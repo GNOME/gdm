@@ -172,6 +172,9 @@ AC_CHECK_FUNC(sched_yield,[
 			   AC_DEFINE(HAVE_SCHED_YIELD)
 			   EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lrt"], [
 			   echo "No sched_yield found"])])
+AC_CHECK_FUNC(inet_aton,,[
+	      AC_CHECK_LIB(resolv,inet_aton, [
+			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lresolv"])])
 
 dnl *****************************
 dnl     IPv6 specific checks
