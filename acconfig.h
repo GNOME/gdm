@@ -1,6 +1,5 @@
 #undef PACKAGE
 #undef VERSION
-#undef AT_BINDIR
 #undef GETTEXT_PACKAGE
 #undef GDM_USER_PATH
 #undef HALT_COMMAND

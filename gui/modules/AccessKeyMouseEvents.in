@@ -15,7 +15,7 @@
 #
 # e.g.
 #
-# <Control>k  5 1000 10000  @AT_BINDIR@/gok --login --access-method=directselection
+# <Control>k  5 1000 10000  gok --login --access-method=directselection
 #
 # Means press Contol-k 5 times, holding each keypress down for at least 1000ms
 # each time and with no greater interval than 10000ms between each event in the
@@ -26,8 +26,8 @@
 # otherwise the sequence will be lost.
 #
 # e.g.
-# Shift_L  5 1000 10000  @AT_BINDIR@/gok --login --access-method=directselection
-# Shift_R  5 1000 10000  @AT_BINDIR@/gok --login --access-method=directselection
+# Shift_L  5 1000 10000  gok --login --access-method=directselection
+# Shift_R  5 1000 10000  gok --login --access-method=directselection
 #
 # Will start gok if you press either shift key 5 times holding it down for more
 # then 1 second each time.
@@ -39,7 +39,7 @@
 #
 # e.g.
 #
-# <Mouse2>  4 3000 6000  @AT_BINDIR@/gnopernicus
+# <Mouse2>  4 3000 6000  @EXPANDED_BINDIR@/gnopernicus
 #
 # Note that mouse numbers are 1-based so <Mouse1> is the left mouse button,
 # <Mouse3> is the right mouse button and <Mouse2> is the middle mouse button.
@@ -51,26 +51,26 @@
 #
 # e.g.
 #
-# <Add>  @AT_BINDIR@/gnome-mag
+# <Add>  @EXPANDED_BINDIR@/gnome-mag
 #
 # Note that pressing any other keys 
 
 # current:
 
 # hold right or left mouse button 3 times for 3 seconds each time
-<Mouse1> 3 3000 10000 @AT_BINDIR@/gok --login --access-method=directselection
+<Mouse1> 3 3000 10000 gok --login --access-method=directselection
 # we add the right mouse button as it may be the left mouse button
 # for a left handed user
-<Mouse3> 3 3000 10000 @AT_BINDIR@/gok --login --access-method=directselection
+<Mouse3> 3 3000 10000 gok --login --access-method=directselection
 
-<Switch1> 1 5000 0 @AT_BINDIR@/gok --login --access-method=automaticscanning --scan-action=switch1 --select-action=switch1
-<Switch2> 3 50 3000 @AT_BINDIR@/gok --login --access-method=inversescanning --scan-action=switch1 --select-action=switch2
-<Switch3> 3 1000 10000 @AT_BINDIR@/gok --login  --access-method=automaticscanning --scan-action=switch3 --select-action=switch3
+<Switch1> 1 5000 0 gok --login --access-method=automaticscanning --scan-action=switch1 --select-action=switch1
+<Switch2> 3 50 3000 gok --login --access-method=inversescanning --scan-action=switch1 --select-action=switch2
+<Switch3> 3 1000 10000 gok --login  --access-method=automaticscanning --scan-action=switch3 --select-action=switch3
 
 # press ctrl-k for 1 second
 # gnopernicus, speech mode
-<Control>s  1 1000 10000  @AT_BINDIR@/srcore --login --enable-speech
+<Control>s  1 1000 10000  srcore --login --enable-speech
 # gnopernicus magnifier
-<Control>m  1 1000 10000  @AT_BINDIR@/srcore --login --enable-magnifier -u
+<Control>m  1 1000 10000  srcore --login --enable-magnifier
 # both
-<Control>g  1 1000 10000  @AT_BINDIR@/srcore --login 
+<Control>g  1 1000 10000  srcore --login 
