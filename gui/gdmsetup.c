@@ -846,7 +846,8 @@ selection_changed (GtkTreeSelection *selection,
 }
 
 static GtkTreeIter *
-read_themes (GtkListStore *store, const char *theme_dir, DIR *dir)
+read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
+	     const char *select_item)
 {
 	struct dirent *dent;
 	GtkTreeIter *select_iter = NULL;
@@ -920,7 +921,8 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir)
 				    THEME_COLUMN_SCREENSHOT, full,
 				    -1);
 
-		if (sel) {
+		if (select_item != NULL &&
+		    strcmp (dent->d_name, select_item) == 0) {
 			/* anality */ g_free (select_iter);
 			select_iter = g_new0 (GtkTreeIter, 1);
 			*select_iter = iter;
@@ -1004,6 +1006,317 @@ selected_toggled (GtkCellRendererToggle *cell,
 	gtk_tree_path_free (sel_path);
 }
 
+static char *
+find_gunzip (void)
+{
+	char *prog;
+	char *try[] = {
+		"/bin/gunzip",
+		"/usr/bin/gunzip",
+		NULL };
+	int i;
+
+	prog = g_find_program_in_path ("gunzip");
+	if (prog != NULL)
+		return prog;
+
+	for (i = 0; try[i] != NULL; i++) {
+		if (access (try[i], X_OK) == 0)
+			return g_strdup (try[i]);
+	}
+	/* Hmmm, fallback */
+	return g_strdup ("/bin/gunzip");
+}
+
+static char *
+find_tar (void)
+{
+	char *tar_prog;
+	char *try[] = {
+		"/bin/gtar",
+		"/bin/tar",
+		"/usr/bin/gtar",
+		"/usr/bin/tar",
+		NULL };
+	int i;
+
+	tar_prog = g_find_program_in_path ("gtar");
+	if (tar_prog != NULL)
+		return tar_prog;
+
+	tar_prog = g_find_program_in_path ("tar");
+	if (tar_prog != NULL)
+		return tar_prog;
+
+	for (i = 0; try[i] != NULL; i++) {
+		if (access (try[i], X_OK) == 0)
+			return g_strdup (try[i]);
+	}
+	/* Hmmm, fallback */
+	return g_strdup ("/bin/tar");
+}
+
+static char *
+get_the_dir (FILE *fp, char **error)
+{
+	char buf[2048];
+	char *dir = NULL;
+	int dirlen = 0;
+	gboolean got_info = FALSE;
+	gboolean read_a_line = FALSE;
+
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		char *p, *s;
+
+		read_a_line = TRUE;
+
+		p = strchr (buf, '\n');
+		if (p != NULL)
+			*p = '\0';
+		if (dir == NULL) {
+			p = strchr (buf, '/');
+			if (p != NULL)
+				*p = '\0';
+			dir = g_strdup (buf);
+			if (p != NULL)
+				*p = '/';
+			dirlen = strlen (dir);
+
+			if (dirlen < 1) {
+				*error =
+					_("Archive is not of a subdirectory");
+
+				g_free (dir);
+				return NULL;
+			}
+		}
+
+		if (strncmp (buf, dir, dirlen) != 0) {
+			*error = _("Archive is not of a single subdirectory");
+			g_free (dir);
+			return NULL;
+		}
+
+		s = g_strconcat (dir, "/GdmGreeterTheme.info", NULL);
+		if (strcmp (buf, s) == 0)
+			got_info = TRUE;
+		g_free (s);
+	}
+
+	if (got_info)
+		return dir;
+
+	if ( ! read_a_line)
+		*error = _("File not a tar.gz or tar archive");
+	else
+		*error = _("Archive does not include a "
+			   "GdmGreeterTheme.info file");
+
+	g_free (dir);
+	return NULL;
+}
+
+static char *
+get_archive_dir (const char *filename, char **untar_cmd, char **error)
+{
+	char *quoted = g_shell_quote (filename);
+	char *tar = find_tar ();
+	char *gunzip = find_gunzip ();
+	char *cmd;
+	char *dir;
+	FILE *fp;
+
+	*untar_cmd = NULL;
+
+	*error = NULL;
+
+	if (access (filename, F_OK) != 0) {
+		*error = _("File does not exist");
+		return NULL;
+	}
+
+	quoted = g_shell_quote (filename);
+	tar = find_tar ();
+	gunzip = find_gunzip ();
+
+	cmd = g_strdup_printf ("%s -c %s | %s -tf -", gunzip, quoted, tar);
+	fp = popen (cmd, "r");
+	g_free (cmd);
+	if (fp != NULL) {
+		int ret;
+		dir = get_the_dir (fp, error);
+		ret = pclose (fp);
+		if (ret == 0 && dir != NULL) {
+			*untar_cmd = g_strdup_printf ("%s -c %s | %s -xf -",
+						      gunzip, quoted, tar);
+			g_free (tar);
+			g_free (gunzip);
+			g_free (quoted);
+			return dir;
+		}
+		g_free (dir);
+		if (ret != 0) {
+			*error = NULL;
+		}
+	}
+
+	/* error due to command failing */
+	if (*error == NULL) {
+		/* Try uncompressed? */
+		cmd = g_strdup_printf ("%s -tf %s", tar, quoted);
+		fp = popen (cmd, "r");
+		g_free (cmd);
+		if (fp != NULL) {
+			int ret;
+			dir = get_the_dir (fp, error);
+			ret = pclose (fp);
+			if (ret == 0 && dir != NULL) {
+				*untar_cmd = g_strdup_printf ("%s -xf %s",
+							      tar, quoted);
+				g_free (tar);
+				g_free (gunzip);
+				g_free (quoted);
+				return dir;
+			}
+			g_free (dir);
+			if (ret != 0) {
+				*error = NULL;
+			}
+		}
+	}
+
+	if (*error == NULL)
+		*error = _("File not a tar.gz or tar archive");
+
+	g_free (tar);
+	g_free (gunzip);
+	g_free (quoted);
+
+	return NULL;
+}
+
+static void
+install_ok (GtkWidget *button, gpointer data)
+{
+	GtkFileSelection *fs = GTK_FILE_SELECTION (data);
+	GtkListStore *store = g_object_get_data (G_OBJECT (fs), "ListStore");
+	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
+						  GTK_TYPE_TREE_VIEW);
+	char *filename, *dir, *untar_cmd, *theme_dir, *cwd;
+	GtkTreeIter *select_iter = NULL;
+	GtkTreeSelection *selection;
+	char *error;
+	DIR *dp;
+
+	cwd = g_get_current_dir ();
+	theme_dir = get_theme_dir ();
+
+	filename = g_strdup (gtk_file_selection_get_filename (fs));
+	if (filename == NULL) {
+		GtkWidget *dlg =
+			gtk_message_dialog_new (GTK_WINDOW (fs),
+						GTK_DIALOG_MODAL | 
+						GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_OK,
+						_("No file selected"));
+		gtk_dialog_run (GTK_DIALOG (dlg));
+		gtk_widget_destroy (dlg);
+		g_free (cwd);
+		g_free (theme_dir);
+		return;
+	}
+
+	if ( ! g_path_is_absolute (filename)) {
+		char *f = g_build_filename (cwd, filename, NULL);
+		g_free (filename);
+		filename = f;
+	}
+
+	dir = get_archive_dir (filename, &untar_cmd, &error);
+
+	if (dir == NULL) {
+		GtkWidget *dlg =
+			gtk_message_dialog_new (GTK_WINDOW (fs),
+						GTK_DIALOG_MODAL | 
+						GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_OK,
+						_("Not a theme archive\n"
+						  "Details: %s"),
+						error);
+		gtk_dialog_run (GTK_DIALOG (dlg));
+		gtk_widget_destroy (dlg);
+		g_free (filename);
+		g_free (cwd);
+		g_free (theme_dir);
+		return;
+	}
+
+	/* FIXME: check for existance, and ask and such */
+
+	g_assert (untar_cmd != NULL);
+
+	if (chdir (theme_dir) == 0) {
+		system (untar_cmd);
+		/* FIXME: check for errors */
+		chdir (cwd);
+	}
+
+	gtk_list_store_clear (store);
+
+	dp = opendir (theme_dir);
+
+	if (dp != NULL) {
+		select_iter = read_themes (store, theme_dir, dp, dir);
+		closedir (dp);
+	}
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
+
+	if (select_iter != NULL) {
+		gtk_tree_selection_select_iter (selection, select_iter);
+		g_free (select_iter);
+	}
+	
+	g_free (untar_cmd);
+	g_free (dir);
+	g_free (filename);
+	g_free (cwd);
+	g_free (theme_dir);
+
+	gtk_widget_destroy (GTK_WIDGET (fs));
+}
+
+static void
+install_new_theme (GtkWidget *button, gpointer data)
+{
+	GtkListStore *store = data;
+	static GtkWidget *fs = NULL;
+	GtkWidget *setup_dialog;
+
+	if (fs != NULL) {
+		gtk_window_present (GTK_WINDOW (fs));
+		return;
+	}
+       
+	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+	
+	fs = gtk_file_selection_new (_("Select new theme archive to install"));
+	gtk_window_set_transient_for (GTK_WINDOW (fs),
+				      GTK_WINDOW (setup_dialog));
+	g_object_set_data (G_OBJECT (fs), "ListStore", store);
+	g_signal_connect (G_OBJECT (fs), "destroy",
+			  G_CALLBACK (gtk_widget_destroyed), &fs);
+	g_signal_connect (GTK_FILE_SELECTION (fs)->ok_button, "clicked",
+			  G_CALLBACK (install_ok), fs);
+	g_signal_connect_swapped (GTK_FILE_SELECTION (fs)->cancel_button,
+				  "clicked",
+				  G_CALLBACK (gtk_widget_destroy), fs);
+
+	gtk_widget_show (fs);
+}
+
 static void
 setup_graphical_themes (void)
 {
@@ -1015,6 +1328,8 @@ setup_graphical_themes (void)
 	GtkTreeIter *select_iter = NULL;
 	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
 						  GTK_TYPE_TREE_VIEW);
+	GtkWidget *button = glade_helper_get (xml, "gg_install_new_theme",
+					      GTK_TYPE_BUTTON);
 
 	char *theme_dir = get_theme_dir ();
 
@@ -1033,10 +1348,14 @@ setup_graphical_themes (void)
 				    G_TYPE_STRING /* copyright */,
 				    G_TYPE_STRING /* screenshot */);
 
+	g_signal_connect (button, "clicked",
+			  G_CALLBACK (install_new_theme), store);
+
 	dir = opendir (theme_dir);
 
 	if (dir != NULL) {
-		select_iter = read_themes (store, theme_dir, dir);
+		select_iter = read_themes (store, theme_dir, dir,
+					   selected_theme);
 		closedir (dir);
 	}
 
