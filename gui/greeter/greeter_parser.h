@@ -17,6 +17,7 @@ typedef enum
 GQuark greeter_parser_error_quark (void);
 
 GreeterItemInfo *greeter_parse (char        *file,
+				char        *data_dir,
 				GnomeCanvas *canvas,
 				int          width,
 				int          height,

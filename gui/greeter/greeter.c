@@ -11,6 +11,7 @@
 #include "gdmwm.h"
 
 #include "greeter.h"
+#include "greeter_configuration.h"
 #include "greeter_parser.h"
 #include "greeter_geometry.h"
 #include "greeter_item_clock.h"
@@ -24,6 +25,22 @@ gboolean DOING_GDM_DEVELOPMENT = FALSE;
 
 GtkWidget *window;
 GtkWidget *canvas;
+
+static char *GreeterConfTheme = NULL;
+
+static void 
+greeter_parse_config (void)
+{
+    if (!g_file_test (GDM_CONFIG_FILE, G_FILE_TEST_EXISTS)) {
+	syslog (LOG_ERR, _("greeter_parse_config: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
+    }
+
+    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+
+    GreeterConfTheme = gnome_config_get_string (GREETER_KEY_THEME);
+
+    gnome_config_pop_prefix();
+}
 
 static gboolean
 greeter_ctrl_handler (GIOChannel *source,
@@ -558,6 +575,8 @@ main (int argc, char *argv[])
   gint w, h;
   GError *error;
   GreeterItemInfo *root;
+  char *theme_file;
+  char *theme_dir;
   int r;
 
   if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
@@ -570,6 +589,8 @@ main (int argc, char *argv[])
   bindtextdomain (PACKAGE, GNOMELOCALEDIR);
   textdomain (PACKAGE);
 
+  greeter_parse_config ();
+  
   gtk_init (&argc, &argv);
 
   gdm_wm_screen_init (0);
@@ -631,8 +652,22 @@ main (int argc, char *argv[])
   gtk_window_set_default_size (GTK_WINDOW (window), w, h);
   gtk_container_add (GTK_CONTAINER (window), canvas);
 
+  if (g_path_is_absolute (GreeterConfTheme))
+    {
+      theme_file = g_strdup (GreeterConfTheme);
+    }
+  else
+    {
+      theme_file = g_build_filename (GREETERTHEMEDIR,
+				     GreeterConfTheme,
+				     NULL);
+    }
+
+  theme_dir = g_path_get_dirname (theme_file);
+  
   error = NULL;
-  root = greeter_parse (argv[1], GNOME_CANVAS (canvas), w, h, &error);
+  root = greeter_parse (theme_file, theme_dir,
+			GNOME_CANVAS (canvas), w, h, &error);
 
   if (root == NULL)
     g_warning ("Failed to parse file: %s!", error->message);

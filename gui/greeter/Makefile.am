@@ -1,9 +1,13 @@
+SUBDIRS = themes
+
 INCLUDES = \
 	-I.						\
 	-I..						\
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\
+	-DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
+	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\" 	\
 	$(WARN_CFLAGS)					\
 	$(GREETER_CFLAGS)
 
@@ -16,6 +20,7 @@ gdmgreeter_SOURCES =  \
 	greeter_action_language.h \
 	greeter_canvas_item.c \
 	greeter_canvas_item.h \
+	greeter_configuration.h \
 	greeter_dialogs.c \
 	greeter_dialogs.h \
 	greeter_events.c \

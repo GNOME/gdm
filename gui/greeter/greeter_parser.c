@@ -10,6 +10,7 @@
 #include "greeter_events.h"
 
 static char *gdm_language = "se";
+static char *file_search_path = NULL;
 
 GHashTable *item_hash = NULL;
 
@@ -410,7 +411,13 @@ parse_state_file (xmlNodePtr node,
   prop = xmlGetProp (node, "file");
   if (prop)
     {
-      info->files[state] = g_strdup (prop);
+      if (g_path_is_absolute (prop))
+	info->files[state] = g_strdup (prop);
+      else
+	info->files[state] = g_build_filename (file_search_path,
+					       prop,
+					       NULL);
+	
       xmlFree (prop);
     }
   
@@ -930,7 +937,8 @@ greeter_info_id_hash (GreeterItemInfo *key)
 }
 
 GreeterItemInfo *
-greeter_parse (char *file, GnomeCanvas *canvas,
+greeter_parse (char *file, char *datadir,
+	       GnomeCanvas *canvas,
 	       int width, int height, GError **error)
 {
   GreeterItemInfo *root;
@@ -939,6 +947,8 @@ greeter_parse (char *file, GnomeCanvas *canvas,
   gboolean res;
   GList *items;
 
+  file_search_path = datadir;
+  
   if (!g_file_test (file, G_FILE_TEST_EXISTS))
     {
       if (error)
