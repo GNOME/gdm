@@ -1,3 +1,12 @@
+Sun Jul 01 05:25:34 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmchooser.c: Another example of why we want compile time
+	  typesafety.  The GIOFunc was casted in the watch adding since
+	  it had a different prototype, and I was getting somewhat random
+	  return values.  Which meant that the chooser would stop working
+	  at points completely.  Eeeek!  So change to correct prototype
+	  to make the chooser happy.
+
 Sun Jul 01 04:50:39 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmchooser.c: scan the hosts 3 times in 2 second intervals

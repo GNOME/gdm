@@ -68,7 +68,11 @@ static GdmChooserHost * gdm_chooser_host_alloc (const char *hostname,
 						const char *description,
 						struct in_addr *ia,
 						gboolean willing);
-static void gdm_chooser_decode_packet (void);
+
+static gboolean gdm_chooser_decode_packet (GIOChannel   *source,
+					   GIOCondition  condition,
+					   gpointer      data);
+
 static void gdm_chooser_abort (const gchar *format, ...);
 static void gdm_chooser_browser_update (void);
 static void gdm_chooser_xdmcp_init (char **hosts);
@@ -164,8 +168,10 @@ is_loopback_addr (struct in_addr *ia)
 	}
 }
 
-static void
-gdm_chooser_decode_packet (void)
+static gboolean
+gdm_chooser_decode_packet (GIOChannel   *source,
+			   GIOCondition  condition,
+			   gpointer      data)
 {
     struct sockaddr_in clnt_sa;
     gint sa_len = sizeof (clnt_sa);
@@ -177,13 +183,13 @@ gdm_chooser_decode_packet (void)
     ARRAY8 auth, host, stat;
 
     if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt_sa, &sa_len))
-	return;
+	return TRUE;
 
     if (! XdmcpReadHeader (&buf, &header))
-	return;
+	return TRUE;
     
     if (header.version != XDM_PROTOCOL_VERSION)
-	return;
+	return TRUE;
 
     if (header.opcode == WILLING) {
 	    if (! XdmcpReadARRAY8 (&buf, &auth))
@@ -200,7 +206,7 @@ gdm_chooser_decode_packet (void)
 	    /* immaterial, will not be shown */
 	    status = NULL;
     } else {
-	    return;
+	    return TRUE;
     }
 
     if ( ! is_loopback_addr (&clnt_sa.sin_addr)) {
@@ -241,7 +247,7 @@ gdm_chooser_decode_packet (void)
     
     g_free (status);
     
-    return;
+    return TRUE;
 }
 
 
@@ -414,7 +420,7 @@ gdm_chooser_xdmcp_init (char **hosts)
     channel = g_io_channel_unix_new (sockfd);
     g_io_add_watch_full (channel, G_PRIORITY_DEFAULT,
 			G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
-			(GIOFunc) gdm_chooser_decode_packet,
+			gdm_chooser_decode_packet,
 			GINT_TO_POINTER (sockfd), NULL);
     g_io_channel_unref (channel);
 
