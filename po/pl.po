@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-10-22 12:08+0200\n"
-"PO-Revision-Date: 2001-10-22 12:10+0200\n"
+"POT-Creation-Date: 2001-10-25 21:17+0200\n"
+"PO-Revision-Date: 2001-10-25 21:19+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -292,7 +292,7 @@ msgstr "deal_with_x_crashes: Uruchamianie skryptu XKeepsCrashing"
 #. Shit if we knew what the program was to tell the user,
 #. * the above script would have been defined and we'd run
 #. * it for them
-#: daemon/gdm.c:1 daemon/gdm.c:1
+#: config/gettextfoo.h:1 daemon/gdm.c:1
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  You will need to log in on a console and rerun "
@@ -301,40 +301,6 @@ msgstr ""
 "Nie mo¿na uruchomiæ serwera X (odpowiedzialnego za interfejs graficzny). "
 "Prawdopodobnie nie zosta³ on poprawnie skonfigurowany. Powróæ na konsolê i "
 "uruchom program konfiguruj±cy serwer X, a nastêpnie uruchom ponownie GDM-a."
-
-#: daemon/gdm.c:1
-msgid ""
-"Would you like me to try to run the X configuration program?  Note that you "
-"will need the root password for this."
-msgstr ""
-"Czy chcesz spróbowaæ uruchomiæ program konfiguruj±cy serwer X (nale¿y w tym "
-"przypadku podaæ has³o u¿ytkownika root)?"
-
-#: daemon/gdm.c:1
-msgid "Please type in the root (privilaged user) password."
-msgstr "Wprowad¼ has³o u¿ytkownika root."
-
-#: daemon/gdm.c:1
-msgid "I will now try to restart the X server again."
-msgstr "Nast±pi próba ponownego uruchomienia serwera X."
-
-#: daemon/gdm.c:1
-msgid ""
-"I will disable this X server for now.  Restart GDM when it is configured "
-"correctly."
-msgstr ""
-"Ten serwer X zostanie tymczasowo unieaktywniony. Po jego poprawnym "
-"skonfigurowaniu uruchom ponownie GDM-a."
-
-#: daemon/gdm.c:1
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  Would you like to view the X server output to "
-"diagnose the problem?"
-msgstr ""
-"Nie mo¿na uruchomiæ serwera X (odpowiedzialnego za interfejs graficzny). "
-"Prawdopodobnie nie zosta³ on poprawnie skonfigurowany. Czy chcesz obejrzeæ "
-"zawarto¶æ wyj¶cia serwera, aby zdiagnozowaæ problem?"
 
 #. else {
 #. * At this point .... screw the user, we don't know how to
@@ -1008,13 +974,6 @@ msgstr ""
 "\n"
 "Niepoprawna nazwa u¿ytkownika lub has³o. Pamiêtaj, ¿e wielko¶æ liter jest "
 "wa¿na. Upewnij siê, ¿e nie jest w³±czony Caps Lock."
-
-#: daemon/verify-crypt.c:1 daemon/verify-crypt.c:1
-#: daemon/verify-crypt.c:1 daemon/verify-crypt.c:1
-#: daemon/verify-shadow.c:1 daemon/verify-shadow.c:1
-#: daemon/verify-shadow.c:1 daemon/verify-shadow.c:1
-msgid "Login incorrect"
-msgstr "Niepoprawny login"
 
 #: daemon/verify-crypt.c:1 daemon/verify-pam.c:1
 #: daemon/verify-shadow.c:1
@@ -2373,10 +2332,6 @@ msgstr ""
 "Okre¶la, czy greeter powinien wy¶wietlaæ b³êdy dotycz±ce uwierzytelniania"
 
 #: gui/gdmconfig-strings.c:1
-msgid "Authentication errors should be verbose"
-msgstr "Szczegó³owe powiadamianie o b³êdach uwierzytelniania"
-
-#: gui/gdmconfig-strings.c:1
 msgid "Select how relaxed permissions are"
 msgstr "Okre¶la, jak restrykcyjne s± wymagania w odniesieniu do praw do plików"
 
@@ -2671,17 +2626,6 @@ msgstr "Awaryjna"
 #: gui/gdmconfig-strings.c:1
 msgid "Script to run when X is crashing: "
 msgstr "Skrypt uruchamiany przy zwracaniu b³êdów przez serwer X: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "X configurator binaries to try: "
-msgstr "Uruchamiane programy konfiguruj±ce serwer X: "
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"A list of X setup programs to try for the above script, separated by spaces"
-msgstr ""
-"Lista programów konfiguruj±cych serwer X, rozdzielonych odstêpami. Lista "
-"wykorzystywana jest przez powy¿szy skrypt."
 
 #: gui/gdmconfig-strings.c:1
 msgid ""
@@ -3749,6 +3693,42 @@ msgstr ""
 "obrazów twarzy"
 
 #: gui/gdmXnestchooser.c:1
+msgid "Xnest command line"
+msgstr "Wiersz poleceñ Xnest"
+
+#: gui/gdmXnestchooser.c:1
+msgid "STRING"
+msgstr "NAPIS"
+
+#: gui/gdmXnestchooser.c:1
+msgid "Extra options for Xnest"
+msgstr "Dodatkowe opcje Xnest"
+
+#: gui/gdmXnestchooser.c:1
+msgid "OPTIONS"
+msgstr "OPCJE"
+
+#: gui/gdmXnestchooser.c:1
+msgid "Just run Xnest, no query (no chooser)"
+msgstr "Bezpo¶rednie uruchomienie Xnest, bez zapytania (bez choosera)"
+
+#: gui/gdmXnestchooser.c:1
+msgid "Do direct query insted of indirect (chooser)"
+msgstr "Bezpo¶rednie zapytanie zamiast po¶redniego (chooser)"
+
+#: gui/gdmXnestchooser.c:1
+msgid "Run broadcast instead of indirect (chooser)"
+msgstr "Rozg³aszanie zamiast po¶redniego zapytania (chooser)"
+
+#: gui/gdmXnestchooser.c:1
+msgid "Run in background"
+msgstr "Uruchomienie w tle"
+
+#: gui/gdmXnestchooser.c:1
+msgid "Don't check for running gdm"
+msgstr "Bez sprawdzania, czy jest uruchomiony gdm"
+
+#: gui/gdmXnestchooser.c:1
 msgid ""
 "Xnest doesn't exist.\n"
 "Please ask your system administrator\n"
@@ -3864,3 +3844,51 @@ msgstr "Nie mo¿na wczytaæ interfejsu (plik: %s). Niedobrze."
 #: vicious-extensions/icon-entry-hack.c:1
 msgid "Choose an icon"
 msgstr "Wybór ikony"
+
+#: config/gettextfoo.h:1
+msgid ""
+"Would you like me to try to run the X configuration program?  Note that you "
+"will need the root password for this."
+msgstr ""
+"Czy chcesz spróbowaæ uruchomiæ program konfiguruj±cy serwer X (nale¿y w tym "
+"przypadku podaæ has³o u¿ytkownika root)?"
+
+#: config/gettextfoo.h:1
+msgid "Please type in the root (privilaged user) password."
+msgstr "Wprowad¼ has³o u¿ytkownika root."
+
+#: config/gettextfoo.h:1
+msgid ""
+"I will disable this X server for now.  Restart GDM when it is configured "
+"correctly."
+msgstr ""
+"Ten serwer X zostanie tymczasowo unieaktywniony. Po jego poprawnym "
+"skonfigurowaniu uruchom ponownie GDM-a."
+
+#: config/gettextfoo.h:1
+msgid ""
+"I cannot start the X server (your graphical interface).  It seems that the "
+"pointer device (your mouse) is not set up correctly.  Would you like to view "
+"the X server output to diagnose the problem?"
+msgstr ""
+"Nie mo¿na uruchomiæ serwera X (odpowiedzialnego za interfejs graficzny). "
+"Prawdopodobnie nie zosta³a poprawnie skonfigurowana mysz. Czy chcesz "
+"obejrzeæ zawarto¶æ wyj¶cia serwera, aby zdiagnozowaæ problem?"
+
+#: config/gettextfoo.h:1
+msgid ""
+"Would you like me to try to run the mouse configuration program?  Note that "
+"you will need the root password for this."
+msgstr ""
+"Czy chcesz spróbowaæ uruchomiæ program konfiguruj±cy mysz? Nale¿y w tym "
+"przypadku podaæ has³o u¿ytkownika root."
+
+#: config/gettextfoo.h:1
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  Would you like to view the X server output to "
+"diagnose the problem?"
+msgstr ""
+"Nie mo¿na uruchomiæ serwera X (odpowiedzialnego za interfejs graficzny). "
+"Prawdopodobnie nie zosta³ on poprawnie skonfigurowany. Czy chcesz obejrzeæ "
+"zawarto¶æ wyj¶cia serwera, aby zdiagnozowaæ problem?"
