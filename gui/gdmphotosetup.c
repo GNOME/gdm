@@ -97,6 +97,8 @@ main (int argc, char *argv[])
 	GtkWidget *dialog;
 	GtkWidget *photo;
 	gboolean face_browser;
+	char *greeter;
+	char *remotegreeter;
 	int max_size;
 	char *last_pix;
 
@@ -114,13 +116,21 @@ main (int argc, char *argv[])
 	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 	face_browser = gnome_config_get_bool (GDM_KEY_BROWSER);
 	max_size = gnome_config_get_int (GDM_KEY_MAXFILE);
+	greeter = gnome_config_get_string (GDM_KEY_GREETER);
+	remotegreeter = gnome_config_get_string (GDM_KEY_REMOTEGREETER);
 	gnome_config_pop_prefix ();
 
 	if ( ! gdm_check ()) {
 		return 1;
 	}
 
-	if ( ! face_browser) {
+	/* HACK */
+	/* only warn if gdmlogin is set for both local and remote greeter,
+	 * the graphical greeter does a different setup thingie for
+	 * the face browser and it would be hard to figure out here ... */
+	if ( ! face_browser &&
+	     strstr (greeter, "gdmlogin") != NULL &&
+	     strstr (remotegreeter, "gdmlogin") != NULL) {
 		GtkWidget *d;
 		d = gtk_message_dialog_new (NULL /* parent */,
 					    GTK_DIALOG_MODAL /* flags */,

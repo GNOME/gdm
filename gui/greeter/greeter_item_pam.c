@@ -4,7 +4,9 @@
 #include <libgnome/libgnome.h>
 #include <gdk/gdkkeysyms.h>
 #include "greeter_item_pam.h"
+#include "greeter_item_ulist.h"
 #include "greeter_parser.h"
+#include "greeter_configuration.h"
 #include "gdm.h"
 #include "gdmwm.h"
 #include "vicious.h"
@@ -15,9 +17,6 @@ static gboolean replace_msg = TRUE;
 static guint err_box_clear_handler = 0;
 static gboolean entry_is_login = FALSE;
 
-extern gboolean DOING_GDM_DEVELOPMENT;
-extern gboolean GdmSystemMenu;
-
 gchar *greeter_current_user = NULL;
 
 void
@@ -25,6 +24,7 @@ greeter_item_pam_set_user (const char *user)
 {
   g_free (greeter_current_user);
   greeter_current_user = g_strdup (user);
+  greeter_item_ulist_set_user (user);
 }
 
 static void
@@ -35,6 +35,8 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   
   gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 
+  greeter_item_ulist_disable ();
+
   /* Save login. I'm making the assumption that login is always
    * the first thing entered. This might not be true for all PAM
    * setups. Needs thinking! 
@@ -43,6 +45,7 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   if (entry_is_login) {
     g_free (greeter_current_user);
     greeter_current_user = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+    greeter_item_ulist_set_user (greeter_current_user);
   }
   
   /* clear the err_box */
@@ -88,7 +91,8 @@ greeter_item_pam_setup (void)
 
   entry_info = greeter_lookup_id ("user-pw-entry");
   if (entry_info && entry_info->item &&
-      GNOME_IS_CANVAS_WIDGET (entry_info->item))
+      GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
+      GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
     {
       GtkWidget *entry;
       entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;

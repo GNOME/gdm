@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<!DOCTYPE greeter SYSTEM "greeter.dtd">
+<greeter>
+  <item type="svg">
+    <normal file="background.svg"/>
+    <pos x="0" y="0" width="100%" height="-75"/>
+  </item>
+  <item type="rect">
+    <normal color="#000000"/>
+    <pos x="0" y="-75" width="100%" height="75"/>
+    <fixed>
+      <item type="rect">
+        <normal color="#ffffff"/>
+        <pos x="0" y="4" width="100%" height="100%"/>
+        <box orientation="horizontal" spacing="10" xpadding="10">
+          <item type="rect" id="language_button" button="true">
+            <normal color="#ffffff"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="options.png" tint="#dddddd"/>
+	        <prelight file="options.png"/>
+	        <active file="options.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+		<!-- Stock label for: _Language -->
+		<stock type="language"/>
+		<!-- Kept for compatibility with older gdm versions -->
+		<_text>_Language</_text>
+	      </item>
+            </box>
+          </item>
+          <item type="rect" id="session_button" button="true">
+            <normal color="#ffffff"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="session.png" tint="#dddddd"/>
+	        <prelight file="session.png"/>
+	        <active file="session.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+		<!-- Stock label for: _Session -->
+		<stock type="session"/>
+		<!-- Kept for compatibility with older gdm versions -->
+		<_text>_Session</_text>
+	      </item>
+            </box>
+          </item>
+          <item type="rect" id="system_button" button="true">
+            <normal color="#ffffff"/>
+	    <show modes="console" type="system"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="system.png" tint="#dddddd"/>
+	        <prelight file="system.png"/>
+	        <active file="system.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+		<!-- Stock label for: S_ystem -->
+		<stock type="system"/>
+		<!-- Kept for compatibility with older gdm versions -->
+		<_text>S_ystem</_text>
+	      </item>
+            </box>
+          </item>
+          <item type="rect" id="disconnect_button" button="true">
+            <normal color="#ffffff"/>
+	    <show modes="flexi,remote"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="disconnect.png" tint="#dddddd"/>
+	        <prelight file="disconnect.png"/>
+	        <active file="disconnect.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+		<!-- Stock label for: D_isconnect -->
+		<stock type="disconnect"/>
+		<!-- Kept for compatibility with older gdm versions -->
+		<_text>D_isconnect</_text>
+	        <show modes="remote"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+		<!-- Stock label for: _Quit -->
+		<stock type="quit"/>
+		<!-- Kept for compatibility with older gdm versions -->
+		<_text>_Quit</_text>
+	        <show modes="flexi"/>
+	      </item>
+            </box>
+          </item>
+        </box>
+      </item>
+    </fixed>
+  </item>
+  <item type="pixmap">
+    <normal file="gnome-logo.png"/>
+    <pos x="-10" y="-10" anchor="se"/>
+  </item>
+  <item type="label" id="clock">
+    <normal color="#000000" font="Sans 16"/>
+    <pos x="-160" y="-37" anchor="e"/>
+    <text>%c</text>
+  </item>
+
+  <item type="rect" id="caps-lock-warning">
+    <normal color="#FFFFFF" alpha="0.5"/>
+    <pos anchor="c" x="75%" y="75%" width="box" height="box"/>
+    <box orientation="vertical" min-width="400" xpadding="10" ypadding="5" spacing="0">
+      <item type="label">
+        <normal color="#000000" font="Sans 14"/>
+        <pos x="50%" anchor="n"/>
+	<!-- Stock label for: You've got capslock on! -->
+	<stock type="caps-lock-warning"/>
+	<!-- Kept for compatibility with older gdm versions -->
+	<_text>You've got capslock on!</_text>
+      </item>
+    </box>
+  </item>
+
+  <item type="rect" id="timed-rect">
+    <show type="timed"/>
+    <normal color="#FFFFFF" alpha="0.5"/>
+    <pos anchor="c" x="75%" y="25%" width="box" height="box"/>
+    <box orientation="vertical" min-width="400" xpadding="10" ypadding="5" spacing="0">
+      <item type="label" id="timed-label">
+        <normal color="#000000" font="Sans 14"/>
+        <pos x="50%" anchor="n"/>
+	<!-- Stock label for: User %s will login in %d seconds -->
+	<stock type="timed-label"/>
+	<!-- Kept for compatibility with older gdm versions -->
+	<_text>User %s will login in %d seconds</_text>
+      </item>
+    </box>
+  </item>
+
+  <item type="rect">
+    <normal color="#FFFFFF" alpha="0.5"/>
+    <pos anchor="c" x="25%" y="50%" height="box" width="box"/>
+    <box orientation="vertical" min-width="440" max-width="440" xpadding="4" ypadding="4" height="550" spacing="0">
+      <item type="rect">
+	<normal color="#000000" alpha="0.0"/>
+        <pos anchor="n" x="50%" height="548" width="438"/>
+	<fixed>
+          <item type="list" id="userlist">
+            <pos anchor="nw" x="1" y="1" height="-2" width="-2"/>
+          </item>
+	</fixed>
+      </item>
+    </box>
+  </item>
+
+  <item type="rect">
+    <normal color="#FFFFFF" alpha="0.5"/>
+    <pos anchor="c" x="75%" y="50%" width="box" height="box"/>
+    <box orientation="vertical" min-width="300" xpadding="30" ypadding="30" spacing="10">
+      <item type="label">
+        <pos anchor="n" x="50%"/>
+        <normal color="#000000" font="Sans 18"/>
+	<!-- Stock label for: Welcome to %h -->
+	<stock type="welcome-label"/>
+	<!-- Kept for compatibility with older gdm versions -->
+	<_text>Welcome to %h</_text>
+      </item>
+      <item type="label" id="pam-prompt">
+        <pos anchor="nw" x="10%"/>
+        <normal color="#000000" font="Sans 16"/>
+	<!-- Stock label for: Username: -->
+	<stock type="username-label"/>
+	<!-- Kept for compatibility with older gdm versions -->
+	<_text>Username:</_text>
+      </item>
+      <item type="rect">
+	<normal color="#000000"/>
+        <pos anchor="n" x="50%" height="24" width="80%"/>
+	<fixed>
+	  <item type="entry" id="user-pw-entry">
+            <pos anchor="nw" x="1" y="1" height="-2" width="-2"/>
+	  </item>
+	</fixed>
+      </item>
+      <item type="label" id="pam-message">
+        <pos anchor="n" x="50%"/>
+        <normal color="#000000" font="Sans 16"/>
+	<text></text>
+      </item>
+    </box>
+    <fixed>
+      <item type="label" id="pam-error">
+        <pos anchor="n" x="50%" y="110%"/>
+        <normal color="#000000" font="Sans 16"/>
+        <text></text>
+      </item>
+    </fixed>
+  </item>
+</greeter>
+
+

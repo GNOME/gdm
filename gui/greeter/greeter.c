@@ -21,6 +21,7 @@
 #include "greeter_geometry.h"
 #include "greeter_item_clock.h"
 #include "greeter_item_pam.h"
+#include "greeter_item_ulist.h"
 #include "greeter_item_capslock.h"
 #include "greeter_item_timed.h"
 #include "greeter_events.h"
@@ -33,6 +34,7 @@ gboolean DOING_GDM_DEVELOPMENT = FALSE;
 GtkWidget *window;
 GtkWidget *canvas;
 
+gboolean GDM_IS_LOCAL = FALSE;
 char *GdmGraphicalTheme = NULL;
 char *GdmGraphicalThemeDir = NULL;
 int GdmXineramaScreen = 0;
@@ -50,9 +52,17 @@ gboolean GdmSystemMenu = TRUE;
 gboolean GdmConfigAvailable = TRUE;
 gboolean GdmTimedLoginEnable;
 gboolean GdmUse24Clock;
+gchar *GdmGlobalFaceDir;
+gchar *GdmDefaultFace;
+gint  GdmIconMaxHeight;
+gint  GdmIconMaxWidth;
 gchar *GdmTimedLogin;
 gchar *GdmGtkRC;
 gint GdmTimedLoginDelay;
+gchar *GdmExclude;
+int GdmMinimalUID;
+gboolean GdmAllowRoot;
+gboolean GdmAllowRemoteRoot;
 
 gboolean GdmUseCirclesInEntry = FALSE;
 
@@ -108,6 +118,10 @@ greeter_parse_config (void)
     GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
 
     GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
+    GdmExclude = ve_config_get_string (config, GDM_KEY_EXCLUDE);
+    GdmMinimalUID = ve_config_get_int (config, GDM_KEY_MINIMALUID);
+    GdmAllowRoot = ve_config_get_bool (config, GDM_KEY_ALLOWROOT);
+    GdmAllowRemoteRoot = ve_config_get_bool (config, GDM_KEY_ALLOWREMOTEROOT);
     GdmTimedLoginDelay = ve_config_get_int (config, GDM_KEY_TIMED_LOGIN_DELAY);
 
     /* Note: TimedLogin here is not gotten out of the config
@@ -137,8 +151,20 @@ greeter_parse_config (void)
 
     GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 
+    GdmIconMaxWidth = ve_config_get_int (config, GDM_KEY_ICONWIDTH);
+    GdmIconMaxHeight = ve_config_get_int (config, GDM_KEY_ICONHEIGHT);
+    GdmGlobalFaceDir = ve_config_get_string (config, GDM_KEY_FACEDIR);
+    GdmDefaultFace = ve_config_get_string (config, GDM_KEY_FACE);
+
     if (GdmXineramaScreen < 0)
       GdmXineramaScreen = 0;
+    if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
+    if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
+    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+	    GDM_IS_LOCAL = FALSE;
+    } else {
+	    GDM_IS_LOCAL = TRUE;
+    }
 }
 
 static void
@@ -191,6 +217,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 	
 	greeter_item_pam_set_user (buf);
+	greeter_item_ulist_disable ();
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
@@ -201,6 +228,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	tmp = ve_locale_to_utf8 (buf);
 	greeter_item_pam_prompt (tmp, 32, TRUE, TRUE);
 	g_free (tmp);
+	greeter_item_ulist_enable ();
 	break;
 
     case GDM_PROMPT:
@@ -210,6 +238,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	tmp = ve_locale_to_utf8 (buf);
 	greeter_item_pam_prompt (tmp, 128, TRUE, FALSE);
 	g_free (tmp);
+	greeter_item_ulist_disable ();
 	break;
 
     case GDM_NOECHO:
@@ -219,6 +248,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	tmp = ve_locale_to_utf8 (buf);
 	greeter_item_pam_prompt (tmp, 128, FALSE, FALSE);
 	g_free (tmp);
+	greeter_item_ulist_disable ();
 	break;
 
     case GDM_MSG:
@@ -506,9 +536,12 @@ key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
 static void
 greeter_setup_items (void)
 {
-
   greeter_item_clock_setup ();
   greeter_item_pam_setup ();
+
+  /* This will query the daemon for pictures through stdin/stdout! */
+  greeter_item_ulist_setup ();
+
   greeter_item_capslock_setup (window);
   greeter_item_timed_setup ();
   greeter_item_register_action_callback ("language_button",

@@ -44,6 +44,8 @@ gdmgreeter_SOURCES =  \
 	greeter_item.h \
 	greeter_item_pam.c \
 	greeter_item_pam.h \
+	greeter_item_ulist.c \
+	greeter_item_ulist.h \
 	greeter_parser.c \
 	greeter_parser.h \
 	greeter_session.c \

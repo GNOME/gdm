@@ -482,8 +482,9 @@ main (int argc, char *argv[])
 		FILE *fp = NULL;
 		long pid;
 		
-		if ( ! xdmcp_enabled ||
-		     ! honor_indirect) {
+		if (( ! xdmcp_enabled ||
+		      ! honor_indirect) &&
+		    ! do_direct) {
 			GtkWidget *d;
 			d = gtk_message_dialog_new
 				(NULL /* parent */,
@@ -491,6 +492,25 @@ main (int argc, char *argv[])
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
 				 _("Indirect XDMCP is not enabled,\n"
+				   "please ask your "
+				   "system administrator to enable "
+				   "it\nin the GDM configurator "
+				   "program."));
+			gtk_widget_show_all (d);
+			gtk_dialog_run (GTK_DIALOG (d));
+			gtk_widget_destroy (d);
+			return 0;
+		}
+
+		if ( ! xdmcp_enabled &&
+		    do_direct) {
+			GtkWidget *d;
+			d = gtk_message_dialog_new
+				(NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_OK,
+				 _("XDMCP is not enabled,\n"
 				   "please ask your "
 				   "system administrator to enable "
 				   "it\nin the GDM configurator "

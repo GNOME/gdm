@@ -1,3 +1,34 @@
+Mon May 19 13:03:57 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmphotosetup.c: do the face browser warning only if gdmlogin
+	  is selected for both greeters
+
+	* config/gdm.conf.in: add nfsnobody to Exclude
+
+	* gui/gdmXnestchooser.c: when direct is on and we're looking
+	  at the local server don't check indirect key for being on
+
+	* gui/greeter/Makefile.am, gui/greeter/greeter.c,
+	  gui/greeter/greeter_canvas_item.c,
+	  gui/greeter/greeter_configuration.h,
+	  gui/greeter/greeter_item.h, gui/greeter/greeter_item_pam.c,
+	  gui/greeter/greeter_parser.c,
+	  gui/greeter/greeter_item_ulist.[ch]:
+	  Based on a patch from Patrizio Bruno <desertconsulting@firenze.net>,
+	  add face browser support by adding a list item, this list item
+	  should have id of "userlist" and it will be populated with
+	  the users just like the gdmlogin browser.  When a user name is
+	  selected (either by typing it in or selecting in the list) it
+	  will be always selected in the list as well (which should make
+	  some people happy).  I think we should use this kind of browser
+	  in gtklogin as well, because it is much cooler.
+
+	* gui/greeter/greeter.dtd: update DTD for the list item
+
+	* configure.in, gui/greeter/themes/happygnome-list/*,
+	  gui/greeter/themes/Makefile.am: Add a happygnome theme
+	  with a face browser using the new list item
+
 Fri May 16 20:46:43 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmlanguages.c, config/locale.alias: added Malaylam, Marathi

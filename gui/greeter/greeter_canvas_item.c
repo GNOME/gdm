@@ -7,6 +7,7 @@
 #include <librsvg/rsvg.h>
 #include "vicious.h"
 
+#include "gdm.h"
 #include "greeter.h"
 #include "greeter_item.h"
 #include "greeter_events.h"
@@ -169,6 +170,8 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 {
   GnomeCanvasGroup *group;
   GtkWidget *entry;
+  GtkWidget *list;
+  GtkWidget *swin;
   double x1, y1, x2, y2;
   int i;
   GtkAllocation rect;
@@ -298,7 +301,10 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
     
     if (item->id != NULL && strcmp (item->id, "user-pw-entry") == 0) {
-	    /* HACK! Add a menubar, this is kind of evil isn't it */
+	    /* HACK! Add a menubar, this is kind of evil isn't it,
+	     * should probably be done in the pam item setup thingie.
+	     * but this is really widget kind of thing.  I dunno where
+	     * this belongs but it's a hack here. */
 	    GtkWidget *menubar = make_menubar ();
 
 	    gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
@@ -314,6 +320,28 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     item->item = gnome_canvas_item_new (group,
 					GNOME_TYPE_CANVAS_WIDGET,
 					"widget", entry,
+					"x", x1,
+					"y", y1,
+					"height", (double)rect.height,
+					"width", (double)rect.width,
+					NULL);
+
+    break;
+
+  case GREETER_ITEM_TYPE_LIST:
+    /* Note a list type must be setup later and we will add the list store
+     * to it then, depending on the type.  Likely userlist is the
+     * only type we support */
+    list = gtk_tree_view_new ();
+    swin = gtk_scrolled_window_new (NULL, NULL);
+    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (swin),
+    					GTK_SHADOW_NONE);
+    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swin),
+    				GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_container_add (GTK_CONTAINER (swin), list);
+    item->item = gnome_canvas_item_new (group,
+					GNOME_TYPE_CANVAS_WIDGET,
+					"widget", swin,
 					"x", x1,
 					"y", y1,
 					"height", (double)rect.height,

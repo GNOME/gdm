@@ -1085,6 +1085,42 @@ parse_label (xmlNodePtr        node,
 }
 
 static gboolean
+parse_list (xmlNodePtr        node,
+	     GreeterItemInfo  *info,
+	     GError         **error)
+{
+  xmlNodePtr child;
+
+  child = node->children;
+  while (child)
+    {
+      if (strcmp (child->name, "pos") == 0)
+	{
+	  if (!parse_pos (child, info, error))
+	    return FALSE;
+	}
+      else if (strcmp (child->name, "show") == 0)
+	{
+	  if (!parse_show (child, info, error))
+	    return FALSE;
+	}
+      else if (strcmp (child->name, "fixed") == 0 ||
+	       strcmp (child->name, "box") == 0)
+	{
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "List items cannot have children");
+	  return FALSE;
+	}
+    
+      child = child->next;
+    }
+
+  return TRUE;
+}
+
+static gboolean
 parse_entry (xmlNodePtr        node,
 	     GreeterItemInfo  *info,
 	     GError         **error)
@@ -1169,6 +1205,8 @@ parse_items (xmlNodePtr  node,
 	      item_type = GREETER_ITEM_TYPE_LABEL;
 	    else if (strcmp (type, "entry") == 0)
 	      item_type = GREETER_ITEM_TYPE_ENTRY;
+	    else if (strcmp (type, "list") == 0)
+	      item_type = GREETER_ITEM_TYPE_LIST;
 	    else
 	      {
 		g_set_error (error,
@@ -1201,6 +1239,9 @@ parse_items (xmlNodePtr  node,
 		break;
 	      case GREETER_ITEM_TYPE_ENTRY:
 		res = parse_entry (child, info, error);
+		break;
+	      case GREETER_ITEM_TYPE_LIST:
+		res = parse_list (child, info, error);
 		break;
 	      default:
 		g_set_error (error,

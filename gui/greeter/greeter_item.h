@@ -23,6 +23,7 @@ enum _GreeterItemType {
   GREETER_ITEM_TYPE_PIXMAP,
   GREETER_ITEM_TYPE_LABEL,
   GREETER_ITEM_TYPE_ENTRY,
+  GREETER_ITEM_TYPE_LIST,
 };
 
 enum _GreeterItemSizeType {

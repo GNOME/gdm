@@ -1,3 +1,5 @@
+#ifndef GREETER_CONFIGURATION_H
+#define GREETER_CONFIGURATION_H
 
 extern gboolean GdmUseCirclesInEntry;
 extern gboolean GdmShowGnomeChooserSession;
@@ -17,3 +19,16 @@ extern gboolean GdmTimedLoginEnable;
 extern gboolean GdmUse24Clock;
 extern gchar *GdmTimedLogin;
 extern gint GdmTimedLoginDelay;
+extern gchar *GdmGlobalFaceDir;
+extern gchar *GdmDefaultFace;
+extern gint  GdmIconMaxHeight;
+extern gint  GdmIconMaxWidth;
+extern gchar *GdmExclude;
+extern int GdmMinimalUID;
+extern gboolean GdmAllowRoot;
+extern gboolean GdmAllowRemoteRoot;
+
+extern gboolean GDM_IS_LOCAL;
+extern gboolean DOING_GDM_DEVELOPMENT;
+
+#endif /* GREETER_CONFIGURATION_H */
