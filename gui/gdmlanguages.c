@@ -37,13 +37,22 @@ struct _Language {
 	char *collate_key;
 };
 
+/* FIXME: We need to have a nicer selection of language and country,
+ * I suppose that we should have a menu of languages and then for each have
+ * a submenu of countries (and perhaps other variations such as utf8 vs not
+ * etc...) if there is more then one. */
+
 /* Note: these should NOT include the encodings, this is just a translation
  * matrix for language_country names.  This is NOT a list of available
  * languages, just their names and where they are placed in the menu.
  * The available languages come from the supplied locale.alias */
 static Language languages [] = {
-/*Note translate the A-M to the A-M you used in the group label */
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Azerbaijani"), "az_AZ", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Arabic (Egypt)"), "ar_EG", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Arabic (Lebanon)"), "ar_LB", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Basque"), "eu_ES", "Euskara", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -67,9 +76,13 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Estonian"), "et_EE", "Eesti", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|American English"), "en_US", "American English", 0 },
+	{ N_("A-M|English (American)"), "en_US", "American English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|British English"), "en_GB", "British English", 0 },
+	{ N_("A-M|English (Australian)"), "en_AU", "Australian English", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|English (British)"), "en_GB", "British English", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|English (Ireland)"), "en_IE", "Irish English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Finnish"), "fi_FI", "Suomi", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -87,6 +100,8 @@ static Language languages [] = {
 	{ N_("A-M|Hungarian"), "hu_HU", "Magyar", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Icelandic"), "is_IS", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Irish"), "ga_IE", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Italian"), "it_IT", "Italiano", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -110,7 +125,7 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Portuguese"), "pt_PT", "Português", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Brazilian Portuguese"), "pt_BR", "Português do Brasil", 0 },
+	{ N_("N-Z|Portuguese (Brazilian)"), "pt_BR", "Português do Brasil", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Romanian"), "ro_RO", "Română", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
@@ -122,7 +137,11 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Spanish"), "es_ES", "Español", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Spanish (Mexico)"), "es_MX", NULL, 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Swedish"), "sv_SE", "Svenska", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Tamil"), "ta_IN", NULL, 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Turkish"), "tr_TR", "Türkçe", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
