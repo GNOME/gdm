@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-01 03:36+0100\n"
-"PO-Revision-Date: 2004-03-01 22:44+0800\n"
+"POT-Creation-Date: 2004-03-03 14:59+0100\n"
+"PO-Revision-Date: 2004-03-04 02:45+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -516,12 +516,12 @@ msgstr "%s：认证目录 %s 的权限 %o 是错误的。应为 %o。中止。"
 #: daemon/gdm.c:836 daemon/gdm.c:844 daemon/gdm.c:2043 daemon/gdm.c:2051
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
-msgstr ""
+msgstr "无法写入 PID 文件 %s，可能磁盘空间不够。错误：%s\n"
 
 #: daemon/gdm.c:838 daemon/gdm.c:846 daemon/gdm.c:2045 daemon/gdm.c:2053
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
-msgstr ""
+msgstr "无法写入 PID 文件 %s，可能磁盘空间不够。错误：%s"
 
 #: daemon/gdm.c:856
 #, c-format
@@ -624,7 +624,7 @@ msgstr "重新启动自身失败"
 #. FIXME: note that this could mean out of memory
 #: daemon/gdm.c:1670
 msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
-msgstr ""
+msgstr "主守护程序：得到 SIGABRT，有什么程序出错了。即将关机！"
 
 #: daemon/gdm.c:1829
 msgid "Do not fork into the background"
@@ -644,7 +644,7 @@ msgstr "打印 GDM 版本"
 
 #: daemon/gdm.c:1837
 msgid "Start the first X server but then halt until we get a GO in the fifo"
-msgstr ""
+msgstr "启动第一个 X 服务器，但却挂机了。目前尚未收到 GO 信息"
 
 #: daemon/gdm.c:1958 gui/gdmchooser.c:2045
 #, c-format
@@ -705,19 +705,16 @@ msgid ""
 msgstr "请求的服务器 %s 不能被用于便捷服务器，使用标准服务器。"
 
 #: daemon/gdm.c:3658
-#, fuzzy
 msgid "Query logout action request denied: Not authenticated"
-msgstr "便捷服务器请求被否决：未通过认证"
+msgstr "查找注销动作请求被禁止：未通过认证"
 
 #: daemon/gdm.c:3716 daemon/gdm.c:3771
-#, fuzzy
 msgid "Set logout action request denied: Not authenticated"
-msgstr "便捷服务器请求被否决：未通过认证"
+msgstr "设置注销动作请求被禁止：未通过认证"
 
 #: daemon/gdm.c:3816 daemon/gdm.c:3843
-#, fuzzy
 msgid "Query vt request denied: Not authenticated"
-msgstr "便捷服务器请求被否决：未通过认证"
+msgstr "查找 vt 请求被禁止：未通过认证"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:623
@@ -750,7 +747,8 @@ msgid ""
 "Last login:\n"
 "%s"
 msgstr ""
-"上次登录：\n%s"
+"上次登录：\n"
+"%s"
 
 #: daemon/server.c:160
 msgid "Can not start fallback console"
@@ -863,11 +861,11 @@ msgstr "%s：无法创建 gdmgreeter 进程"
 
 #: daemon/slave.c:301
 msgid "Can't set EGID to user GID"
-msgstr ""
+msgstr "无法将 EGID 设置为用户 GID"
 
 #: daemon/slave.c:309
 msgid "Can't set EUID to user UID"
-msgstr ""
+msgstr "无法将 EUID 设置为用户 UID"
 
 #: daemon/slave.c:1114
 msgid "Log in anyway"
@@ -1144,7 +1142,7 @@ msgstr "系统管理员已经禁用您的帐号。"
 
 #: daemon/slave.c:3669
 msgid "Error! Unable to set executable context."
-msgstr ""
+msgstr "出错！无法设置可执行环境。"
 
 #. will go to .xsession-errors
 #: daemon/slave.c:3677 daemon/slave.c:3682
@@ -1347,51 +1345,44 @@ msgid "Password of %s has expired"
 msgstr "%s 的密码已过期"
 
 #: daemon/verify-crypt.c:293 daemon/verify-shadow.c:311
-#, fuzzy
 msgid ""
 "You are required to change your password.\n"
 "Please choose a new one."
-msgstr "您需要立即更改您的密码(root 强制)"
+msgstr "您需要更改您的密码。\n请选择一个新密码。"
 
 #: daemon/verify-crypt.c:304 daemon/verify-shadow.c:322
-#, fuzzy
 msgid ""
 "\n"
 "Cannot change your password, you will not be able to log in, please try "
 "again later or contact your system administrator."
 msgstr ""
 "\n"
-"无法设置您的用户组，您将无法登录，请联系您的系统管理员。"
+"无法更改您的密码，您将无法登录。请稍候再试一次，或联系您的系统管理员。"
 
 #: daemon/verify-crypt.c:347 daemon/verify-crypt.c:355
 #: daemon/verify-shadow.c:366 daemon/verify-shadow.c:374
-#, fuzzy
 msgid ""
 "Your password has been changed but you may have to change it again, please "
 "try again later or contact your system administrator."
 msgstr ""
-"\n"
-"修改认证标记失败。请稍后再试或与系统管理员联系。"
+"您的密码已经更改，但是可能需要再次更改。请稍候再试一次，或联系您的系统管理员。"
 
 #: daemon/verify-crypt.c:366 daemon/verify-shadow.c:385
-#, fuzzy
 msgid ""
 "Your password has expired.\n"
 "Only a system administrator can now change it"
-msgstr "您的账户已经过期；请联系您的系统管理员"
+msgstr "您的密码已经过期。\n现在只有系统管理员可以更改"
 
 #: daemon/verify-crypt.c:373 daemon/verify-shadow.c:392
 msgid "Internal error on passwdexpired"
-msgstr ""
+msgstr "密码过期的内部错误"
 
 #: daemon/verify-crypt.c:375 daemon/verify-shadow.c:394
-#, fuzzy
 msgid ""
 "An internal error occured, you will not be able to log in.\n"
 "Please try again later or contact your system administrator."
 msgstr ""
-"\n"
-"无法设置您的用户组，您将无法登录，请联系您的系统管理员。"
+"发生了内部错误，您将无法登录。\n请稍候再试一次，或联系您的系统管理员。"
 
 #: daemon/verify-crypt.c:411 daemon/verify-shadow.c:429
 #, c-format
@@ -2301,288 +2292,283 @@ msgstr "N-Z|英语(爱尔兰)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:101
-msgid "A-M|English (Denmark)"
-msgstr "N-Z|英语(丹麦)"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
 msgid "A-M|Estonian"
 msgstr "A-M|爱沙尼亚语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:103
 msgid "A-M|Finnish"
 msgstr "A-M|芬兰语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:105
 msgid "A-M|French"
 msgstr "A-M|法语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:107
 msgid "A-M|Galician"
 msgstr "A-M|加利西亚语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:109
 msgid "A-M|German"
 msgstr "A-M|德语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:113
+#: gui/gdmlanguages.c:111
 msgid "A-M|Greek"
 msgstr "N-Z|希腊语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:115
+#: gui/gdmlanguages.c:113
 msgid "A-M|Gujarati"
 msgstr "A-M|古吉拉特语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:117 gui/gdmlanguages.c:119
+#: gui/gdmlanguages.c:115 gui/gdmlanguages.c:117
 msgid "A-M|Hebrew"
 msgstr "N-Z|希伯来语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:119
 msgid "A-M|Hindi"
 msgstr "N-Z|印地语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:121
 msgid "A-M|Hungarian"
 msgstr "N-Z|匈牙利语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:123
 msgid "A-M|Icelandic"
 msgstr "A-M|冰岛语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:127
+#: gui/gdmlanguages.c:125
 msgid "A-M|Indonesian"
 msgstr "N-Z|印度尼西亚语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:127
 msgid "A-M|Interlingua"
 msgstr "A-M|拉丁国际语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:129
 msgid "A-M|Irish"
 msgstr "A-M|爱尔兰语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:133
+#: gui/gdmlanguages.c:131
 msgid "A-M|Italian"
 msgstr "N-Z|意大利语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:133
 msgid "A-M|Japanese"
 msgstr "N-Z|日语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:137
+#: gui/gdmlanguages.c:135
 msgid "A-M|Kannada"
 msgstr "A-M|卡纳达语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:139
+#: gui/gdmlanguages.c:137
 msgid "A-M|Korean"
 msgstr "A-M|韩语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:141
+#: gui/gdmlanguages.c:139
 msgid "A-M|Latvian"
 msgstr "A-M|拉脱维亚语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:143
+#: gui/gdmlanguages.c:141
 msgid "A-M|Lithuanian"
 msgstr "A-M|立陶宛语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:145
+#: gui/gdmlanguages.c:143
 msgid "A-M|Macedonian"
 msgstr "A-M|马其顿语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:147
+#: gui/gdmlanguages.c:145
 msgid "A-M|Malay"
 msgstr "A-M|马来语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:149
+#: gui/gdmlanguages.c:147
 msgid "A-M|Malayalam"
 msgstr "A-M|马拉雅拉姆语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:151
+#: gui/gdmlanguages.c:149
 msgid "A-M|Marathi"
 msgstr "A-M|马拉地语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:153
+#: gui/gdmlanguages.c:151
 msgid "A-M|Mongolian"
 msgstr "A-M|蒙古语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:155
+#: gui/gdmlanguages.c:153
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|挪威语(博克马尔语)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:157
+#: gui/gdmlanguages.c:155
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|挪威语(尼诺斯克语)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:159
+#: gui/gdmlanguages.c:157
 msgid "N-Z|Oriya"
 msgstr "N-Z|奥里雅语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:161
+#: gui/gdmlanguages.c:159
 msgid "N-Z|Panjabi"
 msgstr "N-Z|旁遮普语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:163
+#: gui/gdmlanguages.c:161
 msgid "N-Z|Persian"
 msgstr "A-M|波斯语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:165
+#: gui/gdmlanguages.c:163
 msgid "N-Z|Polish"
 msgstr "A-M|波兰语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:167
+#: gui/gdmlanguages.c:165
 msgid "N-Z|Portuguese"
 msgstr "N-Z|葡萄牙语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:169
+#: gui/gdmlanguages.c:167
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|葡萄牙语(巴西)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:171
+#: gui/gdmlanguages.c:169
 msgid "N-Z|Romanian"
 msgstr "A-M|罗马尼亚语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:173
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Russian"
 msgstr "A-M|俄语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:175 gui/gdmlanguages.c:177
+#: gui/gdmlanguages.c:173 gui/gdmlanguages.c:175
 msgid "N-Z|Serbian"
 msgstr "N-Z|塞尔维亚语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:179
+#: gui/gdmlanguages.c:177
 msgid "N-Z|Serbian (Latin)"
 msgstr "N-Z|塞尔维亚语(拉丁)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:181
+#: gui/gdmlanguages.c:179
 msgid "N-Z|Serbian (Jekavian)"
 msgstr "N-Z|塞尔维亚语(Jekavian)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:183
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Slovak"
 msgstr "N-Z|斯洛伐克语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:185
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Slovenian"
 msgstr "N-Z|斯洛文尼亚语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:187
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Spanish"
 msgstr "N-Z|西班牙语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:189
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Spanish (Mexico)"
 msgstr "N-Z|西班牙语(墨西哥)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:191
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Swedish"
 msgstr "N-Z|瑞典语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:193
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|瑞典语(芬兰)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:195
+#: gui/gdmlanguages.c:193
 msgid "N-Z|Tamil"
 msgstr "N-Z|泰米尔语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:197
+#: gui/gdmlanguages.c:195
 msgid "N-Z|Telugu"
 msgstr "N-Z|泰卢固语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:199
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Thai"
 msgstr "N-Z|泰语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:201
+#: gui/gdmlanguages.c:199
 msgid "N-Z|Turkish"
 msgstr "N-Z|土耳其语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:203
+#: gui/gdmlanguages.c:201
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|乌克兰语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:205
+#: gui/gdmlanguages.c:203
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|越南语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:207
+#: gui/gdmlanguages.c:205
 msgid "N-Z|Walloon"
 msgstr "N-Z|瓦龙语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:209
+#: gui/gdmlanguages.c:207
 msgid "N-Z|Welsh"
 msgstr "N-Z|威尔士语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:211
+#: gui/gdmlanguages.c:209
 msgid "N-Z|Yiddish"
 msgstr "N-Z|意第绪语"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:213
+#: gui/gdmlanguages.c:211
 msgid "Other|POSIX/C English"
 msgstr "其它|POSIX/C 英语"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:409
+#: gui/gdmlanguages.c:407
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:417
+#: gui/gdmlanguages.c:415
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2823,12 +2809,11 @@ msgstr "GNOME 桌面管理器"
 
 #: gui/gdmlogin.c:2501 gui/greeter/greeter_item.c:139
 msgid "%a %b %d, %H:%M"
-msgstr "%-m月%-d日%A，%-H:%M"
+msgstr "%-m月%-d日%A，%H:%M"
 
 #: gui/gdmlogin.c:2503 gui/greeter/greeter_item.c:143
-#, fuzzy
 msgid "%a %b %d, %l:%M %p"
-msgstr "%-m月%-d日%A，%-H:%M"
+msgstr "%-m月%-d日%A，%H:%M"
 
 #: gui/gdmlogin.c:2563
 msgid "Finger"
