@@ -35,7 +35,7 @@ int gdm_get_free_display (int start, int server_uid);
 
 gboolean gdm_text_message_dialog (const char *msg);
 gboolean gdm_text_yesno_dialog (const char *msg, gboolean *ret);
-int	gdm_exec_wait (char * const *argv);
+int	gdm_exec_wait (char * const *argv, gboolean no_display);
 
 #endif /* GDM_MISC_H */
 

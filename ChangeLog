@@ -1,3 +1,11 @@
+Wed Aug 22 23:23:21 2001  George Lebl <jirka@5z.com>
+
+	* config/XKeepsCrashing, daemon/misc.c: Also test for whiptail if
+	  we can't find dialog nor gdialog
+
+	* daemon/misc.[ch], daemon/gdm.c:  Make sure things that run dialog
+	  (and could thus run gdialog) don't have DISPLAY set
+
 Wed Aug 22 23:01:59 2001  George Lebl <jirka@5z.com>
 
 	* configure.in, Makefile.am, utils/gdmopen.c, utils/gdmaskpass.c:

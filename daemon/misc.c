@@ -257,6 +257,8 @@ gdm_text_message_dialog (const char *msg)
 	dialog = gnome_is_program_in_path ("dialog");
 	if (dialog == NULL)
 		dialog = gnome_is_program_in_path ("gdialog");
+	if (dialog == NULL)
+		dialog = gnome_is_program_in_path ("whiptail");
 	if (dialog != NULL) {
 		char *argv[7];
 
@@ -268,7 +270,8 @@ gdm_text_message_dialog (const char *msg)
 		argv[5] = "70";
 		argv[6] = NULL;
 
-		if (gdm_exec_wait (argv) < 0) {
+		/* make sure gdialog wouldn't get confused */
+		if (gdm_exec_wait (argv, TRUE /* no display */) < 0) {
 			g_free (dialog);
 			return FALSE;
 		}
@@ -286,7 +289,7 @@ gdm_text_message_dialog (const char *msg)
 			 msg);
 		argv[4] = NULL;
 
-		if (gdm_exec_wait (argv) < 0) {
+		if (gdm_exec_wait (argv, TRUE /* no display */) < 0) {
 			g_free (argv[3]);
 			return FALSE;
 		}
@@ -309,6 +312,8 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	dialog = gnome_is_program_in_path ("dialog");
 	if (dialog == NULL)
 		dialog = gnome_is_program_in_path ("gdialog");
+	if (dialog == NULL)
+		dialog = gnome_is_program_in_path ("whiptail");
 	if (dialog != NULL) {
 		char *argv[7];
 		int retint;
@@ -321,7 +326,9 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		argv[5] = "70";
 		argv[6] = NULL;
 
-		retint = gdm_exec_wait (argv);
+		/* will unset DISPLAY and XAUTHORITY if they exist
+		 * so that gdialog (if used) doesn't get confused */
+		retint = gdm_exec_wait (argv, TRUE /* no display */);
 		if (retint < 0) {
 			g_free (dialog);
 			return FALSE;
@@ -359,7 +366,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 			 tempname);
 		argv[4] = NULL;
 
-		if (gdm_exec_wait (argv) < 0) {
+		if (gdm_exec_wait (argv, TRUE /* no display */) < 0) {
 			g_free (argv[3]);
 			return FALSE;
 		}
@@ -384,7 +391,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 }
 
 int
-gdm_exec_wait (char * const *argv)
+gdm_exec_wait (char * const *argv, gboolean no_display)
 {
 	int status;
 	pid_t pid;
@@ -410,6 +417,11 @@ gdm_exec_wait (char * const *argv)
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		if (no_display) {
+			ve_unsetenv ("DISPLAY");
+			ve_unsetenv ("XAUTHORITY");
+		}
 		
 		execv (argv[0], argv);
 

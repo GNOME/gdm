@@ -49,6 +49,9 @@ SETUP=`which $1`
 DIALOG=`which dialog`
 if test x$DIALOG = x ; then
   DIALOG=`which gdialog`
+  if test x$DIALOG = x ; then
+    DIALOG=`which whiptail`
+  fi
 fi
 if test -x $SBINDIR/gdmaskpass ; then
   ASKPASS=$SBINDIR/gdmaskpass

@@ -686,6 +686,16 @@ deal_with_x_crashes (GdmDisplay *d)
 	    if (pid == 0) {
 		    char *argv[10];
 		    char *xlog = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+		    int ii;
+
+		    for (ii = 0; ii < sysconf (_SC_OPEN_MAX); ii++)
+			    close (ii);
+
+		    /* No error checking here - if it's messed the best response
+		    * is to ignore & try to continue */
+		    open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+		    open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+		    open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		    argv[0] = GdmXKeepsCrashing;
 		    argv[1] = configurators[i];
@@ -709,6 +719,11 @@ deal_with_x_crashes (GdmDisplay *d)
 				"up correctly.  Would you like to view the "
 				"X server output to diagnose the problem?");
 		    argv[9] = NULL;
+
+		    /* unset DISPLAY and XAUTHORITY if they exist
+		     * so that gdialog (if used) doesn't get confused */
+		    ve_unsetenv ("DISPLAY");
+		    ve_unsetenv ("XAUTHORITY");
 
 		    ve_setenv ("XLOG", xlog, TRUE);
 		    ve_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
