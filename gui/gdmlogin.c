@@ -919,7 +919,7 @@ gdm_login_list_lookup (GSList *l, const gchar *data)
 
     while (list) {
 
-	if (g_strcasecmp (list->data, data) == 0)
+	if (strcmp (list->data, data) == 0)
 	    return (TRUE);
 	
 	list = list->next;
@@ -948,7 +948,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    /* If "Last" is chosen run Default,
 	     * else run user's current selection */
 	    g_free (session);
-	    if (g_strcasecmp (cursess, LAST_SESSION) == 0)
+	    if (strcmp (cursess, LAST_SESSION) == 0)
 		    session = g_strdup (defsess);
 	    else
 		    session = g_strdup (cursess);
@@ -958,7 +958,7 @@ gdm_login_session_lookup (const gchar* savedsess)
     }
 
     /* If "Last" session is selected */
-    if (g_strcasecmp (cursess, LAST_SESSION) == 0) { 
+    if (strcmp (cursess, LAST_SESSION) == 0) { 
 	g_free (session);
 	session = g_strdup (savedsess);
 
@@ -981,7 +981,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 	session = g_strdup (cursess);
 
 	/* User's saved session is not the chosen one */
-	if (g_strcasecmp (savedsess, session) != 0) {
+	if (strcmp (savedsess, session) != 0) {
 	    gchar *msg;
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is " \
@@ -1013,7 +1013,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	 * or the GdmDefaultLocale if that's not set or is "C"
 	 * else use current selection */
 	g_free (language);
-	if (g_strcasecmp (curlang, LAST_LANGUAGE) == 0) {
+	if (strcmp (curlang, LAST_LANGUAGE) == 0) {
 		char *lang = g_getenv ("LANG");
 		if (lang == NULL ||
 		    lang[0] == '\0' ||
@@ -1031,12 +1031,12 @@ gdm_login_language_lookup (const gchar* savedlang)
     }
 
     /* If a different language is selected */
-    if (g_strcasecmp (curlang, LAST_LANGUAGE) != 0) {
+    if (strcmp (curlang, LAST_LANGUAGE) != 0) {
         g_free (language);
 	language = g_strdup (curlang);
 
 	/* User's saved language is not the chosen one */
-	if (g_strcasecmp (savedlang, language) != 0) {
+	if (strcmp (savedlang, language) != 0) {
 	    gchar *msg;
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
@@ -1265,6 +1265,8 @@ gdm_login_session_init (GtkWidget *menu)
 	/* Ignore backups and rpmsave files */
 	if ((strstr (dent->d_name, "~")) ||
 	    (strstr (dent->d_name, ".rpmsave")) ||
+	    (strstr (dent->d_name, ".deleted")) ||
+	    (strstr (dent->d_name, ".desc")) /* description file */ ||
 	    (strstr (dent->d_name, ".orig"))) {
 	    dent = readdir (sessdir);
 	    continue;

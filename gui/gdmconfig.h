@@ -33,9 +33,11 @@
 GtkWidget *get_widget(gchar *widget_name);
 
 
-struct GdmConfigSession {
+typedef struct _GdmConfigSession GdmConfigSession;
+struct _GdmConfigSession {
    char *name;
    char *script_contents;
+   gboolean changable; /* if we had trouble reading it it's not */
    gboolean changed;
    gboolean renamed;
    char *old_name;

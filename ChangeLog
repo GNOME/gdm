@@ -1,3 +1,22 @@
+Tue May 01 14:41:03 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmconfig.c: instead of a define, read a
+	  DOING_GDMCONFIG_DEVELOPMENT env var.
+
+	* gui/gdmconfig.c, gui/gdmlogin.c: ignore sessions ending in .deleted
+	  and .desc
+
+	* gui/gdmconfig.c, gui/gdmlogin.c:  Session names ARE case sensitive
+	  so remove all this case insensitivity crap that could seriously mess
+	  things up.  The only case insensitive thing is that the default
+	  link can be case insensitive, the actual files are sensitive.
+
+	* gui/gdmconfig.(c|h|glade): fix an assload of stuff with respect to
+	  the Session directory editting.  Not all tested though, so still
+	  use at your own risk.  Though it theoretically has less problems
+	  now.  Also cleaned up stuff a tiny bit.  This file could use a run
+	  trhough indent.
+
 Mon Apr 30 17:27:11 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: fix a couple of possible crashes with invalid images
