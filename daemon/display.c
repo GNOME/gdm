@@ -204,7 +204,7 @@ gdm_display_manage (GdmDisplay *d)
 	d->slave_notify_conn = gdm_connection_open_fd (fds[0]);
 	gdm_connection_set_handler (d->slave_notify_conn,
 				    gdm_slave_handle_notify,
-				    NULL /* data */,
+				    d /* data */,
 				    NULL /* destroy_notify */);
 
 

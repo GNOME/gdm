@@ -1,3 +1,19 @@
+Thu Apr 11 21:02:38 2002  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter.c: add a function stub for 
+	  handeling configuration changes
+
+	* gui/gdmsetup.glade: an unfinished new gui configurator to replace
+	  gdmconfig.  No it will not have all the options as gdmconfig did
+	  since if you want crack you can just use a text editor.
+
+	* daemon/gdm.[ch], daemon/slave.c: handle greeter changes. and
+	  implement local vs. remote greeter distinction.  Remove unneeded
+	  arguyments.
+
+	* config/gdm.conf.in: remote the extra unnecessary args to the
+	  greeters
+
 2002-04-10  Seth Nickell  <snickell@stanford.edu>
 
 	* gui/Makefile.am:

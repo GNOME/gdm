@@ -64,6 +64,7 @@ static GdmDisplay *d;
 static gchar *login = NULL;
 static sigset_t mask;
 static gboolean greet = FALSE;
+static gboolean remanage_asap = FALSE;
 static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
 static gboolean do_configurator = FALSE; /* if this is true, login as root
@@ -91,6 +92,7 @@ extern gboolean GdmConfigAvailable;
 extern gboolean GdmSystemMenu;
 extern gint GdmXineramaScreen;
 extern gchar *GdmGreeter;
+extern gchar *GdmRemoteGreeter;
 extern gchar *GdmChooser;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmPreSession;
@@ -475,6 +477,7 @@ gdm_slave_run (GdmDisplay *display)
 	       strcmp (ParsedAutomaticLogin, "root") != 0) {
 	    gdm_first_login = FALSE;
 
+	    d->logged_in = TRUE;
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 	    gdm_slave_send_string (GDM_SOP_LOGIN, ParsedAutomaticLogin);
 
@@ -483,9 +486,13 @@ gdm_slave_run (GdmDisplay *display)
 	    }
 
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
+	    d->logged_in = FALSE;
 	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
 
 	    gdm_debug ("gdm_slave_run: Automatic login done");
+	    
+	    if (remanage_asap)
+		    _exit (DISPLAY_REMANAGE);
     } else {
 	    if (gdm_first_login)
 		    gdm_first_login = FALSE;
@@ -494,6 +501,7 @@ gdm_slave_run (GdmDisplay *display)
 	    do {
 		    gdm_slave_wait_for_login (); /* wait for a password */
 
+		    d->logged_in = TRUE;
 		    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 
 		    if (do_timed_login) {
@@ -510,7 +518,11 @@ gdm_slave_run (GdmDisplay *display)
 		    }
 
 		    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
+		    d->logged_in = FALSE;
 		    gdm_slave_send_string (GDM_SOP_LOGIN, "");
+
+		    if (remanage_asap)
+			    _exit (DISPLAY_REMANAGE);
 
 		    if (greet) {
 			    gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
@@ -799,6 +811,7 @@ gdm_slave_wait_for_login (void)
 				continue;
 			}
 
+			d->logged_in = TRUE;
 			gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 			/* Note: nobody really logged in */
 			gdm_slave_send_string (GDM_SOP_LOGIN, "");
@@ -815,6 +828,10 @@ gdm_slave_wait_for_login (void)
 			gdm_verify_cleanup (d);
 
 			gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
+			d->logged_in = FALSE;
+
+			if (remanage_asap)
+				_exit (DISPLAY_REMANAGE);
 
 			gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
 			gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
@@ -1088,7 +1105,8 @@ gdm_slave_greeter (void)
 
     /* Open a pipe for greeter communications */
     if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
-	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't init pipe to gdmgreeter"));
+	gdm_slave_exit (DISPLAY_ABORT, _("%s: Can't init pipe to gdmgreeter"),
+			"gdm_slave_greeter");
     
     /* Fork. Parent is gdmslave, child is greeter process. */
     gdm_sigchld_block_push ();
@@ -1225,17 +1243,20 @@ gdm_slave_greeter (void)
 		g_free (msg);
 	}
 
-	argv = ve_split (GdmGreeter);
+	if (d->console)
+		argv = ve_split (GdmGreeter);
+	else
+		argv = ve_split (GdmRemoteGreeter);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_slave_greeter: Cannot start greeter trying default: %s"),
-		   EXPANDED_BINDIR
-		   "/gdmlogin --disable-sound --disable-crash-dialog");
+		   EXPANDED_BINDIR "/gdmlogin");
 
 	gnome_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
 
-	argv = ve_split (EXPANDED_BINDIR
-			 "/gdmlogin --disable-sound --disable-crash-dialog");
+	argv = g_new0 (char *, 2);
+	argv[0] = EXPANDED_BINDIR "/gdmlogin";
+	argv[1] = NULL;
 	execv (argv[0], argv);
 
 	gdm_error_box (d,
@@ -1246,10 +1267,10 @@ gdm_slave_greeter (void)
 			 "Try logging in by other means and\n"
 			 "editing the configuration file"));
 	
-	gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Error starting greeter on display %s"), d->name);
+	gdm_child_exit (DISPLAY_ABORT, _("%s: Error starting greeter on display %s"), "gdm_slave_greeter", d->name);
 	
     case -1:
-	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't fork gdmgreeter process"));
+	gdm_slave_exit (DISPLAY_ABORT, _("%s: Can't fork gdmgreeter process"), "gdm_slave_greeter");
 	
     default:
 	close (pipe1[0]);
@@ -2977,11 +2998,31 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 void
 gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 {
+	GdmDisplay *display = data;
 	int val;
+
 	if (sscanf (msg, GDM_NOTIFY_ALLOWROOT " %d", &val) == 1) {
 		GdmAllowRoot = val;
 	} else if (sscanf (msg, GDM_NOTIFY_ALLOWREMOTEROOT " %d", &val) == 1) {
 		GdmAllowRemoteRoot = val;
+	} else if (strncmp (msg, GDM_NOTIFY_GREETER " ",
+			    strlen (GDM_NOTIFY_GREETER) + 1) == 0) {
+		/* FIXME: can't handle flexi servers without going all cranky */
+		if (display->type == TYPE_LOCAL) {
+			if ( ! display->logged_in)
+				_exit (DISPLAY_REMANAGE);
+			else
+				remanage_asap = TRUE;
+		}
+	} else if (strncmp (msg, GDM_NOTIFY_REMOTEGREETER " ",
+			    strlen (GDM_NOTIFY_REMOTEGREETER) + 1) == 0) {
+		/* FIXME: can't handle flexi servers without going all cranky */
+		if (display->type == TYPE_XDMCP) {
+			if ( ! display->logged_in)
+				_exit (DISPLAY_REMANAGE);
+			else
+				remanage_asap = TRUE;
+		}
 	}
 }
 

@@ -106,6 +106,7 @@ gboolean GdmBrowser = FALSE;
 gchar *GdmGlobalFaceDir = NULL;
 gint GdmXineramaScreen = 0;
 gchar *GdmGreeter = NULL;
+gchar *GdmRemoteGreeter = NULL;
 gchar *GdmChooser = NULL;
 gchar *GdmLogDir = NULL;
 gchar *GdmDisplayInit = NULL;
@@ -209,7 +210,8 @@ gdm_config_parse (void)
     high_display_num = 0;
 
     if (stat (GDM_CONFIG_FILE, &statbuf) == -1) {
-	    gdm_error (_("gdm_config_parse: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
+	    gdm_error (_("%s: No configuration file: %s. Using defaults."),
+		       "gdm_config_parse", GDM_CONFIG_FILE);
     } else {
 	    config_file_mtime = statbuf.st_mtime;
     }
@@ -224,6 +226,7 @@ gdm_config_parse (void)
     GdmAutomaticLogin = gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN);
     GdmAlwaysRestartServer = gnome_config_get_bool (GDM_KEY_ALWAYSRESTARTSERVER);
     GdmGreeter = gnome_config_get_string (GDM_KEY_GREETER);
+    GdmRemoteGreeter = gnome_config_get_string (GDM_KEY_REMOTEGREETER);
     GdmGroup = gnome_config_get_string (GDM_KEY_GROUP);
     GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
     GdmKillInitClients = gnome_config_get_bool (GDM_KEY_KILLIC);
@@ -295,7 +298,7 @@ gdm_config_parse (void)
 
 #ifndef HAVE_LIBXDMCP
     if (GdmXdmcp) {
-	    gdm_info (_("gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning it off"));
+	    gdm_info (_("%s: XDMCP was enabled while there is no XDMCP support, turning it off"), "gdm_config_parse");
 	    GdmXdmcp = FALSE;
     }
 #endif
@@ -308,7 +311,7 @@ gdm_config_parse (void)
 
     if (GdmAutomaticLogin != NULL &&
 	strcmp (GdmAutomaticLogin, "root") == 0) {
-	    gdm_info (_("gdm_config_parse: Root cannot be autologged in, turing off automatic login"));
+	    gdm_info (_("%s: Root cannot be autologged in, turing off automatic login"), "gdm_config_parse");
 	    g_free (GdmAutomaticLogin);
 	    GdmAutomaticLogin = NULL;
     }
@@ -321,13 +324,13 @@ gdm_config_parse (void)
 
     if (GdmTimedLogin != NULL &&
 	strcmp (GdmTimedLogin, "root") == 0) {
-	    gdm_info (_("gdm_config_parse: Root cannot be autologged in, turing off timed login"));
+	    gdm_info (_("%s: Root cannot be autologged in, turing off timed login"), "gdm_config_parse");
 	    g_free (GdmTimedLogin);
 	    GdmTimedLogin = NULL;
     }
 
     if (GdmTimedLoginDelay < 5) {
-	    gdm_info (_("gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."));
+	    gdm_info (_("%s: TimedLoginDelay less then 5, so I will just use 5."), "gdm_config_parse");
 	    GdmTimedLoginDelay = 5;
     }
 
@@ -337,20 +340,23 @@ gdm_config_parse (void)
 
     /* Prerequisites */ 
     if (ve_string_empty (GdmGreeter)) {
-	    gdm_error (_("gdm_config_parse: No greeter specified."));
+	    gdm_error (_("%s: No greeter specified."), "gdm_config_parse");
+    }
+    if (ve_string_empty (GdmRemoteGreeter)) {
+	    gdm_error (_("%s: No remote greeter specified."), "gdm_config_parse");
     }
 
     if (ve_string_empty (GdmServAuthDir)) {
 	    gdm_text_message_dialog
 		    (gdm_cons_i18n (N_("No daemon/ServAuthDir specified in the configuration file")));
-	    gdm_fail (_("gdm_config_parse: No authdir specified."));
+	    gdm_fail (_("%s: No authdir specified."), "gdm_config_parse");
     }
 
     if (ve_string_empty (GdmLogDir))
 	GdmLogDir = GdmServAuthDir;
 
     if (ve_string_empty (GdmSessDir))
-	gdm_error (_("gdm_config_parse: No sessions directory specified."));
+	gdm_error (_("%s: No sessions directory specified."), "gdm_config_parse");
 
     /* Find server definitions */
     iter = gnome_config_init_iterator_sections ("=" GDM_CONFIG_FILE "=/");
@@ -436,7 +442,7 @@ gdm_config_parse (void)
 		    if (disp_num > high_display_num)
 			    high_display_num = disp_num;
 	    } else {
-		    gdm_info (_("gdm_config_parse: Invalid server line in config file. Ignoring!"));
+		    gdm_info (_("%s: Invalid server line in config file. Ignoring!"), "gdm_config_parse");
 	    }
 	    g_free (k);
 	    g_free (v);
@@ -477,7 +483,7 @@ gdm_config_parse (void)
 					       "and restart gdm.")),
 			     GDM_CONFIG_FILE);
 		    gdm_text_message_dialog (s);
-		    gdm_fail (_("gdm_config_parse: XDMCP disabled and no local servers defined. Aborting!"));
+		    gdm_fail (_("%s: XDMCP disabled and no local servers defined. Aborting!"), "gdm_config_parse");
 	    }
     }
 
@@ -485,7 +491,7 @@ gdm_config_parse (void)
     pwent = getpwnam (GdmUser);
 
     if (pwent == NULL) {
-	    gdm_error (_("gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"), GdmUser);
+	    gdm_error (_("%s: Can't find the gdm user (%s). Trying 'nobody'!"), "gdm_config_parse", GdmUser);
 	    g_free (GdmUser);
 	    GdmUser = g_strdup ("nobody");
 	    pwent = getpwnam (GdmUser);
@@ -498,7 +504,7 @@ gdm_config_parse (void)
 					"and restart gdm.")),
 				    GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
-	    gdm_fail (_("gdm_config_parse: Can't find the gdm user (%s). Aborting!"), GdmUser);
+	    gdm_fail (_("%s: Can't find the gdm user (%s). Aborting!"), "gdm_config_parse", GdmUser);
     } else {
 	    GdmUserId = pwent->pw_uid;
     }
@@ -511,13 +517,13 @@ gdm_config_parse (void)
 				       "correct gdm configuration %s and "
 				       "restart gdm.")), GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
-	    gdm_fail (_("gdm_config_parse: The gdm user should not be root. Aborting!"));
+	    gdm_fail (_("%s: The gdm user should not be root. Aborting!"), "gdm_config_parse");
     }
 
     grent = getgrnam (GdmGroup);
 
     if (grent == NULL) {
-	    gdm_error (_("gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"), GdmUser);
+	    gdm_error (_("%s: Can't find the gdm group (%s). Trying 'nobody'!"), "gdm_config_parse", GdmUser);
 	    g_free (GdmGroup);
 	    GdmGroup = g_strdup ("nobody");
 	    pwent = getpwnam (GdmUser);
@@ -530,7 +536,7 @@ gdm_config_parse (void)
 				       "and restart gdm.")),
 		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
-	    gdm_fail (_("gdm_config_parse: Can't find the gdm group (%s). Aborting!"), GdmGroup);
+	    gdm_fail (_("%s: Can't find the gdm group (%s). Aborting!"), "gdm_config_parse", GdmGroup);
     } else  {
 	    GdmGroupId = grent->gr_gid;   
     }
@@ -543,7 +549,7 @@ gdm_config_parse (void)
 				       "correct gdm configuration %s and "
 				       "restart gdm.")), GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
-	    gdm_fail (_("gdm_config_parse: The gdm group should not be root. Aborting!"));
+	    gdm_fail (_("%s: The gdm group should not be root. Aborting!"), "gdm_config_parse");
     }
 
     setegid (GdmGroupId);	/* gid remains `gdm' */
@@ -551,12 +557,17 @@ gdm_config_parse (void)
 
     /* Check that the greeter can be executed */
     bin = ve_first_word (GdmGreeter);
-
     if (ve_string_empty (bin) ||
 	access (bin, X_OK) != 0) {
 	    gdm_error (_("%s: Greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
     }
+    g_free (bin);
 
+    bin = ve_first_word (GdmRemoteGreeter);
+    if (ve_string_empty (bin) ||
+	access (bin, X_OK) != 0) {
+	    gdm_error (_("%s: Remote greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
+    }
     g_free (bin);
 
 
@@ -582,7 +593,7 @@ gdm_config_parse (void)
 				       "restart gdm.")), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
-	    gdm_fail (_("gdm_config_parse: Authdir %s does not exist. Aborting."), GdmServAuthDir);
+	    gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
 
     if (! S_ISDIR (statbuf.st_mode)) {
@@ -594,7 +605,7 @@ gdm_config_parse (void)
 				       "restart gdm.")), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
-	    gdm_fail (_("gdm_config_parse: Authdir %s is not a directory. Aborting."), GdmServAuthDir);
+	    gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
 
     if (statbuf.st_uid != GdmUserId || statbuf.st_gid != GdmGroupId)  {
@@ -608,7 +619,7 @@ gdm_config_parse (void)
 		     GdmServAuthDir, GdmUser, GdmGroup,
 		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
-	    gdm_fail (_("gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."), 
+	    gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."), "gdm_config_parse", 
 		      GdmServAuthDir, GdmUser, GdmGroup);
     }
 
@@ -623,7 +634,7 @@ gdm_config_parse (void)
 				       "restart gdm.")),
 		     GdmServAuthDir, GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
-	    gdm_fail (_("gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. Aborting."), 
+	    gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be 0750. Aborting."), "gdm_config_parse", 
 		      GdmServAuthDir, statbuf.st_mode);
     }
 
@@ -1815,6 +1826,14 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		gdm_safe_restart ();
 	} else if (strcmp (msg, GDM_SOP_START_NEXT_LOCAL) == 0) {
 		gdm_start_first_unborn_local (3 /* delay */);
+	} else if (strcmp (msg, GDM_SOP_HUP_ALL_GREETERS) == 0) {
+		/* probably shouldn't be done too often */
+		GSList *li;
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *d = li->data;
+			if (d->greetpid > 0)
+				kill (d->greetpid, SIGHUP);
+		}
 	}
 }
 
@@ -2147,6 +2166,19 @@ notify_displays_int (const char *key, int val)
 	}
 }
 
+static void
+notify_displays_string (const char *key, const char *val)
+{
+	GSList *li;
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->master_notify_fd >= 0) {
+			gdm_fdprintf (disp->master_notify_fd,
+				      "%s %s\n", key, val);
+		}
+	}
+}
+
 static gboolean
 update_config (const char *key)
 {
@@ -2166,7 +2198,7 @@ update_config (const char *key)
 
 	if (is_key (key, GDM_KEY_ALLOWROOT)) {
 		gboolean val = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
-		if (val == GdmAllowRoot)
+		if (ve_bool_equal (val, GdmAllowRoot))
 			goto update_config_ok;
 		GdmAllowRoot = val;
 
@@ -2175,11 +2207,35 @@ update_config (const char *key)
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_ALLOWREMOTEROOT)) {
 		gboolean val = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEROOT);
-		if (val == GdmAllowRemoteRoot)
+		if (ve_bool_equal (val, GdmAllowRemoteRoot))
 			goto update_config_ok;
 		GdmAllowRemoteRoot = val;
 
 		notify_displays_int (GDM_NOTIFY_ALLOWREMOTEROOT, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_GREETER)) {
+		char *val = gnome_config_get_string (GDM_KEY_GREETER);
+		if (strcmp (ve_sure_string (val), ve_sure_string (GdmGreeter)) == 0) {
+			g_free (val);
+			goto update_config_ok;
+		}
+		g_free (GdmGreeter);
+		GdmGreeter = val;
+
+		notify_displays_string (GDM_NOTIFY_GREETER, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_REMOTEGREETER)) {
+		char *val = gnome_config_get_string (GDM_KEY_REMOTEGREETER);
+		if (strcmp (ve_sure_string (val), ve_sure_string (GdmRemoteGreeter)) == 0) {
+			g_free (val);
+			goto update_config_ok;
+		}
+		g_free (GdmRemoteGreeter);
+		GdmRemoteGreeter = val;
+
+		notify_displays_string (GDM_NOTIFY_REMOTEGREETER, val);
 
 		goto update_config_ok;
 	}

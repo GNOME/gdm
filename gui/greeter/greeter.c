@@ -559,6 +559,11 @@ greeter_abort (const gchar *format, ...)
     _exit (DISPLAY_ABORT);
 }
 
+static void
+greeter_reread_config (int sig)
+{
+	/* FIXME: reparse config stuff here */
+}
 
 static void
 greeter_done (int sig)
@@ -579,6 +584,7 @@ int
 main (int argc, char *argv[])
 {
   struct sigaction hup;
+  struct sigaction term;
   sigset_t mask;
   GIOChannel *ctrlch;
   gint w, h;
@@ -622,13 +628,18 @@ main (int argc, char *argv[])
   greeter_session_init ();
   greeter_language_init ();
 
-  hup.sa_handler = greeter_done;
+  hup.sa_handler = greeter_reread_config;
   hup.sa_flags = 0;
   sigemptyset(&hup.sa_mask);
   sigaddset (&hup.sa_mask, SIGCHLD);
   
   if (sigaction (SIGHUP, &hup, NULL) < 0) 
     g_error (_("main: Error setting up HUP signal handler"));
+
+  term.sa_handler = greeter_done;
+  term.sa_flags = 0;
+  sigemptyset(&term.sa_mask);
+  sigaddset (&term.sa_mask, SIGCHLD);
   
   if (sigaction (SIGINT, &hup, NULL) < 0) 
     g_error (_("main: Error setting up INT signal handler"));

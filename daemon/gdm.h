@@ -35,11 +35,11 @@
 #define TYPE_FLEXI 3		/* Local Flexi X server */
 #define TYPE_FLEXI_XNEST 4	/* Local Flexi Xnest server */
 
-#define SERVER_IS_LOCAL(d) (d->type == TYPE_LOCAL || \
-			    d->type == TYPE_FLEXI || \
-			    d->type == TYPE_FLEXI_XNEST)
-#define SERVER_IS_FLEXI(d) (d->type == TYPE_FLEXI || \
-			    d->type == TYPE_FLEXI_XNEST)
+#define SERVER_IS_LOCAL(d) ((d)->type == TYPE_LOCAL || \
+			    (d)->type == TYPE_FLEXI || \
+			    (d)->type == TYPE_FLEXI_XNEST)
+#define SERVER_IS_FLEXI(d) ((d)->type == TYPE_FLEXI || \
+			    (d)->type == TYPE_FLEXI_XNEST)
 
 /* These are the servstat values, also used as server
  * process exit codes */
@@ -121,7 +121,8 @@ enum {
 #define GDM_KEY_AUTOMATICLOGIN_ENABLE "daemon/AutomaticLoginEnable=true"
 #define GDM_KEY_AUTOMATICLOGIN "daemon/AutomaticLogin="
 #define GDM_KEY_ALWAYSRESTARTSERVER "daemon/AlwaysRestartServer=false"
-#define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin --disable-sound --disable-crash-dialog"
+#define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin"
+#define GDM_KEY_REMOTEGREETER "daemon/RemoteGreeter=" EXPANDED_BINDIR "/gdmlogin"
 #define GDM_KEY_GROUP "daemon/Group=gdm"
 #define GDM_KEY_HALT "daemon/HaltCommand=/sbin/shutdown -h now"
 #define GDM_KEY_INITDIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
@@ -415,10 +416,13 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 #define GDM_SOP_FLEXI_OK     "FLEXI_OK" /* <slave pid> */
 #define GDM_SOP_SOFT_RESTART "SOFT_RESTART" /* no arguments */
 #define GDM_SOP_START_NEXT_LOCAL "START_NEXT_LOCAL" /* no arguments */
+#define GDM_SOP_HUP_ALL_GREETERS "HUP_ALL_GREETERS" /* no arguments */
 
 /* Notification protocol */
 #define GDM_NOTIFY_ALLOWREMOTEROOT "AllowRemoteRoot" /* <true/false as int> */
 #define GDM_NOTIFY_ALLOWROOT "AllowRoot" /* <true/false as int> */
+#define GDM_NOTIFY_GREETER "Greeter" /* <greeter binary> */
+#define GDM_NOTIFY_REMOTEGREETER "RemoteGreeter" /* <greeter binary> */
 
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
 
@@ -526,6 +530,7 @@ GdmXServer *	gdm_find_x_server	(const char *id);
  *             config file.  The keys that are currently supported are:
  *   		 security/AllowRoot (2.3.90.2)
  *   		 security/AllowRemoteRoot (2.3.90.2)
+ *   		 daemon/Greeter (2.3.90.2)
  * Supported since: 2.3.90.2
  * Arguments:  <key>
  *   <key> is just the base part of the key such as "security/AllowRemoteRoot"

@@ -127,6 +127,7 @@ static gboolean GdmShowXtermFailsafeSession;
 static gboolean GdmShowLastSession;
 
 static GtkWidget *login;
+static GtkWidget *welcome;
 static GtkWidget *label;
 static GtkWidget *icon_button = NULL;
 static GtkWidget *title_box = NULL;
@@ -281,6 +282,7 @@ kill_thingies (void)
 		kill (pid, SIGTERM);
 	}
 }
+
 
 static void
 gdm_login_done (int sig)
@@ -818,8 +820,10 @@ gdm_login_parse_config (void)
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmWelcome = gnome_config_get_translated_string (GDM_KEY_WELCOME_TR);
-    if (ve_string_empty (GdmWelcome))
+    if (ve_string_empty (GdmWelcome)) {
+	    g_free (GdmWelcome);
 	    GdmWelcome = gnome_config_get_string (GDM_KEY_WELCOME);
+    }
     GdmBackgroundProg = gnome_config_get_string (GDM_KEY_BACKGROUNDPROG);
     GdmBackgroundImage = gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE);
     GdmBackgroundColor = gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR);
@@ -2758,7 +2762,7 @@ static void
 gdm_login_gui_init (void)
 {
     GtkWidget *frame1, *frame2, *ebox;
-    GtkWidget *mbox, *menu, *menubar, *item, *welcome;
+    GtkWidget *mbox, *menu, *menubar, *item;
     GtkWidget *table, *stack, *hline1, *hline2, *handle;
     GtkWidget *bbox = NULL;
     GtkWidget *logoframe = NULL;
@@ -3632,10 +3636,54 @@ enum {
 	RESPONSE_CLOSE
 };
 
+static void
+gdm_reread_config (int sig)
+{
+	char *str;
+	/* FIXME: reparse config stuff here.  At least ones we care about */
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+
+	GdmUse24Clock = gnome_config_get_bool (GDM_KEY_USE_24_CLOCK);
+	update_clock (NULL);
+
+	str = gnome_config_get_string (GDM_KEY_LOGO);
+	if (strcmp (ve_sure_string (str), ve_sure_string (GdmLogo)) != NULL) {
+		g_free (GdmLogo);
+		GdmLogo = str;
+		/* FIXME: update logo */
+	} else {
+		g_free (str);
+	}
+
+	str = gnome_config_get_translated_string (GDM_KEY_WELCOME_TR);
+	if (ve_string_empty (str)) {
+		g_free (str);
+		str = gnome_config_get_string (GDM_KEY_WELCOME);
+	}
+	if (strcmp (ve_sure_string (str), ve_sure_string (GdmWelcome)) != NULL) {
+		char *greeting;
+		g_free (GdmWelcome);
+		GdmWelcome = str;
+
+		greeting = gdm_parse_enriched_string ("<big><big><big>", GdmWelcome, "</big></big></big>");    
+		gtk_label_set_markup (GTK_LABEL (welcome), greeting);
+		g_free (greeting);
+	} else {
+		g_free (str);
+	}
+
+	/* FIXME: background, position, xinerama screen, config available,
+	 * system menu, chooser/failsafe/last sessions */
+
+	gnome_config_pop_prefix();
+}
+
 int 
 main (int argc, char *argv[])
 {
     struct sigaction hup;
+    struct sigaction term;
     struct sigaction chld;
     sigset_t mask;
     GIOChannel *ctrlch;
@@ -3800,7 +3848,7 @@ main (int argc, char *argv[])
     if (GdmBrowser)
 	gdm_login_browser_update();
 
-    hup.sa_handler = gdm_login_done;
+    hup.sa_handler = gdm_reread_config;
     hup.sa_flags = 0;
     sigemptyset(&hup.sa_mask);
     sigaddset (&hup.sa_mask, SIGCHLD);
@@ -3808,10 +3856,15 @@ main (int argc, char *argv[])
     if (sigaction (SIGHUP, &hup, NULL) < 0) 
         gdm_login_abort (_("main: Error setting up HUP signal handler"));
 
-    if (sigaction (SIGINT, &hup, NULL) < 0) 
+    term.sa_handler = gdm_login_done;
+    term.sa_flags = 0;
+    sigemptyset(&term.sa_mask);
+    sigaddset (&term.sa_mask, SIGCHLD);
+
+    if (sigaction (SIGINT, &term, NULL) < 0) 
         gdm_login_abort (_("main: Error setting up INT signal handler"));
 
-    if (sigaction (SIGTERM, &hup, NULL) < 0) 
+    if (sigaction (SIGTERM, &term, NULL) < 0) 
         gdm_login_abort (_("main: Error setting up TERM signal handler"));
 
     chld.sa_handler = gdm_greeter_chld;
