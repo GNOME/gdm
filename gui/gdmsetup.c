@@ -169,7 +169,7 @@ check_update_error:
 						GTK_MESSAGE_ERROR,
 						GTK_BUTTONS_OK,
 						FALSE /* markup */,
-						_("An error occured while "
+						_("An error occurred while "
 						  "trying to contact the "
 						  "login screens.  Not all "
 						  "updates may have taken "
@@ -2040,7 +2040,7 @@ install_response (GtkWidget *chooser, gint response, gpointer data)
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
 					   FALSE /* markup */,
-					   _("Some error occured when "
+					   _("Some error occurred when "
 					     "installing the theme"),
 					   /* avoid warning */ "%s", "");
 		gtk_dialog_run (GTK_DIALOG (dlg));

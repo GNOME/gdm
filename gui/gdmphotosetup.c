@@ -370,7 +370,7 @@ main (int argc, char *argv[])
 						       GTK_BUTTONS_OK,
 						       FALSE /* markup */,
 						       _("Cannot open file"),
-						       _("File %s cannot be open for "
+						       _("File %s cannot be opened for "
 						       "writing\n"), tmp);
 
 				gtk_dialog_run (GTK_DIALOG (d));

@@ -71,8 +71,8 @@ set_text (GreeterItemInfo *info, const char *text)
 					      info->item);
 }
 
-static void
-user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
+void
+greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info)
 {
   const char *str;
   char *tmp;
@@ -160,7 +160,7 @@ greeter_item_pam_setup (void)
 	}
 
       g_signal_connect (entry, "activate",
-			G_CALLBACK (user_pw_activate), entry_info);
+			G_CALLBACK (greeter_item_pam_login), entry_info);
       g_signal_connect (G_OBJECT (entry), "key_press_event",
 		        G_CALLBACK (key_press_event), NULL);
     }

@@ -579,8 +579,22 @@ key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
   return FALSE;
 }
 
-static
-void
+static void
+greeter_action_ok (GreeterItemInfo *info,
+                       gpointer         user_data)
+{
+   GreeterItemInfo *entry_info = greeter_lookup_id ("user-pw-entry");
+   if (entry_info && entry_info->item &&
+       GNOME_IS_CANVAS_WIDGET (entry_info->item) &&
+       GTK_IS_ENTRY (GNOME_CANVAS_WIDGET (entry_info->item)->widget))
+     {
+       GtkWidget *entry;
+       entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
+       greeter_item_pam_login (entry, entry_info);
+     }
+}
+
+static void
 greeter_action_cancel (GreeterItemInfo *info,
                        gpointer         user_data)
 {
@@ -600,6 +614,9 @@ greeter_setup_items (void)
 
   greeter_item_capslock_setup (window);
   greeter_item_timed_setup ();
+  greeter_item_register_action_callback ("ok_button",
+					 greeter_action_ok,
+					 window);
   greeter_item_register_action_callback ("cancel_button",
 					 greeter_action_cancel,
 					 window);

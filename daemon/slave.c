@@ -215,7 +215,7 @@ static void	check_notifies_now (void);
 static void	restart_the_greeter (void);
 
 /* Yay thread unsafety */
-static gboolean x_error_occured = FALSE;
+static gboolean x_error_occurred = FALSE;
 static gboolean gdm_got_ack = FALSE;
 static char * gdm_ack_response = NULL;
 static GList *unhandled_notifies = NULL;
@@ -641,7 +641,7 @@ gdm_slave_sensitize_config (void)
 static int
 ignore_xerror_handler (Display *disp, XErrorEvent *evt)
 {
-	x_error_occured = TRUE;
+	x_error_occurred = TRUE;
 	return 0;
 }
 
@@ -956,7 +956,7 @@ gdm_screen_init (GdmDisplay *display)
 	int (* old_xerror_handler) (Display *, XErrorEvent *);
 	gboolean have_xinerama = FALSE;
 
-	x_error_occured = FALSE;
+	x_error_occurred = FALSE;
 	old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
 
 	have_xinerama = XineramaIsActive (display->dsp);
@@ -964,7 +964,7 @@ gdm_screen_init (GdmDisplay *display)
 	XSync (display->dsp, False);
 	XSetErrorHandler (old_xerror_handler);
 
-	if (x_error_occured)
+	if (x_error_occurred)
 		have_xinerama = FALSE;
 
 	if (have_xinerama) {
@@ -2810,10 +2810,10 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 			char *s = g_strndup
 				(str, strlen (GDM_SOP_COOKIE " XXXX XX"));
 			/* cut off most of the cookie for "security" */
-			gdm_debug ("Timeout occured for sending message %s...", s);
+			gdm_debug ("Timeout occurred for sending message %s...", s);
 			g_free (s);
 		} else {
-			gdm_debug ("Timeout occured for sending message %s", str);
+			gdm_debug ("Timeout occurred for sending message %s", str);
 		}
 	}
 }

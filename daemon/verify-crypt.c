@@ -372,7 +372,7 @@ authenticate_again:
     case -1 :
 	    gdm_error (_("Internal error on passwdexpired"));
 	    gdm_error_box (d, GTK_MESSAGE_ERROR,
-			   _("An internal error occured, you will not be able to log in.\n"
+			   _("An internal error occurred, you will not be able to log in.\n"
 			     "Please try again later or contact your system administrator."));
 	    g_free (info_msg);
 	    return NULL;

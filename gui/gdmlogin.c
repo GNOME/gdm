@@ -1105,7 +1105,7 @@ gdm_login_enter (GtkWidget *entry)
 	gtk_label_set_text (GTK_LABEL (err_box), "");
 
 	tmp = ve_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)));
-	printf ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
+	printf ("%c%s\n", STX, tmp);
 	fflush (stdout);
 	g_free (tmp);
 }

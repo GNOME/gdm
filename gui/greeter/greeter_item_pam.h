@@ -11,6 +11,7 @@ void greeter_item_pam_message (const char *message);
 void greeter_item_pam_error (const char *message);
 void greeter_item_pam_set_user (const char *user);
 void greeter_item_pam_leftover_messages (void);
+void greeter_item_pam_login (GtkEntry *entry, GreeterItemInfo *info);
 
 extern gchar *greeter_current_user;
 

@@ -1,3 +1,23 @@
+Fri Mar 18 21:45:0000 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* daemon/slave.c, daemon/verify-crypt.c,
+	  daemon/verify-shadow.c, gui/gdmcomm.c,
+	  gui/gdmphotosetup.c, gui/gdmsetup.c,
+	  vicious-extensions/glade-helper.c:
+	  Fixed messages - fixes bug 170531.
+	* gui/gdmlogin.c: Now use ve_locale_from_utf in
+	  the gdm_login_enter function since it's used
+	  everywhere else and in the same logic in the
+	  greeter.
+	* gui/greeter/greeter.c, gui/greeter_item_pam.[hc],
+	  gui/greeter_greeter_parser.c, 
+	  gui/greeter/themes/circles/circles.xml,
+	  gui/greeter/themes/happygnome/happygnome.xml,
+	  gui/greeter/themes/happygnome-list/happygnome.xml,
+	  docs/C/gdm.xml:  Added OK button to greeter so GDM
+	  now properly follows the Sun HCI recommendations.
+	  Fixes bug 98470.
+
 Thu Mar 17 2:30:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* config/extract-shell.sh: Made comment nicer.
@@ -21,8 +41,8 @@ Thu Mar 17 2:06:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 	  gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.c,
 	  docs/C/gdm.xml, gui/greeter/greeter_parser.c,
 	  gui/greeter/themes/circles/circles.xml,
-	  gui/greeter/themes/circles/happygnome.xml,
-	  gui/greeter/themes/circles/happygnome-list.xml:  Made
+	  gui/greeter/themes/happygnome/happygnome.xml,
+	  gui/greeter/themes/happygnome-list/happygnome.xml:  Made
 	  face browser much less braindead.  The facebrowser is
 	  no longer insensitive when entering the password so
 	  you can change the selected user without having to
