@@ -194,8 +194,8 @@
 #define GDM_KEY_SCAN "chooser/ScanTime=3"
 #define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
 #define GDM_KEY_HOSTDIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
-#define GDM_KEY_HOSTS "xdmcp/Hosts="
-#define GDM_KEY_BROADCAST "xdmcp/Broadcast=true"
+#define GDM_KEY_HOSTS "chooser/Hosts="
+#define GDM_KEY_BROADCAST "chooser/Broadcast=true"
 
 #define GDM_KEY_DEBUG "debug/Enable=false"
 

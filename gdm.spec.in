@@ -28,7 +28,7 @@ several different X sessions on your local machine at the same time.
 CFLAGS="-g $RPM_OPT_FLAGS" ./configure --localstatedir=%{localstatedir} \
     --prefix=%{_prefix} --sysconfdir=%{sysconfdir}/X11 \
     --bindir=%{_bindir} --datadir=%{_datadir} --sbindir=%{_sbindir} \
-    --enable-console-helper --with-pam-prefix=/etc
+    --enable-console-helper --with-pam-prefix=%{sysconfdir}
 
 make
 
@@ -43,7 +43,7 @@ make sysconfdir=$RPM_BUILD_ROOT%{sysconfdir}/X11 \
     datadir=$RPM_BUILD_ROOT%{_datadir} \
     localstatedir=$RPM_BUILD_ROOT%{localstatedir} \
     sbindir=$RPM_BUILD_ROOT%{_sbindir} \
-    PAM_PREFIX=$RPM_BUILD_ROOT%/etc \
+    PAM_PREFIX=$RPM_BUILD_ROOT%{sysconfdir} \
     install
 
 
@@ -85,12 +85,13 @@ exit 0
 %{_sbindir}/*
 %config %{sysconfdir}/pam.d/*
 %config %{sysconfdir}/X11/*
-%config %{sysconfdir}/gdm
+%config %{sysconfdir}/security/console.apps/*
 %{_datadir}/pixmaps/*
 %{_datadir}/gdm
 %{_datadir}/gnome/apps/*/*
 %{_datadir}/gnome/help/*
 %{_datadir}/omf/gdm
+%{_datadir}/locale/*/*/*
 # %config %{sysconfdir}/security/console.apps/gdmconfig
 # %config %{sysconfdir}/X11/gdm/gnomerc
 # %config %{sysconfdir}/X11/gdm/gdm.conf
@@ -111,6 +112,9 @@ exit 0
 
 
 %changelog
+* Sun Jul 01 2001 George Lebl <jirka@5z.com>
+- Fixed file listing
+
 * Sun May 24 2001 George Lebl <jirka@5z.com>
 - Hmmm, simplified the file listing, dunno why normally people list
   things file by file/dir by dir, but the old file list was out of date

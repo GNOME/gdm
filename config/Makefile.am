@@ -107,14 +107,14 @@ install-data-hook: gdm.conf gnomerc Gnome
 
 	system=`uname`; \
 	if test -f /usr/include/security/pam_appl.h; then \
-	  if test '!' -d $(sysconfdir)/pam.d; then \
-		$(mkinstalldirs) $(sysconfdir)/pam.d; \
-		chmod 755 $(sysconfdir)/pam.d; \
+	  if test '!' -d $(PAM_PREFIX)/pam.d; then \
+		$(mkinstalldirs) $(PAM_PREFIX)/pam.d; \
+		chmod 755 $(PAM_PREFIX)/pam.d; \
 	   fi; \
-	   if test $$system = Linux && test '!' -f $(sysconfdir)/pam.d/gdm; then \
-		$(INSTALL_DATA) gdm $(sysconfdir)/pam.d/gdm; \
+	   if test $$system = Linux && test '!' -f $(PAM_PREFIX)/pam.d/gdm; then \
+		$(INSTALL_DATA) gdm $(PAM_PREFIX)/pam.d/gdm; \
 	   fi; \
 	   if test $$system = SunOS; then \
-		echo "Please add PAM authentication for gdm in $(sysconfdir)/pam.conf!"; \
+		echo "Please add PAM authentication for gdm in $(PAM_PREFIX)/pam.conf!"; \
 	   fi; \
 	fi

@@ -146,13 +146,13 @@ static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa);
 static void gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type);
-static void gdm_xdmcp_send_accept (struct sockaddr_in *clnt_sa, gint displaynum);
+static void gdm_xdmcp_send_accept (const char *hostname, struct sockaddr_in *clnt_sa, gint displaynum);
 static void gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa);
 static void gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *cnlt_sa);
-static GdmDisplay *gdm_xdmcp_display_alloc (struct sockaddr_in *, gint);
+static GdmDisplay *gdm_xdmcp_display_alloc (const char *hostname, gint);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
 static void gdm_xdmcp_display_dispose_check (const gchar *name);
 static void gdm_xdmcp_displays_check (void);
@@ -788,6 +788,24 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
 }
 
+static char *
+get_host_from_addr (struct sockaddr_in *clnt_sa)
+{
+	char *hostname;
+	struct hostent *he;
+
+	/* Find client hostname */
+	he = gethostbyaddr ((gchar *) &clnt_sa->sin_addr,
+			    sizeof (struct in_addr),
+			    AF_INET);
+
+	if (he != NULL) {
+		hostname = g_strdup (he->h_name);
+	} else {
+		hostname = g_strdup (inet_ntoa (clnt_sa->sin_addr));
+	}
+	return hostname;
+}
 
 static void
 gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
@@ -902,14 +920,29 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     
     gdm_debug ("gdm_xdmcp_handle_request: pending=%d, MaxPending=%d, sessions=%d, MaxSessions=%d",
 	       pending, GdmMaxPending, sessions, GdmMaxSessions);
-    
+
     /* Check if ok to manage display */
     if (mitauth &&
-	pending < GdmMaxPending && 
-	sessions < GdmMaxSessions)
-	gdm_xdmcp_send_accept (clnt_sa, clnt_dspnum);
-    else
-	gdm_xdmcp_send_decline (clnt_sa);	
+	sessions < GdmMaxSessions) {
+	    char *disp;
+	    char *hostname = get_host_from_addr (clnt_sa);
+	    disp = g_strdup_printf ("%s:%d", hostname, clnt_dspnum);
+
+	    /* Check if we are already talking to this host */
+	    gdm_xdmcp_display_dispose_check (disp);
+	    g_free (disp);
+
+	    if (pending >= GdmMaxPending) {
+		    gdm_debug ("gdm_xdmcp_handle_request: maximum pending");
+		    gdm_xdmcp_send_decline (clnt_sa);	
+	    } else {
+		    gdm_xdmcp_send_accept (hostname, clnt_sa, clnt_dspnum);
+	    }
+
+	    g_free (hostname);
+    } else {
+	    gdm_xdmcp_send_decline (clnt_sa);	
+    }
 
     XdmcpDisposeARRAY8 (&clnt_authname);
     XdmcpDisposeARRAY8 (&clnt_authdata);
@@ -921,7 +954,9 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 
 
 static void
-gdm_xdmcp_send_accept (struct sockaddr_in *clnt_sa, gint displaynum)
+gdm_xdmcp_send_accept (const char *hostname,
+		       struct sockaddr_in *clnt_sa,
+		       gint displaynum)
 {
     XdmcpHeader header;
     ARRAY8 authentype;
@@ -930,7 +965,7 @@ gdm_xdmcp_send_accept (struct sockaddr_in *clnt_sa, gint displaynum)
     ARRAY8 authdata;
     GdmDisplay *d;
     
-    d = gdm_xdmcp_display_alloc (clnt_sa, displaynum);
+    d = gdm_xdmcp_display_alloc (hostname, displaynum);
     
     authentype.data = (CARD8 *) 0;
     authentype.length = (CARD16) 0;
@@ -1086,7 +1121,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	d->dispstat = XDMCP_MANAGED;
 	sessions++;
 	pending--;
-	
+
 	/* Start greeter/session */
 	if (!gdm_display_manage (d)) {
 	    gdm_xdmcp_send_failed (clnt_sa, clnt_sessid);
@@ -1224,10 +1259,9 @@ gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa)
 
 
 static GdmDisplay *
-gdm_xdmcp_display_alloc (struct sockaddr_in *clnt_sa, gint displaynum)
+gdm_xdmcp_display_alloc (const char *hostname, gint displaynum)
 {
     GdmDisplay *d = NULL;
-    struct hostent *client_he = NULL;
     
     d = g_new0 (GdmDisplay, 1);
     d->authfile = NULL;
@@ -1254,24 +1288,9 @@ gdm_xdmcp_display_alloc (struct sockaddr_in *clnt_sa, gint displaynum)
 	    d->timed_login_ok = FALSE;
     }
     
-    /* Find client hostname */
-    client_he = gethostbyaddr ((gchar *) &clnt_sa->sin_addr,
-			       sizeof (struct in_addr),
-			       AF_INET);
-    
-    if (client_he) {
-	d->name = g_strdup_printf ("%s:%d", client_he->h_name, 
-				   displaynum);
-	d->hostname = g_strdup (client_he->h_name);
-    }
-    else {
-	d->name = g_strdup_printf ("%s:%d", inet_ntoa (clnt_sa->sin_addr),
-				   displaynum);
-	d->hostname = g_strdup (inet_ntoa (clnt_sa->sin_addr));
-    }
-    
-    /* Check if we are already talking to this host */
-    gdm_xdmcp_display_dispose_check (d->name);
+    d->name = g_strdup_printf ("%s:%d", hostname,
+			       displaynum);
+    d->hostname = g_strdup (hostname);
     
     /* Secure display with cookie */
     if (! gdm_auth_secure_display (d))
@@ -1325,8 +1344,12 @@ gdm_xdmcp_display_dispose_check (const gchar *name)
 		GdmDisplay *d = dlist->data;
 
 		if (d != NULL &&
+		    d->type == TYPE_XDMCP &&
 		    strcmp (d->name, name) == 0) {
-			gdm_display_dispose (d);
+			if (d->dispstat == XDMCP_MANAGED)
+				gdm_display_unmanage (d);
+			else
+				gdm_display_dispose (d);
 
 			/* restart as the list is now fucked */
 			dlist = displays;

@@ -1,3 +1,17 @@
+Tue Jul 03 02:14:41 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h: Hosts,Broadcast were in the wrong section
+
+	* daemon/xdmcp.c: check for current displays BEFORE we check the
+	  number of pending and allocate a new display, this way we'll remove
+	  it if it itself has been pending, also don't just dispose, the
+	  display may be already managed, in which case we want to unmanage
+	  it to avoid a process leak.
+
+	* gdm.spec.in: fix pam prefix stuff and file listing
+
+	* config/Makefile.am: fix pam installation stuff
+
 Mon Jul 02 14:36:57 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: In remote (xdmcp) mode, allow killing of the
