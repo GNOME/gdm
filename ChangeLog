@@ -1,3 +1,11 @@
+Tue Jul 09 10:47:31 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: before running gdm_fail in the config parsing
+	  set pid file to NULL so that we don't wipe it.  Also
+	  implement a linux specific hack to check for stale pids,
+	  this is largely due to (Jim Bray <jb@cs.wcu.edu>).  It should
+	  just work as before on non-Linux systems.
+
 Tue Jul 09 10:27:51 2002  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in, daemon/gdm.[ch], daemon/server.c,

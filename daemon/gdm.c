@@ -19,6 +19,8 @@
 #include <config.h>
 #include <libgnome/libgnome.h>
 #include <signal.h>
+#include <limits.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -361,6 +363,7 @@ gdm_config_parse (void)
     if (ve_string_empty (GdmServAuthDir)) {
 	    gdm_text_message_dialog
 		    (_("No daemon/ServAuthDir specified in the configuration file"));
+	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: No authdir specified."), "gdm_config_parse");
     }
 
@@ -502,6 +505,7 @@ gdm_config_parse (void)
 			       "and restart gdm."),
 			     GDM_CONFIG_FILE);
 		    gdm_text_message_dialog (s);
+		    GdmPidFile = NULL;
 		    gdm_fail (_("%s: XDMCP disabled and no local servers defined. Aborting!"), "gdm_config_parse");
 	    }
     }
@@ -523,6 +527,7 @@ gdm_config_parse (void)
 		       "and restart gdm."),
 		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Can't find the gdm user (%s). Aborting!"), "gdm_config_parse", GdmUser);
     } else {
 	    GdmUserId = pwent->pw_uid;
@@ -536,6 +541,7 @@ gdm_config_parse (void)
 		       "correct gdm configuration %s and "
 		       "restart gdm."), GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: The gdm user should not be root. Aborting!"), "gdm_config_parse");
     }
 
@@ -555,6 +561,7 @@ gdm_config_parse (void)
 		       "and restart gdm."),
 		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Can't find the gdm group (%s). Aborting!"), "gdm_config_parse", GdmGroup);
     } else  {
 	    GdmGroupId = grent->gr_gid;   
@@ -568,6 +575,7 @@ gdm_config_parse (void)
 		       "correct gdm configuration %s and "
 		       "restart gdm."), GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: The gdm group should not be root. Aborting!"), "gdm_config_parse");
     }
 
@@ -612,6 +620,7 @@ gdm_config_parse (void)
 		       "restart gdm."), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
 
@@ -624,6 +633,7 @@ gdm_config_parse (void)
 		       "restart gdm."), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
 
@@ -638,6 +648,7 @@ gdm_config_parse (void)
 		     GdmServAuthDir, GdmUser, GdmGroup,
 		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."), "gdm_config_parse", 
 		      GdmServAuthDir, GdmUser, GdmGroup);
     }
@@ -653,6 +664,7 @@ gdm_config_parse (void)
 		       "restart gdm."),
 		     GdmServAuthDir, GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be 0750. Aborting."), "gdm_config_parse", 
 		      GdmServAuthDir, statbuf.st_mode);
     }
@@ -1323,6 +1335,33 @@ struct poptOption options [] = {
 	{ NULL, 0, 0, NULL, 0}
 };
 
+static gboolean
+linux_only_is_running (pid_t pid)
+{
+	char resolved_self[PATH_MAX];
+	char resolved_running[PATH_MAX];
+
+	char *running = g_strdup_printf ("/proc/%lu/exe", (gulong)pid);
+
+	if (realpath ("/proc/self/exe", resolved_self) == NULL) {
+		g_free (running);
+		/* probably not a linux system */
+		return FALSE;
+	}
+
+	if (realpath (running, resolved_running) == NULL) {
+		g_free (running);
+		/* probably not a linux system */
+		return FALSE;
+	}
+
+	g_free (running);
+
+	if (strcmp (resolved_running, resolved_self) == 0)
+		return TRUE;
+	return FALSE;
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -1380,7 +1419,8 @@ main (int argc, char *argv[])
 
         if (pf != NULL &&
 	    fscanf (pf, "%d", &pidv) == 1 &&
-	    kill (pidv, 0) != -1) {
+	    kill (pidv, 0) != -1 &&
+	    linux_only_is_running (pidv)) {
 		/* make sure the pid file doesn't get wiped */
 		GdmPidFile = NULL;
 		gdm_fail (_("gdm already running. Aborting!"));
