@@ -91,7 +91,6 @@ static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);
 static void     gdm_slave_exit (gint status, const gchar *format, ...);
 static gint     gdm_slave_exec_script (GdmDisplay*, gchar *dir);
-static gchar*   gdm_get_user_shell(void);
 
 void 
 gdm_slave_start (GdmDisplay *display)
@@ -359,7 +358,7 @@ gdm_slave_session_start (void)
     gchar *session = NULL, *language = NULL, *usrsess, *usrlang;
     gboolean savesess = FALSE, savelang = FALSE, usrcfgok = FALSE, authok = FALSE;
     gint i;
-    char *shell;
+    const char *shell = NULL;
     pid_t sesspid;
 
     pwent = getpwnam (login);
@@ -552,7 +551,8 @@ gdm_slave_session_start (void)
 	
 	sesspath = g_strconcat (GdmSessDir, "/", session, NULL);
 	
-	gdm_debug ("Running %s for %s on %s", sesspath, login, d->name);
+	gdm_debug (_("Running %s for %s on %s"),
+		   sesspath, login, d->name);
 
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 	    close(i);
@@ -566,13 +566,23 @@ gdm_slave_session_start (void)
 	/* Restore sigmask inherited from init */
 	sigprocmask (SIG_SETMASK, &sysmask, NULL);
 	
- 	shell = gdm_get_user_shell ();
-  
- 	execl (shell, "-", "-c", sesspath, NULL);
-	
-	gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
+	if (pwent->pw_shell != NULL &&
+	    pwent->pw_shell[0] != '\0') {
+		shell = pwent->pw_shell;
+	} else {
+		shell = "/bin/sh";
+	}
 
- 	g_free (shell);
+	/* just a stupid test, the below would fail, but this gives a better
+	 * message */
+	if (strcmp (shell, "/bin/false") == 0) {
+		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
+	} else {
+		execl (shell, "-", "-c", sesspath, NULL);
+
+		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
+	}
+
  	g_free (sesspath);
 	
 	gdm_slave_session_stop (0);
@@ -652,36 +662,6 @@ gdm_slave_session_cleanup (void)
     /* Cleanup */
     gdm_debug ("gdm_slave_session_cleanup: Killing windows");
     gdm_server_reinit (d);
-}
-
-static gchar*
-gdm_get_user_shell(void)
-{
-	struct passwd *pw;
-	int i;
-	/*char *shell;*/
-	static char *shells [] = {
-		"/bin/bash", "/bin/zsh", "/bin/tcsh", "/bin/ksh",
-		"/bin/csh", "/bin/sh", 0
-	};
-
-#if 0
-	if ((shell = getenv ("SHELL"))){
-		return g_strconcat (shell, NULL);
-	}
-#endif
-	pw = getpwuid(getuid());
-	if (pw && pw->pw_shell) {
-		return g_strdup (pw->pw_shell);
-	} 
-
-	for (i = 0; shells [i]; i++) {
-		if (g_file_exists (shells [i])){
-			return g_strdup (shells[i]);
-		}
-	}
-	
-	return g_strdup("/bin/sh");
 }
 
 static void
