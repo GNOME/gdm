@@ -133,6 +133,23 @@ gdm_server_check_loop (GdmDisplay *disp)
 }
 
 /**
+ * gdm_server_stop:
+ * @disp: Pointer to a GdmDisplay structure
+ *
+ * Stops a local X server, but only if it exists
+ */
+
+void
+gdm_server_kill (GdmDisplay *disp)
+{
+    if (disp == NULL ||
+	disp->servpid <= 0)
+	return;
+
+    gdm_server_stop (disp);
+}
+
+/**
  * gdm_server_start:
  * @disp: Pointer to a GdmDisplay structure
  *
@@ -152,6 +169,9 @@ gdm_server_start (GdmDisplay *disp)
     
     d = disp;
     d->servtries = 0;
+
+    /* if an X server exists, wipe it */
+    gdm_server_kill (d);
 
     gdm_debug ("gdm_server_start: %s", d->name);
 
@@ -366,10 +386,12 @@ gdm_server_stop (GdmDisplay *d)
     
     d->servstat = SERVER_DEAD;
 
-    kill (d->servpid, SIGTERM);
-    waitpid (d->servpid, 0, 0);
+    if (d->servpid != 0) {
+	    if (kill (d->servpid, SIGTERM) == 0)
+		    waitpid (d->servpid, 0, 0);
+	    d->servpid = 0;
+    }
 
-    d->servpid = 0;
     unlink (d->authfile);
 }
 
@@ -419,6 +441,7 @@ gdm_server_child_handler (gint signal)
     gdm_debug ("gdm_server_child_handler: Got SIGCHLD, server abort");
 
     d->servstat = SERVER_ABORT;	/* Server died unexpectedly */
+    d->servpid = 0;
 
     gdm_quit ();
 }

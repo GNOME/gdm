@@ -184,6 +184,7 @@ gdm_slave_start (GdmDisplay *display)
 		gdm_slave_greeter ();  /* Start the greeter */
 	}
     } else {
+	gdm_server_kill (d);
 	exit (DISPLAY_ABORT);
     }
 }
@@ -420,6 +421,7 @@ gdm_slave_session_start (void)
 	gdm_slave_session_stop();
 	gdm_slave_session_cleanup();
 	
+	gdm_server_kill (d);
 	exit (DISPLAY_REMANAGE);
     } 
 
@@ -489,6 +491,7 @@ gdm_slave_session_start (void)
 	gdm_slave_session_stop();
 	gdm_slave_session_cleanup();
 	
+	gdm_server_kill (d);
 	exit (DISPLAY_REMANAGE);
 	
     default:
@@ -550,6 +553,7 @@ gdm_slave_session_cleanup (void)
 	d->dsp = NULL;
     }
     
+    gdm_server_kill (d);
     exit (DISPLAY_REMANAGE);
 }
 
@@ -602,6 +606,7 @@ gdm_slave_term_handler (int sig)
     XCloseDisplay (d->dsp);
     d->dsp = NULL;
 
+    gdm_server_kill (d);
     exit (DISPLAY_ABORT);
 }
 
@@ -622,21 +627,29 @@ gdm_slave_child_handler (int sig)
 	    gdm_debug ("gdm_slave_child_handler: %d returned %d", pid, WEXITSTATUS (status));
 	
 	if (pid == d->greetpid && greet) {
-	    if (WIFEXITED (status))
+	    if (WIFEXITED (status)) {
+		gdm_server_kill (d);
 		exit (WEXITSTATUS (status));
-	    else {
+	    } else {
 		if (d && d->dsp) {
 		    XCloseDisplay (d->dsp);
 		    d->dsp = NULL;
 		}
 		
+		gdm_server_kill (d);
 		exit (DISPLAY_REMANAGE);
 	    }
 	}
-	
+
 	if (pid && pid == d->sesspid) {
 	    gdm_slave_session_stop();
 	    gdm_slave_session_cleanup();
+	}
+	
+	if (pid && pid == d->servpid) {
+		d->servstat = SERVER_DEAD;
+		d->servpid = 0;
+		unlink (d->authfile);
 	}
     }
 }
@@ -727,7 +740,8 @@ gdm_slave_xioerror_handler (Display *disp)
 	gdm_slave_session_stop();
     
     gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
-    
+
+    gdm_server_kill (d);
     exit (DISPLAY_REMANAGE);
 }
 

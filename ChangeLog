@@ -1,3 +1,11 @@
+Wed Jan 10 07:22:29 2001  George Lebl <jirka@5z.com>
+
+	* daemon/server.[ch], daemon/slave.c: When slave is exitting
+	  we should kill the old X server really.  It should be possible to
+	  reuse, but currently this was leading to hangs.  Also only
+	  wait for the server if the kill worked to avoid hanging in
+	  waitpid.
+
 Wed Jan 10 03:20:48 2001  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in: add empty line for automatic login (disabled)

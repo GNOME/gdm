@@ -22,6 +22,7 @@
 #include "gdm.h"
 
 gboolean gdm_server_start (GdmDisplay *d);
+void gdm_server_kill (GdmDisplay *disp);
 void gdm_server_stop (GdmDisplay *d);
 GdmDisplay *gdm_server_alloc (gint id, gchar *command);
 
