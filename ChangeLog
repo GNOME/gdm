@@ -1,3 +1,18 @@
+Sun Mar 04 16:28:52 2001  George Lebl <jirka@5z.com>
+
+	* daemon/filecheck.[ch]: fix an error message and make const correct
+
+	* gui/gdmlogin.c: make the photo checking code saner, this assumes
+	  we're root and can read anyone's files, really and this is bad,
+	  oh well, it is sort of weird.  Also a bunch of cleanup and
+	  constization.
+
+	* gui/Makefile.am: don't link to filecheck anymore
+
+	* daemon/slave.c, gui/gdmlogin.c: cleanup some code, make GDM_QUIT
+	  work for doing cleanup.  Make it not actually quit but just
+	  cleanup to prepare to be killed.
+
 Sun Mar 04 12:27:50 2001  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in: Added a note to the config file about running

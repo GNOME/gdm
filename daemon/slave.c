@@ -49,7 +49,7 @@ static const gchar RCSid[]="$Id$";
 /* Global vars */
 static GdmDisplay *d;
 static gchar *login = NULL;
-static sigset_t mask, omask;
+static sigset_t mask;
 static gboolean greet = FALSE;
 static FILE *greeter;
 static pid_t last_killed_pid = 0;
@@ -429,17 +429,18 @@ gdm_slave_session_start (void)
     }
 
     if (greet) {
-	    if (strlen (gdm_slave_greeter_ctl (GDM_SSESS, "")))
+	    if (strlen (gdm_slave_greeter_ctl (GDM_SSESS, "")) > 0)
 		    savesess = TRUE;
 
-	    if (strlen (gdm_slave_greeter_ctl (GDM_SLANG, "")))
+	    if (strlen (gdm_slave_greeter_ctl (GDM_SLANG, "")) > 0)
 		    savelang = TRUE;
 
-	    gdm_debug ("gdm_slave_session_start: Authentication completed. Whacking greeter");
+	    gdm_debug (_("gdm_slave_session_start: Authentication completed. Whacking greeter"));
 
-	    sigemptyset (&mask);
-	    sigaddset (&mask, SIGCHLD);
-	    sigprocmask (SIG_BLOCK, &mask, &omask);  
+	    /* do what you do when you quit, this will hang until the
+	     * greeter decides to print an STX\n, meaning it can do some
+	     * last minute cleanup */
+	    gdm_slave_greeter_ctl (GDM_QUIT, "");
 
 	    greet = FALSE;
 
@@ -447,8 +448,6 @@ gdm_slave_session_start (void)
 	    if (kill (d->greetpid, SIGINT) == 0)
 		    waitpid (d->greetpid, 0, 0); 
 	    d->greetpid = 0;
-
-	    sigprocmask (SIG_SETMASK, &omask, NULL);
     }
 
     if (GdmKillInitClients)
@@ -719,6 +718,8 @@ gdm_slave_child_handler (int sig)
 		       (int)pid, (int)WTERMSIG (status));
 
 	if (pid == d->greetpid && greet) {
+		/* if greet is TRUE, then the greeter died outside of our
+		 * control really */
 		gdm_server_stop (d);
 		gdm_verify_cleanup ();
 		if (WIFEXITED (status)) {

@@ -40,15 +40,16 @@ static const gchar RCSid[]="$Id$";
  */
 
 gboolean
-gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file, 
-		gboolean absentok, gint maxsize, gint perms)
+gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
+		const gchar *file, gboolean absentok, gint maxsize, gint perms)
 {
     struct stat statbuf;
     gchar *fullpath;
 
     /* Stat directory */
     if (stat (dir, &statbuf) == -1) {
-	syslog (LOG_WARNING, _("%s: Directory %s does not exist."), caller, dir);
+	syslog (LOG_WARNING, _("%s: Directory %s does not exist."),
+		caller, dir);
 	return FALSE;
     }
 
@@ -80,7 +81,7 @@ gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file,
 	    return TRUE;
 	}
 	else {
-	    syslog (LOG_WARNING, _("%s: does not exist and must."), caller, fullpath);
+	    syslog (LOG_WARNING, _("%s: %s does not exist and must."), caller, fullpath);
 	    g_free (fullpath);
 	    return FALSE;
 	}

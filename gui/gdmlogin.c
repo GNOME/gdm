@@ -40,7 +40,6 @@
 #endif
 #include "gdmlogin.h"
 #include "gdm.h"
-#include "filecheck.h"
 
 static const gchar RCSid[]="$Id$";
 
@@ -75,6 +74,7 @@ static GtkWidget *label;
 static GtkWidget *entry;
 static GtkWidget *msg;
 static gboolean first_message = TRUE;
+static gboolean require_quater = FALSE;
 static GtkWidget *win;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
@@ -89,7 +89,6 @@ static GdkImlibImage *defface;
 static GSList *sessions = NULL;
 static GSList *languages = NULL;
 static GList *users = NULL;
-static GSList *exclude = NULL;
 
 static gchar *defsess = NULL;
 static gchar *cursess = NULL;
@@ -160,9 +159,12 @@ gdm_greeter_chld (int sig)
 static void
 kill_background (void)
 {
-	if (backgroundpid != 0) {
-		kill (backgroundpid, SIGTERM);
-		backgroundpid = 0;
+	pid_t bpid = backgroundpid;
+
+	backgroundpid = 0;
+
+	if (bpid != 0) {
+		kill (bpid, SIGTERM);
 	}
 }
 
@@ -470,6 +472,7 @@ gdm_center_window (GtkWindow *cw)
 
 	x = screen.x + (screen.width - req.width)/2;
 	y = screen.y + (screen.height - req.height)/2;	
+
  	gtk_widget_set_uposition (GTK_WIDGET (cw), x, y);	
 }
 
@@ -486,7 +489,7 @@ gdm_login_query (const gchar *msg)
 	    
     gtk_window_set_modal (GTK_WINDOW (req), TRUE);
     gdm_center_window (GTK_WINDOW (req));
-    return (!gnome_dialog_run (GNOME_DIALOG(req)));
+    return (!gnome_dialog_run (GNOME_DIALOG (req)));
 }
 
 
@@ -762,7 +765,9 @@ static gboolean
 evil (const char *user)
 {
 	static gboolean old_lock;
+
 	if (dance_handler == 0 &&
+	    /* do not translate */
 	    strcmp (user, "Start Dancing") == 0) {
 		setup_cursor (GDK_UMBRELLA);
 		dance_handler = gtk_timeout_add (50, dance, NULL);
@@ -771,18 +776,27 @@ evil (const char *user)
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		return TRUE;
 	} else if (dance_handler != 0 &&
+		   /* do not translate */
 		   strcmp (user, "Stop Dancing") == 0) {
 		setup_cursor (GDK_LEFT_PTR);
 		gtk_timeout_remove (dance_handler);
 		dance_handler = 0;
 		GdmLockPosition = old_lock;
+		gdm_center_window (GTK_WINDOW (login));
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		return TRUE;
+				 /* do not translate */
 	} else if (strcmp (user, "Gimme Random Cursor") == 0) {
 		setup_cursor (((rand () >> 3) % (GDK_LAST_CURSOR/2)) * 2);
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		return TRUE;
+				 /* do not translate */
+	} else if (strcmp (user, "Require Quater") == 0) {
+		require_quater = TRUE;
+		gtk_entry_set_text (GTK_ENTRY (entry), "");
+		return TRUE;
 	}
+
 	return FALSE;
 }
 
@@ -1057,7 +1071,6 @@ gdm_login_language_init (GtkWidget *menu)
     fclose (langlist);
 }
 
-
 static gboolean
 gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 {
@@ -1210,8 +1223,27 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_QUIT:
-        kill_background ();
-	exit (EXIT_SUCCESS);
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	if (require_quater) {
+		GtkWidget *d;
+
+		/* translators:  This is a nice and evil eggie text, translate
+		 * to your favourite currency */
+		d = gnome_message_box_new (_("Please insert 25 cents "
+					     "to log in."),
+					   GNOME_MESSAGE_BOX_INFO,
+					   GNOME_STOCK_BUTTON_OK,
+					   NULL);
+		gtk_window_set_modal (GTK_WINDOW (d), TRUE);
+		gdm_center_window (GTK_WINDOW (d));
+
+		gnome_dialog_run (GNOME_DIALOG (d));
+	}
+
+	kill_background ();
+
+	g_print ("%c\n", STX);
 	break;
 	
     default:
@@ -1704,7 +1736,8 @@ gdm_login_gui_init (void)
 			      (gint) screen.height * 0.25);
     }
 
-    if (GdmLogo && !access (GdmLogo, R_OK)) {
+    if (GdmLogo &&
+	access (GdmLogo, R_OK) == 0) {
 	GtkWidget *logo;
 
 	logoframe = gtk_frame_new (NULL);
@@ -1761,6 +1794,7 @@ gdm_login_gui_init (void)
     gtk_misc_set_padding (GTK_MISC (label), 10, 5);
     
     entry = gtk_entry_new_with_max_length (32);
+    gtk_widget_set_usize (entry, 120, -1);
     gtk_widget_ref (entry);
     gtk_object_set_data_full (GTK_OBJECT (login), "entry", entry,
 			      (GtkDestroyNotify) gtk_widget_unref);
@@ -1856,12 +1890,11 @@ gdm_login_sort_func (gpointer d1, gpointer d2)
 
 
 static GdmLoginUser * 
-gdm_login_user_alloc (gchar *logname, uid_t uid, gchar *homedir)
+gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 {
     GdmLoginUser *user;
-    gboolean fileok;
-    gchar *gnomedir = NULL;
     GdkImlibImage *img = NULL;
+    gchar *filename;
 
     user = g_new0 (GdmLoginUser, 1);
 
@@ -1872,30 +1905,21 @@ gdm_login_user_alloc (gchar *logname, uid_t uid, gchar *homedir)
     user->login = g_strdup (logname);
     user->homedir = g_strdup (homedir);
 
-    gnomedir = g_strconcat (homedir, "/.gnome", NULL);
+    filename = g_strconcat (homedir, "/.gnome/photo", NULL);
 
-    fileok = gdm_file_check ("gdm_login_user_alloc", uid, gnomedir, "photo", 
-			     FALSE, GdmUserMaxFile, GdmRelaxPerms);
-    
-    if (fileok) {
-	gchar *filename;
-	
-	filename = g_strconcat (gnomedir, "/photo", NULL);
-	img = gdk_imlib_load_image (filename);
-	g_free (filename);
-    }
-    else {
-	gchar *filename;
-	
-	filename = g_strconcat (GdmGlobalFaceDir, "/", logname, NULL);
-	
-	if (access (filename, R_OK) == 0)
+    img = NULL;
+    if (access (filename, R_OK) == 0) {
 	    img = gdk_imlib_load_image (filename);
+    } else {
+	    g_free (filename);
+	    filename = g_strconcat (GdmGlobalFaceDir, "/", logname, NULL);
 	
-	g_free (filename);
+	    if (access (filename, R_OK) == 0)
+		    img = gdk_imlib_load_image (filename);
+
     }
     
-    g_free (gnomedir);
+    g_free (filename);
     
     if(img) {
 	gint w, h;
@@ -1923,30 +1947,38 @@ gdm_login_user_alloc (gchar *logname, uid_t uid, gchar *homedir)
 }
 
 
-static gint
+static gboolean
 gdm_login_check_exclude (struct passwd *pwent)
 {
-    const char * const lockout_passes[] = { "*", "!!", NULL };
-    GSList *list = exclude;
-    gint i;
+	const char * const lockout_passes[] = { "*", "!!", NULL };
+	gint i;
 
-    for (i=0 ; lockout_passes[i] ; i++) 
-	if(strcmp (lockout_passes[i], pwent->pw_passwd) == 0)
-	    return (TRUE);
- 
-     while (list && list->data) {
-	 if (g_strcasecmp (pwent->pw_name, (gchar *) list->data) == 0)
-	     return (TRUE);
+	for (i=0 ; lockout_passes[i] != NULL ; i++)  {
+		if (strcmp (lockout_passes[i], pwent->pw_passwd) == 0) {
+			return TRUE;
+		}
+	}
 
-	 list = list->next;
-     }
+	if (GdmExclude != NULL &&
+	    GdmExclude[0] != '\0') {
+		char **excludes;
+		excludes = g_strsplit (GdmExclude, ",", 0);
 
-     return (FALSE);
+		for (i=0 ; excludes[i] != NULL ; i++)  {
+			if (g_strcasecmp (excludes[i], pwent->pw_name) == 0) {
+				g_strfreev (excludes);
+				return TRUE;
+			}
+		}
+		g_strfreev (excludes);
+	}
+
+	return FALSE;
 }
 
 
-static gint
-gdm_login_check_shell (gchar *usersh)
+static gboolean
+gdm_login_check_shell (const gchar *usersh)
 {
     gint found = 0;
     gchar *csh;
@@ -1970,20 +2002,16 @@ gdm_login_users_init (void)
     struct passwd *pwent;
 
     if (access (GdmDefaultFace, R_OK)) {
-	syslog (LOG_WARNING, _("Can't open DefaultImage: %s. Suspending face browser!"), GdmDefaultFace);
-	GdmBrowser = FALSE;
-	return;
+	    syslog (LOG_WARNING,
+		    _("Can't open DefaultImage: %s. Suspending face browser!"),
+		    GdmDefaultFace);
+	    GdmBrowser = FALSE;
+	    return;
+    } else  {
+	    defface = gdk_imlib_load_image (GdmDefaultFace);
     }
-    else 
-	defface = gdk_imlib_load_image (GdmDefaultFace);
 
-    if (GdmExclude) {
-        gchar *s = strtok (GdmExclude, ",");
-        exclude = g_slist_append (exclude, g_strdup (s));
-
-        while ((s = strtok (NULL, ","))) 
-	    exclude = g_slist_append (exclude, g_strdup (s));
-    }
+    setpwent ();
 
     pwent = getpwent();
 	
@@ -2141,7 +2169,7 @@ main (int argc, char *argv[])
     ctrlch = g_io_channel_unix_new (STDIN_FILENO);
     g_io_channel_init (ctrlch);
     g_io_add_watch (ctrlch, 
-		    G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
+		    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
 		    (GIOFunc) gdm_login_ctrl_handler,
 		    NULL);
     g_io_channel_unref (ctrlch);

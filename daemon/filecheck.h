@@ -19,8 +19,9 @@
 #ifndef GDM_FILECHECK_H
 #define GDM_FILECHECK_H
 
-gboolean gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file, 
-                         gboolean absentok, gint maxsize, gint perms);
+gboolean gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
+			 const gchar *file, gboolean absentok, gint maxsize,
+			 gint perms);
 
 #endif /* GDM_FILECHECK_H */
 
