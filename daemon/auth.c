@@ -411,7 +411,8 @@ void
 gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 {
     FILE *af;
-    gchar *authfile, *authdir;
+    const gchar *authfile;
+    gchar *authdir;
 
     if (!d || !d->userauth)
 	return;
@@ -436,9 +437,10 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 
     if (! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
 			  TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
-	gdm_error (_("gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"), d->userauth);
+	    g_free (authdir);
+	    gdm_error (_("gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"), d->userauth);
 
-	return; 
+	    return; 
     }
 
     g_free (authdir);
@@ -464,8 +466,6 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 
     g_free (d->userauth);
     d->userauth = NULL;
-
-    return;
 }
 
 

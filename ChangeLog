@@ -1,3 +1,20 @@
+Mon Oct 08 20:54:33 2001  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c:  Fix small leak
+
+	* daemon/server.[ch], daemon/slave.c: wipe cookies better and safer
+
+	* daemon/server.c: server killing right after launch race fixed,
+	  probably was harmless though, also reset the vt number on linux
+	  before starting a new server.
+
+	* daemon/slave.c: increase the loop of death time for logouts, and
+	  always redo parsed automatic/timed login vars after each display
+	  start as the display number / hostname might have changed.  When
+	  we can't open a display, it's XFAILED rather then REMANAGE so
+	  that we go into the "your X sucks" dialog.  We need better
+	  error reporting though.
+
 Sun Oct 07 16:55:24 2001  Fatih Demir <kabalak@gtranslator.org>
 
 	* configure.in: Added "ta" to the languages list.

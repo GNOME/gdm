@@ -21,6 +21,9 @@
 
 #include "gdm.h"
 
+/* Wipe cookie files */
+void		gdm_server_wipe_cookies	(GdmDisplay *disp);
+
 gboolean	gdm_server_start	(GdmDisplay *d,
 					 gboolean treat_as_flexi,
 					 int min_flexi_disp,

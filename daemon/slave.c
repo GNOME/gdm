@@ -230,7 +230,7 @@ gdm_slave_start (GdmDisplay *display)
 		death_count ++;
 
 		if ((the_time - first_time) <= 0 ||
-		    (the_time - first_time) > 40) {
+		    (the_time - first_time) > 60) {
 			first_time = the_time;
 			death_count = 0;
 		} else if (death_count > 6) {
@@ -334,18 +334,6 @@ gdm_slave_run (GdmDisplay *display)
     
     d = display;
 
-    if ( ! ve_string_empty (GdmAutomaticLogin) &&
-	ParsedAutomaticLogin == NULL) {
-	    ParsedAutomaticLogin = gdm_parse_enriched_login (GdmAutomaticLogin,
-							     display);
-    }
-
-    if ( ! ve_string_empty (GdmTimedLogin) &&
-	ParsedTimedLogin == NULL) {
-	    ParsedTimedLogin = gdm_parse_enriched_login (GdmTimedLogin,
-							 display);
-    }
-
     if (d->sleep_before_run > 0) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
 	    sleep (d->sleep_before_run);
@@ -369,6 +357,20 @@ gdm_slave_run (GdmDisplay *display)
     
     ve_setenv ("XAUTHORITY", d->authfile, TRUE);
     ve_setenv ("DISPLAY", d->name, TRUE);
+
+    /* Now the display name and hostname is final */
+    if ( ! ve_string_empty (GdmAutomaticLogin)) {
+	    g_free (ParsedAutomaticLogin);
+	    ParsedAutomaticLogin = gdm_parse_enriched_login (GdmAutomaticLogin,
+							     display);
+    }
+
+    if ( ! ve_string_empty (GdmTimedLogin)) {
+	    g_free (ParsedTimedLogin);
+	    ParsedTimedLogin = gdm_parse_enriched_login (GdmTimedLogin,
+							 display);
+    }
+
     
     /* X error handlers to avoid the default one (i.e. exit (1)) */
     XSetErrorHandler (gdm_slave_xerror_handler);
@@ -398,12 +400,12 @@ gdm_slave_run (GdmDisplay *display)
 	}
     }
 
-    /* something may have gone wrong, try remanaging, if local (non-flexi),
+    /* something may have gone wrong, try xfailed, if local (non-flexi),
      * the toplevel loop of death will handle us */ 
     if (d->dsp == NULL) {
 	    gdm_server_stop (d);
 	    if (d->type == TYPE_LOCAL)
-		    _exit (DISPLAY_REMANAGE);
+		    _exit (DISPLAY_XFAILED);
 	    else
 		    _exit (DISPLAY_ABORT);
     }
@@ -2344,10 +2346,7 @@ gdm_slave_child_handler (int sig)
 	} else if (pid != 0 && pid == d->servpid) {
 		d->servstat = SERVER_DEAD;
 		d->servpid = 0;
-		if ( ! ve_string_empty (d->authfile))
-			unlink (d->authfile);
-		if ( ! ve_string_empty (d->authfile_gdm))
-			unlink (d->authfile_gdm);
+		gdm_server_wipe_cookies (d);
 	} else if (pid == extra_process) {
 		/* an extra process died, yay! */
 		extra_process = -1;

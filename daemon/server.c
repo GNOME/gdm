@@ -67,6 +67,20 @@ extern pid_t extra_process;
 /* Global vars */
 static GdmDisplay *d = NULL;
 
+/* Wipe cookie files */
+void
+gdm_server_wipe_cookies (GdmDisplay *disp)
+{
+	if ( ! ve_string_empty (disp->authfile))
+		unlink (disp->authfile);
+	g_free (disp->authfile);
+	disp->authfile = NULL;
+	if ( ! ve_string_empty (disp->authfile_gdm))
+		unlink (disp->authfile_gdm);
+	g_free (disp->authfile_gdm);
+	disp->authfile_gdm = NULL;
+}
+
 /**
  * gdm_server_reinit:
  * @disp: Pointer to a GdmDisplay structure
@@ -122,14 +136,16 @@ gdm_server_stop (GdmDisplay *disp)
     disp->servstat = SERVER_DEAD;
 
     if (disp->servpid != 0) {
-	    if (kill (disp->servpid, SIGTERM) == 0)
-		    waitpid (disp->servpid, 0, 0);
+	    pid_t servpid = disp->servpid;
+
+	    /* avoid SIGCHLD race */
 	    disp->servpid = 0;
+
+	    if (kill (servpid, SIGTERM) == 0)
+		    waitpid (servpid, 0, 0);
     }
 
-    unlink (disp->authfile);
-    if (disp->authfile_gdm != NULL)
-	    unlink (disp->authfile_gdm);
+    gdm_server_wipe_cookies (disp);
 }
 
 static gboolean
@@ -278,6 +294,15 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     /* if an X server exists, wipe it */
     gdm_server_stop (d);
+
+    /* On linux first clear the VT number */
+#ifdef __linux__
+    if (d->type == TYPE_LOCAL ||
+	d->type == TYPE_FLEXI) {
+	    d->vt = -1;
+	    gdm_slave_send_num (GDM_SOP_VT_NUM, -1);
+    }
+#endif
 
     if (SERVER_IS_FLEXI (d) ||
 	treat_as_flexi) {
@@ -437,9 +462,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     }
 
     /* We will rebake cookies anyway, so wipe these */
-    unlink (disp->authfile);
-    if (disp->authfile_gdm != NULL)
-	    unlink (disp->authfile_gdm);
+    gdm_server_wipe_cookies (disp);
 
     sigprocmask (SIG_SETMASK, &oldmask, NULL);
 
