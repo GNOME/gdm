@@ -6,8 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2003-07-24 04:28+0100\n"
-"PO-Revision-Date: 2003-07-24 04:42+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-08-19 05:05+0100\n"
+"PO-Revision-Date: 2003-08-14 20:40+0100\n"
 "Last-Translator: Dafydd Harries <daf@parnassus.ath.cx>\n"
 "Language-Team: Cymraeg <gnome-cy@pengwyn.linux.org.uk>\n"
 "MIME-Version: 1.0\n"
@@ -122,33 +123,33 @@ msgid ""
 "diskspace.%s%s"
 msgstr ""
 
-#: daemon/auth.c:188
+#: daemon/auth.c:194
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr ""
 
-#: daemon/auth.c:212 daemon/auth.c:229 daemon/auth.c:622
+#: daemon/auth.c:218 daemon/auth.c:235 daemon/auth.c:711
 #, c-format
 msgid "%s: Cannot safely open %s"
 msgstr ""
 
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:457 daemon/auth.c:495
+#: daemon/auth.c:524 daemon/auth.c:562
 #, c-format
 msgid "%s: Could not open cookie file %s"
 msgstr ""
 
-#: daemon/auth.c:476
+#: daemon/auth.c:543
 #, c-format
 msgid "%s: Could not lock cookie file %s"
 msgstr ""
 
-#: daemon/auth.c:526
+#: daemon/auth.c:593 daemon/auth.c:614
 #, c-format
 msgid "%s: Could not write cookie"
 msgstr ""
 
-#: daemon/auth.c:600
+#: daemon/auth.c:689
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr ""
@@ -163,7 +164,7 @@ msgstr ""
 #. * that should give people ample time to stop gdm if needed,
 #. * or just wait for the stupid malicious user to get bored
 #. * and go away
-#: daemon/display.c:113
+#: daemon/display.c:114
 #, c-format
 msgid ""
 "The display server has been shut down about 6 times in the last 90 seconds, "
@@ -171,74 +172,74 @@ msgid ""
 "before trying again on display %s."
 msgstr ""
 
-#: daemon/display.c:184
+#: daemon/display.c:243
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr ""
 
-#: daemon/display.c:279
+#: daemon/display.c:315
 #, c-format
 msgid "%s: Failed forking gdm slave process for %s"
 msgstr ""
 
-#: daemon/errorgui.c:258
+#: daemon/errorgui.c:286
 #, c-format
 msgid "%s not a regular file!\n"
 msgstr ""
 
-#: daemon/errorgui.c:273
+#: daemon/errorgui.c:301
 msgid ""
 "\n"
 "... File too long to display ...\n"
 msgstr ""
 
-#: daemon/errorgui.c:281
+#: daemon/errorgui.c:309
 #, c-format
 msgid "%s could not be opened"
 msgstr ""
 
-#: daemon/errorgui.c:373 daemon/errorgui.c:490 daemon/errorgui.c:577
-#: daemon/errorgui.c:674
+#: daemon/errorgui.c:402 daemon/errorgui.c:522 daemon/errorgui.c:609
+#: daemon/errorgui.c:706
 #, c-format
 msgid "%s: Cannot fork to display error/info box"
 msgstr ""
 
-#: daemon/filecheck.c:52
+#: daemon/filecheck.c:54
 #, c-format
 msgid "%s: Directory %s does not exist."
 msgstr ""
 
-#: daemon/filecheck.c:59 daemon/filecheck.c:100
+#: daemon/filecheck.c:61 daemon/filecheck.c:103
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr ""
 
-#: daemon/filecheck.c:65 daemon/filecheck.c:107
+#: daemon/filecheck.c:67 daemon/filecheck.c:110
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr ""
 
-#: daemon/filecheck.c:71
+#: daemon/filecheck.c:73
 #, c-format
 msgid "%s: %s is writable by other."
 msgstr ""
 
-#: daemon/filecheck.c:85
+#: daemon/filecheck.c:88
 #, c-format
 msgid "%s: %s does not exist but must exist."
 msgstr ""
 
-#: daemon/filecheck.c:93
+#: daemon/filecheck.c:96
 #, c-format
 msgid "%s: %s is not a regular file."
 msgstr ""
 
-#: daemon/filecheck.c:114
+#: daemon/filecheck.c:117
 #, c-format
 msgid "%s: %s is writable by group/other."
 msgstr ""
 
-#: daemon/filecheck.c:121
+#: daemon/filecheck.c:124
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
@@ -263,199 +264,205 @@ msgstr ""
 msgid "%s: Could not open FIFO"
 msgstr ""
 
-#: daemon/gdm.c:235 gui/gdmlogin.c:692 gui/greeter/greeter.c:93
-#, c-format
-msgid "%s: No configuration file: %s. Using defaults."
-msgstr ""
-
-#: daemon/gdm.c:280
-#, c-format
-msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
-msgstr ""
-
-#: daemon/gdm.c:320
-#, c-format
-msgid "%s: Standard X server not found, trying alternatives"
-msgstr ""
-
-#: daemon/gdm.c:348
-#, c-format
-msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
-msgstr ""
-
-#: daemon/gdm.c:361
-#, c-format
-msgid "%s: Root cannot be autologged in, turing off automatic login"
-msgstr ""
-
-#: daemon/gdm.c:374
-#, c-format
-msgid "%s: Root cannot be autologged in, turing off timed login"
-msgstr ""
-
-#: daemon/gdm.c:380
-#, c-format
-msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
-msgstr ""
-
-#: daemon/gdm.c:390
-#, c-format
-msgid "%s: No greeter specified."
-msgstr ""
-
-#: daemon/gdm.c:393
-#, c-format
-msgid "%s: No remote greeter specified."
-msgstr ""
-
-#: daemon/gdm.c:398
-msgid "No daemon/ServAuthDir specified in the configuration file"
-msgstr ""
-
-#: daemon/gdm.c:400
-#, c-format
-msgid "%s: No authdir specified."
-msgstr ""
-
-#: daemon/gdm.c:407
-#, c-format
-msgid "%s: No sessions directory specified."
-msgstr ""
-
-#: daemon/gdm.c:432
-#, c-format
-msgid "%s: Empty server command, using standard one."
-msgstr ""
-
-#: daemon/gdm.c:473
-#, c-format
-msgid "%s: Display number %d in use!  I will use %d"
-msgstr ""
-
-#: daemon/gdm.c:492
-#, c-format
-msgid "%s: Invalid server line in config file. Ignoring!"
-msgstr ""
-
-#. start
-#. server uid
-#: daemon/gdm.c:512
-#, c-format
-msgid ""
-"%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
-"configuration!"
-msgstr ""
-
-#: daemon/gdm.c:527
-#, c-format
-msgid ""
-"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
-"Please correct the configuration %s and restart gdm."
-msgstr ""
-
-#: daemon/gdm.c:535
-#, c-format
-msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
-msgstr ""
-
-#: daemon/gdm.c:543
-#, c-format
-msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
-msgstr ""
-
-#: daemon/gdm.c:551
-#, c-format
-msgid ""
-"The gdm user does not exist. Please correct gdm configuration %s and restart "
-"gdm."
-msgstr ""
-
-#: daemon/gdm.c:557
-#, c-format
-msgid "%s: Can't find the gdm user (%s). Aborting!"
-msgstr ""
-
-#: daemon/gdm.c:564
-#, c-format
-msgid ""
-"The gdm user is set to be root, but this is not allowed since it can pose a "
-"security risk.  Please correct gdm configuration %s and restart gdm."
-msgstr ""
-
-#: daemon/gdm.c:571
-#, c-format
-msgid "%s: The gdm user should not be root. Aborting!"
-msgstr ""
-
-#: daemon/gdm.c:577
-#, c-format
-msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
-msgstr ""
-
-#: daemon/gdm.c:585
-#, c-format
-msgid ""
-"The gdm group does not exist. Please correct gdm configuration %s and "
-"restart gdm."
-msgstr ""
-
-#: daemon/gdm.c:591
-#, c-format
-msgid "%s: Can't find the gdm group (%s). Aborting!"
-msgstr ""
-
-#: daemon/gdm.c:598
-#, c-format
-msgid ""
-"The gdm group is set to be root, but this is not allowed since it can pose a "
-"security risk. Please correct gdm configuration %s and restart gdm."
-msgstr ""
-
-#: daemon/gdm.c:605
-#, c-format
-msgid "%s: The gdm group should not be root. Aborting!"
-msgstr ""
-
-#: daemon/gdm.c:620
-#, c-format
-msgid "%s: Greeter not found or can't be executed by the gdm user"
-msgstr ""
-
-#: daemon/gdm.c:627
-#, c-format
-msgid "%s: Remote greeter not found or can't be executed by the gdm user"
-msgstr ""
-
-#: daemon/gdm.c:638
-#, c-format
-msgid "%s: Chooser not found or it can't be executed by the gdm user"
-msgstr ""
-
-#: daemon/gdm.c:647
+#: daemon/gdm.c:233
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
 "does not exist. Please correct gdm configuration %s and restart gdm."
 msgstr ""
 
-#: daemon/gdm.c:655
+#: daemon/gdm.c:242
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr ""
 
-#: daemon/gdm.c:660
+#: daemon/gdm.c:247
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
 "not a directory. Please correct gdm configuration %s and restart gdm."
 msgstr ""
 
-#: daemon/gdm.c:668
+#: daemon/gdm.c:256
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr ""
 
-#: daemon/gdm.c:673
+#: daemon/gdm.c:269
+#, c-format
+msgid ""
+"%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
+msgstr ""
+
+#: daemon/gdm.c:303 gui/gdmlogin.c:692 gui/greeter/greeter.c:95
+#, c-format
+msgid "%s: No configuration file: %s. Using defaults."
+msgstr ""
+
+#: daemon/gdm.c:348
+#, c-format
+msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
+msgstr ""
+
+#: daemon/gdm.c:389
+#, c-format
+msgid "%s: Standard X server not found, trying alternatives"
+msgstr ""
+
+#: daemon/gdm.c:417
+#, c-format
+msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
+msgstr ""
+
+#: daemon/gdm.c:430
+#, c-format
+msgid "%s: Root cannot be autologged in, turing off automatic login"
+msgstr ""
+
+#: daemon/gdm.c:443
+#, c-format
+msgid "%s: Root cannot be autologged in, turing off timed login"
+msgstr ""
+
+#: daemon/gdm.c:449
+#, c-format
+msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
+msgstr ""
+
+#: daemon/gdm.c:459
+#, c-format
+msgid "%s: No greeter specified."
+msgstr ""
+
+#: daemon/gdm.c:462
+#, c-format
+msgid "%s: No remote greeter specified."
+msgstr ""
+
+#: daemon/gdm.c:466
+#, c-format
+msgid "%s: No sessions directory specified."
+msgstr ""
+
+#: daemon/gdm.c:491
+#, c-format
+msgid "%s: Empty server command, using standard one."
+msgstr ""
+
+#: daemon/gdm.c:534
+#, c-format
+msgid "%s: Display number %d in use!  I will use %d"
+msgstr ""
+
+#: daemon/gdm.c:553
+#, c-format
+msgid "%s: Invalid server line in config file. Ignoring!"
+msgstr ""
+
+#: daemon/gdm.c:564 daemon/gdm.c:603
+#, c-format
+msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
+msgstr ""
+
+#. start
+#. server uid
+#: daemon/gdm.c:580
+#, c-format
+msgid ""
+"%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
+"configuration!"
+msgstr ""
+
+#: daemon/gdm.c:595
+#, c-format
+msgid ""
+"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
+"Please correct the configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:616
+#, c-format
+msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
+msgstr ""
+
+#: daemon/gdm.c:624
+#, c-format
+msgid ""
+"The gdm user does not exist. Please correct gdm configuration %s and restart "
+"gdm."
+msgstr ""
+
+#: daemon/gdm.c:631
+#, c-format
+msgid "%s: Can't find the gdm user (%s). Aborting!"
+msgstr ""
+
+#: daemon/gdm.c:638
+#, c-format
+msgid ""
+"The gdm user is set to be root, but this is not allowed since it can pose a "
+"security risk.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:646
+#, c-format
+msgid "%s: The gdm user should not be root. Aborting!"
+msgstr ""
+
+#: daemon/gdm.c:652
+#, c-format
+msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
+msgstr ""
+
+#: daemon/gdm.c:660
+#, c-format
+msgid ""
+"The gdm group does not exist. Please correct gdm configuration %s and "
+"restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:667
+#, c-format
+msgid "%s: Can't find the gdm group (%s). Aborting!"
+msgstr ""
+
+#: daemon/gdm.c:674
+#, c-format
+msgid ""
+"The gdm group is set to be root, but this is not allowed since it can pose a "
+"security risk. Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:682
+#, c-format
+msgid "%s: The gdm group should not be root. Aborting!"
+msgstr ""
+
+#: daemon/gdm.c:697
+#, c-format
+msgid "%s: Greeter not found or can't be executed by the gdm user"
+msgstr ""
+
+#: daemon/gdm.c:704
+#, c-format
+msgid "%s: Remote greeter not found or can't be executed by the gdm user"
+msgstr ""
+
+#: daemon/gdm.c:715
+#, c-format
+msgid "%s: Chooser not found or it can't be executed by the gdm user"
+msgstr ""
+
+#: daemon/gdm.c:724
+msgid "No daemon/ServAuthDir specified in the configuration file"
+msgstr ""
+
+#: daemon/gdm.c:726
+#, c-format
+msgid "%s: No daemon/ServAuthDir specified."
+msgstr ""
+
+#: daemon/gdm.c:752
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -463,46 +470,46 @@ msgid ""
 "configuration %s and restart gdm."
 msgstr ""
 
-#: daemon/gdm.c:683
+#: daemon/gdm.c:763
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 
-#: daemon/gdm.c:689
+#: daemon/gdm.c:769
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
-"wrong permissions, it should have permissions of 0750. Please correct the "
+"wrong permissions, it should have permissions of %o. Please correct the "
 "permissions or the gdm configuration %s and restart gdm."
 msgstr ""
 
-#: daemon/gdm.c:699
+#: daemon/gdm.c:780
 #, c-format
-msgid "%s: Authdir %s has wrong permissions %o. Should be 0750. Aborting."
+msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
 
-#: daemon/gdm.c:756
+#: daemon/gdm.c:857
 #, c-format
 msgid "%s: fork() failed!"
 msgstr ""
 
 #. should never happen
-#: daemon/gdm.c:759 daemon/slave.c:2563
+#: daemon/gdm.c:860 daemon/slave.c:2862
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr ""
 
-#: daemon/gdm.c:902
+#: daemon/gdm.c:1030
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr ""
 
-#: daemon/gdm.c:920
+#: daemon/gdm.c:1048
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr ""
 
-#: daemon/gdm.c:998
+#: daemon/gdm.c:1160
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
@@ -514,53 +521,53 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:1010
+#: daemon/gdm.c:1172
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr ""
 
-#: daemon/gdm.c:1055
+#: daemon/gdm.c:1217
 msgid "System is rebooting, please wait ..."
 msgstr "Mae'r system yn ailfwtio, arhoswch os gwelwch yn dda..."
 
-#: daemon/gdm.c:1057
+#: daemon/gdm.c:1219
 msgid "System is shutting down, please wait ..."
 msgstr "Mae'r system yn troi bant, arhoswch os gwelwch yn dda..."
 
-#: daemon/gdm.c:1140
+#: daemon/gdm.c:1313
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
 
-#: daemon/gdm.c:1149
+#: daemon/gdm.c:1322
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-local display %s"
 msgstr ""
 
 #. Bury this display for good
-#: daemon/gdm.c:1209
+#: daemon/gdm.c:1382
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr ""
 
 #. Reboot machine
-#: daemon/gdm.c:1222
+#: daemon/gdm.c:1395
 msgid "Master rebooting..."
 msgstr ""
 
-#: daemon/gdm.c:1234
+#: daemon/gdm.c:1407
 #, c-format
 msgid "%s: Reboot failed: %s"
 msgstr ""
 
 #. Halt machine
-#: daemon/gdm.c:1242
+#: daemon/gdm.c:1415
 msgid "Master halting..."
 msgstr ""
 
-#: daemon/gdm.c:1254
+#: daemon/gdm.c:1427
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr ""
@@ -568,78 +575,75 @@ msgstr ""
 #. Suspend machine
 #. XXX: this is ugly, why should there be a suspend like this,
 #. * see GDM_SOP_SUSPEND_MACHINE
-#: daemon/gdm.c:1264 daemon/gdm.c:2292
+#: daemon/gdm.c:1437 daemon/gdm.c:2596
 msgid "Master suspending..."
 msgstr ""
 
-#: daemon/gdm.c:1373
+#: daemon/gdm.c:1547
 msgid "GDM restarting ..."
 msgstr ""
 
-#: daemon/gdm.c:1377
+#: daemon/gdm.c:1551
 msgid "Failed to restart self"
 msgstr ""
 
-#: daemon/gdm.c:1511
+#: daemon/gdm.c:1711
 msgid "Do not fork into the background"
 msgstr ""
 
-#: daemon/gdm.c:1513
+#: daemon/gdm.c:1713
+msgid "No console (local) servers to be run"
+msgstr ""
+
+#: daemon/gdm.c:1715
 msgid "Preserve LD_* variables"
 msgstr ""
 
-#: daemon/gdm.c:1615 gui/gdmchooser.c:1379
+#: daemon/gdm.c:1833 gui/gdmchooser.c:1494
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 
-#: daemon/gdm.c:1627
+#: daemon/gdm.c:1845
 msgid "Only root wants to run gdm\n"
 msgstr ""
 
-#: daemon/gdm.c:1658
+#: daemon/gdm.c:1861 daemon/gdm.c:1865 daemon/gdm.c:1940 daemon/gdm.c:1944
+#: daemon/gdm.c:1948 daemon/gdm.c:1952 daemon/gdm.c:1962 daemon/gdm.c:1968
+#: daemon/gdm.c:1979 daemon/misc.c:1391 daemon/misc.c:1395 daemon/misc.c:1399
+#: daemon/misc.c:1406 daemon/misc.c:1410 daemon/misc.c:1414
+#: daemon/server.c:499 daemon/server.c:512 daemon/slave.c:627
+#: daemon/slave.c:641 daemon/slave.c:651 daemon/slave.c:661
+#: gui/gdmchooser.c:1373 gui/gdmchooser.c:1376 gui/gdmchooser.c:1379
+#: gui/gdmlogin.c:3803 gui/gdmlogin.c:3811 gui/gdmlogin.c:3814
+#: gui/greeter/greeter.c:1161 gui/greeter/greeter.c:1169
+#: gui/greeter/greeter.c:1172
+#, c-format
+msgid "%s: Error setting up %s signal handler: %s"
+msgstr ""
+
+#: daemon/gdm.c:1889
 msgid "gdm already running. Aborting!"
 msgstr ""
 
-# TRWSIO
-#: daemon/gdm.c:1692 daemon/misc.c:1268 daemon/misc.c:1283
-#, c-format
-msgid "%s: Error setting up TERM signal handler"
-msgstr ""
-
-#: daemon/gdm.c:1696 daemon/misc.c:1272 daemon/misc.c:1287
-#, c-format
-msgid "%s: Error setting up INT signal handler"
-msgstr ""
-
-#: daemon/gdm.c:1700 daemon/misc.c:1276 daemon/misc.c:1291
-#, c-format
-msgid "%s: Error setting up HUP signal handler"
-msgstr ""
-
-#: daemon/gdm.c:1704
-#, c-format
-msgid "%s: Error setting up USR1 signal handler"
-msgstr ""
-
-#: daemon/gdm.c:1713
+#: daemon/gdm.c:1988
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr ""
 
-#: daemon/gdm.c:2929 daemon/gdm.c:2948
+#: daemon/gdm.c:3233 daemon/gdm.c:3252
 msgid "Flexible server request denied: Not authenticated"
 msgstr ""
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:2966
+#: daemon/gdm.c:3270
 msgid "Unknown server type requested, using standard server."
 msgstr ""
 
-#: daemon/gdm.c:2970
+#: daemon/gdm.c:3274
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -647,26 +651,35 @@ msgid ""
 msgstr ""
 
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:537
+#: daemon/misc.c:555
 msgid "y = Yes or n = No? >"
 msgstr ""
 
-#: daemon/misc.c:836
+#: daemon/misc.c:869
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr ""
 
-#: daemon/misc.c:951
+#: daemon/misc.c:984
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr ""
 
-#: daemon/misc.c:956
+#: daemon/misc.c:989
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr ""
 
-#: daemon/server.c:270
+#: daemon/misc.c:1219 daemon/misc.c:1233
+#, c-format
+msgid "%s: Error setting signal %d to %s"
+msgstr ""
+
+#: daemon/server.c:160
+msgid "Can not start fallback console"
+msgstr ""
+
+#: daemon/server.c:330
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -674,148 +687,122 @@ msgid ""
 "server on %s again.%s"
 msgstr ""
 
-#: daemon/server.c:277
+#: daemon/server.c:337
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
 "higher.)"
 msgstr ""
 
-#: daemon/server.c:317
+#: daemon/server.c:377
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr ""
 
-#: daemon/server.c:345
+#: daemon/server.c:405
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr ""
 
-#: daemon/server.c:505
+#: daemon/server.c:487
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr ""
 
-#: daemon/server.c:517
-#, c-format
-msgid "%s: Error setting up USR1 signal handler: %s"
-msgstr ""
-
-#: daemon/server.c:530 daemon/slave.c:432
-#, c-format
-msgid "%s: Error setting up CHLD signal handler: %s"
-msgstr ""
-
-#: daemon/server.c:544 daemon/slave.c:408
-#, c-format
-msgid "%s: Error setting up ALRM signal handler: %s"
-msgstr ""
-
 #. Send X too busy
-#: daemon/server.c:752
+#: daemon/server.c:770
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr ""
 
-#: daemon/server.c:767
+#: daemon/server.c:785
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr ""
 
-#: daemon/server.c:861
+#: daemon/server.c:879
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr ""
 
-#: daemon/server.c:866
+#: daemon/server.c:884
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr ""
 
-#: daemon/server.c:1044
+#: daemon/server.c:1059
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr ""
 
-#: daemon/server.c:1055 daemon/server.c:1060 daemon/server.c:1065
-#: daemon/server.c:1076 daemon/server.c:1081
+#: daemon/server.c:1072 daemon/server.c:1078 daemon/server.c:1083
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr ""
 
-#: daemon/server.c:1115
+#: daemon/server.c:1120
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr ""
 
-#: daemon/server.c:1129
+#: daemon/server.c:1134
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
 
-#: daemon/server.c:1144 daemon/slave.c:1845 daemon/slave.c:2277
+#: daemon/server.c:1149 daemon/slave.c:2152 daemon/slave.c:2609
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr ""
 
-#: daemon/server.c:1150 daemon/slave.c:1850 daemon/slave.c:2282
+#: daemon/server.c:1155 daemon/slave.c:2157 daemon/slave.c:2614
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr ""
 
-#: daemon/server.c:1156 daemon/slave.c:1855 daemon/slave.c:2287
+#: daemon/server.c:1161 daemon/slave.c:2162 daemon/slave.c:2619
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr ""
 
-#: daemon/server.c:1163
+#: daemon/server.c:1168
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr ""
 
-#: daemon/server.c:1174
+#: daemon/server.c:1179
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr ""
 
-#: daemon/server.c:1182
+#: daemon/server.c:1187
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr ""
 
-#: daemon/slave.c:422
-#, c-format
-msgid "%s: Error setting up TERM/INT signal handler: %s"
-msgstr ""
-
-#: daemon/slave.c:442
-#, c-format
-msgid "%s: Error setting up USR2 signal handler: %s"
-msgstr ""
-
-#: daemon/slave.c:708
+#: daemon/slave.c:923
 msgid "Log in anyway"
 msgstr ""
 
-#: daemon/slave.c:710
+#: daemon/slave.c:925
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
 msgstr ""
 
-#: daemon/slave.c:714
+#: daemon/slave.c:929
 msgid "Return to previous login"
 msgstr ""
 
-#: daemon/slave.c:715 daemon/slave.c:721
+#: daemon/slave.c:930 daemon/slave.c:936
 msgid "Abort login"
 msgstr ""
 
-#: daemon/slave.c:718
+#: daemon/slave.c:933
 msgid "You are already logged in.  You can log in anyway or abort this login"
 msgstr ""
 
-#: daemon/slave.c:805
+#: daemon/slave.c:1023
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -827,378 +814,342 @@ msgid ""
 "the problem is corrected."
 msgstr ""
 
-#: daemon/slave.c:1030
+#: daemon/slave.c:1259
 #, c-format
 msgid "%s: cannot fork"
 msgstr ""
 
-#: daemon/slave.c:1077
+#: daemon/slave.c:1306
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr ""
 
-#: daemon/slave.c:1225
+#: daemon/slave.c:1455
 msgid ""
-"Could not execute the configuration\n"
-"program.  Make sure it's path is set\n"
-"correctly in the configuration file.\n"
-"I will attempt to start it from the\n"
+"Could not execute the configuration program.  Make sure it's path is set "
+"correctly in the configuration file.  I will attempt to start it from the "
 "default location."
 msgstr ""
 
-#: daemon/slave.c:1239
+#: daemon/slave.c:1469
 msgid ""
-"Could not execute the configuration\n"
-"program.  Make sure it's path is set\n"
+"Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file."
 msgstr ""
 
-#: daemon/slave.c:1362
+#: daemon/slave.c:1592
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
 msgstr ""
 
-#: daemon/slave.c:1393 daemon/slave.c:1477
-msgid "gdm_slave_wait_for_login: No login/Bad login"
-msgstr ""
-
-#: daemon/slave.c:1805
+#: daemon/slave.c:2106 daemon/slave.c:2111
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr ""
 
-#: daemon/slave.c:1922
+#: daemon/slave.c:2229
 msgid ""
-"No servers were defined in the\n"
-"configuration file and XDMCP was\n"
-"disabled.  This can only be a\n"
-"configuration error.  So I have started\n"
-"a single server for you.  You should\n"
-"log in and fix the configuration.\n"
-"Note that automatic and timed logins\n"
-"are disabled now."
+"No servers were defined in the configuration file and XDMCP was disabled.  "
+"This can only be a configuration error.  So I have started a single server "
+"for you.  You should log in and fix the configuration.  Note that automatic "
+"and timed logins are disabled now."
 msgstr ""
 
-#: daemon/slave.c:1936
+#: daemon/slave.c:2243
 msgid ""
-"I could not start the regular X\n"
-"server (your graphical environment)\n"
-"and so this is a failsafe X server.\n"
-"You should log in and properly\n"
-"configure the X server."
+"I could not start the regular X server (your graphical environment) and so "
+"this is a failsafe X server.  You should log in and properly configure the X "
+"server."
 msgstr ""
 
-#: daemon/slave.c:1945
+#: daemon/slave.c:2252
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr ""
 
-#: daemon/slave.c:1965
+#: daemon/slave.c:2272
 msgid ""
 "The greeter program appears to be crashing.\n"
 "I will attempt to use a different one."
 msgstr ""
 
 #. Something went wrong
-#: daemon/slave.c:1990
+#: daemon/slave.c:2297
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 
-#: daemon/slave.c:1997
+#: daemon/slave.c:2304
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr ""
 
-#: daemon/slave.c:2010
+#: daemon/slave.c:2317
 msgid ""
-"Cannot start the greeter program,\n"
-"you will not be able to log in.\n"
-"This display will be disabled.\n"
-"Try logging in by other means and\n"
-"editing the configuration file"
+"Cannot start the greeter program, you will not be able to log in.  This "
+"display will be disabled.  Try logging in by other means and editing the "
+"configuration file"
 msgstr ""
 
 #. If no greeter we really have to disable the display
-#: daemon/slave.c:2017
+#: daemon/slave.c:2324
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr ""
 
-#: daemon/slave.c:2021
+#: daemon/slave.c:2328
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr ""
 
-#: daemon/slave.c:2105
+#: daemon/slave.c:2413
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr ""
 
-#: daemon/slave.c:2236
-msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
-msgstr ""
-
-#: daemon/slave.c:2323
-msgid ""
-"Cannot start the chooser program,\n"
-"you will probably not be able to log in.\n"
-"Please contact the system administrator.\n"
-msgstr ""
-
-#: daemon/slave.c:2327
+#: daemon/slave.c:2568
 #, c-format
-msgid "gdm_slave_chooser: Error starting chooser on display %s"
+msgid "%s: Can't init pipe to gdmchooser"
 msgstr ""
 
-#: daemon/slave.c:2330
-msgid "gdm_slave_chooser: Can't fork gdmchooser process"
+#: daemon/slave.c:2655
+msgid ""
+"Cannot start the chooser program, you will probably not be able to log in.  "
+"Please contact the system administrator."
 msgstr ""
 
-#. open stdout - fd 1
-#. open stderr - fd 2
-#: daemon/slave.c:2529
+#: daemon/slave.c:2659
+#, c-format
+msgid "%s: Error starting chooser on display %s"
+msgstr ""
+
+#: daemon/slave.c:2662
+#, c-format
+msgid "%s: Can't fork gdmchooser process"
+msgstr ""
+
+#: daemon/slave.c:2832
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr ""
 
-#: daemon/slave.c:2557
-msgid ""
-"gdm_slave_session_start: Execution of PreSession script returned > 0. "
-"Aborting."
+#: daemon/slave.c:2899
+#, c-format
+msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr ""
 
-#: daemon/slave.c:2591
+#: daemon/slave.c:2928
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr ""
 
-#: daemon/slave.c:2592
+#: daemon/slave.c:2929
 msgid "System default"
 msgstr "Rhagosodidad y system"
 
-#: daemon/slave.c:2608
+#: daemon/slave.c:2945
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr ""
 
-#: daemon/slave.c:2623
+#: daemon/slave.c:2965
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr ""
 
-#: daemon/slave.c:2629
+#: daemon/slave.c:2971
 #, c-format
-msgid "gdm_slave_session_start: Could not become %s. Aborting."
+msgid "%s: Could not become %s. Aborting."
 msgstr ""
 
-#: daemon/slave.c:2687
+#: daemon/slave.c:3030
 #, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
 msgstr ""
 
-#: daemon/slave.c:2693
+#: daemon/slave.c:3036
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
 msgstr ""
 
-#: daemon/slave.c:2707
+#: daemon/slave.c:3050
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
 msgstr ""
 
-#: daemon/slave.c:2712
+#: daemon/slave.c:3055
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
 msgstr ""
 
 #. yaikes
-#: daemon/slave.c:2727
+#: daemon/slave.c:3070
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 
-#: daemon/slave.c:2732
+#: daemon/slave.c:3075
 msgid ""
-"Could not find the GNOME installation,\n"
-"will try running the \"Failsafe xterm\"\n"
-"session."
+"Could not find the GNOME installation, will try running the \"Failsafe xterm"
+"\" session."
 msgstr ""
 
-#: daemon/slave.c:2740
+#: daemon/slave.c:3083
 msgid ""
-"This is the Failsafe Gnome session.\n"
-"You will be logged into the 'Default'\n"
-"session of Gnome with no startup scripts\n"
-"run.  This is only to fix problems in\n"
-"your installation."
+"This is the Failsafe Gnome session.  You will be logged into the 'Default' "
+"session of Gnome with no startup scripts run.  This is only to fix problems "
+"in your installation."
 msgstr ""
 
-#: daemon/slave.c:2755
+#: daemon/slave.c:3098
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Methu canfod \"xterm\" er mwyn dechrau sesiwn difethiant."
 
-#: daemon/slave.c:2767
+#: daemon/slave.c:3111
 msgid ""
-"This is the Failsafe xterm session.\n"
-"You will be logged into a terminal\n"
-"console so that you may fix your system\n"
-"if you cannot log in any other way.\n"
-"To exit the terminal emulator, type\n"
-"'exit' and an enter into the window."
+"This is the Failsafe xterm session.  You will be logged into a terminal "
+"console so that you may fix your system if you cannot log in any other way.  "
+"To exit the terminal emulator, type 'exit' and an enter into the window."
 msgstr ""
 
-#: daemon/slave.c:2778
-#, c-format
-msgid "Running %s %s %s for %s on %s"
-msgstr ""
-
-#: daemon/slave.c:2794
+#: daemon/slave.c:3138
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr ""
 
-#: daemon/slave.c:2797
-msgid ""
-"The system administrator has\n"
-"disabled your account."
+#: daemon/slave.c:3141
+msgid "The system administrator has disabled your account."
 msgstr ""
 
 #. will go to .xsession-errors
-#: daemon/slave.c:2806 daemon/slave.c:2811
+#: daemon/slave.c:3152 daemon/slave.c:3157
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr ""
 
 #. we can't really be any more specific
-#: daemon/slave.c:2822
+#: daemon/slave.c:3168
 msgid "Cannot start the session due to some internal error."
 msgstr ""
 
-#: daemon/slave.c:2856
+#: daemon/slave.c:3217
 #, c-format
-msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
+msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 
-#: daemon/slave.c:2869
+#: daemon/slave.c:3231
+#, c-format
+msgid "%s: Execution of PostLogin script returned > 0. Aborting."
+msgstr ""
+
+#: daemon/slave.c:3240
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
 "'%s'\n"
-"but it does not appear to exist.\n"
-"Do you want to log in with the / (root)\n"
+"but it does not appear to exist.  Do you want to log in with the / (root) "
 "directory as your home directory?\n"
 "\n"
-"It is unlikely anything will work unless\n"
-"you use a failsafe session."
+"It is unlikely anything will work unless you use a failsafe session."
 msgstr ""
 
-#: daemon/slave.c:2877
+#: daemon/slave.c:3248
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr ""
 
-#: daemon/slave.c:3001
+#: daemon/slave.c:3376
 msgid ""
-"GDM could not write to your authorization\n"
-"file.  This could mean that you are out of\n"
-"disk space or that your home directory could\n"
-"not be opened for writing.  In any case, it\n"
-"is not possible to log in.  Please contact\n"
-"your system administrator"
+"GDM could not write to your authorization file.  This could mean that you "
+"are out of disk space or that your home directory could not be opened for "
+"writing.  In any case, it is not possible to log in.  Please contact your "
+"system administrator"
 msgstr ""
 
-#: daemon/slave.c:3062
-msgid "gdm_slave_session_start: Error forking user session"
+#: daemon/slave.c:3453
+#, c-format
+msgid "%s: Error forking user session"
 msgstr ""
 
-#: daemon/slave.c:3123
+#: daemon/slave.c:3533
 msgid ""
-"Your session only lasted less than\n"
-"10 seconds.  If you have not logged out\n"
-"yourself, this could mean that there is\n"
-"some installation problem or that you may\n"
-"be out of diskspace.  Try logging in with\n"
-"one of the failsafe sessions to see if you\n"
-"can fix this problem."
+"Your session only lasted less than 10 seconds.  If you have not logged out "
+"yourself, this could mean that there is some installation problem or that "
+"you may be out of diskspace.  Try logging in with one of the failsafe "
+"sessions to see if you can fix this problem."
 msgstr ""
 
-#: daemon/slave.c:3131
+#: daemon/slave.c:3541
 msgid "View details (~/.xsession-errors file)"
 msgstr ""
 
-#: daemon/slave.c:3251
+#: daemon/slave.c:3668
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr ""
 
-#: daemon/slave.c:3318
+#: daemon/slave.c:3762
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr ""
 
-#. no_shutdown_check
-#: daemon/slave.c:3557
+#: daemon/slave.c:4035
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr ""
 
-#: daemon/slave.c:3941
+#: daemon/slave.c:4436
 #, c-format
-msgid "gdm_slave_exec_script: Failed starting: %s"
+msgid "%s: Failed starting: %s"
 msgstr ""
 
-#: daemon/slave.c:3949
-msgid "gdm_slave_exec_script: Can't fork script process!"
-msgstr ""
-
-#: daemon/slave.c:4043
-#, c-format
-msgid "%s: Failed creating pipe"
-msgstr ""
-
-#: daemon/slave.c:4075
-#, c-format
-msgid "%s: Failed executing: %s"
-msgstr ""
-
-#: daemon/slave.c:4081
+#: daemon/slave.c:4444 daemon/slave.c:4581
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr ""
 
-#: daemon/verify-crypt.c:70 daemon/verify-pam.c:657 daemon/verify-shadow.c:71
+#: daemon/slave.c:4538
+#, c-format
+msgid "%s: Failed creating pipe"
+msgstr ""
+
+#: daemon/slave.c:4575
+#, c-format
+msgid "%s: Failed executing: %s"
+msgstr ""
+
+#: daemon/verify-crypt.c:70 daemon/verify-pam.c:696 daemon/verify-shadow.c:71
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
 msgstr ""
 
-#: daemon/verify-crypt.c:75 daemon/verify-pam.c:667 daemon/verify-shadow.c:76
+#: daemon/verify-crypt.c:75 daemon/verify-pam.c:706 daemon/verify-shadow.c:76
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr ""
 
 #. I think I'll add the buttons next to this
-#: daemon/verify-crypt.c:114 daemon/verify-pam.c:159
-#: daemon/verify-shadow.c:113 gui/gdmlogin.c:2895
+#: daemon/verify-crypt.c:114 daemon/verify-pam.c:175
+#: daemon/verify-shadow.c:113 gui/gdmlogin.c:2905
 msgid "Please enter your username"
 msgstr "Rhowch enw eich cyfrif os gwelwch yn dda"
 
 #. login: is whacked always translate to Username:
-#: daemon/verify-crypt.c:115 daemon/verify-pam.c:85 daemon/verify-pam.c:86
-#: daemon/verify-pam.c:153 daemon/verify-pam.c:460 daemon/verify-shadow.c:114
-#: gui/gdmlogin.c:1100 gui/gdmlogin.c:1114 gui/gdmlogin.c:1760
-#: gui/gdmlogin.c:2213 gui/greeter/greeter.c:263
-#: gui/greeter/greeter_parser.c:1003
+#: daemon/verify-crypt.c:115 daemon/verify-pam.c:91 daemon/verify-pam.c:92
+#: daemon/verify-pam.c:93 daemon/verify-pam.c:169 daemon/verify-pam.c:496
+#: daemon/verify-shadow.c:114 gui/gdmlogin.c:1095 gui/gdmlogin.c:1109
+#: gui/gdmlogin.c:1757 gui/gdmlogin.c:2223 gui/greeter/greeter.c:265
+#: gui/greeter/greeter_parser.c:1045
 msgid "Username:"
 msgstr "Enw cyfrif:"
 
-#: daemon/verify-crypt.c:153 daemon/verify-pam.c:87 daemon/verify-pam.c:200
-#: daemon/verify-shadow.c:171 gui/gdmlogin.c:1791
+#: daemon/verify-crypt.c:153 daemon/verify-pam.c:94 daemon/verify-pam.c:95
+#: daemon/verify-pam.c:216 daemon/verify-shadow.c:171 gui/gdmlogin.c:1789
 msgid "Password:"
 msgstr "Cyfrinair:"
 
@@ -1208,7 +1159,7 @@ msgstr "Cyfrinair:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr ""
 
-#: daemon/verify-crypt.c:198 daemon/verify-pam.c:552
+#: daemon/verify-crypt.c:198 daemon/verify-pam.c:585
 #: daemon/verify-shadow.c:216
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1223,22 +1174,22 @@ msgstr ""
 msgid "User %s not allowed to log in"
 msgstr ""
 
-#: daemon/verify-crypt.c:218 daemon/verify-pam.c:582 daemon/verify-pam.c:808
+#: daemon/verify-crypt.c:218 daemon/verify-pam.c:615 daemon/verify-pam.c:858
 #: daemon/verify-shadow.c:236
 msgid ""
 "\n"
 "The system administrator has disabled your account."
 msgstr ""
 
-#: daemon/verify-crypt.c:233 daemon/verify-crypt.c:270 daemon/verify-pam.c:600
-#: daemon/verify-pam.c:825 daemon/verify-shadow.c:250
+#: daemon/verify-crypt.c:233 daemon/verify-crypt.c:270 daemon/verify-pam.c:633
+#: daemon/verify-pam.c:875 daemon/verify-shadow.c:250
 #: daemon/verify-shadow.c:286
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr ""
 
-#: daemon/verify-crypt.c:235 daemon/verify-crypt.c:273 daemon/verify-pam.c:602
-#: daemon/verify-pam.c:828 daemon/verify-shadow.c:252
+#: daemon/verify-crypt.c:235 daemon/verify-crypt.c:273 daemon/verify-pam.c:635
+#: daemon/verify-pam.c:878 daemon/verify-shadow.c:252
 #: daemon/verify-shadow.c:289
 msgid ""
 "\n"
@@ -1251,83 +1202,78 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr ""
 
-#: daemon/verify-pam.c:88
+#: daemon/verify-pam.c:96
 msgid "You are required to change your password immediately (password aged)"
 msgstr ""
 
-#: daemon/verify-pam.c:89
+#: daemon/verify-pam.c:97
 msgid "You are required to change your password immediately (root enforced)"
 msgstr ""
 
-#: daemon/verify-pam.c:90
+#: daemon/verify-pam.c:98
 msgid "Your account has expired; please contact your system administrator"
 msgstr ""
 
-#: daemon/verify-pam.c:91
+#: daemon/verify-pam.c:99
 msgid "No password supplied"
 msgstr ""
 
-#: daemon/verify-pam.c:92
+#: daemon/verify-pam.c:100
 msgid "Password unchanged"
 msgstr ""
 
-#: daemon/verify-pam.c:93
+#: daemon/verify-pam.c:101
 msgid "Can not get username"
 msgstr ""
 
-#: daemon/verify-pam.c:94
+#: daemon/verify-pam.c:102
 msgid "Retype new UNIX password:"
 msgstr ""
 
-#: daemon/verify-pam.c:95
+#: daemon/verify-pam.c:103
 msgid "Enter new UNIX password:"
 msgstr ""
 
-#: daemon/verify-pam.c:96
+#: daemon/verify-pam.c:104
 msgid "(current) UNIX password:"
 msgstr ""
 
-#: daemon/verify-pam.c:97
+#: daemon/verify-pam.c:105
 msgid "Error while changing NIS password."
 msgstr ""
 
-#: daemon/verify-pam.c:98
+#: daemon/verify-pam.c:106
 msgid "You must choose a longer password"
 msgstr ""
 
-#: daemon/verify-pam.c:99
+#: daemon/verify-pam.c:107
 msgid "Password has been already used. Choose another."
 msgstr ""
 
-#: daemon/verify-pam.c:100
+#: daemon/verify-pam.c:108
 msgid "You must wait longer to change your password"
 msgstr ""
 
-#: daemon/verify-pam.c:101
+#: daemon/verify-pam.c:109
 msgid "Sorry, passwords do not match"
 msgstr ""
 
-#: daemon/verify-pam.c:361
+#: daemon/verify-pam.c:380
 msgid "Cannot setup pam handle with null display"
 msgstr ""
 
-#: daemon/verify-pam.c:374
+#: daemon/verify-pam.c:397
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr ""
 
 # TRWSIO
-#: daemon/verify-pam.c:382
+#: daemon/verify-pam.c:405
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr ""
 
-#: daemon/verify-pam.c:392
-#, c-format
-msgid "Can't set PAM_RUSER=%s"
-msgstr ""
-
-#: daemon/verify-pam.c:403
+#: daemon/verify-pam.c:415
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr ""
@@ -1335,221 +1281,221 @@ msgstr ""
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: daemon/verify-pam.c:508 daemon/verify-pam.c:527 daemon/verify-pam.c:758
-#: daemon/verify-pam.c:771
+#: daemon/verify-pam.c:541 daemon/verify-pam.c:560 daemon/verify-pam.c:808
+#: daemon/verify-pam.c:821
 msgid "Couldn't authenticate user"
 msgstr ""
 
-#: daemon/verify-pam.c:555
+#: daemon/verify-pam.c:588
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
 msgstr ""
 
-#: daemon/verify-pam.c:571
+#: daemon/verify-pam.c:604
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr ""
 
-#: daemon/verify-pam.c:573
+#: daemon/verify-pam.c:606
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
 "contact the system administrator."
 msgstr ""
 
-#: daemon/verify-pam.c:580 daemon/verify-pam.c:805
+#: daemon/verify-pam.c:613 daemon/verify-pam.c:855
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr ""
 
-#: daemon/verify-pam.c:586 daemon/verify-pam.c:811
+#: daemon/verify-pam.c:619 daemon/verify-pam.c:861
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr ""
 
-#: daemon/verify-pam.c:588
+#: daemon/verify-pam.c:621
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
 msgstr ""
 
-#: daemon/verify-pam.c:593 daemon/verify-pam.c:818
+#: daemon/verify-pam.c:626 daemon/verify-pam.c:868
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr ""
 
-#: daemon/verify-pam.c:612 daemon/verify-pam.c:838
+#: daemon/verify-pam.c:647 daemon/verify-pam.c:891
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr ""
 
-#: daemon/verify-pam.c:622 daemon/verify-pam.c:849
+#: daemon/verify-pam.c:661 daemon/verify-pam.c:906
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr ""
 
-#: daemon/verify-pam.c:661
+#: daemon/verify-pam.c:700
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
 msgstr ""
 
-#: daemon/verify-pam.c:677 daemon/verify-pam.c:761 daemon/verify-pam.c:774
+#: daemon/verify-pam.c:716 daemon/verify-pam.c:811 daemon/verify-pam.c:824
 msgid "Authentication failed"
 msgstr ""
 
-#: daemon/verify-pam.c:727
+#: daemon/verify-pam.c:777
 msgid "Automatic login"
 msgstr "Mewngofnodiad awtomatig"
 
-#: daemon/verify-pam.c:814
+#: daemon/verify-pam.c:864
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
 msgstr ""
 
-#: daemon/verify-pam.c:944 daemon/verify-pam.c:946
+#: daemon/verify-pam.c:1039 daemon/verify-pam.c:1041
 msgid "Can't find PAM configuration for gdm."
 msgstr ""
 
-#: daemon/xdmcp.c:248
+#: daemon/xdmcp.c:274
 #, c-format
 msgid "%s: Could not get server hostname: %s!"
 msgstr ""
 
-#: daemon/xdmcp.c:269
+#: daemon/xdmcp.c:295
 #, c-format
 msgid "%s: Could not create socket!"
 msgstr ""
 
-#: daemon/xdmcp.c:279
+#: daemon/xdmcp.c:305
 #, c-format
 msgid "%s: Could not bind to XDMCP socket!"
 msgstr ""
 
-#: daemon/xdmcp.c:338
+#: daemon/xdmcp.c:373
 #, c-format
 msgid "%s: Could not create XDMCP buffer!"
 msgstr ""
 
-#: daemon/xdmcp.c:344
+#: daemon/xdmcp.c:379
 #, c-format
 msgid "%s: Could not read XDMCP header!"
 msgstr ""
 
-#: daemon/xdmcp.c:351
+#: daemon/xdmcp.c:386
 #, c-format
 msgid "%s: Incorrect XDMCP version!"
 msgstr ""
 
-#: daemon/xdmcp.c:405
+#: daemon/xdmcp.c:439
 #, c-format
 msgid "%s: Unknown opcode from host %s"
 msgstr ""
 
-#: daemon/xdmcp.c:425 daemon/xdmcp.c:699
+#: daemon/xdmcp.c:459 daemon/xdmcp.c:745
 #, c-format
 msgid "%s: Could not extract authlist from packet"
 msgstr ""
 
-#: daemon/xdmcp.c:438 daemon/xdmcp.c:716
+#: daemon/xdmcp.c:475 daemon/xdmcp.c:765
 #, c-format
 msgid "%s: Error in checksum"
 msgstr ""
 
-#: daemon/xdmcp.c:682
+#: daemon/xdmcp.c:728
 #, c-format
 msgid "%s: Could not read display address"
 msgstr ""
 
-#: daemon/xdmcp.c:690
+#: daemon/xdmcp.c:736
 #, c-format
 msgid "%s: Could not read display port number"
 msgstr ""
 
-#: daemon/xdmcp.c:723
+#: daemon/xdmcp.c:772
 #, c-format
 msgid "%s: Bad address"
 msgstr "%s: Cyfeiriad gwael"
 
-#: daemon/xdmcp.c:832
+#: daemon/xdmcp.c:887
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr ""
 
-#: daemon/xdmcp.c:959
+#: daemon/xdmcp.c:1016
 #, c-format
 msgid "%s: Got REQUEST from banned host %s"
 msgstr ""
 
-#: daemon/xdmcp.c:967 daemon/xdmcp.c:1237 daemon/xdmcp.c:1469
+#: daemon/xdmcp.c:1026 daemon/xdmcp.c:1300 daemon/xdmcp.c:1553
 #, c-format
 msgid "%s: Could not read Display Number"
 msgstr ""
 
-#: daemon/xdmcp.c:974
+#: daemon/xdmcp.c:1033
 #, c-format
 msgid "%s: Could not read Connection Type"
 msgstr ""
 
-#: daemon/xdmcp.c:981
+#: daemon/xdmcp.c:1040
 #, c-format
 msgid "%s: Could not read Client Address"
 msgstr ""
 
-#: daemon/xdmcp.c:989
+#: daemon/xdmcp.c:1048
 #, c-format
 msgid "%s: Could not read Authentication Names"
 msgstr ""
 
-#: daemon/xdmcp.c:998
+#: daemon/xdmcp.c:1057
 #, c-format
 msgid "%s: Could not read Authentication Data"
 msgstr ""
 
-#: daemon/xdmcp.c:1008
+#: daemon/xdmcp.c:1067
 #, c-format
 msgid "%s: Could not read Authorization List"
 msgstr ""
 
-#: daemon/xdmcp.c:1024
+#: daemon/xdmcp.c:1084
 #, c-format
 msgid "%s: Could not read Manufacturer ID"
 msgstr ""
 
-#: daemon/xdmcp.c:1048
+#: daemon/xdmcp.c:1108
 #, c-format
 msgid "%s: Failed checksum from %s"
 msgstr ""
 
-#: daemon/xdmcp.c:1222
+#: daemon/xdmcp.c:1285
 #, c-format
 msgid "%s: Got Manage from banned host %s"
 msgstr ""
 
-#: daemon/xdmcp.c:1230 daemon/xdmcp.c:1476
+#: daemon/xdmcp.c:1293 daemon/xdmcp.c:1560
 #, c-format
 msgid "%s: Could not read Session ID"
 msgstr ""
 
-#: daemon/xdmcp.c:1247
+#: daemon/xdmcp.c:1307
 #, c-format
 msgid "%s: Could not read Display Class"
 msgstr ""
 
-#: daemon/xdmcp.c:1323 daemon/xdmcp.c:1329 daemon/xdmcp.c:1379
-#: daemon/xdmcp.c:1385
+#: daemon/xdmcp.c:1399 daemon/xdmcp.c:1405 daemon/xdmcp.c:1463
+#: daemon/xdmcp.c:1469
 #, c-format
 msgid "%s: Could not read address"
 msgstr ""
 
-#: daemon/xdmcp.c:1461
+#: daemon/xdmcp.c:1545
 #, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr ""
 
-#: daemon/xdmcp.c:1697 daemon/xdmcp.c:1704 daemon/xdmcp.c:1710
+#: daemon/xdmcp.c:1802 daemon/xdmcp.c:1809 daemon/xdmcp.c:1815
 #, c-format
 msgid "%s: No XDMCP support"
 msgstr ""
@@ -1689,22 +1635,22 @@ msgstr ""
 msgid "Choose a ho_st to connect to:"
 msgstr ""
 
-#: gui/gdmchooser.c:464
+#: gui/gdmchooser.c:484
 msgid "Cannot connect to remote server"
 msgstr ""
 
-#: gui/gdmchooser.c:465
+#: gui/gdmchooser.c:485
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
 "try again later."
 msgstr ""
 
-#: gui/gdmchooser.c:831
+#: gui/gdmchooser.c:851
 msgid "Did not receive response from server"
 msgstr ""
 
-#: gui/gdmchooser.c:832
+#: gui/gdmchooser.c:852
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -1712,16 +1658,16 @@ msgid ""
 "now.  Please try again later."
 msgstr ""
 
-#: gui/gdmchooser.c:884
+#: gui/gdmchooser.c:904
 msgid "Cannot find host"
 msgstr ""
 
-#: gui/gdmchooser.c:885
+#: gui/gdmchooser.c:905
 #, c-format
 msgid "I cannot find the host \"%s\", perhaps you have mistyped it."
 msgstr ""
 
-#: gui/gdmchooser.c:1112
+#: gui/gdmchooser.c:1133
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1731,56 +1677,45 @@ msgid ""
 "have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
 
-#: gui/gdmchooser.c:1147
+#: gui/gdmchooser.c:1168
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr ""
 
-#: gui/gdmchooser.c:1265
-msgid "gdm_signals_init: Error setting up HUP signal handler"
-msgstr ""
-
-#: gui/gdmchooser.c:1268
-msgid "gdm_signals_init: Error setting up INT signal handler"
-msgstr ""
-
-#: gui/gdmchooser.c:1271
-msgid "gdm_signals_init: Error setting up TERM signal handler"
-msgstr ""
-
-#: gui/gdmchooser.c:1279 gui/gdmlogin.c:3794 gui/greeter/greeter.c:1155
+#: gui/gdmchooser.c:1387 gui/gdmlogin.c:3822 gui/gdmlogin.c:3829
+#: gui/greeter/greeter.c:1180 gui/greeter/greeter.c:1187
 msgid "Could not set signal mask!"
 msgstr ""
 
-#: gui/gdmchooser.c:1285
+#: gui/gdmchooser.c:1393
 msgid "Socket for xdm communication"
 msgstr ""
 
-#: gui/gdmchooser.c:1285
+#: gui/gdmchooser.c:1393
 msgid "SOCKET"
 msgstr ""
 
-#: gui/gdmchooser.c:1288
+#: gui/gdmchooser.c:1396
 msgid "Client address to return in response to xdm"
 msgstr ""
 
-#: gui/gdmchooser.c:1288
+#: gui/gdmchooser.c:1396
 msgid "ADDRESS"
 msgstr ""
 
-#: gui/gdmchooser.c:1291
+#: gui/gdmchooser.c:1399
 msgid "Connection type to return in response to xdm"
 msgstr ""
 
-#: gui/gdmchooser.c:1291
+#: gui/gdmchooser.c:1399
 msgid "TYPE"
 msgstr ""
 
-#: gui/gdmchooser.c:1412
+#: gui/gdmchooser.c:1527
 msgid "Cannot run chooser"
 msgstr ""
 
-#: gui/gdmchooser.c:1413
+#: gui/gdmchooser.c:1528
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
@@ -1795,7 +1730,7 @@ msgstr ""
 #: gui/gdmcomm.c:395 gui/gdmphotosetup.c:69
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
-"Display Manager or xdm)."
+"Display Manager) or xdm."
 msgstr ""
 
 #: gui/gdmcomm.c:398 gui/gdmphotosetup.c:72
@@ -2330,13 +2265,14 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:209 gui/greeter/greeter_parser.c:989
+#: gui/gdmlogin.c:209 gui/greeter/greeter_parser.c:1031
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr ""
 
 #: gui/gdmlogin.c:441
-msgid "gdm_parse_enriched_string: String too long!"
+#, c-format
+msgid "%s: String too long!"
 msgstr ""
 
 #: gui/gdmlogin.c:443
@@ -2356,7 +2292,7 @@ msgstr ""
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Ydych chi'n sicr eich bod chi eisiau ailfwtio y cyfrifiadur?"
 
-#: gui/gdmlogin.c:644 gui/gdmlogin.c:2619 gui/greeter/greeter_parser.c:969
+#: gui/gdmlogin.c:644 gui/gdmlogin.c:2629 gui/greeter/greeter_parser.c:1011
 #: gui/greeter/greeter_system.c:56 gui/greeter/greeter_system.c:180
 msgid "_Reboot"
 msgstr "_Ailfwtio"
@@ -2373,47 +2309,39 @@ msgstr "Troi _Bant..."
 msgid "Are you sure you want to suspend the machine?"
 msgstr ""
 
-#: gui/gdmlogin.c:678 gui/gdmlogin.c:2646 gui/greeter/greeter_system.c:79
+#: gui/gdmlogin.c:678 gui/gdmlogin.c:2656 gui/greeter/greeter_system.c:79
 msgid "_Suspend"
 msgstr "_Gorffwys"
 
-#: gui/gdmlogin.c:725 gui/gdmlogin.c:3570 gui/greeter/greeter.c:144
-#: gui/greeter/greeter.c:947
+#: gui/gdmlogin.c:725 gui/gdmlogin.c:3600 gui/greeter/greeter.c:146
+#: gui/greeter/greeter.c:951
 msgid "Welcome"
 msgstr "Croeso"
 
-#: gui/gdmlogin.c:728 gui/gdmlogin.c:3573 gui/greeter/greeter.c:147
-#: gui/greeter/greeter.c:950
+#: gui/gdmlogin.c:728 gui/gdmlogin.c:3603 gui/greeter/greeter.c:149
+#: gui/greeter/greeter.c:954
 #, c-format
 msgid "Welcome to %n"
 msgstr "Croeso i %n"
 
-#: gui/gdmlogin.c:772 gui/greeter/greeter.c:172
+#: gui/gdmlogin.c:772 gui/greeter/greeter.c:174
 msgid "TimedLoginDelay was less than 5.  I'll just use 5."
 msgstr ""
 
-#: gui/gdmlogin.c:835 gui/greeter/greeter_session.c:70
-msgid "Failsafe Gnome"
-msgstr "Gnome Difethiant"
-
-#: gui/gdmlogin.c:837 gui/greeter/greeter_session.c:72
-msgid "Failsafe xterm"
-msgstr "xterm difethiant"
-
-#: gui/gdmlogin.c:883 gui/greeter/greeter_session.c:116
+#: gui/gdmlogin.c:878 gui/greeter/greeter_session.c:111
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
 
-#: gui/gdmlogin.c:889 gui/gdmlogin.c:917 gui/gdmlogin.c:992
-#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:122
-#: gui/greeter/greeter_session.c:153
+#: gui/gdmlogin.c:884 gui/gdmlogin.c:912 gui/gdmlogin.c:987
+#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:117
+#: gui/greeter/greeter_session.c:148
 msgid "Make _Default"
-msgstr "Gwneud yn Rhagosodiad"
+msgstr "Gwneud yn _Rhagosodiad"
 
-#: gui/gdmlogin.c:889 gui/greeter/greeter_session.c:122
+#: gui/gdmlogin.c:884 gui/greeter/greeter_session.c:117
 msgid "Just _Log In"
 msgstr "_Mewngofnodi'n Unig"
 
@@ -2421,16 +2349,16 @@ msgstr "_Mewngofnodi'n Unig"
 #. no_group
 #. untranslated
 #. markup
-#: gui/gdmlogin.c:909 gui/gdmlogin.c:986
-#: gui/greeter/greeter_action_language.c:148 gui/greeter/greeter_session.c:145
+#: gui/gdmlogin.c:904 gui/gdmlogin.c:981
+#: gui/greeter/greeter_action_language.c:148 gui/greeter/greeter_session.c:140
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
 
-#: gui/gdmlogin.c:917 gui/gdmlogin.c:992
-#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:153
+#: gui/gdmlogin.c:912 gui/gdmlogin.c:987
+#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:148
 msgid "Just For _This Session"
 msgstr ""
 
@@ -2439,7 +2367,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:925 gui/greeter/greeter_session.c:163
+#: gui/gdmlogin.c:920 gui/greeter/greeter_session.c:158
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -2448,63 +2376,71 @@ msgid ""
 "(System->Desktop Switching Tool from the panel menu)."
 msgstr ""
 
-#: gui/gdmlogin.c:968 gui/gdmlogin.c:977
+#: gui/gdmlogin.c:963 gui/gdmlogin.c:972
 #: gui/greeter/greeter_action_language.c:52
 #: gui/greeter/greeter_action_language.c:132
 #: gui/greeter/greeter_action_language.c:140
 msgid "System Default"
 msgstr "Rhagosodidad y System"
 
-#: gui/gdmlogin.c:1101 gui/gdmlogin.c:1115 gui/gdmlogin.c:1761
-#: gui/gdmlogin.c:2214 gui/gdmlogin.c:2853
+#: gui/gdmlogin.c:1096 gui/gdmlogin.c:1110 gui/gdmlogin.c:1759
+#: gui/gdmlogin.c:2224 gui/gdmlogin.c:2863
 msgid "_Username:"
 msgstr "_Enw Cyfrif:"
 
-#: gui/gdmlogin.c:1173
+#: gui/gdmlogin.c:1168
 #, c-format
 msgid "%s session selected"
 msgstr "Deiswyd y sesiwn %s"
 
-#: gui/gdmlogin.c:1196 gui/gdmlogin.c:1464 gui/greeter/greeter_session.c:260
+#: gui/gdmlogin.c:1191 gui/gdmlogin.c:1461 gui/greeter/greeter_session.c:257
 msgid "_Last"
 msgstr "_Diwethaf"
 
-#: gui/gdmlogin.c:1207 gui/greeter/greeter_session.c:266
+#: gui/gdmlogin.c:1202 gui/greeter/greeter_session.c:263
 msgid "Log in using the session that you have used last time you logged in"
 msgstr ""
 
-#: gui/gdmlogin.c:1220 gui/greeter/greeter_session.c:277
+#: gui/gdmlogin.c:1215 gui/greeter/greeter_session.c:274
 #, c-format
-msgid "gdm_login_session_init: Session directory %s not found!"
+msgid "%s: Session directory %s not found!"
 msgstr ""
 
-#: gui/gdmlogin.c:1332 gui/greeter/greeter_session.c:382
+#: gui/gdmlogin.c:1232 gui/greeter/greeter_session.c:250
+msgid "Failsafe Gnome"
+msgstr "Gnome Difethiant"
+
+#: gui/gdmlogin.c:1233 gui/greeter/greeter_session.c:251
+msgid "Failsafe xterm"
+msgstr "xterm difethiant"
+
+#: gui/gdmlogin.c:1329 gui/greeter/greeter_session.c:379
 msgid "Yaikes, nothing found in the session directory."
 msgstr "O diar, canfodwyd dim byd yn y cyfeiriadur sesiynau."
 
-#: gui/gdmlogin.c:1343 gui/greeter/greeter_session.c:394
+#: gui/gdmlogin.c:1340 gui/greeter/greeter_session.c:391
 msgid "Failsafe _Gnome"
 msgstr "_Gnome Difethiant"
 
-#: gui/gdmlogin.c:1345 gui/greeter/greeter_session.c:396
+#: gui/gdmlogin.c:1342 gui/greeter/greeter_session.c:393
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
 
-#: gui/gdmlogin.c:1368 gui/greeter/greeter_session.c:418
+#: gui/gdmlogin.c:1365 gui/greeter/greeter_session.c:415
 msgid "Failsafe _Terminal"
 msgstr "_Terfynell Difethaint"
 
-#: gui/gdmlogin.c:1370 gui/greeter/greeter_session.c:420
+#: gui/gdmlogin.c:1367 gui/greeter/greeter_session.c:417
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
 msgstr ""
 
-#: gui/gdmlogin.c:1391 gui/greeter/greeter_session.c:440
+#: gui/gdmlogin.c:1388 gui/greeter/greeter_session.c:437
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 
@@ -2512,139 +2448,145 @@ msgstr ""
 #. no_group
 #. untranslated
 #. makrup
-#: gui/gdmlogin.c:1435
+#: gui/gdmlogin.c:1432
 #, c-format
 msgid "%s language selected"
 msgstr "Dewiswyd y iaith %s"
 
-#: gui/gdmlogin.c:1475
+#: gui/gdmlogin.c:1472
 msgid "Log in using the language that you have used last time you logged in"
 msgstr ""
 
-#: gui/gdmlogin.c:1479
+#: gui/gdmlogin.c:1476
 msgid "_System Default"
 msgstr "Rhagosodidad y _System"
 
-#: gui/gdmlogin.c:1490
+#: gui/gdmlogin.c:1487
 msgid "Log in using the default system language"
 msgstr ""
 
-#: gui/gdmlogin.c:1510
+#: gui/gdmlogin.c:1507
 msgid "_Other"
 msgstr "_Arall"
 
-#: gui/gdmlogin.c:1792
+#: gui/gdmlogin.c:1790
 msgid "_Password:"
 msgstr "_Cyfrinair:"
 
-#: gui/gdmlogin.c:2012 gui/greeter/greeter.c:413
+#. translators:  This is a nice and evil eggie text, translate
+#. * to your favourite currency
+#: gui/gdmlogin.c:2010 gui/greeter/greeter.c:416
 msgid "Please insert 25 cents to log in."
 msgstr "Rhowch 20 ceiniog i fewn er mwyn mewngofnodi os gwelwch yn dda."
 
-#: gui/gdmlogin.c:2222 gui/greeter/greeter_item_ulist.c:335
+#: gui/gdmlogin.c:2232
 msgid "Doubleclick on the user to log in"
 msgstr "Defnyddiwch glic ggwbl ar y defnyddiwr er mwyn mewngofnodi"
 
-#: gui/gdmlogin.c:2346
+#: gui/gdmlogin.c:2356
 msgid "GNOME Desktop Manager"
 msgstr "Rheolwr Penbwrdd GNOME"
 
-#: gui/gdmlogin.c:2372 gui/greeter/greeter_item.c:117
+#: gui/gdmlogin.c:2382 gui/greeter/greeter_item.c:116
 msgid "%a %b %d, %H:%M"
 msgstr ""
 
-#: gui/gdmlogin.c:2374 gui/greeter/greeter_item.c:121
+#: gui/gdmlogin.c:2384 gui/greeter/greeter_item.c:120
 msgid "%a %b %d, %I:%M %p"
 msgstr ""
 
-#: gui/gdmlogin.c:2434
+#: gui/gdmlogin.c:2444
 msgid "Finger"
 msgstr ""
 
-#: gui/gdmlogin.c:2527
+#: gui/gdmlogin.c:2537
 msgid "GDM Login"
 msgstr ""
 
-#: gui/gdmlogin.c:2570 gui/greeter/greeter_parser.c:939
+#: gui/gdmlogin.c:2580 gui/greeter/greeter_parser.c:981
 msgid "_Session"
 msgstr "_Sesiwn"
 
-#: gui/gdmlogin.c:2577 gui/greeter/greeter_parser.c:934
+#: gui/gdmlogin.c:2587 gui/greeter/greeter_parser.c:976
 msgid "_Language"
 msgstr "_Iaith"
 
-#: gui/gdmlogin.c:2589 gui/greeter/greeter_system.c:142
+#: gui/gdmlogin.c:2599 gui/greeter/greeter_system.c:142
 msgid "_XDMCP Chooser..."
 msgstr ""
 
-#: gui/gdmlogin.c:2596 gui/greeter/greeter_system.c:149
+#: gui/gdmlogin.c:2606 gui/greeter/greeter_system.c:149
 #: gui/greeter/greeter_system.c:341
 msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "machines, if there are any."
 msgstr ""
 
-#: gui/gdmlogin.c:2605 gui/greeter/greeter_system.c:157
+#: gui/gdmlogin.c:2615 gui/greeter/greeter_system.c:157
 msgid "_Configure Login Manager..."
 msgstr ""
 
-#: gui/gdmlogin.c:2612 gui/greeter/greeter_system.c:164
+#: gui/gdmlogin.c:2622 gui/greeter/greeter_system.c:164
 #: gui/greeter/greeter_system.c:361
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 
-#: gui/gdmlogin.c:2626 gui/greeter/greeter_system.c:187
+#: gui/gdmlogin.c:2636 gui/greeter/greeter_system.c:187
 msgid "Reboot your computer"
 msgstr "Ailfwtio eich cyfrifiadur"
 
-#: gui/gdmlogin.c:2632 gui/greeter/greeter_parser.c:959
+#: gui/gdmlogin.c:2642 gui/greeter/greeter_parser.c:1001
 #: gui/greeter/greeter_system.c:68 gui/greeter/greeter_system.c:192
 msgid "Shut_down"
 msgstr "Troi _bant"
 
-#: gui/gdmlogin.c:2639 gui/greeter/greeter_system.c:199
+#: gui/gdmlogin.c:2649 gui/greeter/greeter_system.c:199
 msgid "Shut down the system so that you may safely turn off the computer."
 msgstr ""
 
-#: gui/gdmlogin.c:2653 gui/greeter/greeter_system.c:212
+#: gui/gdmlogin.c:2663 gui/greeter/greeter_system.c:212
 msgid "Suspend your computer"
 msgstr "Gorffwys y cyfrifiadur"
 
-#: gui/gdmlogin.c:2659 gui/greeter/greeter_parser.c:944
+#: gui/gdmlogin.c:2669 gui/greeter/greeter_parser.c:986
 msgid "_Actions"
 msgstr "_Gweithredion"
 
-#: gui/gdmlogin.c:2671 gui/greeter/greeter_canvas_item.c:145
-#: gui/greeter/greeter_parser.c:954
+#: gui/gdmlogin.c:2681 gui/greeter/greeter_canvas_item.c:145
+#: gui/greeter/greeter_parser.c:996
 msgid "_Quit"
 msgstr "_Gadael"
 
-#: gui/gdmlogin.c:2673 gui/greeter/greeter_canvas_item.c:147
-#: gui/greeter/greeter_parser.c:949
+#: gui/gdmlogin.c:2683 gui/greeter/greeter_canvas_item.c:147
+#: gui/greeter/greeter_parser.c:991
 msgid "D_isconnect"
 msgstr ""
 
-#: gui/gdmlogin.c:2740 gui/greeter/greeter_item_ulist.c:396
+#: gui/gdmlogin.c:2750 gui/greeter/greeter_item_ulist.c:426
 msgid "Icon"
 msgstr "Eicon"
 
-#: gui/gdmlogin.c:2747 gui/greeter/greeter_item_ulist.c:403
+#: gui/gdmlogin.c:2757 gui/greeter/greeter_item_ulist.c:433
 msgid "Username"
 msgstr "Enw Cyfrif"
 
-#: gui/gdmlogin.c:3197
+#: gui/gdmlogin.c:3211
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 
-#: gui/gdmlogin.c:3648 gui/gdmlogin.c:3678 gui/gdmlogin.c:3721
-#: gui/greeter/greeter.c:614 gui/greeter/greeter.c:644
-#: gui/greeter/greeter.c:688
+#: gui/gdmlogin.c:3233 gui/gdmsetup.c:446 gui/greeter/greeter_item_ulist.c:281
+msgid "Too many users to list here..."
+msgstr ""
+
+#: gui/gdmlogin.c:3678 gui/gdmlogin.c:3708 gui/gdmlogin.c:3751
+#: gui/greeter/greeter.c:618 gui/greeter/greeter.c:648
+#: gui/greeter/greeter.c:692
 msgid "Cannot start the greeter"
 msgstr ""
 
-#: gui/gdmlogin.c:3649 gui/gdmlogin.c:3679
+#: gui/gdmlogin.c:3679 gui/gdmlogin.c:3709
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
@@ -2652,12 +2594,12 @@ msgid ""
 "computer."
 msgstr ""
 
-#: gui/gdmlogin.c:3685 gui/gdmlogin.c:3730 gui/greeter/greeter.c:651
-#: gui/greeter/greeter.c:697
+#: gui/gdmlogin.c:3715 gui/gdmlogin.c:3760 gui/greeter/greeter.c:655
+#: gui/greeter/greeter.c:701
 msgid "Reboot"
 msgstr "Ailfwtio"
 
-#: gui/gdmlogin.c:3722
+#: gui/gdmlogin.c:3752
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -2665,48 +2607,36 @@ msgid ""
 "computer."
 msgstr ""
 
-#: gui/gdmlogin.c:3728 gui/greeter/greeter.c:695
+#: gui/gdmlogin.c:3758 gui/greeter/greeter.c:699
 msgid "Restart"
 msgstr "Ailcychwyn"
 
-#: gui/gdmlogin.c:3773 gui/greeter/greeter.c:1135
-msgid "main: Error setting up HUP signal handler"
-msgstr ""
-
-#: gui/gdmlogin.c:3781 gui/greeter/greeter.c:1143
-msgid "main: Error setting up INT signal handler"
-msgstr ""
-
-#: gui/gdmlogin.c:3784 gui/greeter/greeter.c:1146
-msgid "main: Error setting up TERM signal handler"
-msgstr ""
-
-#: gui/gdmlogin.c:3875 gui/greeter/greeter.c:1370
+#: gui/gdmlogin.c:3910 gui/greeter/greeter.c:1401
 msgid "Session directory is missing"
 msgstr ""
 
-#: gui/gdmlogin.c:3877 gui/greeter/greeter.c:1372
+#: gui/gdmlogin.c:3912 gui/greeter/greeter.c:1403
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
 "configuration."
 msgstr ""
 
-#: gui/gdmlogin.c:3900 gui/greeter/greeter.c:1396
+#: gui/gdmlogin.c:3935 gui/greeter/greeter.c:1427
 msgid "Configuration is not correct"
 msgstr ""
 
-#: gui/gdmlogin.c:3902 gui/greeter/greeter.c:1398
+#: gui/gdmlogin.c:3937 gui/greeter/greeter.c:1429
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, and thus I ran the default command.  Please fix your configuration."
 msgstr ""
 
-#: gui/gdmlogin.c:3926 gui/greeter/greeter.c:1424
+#: gui/gdmlogin.c:3961 gui/greeter/greeter.c:1455
 msgid "No configuration was found"
 msgstr ""
 
-#: gui/gdmlogin.c:3928 gui/greeter/greeter.c:1426
+#: gui/gdmlogin.c:3963 gui/greeter/greeter.c:1457
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -2811,12 +2741,12 @@ msgid "Re_mote welcome string: "
 msgstr ""
 
 #: gui/gdmsetup-strings.c:14 gui/gdmsetup-strings.c:16
-#: gui/gdmsetup-strings.c:51 gui/gdmsetup.c:814 gui/gdmsetup.glade.h:46
+#: gui/gdmsetup-strings.c:51 gui/gdmsetup.c:818 gui/gdmsetup.glade.h:46
 msgid "Standard greeter"
 msgstr ""
 
 #: gui/gdmsetup-strings.c:15 gui/gdmsetup-strings.c:17
-#: gui/gdmsetup-strings.c:63 gui/gdmsetup.c:816 gui/gdmsetup.glade.h:19
+#: gui/gdmsetup-strings.c:63 gui/gdmsetup.c:820 gui/gdmsetup.glade.h:19
 msgid "Graphical greeter"
 msgstr ""
 
@@ -3066,66 +2996,62 @@ msgid ""
 "may have taken effect."
 msgstr ""
 
-#: gui/gdmsetup.c:442
-msgid "Too many users to list here..."
-msgstr ""
-
-#: gui/gdmsetup.c:1397
+#: gui/gdmsetup.c:1401
 msgid "Archive is not of a subdirectory"
 msgstr ""
 
-#: gui/gdmsetup.c:1405
+#: gui/gdmsetup.c:1409
 msgid "Archive is not of a single subdirectory"
 msgstr ""
 
-#: gui/gdmsetup.c:1429 gui/gdmsetup.c:1508
+#: gui/gdmsetup.c:1433 gui/gdmsetup.c:1512
 msgid "File not a tar.gz or tar archive"
 msgstr ""
 
-#: gui/gdmsetup.c:1431
+#: gui/gdmsetup.c:1435
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr ""
 
-#: gui/gdmsetup.c:1453
+#: gui/gdmsetup.c:1457
 msgid "File does not exist"
 msgstr ""
 
-#: gui/gdmsetup.c:1561
+#: gui/gdmsetup.c:1565
 msgid "No file selected"
 msgstr ""
 
-#: gui/gdmsetup.c:1588
+#: gui/gdmsetup.c:1592
 msgid "Not a theme archive"
 msgstr ""
 
-#: gui/gdmsetup.c:1589
+#: gui/gdmsetup.c:1593
 #, c-format
 msgid "Details: %s"
 msgstr ""
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
-#: gui/gdmsetup.c:1607
+#: gui/gdmsetup.c:1611
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed, install again anyway?"
 msgstr ""
 
-#: gui/gdmsetup.c:1683
+#: gui/gdmsetup.c:1687
 msgid "Some error occured when installing the theme"
 msgstr ""
 
-#: gui/gdmsetup.c:1729
+#: gui/gdmsetup.c:1733
 msgid "Select new theme archive to install"
 msgstr ""
 
-#: gui/gdmsetup.c:1797
+#: gui/gdmsetup.c:1801
 #, c-format
 msgid "Do you really wish to remove theme '%s' from the system?"
 msgstr ""
 
 #. This is the temporary help dialog
-#: gui/gdmsetup.c:1997
+#: gui/gdmsetup.c:2001
 #, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
@@ -3139,7 +3065,7 @@ msgid ""
 "GNOME/System."
 msgstr ""
 
-#: gui/gdmsetup.c:2370
+#: gui/gdmsetup.c:2374
 msgid "You must be the superuser (root) to configure GDM."
 msgstr ""
 
@@ -3148,7 +3074,7 @@ msgstr ""
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr ""
 
-#: gui/greeter/greeter.c:615 gui/greeter/greeter.c:645
+#: gui/greeter/greeter.c:619 gui/greeter/greeter.c:649
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3156,7 +3082,7 @@ msgid ""
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
 
-#: gui/greeter/greeter.c:689
+#: gui/greeter/greeter.c:693
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3164,28 +3090,28 @@ msgid ""
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
 
-#: gui/greeter/greeter.c:1218
+#: gui/greeter/greeter.c:1249
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr ""
 
-#: gui/greeter/greeter.c:1266
+#: gui/greeter/greeter.c:1297
 msgid "The theme for the graphical greeter is corrupt"
 msgstr ""
 
-#: gui/greeter/greeter.c:1269
+#: gui/greeter/greeter.c:1300
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr ""
 
-#: gui/greeter/greeter.c:1301
+#: gui/greeter/greeter.c:1332
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
 msgstr ""
 
-#: gui/greeter/greeter.c:1322
+#: gui/greeter/greeter.c:1353
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -3211,32 +3137,40 @@ msgstr "Dewis _Iaith..."
 msgid "Select _Session..."
 msgstr "Dewis _Sesiwn..."
 
-#: gui/greeter/greeter_canvas_item.c:340
+#: gui/greeter/greeter_canvas_item.c:351
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
 
-#: gui/greeter/greeter_item_ulist.c:259
+#: gui/greeter/greeter_item_ulist.c:263
 #, c-format
 msgid "Can't open DefaultImage: %s!"
 msgstr ""
 
-#: gui/greeter/greeter_parser.c:964 gui/greeter/greeter_system.c:205
+#: gui/greeter/greeter_item_ulist.c:365
+msgid ""
+"Doubleclick on the user\n"
+"to log in"
+msgstr ""
+"Defnyddiwch glic ggwbl ar y\n"
+"defnyddiwr er mwyn mewngofnodi"
+
+#: gui/greeter/greeter_parser.c:1006 gui/greeter/greeter_system.c:205
 msgid "Sus_pend"
 msgstr "_Gorffwys"
 
-#: gui/greeter/greeter_parser.c:974
+#: gui/greeter/greeter_parser.c:1016
 msgid "_XDMCP Chooser"
 msgstr ""
 
-#: gui/greeter/greeter_parser.c:979
+#: gui/greeter/greeter_parser.c:1021
 msgid "_Configure"
 msgstr "_Cyflunio"
 
-#: gui/greeter/greeter_parser.c:984
+#: gui/greeter/greeter_parser.c:1026
 msgid "You've got capslock on!"
 msgstr "Mae capslock ymalen gennych!"
 
-#: gui/greeter/greeter_session.c:238
+#: gui/greeter/greeter_session.c:233
 msgid "Choose a Session"
 msgstr "Dewiswch Sesiwn"
 
@@ -3246,7 +3180,7 @@ msgstr "Dewiswch Weithred"
 
 #: gui/greeter/greeter_system.c:292
 msgid "Shut _down the computer"
-msgstr "Troi'r cyfrifiadur bant"
+msgstr "Troi'r cyfrifiadur _bant"
 
 #: gui/greeter/greeter_system.c:295
 msgid "Shut down your computer so that you may turn it off."
@@ -3333,7 +3267,7 @@ msgstr "(byffer cof)"
 #: vicious-extensions/glade-helper.c:115 vicious-extensions/glade-helper.c:137
 #: vicious-extensions/glade-helper.c:157
 msgid "(memory buffer"
-msgstr "(byffer cof)"
+msgstr "(byffer cof"
 
 #: vicious-extensions/glade-helper.c:189 vicious-extensions/glade-helper.c:236
 #: vicious-extensions/glade-helper.c:273
