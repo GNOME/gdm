@@ -10,10 +10,10 @@ EXTRA_DIST = \
 
 all: 
 
-gdm.html: gdm/gdm.html
-	-cd $(srcdir) && cp gdm/gdm.html .
+gdm.html: gdm/index.html
+	-cd $(srcdir) && cp gdm/index.html gdm.html
 
-gdm/gdm.html: $(SGML_FILES)
+gdm/index.html: $(SGML_FILES)
 	-cd $(srcdir) && db2html gdm.sgml
 
 dist-hook:
