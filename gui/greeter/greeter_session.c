@@ -267,6 +267,8 @@ greeter_session_init (void)
   vbox = gtk_vbox_new (FALSE, 6);
   /* we will pack this later depending on size */
 
+  sessnames = g_hash_table_new (g_str_hash, g_str_equal);
+
   if (GdmShowLastSession)
     {
       current_session = g_strdup (LAST_SESSION);

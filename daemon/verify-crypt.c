@@ -42,6 +42,18 @@ extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gint GdmRetryDelay;
 
+static char *selected_user = NULL;
+
+void
+gdm_verify_select_user (const char *user)
+{
+	g_free (selected_user);
+	if (ve_string_empty (user))
+		selected_user = NULL;
+	else
+		selected_user = g_strdup (user);
+}
+
 static void
 print_cant_auth_errbox (void)
 {
@@ -95,16 +107,25 @@ gdm_verify_user (GdmDisplay *d,
     if (local)
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 
-    /* Ask for the user's login */
     if (username == NULL) {
+	    /* Ask for the user's login */
+	    gdm_verify_select_user (NULL);
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
 	    login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Username:"));
 	    if (login == NULL ||
 		gdm_slave_greeter_check_interruption ()) {
-		    if (local)
-			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-		    g_free (login);
-		    return NULL;
+		    if ( ! ve_string_empty (selected_user)) {
+			    /* user selected */
+			    g_free (login);
+			    login = selected_user;
+			    selected_user = NULL;
+		    } else {
+			    /* some other interruption */
+			    if (local)
+				    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+			    g_free (login);
+			    return NULL;
+		    }
 	    }
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
     } else {
