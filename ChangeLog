@@ -1,3 +1,12 @@
+Sat Aug 25 21:35:29 2001  George Lebl <jirka@5z.com>
+
+	* daemon/display.c, daemon/gdm.c: don't use an extra printf, if
+	  this was user supplied it could have been a security hole, like
+	  this it was just one extra allocation.
+
+	* gui/gdmXnestchooser.c, gui/gdmchooser.c: cast address argument
+	  to connect to avoid a warning.
+
 Sat Aug 25 10:06:39 2001  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c, daemon/misc.c:  Fix wiping of pid file on

@@ -641,7 +641,6 @@ static gboolean
 deal_with_x_crashes (GdmDisplay *d)
 {
     gboolean just_abort = FALSE;
-    char *msg;
 
     if ( ! d->failsafe_xserver &&
 	 ! ve_string_empty (GdmFailsafeXServer)) {
@@ -793,9 +792,7 @@ deal_with_x_crashes (GdmDisplay *d)
        * reading will do him good 
        * } */
 
-    msg = g_strdup_printf (_("Failed to start X server several times in a short time period; disabling display %s"), d->name);
-    gdm_error (msg);
-    g_free (msg);
+    gdm_error (_("Failed to start X server several times in a short time period; disabling display %s"), d->name);
 
     return FALSE;
 }

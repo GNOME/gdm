@@ -910,7 +910,7 @@ gdm_chooser_choose_host (const char *hostname)
       if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1)
 	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't create response socket.");
 
-      if (connect (fd, (struct sockaddr_in *) &in_addr, sizeof (in_addr)) == -1)
+      if (connect (fd, (struct sockaddr *) &in_addr, sizeof (in_addr)) == -1)
 	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
       buffer.data = (BYTE *) buf;
       buffer.size = sizeof (buf);

@@ -53,7 +53,8 @@ get_free_display (void)
 		serv_addr.sin_port = htons (6000 + i);
 
 		errno = 0;
-		if (connect (sock, &serv_addr, sizeof (serv_addr)) >= 0 ||
+		if (connect (sock, (struct sockaddr *)&serv_addr,
+			     sizeof (serv_addr)) >= 0 ||
 		    errno != ECONNREFUSED) {
 			close (sock);
 			continue;

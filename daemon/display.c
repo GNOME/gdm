@@ -91,10 +91,7 @@ gdm_display_check_loop (GdmDisplay *disp)
    */
   if (disp->retry_count > 4)
     {
-      gchar *msg;
-      msg = g_strdup_printf (_("Failed to start the display server several times in a short time period; disabling display %s"), disp->name);
-      gdm_error (msg);
-      g_free (msg);
+      gdm_error (_("Failed to start the display server several times in a short time period; disabling display %s"), disp->name);
       disp->disabled = TRUE;
 
       gdm_debug ("Failed to start X server after several retries; aborting.");
