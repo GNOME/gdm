@@ -1,4 +1,4 @@
-# Copyright (C) 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001-2002 Free Software Foundation, Inc.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aktualn± wersjê tego pliku mo¿esz odnale¼æ w repozytorium cvs.gnome.pl
 # (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste has³o)
@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-10-28 22:07+0100\n"
-"PO-Revision-Date: 2001-10-28 22:14+0200\n"
+"POT-Creation-Date: 2002-01-01 22:25+0100\n"
+"PO-Revision-Date: 2002-01-01 22:26+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -40,6 +40,10 @@ msgstr ""
 "gdm_auth_user_remove: Zignorowanie podejrzanie wygl±daj±cego pliku "
 "ciasteczka %s"
 
+#. This means we have no clue what's happening,
+#. * it's not X server crashing as we would have
+#. * cought that elsewhere.  Things are just
+#. * not working out, so tell the user
 #: daemon/display.c:1
 #, c-format
 msgid ""
@@ -156,6 +160,10 @@ msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse: Nie okre¶lono greetera."
 
 #: daemon/gdm.c:1
+msgid "No daemon/ServAuthDir specified in the configuration file"
+msgstr ""
+
+#: daemon/gdm.c:1
 msgid "gdm_config_parse: No authdir specified."
 msgstr "gdm_config_parse: Nie okre¶lono katalogu autoryzacji."
 
@@ -191,6 +199,13 @@ msgstr ""
 "na konfiguracjê, zosta³ dodany /usr/bin/X11/X na ekranie :%d!"
 
 #: daemon/gdm.c:1
+#, c-format
+msgid ""
+"Xdmcp is disabled and gdm cannot find any local server to start.  Aborting!  "
+"Please correct the configuration %sand restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:1
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr ""
@@ -206,8 +221,24 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
+msgid ""
+"The gdm user does not exist.  Please correct gdm configuration %s and "
+"restart gdm."
+msgstr ""
+"U¿ytkownik gdm nie istnieje. Popraw konfiguracjê GDM-a w %s i uruchom go "
+"ponownie."
+
+#: daemon/gdm.c:1
+#, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
 msgstr "gdm_config_parse: Nie mo¿na odnale¼æ u¿ytkownika gdm (%s). Rezygnacja!"
+
+#: daemon/gdm.c:1
+#, c-format
+msgid ""
+"The gdm user is set to be root, but this is not allowed since it can pose a "
+"security risk.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
 
 #: daemon/gdm.c:1
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
@@ -223,8 +254,23 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
+msgid ""
+"The gdm group does not exist.  Please correct gdm configuration %s and "
+"restart gdm."
+msgstr ""
+"Grupa gdm nie istnieje. Popraw konfiguracjê GDM-a w %s i uruchom go ponownie."
+
+#: daemon/gdm.c:1
+#, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
 msgstr "gdm_config_parse: Nie mo¿na odnale¼æ grupy gdm (%s). Rezygnacja!"
+
+#: daemon/gdm.c:1
+#, c-format
+msgid ""
+"The gdm group is set to be root, but this is not allowed since it can pose a "
+"security risk.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
 
 #: daemon/gdm.c:1
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
@@ -245,14 +291,36 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
+"does not exist.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:1
+#, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr "gdm_config_parse: Katalog autoryzacji %s nie istnieje. Rezygnacja."
+
+#: daemon/gdm.c:1
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
+"not a directory.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
 msgstr ""
 "gdm_config_parse: Katalog autoryzacji %s nie jest katalogiem. Rezygnacja."
+
+#: daemon/gdm.c:1
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
+"owned by user %s and group %s.  Please correct the ownership or gdm "
+"configuration %s and restart gdm."
+msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
@@ -265,11 +333,19 @@ msgstr ""
 #: daemon/gdm.c:1
 #, c-format
 msgid ""
-"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
+"wrong permissions, it should have permissions of 0750.Please correct the "
+"permissions or the gdm configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:1
+#, c-format
+msgid ""
+"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. "
 "Aborting."
 msgstr ""
 "gdm_config_parse: Katalog autoryzacji %s ma niew³a¶ciwe prawa %o. Powinno "
-"byæ 750. Rezygnacja."
+"byæ 0750. Rezygnacja."
 
 #: daemon/gdm.c:1
 msgid "gdm_daemonify: fork() failed!"
@@ -468,6 +544,16 @@ msgstr "%s: Nie mo¿na pobraæ nazwy serwera: %s!"
 #, c-format
 msgid "%s: Could not get address from hostname!"
 msgstr "%s: Nie mo¿na uzyskaæ adresu na podstawie nazwy serwera!"
+
+#: daemon/misc.c:1
+#, c-format
+msgid "Could not setgid %d. Aborting."
+msgstr "Nie mo¿na wykonaæ setgid %d. Rezygnacja."
+
+#: daemon/misc.c:1
+#, c-format
+msgid "initgroups() failed for %s. Aborting."
+msgstr "Funkcja initgroups() dla %s nie powiod³a siê. Rezygnacja."
 
 #: daemon/server.c:1
 #, c-format
@@ -756,7 +842,7 @@ msgstr "gdm_slave_greeter: B³±d przy uruchamianiu greetera na ekranie %s"
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Nie mo¿na utworzyæ procesu dla gdmgreetera"
 
-#: daemon/slave.c:1 daemon/slave.c:1 daemon/slave.c:1
+#: daemon/slave.c:1 daemon/slave.c:1
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Nie mo¿na otworzyæ kolejki FIFO!"
@@ -786,20 +872,8 @@ msgstr "gdm_slave_chooser: Nie mo¿na utworzyæ procesu dla gdmchoosera"
 
 #: daemon/slave.c:1
 #, c-format
-msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
-msgstr "gdm_slave_session_start: Nie mo¿na wykonaæ setgid %d. Rezygnacja."
-
-#: daemon/slave.c:1
-#, c-format
-msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
-msgstr ""
-"gdm_slave_session_start: Funkcja initgroups() dla %s nie powiod³a siê. "
-"Rezygnacja."
-
-#: daemon/slave.c:1
-#, c-format
-msgid "%s: Could not open session for %s. Aborting."
-msgstr "%s: Nie mo¿na otworzyæ sesji dla %s. Rezygnacja."
+msgid "%s: Could not setup environment for %s. Aborting."
+msgstr "%s: Nie mo¿na ustawiæ ¶rodowiska dla %s. Rezygnacja."
 
 #: daemon/slave.c:1
 #, c-format
@@ -1007,7 +1081,7 @@ msgstr "Nazwa u¿ytkownika:"
 msgid "Password: "
 msgstr "Has³o: "
 
-#: daemon/verify-crypt.c:1 daemon/verify-pam.c:1
+#: daemon/verify-crypt.c:1 daemon/verify-pam.c:1 daemon/verify-pam.c:1
 #: daemon/verify-shadow.c:1
 msgid "Couldn't authenticate user"
 msgstr "Uwierzytelnienie u¿ytkownika nie powiod³o siê"
@@ -1033,13 +1107,12 @@ msgstr "Zablokowano logowanie u¿ytkownika \"root\" na ekranie '%s'"
 msgid "The system administrator is not allowed to login from this screen"
 msgstr "Logowanie siê administratora z tego ekranu jest niedozwolone"
 
-#: daemon/verify-crypt.c:1 daemon/verify-pam.c:1
-#: daemon/verify-shadow.c:1
+#: daemon/verify-crypt.c:1 daemon/verify-shadow.c:1
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "U¿ytkownik %s nie ma uprawnieñ do logowania"
 
-#: daemon/verify-crypt.c:1 daemon/verify-pam.c:1
+#: daemon/verify-crypt.c:1 daemon/verify-pam.c:1 daemon/verify-pam.c:1
 #: daemon/verify-shadow.c:1
 msgid ""
 "\n"
@@ -1048,21 +1121,50 @@ msgstr ""
 "\n"
 "Administrator systemu zablokowa³ to konto."
 
-#: daemon/verify-pam.c:1 daemon/verify-pam.c:1
-msgid "Can't find /etc/pam.d/gdm!"
-msgstr "Nie mo¿na odnale¼æ /etc/pam.d/gdm!"
+#: daemon/verify-crypt.c:1 daemon/verify-crypt.c:1 daemon/verify-pam.c:1
+#: daemon/verify-pam.c:1 daemon/verify-shadow.c:1
+#: daemon/verify-shadow.c:1
+#, c-format
+msgid "Cannot set user group for %s"
+msgstr "Nie mo¿na ustawiæ grupy u¿ytkownika dla %s"
 
-#: daemon/verify-pam.c:1 daemon/verify-pam.c:1
+#: daemon/verify-crypt.c:1 daemon/verify-crypt.c:1 daemon/verify-pam.c:1
+#: daemon/verify-pam.c:1 daemon/verify-shadow.c:1
+#: daemon/verify-shadow.c:1
+msgid ""
+"\n"
+"Cannot set your user group, you will not be able to log in, please contact "
+"your system administrator."
+msgstr ""
+"\n"
+"Nie mo¿na ustawiæ grupy u¿ytkownika, co uniemo¿liwia zalogowanie. Skontaktuj "
+"siê z administratorem systemu."
+
+#: daemon/verify-crypt.c:1 daemon/verify-shadow.c:1
+#, c-format
+msgid "Cannot get passwd structure for %s"
+msgstr "Nie mo¿na uzyskaæ struktury passwd dla %s"
+
+#: daemon/verify-pam.c:1
+msgid "Cannot setup pam handle with null login and/or display"
+msgstr "Nie mo¿na ustawiæ uchwytu PAM-a bez loginu oraz ekranu"
+
+#: daemon/verify-pam.c:1
+#, c-format
+msgid "Can't find /etc/pam.d/%s!"
+msgstr "Nie mo¿na odnale¼æ /etc/pam.d/%s!"
+
+#: daemon/verify-pam.c:1
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Nie mo¿na ustawiæ PAM_TTY=%s"
 
-#: daemon/verify-pam.c:1 daemon/verify-pam.c:1
+#: daemon/verify-pam.c:1
 #, c-format
 msgid "Can't set PAM_RUSER=%s"
 msgstr "Nie mo¿na ustawiæ PAM_RUSER=%s"
 
-#: daemon/verify-pam.c:1 daemon/verify-pam.c:1
+#: daemon/verify-pam.c:1
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Nie mo¿na ustawiæ PAM_RHOST=%s"
@@ -1075,33 +1177,72 @@ msgstr ""
 "\n"
 "Logowanie siê administratora z tego ekranu jest niedozwolone"
 
+#: daemon/verify-pam.c:1
+#, c-format
+msgid "Authentication token change failed for user %s"
+msgstr "Zmiana tokena uwierzytelniaj±cego dla u¿ytkownika %s nie powiod³a siê"
+
+#: daemon/verify-pam.c:1
+msgid ""
+"\n"
+"The change of the authentication token failed. Please try again later or "
+"cantact the system administrator."
+msgstr ""
+"\n"
+"Zmiana tokena uwierzytelniaj±cego nie powiod³a siê. Spróbój ponownie pó¼niej "
+"lub skontaktuj siê z administratorem systemu."
+
+#: daemon/verify-pam.c:1 daemon/verify-pam.c:1
+#, c-format
+msgid "User %s no longer permitted to access the system"
+msgstr ""
+
+#: daemon/verify-pam.c:1 daemon/verify-pam.c:1
+#, c-format
+msgid "User %s not permitted to gain access at this time"
+msgstr ""
+
+#: daemon/verify-pam.c:1
+msgid ""
+"\n"
+"The system administrator has disabled access to the system temporary."
+msgstr ""
+"\n"
+"Administrator systemu czasowo zablokowa³ dostêp do systemu."
+
 #: daemon/verify-pam.c:1 daemon/verify-pam.c:1
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Operacja pam_acct_mgmt() dla %s nie powiod³a siê"
 
-#: daemon/verify-pam.c:1
-msgid "Authentication failed"
-msgstr "Uwierzytelnienie nie powiod³o siê"
+#: daemon/verify-pam.c:1 daemon/verify-pam.c:1
+#, c-format
+msgid "Couldn't set credentials for %s"
+msgstr "Nie mo¿na ustawiæ wierzytelno¶ci dla %s"
 
-#: daemon/verify-pam.c:1
-msgid "Cannot setup pam handle with null login and/or display"
-msgstr "Nie mo¿na ustawiæ uchwytu PAM-a bez loginu oraz ekranu"
-
-#: daemon/verify-pam.c:1
-msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
-msgstr ""
-"gdm_verify_check: Nie mo¿na odnale¼æ pliku konfiguracyjnego PAM dla gdm"
-
-#: daemon/verify-pam.c:1
+#: daemon/verify-pam.c:1 daemon/verify-pam.c:1
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Nie mo¿na otworzyæ sesji dla %s"
 
+#: daemon/verify-pam.c:1 daemon/verify-pam.c:1
+msgid "Authentication failed"
+msgstr "Uwierzytelnienie nie powiod³o siê"
+
+#: daemon/verify-pam.c:1
+msgid ""
+"\n"
+"The system administrator has your disabled access to the system temporary."
+msgstr ""
+"\n"
+"Administrator systemu czasowo zablokowa³ twój dostêp do systemu."
+
 #: daemon/verify-pam.c:1
 #, c-format
-msgid "Couldn't set credentials for %s"
-msgstr "Nie mo¿na ustawiæ wierzytelno¶ci dla %s"
+msgid "Can't find PAM configuration file for gdm. I've tried %s, %s, %s and %s"
+msgstr ""
+"Nie mo¿na odnale¼æ pliku konfiguracyjnego PAM dla gdm. Wypróbowano %s, %s, "
+"%s oraz %s."
 
 #: daemon/xdmcp.c:1
 #, c-format
@@ -1562,7 +1703,7 @@ msgid "Error reading this session script"
 msgstr "B³±d podczas odczytu skryptu sesji"
 
 #: gui/gdmconfig.c:1 gui/gdmconfig.c:1 gui/gdmconfig.c:1
-#: gui/gdmconfig.c:1 gui/gdmconfig.c:1
+#: gui/gdmconfig.c:1 gui/gdmconfig.c:1 gui/gdmconfig.c:1
 msgid "Yes"
 msgstr "Tak"
 
