@@ -459,4 +459,34 @@ gdm_safe_fork (pid_t *pid)
     sigprocmask (SIG_SETMASK, &oldmask, NULL);
 }
 
+/* done before each login.  This can do so sanity ensuring,
+ * one of the things it does now is make sure /tmp/.ICE-unix
+ * exists and has the correct permissions */
+void
+gdm_ensure_sanity (void)
+{
+	mode_t old_umask;
+
+	/* The /tmp/.ICE-unix check, note that we do
+	 * ignore errors, since it's not deadly to run
+	 * if we can't perform this task :) */
+	old_umask = umask (0);
+
+        if (mkdir ("/tmp/.ICE-unix", 0777) == 0) {
+		/* Make sure it is root */
+		if (chown ("/tmp/.ICE-unix", 0, 0) == 0)
+			chmod ("/tmp/.ICE-unix", 02777);
+        } else {
+		struct stat s;
+		if (lstat ("/tmp/.ICE-unix", &s) == 0 &&
+		    S_ISDIR (s.st_mode)) {
+			/* Make sure it is root and sticky */
+			if (chown ("/tmp/.ICE-unix", 0, 0) == 0)
+				chmod ("/tmp/.ICE-unix", 02777);
+		}
+	}
+
+	umask (old_umask);
+}
+
 /* EOF */

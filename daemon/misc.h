@@ -37,6 +37,11 @@ gboolean gdm_text_message_dialog (const char *msg);
 gboolean gdm_text_yesno_dialog (const char *msg, gboolean *ret);
 int	gdm_exec_wait (char * const *argv, gboolean no_display);
 
+/* done before each login.  This can do so sanity ensuring,
+ * one of the things it does now is make sure /tmp/.ICE-unix
+ * exists and has the correct permissions */
+void	gdm_ensure_sanity	(void);
+
 /* This is a race free fork, that is the pid will
  * be set before sigchld is sent.  This is achieved by
  * blocking sigchld for the moment */

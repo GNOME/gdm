@@ -1,3 +1,12 @@
+Wed Oct 03 20:26:27 2001  George Lebl <jirka@5z.com>
+
+	* daemon/misc.[ch], daemon/slave.[ch]: ensure the /tmp/.ICE-unix
+	  directory.  Hopefully we're correct.
+
+	* daemon/server.c: when running server as root, unset suplementary
+	  groups and set group to 0.  So that the files X creates it creates
+	  with gid 0 as well rather then with the 'gdm' group name.
+
 Wed Sep 26 23:54:11 2001  George Lebl <jirka@5z.com>
 
 	* daemon/gdm-net.c, gui/gdmflexiserver.c: deal with the case where

@@ -731,6 +731,16 @@ gdm_server_spawn (GdmDisplay *d)
 				   "gdm_server_spawn", (int)d->server_uid);
 			_exit (SERVER_ABORT);
 		}
+	} else {
+		gid_t groups[1] = { 0 };
+		if (setgid (0) < 0)  {
+			gdm_error (_("%s: Couldn't set groupid to 0"), 
+				   "gdm_server_spawn");
+			/* Don't error out, it's not fatal, if it fails we'll
+			 * just still be */
+		}
+		/* this will get rid of any suplementary groups etc... */
+		setgroups (1, groups);
 	}
 
 	execv (argv[0], argv);
