@@ -40,6 +40,7 @@ extern gboolean GdmAllowRemoteRoot;
 extern gchar *GdmTimedLogin;
 extern gchar *GdmUser;
 extern gboolean GdmAllowRemoteAutoLogin;
+extern gint GdmRetryDelay;
 
 /* Evil, but this way these things are passed to the child session */
 static char *current_login = NULL;
@@ -243,6 +244,7 @@ gdm_verify_user (GdmDisplay *d,
 
     if (username == NULL) {
 	    /* Ask gdmgreeter for the user's login. Just for good measure */
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
 	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Username:"));
 	    if (login == NULL ||
 		gdm_slave_greeter_check_interruption (login)) {
@@ -295,8 +297,15 @@ gdm_verify_user (GdmDisplay *d,
 	    goto pamerr;
     }
 
+#ifdef PAM_FAIL_DELAY
+    pam_fail_delay (pamh, GdmRetryDelay * 1000);
+#endif /* PAM_FAIL_DELAY */
+
     /* Start authentication session */
     if ((pamerr = pam_authenticate (pamh, 0)) != PAM_SUCCESS) {
+#ifndef PAM_FAIL_DELAY
+	    sleep (GdmRetryDelay);
+#endif /* PAM_FAIL_DELAY */
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 	    if (gdm_slave_should_complain ())
@@ -388,9 +397,6 @@ gdm_verify_user (GdmDisplay *d,
 	    } else {
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, _("Authentication failed"));
 	    }
-
-	    /*sleep (3);
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));*/
     }
 
     if (pamh != NULL)

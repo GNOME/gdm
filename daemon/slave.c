@@ -734,7 +734,6 @@ gdm_slave_wait_for_login (void)
 			/* the wanker can't remember his password */
 			if (login == NULL) {
 				gdm_debug (_("gdm_slave_wait_for_login: No login/Bad login"));
-				sleep (GdmRetryDelay);
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 				continue;
 			}
@@ -800,7 +799,6 @@ gdm_slave_wait_for_login (void)
 
 		if (login == NULL) {
 			gdm_debug (_("gdm_slave_wait_for_login: No login/Bad login"));
-			sleep (GdmRetryDelay);
 			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 		}
 	}

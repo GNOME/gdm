@@ -39,6 +39,7 @@ static const gchar RCSid[]="$Id$";
 /* Configuration option variables */
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
+extern gint GdmRetryDelay;
 
 /**
  * gdm_verify_user:
@@ -64,6 +65,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 
     if (username == NULL) {
 	    /* Ask for the user's login */
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
 	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Username:"));
 	    if (login == NULL ||
 		gdm_slave_greeter_check_interruption (login)) {
@@ -113,6 +115,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
     if (pwent == NULL) {
+	    sleep (GdmRetryDelay);
 	    gdm_error (_("Couldn't authenticate user"));
 	    /* FIXME: Hmm, how are we sure that the login is username
 	     * and password.  That is the most common case but not
@@ -133,6 +136,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
     /* Check whether password is valid */
     if (ppasswd == NULL || (ppasswd[0] != '\0' &&
 			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
+	    sleep (GdmRetryDelay);
 	    /* FIXME: Hmm, how are we sure that the login is username
 	     * and password.  That is the most common case but not
 	     * neccessairly true, this message needs to be changed

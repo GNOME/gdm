@@ -1,3 +1,12 @@
+Sat Oct 27 21:44:20 2001  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c, daemon/verify-*.c: put the sleep day in the verify	
+	  code, and in pam verification use the pam sleep to do the same
+	  if available.  This means that the error will come after the sleep
+	  but that the sleep will be 1) random 2) not doubled with both the
+	  gdm and the pam sleep.  Second always print the "Please enter your
+	  username" message on the verify not just the first time.
+
 Sat Oct 27 14:56:47 2001  George Lebl <jirka@5z.com>
 
 	* configure.in: raise version to 2.2.5.1
