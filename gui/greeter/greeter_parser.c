@@ -1044,7 +1044,11 @@ parse_stock (xmlNodePtr node,
       else if (g_ascii_strcasecmp (prop, "timed-label") == 0)
         {
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (_("User %s will login in %d seconds"));
+	  *translated_text = g_strdup (ngettext ("User %s will login in %d "
+				  		 "second",
+						 "User %s will login in %d "
+						 "seconds",
+						 1));
 	}
       else if (g_ascii_strcasecmp (prop, "welcome-label") == 0)
         {
