@@ -1461,6 +1461,7 @@ create_handle (void)
 			syslog (LOG_WARNING, _("Can't open icon file: %s. Suspending iconify feature!"), GdmIcon);
 		} else {
 			w = gtk_button_new ();
+			gtk_button_set_relief (GTK_BUTTON (w), GTK_RELIEF_NONE);
 			gtk_container_add (GTK_CONTAINER (w),
 					   gtk_arrow_new (GTK_ARROW_DOWN,
 							  GTK_SHADOW_OUT));
