@@ -92,10 +92,11 @@ static const gchar RCSid[]="$Id$";
 gint allow_severity = LOG_INFO;
 gint deny_severity = LOG_WARNING;
 
-gint xdmcpfd;
-gint choosefd;
-gint globsessid;
 gint pending = 0;
+
+static gint xdmcpfd = -1;
+static gint choosefd = -1;
+static gint globsessid;
 static gchar *sysid;
 static ARRAY8 servhost;
 static XdmcpBuffer buf;
@@ -188,7 +189,7 @@ gdm_xdmcp_init (void)
     /* Open socket for communications */
     xdmcpfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
     
-    if (xdmcpfd == -1)
+    if (xdmcpfd < 0)
 	gdm_fail (_("gdm_xdmcp_init: Could not create socket!"));
     
     serv_sa.sin_family = AF_INET;
@@ -214,7 +215,7 @@ gdm_xdmcp_init (void)
 
 	choosefd = open (fifopath, O_RDWR); /* Open with write to avoid EOF */
 
-	if (!choosefd)
+	if (choosefd < 0)
 	    gdm_fail (_("gdm_xdmcp_init: Could not open FIFO for chooser"));
 
 	chmod (fifopath, 0660);
@@ -254,10 +255,16 @@ gdm_xdmcp_run (void)
 void
 gdm_xdmcp_close (void)
 {
-    close (xdmcpfd);
+	if (xdmcpfd < 0) {
+		close (xdmcpfd);
+		xdmcpfd = -1;
+	}
 
-    if (GdmIndirect && choosefd)
-	close (choosefd);
+	if (GdmIndirect &&
+	    choosefd < 0) {
+		close (choosefd);
+		choosefd = -1;
+	}
 }
 
 
