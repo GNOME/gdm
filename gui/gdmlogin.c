@@ -37,6 +37,7 @@
 #include <dirent.h>
 #include <gdk/gdkx.h>
 #include <pwd.h>
+#include <sys/utsname.h>
 
 #include "gdm.h"
 
@@ -244,6 +245,7 @@ gdm_parse_enriched_string(gchar *s)
     gchar cmd, *buffer, *start;
     gchar hostbuf[256];
     gchar *hostname, *temp1, *temp2, *display;
+    struct utsname name;
 
     display=getenv("DISPLAY");
 
@@ -265,6 +267,8 @@ gdm_parse_enriched_string(gchar *s)
 
     if(!hostname) 
 	hostname=g_strdup("Gnome");
+
+    uname(&name);
 
     if(strlen(s) > 1023) {
 	syslog(LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
@@ -294,6 +298,16 @@ gdm_parse_enriched_string(gchar *s)
 		memcpy(buffer, display, strlen(display));
 		buffer+=strlen(display);
 		break;
+
+	    case 's':
+	        memcpy(buffer, name.sysname, strlen(name.sysname));
+		buffer+=strlen(name.sysname);
+		break;
+		
+	    case 'r':
+	        memcpy(buffer, name.release, strlen(name.release));
+	        buffer+=strlen(name.release);
+	        break;
 
 	    case '%':
 		*buffer++='%';

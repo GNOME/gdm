@@ -222,11 +222,13 @@ RetryDelay=3
 
 Welcome=Welcome to %h
 	Controls which text to display next to the logo image in the
-	greeter. 
+	greeter. The following control chars are supported:
 
-	  `%h' will be expanded to the hostname
-	  `%d' will be replaced by the display's hostname 
-	  `%%' will print the %-character
+		%%	the `%' character
+		%d	display's hostname
+		%h	hostname
+		%r	release (OS version)
+		%s	sysname (i.e. OS)
 
 
 4.4 Section: [daemon]
