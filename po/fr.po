@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0.99\n"
-"POT-Creation-Date: 2001-03-01 12:24+0100\n"
-"PO-Revision-Date: 2001-03-01 12:26+0100\n"
+"POT-Creation-Date: 2001-03-05 20:42+0100\n"
+"PO-Revision-Date: 2001-03-05 12:26+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: GNOME French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -197,43 +197,43 @@ msgstr ""
 msgid "%s: Directory %s does not exist."
 msgstr "%s : Répertoire %s n'existe pas."
 
-#: daemon/filecheck.c:57 daemon/filecheck.c:98
+#: daemon/filecheck.c:58 daemon/filecheck.c:99
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr "%s : %s n'appartient pas à l'uid %d."
 
-#: daemon/filecheck.c:63 daemon/filecheck.c:105
+#: daemon/filecheck.c:64 daemon/filecheck.c:106
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr ""
 "%s : %s peut être modifié par les membres du groupe. Les droits d'accès "
 "devraient être 644. Ignore."
 
-#: daemon/filecheck.c:69
+#: daemon/filecheck.c:70
 #, c-format
 msgid "%s: %s is writable by other."
 msgstr ""
 "%s : %s peut être modifié par d'autres utilisateurs. Les droits d'accès "
 "devraient être 755. Ignore."
 
-#: daemon/filecheck.c:83
+#: daemon/filecheck.c:84
 #, c-format
-msgid "%s: does not exist and must."
-msgstr "%s : n'existe pas et devrait."
+msgid "%s: %s does not exist and must."
+msgstr "%s : %s n'existe pas et devrait."
 
-#: daemon/filecheck.c:91
+#: daemon/filecheck.c:92
 #, c-format
 msgid "%s: %s is not a regular file."
 msgstr "%s : %s n'est pas un fichier."
 
-#: daemon/filecheck.c:112
+#: daemon/filecheck.c:113
 #, c-format
 msgid "%s: %s is writable by group/other."
 msgstr ""
 "%s : %s peut être modifié par d'autres utilisateurs. Les droits d'accès "
 "devraient être 755. Ignore."
 
-#: daemon/filecheck.c:119
+#: daemon/filecheck.c:120
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
@@ -330,7 +330,12 @@ msgstr ""
 "gdm_slave_session_start : L'utilisateur a passé l'authantification mais "
 "getpwnam(%s) !"
 
-#: daemon/slave.c:485
+#: daemon/slave.c:438
+msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
+msgstr ""
+"gdm_slave_session_start : Identification effectuée. Destruction du greeter"
+
+#: daemon/slave.c:484
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -338,48 +343,48 @@ msgstr ""
 "gdm_slave_session_start : L'exécution du script de pré-session a renvoyé une "
 "valeur > 0. Abandon."
 
-#: daemon/slave.c:511
+#: daemon/slave.c:510
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr ""
 "gdm_slave_session_start : Erreur à la création de la session de l'utilisateur"
 
-#: daemon/slave.c:520
+#: daemon/slave.c:519
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start : Ne peut affecter le groupe à %d. Abandon."
 
-#: daemon/slave.c:524
+#: daemon/slave.c:523
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr "gdm_slave_session_start : Échec de initgroups() pour %s. Abandon."
 
-#: daemon/slave.c:528
+#: daemon/slave.c:527
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Ne peut devenir %s. Abandon."
 
-#: daemon/slave.c:566
+#: daemon/slave.c:565
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start : Ne peut démarrer la session « %s »"
 
-#: daemon/slave.c:759
+#: daemon/slave.c:760
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler : Erreur X fatale - Redémarrage de %s"
 
-#: daemon/slave.c:858
+#: daemon/slave.c:859
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script : Échec du lancement: %s"
 
-#: daemon/slave.c:862
+#: daemon/slave.c:863
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script : Ne peut créer le processus de script !"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1751
+#: gui/gdmlogin.c:1784
 msgid "Login:"
 msgstr "Identifiant :"
 
@@ -641,33 +646,33 @@ msgstr ""
 "gdm_signals_init : Erreur lors de la configuration de la procédure de prise "
 "en charge du signal TERM"
 
-#: gui/gdmchooser.c:628 gui/gdmlogin.c:2122
+#: gui/gdmchooser.c:628 gui/gdmlogin.c:2150
 msgid "Could not set signal mask!"
 msgstr "Ne peut mettre le masque de signal en place !"
 
-#: gui/gdmlogin.c:389 gui/gdmlogin.c:395 gui/gdmlogin.c:402
+#: gui/gdmlogin.c:391 gui/gdmlogin.c:397 gui/gdmlogin.c:404
 #, c-format
 msgid "Welcome to %s"
 msgstr "Bienvenue sur %s"
 
-#: gui/gdmlogin.c:400
+#: gui/gdmlogin.c:402
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string : Chaîne trop longue !"
 
-#: gui/gdmlogin.c:496
+#: gui/gdmlogin.c:499
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Êtes-vous sûr de vouloir redémarrer le système ?"
 
-#: gui/gdmlogin.c:510
+#: gui/gdmlogin.c:513
 msgid "Are you sure you want to halt the machine?"
 msgstr "Êtes-vous sûr de vouloir arrêter le système ?"
 
-#: gui/gdmlogin.c:528
+#: gui/gdmlogin.c:531
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config : Pas de fichier de configuration: %s. Abandon."
 
-#: gui/gdmlogin.c:638
+#: gui/gdmlogin.c:641
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -676,7 +681,7 @@ msgstr ""
 "Votre type favori de session %s n'est pas installé sur cette machine.\n"
 "Souhaitez-vous que %s devienne le type par défaut de vos futures sessions ?"
 
-#: gui/gdmlogin.c:654 gui/gdmlogin.c:709
+#: gui/gdmlogin.c:657 gui/gdmlogin.c:712
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -687,108 +692,116 @@ msgstr ""
 "Souhaitez-vous faire de %s votre configuration par défaut pour vos futures "
 "sessions ?"
 
-#: gui/gdmlogin.c:844
+#: gui/gdmlogin.c:858
 #, c-format
 msgid "%s session selected"
 msgstr "session %s sélectionnée"
 
-#: gui/gdmlogin.c:860 gui/gdmlogin.c:969
+#: gui/gdmlogin.c:874 gui/gdmlogin.c:983
 msgid "Last"
 msgstr "Précédente"
 
-#: gui/gdmlogin.c:877
+#: gui/gdmlogin.c:891
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr ""
 "gdm_login_session_init : Ne peut trouver le répertoire des scripts de "
 "session !"
 
-#: gui/gdmlogin.c:932
+#: gui/gdmlogin.c:946
 msgid "No session scripts found. Aborting!"
 msgstr "Aucun script de session. Abandon !"
 
-#: gui/gdmlogin.c:936
+#: gui/gdmlogin.c:950
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Pas de lien vers une session par défaut. Utilisation de %s.\n"
 
-#: gui/gdmlogin.c:950
+#: gui/gdmlogin.c:964
 #, c-format
 msgid "%s language selected"
 msgstr "langue %s sélectionnée"
 
-#: gui/gdmlogin.c:987
+#: gui/gdmlogin.c:1001
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:993
+#: gui/gdmlogin.c:1007
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:999
+#: gui/gdmlogin.c:1013
 msgid "Other"
 msgstr "Autre"
 
-#: gui/gdmlogin.c:1485
+#. translators:  This is a nice and evil eggie text, translate
+#. * to your favourite currency
+#: gui/gdmlogin.c:1233
+msgid "Please insert 25 cents to log in."
+msgstr ""
+"Veuillez insérer 25 cents pour vous connecter.\n"
+"[ http://europa.eu.int/euro/ ;-) ]."
+
+#: gui/gdmlogin.c:1517
 msgid "GNOME Desktop Manager"
 msgstr "Gestionnaire de bureau GNOME"
 
-#: gui/gdmlogin.c:1497
+#: gui/gdmlogin.c:1529
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr ""
 "Ne peut ouvrir le fichier icône : %s. L'utilisation des icônes est suspendue "
 "!"
 
-#: gui/gdmlogin.c:1604
+#: gui/gdmlogin.c:1636
 msgid "Session"
 msgstr "Session"
 
-#: gui/gdmlogin.c:1611
+#: gui/gdmlogin.c:1643
 msgid "Language"
 msgstr "Langue"
 
-#: gui/gdmlogin.c:1618
+#: gui/gdmlogin.c:1650
 msgid "Reboot..."
 msgstr "Redémarrage..."
 
-#: gui/gdmlogin.c:1625
+#: gui/gdmlogin.c:1657
 msgid "Halt..."
 msgstr "Arrêt..."
 
-#: gui/gdmconfig.c:41 gui/gdmlogin.c:1632
+#: gui/gdmconfig.c:41 gui/gdmlogin.c:1664
 msgid "System"
 msgstr "Système"
 
-#: gui/gdmlogin.c:1786
+#: gui/gdmlogin.c:1820
 msgid "Please enter your login"
 msgstr "Veuillez saisir votre identifiant"
 
-#: gui/gdmlogin.c:1973
+#: gui/gdmlogin.c:2006
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 "Ne peut ouvrir l'image par défaut : %s. L'utilisation de l'outil de "
 "sélection des visages est suspendue !"
 
-#: gui/gdmlogin.c:2099
+#: gui/gdmlogin.c:2127
 msgid "main: Error setting up HUP signal handler"
 msgstr ""
 "main : Erreur lors de la configuration de la procédure de prise en charge du "
 "signal HUP"
 
-#: gui/gdmlogin.c:2102
+#: gui/gdmlogin.c:2130
 msgid "main: Error setting up INT signal handler"
 msgstr ""
 "main : Erreur lors de la configuration de la procédure de prise en charge du "
 "signal INT"
 
-#: gui/gdmlogin.c:2105
+#: gui/gdmlogin.c:2133
 msgid "main: Error setting up TERM signal handler"
 msgstr ""
 "main : Erreur lors de la configuration de la procédure de prise en charge du "
 "signal TERM"
 
-#: gui/gdmlogin.c:2113
+#: gui/gdmlogin.c:2141
 msgid "main: Error setting up CHLD signal handler"
 msgstr ""
 "main : Erreur lors de la configuration de la procédure de prise en charge du "
