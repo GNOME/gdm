@@ -1,3 +1,25 @@
+Fri Jul 25 19:01:11 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: minor cleanup of main
+
+	* daemon/gdm.c, daemon/server.c, daemon/misc.c, daemon/slave.c,
+	  gui/gdmlogin.c, gui/greeter/greeter.c, gui/gdmchooser.c:
+	  unification of some error messages to make translations simpler,
+	  plus fixing bug #56654 finally hopefully by removing programmer
+	  references from translatable strings
+
+	* daemon/slave.c, daemon/misc.[ch], daemon/gdm.c: new functions
+	  for ingoring or reseting to DFL of signals using sigaction.
+	  In the main daemon ignore SIGPIPE and SIGUSR1, in the slave
+	  ignore SIGPIPE and SIGUSR1 and set the mask before the setjmp.
+	  also we just unmask some signals now instead of masking
+	  everything. 
+
+	* daemon/slave.c: accept DISPLAY_GREETERFAILED from a greeter
+
+	* gui/gdmlogin.c, gui/greeter/greeter.c: return DISPLAY_GREETERFAILED
+	  on bad failures.
+
 Fri Jul 25 17:46:11 2003  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: fix C99/C++ism that gcc no longer warns about,

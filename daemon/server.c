@@ -460,8 +460,8 @@ setup_server_wait (GdmDisplay *d)
     sigemptyset (&usr1.sa_mask);
 
     if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
-	    gdm_error (_("%s: Error setting up USR1 signal handler: %s"),
-		       "gdm_server_start", strerror (errno));
+	    gdm_error (_("%s: Error setting up %s signal handler: %s"),
+		       "gdm_server_start", "USR1", strerror (errno));
 	    close (server_signal_pipe[0]);
 	    close (server_signal_pipe[1]);
 	    return FALSE;
@@ -473,9 +473,9 @@ setup_server_wait (GdmDisplay *d)
     sigemptyset (&chld.sa_mask);
 
     if (sigaction (SIGCHLD, &chld, &old_svr_wait_chld) < 0) {
-	    gdm_error (_("%s: Error setting up CHLD signal handler: %s"),
-		       "gdm_server_start", strerror (errno));
-	    signal (SIGUSR1, SIG_IGN);
+	    gdm_error (_("%s: Error setting up %s signal handler: %s"),
+		       "gdm_server_start", "CHLD", strerror (errno));
+	    gdm_signal_ignore (SIGUSR1);
 	    close (server_signal_pipe[0]);
 	    close (server_signal_pipe[1]);
 	    return FALSE;
@@ -574,7 +574,7 @@ do_server_wait (GdmDisplay *d)
     }
 
     /* restore default handlers */
-    signal (SIGUSR1, SIG_IGN);
+    gdm_signal_ignore (SIGUSR1);
     sigaction (SIGCHLD, &old_svr_wait_chld, NULL);
     sigprocmask (SIG_SETMASK, &old_svr_wait_mask, NULL);
 

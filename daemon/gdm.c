@@ -1655,7 +1655,7 @@ int
 main (int argc, char *argv[])
 {
     sigset_t mask;
-    struct sigaction term, child;
+    struct sigaction sig, child;
     FILE *pf;
     poptContext ctx;
     int nextopt;
@@ -1758,25 +1758,25 @@ main (int argc, char *argv[])
     ve_signal_add (SIGHUP, mainloop_sig_callback, NULL);
     ve_signal_add (SIGUSR1, mainloop_sig_callback, NULL);
     
-    term.sa_handler = ve_signal_notify;
-    term.sa_flags = SA_RESTART;
-    sigemptyset (&term.sa_mask);
+    sig.sa_handler = ve_signal_notify;
+    sig.sa_flags = SA_RESTART;
+    sigemptyset (&sig.sa_mask);
 
-    if (sigaction (SIGTERM, &term, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up TERM signal handler"),
-		  "gdm_main");
+    if (sigaction (SIGTERM, &sig, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "TERM", strerror (errno));
 
-    if (sigaction (SIGINT, &term, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up INT signal handler"),
-		  "gdm_main");
+    if (sigaction (SIGINT, &sig, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "INT", strerror (errno));
 
-    if (sigaction (SIGHUP, &term, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up HUP signal handler"),
-		  "gdm_main");
+    if (sigaction (SIGHUP, &sig, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "HUP", strerror (errno));
 
-    if (sigaction (SIGUSR1, &term, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up USR1 signal handler"),
-		  "gdm_main");
+    if (sigaction (SIGUSR1, &sig, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "USR1", strerror (errno));
 
     child.sa_handler = ve_signal_notify;
     child.sa_flags = SA_RESTART|SA_NOCLDSTOP;
@@ -1793,6 +1793,9 @@ main (int argc, char *argv[])
     sigaddset (&mask, SIGHUP);
     sigaddset (&mask, SIGUSR1);
     sigprocmask (SIG_UNBLOCK, &mask, NULL);
+
+    gdm_signal_ignore (SIGUSR2);
+    gdm_signal_ignore (SIGPIPE);
 
     gdm_debug ("gdm_main: Here we go...");
 

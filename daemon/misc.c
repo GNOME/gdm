@@ -1134,14 +1134,43 @@ gdm_unset_signals (void)
 	sigemptyset (&mask);
 	sigprocmask (SIG_SETMASK, &mask, NULL);
 
-	signal (SIGUSR1, SIG_DFL);
-	signal (SIGUSR2, SIG_DFL);
-	signal (SIGCHLD, SIG_DFL);
-	signal (SIGTERM, SIG_DFL);
-	signal (SIGPIPE, SIG_DFL);
-	signal (SIGALRM, SIG_DFL);
-	signal (SIGHUP, SIG_DFL);
+	gdm_signal_default (SIGUSR1);
+	gdm_signal_default (SIGUSR2);
+	gdm_signal_default (SIGCHLD);
+	gdm_signal_default (SIGTERM);
+	gdm_signal_default (SIGPIPE);
+	gdm_signal_default (SIGALRM);
+	gdm_signal_default (SIGHUP);
 }
+
+void
+gdm_signal_ignore (int signal)
+{
+	struct sigaction ign_signal;
+
+	ign_signal.sa_handler = SIG_IGN;
+	ign_signal.sa_flags = SA_RESTART;
+	sigemptyset (&ign_signal.sa_mask);
+
+	if (sigaction (signal, &ign_signal, NULL) < 0)
+		gdm_error (_("%s: Error setting signal %d to %s"),
+			   "gdm_signal_ignore", signal, "SIG_IGN");
+}
+
+void
+gdm_signal_default (int signal)
+{
+	struct sigaction def_signal;
+
+	def_signal.sa_handler = SIG_IGN;
+	def_signal.sa_flags = SA_RESTART;
+	sigemptyset (&def_signal.sa_mask);
+
+	if (sigaction (signal, &def_signal, NULL) < 0)
+		gdm_error (_("%s: Error setting signal %d to %s"),
+			   "gdm_signal_ignore", signal, "SIG_DFL");
+}
+
 
 static char *
 ascify (const char *text)
@@ -1296,31 +1325,31 @@ jumpback_sighandler (int signal)
     sigemptyset (&term.sa_mask);					\
 									\
     if (sigaction (SIGTERM, &term, &oldterm) < 0) 			\
-	gdm_fail (_("%s: Error setting up TERM signal handler"),	\
-		  "SETUP_INTERRUPTS_FOR_TERM");				\
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
+		  "SETUP_INTERRUPTS_FOR_TERM", "TERM", strerror (errno)); \
 									\
     if (sigaction (SIGINT, &term, &oldint) < 0)				\
-	gdm_fail (_("%s: Error setting up INT signal handler"),		\
-		  "SETUP_INTERRUPTS_FOR_TERM");				\
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
+		  "SETUP_INTERRUPTS_FOR_TERM", "INT", strerror (errno)); \
 									\
     if (sigaction (SIGHUP, &term, &oldhup) < 0) 			\
-	gdm_fail (_("%s: Error setting up HUP signal handler"),		\
-		  "SETUP_INTERRUPTS_FOR_TERM");
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
+		  "SETUP_INTERRUPTS_FOR_TERM", "HUP", strerror (errno)); \
 
 #define SETUP_INTERRUPTS_FOR_TERM_TEARDOWN \
     do_jumpback = FALSE;						\
 									\
     if (sigaction (SIGTERM, &oldterm, NULL) < 0) 			\
-	gdm_fail (_("%s: Error setting up TERM signal handler"),	\
-		  "SETUP_INTERRUPTS_FOR_TERM");				\
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
+		  "SETUP_INTERRUPTS_FOR_TERM", "TERM", strerror (errno)); \
 									\
     if (sigaction (SIGINT, &oldint, NULL) < 0) 				\
-	gdm_fail (_("%s: Error setting up INT signal handler"),		\
-		  "SETUP_INTERRUPTS_FOR_TERM");				\
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
+		  "SETUP_INTERRUPTS_FOR_TERM", "INT", strerror (errno)); \
 									\
     if (sigaction (SIGHUP, &oldhup, NULL) < 0) 				\
-	gdm_fail (_("%s: Error setting up HUP signal handler"),		\
-		  "SETUP_INTERRUPTS_FOR_TERM");
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
+		  "SETUP_INTERRUPTS_FOR_TERM", "HUP", strerror (errno));
 
 GdmHostent *
 gdm_gethostbyname (const char *name)

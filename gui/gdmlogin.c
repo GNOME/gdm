@@ -397,7 +397,7 @@ gdm_login_abort (const gchar *format, ...)
 
     if (!format) {
 	kill_thingies ();
-	_exit (DISPLAY_ABORT);
+	_exit (DISPLAY_GREETERFAILED);
     }
 
     va_start (args, format);
@@ -410,7 +410,7 @@ gdm_login_abort (const gchar *format, ...)
     g_free (s);
 
     kill_thingies ();
-    _exit (DISPLAY_ABORT);
+    _exit (DISPLAY_GREETERFAILED);
 }
 
 
@@ -438,7 +438,7 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 
     if (strlen (s) > 2048) {
 	    char *buffer;
-	    syslog (LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
+	    syslog (LOG_ERR, _("%s: String too long!"), "gdm_parse_enriched_string");
 	    g_free (display);
 	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
 				      pre, name.nodename, post);
@@ -1217,7 +1217,7 @@ gdm_login_session_init (GtkWidget *menu)
     /* Check that session dir is readable */
     if (GdmSessionDir == NULL ||
 	access (GdmSessionDir, R_OK|X_OK)) {
-	syslog (LOG_ERR, _("gdm_login_session_init: Session directory %s not found!"), ve_sure_string (GdmSessionDir));
+	syslog (LOG_ERR, _("%s: Session directory %s not found!"), "gdm_login_session_init", ve_sure_string (GdmSessionDir));
 	GdmShowXtermFailsafeSession = TRUE;
 	session_dir_whacked_out = TRUE;
     }
@@ -3781,7 +3781,7 @@ main (int argc, char *argv[])
     sigaddset (&hup.sa_mask, SIGCHLD);
 
     if (sigaction (SIGHUP, &hup, NULL) < 0) 
-        gdm_login_abort (_("main: Error setting up HUP signal handler"));
+        gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
 
     term.sa_handler = gdm_login_done;
     term.sa_flags = 0;
@@ -3789,10 +3789,10 @@ main (int argc, char *argv[])
     sigaddset (&term.sa_mask, SIGCHLD);
 
     if (sigaction (SIGINT, &term, NULL) < 0) 
-        gdm_login_abort (_("main: Error setting up INT signal handler"));
+        gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
 
     if (sigaction (SIGTERM, &term, NULL) < 0) 
-        gdm_login_abort (_("main: Error setting up TERM signal handler"));
+        gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
 
     sigfillset (&mask);
     sigdelset (&mask, SIGTERM);

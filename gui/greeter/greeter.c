@@ -83,6 +83,8 @@ extern gboolean require_quarter;
 
 gboolean greeter_probably_login_prompt = FALSE;
 
+static void gdm_login_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+
 static void 
 greeter_parse_config (void)
 {
@@ -1081,6 +1083,28 @@ setup_background_color (void)
     }
 }
 
+static void
+gdm_login_abort (const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    if (!format) {
+	_exit (DISPLAY_GREETERFAILED);
+    }
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+    
+    syslog (LOG_ERR, "%s", s);
+    closelog();
+
+    g_free (s);
+
+    _exit (DISPLAY_GREETERFAILED);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -1132,7 +1156,7 @@ main (int argc, char *argv[])
   sigaddset (&hup.sa_mask, SIGCHLD);
   
   if (sigaction (SIGHUP, &hup, NULL) < 0) 
-    g_error (_("main: Error setting up HUP signal handler"));
+    gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
 
   term.sa_handler = greeter_done;
   term.sa_flags = 0;
@@ -1140,10 +1164,10 @@ main (int argc, char *argv[])
   sigaddset (&term.sa_mask, SIGCHLD);
   
   if (sigaction (SIGINT, &term, NULL) < 0) 
-    g_error (_("main: Error setting up INT signal handler"));
+    gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
   
   if (sigaction (SIGTERM, &term, NULL) < 0) 
-    g_error (_("main: Error setting up TERM signal handler"));
+    gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
   
   sigfillset (&mask);
   sigdelset (&mask, SIGTERM);
@@ -1152,7 +1176,7 @@ main (int argc, char *argv[])
   sigdelset (&mask, SIGCHLD);
   
   if (sigprocmask (SIG_SETMASK, &mask, NULL) == -1) 
-    g_error (_("Could not set signal mask!"));
+    gdm_login_abort (_("Could not set signal mask!"));
 
   
   if (! DOING_GDM_DEVELOPMENT) {

@@ -1367,13 +1367,13 @@ gdm_chooser_signals_init (void)
     sigemptyset (&term.sa_mask);
 
     if (sigaction (SIGHUP, &hup, NULL) < 0) 
-        gdm_chooser_abort (_("gdm_signals_init: Error setting up HUP signal handler"));
+        gdm_chooser_abort (_("%s: Error setting up %s signal handler: %s"), "gdm_signals_init", "HUP", strerror (errno));
 
     if (sigaction (SIGINT, &term, NULL) < 0) 
-        gdm_chooser_abort (_("gdm_signals_init: Error setting up INT signal handler"));
+        gdm_chooser_abort (_("%s: Error setting up %s signal handler: %s"), "gdm_signals_init", "INT", strerror (errno));
 
     if (sigaction (SIGTERM, &term, NULL) < 0) 
-        gdm_chooser_abort (_("gdm_signals_init: Error setting up TERM signal handler"));
+        gdm_chooser_abort (_("%s: Error setting up %s signal handler: %s"), "gdm_signals_init", "TERM", strerror (errno));
 
     sigfillset (&mask);
     sigdelset (&mask, SIGTERM);

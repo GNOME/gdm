@@ -476,9 +476,26 @@ gdm_slave_start (GdmDisplay *display)
 	static sigset_t mask;
 	struct sigaction alrm, term, child, usr2;
 
-	/* Ignore SIGUSR1, and especially ignore it
+	/* Ignore SIGUSR1/SIGPIPE, and especially ignore it
 	   before the Setjmp */
-	signal (SIGUSR1, SIG_IGN);
+	gdm_signal_ignore (SIGUSR1);
+	gdm_signal_ignore (SIGPIPE);
+
+	/* The signals we wish to listen to */
+	sigemptyset (&mask);
+	sigaddset (&mask, SIGINT);
+	sigaddset (&mask, SIGTERM);
+	sigaddset (&mask, SIGCHLD);
+	sigaddset (&mask, SIGUSR2);
+	sigaddset (&mask, SIGUSR1); /* normally we ignore USR1 */
+	if (display->type == TYPE_XDMCP &&
+	    GdmPingInterval > 0) {
+		sigaddset (&mask, SIGALRM);
+	}
+	/* must set signal mask before the Setjmp as it will be
+	   restored, and we're only interested in catching the above signals */
+	sigprocmask (SIG_UNBLOCK, &mask, NULL);
+
 
 	if (display == NULL) {
 		/* saaay ... what? */
@@ -512,8 +529,8 @@ gdm_slave_start (GdmDisplay *display)
 
 		if (sigaction (SIGALRM, &alrm, NULL) < 0)
 			gdm_slave_exit (DISPLAY_ABORT,
-					_("%s: Error setting up ALRM signal handler: %s"),
-					"gdm_slave_start", strerror (errno));
+					_("%s: Error setting up %s signal handler: %s"),
+					"gdm_slave_start", "ALRM", strerror (errno));
 	}
 
 	/* Handle a INT/TERM signals from gdm master */
@@ -526,8 +543,8 @@ gdm_slave_start (GdmDisplay *display)
 	if ((sigaction (SIGTERM, &term, NULL) < 0) ||
 	    (sigaction (SIGINT, &term, NULL) < 0))
 		gdm_slave_exit (DISPLAY_ABORT,
-				_("%s: Error setting up TERM/INT signal handler: %s"),
-				"gdm_slave_start", strerror (errno));
+				_("%s: Error setting up %s signal handler: %s"),
+				"gdm_slave_start", "TERM/INT", strerror (errno));
 
 	/* Child handler. Keeps an eye on greeter/session */
 	child.sa_handler = gdm_slave_child_handler;
@@ -536,8 +553,8 @@ gdm_slave_start (GdmDisplay *display)
 	sigaddset (&child.sa_mask, SIGCHLD);
 
 	if (sigaction (SIGCHLD, &child, NULL) < 0) 
-		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up CHLD signal handler: %s"),
-				"gdm_slave_start", strerror (errno));
+		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up %s signal handler: %s"),
+				"gdm_slave_start", "CHLD", strerror (errno));
 
 	/* Handle a USR2 which is ack from master that it received a message */
 	usr2.sa_handler = gdm_slave_usr2_handler;
@@ -546,21 +563,8 @@ gdm_slave_start (GdmDisplay *display)
 	sigaddset (&usr2.sa_mask, SIGUSR2);
 
 	if (sigaction (SIGUSR2, &usr2, NULL) < 0)
-		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up USR2 signal handler: %s"),
-				"gdm_slave_start", strerror (errno));
-
-	/* The signals we wish to listen to */
-	sigfillset (&mask);
-	sigdelset (&mask, SIGINT);
-	sigdelset (&mask, SIGTERM);
-	sigdelset (&mask, SIGCHLD);
-	sigdelset (&mask, SIGUSR2);
-	sigdelset (&mask, SIGUSR1); /* normally we ignore USR1 */
-	if (display->type == TYPE_XDMCP &&
-	    GdmPingInterval > 0) {
-		sigdelset (&mask, SIGALRM);
-	}
-	sigprocmask (SIG_SETMASK, &mask, NULL);
+		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up %s signal handler: %s"),
+				"gdm_slave_start", "USR2", strerror (errno));
 
 	first_time = time (NULL);
 	death_count = 0;
@@ -1521,7 +1525,7 @@ gdm_slave_wait_for_login (void)
 
 			/* the wanker can't remember his password */
 			if (login == NULL) {
-				gdm_debug (_("gdm_slave_wait_for_login: No login/Bad login"));
+				gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 				continue;
 			}
@@ -1605,7 +1609,7 @@ gdm_slave_wait_for_login (void)
 		}
 
 		if (login == NULL) {
-			gdm_debug (_("gdm_slave_wait_for_login: No login/Bad login"));
+			gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
 			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 		}
 	}
@@ -2480,7 +2484,7 @@ gdm_slave_chooser (void)
 
 	/* Open a pipe for chooser communications */
 	if (pipe (p) < 0)
-		gdm_slave_exit (DISPLAY_REMANAGE, _("gdm_slave_chooser: Can't init pipe to gdmchooser"));
+		gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmchooser"), "gdm_slave_chooser");
 
 	/* Run the init script. gdmslave suspends until script has terminated */
 	gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL,
@@ -2571,10 +2575,10 @@ gdm_slave_chooser (void)
 				 "you will probably not be able to log in.  "
 				 "Please contact the system administrator."));
 
-		gdm_child_exit (DISPLAY_REMANAGE, _("gdm_slave_chooser: Error starting chooser on display %s"), d->name);
+		gdm_child_exit (DISPLAY_REMANAGE, _("%s: Error starting chooser on display %s"), "gdm_slave_chooser", d->name);
 
 	case -1:
-		gdm_slave_exit (DISPLAY_REMANAGE, _("gdm_slave_chooser: Can't fork gdmchooser process"));
+		gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't fork gdmchooser process"), "gdm_slave_chooser");
 
 	default:
 		gdm_debug ("gdm_slave_chooser: Chooser on pid %d", d->chooserpid);
@@ -2809,7 +2813,7 @@ session_child_run (struct passwd *pwent,
 	    ! failsafe) 
 		/* If script fails reset X server and restart greeter */
 		gdm_child_exit (DISPLAY_REMANAGE,
-				_("gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."));
+				_("%s: Execution of PreSession script returned > 0. Aborting."), "gdm_slave_session_start");
 
 	gdm_clearenv ();
 
@@ -2880,7 +2884,7 @@ session_child_run (struct passwd *pwent,
 #else
 	if (setuid (pwent->pw_uid) < 0) 
 		gdm_child_exit (DISPLAY_REMANAGE,
-				_("gdm_slave_session_start: Could not become %s. Aborting."), login);
+				_("%s: Could not become %s. Aborting."), "gdm_slave_session_start", login);
 #endif
 
 	/* Only force GDM_LANG to something if there is other then
@@ -3027,7 +3031,7 @@ session_child_run (struct passwd *pwent,
 		failsafe = TRUE;
 	} 
 
-	gdm_debug (_("Running %s %s %s for %s on %s"),
+	gdm_debug ("Running %s %s %s for %s on %s",
 		   argv[0],
 		   ve_sure_string (argv[1]),
 		   ve_sure_string (argv[2]),
@@ -3103,7 +3107,7 @@ gdm_slave_session_start (void)
 	    if (greet)
 		    gdm_slave_whack_greeter();
 	    gdm_slave_exit (DISPLAY_REMANAGE,
-			    _("gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"), login);
+			    _("%s: User passed auth but getpwnam(%s) failed!"), "gdm_slave_session_start", login);
     }
 
     /* Run the PostLogin script */
@@ -3114,7 +3118,7 @@ gdm_slave_session_start (void)
 	/* ignore errors in failsafe modes */
 	! failsafe) {
 	    gdm_verify_cleanup (d);
-	    gdm_error (_("gdm_slave_session_start: Execution of PostLogin script returned > 0. Aborting."));
+	    gdm_error (_("%s: Execution of PostLogin script returned > 0. Aborting."), "gdm_slave_session_start");
 	    /* script failed so just try again */
 	    return;
 		
@@ -3320,7 +3324,7 @@ gdm_slave_session_start (void)
     switch (pid) {
 	
     case -1:
-	gdm_slave_exit (DISPLAY_REMANAGE, _("gdm_slave_session_start: Error forking user session"));
+	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Error forking user session"), "gdm_slave_session_start");
 	
     case 0:
 	/* Never returns */
@@ -3708,7 +3712,8 @@ gdm_slave_child_handler (int sig)
 		     WEXITSTATUS (status) == DISPLAY_HALT ||
 		     WEXITSTATUS (status) == DISPLAY_SUSPEND ||
 		     WEXITSTATUS (status) == DISPLAY_RUN_CHOOSER ||
-		     WEXITSTATUS (status) == DISPLAY_RESTARTGDM)) {
+		     WEXITSTATUS (status) == DISPLAY_RESTARTGDM ||
+		     WEXITSTATUS (status) == DISPLAY_GREETERFAILED)) {
 			exit_code_to_use = WEXITSTATUS (status);
 			SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
 		} else {
@@ -4280,7 +4285,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	ve_unsetenv ("MAIL");
 	argv = ve_split (script);
 	execv (argv[0], argv);
-	syslog (LOG_ERR, _("gdm_slave_exec_script: Failed starting: %s"),
+	syslog (LOG_ERR, _("%s: Failed starting: %s"), "gdm_slave_exec_script",
 		script);
 	_exit (EXIT_SUCCESS);
 	    
@@ -4288,7 +4293,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	if (set_parent)
 		gdm_slave_whack_temp_auth_file ();
 	g_free (script);
-	syslog (LOG_ERR, _("gdm_slave_exec_script: Can't fork script process!"));
+	syslog (LOG_ERR, _("%s: Can't fork script process!"), "gdm_slave_exec_script");
 	return EXIT_SUCCESS;
 	
     default:

@@ -274,7 +274,7 @@ greeter_session_init (void)
     if (GdmSessionDir == NULL ||
 	access (GdmSessionDir, R_OK|X_OK))
       {
-	syslog (LOG_ERR, _("gdm_login_session_init: Session directory %s not found!"), ve_sure_string (GdmSessionDir));
+	syslog (LOG_ERR, _("%s: Session directory %s not found!"), "gdm_login_session_init", ve_sure_string (GdmSessionDir));
 	session_dir_whacked_out = TRUE;
 	GdmShowXtermFailsafeSession = TRUE;
       }
