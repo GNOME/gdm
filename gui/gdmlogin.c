@@ -3667,8 +3667,9 @@ main (int argc, char *argv[])
 	    setlocale (LC_ALL, "");
     }
 
-    bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-    textdomain (PACKAGE);
+    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    textdomain (GETTEXT_PACKAGE);
 
     setup_cursor (GDK_LEFT_PTR);
 

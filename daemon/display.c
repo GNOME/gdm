@@ -98,8 +98,14 @@ gdm_display_check_loop (GdmDisplay *disp)
 				       "disabling display %s"), disp->name);
 	  /* only display a dialog box if this is a local display */
 	  if (disp->type == TYPE_LOCAL ||
-	      disp->type == TYPE_FLEXI)
-		  gdm_text_message_dialog (s);
+	      disp->type == TYPE_FLEXI) {
+		  char *ls = g_strdup_printf
+			  (gdm_cons_i18n (N_("Failed to start the display server "
+					     "several times in a short time period; "
+					     "disabling display %s")), disp->name);
+		  gdm_text_message_dialog (ls);
+		  g_free (ls);
+	  }
 	  gdm_error ("%s", s);
 	  g_free (s);
 

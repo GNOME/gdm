@@ -645,22 +645,23 @@ gdm_verify_cleanup (GdmDisplay *d)
 void
 gdm_verify_check (void)
 {
-	/* FIXME: this is somewhat evil */
-	if (access (PAM_PREFIX "/pam.d/gdm", F_OK) != 0 &&
-	    access ("/etc/pam.d/gdm", F_OK) != 0 &&
-	    access (PAM_PREFIX "/pam.conf", F_OK) != 0 &&
-	    access ("/etc/pam.conf", F_OK) != 0) {
-		char *s;
-		s = g_strdup_printf (_("Can't find PAM configuration file for gdm. "
-				       "I've tried %s, %s, %s and %s"),
-				     PAM_PREFIX "/pam.d/gdm",
-				     "/etc/pam.d/gdm",
-				     PAM_PREFIX "/pam.conf",
-				     "/etc/pam.conf");
-		gdm_text_message_dialog (s);
-		gdm_fail ("gdm_verify_check: %s", s);
-		g_free (s); /* I'm an anal wanker */
+	pam_handle_t *ph = NULL;
+
+	if (pam_start ("gdm", NULL, &standalone_pamc, &ph) != PAM_SUCCESS) {
+		closelog ();
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+		gdm_text_message_dialog
+			(gdm_cons_i18n (N_("Can't find PAM configuration for gdm.")));
+		gdm_fail ("gdm_verify_check: %s",
+			  _("Can't find PAM configuration for gdm."));
 	}
+
+	if (ph != NULL)
+		pam_end (ph, PAM_SUCCESS);
+
+	closelog ();
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
 }
 
 /* used in pam */

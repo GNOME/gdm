@@ -367,14 +367,14 @@ gdm_slave_run (GdmDisplay *display)
 		     * that we've given up.  The error is likely something
 		     * internal. */
 		    gdm_text_message_dialog
-			    (_("I could not start the X\n"
-			       "server (your graphical environment)\n"
-			       "due to some internal error.\n"
-			       "Please contact your system administrator\n"
-			       "or check your syslog to diagnose.\n"
-			       "In the meantime this display will be\n"
-			       "disabled.  Please restart gdm when\n"
-			       "the problem is corrected."));
+			    (gdm_cons_i18n (N_("I could not start the X\n"
+					       "server (your graphical environment)\n"
+					       "due to some internal error.\n"
+					       "Please contact your system administrator\n"
+					       "or check your syslog to diagnose.\n"
+					       "In the meantime this display will be\n"
+					       "disabled.  Please restart gdm when\n"
+					       "the problem is corrected.")));
 		    _exit (DISPLAY_ABORT);
 	    }
 	    gdm_slave_send_num (GDM_SOP_XPID, d->servpid);

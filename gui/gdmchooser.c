@@ -1102,8 +1102,9 @@ main (int argc, char *argv[])
     glade_gnome_init();
     g_free (fixedargv);
 
-    bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-    textdomain (PACKAGE);
+    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    textdomain (GETTEXT_PACKAGE);
 
     gdm_wm_screen_init (GdmXineramaScreen);
 

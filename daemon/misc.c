@@ -766,6 +766,64 @@ gdm_setup_gids (const char *login, gid_t gid)
 	return TRUE;
 }
 
+/* See comment in misc.h file */
+const char *
+gdm_cons_i18n (const char *string)
+{
+	char *vt_is_UTF8;
+	static gboolean checked = FALSE;
+	static gboolean is_utf8 = FALSE;
+	char *cmd;
+
+	if (checked) {
+		if (is_utf8)
+			return _(string);
+		else
+			return string;
+	}
+
+	checked = TRUE;
+	is_utf8 = FALSE;
+
+	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
+		return string;
+
+	vt_is_UTF8 = g_find_program_in_path ("vt-is-UTF8");
+	if (vt_is_UTF8 == NULL) {
+		int i;
+		char *check_paths[] = {
+			"/usr/bin/vt-is-UTF8",
+			"/usr/sbin/vt-is-UTF8",
+			"/bin/vt-is-UTF8",
+			"/sbin/vt-is-UTF8",
+			NULL
+		};
+		for (i = 0;
+		     check_paths[i] != NULL &&
+		     vt_is_UTF8 == NULL;
+		     i++) {
+			if (access (check_paths[i], X_OK) == 0) {
+				vt_is_UTF8 = g_strdup (check_paths[i]);
+			}
+		}
+	}
+
+	if (vt_is_UTF8 == NULL)
+		return string;
+
+	cmd = g_strdup_printf (EXPANDED_SBINDIR "/gdmopen %s -q",
+			       vt_is_UTF8);
+
+	if (system (cmd) == 0)
+		is_utf8 = TRUE;
+
+	g_free (cmd);
+
+	if (is_utf8)
+		return _(string);
+	else
+		return string;
+}
 
 
 /* EOF */

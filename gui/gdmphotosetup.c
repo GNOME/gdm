@@ -60,8 +60,9 @@ main (int argc, char *argv[])
 	int max_size;
 	char *last_pix;
 
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
 
 	gnome_program_init ("gdmphotosetup", VERSION, 
 			    LIBGNOMEUI_MODULE /* module_info */,

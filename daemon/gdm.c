@@ -336,7 +336,8 @@ gdm_config_parse (void)
     }
 
     if (ve_string_empty (GdmServAuthDir)) {
-	    gdm_text_message_dialog (_("No daemon/ServAuthDir specified in the configuration file"));
+	    gdm_text_message_dialog
+		    (gdm_cons_i18n (N_("No daemon/ServAuthDir specified in the configuration file")));
 	    gdm_fail (_("gdm_config_parse: No authdir specified."));
     }
 
@@ -463,12 +464,13 @@ gdm_config_parse (void)
 		    g_free (GdmTimedLogin);
 		    GdmTimedLogin = NULL;
 	    } else {
-		    char *s = g_strdup_printf (_("Xdmcp is disabled and gdm "
-						 "cannot find any local server "
-						 "to start.  Aborting!  Please "
-						 "correct the configuration %s "
-						 "and restart gdm."),
-					       GDM_CONFIG_FILE);
+		    char *s = g_strdup_printf
+			    (gdm_cons_i18n (N_("Xdmcp is disabled and gdm "
+					       "cannot find any local server "
+					       "to start.  Aborting!  Please "
+					       "correct the configuration %s "
+					       "and restart gdm.")),
+			     GDM_CONFIG_FILE);
 		    gdm_text_message_dialog (s);
 		    gdm_fail (_("gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"));
 	    }
@@ -485,10 +487,11 @@ gdm_config_parse (void)
     }
 
     if (pwent == NULL) {
-	    char *s = g_strdup_printf (_("The gdm user does not exist. "
-					 "Please correct gdm configuration %s "
-					 "and restart gdm."),
-				       GDM_CONFIG_FILE);
+	    char *s = g_strdup_printf
+		    (gdm_cons_i18n (N_("The gdm user does not exist. "
+					"Please correct gdm configuration %s "
+					"and restart gdm.")),
+				    GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
 	    gdm_fail (_("gdm_config_parse: Can't find the gdm user (%s). Aborting!"), GdmUser);
     } else {
@@ -496,11 +499,12 @@ gdm_config_parse (void)
     }
 
     if (GdmUserId == 0) {
-	    char *s = g_strdup_printf (_("The gdm user is set to be root, but "
-					 "this is not allowed since it can "
-					 "pose a security risk.  Please "
-					 "correct gdm configuration %s and "
-					 "restart gdm."), GDM_CONFIG_FILE);
+	    char *s = g_strdup_printf
+		    (gdm_cons_i18n (N_("The gdm user is set to be root, but "
+				       "this is not allowed since it can "
+				       "pose a security risk.  Please "
+				       "correct gdm configuration %s and "
+				       "restart gdm.")), GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
 	    gdm_fail (_("gdm_config_parse: The gdm user should not be root. Aborting!"));
     }
@@ -515,10 +519,11 @@ gdm_config_parse (void)
     }
 
     if (grent == NULL) {
-	    char *s = g_strdup_printf (_("The gdm group does not exist. "
-					 "Please correct gdm configuration %s "
-					 "and restart gdm."),
-				       GDM_CONFIG_FILE);
+	    char *s = g_strdup_printf
+		    (gdm_cons_i18n (N_("The gdm group does not exist. "
+				       "Please correct gdm configuration %s "
+				       "and restart gdm.")),
+		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
 	    gdm_fail (_("gdm_config_parse: Can't find the gdm group (%s). Aborting!"), GdmGroup);
     } else  {
@@ -526,11 +531,12 @@ gdm_config_parse (void)
     }
 
     if (GdmGroupId == 0) {
-	    char *s = g_strdup_printf (_("The gdm group is set to be root, but "
-					 "this is not allowed since it can "
-					 "pose a security risk. Please "
-					 "correct gdm configuration %s and "
-					 "restart gdm."), GDM_CONFIG_FILE);
+	    char *s = g_strdup_printf
+		    (gdm_cons_i18n (N_("The gdm group is set to be root, but "
+				       "this is not allowed since it can "
+				       "pose a security risk. Please "
+				       "correct gdm configuration %s and "
+				       "restart gdm.")), GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
 	    gdm_fail (_("gdm_config_parse: The gdm group should not be root. Aborting!"));
     }
@@ -563,50 +569,54 @@ gdm_config_parse (void)
 
     /* Enter paranoia mode */
     if (stat (GdmServAuthDir, &statbuf) == -1)  {
-	    char *s = g_strdup_printf (_("Server Authorization directory "
-					 "(daemon/ServAuthDir) is set to %s "
-					 "but this does not exist. Please "
-					 "correct gdm configuration %s and "
-					 "restart gdm."), GdmServAuthDir,
-				       GDM_CONFIG_FILE);
+	    char *s = g_strdup_printf
+		    (gdm_cons_i18n (N_("Server Authorization directory "
+				       "(daemon/ServAuthDir) is set to %s "
+				       "but this does not exist. Please "
+				       "correct gdm configuration %s and "
+				       "restart gdm.")), GdmServAuthDir,
+		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
 	    gdm_fail (_("gdm_config_parse: Authdir %s does not exist. Aborting."), GdmServAuthDir);
     }
 
     if (! S_ISDIR (statbuf.st_mode)) {
-	    char *s = g_strdup_printf (_("Server Authorization directory "
-					 "(daemon/ServAuthDir) is set to %s "
-					 "but this is not a directory. Please "
-					 "correct gdm configuration %s and "
-					 "restart gdm."), GdmServAuthDir,
-				       GDM_CONFIG_FILE);
+	    char *s = g_strdup_printf
+		    (gdm_cons_i18n (N_("Server Authorization directory "
+				       "(daemon/ServAuthDir) is set to %s "
+				       "but this is not a directory. Please "
+				       "correct gdm configuration %s and "
+				       "restart gdm.")), GdmServAuthDir,
+		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
 	    gdm_fail (_("gdm_config_parse: Authdir %s is not a directory. Aborting."), GdmServAuthDir);
     }
 
     if (statbuf.st_uid != GdmUserId || statbuf.st_gid != GdmGroupId)  {
-	    char *s = g_strdup_printf (_("Server Authorization directory "
-					 "(daemon/ServAuthDir) is set to %s "
-					 "but is not owned by user %s and group "
-					 "%s. Please correct the ownership or "
-					 "gdm configuration %s and restart "
-					 "gdm."),
-				       GdmServAuthDir, GdmUser, GdmGroup,
-				       GDM_CONFIG_FILE);
+	    char *s = g_strdup_printf
+		    (gdm_cons_i18n (N_("Server Authorization directory "
+				       "(daemon/ServAuthDir) is set to %s "
+				       "but is not owned by user %s and group "
+				       "%s. Please correct the ownership or "
+				       "gdm configuration %s and restart "
+				       "gdm.")),
+		     GdmServAuthDir, GdmUser, GdmGroup,
+		     GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
 	    gdm_fail (_("gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."), 
 		      GdmServAuthDir, GdmUser, GdmGroup);
     }
 
     if (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRGRP|S_IXGRP))  {
-	    char *s = g_strdup_printf (_("Server Authorization directory "
-					 "(daemon/ServAuthDir) is set to %s "
-					 "but has the wrong permissions, it "
-					 "should have permissions of 0750. "
-					 "Please correct the permissions or "
-					 "the gdm configuration %s and "
-					 "restart gdm."),
-				       GdmServAuthDir, GDM_CONFIG_FILE);
+	    char *s = g_strdup_printf
+		    (gdm_cons_i18n (N_("Server Authorization directory "
+				       "(daemon/ServAuthDir) is set to %s "
+				       "but has the wrong permissions, it "
+				       "should have permissions of 0750. "
+				       "Please correct the permissions or "
+				       "the gdm configuration %s and "
+				       "restart gdm.")),
+		     GdmServAuthDir, GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
 	    gdm_fail (_("gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. Aborting."), 
 		      GdmServAuthDir, statbuf.st_mode);
@@ -862,11 +872,12 @@ deal_with_x_crashes (GdmDisplay *d)
 	    /* Shit if we knew what the program was to tell the user,
 	     * the above script would have been defined and we'd run
 	     * it for them */
-	    char *error = _("I cannot start the X server (your graphical "
-			    "interface).  It is likely that it is not set "
-			    "up correctly. You will need to log in on a "
-			    "console and rerun the X configuration "
-			    "program.  Then restart GDM.");
+	    const char *error =
+		    gdm_cons_i18n (N_("I cannot start the X server (your graphical "
+				      "interface).  It is likely that it is not set "
+				      "up correctly. You will need to log in on a "
+				      "console and rerun the X configuration "
+				      "program.  Then restart GDM."));
 	    gdm_text_message_dialog (error);
     } /* else {
        * At this point .... screw the user, we don't know how to
@@ -1283,8 +1294,10 @@ main (int argc, char *argv[])
     store_argv (argc, argv);
 
     setlocale(LC_ALL, "");
-    bindtextdomain(PACKAGE, GNOMELOCALEDIR);
-    textdomain(PACKAGE);
+
+    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    textdomain (GETTEXT_PACKAGE);
 
     /* XDM compliant error message */
     if (getuid () != 0) {

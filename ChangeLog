@@ -1,3 +1,23 @@
+Mon Jan 21 19:14:28 2002  George Lebl <jirka@5z.com>
+
+	* acconfig.h, configure.in: use GETTEXT_PACKAGE
+
+	* daemon/gdm.c, daemon/misc.[ch], daemon/verify-pam.c,
+	  daemon/server.c, daemon/slave.c, daemon/display.c:
+	  When displaying something on a console display it only
+	  when the console is UTF-8, which is only true if
+	  "gdmopen vt-is-UTF8 -q" returns 0 status.  Else don't
+	  actually translate anything and just print out the english/ASCII
+	  version.
+
+	* daemon/verify-pam.c:  Better check for existance of the pam
+	  gdm configuration
+
+	* daemon/gdm.c, gui/gdmXnestchooser.c, gui/gdmchooser.c,
+	  gui/gdmconfig.c, gui/gdmflexiserver.c, gui/gdmlogin.c,
+	  gui/gdmphotosetup.c:  property bind gettext stuff and make	
+	  sure we correctly set it up for UTF-8
+
 2002-01-20  Alexander Larsson  <alla@lysator.liu.se>
 
 	* gui/greeter/greeter_item.[ch]:

@@ -355,8 +355,9 @@ main (int argc, char *argv[])
 	if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 		DOING_GDM_DEVELOPMENT = TRUE;
 
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
 
 	gnome_init ("gdmconfig", VERSION, argc, argv);
 	glade_gnome_init();
