@@ -1361,6 +1361,8 @@ gdm_cleanup_children (void)
 
     /* definately not logged in now */
     d->logged_in = FALSE;
+    g_free (d->login);
+    d->login = NULL;
 
     /* Declare the display dead */
     d->slavepid = 0;
@@ -2519,7 +2521,8 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			gdm_debug ("Got QUERYLOGIN %s", p);
 			for (li = displays; li != NULL; li = li->next) {
 				GdmDisplay *di = li->data;
-				if (di->login != NULL &&
+				if (di->logged_in &&
+				    di->login != NULL &&
 				    strcmp (di->login, p) == 0) {
 					if (resp == NULL) {
 						resp = g_string_new (di->name);
