@@ -1167,6 +1167,10 @@ gdm_wm_init (Window login_window)
 
 	wm_login_window = login_window;
 
+	if (wm_disp != NULL) {
+		return;
+	}
+
 	wm_disp = XOpenDisplay (gdk_get_display ());
 	if (wm_disp == NULL) {
 		/* EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEK! */

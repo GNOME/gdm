@@ -1,3 +1,13 @@
+Thu Jan 13 17:59:05 2005  George Lebl <jirka@5z.com>
+
+	* gui/gdmwm.c: don't init the wm twice if gdm_wm_init is called
+	  twice.  Fixes the greeter hanging if something went wrong with
+	  loading the theme.
+
+	* gui/greeter/greeter.c: always destroy the dialog widget because
+	  sometimes we don't actually exit.  Fixes non-fatal error dialogs
+	  hanging around.
+
 Tue Dec 14 12:23:35 2004  George Lebl <jirka@5z.com>
 
 	* daemon/verify-pam.c: fix very unlikely possible leak

@@ -647,6 +647,7 @@ verify_gdm_version (void)
       gdm_common_setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
+      gtk_widget_destroy (dialog);
     
       return EXIT_SUCCESS;
     }
@@ -1188,6 +1189,7 @@ main (int argc, char *argv[])
         gdm_common_setup_cursor (GDK_LEFT_PTR);
     
         gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
 
 	if (DOING_GDM_DEVELOPMENT)
 	  {
@@ -1236,6 +1238,7 @@ main (int argc, char *argv[])
       gdm_common_setup_cursor (GDK_LEFT_PTR);
 
       gtk_dialog_run (GTK_DIALOG (dialog));
+      gtk_widget_destroy (dialog);
 
       root = NULL;
     }
@@ -1272,6 +1275,7 @@ main (int argc, char *argv[])
       gdm_common_setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
+      gtk_widget_destroy (dialog);
 
       execl (EXPANDED_BINDIR "/gdmlogin", EXPANDED_BINDIR "/gdmlogin", NULL);
       execlp ("gdmlogin", "gdmlogin", NULL);
@@ -1294,6 +1298,7 @@ main (int argc, char *argv[])
       gdm_common_setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
+      gtk_widget_destroy (dialog);
 
       _exit (DISPLAY_ABORT);
     }
