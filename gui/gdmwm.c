@@ -274,7 +274,7 @@ gdm_wm_focus_window (Window window)
 }
 
 static GList *
-find_window_list (Window w)
+find_window_list (Window w, gboolean deco_ok)
 {
 	GList *li;
 
@@ -283,15 +283,19 @@ find_window_list (Window w)
 
 		if (gw->win == w)
 			return li;
+		if (deco_ok &&
+		    (gw->deco == w ||
+		     gw->shadow == w))
+			return li;
 	}
 
 	return NULL;
 }
 
 static GdmWindow *
-find_window (Window w)
+find_window (Window w, gboolean deco_ok)
 {
-	GList *li = find_window_list (w);
+	GList *li = find_window_list (w, deco_ok);
 	if (li == NULL)
 		return NULL;
 	else
@@ -414,7 +418,7 @@ add_window (Window w)
 {
 	GdmWindow *gw;
 
-	gw = find_window (w);
+	gw = find_window (w, FALSE);
 	if (gw == NULL) {
 		int x, y;
 		Window root;
@@ -454,7 +458,7 @@ add_window (Window w)
 static void
 remove_window (Window w)
 {
-	GList *li = find_window_list (w);
+	GList *li = find_window_list (w, FALSE);
 
 	if (li != NULL) {
 		GdmWindow *gw = li->data;
@@ -579,7 +583,7 @@ event_process (XEvent *ev)
 	switch (ev->type) {
 	case MapRequest:
 		w = ev->xmaprequest.window;
-		gw = find_window (w);
+		gw = find_window (w, FALSE);
 		if (gw == NULL) {
 			if (ev->xmaprequest.parent == wm_root) {
 				XGrabServer (wm_disp);
@@ -592,7 +596,7 @@ event_process (XEvent *ev)
 	case ConfigureRequest:
 		XGrabServer (wm_disp);
 		w = ev->xconfigurerequest.window;
-		gw = find_window (w);
+		gw = find_window (w, FALSE);
 		wchanges.border_width = ev->xconfigurerequest.border_width;
 		wchanges.sibling = ev->xconfigurerequest.above;
 		wchanges.stack_mode = ev->xconfigurerequest.detail;
@@ -632,7 +636,7 @@ event_process (XEvent *ev)
 		break;
 	case CirculateRequest:
 		w = ev->xcirculaterequest.window;
-		gw = find_window (w);
+		gw = find_window (w, FALSE);
 		if (gw == NULL) {
 			if (ev->xcirculaterequest.place == PlaceOnTop)
 				XRaiseWindow (wm_disp, w);
@@ -653,14 +657,14 @@ event_process (XEvent *ev)
 	case MapNotify:
 		w = ev->xmap.window;
 		if ( ! ev->xmap.override_redirect) {
-			gw = find_window (w);
+			gw = find_window (w, FALSE);
 			if (gw != NULL && focus_new_windows)
 				gdm_wm_focus_window (w);
 		}
 		break;
 	case UnmapNotify:
 		w = ev->xunmap.window;
-		gw = find_window (w);
+		gw = find_window (w, FALSE);
 		if (gw != NULL) {
 			XGrabServer (wm_disp);
 			XUnmapWindow (wm_disp, gw->deco);
@@ -676,7 +680,7 @@ event_process (XEvent *ev)
 		break;
 	case DestroyNotify:
 		w = ev->xdestroywindow.window;
-		gw = find_window (w);
+		gw = find_window (w, FALSE);
 		if (gw != NULL) {
 			XGrabServer (wm_disp);
 			remove_window (w);
@@ -687,7 +691,7 @@ event_process (XEvent *ev)
 		break;
 	case EnterNotify:
 		w = ev->xcrossing.window;
-		gw = find_window (w);
+		gw = find_window (w, TRUE);
 		if (gw != NULL)
 			gdm_wm_focus_window (gw->win);
 		break;
