@@ -369,9 +369,14 @@ main (int argc, char *argv[])
      */
 	
     if ( ! DOING_GDM_DEVELOPMENT) {
-	    glade_filename = gnome_datadir_file ("gdm/gdmconfig.glade");
-	    if (glade_filename == NULL) {	  
-		    glade_filename = g_strdup ("gdmconfig.glade");
+	    if (g_file_exists (GDM_GLADE_DIR "/gdmconfig.glade")) {
+		    glade_filename = g_strdup (GDM_GLADE_DIR
+					       "/gdmconfig.glade");
+	    } else {
+		    glade_filename = gnome_datadir_file ("gdm/gdmconfig.glade");
+		    if (glade_filename == NULL) {	  
+			    glade_filename = g_strdup ("gdmconfig.glade");
+		    }
 	    }
     } else {
 	    glade_filename = g_strdup ("gdmconfig.glade");

@@ -504,9 +504,14 @@ gdm_chooser_gui_init (void)
      */
 	
     if ( ! DOING_GDM_DEVELOPMENT) {
-	    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade");
-	    if (glade_filename == NULL) {	  
-		    glade_filename = g_strdup("gdmchooser.glade");
+	    if (g_file_exists (GDM_GLADE_DIR "/gdmchooser.glade")) {
+		    glade_filename = g_strdup (GDM_GLADE_DIR
+					       "/gdmchooser.glade");
+	    } else {
+		    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade");
+		    if (glade_filename == NULL) {	  
+			    glade_filename = g_strdup("gdmchooser.glade");
+		    }
 	    }
     } else {
 	    glade_filename = g_strdup("gdmchooser.glade");
