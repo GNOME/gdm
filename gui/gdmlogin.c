@@ -309,6 +309,11 @@ gdm_parse_enriched_string(gchar *s)
 	        buffer+=strlen(name.release);
 	        break;
 
+	    case 'm':
+	        memcpy(buffer, name.machine, strlen(name.machine));
+	        buffer+=strlen(name.machine);
+	        break;
+
 	    case '%':
 		*buffer++='%';
 		break;
