@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-07 03:47+0100\n"
-"PO-Revision-Date: 2004-01-07 19:37+0100\n"
+"POT-Creation-Date: 2004-01-09 14:40+0100\n"
+"PO-Revision-Date: 2004-01-09 17:30+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -180,21 +180,11 @@ msgstr "%s: Nemohu zapsat cookie"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Ignoruji podezřelý soubor cookie %s"
 
-#: daemon/auth.c:889 daemon/gdm.c:2217
+#: daemon/auth.c:889 daemon/gdm.c:2219
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Nemohu zapisovat do %s: %s"
 
-#. This means we have no clue what's happening,
-#. * it's not X server crashing as we would have
-#. * cought that elsewhere.  Things are just
-#. * not working out, so tell the user.
-#. * However this may have been caused by a malicious local user
-#. * zapping the display repeatedly, that shouldn't cause gdm
-#. * to stop working completely so just wait for 2 minutes,
-#. * that should give people ample time to stop gdm if needed,
-#. * or just wait for the stupid malicious user to get bored
-#. * and go away
 #: daemon/display.c:114
 #, c-format
 msgid ""
@@ -300,7 +290,7 @@ msgstr "%s: Nemohu vytvořit FIFO"
 msgid "%s: Could not open FIFO"
 msgstr "%s: Nemohu otevřít FIFO"
 
-#: daemon/gdm.c:242
+#: daemon/gdm.c:243
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -309,12 +299,12 @@ msgstr ""
 "Adresář pro ověřování serveru (daemon/ServAuthDir) je nastaven na %s, ale "
 "ten neexistuje. Opravte prosím nastavení programu GDM %s a znovu jej spusťte."
 
-#: daemon/gdm.c:251
+#: daemon/gdm.c:252
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Adresář AuthDir %s neexistuje. Končím."
 
-#: daemon/gdm.c:256
+#: daemon/gdm.c:257
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -323,85 +313,85 @@ msgstr ""
 "Adresář pro ověřování serveru (daemon/ServAuthDir) je nastaven na %s, což "
 "není adresář. Opravte prosím nastavení programu GDM %s a znovu jej spusťte."
 
-#: daemon/gdm.c:265
+#: daemon/gdm.c:266
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Adresář AuthDir %s není adresář. Končím."
 
-#: daemon/gdm.c:278
+#: daemon/gdm.c:279
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr "%s: Logdir %s neexistuje nebo není adresář. Používám ServAuthDir %s."
 
-#: daemon/gdm.c:307 gui/gdmlogin.c:630 gui/greeter/greeter.c:100
+#: daemon/gdm.c:308 gui/gdmlogin.c:630 gui/greeter/greeter.c:100
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
 msgstr "%s: Žádný konfigurační soubor: %s. Použiji implicitní hodnoty."
 
-#: daemon/gdm.c:351
+#: daemon/gdm.c:353
 #, c-format
 msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
 msgstr "%s: BaseXsession prázdné, používám %s/gdm/Xsession"
 
-#: daemon/gdm.c:393
+#: daemon/gdm.c:395
 #, c-format
 msgid "%s: Standard X server not found, trying alternatives"
 msgstr "%s: Nenalezl jsem standardní X server, zkouším alternativy"
 
-#: daemon/gdm.c:425
+#: daemon/gdm.c:427
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
 msgstr "%s: Byl povolen protokol XDMCP, ale není podporován, takže jej vypínám"
 
-#: daemon/gdm.c:438
+#: daemon/gdm.c:440
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off automatic login"
 msgstr ""
 "%s: Root se nemůže automaticky přihlašovat, vypínám automatické přihlašování"
 
-#: daemon/gdm.c:451
+#: daemon/gdm.c:453
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off timed login"
 msgstr ""
 "%s: Root se nemůže automaticky přihlašovat, vypínám časované přihlašování"
 
-#: daemon/gdm.c:457
+#: daemon/gdm.c:459
 #, c-format
 msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
 msgstr "%s: TimedLoginDelay menší než 5, takže prostě použiji 5."
 
-#: daemon/gdm.c:467
+#: daemon/gdm.c:469
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Žádný program pro přivítání nebyl zadán."
 
-#: daemon/gdm.c:470
+#: daemon/gdm.c:472
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Žádný vzdálený program pro přivítání nebyl zadán."
 
-#: daemon/gdm.c:474
+#: daemon/gdm.c:476
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Žádný adresář sezení nespecifikován."
 
-#: daemon/gdm.c:499
+#: daemon/gdm.c:501
 #, c-format
 msgid "%s: Empty server command, using standard one."
 msgstr "%s: Prázdný příkaz serveru, použiji standardní."
 
-#: daemon/gdm.c:542
+#: daemon/gdm.c:544
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
 msgstr "%s: Číslo displeje %d je již obsazené! Použiji číslo %d"
 
-#: daemon/gdm.c:561
+#: daemon/gdm.c:563
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Nesprávná řádek serveru v konfiguračním souboru. Ignoruji!"
 
-#: daemon/gdm.c:572 daemon/gdm.c:613
+#: daemon/gdm.c:574 daemon/gdm.c:615
 #, c-format
 msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
 msgstr ""
@@ -410,7 +400,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: daemon/gdm.c:590
+#: daemon/gdm.c:592
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
@@ -419,7 +409,7 @@ msgstr ""
 "%s: Protokol XDMCP je vypnut a nebyly definovány žádné místní servery. "
 "Přidávám %s na :%d pro možnost nastavení!"
 
-#: daemon/gdm.c:605
+#: daemon/gdm.c:607
 #, c-format
 msgid ""
 "XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
@@ -428,7 +418,7 @@ msgstr ""
 "Protokol XDMCP je vypnut a nelze najít žádný lokální server, který by bylo "
 "možné spustit. Končím! Opravte prosím nastavení %s a znovu spusťte GDM."
 
-#: daemon/gdm.c:627
+#: daemon/gdm.c:629
 #, c-format
 msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
@@ -436,12 +426,12 @@ msgid ""
 msgstr ""
 "Uživatel gdm neexistuje.  Prosím opravte nastavení gdm %s a restartujte jej."
 
-#: daemon/gdm.c:634
+#: daemon/gdm.c:636
 #, c-format
 msgid "%s: Can't find the gdm user (%s). Aborting!"
 msgstr "%s: Nemohu najít uživatele gdm (%s). Končím!"
 
-#: daemon/gdm.c:641
+#: daemon/gdm.c:643
 #, c-format
 msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
@@ -450,12 +440,12 @@ msgstr ""
 "Uživatel GDM je nastavený jako root, což je kvůli bezpečnostním rizikům "
 "zakázané. Opravte prosím nastavení programu GDM %s a znovu jej spusťte."
 
-#: daemon/gdm.c:649
+#: daemon/gdm.c:651
 #, c-format
 msgid "%s: The gdm user should not be root. Aborting!"
 msgstr "%s: Uživatel gdm nesmí být root. Končím!"
 
-#: daemon/gdm.c:656
+#: daemon/gdm.c:658
 #, c-format
 msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
@@ -464,12 +454,12 @@ msgstr ""
 "Skupina gdm neexistuje. Opravte prosím soubor s nastavením %s a znovu "
 "spusťte program GDM."
 
-#: daemon/gdm.c:663
+#: daemon/gdm.c:665
 #, c-format
 msgid "%s: Can't find the gdm group (%s). Aborting!"
 msgstr "%s: Nemohu najít skupinu gdm (%s). Končím!"
 
-#: daemon/gdm.c:670
+#: daemon/gdm.c:672
 #, c-format
 msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
@@ -478,40 +468,40 @@ msgstr ""
 "Skupina gdm je nastavená jako root, což je z bezpečnostních důvodů zakázáno. "
 "Opravte prosím nastavení programu GDM %s a znovu jej spusťte."
 
-#: daemon/gdm.c:678
+#: daemon/gdm.c:680
 #, c-format
 msgid "%s: The gdm group should not be root. Aborting!"
 msgstr "%s: Skupina gdm nesmí být root. Končím!"
 
-#: daemon/gdm.c:693
+#: daemon/gdm.c:695
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr ""
 "%s: Program pro přivítání nebyl nalezen nebo jej nelze spustit uživatelem gdm"
 
-#: daemon/gdm.c:700
+#: daemon/gdm.c:702
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the gdm user"
 msgstr ""
 "%s: Vzdálený program pro přivítání nebyl nalezen nebo jej nelze spustit "
 "uživatelem gdm."
 
-#: daemon/gdm.c:711
+#: daemon/gdm.c:713
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr ""
 "%s: Program pro výběr nebyl nalezen nebo jej nelze spustit uživatelem gdm"
 
-#: daemon/gdm.c:720
+#: daemon/gdm.c:722
 msgid "No daemon/ServAuthDir specified in the configuration file"
 msgstr "V souboru s nastavením není uveden démon ani ServAuthDir"
 
-#: daemon/gdm.c:722
+#: daemon/gdm.c:724
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Není zadán démon/ServAuthDir."
 
-#: daemon/gdm.c:746
+#: daemon/gdm.c:748
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -522,13 +512,13 @@ msgstr ""
 "nevlastní jej uživatel %s a skupina %s. Opravte prosím vlastníka adresáře "
 "nebo nastavení programu GDM %s a znovu jej spusťte."
 
-#: daemon/gdm.c:757
+#: daemon/gdm.c:759
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: Adresář AuthDir %s není vlastněn uživatelem %s a skupinou %s. Končím."
 
-#: daemon/gdm.c:763
+#: daemon/gdm.c:765
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -539,44 +529,44 @@ msgstr ""
 "špatně nastavená práva, měl by mít práva %o. Opravte prosím nastavení práv "
 "nebo nastavení gdm %s a znovu spusťte gdm."
 
-#: daemon/gdm.c:774
+#: daemon/gdm.c:776
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: AuthDir %s má špatně nastavená práva %o. Měly by být %o. Končím."
 
 #. FIXME: how to handle this?
-#: daemon/gdm.c:830 daemon/gdm.c:838 daemon/gdm.c:2001 daemon/gdm.c:2009
+#: daemon/gdm.c:832 daemon/gdm.c:840 daemon/gdm.c:2003 daemon/gdm.c:2011
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
 msgstr "Nemohu zapsat soubor PID %s, možná došlo místo na disku. Chyba: %s\n"
 
-#: daemon/gdm.c:832 daemon/gdm.c:840 daemon/gdm.c:2003 daemon/gdm.c:2011
+#: daemon/gdm.c:834 daemon/gdm.c:842 daemon/gdm.c:2005 daemon/gdm.c:2013
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
 msgstr "Nemohu zapsat soubor PID %s, možná došlo místo na disku. Chyba: %s"
 
-#: daemon/gdm.c:850
+#: daemon/gdm.c:852
 #, c-format
 msgid "%s: fork() failed!"
 msgstr "%s: fork() selhal!"
 
 #. should never happen
-#: daemon/gdm.c:853 daemon/slave.c:3367
+#: daemon/gdm.c:855 daemon/slave.c:3367
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() selhal: %s!"
 
-#: daemon/gdm.c:1023
+#: daemon/gdm.c:1025
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: Zkouším záchranný X server %s"
 
-#: daemon/gdm.c:1041
+#: daemon/gdm.c:1043
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: Spouštím skript XKeepsCrashing"
 
-#: daemon/gdm.c:1153
+#: daemon/gdm.c:1155
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
@@ -591,7 +581,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:1165
+#: daemon/gdm.c:1167
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -600,90 +590,92 @@ msgstr ""
 "V krátkém čase selhalo několikrát za sebou spuštění X serveru; vypínám "
 "displej %s"
 
-#: daemon/gdm.c:1173 daemon/gdm.c:2719
+#: daemon/gdm.c:1175 daemon/gdm.c:2721
 msgid "Master suspending..."
 msgstr "Master uspává..."
 
-#: daemon/gdm.c:1227
+#: daemon/gdm.c:1229
+#, c-format
 msgid "System is rebooting, please wait ..."
 msgstr "Systém se restartuje, čekejte prosím ..."
 
-#: daemon/gdm.c:1229
+#: daemon/gdm.c:1231
+#, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "Systém se vypíná, čekejte prosím ..."
 
-#: daemon/gdm.c:1240
+#: daemon/gdm.c:1242
 msgid "Master halting..."
 msgstr "Master vypíná..."
 
-#: daemon/gdm.c:1253
+#: daemon/gdm.c:1255
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s: Vypnutí selhalo: %s"
 
-#: daemon/gdm.c:1262
+#: daemon/gdm.c:1264
 msgid "Master rebooting..."
 msgstr "Master restartuje..."
 
-#: daemon/gdm.c:1275
+#: daemon/gdm.c:1277
 #, c-format
 msgid "%s: Reboot failed: %s"
 msgstr "%s: Restart selhal: %s"
 
-#: daemon/gdm.c:1371
+#: daemon/gdm.c:1373
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
 "Požadavek na restart nebo vypnutí, i když displej %s neobsahuje žádné "
 "systémové menu."
 
-#: daemon/gdm.c:1380
+#: daemon/gdm.c:1382
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-local display %s"
 msgstr ""
 "Požadavek na nové spuštění, restart, nebo vypnutí z nelokálního displeje %s"
 
 #. Bury this display for good
-#: daemon/gdm.c:1440
+#: daemon/gdm.c:1442
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: Ukončuji displej %s"
 
-#: daemon/gdm.c:1578
+#: daemon/gdm.c:1580
 msgid "GDM restarting ..."
 msgstr "GDM restartuje ..."
 
-#: daemon/gdm.c:1582
+#: daemon/gdm.c:1584
 msgid "Failed to restart self"
 msgstr "Nemohu se restartovat"
 
 #. FIXME: note that this could mean out of memory
-#: daemon/gdm.c:1656
+#: daemon/gdm.c:1658
 msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
 msgstr "hlavní démon: Dostal jsem SIGABRT, něco se hodně pokazilo. Končím!"
 
-#: daemon/gdm.c:1794
+#: daemon/gdm.c:1796
 msgid "Do not fork into the background"
 msgstr "Nevětvit se do pozadí"
 
-#: daemon/gdm.c:1796
+#: daemon/gdm.c:1798
 msgid "No console (local) servers to be run"
 msgstr "Nemají být spuštěny žádné místní servery"
 
-#: daemon/gdm.c:1798
+#: daemon/gdm.c:1800
 msgid "Preserve LD_* variables"
 msgstr "Zachovat proměnné LD_*"
 
-#: daemon/gdm.c:1800
+#: daemon/gdm.c:1802
 msgid "Print GDM version"
 msgstr "Vypsat verzi GDM"
 
-#: daemon/gdm.c:1802
+#: daemon/gdm.c:1804
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr ""
 "Spustit první X server, ale pak se zastavit, dokud ve fifo nedostaneme GO"
 
-#: daemon/gdm.c:1921 gui/gdmchooser.c:2023
+#: daemon/gdm.c:1923 gui/gdmchooser.c:2023
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -693,13 +685,13 @@ msgstr ""
 "Spusťte '%s --help' a získáte úplný výpis voleb dostupných z příkazové "
 "řádky.\n"
 
-#: daemon/gdm.c:1939
+#: daemon/gdm.c:1941
 msgid "Only root wants to run gdm\n"
 msgstr "Pouze root chce spustit gdm\n"
 
-#: daemon/gdm.c:1955 daemon/gdm.c:1959 daemon/gdm.c:2034 daemon/gdm.c:2038
-#: daemon/gdm.c:2042 daemon/gdm.c:2046 daemon/gdm.c:2056 daemon/gdm.c:2062
-#: daemon/gdm.c:2073 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
+#: daemon/gdm.c:1957 daemon/gdm.c:1961 daemon/gdm.c:2036 daemon/gdm.c:2040
+#: daemon/gdm.c:2044 daemon/gdm.c:2048 daemon/gdm.c:2058 daemon/gdm.c:2064
+#: daemon/gdm.c:2075 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
 #: daemon/misc.c:1618 daemon/misc.c:1622 daemon/misc.c:1626
 #: daemon/server.c:510 daemon/server.c:523 daemon/slave.c:805
 #: daemon/slave.c:819 daemon/slave.c:829 daemon/slave.c:839 daemon/slave.c:851
@@ -711,31 +703,29 @@ msgstr "Pouze root chce spustit gdm\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Chyba při nastavování zpracování signálu %s: %s"
 
-#: daemon/gdm.c:1983
+#: daemon/gdm.c:1985
 msgid "gdm already running. Aborting!"
 msgstr "gdm již běží. Končím!"
 
-#: daemon/gdm.c:2082
+#: daemon/gdm.c:2084
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Chyba při nastavování zpracování signálu CHLD"
 
-#: daemon/gdm.c:2186
+#: daemon/gdm.c:2188
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "Nemohu otevřít %s pro zápis"
 
-#: daemon/gdm.c:3423 daemon/gdm.c:3442
+#: daemon/gdm.c:3425 daemon/gdm.c:3444
 msgid "Flexible server request denied: Not authenticated"
 msgstr "Odepřen flexibilní požadavek na server: Nepřihlášený"
 
-#. Don't print the name to syslog as it might be
-#. * long and dangerous
-#: daemon/gdm.c:3460
+#: daemon/gdm.c:3462
 msgid "Unknown server type requested, using standard server."
 msgstr "Požadován neznámý typ serveru, použiji standardní server."
 
-#: daemon/gdm.c:3464
+#: daemon/gdm.c:3466
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -744,15 +734,15 @@ msgstr ""
 "Požadovaný server %s nesmí být použit s flexibilními servery, použiji "
 "standardní server."
 
-#: daemon/gdm.c:3586
+#: daemon/gdm.c:3588
 msgid "Query logout action request denied: Not authenticated"
 msgstr "Odepřen požadavek zjištění akce odhlášení: Nepřihlášen"
 
-#: daemon/gdm.c:3644 daemon/gdm.c:3699
+#: daemon/gdm.c:3646 daemon/gdm.c:3701
 msgid "Set logout action request denied: Not authenticated"
 msgstr "Odepřen požadavek nastavení akce odhlášení: Nepřihlášen"
 
-#: daemon/gdm.c:3744 daemon/gdm.c:3771
+#: daemon/gdm.c:3746 daemon/gdm.c:3773
 msgid "Query vt request denied: Not authenticated"
 msgstr "Odepřen požadavek zjištění vt: Nepřihlášen"
 
@@ -780,6 +770,15 @@ msgstr "initgroups() selhal pro %s. Končím."
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s: Chyba při nastavování signálu %d na %s"
+
+#: daemon/misc.c:2270
+#, c-format
+msgid ""
+"Last login:\n"
+"%s"
+msgstr ""
+"Poslední přihlášení:\n"
+"%s"
 
 #: daemon/server.c:160
 msgid "Can not start fallback console"
@@ -820,7 +819,6 @@ msgstr "Displej %s je již obsazen jiným X serverem."
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Chyba při otevírání roury: %s"
 
-#. Send X too busy
 #: daemon/server.c:780
 #, c-format
 msgid "%s: Cannot find a free display number"
@@ -1210,7 +1208,6 @@ msgstr "Chyba! Nemohu nastavit kontext spustitelného programu."
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Nemohu spustit %s %s %s"
 
-#. we can't really be any more specific
 #: daemon/slave.c:3686
 msgid "Cannot start the session due to some internal error."
 msgstr "Nemohu spustit sezení kvůli nějaké interní chybě."
@@ -1323,7 +1320,7 @@ msgstr "%s: Nemohu vytvořit rouru"
 msgid "%s: Failed executing: %s"
 msgstr "%s: Chyba při spouštění: %s"
 
-#: daemon/verify-crypt.c:71 daemon/verify-pam.c:716 daemon/verify-shadow.c:72
+#: daemon/verify-crypt.c:71 daemon/verify-pam.c:723 daemon/verify-shadow.c:72
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
@@ -1331,27 +1328,27 @@ msgstr ""
 "\n"
 "Nesprávné jméno uživatele nebo heslo. Rozlišují se malá a velká písmena."
 
-#: daemon/verify-crypt.c:76 daemon/verify-pam.c:726 daemon/verify-shadow.c:77
+#: daemon/verify-crypt.c:76 daemon/verify-pam.c:733 daemon/verify-shadow.c:77
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Zkontrolujte prosím, že klávesa Caps Lock není povolena."
 
 #. I think I'll add the buttons next to this
-#: daemon/verify-crypt.c:123 daemon/verify-pam.c:175
+#: daemon/verify-crypt.c:123 daemon/verify-pam.c:176
 #: daemon/verify-shadow.c:122 gui/gdmlogin.c:2908
 msgid "Please enter your username"
 msgstr "Zadejte své uživatelské jméno"
 
 #. login: is whacked always translate to Username:
-#: daemon/verify-crypt.c:124 daemon/verify-pam.c:91 daemon/verify-pam.c:92
-#: daemon/verify-pam.c:93 daemon/verify-pam.c:169 daemon/verify-pam.c:505
+#: daemon/verify-crypt.c:124 daemon/verify-pam.c:92 daemon/verify-pam.c:93
+#: daemon/verify-pam.c:94 daemon/verify-pam.c:170 daemon/verify-pam.c:512
 #: daemon/verify-shadow.c:123 gui/gdmlogin.c:1049 gui/gdmlogin.c:1063
 #: gui/gdmlogin.c:1754 gui/gdmlogin.c:2223 gui/greeter/greeter.c:270
 #: gui/greeter/greeter_parser.c:1061
 msgid "Username:"
 msgstr "Uživatel:"
 
-#: daemon/verify-crypt.c:162 daemon/verify-pam.c:94 daemon/verify-pam.c:95
-#: daemon/verify-pam.c:216 daemon/verify-shadow.c:180 gui/gdmlogin.c:1786
+#: daemon/verify-crypt.c:162 daemon/verify-pam.c:95 daemon/verify-pam.c:96
+#: daemon/verify-pam.c:223 daemon/verify-shadow.c:180 gui/gdmlogin.c:1786
 msgid "Password:"
 msgstr "Heslo:"
 
@@ -1361,7 +1358,7 @@ msgstr "Heslo:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "Nemohu autentizovat uživatele \"%s\""
 
-#: daemon/verify-crypt.c:207 daemon/verify-pam.c:602
+#: daemon/verify-crypt.c:207 daemon/verify-pam.c:609
 #: daemon/verify-shadow.c:225
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1377,8 +1374,8 @@ msgstr "Správci systému není dovoleno se přihlásit z této obrazovky"
 msgid "User %s not allowed to log in"
 msgstr "Uživatel %s nemá dovoleno se přihlásit"
 
-#: daemon/verify-crypt.c:227 daemon/verify-crypt.c:251 daemon/verify-pam.c:632
-#: daemon/verify-pam.c:881 daemon/verify-shadow.c:245
+#: daemon/verify-crypt.c:227 daemon/verify-crypt.c:251 daemon/verify-pam.c:639
+#: daemon/verify-pam.c:888 daemon/verify-shadow.c:245
 #: daemon/verify-shadow.c:269
 msgid ""
 "\n"
@@ -1387,15 +1384,15 @@ msgstr ""
 "\n"
 "Správce systému zakázal váš účet."
 
-#: daemon/verify-crypt.c:274 daemon/verify-crypt.c:379 daemon/verify-pam.c:650
-#: daemon/verify-pam.c:898 daemon/verify-shadow.c:292
+#: daemon/verify-crypt.c:274 daemon/verify-crypt.c:379 daemon/verify-pam.c:657
+#: daemon/verify-pam.c:905 daemon/verify-shadow.c:292
 #: daemon/verify-shadow.c:396
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Nemohu nastavit uživatelskou skupinu pro %s"
 
-#: daemon/verify-crypt.c:276 daemon/verify-crypt.c:382 daemon/verify-pam.c:652
-#: daemon/verify-pam.c:901 daemon/verify-shadow.c:294
+#: daemon/verify-crypt.c:276 daemon/verify-crypt.c:382 daemon/verify-pam.c:659
+#: daemon/verify-pam.c:908 daemon/verify-shadow.c:294
 #: daemon/verify-shadow.c:399
 msgid ""
 "\n"
@@ -1455,89 +1452,92 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "Nemohu získat strukturu passwd pro %s"
 
-#: daemon/verify-pam.c:96
+#: daemon/verify-pam.c:97
 msgid "You are required to change your password immediately (password aged)"
 msgstr "Musíte okamžitě změnit své heslo (heslo vypršelo)"
 
-#: daemon/verify-pam.c:97
+#: daemon/verify-pam.c:98
 msgid "You are required to change your password immediately (root enforced)"
 msgstr "Musíte okamžitě změnit své heslo (vynuceno rootem)"
 
-#: daemon/verify-pam.c:98
+#: daemon/verify-pam.c:99
 msgid "Your account has expired; please contact your system administrator"
 msgstr "Váš účet vypršel; kontaktujte prosím svého správce systému"
 
-#: daemon/verify-pam.c:99
+#: daemon/verify-pam.c:100
 msgid "No password supplied"
 msgstr "Nezadáno heslo"
 
-#: daemon/verify-pam.c:100
+#: daemon/verify-pam.c:101
 msgid "Password unchanged"
 msgstr "Heslo nebylo změněno"
 
-#: daemon/verify-pam.c:101
+#: daemon/verify-pam.c:102
 msgid "Can not get username"
 msgstr "Nemohu získat jméno uživatele"
 
-#: daemon/verify-pam.c:102
+#: daemon/verify-pam.c:103
 msgid "Retype new UNIX password:"
 msgstr "Napište nové heslo UNIXu:"
 
-#: daemon/verify-pam.c:103
+#: daemon/verify-pam.c:104
 msgid "Enter new UNIX password:"
 msgstr "Zadejte nové heslo UNIXu:"
 
-#: daemon/verify-pam.c:104
+#: daemon/verify-pam.c:105
 msgid "(current) UNIX password:"
 msgstr "(současné) heslo UNIXu:"
 
-#: daemon/verify-pam.c:105
+#: daemon/verify-pam.c:106
 msgid "Error while changing NIS password."
 msgstr "Chyba při měnění hesla NIS."
 
-#: daemon/verify-pam.c:106
+#: daemon/verify-pam.c:107
 msgid "You must choose a longer password"
 msgstr "Musíte zvolit delší heslo"
 
-#: daemon/verify-pam.c:107
+#: daemon/verify-pam.c:108
 msgid "Password has been already used. Choose another."
 msgstr "Heslo již bylo použito. Zvolte jiné."
 
-#: daemon/verify-pam.c:108
+#: daemon/verify-pam.c:109
 msgid "You must wait longer to change your password"
 msgstr "Na změnu svého hesla musíte počkat déle"
 
-#: daemon/verify-pam.c:109
+#: daemon/verify-pam.c:110
 msgid "Sorry, passwords do not match"
 msgstr "Lituji, hesla nesouhlasí"
 
-#: daemon/verify-pam.c:380
+#: daemon/verify-pam.c:387
 msgid "Cannot setup pam handle with null display"
 msgstr "Nemohu nastavit pam handle s displejem null"
 
-#: daemon/verify-pam.c:397
+#: daemon/verify-pam.c:404
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "Nemohu spustit službu %s: %s\n"
 
-#: daemon/verify-pam.c:405
+#: daemon/verify-pam.c:412
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Nemohu nastavit PAM_TTY=%s"
 
-#: daemon/verify-pam.c:415
+#: daemon/verify-pam.c:422
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Nemohu nastavit PAM_RHOST=%s"
 
 #. #endif
 #. PAM_FAIL_DELAY
-#: daemon/verify-pam.c:558 daemon/verify-pam.c:577 daemon/verify-pam.c:831
-#: daemon/verify-pam.c:844
+#. is not really an auth problem, but it will
+#. pretty much look as such, it shouldn't really
+#. happen
+#: daemon/verify-pam.c:565 daemon/verify-pam.c:584 daemon/verify-pam.c:838
+#: daemon/verify-pam.c:851
 msgid "Couldn't authenticate user"
 msgstr "Nemohu ověřit uživatele"
 
-#: daemon/verify-pam.c:605
+#: daemon/verify-pam.c:612
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1545,12 +1545,12 @@ msgstr ""
 "\n"
 "Správci systému není dovoleno přihlásit se z této obrazovky"
 
-#: daemon/verify-pam.c:621
+#: daemon/verify-pam.c:628
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Změna ověřovacího tokenu selhala pro uživatele %s"
 
-#: daemon/verify-pam.c:623
+#: daemon/verify-pam.c:630
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1560,17 +1560,17 @@ msgstr ""
 "Změna ověřovacího tokenu selhala. Prosím, zkuste to později znovu nebo "
 "kontaktujte svého správce systému."
 
-#: daemon/verify-pam.c:630 daemon/verify-pam.c:878
+#: daemon/verify-pam.c:637 daemon/verify-pam.c:885
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Uživatel %s již nemá povolen přístup do systému"
 
-#: daemon/verify-pam.c:636 daemon/verify-pam.c:884
+#: daemon/verify-pam.c:643 daemon/verify-pam.c:891
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Uživatel %s nemá povolen přístup v tuto dobu"
 
-#: daemon/verify-pam.c:638
+#: daemon/verify-pam.c:645
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1578,22 +1578,22 @@ msgstr ""
 "\n"
 "Správce systému dočasně zakázal váš účet."
 
-#: daemon/verify-pam.c:643 daemon/verify-pam.c:891
+#: daemon/verify-pam.c:650 daemon/verify-pam.c:898
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Nemohu nastavit správu účtu (acct. mgmt.) pro %s"
 
-#: daemon/verify-pam.c:664 daemon/verify-pam.c:914
+#: daemon/verify-pam.c:671 daemon/verify-pam.c:921
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Nemohu nastavit pověření pro %s"
 
-#: daemon/verify-pam.c:678 daemon/verify-pam.c:929
+#: daemon/verify-pam.c:685 daemon/verify-pam.c:936
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Nemohu otevřít sezení pro %s"
 
-#: daemon/verify-pam.c:720
+#: daemon/verify-pam.c:727
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1601,15 +1601,15 @@ msgstr ""
 "\n"
 "Autentizace selhala. Písmena musí být zadána ve správné velikosti."
 
-#: daemon/verify-pam.c:736 daemon/verify-pam.c:834 daemon/verify-pam.c:847
+#: daemon/verify-pam.c:743 daemon/verify-pam.c:841 daemon/verify-pam.c:854
 msgid "Authentication failed"
 msgstr "Ověření selhalo"
 
-#: daemon/verify-pam.c:800
+#: daemon/verify-pam.c:807
 msgid "Automatic login"
 msgstr "Automatické přihlášení"
 
-#: daemon/verify-pam.c:887
+#: daemon/verify-pam.c:894
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
@@ -1617,7 +1617,7 @@ msgstr ""
 "\n"
 "Správce systému dočasně znemožnil váš přístup do systému."
 
-#: daemon/verify-pam.c:1062 daemon/verify-pam.c:1064
+#: daemon/verify-pam.c:1069 daemon/verify-pam.c:1071
 msgid "Can't find PAM configuration for gdm."
 msgstr "Nemohu nalézt nastavení PAM pro program GDM."
 
@@ -1834,7 +1834,6 @@ msgstr "GDM neběží"
 msgid "Please ask your system administrator to start it."
 msgstr "Požádejte prosím svého správce systému, aby jej spustil."
 
-#. markup
 #: gui/gdmXnestchooser.c:623
 msgid "Could not find a free display number"
 msgstr "Nenašel jsem volné číslo displeje"
@@ -2011,7 +2010,6 @@ msgstr ""
 "jste právě aktualizovali gdm. Restartujte prosím démona gdm nebo restartujte "
 "počítač."
 
-#. markup
 #: gui/gdmcomm.c:405 gui/gdmphotosetup.c:70
 msgid "GDM (The GNOME Display Manager) is not running."
 msgstr "GDM (Správce displeje GNOME) neběží."
@@ -2032,7 +2030,6 @@ msgstr ""
 "Pokud si stále přejete používat tuto vlastnost, spusťte GDM sami, nebo "
 "požádejte svého správce systému, aby jej spustil."
 
-#. markup
 #: gui/gdmcomm.c:433 gui/gdmflexiserver.c:671
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Nemohu komunikovat s GDM (správcem displeje GNOME)"
@@ -2176,7 +2173,9 @@ msgstr "Přepnout na _existující displej"
 msgid ""
 "There are some displays already open.  You can select one from the list "
 "below or open a new one."
-msgstr "Nějaké displeje již jsou otevřeny. Můžete vybrat displej ze seznamu níže nebo otevřít nový."
+msgstr ""
+"Nějaké displeje již jsou otevřeny. Můžete vybrat displej ze seznamu níže "
+"nebo otevřít nový."
 
 #: gui/gdmflexiserver.c:389 gui/gdmflexiserver.c:759
 msgid "Can't lock screen"
@@ -2222,7 +2221,6 @@ msgstr "Ladicí výstup"
 msgid "Authenticate before running --command"
 msgstr "Přihlaste se před spuštěním --command"
 
-#. markup
 #: gui/gdmflexiserver.c:699
 msgid "You do not seem to have the authentication needed for this operation"
 msgstr "Zřejmě nejste autentizováni pro tuto operaci"
@@ -2231,7 +2229,6 @@ msgstr "Zřejmě nejste autentizováni pro tuto operaci"
 msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr "Možná váš soubor .Xauthority není nastaven správně."
 
-#. markup
 #: gui/gdmflexiserver.c:727
 msgid "You do not seem to be logged in on the console"
 msgstr "Zřejmě že nejste přihlášený na konzole"
@@ -2727,10 +2724,6 @@ msgstr "Nastavit jako _implicitní"
 msgid "Just _Log In"
 msgstr "_Jen se přihlásit"
 
-#. never_encoding
-#. no_group
-#. untranslated
-#. markup
 #: gui/gdmlogin.c:855 gui/gdmlogin.c:935
 #: gui/greeter/greeter_action_language.c:149 gui/greeter/greeter_session.c:147
 #, c-format
@@ -2866,9 +2859,6 @@ msgstr "_Ostatní"
 msgid "_Password:"
 msgstr "_Heslo:"
 
-#. markup
-#. translators:  This is a nice and evil eggie text, translate
-#. * to your favourite currency
 #: gui/gdmlogin.c:2009 gui/greeter/greeter.c:423
 msgid "Please insert 25 cents to log in."
 msgstr "Za přihlášení vhodit 5 korun."
@@ -3055,7 +3045,6 @@ msgstr ""
 "Měli byste se přihlásit a vytvořit soubor nastavení pomocí programu pro "
 "nastavení GDM."
 
-#. markup
 #: gui/gdmphotosetup.c:144
 msgid "The face browser is not configured"
 msgstr "Prohlížeč tváří není nastaven"
@@ -3454,7 +3443,6 @@ msgstr "Interval pingu (sekundy):"
 msgid "XDMCP"
 msgstr "XDMCP"
 
-#. markup
 #: gui/gdmsetup.c:147
 msgid ""
 "An error occured while trying to contact the login screens.  Not all updates "
@@ -3506,15 +3494,12 @@ msgstr "Není archív s tématem"
 msgid "Details: %s"
 msgstr "Detaily: %s"
 
-#. FIXME: if exists already perhaps we could also have an
-#. * option to change the dir name
 #: gui/gdmsetup.c:1914
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed, install again anyway?"
 msgstr "Adresář s tématem '%s' je již nainstalován, nainstalovat přes něj?"
 
-#. markup
 #: gui/gdmsetup.c:1992
 msgid "Some error occured when installing the theme"
 msgstr "Při instalaci tématu došlo k nějaké chybě"
@@ -3532,7 +3517,6 @@ msgstr "_Instalovat"
 msgid "Do you really wish to remove theme '%s' from the system?"
 msgstr "Opravdu chcete ze systému odstranit téma '%s'?"
 
-#. This is the temporary help dialog
 #: gui/gdmsetup.c:2317
 #, c-format
 msgid ""
@@ -3592,7 +3576,6 @@ msgstr ""
 msgid "There was an error loading the theme %s"
 msgstr "Při načítání tématu %s došlo k chybě"
 
-#. markup
 #: gui/greeter/greeter.c:1204
 msgid "The theme for the graphical greeter is corrupt"
 msgstr "Téma pro grafický program pro přihlášení je poškozeno"
@@ -3603,7 +3586,6 @@ msgid ""
 "element."
 msgstr "Téma neobsahuje definici elementu vkládání jména uživatele/hesla."
 
-#. markup
 #: gui/greeter/greeter.c:1240
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
@@ -3612,7 +3594,6 @@ msgstr ""
 "Při nahrávání tématu došlo k chybě, a výchozí téma také nebylo možné načíst. "
 "Zkusím spustit standardní program pro přivítání."
 
-#. markup
 #: gui/greeter/greeter.c:1262
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
@@ -3761,10 +3742,12 @@ msgstr ""
 "který je připojen k (%s)"
 
 #: utils/gdmaskpass.c:26
+#, c-format
 msgid "gdmaskpass only runs as root\n"
 msgstr "gdmaskpass lze spustit jen jako root\n"
 
 #: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
+#, c-format
 msgid "Authentication failure!\n"
 msgstr "Ověření selhalo!\n"
 
