@@ -986,6 +986,9 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 	if (user && user->login)
 	    gtk_entry_set_text (GTK_ENTRY (entry), user->login);
 
+	if (!curuser)
+	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+
 	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 	g_print ("%s\n", gtk_entry_get_text (GTK_ENTRY (entry)));
 	break;
