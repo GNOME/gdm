@@ -106,10 +106,6 @@ gchar *GdmGroup = NULL;
 gchar *GdmSessDir = NULL;
 gchar *GdmXsession = NULL;
 gchar *GdmLocaleFile = NULL;
-#if 0
-/* FIXME: Maybe just whack this */
-gchar *GdmGnomeDefaultSession = NULL;
-#endif
 gchar *GdmAutomaticLogin = NULL;
 gboolean GdmAutomaticLoginEnable = FALSE;
 gboolean GdmAlwaysRestartServer = FALSE;
@@ -288,10 +284,6 @@ gdm_config_parse (void)
     }
     GdmSuspend = ve_config_get_string (cfg, GDM_KEY_SUSPEND);
     GdmLocaleFile = ve_config_get_string (cfg, GDM_KEY_LOCFILE);
-#if 0
-/* FIXME: Maybe just whack this */
-    GdmGnomeDefaultSession = ve_config_get_string (cfg, GDM_KEY_GNOMEDEFAULTSESSION);
-#endif
     GdmUser = ve_config_get_string (cfg, GDM_KEY_USER);
     GdmUserAuthDir = ve_config_get_string (cfg, GDM_KEY_UAUTHDIR);
     GdmUserAuthFile = ve_config_get_string (cfg, GDM_KEY_UAUTHFILE);

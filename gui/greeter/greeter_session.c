@@ -184,23 +184,6 @@ greeter_save_session (void)
   return save_session;
 }
 
-
-#if 0
-	/* FIXME: Maybe whack this */
-/* At the moment we don't support the gnome session stuff */
-char *
-greeter_get_gnome_session (const char *sess_string)
-{
-  return g_strdup ("Default");
-}
-
-gboolean
-greeter_save_gnome_session (void)
-{
-  return FALSE;
-}
-#endif
-
 void 
 greeter_session_init (void)
 {

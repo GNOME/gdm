@@ -2,10 +2,6 @@
 #define GREETER_CONFIGURATION_H
 
 extern gboolean GdmUseCirclesInEntry;
-#if 0
-/* FIXME: maybe just whack this */
-extern gboolean GdmShowGnomeChooserSession;
-#endif
 extern gboolean GdmShowGnomeFailsafeSession;
 extern gboolean GdmShowXtermFailsafeSession;
 extern gboolean GdmShowLastSession;

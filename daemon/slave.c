@@ -115,10 +115,6 @@ extern int gdm_normal_runlevel;
 extern gchar *GdmUser;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
-#if 0
-/* FIXME: Maybe just whack this */
-extern gchar *GdmGnomeDefaultSession;
-#endif
 extern gchar *GdmSessDir;
 extern gchar *GdmXsession;
 extern gchar *GdmDefaultSession;
@@ -264,14 +260,15 @@ slave_waitpid (GdmWaitPid *wp)
 		}
 		check_notifies_now ();
 	} else {
-		fd_set rfds;
-
-		FD_ZERO (&rfds);
-		FD_SET (wp->fd_r, &rfds);
-
 		do {
 			char buf[1];
-			int ret = select (wp->fd_r+1, &rfds, NULL, NULL, NULL);
+			fd_set rfds;
+			int ret;
+
+			FD_ZERO (&rfds);
+			FD_SET (wp->fd_r, &rfds);
+
+			ret = select (wp->fd_r+1, &rfds, NULL, NULL, NULL);
 			if (ret == 1)
 				read (wp->fd_r, buf, 1);
 			check_notifies_now ();
@@ -923,7 +920,7 @@ gdm_slave_run (GdmDisplay *display)
 	     * which will in fact just exit, so
 	     * this code is a little bit too anal */
 	    while (d->servpid > 0) {
-		    select (0, NULL, NULL, NULL, NULL);
+		    pause ();
 	    }
 	    return;
     } else if (d->use_chooser) {
@@ -2386,130 +2383,6 @@ gdm_slave_chooser (void)
 	}
 }
 
-#if 0
-/* FIXME: Maybe just whack this */
-static void
-read_sessions (FILE *fp, GString *sessions, const char *def, gboolean *got_def)
-{
-	char buf[FIELD_SIZE];
-
-	while (fgets (buf, sizeof (buf), fp) != NULL) {
-		char *p, *session;
-		if (buf[0] != '[')
-			continue;
-		p = strrchr (buf, ']');
-		if (p == NULL)
-			continue;
-		*p = '\0';
-
-		session = &buf[1];
-
-		if (strcmp (session, "Trash") == 0 ||
-		    strcmp (session, "Chooser") == 0 ||
-		    strcmp (session, "Warner") == 0)
-			continue;
-
-		if (strcmp (session, def) == 0)
-			*got_def = TRUE;
-
-		g_string_append_c (sessions, '\n');
-		g_string_append (sessions, session);
-	}
-}
-
-static char *
-gdm_get_sessions (struct passwd *pwent)
-{
-	gboolean session_ok;
-	gboolean options_ok;
-	char *cfgdir;
-	GString *sessions = g_string_new (NULL);
-	char *def;
-	gboolean got_def = FALSE;
-	int session_relax_perms;
-
-	setegid (pwent->pw_gid);
-	seteuid (pwent->pw_uid);
-
-	/* we know this exists already, code has already created it,
-	 * when checking the gsm saved options */
-	cfgdir = g_strconcat (pwent->pw_dir, "/.gnome2", NULL);
-
-	/* We cannot be absolutely strict about the session
-	 * permissions, since by default they will be writable
-	 * by group and there's nothing we can do about it.  So
-	 * we relax the permission checking in this case */
-	session_relax_perms = GdmRelaxPerms;
-	if (session_relax_perms == 0)
-		session_relax_perms = 1;
-
-	/* Sanity check on ~user/.gnome2/session */
-	session_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
-				     cfgdir, "session",
-				     TRUE, FALSE, GdmSessionMaxFile,
-				     session_relax_perms);
-	/* Sanity check on ~user/.gnome2/session-options */
-	options_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
-				     cfgdir, "session-options",
-				     TRUE, FALSE, GdmUserMaxFile,
-				     session_relax_perms);
-
-	g_free (cfgdir);
-
-	if (options_ok) {
-		char *cfgstr;
-
-		cfgstr = g_strconcat
-			("=", pwent->pw_dir,
-			 "/.gnome2/session-options=/Options/CurrentSession",
-			 NULL);
-		def = gnome_config_get_string (cfgstr);
-		if (def == NULL)
-			def = g_strdup ("Default");
-
-		g_free (cfgstr);
-	} else {
-		def = g_strdup ("Default");
-	}
-
-	/* the currently selected comes first (it will come later
-	 * as well, the first position just selects the session) */
-	g_string_append (sessions, def);
-
-	got_def = FALSE;
-	if (session_ok) {
-		char *sessfile = g_strconcat (pwent->pw_dir,
-					      "/.gnome2/session", NULL);
-		FILE *fp = fopen (sessfile, "r");
-		if (fp == NULL &&
-		    GdmGnomeDefaultSession != NULL) {
-			fp = fopen (GdmGnomeDefaultSession, "r");
-		}
-		if (fp != NULL) {
-			read_sessions (fp, sessions, def, &got_def);
-			fclose (fp);
-		}
-		g_free (sessfile);
-	}
-
-	if ( ! got_def) {
-		g_string_append_c (sessions, '\n');
-		g_string_append (sessions, def);
-	}
-
-	g_free (def);
-
-	seteuid (0);
-	setegid (GdmGroupId);
-
-	{
-		char *ret = sessions->str;
-		g_string_free (sessions, FALSE);
-		return ret;
-	}
-}
-#endif
-
 static gboolean
 is_session_ok (const char *session_name)
 {
@@ -2802,35 +2675,12 @@ session_child_run (struct passwd *pwent,
 		dmrc = NULL;
 	}
 
-#if 0
-	/* Maybe just whack this */
-	if (sessoptok &&
-	    savegnomesess &&
-	    gnome_session != NULL &&
-	    home_dir_ok) {
-		gchar *cfgstr = g_strconcat ("=", home_dir, "/.gnome2/session-options=/Options/CurrentSession", NULL);
-		gnome_config_set_string (cfgstr, gnome_session);
-		need_config_sync = TRUE;
-		g_free (cfgstr);
-	}
-#endif
-
 	closelog ();
 
 	gdm_close_all_descriptors (3 /* from */, -1 /* except */);
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
-#if 0
-/* FIXME: Maybe just whack this */
-	/* If "Gnome Chooser" is still set as a session,
-	 * just change that to "Gnome", since "Gnome Chooser" is a
-	 * fake */
-	if (strcmp (session, GDM_SESSION_GNOME_CHOOSER) == 0) {
-		session = "Gnome";
-	}
-#endif
-
 	argv[0] = NULL;
 	argv[1] = NULL;
 	argv[2] = NULL;
@@ -3058,18 +2908,6 @@ gdm_slave_session_start (void)
 	    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
 				       home_dir, ".dmrc", TRUE, FALSE,
 				       GdmUserMaxFile, GdmRelaxPerms);
-#if 0
-	    /* FIXME: Maybe just whack this */
-	    /* Sanity check on ~user/.gnome2/session-options */
-	    sessoptok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
-					cfgdir, "session-options", TRUE, FALSE, GdmUserMaxFile,
-					/* We cannot be absolutely strict about the
-					 * session permissions, since by default they
-					 * will be writable by group and there's
-					 * nothing we can do about it.  So we relax
-					 * the permission checking in this case */
-					GdmRelaxPerms == 0 ? 1 : GdmRelaxPerms);
-#endif
     } else {
 	    usrcfgok = FALSE;
     }
@@ -3133,29 +2971,6 @@ gdm_slave_session_start (void)
 	    if ( ! ve_string_empty (ret))
 		    savelang = TRUE;
 	    g_free (ret);
-
-#if 0
-/* FIXME: Maybe just whack this */
-	    if (strcmp (session, GDM_SESSION_GNOME_CHOOSER) == 0) {
-		    char *sessions = gdm_get_sessions (pwent);
-		    ret = gdm_slave_greeter_ctl (GDM_GNOMESESS, sessions);
-		    g_free (sessions);
-
-		    if (ret != NULL && ret[0] != '\0') {
-			    gnome_session = ret;
-			    ret = NULL;
-			    g_free (session);
-			    session = g_strdup ("Gnome");
-		    }
-		    g_free (ret);
-
-		    ret = gdm_slave_greeter_ctl (GDM_SGNOMESESS, "");
-		    if ( ! ve_string_empty (ret)) {
-			    savegnomesess = TRUE;
-		    }
-		    g_free (ret);
-	    }
-#endif
 
 	    gdm_debug ("gdm_slave_session_start: Authentication completed. Whacking greeter");
 

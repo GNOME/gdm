@@ -6,6 +6,7 @@
 #include "greeter.h"
 #include "greeter_item_pam.h"
 #include "greeter_item_ulist.h"
+#include "greeter_item_timed.h"
 #include "greeter_parser.h"
 #include "greeter_configuration.h"
 #include "gdm.h"
@@ -65,12 +66,23 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   str = gtk_entry_get_text (GTK_ENTRY (entry));
   if (greeter_probably_login_prompt &&
       /* evilness */
-      evil (entry, str)) {
-	  /* obviously being 100% reliable is not an issue for
-	     this test */
-	  gtk_entry_set_text (GTK_ENTRY (entry), "");
-	  return;
-  }
+      evil (entry, str))
+    {
+      /* obviously being 100% reliable is not an issue for
+         this test */
+      gtk_entry_set_text (GTK_ENTRY (entry), "");
+      return;
+    }
+
+  if (greeter_probably_login_prompt &&
+      ve_string_empty (str) &&
+      greeter_item_timed_is_timed ())
+    {
+      /* timed interruption */
+      printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
+      fflush (stdout);
+      return;
+    }
   
   gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 

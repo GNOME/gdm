@@ -6,5 +6,6 @@
 gboolean greeter_item_timed_setup (void);
 void greeter_item_timed_start (void);
 void greeter_item_timed_stop (void);
+gboolean greeter_item_timed_is_timed (void);
 
 #endif

@@ -41,10 +41,6 @@ gboolean GDM_IS_LOCAL = FALSE;
 char *GdmGraphicalTheme = NULL;
 char *GdmGraphicalThemeDir = NULL;
 int GdmXineramaScreen = 0;
-#if 0
-/* FIXME: maybe just whack this */
-gboolean GdmShowGnomeChooserSession = FALSE;
-#endif
 gboolean GdmShowGnomeFailsafeSession = FALSE;
 gboolean GdmShowXtermFailsafeSession = FALSE;
 gboolean GdmShowLastSession = FALSE;
@@ -127,10 +123,6 @@ greeter_parse_config (void)
 
     GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
     GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
-#if 0
-    /* FIXME: maybe just whack this */
-    GdmShowGnomeChooserSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_CHOOSER);
-#endif
     GdmShowLastSession = ve_config_get_bool (config, GDM_KEY_SHOW_LAST_SESSION);
     GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
     GdmDefaultSession = ve_config_get_string (config, GDM_KEY_DEFAULTSESSION);
@@ -439,47 +431,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	/* screw gtk_main_quit, we want to make sure we definately die */
 	_exit (EXIT_SUCCESS);
 	break;
-
-#if 0
-	/* FIXME: Maybe whack this */
-    case GDM_GNOMESESS:
-	{
-		char *sess;
-		GString *str = g_string_new (NULL);
-
-		do {
-			g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-			buf[len-1] = '\0';
-			tmp = ve_locale_to_utf8 (buf);
-			g_string_append (str, tmp);
-			g_free (tmp);
-		} while (len == PIPE_SIZE-1);
-
-
-		sess = greeter_get_gnome_session (str->str);
-
-		g_string_free (str, TRUE);
-
-		tmp = ve_locale_from_utf8 (sess);
-		printf ("%c%s\n", STX, tmp);
-		fflush (stdout);
-		g_free (tmp);
-
-		g_free (sess);
-	}
-	break;
-
-    case GDM_SGNOMESESS:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
-	if (greeter_save_gnome_session ())
-	    printf ("%cY\n", STX);
-	else
-	    printf ("%c\n", STX);
-	fflush (stdout);
-
-	break;
-#endif
 
     case GDM_STARTTIMER:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
@@ -946,12 +897,6 @@ greeter_reread_config (int sig, gpointer data)
 	     ! bool_same (config,
 			  GdmShowGnomeFailsafeSession,
 			  GDM_KEY_SHOW_GNOME_FAILSAFE) ||
-#if 0
-	     /* FIXME: maybe just whack this */
-	     ! bool_same (config,
-			  GdmShowGnomeChooserSession,
-			  GDM_KEY_SHOW_GNOME_CHOOSER) ||
-#endif
 	     ! string_same (config,
 			    GdmSessionDir,
 			    GDM_KEY_SESSDIR) ||

@@ -126,3 +126,9 @@ greeter_item_timed_stop (void)
       timed_handler_id = 0;
     }
 }
+
+gboolean
+greeter_item_timed_is_timed (void)
+{
+  return timed_handler_id != 0;
+}

@@ -123,11 +123,6 @@ static gint GdmPositionX;
 static gint GdmPositionY;
 static gboolean GdmTitleBar;
 
-#if 0
-/* FIXME: maybe just whack this */
-static gboolean GdmShowGnomeChooserSession;
-#endif
-
 static gboolean GdmShowGnomeFailsafeSession;
 static gboolean GdmShowXtermFailsafeSession;
 static gboolean GdmShowLastSession;
@@ -149,10 +144,6 @@ static GtkWidget *msg;
 static GtkWidget *err_box;
 static guint err_box_clear_handler = 0;
 static gboolean require_quarter = FALSE;
-#if 0
-/* FIXME: Maybe whack this */
-static gboolean remember_gnome_session = FALSE;
-#endif
 static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
@@ -760,10 +751,6 @@ gdm_login_parse_config (void)
 
     GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
     GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
-#if 0
-    /* FIXME: Maybe just whack this */
-    GdmShowGnomeChooserSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_CHOOSER);
-#endif
     GdmShowLastSession = ve_config_get_bool (config, GDM_KEY_SHOW_LAST_SESSION);
     
     GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
@@ -1108,24 +1095,21 @@ gdm_login_enter (GtkWidget *entry)
 
 	login_string = gtk_entry_get_text (GTK_ENTRY (entry));
 
-
-#if 0
-	/* FIXME: we can't know this is a login entry */
-	/* If in timed login mode, and if this is the login
-	 * entry.  Then an enter by itself is sort of like I want to
-	 * log in as the timed user "damn it".  */
-	if (ve_string_empty (login_string) &&
-	    timed_handler_id != 0 &&
-	    login_entry) {
-		login_entry = FALSE;
+	str = gtk_label_get_text (GTK_LABEL (label));
+	if (str != NULL &&
+	    (strcmp (str, _("Username:")) == 0 ||
+	     strcmp (str, _("_Username:")) == 0) &&
+	    /* If in timed login mode, and if this is the login
+	     * entry.  Then an enter by itself is sort of like I want to
+	     * log in as the timed user "damn it".  */
+	    ve_string_empty (login_string) &&
+	    timed_handler_id != 0) {
 		/* timed interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
 		fflush (stdout);
 		return;
 	}
-#endif
 
-	str = gtk_label_get_text (GTK_LABEL (label));
 	if (str != NULL &&
 	    (strcmp (str, _("Username:")) == 0 ||
 	     strcmp (str, _("_Username:")) == 0) &&
@@ -1331,38 +1315,6 @@ gdm_login_session_init (GtkWidget *menu)
 		    if (defsess == NULL)
 			    defsess = g_strdup (dent->d_name);
 
-#if 0
-		    /* FIXME: maybe just whack this completely */
-		    if (GdmShowGnomeChooserSession) {
-			    /* Add the chooser session, this one doesn't have a
-			     * script really, it's a fake, it runs the Gnome
-			     * script */
-			    /* For translators:  This is the login that lets
-			     * users choose the specific gnome session they
-			     * want to use */
-			    item = gtk_radio_menu_item_new_with_label
-				    (sessgrp, _("Gnome Chooser"));
-			    gtk_tooltips_set_tip
-				    (tooltips, GTK_WIDGET (item),
-				     _("This session will log you into "
-				       "GNOME and it will let you choose which "
-				       "one of the GNOME sessions you want to "
-				       "use."),
-				     NULL);
-			    g_object_set_data (G_OBJECT (item),
-					       SESSION_NAME,
-					       GDM_SESSION_GNOME_CHOOSER);
-
-			    sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-			    sessions = g_slist_append (sessions,
-						       g_strdup (GDM_SESSION_GNOME_CHOOSER));
-			    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-			    g_signal_connect (G_OBJECT (item), "activate",
-					      G_CALLBACK (gdm_login_session_handler),
-					      NULL);
-			    gtk_widget_show (GTK_WIDGET (item));
-		    }
-#endif
 	    }
 
 	    g_hash_table_insert (sessnames, g_strdup (dent->d_name), name);
@@ -1644,216 +1596,6 @@ gdm_login_language_menu_new (void)
 
     return menu;
 }
-
-#if 0
-/* FIXME: Maybe whack this */
-static void
-toggle_sensitize (GtkWidget *w, gpointer data)
-{
-	gtk_widget_set_sensitive (GTK_WIDGET (data),
-				  GTK_TOGGLE_BUTTON (w)->active);
-}
-static void
-toggle_insensitize (GtkWidget *w, gpointer data)
-{
-	gtk_widget_set_sensitive (GTK_WIDGET (data),
-				  ! GTK_TOGGLE_BUTTON (w)->active);
-}
-
-static void
-clist_double_click_closes (GtkCList *clist,
-			   int row,
-			   int column,
-			   GdkEvent *event,
-			   gpointer data)
-{
-	GtkWidget *dlg = data;
-	if (event != NULL &&
-	    event->type == GDK_2BUTTON_PRESS) {
-		/* OK, pressed */
-		gtk_dialog_response (GTK_DIALOG (dlg),
-				     GTK_RESPONSE_OK);
-	}
-}
-
-static void
-ok_dialog (GtkWidget *entry, gpointer data)
-{
-	GtkWidget *dlg = data;
-	gtk_dialog_response (GTK_DIALOG (dlg),
-			     GTK_RESPONSE_OK);
-}
-
-static char *
-get_gnome_session (const char *sess_string)
-{
-	GtkWidget *d;
-	GtkWidget *clist, *sw;
-	GtkWidget *hbox;
-	GtkWidget *entry;
-	GtkWidget *newcb;
-	GtkWidget *remembercb;
-	char *retval;
-	char **sessions;
-	char *selected;
-	gboolean got_default;
-	int i;
-
-	/* the first one is the selected one, and it will also come
-	 * again later, so we should just note it */
-	sessions = g_strsplit (sess_string, "\n", 0);
-	if (sessions != NULL &&
-	    sessions[0] != NULL)
-		selected = sessions[0];
-	else
-		selected = "Default";
-
-	/* we should be now fine for focusing new windows */
-	gdm_wm_focus_new_windows (TRUE);
-
-	d = gtk_dialog_new_with_buttons (_("Select GNOME session"),
-					 NULL /* parent */,
-					 0 /* flags */,
-					 GTK_STOCK_OK,
-					 GTK_RESPONSE_OK,
-					 NULL);
-	gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox),
-			    gtk_label_new (_("Select GNOME session")),
-			    FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox),
-			    gtk_hseparator_new (),
-			    FALSE, FALSE, 0);
-
-	sw = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox), sw,
-			    TRUE, TRUE, 0);
-	clist = gtk_clist_new (1);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (clist), 0, TRUE);
-	gtk_container_add (GTK_CONTAINER (sw), clist);
-	gtk_widget_set_size_request (sw, 120, 180);
-
-	g_signal_connect (G_OBJECT (clist), "select_row",
-			  G_CALLBACK (clist_double_click_closes),
-			  d);
-
-	got_default = FALSE;
-	if (sessions != NULL &&
-	    sessions[0] != NULL) {
-		for (i = 1; sessions[i] != NULL; i++) {
-			int row;
-			char *text[1];
-			if (strcmp (sessions[i], "Default") == 0) {
-				got_default = TRUE;
-				/* default is nicely translated */
-				/* Translators: default GNOME session */
-				text[0] = _("Default");
-			} else {
-				text[0] = sessions[i];
-			}
-			row = gtk_clist_append (GTK_CLIST (clist),
-						text);
-			gtk_clist_set_row_data_full (GTK_CLIST (clist),
-						     row,
-						     g_strdup (sessions[i]),
-						     (GtkDestroyNotify) g_free);
-			if (strcmp (sessions[i], selected) == 0) {
-				gtk_clist_select_row (GTK_CLIST (clist),
-						      row, 0);
-			}
-		}
-	}
-
-	if ( ! got_default) {
-		int row;
-		char *text[1];
-		/* default is nicely translated */
-		/* Translators: default GNOME session */
-		text[0] = _("Default");
-		row = gtk_clist_append (GTK_CLIST (clist),
-					text);
-		gtk_clist_set_row_data_full (GTK_CLIST (clist),
-					     row, g_strdup ("Default"),
-					     (GtkDestroyNotify) g_free);
-		if (strcmp ("Default", selected) == 0) {
-			gtk_clist_select_row (GTK_CLIST (clist),
-					      row, 0);
-		}
-	}
-
-	g_strfreev (sessions);
-
-	newcb = gtk_check_button_new_with_label (_("Create new session"));
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox), newcb,
-			    FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox), hbox,
-			    FALSE, FALSE, 0);
-
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    gtk_label_new (_("Name: ")),
-			    FALSE, FALSE, 0);
-
-	entry = gtk_entry_new ();
-	g_signal_connect (G_OBJECT (entry), "activate",
-			  G_CALLBACK (ok_dialog), d);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			    entry,
-			    TRUE, TRUE, 0);
-
-	gtk_widget_set_sensitive (hbox, FALSE);
-
-	g_signal_connect (G_OBJECT (newcb), "toggled",
-			  G_CALLBACK (toggle_sensitize),
-			  hbox);
-	g_signal_connect (G_OBJECT (newcb), "toggled",
-			  G_CALLBACK (toggle_insensitize),
-			  clist);
-
-	remembercb = gtk_check_button_new_with_label
-		/* Translators: this is to remember the chosen gnome session
-		 * for next time */
-	       	(_("Remember this setting"));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (remembercb), TRUE);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox), remembercb,
-			    FALSE, FALSE, 0);
-
-	gtk_window_set_modal (GTK_WINDOW (d), TRUE);
-
-	gtk_widget_show_all (d);
-
-	gdm_wm_center_window (GTK_WINDOW (d));
-	gdm_wm_no_login_focus_push ();
-	gtk_dialog_run (GTK_DIALOG (d));
-	gtk_widget_destroy (d);
-	gdm_wm_no_login_focus_pop ();
-
-	remember_gnome_session = GTK_TOGGLE_BUTTON (remembercb)->active;
-
-	/* we've set the just_hide to TRUE, so we can still access the
-	 * window */
-	if (GTK_TOGGLE_BUTTON (newcb)->active) {
-		retval = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
-	} else if (GTK_CLIST (clist)->selection != NULL) {
-		int selected_row =
-			GPOINTER_TO_INT (GTK_CLIST (clist)->selection->data);
-		char *session = gtk_clist_get_row_data (GTK_CLIST (clist),
-							selected_row);
-		retval = g_strdup (session);
-	} else {
-		retval = g_strdup ("");
-	}
-
-	/* finally destroy window */
-	gtk_widget_destroy (d);
-
-	return retval;
-}
-#endif
 
 static gboolean
 err_box_clear (gpointer data)
@@ -2316,47 +2058,6 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	/* screw gtk_main_quit, we want to make sure we definately die */
 	_exit (EXIT_SUCCESS);
 	break;
-
-#if 0
-	/* FIXME: Maybe whack this */
-    case GDM_GNOMESESS:
-	{
-		char *sess;
-		GString *str = g_string_new (NULL);
-
-		do {
-			g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-			buf[len-1] = '\0';
-			tmp = ve_locale_to_utf8 (buf);
-			g_string_append (str, tmp);
-			g_free (tmp);
-		} while (len == PIPE_SIZE-1);
-
-
-		sess = get_gnome_session (str->str);
-
-		g_string_free (str, TRUE);
-
-		tmp = ve_locale_from_utf8 (sess);
-		printf ("%c%s\n", STX, tmp);
-		fflush (stdout);
-		g_free (tmp);
-
-		g_free (sess);
-	}
-	break;
-
-    case GDM_SGNOMESESS:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
-
-	if (remember_gnome_session)
-	    printf ("%cY\n", STX);
-	else
-	    printf ("%c\n", STX);
-	fflush (stdout);
-
-	break;
-#endif
 
     case GDM_STARTTIMER:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
