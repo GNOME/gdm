@@ -1231,6 +1231,7 @@ gdm_server_alloc (gint id, const gchar *command)
 
     d->x_servers_order = -1;
 
+    d->last_loop_start_time = 0;
     d->last_start_time = 0;
     d->retry_count = 0;
     d->disabled = FALSE;

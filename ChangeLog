@@ -1,3 +1,21 @@
+Fri May 30 12:02:59 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmchooser.c: just do exit rather then gdm_main_quit, since that
+	  might possible have issues and we can really just exit cleanly.
+
+	* daemon/slave.c: if we can't start the chooser, we could still maybe
+	  start the greeter if this was just a temporary thing, so just
+	  remanage
+
+	* daemon/gdm.[ch], daemon/display.c: Rework the loop of death thing.
+	  it was really really broken.  It wasn't catching 5 sessions in 90
+	  seconds, but 5 consecutive sessions 90secs or less, which is wrong.
+	  So this is fixed and raised to 6 sessions in 90 secs, none of them
+	  over 30 secs.  Also the sleep time is now 8 seconds ONLY after 2
+	  tries which makes the chooser normally pop up faster.  Also the
+	  DISPLAY_RUN_CHOOSER thing resets the loop of death since we are
+	  expecting a short session. 
+
 Fri May 30 09:40:31 2003  George Lebl <jirka@5z.com>
 
 	* daemon/server.c: when there is a query in the command line,

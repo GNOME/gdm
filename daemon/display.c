@@ -52,37 +52,44 @@ gdm_display_check_loop (GdmDisplay *disp)
 {
   time_t now;
   time_t since_last;
+  time_t since_loop;
   
   now = time (NULL);
 
   if (disp->disabled)
     return FALSE;
+
+  gdm_info ("loop check: last_start %ld, last_loop %ld, now: %ld, retry_count: %d", (long)disp->last_start_time, (long) disp->last_loop_start_time, (long) now, disp->retry_count);
   
-  if (disp->last_start_time > now || disp->last_start_time == 0)
+  if (disp->last_loop_start_time > now || disp->last_loop_start_time == 0)
     {
       /* Reset everything if this is the first time in this
        * function, or if the system clock got reset backward.
        */
+      disp->last_loop_start_time = now;
       disp->last_start_time = now;
       disp->retry_count = 1;
 
-      gdm_debug ("Resetting counts for loop of death detection");
+      gdm_info ("Resetting counts for loop of death detection");
       
       return TRUE;
     }
 
+  since_loop = now - disp->last_loop_start_time;
   since_last = now - disp->last_start_time;
 
-  /* If it's been at least 1.5 minutes since the last startup
-   * attempt, then we reset everything.
+  /* If it's been at least 1.5 minutes since the last startup loop
+   * attempt, then we reset everything.  Or if the last startup was more then
+   * 30 seconds ago, then it was likely a successful session.
    */
 
-  if (since_last >= 90)
+  if (since_loop >= 90 || since_last >= 30)
     {
+      disp->last_loop_start_time = now;
       disp->last_start_time = now;
       disp->retry_count = 1;
 
-      gdm_debug ("Resetting counts for loop of death detection, 90 seconds elapsed.");
+      gdm_info ("Resetting counts for loop of death detection, 90 seconds elapsed since loop started or session lasted more then 30 seconds.");
       
       return TRUE;
     }
@@ -90,52 +97,64 @@ gdm_display_check_loop (GdmDisplay *disp)
   /* If we've tried too many times we bail out. i.e. this means we
    * tried too many times in the 90-second period.
    */
-  if (disp->retry_count > 4) {
+  if (disp->retry_count >= 6) {
 	  /* This means we have no clue what's happening,
 	   * it's not X server crashing as we would have
 	   * cought that elsewhere.  Things are just
-	   * not working out, so tell the user */
-	  char *s = g_strdup_printf (_("Failed to start the display server "
-				       "several times in a short time period; "
-				       "disabling display %s"), disp->name);
+	   * not working out, so tell the user.
+	   * However this may have been caused by a malicious local user
+	   * zapping the display repeatedly, that shouldn't cause gdm
+	   * to stop working completely so just wait for 2 minutes,
+	   * that should give people ample time to stop gdm if needed,
+	   * or just wait for the stupid malicious user to get bored
+	   * and go away */
+	  char *s = g_strdup_printf (_("The display server has been shut down "
+				       "about 6 times in the last 90 seconds, "
+				       "it is likely that something bad is "
+				       "going on.  I will wait for 2 minutes "
+				       "before trying again on display %s."),
+				       disp->name);
 	  /* only display a dialog box if this is a local display */
 	  if (disp->type == TYPE_LOCAL ||
 	      disp->type == TYPE_FLEXI) {
-		  char *ls = g_strdup_printf
-			  (_("Failed to start the display server "
-			     "several times in a short time period; "
-			     "disabling display %s"), disp->name);
-		  gdm_text_message_dialog (ls);
-		  g_free (ls);
+		  gdm_text_message_dialog (s);
 	  }
 	  gdm_error ("%s", s);
 	  g_free (s);
 
-	  disp->disabled = TRUE;
+	  /* Wait 2 minutes */
+	  disp->sleep_before_run = 120;
+	  /* well, "last" start time will really be in the future */
+	  disp->last_start_time = now + disp->sleep_before_run;
 
-	  gdm_debug ("Failed to start X server after several retries; aborting.");
-
-	  return FALSE;
+	  disp->retry_count = 1;
+	  /* this will reset stuff in the next run (after this
+	     "after-two-minutes" server starts) */
+	  disp->last_loop_start_time = 0;
+	  
+	  return TRUE;
   }
   
-  /* At least 8 seconds between start attempts,
-   * so you can try to kill gdm from the console
+  /* At least 8 seconds between start attempts, but only after
+   * the second start attempt, so you can try to kill gdm from the console
    * in these gaps.
    */
-  if (since_last < 8)
+  if (disp->retry_count > 2 && since_last < 8)
     {
-      gdm_debug ("Will sleep %ld seconds before next X server restart attempt",
+      gdm_info ("Will sleep %ld seconds before next X server restart attempt",
                  (long)(8 - since_last));
       now = time (NULL) + 8 - since_last;
       disp->sleep_before_run = 8 - since_last;
+      /* well, "last" start time will really be in the future */
+      disp->last_start_time = now + disp->sleep_before_run;
     }
   else
     {
       disp->sleep_before_run = 0;
+      disp->last_start_time = now;
     }
 
-  disp->retry_count += 1;
-  disp->last_start_time = now;
+  disp->retry_count ++;
 
   return TRUE;
 }

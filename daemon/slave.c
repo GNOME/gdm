@@ -1672,6 +1672,7 @@ gdm_slave_greeter (void)
 			 "Try logging in by other means and\n"
 			 "editing the configuration file"));
 	
+	/* If no greeter we really have to disable the display */
 	gdm_child_exit (DISPLAY_ABORT, _("%s: Error starting greeter on display %s"), "gdm_slave_greeter", d->name);
 	
     case -1:
@@ -1954,10 +1955,10 @@ gdm_slave_chooser (void)
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("Cannot start the chooser program,\n"
-				 "you will not be able to log in.\n"
+				 "you will probably not be able to log in.\n"
 				 "Please contact the system administrator.\n"));
 
-		gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Error starting chooser on display %s"), d->name);
+		gdm_child_exit (DISPLAY_REMANAGE, _("gdm_slave_chooser: Error starting chooser on display %s"), d->name);
 
 	case -1:
 		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Can't fork gdmchooser process"));

@@ -1089,16 +1089,18 @@ gdm_cleanup_children (void)
 
     if ( ! GdmSystemMenu &&
 	(status == DISPLAY_REBOOT ||
+	 status == DISPLAY_SUSPEND ||
 	 status == DISPLAY_HALT)) {
-	    gdm_info (_("gdm_child_action: Reboot or Halt request when there is no system menu from display %s"), d->name);
+	    gdm_info (_("Reboot or Halt request when there is no system menu from display %s"), d->name);
 	    status = DISPLAY_REMANAGE;
     }
 
     if ( ! d->console &&
 	(status == DISPLAY_RESTARTGDM ||
 	 status == DISPLAY_REBOOT ||
+	 status == DISPLAY_SUSPEND ||
 	 status == DISPLAY_HALT)) {
-	    gdm_info (_("gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"), d->name);
+	    gdm_info (_("Restart, Reboot or Halt request from a non-local display %s"), d->name);
 	    status = DISPLAY_REMANAGE;
     }
 
@@ -1108,6 +1110,10 @@ gdm_cleanup_children (void)
 		GdmChooserButton)
 		    d->use_chooser = TRUE;
 	    status = DISPLAY_REMANAGE;
+	    /* go around the display loop detection, these are short
+	     * sessions, so this decreases the chances of the loop
+	     * detection being hit */
+	    d->last_loop_start_time = 0;
     }
 
     if (status == DISPLAY_CHOSEN) {
@@ -1213,7 +1219,7 @@ start_autopsy:
 	if (d->type == TYPE_LOCAL) {
 		time_t now = time (NULL);
 		d->x_faileds ++;
-		/* this is a much faster failing, don't even allow the 8
+		/* this is a much faster failing, don't even allow a few
 		 * seconds, just flash but for at most 30 seconds */
 		if (now - d->last_x_failed > 30) {
 			/* reset */
@@ -1239,7 +1245,7 @@ start_autopsy:
 		}
 		/* go around the display loop detection, we're doing
 		 * our own here */
-		d->last_start_time = 0;
+		d->last_loop_start_time = 0;
 	}
 	/* fall through */
 

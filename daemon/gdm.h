@@ -313,6 +313,7 @@ struct _GdmDisplay {
     gboolean console;
 
     time_t last_start_time;
+    time_t last_loop_start_time;
     gint retry_count;
 
     int sleep_before_run;

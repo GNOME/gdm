@@ -720,8 +720,15 @@ gdm_chooser_choose_host (const char *hostname)
 gboolean
 gdm_chooser_cancel (void)
 {
-    closelog();
-    gtk_main_quit();
+    if (scan_time_handler > 0) {
+	    g_source_remove (scan_time_handler);
+	    scan_time_handler = 0;
+    }
+
+    closelog ();
+    /* exit rather gtk_main_quit, it's just safer this way we don't
+       have to worry about random whackiness happening */
+    exit (EXIT_SUCCESS);
 
     return TRUE;
 }
@@ -739,7 +746,10 @@ gdm_chooser_manage (GtkButton *button, gpointer data)
       gdm_chooser_choose_host (curhost->name);
    
     closelog();
-    gtk_main_quit();
+
+    /* exit rather gtk_main_quit, it's just safer this way we don't
+       have to worry about random whackiness happening */
+    exit (EXIT_SUCCESS);
 }
 
 
