@@ -22,8 +22,6 @@ gdmgreeter_SOURCES =  \
 	greeter_canvas_item.c \
 	greeter_canvas_item.h \
 	greeter_configuration.h \
-	greeter_dialogs.c \
-	greeter_dialogs.h \
 	greeter_events.c \
 	greeter_events.h \
 	greeter_geometry.c \

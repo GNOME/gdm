@@ -8,3 +8,4 @@ extern gboolean GdmShowGnomeFailsafeSession;
 extern gboolean GdmShowXtermFailsafeSession;
 extern gboolean GdmShowLastSession;
 extern gchar *GdmSessionDir;
+extern gchar *GdmDefaultLocale;

@@ -26,13 +26,15 @@ gboolean DOING_GDM_DEVELOPMENT = FALSE;
 GtkWidget *window;
 GtkWidget *canvas;
 
-static char *GreeterConfTheme = NULL;
-static char *GdmDefaultLocale = NULL;
+char *GreeterConfTheme = NULL;
+char *GdmDefaultLocale = NULL;
 gboolean GdmShowGnomeChooserSession = FALSE;
 gboolean GdmShowGnomeFailsafeSession = FALSE;
 gboolean GdmShowXtermFailsafeSession = FALSE;
 gboolean GdmShowLastSession = FALSE;
 gchar *GdmSessionDir = NULL;
+gchar *GdmLocaleFile = NULL;
+
 int greeter_use_circles_in_entry = FALSE;
 
 
@@ -55,6 +57,7 @@ greeter_parse_config (void)
     GdmShowGnomeChooserSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_CHOOSER);
     GdmShowLastSession = gnome_config_get_bool (GDM_KEY_SHOW_LAST_SESSION);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
+    GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     
     gnome_config_pop_prefix();
 }
@@ -69,6 +72,8 @@ greeter_ctrl_handler (GIOChannel *source,
     GtkWidget *dlg;
     char *session;
     GreeterItemInfo *conversation_info;
+    GreeterItemInfo *entry_info;
+    gchar *language;
 
     /* If this is not incoming i/o then return */
     if (cond != G_IO_IN) 
@@ -98,7 +103,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 	
 	greeter_item_pam_set_user (buf);
-	
 	g_print ("%c\n", STX);
 	break;
     case GDM_LOGIN:
@@ -125,9 +129,7 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_MSG:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-
 	greeter_item_pam_message (buf);
-
 	g_print ("%c\n", STX);
 
 	break;
@@ -176,12 +178,9 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_LANG:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 	buf[len-1] = '\0';
-#ifdef TODO	
-	gdm_login_language_lookup (buf);
+	language = greeter_language_get_language (buf);
 	g_print ("%c%s\n", STX, language);
-#else
-	g_print ("%c%s\n", STX, "C");
-#endif
+	g_free (language);
 	break;
 
     case GDM_SSESS:
@@ -197,11 +196,9 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_SLANG:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
-#ifdef TODO	
-	if (savelang)
+	if (greeter_language_get_save_language ())
 	    g_print ("%cY\n", STX);
 	else
-#endif
 	    g_print ("%c\n", STX);
 
 	break;
@@ -622,7 +619,8 @@ main (int argc, char *argv[])
     return r;
 
   greeter_session_init ();
-  
+  greeter_language_init ();
+
   hup.sa_handler = greeter_done;
   hup.sa_flags = 0;
   sigemptyset(&hup.sa_mask);
