@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin:$PATH
+PATH=@X_PATH@:$PATH
 
 if command -v sessreg > /dev/null 2>&1; then
 	sessreg -d -w /var/log/wtmp -u /var/run/utmp -x "$X_SERVERS" -h "$REMOTE_HOST" -l $DISPLAY $USER

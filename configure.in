@@ -456,10 +456,12 @@ AC_SUBST(EXPANDED_AUTHDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_AUTHDIR,"$EXPANDED_AUTHDIR")
 
 if test -x /usr/X11R6/bin/X; then
-   X_PATH="/usr/X11R6/bin"
+   X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
+   X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
 elif test -x /usr/openwin/bin/Xsun; then
    X_PATH="/usr/openwin/bin"
+   X_SERVER_PATH="/usr/openwin/bin"
    X_SERVER="/usr/openwin/bin/Xsun"
 fi
 AC_SUBST(X_PATH)
