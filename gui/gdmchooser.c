@@ -318,6 +318,20 @@ is_loopback_addr (struct in_addr *ia)
 	}
 }
 
+static struct in_addr *
+gdm_addr_known (struct in_addr *ia)
+{
+	GSList *li;
+
+	for (li = queryaddr; li != NULL; li = li->next) {
+		struct in_addr *a = li->data;
+		if (memcmp (a, ia, sizeof (struct in_addr)) == 0) {
+			return a;
+		}
+	}
+	return NULL;
+}
+
 static gboolean
 gdm_chooser_decode_packet (GIOChannel   *source,
 			   GIOCondition  condition,
@@ -541,6 +555,8 @@ void
 gdm_chooser_xdmcp_discover (void)
 {
     GList *hl = hosts;
+
+    select_addr = NULL;
 
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
     gtk_widget_set_sensitive (GTK_WIDGET (rescan), FALSE);
@@ -781,8 +797,12 @@ gdm_chooser_add_host (void)
 	sock.sin_family = AF_INET;
 	sock.sin_port = htons (XDM_UDP_PORT);
 
-	ia = g_new0 (struct in_addr, 1);
-	ia->s_addr = qa.sin_addr.s_addr;
+	ia = gdm_addr_known (&qa.sin_addr);
+	if (ia == NULL) {
+		ia = g_new0 (struct in_addr, 1);
+		ia->s_addr = qa.sin_addr.s_addr;
+		queryaddr = g_slist_append (queryaddr, ia);
+	}
 
 	host = gdm_host_known (ia);
 	if (host != NULL) {
@@ -796,16 +816,15 @@ gdm_chooser_add_host (void)
 			sock.sin_addr.s_addr = ia->s_addr;
 			XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock,
 				    (int)sizeof (struct sockaddr_in));
+
+			select_addr = ia;
 		}
 
 		/* empty the text entry to indicate success */
 		gtk_entry_set_text (GTK_ENTRY (add_entry), "");
-
-		g_free (ia);
 		return;
 	}
 
-	queryaddr = g_slist_append (queryaddr, ia);
 	select_addr = ia;
 
 	/* and send out the query */

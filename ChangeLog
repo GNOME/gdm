@@ -1,3 +1,15 @@
+Tue Jun 03 13:56:24 2003  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in, daemon/gdm.h: change ScanTime default to 4,
+	  which really coincides with the fact that we scan 3 times in
+	  2 second intervals.  Maybe I should just whack this config thing,
+	  it is eminently stupid for this to be configurable.
+
+	* gui/gdmchooser.c: when we press refresh whack the select_addr,
+	  so that it doesn't get selected on refresh since by now that
+	  may be irrelevant.  Also if an addr is already in the query
+	  list, don't readd it.
+
 Tue Jun 03 13:37:31 2003  George Lebl <jirka@5z.com>
 
 	* gdm.spec.in, configure.in, utils/Makefile.am, daemon/server.c,

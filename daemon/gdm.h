@@ -240,7 +240,7 @@ enum {
 #define GDM_KEY_GRAPHICAL_THEME "greeter/GraphicalTheme=circles"
 #define GDM_KEY_GRAPHICAL_THEME_DIR "greeter/GraphicalThemeDir=" EXPANDED_DATADIR "/gdm/themes/"
 
-#define GDM_KEY_SCAN "chooser/ScanTime=3"
+#define GDM_KEY_SCAN "chooser/ScanTime=4"
 #define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
 #define GDM_KEY_HOSTDIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
 #define GDM_KEY_HOSTS "chooser/Hosts="
