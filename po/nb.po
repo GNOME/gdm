@@ -1,18 +1,19 @@
 # Norwegian translation of gdm (bokmål dialect).
-# Copyright (C) 1998-2004 Free Software Foundation, Inc.
-# Kjartan Maraas <kmaraas@gnome.org>, 1998-2004.
+# Copyright (C) 1998-2005 Free Software Foundation, Inc.
+# Kjartan Maraas <kmaraas@gnome.org>, 1998-2005.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm 2.5.0.90\n"
+"Project-Id-Version: gdm 2.6.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-15 22:15+0100\n"
-"PO-Revision-Date: 2004-12-27 13:00+0100\n"
+"POT-Creation-Date: 2005-02-08 12:13+0100\n"
+"PO-Revision-Date: 2005-02-08 12:17+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);"
 
 #: config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -726,9 +727,11 @@ msgstr "gdm kjører allerede. Avbryter!"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Feil under oppsett av CHLD signalhåndtereren"
 
-#: daemon/gdm.c:3633 daemon/gdm.c:3652
-msgid "FLEXI_XSERVER request denied: Not authenticated"
-msgstr "Forespørsel om FLEXI_XSERVER nektet: Ikke autentisert"
+#: daemon/gdm.c:3633 daemon/gdm.c:3652 daemon/gdm.c:3796 daemon/gdm.c:3854
+#: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
+#, c-format
+msgid "%s request denied: Not authenticated"
+msgstr "%s-forespørsel nektet: Ikke autentisert"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -744,18 +747,6 @@ msgid ""
 msgstr ""
 "Forespurt tjener, %s, er ikke tillatt som fleksibel tjener. Bruker forvalgt "
 "tjener."
-
-#: daemon/gdm.c:3796
-msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "QUERY_LOGOUT_ACTION: Forespørsel nektet: Ikke autentisert"
-
-#: daemon/gdm.c:3854 daemon/gdm.c:3909
-msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "SET_LOGOUT_ACTION: Forespørsel nektet: Ikke autentisert"
-
-#: daemon/gdm.c:3954 daemon/gdm.c:3981
-msgid "QUERY_VT request denied: Not authenticated"
-msgstr "QUERY_VT: Forespørsel nektet: Ikke autentisert"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:652
@@ -1048,7 +1039,7 @@ msgstr "%s: Kan ikke starte velkomst ved forsøk på å bruke standard: %s"
 
 #: daemon/slave.c:2665
 msgid ""
-"Cannot start the greeter program, you will not be able to log in.  This "
+"Cannot start the greeter program; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
 msgstr ""
@@ -1207,32 +1198,32 @@ msgstr "%s: Bruker har ikke tillatelse til å logge inn"
 msgid "The system administrator has disabled your account."
 msgstr "Systemadministrator har deaktivert din konto."
 
-#: daemon/slave.c:3790
+#: daemon/slave.c:3792
 msgid "Error! Unable to set executable context."
 msgstr "Feil! Kan ikke sette kontekst for kjøringsmiljø."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3798 daemon/slave.c:3803
+#: daemon/slave.c:3800 daemon/slave.c:3805
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Kunne ikke kjøre %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3814
+#: daemon/slave.c:3816
 msgid "Cannot start the session due to some internal error."
 msgstr "Kan ikke starte sesjonen pga en intern feil."
 
-#: daemon/slave.c:3868
+#: daemon/slave.c:3870
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Bruker passerte autentisering men getpwnam(%s) feilet.!"
 
-#: daemon/slave.c:3882
+#: daemon/slave.c:3884
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Kjøring av PostLogin-skript returnerte > 0. Avbryter."
 
-#: daemon/slave.c:3891
+#: daemon/slave.c:3893
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1250,12 +1241,12 @@ msgstr ""
 "Der er usannsynlig at ting vil fungere med mindre du bruker en feilsikker "
 "sesjon."
 
-#: daemon/slave.c:3899
+#: daemon/slave.c:3901
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Hjemmekatalog for %s: '%s' eksisterer ikke!"
 
-#: daemon/slave.c:4076
+#: daemon/slave.c:4078
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1267,12 +1258,12 @@ msgstr ""
 "Uansett vil det ikke være mulig å logge inn. Vennligst kontakt din "
 "systemadministrator"
 
-#: daemon/slave.c:4152
+#: daemon/slave.c:4154
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Feil under kjøring av brukersesjon"
 
-#: daemon/slave.c:4233
+#: daemon/slave.c:4235
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1284,25 +1275,25 @@ msgstr ""
 "tom for diskplass. Prøv å logge inn med en av de feilsikre sesjonene for å "
 "se om dette løser problemet."
 
-#: daemon/slave.c:4241
+#: daemon/slave.c:4243
 msgid "View details (~/.xsession-errors file)"
 msgstr "Vis detaljer (~/.xsession-errors filen)"
 
-#: daemon/slave.c:4385
+#: daemon/slave.c:4387
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM oppdaget at nedstenging eller omstart pågår."
 
-#: daemon/slave.c:4479
+#: daemon/slave.c:4481
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping til %s feilet. Dæjå!"
 
-#: daemon/slave.c:4765
+#: daemon/slave.c:4767
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Fatal X feil - Starter %s på nytt"
 
-#: daemon/slave.c:4859
+#: daemon/slave.c:4861
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1310,22 +1301,22 @@ msgstr ""
 "Lyd for innlogging forespurt på ikke-lokal skjerm. Andre mulige feil kan "
 "være at avspillingsprogrammet ikke kan kjøre eller at lyden ikke eksisterer"
 
-#: daemon/slave.c:5214
+#: daemon/slave.c:5216
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Feil under oppstart: %s"
 
-#: daemon/slave.c:5222 daemon/slave.c:5361
+#: daemon/slave.c:5224 daemon/slave.c:5363
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Kan ikke kjøre skript-prosess!"
 
-#: daemon/slave.c:5316
+#: daemon/slave.c:5318
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Kan ikke opprette rør"
 
-#: daemon/slave.c:5355
+#: daemon/slave.c:5357
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Feil under kjøring: %s"
@@ -1353,7 +1344,7 @@ msgstr "Vennligst skriv inn brukernavn"
 #: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
-#: gui/greeter/greeter_parser.c:1061
+#: gui/greeter/greeter_parser.c:1065
 msgid "Username:"
 msgstr "Brukernavn:"
 
@@ -1637,7 +1628,7 @@ msgstr ""
 "\n"
 "Systemadministrator har deaktivert din tilgang til systemet midlertidig."
 
-#: daemon/verify-pam.c:1428 daemon/verify-pam.c:1430
+#: daemon/verify-pam.c:1433 daemon/verify-pam.c:1435
 msgid "Can't find PAM configuration for gdm."
 msgstr "Kan ikke finne PAM-konfigurasjonsfil for gdm."
 
@@ -2723,7 +2714,7 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:222 gui/greeter/greeter_parser.c:1047
+#: gui/gdmlogin.c:222
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Bruker %s vil logge på om %d sekunder"
@@ -3639,9 +3630,8 @@ msgstr "Du må være superbruker (root) for å konfigurere GDM."
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr ""
-"En grafisk applikasjon for konfigurasjon av GNOME Display Manager (GDM)"
+msgid "Configure the login screen (Gnome Display Manager)"
+msgstr "Konfigurer innloggingshåndterer (GNOME Display Manager)"
 
 #: gui/greeter/greeter.c:638 gui/greeter/greeter.c:670
 #, c-format
@@ -3754,6 +3744,13 @@ msgstr "_Konfigurer"
 msgid "You've got capslock on!"
 msgstr "Du har capslock på!"
 
+#: gui/greeter/greeter_parser.c:1047
+#, c-format
+msgid "User %s will login in %d second"
+msgid_plural "User %s will login in %d seconds"
+msgstr[0] "Bruker %s vil logge på om %d sekund"
+msgstr[1] "Bruker %s vil logge på om %d sekunder"
+
 #: gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
 msgstr "Velg en sesjon"
@@ -3858,7 +3855,7 @@ msgstr "(minnebuffer"
 
 #. markup
 #: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:301
 msgid "Cannot load user interface"
 msgstr "Kan ikke laste brukergrensesnitt"
 
@@ -3887,17 +3884,23 @@ msgstr ""
 #: vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %"
-"s.  CList type widget should have %d columns.  Possibly the glade interface "
-"description was corrupted.  %s cannot continue and will exit now.  You "
-"should check your installation of %s or reinstall %s."
-msgstr ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d column. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgid_plural ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d columns. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgstr[0] "En feil oppsto under lasting av et element av brukergrensesnittet %s%s fra fil %s. Komponenter av CList-type må ha %d kolonne. En mulig årsak er at glade grensesnittfilen er korrupt. %s kan ikke fortsette og vil avslutte nå. Du bør sjekke installasjonen av %s eller reinstallere %s."
+msgstr[1] ""
 "En feil oppsto under lasting av et element av brukergrensesnittet %s%s fra "
 "fil %s. widget av CList-type må ha %d kolonner. En mulig årsak er at glade "
 "grensesnittfilen er korrupt. %s kan ikke fortsette og vil avslutte nå. Du "
 "bør sjekke installasjonen av %s eller reinstallere %s."
 
-#: vicious-extensions/glade-helper.c:266
+#: vicious-extensions/glade-helper.c:277
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3906,7 +3909,7 @@ msgstr ""
 "Glade filen er på crack! Sjekk at korrekt fil er installert!\n"
 "fil: %s widget: %s forventet antall clist-kolonner: %d"
 
-#: vicious-extensions/glade-helper.c:291
+#: vicious-extensions/glade-helper.c:302
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -3918,7 +3921,7 @@ msgstr ""
 "fortsette og vil avslutte nå. Du bør sjekke installasjonen av %s eller "
 "installere %s på nytt."
 
-#: vicious-extensions/glade-helper.c:303
+#: vicious-extensions/glade-helper.c:314
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Ingen grensesnitt kunne lastes! (fil: %s)"
