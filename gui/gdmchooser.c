@@ -1157,16 +1157,6 @@ main (int argc, char *argv[])
 	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
     }
 
-    /* FIXME:*/
-    {
-	    struct in_addr ia = {0};
-     
-gdm_chooser_host_alloc ("foo1", "foo-desc",
-			&ia, TRUE);
-gdm_chooser_host_alloc ("foo2", "foo2-desc",
-			&ia, TRUE);
-    }
-
     setup_cursor (GDK_LEFT_PTR);
 
     gtk_main();
