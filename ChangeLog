@@ -1,3 +1,14 @@
+Wed Jun 11 16:04:02 2003  George Lebl <jirka@5z.com>
+
+	* configure.in, daemon/gdm.h, config/gdm.conf.in: Sync defaults into
+	  with the header file.  Add comment about the gtk modules stuff
+	  and make it default to what you'd normally have for accessibility
+	  (though it doesn't add them by default).  The gdm.h defaults to
+	  no modules though.  Also if we can't find an X server, default
+	  to the Linux setup so that the beast at least builds.
+
+	* docs/Makefile.am: actually include the theme document, DUH!
+
 Wed Jun 11  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* configure.in, config/gdm.conf.in: Fixed setting of DefaultPath and

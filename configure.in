@@ -480,11 +480,21 @@ elif test -x /usr/openwin/bin/Xsun; then
    X_SERVER_PATH="/usr/openwin/bin"
    X_SERVER="/usr/openwin/bin/Xsun"
    X_CONF_PATH="/usr/openwin/bin"
+else
+   # what to do, what to do, this is wrong, but this just sets the
+   # defaults, perhaps this user is cross compiling or some such
+   X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
+   X_SERVER_PATH="/usr/X11R6/bin"
+   X_SERVER="/usr/X11R6/bin/X"
+   X_CONF_PATH="/usr/bin/X11:usr/X11R6/bin:/usr/local/bin"
 fi
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
 AC_SUBST(X_SERVER_PATH)
 AC_SUBST(X_CONF_PATH)
+AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER")
+AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH")
+AC_DEFINE_UNQUOTED(X_CONF_PATH,"$X_CONF_PATH")
 
 SYSCONFDIR_TMP="$sysconfdir"
 EXPANDED_SYSCONFDIR=`eval echo $SYSCONFDIR_TMP`

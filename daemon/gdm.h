@@ -133,13 +133,13 @@ enum {
 #define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin"
 #define GDM_KEY_REMOTEGREETER "daemon/RemoteGreeter=" EXPANDED_BINDIR "/gdmlogin"
 #define GDM_KEY_ADD_GTK_MODULES "daemon/AddGtkModules=false"
-#define GDM_KEY_GTK_MODULES_LIST "daemon/GtkModulesList=" "gail:atk-bridge"
+#define GDM_KEY_GTK_MODULES_LIST "daemon/GtkModulesList="
 #define GDM_KEY_GROUP "daemon/Group=gdm"
 #define GDM_KEY_HALT "daemon/HaltCommand=/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
 #define GDM_KEY_INITDIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
 #define GDM_KEY_KILLIC "daemon/KillInitClients=true"
 #define GDM_KEY_LOGDIR "daemon/LogDir=" EXPANDED_AUTHDIR
-#define GDM_KEY_PATH "daemon/DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:" EXPANDED_BINDIR
+#define GDM_KEY_PATH "daemon/DefaultPath=/bin:/usr/bin:" X_CONF_PATH ":" EXPANDED_BINDIR
 #define GDM_KEY_PIDFILE "daemon/PidFile=/var/run/gdm.pid"
 #define GDM_KEY_POSTSESS "daemon/PostSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PostSession/"
 #define GDM_KEY_PRESESS "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
@@ -147,7 +147,7 @@ enum {
 #define GDM_KEY_FAILSAFE_XSERVER "daemon/FailsafeXServer="
 #define GDM_KEY_XKEEPSCRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
 #define GDM_KEY_REBOOT "daemon/RebootCommand=/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
-#define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:" EXPANDED_BINDIR
+#define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:" X_CONF_PATH ":" EXPANDED_BINDIR
 #if 0
 /* FIXME: Maybe just whack this */
 #define GDM_KEY_GNOMEDEFAULTSESSION "daemon/GnomeDefaultSession=" EXPANDED_DATADIR "/gnome/default.session"
@@ -170,9 +170,9 @@ enum {
 #define GDM_KEY_TIMED_LOGIN "daemon/TimedLogin="
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=30"
 
-#define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=/usr/X11R6/bin/X"
+#define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=" X_SERVER
 #define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
-#define GDM_KEY_XNEST "daemon/Xnest=/usr/X11R6/bin/Xnest -name Xnest"
+#define GDM_KEY_XNEST "daemon/Xnest=" X_SERVER_PATH "/Xnest -name Xnest"
 /* Keys for automatic VT allocation rather then letting it up to the
  * X server */
 #define GDM_KEY_FIRSTVT "daemon/FirstVT=7"
@@ -180,7 +180,7 @@ enum {
 
 /* Per server definitions */
 #define GDM_KEY_SERVER_NAME "name=Standard server"
-#define GDM_KEY_SERVER_COMMAND "command=/usr/X11R6/bin/X"
+#define GDM_KEY_SERVER_COMMAND "command=" X_SERVER
 /* runnable as flexi server */
 #define GDM_KEY_SERVER_FLEXIBLE "flexible=true"
 /* choosable from the login screen */
