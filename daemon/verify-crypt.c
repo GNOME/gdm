@@ -80,10 +80,11 @@ gdm_verify_user (const char *username,
 
     pwent = getpwnam (login);
         
-    ppasswd = !pwent ? NULL : pwent->pw_passwd;
+    ppasswd = (pwent == NULL) ? NULL : g_strdup (pwent->pw_passwd);
     
     /* Request the user's password */
-    if (ve_string_empty (ppasswd)) {
+    if (pwent != NULL &&
+        ve_string_empty (ppasswd)) {
 	    /* eeek a passwordless account */
 	    passwd = g_strdup ("");
     } else {
@@ -95,9 +96,9 @@ gdm_verify_user (const char *username,
 			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 		    g_free (login);
 		    g_free (passwd);
+		    g_free (ppasswd);
 		    return NULL;
-    }
-
+	    }
     }
 
     if (local)
@@ -108,6 +109,7 @@ gdm_verify_user (const char *username,
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
 	    g_free (login);
 	    g_free (passwd);
+	    g_free (ppasswd);
 	    return NULL;
     }
 
@@ -117,6 +119,7 @@ gdm_verify_user (const char *username,
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
 	    g_free (login);
 	    g_free (passwd);
+	    g_free (ppasswd);
 	    return NULL;
     }
 
@@ -133,6 +136,7 @@ gdm_verify_user (const char *username,
 	    }
 	    g_free (login);
 	    g_free (passwd);
+	    g_free (ppasswd);
 	    return NULL;
     }
 
@@ -151,6 +155,7 @@ gdm_verify_user (const char *username,
     }	
 
     g_free (passwd);
+    g_free (ppasswd);
     
     return login;
 }
