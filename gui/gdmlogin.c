@@ -105,12 +105,14 @@ static GtkWidget *login;
 static GtkWidget *label;
 static GtkWidget *entry;
 static GtkWidget *msg;
-static gboolean require_quater = FALSE;
+static gboolean require_quarter = FALSE;
 static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
 static GdkWindow *rootwin;
 static GdkRectangle screen;
+static GdkRectangle *allscreens;
+static int screens = 0;
 static GtkTooltips *tooltips;
 
 static GnomeIconList *browser;
@@ -1149,7 +1151,7 @@ evil (const char *user)
 		 * thus this checks for Quater as well as Quarter to
 		 * keep compatibility which is obviously important for
 		 * something like this */
-		require_quater = TRUE;
+		require_quarter = TRUE;
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		return TRUE;
 	}
@@ -1989,7 +1991,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		timed_handler_id = 0;
 	}
 
-	if (require_quater) {
+	if (require_quarter) {
 		GtkWidget *d;
 
 		/* we should be now fine for focusing new windows */
@@ -2928,7 +2930,7 @@ gdm_screen_init (void)
 
 	if (have_xinerama) {
 		int screen_num;
-		XineramaScreenInfo *screens = XineramaQueryScreens (GDK_DISPLAY (),
+		XineramaScreenInfo *xscreens = XineramaQueryScreens (GDK_DISPLAY (),
 								    &screen_num);
 
 
@@ -2938,11 +2940,20 @@ gdm_screen_init (void)
 		if (screen_num <= GdmXineramaScreen)
 			GdmXineramaScreen = 0;
 
-		screen.x = screens[GdmXineramaScreen].x_org;
-		screen.y = screens[GdmXineramaScreen].y_org;
-		screen.width = screens[GdmXineramaScreen].width;
-		screen.height = screens[GdmXineramaScreen].height;
-		XFree (screens);
+		allscreens = g_new0 (GdkRectangle, screen_num);
+		screens = screen_num;
+
+		for (i = 0; i < screen_num; i++) {
+			allscreens[i].x = xscreens[i].x_org;
+			allscreens[i].y = xscreens[i].y_org;
+			allscreens[i].width = xscreens[i].width;
+			allscreens[i].height = xscreens[i].height;
+
+			if (GdmXineramaScreen == i)
+				screen = allscreens[i];
+		}
+
+		XFree (xscreens);
 	} else
 #endif
 	{
@@ -2950,6 +2961,10 @@ gdm_screen_init (void)
 		screen.y = 0;
 		screen.width = gdk_screen_width ();
 		screen.height = gdk_screen_height ();
+
+		allscreens = g_new0 (GdkRectangle, 1);
+		allscreens[0] = screen;
+		screens = 1;
 	}
 }
 
@@ -2983,6 +2998,36 @@ set_root (GdkPixbuf *pb)
 	gdk_error_trap_pop ();
 }
 
+static GdkPixbuf *
+render_scaled_back (const GdkPixbuf *pb)
+{
+	int i;
+	int width, height;
+
+	GdkPixbuf *back = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+					  FALSE, 8,
+					  gdk_screen_width (),
+					  gdk_screen_height ());
+
+	width = gdk_pixbuf_get_width (pb);
+	height = gdk_pixbuf_get_height (pb);
+
+	for (i = 0; i < screens; i++) {
+		gdk_pixbuf_scale (pb, back,
+				  allscreens[i].x,
+				  allscreens[i].y,
+				  allscreens[i].width,
+				  allscreens[i].height,
+				  0 /* offset_x */,
+				  0 /* offset_y */,
+				  (double) allscreens[i].width / width,
+				  (double) allscreens[i].height / height,
+				  GDK_INTERP_BILINEAR);
+	}
+
+	return back;
+}
+
 /* Load the background stuff, the image and program */
 static void
 run_backgrounds (void)
@@ -2994,12 +3039,7 @@ run_backgrounds (void)
 		GdkPixbuf *pb = gdk_pixbuf_new_from_file (GdmBackgroundImage);
 		if (pb != NULL) {
 			if (GdmBackgroundScaleToFit) {
-				GdkPixbuf *spb =
-					gdk_pixbuf_scale_simple
-					(pb,
-					 gdk_screen_width (),
-					 gdk_screen_height (),
-					 GDK_INTERP_BILINEAR);
+				GdkPixbuf *spb = render_scaled_back (pb);
 				gdk_pixbuf_unref (pb);
 				pb = spb;
 			}
