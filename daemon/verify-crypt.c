@@ -71,7 +71,7 @@ gdm_verify_user (GdmDisplay *d,
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
 	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Username:"));
 	    if (login == NULL ||
-		gdm_slave_greeter_check_interruption (login)) {
+		gdm_slave_greeter_check_interruption ()) {
 		    if (local)
 			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 		    g_free (login);
@@ -94,7 +94,7 @@ gdm_verify_user (GdmDisplay *d,
 	    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
 	    if (passwd == NULL)
 		    passwd = g_strdup ("");
-	    if (gdm_slave_greeter_check_interruption (passwd)) {
+	    if (gdm_slave_greeter_check_interruption ()) {
 		    if (local)
 			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 		    g_free (login);

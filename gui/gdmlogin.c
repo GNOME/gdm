@@ -3714,8 +3714,8 @@ gdm_reread_config (int sig)
 	     ! bool_same (GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
 	     ! bool_same (GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
 		/* restart interruption */
-		g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_RESTART_GREETER);
 		gnome_config_pop_prefix ();
+		_exit (DISPLAY_RESTARTGREETER);
 		return;
 	}
 
@@ -4085,6 +4085,8 @@ main (int argc, char *argv[])
 	    gtk_widget_destroy (dialog);
 	    gdm_wm_no_login_focus_pop ();
     }
+
+    gdm_wm_raise_config_windows ();
 
     g_atexit (kill_thingies);
 

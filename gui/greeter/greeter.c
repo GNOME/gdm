@@ -612,8 +612,7 @@ greeter_reread_config (int sig)
 {
   /* FIXME: actually reparse config stuff here, instead of
    * just requesting a restart */
-  /* restart interruption */
-  g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_RESTART_GREETER);
+  _exit (DISPLAY_RESTARTGREETER);
 }
 
 static void
@@ -946,6 +945,8 @@ main (int argc, char *argv[])
       gtk_widget_destroy (dialog);
       gdm_wm_no_login_focus_pop ();
     }
+
+  gdm_wm_raise_config_windows ();
 
   gtk_main ();
 

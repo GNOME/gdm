@@ -26,7 +26,7 @@
 void     gdm_slave_start       (GdmDisplay *d);
 void     gdm_slave_greeter_ctl_no_ret (char cmd, const char *str);
 char    *gdm_slave_greeter_ctl (char cmd, const char *str);
-gboolean gdm_slave_greeter_check_interruption (const char *msg);
+gboolean gdm_slave_greeter_check_interruption (void);
 gboolean gdm_slave_should_complain (void);
 
 void	 gdm_slave_send		(const char *str, gboolean wait_for_usr2);

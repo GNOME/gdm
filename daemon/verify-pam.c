@@ -79,7 +79,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    s = gdm_slave_greeter_ctl (GDM_PROMPT, utf8);
 	    g_free (utf8);
 
-	    if (gdm_slave_greeter_check_interruption (s)) {
+	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
 		    free (reply);
 		    return PAM_CONV_ERR;
@@ -95,7 +95,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    utf8 = g_locale_to_utf8 (msg[replies]->msg, -1, NULL, NULL, NULL);
 	    s = gdm_slave_greeter_ctl (GDM_NOECHO, utf8);
 	    g_free (utf8);
-	    if (gdm_slave_greeter_check_interruption (s)) {
+	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
 		    free (reply);
 		    return PAM_CONV_ERR;
@@ -310,7 +310,7 @@ gdm_verify_user (GdmDisplay *d,
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
 	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Username:"));
 	    if (login == NULL ||
-		gdm_slave_greeter_check_interruption (login)) {
+		gdm_slave_greeter_check_interruption ()) {
 		    if (started_timer)
 			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 		    g_free (login);

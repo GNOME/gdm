@@ -24,6 +24,7 @@
 #include <gdk/gdkx.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
 #ifdef HAVE_LIBXINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
@@ -43,6 +44,10 @@ struct _GdmWindow {
 	gboolean center; /* do centering */
 	gboolean recenter; /* do re-centering */
         gboolean takefocus; /* permit take focus */
+
+	int config_window; /* a config window, we may treat it specially,
+			      may be up to 3 numbers, where the third should
+			      be raised the most */
 };
 
 static GList *windows = NULL;
@@ -56,6 +61,7 @@ static Atom XA_WM_PROTOCOLS = 0;
 static Atom XA_WM_STATE = 0;
 static Atom XA_WM_TAKE_FOCUS = 0;
 static Atom XA_COMPOUND_TEXT = 0;
+static Atom GDM_CONFIG_WINDOW = 0;
 
 static int trap_depth = 0;
 
@@ -648,6 +654,8 @@ add_window (Window w, gboolean center)
 		int x, y;
 		Window root;
 		unsigned int width, height, border, depth;
+		long *data;
+		int data_size;
 
 		gw = g_new0 (GdmWindow, 1);
 		gw->win = w;
@@ -706,6 +714,19 @@ add_window (Window w, gboolean center)
 
 		gw->x = x;
 		gw->y = x;
+
+		data = get_typed_property_data (wm_disp, w,
+						GDM_CONFIG_WINDOW,
+						XA_CARDINAL,
+						&data_size,
+						32);
+		if (data != NULL) {
+			if (data_size >= 1 &&
+			    data[0] != 0) {
+				gw->config_window = data[0];
+			}
+			g_free (data);
+		}
 
 		center_x_window (gw, w, w);
 		add_deco (gw);
@@ -1077,7 +1098,7 @@ gdm_wm_init (Window login_window)
 	XA_WM_TAKE_FOCUS = XInternAtom (wm_disp, "WM_TAKE_FOCUS", False);
 
 	XA_COMPOUND_TEXT = XInternAtom (wm_disp, "COMPOUND_TEXT", False);
-
+	GDM_CONFIG_WINDOW = XInternAtom (wm_disp, "_GDM_CONFIG_WINDOW", False);
 
 	wm_root = DefaultRootWindow (wm_disp);
 
@@ -1185,6 +1206,35 @@ gdm_wm_move_window_now (Window window, int x, int y)
 
 	XSync (wm_disp, False);
 	trap_pop ();
+}
+
+void
+gdm_wm_raise_config_windows (void)
+{
+	GList *li;
+	int i;
+	Window focus = 0;
+
+	for (i = 1; i <= 3; i++) {
+		for (li = windows; li != NULL; li = li->next) {
+			GdmWindow *gw = li->data;
+
+			if (gw->config_window == i) {
+				focus = gw->win;
+				if (gw->shadow != None)
+					XRaiseWindow (wm_disp, gw->shadow);
+				if (gw->deco != None)
+					XRaiseWindow (wm_disp, gw->deco);
+				else
+					XRaiseWindow (wm_disp, gw->win);
+			}
+		}
+	}
+
+	if (focus != 0) {
+		focus_new_windows = TRUE;
+		gdm_wm_focus_window (focus);
+	}
 }
 
 /* EOF */

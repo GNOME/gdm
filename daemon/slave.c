@@ -71,6 +71,9 @@ static gboolean do_configurator = FALSE; /* if this is true, login as root
 					  * and start the configurator */
 static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
 					       greeter and try again */
+static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
+						SIGCHLD hits */
+static gboolean interrupted = FALSE;
 static gchar *ParsedAutomaticLogin = NULL;
 static gchar *ParsedTimedLogin = NULL;
 
@@ -526,14 +529,6 @@ gdm_slave_run (GdmDisplay *display)
 	    do {
 		    gdm_slave_wait_for_login (); /* wait for a password */
 
-		    if (do_restart_greeter) {
-			    do_restart_greeter = FALSE;
-			    if (greet)
-				    gdm_slave_whack_greeter ();
-			    gdm_slave_greeter ();  /* Start the greeter */
-			    continue;
-		    }
-
 		    d->logged_in = TRUE;
 		    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 
@@ -721,17 +716,30 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		_exit (0);
 	} else {
-		gdm_sigchld_block_push ();
+		/* XXX: is this a race if we don't push a sigchld block?
+		 * but then we don't get a signal for restarting the greeter */
 		/* wait for the config proggie to die */
 		if (d->sesspid > 0)
-			waitpid (d->sesspid, 0, 0);
+			/* must use the pid var here since sesspid might get
+			 * zeroed between the check and here by sigchld
+			 * handler */
+			waitpid (pid, 0, 0);
 		display->sesspid = 0;
-		gdm_sigchld_block_pop ();
 	}
 }
 
+static void
+restart_the_greeter (void)
+{
+	/* no login */
+	g_free (login);
+	login = NULL;
 
-
+	/* No restart it */
+	if (greet)
+		gdm_slave_whack_greeter ();
+	gdm_slave_greeter ();
+}
 
 static void
 gdm_slave_wait_for_login (void)
@@ -739,12 +747,21 @@ gdm_slave_wait_for_login (void)
 	g_free (login);
 	login = NULL;
 
-	/* init to a sane value */
-	do_timed_login = FALSE;
-	do_configurator = FALSE;
-
 	/* Chat with greeter */
 	while (login == NULL) {
+		/* init to a sane value */
+		do_timed_login = FALSE;
+		do_configurator = FALSE;
+
+		if (do_restart_greeter) {
+			restart_the_greeter ();
+		}
+
+		do_restart_greeter = FALSE;
+
+		/* We are NOT interrupted yet */
+		interrupted = FALSE;
+
 		/* just for paranoia's sake */
 		seteuid (0);
 		setegid (0);
@@ -756,8 +773,16 @@ gdm_slave_wait_for_login (void)
 					 d->console);
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
 			   ve_sure_string (login));
+
 		/* Complex, make sure to always handle the do_configurator
-		 * and do_timed_login after any call to gdm_verify_user */
+		 * do_timed_login and do_restart_greeter after any call
+		 * to gdm_verify_user */
+
+		if (do_restart_greeter) {
+			do_restart_greeter = FALSE;
+			restart_the_greeter ();
+			continue;
+		}
 
 		if (do_configurator) {
 			struct passwd *pwent;
@@ -782,6 +807,12 @@ gdm_slave_wait_for_login (void)
 						 d->name,
 						 d->console);
 			GdmAllowRoot = oldAllowRoot;
+
+			if (do_restart_greeter) {
+				do_restart_greeter = FALSE;
+				restart_the_greeter ();
+				continue;
+			}
 
 			/* the wanker can't remember his password */
 			if (login == NULL) {
@@ -830,10 +861,11 @@ gdm_slave_wait_for_login (void)
 			 * log in in the meantime */
 			gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
 
+			restart_greeter_now = TRUE;
+
 			run_config (d, pwent);
-			/* note that we may never get here as the configurator
-			 * may have sighupped the main gdm server and with it
-			 * wiped us */
+
+			restart_greeter_now = FALSE;
 
 			gdm_verify_cleanup (d);
 
@@ -2547,6 +2579,21 @@ gdm_slave_child_handler (int sig)
 		       (int)pid, (int)WTERMSIG (status));
 
 	if (pid == d->greetpid && greet) {
+		if (WIFEXITED (status) &&
+		    WEXITSTATUS (status) == DISPLAY_RESTARTGREETER) {
+			greet = FALSE;
+			d->greetpid = 0;
+			gdm_slave_send_num (GDM_SOP_GREETPID, 0);
+
+			if (restart_greeter_now) {
+				gdm_slave_greeter ();
+			} else {
+				interrupted = TRUE;
+				do_restart_greeter = TRUE;
+			}
+			return;
+		}
+
 		/* just for paranoia's sake */
 		seteuid (0);
 		setegid (0);
@@ -2649,11 +2696,64 @@ gdm_slave_xioerror_handler (Display *disp)
 	}
 }
 
+static void
+check_for_interruption (const char *msg)
+{
+	/* Hell yeah we were interrupted, the greeter died */
+	if (msg == NULL) {
+		interrupted = TRUE;
+		return;
+	}
+
+	if (msg[0] == BEL) {
+		/* Different interruptions come here */
+		/* Note that we don't want to actually do anything.  We want
+		 * to just set some flag and go on and schedule it after we
+		 * dump out of the login in the main login checking loop */
+		switch (msg[1]) {
+		case GDM_INTERRUPT_TIMED_LOGIN:
+			/* only allow timed login if display is local,
+			 * it is allowed for this display (it's only allowed
+			 * for the first local display) and if it's set up
+			 * correctly */
+			if ((d->console || GdmAllowRemoteAutoLogin) 
+                            && d->timed_login_ok &&
+			    ! ve_string_empty (ParsedTimedLogin) &&
+                            strcmp (ParsedTimedLogin, "root") != 0 &&
+			    GdmTimedLoginDelay > 0) {
+				do_timed_login = TRUE;
+			}
+			break;
+		case GDM_INTERRUPT_CONFIGURE:
+			if (d->console &&
+			    GdmConfigAvailable &&
+			    GdmSystemMenu &&
+			    ! ve_string_empty (GdmConfigurator)) {
+				do_configurator = TRUE;
+			}
+			break;
+		default:
+			break;
+		}
+
+		/* this was an interruption, if it wasn't
+		 * handled then the user will just get an error as if he
+		 * entered an invalid login or passward.  Seriously BEL
+		 * cannot be part of a login/password really */
+		interrupted = TRUE;
+	}
+}
+
+
 char * 
 gdm_slave_greeter_ctl (char cmd, const char *str)
 {
     gchar buf[FIELD_SIZE];
     guchar c;
+
+    /* There is no spoon^H^H^H^H^Hgreeter */
+    if ( ! greet)
+	    return NULL;
 
     if (str)
 	g_print ("%c%c%s\n", STX, cmd, str);
@@ -2666,9 +2766,12 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
     } while (c && c != STX);
     
     if (fgets (buf, FIELD_SIZE-1, stdin) == NULL) {
+	    interrupted = TRUE;
 	    /* things don't seem well with the greeter, it probably died */
 	    return NULL;
     }
+
+    check_for_interruption (buf);
 
     /* don't forget to flush */
     fflush (stdin);
@@ -2848,58 +2951,23 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 }
 
 gboolean
-gdm_slave_greeter_check_interruption (const char *msg)
+gdm_slave_greeter_check_interruption (void)
 {
-	if (msg != NULL &&
-	    msg[0] == BEL) {
-		/* Different interruptions come here */
-		/* Note that we don't want to actually do anything.  We want
-		 * to just set some flag and go on and schedule it after we
-		 * dump out of the login in the main login checking loop */
-		switch (msg[1]) {
-		case GDM_INTERRUPT_TIMED_LOGIN:
-			/* only allow timed login if display is local,
-			 * it is allowed for this display (it's only allowed
-			 * for the first local display) and if it's set up
-			 * correctly */
-			if ((d->console || GdmAllowRemoteAutoLogin) 
-                            && d->timed_login_ok &&
-			    ! ve_string_empty (ParsedTimedLogin) &&
-                            strcmp (ParsedTimedLogin, "root") != 0 &&
-			    GdmTimedLoginDelay > 0) {
-				do_timed_login = TRUE;
-				return TRUE;
-			}
-			break;
-		case GDM_INTERRUPT_CONFIGURE:
-			if (d->console &&
-			    GdmConfigAvailable &&
-			    GdmSystemMenu &&
-			    ! ve_string_empty (GdmConfigurator)) {
-				do_configurator = TRUE;
-			}
-			break;
-		case GDM_INTERRUPT_RESTART_GREETER:
-			do_restart_greeter = TRUE;
-			break;
-		default:
-			break;
-		}
-
-		/* Return true, this was an interruption, if it wasn't
-		 * handled then the user will just get an error as if he
-		 * entered an invalid login or passward.  Seriously BEL
-		 * cannot be part of a login/password really */
+	if (interrupted) {
+		/* no longer interrupted */
+		interrupted = FALSE;
 		return TRUE;
+	} else {
+		return FALSE;
 	}
-	return FALSE;
 }
 
 gboolean
 gdm_slave_should_complain (void)
 {
 	if (do_timed_login ||
-	    do_configurator)
+	    do_configurator ||
+	    do_restart_greeter)
 		return FALSE;
 	return TRUE;
 }

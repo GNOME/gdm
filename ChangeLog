@@ -1,3 +1,18 @@
+Sat May 11 23:38:02 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/slave.[ch],
+	  daemon/verify-(pam|crypt|shadow).c, gui/gdmlogin.c,
+	  gui/greeter/greeter.c:  Change the interruption stuff, to remove
+	  some races and the restart of greeters is done by return code
+
+	* gui/gdmsetup.c, gui/gdmwm.[ch], gui/gdmlogin.c,
+	  gui/greeter/greeter.c:  Add a property on the setup windows so
+	  that we can raise the setup windows after a restart of the greeter,
+	  this doesn't really work yet well.
+
+	* gui/gdmsetup.c: add some more error checking and change the
+	  owenership/permissions correctly on installed themes
+
 Fri May 10 15:52:07 2002  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.glade: a bit of work on the accessibility stuff
