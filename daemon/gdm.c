@@ -292,6 +292,11 @@ gdm_config_parse (void)
     displays = NULL;
     high_display_num = 0;
 
+#if defined(_SCO_DS) || defined(__UNIXWARE__) || defined(__USLC__)
+    gdm_error ("SCO OS detected!!!  I will sleep for 5 seconds in protest.  This message can be disabled by SCO stopping to sue people.");
+    sleep (5);
+#endif
+
     IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
     if (r < 0) {
 	    gdm_error (_("%s: No configuration file: %s. Using defaults."),
