@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-04 06:26+0100\n"
-"PO-Revision-Date: 2004-12-04 16:31+0800\n"
+"POT-Creation-Date: 2005-01-29 03:51+0100\n"
+"PO-Revision-Date: 2005-01-29 16:43+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -672,8 +672,8 @@ msgstr "只有 root 需要运行 gdm\n"
 #: daemon/slave.c:825 daemon/slave.c:835 daemon/slave.c:845 daemon/slave.c:857
 #: gui/gdmchooser.c:1936 gui/gdmchooser.c:1939 gui/gdmchooser.c:1942
 #: gui/gdmlogin.c:3958 gui/gdmlogin.c:3966 gui/gdmlogin.c:3969
-#: gui/greeter/greeter.c:1085 gui/greeter/greeter.c:1093
-#: gui/greeter/greeter.c:1096
+#: gui/greeter/greeter.c:1086 gui/greeter/greeter.c:1094
+#: gui/greeter/greeter.c:1097
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s：设置 %s 信号处理器出错：%s"
@@ -996,11 +996,11 @@ msgstr "%s：无法启动欢迎程序，正在尝试默认值：%s"
 
 #: daemon/slave.c:2665
 msgid ""
-"Cannot start the greeter program, you will not be able to log in.  This "
+"Cannot start the greeter program; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
 msgstr ""
-"无法启动欢迎程序，您将无法登录。该显示将被禁用。试图通过其它方式登录并编辑配"
+"无法启动欢迎程序；您将无法登录。该显示将被禁用。试图通过其它方式登录并编辑配"
 "置文件"
 
 #. If no greeter we really have to disable the display
@@ -1902,7 +1902,7 @@ msgid "Can't open default host icon: %s"
 msgstr "无法打开默认主机图标：%s"
 
 #: gui/gdmchooser.c:1950 gui/gdmlogin.c:3977 gui/gdmlogin.c:3984
-#: gui/greeter/greeter.c:1104 gui/greeter/greeter.c:1111
+#: gui/greeter/greeter.c:1105 gui/greeter/greeter.c:1112
 msgid "Could not set signal mask!"
 msgstr "无法设置信号屏蔽！"
 
@@ -2682,12 +2682,12 @@ msgid "_Suspend"
 msgstr "挂起(_S)"
 
 #: gui/gdmlogin.c:685 gui/gdmlogin.c:3752 gui/greeter/greeter.c:164
-#: gui/greeter/greeter.c:858
+#: gui/greeter/greeter.c:859
 msgid "Welcome"
 msgstr "欢迎"
 
 #: gui/gdmlogin.c:688 gui/gdmlogin.c:3755 gui/greeter/greeter.c:167
-#: gui/greeter/greeter.c:861
+#: gui/greeter/greeter.c:862
 #, c-format
 msgid "Welcome to %n"
 msgstr "欢迎来到 %n"
@@ -2954,8 +2954,8 @@ msgstr "要在此列出的用户太多..."
 
 #. markup
 #: gui/gdmlogin.c:3831 gui/gdmlogin.c:3862 gui/gdmlogin.c:3906
-#: gui/greeter/greeter.c:637 gui/greeter/greeter.c:668
-#: gui/greeter/greeter.c:713
+#: gui/greeter/greeter.c:637 gui/greeter/greeter.c:669
+#: gui/greeter/greeter.c:714
 msgid "Cannot start the greeter"
 msgstr "无法启动欢迎程序"
 
@@ -2969,8 +2969,8 @@ msgstr ""
 "欢迎程序版本(%s)与守护程序版本不匹配。您可能刚刚升级 gdm。请重新启动 gdm 守护"
 "程序或重新启动计算机。"
 
-#: gui/gdmlogin.c:3869 gui/gdmlogin.c:3915 gui/greeter/greeter.c:675
-#: gui/greeter/greeter.c:722
+#: gui/gdmlogin.c:3869 gui/gdmlogin.c:3915 gui/greeter/greeter.c:676
+#: gui/greeter/greeter.c:723
 msgid "Reboot"
 msgstr "重启"
 
@@ -2984,16 +2984,16 @@ msgstr ""
 "欢迎程序版本(%s)与守护程序版本(%s)不匹配。您可能刚刚升级 gdm。请重新启动 gdm "
 "守护程序或重新启动计算机。"
 
-#: gui/gdmlogin.c:3913 gui/greeter/greeter.c:720
+#: gui/gdmlogin.c:3913 gui/greeter/greeter.c:721
 msgid "Restart"
 msgstr "重新启动"
 
 #. markup
-#: gui/gdmlogin.c:4099 gui/greeter/greeter.c:1335
+#: gui/gdmlogin.c:4099 gui/greeter/greeter.c:1340
 msgid "Session directory is missing"
 msgstr "会话目录为空"
 
-#: gui/gdmlogin.c:4101 gui/greeter/greeter.c:1337
+#: gui/gdmlogin.c:4101 gui/greeter/greeter.c:1342
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3003,11 +3003,11 @@ msgstr ""
 "置。"
 
 #. markup
-#: gui/gdmlogin.c:4125 gui/greeter/greeter.c:1362
+#: gui/gdmlogin.c:4125 gui/greeter/greeter.c:1367
 msgid "Configuration is not correct"
 msgstr "配置不正确"
 
-#: gui/gdmlogin.c:4127 gui/greeter/greeter.c:1364
+#: gui/gdmlogin.c:4127 gui/greeter/greeter.c:1369
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, and thus I ran the default command.  Please fix your configuration."
@@ -3015,11 +3015,11 @@ msgstr ""
 "配置文件含有登录对话框的非法命令行，因而我运行了默认命令。请修正您的配置。"
 
 #. markup
-#: gui/gdmlogin.c:4152 gui/greeter/greeter.c:1391
+#: gui/gdmlogin.c:4152 gui/greeter/greeter.c:1396
 msgid "No configuration was found"
 msgstr "没有找到配置"
 
-#: gui/gdmlogin.c:4154 gui/greeter/greeter.c:1393
+#: gui/gdmlogin.c:4154 gui/greeter/greeter.c:1398
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -3526,7 +3526,7 @@ msgstr "只有超级用户 (root) 才能配置 GDM。"
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr "配置 GNOME 显示控制器 (GDM) 的图形应用程序"
 
-#: gui/greeter/greeter.c:638 gui/greeter/greeter.c:669
+#: gui/greeter/greeter.c:638 gui/greeter/greeter.c:670
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3537,7 +3537,7 @@ msgstr ""
 "您可能刚刚升级 gdm。\n"
 "请重新启动 gdm daemon 或重新启动计算机。"
 
-#: gui/greeter/greeter.c:714
+#: gui/greeter/greeter.c:715
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3548,31 +3548,31 @@ msgstr ""
 "您可能刚刚升级 gdm。\n"
 "请重新启动 gdm daemon 或重新启动计算机。"
 
-#: gui/greeter/greeter.c:1173
+#: gui/greeter/greeter.c:1174
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "装入主题 %s 出错"
 
 #. markup
-#: gui/greeter/greeter.c:1226
+#: gui/greeter/greeter.c:1228
 msgid "The theme for the graphical greeter is corrupt"
 msgstr "图形化欢迎程序的主题损坏"
 
-#: gui/greeter/greeter.c:1229
+#: gui/greeter/greeter.c:1231
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "主题不包含用户名/密码输入项元素的定义"
 
 #. markup
-#: gui/greeter/greeter.c:1262
+#: gui/greeter/greeter.c:1265
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
 msgstr "装入主题时出错，而默认主题也无法装入，我将试图启动标准欢迎程序"
 
 #. markup
-#: gui/greeter/greeter.c:1284
+#: gui/greeter/greeter.c:1288
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
