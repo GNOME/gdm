@@ -2277,12 +2277,22 @@ main (int argc, char *argv[])
     gnome_init ("gdmlogin", VERSION, fixedargc, fixedargv);
     g_free (fixedargv);
 
+    gdm_login_parse_config ();
+
+    /* no language set, use the GdmDefaultLocale */
+    if (GdmDefaultLocale != NULL &&
+	GdmDefaultLocale[0] != '\0' &&
+	g_getenv ("LANG") == NULL &&
+	g_getenv ("LC_ALL") == NULL) {
+	    setlocale (LC_ALL, GdmDefaultLocale);
+    } else {
+	    setlocale (LC_ALL, "");
+    }
+
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
 
     setup_cursor (GDK_LEFT_PTR);
-
-    gdm_login_parse_config ();
 
     gdm_screen_init ();
 
