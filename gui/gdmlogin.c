@@ -1993,7 +1993,7 @@ gdm_screen_init (void)
 		if (screen_num <= 0) 
 			gdm_login_abort ("Xinerama active, but <= 0 screens?");
 
-		if (screen_num < GdmXineramaScreen)
+		if (screen_num <= GdmXineramaScreen)
 			GdmXineramaScreen = 0;
 
 		screen.x = screens[GdmXineramaScreen].x_org;
