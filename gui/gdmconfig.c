@@ -42,6 +42,10 @@ GladeXML *system_notebook = NULL;
 /* The XML file */
 gchar *glade_filename;
 
+/* FIXME: this is a global and immutable, it should change as the
+ * user changes the dir */
+char *sessions_directory;
+
 /* 3 user levels are present in the CList */
 gchar *basic_row[1] = { N_("Basic") };
 gchar *expert_row[1] = { N_("Expert") };
@@ -292,6 +296,8 @@ gdm_config_parse_most (void)
       }
     
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+
+    sessions_directory = gnome_config_get_string (GDM_KEY_SESSDIR);
     
     /* Fill the widgets in GDM tab */
     gdm_entry_set("automatic_login", gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN));
@@ -389,8 +395,15 @@ gdm_config_parse_most (void)
     gdm_toggle_set("enable_debug", gnome_config_get_bool(GDM_KEY_DEBUG));
 
     /* Read directory entries in session dir */
-    sessdir = opendir (gnome_config_get_string (GDM_KEY_SESSDIR));
-    dent = readdir (sessdir);
+    if (sessions_directory != NULL)
+	    sessdir = opendir (sessions_directory);
+    else
+	    sessdir = NULL;
+
+    if (sessdir != NULL)
+	    dent = readdir (sessdir);
+    else
+	    dent = NULL;
 
     while (dent != NULL) {
 	gchar *s;
@@ -405,7 +418,7 @@ gdm_config_parse_most (void)
 	    continue;
 	}
 
-	s = g_strconcat (gnome_config_get_string (GDM_KEY_SESSDIR),
+	s = g_strconcat (sessions_directory,
 			 "/", dent->d_name, NULL);
 	lstat (s, &statbuf);
 
@@ -480,7 +493,7 @@ gdm_config_parse_most (void)
 	    else 
 	        /* FIXME: this should have an error dialog I suppose */
 		syslog (LOG_ERR, "Wrong permissions on %s/%s. Should be readable/executable for all.", 
-			gnome_config_get_string(GDM_KEY_SESSDIR), dent->d_name);
+			sessions_directory, dent->d_name);
 	}
 
 	dent = readdir (sessdir);
@@ -640,13 +653,10 @@ write_new_config_file                  (GtkButton *button,
 {
     int i = -1;
     GList *tmp = NULL;
-    gchar *sessions_directory;
     GString *errors = NULL;
    
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
     
-    sessions_directory = gnome_config_get_string (GDM_KEY_SESSDIR);
-   
     /* Write out the widget contents of the GDM tab */
     gdm_entry_write("automatic_login", GDM_KEY_AUTOMATICLOGIN);
     gdm_entry_write("timed_login", GDM_KEY_TIMED_LOGIN);

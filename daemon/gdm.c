@@ -223,7 +223,7 @@ gdm_config_parse (void)
 	GdmLogDir = GdmServAuthDir;
 
     if (GdmSessDir == NULL) 
-	gdm_fail (_("gdm_config_parse: No sessions directory specified."));
+	gdm_error (_("gdm_config_parse: No sessions directory specified."));
 
 
     /* Find local X server definitions */

@@ -152,6 +152,10 @@ static GList *windows = NULL;
 static gboolean focus_new_windows = FALSE;
 static gboolean no_focus_login = FALSE;
 
+/* This is true if session dir doesn't exist or is whacked out
+ * in some way or another */
+static gboolean session_dir_whacked_out = FALSE;
+
 static gulong XA_WM_PROTOCOLS = 0;
 static gulong XA_WM_TAKE_FOCUS = 0;
 static gulong XA_COMPOUND_TEXT = 0;
@@ -1252,12 +1256,22 @@ gdm_login_session_init (GtkWidget *menu)
     gtk_widget_show (GTK_WIDGET (item));
 
     /* Check that session dir is readable */
-    if (access (GdmSessionDir, R_OK|X_OK))
-	gdm_login_abort (_("gdm_login_session_init: Session script directory not found!"));
+    if (GdmSessionDir == NULL ||
+	access (GdmSessionDir, R_OK|X_OK)) {
+	syslog (LOG_ERR, _("gdm_login_session_init: Session script directory not found!"));
+	session_dir_whacked_out = TRUE;
+    }
 
     /* Read directory entries in session dir */
-    sessdir = opendir (GdmSessionDir);
-    dent = readdir (sessdir);
+    if (GdmSessionDir == NULL)
+	    sessdir = NULL;
+    else
+	    sessdir = opendir (GdmSessionDir);
+
+    if (sessdir != NULL)
+	    dent = readdir (sessdir);
+    else
+	    dent = NULL;
 
     while (dent != NULL) {
 	gchar *s;
@@ -1339,13 +1353,51 @@ gdm_login_session_init (GtkWidget *menu)
 	g_free (s);
     }
 
-    if (!g_slist_length (sessgrp)) 
-	gdm_login_abort (_("No session scripts found. Aborting!"));
+    if (sessdir != NULL)
+	    closedir (sessdir);
+
+    if (sessions == NULL) {
+	    syslog (LOG_WARNING, _("Yaikes, nothing found in the session directory."));
+	    session_dir_whacked_out = TRUE;
+
+	    defsess = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
+
+	    /* For translators:  This is the login when the session directory
+	     * really is screwed up. */
+	    item = gtk_radio_menu_item_new_with_label (sessgrp,
+						       _("Failsafe Gnome"));
+	    gtk_object_set_data (GTK_OBJECT (item),
+				 "SessionName", GDM_SESSION_FAILSAFE_GNOME);
+
+	    sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+	    sessions = g_slist_append (sessions, GDM_SESSION_FAILSAFE_GNOME);
+	    gtk_menu_append (GTK_MENU (menu), item);
+	    gtk_signal_connect (GTK_OBJECT (item), "activate",
+				GTK_SIGNAL_FUNC (gdm_login_session_handler),
+				NULL);
+	    gtk_widget_show (GTK_WIDGET (item));
+
+	    /* For translators:  This is the login when the session directory
+	     * really is screwed up. */
+	    item = gtk_radio_menu_item_new_with_label (sessgrp,
+						       _("Failsafe xterm"));
+	    gtk_object_set_data (GTK_OBJECT (item),
+				 "SessionName", GDM_SESSION_FAILSAFE_XTERM);
+
+	    sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+	    sessions = g_slist_append (sessions, GDM_SESSION_FAILSAFE_XTERM);
+	    gtk_menu_append (GTK_MENU (menu), item);
+	    gtk_signal_connect (GTK_OBJECT (item), "activate",
+				GTK_SIGNAL_FUNC (gdm_login_session_handler),
+				NULL);
+	    gtk_widget_show (GTK_WIDGET (item));
+    }
 
     if (defsess == NULL) {
 	    defsess = gtk_object_get_data (GTK_OBJECT (sessgrp->data), SESSION_NAME);
 	    syslog (LOG_WARNING, _("No default session link found. Using %s.\n"), defsess);
     }
+
 }
 
 
@@ -3248,6 +3300,22 @@ main (int argc, char *argv[])
     gdk_error_trap_pop ();
 
     gdk_window_add_filter (rootwin, root_filter, NULL);
+
+    if (session_dir_whacked_out) {
+	    GtkWidget *dialog;
+
+	    focus_new_windows = TRUE;
+
+	    dialog = gnome_error_dialog
+		    (_("Your session directory is missing or empty!\n\n"
+		       "There are two available sessions you can use, but\n"
+		       "you should log in and correct the gdm configuration."));
+	    gtk_widget_show_all (dialog);
+	    gdm_center_window (GTK_WINDOW (dialog));
+	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+    }
 
     gtk_main ();
 

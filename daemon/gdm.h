@@ -169,6 +169,9 @@
 #define GDM_KEY_SERVERS "servers"
 
 
+#define GDM_SESSION_FAILSAFE_GNOME "GDM_Failsafe.GNOME"
+#define GDM_SESSION_FAILSAFE_XTERM "GDM_Failsafe.XTERM"
+
 
 typedef struct _GdmDisplay GdmDisplay;
 

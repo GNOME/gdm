@@ -639,11 +639,11 @@ gdm_get_sessions (struct passwd *pwent)
 			 NULL);
 		def = gnome_config_get_string (cfgstr);
 		if (def == NULL)
-			def = g_strdup ("Default");
+			def = g_strdup ("Gnome");
 
 		g_free (cfgstr);
 	} else {
-		def = g_strdup ("Default");
+		def = g_strdup ("Gnome");
 	}
 
 	/* the currently selected comes first (it will come later
@@ -685,6 +685,11 @@ static gboolean
 is_session_ok (const char *session_name)
 {
 	char *file;
+
+	/* these are always OK */
+	if (strcmp (session_name, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
+	    strcmp (session_name, GDM_SESSION_FAILSAFE_XTERM) == 0)
+		return TRUE;
 
 	if (gdm_string_empty (GdmSessDir))
 		return FALSE;
@@ -840,7 +845,7 @@ gdm_slave_session_start (void)
 	    session = find_a_session ();
 	    if (session == NULL) {
 		    /* we're running out of options */
-		    session = g_strdup ("Default");
+		    session = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
 	    }
     }
 
@@ -1018,19 +1023,6 @@ gdm_slave_session_start (void)
 	    g_free (cfgstr);
 	}
 
-	/* If "Gnome Chooser" is still set as a session,
-	 * just change that to "Gnome", since "Gnome Chooser" is a
-	 * fake */
-	if (strcmp (session, "Gnome Chooser") == 0) {
-		g_free (session);
-		session = g_strdup ("Gnome");
-	}
-	
-	sesspath = g_strconcat (GdmSessDir, "/", session, NULL);
-	
-	gdm_debug (_("Running %s for %s on %s"),
-		   sesspath, login, d->name);
-
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 	    close(i);
 
@@ -1043,6 +1035,79 @@ gdm_slave_session_start (void)
 	/* Restore sigmask inherited from init */
 	sigprocmask (SIG_SETMASK, &sysmask, NULL);
 	
+
+	/* If "Gnome Chooser" is still set as a session,
+	 * just change that to "Gnome", since "Gnome Chooser" is a
+	 * fake */
+	if (strcmp (session, "Gnome Chooser") == 0) {
+		g_free (session);
+		session = g_strdup ("Gnome");
+	}
+	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+	    close(i);
+
+	/* No error checking here - if it's messed the best response
+         * is to ignore & try to continue */
+	open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+	open("/dev/null", O_RDWR); /* open stdout - fd 1 */
+	open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	
+	/* Restore sigmask inherited from init */
+	sigprocmask (SIG_SETMASK, &sysmask, NULL);
+	
+	sesspath = NULL;
+
+	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
+		sesspath = gnome_is_program_in_path ("gnome-session");
+		if (sesspath == NULL) {
+			if (g_file_exists ("/usr/bin/X11/gnome-session")) {
+				sesspath = g_strdup ("/usr/bin/X11/gnome-session");
+			} else if (g_file_exists ("/usr/X11R6/bin/gnome-session")) {
+				sesspath = g_strdup ("/usr/X11R6/bin/gnome-session");
+			} else if (g_file_exists ("/usr/bin/gnome-session")) {
+				sesspath = g_strdup ("/usr/bin/gnome-session");
+			} else if (g_file_exists ("/usr/local/bin/gnome-session")) {
+				sesspath = g_strdup ("/usr/local/bin/gnome-session");
+			} else {
+				/* yaikes */
+				gdm_error (_("gdm_slave_session_start: gnome-session not found for a failsafe gnome session, trying xterm"));
+				g_free (session);
+				session = g_strdup (GDM_SESSION_FAILSAFE_XTERM);
+			}
+		}
+	}
+
+	/* an if and not an else, we could have done a fall-through
+	 * to here in the above code if we can't find gnome-session */
+	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
+		sesspath = gnome_is_program_in_path ("xterm");
+		if (sesspath == NULL) {
+			if (g_file_exists ("/usr/bin/X11/xterm")) {
+				sesspath = g_strdup ("/usr/bin/X11/xterm");
+			} else if (g_file_exists ("/usr/X11R6/bin/xterm")) {
+				sesspath = g_strdup ("/usr/X11R6/bin/xterm");
+			} else if (g_file_exists ("/usr/bin/xterm")) {
+				sesspath = g_strdup ("/usr/bin/xterm");
+			} else {
+				run_error_dialog
+					(_("Cannot find \"xterm\" to start "
+					   "a failsafe session."));
+				/* nyah nyah nyah nyah nyah */
+				_exit (0);
+			}
+		}
+	} 
+
+	if (sesspath == NULL) {
+		if (GdmSessDir != NULL)
+			sesspath = g_strconcat (GdmSessDir, "/", session, NULL);
+		else
+			sesspath = g_strdup ("/Eeeeek! Eeeeek!");
+	}
+	
+	gdm_debug (_("Running %s for %s on %s"),
+		   sesspath, login, d->name);
+
 	if (pwent->pw_shell != NULL &&
 	    pwent->pw_shell[0] != '\0') {
 		shell = pwent->pw_shell;
@@ -1160,12 +1225,13 @@ gdm_slave_term_handler (int sig)
 
     if (d->greetpid != 0) {
 	gdm_debug ("gdm_slave_term_handler: Whacking greeter");
-	if (kill (d->greetpid, SIGINT) == 0)
+	if (kill (d->greetpid, sig) == 0)
 		waitpid (d->greetpid, 0, 0); 
 	d->greetpid = 0;
-    } 
-    else if (login)
+    } else if (login) {
 	gdm_slave_session_stop (d->sesspid);
+	gdm_slave_session_cleanup ();
+    }
     
     gdm_debug ("gdm_slave_term_handler: Whacking server");
 
