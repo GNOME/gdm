@@ -137,7 +137,7 @@ Xnest=@X_XNEST_PATH@/Xnest @X_XNEST_CONFIG_OPTIONS@
 #FirstVT=7
 #VTAllocation=true
 # Should double login be treated with a warning (and possibility to change
-# vts on linux systems for console logins)
+# vts on linux and freebsd systems for console logins)
 #DoubleLoginWarning=true
 
 # If true then the last login information is printed to the user before
@@ -399,13 +399,13 @@ Enable=false
 # the 0 server is used.
 0=Standard
 #1=Standard
-# Note the VTAllocation and FirstVT keys on linux.  Don't add any vt<number>
-# arguments if VTAllocation is on, and set FirstVT to be the first vt
-# available that your gettys don't grab (gettys are usually dumb and grab
-# even a vt that has already been taken).  Using 7 will work pretty much for
-# all linux distributions.  VTAllocation is not currently implemented on
-# anything but linux since I don't own any non-linux systems.  Feel free to
-# send patches.  X servers will just not get any extra arguments then.
+# Note the VTAllocation and FirstVT keys on linux and freebsd.
+# Don't add any vt<number> arguments if VTAllocation is on, and set FirstVT to
+# be the first vt available that your gettys don't grab (gettys are usually
+# dumb and grab even a vt that has already been taken).  Using 7 will work
+# pretty much for all linux distributions.  VTAllocation is not currently
+# implemented on anything but linux and freebsd.  Feel free to send patches.
+# X servers will just not get any extra arguments then.
 #
 # If you want to run an X terminal you could add an X server such as this
 #0=Terminal -query serverhostname
