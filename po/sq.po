@@ -8,13 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-02 04:48+0100\n"
-"PO-Revision-Date: 2005-02-02 10:48+0100\n"
+"POT-Creation-Date: 2005-02-14 05:28+0100\n"
+"PO-Revision-Date: 2005-02-14 12:02+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -736,9 +737,11 @@ msgstr "gdm është aktualisht në përdorim. Duke dalë!"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Gabim gjatë aktivimit të kontrolluesit të sinjalit CHLD"
 
-#: daemon/gdm.c:3633 daemon/gdm.c:3652
-msgid "FLEXI_XSERVER request denied: Not authenticated"
-msgstr "Kërkesa për FLEXI_XSERVER nuk u pranua: I pa identifikuar"
+#: daemon/gdm.c:3633 daemon/gdm.c:3652 daemon/gdm.c:3796 daemon/gdm.c:3854
+#: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
+#, c-format
+msgid "%s request denied: Not authenticated"
+msgstr "Kërkesa %s nuk u pranua: I pa identifikuar"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -754,18 +757,6 @@ msgid ""
 msgstr ""
 "Serveri i kërkuar %s nuk mund të përdoret për flexible servers, po përdor "
 "server-in standart."
-
-#: daemon/gdm.c:3796
-msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "Kërkesa QUERY_LOGOUT_ACTION nuk u pranua: I pa identifikuar"
-
-#: daemon/gdm.c:3854 daemon/gdm.c:3909
-msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "Kërkesa SET_LOGOUT_ACTION nuk u pranua: I pa identifikuar"
-
-#: daemon/gdm.c:3954 daemon/gdm.c:3981
-msgid "QUERY_VT request denied: Not authenticated"
-msgstr "Kërkesa QUERY_VT nuk u pranua: I pa identifikuar"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:652
@@ -1222,34 +1213,34 @@ msgstr "%s: Përdoruesi nuk lejohet të kryej log in"
 msgid "The system administrator has disabled your account."
 msgstr "Administratori i sistemit ka ç'aktivuar llogarinë tuaj."
 
-#: daemon/slave.c:3790
+#: daemon/slave.c:3792
 msgid "Error! Unable to set executable context."
 msgstr "Gabim! Nuk arrij të vendos kontekstin e ekzekutueshëm."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3798 daemon/slave.c:3803
+#: daemon/slave.c:3800 daemon/slave.c:3805
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: I pamundur ekzekutimi i %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3814
+#: daemon/slave.c:3816
 msgid "Cannot start the session due to some internal error."
 msgstr "Nuk arrij të nis seancën për shkak të ndonjë gabimi të brendshëm."
 
-#: daemon/slave.c:3868
+#: daemon/slave.c:3870
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Përdoruesi u identifikua por getpwnam(%s) dështoi!"
 
-#: daemon/slave.c:3882
+#: daemon/slave.c:3884
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr ""
 "%s: Ekzekutimi i script-it \"PostLogin\" ktheu si rezultat një vlerë > 0. "
 "Procesi po ndërpritet."
 
-#: daemon/slave.c:3891
+#: daemon/slave.c:3893
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1265,12 +1256,12 @@ msgstr ""
 "\n"
 "Që desktop të funksionojë si duhet përdorni një seancë emergjence."
 
-#: daemon/slave.c:3899
+#: daemon/slave.c:3901
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Directory home për %s: '%s' nuk ekziston!"
 
-#: daemon/slave.c:4076
+#: daemon/slave.c:4078
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1282,12 +1273,12 @@ msgstr ""
 "nuk mund të kryhet login.  Vihu në kontakt me administratorin tuaj të "
 "sistemit"
 
-#: daemon/slave.c:4152
+#: daemon/slave.c:4154
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: gabim gjatë kryerjes së fork të seancës së përdoruesit"
 
-#: daemon/slave.c:4233
+#: daemon/slave.c:4235
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1299,25 +1290,25 @@ msgstr ""
 "më hapësirë në disk.  Mundohuni të përdorni seancën e emergjencës për të "
 "kryer një përpjekjepër të korrigjuar problemin."
 
-#: daemon/slave.c:4241
+#: daemon/slave.c:4243
 msgid "View details (~/.xsession-errors file)"
 msgstr "Shiko hollësitë (tek file  ~/.xsession-errors)"
 
-#: daemon/slave.c:4385
+#: daemon/slave.c:4387
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM zbuloi një proçes ndalje apo rinisje në progres."
 
-#: daemon/slave.c:4479
+#: daemon/slave.c:4481
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "I pamundur kryerja e ping tek %s, display do të shkëputet!"
 
-#: daemon/slave.c:4765
+#: daemon/slave.c:4767
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Gabim fatal i X - Po filloj përsëri %s"
 
-#: daemon/slave.c:4859
+#: daemon/slave.c:4861
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1325,22 +1316,22 @@ msgstr ""
 "Tingulli i hyrjes është kërkuar në një display jo lokale ose programi audio "
 "nuk mund të zbatohet ose tingulli nuk ekziston"
 
-#: daemon/slave.c:5214
+#: daemon/slave.c:5216
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Gabim gjatë nisjes: %s"
 
-#: daemon/slave.c:5222 daemon/slave.c:5361
+#: daemon/slave.c:5224 daemon/slave.c:5363
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: E pamundur kryerja e një fork mbi proçesin e script!"
 
-#: daemon/slave.c:5316
+#: daemon/slave.c:5318
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Krijimi i pipe dështoi"
 
-#: daemon/slave.c:5355
+#: daemon/slave.c:5357
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Gabim gjatë ekzekutimit: %s"
@@ -1369,7 +1360,7 @@ msgstr "Shkruani emrin e përdoruesit"
 #: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
-#: gui/greeter/greeter_parser.c:1061
+#: gui/greeter/greeter_parser.c:1065
 msgid "Username:"
 msgstr "Përdoruesi:"
 
@@ -1657,7 +1648,7 @@ msgstr ""
 "\n"
 "Administratori i sistemit ka bllokuar përkohësisht hyrjen tuaj në sistem."
 
-#: daemon/verify-pam.c:1428 daemon/verify-pam.c:1430
+#: daemon/verify-pam.c:1433 daemon/verify-pam.c:1435
 msgid "Can't find PAM configuration for gdm."
 msgstr "Nuk arrij të gjej konfigurimin PAm për gdm."
 
@@ -2744,7 +2735,7 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:222 gui/greeter/greeter_parser.c:1047
+#: gui/gdmlogin.c:222
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Përdoruesi %s do të kryej login pas %d sekondash"
@@ -3667,8 +3658,8 @@ msgstr "Duhet të jeni superpërdorues (root) që të mund të konfiguroni GDM."
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr "Një instrument grafik për të konfiguruar GNOME Display Manager (GDM)"
+msgid "Configure the login screen (Gnome Display Manager)"
+msgstr "Konfiguro organizuesin e hyrjes Gnome Display Manager)"
 
 #: gui/greeter/greeter.c:638 gui/greeter/greeter.c:670
 #, c-format
@@ -3782,6 +3773,13 @@ msgstr "_Konfiguro"
 msgid "You've got capslock on!"
 msgstr "Keni capslock të aktivuar!"
 
+#: gui/greeter/greeter_parser.c:1047
+#, c-format
+msgid "User %s will login in %d second"
+msgid_plural "User %s will login in %d seconds"
+msgstr[0] "Përdoruesi %s do të futet mbas %d sekonde"
+msgstr[1] "Përdoruesi %s do të futet mbas %d sekondash"
+
 #: gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
 msgstr "Zgjidh një Seancë"
@@ -3886,7 +3884,7 @@ msgstr "(memory buffer"
 
 #. markup
 #: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:301
 msgid "Cannot load user interface"
 msgstr "Nuk arrij të lexoj interfaqen e përdoruesit"
 
@@ -3915,17 +3913,27 @@ msgstr ""
 #: vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %"
-"s.  CList type widget should have %d columns.  Possibly the glade interface "
-"description was corrupted.  %s cannot continue and will exit now.  You "
-"should check your installation of %s or reinstall %s."
-msgstr ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d column. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgid_plural ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d columns. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgstr[0] ""
+"Gabim gjatë ngarkimit të elementit %s%s të interfaqes së përdoruesit nga "
+"file %s.  Widget i llojit CList duhet të ketë %d kollonë.  Ka mundësi që "
+"përshkrimi i interfaqes glade të jetë i dëmtuar. Vazhdimi i ekzekutimit të %"
+"s është i pamundur.  Kontrollo instalimin e %s ose instalo dhe njëherë %s."
+msgstr[1] ""
 "Gabim gjatë ngarkimit të elementit %s%s të interfaqes së përdoruesit nga "
 "file %s.  Widget i llojit CList duhet të ketë %d kollona.  Ka mundësi që "
 "përshkrimi i interfaqes glade të jetë i dëmtuar. Vazhdimi i ekzekutimit të %"
 "s është i pamundur.  Kontrollo instalimin e %s ose instalo dhe njëherë %s."
 
-#: vicious-extensions/glade-helper.c:266
+#: vicious-extensions/glade-helper.c:277
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3934,7 +3942,7 @@ msgstr ""
 "File glade është i dëmtuar! Sigurohu që ke instaluar file e duhur!\n"
 "file: %s widget: %s expected clist columns: %d"
 
-#: vicious-extensions/glade-helper.c:291
+#: vicious-extensions/glade-helper.c:302
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -3945,7 +3953,7 @@ msgstr ""
 "që përshkrimi i interfaqes glade të mos jetë gjetur. Vazhdimi i ekzekutimit "
 "të %sështë i pamundur. Kontrollo instalimin e %s ose instalo dhe njëherë %s."
 
-#: vicious-extensions/glade-helper.c:303
+#: vicious-extensions/glade-helper.c:314
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "GABIM! I pamundur ngarkimi i interfaqes (file: %s)"
