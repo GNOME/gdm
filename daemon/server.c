@@ -239,6 +239,35 @@ display_busy (GdmDisplay *disp)
 	return FALSE;
 }
 
+#ifdef __linux__
+static int
+display_vt (GdmDisplay *disp)
+{
+	char *logname = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+	FILE *fp;
+	char buf[256];
+
+	fp = fopen (logname, "r");
+	g_free (logname);
+
+	if (fp == NULL)
+		return FALSE;
+
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		int vt;
+		/* Note: this is probably XFree86 specific, and perhaps even
+		 * version 3 specific (I don't have xfree v4 to test this),
+		 * of course additions are welcome to make this more robust */
+		if (sscanf (buf, "(using VT number %d)", &vt) == 1) {
+			fclose (fp);
+			return vt;
+		}
+	}
+	fclose (fp);
+	return -1;
+}
+#endif
+
 /**
  * gdm_server_start:
  * @disp: Pointer to a GdmDisplay structure
@@ -363,6 +392,14 @@ gdm_server_start (GdmDisplay *disp, int min_flexi_disp, int flexi_retries)
 
 	    if (SERVER_IS_FLEXI (d))
 		    gdm_slave_send_num (GDM_SOP_FLEXI_OK, 0 /* bogus */);
+#ifdef __linux__
+	    if (d->type == TYPE_LOCAL ||
+		d->type == TYPE_FLEXI) {
+		    d->vt = display_vt (d);
+		    if (d->vt >= 0)
+			    gdm_slave_send_num (GDM_SOP_VT_NUM, d->vt);
+	    }
+#endif
 
 	    return TRUE;
     default:
@@ -423,6 +460,22 @@ gdm_server_start (GdmDisplay *disp, int min_flexi_disp, int flexi_retries)
     return FALSE;
 }
 
+/* Do things that require checking the log,
+ * we really do need to get called a bit later, after all init is done
+ * as things aren't written to disk before that */
+void
+gdm_server_checklog (GdmDisplay *disp)
+{
+#ifdef __linux__
+	    if (d->vt < 0 &&
+		(d->type == TYPE_LOCAL ||
+		 d->type == TYPE_FLEXI)) {
+		    d->vt = display_vt (d);
+		    if (d->vt >= 0)
+			    gdm_slave_send_num (GDM_SOP_VT_NUM, d->vt);
+	    }
+#endif
+}
 
 /**
  * gdm_server_spawn:
@@ -702,16 +755,22 @@ gdm_server_alloc (gint id, const gchar *command)
     d->sesspid = 0;
     d->slavepid = 0;
     d->type = TYPE_LOCAL;
+    d->console = TRUE;
     d->sessionid = 0;
     d->acctime = 0;
     d->dsp = NULL;
     d->screenx = 0; /* xinerama offset */
     d->screeny = 0;
 
+#ifdef __linux__
+    d->vt = -1;
+#endif
+
     d->last_start_time = 0;
     d->retry_count = 0;
     d->disabled = FALSE;
     d->sleep_before_run = 0;
+    d->login = NULL;
 
     d->timed_login_ok = FALSE;
     

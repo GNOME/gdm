@@ -316,6 +316,9 @@ gdm_display_dispose (GdmDisplay *d)
     g_free (d->xnest_auth_file);
     d->xnest_auth_file = NULL;
 
+    g_free (d->login);
+    d->login = NULL;
+
     g_free (d);
 }
 

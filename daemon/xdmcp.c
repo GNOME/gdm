@@ -1428,10 +1428,18 @@ gdm_xdmcp_display_alloc (const char *hostname, gint displaynum)
     d->sesspid = 0;
     d->slavepid = 0;
     d->type = TYPE_XDMCP;
+    d->console = FALSE;
     d->dispstat = XDMCP_PENDING;
     d->sessionid = globsessid++;
     d->acctime = time (NULL);
     d->dispnum = displaynum;
+
+#ifdef __linux__
+    d->vt = -1;
+#endif
+
+    d->logged_in = FALSE;
+    d->login = NULL;
 
     d->sleep_before_run = 0;
     if (GdmAllowRemoteAutoLogin &&

@@ -42,7 +42,7 @@ do_command (int fd, const char *command, gboolean get_response)
 	char buf[1];
 	char *cstr;
 
-	g_print ("Sending command: '%s'\n", command);
+	/* g_print ("Sending command: '%s'\n", command); */
 
 	cstr = g_strdup_printf ("%s\n", command);
 	if (send (fd, cstr, strlen (cstr), MSG_NOSIGNAL) < 0)
@@ -57,7 +57,7 @@ do_command (int fd, const char *command, gboolean get_response)
 		g_string_append_c (str, buf[0]);
 	}
 
-	g_print ("  Got response: '%s'\n", str->str);
+	/* g_print ("  Got response: '%s'\n", str->str); */
 
 	cstr = str->str;
 	g_string_free (str, FALSE);
@@ -174,6 +174,7 @@ get_xauthfile (void)
 static GSList *xservers = NULL;
 static gboolean got_standard = FALSE;
 static gboolean use_xnest = FALSE;
+const char *send_command = NULL;
 const char *server = NULL;
 const char *chosen_server = NULL;
 
@@ -315,6 +316,7 @@ choose_server (void)
 }
 
 struct poptOption options [] = {
+	{ "command", 'c', POPT_ARG_STRING, &send_command, 0, N_("Send the specified protocol command to gdm"), N_("COMMAND") },
 	{ "xnest", 'n', POPT_ARG_NONE, &use_xnest, 0, N_("Xnest mode"), NULL },
 	POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
@@ -366,7 +368,7 @@ main (int argc, char *argv[])
 			   "Please ask your "
 			   "system administrator to start it."));
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-		return 0;
+		return 1;
 	}
 
 	if (access (GDM_SUP_SOCKET, R_OK|W_OK)) {
@@ -374,7 +376,21 @@ main (int argc, char *argv[])
 			(_("Cannot communicate with gdm, perhaps "
 			   "you have an old version running."));
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-		return 0;
+		return 1;
+	}
+
+	if (send_command != NULL) {
+		ret = call_gdm (send_command, "2.2.3.2", 5);
+		if (ret != NULL) {
+			g_print ("%s\n", ret);
+			return 0;
+		} else {
+			dialog = gnome_warning_dialog
+				(_("Cannot communicate with gdm, perhaps "
+				   "you have an old version running."));
+			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+			return 1;
+		}
 	}
 
 	if (use_xnest) {

@@ -371,8 +371,14 @@ gdm_config_parse (void)
     while (iter) {
 	    if (isdigit (*k)) {
 		    int disp_num = atoi (k);
-		    displays = g_slist_append (displays,
-					       gdm_server_alloc (disp_num, v));
+		    GdmDisplay *disp = gdm_server_alloc (disp_num, v);
+		    if (disp == NULL) {
+			    g_free (k);
+			    g_free (v);
+			    iter = gnome_config_iterator_next (iter, &k, &v);
+			    continue;
+		    }
+		    displays = g_slist_append (displays, disp);
 		    if (disp_num > high_display_num)
 			    high_display_num = disp_num;
 	    } else {
@@ -865,7 +871,7 @@ gdm_cleanup_children (void)
 	    status = DISPLAY_REMANAGE;
     }
 
-    if ( ! SERVER_IS_LOCAL (d) &&
+    if ( ! d->console &&
 	(status == DISPLAY_RESTARTGDM ||
 	 status == DISPLAY_REBOOT ||
 	 status == DISPLAY_HALT)) {
@@ -1520,6 +1526,54 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			/* send ack */
 			kill (slave_pid, SIGUSR2);
 		}
+	} else if (strncmp (msg, GDM_SOP_VT_NUM " ",
+		            strlen (GDM_SOP_VT_NUM " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		int vt_num;
+
+		if (sscanf (msg, GDM_SOP_VT_NUM " %ld %d",
+			    &slave_pid, &vt_num) != 2)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+#ifdef __linux__
+			d->vt = vt_num;
+#endif
+			gdm_debug ("Got VT_NUM == %d", vt_num);
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
+	} else if (strncmp (msg, GDM_SOP_LOGIN " ",
+		            strlen (GDM_SOP_LOGIN " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		char *p;
+
+		if (sscanf (msg, GDM_SOP_LOGIN " %ld",
+			    &slave_pid) != 1)
+			return;
+		p = strchr (msg, ' ');
+		if (p != NULL)
+			p = strchr (p+1, ' ');
+		if (p == NULL)
+			return;
+
+		p++;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			g_free (d->login);
+			d->login = g_strdup (p);
+			gdm_debug ("Got LOGIN == %s", p);
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
 	} else if (strncmp (msg, GDM_SOP_FLEXI_ERR " ",
 		            strlen (GDM_SOP_FLEXI_ERR " ")) == 0) {
 		GdmDisplay *d;
@@ -1638,6 +1692,20 @@ close_conn (gpointer data)
 	}
 }
 
+static GdmDisplay *
+find_display (const char *name)
+{
+	GSList *li;
+
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->name != NULL &&
+		    strcmp (disp->name, name) == 0)
+			return disp;
+	}
+	return NULL;
+}
+
 static void
 handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		     const char *xnest_disp, const char *xnest_auth_file)
@@ -1668,6 +1736,31 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		gdm_connection_write (conn,
 				      "ERROR 2 Startup errors\n");
 		return;
+	}
+
+	if (type == TYPE_FLEXI_XNEST) {
+		GdmDisplay *parent;
+		char *disp, *p;
+		g_assert (xnest_disp != NULL);
+
+		disp = g_strdup (xnest_disp);
+		/* whack the screen info */
+		p = strchr (disp, ':');
+		if (p != NULL)
+			p = strchr (p+1, '.');
+		if (p != NULL)
+			*p = '\0';
+		/* if it's on one of the console displays we started,
+		 * it's on the console, else it's not (it could be but
+		 * we aren't sure and we don't want to be fooled) */
+		parent = find_display (disp);
+		if (/* paranoia */xnest_disp[0] == ':' &&
+		    parent != NULL &&
+		    parent->console)
+			display->console = TRUE;
+		else
+			display->console = FALSE;
+		g_free (disp);
 	}
 
 	flexi_servers ++;
@@ -1744,6 +1837,39 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		g_free (dispname);
 		g_free (xauthfile);
+	} else if (strcmp (msg, GDM_SUP_CONSOLE_SERVERS) == 0) {
+		GSList *li;
+		const char *sep = " ";
+		gdm_connection_write (conn, "OK");
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *disp = li->data;
+			if ( ! disp->console)
+				continue;
+			gdm_connection_write (conn, sep);
+			sep = ";";
+			gdm_connection_write (conn,
+					      ve_sure_string (disp->name));
+			gdm_connection_write (conn, ",");
+			gdm_connection_write (conn,
+					      ve_sure_string (disp->login));
+			gdm_connection_write (conn, ",");
+			if (disp->type == TYPE_FLEXI_XNEST) {
+				gdm_connection_write
+					(conn,
+					 ve_sure_string (disp->xnest_disp));
+			} else {
+				char *vt = g_strdup_printf ("%d",
+#ifdef __linux__
+							    disp->vt
+#else
+							    -1
+#endif
+							    );
+				gdm_connection_write (conn, vt);
+				g_free (vt);
+			}
+		}
+		gdm_connection_write (conn, "\n");
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
 		gdm_connection_write (conn, "GDM " VERSION "\n");
 	} else if (strcmp (msg, GDM_SUP_CLOSE) == 0) {

@@ -133,7 +133,7 @@ static void     gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PR
 static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
-static void	gdm_send_logged_in (gboolean logged_in);
+static void	gdm_send_login (const char *login);
 
 
 /* Yay thread unsafety */
@@ -424,22 +424,29 @@ gdm_slave_run (GdmDisplay *display)
     /* checkout xinerama */
     gdm_screen_init (d);
 
+    /* check log stuff for the server, this is done here
+     * because it's really a race */
+    if (SERVER_IS_LOCAL (d))
+	    gdm_server_checklog (d);
+
     if (d->use_chooser) {
 	    /* this usually doesn't return */
 	    gdm_slave_chooser ();  /* Run the chooser */
-    } else if ((SERVER_IS_LOCAL (d) || GdmAllowRemoteAutoLogin) &&
+    } else if ((d->console || GdmAllowRemoteAutoLogin) &&
 	       gdm_first_login &&
 	       ! ve_string_empty (ParsedAutomaticLogin) &&
 	       strcmp (ParsedAutomaticLogin, "root") != 0) {
 	    gdm_first_login = FALSE;
 
-	    gdm_send_logged_in (TRUE);
+	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
+	    gdm_send_login (ParsedAutomaticLogin);
 
 	    setup_automatic_session (d, ParsedAutomaticLogin);
 
 	    gdm_slave_session_start();
 
-	    gdm_send_logged_in (FALSE);
+	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
+	    gdm_send_login ("");
 
 	    gdm_debug ("gdm_slave_run: Automatic login done");
     } else {
@@ -448,16 +455,20 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_slave_greeter ();  /* Start the greeter */
 	    gdm_slave_wait_for_login (); /* wait for a password */
 
-	    gdm_send_logged_in (TRUE);
+	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 
 	    if (do_timed_login) {
 		    /* timed out into a timed login */
 		    do_timed_login = FALSE;
 		    setup_automatic_session (d, ParsedTimedLogin);
+		    gdm_send_login (ParsedTimedLogin);
+	    } else {
+		    gdm_send_login (login);
 	    }
 	    gdm_slave_session_start ();
 
-	    gdm_send_logged_in (FALSE);
+	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
+	    gdm_send_login ("");
     }
 }
 
@@ -653,7 +664,7 @@ gdm_slave_wait_for_login (void)
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
 		login = gdm_verify_user (NULL /* username*/,
 					 d->name,
-					 SERVER_IS_LOCAL (d));
+					 d->console);
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
 			   ve_sure_string (login));
 		/* Complex, make sure to always handle the do_configurator
@@ -679,7 +690,7 @@ gdm_slave_wait_for_login (void)
 			gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, "root");
 			login = gdm_verify_user ("root",
 						 d->name,
-						 SERVER_IS_LOCAL (d));
+						 d->console);
 			GdmAllowRoot = oldAllowRoot;
 
 			/* the wanker can't remember his password */
@@ -721,7 +732,9 @@ gdm_slave_wait_for_login (void)
 				continue;
 			}
 
-			gdm_send_logged_in (TRUE);
+			gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
+			/* Note: nobody really logged in */
+			gdm_send_login ("");
 
 			/* disable the login screen, we don't want people to
 			 * log in in the meantime */
@@ -734,7 +747,7 @@ gdm_slave_wait_for_login (void)
 
 			gdm_verify_cleanup ();
 
-			gdm_send_logged_in (FALSE);
+			gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
 
 			gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
 			gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
@@ -1046,7 +1059,7 @@ gdm_slave_greeter (void)
 	/* Note that this is just informative, the slave will not listen to
 	 * the greeter even if it does something it shouldn't on a non-local
 	 * display so it's not a security risk */
-	if (SERVER_IS_LOCAL (d)) {
+	if (d->console) {
 		ve_setenv ("GDM_IS_LOCAL", "yes", TRUE);
 	} else {
 		ve_unsetenv ("GDM_IS_LOCAL");
@@ -1190,16 +1203,15 @@ gdm_slave_send_num (const char *opcode, long num)
 		sleep (10);
 }
 
-
 static void
-gdm_send_logged_in (gboolean logged_in)
+gdm_send_login (const char *login)
 {
 	char *msg;
 	int fd;
 	char *fifopath;
 
-	gdm_debug ("Sending logged_in == %s for slave %ld",
-		   logged_in ? "TRUE" : "FALSE",
+	gdm_debug ("Sending login == %s for slave %ld",
+		   ve_sure_string (login),
 		   (long)getpid ());
 
 	gdm_got_usr2 = FALSE;
@@ -1209,12 +1221,12 @@ gdm_send_logged_in (gboolean logged_in)
 	fd = open (fifopath, O_WRONLY);
 	/* eek */
 	if (fd < 0) {
-		gdm_error (_("%s: Can't open fifo!"), "gdm_send_logged_in");
+		gdm_error (_("%s: Can't open fifo!"), "gdm_send_login");
 		return;
 	}
 
-	msg = g_strdup_printf ("\n%s %ld %d\n", GDM_SOP_LOGGED_IN,
-			       (long)getpid (), (int)logged_in);
+	msg = g_strdup_printf ("\n%s %ld %s\n", GDM_SOP_LOGIN,
+			       (long)getpid (), ve_sure_string (login));
 
 	write (fd, msg, strlen (msg));
 
@@ -2522,7 +2534,7 @@ gdm_slave_greeter_check_interruption (const char *msg)
 			 * it is allowed for this display (it's only allowed
 			 * for the first local display) and if it's set up
 			 * correctly */
-			if ((SERVER_IS_LOCAL (d) || GdmAllowRemoteAutoLogin) 
+			if ((d->console || GdmAllowRemoteAutoLogin) 
                             && d->timed_login_ok &&
 			    ! ve_string_empty (ParsedTimedLogin) &&
                             strcmp (ParsedTimedLogin, "root") != 0 &&
@@ -2532,7 +2544,7 @@ gdm_slave_greeter_check_interruption (const char *msg)
 			}
 			break;
 		case GDM_INTERRUPT_CONFIGURE:
-			if (SERVER_IS_LOCAL (d) &&
+			if (d->console &&
 			    GdmConfigAvailable &&
 			    GdmSystemMenu &&
 			    ! ve_string_empty (GdmConfigurator)) {

@@ -264,6 +264,12 @@ struct _GdmDisplay {
     pid_t chooserpid;
     time_t acctime;
 
+#ifdef __linux__
+    int vt;
+#endif
+
+    gboolean console;
+
     time_t last_start_time;
     gint retry_count;
 
@@ -275,6 +281,7 @@ struct _GdmDisplay {
     gboolean disabled;
 
     gboolean logged_in; /* TRUE if someone is logged in */
+    char *login;
 
     gboolean timed_login_ok;
 
@@ -354,7 +361,7 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 void gdm_run (void);
 void gdm_quit (void);
 
-/* primitive protocol for controlling the daemon from the chooser
+/* primitive protocol for controlling the daemon from slave
  * or gdmconfig or whatnot */
 
 /* The ones that pass a <slave pid> must be from a valid slave, and
@@ -366,7 +373,10 @@ void gdm_quit (void);
 #define GDM_SOP_GREETPID     "GREETPID" /* <slave pid> <greetpid> */
 #define GDM_SOP_CHOOSERPID   "CHOOSERPID" /* <slave pid> <chooserpid> */
 #define GDM_SOP_LOGGED_IN    "LOGGED_IN" /* <slave pid> <logged_in as int> */
+#define GDM_SOP_LOGIN        "LOGIN" /* <slave pid> <username> */
 #define GDM_SOP_DISP_NUM     "DISP_NUM" /* <slave pid> <display as int> */
+/* For linux only currently */
+#define GDM_SOP_VT_NUM       "VT_NUM" /* <slave pid> <vt as int> */
 #define GDM_SOP_FLEXI_ERR    "FLEXI_ERR" /* <slave pid> <error num> */
 	/* 3 = X failed */
 	/* 4 = X too busy */
@@ -376,15 +386,26 @@ void gdm_quit (void);
 
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
 
+/*
+ * The user socket protocol.  Each command is given on a separate line
+ *
+ * A user should first send a VERSION\n after connecting and only do
+ * anything else if gdm responds with the correct response.  The version
+ * is the gdm version and not a "protocol" revision, so you can't check
+ * against a single version but check if the version is higher then some
+ * value.
+ */
 /* The user protocol, using /tmp/.gdm_socket */
 #define GDM_SUP_VERSION "VERSION" /* no arguments */
 /* VERSION: Query version
+ * Supported since: 2.2.4.0
  * Arguments:  None
  * Answers:
  *   GDM <gdm version>
  */
 #define GDM_SUP_FLEXI_XSERVER "FLEXI_XSERVER" /* <xserver type> */
 /* FLEXI_XSERVER: Start a new X flexible server
+ * Supported since: 2.2.4.0
  * Arguments:  <xserver type>
  *   If no arguments, starts the standard x server
  * Answers:
@@ -400,6 +421,7 @@ void gdm_quit (void);
  */
 #define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <xauth file> */
 /* FLEXI_XNEXT: Start a new flexible Xnest server
+ * Supported since: 2.2.4.0
  * Arguments:  <display> <xauth file>
  * Answers:
  *   OK <display>
@@ -413,8 +435,25 @@ void gdm_quit (void);
  *      6 = No server binary
  *      999 = Unknown error
  */
+#define GDM_SUP_CONSOLE_SERVERS  "CONSOLE_SERVERS" /* None */
+/* CONSOLE_SERVERS: List all console servers, useful for linux mostly
+ *  Doesn't list xdmcp and xnest non-console servers
+ * Supported since: 2.2.4.0
+ * Arguments:  None
+ * Answers:
+ *   OK <server>;<server>;...
+ *
+ *   <server> is <display>,<logged in user>,<vt or xnest display>
+ *
+ *   <logged in user> can be empty in case no one logged in yet,
+ *   and <vt> can be -1 if it's not known or not supported (on non-linux
+ *   for example).  If the display is an xnest display and is a console one
+ *   (that is, it is an xnest inside another console display) it is listed
+ *   and instead of vt, it lists the parent display in standard form.
+ */
 #define GDM_SUP_CLOSE        "CLOSE" /* no arguments */
 /* CLOSE Answers: None
+ * Supported since: 2.2.4.0
  */
 
 #endif /* GDM_H */

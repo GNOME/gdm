@@ -29,6 +29,7 @@ void		gdm_server_reinit	(GdmDisplay *d);
 GdmDisplay *	gdm_server_alloc	(gint id,
 					 const gchar *command);
 void		gdm_server_whack_clients (GdmDisplay *disp);
+void		gdm_server_checklog	(GdmDisplay *disp);
 
 
 #endif /* GDM_SERVER_H */
