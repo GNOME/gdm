@@ -22,6 +22,8 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <X11/Xauth.h>
+#include <sys/types.h>
+#include <fcntl.h>
 
 #include "gdm.h"
 #include "gdm-net.h"
@@ -31,6 +33,7 @@
 #include "misc.h"
 #include "xdmcp.h"
 #include "choose.h"
+#include "gdm-net.h"
 
 static const gchar RCSid[]="$Id$";
 
@@ -40,6 +43,8 @@ extern gint sessions;
 extern gint flexi_servers;
 extern gint pending;
 extern GSList *displays;
+extern GdmConnection *fifoconn;
+extern GdmConnection *unixconn;
 
 static gboolean
 gdm_display_check_loop (GdmDisplay *disp)
@@ -131,6 +136,7 @@ gboolean
 gdm_display_manage (GdmDisplay *d)
 {
     sigset_t mask, omask;
+    int i;
 
     if (!d) 
 	return FALSE;
@@ -162,6 +168,21 @@ gdm_display_manage (GdmDisplay *d)
 	/* Close XDMCP fd in slave process */
 	if (GdmXdmcp)
 	    gdm_xdmcp_close ();
+
+	gdm_connection_close (fifoconn);
+	fifoconn = NULL;
+	gdm_connection_close (unixconn);
+	unixconn = NULL;
+
+	/* Close everything */
+	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+	    close(i);
+
+	/* No error checking here - if it's messed the best response
+         * is to ignore & try to continue */
+	open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+	open("/dev/null", O_RDWR); /* open stdout - fd 1 */
+	open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 	if (d->type == TYPE_LOCAL) {
 	    gdm_slave_start (d);

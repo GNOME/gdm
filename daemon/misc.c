@@ -226,6 +226,7 @@ gdm_get_free_display (int start, int server_uid)
 			close (sock);
 			continue;
 		}
+		close (sock);
 
 		/* if starting as root, we'll be able to overwrite any
 		 * stale sockets, but a user may not be able to */
@@ -234,12 +235,10 @@ gdm_get_free_display (int start, int server_uid)
 				    "/tmp/.X11-unix/X%d", i);
 			if (stat (buf, &s) == 0 &&
 			    s.st_uid != server_uid) {
-				close (sock);
 				continue;
 			}
 		}
 
-		close (sock);
 		return i;
 	}
 

@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include "gdm.h"
 #include "misc.h"
 
@@ -34,6 +35,7 @@
 extern char **stored_argv;
 extern int stored_argc;
 extern char *stored_path;
+extern pid_t extra_process;
 
 static gboolean
 gdm_event (GtkObject *object,
@@ -127,9 +129,19 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 {
 	pid_t pid;
 
-	pid = fork ();
+	extra_process = pid = fork ();
 	if (pid == 0) {
 		char *geom;
+		int i;
+
+		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+			close(i);
+
+		/* No error checking here - if it's messed the best response
+		* is to ignore & try to continue */
+		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 	       
 		if (d != NULL)
 			geom = g_strdup_printf ("%d:%d:%d:%d",
@@ -153,6 +165,7 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 		_exit (1);
 	} else if (pid > 0) {
 		waitpid (pid, 0, 0);
+		extra_process = -1;
 	} else {
 		gdm_error (_("gdm_error_box: Cannot fork to display error/info box"));
 	}

@@ -1,3 +1,19 @@
+Thu Aug 23 10:10:33 2001  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in:  Update for the server stuff
+
+	* daemon/display.c, daemon/errorgui.c, daemon/misc.c, daemon/slave.c:
+	  close fds no longer needed.  Close all needed things after
+	  forking,  Some other related cleanup as well.
+
+	* gui/gdmlogin.c:  A minor UI cleanup, make the entry at least
+	  250 pixels wide, in an attempt t make the window not change size
+	  all the time
+
+	* gui/gdmphotosetup.c:  Don't require the browser to be on.  Just
+	  warn the user that the browser is off, but still let him pick
+	  the face.
+
 Wed Aug 22 23:23:21 2001  George Lebl <jirka@5z.com>
 
 	* config/XKeepsCrashing, daemon/misc.c: Also test for whiptail if

@@ -509,6 +509,7 @@ focus_first_x_window (const char *class_res_name)
 	pid_t pid;
 	Display *disp;
 	XWindowAttributes attribs = { 0, };
+	int i;
 
 	pid = fork ();
 	if (pid < 0) {
@@ -519,6 +520,15 @@ focus_first_x_window (const char *class_res_name)
 	if (pid > 0) {
 		return;
 	}
+
+	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+	    close(i);
+
+	/* No error checking here - if it's messed the best response
+         * is to ignore & try to continue */
+	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 	disp = XOpenDisplay (d->name);
 	if (disp == NULL) {
@@ -606,9 +616,9 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
-		open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-		open("/dev/null", O_RDWR); /* open stdout - fd 1 */
-		open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		/* exec the configurator */
 		argv = ve_split (GdmConfigurator);
@@ -989,6 +999,7 @@ gdm_slave_greeter (void)
     gint pipe1[2], pipe2[2];  
     gchar **argv;
     struct passwd *pwent;
+    int i;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     
@@ -1023,6 +1034,11 @@ gdm_slave_greeter (void)
 	
 	if (pipe2[1] != STDOUT_FILENO) 
 	    dup2 (pipe2[1], STDOUT_FILENO);
+
+	for (i = 2; i < sysconf (_SC_OPEN_MAX); i++)
+	    close(i);
+
+	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 	
 	if (setgid (GdmGroupId) < 0) 
 	    gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set groupid to %d"), GdmGroupId);
@@ -1297,6 +1313,7 @@ gdm_slave_chooser (void)
 	struct passwd *pwent;
 	char buf[1024];
 	size_t bytes;
+	int i;
 
 	gdm_debug ("gdm_slave_chooser: Running chooser on %s", d->name);
 
@@ -1325,6 +1342,13 @@ gdm_slave_chooser (void)
 
 		if (p[1] != STDOUT_FILENO) 
 			dup2 (p[1], STDOUT_FILENO);
+
+		close (0);
+		for (i = 2; i < sysconf (_SC_OPEN_MAX); i++)
+			close(i);
+
+		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		if (setgid (GdmGroupId) < 0) 
 			gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Couldn't set groupid to %d"), GdmGroupId);
@@ -1397,13 +1421,13 @@ gdm_slave_chooser (void)
 
 		bytes = read (p[0], buf, sizeof(buf)-1);
 		if (bytes > 0) {
+			close (p[0]);
+
 			if (buf[bytes-1] == '\n')
 				buf[bytes-1] ='\0';
 			else
 				buf[bytes] ='\0';
 			send_chosen_host (d, buf);
-
-			close (p[0]);
 
 			_exit (DISPLAY_CHOSEN);
 		}
@@ -1960,21 +1984,21 @@ gdm_slave_session_start (void)
 	}
 
 	if (need_config_sync) {
-		gnome_config_sync();
+		gnome_config_sync ();
+		gnome_config_drop_all ();
 	}
 
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-	    close(i);
+	    close (i);
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
-	open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-	open("/dev/null", O_RDWR); /* open stdout - fd 1 */
-	open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 	
 	/* Restore sigmask inherited from init */
 	sigprocmask (SIG_SETMASK, &sysmask, NULL);
-	
 
 	/* If "Gnome Chooser" is still set as a session,
 	 * just change that to "Gnome", since "Gnome Chooser" is a
@@ -1983,14 +2007,6 @@ gdm_slave_session_start (void)
 		g_free (session);
 		session = g_strdup ("Gnome");
 	}
-	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-	    close(i);
-
-	/* No error checking here - if it's messed the best response
-         * is to ignore & try to continue */
-	open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-	open("/dev/null", O_RDWR); /* open stdout - fd 1 */
-	open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 	
 	/* Restore sigmask inherited from init */
 	sigprocmask (SIG_SETMASK, &sysmask, NULL);
@@ -2659,51 +2675,54 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 
     if(str->len > 0 && str->str[str->len - 1] == '|') {
       g_string_truncate(str, str->len - 1);
-      if (pipe(pipe1) < 0)
-        syslog (LOG_ERR, _("gdm_parse_enriched_login: Failed creating pipe"));
-
-      extra_process = pid = fork();
-      switch (pid) {
+      if (pipe (pipe1) < 0) {
+        gdm_error (_("gdm_parse_enriched_login: Failed creating pipe"));
+      } else {
+        extra_process = pid = fork();
+        switch (pid) {
 	    
-      case 0:
-	  /* The child will write the username to stdout based on the DISPLAY
-	     environment variable. */
+        case 0:
+	    /* The child will write the username to stdout based on the DISPLAY
+	       environment variable. */
 
-          close(pipe1[0]);
-          if(pipe1[1] != STDOUT_FILENO) 
-	    dup2 (pipe1[1], STDOUT_FILENO);
+            close (pipe1[0]);
+            if(pipe1[1] != STDOUT_FILENO) 
+	      dup2 (pipe1[1], STDOUT_FILENO);
 
-	  ve_setenv ("XAUTHORITY", display->authfile, TRUE);
-	  ve_setenv ("DISPLAY", display->name, TRUE);
-	  ve_setenv ("PATH", GdmRootPath, TRUE);
-	  ve_unsetenv ("MAIL");
+	    ve_setenv ("XAUTHORITY", display->authfile, TRUE);
+	    ve_setenv ("DISPLAY", display->name, TRUE);
+	    ve_setenv ("PATH", GdmRootPath, TRUE);
+	    ve_unsetenv ("MAIL");
 
-	  argv = ve_split (str->str);
-	  execv (argv[0], argv);
-	  syslog (LOG_ERR, _("gdm_parse_enriched_login: Failed executing: %s"),
-		  str->str);
-	  _exit (EXIT_SUCCESS);
+	    argv = ve_split (str->str);
+	    execv (argv[0], argv);
+	    gdm_error (_("gdm_parse_enriched_login: Failed executing: %s"),
+		    str->str);
+	    _exit (EXIT_SUCCESS);
 	    
-      case -1:
-	  syslog (LOG_ERR, _("gdm_parse_enriched_login: Can't fork script process!"));
-	  break;
+        case -1:
+	    gdm_error (_("gdm_parse_enriched_login: Can't fork script process!"));
+            close (pipe1[0]);
+            close (pipe1[1]);
+	    break;
 	
-      default:
-	  /* The parent reads username from the pipe a chunk at a time */
-          close(pipe1[1]);
-          g_string_truncate(str,0);
-          while((in_buffer_len = read(pipe1[0],in_buffer,
-				      sizeof(in_buffer)/sizeof(char)- 1)) > 0) {
-	    in_buffer[in_buffer_len] = '\000';
-            g_string_append(str,in_buffer);
-          }
+        default:
+	    /* The parent reads username from the pipe a chunk at a time */
+            close(pipe1[1]);
+            g_string_truncate(str,0);
+            while((in_buffer_len = read(pipe1[0],in_buffer,
+				        sizeof(in_buffer)/sizeof(char)- 1)) > 0) {
+	      in_buffer[in_buffer_len] = '\000';
+              g_string_append(str,in_buffer);
+            }
 
-          if(str->len > 0 && str->str[str->len - 1] == '\n')
-            g_string_truncate(str, str->len - 1);
+            if(str->len > 0 && str->str[str->len - 1] == '\n')
+              g_string_truncate(str, str->len - 1);
 
-          close(pipe1[0]);
-	  waitpid (pid, &status, 0);	/* Wait for script to finish */
-	  extra_process = -1;
+            close(pipe1[0]);
+	    waitpid (pid, &status, 0);	/* Wait for script to finish */
+	    extra_process = -1;
+        }
       }
     }
 

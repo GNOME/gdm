@@ -73,8 +73,8 @@ gid_t GdmGroupId;		/* Groupid under which gdm should run */
 pid_t extra_process = -1;	/* An extra process.  Used for quickie 
 				   processes, so that they also get whacked */
 
-static GdmConnection *fifoconn = NULL; /* Fifo connection */
-static GdmConnection *unixconn = NULL; /* UNIX Socket connection */
+GdmConnection *fifoconn = NULL; /* Fifo connection */
+GdmConnection *unixconn = NULL; /* UNIX Socket connection */
 
 /* True if the server that was run was in actuallity not specified in the
  * config file.  That is if xdmcp was disabled and no local servers were

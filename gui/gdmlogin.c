@@ -3010,9 +3010,10 @@ gdm_login_gui_init (void)
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
     gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
     gtk_misc_set_padding (GTK_MISC (label), 10, 5);
+    gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     
     entry = gtk_entry_new_with_max_length (32);
-    gtk_widget_set_usize (entry, 120, -1);
+    gtk_widget_set_usize (entry, 250, -1);
     gtk_widget_ref (entry);
     gtk_object_set_data_full (GTK_OBJECT (login), "entry", entry,
 			      (GtkDestroyNotify) gtk_widget_unref);
@@ -3037,6 +3038,8 @@ gdm_login_gui_init (void)
     /* I think I'll add the buttons next to this */
     msg = gtk_label_new (_("Please enter your login"));
     gtk_widget_set_name(msg, "Message");
+    gtk_label_set_line_wrap (GTK_LABEL (msg), TRUE);
+    gtk_label_set_justify (GTK_LABEL (msg), GTK_JUSTIFY_LEFT);
     
     gtk_widget_ref (msg);
     gtk_object_set_data_full (GTK_OBJECT (login), "msg", msg,
@@ -3054,7 +3057,8 @@ gdm_login_gui_init (void)
     gtk_widget_show (ok_button);
 
     button_box = gtk_hbox_new (0, 5);
-    gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (msg), TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (msg),
+			FALSE /* expand */, TRUE /* fill */, 0);
     /*gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (help_button),
 			FALSE, FALSE, 0);*/
     gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (ok_button),
@@ -3062,7 +3066,7 @@ gdm_login_gui_init (void)
     gtk_widget_show (button_box);
     
     gtk_table_attach (GTK_TABLE (stack), button_box, 0, 1, 6, 7,
-		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 10, 10);
 
     /* Put it nicely together */

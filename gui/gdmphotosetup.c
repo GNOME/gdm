@@ -79,7 +79,6 @@ main (int argc, char *argv[])
 					    "it\nin the GDM configurator "
 					    "program."));
 		gnome_dialog_run_and_close (GNOME_DIALOG (d));
-		return 0;
 	}
 
 	dialog = gnome_dialog_new (_("Select a photo"),
