@@ -1,3 +1,12 @@
+Tue Jun 10 15:57:39 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c, config/Xsession.in: Change the argument to the
+	  Xsession to be the Exec= line of the .desktop and not the .desktop,
+	  that was kind of silly in retrospect.  We still pass the desktop,
+	  but it's kind of secret since I don't want people to depend on this
+	  second argument.  Also update the comments inside the Xsession
+	  to reflect what's really going on.
+
 Tue Jun 10 09:59:44 2003  George Lebl <jirka@5z.com>
 
 	* configure.in: remove removed files from the generated files list
