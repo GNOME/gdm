@@ -25,6 +25,9 @@ gboolean gdm_auth_secure_display (GdmDisplay *d);
 gboolean gdm_auth_user_add       (GdmDisplay *d, uid_t user, const char *homedir);
 void     gdm_auth_user_remove    (GdmDisplay *d, uid_t user);
 
+/* Call XSetAuthorization */
+void	 gdm_auth_set_local_auth (GdmDisplay *d);
+
 #endif /* GDM_AUTH_H */
 
 /* EOF */

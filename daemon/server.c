@@ -117,6 +117,8 @@ gdm_server_wipe_cookies (GdmDisplay *disp)
 	disp->authfile_gdm = NULL;
 }
 
+static Jmp_buf reinitjmp;
+
 /* ignore handlers */
 static int
 ignore_xerror_handler (Display *disp, XErrorEvent *evt)
@@ -125,9 +127,9 @@ ignore_xerror_handler (Display *disp, XErrorEvent *evt)
 }
 
 static int
-exit_xioerror_handler (Display *disp)
+jumpback_xioerror_handler (Display *disp)
 {
-	_exit (1);
+	Longjmp (reinitjmp, 1);
 }
 
 /**
@@ -141,86 +143,69 @@ exit_xioerror_handler (Display *disp)
 void
 gdm_server_reinit (GdmDisplay *disp)
 {
-	pid_t pid;
+	int (*old_xerror_handler)(Display *, XErrorEvent *) = NULL;
+	int (*old_xioerror_handler)(Display *) = NULL;
 
 	if (disp == NULL)
 		return;
 
-	/* Kill our connection if one existed */
-	if (disp->dsp != NULL) {
-		XCloseDisplay (disp->dsp);
-		disp->dsp = NULL;
-	}
-
-	if (disp->servpid <= 0)
+	if (disp->servpid <= 0) {
+		/* Kill our connection if one existed, likely to result
+		 * in some bizzaro error right now */
+		if (disp->dsp != NULL) {
+			XCloseDisplay (disp->dsp);
+			disp->dsp = NULL;
+		}
 		return;
+	}
 
 	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
 
-	/* This hack below is beautiful BTW */
+	/* Long live Setjmp, DIE DIE DIE XSetIOErrorHandler */
 
-	gdm_sigchld_block_push ();
-
-	pid = gdm_fork_extra ();
-	if (pid < 0) {
-		/* So much work just because we can't fork */
-		if (disp->servpid > 1)
-			kill (disp->servpid, SIGHUP);
-
-		gdm_sigchld_block_push ();
-
-		/* HACK! the Xserver can't really tell us when it got the hup signal,
-		 * so we are really stuck just going to sleep for a bit hoping that
-		 * the kernel will tell the X server and that will run, else we will
-		 * get whacked ourselves after we open the connection and we'll think
-		 * it's an X screwup, which is really OK to happen and will just
-		 * restart the Xserver, it's just more nasty.  Oh how fun */
-		sleep (1);
-	} else if (pid == 0) {
-		Display *dsp;
-
-		closelog ();
-
-		signal (SIGCHLD, SIG_IGN);
-		signal (SIGTERM, SIG_DFL);
-		signal (SIGINT, SIG_DFL);
-		signal (SIGHUP, SIG_DFL);
-
-		/* close things */
-		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
-
-		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
-
-		XSetErrorHandler (ignore_xerror_handler);
-		XSetIOErrorHandler (exit_xioerror_handler);
-	       
-		ve_setenv ("XAUTHORITY", d->authfile, TRUE);
-		dsp = XOpenDisplay (d->name);
+	if (disp->dsp == NULL) {
+		gdm_error ("Reiniting server, but don't have a display connection, strange");
 
 		/* Now whack the server with a SIGHUP */
+		gdm_sigchld_block_push ();
 		if (disp->servpid > 1)
 			kill (disp->servpid, SIGHUP);
+		gdm_sigchld_block_pop ();
+		/* a hack we have no way of knowing when the server died */
+		sleep (1);
+	}
 
-		if (dsp == NULL) {
-			/* HACK, see note above */
-			sleep (1);
-			_exit (0);
+	if (Setjmp (reinitjmp) == 0)  {
+		/* come here and we'll whack the server and wait to get
+		   an xio error */
+		old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
+		old_xioerror_handler = XSetIOErrorHandler (jumpback_xioerror_handler);
+
+		/* Now whack the server with a SIGHUP */
+		gdm_sigchld_block_push ();
+		if (disp->servpid > 1) {
+			kill (disp->servpid, SIGHUP);
 		} else {
-			/* Wait for an xioerror */
-			for (;;) {
-				XEvent event;
-				XNextEvent (dsp, &event);
+			gdm_sigchld_block_pop ();
+			/* the server is dead, weird */
+			if (disp->dsp != NULL) {
+				XCloseDisplay (disp->dsp);
+				disp->dsp = NULL;
 			}
+			Longjmp (reinitjmp, 1);
 		}
-		/* anality */
-		_exit (0);
-	} else if (pid > 0) {
 		gdm_sigchld_block_pop ();
 
-		gdm_wait_for_extra (NULL);
+		/* Wait for an xioerror */
+		for (;;) {
+			XEvent event;
+			XNextEvent (disp->dsp, &event);
+		}
 	}
+	/* no more display */
+	disp->dsp = NULL;
+	XSetErrorHandler (old_xerror_handler);
+	XSetIOErrorHandler (old_xioerror_handler);
 }
 
 /**
@@ -617,7 +602,11 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		    /* In case we got a SIGCHLD */
 		    check_child_status ();
 
-		    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+		    /* just in case it's set */
+		    ve_unsetenv ("XAUTHORITY");
+
+		    gdm_auth_set_local_auth (d);
+
 		    for (i = 0;
 			 d->dsp == NULL &&
 			 d->servstat == SERVER_STARTED &&
@@ -632,7 +621,6 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 			    /* In case we got a SIGCHLD */
 			    check_child_status ();
 		    }
-		    ve_unsetenv ("XAUTHORITY");
 		    if (d->dsp == NULL &&
 			/* Note: we could have still gotten a SIGCHLD */
 			d->servstat == SERVER_STARTED) {
@@ -810,6 +798,27 @@ gdm_server_checklog (GdmDisplay *disp)
 	}
 }
 
+/* somewhat safer rename (safer if the log dir is unsafe), may in fact
+   lose the file though, it guarantees that a is gone, but not that
+   b exists */
+static void
+safer_rename (const char *a, const char *b)
+{
+	errno = 0;
+	if (link (a, b) < 0) {
+		if (errno == EEXIST) {
+			unlink (a);
+			return;
+		} 
+		unlink (b);
+		/* likely this system doesn't support hard links */
+		rename (a, b);
+		unlink (a);
+		return;
+	}
+	unlink (a);
+}
+
 static void
 rotate_logs (const char *dname)
 {
@@ -822,10 +831,10 @@ rotate_logs (const char *dname)
 
 	/* Rotate the logs (keep 4 last) */
 	unlink (fname4);
-	rename (fname3, fname4);
-	rename (fname2, fname3);
-	rename (fname1, fname2);
-	rename (fname, fname1);
+	safer_rename (fname3, fname4);
+	safer_rename (fname2, fname3);
+	safer_rename (fname1, fname2);
+	safer_rename (fname, fname1);
 
 	g_free (fname4);
 	g_free (fname3);
@@ -958,6 +967,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
     struct sigaction ign_signal, dfl_signal;
     sigset_t mask;
     gchar **argv = NULL;
+    char *logfile;
     int logfd;
     char *command;
     pid_t pid;
@@ -1023,8 +1033,9 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	rotate_logs (d->name);
 
         /* Log all output from spawned programs to a file */
-	logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),
-		      O_CREAT|O_TRUNC|O_WRONLY, 0644);
+	logfile = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+	unlink (logfile);
+	logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644);
 
 	if (logfd != -1) {
 		dup2 (logfd, 1);

@@ -32,6 +32,7 @@
 #include <sys/stat.h>
 #include "gdm.h"
 #include "misc.h"
+#include "auth.h"
 
 #include <vicious.h>
 
@@ -183,6 +184,50 @@ get_error_text_view (const char *details)
 	return sw;
 }
 
+static void
+setup_dialog (GdmDisplay *d, const char *name, int closefdexcept)
+{
+	int argc = 1;
+	char **argv;
+
+	closelog ();
+
+	gdm_close_all_descriptors (0 /* from */, closefdexcept /* except */);
+
+	/* No error checking here - if it's messed the best response
+	 * is to ignore & try to continue */
+	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+
+	setgid (GdmGroupId);
+	initgroups (GdmUser, GdmGroupId);
+	setuid (GdmUserId);
+
+	gdm_desetuid ();
+
+	/* restore initial environment */
+	gdm_restoreenv ();
+
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+	ve_setenv ("DISPLAY", d->name, TRUE);
+	ve_unsetenv ("XAUTHORITY");
+
+	gdm_auth_set_local_auth (d);
+
+	/* sanity env stuff */
+	ve_setenv ("SHELL", "/bin/sh", TRUE);
+	ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
+
+	argv = g_new0 (char *, 2);
+	argv[0] = (char *)name;
+
+	gtk_init (&argc, &argv);
+
+	get_screen_size (d);
+}
+
 void
 gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		    const char *details_label, const char *details_file)
@@ -193,13 +238,9 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 	if (pid == 0) {
 		guint sid;
-		int argc = 1;
-		char **argv;
 		GtkWidget *dlg;
 		GtkWidget *button;
 		char *loc;
-		char *display;
-		char *xauthority;
 		char *details;
 		
 		/* First read the details if they exist */
@@ -253,44 +294,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 			details = NULL;
 		}
 
-		closelog ();
-
-		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
-
-		/* No error checking here - if it's messed the best response
-		 * is to ignore & try to continue */
-		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
-
-		setgid (GdmGroupId);
-		initgroups (GdmUser, GdmGroupId);
-		setuid (GdmUserId);
-
-		gdm_desetuid ();
-
-		display = g_strdup (g_getenv ("DISPLAY"));
-		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
-
-		/* restore initial environment */
-		gdm_restoreenv ();
-
-		if (display != NULL)
-			ve_setenv ("DISPLAY", display, TRUE);
-		if (xauthority != NULL)
-			ve_setenv ("XAUTHORITY", xauthority, TRUE);
-		/* sanity env stuff */
-		ve_setenv ("SHELL", "/bin/sh", TRUE);
-		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
-
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
-
-		argv = g_new0 (char *, 2);
-		argv[0] = "gtk-error-box";
-
-		gtk_init (&argc, &argv);
-
-		get_screen_size (d);
+		setup_dialog (d, "gtk-error-box", -1);
 
 		loc = gdm_locale_to_utf8 (error);
 
@@ -398,51 +402,10 @@ gdm_failsafe_question (GdmDisplay *d,
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
 		guint sid;
-		int argc = 1;
-		char **argv;
 		GtkWidget *dlg, *label, *entry;
 		char *loc;
-		char *display;
-		char *xauthority;
 
-		closelog ();
-
-		gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
-
-		/* No error checking here - if it's messed the best response
-		 * is to ignore & try to continue */
-		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
-
-		setgid (GdmGroupId);
-		initgroups (GdmUser, GdmGroupId);
-		setuid (GdmUserId);
-
-		gdm_desetuid ();
-
-		display = g_strdup (g_getenv ("DISPLAY"));
-		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
-
-		/* restore initial environment */
-		gdm_restoreenv ();
-
-		if (display != NULL)
-			ve_setenv ("DISPLAY", display, TRUE);
-		if (xauthority != NULL)
-			ve_setenv ("XAUTHORITY", xauthority, TRUE);
-		/* sanity env stuff */
-		ve_setenv ("SHELL", "/bin/sh", TRUE);
-		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
-
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
-
-		argv = g_new0 (char *, 2);
-		argv[0] = "gtk-failsafe-question";
-
-		gtk_init (&argc, &argv);
-
-		get_screen_size (d);
+		setup_dialog (d, "gtk-failsafe-question", p[1]);
 
 		loc = gdm_locale_to_utf8 (question);
 
@@ -543,51 +506,10 @@ gdm_failsafe_yesno (GdmDisplay *d,
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
 		guint sid;
-		int argc = 1;
-		char **argv;
 		GtkWidget *dlg;
 		char *loc;
-		char *display;
-		char *xauthority;
 
-		closelog ();
-
-		gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
-
-		/* No error checking here - if it's messed the best response
-		 * is to ignore & try to continue */
-		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
-
-		setgid (GdmGroupId);
-		initgroups (GdmUser, GdmGroupId);
-		setuid (GdmUserId);
-
-		gdm_desetuid ();
-
-		display = g_strdup (g_getenv ("DISPLAY"));
-		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
-
-		/* restore initial environment */
-		gdm_restoreenv ();
-
-		if (display != NULL)
-			ve_setenv ("DISPLAY", display, TRUE);
-		if (xauthority != NULL)
-			ve_setenv ("XAUTHORITY", xauthority, TRUE);
-		/* sanity env stuff */
-		ve_setenv ("SHELL", "/bin/sh", TRUE);
-		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
-
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
-
-		argv = g_new0 (char *, 2);
-		argv[0] = "gtk-failsafe-yesno";
-
-		gtk_init (&argc, &argv);
-
-		get_screen_size (d);
+		setup_dialog (d, "gtk-failsafe-yesno", p[1]);
 
 		loc = gdm_locale_to_utf8 (question);
 
@@ -673,51 +595,10 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 	if (pid == 0) {
 		int i;
 		guint sid;
-		int argc = 1;
-		char **argv;
 		GtkWidget *dlg;
 		char *loc;
-		char *display;
-		char *xauthority;
 
-		closelog ();
-
-		gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
-
-		/* No error checking here - if it's messed the best response
-		 * is to ignore & try to continue */
-		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
-		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
-
-		setgid (GdmGroupId);
-		initgroups (GdmUser, GdmGroupId);
-		setuid (GdmUserId);
-
-		gdm_desetuid ();
-
-		display = g_strdup (g_getenv ("DISPLAY"));
-		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
-
-		/* restore initial environment */
-		gdm_restoreenv ();
-
-		if (display != NULL)
-			ve_setenv ("DISPLAY", display, TRUE);
-		if (xauthority != NULL)
-			ve_setenv ("XAUTHORITY", xauthority, TRUE);
-		/* sanity env stuff */
-		ve_setenv ("SHELL", "/bin/sh", TRUE);
-		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
-
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
-
-		argv = g_new0 (char *, 2);
-		argv[0] = "gtk-failsafe-ask-buttons";
-
-		gtk_init (&argc, &argv);
-
-		get_screen_size (d);
+		setup_dialog (d, "gtk-failsafe-ask-buttons", p[1]);
 
 		loc = gdm_locale_to_utf8 (question);
 

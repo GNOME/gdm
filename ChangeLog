@@ -1,3 +1,52 @@
+Tue Jul 22 14:31:25 2003  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c, daemon/slave.c, daemon/server.c:
+	  Set XAUTHORITY to GDM_AUTHFILE always for root processes.
+	  Also make sure not to set it if it's NULL already.
+
+	* daemon/auth.[ch], daemon/slave.c, daemon/server.c: use
+	  XSetAuthority instead of XAUTHORITY env var as that is
+	  more failsafe
+
+	* daemon/errorgui.c: set the DISPLAY and use XSetAuthority
+	  instead of relying on XAUTHORITY/DISPLAY being set right
+	  (which they not always are).  Also cleanup the dialog
+	  startup a bit.
+
+	* daemon/slave.c, daemon/errorgui.c: chmod the authfile
+	  to 640 before a session and back to 644 afterwards.  This
+	  reduces the risk from gdm user breakage.  In case someone
+	  breaks the gdm user they can't connect to existing
+	  user sessions, only new ones.
+
+	* daemon/misc.h, daemon/server.c, daemon/slave.c: redo the
+	  reinit stuff.  Don't close the display before we reinit
+	  and then do a nice setjmp hack to notice when the server
+	  got reinited.  This avoids races, avoids an extra process
+	  for figuring out the reinit and as icing on the cake it
+	  is also about 4-5 seconds faster to reinit not (and the
+	  server is reinited just once instead of thrice which
+	  might have been causing some X server whackiness)
+
+	* daemon/server.c: be careful in the log directory as well
+	  when opening files and do safer moves there as well
+	  for the rotation.
+
+	* daemon/slave.c: whack the stupid extra XOpenDisplay,
+	  this is apparently only a workaround for some whacky
+	  streams X server connection which we don't support.
+	  And this takes up quite a bit of time on startup
+	  it turns out.  Also related we'll set the cursor
+	  to pointer before we fork so that we don't need to
+	  do yet another XOpenDisplay.  This speeds up startup
+	  yet some more.
+
+	* daemon/slave.c: when reading the session .desktop file
+	  _get it rather then _new it so that we do less reading/parsing
+	  on session startup.
+
+	* daemon/slave.c: some cleanup of session ends
+
 Mon Jul 21 15:36:48 2003  George Lebl <jirka@5z.com>
 
 	* docs/GdmGreeterThemeManual.txt: removed since this is now in

@@ -820,8 +820,10 @@ gdm_slave_run (GdmDisplay *display)
     /* We can use d->handled from now on on this display,
      * since the lookup was done in server start */
     
-    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
     ve_setenv ("DISPLAY", d->name, TRUE);
+    ve_unsetenv ("XAUTHORITY"); /* just in case it's set */
+
+    gdm_auth_set_local_auth (d);
 
     if (d->handled) {
 	    /* Now the display name and hostname is final */
@@ -895,14 +897,6 @@ gdm_slave_run (GdmDisplay *display)
 		    gdm_slave_quick_exit (DISPLAY_XFAILED);
 	    else
 		    gdm_slave_quick_exit (DISPLAY_ABORT);
-    }
-
-    /* Some sort of a bug foo to make some servers work or whatnot,
-     * stolen from xdm sourcecode, perhaps not necessary, but can't hurt */
-    if (d->handled) {
-	    Display *dsp = XOpenDisplay (d->name);
-	    if (dsp != NULL)
-		    XCloseDisplay (dsp);
     }
 
     /* OK from now on it's really the user whacking us most likely,
@@ -1073,6 +1067,11 @@ focus_first_x_window (const char *class_res_name)
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
+	/* just in case it's set */
+	ve_unsetenv ("XAUTHORITY");
+
+	gdm_auth_set_local_auth (d);
+
 	disp = XOpenDisplay (d->name);
 	if (disp == NULL) {
 		gdm_error (_("%s: cannot open display %s"),
@@ -1189,7 +1188,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		/* gdm_clearenv_no_lang (); */
 
 		/* root here */
-		ve_setenv ("XAUTHORITY", display->authfile, TRUE);
+		ve_setenv ("XAUTHORITY", GDM_AUTHFILE (display), TRUE);
 		ve_setenv ("DISPLAY", display->name, TRUE);
 		ve_setenv ("LOGNAME", pwent->pw_name, TRUE);
 		ve_setenv ("USER", pwent->pw_name, TRUE);
@@ -2567,10 +2566,9 @@ get_session_exec (const char *desktop)
 	char *exec;
 
 	file = g_strconcat (GdmSessDir, "/", desktop, NULL);
-	cfg = ve_config_new (file);
+	cfg = ve_config_get (file);
 	g_free (file);
 	exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
-	ve_config_destroy (cfg);
 	return exec;
 }
 
@@ -2624,30 +2622,11 @@ session_child_run (struct passwd *pwent,
 	char *exec;
 	const char *shell = NULL;
 	VeConfig *dmrc = NULL;
-	Display *disp;
 	char *argv[4];
 
 	gdm_unset_signals ();
 
-	ve_setenv ("XAUTHORITY", d->authfile, TRUE);
-
-	disp = XOpenDisplay (d->name);
-	if (disp != NULL) {
-		Cursor xcursor;
-			
-		XSetInputFocus (disp, PointerRoot,
-				RevertToPointerRoot, CurrentTime);
-
-		/* return left pointer */
-		xcursor = XCreateFontCursor (disp, GDK_LEFT_PTR);
-		XDefineCursor (disp,
-			       DefaultRootWindow (disp),
-			       xcursor);
-		XFreeCursor (disp, xcursor);
-		XSync (disp, False);
-
-		XCloseDisplay (disp);
-	}
+	ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 
 	/* Here we setup our 0,1,2 descriptors, we do it here
 	 * nowdays rather then later on so that we get errors even
@@ -2748,6 +2727,10 @@ session_child_run (struct passwd *pwent,
 		gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
 		language = NULL;
 	}
+
+	/* Now still as root make the system authfile not readable by others,
+	   and therefore not by the gdm user */
+	chmod (GDM_AUTHFILE (d), 0640);
 
 	setpgid (0, 0);
 	
@@ -3202,8 +3185,6 @@ gdm_slave_session_start (void)
     if ( ! authok) {
 	    gdm_debug ("gdm_slave_session_start: Auth not OK");
 
-	    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
-
 	    gdm_error_box (d,
 			   GTK_MESSAGE_ERROR,
 			   _("GDM could not write to your authorization\n"
@@ -3235,6 +3216,21 @@ gdm_slave_session_start (void)
 
     /* Write out the Xservers file */
     gdm_slave_send_num (GDM_SOP_WRITE_X_SERVERS, 0 /* bogus */);
+
+    if (d->dsp != NULL) {
+	    Cursor xcursor;
+
+	    XSetInputFocus (d->dsp, PointerRoot,
+			    RevertToPointerRoot, CurrentTime);
+
+	    /* return left pointer */
+	    xcursor = XCreateFontCursor (d->dsp, GDK_LEFT_PTR);
+	    XDefineCursor (d->dsp,
+			   DefaultRootWindow (d->dsp),
+			   xcursor);
+	    XFreeCursor (d->dsp, xcursor);
+	    XSync (d->dsp, False);
+    }
 
     /* don't completely rely on this, the user
      * could reset time or do other crazy things */
@@ -3295,6 +3291,10 @@ gdm_slave_session_start (void)
 
     d->sesspid = 0;
 
+    /* Now still as root make the system authfile readable by others,
+       and therefore by the gdm user */
+    chmod (GDM_AUTHFILE (d), 0644);
+
     end_time = time (NULL);
 
     gdm_debug ("Session: start_time: %ld end_time: %ld",
@@ -3304,8 +3304,6 @@ gdm_slave_session_start (void)
 	 (end_time - 10 <= session_start_time)) {
 	    char *errfile = g_strconcat (home_dir, "/.xsession-errors", NULL);
 	    gdm_debug ("Session less than 10 seconds!");
-
-	    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
 
 	    /* FIXME: perhaps do some checking to display a better error,
 	     * such as gnome-session missing and such things. */
@@ -3351,6 +3349,11 @@ gdm_slave_session_stop (gboolean run_post_session,
 
     gdm_slave_send_num (GDM_SOP_SESSPID, 0);
 
+    /* Now still as root make the system authfile not readable by others,
+       and therefore not by the gdm user */
+    if (GDM_AUTHFILE (d) != NULL)
+	    chmod (GDM_AUTHFILE (d), 0640);
+
     gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
 
     /* Note we use the info in the structure here since if we get passed
@@ -3374,23 +3377,11 @@ gdm_slave_session_stop (gboolean run_post_session,
 
     /* if there was a session that ran, run the PostSession script */
     if (run_post_session) {
-	    /* setup some env for PostSession script */
-	    ve_setenv ("DISPLAY", d->name, TRUE);
-	    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
-
-	    ve_setenv ("X_SERVERS", x_servers_file, TRUE);
-	    if (d->type == TYPE_XDMCP)
-		    ve_setenv ("REMOTE_HOST", d->hostname, TRUE);
-
 	    /* Execute post session script */
 	    gdm_debug ("gdm_slave_session_stop: Running post session script");
 	    gdm_slave_exec_script (d, GdmPostSession, local_login, pwent,
 				   FALSE /* pass_stdout */,
 				   TRUE /* set_parent */);
-
-	    ve_unsetenv ("X_SERVERS");
-	    if (d->type == TYPE_XDMCP)
-		    ve_unsetenv ("REMOTE_HOST");
     }
 
     unlink (x_servers_file);
@@ -3411,13 +3402,6 @@ gdm_slave_session_stop (gboolean run_post_session,
 
     /* things are going to be killed, so ignore errors */
     XSetErrorHandler (ignore_xerror_handler);
-
-    /* Cleanup */
-    gdm_debug ("gdm_slave_session_stop: Severing connection");
-    if (d->dsp != NULL) {
-	    XCloseDisplay (d->dsp);
-	    d->dsp = NULL;
-    }
 
     in_session_stop --;
 
@@ -3916,13 +3900,13 @@ gdm_slave_quick_exit (gint status)
 	    gdm_server_stop (d);
 	    gdm_verify_cleanup (d);
 
-	    if (d->servpid > 1)
-		    kill (d->servpid, SIGTERM);
-	    d->servpid = 0;
-
 	    if (extra_process > 1)
 		    kill (-(extra_process), SIGTERM);
 	    extra_process = 0;
+
+	    if (d->servpid > 1)
+		    kill (d->servpid, SIGTERM);
+	    d->servpid = 0;
     }
 
     _exit (status);
@@ -4126,8 +4110,11 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	if (d->type == TYPE_XDMCP)
 		ve_setenv ("REMOTE_HOST", d->hostname, TRUE);
 
-	/* Runs as root, uses server authfile */
-	ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+	/* Runs as root */
+	if (GDM_AUTHFILE (d) != NULL)
+		ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
+	else
+		ve_unsetenv ("XAUTHORITY");
         ve_setenv ("DISPLAY", d->name, TRUE);
 	ve_setenv ("PATH", GdmRootPath, TRUE);
 	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
@@ -4258,7 +4245,10 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	    openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 	    /* runs as root */
-	    ve_setenv ("XAUTHORITY", display->authfile, TRUE);
+	    if (GDM_AUTHFILE (display) != NULL)
+		    ve_setenv ("XAUTHORITY", GDM_AUTHFILE (display), TRUE);
+	    else
+		    ve_unsetenv ("XAUTHORITY");
 	    ve_setenv ("DISPLAY", display->name, TRUE);
 	    ve_setenv ("PATH", GdmRootPath, TRUE);
 	    ve_unsetenv ("MAIL");

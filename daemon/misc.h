@@ -110,6 +110,20 @@ void gdm_reset_limits (void);
 
 const char *gdm_root_user (void);
 
+#include <setjmp.h>
+
+/* stolen from xdm sources */
+#if defined(X_NOT_POSIX) || defined(__EMX__) || defined(__NetBSD__) && defined(__sparc__)
+#define Setjmp(e)	setjmp(e)
+#define Longjmp(e,v)	longjmp(e,v)
+#define Jmp_buf		jmp_buf
+#else
+#define Setjmp(e)   sigsetjmp(e,1)
+#define Longjmp(e,v)	siglongjmp(e,v)
+#define Jmp_buf		sigjmp_buf
+#endif
+
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

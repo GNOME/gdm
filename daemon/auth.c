@@ -367,7 +367,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     fclose (af);
     if (af_gdm != NULL)
 	    fclose (af_gdm);
-    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+    ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 
     if (GdmDebug)
 	    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
@@ -702,5 +702,11 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
     g_slist_free (keep);
 }
 
+void
+gdm_auth_set_local_auth (GdmDisplay *d)
+{
+	XSetAuthorization ((char *)"MIT-MAGIC-COOKIE-1", (int) strlen ("MIT-MAGIC-COOKIE-1"),
+			   (char *)d->bcookie, (int) 16);
+}
 
 /* EOF */
