@@ -1409,12 +1409,12 @@ gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 		gdm_choose_indirect_dispose (id);
 	}
 
-	XdmcpDisposeARRAY8 (&clnt_address);
-
 	/* Note: we send GOT even on not found, just in case our previous
 	 * didn't get through and this was a second managed forward */
 	gdm_xdmcp_send_got_managed_forward
 		(clnt_sa, (struct in_addr *)clnt_address.data);
+
+	XdmcpDisposeARRAY8 (&clnt_address);
 }
 
 static void
