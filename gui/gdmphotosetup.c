@@ -68,7 +68,7 @@ gdm_check (void)
 			 "%s\n%s",
 			 _("You might in fact be using a different "
 			   "display manager, such as KDM "
-			   "(KDE Display Manager or xdm)."),
+			   "(KDE Display Manager) or xdm."),
 			 _("If you still wish to use this feature, "
 			   "either start GDM yourself or ask your "
 			   "system administrator to start GDM."));
