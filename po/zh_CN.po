@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "POT-Creation-Date: 2002-02-04 12:17+0800\n"
-"PO-Revision-Date: 2002-02-06 18:51+0800\n"
+"PO-Revision-Date: 2002-02-17 23:23+0800\n"
 "Last-Translator: Wang Li <charlesw1234@163.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -176,7 +176,7 @@ msgstr "gdm_config_parse：Xdmcp 已禁用并且没有定义本地服务器。�
 #: daemon/gdm.c:483
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
-msgstr "gdm_config_parse：无法找到 gdm 用户 (%s)。正在尝试‘nobody’！"
+msgstr "gdm_config_parse：无法找到 gdm 用户 (%s)。正在尝试“nobody”！"
 
 #: daemon/gdm.c:491
 #, c-format
@@ -204,7 +204,7 @@ msgstr "gdm_config_parse：gdm 用户不能为根用户。中止！"
 #: daemon/gdm.c:515
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
-msgstr "gdm_config_parse：无法找到 gdm 组 (%s)。正在尝试‘nobody’!"
+msgstr "gdm_config_parse：无法找到 gdm 组 (%s)。正在尝试“nobody”!"
 
 #: daemon/gdm.c:523
 #, c-format
@@ -512,7 +512,7 @@ msgstr "  (您可以通过按 Ctrl-Alt 和一个功能键来切换到控制台�
 #: daemon/server.c:214
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
-msgstr "Xnest 无法打开显示‘%s’"
+msgstr "Xnest 无法打开显示“%s”"
 
 #: daemon/server.c:244
 #, c-format
@@ -578,12 +578,12 @@ msgstr "gdm_server_spawn：将 TERM 设置成 SIG_DFL 时出错"
 #: daemon/server.c:745
 #, c-format
 msgid "Invalid server command '%s'"
-msgstr "非法服务器命令‘%s’"
+msgstr "非法服务器命令“%s”"
 
 #: daemon/server.c:751
 #, c-format
 msgid "Server name '%s' not found, using standard server"
-msgstr "找不到服务器名‘%s’，使用标准服务器"
+msgstr "找不到服务器名“%s”，使用标准服务器"
 
 #: daemon/server.c:783
 #, c-format
@@ -837,7 +837,7 @@ msgid ""
 msgstr ""
 "这是 Failsafe Gnome 会话。\n"
 "您将登录到没有启动脚本的\n"
-"‘默认’Gnome 会话。这\n"
+"“默认”Gnome 会话。这\n"
 "仅仅是用于修正您安装中的\n"
 "问题的。"
 
@@ -858,7 +858,7 @@ msgstr ""
 "您将登录到终端控制台以便\n"
 "在您无法以其它方式登录的\n"
 "情况下修正您的系统。为了\n"
-"退出终端模拟器，把‘exit’\n"
+"退出终端模拟器，把“exit”\n"
 "和回车输入到终端窗口即可。"
 
 #: daemon/slave.c:2019
@@ -881,7 +881,7 @@ msgstr ""
 #: daemon/slave.c:2038
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
-msgstr "gdm_slave_session_start：无法找到/运行会话‘%s’"
+msgstr "gdm_slave_session_start：无法找到/运行会话“%s”"
 
 #: daemon/slave.c:2043
 msgid ""
@@ -898,7 +898,7 @@ msgstr ""
 #: daemon/slave.c:2051
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
-msgstr "gdm_slave_session_start：无法启动会话‘%s’"
+msgstr "gdm_slave_session_start：无法启动会话“%s”"
 
 #: daemon/slave.c:2054
 msgid ""
@@ -928,7 +928,7 @@ msgid ""
 "you use a failsafe session."
 msgstr ""
 "您的家目录为：\n"
-"‘%s’\n"
+"“%s”\n"
 "但它好像不存在。\n"
 "您是否希望将根目录\n"
 "作为您的家目录登录？\n"
@@ -939,11 +939,12 @@ msgstr ""
 #: daemon/slave.c:2100
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
-msgstr "%s：%s 的家目录不存在：‘%s’不存在！"
+msgstr "%s：%s 的家目录不存在：“%s”不存在！"
 
 #: daemon/slave.c:2247
+#, fuzzy
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
-msgstr ""
+msgstr "gdm_slave_session_start：验证完成。"
 
 #: daemon/slave.c:2265
 msgid ""
@@ -956,9 +957,9 @@ msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start：创建用户会话出错"
 
 #: daemon/slave.c:2486
-#, c-format
+#, fuzzy, c-format
 msgid "Ping to %s failed, whacking display!"
-msgstr ""
+msgstr "Ping %s 失败，"
 
 #: daemon/slave.c:2607
 #, c-format
@@ -1018,7 +1019,7 @@ msgstr "\n用户名或口令不正确。字母必须以正确的大小写输入�
 #: daemon/verify-shadow.c:161
 #, c-format
 msgid "Root login disallowed on display '%s'"
-msgstr "显示‘%s’禁止根用户登录"
+msgstr "显示“%s”禁止根用户登录"
 
 #: daemon/verify-crypt.c:154 daemon/verify-shadow.c:163
 msgid "The system administrator is not allowed to login from this screen"
@@ -1118,7 +1119,7 @@ msgstr "\n系统管理员已经暂时地收回了您对系统的访问权。"
 #: daemon/verify-pam.c:386 daemon/verify-pam.c:541
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
-msgstr ""
+msgstr "无法设置 %s 的帐号管理"
 
 #: daemon/verify-pam.c:405 daemon/verify-pam.c:569
 #, c-format
@@ -1468,7 +1469,7 @@ msgstr ""
 "远程登录到其它机器就好像他们是从\n"
 "控制台登录一样。\n"
 "\n"
-"您可以点击‘重新扫描’重新扫描网络\n"
+"您可以点击“重新扫描”重新扫描网络\n"
 "以便找到新主机。当您选择了一个主机，\n"
 "点击“连接”以打开到那个主机的会话。"
 
@@ -1501,7 +1502,7 @@ msgid ""
 msgstr ""
 "该面板显示配置 GDM 的基本选项。\n"
 "\n"
-"如果您需要更多细节，请从上面的列表中选择‘专家’或‘系统设置’。\n"
+"如果您需要更多细节，请从上面的列表中选择“专家”或“系统设置”。\n"
 "\n"
 "这将显示一些很少需要变更的更复杂的 GDM 选项。"
 
@@ -1773,7 +1774,7 @@ msgstr ""
 
 #: gui/gdmconfig.c:2016 gui/gdmconfig.c:2348
 msgid "A command line must start with a forward slash ('/')"
-msgstr "命令行必须以除号开始 (‘/’)"
+msgstr "命令行必须以除号开始 (“/”)"
 
 #: gui/gdmconfig.c:2020
 msgid "A descriptive server name must be supplied"
@@ -1898,7 +1899,7 @@ msgstr "显示“系统”菜单。它含有关机、重新启动和配置项目
 
 #: gui/gdmconfig-strings.c:28
 msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
-msgstr "显示‘系统’菜单，(提供重启、关机等功能。)"
+msgstr "显示“系统”菜单，(提供重启、关机等功能。)"
 
 #: gui/gdmconfig-strings.c:29
 msgid "Allow users to run the configurator from the system menu"
@@ -2182,7 +2183,7 @@ msgstr "最大头像宽度："
 
 #: gui/gdmconfig-strings.c:98
 msgid "Select an image for users with no 'face'"
-msgstr "为没用‘头像’的用户选择一幅图像"
+msgstr "为没用“头像”的用户选择一幅图像"
 
 #: gui/gdmconfig-strings.c:99
 msgid "Choose the directory to search for faces"
@@ -2352,7 +2353,7 @@ msgstr "确定 GDM 是否应该在用户登录时杀死由 init 脚本启动的 
 
 #: gui/gdmconfig-strings.c:142
 msgid "Kill 'init' clients"
-msgstr "杀死‘init’客户端"
+msgstr "杀死“init”客户端"
 
 #: gui/gdmconfig-strings.c:143
 msgid "Should GDM print authentication errors in the greeter"
@@ -2400,7 +2401,7 @@ msgstr "GDM 以该用户的身份运行："
 
 #: gui/gdmconfig-strings.c:154
 msgid "User 'auth' directory: "
-msgstr "用户‘认证’目录："
+msgstr "用户“认证”目录："
 
 #: gui/gdmconfig-strings.c:155
 msgid "User 'auth' FB directory: "
@@ -2408,7 +2409,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:156
 msgid "User 'auth' file: "
-msgstr "用户‘认证’文件："
+msgstr "用户“认证”文件："
 
 #: gui/gdmconfig-strings.c:157
 msgid "GDM runs as this group: "
@@ -2472,7 +2473,7 @@ msgstr "连接设置"
 
 #: gui/gdmconfig-strings.c:170
 msgid "Honour indirect requests"
-msgstr ""
+msgstr "允许非直接请求"
 
 #: gui/gdmconfig-strings.c:171
 msgid "Maximum indirect wait time: "
@@ -2580,7 +2581,7 @@ msgstr "服务器"
 
 #: gui/gdmconfig-strings.c:195
 msgid "Extra arguments"
-msgstr ""
+msgstr "额外参数"
 
 #: gui/gdmconfig-strings.c:196
 msgid ""
@@ -2666,7 +2667,7 @@ msgstr "可用的会话"
 
 #: gui/gdmconfig-strings.c:217
 msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
-msgstr "如果名为 ‘Gnome’ 的会话存在，则显示 Gnome 选择程序会话"
+msgstr "如果名为 “Gnome” 的会话存在，则显示 Gnome 选择程序会话"
 
 #: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:71 gui/gdmlogin.c:1452
 msgid "Gnome Chooser"
@@ -2732,7 +2733,7 @@ msgstr "刷新"
 
 #: gui/gdmconfig-strings.c:236
 msgid "Scan every 'x' seconds: "
-msgstr "每隔‘x’秒进行扫描："
+msgstr "每隔“x”秒进行扫描："
 
 #: gui/gdmconfig-strings.c:237
 msgid "Hosts"
@@ -2870,7 +2871,7 @@ msgid ""
 "under the `gdm' product."
 msgstr ""
 "配置 GNOME 显示管理器。\n"
-"请把任何错误或功能需求提交到 http://bugzilla.gnome.org 的 ‘gdm’产品下。"
+"请把任何错误或功能需求提交到 http://bugzilla.gnome.org 的 “gdm”产品下。"
 
 #: gui/gdmconfig-strings.c:274
 msgid "label273"
@@ -2878,7 +2879,7 @@ msgstr "标签273"
 
 #: gui/gdmconfig-strings.c:275
 msgid "Extra arguments:"
-msgstr ""
+msgstr "额外参数："
 
 #: gui/gdmconfig-strings.c:276
 msgid "Custom command line:"
@@ -3329,7 +3330,7 @@ msgid ""
 msgstr ""
 "您已为该会话选择了 %s。\n"
 "如果您希望使 %s 成为未来会话的默认值，\n"
-"请运行工具‘switchdesk’\n"
+"请运行工具“switchdesk”\n"
 "(从面板菜单选取 系统->桌面切换工具)。"
 
 #: gui/gdmlogin.c:1309
@@ -3365,14 +3366,14 @@ msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
-msgstr "这是个将您登录到 GNOME 的 failsafe 会话。不会读入启动脚本，而且只有在您无法以其它方式登录时才使用。GNOME将使用‘默认’会话。"
+msgstr "这是个将您登录到 GNOME 的 failsafe 会话。不会读入启动脚本，而且只有在您无法以其它方式登录时才使用。GNOME将使用“默认”会话。"
 
 #: gui/gdmlogin.c:1527
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
-msgstr "这是个将您登录到终端的 failsafe 会话。不会读入启动脚本，并且只有在您无法以其它方式登录时才使用。为了退出终端，输入‘exit’。"
+msgstr "这是个将您登录到终端的 failsafe 会话。不会读入启动脚本，并且只有在您无法以其它方式登录时才使用。为了退出终端，输入“exit”。"
 
 #: gui/gdmlogin.c:1548
 msgid "No default session link found. Using Failsafe GNOME.\n"
