@@ -3018,6 +3018,7 @@ gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 		GdmRetryDelay = val;
 	} else if (strncmp (msg, GDM_NOTIFY_GREETER " ",
 			    strlen (GDM_NOTIFY_GREETER) + 1) == 0) {
+		/* FIXME: this is fairly nasty, we should handle this nicer */
 		/* FIXME: can't handle flexi servers without going all cranky */
 		if (display->type == TYPE_LOCAL) {
 			if ( ! display->logged_in)
@@ -3027,6 +3028,7 @@ gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 		}
 	} else if (strncmp (msg, GDM_NOTIFY_REMOTEGREETER " ",
 			    strlen (GDM_NOTIFY_REMOTEGREETER) + 1) == 0) {
+		/* FIXME: this is fairly nasty, we should handle this nicer */
 		/* FIXME: can't handle flexi servers without going all cranky */
 		if (display->type == TYPE_XDMCP) {
 			if ( ! display->logged_in)
@@ -3034,6 +3036,18 @@ gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 			else
 				remanage_asap = TRUE;
 		}
+	} else if (strncmp (msg, GDM_NOTIFY_TIMED_LOGIN " ",
+			    strlen (GDM_NOTIFY_TIMED_LOGIN) + 1) == 0) {
+		/* FIXME: this is fairly nasty, we should handle this nicer */
+		/* FIXME: can't handle flexi servers without going all cranky */
+		if (display->type == TYPE_LOCAL) {
+			if ( ! display->logged_in)
+				_exit (DISPLAY_REMANAGE);
+			else
+				remanage_asap = TRUE;
+		}
+	} else if (sscanf (msg, GDM_NOTIFY_TIMED_LOGIN_DELAY " %d", &val) == 1) {
+		GdmTimedLoginDelay = val;
 	}
 }
 

@@ -2255,6 +2255,45 @@ update_config (const char *key)
 		notify_displays_string (GDM_NOTIFY_REMOTEGREETER, val);
 
 		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_TIMED_LOGIN) ||
+		   is_key (key, GDM_KEY_TIMED_LOGIN_ENABLE)) {
+		gboolean enable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
+		char *val;
+
+		/* if not enabled, we just don't care */
+		if ( ! enable && ! GdmTimedLoginEnable)
+			goto update_config_ok;
+
+		val = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
+		if (strcmp (ve_sure_string (val),
+			    ve_sure_string (GdmTimedLogin)) == 0 &&
+		    ve_bool_equal (enable, GdmTimedLoginEnable)) {
+			g_free (val);
+			goto update_config_ok;
+		}
+
+		GdmTimedLoginEnable = enable;
+		g_free (GdmTimedLogin);
+		if (GdmTimedLoginEnable) {
+			GdmTimedLogin = val;
+		} else {
+			g_free (val);
+			GdmTimedLogin = NULL;
+		}
+
+		notify_displays_string (GDM_NOTIFY_TIMED_LOGIN,
+					ve_sure_string (GdmTimedLogin));
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_TIMED_LOGIN_DELAY)) {
+		int val = gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+		if (val == GdmTimedLoginDelay)
+			goto update_config_ok;
+		GdmTimedLoginDelay = val;
+
+		notify_displays_int (GDM_NOTIFY_TIMED_LOGIN_DELAY, val);
+
+		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_XDMCP)) {
 		gboolean val = gnome_config_get_bool (GDM_KEY_XDMCP);
 		if (ve_bool_equal (val, GdmXdmcp))

@@ -166,11 +166,13 @@ greeter_item_pam_message (const char *message)
 
 
 static gboolean
-error_clear (GreeterItemInfo *error_info)
+error_clear (gpointer data)
 {
-      g_object_set (G_OBJECT (error_info->item),
-		    "text", "",
-		    NULL);
+	GreeterItemInfo *error_info = data;
+
+	g_object_set (G_OBJECT (error_info->item),
+		      "text", "",
+		      NULL);
 
 	err_box_clear_handler = 0;
 	return FALSE;

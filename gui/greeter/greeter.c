@@ -18,9 +18,11 @@
 #include "greeter_geometry.h"
 #include "greeter_item_clock.h"
 #include "greeter_item_pam.h"
+#include "greeter_item_capslock.h"
 #include "greeter_events.h"
 #include "greeter_action_language.h"
 #include "greeter_session.h"
+#include "greeter_system.h"
 
 gboolean DOING_GDM_DEVELOPMENT = FALSE;
 

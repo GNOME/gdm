@@ -203,6 +203,7 @@ greeter_session_init (void)
   gboolean got_default_link = FALSE;
   GtkTooltips *tooltips;
 
+  g_free (current_session);
   current_session = NULL;
   
   session_dialog = dialog = gtk_dialog_new ();
@@ -218,7 +219,7 @@ greeter_session_init (void)
   
   if (GdmShowLastSession)
     {
-      current_session = LAST_SESSION;
+      current_session = g_strdup (LAST_SESSION);
 
       radio = gtk_radio_button_new_with_mnemonic (session_group, _(LAST_SESSION));
       g_object_set_data (G_OBJECT (radio),
@@ -441,7 +442,8 @@ greeter_session_init (void)
       }
     
     if (current_session == NULL)
-            current_session = default_session;
+            current_session = g_strdup (default_session);
+
 
 }
 
@@ -491,7 +493,8 @@ greeter_session_handler (GreeterItemInfo *info,
 	  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (w)))
 	    {
 	      n = g_object_get_data (G_OBJECT (w), SESSION_NAME);
-	      current_session = n;
+	      g_free (current_session);
+	      current_session = g_strdup (n);
 	      break;
 	    }
 	  

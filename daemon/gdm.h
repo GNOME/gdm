@@ -425,6 +425,8 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 #define GDM_NOTIFY_RETRYDELAY "RetryDelay" /* <seconds> */
 #define GDM_NOTIFY_GREETER "Greeter" /* <greeter binary> */
 #define GDM_NOTIFY_REMOTEGREETER "RemoteGreeter" /* <greeter binary> */
+#define GDM_NOTIFY_TIMED_LOGIN "TimedLogin" /* <login> */
+#define GDM_NOTIFY_TIMED_LOGIN_DELAY "TimedLoginDelay" /* <seconds> */
 
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
 
@@ -547,6 +549,9 @@ GdmXServer *	gdm_find_x_server	(const char *id);
  *			xdmcp/MaxPendingIndirect
  *			xdmcp/MaxWaitIndirect
  *			xdmcp/PingInterval (only affects new connections)
+ *   		 xdmcp/TimedLogin (2.3.90.3)
+ *   		 xdmcp/TimedLoginEnable (2.3.90.3)
+ *   		 xdmcp/TimedLoginDelay (2.3.90.3)
  * Supported since: 2.3.90.2
  * Arguments:  <key>
  *   <key> is just the base part of the key such as "security/AllowRemoteRoot"

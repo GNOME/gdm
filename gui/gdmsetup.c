@@ -49,14 +49,175 @@ static gboolean gdm_running = FALSE;
 static GladeXML *xml;
 
 static void
-setup_user_combo (const char *name)
+run_timeout (GtkWidget *widget, guint tm, gboolean (*func) (GtkWidget *))
+{
+	guint id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
+							"change_timeout"));
+	if (id != 0) {
+		g_source_remove (id);
+	}
+
+	id = g_timeout_add (tm, (GSourceFunc)func, widget);
+	g_object_set_data (G_OBJECT (widget), "timeout_func", func);
+
+	g_object_set_data (G_OBJECT (widget), "change_timeout",
+			   GUINT_TO_POINTER (id));
+}
+
+static void
+update_key (const char *notify_key)
+{
+	if (notify_key != NULL && gdm_running) {
+		char *ret;
+		char *s = g_strdup_printf ("%s %s", GDM_SUP_UPDATE_CONFIG,
+					   notify_key);
+		ret = gdmcomm_call_gdm (s,
+					NULL /* auth_cookie */,
+					"2.3.90.2",
+					5);
+		g_free (s);
+		g_free (ret);
+	}
+}
+
+static gboolean
+toggle_timeout (GtkWidget *toggle)
+{
+	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
+	const char *notify_key = g_object_get_data (G_OBJECT (toggle),
+						    "notify_key");
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	gnome_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
+	gnome_config_pop_prefix ();
+
+	gnome_config_sync ();
+
+	update_key (notify_key);
+
+	return FALSE;
+}
+
+static gboolean
+entry_timeout (GtkWidget *entry)
+{
+	const char *key = g_object_get_data (G_OBJECT (entry), "key");
+	const char *text;
+
+	text = gtk_entry_get_text (GTK_ENTRY (entry));
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	gnome_config_set_string (key, ve_sure_string (text));
+	gnome_config_pop_prefix ();
+
+	gnome_config_sync ();
+
+	update_key (key);
+
+	return FALSE;
+}
+
+static gboolean
+intspin_timeout (GtkWidget *spin)
+{
+	const char *key = g_object_get_data (G_OBJECT (spin), "key");
+	const char *notify_key = g_object_get_data (G_OBJECT (spin),
+						    "notify_key");
+	int val;
+
+	val = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (spin));
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	gnome_config_set_int (key, val);
+	gnome_config_pop_prefix ();
+
+	gnome_config_sync ();
+
+	update_key (notify_key);
+
+	return FALSE;
+}
+
+static void
+toggle_toggled (GtkWidget *toggle)
+{
+	run_timeout (toggle, 200, toggle_timeout);
+}
+
+static void
+entry_changed (GtkWidget *entry)
+{
+	run_timeout (entry, 500, entry_timeout);
+}
+
+static void
+intspin_changed (GtkWidget *spin)
+{
+	run_timeout (spin, 500, intspin_timeout);
+}
+
+static void
+timeout_remove (GtkWidget *widget)
+{
+	gboolean (*func) (GtkWidget *);
+	guint id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
+							"change_timeout"));
+	if (id != 0) {
+		g_source_remove (id);
+	}
+	g_object_set_data (G_OBJECT (widget), "change_timeout", NULL);
+
+	func = g_object_get_data (G_OBJECT (widget), "timeout_func");
+
+	(*func) (widget);
+}
+
+static void
+setup_notify_toggle (const char *name,
+		     const char *key,
+		     const char *notify_key)
+{
+	GtkWidget *toggle = glade_helper_get (xml, name,
+					      GTK_TYPE_TOGGLE_BUTTON);
+	gboolean val;
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	val = gnome_config_get_bool (key);
+	gnome_config_pop_prefix ();
+
+	g_object_set_data_full (G_OBJECT (toggle),
+				"key", g_strdup (key),
+				(GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (toggle),
+				"notify_key", g_strdup (notify_key),
+				(GDestroyNotify) g_free);
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), val);
+
+	g_signal_connect (G_OBJECT (toggle), "toggled",
+			  G_CALLBACK (toggle_toggled), NULL);
+	g_signal_connect (G_OBJECT (toggle), "destroy",
+			  G_CALLBACK (timeout_remove), NULL);
+}
+
+static void
+setup_user_combo (const char *name, const char *key)
 {
 	GtkWidget *combo = glade_helper_get (xml, name, GTK_TYPE_COMBO);
+	GtkWidget *entry= GTK_COMBO (combo)->entry;
 	GList *users = NULL;
 	struct passwd *pwent;
+	char *str;
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	str = gnome_config_get_string (key);
+	gnome_config_pop_prefix ();
 
 	/* normally empty */
 	users = g_list_append (users, g_strdup (""));
+
+	if ( ! ve_string_empty (str))
+		users = g_list_append (users, g_strdup (str));
 
 	setpwent ();
 
@@ -64,7 +225,8 @@ setup_user_combo (const char *name)
 	
 	while (pwent != NULL) {
 		/* FIXME: 100 is a pretty arbitrary constant */
-		if (pwent->pw_uid >= 100) {
+		if (pwent->pw_uid >= 100 &&
+		    strcmp (ve_sure_string (str), pwent->pw_name) != 0) {
 			users = g_list_append (users,
 					       g_strdup (pwent->pw_name));
 		}
@@ -76,20 +238,79 @@ setup_user_combo (const char *name)
 
 	gtk_combo_set_popdown_strings (GTK_COMBO (combo), users);
 
+	gtk_entry_set_text (GTK_ENTRY (entry),
+			    ve_sure_string (str));
+
+	g_object_set_data_full (G_OBJECT (entry),
+				"key", g_strdup (key),
+				(GDestroyNotify) g_free);
+
+	g_signal_connect (G_OBJECT (entry), "changed",
+			  G_CALLBACK (entry_changed), NULL);
+	g_signal_connect (G_OBJECT (entry), "destroy",
+			  G_CALLBACK (timeout_remove), NULL);
+
 	g_list_foreach (users, (GFunc)g_free, NULL);
 	g_list_free (users);
+	g_free (str);
+}
+
+static void
+setup_intspin (const char *name,
+	       const char *key,
+	       const char *notify_key)
+{
+	GtkWidget *spin = glade_helper_get (xml, name,
+					    GTK_TYPE_SPIN_BUTTON);
+	int val;
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	val = gnome_config_get_int (key);
+	gnome_config_pop_prefix ();
+
+	g_object_set_data_full (G_OBJECT (spin),
+				"key", g_strdup (key),
+				(GDestroyNotify) g_free);
+	g_object_set_data_full (G_OBJECT (spin),
+				"notify_key", g_strdup (notify_key),
+				(GDestroyNotify) g_free);
+
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin), val);
+
+	g_signal_connect (G_OBJECT (spin), "value_changed",
+			  G_CALLBACK (intspin_changed), NULL);
+	g_signal_connect (G_OBJECT (spin), "destroy",
+			  G_CALLBACK (timeout_remove), NULL);
+}
+
+static void
+xdmcp_toggled (GtkWidget *toggle, gpointer data)
+{
+	GtkWidget *frame = data;
+
+	gtk_widget_set_sensitive (frame, GTK_TOGGLE_BUTTON (toggle)->active);
 }
 
 static void
 setup_xdmcp_support (void)
 {
+	GtkWidget *xdmcp_toggle = glade_helper_get (xml, "enable_xdmcp", GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *xdmcp_frame = glade_helper_get (xml, "xdmcp_frame", GTK_TYPE_FRAME);
+
 #ifndef HAVE_LIBXDMCP
 	gtk_widget_show (glade_helper_get (xml, "no_xdmcp_label", GTK_TYPE_LABEL));
-	gtk_widget_set_sensitive (glade_helper_get (xml, "enable_xdmcp", GTK_TYPE_TOGGLE_BUTTON), FALSE);
-	gtk_widget_set_sensitive (glade_helper_get (xml, "xdmcp_frame", GTK_TYPE_FRAME), FALSE);
+	gtk_widget_set_sensitive (xdmcp_toggle, FALSE);
+	gtk_widget_set_sensitive (xdmcp_frame, FALSE);
 #else /* ! HAVE_LIBXDMCP */
 	gtk_widget_hide (glade_helper_get (xml, "no_xdmcp_label", GTK_TYPE_LABEL));
 #endif /* HAVE_LIBXDMCP */
+
+	gtk_widget_set_sensitive (xdmcp_frame, 
+				  GTK_TOGGLE_BUTTON (xdmcp_toggle)->active);
+
+	g_signal_connect (G_OBJECT (xdmcp_toggle), "toggled",
+			  G_CALLBACK (xdmcp_toggled),
+			  xdmcp_frame);
 }
 
 static void
@@ -119,8 +340,67 @@ setup_gui (void)
 
 	setup_xdmcp_support ();
 
-	setup_user_combo ("autologin_combo");
-	setup_user_combo ("timedlogin_combo");
+	setup_user_combo ("autologin_combo",
+			  GDM_KEY_AUTOMATICLOGIN);
+	setup_user_combo ("timedlogin_combo",
+			  GDM_KEY_TIMED_LOGIN);
+
+	setup_notify_toggle ("autologin",
+			     GDM_KEY_AUTOMATICLOGIN_ENABLE,
+			     NULL /* notify_key */);
+	setup_notify_toggle ("timedlogin",
+			     GDM_KEY_TIMED_LOGIN_ENABLE,
+			     NULL /* notify_key */);
+
+	setup_notify_toggle ("allowroot",
+			     GDM_KEY_ALLOWROOT,
+			     GDM_KEY_ALLOWROOT /* notify_key */);
+	setup_notify_toggle ("allowremoteroot",
+			     GDM_KEY_ALLOWREMOTEROOT,
+			     GDM_KEY_ALLOWREMOTEROOT /* notify_key */);
+	setup_notify_toggle ("allowremoteauto",
+			     GDM_KEY_ALLOWREMOTEAUTOLOGIN,
+			     GDM_KEY_ALLOWREMOTEAUTOLOGIN /* notify_key */);
+
+	setup_notify_toggle ("enable_xdmcp",
+			     GDM_KEY_XDMCP,
+			     GDM_KEY_XDMCP /* notify_key */);
+	setup_notify_toggle ("honour_indirect",
+			     GDM_KEY_INDIRECT,
+			     "xdmcp/PARAMETERS" /* notify_key */);
+
+	setup_intspin ("timedlogin_seconds",
+		       GDM_KEY_TIMED_LOGIN_DELAY,
+		       GDM_KEY_TIMED_LOGIN_DELAY /* notify_key */);
+	setup_intspin ("retry_delay",
+		       GDM_KEY_RETRYDELAY,
+		       GDM_KEY_RETRYDELAY /* notify_key */);
+
+	setup_intspin ("udpport",
+		       GDM_KEY_UDPPORT,
+		       GDM_KEY_UDPPORT /* notify_key */);
+
+	setup_intspin ("maxpending",
+		       GDM_KEY_MAXPEND,
+		       "xdmcp/PARAMETERS" /* notify_key */);
+	setup_intspin ("maxpendingindirect",
+		       GDM_KEY_MAXINDIR,
+		       "xdmcp/PARAMETERS" /* notify_key */);
+	setup_intspin ("maxremotesessions",
+		       GDM_KEY_MAXSESS,
+		       "xdmcp/PARAMETERS" /* notify_key */);
+	setup_intspin ("maxwait",
+		       GDM_KEY_MAXWAIT,
+		       "xdmcp/PARAMETERS" /* notify_key */);
+	setup_intspin ("maxwaitindirect",
+		       GDM_KEY_MAXINDWAIT,
+		       "xdmcp/PARAMETERS" /* notify_key */);
+	setup_intspin ("displaysperhost",
+		       GDM_KEY_DISPERHOST,
+		       "xdmcp/PARAMETERS" /* notify_key */);
+	setup_intspin ("pinginterval",
+		       GDM_KEY_PINGINTERVAL,
+		       "xdmcp/PARAMETERS" /* notify_key */);
 }
 
 static gboolean
