@@ -5,9 +5,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2.HEAD\n"
+"Project-Id-Version: gdm2\n"
 "POT-Creation-Date: 2003-04-29 04:47+0200\n"
-"PO-Revision-Date: 2003-07-02 01:44+0200\n"
+"PO-Revision-Date: 2003-07-02 14:14+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -1682,22 +1682,28 @@ msgid ""
 "You can rescan the network for new hosts by clicking \"Refresh\". When you "
 "have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
+"Zona kryesore e këtij aplikativi shfaq të gjithë hosts, në rrjetin lokal që kanë "
+"të aktivuar \"XDMCP\". U mundëson përdoruesve kryerjen e login në "
+"makinat remote sikur të ishin duke e kryer nga console.\n"
+"\n"
+"Mund të kryesh një kërkim për të gjetur hosts të rinj duke klikuar mbi \"Rifresko\". "
+"Mbasi të keni zgjedhur një host kliko tek \"Lidhu\" për të hapur një seancë në atë makinë."
 
 #: gui/gdmchooser-strings.c:17 gui/gdmchooser.glade.h:5
 msgid "Information"
-msgstr ""
+msgstr "Informacione"
 
 #: gui/gdmchooser.c:75
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
-msgstr ""
+msgstr "Ju lutem durim: duke kërkuar hosts me XDMCP aktive në rrjetin lokal... "
 
 #: gui/gdmchooser.c:76
 msgid "No serving hosts were found."
-msgstr ""
+msgstr "Nuk u gjet asnjë host."
 
 #: gui/gdmchooser.c:77
 msgid "Choose a host to connect to from the selection below."
-msgstr ""
+msgstr "Zgjidh host-in me të cilin dëshiron të lidhesh nga lista e mëposhtme."
 
 #: gui/gdmchooser.c:871
 msgid ""
@@ -1708,51 +1714,57 @@ msgid ""
 "You can rescan the network for new hosts by clicking \"Refresh\".  When you "
 "have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
+"Zona kryesore e këtij aplikativi shfaq të gjithë hosts, në rrjetin lokal që kanë "
+"të aktivuar \"XDMCP\". U mundëson përdoruesve kryerjen e login në "
+"makinat remote sikur të ishin duke e kryer nga console.\n"
+"\n"
+"Mund të kryesh një kërkim për të gjetur hosts të rinj duke klikuar mbi \"Rifresko\". "
+"Mbasi të keni zgjedhur një host kliko tek \"Lidhu\" për të hapur një seancë në atë makinë."
 
 #: gui/gdmchooser.c:899
 #, c-format
 msgid "Can't open default host icon: %s"
-msgstr ""
+msgstr "Nuk arrij të hap ikonën e prezgjedhur të host: %s"
 
 #: gui/gdmchooser.c:955
 msgid "gdm_signals_init: Error setting up HUP signal handler"
-msgstr ""
+msgstr "gdm_signals_init: gabim gjatë aktivimit të manazhuesit të sinjalit HUP"
 
 #: gui/gdmchooser.c:958
 msgid "gdm_signals_init: Error setting up INT signal handler"
-msgstr ""
+msgstr "gdm_signals_init: abim gjatë aktivimit të manazhuesit të sinjalit INT"
 
 #: gui/gdmchooser.c:961
 msgid "gdm_signals_init: Error setting up TERM signal handler"
-msgstr ""
+msgstr "gdm_signals_init: abim gjatë aktivimit të manazhuesit të sinjalit TERM"
 
 #: gui/gdmchooser.c:969 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
 msgid "Could not set signal mask!"
-msgstr ""
+msgstr "E pamundur vendosja e maskës së sinjalit!"
 
 #: gui/gdmchooser.c:975
 msgid "Socket for xdm communication"
-msgstr ""
+msgstr "Socket për komunikimin xdm"
 
 #: gui/gdmchooser.c:975
 msgid "SOCKET"
-msgstr ""
+msgstr "SOCKET"
 
 #: gui/gdmchooser.c:978
 msgid "Client address to return in response to xdm"
-msgstr ""
+msgstr "Adresa klient që i duhet dërguar si përgjigje xdm-së"
 
 #: gui/gdmchooser.c:978
 msgid "ADDRESS"
-msgstr ""
+msgstr "ADRESA"
 
 #: gui/gdmchooser.c:981
 msgid "Connection type to return in response to xdm"
-msgstr ""
+msgstr "Lloji i lidhjes që i duhet dërguar si përgjigje xdm-së"
 
 #: gui/gdmchooser.c:981
 msgid "TYPE"
-msgstr ""
+msgstr "LLOJI"
 
 #: gui/gdmchooser.c:1101
 #, c-format
@@ -1761,6 +1773,9 @@ msgid ""
 "You have probably just upgraded gdm.\n"
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
+"Versioni i chooser (%s) nuk përputhet me versionin e daemon (%s).\n"
+"Ka mundësi që sapo keni kryer një upgrade të gdm.\n"
+"Rifillo daemon e gdm ose rinis kompjuterin."
 
 #: gui/gdmcomm.c:395 gui/gdmphotosetup.c:68
 msgid ""
@@ -1771,561 +1786,578 @@ msgid ""
 "If you still wish to use this feature, either start GDM your self or ask "
 "your system administrator to start GDM."
 msgstr ""
+"<b>GDM (GNOME Display Manager) nuk është në ekzekutim.</b>\n"
+"\n"
+"Ndoshta jeni duke përdorur një manazhues tjetër të display, si për shembull "
+"KDM (KDE Display Manager) ose xdm.\n"
+"Për të shfrytëzuar këtë funksion duhet të përdorni GDM."
 
 #: gui/gdmcomm.c:417
 msgid ""
 "Cannot communicate with GDM (The GNOME Display Manager), perhaps you have an "
 "old version running."
 msgstr ""
+"Nuk arrij të komunikoj me GDM (GNOME Display Manager), ka mundësi që versioni në "
+"përdorim të jetë i vjetër."
 
 #: gui/gdmcomm.c:435 gui/gdmcomm.c:438 gui/gdmflexiserver.c:252
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
-msgstr ""
+msgstr "Nuk arrij të komunikoj me gdm, ka mundësi që versioni në përdorim të jetë i vjetër."
 
 #: gui/gdmcomm.c:441
 msgid "The allowed limit of flexible X servers reached."
-msgstr ""
+msgstr "Është arritur limiti maksimum i lejuar për servers X flexible."
 
 #: gui/gdmcomm.c:443
 msgid "There were errors trying to start the X server."
-msgstr ""
+msgstr "Janë verifikuar disa gabime gjatë nisjes së server-it X."
 
 #: gui/gdmcomm.c:445
 msgid "The X server failed.  Perhaps it is not configured well."
-msgstr ""
+msgstr "Server-i X dështoi.  Ndoshta nuk është i konfiguruar si duhet."
 
 #: gui/gdmcomm.c:448
 msgid "Too many X sessions running."
-msgstr ""
+msgstr "Shumë seanca X aktive."
 
 #: gui/gdmcomm.c:450
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
 msgstr ""
+"Xnest nuk arrin të lidhet me server-in tuaj X aktual.  Ka mundësi që file autorizues "
+"i X mungon."
 
 #: gui/gdmcomm.c:455
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
 msgstr ""
+"Xnest jo në dispozicion, ose gdm e konfiguruar keq.\n"
+"Instalo pakon Xnest që të përdorësh dritaren e login."
 
 #: gui/gdmcomm.c:460
 msgid "The X server is not available, it is likely that gdm is badly configured."
-msgstr ""
+msgstr "Server-i X jo në dispozicion, ka mundësi që gdm të jetë konfiguruar keq."
 
 #: gui/gdmcomm.c:464
 msgid "Trying to update an unsupported configuration key."
-msgstr ""
+msgstr "Përpjekje për të rifreskuar një çelës konfigurimi të pasuportuar."
 
 #: gui/gdmcomm.c:466
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
+"Nuk keni të drejtat e duhura për këtë operacion. Ka mundësi që file juaj "
+"\".Xauthority\" nuk është konfiguruar si duhet."
 
 #: gui/gdmcomm.c:470
 msgid "Unknown error occured."
-msgstr ""
+msgstr "Gabim i panjohur."
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
-msgstr ""
+msgstr "Mundëson kryerjen e një login të ri në një dritare"
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:2
 msgid "New login in a nested window"
-msgstr ""
+msgstr "Login i ri në dritare"
 
 #: gui/gdmflexiserver.c:129
 msgid "Choose server"
-msgstr ""
+msgstr "Zgjidh një server"
 
 #: gui/gdmflexiserver.c:139
 msgid "Choose the X server to start"
-msgstr ""
+msgstr "Zgjidh një server X për të nisur"
 
 #: gui/gdmflexiserver.c:145
 msgid "Standard server"
-msgstr ""
+msgstr "Server standart"
 
 #: gui/gdmflexiserver.c:193
 msgid "Send the specified protocol command to gdm"
-msgstr ""
+msgstr "Dërgoi gdm-së komandën e protokollit të caktuar"
 
 #: gui/gdmflexiserver.c:193
 msgid "COMMAND"
-msgstr ""
+msgstr "KOMANDA"
 
 #: gui/gdmflexiserver.c:194
 msgid "Xnest mode"
-msgstr ""
+msgstr "Modalitet Xnest"
 
 #: gui/gdmflexiserver.c:195
 msgid "Do not lock current screen"
-msgstr ""
+msgstr "Mos kryej lock e screen aktual"
 
 #: gui/gdmflexiserver.c:196
 msgid "Debugging output"
-msgstr ""
+msgstr "Lejo output për debug"
 
 #: gui/gdmflexiserver.c:197
 msgid "Authenticate before running --command"
-msgstr ""
+msgstr "Kryej identifikimin përpara se të zbatotosh --command"
 
 #: gui/gdmflexiserver.c:269
 msgid ""
 "You do not seem to have the authentication needed for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
+"Nuk keni të drejtat e duhura për këtë operacion. Ka mundësi që file juaj "
+"\".Xauthority\" nuk është konfiguruar si duhet."
 
 #: gui/gdmflexiserver.c:295
 msgid ""
 "You do not seem to be logged in on the console.  Starting a new login only "
 "works correctly on the console."
 msgstr ""
+"Mesa duket nuk jeni futur në konsolë.  Një login i ri funksionon si duhet "
+"vetëm nga konsolë."
 
 #: gui/gdmflexiserver.c:323
 msgid "Can't lock screen"
-msgstr ""
+msgstr "I pamundur bllokimi i ekranit"
 
 #: gui/gdmflexiserver.c:326
 msgid "Can't disable xscreensaver display hacks"
-msgstr ""
+msgstr "I pamundur disaktivimi i \"hack\" për display e xscreensaver"
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without logging out"
-msgstr ""
+msgstr "Kryej një log in të ri pa mbyllur seancën aktuale"
 
 #: gui/gdmflexiserver.desktop.in.h:2
 msgid "New login"
-msgstr ""
+msgstr "Login i ri"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:53
 msgid "A-M|Albanian"
-msgstr ""
+msgstr "N-Z|Shqip"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:55
 msgid "A-M|Amharic"
-msgstr ""
+msgstr "A-M|Amharic"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:57
 msgid "A-M|Arabic (Egypt)"
-msgstr ""
+msgstr "A-M|Arabisht (Egjypt)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:59
 msgid "A-M|Arabic (Lebanon)"
-msgstr ""
+msgstr "A-M|Arabisht (Libaneze)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:61
 msgid "A-M|Azerbaijani"
-msgstr ""
+msgstr "A-M|Azerbaijani"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:63
 msgid "A-M|Basque"
-msgstr ""
+msgstr "A-M|Basque"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:65
 msgid "A-M|Belarusian"
-msgstr ""
+msgstr "A-M|Bjellorusisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:67
 msgid "A-M|Bengali"
-msgstr ""
+msgstr "A-M|Bengali"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:69
 msgid "A-M|Bengali (India)"
-msgstr ""
+msgstr "A-M|Bengali (India)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:71
 msgid "A-M|Bulgarian"
-msgstr ""
+msgstr "A-M|Bullgarisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:73
 msgid "A-M|Bosnian"
-msgstr ""
+msgstr "A-M|Bosnian"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:75
 msgid "A-M|Catalan"
-msgstr ""
+msgstr "A-M|Catalan"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:77
 msgid "A-M|Chinese (simplified)"
-msgstr ""
+msgstr "A-M|Kineze (e thjeshtë)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:79
 msgid "A-M|Chinese (traditional)"
-msgstr ""
+msgstr "A-M|Kineze (tradicionale)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:81
 msgid "A-M|Croatian"
-msgstr ""
+msgstr "A-M|Kroate"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:83
 msgid "A-M|Czech"
-msgstr ""
+msgstr "A-M|Çekisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:85
 msgid "A-M|Danish"
-msgstr ""
+msgstr "A-M|Daneze"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:87
 msgid "A-M|Dutch"
-msgstr ""
+msgstr "A-M|Dutch"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:89
 msgid "A-M|English"
-msgstr ""
+msgstr "A-M|Anglisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:91
 msgid "A-M|English (American)"
-msgstr ""
+msgstr "A-M|Anglish (Amerikane)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:93
 msgid "A-M|English (Australian)"
-msgstr ""
+msgstr "A-M|Anglisht (Australiane)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:95
 msgid "A-M|English (British)"
-msgstr ""
+msgstr "A-M|Anglisht (British)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:97
 msgid "A-M|English (Ireland)"
-msgstr ""
+msgstr "A-M|Anglisht (Irlanda)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:99
 msgid "A-M|Estonian"
-msgstr ""
+msgstr "A-M|Estonisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:101
 msgid "A-M|Finnish"
-msgstr ""
+msgstr "A-M|Finlandeze"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:103
 msgid "A-M|French"
-msgstr ""
+msgstr "A-M|Frengjisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:105
 msgid "A-M|Galician"
-msgstr ""
+msgstr "A-M|Galician"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:107
 msgid "A-M|German"
-msgstr ""
+msgstr "A-M|Gjermanisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:109
 msgid "A-M|Greek"
-msgstr ""
+msgstr "A-M|Greqisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:111
 msgid "A-M|Gujarati"
-msgstr ""
+msgstr "A-M|Gujarati"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:113 gui/gdmlanguages.c:115
 msgid "A-M|Hebrew"
-msgstr ""
+msgstr "A-M|Hebrew"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:117
 msgid "A-M|Hindi"
-msgstr ""
+msgstr "A-M|Hindi"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:119
 msgid "A-M|Hungarian"
-msgstr ""
+msgstr "A-M|Hungarisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:121
 msgid "A-M|Icelandic"
-msgstr ""
+msgstr "A-M|Islandisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:123
 msgid "A-M|Indonesian"
-msgstr ""
+msgstr "A-M|Indoneziane"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:125
 msgid "A-M|Interlingua"
-msgstr ""
+msgstr "A-M|Interlingua"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:127
 msgid "A-M|Irish"
-msgstr ""
+msgstr "A-M|Irlandeze"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:129
 msgid "A-M|Italian"
-msgstr ""
+msgstr "A-M|Italisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:131
 msgid "A-M|Japanese"
-msgstr ""
+msgstr "A-M|Japonisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:133
 msgid "A-M|Kannada"
-msgstr ""
+msgstr "A-M|Kanadeze"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:135
 msgid "A-M|Korean"
-msgstr ""
+msgstr "A-M|Koreane"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:137
 msgid "A-M|Latvian"
-msgstr ""
+msgstr "A-M|Latuaneze"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:139
 msgid "A-M|Lithuanian"
-msgstr ""
+msgstr "A-M|Lithuaneze"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:141
 msgid "A-M|Macedonian"
-msgstr ""
+msgstr "A-M|Maqedonisht"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:143
 msgid "A-M|Malay"
-msgstr ""
+msgstr "A-M|Maleze"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:145
 msgid "A-M|Mongolian"
-msgstr ""
+msgstr "A-M|Mongolisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:147
 msgid "N-Z|Norwegian (bokmal)"
-msgstr ""
+msgstr "N-Z|Norvegjisht (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:149
 msgid "N-Z|Norwegian (nynorsk)"
-msgstr ""
+msgstr "N-Z|Norvegjisht (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:151
 msgid "N-Z|Panjabi"
-msgstr ""
+msgstr "N-Z|Panjabi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:153
 msgid "N-Z|Persian"
-msgstr ""
+msgstr "N-Z|Persisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:155
 msgid "N-Z|Polish"
-msgstr ""
+msgstr "N-Z|Polake"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:157
 msgid "N-Z|Portuguese"
-msgstr ""
+msgstr "N-Z|Portugeze"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:159
 msgid "N-Z|Portuguese (Brazilian)"
-msgstr ""
+msgstr "N-Z|Portugeze (Brazili)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:161
 msgid "N-Z|Romanian"
-msgstr ""
+msgstr "N-Z|Romanisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:163
 msgid "N-Z|Russian"
-msgstr ""
+msgstr "N-Z|Rusisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:165
 msgid "N-Z|Serbian"
-msgstr ""
+msgstr "N-Z|Serbisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:167
 msgid "N-Z|Slovak"
-msgstr ""
+msgstr "N-Z|Sllovakisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:169
 msgid "N-Z|Slovenian"
-msgstr ""
+msgstr "N-Z|Slovenisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:171
 msgid "N-Z|Spanish"
-msgstr ""
+msgstr "N-Z|Spanjisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:173
 msgid "N-Z|Spanish (Mexico)"
-msgstr ""
+msgstr "N-Z|Spanjisht (Meksikë)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:175
 msgid "N-Z|Swedish"
-msgstr ""
+msgstr "N-Z|Suedisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:177
 msgid "N-Z|Swedish (Finland)"
-msgstr ""
+msgstr "N-Z|Suedisht (Finlandë)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:179
 msgid "N-Z|Tamil"
-msgstr ""
+msgstr "N-Z|Tamil"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:181
 msgid "N-Z|Telugu"
-msgstr ""
+msgstr "N-Z|Telugu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:183
 msgid "N-Z|Thai"
-msgstr ""
+msgstr "N-Z|Thai"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:185
 msgid "N-Z|Turkish"
-msgstr ""
+msgstr "N-Z|Turqisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:187
 msgid "N-Z|Ukrainian"
-msgstr ""
+msgstr "N-Z|Ukrainian"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:189
 msgid "N-Z|Vietnamese"
-msgstr ""
+msgstr "N-Z|Vietnamisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:191
 msgid "N-Z|Walloon"
-msgstr ""
+msgstr "N-Z|Walloon"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:193
 msgid "N-Z|Welsh"
-msgstr ""
+msgstr "N-Z|Welsh"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:195
 msgid "N-Z|Yiddish"
-msgstr ""
+msgstr "N-Z|Yiddish"
 
 #. This is the POSIX/C locale for english, should really be in Other
 #: gui/gdmlanguages.c:197
 msgid "Other|POSIX/C English"
-msgstr ""
+msgstr "Tjetër|POSIX/C Anglisht"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
 #: gui/gdmlanguages.c:372
 msgid "A-M"
-msgstr ""
+msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
 #: gui/gdmlanguages.c:380
 msgid "N-Z"
-msgstr ""
+msgstr "N-Z"
 
 #: gui/gdmlogin.c:69
 msgid "AnotherLevel"
-msgstr ""
+msgstr "NivelTjetër"
 
 #. default is nicely translated
 #. Translators: default GNOME session
 #: gui/gdmlogin.c:70 gui/gdmlogin.c:1884 gui/gdmlogin.c:1906
 msgid "Default"
-msgstr ""
+msgstr "Prezgjedhur"
 
 #: gui/gdmlogin.c:71
 msgid "Failsafe"
-msgstr ""
+msgstr "E emrgjencës"
 
 #: gui/gdmlogin.c:72
 msgid "Gnome"
-msgstr ""
+msgstr "Gnome"
 
 #: gui/gdmlogin.c:73
 msgid "KDE"
-msgstr ""
+msgstr "KDE"
 
 #: gui/gdmlogin.c:74
 msgid "XSession"
-msgstr ""
+msgstr "XSession"
 
 #: gui/gdmlogin.c:75 gui/gdmlogin.c:1477 gui/greeter/greeter_session.c:353
 msgid "Gnome Chooser"
-msgstr ""
+msgstr "Gnome Chooser"
 
 #: gui/gdmlogin.c:76 gui/gdmlogin.c:1646
 #: gui/greeter/greeter_action_language.c:45
 msgid "Last"
-msgstr ""
+msgstr "E fundit"
 
 #: gui/gdmlogin.c:218 gui/greeter/greeter_parser.c:948
 #: gui/greeter/themes/circles/circles.xml.in.h:4
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
 #, no-c-format
 msgid "User %s will login in %d seconds"
-msgstr ""
+msgstr "Përdoruesi %s do të kryej login pas %d sekondash"
 
 #: gui/gdmlogin.c:518
 msgid "Doubleclick here to un-iconify the login window, so that you may log in."
-msgstr ""
+msgstr "Dopjo klikim këtu për të rikthyer dritaren e login, që të mund të futeni."
 
 #: gui/gdmlogin.c:588 gui/gdmlogin.c:600
 #, c-format
 msgid "%sWelcome to %s%s"
-msgstr ""
+msgstr "%sMirësevini tek %s%s"
 
 #: gui/gdmlogin.c:598
 msgid "gdm_parse_enriched_string: String too long!"
-msgstr ""
+msgstr "gdm_parse_enriched_string: stringë tepër e gjatë!"
 
 #: gui/gdmlogin.c:755
 msgid ""
@@ -2333,42 +2365,45 @@ msgid ""
 "\n"
 "You likely won't be able to log in either."
 msgstr ""
+"I pamundur kryerja e fork të procesit të ri!\n"
+"\n"
+"Ndoshta nuk do të jetë e mundur kryerja e login."
 
 #: gui/gdmlogin.c:803 gui/greeter/greeter_system.c:52
 msgid "Are you sure you want to reboot the machine?"
-msgstr ""
+msgstr "Rinis makinën?"
 
 #: gui/gdmlogin.c:815 gui/greeter/greeter_system.c:63
 msgid "Are you sure you want to shut down the machine?"
-msgstr ""
+msgstr "Ndaloj makinën?"
 
 #: gui/gdmlogin.c:826 gui/greeter/greeter_system.c:73
 msgid "Are you sure you want to suspend the machine?"
-msgstr ""
+msgstr "Vë në pauzë makinën?"
 
 #: gui/gdmlogin.c:841
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
-msgstr ""
+msgstr "gdm_login_parse_config: mungon file i konfigurimit: %s. Do të përdoren rregullimet standart."
 
 #: gui/gdmlogin.c:873 gui/gdmlogin.c:4009
 #, c-format
 msgid "Welcome to %n"
-msgstr ""
+msgstr "Mirësevini tek %n"
 
 #: gui/gdmlogin.c:918 gui/greeter/greeter.c:128
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
-msgstr ""
+msgstr "Intervali i login me kohë është më i vogël se 5 sekonda.  Sidoqoftë do të përdoren 5 sekonda."
 
 #: gui/gdmlogin.c:978 gui/gdmlogin.c:1525 gui/greeter/greeter_session.c:65
 #: gui/greeter/greeter_session.c:400
 msgid "Failsafe Gnome"
-msgstr ""
+msgstr "Seanca Gnome e emrgjencës"
 
 #: gui/gdmlogin.c:980 gui/gdmlogin.c:1550 gui/greeter/greeter_session.c:67
 #: gui/greeter/greeter_session.c:426
 msgid "Failsafe xterm"
-msgstr ""
+msgstr "Seanca xterm e emrgjencës"
 
 #: gui/gdmlogin.c:1026 gui/greeter/greeter_session.c:111
 #, c-format
@@ -2376,6 +2411,8 @@ msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
+"Lloji i seancës së preferuar «%s» nuk është i instaluar në këtë makinë.\n"
+"Dëshiron të vendosësh «%s» si të prezgjedhur për seancat e ardhëshme?"
 
 #. never_encoding
 #. no_group
@@ -2388,6 +2425,8 @@ msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
+"Është zgjedhur «%s» për këtë seancë, por e prezgjedhura është «%s».\n"
+"Dëshiron të vendosësh «%s» si të prezgjedhur për seancat e ardhëshme?"
 
 #. if !GdmShowLastSession then our saved session is
 #. * irrelevant, we are in "switchdesk mode"
@@ -2402,33 +2441,39 @@ msgid ""
 "run the 'switchdesk' utility\n"
 "(System->Desktop Switching Tool from the panel menu)."
 msgstr ""
+"Është zgjedhur «%s» për këtë seancë.\n"
+"Nëse dëshiron të vendosësh «%s» si të prezgjedhur për seancat e ardhëshme,\n"
+"shfrytëzo instrumentin 'switchdesk'\n"
+"(nga menu e panelit: «Vegla të Sistemit» -> «Desktop Switching Tool»"
 
 #: gui/gdmlogin.c:1327
 #, c-format
 msgid "%s session selected"
-msgstr ""
+msgstr "Seanca e zgjedhur: %s"
 
 #: gui/gdmlogin.c:1362 gui/greeter/greeter_session.c:231
 msgid "Log in using the session that you have used last time you logged in"
-msgstr ""
+msgstr "Kryej login duke përdorur seancën e përdorur për herë të fundit"
 
 #: gui/gdmlogin.c:1375 gui/greeter/greeter_session.c:244
 msgid "gdm_login_session_init: Session script directory not found!"
-msgstr ""
+msgstr "gdm_login_session_init: directory e script-eve të seancës nuk u gjet!"
 
 #: gui/gdmlogin.c:1465 gui/greeter/greeter_session.c:339
 msgid "This session will log you directly into GNOME, into your current session."
-msgstr ""
+msgstr "Kryen login direkt në seancën aktuale të GNOME."
 
 #: gui/gdmlogin.c:1480 gui/greeter/greeter_session.c:356
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
 msgstr ""
+"Kjo seancë do t'ju futë në GNOME dhe lejon zgjedhjen e seancës së GNOME "
+"që dëshironi të përdorni."
 
 #: gui/gdmlogin.c:1515 gui/greeter/greeter_session.c:389
 msgid "Yaikes, nothing found in the session directory."
-msgstr ""
+msgstr "Directory e seancës është bosh."
 
 #: gui/gdmlogin.c:1527 gui/greeter/greeter_session.c:402
 msgid ""
@@ -2436,6 +2481,9 @@ msgid ""
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
+"Kjo është një seancë emergjence e GNOME.  Nuk do të zbatohen script-et e "
+"nisjes, shërben vetëm për të kryer login kur nuk ka rrugë tjetër.  "
+"GNOME do të përdorë seancën e 'Prezgjedhur'."
 
 #: gui/gdmlogin.c:1552 gui/greeter/greeter_session.c:428
 msgid ""
@@ -2443,10 +2491,15 @@ msgid ""
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
 msgstr ""
+"Kjo është një seancë emergjence që ju siguron hyrjen në një terminal.  "
+"Nuk do të zbatohen script-et e nisjes, shërben vetëm për të kryer login "
+"kur nuk ka rrugë tjetër.  Për të dalë nga teminali shkruaj 'exit'."
 
 #: gui/gdmlogin.c:1573 gui/greeter/greeter_session.c:450
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
+"Lidhja për seancën e prezgjedhur nuk u gjet. Do të përdoret "
+"seanca e emergjencës së GNOME.\n"
 
 #. never_encoding
 #. no_group
@@ -2455,142 +2508,142 @@ msgstr ""
 #: gui/gdmlogin.c:1617
 #, c-format
 msgid "%s language selected"
-msgstr ""
+msgstr "Gjuha e zgjedhur: %s"
 
 #: gui/gdmlogin.c:1657
 msgid "Log in using the language that you have used last time you logged in"
-msgstr ""
+msgstr "Futu duke përdorur gjuhën e përdorur herën e fundit që jeni futur"
 
 #: gui/gdmlogin.c:1672
 msgid "Log in using the default system language"
-msgstr ""
+msgstr "Futu duke përdorur gjuhën e prezgjedhur të sistemit"
 
 #: gui/gdmlogin.c:1692
 msgid "Other"
-msgstr ""
+msgstr "Tjetër"
 
 #: gui/gdmlogin.c:1846 gui/gdmlogin.c:1853
 msgid "Select GNOME session"
-msgstr ""
+msgstr "Zgjidh seancën GNOME"
 
 #: gui/gdmlogin.c:1920
 msgid "Create new session"
-msgstr ""
+msgstr "Krijo një seancë të re"
 
 #: gui/gdmlogin.c:1929
 msgid "Name: "
-msgstr ""
+msgstr "Emri: "
 
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
 #: gui/gdmlogin.c:1951
 msgid "Remember this setting"
-msgstr ""
+msgstr "Regjistro këto rregullime"
 
 #: gui/gdmlogin.c:2335
 msgid "Please insert 25 cents to log in."
-msgstr ""
+msgstr "Të lutem, fut 25 cents për të hyrë."
 
 #: gui/gdmlogin.c:2742
 msgid "GNOME Desktop Manager"
-msgstr ""
+msgstr "GNOME Desktop Manager"
 
 #: gui/gdmlogin.c:2750
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
-msgstr ""
+msgstr "E pamundur hapja e file ikonë: %s. zvogëlimi si ikonë u disaktivua!"
 
 #: gui/gdmlogin.c:2772
 msgid "Iconify the login window"
-msgstr ""
+msgstr "Kthen në ikonë dritaren e login"
 
 #: gui/gdmlogin.c:2797 gui/greeter/greeter_item.c:96
 msgid "%a %b %d, %H:%M"
-msgstr ""
+msgstr "%a %d %b, %H:%M"
 
 #: gui/gdmlogin.c:2799 gui/greeter/greeter_item.c:100
 msgid "%a %b %d, %I:%M %p"
-msgstr ""
+msgstr "%a %d %b, %I:%M %p"
 
 #: gui/gdmlogin.c:2865
 msgid "Finger"
-msgstr ""
+msgstr "Finger"
 
 #: gui/gdmlogin.c:2957
 msgid "GDM Login"
-msgstr ""
+msgstr "GDM Login"
 
 #: gui/gdmlogin.c:3000 gui/greeter/greeter_canvas_item.c:129
 #: gui/greeter/greeter_parser.c:923
 #: gui/greeter/themes/circles/circles.xml.in.h:11
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
 msgid "_Session"
-msgstr ""
+msgstr "_Seanca"
 
 #: gui/gdmlogin.c:3007 gui/greeter/greeter_canvas_item.c:122
 #: gui/greeter/greeter_parser.c:918
 #: gui/greeter/themes/circles/circles.xml.in.h:9
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
 msgid "_Language"
-msgstr ""
+msgstr "_Gjuha"
 
 #: gui/gdmlogin.c:3019
 msgid "_Configure..."
-msgstr ""
+msgstr "_Konfiguro..."
 
 #: gui/gdmlogin.c:3026
 msgid "Configure GDM (this login manager). This will require the root password."
-msgstr ""
+msgstr "Konfiguro GDM (manazhuesin e login). Nevoitet password e root."
 
 #: gui/gdmlogin.c:3033
 msgid "_Reboot..."
-msgstr ""
+msgstr "_Rinis..."
 
 #: gui/gdmlogin.c:3040
 msgid "Reboot your computer"
-msgstr ""
+msgstr "Rinis kompjuterin"
 
 #: gui/gdmlogin.c:3046
 msgid "Shut _down..."
-msgstr ""
+msgstr "_Ndalo..."
 
 #: gui/gdmlogin.c:3053
 msgid "Shut down your computer so that you may turn it off."
-msgstr ""
+msgstr "Ndalon kompjuterin që ju mund t'a fikni."
 
 #: gui/gdmlogin.c:3060
 msgid "_Suspend..."
-msgstr ""
+msgstr "_Suspend..."
 
 #: gui/gdmlogin.c:3067
 msgid "Suspend your computer"
-msgstr ""
+msgstr "Vë në pauzë kompjuterin tuaj"
 
 #: gui/gdmlogin.c:3073 gui/greeter/greeter_canvas_item.c:138
 #: gui/greeter/greeter_parser.c:928
 #: gui/greeter/themes/circles/circles.xml.in.h:2
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
 msgid "S_ystem"
-msgstr ""
+msgstr "S_istemi"
 
 #: gui/gdmlogin.c:3085 gui/greeter/greeter_canvas_item.c:151
 #: gui/greeter/greeter_parser.c:938
 #: gui/greeter/themes/circles/circles.xml.in.h:10
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
 msgid "_Quit"
-msgstr ""
+msgstr "_Dil"
 
 #: gui/gdmlogin.c:3087 gui/greeter/greeter_canvas_item.c:153
 #: gui/greeter/greeter_parser.c:933
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "D_isconnect"
-msgstr ""
+msgstr "Sh_këputu"
 
 #: gui/gdmlogin.c:3644
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
-msgstr ""
+msgstr "E pamundur hapja e figurës standart: %s. Paraqitja e faqeve do të disaktivohet!"
 
 #: gui/gdmlogin.c:4084 gui/gdmlogin.c:4113 gui/greeter/greeter.c:556
 #: gui/greeter/greeter.c:585
@@ -2600,11 +2653,14 @@ msgid ""
 "You have probably just upgraded gdm.\n"
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
+"Versioni i greeter (%s) nuk përputhet me versionin e daemon.\n"
+"Ka mundësi që sapo keni kryer një upgrade të gdm.\n"
+"Rifillo daemon e gdm ose rinis kompjuterin."
 
 #: gui/gdmlogin.c:4119 gui/gdmlogin.c:4163 gui/greeter/greeter.c:591
 #: gui/greeter/greeter.c:636
 msgid "Reboot"
-msgstr ""
+msgstr "Rinis"
 
 #: gui/gdmlogin.c:4155 gui/greeter/greeter.c:628
 #, c-format
@@ -2613,22 +2669,25 @@ msgid ""
 "You have probably just upgraded gdm.\n"
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
+"Versioni i greeter (%s) nuk përputhet me versionin e daemon (%s).\n"
+"Ka mundësi që sapo keni kryer një upgrade të gdm.\n"
+"Rifillo daemon e gdm ose rinis kompjuterin."
 
 #: gui/gdmlogin.c:4161 gui/greeter/greeter.c:634
 msgid "Restart"
-msgstr ""
+msgstr "Rifillo"
 
 #: gui/gdmlogin.c:4206 gui/greeter/greeter.c:1055
 msgid "main: Error setting up HUP signal handler"
-msgstr ""
+msgstr "main: Gabim gjatë aktivimit të kontrolluesit të sinjalit HUP"
 
 #: gui/gdmlogin.c:4214 gui/greeter/greeter.c:1063
 msgid "main: Error setting up INT signal handler"
-msgstr ""
+msgstr "main: Gabim gjatë aktivimit të kontrolluesit të sinjalit INT"
 
 #: gui/gdmlogin.c:4217 gui/greeter/greeter.c:1066
 msgid "main: Error setting up TERM signal handler"
-msgstr ""
+msgstr "main: Gabim gjatë aktivimit të kontrolluesit të sinjalit TERM"
 
 #: gui/gdmlogin.c:4308 gui/greeter/greeter.c:1279
 msgid ""
@@ -2637,6 +2696,10 @@ msgid ""
 "There are two available sessions you can use, but\n"
 "you should log in and correct the gdm configuration."
 msgstr ""
+"Directory e seancës mungon ose është bosh!\n"
+"\n"
+"Keni dy seanca të përdorshme në dispozicion, por\n"
+"duhet të kryeni login dhe të korrigjoni konfigurimin e gdm."
 
 #: gui/gdmlogin.c:4331 gui/greeter/greeter.c:1303
 msgid ""
@@ -2644,6 +2707,9 @@ msgid ""
 "line for the login dialog, and thus I ran the\n"
 "default command.  Please fix your configuration."
 msgstr ""
+"File i konfigurimit përmban një rresht komande të gabuar\n"
+"në lidhje me dritaren e login, prandaj do të zbatoj komandën\n"
+"standart.  Kontrollo dhe korrigjo konfigurimin."
 
 #: gui/gdmlogin.c:4355 gui/greeter/greeter.c:1328
 msgid ""
@@ -2652,6 +2718,10 @@ msgid ""
 "and create a configuration file with the GDM\n"
 "configuration program."
 msgstr ""
+"Konfigurimi nuk u gjet.  GDM do të përdorë\n"
+"vlerat standart për këtë seancë.  Futuni dhe\n"
+"krijoni një file konfigurimi duke shfrytëzuar\n"
+"programin e konfigurimit të GDM."
 
 #: gui/gdmphotosetup.c:129
 msgid ""
@@ -2659,22 +2729,25 @@ msgid ""
 "please ask your system administrator to enable it\n"
 "in the GDM configurator program."
 msgstr ""
+"Browser-i i faqeve nuk është konfiguruar,\n"
+"kërkoi administratorit të sistemit t'a aktivojë\n"
+"tek programi i konfigurimit të GDM."
 
 #: gui/gdmphotosetup.c:138
 msgid "Select a photo"
-msgstr ""
+msgstr "Zgjidh një fotografi"
 
 #: gui/gdmphotosetup.c:147
 msgid "Select a photograph to show in the facebrowser:"
-msgstr ""
+msgstr "Zgjidh fotografinë për t'a përdorur me browser-in e faqeve:"
 
 #: gui/gdmphotosetup.c:152
 msgid "Browse"
-msgstr ""
+msgstr "Shfleto"
 
 #: gui/gdmphotosetup.c:185
 msgid "No picture selected."
-msgstr ""
+msgstr "Asnjë foto e zgjedhur."
 
 #: gui/gdmphotosetup.c:194
 #, c-format
@@ -2683,6 +2756,9 @@ msgid ""
 "disallowed pictures larger then %d bytes to\n"
 "show in the face browser"
 msgstr ""
+"Fotgrafia tejkalon madhësinë prej %d bytes të vendosur\n"
+"nga adminiastratori i sistemit që të mund të përdoret\n"
+"me browser-in e faqeve "
 
 #: gui/gdmphotosetup.c:220
 #, c-format
@@ -2690,6 +2766,8 @@ msgid ""
 "File %s cannot be open for reading\n"
 "Error: %s"
 msgstr ""
+"E pamundur hapja për lexim e file %s\n"
+"Gabim: %s"
 
 #: gui/gdmphotosetup.c:238
 #, c-format
@@ -2697,14 +2775,16 @@ msgid ""
 "File %s cannot be open for writing\n"
 "Error: %s"
 msgstr ""
+"E pamundur hapja për shkrim e file %s\n"
+"Gabim: %s"
 
 #: gui/gdmphotosetup.desktop.in.h:1
 msgid "Change the picture that will show in the GDM (login manager) face browser"
-msgstr ""
+msgstr "Ndrysho foton që do të shfaqet në browser-in e faqeve të GDM (manazhuesi i login)"
 
 #: gui/gdmphotosetup.desktop.in.h:2
 msgid "Login Photo"
-msgstr ""
+msgstr "Fotografia e login"
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -2713,265 +2793,271 @@ msgstr ""
 #.
 #: gui/gdmsetup-strings.c:7 gui/gdmsetup.glade.h:15
 msgid "GDM Setup"
-msgstr ""
+msgstr "Konfigurimi i GDM"
 
 #: gui/gdmsetup-strings.c:8 gui/gdmsetup.glade.h:20
 msgid "L_ocal: "
-msgstr ""
+msgstr "L_okal: "
 
 #: gui/gdmsetup-strings.c:9 gui/gdmsetup.glade.h:51
 msgid "_Remote: "
-msgstr ""
+msgstr "_Remot: "
 
 #: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
 #: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:807 gui/gdmsetup.glade.h:39
 msgid "Standard greeter"
-msgstr ""
+msgstr "Greeter standart"
 
 #: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
 #: gui/gdmsetup-strings.c:52 gui/gdmsetup.c:809 gui/gdmsetup.glade.h:17
 msgid "Graphical greeter"
-msgstr ""
+msgstr "Greeter grafik"
 
 #: gui/gdmsetup-strings.c:14 gui/gdmsetup.glade.h:9
 msgid "Always use 24 hour cloc_k format"
-msgstr ""
+msgstr "Përdor gjithmonë formatin 24 o_rësh"
 
 #: gui/gdmsetup-strings.c:15 gui/gdmsetup.glade.h:18
 msgid "Greeter"
-msgstr ""
+msgstr "Greeter"
 
 #: gui/gdmsetup-strings.c:16 gui/gdmsetup.glade.h:48
 msgid "_Login a user automatically on first bootup"
-msgstr ""
+msgstr "Aktivo _Login automatik të përdoruesi gjatë nisjes së parë"
 
 #: gui/gdmsetup-strings.c:17 gui/gdmsetup.glade.h:44
 msgid "_Automatic login username:"
-msgstr ""
+msgstr "Emri i përdoruesit për login _automatik:"
 
 #: gui/gdmsetup-strings.c:18 gui/gdmsetup-strings.c:23
 #: gui/gdmsetup-strings.c:26 gui/gdmsetup-strings.c:29
 #: gui/gdmsetup-strings.c:37 gui/gdmsetup.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: gui/gdmsetup-strings.c:20 gui/gdmsetup.glade.h:22
 msgid "Login a user automa_tically after a specified number of seconds"
-msgstr ""
+msgstr "Login automa_tikisht një përdorues mbas një numri të caktuar sekondash"
 
 #: gui/gdmsetup-strings.c:21 gui/gdmsetup.glade.h:41
 msgid "Timed login us_ername:"
-msgstr ""
+msgstr "Për_doruesi për login me kohë:"
 
 #: gui/gdmsetup-strings.c:22 gui/gdmsetup.glade.h:53
 msgid "_Seconds before login:"
-msgstr ""
+msgstr "Pritja në _sekonda:"
 
 #: gui/gdmsetup-strings.c:24 gui/gdmsetup.glade.h:40
 msgid "Timed login"
-msgstr ""
+msgstr "Login me kohë"
 
 #: gui/gdmsetup-strings.c:25 gui/gdmsetup.glade.h:16
 msgid "General"
-msgstr ""
+msgstr "Përgjithshëm"
 
 #: gui/gdmsetup-strings.c:27 gui/gdmsetup.glade.h:54
 msgid "_Welcome string: "
-msgstr ""
+msgstr "Mesazhi i _mirëseardhjes: "
 
 #: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:42
 msgid "Welcome string: "
-msgstr ""
+msgstr "Mesazhi i mirëseardhjes: "
 
 #: gui/gdmsetup-strings.c:30 gui/gdmsetup.glade.h:23
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 #: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:38
 msgid "Show choosable user images (_face browser)"
-msgstr ""
+msgstr "Shfaq imazhet e përdoruesit që mund të zgjidhen (browser-i i _faqeve)"
 
 #: gui/gdmsetup-strings.c:32 gui/gdmsetup.glade.h:29
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Të ndryshme"
 
 #: gui/gdmsetup-strings.c:33 gui/gdmsetup.glade.h:49
 msgid "_No background"
-msgstr ""
+msgstr "_Asnjë sfond"
 
 #: gui/gdmsetup-strings.c:34 gui/gdmsetup.glade.h:46
 msgid "_Image"
-msgstr ""
+msgstr "_Imazh"
 
 #: gui/gdmsetup-strings.c:35 gui/gdmsetup.glade.h:12
 msgid "Co_lor"
-msgstr ""
+msgstr "Ngj_yra"
 
 #: gui/gdmsetup-strings.c:36 gui/gdmsetup.glade.h:52
 msgid "_Scale background image to fit"
-msgstr ""
+msgstr "_Përshtatja ekranit figurën e sfondit"
 
 #: gui/gdmsetup-strings.c:38 gui/gdmsetup.glade.h:50
 msgid "_Only color on remote displays"
-msgstr ""
+msgstr "Ngjyra ve_tëm tek display remot"
 
 #: gui/gdmsetup-strings.c:39 gui/gdmsetup.glade.h:45
 msgid "_Background color: "
-msgstr ""
+msgstr "Ngjyra e _Sfondit: "
 
 #: gui/gdmsetup-strings.c:40 gui/gdmsetup.glade.h:33
 msgid "Pick a color"
-msgstr ""
+msgstr "Zgjidh një ngjyrë"
 
 #: gui/gdmsetup-strings.c:41 gui/gdmsetup.glade.h:11
 msgid "Background"
-msgstr ""
+msgstr "Sfondi"
 
 #: gui/gdmsetup-strings.c:43 gui/gdmsetup.glade.h:4
 msgid "<b>Preview:</b>"
-msgstr ""
+msgstr "<b>Shikoje:</b>"
 
 #: gui/gdmsetup-strings.c:44 gui/gdmsetup.glade.h:31
 msgid "No screenshot available"
-msgstr ""
+msgstr "Asnjë screenshot në dispozicion"
 
 #: gui/gdmsetup-strings.c:45 gui/gdmsetup.glade.h:3
 msgid "<b>Description:</b>"
-msgstr ""
+msgstr "<b>Përshkrimi:</b>"
 
 #: gui/gdmsetup-strings.c:46 gui/gdmsetup.glade.h:2
 msgid "<b>Author:</b>"
-msgstr ""
+msgstr "<b>Autori:</b>"
 
 #: gui/gdmsetup-strings.c:47 gui/gdmsetup.glade.h:57
 msgid ""
 "description\n"
 "widget"
 msgstr ""
+"përshkrimi\n"
+"widget"
 
 #: gui/gdmsetup-strings.c:49 gui/gdmsetup.glade.h:55
 msgid "author"
-msgstr ""
+msgstr "autori"
 
 #: gui/gdmsetup-strings.c:50 gui/gdmsetup.glade.h:56
 msgid "copyright"
-msgstr ""
+msgstr "copyright"
 
 #: gui/gdmsetup-strings.c:51 gui/gdmsetup.glade.h:47
 msgid "_Install new theme"
-msgstr ""
+msgstr "_Instalo një temë të re"
 
 #: gui/gdmsetup-strings.c:53 gui/gdmsetup.glade.h:5
 msgid "Allow _root to login with GDM"
-msgstr ""
+msgstr "Lejo që _root të kryej login me GDM"
 
 #: gui/gdmsetup-strings.c:54 gui/gdmsetup.glade.h:8
 msgid "Allow root to login r_emotely with GDM"
-msgstr ""
+msgstr "Lejo që root të kryej login në r_emot me GDM"
 
 #: gui/gdmsetup-strings.c:55 gui/gdmsetup.glade.h:7
 msgid "Allow remote _timed logins"
-msgstr ""
+msgstr "Lejo kryerjet e login remot me _kohë"
 
 #: gui/gdmsetup-strings.c:56 gui/gdmsetup.glade.h:37
 msgid "Show _system menu"
-msgstr ""
+msgstr "Shfaq menu e _sistemit"
 
 #: gui/gdmsetup-strings.c:57 gui/gdmsetup.glade.h:6
 msgid "Allow c_onfiguration from the login screen"
-msgstr ""
+msgstr "Lejo k_onfigurimin nga dritarja e login"
 
 #: gui/gdmsetup-strings.c:58 gui/gdmsetup.glade.h:35
 msgid "Retry _delay (seconds) :"
-msgstr ""
+msgstr "Pritja për një login të ri (në sekon_da) :"
 
 #: gui/gdmsetup-strings.c:59 gui/gdmsetup.glade.h:32
 msgid "Options"
-msgstr ""
+msgstr "Opcione"
 
 #: gui/gdmsetup-strings.c:60 gui/gdmsetup.glade.h:36
 msgid "Security"
-msgstr ""
+msgstr "Siguria"
 
 #: gui/gdmsetup-strings.c:61 gui/gdmsetup.glade.h:30
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
 msgstr ""
+"Asnjë suport për XDMPC.  Për të aktivuar suportin XDMCP duhet të rikompiloni "
+"GDM me libraritë XDMCP."
 
 #: gui/gdmsetup-strings.c:62 gui/gdmsetup.glade.h:19
 msgid "Honour _indirect requests"
-msgstr ""
+msgstr "Plotëso kërkesat _indirekte"
 
 #: gui/gdmsetup-strings.c:63 gui/gdmsetup.glade.h:21
 msgid "Listen on UDP port: "
-msgstr ""
+msgstr "Në dëgjim tek porta UDP: "
 
 #: gui/gdmsetup-strings.c:64 gui/gdmsetup.glade.h:26
 msgid "Maximum pending requests:"
-msgstr ""
+msgstr "Numri maksimum i kërkesave në pritje:"
 
 #: gui/gdmsetup-strings.c:65 gui/gdmsetup.glade.h:24
 msgid "Max pending indirect requests:"
-msgstr ""
+msgstr "Numri maksimum i kërkesave indirekte në pritje:"
 
 #: gui/gdmsetup-strings.c:66 gui/gdmsetup.glade.h:27
 msgid "Maximum remote sessions:"
-msgstr ""
+msgstr "Numri maksimum i seancave remote:"
 
 #: gui/gdmsetup-strings.c:67 gui/gdmsetup.glade.h:28
 msgid "Maximum wait time:"
-msgstr ""
+msgstr "Koha maksimum e pritjes:"
 
 #: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:25
 msgid "Maximum indirect wait time:"
-msgstr ""
+msgstr "Koha maksimum e pritjes indirekte:"
 
 #: gui/gdmsetup-strings.c:69 gui/gdmsetup.glade.h:13
 msgid "Displays per host:"
-msgstr ""
+msgstr "Displays për host:"
 
 #: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:34
 msgid "Ping interval (minutes):"
-msgstr ""
+msgstr "Intervali i ping (në minuta):"
 
 #: gui/gdmsetup-strings.c:71 gui/gdmsetup.glade.h:14
 msgid "Enable _XDMCP"
-msgstr ""
+msgstr "Aktivo _XDMCP"
 
 #: gui/gdmsetup-strings.c:72 gui/gdmsetup.glade.h:43
 msgid "XDMCP"
-msgstr ""
+msgstr "XDMCP"
 
 #: gui/gdmsetup.c:145
 msgid ""
 "An error occured while trying to contact the login screens.  Not all updates "
 "may have taken effect."
 msgstr ""
+"Gabim gjatë përpjekjes për të kontaktuar dritaren e login.  Jo të gjitha ndryshimet "
+"mund të jenë ruajtur."
 
 #: gui/gdmsetup.c:1324
 msgid "Archive is not of a subdirectory"
-msgstr ""
+msgstr "Arkivi nuk përmban vetëm një nën-directory"
 
 #: gui/gdmsetup.c:1332
 msgid "Archive is not of a single subdirectory"
-msgstr ""
+msgstr "Arkivi duhet të përmbajë vetëm një nën-directory"
 
 #: gui/gdmsetup.c:1356 gui/gdmsetup.c:1435
 msgid "File not a tar.gz or tar archive"
-msgstr ""
+msgstr "File nuk është një tar.gz apo arkiv tar"
 
 #: gui/gdmsetup.c:1358
 msgid "Archive does not include a GdmGreeterTheme.info file"
-msgstr ""
+msgstr "Arkivi nuk përmban file GdmGreeterTheme.info"
 
 #: gui/gdmsetup.c:1380
 msgid "File does not exist"
-msgstr ""
+msgstr "File nuk ekziston"
 
 #: gui/gdmsetup.c:1488
 msgid "No file selected"
-msgstr ""
+msgstr "Nuk është zgjedhur asnjë file"
 
 #: gui/gdmsetup.c:1514
 #, c-format
@@ -2979,19 +3065,21 @@ msgid ""
 "Not a theme archive\n"
 "Details: %s"
 msgstr ""
+"Nuk është arkiv i një teme\n"
+"Hollësi: %s"
 
 #: gui/gdmsetup.c:1536
 #, c-format
 msgid "Theme directory '%s' seems to be already installed, install again anyway?"
-msgstr ""
+msgstr "Directory e temës '%s' ekziston, t'a instaloj edhe njëherë?"
 
 #: gui/gdmsetup.c:1581
 msgid "Some error occured when installing the theme"
-msgstr ""
+msgstr "Gabime gjatë instalimit të temës"
 
 #: gui/gdmsetup.c:1626
 msgid "Select new theme archive to install"
-msgstr ""
+msgstr "Zgjidh arkivin e temës së re që duhet instaluar"
 
 #. This is the temporary help dialog
 #: gui/gdmsetup.c:1766
@@ -3004,133 +3092,144 @@ msgid ""
 "Note that not all configuration options are listed here.  You may want to "
 "edit %s if you cannot find what you are looking for."
 msgstr ""
+"Nga kjo dritare konfigurimi ndryshohen rregullimet e daemon GDM, login grafik i "
+"GNOME. Ndryshimet e kryera do të kenë efekt të menjëherëshëm.\n"
+"\n"
+"Ki parasysh që këtu nuk janë rreshtuar të gjitha mundësitë e konfigurimit. Nëse "
+"nuk arrin të gjesh çfarë kërkon mund të shkruash (ndryshosh) file «%s». "
 
 #: gui/gdmsetup.c:2070
 msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr ""
+msgstr "Duhet të jeni superpërdorues (root) që të mund të konfiguroni GDM.\n"
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr ""
+msgstr "Një instrument grafik për të konfiguruar GNOME Display Manager (GDM)"
 
 #: gui/gdmsetup.desktop.in.h:2
 msgid "GDM Configurator"
-msgstr ""
+msgstr "Konfiguruesi i GDM"
 
 #: gui/greeter/greeter.c:72
 #, c-format
 msgid "greeter_parse_config: No configuration file: %s. Using defaults."
-msgstr ""
+msgstr "greeter_parse_config: file i konfigurimit nuk ekziston: %s. Po përdor vlerat standart."
 
 #: gui/greeter/greeter.c:1141
 #, c-format
 msgid "There was an error loading the theme %s"
-msgstr ""
+msgstr "Gabim gjatë ngarkimit të temës %s"
 
 #: gui/greeter/greeter.c:1179
 msgid ""
 "The theme for the graphical greeter is corrupt.  It does not contain "
 "definition for the username/password entry element."
 msgstr ""
+"Tema për greeter grafik është e dëmtuar.  Nuk përmban përcaktimin "
+"e elementit username/paswword."
 
 #: gui/greeter/greeter.c:1212
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
 msgstr ""
+"Gabim gjatë ngarkimit të temës së zgjedhur, dhe tema e prezgjedhur nuk arrin të "
+"ngarkohet. Po përpiqem të filloj greeter standart"
 
 #: gui/greeter/greeter.c:1232
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
 msgstr ""
+"Nuk arrij të filloj greeter standart.  Kjo display do të mbyllet dhe do t'ju duhet "
+"të kryeni login me ndonjë rrugë tjetër dhe të korrigjoni instalimin e gdm"
 
 #: gui/greeter/greeter_action_language.c:194
 msgid "Select a language"
-msgstr ""
+msgstr "Zgjidh një gjuhë"
 
 #: gui/greeter/greeter_action_language.c:207
 msgid "Select a language for your session to use:"
-msgstr ""
+msgstr "Zgjidh gjuhën për seancën:"
 
 #: gui/greeter/greeter_system.c:150
 msgid "Shut down the computer"
-msgstr ""
+msgstr "Ndalo kompjuterin"
 
 #: gui/greeter/greeter_system.c:162
 msgid "Suspend the computer"
-msgstr ""
+msgstr "Vër në pauzë kompjuterin"
 
 #: gui/greeter/greeter_system.c:174
 msgid "Reboot the computer"
-msgstr ""
+msgstr "Rinis kompjuterin"
 
 #: gui/greeter/greeter_system.c:187
 msgid "Configure"
-msgstr ""
+msgstr "Konfiguro"
 
 #: gui/greeter/greeter_parser.c:943
 #: gui/greeter/themes/circles/circles.xml.in.h:8
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
 msgid "You've got capslock on!"
-msgstr ""
+msgstr "Keni capslock të aktivuar!"
 
 #: gui/greeter/greeter_parser.c:955
 #: gui/greeter/themes/circles/circles.xml.in.h:7
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
 #, no-c-format
 msgid "Welcome to %h"
-msgstr ""
+msgstr "Mirësevini tek %h"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
-msgstr ""
+msgstr "© 2002 Bond, James Bond"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:2
 msgid "Bond, James Bond"
-msgstr ""
+msgstr "Bond, James Bond"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:3
 msgid "Circles"
-msgstr ""
+msgstr "Rrathë"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:4
 msgid "Theme with blue circles"
-msgstr ""
+msgstr "Temë me rrathë blu"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
-msgstr ""
+msgstr "© 2002 GNOME"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:2
 msgid "GNOME Art variation of Circles"
-msgstr ""
+msgstr "GNOME Art variation of Circles"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
 msgid "GNOME Artists"
-msgstr ""
+msgstr "Artistët e GNOME"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:4
 msgid "Happy GNOME"
-msgstr ""
+msgstr "Happy GNOME"
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
-msgstr ""
+msgstr "gdmaskpass funksionon vetëm po të niset nga root\n"
 
 #: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
 msgid "Authentication failure!\n"
-msgstr ""
+msgstr "Autentifikimi dështoi!\n"
 
 #: vicious-extensions/glade-helper.c:82
 msgid "(memory buffer)"
-msgstr ""
+msgstr "(memory buffer)"
 
 #: vicious-extensions/glade-helper.c:114 vicious-extensions/glade-helper.c:136
 #: vicious-extensions/glade-helper.c:156
 msgid "(memory buffer"
-msgstr ""
+msgstr "(memory buffer"
 
 #: vicious-extensions/glade-helper.c:188
 #, c-format
@@ -3141,6 +3240,12 @@ msgid ""
 "%s cannot continue and will exit now.\n"
 "You should check your installation of %s or reinstall %s."
 msgstr ""
+"Gabim gjatë ngarkimit të elementit %s%s\n"
+"të interfaqes së përdoruesit nga file %s.\n"
+"Ka mundësi që përshkrimi i interfaqes glade\n"
+"të jetë i dëmtuar. Vazhdimi i ekzekutimit të %s\n"
+"është i pamundur. Kontrollo instalimin e %s ose\n"
+"instalo dhe njëherë %s."
 
 #: vicious-extensions/glade-helper.c:204
 #, c-format
@@ -3148,6 +3253,8 @@ msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
 "file: %s widget: %s"
 msgstr ""
+"File glade është i dëmtuar! Sigurohu që ke instaluar file e duhur!\n"
+"file: %s widget: %s"
 
 #: vicious-extensions/glade-helper.c:234
 #, c-format
@@ -3159,6 +3266,13 @@ msgid ""
 "%s cannot continue and will exit now.\n"
 "You should check your installation of %s or reinstall %s."
 msgstr ""
+"Gabim gjatë ngarkimit të elementit %s%s\n"
+"të interfaqes së përdoruesit nga file %s.\n"
+"Widget i llojit CList duhet të ketë %d kollona.\n"
+"Ka mundësi që përshkrimi i interfaqes glade\n"
+"të jetë i dëmtuar. Vazhdimi i ekzekutimit të %s\n"
+"është i pamundur. Kontrollo instalimin e %s ose\n"
+"instalo dhe njëherë %s."
 
 #: vicious-extensions/glade-helper.c:252
 #, c-format
@@ -3166,6 +3280,8 @@ msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
 "file: %s widget: %s expected clist columns: %d"
 msgstr ""
+"File glade është i dëmtuar! Sigurohu që ke instaluar file e duhur!\n"
+"file: %s widget: %s expected clist columns: %d"
 
 #: vicious-extensions/glade-helper.c:270
 #, c-format
@@ -3176,9 +3292,15 @@ msgid ""
 "%s cannot continue and will exit now.\n"
 "You should check your installation of %s or reinstall %s."
 msgstr ""
+"Gabim gjatë ngarkimit të interfaqes së përdoruesit\n"
+"nga file %s.\n"
+"Ka mundësi që përshkrimi i interfaqes glade\n"
+"të mos jetë gjetur. Vazhdimi i ekzekutimit të %s\n"
+"është i pamundur. Kontrollo instalimin e %s ose\n"
+"instalo dhe njëherë %s."
 
 #: vicious-extensions/glade-helper.c:281
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
-msgstr ""
+msgstr "GABIM! I pamundur ngarkimi i interfaqes (file: %s)"
 
