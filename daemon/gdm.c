@@ -1204,7 +1204,7 @@ gdm_cleanup_children (void)
 static void
 gdm_restart_now (void)
 {
-	gdm_info (_("Gdm restarting ..."));
+	gdm_info (_("GDM restarting ..."));
 	final_cleanup ();
 	if (stored_path != NULL)
 		gnome_setenv ("PATH", stored_path, TRUE);

@@ -4,7 +4,7 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Gdm Host Chooser");
+gchar *s = N_("GDM Host Chooser");
 gchar *s = N_("How to use this application");
 gchar *s = N_("Open a session to the selected host");
 gchar *s = N_("C_onnect");
