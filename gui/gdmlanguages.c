@@ -62,7 +62,7 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Basque"), "eu_ES", "Euskara", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Belarusian"), "be_BY", NULL, 0 },
+	{ N_("A-M|Belarusian"), "be_BY", "Беларуская мова", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Bengali"), "bn_BD", "বাংলা", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
