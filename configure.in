@@ -711,13 +711,6 @@ AC_CHECK_LIB(devinfo, di_devperm_login, [
 		     	AC_DEFINE(HAVE_LOGINDEVPERM)
 			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -ldevinfo" ])
 
-# On Solaris, Xnest is only shipped in /usr/openwin/, so set path
-# properly.  The Xsun version of Xnest also requires the -pn
-# argument so it can be run as the user.  Note that you can have
-# both the X.org and Xsun Xservers on the same system (but X.org on
-# Solaris doesn't ship with Xnest), so this makes Solaris work
-# properly when the X.org Xserver is included.
-#
 # Define different Halt, and Reboot commands differently for Solaris.
 #
 # On Solaris/bin is a symlink to /usr/bin, so don't include it in
@@ -726,16 +719,12 @@ AC_CHECK_LIB(devinfo, di_devperm_login, [
 case "$host" in
 *solaris*)
         GDM_USER_PATH="/usr/bin"
-        X_XNEST_PATH="/usr/openwin/bin"
-        X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
         HALT_COMMAND="/sbin/init 0"
         REBOOT_COMMAND="/sbin/init 6"
         SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
         ;;
 *)
         GDM_USER_PATH="/bin:/usr/bin"
-        X_XNEST_PATH=$X_SERVER_PATH
-        X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
         HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
         REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
         SUSPEND_COMMAND=""
@@ -800,6 +789,24 @@ fi
 if test "x$USER_POST_PATH" != "x"; then
    GDM_USER_PATH="$GDM_USER_PATH:$USER_POST_PATH"
 fi
+
+# On Solaris, Xnest is only shipped in /usr/openwin/, so set path
+# properly.  The Xsun version of Xnest also requires the -pn
+# argument so it can be run as the user.  Note that you can have
+# both the X.org and Xsun Xservers on the same system (but X.org on
+# Solaris doesn't ship with Xnest), so this makes Solaris work
+# properly when the X.org Xserver is included.
+#
+case "$host" in
+*solaris*)
+        X_XNEST_PATH="/usr/openwin/bin"
+        X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
+        ;;
+*)
+        X_XNEST_PATH=$X_SERVER_PATH
+        X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
+        ;;
+esac
 
 AC_SUBST(HALT_COMMAND)
 AC_DEFINE_UNQUOTED(HALT_COMMAND,"$HALT_COMMAND")
