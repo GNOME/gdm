@@ -919,11 +919,18 @@ get_theme_file (const char *in, char **theme_dir)
       dir = NULL;
       if (DOING_GDM_DEVELOPMENT)
         {
-          dir = g_build_filename ("themes", in, NULL);
-	  if (access (dir, F_OK) != 0)
+	  if (access (in, F_OK) == 0)
 	    {
-	      g_free (dir);
-	      dir = NULL;
+	      dir = g_strdup (in);
+	    }
+	  else
+	    {
+              dir = g_build_filename ("themes", in, NULL);
+	      if (access (dir, F_OK) != 0)
+	        {
+	          g_free (dir);
+	          dir = NULL;
+	        }
 	    }
 	}
       if (dir == NULL)
@@ -939,10 +946,12 @@ get_theme_file (const char *in, char **theme_dir)
   }
   if (access (info, F_OK) != 0)
     {
+      char *base = g_path_get_basename (in);
       /* just guess the name, we have no info about the theme at
        * this point */
       g_free (info);
-      file = g_strdup_printf ("%s/%s.xml", dir, in);
+      file = g_strdup_printf ("%s/%s.xml", dir, base);
+      g_free (base);
       return file;
     }
 
@@ -1071,6 +1080,18 @@ main (int argc, char *argv[])
 			       gdm_wm_screen.height);
   gtk_container_add (GTK_CONTAINER (window), canvas);
 
+  if (g_getenv ("GDM_THEME") != NULL)
+    {
+      g_free (GdmGraphicalTheme);
+      GdmGraphicalTheme = g_strdup (g_getenv ("GDM_THEME"));
+    }
+  if (DOING_GDM_DEVELOPMENT &&
+      g_getenv ("GDM_FAKE_TIMED") != NULL)
+    {
+      g_free (GdmTimedLogin);
+      GdmTimedLogin = g_strdup ("fake");
+    }
+
   theme_file = get_theme_file (GdmGraphicalTheme, &theme_dir);
   
   error = NULL;
@@ -1079,6 +1100,15 @@ main (int argc, char *argv[])
 			gdm_wm_screen.width,
 			gdm_wm_screen.height,
 			&error);
+
+    /* FIXME: beter information should be printed */
+    if (root == NULL &&
+	g_getenv ("GDM_THEME") != NULL &&
+	DOING_GDM_DEVELOPMENT)
+      {
+        g_warning ("Theme could not be loaded");
+        exit(1);
+      }
 
   /* Try circles.xml */
   if (root == NULL)

@@ -1,0 +1,78 @@
+#!/bin/sh
+echo
+echo "GDM Graphical Greeter Theme Tester."
+echo
+echo "Be sure to test all the environments:"
+echo " console, console-timed, flexi, remote-flexi, xdmcp"
+echo "Also be sure to test using caps lock"
+echo
+
+if ! which Xnest > /dev/null 2>&1 ; then
+	echo "ERROR: Xnest not found"
+	exit 1
+fi
+
+if ! which gdmXnest > /dev/null 2>&1 ; then
+	echo "ERROR: gdmXnest not found"
+	exit 1
+fi
+
+if ! which gdmgreeter > /dev/null 2>&1 ; then
+	echo "ERROR: gdmgreeter not found"
+	exit 1
+fi
+
+USAGE="
+Usage: $0 <environment> <theme>
+<environment> is one of: console, console-timed, flexi, remote-flexi, xdmcp
+<theme> is either the path of the theme or the name of an installed theme
+"
+if [ "$#" != 2 ]; then
+	echo "$USAGE"
+	exit 1
+fi
+
+GDM_THEME="$2"
+DOING_GDM_DEVELOPMENT=yes
+GDM_PARENT_DISPLAY="$DISPLAY"
+export GDM_THEME DOING_GDM_DEVELOPMENT GDM_PARENT_DISPLAY
+
+case $1 in
+console)
+	GDM_IS_LOCAL=yes
+	export GDM_IS_LOCAL
+	;;
+console-timed)
+	GDM_IS_LOCAL=yes
+	GDM_FAKE_TIMED=yes
+	export GDM_IS_LOCAL GDM_FAKE_TIMED
+	;;
+flexi)
+	GDM_IS_LOCAL=yes
+	GDM_FLEXI_SERVER=yes
+	export GDM_IS_LOCAL GDM_FLEXI_SERVER
+	;;
+remote-flexi)
+	GDM_FLEXI_SERVER=yes
+	export GDM_FLEXI_SERVER
+	;;
+xdmcp)
+	;;
+*)
+	echo "$USAGE"
+	exit 1
+	;;
+esac
+
+eval `gdmXnest -b`
+export DISPLAY
+
+if [ "x$GDM_PARENT_DISPLAY" = "x$DISPLAY" ]; then
+	echo "ERROR: Can't start the Xnest server"
+	exit 1
+fi
+
+# This may not be necessary
+sleep 1
+
+gdmgreeter

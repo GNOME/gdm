@@ -23,6 +23,9 @@ INCLUDES = \
 bin_PROGRAMS = \
 	gdmgreeter
 
+bin_SCRIPTS = \
+	gdmthemetester
+
 gdmgreeter_SOURCES =  \
 	greeter.c \
 	greeter.h \

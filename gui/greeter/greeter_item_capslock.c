@@ -12,13 +12,28 @@
 
 static gboolean caps_lock_state = FALSE;
 
+extern gboolean DOING_GDM_DEVELOPMENT;
+
 static gboolean
 is_caps_lock_on (void)
 {
   unsigned int states;
+  Display *dsp = NULL;
+
+  /* HACK! incredible hack, if this is set we get
+   * indicator state from the parent display, since we must be inside an
+   * Xnest */
+  if (g_getenv ("GDM_PARENT_DISPLAY") != NULL)
+    dsp = XOpenDisplay (g_getenv ("GDM_PARENT_DISPLAY"));
+
+  if (dsp == NULL)
+    dsp = GDK_DISPLAY ();
 	
-  if (XkbGetIndicatorState (GDK_DISPLAY (), XkbUseCoreKbd, &states) != Success)
+  if (XkbGetIndicatorState (dsp, XkbUseCoreKbd, &states) != Success)
       return FALSE;
+
+  if (dsp != GDK_DISPLAY ())
+    XCloseDisplay (dsp);
 
   return (states & ShiftMask) != 0;
 }

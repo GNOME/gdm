@@ -1,3 +1,16 @@
+Wed Aug 14 16:01:41 2002  George Lebl <jirka@5z.com>
+
+	* gui/greeter/Makfile.am, gui/greeter/gdmthemetester: a script to
+	  run gdmgreeter in Xnest to test themes in the various environments
+
+	* gui/greeter/greeter_item_capslock.c: if GDM_PARENT_DISPLAY is set
+	  then use it to get capslock state.  Currently only used in
+	  gdmthemetester as we have to figure out how to do this inside
+	  the daemon with the cookies and all that.
+
+	* gui/gdmXnestchooser.c: close the 0,1,2 descriptors so that we may
+	  do things such as `gdmXnest -b`
+
 Wed Aug 14 12:16:30 2002  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: whack old debug printf (it wasn't harmful due to

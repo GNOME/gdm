@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -533,6 +534,7 @@ main (int argc, char *argv[])
 	}
 
 	printf ("DISPLAY=:%d\n", display);
+	fflush (stdout);
 
 	g_snprintf (display_num, sizeof (display_num), ":%d", display);
 	g_snprintf (indirect_host, sizeof (indirect_host), "%s", host);
@@ -546,6 +548,12 @@ main (int argc, char *argv[])
 		if (fork () > 0) {
 			_exit (0);
 		}
+		close (0);
+		close (1);
+		close (2);
+		open ("/dev/null", O_RDWR);
+		open ("/dev/null", O_RDONLY);
+		open ("/dev/null", O_RDONLY);
 	}
 
 	pid = fork ();
