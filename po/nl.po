@@ -11,13 +11,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-05 04:10+0100\n"
+"POT-Creation-Date: 2004-05-03 14:35+0200\n"
 "PO-Revision-Date: 2004-03-07 17:41+0100\n"
 "Last-Translator: Michiel Sikkes <michiel@sikkes.xs4all.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -131,19 +131,19 @@ msgstr "GNOME"
 msgid "This session logs you into GNOME"
 msgstr "Deze sessie meldt u aan bij GNOME"
 
-#: daemon/auth.c:58
+#: daemon/auth.c:66
 #, c-format
 msgid "%s: Could not write new authorization entry: %s"
 msgstr "%s: Kan geen nieuwe identificatie-ingang wegschrijven: %s"
 
-#: daemon/auth.c:61
+#: daemon/auth.c:69
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
 msgstr ""
 "%s: Kon geen nieuwe identificatie-ingang wegschrijven. Waarschijnlijk is er "
 "geen ruimte meer."
 
-#: daemon/auth.c:66
+#: daemon/auth.c:74
 #, c-format
 msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
@@ -152,38 +152,38 @@ msgstr ""
 "GDM kon geen nieuwe identificatie-ingang wegschrijven. Waarschijnlijk is er "
 "geen ruimte meer.%s%s"
 
-#: daemon/auth.c:196
+#: daemon/auth.c:204
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: Kan geen nieuw cookiebestand maken in %s"
 
-#: daemon/auth.c:220 daemon/auth.c:237 daemon/auth.c:871
+#: daemon/auth.c:228 daemon/auth.c:245 daemon/auth.c:879
 #, c-format
 msgid "%s: Cannot safely open %s"
 msgstr "%s: Kan %s niet veilig openen"
 
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:669 daemon/auth.c:709
+#: daemon/auth.c:677 daemon/auth.c:717
 #, c-format
 msgid "%s: Could not open cookie file %s"
 msgstr "%s: Kan cookiebestand %s niet openen"
 
-#: daemon/auth.c:690
+#: daemon/auth.c:698
 #, c-format
 msgid "%s: Could not lock cookie file %s"
 msgstr "%s: Kan cookiebestand %s niet vergrendelen"
 
-#: daemon/auth.c:740 daemon/auth.c:762
+#: daemon/auth.c:748 daemon/auth.c:770
 #, c-format
 msgid "%s: Could not write cookie"
 msgstr "%s: Kon geen cookie wegschrijven"
 
-#: daemon/auth.c:847
+#: daemon/auth.c:855
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Verdacht cookiebestand %s wordt genegeerd"
 
-#: daemon/auth.c:890 daemon/gdm.c:2259
+#: daemon/auth.c:898 daemon/gdm.c:2261
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Kan niet naar %s schrijven: %s"
@@ -209,12 +209,12 @@ msgstr ""
 "seconden. Waarschijnlijk is er iets niet in orde. Ik zal 2 minuten wachten "
 "voordat de grafische omgeving weer gestart wordt op scherm %s."
 
-#: daemon/display.c:244
+#: daemon/display.c:258
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s: Kon pipe niet maken"
 
-#: daemon/display.c:316
+#: daemon/display.c:334
 #, c-format
 msgid "%s: Failed forking gdm slave process for %s"
 msgstr "%s: Kan gdm slaafproces niet afsplitsen voor %s"
@@ -336,8 +336,8 @@ msgstr "%s: Authdir %s is geen map. Gestopt."
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
-"·%s:·Logmap·%s·bestaat·niet·of·is·geen·map.·Identificatiemap·%"
-"s·wordt·gebruikt."
+" %s: Logmap %s bestaat niet of is geen map. Identificatiemap %"
+"s wordt gebruikt."
 
 #: daemon/gdm.c:311 gui/gdmlogin.c:650 gui/greeter/greeter.c:101
 #, c-format
@@ -548,7 +548,7 @@ msgid ""
 msgstr ""
 " Server identificatiemap (daemon/ServAuthDir) is ingesteld op %s, maar heeft "
 "de verkeerde rechten. Deze zouden %o moeten zijn. Corrigeer alstublieft de "
-"rechten·of·de·configuratie %s en herstart GDM."
+"rechten of de configuratie %s en herstart GDM."
 
 #: daemon/gdm.c:780
 #, c-format
@@ -611,7 +611,7 @@ msgstr ""
 "Kon de X-server meerdere keren achter elkaar niet starten; scherm %s wordt "
 "tijdelijk uitgeschakeld"
 
-#: daemon/gdm.c:1179 daemon/gdm.c:2762
+#: daemon/gdm.c:1179 daemon/gdm.c:2764
 msgid "Master suspending..."
 msgstr "Meester gaat in slaapstand..."
 
@@ -683,7 +683,7 @@ msgstr "Niet opstarten in de achtergrond"
 
 #: daemon/gdm.c:1831
 msgid "No console (local) servers to be run"
-msgstr "Geen·lokale·servers·te·starten."
+msgstr "Geen lokale servers te starten."
 
 #: daemon/gdm.c:1833
 msgid "Preserve LD_* variables"
@@ -714,8 +714,8 @@ msgstr "Alleen root wil gdm opstarten\n"
 
 #: daemon/gdm.c:1997 daemon/gdm.c:2001 daemon/gdm.c:2076 daemon/gdm.c:2080
 #: daemon/gdm.c:2084 daemon/gdm.c:2088 daemon/gdm.c:2098 daemon/gdm.c:2104
-#: daemon/gdm.c:2115 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
-#: daemon/misc.c:1618 daemon/misc.c:1622 daemon/misc.c:1626
+#: daemon/gdm.c:2115 daemon/misc.c:1613 daemon/misc.c:1617 daemon/misc.c:1621
+#: daemon/misc.c:1628 daemon/misc.c:1632 daemon/misc.c:1636
 #: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:811
 #: daemon/slave.c:825 daemon/slave.c:835 daemon/slave.c:845 daemon/slave.c:857
 #: gui/gdmchooser.c:1924 gui/gdmchooser.c:1927 gui/gdmchooser.c:1930
@@ -735,23 +735,23 @@ msgstr "gdm is al gestart. Gestopt!"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Fout bij het instellen van de CHLD signaalafhandeling"
 
-#: daemon/gdm.c:2228
+#: daemon/gdm.c:2230
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "Kan  %s niet openen voor schrijven"
 
-#: daemon/gdm.c:3495 daemon/gdm.c:3514
+#: daemon/gdm.c:3497 daemon/gdm.c:3516
 msgid "Flexible server request denied: Not authenticated"
 msgstr ""
 "Flexibele server-aanvraag afgewezen: Identiteit kon niet bepaald worden"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:3532
+#: daemon/gdm.c:3534
 msgid "Unknown server type requested, using standard server."
 msgstr "Onbekend servertype aangevraagd, standaardtype zal gebruikt worden."
 
-#: daemon/gdm.c:3536
+#: daemon/gdm.c:3538
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -760,19 +760,19 @@ msgstr ""
 "Aangevraagde server %s mag niet gebruikt worden voor flexible-servers, ik "
 "gebruik de standaardserver."
 
-#: daemon/gdm.c:3658
+#: daemon/gdm.c:3660
 msgid "Query logout action request denied: Not authenticated"
 msgstr ""
 "Aanvraag voor afmeldacties geweigerd: Identiteit kon niet bepaald worden"
 
-#: daemon/gdm.c:3716 daemon/gdm.c:3771
+#: daemon/gdm.c:3718 daemon/gdm.c:3773
 msgid "Set logout action request denied: Not authenticated"
 msgstr ""
 "Aanvraag voor instellen afmeldactie afgewezen: Identiteit kon niet bepaald "
 "worden"
 
 # wat betekend het engelse 'vt' hier?
-#: daemon/gdm.c:3816 daemon/gdm.c:3843
+#: daemon/gdm.c:3818 daemon/gdm.c:3845
 msgid "Query vt request denied: Not authenticated"
 msgstr "Query of aanvraag geweigerd: Identiteit kon niet bepaald worden"
 
@@ -781,27 +781,27 @@ msgstr "Query of aanvraag geweigerd: Identiteit kon niet bepaald worden"
 msgid "y = Yes or n = No? >"
 msgstr "y = Ja (yes) of n = Nee (no) ? >"
 
-#: daemon/misc.c:977
+#: daemon/misc.c:987
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: Kan geen lokale adressen vinden!"
 
-#: daemon/misc.c:1129
+#: daemon/misc.c:1139
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "Kan het groepsid %d niet instellen. Gestopt."
 
-#: daemon/misc.c:1134
+#: daemon/misc.c:1144
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr "initgroups() mislukt voor %s. Gestopt."
 
-#: daemon/misc.c:1371 daemon/misc.c:1385
+#: daemon/misc.c:1381 daemon/misc.c:1395
 #, c-format
 msgid "%s: Error setting signal %d to %s"
-msgstr "%s: Fout bij instellen van signaal·%d naar %s"
+msgstr "%s: Fout bij instellen van signaal %d naar %s"
 
-#: daemon/misc.c:2272
+#: daemon/misc.c:2282
 #, c-format
 msgid ""
 "Last login:\n"
@@ -1149,7 +1149,7 @@ msgstr "%s: setusercontext() mislukt voor %s. Gestopt."
 #: daemon/slave.c:3547
 #, c-format
 msgid "%s: Could not become %s. Aborting."
-msgstr "%s: Kan geen·%s·worden. Gestopt."
+msgstr "%s: Kan geen %s worden. Gestopt."
 
 #: daemon/slave.c:3607
 #, c-format
@@ -1279,7 +1279,7 @@ msgstr ""
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Thuismap voor %s: '%s' bestaat niet!"
 
-#: daemon/slave.c:4037
+#: daemon/slave.c:4034
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1292,12 +1292,12 @@ msgstr ""
 "mogelijk om u aan te melden. Neem alstublieft contact op met de "
 "systeembeheerder"
 
-#: daemon/slave.c:4113
+#: daemon/slave.c:4110
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Fout bij afsplitsen van gebruikers-sessie"
 
-#: daemon/slave.c:4194
+#: daemon/slave.c:4191
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1309,25 +1309,25 @@ msgstr ""
 "met een van de failsafe-sessies aan te melden om te kijken of u het probleem "
 "kunt verhelpen."
 
-#: daemon/slave.c:4202
+#: daemon/slave.c:4199
 msgid "View details (~/.xsession-errors file)"
 msgstr "Details weergeven (~/.xsession-errors)"
 
-#: daemon/slave.c:4346
+#: daemon/slave.c:4343
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM detecteert een actieve herstart of uitschakeling."
 
-#: daemon/slave.c:4440
+#: daemon/slave.c:4437
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping naar %s is mislukt. Scherm wordt uitgeschakeld!"
 
-#: daemon/slave.c:4726
+#: daemon/slave.c:4723
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Fatale X-fout - %s wordt opnieuw gestart"
 
-#: daemon/slave.c:4820
+#: daemon/slave.c:4817
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1335,22 +1335,22 @@ msgstr ""
 "Aanmeldgeluid verzocht op niet-lokale weergave of de afspeelsoftware kan "
 "niet worden uitgevoerd of het geluid bestaat niet."
 
-#: daemon/slave.c:5175
+#: daemon/slave.c:5172
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Starten van %s mislukt"
 
-#: daemon/slave.c:5183 daemon/slave.c:5322
+#: daemon/slave.c:5180 daemon/slave.c:5319
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Kan het gdmgroeter proces niet afsplitsen!"
 
-#: daemon/slave.c:5277
+#: daemon/slave.c:5274
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Kon pipe niet maken"
 
-#: daemon/slave.c:5316
+#: daemon/slave.c:5313
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Starten van %s mislukt"
@@ -3857,22 +3857,22 @@ msgstr "gdmaskpass werkt alleen als root\n"
 msgid "Authentication failure!\n"
 msgstr "Identificatiefout!\n"
 
-#: vicious-extensions/glade-helper.c:83
+#: vicious-extensions/glade-helper.c:84
 msgid "(memory buffer)"
 msgstr "(geheugen-buffer)"
 
-#: vicious-extensions/glade-helper.c:115 vicious-extensions/glade-helper.c:137
-#: vicious-extensions/glade-helper.c:157
+#: vicious-extensions/glade-helper.c:116 vicious-extensions/glade-helper.c:138
+#: vicious-extensions/glade-helper.c:158
 msgid "(memory buffer"
 msgstr "(geheugen-buffer"
 
 #. markup
-#: vicious-extensions/glade-helper.c:193 vicious-extensions/glade-helper.c:246
-#: vicious-extensions/glade-helper.c:289
+#: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
+#: vicious-extensions/glade-helper.c:290
 msgid "Cannot load user interface"
 msgstr "Kan gebruikersinterface niet laden"
 
-#: vicious-extensions/glade-helper.c:194
+#: vicious-extensions/glade-helper.c:195
 #, c-format
 msgid ""
 "An error occured while loading the user interface element %s%s from file %"
@@ -3885,7 +3885,7 @@ msgstr ""
 "beëindigd worden. U kunt het beste de installatie van %s controleren of %s "
 "opnieuw installeren."
 
-#: vicious-extensions/glade-helper.c:210
+#: vicious-extensions/glade-helper.c:211
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3895,7 +3895,7 @@ msgstr ""
 "geïnstalleerd is!\n"
 "bestand: %s widget: %s"
 
-#: vicious-extensions/glade-helper.c:247
+#: vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
 "An error occured while loading the user interface element %s%s from file %"
@@ -3908,7 +3908,7 @@ msgstr ""
 "beschrijving kapot. %s kan niet doorgaan en zal beëindigd worden. U kunt het "
 "beste de installatie van %s controleren of %s opnieuw installeren."
 
-#: vicious-extensions/glade-helper.c:265
+#: vicious-extensions/glade-helper.c:266
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3918,7 +3918,7 @@ msgstr ""
 "geïnstalleerd is!\n"
 "bestand: %s widget: %s verwachtte aantal kolommen: %d"
 
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:291
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -3930,12 +3930,12 @@ msgstr ""
 "doorgaan en zal beëindigd worden. U kunt het beste de installatie van %s "
 "controleren of %s opnieuw installeren."
 
-#: vicious-extensions/glade-helper.c:302
+#: vicious-extensions/glade-helper.c:303
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Er kon geen gebruikersinterface worden geladen, SLECHT! (bestand: %s)"
 
-#: vicious-extensions/ve-nongnome.c:135
+#: vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr ""
 "Te veel aliasniveaus voor een locale, dit wijst mogelijk op een "
