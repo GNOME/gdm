@@ -160,6 +160,9 @@ gint GdmTimedLoginDelay = 0;
 gchar *GdmStandardXServer = NULL;
 gint  GdmFlexibleXServers = 5;
 gchar *GdmXnest = NULL;
+int GdmFirstVT = 7;
+gboolean GdmVTAllocation = TRUE;
+
 
 /* set in the main function */
 char **stored_argv = NULL;
@@ -309,6 +312,9 @@ gdm_config_parse (void)
     GdmXnest = gnome_config_get_string (GDM_KEY_XNEST);    
     if (ve_string_empty (GdmXnest))
 	    GdmXnest = NULL;
+
+    GdmFirstVT = gnome_config_get_int (GDM_KEY_FIRSTVT);    
+    GdmVTAllocation = gnome_config_get_bool (GDM_KEY_VTALLOCATION);    
 
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
 
@@ -1620,7 +1626,8 @@ write_x_servers (GdmDisplay *d)
 		char **argv;
 		char *command;
 		argv = gdm_server_resolve_command_line
-			(d, FALSE /* resolve_handled */);
+			(d, FALSE /* resolve_handled */,
+			 NULL /* vtarg */);
 		command = g_strjoinv (" ", argv);
 		g_strfreev (argv);
 		fprintf (fp, "%s local %s\n", d->name, command);
@@ -1817,9 +1824,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		d = gdm_display_lookup (slave_pid);
 
 		if (d != NULL) {
-#ifdef __linux__
 			d->vt = vt_num;
-#endif
 			gdm_debug ("Got VT_NUM == %d", vt_num);
 			/* send ack */
 			send_slave_ack (d);
@@ -2716,12 +2721,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 					 ve_sure_string (disp->xnest_disp));
 			} else {
 				gdm_connection_printf (conn, "%d",
-#ifdef __linux__
-						       disp->vt
-#else
-						       -1
-#endif
-						      );
+						       disp->vt);
 			}
 		}
 		gdm_connection_write (conn, "\n");

@@ -1,3 +1,17 @@
+Thu Aug 22 12:23:49 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/server.[ch], daemon/Makefile.am,
+	  daemon/getvt.[ch], daemon/xdmcp.c, config/gdm.conf.in:
+	  Make the vt member exist for non-linux systems as well just
+	  for kicks.  Set up a vt allocation thingie (kind of a hack
+	  to get a VT higher then a certain number, but oh well).  Currently
+	  only for linux.  And add vt<number> arguments unless there
+	  was such an argument added already.  This should fix all
+	  the problems with people running gdm as a service since
+	  all the VT stuff is so horribly broken.  Should fix #62997.
+	  Adds two keys FirstVT and VTAllocation to control this
+	  behaviour.
+
 Tue Aug 20 10:28:45 2002  George Lebl <jirka@5z.com>
 
 	* Release 2.4.0.8

@@ -51,7 +51,9 @@ gdm_binary_SOURCES = \
 	errorgui.c \
 	errorgui.h \
 	gdm-net.c \
-	gdm-net.h
+	gdm-net.h \
+	getvt.c \
+	getvt.h
 
 EXTRA_gdm_binary_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
 

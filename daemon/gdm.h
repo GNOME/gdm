@@ -161,6 +161,10 @@ enum {
 #define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=/usr/X11R6/bin/X"
 #define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
 #define GDM_KEY_XNEST "daemon/Xnest=/usr/X11R6/bin/Xnest -name Xnest"
+/* Keys for automatic VT allocation rather then letting it up to the
+ * X server */
+#define GDM_KEY_FIRSTVT "daemon/FirstVT=7"
+#define GDM_KEY_VTALLOCATION "daemon/VTAllocation=true"
 
 /* Per server definitions */
 #define GDM_KEY_SERVER_NAME "name=Standard server"
@@ -292,9 +296,7 @@ struct _GdmDisplay {
 
     gboolean handled;
 
-#ifdef __linux__
     int vt;
-#endif
 
     gboolean busy_display;
 

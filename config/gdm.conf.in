@@ -85,6 +85,11 @@ StandardXServer=/usr/X11R6/bin/X
 FlexibleXServers=5
 # the X nest command
 Xnest=/usr/X11R6/bin/Xnest -name Xnest
+# Automatic VT allocation.  Right now only works on Linux.  This way
+# we force X to use specific vts.  turn VTAllocation to false if this
+# is causing problems.
+FirstVT=7
+VTAllocation=true
 
 [security]
 # If any distributions ship with this one off, they should be shot
@@ -189,13 +194,13 @@ Enable=false
 # the 0 server is used.
 0=Standard
 #1=Standard
-#Note: If you want to make sure X runs on a specific virtual console on linux,
-#      you can use the following (for console 7).  However this can cause
-#      problems for some users.  Be careful about this, getting this wrong
-#      can lead to an unusable console.  Best solution is to make sure gdm
-#      starts as the last thing, and that will make it not neccessary to
-#      do hacks like this since X will itself find the first free console
-#0=Standard vt7
+# Note the VTAllocation and FirstVT keys on linux.  Don't add any vt<number>
+# arguments if VTAllocation is on, and set FirstVT to be the first vt
+# available that your gettys don't grab (gettys are usually dumb and grab
+# even a vt that has already been taken).  Using 7 will work pretty much for
+# all linux distributions.  VTAllocation is not currently implemented on
+# anything but linux since I don't own any non-linux systems.  Feel free to
+# send patches.  X servers will just not get any extra arguments then.
 #
 #Note: If you want to run an X terminal you could add an X server such as this
 #0=Terminal -query serverhostname

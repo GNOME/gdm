@@ -34,6 +34,7 @@
 #include <syslog.h>
 #include <errno.h>
 #include <time.h>
+#include <ctype.h>
 #include <X11/Xlib.h>
 
 #include <vicious.h>
@@ -45,12 +46,13 @@
 #include "display.h"
 #include "auth.h"
 #include "slave.h"
+#include "getvt.h"
 
 #define SERVER_WAIT_ALARM 10
 
 
 /* Local prototypes */
-static void gdm_server_spawn (GdmDisplay *d);
+static void gdm_server_spawn (GdmDisplay *d, const char *vtarg);
 static void gdm_server_usr1_handler (gint);
 static void gdm_server_alarm_handler (gint);
 static void gdm_server_child_handler (gint);
@@ -268,7 +270,6 @@ display_busy (GdmDisplay *disp)
 	return FALSE;
 }
 
-#ifdef __linux__
 static int
 display_vt (GdmDisplay *disp)
 {
@@ -295,7 +296,6 @@ display_vt (GdmDisplay *disp)
 	fclose (fp);
 	return -1;
 }
-#endif
 
 /**
  * gdm_server_start:
@@ -312,6 +312,8 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     struct sigaction old_usr1, old_chld, old_alrm;
     sigset_t mask, oldmask;
     int flexi_disp = 20;
+    char *vtarg = NULL;
+    int vtfd = -1, vt = -1;
     
     if (disp == NULL)
 	    return FALSE;
@@ -321,14 +323,12 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     /* if an X server exists, wipe it */
     gdm_server_stop (d);
 
-    /* On linux first clear the VT number */
-#ifdef __linux__
+    /* First clear the VT number */
     if (d->type == TYPE_LOCAL ||
 	d->type == TYPE_FLEXI) {
 	    d->vt = -1;
 	    gdm_slave_send_num (GDM_SOP_VT_NUM, -1);
     }
-#endif
 
     if (SERVER_IS_FLEXI (d) ||
 	treat_as_flexi) {
@@ -420,8 +420,13 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     d->servstat = SERVER_DEAD;
 
+    if (d->type == TYPE_LOCAL ||
+	d->type == TYPE_FLEXI) {
+	    vtarg = gdm_get_empty_vt_argument (&vtfd, &vt);
+    }
+
     /* fork X server process */
-    gdm_server_spawn (d);
+    gdm_server_spawn (d, vtarg);
 
     /* we can now use d->handled since that's set up above */
 
@@ -482,6 +487,11 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 	    alarm (0);
     }
 
+    /* If we were holding a vt open for the server, close it now as it has
+     * already taken the bait. */
+    if (vtfd > 0)
+	    close (vtfd);
+
     switch (d->servstat) {
 
     case SERVER_TIMEOUT:
@@ -507,14 +517,16 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
 	    if (SERVER_IS_FLEXI (d))
 		    gdm_slave_send_num (GDM_SOP_FLEXI_OK, 0 /* bogus */);
-#ifdef __linux__
 	    if (d->type == TYPE_LOCAL ||
 		d->type == TYPE_FLEXI) {
-		    d->vt = display_vt (d);
+		    if (vt >= 0)
+			    d->vt = vt;
+
+		    if (d->vt < 0)
+			    d->vt = display_vt (d);
 		    if (d->vt >= 0)
 			    gdm_slave_send_num (GDM_SOP_VT_NUM, d->vt);
 	    }
-#endif
 
 	    return TRUE;
     default:
@@ -605,7 +617,6 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 void
 gdm_server_checklog (GdmDisplay *disp)
 {
-#ifdef __linux__
 	if (d->vt < 0 &&
 	    (d->type == TYPE_LOCAL ||
 	     d->type == TYPE_FLEXI)) {
@@ -613,7 +624,6 @@ gdm_server_checklog (GdmDisplay *disp)
 		if (d->vt >= 0)
 			gdm_slave_send_num (GDM_SOP_VT_NUM, d->vt);
 	}
-#endif
 }
 
 static void
@@ -640,14 +650,17 @@ rotate_logs (const char *dname)
 	g_free (fname);
 }
 
+
 char **
 gdm_server_resolve_command_line (GdmDisplay *disp,
-				 gboolean resolve_handled)
+				 gboolean resolve_handled,
+				 const char *vtarg)
 {
 	char *bin;
 	char **argv;
 	int len;
 	int i;
+	gboolean gotvtarg = FALSE;
 
 	bin = ve_first_word (disp->command);
 	if (bin == NULL) {
@@ -682,22 +695,35 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 		argv = ve_split (disp->command);
 	}
 
-	for (len = 0; argv != NULL && argv[len] != NULL; len++)
-		;
+	for (len = 0; argv != NULL && argv[len] != NULL; len++) {
+		char *arg = argv[len];
+		/* HACK! Not to add vt argument to servers that already force
+		 * allocation.  Mostly for backwards compat only */
+		if (strncmp (arg, "vt", 2) == 0 &&
+		    isdigit (arg[2]) &&
+		    (arg[3] == '\0' ||
+		     (isdigit (arg[3]) && arg[4] == '\0')))
+			gotvtarg = TRUE;
+	}
 
-	argv = g_renew (char *, argv, len + 4);
+	argv = g_renew (char *, argv, len + 5);
 	for (i = len - 1; i >= 1; i--) {
 		argv[i+1] = argv[i];
 	}
 	/* server number is the FIRST argument, before any others */
 	argv[1] = g_strdup (disp->name);
+	len++;
 	if (disp->authfile != NULL) {
-		argv[len+1] = g_strdup ("-auth");
-		argv[len+2] = g_strdup (disp->authfile);
-		argv[len+3] = NULL;
-	} else {
-		argv[len+1] = NULL;
+		argv[len++] = g_strdup ("-auth");
+		argv[len++] = g_strdup (disp->authfile);
 	}
+
+	if (vtarg != NULL &&
+	    ! gotvtarg) {
+		argv[len++] = g_strdup (vtarg);
+	}
+
+	argv[len++] = NULL;
 
 	g_free (bin);
 
@@ -715,7 +741,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
  */
 
 static void 
-gdm_server_spawn (GdmDisplay *d)
+gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 {
     struct sigaction ign_signal, dfl_signal;
     sigset_t mask;
@@ -743,7 +769,8 @@ gdm_server_spawn (GdmDisplay *d)
 
     /* Figure out the server command */
     argv = gdm_server_resolve_command_line (d,
-					    TRUE /* resolve handled */);
+					    TRUE /* resolve handled */,
+					    vtarg);
 
     command = g_strjoinv (" ", argv);
 
@@ -1078,9 +1105,7 @@ gdm_server_alloc (gint id, const gchar *command)
 
     d->handled = TRUE;
 
-#ifdef __linux__
     d->vt = -1;
-#endif
 
     d->x_servers_order = -1;
 

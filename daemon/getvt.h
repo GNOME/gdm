@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
+ * Copyright (C) 2002 Queen of England
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef GDM_SERVER_H
-#define GDM_SERVER_H
+#ifndef GETVT_H
+#define GETVT_H
 
-#include "gdm.h"
+/* gets an argument we should pass to the X server, on
+ * linux for example we get the first empty vt (higher
+ * then or equal to GdmFirstVT) and then return vt<number>
+ * (e.g. "vt7") as a newly allocated string.
+ * Can return NULL if we can't figure out what to do
+ * or if GdmVTAllocation is false. */
+/* fd is opened so that we are saying we have opened this
+ * vt.  This should be closed after the server has started.
+ * This is to avoid race with other stuff openning this vt.
+ * It can be set to -1 if nothing could be opened. */
+char * gdm_get_empty_vt_argument (int *fd, int *vt);
 
-/* Wipe cookie files */
-void		gdm_server_wipe_cookies	(GdmDisplay *disp);
-
-gboolean	gdm_server_start	(GdmDisplay *d,
-					 gboolean treat_as_flexi,
-					 int min_flexi_disp,
-					 int flexi_retries);
-void		gdm_server_stop		(GdmDisplay *d);
-void		gdm_server_reinit	(GdmDisplay *d);
-GdmDisplay *	gdm_server_alloc	(gint id,
-					 const gchar *command);
-void		gdm_server_whack_clients (GdmDisplay *disp);
-void		gdm_server_checklog	(GdmDisplay *disp);
-
-char **		gdm_server_resolve_command_line (GdmDisplay *disp,
-						 gboolean resolve_handled,
-						 const char *vtarg);
-
-
-
-#endif /* GDM_SERVER_H */
-
-/* EOF */
+#endif /* GETVT_H */
