@@ -157,6 +157,8 @@ char **stored_argv = NULL;
 int stored_argc = 0;
 char *stored_path = NULL;
 
+static time_t config_file_mtime = 0;
+
 static gboolean gdm_restart_mode = FALSE;
 
 static GMainLoop *main_loop = NULL;
@@ -206,8 +208,11 @@ gdm_config_parse (void)
     displays = NULL;
     high_display_num = 0;
 
-    if (stat (GDM_CONFIG_FILE, &statbuf) == -1)
-	gdm_error (_("gdm_config_parse: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
+    if (stat (GDM_CONFIG_FILE, &statbuf) == -1) {
+	    gdm_error (_("gdm_config_parse: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
+    } else {
+	    config_file_mtime = statbuf.st_mtime;
+    }
 
     /* Parse configuration options */
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
@@ -1299,13 +1304,6 @@ main (int argc, char *argv[])
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
 
-    /* XDM compliant error message */
-    if (getuid () != 0) {
-	    /* make sure the pid file doesn't get wiped */
-	    GdmPidFile = NULL;
-	    gdm_fail (_("Only root wants to run gdm\n"));
-    }
-
     /* Initialize runtime environment */
     umask (022);
 
@@ -1315,6 +1313,13 @@ main (int argc, char *argv[])
 			GNOME_PARAM_POPT_TABLE, options,
 			GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
 			NULL);
+
+    /* XDM compliant error message */
+    if (getuid () != 0) {
+	    /* make sure the pid file doesn't get wiped */
+	    GdmPidFile = NULL;
+	    gdm_fail (_("Only root wants to run gdm\n"));
+    }
 
     main_loop = g_main_loop_new (NULL, FALSE);
     openlog ("gdm", LOG_PID, LOG_DAEMON);
@@ -2100,6 +2105,94 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	/* Now we wait for the server to start up (or not) */
 }
 
+static gboolean
+is_key (const char *key1, const char *key2)
+{
+	char *key1d, *key2d, *p;
+
+	key1d = g_strdup (key1);
+	key2d = g_strdup (key2);
+
+	g_strstrip (key1d);
+	p = strchr (key1d, '=');
+	if (p != NULL)
+		*p = '\0';
+
+	g_strstrip (key2d);
+	p = strchr (key2d, '=');
+	if (p != NULL)
+		*p = '\0';
+
+	if (strcmp (key1d, key2d) == 0) {
+		g_free (key1d);
+		g_free (key2d);
+		return TRUE;
+	} else {
+		g_free (key1d);
+		g_free (key2d);
+		return FALSE;
+	}
+}
+
+static void
+notify_displays_int (const char *key, int val)
+{
+	GSList *li;
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->master_notify_fd >= 0) {
+			gdm_fdprintf (disp->master_notify_fd,
+				      "%s %d\n", key, val);
+		}
+	}
+}
+
+static gboolean
+update_config (const char *key)
+{
+	struct stat statbuf;
+	if (stat (GDM_CONFIG_FILE, &statbuf) == -1) {
+		/* if the file didn't exist before either */
+		if (config_file_mtime == 0)
+			return TRUE;
+	} else {
+		/* if the file didn't exist before either */
+		if (config_file_mtime == statbuf.st_mtime)
+			return TRUE;
+		config_file_mtime = statbuf.st_mtime;
+	}
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+
+	if (is_key (key, GDM_KEY_ALLOWROOT)) {
+		gboolean val = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
+		if (val == GdmAllowRoot)
+			goto update_config_ok;
+		GdmAllowRoot = val;
+
+		notify_displays_int (GDM_NOTIFY_ALLOWROOT, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_ALLOWREMOTEROOT)) {
+		gboolean val = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEROOT);
+		if (val == GdmAllowRemoteRoot)
+			goto update_config_ok;
+		GdmAllowRemoteRoot = val;
+
+		notify_displays_int (GDM_NOTIFY_ALLOWREMOTEROOT, val);
+
+		goto update_config_ok;
+	}
+
+	gnome_config_pop_prefix ();
+	return FALSE;
+
+update_config_ok:
+
+	gnome_config_pop_prefix ();
+	return TRUE;
+}
+
 static void
 gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 {
@@ -2254,6 +2347,17 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			}
 		}
 		gdm_connection_write (conn, "\n");
+	} else if (strncmp (msg, GDM_SUP_UPDATE_CONFIG " ",
+		     strlen (GDM_SUP_UPDATE_CONFIG " ")) == 0) {
+		const char *key = 
+			&msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
+
+		if ( ! update_config (key)) {
+			gdm_connection_write (conn,
+					      "ERROR 50 Unsupported key\n");
+		} else {
+			gdm_connection_write (conn, "OK\n");
+		}
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
 		gdm_connection_write (conn, "GDM " VERSION "\n");
 	} else if (strcmp (msg, GDM_SUP_CLOSE) == 0) {

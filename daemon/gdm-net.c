@@ -73,7 +73,7 @@ static gboolean
 close_if_needed (GdmConnection *conn, GIOCondition cond)
 {
 	/* non-subconnections are never closed */
-	if (conn->filename != NULL)
+	if (conn->parent == NULL)
 		return TRUE;
 
 	if (cond & G_IO_ERR ||
@@ -268,6 +268,39 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 	conn->writable = FALSE;
 	conn->buffer = NULL;
 	conn->filename = g_strdup (sockname);
+	conn->user_flags = 0;
+	conn->parent = NULL;
+	conn->subconnections = NULL;
+	conn->n_subconnections = 0;
+
+	unixchan = g_io_channel_unix_new (conn->fd);
+	g_io_channel_set_buffered (unixchan, FALSE);
+
+	conn->source = g_io_add_watch_full
+		(unixchan, G_PRIORITY_DEFAULT,
+		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
+		 gdm_socket_handler, conn, NULL);
+	g_io_channel_unref (unixchan);
+
+	listen (fd, 5);
+
+	return conn;
+}
+
+GdmConnection *
+gdm_connection_open_fd (int fd)
+{
+	GIOChannel *unixchan;
+	GdmConnection *conn;
+
+	g_return_val_if_fail (fd < 0, NULL);
+
+	conn = g_new0 (GdmConnection, 1);
+	conn->close_level = 0;
+	conn->fd = fd;
+	conn->writable = FALSE;
+	conn->buffer = NULL;
+	conn->filename = NULL;
 	conn->user_flags = 0;
 	conn->parent = NULL;
 	conn->subconnections = NULL;

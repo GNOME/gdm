@@ -33,6 +33,10 @@ void	 gdm_slave_send		(const char *str, gboolean wait_for_usr2);
 void	 gdm_slave_send_num	(const char *opcode, long num);
 void     gdm_slave_send_string	(const char *opcode, const char *str);
 
+void	gdm_slave_handle_notify	(GdmConnection *conn,
+				 const char *msg,
+				 gpointer data);
+
 #endif /* GDM_SLAVE_H */
 
 /* EOF */

@@ -28,6 +28,8 @@ void gdm_info   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void gdm_error  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void gdm_debug  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
+void gdm_fdprintf  (int fd, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
+
 /* Console i18n.  A hack, but we'd rather speak english if we can't verify
  * console fonts.  So this will write out things localized only if it can
  * verify a console being utf8.  It will do this by gdmopening "vt-is-UTF8 -q"

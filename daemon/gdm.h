@@ -312,6 +312,10 @@ struct _GdmDisplay {
     char *xnest_auth_file;
     uid_t server_uid;
     GdmConnection *socket_conn;
+
+    /* Notification connection */
+    int master_notify_fd;  /* write part of the connection */
+    GdmConnection *slave_notify_conn; /* read part of the connection */
 };
 
 typedef struct _GdmXServer GdmXServer;
@@ -412,6 +416,10 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 #define GDM_SOP_SOFT_RESTART "SOFT_RESTART" /* no arguments */
 #define GDM_SOP_START_NEXT_LOCAL "START_NEXT_LOCAL" /* no arguments */
 
+/* Notification protocol */
+#define GDM_NOTIFY_ALLOWREMOTEROOT "AllowRemoteRoot" /* <true/false as int> */
+#define GDM_NOTIFY_ALLOWROOT "AllowRoot" /* <true/false as int> */
+
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
 
 /*
@@ -509,6 +517,24 @@ GdmXServer *	gdm_find_x_server	(const char *id);
  *   for example).  If the display is an xnest display and is a console one
  *   (that is, it is an xnest inside another console display) it is listed
  *   and instead of vt, it lists the parent display in standard form.
+ */
+#define GDM_SUP_UPDATE_CONFIG "UPDATE_CONFIG" /* <key> */
+/* AUTH_LOCAL: Tell the daemon to update config of some key.  Any user
+ *             can really request that values are re-read but the daemon
+ *             caches the last date of the config file so a user can't
+ *             actually change any values unless they can write the
+ *             config file.  The keys that are currently supported are:
+ *   		 security/AllowRoot (2.3.90.2)
+ *   		 security/AllowRemoteRoot (2.3.90.2)
+ * Supported since: 2.3.90.2
+ * Arguments:  <key>
+ *   <key> is just the base part of the key such as "security/AllowRemoteRoot"
+ * Answers:
+ *   OK
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      50 = Unsupported key
+ *      999 = Unknown error
  */
 #define GDM_SUP_CLOSE        "CLOSE" /* no arguments */
 /* CLOSE Answers: None

@@ -164,6 +164,21 @@ gdm_debug (const gchar *format, ...)
     g_free (s);
 }
 
+void 
+gdm_fdprintf (int fd, const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+
+    write (fd, s, strlen (s));
+    
+    g_free (s);
+}
+
 /* clear environment, but keep the i18n ones,
  * note that this leaks memory so only use before exec
  * (keep LD_* if preserve_ld_vars is true) */

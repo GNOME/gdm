@@ -151,11 +151,16 @@ gdm_display_manage (GdmDisplay *d)
 {
     pid_t pid;
     int i;
+    int fds[2];
 
     if (!d) 
 	return FALSE;
 
     gdm_debug ("gdm_display_manage: Managing %s", d->name);
+
+    if (pipe (fds) < 0) {
+	    gdm_error (_("%s: Cannot create pipe"), "gdm_display_manage");
+    }
 
     if ( ! gdm_display_check_loop (d))
 	    return FALSE;
@@ -191,8 +196,17 @@ gdm_display_manage (GdmDisplay *d)
 	unixconn = NULL;
 
 	/* Close everything */
-	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-	    close(i);
+	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++) {
+		if (i != fds[0])
+			close(i);
+	}
+
+	d->slave_notify_conn = gdm_connection_open_fd (fds[0]);
+	gdm_connection_set_handler (d->slave_notify_conn,
+				    gdm_slave_handle_notify,
+				    NULL /* data */,
+				    NULL /* destroy_notify */);
+
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
@@ -233,6 +247,8 @@ gdm_display_manage (GdmDisplay *d)
     default:
 	gdm_debug ("gdm_display_manage: Forked slave: %d",
 		   (int)pid);
+	d->master_notify_fd = fds[1];
+	close (fds[0]);
 	break;
     }
 
@@ -294,6 +310,17 @@ gdm_display_dispose (GdmDisplay *d)
 	    GdmConnection *conn = d->socket_conn;
 	    d->socket_conn = NULL;
 	    gdm_connection_set_close_notify (conn, NULL, NULL);
+    }
+
+    if (d->slave_notify_conn != NULL) {
+	    GdmConnection *conn = d->slave_notify_conn;
+	    d->slave_notify_conn = NULL;
+	    gdm_connection_close (conn);
+    }
+
+    if (d->master_notify_fd >= 0) {
+	    close (d->master_notify_fd);
+	    d->master_notify_fd = -1;
     }
 
     displays = g_slist_remove (displays, d);

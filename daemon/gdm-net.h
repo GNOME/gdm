@@ -37,6 +37,7 @@ gboolean	gdm_connection_write (GdmConnection *conn,
 
 GdmConnection *	gdm_connection_open_unix (const char *sockname,
 					  mode_t mode);
+GdmConnection * gdm_connection_open_fd (int fd);
 GdmConnection *	gdm_connection_open_fifo (const char *fifo,
 					  mode_t mode);
 

@@ -110,6 +110,7 @@ extern gboolean GdmKillInitClients;
 extern gint GdmPingInterval;
 extern gint GdmRetryDelay;
 extern gboolean GdmAllowRoot;
+extern gboolean GdmAllowRemoteRoot;
 extern sigset_t sysmask;
 extern gchar *GdmGlobalFaceDir;
 extern gboolean GdmBrowser;
@@ -1292,7 +1293,6 @@ parent_exists (void)
 void
 gdm_slave_send (const char *str, gboolean wait_for_usr2)
 {
-	char *msg;
 	int fd;
 	char *fifopath;
 	int i;
@@ -1312,11 +1312,7 @@ gdm_slave_send (const char *str, gboolean wait_for_usr2)
 		return;
 	}
 
-	msg = g_strdup_printf ("\n%s\n", str);
-
-	write (fd, msg, strlen (msg));
-
-	g_free (msg);
+	gdm_fdprintf (fd, "\n%s\n", str);
 
 	close (fd);
 
@@ -1378,7 +1374,6 @@ gdm_slave_send_string (const char *opcode, const char *str)
 static void
 send_chosen_host (GdmDisplay *disp, const char *hostname)
 {
-	char *msg;
 	int fd;
 	char *fifopath;
 	struct hostent *host;
@@ -1405,13 +1400,9 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 		return;
 	}
 
-	msg = g_strdup_printf ("\n%s %d %s\n", GDM_SOP_CHOSEN,
-			       disp->indirect_id,
-			       inet_ntoa (*((struct in_addr *)host->h_addr_list[0])));
-
-	write (fd, msg, strlen (msg));
-
-	g_free (msg);
+	gdm_fdprintf (fd, "\n%s %d %s\n", GDM_SOP_CHOSEN,
+		      disp->indirect_id,
+		      inet_ntoa (*((struct in_addr *)host->h_addr_list[0])));
 
 	close (fd);
 }
@@ -2981,6 +2972,17 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
     g_string_free (str, FALSE);
 
     return buffer;
+}
+
+void
+gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
+{
+	int val;
+	if (sscanf (msg, GDM_NOTIFY_ALLOWROOT " %d", &val) == 1) {
+		GdmAllowRoot = val;
+	} else if (sscanf (msg, GDM_NOTIFY_ALLOWREMOTEROOT " %d", &val) == 1) {
+		GdmAllowRemoteRoot = val;
+	}
 }
 
 /* EOF */
