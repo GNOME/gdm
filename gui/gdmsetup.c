@@ -1007,8 +1007,14 @@ get_theme_dir (void)
 }
 
 static void
-selection_changed (GtkTreeSelection *selection,
-		   GtkWidget        *dialog)
+textview_set_buffer (GtkTextView *view, const char *text)
+{
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer (view);
+	gtk_text_buffer_set_text (buffer, text, -1);
+}
+
+static void
+selection_changed (GtkTreeSelection *selection, gpointer data)
 {
         GtkWidget *label;
         GtkWidget *preview = glade_helper_get (xml, "gg_theme_preview",
@@ -1026,27 +1032,27 @@ selection_changed (GtkTreeSelection *selection,
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_AUTHOR,
 				  &value);
-        label = glade_helper_get (xml, "gg_author_label",
-				  GTK_TYPE_LABEL);
-	gtk_label_set_text (GTK_LABEL (label),
-			    ve_sure_string (g_value_get_string (&value)));
+        label = glade_helper_get (xml, "gg_author_text_view",
+				  GTK_TYPE_TEXT_VIEW);
+	textview_set_buffer (GTK_TEXT_VIEW (label),
+			     ve_sure_string (g_value_get_string (&value)));
 	g_value_unset (&value);
 
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_COPYRIGHT,
 				  &value);
-        label = glade_helper_get (xml, "gg_copyright_label",
-				  GTK_TYPE_LABEL);
-	gtk_label_set_text (GTK_LABEL (label),
+        label = glade_helper_get (xml, "gg_copyright_text_view",
+				  GTK_TYPE_TEXT_VIEW);
+	textview_set_buffer (GTK_TEXT_VIEW (label),
 			    ve_sure_string (g_value_get_string (&value)));
 	g_value_unset (&value);
 
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_DESCRIPTION,
 				  &value);
-        label = glade_helper_get (xml, "gg_desc_label",
-				  GTK_TYPE_LABEL);
-	gtk_label_set_text (GTK_LABEL (label),
+        label = glade_helper_get (xml, "gg_desc_text_view",
+				  GTK_TYPE_TEXT_VIEW);
+	textview_set_buffer (GTK_TEXT_VIEW (label),
 			    ve_sure_string (g_value_get_string (&value)));
 	g_value_unset (&value);
 
