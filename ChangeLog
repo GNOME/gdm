@@ -1,3 +1,24 @@
+Tue Dec 04 18:44:10 2001  George Lebl <jirka@5z.com>
+
+	* daemon/Makefile.am, daemon/verify-pam.c, daemon/verify-crypt.c, 
+	  daemon/verify-shadow.c, daemon/verify.h, daemon/misc.[ch],
+	  daemon/slave.c:  revamp the PAM support based on a patch
+	  from Karsten Petersen <karsten.petersen@informatik.tu-chemnitz.de>.
+	  Move the open session and setcred back to verify, implement
+	  account checking more properly, especially for auto logins.  We
+	  assume the pamh existing when needed.  And don't do the weird
+	  ensure hack.  Also setgid and initgroups in the verify/setup
+	  function.  rename the open_session function to setup_env, since
+	  that's what it does.  Also implement more checking of errors
+	  during login process.
+
+	* daemon/gdm.c, daemon/errorgui.c: make sure that we're not 'setuid'
+	  looking in the failsafes.  Also correctly setup "PATH" from stored
+	  path.
+
+	* daemon/slave.c: fix race where USR2 was expected from a
+	  non-existant parent.  This can happen when you do 'killall gdm'
+
 Wed Nov 21 21:46:42 2001  George Lebl <jirka@5z.com>
 
 	* Release 2.2.5.2

@@ -29,6 +29,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <errno.h>
+#include <grp.h>
+#include <sys/types.h>
 
 #include <vicious.h>
 
@@ -709,6 +711,23 @@ gdm_is_loopback_addr (struct in_addr *ia)
 		return FALSE;
 	}
 }
+
+gboolean
+gdm_setup_gids (const char *login, gid_t gid)
+{
+	if (setgid (gid) < 0)  {
+		gdm_error (_("Could not setgid %d. Aborting."), (int)gid);
+		return FALSE;
+	}
+
+	if (initgroups (login, gid) < 0) {
+		gdm_error (_("initgroups() failed for %s. Aborting."), login);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 
 
 /* EOF */

@@ -29,6 +29,8 @@
 #include "gdm.h"
 #include "misc.h"
 
+#include <vicious.h>
+
 #include "errorgui.h"
 
 /* set in the main function */
@@ -141,7 +143,10 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
-	       
+
+		seteuid (getuid ());
+		setegid (getgid ());
+
 		if (d != NULL)
 			geom = g_strdup_printf ("%d:%d:%d:%d",
 						d->screenx,
@@ -152,7 +157,8 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 			geom = "0:0:0:0";
 
 		if (stored_path != NULL)
-			putenv (stored_path);
+			ve_setenv ("PATH", stored_path, TRUE);
+
 		execlp (stored_argv[0],
 			stored_argv[0],
 			"--run-error-dialog",
@@ -281,6 +287,9 @@ gdm_failsafe_question (GdmDisplay *d,
 		/* The pipe on stdout */
 		dup2 (p[1], 1);
 
+		seteuid (getuid ());
+		setegid (getgid ());
+
 		if (d != NULL)
 			geom = g_strdup_printf ("%d:%d:%d:%d",
 						d->screenx,
@@ -291,7 +300,7 @@ gdm_failsafe_question (GdmDisplay *d,
 			geom = "0:0:0:0";
 
 		if (stored_path != NULL)
-			putenv (stored_path);
+			ve_setenv ("PATH", stored_path, TRUE);
 		execlp (stored_argv[0],
 			stored_argv[0],
 			"--run-failsafe-question",
@@ -415,6 +424,9 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		/* The pipe on stdout */
 		dup2 (p[1], 1);
 
+		seteuid (getuid ());
+		setegid (getgid ());
+
 		if (d != NULL)
 			geom = g_strdup_printf ("%d:%d:%d:%d",
 						d->screenx,
@@ -425,7 +437,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 			geom = "0:0:0:0";
 
 		if (stored_path != NULL)
-			putenv (stored_path);
+			ve_setenv ("PATH", stored_path, TRUE);
 		execlp (stored_argv[0],
 			stored_argv[0],
 			"--run-failsafe-yesno",

@@ -20,6 +20,8 @@
 #include <gnome.h>
 #include <syslog.h>
 #include <pwd.h>
+#include <grp.h>
+#include <sys/types.h>
 
 #ifdef HAVE_CRYPT
 #  include <crypt.h>
@@ -36,7 +38,6 @@
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gint GdmRetryDelay;
-
 
 /**
  * gdm_verify_user:
@@ -178,6 +179,16 @@ gdm_verify_user (GdmDisplay *d,
 
     g_free (passwd);
     g_free (ppasswd);
+
+    if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
+	    gdm_error (_("Cannot set user group for %s"), login);
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					  _("\nCannot set your user group, "
+					    "you will not be able to log in, "
+					    "please contact your system administrator."));
+	    g_free (login);
+	    return NULL;
+    }
     
     return login;
 }
@@ -191,10 +202,29 @@ gdm_verify_user (GdmDisplay *d,
  * session for this user
  */
 
-void
+gboolean
 gdm_verify_setup_user (GdmDisplay *d,
 		       const gchar *login, const gchar *display) 
 {
+	struct passwd *pwent;
+
+	pwent = getpwnam (login);
+	if (pwent == NULL) {
+		gdm_error (_("Cannot get passwd structure for %s"), login);
+		return FALSE;
+	}
+
+	if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
+		gdm_error (_("Cannot set user group for %s"), login);
+		gdm_error_box (d,
+			       GNOME_MESSAGE_BOX_ERROR,
+			       _("\nCannot set your user group, "
+				 "you will not be able to log in, "
+				 "please contact your system administrator."));
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 
@@ -207,6 +237,12 @@ gdm_verify_setup_user (GdmDisplay *d,
 void
 gdm_verify_cleanup (GdmDisplay *d)
 {
+	gid_t groups[1] = { 0 };
+
+	/* Clear the group setup */
+	setgid (0);
+	/* this will get rid of any suplementary groups etc... */
+	setgroups (1, groups);
 }
 
 /**
@@ -224,7 +260,7 @@ gdm_verify_check (void)
 
 /* used in pam */
 gboolean
-gdm_verify_open_session (GdmDisplay *d)
+gdm_verify_setup_env (GdmDisplay *d)
 {
 	return TRUE;
 }

@@ -1086,7 +1086,7 @@ gdm_restart_now (void)
 	gdm_info (_("Gdm restarting ..."));
 	final_cleanup ();
 	if (stored_path != NULL)
-		putenv (stored_path);
+		ve_setenv ("PATH", stored_path, TRUE);
 	execvp (stored_argv[0], stored_argv);
 	gdm_error (_("Failed to restart self"));
 	_exit (1);

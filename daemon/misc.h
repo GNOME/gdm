@@ -19,6 +19,8 @@
 #ifndef GDM_MISC_H
 #define GDM_MISC_H
 
+#include <sys/types.h>
+
 #include "config.h"
 #include "gdm.h"
 
@@ -54,6 +56,8 @@ void	gdm_wait_for_extra (int *status);
 const GList * gdm_peek_local_address_list (void);
 gboolean gdm_is_local_addr (struct in_addr *ia);
 gboolean gdm_is_loopback_addr (struct in_addr *ia);
+
+gboolean gdm_setup_gids (const char *login, gid_t gid);
 
 #endif /* GDM_MISC_H */
 

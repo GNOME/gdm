@@ -12,6 +12,7 @@ INCLUDES = \
 	-I$(top_srcdir)/vicious-extensions		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DLOCALEDIR=\"$(datadir)/locale\"		\
+	-DPAM_PREFIX=\"$(PAM_PREFIX)\"			\
 	$(GNOME_INCLUDEDIR)
 
 bin_PROGRAMS = gdm
