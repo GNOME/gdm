@@ -1257,9 +1257,12 @@ gdm_login_session_init (GtkWidget *menu)
 		    char *s;
 		    char *label;
 		    char *tryexec;
+		    char *ext;
 
 		    /* ignore everything but the .desktop files */
-		    if (strstr (dent->d_name, ".desktop") == NULL) {
+		    ext = strstr (dent->d_name, ".desktop");
+		    if (ext == NULL ||
+			strcmp (ext, ".desktop") != 0) {
 			    dent = readdir (sessdir);
 			    continue;
 		    }

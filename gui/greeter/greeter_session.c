@@ -306,9 +306,12 @@ greeter_session_init (void)
 		char *comment;
 		char *label;
 		char *tryexec;
+		char *ext;
 
 		/* ignore everything bug the .desktop files */
-		if (strstr (dent->d_name, ".desktop") == NULL) {
+		ext = strstr (dent->d_name, ".desktop");
+		if (ext == NULL ||
+		    strcmp (ext, ".desktop") != 0) {
 			dent = readdir (sessdir);
 			continue;
 		}
@@ -318,7 +321,6 @@ greeter_session_init (void)
 			dent = readdir (sessdir);
 			continue;
 		}
-
 
 		s = g_strconcat (dir, "/", dent->d_name, NULL);
 		cfg = ve_config_new (s);

@@ -74,27 +74,27 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop D
 	fi
 
 	-if test -f $(DESTDIR)$(bisessdir)/Default.desktop; then \
-		cp -f $(DESTDIR)$(bisessdir)/Default.desktop $(DESTDIR)$(bisessdir)/Default.orig; \
+		mv -f $(DESTDIR)$(bisessdir)/Default.desktop $(DESTDIR)$(bisessdir)/Default.desktop.orig; \
 	fi
 	-if test -f $(DESTDIR)$(bisessdir)/default.desktop; then \
-		cp -f $(DESTDIR)$(bisessdir)/default.desktop $(DESTDIR)$(bisessdir)/default.orig; \
+		cp -f $(DESTDIR)$(bisessdir)/default.desktop $(DESTDIR)$(bisessdir)/default.desktop.orig; \
 	fi
 	$(INSTALL_SCRIPT) default.desktop $(DESTDIR)$(bisessdir)/default.desktop
 
 	-if test -f $(DESTDIR)$(bisessdir)/gnome.desktop; then \
-		cp -f $(DESTDIR)$(bisessdir)/gnome.desktop $(DESTDIR)$(bisessdir)/gnome.orig; \
+		mv -f $(DESTDIR)$(bisessdir)/gnome.desktop $(DESTDIR)$(bisessdir)/gnome.desktop.orig; \
 	fi
 	-if test -f $(DESTDIR)$(instsessdir)/gnome.desktop; then \
-		cp -f $(DESTDIR)$(instsessdir)/gnome.desktop $(DESTDIR)$(instsessdir)/gnome.orig; \
+		cp -f $(DESTDIR)$(instsessdir)/gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop.orig; \
 	fi
 	$(INSTALL_SCRIPT) gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop
 
 	-if test -f /usr/dt/bin/Xsession; then \
 	   if test -f $(DESTDIR)$(bisessdir)/CDE.desktop; then \
-		cp -f $(DESTDIR)$(bisessdir)/CDE.desktop $(DESTDIR)$(bisessdir)/CDE.orig; \
+		mv -f $(DESTDIR)$(bisessdir)/CDE.desktop $(DESTDIR)$(bisessdir)/CDE.desktop.orig; \
 	   fi; \
 	   if test -f $(DESTDIR)$(instsessdir)/CDE.desktop; then \
-		cp -f $(DESTDIR)$(instsessdir)/CDE.desktop $(DESTDIR)$(instsessdir)/CDE.orig; \
+		cp -f $(DESTDIR)$(instsessdir)/CDE.desktop $(DESTDIR)$(instsessdir)/CDE.desktop.orig; \
 	   fi; \
 	   $(INSTALL_SCRIPT) CDE.desktop $(DESTDIR)$(instsessdir)/CDE.desktop; \
 	fi
