@@ -449,135 +449,104 @@ gdm_login_list_lookup (GSList *l, gchar *data)
 
 
 static void
-gdm_login_sesslang_lookup (void)	/* Input validation sucks */
+gdm_login_session_lookup (gchar* savedsess)
 {
-    struct passwd *pwent;
-    gboolean fileok;
-    gchar msg[1024];
-    gchar *dir=NULL, *cfg=NULL;
-    gchar *usrlang=NULL, *usrsess=NULL;
-
-    if(!curuser)
-	gdm_login_abort("gdm_login_sesslang_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
-			"information on your PAM and user database  setup");
-
-    gtk_widget_set_sensitive (GTK_WIDGET (sessmenu), FALSE);
-    gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
-
-    /* Lookup verified user */
-    pwent = getpwnam (curuser);
-
-    if(!pwent)
-	gdm_login_abort("gdm_login_sesslang_lookup: pwent==NULL. Mail <mkp@mkp.net> with " \
+    if (!curuser)
+	gdm_login_abort("gdm_login_session_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
 			"information on your PAM and user database setup");
 
-    dir = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
-    fileok = gdm_file_check ("gdm_login_sesslang_lookup", pwent->pw_uid, dir, "gdm", TRUE, GdmUserMaxFile, GdmRelaxPerms);
-    g_free (dir);
+    /* Don't save session unless told otherwise */
+    savesess = FALSE;
 
-    if (!fileok) { /* User's settings can't be retrieved */
-	
-	/* If cursess==last use system default session */
+    gtk_widget_set_sensitive (GTK_WIDGET (sessmenu), FALSE);
+
+    /* Previously saved session not found in ~user/.gnome/gdm */
+    if (! strlen (savedsess)) {
+	/* If "Last" is chosen run Default, else run user's current selection */
 	if (!strcasecmp (cursess, lastsess))
 	    session = defsess;
 	else
 	    session = cursess;
 
-	/* If curlang==last use default */
-	if (!strcasecmp (curlang, lastlang))
-	    language = GdmDefaultLocale;
-	else
-	    language = curlang;
-
-	savesess = FALSE;
-	savelang = FALSE;
-
+	savesess = TRUE;
 	return;
     }
 
-    /* Find user's last session and language if available */
-    cfg = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/last", NULL);
-    usrsess = gnome_config_get_string (cfg);
-    g_free (cfg);
-
-    cfg = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/lang", NULL);
-    usrlang = gnome_config_get_string (cfg);
-    g_free (cfg);
-
-    /* If ``Last'' session is selected */
+    /* If "Last" session is selected */
     if (!strcasecmp (cursess, lastsess)) { 
+	session = savedsess;
 
-	/* User has no saved session. Use default. */
-	if (!usrsess) {
+	/* Check if user's saved session exists on this box */
+	if (!gdm_login_list_lookup (sessions, session)) {
+	    gchar *msg;
+
 	    session = defsess;
-	    savesess = TRUE;
-	}
-	/* User's saved session exists on this box */
-	else if (gdm_login_list_lookup (sessions, usrsess)) {
-	    session = usrsess;
-	    savesess = FALSE;
-	}
-	/* User's saved session type unknown */
-	else {
-	    session = defsess;
-	    g_snprintf (msg, 1023, 
-			_("Your preferred session type %s is not installed on this machine.\n" \
-			  "Do you wish to make %s the default for future sessions?"),
-			usrsess, defsess);	    
+	    msg = g_strdup_printf (_("Your preferred session type %s is not installed on this machine.\n" \
+				     "Do you wish to make %s the default for future sessions?"),
+				   savedsess, defsess);	    
 	    savesess = gdm_login_query (msg);
+	    g_free (msg);
 	}
     }
     /* One of the other available session types is selected */
     else { 
 	session = cursess;
 
-	/* User has no saved session type. Use current */
-	if (!usrsess)
-	    savesess = TRUE;
-	/* User's saved session is also the chosen one */
-	else if (!strcasecmp (usrsess, cursess)) 
-	    savesess = FALSE;
-	/* User selected a new session type */
-	else {
-	    g_snprintf (msg, 1023, 
-			_("You have chosen %s for this session, but your default setting is %s.\n" \
-			  "Do you wish to make %s the default for future sessions?"),
-			cursess, usrsess, cursess);
+	/* User's saved session is not the chosen one */
+	if (strcasecmp (savedsess, session)) {
+	    gchar *msg;
+
+	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is " \
+				     "%s.\nDo you wish to make %s the default for future sessions?"),
+				   cursess, savedsess, cursess);
 	    savesess = gdm_login_query (msg);
+	    g_free (msg);
 	}
     }
+}
 
-    /* If ``Last'' language is selected */
-    if (!strcasecmp (curlang, lastlang)) { 
 
-	/* User has no saved language. Use default. */
-	if (!usrlang) {
+static void
+gdm_login_language_lookup (gchar* savedlang)
+{
+    if (!curuser)
+	gdm_login_abort("gdm_login_language_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
+			"information on your PAM and user database setup");
+
+    /* Don't save language unless told otherwise */
+    savelang = FALSE;
+
+    gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
+
+    /* Previously saved language not found in ~user/.gnome/gdm */
+    if (! strlen (savedlang)) {
+	/* If "Last" is chosen use Default, else use current selection */
+	if (!strcasecmp (curlang, lastlang))
 	    language = GdmDefaultLocale;
-	    savelang = TRUE;
-	}
-	else {
-	    language = usrlang;
-	    savelang = FALSE;
-	}
+	else
+	    language = curlang;
+
+	savelang = TRUE;
+	return;
     }
-    /* One of the available languages is selected */
-    else { 
+
+    /* If a different language is selected */
+    if (strcasecmp (curlang, lastlang)) {
 	language = curlang;
 
-	/* User has no saved language. Use current */
-	if (!usrlang)
-	    savelang = TRUE;
-	/* User selected a new language */
-	else {
-	    g_snprintf (msg, 1023, 
-			_("You have chosen %s for this session, but your default setting is %s.\n" \
-			  "Do you wish to make %s the default for future sessions?"),
-			curlang, usrlang, curlang);
+	/* User's saved language is not the chosen one */
+	if (strcasecmp (savedlang, language)) {
+	    gchar *msg;
+
+	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is " \
+				     "%s.\nDo you wish to make %s the default for future sessions?"),
+				   curlang, savedlang, curlang);
 	    savelang = gdm_login_query (msg);
+	    g_free (msg);
 	}
     }
-
-    return;
+    else
+	language = savedlang;
 }
 
 
@@ -866,19 +835,22 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_MSGERR:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-	gtk_label_set (GTK_LABEL(msg), buf);
+	gtk_label_set (GTK_LABEL (msg), buf);
 	gtk_widget_show (GTK_WIDGET (msg));
 	g_print ("\n");
 	break;
 
     case GDM_SESS:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
-	gdm_login_sesslang_lookup(); /* Lookup session and language */
+	buf[len-1] = '\0';
+	gdm_login_session_lookup (buf);
 	g_print ("%s\n", session);
 	break;
 
     case GDM_LANG:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	buf[len-1] = '\0';
+	gdm_login_language_lookup (buf);
 	g_print ("%s\n", language);
 	break;
 
@@ -1522,6 +1494,9 @@ main (int argc, char *argv[])
     fixedargv[fixedargc-1] = "--disable-sound";
     gnome_init ("gdmlogin", VERSION, fixedargc, fixedargv);
     g_free (fixedargv);
+
+    bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+    textdomain (PACKAGE);
 
     gnome_preferences_set_dialog_position (GTK_WIN_POS_CENTER);
     

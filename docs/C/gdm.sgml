@@ -78,16 +78,22 @@
   </preface>
 
   <chapter id="intro">
-    <title>Introduction</title>
+    <title>Overview</title>
 
-    <para> 
-      GDM is a replacement for XDM, the X Display Manager. Unlike its
-      competitors (X3DM, KDM, WDM) GDM was written from scratch and
-      does not contain any original XDM / X Consortium code. 
-    </para>
+    <sect1>
+      <title>
+	Introduction
+      </title>
 
-    <sect1 id="overview">
-      <title>Daemon Overview</title>
+      <para> 
+	GDM is a replacement for XDM, the X Display Manager. Unlike its
+	competitors (X3DM, KDM, WDM) GDM was written from scratch and
+	does not contain any original XDM / X Consortium code. 
+      </para>
+    </sect1>
+
+    <sect1 id="daemonov">
+      <title>The GDM Daemon</title>
       
       <para> 
 	GDM was written with simplicity and security in mind. The
@@ -157,11 +163,176 @@
 	reasons. Looking up icons in homedirs, scaling and rendering
 	face icons can take quite a long time. YMMV.
       </para>
+    </sect1>
+
+    <sect1>
+      <title>
+	XDMCP
+      </title>
+
+      <para>
+	GDM also supports the X Display Manager Protocol (XDMCP) for
+	managing remote displays.
+      </para>
+
+      <para>
+	GDM listens to UDP port 177 and will repond to QUERY and
+	BROADCAST_QUERY requests by sending a WILLING packet to the
+	originator.
+      </para>
+
+      <para>
+	GDM can also be configured to honor INDIRECT queries and
+	present a host chooser to the remote display. GDM will
+	remember the user's choice and forward subsequent requests to
+	the chosen manager.
+      </para>
+
+      <para>
+	GDM only supports the MIT-MAGIC-COOKIE-1 authentication
+	system.  Little is gained from the other schemes, and no
+	effort has been made to implement them so far.
+      </para>
+
+      <para>
+	Since it is fairly easy to do denial of service attacks on the
+	XDMCP service, GDM incorporates a few features to guard
+	against attacks. Please read the XDMCP reference section below
+	for more information.
+      </para>
+
+      <para>
+	Even though GDM tries to outsmart potential attackers, it is
+	still adviced that you block UDP port 177 on your firewall
+	unless you really need it. GDM guards against DoS attacks, but
+	the X protocol is still inherently insecure and should only be
+	used in controlled environments.
+      </para>
+
+      <para>
+	Even though your display is protected by cookies the XEvents
+	and thus the keystrokes typed when entering passwords will
+	still go over the wire in clear text. It is trivial to capture
+	these. You should also be aware that cookies, if placed on an
+	NFS mounted directory, are prone to eavesdropping too.
+      </para>
 
     </sect1>
+
+    <sect1>
+      <title>The Greeter</title>
+
+      <para>
+	The greeter is the graphical user interface that is presented
+	to the user. The greeter contains a menu at the top, an
+	optional face browser, an optional logo and a text entry
+	widget.
+      </para>
+
+      <sect2>
+	<title>
+	  Text entry
+	</title>
+
+	<para>
+	  The text entry field is used for entering logins, passwords,
+	  passphrases etc. <filename /gdmlogin/ is controlled by the
+	  underlying daemon and is basically stateless. The daemon
+	  controls the greeter through a simple protocol where it can
+	  ask the greeter for a text string with echo turned on or
+	  off. Similarly, the daemon can change the label above the
+	  text entry widget to correspond to the value the
+	  authentication system wants the user to enter.
+	</para>
+
+      </sect2>
+
+      <sect2>
+	<title>
+	  The Menu
+	</title>
+
+	<para>
+	  The menu bar in the top of the greeter enables the user to
+	  select the requested session type/desktop environment,
+	  select an appropriate locale/language and optionally
+	  shutdown/reboot the machine. The greeter window can also be
+	  iconified to make room for other applications on the login
+	  screen.
+	</para>
+
+      </sect2>
+
+      <sect2>
+	<title>
+	  The face browser
+	</title>
+
+	<para>
+	  The greeter provides a face browser containing icons for all
+	  the users on a system. The icons can be installed globally
+	  by the sysadmin or in the users' home directories.
+	</para>
+	
+	<para>
+	  The face browser makes a few assumptions about your
+	  environment. First of all, the greeter runs under a
+	  dedicated userid, and therefore any face icons located in
+	  user directories must be readable to the gdm user. I.e. all
+	  home- and <filename>~/.gnome</filename> directories must be
+	  made readable and executable to the ``other'' group on the
+	  system.
+	</para>
+
+	<para>
+	  Similarly, face icons placed in the global face directory
+	  must be readable to the gdm user.
+	</para>
+
+	<para>
+	  Please note that loading and scaling face icons located in
+	  user home directories can be a very time consuming task.
+	  Especially on large systems or systems running NIS. The
+	  browser feature is only intended for systems with relatively
+	  few users.
+	</para>
+
+	<para>
+	  To filter out unwanted user names in the browser, an exclude
+	  option is implemented. The greeter will automatically ignore
+	  usernames listed in the <filename /Exclude/ statement in the
+	  config file.
+	</para>
+
+	<para>
+	  When the browser is turned on, valid usernames on the
+	  machine are inherently exposed to a potential intruder. If
+	  your system is connected directly to the Internet, this
+	  might be a bad idea.
+	</para>
+
+      </sect2>
+
+      <sect2>
+	<title>
+	  The Logo
+	</title>
+
+	<para>
+	  The greeter can optionally display a logo in the login
+	  window. The image must be in a format readable to the Imlib
+	  library (GIF, JPG, PNG, TIFF, XPM and possibly others), and
+	  it must be readable to the gdm user. See the <filename
+	  /Logo/ option in the reference section below for detauls.
+	</para>
+
+      </sect2>
+
+    </sect1>
+
   </chapter>
 
-  <chapter id="ConfigurationOverview">
+  <chapter id="Configuration">
     <title>The Configuration Directory</title>
 
     <para> 
@@ -269,20 +440,19 @@
 	just logged out.
       </para>
 
+      <para>
+	Note that the PostSession script will be run even when the
+	display fails to respond due to an I/O error or similar. Thus,
+	there is no guarantee that X applications will work during
+	script execution.
+      </para>
+
       <para> 
 	Neither of the Init, PreSession or PostSession scripts are
 	necessary and can be left out. At least one session script is
 	required for proper operation.
       </para>
 
-    </sect1>
-
-    <sect1>
-      <title>The Greeter</title>
-
-      <para>
-	foo foo
-      </para>
     </sect1>
 
     <sect1>

@@ -298,6 +298,7 @@ gdm_xdmcp_decode_packet (void)
     gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", 
 	       opcode_names[header.opcode], inet_ntoa (clnt_sa.sin_addr));
 
+
     switch (header.opcode) {
 	
     case BROADCAST_QUERY:
@@ -388,7 +389,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 	gdm_xdmcp_send_unwilling (clnt_sa, type);
 
     /* Dispose authlist from remote display */
-    XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
+    /* XdmcpDisposeARRAYofARRAY8 (&clnt_authlist); */
 }
 
 
@@ -410,7 +411,7 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist)
     XdmcpWriteARRAY8 (&buf, &serv_authlist.authentication); /* Hardcoded authentication */
     XdmcpWriteARRAY8 (&buf, &servhost);
     XdmcpWriteARRAY8 (&buf, &status);
-    /* XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));*/
+    /* XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in)); */
 }
 
 

@@ -1167,6 +1167,9 @@ int main (int argc, gchar* argv[])
     gnome_init ("gdmconfig", VERSION, argc, argv);
     gnome_sound_shutdown ();
     help.name = gnome_app_id;
+
+    bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+    textdomain (PACKAGE);
     
     gdm_config_gui_init ();
     gdm_config_parse ();

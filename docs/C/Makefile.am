@@ -20,6 +20,7 @@ dist-hook:
 	mkdir $(distdir)/gdm
 	-cp $(srcdir)/gdm/*.html gdm/*.css $(distdir)/gdm
 	-cp $(srcdir)/gdm.html $(distdir)
+	-cp $(srcdir)/gdm.html $(distdir)/gdm/index.html
 	mkdir $(distdir)/images
 	-cp $(srcdir)/images/*.gif $(srcdir)/images/*.jpg $(distdir)/images
 

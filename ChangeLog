@@ -1,8 +1,31 @@
+1999-09-30    <mkp@mkp.net>
+
+	* config/PreSession, config/PostSession: Example sessreg scripts.
+
+	* daemon/slave.c (gdm_slave_session_cleanup): Run PostSession
+ 	script even when display is dead. 
+
+	* daemon/xdmcp.c (gdm_xdmcp_handle_query): Get XDMCP running again.
+
+1999-09-29    <mkp@mkp.net>
+
+	* gui/gdmlogin.c, gui/gdmchooser.c: bindtextdomain() + other
+ 	fixes.
+
+	* daemon/slave.c (gdm_slave_session_start): Pipe fix from Elliot.
+
 1999-09-28  Rodrigo Stulzer Lopes <rodrigo@conectiva.com.br>
 
 	* configure.in (ALL_LINGUAS): Added pt_BR.
 
-1999-09-26 +09  Changwoo Ryu  <cwryu@adam.kaist.ac.kr>
+1999-09-27    <mkp@mkp.net>
+
+	* docs/C/gdm.sgml: Lots of updates.
+
+	* daemon/slave.c (gdm_slave_session_start): Let the daemon handle
+ 	session/language lookups.
+
+1999-09-26 Changwoo Ryu  <cwryu@adam.kaist.ac.kr>
 
 	* configure.in (ALL_LINGUAS): Added Korean.
 	* config/locale.alias: Likewise.

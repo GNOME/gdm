@@ -74,7 +74,7 @@ void   gdm_slave_start (GdmDisplay *d);
 static gint gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt);
 static gint gdm_slave_xioerror_handler (Display *disp);
 static void gdm_slave_greeter (void);
-static void gdm_slave_session_start (gchar *login, gchar *session, gboolean savesess, gchar *lang, gboolean savelang);
+static void gdm_slave_session_start (gchar *login);
 static void gdm_slave_session_stop (void);
 static void gdm_slave_session_cleanup (void);
 static void gdm_slave_term_handler (int sig);
@@ -165,8 +165,7 @@ static void
 gdm_slave_greeter (void)
 {
     gint pipe1[2], pipe2[2];  
-    gchar *login = NULL, *session, *language;
-    gboolean savesess = FALSE, savelang = FALSE;
+    gchar *login = NULL;
     gchar **argv;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
@@ -222,14 +221,17 @@ gdm_slave_greeter (void)
     default:
 	close (pipe1[0]);
 	close (pipe2[1]);
-	
+
+	fcntl(pipe1[1], F_SETFD, fcntl(pipe1[1], F_GETFD, 0) | FD_CLOEXEC);
+	fcntl(pipe2[0], F_SETFD, fcntl(pipe2[2], F_GETFD, 0) | FD_CLOEXEC);
+
 	if (pipe1[1] != STDOUT_FILENO) 
 	    dup2 (pipe1[1], STDOUT_FILENO);
 	
 	if (pipe2[0] != STDIN_FILENO) 
 	    dup2 (pipe2[0], STDIN_FILENO);
 	
-	greeter=fdopen (STDIN_FILENO, "r");
+	greeter = fdopen (STDIN_FILENO, "r");
 	
 	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", d->greetpid);
 	break;
@@ -244,9 +246,62 @@ gdm_slave_greeter (void)
 	    sleep (GdmRetryDelay);
 	}
     }
+
+    gdm_slave_session_start (login);
+}
+
+
+static void
+gdm_slave_session_start (gchar *login)
+{
+    gchar *cfgdir, *sesspath;
+    struct stat statbuf;
+    gchar *session, *language, *usrsess, *usrlang;
+    gboolean savesess = FALSE, savelang = FALSE, usrcfgok = FALSE, authok = FALSE;
+    gint i;
+
+    pwent = getpwnam (login);
     
-    session = gdm_slave_greeter_ctl (GDM_SESS, "");
-    language = gdm_slave_greeter_ctl (GDM_LANG, "");
+    if (!pwent) 
+	gdm_remanage (_("gdm_slave_session_start: User passed authentication but getpwnam(%s) failed. Spooky!"), login);
+
+    setegid (pwent->pw_gid);
+    seteuid (pwent->pw_uid);
+
+    /* Check if ~user/.gnome exists. Create it otherwise. */
+    cfgdir = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
+    
+    if (stat (cfgdir, &statbuf) == -1) {
+	mkdir (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
+	chmod (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
+    }
+    
+    /* Sanity check on ~user/.gnome/gdm */
+    usrcfgok = gdm_file_check ("gdm_slave_greeter", pwent->pw_uid, cfgdir, "gdm", 
+				TRUE, GdmUserMaxFile, GdmRelaxPerms);
+    g_free (cfgdir);
+
+    if (usrcfgok) {
+	gchar *cfgstr;
+
+	cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/last", NULL);
+	usrsess = gnome_config_get_string (cfgstr);
+	g_free (cfgstr);
+
+	cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/lang", NULL);
+	usrlang = gnome_config_get_string (cfgstr);
+	g_free (cfgstr);
+    } 
+    else {
+	usrsess = "";
+	usrlang = "";
+    }
+
+    setegid (GdmGroupId);
+    seteuid (0);
+    
+    session = gdm_slave_greeter_ctl (GDM_SESS, usrsess);
+    language = gdm_slave_greeter_ctl (GDM_LANG, usrlang);
     
     if (strlen (gdm_slave_greeter_ctl (GDM_SSESS, "")))
 	savesess = TRUE;
@@ -254,7 +309,7 @@ gdm_slave_greeter (void)
     if (strlen (gdm_slave_greeter_ctl (GDM_SLANG, "")))
 	savelang = TRUE;
     
-    gdm_debug ("gdm_slave_greeter: Authentication completed. Whacking greeter");
+    gdm_debug ("gdm_slave_session_start: Authentication completed. Whacking greeter");
     
     sigemptyset (&mask);
     sigaddset (&mask, SIGCHLD);
@@ -271,32 +326,8 @@ gdm_slave_greeter (void)
     
     if (GdmKillInitClients)
 	gdm_slave_windows_kill();
-    
-    gdm_slave_session_start (login, session, savesess, language, savelang);
-}
-
-
-static void 
-gdm_slave_session_start (gchar *login, gchar *session, gboolean savesess, gchar *lang, gboolean savelang)
-{
-    gchar *sessdir, *cfgdir, *cfgstr;
-    struct stat statbuf;
-    gboolean authok;
-    gboolean usercfgok;
-    
-    if (!login || !session || !lang) {
-	gdm_debug ("gdm_slave_session_start: Insufficient parameters");
-	return;
-    }
-
-    gdm_error ("gdm_slave_session_start: %s on %s", login, d->name);
-    
-    pwent = getpwnam (login);
-    
-    /* If the user doesn't exist, reset the X server and restart greeter */
-    if (!pwent) 
-	gdm_remanage (_("gdm_slave_session_init: User '%s' not found. Aborting."), login);
-
+ 
+    /* Prepare user session */
     setenv ("DISPLAY", d->name, TRUE);
     setenv ("LOGNAME", login, TRUE);
     setenv ("USER", login, TRUE);
@@ -313,14 +344,14 @@ gdm_slave_session_start (gchar *login, gchar *session, gboolean savesess, gchar 
 	setenv ("PATH", GdmDefaultPath, TRUE);
 
     /* Set locale */
-    if (!strcasecmp (lang, "english"))
+    if (!strcasecmp (language, "english"))
 	setenv ("LANG", "C", TRUE);
     else
-	setenv ("LANG", lang, TRUE);
+	setenv ("LANG", language, TRUE);
     
     /* If script fails reset X server and restart greeter */
     if (gdm_exec_script (d, GdmPreSession) != EXIT_SUCCESS) 
-	gdm_remanage (_("gdm_slave_session_init: Execution of PreSession script returned > 0. Aborting."));
+	gdm_remanage (_("gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."));
 
     /* Setup cookie -- We need this information during cleanup, thus
      * cookie handling is done before fork()ing */
@@ -344,7 +375,7 @@ gdm_slave_session_start (gchar *login, gchar *session, gboolean savesess, gchar 
     switch (d->sesspid = fork()) {
 	
     case -1:
-	gdm_abort (_("gdm_slave_session_init: Error forking user session"));
+	gdm_abort (_("gdm_slave_session_start: Error forking user session"));
 	
     case 0:
 	setpgid (0, 0);
@@ -352,55 +383,49 @@ gdm_slave_session_start (gchar *login, gchar *session, gboolean savesess, gchar 
 	umask (022);
 	
 	if (setgid (pwent->pw_gid) < 0) 
-	    gdm_remanage (_("gdm_slave_session_init: Could not setgid %d. Aborting."), pwent->pw_gid);
+	    gdm_remanage (_("gdm_slave_session_start: Could not setgid %d. Aborting."), pwent->pw_gid);
 	
 	if (initgroups (login, pwent->pw_gid) < 0)
-	    gdm_remanage (_("gdm_slave_session_init: initgroups() failed for %s. Aborting."), login);
+	    gdm_remanage (_("gdm_slave_session_start: initgroups() failed for %s. Aborting."), login);
 	
 	if (setuid (pwent->pw_uid) < 0) 
-	    gdm_remanage (_("gdm_slave_session_init: Could not become %s. Aborting."), login);
+	    gdm_remanage (_("gdm_slave_session_start: Could not become %s. Aborting."), login);
 	
 	chdir (pwent->pw_dir);
 	
-	/* Check if ~user/.gnome exists. Create it otherwise. */
-	cfgdir = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
-	
-	if (stat (cfgdir, &statbuf) == -1) { /* FIXME: Maybe I need to be a bit more paranoid here! */
-	    mkdir (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
-	    chmod (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
-	}
-	
-	/* Sanity check on ~user/.gnome/gdm */
-	usercfgok = gdm_file_check ("gdm_slave_session_init", pwent->pw_uid, cfgdir, "gdm", 
-				TRUE, GdmUserMaxFile, GdmRelaxPerms);
-	
-	g_free (cfgdir);
-	
-	if (usercfgok && savesess) {
-	    /* libgnome sets home to ~root, so we have to write the path ourselves */
-	    cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/last", NULL);
+	if (usrcfgok && savesess) {
+	    gchar *cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/last", NULL);
 	    gnome_config_set_string (cfgstr, session);
 	    gnome_config_sync();
 	    g_free (cfgstr);
 	}
 	
-	if (usercfgok && savelang) {
-	    cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/lang", NULL);
-	    gnome_config_set_string (cfgstr, lang);
+	if (usrcfgok && savelang) {
+	    gchar *cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/lang", NULL);
+	    gnome_config_set_string (cfgstr, language);
 	    gnome_config_sync();
 	    g_free (cfgstr);
 	}
 	
-	sessdir = g_strconcat (GdmSessDir, "/", session, NULL);
+	sesspath = g_strconcat (GdmSessDir, "/", session, NULL);
 	
-	gdm_debug ("Running %s for %s on %s", sessdir, login, d->name);
+	gdm_debug ("Running %s for %s on %s", sesspath, login, d->name);
+
+	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+	    close(i);
+
+	/* No error checking here - if it's messed the best response
+         * is to ignore & try to continue */
+	open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+	open("/dev/null", O_RDWR); /* open stdout - fd 1 */
+	open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 	
 	/* Restore sigmask inherited from init */
 	sigprocmask (SIG_SETMASK, &sysmask, NULL);
 	
-	execl (sessdir, NULL);
+	execl (sesspath, NULL);
 	
-	gdm_error (_("gdm_slave_session_init: Could not start session `%s'"), sessdir);
+	gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
 	
 	gdm_slave_session_stop();
 	gdm_slave_session_cleanup();
@@ -445,11 +470,11 @@ gdm_slave_session_cleanup (void)
 {
     gdm_debug ("gdm_slave_session_cleanup: %s on %s", pwent->pw_name, d->name);
     
-    if (d->dsp && gdm_slave_xsync_ping()) {
+    /* Execute post session script */
+    gdm_debug ("gdm_slave_session_cleanup: Running post session script");
+    gdm_exec_script (d, GdmPostSession);
 	
-	/* Execute post session script */
-	gdm_debug ("gdm_slave_session_cleanup: Running post session script");
-	gdm_exec_script (d, GdmPostSession);
+    if (d->dsp && gdm_slave_xsync_ping()) {
 	
 	/* Cleanup */
 	gdm_debug ("gdm_slave_session_cleanup: Killing windows");

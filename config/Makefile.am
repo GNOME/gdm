@@ -5,6 +5,8 @@ sessdir = $(sysconfdir)/gdm/Sessions
 initdir = $(sysconfdir)/gdm/Init
 authdir = $(localstatedir)/gdm
 gnomercdir = $(sysconfdir)
+postdir = $(sysconfdir)/gdm/PostSession
+predir = $(sysconfdir)/gdm/PreSession
 
 
 gdm.conf: gdm.conf.in Makefile
@@ -36,7 +38,9 @@ EXTRA_DIST = \
 	Xsession \
 	gdm \
 	locale.alias \
-	Default
+	Default \
+	PostSession \
+	PreSession
 
 install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -d $(confdir); then \
@@ -65,6 +69,20 @@ install-data-hook: gdm.conf gnomerc Gnome
 	fi
 	if test '!' -f $(initdir)/Default; then \
 		$(INSTALL_SCRIPT) $(srcdir)/Default $(initdir)/Default; \
+	fi
+	if test '!' -d $(predir); then \
+		$(mkinstalldirs) $(predir); \
+		chmod 755 $(predir); \
+	fi
+	if test '!' -f $(predir)/Default; then \
+		$(INSTALL_SCRIPT) $(srcdir)/PreSession $(predir)/Default; \
+	fi
+	if test '!' -d $(postdir); then \
+		$(mkinstalldirs) $(postdir); \
+		chmod 755 $(postdir); \
+	fi
+	if test '!' -f $(postdir)/Default; then \
+		$(INSTALL_SCRIPT) $(srcdir)/PostSession $(postdir)/Default; \
 	fi
 	if test '!' -d $(authdir); then \
 		$(mkinstalldirs) $(authdir); \

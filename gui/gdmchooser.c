@@ -676,6 +676,9 @@ main (int argc, char *argv[])
     gnome_init ("gdmchooser", VERSION, fixedargc, fixedargv);
     g_free (fixedargv);
 
+    bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+    textdomain (PACKAGE);
+
     gnome_preferences_set_dialog_position(GTK_WIN_POS_CENTER);
     
     gdm_chooser_parse_config();
