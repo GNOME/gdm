@@ -1,3 +1,15 @@
+Mon Aug 04 09:20:06 2003  George Lebl <jirka@5z.com>
+
+	* config/gdm, config/gdm-autologin: Don't unclude the /lib/security
+	  dir for the pam modules and just let pam locate things on its own
+
+	* daemon/errorgui.[ch], daemon/gdm.c, daemon/slave.c: Use the gtk
+	  resource file for the greeters in the errorgui to get the same
+	  GTK theme going here, instead of gdm run the post session error
+	  dialog as the user for whom it is running, and run the post session
+	  error dialog before the session stop again since the home dir might
+	  not be present after the session stopped.
+
 Fri Aug 01 11:19:50 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c: the SIGABRT handler cannot use the mainloop as

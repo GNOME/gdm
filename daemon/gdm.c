@@ -113,6 +113,7 @@ gboolean gdm_in_final_cleanup = FALSE;
 /* Configuration options */
 gchar *GdmUser = NULL;
 gchar *GdmGroup = NULL;
+gchar *GdmGtkRC = NULL;
 gchar *GdmSessDir = NULL;
 gchar *GdmXsession = NULL;
 gchar *GdmLocaleFile = NULL;
@@ -352,6 +353,8 @@ gdm_config_parse (void)
     GdmUserAuthDir = ve_config_get_string (cfg, GDM_KEY_UAUTHDIR);
     GdmUserAuthFile = ve_config_get_string (cfg, GDM_KEY_UAUTHFILE);
     GdmUserAuthFB = ve_config_get_string (cfg, GDM_KEY_UAUTHFB);
+
+    GdmGtkRC = ve_config_get_string (cfg, GDM_KEY_GTKRC);
 
     GdmTimedLoginEnable = ve_config_get_bool (cfg, GDM_KEY_TIMED_LOGIN_ENABLE);
     GdmTimedLogin = ve_config_get_string (cfg, GDM_KEY_TIMED_LOGIN);

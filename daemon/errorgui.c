@@ -46,6 +46,7 @@ extern char *stored_path;
 /* Configuration option variables */
 extern gchar *GdmUser;
 extern gchar *GdmServAuthDir;
+extern gchar *GdmGtkRC;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
 
@@ -185,7 +186,7 @@ get_error_text_view (const char *details)
 }
 
 static void
-setup_dialog (GdmDisplay *d, const char *name, int closefdexcept)
+setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_ids)
 {
 	int argc = 1;
 	char **argv;
@@ -200,9 +201,11 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept)
 	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-	setgid (GdmGroupId);
-	initgroups (GdmUser, GdmGroupId);
-	setuid (GdmUserId);
+	if (set_ids) {
+		setgid (GdmGroupId);
+		initgroups (GdmUser, GdmGroupId);
+		setuid (GdmUserId);
+	}
 
 	gdm_desetuid ();
 
@@ -222,19 +225,28 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept)
 
 	/* sanity env stuff */
 	ve_setenv ("SHELL", "/bin/sh", TRUE);
-	ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
+	/* set HOME to /, we don't need no stinking HOME anyway */
+	if (set_ids)
+		ve_setenv ("HOME", "/", TRUE);
+	else
+		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
 
 	argv = g_new0 (char *, 2);
 	argv[0] = (char *)name;
 
 	gtk_init (&argc, &argv);
 
+	if( ! ve_string_empty (GdmGtkRC) &&
+	   access (GdmGtkRC, R_OK) == 0)
+		gtk_rc_parse (GdmGtkRC);
+
 	get_screen_size (d);
 }
 
 void
 gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
-		    const char *details_label, const char *details_file)
+		    const char *details_label, const char *details_file,
+		    uid_t uid, gid_t gid)
 {
 	pid_t pid;
 
@@ -246,7 +258,17 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		GtkWidget *button;
 		char *loc;
 		char *details;
-		
+
+		if (uid != 0) {
+			gid_t groups[1] = { gid };
+
+			setgid (gid);
+			setgroups (1, groups);
+			setuid (uid);
+
+			gdm_desetuid ();
+		}
+
 		/* First read the details if they exist */
 		if (details_file) {
 			FILE *fp;
@@ -256,7 +278,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 			GString *gs = g_string_new (NULL);
 
 			fp = NULL;
-			IGNORE_EINTR (r = stat (details_file, &s));
+			IGNORE_EINTR (r = lstat (details_file, &s));
 			if (r == 0) {
 				if (S_ISREG (s.st_mode))
 					fp = fopen (details_file, "r");
@@ -300,7 +322,8 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 			details = NULL;
 		}
 
-		setup_dialog (d, "gtk-error-box", -1);
+		setup_dialog (d, "gtk-error-box", -1,
+			      (uid == 0 || uid == GdmUserId) /* set_ids */);
 
 		loc = gdm_locale_to_utf8 (error);
 
@@ -391,7 +414,10 @@ press_ok (GtkWidget *entry, gpointer data)
 void
 gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 {
-	gdm_error_box_full (d, type, error, NULL, NULL);
+	gdm_error_box_full (d, type, error, NULL, NULL,
+			    /* zero for uid/gid doesn't mean root, but
+			       it means to use the gdm user/group */
+			    0, 0);
 }
 
 char *
@@ -411,7 +437,7 @@ gdm_failsafe_question (GdmDisplay *d,
 		GtkWidget *dlg, *label, *entry;
 		char *loc;
 
-		setup_dialog (d, "gtk-failsafe-question", p[1]);
+		setup_dialog (d, "gtk-failsafe-question", p[1], TRUE /* set_ids */);
 
 		loc = gdm_locale_to_utf8 (question);
 
@@ -515,7 +541,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		GtkWidget *dlg;
 		char *loc;
 
-		setup_dialog (d, "gtk-failsafe-yesno", p[1]);
+		setup_dialog (d, "gtk-failsafe-yesno", p[1], TRUE /* set_ids */);
 
 		loc = gdm_locale_to_utf8 (question);
 
@@ -604,7 +630,7 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 		GtkWidget *dlg;
 		char *loc;
 
-		setup_dialog (d, "gtk-failsafe-ask-buttons", p[1]);
+		setup_dialog (d, "gtk-failsafe-ask-buttons", p[1], TRUE /* set_ids */);
 
 		loc = gdm_locale_to_utf8 (question);
 

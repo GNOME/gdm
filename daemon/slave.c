@@ -3070,6 +3070,8 @@ gdm_slave_session_start (void)
     gboolean failsafe = FALSE;
     pid_t pid;
     GdmWaitPid *wp;
+    uid_t uid;
+    gid_t gid;
 
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
 	       login);
@@ -3083,6 +3085,9 @@ gdm_slave_session_start (void)
 	    gdm_slave_exit (DISPLAY_REMANAGE,
 			    _("%s: User passed auth but getpwnam(%s) failed!"), "gdm_slave_session_start", login);
     }
+
+    uid = pwent->pw_uid;
+    gid = pwent->pw_gid;
 
     /* Run the PostLogin script */
     if (gdm_slave_exec_script (d, GdmPostLogin,
@@ -3350,9 +3355,6 @@ gdm_slave_session_start (void)
     gdm_debug ("Session: start_time: %ld end_time: %ld",
 	       (long)session_start_time, (long)end_time);
 
-    gdm_slave_session_stop (pid != 0 /* run_post_session */,
-			    FALSE /* no_shutdown_check */);
-
     if  ((/* sanity */ end_time >= session_start_time) &&
 	 (end_time - 10 <= session_start_time) &&
 	 /* only if the X server still exist! */
@@ -3374,9 +3376,13 @@ gdm_slave_session_start (void)
 				(home_dir_ok && ! failsafe) ?
 			       	  _("View details (~/.xsession-errors file)") :
 				  NULL,
-				errfile);
+				errfile,
+				uid, gid);
 	    g_free (errfile);
     }
+
+    gdm_slave_session_stop (pid != 0 /* run_post_session */,
+			    FALSE /* no_shutdown_check */);
 
     gdm_debug ("gdm_slave_session_start: Session ended OK (now all finished)");
 }
