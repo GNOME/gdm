@@ -29,7 +29,6 @@
 #include <errno.h>
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
-#include <X11/Xdmcp.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -81,39 +80,23 @@ remove_oldest_pending (void)
 }
 
 gboolean
-gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gpointer data)
+gdm_choose_data (void *uncast_data, size_t len)
 {
-	gchar buf[PIPE_SIZE];
-	gint len;
-	int id;
-	struct in_addr addr;
+	GdmChooseData data;
 	GSList *li;
 
-	if (cond != G_IO_IN) 
-		return TRUE;
-
-	if (g_io_channel_read (source, buf, PIPE_SIZE, &len) != G_IO_ERROR_NONE)
-		return TRUE;
-
-	gdm_debug ("gdm_choose_socket_handler: Read %d bytes", len);
-
-	if (buf[0] != STX)
-		return TRUE;
-
-	if (len != 1/*stx*/ + sizeof (int) /* id */ + sizeof (struct in_addr)) {
-		gdm_debug ("gdm_choose_socket_handler: Data not correct size");
-		return TRUE;
+	if (len != sizeof (data)) {
+		return FALSE;
 	}
 
-	id = *(int *) (&buf[1]);
-	memcpy (&addr, &buf[1+sizeof(int)], sizeof (struct in_addr));
+	memcpy (&data, uncast_data, len);
 
-	gdm_debug ("gdm_choose_socket_handler: got indirect id: %d address: %s",
-		   id, inet_ntoa (addr));
+	gdm_debug ("gdm_choose_data: got indirect id: %d address: %s",
+		   data.id, inet_ntoa (data.addr));
 
 	for (li = indirect; li != NULL; li = li->next) {
 		GdmIndirectDisplay *idisp = li->data;
-		if (idisp->id == id) {
+		if (idisp->id == data.id) {
 			/* whack the oldest if more then allowed */
 			while (ipending >= GdmMaxIndirect &&
 			       remove_oldest_pending ())
@@ -122,7 +105,7 @@ gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gpointer data)
 			idisp->acctime = time (NULL);
 			g_free (idisp->chosen_host);
 			idisp->chosen_host = g_new (struct in_addr, 1);
-			memcpy (idisp->chosen_host, &addr,
+			memcpy (idisp->chosen_host, &(data.addr),
 				sizeof (struct in_addr));
 
 			/* Now this display is pending */
@@ -132,7 +115,7 @@ gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gpointer data)
 		}
 	}
 
-	return TRUE;
+	return FALSE;
 }
 
 

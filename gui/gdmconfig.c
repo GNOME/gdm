@@ -907,18 +907,36 @@ gdm_config_parse_remaining (gboolean factory)
 static gboolean
 run_query (const gchar *msg)
 {
-    GtkWidget *req;
+	GtkWidget *req;
 
-    req = gnome_message_box_new (msg,
-				 GNOME_MESSAGE_BOX_QUESTION,
-				 GNOME_STOCK_BUTTON_YES,
-				 GNOME_STOCK_BUTTON_NO,
-				 NULL);
-	
-    gtk_window_set_modal (GTK_WINDOW (req), TRUE);
-    gnome_dialog_set_parent (GNOME_DIALOG (req),
-			     GTK_WINDOW (GDMconfigurator));
-    return (!gnome_dialog_run (GNOME_DIALOG(req)));
+	req = gnome_message_box_new (msg,
+				     GNOME_MESSAGE_BOX_QUESTION,
+				     GNOME_STOCK_BUTTON_YES,
+				     GNOME_STOCK_BUTTON_NO,
+				     NULL);
+
+	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
+	gnome_dialog_set_parent (GNOME_DIALOG (req),
+				 GTK_WINDOW (GDMconfigurator));
+	return (!gnome_dialog_run (GNOME_DIALOG(req)));
+}
+
+static int
+run_3_query (const gchar *msg, const char *b1, const char *b2, const char *b3)
+{
+	GtkWidget *req;
+
+	req = gnome_message_box_new (msg,
+				     GNOME_MESSAGE_BOX_QUESTION,
+				     b1,
+				     b2,
+				     b3,
+				     NULL);
+
+	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
+	gnome_dialog_set_parent (GNOME_DIALOG (req),
+				 GTK_WINDOW (GDMconfigurator));
+	return gnome_dialog_run (GNOME_DIALOG(req));
 }
 
 static void
@@ -944,15 +962,29 @@ run_warn_reset_dialog (void)
 
 	if (pid > 1 &&
 	    kill (pid, 0) == 0) {
-		if (run_query (_("The applied settings cannot take effect until gdm\n"
-				 "is restarted or your computer is rebooted.\n"
-				 "Do you wish to restart GDM now?\n"
-				 "This will kill all your current sessions\n"
-				 "and you will lose any unsaved data!")) &&
-		    run_query (_("Are you sure you wish to restart GDM\n"
-				 "and lose any unsaved data?"))) {
-			kill (pid, SIGHUP);
-			/* now what happens :) */
+		int reply = run_3_query
+			(_("The applied settings cannot take effect until gdm\n"
+			   "is restarted or your computer is rebooted.\n"
+			   "You can restart GDM when all sessions are\n"
+			   "closed (when all users log out) or you can\n"
+			   "restart GDM now (which will kill all current\n"
+			   "sessions)"),
+			 _("Restart after logout"),
+			 _("Restart now"),
+			 GNOME_STOCK_BUTTON_CANCEL);
+
+		if (reply == 0) {
+			kill (pid, SIGUSR1);
+		} else if (reply == 1) {
+			/* this level of paranoia isn't needed in case of
+			 * running from gdm */
+			if (g_getenv ("RUNNING_UNDER_GDM") != NULL ||
+			    run_query
+			    (_("Are you sure you wish to restart GDM\n"
+			       "now and lose any unsaved data?"))) {
+				kill (pid, SIGHUP);
+				/* now what happens :) */
+			}
 		}
 	} else {
 		w = gnome_ok_dialog_parented

@@ -10,9 +10,10 @@ EXTRA_DIST = \
 	xml-i18n-extract.in	\
 	xml-i18n-merge.in	\
 	xml-i18n-update.in	\
-	gdm-restart.in
+	gdm-restart.in		\
+	gdm-safe-restart.in
 
-sbin_SCRIPTS = gdm-restart
+sbin_SCRIPTS = gdm-restart gdm-safe-restart
 
 install-data-local: gdmconfig-security
 if CONSOLE_HELPER

@@ -1,3 +1,19 @@
+Wed Jul 04 20:58:31 2001  George Lebl <jirka@5z.com>
+
+	* gdm-safe-restart.in, Makefile.am, configure.in, daemon/choose.[ch], 
+	  daemon/gdm.[ch], daemon/slave.c, daemon/xdmcp.c, gui/gdmconfig.c:
+	  The fifo is not only for chooser now, it is a general protocol to
+	  control some gdm things, more to come.  It's writing direct binary
+	  structs, but then again this is only a fifo and you should only be
+	  able to write to it from gdm and root account on the same machine.
+	  The daemon now knows when a user is logged in on a display and
+	  there is a safe restart option with SIGUSR1 to the daemon.  Also
+	  the daemon knows the x pids now and can whack the X server when
+	  the slave crashes, so that we don't get busy hanging server.
+
+	* daemon/misc.c: fails are LOG_CRIT not LOG_ERR (I hope this is
+	  correct)
+
 Tue Jul 03 13:18:18 2001  George Lebl <jirka@5z.com>
 
 	* Makefile.am, config/Makefile.am: prepend $DESTDIR to $PAM_PREFIX

@@ -248,6 +248,8 @@ struct _GdmDisplay {
 
     gboolean disabled;
 
+    gboolean logged_in; /* TRUE if someone is logged in */
+
     gboolean timed_login_ok;
 
     int screenx;
@@ -281,6 +283,44 @@ void    g_signal_notify         (gint8          signal);
 
 void gdm_run (void);
 void gdm_quit (void);
+
+/* primitive protocol for controlling the daemon from the chooser
+ * or gdmconfig or whatnot */
+enum {
+	GDM_SOP_INVALID = 0,
+
+	GDM_SOP_CHOOSER,	/* Chosen host information */
+	GDM_SOP_XPID,		/* Pid of X server so that in case of
+				   slave crash, daemon can kill it */
+	GDM_SOP_LOGGED_IN,	/* status of user, if logged in or not,
+				   useful for safe restarts */
+
+	GDM_SOP_LAST
+};
+
+typedef struct _GdmXPidData GdmXPidData;
+struct _GdmXPidData {
+	pid_t slave_pid;
+	pid_t xpid;
+};
+
+typedef struct _GdmLoggedInData GdmLoggedInData;
+struct _GdmLoggedInData {
+	pid_t slave_pid;
+	gboolean logged_in;
+};
+
+/* Protocol is not for use outside of gdm so endianess be damned,
+ * it's not really a "wire" protocol, just for the programs of the
+ * gdm suite.  Which are all compiled on the same machine etc... etc...
+ * blah blah blah*/
+typedef struct _GdmSlaveHeader GdmSlaveHeader;
+struct _GdmSlaveHeader {
+	int opcode;
+	size_t len; /* length of data (not including header) */
+};
+
+void gdm_fifo_close (void);
 
 #define gdm_string_empty(x) ((x)==NULL||(x)[0]=='\0')
 #define gdm_sure_string(x) ((x)!=NULL?(x):"")

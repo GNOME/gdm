@@ -104,8 +104,6 @@ gint deny_severity = LOG_WARNING;
 
 static gint xdmcpfd = -1;
 static guint xdmcp_source = 0;
-static gint choosefd = -1;
-static guint choose_source = 0;
 static gint globsessid;
 static gchar *sysid;
 static ARRAY8 servhost;
@@ -361,38 +359,7 @@ gdm_xdmcp_init (void)
 	return FALSE;
     }
 
-    /* Setup FIFO if choosing is enabled */
-    if (GdmIndirect) {
-	gchar *fifopath;
-
-	fifopath = g_strconcat (GdmServAuthDir, "/.gdmchooser", NULL);
-
-	unlink (fifopath);
-
-	if (mkfifo (fifopath, 0660) < 0) {
-	    gdm_error (_("gdm_xdmcp_init: Could not make FIFO for chooser"));
-	    gdm_xdmcp_close ();
-	    GdmXdmcp = FALSE;
-	    g_free (fifopath);
-	    return FALSE;
-	}
-
-	choosefd = open (fifopath, O_RDWR); /* Open with write to avoid EOF */
-
-	if (choosefd < 0) {
-	    gdm_error (_("gdm_xdmcp_init: Could not open FIFO for chooser"));
-	    gdm_xdmcp_close ();
-	    GdmXdmcp = FALSE;
-	    g_free (fifopath);
-	    return FALSE;
-	}
-
-	chmod (fifopath, 0660);
-
-	g_free (fifopath);
-    }
-
-    return (TRUE);
+    return TRUE;
 }
 
 
@@ -407,17 +374,6 @@ gdm_xdmcp_run (void)
 		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
 		 gdm_xdmcp_decode_packet, NULL, NULL);
 	g_io_channel_unref (xdmcpchan);
-
-	if (GdmIndirect) {
-		GIOChannel *choosechan;
-
-		choosechan = g_io_channel_unix_new (choosefd);
-		choose_source = g_io_add_watch_full
-			(choosechan, G_PRIORITY_DEFAULT,
-			 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
-			 gdm_choose_socket_handler, NULL, NULL);
-		g_io_channel_unref (choosechan);
-	}
 }
 
 
@@ -432,16 +388,6 @@ gdm_xdmcp_close (void)
 	if (xdmcpfd > 0) {
 		close (xdmcpfd);
 		xdmcpfd = -1;
-	}
-
-	if (choose_source > 0) {
-		g_source_remove (choose_source);
-		choose_source = 0;
-	}
-
-	if (choosefd > 0) {
-		close (choosefd);
-		choosefd = -1;
 	}
 }
 

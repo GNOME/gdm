@@ -21,6 +21,9 @@
 
 #include "gdm.h"
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 GdmIndirectDisplay *	gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
 GdmIndirectDisplay *	gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
 void			gdm_choose_indirect_dispose (GdmIndirectDisplay *id);
@@ -28,11 +31,14 @@ void			gdm_choose_indirect_dispose (GdmIndirectDisplay *id);
 /* dispose of indirect display of id, if no host is set */
 void			gdm_choose_indirect_dispose_empty_id (guint id);
 
-gboolean		gdm_choose_socket_handler (GIOChannel *source,
-						   GIOCondition cond,
-						   gpointer data);
+typedef struct _GdmChooseData GdmChooseData;
+struct _GdmChooseData {
+	int id;
+	struct in_addr addr;
+};
 
-
+gboolean		gdm_choose_data (void *uncast_data,
+					 size_t len);
 
 #endif /* CHOOSE_H */
 

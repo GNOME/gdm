@@ -51,6 +51,7 @@
 #include "filecheck.h"
 #include "auth.h"
 #include "server.h"
+#include "choose.h"
 #include "errorgui.h"
 
 
@@ -131,6 +132,8 @@ static void     gdm_child_exit (gint status, const gchar *format, ...);
 static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
+static void	gdm_send_logged_in (gboolean logged_in);
+static void	gdm_send_xpid (pid_t xpid);
 
 
 /* Yay thread unsafety */
@@ -238,6 +241,7 @@ gdm_slave_start (GdmDisplay *display)
 			/* Whack the server if we want to restart it next time
 			 * we run gdm_slave_run */
 			gdm_server_stop (display);
+			gdm_send_xpid (0);
 		} else {
 			/* OK about to start again so redo our cookies and reinit
 			 * the server */
@@ -347,8 +351,10 @@ gdm_slave_run (GdmDisplay *display)
     /* if this is local display start a server if one doesn't
      * exist */
     if (d->type == TYPE_LOCAL &&
-	d->servpid <= 0)
+	d->servpid <= 0) {
 	    gdm_server_start (d);
+	    gdm_send_xpid (d->servpid);
+    }
     
     gdm_setenv ("XAUTHORITY", d->authfile);
     gdm_setenv ("DISPLAY", d->name);
@@ -417,9 +423,13 @@ gdm_slave_run (GdmDisplay *display)
 	       strcmp (ParsedAutomaticLogin, "root") != 0) {
 	    gdm_first_login = FALSE;
 
+	    gdm_send_logged_in (TRUE);
+
 	    setup_automatic_session (d, ParsedAutomaticLogin);
 
 	    gdm_slave_session_start();
+
+	    gdm_send_logged_in (FALSE);
 
 	    gdm_debug ("gdm_slave_run: Automatic login done");
     } else {
@@ -427,12 +437,17 @@ gdm_slave_run (GdmDisplay *display)
 		    gdm_first_login = FALSE;
 	    gdm_slave_greeter ();  /* Start the greeter */
 	    gdm_slave_wait_for_login (); /* wait for a password */
+
+	    gdm_send_logged_in (TRUE);
+
 	    if (do_timed_login) {
 		    /* timed out into a timed login */
 		    do_timed_login = FALSE;
 		    setup_automatic_session (d, ParsedTimedLogin);
 	    }
 	    gdm_slave_session_start ();
+
+	    gdm_send_logged_in (FALSE);
     }
 }
 
@@ -697,6 +712,8 @@ gdm_slave_wait_for_login (void)
 				continue;
 			}
 
+			gdm_send_logged_in (TRUE);
+
 			/* disable the login screen, we don't want people to
 			 * log in in the meantime */
 			gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
@@ -707,6 +724,8 @@ gdm_slave_wait_for_login (void)
 			 * wiped us */
 
 			gdm_verify_cleanup ();
+
+			gdm_send_logged_in (FALSE);
 
 			gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
 			gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
@@ -1114,12 +1133,80 @@ gdm_slave_greeter (void)
 }
 
 static void
+gdm_send_xpid (pid_t xpid)
+{
+	GdmSlaveHeader header;
+	GdmXPidData data;
+	int fd;
+	char *fifopath;
+
+	gdm_debug ("Sending X pid == %ld for slave %ld",
+		   (long)xpid,
+		   (long)getpid ());
+
+	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+
+	fd = open (fifopath, O_WRONLY);
+	/* eek */
+	if (fd < 0) {
+		gdm_error (_("%s: Can't open fifo!"), "gdm_send_logged_in");
+		return;
+	}
+
+	header.opcode = GDM_SOP_XPID;
+	header.len = sizeof (data);
+
+	data.slave_pid = getpid ();
+	data.xpid = xpid;
+
+	write (fd, &header, sizeof (header));
+	write (fd, &data, sizeof (data));
+
+	close (fd);
+}
+
+
+static void
+gdm_send_logged_in (gboolean logged_in)
+{
+	GdmSlaveHeader header;
+	GdmLoggedInData data;
+	int fd;
+	char *fifopath;
+
+	gdm_debug ("Sending logged_in == %s for slave %ld",
+		   logged_in ? "TRUE" : "FALSE",
+		   (long)getpid ());
+
+	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+
+	fd = open (fifopath, O_WRONLY);
+	/* eek */
+	if (fd < 0) {
+		gdm_error (_("%s: Can't open fifo!"), "gdm_send_logged_in");
+		return;
+	}
+
+	header.opcode = GDM_SOP_LOGGED_IN;
+	header.len = sizeof (data);
+
+	data.slave_pid = getpid ();
+	data.logged_in = logged_in;
+
+	write (fd, &header, sizeof (header));
+	write (fd, &data, sizeof (data));
+
+	close (fd);
+}
+
+static void
 send_chosen_host (GdmDisplay *disp, const char *hostname)
 {
+	GdmSlaveHeader header;
+	GdmChooseData data;
 	int fd;
 	char *fifopath;
 	struct hostent *host;
-	char *buf;
 
 	host = gethostbyname (hostname);
 
@@ -1131,18 +1218,25 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 	gdm_debug ("Sending chosen host address (%s) %s",
 		   hostname, inet_ntoa (*(struct in_addr *)host->h_addr_list[0]));
 
-	fifopath = g_strconcat (GdmServAuthDir, "/.gdmchooser", NULL);
+	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 
 	fd = open (fifopath, O_WRONLY);
 
-	/* send char: STX, int: indirect display id, in_addr: address */
-	buf = g_new (char, 1 + sizeof (int) + sizeof (struct in_addr));
-	buf[0] = STX;
-	memcpy (&buf[1], &disp->indirect_id, sizeof (int));
-	memcpy (&buf[1 + sizeof (int)],
-		(struct in_addr *)host->h_addr_list[0],
+	/* eek */
+	if (fd < 0) {
+		gdm_error (_("%s: Can't open fifo!"), "send_chosen_host");
+		return;
+	}
+
+	header.opcode = GDM_SOP_CHOOSER;
+	header.len = sizeof (GdmChooseData);
+
+	data.id = disp->indirect_id;
+	memcpy (&(data.addr), (struct in_addr *)host->h_addr_list[0],
 		sizeof (struct in_addr));
-	write (fd, buf, 1 + sizeof (int) + sizeof (struct in_addr));
+
+	write (fd, &header, sizeof (header));
+	write (fd, &data, sizeof (data));
 
 	close (fd);
 }

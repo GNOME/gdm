@@ -1,0 +1,13 @@
+#!/bin/sh
+PIDFILE=`grep '^PidFile=' @sysconfdir@/gdm/gdm.conf | sed -e 's/^PidFile=//'`
+if test x$PIDFILE = x ; then
+	echo "Can't find the PID file in the configuration file, going to try:"
+	echo "/var/run/gdm.pid"
+	PIDFILE=/var/run/gdm.pid
+fi
+if test '!' -f $PIDFILE ; then
+	echo "$PIDFILE doesn't exist, perhaps GDM isn't running"
+	exit 1
+fi
+# exec the kill to get the correct return code
+exec kill -USR1 `cat $PIDFILE`

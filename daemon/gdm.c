@@ -21,6 +21,10 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 #include <ctype.h>
 #include <pwd.h>
 #include <grp.h>
@@ -35,6 +39,7 @@
 #include "xdmcp.h"
 #include "verify.h"
 #include "display.h"
+#include "choose.h"
 #include "errorgui.h"
 
 static const gchar RCSid[]="$Id$";
@@ -44,6 +49,11 @@ static const gchar RCSid[]="$Id$";
 static void gdm_config_parse (void);
 static void gdm_local_servers_start (GdmDisplay *d);
 static void gdm_daemonify (void);
+static gboolean gdm_slave_socket_handler (GIOChannel *source,
+					  GIOCondition cond,
+					  gpointer data);
+static void gdm_safe_restart (void);
+static void gdm_restart_now (void);
 
 /* Global vars */
 GSList *displays;		/* List of displays managed */
@@ -52,6 +62,8 @@ sigset_t sysmask;		/* Inherited system signal mask */
 gchar *argdelim = " ";		/* argv argument delimiter */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
+int fifofd = -1;		/* fifo fd for the slave communication fifo */
+guint fifo_source = 0;		/* source for the above */
 
 /* True if the server that was run was in actuallity not specified in the
  * config file.  That is if xdmcp was disabled and no local servers were
@@ -127,6 +139,8 @@ gint GdmTimedLoginDelay = 0;
 char **stored_argv = NULL;
 int stored_argc = 0;
 char *stored_path = NULL;
+
+static gboolean gdm_restart_mode = FALSE;
 
 
 /**
@@ -485,6 +499,7 @@ final_cleanup (void)
 	g_slist_free (list);
 
 	gdm_xdmcp_close ();
+	gdm_fifo_close ();
 
 	closelog();
 	unlink (GdmPidFile);
@@ -677,14 +692,18 @@ gdm_cleanup_children (void)
     gint exitstatus = 0, status;
     GdmDisplay *d = NULL;
     gchar **argv;
+    gboolean crashed;
 
     /* Pid and exit status of slave that died */
     pid = waitpid (-1, &exitstatus, WNOHANG);
 
-    if (WIFEXITED (exitstatus))
+    if (WIFEXITED (exitstatus)) {
 	    status = WEXITSTATUS (exitstatus);
-    else
+	    crashed = FALSE;
+    } else {
 	    status = DISPLAY_SUCCESS;
+	    crashed = TRUE;
+    }
 	
     gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
 
@@ -696,6 +715,23 @@ gdm_cleanup_children (void)
 
     if (!d)
 	return;
+
+    if (crashed) {
+	    if (d->servpid > 0) {
+		    if (kill (d->servpid, SIGTERM) == 0)
+			    waitpid (d->servpid, NULL, 0);
+
+		    /* just for paranoia's sake, yes sleeping in the
+		     * daemon is bad but this is an exceptional
+		     * situation and not normal occurance. */
+		    sleep (3);
+			    
+		    d->servpid = 0;
+	    }
+    }
+
+    /* definately not logged in now */
+    d->logged_in = FALSE;
 
     /* Declare the display dead */
     d->slavepid = 0;
@@ -748,6 +784,9 @@ gdm_cleanup_children (void)
     case DISPLAY_ABORT:		/* Bury this display for good */
 	gdm_info (_("gdm_child_action: Aborting display %s"), d->name);
 
+	if (gdm_restart_mode)
+		gdm_safe_restart ();
+
 	gdm_display_unmanage (d);
 	break;
 	
@@ -783,18 +822,15 @@ gdm_cleanup_children (void)
 
 	gdm_error (_("gdm_child_action: Suspend failed: %s"), strerror (errno));
 	break;
-	
 
     case DISPLAY_RESTARTGDM:
-	final_cleanup ();
-	if (stored_path != NULL)
-		putenv (stored_path);
-	execvp (stored_argv[0], stored_argv);
-	gdm_error (_("Failed to restart self"));
-	_exit (1);
+	gdm_restart_now ();
 	break;
 
     case DISPLAY_XFAILED:       /* X sucks */
+	if (gdm_restart_mode)
+		gdm_safe_restart ();
+
 	/* in remote case just drop to _REMANAGE */
 	if (d->type == TYPE_LOCAL) {
 		time_t now = time (NULL);
@@ -828,6 +864,9 @@ gdm_cleanup_children (void)
     case DISPLAY_REMANAGE:	/* Remanage display */
     default:
 	gdm_debug ("gdm_child_action: Slave process returned %d", status);
+
+	if (gdm_restart_mode)
+		gdm_safe_restart ();
 	
 	/* This is a local server so we start a new slave */
 	if (d->type == TYPE_LOCAL) {
@@ -841,18 +880,38 @@ gdm_cleanup_children (void)
 	break;
     }
 
+    if (gdm_restart_mode)
+	    gdm_safe_restart ();
+
     gdm_quit ();
 }
 
 static void
-term_cleanup (void)
+gdm_restart_now (void)
 {
-	gdm_debug ("term_cleanup: Got TERM/INT. Going down!");
-
+	gdm_info (_("Gdm restarting ..."));
 	final_cleanup ();
+	if (stored_path != NULL)
+		putenv (stored_path);
+	execvp (stored_argv[0], stored_argv);
+	gdm_error (_("Failed to restart self"));
+	_exit (1);
 }
 
+static void
+gdm_safe_restart (void)
+{
+	GSList *li;
 
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *d = li->data;
+
+		if (d->logged_in)
+			return;
+	}
+
+	gdm_restart_now ();
+}
 
 static gboolean
 mainloop_sig_callback (gint8 sig, gpointer data)
@@ -866,17 +925,18 @@ mainloop_sig_callback (gint8 sig, gpointer data)
 
     case SIGINT:
     case SIGTERM:
-      term_cleanup ();
+      gdm_debug ("mainloop_sig_callback: Got TERM/INT. Going down!");
+      final_cleanup ();
       exit (EXIT_SUCCESS);
       break;
 
     case SIGHUP:
-      term_cleanup ();
-      if (stored_path != NULL)
-	      putenv (stored_path);
-      execvp (stored_argv[0], stored_argv);
-      gdm_error (_("Failed to restart self"));
-      _exit (1);
+      gdm_restart_now ();
+      break;
+
+    case SIGUSR1:
+      gdm_restart_mode = TRUE;
+      gdm_safe_restart ();
       break;
  
     default:
@@ -910,6 +970,42 @@ store_argv (int argc, char *argv[])
 		stored_argv[i] = g_strdup (argv[i]);
 	stored_argv[i] = NULL;
 	stored_argc = argc;
+}
+
+static void
+create_fifo (void)
+{
+	gchar *fifopath;
+	GIOChannel *fifochan;
+
+	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+
+	unlink (fifopath);
+
+	if (mkfifo (fifopath, 0660) < 0) {
+		gdm_fail (_("%s: Could not make FIFO"),
+			  "create_fifo");
+		return;
+	}
+
+	fifofd = open (fifopath, O_RDWR); /* Open with write to avoid EOF */
+
+	if (fifofd < 0) {
+		gdm_fail (_("%s: Could not open FIFO"),
+			  "create_fifo");
+		return;
+	}
+
+	chmod (fifopath, 0660);
+
+	g_free (fifopath);
+
+	fifochan = g_io_channel_unix_new (fifofd);
+	fifo_source = g_io_add_watch_full
+		(fifochan, G_PRIORITY_DEFAULT,
+		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
+		 gdm_slave_socket_handler, NULL, NULL);
+	g_io_channel_unref (fifochan);
 }
 
 int 
@@ -989,19 +1085,27 @@ main (int argc, char *argv[])
     g_signal_add (SIGTERM, mainloop_sig_callback, NULL);
     g_signal_add (SIGINT, mainloop_sig_callback, NULL);
     g_signal_add (SIGHUP, mainloop_sig_callback, NULL);
+    g_signal_add (SIGUSR1, mainloop_sig_callback, NULL);
     
     term.sa_handler = signal_notify;
     term.sa_flags = SA_RESTART;
     sigemptyset (&term.sa_mask);
 
     if (sigaction (SIGTERM, &term, NULL) < 0) 
-	gdm_fail (_("gdm_main: Error setting up TERM signal handler"));
+	gdm_fail (_("%s: Error setting up TERM signal handler"),
+		  "gdm_main");
 
     if (sigaction (SIGINT, &term, NULL) < 0) 
-	gdm_fail (_("gdm_main: Error setting up INT signal handler"));
+	gdm_fail (_("%s: Error setting up INT signal handler"),
+		  "gdm_main");
 
     if (sigaction (SIGHUP, &term, NULL) < 0) 
-	gdm_fail (_("gdm_main: Error setting up HUP signal handler"));
+	gdm_fail (_("%s: Error setting up HUP signal handler"),
+		  "gdm_main");
+
+    if (sigaction (SIGUSR1, &term, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up USR1 signal handler"),
+		  "gdm_main");
 
     child.sa_handler = signal_notify;
     child.sa_flags = SA_RESTART|SA_NOCLDSTOP;
@@ -1009,13 +1113,14 @@ main (int argc, char *argv[])
     sigaddset (&child.sa_mask, SIGCHLD);
 
     if (sigaction (SIGCHLD, &child, NULL) < 0) 
-	gdm_fail (_("gdm_main: Error setting up CHLD signal handler"));
+	gdm_fail (_("%s: Error setting up CHLD signal handler"), "gdm_main");
 
     sigemptyset (&mask);
     sigaddset (&mask, SIGINT);
     sigaddset (&mask, SIGTERM);
     sigaddset (&mask, SIGCHLD);
     sigaddset (&mask, SIGHUP);
+    sigaddset (&mask, SIGUSR1);
     sigprocmask (SIG_UNBLOCK, &mask, &sysmask); /* Save system sigmask */
 
     gdm_debug ("gdm_main: Here we go...");
@@ -1023,6 +1128,8 @@ main (int argc, char *argv[])
     /* Init XDMCP if applicable */
     if (GdmXdmcp)
 	gdm_xdmcp_init();
+
+    create_fifo ();
 
     /* Start local X servers */
     g_slist_foreach (displays, (GFunc) gdm_local_servers_start, NULL);
@@ -1159,6 +1266,106 @@ void
 gdm_quit (void)
 {
   g_main_quit (main_loop);
+}
+
+static gboolean
+gdm_slave_socket_handler (GIOChannel *source,
+			  GIOCondition cond,
+			  gpointer data)
+{
+	GdmSlaveHeader header;
+	gchar buf[PIPE_SIZE];
+	gint len;
+
+	if (cond != G_IO_IN) 
+		return TRUE;
+
+	if (g_io_channel_read (source, (char *)&header, sizeof (header), &len)
+	    != G_IO_ERROR_NONE)
+		return TRUE;
+
+	if (len < sizeof (header))
+		return TRUE;
+
+	gdm_debug ("gdm_slave_socket_handler: opcode %d len %d",
+		   (int) header.opcode,
+		   (int) header.len);
+
+	if (header.len > 0) {
+		if (g_io_channel_read (source, buf, header.len, &len)
+		    != G_IO_ERROR_NONE)
+			return TRUE;
+
+		if (len != header.len)
+			return TRUE;
+	} else {
+		len = 0;
+	}
+
+	gdm_debug ("gdm_slave_socket_handler: Read %d bytes", len);
+
+	if (header.opcode <= GDM_SOP_INVALID ||
+	    header.opcode >= GDM_SOP_LAST) {
+		gdm_error (_("%s: Invalid opcode"),
+			   "gdm_slave_socket_handler");
+		return TRUE;
+	}
+
+	if (header.opcode == GDM_SOP_CHOOSER) {
+		gdm_choose_data (buf, header.len);
+	} else if (header.opcode == GDM_SOP_XPID) {
+		GdmXPidData data;
+		if (header.len == sizeof (data)) {
+			GdmDisplay *d;
+			memcpy (&data, buf, sizeof (data));
+			/* Find out who this slave belongs to */
+			d = gdm_display_lookup (data.slave_pid);
+
+			if (d != NULL) {
+				d->servpid = data.xpid;
+			}
+		}
+	} else if (header.opcode == GDM_SOP_LOGGED_IN) {
+		GdmLoggedInData data;
+		if (header.len == sizeof (data)) {
+			GdmDisplay *d;
+			memcpy (&data, buf, sizeof (data));
+			/* Find out who this slave belongs to */
+			d = gdm_display_lookup (data.slave_pid);
+
+			if (d != NULL) {
+				d->logged_in = data.logged_in;
+
+				/* if the user just logged out,
+				 * let's see if it's safe to restart */
+				if (gdm_restart_mode &&
+				    ! data.logged_in)
+					gdm_safe_restart ();
+			}
+		}
+	}
+
+	return TRUE;
+}
+
+void
+gdm_fifo_close (void)
+{
+	gchar *fifopath;
+
+	if (fifo_source > 0) {
+		g_source_remove (fifo_source);
+		fifo_source = 0;
+	}
+
+	if (fifofd > 0) {
+		close (fifofd);
+		fifofd = -1;
+	}
+
+	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+	unlink (fifopath);
+	g_free (fifopath);
 }
 
 /* EOF */

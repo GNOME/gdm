@@ -53,7 +53,7 @@ gdm_fail (const gchar *format, ...)
     va_end (args);
 
     /* Log to both syslog and stderr */
-    syslog (LOG_ERR, s);
+    syslog (LOG_CRIT, s);
     fprintf (stderr, "%s\n", s);
     fflush (stderr);
 

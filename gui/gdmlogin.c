@@ -927,7 +927,8 @@ gdm_login_language_lookup (const gchar* savedlang)
     /* Don't save language unless told otherwise */
     savelang = FALSE;
 
-    gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
+    if (langmenu != NULL)
+	    gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
 
     /* Previously saved language not found in ~user/.gnome/gdm */
     if (gdm_string_empty (savedlang)) {
