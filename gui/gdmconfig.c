@@ -582,7 +582,7 @@ void
 open_help_page                         (GtkButton *button,
                                         gpointer         user_data)
 {
-	gnome_error_dialog("No help has been written yet!\nMail docs@gnome.org if you wish to volunteer.");
+	gnome_warning_dialog("Documentation is being written but is not yet finished.\nPlease be patient.");
 	/* FIXME: ! */
 }
 
