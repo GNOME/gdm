@@ -335,7 +335,7 @@ greeter_session_init (void)
 		    continue;
 	    }
 
-	    radio = gtk_radio_button_new_with_mnemonic (session_group, _(dent->d_name));
+	    radio = gtk_radio_button_new_with_mnemonic (session_group, name);
 	    g_object_set_data_full (G_OBJECT (radio),
 				    SESSION_NAME,
 				    g_strdup (dent->d_name),
