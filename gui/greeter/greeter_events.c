@@ -20,13 +20,15 @@ state_run (GreeterItemInfo *info,
 	   GreeterItemState old_state)
 {
   if (info->state != old_state &&
+      info->have_state & (1<<(info->state)) &&
+      info->have_state != (1<<GREETER_ITEM_STATE_NORMAL) &&
       info->item != NULL)
     {
       if (info->pixbufs[info->state])
-	gnome_canvas_item_set (info->item,
+        gnome_canvas_item_set (info->item,
 			       "pixbuf", info->pixbufs[info->state],
 			       NULL);
-      if (info->have_color[info->state])
+      if (info->have_color & (1<<(info->state)))
 	gnome_canvas_item_set (info->item,
 			       "fill_color_rgba", info->colors[info->state],
 			       NULL);
@@ -121,7 +123,7 @@ greeter_item_event_handler (GnomeCanvasItem *item,
   GreeterItemInfo *button;
 
   info = data;
-  button = greeter_item_find_my_button (info);
+  button = info->my_button;
   if (button != NULL && button != info)
     {
       /* FIXME: this is a hack, we have not really left the container,

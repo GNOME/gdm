@@ -20,7 +20,11 @@
 /* FIXME: hack */
 extern GreeterItemInfo *welcome_string_info;
 
+/* evil globals */
 static char *file_search_path = NULL;
+static GList *button_stack = NULL;
+
+static GHashTable *pixbuf_hash = NULL;
 
 GHashTable *item_hash = NULL;
 GList *custom_items = NULL;
@@ -30,6 +34,28 @@ static gboolean parse_items (xmlNodePtr       node,
 			     GreeterItemInfo *parent,
 			     GError         **error);
 
+static GdkPixbuf *
+load_pixbuf (const char *fname, GError **error)
+{
+  GdkPixbuf *pb;
+
+  if (pixbuf_hash == NULL)
+    pixbuf_hash = g_hash_table_new_full (g_str_hash,
+					 g_str_equal,
+					 g_free,
+					 (GDestroyNotify)g_object_unref);
+  pb = g_hash_table_lookup (pixbuf_hash, fname);
+  if (pb != NULL)
+    return g_object_ref (pb);
+
+  pb = gdk_pixbuf_new_from_file (fname, error);
+  if (pb == NULL)
+    return NULL;
+
+  g_hash_table_insert (pixbuf_hash, g_strdup (fname), g_object_ref (pb));
+
+  return pb;
+}
 
 GQuark
 greeter_parser_error_quark (void)
@@ -581,6 +607,8 @@ parse_state_file (xmlNodePtr node,
 {
   xmlChar *prop;
   char *p;
+
+  info->have_state |= (1<<state);
   
   prop = xmlGetProp (node, "file");
   if (prop)
@@ -600,7 +628,7 @@ parse_state_file (xmlNodePtr node,
     {
       if (!parse_color (prop, &info->tints[state], error))
 	return FALSE;
-      info->have_tint[state] = TRUE;
+      info->have_tint |= (1<<state);
       xmlFree (prop);
     }
 
@@ -632,13 +660,15 @@ parse_state_color (xmlNodePtr node,
 {
   xmlChar *prop;
   char *p;
+
+  info->have_state |= (1<<state);
   
   prop = xmlGetProp (node, "color");
   if (prop)
     {
       if (!parse_color (prop, &info->colors[state], error))
 	return FALSE;
-      info->have_color[state] = TRUE;
+      info->have_color |= (1<<state);
       xmlFree (prop);
     }
 
@@ -719,7 +749,7 @@ parse_pixmap (xmlNodePtr        node,
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_BAD_SPEC,
-		   "No filename specified for normal state\n");
+		   "No filename specified for normal state");
       return FALSE;
     }
   
@@ -729,13 +759,13 @@ parse_pixmap (xmlNodePtr        node,
 	{
 	  if (info->files[i] != NULL)
 	    {
-	      info->orig_pixbufs[i] = gdk_pixbuf_new_from_file (info->files[i], error);
+	      info->pixbufs[i] = load_pixbuf (info->files[i], error);
 	      
-	      if (info->orig_pixbufs[i] == NULL)
+	      if (info->pixbufs[i] == NULL)
 		return FALSE;
 	    }
 	  else
-	    info->orig_pixbufs[i] = NULL;
+	    info->pixbufs[i] = NULL;
 	}
     }
 
@@ -795,7 +825,7 @@ parse_rect (xmlNodePtr node,
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
     {
-      if (!info->have_color[i])
+      if ( ! (info->have_color & (1<<i)))
 	continue;
       
       if (info->alphas[i] >= 1.0)
@@ -819,6 +849,8 @@ parse_state_text (xmlNodePtr node,
   xmlChar *prop;
   char *p;
 
+  info->have_state |= (1<<state);
+
   prop = xmlGetProp (node, "font");
   if (prop)
     {
@@ -840,7 +872,7 @@ parse_state_text (xmlNodePtr node,
     {
       if (!parse_color (prop, &info->colors[state], error))
 	return FALSE;
-      info->have_color[state] = TRUE;
+      info->have_color |= (1<<state);
       xmlFree (prop);
    }
 
@@ -1124,7 +1156,7 @@ parse_label (xmlNodePtr        node,
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
     {
-      if (!info->have_color[i])
+      if ( ! (info->have_color & (1<<i)))
 	continue;
       
       if (info->alphas[i] >= 1.0)
@@ -1380,6 +1412,11 @@ parse_items (xmlNodePtr  node,
 	    if ( ! parse_button (child, info, error))
 	      return FALSE;
 
+	    if (button_stack != NULL)
+	      info->my_button = button_stack->data;
+	    if (info->button)
+	      button_stack = g_list_prepend (button_stack, info);
+
 	    switch (item_type)
 	      {
 	      case GREETER_ITEM_TYPE_SVG:
@@ -1407,6 +1444,9 @@ parse_items (xmlNodePtr  node,
 			     "Bad item type");
 		res = FALSE;
 	      }
+
+	    if (info->button)
+	      button_stack = g_list_remove (button_stack, info);
 	    
 	    if (!res)
 	      return FALSE;
@@ -1497,6 +1537,12 @@ greeter_parse (const char *file, const char *datadir,
 
   root = greeter_item_info_new (NULL, GREETER_ITEM_TYPE_RECT);
   res = parse_items (node, &items, root, error);
+
+  /* Now we can whack the hash, we don't want to keep cached
+     pixbufs around anymore */
+  g_hash_table_destroy (pixbuf_hash);
+  pixbuf_hash = NULL;
+
   if (!res)
     {
       welcome_string_info = NULL;
@@ -1505,6 +1551,9 @@ greeter_parse (const char *file, const char *datadir,
       item_hash = NULL;
       g_list_free (custom_items);
       custom_items = NULL;
+
+      g_list_free (button_stack);
+      button_stack = NULL;
 
       g_list_foreach (items, (GFunc) greeter_item_info_free, NULL);
       g_list_free (items);

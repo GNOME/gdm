@@ -225,13 +225,21 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     setlocale (LC_NUMERIC, "C");
     for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
       {
-	if (item->files[i])
-	  item->orig_pixbufs[i] =
-	    rsvg_pixbuf_from_file_at_size (item->files[i],
-					   rect.width, rect.height,
-					   NULL);
+	if (item->files[i] != NULL)
+	  {
+	    if (i > 0 &&
+		item->files[0] != NULL &&
+		item->pixbufs[0] != NULL &&
+		strcmp (item->files[0], item->files[i]) == 0)
+	      item->pixbufs[i] = g_object_ref (item->pixbufs[0]);
+	    else
+	      item->pixbufs[i] =
+	        rsvg_pixbuf_from_file_at_size (item->files[i],
+					       rect.width, rect.height,
+					       NULL);
+	  }
 	else
-	  item->orig_pixbufs[i] = NULL;
+	  item->pixbufs[i] = NULL;
       }
     setlocale (LC_NUMERIC, num_locale);
     g_free (num_locale);
@@ -241,21 +249,24 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   case GREETER_ITEM_TYPE_PIXMAP:
     for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
       {
-	if (item->orig_pixbufs[i])
-	  item->pixbufs[i] =
-	    transform_pixbuf (item->orig_pixbufs[i],
-			      item->have_tint[i], item->tints[i],
-			      item->alphas[i], rect.width, rect.height);
-	else
-	  item->pixbufs[i] = NULL;
+	GdkPixbuf *pb = item->pixbufs[i];
+	if (pb != NULL)
+	  {
+	    item->pixbufs[i] =
+	      transform_pixbuf (pb,
+				(item->have_tint & (1<<i)), item->tints[i],
+				item->alphas[i], rect.width, rect.height);
+	    g_object_unref (pb);
+	  }
       }
     
-    item->item = gnome_canvas_item_new (group,
-					GNOME_TYPE_CANVAS_PIXBUF,
-					"x", (gdouble) x1,
-					"y", (gdouble) y1,
-					"pixbuf", item->pixbufs[GREETER_ITEM_STATE_NORMAL],
-					NULL);
+    if (item->pixbufs[GREETER_ITEM_STATE_NORMAL] != NULL)
+      item->item = gnome_canvas_item_new (group,
+					  GNOME_TYPE_CANVAS_PIXBUF,
+					  "x", (gdouble) x1,
+					  "y", (gdouble) y1,
+					  "pixbuf", item->pixbufs[GREETER_ITEM_STATE_NORMAL],
+					  NULL);
     break;
   case GREETER_ITEM_TYPE_LABEL:
     text = greeter_item_expand_text (item->orig_text);
@@ -298,7 +309,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 			       "height", (double)20.0,
 			       "width", (double)20.0,
 			       NULL);
-	button = greeter_item_find_my_button (item);
+	button = item->my_button;
 	if (button == NULL)
 	  button = item;
 	g_signal_connect_data (G_OBJECT (fake_button), "clicked",

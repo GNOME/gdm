@@ -22,6 +22,7 @@ greeter_item_info_new (GreeterItemInfo *parent,
   int i;
 
   info = g_new0 (GreeterItemInfo, 1);
+
   info->item_type = type;
   info->parent = parent;
 
@@ -58,8 +59,6 @@ greeter_item_info_free (GreeterItemInfo *info)
     {
       if (info->pixbufs[i])
         g_object_unref (G_OBJECT (info->pixbufs[i]));
-      if (info->orig_pixbufs[i])
-        g_object_unref (G_OBJECT (info->orig_pixbufs[i]));
       if (info->files[i])
         g_free (info->files[i]);
       if (info->fonts[i])
@@ -276,15 +275,4 @@ greeter_item_is_visible (GreeterItemInfo *info)
 	  return FALSE;
 
   return TRUE;
-}
-
-GreeterItemInfo *
-greeter_item_find_my_button (GreeterItemInfo *info)
-{
-  if (info == NULL)
-    return NULL;
-  else if (info->button)
-    return info;
-  else
-    return greeter_item_find_my_button (info->parent);
 }

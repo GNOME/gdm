@@ -11,6 +11,8 @@ typedef enum _GreeterItemSizeType GreeterItemSizeType;
 typedef enum _GreeterItemPosType GreeterItemPosType;
 typedef enum _GreeterItemShowModes GreeterItemShowModes;
 
+/* Make sure to adjust the bitfield in the structure if
+   you make this larger */
 enum _GreeterItemState {
   GREETER_ITEM_STATE_NORMAL,
   GREETER_ITEM_STATE_PRELIGHT,
@@ -18,6 +20,8 @@ enum _GreeterItemState {
   GREETER_ITEM_STATE_MAX,
 };
 
+/* Make sure to adjust the bitfield in the structure if
+   you make this larger */
 enum _GreeterItemType {
   GREETER_ITEM_TYPE_RECT,
   GREETER_ITEM_TYPE_SVG,
@@ -27,6 +31,8 @@ enum _GreeterItemType {
   GREETER_ITEM_TYPE_LIST,
 };
 
+/* Make sure to adjust the bitfield in the structure if
+   you make this larger */
 enum _GreeterItemSizeType {
   GREETER_ITEM_SIZE_UNSET,
   GREETER_ITEM_SIZE_ABSOLUTE,
@@ -34,14 +40,18 @@ enum _GreeterItemSizeType {
   GREETER_ITEM_SIZE_BOX,
 };
 
+/* Make sure to adjust the bitfield in the structure if
+   you make this larger */
 enum _GreeterItemPosType {
   GREETER_ITEM_POS_UNSET,
   GREETER_ITEM_POS_ABSOLUTE,
   GREETER_ITEM_POS_RELATIVE,
 };
 
+/* Make sure to adjust the bitfield in the structure if
+   you make this larger */
 enum _GreeterItemShowModes {
-  GREETER_ITEM_SHOW_EVERYWHERE = 0xffff,
+  GREETER_ITEM_SHOW_EVERYWHERE = 0xf,
   GREETER_ITEM_SHOW_NOWHERE = 0,
   GREETER_ITEM_SHOW_CONSOLE_FIXED = 1<<0,
   GREETER_ITEM_SHOW_CONSOLE = (1<<0) | (1<<1),
@@ -55,40 +65,46 @@ struct _GreeterItemInfo {
   GreeterItemInfo *parent;
   
   GtkAnchorType anchor;
-  GreeterItemPosType x_type;
-  GreeterItemPosType y_type;
   double x;
   double y;
-  gboolean x_negative; /* needed for -0 */
-  gboolean y_negative; /* needed for -0 */
+  GreeterItemPosType x_type:2;
+  GreeterItemPosType y_type:2;
+  gboolean x_negative:1; /* needed for -0 */
+  gboolean y_negative:1; /* needed for -0 */
 
-  GreeterItemShowModes show_modes;
+  /* For packed items */
+  gboolean expand:1;
+
+  /* The item type */
+  GreeterItemType item_type:4;
+
+  GreeterItemShowModes show_modes:4;
   char *show_type; /* timed, system, config, chooser, halt, suspend, reboot */
   
-  GreeterItemSizeType width_type;
-  GreeterItemSizeType height_type;
+  GreeterItemSizeType width_type:2;
+  GreeterItemSizeType height_type:2;
   double width;
   double height;
 
-  /* For packed items */
-  gboolean expand;
-  
   char *id;
 
-  /* Button can propagate states and collect states from underlying items */
+  /* Button can propagate states and collect states from underlying items,
+   * it should be a parent of this item */
   gboolean button;
-
-  GreeterItemType item_type;
+  GreeterItemInfo *my_button;
 
   char *files[GREETER_ITEM_STATE_MAX];
   gdouble alphas[GREETER_ITEM_STATE_MAX];
-  gboolean have_tint[GREETER_ITEM_STATE_MAX];
-  guint32 tints[GREETER_ITEM_STATE_MAX];
-  GdkPixbuf *orig_pixbufs[GREETER_ITEM_STATE_MAX];
   GdkPixbuf *pixbufs[GREETER_ITEM_STATE_MAX];
-
-  gboolean have_color[GREETER_ITEM_STATE_MAX];
+  guint32 tints[GREETER_ITEM_STATE_MAX];
   guint32 colors[GREETER_ITEM_STATE_MAX];
+
+  guint8 have_color; /* this is a bitfield since these are
+			true/false values */
+  guint8 have_tint; /* this is a bitfield since these are
+		       true/false values */
+  guint8 have_state; /* this is a bitfield since these are
+			true/false values */
 
   PangoFontDescription *fonts[GREETER_ITEM_STATE_MAX];
   char *orig_text;
@@ -101,7 +117,7 @@ struct _GreeterItemInfo {
   GList *fixed_children;
 
   GtkOrientation box_orientation;
-  gboolean box_homogeneous;
+  gboolean box_homogeneous:1;
   double box_x_padding;
   double box_y_padding;
   double box_min_width;
@@ -110,17 +126,17 @@ struct _GreeterItemInfo {
   GList *box_children;
   
   /* Runtime state: */
-  GreeterItemState state;
-  GreeterItemState base_state;
-  gboolean mouse_down;
-  gboolean mouse_over;
+  GreeterItemState state:2;
+  GreeterItemState base_state:2;
+  gboolean mouse_down:1;
+  gboolean mouse_over:1;
 
   /* Canvas data: */
   GnomeCanvasItem *item;
   GnomeCanvasGroup *group_item;
 
   /* geometry handling: */
-  gboolean has_requisition;
+  gboolean has_requisition:1;
   GtkRequisition requisition;
   GtkAllocation allocation;
 };
@@ -143,6 +159,5 @@ char *greeter_item_expand_text (const char *text);
 void greeter_item_update_text (GreeterItemInfo *info);
 
 gboolean greeter_item_is_visible (GreeterItemInfo *info);
-GreeterItemInfo *greeter_item_find_my_button (GreeterItemInfo *info);
 
 #endif /* GREETER_ITEM_H */

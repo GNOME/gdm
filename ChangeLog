@@ -1,3 +1,32 @@
+Thu Aug 14 14:45:42 2003  George Lebl <jirka@5z.com>
+
+	* gui/greeter/greeter_item.[ch], gui/greeter/greeter_parser.c,
+	  gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_events.c:
+	  whack the button lookup, we can just setup a "my_button" pointer
+	  when parsing avoiding tree traversal up to root on every event
+
+	* gui/greeter/greeter_geometry.c, gui/greeter/greeter_item.[ch],
+	  gui/greeter/greeter_parser.c:  Notice that we never use the
+	  orig_pixbufs, so we completely whack them, also we try to avoid
+	  hitting the disk all the time for pixmaps, if we have already
+	  loaded them elsewhere just use a cached copy.  This all won't
+	  work right if we would allocate items several times but we never
+	  do.  The above change seems to save about 6megs of memory for
+	  circles (and other themes with larger pixmaps around)
+
+	* gui/greeter/greeter_item.[ch], gui/greeter/greeter_parser.c,
+	  gui/greeter/greeter_canvas_item.c: By clever use of bitfields and
+	  reordering the items in the info structure, reduce the size of the
+	  info structure by 72 bytes on x86 at least, this saves about 2.5k
+	  for the Bluecurve theme.
+
+	* gui/greeter/greeter_events.c, gui/greeter/greeter_item.h,
+	  gui/greeter/greeter_parser.c: don't change state for things
+	  that don't have the other states defined, and don't do the
+	  state change stuff for items that only have the normal state.
+	  Saves quite a bit of CPU grinding that was going on for constant
+	  updates.
+
 Thu Aug 14 11:36:45 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.h, daemon/slave.c: Save status of the last session

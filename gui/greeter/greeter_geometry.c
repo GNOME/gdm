@@ -457,8 +457,8 @@ greeter_item_size_request (GreeterItemInfo *item,
 
   if (item->item_type == GREETER_ITEM_TYPE_PIXMAP)
     {
-      req->width = gdk_pixbuf_get_width (item->orig_pixbufs[0]);
-      req->height = gdk_pixbuf_get_height (item->orig_pixbufs[0]);
+      req->width = gdk_pixbuf_get_width (item->pixbufs[0]);
+      req->height = gdk_pixbuf_get_height (item->pixbufs[0]);
     }
   
   if (item->width_type == GREETER_ITEM_SIZE_BOX ||
