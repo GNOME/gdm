@@ -2303,11 +2303,12 @@ create_handle (void)
 		} else {
 			GtkWidget *icon;
 			w = gtk_button_new ();
+			gtk_container_border_width (GTK_CONTAINER (w), 2);
 			icon = gtk_drawing_area_new ();
 			gtk_signal_connect (GTK_OBJECT (icon), "expose_event",
 					    GTK_SIGNAL_FUNC (minimize_expose),
 					    NULL);
-			gtk_widget_set_usize (icon, 20, -1);
+			gtk_widget_set_usize (icon, 16, -1);
 			gtk_container_add (GTK_CONTAINER (w), icon);
 			gtk_signal_connect
 				(GTK_OBJECT (w), "clicked",
