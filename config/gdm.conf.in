@@ -38,15 +38,19 @@ TimedLoginDelay=30
 # The gdm configuration program that is run from the login screen, you should
 # probably leave this alone
 #Configurator=@EXPANDED_GDMCONFIGDIR@/gdmsetup --disable-sound --disable-crash-dialog
+
 # The chooser program.  Must output the chosen host on stdout, probably you
 # should leave this alone
 #Chooser=@EXPANDED_BINDIR@/gdmchooser
-# Greeter for local (non-xdmcp) logins.  Change gdmlogin to gdmgreeter to
+
+# The greeter for local (non-xdmcp) logins.  Change gdmlogin to gdmgreeter to
 # get the new graphical greeter.
 #Greeter=@EXPANDED_BINDIR@/gdmlogin
-# Greeter for xdmcp logins, usually you want a less graphically intensive
+
+# The greeter for xdmcp logins, usually you want a less graphically intensive
 # greeter here so it's better to leave this with gdmlogin
 #RemoteGreeter=@EXPANDED_BINDIR@/gdmlogin
+
 # Launch the greeter with an additional list of colon seperated gtk 
 # modules. This is useful for enabling additional feature support 
 # e.g. gnome accessibility framework. Only "trusted" modules should
@@ -225,10 +229,23 @@ Enable=false
 #Willing=@EXPANDED_SYSCONFDIR@/gdm/Xwilling
 
 [gui]
-# The 'theme'.  By default we're using the default gtk theme
-# Of course assuming that gtk got installed in the same prefix,
-# if not change this.
+# The specific gtkrc file we use.  It should be the full path to the gtkrc
+# that we need.  Unless you need a specific gtkrc that doesn't correspond to
+# a specific theme, then just use the GtkTheme key
 #GtkRC=@EXPANDED_DATADIR@/themes/Default/gtk/gtkrc
+
+# The GTK+ theme to use for the gui
+#GtkTheme=Default
+# If to allow changing the GTK+ (widget) theme from the greeter.  Currently
+# this only affects the standard greeter as the graphical greeter does
+# not yet have this ability
+#AllowGtkThemeChange=true
+# Comma separated list of themes to allow.  These must be the names of the
+# themes installed in the standard locations for gtk themes.  You can
+# also specify 'all' to allow all installed themes.  These should be just
+# the basenames of the themes such as 'Thinice' or 'LowContrast'.
+#GtkThemesToAllow=all
+
 # Maximum size of an icon, larger icons are scaled down
 #MaxIconWidth=128
 #MaxIconHeight=128

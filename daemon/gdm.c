@@ -123,6 +123,7 @@ GdmLogoutAction safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 gchar *GdmUser = NULL;
 gchar *GdmGroup = NULL;
 gchar *GdmGtkRC = NULL;
+gchar *GdmGtkTheme = NULL;
 gchar *GdmSessDir = NULL;
 gchar *GdmXsession = NULL;
 gchar *GdmAutomaticLogin = NULL;
@@ -204,6 +205,8 @@ static time_t config_file_mtime = 0;
 static gboolean gdm_restart_mode = FALSE;
 
 static GMainLoop *main_loop = NULL;
+
+static gboolean monte_carlo_sqrt2 = FALSE;
 
 static gboolean
 display_exists (int num)
@@ -365,6 +368,7 @@ gdm_config_parse (void)
     GdmUserAuthFB = ve_config_get_string (cfg, GDM_KEY_UAUTHFB);
 
     GdmGtkRC = ve_config_get_string (cfg, GDM_KEY_GTKRC);
+    GdmGtkTheme = ve_config_get_string (cfg, GDM_KEY_GTK_THEME);
 
     GdmTimedLoginEnable = ve_config_get_bool (cfg, GDM_KEY_TIMED_LOGIN_ENABLE);
     GdmTimedLogin = ve_config_get_string (cfg, GDM_KEY_TIMED_LOGIN);
@@ -1435,6 +1439,12 @@ gdm_cleanup_children (void)
 	    break;
     }
 
+    /* if we crashed clear the theme */
+    if (crashed) {
+	    g_free (d->theme_name);
+	    d->theme_name = NULL;
+    }
+
 start_autopsy:
 
     /* Autopsy */
@@ -1793,6 +1803,27 @@ create_connections (void)
 	}
 }
 
+static void
+calc_sqrt2 (void)
+{
+	unsigned long n = 0, h = 0;
+	double x;
+	printf ("\n");
+	for (;;) {
+		x = g_random_double_range (1.0, 2.0);
+		if (x*x <= 2.0)
+			h++;
+		n++;
+		if ( ! (n & 0xfff)) {
+			double sqrttwo = 1.0 + ((double)h)/(double)n;
+			printf ("sqrt(2) ~~ %1.10f\t(1 + %lu/%lu) "
+				"iteration: %lu \r",
+				sqrttwo, h, n, n);
+		}
+	}
+	printf ("\n");
+}
+
 struct poptOption options [] = {
 	{ "nodaemon", '\0', POPT_ARG_NONE | POPT_ARGFLAG_ONEDASH,
 	  &no_daemon, 0, N_("Do not fork into the background"), NULL },
@@ -1804,6 +1835,8 @@ struct poptOption options [] = {
 	  &print_version, 0, N_("Print GDM version"), NULL },
 	{ "wait-for-go", '\0', POPT_ARG_NONE,
 	  &gdm_wait_for_go, 0, N_("Start the first X server but then halt until we get a GO in the fifo"), NULL },
+	{ "monte-carlo-sqrt2", 0, POPT_ARG_NONE,
+	  &monte_carlo_sqrt2, 0, NULL, NULL },
         POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
 };
@@ -1928,6 +1961,11 @@ main (int argc, char *argv[])
 		     argv[0]);
 	    fflush (stderr);
 	    exit (1);
+    }
+
+    if (monte_carlo_sqrt2) {
+	    calc_sqrt2 ();
+	    return 0;
     }
 
     if (print_version) {
@@ -2736,14 +2774,26 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		d = gdm_display_lookup (slave_pid);
 
-		p = strrchr (msg, ' ');
-		if (p == NULL)
-			d->theme_name = "Default";
-		while (*p == ' ')
-			p++;
-		d->theme_name = g_strdup (p);
+		if (d != NULL) {
+			g_free (d->theme_name);
+			d->theme_name = NULL;
 
-		send_slave_ack (d, NULL);
+			/* Syntax errors are partially OK here, if there
+			   was no theme argument we just wanted to clear the
+			   theme field */
+			p = strchr (msg, ' ');
+			if (p != NULL) {
+				p = strchr (p+1, ' ');
+				if (p != NULL) {
+					while (*p == ' ')
+						p++;
+					if ( ! ve_string_empty (p))
+						d->theme_name = g_strdup (p);
+				}
+			}
+
+			send_slave_ack (d, NULL);
+		}
 	}
 }
 

@@ -125,6 +125,10 @@ static gint GdmPositionX;
 static gint GdmPositionY;
 static gboolean GdmTitleBar;
 
+static gboolean GdmAllowGtkThemeChange;
+static char *GdmGtkThemesToAllow;
+static char *GdmGtkTheme;
+
 gboolean GdmSoundOnLogin;
 gchar *GdmSoundOnLoginFile;
 gchar *GdmSoundProgram;
@@ -704,6 +708,10 @@ gdm_login_parse_config (void)
     GdmSetPosition = ve_config_get_bool (config, GDM_KEY_SET_POSITION);
     GdmPositionX = ve_config_get_int (config, GDM_KEY_POSITIONX);
     GdmPositionY = ve_config_get_int (config, GDM_KEY_POSITIONY);
+
+    GdmAllowGtkThemeChange = ve_config_get_bool (config, GDM_KEY_ALLOW_GTK_THEME_CHANGE);
+    GdmGtkThemesToAllow = ve_config_get_string (config, GDM_KEY_GTK_THEMES_TO_ALLOW);
+    GdmGtkTheme = ve_config_get_string (config, GDM_KEY_GTK_THEME);
 
     GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
     GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
@@ -1607,58 +1615,98 @@ gdm_login_language_menu_new (void)
     return menu;
 }
 
-static GList *
+static gboolean
+theme_allowed (const char *theme)
+{
+	char **vec;
+	int i;
+
+	if (ve_string_empty (GdmGtkThemesToAllow) ||
+	    g_ascii_strcasecmp (GdmGtkThemesToAllow, "all") == 0)
+		return TRUE;
+
+	vec = g_strsplit (GdmGtkThemesToAllow, ",", 0);
+	if (vec == NULL || vec[0] == NULL)
+		return TRUE;
+
+	for (i = 0; vec[i] != NULL; i++) {
+		if (strcmp (vec[i], theme) == 0)
+			return TRUE;
+	}
+
+	g_strfreev (vec);
+
+	return FALSE;
+}
+
+static GSList *
 build_theme_list (void)
 {
     DIR *dir;
     struct dirent *de;
     gchar *theme_dir;
-    GList *theme_list = NULL;
-    gchar *tmp1, *tmp2;
+    GSList *theme_list = NULL;
 
     theme_dir = gtk_rc_get_theme_dir ();
     dir = opendir (theme_dir);
 
     while ((de = readdir (dir))) {
+	char *name;
 	if (de->d_name[0] == '.')
 		continue;
-	tmp1 = g_build_filename (theme_dir, de->d_name, NULL);
-	tmp2 = g_build_filename (tmp1, GTK_KEY, NULL);
-	if (g_file_test (tmp2, G_FILE_TEST_IS_DIR))
-		theme_list = g_list_prepend (theme_list, g_strdup (de->d_name));
+	if ( ! theme_allowed (de->d_name))
+		continue;
+	name = g_build_filename (theme_dir, de->d_name, GTK_KEY, NULL);
+	if (g_file_test (name, G_FILE_TEST_IS_DIR))
+		theme_list = g_slist_append (theme_list, g_strdup (de->d_name));
+	g_free (name);
     }
-    g_free (tmp1);
-    g_free (tmp2);
     g_free (theme_dir);
     closedir (dir);
+
     return theme_list;
 }
 
 static GtkWidget *
 gdm_login_theme_menu_new (void)
 {
-    GList *theme_list;
+    GSList *theme_list;
     GtkWidget *item;
     GtkWidget *menu;
-    char *theme_name;
-    char *menu_item_name;
+    int num = 1;
+
+    if ( ! GdmAllowGtkThemeChange)
+	    return NULL;
 
     menu = gtk_menu_new ();
-    theme_list = build_theme_list ();
+    
+    for (theme_list = build_theme_list ();
+	 theme_list != NULL;
+	 theme_list = theme_list->next) {
+        char *menu_item_name;
+        char *theme_name = theme_list->data;
+	theme_list->data = NULL;
 
-    for ( ; theme_list ; theme_list = theme_list->next) {
-	theme_name = g_strdup ((char *)theme_list->data);
-	menu_item_name = g_strdup_printf ("_%s", theme_name);
-	item = gtk_menu_item_new_with_mnemonic (_(menu_item_name));
+	if (num < 10)
+		menu_item_name = g_strdup_printf ("_%d. %s", num, _(theme_name));
+	else if ((num -10) + (int)'a' <= (int)'z')
+		menu_item_name = g_strdup_printf ("_%c. %s",
+						  (char)(num-10)+'a',
+						  _(theme_name));
+	else
+		menu_item_name = g_strdup (theme_name);
+	num ++;
+
+	item = gtk_menu_item_new_with_mnemonic (menu_item_name);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 	gtk_widget_show (GTK_WIDGET (item));
 	g_signal_connect (G_OBJECT (item), "activate",
 			  G_CALLBACK (gdm_theme_handler), theme_name);
 	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item), _(theme_name), NULL);
+
+	g_free (menu_item_name);
     }
-    g_free (theme_name);
-    g_free (menu_item_name);
-    g_list_free (theme_list);
+    g_slist_free (theme_list);
     return menu;
 }
 
@@ -2598,17 +2646,25 @@ gdm_login_gui_init (void)
     int lw, lh;
     gboolean have_logo = FALSE;
     GtkWidget *thememenu;
-    gchar *theme_dir;
     const gchar *theme_name;
 
-    theme_dir = gtk_rc_get_theme_dir ();
-    theme_name = g_getenv ("GDM_THEME");
+    theme_name = g_getenv ("GDM_GTK_THEME");
+    if (ve_string_empty (theme_name))
+	    theme_name = GdmGtkTheme;
 
-    GdmGtkRC = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
-    g_free (theme_dir);
-    
     if( ! ve_string_empty (GdmGtkRC))
-	gtk_rc_parse (GdmGtkRC);
+	    gtk_rc_parse (GdmGtkRC);
+
+    if ( ! ve_string_empty (theme_name)) {
+	    gchar *theme_dir = gtk_rc_get_theme_dir ();
+	    char *theme = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
+	    g_free (theme_dir);
+
+	    if( ! ve_string_empty (theme))
+		    gtk_rc_parse (theme);
+
+	    g_free (theme);
+    }
 
     login = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     g_object_ref (login);
@@ -3554,6 +3610,7 @@ gdm_reread_config (int sig, gpointer data)
 	 * then just restarting */
 	/* Also we may not need to check ALL those keys but just a few */
 	if ( ! gdm_common_string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
+	     ! gdm_common_string_same (config, GdmGtkTheme, GDM_KEY_GTK_THEME) ||
 	     ! gdm_common_string_same (config, GdmInfoMsgFile, GDM_KEY_INFO_MSG_FILE) ||
 	     ! gdm_common_string_same (config, GdmInfoMsgFont, GDM_KEY_INFO_MSG_FONT) ||
 	     ! gdm_common_int_same (config,

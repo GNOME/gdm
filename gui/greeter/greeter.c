@@ -63,6 +63,7 @@ gint  GdmIconMaxHeight;
 gint  GdmIconMaxWidth;
 gchar *GdmTimedLogin;
 gchar *GdmGtkRC;
+gchar *GdmGtkTheme;
 gint GdmTimedLoginDelay;
 gchar *GdmExclude;
 int GdmMinimalUID;
@@ -142,6 +143,7 @@ greeter_parse_config (void)
     GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
     GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
     GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
+    GdmGtkTheme = ve_config_get_string (config, GDM_KEY_GTK_THEME);
     GdmServAuthDir = ve_config_get_string (config, GDM_KEY_SERVAUTH);
     GdmInfoMsgFile = ve_config_get_string (config, GDM_KEY_INFO_MSG_FILE);
     GdmInfoMsgFont = ve_config_get_string (config, GDM_KEY_INFO_MSG_FONT);
@@ -766,6 +768,9 @@ greeter_reread_config (int sig, gpointer data)
 	     ! gdm_common_string_same (config,
 			    GdmGtkRC,
 			    GDM_KEY_GTKRC) ||
+	     ! gdm_common_string_same (config,
+			    GdmGtkTheme,
+			    GDM_KEY_GTK_THEME) ||
 	     ! gdm_common_int_same (config,
 			 GdmXineramaScreen,
 			 GDM_KEY_XINERAMASCREEN) ||
@@ -1020,6 +1025,7 @@ main (int argc, char *argv[])
   GreeterItemInfo *root;
   char *theme_file;
   char *theme_dir;
+  const char *gdm_gtk_theme;
   int r;
 
   if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
@@ -1040,8 +1046,23 @@ main (int argc, char *argv[])
   /* Should be a watch already, but anyway */
   gdm_common_setup_cursor (GDK_WATCH);
 
-  if ( ! ve_string_empty (GdmGtkRC))
-    gtk_rc_parse (GdmGtkRC);
+  if( ! ve_string_empty (GdmGtkRC))
+	  gtk_rc_parse (GdmGtkRC);
+
+  gdm_gtk_theme = g_getenv ("GDM_GTK_THEME");
+  if (ve_string_empty (gdm_gtk_theme))
+	  gdm_gtk_theme = GdmGtkTheme;
+
+  if ( ! ve_string_empty (gdm_gtk_theme)) {
+	  gchar *theme_gtk_dir = gtk_rc_get_theme_dir ();
+	  char *theme = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_gtk_dir, gdm_gtk_theme);
+	  g_free (theme_gtk_dir);
+
+	  if( ! ve_string_empty (theme))
+		  gtk_rc_parse (theme);
+
+	  g_free (theme);
+  }
   
   gdm_wm_screen_init (GdmXineramaScreen);
   

@@ -212,9 +212,13 @@ enum {
 #define GDM_KEY_PINGINTERVAL "xdmcp/PingIntervalSeconds=15"
 #define GDM_KEY_WILLING "xdmcp/Willing=" EXPANDED_SYSCONFDIR "/gdm/Xwilling"
 
-#define GDM_KEY_GTKRC "gui/GtkRC=" EXPANDED_DATADIR "/themes/Default/gtk/gtkrc"
+#define GDM_KEY_GTK_THEME "gui/GtkTheme=Default"
+#define GDM_KEY_GTKRC "gui/GtkRC="
 #define GDM_KEY_ICONWIDTH "gui/MaxIconWidth=128"
 #define GDM_KEY_ICONHEIGHT "gui/MaxIconHeight=128"
+
+#define GDM_KEY_ALLOW_GTK_THEME_CHANGE "gui/AllowGtkThemeChange=true"
+#define GDM_KEY_GTK_THEMES_TO_ALLOW "gui/GtkThemesToAllow=all"
 
 #define GDM_KEY_BROWSER "greeter/Browser=false"
 #define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm,rpm,nfsnobody,pcap"

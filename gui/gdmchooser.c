@@ -153,6 +153,7 @@ static gint  GdmScanTime;
 static gchar *GdmHostIconDir;
 static gchar *GdmHostDefaultIcon;
 static gchar *GdmGtkRC;
+static gchar *GdmGtkTheme;
 static gchar *GdmHosts;
 static gchar *GdmHostsOrig;
 static gboolean GdmBroadcast;
@@ -1576,6 +1577,7 @@ gdm_chooser_parse_config (void)
 
     GdmXineramaScreen = ve_config_get_int (cfg, GDM_KEY_XINERAMASCREEN);
     GdmGtkRC = ve_config_get_string (cfg, GDM_KEY_GTKRC);
+    GdmGtkTheme = ve_config_get_string (cfg, GDM_KEY_GTK_THEME);
     GdmScanTime = ve_config_get_int (cfg, GDM_KEY_SCAN);
     GdmHostDefaultIcon = ve_config_get_string (cfg, GDM_KEY_HOST);
     GdmHostIconDir = ve_config_get_string (cfg, GDM_KEY_HOSTDIR);
@@ -1685,20 +1687,31 @@ gdm_chooser_gui_init (void)
 	GtkTreeSelection *selection;
 	GtkTreeViewColumn *column;
 
-	gchar *theme_dir;
-	const char *theme_name;
-
 	glade_helper_add_glade_directory (GDM_GLADE_DIR);
 	glade_helper_search_gnome_dirs (FALSE);
 
     /* Enable theme */
-    theme_dir = gtk_rc_get_theme_dir ();
-    theme_name = g_getenv ("GDM_THEME");
-    GdmGtkRC = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
-    g_free (theme_dir);
+    if (RUNNING_UNDER_GDM) {
+	const char *theme_name;
 
-    if (RUNNING_UNDER_GDM && GdmGtkRC)
-	gtk_rc_parse (GdmGtkRC);
+	if( ! ve_string_empty (GdmGtkRC))
+		gtk_rc_parse (GdmGtkRC);
+
+	theme_name = g_getenv ("GDM_GTK_THEME");
+	if (ve_string_empty (theme_name))
+		theme_name = GdmGtkTheme;
+
+	if ( ! ve_string_empty (theme_name)) {
+		gchar *theme_dir = gtk_rc_get_theme_dir ();
+		char *theme = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
+		g_free (theme_dir);
+
+		if( ! ve_string_empty (theme))
+			gtk_rc_parse (theme);
+
+		g_free (theme);
+	}
+    }
 
     /* Load default host image */
     if (access (GdmHostDefaultIcon, R_OK) != 0) {
@@ -1857,6 +1870,7 @@ gdm_reread_config (int sig, gpointer data)
 	/* Also we may not need to check ALL those keys but just a few */
 	if ( ! string_same (config, GdmHostsOrig, GDM_KEY_HOSTS) ||
 	     ! string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
+	     ! string_same (config, GdmGtkTheme, GDM_KEY_GTK_THEME) ||
 	     ! string_same (config, GdmHostDefaultIcon, GDM_KEY_HOST) ||
 	     ! string_same (config, GdmHostIconDir, GDM_KEY_HOSTDIR) ||
 	     ! int_same (config,

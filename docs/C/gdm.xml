@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.5.90.0"> 
-    <!ENTITY date "1/6/2003"> 
+    <!ENTITY version "2.5.90.2"> 
+    <!ENTITY date "2/12/2004"> 
 ]>
 
 <article id="index" lang="en">
@@ -2066,15 +2066,59 @@
 
 	<variablelist>
 	  <title>[gui]</title>
+
+	  <varlistentry>
+	    <term>AllowGtkThemeChange</term>
+	    <listitem>
+	      <synopsis>AllowGtkThemeChange=true</synopsis>
+	      <para>
+		If to allow changing the GTK+ (widget) theme from the greeter.
+		Currently this only affects the standard greeter as the
+		graphical greeter does not yet have this ability.
+		The theme will stay in effect on this display until changed
+		and will affect all the other windows that are put up by GDM.
+	        Supported since 2.5.90.2.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
-	    <term>Gtkrc</term>
+	    <term>GtkRC</term>
 	    <listitem>
-	      <synopsis>Gtkrc=</synopsis>
+	      <synopsis>GtkRC=</synopsis>
 	      <para>
-		Path to a <filename>gtkrc</filename> containing the
-		theme for use in <filename>gdmlogin</filename> /
-		<filename>gdmchooser</filename>.
+		Path to a <filename>gtkrc</filename> to read when GDM
+		puts up a window.  You should really now use the
+		<filename>GtkTheme</filename> key for just setting a 
+		theme.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>GtkTheme</term>
+	    <listitem>
+	      <synopsis>GtkTheme=Default</synopsis>
+	      <para>
+		A name of an installed theme to use by default.
+		It will be used in the greeter, chooser and all other GUI
+		windows put up by GDM.
+	        Supported since 2.5.90.2.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>GtkThemesToAllow</term>
+	    <listitem>
+	      <synopsis>GtkThemesToAllow=all</synopsis>
+	      <para>
+	      	Comma separated list of themes to allow.  These must be the names
+		of the themes installed in the standard locations for gtk themes.
+		You can also specify 'all' to allow all installed themes.
+		This is related to the <filename>AllowGtkThemeChange</filename>
+		key.  
+	        Supported since 2.5.90.2.
 	      </para>
 	    </listitem>
 	  </varlistentry>

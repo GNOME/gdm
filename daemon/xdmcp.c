@@ -2582,6 +2582,8 @@ gdm_xdmcp_display_alloc (
 
     d->chooser_output_fd = -1;
     d->chooser_last_line = NULL;
+
+    d->theme_name = NULL;
     
     /* Secure display with cookie */
     if G_UNLIKELY (! gdm_auth_secure_display (d))

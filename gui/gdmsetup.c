@@ -2670,24 +2670,37 @@ main (int argc, char *argv[])
 
 	if (RUNNING_UNDER_GDM) {
 		char *gtkrc;
-		char *theme_dir;
-		const char *theme_name;
+		char *theme_name;
 		guint sid;
 
 		/* Set busy cursor */
 		setup_cursor (GDK_WATCH);
 
-		theme_name = g_getenv ("GDM_THEME");
-		theme_dir = gtk_rc_get_theme_dir ();
-
-		/* If we are running under gdm parse the GDM gtkRC */
-		gtkrc = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, 
-					 theme_name);
-
+		/* parse the given gtk rc first */
+		gtkrc = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+					      GDM_KEY_GTKRC);
 		if ( ! ve_string_empty (gtkrc))
 			gtk_rc_parse (gtkrc);
 		g_free (gtkrc);
-		g_free (theme_dir);
+
+		theme_name = g_strdup (g_getenv ("GDM_GTK_THEME"));
+		if (ve_string_empty (theme_name)) {
+			g_free (theme_name);
+			theme_name = ve_config_get_string
+				(ve_config_get (GDM_CONFIG_FILE), GDM_KEY_GTK_THEME);
+		}
+
+		if ( ! ve_string_empty (theme_name)) {
+			char *theme_dir = gtk_rc_get_theme_dir ();
+			/* If we are running under gdm parse the GDM gtkRC */
+			gtkrc = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, 
+						 theme_name);
+			g_free (theme_dir);
+
+			if ( ! ve_string_empty (gtkrc))
+				gtk_rc_parse (gtkrc);
+			g_free (gtkrc);
+		}
 
 		/* evil, but oh well */
 		g_type_class_ref (GTK_TYPE_WIDGET);	

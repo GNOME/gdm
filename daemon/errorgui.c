@@ -51,6 +51,7 @@ extern char *stored_path;
 extern gchar *GdmUser;
 extern gchar *GdmServAuthDir;
 extern gchar *GdmGtkRC;
+extern gchar *GdmGtkTheme;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
 extern gboolean GdmAddGtkModules;
@@ -262,10 +263,28 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_g
 
 	gtk_init (&argc, &argv);
 
-	if( ! inhibit_gtk_themes &&
-	    ! ve_string_empty (GdmGtkRC) &&
-	   access (GdmGtkRC, R_OK) == 0)
-		gtk_rc_parse (GdmGtkRC);
+	if ( ! inhibit_gtk_themes) {
+		const char *theme_name;
+
+		if ( ! ve_string_empty (GdmGtkRC) &&
+		     access (GdmGtkRC, R_OK) == 0)
+			gtk_rc_parse (GdmGtkRC);
+
+		theme_name = d->theme_name;
+		if (ve_string_empty (theme_name))
+			theme_name = GdmGtkTheme;
+		if ( ! ve_string_empty (theme_name)) {
+			gchar *theme_dir = gtk_rc_get_theme_dir ();
+			char *theme = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
+			g_free (theme_dir);
+
+			if ( ! ve_string_empty (theme) &&
+			     access (theme, R_OK) == 0)
+				gtk_rc_parse (theme);
+
+			g_free (theme);
+		}
+	}
 
 	get_screen_size (d);
 }

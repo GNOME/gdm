@@ -1332,6 +1332,8 @@ gdm_server_alloc (gint id, const gchar *command)
 
     d->chooser_output_fd = -1;
     d->chooser_last_line = NULL;
+
+    d->theme_name = NULL;
     
     return d;
 }

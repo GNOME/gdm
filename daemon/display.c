@@ -526,6 +526,9 @@ gdm_display_dispose (GdmDisplay *d)
 	    d->chooser_output_fd = -1;
     }
 
+    g_free (d->theme_name);
+    d->theme_name = NULL;
+
     g_free (d);
 }
 

@@ -1629,7 +1629,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 		ve_setenv ("PATH", GdmRootPath, TRUE);
 		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-		ve_setenv ("GDM_THEME", display->theme_name, TRUE);
+		if ( ! ve_string_empty (display->theme_name))
+			ve_setenv ("GDM_GTK_THEME", display->theme_name, TRUE);
 		ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
 		closelog ();
@@ -2537,7 +2538,8 @@ gdm_slave_greeter (void)
 		ve_setenv ("PATH", g_strconcat (g_getenv ("PATH"), ":", GdmDefaultPath, NULL), TRUE);
 	}
 	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-	ve_setenv ("GDM_THEME", d->theme_name, TRUE);
+	if ( ! ve_string_empty (d->theme_name))
+		ve_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
 	/* Note that this is just informative, the slave will not listen to
 	 * the greeter even if it does something it shouldn't on a non-local
@@ -3010,7 +3012,8 @@ gdm_slave_chooser (void)
 			ve_setenv ("PATH", g_strconcat (g_getenv ("PATH"), ":", GdmDefaultPath, NULL), TRUE);
 		}
 		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-		ve_setenv ("GDM_THEME", d->theme_name, TRUE);
+		if ( ! ve_string_empty (d->theme_name))
+			ve_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 
 		if (GdmAddGtkModules &&
 		    ! ve_string_empty (GdmGtkModulesList)) {
@@ -4718,8 +4721,11 @@ check_for_interruption (const char *msg)
 			gdm_verify_select_user (&msg[2]);
 			break;
 		case GDM_INTERRUPT_THEME:
+			g_free (d->theme_name);
+			d->theme_name = NULL;
+			if ( ! ve_string_empty (&msg[2]))
+				d->theme_name = g_strdup (&msg[2]);
 			gdm_slave_send_string (GDM_SOP_CHOSEN_THEME, &msg[2]);
-			interrupted = FALSE;
 			return TRUE;
 		default:
 			break;
@@ -5058,7 +5064,8 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         ve_setenv ("DISPLAY", d->name, TRUE);
 	ve_setenv ("PATH", GdmRootPath, TRUE);
 	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-	ve_setenv ("GDM_THEME", d->theme_name, TRUE);
+	if ( ! ve_string_empty (d->theme_name))
+		ve_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 	ve_unsetenv ("MAIL");
 	argv = ve_split (script);
 	VE_IGNORE_EINTR (execv (argv[0], argv));
@@ -5197,7 +5204,8 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	    ve_setenv ("PATH", GdmRootPath, TRUE);
 	    ve_setenv ("SHELL", "/bin/sh", TRUE);
 	    ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-	    ve_setenv ("GDM_THEME", display->theme_name, TRUE);
+	    if ( ! ve_string_empty (d->theme_name))
+		    ve_setenv ("GDM_GTK_THEME", d->theme_name, TRUE);
 	    ve_unsetenv ("MAIL");
 
 	    argv = ve_split (str->str);
