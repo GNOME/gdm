@@ -295,6 +295,8 @@ enum {
 
 #define GDM_STANDARD "Standard"
 
+#define GDM_RESPONSE_CANCEL "GDM_RESPONSE_CANCEL"
+
 #ifndef TYPEDEF_GDM_CONNECTION
 #define TYPEDEF_GDM_CONNECTION
 typedef struct _GdmConnection GdmConnection;

@@ -183,8 +183,8 @@ static gchar *session = NULL;
 static gchar *language = NULL;
 static gint curdelay = 0;
 
-static gboolean savesess = FALSE;
-static gboolean savelang = FALSE;
+static gint savesess = GTK_RESPONSE_NO;
+static gint savelang = GTK_RESPONSE_NO;
 
 static pid_t backgroundpid = 0;
 
@@ -578,7 +578,7 @@ gdm_login_reboot_handler (void)
 {
 	if (gdm_common_query (_("Are you sure you want to reboot the machine?"),
 			     FALSE /* markup */,
-			     _("_Reboot"), GTK_STOCK_CANCEL)) {
+			     _("_Reboot"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog();
 
 		gdm_kill_thingies ();
@@ -592,7 +592,7 @@ gdm_login_halt_handler (void)
 {
 	if (gdm_common_query (_("Are you sure you want to shut down the machine?"),
 			     FALSE /* markup */,
-			     _("Shut _Down"), GTK_STOCK_CANCEL)) {
+			     _("Shut _Down"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		closelog();
 
 		gdm_kill_thingies ();
@@ -614,7 +614,7 @@ gdm_login_suspend_handler (void)
 {
 	if (gdm_common_query (_("Are you sure you want to suspend the machine?"),
 			     FALSE /* markup */,
-			     _("_Suspend"), GTK_STOCK_CANCEL)) {
+			     _("_Suspend"), NULL, TRUE) == GTK_RESPONSE_YES) {
 		/* suspend interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
 		fflush (stdout);
@@ -818,9 +818,7 @@ static void
 gdm_login_session_lookup (const gchar* savedsess)
 {
     /* Don't save session unless told otherwise */
-    savesess = FALSE;
-
-    gtk_widget_set_sensitive (GTK_WIDGET (sessmenu), FALSE);
+    savesess = GTK_RESPONSE_NO;
 
     /* Previously saved session not found in ~user/.gnome2/gdm */
     if ( ! (savedsess != NULL &&
@@ -834,7 +832,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    else
 		    session = g_strdup (cursess);
 
-	    savesess = TRUE;
+	    savesess = GTK_RESPONSE_YES;
 	    return;
     }
 
@@ -856,7 +854,8 @@ gdm_login_session_lookup (const gchar* savedsess)
 				     "future sessions?"),
                                    session_name (savedsess),
                                    session_name (defsess));	    
-	    savesess = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"));
+	    savesess = gdm_common_query (msg, FALSE /* markup */,
+		 _("Make _Default"), _("Just _Log In"), TRUE);
 	    g_free (msg);
 	}
     }
@@ -870,7 +869,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
 	    g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE ".desktop") == 0 ||
 	    g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE) == 0) {
-		savesess = FALSE;
+		savesess = GTK_RESPONSE_NO;
 	} else if (strcmp (savedsess, session) != 0) {
 		gchar *msg = NULL;
 
@@ -883,7 +882,8 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                session_name (session),
                                                session_name (savedsess),
                                                session_name (session));
-			savesess = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
+			savesess = gdm_common_query (msg, FALSE /* markup */,
+				_("Make _Default"), _("Just For _This Session"), TRUE);
                 } else if (strcmp (session, defsess) != 0 &&
 			   strcmp (session, savedsess) != 0 &&
                            strcmp (session, LAST_SESSION) != 0) {
@@ -903,7 +903,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 						       session_name (session));
 				gdm_common_message (msg);
 			}
-			savesess = FALSE;
+			savesess = GTK_RESPONSE_NO;
                 }
 		g_free (msg);
 	}
@@ -915,10 +915,7 @@ static void
 gdm_login_language_lookup (const gchar* savedlang)
 {
     /* Don't save language unless told otherwise */
-    savelang = FALSE;
-
-    if (langmenu != NULL)
-	    gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
+    savelang = GTK_RESPONSE_NO;
 
     if (savedlang == NULL)
 	    savedlang = "";
@@ -961,7 +958,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	    g_free (curname);
 	    g_free (savedname);
 
-	    savelang = gdm_common_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"));
+	    savelang = gdm_common_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"), TRUE);
 	    g_free (msg);
 	}
     } else {
@@ -1485,6 +1482,12 @@ gdm_login_language_menu_new (void)
     GtkWidget *other_menu;
     const char *g1;
     const char *g2;
+    char *menulabel;
+    /* Start numbering with 3 since 1-2 is used for toplevel menu */
+    int g1_num = 3;
+    int g2_num = 3;
+    int other_num = 3;
+    int num;
 
     langlist = gdm_lang_read_locale_file (GdmLocaleFile);
 
@@ -1529,13 +1532,17 @@ gdm_login_language_menu_new (void)
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
-    item = gtk_menu_item_new_with_label (gdm_lang_group1 ());
+    menulabel = g_strdup_printf ("_1. %s", gdm_lang_group1());
+    item = gtk_menu_item_new_with_mnemonic (menulabel);
+    g_free (menulabel);
     ammenu = gtk_menu_new();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), GTK_WIDGET (ammenu));
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
-    item = gtk_menu_item_new_with_label (gdm_lang_group2 ());
+    menulabel = g_strdup_printf ("_2. %s", gdm_lang_group2());
+    item = gtk_menu_item_new_with_mnemonic (menulabel);
+    g_free (menulabel);
     nzmenu = gtk_menu_new();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), nzmenu);
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -1550,6 +1557,7 @@ gdm_login_language_menu_new (void)
     g1 = gdm_lang_group1 ();
     g2 = gdm_lang_group2 ();
 
+/* HERE */
     for (li = langlist; li != NULL; li = li->next) {
 	    char *lang = li->data;
 	    char *name;
@@ -1582,7 +1590,23 @@ gdm_login_language_menu_new (void)
 	    box = gtk_hbox_new (FALSE, 5);
 	    gtk_widget_show (box);
 
-	    l = gtk_label_new (name);
+	    if (strcmp (group, g1) == 0)
+		num = g1_num++;
+	    else if (strcmp (group, g2) == 0)
+                num = g2_num++;
+	    else
+		num = other_num++;
+
+	    if (num < 10)
+		menulabel = g_strdup_printf ("_%d. %s", num, name);
+	    else if ((num -10) + (int)'a' <= (int)'z')
+		menulabel = g_strdup_printf ("_%c. %s",
+                                                  (char)(num-10)+'a',
+                                                  name);
+	    else
+		menulabel = g_strdup (name);
+
+	    l = gtk_label_new_with_mnemonic (menulabel);
 	    if ( ! gdm_lang_name_translated (lang))
 		    gtk_widget_set_direction (l, GTK_TEXT_DIR_LTR);
 	    gtk_widget_show (l);
@@ -2037,24 +2061,31 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	tmp = ve_locale_to_utf8 (buf);
 	gdm_login_session_lookup (tmp);
 	g_free (tmp);
-	tmp = ve_locale_from_utf8 (session);
-	printf ("%c%s\n", STX, tmp);
+	if (savesess == GTK_RESPONSE_CANCEL) {
+	    printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
+	} else {
+	    tmp = ve_locale_from_utf8 (session);
+	    printf ("%c%s\n", STX, tmp);
+	    g_free (tmp);
+	}
 	fflush (stdout);
-	g_free (tmp);
 	break;
 
     case GDM_LANG:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 	gdm_login_language_lookup (buf);
-	printf ("%c%s\n", STX, language);
+	if (savelang == GTK_RESPONSE_CANCEL)
+	    printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
+	else
+	    printf ("%c%s\n", STX, language);
 	fflush (stdout);
 	break;
 
     case GDM_SSESS:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
-	if (savesess)
+	if (savesess == GTK_RESPONSE_YES)
 	    printf ("%cY\n", STX);
 	else
 	    printf ("%c\n", STX);
@@ -2065,7 +2096,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_SLANG:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
-	if (savelang)
+	if (savelang == GTK_RESPONSE_YES)
 	    printf ("%cY\n", STX);
 	else
 	    printf ("%c\n", STX);
@@ -3363,8 +3394,8 @@ gdm_reread_config (int sig, gpointer data)
 	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
 	     ! gdm_common_bool_same (config, GdmBrowser, GDM_KEY_BROWSER) ||
 	     ! gdm_common_bool_same (config, GdmIncludeAll, GDM_KEY_INCLUDEALL) ||
-	     ! gdm_common_bool_same (config, GdmInclude, GDM_KEY_INCLUDE) ||
-	     ! gdm_common_bool_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
+	     ! gdm_common_string_same (config, GdmInclude, GDM_KEY_INCLUDE) ||
+	     ! gdm_common_string_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
 	     ! gdm_common_bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
 	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_CHOOSER_BUTTON) ||
 	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_ALLOW_GTK_THEME_CHANGE) ||

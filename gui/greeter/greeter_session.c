@@ -26,7 +26,7 @@
 #define LAST_LANGUAGE "Last"
 #define SESSION_NAME "SessionName"
 
-static gboolean save_session = FALSE;
+static gint save_session = GTK_RESPONSE_NO;
 static char *current_session = NULL;
 static gchar *default_session = NULL;
 static GSList *sessions = NULL;
@@ -87,7 +87,7 @@ greeter_session_lookup (const char *saved_session)
   gchar *session = NULL;
   
   /* Don't save session unless told otherwise */
-  save_session = FALSE;
+  save_session = GTK_RESPONSE_NO;
 
   /* Previously saved session not found in ~/.dmrc */
   if ( ! (saved_session != NULL &&
@@ -100,7 +100,7 @@ greeter_session_lookup (const char *saved_session)
     else
       session = g_strdup (current_session);
     
-    save_session = TRUE;
+    save_session = GTK_RESPONSE_YES;
     return session;
   }
 
@@ -122,7 +122,7 @@ greeter_session_lookup (const char *saved_session)
 				   "future sessions?"),
 				 session_name (saved_session),
 				 session_name (default_session));	    
-	  save_session = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"));
+	  save_session = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"), TRUE);
 	  g_free (msg);
 	}
     }
@@ -136,7 +136,7 @@ greeter_session_lookup (const char *saved_session)
 	  g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE ".desktop") == 0 ||
 	  g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE) == 0)
 	{
-	  save_session = FALSE;
+	  save_session = GTK_RESPONSE_YES;
 	}
       else if (strcmp (saved_session, session) != 0)
 	{
@@ -152,7 +152,7 @@ greeter_session_lookup (const char *saved_session)
 				     session_name (session),
 				     session_name (saved_session),
 				     session_name (session));
-	      save_session = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
+	      save_session = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"), TRUE);
 	    }
 	  else if (strcmp (session, default_session) != 0 &&
 		   strcmp (session, saved_session) != 0 &&
@@ -175,7 +175,7 @@ greeter_session_lookup (const char *saved_session)
 					 session_name (session));
 		  gdm_common_message (msg);
 		}
-	      save_session = FALSE;
+	      save_session = GTK_RESPONSE_NO;
 	    }
 	  g_free (msg);
 	}
@@ -184,7 +184,7 @@ greeter_session_lookup (const char *saved_session)
   return session;
 }
 
-gboolean
+gint
 greeter_save_session (void)
 {
   return save_session;

@@ -111,11 +111,12 @@ gdm_common_message (const gchar *msg)
 	gdm_wm_no_login_focus_pop ();
 }
 
-gboolean
+gint
 gdm_common_query (const gchar *msg,
 		  gboolean markup,
 		  const char *posbutton,
-		  const char *negbutton)
+		  const char *negbutton,
+		  gboolean has_cancel)
 {
 	int ret;
 	GtkWidget *req;
@@ -132,31 +133,42 @@ gdm_common_query (const gchar *msg,
 				 msg,
 				 /* avoid warning */ "%s", "");
 
-	button = gtk_button_new_from_stock (negbutton);
-	gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_NO);
-	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-	gtk_widget_show (button);
+	if (negbutton != NULL) {
+		button = gtk_button_new_from_stock (negbutton);
+		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_NO);
+		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+		gtk_widget_show (button);
+	}
 
-	button = gtk_button_new_from_stock (posbutton);
-	gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_YES);
-	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-	gtk_widget_show (button);
+	if (posbutton != NULL) {
+		button = gtk_button_new_from_stock (posbutton);
+		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_YES);
+		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+		gtk_widget_show (button);
+	}
 
-	gtk_dialog_set_default_response (GTK_DIALOG (req),
-					 GTK_RESPONSE_YES);
+	if (has_cancel == TRUE) {
+		button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+		gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_CANCEL);
+		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+		gtk_widget_show (button);
+	}
+
+	if (posbutton != NULL)
+		gtk_dialog_set_default_response (GTK_DIALOG (req), GTK_RESPONSE_YES);
+	else if (negbutton != NULL)
+		gtk_dialog_set_default_response (GTK_DIALOG (req), GTK_RESPONSE_NO);
+	else if (has_cancel)
+		gtk_dialog_set_default_response (GTK_DIALOG (req), GTK_RESPONSE_CANCEL);
 
 	gdm_wm_center_window (GTK_WINDOW (req));
 
 	gdm_wm_no_login_focus_push ();
 	ret = gtk_dialog_run (GTK_DIALOG (req));
 	gdm_wm_no_login_focus_pop ();
-
 	gtk_widget_destroy (req);
 
-	if (ret == GTK_RESPONSE_YES)
-		return TRUE;
-	else /* this includes window close */
-		return FALSE;
+	return ret;
 }
 
 void

@@ -1,3 +1,21 @@
+2005-04-04  Brian Cameron  <brian.cameron@sun.com>
+
+	* gui/gdmcommon.c, gui/gdmcommon.h, gui/gdmlogin.c,
+	  gui/greeter/greeter.c, gui/greeter/greeter_session.c,
+	  gui/greeter/greeter_action_language.[ch],
+	  gui/greeter/greeter_system.c:  Fixed dialogs that
+	  ask user if they want to change their default
+	  language/session so they have a Cancel button that
+	  returns the user to the login screen without having
+	  to login/logout to change their session/language
+	  session.  Also added mnemonics to the Languages
+	  menu in gdmlogin.c.  Fixed minor bug where gdmlogin
+	  and gdmgreeter were checking Include and Exclude 
+	  list as booleans rather than strings.
+	* gui/gdmsetup-strings.c, gui/gdmsetup.c,
+	  gui/gdmsetup.glade: Now allow user to turn on/off
+	  debug on the Security tab.  Minor cleanup.
+
 2005-04-01  Pawan Chitrakar  <pawan@nplinux.org>
 
 	* configure.in: Added ne in ALL_LINGUAS

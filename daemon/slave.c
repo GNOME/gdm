@@ -3974,7 +3974,23 @@ gdm_slave_session_start (void)
 	    tmp = gdm_ensure_extension (usrsess, ".desktop");
 	    session = gdm_slave_greeter_ctl (GDM_SESS, tmp);
 	    g_free (tmp);
+
+	    if (session != NULL &&
+		strcmp (session, GDM_RESPONSE_CANCEL) == 0) {
+		    gdm_debug ("User canceled login");
+		    gdm_verify_cleanup (d);
+		    session_started = FALSE;
+		    return;
+	    }
+
 	    language = gdm_slave_greeter_ctl (GDM_LANG, usrlang);
+	    if (language != NULL && 
+		strcmp (language, GDM_RESPONSE_CANCEL) == 0) {
+		    gdm_debug ("User canceled login");
+		    gdm_verify_cleanup (d);
+		    session_started = FALSE;
+		    return;
+	    }
     } else {
 	    session = g_strdup (usrsess);
 	    language = g_strdup (usrlang);

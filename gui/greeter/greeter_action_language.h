@@ -3,7 +3,7 @@
 
 #include "greeter_item.h"
 
-gboolean  greeter_language_get_save_language (void);
+gint      greeter_language_get_save_language (void);
 gchar    *greeter_language_get_language      (const char      *old_language);
 void      greeter_action_language            (GreeterItemInfo *info,
 					      gpointer         user_data);

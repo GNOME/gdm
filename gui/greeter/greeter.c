@@ -357,18 +357,26 @@ greeter_ctrl_handler (GIOChannel *source,
 	tmp = ve_locale_to_utf8 (buf);
 	session = greeter_session_lookup (tmp);
 	g_free (tmp);
-	tmp = ve_locale_from_utf8 (session);
-	printf ("%c%s\n", STX, tmp);
+
+	if (greeter_save_session() == GTK_RESPONSE_CANCEL) {
+	     printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
+	} else {
+	    tmp = ve_locale_from_utf8 (session);
+	    printf ("%c%s\n", STX, tmp);
+	    g_free (tmp);
+	}
 	fflush (stdout);
 	g_free (session);
-	g_free (tmp);
 	break;
 
     case GDM_LANG:
         g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	buf[len-1] = '\0';
 	language = greeter_language_get_language (buf);
-	printf ("%c%s\n", STX, language);
+	if (greeter_language_get_save_language() == GTK_RESPONSE_CANCEL)
+	    printf ("%c%s\n", STX, GDM_RESPONSE_CANCEL);
+	else
+	    printf ("%c%s\n", STX, language);
 	fflush (stdout);
 	g_free (language);
 	break;
@@ -376,7 +384,7 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_SSESS:
         g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
-	if (greeter_save_session ())
+	if (greeter_save_session() == GTK_RESPONSE_YES)
 	  printf ("%cY\n", STX);
 	else
 	  printf ("%c\n", STX);
@@ -387,7 +395,7 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_SLANG:
         g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
-	if (greeter_language_get_save_language ())
+	if (greeter_language_get_save_language() == GTK_RESPONSE_YES)
 	    printf ("%cY\n", STX);
 	else
 	    printf ("%c\n", STX);
@@ -590,7 +598,7 @@ greeter_action_ok (GreeterItemInfo *info,
      {
        GtkWidget *entry;
        entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
-       greeter_item_pam_login (entry, entry_info);
+       greeter_item_pam_login (GTK_ENTRY (entry), entry_info);
      }
 }
 
@@ -815,8 +823,8 @@ greeter_reread_config (int sig, gpointer data)
 	     ! gdm_common_bool_same (config, GdmShowXtermFailsafeSession, GDM_KEY_SHOW_XTERM_FAILSAFE) ||
 	     ! gdm_common_bool_same (config, GdmShowGnomeFailsafeSession, GDM_KEY_SHOW_GNOME_FAILSAFE) ||
 	     ! gdm_common_bool_same (config, GdmIncludeAll, GDM_KEY_INCLUDEALL) ||
-	     ! gdm_common_bool_same (config, GdmInclude, GDM_KEY_INCLUDE) ||
-	     ! gdm_common_bool_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
+	     ! gdm_common_string_same (config, GdmInclude, GDM_KEY_INCLUDE) ||
+	     ! gdm_common_string_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
 	     ! gdm_common_string_same (config, GdmSessionDir, GDM_KEY_SESSDIR) ||
 	     ! gdm_common_string_same (config, GdmLocaleFile, GDM_KEY_LOCFILE) ||
 	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||

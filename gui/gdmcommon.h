@@ -30,10 +30,11 @@ void	gdm_common_show_info_msg	(void);
 void	gdm_common_message		(const gchar *msg);
 void	gdm_common_abort		(const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void	gdm_common_setup_cursor		(GdkCursorType type);
-gboolean gdm_common_query		(const gchar *msg,
+gint	gdm_common_query		(const gchar *msg,
 					 gboolean markup,
 					 const char *posbutton,
-					 const char *negbutton);
+					 const char *negbutton,
+					 gboolean has_cancel);
 
 gboolean gdm_common_string_same		(VeConfig *config,
 					 const char *cur, const char *key);

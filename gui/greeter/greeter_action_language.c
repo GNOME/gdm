@@ -24,7 +24,7 @@ enum {
 
 static GtkListStore *lang_model = NULL;
 static GtkWidget *dialog = NULL;
-static gboolean savelang = FALSE;
+static gint savelang = GTK_RESPONSE_NO;
 static gchar *current_language = NULL;
 static gchar *dialog_selected_language = NULL;
 
@@ -86,7 +86,7 @@ greeter_langauge_initialize_model (void)
   g_list_free (list);
 }
 
-gboolean
+gint
 greeter_language_get_save_language (void)
 {
   return savelang;
@@ -98,7 +98,7 @@ greeter_language_get_language (const char *old_language)
   gchar *retval = NULL;
 
   /* Don't save language unless told otherwise */
-  savelang = FALSE;
+  savelang = GTK_RESPONSE_NO;
 
   if (old_language == NULL)
     old_language = "";
@@ -140,7 +140,7 @@ greeter_language_get_language (const char *old_language)
 	  g_free (current_name);
 	  g_free (saved_name);
 
-	  savelang = gdm_common_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"));
+	  savelang = gdm_common_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"), TRUE);
 	  g_free (msg);
 	}
     }

@@ -3153,8 +3153,6 @@ setup_gui (void)
 
 	glade_helper_tagify_label (xml, "acc_options_cat_label", "b");
 
-	glade_helper_tagify_label (xml, "enable_xdmcp", "b");
-
 	setup_accessibility_support ();
 	setup_xdmcp_support ();
 	setup_background_support ();
@@ -3199,6 +3197,7 @@ setup_gui (void)
 	   (or chooser) or whereever this is actually being
 	   updated. */
 
+	/* General */
 	setup_user_combobox ("autologin_combo",
 			  GDM_KEY_AUTOMATICLOGIN);
 	setup_user_combobox ("timedlogin_combo",
@@ -3233,18 +3232,13 @@ setup_gui (void)
 			     GDM_KEY_DISALLOWTCP,
 			     GDM_KEY_DISALLOWTCP /* notify_key */);
 
-	/* security sensitivities */
+	/* Security */
 	setup_sensitivity_positive_toggle ("sysmenu", "config_available");
 	setup_sensitivity_positive_toggle ("sysmenu", "chooser_button");
 
-	setup_greeter_toggle ("acc_beep",
-			      GDM_KEY_SOUND_ON_LOGIN);
-	setup_greeter_toggle ("acc_theme",
-			      GDM_KEY_ALLOW_GTK_THEME_CHANGE);
-
-	/* accesibility sensitivities */
-	setup_sensitivity_positive_toggle ("acc_beep", "acc_sound_file_box");
-
+	setup_notify_toggle ("enable_debug",
+			     GDM_KEY_DEBUG,
+			     GDM_KEY_DEBUG /* notify_key */);
 	setup_notify_toggle ("enable_xdmcp",
 			     GDM_KEY_XDMCP,
 			     GDM_KEY_XDMCP /* notify_key */);
@@ -3288,8 +3282,7 @@ setup_gui (void)
 	setup_greeter_combobox ("local_greeter", GDM_KEY_GREETER);
 	setup_greeter_combobox ("remote_greeter", GDM_KEY_REMOTEGREETER);
 
-	/* Greeter configurations */
-
+	/* Greeter */
 	setup_greeter_toggle ("sg_use_24_clock",
 			      GDM_KEY_USE_24_CLOCK);
 	setup_greeter_toggle ("sg_scale_background",
@@ -3306,7 +3299,15 @@ setup_gui (void)
 	setup_greeter_untranslate_entry ("remote_welcome",
 					 GDM_KEY_REMOTEWELCOME);
 
-	/* Face browser setup */
+	/* Accesibility */
+	setup_sensitivity_positive_toggle ("acc_beep", "acc_sound_file_box");
+
+	setup_greeter_toggle ("acc_beep",
+			      GDM_KEY_SOUND_ON_LOGIN);
+	setup_greeter_toggle ("acc_theme",
+			      GDM_KEY_ALLOW_GTK_THEME_CHANGE);
+
+	/* Face browser */
 	setup_face ();
 	setup_greeter_toggle ("fb_browser",
 			      GDM_KEY_BROWSER);
