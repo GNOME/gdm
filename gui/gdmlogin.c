@@ -194,6 +194,27 @@ gdm_timer_up_delay (GtkObject *object,
 	return TRUE;
 }      
 
+static gboolean
+gdm_event (GtkObject *object,
+	   guint signal_id,
+	   guint n_params,
+	   GtkArg *params,
+	   gpointer data)
+{
+	/* HAAAAAAAAAAAAAAAAACK */
+	/* Since the user has not logged in yet and may have left/right
+	 * mouse buttons switched, we just translate every right mouse click
+	 * to a left mouse click */
+	GdkEvent *event = GTK_VALUE_POINTER(params[0]);
+	if ((event->type == GDK_BUTTON_PRESS ||
+	     event->type == GDK_2BUTTON_PRESS ||
+	     event->type == GDK_3BUTTON_PRESS ||
+	     event->type == GDK_BUTTON_RELEASE)
+	    && event->button.button == 3)
+		event->button.button = 1;
+
+	return TRUE;
+}      
 
 static void
 setup_cursor (GdkCursorType type)
@@ -3120,6 +3141,14 @@ main (int argc, char *argv[])
 				     GTK_TYPE_ENTRY);
 	    gtk_signal_add_emission_hook (sid,
 					  gdm_timer_up_delay,
+					  NULL);
+    }
+
+    if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+	    guint sid = gtk_signal_lookup ("event",
+					   GTK_TYPE_WIDGET);
+	    gtk_signal_add_emission_hook (sid,
+					  gdm_event,
 					  NULL);
     }
 

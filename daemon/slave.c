@@ -518,6 +518,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		gdm_setenv ("HOME", pwent->pw_dir);
 		gdm_setenv ("SHELL", pwent->pw_shell);
 		gdm_setenv ("PATH", GdmRootPath);
+		gdm_setenv ("RUNNING_UNDER_GDM", "true");
 
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
@@ -721,6 +722,7 @@ gdm_slave_greeter (void)
 	gdm_setenv ("DISPLAY", d->name);
 	gdm_setenv ("HOME", "/"); /* Hack */
 	gdm_setenv ("PATH", GdmDefaultPath);
+	gdm_setenv ("RUNNING_UNDER_GDM", "true");
 
 	/* Note that this is just informative, the slave will not listen to
 	 * the greeter even if it does something it shouldn't on a non-local

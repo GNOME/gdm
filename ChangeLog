@@ -1,3 +1,11 @@
+Mon May 14 02:15:06 2001  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: define RUNNING_UNDER_GDM for gdmlogin and gdmconfig
+
+	* gui/gdmlogin.c, gui/gdmconfig.c:  When RUNNING_UNDER_GDM is defined
+	  we treat button click 3 like 1 since the user could be left
+	  handed but has not yet logged in.
+
 Mon May 14 00:55:17 2001  George Lebl <jirka@5z.com>
 
 	* gui/Makefile.am, gui/gdmwm.[ch], gui/gdmlogin.c: Clean up stuff,

@@ -139,6 +139,29 @@ void gdm_radio_write (gchar *radio_base_name,
    }
 }
 
+static gboolean
+gdm_event (GtkObject *object,
+	   guint signal_id,
+	   guint n_params,
+	   GtkArg *params,
+	   gpointer data)
+{
+	/* HAAAAAAAAAAAAAAAAACK */
+	/* Since the user has not logged in yet and may have left/right
+	 * mouse buttons switched, we just translate every right mouse click
+	 * to a left mouse click */
+	GdkEvent *event = GTK_VALUE_POINTER(params[0]);
+	if ((event->type == GDK_BUTTON_PRESS ||
+	     event->type == GDK_2BUTTON_PRESS ||
+	     event->type == GDK_3BUTTON_PRESS ||
+	     event->type == GDK_BUTTON_RELEASE)
+	    && event->button.button == 3)
+		event->button.button = 1;
+
+	return TRUE;
+}      
+
+
 
 int
 main (int argc, char *argv[])
@@ -272,6 +295,16 @@ main (int argc, char *argv[])
     gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply_button")), FALSE);
 
     gtk_widget_show (GDMconfigurator);
+
+    /* If we are running under gdm and not in a normal session we want to
+     * treat the right mouse button like the first */
+    if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+	    guint sid = gtk_signal_lookup ("event",
+					   GTK_TYPE_WIDGET);
+	    gtk_signal_add_emission_hook (sid,
+					  gdm_event,
+					  NULL);
+    }
     
     gtk_main ();
     return 0;
