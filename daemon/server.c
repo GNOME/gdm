@@ -32,33 +32,31 @@
 #include <X11/Xlib.h>
 
 #include "gdm.h"
+#include "server.h"
+#include "misc.h"
+#include "xdmcp.h"
+#include "display.h"
+#include "auth.h"
 
 static const gchar RCSid[]="$Id$";
 
+
+/* Local prototypes */
+void gdm_server_spawn (GdmDisplay *d);
+void gdm_server_usr1_handler (gint);
+void gdm_server_alarm_handler (gint);
+void gdm_server_child_handler (gint);
+
+/* Configuration options */
 extern gchar *argdelim;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmServAuthDir;
 extern gchar *GdmLogDir;
 extern gint GdmXdmcp;
+extern sigset_t sysmask;
 
-extern gboolean gdm_auth_secure_display (GdmDisplay *);
-extern void gdm_debug (const gchar *, ...);
-extern void gdm_error (const gchar *, ...);
-extern gint gdm_display_manage (GdmDisplay *);
-extern void gdm_xdmcp_close();
-extern gint gdm_setenv (gchar *var, gchar *value);
-
-gboolean gdm_server_start (GdmDisplay *d);
-void gdm_server_stop (GdmDisplay *d);
-void gdm_server_spawn (GdmDisplay *d);
-void gdm_server_usr1_handler (gint);
-void gdm_server_alarm_handler (gint);
-void gdm_server_child_handler (gint);
-GdmDisplay *gdm_server_alloc (gint id, gchar *command);
-
-
+/* Global vars */
 GdmDisplay *d;
-sigset_t mask, omask;
 
 
 /**
@@ -71,8 +69,8 @@ sigset_t mask, omask;
 gboolean
 gdm_server_start (GdmDisplay *disp)
 {
-    struct sigaction usr1, chld, oldchld, alrm;
-    sigset_t mask, omask;
+    struct sigaction usr1, chld, alrm;
+    sigset_t mask;
     
     if (!disp)
 	return FALSE;
@@ -95,32 +93,37 @@ gdm_server_start (GdmDisplay *disp)
 	gdm_error (_("gdm_server_start: Error setting up USR1 signal handler"));
 	return FALSE;
     }
+
+    /* Catch CHLD from X server */
+    chld.sa_handler = gdm_server_child_handler;
+    chld.sa_flags = SA_RESTART|SA_RESETHAND;
+    sigemptyset (&chld.sa_mask);
     
-    /* Set signal mask */
-    sigemptyset (&mask);
-    sigaddset (&mask, SIGUSR1);
-    sigprocmask (SIG_UNBLOCK, &mask, &omask);
-    
-    /* Is the old server (if any) still alive */
-    if (d->servpid && kill (d->servpid, 0) == 0) {
-	
-	/* Reset X and force auth file reread. XCloseDisplay works on most
-	 * servers but just like young Zaphod, we play it safe */
-	
-	gdm_debug ("gdm_server_start: HUP'ing servpid=%d", d->servpid);
-	kill (d->servpid, SIGHUP);
-	d->servstat = SERVER_STARTED;
+    if (sigaction (SIGCHLD, &chld, NULL) < 0) {
+	gdm_error (_("gdm_server_start: Error setting up CHLD signal handler"));
+	return FALSE;
     }
-    else /* No server running */
-	gdm_server_spawn (d);
-	
+
+    /* Catch ALRM from X server */
+    alrm.sa_handler = gdm_server_alarm_handler;
+    alrm.sa_flags = SA_RESTART|SA_RESETHAND;
+    sigemptyset (&alrm.sa_mask);
+    
+    if (sigaction (SIGALRM, &alrm, NULL) < 0) {
+	gdm_error (_("gdm_server_start: Error setting up ALRM signal handler"));
+	return FALSE;
+    }
+    
     /* Set signal mask */
     sigemptyset (&mask);
     sigaddset (&mask, SIGUSR1);
     sigaddset (&mask, SIGCHLD);
     sigaddset (&mask, SIGALRM);
-    sigprocmask (SIG_UNBLOCK, &mask, &omask);
-
+    sigprocmask (SIG_UNBLOCK, &mask, NULL);
+    
+    /* fork X server process */
+    gdm_server_spawn (d);
+	
     /* Wait for X server to send ready signal */
     while (d->servtries < 5) {
 	pause();
@@ -130,11 +133,9 @@ gdm_server_start (GdmDisplay *disp)
 	case SERVER_TIMEOUT:
 	    /* Unset alarm and try again */
 	    alarm (0);
-	    sigprocmask (SIG_SETMASK, &omask, NULL); 
-	    
 	    waitpid (d->servpid, 0, WNOHANG);
 	    
-	    gdm_debug ("gdm_server_alarm_handler: Temporary server failure");
+	    gdm_debug ("gdm_server_start: Temporary server failure (%d)", d->name);
 	    gdm_server_spawn (d);
 	    
 	    break;
@@ -142,11 +143,17 @@ gdm_server_start (GdmDisplay *disp)
 	case SERVER_RUNNING:
 	    /* Unset alarm */
 	    alarm (0);
-	    sigprocmask (SIG_SETMASK, &omask, NULL);
 	    
-	    gdm_debug ("gdm_server_run_session: Starting display %s!", d->name);
+	    gdm_debug ("gdm_server_start: Completed %s!", d->name);
 	    
 	    return TRUE;
+
+	case SERVER_ABORT:
+	    alarm (0);
+	    gdm_debug ("gdm_server_start: Server %s died during startup!", d->name);
+	    sigprocmask (SIG_SETMASK, &sysmask, NULL);
+
+	    return FALSE;
 
 	default:
 	    break;
@@ -157,10 +164,17 @@ gdm_server_start (GdmDisplay *disp)
 }
 
 
+/**
+ * gdm_server_spawn:
+ * @disp: Pointer to a GdmDisplay structure
+ *
+ * forks an actual X server process
+ */
+
 void 
 gdm_server_spawn (GdmDisplay *d)
 {
-    struct sigaction usr1, sigalarm, chld, ochld;
+    struct sigaction usr1;
     gchar *srvcmd = NULL;
     gchar **argv = NULL;
     int logfd;
@@ -169,20 +183,6 @@ gdm_server_spawn (GdmDisplay *d)
 	return;
 
     d->servstat = SERVER_STARTED;
-
-    /* Catch CHLD from X server */
-    chld.sa_handler = gdm_server_child_handler;
-    chld.sa_flags = 0;
-    sigemptyset (&chld.sa_mask);
-    
-    if (sigaction (SIGCHLD, &chld, &ochld) < 0) {
-	gdm_error (_("gdm_server_start: Error setting up CHLD signal handler"));
-	return;
-    }
-
-    /* If the old server is still alive, kill it */
-    if (d->servpid && kill (d->servpid, 0) == 0)
-	gdm_server_stop (d);
 
     /* Log all output from spawned programs to a file */
     logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),
@@ -250,6 +250,13 @@ gdm_server_spawn (GdmDisplay *d)
 }
 
 
+/**
+ * gdm_server_stop:
+ * @disp: Pointer to a GdmDisplay structure
+ *
+ * Stops a local X server
+ */
+
 void
 gdm_server_stop (GdmDisplay *d)
 {
@@ -265,12 +272,26 @@ gdm_server_stop (GdmDisplay *d)
 }
 
 
+/**
+ * gdm_server_usr1_handler:
+ * @sig: Signal value
+ *
+ * Received when the server is ready to accept connections
+ */
+
 void
 gdm_server_usr1_handler (gint sig)
 {
     d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
 }
 
+
+/**
+ * gdm_server_alarm_handler:
+ * @sig: Signal value
+ *
+ * Server start timeout handler
+ */
 
 void 
 gdm_server_alarm_handler (gint signal)
@@ -279,12 +300,27 @@ gdm_server_alarm_handler (gint signal)
 }
 
 
+/**
+ * gdm_server_child_handler:
+ * @sig: Signal value
+ *
+ * Received when server died during startup
+ */
+
 void 
 gdm_server_child_handler (gint signal)
 {
     d->servstat = SERVER_ABORT;	/* Server died unexpectedly */
 }
 
+
+/**
+ * gdm_server_alloc:
+ * @id: Local display number
+ * @command: Command line for starting the X server
+ *
+ * Allocate display structure for a local X server
+ */
 
 GdmDisplay * 
 gdm_server_alloc (gint id, gchar *command)

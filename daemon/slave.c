@@ -41,6 +41,7 @@
 #include "verify.h"
 #include "filecheck.h"
 #include "auth.h"
+#include "server.h"
 
 
 static const gchar RCSid[]="$Id$";
@@ -100,6 +101,9 @@ gdm_slave_start (GdmDisplay *display)
     gdm_debug ("gdm_slave_start: Starting slave process for %s", display->name);
     
     d = display;
+
+    if (d->type == TYPE_LOCAL)
+	gdm_server_start (d);
     
     gdm_setenv ("XAUTHORITY", d->authfile);
     gdm_setenv ("DISPLAY", d->name);

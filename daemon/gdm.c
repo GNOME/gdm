@@ -31,6 +31,7 @@
 #include "gdm.h"
 #include "misc.h"
 #include "slave.h"
+#include "server.h"
 #include "xdmcp.h"
 #include "verify.h"
 #include "display.h"
@@ -403,7 +404,7 @@ gdm_child_handler (gint sig)
 
 		    if (d->type == TYPE_LOCAL && d->dispstat != DISPLAY_ABORT) {
 			d->dispstat = DISPLAY_DEAD;
-			gdm_server_start (d);
+			gdm_slave_start (d);
 		    }
 		    
 		    if (d->type == TYPE_XDMCP)
