@@ -186,9 +186,23 @@
 
       <para>
 	All operations on user files are done with the effective
-	user id of the user. If the sanity check fails on the user's
+	user id of the user.  If the sanity check fails on the user's
 	<filename>.Xauthority</filename> file, a fallback cookie is created in
 	<filename>/tmp</filename>.
+      </para>
+
+      <para>
+        Note that normally it is assumed that the home directory
+	is only readable by the user.  However NFS traffic really
+	goes "over the wire" and thus can be snooped.  For setups
+	with NFS directories you should really use the
+	<filename>UserAuthDir</filename> and set it to some local
+	directory such as <filename>/tmp</filename>.  GDM will try
+	to open the normal authorization file for reading as root, and
+	if it fails, then 
+	it will conclude that it is on an NFS mount and it will
+	automatically use <filename>UserAuthFBDir</filename>,
+	which is usually <filename>/tmp</filename>.
       </para>
 
       <para>
@@ -316,8 +330,11 @@
 	Even though your display is protected by cookies the XEvents
 	and thus the keystrokes typed when entering passwords will
 	still go over the wire in clear text. It is trivial to capture
-	these. You should also be aware that cookies, if placed on an
+	these.  You should also be aware that cookies, if placed on an
 	NFS mounted directory, are prone to eavesdropping too.
+	In case of NFS home directories you should really use the
+	<filename>UserAuthDir</filename> and set it to some local
+	temporary directory.
       </para>
 
       <para>
@@ -1324,8 +1341,23 @@
 	      <para>
 		The directory where user's
 		<filename>.Xauthority</filename> file should be
-		saved. When nothing is specified the user's home
-		directory is used.
+		saved.  When nothing is specified the user's home
+		directory is used.  This is tilde expanded so you
+		can set it to things like: <filename>~/authdir/</filename>.
+	      </para>
+
+	      <para>
+		If you do not use the tilde expansion, then
+		the filename created will be random, like in
+		<filename>UserAuthFBDir</filename>.  This way many
+		users can have the same authentication directory.
+		For example you might want to set this to
+		<filename>/tmp</filename> when
+		user has the home directory on NFS, since you really don't
+		want cookie files to go over the wire.  The users should
+		really have write privilages to this directory, and this
+		directory should really be sticky and all that, just like
+		the <filename>/tmp</filename> directory.
 	      </para>
 	    </listitem>
 	  </varlistentry>

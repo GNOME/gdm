@@ -95,7 +95,9 @@ SessionDesktopDir=@EXPANDED_SYSCONFDIR@/dm/Sessions/
 # This is the default .desktop session.  One of the ones in SessionDesktopDir
 DefaultSession=gnome.desktop
 # Better leave this blank and HOME will be used.  You can use syntax ~/ below
-# to indicate home directory of the user
+# to indicate home directory of the user.  You can also set this to something
+# like /tmp if you don't want the authorizations to be in home directories.
+# This is useful if you have NFS mounted home directories.
 UserAuthDir=
 # Fallback if home directory not writable
 UserAuthFBDir=/tmp

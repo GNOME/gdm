@@ -1,3 +1,16 @@
+Thu Aug 14 17:50:30 2003  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c: The UserAuthDir is treated just like /tmp when
+	  no tilde expansion is used.  Without that it is kind of useless.
+	  Also try to detect a nfs home directory by trying to open file
+	  for reading in it as root, and if we can't use the fallback
+	  directory.
+
+	* docs/C/gdm.xml:  Update docs for UserAuthDir and add a note about
+	  using this with NFS mounted home directories.
+
+	* config/gdm.conf.in: add note about UserAuthDir
+
 Thu Aug 14 14:45:42 2003  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter_item.[ch], gui/greeter/greeter_parser.c,

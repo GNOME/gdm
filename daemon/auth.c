@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <netdb.h> 
 #include <netinet/in.h>
 #include <X11/Xauth.h>
@@ -376,16 +377,36 @@ gdm_auth_secure_display (GdmDisplay *d)
     return TRUE;
 }
 
+
 static gboolean
 try_open_append (const char *file)
 {
 	FILE *fp;
+
 	fp = fopen (file, "a+");
 	if (fp != NULL) {
 		fclose (fp);
 		return TRUE;
 	} else {
 		return FALSE;
+	}
+}
+
+static gboolean
+try_open_read_as_root (const char *file)
+{
+	int fd;
+	uid_t oldeuid = geteuid ();
+	seteuid (0);
+
+	fd = open (file, O_RDONLY);
+	if (fd < 0) {
+		seteuid (oldeuid);
+		return FALSE;
+	} else {
+		close (fd);
+		seteuid (oldeuid);
+		return TRUE;
 	}
 }
 
@@ -410,6 +431,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     GSList *auths = NULL;
     gboolean ret = TRUE;
     gboolean automatic_tmp_dir = FALSE;
+    gboolean authdir_is_tmp_dir = FALSE;
     gboolean locked;
 
     if (!d)
@@ -424,6 +446,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 		    authdir = g_strconcat (homedir, &GdmUserAuthDir[1], NULL);
 	    } else {
 		    authdir = g_strdup (GdmUserAuthDir);
+		    automatic_tmp_dir = TRUE;
+		    authdir_is_tmp_dir = TRUE;
 	    }
     } else {
 	    authdir = g_strdup (homedir);
@@ -445,15 +469,34 @@ try_user_add_again:
 	authdir == NULL ||
 	! gdm_file_check ("gdm_auth_user_add", user, authdir, GdmUserAuthFile, 
 			  TRUE, FALSE, GdmUserMaxFile, GdmRelaxPerms) ||
-	! try_open_append (d->userauth)) {
+	! try_open_append (d->userauth) ||
 
-	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp) */
+	/* try opening as root, if we can't open as root,
+	   then this is a NFS mounted directory with root squashing,
+	   and we don't want to write cookies over NFS */
+	! try_open_read_as_root (d->userauth)) {
+
+	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp)
+	 * or perhaps GdmUserAuth directory (usually would be /tmp) */
 	d->authfb = TRUE;
 	g_free (d->userauth);
-	d->userauth = g_build_filename (GdmUserAuthFB, ".gdmXXXXXX", NULL);
+	if (authdir_is_tmp_dir && authdir != NULL)
+		d->userauth = g_build_filename (authdir, ".gdmXXXXXX", NULL);
+	else
+		d->userauth = g_build_filename (GdmUserAuthFB, ".gdmXXXXXX", NULL);
 	authfd = g_mkstemp (d->userauth);
 
-	if (authfd == -1) {
+	if (authfd < 0 && authdir_is_tmp_dir) {
+	    g_free (d->userauth);
+	    d->userauth = NULL;
+
+	    umask (022);
+
+	    authdir_is_tmp_dir = FALSE;
+	    goto try_user_add_again;
+	}
+
+	if (authfd < 0) {
 	    gdm_error (_("%s: Could not open cookie file %s"),
 		       "gdm_auth_user_add",
 		       d->userauth);
