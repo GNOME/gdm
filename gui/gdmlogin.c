@@ -927,8 +927,8 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                session_name (savedsess),
                                                session_name (session));
 			savesess = gdm_login_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
-                } else if (g_ascii_strcasecmp (session, "Xclients.desktop") != 0 &&
-			   g_ascii_strcasecmp (session, "default.desktop") != 0 &&
+                } else if (strcmp (session, defsess) != 0 &&
+			   strcmp (session, savedsess) != 0 &&
                            strcmp (session, LAST_SESSION) != 0) {
                         /* if !GdmShowLastSession then our saved session is
                          * irrelevant, we are in "switchdesk mode"

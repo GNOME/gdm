@@ -158,8 +158,8 @@ greeter_session_lookup (const char *saved_session)
 				     session_name (session));
 	      save_session = greeter_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
 	    }
-	  else if (g_ascii_strcasecmp (session, "Xclients.desktop") != 0 &&
-		   g_ascii_strcasecmp (session, "default.desktop") != 0 &&
+	  else if (strcmp (session, default_session) != 0 &&
+		   strcmp (session, saved_session) != 0 &&
 		   strcmp (session, LAST_SESSION) != 0)
 	    {
 	      /* if !GdmShowLastSession then our saved session is
