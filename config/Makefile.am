@@ -6,6 +6,7 @@ initdir = $(sysconfdir)/gdm/Init
 authdir = $(localstatedir)/gdm
 gnomercdir = $(sysconfdir)
 
+
 gdm.conf: gdm.conf.in Makefile
 	sed -e 's,\@datadir\@,$(datadir),g' \
 	    -e 's,\@pixmapdir\@,$(pixmapdir),g' \
