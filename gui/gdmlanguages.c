@@ -362,7 +362,7 @@ gdm_lang_read_locale_file (const char *locale_file)
 	char curline[256];
 	GList *langs = NULL;
 	GHashTable *dupcheck;
-	gboolean got_C = FALSE;
+	gboolean got_english = FALSE;
 	Language *language;
 	gboolean clean;
 	char *curlocale;
@@ -417,15 +417,18 @@ gdm_lang_read_locale_file (const char *locale_file)
 		g_hash_table_insert (dupcheck, g_strdup (lang),
 				     GINT_TO_POINTER (1));
 
-		if (strcmp (lang, "C") == 0)
-			got_C = TRUE;
+		/* if we have an english locale */
+		if (strncmp (lang, "en_", 3) == 0)
+			got_english = TRUE;
 	}
 
 	g_hash_table_foreach (dupcheck, (GHFunc) g_free, NULL);
 	g_hash_table_destroy (dupcheck);
 
-	if ( ! got_C)
-		langs = g_list_prepend (langs, g_strdup ("C"));
+	/* If we haven't found any english locale, add american
+	 * english as that's as much of a fallback as we can get */
+	if ( ! got_english)
+		langs = g_list_prepend (langs, g_strdup ("en_US"));
 
 	curlocale = setlocale (LC_MESSAGES, NULL);
 	if (curlocale != NULL &&
