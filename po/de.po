@@ -1,4 +1,4 @@
-# gdm 2.0 German translation.
+# German translation for gdm.
 # Copyright (C) 1999, 2000, 2001 Free Software Foundation, Inc.
 # Karsten Weiss <karsten@addx.au.s.shuttle.de>, 1999.
 # Benedikt Roth <Benedikt.Roth@gmx.net>, 2000, 2001.
@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.2.1\n"
-"POT-Creation-Date: 2001-05-05 16:40+0200\n"
-"PO-Revision-Date: 2001-05-05 16:38+0200\n"
+"POT-Creation-Date: 2001-05-06 13:01+0200\n"
+"PO-Revision-Date: 2001-05-06 13:01+0200\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,14 +25,20 @@ msgstr "gdm_config_parse: Keine Konfigurationsdatei: %s. Abbruch."
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
+"gdm_config_parse: Root kann nicht automatisch angemeldet werden. "
+"Automatisches Anmelden wird ausgeschaltet."
 
 #: daemon/gdm.c:205
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
+"gdm_config_parse: Root kann nicht automatisch angemeldet werden. "
+"Zeitgesteuertes Anmelden wird ausgeschaltet."
 
 #: daemon/gdm.c:211
 msgid "gdm_config_parse: TimedLoginDelay less then 10, so I will just use 10."
 msgstr ""
+"gdm_config_parse: TimedLoginDelay kleiner als 10. Er wird einfach 10 "
+"verwendet."
 
 #: daemon/gdm.c:217
 msgid "gdm_config_parse: No greeter specified."
@@ -303,11 +309,11 @@ msgstr "gdm_slave_init: Fehler beim Einrichten des CHLD-Signalhandlers"
 
 #: daemon/slave.c:311
 msgid "Cannot start session"
-msgstr ""
+msgstr "Sitzung kann nicht gestartet werden"
 
 #: daemon/slave.c:320
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: daemon/slave.c:376
 msgid ""
@@ -315,16 +321,22 @@ msgid ""
 "program.  Make sure it's path is set\n"
 "correctly in the configuration file."
 msgstr ""
+"Das·Konfigurationsprogramm·kann·nicht\n"
+"ausgeführt·werden. Stellen Sie sicher,\n"
+"dass der Pfad in der Konfigurationsdatei\n"
+"richtig gesetzt ist."
 
 #: daemon/slave.c:418
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
 msgstr ""
+"Geben Sie für die Konfiguration\n"
+"das root-Passwort ein."
 
 #: daemon/slave.c:432 daemon/slave.c:492
 msgid "gdm_slave_wait_for_login: No login/Bad login"
-msgstr ""
+msgstr "gdm_slave_wait_for_login: Keine Anmeldung/Falsche Anmeldung"
 
 #: daemon/slave.c:523
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
@@ -400,10 +412,12 @@ msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
 msgstr ""
+"gdm_slave_session_start: gnome-session wurde für eine 'failsafe' "
+"GNOME-Sitzung nicht gefunden. xterm wird versucht."
 
 #: daemon/slave.c:1104
 msgid "Cannot find \"xterm\" to start a failsafe session."
-msgstr ""
+msgstr "\"xterm\" kann nicht gefunden werden um 'failsafe'-Sitzung zu starten"
 
 #: daemon/slave.c:1119
 #, c-format
@@ -419,6 +433,8 @@ msgid ""
 "The system administrator has\n"
 "disabled your account."
 msgstr ""
+"Der Systemadministrator hat Ihren\n"
+"Zugang deaktiviert."
 
 #: daemon/slave.c:1136
 #, c-format
@@ -432,6 +448,10 @@ msgid ""
 "the list of available sessions in the login\n"
 "dialog window."
 msgstr ""
+"Die Sitzung kann nicht gestartet werden,\n"
+"wahrscheinlich gibt es die Sitzung nicht.\n"
+"Bitte wählen Sie aus der Liste der verfügbaren\n"
+"Sitzungen im Anmelde-Dialogfenster."
 
 #: daemon/slave.c:1148
 #, c-format
@@ -444,6 +464,10 @@ msgid ""
 "system administrator has disabled your login.\n"
 "It could also indicate an error with your account.\n"
 msgstr ""
+"Ihre Shell kann nicht gestartet werden.  Es könnte\n"
+"sein, dass Ihr Systemadministrator Ihren Zugang\n"
+"deaktiviert hat. Es kann aber auch ein Fehler Ihres\n"
+"Zugangs sein.\n"
 
 #: daemon/slave.c:1315
 #, c-format
@@ -731,6 +755,10 @@ msgid ""
 "Please check your installation and the\n"
 "location of the gdmchooser.glade file."
 msgstr ""
+"Die glade-Schnittstellenbeschreibungsdatei\n"
+"kann nicht gefunden werden. gdmchooser kann\n"
+"nicht gestartet werden. Bitte überprüfen Sie\n"
+"Ihre Installation und den Ort der gdmchooser.glade-Datei."
 
 #: gui/gdmchooser.c:555
 msgid ""
@@ -738,6 +766,9 @@ msgid ""
 "appears to be corrupted.\n"
 "Please check your installation."
 msgstr ""
+"Die glade-Schnittstellenbeschreibungsdatei\n"
+"scheint defekt zu sein.\n"
+"Bitte überprüfen Sie Ihre Installation."
 
 #: gui/gdmchooser.c:604
 msgid "gdm_signals_init: Error setting up HUP signal handler"
@@ -757,7 +788,7 @@ msgstr "Signalmaske konnte nicht gesetzt werden!"
 
 #: gui/gdmlogin.c:53
 msgid "AnotherLevel"
-msgstr ""
+msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
@@ -767,15 +798,15 @@ msgstr "Vorgabe"
 
 #: gui/gdmlogin.c:55
 msgid "Failsafe"
-msgstr ""
+msgstr "Failsafe"
 
 #: gui/gdmlogin.c:56
 msgid "Gnome"
-msgstr ""
+msgstr "GNOME"
 
 #: gui/gdmlogin.c:57
 msgid "KDE"
-msgstr ""
+msgstr "KDE"
 
 #: gui/gdmlogin.c:58
 msgid "XSession"
@@ -796,7 +827,7 @@ msgstr "Letzte"
 #: gui/gdmlogin.c:343
 #, c-format
 msgid "User %s will login in %d seconds"
-msgstr ""
+msgstr "Benutzer %s wird in %s Sekunden angeldet"
 
 #: gui/gdmlogin.c:647 gui/gdmlogin.c:653 gui/gdmlogin.c:660
 #, c-format
@@ -815,6 +846,9 @@ msgid ""
 "\n"
 "You likely won't be able to log in either."
 msgstr ""
+"Ein neuer Prozess kann nicht abgespaltet werden!\n"
+"\n"
+"Sie werden sich wohl nicht anmelden können."
 
 #: gui/gdmlogin.c:822
 msgid "Are you sure you want to reboot the machine?"
@@ -831,7 +865,7 @@ msgstr "gdm_login_parse_config: Keine Konfigurationsdatei: %s. Abbruch."
 
 #: gui/gdmlogin.c:892
 msgid "TimedLoginDelay was less then 10.  I'll just use 10."
-msgstr ""
+msgstr "TimedLoginDelay war kleiner als 10. Es wird 10 verwendet."
 
 #: gui/gdmlogin.c:975
 #, c-format
@@ -862,15 +896,15 @@ msgstr "gdm_login_session_init: Sitzungsskript-Verzeichnis nicht gefunden!"
 
 #: gui/gdmlogin.c:1360
 msgid "Yaikes, nothing found in the session directory."
-msgstr ""
+msgstr "Ups, nichts im Situngsverzeichnis gefunden."
 
 #: gui/gdmlogin.c:1368
 msgid "Failsafe Gnome"
-msgstr ""
+msgstr "Failsafe·GNOME"
 
 #: gui/gdmlogin.c:1383
 msgid "Failsafe xterm"
-msgstr ""
+msgstr "Failsafe·xterm"
 
 #: gui/gdmlogin.c:1398
 #, c-format
@@ -897,15 +931,15 @@ msgstr "Andere"
 
 #: gui/gdmlogin.c:1583 gui/gdmlogin.c:1592
 msgid "Select GNOME session"
-msgstr ""
+msgstr "Wählen Sie GNOME-Sitzung"
 
 #: gui/gdmlogin.c:1659
 msgid "Create new session"
-msgstr ""
+msgstr "Neue Sitzung erstellen"
 
 #: gui/gdmlogin.c:1668
 msgid "Name: "
-msgstr ""
+msgstr "Name: "
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
@@ -984,6 +1018,11 @@ msgid ""
 "There are two available sessions you can use, but\n"
 "you should log in and correct the gdm configuration."
 msgstr ""
+"Ihr Sitzungsverzeichnis fehlt oder ist leer!\n"
+"\n"
+"Es stehen 2 Sitzungen zur Verfügung, die Sie verwenden\n"
+"können, aber Sie sollten sich anmelden und Ihre gdm-Konfiguration\n"
+"korrigieren."
 
 #. 3 user levels are present in the CList
 #: gui/gdmconfig.c:51
@@ -1087,11 +1126,11 @@ msgstr ""
 
 #: gui/gdmconfig.c:497
 msgid "Error reading session script!"
-msgstr ""
+msgstr "Fehler beim Lesen des Sitzungsskripts."
 
 #: gui/gdmconfig.c:499
 msgid "Error reading this session script"
-msgstr ""
+msgstr "Fehler beim Lesen dieses Sitzungsskripts"
 
 #: gui/gdmconfig.c:588
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
@@ -1193,6 +1232,9 @@ msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
 msgstr ""
+"\n"
+"Es konnte kein geeigneter Name für die voreingestellte Sitzungsverknüpfung "
+"gefunden werden"
 
 #: gui/gdmconfig.c:997
 #, c-format
@@ -1210,6 +1252,8 @@ msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
 msgstr ""
+"Es traten Fehler während des Schreibens der Sitzungsdateien auf.\n"
+"Die Konfiguration wurde wahrscheinlich nicht erfolgreich abgeschlossen.\n"
 
 #: gui/gdmconfig.c:1034
 msgid ""
@@ -1224,6 +1268,8 @@ msgid ""
 "Documentation is being written but is not yet finished.\n"
 "Please be patient."
 msgstr ""
+"Die Dokumentation wird derzeit geschrieben, ist aber nicht vollständig.\n"
+"Bitte haben Sie Geduld."
 
 #. Request the command line for this new server
 #: gui/gdmconfig.c:1156 gui/gdmconfig.c:1175
@@ -1236,11 +1282,11 @@ msgstr ""
 
 #: gui/gdmconfig.c:1389
 msgid "A session name must be unique and not empty"
-msgstr ""
+msgstr "Ein Sitzungsname muss eindeutig, darf aber nicht leer sein"
 
 #: gui/gdmconfig.c:1401
 msgid "Enter a name for the new session"
-msgstr ""
+msgstr "Geben Sie einen Namen für die neue Sitzung ein"
 
 #: gui/gdmconfig.c:1507
 msgid ""
@@ -1322,7 +1368,7 @@ msgstr "Das 'System' Menü zeigen, (für reboot, shutdown, etc.)"
 
 #: gui/gdmconfig-strings.c:23
 msgid "Allow users to run the configurator from the system menu"
-msgstr ""
+msgstr "Es Benutzern erlauben den Konfigurierer vom Systemmenü aus zu starten"
 
 #: gui/gdmconfig-strings.c:24
 msgid "Quiver on failure"
@@ -1330,7 +1376,7 @@ msgstr "Bei Fehlschlag zittern"
 
 #: gui/gdmconfig-strings.c:25
 msgid "Show title bar on login window"
-msgstr ""
+msgstr "Titelleiste bei Anmeldefenstern zeigen"
 
 #: gui/gdmconfig-strings.c:26
 #, c-format
@@ -1382,6 +1428,7 @@ msgstr "Position"
 #: gui/gdmconfig-strings.c:38
 msgid "Set the initial position of the login window to the values below"
 msgstr ""
+"Die anfängliche Position des Anmeldefensters auf die Werte unten setzen"
 
 #: gui/gdmconfig-strings.c:39
 msgid "Manually set position"
@@ -1389,7 +1436,7 @@ msgstr "Position manuell einstellen"
 
 #: gui/gdmconfig-strings.c:40
 msgid "Do note allow the user to drag the login window around"
-msgstr ""
+msgstr "Es Benutzern nicht erlauben das Anmeldefenster herumzuschieben"
 
 #: gui/gdmconfig-strings.c:41
 msgid "Lock position"
@@ -1505,7 +1552,7 @@ msgstr "Wählen Sie eine Datei aus, die die Locale-Informationen beinhaltet"
 
 #: gui/gdmconfig-strings.c:69
 msgid "The program to run in the background of the login."
-msgstr ""
+msgstr "Das zu startende Programm im Hintergrund der Anmeldung."
 
 #: gui/gdmconfig-strings.c:71 gui/gdmconfig-strings.c:78
 msgid "Automatic login"
@@ -1517,7 +1564,7 @@ msgstr "Automatischer Login:"
 
 #: gui/gdmconfig-strings.c:73
 msgid "User to log in automatically on first bootup."
-msgstr ""
+msgstr "Benutzer, der automatisch beim ersten Start angemeldet werden soll."
 
 #: gui/gdmconfig-strings.c:74
 msgid "Timed login"
@@ -1530,10 +1577,12 @@ msgstr "Zeitgesteuerter Login:"
 #: gui/gdmconfig-strings.c:76
 msgid "User to log in automatically after the specified number of seconds."
 msgstr ""
+"Benutzer, der automatisch nach der angegebenen Anzahl von Sekunden "
+"angemeldet werden soll."
 
 #: gui/gdmconfig-strings.c:77
 msgid "Seconds before login: "
-msgstr ""
+msgstr "Sekunden vor Anmeldung: "
 
 #: gui/gdmconfig-strings.c:79
 msgid "expert"
@@ -1541,7 +1590,7 @@ msgstr "Experte"
 
 #: gui/gdmconfig-strings.c:81
 msgid "Allow logging in as root (administrator) user."
-msgstr ""
+msgstr "root-Anmeldung (Administrator) erlauben."
 
 #: gui/gdmconfig-strings.c:82
 msgid "Allow root to login with GDM"
@@ -1641,6 +1690,8 @@ msgstr "Beschränkungen"
 msgid ""
 "The number of seconds before a login is allowed after an unsuccesful try."
 msgstr ""
+"Die Anzahl der Sekunden bevor eine erneute Anmeldung nach einem Fehlversuch "
+"erlaubt ist."
 
 #: gui/gdmconfig-strings.c:105
 msgid ""
@@ -1758,10 +1809,12 @@ msgstr "Sitzungsverzeichnis: "
 #: gui/gdmconfig-strings.c:132
 msgid "Select a directory to be used for system-wide session scripts"
 msgstr ""
+"Wählen Sie ein Verzeichnis, das für systemweite Sitzungsskripte verwendet "
+"werden soll."
 
 #: gui/gdmconfig-strings.c:133
 msgid "Available Sessions"
-msgstr ""
+msgstr "Verfügbare Sitzungen"
 
 #: gui/gdmconfig-strings.c:134
 msgid "Add session"
@@ -1785,10 +1838,13 @@ msgid ""
 "will appear here when you select\n"
 "one from the list on the left.\n"
 msgstr ""
+"Die genauen Skriptdetails einer Sitzung\n"
+"werden hier erscheinen, wenn Sie eines\n"
+"von der Liste auf der linken Seite auswählen.\n"
 
 #: gui/gdmconfig-strings.c:142
 msgid "Login sessions"
-msgstr ""
+msgstr "Anmeldesitzungen"
 
 #: gui/gdmconfig-strings.c:143
 msgid "system_setup"
