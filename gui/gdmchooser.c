@@ -56,6 +56,12 @@
 
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
+enum {
+	CHOOSER_LIST_ICON_COLUMN = 0,
+	CHOOSER_LIST_LABEL_COLUMN,
+	CHOOSER_LIST_HOST_COLUMN
+};
+
 typedef struct _GdmChooserHost GdmChooserHost;
 struct _GdmChooserHost {
     gchar *name;
@@ -63,7 +69,6 @@ struct _GdmChooserHost {
     struct in_addr ia;
     GdkPixbuf *picture;
     gboolean willing;
-    int pos;
 };
 
 
@@ -154,7 +159,24 @@ static GIOChannel *channel;
 static GList *hosts = NULL;
 static GdkPixbuf *defhostimg;
 static GtkWidget *browser;
+static GtkTreeModel *browser_model;
 static GdmChooserHost *curhost;
+
+static gboolean
+find_host_in_list (GdmChooserHost *host, GtkTreeIter *iter)
+{
+	if (gtk_tree_model_get_iter_first (browser_model, iter)) {
+		do {
+			GdmChooserHost *lhost;
+			gtk_tree_model_get (browser_model, iter,
+					    CHOOSER_LIST_HOST_COLUMN, &lhost,
+					    -1);
+			if (lhost == host)
+				return TRUE;
+		} while (gtk_tree_model_iter_next (browser_model, iter));
+	}
+	return FALSE;
+}
 
 static void
 setup_cursor (GdkCursorType type)
@@ -181,18 +203,6 @@ gdm_chooser_host_dispose (GdmChooserHost *host)
     g_free (host);
 }
 
-static gint 
-gdm_chooser_sort_func (gpointer d1, gpointer d2)
-{
-    GdmChooserHost *a = d1;
-    GdmChooserHost *b = d2;
-
-    if (!d1 || !d2)
-	return 0;
-
-    return strcmp (a->name, b->name);
-}
-
 static GdmChooserHost * 
 gdm_chooser_host_alloc (const char *hostname,
 			const char *description,
@@ -202,28 +212,14 @@ gdm_chooser_host_alloc (const char *hostname,
     GdmChooserHost *host;
     GdkPixbuf *img;
     gchar *hostimg;
-    GList *hostl;
 
     host = g_new0 (GdmChooserHost, 1);
-    host->pos = -1;
     host->name = g_strdup (hostname);
     host->desc = g_strdup (description);
     memcpy (&host->ia, ia, sizeof (struct in_addr));
     host->willing = willing;
 
-    hostl = g_list_find_custom (hosts,
-				host,
-				(GCompareFunc) gdm_chooser_sort_func);
-    /* replace */
-    if (hostl != NULL) {
-	    GdmChooserHost *old = hostl->data;
-	    hostl->data = host;
-	    gdm_chooser_host_dispose (old);
-    } else {
-	    hosts = g_list_insert_sorted (hosts, 
-					  host,
-					  (GCompareFunc) gdm_chooser_sort_func);
-    }
+    hosts = g_list_prepend (hosts, host);
     
     if ( ! willing)
 	    return host;
@@ -271,22 +267,39 @@ static void
 gdm_chooser_browser_add_host (GdmChooserHost *host)
 {
     if (host->willing) {
-	    /* FIXME: the \n doesn't actually propagate
-	     * since the icon list is a broken piece of horsedung */
-	    char *temp = g_strconcat (host->name, " \n",
-				      host->desc, NULL);
-	    host->pos =
-		    gnome_icon_list_append_pixbuf (GNOME_ICON_LIST (browser),
-						   host->picture,
-						   NULL /* icon_filename */,
-						   temp);
-	    g_free (temp);
+	    GtkTreeIter iter = {0};
+	    const char *addr = inet_ntoa (host->ia);
+	    char *label;
+
+	    if (strcmp (addr, host->name) == 0)
+		    label = g_strdup_printf ("%s\n%s",
+					     host->name,
+					     host->desc);
+	    else
+		    label = g_strdup_printf ("%s (%s)\n%s",
+					     host->name,
+					     addr,
+					     host->desc);
+
+	    gtk_list_store_append (GTK_LIST_STORE (browser_model), &iter);
+	    gtk_list_store_set (GTK_LIST_STORE (browser_model), &iter,
+				CHOOSER_LIST_ICON_COLUMN, host->picture,
+				CHOOSER_LIST_LABEL_COLUMN, label,
+				CHOOSER_LIST_HOST_COLUMN, host,
+				-1);
+	    g_free (label);
 
 	    if (added_addr != NULL &&
 		memcmp (&host->ia, added_addr,
 			sizeof (struct in_addr)) == 0) {
-		    gnome_icon_list_select_icon (GNOME_ICON_LIST (browser),
-						 host->pos);
+		    GtkTreeSelection *selection;
+		    GtkTreePath *path = gtk_tree_model_get_path (browser_model, &iter);
+		    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
+		    gtk_tree_selection_select_iter (selection, &iter);
+		    gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (browser),
+						  path, NULL,
+						  FALSE, 0.0, 0.0);
+		    gtk_tree_path_free (path);
 		    gtk_widget_grab_focus (manage);
 	    }
 	    g_free (added_host);
@@ -608,7 +621,7 @@ gdm_chooser_xdmcp_discover (void)
 
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
     gtk_widget_set_sensitive (GTK_WIDGET (rescan), FALSE);
-    gnome_icon_list_clear (GNOME_ICON_LIST (browser));
+    gtk_list_store_clear (GTK_LIST_STORE (browser_model));
     gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
     gtk_label_set_text (GTK_LABEL (status_label),
 			_(scanning_message));
@@ -887,9 +900,16 @@ gdm_chooser_add_host (void)
 
 	host = gdm_host_known (ia);
 	if (host != NULL) {
-		if (host->pos >= 0) {
-			gnome_icon_list_select_icon (GNOME_ICON_LIST (browser),
-						     host->pos);
+		GtkTreeIter iter = {0};
+		if (find_host_in_list (host, &iter)) {
+			GtkTreeSelection *selection;
+			GtkTreePath *path = gtk_tree_model_get_path (browser_model, &iter);
+			selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
+			gtk_tree_selection_select_iter (selection, &iter);
+			gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (browser),
+						      path, NULL,
+						      FALSE, 0.0, 0.0);
+			gtk_tree_path_free (path);
 			gtk_widget_grab_focus (manage);
 		} else {
 			/* hmm, probably not willing, ping the host then for
@@ -1036,43 +1056,29 @@ gdm_chooser_parse_config (void)
     if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
 }
 
-static GdmChooserHost *
-gdm_nth_willing_host (int n)
+static void
+host_selected (GtkTreeSelection *selection, gpointer data)
 {
-	GList *li;
-	int i;
+	GtkTreeModel *tm = NULL;
+	GtkTreeIter iter = {0};
 
-	i = 0;
-	for (li = hosts; li != NULL; li = li->next) {
-		GdmChooserHost *host = li->data;
-		if (host->willing) {
-			if (i == n)
-				return host;
-			i++;
-		}
-	}
-	return NULL;
-}
-
-
-void
-gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
-{
-	curhost = gdm_nth_willing_host (selected);
-	gtk_widget_set_sensitive (manage, TRUE);
-
-	if (event != NULL &&
-	    event->type == GDK_2BUTTON_PRESS) {
-		gdm_chooser_manage (NULL, NULL);
-	}
-}
-
-
-void
-gdm_chooser_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
-{
 	curhost = NULL;
-	gtk_widget_set_sensitive (manage, FALSE);
+
+	if (gtk_tree_selection_get_selected (selection, &tm, &iter)) {
+		gtk_tree_model_get (tm, &iter, CHOOSER_LIST_HOST_COLUMN,
+				    &curhost, -1);
+	}
+
+	gtk_widget_set_sensitive (manage, curhost != NULL);
+}
+
+static void
+row_activated (GtkTreeView *tree_view,
+	       GtkTreePath *path,
+	       GtkTreeViewColumn *column)
+{
+	if (curhost != NULL)
+		gdm_chooser_manage (NULL, NULL);
 }
 
 void
@@ -1109,12 +1115,14 @@ gdm_chooser_gui_init (void)
 {
 	int width;
 	int height;
+	GtkTreeSelection *selection;
+	GtkTreeViewColumn *column;
 
 	glade_helper_add_glade_directory (GDM_GLADE_DIR);
 	glade_helper_search_gnome_dirs (FALSE);
 
     /* Enable theme */
-    if (GdmGtkRC)
+    if (RUNNING_UNDER_GDM && GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
 
     /* Load default host image */
@@ -1151,12 +1159,45 @@ gdm_chooser_gui_init (void)
 				  GTK_TYPE_ENTRY);
 
     browser = glade_helper_get (chooser_app, "chooser_iconlist",
-				GNOME_TYPE_ICON_LIST);
-    gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
-    gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.\n");
-    gnome_icon_list_set_icon_width (GNOME_ICON_LIST (browser), GdmIconMaxWidth + 20);
-    gnome_icon_list_set_icon_border (GNOME_ICON_LIST (browser), 2);
-    gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
+				GTK_TYPE_TREE_VIEW);
+
+    gtk_dialog_set_has_separator (GTK_DIALOG (chooser), FALSE);
+
+    gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (browser), TRUE);
+
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
+    gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+
+    g_signal_connect (selection, "changed",
+		      G_CALLBACK (host_selected),
+		      NULL);
+    g_signal_connect (browser, "row_activated",
+		      G_CALLBACK (row_activated),
+		      NULL);
+
+    browser_model = (GtkTreeModel *)gtk_list_store_new (3,
+							GDK_TYPE_PIXBUF,
+							G_TYPE_STRING,
+							G_TYPE_POINTER);
+    gtk_tree_view_set_model (GTK_TREE_VIEW (browser), browser_model);
+    column = gtk_tree_view_column_new_with_attributes
+	    ("Icon",
+	     gtk_cell_renderer_pixbuf_new (),
+	     "pixbuf", CHOOSER_LIST_ICON_COLUMN,
+	     NULL);
+    gtk_tree_view_append_column (GTK_TREE_VIEW (browser), column);
+
+    column = gtk_tree_view_column_new_with_attributes
+	    ("Hostname",
+	     gtk_cell_renderer_text_new (),
+	     "text", CHOOSER_LIST_LABEL_COLUMN,
+	     NULL);
+    gtk_tree_view_append_column (GTK_TREE_VIEW (browser), column);
+
+    gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (browser_model),
+					  CHOOSER_LIST_LABEL_COLUMN,
+					  GTK_SORT_ASCENDING);
+
 
     if ( ! GdmAllowAdd) {
 	    GtkWidget *w = glade_helper_get (chooser_app, "add_hbox",

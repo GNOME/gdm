@@ -71,9 +71,10 @@ gdmsetup_SOURCES = \
 gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
 	libgdmwm.a		\
-	$(GUI_LIBS)		\
+	$(GUIGLADE_LIBS)	\
 	$(X_LIBS)		\
 	$(XDMCP_LIBS)		\
+	-lpopt			\
 	-lX11			\
 	$(XINERAMA_LIBS)	\
 	$(X_EXTRA_LIBS)	\

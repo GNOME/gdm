@@ -3212,6 +3212,7 @@ gdm_login_gui_init (void)
 	    GtkTreeViewColumn *column;
 
 	    browser = gtk_tree_view_new ();
+	    gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (browser), TRUE);
 	    gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (browser),
 					       FALSE);
 	    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));

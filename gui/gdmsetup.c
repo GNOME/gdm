@@ -1825,6 +1825,8 @@ setup_graphical_themes (void)
 
 	char *theme_dir = get_theme_dir ();
 
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (theme_list), TRUE);
+
 	selected_theme = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 					       GDM_KEY_GRAPHICAL_THEME);
 

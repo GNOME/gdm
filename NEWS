@@ -10,13 +10,18 @@ Ahh news...
 - Fix DNS lookup stuff in XDMCP for places without DNS.  Also cache
   last result of DNS lookup to cut down traffic during session setup.
 
-- daemon, gdmgreeter and gdmlogin don't link against libgnome and
-  friends (gdmgreeter still uses canvas).  This reduces number of
-  libs linked by daemon from 46 to 26, for gdmgreeter this goes
-  from 56 to 32 and for gdmlogin this goes from 52 to 22
+- daemon, gdmgreeter, gdmlogin and gdmchooser don't link against
+  libgnome and friends (gdmgreeter still uses canvas).  This
+  reduces number of libs linked by daemon from 46 to 26, for
+  gdmgreeter this goes from 56 to 32 and for gdmlogin this goes
+  from 52 to 22, and gdmchooser is down to 27
 
 - If a greeter crashes within 10 seconds of display start, try
   running a different greeter (and telling the user that)
+
+- Fix the chooser so that it actually chooses the host that
+  you clicked on and not some random one.  This also changes
+  the chooser to use GtkTreeView
 
 - Fix #97774 by resetting the rlimits back after we fork the
   user session.  Also make AlwaysRestartServer default to false
@@ -64,7 +69,7 @@ Ahh news...
 - Translation updates (Danilo Segan, Serbian team, Metin Amiroff,
   Christian Rose, Kjartan Maraas, Artur Flinta, Vincent van Adrighem,
   Valek Filippov, Laurent Dhima, Christophe Merlet, Mohammad DAMT,
-  Dafydd Harries)
+  Dafydd Harries, Kang Jeong-Hee, Simos Xenitellis)
 
 2.4.2.96 stuff:
 

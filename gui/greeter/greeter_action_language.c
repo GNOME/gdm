@@ -209,6 +209,7 @@ greeter_action_language (GreeterItemInfo *info,
       gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			  label, FALSE, FALSE, 0);
       view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (lang_model));
+      gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (view), TRUE);
       /* FIXME: we should handle this better, but things really look
        * like crap if we aren't always LTR */
       gtk_widget_set_direction (view, GTK_TEXT_DIR_LTR);
