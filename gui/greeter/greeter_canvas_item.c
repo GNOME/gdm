@@ -174,6 +174,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   double x1, y1, x2, y2;
   int i;
   GtkAllocation rect;
+  GtkJustification just;
   char *text;
   GtkTooltips *tooltips;
   char *num_locale;
@@ -259,6 +260,18 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   case GREETER_ITEM_TYPE_LABEL:
     text = greeter_item_expand_text (item->orig_text);
 
+    /* Justification is taken from the anchor */
+    if (item->anchor == GTK_ANCHOR_NORTH_WEST ||
+	item->anchor == GTK_ANCHOR_SOUTH_WEST ||
+	item->anchor == GTK_ANCHOR_WEST)
+	    just = GTK_JUSTIFY_LEFT;
+    else if (item->anchor == GTK_ANCHOR_NORTH_EAST ||
+	     item->anchor == GTK_ANCHOR_SOUTH_EAST ||
+	     item->anchor == GTK_ANCHOR_EAST)
+	    just = GTK_JUSTIFY_RIGHT;
+    else
+	    just = GTK_JUSTIFY_CENTER;
+
     item->item = gnome_canvas_item_new (group,
 					GNOME_TYPE_CANVAS_TEXT,
 					"markup", text,
@@ -267,6 +280,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					"anchor", item->anchor,
 					"font_desc", item->fonts[GREETER_ITEM_STATE_NORMAL],
 					"fill_color_rgba", item->colors[GREETER_ITEM_STATE_NORMAL],
+					"justification", just,
 					NULL);
 
     /* if there is an accelerator we do an INCREDIBLE hack */
