@@ -813,7 +813,7 @@ gdm_login_parse_config (void)
      * but from the daemon since it's been munged on by the daemon a bit
      * already maybe */
     if (GdmTimedLoginEnable) {
-	    GdmTimedLogin = g_getenv("GDM_TIMED_LOGIN_OK");
+	    GdmTimedLogin = g_strdup (g_getenv("GDM_TIMED_LOGIN_OK"));
             if (ve_string_empty (GdmTimedLogin)) {
 	      g_free (GdmTimedLogin);
 	      GdmTimedLogin = NULL;
