@@ -276,7 +276,7 @@ static gboolean have_ipv6 (void)
 
 	s = socket (AF_INET6, SOCK_STREAM, 0);
 	if (s != -1) {
-		IGNORE_EINTR (close (s));
+		VE_IGNORE_EINTR (close (s));
 		return TRUE;
 	}
 
@@ -518,7 +518,7 @@ gdm_xdmcp_close (void)
 	}
 
 	if (gdm_xdmcpfd > 0) {
-		IGNORE_EINTR (close (gdm_xdmcpfd));
+		VE_IGNORE_EINTR (close (gdm_xdmcpfd));
 		gdm_xdmcpfd = -1;
 	}
 }

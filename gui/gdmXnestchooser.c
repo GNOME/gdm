@@ -49,7 +49,7 @@ static gboolean have_ipv6 () {
 	s = socket (AF_INET6, SOCK_STREAM, 0);
 
 	if (s != -1) {
-		IGNORE_EINTR (close (s));
+		VE_IGNORE_EINTR (close (s));
 		return TRUE;
 	}
 
@@ -90,7 +90,7 @@ get_free_display (void)
 			serv6_addr.sin6_port = htons (6000 + i);
 
 			if (connect (sock, (struct sockaddr *)&serv6_addr, sizeof(serv6_addr)) >= 0 ||  errno != ECONNREFUSED) {
-				IGNORE_EINTR (close (sock));
+				VE_IGNORE_EINTR (close (sock));
 				continue;
 			      }
 		}
@@ -106,28 +106,28 @@ get_free_display (void)
 			if (connect (sock, (struct sockaddr *)&serv_addr,
 			     sizeof (serv_addr)) >= 0 ||
 			    errno != ECONNREFUSED) {
-				IGNORE_EINTR (close (sock));
+				VE_IGNORE_EINTR (close (sock));
 				continue;
 			}
 		}
 
-		IGNORE_EINTR (close (sock));
+		VE_IGNORE_EINTR (close (sock));
 
 		/* if lock file exists and the process exists */
 		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
-		fp = fopen (buf, "r");
+		VE_IGNORE_EINTR (fp = fopen (buf, "r"));
 		if (fp != NULL) {
 			char buf2[100];
 			if (fgets (buf2, sizeof (buf2), fp) != NULL) {
 				gulong pid;
 				if (sscanf (buf2, "%lu", &pid) == 1 &&
 				    kill (pid, 0) == 0) {
-					fclose (fp);
+					VE_IGNORE_EINTR (fclose (fp));
 					continue;
 				}
 
 			}
-			fclose (fp);
+			VE_IGNORE_EINTR (fclose (fp));
 		}
 
 		g_snprintf (buf, sizeof (buf), "/tmp/.X11-unix/X%d", i);
@@ -429,7 +429,7 @@ setup_cookie (int disp)
 	    return;
     }
 
-    af = fopen (filename, "a+");
+    VE_IGNORE_EINTR (af = fopen (filename, "a+"));
     if (af == NULL) {
 	    XauUnlockAuth (filename);
 	    g_free (cookie);
@@ -439,7 +439,7 @@ setup_cookie (int disp)
     xa = get_auth_entry (disp, cookie);
     if (xa == NULL) {
 	    g_free (cookie);
-	    fclose (af);
+	    VE_IGNORE_EINTR (fclose (af));
 	    XauUnlockAuth (filename);
 	    return;
     }
@@ -450,7 +450,7 @@ setup_cookie (int disp)
 
     XauDisposeAuth (xa);
 
-    fclose (af);
+    VE_IGNORE_EINTR (fclose (af));
 
     XauUnlockAuth (filename);
 }
@@ -581,10 +581,13 @@ main (int argc, char *argv[])
 
 		pid = 0;
 		if (pidfile != NULL)
-			fp = fopen (pidfile, "r");
+			VE_IGNORE_EINTR (fp = fopen (pidfile, "r"));
 		if (fp != NULL) {
-			fscanf (fp, "%ld", &pid);
-			fclose (fp);
+			int r;
+			VE_IGNORE_EINTR (r = fscanf (fp, "%ld", &pid));
+			VE_IGNORE_EINTR (fclose (fp));
+			if (r != 1)
+				pid = 0;
 		}
 
 		errno = 0;
@@ -641,12 +644,12 @@ main (int argc, char *argv[])
 		if (fork () > 0) {
 			_exit (0);
 		}
-		IGNORE_EINTR (close (0));
-		IGNORE_EINTR (close (1));
-		IGNORE_EINTR (close (2));
-		open ("/dev/null", O_RDWR);
-		open ("/dev/null", O_RDONLY);
-		open ("/dev/null", O_RDONLY);
+		VE_IGNORE_EINTR (close (0));
+		VE_IGNORE_EINTR (close (1));
+		VE_IGNORE_EINTR (close (2));
+		VE_IGNORE_EINTR (open ("/dev/null", O_RDWR));
+		VE_IGNORE_EINTR (open ("/dev/null", O_RDONLY));
+		VE_IGNORE_EINTR (open ("/dev/null", O_RDONLY));
 	}
 
 	term.sa_handler = term_handler;

@@ -322,7 +322,7 @@ gdm_display_manage (GdmDisplay *d)
 	gdm_debug ("gdm_display_manage: Forked slave: %d",
 		   (int)pid);
 	d->master_notify_fd = fds[1];
-	IGNORE_EINTR (close (fds[0]));
+	VE_IGNORE_EINTR (close (fds[0]));
 	break;
     }
 
@@ -426,12 +426,12 @@ gdm_display_dispose (GdmDisplay *d)
     }
 
     if (d->slave_notify_fd >= 0) {
-	    IGNORE_EINTR (close (d->slave_notify_fd));
+	    VE_IGNORE_EINTR (close (d->slave_notify_fd));
 	    d->slave_notify_fd = -1;
     }
 
     if (d->master_notify_fd >= 0) {
-	    IGNORE_EINTR (close (d->master_notify_fd));
+	    VE_IGNORE_EINTR (close (d->master_notify_fd));
 	    d->master_notify_fd = -1;
     }
 
@@ -465,7 +465,7 @@ gdm_display_dispose (GdmDisplay *d)
     d->authfile_gdm = NULL;
 
     if (d->xnest_temp_auth_file != NULL) {
-	    IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
+	    VE_IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
     }
     g_free (d->xnest_temp_auth_file);
     d->xnest_temp_auth_file = NULL;

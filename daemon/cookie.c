@@ -36,6 +36,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <libgnome/libgnome.h>
+#include <vicious.h>
 
 #include "gdm.h"
 #include "md5.h"
@@ -200,14 +201,17 @@ gdm_cookie_generate (GdmDisplay *d)
 	    file = d->authfile;
 	if G_UNLIKELY (file == NULL)
 	    continue;
-	fd = open (file, O_RDONLY|O_NONBLOCK
+	do {
+		errno = 0;
+		fd = open (file, O_RDONLY|O_NONBLOCK
 #ifdef O_NOCTTY
-			|O_NOCTTY
+			   |O_NOCTTY
 #endif
 #ifdef O_NOFOLLOW
-			|O_NOFOLLOW
+			   |O_NOFOLLOW
 #endif
-		   );
+			  );
+	} while G_UNLIKELY (errno == EINTR);
 	if G_LIKELY (fd >= 0) {
 	    /* Apparently this can sometimes block anyway even if it is O_NONBLOCK,
 	       so use select to figure out if there is something available */
@@ -225,7 +229,7 @@ gdm_cookie_generate (GdmDisplay *d)
 		lseek (fd, rngs[i].seek, SEEK_SET);
 
 	    if G_LIKELY (select (fd+1, &rfds, NULL, NULL, &tv) > 0) {
-	        IGNORE_EINTR (r = read (fd, buf, MIN (sizeof (buf), rngs[i].length)));
+	        VE_IGNORE_EINTR (r = read (fd, buf, MIN (sizeof (buf), rngs[i].length)));
 	    }
 
 	    if G_LIKELY (r > 0)
@@ -233,10 +237,10 @@ gdm_cookie_generate (GdmDisplay *d)
 	    else
 		r = 0;
 
-	    IGNORE_EINTR (close (fd));
+	    VE_IGNORE_EINTR (close (fd));
 
 	    if G_LIKELY (r >= rngs[i].length &&
-		data_seems_random (buf, r)) 
+			 data_seems_random (buf, r)) 
 		break;
 	}
     }

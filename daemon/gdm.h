@@ -804,11 +804,6 @@ enum {
 					  * from a local display we started */
 };
 
-#define IGNORE_EINTR(expr) \
-	do {		\
-		errno = 0;	\
-		expr;		\
-	} while G_UNLIKELY (errno == EINTR);
 
 #define NEVER_FAILS_seteuid(uid) \
 	{ int r = seteuid (uid); \

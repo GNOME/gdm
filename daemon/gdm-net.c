@@ -105,7 +105,7 @@ gdm_connection_handler (GIOChannel *source,
 	if ( ! (cond & G_IO_IN)) 
 		return close_if_needed (conn, cond);
 
-	IGNORE_EINTR (len = read (conn->fd, buf, sizeof (buf) -1));
+	VE_IGNORE_EINTR (len = read (conn->fd, buf, sizeof (buf) -1));
 	if (len <= 0) {
 		return close_if_needed (conn, cond);
 	}
@@ -174,11 +174,11 @@ gdm_connection_write (GdmConnection *conn, const char *str)
 #endif
 
 #ifdef MSG_NOSIGNAL
-	IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), MSG_NOSIGNAL | flags));
+	VE_IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), MSG_NOSIGNAL | flags));
 	save_errno = errno;
 #else
 	old_handler = signal (SIGPIPE, SIG_IGN);
-	IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), flags));
+	VE_IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), flags));
 	save_errno = errno;
 	signal (SIGPIPE, old_handler);
 #endif
@@ -207,7 +207,7 @@ gdm_socket_handler (GIOChannel *source,
 	if ( ! (cond & G_IO_IN)) 
 		return TRUE;
 
-	IGNORE_EINTR (fd = accept (conn->fd,
+	VE_IGNORE_EINTR (fd = accept (conn->fd,
 				   (struct sockaddr *)&addr,
 				   &addr_size));
 	if G_UNLIKELY (fd < 0) {
@@ -275,7 +275,7 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 
 try_again:
 	/* this is all for creating sockets in /tmp/ safely */
-	IGNORE_EINTR (unlink (sockname));
+	VE_IGNORE_EINTR (unlink (sockname));
 	if G_UNLIKELY (errno == EISDIR ||
 		       errno == EPERM) {
 		/* likely a directory, someone's playing tricks on us */
@@ -286,7 +286,7 @@ try_again:
 						   sockname,
 						   (guint)g_random_int ());
 		} while (access (newname, F_OK) == 0);
-		IGNORE_EINTR (rename (sockname, newname));
+		VE_IGNORE_EINTR (rename (sockname, newname));
 		if G_UNLIKELY (errno != 0)
 			try_again_attempts = 0;
 		g_free (newname);
@@ -305,11 +305,11 @@ try_again:
 		/* someone is being evil on us */
 		if (errno == EADDRINUSE && try_again_attempts >= 0)
 			goto try_again;
-		IGNORE_EINTR (close (fd));
+		VE_IGNORE_EINTR (close (fd));
 		return NULL;
 	}
 
-	IGNORE_EINTR (chmod (sockname, mode));
+	VE_IGNORE_EINTR (chmod (sockname, mode));
 
 	conn = g_new0 (GdmConnection, 1);
 	conn->disp = NULL;
@@ -382,7 +382,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	GdmConnection *conn;
 	int fd;
 
-	IGNORE_EINTR (unlink (fifo));
+	VE_IGNORE_EINTR (unlink (fifo));
 
 	if G_UNLIKELY (mkfifo (fifo, 0660) < 0) {
 		gdm_error (_("%s: Could not make FIFO"),
@@ -398,7 +398,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 		return NULL;
 	}
 
-	IGNORE_EINTR (chmod (fifo, mode));
+	VE_IGNORE_EINTR (chmod (fifo, mode));
 
 	conn = g_new0 (GdmConnection, 1);
 	conn->disp = NULL;
@@ -510,7 +510,7 @@ gdm_connection_close (GdmConnection *conn)
 	}
 
 	if (conn->fd > 0) {
-		IGNORE_EINTR (close (conn->fd));
+		VE_IGNORE_EINTR (close (conn->fd));
 		conn->fd = -1;
 	}
 

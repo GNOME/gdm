@@ -246,7 +246,7 @@ slave_waitpid_notify (void)
 	gdm_sigchld_block_push ();
 
 	if (slave_waitpid_w >= 0)
-		IGNORE_EINTR (write (slave_waitpid_w, "N", 1));
+		VE_IGNORE_EINTR (write (slave_waitpid_w, "N", 1));
 
 	gdm_sigchld_block_pop ();
 }
@@ -308,13 +308,13 @@ run_session_output (gboolean read_until_eof)
 
 	/* the fd is non-blocking */
 	for (;;) {
-		IGNORE_EINTR (r = read (d->session_output_fd, buf, sizeof(buf)));
+		VE_IGNORE_EINTR (r = read (d->session_output_fd, buf, sizeof(buf)));
 
 		/* EOF */
 		if G_UNLIKELY (r == 0) {
-			IGNORE_EINTR (close (d->session_output_fd));
+			VE_IGNORE_EINTR (close (d->session_output_fd));
 			d->session_output_fd = -1;
-			IGNORE_EINTR (close (d->xsession_errors_fd));
+			VE_IGNORE_EINTR (close (d->xsession_errors_fd));
 			d->xsession_errors_fd = -1;
 			break;
 		}
@@ -326,9 +326,9 @@ run_session_output (gboolean read_until_eof)
 		/* some evil error */
 		if G_UNLIKELY (r < 0) {
 			gdm_error ("error reading from session output, closing the pipe");
-			IGNORE_EINTR (close (d->session_output_fd));
+			VE_IGNORE_EINTR (close (d->session_output_fd));
 			d->session_output_fd = -1;
-			IGNORE_EINTR (close (d->xsession_errors_fd));
+			VE_IGNORE_EINTR (close (d->xsession_errors_fd));
 			d->xsession_errors_fd = -1;
 			break;
 		}
@@ -338,7 +338,7 @@ run_session_output (gboolean read_until_eof)
 			continue;
 
 		/* write until we succeed in writing something */
-		IGNORE_EINTR (written = write (d->xsession_errors_fd, buf, r));
+		VE_IGNORE_EINTR (written = write (d->xsession_errors_fd, buf, r));
 		if G_UNLIKELY (written < 0 || got_xfsz_signal) {
 			/* evil! */
 			break;
@@ -347,7 +347,7 @@ run_session_output (gboolean read_until_eof)
 		/* write until we succeed in writing everything */
 		while G_UNLIKELY (written < r) {
 			int n;
-			IGNORE_EINTR (n = write (d->xsession_errors_fd, &buf[written], r-written));
+			VE_IGNORE_EINTR (n = write (d->xsession_errors_fd, &buf[written], r-written));
 			if G_UNLIKELY (n < 0 || got_xfsz_signal) {
 				/* evil! */
 				break;
@@ -359,7 +359,7 @@ run_session_output (gboolean read_until_eof)
 
 		if G_UNLIKELY (d->xsession_errors_bytes >= MAX_XSESSION_ERRORS_BYTES &&
 			       ! got_xfsz_signal) {
-			IGNORE_EINTR (write (d->xsession_errors_fd,
+			VE_IGNORE_EINTR (write (d->xsession_errors_fd,
 					     "\n...Too much output, ignoring rest...\n",
 					     strlen ("\n...Too much output, ignoring rest...\n")));
 		}
@@ -500,7 +500,7 @@ slave_waitpid (GdmWaitPid *wp)
 
 			if (ret > 0) {
 			       	if (FD_ISSET (slave_waitpid_r, &rfds)) {
-					IGNORE_EINTR (read (slave_waitpid_r, buf, 1));
+					VE_IGNORE_EINTR (read (slave_waitpid_r, buf, 1));
 				}
 				if (d->session_output_fd >= 0 &&
 				    FD_ISSET (d->session_output_fd, &rfds)) {
@@ -605,10 +605,10 @@ static void
 whack_greeter_fds (void)
 {
 	if (greeter_fd_out > 0)
-		IGNORE_EINTR (close (greeter_fd_out));
+		VE_IGNORE_EINTR (close (greeter_fd_out));
 	greeter_fd_out = -1;
 	if (greeter_fd_in > 0)
-		IGNORE_EINTR (close (greeter_fd_in));
+		VE_IGNORE_EINTR (close (greeter_fd_in));
 	greeter_fd_in = -1;
 }
 
@@ -1421,9 +1421,9 @@ focus_first_x_window (const char *class_res_name)
 	pid = fork ();
 	if G_UNLIKELY (pid < 0) {
 		if (p[0] != -1)
-			IGNORE_EINTR (close (p[0]));
+			VE_IGNORE_EINTR (close (p[0]));
 		if (p[1] != -1)
-			IGNORE_EINTR (close (p[1]));
+			VE_IGNORE_EINTR (close (p[1]));
 		gdm_error (_("%s: cannot fork"), "focus_first_x_window");
 		return;
 	}
@@ -1434,7 +1434,7 @@ focus_first_x_window (const char *class_res_name)
 			fd_set rfds;
 			struct timeval tv;
 
-			IGNORE_EINTR (close (p[1]));
+			VE_IGNORE_EINTR (close (p[1]));
 
 			FD_ZERO(&rfds);
 			FD_SET(p[0], &rfds);
@@ -1445,7 +1445,7 @@ focus_first_x_window (const char *class_res_name)
 
 			select(p[0]+1, &rfds, NULL, NULL, &tv);
 
-			IGNORE_EINTR (close (p[0]));
+			VE_IGNORE_EINTR (close (p[0]));
 		}
 		return;
 	}
@@ -1489,8 +1489,8 @@ focus_first_x_window (const char *class_res_name)
 		      SubstructureNotifyMask);
 
 	if G_LIKELY (p[1] >= 0) {
-		IGNORE_EINTR (write (p[1], "!", 1));
-		IGNORE_EINTR (close (p[1]));
+		VE_IGNORE_EINTR (write (p[1], "!", 1));
+		VE_IGNORE_EINTR (close (p[1]));
 	}
 
 	for (;;) {
@@ -1607,16 +1607,16 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		IGNORE_EINTR (chdir (pwent->pw_dir));
+		VE_IGNORE_EINTR (chdir (pwent->pw_dir));
 		if G_UNLIKELY (errno != 0)
-			IGNORE_EINTR (chdir ("/"));
+			VE_IGNORE_EINTR (chdir ("/"));
 
 		/* exec the configurator */
 		argv = ve_split (GdmConfigurator);
 		if G_LIKELY (argv != NULL &&
 			     argv[0] != NULL &&
 			     access (argv[0], X_OK) == 0)
-			IGNORE_EINTR (execv (argv[0], argv));
+			VE_IGNORE_EINTR (execv (argv[0], argv));
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
@@ -1630,7 +1630,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			(EXPANDED_BINDIR
 			 "/gdmsetup --disable-sound --disable-crash-dialog");
 		if (access (argv[0], X_OK) == 0)
-			IGNORE_EINTR (execv (argv[0], argv));
+			VE_IGNORE_EINTR (execv (argv[0], argv));
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
@@ -2149,7 +2149,7 @@ run_pictures (void)
 			g_free (picdir);
 		}
 
-		IGNORE_EINTR (r = stat (picfile, &s));
+		VE_IGNORE_EINTR (r = stat (picfile, &s));
 		if G_UNLIKELY (r < 0 || s.st_size > GdmUserMaxFile) {
 			NEVER_FAILS_seteuid (0);
 			NEVER_FAILS_setegid (GdmGroupId);
@@ -2158,7 +2158,7 @@ run_pictures (void)
 			continue;
 		}
 
-		fp = fopen (picfile, "r");
+		VE_IGNORE_EINTR (fp = fopen (picfile, "r"));
 		g_free (picfile);
 		if G_UNLIKELY (fp == NULL) {
 			NEVER_FAILS_seteuid (0);
@@ -2173,7 +2173,7 @@ run_pictures (void)
 		g_free (tmp);
 
 		if G_UNLIKELY (ret == NULL || strcmp (ret, "OK") != 0) {
-			fclose (fp);
+			VE_IGNORE_EINTR (fclose (fp));
 			g_free (ret);
 
 			NEVER_FAILS_seteuid (0);
@@ -2198,16 +2198,20 @@ run_pictures (void)
 #endif
 
 		i = 0;
-		while (i < s.st_size &&
-		       (bytes = fread (buf, sizeof (char),
-				       max_write, fp)) > 0) {
+		while (i < s.st_size) {
 			int written;
+
+			VE_IGNORE_EINTR (bytes = fread (buf, sizeof (char),
+						     max_write, fp));
+
+			if (bytes <= 0)
+				break;
 
 			if G_UNLIKELY (i + bytes > s.st_size)
 				bytes = s.st_size - i;
 
 			/* write until we succeed in writing something */
-			IGNORE_EINTR (written = write (greeter_fd_out, buf, bytes));
+			VE_IGNORE_EINTR (written = write (greeter_fd_out, buf, bytes));
 			if G_UNLIKELY (written < 0 &&
 				       (errno == EPIPE || errno == EBADF)) {
 				/* something very, very bad has happened */
@@ -2220,7 +2224,7 @@ run_pictures (void)
 			/* write until we succeed in writing everything */
 			while (written < bytes) {
 				int n;
-				IGNORE_EINTR (n = write (greeter_fd_out, &buf[written], bytes-written));
+				VE_IGNORE_EINTR (n = write (greeter_fd_out, &buf[written], bytes-written));
 				if G_UNLIKELY (n < 0 &&
 					       (errno == EPIPE || errno == EBADF)) {
 					/* something very, very bad has happened */
@@ -2234,7 +2238,7 @@ run_pictures (void)
 			i += bytes;
 		}
 
-		fclose (fp);
+		VE_IGNORE_EINTR (fclose (fp));
 
 		/* eek, this "could" happen, so just send some garbage */
 		while G_UNLIKELY (i < s.st_size) {
@@ -2284,14 +2288,17 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 		return NULL;
 	}
 
-	fromfd = open (file, O_RDONLY
+	do {
+		errno = 0;
+		fromfd = open (file, O_RDONLY
 #ifdef O_NOCTTY
-		       |O_NOCTTY
+				     |O_NOCTTY
 #endif
 #ifdef O_NOFOLLOW
-		       |O_NOFOLLOW
+				     |O_NOFOLLOW
 #endif
-		      );
+				    );
+	} while G_UNLIKELY (errno == EINTR);
 
 	if G_UNLIKELY (fromfd < 0) {
 		NEVER_FAILS_seteuid (old);
@@ -2304,23 +2311,23 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 	name = gdm_make_filename (GdmServAuthDir, d->name, ".XnestAuth");
 
-	IGNORE_EINTR (unlink (name));
-	authfd = open (name, O_EXCL|O_TRUNC|O_WRONLY|O_CREAT, 0600);
+	VE_IGNORE_EINTR (unlink (name));
+	VE_IGNORE_EINTR (authfd = open (name, O_EXCL|O_TRUNC|O_WRONLY|O_CREAT, 0600));
 
 	if G_UNLIKELY (authfd < 0) {
-		IGNORE_EINTR (close (fromfd));
+		VE_IGNORE_EINTR (close (fromfd));
 		NEVER_FAILS_seteuid (old);
 		NEVER_FAILS_setegid (oldg);
 		g_free (name);
 		return NULL;
 	}
 
-	IGNORE_EINTR (fchown (authfd, touid, -1));
+	VE_IGNORE_EINTR (fchown (authfd, touid, -1));
 
 	cnt = 0;
 	for (;;) {
 		int written, n;
-		IGNORE_EINTR (bytes = read (fromfd, buf, sizeof (buf)));
+		VE_IGNORE_EINTR (bytes = read (fromfd, buf, sizeof (buf)));
 
 		/* EOF */
 		if (bytes == 0)
@@ -2329,8 +2336,8 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 		if G_UNLIKELY (bytes < 0) {
 			/* Error reading */
 			gdm_error ("Error reading %s: %s", file, strerror (errno));
-			IGNORE_EINTR (close (fromfd));
-			IGNORE_EINTR (close (authfd));
+			VE_IGNORE_EINTR (close (fromfd));
+			VE_IGNORE_EINTR (close (authfd));
 			NEVER_FAILS_seteuid (old);
 			NEVER_FAILS_setegid (oldg);
 			g_free (name);
@@ -2339,12 +2346,12 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 		written = 0;
 		do {
-			IGNORE_EINTR (n = write (authfd, &buf[written], bytes-written));
+			VE_IGNORE_EINTR (n = write (authfd, &buf[written], bytes-written));
 			if G_UNLIKELY (n < 0) {
 				/* Error writing */
 				gdm_error ("Error writing %s: %s", name, strerror (errno));
-				IGNORE_EINTR (close (fromfd));
-				IGNORE_EINTR (close (authfd));
+				VE_IGNORE_EINTR (close (fromfd));
+				VE_IGNORE_EINTR (close (authfd));
 				NEVER_FAILS_seteuid (old);
 				NEVER_FAILS_setegid (oldg);
 				g_free (name);
@@ -2360,8 +2367,8 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 			return NULL;
 	}
 
-	IGNORE_EINTR (close (fromfd));
-	IGNORE_EINTR (close (authfd));
+	VE_IGNORE_EINTR (close (fromfd));
+	VE_IGNORE_EINTR (close (authfd));
 
 	NEVER_FAILS_seteuid (old);
 	NEVER_FAILS_setegid (oldg);
@@ -2395,7 +2402,7 @@ exec_command (const char *command, const char *extra_arg)
 		argv = new_argv;
 	}
 
-	IGNORE_EINTR (execv (argv[0], argv));
+	VE_IGNORE_EINTR (execv (argv[0], argv));
 }
 
 static void
@@ -2418,8 +2425,8 @@ gdm_slave_greeter (void)
 	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmgreeter"),
 			"gdm_slave_greeter");
     if G_UNLIKELY (pipe (pipe2) < 0) {
-	IGNORE_EINTR (close (pipe1[0]));
-	IGNORE_EINTR (close (pipe1[1]));
+	VE_IGNORE_EINTR (close (pipe1[0]));
+	VE_IGNORE_EINTR (close (pipe1[1]));
 	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmgreeter"),
 			"gdm_slave_greeter");
     }
@@ -2445,11 +2452,11 @@ gdm_slave_greeter (void)
 	gdm_unset_signals ();
 
 	/* Plumbing */
-	IGNORE_EINTR (close (pipe1[1]));
-	IGNORE_EINTR (close (pipe2[0]));
+	VE_IGNORE_EINTR (close (pipe1[1]));
+	VE_IGNORE_EINTR (close (pipe2[0]));
 
-	IGNORE_EINTR (dup2 (pipe1[0], STDIN_FILENO));
-	IGNORE_EINTR (dup2 (pipe2[1], STDOUT_FILENO));
+	VE_IGNORE_EINTR (dup2 (pipe1[0], STDIN_FILENO));
+	VE_IGNORE_EINTR (dup2 (pipe2[1], STDOUT_FILENO));
 
 	closelog ();
 
@@ -2620,7 +2627,7 @@ gdm_slave_greeter (void)
 
 	exec_command (EXPANDED_BINDIR "/gdmlogin", NULL);
 
-	IGNORE_EINTR (execl (EXPANDED_BINDIR "/gdmlogin", EXPANDED_BINDIR "/gdmlogin", NULL));
+	VE_IGNORE_EINTR (execl (EXPANDED_BINDIR "/gdmlogin", EXPANDED_BINDIR "/gdmlogin", NULL));
 
 	gdm_error_box (d,
 		       GTK_MESSAGE_ERROR,
@@ -2638,8 +2645,8 @@ gdm_slave_greeter (void)
 	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't fork gdmgreeter process"), "gdm_slave_greeter");
 	
     default:
-	IGNORE_EINTR (close (pipe1[0]));
-	IGNORE_EINTR (close (pipe2[1]));
+	VE_IGNORE_EINTR (close (pipe1[0]));
+	VE_IGNORE_EINTR (close (pipe2[1]));
 
 	whack_greeter_fds ();
 
@@ -2708,9 +2715,9 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 		if (old != 0)
 			seteuid (0);
 #ifdef O_NOFOLLOW
-		fd = open (fifopath, O_WRONLY|O_NOFOLLOW);
+		VE_IGNORE_EINTR (fd = open (fifopath, O_WRONLY|O_NOFOLLOW));
 #else
-		fd = open (fifopath, O_WRONLY);
+		VE_IGNORE_EINTR (fd = open (fifopath, O_WRONLY));
 #endif
 		if (old != 0)
 			seteuid (old);
@@ -2727,7 +2734,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	gdm_fdprintf (fd, "\n%s\n", str);
 
 	if G_UNLIKELY (fd != slave_fifo_pipe_fd) {
-		IGNORE_EINTR (close (fd));
+		VE_IGNORE_EINTR (close (fd));
 	}
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
@@ -2922,14 +2929,14 @@ gdm_slave_chooser (void)
 		gdm_unset_signals ();
 
 		/* Plumbing */
-		IGNORE_EINTR (close (p[0]));
+		VE_IGNORE_EINTR (close (p[0]));
 
 		if (p[1] != STDOUT_FILENO) 
-			IGNORE_EINTR (dup2 (p[1], STDOUT_FILENO));
+			VE_IGNORE_EINTR (dup2 (p[1], STDOUT_FILENO));
 
 		closelog ();
 
-		IGNORE_EINTR (close (0));
+		VE_IGNORE_EINTR (close (0));
 		gdm_close_all_descriptors (2 /* from */, -1 /* except */, -1 /* except2 */);
 
 		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
@@ -3007,7 +3014,7 @@ gdm_slave_chooser (void)
 		gdm_debug ("gdm_slave_chooser: Chooser on pid %d", d->chooserpid);
 		gdm_slave_send_num (GDM_SOP_CHOOSERPID, d->chooserpid);
 
-		IGNORE_EINTR (close (p[1]));
+		VE_IGNORE_EINTR (close (p[1]));
 
 		/* wait for the chooser to die */
 
@@ -3023,9 +3030,9 @@ gdm_slave_chooser (void)
 		/* Note: Nothing affecting the chooser needs update
 		 * from notifies */
 
-		IGNORE_EINTR (bytes = read (p[0], buf, sizeof(buf)-1));
+		VE_IGNORE_EINTR (bytes = read (p[0], buf, sizeof(buf)-1));
 		if (bytes > 0) {
-			IGNORE_EINTR (close (p[0]));
+			VE_IGNORE_EINTR (close (p[0]));
 
 			if (buf[bytes-1] == '\n')
 				buf[bytes-1] ='\0';
@@ -3041,7 +3048,7 @@ gdm_slave_chooser (void)
 			}
 		}
 
-		IGNORE_EINTR (close (p[0]));
+		VE_IGNORE_EINTR (close (p[0]));
 
 		gdm_slave_quick_exit (DISPLAY_REMANAGE);
 		break;
@@ -3234,8 +3241,8 @@ open_xsession_errors (struct passwd *pwent,
 		if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
 			     seteuid (pwent->pw_uid) == 0) {
 			/* unlink to be anal */
-			IGNORE_EINTR (unlink (filename));
-			logfd = open (filename, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644);
+			VE_IGNORE_EINTR (unlink (filename));
+			VE_IGNORE_EINTR (logfd = open (filename, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644));
 		}
 		NEVER_FAILS_seteuid (old);
 		NEVER_FAILS_setegid (oldg);
@@ -3344,17 +3351,17 @@ session_child_run (struct passwd *pwent,
 	 * nowdays rather then later on so that we get errors even
 	 * from the PreSession script */
 	if G_LIKELY (logfd >= 0) {
-		IGNORE_EINTR (dup2 (logfd, 1));
-		IGNORE_EINTR (dup2 (logfd, 2));
-		IGNORE_EINTR (close (logfd));
+		VE_IGNORE_EINTR (dup2 (logfd, 1));
+		VE_IGNORE_EINTR (dup2 (logfd, 2));
+		VE_IGNORE_EINTR (close (logfd));
 	} else {
-		IGNORE_EINTR (close (1));
-		IGNORE_EINTR (close (2));
+		VE_IGNORE_EINTR (close (1));
+		VE_IGNORE_EINTR (close (2));
 		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 	}
 
-	IGNORE_EINTR (close (0));
+	VE_IGNORE_EINTR (close (0));
 	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 
 	/* Set this for the PreSession script */
@@ -3409,7 +3416,7 @@ session_child_run (struct passwd *pwent,
 
 	/* Now still as root make the system authfile not readable by others,
 	   and therefore not by the gdm user */
-	IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
+	VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
 
 	setpgid (0, 0);
 	
@@ -3427,9 +3434,9 @@ session_child_run (struct passwd *pwent,
 	 * ok to gdm_fail here */
 	NEVER_FAILS_setegid (pwent->pw_gid);
 
-	IGNORE_EINTR (chdir (home_dir));
+	VE_IGNORE_EINTR (chdir (home_dir));
 	if G_UNLIKELY (errno != 0) {
-		IGNORE_EINTR (chdir ("/"));
+		VE_IGNORE_EINTR (chdir ("/"));
 	}
 
 #ifdef HAVE_LOGINCAP
@@ -3457,7 +3464,7 @@ session_child_run (struct passwd *pwent,
 	}
 
 	/* just in case there is some weirdness going on */
-	IGNORE_EINTR (chdir (home_dir));
+	VE_IGNORE_EINTR (chdir (home_dir));
 	
 	if (usrcfgok && savesess && home_dir_ok) {
 		gchar *cfgstr = g_build_filename (home_dir, ".dmrc", NULL);
@@ -3639,7 +3646,7 @@ session_child_run (struct passwd *pwent,
 	}
 #endif
 
-	IGNORE_EINTR (execv (argv[0], argv));
+	VE_IGNORE_EINTR (execv (argv[0], argv));
 
 	/* will go to .xsession-errors */
 	fprintf (stderr, _("%s: Could not exec %s %s %s"), 
@@ -3672,11 +3679,11 @@ finish_session_output (gboolean do_read)
 		if (do_read)
 			run_session_output (TRUE /* read_until_eof */);
 		if (d->session_output_fd >= 0)  {
-			IGNORE_EINTR (close (d->session_output_fd));
+			VE_IGNORE_EINTR (close (d->session_output_fd));
 			d->session_output_fd = -1;
 		}
 		if (d->xsession_errors_fd >= 0)  {
-			IGNORE_EINTR (close (d->xsession_errors_fd));
+			VE_IGNORE_EINTR (close (d->xsession_errors_fd));
 			d->xsession_errors_fd = -1;
 		}
 	}
@@ -3964,7 +3971,7 @@ gdm_slave_session_start (void)
     if G_UNLIKELY (logfilefd < 0 ||
 		   pipe (logpipe) != 0) {
 	    if (logfilefd >= 0)
-		    IGNORE_EINTR (close (logfilefd));
+		    VE_IGNORE_EINTR (close (logfilefd));
 	    logfilefd = -1;
     }
 
@@ -3988,7 +3995,7 @@ gdm_slave_session_start (void)
 	
     case 0:
 	if G_LIKELY (logfilefd >= 0) {
-		IGNORE_EINTR (close (logpipe[0]));
+		VE_IGNORE_EINTR (close (logpipe[0]));
 	}
 	/* Never returns */
 	session_child_run (pwent,
@@ -4017,7 +4024,7 @@ gdm_slave_session_start (void)
 	    d->session_output_fd = logpipe[0];
 	    /* make the output read fd non-blocking */
 	    fcntl (d->session_output_fd, F_SETFL, O_NONBLOCK);
-	    IGNORE_EINTR (close (logpipe[1]));
+	    VE_IGNORE_EINTR (close (logpipe[1]));
     }
 
     /* We must be root for this, and we are, but just to make sure */
@@ -4047,7 +4054,7 @@ gdm_slave_session_start (void)
 
     /* Now still as root make the system authfile readable by others,
        and therefore by the gdm user */
-    IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
+    VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
 
     end_time = time (NULL);
 
@@ -4114,7 +4121,7 @@ gdm_slave_session_stop (gboolean run_post_session,
     /* Now still as root make the system authfile not readable by others,
        and therefore not by the gdm user */
     if (GDM_AUTHFILE (d) != NULL) {
-	    IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
+	    VE_IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
     }
 
     gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
@@ -4158,7 +4165,7 @@ gdm_slave_session_stop (gboolean run_post_session,
 				   TRUE /* set_parent */);
     }
 
-    IGNORE_EINTR (unlink (x_servers_file));
+    VE_IGNORE_EINTR (unlink (x_servers_file));
     g_free (x_servers_file);
 
     g_free (local_login);
@@ -4364,7 +4371,7 @@ gdm_slave_child_handler (int sig)
 		if (wp->pid == pid) {
 			wp->pid = -1;
 			if (slave_waitpid_w >= 0) {
-				IGNORE_EINTR (write (slave_waitpid_w, "!", 1));
+				VE_IGNORE_EINTR (write (slave_waitpid_w, "!", 1));
 			}
 		}
 	}
@@ -4479,7 +4486,7 @@ gdm_slave_handle_usr2_message (void)
 	char **vec;
 	int i;
 
-	IGNORE_EINTR (count = read (d->slave_notify_fd, buf, sizeof (buf) -1));
+	VE_IGNORE_EINTR (count = read (d->slave_notify_fd, buf, sizeof (buf) -1));
 	if (count <= 0) {
 		return;
 	}
@@ -4821,7 +4828,7 @@ gdm_slave_whack_temp_auth_file (void)
 	if (old != 0)
 		seteuid (0);
 	if (d->xnest_temp_auth_file != NULL) {
-		IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
+		VE_IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
 	}
 	g_free (d->xnest_temp_auth_file);
 	d->xnest_temp_auth_file = NULL;
@@ -4835,7 +4842,7 @@ create_temp_auth_file (void)
 	if (d->type == TYPE_FLEXI_XNEST &&
 	    d->xnest_auth_file != NULL) {
 		if (d->xnest_temp_auth_file != NULL) {
-			IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
+			VE_IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
 		}
 		g_free (d->xnest_temp_auth_file);
 		d->xnest_temp_auth_file =
@@ -4924,12 +4931,12 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     case 0:
         closelog ();
 
-	IGNORE_EINTR (close (0));
+	VE_IGNORE_EINTR (close (0));
 	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 
 	if ( ! pass_stdout) {
-		IGNORE_EINTR (close (1));
-		IGNORE_EINTR (close (2));
+		VE_IGNORE_EINTR (close (1));
+		VE_IGNORE_EINTR (close (2));
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
 		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
@@ -4953,13 +4960,13 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		if (ve_string_empty (pwent->pw_dir)) {
 			ve_setenv ("HOME", "/", TRUE);
 			ve_setenv ("PWD", "/", TRUE);
-			IGNORE_EINTR (chdir ("/"));
+			VE_IGNORE_EINTR (chdir ("/"));
 		} else {
 			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 			ve_setenv ("PWD", pwent->pw_dir, TRUE);
-			IGNORE_EINTR (chdir (pwent->pw_dir));
+			VE_IGNORE_EINTR (chdir (pwent->pw_dir));
 			if (errno != 0) {
-				IGNORE_EINTR (chdir ("/"));
+				VE_IGNORE_EINTR (chdir ("/"));
 				ve_setenv ("PWD", "/", TRUE);
 			}
 		}
@@ -4967,7 +4974,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         } else {
 	        ve_setenv ("HOME", "/", TRUE);
 		ve_setenv ("PWD", "/", TRUE);
-		IGNORE_EINTR (chdir ("/"));
+		VE_IGNORE_EINTR (chdir ("/"));
 	        ve_setenv ("SHELL", "/bin/sh", TRUE);
         }
 
@@ -4992,7 +4999,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 	ve_unsetenv ("MAIL");
 	argv = ve_split (script);
-	IGNORE_EINTR (execv (argv[0], argv));
+	VE_IGNORE_EINTR (execv (argv[0], argv));
 	syslog (LOG_ERR, _("%s: Failed starting: %s"), "gdm_slave_exec_script",
 		script);
 	_exit (EXIT_SUCCESS);
@@ -5106,9 +5113,9 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	    /* The child will write the username to stdout based on the DISPLAY
 	       environment variable. */
 
-            IGNORE_EINTR (close (pipe1[0]));
+            VE_IGNORE_EINTR (close (pipe1[0]));
             if G_LIKELY (pipe1[1] != STDOUT_FILENO)  {
-	      IGNORE_EINTR (dup2 (pipe1[1], STDOUT_FILENO));
+	      VE_IGNORE_EINTR (dup2 (pipe1[1], STDOUT_FILENO));
 	    }
 
 	    closelog ();
@@ -5131,7 +5138,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	    ve_unsetenv ("MAIL");
 
 	    argv = ve_split (str->str);
-	    IGNORE_EINTR (execv (argv[0], argv));
+	    VE_IGNORE_EINTR (execv (argv[0], argv));
 	    gdm_error (_("%s: Failed executing: %s"),
 		       "gdm_parse_enriched_login",
 		       str->str);
@@ -5140,16 +5147,16 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
         case -1:
 	    gdm_error (_("%s: Can't fork script process!"),
 		       "gdm_parse_enriched_login");
-            IGNORE_EINTR (close (pipe1[0]));
-            IGNORE_EINTR (close (pipe1[1]));
+            VE_IGNORE_EINTR (close (pipe1[0]));
+            VE_IGNORE_EINTR (close (pipe1[1]));
 	    break;
 	
         default:
 	    /* The parent reads username from the pipe a chunk at a time */
-            IGNORE_EINTR (close (pipe1[1]));
+            VE_IGNORE_EINTR (close (pipe1[1]));
             g_string_truncate (str, 0);
 	    do {
-		    IGNORE_EINTR (in_buffer_len = read (pipe1[0], in_buffer,
+		    VE_IGNORE_EINTR (in_buffer_len = read (pipe1[0], in_buffer,
 							sizeof(in_buffer) - 1));
 		    if (in_buffer_len > 0) {
 			    in_buffer[in_buffer_len] = '\0';
@@ -5160,7 +5167,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
             if(str->len > 0 && str->str[str->len - 1] == '\n')
               g_string_truncate(str, str->len - 1);
 
-            IGNORE_EINTR (close(pipe1[0]));
+            VE_IGNORE_EINTR (close(pipe1[0]));
 
 	    gdm_wait_for_extra (NULL);
         }

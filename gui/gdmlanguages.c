@@ -431,11 +431,12 @@ gdm_lang_read_locale_file (const char *locale_file)
 	Language *language;
 	gboolean clean;
 	char *curlocale;
+	char *getsret;
 
 	if (locale_file == NULL)
 		return NULL;
 
-	langlist = fopen (locale_file, "r");
+	VE_IGNORE_EINTR (langlist = fopen (locale_file, "r"));
 
 	if (langlist == NULL)
 		return NULL;
@@ -444,11 +445,15 @@ gdm_lang_read_locale_file (const char *locale_file)
 
 	dupcheck = g_hash_table_new (g_str_hash, g_str_equal);
 
-	while (fgets (curline, sizeof (curline), langlist)) {
+	for (;;) {
 		char *name;
 		char *lang;
 		char **lang_list;
 		int i;
+
+		VE_IGNORE_EINTR (getsret = fgets (curline, sizeof (curline), langlist));
+		if (getsret == NULL)
+			break;
 
 		if (curline[0] <= ' ' ||
 		    curline[0] == '#')
@@ -522,7 +527,7 @@ gdm_lang_read_locale_file (const char *locale_file)
 
 	langs = g_list_sort (langs, lang_collate);
 
-	fclose (langlist);
+	VE_IGNORE_EINTR (fclose (langlist));
 
 	return langs;
 }

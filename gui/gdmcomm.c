@@ -125,25 +125,25 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 	addr.sun_family = AF_UNIX;
 
 	if (connect (fd, (struct sockaddr *)&addr, sizeof (addr)) < 0) {
-		close (fd);
+		VE_IGNORE_EINTR (close (fd));
 		return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
 	}
 
 	/* Version check first */
 	ret = do_command (fd, GDM_SUP_VERSION, TRUE /* get_response */);
 	if (ret == NULL) {
-		close (fd);
+		VE_IGNORE_EINTR (close (fd));
 		return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
 	}
 	if (strncmp (ret, "GDM ", strlen ("GDM ")) != 0) {
 		g_free (ret);
-		close (fd);
+		VE_IGNORE_EINTR (close (fd));
 		return NULL;
 	}
 	if ( ! version_ok_p (&ret[4], min_version)) {
 		g_free (ret);
 		do_command (fd, GDM_SUP_CLOSE, FALSE /* get_response */);
-		close (fd);
+		VE_IGNORE_EINTR (close (fd));
 		return NULL;
 	}
 	g_free (ret);
@@ -155,7 +155,7 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 		ret = do_command (fd, auth_cmd, TRUE /* get_response */);
 		g_free (auth_cmd);
 		if (ret == NULL) {
-			close (fd);
+			VE_IGNORE_EINTR (close (fd));
 			return gdmcomm_call_gdm (command, auth_cookie,
 						 min_version, tries - 1);
 		}
@@ -163,7 +163,7 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 		if (strcmp (ret, "OK") != 0) {
 			do_command (fd, GDM_SUP_CLOSE,
 				    FALSE /* get_response */);
-			close (fd);
+			VE_IGNORE_EINTR (close (fd));
 			/* returns the error */
 			return ret;
 		}
@@ -172,13 +172,13 @@ gdmcomm_call_gdm (const char *command, const char * auth_cookie, const char *min
 
 	ret = do_command (fd, command, TRUE /* get_response */);
 	if (ret == NULL) {
-		close (fd);
+		VE_IGNORE_EINTR (close (fd));
 		return gdmcomm_call_gdm (command, auth_cookie, min_version, tries - 1);
 	}
 
 	do_command (fd, GDM_SUP_CLOSE, FALSE /* get_response */);
 
-	close (fd);
+	VE_IGNORE_EINTR (close (fd));
 
 	return ret;
 }
@@ -236,7 +236,7 @@ gdmcomm_get_a_cookie (gboolean binary)
 	char *cookie = NULL;
 	Xauth *xau;
 
-	fp = fopen (XauFileName (), "r");
+	VE_IGNORE_EINTR (fp = fopen (XauFileName (), "r"));
 	if (fp == NULL) {
 		return NULL;
 	}
@@ -280,7 +280,7 @@ gdmcomm_get_a_cookie (gboolean binary)
 
 		break;
 	}
-	fclose (fp);
+	VE_IGNORE_EINTR (fclose (fp));
 
 	return cookie;
 }
@@ -297,7 +297,7 @@ gdmcomm_get_auth_cookie (void)
 	if (tried)
 		return cookie;
 
-	fp = fopen (XauFileName (), "r");
+	VE_IGNORE_EINTR (fp = fopen (XauFileName (), "r"));
 	if (fp == NULL) {
 		cookie = NULL;
 		tried = TRUE;
@@ -352,7 +352,7 @@ gdmcomm_get_auth_cookie (void)
 		}
 		g_free (ret);
 	}
-	fclose (fp);
+	VE_IGNORE_EINTR (fclose (fp));
 
 	tried = TRUE;
 	return cookie;
@@ -373,10 +373,13 @@ gdmcomm_check (gboolean gui_bitching)
 
 	pid = 0;
 	if (pidfile != NULL)
-		fp = fopen (pidfile, "r");
+		VE_IGNORE_EINTR (fp = fopen (pidfile, "r"));
 	if (fp != NULL) {
-		fscanf (fp, "%ld", &pid);
-		fclose (fp);
+		int r;
+		VE_IGNORE_EINTR (r = fscanf (fp, "%ld", &pid));
+		VE_IGNORE_EINTR (fclose (fp));
+		if (r != 1)
+			pid = 0;
 	}
 
 	g_free (pidfile);
@@ -409,7 +412,7 @@ gdmcomm_check (gboolean gui_bitching)
 		return FALSE;
 	}
 
-	IGNORE_EINTR (statret = stat (GDM_SUP_SOCKET, &s));
+	VE_IGNORE_EINTR (statret = stat (GDM_SUP_SOCKET, &s));
 	if (statret < 0 ||
 	    s.st_uid != 0 ||
 	    access (GDM_SUP_SOCKET, R_OK|W_OK) != 0) {

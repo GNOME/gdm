@@ -329,11 +329,11 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 			GString *gs = g_string_new (NULL);
 
 			fp = NULL;
-			IGNORE_EINTR (r = lstat (details_file, &s));
+			VE_IGNORE_EINTR (r = lstat (details_file, &s));
 			if (r == 0) {
-				if (S_ISREG (s.st_mode))
-					fp = fopen (details_file, "r");
-				else {
+				if (S_ISREG (s.st_mode)) {
+					VE_IGNORE_EINTR (fp = fopen (details_file, "r"));
+				} else {
 					loc = gdm_locale_to_utf8 (_("%s not a regular file!\n"));
 					g_string_printf (gs, loc, details_file);
 					g_free (loc);
@@ -342,7 +342,9 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 			if (fp != NULL) {
 				char buf[256];
 				int lines = 0;
-				while (fgets (buf, sizeof (buf), fp)) {
+				char *getsret;
+				VE_IGNORE_EINTR (getsret = fgets (buf, sizeof (buf), fp));
+				while (getsret != NULL) {
 					if ( ! g_utf8_validate (buf, -1, NULL))
 						valid_utf8 = FALSE;
 					g_string_append (gs, buf);
@@ -355,7 +357,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 						break;
 					}
 				}
-				fclose (fp);
+				VE_IGNORE_EINTR (fclose (fp));
 			} else {
 				loc = gdm_locale_to_utf8 (_("%s could not be opened"));
 				g_string_append_printf (gs, loc, details_file);
@@ -579,13 +581,13 @@ gdm_failsafe_question (GdmDisplay *d,
 		char buf[BUFSIZ];
 		int bytes;
 
-		IGNORE_EINTR (close (p[1]));
+		VE_IGNORE_EINTR (close (p[1]));
 
 		gdm_wait_for_extra (&status);
 
 		if (dialog_failed (status)) {
 			char *ret = NULL;
-			IGNORE_EINTR (close (p[0]));
+			VE_IGNORE_EINTR (close (p[0]));
 			if ( ! inhibit_gtk_themes) {
 				/* on failure try again, this time without any themes
 				   which may be causing a crash */
@@ -602,13 +604,13 @@ gdm_failsafe_question (GdmDisplay *d,
 			return ret;
 		}
 
-		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
+		VE_IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
-			IGNORE_EINTR (close (p[0]));
+			VE_IGNORE_EINTR (close (p[0]));
 			buf[bytes] = '\0';
 			return g_strdup (buf);
 		} 
-		IGNORE_EINTR (close (p[0]));
+		VE_IGNORE_EINTR (close (p[0]));
 	} else {
 		gdm_error (_("%s: Cannot fork to display error/info box"),
 			   "gdm_failsafe_question");
@@ -685,13 +687,13 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		char buf[BUFSIZ];
 		int bytes;
 
-		IGNORE_EINTR (close (p[1]));
+		VE_IGNORE_EINTR (close (p[1]));
 
 		gdm_wait_for_extra (&status);
 
 		if (dialog_failed (status)) {
 			gboolean ret = FALSE;
-			IGNORE_EINTR (close (p[0]));
+			VE_IGNORE_EINTR (close (p[0]));
 			if ( ! inhibit_gtk_themes) {
 				/* on failure try again, this time without any themes
 				   which may be causing a crash */
@@ -708,15 +710,15 @@ gdm_failsafe_yesno (GdmDisplay *d,
 			return ret;
 		}
 
-		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
+		VE_IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
-			IGNORE_EINTR (close (p[0]));
+			VE_IGNORE_EINTR (close (p[0]));
 			if (buf[0] == 'y')
 				return TRUE;
 			else
 				return FALSE;
 		} 
-		IGNORE_EINTR (close (p[0]));
+		VE_IGNORE_EINTR (close (p[0]));
 	} else {
 		gdm_error (_("%s: Cannot fork to display error/info box"),
 			   "gdm_failsafe_yesno");
@@ -801,13 +803,13 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 		char buf[BUFSIZ];
 		int bytes;
 
-		IGNORE_EINTR (close (p[1]));
+		VE_IGNORE_EINTR (close (p[1]));
 
 		gdm_wait_for_extra (&status);
 
 		if (dialog_failed (status)) {
 			int ret = -1;
-			IGNORE_EINTR (close (p[0]));
+			VE_IGNORE_EINTR (close (p[0]));
 			if ( ! inhibit_gtk_themes) {
 				/* on failure try again, this time without any themes
 				   which may be causing a crash */
@@ -824,17 +826,17 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 			return ret;
 		}
 
-		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
+		VE_IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
 			int i;
-			IGNORE_EINTR (close (p[0]));
+			VE_IGNORE_EINTR (close (p[0]));
 			buf[bytes] = '\0';
 			if (sscanf (buf, "%d", &i) == 1)
 				return i;
 			else
 				return -1;
 		} 
-		IGNORE_EINTR (close (p[0]));
+		VE_IGNORE_EINTR (close (p[0]));
 	} else {
 		gdm_error (_("%s: Cannot fork to display error/info box"),
 			   "gdm_failsafe_ask_buttons");

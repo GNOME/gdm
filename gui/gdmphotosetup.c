@@ -46,10 +46,13 @@ gdm_check (void)
 
 	pid = 0;
 	if (pidfile != NULL)
-		fp = fopen (pidfile, "r");
+		VE_IGNORE_EINTR (fp = fopen (pidfile, "r"));
 	if (fp != NULL) {
-		fscanf (fp, "%ld", &pid);
-		fclose (fp);
+		int r;
+		VE_IGNORE_EINTR (r = fscanf (fp, "%ld", &pid));
+		VE_IGNORE_EINTR (fclose (fp));
+		if (r != 1)
+			pid = 0;
 	}
 
 	g_free (pidfile);
@@ -230,7 +233,7 @@ main (int argc, char *argv[])
 						      NULL);
 			int fddest, fdsrc;
 
-			fdsrc = open (pixmap, O_RDONLY);
+			VE_IGNORE_EINTR (fdsrc = open (pixmap, O_RDONLY));
 			if (fdsrc < 0) {
 				GtkWidget *d;
 				char *tmp = ve_filename_to_utf8 (pixmap);
@@ -251,8 +254,8 @@ main (int argc, char *argv[])
 				g_free (photofile);
 				continue;
 			}
-			unlink (photofile);
-			fddest = open (photofile, O_WRONLY | O_CREAT);
+			VE_IGNORE_EINTR (unlink (photofile));
+			VE_IGNORE_EINTR (fddest = open (photofile, O_WRONLY | O_CREAT));
 			if (fddest < 0) {
 				GtkWidget *d;
 				char *tmp = ve_filename_to_utf8 (photofile);
@@ -271,15 +274,19 @@ main (int argc, char *argv[])
 				gtk_widget_destroy (d);
 				g_free (cfg_file);
 				g_free (photofile);
-				close (fdsrc);
+				VE_IGNORE_EINTR (close (fdsrc));
 				continue;
 			}
-			while ((size = read (fdsrc, buf, sizeof (buf))) > 0) {
-				write (fddest, buf, size);
+			for (;;) {
+				VE_IGNORE_EINTR (size = read (fdsrc, buf, sizeof (buf)));
+				if (size <= 0)
+					break;
+
+				VE_IGNORE_EINTR (write (fddest, buf, size));
 			}
 			fchmod (fddest, 0600);
-			close (fdsrc);
-			close (fddest);
+			VE_IGNORE_EINTR (close (fdsrc));
+			VE_IGNORE_EINTR (close (fddest));
 			gnome_config_set_string ("/gdmphotosetup/last/picture",
 						 pixmap);
 			gnome_config_set_string ("/gdm/face/picture", "");

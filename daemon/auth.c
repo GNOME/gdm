@@ -165,6 +165,7 @@ gboolean
 gdm_auth_secure_display (GdmDisplay *d)
 {
     FILE *af, *af_gdm;
+    int closeret;
 
     if G_UNLIKELY (!d)
 	return FALSE;
@@ -201,7 +202,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    /* Make it owned by the user that Xnest is started as */
 	    fchown (authfd, d->server_uid, -1);
 
-	    af = fdopen (authfd, "w");
+	    VE_IGNORE_EINTR (af = fdopen (authfd, "w"));
 
 	    if G_UNLIKELY (af == NULL) {
 		    g_free (d->authfile);
@@ -223,7 +224,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 		    d->authfile_gdm = NULL;
 		    g_free (d->authfile);
 		    d->authfile = NULL;
-		    fclose (af);
+		    VE_IGNORE_EINTR (fclose (af));
 		    return FALSE;
 	    }
     } else {
@@ -276,12 +277,14 @@ gdm_auth_secure_display (GdmDisplay *d)
 
     gdm_debug ("gdm_auth_secure_display: Setting up access");
 
-    if G_UNLIKELY (fclose (af) < 0) {
+    VE_IGNORE_EINTR (closeret = fclose (af));
+    if G_UNLIKELY (closeret < 0) {
 	    display_add_error (d);
 	    return FALSE;
     }
     if (af_gdm != NULL) {
-	    if G_UNLIKELY (fclose (af_gdm) < 0) {
+	    VE_IGNORE_EINTR (closeret = fclose (af_gdm));
+	    if G_UNLIKELY (closeret < 0) {
 		    display_add_error (d);
 		    return FALSE;
 	    }
@@ -512,9 +515,9 @@ try_open_append (const char *file)
 {
 	FILE *fp;
 
-	fp = fopen (file, "a+");
+	VE_IGNORE_EINTR (fp = fopen (file, "a+"));
 	if G_LIKELY (fp != NULL) {
-		fclose (fp);
+		VE_IGNORE_EINTR (fclose (fp));
 		return TRUE;
 	} else {
 		return FALSE;
@@ -530,13 +533,13 @@ try_open_read_as_root (const char *file)
 	setegid (0);
 	seteuid (0);
 
-	fd = open (file, O_RDONLY);
+	VE_IGNORE_EINTR (fd = open (file, O_RDONLY));
 	if G_UNLIKELY (fd < 0) {
 		seteuid (oldeuid);
 		setegid (oldegid);
 		return FALSE;
 	} else {
-		close (fd);
+		VE_IGNORE_EINTR (close (fd));
 		seteuid (oldeuid);
 		setegid (oldegid);
 		return TRUE;
@@ -567,6 +570,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     gboolean authdir_is_tmp_dir = FALSE;
     gboolean locked;
     gboolean user_auth_exists;
+    int closeret;
 
     if (!d)
 	return FALSE;
@@ -678,7 +682,7 @@ try_user_add_again:
 
 	d->last_auth_touch = time (NULL);
 
-	af = fdopen (authfd, "w");
+	VE_IGNORE_EINTR (af = fdopen (authfd, "w"));
     }
     else { /* User's Xauthority file is ok */
 	d->authfb = FALSE;
@@ -739,7 +743,7 @@ try_user_add_again:
 			   "gdm_auth_user_add");
 
 		if ( ! d->authfb) {
-			fclose (af);
+			VE_IGNORE_EINTR (fclose (af));
 			if (locked)
 				XauUnlockAuth (d->userauth);
 			g_free (d->userauth);
@@ -755,7 +759,8 @@ try_user_add_again:
 	auths = auths->next;
     }
 
-    if G_UNLIKELY (fclose (af) < 0) {
+    VE_IGNORE_EINTR (closeret = fclose (af));
+    if G_UNLIKELY (closeret < 0) {
 	    gdm_error (_("%s: Could not write cookie"),
 		       "gdm_auth_user_add");
 
@@ -808,7 +813,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     /* If we are using the fallback cookie location, simply nuke the
      * cookie file */
     if (d->authfb) {
-	IGNORE_EINTR (unlink (d->userauth));
+	VE_IGNORE_EINTR (unlink (d->userauth));
 	g_free (d->userauth);
 	d->userauth = NULL;
 	return;
@@ -881,7 +886,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     /* Close the file and unlock it */
     if (af != NULL)
 	    /* FIXME: what about out of diskspace errors on errors close */
-	    fclose (af);
+	    VE_IGNORE_EINTR (fclose (af));
 
     XauUnlockAuth (d->userauth);
 
@@ -973,11 +978,11 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 		break;
     }
 
-    fclose (af);
+    VE_IGNORE_EINTR (fclose (af));
 
     if (remove_when_empty &&
 	keep == NULL) {
-	    IGNORE_EINTR (unlink (d->userauth));
+	    VE_IGNORE_EINTR (unlink (d->userauth));
 	    return NULL;
     }
 

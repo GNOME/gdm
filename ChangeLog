@@ -1,3 +1,10 @@
+Fri Dec 19 12:22:18 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/*.c, gui/*.c: use VE_IGNORE_EINTR instead
+	  of IGNORE_EINTR and use this on more calls which can still
+	  apparently fail with EINTR on completely braindead systems.
+	  EINTR is evil.  It is PURE EVIL I tell you!
+
 Mon Dec 17  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* configure.in

@@ -96,12 +96,12 @@ gdm_server_whack_lockfile (GdmDisplay *disp)
 
 	    /* if lock file exists and it is our process, whack it! */
 	    g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", disp->dispnum);
-	    IGNORE_EINTR (unlink (buf));
+	    VE_IGNORE_EINTR (unlink (buf));
 
 	    /* whack the unix socket as well */
 	    g_snprintf (buf, sizeof (buf),
 			"/tmp/.X11-unix/X%d", disp->dispnum);
-	    IGNORE_EINTR (unlink (buf));
+	    VE_IGNORE_EINTR (unlink (buf));
 }
 
 
@@ -110,12 +110,12 @@ void
 gdm_server_wipe_cookies (GdmDisplay *disp)
 {
 	if ( ! ve_string_empty (disp->authfile)) {
-		IGNORE_EINTR (unlink (disp->authfile));
+		VE_IGNORE_EINTR (unlink (disp->authfile));
 	}
 	g_free (disp->authfile);
 	disp->authfile = NULL;
 	if ( ! ve_string_empty (disp->authfile_gdm)) {
-		IGNORE_EINTR (unlink (disp->authfile_gdm));
+		VE_IGNORE_EINTR (unlink (disp->authfile_gdm));
 	}
 	g_free (disp->authfile_gdm);
 	disp->authfile_gdm = NULL;
@@ -154,7 +154,7 @@ gdm_exec_fbconsole(GdmDisplay *disp)
         if (pid == 0) {
                 gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */)
 ;
-                IGNORE_EINTR (execv (argv[0], argv));
+                VE_IGNORE_EINTR (execv (argv[0], argv));
         }
         if (pid == -1) {
                 gdm_error (_("Can not start fallback console"));
@@ -362,27 +362,30 @@ display_xnest_no_connect (GdmDisplay *disp)
 	char *logname = gdm_make_filename (GdmLogDir, d->name, ".log");
 	FILE *fp;
 	char buf[256];
+	char *getsret;
 
-	fp = fopen (logname, "r");
+	VE_IGNORE_EINTR (fp = fopen (logname, "r"));
 	g_free (logname);
 
 	if (fp == NULL)
 		return FALSE;
 
-	while (fgets (buf, sizeof (buf), fp) != NULL) {
+	for (;;) {
+		VE_IGNORE_EINTR (getsret = fgets (buf, sizeof (buf), fp));
+		if (getsret == NULL) {
+			VE_IGNORE_EINTR (fclose (fp));
+			return FALSE;
+		}
 		/* Note: this is probably XFree86 specific, and perhaps even
 		 * version 3 specific (I don't have xfree v4 to test this),
 		 * of course additions are welcome to make this more robust */
 		if (strstr (buf, "Unable to open display \"") == buf) {
 			gdm_error (_("Display '%s' cannot be opened by Xnest"),
 				   ve_sure_string (disp->xnest_disp));
-			fclose (fp);
+			VE_IGNORE_EINTR (fclose (fp));
 			return TRUE;
 		}
 	}
-
-	fclose (fp);
-	return FALSE;
 }
 
 static gboolean
@@ -391,27 +394,30 @@ display_busy (GdmDisplay *disp)
 	char *logname = gdm_make_filename (GdmLogDir, d->name, ".log");
 	FILE *fp;
 	char buf[256];
+	char *getsret;
 
-	fp = fopen (logname, "r");
+	VE_IGNORE_EINTR (fp = fopen (logname, "r"));
 	g_free (logname);
 
 	if (fp == NULL)
 		return FALSE;
 
-	while (fgets (buf, sizeof (buf), fp) != NULL) {
+	for (;;) {
+		VE_IGNORE_EINTR (getsret = fgets (buf, sizeof (buf), fp));
+		if (getsret == NULL) {
+			VE_IGNORE_EINTR (fclose (fp));
+			return FALSE;
+		}
 		/* Note: this is probably XFree86 specific */
 		if (strstr (buf, "Server is already active for display")
 		    == buf) {
 			gdm_error (_("Display %s is busy. There is another "
 				     "X server running already."),
 				   disp->name);
-			fclose (fp);
+			VE_IGNORE_EINTR (fclose (fp));
 			return TRUE;
 		}
 	}
-
-	fclose (fp);
-	return FALSE;
 }
 
 /* if we find 'Log file: "foo"' switch fp to foo and
@@ -427,10 +433,10 @@ open_another_logfile (char buf[256], FILE **fp)
 		if (p == NULL)
 			return FALSE;
 		*p = '\0';
-		ffp = fopen (fname, "r");
+		VE_IGNORE_EINTR (ffp = fopen (fname, "r"));
 		if (ffp == NULL)
 			return FALSE;
-		fclose (*fp);
+		VE_IGNORE_EINTR (fclose (*fp));
 		*fp = ffp;
 		return TRUE;
 	}
@@ -444,16 +450,23 @@ display_vt (GdmDisplay *disp)
 	FILE *fp;
 	char buf[256];
 	gboolean switched = FALSE;
+	char *getsret;
 
-	fp = fopen (logname, "r");
+	VE_IGNORE_EINTR (fp = fopen (logname, "r"));
 	g_free (logname);
 
 	if (fp == NULL)
 		return FALSE;
 
-	while (fgets (buf, sizeof (buf), fp) != NULL) {
+	for (;;) {
 		int vt;
 		char *p;
+
+		VE_IGNORE_EINTR (getsret = fgets (buf, sizeof (buf), fp));
+		if (getsret == NULL) {
+			VE_IGNORE_EINTR (fclose (fp));
+			return -1;
+		}
 
 		if ( ! switched &&
 		     /* this is XFree v4 specific */
@@ -466,12 +479,10 @@ display_vt (GdmDisplay *disp)
 		p = strstr (buf, "using VT number ");
 		if (p != NULL &&
 		    sscanf (p, "using VT number %d", &vt) == 1) {
-			fclose (fp);
+			VE_IGNORE_EINTR (fclose (fp));
 			return vt;
 		}
 	}
-	fclose (fp);
-	return -1;
 }
 
 static struct sigaction old_svr_wait_chld;
@@ -498,8 +509,8 @@ setup_server_wait (GdmDisplay *d)
     if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
 	    gdm_error (_("%s: Error setting up %s signal handler: %s"),
 		       "gdm_server_start", "USR1", strerror (errno));
-	    IGNORE_EINTR (close (server_signal_pipe[0]));
-	    IGNORE_EINTR (close (server_signal_pipe[1]));
+	    VE_IGNORE_EINTR (close (server_signal_pipe[0]));
+	    VE_IGNORE_EINTR (close (server_signal_pipe[1]));
 	    return FALSE;
     }
 
@@ -512,8 +523,8 @@ setup_server_wait (GdmDisplay *d)
 	    gdm_error (_("%s: Error setting up %s signal handler: %s"),
 		       "gdm_server_start", "CHLD", strerror (errno));
 	    gdm_signal_ignore (SIGUSR1);
-	    IGNORE_EINTR (close (server_signal_pipe[0]));
-	    IGNORE_EINTR (close (server_signal_pipe[1]));
+	    VE_IGNORE_EINTR (close (server_signal_pipe[0]));
+	    VE_IGNORE_EINTR (close (server_signal_pipe[1]));
 	    return FALSE;
     }
 
@@ -588,7 +599,7 @@ do_server_wait (GdmDisplay *d)
 			    if (select (server_signal_pipe[0]+1, &rfds, NULL, NULL, &tv) > 0) {
 				    char buf[4];
 				    /* read the Yay! */
-				    IGNORE_EINTR (read (server_signal_pipe[0], buf, 4));
+				    VE_IGNORE_EINTR (read (server_signal_pipe[0], buf, 4));
 			    }
 			    if ( ! server_signal_notified &&
 				t + SERVER_WAIT_ALARM < time (NULL)) {
@@ -611,8 +622,8 @@ do_server_wait (GdmDisplay *d)
     sigaction (SIGCHLD, &old_svr_wait_chld, NULL);
     sigprocmask (SIG_SETMASK, &old_svr_wait_mask, NULL);
 
-    IGNORE_EINTR (close (server_signal_pipe[0]));
-    IGNORE_EINTR (close (server_signal_pipe[1]));
+    VE_IGNORE_EINTR (close (server_signal_pipe[0]));
+    VE_IGNORE_EINTR (close (server_signal_pipe[1]));
 
     if (d->servpid <= 1) {
 	    d->servstat = SERVER_ABORT;
@@ -690,7 +701,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     /* If we were holding a vt open for the server, close it now as it has
      * already taken the bait. */
     if (vtfd > 0) {
-	    IGNORE_EINTR (close (vtfd));
+	    VE_IGNORE_EINTR (close (vtfd));
     }
 
     switch (d->servstat) {
@@ -824,16 +835,16 @@ safer_rename (const char *a, const char *b)
 	errno = 0;
 	if (link (a, b) < 0) {
 		if (errno == EEXIST) {
-			IGNORE_EINTR (unlink (a));
+			VE_IGNORE_EINTR (unlink (a));
 			return;
 		} 
-		IGNORE_EINTR (unlink (b));
+		VE_IGNORE_EINTR (unlink (b));
 		/* likely this system doesn't support hard links */
 		rename (a, b);
-		IGNORE_EINTR (unlink (a));
+		VE_IGNORE_EINTR (unlink (a));
 		return;
 	}
-	IGNORE_EINTR (unlink (a));
+	VE_IGNORE_EINTR (unlink (a));
 }
 
 static void
@@ -847,7 +858,7 @@ rotate_logs (const char *dname)
 	char *fname = gdm_make_filename (GdmLogDir, dname, ".log");
 
 	/* Rotate the logs (keep 4 last) */
-	IGNORE_EINTR (unlink (fname4));
+	VE_IGNORE_EINTR (unlink (fname4));
 	safer_rename (fname3, fname4);
 	safer_rename (fname2, fname3);
 	safer_rename (fname1, fname2);
@@ -1049,12 +1060,12 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
         /* Log all output from spawned programs to a file */
 	logfile = gdm_make_filename (GdmLogDir, d->name, ".log");
-	IGNORE_EINTR (unlink (logfile));
-	logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644);
+	VE_IGNORE_EINTR (unlink (logfile));
+	VE_IGNORE_EINTR (logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644));
 
 	if (logfd != -1) {
-		IGNORE_EINTR (dup2 (logfd, 1));
-		IGNORE_EINTR (dup2 (logfd, 2));
+		VE_IGNORE_EINTR (dup2 (logfd, 1));
+		VE_IGNORE_EINTR (dup2 (logfd, 2));
         } else {
 		gdm_error (_("%s: Could not open logfile for display %s!"),
 			   "gdm_server_spawn", d->name);
@@ -1174,7 +1185,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		setgroups (1, groups);
 	}
 
-	IGNORE_EINTR (execv (argv[0], argv));
+	VE_IGNORE_EINTR (execv (argv[0], argv));
 	
 	gdm_error (_("%s: Xserver not found: %s"), 
 		   "gdm_server_spawn", command);
@@ -1219,7 +1230,7 @@ gdm_server_usr1_handler (gint sig)
 
     server_signal_notified = TRUE;
     /* this will quit the select */
-    IGNORE_EINTR (write (server_signal_pipe[1], "Yay!", 4));
+    VE_IGNORE_EINTR (write (server_signal_pipe[1], "Yay!", 4));
 
     gdm_in_signal--;
 }
@@ -1243,7 +1254,7 @@ gdm_server_child_handler (int signal)
 	gdm_slave_child_handler (signal);
 
 	/* this will quit the select */
-	IGNORE_EINTR (write (server_signal_pipe[1], "Yay!", 4));
+	VE_IGNORE_EINTR (write (server_signal_pipe[1], "Yay!", 4));
 
 	gdm_in_signal--;
 }

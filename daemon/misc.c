@@ -76,7 +76,7 @@ static gboolean have_ipv6 (void)
 
 	s = socket (AF_INET6, SOCK_STREAM, 0);
 	if (s != -1) {
-		IGNORE_EINTR (close (s));
+		VE_IGNORE_EINTR (close (s));
 		return TRUE;
 	}
 
@@ -248,7 +248,7 @@ gdm_fdprintf (int fd, const gchar *format, ...)
 	written = 0;
 	while (written < len) {
 		int w;
-		IGNORE_EINTR (w = write (fd, &s[written], len - written));
+		VE_IGNORE_EINTR (w = write (fd, &s[written], len - written));
 		if (w < 0)
 			/* evil! */
 			break;
@@ -401,7 +401,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 			serv6_addr.sin6_addr = in6addr_loopback;
 			serv6_addr.sin6_port = htons (6000 + i);
 			errno = 0;
-			IGNORE_EINTR (connect (sock,
+			VE_IGNORE_EINTR (connect (sock,
                                       (struct sockaddr *)&serv6_addr,
                                       sizeof (serv6_addr)));
 		}
@@ -413,41 +413,43 @@ gdm_get_free_display (int start, uid_t server_uid)
 			serv_addr.sin_port = htons (6000 + i);
 
 			errno = 0;
-			IGNORE_EINTR (connect (sock,
+			VE_IGNORE_EINTR (connect (sock,
 				       (struct sockaddr *)&serv_addr,
 				       sizeof (serv_addr)));
 		}
 		if (errno != 0 && errno != ECONNREFUSED) {
-			IGNORE_EINTR (close (sock));
+			VE_IGNORE_EINTR (close (sock));
 			continue;
 		}
-		IGNORE_EINTR (close (sock));
+		VE_IGNORE_EINTR (close (sock));
 
 		/* if lock file exists and the process exists */
 		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
-		IGNORE_EINTR (r = stat (buf, &s));
+		VE_IGNORE_EINTR (r = stat (buf, &s));
 		if (r == 0 &&
 		    ! S_ISREG (s.st_mode)) {
 			/* Eeeek! not a regular file?  Perhaps someone
 			   is trying to play tricks on us */
 			continue;
 		}
-		fp = fopen (buf, "r");
+		VE_IGNORE_EINTR (fp = fopen (buf, "r"));
 		if (fp != NULL) {
 			char buf2[100];
-			if (fgets (buf2, sizeof (buf2), fp) != NULL) {
+			char *getsret;
+			VE_IGNORE_EINTR (getsret = fgets (buf2, sizeof (buf2), fp));
+			if (getsret != NULL) {
 				gulong pid;
 				if (sscanf (buf2, "%lu", &pid) == 1 &&
 				    kill (pid, 0) == 0) {
-					fclose (fp);
+					VE_IGNORE_EINTR (fclose (fp));
 					continue;
 				}
 
 			}
-			fclose (fp);
+			VE_IGNORE_EINTR (fclose (fp));
 
 			/* whack the file, it's a stale lock file */
-			IGNORE_EINTR (unlink (buf));
+			VE_IGNORE_EINTR (unlink (buf));
 		}
 
 		/* if starting as root, we'll be able to overwrite any
@@ -456,7 +458,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 		if (server_uid > 0) {
 			g_snprintf (buf, sizeof (buf),
 				    "/tmp/.X11-unix/X%d", i);
-			IGNORE_EINTR (r = stat (buf, &s));
+			VE_IGNORE_EINTR (r = stat (buf, &s));
 			if (r == 0 &&
 			    s.st_uid != server_uid) {
 				continue;
@@ -464,7 +466,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 
 			g_snprintf (buf, sizeof (buf),
 				    "/tmp/.X%d-lock", i);
-			IGNORE_EINTR (r = stat (buf, &s));
+			VE_IGNORE_EINTR (r = stat (buf, &s));
 			if (r == 0 &&
 			    s.st_uid != server_uid) {
 				continue;
@@ -605,7 +607,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 			return FALSE;
 		}
 
-		IGNORE_EINTR (close (tempfd));
+		VE_IGNORE_EINTR (close (tempfd));
 
 		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
 		argv[1] = "-l";
@@ -630,19 +632,19 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		g_free (argv[4]);
 
 		if (ret != NULL) {
-			fp = fopen (tempname, "r");
+			VE_IGNORE_EINTR (fp = fopen (tempname, "r"));
 			if (fp != NULL) {
 				if (fgets (buf, sizeof (buf), fp) != NULL &&
 				    (buf[0] == 'y' || buf[0] == 'Y'))
 					*ret = TRUE;
-				fclose (fp);
+				VE_IGNORE_EINTR (fclose (fp));
 			} else {
 				g_free (msg_quoted);
 				return FALSE;
 			}
 		}
 
-		IGNORE_EINTR (unlink (tempname));
+		VE_IGNORE_EINTR (unlink (tempname));
 
 		g_free (msg_quoted);
 		return TRUE;
@@ -684,7 +686,7 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 			ve_unsetenv ("XAUTHORITY");
 		}
 		
-		IGNORE_EINTR (execv (argv[0], argv));
+		VE_IGNORE_EINTR (execv (argv[0], argv));
 
 		_exit (-1);
 	}
@@ -866,14 +868,14 @@ gdm_ensure_sanity (void)
 		   correct permissions */
 		struct stat s;
 		int r;
-		IGNORE_EINTR (r = lstat ("/tmp/.ICE-unix", &s));
+		VE_IGNORE_EINTR (r = lstat ("/tmp/.ICE-unix", &s));
 		if G_LIKELY (r == 0 && S_ISDIR (s.st_mode)) {
 			/* Make sure it is root and sticky */
-			IGNORE_EINTR (chown ("/tmp/.ICE-unix", 0, 0));
-			IGNORE_EINTR (chmod ("/tmp/.ICE-unix", 01777));
+			VE_IGNORE_EINTR (chown ("/tmp/.ICE-unix", 0, 0));
+			VE_IGNORE_EINTR (chmod ("/tmp/.ICE-unix", 01777));
 		} else {
 			/* There is a file/link/whatever called .ICE-unix? whack and try mkdir */
-			IGNORE_EINTR (unlink ("/tmp/.ICE-unix"));
+			VE_IGNORE_EINTR (unlink ("/tmp/.ICE-unix"));
 			mkdir ("/tmp/.ICE-unix", 01777);
 		}
 	}
@@ -976,7 +978,7 @@ gdm_peek_local_address_list (void)
 		gdm_error (_("%s: Cannot get local addresses!"),
 			   "gdm_peek_local_address_list");
 		g_free (buf);
-		IGNORE_EINTR (close (sockfd));
+		VE_IGNORE_EINTR (close (sockfd));
 		sin = g_new0 (struct sockaddr_in, 1);
 		sin->sin_family = AF_INET;
 		sin->sin_addr.s_addr = INADDR_LOOPBACK;
@@ -1009,7 +1011,7 @@ gdm_peek_local_address_list (void)
 		the_list = g_list_append (the_list, addr);
 	}
 
-		IGNORE_EINTR (close (sockfd));
+		VE_IGNORE_EINTR (close (sockfd));
 	g_free (buf);
 #else /* SIOCGIFCONF */
 	/* host based fallback, will likely only get 127.0.0.1 i think */
@@ -1225,7 +1227,7 @@ gdm_test_opt (const char *cmd, const char *help, const char *option)
 
 		got_it = TRUE;
 	}
-	fclose (fp);
+	VE_IGNORE_EINTR (fclose (fp));
 	return got_it;
 }
 
@@ -1235,7 +1237,7 @@ gdm_fdgetc (int fd)
 	char buf[1];
 	int bytes;
 
-	IGNORE_EINTR (bytes = read (fd, buf, 1));
+	VE_IGNORE_EINTR (bytes = read (fd, buf, 1));
 	if (bytes != 1)
 		return EOF;
 	else
@@ -1292,7 +1294,7 @@ gdm_close_all_descriptors (int from, int except, int except2)
 		closedir (dir);
 		for (li = openfds; li != NULL; li = li->next) {
 			int fd = GPOINTER_TO_INT (li->data); 
-			IGNORE_EINTR (close(fd));
+			VE_IGNORE_EINTR (close(fd));
 		}
 		g_slist_free (openfds);
 	} else {
@@ -1311,7 +1313,7 @@ gdm_close_all_descriptors (int from, int except, int except2)
 		}
 		for (i = from; i < max; i++) {
 			if G_LIKELY (i != except && i != except2)
-				IGNORE_EINTR (close(i));
+				VE_IGNORE_EINTR (close(i));
 		}
 	}
 }
@@ -1320,12 +1322,12 @@ int
 gdm_open_dev_null (mode_t mode)
 {
 	int ret;
-	ret = open ("/dev/null", mode);
+	VE_IGNORE_EINTR (ret = open ("/dev/null", mode));
 	if G_UNLIKELY (ret < 0) {
 		/* never output anything, we're likely in some
 		 * strange state right now */
 		gdm_signal_ignore (SIGPIPE);
-		IGNORE_EINTR (close (2));
+		VE_IGNORE_EINTR (close (2));
 		gdm_fail ("Cannot open /dev/null, system on crack!");
 	}
 
@@ -1869,38 +1871,11 @@ FILE *
 gdm_safe_fopen_w (const char *file)
 {
 	int fd;
-	IGNORE_EINTR (unlink (file));
-	fd = open (file, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY
-#ifdef O_NOCTTY
-		   |O_NOCTTY
-#endif
-#ifdef O_NOFOLLOW
-		   |O_NOFOLLOW
-#endif
-		   , 0644);
-	if (fd < 0)
-		return NULL;
-	return fdopen (fd, "w");
-}
-
-/* like fopen with "a+" */
-FILE *
-gdm_safe_fopen_ap (const char *file)
-{
-	int fd;
-
-	if (access (file, F_OK) == 0) {
-		fd = open (file, O_APPEND|O_RDWR
-#ifdef O_NOCTTY
-			   |O_NOCTTY
-#endif
-#ifdef O_NOFOLLOW
-			   |O_NOFOLLOW
-#endif
-			  );
-	} else {
-		/* doesn't exist, open with O_EXCL */
-		fd = open (file, O_EXCL|O_CREAT|O_RDWR
+	FILE *ret;
+	VE_IGNORE_EINTR (unlink (file));
+	do {
+		errno = 0;
+		fd = open (file, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY
 #ifdef O_NOCTTY
 			   |O_NOCTTY
 #endif
@@ -1908,10 +1883,50 @@ gdm_safe_fopen_ap (const char *file)
 			   |O_NOFOLLOW
 #endif
 			   , 0644);
+	} while G_UNLIKELY (errno == EINTR);
+	if (fd < 0)
+		return NULL;
+	VE_IGNORE_EINTR (ret = fdopen (fd, "w"));
+	return ret;
+}
+
+/* like fopen with "a+" */
+FILE *
+gdm_safe_fopen_ap (const char *file)
+{
+	int fd;
+	FILE *ret;
+
+	if (access (file, F_OK) == 0) {
+		do {
+			errno = 0;
+			fd = open (file, O_APPEND|O_RDWR
+#ifdef O_NOCTTY
+				   |O_NOCTTY
+#endif
+#ifdef O_NOFOLLOW
+				   |O_NOFOLLOW
+#endif
+				  );
+		} while G_UNLIKELY (errno == EINTR);
+	} else {
+		/* doesn't exist, open with O_EXCL */
+		do {
+			errno = 0;
+			fd = open (file, O_EXCL|O_CREAT|O_RDWR
+#ifdef O_NOCTTY
+				   |O_NOCTTY
+#endif
+#ifdef O_NOFOLLOW
+				   |O_NOFOLLOW
+#endif
+				   , 0644);
+		} while G_UNLIKELY (errno == EINTR);
 	}
 	if (fd < 0)
 		return NULL;
-	return fdopen (fd, "a+");
+	VE_IGNORE_EINTR (ret = fdopen (fd, "a+"));
+	return ret;
 }
 
 #ifdef RLIM_NLIMITS

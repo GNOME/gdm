@@ -231,7 +231,7 @@ check_servauthdir (struct stat *statbuf)
     int r;
 
     /* Enter paranoia mode */
-    IGNORE_EINTR (r = stat (GdmServAuthDir, statbuf));
+    VE_IGNORE_EINTR (r = stat (GdmServAuthDir, statbuf));
     if G_UNLIKELY (r < 0) {
 	    char *s = g_strdup_printf
 		    (_("Server Authorization directory "
@@ -267,7 +267,7 @@ check_logdir (void)
 	struct stat statbuf;
 	int r;
    
-	IGNORE_EINTR (r = stat (GdmLogDir, &statbuf));
+	VE_IGNORE_EINTR (r = stat (GdmLogDir, &statbuf));
 	if (r < 0 ||
 	    ! S_ISDIR (statbuf.st_mode))  {
 		gdm_error (_("%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."), "gdm_config_parse",
@@ -297,7 +297,7 @@ gdm_config_parse (void)
     displays = NULL;
     high_display_num = 0;
 
-    IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
+    VE_IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
     if (r < 0) {
 	    gdm_error (_("%s: No configuration file: %s. Using defaults."),
 		       "gdm_config_parse", GDM_CONFIG_FILE);
@@ -818,8 +818,8 @@ gdm_daemonify (void)
         errno = 0;
 	if ((pf = gdm_safe_fopen_w (GdmPidFile)) != NULL) {
 	    errno = 0;
-	    fprintf (pf, "%d\n", (int)pid);
-	    fclose (pf);
+	    VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)pid));
+	    VE_IGNORE_EINTR (fclose (pf));
 	    if G_UNLIKELY (errno != 0) {
 		    /* FIXME: how to handle this? */
 		    gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
@@ -848,12 +848,12 @@ gdm_daemonify (void)
 	gdm_fail (_("%s: setsid() failed: %s!"), "gdm_daemonify",
 		  strerror(errno));
 
-    IGNORE_EINTR (chdir (GdmServAuthDir));
+    VE_IGNORE_EINTR (chdir (GdmServAuthDir));
     umask (022);
 
-    IGNORE_EINTR (close (0));
-    IGNORE_EINTR (close (1));
-    IGNORE_EINTR (close (2));
+    VE_IGNORE_EINTR (close (0));
+    VE_IGNORE_EINTR (close (1));
+    VE_IGNORE_EINTR (close (2));
 
     gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
     gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
@@ -976,7 +976,7 @@ gdm_final_cleanup (void)
 		char *path;
 		gdm_connection_close (fifoconn);
 		path = g_build_filename (GdmServAuthDir, ".gdmfifo", NULL);
-		IGNORE_EINTR (unlink (path));
+		VE_IGNORE_EINTR (unlink (path));
 		g_free (path);
 		fifoconn = NULL;
 	}
@@ -987,20 +987,20 @@ gdm_final_cleanup (void)
 	}
 
 	if (slave_fifo_pipe_fd >= 0) {
-		IGNORE_EINTR (close (slave_fifo_pipe_fd));
+		VE_IGNORE_EINTR (close (slave_fifo_pipe_fd));
 		slave_fifo_pipe_fd = -1;
 	}
 
 	if (unixconn != NULL) {
 		gdm_connection_close (unixconn);
-		IGNORE_EINTR (unlink (GDM_SUP_SOCKET));
+		VE_IGNORE_EINTR (unlink (GDM_SUP_SOCKET));
 		unixconn = NULL;
 	}
 
 	closelog();
 
 	if (GdmPidFile != NULL) {
-		IGNORE_EINTR (unlink (GdmPidFile));
+		VE_IGNORE_EINTR (unlink (GdmPidFile));
 	}
 }
 
@@ -1086,7 +1086,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		    ve_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
 		    ve_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
-		    IGNORE_EINTR (execv (argv[0], argv));
+		    VE_IGNORE_EINTR (execv (argv[0], argv));
 	
 		    /* yaikes! */
 		    _exit (32);
@@ -1177,10 +1177,10 @@ suspend_machine (void)
 		/* Also make a new process group */
 		setsid ();
 
-		IGNORE_EINTR (chdir ("/"));
+		VE_IGNORE_EINTR (chdir ("/"));
 
 		argv = ve_split (GdmSuspendReal);
-		IGNORE_EINTR (execv (argv[0], argv));
+		VE_IGNORE_EINTR (execv (argv[0], argv));
 		/* FIXME: what about fail */
 		_exit (1);
 	}
@@ -1191,12 +1191,12 @@ static void
 change_to_first_and_clear (gboolean reboot)
 {
 	gdm_change_vt (1);
-	IGNORE_EINTR (close (0));
-	IGNORE_EINTR (close (1));
-	IGNORE_EINTR (close (2));
-	open ("/dev/tty1", O_WRONLY);
-	open ("/dev/tty1", O_WRONLY);
-	open ("/dev/tty1", O_WRONLY);
+	VE_IGNORE_EINTR (close (0));
+	VE_IGNORE_EINTR (close (1));
+	VE_IGNORE_EINTR (close (2));
+	VE_IGNORE_EINTR (open ("/dev/tty1", O_WRONLY));
+	VE_IGNORE_EINTR (open ("/dev/tty1", O_WRONLY));
+	VE_IGNORE_EINTR (open ("/dev/tty1", O_WRONLY));
 
 	ve_setenv ("TERM", "linux", TRUE);
 
@@ -1408,14 +1408,14 @@ start_autopsy:
 	gdm_info (_("Master rebooting..."));
 
 	gdm_final_cleanup ();
-	IGNORE_EINTR (chdir ("/"));
+	VE_IGNORE_EINTR (chdir ("/"));
 
 #ifdef __linux__
 	change_to_first_and_clear (TRUE /* reboot */);
 #endif /* __linux */
 
 	argv = ve_split (GdmRebootReal);
-	IGNORE_EINTR (execv (argv[0], argv));
+	VE_IGNORE_EINTR (execv (argv[0], argv));
 
 	gdm_error (_("%s: Reboot failed: %s"), 
 		   "gdm_child_action", strerror (errno));
@@ -1428,14 +1428,14 @@ start_autopsy:
 	gdm_info (_("Master halting..."));
 
 	gdm_final_cleanup ();
-	IGNORE_EINTR (chdir ("/"));
+	VE_IGNORE_EINTR (chdir ("/"));
 
 #ifdef __linux__
 	change_to_first_and_clear (FALSE /* reboot */);
 #endif /* __linux */
 
 	argv = ve_split (GdmHaltReal);
-	IGNORE_EINTR (execv (argv[0], argv));
+	VE_IGNORE_EINTR (execv (argv[0], argv));
 
 	gdm_error (_("%s: Halt failed: %s"),
 		   "gdm_child_action", strerror (errno));
@@ -1560,7 +1560,7 @@ gdm_restart_now (void)
 	gdm_info (_("GDM restarting ..."));
 	gdm_final_cleanup ();
 	gdm_restoreenv ();
-	IGNORE_EINTR (execvp (stored_argv[0], stored_argv));
+	VE_IGNORE_EINTR (execvp (stored_argv[0], stored_argv));
 	gdm_error (_("Failed to restart self"));
 	_exit (1);
 }
@@ -1700,8 +1700,8 @@ create_connections (void)
 						 &pipeconn,
 						 close_notify);
 	} else {
-		IGNORE_EINTR (close (p[0]));
-		IGNORE_EINTR (close (p[1]));
+		VE_IGNORE_EINTR (close (p[0]));
+		VE_IGNORE_EINTR (close (p[1]));
 		slave_fifo_pipe_fd = -1;
 	}
 
@@ -1774,7 +1774,7 @@ ensure_desc_012 (void)
 		/* Once we are up to 3, we're beyond stdin,
 		 * stdout and stderr */
 		if (fd >= 3) {
-			IGNORE_EINTR (close (fd));
+			VE_IGNORE_EINTR (close (fd));
 			break;
 		}
 	}
@@ -1910,12 +1910,12 @@ main (int argc, char *argv[])
 	    linux_only_is_running (pidv)) {
 		/* make sure the pid file doesn't get wiped */
 		GdmPidFile = NULL;
-		fclose (pf);
+		VE_IGNORE_EINTR (fclose (pf));
 		gdm_fail (_("gdm already running. Aborting!"));
 	}
 
 	if (pf != NULL)
-		fclose (pf);
+		VE_IGNORE_EINTR (fclose (pf));
     }
 
     /* Become daemon unless started in -nodaemon mode or child of init */
@@ -1925,8 +1925,8 @@ main (int argc, char *argv[])
 	errno = 0;
 	if ((pf = gdm_safe_fopen_w (GdmPidFile)) != NULL) {
 	    errno = 0;
-	    fprintf (pf, "%d\n", (int)getpid());
-	    fclose (pf);
+	    VE_IGNORE_EINTR (fprintf (pf, "%d\n", (int)getpid()));
+	    VE_IGNORE_EINTR (fclose (pf));
 	    if (errno != 0) {
 		    /* FIXME: how to handle this? */
 		    gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
@@ -1944,7 +1944,7 @@ main (int argc, char *argv[])
 
 	}
 
-	IGNORE_EINTR (chdir (GdmServAuthDir));
+	VE_IGNORE_EINTR (chdir (GdmServAuthDir));
 	umask (022);
     }
     else
@@ -2124,11 +2124,11 @@ write_x_servers (GdmDisplay *d)
 		g_snprintf (buf, sizeof (buf), ":%d", bogusname);
 		if (strcmp (buf, d->name) == 0)
 			g_snprintf (buf, sizeof (buf), ":%d", ++bogusname);
-		fprintf (fp, "%s local /usr/X11R6/bin/Xbogus\n", buf);
+		VE_IGNORE_EINTR (fprintf (fp, "%s local /usr/X11R6/bin/Xbogus\n", buf));
 	}
 
 	if (d->type == TYPE_XDMCP) {
-		fprintf (fp, "%s foreign\n", d->name);
+		VE_IGNORE_EINTR (fprintf (fp, "%s foreign\n", d->name));
 	} else {
 		char **argv;
 		char *command;
@@ -2137,12 +2137,12 @@ write_x_servers (GdmDisplay *d)
 			 NULL /* vtarg */);
 		command = g_strjoinv (" ", argv);
 		g_strfreev (argv);
-		fprintf (fp, "%s local %s\n", d->name, command);
+		VE_IGNORE_EINTR (fprintf (fp, "%s local %s\n", d->name, command));
 		g_free (command);
 	}
 
 	/* FIXME: What about out of disk space errors? */
-	fclose (fp);
+	VE_IGNORE_EINTR (fclose (fp));
 }
 
 static void
@@ -2153,12 +2153,12 @@ send_slave_ack (GdmDisplay *d, const char *resp)
 			char not[2];
 			not[0] = GDM_SLAVE_NOTIFY_ACK;
 			not[1] = '\n';
-			IGNORE_EINTR (write (d->master_notify_fd, not, 2));
+			VE_IGNORE_EINTR (write (d->master_notify_fd, not, 2));
 		} else {
 			char *not = g_strdup_printf ("%c%s\n",
 						     GDM_SLAVE_NOTIFY_ACK,
 						     resp);
-			IGNORE_EINTR (write (d->master_notify_fd, not, strlen (not)));
+			VE_IGNORE_EINTR (write (d->master_notify_fd, not, strlen (not)));
 			g_free (not);
 		}
 	}
@@ -2179,7 +2179,7 @@ send_slave_command (GdmDisplay *d, const char *command)
 		char *cmd = g_strdup_printf ("%c%s\n",
 					     GDM_SLAVE_NOTIFY_COMMAND,
 					     command);
-		IGNORE_EINTR (write (d->master_notify_fd, cmd, strlen (cmd)));
+		VE_IGNORE_EINTR (write (d->master_notify_fd, cmd, strlen (cmd)));
 		g_free (cmd);
 	}
 	if (d->slavepid > 1) {
@@ -2845,7 +2845,7 @@ check_cookie (const char *file, const char *disp, const char *cookie)
 	g_free (number);
 	g_free (bcookie);
 
-	fclose (fp);
+	VE_IGNORE_EINTR (fclose (fp));
 
 	return ret;
 }
@@ -3061,7 +3061,7 @@ update_config (const char *key)
 	VeConfig *cfg;
 	int r;
 
-	IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
+	VE_IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
 	if G_UNLIKELY (r < 0) {
 		/* if the file didn't exist before either */
 		if (config_file_mtime == 0)

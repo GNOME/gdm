@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include <libgnome/libgnome.h>
+#include <vicious.h>
 #include "gdm.h"
 #include "misc.h"
 #include "getvt.h"
@@ -26,11 +27,15 @@ static int
 open_vt (int vtno)
 {
 	char *vtname = g_strdup_printf ("/dev/tty%d", vtno);
-	int fd = open (vtname, O_RDWR
+	int fd;
+	do {
+		errno = 0;
+		fd = open (vtname, O_RDWR
 #ifdef O_NOCTTY
-		   |O_NOCTTY
+			   |O_NOCTTY
 #endif
-		   , 0);
+			   , 0);
+	} while G_UNLIKELY (errno == EINTR);
 	g_free (vtname);
 	return fd;
 }
@@ -44,22 +49,25 @@ get_free_vt (int *vtfd)
 
 	*vtfd = -1;
 
-	fd = open ("/dev/console", O_WRONLY
+	do {
+		errno = 0;
+		fd = open ("/dev/console", O_WRONLY
 #ifdef O_NOCTTY
-		   |O_NOCTTY
+			   |O_NOCTTY
 #endif
-		   , 0);
+			   , 0);
+	} while G_UNLIKELY (errno == EINTR);
 	if (fd < 0)
 		return -1;
 
 	if ((ioctl(fd, VT_OPENQRY, &vtno) < 0) || (vtno == -1)) {
-		IGNORE_EINTR (close (fd));
+		VE_IGNORE_EINTR (close (fd));
 		return -1;
 	}
 
 	fdv = open_vt (vtno);
 	if (fdv < 0) {
-		IGNORE_EINTR (close (fd));
+		VE_IGNORE_EINTR (close (fd));
 		return -1;
 	}
 
@@ -89,7 +97,7 @@ get_free_vt (int *vtfd)
 
 cleanup:
 	for (li = to_close_vts; li != NULL; li = li->next) {
-		IGNORE_EINTR (close (GPOINTER_TO_INT (li->data)));
+		VE_IGNORE_EINTR (close (GPOINTER_TO_INT (li->data)));
 	}
 	return vtno;
 }
@@ -117,18 +125,21 @@ gdm_change_vt (int vt)
 	if (vt < 0)
 		return;
 
-	fd = open ("/dev/console", O_WRONLY
+	do {
+		errno = 0;
+		fd = open ("/dev/console", O_WRONLY
 #ifdef O_NOCTTY
-		   |O_NOCTTY
+			   |O_NOCTTY
 #endif
-		   , 0);
+			   , 0);
+	} while G_UNLIKELY (errno == EINTR);
 	if (fd < 0)
 		return;
 
 	ioctl (fd, VT_ACTIVATE, vt);
 	ioctl (fd, VT_WAITACTIVE, vt);
 
-	IGNORE_EINTR (close (fd));
+	VE_IGNORE_EINTR (close (fd));
 }
 
 #else /* here this is just a stub, we don't know how to do this outside
