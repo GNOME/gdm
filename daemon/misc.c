@@ -855,4 +855,76 @@ gdm_desetuid (void)
 #endif
 }
 
+gboolean
+gdm_test_opt (const char *cmd, const char *help, const char *option)
+{
+	char *q;
+	char *full;
+	char buf[1024];
+	FILE *fp;
+	static GString *cache = NULL;
+	static char *cached_cmd = NULL;
+	gboolean got_it;
+
+	if (cached_cmd != NULL &&
+	    strcmp (cached_cmd, cmd) == 0) {
+		char *p = strstr (ve_sure_string (cache->str), option);
+		char end;
+		if (p == NULL)
+			return FALSE;
+		/* must be a full word */
+		end = *(p + strlen (option));
+		if ((end >= 'a' && end <= 'z') ||
+		    (end >= 'A' && end <= 'Z') ||
+		    (end >= '0' && end <= '9') ||
+		    end == '_')
+			return FALSE;
+		return TRUE;
+	}
+
+	g_free (cached_cmd);
+	cached_cmd = g_strdup (cmd);
+	if (cache != NULL)
+		g_string_assign (cache, "");
+	else
+		cache = g_string_new (NULL);
+
+	q = g_shell_quote (cmd);
+
+	full = g_strdup_printf ("%s %s 2>&1", q, help);
+	g_free (q);
+
+	fp = popen (full, "r");
+	g_free (full);
+
+	if (fp == NULL)
+		return FALSE;
+
+	got_it = FALSE;
+
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		char *p;
+		char end;
+
+		g_string_append (cache, buf);
+
+		if (got_it)
+			continue;
+
+		p = strstr (buf, option);
+		if (p == NULL)
+			continue;
+		/* must be a full word */
+		end = *(p + strlen (option));
+		if ((end >= 'a' && end <= 'z') ||
+		    (end >= 'A' && end <= 'Z') ||
+		    (end >= '0' && end <= '9') ||
+		    end == '_')
+			continue;
+
+		got_it = TRUE;
+	}
+	fclose (fp);
+	return got_it;
+}
 /* EOF */

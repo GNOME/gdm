@@ -106,6 +106,46 @@ static const struct poptOption options[] = {
 	{ NULL } 
 };
 
+#if 0
+/* Perhaps this may be useful sometime */
+static gboolean
+test_opt (const char *cmd, const char *help, const char *option)
+{
+	char *q = g_shell_quote (cmd);
+	char *full;
+	char buf[1024];
+	FILE *fp;
+
+	full = g_strdup_printf ("%s %s 2>&1", q, help);
+	g_free (q);
+
+	fp = popen (full, "r");
+	g_free (full);
+
+	if (fp == NULL)
+		return FALSE;
+
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		char *p = strstr (buf, option);
+		char end;
+		if (p == NULL)
+			continue;
+		/* must be a full word */
+		end = *(p + strlen (option));
+		if ((end >= 'a' && end <= 'z') ||
+		    (end >= 'A' && end <= 'Z') ||
+		    (end >= '0' && end <= '9') ||
+		    end == '_')
+			continue;
+
+		fclose (fp);
+		return TRUE;
+	}
+	fclose (fp);
+	return FALSE;
+}
+#endif
+
 static char **
 make_us_an_exec_vector (const char *xnest)
 {
@@ -120,21 +160,6 @@ make_us_an_exec_vector (const char *xnest)
 
 	if (ve_string_empty (xnest))
 		xnest = "Xnest";
-
-	if (xnest[0] == '/' &&
-	    /* leak */
-	    access (ve_sure_string (ve_first_word (xnest)), X_OK) != 0) {
-		xnest = "Xnest";
-	}
-
-	/* leak */
-	if (g_find_program_in_path (xnest) == NULL) {
-		xnest = "Xnest";
-		/* leak */
-		if (g_find_program_in_path (xnest) == NULL) {
-			return NULL;
-		}
-	}
 
 	xnest_vec = ve_split (xnest);
 	if (xnest_options != NULL)
@@ -285,7 +310,11 @@ main (int argc, char *argv[])
 	pid = fork ();
 	if (pid == 0) {
 		execvp (execvec[0], execvec);
-		g_warning ("Can't exec");
+		g_warning ("Can't exec, trying Xnest");
+		execvec[0] = "Xnest";
+		execvp (execvec[0], execvec);
+		g_warning ("Can't exec that either, giving up");
+		/* FIXME: this should be handled in the GUI */
 		_exit (1);
 	} else if (pid < 0) {
 		/* eeeek */
