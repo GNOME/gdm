@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2003-01-03 17:54+0200\n"
+"POT-Creation-Date: 2003-09-02 12:12-0700\n"
 "PO-Revision-Date: 2002-12-23 00:42+0200\n"
 "Last-Translator: Alexander Shopov <al_shopov@yahoo.com>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
@@ -15,6 +15,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
+
+#: config/CDE.desktop.in.h:1
+#, fuzzy
+msgid "CDE"
+msgstr "KDE"
+
+#: config/CDE.desktop.in.h:2
+msgid "This session logs you into CDE"
+msgstr ""
+
+#: config/Default.desktop.in.h:1
+#, fuzzy
+msgid "Default System Session"
+msgstr "Създаване на нова сесия"
+
+#: config/Default.desktop.in.h:2
+#, fuzzy
+msgid "This is the default system session"
+msgstr "Влизане в системата използвайки езика по подразбиране"
 
 #. DON\'T CHANGE THIS BY HAND! CHANGE THE SCRIPT THIS IS GENERATED
 #. ALWAYS ADD A CHANGELOG OR I WILL PERSONALLY KICK YOUR ASS!
@@ -63,6 +82,10 @@ msgstr ""
 "диагностицирате проблема?"
 
 #: config/gettextfoo.h:9
+msgid "Would you like to view the detailed X server output as well?"
+msgstr ""
+
+#: config/gettextfoo.h:10
 msgid ""
 "I cannot start the X server (your graphical interface).  It seems that the "
 "pointer device (your mouse) is not set up correctly.  Would you like to view "
@@ -72,7 +95,7 @@ msgstr ""
 "устройството за показване (вашата мишка) не е настроена коректно. Искате ли "
 "да видите изхода от X сървъра за да диагностицирате проблема?"
 
-#: config/gettextfoo.h:10
+#: config/gettextfoo.h:11
 msgid ""
 "Would you like me to try to run the mouse configuration program?  Note that "
 "you will need the root password for this."
@@ -80,19 +103,42 @@ msgstr ""
 "Искате ли да опитам да изпълня конфигурационната програма за мишката? "
 "Забележете , че затова е необходимо 'root' паролата."
 
-#: daemon/auth.c:55
+#: config/gettextfoo.h:12
+msgid ""
+"This is the failsafe xterm session.  Windows now have focus only if you have "
+"your cursor above them.  To get out of this mode type 'exit' in the window "
+"in the upper left corner"
+msgstr ""
+
+#: config/gettextfoo.h:13
+msgid ""
+"I could not start your session and so I have started the failsafe xterm "
+"session.  Windows now have focus only if you have your cursor above them.  "
+"To get out of this mode type 'exit' in the window in the upper left corner"
+msgstr ""
+
+#: config/gnome.desktop.in.h:1
+#, fuzzy
+msgid "GNOME"
+msgstr "Щастливо ГНОМЕ"
+
+#: config/gnome.desktop.in.h:2
+msgid "This session logs you into GNOME"
+msgstr ""
+
+#: daemon/auth.c:56
 #, c-format
 msgid "%s: Could not write new authorization entry: %s"
 msgstr "%s: Не мога да запиша нов запис за оторизация: %s"
 
-#: daemon/auth.c:58
+#: daemon/auth.c:59
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
 msgstr ""
 "%s: Не мога да запиша нов запис за оторизация. Възможно е поради липса на "
 "място на диска"
 
-#: daemon/auth.c:63
+#: daemon/auth.c:64
 #, c-format
 msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
@@ -101,109 +147,126 @@ msgstr ""
 "GDM не може да запише нов запис за оторизация на диска. Възможно е липса на "
 "дисково пространство.%s%s"
 
-#: daemon/auth.c:179
+#: daemon/auth.c:193
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: Не мога направя нов 'cookie' файл в %s"
 
+#: daemon/auth.c:217 daemon/auth.c:234 daemon/auth.c:759
+#, fuzzy, c-format
+msgid "%s: Cannot safely open %s"
+msgstr "%s: Не мога да създам програмен канал"
+
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:437 daemon/auth.c:471
-#, c-format
-msgid "gdm_auth_user_add: Could not open cookie file %s"
-msgstr "gdm_auth_user_add: Не мога да отворя 'cookie' файл %s"
+#: daemon/auth.c:572 daemon/auth.c:610
+#, fuzzy, c-format
+msgid "%s: Could not open cookie file %s"
+msgstr "%s: Не мога направя нов 'cookie' файл в %s"
 
-#: daemon/auth.c:454
-#, c-format
-msgid "gdm_auth_user_add: Could not lock cookie file %s"
-msgstr "gdm_auth_user_add: Не мога да заключа 'cookie' файл %s"
+#: daemon/auth.c:591
+#, fuzzy, c-format
+msgid "%s: Could not lock cookie file %s"
+msgstr "%s: Не мога направя нов 'cookie' файл в %s"
 
-#: daemon/auth.c:500
+#: daemon/auth.c:641 daemon/auth.c:662
 #, c-format
 msgid "%s: Could not write cookie"
 msgstr "%s: Не мога да пиша в 'cookie'"
 
-#: daemon/auth.c:574
-#, c-format
-msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
+#: daemon/auth.c:737
+#, fuzzy, c-format
+msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr ""
 "gdm_auth_user_remove: Игнорира подозрителните преглеждайки 'cookie' файла %s"
 
 #. This means we have no clue what's happening,
 #. * it's not X server crashing as we would have
 #. * cought that elsewhere.  Things are just
-#. * not working out, so tell the user
-#: daemon/display.c:98 daemon/display.c:105
+#. * not working out, so tell the user.
+#. * However this may have been caused by a malicious local user
+#. * zapping the display repeatedly, that shouldn't cause gdm
+#. * to stop working completely so just wait for 2 minutes,
+#. * that should give people ample time to stop gdm if needed,
+#. * or just wait for the stupid malicious user to get bored
+#. * and go away
+#: daemon/display.c:114
 #, c-format
 msgid ""
-"Failed to start the display server several times in a short time period; "
-"disabling display %s"
+"The display server has been shut down about 6 times in the last 90 seconds, "
+"it is likely that something bad is going on.  I will wait for 2 minutes "
+"before trying again on display %s."
 msgstr ""
-"Неуспех да стартира сървъра няколко пъти в кратък период от време; "
-"забранявам дисплей %s"
 
-#: daemon/display.c:163
+#: daemon/display.c:243
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s: Не мога да създам програмен канал"
 
-#: daemon/display.c:254
-#, c-format
-msgid "gdm_display_manage: Failed forking gdm slave process for %s"
+#: daemon/display.c:315
+#, fuzzy, c-format
+msgid "%s: Failed forking gdm slave process for %s"
 msgstr "gdm_display_manage: Неуспех при съдаване на синовен процес за %s"
 
-#: daemon/errorgui.c:133
+#: daemon/errorgui.c:286
+#, fuzzy, c-format
+msgid "%s not a regular file!\n"
+msgstr "%s: %s не е обикновен файл."
+
+#: daemon/errorgui.c:301
+msgid ""
+"\n"
+"... File too long to display ...\n"
+msgstr ""
+
+#: daemon/errorgui.c:309
 #, c-format
 msgid "%s could not be opened"
 msgstr "%s не може да бъде отворен"
 
-#: daemon/errorgui.c:283
-msgid "gdm_error_box: Cannot fork to display error/info box"
+#: daemon/errorgui.c:402 daemon/errorgui.c:522 daemon/errorgui.c:609
+#: daemon/errorgui.c:706
+#, fuzzy, c-format
+msgid "%s: Cannot fork to display error/info box"
 msgstr ""
 "gdm_error_box: Не мога да направя синовен процес за да покажа грешка/"
 "информация"
 
-#: daemon/errorgui.c:435 daemon/errorgui.c:557
-msgid "gdm_failsafe_question: Cannot fork to display error/info box"
-msgstr ""
-"gdm_failsafe_question:Не мога да направя синовен процес за да покажа грешка/"
-"информация"
-
-#: daemon/filecheck.c:49
+#: daemon/filecheck.c:54
 #, c-format
 msgid "%s: Directory %s does not exist."
 msgstr "%s: Директория %s не съществува."
 
-#: daemon/filecheck.c:56 daemon/filecheck.c:97
+#: daemon/filecheck.c:61 daemon/filecheck.c:103
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr "%s: %s не е собственост от uid %d."
 
-#: daemon/filecheck.c:62 daemon/filecheck.c:104
+#: daemon/filecheck.c:67 daemon/filecheck.c:110
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr "%s: %s е с възможност за писане от група."
 
-#: daemon/filecheck.c:68
+#: daemon/filecheck.c:73
 #, c-format
 msgid "%s: %s is writable by other."
 msgstr "%s: %s е с възможност за писане от други."
 
-#: daemon/filecheck.c:82
+#: daemon/filecheck.c:88
 #, c-format
 msgid "%s: %s does not exist but must exist."
 msgstr "%s: %s не съществува, но трябва да го има."
 
-#: daemon/filecheck.c:90
+#: daemon/filecheck.c:96
 #, c-format
 msgid "%s: %s is not a regular file."
 msgstr "%s: %s не е обикновен файл."
 
-#: daemon/filecheck.c:111
+#: daemon/filecheck.c:117
 #, c-format
 msgid "%s: %s is writable by group/other."
 msgstr "%s: %s е възможен за писане от група/други."
 
-#: daemon/filecheck.c:118
+#: daemon/filecheck.c:124
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
@@ -220,198 +283,17 @@ msgstr "%s: Не мога да направя 'socket'"
 msgid "%s: Could not bind socket"
 msgstr "%s: Не мога да 'привържа' socket"
 
-#: daemon/gdm-net.c:336
+#: daemon/gdm-net.c:334
 #, c-format
 msgid "%s: Could not make FIFO"
 msgstr "%s: Не мога да направя FIFO"
 
-#: daemon/gdm-net.c:344
+#: daemon/gdm-net.c:342
 #, c-format
 msgid "%s: Could not open FIFO"
 msgstr "%s: Не мога да отворя FIFO"
 
-#: daemon/gdm.c:225
-#, c-format
-msgid "%s: No configuration file: %s. Using defaults."
-msgstr "%s: Няма конфигурационен файл: %s. Използвам по подразбиране."
-
-#: daemon/gdm.c:298
-#, c-format
-msgid "%s: Standard X server not found, trying alternatives"
-msgstr "%s: Стандартен X сървър не е намерен, опитвам алтернативи"
-
-#: daemon/gdm.c:327
-#, c-format
-msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
-msgstr "%s: XDMCP е разрешен, но няма подръжка на него, изключвам го"
-
-#: daemon/gdm.c:340
-#, c-format
-msgid "%s: Root cannot be autologged in, turing off automatic login"
-msgstr "%s: Root не мога да влезе автоматично, изключвам автоматично влизане"
-
-#: daemon/gdm.c:353
-#, c-format
-msgid "%s: Root cannot be autologged in, turing off timed login"
-msgstr ""
-"%s: Root не мога да влезе автоматично, изключвам влизане за 'брой пъти'"
-
-#: daemon/gdm.c:359
-#, c-format
-msgid "%s: TimedLoginDelay less then 5, so I will just use 5."
-msgstr "%s: TimedLoginDelay по-малко от 5, така аз ще използвам 5"
-
-#: daemon/gdm.c:369
-#, c-format
-msgid "%s: No greeter specified."
-msgstr "%s: Няма зададена програма посрещач."
-
-#: daemon/gdm.c:372
-#, c-format
-msgid "%s: No remote greeter specified."
-msgstr "%s: Няма зададена отдалечена програма посрещач."
-
-#: daemon/gdm.c:377
-msgid "No daemon/ServAuthDir specified in the configuration file"
-msgstr "Няма зададен демон/ServAuthDir в конфигурационният файл"
-
-#: daemon/gdm.c:379
-#, c-format
-msgid "%s: No authdir specified."
-msgstr "%s: Няма зададено authdir"
-
-#: daemon/gdm.c:386
-#, c-format
-msgid "%s: No sessions directory specified."
-msgstr "%s: Няма зададена директория за сесия."
-
-#: daemon/gdm.c:412
-#, c-format
-msgid "%s: Empty server command, using standard one."
-msgstr "%s: Празна команда за сървър, използвам стандартна."
-
-#: daemon/gdm.c:458
-#, c-format
-msgid "%s: Display number %d in use!  I will use %d"
-msgstr "%s: Дисплей с номер %d се използва!  Аз ще използвам %d"
-
-#: daemon/gdm.c:475
-#, c-format
-msgid "%s: Invalid server line in config file. Ignoring!"
-msgstr "%s: Грешен ред в конфигурационният файл за сървър. Игнорирам!"
-
-#. start
-#. server uid
-#: daemon/gdm.c:498
-#, c-format
-msgid ""
-"%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
-"configuration!"
-msgstr ""
-"%s: XDMCP е забранен и не е зададен локален сървър. Добавям %s в :%d за да "
-"позволя конфигурацията!"
-
-#: daemon/gdm.c:513
-#, c-format
-msgid ""
-"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
-"Please correct the configuration %s and restart gdm."
-msgstr ""
-"XDMCP е забранен и gdm не може да намери локален сървър за стартиране. "
-"Прекъсвам!  Моля, коригирайте конфигурацията %s и престартирайте gdm."
-
-#: daemon/gdm.c:521
-#, c-format
-msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
-msgstr "%s: XDMCP е забранен и няма зададен локален сървър. Прекъсвам!"
-
-#: daemon/gdm.c:529
-#, c-format
-msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
-msgstr "%s: Не мога да намеря gdm потребител (%s). Опитвам 'nobody'!"
-
-#: daemon/gdm.c:537
-#, c-format
-msgid ""
-"The gdm user does not exist. Please correct gdm configuration %s and restart "
-"gdm."
-msgstr ""
-"Потребителя на gdm не съществува. Моля, коригирайте %s и престартирайте gdm."
-
-#: daemon/gdm.c:543
-#, c-format
-msgid "%s: Can't find the gdm user (%s). Aborting!"
-msgstr "%s: Не мога да намеря gdm потребител (%s). Прекъсам!"
-
-#: daemon/gdm.c:550
-#, c-format
-msgid ""
-"The gdm user is set to be root, but this is not allowed since it can pose a "
-"security risk.  Please correct gdm configuration %s and restart gdm."
-msgstr ""
-"Потребителя на gdm е зададен да бъде 'root', но това не е позволено поради "
-"причини от риск за сигурността. Моля коригирайте %s и рестартирайте gdm."
-
-#: daemon/gdm.c:557
-#, c-format
-msgid "%s: The gdm user should not be root. Aborting!"
-msgstr "%s: Потребителя на gdm не трябва да е 'root'. Прекъсвам!"
-
-#: daemon/gdm.c:563
-#, c-format
-msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
-msgstr "%s: Не мога да намеря групата на gdm (%s). Опитвам 'nobody'!"
-
-#: daemon/gdm.c:571
-#, c-format
-msgid ""
-"The gdm group does not exist. Please correct gdm configuration %s and "
-"restart gdm."
-msgstr ""
-"Групата на gdm не съществува. Моля коригирайте конфигурацията на gdm %s и го "
-"престартирайте."
-
-#: daemon/gdm.c:577
-#, c-format
-msgid "%s: Can't find the gdm group (%s). Aborting!"
-msgstr "%s: Не мога да намеря групата на gdm (%s). Прекъсвам!"
-
-#: daemon/gdm.c:584
-#, c-format
-msgid ""
-"The gdm group is set to be root, but this is not allowed since it can pose a "
-"security risk. Please correct gdm configuration %s and restart gdm."
-msgstr ""
-"Групата на gdm е зададена да бъде 'root', но това не е позволено поради "
-"причини от риск за сигурността. Моля коригирайте %s и рестартирайте gdm."
-
-#: daemon/gdm.c:591
-#, c-format
-msgid "%s: The gdm group should not be root. Aborting!"
-msgstr "%s: Групата на gdm не може да е 'root'. Прекъсвам!"
-
-#: daemon/gdm.c:606
-#, c-format
-msgid "%s: Greeter not found or can't be executed by the gdm user"
-msgstr ""
-"%s: Програмата посрещач не е намерена или не може да бъде изпълнене от "
-"потребител gdm"
-
-#: daemon/gdm.c:613
-#, c-format
-msgid "%s: Remote greeter not found or can't be executed by the gdm user"
-msgstr ""
-"%s: Отдалечената програма посрещач не е намерена или не може да бъде "
-"изпълнене от потребител gdm"
-
-#: daemon/gdm.c:624
-#, c-format
-msgid "%s: Chooser not found or it can't be executed by the gdm user"
-msgstr ""
-"%s: Програмата за избор на хостове 'chooser' не е намерена или не може да "
-"бъде изпълнена от потребител gdm"
-
-#: daemon/gdm.c:633
+#: daemon/gdm.c:234
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -421,12 +303,12 @@ msgstr ""
 "но тя не съществува. Моля коригирайте gdm конфигурацията %s и престартирайте "
 "gdm."
 
-#: daemon/gdm.c:641
+#: daemon/gdm.c:243
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Authdir %s не съществува. Прекъсвам."
 
-#: daemon/gdm.c:646
+#: daemon/gdm.c:248
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -436,12 +318,204 @@ msgstr ""
 "но това не е директория. Моля коригирайте gdm конфигурацията %s и "
 "престартирайте gdm."
 
-#: daemon/gdm.c:654
+#: daemon/gdm.c:257
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Authdir %s не е директория. Прекъсвам."
 
-#: daemon/gdm.c:659
+#: daemon/gdm.c:270
+#, c-format
+msgid ""
+"%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
+msgstr ""
+
+#: daemon/gdm.c:304 gui/gdmlogin.c:692 gui/greeter/greeter.c:95
+#, c-format
+msgid "%s: No configuration file: %s. Using defaults."
+msgstr "%s: Няма конфигурационен файл: %s. Използвам по подразбиране."
+
+#: daemon/gdm.c:349
+#, c-format
+msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
+msgstr ""
+
+#: daemon/gdm.c:389
+#, c-format
+msgid "%s: Standard X server not found, trying alternatives"
+msgstr "%s: Стандартен X сървър не е намерен, опитвам алтернативи"
+
+#: daemon/gdm.c:417
+#, c-format
+msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
+msgstr "%s: XDMCP е разрешен, но няма подръжка на него, изключвам го"
+
+#: daemon/gdm.c:430
+#, c-format
+msgid "%s: Root cannot be autologged in, turing off automatic login"
+msgstr "%s: Root не мога да влезе автоматично, изключвам автоматично влизане"
+
+#: daemon/gdm.c:443
+#, c-format
+msgid "%s: Root cannot be autologged in, turing off timed login"
+msgstr ""
+"%s: Root не мога да влезе автоматично, изключвам влизане за 'брой пъти'"
+
+#: daemon/gdm.c:449
+#, fuzzy, c-format
+msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
+msgstr "%s: TimedLoginDelay по-малко от 5, така аз ще използвам 5"
+
+#: daemon/gdm.c:459
+#, c-format
+msgid "%s: No greeter specified."
+msgstr "%s: Няма зададена програма посрещач."
+
+#: daemon/gdm.c:462
+#, c-format
+msgid "%s: No remote greeter specified."
+msgstr "%s: Няма зададена отдалечена програма посрещач."
+
+#: daemon/gdm.c:466
+#, c-format
+msgid "%s: No sessions directory specified."
+msgstr "%s: Няма зададена директория за сесия."
+
+#: daemon/gdm.c:491
+#, c-format
+msgid "%s: Empty server command, using standard one."
+msgstr "%s: Празна команда за сървър, използвам стандартна."
+
+#: daemon/gdm.c:534
+#, c-format
+msgid "%s: Display number %d in use!  I will use %d"
+msgstr "%s: Дисплей с номер %d се използва!  Аз ще използвам %d"
+
+#: daemon/gdm.c:553
+#, c-format
+msgid "%s: Invalid server line in config file. Ignoring!"
+msgstr "%s: Грешен ред в конфигурационният файл за сървър. Игнорирам!"
+
+#: daemon/gdm.c:564 daemon/gdm.c:603
+#, c-format
+msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
+msgstr "%s: XDMCP е забранен и няма зададен локален сървър. Прекъсвам!"
+
+#. start
+#. server uid
+#: daemon/gdm.c:580
+#, c-format
+msgid ""
+"%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
+"configuration!"
+msgstr ""
+"%s: XDMCP е забранен и не е зададен локален сървър. Добавям %s в :%d за да "
+"позволя конфигурацията!"
+
+#: daemon/gdm.c:595
+#, c-format
+msgid ""
+"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
+"Please correct the configuration %s and restart gdm."
+msgstr ""
+"XDMCP е забранен и gdm не може да намери локален сървър за стартиране. "
+"Прекъсвам!  Моля, коригирайте конфигурацията %s и престартирайте gdm."
+
+#: daemon/gdm.c:616
+#, c-format
+msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
+msgstr "%s: Не мога да намеря gdm потребител (%s). Опитвам 'nobody'!"
+
+#: daemon/gdm.c:624
+#, c-format
+msgid ""
+"The gdm user does not exist. Please correct gdm configuration %s and restart "
+"gdm."
+msgstr ""
+"Потребителя на gdm не съществува. Моля, коригирайте %s и престартирайте gdm."
+
+#: daemon/gdm.c:631
+#, c-format
+msgid "%s: Can't find the gdm user (%s). Aborting!"
+msgstr "%s: Не мога да намеря gdm потребител (%s). Прекъсам!"
+
+#: daemon/gdm.c:638
+#, c-format
+msgid ""
+"The gdm user is set to be root, but this is not allowed since it can pose a "
+"security risk.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+"Потребителя на gdm е зададен да бъде 'root', но това не е позволено поради "
+"причини от риск за сигурността. Моля коригирайте %s и рестартирайте gdm."
+
+#: daemon/gdm.c:646
+#, c-format
+msgid "%s: The gdm user should not be root. Aborting!"
+msgstr "%s: Потребителя на gdm не трябва да е 'root'. Прекъсвам!"
+
+#: daemon/gdm.c:652
+#, c-format
+msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
+msgstr "%s: Не мога да намеря групата на gdm (%s). Опитвам 'nobody'!"
+
+#: daemon/gdm.c:660
+#, c-format
+msgid ""
+"The gdm group does not exist. Please correct gdm configuration %s and "
+"restart gdm."
+msgstr ""
+"Групата на gdm не съществува. Моля коригирайте конфигурацията на gdm %s и го "
+"престартирайте."
+
+#: daemon/gdm.c:667
+#, c-format
+msgid "%s: Can't find the gdm group (%s). Aborting!"
+msgstr "%s: Не мога да намеря групата на gdm (%s). Прекъсвам!"
+
+#: daemon/gdm.c:674
+#, c-format
+msgid ""
+"The gdm group is set to be root, but this is not allowed since it can pose a "
+"security risk. Please correct gdm configuration %s and restart gdm."
+msgstr ""
+"Групата на gdm е зададена да бъде 'root', но това не е позволено поради "
+"причини от риск за сигурността. Моля коригирайте %s и рестартирайте gdm."
+
+#: daemon/gdm.c:682
+#, c-format
+msgid "%s: The gdm group should not be root. Aborting!"
+msgstr "%s: Групата на gdm не може да е 'root'. Прекъсвам!"
+
+#: daemon/gdm.c:697
+#, c-format
+msgid "%s: Greeter not found or can't be executed by the gdm user"
+msgstr ""
+"%s: Програмата посрещач не е намерена или не може да бъде изпълнене от "
+"потребител gdm"
+
+#: daemon/gdm.c:704
+#, c-format
+msgid "%s: Remote greeter not found or can't be executed by the gdm user"
+msgstr ""
+"%s: Отдалечената програма посрещач не е намерена или не може да бъде "
+"изпълнене от потребител gdm"
+
+#: daemon/gdm.c:715
+#, c-format
+msgid "%s: Chooser not found or it can't be executed by the gdm user"
+msgstr ""
+"%s: Програмата за избор на хостове 'chooser' не е намерена или не може да "
+"бъде изпълнена от потребител gdm"
+
+#: daemon/gdm.c:724
+msgid "No daemon/ServAuthDir specified in the configuration file"
+msgstr "Няма зададен демон/ServAuthDir в конфигурационният файл"
+
+#: daemon/gdm.c:726
+#, fuzzy, c-format
+msgid "%s: No daemon/ServAuthDir specified."
+msgstr "%s: Няма зададено authdir"
+
+#: daemon/gdm.c:752
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -452,48 +526,49 @@ msgstr ""
 "но тя не принадлежи на потребител %s и група %s. Моля коригирайте gdm "
 "конфигурацията %s и престартирайте gdm."
 
-#: daemon/gdm.c:669
+#: daemon/gdm.c:763
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s: Authdir %s не принадлежи на потребител %s, група %s. Прекъсвам."
 
-#: daemon/gdm.c:675
-#, c-format
+#: daemon/gdm.c:769
+#, fuzzy, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
-"wrong permissions, it should have permissions of 0750. Please correct the "
+"wrong permissions, it should have permissions of %o. Please correct the "
 "permissions or the gdm configuration %s and restart gdm."
 msgstr ""
 "Директория за Оторизация на сървъра (daemon/ServAuthDir) е зададена като %s "
 "но тя има грешни права, те трябва да са 0750. Моля коригирайте правата или "
 "gdm конфигурацията %s и престартирайте gdm."
 
-#: daemon/gdm.c:685
-#, c-format
-msgid "%s: Authdir %s has wrong permissions %o. Should be 0750. Aborting."
+#: daemon/gdm.c:780
+#, fuzzy, c-format
+msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: Authdir %s има грешни права %o. Трябва да са 0750. Прекъсвам."
 
-#: daemon/gdm.c:740
+#: daemon/gdm.c:857
 #, c-format
 msgid "%s: fork() failed!"
 msgstr "%s: Неуспешен fork()!"
 
 #. should never happen
-#: daemon/gdm.c:743 daemon/slave.c:2281
+#: daemon/gdm.c:860 daemon/slave.c:2978
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() пропадна: %s!"
 
-#: daemon/gdm.c:875
-#, c-format
-msgid "deal_with_x_crashes: Trying failsafe X server %s"
+#: daemon/gdm.c:1030
+#, fuzzy, c-format
+msgid "%s: Trying failsafe X server %s"
 msgstr "deal_with_x_crashes: Опитвам авариен X сървър %s"
 
-#: daemon/gdm.c:891
-msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
+#: daemon/gdm.c:1048
+#, fuzzy, c-format
+msgid "%s: Running the XKeepsCrashing script"
 msgstr "deal_with_x_crashes: Изпълнявам XKeepsCrashing скрипт"
 
-#: daemon/gdm.c:964
+#: daemon/gdm.c:1160
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
@@ -508,7 +583,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:976
+#: daemon/gdm.c:1172
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -517,76 +592,85 @@ msgstr ""
 "Неуспешенопит за стартиране на X сървъра няколко пъти за кратък период от "
 "време; забранявам дисплей %s"
 
-#: daemon/gdm.c:1058
-#, c-format
-msgid ""
-"gdm_child_action: Reboot or Halt request when there is no system menu from "
-"display %s"
+#: daemon/gdm.c:1217
+msgid "System is rebooting, please wait ..."
+msgstr ""
+
+#: daemon/gdm.c:1219
+msgid "System is shutting down, please wait ..."
+msgstr ""
+
+#: daemon/gdm.c:1313
+#, fuzzy, c-format
+msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
 "gdm_child_action: Заявка за Престартиране или Спиране когато няма системно "
 "меню от дисплей %s"
 
-#: daemon/gdm.c:1066
-#, c-format
-msgid ""
-"gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
+#: daemon/gdm.c:1322
+#, fuzzy, c-format
+msgid "Restart, Reboot or Halt request from a non-local display %s"
 msgstr ""
 "gdm_child_action: Заявка за Презареждане, Престартиране или Спиране от не "
 "локален дисплей %s"
 
 #. Bury this display for good
-#: daemon/gdm.c:1102
-#, c-format
-msgid "gdm_child_action: Aborting display %s"
+#: daemon/gdm.c:1382
+#, fuzzy, c-format
+msgid "%s: Aborting display %s"
 msgstr "gdm_child_action: Прекъсвам дисплей %s"
 
 #. Reboot machine
-#: daemon/gdm.c:1114
-msgid "gdm_child_action: Master rebooting..."
+#: daemon/gdm.c:1395
+#, fuzzy
+msgid "Master rebooting..."
 msgstr "gdm_child_action: Престартиране на системата..."
 
-#: daemon/gdm.c:1122
-#, c-format
-msgid "gdm_child_action: Reboot failed: %s"
-msgstr "gdm_child_action: Престартирането не е успешно: %s"
+#: daemon/gdm.c:1407
+#, fuzzy, c-format
+msgid "%s: Reboot failed: %s"
+msgstr "%s: setsid() пропадна: %s!"
 
 #. Halt machine
-#: daemon/gdm.c:1129
-msgid "gdm_child_action: Master halting..."
+#: daemon/gdm.c:1415
+#, fuzzy
+msgid "Master halting..."
 msgstr "gdm_child_action: Спране на системата..."
 
-#: daemon/gdm.c:1137
-#, c-format
-msgid "gdm_child_action: Halt failed: %s"
-msgstr "gdm_child_action: Спирането пропадна: %s"
+#: daemon/gdm.c:1427
+#, fuzzy, c-format
+msgid "%s: Halt failed: %s"
+msgstr "%s: setsid() пропадна: %s!"
 
 #. Suspend machine
-#: daemon/gdm.c:1144
-msgid "gdm_child_action: Master suspending..."
+#. XXX: this is ugly, why should there be a suspend like this,
+#. * see GDM_SOP_SUSPEND_MACHINE
+#: daemon/gdm.c:1437 daemon/gdm.c:2604
+#, fuzzy
+msgid "Master suspending..."
 msgstr "gdm_child_action:Привеждане на компютъра в 'заспало' състияние"
 
-#: daemon/gdm.c:1152
-#, c-format
-msgid "gdm_child_action: Suspend failed: %s"
-msgstr "gdm_child_action: \"Заспалото' състояние на компютъра пропадна: %s"
-
-#: daemon/gdm.c:1250
+#: daemon/gdm.c:1547
 msgid "GDM restarting ..."
 msgstr "Рестартра GDM..."
 
-#: daemon/gdm.c:1255
+#: daemon/gdm.c:1551
 msgid "Failed to restart self"
 msgstr "Неуспех при собствено престартиране"
 
-#: daemon/gdm.c:1352
+#: daemon/gdm.c:1711
 msgid "Do not fork into the background"
 msgstr "Не преминава във фонов режим"
 
-#: daemon/gdm.c:1354
+#: daemon/gdm.c:1713
+msgid "No console (local) servers to be run"
+msgstr ""
+
+#: daemon/gdm.c:1715
 msgid "Preserve LD_* variables"
 msgstr "Запазва LD_* променливи"
 
-#: daemon/gdm.c:1436 gui/gdmchooser.c:1103
+#: daemon/gdm.c:1835 gui/gdmchooser.c:1494
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -596,50 +680,44 @@ msgstr ""
 "Изпълнете '%s --help' за да видите пълният списък от налични опции за "
 "командата.\n"
 
-#: daemon/gdm.c:1448
+#: daemon/gdm.c:1853
 msgid "Only root wants to run gdm\n"
 msgstr "Само 'root' може да изпълни gdm\n"
 
-#: daemon/gdm.c:1476
+#: daemon/gdm.c:1869 daemon/gdm.c:1873 daemon/gdm.c:1948 daemon/gdm.c:1952
+#: daemon/gdm.c:1956 daemon/gdm.c:1960 daemon/gdm.c:1970 daemon/gdm.c:1976
+#: daemon/gdm.c:1987 daemon/misc.c:1391 daemon/misc.c:1395 daemon/misc.c:1399
+#: daemon/misc.c:1406 daemon/misc.c:1410 daemon/misc.c:1414
+#: daemon/server.c:499 daemon/server.c:512 daemon/slave.c:678
+#: daemon/slave.c:692 daemon/slave.c:702 daemon/slave.c:712 daemon/slave.c:724
+#: gui/gdmchooser.c:1373 gui/gdmchooser.c:1376 gui/gdmchooser.c:1379
+#: gui/gdmlogin.c:3803 gui/gdmlogin.c:3811 gui/gdmlogin.c:3814
+#: gui/greeter/greeter.c:1161 gui/greeter/greeter.c:1169
+#: gui/greeter/greeter.c:1172
+#, fuzzy, c-format
+msgid "%s: Error setting up %s signal handler: %s"
+msgstr "%s: Грешка при задаване на USR2 сигнал в: %s"
+
+#: daemon/gdm.c:1897
 msgid "gdm already running. Aborting!"
 msgstr "gdm вече е стартирана. Прекъсвам!"
 
-#: daemon/gdm.c:1510
-#, c-format
-msgid "%s: Error setting up TERM signal handler"
-msgstr "%s: Грешка при задаване обработка на сигнал TERM"
-
-#: daemon/gdm.c:1514
-#, c-format
-msgid "%s: Error setting up INT signal handler"
-msgstr "%s: Грешка при задаване обработка на сигнал INT"
-
-#: daemon/gdm.c:1518
-#, c-format
-msgid "%s: Error setting up HUP signal handler"
-msgstr "%s: Грешка при задаване обработка на сигнал HUP"
-
-#: daemon/gdm.c:1522
-#, c-format
-msgid "%s: Error setting up USR1 signal handler"
-msgstr "%s: Грешка при задаване обработка на сигнал USR1"
-
-#: daemon/gdm.c:1531
+#: daemon/gdm.c:1996
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Грешка при задаване обработка на сигнал CHLD"
 
-#: daemon/gdm.c:2634 daemon/gdm.c:2652
+#: daemon/gdm.c:3241 daemon/gdm.c:3260
 msgid "Flexible server request denied: Not authenticated"
 msgstr "Заявка за сървъра е отклонена: няма оторизация"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:2670
+#: daemon/gdm.c:3278
 msgid "Unknown server type requested, using standard server."
 msgstr "Заявка за неизвестен сървър, използвам стандартен сървър."
 
-#: daemon/gdm.c:2674
+#: daemon/gdm.c:3282
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -647,26 +725,35 @@ msgid ""
 msgstr "Заявеният сървър %s не е позволен за използване, използвам стандартен."
 
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:491
+#: daemon/misc.c:555
 msgid "y = Yes or n = No? >"
 msgstr "y = \"Да\" or n = \"Не\"? >"
 
-#: daemon/misc.c:775
+#: daemon/misc.c:869
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: Не мога да получа локален адрес!"
 
-#: daemon/misc.c:890
+#: daemon/misc.c:984
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "Не мога да задам setgid %d. Прекъсвам."
 
-#: daemon/misc.c:895
+#: daemon/misc.c:989
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr "initgroups() е неуспешно за %s. Прекъсвам."
 
-#: daemon/server.c:255
+#: daemon/misc.c:1219 daemon/misc.c:1233
+#, fuzzy, c-format
+msgid "%s: Error setting signal %d to %s"
+msgstr "%s: Грешка при задаване обработка на сигнал USR1: %s"
+
+#: daemon/server.c:160
+msgid "Can not start fallback console"
+msgstr ""
+
+#: daemon/server.c:330
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -676,7 +763,7 @@ msgstr ""
 "Изглежда има работещ X сървър на дисплей %s. Да опитам ли друг номер? Ако "
 "отговорите не, аз ще се опитам да стартирам сървър на %s отново.%s"
 
-#: daemon/server.c:262
+#: daemon/server.c:337
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -686,132 +773,116 @@ msgstr ""
 "клавиш като Ctrl-Alt-F за да отидете на конзола 7. X сървъра обикновенно "
 "работи на конзола 7 и по-висока.)"
 
-#: daemon/server.c:301
+#: daemon/server.c:377
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Дисплей '%s' не може да бъде отворен от Xnest"
 
-#: daemon/server.c:331
+#: daemon/server.c:405
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "Дисплей %s е зает. Има друг работещ X сървър."
 
-#: daemon/server.c:458
+#: daemon/server.c:487
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Грешка при отваряне на програмен канал: %s"
 
-#: daemon/server.c:470
-#, c-format
-msgid "%s: Error setting up USR1 signal handler: %s"
-msgstr "%s: Грешка при задаване обработка на сигнал USR1: %s"
-
-#: daemon/server.c:483 daemon/slave.c:291
-#, c-format
-msgid "%s: Error setting up CHLD signal handler: %s"
-msgstr "%s: Грешка при задаване обработка на сигнал CHLD: %s"
-
-#: daemon/server.c:497 daemon/slave.c:267
-#, c-format
-msgid "%s: Error setting up ALRM signal handler: %s"
-msgstr "%s: Грешка при задаване обработка на сигнал ALRM: %s"
-
 #. Send X too busy
-#: daemon/server.c:700
+#: daemon/server.c:770
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s: Не мога да намеря свободен номер на дисплей"
 
-#: daemon/server.c:715
+#: daemon/server.c:785
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s: Дисплей %s е зает. Опитвам друг номер на дисплей."
 
-#: daemon/server.c:787
+#: daemon/server.c:879
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Грешна команада за сървър '%s'"
 
-#: daemon/server.c:792
+#: daemon/server.c:884
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "Името на сървъра '%s' не е намерено, използвам стандартен сървър."
 
-#: daemon/server.c:939
-#, c-format
-msgid "gdm_server_spawn: Could not open logfile for display %s!"
+#: daemon/server.c:1060
+#, fuzzy, c-format
+msgid "%s: Could not open logfile for display %s!"
 msgstr "gdm_server_spawn: Не мога да отворя журнален файл за дисплей %s!"
 
-#: daemon/server.c:949
-msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
-msgstr "gdm_server_spawn:Грешка при задаване на USR1 в SIG_IGN"
+#: daemon/server.c:1073 daemon/server.c:1079 daemon/server.c:1084
+#, fuzzy, c-format
+msgid "%s: Error setting %s to %s"
+msgstr "%s: Грешка при отваряне на програмен канал: %s"
 
-#: daemon/server.c:953
-msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
-msgstr "gdm_server_spawn:Грешка при задаване на TTIN в SIG_IGN"
-
-#: daemon/server.c:957
-msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
-msgstr "gdm_server_spawn:Грешка при задаване на TTOU в SIG_IGN"
-
-#: daemon/server.c:967
-msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
-msgstr "gdm_server_spawn:Грешка при задаване на HUP в SIG_IGN"
-
-#: daemon/server.c:971
-msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
-msgstr "gdm_server_spawn:Грешка при задаване на TERM в SIG_IGN"
-
-#: daemon/server.c:1004
+#: daemon/server.c:1121
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Празна команда на сървър за показване %s"
 
-#: daemon/server.c:1018
+#: daemon/server.c:1135
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: Сървъра бе породен от uid %d но такъв потребител несъществува"
 
-#: daemon/server.c:1033 daemon/slave.c:1483 daemon/slave.c:1849
+#: daemon/server.c:1150 daemon/slave.c:2234 daemon/slave.c:2692
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Не мога да задам groupid ма %d"
 
-#: daemon/server.c:1039 daemon/slave.c:1488 daemon/slave.c:1854
+#: daemon/server.c:1156 daemon/slave.c:2239 daemon/slave.c:2697
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgroups() пропадна за %s"
 
-#: daemon/server.c:1045 daemon/slave.c:1493 daemon/slave.c:1859
+#: daemon/server.c:1162 daemon/slave.c:2244 daemon/slave.c:2702
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Не мога да задам userid на %d"
 
-#: daemon/server.c:1052
+#: daemon/server.c:1169
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: Не мога да задам groupid на 0"
 
-#: daemon/server.c:1063
-#, c-format
-msgid "gdm_server_spawn: Xserver not found: %s"
+#: daemon/server.c:1180
+#, fuzzy, c-format
+msgid "%s: Xserver not found: %s"
 msgstr "gdm_server_spawn: Xserver не е намерен: %s"
 
-#: daemon/server.c:1070
-msgid "gdm_server_spawn: Can't fork Xserver process!"
-msgstr "gdm_server_spawn: Не мога да създам Xserver процес!"
+#: daemon/server.c:1188
+#, fuzzy, c-format
+msgid "%s: Can't fork Xserver process!"
+msgstr "%s: Не мога да създам 'gdmgreeter' процес"
 
-#: daemon/slave.c:281
-#, c-format
-msgid "%s: Error setting up TERM/INT signal handler: %s"
-msgstr "%s: Грешка при задаване на TERM/INT сигнал в: %s"
+#: daemon/slave.c:987
+msgid "Log in anyway"
+msgstr ""
 
-#: daemon/slave.c:301
-#, c-format
-msgid "%s: Error setting up USR2 signal handler: %s"
-msgstr "%s: Грешка при задаване на USR2 сигнал в: %s"
+#: daemon/slave.c:989
+msgid ""
+"You are already logged in.  You can log in anyway, return to your previous "
+"login session, or abort this login"
+msgstr ""
 
-#: daemon/slave.c:512
+#: daemon/slave.c:993
+msgid "Return to previous login"
+msgstr ""
+
+#: daemon/slave.c:994 daemon/slave.c:1000
+#, fuzzy
+msgid "Abort login"
+msgstr "Автоматично влизане"
+
+#: daemon/slave.c:997
+msgid "You are already logged in.  You can log in anyway or abort this login"
+msgstr ""
+
+#: daemon/slave.c:1087
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -831,21 +902,21 @@ msgstr ""
 "забранен. Моля рестартирайте gdm когато\n"
 "проблема се коригира."
 
-#: daemon/slave.c:737
-msgid "focus_first_x_window: cannot fork"
-msgstr "focus_first_x_window: не мога да направя 'fork'"
-
-#: daemon/slave.c:761
+#: daemon/slave.c:1323
 #, c-format
-msgid "focus_first_x_window: cannot open display %s"
+msgid "%s: cannot fork"
+msgstr ""
+
+#: daemon/slave.c:1370
+#, fuzzy, c-format
+msgid "%s: cannot open display %s"
 msgstr "focus_first_x_window: не мога да отворя дисплей %s"
 
-#: daemon/slave.c:901
+#: daemon/slave.c:1520
+#, fuzzy
 msgid ""
-"Could not execute the configuration\n"
-"program.  Make sure it's path is set\n"
-"correctly in the configuration file.\n"
-"I will attempt to start it from the\n"
+"Could not execute the configuration program.  Make sure it's path is set "
+"correctly in the configuration file.  I will attempt to start it from the "
 "default location."
 msgstr ""
 "Не мога да изпълня конфигурационната програма\n"
@@ -854,17 +925,17 @@ msgstr ""
 "Аз ще се опитам да го стартирам от\n"
 "подразбиращото се място."
 
-#: daemon/slave.c:915
+#: daemon/slave.c:1534
+#, fuzzy
 msgid ""
-"Could not execute the configuration\n"
-"program.  Make sure it's path is set\n"
+"Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file."
 msgstr ""
 "Не мога да изпълня конфигурационната програма\n"
 "Умедете се, че пътя е правилен\n"
 "в конфигурационният файл."
 
-#: daemon/slave.c:1032
+#: daemon/slave.c:1661
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -872,25 +943,18 @@ msgstr ""
 "Въведете паролата за 'root'\n"
 "за да стартирате конфигурацията."
 
-#: daemon/slave.c:1055 daemon/slave.c:1139
-msgid "gdm_slave_wait_for_login: No login/Bad login"
-msgstr "gdm_slave_wait_for_login: Няма име/Лошо име"
-
-#: daemon/slave.c:1445
+#: daemon/slave.c:2188 daemon/slave.c:2193
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Не мога да инициализирам програмен канал за gdmgreeter"
 
-#: daemon/slave.c:1560
+#: daemon/slave.c:2312
+#, fuzzy
 msgid ""
-"No servers were defined in the\n"
-"configuration file and XDMCP was\n"
-"disabled.  This can only be a\n"
-"configuration error.  So I have started\n"
-"a single server for you.  You should\n"
-"log in and fix the configuration.\n"
-"Note that automatic and timed logins\n"
-"are disabled now."
+"No servers were defined in the configuration file and XDMCP was disabled.  "
+"This can only be a configuration error.  So I have started a single server "
+"for you.  You should log in and fix the configuration.  Note that automatic "
+"and timed logins are disabled now."
 msgstr ""
 "Не е зададен сървър в конфигурационният\n"
 "файл и XDMCP е забранен.\n"
@@ -899,20 +963,19 @@ msgstr ""
 "трябва да влезете и да оправите конфигурацията.\n"
 "Забележете, че автоматичното влизане е забранено сега."
 
-#: daemon/slave.c:1574
+#: daemon/slave.c:2326
+#, fuzzy
 msgid ""
-"I could not start the regular X\n"
-"server (your graphical environment)\n"
-"and so this is a failsafe X server.\n"
-"You should log in and properly\n"
-"configure the X server."
+"I could not start the regular X server (your graphical environment) and so "
+"this is a failsafe X server.  You should log in and properly configure the X "
+"server."
 msgstr ""
 "Не мога да стартирам обикновенният X\n"
 "сървър и това е авариен X сървър.\n"
 "Вие ще трябва да влезете в системата\n"
 "и да оправите конфигурацията на X сървъра."
 
-#: daemon/slave.c:1583
+#: daemon/slave.c:2335
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -920,133 +983,162 @@ msgid ""
 msgstr ""
 "зададеният номер дисплей е зает, така този сървър е стартиран на дисплей %s."
 
-#: daemon/slave.c:1596
+#: daemon/slave.c:2355
+msgid ""
+"The greeter program appears to be crashing.\n"
+"I will attempt to use a different one."
+msgstr ""
+
+#. Something went wrong
+#: daemon/slave.c:2380
 #, c-format
-msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
+msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
+msgstr ""
+
+#: daemon/slave.c:2387
+#, fuzzy, c-format
+msgid "%s: Cannot start greeter trying default: %s"
 msgstr ""
 "gdm_slave_greeter: Не мога да стартирам посрещача, опитвам подразбиращата "
 "се: %s"
 
-#: daemon/slave.c:1608
+#: daemon/slave.c:2400
+#, fuzzy
 msgid ""
-"Cannot start the greeter program,\n"
-"you will not be able to log in.\n"
-"This display will be disabled.\n"
-"Try logging in by other means and\n"
-"editing the configuration file"
+"Cannot start the greeter program, you will not be able to log in.  This "
+"display will be disabled.  Try logging in by other means and editing the "
+"configuration file"
 msgstr ""
 "Не мога да стартирам посрещача,\n"
 "и вие няма да сте в състояние да влезете.\n"
 "Опитайте да влезете по друг начин и\n"
 "редактирайте конфигурационният файл"
 
-#: daemon/slave.c:1614
+#. If no greeter we really have to disable the display
+#: daemon/slave.c:2407
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Грешка при стартиране на посрещача от дисплей %s"
 
-#: daemon/slave.c:1618
+#: daemon/slave.c:2411
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Не мога да създам 'gdmgreeter' процес"
 
-#: daemon/slave.c:1685 daemon/slave.c:1784
+#: daemon/slave.c:2496
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Не мога да отворя fifo!"
 
-#: daemon/slave.c:1810
-msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
-msgstr ""
-"gdm_slave_chooser: Не мога да инициализирам програмен канал за 'gdmchooser'"
+#: daemon/slave.c:2651
+#, fuzzy, c-format
+msgid "%s: Can't init pipe to gdmchooser"
+msgstr "%s: Не мога да инициализирам програмен канал за gdmgreeter"
 
-#: daemon/slave.c:1895
+#: daemon/slave.c:2740
+#, fuzzy
 msgid ""
-"Cannot start the chooser program,\n"
-"you will not be able to log in.\n"
-"Please contact the system administrator.\n"
+"Cannot start the chooser program, you will probably not be able to log in.  "
+"Please contact the system administrator."
 msgstr ""
 "Не мога да изпълня програмата 'chooser',\n"
 "и вие няма да сте в състояние да влезете.\n"
 "Моля, обърнете се към системният администратор.\n"
 
-#: daemon/slave.c:1899
-#, c-format
-msgid "gdm_slave_chooser: Error starting chooser on display %s"
-msgstr "gdm_slave_chooser: Грешка при стартиране на 'chooser' от дисплей %s"
+#: daemon/slave.c:2744
+#, fuzzy, c-format
+msgid "%s: Error starting chooser on display %s"
+msgstr "%s: Грешка при стартиране на посрещача от дисплей %s"
 
-#: daemon/slave.c:1902
-msgid "gdm_slave_chooser: Can't fork gdmchooser process"
-msgstr "gdm_slave_chooser: Не мога да направя 'fork' за 'gdmchooser' процеса"
+#: daemon/slave.c:2747
+#, fuzzy, c-format
+msgid "%s: Can't fork gdmchooser process"
+msgstr "%s: Не мога да създам 'gdmgreeter' процес"
 
-#. open stdout - fd 1
-#. open stderr - fd 2
-#: daemon/slave.c:2253
+#: daemon/slave.c:2919
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Не мога да отворя ~/.xsession-errors"
 
-#: daemon/slave.c:2275
-msgid ""
-"gdm_slave_session_start: Execution of PreSession script returned > 0. "
-"Aborting."
+#: daemon/slave.c:3015
+#, fuzzy, c-format
+msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr ""
 "gdm_slave_session_start: Изпълнението на PreSession скрипта върна > 0. "
 "Прекъсвам."
 
-#: daemon/slave.c:2308
+#: daemon/slave.c:3044
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "Езикът %s не съществува, използвам %s"
 
-#: daemon/slave.c:2309 gui/gdmlogin.c:1114 gui/gdmlogin.c:1123
-#: gui/gdmlogin.c:1661 gui/greeter/greeter_action_language.c:52
-#: gui/greeter/greeter_action_language.c:138
-#: gui/greeter/greeter_action_language.c:146
+#: daemon/slave.c:3045
 msgid "System default"
 msgstr "Системни настройки по подразбиране"
 
-#: daemon/slave.c:2321
+#: daemon/slave.c:3061
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s:Не мога да задам обкръжението за %s. Прекъсвам."
 
-#: daemon/slave.c:2335
+#: daemon/slave.c:3081
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: setusercontext() пропадна за %s. Прекъсвам."
 
-#: daemon/slave.c:2341
+#: daemon/slave.c:3087
+#, fuzzy, c-format
+msgid "%s: Could not become %s. Aborting."
+msgstr "%s:Не мога да задам обкръжението за %s. Прекъсвам."
+
+#: daemon/slave.c:3146
+#, fuzzy, c-format
+msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
+msgstr ""
+"Няма намерен указател на подразбираща се сесия. Използвам Аварийно ГНОМЕ.\n"
+
+#: daemon/slave.c:3152
+msgid ""
+"The session you selected does not look valid.  I will run the GNOME failsafe "
+"session for you."
+msgstr ""
+
+#: daemon/slave.c:3166
 #, c-format
-msgid "gdm_slave_session_start: Could not become %s. Aborting."
-msgstr "gdm_slave_session_start: Не мога да стана %s. Прекъсвам"
+msgid ""
+"%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
+msgstr ""
+
+#: daemon/slave.c:3171
+msgid ""
+"Cannot find or run the base session script, will try the GNOME failsafe "
+"session for you."
+msgstr ""
 
 #. yaikes
-#: daemon/slave.c:2415
-msgid ""
-"gdm_slave_session_start: gnome-session not found for a failsafe gnome "
-"session, trying xterm"
+#: daemon/slave.c:3186
+#, fuzzy, c-format
+msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "gdm_slave_session_start: gnome-session не е намерен за аварийна сесия на "
 "гноме, опитвам xterm"
 
-#: daemon/slave.c:2419
+#: daemon/slave.c:3191
+#, fuzzy
 msgid ""
-"Could not find the GNOME installation,\n"
-"will try running the \"Failsafe xterm\"\n"
-"session."
+"Could not find the GNOME installation, will try running the \"Failsafe xterm"
+"\" session."
 msgstr ""
 "Не мога да намеря GNOME инсталацията,\n"
 "ще опитам да изпълня \"Авариен xterm\"\n"
 "сесията"
 
-#: daemon/slave.c:2425
+#: daemon/slave.c:3199
+#, fuzzy
 msgid ""
-"This is the Failsafe Gnome session.\n"
-"You will be logged into the 'Default'\n"
-"session of Gnome with no startup scripts\n"
-"run.  This is only to fix problems in\n"
-"your installation."
+"This is the Failsafe Gnome session.  You will be logged into the 'Default' "
+"session of Gnome with no startup scripts run.  This is only to fix problems "
+"in your installation."
 msgstr ""
 "Това е Аварийна сесия на Гноме.\n"
 "Вие ще влезете в подразбираща се сесия\n"
@@ -1054,18 +1146,16 @@ msgstr ""
 "Това е само за да фиксирате проблема\n"
 "във вашата инсталация."
 
-#: daemon/slave.c:2446
+#: daemon/slave.c:3214
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Не мога да намеря \"xterm\" за да стартирам аварийна сесия."
 
-#: daemon/slave.c:2453
+#: daemon/slave.c:3227
+#, fuzzy
 msgid ""
-"This is the Failsafe xterm session.\n"
-"You will be logged into a terminal\n"
-"console so that you may fix your system\n"
-"if you cannot log in any other way.\n"
-"To exit the terminal emulator, type\n"
-"'exit' and an enter into the window."
+"This is the Failsafe xterm session.  You will be logged into a terminal "
+"console so that you may fix your system if you cannot log in any other way.  "
+"To exit the terminal emulator, type 'exit' and an enter into the window."
 msgstr ""
 "Това е Аварийна сесия на xterm.\n"
 "Вие ще трябва да влезете в терминалната\n"
@@ -1074,72 +1164,52 @@ msgstr ""
 "За да излезете от терминалният емулатор\n"
 "напишете 'exit' в прозореца."
 
-#: daemon/slave.c:2481
-#, c-format
-msgid "Running %s for %s on %s"
-msgstr "Изпълнявам  %s за %s на %s"
+#: daemon/slave.c:3254
+#, fuzzy, c-format
+msgid "%s: User not allowed to log in"
+msgstr "Потребител %s не може да влиза в системата"
 
-#: daemon/slave.c:2495
-msgid "gdm_slave_session_start: User not allowed to log in"
-msgstr "gdm_slave_session_start: Потребителя нама право да влиза в системата"
-
-#: daemon/slave.c:2497
-msgid ""
-"The system administrator has\n"
-"disabled your account."
+#: daemon/slave.c:3257
+#, fuzzy
+msgid "The system administrator has disabled your account."
 msgstr ""
-"Системният администратор е \n"
-"забранил вашият акаунт."
+"\n"
+"Системният администратор е забранил вашият акаунт."
 
-#: daemon/slave.c:2500
-#, c-format
-msgid "gdm_slave_session_start: Could not find/run session `%s'"
-msgstr "gdm_slave_session_start: Не мога да намеря/изпълня сесия `%s'"
+#. will go to .xsession-errors
+#: daemon/slave.c:3268 daemon/slave.c:3273
+#, fuzzy, c-format
+msgid "%s: Could not exec %s %s %s"
+msgstr "%s: Не можах да прочета адреса"
 
-#: daemon/slave.c:2505
-msgid ""
-"Cannot start the session, most likely the\n"
-"session does not exist.  Please select from\n"
-"the list of available sessions in the login\n"
-"dialog window."
+#. we can't really be any more specific
+#: daemon/slave.c:3284
+msgid "Cannot start the session due to some internal error."
 msgstr ""
-"Не мога да стартирам сесията, най вероятно\n"
-"тя не съществува. Моля, изберете от списъка\n"
-"наличните сесии в диалога за влизане."
 
-#: daemon/slave.c:2539
-#, c-format
-msgid "gdm_slave_session_start: Could not start session `%s'"
-msgstr "gdm_slave_session_start: Не мога да стартирам сесия `%s'"
-
-#: daemon/slave.c:2542
-msgid ""
-"Cannot start your shell.  It could be that the\n"
-"system administrator has disabled your login.\n"
-"It could also indicate an error with your account.\n"
-msgstr ""
-"Не мога да стартирам вашият 'shell'. Изглежда\n"
-"системният администратор е забранил вашето влизане.\n"
-"Това също може да бъде индикация за грешка във вашият акаунт.\n"
-
-#: daemon/slave.c:2576
-#, c-format
-msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
+#: daemon/slave.c:3337
+#, fuzzy, c-format
+msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: Потребителя мина през оторизацияра но getpwnam(%s) "
 "пропадна!"
 
-#: daemon/slave.c:2582
-#, c-format
+#: daemon/slave.c:3351
+#, fuzzy, c-format
+msgid "%s: Execution of PostLogin script returned > 0. Aborting."
+msgstr ""
+"gdm_slave_session_start: Изпълнението на PreSession скрипта върна > 0. "
+"Прекъсвам."
+
+#: daemon/slave.c:3360
+#, fuzzy, c-format
 msgid ""
 "Your home directory is listed as:\n"
 "'%s'\n"
-"but it does not appear to exist.\n"
-"Do you want to log in with the root\n"
+"but it does not appear to exist.  Do you want to log in with the / (root) "
 "directory as your home directory?\n"
 "\n"
-"It is unlikely anything will work unless\n"
-"you use a failsafe session."
+"It is unlikely anything will work unless you use a failsafe session."
 msgstr ""
 "Вашата домашна директория е в списъка като:\n"
 "'%s'\n"
@@ -1150,19 +1220,18 @@ msgstr ""
 "Това е необичайно и нежелателно, освен ако не сте\n"
 "в аварийна сесия."
 
-#: daemon/slave.c:2590
+#: daemon/slave.c:3368
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Домашната директория за %s: '%s' не съществува!"
 
-#: daemon/slave.c:2756
+#: daemon/slave.c:3496
+#, fuzzy
 msgid ""
-"GDM could not write to your authorization\n"
-"file.  This could mean that you are out of\n"
-"disk space or that your home directory could\n"
-"not be opened for writing.  In any case, it\n"
-"is not possible to log in.  Please contact\n"
-"your system administrator"
+"GDM could not write to your authorization file.  This could mean that you "
+"are out of disk space or that your home directory could not be opened for "
+"writing.  In any case, it is not possible to log in.  Please contact your "
+"system administrator"
 msgstr ""
 "GDM не може да пише във вашият файл за оторизация\n"
 "Това може да означава че вие нямате свободно място на диска\n"
@@ -1170,19 +1239,18 @@ msgstr ""
 "Във всеки случай е невъзможно да влезете. Моля обърнете се\n"
 "към системният администратор."
 
-#: daemon/slave.c:2790
-msgid "gdm_slave_session_start: Error forking user session"
+#: daemon/slave.c:3573
+#, fuzzy, c-format
+msgid "%s: Error forking user session"
 msgstr "gdm_slave_session_start: Грешка при създаване на потребителска сесия"
 
-#: daemon/slave.c:2848
+#: daemon/slave.c:3652
+#, fuzzy
 msgid ""
-"Your session only lasted less then\n"
-"10 seconds.  If you have not logged out\n"
-"yourself, this could mean that there is\n"
-"some installation problem or that you may\n"
-"be out of diskspace.  Try logging in with\n"
-"one of the failsafe sessions to see if you\n"
-"can fix this problem."
+"Your session only lasted less than 10 seconds.  If you have not logged out "
+"yourself, this could mean that there is some installation problem or that "
+"you may be out of diskspace.  Try logging in with one of the failsafe "
+"sessions to see if you can fix this problem."
 msgstr ""
 "Вашата сесия е на по-малко от\n"
 "от 10 секунди. Ако вие не излезете сам\n"
@@ -1191,90 +1259,102 @@ msgstr ""
 "Опитайте се да влезете с аварийна сесия за да видите\n"
 "и оправите проблема."
 
-#: daemon/slave.c:2856
+#: daemon/slave.c:3660
 msgid "View details (~/.xsession-errors file)"
 msgstr "Подробем преглед на (~/.xsession-errors файла)"
 
-#: daemon/slave.c:2990
+#: daemon/slave.c:3786
+msgid "GDM detected a shutdown or reboot in progress."
+msgstr ""
+
+#: daemon/slave.c:3880
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping до %s е неуспешен, огрмоен дисплей!"
 
-#: daemon/slave.c:3190
-#, c-format
-msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
+#: daemon/slave.c:4153
+#, fuzzy, c-format
+msgid "%s: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Фатална грешка в X - Рестартирам %s"
 
-#: daemon/slave.c:3550
-#, c-format
-msgid "gdm_slave_exec_script: Failed starting: %s"
+#: daemon/slave.c:4554
+#, fuzzy, c-format
+msgid "%s: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Неуспех за стартиране на: %s"
 
-#: daemon/slave.c:3558
-msgid "gdm_slave_exec_script: Can't fork script process!"
-msgstr "gdm_slave_exec_script: Не мога да създам скрипт процес!"
+#: daemon/slave.c:4562 daemon/slave.c:4699
+#, fuzzy, c-format
+msgid "%s: Can't fork script process!"
+msgstr "%s: Не мога да създам 'gdmgreeter' процес"
 
-#: daemon/slave.c:3652
-msgid "gdm_parse_enriched_login: Failed creating pipe"
-msgstr "gdm_parse_enriched_login: Неуспех при създаване на програмен канал"
+#: daemon/slave.c:4656
+#, fuzzy, c-format
+msgid "%s: Failed creating pipe"
+msgstr "%s: Не мога да създам програмен канал"
 
-#: daemon/slave.c:3680
-#, c-format
-msgid "gdm_parse_enriched_login: Failed executing: %s"
+#: daemon/slave.c:4693
+#, fuzzy, c-format
+msgid "%s: Failed executing: %s"
 msgstr "gdm_parse_enriched_login: Грешка при изпълнение на: %s"
 
-#: daemon/slave.c:3685
-msgid "gdm_parse_enriched_login: Can't fork script process!"
-msgstr "gdm_parse_enriched_login: Не мога да създам скрипт процес!"
-
-#. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:71 daemon/verify-pam.c:319 daemon/verify-shadow.c:70
-#: gui/gdmlogin.c:3339
-msgid "Please enter your username"
-msgstr "Моля, въведете вашето потребителско име"
-
-#: daemon/verify-crypt.c:72 daemon/verify-pam.c:320 daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3297 gui/greeter/themes/circles/circles.xml.in.h:5
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
-msgid "Username:"
-msgstr "Име:"
-
-#: daemon/verify-crypt.c:96 daemon/verify-shadow.c:105
-msgid "Password: "
-msgstr "Парола:"
-
-#: daemon/verify-crypt.c:114 daemon/verify-pam.c:361 daemon/verify-pam.c:532
-#: daemon/verify-shadow.c:123
-msgid "Couldn't authenticate user"
-msgstr "Не мога да оторизирам потребителя"
-
-#: daemon/verify-crypt.c:120 daemon/verify-crypt.c:140
+#: daemon/verify-crypt.c:70 daemon/verify-pam.c:708 daemon/verify-shadow.c:71
+#, fuzzy
 msgid ""
 "\n"
-"Incorrect username or password.  Letters must be typed in the correct case.  "
-"Please be sure the Caps Lock key is not enabled"
+"Incorrect username or password.  Letters must be typed in the correct case."
 msgstr ""
 "\n"
 "Грешно име или парола. Буквите трябва да се въведат със значение на малки и "
 "големи. Моля проверете дали 'Caps Lock' клавиша е натиснат"
 
-#: daemon/verify-crypt.c:154 daemon/verify-pam.c:374
-#: daemon/verify-shadow.c:163
+#: daemon/verify-crypt.c:75 daemon/verify-pam.c:718 daemon/verify-shadow.c:76
+msgid "Please make sure the Caps Lock key is not enabled."
+msgstr ""
+
+#. I think I'll add the buttons next to this
+#: daemon/verify-crypt.c:114 daemon/verify-pam.c:175
+#: daemon/verify-shadow.c:113 gui/gdmlogin.c:2905
+msgid "Please enter your username"
+msgstr "Моля, въведете вашето потребителско име"
+
+#. login: is whacked always translate to Username:
+#: daemon/verify-crypt.c:115 daemon/verify-pam.c:91 daemon/verify-pam.c:92
+#: daemon/verify-pam.c:93 daemon/verify-pam.c:169 daemon/verify-pam.c:505
+#: daemon/verify-shadow.c:114 gui/gdmlogin.c:1095 gui/gdmlogin.c:1109
+#: gui/gdmlogin.c:1757 gui/gdmlogin.c:2223 gui/greeter/greeter.c:265
+#: gui/greeter/greeter_parser.c:1045
+msgid "Username:"
+msgstr "Име:"
+
+#: daemon/verify-crypt.c:153 daemon/verify-pam.c:94 daemon/verify-pam.c:95
+#: daemon/verify-pam.c:216 daemon/verify-shadow.c:171 gui/gdmlogin.c:1789
+#, fuzzy
+msgid "Password:"
+msgstr "Парола:"
+
+#: daemon/verify-crypt.c:171 daemon/verify-crypt.c:185
+#: daemon/verify-shadow.c:189 daemon/verify-shadow.c:203
+#, fuzzy, c-format
+msgid "Couldn't authenticate user \"%s\""
+msgstr "Не мога да оторизирам потребителя"
+
+#: daemon/verify-crypt.c:198 daemon/verify-pam.c:594
+#: daemon/verify-shadow.c:216
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Влизането като 'Root' е отхвърлено от дисплей '%s'"
 
-#: daemon/verify-crypt.c:156 daemon/verify-shadow.c:165
+#: daemon/verify-crypt.c:200 daemon/verify-shadow.c:218
 msgid "The system administrator is not allowed to login from this screen"
 msgstr "На системният администратор не му е разрешено да влиза от този екран"
 
-#: daemon/verify-crypt.c:172 daemon/verify-shadow.c:181
+#: daemon/verify-crypt.c:216 daemon/verify-shadow.c:234
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Потребител %s не може да влиза в системата"
 
-#: daemon/verify-crypt.c:174 daemon/verify-pam.c:404 daemon/verify-pam.c:565
-#: daemon/verify-shadow.c:183
+#: daemon/verify-crypt.c:218 daemon/verify-pam.c:624 daemon/verify-pam.c:873
+#: daemon/verify-shadow.c:236
 msgid ""
 "\n"
 "The system administrator has disabled your account."
@@ -1282,16 +1362,16 @@ msgstr ""
 "\n"
 "Системният администратор е забранил вашият акаунт."
 
-#: daemon/verify-crypt.c:189 daemon/verify-crypt.c:223 daemon/verify-pam.c:422
-#: daemon/verify-pam.c:582 daemon/verify-shadow.c:197
-#: daemon/verify-shadow.c:230
+#: daemon/verify-crypt.c:233 daemon/verify-crypt.c:270 daemon/verify-pam.c:642
+#: daemon/verify-pam.c:890 daemon/verify-shadow.c:250
+#: daemon/verify-shadow.c:286
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Не мога да задам потребителска група за %s"
 
-#: daemon/verify-crypt.c:191 daemon/verify-crypt.c:226 daemon/verify-pam.c:424
-#: daemon/verify-pam.c:585 daemon/verify-shadow.c:199
-#: daemon/verify-shadow.c:233
+#: daemon/verify-crypt.c:235 daemon/verify-crypt.c:273 daemon/verify-pam.c:644
+#: daemon/verify-pam.c:893 daemon/verify-shadow.c:252
+#: daemon/verify-shadow.c:289
 msgid ""
 "\n"
 "Cannot set your user group, you will not be able to log in, please contact "
@@ -1301,37 +1381,103 @@ msgstr ""
 "Не мога да задам вашата потребителска група, вие няма да може да влезете в "
 "системата,  моля обърнете се към системният администратор."
 
-#: daemon/verify-crypt.c:218 daemon/verify-shadow.c:225
+#: daemon/verify-crypt.c:265 daemon/verify-shadow.c:281
 #, c-format
 msgid "Cannot get passwd structure for %s"
 msgstr "Не мога да получа структурата на 'passwd' за %s"
 
-#: daemon/verify-pam.c:238
-msgid "Cannot setup pam handle with null login and/or display"
+#: daemon/verify-pam.c:96
+msgid "You are required to change your password immediately (password aged)"
+msgstr ""
+
+#: daemon/verify-pam.c:97
+msgid "You are required to change your password immediately (root enforced)"
+msgstr ""
+
+#: daemon/verify-pam.c:98
+#, fuzzy
+msgid "Your account has expired; please contact your system administrator"
+msgstr ""
+"\n"
+"Не мога да задам вашата потребителска група, вие няма да може да влезете в "
+"системата,  моля обърнете се към системният администратор."
+
+#: daemon/verify-pam.c:99
+msgid "No password supplied"
+msgstr ""
+
+#: daemon/verify-pam.c:100
+#, fuzzy
+msgid "Password unchanged"
+msgstr "Парола:"
+
+#: daemon/verify-pam.c:101
+#, fuzzy
+msgid "Can not get username"
+msgstr "Моля, въведете вашето потребителско име"
+
+#: daemon/verify-pam.c:102
+msgid "Retype new UNIX password:"
+msgstr ""
+
+#: daemon/verify-pam.c:103
+msgid "Enter new UNIX password:"
+msgstr ""
+
+#: daemon/verify-pam.c:104
+msgid "(current) UNIX password:"
+msgstr ""
+
+#: daemon/verify-pam.c:105
+msgid "Error while changing NIS password."
+msgstr ""
+
+#: daemon/verify-pam.c:106
+msgid "You must choose a longer password"
+msgstr ""
+
+#: daemon/verify-pam.c:107
+msgid "Password has been already used. Choose another."
+msgstr ""
+
+#: daemon/verify-pam.c:108
+msgid "You must wait longer to change your password"
+msgstr ""
+
+#: daemon/verify-pam.c:109
+msgid "Sorry, passwords do not match"
+msgstr ""
+
+#: daemon/verify-pam.c:380
+#, fuzzy
+msgid "Cannot setup pam handle with null display"
 msgstr ""
 "Не мога да испълня подръжката на 'pam' с 'null' влизане и/или за дисплей"
 
-#: daemon/verify-pam.c:252
+#: daemon/verify-pam.c:397
 #, c-format
-msgid "Can't find /etc/pam.d/%s!"
-msgstr "Не мога да намеря /etc/pam.d/%s!"
+msgid "Unable to establish service %s: %s\n"
+msgstr ""
 
-#: daemon/verify-pam.c:259
+#: daemon/verify-pam.c:405
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Не мога да задам PAM_TTY=%s"
 
-#: daemon/verify-pam.c:266
-#, c-format
-msgid "Can't set PAM_RUSER=%s"
-msgstr "Не мога да задам PAM_RUSER=%s"
-
-#: daemon/verify-pam.c:274
+#: daemon/verify-pam.c:415
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Не мога да задам PAM_RHOST=%s"
 
-#: daemon/verify-pam.c:377
+#. is not really an auth problem, but it will
+#. pretty much look as such, it shouldn't really
+#. happen
+#: daemon/verify-pam.c:550 daemon/verify-pam.c:569 daemon/verify-pam.c:823
+#: daemon/verify-pam.c:836
+msgid "Couldn't authenticate user"
+msgstr "Не мога да оторизирам потребителя"
+
+#: daemon/verify-pam.c:597
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1339,12 +1485,12 @@ msgstr ""
 "\n"
 "На системният администратор не е позволено да влиза от този екран"
 
-#: daemon/verify-pam.c:393
+#: daemon/verify-pam.c:613
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Признака за промяна на оторизация пропадна за потребител %s"
 
-#: daemon/verify-pam.c:395
+#: daemon/verify-pam.c:615
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1354,17 +1500,17 @@ msgstr ""
 "Промяната на признака за оторизация е неуспешен. Моля опитайте отново по-"
 "късно или се обърнете към системният администратор"
 
-#: daemon/verify-pam.c:402 daemon/verify-pam.c:562
+#: daemon/verify-pam.c:622 daemon/verify-pam.c:870
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Потребител %s няма повече права за достъп до системата"
 
-#: daemon/verify-pam.c:408 daemon/verify-pam.c:568
+#: daemon/verify-pam.c:628 daemon/verify-pam.c:876
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Потребител %s няма повече права за достъп до системата по това време"
 
-#: daemon/verify-pam.c:410
+#: daemon/verify-pam.c:630
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1372,41 +1518,36 @@ msgstr ""
 "\n"
 "Системният администратор е забранил достъпа до системата временно."
 
-#: daemon/verify-pam.c:415 daemon/verify-pam.c:575
+#: daemon/verify-pam.c:635 daemon/verify-pam.c:883
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Не мога да настроя управлението на акаунтите за %s"
 
-#: daemon/verify-pam.c:434 daemon/verify-pam.c:595
+#: daemon/verify-pam.c:656 daemon/verify-pam.c:906
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Не могах да задам акредитация за %s"
 
-#: daemon/verify-pam.c:444 daemon/verify-pam.c:606
+#: daemon/verify-pam.c:670 daemon/verify-pam.c:921
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Не мога да отворя сесия за %s"
 
-#: daemon/verify-pam.c:470 daemon/verify-shadow.c:129
-#: daemon/verify-shadow.c:149
+#: daemon/verify-pam.c:712
 msgid ""
 "\n"
-"Incorrect username or password. Letters must be typed in the correct case. "
-"Please make sure the Caps Lock key is not enabled."
+"Authentication failed.  Letters must be typed in the correct case."
 msgstr ""
-"\n"
-"Грешно име или парола. Буквите трябва да се въведат със значение на малки и "
-"големи. Моля проверете дали 'Caps Lock' клавиша е натиснат"
 
-#: daemon/verify-pam.c:475 daemon/verify-pam.c:535
+#: daemon/verify-pam.c:728 daemon/verify-pam.c:826 daemon/verify-pam.c:839
 msgid "Authentication failed"
 msgstr "Оторизацията пропадна"
 
-#: daemon/verify-pam.c:520 gui/gdmsetup-strings.c:19 gui/gdmsetup.glade.h:10
+#: daemon/verify-pam.c:792
 msgid "Automatic login"
 msgstr "Автоматично влизане"
 
-#: daemon/verify-pam.c:571
+#: daemon/verify-pam.c:879
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
@@ -1414,228 +1555,231 @@ msgstr ""
 "\n"
 "Системният администратор е забранил вашият достъп до системата временно."
 
-#: daemon/verify-pam.c:698 daemon/verify-pam.c:700
+#: daemon/verify-pam.c:1054 daemon/verify-pam.c:1056
 msgid "Can't find PAM configuration for gdm."
 msgstr "Не мога да намеря PAM конфигурацията за gdm."
 
-#: daemon/xdmcp.c:244
-#, c-format
-msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
+#: daemon/xdmcp.c:270
+#, fuzzy, c-format
+msgid "%s: Could not get server hostname: %s!"
 msgstr "gdm_xdmcp_init: Не можаш да получа името на сървър: %s!"
 
-#: daemon/xdmcp.c:264
-msgid "gdm_xdmcp_init: Could not create socket!"
-msgstr "gdm_xdmcp_init: Не мога да направя socket!"
+#: daemon/xdmcp.c:291
+#, fuzzy, c-format
+msgid "%s: Could not create socket!"
+msgstr "%s: Не мога да направя 'socket'"
 
-#: daemon/xdmcp.c:274
-msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
-msgstr "gdm_xdmcp_init: Не мога да направя XDMCP socket!"
+#: daemon/xdmcp.c:301
+#, fuzzy, c-format
+msgid "%s: Could not bind to XDMCP socket!"
+msgstr "%s: Не мога да 'привържа' socket"
 
-#: daemon/xdmcp.c:333
-msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
+#: daemon/xdmcp.c:369
+#, fuzzy, c-format
+msgid "%s: Could not create XDMCP buffer!"
 msgstr "gdm_xdmcp_decode: Не мога да направя XDMCP буфер!"
 
-#: daemon/xdmcp.c:338
-msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
+#: daemon/xdmcp.c:375
+#, fuzzy, c-format
+msgid "%s: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode: Не мога да чета XDMCP заглавия!"
 
-#: daemon/xdmcp.c:344
-msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
+#: daemon/xdmcp.c:382
+#, fuzzy, c-format
+msgid "%s: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: Грешна XDMCP версия!"
 
-#: daemon/xdmcp.c:397
-#, c-format
-msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
+#: daemon/xdmcp.c:435
+#, fuzzy, c-format
+msgid "%s: Unknown opcode from host %s"
 msgstr ""
 "gdm_xdmcp_decode_packet: Неизвестен код на операция (opcode) от хост %s"
 
-#: daemon/xdmcp.c:416
-msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
+#: daemon/xdmcp.c:455 daemon/xdmcp.c:741
+#, fuzzy, c-format
+msgid "%s: Could not extract authlist from packet"
 msgstr "gdm_xdmcp_handle_query: Не мога да извлека 'authlist' от пакет"
 
-#: daemon/xdmcp.c:428
-msgid "gdm_xdmcp_handle_query: Error in checksum"
+#: daemon/xdmcp.c:471 daemon/xdmcp.c:761
+#, fuzzy, c-format
+msgid "%s: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: Грешка в контролната сума"
 
-#: daemon/xdmcp.c:671
-msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
-msgstr "gdm_xdmcp_handle_forward_query: Не можах да прочета адреса на дислея"
+#: daemon/xdmcp.c:724
+#, fuzzy, c-format
+msgid "%s: Could not read display address"
+msgstr "%s: Не можах да прочета адреса"
 
-#: daemon/xdmcp.c:678
-msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
-msgstr ""
-"gdm_xdmcp_handle_forward_query: Не можах да прочета номера на порта на "
-"дисплея"
+#: daemon/xdmcp.c:732
+#, fuzzy, c-format
+msgid "%s: Could not read display port number"
+msgstr "Не мога да намеря свободен номер за дисплей"
 
-#: daemon/xdmcp.c:686
-msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
-msgstr ""
-"gdm_xdmcp_handle_forward_query: Не можах да получа 'authlist' от пакета"
+#: daemon/xdmcp.c:768
+#, fuzzy, c-format
+msgid "%s: Bad address"
+msgstr "%s: Не можах да прочета адреса"
 
-#: daemon/xdmcp.c:702
-msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
-msgstr "gdm_xdmcp_handle_forward_query: Грешка в контролната сума"
-
-#: daemon/xdmcp.c:708
-msgid "gdm_xdmcp_handle_forward_query: Bad address"
-msgstr "gdm_xdmcp_handle_forward_query: Грешен адрес"
-
-#: daemon/xdmcp.c:816
+#: daemon/xdmcp.c:883
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Отказана XDMCP заявка от хост %s"
 
-#: daemon/xdmcp.c:962
-#, c-format
-msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
+#: daemon/xdmcp.c:1012
+#, fuzzy, c-format
+msgid "%s: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: Получена 'REQUEST' от забранена система %s"
 
-#: daemon/xdmcp.c:969
-msgid "gdm_xdmcp_handle_request: Could not read Display Number"
+#: daemon/xdmcp.c:1022 daemon/xdmcp.c:1296 daemon/xdmcp.c:1549
+#, fuzzy, c-format
+msgid "%s: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: Не мога да прочета Номер на Дисплея"
 
-#: daemon/xdmcp.c:975
-msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
+#: daemon/xdmcp.c:1029
+#, fuzzy, c-format
+msgid "%s: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: Не мога да прочета Типа на Връзката"
 
-#: daemon/xdmcp.c:981
-msgid "gdm_xdmcp_handle_request: Could not read Client Address"
-msgstr "gdm_xdmcp_handle_request: Не мога да прочета Адреса на Клиента"
+#: daemon/xdmcp.c:1036
+#, fuzzy, c-format
+msgid "%s: Could not read Client Address"
+msgstr "%s: Не можах да прочета адреса"
 
-#: daemon/xdmcp.c:988
-msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
+#: daemon/xdmcp.c:1044
+#, fuzzy, c-format
+msgid "%s: Could not read Authentication Names"
 msgstr "gdm_xdmcp_handle_request: Не мога да прочета Имената за Оторизация"
 
-#: daemon/xdmcp.c:996
-msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
+#: daemon/xdmcp.c:1053
+#, fuzzy, c-format
+msgid "%s: Could not read Authentication Data"
 msgstr "gdm_xdmcp_handle_request: Не мога да прочета Данните за Оторизация"
 
-#: daemon/xdmcp.c:1005
-msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
+#: daemon/xdmcp.c:1063
+#, fuzzy, c-format
+msgid "%s: Could not read Authorization List"
 msgstr "gdm_xdmcp_handle_request: Не мога да прочета Списъка за Оторизация"
 
-#: daemon/xdmcp.c:1020
-msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
-msgstr "gdm_xdmcp_handle_request: Не мога да прочета ID на Производителя"
+#: daemon/xdmcp.c:1080
+#, fuzzy, c-format
+msgid "%s: Could not read Manufacturer ID"
+msgstr "%s: Не можах да прочета адреса"
 
-#: daemon/xdmcp.c:1043
-#, c-format
-msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
+#: daemon/xdmcp.c:1104
+#, fuzzy, c-format
+msgid "%s: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request:Грешка в контролна сума от %s"
 
-#: daemon/xdmcp.c:1210
-#, c-format
-msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
+#: daemon/xdmcp.c:1281
+#, fuzzy, c-format
+msgid "%s: Got Manage from banned host %s"
 msgstr "gdm_xdmcp_handle_manage:Получи Управление от забранен хост %s"
 
-#: daemon/xdmcp.c:1217
-msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
-msgstr "gdm_xdmcp_handle_manage: Не мога да чета ID на Сесия"
+#: daemon/xdmcp.c:1289 daemon/xdmcp.c:1556
+#, fuzzy, c-format
+msgid "%s: Could not read Session ID"
+msgstr "%s: Не можах да прочета адреса"
 
-#: daemon/xdmcp.c:1223
-msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
-msgstr "gdm_xdmcp_handle_manage: Не можах да прочета Номер на Дисплей"
+#: daemon/xdmcp.c:1303
+#, fuzzy, c-format
+msgid "%s: Could not read Display Class"
+msgstr "%s: Не можах да прочета адреса"
 
-#: daemon/xdmcp.c:1232
-msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
-msgstr "gdm_xdmcp_handle_manage: Не можах да прочета Клас на Дисплей"
-
-#: daemon/xdmcp.c:1307 daemon/xdmcp.c:1313 daemon/xdmcp.c:1363
-#: daemon/xdmcp.c:1369
+#: daemon/xdmcp.c:1395 daemon/xdmcp.c:1401 daemon/xdmcp.c:1459
+#: daemon/xdmcp.c:1465
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s: Не можах да прочета адреса"
 
-#: daemon/xdmcp.c:1445
-#, c-format
-msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
+#: daemon/xdmcp.c:1541
+#, fuzzy, c-format
+msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "gdm_xdmcp_handle_keepalive: Получих 'KEEPALIVE' от забранен хост %s"
 
-#: daemon/xdmcp.c:1452
-msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
-msgstr "gdm_xdmcp_handle_keepalive: Не мога да прочета Номер на Дисплей"
-
-#: daemon/xdmcp.c:1458
-msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
-msgstr "gdm_xdmcp_handle_keepalive: Не мога да прочета ID на Сесия"
-
-#: daemon/xdmcp.c:1662
-msgid "gdm_xdmcp_init: No XDMCP support"
-msgstr "gdm_xdmcp_init: Няма подръжка на XDMCP"
-
-#: daemon/xdmcp.c:1669
-msgid "gdm_xdmcp_run: No XDMCP support"
-msgstr "gdm_xdmcp_run: Няма подръжка на XDMCP"
-
-#: daemon/xdmcp.c:1675
-msgid "gdm_xdmcp_close: No XDMCP support"
+#: daemon/xdmcp.c:1799 daemon/xdmcp.c:1806 daemon/xdmcp.c:1812
+#, fuzzy, c-format
+msgid "%s: No XDMCP support"
 msgstr "gdm_xdmcp_close: Няма подръжка на XDMCP"
 
-#: gui/gdmXnestchooser.c:114 gui/gdmXnestchooser.c:121
+#: gui/gdmXnestchooser.c:132 gui/gdmXnestchooser.c:139
 msgid "Xnest command line"
 msgstr "Команден ред на Xnest"
 
-#: gui/gdmXnestchooser.c:114 gui/gdmXnestchooser.c:121
+#: gui/gdmXnestchooser.c:132 gui/gdmXnestchooser.c:139
 msgid "STRING"
 msgstr "НИЗ"
 
-#: gui/gdmXnestchooser.c:115 gui/gdmXnestchooser.c:122
+#: gui/gdmXnestchooser.c:133 gui/gdmXnestchooser.c:140
 msgid "Extra options for Xnest"
 msgstr "Допълнителни опции за Xnest"
 
-#: gui/gdmXnestchooser.c:115 gui/gdmXnestchooser.c:122
+#: gui/gdmXnestchooser.c:133 gui/gdmXnestchooser.c:140
 msgid "OPTIONS"
 msgstr "ОПЦИИ"
 
-#: gui/gdmXnestchooser.c:116 gui/gdmXnestchooser.c:126
+#: gui/gdmXnestchooser.c:134 gui/gdmXnestchooser.c:144
 msgid "Run in background"
 msgstr "Изпълнява във фонов режим"
 
-#: gui/gdmXnestchooser.c:123
+#: gui/gdmXnestchooser.c:141
 msgid "Just run Xnest, no query (no chooser)"
 msgstr "Само изпълнение на Xnest, без заявка (без chooser)"
 
-#: gui/gdmXnestchooser.c:124
+#: gui/gdmXnestchooser.c:142
 msgid "Do direct query instead of indirect (chooser)"
 msgstr "Директна заявка вместо индиректна (chooser)"
 
-#: gui/gdmXnestchooser.c:125
+#: gui/gdmXnestchooser.c:143
 msgid "Run broadcast instead of indirect (chooser)"
 msgstr "Изпълнява 'broadcast' вместо индиректна (chooser)"
 
-#: gui/gdmXnestchooser.c:127
+#: gui/gdmXnestchooser.c:145
 msgid "Don't check for running gdm"
 msgstr "Не проверява за работещ gdm"
 
-#: gui/gdmXnestchooser.c:468
-msgid ""
-"Xnest doesn't exist.\n"
-"Please ask your system administrator\n"
-"to install it."
+#: gui/gdmXnestchooser.c:486
+#, fuzzy
+msgid "Xnest doesn't exist."
+msgstr "Файла не съществува"
+
+#: gui/gdmXnestchooser.c:488
+#, fuzzy
+msgid "Please ask your system administrator to install it."
 msgstr ""
 "Xnest не съществува.\n"
 "Моля, помолете вашият системен администратор\n"
 "да го инсталира."
 
-#: gui/gdmXnestchooser.c:493
+#: gui/gdmXnestchooser.c:513
+msgid "Indirect XDMCP is not enabled"
+msgstr ""
+
+#: gui/gdmXnestchooser.c:515 gui/gdmXnestchooser.c:535
+#, fuzzy
 msgid ""
-"Indirect XDMCP is not enabled,\n"
-"please ask your system administrator to enable it\n"
-"in the GDM configurator program."
+"Please ask your system administrator to enable it in the GDM configurator "
+"program."
 msgstr ""
 "Индиректен XDMCP не е позволен,\n"
 "моля, помолете системният администратор да го\n"
 "разреши в конфигурационната програма на GDM."
 
-#: gui/gdmXnestchooser.c:522
-msgid ""
-"GDM is not running.\n"
-"Please ask your system administrator to start it."
+#: gui/gdmXnestchooser.c:533
+msgid "XDMCP is not enabled"
+msgstr ""
+
+#: gui/gdmXnestchooser.c:563
+msgid "GDM is not running"
+msgstr ""
+
+#: gui/gdmXnestchooser.c:565
+#, fuzzy
+msgid "Please ask your system administrator to start it."
 msgstr ""
 "GDM не е в изпълнение.\n"
 "Моля, помолете системният администратор да я стартира."
 
-#: gui/gdmXnestchooser.c:539
+#: gui/gdmXnestchooser.c:581
 msgid "Could not find a free display number"
 msgstr "Не мога да намеря свободен номер за дисплей"
 
@@ -1644,58 +1788,57 @@ msgstr "Не мога да намеря свободен номер за дис�
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: gui/gdmchooser-strings.c:7 gui/gdmchooser.glade.h:3
+#: gui/gdmchooser-strings.c:7 gui/gdmchooser.glade.h:5
 msgid "GDM Host Chooser"
 msgstr "Избирател на Хостове в GDM"
 
-#: gui/gdmchooser-strings.c:8 gui/gdmchooser.glade.h:4
+#: gui/gdmchooser-strings.c:8 gui/gdmchooser.glade.h:6
 msgid "How to use this application"
 msgstr "Как се използва това приложение"
 
-#: gui/gdmchooser-strings.c:9 gui/gdmchooser.glade.h:6
-msgid "Open a session to the selected host"
-msgstr "Отваря сесия за избран хост"
-
-#. EOF
-#: gui/gdmchooser-strings.c:10 gui/gdmchooser.glade.h:1
-msgid "C_onnect"
-msgstr "В_ръзка"
-
-#: gui/gdmchooser-strings.c:11 gui/gdmchooser.glade.h:7
+#: gui/gdmchooser-strings.c:9 gui/gdmchooser.glade.h:8
 msgid "Probe the network"
 msgstr "Опитва мрежата"
 
-#: gui/gdmchooser-strings.c:12 gui/gdmchooser.glade.h:2
+#: gui/gdmchooser-strings.c:10 gui/gdmchooser.glade.h:4
 msgid "Exit the application"
 msgstr "Излизане от приложението"
 
-#: gui/gdmchooser-strings.c:13 gui/gdmchooser.glade.h:8
+#: gui/gdmchooser-strings.c:11 gui/gdmchooser.glade.h:7
+msgid "Open a session to the selected host"
+msgstr "Отваря сесия за избран хост"
+
+#: gui/gdmchooser-strings.c:12 gui/gdmchooser.glade.h:3
+msgid "C_onnect"
+msgstr "В_ръзка"
+
+#: gui/gdmchooser-strings.c:13 gui/gdmchooser.glade.h:10
 msgid "Status"
 msgstr "Статус"
 
-#: gui/gdmchooser-strings.c:14 gui/gdmchooser.glade.h:9
-msgid ""
-"The main area of this application shows the hosts on the local network that "
-"have \"XDMCP\" enabled. This allows users to login remotely to other "
-"machines as if they were logged on using the console.\n"
-"\n"
-"You can rescan the network for new hosts by clicking \"Refresh\". When you "
-"have selected a host click \"Connect\" to open a session to that machine."
+#: gui/gdmchooser-strings.c:14 gui/gdmchooser.glade.h:2
+msgid "A_dd host: "
 msgstr ""
-"Главното място на това приложение е да покаже хостовете във вашата локална "
-"мрежа които имат разрешен \"XDMCP\". Това позволява потребителите да влизат "
-"в системите отдалечено.\n"
-"\n"
-"Вие може да пресканирате мрежата за нови хостове като кликнете на \"Обновява"
-"\" Когато изберете хост кликнете на \"Връзка\" за да се отвори сесия с тази "
-"машина."
 
-#: gui/gdmchooser-strings.c:17 gui/gdmchooser.glade.h:5
-msgid "Information"
-msgstr "Информация"
+#. EOF
+#: gui/gdmchooser-strings.c:15 gui/gdmchooser.glade.h:1
+#: gui/gdmsetup-strings.c:19 gui/gdmsetup-strings.c:21
+#: gui/gdmsetup-strings.c:26 gui/gdmsetup-strings.c:32
+#: gui/gdmsetup-strings.c:37 gui/gdmsetup-strings.c:47 gui/gdmsetup.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: gui/gdmchooser-strings.c:16 gui/gdmchooser.glade.h:9
+msgid "Query and add this host to the above list"
+msgstr ""
+
+#: gui/gdmchooser-strings.c:17 gui/gdmchooser.glade.h:11
+msgid "_Add"
+msgstr ""
 
 #: gui/gdmchooser.c:75
-msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
+#, fuzzy
+msgid "Please wait: scanning local network..."
 msgstr ""
 "Моля изчакайте: сканирам локалната мрежа за хостове с разрешен XDMCP..."
 
@@ -1704,10 +1847,43 @@ msgid "No serving hosts were found."
 msgstr "Не са намерени обслужващи хостове."
 
 #: gui/gdmchooser.c:77
-msgid "Choose a host to connect to from the selection below."
+#, fuzzy
+msgid "Choose a ho_st to connect to:"
 msgstr "Изберете хост за връзка от списъка долу."
 
-#: gui/gdmchooser.c:903
+#: gui/gdmchooser.c:484
+msgid "Cannot connect to remote server"
+msgstr ""
+
+#: gui/gdmchooser.c:485
+#, c-format
+msgid ""
+"The host \"%s\" is not willing to support a login session right now.  Please "
+"try again later."
+msgstr ""
+
+#: gui/gdmchooser.c:851
+msgid "Did not receive response from server"
+msgstr ""
+
+#: gui/gdmchooser.c:852
+#, c-format
+msgid ""
+"Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
+"host is not turned on, or is not willing to support a login session right "
+"now.  Please try again later."
+msgstr ""
+
+#: gui/gdmchooser.c:904
+msgid "Cannot find host"
+msgstr ""
+
+#: gui/gdmchooser.c:905
+#, c-format
+msgid "I cannot find the host \"%s\", perhaps you have mistyped it."
+msgstr ""
+
+#: gui/gdmchooser.c:1133
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1724,113 +1900,116 @@ msgstr ""
 "\" Когато изберете хост кликнете на \"Връзка\" за да се отвори сесия с тази "
 "машина."
 
-#: gui/gdmchooser.c:931
+#: gui/gdmchooser.c:1168
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Не мога да отворя подразбираща се икона на хост: %s"
 
-#: gui/gdmchooser.c:987
-msgid "gdm_signals_init: Error setting up HUP signal handler"
-msgstr "gdm_signals_init: Грешка при задаване обработката на сигнал HUP"
-
-#: gui/gdmchooser.c:990
-msgid "gdm_signals_init: Error setting up INT signal handler"
-msgstr "gdm_signals_init: Грешка при задаване обработката на сигнал INT"
-
-#: gui/gdmchooser.c:993
-msgid "gdm_signals_init: Error setting up TERM signal handler"
-msgstr "gdm_signals_init: Грешка при задаване обработката на сигнал TERM"
-
-#: gui/gdmchooser.c:1001 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
+#: gui/gdmchooser.c:1387 gui/gdmlogin.c:3822 gui/gdmlogin.c:3829
+#: gui/greeter/greeter.c:1180 gui/greeter/greeter.c:1187
 msgid "Could not set signal mask!"
 msgstr "Не мога да задам маска на сигнала!"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:1393
 msgid "Socket for xdm communication"
 msgstr "Socket за xdm комуникация"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:1393
 msgid "SOCKET"
 msgstr "SOCKET"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:1396
 msgid "Client address to return in response to xdm"
 msgstr "Клиентски адрес за връщане отговор на xdm"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:1396
 msgid "ADDRESS"
 msgstr "АДРЕС"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:1399
 msgid "Connection type to return in response to xdm"
 msgstr "Тип на връзка за връщане на отговор от xdm"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:1399
 msgid "TYPE"
 msgstr "ТИП"
 
-#: gui/gdmchooser.c:1133
-#, c-format
+#: gui/gdmchooser.c:1527
+msgid "Cannot run chooser"
+msgstr ""
+
+#: gui/gdmchooser.c:1528
+#, fuzzy, c-format
 msgid ""
-"The chooser version (%s) does not match the daemon version (%s).\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"The chooser version (%s) does not match the daemon version (%s).  You have "
+"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
+"computer."
 msgstr ""
 "Версията на chooser (%s) не съвпада с тази на демона (%s).\n"
 "Вероятно сте обновили gdm.\n"
 "Моля престартирайте демона на gdm или престартирайте машината."
 
-#: gui/gdmcomm.c:395 gui/gdmphotosetup.c:68
-msgid ""
-"<b>GDM (The GNOME Display Manager) is not running.</b>\n"
-"\n"
-"You might in fact be using a different display manager, such as KDM (KDE "
-"Display Manager or xdm).\n"
-"If you still wish to use this feature, either start GDM your self or ask "
-"your system administrator to start GDM."
-msgstr ""
-"<b>GDM (Мениджърът на досплеи на Гном) не работи.</b>\n"
-"\n"
-"Може да ползвате друг мениджър на дисплеи, като KDM (мениджърът на дисплеи "
-"на КДЕ или xdm).\n"
-"Ако искате да ползвате GDM, или го стартирайте, или кажете на системния си "
-"администратор да го пусне."
-
-#: gui/gdmcomm.c:417
-msgid ""
-"Cannot communicate with GDM (The GNOME Display Manager), perhaps you have an "
-"old version running."
+#: gui/gdmcomm.c:392 gui/gdmphotosetup.c:66
+#, fuzzy
+msgid "GDM (The GNOME Display Manager) is not running."
 msgstr ""
 "Не мога да комуникирам с gdm (мениджърът за дисплеи на Гном). Може би имате "
 "стара работеща версия."
 
-#: gui/gdmcomm.c:435 gui/gdmcomm.c:438 gui/gdmflexiserver.c:252
+#: gui/gdmcomm.c:395 gui/gdmphotosetup.c:69
+msgid ""
+"You might in fact be using a different display manager, such as KDM (KDE "
+"Display Manager) or xdm."
+msgstr ""
+
+#: gui/gdmcomm.c:398 gui/gdmphotosetup.c:72
+#, fuzzy
+msgid ""
+"If you still wish to use this feature, either start GDM yourself or ask your "
+"system administrator to start GDM."
+msgstr ""
+"GDM не е в изпълнение.\n"
+"Моля, помолете системният администратор да я стартира."
+
+#: gui/gdmcomm.c:416 gui/gdmflexiserver.c:253
+#, fuzzy
+msgid "Cannot communicate with GDM (The GNOME Display Manager)"
+msgstr ""
+"Не мога да комуникирам с gdm (мениджърът за дисплеи на Гном). Може би имате "
+"стара работеща версия."
+
+#: gui/gdmcomm.c:419 gui/gdmflexiserver.c:256
+#, fuzzy
+msgid "Perhaps you have an old version of GDM running."
+msgstr "Не мога да комуникирам с gdm, може би имате стара работеща версия."
+
+#: gui/gdmcomm.c:436 gui/gdmcomm.c:439
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr "Не мога да комуникирам с gdm, може би имате стара работеща версия."
 
-#: gui/gdmcomm.c:441
+#: gui/gdmcomm.c:442
 msgid "The allowed limit of flexible X servers reached."
 msgstr "Достигнат е лимита на X сървъра."
 
-#: gui/gdmcomm.c:443
+#: gui/gdmcomm.c:444
 msgid "There were errors trying to start the X server."
 msgstr "Появи се грешка при опит за стартиране на X сървъра."
 
-#: gui/gdmcomm.c:445
+#: gui/gdmcomm.c:446
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "Неуспешно стартиране на X сървъра.  Може би не е конфигуриран добре."
 
-#: gui/gdmcomm.c:448
+#: gui/gdmcomm.c:449
 msgid "Too many X sessions running."
 msgstr "Твърде много работещи сесии на X."
 
-#: gui/gdmcomm.c:450
+#: gui/gdmcomm.c:451
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
 msgstr "Xnest сървъра не може да"
 
-#: gui/gdmcomm.c:455
+#: gui/gdmcomm.c:456
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
@@ -1838,18 +2017,18 @@ msgstr ""
 "Xnest сървъра не е наличен, или gdm е лошо конфигуриран.\n"
 "Моля, инсталирайте пакета с Xnest."
 
-#: gui/gdmcomm.c:460
+#: gui/gdmcomm.c:461
 msgid ""
 "The X server is not available, it is likely that gdm is badly configured."
 msgstr ""
 "X сървъра не е наличен, обикновенно това означава, че gdm е лошо "
 "конфигуриран."
 
-#: gui/gdmcomm.c:464
+#: gui/gdmcomm.c:465
 msgid "Trying to update an unsupported configuration key."
 msgstr "Опитвам се да обновя неподържан конфигурационен ключ."
 
-#: gui/gdmcomm.c:466
+#: gui/gdmcomm.c:467
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
@@ -1857,7 +2036,7 @@ msgstr ""
 "Изглежда вие нямате оторизация за тази операция. Може би вашият .Xauthority "
 "файл не е коректен"
 
-#: gui/gdmcomm.c:470
+#: gui/gdmcomm.c:471
 msgid "Unknown error occured."
 msgstr "Появи се неизвестна грешка."
 
@@ -1866,80 +2045,99 @@ msgid "Log in as another user inside a nested window"
 msgstr "Влизане в системата като друг потребител вътре в 'nested' прозорец"
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:2
-msgid "New login in a nested window"
+#, fuzzy
+msgid "New Login in a Nested Window"
 msgstr "Ново влизане в 'nested' прозорец"
 
 #: gui/gdmflexiserver.c:129
 msgid "Choose server"
 msgstr "Избор на сървър"
 
-#: gui/gdmflexiserver.c:139
+#: gui/gdmflexiserver.c:140
 msgid "Choose the X server to start"
 msgstr "Избор на X сървър за стартиране"
 
-#: gui/gdmflexiserver.c:145
+#: gui/gdmflexiserver.c:146
 msgid "Standard server"
 msgstr "Стандартен сървър"
 
-#: gui/gdmflexiserver.c:193
+#: gui/gdmflexiserver.c:194
 msgid "Send the specified protocol command to gdm"
 msgstr "Изпраща команда със зададеният протокол на gdm"
 
-#: gui/gdmflexiserver.c:193
+#: gui/gdmflexiserver.c:194
 msgid "COMMAND"
 msgstr "КОМАНДА"
 
-#: gui/gdmflexiserver.c:194
+#: gui/gdmflexiserver.c:195
 msgid "Xnest mode"
 msgstr "Режим на Xnest"
 
-#: gui/gdmflexiserver.c:195
+#: gui/gdmflexiserver.c:196
 msgid "Do not lock current screen"
 msgstr "Не заключва текущият екран"
 
-#: gui/gdmflexiserver.c:196
+#: gui/gdmflexiserver.c:197
 msgid "Debugging output"
 msgstr "Дебъг изход"
 
-#: gui/gdmflexiserver.c:197
+#: gui/gdmflexiserver.c:198
 msgid "Authenticate before running --command"
 msgstr "Оторизация преди изпълнение --команда"
 
-#: gui/gdmflexiserver.c:269
-msgid ""
-"You do not seem to have the authentication needed for this operation.  "
-"Perhaps your .Xauthority file is not set up correctly."
+#: gui/gdmflexiserver.c:273
+#, fuzzy
+msgid "You do not seem to have the authentication needed for this operation"
 msgstr ""
 "Изглежда вие нямате оторизация за тази операция.  Може би вашият .Xauthority "
 "файл не е коректен"
 
-#: gui/gdmflexiserver.c:295
-msgid ""
-"You do not seem to be logged in on the console.  Starting a new login only "
-"works correctly on the console."
+#: gui/gdmflexiserver.c:277
+#, fuzzy
+msgid "Perhaps your .Xauthority file is not set up correctly."
+msgstr ""
+"Изглежда вие нямате оторизация за тази операция. Може би вашият .Xauthority "
+"файл не е коректен"
+
+#: gui/gdmflexiserver.c:302
+#, fuzzy
+msgid "You do not seem to be logged in on the console"
 msgstr ""
 "Вие изглежда не сте влезли в конзолата. Стартирането на ново влизане работи "
 "само на конзолата"
 
-#: gui/gdmflexiserver.c:323
+#: gui/gdmflexiserver.c:305
+#, fuzzy
+msgid "Starting a new login only works correctly on the console."
+msgstr ""
+"Вие изглежда не сте влезли в конзолата. Стартирането на ново влизане работи "
+"само на конзолата"
+
+#: gui/gdmflexiserver.c:334
 msgid "Can't lock screen"
 msgstr "Не мога да заключа екрана"
 
-#: gui/gdmflexiserver.c:326
+#: gui/gdmflexiserver.c:337
 msgid "Can't disable xscreensaver display hacks"
 msgstr "Не мога да забраня предпазителя на екрана"
+
+#: gui/gdmflexiserver.c:351
+msgid "Cannot start new display"
+msgstr ""
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without logging out"
 msgstr "Влез като друг потребител без излизане от системата"
 
 #: gui/gdmflexiserver.desktop.in.h:2
-msgid "New login"
+#, fuzzy
+msgid "New Login"
 msgstr "Ново влизане"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:53
-msgid "A-M|Azerbaijani"
+#, fuzzy
+msgid "A-M|Albanian"
 msgstr "А-К|Азербайджански"
 
 #. Note translate the A-M to the A-M you used in the group label
@@ -1959,371 +2157,465 @@ msgstr "А-К|Арабски (Ливански)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:61
+msgid "A-M|Azerbaijani"
+msgstr "А-К|Азербайджански"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:63
 msgid "A-M|Basque"
 msgstr "А-К|Баски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:63
+#: gui/gdmlanguages.c:65
+#, fuzzy
+msgid "A-M|Belarusian"
+msgstr "А-К|Български"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:67
+#, fuzzy
+msgid "A-M|Bengali"
+msgstr "А-К|Английски"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:69
+#, fuzzy
+msgid "A-M|Bengali (India)"
+msgstr "А-К|Английски (Ирландски)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:71
 msgid "A-M|Bulgarian"
 msgstr "А-К|Български"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:65
+#: gui/gdmlanguages.c:73
+#, fuzzy
+msgid "A-M|Bosnian"
+msgstr "А-К|Естонски"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:75
 msgid "A-M|Catalan"
 msgstr "А-К|Каталунски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:67
+#: gui/gdmlanguages.c:77
 msgid "A-M|Chinese (simplified)"
 msgstr "А-К|Китайски (опростен)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:69
+#: gui/gdmlanguages.c:79
 msgid "A-M|Chinese (traditional)"
 msgstr "А-К|Китайски (традиционен)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:71
+#: gui/gdmlanguages.c:81
 msgid "A-M|Croatian"
 msgstr "Л-Я|Хърватски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:73
+#: gui/gdmlanguages.c:83
 msgid "A-M|Czech"
 msgstr "Л-Я|Чешки"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:75
+#: gui/gdmlanguages.c:85
 msgid "A-M|Danish"
 msgstr "А-К|Датски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:77
+#: gui/gdmlanguages.c:87
 msgid "A-M|Dutch"
 msgstr "Л-Я|Холандски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:79
+#: gui/gdmlanguages.c:89
 msgid "A-M|English"
 msgstr "А-К|Английски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:81
-msgid "A-M|Estonian"
-msgstr "А-К|Естонски"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:83
+#: gui/gdmlanguages.c:91
 msgid "A-M|English (American)"
 msgstr "А-К|Английски (Американски)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:93
 msgid "A-M|English (Australian)"
 msgstr "А-К|Английски (Австралийски)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:95
 msgid "A-M|English (British)"
 msgstr "А-К|Английски (Британски)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:97
 msgid "A-M|English (Ireland)"
 msgstr "А-К|Английски (Ирландски)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:99
+msgid "A-M|Estonian"
+msgstr "А-К|Естонски"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:101
 msgid "A-M|Finnish"
 msgstr "Л-Я|Фински"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:103
 msgid "A-M|French"
 msgstr "Л-Я|Френски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:105
 msgid "A-M|Galician"
 msgstr "А-К|Галски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:107
 msgid "A-M|German"
 msgstr "Л-Я|Немски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:109
 msgid "A-M|Greek"
 msgstr "А-К|Гръцки"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101 gui/gdmlanguages.c:102
+#: gui/gdmlanguages.c:111
+#, fuzzy
+msgid "A-M|Gujarati"
+msgstr "Л-Я|Хърватски"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:113 gui/gdmlanguages.c:115
 msgid "A-M|Hebrew"
 msgstr "А-К|Еврейски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:104
+#: gui/gdmlanguages.c:117
+#, fuzzy
+msgid "A-M|Hindi"
+msgstr "Л-Я|Фински"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:119
 msgid "A-M|Hungarian"
 msgstr "Л-Я|Унгарски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:106
+#: gui/gdmlanguages.c:121
 msgid "A-M|Icelandic"
 msgstr "А-К|Исландски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:108
+#: gui/gdmlanguages.c:123
+#, fuzzy
+msgid "A-M|Indonesian"
+msgstr "Л-Я|Македонски"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:125
+#, fuzzy
+msgid "A-M|Interlingua"
+msgstr "А-К|Италиански"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:127
 msgid "A-M|Irish"
 msgstr "А-К|Ирландски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:110
+#: gui/gdmlanguages.c:129
 msgid "A-M|Italian"
 msgstr "А-К|Италиански"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:112
+#: gui/gdmlanguages.c:131
 msgid "A-M|Japanese"
 msgstr "Л-Я|Японски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:114
+#: gui/gdmlanguages.c:133
+#, fuzzy
+msgid "A-M|Kannada"
+msgstr "А-К|Корейски"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:135
 msgid "A-M|Korean"
 msgstr "А-К|Корейски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:116
+#: gui/gdmlanguages.c:137
 msgid "A-M|Latvian"
 msgstr "Л-Я|Латвийски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:118
+#: gui/gdmlanguages.c:139
 msgid "A-M|Lithuanian"
 msgstr "Л-Я|Литовски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:120
+#: gui/gdmlanguages.c:141
 msgid "A-M|Macedonian"
 msgstr "Л-Я|Македонски"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:122
+#: gui/gdmlanguages.c:143
 msgid "A-M|Malay"
 msgstr "Л-Я|Малайзииски"
 
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:145
+#, fuzzy
+msgid "A-M|Malayalam"
+msgstr "Л-Я|Малайзииски"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:147
+#, fuzzy
+msgid "A-M|Marathi"
+msgstr "Л-Я|Малайзииски"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:149
+#, fuzzy
+msgid "A-M|Mongolian"
+msgstr "Л-Я|Македонски"
+
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:124
+#: gui/gdmlanguages.c:151
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "Л-Я|Норвежки (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:126
+#: gui/gdmlanguages.c:153
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "Л-Я|Норвежки (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:128
+#: gui/gdmlanguages.c:155
+#, fuzzy
+msgid "N-Z|Oriya"
+msgstr "Л-Я|Украински"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:157
+#, fuzzy
+msgid "N-Z|Panjabi"
+msgstr "А-К|Испански"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:159
+#, fuzzy
+msgid "N-Z|Persian"
+msgstr "Л-Я|Руски"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:161
 msgid "N-Z|Polish"
 msgstr "Л-Я|Полски"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:130
+#: gui/gdmlanguages.c:163
 msgid "N-Z|Portuguese"
 msgstr "Л-Я|Португалски"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:132
+#: gui/gdmlanguages.c:165
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "Л-Я|Португалски (Бразилски)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:134
+#: gui/gdmlanguages.c:167
 msgid "N-Z|Romanian"
 msgstr "Л-Я|Румънски"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:136
+#: gui/gdmlanguages.c:169
 msgid "N-Z|Russian"
 msgstr "Л-Я|Руски"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:138
+#: gui/gdmlanguages.c:171
+#, fuzzy
+msgid "N-Z|Serbian"
+msgstr "Л-Я|Словенски"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:173
 msgid "N-Z|Slovak"
 msgstr "Л-Я|Словашки"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:140
+#: gui/gdmlanguages.c:175
 msgid "N-Z|Slovenian"
 msgstr "Л-Я|Словенски"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:142
+#: gui/gdmlanguages.c:177
 msgid "N-Z|Spanish"
 msgstr "А-К|Испански"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:144
+#: gui/gdmlanguages.c:179
 msgid "N-Z|Spanish (Mexico)"
 msgstr "А-К|Испански (Мексико)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:146
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Swedish"
 msgstr "Л-Я|Шведски"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:148
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Swedish (Finland)"
 msgstr "Л-Я|Шведски (Финалдия)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:150
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Tamil"
 msgstr "Л-Я|Тамилски"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:152
+#: gui/gdmlanguages.c:187
+#, fuzzy
+msgid "N-Z|Telugu"
+msgstr "Л-Я|Тамилски"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:189
+#, fuzzy
+msgid "N-Z|Thai"
+msgstr "Л-Я|Тамилски"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Turkish"
 msgstr "Л-Я|Турски"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:154
+#: gui/gdmlanguages.c:193
 msgid "N-Z|Ukrainian"
 msgstr "Л-Я|Украински"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:156
+#: gui/gdmlanguages.c:195
 msgid "N-Z|Vietnamese"
 msgstr "А-К|Виетнамски"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:158
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Walloon"
 msgstr "А-К|Валонски"
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:199
+#, fuzzy
+msgid "N-Z|Welsh"
+msgstr "Л-Я|Полски"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:201
+#, fuzzy
+msgid "N-Z|Yiddish"
+msgstr "Л-Я|Шведски"
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:160
+#: gui/gdmlanguages.c:203
 msgid "Other|POSIX/C English"
 msgstr "Друг|POSIX/C Английски"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:335
+#: gui/gdmlanguages.c:378
 msgid "A-M"
 msgstr "А-К"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:343
+#: gui/gdmlanguages.c:386
 msgid "N-Z"
 msgstr "Л-Я"
 
-#: gui/gdmlogin.c:69
-msgid "AnotherLevel"
-msgstr "Друго Ниво"
-
-#. default is nicely translated
-#. Translators: default GNOME session
-#: gui/gdmlogin.c:70 gui/gdmlogin.c:1884 gui/gdmlogin.c:1906
-msgid "Default"
-msgstr "По подразбиране"
-
-#: gui/gdmlogin.c:71
-msgid "Failsafe"
-msgstr "Аварйна"
-
-#: gui/gdmlogin.c:72
-msgid "Gnome"
-msgstr "Гноме"
-
-#: gui/gdmlogin.c:73
-msgid "KDE"
-msgstr "KDE"
-
-#: gui/gdmlogin.c:74
-msgid "XSession"
-msgstr "XСесия"
-
-#: gui/gdmlogin.c:75 gui/gdmlogin.c:1477 gui/greeter/greeter_session.c:353
-msgid "Gnome Chooser"
-msgstr "Gnome Chooser"
-
-#: gui/gdmlogin.c:76 gui/gdmlogin.c:1646
-#: gui/greeter/greeter_action_language.c:45
-msgid "Last"
-msgstr "Последна"
-
-#: gui/gdmlogin.c:218 gui/greeter/themes/circles/circles.xml.in.h:4
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
-#, no-c-format
+#: gui/gdmlogin.c:209 gui/greeter/greeter_parser.c:1031
+#, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Потребител %s ше влезе %d секунди"
 
-#: gui/gdmlogin.c:518
-msgid ""
-"Doubleclick here to un-iconify the login window, so that you may log in."
-msgstr ""
-"Двойно кликване тук за да реконфигурирате влизането в прозореца, така че да "
-"може да влезете в системата."
+#: gui/gdmlogin.c:441
+#, fuzzy, c-format
+msgid "%s: String too long!"
+msgstr "gdm_parse_enriched_string: Низа е твърде дълъг!"
 
-#: gui/gdmlogin.c:588 gui/gdmlogin.c:600
+#: gui/gdmlogin.c:443
 #, c-format
 msgid "%sWelcome to %s%s"
 msgstr "%sДобре дошли в %s%s"
 
-#: gui/gdmlogin.c:598
-msgid "gdm_parse_enriched_string: String too long!"
-msgstr "gdm_parse_enriched_string: Низа е твърде дълъг!"
+#: gui/gdmlogin.c:597
+#, fuzzy
+msgid "Could not fork a new process!"
+msgstr "%s: Не можах да прочета адреса"
 
-#: gui/gdmlogin.c:755
-msgid ""
-"Could not fork a new process!\n"
-"\n"
-"You likely won't be able to log in either."
+#: gui/gdmlogin.c:599
+#, fuzzy
+msgid "You likely won't be able to log in either."
 msgstr ""
 "Немога да създам нов процес!\n"
 "\n"
 "Вие няма да можете да влезете."
 
-#: gui/gdmlogin.c:803
+#: gui/gdmlogin.c:643 gui/greeter/greeter_system.c:55
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Сигурни ли сте, че искате да престартирате машината?"
 
-#: gui/gdmlogin.c:815
+#: gui/gdmlogin.c:644 gui/gdmlogin.c:2629 gui/greeter/greeter_parser.c:1011
+#: gui/greeter/greeter_system.c:56 gui/greeter/greeter_system.c:180
+#, fuzzy
+msgid "_Reboot"
+msgstr "Престартира"
+
+#: gui/gdmlogin.c:656 gui/greeter/greeter_system.c:67
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Сигурни ли сте, че искате да спрете машината?"
 
-#: gui/gdmlogin.c:826
+#: gui/gdmlogin.c:657
+#, fuzzy
+msgid "Shut _Down"
+msgstr "_Спира..."
+
+#: gui/gdmlogin.c:677 gui/greeter/greeter_system.c:78
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Сигурни ли сте, че искате да доведете машината до 'спящо' състояние?"
 
-#: gui/gdmlogin.c:841
-#, c-format
-msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
-msgstr ""
-"gdm_login_parse_config: Няма конфигурационен файл: %s. Използвам подразбиращ."
+#: gui/gdmlogin.c:678 gui/gdmlogin.c:2656 gui/greeter/greeter_system.c:79
+#, fuzzy
+msgid "_Suspend"
+msgstr "_Преустановява"
 
-#: gui/gdmlogin.c:873 gui/gdmlogin.c:4009
+#: gui/gdmlogin.c:725 gui/gdmlogin.c:3600 gui/greeter/greeter.c:146
+#: gui/greeter/greeter.c:951
+#, fuzzy
+msgid "Welcome"
+msgstr "Добре дошли в %h"
+
+#: gui/gdmlogin.c:728 gui/gdmlogin.c:3603 gui/greeter/greeter.c:149
+#: gui/greeter/greeter.c:954
 #, c-format
 msgid "Welcome to %n"
 msgstr "Добре дошли в %n"
 
-#: gui/gdmlogin.c:918 gui/greeter/greeter.c:128
-msgid "TimedLoginDelay was less then 5.  I'll just use 5."
+#: gui/gdmlogin.c:772 gui/greeter/greeter.c:174
+#, fuzzy
+msgid "TimedLoginDelay was less than 5.  I'll just use 5."
 msgstr "TimedLoginDelay е по-малко от 5. Аз ще го наглася на 5."
 
-#: gui/gdmlogin.c:978 gui/gdmlogin.c:1525 gui/greeter/greeter_session.c:65
-#: gui/greeter/greeter_session.c:400
-msgid "Failsafe Gnome"
-msgstr "Аварийно Гноме"
-
-#: gui/gdmlogin.c:980 gui/gdmlogin.c:1550 gui/greeter/greeter_session.c:67
-#: gui/greeter/greeter_session.c:426
-msgid "Failsafe xterm"
-msgstr "Авариен xterm"
-
-#: gui/gdmlogin.c:1026 gui/greeter/greeter_session.c:111
+#: gui/gdmlogin.c:878 gui/greeter/greeter_session.c:111
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -2332,12 +2624,23 @@ msgstr ""
 "Вашата предпочитана тип сесия %s не е инсталирана на тази машина.\n"
 "Искате ли да направите %s подразбираща се за следващите сесии?"
 
+#: gui/gdmlogin.c:884 gui/gdmlogin.c:912 gui/gdmlogin.c:987
+#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:117
+#: gui/greeter/greeter_session.c:148
+#, fuzzy
+msgid "Make _Default"
+msgstr "По подразбиране"
+
+#: gui/gdmlogin.c:884 gui/greeter/greeter_session.c:117
+msgid "Just _Log In"
+msgstr ""
+
 #. never_encoding
 #. no_group
 #. untranslated
 #. markup
-#: gui/gdmlogin.c:1051 gui/gdmlogin.c:1132
-#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:139
+#: gui/gdmlogin.c:904 gui/gdmlogin.c:981
+#: gui/greeter/greeter_action_language.c:148 gui/greeter/greeter_session.c:140
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -2346,12 +2649,17 @@ msgstr ""
 "Вие избрахте %s за тази сесия, но вашата подразбираща се е %s.\n"
 "Искате ли да направите %s подразбираща се за следващите сесии?"
 
+#: gui/gdmlogin.c:912 gui/gdmlogin.c:987
+#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:148
+msgid "Just For _This Session"
+msgstr ""
+
 #. if !GdmShowLastSession then our saved session is
 #. * irrelevant, we are in "switchdesk mode"
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:1067 gui/greeter/greeter_session.c:157
+#: gui/gdmlogin.c:920 gui/greeter/greeter_session.c:158
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -2364,38 +2672,57 @@ msgstr ""
 "изпълнете програмата 'switchdesk'\n"
 "(Система->Работно място Превключващ Инструмент от менюто на панела)."
 
-#: gui/gdmlogin.c:1327
+#: gui/gdmlogin.c:963 gui/gdmlogin.c:972
+#: gui/greeter/greeter_action_language.c:52
+#: gui/greeter/greeter_action_language.c:132
+#: gui/greeter/greeter_action_language.c:140
+#, fuzzy
+msgid "System Default"
+msgstr "Системни настройки по подразбиране"
+
+#: gui/gdmlogin.c:1096 gui/gdmlogin.c:1110 gui/gdmlogin.c:1759
+#: gui/gdmlogin.c:2224 gui/gdmlogin.c:2863
+#, fuzzy
+msgid "_Username:"
+msgstr "Име:"
+
+#: gui/gdmlogin.c:1168
 #, c-format
 msgid "%s session selected"
 msgstr "%s избрана сесия"
 
-#: gui/gdmlogin.c:1362 gui/greeter/greeter_session.c:231
+#: gui/gdmlogin.c:1191 gui/gdmlogin.c:1461 gui/greeter/greeter_session.c:257
+#, fuzzy
+msgid "_Last"
+msgstr "Последна"
+
+#: gui/gdmlogin.c:1202 gui/greeter/greeter_session.c:263
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Влизане в системата използвайки последната работна сесия"
 
-#: gui/gdmlogin.c:1375 gui/greeter/greeter_session.c:244
-msgid "gdm_login_session_init: Session script directory not found!"
-msgstr ""
-"gdm_login_session_init: Директорията със скрипт за сесията не е намерена!"
+#: gui/gdmlogin.c:1215 gui/greeter/greeter_session.c:274
+#, fuzzy, c-format
+msgid "%s: Session directory %s not found!"
+msgstr "%s: Няма зададена директория за сесия."
 
-#: gui/gdmlogin.c:1465 gui/greeter/greeter_session.c:339
-msgid ""
-"This session will log you directly into GNOME, into your current session."
-msgstr "С тази сесия вие ще влезете директно в ГНОМЕ, във вашта текуща сесия."
+#: gui/gdmlogin.c:1232 gui/greeter/greeter_session.c:250
+msgid "Failsafe Gnome"
+msgstr "Аварийно Гноме"
 
-#: gui/gdmlogin.c:1480 gui/greeter/greeter_session.c:356
-msgid ""
-"This session will log you into GNOME and it will let you choose which one of "
-"the GNOME sessions you want to use."
-msgstr ""
-"С тази сесия вие ще влезете директно в ГНОМЕ и ще ви даде възможност за "
-"избор коя от сесиите на GNOME искате да използвате."
+#: gui/gdmlogin.c:1233 gui/greeter/greeter_session.c:251
+msgid "Failsafe xterm"
+msgstr "Авариен xterm"
 
-#: gui/gdmlogin.c:1515 gui/greeter/greeter_session.c:389
+#: gui/gdmlogin.c:1329 gui/greeter/greeter_session.c:379
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Шегичка, нищо не намерих в директорията на сесията."
 
-#: gui/gdmlogin.c:1527 gui/greeter/greeter_session.c:402
+#: gui/gdmlogin.c:1340 gui/greeter/greeter_session.c:391
+#, fuzzy
+msgid "Failsafe _Gnome"
+msgstr "Аварийно Гноме"
+
+#: gui/gdmlogin.c:1342 gui/greeter/greeter_session.c:393
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -2405,7 +2732,12 @@ msgstr ""
 "четат стартиращи скриптове и ще бъде използван само за влизане когато не "
 "може да влезете по друг начин. ГНОМЕ ще използва подразбираща се сесия."
 
-#: gui/gdmlogin.c:1552 gui/greeter/greeter_session.c:428
+#: gui/gdmlogin.c:1365 gui/greeter/greeter_session.c:415
+#, fuzzy
+msgid "Failsafe _Terminal"
+msgstr "Авариен xterm"
+
+#: gui/gdmlogin.c:1367 gui/greeter/greeter_session.c:417
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -2415,7 +2747,7 @@ msgstr ""
 "бъдат прочетени стртиращите скриптове и се използва само ако не може да "
 "влезете по друг начин. За да излезете от терминала напишете 'exit'."
 
-#: gui/gdmlogin.c:1573 gui/greeter/greeter_session.c:450
+#: gui/gdmlogin.c:1388 gui/greeter/greeter_session.c:437
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 "Няма намерен указател на подразбираща се сесия. Използвам Аварийно ГНОМЕ.\n"
@@ -2424,217 +2756,228 @@ msgstr ""
 #. no_group
 #. untranslated
 #. makrup
-#: gui/gdmlogin.c:1617
+#: gui/gdmlogin.c:1432
 #, c-format
 msgid "%s language selected"
 msgstr "%s избор на език"
 
-#: gui/gdmlogin.c:1657
+#: gui/gdmlogin.c:1472
 msgid "Log in using the language that you have used last time you logged in"
 msgstr ""
 "Влизане в системата използвайки езика който е бил използван в последната"
 
-#: gui/gdmlogin.c:1672
+#: gui/gdmlogin.c:1476
+#, fuzzy
+msgid "_System Default"
+msgstr "Системни настройки по подразбиране"
+
+#: gui/gdmlogin.c:1487
 msgid "Log in using the default system language"
 msgstr "Влизане в системата използвайки езика по подразбиране"
 
-#: gui/gdmlogin.c:1692
-msgid "Other"
+#: gui/gdmlogin.c:1507
+#, fuzzy
+msgid "_Other"
 msgstr "Друг"
 
-#: gui/gdmlogin.c:1846 gui/gdmlogin.c:1853
-msgid "Select GNOME session"
-msgstr "Избор на ГНОМЕ сесия"
+#: gui/gdmlogin.c:1790
+#, fuzzy
+msgid "_Password:"
+msgstr "Парола:"
 
-#: gui/gdmlogin.c:1920
-msgid "Create new session"
-msgstr "Създаване на нова сесия"
-
-#: gui/gdmlogin.c:1929
-msgid "Name: "
-msgstr "Име:"
-
-#. Translators: this is to remember the chosen gnome session
-#. * for next time
-#: gui/gdmlogin.c:1951
-msgid "Remember this setting"
-msgstr "Запомни тези настройки"
-
-#: gui/gdmlogin.c:2335
+#. translators:  This is a nice and evil eggie text, translate
+#. * to your favourite currency
+#: gui/gdmlogin.c:2010 gui/greeter/greeter.c:416
 msgid "Please insert 25 cents to log in."
 msgstr "Моля въведете 25 стотинки за да влезете"
 
-#: gui/gdmlogin.c:2742
+#: gui/gdmlogin.c:2232
+msgid "Doubleclick on the user to log in"
+msgstr ""
+
+#: gui/gdmlogin.c:2356
 msgid "GNOME Desktop Manager"
 msgstr "Мениджър на Работно място за ГНОМЕ"
 
-#: gui/gdmlogin.c:2750
-#, c-format
-msgid "Can't open icon file: %s. Suspending iconify feature!"
-msgstr ""
-"Не мога да отворя файла с икони: %s. Блокирам възможността за минизиране!"
-
-#: gui/gdmlogin.c:2772
-msgid "Iconify the login window"
-msgstr "Минимизиране на прозореца за влизане"
-
-#: gui/gdmlogin.c:2797 gui/greeter/greeter_item.c:96
+#: gui/gdmlogin.c:2382 gui/greeter/greeter_item.c:116
 msgid "%a %b %d, %H:%M"
 msgstr "%a %b %d, %H:%M"
 
-#: gui/gdmlogin.c:2799 gui/greeter/greeter_item.c:100
+#: gui/gdmlogin.c:2384 gui/greeter/greeter_item.c:120
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a %b %d, %I:%M %p"
 
-#: gui/gdmlogin.c:2865
+#: gui/gdmlogin.c:2444
 msgid "Finger"
 msgstr "Finger"
 
-#: gui/gdmlogin.c:2957
+#: gui/gdmlogin.c:2537
 msgid "GDM Login"
 msgstr "GDM Влизане в системата"
 
-#: gui/gdmlogin.c:3000 gui/greeter/greeter_canvas_item.c:129
-#: gui/greeter/themes/circles/circles.xml.in.h:11
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
+#: gui/gdmlogin.c:2580 gui/greeter/greeter_parser.c:981
 msgid "_Session"
 msgstr "_Сесия"
 
-#: gui/gdmlogin.c:3007 gui/greeter/greeter_canvas_item.c:122
-#: gui/greeter/themes/circles/circles.xml.in.h:9
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
+#: gui/gdmlogin.c:2587 gui/greeter/greeter_parser.c:976
 msgid "_Language"
 msgstr "_Език"
 
-#: gui/gdmlogin.c:3019
-msgid "_Configure..."
+#: gui/gdmlogin.c:2599 gui/greeter/greeter_system.c:142
+#, fuzzy
+msgid "_XDMCP Chooser..."
+msgstr "Избирател на Хостове в GDM"
+
+#: gui/gdmlogin.c:2606 gui/greeter/greeter_system.c:149
+#: gui/greeter/greeter_system.c:341
+msgid ""
+"Run an XDMCP chooser which will allow you to log into available remote "
+"machines, if there are any."
+msgstr ""
+
+#: gui/gdmlogin.c:2615 gui/greeter/greeter_system.c:157
+#, fuzzy
+msgid "_Configure Login Manager..."
 msgstr "_Конфигуриране..."
 
-#: gui/gdmlogin.c:3026
+#: gui/gdmlogin.c:2622 gui/greeter/greeter_system.c:164
+#: gui/greeter/greeter_system.c:361
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr "Конфигуриране на GDM. Това ще изисква 'root' парола."
 
-#: gui/gdmlogin.c:3033
-msgid "_Reboot..."
-msgstr "_Престартира..."
-
-#: gui/gdmlogin.c:3040
+#: gui/gdmlogin.c:2636 gui/greeter/greeter_system.c:187
 msgid "Reboot your computer"
 msgstr "Престартира компютъра"
 
-#: gui/gdmlogin.c:3046
-msgid "Shut _down..."
+#: gui/gdmlogin.c:2642 gui/greeter/greeter_parser.c:1001
+#: gui/greeter/greeter_system.c:68 gui/greeter/greeter_system.c:192
+#, fuzzy
+msgid "Shut_down"
 msgstr "_Спира..."
 
-#: gui/gdmlogin.c:3053
-msgid "Shut down your computer so that you may turn it off."
+#: gui/gdmlogin.c:2649 gui/greeter/greeter_system.c:199
+#, fuzzy
+msgid "Shut down the system so that you may safely turn off the computer."
 msgstr "Спира компютъра така че вие може да го загасите."
 
-#: gui/gdmlogin.c:3060
-msgid "_Suspend..."
-msgstr "_Преустановява"
-
-#: gui/gdmlogin.c:3067
+#: gui/gdmlogin.c:2663 gui/greeter/greeter_system.c:212
 msgid "Suspend your computer"
 msgstr "Преустановява компютъра"
 
-#: gui/gdmlogin.c:3073 gui/greeter/greeter_canvas_item.c:138
-#: gui/greeter/themes/circles/circles.xml.in.h:2
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
-msgid "S_ystem"
-msgstr "_Състема"
+#: gui/gdmlogin.c:2669 gui/greeter/greeter_parser.c:986
+#, fuzzy
+msgid "_Actions"
+msgstr "Опции"
 
-#: gui/gdmlogin.c:3085 gui/greeter/greeter_canvas_item.c:151
-#: gui/greeter/themes/circles/circles.xml.in.h:10
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
+#: gui/gdmlogin.c:2681 gui/greeter/greeter_canvas_item.c:145
+#: gui/greeter/greeter_parser.c:996
 msgid "_Quit"
 msgstr "_Напуска"
 
-#: gui/gdmlogin.c:3087 gui/greeter/greeter_canvas_item.c:153
-#: gui/greeter/themes/circles/circles.xml.in.h:1
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
+#: gui/gdmlogin.c:2683 gui/greeter/greeter_canvas_item.c:147
+#: gui/greeter/greeter_parser.c:991
 msgid "D_isconnect"
 msgstr "Р_азкачва"
 
-#: gui/gdmlogin.c:3644
+#: gui/gdmlogin.c:2750 gui/greeter/greeter_item_ulist.c:426
+msgid "Icon"
+msgstr ""
+
+#: gui/gdmlogin.c:2757 gui/greeter/greeter_item_ulist.c:433
+#, fuzzy
+msgid "Username"
+msgstr "Име:"
+
+#: gui/gdmlogin.c:3211
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 "Не мога да отворя Подразбираща се Картинка: %s. Лентата с лицата ще бъде "
 "преустановена!"
 
-#: gui/gdmlogin.c:4084 gui/gdmlogin.c:4113 gui/greeter/greeter.c:556
-#: gui/greeter/greeter.c:585
-#, c-format
+#: gui/gdmlogin.c:3233 gui/gdmsetup.c:468 gui/greeter/greeter_item_ulist.c:281
+msgid "Too many users to list here..."
+msgstr ""
+
+#: gui/gdmlogin.c:3678 gui/gdmlogin.c:3708 gui/gdmlogin.c:3751
+#: gui/greeter/greeter.c:618 gui/greeter/greeter.c:648
+#: gui/greeter/greeter.c:692
+#, fuzzy
+msgid "Cannot start the greeter"
+msgstr "Стандартен посрещач"
+
+#: gui/gdmlogin.c:3679 gui/gdmlogin.c:3709
+#, fuzzy, c-format
 msgid ""
-"The greeter version (%s) does not match the daemon version.\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"The greeter version (%s) does not match the daemon version.  You have "
+"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
+"computer."
 msgstr ""
 "Версията на посрещача (%s) не съвпада с демона на версията.\n"
 "Вие вероятно току що сте обновили gdm.\n"
 "Моля, престартирайте gdm демона или компютъра."
 
-#: gui/gdmlogin.c:4119 gui/gdmlogin.c:4163 gui/greeter/greeter.c:591
-#: gui/greeter/greeter.c:636
+#: gui/gdmlogin.c:3715 gui/gdmlogin.c:3760 gui/greeter/greeter.c:655
+#: gui/greeter/greeter.c:701
 msgid "Reboot"
 msgstr "Престартира"
 
-#: gui/gdmlogin.c:4155 gui/greeter/greeter.c:628
-#, c-format
+#: gui/gdmlogin.c:3752
+#, fuzzy, c-format
 msgid ""
-"The greeter version (%s) does not match the daemon version (%s).\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"The greeter version (%s) does not match the daemon version (%s).  You have "
+"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
+"computer."
 msgstr ""
 "Версията на посрещача (%s) не съвпада с демона на версия (%s).\n"
 "Вие вероятно току що сте обновили gdm.\n"
 "Моля, престартирайте gdm демона или компютъра."
 
-#: gui/gdmlogin.c:4161 gui/greeter/greeter.c:634
+#: gui/gdmlogin.c:3758 gui/greeter/greeter.c:699
 msgid "Restart"
 msgstr "Престартира"
 
-#: gui/gdmlogin.c:4206 gui/greeter/greeter.c:1055
-msgid "main: Error setting up HUP signal handler"
-msgstr "main: Грешка при задаване обработката на сигнала HUP"
+#: gui/gdmlogin.c:3910 gui/greeter/greeter.c:1401
+#, fuzzy
+msgid "Session directory is missing"
+msgstr "%s: Няма зададена директория за сесия."
 
-#: gui/gdmlogin.c:4214 gui/greeter/greeter.c:1063
-msgid "main: Error setting up INT signal handler"
-msgstr "main: Грешка при задаване обработката на сигнала INT"
-
-#: gui/gdmlogin.c:4217 gui/greeter/greeter.c:1066
-msgid "main: Error setting up TERM signal handler"
-msgstr "main: Грешка при задаване обработката на сигнала TERM"
-
-#: gui/gdmlogin.c:4308 gui/greeter/greeter.c:1279
+#: gui/gdmlogin.c:3912 gui/greeter/greeter.c:1403
+#, fuzzy
 msgid ""
-"Your session directory is missing or empty!\n"
-"\n"
-"There are two available sessions you can use, but\n"
-"you should log in and correct the gdm configuration."
+"Your session directory is missing or empty!  There are two available "
+"sessions you can use, but you should log in and correct the gdm "
+"configuration."
 msgstr ""
 "Вашата директория е грешна или празна!\n"
 "\n"
 "Има две възможни сесии които може да избирате, но\n"
 "вие трябва да влезете и да коригирате конфигурацията на gdm."
 
-#: gui/gdmlogin.c:4331 gui/greeter/greeter.c:1303
+#: gui/gdmlogin.c:3935 gui/greeter/greeter.c:1427
+msgid "Configuration is not correct"
+msgstr ""
+
+#: gui/gdmlogin.c:3937 gui/greeter/greeter.c:1429
+#, fuzzy
 msgid ""
-"The configuration file contains an invalid command\n"
-"line for the login dialog, and thus I ran the\n"
-"default command.  Please fix your configuration."
+"The configuration file contains an invalid command line for the login "
+"dialog, and thus I ran the default command.  Please fix your configuration."
 msgstr ""
 "Конфигурационният файл съдържа грешна команден\n"
 "ред за диалога по влизане, и затова аз изпълнявам\n"
 "подразбираща се команда. Моля оправете конфигурацията."
 
-#: gui/gdmlogin.c:4355 gui/greeter/greeter.c:1328
+#: gui/gdmlogin.c:3961 gui/greeter/greeter.c:1455
+msgid "No configuration was found"
+msgstr ""
+
+#: gui/gdmlogin.c:3963 gui/greeter/greeter.c:1457
+#, fuzzy
 msgid ""
-"The configuration was not found.  GDM is using\n"
-"defaults to run this session.  You should log in\n"
-"and create a configuration file with the GDM\n"
+"The configuration was not found.  GDM is using defaults to run this "
+"session.  You should log in and create a configuration file with the GDM "
 "configuration program."
 msgstr ""
 "Конфигурацията не е намерена. GDM използва\n"
@@ -2642,44 +2985,57 @@ msgstr ""
 "Вие ще трябва да влезете и да създадете конфигурационен файл\n"
 "с конфигурационната програма за GDM."
 
-#: gui/gdmphotosetup.c:129
+#: gui/gdmphotosetup.c:139
+#, fuzzy
+msgid "The face browser is not configured"
+msgstr "Неуспешно стартиране на X сървъра.  Може би не е конфигуриран добре."
+
+#: gui/gdmphotosetup.c:142
+#, fuzzy
 msgid ""
-"The face browser is not configured,\n"
-"please ask your system administrator to enable it\n"
-"in the GDM configurator program."
+"The face browser is not configured in the GDM configuration.  Please ask "
+"your system administrator to enable it in the GDM configurator program."
 msgstr ""
 "Браузера за лицата не е конфигуриран,\n"
 "моля помолете системният администратор да го разреши\n"
 "в конфигурационната програма на GDM"
 
-#: gui/gdmphotosetup.c:138
-msgid "Select a photo"
-msgstr "Избор на фото"
+#: gui/gdmphotosetup.c:152 gui/gdmphotosetup.desktop.in.h:2
+msgid "Login Photo"
+msgstr "Фото за влизане в системата"
 
-#: gui/gdmphotosetup.c:147
+#: gui/gdmphotosetup.c:162
 msgid "Select a photograph to show in the facebrowser:"
 msgstr "Избор на фотографии за показване в браузера за лица:"
 
-#: gui/gdmphotosetup.c:152
+#: gui/gdmphotosetup.c:167
 msgid "Browse"
 msgstr "Браузер"
 
-#: gui/gdmphotosetup.c:185
+#: gui/gdmphotosetup.c:200
 msgid "No picture selected."
 msgstr "Няма избрани картинки."
 
-#: gui/gdmphotosetup.c:194
-#, c-format
+#: gui/gdmphotosetup.c:210
+msgid "Picture is too large"
+msgstr ""
+
+#: gui/gdmphotosetup.c:211
+#, fuzzy, c-format
 msgid ""
-"The picture is too large and the system administrator\n"
-"disallowed pictures larger then %d bytes to\n"
-"show in the face browser"
+"The system administrator disallowed pictures larger than %d bytes to show in "
+"the face browser"
 msgstr ""
 "Картинката е твърде голяма и системният администратор\n"
 "забранява картинки по-голями от %d байта\n"
 "да се показват в браузера за лица"
 
-#: gui/gdmphotosetup.c:220
+#: gui/gdmphotosetup.c:236 gui/gdmphotosetup.c:255
+#, fuzzy
+msgid "Cannot open file"
+msgstr "%s: Не мога да отворя fifo!"
+
+#: gui/gdmphotosetup.c:237
 #, c-format
 msgid ""
 "File %s cannot be open for reading\n"
@@ -2688,7 +3044,7 @@ msgstr ""
 "Файла %s не може да бъде отворен за четене\n"
 "Грешка: %s"
 
-#: gui/gdmphotosetup.c:238
+#: gui/gdmphotosetup.c:256
 #, c-format
 msgid ""
 "File %s cannot be open for writing\n"
@@ -2703,148 +3059,176 @@ msgid ""
 msgstr ""
 "Промяна на картинката която ще бъде показвана в браузера за лица на GDM"
 
-#: gui/gdmphotosetup.desktop.in.h:2
-msgid "Login Photo"
-msgstr "Фото за влизане в системата"
-
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: gui/gdmsetup-strings.c:7 gui/gdmsetup.glade.h:15
-msgid "GDM Setup"
-msgstr "Настройка на GDM"
+#: gui/gdmsetup-strings.c:7 gui/gdmsetup.desktop.in.h:2
+#: gui/gdmsetup.glade.h:24
+msgid "Login Screen Setup"
+msgstr ""
 
 #: gui/gdmsetup-strings.c:8 gui/gdmsetup.glade.h:20
-msgid "L_ocal: "
-msgstr "_Локален:"
-
-#: gui/gdmsetup-strings.c:9 gui/gdmsetup.glade.h:51
-msgid "_Remote: "
-msgstr "_Отдалечен:"
-
-#: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
-#: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:807 gui/gdmsetup.glade.h:39
-msgid "Standard greeter"
-msgstr "Стандартен посрещач"
-
-#: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
-#: gui/gdmsetup-strings.c:52 gui/gdmsetup.c:809 gui/gdmsetup.glade.h:17
-msgid "Graphical greeter"
-msgstr "Графичен посрещач"
-
-#: gui/gdmsetup-strings.c:14 gui/gdmsetup.glade.h:9
-msgid "Always use 24 hour cloc_k format"
-msgstr "Винаги използва 24-ов формат на часовник"
-
-#: gui/gdmsetup-strings.c:15 gui/gdmsetup.glade.h:18
 msgid "Greeter"
 msgstr "Посрещач"
 
-#: gui/gdmsetup-strings.c:16 gui/gdmsetup.glade.h:48
-msgid "_Login a user automatically on first bootup"
-msgstr "_Автоматично влизане на потребителя при първо стартиране"
+#: gui/gdmsetup-strings.c:9 gui/gdmsetup-strings.c:24
+#: gui/gdmsetup-strings.c:29 gui/gdmsetup-strings.c:36
+#: gui/gdmsetup-strings.c:39 gui/gdmsetup-strings.c:42
+#: gui/gdmsetup-strings.c:65 gui/gdmsetup-strings.c:78 gui/gdmsetup.glade.h:1
+msgid "    "
+msgstr ""
 
-#: gui/gdmsetup-strings.c:17 gui/gdmsetup.glade.h:44
-msgid "_Automatic login username:"
-msgstr "Име на _потребител за автоматично влизане в системата:"
+#: gui/gdmsetup-strings.c:10 gui/gdmsetup.glade.h:22
+msgid "L_ocal: "
+msgstr "_Локален:"
 
-#: gui/gdmsetup-strings.c:18 gui/gdmsetup-strings.c:23
-#: gui/gdmsetup-strings.c:26 gui/gdmsetup-strings.c:29
-#: gui/gdmsetup-strings.c:37 gui/gdmsetup.glade.h:1
-msgid "*"
-msgstr "*"
+#: gui/gdmsetup-strings.c:11 gui/gdmsetup.glade.h:62
+msgid "_Remote: "
+msgstr "_Отдалечен:"
 
-#: gui/gdmsetup-strings.c:20 gui/gdmsetup.glade.h:22
-msgid "Login a user automa_tically after a specified number of seconds"
-msgstr "Влизане на п_отребител автоматично след определен брой секунди"
-
-#: gui/gdmsetup-strings.c:21 gui/gdmsetup.glade.h:41
-msgid "Timed login us_ername:"
-msgstr "Влизане за определеное време за _потребител:"
-
-#: gui/gdmsetup-strings.c:22 gui/gdmsetup.glade.h:53
-msgid "_Seconds before login:"
-msgstr "_Секунди преди влизане в системата:"
-
-#: gui/gdmsetup-strings.c:24 gui/gdmsetup.glade.h:40
-msgid "Timed login"
-msgstr "Влизане за определено време"
-
-#: gui/gdmsetup-strings.c:25 gui/gdmsetup.glade.h:16
-msgid "General"
-msgstr "Основни"
-
-#: gui/gdmsetup-strings.c:27 gui/gdmsetup.glade.h:54
+#: gui/gdmsetup-strings.c:12 gui/gdmsetup.glade.h:65
 msgid "_Welcome string: "
 msgstr "_Низ за поздравление:"
 
-#: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:42
-msgid "Welcome string: "
-msgstr "Низ за поздравление:"
+#: gui/gdmsetup-strings.c:13 gui/gdmsetup.glade.h:40
+#, fuzzy
+msgid "Re_mote welcome string: "
+msgstr "_Низ за поздравление:"
 
-#: gui/gdmsetup-strings.c:30 gui/gdmsetup.glade.h:23
+#: gui/gdmsetup-strings.c:14 gui/gdmsetup-strings.c:16
+#: gui/gdmsetup-strings.c:51 gui/gdmsetup.c:840 gui/gdmsetup.glade.h:46
+msgid "Standard greeter"
+msgstr "Стандартен посрещач"
+
+#: gui/gdmsetup-strings.c:15 gui/gdmsetup-strings.c:17
+#: gui/gdmsetup-strings.c:63 gui/gdmsetup.c:842 gui/gdmsetup.glade.h:19
+msgid "Graphical greeter"
+msgstr "Графичен посрещач"
+
+#: gui/gdmsetup-strings.c:18 gui/gdmsetup.glade.h:48
+#, no-c-format
+msgid ""
+"String to be shown in the greeter as welcome.  You can insert %n in here and "
+"it will be replaced by the name of your computer."
+msgstr ""
+
+#: gui/gdmsetup-strings.c:20 gui/gdmsetup.glade.h:50
+#, no-c-format
+msgid ""
+"String to be shown in the greeter for people logging in remotely with "
+"XDMCP.  You can insert %n in here and it will be replaced by the name of "
+"your computer."
+msgstr ""
+
+#: gui/gdmsetup-strings.c:22 gui/gdmsetup.glade.h:9
+msgid "Always use 24 hour cloc_k format"
+msgstr "Винаги използва 24-ов формат на часовник"
+
+#: gui/gdmsetup-strings.c:23 gui/gdmsetup.glade.h:11
+#, fuzzy
+msgid "Automatic Login"
+msgstr "Автоматично влизане"
+
+#: gui/gdmsetup-strings.c:25 gui/gdmsetup.glade.h:54
+msgid "_Automatic login username:"
+msgstr "Име на _потребител за автоматично влизане в системата:"
+
+#: gui/gdmsetup-strings.c:27 gui/gdmsetup.glade.h:59
+msgid "_Login a user automatically on first bootup"
+msgstr "_Автоматично влизане на потребителя при първо стартиране"
+
+#: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:51
+#, fuzzy
+msgid "Timed Login"
+msgstr "Влизане за определено време"
+
+#: gui/gdmsetup-strings.c:30 gui/gdmsetup.glade.h:52
+msgid "Timed login us_ername:"
+msgstr "Влизане за определеное време за _потребител:"
+
+#: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:64
+msgid "_Seconds before login:"
+msgstr "_Секунди преди влизане в системата:"
+
+#: gui/gdmsetup-strings.c:33 gui/gdmsetup.glade.h:25
+msgid "Login a user automa_tically after a specified number of seconds"
+msgstr "Влизане на п_отребител автоматично след определен брой секунди"
+
+#: gui/gdmsetup-strings.c:34 gui/gdmsetup.glade.h:18
+msgid "General"
+msgstr "Основни"
+
+#: gui/gdmsetup-strings.c:35 gui/gdmsetup.glade.h:26
 msgid "Logo"
 msgstr "Лого"
 
-#: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:38
-msgid "Show choosable user images (_face browser)"
-msgstr "Показва избираеми картинки на потребител (браузер на лица)"
-
-#: gui/gdmsetup-strings.c:32 gui/gdmsetup.glade.h:29
+#: gui/gdmsetup-strings.c:38 gui/gdmsetup.glade.h:32
 msgid "Miscellaneous"
 msgstr "Допълнителни"
 
-#: gui/gdmsetup-strings.c:33 gui/gdmsetup.glade.h:49
-msgid "_No background"
-msgstr "_Без фон"
+#: gui/gdmsetup-strings.c:40 gui/gdmsetup.glade.h:44
+msgid "Show choosable user images (_face browser)"
+msgstr "Показва избираеми картинки на потребител (браузер на лица)"
 
-#: gui/gdmsetup-strings.c:34 gui/gdmsetup.glade.h:46
-msgid "_Image"
-msgstr "_Картинка"
-
-#: gui/gdmsetup-strings.c:35 gui/gdmsetup.glade.h:12
-msgid "Co_lor"
-msgstr "Цв_ят"
-
-#: gui/gdmsetup-strings.c:36 gui/gdmsetup.glade.h:52
-msgid "_Scale background image to fit"
-msgstr "_Мащабира фонова картинка до изпълване"
-
-#: gui/gdmsetup-strings.c:38 gui/gdmsetup.glade.h:50
-msgid "_Only color on remote displays"
-msgstr "_Само цвят на отдалечен дисплей"
-
-#: gui/gdmsetup-strings.c:39 gui/gdmsetup.glade.h:45
-msgid "_Background color: "
-msgstr "_Цвят на фон:"
-
-#: gui/gdmsetup-strings.c:40 gui/gdmsetup.glade.h:33
-msgid "Pick a color"
-msgstr "Избор на цвят"
-
-#: gui/gdmsetup-strings.c:41 gui/gdmsetup.glade.h:11
+#: gui/gdmsetup-strings.c:41 gui/gdmsetup.glade.h:12
 msgid "Background"
 msgstr "Фон"
 
-#: gui/gdmsetup-strings.c:43 gui/gdmsetup.glade.h:4
-msgid "<b>Preview:</b>"
+#: gui/gdmsetup-strings.c:43 gui/gdmsetup.glade.h:60
+msgid "_No background"
+msgstr "_Без фон"
+
+#: gui/gdmsetup-strings.c:44 gui/gdmsetup.glade.h:57
+msgid "_Image"
+msgstr "_Картинка"
+
+#: gui/gdmsetup-strings.c:45 gui/gdmsetup.glade.h:13
+msgid "Co_lor"
+msgstr "Цв_ят"
+
+#: gui/gdmsetup-strings.c:46 gui/gdmsetup.glade.h:63
+msgid "_Scale background image to fit"
+msgstr "_Мащабира фонова картинка до изпълване"
+
+#: gui/gdmsetup-strings.c:48 gui/gdmsetup.glade.h:61
+msgid "_Only color on remote displays"
+msgstr "_Само цвят на отдалечен дисплей"
+
+#: gui/gdmsetup-strings.c:49 gui/gdmsetup.glade.h:55
+msgid "_Background color: "
+msgstr "_Цвят на фон:"
+
+#: gui/gdmsetup-strings.c:50 gui/gdmsetup.glade.h:36
+msgid "Pick a color"
+msgstr "Избор на цвят"
+
+#: gui/gdmsetup-strings.c:52 gui/gdmsetup.glade.h:39
+#, fuzzy
+msgid "Preview:"
 msgstr "<b>Преглед:</b>"
 
-#: gui/gdmsetup-strings.c:44 gui/gdmsetup.glade.h:31
+#: gui/gdmsetup-strings.c:53 gui/gdmsetup.glade.h:34
 msgid "No screenshot available"
 msgstr "Няма налична 'снимка на екран'"
 
-#: gui/gdmsetup-strings.c:45 gui/gdmsetup.glade.h:3
-msgid "<b>Description:</b>"
+#: gui/gdmsetup-strings.c:54 gui/gdmsetup.glade.h:15
+#, fuzzy
+msgid "Description:"
 msgstr "<b>Описание:</b>"
 
-#: gui/gdmsetup-strings.c:46 gui/gdmsetup.glade.h:2
-msgid "<b>Author:</b>"
-msgstr "<b>Автор:</b>"
+#: gui/gdmsetup-strings.c:55 gui/gdmsetup.glade.h:14
+#, fuzzy
+msgid "Copyright:"
+msgstr "aвторски права"
 
-#: gui/gdmsetup-strings.c:47 gui/gdmsetup.glade.h:57
+#: gui/gdmsetup-strings.c:56 gui/gdmsetup.glade.h:10
+#, fuzzy
+msgid "Author:"
+msgstr "aвтор"
+
+#: gui/gdmsetup-strings.c:57 gui/gdmsetup.glade.h:68
 msgid ""
 "description\n"
 "widget"
@@ -2852,51 +3236,74 @@ msgstr ""
 "описание\n"
 "елемент"
 
-#: gui/gdmsetup-strings.c:49 gui/gdmsetup.glade.h:55
+#: gui/gdmsetup-strings.c:59 gui/gdmsetup.glade.h:66
 msgid "author"
 msgstr "aвтор"
 
-#: gui/gdmsetup-strings.c:50 gui/gdmsetup.glade.h:56
+#: gui/gdmsetup-strings.c:60 gui/gdmsetup.glade.h:67
 msgid "copyright"
 msgstr "aвторски права"
 
-#: gui/gdmsetup-strings.c:51 gui/gdmsetup.glade.h:47
+#: gui/gdmsetup-strings.c:61 gui/gdmsetup.glade.h:58
 msgid "_Install new theme"
 msgstr "_Инсталира нова тема"
 
-#: gui/gdmsetup-strings.c:53 gui/gdmsetup.glade.h:5
-msgid "Allow _root to login with GDM"
-msgstr "Позволява _root да влиза в системата с GDM"
+#: gui/gdmsetup-strings.c:62 gui/gdmsetup.glade.h:56
+msgid "_Delete theme"
+msgstr ""
 
-#: gui/gdmsetup-strings.c:54 gui/gdmsetup.glade.h:8
-msgid "Allow root to login r_emotely with GDM"
-msgstr "Позволява 'root' да влиза от_далечено с GDM"
-
-#: gui/gdmsetup-strings.c:55 gui/gdmsetup.glade.h:7
-msgid "Allow remote _timed logins"
-msgstr "Разрешава отдалечени влизания за определено време"
-
-#: gui/gdmsetup-strings.c:56 gui/gdmsetup.glade.h:37
-msgid "Show _system menu"
-msgstr "Показва _системно меню"
-
-#: gui/gdmsetup-strings.c:57 gui/gdmsetup.glade.h:6
-msgid "Allow c_onfiguration from the login screen"
-msgstr "Позволява к_онфигурация от екрана за влизане"
-
-#: gui/gdmsetup-strings.c:58 gui/gdmsetup.glade.h:35
-msgid "Retry _delay (seconds) :"
-msgstr "_Задръжка при повторен опит (секунди) :"
-
-#: gui/gdmsetup-strings.c:59 gui/gdmsetup.glade.h:32
+#: gui/gdmsetup-strings.c:64 gui/gdmsetup.glade.h:35
 msgid "Options"
 msgstr "Опции"
 
-#: gui/gdmsetup-strings.c:60 gui/gdmsetup.glade.h:36
+#: gui/gdmsetup-strings.c:66 gui/gdmsetup.glade.h:4
+msgid "Allow _root to login with GDM"
+msgstr "Позволява _root да влиза в системата с GDM"
+
+#: gui/gdmsetup-strings.c:67 gui/gdmsetup.glade.h:7
+msgid "Allow root to login r_emotely with GDM"
+msgstr "Позволява 'root' да влиза от_далечено с GDM"
+
+#: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:6
+msgid "Allow remote _timed logins"
+msgstr "Разрешава отдалечени влизания за определено време"
+
+#: gui/gdmsetup-strings.c:69 gui/gdmsetup.glade.h:45
+msgid ""
+"Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
+"set, none of the system commands will be available (this includes reboot, "
+"shutdown, configure, chooser)"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:43
+#, fuzzy
+msgid "Show _actions menu"
+msgstr "Показва _системно меню"
+
+#: gui/gdmsetup-strings.c:71 gui/gdmsetup.glade.h:5
+msgid "Allow c_onfiguration from the login screen"
+msgstr "Позволява к_онфигурация от екрана за влизане"
+
+#: gui/gdmsetup-strings.c:72 gui/gdmsetup.glade.h:3
+#, fuzzy
+msgid "Allo_w running XDMCP chooser from the login screen"
+msgstr "Позволява к_онфигурация от екрана за влизане"
+
+#: gui/gdmsetup-strings.c:73 gui/gdmsetup.glade.h:8
+msgid ""
+"Always disallow TCP connections to _X server (disables all remote "
+"connections)"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:74 gui/gdmsetup.glade.h:41
+msgid "Retry _delay (seconds) :"
+msgstr "_Задръжка при повторен опит (секунди) :"
+
+#: gui/gdmsetup-strings.c:75 gui/gdmsetup.glade.h:42
 msgid "Security"
 msgstr "Защита"
 
-#: gui/gdmsetup-strings.c:61 gui/gdmsetup.glade.h:30
+#: gui/gdmsetup-strings.c:76 gui/gdmsetup.glade.h:33
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -2904,47 +3311,60 @@ msgstr ""
 "Няма подръжка на изпълним XDMCP.  За да разрешите поддръжката на XDMCP вие "
 "трябва да компилирате GDM с XDMCP боблиотеки."
 
-#: gui/gdmsetup-strings.c:62 gui/gdmsetup.glade.h:19
-msgid "Honour _indirect requests"
-msgstr "Удържани _индиректни заявки"
-
-#: gui/gdmsetup-strings.c:63 gui/gdmsetup.glade.h:21
-msgid "Listen on UDP port: "
-msgstr "Слуша на UDP порт:"
-
-#: gui/gdmsetup-strings.c:64 gui/gdmsetup.glade.h:26
-msgid "Maximum pending requests:"
-msgstr "Максимално очакващи заявки:"
-
-#: gui/gdmsetup-strings.c:65 gui/gdmsetup.glade.h:24
-msgid "Max pending indirect requests:"
-msgstr "Максимално очакващи индиректни завки:"
-
-#: gui/gdmsetup-strings.c:66 gui/gdmsetup.glade.h:27
-msgid "Maximum remote sessions:"
-msgstr "Максималем брой отдалечени сесии:"
-
-#: gui/gdmsetup-strings.c:67 gui/gdmsetup.glade.h:28
-msgid "Maximum wait time:"
-msgstr "Максимално време на очакване:"
-
-#: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:25
-msgid "Maximum indirect wait time:"
-msgstr "Максимално време за изчакване при индиректна заявка:"
-
-#: gui/gdmsetup-strings.c:69 gui/gdmsetup.glade.h:13
-msgid "Displays per host:"
-msgstr "Дисплея за хост:"
-
-#: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:34
-msgid "Ping interval (minutes):"
-msgstr "Интервал на ping (минути):"
-
-#: gui/gdmsetup-strings.c:71 gui/gdmsetup.glade.h:14
+#: gui/gdmsetup-strings.c:77 gui/gdmsetup.glade.h:17
 msgid "Enable _XDMCP"
 msgstr "Разрешава _XDMCP"
 
-#: gui/gdmsetup-strings.c:72 gui/gdmsetup.glade.h:43
+#: gui/gdmsetup-strings.c:79 gui/gdmsetup.glade.h:21
+msgid "Honour _indirect requests"
+msgstr "Удържани _индиректни заявки"
+
+#: gui/gdmsetup-strings.c:80 gui/gdmsetup.glade.h:23
+#, fuzzy
+msgid "Listen on _UDP port: "
+msgstr "Слуша на UDP порт:"
+
+#: gui/gdmsetup-strings.c:81 gui/gdmsetup.glade.h:28
+#, fuzzy
+msgid "Maximum _pending requests:"
+msgstr "Максимално очакващи заявки:"
+
+#: gui/gdmsetup-strings.c:82 gui/gdmsetup.glade.h:27
+#, fuzzy
+msgid "Max p_ending indirect requests:"
+msgstr "Максимално очакващи индиректни завки:"
+
+#: gui/gdmsetup-strings.c:83 gui/gdmsetup.glade.h:29
+#, fuzzy
+msgid "Maximum _remote sessions:"
+msgstr "Максималем брой отдалечени сесии:"
+
+#: gui/gdmsetup-strings.c:84 gui/gdmsetup.glade.h:30
+#, fuzzy
+msgid "Maximum _wait time:"
+msgstr "Максимално време на очакване:"
+
+#: gui/gdmsetup-strings.c:85 gui/gdmsetup.glade.h:31
+#, fuzzy
+msgid "Maximum indirect w_ait time:"
+msgstr "Максимално време за изчакване при индиректна заявка:"
+
+#: gui/gdmsetup-strings.c:86 gui/gdmsetup.glade.h:16
+#, fuzzy
+msgid "Displays per _host:"
+msgstr "Дисплея за хост:"
+
+#: gui/gdmsetup-strings.c:87 gui/gdmsetup.glade.h:37
+#, fuzzy
+msgid "Pin_g interval (seconds):"
+msgstr "Интервал на ping (минути):"
+
+#: gui/gdmsetup-strings.c:88 gui/gdmsetup.glade.h:38
+#, fuzzy
+msgid "Ping interval (seconds):"
+msgstr "Интервал на ping (минути):"
+
+#: gui/gdmsetup-strings.c:89 gui/gdmsetup.glade.h:53
 msgid "XDMCP"
 msgstr "XDMCP"
 
@@ -2956,40 +3376,45 @@ msgstr ""
 "Появи се грешка при опит за контакт с екрана за влизане в системата.  Не "
 "всички обновявания са получили ефекта."
 
-#: gui/gdmsetup.c:1324
+#: gui/gdmsetup.c:1423
 msgid "Archive is not of a subdirectory"
 msgstr "Архива не е в поддиректорията"
 
-#: gui/gdmsetup.c:1332
+#: gui/gdmsetup.c:1431
 msgid "Archive is not of a single subdirectory"
 msgstr "Архива не е в една поддиректория"
 
-#: gui/gdmsetup.c:1356 gui/gdmsetup.c:1435
+#: gui/gdmsetup.c:1455 gui/gdmsetup.c:1534
 msgid "File not a tar.gz or tar archive"
 msgstr "Файла не е в tar.gz или tar формат"
 
-#: gui/gdmsetup.c:1358
+#: gui/gdmsetup.c:1457
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "Архива не включва файла GdmGreeterTheme.info"
 
-#: gui/gdmsetup.c:1380
+#: gui/gdmsetup.c:1479
 msgid "File does not exist"
 msgstr "Файла не съществува"
 
-#: gui/gdmsetup.c:1488
+#: gui/gdmsetup.c:1587
 msgid "No file selected"
 msgstr "Не е избран файл"
 
-#: gui/gdmsetup.c:1514
-#, c-format
-msgid ""
-"Not a theme archive\n"
-"Details: %s"
+#: gui/gdmsetup.c:1614
+#, fuzzy
+msgid "Not a theme archive"
 msgstr ""
 "Няма архив с тема\n"
 "Подробности: %s"
 
-#: gui/gdmsetup.c:1536
+#: gui/gdmsetup.c:1615
+#, c-format
+msgid "Details: %s"
+msgstr ""
+
+#. FIXME: if exists already perhaps we could also have an
+#. * option to change the dir name
+#: gui/gdmsetup.c:1633
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed, install again anyway?"
@@ -2997,24 +3422,32 @@ msgstr ""
 "Директорията на тема '%s' изглежда вече е инсталиран, да го инсталирам "
 "отново?"
 
-#: gui/gdmsetup.c:1581
+#: gui/gdmsetup.c:1709
 msgid "Some error occured when installing the theme"
 msgstr "Появи се някаква грешка при инсталиране на темата"
 
-#: gui/gdmsetup.c:1626
+#: gui/gdmsetup.c:1755
 msgid "Select new theme archive to install"
 msgstr "Изберете нов архив с теми за инсталиране"
 
-#. This is the temporary help dialog
-#: gui/gdmsetup.c:1766
+#: gui/gdmsetup.c:1823
 #, c-format
+msgid "Do you really wish to remove theme '%s' from the system?"
+msgstr ""
+
+#. This is the temporary help dialog
+#: gui/gdmsetup.c:2033
+#, fuzzy, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
 "graphical login screen for GNOME.  Changes that you make will take effect "
 "immediately.\n"
 "\n"
 "Note that not all configuration options are listed here.  You may want to "
-"edit %s if you cannot find what you are looking for."
+"edit %s if you cannot find what you are looking for.\n"
+"\n"
+"For complete documentation see the GNOME help browser Under the category "
+"GNOME/System."
 msgstr ""
 "Тзи конфигурационен прозорец сменя настройките на GDM демона, който е "
 "графичния екран за влизане в системата на ГНОМЕ. Промените които правите ще "
@@ -3023,8 +3456,9 @@ msgstr ""
 "Забележете, че не всички конфигурационни опции за показани тук. Вие може да "
 "поискате да редактирате %s ако не харесате как изглежда."
 
-#: gui/gdmsetup.c:2070
-msgid "You must be the superuser (root) to configure GDM.\n"
+#: gui/gdmsetup.c:2417
+#, fuzzy
+msgid "You must be the superuser (root) to configure GDM."
 msgstr "Вие трябва да сте 'root' за да конфигурирате GDM.\n"
 
 #. EOF
@@ -3033,31 +3467,47 @@ msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr ""
 "Графично приложение за конфигуриране на GDM (Мениджър за Дисплей на ГНОМЕ)"
 
-#: gui/gdmsetup.desktop.in.h:2
-msgid "GDM Configurator"
-msgstr "Конфигуратор на GDM"
-
-#: gui/greeter/greeter.c:72
+#: gui/greeter/greeter.c:619 gui/greeter/greeter.c:649
 #, c-format
-msgid "greeter_parse_config: No configuration file: %s. Using defaults."
+msgid ""
+"The greeter version (%s) does not match the daemon version.\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
 msgstr ""
-"greeter_parse_config: Няма конфигурационен файл: %s. Използвам по "
-"подразбиране."
+"Версията на посрещача (%s) не съвпада с демона на версията.\n"
+"Вие вероятно току що сте обновили gdm.\n"
+"Моля, престартирайте gdm демона или компютъра."
 
-#: gui/greeter/greeter.c:1141
+#: gui/greeter/greeter.c:693
+#, c-format
+msgid ""
+"The greeter version (%s) does not match the daemon version (%s).\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
+msgstr ""
+"Версията на посрещача (%s) не съвпада с демона на версия (%s).\n"
+"Вие вероятно току що сте обновили gdm.\n"
+"Моля, престартирайте gdm демона или компютъра."
+
+#: gui/greeter/greeter.c:1249
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Грешка при зареждането на темата %s"
 
-#: gui/greeter/greeter.c:1179
+#: gui/greeter/greeter.c:1297
+msgid "The theme for the graphical greeter is corrupt"
+msgstr ""
+
+#: gui/greeter/greeter.c:1300
+#, fuzzy
 msgid ""
-"The theme for the graphical greeter is corrupt.  It does not contain "
-"definition for the username/password entry element."
+"The theme does not contain definition for the username/password entry "
+"element."
 msgstr ""
 "Темата за графичния посрещач е рзвалена. Не съдържа дефиниция за елементи за "
 "въвеждане на потребителско име/парола."
 
-#: gui/greeter/greeter.c:1212
+#: gui/greeter/greeter.c:1332
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
@@ -3065,7 +3515,7 @@ msgstr ""
 "Появи се грешка при зареждане на темата, а също така подразбиращата се тема "
 "също не може да се зареди, аз ще се опитам да стартирам стандартният посрещач"
 
-#: gui/greeter/greeter.c:1232
+#: gui/greeter/greeter.c:1353
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -3073,29 +3523,97 @@ msgstr ""
 "Не мога да стартирам стандартния посрещач. Този дисплей ще прекъсне и вие ще "
 "трябва да влезете в системата по друг начин и да оправите проблема с gdm"
 
-#: gui/greeter/greeter_action_language.c:194
+#: gui/greeter/greeter_action_language.c:45
+msgid "Last"
+msgstr "Последна"
+
+#: gui/greeter/greeter_action_language.c:188
 msgid "Select a language"
 msgstr "Избор на език"
 
-#: gui/greeter/greeter_action_language.c:207
+#: gui/greeter/greeter_action_language.c:205
 msgid "Select a language for your session to use:"
 msgstr "Изберете език за вашата сесия:"
 
-#: gui/greeter/greeter_system.c:119
-msgid "Shut down the computer"
+#: gui/greeter/greeter_canvas_item.c:124
+#, fuzzy
+msgid "Select _Language..."
+msgstr "Избор на език"
+
+#: gui/greeter/greeter_canvas_item.c:131
+#, fuzzy
+msgid "Select _Session..."
+msgstr "Избор на ГНОМЕ сесия"
+
+#: gui/greeter/greeter_canvas_item.c:351
+msgid "Answer questions here and press Enter when done.  For a menu press F10."
+msgstr ""
+
+#: gui/greeter/greeter_item_ulist.c:263
+#, fuzzy, c-format
+msgid "Can't open DefaultImage: %s!"
+msgstr "Не мога да отворя подразбираща се икона на хост: %s"
+
+#: gui/greeter/greeter_item_ulist.c:365
+msgid ""
+"Doubleclick on the user\n"
+"to log in"
+msgstr ""
+
+#: gui/greeter/greeter_parser.c:1006 gui/greeter/greeter_system.c:205
+#, fuzzy
+msgid "Sus_pend"
+msgstr "_Преустановява"
+
+#: gui/greeter/greeter_parser.c:1016
+#, fuzzy
+msgid "_XDMCP Chooser"
+msgstr "Избирател на Хостове в GDM"
+
+#: gui/greeter/greeter_parser.c:1021
+#, fuzzy
+msgid "_Configure"
+msgstr "Конфигуриране"
+
+#: gui/greeter/greeter_parser.c:1026
+msgid "You've got capslock on!"
+msgstr "Вие имате включен 'capslock'!"
+
+#: gui/greeter/greeter_session.c:233
+#, fuzzy
+msgid "Choose a Session"
+msgstr "Сесия"
+
+#: gui/greeter/greeter_system.c:270
+msgid "Choose an Action"
+msgstr ""
+
+#: gui/greeter/greeter_system.c:292
+#, fuzzy
+msgid "Shut _down the computer"
 msgstr "Спира системата"
 
-#: gui/greeter/greeter_system.c:131
-msgid "Suspend the computer"
-msgstr "Преустановява компютъра"
+#: gui/greeter/greeter_system.c:295
+msgid "Shut down your computer so that you may turn it off."
+msgstr "Спира компютъра така че вие може да го загасите."
 
-#: gui/greeter/greeter_system.c:143
-msgid "Reboot the computer"
+#: gui/greeter/greeter_system.c:310
+#, fuzzy
+msgid "_Reboot the computer"
 msgstr "Престартира компютъра"
 
-#: gui/greeter/greeter_system.c:156
-msgid "Configure"
-msgstr "Конфигуриране"
+#: gui/greeter/greeter_system.c:324
+#, fuzzy
+msgid "Sus_pend the computer"
+msgstr "Преустановява компютъра"
+
+#: gui/greeter/greeter_system.c:338
+msgid "Run _XDMCP chooser"
+msgstr ""
+
+#: gui/greeter/greeter_system.c:358
+msgid "_Configure the login manager"
+msgstr ""
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
@@ -3113,32 +3631,40 @@ msgstr "Цикли"
 msgid "Theme with blue circles"
 msgstr "Време със син цикъл"
 
-#: gui/greeter/themes/circles/circles.xml.in.h:7
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
-#, no-c-format
-msgid "Welcome to %h"
-msgstr "Добре дошли в %h"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:8
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
-msgid "You've got capslock on!"
-msgstr "Вие имате включен 'capslock'!"
-
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:1
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
 msgstr "(c) 2002 ГНОМЕ"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:2
+#, fuzzy
+msgid "GNOME Art variation of Circles with a Face Browser"
+msgstr "GNOME Арт вариация на Circles"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:3
+#: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
+msgid "GNOME Artists"
+msgstr "Художници на ГНОМЕ"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:4
+#, fuzzy
+msgid "Happy GNOME with Browser"
+msgstr "Щастливо ГНОМЕ"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:2
 msgid "GNOME Art variation of Circles"
 msgstr "GNOME Арт вариация на Circles"
 
-#: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
-msgid "GNOME Artists"
-msgstr "Художници на ГНОМЕ"
-
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:4
 msgid "Happy GNOME"
 msgstr "Щастливо ГНОМЕ"
+
+#: gui/modules/dwellmouselistener.c:573 gui/modules/keymouselistener.c:632
+#, c-format
+msgid ""
+"Error while trying to run (%s)\n"
+"which is linked to (%s)"
+msgstr ""
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
@@ -3148,23 +3674,27 @@ msgstr "gdmaskpass се изпълнява само като root\n"
 msgid "Authentication failure!\n"
 msgstr "Оторизацията пропадна!\n"
 
-#: vicious-extensions/glade-helper.c:82
+#: vicious-extensions/glade-helper.c:83
 msgid "(memory buffer)"
 msgstr "(буфер в паметта)"
 
-#: vicious-extensions/glade-helper.c:114 vicious-extensions/glade-helper.c:136
-#: vicious-extensions/glade-helper.c:156
+#: vicious-extensions/glade-helper.c:115 vicious-extensions/glade-helper.c:137
+#: vicious-extensions/glade-helper.c:157
 msgid "(memory buffer"
 msgstr "(буфер в паметта"
 
-#: vicious-extensions/glade-helper.c:188
-#, c-format
+#: vicious-extensions/glade-helper.c:189 vicious-extensions/glade-helper.c:236
+#: vicious-extensions/glade-helper.c:273
+msgid "Cannot load user interface"
+msgstr ""
+
+#: vicious-extensions/glade-helper.c:190
+#, fuzzy, c-format
 msgid ""
-"An error occured while loading the user interface\n"
-"element %s%s from file %s.\n"
-"Possibly the glade interface description was corrupted.\n"
-"%s cannot continue and will exit now.\n"
-"You should check your installation of %s or reinstall %s."
+"An error occured while loading the user interface element %s%s from file %"
+"s.  Possibly the glade interface description was corrupted.  %s cannot "
+"continue and will exit now.  You should check your installation of %s or "
+"reinstall %s."
 msgstr ""
 "Настъпи грешка при зареждане на елемента от потребителския\n"
 "интерфейс %s%s от файл %s.\n"
@@ -3172,7 +3702,7 @@ msgstr ""
 "%s не може да продължи и ще излезе сега.\n"
 "Трябва да проверите вашата инсталация на %s или да преинсталирате %s."
 
-#: vicious-extensions/glade-helper.c:204
+#: vicious-extensions/glade-helper.c:206
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3181,15 +3711,13 @@ msgstr ""
 "Glade файлът е невалиден! Уверете се, че правилният файл е инсталиран!\n"
 "файл: %s, елемент: %s"
 
-#: vicious-extensions/glade-helper.c:234
-#, c-format
+#: vicious-extensions/glade-helper.c:237
+#, fuzzy, c-format
 msgid ""
-"An error occured while loading the user interface\n"
-"element %s%s from file %s.\n"
-"CList type widget should have %d columns.\n"
-"Possibly the glade interface description was corrupted.\n"
-"%s cannot continue and will exit now.\n"
-"You should check your installation of %s or reinstall %s."
+"An error occured while loading the user interface element %s%s from file %"
+"s.  CList type widget should have %d columns.  Possibly the glade interface "
+"description was corrupted.  %s cannot continue and will exit now.  You "
+"should check your installation of %s or reinstall %s."
 msgstr ""
 "Настъпи грешка при зареждане на елемента от потребителския\n"
 "интерфейс %s%s от файл %s.\n"
@@ -3198,7 +3726,7 @@ msgstr ""
 "%s не може да продължи и ще излезе сега.\n"
 "Трябва да проверите вашата инсталация на %s или да преинсталирате %s."
 
-#: vicious-extensions/glade-helper.c:252
+#: vicious-extensions/glade-helper.c:255
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3207,14 +3735,12 @@ msgstr ""
 "Glade файлът е невалиден! Уверете се, че правилният файл е инсталиран!\n"
 "файл: %s, елемент: %s очаквани clist колони: %d"
 
-#: vicious-extensions/glade-helper.c:270
-#, c-format
+#: vicious-extensions/glade-helper.c:274
+#, fuzzy, c-format
 msgid ""
-"An error occured while loading the user interface\n"
-"from file %s.\n"
-"Possibly the glade interface description was not found.\n"
-"%s cannot continue and will exit now.\n"
-"You should check your installation of %s or reinstall %s."
+"An error occured while loading the user interface from file %s.  Possibly "
+"the glade interface description was not found.  %s cannot continue and will "
+"exit now.  You should check your installation of %s or reinstall %s."
 msgstr ""
 "Появи се грешка при зареждане на потребителски интерфейс\n"
 "от файл %s.\n"
@@ -3222,10 +3748,351 @@ msgstr ""
 "%s не може да продължи и ще излезе сега.\n"
 "Вие трябва да проверите вашата инсталация на %s или да преинсталирате %s."
 
-#: vicious-extensions/glade-helper.c:281
+#: vicious-extensions/glade-helper.c:286
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Няма заредено лице, ЛОШО! (файл: %s)"
+
+#: vicious-extensions/ve-nongnome.c:132
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+
+#~ msgid "gdm_auth_user_add: Could not open cookie file %s"
+#~ msgstr "gdm_auth_user_add: Не мога да отворя 'cookie' файл %s"
+
+#~ msgid "gdm_auth_user_add: Could not lock cookie file %s"
+#~ msgstr "gdm_auth_user_add: Не мога да заключа 'cookie' файл %s"
+
+#~ msgid ""
+#~ "Failed to start the display server several times in a short time period; "
+#~ "disabling display %s"
+#~ msgstr ""
+#~ "Неуспех да стартира сървъра няколко пъти в кратък период от време; "
+#~ "забранявам дисплей %s"
+
+#~ msgid "gdm_failsafe_question: Cannot fork to display error/info box"
+#~ msgstr ""
+#~ "gdm_failsafe_question:Не мога да направя синовен процес за да покажа "
+#~ "грешка/информация"
+
+#~ msgid "gdm_child_action: Reboot failed: %s"
+#~ msgstr "gdm_child_action: Престартирането не е успешно: %s"
+
+#~ msgid "gdm_child_action: Halt failed: %s"
+#~ msgstr "gdm_child_action: Спирането пропадна: %s"
+
+#~ msgid "gdm_child_action: Suspend failed: %s"
+#~ msgstr "gdm_child_action: \"Заспалото' състояние на компютъра пропадна: %s"
+
+#~ msgid "%s: Error setting up TERM signal handler"
+#~ msgstr "%s: Грешка при задаване обработка на сигнал TERM"
+
+#~ msgid "%s: Error setting up INT signal handler"
+#~ msgstr "%s: Грешка при задаване обработка на сигнал INT"
+
+#~ msgid "%s: Error setting up HUP signal handler"
+#~ msgstr "%s: Грешка при задаване обработка на сигнал HUP"
+
+#~ msgid "%s: Error setting up USR1 signal handler"
+#~ msgstr "%s: Грешка при задаване обработка на сигнал USR1"
+
+#~ msgid "%s: Error setting up CHLD signal handler: %s"
+#~ msgstr "%s: Грешка при задаване обработка на сигнал CHLD: %s"
+
+#~ msgid "%s: Error setting up ALRM signal handler: %s"
+#~ msgstr "%s: Грешка при задаване обработка на сигнал ALRM: %s"
+
+#~ msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
+#~ msgstr "gdm_server_spawn:Грешка при задаване на USR1 в SIG_IGN"
+
+#~ msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
+#~ msgstr "gdm_server_spawn:Грешка при задаване на TTIN в SIG_IGN"
+
+#~ msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
+#~ msgstr "gdm_server_spawn:Грешка при задаване на TTOU в SIG_IGN"
+
+#~ msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
+#~ msgstr "gdm_server_spawn:Грешка при задаване на HUP в SIG_IGN"
+
+#~ msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
+#~ msgstr "gdm_server_spawn:Грешка при задаване на TERM в SIG_IGN"
+
+#~ msgid "gdm_server_spawn: Can't fork Xserver process!"
+#~ msgstr "gdm_server_spawn: Не мога да създам Xserver процес!"
+
+#~ msgid "%s: Error setting up TERM/INT signal handler: %s"
+#~ msgstr "%s: Грешка при задаване на TERM/INT сигнал в: %s"
+
+#~ msgid "focus_first_x_window: cannot fork"
+#~ msgstr "focus_first_x_window: не мога да направя 'fork'"
+
+#~ msgid "gdm_slave_wait_for_login: No login/Bad login"
+#~ msgstr "gdm_slave_wait_for_login: Няма име/Лошо име"
+
+#~ msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
+#~ msgstr ""
+#~ "gdm_slave_chooser: Не мога да инициализирам програмен канал за "
+#~ "'gdmchooser'"
+
+#~ msgid "gdm_slave_chooser: Error starting chooser on display %s"
+#~ msgstr "gdm_slave_chooser: Грешка при стартиране на 'chooser' от дисплей %s"
+
+#~ msgid "gdm_slave_chooser: Can't fork gdmchooser process"
+#~ msgstr ""
+#~ "gdm_slave_chooser: Не мога да направя 'fork' за 'gdmchooser' процеса"
+
+#~ msgid "gdm_slave_session_start: Could not become %s. Aborting."
+#~ msgstr "gdm_slave_session_start: Не мога да стана %s. Прекъсвам"
+
+#~ msgid "Running %s for %s on %s"
+#~ msgstr "Изпълнявам  %s за %s на %s"
+
+#~ msgid "gdm_slave_session_start: User not allowed to log in"
+#~ msgstr ""
+#~ "gdm_slave_session_start: Потребителя нама право да влиза в системата"
+
+#~ msgid ""
+#~ "The system administrator has\n"
+#~ "disabled your account."
+#~ msgstr ""
+#~ "Системният администратор е \n"
+#~ "забранил вашият акаунт."
+
+#~ msgid "gdm_slave_session_start: Could not find/run session `%s'"
+#~ msgstr "gdm_slave_session_start: Не мога да намеря/изпълня сесия `%s'"
+
+#~ msgid ""
+#~ "Cannot start the session, most likely the\n"
+#~ "session does not exist.  Please select from\n"
+#~ "the list of available sessions in the login\n"
+#~ "dialog window."
+#~ msgstr ""
+#~ "Не мога да стартирам сесията, най вероятно\n"
+#~ "тя не съществува. Моля, изберете от списъка\n"
+#~ "наличните сесии в диалога за влизане."
+
+#~ msgid "gdm_slave_session_start: Could not start session `%s'"
+#~ msgstr "gdm_slave_session_start: Не мога да стартирам сесия `%s'"
+
+#~ msgid ""
+#~ "Cannot start your shell.  It could be that the\n"
+#~ "system administrator has disabled your login.\n"
+#~ "It could also indicate an error with your account.\n"
+#~ msgstr ""
+#~ "Не мога да стартирам вашият 'shell'. Изглежда\n"
+#~ "системният администратор е забранил вашето влизане.\n"
+#~ "Това също може да бъде индикация за грешка във вашият акаунт.\n"
+
+#~ msgid "gdm_slave_exec_script: Can't fork script process!"
+#~ msgstr "gdm_slave_exec_script: Не мога да създам скрипт процес!"
+
+#~ msgid "gdm_parse_enriched_login: Failed creating pipe"
+#~ msgstr "gdm_parse_enriched_login: Неуспех при създаване на програмен канал"
+
+#~ msgid "gdm_parse_enriched_login: Can't fork script process!"
+#~ msgstr "gdm_parse_enriched_login: Не мога да създам скрипт процес!"
+
+#~ msgid "Can't find /etc/pam.d/%s!"
+#~ msgstr "Не мога да намеря /etc/pam.d/%s!"
+
+#~ msgid "Can't set PAM_RUSER=%s"
+#~ msgstr "Не мога да задам PAM_RUSER=%s"
+
+#~ msgid ""
+#~ "\n"
+#~ "Incorrect username or password. Letters must be typed in the correct "
+#~ "case. Please make sure the Caps Lock key is not enabled."
+#~ msgstr ""
+#~ "\n"
+#~ "Грешно име или парола. Буквите трябва да се въведат със значение на малки "
+#~ "и големи. Моля проверете дали 'Caps Lock' клавиша е натиснат"
+
+#~ msgid "gdm_xdmcp_init: Could not create socket!"
+#~ msgstr "gdm_xdmcp_init: Не мога да направя socket!"
+
+#~ msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
+#~ msgstr "gdm_xdmcp_init: Не мога да направя XDMCP socket!"
+
+#~ msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
+#~ msgstr ""
+#~ "gdm_xdmcp_handle_forward_query: Не можах да прочета адреса на дислея"
+
+#~ msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
+#~ msgstr ""
+#~ "gdm_xdmcp_handle_forward_query: Не можах да прочета номера на порта на "
+#~ "дисплея"
+
+#~ msgid ""
+#~ "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
+#~ msgstr ""
+#~ "gdm_xdmcp_handle_forward_query: Не можах да получа 'authlist' от пакета"
+
+#~ msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
+#~ msgstr "gdm_xdmcp_handle_forward_query: Грешка в контролната сума"
+
+#~ msgid "gdm_xdmcp_handle_forward_query: Bad address"
+#~ msgstr "gdm_xdmcp_handle_forward_query: Грешен адрес"
+
+#~ msgid "gdm_xdmcp_handle_request: Could not read Client Address"
+#~ msgstr "gdm_xdmcp_handle_request: Не мога да прочета Адреса на Клиента"
+
+#~ msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
+#~ msgstr "gdm_xdmcp_handle_request: Не мога да прочета ID на Производителя"
+
+#~ msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
+#~ msgstr "gdm_xdmcp_handle_manage: Не мога да чета ID на Сесия"
+
+#~ msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
+#~ msgstr "gdm_xdmcp_handle_manage: Не можах да прочета Номер на Дисплей"
+
+#~ msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
+#~ msgstr "gdm_xdmcp_handle_manage: Не можах да прочета Клас на Дисплей"
+
+#~ msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
+#~ msgstr "gdm_xdmcp_handle_keepalive: Не мога да прочета Номер на Дисплей"
+
+#~ msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
+#~ msgstr "gdm_xdmcp_handle_keepalive: Не мога да прочета ID на Сесия"
+
+#~ msgid "gdm_xdmcp_init: No XDMCP support"
+#~ msgstr "gdm_xdmcp_init: Няма подръжка на XDMCP"
+
+#~ msgid "gdm_xdmcp_run: No XDMCP support"
+#~ msgstr "gdm_xdmcp_run: Няма подръжка на XDMCP"
+
+#~ msgid ""
+#~ "The main area of this application shows the hosts on the local network "
+#~ "that have \"XDMCP\" enabled. This allows users to login remotely to other "
+#~ "machines as if they were logged on using the console.\n"
+#~ "\n"
+#~ "You can rescan the network for new hosts by clicking \"Refresh\". When "
+#~ "you have selected a host click \"Connect\" to open a session to that "
+#~ "machine."
+#~ msgstr ""
+#~ "Главното място на това приложение е да покаже хостовете във вашата "
+#~ "локална мрежа които имат разрешен \"XDMCP\". Това позволява потребителите "
+#~ "да влизат в системите отдалечено.\n"
+#~ "\n"
+#~ "Вие може да пресканирате мрежата за нови хостове като кликнете на "
+#~ "\"Обновява\" Когато изберете хост кликнете на \"Връзка\" за да се отвори "
+#~ "сесия с тази машина."
+
+#~ msgid "Information"
+#~ msgstr "Информация"
+
+#~ msgid "gdm_signals_init: Error setting up HUP signal handler"
+#~ msgstr "gdm_signals_init: Грешка при задаване обработката на сигнал HUP"
+
+#~ msgid "gdm_signals_init: Error setting up INT signal handler"
+#~ msgstr "gdm_signals_init: Грешка при задаване обработката на сигнал INT"
+
+#~ msgid "gdm_signals_init: Error setting up TERM signal handler"
+#~ msgstr "gdm_signals_init: Грешка при задаване обработката на сигнал TERM"
+
+#~ msgid ""
+#~ "<b>GDM (The GNOME Display Manager) is not running.</b>\n"
+#~ "\n"
+#~ "You might in fact be using a different display manager, such as KDM (KDE "
+#~ "Display Manager or xdm).\n"
+#~ "If you still wish to use this feature, either start GDM your self or ask "
+#~ "your system administrator to start GDM."
+#~ msgstr ""
+#~ "<b>GDM (Мениджърът на досплеи на Гном) не работи.</b>\n"
+#~ "\n"
+#~ "Може да ползвате друг мениджър на дисплеи, като KDM (мениджърът на "
+#~ "дисплеи на КДЕ или xdm).\n"
+#~ "Ако искате да ползвате GDM, или го стартирайте, или кажете на системния "
+#~ "си администратор да го пусне."
+
+#~ msgid "AnotherLevel"
+#~ msgstr "Друго Ниво"
+
+#~ msgid "Failsafe"
+#~ msgstr "Аварйна"
+
+#~ msgid "Gnome"
+#~ msgstr "Гноме"
+
+#~ msgid "XSession"
+#~ msgstr "XСесия"
+
+#~ msgid "Gnome Chooser"
+#~ msgstr "Gnome Chooser"
+
+#~ msgid ""
+#~ "Doubleclick here to un-iconify the login window, so that you may log in."
+#~ msgstr ""
+#~ "Двойно кликване тук за да реконфигурирате влизането в прозореца, така че "
+#~ "да може да влезете в системата."
+
+#~ msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
+#~ msgstr ""
+#~ "gdm_login_parse_config: Няма конфигурационен файл: %s. Използвам "
+#~ "подразбиращ."
+
+#~ msgid "gdm_login_session_init: Session script directory not found!"
+#~ msgstr ""
+#~ "gdm_login_session_init: Директорията със скрипт за сесията не е намерена!"
+
+#~ msgid ""
+#~ "This session will log you directly into GNOME, into your current session."
+#~ msgstr ""
+#~ "С тази сесия вие ще влезете директно в ГНОМЕ, във вашта текуща сесия."
+
+#~ msgid ""
+#~ "This session will log you into GNOME and it will let you choose which one "
+#~ "of the GNOME sessions you want to use."
+#~ msgstr ""
+#~ "С тази сесия вие ще влезете директно в ГНОМЕ и ще ви даде възможност за "
+#~ "избор коя от сесиите на GNOME искате да използвате."
+
+#~ msgid "Name: "
+#~ msgstr "Име:"
+
+#~ msgid "Remember this setting"
+#~ msgstr "Запомни тези настройки"
+
+#~ msgid "Can't open icon file: %s. Suspending iconify feature!"
+#~ msgstr ""
+#~ "Не мога да отворя файла с икони: %s. Блокирам възможността за минизиране!"
+
+#~ msgid "Iconify the login window"
+#~ msgstr "Минимизиране на прозореца за влизане"
+
+#~ msgid "_Reboot..."
+#~ msgstr "_Престартира..."
+
+#~ msgid "S_ystem"
+#~ msgstr "_Състема"
+
+#~ msgid "main: Error setting up HUP signal handler"
+#~ msgstr "main: Грешка при задаване обработката на сигнала HUP"
+
+#~ msgid "main: Error setting up INT signal handler"
+#~ msgstr "main: Грешка при задаване обработката на сигнала INT"
+
+#~ msgid "main: Error setting up TERM signal handler"
+#~ msgstr "main: Грешка при задаване обработката на сигнала TERM"
+
+#~ msgid "Select a photo"
+#~ msgstr "Избор на фото"
+
+#~ msgid "GDM Setup"
+#~ msgstr "Настройка на GDM"
+
+#~ msgid "Welcome string: "
+#~ msgstr "Низ за поздравление:"
+
+#~ msgid "<b>Author:</b>"
+#~ msgstr "<b>Автор:</b>"
+
+#~ msgid "GDM Configurator"
+#~ msgstr "Конфигуратор на GDM"
+
+#~ msgid "greeter_parse_config: No configuration file: %s. Using defaults."
+#~ msgstr ""
+#~ "greeter_parse_config: Няма конфигурационен файл: %s. Използвам по "
+#~ "подразбиране."
 
 #~ msgid "main: Error setting up CHLD signal handler"
 #~ msgstr "main: Грешка при задаване обработката на сигнала CHLD"
@@ -3241,9 +4108,6 @@ msgstr "Няма заредено лице, ЛОШО! (файл: %s)"
 
 #~ msgid "Quit"
 #~ msgstr "Напуска"
-
-#~ msgid "Session"
-#~ msgstr "Сесия"
 
 #~ msgid "System"
 #~ msgstr "Система"

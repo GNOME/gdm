@@ -1,5 +1,46 @@
 Ahh news...
 
+Major changes in 2.4.4.x since 2.4.1.x:
+
+- Full reference documentation!
+- Facebrowser support in the graphical greeter
+- Better HIG support
+- Many security improvements
+- Performance and memory usage improvements
+- XDMCP much more robust
+- Better support for running XDMCP-only servers
+- Session setup is reworked into a new common standard
+  to be implemented in KDM soon
+- "Proper" support for PAM making things like
+  smartcard modules possible
+- XDMCP chooser may be run directly from the local
+  login dialog (or you can have the chooser be default)
+- A PostLogin script for finer grained login setup
+- Many MANY bugfixes and build fixes
+- Lots of new translations
+- And lots of other new features, improvements,
+  and bugfixes, see individual news entries since
+  2.4.1.4
+
+2.4.4.0 stuff (since 2.4.2.102):
+
+- Updated the documentation quite a bit again.
+
+- Make the .spec file work again
+
+- Run pam_close_session and the delete cred AFTER the
+  PostSession script and all those places where we touch
+  the home dir so that pam_mount works properly
+
+- Fix error output to point to the right places
+
+- Create log file correctly during "make install"
+
+- Translation updates (Dafydd Harries, Alessio Frusciante, Jordi Mallach,
+  Vincent van Adrighem, Ole Laursen, Stanislav Visnovsky, Abel Cheung,
+  Pablo Gonzalo del Campo, Lucas 'Basurero' Vieites, Danilo Segan, 
+  Laurent Dhima, Christian Neumair)
+
 2.4.2.102 stuff:
 
 - Update the manual
