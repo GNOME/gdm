@@ -225,6 +225,24 @@ find_lang (const char *language, gboolean *clean)
 	return NULL;
 }
 
+gboolean
+gdm_lang_name_translated (const char *language)
+{
+	Language *lang;
+	gboolean clean;
+
+	gdm_lang_init ();
+
+	lang = find_lang (language, &clean);
+	if (lang == NULL)
+		return FALSE;
+
+	if (strcmp (lang->name, _(lang->name)) == 0)
+		return FALSE;
+
+	return TRUE;
+}
+
 char *
 gdm_lang_name (const char *language,
 	       gboolean never_encoding,

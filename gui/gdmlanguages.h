@@ -32,6 +32,7 @@ char *		gdm_lang_name		(const char *language,
 					 gboolean no_group,
 					 gboolean untranslated,
 					 gboolean markup);
+gboolean	gdm_lang_name_translated (const char *language);
 
 /* NULL if not found */
 char *		gdm_lang_untranslated_name (const char *language,

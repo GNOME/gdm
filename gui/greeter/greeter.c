@@ -52,6 +52,7 @@ gboolean GdmConfigAvailable = TRUE;
 gboolean GdmTimedLoginEnable;
 gboolean GdmUse24Clock;
 gchar *GdmTimedLogin;
+gchar *GdmGtkRC;
 gint GdmTimedLoginDelay;
 
 gboolean GdmUseCirclesInEntry = FALSE;
@@ -106,6 +107,7 @@ greeter_parse_config (void)
     GdmReboot = ve_config_get_string (config, GDM_KEY_REBOOT);
     GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
     GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
+    GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
 
     GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
     GdmTimedLoginDelay = ve_config_get_int (config, GDM_KEY_TIMED_LOGIN_DELAY);
@@ -820,6 +822,9 @@ greeter_reread_config (int sig, gpointer data)
 	     ! string_same (config,
 			    GdmDefaultLocale,
 			    GDM_KEY_LOCALE) ||
+	     ! string_same (config,
+			    GdmGtkRC,
+			    GDM_KEY_GTKRC) ||
 	     ! int_same (config,
 			 GdmXineramaScreen,
 			 GDM_KEY_XINERAMASCREEN) ||
@@ -993,6 +998,9 @@ main (int argc, char *argv[])
 
   /* Should be a watch already, but anyway */
   setup_cursor (GDK_WATCH);
+
+  if ( ! ve_string_empty (GdmGtkRC))
+    gtk_rc_parse (GdmGtkRC);
   
   gdm_wm_screen_init (GdmXineramaScreen);
   

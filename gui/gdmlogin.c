@@ -1758,11 +1758,15 @@ gdm_login_language_menu_new (void)
 	    gtk_widget_show (box);
 
 	    l = gtk_label_new (name);
+	    if ( ! gdm_lang_name_translated (lang))
+		    gtk_widget_set_direction (l, GTK_TEXT_DIR_LTR);
 	    gtk_widget_show (l);
 	    gtk_box_pack_start (GTK_BOX (box), l, FALSE, FALSE, 0);
 
 	    if (untranslated != NULL) {
 		    l = gtk_label_new (untranslated);
+		    /* we really wantd LTR here for the widget */
+		    gtk_widget_set_direction (l, GTK_TEXT_DIR_LTR);
 		    gtk_label_set_use_markup (GTK_LABEL (l), TRUE);
 		    gtk_widget_show (l);
 		    gtk_box_pack_end (GTK_BOX (box), l, FALSE, FALSE, 0);

@@ -1,5 +1,23 @@
 Ahh news...
 
+2.4.0.6 stuff:
+
+- Stop using stdio in the slave to communicate with the greeter (greeters
+  still use stdio).  This "may" fix the FreeBSD /dev/ttys issue.  Plus it's
+  a nicer way to do it.
+
+- Read and honour the gtkrc setting in the graphical greeter, fixes #90003
+
+- make the gdmXnest link relative
+
+- Gnome and Xsession scripts no longer read in the xdm resources, I was
+  told this is bad
+
+- Fix some RTL issues with the language lists
+
+- Translation updates (Dmitry G. Mastrukov, Andras Timar, UHU Linux team,
+  Manuel Borchers, Christian Neumair, Tõivo Leedjärv, Duarte Loreto)
+
 2.4.0.5 stuff:
 
 - Applied patch from #89454 (Havoc/Owen, me) to change .gnome to .gnome2,
