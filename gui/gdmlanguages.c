@@ -240,7 +240,28 @@ find_lang (const char *language, gboolean *clean)
 
 	p = strrchr (name, '@');
 	if (p != NULL) {
+		char *mod = p+1;
 		*p = '\0';
+
+		/* attempt lookup without encoding but with the
+		   modifier first */
+		p = strrchr (name, '.');
+		if (p != NULL) {
+			char *noenc;
+			*p = '\0';
+
+			noenc = g_strconcat (name, "@", mod, NULL);
+			lang = g_hash_table_lookup (lang_names, noenc);
+			if (lang != NULL) {
+				g_free (name);
+				g_free (noenc);
+				return lang;
+			}
+			g_free (noenc);
+
+			*p = '.';
+		}
+
 		lang = g_hash_table_lookup (lang_names, name);
 		if (lang != NULL) {
 			g_free (name);
