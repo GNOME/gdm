@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.2.2.2\n"
-"POT-Creation-Date: 2002-12-27 17:19+0100\n"
+"POT-Creation-Date: 2003-01-14 23:12+0100\n"
 "PO-Revision-Date: 2002-12-27 17:24+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1236,7 +1236,8 @@ msgid "Please enter your username"
 msgstr "Vennligst skriv inn brukernavn"
 
 #: daemon/verify-crypt.c:72 daemon/verify-pam.c:320 daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3297 gui/greeter/themes/circles/circles.xml.in.h:5
+#: gui/gdmlogin.c:3297 gui/greeter/greeter_parser.c:961
+#: gui/greeter/themes/circles/circles.xml.in.h:5
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
 msgid "Username:"
 msgstr "Brukernavn:"
@@ -1560,15 +1561,15 @@ msgstr "gdm_xdmcp_handle_keepalive: Kunne ikke lese skjermnummer"
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Kunne ikke lese sesjons-ID"
 
-#: daemon/xdmcp.c:1662
+#: daemon/xdmcp.c:1661
 msgid "gdm_xdmcp_init: No XDMCP support"
 msgstr "gdm_xdmcp_init: Ingen støtte for XDMCP"
 
-#: daemon/xdmcp.c:1669
+#: daemon/xdmcp.c:1668
 msgid "gdm_xdmcp_run: No XDMCP support"
 msgstr "gdm_xdmcp_run: Ingen støtte for XDMCP"
 
-#: daemon/xdmcp.c:1675
+#: daemon/xdmcp.c:1674
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_close: Ingen støtte for XDMCP"
 
@@ -1792,14 +1793,18 @@ msgid ""
 msgstr ""
 "<b>GDM (GNOME Display Manager) kjører ikke.</b>\n"
 "\n"
-"Kanskje du kjører en annen skjermhåndterer slik som KDM (KDE Display Manager) eller XDM.\n"
-"Hvis du likevel ønsker å bruke denne funksjonen må du starte GDM eller be din systemadministrator om å gjøre dette."
+"Kanskje du kjører en annen skjermhåndterer slik som KDM (KDE Display "
+"Manager) eller XDM.\n"
+"Hvis du likevel ønsker å bruke denne funksjonen må du starte GDM eller be "
+"din systemadministrator om å gjøre dette."
 
 #: gui/gdmcomm.c:417
 msgid ""
 "Cannot communicate with GDM (The GNOME Display Manager), perhaps you have an "
 "old version running."
-msgstr "Kan ikke kommunisere med GDM (GNOME Display Manager), kanskje en gammel versjon kjører."
+msgstr ""
+"Kan ikke kommunisere med GDM (GNOME Display Manager), kanskje en gammel "
+"versjon kjører."
 
 #: gui/gdmcomm.c:435 gui/gdmcomm.c:438 gui/gdmflexiserver.c:252
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
@@ -2251,7 +2256,8 @@ msgstr "GNOME velger"
 msgid "Last"
 msgstr "Forrige"
 
-#: gui/gdmlogin.c:218 gui/greeter/themes/circles/circles.xml.in.h:4
+#: gui/gdmlogin.c:218 gui/greeter/greeter_parser.c:948
+#: gui/greeter/themes/circles/circles.xml.in.h:4
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
 #, no-c-format
 msgid "User %s will login in %d seconds"
@@ -2283,15 +2289,15 @@ msgstr ""
 "\n"
 "Du vil sannsynligvis ikke kunne logge inn heller."
 
-#: gui/gdmlogin.c:803
+#: gui/gdmlogin.c:803 gui/greeter/greeter_system.c:52
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Er du sikker på at du vil starte maskinen på nytt?"
 
-#: gui/gdmlogin.c:815
+#: gui/gdmlogin.c:815 gui/greeter/greeter_system.c:63
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Er du sikker på at du vil slå av maskinen?"
 
-#: gui/gdmlogin.c:826
+#: gui/gdmlogin.c:826 gui/greeter/greeter_system.c:73
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Er du sikker på at du vil sette maskinen i hvilemodus?"
 
@@ -2476,7 +2482,7 @@ msgstr "%a %b %d, %H:%M"
 
 #: gui/gdmlogin.c:2799 gui/greeter/greeter_item.c:100
 msgid "%a %b %d, %I:%M %p"
-msgstr "%a %b %d, %I:%M %p"
+msgstr "%a %b %d, %H:%M"
 
 #: gui/gdmlogin.c:2865
 msgid "Finger"
@@ -2487,12 +2493,14 @@ msgid "GDM Login"
 msgstr "GDM innlogging"
 
 #: gui/gdmlogin.c:3000 gui/greeter/greeter_canvas_item.c:129
+#: gui/greeter/greeter_parser.c:923
 #: gui/greeter/themes/circles/circles.xml.in.h:11
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
 msgid "_Session"
 msgstr "_Sesjon"
 
 #: gui/gdmlogin.c:3007 gui/greeter/greeter_canvas_item.c:122
+#: gui/greeter/greeter_parser.c:918
 #: gui/greeter/themes/circles/circles.xml.in.h:9
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
 msgid "_Language"
@@ -2533,18 +2541,21 @@ msgid "Suspend your computer"
 msgstr "Sett datamaskinen i hvilemodus"
 
 #: gui/gdmlogin.c:3073 gui/greeter/greeter_canvas_item.c:138
+#: gui/greeter/greeter_parser.c:928
 #: gui/greeter/themes/circles/circles.xml.in.h:2
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
 msgid "S_ystem"
 msgstr "S_ystem"
 
 #: gui/gdmlogin.c:3085 gui/greeter/greeter_canvas_item.c:151
+#: gui/greeter/greeter_parser.c:938
 #: gui/greeter/themes/circles/circles.xml.in.h:10
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
 msgid "_Quit"
 msgstr "_Avslutt"
 
 #: gui/gdmlogin.c:3087 gui/greeter/greeter_canvas_item.c:153
+#: gui/greeter/greeter_parser.c:933
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "D_isconnect"
@@ -3042,7 +3053,9 @@ msgstr "Det oppsto en feil under lasting av tema %s"
 msgid ""
 "The theme for the graphical greeter is corrupt.  It does not contain "
 "definition for the username/password entry element."
-msgstr "Temaet for grafisk velkomst er korrupt. Det har ingen definisjon for elementet brukernavn/passord"
+msgstr ""
+"Temaet for grafisk velkomst er korrupt. Det har ingen definisjon for "
+"elementet brukernavn/passord"
 
 #: gui/greeter/greeter.c:1212
 msgid ""
@@ -3068,21 +3081,34 @@ msgstr "Velg et språk"
 msgid "Select a language for your session to use:"
 msgstr "Velg et språk for bruk med din sesjon:"
 
-#: gui/greeter/greeter_system.c:119
+#: gui/greeter/greeter_system.c:150
 msgid "Shut down the computer"
 msgstr "Slå av datamaskinen"
 
-#: gui/greeter/greeter_system.c:131
+#: gui/greeter/greeter_system.c:162
 msgid "Suspend the computer"
 msgstr "Sett datamaskinen i hvilemodus"
 
-#: gui/greeter/greeter_system.c:143
+#: gui/greeter/greeter_system.c:174
 msgid "Reboot the computer"
 msgstr "Start datamaskinen på nytt"
 
-#: gui/greeter/greeter_system.c:156
+#: gui/greeter/greeter_system.c:187
 msgid "Configure"
 msgstr "Konfigurer"
+
+#: gui/greeter/greeter_parser.c:943
+#: gui/greeter/themes/circles/circles.xml.in.h:8
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
+msgid "You've got capslock on!"
+msgstr "Du har capslock på!"
+
+#: gui/greeter/greeter_parser.c:955
+#: gui/greeter/themes/circles/circles.xml.in.h:7
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
+#, no-c-format
+msgid "Welcome to %h"
+msgstr "Velkommen til %h"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
@@ -3099,17 +3125,6 @@ msgstr "Sirkler"
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:4
 msgid "Theme with blue circles"
 msgstr "Tema med blå sirkler"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:7
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
-#, no-c-format
-msgid "Welcome to %h"
-msgstr "Velkommen til %h"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:8
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
-msgid "You've got capslock on!"
-msgstr "Du har capslock på!"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
