@@ -247,10 +247,10 @@ main (int argc, char *argv[])
 		char *cookie = gdmcomm_get_a_cookie ();
 		if (cookie == NULL) {
 			dialog = gnome_warning_dialog
-				(_("You do not seem to have authentication "
-				   "needed be for this operation.  Perhaps "
-				   "your .Xauthority file is not set up "
-				   "correctly."));
+				(_("You do not seem to have the "
+				   "authentication needed for this "
+				   "operation.  Perhaps your .Xauthority "
+				   "file is not set up correctly."));
 			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 			return 1;
 		}
