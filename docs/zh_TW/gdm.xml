@@ -1,0 +1,381 @@
+<?xml version="1.0"?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "2.4.2.101" >
+  <!ENTITY manrevision "2.0.1" >
+  <!ENTITY date "2004 年 1 月" >
+  <!ENTITY app "登入畫面設定" >
+  <!ENTITY ug "GNOME Desktop 使用者指南" >
+]><!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+--><!-- =============Document Header ============================= --> <article id="index" lang="zh_tw"><!-- please do not change the id; for translations, change lang to --><!-- appropriate code -->
+
+
+  <articleinfo> 
+    <title>登入畫面設定手冊 V&manrevision; </title>       
+
+	 <copyright><year>2004</year> <holder>Sun Microsystems</holder>  </copyright><!-- translators: uncomment this:
+  	 <copyright>
+   		<year>2003</year>
+   		<holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  	 </copyright>
+   	 -->
+	 
+
+    <publisher><publishername>GNOME 文件專案</publishername>  </publisher><!-- This file  contains link to license for the documentation (GNU FDL), and 
+        other legal stuff such as "NO WARRANTY" statement. Please do not change 
+	any of this. -->&legal;  <authorgroup> 
+		<author><firstname>Sun</firstname> <surname>GNOME 文件小組</surname>  <affiliation><orgname>Sun Microsystems</orgname>  </affiliation>
+		</author><!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+
+    </authorgroup>
+
+    <revhistory>
+      <revision><revnumber>登入螢幕設定手冊 V&manrevision;</revnumber> <date>&date;</date> <revdescription> 
+	  		<para role="author">Sun GNOME 文件小組 </para>
+	  		<para role="publisher">GNOME 文件專案 </para>
+		</revdescription> 
+      </revision>
+    </revhistory><releaseinfo>本手冊將說明第 &appversion; 版 &app; 的內容。</releaseinfo>  <legalnotice> 
+      <title>意見回應</title> 
+      <para>關於本 &app; 應用程式或手冊，如果要報告錯誤或提出建議，請遵照 <ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>的指示。  </para><!-- Translators may also add here feedback address for translations -->
+
+    </legalnotice> 
+  </articleinfo><!-- ============= Document Body ============================= --><!-- ============= Introduction ============================== --><indexterm> <primary>登入畫面設定</primary> </indexterm> <sect1 id="gdm-introduction">
+<title>介紹 </title>
+<para>若要啟動 GNOME Desktop 工作時段，使用者必須以其身份登入以便進行驗證。 登入畫面對使用者提供了連到 GNOME Desktop 的閘道。 使用 <application>&app;</application> 應用程式，可以配置使用者登入系統的方式。</para>
+</sect1><!-- =========== Getting Started ============================== -->
+
+
+
+  <sect1 id="gdm-getting-started"> 
+	 <title>入門</title>
+
+	 <sect2 id="gdm-to-start"> 
+		<title>啟動 &app;</title>
+		
+		<para>您可以使用下列方式啟動 <application>&app;</application>： </para>
+		
+		<variablelist>
+			<varlistentry><term>功能表</term> <listitem>
+			<para>有關如何從功能表中啟動 <application>&app;</application> 的資訊，請參閱適用您平台之最新版本的 &ug;。  </para>
+			</listitem>
+			</varlistentry>
+			<varlistentry><term>指令行</term> <listitem>
+			<para>執行下列指令： <command>gdmsetup</command></para>
+			</listitem>
+			</varlistentry>
+	</variablelist>
+<note><para>您必須具有管理員權限或是 <literal>root</literal> 存取權，才能設定登入畫面。</para></note>
+	</sect2>
+
+	<sect2 id="gdm-when-you-start">
+	<title>當您啟動 &app;</title>
+
+	<para>當您啟動 <application>&app;</application> 時，會顯示下列對話方塊。</para><!-- ==== Figure ==== -->
+	
+		<figure id="gdm_window"> 
+		  <title>&app; 對話方塊</title>
+		  <screenshot> 
+			 <mediaobject> 
+				<imageobject><imagedata fileref="figures/gdm_window.png" format="PNG"/>
+					 </imageobject>
+				<textobject> <phrase>顯示「登入畫面設定」對話方塊。 上下文將描述該圖形。</phrase>
+				</textobject> </mediaobject>
+		  </screenshot>
+		</figure><!-- ==== End of Figure ==== -->
+	
+<para><application>&app;</application> 對話方塊包含下列標籤區段：</para>
+<itemizedlist>
+<listitem><para><link linkend="gdm-prefs-general"><guilabel>一般</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-standard"><guilabel>標準問候程式</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-graphical"><guilabel>圖形式問候程式</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-security"><guilabel>安全性</guilabel></link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-xdmcp"><guilabel>XDMCP</guilabel></link></para></listitem>
+</itemizedlist>
+	
+	 </sect2>
+
+
+  </sect1><!-- ============= Customization ============================= -->
+
+
+  
+  <sect1 id="gdm-preferences"> 
+<title>個人喜好</title>
+
+<sect2 id="gdm-prefs-general">
+<title>一般</title>
+<para>使用<guilabel>「一般」</guilabel>標籤區段，可以設定的一般個人喜好。 </para>
+
+		<variablelist> 
+		  <varlistentry><term><guilabel>本機</guilabel> </term> <listitem> 
+				<para>選取當使用者從本機系統登入時，登入畫面所使用的介面類型。 請從下拉式清單中，選取下列任一選項：</para>
+<itemizedlist>
+<listitem><para><guilabel>圖形式問候程式</guilabel>: 選取此選項後，使用者從本機系統登入時，會使用圖形式登入畫面。 </para>
+</listitem>
+<listitem><para><guilabel>標準問候程式</guilabel>: 選取此選項後，使用者從本機系統登入時，會使用標準 GNOME 登入畫面。  </para></listitem>
+</itemizedlist>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term><guilabel>遠端</guilabel> </term> <listitem> 
+				<para>選取當使用者從遠端系統登入時，登入畫面所使用的介面類型。 請從下拉式清單中，選取下列任一選項：</para><itemizedlist>
+<listitem><para><guilabel>圖形式問候程式</guilabel>: 選取此選項後，使用者從遠端系統登入時，會使用圖形式登入畫面。 </para>
+</listitem>
+<listitem><para><guilabel>標準問候程式</guilabel>: 選取此選項後，使用者從遠端系統登入時會，使用標準 GNOME 登入畫面。  </para></listitem>
+</itemizedlist>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>固定使用 24 小時制</guilabel> </term> <listitem> 
+<para>選取此選項後，登入畫面將會以 00.00 至 24.00 的格式顯示時間。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>歡迎使用字串</guilabel> </term> <listitem> 
+<para>輸入使用者從本機系統登入時，標準 GNOME 登入畫面所顯示的歡迎使用訊息。</para><note><para>如果您想要在歡迎使用訊息中顯示系統名稱，請在本文字方塊中輸入 <literal>%n</literal>。  </para></note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>遠端歡迎使用字串</guilabel> </term> <listitem> 
+<para>輸入使用者從遠端系統登入時，標準 GNOME 登入畫面所顯示的歡迎使用訊息。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>第一次啟動時自動登入使用者</guilabel> </term> <listitem> 
+<para>選取此選項後，使用者第一次啟動系統時會進行自動登入。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>自動登入使用者名稱</guilabel> </term> <listitem> 
+<para>使用此下拉式組合方塊，可以輸入系統自動登入使用者所用的使用者名稱。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>在指定的秒數後自動登入使用者</guilabel> </term> <listitem> 
+<para>選取此選項時，在經過您指定的間隔後會自動登入使用者。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>計時登入使用者名稱</guilabel> </term> <listitem> 
+<para>使用此下拉式組合方塊，輸入經過某段間隔後，系統自動登入使用者所用的使用者名稱。 </para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term><guilabel>登入前秒數</guilabel> </term> <listitem> 
+<para>使用此旋轉方塊可以指定於自動登入使用者前，應等待多久的時間。</para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+</sect2>
+
+<sect2 id="gdm-prefs-standard">
+<title>標準問候程式</title>
+<para>使用<guilabel>「標準問候程式」</guilabel>標籤區段，可以設定標準 GNOME 登入畫面的個人喜好。 </para>
+
+
+
+<variablelist>
+		  <varlistentry><term><guilabel>標題圖案</guilabel> </term> <listitem> 
+<para>可選擇影像作為標準 GNOME 登入畫面上所顯示的標題圖案。 若要選擇影像，請在下拉式組合方塊中輸入該影像的檔案名稱。 或者，按一下<guibutton>「瀏覽」</guibutton>按鈕顯示對話方塊，再從其中選擇影像。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>顯示可選擇的使用者影像（Face 瀏覽器）</guilabel> </term> <listitem> 
+<para>選取此選項後，便可在標準 GNOME 登入畫面上顯示使用者的影像。 如果已選取這個選項，使用者便可以直接選取影像，而不需輸入使用者名稱。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>沒有背景</guilabel> </term> <listitem> 
+<para>如果您不希望在標準 GNOME 登入畫面的背景顯示影像或色彩，請選取這個選項。  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>影像</guilabel> </term> <listitem> 
+<para>選取此選項後，便可在標準 GNOME 登入畫面的背景顯示影像。 若要選擇影像，請於對話方塊右側的下拉式組合方塊中輸入影像的檔案名稱。 或者，按一下對話方塊右側的<guibutton>「瀏覽」</guibutton>按鈕顯示一個對話方塊，您便可從其中選擇影像。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>色彩</guilabel> </term> <listitem> 
+<para>選取此選項後，便可在標準 GNOME 登入畫面的背景顯示色彩。 請使用<guilabel>「背景色彩」</guilabel>按鈕指定色彩。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>縮放背景影像調整大小</guilabel> </term> <listitem> 
+<para>如果您選取<guilabel>「影像」</guilabel>選項，便可縮放背景影像以便適合標準 GNOME 登入畫面的背景。 但是會保留影像的長寬比例不變。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>僅在遠端上顯示色彩</guilabel> </term> <listitem> 
+<para>選取此選項後，使用者從遠端系統登入時，便會在標準 GNOME 登入畫面的背景中顯示色彩。  </para>
+			 </listitem>
+		  </varlistentry>
+
+
+		  <varlistentry><term><guilabel>背景色彩</guilabel></term> <listitem> 
+<para>如果您對背景選取<guilabel>「色彩」</guilabel>選項或<guilabel>「僅在遠端上顯示色彩」</guilabel>選項時，請使用此按鈕來指定色彩。 按一下色彩選擇器按鈕，便可顯示色彩選擇器對話方塊。 請從顏色選擇器對話方塊中，選擇所需的色彩。 </para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+</sect2>
+<sect2 id="gdm-prefs-graphical">
+<title>圖形式問候程式</title>
+<para>使用<guilabel>「圖形式問候程式」</guilabel>標籤區段，可以設定圖形式登入畫面的個人喜好。</para>
+
+<variablelist>
+
+		  <varlistentry><term>配色清單</term> <listitem> 
+<para>選取圖形式登入畫面所用的配色。 若要預覽選取的配色，請參閱對話方塊的右側。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guibutton>安裝新配色</guibutton> </term> <listitem> 
+<para>您可以將配色加入可用的配色清單中。 新配色必須是經過打包及壓縮處理過的歸檔檔案。 也就是說，新配色必須是 <filename>.tar.gz</filename> 檔案。</para><para>如果要安裝新配色，請執行下列步驟：</para>
+<orderedlist>
+<listitem><para>在<guibutton>「安裝新配色」</guibutton>按鈕按一下。</para></listitem>
+<listitem><para>使用此對話來選取歸檔檔案。</para></listitem>
+<listitem><para>按一下<guibutton>「確定」</guibutton>。 </para></listitem>
+</orderedlist>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guibutton>刪除配色</guibutton> </term> <listitem> 
+<para>若要刪除配色，請先選取配色，然後再按一下<guibutton>「刪除配色」</guibutton>按鈕。</para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+</sect2>
+<sect2 id="gdm-prefs-security">
+<title>安全性</title>
+<para>使用<guilabel>「安全性」</guilabel>標籤區段，可以設定登入安全性個人喜好。 </para>
+
+<variablelist>
+		  <varlistentry><term><guilabel>允許 root 利用 GDM 登入</guilabel> </term> <listitem> 
+<para>選取此選項後，可讓具有系統管理員權限或 <literal>root</literal> 存取權限的使用者，使用 <application>GNOME  顯示管理員</application> (<application>GDM</application>) 從本機系統登入。</para>
+<note><para>支援「可插接式驗證模組」(PAM) 的系統則會忽略此選項。 PAM 程式庫會判定使用者是否在本機系統上。  </para>
+</note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>允許 root 利用 GDM 從遠端登入</guilabel> </term> <listitem> 
+<para>選取此選項後，可讓具有系統管理員權限或 <literal>root</literal> 存取權限的使用者，使用 <application>GDM</application> 從遠端系統來登入。  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>允許遠端計時登入</guilabel> </term> <listitem> 
+<para>選取此選項時，可讓 <application>GDM</application> 在經過一段間隔後，從遠端系統自動登入使用者。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>顯示動作功能表</guilabel> </term> <listitem> 
+<para>選取此選項後，可讓使用者使用登入畫面上的<guimenu>「動作」</guimenu>功能表。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>允許從登入畫面設定</guilabel> </term> <listitem> 
+<para>選取此選項時，可讓使用者使用登入畫面上<guimenu>「動作」</guimenu>功能表中的<guimenuitem>「設定登入管理員」</guimenuitem>項目。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>允許從登入畫面執行 XDMCP 選擇器</guilabel> </term> <listitem> 
+<para>選取此選項，可以讓使用者使用登入畫面上<guimenu>「動作」</guimenu>功能表中的<guimenuitem>「執行 XDMCP 選擇器」</guimenuitem>項目。</para><para><guimenuitem>「執行 XDMCP 選擇器」</guimenuitem>項目會顯示一份能提供顯示管理服務的主機清單。 使用者可以使用此清單，選擇可管理工作時段的主機。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>一律禁止 TCP 連線至 X 伺服器（停用所有遠端連線）</guilabel> </term> <listitem> 
+<para>如果您不希望使用者能夠從遠端系統連線到 X Window 系統伺服器，請選取此選項。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>重試延遲（秒數）</guilabel> </term> <listitem> 
+<para>使用此旋轉方塊，指定在登入畫面上登入嘗試失敗後，應等待多久才重新啟動 <guilabel>「使用者名稱」</guilabel>欄位。</para>
+<note><para>支援 PAM 的系統會忽略此選項。 </para></note>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+
+</sect2>
+<sect2 id="gdm-prefs-xdmcp">
+<title>XDMCP</title>
+<para>請使用<guilabel>「XDMCP」</guilabel>標籤區段來設定「X 顯示管理員控制通訊協定」 (XDMCP) 的個人喜好。  </para>
+
+
+<variablelist>
+		  <varlistentry><term><guilabel>啟用 XDMCP</guilabel> </term> <listitem> 
+<para>選取此選項時可顯示遠端  X Windows System，以便要求來自系統的 X Windows System 工作時段。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>接受間接要求</guilabel> </term> <listitem> 
+<para>選取此選項後，可以顯示未具有顯示管理員的遠端 X Windows System，以便要求來自該系統的 XDMCP 顯示管理服務。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>在 UDP 埠上偵聽</guilabel> </term> <listitem> 
+<para>使用此旋轉方塊，可以指定偵聽「使用者資料封包協定」(UDP) 要求所在的連接埠號號。  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>最大擱置要求數量</guilabel> </term> <listitem> 
+<para>使用此旋轉方塊，可指定來自系統之工作時段的最大佇列要求數量。</para><note><para>使用此選項，有助於避免拒絕服務入侵攻擊。 此選項可指定一次可以<emphasis>要求</emphasis>工作時段的顯示數量。 此選項無法指定 <application>GDM</application> 允許的遠端工作時段總數。 </para>
+</note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>最大擱置間接要求</guilabel> </term> <listitem> 
+<para><application>GDM</application> 對於來自系統的工作時段要求，會建立一個要求佇列。 使用此旋轉方塊，可以對於來自沒有顯示管理員的顯示的工作時段，指定最大的佇列要求數量。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>最大遠端工作時段數</guilabel> </term> <listitem> 
+<para>使用此旋轉方塊，可以指定 <application>GDM</application> 允許的最大遠端工作時段總數。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>最大等待時間</guilabel> </term> <listitem> 
+<para>使用此旋轉方塊，可以指定在 <application>GDM</application> 從要求佇列中移除要求之前，需要等待的時間。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>最大間接等待時間</guilabel> </term> <listitem> 
+<para>使用此旋轉方塊，可以指定在 <application>GDM</application> 從具有要求工作時段的顯示佇列中，移除未具有顯示管理員的顯示之前，應該等待的時間。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>每個主機的顯示數量</guilabel> </term> <listitem> 
+<para>使用此旋轉方塊，可以指定 <application>GDM </application> 允許來自主機之工作時段的總數。 </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term><guilabel>Ping 間隔（秒數）</guilabel> </term> <listitem> 
+<para><application>GDM</application> 會偵測工作時段，以檢查該工作時段是否仍在使用中。 使用此旋轉方塊，可以指定從 <application>GDM</application> 發出之偵測間的間隔。</para>
+			 </listitem>
+		  </varlistentry>
+</variablelist>
+
+</sect2>
+
+</sect1>
+</article>

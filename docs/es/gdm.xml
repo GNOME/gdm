@@ -1,0 +1,391 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "2.4.2.101" >
+  <!ENTITY manrevision "2.0.1" >
+  <!ENTITY date "Febrero 2004" >
+  <!ENTITY app "Configuraci&oacute;n de la pantalla de sesi&oacute;n" >
+  <!ENTITY ug "Escritorio de GNOME: Gu&iacute;a del usuario" >
+]>
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="es">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+
+
+  <articleinfo> 
+    <title>Manual de la Configuraci&oacute;n de la pantalla de sesi&oacute;n, versi&oacute;n V&manrevision; </title>       
+
+	 <copyright><year>2004</year> <holder>Sun Microsystems</holder>  </copyright><!-- translators: uncomment this:
+  	 <copyright>
+   		<year>2003</year>
+   		<holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  	 </copyright>
+   	 -->
+	 
+
+    <publisher><publishername>Proyecto de documentaci&oacute;n de GNOME</publishername>  </publisher><!-- This file  contains link to license for the documentation (GNU FDL), and 
+        other legal stuff such as "NO WARRANTY" statement. Please do not change 
+	any of this. -->&legal;  <authorgroup> 
+		<author>
+<surname>Equipo de documentaci&oacute;n de </surname>
+<firstname>Sun GNOME</firstname>
+<affiliation>
+<orgname>Sun Microsystems</orgname>
+</affiliation>
+</author>
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+
+    </authorgroup>
+
+    <revhistory>
+      <revision><revnumber>Manual de la Configuraci&oacute;n de la pantalla de sesi&oacute;n, versi&oacute;n &manrevision;</revnumber> <date>&date;</date> <revdescription> 
+	  		<para role="author">Equipo de documentaci&oacute;n de Sun GNOME </para>
+	  		<para role="publisher">Proyecto de documentaci&oacute;n de GNOME </para>
+		</revdescription> 
+      </revision>
+    </revhistory><releaseinfo>Este manual describe la versi&oacute;n &appversion; de la &app;.</releaseinfo>  <legalnotice> 
+      <title>Comentarios</title> 
+      <para>Para informar de un defecto o realizar una sugerencia sobre la aplicaci&oacute;n &app; o el presente manual, siga las indicaciones que aparecen en la <ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>.  </para><!-- Translators may also add here feedback address for translations -->
+
+    </legalnotice> 
+  </articleinfo><!-- ============= Document Body ============================= --><!-- ============= Introduction ============================== --><indexterm> <primary>Configuraci&oacute;n de la pantalla de sesi&oacute;n</primary> </indexterm> <sect1 id="gdm-introduction">
+<title>Introducci&oacute;n </title>
+<para>Para iniciar una sesi&oacute;n en el escritorio de GNOME, los usuarios deben autenticar su identidad. La pantalla de inicio de sesi&oacute;n proporciona al usuario un portal al escritorio de GNOME. Use la aplicaci&oacute;n <application>&app;</application> para configurar c&oacute;mo los usuarios iniciar&aacute;n la sesi&oacute;n en el sistema.</para>
+</sect1><!-- =========== Getting Started ============================== -->
+
+
+
+  <sect1 id="gdm-getting-started"> 
+	 <title>Procedimientos iniciales</title>
+
+	 <sect2 id="gdm-to-start"> 
+		<title>Para iniciar la &app;</title>
+		
+		<para>Para iniciar la <application>&app;</application>, siga este procedimiento: </para>
+		
+		<variablelist>
+			<varlistentry><term>Men&uacute;</term> <listitem>
+			<para>Si desea m&aacute;s informaci&oacute;n sobre c&oacute;mo iniciar la <application>&app;</application> desde un men&uacute;, consulte la &uacute;ltima versi&oacute;n del manual &ug; para su plataforma.  </para>
+			</listitem>
+			</varlistentry>
+			<varlistentry><term>L&iacute;nea de &oacute;rdenes</term> <listitem>
+			<para>Ejecute la orden siguiente: <command>gdmsetup</command></para>
+			</listitem>
+			</varlistentry>
+	</variablelist>
+<note><para>Debe tener privilegios de administrador del sistema o acceso como usuario <literal>root</literal> para configurar la pantalla de inicio de sesi&oacute;n.</para></note>
+	</sect2>
+
+	<sect2 id="gdm-when-you-start">
+	<title>Al iniciar la &app;</title>
+
+	<para>Cuando inicie <application>&app;</application> se abre el cuadro de di&aacute;logo siguiente:</para><!-- ==== Figure ==== -->
+	
+		<figure id="gdm_window"> 
+		  <title>Cuadro de di&aacute;logo de &app;</title>
+		  <screenshot><mediaobject><imageobject><imagedata fileref="figures/gdm_window.png" format="PNG"/> 
+			  
+				
+					 
+				 </imageobject><textobject> <phrase>Muestra el cuadro de di&aacute;logo Configuraci&oacute;n de la pantalla de sesi&oacute;n. El contexto describe la ilustraci&oacute;n.</phrase>
+		</textobject></mediaobject></screenshot>
+		</figure><!-- ==== End of Figure ==== -->
+<para>El cuadro de di&aacute;logo <application>&app;</application> contiene las fichas siguientes:</para>
+<itemizedlist>
+<listitem><para><link linkend="gdm-prefs-general">General</link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-standard">Interfaz de inicio est&aacute;ndar</link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-graphical">Interfaz de inicio gr&aacute;fica</link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-security">Seguridad</link></para></listitem>
+<listitem><para><link linkend="gdm-prefs-xdmcp">XDMCP</link></para></listitem>
+</itemizedlist>
+	
+	 </sect2>
+
+
+  </sect1><!-- ============= Customization ============================= -->
+
+
+  
+  <sect1 id="gdm-preferences"> 
+<title>Preferencias</title>
+
+<sect2 id="gdm-prefs-general">
+<title>General</title>
+<para>La ficha General permite definir las preferencias generales de la pantalla de inicio de sesi&oacute;n. </para>
+
+		<variablelist> 
+		  <varlistentry><term>Local</term> <listitem> 
+				<para>Seleccione el tipo de interfaz para la pantalla de inicio cuando los usuarios inicien la sesi&oacute;n desde un sistema local. Seleccione una de las siguientes opciones de la lista desplegable.</para>
+<itemizedlist>
+<listitem><para>Interfaz de inicio gr&aacute;fica: seleccione esta opci&oacute;n para usar una pantalla de inicio de sesi&oacute;n con im&aacute;genes desde un sistema local. </para>
+</listitem>
+<listitem><para>Interfaz de inicio est&aacute;ndar: seleccione esta opci&oacute;n para usar la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME cuando los usuarios inicien la sesi&oacute;n desde un sistema local.  </para></listitem>
+</itemizedlist>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Remoto</term> <listitem> 
+				<para>Seleccione el tipo de interfaz para la pantalla de inicio cuando los usuarios inicien la sesi&oacute;n desde un sistema remoto. Seleccione una de las siguientes opciones de la lista desplegable.</para><itemizedlist>
+<listitem><para>Interfaz de inicio gr&aacute;fica: seleccione esta opci&oacute;n para usar una pantalla de inicio de sesi&oacute;n con im&aacute;genes desde un sistema remoto. </para>
+</listitem>
+<listitem><para>Interfaz de inicio est&aacute;ndar: seleccione esta opci&oacute;n para usar la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME cuando los usuarios inicien la sesi&oacute;n desde un sistema remoto.  </para></listitem>
+</itemizedlist>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Usar siempre el formato de 24 horas</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para ver la hora en la pantalla de inicio de sesi&oacute;n con el formato de 00.00 a 24.00. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Mensaje de bienvenida</term> <listitem> 
+<para>Escriba un mensaje de bienvenida para que aparezca en la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME cuando los usuarios inicien la sesi&oacute;n desde un sistema local.</para><note><para>Si desea ver el nombre del sistema en el mensaje de bienvenida, escriba <literal>%n</literal> en este cuadro de texto.  </para></note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Mensaje de bienvenida remoto</term> <listitem> 
+<para>Escriba un mensaje de bienvenida para que aparezca en la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME cuando los usuarios inicien la sesi&oacute;n desde un sistema remoto. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Iniciar la sesi&oacute;n con un usuario de forma autom&aacute;tica en el arranque del sistema</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para iniciar la sesi&oacute;n con un usuario autom&aacute;ticamente cuando &eacute;ste arranque el sistema por primera vez. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Nombre de usuario del inicio de sesi&oacute;n autom&aacute;tico</term> <listitem> 
+<para>Use el cuadro combinado desplegable para escribir el nombre del usuario que el sistema deba usar para iniciar la sesi&oacute;n autom&aacute;ticamente. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Iniciar la sesi&oacute;n con un usuario en forma autom&aacute;tica tras unos segundos</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para iniciar la sesi&oacute;n con un usuario automaticamente despu&eacute;s del intervalo que especifique. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Nombre de usuario del inicio de sesi&oacute;n temporizado</term> <listitem> 
+<para>Use el cuadro combinado desplegable para escribir el nombre del usuario que el sistema utiliza para iniciar autom&aacute;ticamente la sesi&oacute;n de un usuario despu&eacute;s de un intervalo. </para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry><term>Segundos antes del inicio de sesi&oacute;n</term> <listitem> 
+<para>Use el cuadro de selecci&oacute;n para especificar cu&aacute;nto tiempo debe esperar el usuario antes de iniciar la sesi&oacute;n autom&aacute;ticamente.</para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+</sect2>
+
+<sect2 id="gdm-prefs-standard">
+<title>Interfaz de inicio est&aacute;ndar</title>
+<para>La ficha Interfaz de inicio est&aacute;ndar permite definir las preferencias de la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME. </para>
+
+
+
+<variablelist>
+		  <varlistentry><term>Logo</term> <listitem> 
+<para>Seleccione una imagen para mostrar como logo en la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME. Si desea elegir una imagen, escriba el nombre del archivo de la imagen en el cuadro combinado desplegable. Si lo prefiere, puede hacer clic en el boton Examinar para ver un cuadro de di&aacute;logo, desde el que puede elegir una imagen. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Mostrar las im&aacute;genes seleccionables (navegador de rostros)</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para mostrar im&aacute;genes de usuarios en la pantalla est&aacute;ndar del inicio de sesi&oacute;n de GNOME. Si se selecciona esta opci&oacute;n, los usuarios pueden seleccionar una imagen en lugar de escribir el nombre de un usuario. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Sin fondo</term> <listitem> 
+<para>Seleccione esta opci&oacute;n si no desea que aparezca una imagen o un color en el fondo de la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME.  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Imagen</term> <listitem> 
+<para>Seleccione esta opci&oacute;n si desea que aparezca una imagen en el fondo de la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME. Para elegir una imagen, escriba el nombre de &eacute;sta en el cuadro combinado desplegable que se encuentra en el lado derecho del cuadro de di&aacute;logo. Si lo desea, tambi&eacute;n puede hacer clic en el bot&oacute;n Examinar, en el lado derecho del cuadro de di&aacute;logo para que aparezca un cuadro de di&aacute;logo desde el que pueda elegir una imagen. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Color</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para que aparezca un color en el fondo de la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME. Use el bot&oacute;n Color de fondo para especificar el color. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Ajustar imagen de fondo para que encaje</term> <listitem> 
+<para>Si ha marcado la opci&oacute;n Imagen, seleccione esta opci&oacute;n para escalar la imagen del fondo de modo que se ajuste a la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME. La proporci&oacute;n entre altura y anchura se mantendr&aacute;. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Solamente color en pantallas remotas</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para mostrar un color en el fondo de la pantalla est&aacute;ndar de inicio de sesi&oacute;n de GNOME si los usuarios inician la sesi&oacute;n desde un sistema remoto.  </para>
+			 </listitem>
+		  </varlistentry>
+
+
+		  <varlistentry><term>Color de fondo</term> <listitem> 
+<para>Si selecciona la opci&oacute;n Color o Solamente color en pantallas remotas para el fondo de pantalla, utilice este bot&oacute;n para especificar el color. Haga clic en el bot&oacute;n del selector de colores para que se muestre el cuadro de di&aacute;logo del selector de colores. Seleccione el color en este cuadro de di&aacute;logo. </para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+</sect2>
+<sect2 id="gdm-prefs-graphical">
+<title>Interfaz de inicio gr&aacute;fica</title>
+<para>La ficha Interfaz de inicio gr&aacute;fica permite definir las preferencias de la pantalla gr&aacute;fica de inicio de sesi&oacute;n.</para>
+
+<variablelist>
+
+		  <varlistentry><term>Lista de temas</term> <listitem> 
+<para>Elija un tema para la pantalla gr&aacute;fica de inicio de sesi&oacute;n. En el lado derecho del cuadro de di&aacute;logo podr&aacute; ver una vista previa del tema elegido. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Instalar tema nuevo</term> <listitem> 
+<para>Puede a&ntilde;adir un tema nuevo a la lista de disponibles. El nuevo tema deber&aacute; ser un contenedor comprimido en formato tar y zip. Es decir, debe ser un archivo del tipo <filename>.tar.gz</filename>.</para><para>Para instalar un tema nuevo:</para>
+<orderedlist>
+<listitem><para>Haga clic en el bot&oacute;n Instalar tema nuevo.</para></listitem>
+<listitem><para>Use el cuadro de di&aacute;logo para seleccionar el archivo del contenedor.</para></listitem>
+<listitem><para>Haga clic en Aceptar. </para></listitem>
+</orderedlist>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Suprimir tema</term> <listitem> 
+<para>Si desea borrar un tema, selecci&oacute;nelo y haga clic en el bot&oacute;n Suprimir tema.</para>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+</sect2>
+<sect2 id="gdm-prefs-security">
+<title>Seguridad</title>
+<para>La ficha Seguridad permite configurar las preferencias de seguridad del inicio de sesi&oacute;n. </para>
+
+<variablelist>
+		  <varlistentry><term>Permitir a un usuario root iniciar la sesi&oacute;n de GDM</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para permitir que los usuarios con privilegios de administrador del sistema o de acceso de usuario <literal>root</literal> para usar el <application>Gestor de la pantalla de GNOME</application> (<application>GDM</application>) puedan iniciar la sesi&oacute;n desde un sistema local.</para>
+<note><para>Los sistemas que admitan los m&oacute;dulos Pluggable Authentication Modules (PAM) omiten esta opci&oacute;n. Las bibliotecas PAM determinan si el usuario se encuentra en el sistema local.  </para>
+</note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Permitir a un usuario root iniciar una sesi&oacute;n remota con GDM</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para permitir que los usuarios con privilegios de administrador del sistema o de acceso de usuario <literal>root</literal> utilicen <application>GDM</application> puedan iniciar la sesi&oacute;n desde un sistema remoto.  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Permitir inicios de sesi&oacute;n remotos temporizados</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para permitir que <application>GDM</application> inicie autom&aacute;ticamente la sesi&oacute;n de un usuario despu&eacute;s de un intervalo, desde un sistema remoto. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Mostrar men&uacute; de acciones</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para permitir que los usuarios utilicen el men&uacute; Acciones en la pantalla de inicio de sesi&oacute;n. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Permitir configuraci&oacute;n desde la pantalla de inicio de sesi&oacute;n</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para permitir a los usuarios que utilicen la opci&oacute;n Configurar el gestor de inicio de sesi&oacute;n desde el men&uacute; Acciones en la pantalla de inicio de sesi&oacute;n. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Permitir ejecutar el selector XDMCP desde la pantalla de inicio de sesi&oacute;n</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para permitir a los usuarios que utilicen el elemento Ejecutar el selector XDMCP del men&uacute; Acciones en la pantalla de inicio de sesi&oacute;n.</para><para>El elemento Ejecutar el selector XDMCP muestra una lista de sistemas que pueden ofrecer servicios de gesti&oacute;n para la visualizaci&oacute;n. Los usuarios pueden utilizar esta lista para elegir un sistema que gestione una sesi&oacute;n. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>No permitir nunca conexiones TCP con el servidor X (inhabilita todas las conexiones remotas)</term> <listitem> 
+<para>Seleccione esta opci&oacute;n si no desea que los usuarios puedan conectarse con el servidor del sistema de X Window desde sistemas remotos. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Retraso para reintento (seg)</term> <listitem> 
+<para>Use el cuadro de selecci&oacute;n para especificar cu&aacute;nto tiempo se debe esperar tras un intento fallido de inicio de sesi&oacute;n, antes de volver a activar el campo Nombre de usuario en la pantalla de inicio de sesi&oacute;n.</para>
+<note><para>Los sistemas que admitan PAM omiten esta opci&oacute;n. </para></note>
+			 </listitem>
+		  </varlistentry>
+
+</variablelist>
+
+
+</sect2>
+<sect2 id="gdm-prefs-xdmcp">
+<title>XDMCP</title>
+<para>La ficha XDMCP permite definir las preferencias de X Display Manager Control Protocol (XDMCP, protocolo de control del gestor de pantallas X).  </para>
+
+
+<variablelist>
+		  <varlistentry><term>Habilitar XDMCP</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para permitir que un sistema remoto de X Window solicite una sesi&oacute;n del sistema de X Windows desde el sistema. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Admitir peticiones indirectas</term> <listitem> 
+<para>Seleccione esta opci&oacute;n para que el sistema remoto de X Windows muestre que no dispone de un gestor de visualizaciones para solicitar servicios de gesti&oacute;n de visualizaci&oacute;n de XDMCP desde este sistema. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Escuchar en el puerto UDP</term> <listitem> 
+<para>Use el cuadro de selecci&oacute;n para especificar el n&uacute;mero de puertos en los que se deben recibir las solicitudes de User Datagram Protocol (UDP, protocolo de datagrama del usuario).  </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>M&aacute;ximo de solicitudes pendientes</term> <listitem> 
+<para>Use el cuadro de selecci&oacute;n para especificar el n&uacute;mero m&aacute;ximo de solicitudes en cola de las sesiones del sistema.</para><note><para>Use esta opci&oacute;n para prevenir los ataques de denegaci&oacute;n de servicio. Esta opci&oacute;n especifica el n&uacute;mero de pantallas que pueden <emphasis>solicitar</emphasis> una sesi&oacute;n a la vez. Esta opci&oacute;n no especifica el n&uacute;mero total de sesiones remotas que permite <application>GDM</application>. </para>
+</note>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>M&aacute;ximo de solicitudes indirectas pendientes</term> <listitem> 
+<para><application>GDM</application> crea una cola de solicitudes para las sesiones desde el sistema. Use el cuadro de selecci&oacute;n para especificar el n&uacute;mero m&aacute;ximo de solicitudes en cola de las sesiones desde las visualizaciones que no disponen de un gestor. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>M&aacute;ximo de sesiones remotas</term> <listitem> 
+<para>Use el cuadro de selecci&oacute;n para especificar el n&uacute;mero total de sesiones remotas que permite <application>GDM</application>. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Tiempo m&aacute;ximo de espera</term> <listitem> 
+<para>Use el cuadro de selecci&oacute;n para especificar cu&aacute;nto tiempo se debe esperar antes de que <application>GDM</application> suprima una solicitud de la cola de solicitudes. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Tiempo m&aacute;ximo de espera indirecta</term> <listitem> 
+<para>Use el cuadro de selecci&oacute;n para especificar cu&aacute;nto tiempo se debe esperar antes de que <application>GDM</application> suprima las pantallas que no dispongan de un gestor, desde la cola de pantallas que han solicitado sesiones. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Pantallas por sistema</term> <listitem> 
+<para>Use el cuadro de selecci&oacute;n para especificar el n&uacute;mero total de sesiones que permite <application>GDM</application> desde un sistema. </para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry><term>Intervalo de ping (segundos)</term> <listitem> 
+<para><application>GDM</application> sondea las sesiones para comprobar que todav&iacute;a est&eacute;n activas. Use el cuadro de selecci&oacute;n para determinar el intervalo entre los sondeos de <application>GDM</application>.</para>
+			 </listitem>
+		  </varlistentry>
+</variablelist>
+
+</sect2>
+
+</sect1>
+</article>

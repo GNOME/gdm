@@ -1,4 +1,4 @@
-SUBDIRS = . C
+SUBDIRS = . C de es fr it sv ja ko zh_CN zh_CN
 
 man_MANS = gdm.1
 
