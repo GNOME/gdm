@@ -1,4 +1,4 @@
-SUBDIRS = config macros pixmaps intl daemon gui docs po
+SUBDIRS = config macros pixmaps intl daemon gui docs omf-install po
 
 EXTRA_DIST = \
 	ChangeLog		\
