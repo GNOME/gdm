@@ -1,3 +1,20 @@
+Tue Jul 15 15:54:14 2003  George Lebl <jirka@5z.com>
+
+	* docs/GdmGreeterThemeManual.txt, gui/greeter/Makefile.am,
+	  gui/greeter/greeter.dtd, gui/greeter/themes/circles/circles.xml.in,
+	  gui/greeter/themes/happygnome/happygnome.xml.in,
+	  gui/greeter/themes/happygnome-list/happygnome.xml.in:  Remove
+	  the translations from the .xml.in files (they are now processed
+	  by intltool needlessly).  These were not used anyway, we are
+	  using stock labels here.  Perhaps people will this way stop putting
+	  translated labels inside the themes if they can use stock labels.
+	  Also this improves loadup speed a bit as it reduces the average
+	  theme xml size from about 25k to about 5k.  Also whack the id
+	  timed-rect as it's not used and kill it from the dtd as it's bogus.
+	  Update the theme manual adding the userlist and whacking
+	  pam-warning which does not exist and other minor fixes and
+	  additions.
+
 Tue Jul 15 13:04:26 2003  George Lebl <jirka@5z.com>
 
 	* daemon/verify-pam.c: reset limits in cleanup

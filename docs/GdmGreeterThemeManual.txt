@@ -3,7 +3,7 @@
 GDM Theme Manual
 By Brian Cameron <Brian.Cameron@Sun.COM>
 Updated by George Lebl <jirka@5z.com>
-Last Updated: June 6, 2003
+Last Updated: July 15, 2003
 ========================================
 
 GDM Themes can be created by creating an XML file that follows the
@@ -80,6 +80,7 @@ Item Nodes:
   nodes.  Item nodes can have the following value for "type":
 
     entry  - Text entry field
+    list   - A list widget
     label  - Label.  Must have a "text" node to specify the text.
     pixmap - Pixmap (in a format GTK+ supports like PNG, JPEG, Tiff)
     rect   - Rectangle
@@ -96,26 +97,39 @@ Item Nodes:
 
     Entry items can have id values as follows:
 
-       user-pw-entry - Entry field for userid and password entry.
+       user-pw-entry - Entry field for userid and password entry.  This is
+                       the field used for responses for the PAM/GDM questions
+                       (Username, Password, etc..)
+
+  list:
+
+    List items can have id values as follows:
+
+       userlist    - A user browser list, so that users can pick
+                     their username by clicking on this instead
+                     of typing.
 
   label:
 
     Label items can have id values as follows:
 
      clock         - Label the displays the date and time.
-     pam-error     - Label the displays PAM error messages.
-     pam-message   - Label the displays PAM message.
-     pam-prompt    - Label the displays PAM prompt.
-     pam-warning   - Label the displays PAM warning messages.
-     timed-label   - Label that displays timed login information
-
+     pam-prompt    - Label the displays PAM prompt.  This is the prompt that
+                     PAM uses to ask for username, password, etc...
+     pam-error     - Label the displays PAM/GDM error messages.  Such as when
+                     user can't log in
+     pam-message   - Label the displays PAM message.  These are messages that
+                     PAM/GDM gives about state of the account, help about the
+                     prompts and other information.
+     timed-label   - Label that displays timed login information.
+                     
    rect:
 
      Rectangles can have id values as follows:
 
        caps-lock-warning - Displays an icon that shows if the
-                           CAPS LOCK key is depressed.
-
+                           CAPS LOCK key is depressed.  This rectangle
+                           will be hidden/shown appropriately
 
      If an item is of type rect, the item can be a button.  Buttons
      must also include a "button" value as follows:
@@ -125,13 +139,13 @@ Item Nodes:
      Possible values for button ids are as follows:
 
        chooser_button    - Runs XDMCP chooser
-       config_button     - Only allows configure system
+       config_button     - Runs the GDM Setup program
        disconnect_button - Disconnect from remote session
-       language_button   - Select language
-       halt_button       - Halt system
-       reboot_button     - Reboot system
-       session_button    - List available sessions
-       suspend_button    - Suspect system
+       language_button   - Displays the language selection dialog
+       halt_button       - Halt (shuts down) the system
+       reboot_button     - Reboot the system
+       session_button    - List and select from available sessions
+       suspend_button    - Suspend the system
        system_button     - Perform halt/reboot/suspend/etc. options
                            (if allowed by gdm configuration).  Also
                            allows user to run configurator if user
@@ -181,6 +195,8 @@ Show Node:
   Note that if SystemMenu is off then all of halt, reboot, suspend, chooser
   and config will not show, so this is a global toggle for them all.
 
+  See some of the standard themes for how the show modes are used.
+
 Normal/Active/Prelight Nodes:
 
   Depending on the item type, it can specify its color, font, or
@@ -216,8 +232,10 @@ Text Node:
 Stock:
 
   Certain common localized labels can be specified via the stock
-  tags.  The "text" tag is ignored if the "stock" tag is used.
-  The following values are valid:
+  tags.  The "text" tag is ignored if the "stock" tag is used.   You
+  should really use the stock labels rather then just putting all
+  the translations into the themes.  This gives faster load times
+  and likely better translations.  The following values are valid:
 
      caps-lock-warning  _("You've got capslock on!") 
      chooser            _("_XDMCP Chooser")

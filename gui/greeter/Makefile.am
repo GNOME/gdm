@@ -67,4 +67,5 @@ gdmgreeter_LDADD = \
 	$(GREETER_LIBS)
 
 EXTRA_DIST = \
-	gdmthemetester
+	gdmthemetester \
+	greeter.dtd
