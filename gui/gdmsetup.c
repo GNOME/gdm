@@ -51,6 +51,7 @@ static gboolean RUNNING_UNDER_GDM = FALSE;
 
 static gboolean gdm_running = FALSE;
 static int GdmMinimalUID = 100;
+static char *GdmExclude = NULL;
 static char *GdmSoundProgram = NULL;
 
 static GladeXML *xml;
@@ -493,6 +494,36 @@ root_not_allowed (GtkWidget *entry)
 	}
 }
 
+static gboolean
+check_exclude (struct passwd *pwent, char **excludes)
+{
+	const char * const lockout_passes[] = { "!!", NULL };
+	gint i;
+
+	if (pwent->pw_uid == 0)
+		return TRUE;
+
+	if (pwent->pw_uid < GdmMinimalUID)
+		return TRUE;
+
+	for (i=0 ; lockout_passes[i] != NULL ; i++)  {
+		if (strcmp (lockout_passes[i], pwent->pw_passwd) == 0) {
+			return TRUE;
+		}
+	}
+
+	if (excludes != NULL) {
+		for (i=0 ; excludes[i] != NULL ; i++)  {
+			if (g_ascii_strcasecmp (excludes[i],
+						pwent->pw_name) == 0) {
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
 static void
 setup_user_combo (const char *name, const char *key)
 {
@@ -503,6 +534,8 @@ setup_user_combo (const char *name, const char *key)
 	char *str;
 	int cnt;
 	time_t time_started;
+	char **excludes;
+	int i;
 
 	str = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
@@ -518,13 +551,17 @@ setup_user_combo (const char *name, const char *key)
 
 	pwent = getpwent();
 	cnt = 0;
+
+	excludes = g_strsplit (GdmExclude, ",", 0);
+	for (i=0 ; excludes != NULL && excludes[i] != NULL ; i++)
+		g_strstrip (excludes[i]);
 	
 	while (pwent != NULL) {
-		if (pwent->pw_uid >= GdmMinimalUID &&
+		if ( ! check_exclude (pwent, excludes) &&
 		    strcmp (ve_sure_string (str), pwent->pw_name) != 0) {
 			cnt ++;
-			users = g_list_append (users,
-					       g_strdup (pwent->pw_name));
+			users = g_list_prepend (users,
+						g_strdup (pwent->pw_name));
 			/* FIXME: fix properly, see bug #111830 */
 			if (cnt >= 100 ||
 			    time_started + 5 <= time (NULL)) {
@@ -538,6 +575,11 @@ setup_user_combo (const char *name, const char *key)
 	}
 
 	endpwent ();
+
+	g_strfreev (excludes);
+	excludes = NULL;
+
+	users = g_list_reverse (users);
 
 	gtk_combo_set_popdown_strings (GTK_COMBO (combo), users);
 
@@ -2764,6 +2806,8 @@ main (int argc, char *argv[])
 	 * ui?  Say it ain't so.  Our config sections are SUCH A MESS */
 	GdmMinimalUID = ve_config_get_int (ve_config_get (GDM_CONFIG_FILE),
 					   GDM_KEY_MINIMALUID);
+	GdmExclude = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+					   GDM_KEY_EXCLUDE);
 	GdmSoundProgram = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 						GDM_KEY_SOUND_PROGRAM);
 	if (ve_string_empty (GdmSoundProgram) ||
