@@ -1,3 +1,14 @@
+Tue May 14 14:53:51 2002  George Lebl <jirka@5z.com>
+
+	* NEWS, configure.in: increment version, prepare for release
+
+	* gui/gdmsetup.c: fix initial selection of the current greeter
+
+	* daemon/display.c, daemon/errorgui.c, daemon/gdm.[ch],
+	  daemon/misc.c, daemon/server.c, daemon/slave.c:  Fix deadlocks
+	  when using the syslog inside a signal handler by sending the
+	  message to the main daemon which then syslogs it.
+
 Tue May 14 12:08:25 2002  George Lebl <jirka@5z.com>
 
 	* gui/gdmphotosetup.c, daemon/auth.c:  Apply some leak fixes from

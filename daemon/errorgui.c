@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <unistd.h>
+#include <syslog.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
@@ -80,6 +81,8 @@ gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 		int screenheight = 0;
 		char *loc;
 
+		closelog ();
+
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
 
@@ -88,6 +91,8 @@ gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		seteuid (getuid ());
 		setegid (getgid ());
@@ -190,6 +195,8 @@ gdm_failsafe_question (GdmDisplay *d,
 		int screenheight = 0;
 		char *loc;
 
+		closelog ();
+
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
 
@@ -198,6 +205,8 @@ gdm_failsafe_question (GdmDisplay *d,
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		seteuid (getuid ());
 		setegid (getgid ());
@@ -327,6 +336,8 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		int screenheight = 0;
 		char *loc;
 
+		closelog ();
+
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++) {
 			if (p[1] != i)
 				close(i);
@@ -337,6 +348,8 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		seteuid (getuid ());
 		setegid (getgid ());

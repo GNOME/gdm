@@ -421,6 +421,8 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 #define GDM_SOP_SOFT_RESTART "SOFT_RESTART" /* no arguments */
 #define GDM_SOP_START_NEXT_LOCAL "START_NEXT_LOCAL" /* no arguments */
 #define GDM_SOP_HUP_ALL_GREETERS "HUP_ALL_GREETERS" /* no arguments */
+/* sometimes we can't do a syslog so we tell the main daemon */
+#define GDM_SOP_SYSLOG "SYSLOG" /* <pid> <type> <message> */
 
 /* Notification protocol */
 #define GDM_NOTIFY_ALLOWREMOTEROOT "AllowRemoteRoot" /* <true/false as int> */

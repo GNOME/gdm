@@ -89,6 +89,8 @@ gboolean gdm_emergency_server = FALSE;
 
 gboolean gdm_first_login = TRUE;
 
+int gdm_in_signal = 0;
+
 /* Configuration options */
 gchar *GdmUser = NULL;
 gchar *GdmGroup = NULL;
@@ -839,6 +841,8 @@ deal_with_x_crashes (GdmDisplay *d)
 		    char *argv[2];
 		    char *xlog = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
 		    int ii;
+
+		    closelog ();
 
 		    for (ii = 0; ii < sysconf (_SC_OPEN_MAX); ii++)
 			    close (ii);
@@ -1851,6 +1855,30 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strcmp (msg, GDM_SOP_SOFT_RESTART) == 0) {
 		gdm_restart_mode = TRUE;
 		gdm_safe_restart ();
+	} else if (strncmp (msg, GDM_SOP_SYSLOG " ",
+		            strlen (GDM_SOP_SYSLOG " ")) == 0) {
+		char *p;
+		long pid;
+	       	int type;
+		p = strchr (msg, ' ');
+		if (p == NULL)
+			return;
+		p++;
+		if (sscanf (p, "%ld", &pid) != 1)
+			return;
+		p = strchr (p, ' ');
+		if (p == NULL)
+			return;
+		p++;
+		if (sscanf (p, "%d", &type) != 1)
+			return;
+
+		p = strchr (p, ' ');
+		if (p == NULL)
+			return;
+		p++;
+
+		syslog (type, "(child %ld) %s", pid, p);
 	} else if (strcmp (msg, GDM_SOP_START_NEXT_LOCAL) == 0) {
 		gdm_start_first_unborn_local (3 /* delay */);
 	} else if (strcmp (msg, GDM_SOP_HUP_ALL_GREETERS) == 0) {

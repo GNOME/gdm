@@ -37,6 +37,7 @@
 
 #include "gdm.h"
 #include "misc.h"
+#include "slave.h"
 
 /* Configuration option variables */
 extern gchar *GdmPidFile;
@@ -49,6 +50,20 @@ extern char **environ;
 extern pid_t extra_process;
 extern int extra_status;
 extern gboolean preserve_ld_vars;
+extern int gdm_in_signal;
+
+static void
+do_syslog (int type, const char *s)
+{
+	if (gdm_in_signal > 0) {
+		char *m = g_strdup_printf (GDM_SOP_SYSLOG " %ld %d %s",
+					   (long)getpid (), type, s);
+		gdm_slave_send (m, FALSE);
+		g_free (m);
+	} else {
+		syslog (type, "%s", s);
+	}
+}
 
 
 /**
@@ -71,7 +86,7 @@ gdm_fail (const gchar *format, ...)
     va_end (args);
 
     /* Log to both syslog and stderr */
-    syslog (LOG_CRIT, "%s", s);
+    do_syslog (LOG_CRIT, s);
     fprintf (stderr, "%s\n", s);
     fflush (stderr);
 
@@ -107,7 +122,7 @@ gdm_info (const gchar *format, ...)
     s = g_strdup_vprintf (format, args);
     va_end (args);
 
-    syslog (LOG_INFO, "%s", s);
+    do_syslog (LOG_INFO, s);
     
     g_free (s);
 }
@@ -131,7 +146,7 @@ gdm_error (const gchar *format, ...)
     s = g_strdup_vprintf (format, args);
     va_end (args);
 
-    syslog (LOG_ERR, "%s", s);
+    do_syslog (LOG_ERR, s);
     
     g_free (s);
 }
@@ -158,7 +173,7 @@ gdm_debug (const gchar *format, ...)
     s = g_strdup_vprintf (format, args);
     va_end (args);
 
-    syslog (LOG_ERR, "%s", s);	/* Maybe should be LOG_DEBUG, but then normally
+    do_syslog (LOG_ERR, s);	/* Maybe should be LOG_DEBUG, but then normally
 				 * you wouldn't get it in the log.  ??? */
     
     g_free (s);
@@ -464,6 +479,8 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 	if (pid == 0) {
 		int i;
 
+		closelog ();
+
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close (i);
 
@@ -477,6 +494,8 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 			seteuid (getuid ());
 			setegid (getgid ());
 		}
+
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		if (no_display) {
 			gnome_unsetenv ("DISPLAY");

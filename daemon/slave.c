@@ -85,6 +85,7 @@ extern gboolean gdm_first_login;
 extern gboolean gdm_emergency_server;
 extern pid_t extra_process;
 extern int extra_status;
+extern int gdm_in_signal;
 
 /* Configuration option variables */
 extern gchar *GdmUser;
@@ -635,6 +636,8 @@ focus_first_x_window (const char *class_res_name)
 		return;
 	}
 
+	closelog ();
+
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 	    close(i);
 
@@ -643,6 +646,8 @@ focus_first_x_window (const char *class_res_name)
 	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 	disp = XOpenDisplay (d->name);
 	if (disp == NULL) {
@@ -735,6 +740,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		gnome_setenv ("PATH", GdmRootPath, TRUE);
 		gnome_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
+		closelog ();
+
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
 
@@ -743,6 +750,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		/* exec the configurator */
 		argv = ve_split (GdmConfigurator);
@@ -1273,10 +1282,14 @@ gdm_slave_greeter (void)
 	if (pipe2[1] != STDOUT_FILENO) 
 	    dup2 (pipe2[1], STDOUT_FILENO);
 
+	closelog ();
+
 	for (i = 2; i < sysconf (_SC_OPEN_MAX); i++)
 	    close(i);
 
 	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
 	if (setgid (GdmGroupId) < 0) 
 	    gdm_child_exit (DISPLAY_ABORT,
@@ -1451,6 +1464,8 @@ parent_exists (void)
 	return TRUE;
 }
 
+/* This should not call anything that could cause a syslog in case we
+ * are in a signal */
 void
 gdm_slave_send (const char *str, gboolean wait_for_ack)
 {
@@ -1458,7 +1473,8 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	char *fifopath;
 	int i;
 
-	gdm_debug ("Sending %s", str);
+	if (gdm_in_signal == 0)
+		gdm_debug ("Sending %s", str);
 
 	if (wait_for_ack)
 		gdm_got_ack = FALSE;
@@ -1469,7 +1485,8 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 
 	/* eek */
 	if (fd < 0) {
-		gdm_error (_("%s: Can't open fifo!"), "gdm_slave_send");
+		if (gdm_in_signal == 0)
+			gdm_error (_("%s: Can't open fifo!"), "gdm_slave_send");
 		return;
 	}
 
@@ -1492,11 +1509,11 @@ gdm_slave_send_num (const char *opcode, long num)
 {
 	char *msg;
 
-	gdm_debug ("Sending %s == %ld for slave %ld",
-		   opcode,
-		   (long)num,
-		   (long)getpid ());
-
+	if (gdm_in_signal == 0)
+		gdm_debug ("Sending %s == %ld for slave %ld",
+			   opcode,
+			   (long)num,
+			   (long)getpid ());
 
 	msg = g_strdup_printf ("%s %ld %ld", opcode,
 			       (long)getpid (), (long)num);
@@ -1512,7 +1529,7 @@ gdm_slave_send_string (const char *opcode, const char *str)
 	char *msg;
 
 	/* Evil!, all this for debugging? */
-	if (GdmDebug) {
+	if (GdmDebug && gdm_in_signal == 0) {
 		if (strcmp (opcode, GDM_SOP_COOKIE) == 0)
 			gdm_debug ("Sending %s == <secret> for slave %ld",
 				   opcode,
@@ -1611,12 +1628,16 @@ gdm_slave_chooser (void)
 		if (p[1] != STDOUT_FILENO) 
 			dup2 (p[1], STDOUT_FILENO);
 
+		closelog ();
+
 		close (0);
 		for (i = 2; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
 
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		if (setgid (GdmGroupId) < 0) 
 			gdm_child_exit (DISPLAY_ABORT,
@@ -2088,6 +2109,8 @@ session_child_run (struct passwd *pwent,
 		gnome_config_drop_all ();
 	}
 
+	closelog ();
+
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 	    close (i);
 
@@ -2096,6 +2119,8 @@ session_child_run (struct passwd *pwent,
 	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
 	sigemptyset (&mask);
 	sigprocmask (SIG_SETMASK, &mask, NULL);
@@ -2581,6 +2606,8 @@ gdm_slave_term_handler (int sig)
 {
 	sigset_t tmask;
 
+	gdm_in_signal++;
+
 	gdm_debug ("gdm_slave_term_handler: %s got TERM/INT signal", d->name);
 
 	/* just for paranoia's sake */
@@ -2631,10 +2658,13 @@ gdm_slave_alrm_handler (int sig)
 {
 	static gboolean in_ping = FALSE;
 
+	gdm_in_signal++;
+
 	gdm_debug ("gdm_slave_alrm_handler: %s got ARLM signal, "
 		   "to ping display", d->name);
 
 	if (d->dsp == NULL) {
+		gdm_in_signal --;
 		/* huh? */
 		return;
 	}
@@ -2660,6 +2690,8 @@ gdm_slave_alrm_handler (int sig)
 	XSync (d->dsp, True);
 
 	in_ping = FALSE;
+
+	gdm_in_signal --;
 }
 
 /* Called on every SIGCHLD */
@@ -2668,6 +2700,8 @@ gdm_slave_child_handler (int sig)
 {
     gint status;
     pid_t pid;
+
+    gdm_in_signal++;
 
     gdm_debug ("gdm_slave_child_handler");
     
@@ -2695,6 +2729,7 @@ gdm_slave_child_handler (int sig)
 				interrupted = TRUE;
 				do_restart_greeter = TRUE;
 			}
+			gdm_in_signal--;
 			return;
 		}
 
@@ -2733,6 +2768,7 @@ gdm_slave_child_handler (int sig)
 	    	extra_status = status;
 	}
     }
+    gdm_in_signal--;
 }
 
 static void
@@ -2743,17 +2779,23 @@ gdm_slave_usr2_handler (int sig)
 	char **vec;
 	int i;
 
+	gdm_in_signal++;
+
 	gdm_debug ("gdm_slave_usr2_handler: %s got USR2 signal", d->name);
 
 	count = read (d->slave_notify_fd, buf, sizeof (buf) -1);
-	if (count <= 0)
+	if (count <= 0) {
+		gdm_in_signal--;
 		return;
+	}
 
 	buf[count] = '\0';
 
 	vec = g_strsplit (buf, "\n", -1);
-	if (vec == NULL)
+	if (vec == NULL) {
+		gdm_in_signal--;
 		return;
+	}
 
 	for (i = 0; vec[i] != NULL; i++) {
 		char *s = vec[i];
@@ -2771,6 +2813,8 @@ gdm_slave_usr2_handler (int sig)
 	}
 
 	g_strfreev (vec);
+
+	gdm_in_signal--;
 }
 
 /* Minor X faults */
@@ -3032,6 +3076,8 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     switch (pid) {
 	    
     case 0:
+        closelog ();
+
         for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 	    close (i);
 
@@ -3040,6 +3086,8 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
         open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
         open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
         if (login != NULL) {
 	        gnome_setenv ("LOGNAME", login, TRUE);
@@ -3169,6 +3217,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
       if (pipe (pipe1) < 0) {
         gdm_error (_("gdm_parse_enriched_login: Failed creating pipe"));
       } else {
+        int i;
 	pid = gdm_fork_extra ();
 
         switch (pid) {
@@ -3180,6 +3229,15 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
             close (pipe1[0]);
             if(pipe1[1] != STDOUT_FILENO) 
 	      dup2 (pipe1[1], STDOUT_FILENO);
+
+	    closelog ();
+
+	    for (i = 3; i < sysconf (_SC_OPEN_MAX); i++) {
+		    if (pipe1[1] != i)
+			    close (i);
+	    }
+
+	    openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 	    /* runs as root */
 	    gnome_setenv ("XAUTHORITY", display->authfile, TRUE);

@@ -31,6 +31,7 @@
 #include <sys/wait.h>
 #include <strings.h>
 #include <signal.h>
+#include <syslog.h>
 #include <errno.h>
 #include <time.h>
 #include <X11/Xlib.h>
@@ -63,6 +64,7 @@ extern gboolean GdmXdmcp;
 extern gint high_display_num;
 extern pid_t extra_process;
 extern int extra_status;
+extern int gdm_in_signal;
 
 /* Global vars */
 static GdmDisplay *d = NULL;
@@ -665,6 +667,8 @@ gdm_server_spawn (GdmDisplay *d)
 	if (GdmXdmcp)
 		gdm_xdmcp_close();
 
+	closelog ();
+
 	/* close things */
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 		close(i);
@@ -674,6 +678,8 @@ gdm_server_spawn (GdmDisplay *d)
 	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 	/* Rotate the X server logs */
 	rotate_logs (d->name);
@@ -873,6 +879,8 @@ gdm_server_spawn (GdmDisplay *d)
 static void
 gdm_server_usr1_handler (gint sig)
 {
+    gdm_in_signal++;
+
     d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
     d->starttime = time (NULL);
 
@@ -881,6 +889,8 @@ gdm_server_usr1_handler (gint sig)
     server_signal_notified = TRUE;
     /* this will quit the select */
     write (server_signal_pipe[1], "Yay!", 4);
+
+    gdm_in_signal--;
 }
 
 
@@ -894,14 +904,17 @@ gdm_server_usr1_handler (gint sig)
 static void 
 gdm_server_alarm_handler (gint signal)
 {
+    gdm_in_signal++;
+
     d->servstat = SERVER_TIMEOUT; /* Server didn't start */
 
-    /* FIXME: apparently this can cause a hang */
-    /* gdm_debug ("gdm_server_alarm_handler: Got SIGALRM, server abort"); */
+    gdm_debug ("gdm_server_alarm_handler: Got SIGALRM, server abort");
 
     server_signal_notified = TRUE;
     /* this will quit the select */
     write (server_signal_pipe[1], "Yay!", 4);
+
+    gdm_in_signal--;
 }
 
 
@@ -917,6 +930,8 @@ gdm_server_child_handler (int signal)
 {
 	int status;
 	pid_t pid;
+
+	gdm_in_signal++;
 
 	gdm_debug ("gdm_server_child_handler: Got SIGCHLD");
 
@@ -946,6 +961,8 @@ gdm_server_child_handler (int signal)
 			extra_status = status;
 		}
 	}
+
+	gdm_in_signal--;
 }
 
 

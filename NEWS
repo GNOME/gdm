@@ -1,5 +1,53 @@
 Ahh news...
 
+2.3.90.3 stuff:
+
+- The instant apply, no crack, setup proggie (gdmsetup) now works,
+  gdmconfig is removed (Check out the gdmgreeter theme selector, though
+  we only have one theme now)
+
+- Fix the i18n encoding issues.  non-english users can now log in!  Yay!
+  The daemon is back to not using UTF-8 but the locale specific encoding
+  because of fun GConv cache crack.  All the utf8 stuff is done on the
+  greeter side now
+
+- Leak fixes #80888 (Ali Akcaagac, me)
+
+- Gdmphotosetup fixiage #80835
+
+- Look into other dirs for an X server, and use /usr/X11R6/bin/X by default
+  #80829 (Ali Akcaagac, me)
+
+- Check for socklen_t #79373
+
+- Fix focus on the Failsafe xterm session
+
+- Randomly scattered fixes
+
+- Greeter themes now have info files, so that we can have some info about a
+  theme for the theme browser
+
+- Bunch of greeter work to bring it more up to speed with gdmlogin, though
+  it's still not quite there yet.
+
+- Add an icon for the photo chooser 'capplet' (Seth)
+
+- Some dialog fixes all around
+
+- Fix gdmchooser, use a completely new looking glade file
+
+- Translation updates (Pablo Saratxaga, Zbigniew Chyla, Stanislav Visnovsky,
+  Christophe Merlet, Ole Laursen, Kjartan Maraas, Changwoo Ryu, 
+  Germán Poo-Caamaño, Fatih Demir, Duarte Loreto, Abel Cheung, 
+  Jarkko Ranta)
+
+Issues with this version:
+
+- You need a very new libgnomeui to run gdmsetup else it'll crash
+
+- The graphical greeter (gdmgreeter) is still not where it should be
+  functionality wise, but it is mostly usable as a login window
+
 2.3.90.2 stuff:
 
 - LOTS of new greeter work (Alex, Jonathan)

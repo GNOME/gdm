@@ -195,6 +195,8 @@ gdm_display_manage (GdmDisplay *d)
 	gdm_connection_close (unixconn);
 	unixconn = NULL;
 
+	closelog ();
+
 	/* Close everything */
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++) {
 		if (i != fds[0])
@@ -206,6 +208,8 @@ gdm_display_manage (GdmDisplay *d)
 	open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 	open("/dev/null", O_RDWR); /* open stdout - fd 1 */
 	open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 	d->slave_notify_fd = fds[0];
 
