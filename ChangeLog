@@ -1,3 +1,14 @@
+Tue May 15 02:14:23 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/slave.c, gui/gdmlogin.c:  gdmlogin cannot
+	  fetch user pictures.  SO there is now an interface so that the
+	  slave can check/fetch the pictures for gdmlogin.  Unfortunately
+	  imlib is braindead so the way we pass the pictures is to write them
+	  to a temp file.  So this is even less friendly on large systems.
+	  Paranoia is high however so there should not be a way to exploit
+	  it.  Unless you find a pic that kills imlib in which case you can
+	  run a dos, so this isn't an option for all systems anyway.
+
 Mon May 14 23:54:18 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: Browser fixes.  Do smarter sizing of the browser

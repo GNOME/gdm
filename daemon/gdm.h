@@ -77,6 +77,9 @@
 #define GDM_DISABLE    '-' /* disable the login screen */
 #define GDM_ENABLE     '+' /* enable the login screen */
 #define GDM_RESETOK    'r' /* reset but don't shake */
+#define GDM_NEEDPIC    '#' /* need a user picture?, sent after greeter
+			    *  is started */
+#define GDM_READPIC    '%' /* Send a user picture in a temp file */
 
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'

@@ -1994,6 +1994,14 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_set_sensitive (login, TRUE);
 	g_print ("%c\n", STX);
 	break;
+
+    /* These are handled separately so ignore them here and send
+     * back a NULL response so that the daemon quits sending them */
+    case GDM_NEEDPIC:
+    case GDM_READPIC:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_print ("%c\n", STX);
+	break;
 	
     default:
 	break;
@@ -2728,58 +2736,74 @@ gdm_login_sort_func (gpointer d1, gpointer d2)
 static GdmLoginUser * 
 gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 {
-    GdmLoginUser *user;
-    GdkImlibImage *img = NULL;
-    gchar *filename;
+	GdmLoginUser *user;
+	GdkImlibImage *img = NULL;
+	gchar buf[PIPE_SIZE];
+	size_t size;
 
-    user = g_new0 (GdmLoginUser, 1);
+	user = g_new0 (GdmLoginUser, 1);
 
-    if (!user)
-	return (NULL);
-
-    user->uid = uid;
-    user->login = g_strdup (logname);
-    user->homedir = g_strdup (homedir);
-
-    filename = g_strconcat (homedir, "/.gnome/photo", NULL);
-
-    img = NULL;
-    if (access (filename, R_OK) == 0) {
-	    img = gdk_imlib_load_image (filename);
-    } else {
-	    g_free (filename);
-	    filename = g_strconcat (GdmGlobalFaceDir, "/", logname, NULL);
-	
-	    if (access (filename, R_OK) == 0)
-		    img = gdk_imlib_load_image (filename);
-
-    }
-    
-    g_free (filename);
-    
-    if(img) {
-	gint w, h;
-	
-	w = img->rgb_width;
-	h = img->rgb_height;
-	
-	if (w > h && w > GdmIconMaxWidth) {
-	    h = h * ((gfloat) GdmIconMaxWidth/w);
-	    w = GdmIconMaxWidth;
-	} else if (h > GdmIconMaxHeight) {
-	    w = w * ((gfloat) GdmIconMaxHeight/h);
-	    h = GdmIconMaxHeight;
-	}
-	
-	maxwidth = MAX (maxwidth, w);
-	maxheight = MAX (maxheight, h);
-	user->picture = gdk_imlib_clone_scaled_image (img, w, h);
-	gdk_imlib_destroy_image (img);
-    } else {
+	user->uid = uid;
+	user->login = g_strdup (logname);
+	user->homedir = g_strdup (homedir);
 	user->picture = defface;
-    }
 
-    return (user);
+	/* read initial request */
+	do {
+		while (read (STDIN_FILENO, buf, 1) == 1)
+			if (buf[0] == STX)
+				break;
+		size = read (STDIN_FILENO, buf, sizeof (buf));
+		if (size <= 0)
+			return user;
+	} while (buf[0] != GDM_NEEDPIC);
+
+	g_print ("%c%s\n", STX, logname);
+
+	do {
+		while (read (STDIN_FILENO, buf, 1) == 1)
+			if (buf[0] == STX)
+				break;
+		size = read (STDIN_FILENO, buf, sizeof (buf));
+		if (size <= 0)
+			return user;
+	} while (buf[0] != GDM_READPIC);
+
+	/* both nul terminate and wipe the trailing \n */
+	buf[size-1] = '\0';
+
+	if (size < 2 ||
+	    access (&buf[1], R_OK) != 0) {
+		g_print ("%c\n", STX);
+		return user;
+	}
+
+	img = gdk_imlib_load_image (&buf[1]);
+
+	/* the daemon is now free to go on */
+	g_print ("%c\n", STX);
+
+	if (img != NULL) {
+		gint w, h;
+
+		w = img->rgb_width;
+		h = img->rgb_height;
+
+		if (w > h && w > GdmIconMaxWidth) {
+			h = h * ((gfloat) GdmIconMaxWidth/w);
+			w = GdmIconMaxWidth;
+		} else if (h > GdmIconMaxHeight) {
+			w = w * ((gfloat) GdmIconMaxHeight/h);
+			h = GdmIconMaxHeight;
+		}
+
+		maxwidth = MAX (maxwidth, w);
+		maxheight = MAX (maxheight, h);
+		user->picture = gdk_imlib_clone_scaled_image (img, w, h);
+		gdk_imlib_destroy_image (img);
+	}
+
+	return user;
 }
 
 
@@ -2877,7 +2901,7 @@ gdm_login_users_init (void)
 	}
 	
 	pwent = getpwent();
-    }    
+    }
 
     endpwent ();
 }

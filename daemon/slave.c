@@ -57,9 +57,10 @@ static sigset_t mask;
 static gboolean greet = FALSE;
 static FILE *greeter;
 static pid_t last_killed_pid = 0;
-gboolean do_timed_login = FALSE; /* if this is true, login the timed login */
-gboolean do_configurator = FALSE; /* if this is true, login as root
-				   * and start the configurator */
+static gboolean do_timed_login = FALSE; /* if this is true,
+					   login the timed login */
+static gboolean do_configurator = FALSE; /* if this is true, login as root
+					  * and start the configurator */
 
 extern gboolean gdm_first_login;
 
@@ -93,6 +94,8 @@ extern gint GdmRetryDelay;
 extern gboolean GdmAllowRoot;
 extern sigset_t sysmask;
 extern gchar *argdelim;
+extern gchar *GdmGlobalFaceDir;
+extern gboolean GdmBrowser;
 
 
 /* Local prototypes */
@@ -689,6 +692,118 @@ gdm_slave_wait_for_login (void)
 	}
 }
 
+/* This is VERY evil! */
+static void
+run_pictures (void)
+{
+	char *response;
+	int tempfd;
+	char tempname[256];
+	char buf[1024];
+	size_t bytes;
+	struct passwd *pwent;
+	char *picfile;
+	FILE *fp;
+
+	for (;;) {
+		response = gdm_slave_greeter_ctl (GDM_NEEDPIC, "");
+		if (gdm_string_empty (response)) {
+			g_free (response);
+			return;
+		}
+		
+		/* don't quit, we don't want to further confuse a confused
+		 * greeter, just don't send it pics */
+		if ( ! GdmBrowser) {
+			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+			continue;
+		}
+
+		pwent = getpwnam (response);
+		if (pwent == NULL) {
+			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+			continue;
+		}
+
+		picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
+		if (access (picfile, F_OK) != 0) {
+			g_free (picfile);
+			picfile = g_strconcat (GdmGlobalFaceDir, "/",
+					       response, NULL);
+	
+			if (access (picfile, R_OK) == 0) {
+				gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
+							      picfile);
+				g_free (picfile);
+				continue;
+			}
+
+			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+			g_free (picfile);
+			continue;
+		}
+		g_free (picfile);
+
+		setegid (pwent->pw_gid);
+		seteuid (pwent->pw_uid);
+
+		/* Sanity check on ~user/.gnome/photo */
+		picfile = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
+		if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
+				       picfile, "photo", TRUE, GdmUserMaxFile,
+				       GdmRelaxPerms)) {
+			g_free (picfile);
+
+			seteuid (0);
+			setegid (GdmGroupId);
+
+			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+			continue;
+		}
+		g_free (picfile);
+		picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
+
+		fp = fopen (picfile, "r");
+		g_free (picfile);
+		if (fp == NULL) {
+			seteuid (0);
+			setegid (GdmGroupId);
+
+			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+			continue;
+		}
+
+		strcpy (tempname, "/tmp/gdm-user-picture-XXXXXX");
+		tempfd = mkstemp (tempname);
+
+		if (tempfd < 0) {
+			fclose (fp);
+
+			seteuid (0);
+			setegid (GdmGroupId);
+
+			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+			continue;
+		}
+
+		fchmod (tempfd, 0644);
+
+		while ((bytes = fread (buf, sizeof (char),
+				       sizeof (buf), fp)) > 0) {
+			write (tempfd, buf, bytes);
+		}
+
+		fclose (fp);
+		close (tempfd);
+
+		gdm_slave_greeter_ctl_no_ret (GDM_READPIC, tempname);
+
+		unlink (tempname);
+
+		seteuid (0);
+		setegid (GdmGroupId);
+	}
+}
 
 static void
 gdm_slave_greeter (void)
@@ -812,6 +927,8 @@ gdm_slave_greeter (void)
 	greeter = fdopen (STDIN_FILENO, "r");
 	
 	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", d->greetpid);
+
+	run_pictures (); /* Append pictures to greeter if browsing is on */
 	break;
     }
 }
