@@ -3,27 +3,34 @@
 #
 # For keyboard gestures:
 #
-# <modifier>[<modifier>...]key  #times duration timeout  full_executable_path +args
+# <modifier>[<modifier>...]key  #times duration timeout executable_path +args
+#
+# For executable_path give the full executable path path of the program or the
+# DefaultPath is used.
 #
 # e.g.
 #
-# <Control>k  5 1000 10000  @EXPANDED_BINDIR@/gok
+# <Control>k  5 1000 10000  gok --login --access-method=directselection
 #
 # Means press Contol-k 5 times, holding each keypress down for at least 1000ms
 # each time and with no greater interval than 10000ms between each event in the
 # sequence.  A duration value of 0 indicates that a keypress of any length is
 # accepted.  The timeout value is only meaningful if the #times value is > 1.
 # Completing the above example sequence will invoke the gnome on screen keyboard
-# program, gok.
+# program, gok.  Note that you cannot release the <Control> key while pressing
+# otherwise the sequence will be lost.
 #
 # For mouse button gestures the format is the same except the mouse button number
 # is specified instead of a key gesture:
 #
-# <Mouse#>  #times duration timeout  full_executable_path +args
+# <Mouse#>  #times duration timeout  executable_path +args
 #
 # e.g.
 #
 # <Mouse2>  4 3000 6000  @EXPANDED_BINDIR@/gnopernicus
+#
+# Note that mouse numbers are 1-based so <Mouse1> is the left mouse button,
+# <Mouse3> is the right mouse button and <Mouse2> is the middle mouse button.
 #
 # It is possible to invoke multiple actions from a single gesture using the <Add>
 # keyword. Actions specified with <Add> are invoked by the previous gesture
@@ -33,8 +40,16 @@
 # e.g.
 #
 # <Add>  @EXPANDED_BINDIR@/gnome-mag
+#
+# Note that pressing any other keys 
 
 # current:
-<Mouse0> 1 5000 10000 /opt/gnome-2.4/bin/gok --login --access-method=directselection
 
-<Control>k  1 1000 10000  /opt/gnome-2.4/bin/gok --login --access-method=directselection
+# hold right or left mouse button 4 times for 4 seconds each time
+<Mouse1> 4 4000 10000 gok --login --access-method=directselection
+# we add the right mouse button as it may be the left mouse button
+# for a left handed user
+<Mouse3> 4 4000 10000 gok --login --access-method=directselection
+
+# press ctrl-k for 1 second
+<Control>k  1 1000 10000  gok --login --access-method=directselection

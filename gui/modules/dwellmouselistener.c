@@ -208,6 +208,8 @@ get_binding_direction(char c)
 static void
 free_binding (Binding *binding)
 {
+	if (binding == NULL)
+		return;
 	g_slist_foreach (binding->actions, (GFunc)g_free, NULL);
 	g_slist_free (binding->actions);
 	g_free (binding->binding_str);
@@ -233,8 +235,6 @@ parse_line(gchar *buf)
   if ((*buf == '#') || (iseol (*buf)) || (buf == NULL))
     return NULL;
 
-  tmp_binding = g_new0 (Binding, 1);
-
   /*
    * Find the binding name
    */
@@ -242,9 +242,10 @@ parse_line(gchar *buf)
   if (keystring == NULL)
     {
       /* TODO - Add an error message */
-      free_binding (tmp_binding);
       return NULL;
     }
+
+  tmp_binding = g_new0 (Binding, 1);
   tmp_binding->binding_str = g_strdup (keystring);
 
   if (strcmp (tmp_binding->binding_str, "<Add>") != 0)
@@ -265,7 +266,7 @@ parse_line(gchar *buf)
 
           if (bt == BINDING_DWELL_BORDER_ERROR)
             {
-              printf("Invalid value in binding %s\n", tmp_binding->binding_str);
+              g_warning ("Invalid value in binding %s\n", tmp_binding->binding_str);
               continue;
             }
 
@@ -289,7 +290,7 @@ parse_line(gchar *buf)
       bd = get_binding_direction (tmp_string[0]);
 
       if (bd == BINDING_DWELL_DIRECTION_ERROR)
-        printf("Invalid value in binding %s\n", tmp_binding->binding_str);
+        g_warning ("Invalid value in binding %s\n", tmp_binding->binding_str);
       else
         tmp_binding->input.start_direction = bd;
 
@@ -370,14 +371,15 @@ load_bindings(gchar *path)
   Binding *tmp_binding;
   gchar buf[1024];
 
-  if ((fp = fopen (path, "r")) == NULL)
+  fp = fopen (path, "r");
+  if (fp == NULL)
     {
       /* TODO - I18n */
-      printf ("Cannot open bindings file: %s\n", path);
+      g_warning ("Cannot open bindings file: %s\n", path);
       return;
     }
 
-  while (((fgets (buf, sizeof (buf), fp)) != NULL) && ((feof (fp)) == 0))
+  while (fgets (buf, sizeof (buf), fp) != NULL)
     {
       tmp_binding = (Binding *)parse_line (buf);
 

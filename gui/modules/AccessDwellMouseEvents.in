@@ -1,7 +1,10 @@
 # This is the configuration file for the keymouselistener.so module.
 # The confiuration syntax is as follows:
 #
-#   crossing inital_direction timeout full_executable_path +args
+#   crossing inital_direction timeout executable_path +args
+#
+# For executable_path give the full executable path path of the program or the
+# DefaultPath is used.
 #
 # where:
 #
@@ -12,7 +15,7 @@
 #   that the initial crossing is a motion In or Out of the window.
 # 
 # e.g.
-# TBLR I 10000    @EXPANDED_BINDIR@/gok
+# TBLR I 10000    gok --login --access-method=dwellselection
 #
 # Means the user crosses into the top border, out the bottom border, into the left
 # border, and then out the right border (in that order).  The initial_direction
@@ -30,4 +33,4 @@
 # <Add>           @EXPANDED_BINDIR@/gnome-mag
 
 # current:
-TBLR I 10000    /opt/gnome-2.4/bin/gok --login --access-method=dwellselection
+TBLR I 10000    gok --login --access-method=dwellselection

@@ -2164,12 +2164,38 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 }
 
 static void
+exec_in_shell (const char *command)
+{
+	char *shell_cmd;
+	char *argv[10];
+	char *first_word = ve_first_word (command);
+
+	if (access (first_word, X_OK) != 0)
+		return;
+
+	if (access ("/bin/bash", X_OK) == 0) {
+		shell_cmd = "/bin/bash";
+		argv[0] = "-/bin/bash";
+	} else {
+		shell_cmd = "/bin/sh";
+		argv[0] = "-/bin/sh";
+	}
+
+	argv[1] = "-c";
+	argv[2] = g_strdup_printf ("exec %s", command);
+	argv[3] = NULL;
+
+	IGNORE_EINTR (execv (shell_cmd, argv));
+}
+
+static void
 gdm_slave_greeter (void)
 {
     gint pipe1[2], pipe2[2];  
-    gchar **argv;
     struct passwd *pwent;
     pid_t pid;
+    char *command;
+    char **argv;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     
@@ -2335,9 +2361,9 @@ gdm_slave_greeter (void)
 	}
 
 	if (d->console)
-		argv = ve_split (GdmGreeter);
+		command = GdmGreeter;
 	else
-		argv = ve_split (GdmRemoteGreeter);
+		command = GdmRemoteGreeter;
 
 	if G_UNLIKELY (d->try_different_greeter) {
 		/* FIXME: we should also really be able to do standalone failsafe
@@ -2349,35 +2375,31 @@ gdm_slave_greeter (void)
 			       GTK_MESSAGE_ERROR,
 			       _("The greeter program appears to be crashing.\n"
 				 "I will attempt to use a different one."));
-		if (strstr (argv[0], "gdmlogin") != NULL) {
+		if (strstr (command, "gdmlogin") != NULL) {
 			/* in case it is gdmlogin that's crashing
 			   try the graphical greeter for luck */
-			argv = g_new0 (char *, 2);
-			argv[0] = EXPANDED_BINDIR "/gdmgreeter";
-			argv[1] = NULL;
+			command = EXPANDED_BINDIR "/gdmgreeter";
 		} else {
 			/* in all other cases, try the gdmlogin (standard greeter)
 			   proggie */
-			argv = g_new0 (char *, 2);
-			argv[0] = EXPANDED_BINDIR "/gdmlogin";
-			argv[1] = NULL;
+			command = EXPANDED_BINDIR "/gdmlogin";
 		}
 	}
 
 	if (GdmAddGtkModules &&
-	    !(ve_string_empty(GdmGtkModulesList)) &&
+	    ! ve_string_empty (GdmGtkModulesList) &&
 	    /* don't add modules if we're trying to prevent crashes,
 	       perhaps it's the modules causing the problem in the first place */
 	    ! d->try_different_greeter) {
-		gchar *modules =  g_strdup_printf("--gtk-module=%s", GdmGtkModulesList);
-		IGNORE_EINTR (execl (argv[0], argv[0], modules, NULL));
+		gchar *modules =  g_strdup_printf("%s --gtk-module=%s", command, GdmGtkModulesList);
+		exec_in_shell (modules);
 		/* Something went wrong */
 		gdm_error (_("%s: Cannot start greeter with gtk modules: %s. Trying without modules"),
 			   "gdm_slave_greeter",
 			   GdmGtkModulesList);
 		g_free(modules);
 	}
-	IGNORE_EINTR (execv (argv[0], argv));
+	exec_in_shell (command);
 
 	gdm_error (_("%s: Cannot start greeter trying default: %s"),
 		   "gdm_slave_greeter",
@@ -2385,10 +2407,9 @@ gdm_slave_greeter (void)
 
 	ve_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
 
-	argv = g_new0 (char *, 2);
-	argv[0] = EXPANDED_BINDIR "/gdmlogin";
-	argv[1] = NULL;
-	IGNORE_EINTR (execv (argv[0], argv));
+	exec_in_shell (EXPANDED_BINDIR "/gdmlogin");
+
+	IGNORE_EINTR (execl (EXPANDED_BINDIR "/gdmlogin", EXPANDED_BINDIR "/gdmlogin", NULL));
 
 	gdm_error_box (d,
 		       GTK_MESSAGE_ERROR,
@@ -2631,8 +2652,8 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 static void
 gdm_slave_chooser (void)
 {
+	char *cmd;
 	gint p[2];
-	gchar **argv;
 	struct passwd *pwent;
 	char buf[1024];
 	size_t bytes;
@@ -2727,8 +2748,17 @@ gdm_slave_chooser (void)
 		ve_setenv ("PATH", GdmDefaultPath, TRUE);
 		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
-		argv = ve_split (GdmChooser);
-		IGNORE_EINTR (execv (argv[0], argv));
+		cmd = GdmChooser;
+
+		if (GdmAddGtkModules &&
+		    ! ve_string_empty (GdmGtkModulesList)) {
+			cmd = g_strdup_printf("%s --gtk-module=%s", GdmChooser, GdmGtkModulesList);
+		}
+
+		exec_in_shell (cmd);
+
+		/* anality */
+		exec_in_shell (GdmChooser);
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,

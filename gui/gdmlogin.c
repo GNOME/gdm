@@ -2582,9 +2582,12 @@ gdm_login_gui_init (void)
 	gtk_rc_parse (GdmGtkRC);
 
     login = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-    gtk_widget_ref (login);
+    g_object_ref (login);
     g_object_set_data_full (G_OBJECT (login), "login", login,
 			    (GDestroyNotify) g_object_unref);
+
+    gtk_widget_set_events (login, GDK_ALL_EVENTS_MASK);
+
     gtk_window_set_title (GTK_WINDOW (login), _("GDM Login"));
     /* connect for fingering */
     if (GdmBrowser)

@@ -1,3 +1,28 @@
+Fri Sep 19 18:00:37 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: Launch the greeter from a shell so that we get
+	  a nice environment.  This is needed for both TryExec in the
+	  sessions and for finding things in the path for the accessibility
+	  modules
+
+	* gui/gdmlogin.c: select all events on the login window, this will
+	  catch all events so that the modules get them
+
+	* gui/modules/AccessDwellMouseEvents.in,
+	  gui/modules/AccessKeyMouseEvents.in: update the docs here and
+	  use the path.  Also change <Mouse0> to <Mouse1>.  And make
+	  it 4 times 4 seconds. to get gok.  1 time is annoying as hell.
+	  Also add the same for <Mouse3> as that may be for a left handed
+	  person.
+
+	* gui/modules/dwellmouselistener.c, gui/modules/keymouselistener.c:
+	  cleanups to both modules, fix it so that sequences aren't 1
+	  longer in the key mouse listener, also don't kill the events.
+	  it does kill a lot of real events, especially if we use the mouse
+	  events.  We just have to deal with the mouse doing something.
+	  We can't decide if it was a guesture until after it was done,
+	  which means we're really out of luck.
+
 Fri Sep 19 15:34:36 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmXnestchooser.c, gui/gdmchooser.c, gui/gdmcomm.c,

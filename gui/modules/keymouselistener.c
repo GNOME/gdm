@@ -91,6 +91,17 @@ static gboolean gesture_already_used (Gesture *gesture);
 static GdkFilterReturn	
 gestures_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data);
 static gint is_mouseX (const gchar *string);
+
+static void
+free_gesture (Gesture *gesture)
+{
+	if (gesture == NULL)
+		return;
+	g_slist_foreach (gesture->actions, (GFunc)g_free, NULL);
+	g_slist_free (gesture->actions);
+	g_free (gesture->gesture_str);
+	g_free (gesture);
+}
 			
 static gchar *
 screen_exec_display_string (GdkScreen *screen, const char *old)
@@ -154,20 +165,20 @@ load_gestures(gchar *path)
 	Gesture *tmp_gesture;
 	gchar buf[1024];
 
-	if ((fp = fopen(path, "r")) == NULL) {
+	fp = fopen (path, "r");
+	if (fp == NULL) {
 		/* TODO - I18n */
-		printf("Cannot open gestures file: %s\n", path);
+		g_warning ("Cannot open gestures file: %s\n", path);
 		return;
 	}
 
-	while (((fgets(buf, 1024, fp)) != NULL) && ((feof(fp)) == 0)) {
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
 		tmp_gesture = (Gesture *)parse_line(buf);
 		if (tmp_gesture) {
 		/*
 		 * Is the key already associated with an existing gesture?
 		 */
-			/* TODO - This leaks the tmp_gesture lots */
-			if (!strcmp(tmp_gesture->gesture_str, "<Add>")) {
+			if (strcmp (tmp_gesture->gesture_str, "<Add>") == 0) {
 				/*
 				 * Add another action to the last gesture
 				 */
@@ -183,9 +194,12 @@ load_gestures(gchar *path)
 						g_slist_append(last_gesture->actions,
 						g_strdup((gchar *)tmp_gesture->actions->data));
 				}
+				free_gesture (tmp_gesture);
 				/* Ignore duplicate gestures */
-			} else if (!gesture_already_used (tmp_gesture))
-				gesture_list = g_slist_append(gesture_list, tmp_gesture);
+			} else if ( ! gesture_already_used (tmp_gesture))
+				gesture_list = g_slist_append (gesture_list, tmp_gesture);
+			else
+				free_gesture (tmp_gesture);
 		}
 	}
 	fclose(fp);
@@ -240,7 +254,7 @@ get_exec_environment (XEvent *xevent)
 }
 
 static Gesture *
-parse_line(gchar *buf)
+parse_line (gchar *buf)
 {
 	gchar *keystring;
 	gchar *keyservice;
@@ -257,8 +271,6 @@ parse_line(gchar *buf)
 	if ((*buf == '#') || (iseol(*buf)) || (buf == NULL))
 		return NULL;
 	
-	tmp_gesture = g_new0 (Gesture, 1);
-
 	/*
 	 * Find the key name
 	 */
@@ -268,13 +280,15 @@ parse_line(gchar *buf)
 		return NULL;
 	}
 
+	tmp_gesture = g_new0 (Gesture, 1);
 	tmp_gesture->gesture_str = g_strdup (keystring);
 
-	if(strcmp(tmp_gesture->gesture_str, "<Add>")) {
+	if (strcmp (tmp_gesture->gesture_str, "<Add>") != 0) {
 		guint n, duration, timeout;
 		gchar *tmp_string;
 
-		if ((button = is_mouseX(tmp_gesture->gesture_str)) > 0) {
+		button = is_mouseX (tmp_gesture->gesture_str);
+		if (button > 0) {
 			tmp_gesture->type = GESTURE_TYPE_MOUSE;
 			tmp_gesture->input.button.number = button;
 		} else {
@@ -285,6 +299,12 @@ parse_line(gchar *buf)
 			tmp_gesture->input.key.keycode = 
 				XKeysymToKeycode(GDK_DISPLAY_XDISPLAY (display), tmp_gesture->input.key.keysym);
 		}
+
+		if (tmp_gesture->type == 0) {
+			/* TODO - Error messages here */
+			free_gesture (tmp_gesture);
+			return NULL;
+		}
 		/* [TODO] Need to clean up here. */
 		 
 		/*
@@ -293,6 +313,7 @@ parse_line(gchar *buf)
 		tmp_string = strtok (NULL, " \t\n\r\f");
 		if (tmp_string == NULL) {
 			/* TODO - Error messages */
+			free_gesture (tmp_gesture);
 			return NULL;
 		}
 
@@ -300,7 +321,8 @@ parse_line(gchar *buf)
 		   be all digits */
 
 		if ((n=atoi(tmp_string)) <= 0) {
-				/* Add an error message */
+			/* Add an error message */
+			free_gesture (tmp_gesture);
 			return NULL;
 		}
 		tmp_gesture->n_times = n;
@@ -311,13 +333,16 @@ parse_line(gchar *buf)
 		tmp_string = strtok (NULL, " \t\n\r\f");
 		if (tmp_string == NULL) {
 			/* TODO - Error messages */
+			free_gesture (tmp_gesture);
 			return NULL;
 		}
 		/* TODO - the above doesn't check for the string to
 		   be all digits */
 
-		if ((duration=atoi(tmp_string)) < 0) {
-				/* Add an error message */
+		duration = atoi (tmp_string);
+		if (duration < 0) {
+			/* Add an error message */
+			free_gesture (tmp_gesture);
 			return NULL;
 		}
 		tmp_gesture->duration = duration;
@@ -330,11 +355,13 @@ parse_line(gchar *buf)
 		tmp_string = strtok (NULL, " \t\n\r\f");
 		if (tmp_string == NULL) {
 			/* TODO - Error messages */
+			free_gesture (tmp_gesture);
 			return NULL;
 		}
 
 		if ((timeout=atoi(tmp_string)) <= 0) {
-				/* Add an error message */;
+			/* Add an error message */;
+			free_gesture (tmp_gesture);
 			return NULL;
 		}
 		tmp_gesture->timeout = timeout;
@@ -346,6 +373,7 @@ parse_line(gchar *buf)
 	keyservice = strtok (NULL, "\n\r\f");
 	if (keyservice == NULL) {
 		/* TODO - Error messages */
+		free_gesture (tmp_gesture);
 		return NULL;
 	}
 	/* skip over initial whitespace */
@@ -387,7 +415,7 @@ gesture_already_used (Gesture *gesture)
 		  		break;
 			}
 		}
-    }
+	}
 	return FALSE;
 }
 
@@ -416,133 +444,143 @@ gestures_filter (GdkXEvent *gdk_xevent,
 	switch (xevent->type) {
 
 	case KeyPress:
-		if (last_event->type != KeyRelease) {
+		if (seq_count > 0 &&
+		    last_event->type != KeyRelease) {
 			seq_count = 0;
-		} else {
-			if (last_event->xkey.keycode != xevent->xkey.keycode ||
-				last_event->xkey.state != xevent->xkey.state
-				) {
-				seq_count = 0;
-			} else {
-				/*
-				 * Find the associated gesture for this keycode & state
-				 * TODO: write a custom g_slist_find function.
+			break;
+		}
+
+		if (seq_count > 0 &&
+		    (last_event->xkey.keycode != xevent->xkey.keycode ||
+		     last_event->xkey.state != xevent->xkey.state)) {
+			seq_count = 0;
+			break;
+		}
+
+		/*
+		 * Find the associated gesture for this keycode & state
+		 * TODO: write a custom g_slist_find function.
+		 */
+		for (li = gesture_list; li != NULL; li = li->next) {
+			Gesture *gesture = (Gesture *) li->data;
+			if (gesture->type == GESTURE_TYPE_KEY &&
+			    xevent->xkey.keycode == gesture->input.key.keycode &&
+			    (xevent->xkey.state & USED_MODS) == gesture->input.key.state) {
+				/* 
+				 * OK Found the gesture.
+				 * Now check if it has a timeout value > 0;
 				 */
-				 for (li = gesture_list; li != NULL; li = li->next) {
-				 	Gesture *gesture = (Gesture *) li->data;
-					if (gesture->type == GESTURE_TYPE_KEY &&
-						xevent->xkey.keycode == gesture->input.key.keycode &&
-						(xevent->xkey.state & USED_MODS) == gesture->input.key.state) {
-						/* 
-						 * OK Found the gesture.
-						 * Now check if it has a timeout value > 0;
-						 */
-						curr_gesture = gesture;
-						if (gesture->timeout > 0) {
-							 /* xevent time values are in milliseconds. The config file spec is in ms */
-							if ((xevent->xkey.time - last_event->xkey.time) > gesture->timeout) {
-								seq_count = 0; /* The timeout has been exceeded. Reset the sequence. */
-								curr_gesture = NULL;
-							}
-						}
-					}
+				curr_gesture = gesture;
+				if (gesture->timeout > 0 && seq_count > 0 &&
+				    /* xevent time values are in milliseconds. The config file spec is in ms */
+				    (xevent->xkey.time - last_event->xkey.time) > gesture->timeout) {
+					seq_count = 0; /* The timeout has been exceeded. Reset the sequence. */
+					curr_gesture = NULL;
 				}
+				break;
 			}
 		}
 		break;
 
 	case KeyRelease:
-		if ((last_event->type != KeyPress) ||
-			last_event->xkey.keycode != xevent->xkey.keycode ||
-			last_event->xkey.state != xevent->xkey.state
-			)
+		if (seq_count > 0 &&
+		    ((last_event->type != KeyPress) ||
+		     last_event->xkey.keycode != xevent->xkey.keycode ||
+		     last_event->xkey.state != xevent->xkey.state)) {
 			seq_count = 0;
-		else {
-			/*
-			 * Find the associated gesture for this keycode &state
-			 * TODO: write a custom g_slist_find function.
-			 */
-			for (li = gesture_list; li != NULL; li = li->next) {
-				Gesture *gesture = (Gesture *) li->data;
-				if (gesture->type == GESTURE_TYPE_KEY &&
-					xevent->xkey.keycode == gesture->input.key.keycode &&
-					(xevent->xkey.state & USED_MODS) == gesture->input.key.state) {
-					/* 
-					 * OK Found the gesture.
-					 * Now check if it has a duration value > 0.
-					 */
-					curr_gesture = gesture;
-					if ((gesture->duration > 0) &&
-						((xevent->xkey.time - last_event->xkey.time) < gesture->duration)) {
-						seq_count = 0;
-						curr_gesture = NULL;
-					}
-					else
-						seq_count++;
+			break;
+		}
+
+		/*
+		 * Find the associated gesture for this keycode &state
+		 * TODO: write a custom g_slist_find function.
+		 */
+		for (li = gesture_list; li != NULL; li = li->next) {
+			Gesture *gesture = (Gesture *) li->data;
+			if (gesture->type == GESTURE_TYPE_KEY &&
+			    xevent->xkey.keycode == gesture->input.key.keycode &&
+			    (xevent->xkey.state & USED_MODS) == gesture->input.key.state) {
+				/* 
+				 * OK Found the gesture.
+				 * Now check if it has a duration value > 0.
+				 */
+				curr_gesture = gesture;
+				if ((gesture->duration > 0) &&
+				    ((xevent->xkey.time - last_event->xkey.time) < gesture->duration)) {
+					seq_count = 0;
+					curr_gesture = NULL;
+				} else {
+					seq_count++;
 				}
+				break;
 			}
 		}
 		break;
 
 	case ButtonPress:
-		if(last_event->type != ButtonRelease)
+		if (seq_count > 0 && last_event->type != ButtonRelease) {
 			seq_count = 0;
-		else {
-			if (last_event->xbutton.button != xevent->xbutton.button)
-				seq_count = 0;
-			else {
+			break;
+		}
+
+		if (seq_count > 0 && last_event->xbutton.button != xevent->xbutton.button) {
+			seq_count = 0;
+			break;
+		}
+
+		/*
+		 * Find the associated gesture for this button.
+		 * TODO: write a custom g_slist_find function
+		 */
+		for (li = gesture_list; li != NULL; li = li->next) {
+			Gesture *gesture = (Gesture *) li->data;
+			if (gesture->type == GESTURE_TYPE_MOUSE &&
+			    xevent->xbutton.button == gesture->input.button.number) { /* TODO: Support state? */
 				/*
-				 * Find the associated gesture for this button.
-				 * TODO: write a custom g_slist_find function
+				 * Ok Found the gesture.
+				 * Now check if it has a timeout value > 0;
 				 */
-				for (li = gesture_list; li != NULL; li = li->next) {
-					Gesture *gesture = (Gesture *) li->data;
-					if (gesture->type == GESTURE_TYPE_MOUSE &&
-						xevent->xbutton.button == gesture->input.button.number) { /* TODO: Support state? */
-						/*
-						 * Ok Found the gesture.
-						 * Now check if it has a timeout value > 0;
-						 */
-						curr_gesture = gesture;
-						if (gesture->timeout > 0 ) {
-							/* xevent time values are in milliseconds. The config file spec is in ms */
-							if ((xevent->xbutton.time - last_event->xbutton.time) > gesture->timeout) {
-								seq_count = 0; /* Timeout has elapsed. Reset the sequence. */
-								curr_gesture = NULL;
-							}
-						}
-					}
+				curr_gesture = gesture;
+				if (gesture->timeout > 0 && seq_count > 0 &&
+				    /* xevent time values are in milliseconds. The config file spec is in ms */
+				    (xevent->xbutton.time - last_event->xbutton.time) > gesture->timeout) {
+					seq_count = 0; /* Timeout has elapsed. Reset the sequence. */
+					curr_gesture = NULL;
 				}
+				break;
 			}
 		}
 		break;
 
 	case ButtonRelease:
-		if (last_event->type != ButtonPress ||
-			last_event->xbutton.button != xevent->xbutton.button)
+		if (seq_count > 0 &&
+		    (last_event->type != ButtonPress ||
+		     last_event->xbutton.button != xevent->xbutton.button)) {
 			seq_count = 0;
-		else {
-			/*
-			 * Find the associated gesture for this button.
-			 * TODO: write a custom g_slist_find function
-			 */
-			for (li = gesture_list; li != NULL; li = li->next) {
-				Gesture *gesture = (Gesture *) li->data;
-				if (gesture->type == GESTURE_TYPE_MOUSE &&
-					xevent->xbutton.button == gesture->input.button.number) { /* TODO: Support state? */
-					/*
-					 * OK Found the gesture.
-					 * Now check if it has a duration value > 0.
-					 */
-					curr_gesture = gesture;
-					if ((gesture->duration > 0) &&
-						((xevent->xbutton.time - last_event->xbutton.time) < gesture->duration)) {
-						seq_count = 0;
-						curr_gesture = NULL;
-					}
-					else
-						seq_count++;
+			break;
+		}
+
+		/*
+		 * Find the associated gesture for this button.
+		 * TODO: write a custom g_slist_find function
+		 */
+		for (li = gesture_list; li != NULL; li = li->next) {
+			Gesture *gesture = (Gesture *) li->data;
+			if (gesture->type == GESTURE_TYPE_MOUSE &&
+			    xevent->xbutton.button == gesture->input.button.number) { /* TODO: Support state? */
+				/*
+				 * OK Found the gesture.
+				 * Now check if it has a duration value > 0.
+				 */
+				curr_gesture = gesture;
+				if ((gesture->duration > 0) &&
+				    ((xevent->xbutton.time - last_event->xbutton.time) < gesture->duration)) {
+					seq_count = 0;
+					curr_gesture = NULL;
+				} else {
+					seq_count++;
 				}
+				break;
 			}
 		}
 		break;
@@ -556,9 +594,9 @@ gestures_filter (GdkXEvent *gdk_xevent,
 	 */
 	last_event = memcpy(last_event, xevent, sizeof(XEvent));
 	if (curr_gesture) {
-		if (seq_count != curr_gesture->n_times) 
-			return GDK_FILTER_REMOVE;
-		else {
+		if (seq_count != curr_gesture->n_times) {
+			return GDK_FILTER_CONTINUE;
+		} else {
 			GError* error = NULL;
 			gboolean retval;
 			gchar **argv = NULL;
@@ -600,10 +638,10 @@ gestures_filter (GdkXEvent *gdk_xevent,
 					gtk_widget_show (dialog);
 				}
 			}
-   			return GDK_FILTER_REMOVE;
+   			return GDK_FILTER_CONTINUE;
 		}
 	}
-  return GDK_FILTER_CONTINUE;
+	return GDK_FILTER_CONTINUE;
 }
 
 			
