@@ -1,3 +1,16 @@
+Sat Jul 06 19:28:09 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: Don't send greeter pids that are 0, fixes #84717 and
+	  some others.  Whoops!
+
+	* daemon/xdmcp.c: Fix #85681 by putting the gdm_xdmcpfd outside of
+	  the #ifdef so non-xdmcp compiles should work again
+
+	* configure.in: Hopefully fix #85785 by adding -lcrypt before other
+	  libs.  Also apply patch from dalgoda@ix.netcom.com (Mike Castle)
+	  to fix #86607 by adding proper includes for X before testing 
+	  for xdmcp libs
+
 2002-06-24  Yanko Kaneti <yaneti@declera.com>
 
 	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).

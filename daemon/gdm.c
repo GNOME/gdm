@@ -2615,9 +2615,11 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		gdm_connection_write (conn, "OK");
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *disp = li->data;
-			gdm_connection_printf (conn, "%s%ld",
-					       sep, (long)disp->greetpid);
-			sep = ";";
+			if (disp->greetpid > 0) {
+				gdm_connection_printf (conn, "%s%ld",
+						       sep, (long)disp->greetpid);
+				sep = ";";
+			}
 		}
 		gdm_connection_write (conn, "\n");
 	} else if (strncmp (msg, GDM_SUP_UPDATE_CONFIG " ",

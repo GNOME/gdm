@@ -98,14 +98,13 @@
 #include "xdmcp.h"
 
 gint pending = 0;
+int gdm_xdmcpfd = -1;
 
 #ifdef HAVE_LIBXDMCP
 
 /* TCP Wrapper syslog control */
 gint allow_severity = LOG_INFO;
 gint deny_severity = LOG_WARNING;
-
-int gdm_xdmcpfd = -1;
 
 static guint xdmcp_source = 0;
 static gint globsessid;

@@ -267,9 +267,10 @@ fi
 
 if test x$have_pam = xno; then
 
-  # Check if -lcrypt is necessary
+  # Check if -lcrypt is necessary, and if so
+  # add it to the front of the link chain
   AC_CHECK_LIB(crypt, crypt, [
-  	      LIBS="$LIBS -lcrypt"])
+  	      LIBS="-lcrypt $LIBS"])
 
   # Check if crypt lives in a separate header file
   AC_CHECK_HEADERS(crypt.h, [
@@ -307,6 +308,8 @@ AC_CHECK_HEADER(login_cap.h, [
 #
 XDMCP_LIBS=""
 if test x$with_xdmcp != xno ; then
+	xdmcp_save_CPPFLAGS="$CPPFLAGS"
+	CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 	AC_CHECK_HEADER(X11/Xdmcp.h, [
 		AC_CHECK_LIB(Xdmcp, XdmcpFlush, [
 		     	AC_DEFINE(HAVE_LIBXDMCP)
@@ -317,6 +320,7 @@ if test x$with_xdmcp != xno ; then
 	if test x$with_xdmcp = xyes -a x$XDMCP_SUPPORT = x ; then
 		AC_MSG_ERROR(XDMCP support requested but XDMCP libraries not found)
 	fi
+	CPPFLAGS="$xdmcp_save_CPPFLAGS"
 fi
 AC_SUBST(XDMCP_LIBS)
 
