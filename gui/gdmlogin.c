@@ -555,7 +555,15 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
     gtk_widget_show (fixed);
 
     icon = gnome_pixmap_new_from_file (GdmIcon);
-    gdk_window_get_size ((GdkWindow *) GNOME_PIXMAP (icon)->pixmap, &iw, &ih);
+    if (icon != NULL) {
+	    gdk_window_get_size ((GdkWindow *) GNOME_PIXMAP (icon)->pixmap,
+				 &iw, &ih);
+    } else {
+	    /* sanity fallback */
+	    icon = gtk_event_box_new ();
+	    gtk_widget_set_usize (icon, 64, 64);
+	    iw = ih = 64;
+    }
     
     gtk_fixed_put(GTK_FIXED (fixed), GTK_WIDGET (icon), 0, 0);
     gtk_widget_show(GTK_WIDGET (icon));
@@ -2473,16 +2481,40 @@ gdm_login_gui_init (void)
 	access (GdmLogo, R_OK) == 0) {
 	GtkWidget *logo;
 
-	logoframe = gtk_frame_new (NULL);
-	gtk_widget_ref (logoframe);
-	gtk_object_set_data_full (GTK_OBJECT (login), "logoframe", logoframe,
-				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (logoframe);
-	gtk_frame_set_shadow_type (GTK_FRAME (logoframe), GTK_SHADOW_IN);
-
 	logo = gnome_pixmap_new_from_file (GdmLogo);
-	gtk_container_add (GTK_CONTAINER (logoframe), logo);
-	gtk_widget_show (GTK_WIDGET (logo));
+
+	if (logo != NULL) {
+		GtkWidget *ebox;
+		int lw, lh;
+
+		logoframe = gtk_frame_new (NULL);
+		gtk_widget_ref (logoframe);
+		gtk_object_set_data_full (GTK_OBJECT (login), "logoframe",
+					  logoframe,
+					  (GtkDestroyNotify) gtk_widget_unref);
+		gtk_widget_show (logoframe);
+		gtk_frame_set_shadow_type (GTK_FRAME (logoframe),
+					   GTK_SHADOW_IN);
+
+		ebox = gtk_event_box_new ();
+		gtk_widget_show (ebox);
+		gtk_container_add (GTK_CONTAINER (ebox), logo);
+		gtk_container_add (GTK_CONTAINER (logoframe), ebox);
+
+		gdk_window_get_size ((GdkWindow *) GNOME_PIXMAP (logo)->pixmap,
+				     &lw, &lh);
+		if (lw > screen.width / 2)
+			lw = screen.width / 2;
+		else
+			lw = -1;
+		if (lh > (2 * screen.height) / 3)
+			lh = (2 * screen.height) / 3;
+		else
+			lh = -1;
+		if (lw > -1 || lh > -1)
+			gtk_widget_set_usize (logo, lw, lh);
+		gtk_widget_show (GTK_WIDGET (logo));
+	}
     }
 
     stack = gtk_table_new (6, 1, FALSE);

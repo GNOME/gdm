@@ -206,6 +206,16 @@ BINDIR_TMP="$bindir"
 EXPANDED_BINDIR=`eval echo $BINDIR_TMP`
 AC_SUBST(EXPANDED_BINDIR)
 
+dnl This is where the binary actually resides,
+dnl not the console helper link
+if test "x$enable_console_helper" = "xyes"; then
+	GDMCONFIGDIR_TMP="$sbindir"
+else
+	GDMCONFIGDIR_TMP="$bindir"
+fi
+EXPANDED_GDMCONFIGDIR=`eval echo $GDMCONFIGDIR_TMP`
+AC_SUBST(EXPANDED_GDMCONFIGDIR)
+
 LOCALEDIR_TMP="$sysconfdir/gdm"
 EXPANDED_LOCALEDIR=`eval echo $LOCALEDIR_TMP`
 AC_SUBST(EXPANDED_LOCALEDIR)

@@ -1,3 +1,13 @@
+Mon Apr 30 17:27:11 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c: fix a couple of possible crashes with invalid images
+	  being set.  Limit the logo size by just cropping the widget, that
+	  way user will still be able to log in if he screws up the config
+
+	* configure.in, config/gdm.conf.in:  Use the sbin path if using
+	  console helper for the Configurator setting, else it won't work
+	  right
+
 Mon Apr 30 16:48:42 2001  George Lebl <jirka@5z.com>
 
 	* gdm/gdm.[ch], gdm/verify-(pam|crypt|shadow).c,
