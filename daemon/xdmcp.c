@@ -59,6 +59,7 @@
 
 #ifdef HAVE_LIBXDMCP
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <syslog.h>
 #include <sys/stat.h>
@@ -832,32 +833,38 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 {
     ARRAY8 status;
     XdmcpHeader header;
-    char statusBuf[256];
+    static char *last_status = NULL;
+    static time_t last_willing = 0;
     char *bin;
     FILE *fd;
     
     gdm_debug ("gdm_xdmcp_send_willing: Sending WILLING to %s", inet_ntoa (clnt_sa->sin_addr));
 
-    bin = ve_first_word (GdmWilling);
-    if ( ! ve_string_empty (bin) &&
-	access (bin, X_OK) == 0 &&
-	(fd = popen (GdmWilling, "r")) != NULL) {
-	    if (fgets (statusBuf, sizeof (statusBuf), fd) != NULL &&
-		! ve_string_empty (g_strstrip (statusBuf))) {
-		    status.data = statusBuf;
-		    status.length = strlen (statusBuf);
+    if (last_willing == 0 ||
+	time (NULL) - 3 > last_willing) {
+	    char statusBuf[256] = "";
+	    bin = ve_first_word (GdmWilling);
+	    if ( ! ve_string_empty (bin) &&
+		 access (bin, X_OK) == 0 &&
+		 (fd = popen (GdmWilling, "r")) != NULL) {
+		    if (fgets (statusBuf, sizeof (statusBuf), fd) != NULL &&
+			! ve_string_empty (g_strstrip (statusBuf))) {
+			    g_free (last_status);
+			    last_status = g_strdup (statusBuf);
+		    } else {
+			    g_free (last_status);
+			    last_status = g_strdup (sysid);
+		    }
+		    fclose (fd);
 	    } else {
-		    status.data = sysid;
-		    status.length = strlen (sysid);
+		    g_free (last_status);
+		    last_status = g_strdup (sysid);
 	    }
-	    fclose (fd);
-    } else {
-	    status.data = sysid;
-	    status.length = strlen (sysid);
+	    last_willing = time (NULL);
     }
-    
-    status.data = sysid;
-    status.length = strlen (sysid);
+
+    status.data = last_status;
+    status.length = strlen (last_status);
     
     header.opcode = (CARD16) WILLING;
     header.length = 6 + serv_authlist.authentication.length;

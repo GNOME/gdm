@@ -1286,7 +1286,9 @@
 		message.  If this script doesn't exist or this key is
 		empty the default message is sent.  If this script succeeds
 		and produces some output, the first line of it's output
-		is sent (and only the first line).
+		is sent (and only the first line).  It runs at most once
+		every 3 seconds to prevent possible denial of service
+		by flooding the server with QUERY packets.
 	      </para>
 	    </listitem>
 	  </varlistentry>
