@@ -64,6 +64,7 @@ get_free_display (void)
 	for (i = 20; i < 3000; i ++) {
 		struct stat s;
 		char buf[256];
+		FILE *fp;
 		sock = socket (AF_INET, SOCK_STREAM, 0);
 
 		serv_addr.sin_port = htons (6000 + i);
@@ -77,6 +78,23 @@ get_free_display (void)
 		}
 
 		close (sock);
+
+		/* if lock file exists and the process exists */
+		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
+		fp = fopen (buf, "r");
+		if (fp != NULL) {
+			char buf2[100];
+			if (fgets (buf2, sizeof (buf2), fp) != NULL) {
+				gulong pid;
+				if (sscanf (buf2, "%lu", &pid) == 1 &&
+				    kill (pid, 0) == 0) {
+					fclose (fp);
+					continue;
+				}
+
+			}
+			fclose (fp);
+		}
 
 		g_snprintf (buf, sizeof (buf), "/tmp/.X11-unix/X%d", i);
 		if (stat (buf, &s) == 0 &&

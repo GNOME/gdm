@@ -318,6 +318,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 		GSList *li;
 		struct stat s;
 		char buf[256];
+		FILE *fp;
 
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *dsp = li->data;
@@ -342,6 +343,23 @@ gdm_get_free_display (int start, uid_t server_uid)
 			continue;
 		}
 		close (sock);
+
+		/* if lock file exists and the process exists */
+		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
+		fp = fopen (buf, "r");
+		if (fp != NULL) {
+			char buf2[100];
+			if (fgets (buf2, sizeof (buf2), fp) != NULL) {
+				gulong pid;
+				if (sscanf (buf2, "%lu", &pid) == 1 &&
+				    kill (pid, 0) == 0) {
+					fclose (fp);
+					continue;
+				}
+
+			}
+			fclose (fp);
+		}
 
 		/* if starting as root, we'll be able to overwrite any
 		 * stale sockets or lock files, but a user may not be

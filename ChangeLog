@@ -1,3 +1,9 @@
+Mon Jul 07 15:42:44 2003  George Lebl <jirka@5z.com>
+
+	* daemon/misc.c, gui/gdmXnestchooser.c: the display check code was
+	  wrong, it only used the tcp connections.  Which are the most robust
+	  way, but we also really need to check the lock file.
+
 Mon Jul 07 12:41:21 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.(c|glade), gui/gdmcomm.c, gui/gdmphotosetup.c: Change
