@@ -168,7 +168,7 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 	GtkWidget *temp_preview = gtk_image_new ();
 	GtkWindow *parent = GTK_WINDOW (data);
 	GtkFileFilter *filter;
-	GtkWidget *file_dialog = gtk_file_chooser_dialog_new ("Open File",
+	GtkWidget *file_dialog = gtk_file_chooser_dialog_new (_("Open File"),
 					      parent,
 					      GTK_FILE_CHOOSER_ACTION_OPEN,
 					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -186,7 +186,7 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 			EXPANDED_DATADIR "/pixmaps");
 
 	filter = gtk_file_filter_new ();
-	gtk_file_filter_set_name (filter, "PNG and JPEG");
+	gtk_file_filter_set_name (filter, _("PNG and JPEG"));
 	gtk_file_filter_add_mime_type (filter, "image/jpeg");
 	gtk_file_filter_add_mime_type (filter, "image/png");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (file_dialog), filter);

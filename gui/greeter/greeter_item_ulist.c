@@ -16,12 +16,14 @@
 #include "vicious.h"
 
 #include "gdm.h"
+#include "gdmuser.h"
 #include "greeter.h"
 #include "greeter_item_ulist.h"
 #include "greeter_parser.h"
 #include "greeter_configuration.h"
 
 static GList *users = NULL;
+static GList *users_string = NULL;
 static GdkPixbuf *defface;
 static gint maxwidth = 0;
 static gint maxheight = 0;
@@ -31,16 +33,6 @@ static GtkWidget *user_list = NULL;
 
 static gboolean selecting_user = FALSE;
 
-typedef struct _GdmGreeterUser GdmGreeterUser;
-struct _GdmGreeterUser {
-  uid_t uid;
-  gchar *login;
-  gchar *gecos;
-  gchar *homedir;
-  GdkPixbuf *picture;
-};
-
-
 enum
 {
   GREETER_ULIST_ICON_COLUMN = 0,
@@ -48,228 +40,10 @@ enum
   GREETER_ULIST_LOGIN_COLUMN
 };
 
-static GdmGreeterUser * 
-gdm_greeter_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
-			const char *gecos)
-{
-	GdmGreeterUser *user;
-	GdkPixbuf *img = NULL;
-	gchar buf[PIPE_SIZE];
-	size_t size;
-	int bufsize;
-	char *p;
-
-	user = g_new0 (GdmGreeterUser, 1);
-
-	user->uid = uid;
-	user->login = g_strdup (logname);
-	if (!g_utf8_validate (gecos, -1, NULL))
-		user->gecos = ve_locale_to_utf8 (gecos);
-	else
-		user->gecos = g_strdup (gecos);
-
-	/* Cut up to first comma since those are ugly arguments and
-	 * not the name anymore, but only if more then 1 comma is found,
-	 * since otherwise it might be part of the actual comment,
-	 * this is sort of "heurestic" because there seems to be no
-	 * real standard, it's all optional */
-	p = strchr (user->gecos, ',');
-	if (p != NULL) {
-		if (strchr (p+1, ',') != NULL)
-			*p = '\0';
-	}
-
-	user->homedir = g_strdup (homedir);
-	if (defface != NULL)
-		user->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defface));
-
-	if (ve_string_empty (logname))
-		return user;
-
-	/* don't read faces, since that requires the daemon */
-	if (DOING_GDM_DEVELOPMENT)
-		return user;
-
-	/* read initial request */
-	do {
-		while (read (STDIN_FILENO, buf, 1) == 1)
-			if (buf[0] == STX)
-				break;
-		size = read (STDIN_FILENO, buf, sizeof (buf));
-		if (size <= 0)
-			return user;
-	} while (buf[0] != GDM_NEEDPIC);
-
-	printf ("%c%s\n", STX, logname);
-	fflush (stdout);
-
-	do {
-		while (read (STDIN_FILENO, buf, 1) == 1)
-			if (buf[0] == STX)
-				break;
-		size = read (STDIN_FILENO, buf, sizeof (buf));
-		if (size <= 0)
-			return user;
-	} while (buf[0] != GDM_READPIC);
-
-	/* both nul terminate and wipe the trailing \n */
-	buf[size-1] = '\0';
-
-	if (size < 2) {
-		img = NULL;
-	} else if (sscanf (&buf[1], "buffer:%d", &bufsize) == 1) {
-		char buffer[2048];
-		int pos = 0;
-		int n;
-		GdkPixbufLoader *loader;
-		/* we trust the daemon, even if it wanted to give us
-		 * bogus bufsize */
-		/* the daemon will now print the buffer */
-		printf ("%cOK\n", STX);
-		fflush (stdout);
-
-		while (read (STDIN_FILENO, buf, 1) == 1)
-			if (buf[0] == STX)
-				break;
-
-		loader = gdk_pixbuf_loader_new ();
-
-		while ((n = read (STDIN_FILENO, buffer,
-				  MIN (sizeof (buffer), bufsize-pos))) > 0) {
-			gdk_pixbuf_loader_write (loader, buffer, n, NULL);
-			pos += n;
-			if (pos >= bufsize)
-			       break;	
-		}
-
-		gdk_pixbuf_loader_close (loader, NULL);
-
-		img = gdk_pixbuf_loader_get_pixbuf (loader);
-		if (img != NULL)
-			g_object_ref (G_OBJECT (img));
-
-		g_object_unref (G_OBJECT (loader));
-
-		/* read the "done" bit, but don't check */
-		read (STDIN_FILENO, buf, sizeof (buf));
-	} else if (access (&buf[1], R_OK) == 0) {
-		img = gdk_pixbuf_new_from_file (&buf[1], NULL);
-	} else {
-		img = NULL;
-	}
-
-	/* the daemon is now free to go on */
-	printf ("%c\n", STX);
-	fflush (stdout);
-
-	if (img != NULL) {
-		gint w, h;
-
-		w = gdk_pixbuf_get_width (img);
-		h = gdk_pixbuf_get_height (img);
-
-		if (w > h && w > GdmIconMaxWidth) {
-			h = h * ((gfloat) GdmIconMaxWidth/w);
-			w = GdmIconMaxWidth;
-		} else if (h > GdmIconMaxHeight) {
-			w = w * ((gfloat) GdmIconMaxHeight/h);
-			h = GdmIconMaxHeight;
-		}
-
-		if (user->picture != NULL)
-			g_object_unref (G_OBJECT (user->picture));
-
-		maxwidth = MAX (maxwidth, w);
-		maxheight = MAX (maxheight, h);
-		if (w != gdk_pixbuf_get_width (img) ||
-		    h != gdk_pixbuf_get_height (img)) {
-			user->picture = gdk_pixbuf_scale_simple
-				(img, w, h, GDK_INTERP_BILINEAR);
-			g_object_unref (G_OBJECT (img));
-		} else {
-			user->picture = img;
-		}
-	}
-
-	return user;
-}
-
-static gboolean
-gdm_greeter_check_shell (const gchar *usersh)
-{
-    gint found = 0;
-    gchar *csh;
-
-    if(!usersh) return FALSE;
-
-    setusershell ();
-
-    while ((csh = getusershell ()) != NULL)
-	if (! strcmp (csh, usersh))
-	    found = 1;
-
-    endusershell ();
-
-    return (found);
-}
-
-static gboolean
-gdm_greeter_check_exclude (struct passwd *pwent)
-{
-	const char * const lockout_passes[] = { "!!", NULL };
-	gint i;
-
-	if ( ! GdmAllowRoot && pwent->pw_uid == 0)
-		return TRUE;
-
-	if ( ! GdmAllowRemoteRoot && ! GDM_IS_LOCAL && pwent->pw_uid == 0)
-		return TRUE;
-
-	if (pwent->pw_uid < GdmMinimalUID)
-		return TRUE;
-
-	for (i=0 ; lockout_passes[i] != NULL ; i++)  {
-		if (strcmp (lockout_passes[i], pwent->pw_passwd) == 0) {
-			return TRUE;
-		}
-	}
-
-	if (GdmExclude != NULL &&
-	    GdmExclude[0] != '\0') {
-		char **excludes;
-		excludes = g_strsplit (GdmExclude, ",", 0);
-
-		for (i=0 ; excludes[i] != NULL ; i++)  {
-			g_strstrip (excludes[i]);
-			if (g_ascii_strcasecmp (excludes[i],
-						pwent->pw_name) == 0) {
-				g_strfreev (excludes);
-				return TRUE;
-			}
-		}
-		g_strfreev (excludes);
-	}
-
-	return FALSE;
-}
-
-static gint 
-gdm_greeter_sort_func (gpointer d1, gpointer d2)
-{
-    GdmGreeterUser *a = d1;
-    GdmGreeterUser *b = d2;
-
-    if (!d1 || !d2)
-	return (0);
-
-    return (strcmp (a->login, b->login));
-}
-
 static void 
-gdm_greeter_users_init (void)
+gdm_greeter_users_init ()
 {
-    GdmGreeterUser *user;
-    struct passwd *pwent;
+    gint size_of_users = 0;
     time_t time_started;
 
     if (access (GdmDefaultFace, R_OK) == 0) {
@@ -307,48 +81,8 @@ gdm_greeter_users_init (void)
 		    GdmDefaultFace);
     }
 
-    time_started = time (NULL);
-
-    setpwent ();
-
-    pwent = getpwent();
-	
-    while (pwent != NULL) {
-
-	/* FIXME: fix properly, see bug #111830 */
-	if (number_of_users > 500 ||
-	    time_started + 5 <= time (NULL)) {
-	    user = gdm_greeter_user_alloc ("",
-					   9999 /*fake uid*/,
-					   "/",
-					   _("Too many users to list here..."));
-	    users = g_list_insert_sorted (users, user,
-					  (GCompareFunc) gdm_greeter_sort_func);
-	    /* don't update the size numbers */
-	    break;
-	}
-	
-	if (pwent->pw_shell && 
-	    gdm_greeter_check_shell (pwent->pw_shell) &&
-	    !gdm_greeter_check_exclude(pwent)) {
-
-	    user = gdm_greeter_user_alloc (pwent->pw_name,
-					   pwent->pw_uid,
-					   pwent->pw_dir,
-					   ve_sure_string (pwent->pw_gecos));
-
-	    if ((user) && (! g_list_find_custom (users, user,
-				(GCompareFunc) gdm_greeter_sort_func))) {
-		users = g_list_insert_sorted(users, user,
-					     (GCompareFunc) gdm_greeter_sort_func);
-		number_of_users ++;
-	    }
-	}
-	
-	pwent = getpwent();
-    }
-
-    endpwent ();
+    gdm_users_init (&users, &users_string, NULL, defface,
+	&size_of_users, GDM_IS_LOCAL, !DOING_GDM_DEVELOPMENT);
 }
 
 static void
@@ -358,7 +92,7 @@ greeter_populate_user_list (GtkTreeModel *tm)
 
   for (li = users; li != NULL; li = li->next)
     {
-      GdmGreeterUser *usr = li->data;
+      GdmUser *usr = li->data;
       GtkTreeIter iter = {0};
       char *label;
       char *login, *gecos;

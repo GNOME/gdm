@@ -61,6 +61,8 @@ libgdmwm_a_SOURCES = \
 libgdmcommon_a_SOURCES = \
 	gdmlanguages.c		\
 	gdmlanguages.h		\
+	gdmuser.c		\
+	gdmuser.h		\
 	misc.c			\
 	misc.h			\
 	gdmcommon.c		\
@@ -78,6 +80,8 @@ gdmsetup_SOURCES = \
 	gdmsetup.c		\
 	gdmcomm.c		\
 	gdmcomm.h		\
+	gdmuser.c		\
+	gdmuser.h		\
 	misc.c			\
 	misc.h
 

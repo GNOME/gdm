@@ -44,6 +44,8 @@
 #include <viciousui.h>
 
 #include "gdm.h"
+#include "gdmuser.h"
+#include "gdmcommon.h"
 #include "gdmwm.h"
 #include "gdmlanguages.h"
 #include "gdmcommon.h"
@@ -53,15 +55,6 @@
  * within the protocol */
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 static char *greeter_Welcome_key = GDM_KEY_WELCOME;
-
-typedef struct _GdmLoginUser GdmLoginUser;
-struct _GdmLoginUser {
-    uid_t uid;
-    char *login;
-    char *homedir;
-    char *gecos;
-    GdkPixbuf *picture;
-};
 
 #define LAST_SESSION "Last"
 #define LAST_LANGUAGE "Last"
@@ -75,12 +68,8 @@ enum {
 	GREETER_ULIST_LOGIN_COLUMN
 };
 
-static gboolean GdmAllowRoot;
-static gboolean GdmAllowRemoteRoot;
 static gboolean GdmBrowser;
 static gboolean GdmDebug;
-static gint  GdmIconMaxHeight;
-static gint  GdmIconMaxWidth;
 static gboolean GdmQuiver;
 static gboolean GdmSystemMenu;
 static gboolean GdmSystemMenuReal;
@@ -111,8 +100,6 @@ static gchar *GdmGtkRC;
 static gchar *GdmSessionDir;
 static gchar *GdmDefaultSession;
 static gchar *GdmLocaleFile;
-static gchar *GdmExclude;
-static int GdmMinimalUID;
 static gchar *GdmGlobalFaceDir;
 static gchar *GdmDefaultFace;
 static gboolean GdmTimedLoginEnable;
@@ -129,10 +116,6 @@ static gboolean GdmAllowGtkThemeChange;
 static char *GdmGtkThemesToAllow;
 static char *GdmGtkTheme;
 
-gboolean GdmSoundOnLogin;
-gchar *GdmSoundOnLoginFile;
-gchar *GdmSoundProgram;
-
 static gboolean GdmShowGnomeFailsafeSession;
 static gboolean GdmShowXtermFailsafeSession;
 static gboolean GdmShowLastSession;
@@ -144,6 +127,17 @@ static gint GdmFlexiReapDelayMinutes;
 /* FIXME: Should move everything to externs and move reading to gdmcommon.c */
 gchar *GdmInfoMsgFile;
 gchar *GdmInfoMsgFont;
+gboolean GdmSoundOnLogin;
+gchar *GdmSoundOnLoginFile;
+gchar *GdmSoundProgram;
+gint  GdmIconMaxHeight;
+gint  GdmIconMaxWidth;
+int GdmMinimalUID;
+gchar *GdmInclude = NULL;
+gchar *GdmExclude = NULL;
+gboolean GdmIncludeAll;
+gboolean GdmAllowRoot;
+gboolean GdmAllowRemoteRoot;
 
 static GtkWidget *login;
 static GtkWidget *logo_frame = NULL;
@@ -177,7 +171,7 @@ static GdkPixbuf *defface;
 static GSList *sessions = NULL;
 static GSList *languages = NULL;
 static GList *users = NULL;
-static gint number_of_users = 0;
+static GList *users_string = NULL;
 static gint size_of_users = 0;
 
 static gchar *defsess = NULL;
@@ -190,8 +184,6 @@ static gint curdelay = 0;
 
 static gboolean savesess = FALSE;
 static gboolean savelang = FALSE;
-static gint maxwidth = 0;
-static gint maxheight = 0;
 
 static pid_t backgroundpid = 0;
 
@@ -696,6 +688,8 @@ gdm_login_parse_config (void)
     GdmBackgroundScaleToFit = ve_config_get_bool (config, GDM_KEY_BACKGROUNDSCALETOFIT);
     GdmBackgroundRemoteOnlyColor = ve_config_get_bool (config, GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
     GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
+    GdmIncludeAll = ve_config_get_bool (config, GDM_KEY_INCLUDEALL);
+    GdmInclude = ve_config_get_string (config, GDM_KEY_INCLUDE);
     GdmExclude = ve_config_get_string (config, GDM_KEY_EXCLUDE);
     GdmMinimalUID = ve_config_get_int (config, GDM_KEY_MINIMALUID);
     GdmGlobalFaceDir = ve_config_get_string (config, GDM_KEY_FACEDIR);
@@ -2297,7 +2291,7 @@ gdm_login_browser_populate (void)
     GList *li;
 
     for (li = users; li != NULL; li = li->next) {
-	    GdmLoginUser *usr = li->data;
+	    GdmUser *usr = li->data;
 	    GtkTreeIter iter = {0};
 	    char *label;
 	    char *login, *gecos;
@@ -3163,294 +3157,6 @@ gdm_login_gui_init (void)
     }
 }
 
-
-static gint 
-gdm_login_sort_func (gpointer d1, gpointer d2)
-{
-    GdmLoginUser *a = d1;
-    GdmLoginUser *b = d2;
-
-    if (!d1 || !d2)
-	return (0);
-
-    return (strcmp (a->login, b->login));
-}
-
-
-static GdmLoginUser * 
-gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
-		      const char *gecos)
-{
-	GdmLoginUser *user;
-	GdkPixbuf *img = NULL;
-	gchar buf[PIPE_SIZE];
-	size_t size;
-	int bufsize;
-	char *p;
-
-	user = g_new0 (GdmLoginUser, 1);
-
-	user->uid = uid;
-	user->login = g_strdup (logname);
-	if (!g_utf8_validate (gecos, -1, NULL))
-		user->gecos = ve_locale_to_utf8 (gecos);
-	else
-		user->gecos = g_strdup (gecos);
-
-	/* Cut up to first comma since those are ugly arguments and
-	 * not the name anymore, but only if more then 1 comma is found,
-	 * since otherwise it might be part of the actual comment,
-	 * this is sort of "heurestic" because there seems to be no
-	 * real standard, it's all optional */
-	p = strchr (user->gecos, ',');
-	if (p != NULL) {
-		if (strchr (p+1, ',') != NULL)
-			*p = '\0';
-	}
-
-	user->homedir = g_strdup (homedir);
-	if (defface != NULL)
-		user->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defface));
-
-	if (ve_string_empty (logname))
-		return user;
-
-	/* don't read faces, since that requires the daemon */
-	if (DOING_GDM_DEVELOPMENT)
-		return user;
-
-	/* read initial request */
-	do {
-		while (read (STDIN_FILENO, buf, 1) == 1)
-			if (buf[0] == STX)
-				break;
-		size = read (STDIN_FILENO, buf, sizeof (buf));
-		if (size <= 0)
-			return user;
-	} while (buf[0] != GDM_NEEDPIC);
-
-	printf ("%c%s\n", STX, logname);
-	fflush (stdout);
-
-	do {
-		while (read (STDIN_FILENO, buf, 1) == 1)
-			if (buf[0] == STX)
-				break;
-		size = read (STDIN_FILENO, buf, sizeof (buf));
-		if (size <= 0)
-			return user;
-	} while (buf[0] != GDM_READPIC);
-
-	/* both nul terminate and wipe the trailing \n */
-	buf[size-1] = '\0';
-
-	if (size < 2) {
-		img = NULL;
-	} else if (sscanf (&buf[1], "buffer:%d", &bufsize) == 1) {
-		char buffer[2048];
-		int pos = 0;
-		int n;
-		GdkPixbufLoader *loader;
-		/* we trust the daemon, even if it wanted to give us
-		 * bogus bufsize */
-		/* the daemon will now print the buffer */
-		printf ("%cOK\n", STX);
-		fflush (stdout);
-
-		while (read (STDIN_FILENO, buf, 1) == 1)
-			if (buf[0] == STX)
-				break;
-
-		loader = gdk_pixbuf_loader_new ();
-
-		while ((n = read (STDIN_FILENO, buffer,
-				  MIN (sizeof (buffer), bufsize-pos))) > 0) {
-			gdk_pixbuf_loader_write (loader, buffer, n, NULL);
-			pos += n;
-			if (pos >= bufsize)
-			       break;	
-		}
-
-		gdk_pixbuf_loader_close (loader, NULL);
-
-		img = gdk_pixbuf_loader_get_pixbuf (loader);
-		if (img != NULL)
-			g_object_ref (G_OBJECT (img));
-
-		g_object_unref (G_OBJECT (loader));
-
-		/* read the "done" bit, but don't check */
-		read (STDIN_FILENO, buf, sizeof (buf));
-	} else if (access (&buf[1], R_OK) == 0) {
-		img = gdk_pixbuf_new_from_file (&buf[1], NULL);
-	} else {
-		img = NULL;
-	}
-
-	/* the daemon is now free to go on */
-	printf ("%c\n", STX);
-	fflush (stdout);
-
-	if (img != NULL) {
-		gint w, h;
-
-		w = gdk_pixbuf_get_width (img);
-		h = gdk_pixbuf_get_height (img);
-
-		if (w > h && w > GdmIconMaxWidth) {
-			h = h * ((gfloat) GdmIconMaxWidth/w);
-			w = GdmIconMaxWidth;
-		} else if (h > GdmIconMaxHeight) {
-			w = w * ((gfloat) GdmIconMaxHeight/h);
-			h = GdmIconMaxHeight;
-		}
-
-		if (user->picture != NULL)
-			g_object_unref (G_OBJECT (user->picture));
-
-		maxwidth = MAX (maxwidth, w);
-		maxheight = MAX (maxheight, h);
-		if (w != gdk_pixbuf_get_width (img) ||
-		    h != gdk_pixbuf_get_height (img)) {
-			user->picture = gdk_pixbuf_scale_simple
-				(img, w, h, GDK_INTERP_BILINEAR);
-			g_object_unref (G_OBJECT (img));
-		} else {
-			user->picture = img;
-		}
-	}
-
-	return user;
-}
-
-
-static gboolean
-gdm_login_check_exclude (struct passwd *pwent)
-{
-	const char * const lockout_passes[] = { "!!", NULL };
-	gint i;
-
-	if ( ! GdmAllowRoot && pwent->pw_uid == 0)
-		return TRUE;
-
-	if ( ! GdmAllowRemoteRoot && ! login_is_local && pwent->pw_uid == 0)
-		return TRUE;
-
-	if (pwent->pw_uid < GdmMinimalUID)
-		return TRUE;
-
-	for (i=0 ; lockout_passes[i] != NULL ; i++)  {
-		if (strcmp (lockout_passes[i], pwent->pw_passwd) == 0) {
-			return TRUE;
-		}
-	}
-
-	if (GdmExclude != NULL &&
-	    GdmExclude[0] != '\0') {
-		char **excludes;
-		excludes = g_strsplit (GdmExclude, ",", 0);
-
-		for (i=0 ; excludes[i] != NULL ; i++)  {
-			g_strstrip (excludes[i]);
-			if (g_ascii_strcasecmp (excludes[i],
-						pwent->pw_name) == 0) {
-				g_strfreev (excludes);
-				return TRUE;
-			}
-		}
-		g_strfreev (excludes);
-	}
-
-	return FALSE;
-}
-
-
-static gboolean
-gdm_login_check_shell (const gchar *usersh)
-{
-    gint found = 0;
-    gchar *csh;
-
-    setusershell ();
-
-    while ((csh = getusershell ()) != NULL)
-	if (! strcmp (csh, usersh))
-	    found = 1;
-
-    endusershell ();
-
-    return (found);
-}
-
-
-static void 
-gdm_login_users_init (void)
-{
-    GdmLoginUser *user;
-    struct passwd *pwent;
-    time_t time_started;
-
-    if (access (GdmDefaultFace, R_OK)) {
-	    syslog (LOG_WARNING,
-		    _("Can't open DefaultImage: %s. Suspending face browser!"),
-		    GdmDefaultFace);
-	    GdmBrowser = FALSE;
-	    return;
-    } else  {
-	    defface = gdk_pixbuf_new_from_file (GdmDefaultFace, NULL);
-    }
-
-    time_started = time (NULL);
-
-    setpwent ();
-
-    pwent = getpwent();
-	
-    while (pwent != NULL) {
-
-	/* FIXME: fix properly, see bug #111830 */
-	if (number_of_users > 500 ||
-	    time_started + 5 <= time (NULL)) {
-		user = gdm_login_user_alloc ("",
-					     9999 /*fake uid*/,
-					     "/",
-					     _("Too many users to list here..."));
-		users = g_list_insert_sorted (users, user,
-					      (GCompareFunc) gdm_login_sort_func);
-		/* don't update the size numbers, it's ok if this "user" is
-		   offscreen */
-		break;
-	}
-	
-	if (pwent->pw_shell && 
-	    gdm_login_check_shell (pwent->pw_shell) &&
-	    !gdm_login_check_exclude (pwent)) {
-
-	    user = gdm_login_user_alloc(pwent->pw_name,
-					pwent->pw_uid,
-					pwent->pw_dir,
-					ve_sure_string (pwent->pw_gecos));
-
-	    if ((user) &&
-		(! g_list_find_custom (users, user, (GCompareFunc) gdm_login_sort_func))) {
-		users = g_list_insert_sorted(users, user,
-					     (GCompareFunc) gdm_login_sort_func);
-		number_of_users ++;
-		if (user->picture != NULL) {
-			size_of_users +=
-				gdk_pixbuf_get_height (user->picture) + 2;
-		} else {
-			size_of_users += GdmIconMaxHeight;
-		}
-	    }
-	}
-	
-	pwent = getpwent();
-    }
-
-    endpwent ();
-}
-
 static void
 set_root (GdkPixbuf *pb)
 {
@@ -3943,8 +3649,18 @@ main (int argc, char *argv[])
 	    }
     }
 
-    if (GdmBrowser)
-	gdm_login_users_init ();
+    if (GdmBrowser) {
+	    if (access (GdmDefaultFace, R_OK)) {
+		syslog (LOG_WARNING,
+		   _("Can't open DefaultImage: %s. Suspending face browser!"),
+		GdmDefaultFace);
+		GdmBrowser = FALSE;
+	    } else  {
+		defface = gdk_pixbuf_new_from_file (GdmDefaultFace, NULL);
+	        gdm_users_init (&users, &users_string, NULL, defface,
+			&size_of_users, login_is_local, !DOING_GDM_DEVELOPMENT);
+	    }
+    }
 
     gdm_login_gui_init ();
 

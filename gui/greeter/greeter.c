@@ -69,8 +69,10 @@ gchar *GdmTimedLogin;
 gchar *GdmGtkRC;
 gchar *GdmGtkTheme;
 gint GdmTimedLoginDelay;
-gchar *GdmExclude;
 int GdmMinimalUID;
+gchar *GdmInclude = NULL;
+gchar *GdmExclude = NULL;
+gboolean GdmIncludeAll;
 gboolean GdmAllowRoot;
 gboolean GdmAllowRemoteRoot;
 gchar *GdmWelcome;
@@ -170,6 +172,8 @@ greeter_parse_config (void)
     }
 
     GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
+    GdmIncludeAll = ve_config_get_bool (config, GDM_KEY_INCLUDEALL);
+    GdmInclude = ve_config_get_string (config, GDM_KEY_INCLUDE);
     GdmExclude = ve_config_get_string (config, GDM_KEY_EXCLUDE);
     GdmMinimalUID = ve_config_get_int (config, GDM_KEY_MINIMALUID);
     GdmAllowRoot = ve_config_get_bool (config, GDM_KEY_ALLOWROOT);

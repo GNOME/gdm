@@ -483,11 +483,15 @@
       </para>
 
       <para>
-        To filter out unwanted user names in the browser, an exclude
-        option is implemented. The greeter will automatically ignore
-        usernames listed in the <filename>Exclude</filename> statement in the
-        config file, and furthermore exclude users whose UIDs are lower
-        then <filename>MinimalUID</filename>.
+	To control the faces that get displayed, there are a number of 
+	configuration options that can be used.  If the
+	<filename>Include</filename> option contains a list of users
+	separated by commas, then only the specified users will be displayed.
+	If the <filename>IncludeAll</filename> option is set to true and the
+	<filename>Include</filename> option is empty, then the password file
+	will be scanned and all users will be displayed.  Any user listed in
+	the <filename>Exclude</filename> option and users whose UID's is
+	lower than <filename>MinimalUID</filename> will be filtered out.
       </para>
 
       <para>
@@ -2290,13 +2294,52 @@ XKeepsCrashing
           </varlistentry>
           
           <varlistentry>
+            <term>Include</term>
+            <listitem>
+              <synopsis>Include=</synopsis>
+		Comma separated list of users to be included in the face
+		browser and in the gdmsetup selection list for
+		Automatic/Timed login. 
+		See also <filename>Exclude</filename>,
+		<filename>IncludeAll</filename>, and
+		<filename>MinimalUID</filename>.
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
             <term>Exclude</term>
             <listitem>
               <synopsis>Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,...</synopsis>
               <para>
-                Comma-separated list of usernames to exclude from the
-                face browser. The excluded users will still be able to
-                log in.  See also <filename>MinimalUID</filename>.
+		Comma separated list of users to be excluded from the face
+		browser and from the gdmsetup selection list for
+		Automatic/Timed login.  Excluded users will still be able to
+		log in, but will have to type their username.
+		See also <filename>Include</filename>,
+		<filename>IncludeAll</filename>, and
+		<filename>MinimalUID</filename>.
+              </para>
+            </listitem>
+          </varlistentry>
+          
+          <varlistentry>
+            <term>IncludeAll</term>
+            <listitem>
+              <synopsis>IncludeAll=false</synopsis>
+		By default, an empty include list means display no users.
+		By setting IncludeAll to true, the password file will be
+		scanned and all users will be displayed aside from users
+		excluded via the Exclude setting and user ID's less than
+		MinimalUID.  Scanning the password file can be slow on
+		systems with large numbers of users and this feature should
+		not be used in such environments.  The setting of IncludeAll
+		does nothing if Include is set to a non-empty value.
+		See also <filename>Include</filename>,
+		<filename>Exclude</filename>, and
+		<filename>MinimalUID</filename>.
+              <para>
               </para>
             </listitem>
           </varlistentry>
@@ -2425,7 +2468,9 @@ XKeepsCrashing
               <para>
                 The minimal UID that gdm should consider a user.  All
                 users with a lower UID will be excluded from the face browser.
-                See also <filename>Exclude</filename>.
+                See also <filename>Include</filename>,
+		<filename>Exclude</filename>, and
+		<filename>IncludeAll</filename>.
               </para>
             </listitem>
           </varlistentry>

@@ -38,6 +38,7 @@
 #include <viciousui.h>
 
 #include "gdm.h"
+#include "gdmcommon.h"
 #include "misc.h"
 #include "gdmcomm.h"
 
@@ -50,8 +51,15 @@ static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
 static gboolean gdm_running = FALSE;
-static int GdmMinimalUID = 100;
-static char *GdmExclude = NULL;
+gint  GdmIconMaxHeight;
+gint  GdmIconMaxWidth;
+gint GdmMinimalUID = 100;
+gchar *GdmExclude = NULL;
+gchar *GdmInclude = NULL;
+gboolean GdmIncludeAll;
+gboolean GdmAllowRoot;
+gboolean GdmAllowRemoteRoot;
+
 static char *GdmSoundProgram = NULL;
 
 static GladeXML *xml;
@@ -530,61 +538,35 @@ setup_user_combo (const char *name, const char *key)
 	GtkWidget *combo = glade_helper_get (xml, name, GTK_TYPE_COMBO);
 	GtkWidget *entry= GTK_COMBO (combo)->entry;
 	GList *users = NULL;
-	struct passwd *pwent;
-	char *str;
-	int cnt;
-	time_t time_started;
-	char **excludes;
-	int i;
+	GList *users_string = NULL;
+	static gboolean GDM_IS_LOCAL = FALSE;
+	char *selected_user;
+	char *testme;
+	gint size_of_users = 0;
 
-	str = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
+	selected_user = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
 	/* normally empty */
-	users = g_list_append (users, g_strdup (""));
+	users_string = g_list_append (users_string, g_strdup (""));
 
-	if ( ! ve_string_empty (str))
-		users = g_list_append (users, g_strdup (str));
+	if ( ! ve_string_empty (selected_user))
+		users_string = g_list_append (users_string, g_strdup (selected_user));
 
-	time_started = time (NULL);
-
-	setpwent ();
-
-	pwent = getpwent();
-	cnt = 0;
-
-	excludes = g_strsplit (GdmExclude, ",", 0);
-	for (i=0 ; excludes != NULL && excludes[i] != NULL ; i++)
-		g_strstrip (excludes[i]);
-	
-	while (pwent != NULL) {
-		if ( ! check_exclude (pwent, excludes) &&
-		    strcmp (ve_sure_string (str), pwent->pw_name) != 0) {
-			cnt ++;
-			users = g_list_prepend (users,
-						g_strdup (pwent->pw_name));
-			/* FIXME: fix properly, see bug #111830 */
-			if (cnt >= 100 ||
-			    time_started + 5 <= time (NULL)) {
-				users = g_list_append (users,
-						       g_strdup (_("Too many users to list here...")));
-				break;
-			}
-		}
-	
-		pwent = getpwent();
+	if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+		GDM_IS_LOCAL = FALSE;
+	} else {
+		GDM_IS_LOCAL = TRUE;
 	}
 
-	endpwent ();
+        gdm_users_init (&users, &users_string, selected_user, NULL, &size_of_users,
+		GDM_IS_LOCAL, FALSE);
 
-	g_strfreev (excludes);
-	excludes = NULL;
+	users_string = g_list_reverse (users_string);
 
-	users = g_list_reverse (users);
-
-	gtk_combo_set_popdown_strings (GTK_COMBO (combo), users);
+	gtk_combo_set_popdown_strings (GTK_COMBO (combo), users_string);
 
 	gtk_entry_set_text (GTK_ENTRY (entry),
-			    ve_sure_string (str));
+			    ve_sure_string (selected_user));
 
 	g_object_set_data_full (G_OBJECT (entry),
 				"key", g_strdup (key),
@@ -597,7 +579,9 @@ setup_user_combo (const char *name, const char *key)
 
 	g_list_foreach (users, (GFunc)g_free, NULL);
 	g_list_free (users);
-	g_free (str);
+	g_list_foreach (users_string, (GFunc)g_free, NULL);
+	g_list_free (users_string);
+	g_free (selected_user);
 }
 
 static void
@@ -2804,12 +2788,24 @@ main (int argc, char *argv[])
 
 	/* XXX: the setup proggie using a greeter config var for it's
 	 * ui?  Say it ain't so.  Our config sections are SUCH A MESS */
+	GdmIconMaxHeight = ve_config_get_int (ve_config_get (GDM_CONFIG_FILE),
+					   GDM_KEY_ICONHEIGHT);
+	GdmIconMaxWidth = ve_config_get_int (ve_config_get (GDM_CONFIG_FILE),
+					   GDM_KEY_ICONWIDTH);
 	GdmMinimalUID = ve_config_get_int (ve_config_get (GDM_CONFIG_FILE),
 					   GDM_KEY_MINIMALUID);
+	GdmIncludeAll = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
+					   GDM_KEY_INCLUDEALL);
+	GdmInclude = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+					   GDM_KEY_INCLUDE);
 	GdmExclude = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 					   GDM_KEY_EXCLUDE);
 	GdmSoundProgram = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 						GDM_KEY_SOUND_PROGRAM);
+	GdmAllowRoot = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+						GDM_KEY_ALLOWROOT);
+	GdmAllowRemoteRoot = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+						GDM_KEY_ALLOWREMOTEROOT);
 	if (ve_string_empty (GdmSoundProgram) ||
 	    access (GdmSoundProgram, X_OK) != 0) {
 		g_free (GdmSoundProgram);

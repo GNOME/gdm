@@ -1,3 +1,18 @@
+Mon Mar 14 12:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* daemon/gdm.h, gui/Makefile.am, gui/gdmlogin.c,
+	  gui/gdmsetup.c, gui/gdmuser.h, gui/gdmuser.c, 
+	  gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.c,
+	  docs/C/gdm.xml:  Added Include and IncludeAll gdm config
+	  options to better control what users are displayed in
+	  the face browser.  Consolidated the almost identical
+	  logic from gdmlogin.c, gdmsetup.c and greeter_item_ulist.c
+	  into gdm_user.[ch].
+	* daemon/gdm.h: Correct setting of HALT_COMMAND, which
+	  got fat-fingered when I moved the setup of this to
+	  the configure file.
+	* gui/gdmphotosetup.c: Mark strings for translation.
+
 Thu Mar 10 17:50:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/gdm.h, config/gdm.conf.in: Changed default face

@@ -133,7 +133,7 @@ enum {
 #define GDM_KEY_ADD_GTK_MODULES "daemon/AddGtkModules=false"
 #define GDM_KEY_GTK_MODULES_LIST "daemon/GtkModulesList="
 #define GDM_KEY_GROUP "daemon/Group=gdm"
-#define GDM_KEY_HALT "daemon/DefaultPath=" HALT_COMMAND
+#define GDM_KEY_HALT "daemon/HaltCommand=" HALT_COMMAND
 #define GDM_KEY_INITDIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
 #define GDM_KEY_KILLIC "daemon/KillInitClients=true"
 #define GDM_KEY_LOGDIR "daemon/LogDir=" EXPANDED_LOGDIR
@@ -224,7 +224,9 @@ enum {
 #define GDM_KEY_GTK_THEMES_TO_ALLOW "gui/GtkThemesToAllow=all"
 
 #define GDM_KEY_BROWSER "greeter/Browser=false"
+#define GDM_KEY_INCLUDE "greeter/Include="
 #define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm,rpm,nfsnobody,pcap"
+#define GDM_KEY_INCLUDEALL "greeter/IncludeAll=false"
 #define GDM_KEY_MINIMALUID "greeter/MinimalUID=100"
 #define GDM_KEY_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "/nobody.png"
 #define GDM_KEY_FACEDIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/pixmaps/faces/"
