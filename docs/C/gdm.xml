@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.4.1.101"> 
-    <!ENTITY date "8/18/2003"> 
+    <!ENTITY date "8/20/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -309,8 +309,8 @@
       <para>
 	On the upside, GDM's random number generation is far superior
 	to XDM or KDM.  At least the last time I looked at both of
-	those.  XDM or KDM will only really have 32 bits of randomness
-	for the MIT-MAGIC-COOKIE-1 (they both get a 32bit seed and then
+	those.  XDM or KDM will only really have 31 bits of randomness
+	for the MIT-MAGIC-COOKIE-1 (they both get a 31bit seed and then
 	user a pseudorandom number generator to get 128 bits).  GDM goes
 	to extraordinary measures to truly get a 128 bit random number,
 	using hardware random number generators if available, plus the
@@ -652,6 +652,14 @@
       The configuration files, and especially the <filename>gdm.conf</filename>
       file, contain lots of useful comments, so also read these when
       changing your setup.
+    </para>
+
+    <para>
+      Some keys in the configuration file as shipped are commented out
+      while others are set.  This is done so that defaults can be easily
+      changed in the future for some keys.  If you wish to set such a key
+      you must first remove the leading hash mark that marks it as a
+      comment.
     </para>
 
     <para> 
@@ -2237,6 +2245,7 @@
 	      <synopsis>UseCirclesInEntry=false</synopsis>
 	      <para>
 		Use circles instead of asterisks in the password entry.
+		This may not work with all fonts however.
 	      </para>
 	    </listitem>
 	  </varlistentry>

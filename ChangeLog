@@ -1,3 +1,24 @@
+Wed Aug 20 12:13:04 2003  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in, daemon/gdm.h: sync some defaults and make
+	  lots of keys commented out in the standard config file so that
+	  we can change the defaults later without users having to
+	  install a new config file.
+
+	* daemon/xdmcp.c, daemon/cookie.c: Use glib's random functions
+	  instead of rand where we need those pesky pseudorandom
+	  numbers
+
+	* daemon/slave.c: cleanup for greeter restarting
+
+	* daemon/verify-pam.c: a bit of cleanup and set tmp_PAM_USER
+	  to login if login is set, just in case pam is weird.
+
+	* gui/gdmsetup.c: when not running from within gdm itself
+	  display "ghelp:gdm" on help
+
+	* docs/C/gdm.xml: minor updates
+
 Mon Aug 18 17:33:12 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter.c,

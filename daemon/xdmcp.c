@@ -262,11 +262,7 @@ gdm_xdmcp_init (void)
     if ( ! GdmXdmcp)
 	    return TRUE;
 
-    /* do we care that this is not the most random number?
-       no.  All we care about that it is likely far enough
-       away from any previous run */
-    srand (getpid () * time (NULL));
-    globsessid = rand ();
+    globsessid = g_random_int ();
     
     /* Fetch and store local hostname in XDMCP friendly format */
     hostbuf[1023] = '\0';

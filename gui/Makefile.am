@@ -1,10 +1,14 @@
 SUBDIRS = . greeter modules
 
 ## Process this file with automake to produce makefile.in
-DEFS = @DEFS@ -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
+DEFS = @DEFS@ \
+	-DPREFIX=\"@prefix@\" \
+	-DSYSCONFDIR=\"@sysconfdir@\" \
+	-DDATADIR=\"@datadir@\" \
+	-DLIBDIR=\"@libdir@\" \
+	-DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
 	-DGDM_FACTORY_CONFIG_FILE=\"@sysconfdir@/gdm/factory-gdm.conf\" \
 	-DGDM_GLADE_DIR=\"@datadir@/gdm\"
-
 
 INCLUDES = \
 	-I.						\

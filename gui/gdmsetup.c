@@ -1981,15 +1981,25 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 		timeout_remove_all ();
 		gtk_main_quit ();
 	} else if (response == GTK_RESPONSE_HELP) {
-		/* FIXME: when help gets written connect it here */
+		GError *error = NULL;
 		GtkWidget *setup_dialog = glade_helper_get
 			(xml, "setup_dialog", GTK_TYPE_WINDOW);
-		static GtkWidget *dlg;
+		static GtkWidget *dlg = NULL;
 
 		if (dlg != NULL) {
 			gtk_window_present (GTK_WINDOW (dlg));
 			return;
 		}
+
+		if ( ! RUNNING_UNDER_GDM) {
+			gnome_help_display_uri ("ghelp:gdm", &error);
+			/* FIXME: handle errors nicer */
+			if (error == NULL)
+				return;
+			g_error_free (error);
+		}
+
+		/* fallback help dialogue */
 	
 		/* HIG compliance? */
 		dlg = gtk_message_dialog_new
@@ -2096,6 +2106,12 @@ setup_gui (void)
 	add_to_size_group (sg, "autologin");
 	add_to_size_group (sg, "timedlogin");
 	g_object_unref (G_OBJECT (sg));
+
+	/* Note: Just setting up a notify here doesn't mean
+	   things will get updated.  You must also wire in
+	   the logic for update in the daemon and/or greeters
+	   (or chooser) or whereever this is actually being
+	   updated. */
 
 	setup_user_combo ("autologin_combo",
 			  GDM_KEY_AUTOMATICLOGIN);
@@ -2322,6 +2338,7 @@ main (int argc, char *argv[])
 	gnome_program_init ("gdmsetup", VERSION, 
 			    LIBGNOMEUI_MODULE /* module_info */,
 			    argc, argv,
+			    GNOME_PROGRAM_STANDARD_PROPERTIES,
 			    /* *GNOME_PARAM_POPT_TABLE, options, */
 			    GNOME_PARAM_CREATE_DIRECTORIES, ! RUNNING_UNDER_GDM,
 			    NULL);

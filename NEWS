@@ -25,7 +25,8 @@ Ahh news...
   now capped at a higher number, but we also cap the time
   that is spent gathering the info at 5 seconds.
 
-- Deal with main daemon crashes semi decently in the slave.
+- Deal with hypothetical main daemon crashes semi decently
+  in the slave.
 
 - Try /dev/fd if /proc/self/fd isn't there for checking
   which FDs are open, should make this work on more platforms
@@ -47,6 +48,14 @@ Ahh news...
 - Respect negative coordinates with "-0" in the
   theme
 
+- Display help from the setup program if not running
+  from within gdm itself
+
+- The standard config file now has most keys commented out
+  so that the internal defaults are used and so that we can
+  change those defaults in the future without the user having
+  to update the config file.
+
 - Improvements in the cookie generation.  Doesn't use
   up all the system entropy but just uses the 16 bytes it
   actually needs (since we just need a 16 byte cookie).
@@ -66,7 +75,27 @@ Ahh news...
 
 - Some soptimization to save a nanosecond or two
 
-- Translation updates (FIXME)
+- Translation updates (Wang Jian, Funda Wang, Christian Rose, Jordi Mallach,
+  Danilo Segan, Artur Flinta, Miloslav Trmac, Duarte Loreto, Kostas Papadimas,
+  Ales Nyakhaychyk, Laurent Dhima, Christophe Merlet,
+  Evandro Fernandes Giovanini, Metin Amiroff, Pauli Virtanen, Dafydd Harries)
+
+2.4.2.100 SECURITY ADDENDUM:
+  Was not part of the original release notes to give distributors a chance
+  to update.
+
+- SECURITY: Fixed CAN-2003-0547 which allows any user to read any
+  root readable text file on the system by making a symling from
+  ~/.xsession-errors
+
+- SECURITY: Fixed CAN-2003-0548, a crash when chosen host expires.
+  DoS only for XDMCP (XDMCP should however be confined to a 'trusted'
+  network anyway)
+
+- SECURITY: Fixed CAN-2003-0549, a crash if authorization key name
+  is shorter then 18 bytes (that is, not MIT-MAGIC-COOKIE-1)
+  DoS only for XDMCP (XDMCP should however be confined to a 'trusted'
+  network anyway)
 
 2.4.2.100 stuff:
 

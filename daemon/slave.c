@@ -1426,6 +1426,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 		ve_setenv ("PATH", GdmRootPath, TRUE);
 		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
+		ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
 		closelog ();
 
@@ -1493,13 +1494,15 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 static void
 restart_the_greeter (void)
 {
+	do_restart_greeter = FALSE;
+
 	gdm_slave_desensitize_config ();
 
 	/* no login */
 	g_free (login);
 	login = NULL;
 
-	/* No restart it */
+	/* Now restart it */
 	if (greet) {
 		GdmWaitPid *wp;
 
@@ -1571,6 +1574,8 @@ gdm_slave_wait_for_login (void)
 		 * to gdm_verify_user */
 
 		if G_UNLIKELY (do_restart_greeter) {
+			g_free (login);
+			login = NULL;
 			do_restart_greeter = FALSE;
 			restart_the_greeter ();
 			continue;
@@ -1611,6 +1616,8 @@ gdm_slave_wait_for_login (void)
 			GdmAllowRoot = oldAllowRoot;
 
 			if G_UNLIKELY (do_restart_greeter) {
+				g_free (login);
+				login = NULL;
 				do_restart_greeter = FALSE;
 				restart_the_greeter ();
 				continue;
@@ -2178,6 +2185,7 @@ gdm_slave_greeter (void)
 	ve_setenv ("GDM_GREETER_PROTOCOL_VERSION",
 		      GDM_GREETER_PROTOCOL_VERSION, TRUE);
 	ve_setenv ("GDM_VERSION", VERSION, TRUE);
+	ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
 	pwent = getpwnam (GdmUser);
 	if G_LIKELY (pwent != NULL) {
@@ -2631,6 +2639,8 @@ gdm_slave_chooser (void)
 		ve_setenv ("USERNAME", GdmUser, TRUE);
 
 		ve_setenv ("GDM_VERSION", VERSION, TRUE);
+
+		ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
 		pwent = getpwnam (GdmUser);
 		if G_LIKELY (pwent != NULL) {
@@ -4646,6 +4656,7 @@ gdm_slave_handle_notify (const char *msg)
 		GdmGreeter = g_strdup (&msg[strlen (GDM_NOTIFY_GREETER) + 1]);
 
 		if (d->console) {
+			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
 				restart_the_greeter ();
 			} else if (d->type == TYPE_LOCAL) {
@@ -4664,6 +4675,7 @@ gdm_slave_handle_notify (const char *msg)
 		GdmRemoteGreeter = g_strdup
 			(&msg[strlen (GDM_NOTIFY_REMOTEGREETER) + 1]);
 		if ( ! d->console) {
+			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
 				restart_the_greeter ();
 			} else if (d->type == TYPE_XDMCP) {
@@ -4678,6 +4690,7 @@ gdm_slave_handle_notify (const char *msg)
 		}
 	} else if (strncmp (msg, GDM_NOTIFY_TIMED_LOGIN " ",
 			    strlen (GDM_NOTIFY_TIMED_LOGIN) + 1) == 0) {
+		do_restart_greeter = TRUE;
 		/* FIXME: this is fairly nasty, we should handle this nicer */
 		/* FIXME: can't handle flexi servers without going all cranky */
 		if (d->type == TYPE_LOCAL || d->type == TYPE_XDMCP) {

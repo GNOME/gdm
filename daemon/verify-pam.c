@@ -440,13 +440,22 @@ gdm_verify_user (GdmDisplay *d,
 		 const gchar *display,
 		 gboolean local) 
 {
-    gint pamerr = 0;
-    char *login = NULL;
+    gint pamerr;
+    char *login;
     struct passwd *pwent;
-    gboolean error_msg_given = FALSE;
-    gboolean credentials_set = FALSE;
-    gboolean started_timer = FALSE;
-    int null_tok = 0;
+    gboolean error_msg_given;
+    gboolean credentials_set;
+    gboolean started_timer;
+    int null_tok;
+
+verify_user_again:
+
+    pamerr = 0;
+    login = NULL;
+    error_msg_given = FALSE;
+    credentials_set = FALSE;
+    started_timer = FALSE;
+    null_tok = 0;
 
     /* start the timer for timed logins */
     if ( ! ve_string_empty (GdmTimedLogin) &&
@@ -484,7 +493,7 @@ authenticate_again:
 
     /* hack */
     g_free (tmp_PAM_USER);
-    tmp_PAM_USER = NULL;
+    tmp_PAM_USER = g_strdup (login);
 
     /* Initialize a PAM session for the user */
     if ( ! create_pamh (d, "gdm", login, &pamc, display, &pamerr)) {
@@ -573,8 +582,8 @@ authenticate_again:
 	    gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
 
 	    gdm_verify_cleanup (d);
-	    /* kind of a hack */
-	    return gdm_verify_user (d, username, display, local);
+
+	    goto verify_user_again;
     }
 
     pwent = getpwnam (login);
@@ -667,6 +676,9 @@ authenticate_again:
     openlog ("gdm", LOG_PID, LOG_DAEMON);
 
     cur_gdm_disp = NULL;
+
+    g_free (tmp_PAM_USER);
+    tmp_PAM_USER = NULL;
     
     return login;
     
@@ -741,6 +753,9 @@ authenticate_again:
     openlog ("gdm", LOG_PID, LOG_DAEMON);
 
     g_free (login);
+
+    g_free (tmp_PAM_USER);
+    tmp_PAM_USER = NULL;
     
     cur_gdm_disp = NULL;
 

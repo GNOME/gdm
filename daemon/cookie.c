@@ -86,15 +86,22 @@ static int randnums[RANDNUMS];
 void
 gdm_random_tick (void)
 {
-	int i;
 	struct timeval tv;
 	struct timezone tz;
+	static GRand *rnd = NULL;
 
 	gettimeofday (&tv, &tz);
 
-	srand (tv.tv_usec ^ tv.tv_sec);
-	for (i = 0; i < RANDNUMS; i++)
-		randnums[i] += rand ();
+	if (rnd == NULL)
+		rnd = g_rand_new_with_seed (tv.tv_usec ^ tv.tv_sec);
+	else
+		g_rand_set_seed (rnd, tv.tv_usec ^ tv.tv_sec);
+	randnums[0] += g_rand_int (rnd);
+	randnums[1] *= g_rand_int (rnd);
+	randnums[2] ^= g_rand_int (rnd);
+
+	randnums[3] += g_random_int ();
+	randnums[4] ^= g_random_int ();
 }
 
 /* check a few values and if we get the same
@@ -108,7 +115,7 @@ data_seems_random (const char buf[], int size)
 	if (size < 16)
 		return FALSE;
 	for (i = 0; i < 10; i++) {
-		int idx = (rand()>>4)%size;
+		int idx = g_random_int_range (0, size);
 		if (i > 0 &&
 		    lastval != buf[idx])
 			return TRUE;
