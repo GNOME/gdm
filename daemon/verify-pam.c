@@ -73,7 +73,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_PROMPT_ECHO_ON:
 	    /* PAM requested textual input with echo on */
-	    s = gdm_slave_greeter_ctl (GDM_PROMPT, _(msg[replies]->msg));
+	    s = gdm_slave_greeter_ctl (GDM_PROMPT, msg[replies]->msg);
 
 	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
@@ -88,7 +88,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_PROMPT_ECHO_OFF:
 	    /* PAM requested textual input with echo off */
-	    s = gdm_slave_greeter_ctl (GDM_NOECHO, _(msg[replies]->msg));
+	    s = gdm_slave_greeter_ctl (GDM_NOECHO, msg[replies]->msg);
 	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
 		    free (reply);
@@ -101,13 +101,13 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_ERROR_MSG:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl (GDM_ERRDLG, _(msg[replies]->msg));
+	    gdm_slave_greeter_ctl (GDM_ERRDLG, msg[replies]->msg);
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
 	case PAM_TEXT_INFO:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl (GDM_MSG, _(msg[replies]->msg));
+	    gdm_slave_greeter_ctl (GDM_MSG, msg[replies]->msg);
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
@@ -156,9 +156,9 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 			if (extra_standalone_message != NULL)
 				text = g_strdup_printf
 					("%s\n%s", extra_standalone_message,
-					 _(msg[replies]->msg));
+					 msg[replies]->msg);
 			else
-				text = g_strdup (_(msg[replies]->msg));
+				text = g_strdup (msg[replies]->msg);
 
 			/* PAM requested textual input with echo on */
 			s = gdm_failsafe_question (cur_gdm_disp, text,
@@ -174,9 +174,9 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 			if (extra_standalone_message != NULL)
 				text = g_strdup_printf
 					("%s\n%s", extra_standalone_message,
-					 _(msg[replies]->msg));
+					 msg[replies]->msg);
 			else
-				text = g_strdup (_(msg[replies]->msg));
+				text = g_strdup (msg[replies]->msg);
 
 			/* PAM requested textual input with echo off */
 			s = gdm_failsafe_question (cur_gdm_disp, text,
@@ -193,7 +193,7 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 			/* PAM sent a message that should displayed to the user */
 			gdm_error_box (cur_gdm_disp,
 				       GTK_MESSAGE_ERROR,
-				       _(msg[replies]->msg));
+				       msg[replies]->msg);
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;
@@ -202,7 +202,7 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 			/* PAM sent a message that should displayed to the user */
 			gdm_error_box (cur_gdm_disp,
 				       GTK_MESSAGE_INFO,
-				       _(msg[replies]->msg));
+				       msg[replies]->msg);
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;

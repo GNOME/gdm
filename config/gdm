@@ -1,4 +1,5 @@
 #%PAM-1.0
+auth       required	/lib/security/pam_env.so
 auth       required	/lib/security/pam_stack.so service=system-auth
 auth       required	/lib/security/pam_nologin.so
 account    required	/lib/security/pam_stack.so service=system-auth

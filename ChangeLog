@@ -1,3 +1,13 @@
+Mon Jan 13 01:00:23 2003  George Lebl <jirka@5z.com>
+
+	* config/gdm: add pam_env
+
+	* gui/greeter/greeter_action_language.c: make the language
+	  dialog at least 400 pixels wide, should fix #103254
+
+	* daemon/verify-pam.c: don't translate stuff that comes from
+	  pam, that should already be translated and this fixes #102691
+
 Sun Jan 12 10:46:25 2003  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in, daemon/gdm.h: make always restart server default
