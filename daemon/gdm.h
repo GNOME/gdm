@@ -731,6 +731,20 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
+#define GDM_SUP_GET_CONFIG "GET_CONFIG" /* <key> */
+/* GET_CONFIG:  Get configuration value for key.  Useful so
+ * that other programs can request configuration information
+ * from GDM.
+ * Supported since: 2.6.0.9
+ * Arguments:   <key>
+ * Answers:
+ *   OK <value>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      50 = Unsupported key
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
 #define GDM_SUP_UPDATE_CONFIG "UPDATE_CONFIG" /* <key> */
 /* UPDATE_CONFIG: Tell the daemon to update config of some key.  Any user
  *             can really request that values are re-read but the daemon

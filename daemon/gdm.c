@@ -1884,7 +1884,6 @@ calc_sqrt2 (void)
 				sqrttwo, h, n, n);
 		}
 	}
-	printf ("\n");
 }
 
 struct poptOption options [] = {
@@ -3777,10 +3776,28 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			&msg[strlen (GDM_SUP_UPDATE_CONFIG " ")];
 
 		if ( ! update_config (key)) {
-			gdm_connection_write (conn,
-					      "ERROR 50 Unsupported key\n");
+			char *msg = g_strdup_printf ("ERROR 50 Unsupported key <%s>\n", key);
+			gdm_connection_write (conn, msg);
 		} else {
 			gdm_connection_write (conn, "OK\n");
+		}
+	} else if (strncmp (msg, GDM_SUP_GET_CONFIG " ",
+		     strlen (GDM_SUP_GET_CONFIG " ")) == 0) {
+		const char *key = 
+			&msg[strlen (GDM_SUP_GET_CONFIG " ")];
+		char *val;
+		VeConfig *cfg;
+
+		cfg = ve_config_new (GDM_CONFIG_FILE);
+
+		val = ve_config_get_string (cfg, key);
+
+		if (val == NULL) {
+			char *msg = g_strdup_printf ("ERROR 50 Unsupported key <%s>\n", key);
+			gdm_connection_write (conn, msg);
+		} else {
+			char *msg = g_strdup_printf ("OK %s\n", val);
+			gdm_connection_write (conn, msg);
 		}
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
 		const char *sep = " ";

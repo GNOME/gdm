@@ -31,7 +31,12 @@
 
 #include "gdm.h"
 
-int response = -999;
+static GtkWidget *preview;
+static GtkWidget *current_image;
+static char *current_pix;
+static char *photofile;
+static int max_width, max_height;
+static int response = -999;
 
 static gboolean
 gdm_check (void)
@@ -95,16 +100,122 @@ dialog_response (GtkWidget *dialog, int res, gpointer data)
 	gtk_main_quit ();
 }
 
+static void
+update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
+{
+	char *filename;
+
+	filename = gtk_file_chooser_get_preview_filename (file_chooser);
+
+	if (filename != NULL) {
+		GtkWidget *temp_preview = GTK_WIDGET (data);
+		GdkPixbuf *pixbuf;
+		gboolean have_preview;
+
+		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+		have_preview = (pixbuf != NULL);
+		g_free (filename);
+
+		if (pixbuf) {
+			GdkPixbuf *preview_pixbuf;
+			float scale_factor_x = 1.0;
+			float scale_factor_y = 1.0;
+			float scale_factor = 1.0;
+
+			/* Determine which dimension requires the smallest scale. */
+			if (gdk_pixbuf_get_width (pixbuf) > max_width)
+				scale_factor_x = (float) max_width /
+					(float) gdk_pixbuf_get_width (pixbuf);
+			if (gdk_pixbuf_get_height (pixbuf) > max_height)
+				scale_factor_y = (float) max_height /
+					(float) gdk_pixbuf_get_height (pixbuf);
+
+			if (scale_factor_x > scale_factor_y)
+				scale_factor = scale_factor_y;
+			else
+				scale_factor = scale_factor_x;
+
+			/* Only scale if it needs to be scaled smaller */
+			if (scale_factor >= 1.0) {
+				preview_pixbuf = pixbuf;
+			} else {
+				int scale_x = (int) (gdk_pixbuf_get_width (pixbuf) * scale_factor);
+				int scale_y = (int) (gdk_pixbuf_get_height (pixbuf) * scale_factor);
+
+				/* Scale bigger dimension of image to max icon height/width */
+				preview_pixbuf = gdk_pixbuf_scale_simple (pixbuf, scale_x, scale_y,
+					GDK_INTERP_BILINEAR);
+			}
+
+			gtk_image_set_from_pixbuf (GTK_IMAGE (preview), preview_pixbuf);
+
+			gdk_pixbuf_unref (pixbuf);
+			if (scale_factor != 1.0)
+				gdk_pixbuf_unref (preview_pixbuf);
+
+			gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
+		}
+	}
+}
+
+static void
+browse_button_cb (GtkWidget *widget, gpointer data)
+{
+	GtkWidget *temp_preview = gtk_image_new ();
+	GtkWindow *parent = GTK_WINDOW (data);
+	GtkFileFilter *filter;
+	GtkWidget *file_dialog = gtk_file_chooser_dialog_new ("Open File",
+					      parent,
+					      GTK_FILE_CHOOSER_ACTION_OPEN,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+					      NULL);
+
+	if (current_pix != NULL && strcmp (photofile, current_pix))
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_dialog), current_pix);
+	else
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
+			EXPANDED_DATADIR "/pixmaps");
+
+	filter = gtk_file_filter_new ();
+	gtk_file_filter_set_name (filter, "PNG and JPEG");
+	gtk_file_filter_add_mime_type (filter, "image/jpeg");
+	gtk_file_filter_add_mime_type (filter, "image/png");
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (file_dialog), filter);
+
+	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (file_dialog), temp_preview);
+	g_signal_connect (file_dialog, "update-preview",
+	    G_CALLBACK (update_preview_cb), NULL);
+
+	if (gtk_dialog_run (GTK_DIALOG (file_dialog)) == GTK_RESPONSE_ACCEPT) {
+		char *filename;
+
+		gtk_image_set_from_pixbuf (GTK_IMAGE (current_image),
+			gtk_image_get_pixbuf (GTK_IMAGE (preview)));
+		current_pix = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_dialog));
+		g_free (filename);
+	} else {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (preview),
+			gtk_image_get_pixbuf (GTK_IMAGE (current_image)));
+	}
+
+	gtk_widget_destroy (file_dialog);
+}
+
 int
 main (int argc, char *argv[])
 {
+	struct stat s;
 	GtkWidget *dialog;
-	GtkWidget *photo;
+	GtkWidget *browse_button;
+	GtkWidget *scrolled_window;
+	GtkWidget *table;
 	gboolean face_browser;
 	char *greeter;
 	char *remotegreeter;
 	int max_size;
-	char *last_pix;
+
+	photofile = g_strconcat (g_get_home_dir (), "/.face", NULL);
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -115,11 +226,13 @@ main (int argc, char *argv[])
 			    argc, argv,
 			    NULL);
 
-	last_pix = gnome_config_get_string ("/gdmphotosetup/last/picture");
+	current_pix = gnome_config_get_string ("/gdmphotosetup/last/picture");
 
 	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 	face_browser = gnome_config_get_bool (GDM_KEY_BROWSER);
 	max_size = gnome_config_get_int (GDM_KEY_MAXFILE);
+        max_width = gnome_config_get_int (GDM_KEY_ICONWIDTH);
+	max_height = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
 	greeter = gnome_config_get_string (GDM_KEY_GREETER);
 	remotegreeter = gnome_config_get_string (GDM_KEY_REMOTEGREETER);
 	gnome_config_pop_prefix ();
@@ -168,16 +281,35 @@ main (int argc, char *argv[])
 					     "in the facebrowser:")),
 			    FALSE, FALSE, 0);
 
-	photo = gnome_pixmap_entry_new ("gdm_face",
-					_("Browse"),
-					TRUE);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    photo, TRUE, TRUE, 0);
-
-	if ( ! ve_string_empty (last_pix)) {
-		gnome_file_entry_set_filename (GNOME_FILE_ENTRY (photo),
-					       last_pix);
+	if (stat (current_pix, &s) < 0 || current_pix == NULL) {
+		preview       = gtk_image_new ();
+		current_image = gtk_image_new ();
+	} else {
+		preview       = gtk_image_new_from_file (current_pix);
+		current_image = gtk_image_new_from_file (current_pix);
 	}
+
+
+	table = gtk_table_new (1, 1, FALSE);
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_set_usize (scrolled_window, 128, 128);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+	   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+	gtk_scrolled_window_add_with_viewport (
+	  GTK_SCROLLED_WINDOW (scrolled_window), preview);
+	gtk_container_add (GTK_CONTAINER (table), scrolled_window);
+	
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			    table, TRUE, TRUE, 0);
+
+	browse_button = gtk_button_new_with_mnemonic (_("_Browse"));
+
+	g_signal_connect (G_OBJECT (browse_button), "clicked",
+			  G_CALLBACK (browse_button_cb), dialog);
+
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			    browse_button, FALSE, TRUE, 0);
 
 	gtk_widget_show_all (dialog);
 
@@ -186,17 +318,18 @@ main (int argc, char *argv[])
 			  NULL);
 
 	for (;;) {
-		struct stat s;
-		char *pixmap;
-
 		gtk_main ();
 
 		if (response != GTK_RESPONSE_OK)
 			break;
 
-		pixmap = gnome_pixmap_entry_get_filename (GNOME_PIXMAP_ENTRY (photo));
-		if (ve_string_empty (pixmap) ||
-		    stat (pixmap, &s) < 0) {
+		if (ve_string_empty (current_pix) ||
+		    stat (current_pix, &s) < 0) {
+
+			/*
+			 * This can happen if the user has a setting for their face
+			 * image, but the file does not exist.
+			 */
 			GtkWidget *d;
 			d = ve_hig_dialog_new (NULL /* parent */,
 					       GTK_DIALOG_MODAL /* flags */,
@@ -207,58 +340,21 @@ main (int argc, char *argv[])
 					       /* avoid warning */ "%s", "");
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
-		} else if (s.st_size > max_size) {
-			GtkWidget *d;
-			d = ve_hig_dialog_new (NULL /* parent */,
-					       GTK_DIALOG_MODAL /* flags */,
-					       GTK_MESSAGE_WARNING,
-					       GTK_BUTTONS_OK,
-					       FALSE /* markup */,
-					       _("Picture is too large"),
-					       _("The system administrator "
-						 "disallowed pictures larger "
-						 "than %d bytes to "
-						 "show in the face browser"),
-					       max_size);
-			gtk_dialog_run (GTK_DIALOG (d));
-			gtk_widget_destroy (d);
 		} else {
-			char buf[4096];
-			size_t size;
-			char *photofile = g_strconcat (g_get_home_dir (),
-						       "/.face",
-						       NULL);
+			GdkPixbuf *preview_pixbuf;
 			char *cfg_file = g_strconcat (g_get_home_dir (),
 						      "/.gnome2/gdm",
 						      NULL);
-			int fddest, fdsrc;
 
-			VE_IGNORE_EINTR (fdsrc = open (pixmap, O_RDONLY));
-			if (fdsrc < 0) {
-				GtkWidget *d;
-				char *tmp = ve_filename_to_utf8 (pixmap);
-				d = ve_hig_dialog_new (NULL /* parent */,
-						       GTK_DIALOG_MODAL /* flags */,
-						       GTK_MESSAGE_ERROR,
-						       GTK_BUTTONS_OK,
-						       FALSE /* markup */,
-						       _("Cannot open file"),
-						       _("File %s cannot be open for "
-							 "reading\nError: %s"),
-						       tmp,
-						       g_strerror (errno));
-				g_free (tmp);
-				gtk_dialog_run (GTK_DIALOG (d));
-				gtk_widget_destroy (d);
-				g_free (cfg_file);
-				g_free (photofile);
-				continue;
-			}
 			VE_IGNORE_EINTR (unlink (photofile));
-			VE_IGNORE_EINTR (fddest = open (photofile, O_WRONLY | O_CREAT));
-			if (fddest < 0) {
+			preview_pixbuf = gtk_image_get_pixbuf (GTK_IMAGE (current_image));
+
+			if (gdk_pixbuf_save (preview_pixbuf, photofile, "png", NULL,
+				NULL) != TRUE) {
+
 				GtkWidget *d;
 				char *tmp = ve_filename_to_utf8 (photofile);
+
 				d = ve_hig_dialog_new (NULL /* parent */,
 						       GTK_DIALOG_MODAL /* flags */,
 						       GTK_MESSAGE_ERROR,
@@ -266,33 +362,27 @@ main (int argc, char *argv[])
 						       FALSE /* markup */,
 						       _("Cannot open file"),
 						       _("File %s cannot be open for "
-							 "writing\nError: %s"),
-						       tmp,
-						       g_strerror (errno));
-				g_free (tmp);
+						       "writing\n"), tmp);
+
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
+
+				g_free (tmp);
 				g_free (cfg_file);
 				g_free (photofile);
-				VE_IGNORE_EINTR (close (fdsrc));
 				continue;
 			}
-			for (;;) {
-				VE_IGNORE_EINTR (size = read (fdsrc, buf, sizeof (buf)));
-				if (size <= 0)
-					break;
 
-				VE_IGNORE_EINTR (write (fddest, buf, size));
-			}
-			fchmod (fddest, 0600);
-			VE_IGNORE_EINTR (close (fdsrc));
-			VE_IGNORE_EINTR (close (fddest));
+			/* Set configuration */
 			gnome_config_set_string ("/gdmphotosetup/last/picture",
-						 pixmap);
+						 photofile);
 			gnome_config_set_string ("/gdm/face/picture", "");
 			gnome_config_sync ();
+
 			/* ensure proper permissions */
 			chmod (cfg_file, 0600);
+			chmod (photofile, 0600);
+
 			g_free (cfg_file);
 			g_free (photofile);
 			break;

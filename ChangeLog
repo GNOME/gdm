@@ -1,3 +1,15 @@
+Thu Mar 10 14:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* daemon/gdm.h, daemon/gdm.c:  Added GET_CONFIG gdmflexiserver
+	  command, so that other programs can access the GDM configuration
+	  data in a stable way.  This is useful for progrmas that might
+	  want to know what the system suspend command is, or what the
+	  max icon size is for creating face images.
+	* gui/gdmphotosetup.c: Fix bugs 126796, 143618, and 159025
+	  since it no longer crashes, uses the new file chooser, and
+	  now automatically scales images down to the max icon
+	  height/width.
+
 Thu Mar 10 14:16:00 2005  Adi Attar  <aattar@cvs.gnome.org>
 
 	* configure.in: Added "xh" to ALL_LINGUAS.
