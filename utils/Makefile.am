@@ -21,9 +21,12 @@ INCLUDES = \
 
 sbin_PROGRAMS = \
 	@GDMASKPASS@	\
-	@GDMOPEN@	\
-	gdmmkstemp
-EXTRA_PROGRAMS = gdmaskpass gdmopen gdmmkstemp
+	@GDMOPEN@
+
+bin_PROGRAMS = \
+	gdmmktemp
+
+EXTRA_PROGRAMS = gdmaskpass gdmopen
 
 gdmaskpass_SOURCES = \
 	gdmaskpass.c
@@ -31,8 +34,8 @@ gdmaskpass_SOURCES = \
 gdmopen_SOURCES = \
 	gdmopen.c
 
-gdmmkstemp_SOURCES = \
-	gdmmkstemp.c
+gdmmktemp_SOURCES = \
+	gdmmktemp.c
 
 gdmaskpass_LDADD = \
 	$(GNOME_LIBDIR)		\
@@ -44,6 +47,6 @@ gdmopen_LDADD = \
 	$(GNOME_LIBDIR)		\
 	$(INTLLIBS)
 
-gdmmkstemp_LDADD = \
+gdmmktemp_LDADD = \
 	$(GNOME_LIBDIR)		\
 	$(INTLLIBS)

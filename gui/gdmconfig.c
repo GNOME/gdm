@@ -776,7 +776,6 @@ gdm_config_parse_most (gboolean factory)
     gdm_spin_set("flexible_servers", gnome_config_get_int(GDM_KEY_FLEXIBLE_XSERVERS));
     gdm_entry_set("failsafe_x_server", gnome_config_get_string (GDM_KEY_FAILSAFE_XSERVER));
     gdm_entry_set("x_keeps_crashing", gnome_config_get_string (GDM_KEY_XKEEPSCRASHING));
-    gdm_entry_set("x_keeps_crashing_configurators", gnome_config_get_string (GDM_KEY_XKEEPSCRASHING_CONFIGURATORS));
     gdm_toggle_set("always_restart_server", gnome_config_get_bool (GDM_KEY_ALWAYSRESTARTSERVER));
 
     gdm_entry_set("pid_file", gnome_config_get_string (GDM_KEY_PIDFILE));
@@ -1385,7 +1384,6 @@ write_config (void)
     gdm_entry_write("post_session_dir", GDM_KEY_POSTSESS);
     gdm_entry_write("failsafe_x_server", GDM_KEY_FAILSAFE_XSERVER);
     gdm_entry_write("x_keeps_crashing", GDM_KEY_XKEEPSCRASHING);
-    gdm_entry_write("x_keeps_crashing_configurators", GDM_KEY_XKEEPSCRASHING_CONFIGURATORS);
     gdm_toggle_write("always_restart_server", GDM_KEY_ALWAYSRESTARTSERVER);
 
     gdm_entry_write("pid_file", GDM_KEY_PIDFILE);

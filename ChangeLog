@@ -1,3 +1,24 @@
+Wed Oct 24 17:57:03 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], gui/gdmconfig.(c|glade), config/gdm.conf.in:
+	  Don't pass extra arguments to XKeepsCrashing, and whack the X
+	  configurators option since that is now changed by editting the
+	  XKeepsCrashing script directly.
+
+	* config/XKeepsCrashing, config/Makefile.am, config/gettextfoo.h,
+	  po/POTFILES.in, config/extract-shell.sh:  Rework the XKeepsCrashing
+	  script, configurator is found from a list in the script.  If the
+	  error is a mouse error try the mouseconfig configurator first. 
+	  Messages are now gotten by gettext -s directly and extracted
+	  by a simple stupid script, that needs a tad of work still I think.
+
+	* docs/C/gdm.sgml:  Remove the XKeepsCrashingConfigurators option
+
+Wed Oct 24 11:39:54 2001  George Lebl <jirka@5z.com>
+
+	* utils/gdmmktemp.c, utils/Makefile.am: rename to gdmmktemp,
+	  make it build, and install in /bin
+
 Wed Oct 24 11:02:55 2001  George Lebl <jirka@5z.com>
 
 	* utils/gdmkstemp.c, utils/Makefile.am:  add a small utility

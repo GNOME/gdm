@@ -130,7 +130,6 @@
 #define GDM_KEY_PRESESS "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
 #define GDM_KEY_FAILSAFE_XSERVER "daemon/FailsafeXServer="
 #define GDM_KEY_XKEEPSCRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
-#define GDM_KEY_XKEEPSCRASHING_CONFIGURATORS "daemon/XKeepsCrashingConfigurators=/usr/bin/X11/XF86Setup /usr/bin/X11/Xconfigurator"
 #define GDM_KEY_REBOOT "daemon/RebootCommand=/sbin/shutdown -r now"
 #define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:" EXPANDED_BINDIR
 #define GDM_KEY_GNOMEDEFAULTSESSION "daemon/GnomeDefaultSession=" EXPANDED_DATADIR "/gnome/default.session"

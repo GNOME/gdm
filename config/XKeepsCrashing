@@ -1,22 +1,10 @@
 #!/bin/sh
 
-# DO NOTE! This script may get more arguments in the future, if you set up
-# a custom one keep that in mind.  You should only ever rely on the first
-# and second argument.  Maybe I should figure out a better way to do the
-# translations
-
-# This script gets some arguments, they are translated messages like (not
-# word by word obviously)
-#
-# The first argument is the X setup proggie to run
-# The second argument is a temporary file we can use
-#
-# $3 = 'Your X server is b0rk I will disable this server'
-# $4 = 'Would you like to try to reconfigure your server?"
-# $5 = 'Please type in the root password'
-# $6 = 'I will now restart the X server again'
-# $7 = 'I will disable this X server'
-# $8 = 'Your X server is b0rk, do ya wanna view X logs?'
+MSG3=`gettext -s _"I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  You will need to log in on a console and rerun the X configuration program.  Then restart GDM."`
+MSG4=`gettext -s "Would you like me to try to run the X configuration program?  Note that you will need the root password for this."`
+MSG5=`gettext -s "Please type in the root (privilaged user) password."`
+MSG6=`gettest -s "I will now try to restart the X server again."`
+MSG7=`gettext -s "I will disable this X server for now.  Restart GDM when it is configured correctly."`
 
 # there are some env vars defined:
 # XLOG = the log file for the X server
@@ -27,10 +15,52 @@
 # 0 = try again, runs this server again
 # 1 = abort this display, removes this server from the list
 # 32 = something went very wrong, things will just get logged.
-#      this means this script didn't work so do alternative things
+#      this means this script didnt work so do alternative things
 #      to tell the user if possible
 
-# we require "gdmopen", to open a console, because we really don't
+
+#
+#  If this is a mouse problem try mouseconfig
+#
+if grep '^Cannot open mouse ' "$XLOG" ; then
+
+  MSG8=`gettext -s "I cannot start the X server (your graphical interface).  It seems that the pointer device (your mouse) is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
+
+  XCONFIGURATOR=
+  if test -x /usr/sbin/mouseconfig ; then
+    XCONFIGURATOR=/usr/sbin/mouseconfig
+    # Note: we know this is a mouse problem and yay we have mouseconfig
+    MSG4=`gettext -s "Would you like me to try to run the mouse configuration program?  Note that you will need the root password for this."`
+  else
+    if test -x /usr/bin/X11/XF86Setup ; then
+      XCONFIGURATOR=/usr/bin/X11/XF86Setup
+    else
+      if test -x /usr/bin/X11/Xconfigurator ; then
+        XCONFIGURATOR=/usr/bin/X11/Xconfigurator
+      fi
+    fi
+  fi
+
+else
+
+  MSG8=`gettext -s "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
+
+  XCONFIGURATOR=
+  if test -x /usr/bin/X11/XF86Setup ; then
+    XCONFIGURATOR=/usr/bin/X11/XF86Setup
+  else
+    if test -x /usr/bin/X11/Xconfigurator ; then
+      XCONFIGURATOR=/usr/bin/X11/Xconfigurator
+    fi
+  fi
+
+fi
+
+if test x$XCONFIGURATOR = x ; then
+  exit 32
+fi
+
+# we require 'gdmopen', to open a console, because we really dont
 # have one.  Perhaps someone should try to figure out some shell
 # black magic to get this to work on other then linux systems
 if test ! -x $SBINDIR/gdmopen ; then
@@ -66,27 +96,27 @@ clear
 if test x = x$SETUP -o x = x$DIALOG ; then
   echo =======================================================================
   echo 
-  cat $XLOG
+  cat "$XLOG"
   echo 
   echo =======================================================================
   echo
-  echo  "$3"
+  echo  "$MSG3"
   echo
   echo =======================================================================
   read
   exit 1
 fi
 
-if $DIALOG --yesno "$8" 10 50 ; then 
+if $DIALOG --yesno "$MSG8" 10 50 ; then 
   $DIALOG --textbox $XLOG 22 76
 fi
 
-if $DIALOG --yesno "$4" 10 50 ; then 
+if $DIALOG --yesno "$MSG4" 10 50 ; then 
   clear
   echo
-  echo "$5"
+  echo "$MSG5"
   if test x$ASKPASS = x ; then
-    # dirty trick to fool su into asking the root password even if we're
+    # dirty trick to fool su into asking the root password even if were
     # root
     su nobody -c "su -c $SETUP"
   else
@@ -95,9 +125,9 @@ if $DIALOG --yesno "$4" 10 50 ; then
     fi
   fi
   clear
-  $DIALOG --msgbox "$6" 8 50
+  $DIALOG --msgbox "$MSG6" 8 50
   exit 0
 else
-  $DIALOG --msgbox "$7" 8 50
+  $DIALOG --msgbox "$MSG7" 8 50
   exit 1
 fi

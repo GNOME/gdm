@@ -890,30 +890,16 @@
 	      <synopsis>XKeepsCrashing=etc/gdm/XKeepsCrashing</synopsis>
 	      <para>
 		A script to run in case X keeps crashing.  This is for running
-		An X configuration.  The first argument will be one of the
-		programs specified in XKeepsCrashingConfigurators, the first
-		one that exists.  If none of those exist, this script will not
-		be run.  The second argument is a temporary filename that can
-		be used for any purpose within the script.  The rest of the
-		arguments are translated messages.  Please see the standard
-		installed script for further details.
+		An X configuration or whatever else to make the X configuration
+		work.  See the script that came with the distribution for an
+		example.  The distributed XKeepsCrashing script is tested
+		on RedHat, but may work elsewhere.  Your system integrator should
+		make sure this script is up to date for your particular system.
 	      </para>
 	      <para>
 		In case FailsafeXServer is setup, that will be tried first.
 		and this only used as a backup if even that server keeps
 		crashing.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-
-	  <varlistentry>
-	    <term>XKeepsCrashingConfigurators</term>
-	    <listitem>
-	      <synopsis>XKeepsCrashingConfigurators=/usr/bin/X11/XF86Setup /usr/bin/X11/Xconfigurator</synopsis>
-	      <para>
-		A list of programs to try which will do X configuration for
-		the user.  These are run from the XKeepsCrashing script.
-		The first one on this list that exists is used.
 	      </para>
 	    </listitem>
 	  </varlistentry>

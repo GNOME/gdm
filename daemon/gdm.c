@@ -114,7 +114,6 @@ gchar *GdmPreSession = NULL;
 gchar *GdmPostSession = NULL;
 gchar *GdmFailsafeXServer = NULL;
 gchar *GdmXKeepsCrashing = NULL;
-gchar *GdmXKeepsCrashingConfigurators = NULL;
 gchar *GdmHalt = NULL;
 gchar *GdmReboot = NULL;
 gchar *GdmSuspend = NULL;
@@ -216,7 +215,6 @@ gdm_config_parse (void)
     GdmPostSession = gnome_config_get_string (GDM_KEY_POSTSESS);
     GdmFailsafeXServer = gnome_config_get_string (GDM_KEY_FAILSAFE_XSERVER);
     GdmXKeepsCrashing = gnome_config_get_string (GDM_KEY_XKEEPSCRASHING);
-    GdmXKeepsCrashingConfigurators = gnome_config_get_string (GDM_KEY_XKEEPSCRASHING_CONFIGURATORS);
     GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
@@ -692,42 +690,17 @@ deal_with_x_crashes (GdmDisplay *d)
 
     /* Eeek X keeps crashing, let's try the XKeepsCrashing script */
     if ( ! ve_string_empty (GdmXKeepsCrashing) &&
-	 ! ve_string_empty (GdmXKeepsCrashingConfigurators) &&
 	access (GdmXKeepsCrashing, X_OK|R_OK) == 0) {
-	    char tempname[256];
-	    int tempfd;
 	    pid_t pid;
-	    char **configurators;
-	    int i;
 
-	    configurators = ve_split (GdmXKeepsCrashingConfigurators);
-	    for (i = 0; configurators[i] != NULL; i++) {
-		    if (access (configurators[i], X_OK) == 0)
-			    break;
-	    }
+	    gdm_info (_("deal_with_x_crashes: Running the "
+			"XKeepsCrashing script"));
 
-	    if (configurators[i] != NULL) {
-		    strcpy (tempname, "/tmp/gdm-X-failed-XXXXXX");
-		    tempfd = mkstemp (tempname);
-		    if (tempfd >= 0) {
-			    close (tempfd);
+	    gdm_safe_fork (&extra_process);
+	    pid = extra_process;
 
-			    gdm_info (_("deal_with_x_crashes: Running the "
-					"XKeepsCrashing script"));
-
-			    gdm_safe_fork (&extra_process);
-			    pid = extra_process;
-		    } else {
-			    /* no forking, we're screwing this */
-			    pid = -1;
-		    }
-	    } else {
-		    tempfd = -1;
-		    /* no forking, we're screwing this */
-		    pid = -1;
-	    }
 	    if (pid == 0) {
-		    char *argv[10];
+		    char *argv[2];
 		    char *xlog = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
 		    int ii;
 
@@ -741,27 +714,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		    open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		    argv[0] = GdmXKeepsCrashing;
-		    argv[1] = configurators[i];
-		    argv[2] = tempname;
-		    argv[3] = _("I cannot start the X server (your graphical "
-				"interface).  It is likely that it is not set "
-				"up correctly.  You will need to log in on a "
-				"console and rerun the X configuration "
-				"program.  Then restart GDM.");
-		    argv[4] = _("Would you like me to try to "
-				"run the X configuration program?  Note that "
-				"you will need the root password for this.");
-		    argv[5] = _("Please type in the root (privilaged user) "
-				"password.");
-		    argv[6] = _("I will now try to restart the X server "
-				"again.");
-		    argv[7] = _("I will disable this X server for now.  "
-				"Restart GDM when it is configured correctly.");
-		    argv[8] = _("I cannot start the X server (your graphical "
-				"interface).  It is likely that it is not set "
-				"up correctly.  Would you like to view the "
-				"X server output to diagnose the problem?");
-		    argv[9] = NULL;
+		    argv[1] = NULL;
 
 		    /* unset DISPLAY and XAUTHORITY if they exist
 		     * so that gdialog (if used) doesn't get confused */
@@ -796,9 +749,6 @@ deal_with_x_crashes (GdmDisplay *d)
 			    just_abort = TRUE;
 		    }
 	    }
-
-	    if (tempfd >= 0)
-		    unlink (tempname);
 
 	    /* if we failed to fork, or something else has happened,
 	     * we fall through to the other options below */

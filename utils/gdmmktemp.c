@@ -13,6 +13,10 @@
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 
 int 
 main (int argc, char *argv[])
@@ -24,9 +28,9 @@ main (int argc, char *argv[])
 	if (i < 0)
 		return 1;
 	
-	fchown (i, 0600);
+	fchmod (i, 0600);
 
 	printf ("%s\n", template);
-	close (i)
+	close (i);
 	return 0;
 }

@@ -1,4 +1,4 @@
-pixmapdir = $(datadir)/pixmaps
+pixmapdir = $(datadIR)/pixmaps
 confdir = $(sysconfdir)/gdm
 localedir = $(sysconfdir)/gdm
 sessdir = $(sysconfdir)/gdm/Sessions
@@ -22,7 +22,12 @@ EXTRA_DIST = \
 	PostSession \
 	PreSession \
 	Default.redhat \
-	XKeepsCrashing
+	XKeepsCrashing \
+	gettextfoo.h \
+	extract-shell.h
+
+gettextfoo.h: XKeepsCrashing
+	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
 
 install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -d $(confdir); then \
