@@ -61,7 +61,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_PROMPT_ECHO_ON:
 	    /* PAM requested textual input with echo on */
-	    s = gdm_slave_greeter_ctl (GDM_PROMPT, (gchar *) msg[replies]->msg);
+	    s = gdm_slave_greeter_ctl (GDM_PROMPT, _((gchar *) msg[replies]->msg));
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = strdup (s);
 	    g_free (s);
@@ -69,7 +69,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_PROMPT_ECHO_OFF:
 	    /* PAM requested textual input with echo off */
-	    s = gdm_slave_greeter_ctl (GDM_NOECHO, (gchar *) msg[replies]->msg);
+	    s = gdm_slave_greeter_ctl (GDM_NOECHO, _((gchar *) msg[replies]->msg));
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = strdup (s);
 	    g_free (s);
@@ -78,7 +78,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	case PAM_ERROR_MSG:
 	case PAM_TEXT_INFO:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl (GDM_MSGERR, (gchar *) msg[replies]->msg);
+	    gdm_slave_greeter_ctl (GDM_MSGERR, _((gchar *) msg[replies]->msg));
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;

@@ -601,6 +601,9 @@ gdm_login_language_lookup (const gchar* savedlang)
 	else
 	    language = g_strdup (curlang);
 
+	/* Now this is utterly ugly, but I suppose it works */
+	language[0] = tolower (language[0]);
+
 	savelang = TRUE;
 	return;
     }
@@ -844,6 +847,8 @@ gdm_login_language_init (GtkWidget *menu)
     FILE *langlist;
     char curline[256];
     char *ctmp, *ctmp1, *ctmp2;
+    int has_other_locale = FALSE;
+    GtkWidget *other_menu;
 
     if (!menu)
 	return;
@@ -875,7 +880,7 @@ gdm_login_language_init (GtkWidget *menu)
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_widget_show(GTK_WIDGET (item));
 
-    item = gtk_menu_item_new_with_label (_("Other"));
+    other_menu = item = gtk_menu_item_new_with_label (_("Other"));
     omenu = gtk_menu_new();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), omenu);
     gtk_menu_append (GTK_MENU (menu), item);
@@ -911,14 +916,18 @@ gdm_login_language_init (GtkWidget *menu)
 	    gtk_menu_append (GTK_MENU (ammenu), item);
 	else if (curline[0] >= 'N' && curline[0] <= 'Z')
 	    gtk_menu_append (GTK_MENU (nzmenu), item);
-	else
+	else {
 	    gtk_menu_append (GTK_MENU (omenu), item);
+	    has_other_locale = 1;
+	}
 
 	gtk_signal_connect (GTK_OBJECT (item), "activate", 
 			    GTK_SIGNAL_FUNC (gdm_login_language_handler), 
 			    NULL);
 	gtk_widget_show (GTK_WIDGET (item));
     }
+    if (!has_other_locale) 
+        gtk_widget_destroy(other_menu);
     
     fclose (langlist);
 }
@@ -1001,6 +1010,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 	gtk_label_set (GTK_LABEL (msg), buf);
 	gtk_widget_show (GTK_WIDGET (msg));
+	g_print ("%c\n", STX);
+
 	break;
 
     case GDM_SESS:

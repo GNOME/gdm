@@ -502,9 +502,14 @@ main (int argc, char *argv[])
     struct sigaction term, child;
     FILE *pf;
  
+    setlocale(LC_ALL, "");
+    bindtextdomain(PACKAGE, GNOMELOCALEDIR);
+    textdomain(PACKAGE);
+
     /* XDM compliant error message */
     if (getuid())
 	gdm_fail (_("Only root wants to run gdm\n"));
+
 
     /* Initialize runtime environment */
     umask (022);
@@ -512,6 +517,7 @@ main (int argc, char *argv[])
     gnomelib_init ("gdm", VERSION);
     main_loop = g_main_new (FALSE);
     openlog ("gdm", LOG_PID, LOG_DAEMON);
+
 
     /* Parse configuration file */
     gdm_config_parse();

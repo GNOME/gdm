@@ -245,8 +245,8 @@ gdm_slave_wait_for_login (void)
 
 		if (login == NULL) {
 			gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
-			g_free (gdm_slave_greeter_ctl (GDM_RESET, ""));
 			sleep (GdmRetryDelay);
+			g_free (gdm_slave_greeter_ctl (GDM_RESET, ""));
 		}
 	}
 }
@@ -398,8 +398,16 @@ gdm_slave_session_start (void)
 
     if (language == NULL ||
 	language[0] == '\0') {
+	    const char *lang = g_getenv ("LANG");
+
 	    g_free (language);
-	    language = g_strdup ("english");
+
+	    if (lang != NULL &&
+		lang[0] != '\0') 
+		    language = g_strdup (lang);
+	    else
+		    language = g_strdup (GdmDefaultLocale);
+	    savelang = TRUE;
     }
 
     if (greet) {

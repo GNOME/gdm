@@ -61,7 +61,7 @@ gdm_verify_user (const gchar *display)
     ppasswd = !pwent ? NULL : pwent->pw_passwd;
     
     /* Request the user's password */
-    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password:"));
+    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
 
     /* If verbose authentication is enabled, output messages from the
      * authentication system */
