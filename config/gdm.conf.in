@@ -2,11 +2,14 @@
 # edit this, or you can optionally just edit this file by hand.  Note that
 # gdmsetup does not tweak every option here, just the ones most users
 # would care about.  Rest is for special setups and distro specific
-# tweaks.  If you edit this file, you should send the HUP signal to the
-# daemon so that it restarts: (Assuming you have not changed PidFile)
-#   kill -HUP `cat /var/run/gdm.pid`
-# (HUP will make gdm not kill existing sessions and will only restart gdm
-# after all users log out)
+# tweaks.  If you edit this file, you should send the HUP or USR1 signal to
+# the daemon so that it restarts: (Assuming you have not changed PidFile)
+#   kill -USR1 `cat /var/run/gdm.pid`
+# (HUP will make gdm restart immediately while USR1 will make gdm not kill
+# existing sessions and will only restart gdm after all users log out)
+#
+# You can also use the gdm-restart and gdm-safe-restart scripts which just
+# do the above for you.
 #
 # Have fun! - George
 
