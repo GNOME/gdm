@@ -994,9 +994,6 @@ authenticate_again:
 	if (d->console)
 		(void) di_devperm_login("/dev/console", pwent->pw_uid,
 		    pwent->pw_gid, NULL);
-	else
-		(void) di_devperm_login(d->name, pwent->pw_uid,
-		    pwent->pw_gid, NULL);
 #endif	/* HAVE_LOGINDEVPERM */
 #ifdef  HAVE_ADT
 	audit_success_login(pw_change, pwent);
@@ -1385,8 +1382,6 @@ gdm_verify_cleanup (GdmDisplay *d)
 #ifdef	HAVE_LOGINDEVPERM
 	if (d->console)
 		(void) di_devperm_logout("/dev/console");
-	else
-		(void) di_devperm_logout(d->name);
 #endif	/* HAVE_LOGINDEVPERM */
 	/* Clear the group setup */
 	setgid (0);
