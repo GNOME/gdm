@@ -70,6 +70,17 @@ Ahh news...
   come just before login are also in a dialog so that the user gets
   a chance to see them
 
+- Use the pam wait time on errors, if available, this fixes a bug where
+  the wait time was doubled because it was both the pam one and the
+  gdm one.
+
+- Make sure the cookie file is full of all different local addresses
+  and don't whack out if the local hostname is not resolvable.  Also
+  if we still can't start the server, tell the user rather then giving
+  up quietly.
+
+- Always print the "Plesae enter your username" message
+
 2.2.4.3 stuff:
 
 - Use PAM_ESTABILISH_CRED for pam_setcred
