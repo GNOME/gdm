@@ -1,3 +1,12 @@
+Thu Mar 04 10:48:04 2004  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: Handle out of diskspace on making user
+	  authentication better by first trying to wipe old xsession-errors
+	  files for this user as that could in fact be the culprit and
+	  usually frees up enough to write ~/.Xauthority.  We should try more
+	  things, this is a crucial point which could render the machine
+	  unusable on a simple out of diskspace error.
+
 Thu Mar 04 10:18:40 2004  George Lebl <jirka@5z.com>
 
 	* configure.in, daemon/slave.c: Apply patch from

@@ -25,6 +25,7 @@
 #include <gdk/gdkx.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <dirent.h>
 #include <unistd.h>
 #include <utime.h>
 #if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
@@ -3251,6 +3252,58 @@ find_prog (const char *name)
 	return NULL;
 }
 
+static gboolean
+wipe_xsession_errors (struct passwd *pwent,
+		      const char *home_dir,
+		      gboolean home_dir_ok)
+{
+	gboolean wiped_something = FALSE;
+	DIR *dir;
+	struct dirent *ent;
+	uid_t old = geteuid ();
+	uid_t oldg = getegid ();
+
+	seteuid (0);
+	if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
+		       seteuid (pwent->pw_uid) != 0) {
+		NEVER_FAILS_root_set_euid_egid (old, oldg);
+		return FALSE;
+	}
+
+	if G_LIKELY (home_dir_ok) {
+		char *filename = g_build_filename (home_dir,
+						   ".xsession-errors",
+						   NULL);
+		if (access (filename, F_OK) == 0) {
+			wiped_something = TRUE;
+			VE_IGNORE_EINTR (unlink (filename));
+		}
+		g_free (filename);
+	}
+
+	VE_IGNORE_EINTR (dir = opendir ("/tmp"));
+	if G_LIKELY (dir != NULL) {
+		char *prefix = g_strdup_printf ("xses-%s.", pwent->pw_name);
+		int prefixlen = strlen (prefix);
+		VE_IGNORE_EINTR (ent = readdir (dir));
+		while (ent != NULL) {
+			if (strncmp (ent->d_name, prefix, prefixlen) == 0) {
+				char *filename = g_strdup_printf ("/tmp/%s",
+								  ent->d_name);
+				wiped_something = TRUE;
+				VE_IGNORE_EINTR (unlink (filename));
+				g_free (filename);
+			}
+			VE_IGNORE_EINTR (ent = readdir (dir));
+		}
+		VE_IGNORE_EINTR (closedir (dir));
+	}
+
+	NEVER_FAILS_root_set_euid_egid (old, oldg);
+
+	return wiped_something;
+}
+
 static int
 open_xsession_errors (struct passwd *pwent,
 		      gboolean failsafe,
@@ -3956,6 +4009,23 @@ gdm_slave_session_start (void)
 				/* Only pass the home_dir if
 				 * it was ok */
 				home_dir_ok ? home_dir : NULL);
+
+    /* FIXME: this should be smarter and only do this on out-of-diskspace
+     * errors */
+    if G_UNLIKELY ( ! authok && home_dir_ok) {
+	    /* try wiping the .xsession-errors file (and perhaps other things)
+	       in an attempt to gain disk space */
+	    if (wipe_xsession_errors (pwent, home_dir, home_dir_ok)) {
+		    gdm_error ("Tried wiping some old user session errors files "
+			       "to make disk space and will try adding user auth "
+			       "files again");
+		    /* Try again */
+		    authok = gdm_auth_user_add (d, pwent->pw_uid,
+						/* Only pass the home_dir if
+						 * it was ok */
+						home_dir_ok ? home_dir : NULL);
+	    }
+    }
 
     NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
     
