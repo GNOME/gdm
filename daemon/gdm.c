@@ -1627,7 +1627,7 @@ start_autopsy:
 		/* if this was a chooser session and we have chosen a host,
 		   then we don't want to unmanage, we want to manage and
 		   choose that host */
-		if (d->chosen_hostname != NULL) {
+		if (d->chosen_hostname != NULL || d->use_chooser) {
 			if ( ! gdm_display_manage (d)) {
 				gdm_display_unmanage (d);
 			}
