@@ -53,7 +53,7 @@ display_add_error (GdmDisplay *d)
 {
 	if (errno != 0)
 		gdm_error (_("%s: Could not write new authorization entry: %s"),
-			   "add_auth_entry", g_strerror (errno));
+			   "add_auth_entry", strerror (errno));
 	else
 		gdm_error (_("%s: Could not write new authorization entry.  "
 			     "Possibly out of diskspace"),
@@ -63,7 +63,7 @@ display_add_error (GdmDisplay *d)
 			(_("GDM could not write a new authorization "
 			   "entry to disk.  Possibly out of diskspace.%s%s"),
 			 errno != 0 ? "  Error: " : "",
-			 errno != 0 ? g_strerror (errno) : "");
+			 errno != 0 ? strerror (errno) : "");
 		gdm_text_message_dialog (s);
 		g_free (s);
 	}

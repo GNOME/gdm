@@ -925,7 +925,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		    gnome_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
 
 		    /* To enable gettext stuff in the script */
-		    gnome_setenv ("TEXTDOMAIN", PACKAGE, TRUE);
+		    gnome_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
 		    gnome_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
 		    execv (argv[0], argv);

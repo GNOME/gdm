@@ -88,10 +88,19 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
     /* Lookup shadow password */
     sp = getspnam (login);
     
-    if (sp)
-	ppasswd = g_strdup (sp->sp_pwdp);
-    else
-	ppasswd = NULL;
+    /* Use shadow password when available */
+    if (sp != NULL) {
+	    ppasswd = g_strdup (sp->sp_pwdp);
+    } else {
+	    /* In case shadow password cannot be retrieved (when using NIS
+	       authentication for example), use standard passwd */
+	    if (pwent != NULL &&
+		pwent->pw_passwd != NULL)
+		    ppasswd = g_strdup (pwent->pw_passwd);
+	    else
+		    /* If no password can be retrieved, set it to NULL */
+		    ppasswd = NULL;
+    }
     
     endspent ();
 

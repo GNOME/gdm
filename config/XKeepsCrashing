@@ -91,7 +91,7 @@ else
   # We do a lot of work wastefully over again, but oh well,
   # perhaps this needs fixing.
   #
-  "$SBINDIR/gdmopen" $0 -noopen "$@"
+  "$SBINDIR/gdmopen" -l /bin/sh -c "$0 -noopen $@"
   exit $?
 fi
 

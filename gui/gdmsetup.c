@@ -414,6 +414,7 @@ setup_user_combo (const char *name, const char *key)
 	GList *users = NULL;
 	struct passwd *pwent;
 	char *str;
+	int cnt;
 
 	str = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
@@ -426,12 +427,20 @@ setup_user_combo (const char *name, const char *key)
 	setpwent ();
 
 	pwent = getpwent();
+	cnt = 0;
 	
 	while (pwent != NULL) {
 		if (pwent->pw_uid >= GdmMinimalUID &&
 		    strcmp (ve_sure_string (str), pwent->pw_name) != 0) {
+			cnt ++;
 			users = g_list_append (users,
 					       g_strdup (pwent->pw_name));
+			/* FIXME: fix properly, see bug #111830 */
+			if (cnt >= 50) {
+				users = g_list_append (users,
+						       g_strdup (_("Too many users to list here...")));
+				break;
+			}
 		}
 	
 		pwent = getpwent();

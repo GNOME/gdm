@@ -1,3 +1,36 @@
+Tue May 13 12:22:45 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmsetup.c: when more then 50 users don't put them all in the
+	  combo boxes, this is a semi-solution to #111830
+
+	* daemon/verify-shadow.c: Apply patch from cschelcher@free.fr to fall
+	  back to standard password when shadow is not available.  Apparently
+	  fixes NIS stuff, but I really think people should be using pam,
+	  but I digress.  Fixes #109765
+
+	* daemon/auth.c, daemon/misc.c, daemon/server.c, daemon/slave.c:
+	  use strerror instead of g_strerror as that returns always UTF-8
+	  and we want current locale.  We already assume strerror is on
+	  the system so this is not a portability issue anyway.  Fixes
+	  #106655
+
+	* utils/gdmopen.c: apply patch from Owen Taylor to fix #106656
+	  by not deallocating the vt after we are done as apparently this
+	  is what open does and the kernel has a fit otherwise anyway.
+	  It's braindead, but oh well, this is the way it apparently works
+	  right.
+
+	* daemon/gdm.c: apply patch from Owen Taylor to fix #106656
+	  by setting TEXTDOMAIN to GETTEXT_PACKAGE rather then PACKAGE
+	  before running scripts
+
+	* utils/gdmopen.c, daemon/misc.c: Apply patch from Owen Taylor
+	  to fix #106658, but fix it portably by adding the -l
+	  option to gdmopen as suggested by Owen.  So all gdmopens
+	  we do are now using login shells which makes me wonder if we
+	  should just build that into gdmopen, since it's a special
+	  purpose utility anyhow.
+
 2003-05-08 Brian Cameron <Brian.Cameron@Sun.COM>
 	* gui/greeter/greeter.dtd: Updated so it is no longer
 	out of date.  Patch provided by Aidan.Butler@Sun.COM.

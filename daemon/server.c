@@ -456,7 +456,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     if (pipe (server_signal_pipe) != 0) {
 	    gdm_error (_("%s: Error opening a pipe: %s"),
-		       "gdm_server_start", g_strerror (errno));
+		       "gdm_server_start", strerror (errno));
 	    return FALSE; 
     }
     server_signal_notified = FALSE;
@@ -468,7 +468,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     if (sigaction (SIGUSR1, &usr1, &old_usr1) < 0) {
 	    gdm_error (_("%s: Error setting up USR1 signal handler: %s"),
-		       "gdm_server_start", g_strerror (errno));
+		       "gdm_server_start", strerror (errno));
 	    close (server_signal_pipe[0]);
 	    close (server_signal_pipe[1]);
 	    return FALSE;
@@ -481,7 +481,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     if (sigaction (SIGCHLD, &chld, &old_chld) < 0) {
 	    gdm_error (_("%s: Error setting up CHLD signal handler: %s"),
-		       "gdm_server_start", g_strerror (errno));
+		       "gdm_server_start", strerror (errno));
 	    sigaction (SIGUSR1, &old_usr1, NULL);
 	    close (server_signal_pipe[0]);
 	    close (server_signal_pipe[1]);
@@ -495,7 +495,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     if (sigaction (SIGALRM, &alrm, &old_alrm) < 0) {
 	    gdm_error (_("%s: Error setting up ALRM signal handler: %s"),
-		       "gdm_server_start", g_strerror (errno));
+		       "gdm_server_start", strerror (errno));
 	    sigaction (SIGUSR1, &old_usr1, NULL);
 	    sigaction (SIGCHLD, &old_chld, NULL);
 	    close (server_signal_pipe[0]);

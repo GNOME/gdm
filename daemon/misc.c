@@ -373,53 +373,61 @@ gboolean
 gdm_text_message_dialog (const char *msg)
 {
 	char *dialog; /* do we have dialog?*/
+	char *msg_locale;
+	char *msg_quoted;
 
 	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
 
+	msg_quoted = g_shell_quote (msg);
+	
 	dialog = g_find_program_in_path ("dialog");
 	if (dialog == NULL)
 		dialog = g_find_program_in_path ("gdialog");
 	if (dialog == NULL)
 		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {
-		char *argv[7];
-
+		char *argv[6];
+		
 		argv[0] = EXPANDED_SBINDIR "/gdmopen";
-		argv[1] = dialog;
-		argv[2] = "--msgbox";
-		argv[3] = (char *)msg;
-		argv[4] = "11";
-		argv[5] = "70";
-		argv[6] = NULL;
+		argv[1] = "-l";
+		argv[2] = "/bin/sh";
+		argv[3] = "-c";
+		argv[4] = g_strdup_printf ("%s --msgbox %s 11 70",
+					   dialog, msg_quoted);
+		argv[5] = NULL;
 
 		/* make sure gdialog wouldn't get confused */
 		if (gdm_exec_wait (argv, TRUE /* no display */,
 				   TRUE /* de_setuid */) < 0) {
 			g_free (dialog);
+			g_free (msg_quoted);
 			return FALSE;
 		}
 
 		g_free (dialog);
 	} else {
-		char *argv[5];
+		char *argv[6];
 
 		argv[0] = EXPANDED_SBINDIR "/gdmopen";
-		argv[1] = "/bin/sh";
-		argv[2] = "-c";
-		argv[3] = g_strdup_printf
+		argv[1] = "-l";
+		argv[2] = "/bin/sh";
+		argv[3] = "-c";
+		argv[4] = g_strdup_printf
 			("clear ; "
-			 "echo \"%s\" ; read ; clear",
-			 msg);
-		argv[4] = NULL;
+			 "echo %s ; read ; clear",
+			 msg_quoted);
+		argv[5] = NULL;
 
 		if (gdm_exec_wait (argv, TRUE /* no display */,
 				   TRUE /* de_setuid */) < 0) {
 			g_free (argv[3]);
+			g_free (msg_quoted);
 			return FALSE;
 		}
 		g_free (argv[3]);
 	}
+	g_free (msg_quoted);
 	return TRUE;
 }
 
@@ -427,29 +435,34 @@ gboolean
 gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 {
 	char *dialog; /* do we have dialog?*/
-
+	char *msg_locale;
+	char *msg_quoted;
+	
 	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
 
 	if (ret != NULL)
 		*ret = FALSE;
 
+	msg_quoted = g_shell_quote (msg);
+	
 	dialog = g_find_program_in_path ("dialog");
 	if (dialog == NULL)
 		dialog = g_find_program_in_path ("gdialog");
 	if (dialog == NULL)
 		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {
-		char *argv[7];
+		char *argv[6];
+		char *msg_quoted;
 		int retint;
 
 		argv[0] = EXPANDED_SBINDIR "/gdmopen";
-		argv[1] = dialog;
-		argv[2] = "--yesno";
-		argv[3] = (char *)msg;
-		argv[4] = "11";
-		argv[5] = "70";
-		argv[6] = NULL;
+		argv[1] = "-l";
+		argv[2] = "/bin/sh";
+		argv[3] = "-c";
+		argv[4] = g_strdup_printf ("%s --yesno %s 11 70",
+					   dialog, msg_quoted);
+		argv[5] = NULL;
 
 		/* will unset DISPLAY and XAUTHORITY if they exist
 		 * so that gdialog (if used) doesn't get confused */
@@ -457,6 +470,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 					TRUE /* de_setuid */);
 		if (retint < 0) {
 			g_free (dialog);
+			g_free (msg_quoted);
 			return FALSE;
 		}
 
@@ -464,6 +478,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 			*ret = (retint == 0) ? TRUE : FALSE;
 
 		g_free (dialog);
+		g_free (msg_quoted);
 
 		return TRUE;
 	} else {
@@ -471,30 +486,34 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		int tempfd;
 		FILE *fp;
 		char buf[256];
-		char *argv[5];
+		char *argv[6];
 
 		tempfd = g_mkstemp (tempname);
-		if (tempfd < 0)
+		if (tempfd < 0) {
+			g_free (msg_quoted);
 			return FALSE;
+		}
 
 		close (tempfd);
 
 		argv[0] = EXPANDED_SBINDIR "/gdmopen";
-		argv[1] = "/bin/sh";
-		argv[2] = "-c";
-		argv[3] = g_strdup_printf
+		argv[1] = "-l";
+		argv[2] = "/bin/sh";
+		argv[3] = "-c";
+		argv[4] = g_strdup_printf
 			("clear ; "
-			 "echo \"%s\" ; echo ; echo \"%s\" ; "
+			 "echo %s ; echo ; echo \"%s\" ; "
 			 "read RETURN ; echo $RETURN > %s ; clear'",
-			 msg,
+			 msg_quoted,
 			 /* Translators, don't translate the 'y' and 'n' */
 			 _("y = Yes or n = No? >"),
 			 tempname);
-		argv[4] = NULL;
+		argv[5] = NULL;
 
 		if (gdm_exec_wait (argv, TRUE /* no display */,
 				   TRUE /* de_setuid */) < 0) {
 			g_free (argv[3]);
+			g_free (msg_quoted);
 			return FALSE;
 		}
 		g_free (argv[3]);
@@ -507,12 +526,14 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 					*ret = TRUE;
 				fclose (fp);
 			} else {
+				g_free (msg_quoted);
 				return FALSE;
 			}
 		}
 
 		unlink (tempname);
 
+		g_free (msg_quoted);
 		return TRUE;
 	}
 }
@@ -818,7 +839,7 @@ gdm_peek_local_address_list (void)
 	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
 		gdm_debug ("%s: Could not get server hostname: %s!",
 			   "gdm_peek_local_address_list",
-			   g_strerror (errno));
+			   strerror (errno));
 		addr = g_new0 (struct in_addr, 1);
 		addr->s_addr = INADDR_LOOPBACK;
 		return g_list_append (NULL, addr);

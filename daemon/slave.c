@@ -269,7 +269,7 @@ gdm_slave_start (GdmDisplay *display)
 		if (sigaction (SIGALRM, &alrm, NULL) < 0)
 			gdm_slave_exit (DISPLAY_ABORT,
 					_("%s: Error setting up ALRM signal handler: %s"),
-					"gdm_slave_start", g_strerror (errno));
+					"gdm_slave_start", strerror (errno));
 	}
 
 	/* Handle a INT/TERM signals from gdm master */
@@ -283,7 +283,7 @@ gdm_slave_start (GdmDisplay *display)
 	    (sigaction (SIGINT, &term, NULL) < 0))
 		gdm_slave_exit (DISPLAY_ABORT,
 				_("%s: Error setting up TERM/INT signal handler: %s"),
-				"gdm_slave_start", g_strerror (errno));
+				"gdm_slave_start", strerror (errno));
 
 	/* Child handler. Keeps an eye on greeter/session */
 	child.sa_handler = gdm_slave_child_handler;
@@ -293,7 +293,7 @@ gdm_slave_start (GdmDisplay *display)
 
 	if (sigaction (SIGCHLD, &child, NULL) < 0) 
 		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up CHLD signal handler: %s"),
-				"gdm_slave_start", g_strerror (errno));
+				"gdm_slave_start", strerror (errno));
 
 	/* Handle a USR2 which is ack from master that it received a message */
 	usr2.sa_handler = gdm_slave_usr2_handler;
@@ -303,7 +303,7 @@ gdm_slave_start (GdmDisplay *display)
 
 	if (sigaction (SIGUSR2, &usr2, NULL) < 0)
 		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up USR2 signal handler: %s"),
-				"gdm_slave_start", g_strerror (errno));
+				"gdm_slave_start", strerror (errno));
 
 	/* The signals we wish to listen to */
 	sigfillset (&mask);
