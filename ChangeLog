@@ -1,3 +1,16 @@
+Thu Sep 11 16:11:57 2003  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in: add comment about ShowLastSession
+
+	* daemon/gdm.h, daemon/slave.c, daemon/misc.[ch], gui/gdmlogin.c,
+	  gui/greeter/greeter_session.c: Work with the session setup
+	  as implemented now in KDM.  Doesn't add the built in default,
+	  custom, failsafe sessions to the greeters themselves though
+	  yet, and doesn't change the default session path (will change
+	  to /etc/X11/sessions from /etc/X11/dm/Sessions)
+
+	* daemon/gdm.c: minor cleanup
+
 Tue Sep 02 12:11:39 2003  George Lebl <jirka@5z.com>
 
 	* Release 2.4.4.0

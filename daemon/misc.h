@@ -153,6 +153,8 @@ void gdm_sleep_no_signal (int secs);
  * <dir> "/" <name> <extension>
  */
 char * gdm_make_filename (const char *dir, const char *name, const char *extension);
+char * gdm_ensure_extension (const char *name, const char *extension);
+char * gdm_strip_extension (const char *name, const char *extension);
 
 #endif /* GDM_MISC_H */
 

@@ -258,6 +258,11 @@ enum {
 #define GDM_SESSION_FAILSAFE_GNOME "GDM_Failsafe.GNOME"
 #define GDM_SESSION_FAILSAFE_XTERM "GDM_Failsafe.XTERM"
 
+/* FIXME: will support these builtin types later */
+#define GDM_SESSION_DEFAULT "default"
+#define GDM_SESSION_CUSTOM "custom"
+#define GDM_SESSION_FAILSAFE "failsafe"
+
 #define GDM_STANDARD "Standard"
 
 #ifndef TYPEDEF_GDM_CONNECTION

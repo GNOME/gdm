@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <signal.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -1816,6 +1817,34 @@ gdm_make_filename (const char *dir, const char *name, const char *extension)
 	char *full = g_build_filename (dir, base, NULL);
 	g_free (base);
 	return full;
+}
+
+char *
+gdm_ensure_extension (const char *name, const char *extension)
+{
+	const char *p = strrchr (name, '.');
+	if (p != NULL &&
+	    strcmp (p, extension) == 0) {
+		return g_strdup (name);
+	} else {
+		return g_strconcat (name, extension, NULL);
+	}
+}
+
+char *
+gdm_strip_extension (const char *name, const char *extension)
+{
+	const char *p = strrchr (name, '.');
+	if (p != NULL &&
+	    strcmp (p, extension) == 0) {
+		return g_strdup (name);
+		char *r = g_strdup (name);
+		char *rp = strrchr (r, '.');
+		*rp = '\0';
+		return r;
+	} else {
+		return g_strdup (name);
+	}
 }
 
 /* EOF */

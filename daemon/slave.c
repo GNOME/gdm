@@ -2792,9 +2792,95 @@ gdm_slave_chooser (void)
 }
 
 static gboolean
-is_session_ok (const char *session_name)
+is_prog_in_path (const char *prog, const char *path)
+{
+	char **vec;
+	int i;
+
+	if (ve_string_empty (prog) || ve_string_empty (path))
+		return FALSE;
+
+	vec = g_strsplit (path, ":", -1);
+	for (i = 0; vec != NULL && vec[i] != NULL; i++) {
+		char *full = g_build_filename (vec[i], prog, NULL);
+		if (access (full, X_OK) == 0) {
+			g_free (full);
+			return TRUE;
+		}
+		g_free (full);
+	}
+	return FALSE;
+}
+
+static gboolean
+is_session_magic (const char *session_name)
+{
+	return (strcmp (session_name, GDM_SESSION_DEFAULT) == 0 ||
+		strcmp (session_name, GDM_SESSION_CUSTOM) == 0 ||
+		strcmp (session_name, GDM_SESSION_FAILSAFE) == 0);
+}
+
+static char *
+get_session_exec (const char *session_name)
 {
 	char *file;
+	VeConfig *cfg;
+	static char *exec;
+	static char *cached = NULL;
+	char *tryexec;
+
+	/* clear cache */
+	if (session_name == NULL) {
+		g_free (exec);
+		exec = NULL;
+		g_free (cached);
+		cached = NULL;
+		return NULL;
+	}
+
+	if (cached != NULL && strcmp (session_name, cached) == 0)
+		return g_strdup (exec);
+
+	g_free (exec);
+	exec = NULL;
+	g_free (cached);
+	cached = g_strdup (session_name);
+
+	file = gdm_make_filename (GdmSessDir, session_name, ".desktop");
+
+	if (access (file, R_OK) != 0) {
+		g_free (file);
+		if (is_session_magic (session_name)) {
+			exec = g_strdup (session_name);
+			return g_strdup (exec);
+		} else {
+			return NULL;
+		}
+	}
+
+	cfg = ve_config_get (file);
+	g_free (file);
+	if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false"))
+		return NULL;
+
+	tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
+	if ( ! ve_string_empty (tryexec) &&
+	     ! is_prog_in_path (tryexec, GdmDefaultPath)) {
+		g_free (tryexec);
+		return NULL;
+	}
+	g_free (tryexec);
+
+
+	exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
+	return g_strdup (exec);
+}
+
+static gboolean
+is_session_ok (const char *session_name)
+{
+	char *exec;
+	gboolean ret = TRUE;
 
 	/* these are always OK */
 	if (strcmp (session_name, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
@@ -2802,30 +2888,30 @@ is_session_ok (const char *session_name)
 		return TRUE;
 
 	if (ve_string_empty (GdmSessDir))
-		return FALSE;
+		return is_session_magic (session_name);
 
-	file = g_build_filename (GdmSessDir, session_name, NULL);
-	if (access (file, F_OK) == 0) {
-		g_free (file);
-		return TRUE;
-	}
-	g_free (file);
-	return FALSE;
+	exec = get_session_exec (session_name);
+	if (exec == NULL)
+		ret = FALSE;
+	g_free (exec);
+	return ret;
 }
 
 static char *
 find_a_session (void)
 {
 	char *try[] = {
-		"Default.desktop",
-		"default.desktop",
-		"Gnome.desktop",
-		"gnome.desktop",
-		"GNOME.desktop",
-		"kde.desktop",
-		"KDE.desktop",
-		"failsafe.desktop",
-		"Failsafe.desktop",
+		"Default",
+		"default",
+		"Gnome",
+		"gnome",
+		"GNOME",
+		"Custom",
+		"custom",
+		"kde",
+		"KDE",
+		"failsafe",
+		"Failsafe",
 		NULL
 	};
 	int i;
@@ -2837,20 +2923,6 @@ find_a_session (void)
 			session = g_strdup (try[i]);
 	}
 	return session;
-}
-
-static char *
-get_session_exec (const char *desktop)
-{
-	char *file;
-	VeConfig *cfg;
-	char *exec;
-
-	file = g_build_filename (GdmSessDir, desktop, NULL);
-	cfg = ve_config_get (file);
-	g_free (file);
-	exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
-	return exec;
 }
 
 static char *
@@ -3166,6 +3238,7 @@ session_child_run (struct passwd *pwent,
 			gdm_error (_("%s: Cannot find or run the base Xsession script, will try GNOME failsafe"),
 				   "gdm_slave_session_start");
 			session = GDM_SESSION_FAILSAFE_GNOME;
+			exec = NULL;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
 				 _("Cannot find or run the base session script, will try the GNOME failsafe session for you."));
@@ -3323,6 +3396,7 @@ gdm_slave_session_start (void)
     gid_t gid;
     int logpipe[2];
     int logfilefd;
+    char *tmp;
 
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
 	       login);
@@ -3421,7 +3495,9 @@ gdm_slave_session_start (void)
     setegid (GdmGroupId);
 
     if (greet) {
-	    session = gdm_slave_greeter_ctl (GDM_SESS, usrsess);
+	    tmp = gdm_ensure_extension (usrsess, ".desktop");
+	    session = gdm_slave_greeter_ctl (GDM_SESS, tmp);
+	    g_free (tmp);
 	    language = gdm_slave_greeter_ctl (GDM_LANG, usrlang);
     } else {
 	    session = g_strdup (usrsess);
@@ -3430,6 +3506,10 @@ gdm_slave_session_start (void)
 
     g_free (usrsess);
     g_free (usrlang);
+
+    tmp = gdm_strip_extension (session, ".desktop");
+    g_free (session);
+    session = tmp;
     
     if (ve_string_empty (session)) {
 	    g_free (session);
@@ -3508,8 +3588,7 @@ gdm_slave_session_start (void)
 
     if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
 	strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-	g_ascii_strcasecmp (session, "Failsafe") == 0 /* hack */ ||
-	g_ascii_strcasecmp (session, "Failsafe.desktop") == 0 /* hack */)
+	g_ascii_strcasecmp (session, "failsafe") == 0 /* hack */)
 	    failsafe = TRUE;
 
     if ( ! failsafe) {
@@ -3594,6 +3673,9 @@ gdm_slave_session_start (void)
     default:
 	break;
     }
+    
+    /* this clears internal cache */
+    get_session_exec (NULL);
 
     if G_LIKELY (logfilefd >= 0)  {
 	    d->xsession_errors_fd = logfilefd;

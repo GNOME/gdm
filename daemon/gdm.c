@@ -294,11 +294,6 @@ gdm_config_parse (void)
     displays = NULL;
     high_display_num = 0;
 
-#if defined(_SCO_DS) || defined(__UNIXWARE__) || defined(__USLC__)
-    gdm_error ("SCO OS detected!!!  I will sleep for 5 seconds in protest.  This message can be disabled by SCO stopping to sue people.");
-    sleep (5);
-#endif
-
     IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
     if (r < 0) {
 	    gdm_error (_("%s: No configuration file: %s. Using defaults."),
@@ -832,7 +827,7 @@ gdm_daemonify (void)
 	    errno = 0;
 	    fprintf (pf, "%d\n", (int)pid);
 	    fclose (pf);
-	    if (errno != 0) {
+	    if G_UNLIKELY (errno != 0) {
 		    /* FIXME: how to handle this? */
 		    gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
 				  GdmPidFile, strerror (errno));
@@ -840,7 +835,7 @@ gdm_daemonify (void)
 			       GdmPidFile, strerror (errno));
 
 	    }
-	} else if (errno != 0) {
+	} else if G_UNLIKELY (errno != 0) {
 	    /* FIXME: how to handle this? */
 	    gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
 			  GdmPidFile, strerror (errno));

@@ -811,15 +811,22 @@ gdm_login_list_lookup (GSList *l, const gchar *data)
     if (!list || !data)
 	return(FALSE);
 
+    /* FIXME: Hack, will support these builtin types later */
+    if (strcmp (data, GDM_SESSION_DEFAULT ".desktop") == 0 ||
+	strcmp (data, GDM_SESSION_CUSTOM ".desktop") == 0 ||
+	strcmp (data, GDM_SESSION_FAILSAFE ".desktop") == 0) {
+	    return TRUE;
+    }
+
     while (list) {
 
 	if (strcmp (list->data, data) == 0)
-	    return (TRUE);
+	    return TRUE;
 	
 	list = list->next;
     }
 
-    return (FALSE);
+    return FALSE;
 }
 
 static const char *
@@ -1239,8 +1246,9 @@ gdm_login_session_init (GtkWidget *menu)
 	    char *comment;
 	    char *s;
 	    char *label;
+	    char *tryexec;
 
-	    /* ignore everything bug the .desktop files */
+	    /* ignore everything but the .desktop files */
 	    if (strstr (dent->d_name, ".desktop") == NULL) {
 		    dent = readdir (sessdir);
 		    continue;
@@ -1250,6 +1258,24 @@ gdm_login_session_init (GtkWidget *menu)
 	    cfg = ve_config_new (s);
 	    g_free (s);
 
+	    if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false")) {
+		    ve_config_destroy (cfg);
+		    dent = readdir (sessdir);
+		    continue;
+	    }
+
+	    tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
+	    if ( ! ve_string_empty (tryexec)) {
+		    char *full = g_find_program_in_path (tryexec);
+		    if (full == NULL) {
+			    g_free (tryexec);
+			    ve_config_destroy (cfg);
+			    dent = readdir (sessdir);
+			    continue;
+		    }
+		    g_free (full);
+	    }
+	    g_free (tryexec);
 
 	    exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
 	    name = ve_config_get_translated_string (cfg, "Desktop Entry/Name");
