@@ -37,7 +37,8 @@ int gdm_get_free_display (int start, uid_t server_uid);
 
 gboolean gdm_text_message_dialog (const char *msg);
 gboolean gdm_text_yesno_dialog (const char *msg, gboolean *ret);
-int	gdm_exec_wait (char * const *argv, gboolean no_display);
+int	gdm_exec_wait (char * const *argv, gboolean no_display,
+		       gboolean de_setuid);
 
 /* done before each login.  This can do so sanity ensuring,
  * one of the things it does now is make sure /tmp/.ICE-unix

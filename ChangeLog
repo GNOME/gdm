@@ -1,3 +1,12 @@
+Tue Dec 04 20:46:57 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c, daemon/misc.[ch], daemon/display.c:  On events where
+	  we fail due to bad configuration, run the text message dialog.
+	  Also if we hit the loop of death outside of XFAILED on a local
+	  display, run a text message telling the user so instead of just
+	  putting this into the syslog.  We need more interaction here I
+	  think.  But this is better then nothing.
+
 Tue Dec 04 18:44:10 2001  George Lebl <jirka@5z.com>
 
 	* daemon/Makefile.am, daemon/verify-pam.c, daemon/verify-crypt.c, 
