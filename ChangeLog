@@ -1,3 +1,12 @@
+Wed Aug 07 21:01:41 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, config/gdm.conf.in, gui/gdmlogin.c: Add a new key
+	  RunBackgroundProgramAlways.  It is now normally false, and if
+	  it is false, background program is run ONLY if the BackgroundType
+	  is set to 0 (None), setting it to true will revert to previous
+	  behaviour.  This is to work around the crackladden xsri hack that
+	  redhat does and still have nice gui way to config backgrounds.
+
 Wed Aug 07 20:23:28 2002  George Lebl <jirka@5z.com>
 
 	* gui/greeter/themes/circles/circles.xml.in,

@@ -212,6 +212,7 @@ enum {
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %n"
 #define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
 #define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="
+#define GDM_KEY_RUNBACKGROUNDPROGALWAYS "greeter/RunBackgroundProgramAlways=false"
 #define GDM_KEY_BACKGROUNDIMAGE "greeter/BackgroundImage="
 #define GDM_KEY_BACKGROUNDCOLOR "greeter/BackgroundColor=#363047"
 #define GDM_KEY_BACKGROUNDTYPE "greeter/BackgroundType=2"

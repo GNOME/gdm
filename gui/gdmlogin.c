@@ -98,6 +98,7 @@ static gint GdmXineramaScreen;
 static gchar *GdmLogo;
 static gchar *GdmWelcome;
 static gchar *GdmBackgroundProg;
+static gboolean GdmRunBackgroundProgAlways;
 static gchar *GdmBackgroundImage;
 static gchar *GdmBackgroundColor;
 static gboolean GdmBackgroundScaleToFit;
@@ -293,7 +294,8 @@ kill_thingies (void)
 
 	backgroundpid = 0;
 	if (pid != 0) {
-		kill (pid, SIGTERM);
+		if (kill (pid, SIGTERM) == 0)
+			waitpid (pid, NULL, 0);
 	}
 }
 
@@ -873,6 +875,7 @@ gdm_login_parse_config (void)
 	    GdmWelcome = g_strdup (_("Welcome to %n"));
     }
     GdmBackgroundProg = ve_config_get_string (config, GDM_KEY_BACKGROUNDPROG);
+    GdmRunBackgroundProgAlways = ve_config_get_bool (config, GDM_KEY_RUNBACKGROUNDPROGALWAYS);
     GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUNDIMAGE);
     GdmBackgroundColor = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
     GdmBackgroundType = ve_config_get_int (config, GDM_KEY_BACKGROUNDTYPE);
@@ -3836,8 +3839,9 @@ run_backgrounds (void)
 	setup_background ();
 
 	/* Launch a background program if one exists */
-	if (GdmBackgroundProg != NULL &&
-	    GdmBackgroundProg[0] != '\0') {
+	if ((GdmBackgroundType == GDM_BACKGROUND_NONE ||
+	     GdmRunBackgroundProgAlways) &&
+	    ! ve_string_empty (GdmBackgroundProg)) {
 		backgroundpid = gdm_run_command (GdmBackgroundProg);
 		g_atexit (kill_thingies);
 	}
@@ -3897,8 +3901,7 @@ gdm_reread_config (int sig, gpointer data)
 	/* FIXME: The following is evil, we should update on the fly rather
 	 * then just restarting */
 	/* Also we may not need to check ALL those keys but just a few */
-	if ( ! string_same (config, GdmBackgroundProg, GDM_KEY_BACKGROUNDPROG) ||
-	     ! string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
+	if ( ! string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
 	     ! int_same (config,
 			 GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
 	     ! bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
@@ -3930,7 +3933,18 @@ gdm_reread_config (int sig, gpointer data)
 		GdmBackgroundScaleToFit = ve_config_get_bool (config, GDM_KEY_BACKGROUNDSCALETOFIT);
 		GdmBackgroundRemoteOnlyColor = ve_config_get_bool (config, GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
 
+		if (GdmBackgroundType != GDM_BACKGROUND_NONE &&
+		    ! GdmRunBackgroundProgAlways)
+			kill_thingies ();
+
 		setup_background ();
+
+		/* Launch a background program if one exists */
+		if ((GdmBackgroundType == GDM_BACKGROUND_NONE ||
+		     GdmRunBackgroundProgAlways) &&
+		    ! ve_string_empty (GdmBackgroundProg)) {
+			backgroundpid = gdm_run_command (GdmBackgroundProg);
+		}
 	}
 
 	GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
