@@ -119,9 +119,7 @@
 
 	<para>Ongietorriak sistemako erabiltzaile guztientzat ikonoak dituen aurpegi-arakatzailea eskaintzen du.  Sistema-administratzaileak ikonoak modu orokorrean instala ditzake, baina erabiltzailearen etxeko direktorioan ere instala daitezke.</para>
 	
-	<para>Aurpegi-arakatzaileak zure inguruneari buruzko suposizio batzuk egiten ditu. Lehenik eta behin, ongietorriak erabiltzailearen IDa exekutatzen du eta, horregatik, erabiltzailearen direktorioko aurpegi-ikonoek gdm-ren erabiltzaileak irakurtzeko modukoak izan behar dute. Hau da, etxeko direktorio eta <filename>~/.gnome</filename> direktorio guztiek sistemako &quot;beste&quot; taldeentzat irakurgarriak eta exekutagarriak izan behar dute.</para>
-
-	<para>Era berean, aurpegi-direktorio orokorreko aurpegi-ikonoek gdm-ren erabiltzailearentzat irakurgarriak izan behar dute.</para>
+	<para> Aurpegi-direktorio orokorreko aurpegi-ikonoek gdm-erabiltzaileak irakurtzeko moduan egon behar dute. Baina daemon-aren, proxy-en erabiltzaileak ongietorrian marrazten du eta beraz, horiek ezingo ditu gdm-erabiltzaileak irakurri, root-ak baizik.</para>
 
 	<para>Kontuan hartu erabiltzailearen etxeko direktorioan aurpegi-ikonoak kargatzeak eta eskalatzeak denbora asko iraun dezakeela.  Bereziki sistema handietan edo NIS exekutatzen duten sistemetan. Arakatzaile hau erabiltzaile gutxi dituen sistementzat bakarrik dago pentsatuta.</para>
 
@@ -146,6 +144,8 @@
 
   <chapter id="Configuration">
     <title>Konfigurazio-direktorioa</title>
+
+     <para>Atal honetan konfigurazio-direktorioaren egiturari eta konfigurazio-fitxategiaren formatuari buruz arituko gara. Hala ere,  <filename>gdmconfig</filename> bitarra GDM ingurune grafiko batetik konfiguratzeko erabil dezakezu. Atal honetan terminoak, ordea, erabilgarriak izan daitezke. Konfiguratzailea GNOME menutik exekutatu nahi baduzu, <filename>Sistema</filename> azpimenuan instalatuta egon behar du.</para>
 
     <para>GDMren konfigurazio-fitxategiak <filename>etc/gdm/</filename> direktorioan daude.</para>
 
@@ -203,7 +203,7 @@
 	  
 	  <varlistentry><term>Hautatzailea</term> <listitem><synopsis>Hautatzailea=bin/gdmchooser --disable-sound --disable-crash-dialog</synopsis> <para>Hautatzailearen bide-izen osoa eta izen exekutagarriak, hautazko argumentuaz jarraiturik.</para></listitem></varlistentry>
 
-	  <varlistentry><term>Konfiguratzailea</term> <listitem><synopsis>Konfiguratzailea=/usr/bin/gdmconfig --disable-sound --disable-crash-dialog</synopsis> <para>Konfigurazio bitarraren bide-izena.  Ongietorriko KonfigErabilgarri aukera egia moduan jarrita badago, orduan bitar hori exekutatu norbaitek sistema-menuan Konfigurazioa aukeratzen duenean. Hala ere GDMk aurrena root-aren pasahitza eskatuko dizu. Hori ezingo da urruneko pantaila batetik egin.</para></listitem></varlistentry>
+	  <varlistentry><term>Konfiguratzailea</term> <listitem><synopsis>Konfiguratzailea=bin/gdmconfig --disable-sound --disable-crash-dialog</synopsis><para>Konfigurazio bitarraren bide-izena.  Ongietorriko KonfigErabilgarri aukera egia moduan jarrita badago, orduan bitar hori exekutatu norbaitek sistema-menuan Konfigurazioa aukeratzen duenean. Hala ere GDMk aurrena root-aren pasahitza eskatuko dizu. Hori ezingo da urruneko pantaila batetik egin.</para></listitem></varlistentry>
 	  
 	  <varlistentry><term>BideIzenLehenetsia</term> <listitem><synopsis>BideIzenLehenetsia=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis> <para>Erabiltzailearen saioa zer bide-izenekin ezarriko den zehazten du.</para></listitem></varlistentry>
 	  
@@ -211,7 +211,21 @@
 
 	  <varlistentry><term>FailsafeXZerbitzaria</term> <listitem><synopsis>FailsafeXZerbitzaria=</synopsis> <para>X zerbitzari arrunta hasi ezin dugun kasurako X komando-lerroa. Bereizmen txikiko zerbitzaria exekutatzeko script-motaren bat izan behar luke.  XKeepsCrashing script-a exekutatu aurretik egiten da.</para></listitem></varlistentry>
 
-	  <varlistentry><term>GnomeSaioLehenetsia</term> <listitem><synopsis>GnomeSaioLehenetsia=share/gnome/default.session</synopsis> <para>GDMk irakurri behar lukeen fitxategia, erabiltzaile bakoitzeko GNOMEren saio-fitxategirik ez badago, eta erabiltzaileak Gnome-ren Hautatzaile-saioa eskatu badu.</para></listitem></varlistentry>
+  <varlistentry>
+    <term>XZerbitzariMalguak</term>
+    <listitem>
+      <synopsis>XZerbitzariMalguak=5</synopsis>
+      <para>
+Onartzen den gehienezko zerbitzari malguen kopurua. Zerbitzari hauek
+/tmp/.gdm_socket socket-konexioa erabiliz exekuta daitezke.   
+Konexio-mota hori zerbitzari osoetarako eta Xnest zerbitzarietarako
+erabiltzen da.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+<term>GnomeSaioLehenetsia</term> <listitem><synopsis>GnomeSaioLehenetsia=share/gnome/default.session</synopsis> <para>GDMk irakurri behar lukeen fitxategia, erabiltzaile bakoitzeko GNOMEren saio-fitxategirik ez badago, eta erabiltzaileak Gnome-ren Hautatzaile-saioa eskatu badu.</para></listitem></varlistentry>
 	  
 	  <varlistentry><term>Ongietorria</term> <listitem><synopsis>Ongietorria=bin/gdmlogin --disable-sound --disable-crash-dialog</synopsis> <para>Ongietorriaren bide-izen osoa eta izen exekutagarriak, hautazko argumentuez jarraiturik.</para></listitem></varlistentry>
 	  
@@ -233,11 +247,25 @@
 	  
 	  <varlistentry><term>RootBideIzena</term> <listitem><synopsis>RootBideIzena=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis> <para>Root-aren saioan zer bide-izen ezarriko den eta GDMk exekutatutako {Init,PreSession,PostSession} script-ak zehazten ditu.</para></listitem></varlistentry>
 	  
-	  <varlistentry><term>ZerbAuthDir</term> <listitem><synopsis>ZerbAuthDir=/var/gdm</synopsis> <para>Pantaila indibidualentzako X autentifikazio-fitxategiak dituen direktorioa.   <filename>gdm.gdm</filename>-ren barnean egon behar luke 750 baimenekin.</para></listitem></varlistentry>
+	  <varlistentry><term>ZerbAuthDir</term> <listitem><synopsis>ZerbAuthDir=/var/gdm</synopsis> <para>Pantaila indibidualentzako X autentifikazio-fitxategiak dituen direktorioa.   <filename>gdm.gdm</filename>-ren barnean egon behar luke 750 baimenekin. Direktorio hau daemon-ak gorde behar dituen fitxategi pribatuentzat ere erabiltzen da. Beste erabiltzaileek ezingo dute direktorio hori lortu eta bere edukia irakurri/gorde.</para></listitem></varlistentry>
 	  
 	  <varlistentry><term>SaioDir</term> <listitem><synopsis>SaioDir=etc/gdm/Sessions</synopsis> <para>Sisteman erabilgarri dauden saio-mota guztien script-ak dituen direktorioa.</para></listitem></varlistentry>
 
-	  <varlistentry><term>EsekiKomandoa</term> <listitem><synopsis>EsekiKomandoa=</synopsis> <para>Erabiltzaileak Sistema menuan Eseki hautatzen duenean exekutatu behar diren bide-izen osoa eta argumentuak.  Hutsik badago, menu-elementu hori ez da egongo.</para></listitem></varlistentry>
+  <varlistentry>
+    <term>XzerbitzariEstandarra</term>
+    <listitem>
+      <synopsis>XzerbitzariEstandarra=/usr/bin/X11/X</synopsis>
+      <para>
+X zerbitzari estandarraren komandorako bide-izen eta argumentu osoak.
+Hau gdm-k bestelako definiziorik aurkitzen ez duenean erabiltzen da,
+eta hainbat lekutan laguntza lehenetsi eta failsafe laguntza gisa erabiltzen
+da. X zerbitzari-mota jakin batzuk exekutatzeko gai izan behar du.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+<term>EsekiKomandoa</term> <listitem><synopsis>EsekiKomandoa=</synopsis> <para>Erabiltzaileak Sistema menuan Eseki hautatzen duenean exekutatu behar diren bide-izen osoa eta argumentuak.  Hutsik badago, menu-elementu hori ez da egongo.</para></listitem></varlistentry>
 
 	  <varlistentry><term>DenborazMugatutakoSaioHasieraGaitu</term> <listitem><synopsis>DenborazMugatutakoSaioHasieraGaitu=faltsua</synopsis> <para>DenborazMugatutakoSaioHasieraren erabiltzaileak saioa saio-hasierako pantaila segundo batzuetan (SaioHasieraAtzerapena aukerarekin ezarria) inaktibo egon ondoren hasi behar luke.  Hau erabilgarria da atzipen publikoko terminalentzat, edo baita etxeko erabilpenerako ere.   Erabiltzaileak teklatua erabili edo menuak arakatzen baditu, denbora-muga SaioHasieraAtzerapena aukeran edo 30 segundotan berrezarriko da, beti ere bietatik handiagoa dena.   Kontuan hartu pasa-hitzik ez dela eskatzen, beraz erabiltzaileak kontuz ibili behar luke.</para></listitem></varlistentry>
 
@@ -253,9 +281,13 @@
 	  
 	  <varlistentry><term>ErabiltzaileAuthFitx</term> <listitem><synopsis>ErabiltzaileAuthFitx=.Xauthority</synopsis> <para>Erabiltzailearen cookie-ak gordetzeko erabiltzen den fitxategiaren izena.</para></listitem></varlistentry>
 
-	  <varlistentry><term>XKeepsCrashing</term> <listitem><synopsis>XKeepsCrashing=etc/gdm/XKeepsCrashing</synopsis> <para>X kasuan exekutatu behar den script-ak bertan behera gelditzen jarraitzen du.   Hori X konfigurazioa exekutatzeko da.   Lehen argumentua XKeepsCrashingConfigurators script-ean zehaztutako programa bat izango da, lehendik dagoen bakarra.    Programarik lehendik ez badago, script-a ez da exekutatuko.   Bigarren argumentua script-ean edozein helburutarako erabil daitekeen aldi baterako fitxategi-izena da.   Gainerako argumentuak itzulitako mezuak dira.   Xehetasun gehiagotarako ikus instalatutako script estandarra.</para> <para>FailsafeXZerbitzaria instalatuta badago, aurrena hori erabiliko da, baina babes moduan soilik, nahiz eta zerbitzariak bertan behera gelditzen jarraitu.</para></listitem></varlistentry>
+	  <varlistentry><term>XKeepsCrashing</term> <listitem><synopsis>XKeepsCrashing=etc/gdm/XKeepsCrashing</synopsis> <para>
+Xk bertan behera gelditzen jarraitzen duenean exekutatu behar den script-a. Hau X konfigurazioa edo beste zerbait exekutatzeko, horrela X konfigurazioa ibil dadin.  Adibide gisa, ikusi banaketarekin batera etorri zen script-a.  XKeepsCrashing script-a RedHat-en probatu da, baina beste edozein programetan ere ibil daiteke.  Sistema-integratzaileak script hau zure sistemarako eguneratuta dagoela ziurtatu behar du.
+</para> <para>FailsafeXZerbitzaria instalatuta badago, aurrena hori erabiliko da, baina babes moduan soilik, nahiz eta zerbitzariak bertan behera gelditzen jarraitu.</para></listitem></varlistentry>
 
-	  <varlistentry><term>XKeepsCrashingConfigurators</term> <listitem><synopsis>XKeepsCrashingConfigurators=/usr/bin/X11/XF86Setup /usr/bin/X11/Xconfigurator</synopsis> <para>Erabiltzailearentzat X konfigurazioa egingo duen programa-zerrenda.  Programa horiek XKeepsCrashing script-ak exekutatzen ditu.  Zerrendan lehendik dagoen lehena erabiltzen da.</para></listitem></varlistentry></variablelist>
+	  <varlistentry><term> Xnest</term> <listitem><synopsis> Xnest=/usr/bin/X11/Xnest </synopsis> <para>
+Xnest komandorako bide-izen eta argumentu osoak. Xnest zerbitzari malguetan erabiltzen da. Horrela, erabiltzaileak saio-hasierako pantaila berriak habiaratutako leihoan has ditzake. Lan honetarako Xnest zerbitzaria X zerbitzariaren paketeetatik instalatuta eduki behar duzu.
+</para></listitem></varlistentry></variablelist>
 	
       </sect2>
 
@@ -289,7 +321,7 @@
 	      
 	      <para>Tamaina-kontrolaz gain, <filename>gdm</filename> eta <filename>gdmlogin</filename> programak ez dira hain erraz erabiltzailearen direktorioko fitxategietan sartzen. Ez die esteka sinbolikoei jarraituko eta, hala nahi badute, fitxategi eta direktorioetan haien jabea ez den norbaitek idatz badezake, ez ditu irakurriko. Informazio gehiagorako ikus ErlaxazioBaimenak aukera.</para></listitem></varlistentry>
 	  
-	  <varlistentry><term>AuthXehetu</term> <listitem><synopsis>AuthXehetu=egia</synopsis> <para>GDMk ongietorriko mezu-ereduan autentifikazio-erroreak erakutsi behar lituzkeen zehazten du.   Iraganean ez bezala, aukera hau egiazkotzat edukitzea ez da segurtasun-arrisku bat. Erabiltzaile-izena edo pasahitza okerra bada, ordea, ez du aukera hori zehaztuko, biak errore berdinak baitira.   Beste errore bat emango du, adibidez, root-aren saio-hasiera debekatuta badago eta saioa hasten badu, edo desgaitutako saio-hasiera duen erabiltzaile batek saioa hasten saiatzen bada (saioa hasi ondoren bakarrik).  Saio-hasierari buruzko informazio xehetua ez da ematen erabiltzailea egiaztatu arte.</para></listitem></varlistentry></variablelist>
+</variablelist>
 	
       </sect2>
 
@@ -299,7 +331,15 @@
 	<variablelist>
 	  <title>[xdmcp]</title>
 	  
-	  <varlistentry><term>DisplaysPerHost</term> <listitem><synopsis>DisplaysPerHost=1</synopsis> <para>Erasotzaileek itxaron-ilara bete ez dezaten, GDMk urruneko ordenagailu bakoitzeko konexio bakarra baimenduko du.  Ordenagailuak pantaila bat baino gehiagoko pantaila-zerbitzuekin hornitu nahi badituzu, DisplaysPerHost-en balioa modu proportzionalean handitu beharko zenuke.</para></listitem></varlistentry>
+	  <varlistentry><term>DisplaysPerHost</term> <listitem><synopsis>DisplaysPerHost=1</synopsis> <para>Erasotzaileek itxaron-ilara bete ez dezaten, GDMk urruneko ordenagailu bakoitzeko konexio bakarra baimenduko du.  Ordenagailuak pantaila bat baino gehiagoko pantaila-zerbitzuekin hornitu nahi badituzu, DisplaysPerHost-en balioa modu proportzionalean handitu beharko zenuke.</para>
+
+      <para>
+Kontuan izan ordenagailu lokaletik nahi adina 
+konexio egin ditzakezula. Urruneko konexioak 
+bakarrik daude zenbaki honen bidez mugaturik.
+      </para>
+
+</listitem></varlistentry>
 
 	  <varlistentry><term>Gaitu</term> <listitem><synopsis>Gaitu=faltsua</synopsis> <para>Aukera horretan egiazkoa jartzeak XDMCP euskarria gaitzen du, eta horrela urruneko pantailak/X teminalak GDMren bidez kudea daitezke.</para>
 	      
@@ -335,7 +375,27 @@
 	  
 	  <varlistentry><term>Ataka</term> <listitem><synopsis>Ataka=177</synopsis> <para><filename>gdm</filename>-k XDMCPren eskaeratarako jaso behar lukeen UDP atakaren zenbakia. Ez aldatu, ez badakizu zer egiten ari zaren.</para></listitem></varlistentry>
 
-	  <varlistentry><term>PingEgitekoTartea</term> <listitem><synopsis>PingEgitekoTartea=5</synopsis> <para>X zerbitzarian ping egiteko tartea minututan.  X zerbitzariak hurrena guk ping egin aurretik erantzuten ez badu, konexioa gelditu eta saioa amaituko da.  xdm-ren PingTartea eta PingDenboraMuga aukeren arteko konbinazioa da.</para></listitem></varlistentry></variablelist>
+	  <varlistentry><term>PingEgitekoTartea</term> <listitem><synopsis>PingEgitekoTartea=5</synopsis> <para>X zerbitzarian ping egiteko tartea minututan.  X zerbitzariak hurrena guk ping egin aurretik erantzuten ez badu, konexioa gelditu eta saioa amaituko da.  xdm-ren PingTartea eta PingDenboraMuga aukeren arteko konbinazioa da.</para></listitem></varlistentry>
+
+  <varlistentry>
+    <term>Willing</term>
+    <listitem>
+      <synopsis>Willing=etc/gdm/Xwilling</synopsis>
+      <para>
+Zerbitzariak KONTSULTA baten ondoren WILLING paketea
+bidaltzen duenean, zerbitzariaren uneko egoera ematen 
+duen katea bidaltzen du. Mezu lehenetsia sistemaren IDa 
+da, baina mezu pertsonalizatua bistaratzen duen script-a 
+sor daiteke. Script hori ez badago edo gako hori hutsik
+ badago, mezu lehenetsia bidaliko da. Script hori baldin  
+badago eta irteeraren bat sortzen badu, irteera horren lehen 
+lerroa bidaliko da (lehena bakarrik). 3 segundoz behin exekutatzen da zerbitzaria KONTSULTA paketeez ez betetzearren, bestela ez baita
+zerbitzua onartuko.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
 	
       </sect2>
 
@@ -392,21 +452,35 @@
 
 	  <varlistentry><term>TituluBarra</term> <listitem><synopsis>TituluBarra=egia</synopsis> <para>Ongietorrian titulu-barra bistaratzen du.</para></listitem></varlistentry>
 	  
-	  <varlistentry><term>Ongi etorri</term> <listitem><synopsis>Ongi etorri=Ongi etorri %n-(e)ra</synopsis> <para>Ongietorrian logotipo-irudiaren ondoren zer testu bistaratu behar den kontrolatzen du. Honako kontrol-karaktereak onartzen dira:</para>
+	  <varlistentry>
+    <term>Erabili24Erlojua</term>
+    <listitem>
+      <synopsis>Erabili24Erlojua=faltsua</synopsis>
+      <para>
+24 orduko erlojua erabiltzera behartu, nahiz eta lokalak
+lehenespen gisa 12 orduko erloju eduki. Orokorrean 24 
+orduko formatua erabiltzen duten lokaletan (esaterako cs_CZ)
+ezarpen horrek ez du eraginik.
+      </para>
+    </listitem>
+  </varlistentry>
+  
+  <varlistentry>
+<term>Ongi etorri</term> <listitem><synopsis>Ongi etorri=Ongi etorri &percnt;n -(e)ra</synopsis> <para>Ongietorrian logotipo-irudiaren ondoren zer testu bistaratu behar den kontrolatzen du. Honako kontrol-karaktereak onartzen dira:</para>
 	      
-	      <para>%%	 `%' karakterea</para>
+	      <para&percnt;&percnt; &mdash; `&percnt;' karakterea</para>
 	      
-	      <para>%d karaktereak	ostalari-izena bistaratzen du</para>
+	      <para>&percnt;d karaktereak &mdash; ostalari-izena bistaratzen du</para>
 	      
-	      <para>%h	Guztiz kualifikatutako ostalari-izena</para>
+	      <para&percnt;h &mdash; Guztiz kualifikatutako ostalari-izena</para>
 
-	      <para>%m	ordenagailua (prozesadore-mota)</para>
+	      <para&percnt;m &mdash; ordenagailua (prozesadore-mota)</para>
 
-	      <para>%n	Nodo-izena (hau da, domeinurik gabeko ostalari-izena)</para>
+	      <para&percnt;n &mdash; Nodo-izena (hau da, domeinurik gabeko ostalari-izena)</para>
 	      
-	      <para>%r	edizioa (SE bertsioa)</para>
+	      <para>&percnt;r &mdash; edizioa (SE bertsioa)</para>
 	      
-	      <para>%s	sistema-izena (hau da, SE)</para>
+	      <para>&percnt;s &mdash; sistema-izena (hau da, SE)</para>
 	      	      
 	    </listitem></varlistentry>
 
@@ -466,14 +540,100 @@
 
       <sect2>
 
+<title>X zerbitzariaren definizioak</title>
+
+<para>
+  X zerbitzariak konfiguratzeko, gdm-ri instalatutako 
+  X zerbitzariari buruzko informazioa eman behar diozu.
+  Nahi adina definizio eduki ditzakezu, bakoitza izen batez  
+  zehazturik. <filename>Standard</filename> izena beharrezkoa
+  da. Zerbitzari hori zehazten ez baduzu, gdm-k zerbitzari 
+  'Standar' baten balio lehenetsiak eta     <filename>daemon/StandardXServer</filename> fitxategiak 
+  emandako bide-izena hartuko ditu kontuan.
+  <filename>Standard</filename> lehenetsi gisa erabiltzen
+  da beste zerbitzaririk zehaztu ez denen kasuetan.
+</para>
+
+<para>
+  Zerbitzariak <filename>server-</filename> deituriko sekzioz
+  zehazten dira, eta ondoren zerbitzari horren identifikatzailea
+  ipintzen da. Ascii kate soila izan behar du, tarterik gabe.
+  GUI konfiguratzailea erabiltzen baduzu, ausazko hitzak erabiliko
+  ditu horretarako. Hitz horiek ezingo ditu erabiltzaileak ikusi,
+  zerbitzaria identifikatzeko besterik ez dira erabiltzen.
+</para>
+
+<variablelist>
+  <title>[zerbitzari-Estandarra]</title>
+
+  <varlistentry>
+    <term>izena</term>
+    <listitem>
+      <synopsis>izena=Zerbitzari estandarra</synopsis>
+      <para>
+Izen hori erabiltzaileari erakutsiko zaio.
+      </para>
+    </listitem>
+  </varlistentry>
+  
+  <varlistentry>
+    <term>komandoa</term>
+    <listitem>
+      <synopsis>komandoa=/usr/bin/X11/X</synopsis>
+      <para>
+Exekutatu behar den komandoa, X zerbitzariaren 
+bitarraren bide-izen osoarekin eta behar diren 
+argumentu osagarriekin.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term>malgua</term>
+    <listitem>
+      <synopsis>malgua=egia</synopsis>
+      <para>
+Erabiltzaile batek zerbitzari malgua exekutatu 
+nahi duenean zerbitzari hori erabilgarri dagoen
+adierazten du.
+      </para>
+    </listitem>
+  </varlistentry>
+  
+</variablelist>
+
+      </sect2>
+
+      <sect2>
+
+
+
 	<title>X zerbitzariaren konfigurazio lokala </title>
 	
 	<variablelist>
 	  <title>[zerbitzariak]</title>
 	  
-	  <varlistentry><term>0</term> <listitem><synopsis>0=/usr/bin/X11/X</synopsis> <para>X zerbitzari lokalen kontrol-sekzioa. Lerro bakoitzak pantaila lokalen kopurua eta X zerbitzaria(k) hasieratzeko exekutatu behar den komandoa adierazten du.</para>
+	  <varlistentry><term>0</term> <listitem><synopsis>0=Standard </synopsis> <para>X zerbitzari lokalen kontrol-sekzioa. Lerro bakoitzak pantaila lokalen kopurua eta X zerbitzaria(k) hasieratzeko exekutatu behar den komandoa adierazten du.</para>
 	      
-	      <para>GDMk &quot;<filename>-auth &lt;ServAuthDir&gt;/:n.Xauth :n</filename>&quot; erantsiko du, pantaila-kopurua n denean.</para>
+	      <para> 
+Komando hori X exekutagarrirako bide-izena edo 
+zerbitzariaren definizioetako baten izena izan 
+daiteke. Jarraian X zerbitzaria exekutatzean pasa 
+behar zaizkion argumentu batzuk ipin daitezke.
+      </para>
+
+      <para>
+Gdm daemon-ak ez du behartzen zenbakiak ordenatuta
+edo "paketatuta" edukitzea. Dena den, GUI 
+konfiguratzailea erabiltzen duzunean, zerbitzariak
+beti 0-tik hasi eta banaka igotzen joango dira. 
+Hau da, hutsunerik utzi gabe.
+      </para>
+      
+      <para>
+GDMek "<filename>-auth &lt;ServAuthDir&gt;/:n.Xauth :n</filename>", non n pantaila-zenbakia den, komando-lerroan sartuko du, argumentu guztien aurretik eta zerbitzaria exekutatu aurretik.
+
+</para>
 
 	      <para>Sistema batzuetan gdm programak X zerbitzariak zer kontsola birtual exekutatzen duen jakin behar du.  Kasu honetan, (XFree86 exekutatzen bada) gehitu &quot;vt7&quot; komando-lerroari, adibidez, 7. kontsola birtuala exekutatzeko.</para></listitem></varlistentry>
 	  
