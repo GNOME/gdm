@@ -1,3 +1,14 @@
+Thu Sep 25 10:37:38 2003  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c, daemon/filecheck.[ch], daemon/gdm.[ch],
+	  daemon/misc.c, daemon/slave.c:  Auditing the file handling
+	  stuff, increase general paranoia and code anality about
+	  these things plus check pretty much every return of the
+	  sete[ug]id even though they are pretty much guaranteed
+	  to exist.  Being paranoid here is good.  Allow the
+	  authentication cookie be given in upper case hex for
+	  the socket protocol.
+
 Wed Sep 24 18:01:06 2003  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: add some extra anality to the slave when looking

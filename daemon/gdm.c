@@ -57,6 +57,7 @@
 #include "getvt.h"
 #include "gdm-net.h"
 #include "cookie.h"
+#include "filecheck.h"
 
 /* Local functions */
 static void gdm_config_parse (void);
@@ -680,8 +681,8 @@ gdm_config_parse (void)
     GdmRebootReal = ve_get_first_working_command (GdmReboot, FALSE);
     GdmSuspendReal = ve_get_first_working_command (GdmSuspend, FALSE);
 
-    setegid (GdmGroupId);	/* gid remains `gdm' */
-    seteuid (GdmUserId);
+    NEVER_FAILS_setegid (GdmGroupId);	/* gid remains `gdm' */
+    NEVER_FAILS_seteuid (GdmUserId);
 
     /* Check that the greeter can be executed */
     bin = ve_first_word (GdmGreeter);
@@ -727,15 +728,15 @@ gdm_config_parse (void)
     /* Enter paranoia mode */
     check_servauthdir (&statbuf);
 
-    seteuid (0);
-    setegid (0);
+    NEVER_FAILS_seteuid (0);
+    NEVER_FAILS_setegid (0);
 
     /* Now set things up for us as  */
     chown (GdmServAuthDir, 0, GdmGroupId);
     chmod (GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
 
-    setegid (GdmGroupId);
-    seteuid (GdmUserId);
+    NEVER_FAILS_setegid (GdmGroupId);
+    NEVER_FAILS_seteuid (GdmUserId);
 
     /* again paranoid */
     check_servauthdir (&statbuf);
@@ -774,8 +775,8 @@ gdm_config_parse (void)
 		      GdmServAuthDir, statbuf.st_mode, (S_IRWXU|S_IRWXG|S_ISVTX));
     }
 
-    seteuid (0);
-    setegid (0);
+    NEVER_FAILS_seteuid (0);
+    NEVER_FAILS_setegid (0);
 
     check_logdir ();
 
@@ -2757,6 +2758,7 @@ dehex_cookie (const char *cookie, int *len)
 	return bcookie;
 }
 
+/* This runs as the user who owns the file */
 static gboolean
 check_cookie (const char *file, const char *disp, const char *cookie)
 {
@@ -2765,6 +2767,7 @@ check_cookie (const char *file, const char *disp, const char *cookie)
 	char *bcookie;
 	int cookielen;
 	gboolean ret = FALSE;
+	int cnt = 0;
 
 	FILE *fp = fopen (file, "r");
 	if (fp == NULL)
@@ -2792,6 +2795,11 @@ check_cookie (const char *file, const char *disp, const char *cookie)
 			break; 
 		}
 		XauDisposeAuth (xa);
+
+		/* just being ultra anal */
+		cnt ++;
+		if (cnt > 500)
+			break;
 	}
 
 	g_free (number);
@@ -2817,24 +2825,33 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	gdm_debug ("server: '%s'", server);
 
 	if (type == TYPE_FLEXI_XNEST) {
-		struct stat s;
-		int r;
 		gboolean authorized = TRUE;
+		struct passwd *pw;
+		gid_t oldgid = getegid ();
 
-		seteuid (xnest_uid);
+		pw = getpwuid (xnest_uid);
+		if (pw == NULL) {
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
+
+		if (seteuid (xnest_uid) < 0) {
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
+		if (setegid (pw->pw_gid) < 0)
+			NEVER_FAILS_setegid (GdmGroupId);
 
 		gdm_assert (xnest_auth_file != NULL);
 		gdm_assert (xnest_disp != NULL);
 		gdm_assert (xnest_cookie != NULL);
 
-		IGNORE_EINTR (r = stat (xnest_auth_file, &s));
-		if (r < 0)
-			authorized = FALSE;
 		if (authorized &&
-		    /* if readable or writable by group or others,
-		     * we are NOT authorized */
-		    s.st_mode & 0077)
+		    ! gdm_auth_file_check ("handle_flexi_server", xnest_uid, xnest_auth_file, FALSE /* absentok */, NULL))
 			authorized = FALSE;
+
 		if (authorized &&
 		    ! check_cookie (xnest_auth_file,
 				    xnest_disp,
@@ -2842,10 +2859,9 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 			authorized = FALSE;
 		}
 
-		if (s.st_uid != xnest_uid)
-			authorized = FALSE;
-
-		seteuid (0);
+		/* this must always work, thus the asserts */
+		NEVER_FAILS_seteuid (0);
+		NEVER_FAILS_setegid (oldgid);
 
 		if ( ! authorized) {
 			/* Sorry dude, you're not doing something
@@ -2855,7 +2871,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 			return;
 		}
 
-		server_uid = s.st_uid;
+		server_uid = xnest_uid;
 	}
 
 	if (flexi_servers >= GdmFlexibleXServers) {
@@ -3217,7 +3233,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			GdmDisplay *disp = li->data;
 			if (disp->console &&
 			    disp->cookie != NULL &&
-			    strcmp (disp->cookie, cookie) == 0) {
+			    g_ascii_strcasecmp (disp->cookie, cookie) == 0) {
 				g_free (cookie);
 				GDM_CONNECTION_SET_USER_FLAG
 					(conn, GDM_SUP_FLAG_AUTHENTICATED);

@@ -287,10 +287,20 @@ run_session_output (gboolean read_until_eof)
 	/* make sure we are the user when we do this,
 	   for purposes of file limits and all that kind of
 	   stuff */
-	if G_LIKELY (logged_in_gid >= 0)
-		setegid (logged_in_gid);
-	if G_LIKELY (logged_in_uid >= 0)
-		seteuid (logged_in_uid);
+	if G_LIKELY (logged_in_gid >= 0) {
+		if G_UNLIKELY (setegid (logged_in_gid) != 0) {
+			gdm_error ("Can't set GID to user GID");
+			return;
+		}
+	}
+
+	if G_LIKELY (logged_in_uid >= 0) {
+		if G_UNLIKELY (seteuid (logged_in_uid) != 0) {
+			gdm_error ("Can't set UID to user UID");
+			NEVER_FAILS_seteuid (old);
+			return;
+		}
+	}
 
 	/* the fd is non-blocking */
 	for (;;) {
@@ -356,8 +366,8 @@ run_session_output (gboolean read_until_eof)
 			break;
 	}
 
-	seteuid (old);
-	setegid (oldg);
+	NEVER_FAILS_seteuid (old);
+	NEVER_FAILS_setegid (oldg);
 }
 
 /* must call slave_waitpid_setpid before calling this */
@@ -1617,8 +1627,8 @@ gdm_slave_wait_for_login (void)
 		check_notifies_now ();
 
 		/* just for paranoia's sake */
-		seteuid (0);
-		setegid (0);
+		NEVER_FAILS_seteuid (0);
+		NEVER_FAILS_setegid (0);
 
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
 		login = gdm_verify_user (d,
@@ -1843,8 +1853,13 @@ run_pictures (void)
 
 		picfile = NULL;
 
-		setegid (pwent->pw_gid);
-		seteuid (pwent->pw_uid);
+		if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
+			       seteuid (pwent->pw_uid) != 0) {
+			NEVER_FAILS_seteuid (0);
+			NEVER_FAILS_setegid (GdmGroupId);
+			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+			continue;
+		}
 
 		if G_LIKELY (picfile == NULL) {
 			picfile = g_build_filename (pwent->pw_dir, ".face", NULL);
@@ -1856,8 +1871,8 @@ run_pictures (void)
 								 GdmRelaxPerms)) {
 				g_free (picfile);
 
-				seteuid (0);
-				setegid (GdmGroupId);
+				NEVER_FAILS_seteuid (0);
+				NEVER_FAILS_setegid (GdmGroupId);
 
 				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 				continue;
@@ -1874,8 +1889,8 @@ run_pictures (void)
 								 GdmRelaxPerms)) {
 				g_free (picfile);
 
-				seteuid (0);
-				setegid (GdmGroupId);
+				NEVER_FAILS_seteuid (0);
+				NEVER_FAILS_setegid (GdmGroupId);
 
 				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 				continue;
@@ -1913,8 +1928,8 @@ run_pictures (void)
 
 					/* if in trusted dir, just use it */
 					if (is_in_trusted_pic_dir (picfile)) {
-						seteuid (0);
-						setegid (GdmGroupId);
+						NEVER_FAILS_seteuid (0);
+						NEVER_FAILS_setegid (GdmGroupId);
 
 						g_free (cfgdir);
 
@@ -1932,9 +1947,11 @@ run_pictures (void)
 					 * on this file.  Even if it may not even be owned by the
 					 * user.  This setting should ONLY point to pics in trusted
 					 * dirs. */
-					if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-							       dir, base, TRUE, TRUE, GdmUserMaxFile,
-							       GdmRelaxPerms)) {
+					if (ve_string_empty (dir) ||
+					    ve_string_empty (base) ||
+					    ! gdm_file_check ("run_pictures", pwent->pw_uid,
+							      dir, base, TRUE, TRUE, GdmUserMaxFile,
+							      GdmRelaxPerms)) {
 						g_free (picfile);
 						picfile = NULL;
 					}
@@ -1960,8 +1977,8 @@ run_pictures (void)
 				picdir = g_build_filename (pwent->pw_dir, ".gnome", NULL);
 			}
 			if (access (picfile, F_OK) != 0) {
-				seteuid (0);
-				setegid (GdmGroupId);
+				NEVER_FAILS_seteuid (0);
+				NEVER_FAILS_setegid (GdmGroupId);
 
 				/* Try the global face directory */
 
@@ -1999,8 +2016,8 @@ run_pictures (void)
 					       GdmRelaxPerms)) {
 				g_free (picdir);
 
-				seteuid (0);
-				setegid (GdmGroupId);
+				NEVER_FAILS_seteuid (0);
+				NEVER_FAILS_setegid (GdmGroupId);
 
 				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 				continue;
@@ -2010,8 +2027,8 @@ run_pictures (void)
 
 		IGNORE_EINTR (r = stat (picfile, &s));
 		if G_UNLIKELY (r < 0 || s.st_size > GdmUserMaxFile) {
-			seteuid (0);
-			setegid (GdmGroupId);
+			NEVER_FAILS_seteuid (0);
+			NEVER_FAILS_setegid (GdmGroupId);
 
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
@@ -2020,8 +2037,8 @@ run_pictures (void)
 		fp = fopen (picfile, "r");
 		g_free (picfile);
 		if G_UNLIKELY (fp == NULL) {
-			seteuid (0);
-			setegid (GdmGroupId);
+			NEVER_FAILS_seteuid (0);
+			NEVER_FAILS_setegid (GdmGroupId);
 
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
@@ -2034,8 +2051,10 @@ run_pictures (void)
 		if G_UNLIKELY (ret == NULL || strcmp (ret, "OK") != 0) {
 			fclose (fp);
 			g_free (ret);
-			seteuid (0);
-			setegid (GdmGroupId);
+
+			NEVER_FAILS_seteuid (0);
+			NEVER_FAILS_setegid (GdmGroupId);
+
 			continue;
 		}
 		g_free (ret);
@@ -2108,8 +2127,8 @@ run_pictures (void)
 			
 		gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "done");
 
-		seteuid (0);
-		setegid (GdmGroupId);
+		NEVER_FAILS_seteuid (0);
+		NEVER_FAILS_setegid (GdmGroupId);
 	}
 	g_free (response);
 }
@@ -2119,22 +2138,45 @@ static char *
 copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 {
 	uid_t old = geteuid ();
+	gid_t oldg = getegid ();
 	char *name;
 	int authfd;
 	int fromfd;
 	int bytes;
 	char buf[2048];
+	int cnt;
 
-	seteuid (fromuid);
+	NEVER_FAILS_setegid (GdmGroupId);
 
-	fromfd = open (file, O_RDONLY);
-
-	if G_UNLIKELY (fromfd < 0) {
-		seteuid (old);
+	if G_UNLIKELY (seteuid (fromuid) != 0) {
+		NEVER_FAILS_setegid (oldg);
 		return NULL;
 	}
 
-	seteuid (0);
+	if ( ! gdm_auth_file_check ("copy_auth_file", fromuid,
+				    file, FALSE /* absentok */, NULL)) {
+		NEVER_FAILS_seteuid (old);
+		NEVER_FAILS_seteuid (oldg);
+		return NULL;
+	}
+
+	fromfd = open (file, O_RDONLY
+#ifdef O_NOCTTY
+		       |O_NOCTTY
+#endif
+#ifdef O_NOFOLLOW
+		       |O_NOFOLLOW
+#endif
+		      );
+
+	if G_UNLIKELY (fromfd < 0) {
+		NEVER_FAILS_seteuid (old);
+		NEVER_FAILS_seteuid (oldg);
+		return NULL;
+	}
+
+	NEVER_FAILS_seteuid (0);
+	NEVER_FAILS_setegid (0);
 
 	name = gdm_make_filename (GdmServAuthDir, d->name, ".XnestAuth");
 
@@ -2143,14 +2185,15 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 	if G_UNLIKELY (authfd < 0) {
 		IGNORE_EINTR (close (fromfd));
-		seteuid (old);
+		NEVER_FAILS_seteuid (old);
+		NEVER_FAILS_setegid (oldg);
 		g_free (name);
 		return NULL;
 	}
 
-	/* Make it owned by the user that Xnest is started as */
 	IGNORE_EINTR (fchown (authfd, touid, -1));
 
+	cnt = 0;
 	for (;;) {
 		int written, n;
 		IGNORE_EINTR (bytes = read (fromfd, buf, sizeof (buf)));
@@ -2159,12 +2202,13 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 		if (bytes == 0)
 			break;
 
-		if (bytes < 0) {
+		if G_UNLIKELY (bytes < 0) {
 			/* Error reading */
 			gdm_error ("Error reading %s: %s", file, strerror (errno));
 			IGNORE_EINTR (close (fromfd));
 			IGNORE_EINTR (close (authfd));
-			setuid (old);
+			NEVER_FAILS_seteuid (old);
+			NEVER_FAILS_setegid (oldg);
 			g_free (name);
 			return NULL;
 		}
@@ -2177,18 +2221,26 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 				gdm_error ("Error writing %s: %s", name, strerror (errno));
 				IGNORE_EINTR (close (fromfd));
 				IGNORE_EINTR (close (authfd));
-				setuid (old);
+				NEVER_FAILS_seteuid (old);
+				NEVER_FAILS_setegid (oldg);
 				g_free (name);
 				return NULL;
 			}
 			written += n;
 		} while (written < bytes);
+
+		cnt = cnt + written;
+		/* this should never occur (we check above)
+		   but we're paranoid) */
+		if G_UNLIKELY (cnt > GdmUserMaxFile)
+			return NULL;
 	}
 
 	IGNORE_EINTR (close (fromfd));
 	IGNORE_EINTR (close (authfd));
 
-	seteuid (old);
+	NEVER_FAILS_seteuid (old);
+	NEVER_FAILS_setegid (oldg);
 
 	return name;
 }
@@ -3031,13 +3083,14 @@ open_xsession_errors (struct passwd *pwent,
 		uid_t old = geteuid ();
 		uid_t oldg = getegid ();
 
-		setegid (pwent->pw_gid);
-		seteuid (pwent->pw_uid);
-		/* unlink to be anal */
-		IGNORE_EINTR (unlink (filename));
-		logfd = open (filename, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644);
-		seteuid (old);
-		setegid (oldg);
+		if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
+			     seteuid (pwent->pw_uid) == 0) {
+			/* unlink to be anal */
+			IGNORE_EINTR (unlink (filename));
+			logfd = open (filename, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644);
+		}
+		NEVER_FAILS_seteuid (old);
+		NEVER_FAILS_setegid (oldg);
 
 		if G_UNLIKELY (logfd < 0) {
 			gdm_error (_("%s: Could not open ~/.xsession-errors"),
@@ -3057,15 +3110,15 @@ open_xsession_errors (struct passwd *pwent,
 		uid_t old = geteuid ();
 		uid_t oldg = getegid ();
 
-		setegid (pwent->pw_gid);
-		seteuid (pwent->pw_uid);
+		if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
+			     seteuid (pwent->pw_uid) == 0) {
+			oldmode = umask (077);
+			logfd = mkstemp (filename);
+			umask (oldmode);
+		}
 
-		oldmode = umask (077);
-		logfd = mkstemp (filename);
-		umask (oldmode);
-
-		seteuid (old);
-		setegid (oldg);
+		NEVER_FAILS_seteuid (old);
+		NEVER_FAILS_setegid (oldg);
 
 		if G_LIKELY (logfd >= 0) {
 			d->xsession_errors_filename = filename;
@@ -3222,8 +3275,9 @@ session_child_run (struct passwd *pwent,
 				"gdm_slave_session_start", login);
 
 	/* setup egid to the correct group,
-	 * not to leave the egid around */
-	setegid (pwent->pw_gid);
+	 * not to leave the egid around.  It's
+	 * ok to gdm_fail here */
+	NEVER_FAILS_setegid (pwent->pw_gid);
 
 	IGNORE_EINTR (chdir (home_dir));
 	if G_UNLIKELY (errno != 0) {
@@ -3563,8 +3617,13 @@ gdm_slave_session_start (void)
 	    home_dir = pwent->pw_dir;
     }
 
-    setegid (pwent->pw_gid);
-    seteuid (pwent->pw_uid);
+    if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
+		   seteuid (pwent->pw_uid) != 0) {
+	    gdm_error ("Cannot set effective user/group id");
+	    gdm_verify_cleanup (d);
+	    session_started = FALSE;
+	    return;
+    }
 
     if G_LIKELY (home_dir_ok) {
 	    /* Sanity check on ~user/.dmrc */
@@ -3613,8 +3672,8 @@ gdm_slave_session_start (void)
 	usrlang = g_strdup ("");
     }
 
-    seteuid (0);
-    setegid (GdmGroupId);
+    NEVER_FAILS_seteuid (0);
+    NEVER_FAILS_setegid (GdmGroupId);
 
     if (greet) {
 	    tmp = gdm_ensure_extension (usrsess, ".desktop");
@@ -3682,16 +3741,19 @@ gdm_slave_session_start (void)
     /* Setup cookie -- We need this information during cleanup, thus
      * cookie handling is done before fork()ing */
 
-    setegid (pwent->pw_gid);
-    seteuid (pwent->pw_uid);
+    if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
+		   seteuid (pwent->pw_uid) != 0) {
+	    gdm_error ("Cannot set effective user/group id");
+	    gdm_slave_quick_exit (DISPLAY_REMANAGE);
+    }
 
     authok = gdm_auth_user_add (d, pwent->pw_uid,
 				/* Only pass the home_dir if
 				 * it was ok */
 				home_dir_ok ? home_dir : NULL);
 
-    seteuid (0);
-    setegid (GdmGroupId);
+    NEVER_FAILS_seteuid (0);
+    NEVER_FAILS_setegid (GdmGroupId);
     
     if G_UNLIKELY ( ! authok) {
 	    gdm_debug ("gdm_slave_session_start: Auth not OK");
@@ -3811,8 +3873,8 @@ gdm_slave_session_start (void)
     }
 
     /* We must be root for this, and we are, but just to make sure */
-    seteuid (0);
-    setegid (GdmGroupId);
+    NEVER_FAILS_seteuid (0);
+    NEVER_FAILS_setegid (GdmGroupId);
     /* Reset all the process limits, pam may have set some up for our process and that
        is quite evil.  But pam is generally evil, so this is to be expected. */
     gdm_reset_limits ();
@@ -3893,6 +3955,9 @@ gdm_slave_session_stop (gboolean run_post_session,
     local_login = login;
     login = NULL;
 
+    /* don't use NEVER_FAILS_ here this can be called from places
+       kind of exiting and it's ok if this doesn't work (when shouldn't
+       it work anyway? */
     seteuid (0);
     setegid (0);
 
@@ -3941,11 +4006,14 @@ gdm_slave_session_stop (gboolean run_post_session,
 
     if (pwent != NULL) {
 	    /* Remove display from ~user/.Xauthority */
-	    setegid (pwent->pw_gid);
-	    seteuid (pwent->pw_uid);
+	    if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
+			 seteuid (pwent->pw_uid) == 0) {
+		    gdm_auth_user_remove (d, pwent->pw_uid);
+	    }
 
-	    gdm_auth_user_remove (d, pwent->pw_uid);
-
+	    /* don't use NEVER_FAILS_ here this can be called from places
+	       kind of exiting and it's ok if this doesn't work (when shouldn't
+	       it work anyway? */
 	    seteuid (0);
 	    setegid (0);
     }
@@ -4499,6 +4567,9 @@ static void
 gdm_slave_quick_exit (gint status)
 {
     /* just for paranoia's sake */
+    /* don't use NEVER_FAILS_ here this can be called from places
+       kind of exiting and it's ok if this doesn't work (when shouldn't
+       it work anyway? */
     seteuid (0);
     setegid (0);
 

@@ -21,7 +21,12 @@
 
 gboolean gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
 			 const gchar *file, gboolean absentok,
-			 gboolean absentdirok, gint maxsize, gint perms);
+			 gboolean absentdirok, gint maxsize,
+			 gint perms);
+
+/* more paranoid on the file itself, doesn't check directory (for all we know
+   it could be /tmp) */
+gboolean gdm_auth_file_check (const gchar *caller, uid_t user, const gchar *authfile, gboolean absentok, struct stat *s);
 
 #endif /* GDM_FILECHECK_H */
 

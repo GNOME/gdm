@@ -21,8 +21,12 @@
 #include <syslog.h>
 #include <sys/stat.h>
 
+#include <vicious.h>
+
 #include "gdm.h"
 #include "filecheck.h"
+
+extern int GdmUserMaxFile;
 
 /**
  * gdm_file_check:
@@ -38,6 +42,7 @@
  * Examines a file to determine whether it is safe for the daemon to write to it.
  */
 
+/* we should be euid the user BTW */
 gboolean
 gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
 		const gchar *file, gboolean absentok,
@@ -46,6 +51,10 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
     struct stat statbuf;
     gchar *fullpath;
     int r;
+
+    if (ve_string_empty (dir) ||
+	ve_string_empty (file))
+	    return FALSE;
 
     /* Stat directory */
     IGNORE_EINTR (r = stat (dir, &statbuf));
@@ -57,19 +66,19 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
     }
 
     /* Check if dir is owned by the user ... */
-    if (statbuf.st_uid != user) {
+    if G_UNLIKELY (statbuf.st_uid != user) {
 	syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, dir, user);
 	return FALSE;
     }
     
     /* ... if group has write permission ... */
-    if (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
+    if G_UNLIKELY (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
 	syslog (LOG_WARNING, _("%s: %s is writable by group."), caller, dir);
 	return FALSE;
     }
 
     /* ... and if others have write permission. */
-    if (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
+    if G_UNLIKELY (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
 	syslog (LOG_WARNING, _("%s: %s is writable by other."), caller, dir);
 	return FALSE;
     }
@@ -92,35 +101,35 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
     }
 
     /* Check that it is a regular file ... */
-    if (! S_ISREG (statbuf.st_mode)) {
+    if G_UNLIKELY (! S_ISREG (statbuf.st_mode)) {
 	syslog (LOG_WARNING, _("%s: %s is not a regular file."), caller, fullpath);
 	g_free (fullpath);
 	return FALSE;
     }
 
     /* ... owned by the user ... */
-    if (statbuf.st_uid != user) {
+    if G_UNLIKELY (statbuf.st_uid != user) {
 	syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, fullpath, user);
 	g_free (fullpath);
 	return FALSE;
     }
 
     /* ... unwritable by group ... */
-    if (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
+    if G_UNLIKELY (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
 	syslog (LOG_WARNING, _("%s: %s is writable by group."), caller, fullpath);
 	g_free (fullpath);
 	return FALSE;
     }
 
     /* ... unwritable by others ... */
-    if (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
+    if G_UNLIKELY (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
 	syslog (LOG_WARNING, _("%s: %s is writable by group/other."), caller, fullpath);
 	g_free (fullpath);
 	return FALSE;
     }
 
     /* ... and smaller than sysadmin specified limit. */
-    if (maxsize && statbuf.st_size > maxsize) {
+    if G_UNLIKELY (maxsize && statbuf.st_size > maxsize) {
 	syslog (LOG_WARNING, _("%s: %s is bigger than sysadmin specified maximum file size."), 
 		caller, fullpath);
 	g_free (fullpath);
@@ -128,6 +137,56 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
     }
 
     g_free (fullpath);
+
+    /* Yeap, this file is ok */
+    return TRUE;
+}
+
+/* we should be euid the user BTW */
+gboolean
+gdm_auth_file_check (const gchar *caller, uid_t user, const gchar *authfile, gboolean absentok, struct stat *s)
+{
+    struct stat statbuf;
+    int r;
+
+    if (ve_string_empty (authfile))
+	    return FALSE;
+
+    /* Stat file */
+    IGNORE_EINTR (r = lstat (authfile, &statbuf));
+    if (s != NULL)
+	    *s = statbuf;
+    if (r < 0) {
+	    if (absentok)
+		    return TRUE;
+	    syslog (LOG_WARNING, _("%s: %s does not exist but must exist."), caller, authfile);
+	    return FALSE;
+    }
+
+    /* Check that it is a regular file ... */
+    if G_UNLIKELY (! S_ISREG (statbuf.st_mode)) {
+	syslog (LOG_WARNING, _("%s: %s is not a regular file."), caller, authfile);
+	return FALSE;
+    }
+
+    /* ... owned by the user ... */
+    if G_UNLIKELY (statbuf.st_uid != user) {
+	syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, authfile, user);
+	return FALSE;
+    }
+
+    /* ... has right permissions ... */
+    if G_UNLIKELY (statbuf.st_mode & 0077) {
+	syslog (LOG_WARNING, "%s: %s has wrong permissions (should be 0600)", caller, authfile);
+	return FALSE;
+    }
+
+    /* ... and smaller than sysadmin specified limit. */
+    if G_UNLIKELY (GdmUserMaxFile && statbuf.st_size > GdmUserMaxFile) {
+	syslog (LOG_WARNING, _("%s: %s is bigger than sysadmin specified maximum file size."), 
+		caller, authfile);
+	return FALSE;
+    }
 
     /* Yeap, this file is ok */
     return TRUE;

@@ -822,8 +822,8 @@ gdm_ensure_sanity (void)
 	old_euid = geteuid ();
 	old_egid = getegid ();
 
-	seteuid (0);
-	setegid (0);
+	NEVER_FAILS_seteuid (0);
+	NEVER_FAILS_setegid (0);
 
 	/* The /tmp/.ICE-unix check, note that we do
 	 * ignore errors, since it's not deadly to run
@@ -850,8 +850,8 @@ gdm_ensure_sanity (void)
 
 	umask (old_umask);
 
-	seteuid (old_euid);
-	setegid (old_egid);
+	NEVER_FAILS_seteuid (old_euid);
+	NEVER_FAILS_setegid (old_egid);
 }
 
 const GList *

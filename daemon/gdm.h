@@ -693,6 +693,23 @@ enum {
 		errno = 0;	\
 		expr;		\
 	} while G_UNLIKELY (errno == EINTR);
+
+#define NEVER_FAILS_seteuid(uid) \
+	{ int r = seteuid (uid); \
+	  if G_UNLIKELY (r != 0) \
+        gdm_fail ("GDM file %s: line %d (%s): Cannot run seteuid to %d", \
+		  __FILE__,						\
+		  __LINE__,						\
+		  __PRETTY_FUNCTION__,					\
+                  (int)uid);			}
+#define NEVER_FAILS_setegid(gid) \
+	{ int r = setegid (gid); \
+	  if G_UNLIKELY (r != 0) \
+        gdm_fail ("GDM file %s: line %d (%s): Cannot run setegid to %d", \
+		  __FILE__,						\
+		  __LINE__,						\
+		  __PRETTY_FUNCTION__,					\
+                  (int)gid);			}
 		
 
 #endif /* GDM_H */

@@ -537,10 +537,20 @@ try_user_add_again:
 	    d->userauth = g_build_filename (authdir, GdmUserAuthFile, NULL);
 
     /* Find out if the Xauthority file passes the paranoia check */
+    /* Note that this is not very efficient, we stat the files over
+       and over, but we don't care, we don't do this too often */
     if (automatic_tmp_dir ||
 	authdir == NULL ||
+
+	/* first the standard paranoia check (this checks the home dir
+	 * too which is useful here) */
 	! gdm_file_check ("gdm_auth_user_add", user, authdir, GdmUserAuthFile, 
 			  TRUE, FALSE, GdmUserMaxFile, GdmRelaxPerms) ||
+
+	/* now the auth file checking routine */
+	! gdm_auth_file_check ("gdm_auth_user_add", user, d->userauth, TRUE /* absentok */, NULL) ||
+
+	/* now see if we can actually append this file */
 	! try_open_append (d->userauth) ||
 
 	/* try opening as root, if we can't open as root,
@@ -726,12 +736,21 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     authfile = g_path_get_basename (d->userauth);
     authdir = g_path_get_dirname (d->userauth);
 
+    if (ve_string_empty (authfile) ||
+	ve_string_empty (authdir)) {
+	    g_free (authdir);
+	    g_free (authfile);
+	    return;
+    }
+
     /* Now, the cookie file could be owned by a malicious user who
      * decided to concatenate something like his entire MP3 collection
      * to it. So we better play it safe... */
 
     if G_UNLIKELY ( ! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
-			   TRUE, FALSE, GdmUserMaxFile, GdmRelaxPerms)) {
+			   TRUE, FALSE, GdmUserMaxFile, GdmRelaxPerms) ||
+		    /* be even paranoider with permissions */
+		    ! gdm_auth_file_check ("gdm_auth_user_remove", user, d->userauth, FALSE /* absentok */, NULL)) {
 	    g_free (authdir);
 	    g_free (authfile);
 	    gdm_error (_("%s: Ignoring suspiciously looking cookie file %s"),
@@ -825,6 +844,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 {
     Xauth *xa;
     GSList *keep = NULL, *li;
+    int cnt;
 
     if G_UNLIKELY (!d || !af)
 	return af;
@@ -836,6 +856,8 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
     /* Read the user's entire Xauth file into memory to avoid
      * temporary file issues. Then remove any instance of this display
      * in the cookie jar... */
+
+    cnt = 0;
 
     while ( (xa = XauReadAuth (af)) != NULL ) {
 	GSList *li;
@@ -853,6 +875,11 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 	}
 	if (xa != NULL)
 		keep = g_slist_append (keep, xa);
+
+	/* just being ultra anal */
+	cnt ++;
+	if (cnt > 500)
+		break;
     }
 
     fclose (af);
