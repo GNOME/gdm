@@ -67,8 +67,8 @@
 
 /* The dreaded miscellaneous category */
 #define MAX_ARGS 32
-#define FIELD_SIZE 64
-#define PIPE_SIZE 1024
+#define FIELD_SIZE 256
+#define PIPE_SIZE 4096
 
 /* Configuration constants */
 #define GDM_KEY_CHOOSER "daemon/Chooser=gdmchooser"
@@ -85,6 +85,7 @@
 #define GDM_KEY_PRESESS "daemon/PreSessionScriptDir="
 #define GDM_KEY_REBOOT "daemon/RebootCommand=shutdown -r now"
 #define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin"
+#define GDM_KEY_GNOMEDEFAULTSESSION "daemon/GnomeDefaultSession=/usr/share/gnome/default.session"
 #define GDM_KEY_SERVAUTH "daemon/ServAuthDir=/var/gdm"
 #define GDM_KEY_SESSDIR "daemon/SessionDir="
 #define GDM_KEY_UAUTHDIR "daemon/UserAuthDir="

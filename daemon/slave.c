@@ -60,6 +60,7 @@ extern gboolean gdm_first_login;
 extern gchar *GdmUser;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
+extern gchar *GdmGnomeDefaultSession;
 extern gchar *GdmSessDir;
 extern gchar *GdmAutomaticLogin;
 extern gchar *GdmGreeter;
@@ -351,12 +352,129 @@ gdm_slave_greeter (void)
 }
 
 static void
+read_sessions (FILE *fp, GString *sessions, const char *def, gboolean *got_def)
+{
+	char buf[FIELD_SIZE];
+
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		char *p;
+		if (buf[0] != '[')
+			continue;
+		p = strrchr (buf, ']');
+		if (p == NULL)
+			continue;
+		*p = '\0';
+
+		if (strcmp (&buf[1], "Trash") == 0 ||
+		    strcmp (&buf[1], "Chooser") == 0 ||
+		    strcmp (&buf[1], "Warner") == 0)
+			continue;
+
+		if (strcmp (&buf[1], def) == 0)
+			*got_def = TRUE;
+
+		g_string_append_c (sessions, '\n');
+		g_string_append (sessions, &buf[1]);
+	}
+}
+
+static char *
+gdm_get_sessions (struct passwd *pwent)
+{
+	gboolean session_ok;
+	gboolean options_ok;
+	char *cfgdir;
+	GString *sessions = g_string_new (NULL);
+	char *def;
+	gboolean got_def = FALSE;
+	int session_relax_perms;
+
+	setegid (pwent->pw_gid);
+	seteuid (pwent->pw_uid);
+
+	/* we know this exists already, code has already created it,
+	 * when checking the gsm saved options */
+	cfgdir = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
+
+	/* We cannot be absolutely strict about the session
+	 * permissions, since by default they will be writable
+	 * by group and there's nothing we can do about it.  So
+	 * we relax the permission checking in this case */
+	session_relax_perms = GdmRelaxPerms;
+	if (session_relax_perms == 0)
+		session_relax_perms = 1;
+
+	/* Sanity check on ~user/.gnome/session */
+	session_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
+				     cfgdir, "session",
+				     TRUE, GdmUserMaxFile,
+				     session_relax_perms);
+	/* Sanity check on ~user/.gnome/session-options */
+	options_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
+				     cfgdir, "session-options",
+				     TRUE, GdmUserMaxFile,
+				     session_relax_perms);
+
+	g_free (cfgdir);
+
+	if (options_ok) {
+		char *cfgstr;
+
+		cfgstr = g_strconcat
+			("=", pwent->pw_dir,
+			 "/.gnome/session-options=/Options/CurrentSession",
+			 NULL);
+		def = gnome_config_get_string (cfgstr);
+		if (def == NULL)
+			def = g_strdup ("Default");
+
+		g_free (cfgstr);
+	} else {
+		def = g_strdup ("Default");
+	}
+
+	/* the currently selected comes first (it will come later
+	 * as well, the first position just selects the session) */
+	g_string_append (sessions, def);
+
+	got_def = FALSE;
+	if (session_ok) {
+		char *sessfile = g_strconcat (pwent->pw_dir,
+					      "/.gnome/session", NULL);
+		FILE *fp = fopen (sessfile, "r");
+		if (fp == NULL &&
+		    GdmGnomeDefaultSession != NULL) {
+			fp = fopen (GdmGnomeDefaultSession, "r");
+		}
+		if (fp != NULL) {
+			read_sessions (fp, sessions, def, &got_def);
+			fclose (fp);
+		}
+		g_free (sessfile);
+	}
+
+	if ( ! got_def) {
+		g_string_append_c (sessions, '\n');
+		g_string_append (sessions, def);
+	}
+
+	seteuid (0);
+	setegid (GdmGroupId);
+
+	{
+		char *ret = sessions->str;
+		g_string_free (sessions, FALSE);
+		return ret;
+	}
+}
+
+static void
 gdm_slave_session_start (void)
 {
     char *cfgdir, *sesspath;
     struct stat statbuf;
     struct passwd *pwent;
-    char *session = NULL, *language = NULL, *usrsess, *usrlang;
+    char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
     char *gnome_session = NULL;
     gboolean savesess = FALSE, savelang = FALSE, usrcfgok = FALSE, authok = FALSE;
     int i;
@@ -412,6 +530,9 @@ gdm_slave_session_start (void)
     if (greet) {
 	    session = gdm_slave_greeter_ctl (GDM_SESS, usrsess);
 	    language = gdm_slave_greeter_ctl (GDM_LANG, usrlang);
+    } else {
+	    session = g_strdup (usrsess);
+	    language = g_strdup (usrlang);
     }
 
     g_free (usrsess);
@@ -437,6 +558,9 @@ gdm_slave_session_start (void)
 	    savelang = TRUE;
     }
 
+    /* save this session as the users session */
+    save_session = g_strdup (session);
+
     if (greet) {
 	    char *ret = gdm_slave_greeter_ctl (GDM_SSESS, "");
 	    if (ret != NULL && ret[0] != '\0')
@@ -449,7 +573,10 @@ gdm_slave_session_start (void)
 	    g_free (ret);
 
 	    if (strcmp (session, "Gnome Chooser") == 0) {
-		    ret = gdm_slave_greeter_ctl (GDM_GNOMESESS, /*FIXME: */"Default,Foo,Bar");
+		    char *sessions = gdm_get_sessions (pwent);
+		    ret = gdm_slave_greeter_ctl (GDM_GNOMESESS, sessions);
+		    g_free (sessions);
+
 		    if (ret != NULL && ret[0] != '\0') {
 			    gnome_session = ret;
 			    ret = NULL;
@@ -537,7 +664,7 @@ gdm_slave_session_start (void)
 	gdm_setenv ("GDMSESSION", session);
 	gdm_setenv ("SHELL", pwent->pw_shell);
 	if (gnome_session != NULL)
-		gdm_setenv ("GNOME_SESSION", gnome_session);
+		gdm_setenv ("GDM_GNOME_SESSION", gnome_session);
 #if 0
 	gdm_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 #endif
@@ -580,7 +707,7 @@ gdm_slave_session_start (void)
 	
 	if (usrcfgok && savesess) {
 	    gchar *cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/last", NULL);
-	    gnome_config_set_string (cfgstr, session);
+	    gnome_config_set_string (cfgstr, save_session);
 	    gnome_config_sync();
 	    g_free (cfgstr);
 	}
@@ -647,6 +774,7 @@ gdm_slave_session_start (void)
     }
 
     g_free (session);
+    g_free (save_session);
     g_free (language);
     g_free (gnome_session);
 

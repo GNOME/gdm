@@ -58,6 +58,7 @@ gboolean gdm_first_login = TRUE;
 gchar *GdmUser = NULL;
 gchar *GdmGroup = NULL;
 gchar *GdmSessDir = NULL;
+gchar *GdmGnomeDefaultSession = NULL;
 gchar *GdmAutomaticLogin = NULL;
 gchar *GdmGreeter = NULL;
 gchar *GdmChooser = NULL;
@@ -138,7 +139,8 @@ gdm_config_parse (void)
     GdmRootPath = gnome_config_get_string (GDM_KEY_ROOTPATH);
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmServAuthDir = gnome_config_get_string (GDM_KEY_SERVAUTH);
-    GdmSessDir= gnome_config_get_string (GDM_KEY_SESSDIR);
+    GdmSessDir = gnome_config_get_string (GDM_KEY_SESSDIR);
+    GdmGnomeDefaultSession = gnome_config_get_string (GDM_KEY_GNOMEDEFAULTSESSION);
     GdmUser = gnome_config_get_string (GDM_KEY_USER);
     GdmUserAuthDir = gnome_config_get_string (GDM_KEY_UAUTHDIR);
     GdmUserAuthFile = gnome_config_get_string (GDM_KEY_UAUTHFILE);

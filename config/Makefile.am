@@ -43,15 +43,17 @@ install-data-hook: gdm.conf gnomerc Gnome Failsafe
 		$(mkinstalldirs) $(sessdir); \
 		chmod 755 $(sessdir); \
 	fi
+
 	if test '!' -f $(sessdir)/Xsession; then \
 		$(INSTALL_SCRIPT) $(srcdir)/Xsession $(sessdir)/Xsession; \
 	fi
-	if test '!' -f $(sessdir)/Gnome; then \
-		$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome; \
-	fi
+
+	$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome;
+
 	if test '!' -f $(sessdir)/Failsafe; then \
 		$(INSTALL_SCRIPT) Failsafe $(sessdir)/Failsafe; \
 	fi
+
 	if test -e /etc/debian_version; then \
 		$(INSTALL_SCRIPT) $(srcdir)/Default.debian $(sessdir)/Default; \
 	fi
@@ -84,9 +86,8 @@ install-data-hook: gdm.conf gnomerc Gnome Failsafe
 		$(mkinstalldirs) $(gnomercdir); \
 		chmod 755 $(gnomercdir); \
 	fi
-	if test '!' -f $(gnomercdir)/gnomerc; then \
-		$(INSTALL_SCRIPT) gnomerc $(gnomercdir)/gnomerc; \
-	fi
+
+	$(INSTALL_SCRIPT) gnomerc $(gnomercdir)/gnomerc;
 
 	if test '!' -d $(authdir); then \
 		$(mkinstalldirs) $(authdir); \

@@ -26,6 +26,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <syslog.h>
 #include <ctype.h>
@@ -133,6 +134,8 @@ static gboolean savelang;
 static gint maxwidth;
 
 static pid_t backgroundpid = 0;
+static pid_t gdmconfigpid = 0;
+
 
 static GHashTable *back_locales = NULL;
 
@@ -362,24 +365,33 @@ gdm_greeter_chld (int sig)
 	    waitpid (backgroundpid, NULL, WNOHANG) > 0) {
 		backgroundpid = 0;
 	}
+	if (gdmconfigpid != 0 &&
+	    waitpid (gdmconfigpid, NULL, WNOHANG) > 0) {
+		gdmconfigpid = 0;
+	}
 }
 
 static void
-kill_background (void)
+kill_thingies (void)
 {
-	pid_t bpid = backgroundpid;
+	pid_t pid = backgroundpid;
 
 	backgroundpid = 0;
+	if (pid != 0) {
+		kill (pid, SIGTERM);
+	}
 
-	if (bpid != 0) {
-		kill (bpid, SIGTERM);
+	pid = gdmconfigpid;
+	gdmconfigpid = 0;
+	if (pid != 0) {
+		kill (pid, SIGTERM);
 	}
 }
 
 static void
 gdm_login_done (int sig)
 {
-    kill_background ();
+    kill_thingies ();
     _exit (DISPLAY_SUCCESS);
 }
 
@@ -533,7 +545,7 @@ gdm_login_abort (const gchar *format, ...)
     gchar *s;
 
     if (!format) {
-	kill_background ();
+	kill_thingies ();
 	exit (DISPLAY_ABORT);
     }
 
@@ -544,7 +556,7 @@ gdm_login_abort (const gchar *format, ...)
     syslog (LOG_ERR, s);
     closelog();
 
-    kill_background ();
+    kill_thingies ();
     exit (DISPLAY_ABORT);
 }
 
@@ -704,29 +716,52 @@ gdm_login_query (const gchar *msg)
 		return FALSE;
 }
 
+static pid_t
+gdm_run_command (const char *command)
+{
+	pid_t pid;
+	char **argv;
+
+	pid = fork ();
+
+	if (pid == -1) {
+		/* We can't fork, that means we're pretty much up shit creek
+		 * without a paddle. */
+		gnome_error_dialog (_("Could not fork a new procss!\n\n"
+				      "You likely won't be able to log "
+				      "in either."));
+	} else if (pid == 0) {
+		int i;
+
+		/* close everything */
+
+		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+			close(i);
+
+		/* No error checking here - if it's messed the best
+		 * response is to ignore & try to continue */
+		open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+		open("/dev/null", O_RDWR); /* open stdout - fd 1 */
+		open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		argv = g_strsplit (command, " ", MAX_ARGS);	
+		execv (argv[0], argv);
+		/*ingore errors, this is irrelevant */
+		_exit (0);
+	}
+
+	return pid;
+}
+
 static void
 gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 {
-   char **argv;
-   pid_t gdmconfig_pid;
+	/* we should be now fine for focusing new windows */
+	focus_new_windows = TRUE;
 
-   /* FIXME: we should clean up if gdmlogin ends, like the background prog */
-
-   /* we should be now fine for focusing new windows */
-   focus_new_windows = TRUE;
-   
-   gdmconfig_pid = fork ();
-   
-   if (gdmconfig_pid == -1) {
-      /*Try and warn the user */
-      gdmconfig_pid = 0;
-      gnome_error_dialog (_("Could not launch gdmconfig.\nYour GDM installation may have been built incorrectly.\n"));
-   } else if (gdmconfig_pid == 0) {
-      argv = g_strsplit (GdmConfig, " ", MAX_ARGS);	
-      execv (argv[0], argv);
-      /*ingore errors, this is irrelevant */
-      _exit (0);
-   }
+	/* only run this once, if already running just ignore */
+	if (gdmconfigpid == 0)
+		gdmconfigpid = gdm_run_command (GdmConfig);
 }
 
 static gboolean
@@ -735,7 +770,7 @@ gdm_login_reboot_handler (void)
     if (gdm_login_query (_("Are you sure you want to reboot the machine?"))) {
 	closelog();
 
-        kill_background ();
+        kill_thingies ();
 	exit (DISPLAY_REBOOT);
     }
 
@@ -749,7 +784,7 @@ gdm_login_halt_handler (void)
     if (gdm_login_query (_("Are you sure you want to halt the machine?"))) {
 	closelog();
 
-        kill_background ();
+        kill_thingies ();
 	exit (DISPLAY_HALT);
     }
 
@@ -1374,6 +1409,25 @@ toggle_insensitize (GtkWidget *w, gpointer data)
 				  ! GTK_TOGGLE_BUTTON (w)->active);
 }
 
+static gboolean
+selector_delete_event (GtkWidget *dlg, GdkEvent *event, gpointer data)
+{
+	gnome_dialog_close (GNOME_DIALOG (dlg));
+	return TRUE;
+}
+
+static void
+clist_double_click_closes (GtkCList *clist,
+			   int row,
+			   int column,
+			   GdkEvent *event,
+			   gpointer data)
+{
+	if (event != NULL &&
+	    event->type == GDK_2BUTTON_PRESS)
+		gnome_dialog_close (GNOME_DIALOG (data));
+}
+
 static char *
 get_gnome_session (const char *sess_string)
 {
@@ -1382,15 +1436,31 @@ get_gnome_session (const char *sess_string)
 	GtkWidget *hbox;
 	GtkWidget *entry;
 	GtkWidget *newcb;
+	char *retval;
+	char **sessions;
+	char *selected;
+	gboolean got_default;
+	int i;
+
+	/* the first one is the selected one, and it will also come
+	 * again later, so we should just note it */
+	sessions = g_strsplit (sess_string, "\n", 0);
+	if (sessions != NULL &&
+	    sessions[0] != NULL)
+		selected = sessions[0];
+	else
+		selected = "Default";
 
 	/* we should be now fine for focusing new windows */
 	focus_new_windows = TRUE;
 
-	/* translators:  This is a nice and evil eggie text, translate
-	 * to your favourite currency */
 	d = gnome_dialog_new (_("Select GNOME session"),
 			      GNOME_STOCK_BUTTON_OK,
 			      NULL);
+	gnome_dialog_close_hides (GNOME_DIALOG (d), TRUE);
+	gtk_signal_connect (GTK_OBJECT (d), "delete_event",
+			    GTK_SIGNAL_FUNC (selector_delete_event),
+			    NULL);
 
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox),
 			    gtk_label_new (_("Select GNOME session")),
@@ -1406,8 +1476,59 @@ get_gnome_session (const char *sess_string)
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), sw,
 			    TRUE, TRUE, 0);
 	clist = gtk_clist_new (1);
+	gtk_clist_set_column_auto_resize (GTK_CLIST (clist), 0, TRUE);
 	gtk_container_add (GTK_CONTAINER (sw), clist);
 	gtk_widget_set_usize (sw, 120, 180);
+
+	gtk_signal_connect (GTK_OBJECT (clist), "select_row",
+			    GTK_SIGNAL_FUNC (clist_double_click_closes),
+			    d);
+
+	got_default = FALSE;
+	if (sessions != NULL &&
+	    sessions[0] != NULL) {
+		for (i = 1; sessions[i] != NULL; i++) {
+			int row;
+			char *text[1];
+			if (strcmp (sessions[i], "Default") == 0) {
+				got_default = TRUE;
+				/* default is nicely translated */
+				/* Translators: default GNOME session */
+				text[0] = _("Default");
+			} else {
+				text[0] = sessions[i];
+			}
+			row = gtk_clist_append (GTK_CLIST (clist),
+						text);
+			gtk_clist_set_row_data_full (GTK_CLIST (clist),
+						     row,
+						     g_strdup (sessions[i]),
+						     (GtkDestroyNotify) g_free);
+			if (strcmp (sessions[i], selected) == 0) {
+				gtk_clist_select_row (GTK_CLIST (clist),
+						      row, 0);
+			}
+		}
+	}
+
+	if ( ! got_default) {
+		int row;
+		char *text[1];
+		/* default is nicely translated */
+		/* Translators: default GNOME session */
+		text[0] = _("Default");
+		row = gtk_clist_append (GTK_CLIST (clist),
+					text);
+		gtk_clist_set_row_data_full (GTK_CLIST (clist),
+					     row, g_strdup ("Default"),
+					     (GtkDestroyNotify) g_free);
+		if (strcmp ("Default", selected) == 0) {
+			gtk_clist_select_row (GTK_CLIST (clist),
+					      row, 0);
+		}
+	}
+
+	g_strfreev (sessions);
 
 	newcb = gtk_check_button_new_with_label (_("Create new session"));
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), newcb,
@@ -1422,6 +1543,7 @@ get_gnome_session (const char *sess_string)
 			    FALSE, FALSE, 0);
 
 	entry = gtk_entry_new ();
+	gnome_dialog_editable_enters (GNOME_DIALOG (d), GTK_EDITABLE (entry));
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    entry,
 			    TRUE, TRUE, 0);
@@ -1435,7 +1557,6 @@ get_gnome_session (const char *sess_string)
 			    GTK_SIGNAL_FUNC (toggle_insensitize),
 			    clist);
 
-
 	gtk_window_set_modal (GTK_WINDOW (d), TRUE);
 
 	gtk_widget_show_all (d);
@@ -1445,7 +1566,24 @@ get_gnome_session (const char *sess_string)
 	gnome_dialog_run (GNOME_DIALOG (d));
 	no_focus_login = FALSE;
 
-	return NULL;
+	/* we've set the just_hide to TRUE, so we can still access the
+	 * window */
+	if (GTK_TOGGLE_BUTTON (newcb)->active) {
+		retval = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+	} else if (GTK_CLIST (clist)->selection != NULL) {
+		int selected_row =
+			GPOINTER_TO_INT (GTK_CLIST (clist)->selection->data);
+		char *session = gtk_clist_get_row_data (GTK_CLIST (clist),
+							selected_row);
+		retval = g_strdup (session);
+	} else {
+		retval = g_strdup ("");
+	}
+
+	/* finally destroy window */
+	gtk_widget_destroy (d);
+
+	return retval;
 }
 
 static gboolean
@@ -1643,7 +1781,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		no_focus_login = FALSE;
 	}
 
-	kill_background ();
+	kill_thingies ();
 
 	g_print ("%c\n", STX);
 
@@ -1666,7 +1804,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 		g_string_free (str, TRUE);
 
-		g_print ("%s%c\n", sess, STX);
+		g_print ("%c%s\n", STX, sess);
 
 		g_free (sess);
 	}
@@ -2612,6 +2750,17 @@ run_backgrounds (void)
 			backgroundpid = 0;
 		} else if (backgroundpid == 0) {
 			char **argv;
+			int i;
+
+			for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+				close(i);
+
+			/* No error checking here - if it's messed the best
+			 * response is to ignore & try to continue */
+			open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+			open("/dev/null", O_RDWR); /* open stdout - fd 1 */
+			open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
 			argv = g_strsplit (GdmBackgroundProg, " ", MAX_ARGS);
 			execv (argv[0], argv);
 			/*ingore errors, this is irrelevant */
@@ -2923,7 +3072,7 @@ main (int argc, char *argv[])
 
     gtk_main ();
 
-    kill_background ();
+    kill_thingies ();
 
     return EXIT_SUCCESS;
 }

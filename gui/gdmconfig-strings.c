@@ -121,6 +121,7 @@ gchar *s = N_("Logging directory: ");
 gchar *s = N_("Display initialization directory: ");
 gchar *s = N_("Miscelleaneous");
 gchar *s = N_("PID file: ");
+gchar *s = N_("Default GNOME session file: ");
 gchar *s = N_("Paths");
 gchar *s = N_("Miscelleaneous");
 gchar *s = N_("Default $PATH: ");

@@ -1,3 +1,26 @@
+Sun Apr 29 02:00:29 2001  George Lebl <jirka@5z.com>
+
+	* config/Gnome.in, config/Makefile.am:  Always install gnomerc
+	  and Gnome even if they already exist, this is because we may
+	  want to change these and want these changes to propagate.  Not
+	  a perfect solution since it's not clear which config files are
+	  editable without the install mucking them up, but oh well.
+
+	* gui/gdmlogin.c, daemon/gdm.[ch], daemon/slave.c,
+	  gui/gdmconfig.(glade|c):  Parse the session and session options
+	  file and pass the sessions to the greeter if Gnome Chooser session
+	  is selected.  The chooser then allows the picking of one specific
+	  gsm session or the creation of a new one.  We set an env var
+	  GDM_GNOME_SESSION with the session name in it.
+
+	* daemon/gdm.c:  doh!  on automatic login actually use the saved
+	  language and session
+
+	* gui/gdmlogin.c: the execution of background prog and config now
+	  closes all descriptors and opens /dev/null for stdin/out/err.  Also
+	  the config program is killed on exit just like the background prog
+	  and we don't allow starting multiple config programs.
+
 Sat Apr 28 16:01:48 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: Remove the overlay window crap and write a simple

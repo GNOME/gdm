@@ -281,6 +281,7 @@ gdm_config_parse_most (void)
     gdm_entry_set("post_session_dir", gnome_config_get_string (GDM_KEY_POSTSESS));
 
     gdm_entry_set("pid_file", gnome_config_get_string (GDM_KEY_PIDFILE));
+    gdm_entry_set("gnome_default_session", gnome_config_get_string (GDM_KEY_GNOMEDEFAULTSESSION));
     gdm_entry_set("default_path", gnome_config_get_string (GDM_KEY_PATH));
     gdm_entry_set("root_path", gnome_config_get_string (GDM_KEY_ROOTPATH));
  
@@ -490,6 +491,7 @@ write_new_config_file                  (GtkButton *button,
     gdm_entry_write("post_session_dir", GDM_KEY_POSTSESS);
 
     gdm_entry_write("pid_file", GDM_KEY_PIDFILE);
+    gdm_entry_write("gnome_default_session", GDM_KEY_GNOMEDEFAULTSESSION);
     gdm_entry_write("default_path", GDM_KEY_PATH);
     gdm_entry_write("root_path", GDM_KEY_ROOTPATH);
 
