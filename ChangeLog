@@ -1,3 +1,10 @@
+Tue Jan 29  Brian Cameron <Brian.Cameron@Sun.COM>
+
+	* gui/modules/keymouselistener.c:  Fixed so that it accepts
+	  key gestures with a timeout of <= 0 if n_times is 1.  This
+	  makes sense since timeout is not used if n_times is less
+	  than 2.
+
 Sun Jan 25 15:49:53 2004  George Lebl <jirka@5z.com>
 
 	* gui/gdmflexiserver.c: minor cleanup

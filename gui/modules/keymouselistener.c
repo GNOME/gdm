@@ -365,12 +365,22 @@ parse_line (gchar *buf)
 			return NULL;
 		}
 
-		if ((timeout=atoi(tmp_string)) <= 0) {
-			/* Add an error message */;
-			free_gesture (tmp_gesture);
-			return NULL;
+		/*
+		 * A gesture with an n_times value greater than 1 and a
+		 * non-positive timeout can never be triggered, so do not
+		 * accept such gestures.  The value of timeout is not used
+		 * if n_times is 1, so don't bother setting the timeout in
+		 * this case.
+		 */
+		tmp_gesture->timeout = 0;
+		if (tmp_gesture->n_times > 1) {
+			if ((timeout=atoi(tmp_string)) <= 0) {
+				/* Add an error message */;
+				free_gesture (tmp_gesture);
+				return NULL;
+			}
+			tmp_gesture->timeout = timeout;
 		}
-		tmp_gesture->timeout = timeout;
 	}
 
 	/*
@@ -718,7 +728,7 @@ G_MODULE_EXPORT void gtk_module_init(int *argc, char* argv[]);
 void gtk_module_init(int *argc, char* argv[])
 {
 	create_event_watcher();
-}		
+}
 
 /* EOF */
 
