@@ -1,3 +1,10 @@
+Fri Aug 31 17:04:02 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmconfig.c: Fix reading and changing servers with respect
+	  to server numbers.  All server numbers are now normalized and
+	  they equal the actual row (such assumptions were made before,
+	  but were not enforced).  Also fix some memory leaks.
+
 Fri Aug 31 16:34:58 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmconfig.c: fix writing of servers to config file

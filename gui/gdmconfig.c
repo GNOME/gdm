@@ -706,6 +706,7 @@ gdm_config_parse_most (gboolean factory)
     gboolean got_standard_server = FALSE;
     gboolean got_any_servers = FALSE;
     char *standard_x_server = NULL;
+    int biggest_server, i;
 
     gtk_clist_clear (GTK_CLIST (get_widget ("sessions_clist")));
     gtk_clist_clear (GTK_CLIST (get_widget ("server_clist")));
@@ -928,7 +929,7 @@ gdm_config_parse_most (gboolean factory)
 	       GdmConfigSession *this_session;
 	       FILE *script_file;
 	       
-	       this_session = g_malloc0 (sizeof (GdmConfigSession));
+	       this_session = g_new0 (GdmConfigSession, 1);
 	       this_session->name = g_strdup(dent->d_name);
 	       script_file = fopen(s, "r");
 	       if (script_file == NULL) {
@@ -975,7 +976,6 @@ gdm_config_parse_most (gboolean factory)
     }
 
    if (default_session_name) {
-      int i;
       GdkColor col;
 
       for (i=0; i< GTK_CLIST(get_widget ("sessions_clist"))->rows; i++) {
@@ -1109,52 +1109,84 @@ gdm_config_parse_most (gboolean factory)
 	    g_free (text[1]);
 	    g_free (text[2]);
     }
-    
+
     /* Fill the widgets in Servers tab */
+    biggest_server = 0;
     iter=gnome_config_init_iterator("=" GDM_CONFIG_FILE "=/" GDM_KEY_SERVERS);
     iter=gnome_config_iterator_next (iter, &key, &value);
     
-    while (iter) {
-	char *a_server[3];
-	
-	if (isdigit (*key)) {
-		char *first = ve_first_word (ve_sure_string (value));
-		a_server[0] = key;
-		if (first[0] == '/') {
-			a_server[1] = value;
-			a_server[2] = "";
-			gtk_clist_append
-				(GTK_CLIST (get_widget ("server_clist")),
-				 a_server);
-			g_free (first);
-		} else {
-			int row;
-			char *rest = ve_rest (value);
-			char *name = get_server_name (first);
-			if (rest == NULL)
-				rest = g_strdup ("");
-			a_server[1] = name;
-			a_server[2] = rest;
-			row = gtk_clist_append
-				(GTK_CLIST (get_widget ("server_clist")),
-				 a_server);
-			gtk_clist_set_row_data_full
-				(GTK_CLIST (get_widget ("server_clist")),
-				 row,
-				 first,
-				 (GDestroyNotify) g_free);
-			g_free (name);
-			g_free (rest);
-		}
-		number_of_servers++;
-	} else {
-	      gnome_warning_dialog_parented(_("gdm_config_parse_most: Invalid server line in config file. Ignoring!"),
-					    GTK_WINDOW(GDMconfigurator));
-	}
-	g_free (key);
-	g_free (value);
-	iter=gnome_config_iterator_next (iter, &key, &value);
+    while (iter != NULL) {
+	    if (isdigit (*key)) {
+		    int svr = atoi (key);
+
+		    if (svr > biggest_server)
+			    biggest_server = svr;
+	    } else {
+		    gnome_warning_dialog_parented(_("gdm_config_parse_most: Invalid server line in config file. Ignoring!"),
+						  GTK_WINDOW(GDMconfigurator));
+	    }
+	    g_free (key);
+	    g_free (value);
+	    iter = gnome_config_iterator_next (iter, &key, &value);
     }
+    
+    /* Fill the widgets in Servers tab */
+    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/" GDM_KEY_SERVERS "/");
+
+    for (i = 0; i <= biggest_server; i++) {
+	    char *a_server[3];
+	    char *first;
+
+	    key = g_strdup_printf ("%d", i);
+	    value = gnome_config_get_string (key);
+
+	    if (ve_string_empty (value)) {
+		    g_free (value);
+		    g_free (key);
+		    continue;
+	    }
+
+	    /* Make new, in-order, key */
+	    if (i != number_of_servers) {
+		    g_free (key);
+		    key = g_strdup_printf ("%d", number_of_servers);
+	    }
+
+	    first = ve_first_word (ve_sure_string (value));
+	    a_server[0] = key;
+	    if (first[0] == '/') {
+		    a_server[1] = value;
+		    a_server[2] = "";
+		    gtk_clist_append
+			    (GTK_CLIST (get_widget ("server_clist")),
+			     a_server);
+		    g_free (first);
+	    } else {
+		    int row;
+		    char *rest = ve_rest (value);
+		    char *name = get_server_name (first);
+		    if (rest == NULL)
+			    rest = g_strdup ("");
+		    a_server[1] = name;
+		    a_server[2] = rest;
+		    row = gtk_clist_append
+			    (GTK_CLIST (get_widget ("server_clist")),
+			     a_server);
+		    gtk_clist_set_row_data_full
+			    (GTK_CLIST (get_widget ("server_clist")),
+			     row,
+			     first,
+			     (GDestroyNotify) g_free);
+		    g_free (name);
+		    g_free (rest);
+	    }
+	    number_of_servers++;
+
+	    g_free (key);
+	    g_free (value);
+    }
+    gnome_config_pop_prefix ();
+
     /* FIXME: Could do something nicer with the 'exclude users' GUI sometime */
 
     g_free (standard_x_server);
@@ -1454,7 +1486,6 @@ write_config (void)
 	    char *extra_args = NULL;
 	    char *current_server =
 		    gtk_clist_get_row_data (GTK_CLIST (get_widget ("server_clist")), i);
-	    g_print ("foo %d: %s\n", i, current_server);
 
 	    if (ve_string_empty (current_server))
 		    continue;
@@ -1470,8 +1501,7 @@ write_config (void)
 
 
 	    key = g_strdup_printf ("%d", i);
-	    g_print ("%s=%s\n", key, val);
-	    gnome_config_set_string(key, val);
+	    gnome_config_set_string (key, val);
 	    g_free (key);
 	    g_free (val);
     }
@@ -2396,6 +2426,19 @@ edit_selected_server (GtkButton *button, gpointer user_data)
 	handle_server_edit (TRUE /*edit*/);
 }
 
+static void
+redo_server_numbers (void)
+{
+	int i;
+
+	for (i = 0; i < number_of_servers; i++) {
+		char *num = g_strdup_printf("%d", i);
+		gtk_clist_set_text (GTK_CLIST (get_widget("server_clist")),
+				    i, 0, num);
+		g_free (num);
+	}
+}
+
 
 void
 delete_selected_server                 (GtkButton       *button,
@@ -2414,13 +2457,7 @@ delete_selected_server                 (GtkButton       *button,
     number_of_servers--;
     
     /* The server numbers will be out of sync now, so correct that */ 
-    /* FIXME: this is not right */
-    while (tmp < number_of_servers) {
-	      char *num = g_strdup_printf("%d", tmp);
-	      gtk_clist_set_text (GTK_CLIST (get_widget("server_clist")),
-				  tmp, 0, num);
-	      tmp++;
-    }
+    redo_server_numbers ();
 }
 
 
@@ -2448,14 +2485,12 @@ move_server_up                         (GtkButton       *button,
     gtk_clist_swap_rows(GTK_CLIST(get_widget("server_clist")),
 			selected_server_row,
 			selected_server_row - 1);
-    gtk_clist_set_text(GTK_CLIST(get_widget("server_clist")),
-		       selected_server_row, 0, g_strdup_printf("%d", selected_server_row));
-    
+
+    /* The server numbers will be out of sync now, so correct that */ 
+    redo_server_numbers ();
+
     gtk_clist_select_row(GTK_CLIST(get_widget("server_clist")), 
 			 --selected_server_row, 0);
-    gtk_clist_set_text(GTK_CLIST(get_widget("server_clist")),
-		       selected_server_row, 0, g_strdup_printf("%d", selected_server_row));
-
 }
 
 
@@ -2475,13 +2510,11 @@ move_server_down                       (GtkButton       *button,
     gtk_clist_swap_rows(GTK_CLIST(get_widget("server_clist")),
 			selected_server_row,
 			selected_server_row + 1);
-    gtk_clist_set_text(GTK_CLIST(get_widget("server_clist")),
-		       selected_server_row, 0, g_strdup_printf("%d", selected_server_row));
+    /* The server numbers will be out of sync now, so correct that */ 
+    redo_server_numbers ();
 
     gtk_clist_select_row(GTK_CLIST(get_widget("server_clist")), 
 			 ++selected_server_row, 0);
-    gtk_clist_set_text(GTK_CLIST(get_widget("server_clist")),
-		       selected_server_row, 0, g_strdup_printf("%d", selected_server_row));
 }
 
 void
@@ -2595,7 +2628,7 @@ add_session_real (gchar *new_session_name, gpointer data)
 	   int rowNum;
 
 	   /* printf ("Will add session with %s.\n", new_session_name); */
-	   a_session = g_malloc0 (sizeof (GdmConfigSession));
+	   a_session = g_new0 (GdmConfigSession, 1);
 	   a_session->name = g_strdup (new_session_name);
 
 	   label[0] = a_session->name;
