@@ -29,6 +29,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include "gdm.h"
 #include "misc.h"
 
@@ -121,23 +122,11 @@ center_window (GtkWidget *window)
 static void
 show_errors (GtkWidget *button, gpointer data)
 {
-	const char *file = data;
-	FILE *fp;
+	const char *details = data;
 	GtkWidget *sw;
 	GtkWidget *label;
 	GtkWidget *dlg = gtk_widget_get_toplevel (button);
 	GtkWidget *parent = button->parent;
-	GString *gs = g_string_new (NULL);
-
-	fp = fopen (file, "r");
-	if (fp != NULL) {
-		char buf[256];
-		while (fgets (buf, sizeof (buf), fp))
-			g_string_append (gs, buf);
-		fclose (fp);
-	} else {
-		g_string_printf (gs, _("%s could not be opened"), file);
-	}
 
 	gtk_widget_destroy (button);
 
@@ -155,17 +144,22 @@ show_errors (GtkWidget *button, gpointer data)
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
 					     GTK_SHADOW_IN);
 
-	label = gtk_label_new (gs->str);
+	label = gtk_label_new (ve_sure_string (details));
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (sw), label);
 	gtk_widget_show (label);
 
 	gtk_box_pack_start (GTK_BOX (parent),
 			    sw, TRUE, TRUE, 0);
 
-	g_string_free (gs, TRUE);
-
 	center_window (dlg);
 }
+
+gboolean g_file_get_contents (const gchar  *filename,
+                              gchar       **contents,
+                              gsize        *length,    
+                              GError      **error);
+
+
 
 void
 gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
@@ -184,6 +178,42 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		char *loc;
 		char *display;
 		char *xauthority;
+		char *details;
+		
+		/* First read the details if they exist */
+		if (details_file) {
+			FILE *fp;
+			struct stat s;
+			GString *gs = g_string_new (NULL);
+
+			fp = NULL;
+			if (stat (details_file, &s) == 0) {
+				if (S_ISREG (s.st_mode))
+					fp = fopen (details_file, "r");
+				else
+					g_string_printf (gs, _("%s not a regular file!\n"), details_file);
+			}
+			if (fp != NULL) {
+				char buf[256];
+				int lines = 0;
+				while (fgets (buf, sizeof (buf), fp)) {
+					g_string_append (gs, buf);
+					/* cap the lines at 500, that's already
+					   a possibility of 128k of crap */
+					if (lines ++ > 500) {
+						g_string_append (gs, _("\n... File too long to display ...\n"));
+						break;
+					}
+				}
+				fclose (fp);
+			} else {
+				g_string_append_printf (gs, _("%s could not be opened"), details_file);
+			}
+
+			details = g_string_free (gs, FALSE);
+		} else {
+			details = NULL;
+		}
 
 		closelog ();
 
@@ -195,14 +225,9 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-		/* because details_file may not be readable, we must run as root */
-		/* FIXME: we should read in the details file here so that we don't
-		   have to touch the disk again */
-		if (details_file == NULL) {
-			setgid (GdmGroupId);
-			initgroups (GdmUser, GdmGroupId);
-			setuid (GdmUserId);
-		}
+		setgid (GdmGroupId);
+		initgroups (GdmUser, GdmGroupId);
+		setuid (GdmUserId);
 
 		gdm_desetuid ();
 
@@ -217,8 +242,8 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		if (xauthority != NULL)
 			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/bash", TRUE);
-		gnome_setenv ("HOME", "/", TRUE);
+		gnome_setenv ("SHELL", "/bin/sh", TRUE);
+		gnome_setenv ("HOME", "/tmp", TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -250,7 +275,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 					  G_CALLBACK (show_errors),
 					  /* leak? who cares we exit right
 					   * away */
-					  g_strdup (details_file));
+					  details);
 
 			gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
 					    button, FALSE, FALSE, 3);
@@ -362,8 +387,8 @@ gdm_failsafe_question (GdmDisplay *d,
 		if (xauthority != NULL)
 			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/bash", TRUE);
-		gnome_setenv ("HOME", "/", TRUE);
+		gnome_setenv ("SHELL", "/bin/sh", TRUE);
+		gnome_setenv ("HOME", "/tmp", TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -507,8 +532,8 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		if (xauthority != NULL)
 			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/bash", TRUE);
-		gnome_setenv ("HOME", "/", TRUE);
+		gnome_setenv ("SHELL", "/bin/sh", TRUE);
+		gnome_setenv ("HOME", "/tmp", TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -637,8 +662,8 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 		if (xauthority != NULL)
 			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/bash", TRUE);
-		gnome_setenv ("HOME", "/", TRUE);
+		gnome_setenv ("SHELL", "/bin/sh", TRUE);
+		gnome_setenv ("HOME", "/tmp", TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 

@@ -1059,7 +1059,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
-			gnome_setenv ("HOME", "/", TRUE); /* Hack */
+			gnome_setenv ("HOME", "/tmp", TRUE); /* Hack */
 		gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
 		gnome_unsetenv ("MAIL");
 

@@ -1144,6 +1144,144 @@ gdm_locale_from_utf8 (const char *text)
 	return out;
 }
 
+static GdmHostent *
+fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
+{
+	GdmHostent *he;
 
+	he = g_new0 (GdmHostent, 1);
+
+	he->addrs = NULL;
+	he->addr_count = 0;
+
+	/* Sometimes if we can't look things up, we could end
+	   up with a dot in the name field which would screw
+	   us up.  Weird but apparently possible */
+	if (he_ != NULL &&
+	    he_->h_name != NULL &&
+	    he_->h_name[0] != '\0' &&
+	    strcmp (he_->h_name, ".") != 0) {
+		he->hostname = g_strdup (he_->h_name);
+		he->not_found = FALSE;
+	} else {
+		he->not_found = TRUE;
+		if (name != NULL)
+			he->hostname = g_strdup (name);
+		else /* either ia or name is set */
+			he->hostname = g_strdup (inet_ntoa (*ia));
+	}
+
+	if (he_ != NULL && he_->h_addrtype == AF_INET) {
+		int i;
+		for (i = 0; ; i++) {
+			struct in_addr *ia_ = (struct in_addr *) (he_->h_addr_list[i]);
+			if (ia_ == NULL)
+				break;
+		}
+		he->addrs = g_new0 (struct in_addr, i);
+		he->addr_count = i;
+		for (i = 0; ; i++) {
+			struct in_addr *ia_ = (struct in_addr *) he_->h_addr_list[i];
+			if (ia_ == NULL)
+				break;
+			(he->addrs)[i] = *ia_;
+		}
+	}
+	return he;
+}
+
+GdmHostent *
+gdm_gethostbyname (const char *name)
+{
+	struct hostent *he_;
+
+	/* the cached address */
+	static GdmHostent *he = NULL;
+	static time_t last_time = 0;
+	static char *cached_hostname = NULL;
+
+	if (cached_hostname != NULL &&
+	    strcmp (cached_hostname, name) == 0) {
+		/* don't check more then every 5 seconds */
+		if (last_time + 5 > time (NULL))
+			return gdm_hostent_copy (he);
+	}
+
+	/* Find client hostname */
+	he_ = gethostbyname (name);
+	g_free (cached_hostname);
+	cached_hostname = g_strdup (name);
+
+	gdm_hostent_free (he);
+	he = fillout_hostent (he_, NULL, name);
+
+	last_time = time (NULL);
+	return gdm_hostent_copy (he);
+}
+
+GdmHostent *
+gdm_gethostbyaddr (struct in_addr *ia)
+{
+	struct hostent *he_;
+
+	/* the cached address */
+	static GdmHostent *he = NULL;
+	static time_t last_time = 0;
+	static struct in_addr cached_addr;
+
+	if (last_time != 0 &&
+	    memcmp (&cached_addr, ia, sizeof (struct in_addr)) == 0) {
+		/* don't check more then every 5 seconds */
+		if (last_time + 5 > time (NULL))
+			return gdm_hostent_copy (he);
+	}
+
+	/* Find client hostname */
+	he_ = gethostbyaddr ((gchar *) ia, sizeof (struct in_addr), AF_INET);
+	cached_addr = *ia;
+
+	gdm_hostent_free (he);
+	he = fillout_hostent (he_, ia, NULL);
+
+	last_time = time (NULL);
+	return gdm_hostent_copy (he);
+}
+
+GdmHostent *
+gdm_hostent_copy (GdmHostent *he)
+{
+	GdmHostent *cpy;
+
+	if (he == NULL)
+		return NULL;
+
+	cpy = g_new0 (GdmHostent, 1);
+	cpy->not_found = he->not_found;
+	cpy->hostname = g_strdup (he->hostname);
+	if (he->addr_count == 0) {
+		cpy->addr_count = 0;
+		cpy->addrs = NULL;
+	} else {
+		cpy->addr_count = he->addr_count;
+		cpy->addrs = g_new0 (struct in_addr, he->addr_count);
+		memcpy (cpy->addrs, he->addrs, sizeof (struct in_addr) * he->addr_count);
+	}
+	return cpy;
+}
+
+void
+gdm_hostent_free (GdmHostent *he)
+{
+	if (he == NULL)
+		return;
+	g_free (he->hostname);
+	he->hostname = NULL;
+
+	g_free (he->addrs);
+	he->addrs = NULL;
+	he->addr_count = 0;
+
+	g_free (he);
+}
 
 /* EOF */

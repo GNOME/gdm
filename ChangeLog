@@ -1,3 +1,24 @@
+Thu Jul 03 14:57:38 2003  George Lebl <jirka@5z.com>
+
+	* daemon/errorgui.c: the details file is read first, capped at 500
+	  lines, and so now we can run the errorbox as the gdm user meaning
+	  no more gtk code as root.
+
+	* daemon/gdm.h, daemon/misc.[ch], daemon/xdmcp.c, daemon/slave.c,
+	  daemon/auth.c: Apparently gethostbyaddr can return a dot in the
+	  name field meaning unknown host which is kind of crap, so handle
+	  that.  In fact make our own saner gdm_gethostby{addr,name} that
+	  handle such cases and cache last result for 5 seconds.  This way we
+	  do a lot less dns lookups since we used to do 1 or 2 (or even 3)
+	  per every xdmcp packet (if tcpwrappers were on).  Also instead of
+	  resolving ip to name and back to ip, keep the list of addresses of
+	  the host in the display structure.  This all should speed up
+	  XDMCP in general and fix XDMCP for places without proper DNS.
+
+	* daemon/errorgui.c, daemon/slave.c, daemon/server.c: /tmp is a much
+	  better choice for fallback HOME then / and /bin/sh is a much better
+	  fallback then /bin/bash.
+
 2003-07-02  Jordi Mallach  <jordi@sindominio.net>
 
 	* gui/*.desktop.in: Fix Terminal entries and add StartupNotify

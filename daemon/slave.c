@@ -1737,10 +1737,10 @@ gdm_slave_greeter (void)
 		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
-			gnome_setenv ("HOME", "/", TRUE); /* Hack */
+			gnome_setenv ("HOME", "/tmp", TRUE); /* Hack */
 		gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
 	} else {
-		gnome_setenv ("HOME", "/", TRUE); /* Hack */
+		gnome_setenv ("HOME", "/tmp", TRUE); /* Hack */
 		gnome_setenv ("SHELL", "/bin/sh", TRUE);
 	}
 	gnome_setenv ("PATH", GdmDefaultPath, TRUE);
@@ -1989,18 +1989,23 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 {
 	int fd;
 	char *fifopath;
-	struct hostent *host;
+	GdmHostent *host;
 	uid_t old;
+	struct in_addr ia;
 
-	host = gethostbyname (hostname);
+	host = gdm_gethostbyname (hostname);
 
-	if (host == NULL) {
+	if (host->addrs == NULL) {
 		gdm_error ("Cannot get address of host '%s'", hostname);
+		gdm_hostent_free (host);
 		return;
 	}
+	/* take first address */
+	ia = host->addrs[0];
+	gdm_hostent_free (host);
 
 	gdm_debug ("Sending chosen host address (%s) %s",
-		   hostname, inet_ntoa (*(struct in_addr *)host->h_addr_list[0]));
+		   hostname, inet_ntoa (ia));
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 
@@ -2021,7 +2026,7 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 
 	gdm_fdprintf (fd, "\n%s %d %s\n", GDM_SOP_CHOSEN,
 		      disp->indirect_id,
-		      inet_ntoa (*((struct in_addr *)host->h_addr_list[0])));
+		      inet_ntoa (ia));
 
 	close (fd);
 }
@@ -2112,10 +2117,10 @@ gdm_slave_chooser (void)
 			if (g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 				gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 			else
-				gnome_setenv ("HOME", "/", TRUE); /* Hack */
+				gnome_setenv ("HOME", "/tmp", TRUE); /* Hack */
 			gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
 		} else {
-			gnome_setenv ("HOME", "/", TRUE); /* Hack */
+			gnome_setenv ("HOME", "/tmp", TRUE); /* Hack */
 			gnome_setenv ("SHELL", "/bin/sh", TRUE);
 		}
 		gnome_setenv ("PATH", GdmDefaultPath, TRUE);
@@ -3864,9 +3869,9 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         }
         if (pwent != NULL) {
 		if (ve_string_empty (pwent->pw_dir)) {
-			gnome_setenv ("HOME", "/", TRUE);
-			gnome_setenv ("PWD", "/", TRUE);
-			chdir ("/");
+			gnome_setenv ("HOME", "/tmp", TRUE);
+			gnome_setenv ("PWD", "/tmp", TRUE);
+			chdir ("/tmp");
 		} else {
 			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 			gnome_setenv ("PWD", pwent->pw_dir, TRUE);
@@ -3874,9 +3879,9 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		}
 	        gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
         } else {
-	        gnome_setenv ("HOME", "/", TRUE);
-		gnome_setenv ("PWD", "/", TRUE);
-		chdir ("/");
+	        gnome_setenv ("HOME", "/tmp", TRUE);
+		gnome_setenv ("PWD", "/tmp", TRUE);
+		chdir ("/tmp");
 	        gnome_setenv ("SHELL", "/bin/sh", TRUE);
         }
 

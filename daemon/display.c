@@ -389,6 +389,10 @@ gdm_display_dispose (GdmDisplay *d)
     g_free (d->hostname);
     d->hostname = NULL;
 
+    g_free (d->addrs);
+    d->addrs = NULL;
+    d->addr_count = 0;
+
     g_free (d->authfile);
     d->authfile = NULL;
 

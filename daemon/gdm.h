@@ -309,6 +309,12 @@ struct _GdmDisplay {
     gchar *name;
     gchar *hostname;
     struct in_addr addr;
+    struct in_addr *addrs; /* array of addresses */
+    int addr_count; /* number of addresses in array */
+    /* Note that the above may in fact be empty even though
+       addr is set, these are just extra addresses
+       (it could also contain addr for all we know) */
+
     guint8 dispstat;
     guint16 dispnum;
     guint8 servstat;

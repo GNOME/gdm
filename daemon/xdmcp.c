@@ -153,7 +153,9 @@ static void gdm_xdmcp_whack_queued_managed_forwards (struct sockaddr_in *clnt_sa
 						     struct in_addr *origin);
 static void gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa);
 static void gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type);
-static void gdm_xdmcp_send_accept (const char *hostname, struct sockaddr_in *clnt_sa, gint displaynum);
+static void gdm_xdmcp_send_accept (GdmHostent *he /* eaten and freed */,
+				   struct sockaddr_in *clnt_sa,
+				   int displaynum);
 static void gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa, const char *reason);
 static void gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid);
@@ -163,7 +165,9 @@ static void gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa,
 static void gdm_xdmcp_send_got_managed_forward (struct sockaddr_in *clnt_sa,
 						struct in_addr *origin);
 static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *cnlt_sa);
-static GdmDisplay *gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint);
+static GdmDisplay *gdm_xdmcp_display_alloc (struct in_addr *addr,
+					    GdmHostent *he /* eaten and freed */,
+					    int displaynum);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
 static void gdm_xdmcp_display_dispose_check (const gchar *name);
 static void gdm_xdmcp_displays_check (void);
@@ -933,25 +937,6 @@ gdm_xdmcp_send_got_managed_forward (struct sockaddr_in *clnt_sa,
 		    (int)sizeof (struct sockaddr_in));
 }
 
-static char *
-get_host_from_addr (struct sockaddr_in *clnt_sa)
-{
-	char *hostname;
-	struct hostent *he;
-
-	/* Find client hostname */
-	he = gethostbyaddr ((gchar *) &(clnt_sa->sin_addr),
-			    sizeof (struct in_addr),
-			    AF_INET);
-
-	if (he != NULL) {
-		hostname = g_strdup (he->h_name);
-	} else {
-		hostname = g_strdup (inet_ntoa (clnt_sa->sin_addr));
-	}
-	return hostname;
-}
-
 static void
 gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 {
@@ -1082,8 +1067,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	(gdm_is_local_addr (&(clnt_sa->sin_addr)) ||
 	 gdm_xdmcp_displays_from_host (&(clnt_sa->sin_addr)) < GdmDispPerHost)) {
 	    char *disp;
-	    char *hostname = get_host_from_addr (clnt_sa);
-	    disp = g_strdup_printf ("%s:%d", hostname, clnt_dspnum);
+	    GdmHostent *he = gdm_gethostbyaddr (&(clnt_sa->sin_addr));
+	    disp = g_strdup_printf ("%s:%d", he->hostname, clnt_dspnum);
 
 	    /* Check if we are already talking to this host */
 	    gdm_xdmcp_display_dispose_check (disp);
@@ -1094,11 +1079,11 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 		    /* Don't translate, this goes over the wire to servers where we
 		    * don't know the charset or language, so it must be ascii */
 		    gdm_xdmcp_send_decline (clnt_sa, "Maximum pending servers");	
+		    gdm_hostent_free (he);
 	    } else {
-		    gdm_xdmcp_send_accept (hostname, clnt_sa, clnt_dspnum);
+		    /* the addrs are NOT copied */
+		    gdm_xdmcp_send_accept (he /* eaten and freed */, clnt_sa, clnt_dspnum);
 	    }
-
-	    g_free (hostname);
     } else {
 	    /* Don't translate, this goes over the wire to servers where we
 	    * don't know the charset or language, so it must be ascii */
@@ -1120,7 +1105,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 
 
 static void
-gdm_xdmcp_send_accept (const char *hostname,
+gdm_xdmcp_send_accept (GdmHostent *he /* eaten and freed */,
 		       struct sockaddr_in *clnt_sa,
 		       gint displaynum)
 {
@@ -1131,7 +1116,9 @@ gdm_xdmcp_send_accept (const char *hostname,
     ARRAY8 authdata;
     GdmDisplay *d;
     
-    d = gdm_xdmcp_display_alloc (&(clnt_sa->sin_addr), hostname, displaynum);
+    d = gdm_xdmcp_display_alloc (&(clnt_sa->sin_addr),
+				 he /* eaten and freed */,
+				 displaynum);
     
     authentype.data = (CARD8 *) 0;
     authentype.length = (CARD16) 0;
@@ -1520,18 +1507,24 @@ gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa)
      */
     extern int hosts_ctl (char *daemon, char *client_name, char *client_addr, char *client_user);
 
-    struct hostent *client_he;
-    gchar *client;
+    GdmHostent *client_he;
+    char *client;
+    gboolean ret;
     
     /* Find client hostname */
-    client_he = gethostbyaddr ((gchar *) &clnt_sa->sin_addr,
-			       sizeof (struct in_addr),
-			       AF_INET);
-    
-    client = (client_he != NULL) ? client_he->h_name : NULL;
-    
+    client_he = gdm_gethostbyaddr (&(clnt_sa->sin_addr));
+
+    if (client_he->not_found)
+	    client = "unknown";
+    else
+	    client = client_he->hostname;
+
     /* Check with tcp_wrappers if client is allowed to access */
-    return (hosts_ctl ("gdm", client ? client : "unknown", inet_ntoa (clnt_sa->sin_addr), ""));
+    ret = (hosts_ctl ("gdm", client, inet_ntoa (clnt_sa->sin_addr), ""));
+
+    gdm_hostent_free (client_he);
+
+    return ret;
 #else /* HAVE_TCPWRAPPERS */
     return (TRUE);
 #endif /* HAVE_TCPWRAPPERS */
@@ -1539,7 +1532,9 @@ gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa)
 
 
 static GdmDisplay *
-gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint displaynum)
+gdm_xdmcp_display_alloc (struct in_addr *addr,
+			 GdmHostent *he /* eaten and freed */,
+			 int displaynum)
 {
     GdmDisplay *d = NULL;
     
@@ -1577,10 +1572,19 @@ gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint displa
 	    d->timed_login_ok = FALSE;
     }
     
-    d->name = g_strdup_printf ("%s:%d", hostname,
+    d->name = g_strdup_printf ("%s:%d", he->hostname,
 			       displaynum);
-    d->hostname = g_strdup (hostname);
+
     memcpy (&d->addr, addr, sizeof (struct in_addr));
+
+    d->hostname = he->hostname;
+    he->hostname = NULL;
+    d->addrs = he->addrs;
+    he->addrs = NULL;
+    d->addr_count = he->addr_count;
+    he->addr_count = 0;
+
+    gdm_hostent_free (he);
 
     d->slave_notify_fd = -1;
     d->master_notify_fd = -1;

@@ -145,8 +145,7 @@ gboolean
 gdm_auth_secure_display (GdmDisplay *d)
 {
     FILE *af, *af_gdm;
-    struct hostent *hentry = NULL;
-    struct in_addr *ia = NULL;
+    gboolean is_local = FALSE;
     const char lo[] = {127,0,0,1};
     guint i;
     const GList *local_addys = NULL;
@@ -258,23 +257,22 @@ gdm_auth_secure_display (GdmDisplay *d)
 		    d->hostname = g_strdup (hostname);
 	    }
 	    local_addys = gdm_peek_local_address_list ();
-    } else  {
-	    /* Find FQDN or IP of display host */
-	    hentry = gethostbyname (d->hostname);
 
-	    if (hentry == NULL) {
-		    gdm_error ("gdm_auth_secure_display: Error getting hentry for %s", d->hostname);
-		    /* eeek, there will be nothing to add */
-		    return FALSE;
-	    } else {
-		    /* first addy, would be loopback in case of local */
-		    ia = (struct in_addr *) hentry->h_addr_list[0];
+	    is_local = TRUE;
+    } else  {
+	    is_local = FALSE;
+	    if (gdm_is_local_addr (&(d->addr)))
+		    is_local = TRUE;
+	    for (i = 0; ! is_local && i < d->addr_count; i++) {
+		    if (gdm_is_local_addr (&(d->addrs[i]))) {
+			    is_local = TRUE;
+			    break;
+		    }
 	    }
     }
 
     /* Local access also in case the host is very local */
-    if (SERVER_IS_LOCAL (d) ||
-	(ia != NULL && gdm_is_local_addr (ia))) {
+    if (is_local) {
 	    gdm_debug ("gdm_auth_secure_display: Setting up socket access");
 
 	    if ( ! add_auth_entry (d, af, af_gdm, FamilyLocal,
@@ -310,14 +308,22 @@ gdm_auth_secure_display (GdmDisplay *d)
     }
 
     gdm_debug ("gdm_auth_secure_display: Setting up network access");
+
+    if ( ! SERVER_IS_LOCAL (d)) {
+	    /* we should write out an entry for d->addr since
+	       possibly it is not in d->addrs */
+	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
+				   (char *)&(d->addr), 4))
+		    return FALSE;
+    }
     
     /* Network access: Write out an authentication entry for each of
      * this host's official addresses */
-    for (i = 0 ; hentry != NULL && i < hentry->h_length ; i++) {
-	    ia = (struct in_addr *) hentry->h_addr_list[i];
+    for (i = 0; i < d->addr_count; i++) {
+	    struct in_addr *ia = &(d->addrs[i]);
 
-	    if (ia == NULL)
-		    break;
+	    if (memcmp (ia, &(d->addr), sizeof (struct in_addr)) == 0)
+		    continue;
 
 	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
 				   (char *)&ia->s_addr, 4))
@@ -327,7 +333,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     /* Network access: Write out an authentication entry for each of
      * this host's local addresses if any */
     for (; local_addys != NULL; local_addys = local_addys->next) {
-	    ia = (struct in_addr *) local_addys->data;
+	    struct in_addr *ia = (struct in_addr *) local_addys->data;
 
 	    if (ia == NULL)
 		    break;

@@ -67,6 +67,21 @@ const GList * gdm_peek_local_address_list (void);
 gboolean gdm_is_local_addr (struct in_addr *ia);
 gboolean gdm_is_loopback_addr (struct in_addr *ia);
 
+typedef struct {
+	gboolean not_found; /* hostname below set to fallback,
+			       as gethostbyaddr/name failed */
+	char *hostname; /* never a bogus dot, if
+			   invalid/unknown, then set to the
+			   ip address in string form */
+	struct in_addr *addrs; /* array */
+	int addr_count;
+} GdmHostent;
+
+GdmHostent * gdm_gethostbyname (const char *name);
+GdmHostent * gdm_gethostbyaddr (struct in_addr *ia);
+GdmHostent * gdm_hostent_copy (GdmHostent *he);
+void gdm_hostent_free (GdmHostent *he);
+
 gboolean gdm_setup_gids (const char *login, gid_t gid);
 
 void gdm_desetuid (void);
