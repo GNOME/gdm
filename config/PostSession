@@ -1,4 +1,4 @@
 #!/bin/sh
 if [ -x /usr/bin/X11/sessreg ]; then
-	/usr/bin/X11/sessreg -d -w /var/log/wtmp -u /var/run/utmp -l $DISPLAY $USER
+	/usr/bin/X11/sessreg -d -w /var/log/wtmp -u none -l $DISPLAY $USER
 fi
