@@ -182,6 +182,7 @@ gboolean  GdmAllowRoot = FALSE;
 gboolean  GdmAllowRemoteRoot = FALSE;
 gboolean  GdmAllowRemoteAutoLogin = FALSE;
 gint  GdmRelaxPerms = 0;
+gboolean GdmCheckDirOwner = TRUE;
 gint  GdmRetryDelay = 0;
 gchar *GdmTimedLogin = NULL;
 gboolean GdmTimedLoginEnable = FALSE;
@@ -385,6 +386,7 @@ gdm_config_parse (void)
     GdmAllowRemoteRoot = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEROOT);
     GdmAllowRemoteAutoLogin = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEAUTOLOGIN);
     GdmRelaxPerms = ve_config_get_int (cfg, GDM_KEY_RELAXPERM);
+    GdmCheckDirOwner = ve_config_get_bool (cfg, GDM_KEY_CHECKDIROWNER);
     GdmUserMaxFile = ve_config_get_int (cfg, GDM_KEY_MAXFILE);
 
     GdmXdmcp = ve_config_get_bool (cfg, GDM_KEY_XDMCP);

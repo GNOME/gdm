@@ -197,6 +197,7 @@ enum {
 #define GDM_KEY_ALLOWREMOTEAUTOLOGIN "security/AllowRemoteAutoLogin=false"
 #define GDM_KEY_MAXFILE "security/UserMaxFile=65536"
 #define GDM_KEY_RELAXPERM "security/RelaxPermissions=0"
+#define GDM_KEY_CHECKDIROWNER "security/CheckDirOwner=true"
 #define GDM_KEY_RETRYDELAY "security/RetryDelay=1"
 #define GDM_KEY_DISALLOWTCP "security/DisallowTCP=true"
 

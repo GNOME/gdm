@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.6.0.4"> 
-    <!ENTITY date "7/13/2004"> 
+    <!ENTITY date "7/14/2004"> 
 ]>
 
 <article id="index" lang="en">
@@ -1762,6 +1762,23 @@
 	      <para>
 		Note that this can make a system quite insecure, and thus is
 		off by default.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>CheckDirOwner</term>
+	    <listitem>
+	      <synopsis>CheckDirOwner=true</synopsis>
+	      <para>
+		By default GDM checks the ownership of the home directories
+		before writing to them, this prevents security issues in case
+		of bad setup.  However in some instances home directories will
+		be owned by a different user and in this case it is necessary
+		to turn this option on.  You will also most likely have to
+		turn the <filename>RelaxPermissions</filename> key to at least
+		value 1 since in such a scenario home directories are likely
+		to be group writable.  Supported since 2.6.0.4.
 	      </para>
 	    </listitem>
 	  </varlistentry>

@@ -27,6 +27,7 @@
 #include "filecheck.h"
 
 extern int GdmUserMaxFile;
+extern gboolean GdmCheckDirOwner;
 
 /**
  * gdm_file_check:
@@ -65,10 +66,15 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
 	    return FALSE;
     }
 
-    /* Check if dir is owned by the user ... */
-    if G_UNLIKELY (statbuf.st_uid != user) {
-	syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, dir, user);
-	return FALSE;
+    /* Check if dir is owned by the user ... 
+       Only, if GdmCheckDirOwner is true (default)
+       This is a "hack" for directories not owned by 
+       the user.
+       2004-06-22, Andreas Schubert, MATHEMA Software GmbH */
+
+    if G_UNLIKELY (GdmCheckDirOwner && (statbuf.st_uid != user)) {
+        syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, dir, user);
+        return FALSE;
     }
     
     /* ... if group has write permission ... */
