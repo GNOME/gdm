@@ -5,632 +5,623 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.2.0\n"
-"POT-Creation-Date: 1999-11-20 03:05+0100\n"
-"PO-Revision-Date: 1999-11-19 19:24+0000\n"
+"POT-Creation-Date: 2000-03-06 00:44+0000\n"
+"PO-Revision-Date: 1999-11-19 HO:MI+ZONE\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-7\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:215 daemon/auth.c:240
-#, c-format
-msgid "gdm_auth_user_add: Could not open cookie file %s"
-msgstr "gdm_auth_user_add: Αποτυχία ανοίγματος του αρχείου cookie %s"
-
-#: daemon/auth.c:229
-#, c-format
-msgid "gdm_auth_user_add: Could not lock cookie file %s"
-msgstr "gdm_auth_user_add: Αποτυχία κλειδώματος του αρχείου cookie %s"
-
-#: daemon/auth.c:300
-#, c-format
-msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
-msgstr "gdm_auth_user_remove: Αγνόηση ύποπτου αρχείου cookie %s"
-
-#: daemon/filecheck.c:58
-#, c-format
-msgid "%s: Directory %s does not exist."
-msgstr "%s: Ο κατάλογος %s δεν υπάρχει."
-
-#: daemon/filecheck.c:64 daemon/filecheck.c:105
-#, c-format
-msgid "%s: %s is not owned by uid %d."
-msgstr "%s: Το %s δεν ανήκει στη ταυτότητα χρήστη %d."
-
-#: daemon/filecheck.c:70 daemon/filecheck.c:112
-#, c-format
-msgid "%s: %s is writable by group."
-msgstr "%s: Το %s είναι εγγράψιμο από ομάδα."
-
-#: daemon/filecheck.c:76
-#, c-format
-msgid "%s: %s is writable by other."
-msgstr "%s: Το %s είναι εγγράψιμο από τους άλλους."
-
-#: daemon/filecheck.c:90
-#, c-format
-msgid "%s: does not exist and must."
-msgstr "%s: δεν υπάρχει και πρέπει να υπάρχει."
-
-#: daemon/filecheck.c:98
-#, c-format
-msgid "%s: %s is not a regular file."
-msgstr "%s: Το %s: δεν είναι κανονικό αρχείο."
-
-#: daemon/filecheck.c:119
-#, c-format
-msgid "%s: %s is writable by group/other."
-msgstr "%s: Το %s: είναι εγγράψιμο από ομάδα/άλλους."
-
-#: daemon/filecheck.c:126
-#, c-format
-msgid "%s: %s is bigger than sysadmin specified maximum file size."
-msgstr ""
-"%s: Το %s είναι μεγαλύτερο από το όριο που έθεσε ο διαχειριστής για μέγιστο "
-"μέγεθος αρχείου."
-
-#: daemon/gdm.c:166
+#
+# File: daemon/gdm.c, line: 114
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Aborting."
 msgstr "gdm_config_parse: Δε βρέθηκε το αρχείο ρυθμίσεων: %s. Διακοπή."
-
-#: daemon/gdm.c:217
-msgid "gdm_config_parse: No greeter specified and default not found."
-msgstr ""
-"gdm_config_parse: Δεν καθορίστηκε χαιρετισμός και ο εξ'ορισμού δε βρέθηκε."
-
-#: daemon/gdm.c:229
-msgid "gdm_config_parse: No authdir specified and default not found."
-msgstr ""
-"gdm_config_parse: Δεν καθορίστηκε κατάλογος authdir και ο εξ'ορισμού δε "
-"βρέθηκε."
-
-#: daemon/gdm.c:247
-msgid ""
-"gdm_config_parse: No sessions directory specified and default not found."
-msgstr ""
-"gdm_config_parse: Δεν καθορίστηκε κατάλογος συνεδριών και ο εξ'ορισμού δε "
-"βρέθηκε."
-
-#: daemon/gdm.c:259
+#
+# File: daemon/gdm.c, line: 162
+msgid "gdm_config_parse: No greeter specified."
+msgstr "gdm_config_parse: Δεν καθορίστηκε χαιρετισμός."
+#
+# File: daemon/gdm.c, line: 165
+msgid "gdm_config_parse: No authdir specified."
+msgstr "gdm_config_parse: Δεν καθορίστηκε κατάλογος authdir."
+#
+# File: daemon/gdm.c, line: 171
+msgid "gdm_config_parse: No sessions directory specified."
+msgstr "gdm_config_parse: Δεν καθορίστηκε κατάλογος συνεδριών."
+#
+# File: daemon/gdm.c, line: 183
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse: Μη έγκυρη γραμμή εξυπηρετητή στο αρχείο ρυθμίσεων. "
 "Αγνοείται!"
-
-#: daemon/gdm.c:265
+#
+# File: daemon/gdm.c, line: 189
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr ""
 "gdm_config_parse: Το Xdmcp έχει απενεργοποιηθεί και δεν έχουν οριστεί "
 "τοπικοί εξυπηρετητές. Διακοπή!"
-
-#: daemon/gdm.c:270
+#
+# File: daemon/gdm.c, line: 196
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
 msgstr "gdm_config_parse: Δε βρέθηκε ο χρήστης gdm (%s). Διακοπή!"
-
-#: daemon/gdm.c:275
+#
+# File: daemon/gdm.c, line: 201
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr ""
 "gdm_config_parse: Ο χρήστης gdm δε πρέπει να είναι διαχειριστής. Διακοπή!"
-
-#: daemon/gdm.c:280
+#
+# File: daemon/gdm.c, line: 206
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
 msgstr "gdm_config_parse: Δε βρέθηκε η ομάδα gdm (%s). Διακοπή!"
-
-#: daemon/gdm.c:285
+#
+# File: daemon/gdm.c, line: 211
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
 msgstr "gdm_config_parse: Η ομάδα gdm δε πρέπει να είναι διαχειριστή. Διακοπή!"
-
-#: daemon/gdm.c:292
+#
+# File: daemon/gdm.c, line: 247
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr "gdm_config_parse: Ο κατάλογος Authdir %s δεν υπάρχει. Διακοπή."
-
-#: daemon/gdm.c:295
+#
+# File: daemon/gdm.c, line: 250
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
 msgstr "gdm_config_parse: Το %s (για Authdir) δεν είναι κατάλογος. Διακοπή."
-
-#: daemon/gdm.c:298
+#
+# File: daemon/gdm.c, line: 253
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "gdm_config_parse: Ο κατάλογος Authdir %s δεν ανήκει στο χρήση %s, ομάδα %s. "
 "Διακοπή."
-
-#: daemon/gdm.c:302
+#
+# File: daemon/gdm.c, line: 257
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
 msgstr ""
 "gdm_config_parse: Ο κατάλογος Authdir %s έχει λάθος δικαιώματα. Έπρεπε 750. "
 "Διακοπή."
-
-#: daemon/gdm.c:363
-#, c-format
-msgid "gdm_display_manage: Failed forking gdm slave process for %d"
-msgstr ""
-"gdm_display_manage: Αποτυχία στη διχάλωση θυγατρικής διεργασίας gdm για %d"
-
-#: daemon/gdm.c:442
-#, c-format
-msgid "gdm_child_action: Aborting display %s"
-msgstr "gdm_child_action: Διακοπή οθόνης %s"
-
-#: daemon/gdm.c:447
-msgid "gdm_child_action: Master rebooting..."
-msgstr "gdm_child_action: Ο κύριος εξυπηρετητής επανεκκινήται..."
-
-#: daemon/gdm.c:453
-#, c-format
-msgid "gdm_child_action: Reboot failed: %s"
-msgstr "gdm_child_action: Επανεκκίνηση απέτυχε: %s"
-
-#: daemon/gdm.c:457
-msgid "gdm_child_action: Master halting..."
-msgstr "gdm_child_action: Ο εξυπηρετητής παύει να λειτουργεί..."
-
-#: daemon/gdm.c:463
-#, c-format
-msgid "gdm_child_action: Halt failed: %s"
-msgstr "gdm_child_action: Πάυση λειτουργίας απέτυχε: %s"
-
-#: daemon/gdm.c:560
+#
+# File: daemon/gdm.c, line: 291
 msgid "gdm_daemonify: fork() failed!"
 msgstr "gdm_daemonify: Το fork() απέτυχε!"
-
-#: daemon/gdm.c:563
+#
+# File: daemon/gdm.c, line: 294
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify:Το setsid() απέτυχε: %s!"
-
-#. XDM compliant error message
-#: daemon/gdm.c:589
+#
+#. Bury this display for good
+# File: daemon/gdm.c, line: 366
+#, c-format
+msgid "gdm_child_action: Aborting display %s"
+msgstr "gdm_child_action: Διακοπή οθόνης %s"
+#
+#. Reboot machine
+# File: daemon/gdm.c, line: 372
+msgid "gdm_child_action: Master rebooting..."
+msgstr "gdm_child_action: Ο κύριος εξυπηρετητής επανεκκινήται..."
+#
+# File: daemon/gdm.c, line: 381
+#, c-format
+msgid "gdm_child_action: Reboot failed: %s"
+msgstr "gdm_child_action: Επανεκκίνηση απέτυχε: %s"
+#
+#. Halt machine
+# File: daemon/gdm.c, line: 385
+msgid "gdm_child_action: Master halting..."
+msgstr "gdm_child_action: Ο εξυπηρετητής παύει να λειτουργεί..."
+#
+# File: daemon/gdm.c, line: 394
+#, c-format
+msgid "gdm_child_action: Halt failed: %s"
+msgstr "gdm_child_action: Πάυση λειτουργίας απέτυχε: %s"
+#
+# File: daemon/gdm.c, line: 458
 msgid "Only root wants to run x^hgdm\n"
 msgstr "Μόνο ο διαχειριστής θέλει να τρέξει x^hgdm\n"
-
-#: daemon/gdm.c:610
-msgid ""
-"gdm already running. Aborting!\n"
-"\n"
-msgstr ""
-"Το gdm εκτελείτε ήδη. Διακοπή!\n"
-"\n"
-
-#: daemon/gdm.c:616
-#, c-format
-msgid ""
-"According to %s, gdm was already running (%d),\n"
-"but seems to have been murdered mysteriously.\n"
-msgstr ""
-"Σύμφωνα με το %s, το gdm εκτελέιται ήδη (%d),\n"
-"άλλα φαίνεται ότι έχει θανατωθεί μυστηριωδώς.\n"
-
-#: daemon/gdm.c:638
+#
+# File: daemon/gdm.c, line: 479
+msgid "gdm already running. Aborting!"
+msgstr "Το gdm εκτελείτε ήδη. Διακοπή!"
+#
+# File: daemon/gdm.c, line: 500
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr "gdm_main: Σφάλμα στη ρύθμιση του χειριστή του σήματος TERM"
-
-#: daemon/gdm.c:641
+#
+# File: daemon/gdm.c, line: 503
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr "gdm_main: Σφάλμα στη ρύθμιση του χειριστή του σήματος INT"
-
-#: daemon/gdm.c:649
+#
+# File: daemon/gdm.c, line: 511
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr "gdm_main: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
-
-#: daemon/misc.c:128
+#
+#. Really no need to clean up here - this process is a goner anyway
+# File: daemon/auth.c, line: 228
+# File: daemon/auth.c, line: 255
 #, c-format
-msgid "gdm_exec_script: Failed starting: %s"
-msgstr "gdm_exec_script: Αποτυχία εκκίνησης: %s"
-
-#: daemon/misc.c:132
-msgid "gdm_exec_script: Can't fork script process!"
-msgstr "gdm_exec_script: Δεν είναι δυνατή η δικράνωση διεργασίας σκρίπτ!"
-
-#: daemon/server.c:84 daemon/server.c:208
+msgid "gdm_auth_user_add: Could not open cookie file %s"
+msgstr "gdm_auth_user_add: Αποτυχία ανοίγματος του αρχείου cookie %s"
+#
+# File: daemon/auth.c, line: 243
+#, c-format
+msgid "gdm_auth_user_add: Could not lock cookie file %s"
+msgstr "gdm_auth_user_add: Αποτυχία κλειδώματος του αρχείου cookie %s"
+#
+# File: daemon/auth.c, line: 325
+#, c-format
+msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
+msgstr "gdm_auth_user_remove: Αγνόηση ύποπτου αρχείου cookie %s"
+#
+# File: daemon/filecheck.c, line: 51
+#, c-format
+msgid "%s: Directory %s does not exist."
+msgstr "%s: Ο κατάλογος %s δεν υπάρχει."
+#
+# File: daemon/filecheck.c, line: 57
+# File: daemon/filecheck.c, line: 98
+#, c-format
+msgid "%s: %s is not owned by uid %d."
+msgstr "%s: Το %s δεν ανήκει στη ταυτότητα χρήστη %d."
+#
+# File: daemon/filecheck.c, line: 63
+# File: daemon/filecheck.c, line: 105
+#, c-format
+msgid "%s: %s is writable by group."
+msgstr "%s: Το %s είναι εγγράψιμο από ομάδα."
+#
+# File: daemon/filecheck.c, line: 69
+#, c-format
+msgid "%s: %s is writable by other."
+msgstr "%s: Το %s είναι εγγράψιμο από τους άλλους."
+#
+# File: daemon/filecheck.c, line: 83
+#, c-format
+msgid "%s: does not exist and must."
+msgstr "%s: δεν υπάρχει και πρέπει να υπάρχει."
+#
+# File: daemon/filecheck.c, line: 91
+#, c-format
+msgid "%s: %s is not a regular file."
+msgstr "%s: Το %s: δεν είναι κανονικό αρχείο."
+#
+# File: daemon/filecheck.c, line: 112
+#, c-format
+msgid "%s: %s is writable by group/other."
+msgstr "%s: Το %s: είναι εγγράψιμο από ομάδα/άλλους."
+#
+# File: daemon/filecheck.c, line: 119
+#, c-format
+msgid "%s: %s is bigger than sysadmin specified maximum file size."
+msgstr ""
+"%s: Το %s είναι μεγαλύτερο από το όριο που έθεσε ο διαχειριστής για μέγιστο "
+"μέγεθος αρχείου."
+#
+# File: daemon/server.c, line: 93
 msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr "gdm_server_start: Σφάλμα στη ρύθμιση του χειριστή του σήματος USR1"
-
-#: daemon/server.c:101
+#
+# File: daemon/server.c, line: 103
+msgid "gdm_server_start: Error setting up CHLD signal handler"
+msgstr "gdm_server_start: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
+#
+# File: daemon/server.c, line: 113
+msgid "gdm_server_start: Error setting up ALRM signal handler"
+msgstr "gdm_server_restart: Σφάλμα στη ρύθμιση του χειριστή του σήματος ALRM"
+#
+# File: daemon/server.c, line: 196
 #, c-format
-msgid "gdm_server_start: Could not open logfile for display %s!"
+msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr ""
-"gdm_server_start: Αποτυχία ανοίγματος αρχείου καταγραφών για εμφάνιση %s!"
-
-#: daemon/server.c:130
-msgid "gdm_server_start: Error setting USR1 to SIG_IGN"
-msgstr "gdm_server_start: Σφάλμα στη ρύθμιση του USR1 σε SIG_IGN"
-
-#: daemon/server.c:147
+"gdm_server_spawn: Αποτυχία ανοίγματος αρχείου καταγραφών για εμφάνιση %s!"
+#
+# File: daemon/server.c, line: 221
+msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
+msgstr "gdm_server_spawn: Σφάλμα στη ρύθμιση του USR1 σε SIG_IGN"
+#
+# File: daemon/server.c, line: 237
 #, c-format
-msgid "gdm_server_start: Xserver not found: %s"
-msgstr "gdm_server_start: Ο εξυπηρετητής Χ δε βρέθηκε: %s"
-
-#: daemon/server.c:153
-msgid "gdm_server_start: Can't fork Xserver process!"
-msgstr "gdm_server_start: Αποτυχία δικράνωσης διεργασίας εξυπηρετητή Χ!"
-
-#: daemon/server.c:179
-#, c-format
-msgid "gdm_server_stop: Could not unlink auth file: %s!"
-msgstr "gdm_server_stop: Αποτυχία διαγραφής αρχείου ελέγχου auth: %s!"
-
-#: daemon/server.c:234
-msgid "gdm_server_restart: Error setting up ALARM signal handler"
-msgstr "gdm_server_restart: Σφάλμα στη ρύθμιση του χειριστή του σήματος ALARM"
-
-#: daemon/slave.c:120
+msgid "gdm_server_spawn: Xserver not found: %s"
+msgstr "gdm_server_spawn: Ο εξυπηρετητής Χ δε βρέθηκε: %s"
+#
+# File: daemon/server.c, line: 242
+msgid "gdm_server_spawn: Can't fork Xserver process!"
+msgstr "gdm_server_spawn: Αποτυχία δικράνωσης διεργασίας εξυπηρετητή Χ!"
+#
+# File: daemon/slave.c, line: 119
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
 msgstr "gdm_slave_init: Σφάλμα στη ρύθμιση του χειριστή του σήματος TERM/INT"
-
-#: daemon/slave.c:128
+#
+# File: daemon/slave.c, line: 127
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr "gdm_slave_init: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
-
-#: daemon/slave.c:178
+#
+# File: daemon/slave.c, line: 176
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr "gdm_slave_greeter: Αποτυχία αρχικοποίησης σωλήνωσης στο gdmgreeter"
-
-#: daemon/slave.c:203
+#
+# File: daemon/slave.c, line: 201
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
-
-#: daemon/slave.c:206
+#
+# File: daemon/slave.c, line: 204
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας χρήστη σε %d"
-
-#: daemon/slave.c:216
+#
+# File: daemon/slave.c, line: 214
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr "gdm_slave_greeter: Σφάλμα εκκίνησης του χαιρετιστή στην οθόνη %s"
-
-#: daemon/slave.c:219
+#
+# File: daemon/slave.c, line: 217
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Αποτυχία δικράνωσης της διεργασίας gdmgreeter"
-
-#: daemon/slave.c:266
+#
+# File: daemon/slave.c, line: 266
 #, c-format
-msgid ""
-"gdm_slave_session_start: User passed authentication but getpwnam(%s) failed. "
-"Spooky!"
+msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
-"gdm_slave_session_start: Ο χρήστης πέρασε τον έλεγχο αυθεντικότητας άλλα η "
-"getpwnam(%s) απέτυχε. Μυστηριώδες!"
-
-#: daemon/slave.c:354
+"gdm_slave_session_start: Ο χρήστης πέρασε τον έλεγχο αυθεντικότητας αλλά η "
+"getpwnam(%s) απέτυχε!"
+#
+# File: daemon/slave.c, line: 355
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
 msgstr ""
 "gdm_slave_session_start: Η εκτέλεση του σκρίπτ PreSession επέστρεψε > 0."
-
-#: daemon/slave.c:378
+#
+# File: daemon/slave.c, line: 379
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Σφάλμα δικράνωσης συνεδρίας χρήστη"
-
-#: daemon/slave.c:386
+#
+# File: daemon/slave.c, line: 388
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: Αποτυχία του setgid(%d). Διακοπή."
-
-#: daemon/slave.c:389
+#
+# File: daemon/slave.c, line: 392
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr "gdm_slave_session_start: Το initgroups() απέτυχε για το %s. Διακοπή."
-
-#: daemon/slave.c:392
+#
+# File: daemon/slave.c, line: 396
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Αποτυχία αλλαγής ταυτότητας σε %s. Διακοπή."
-
-#: daemon/slave.c:428
+#
+# File: daemon/slave.c, line: 432
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Αποτυχία έναρξης συνεδρίας `%s'"
-
-#: daemon/slave.c:603
+#
+# File: daemon/slave.c, line: 613
 #, c-format
 msgid "gdm_slave_windows_kill_ioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 "gdm_slave_windows_kill_ioerror_handler: Μοιραίο σφάλμα Χ - Επανεκκίνηση %s"
-
-#: daemon/slave.c:635
+#
+# File: daemon/slave.c, line: 645
 msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
 msgstr ""
 "gdm_slave_xsync_ping: Σφάλμα στη ρύθμιση του χειριστή του σήματος ALARM"
-
-#: daemon/verify.c:129 daemon/verify.c:201 gui/gdmlogin.c:1220
+#
+# File: daemon/slave.c, line: 747
+#, c-format
+msgid "gdm_slave_exec_script: Failed starting: %s"
+msgstr "gdm_slave_exec_script: Αποτυχία εκκίνησης: %s"
+#
+# File: daemon/slave.c, line: 751
+msgid "gdm_slave_exec_script: Can't fork script process!"
+msgstr "gdm_slave_exec_script: Δεν είναι δυνατή η δικράνωση διεργασίας "
+"προγράμματος εντολών!"
+#
+#. Ask gdmgreeter for the user's login. Just for good measure
+# File: daemon/verify-crypt.c, line: 58
+# File: daemon/verify-pam.c, line: 123
+# File: daemon/verify-shadow.c, line: 60
+# File: gui/gdmlogin.c, line: 1230
 msgid "Login:"
 msgstr "Όνομα χρήστη:"
-
-#: daemon/verify.c:135
+#
+# File: daemon/verify-pam.c, line: 130
 msgid "Can't find /etc/pam.d/gdm!"
 msgstr "Δε μπόρεσε να βρεθεί το /etc/pam.d/gdm!"
-
-#: daemon/verify.c:140
+#
+# File: daemon/verify-pam.c, line: 136
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Αποτυχία ορίσματος του PAM_TTY=%s"
-
-#: daemon/verify.c:145 daemon/verify.c:222
+#
+# File: daemon/verify-crypt.c, line: 71
+# File: daemon/verify-pam.c, line: 142
+# File: daemon/verify-shadow.c, line: 81
 #, c-format
 msgid "Couldn't authenticate %s"
 msgstr "Αποτυχία ελέγχου αυθεντικότητας του %s"
-
-#: daemon/verify.c:150
+#
+# File: daemon/verify-pam.c, line: 153
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Αποτυχία ρύθμισης της διαχείρισης λογαριασμού για %s"
-
-#: daemon/verify.c:155
+#
+# File: daemon/verify-pam.c, line: 159
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Αποτυχία ρύθμισης των διαπιστευτηρίων για %s"
-
-#: daemon/verify.c:160
+#
+# File: daemon/verify-pam.c, line: 165
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
-
-#: daemon/verify.c:217
+#
+# File: daemon/verify-pam.c, line: 232
+msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
+msgstr "gdm_verify_check: Δε βρέθηκε αρχείο ρυθμίσεων PAM για το gdm"
+#
+#. Request the user's password
+# File: daemon/verify-crypt.c, line: 64
+# File: daemon/verify-shadow.c, line: 74
 msgid "Password:"
 msgstr "Κωδικός πρόσβασης:"
-
-#: daemon/verify.c:223
+#
+# File: daemon/verify-crypt.c, line: 72
+# File: daemon/verify-shadow.c, line: 82
 msgid "User unknown"
 msgstr "Άγνωστος χρήστης"
-
-#: daemon/verify.c:228
+#
+# File: daemon/verify-crypt.c, line: 77
+# File: daemon/verify-shadow.c, line: 87
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Η σύνδεση ως διαχειριστής δεν επιτρέπεται στην απεικόνιση '%s'"
-
-#: daemon/verify.c:229
+#
+# File: daemon/verify-crypt.c, line: 78
+# File: daemon/verify-shadow.c, line: 88
 msgid "Root login disallowed"
 msgstr "Σύνδεση ως διαχειριστής δεν επιτρέπεται"
-
-#: daemon/verify.c:237
+#
+# File: daemon/verify-crypt.c, line: 87
+# File: daemon/verify-shadow.c, line: 97
 msgid "Incorrect password"
 msgstr "Εσφαλμένος κωδικός πρόσβασης"
-
-#: daemon/verify.c:256
-msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
-msgstr "gdm_verify_check: Δε βρέθηκε αρχείο ρυθμίσεων PAM για το gdm"
-
-#: daemon/xdmcp.c:184
+#
+# File: daemon/xdmcp.c, line: 178
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr ""
 "gdm_xdmcp_init: Αποτυχία λήψης του ονόματος συστήματος του εξυπηρετητή: %s!"
-
-#: daemon/xdmcp.c:198
+#
+# File: daemon/xdmcp.c, line: 192
 msgid "gdm_xdmcp_init: Could not create socket!"
 msgstr "gdm_xdmcp_init: Αποτυχία δημιουργίας υποδοχής!"
-
-#: daemon/xdmcp.c:205
+#
+# File: daemon/xdmcp.c, line: 199
 msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
 msgstr "gdm_xdmcp_init: Αποτυχία επίδεσης στην υποδοχή XDMCP!"
-
-#: daemon/xdmcp.c:214
+#
+# File: daemon/xdmcp.c, line: 208
 msgid "gdm_xdmcp_init: Can't alloc fifopath"
 msgstr "gdm_xdmcp_init: Αποτυχία δέσμευσης fifopath"
-
-#: daemon/xdmcp.c:219
+#
+# File: daemon/xdmcp.c, line: 213
 msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
 msgstr "gdm_xdmcp_init: Αποτυχία δημιουργίας FIFO για τον επιλογέα"
-
-#: daemon/xdmcp.c:224
+#
+# File: daemon/xdmcp.c, line: 218
 msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
 msgstr "gdm_xdmcp_init: Αποτυχία ανοίγματος FIFO για τον επιλογέα"
-
-#: daemon/xdmcp.c:284
+#
+# File: daemon/xdmcp.c, line: 278
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
 msgstr "gdm_xdmcp_decode: Αποτυχίά δημιουργίας ενταμιευτή XDMCP"
-
-#: daemon/xdmcp.c:289
+#
+# File: daemon/xdmcp.c, line: 283
 msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode: Αποτυχία ανάγνωσης κεφαλίδας XDMCP!"
-
-#: daemon/xdmcp.c:294
+#
+# File: daemon/xdmcp.c, line: 288
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: Εσφαλμένη έκδοση XDMCP!"
-
-#: daemon/xdmcp.c:334
+#
+# File: daemon/xdmcp.c, line: 328
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr ""
 "gdm_xdmcp_decode_packet: Άγνωστος κώδικας λειτουργίας από το σύστημα %s"
-
-#: daemon/xdmcp.c:352
+#
+# File: daemon/xdmcp.c, line: 346
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_query: Αποτυχία εξαγωγής λίστας ελέγχου αυθεντικότητας από "
 "το πακέτο"
-
-#: daemon/xdmcp.c:363
+#
+# File: daemon/xdmcp.c, line: 357
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: Σφάλμα στο άθροισμα ελέγχου"
-
-#: daemon/xdmcp.c:434
+#
+# File: daemon/xdmcp.c, line: 428
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Αποτυχία ανάγνωσης της διεύθυνσης απεικόνισης"
-
-#: daemon/xdmcp.c:440
+#
+# File: daemon/xdmcp.c, line: 434
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Αποτυχία ανάγνωσης αριθμού θύρας απεικόνισης"
-
-#: daemon/xdmcp.c:446
+#
+# File: daemon/xdmcp.c, line: 440
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Αποτυχία εξαγωγής λίστας ελέγχου "
 "αυθεντικότητας από το πακέτο"
-
-#: daemon/xdmcp.c:461
+#
+# File: daemon/xdmcp.c, line: 455
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: Σφάλμα στο άθροισμα ελέγχου"
-
-#: daemon/xdmcp.c:524
+#
+# File: daemon/xdmcp.c, line: 518
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Άρνηση ερωτήματος XDMCP από το σύστημα %s"
-
-#: daemon/xdmcp.c:526
+#
+# File: daemon/xdmcp.c, line: 520
 msgid "Display not authorized to connect"
 msgstr "Η απεικόνιση δεν είναι εξουσιοδοτημένη να συνδεθεί"
-
-#: daemon/xdmcp.c:559
+#
+# File: daemon/xdmcp.c, line: 553
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: Λήψη REQUEST από απαγορευμένο σύστημα %s"
-
-#: daemon/xdmcp.c:566
+#
+# File: daemon/xdmcp.c, line: 560
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Αριθμού Απεικόνισης"
-
-#: daemon/xdmcp.c:572
+#
+# File: daemon/xdmcp.c, line: 566
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Είδους Σύνδεσης"
-
-#: daemon/xdmcp.c:578
+#
+# File: daemon/xdmcp.c, line: 572
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr ""
 "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Διεύθυνσης Εξυπηρετούμενου"
-
-#: daemon/xdmcp.c:584
+#
+# File: daemon/xdmcp.c, line: 578
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Ονομάτων Εξουσιοδότησης"
-
-#: daemon/xdmcp.c:590
+#
+# File: daemon/xdmcp.c, line: 584
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Δεδομένων Εξουσιοδότησης"
-
-#: daemon/xdmcp.c:596
+#
+# File: daemon/xdmcp.c, line: 590
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Λίστας Εξουσιοδότησης"
-
-#: daemon/xdmcp.c:607
+#
+# File: daemon/xdmcp.c, line: 601
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Ταυτότητας Κατασκευαστή"
-
-#: daemon/xdmcp.c:625
+#
+# File: daemon/xdmcp.c, line: 619
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: Εσφαλμένο άθροισμα ελέγχου από %s"
-
-#: daemon/xdmcp.c:738
+#
+# File: daemon/xdmcp.c, line: 732
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr ""
 "gdm_xdmcp_handle_manage: Λήψη μηνύματος Manage από απαγορευμένο σύστημα %s"
-
-#: daemon/xdmcp.c:745
+#
+# File: daemon/xdmcp.c, line: 739
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage: Αποτυχία ανάγνωσης Ταυτότητας Συνεδρίας"
-
-#: daemon/xdmcp.c:751
+#
+# File: daemon/xdmcp.c, line: 745
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: Αποτυχίά ανάγνωσης Αριθμού Απεικόνισης"
-
-#: daemon/xdmcp.c:760
+#
+# File: daemon/xdmcp.c, line: 754
 msgid "gdm_xdmcp_manage: Could not read Display Class"
 msgstr "gdm_xdmcp_manage: Αποτυχία ανάγνωσης Κλάσης Απεικόνισης"
-
-#: daemon/xdmcp.c:781
+#
+# File: daemon/xdmcp.c, line: 775
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr ""
 "gdm_xdmcp_handle_manage: Αποτυχία ανοίγματος αρχείου καταγραφών για "
 "απεικόνιση %s!"
-
-#: daemon/xdmcp.c:853
+#
+# File: daemon/xdmcp.c, line: 847
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr "gdm_xdmcp_handle_keepalive: Λήψη KEEPALIVE από απαγορευμένο σύστημα %s"
-
-#: daemon/xdmcp.c:860
+#
+# File: daemon/xdmcp.c, line: 854
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_keepalive: Αποτυχία ανάγνωσης Αριθμού Απεικόνισης"
-
-#: daemon/xdmcp.c:866
+#
+# File: daemon/xdmcp.c, line: 860
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Αποτυχία ανάγνωσης Ταυτότητας Συνεδρίας"
-
-#: gui/gdmchooser.c:342
+#
+# File: gui/gdmchooser.c, line: 340
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_chooser_parse_config: Κανένα αρχείο ρυθμίσεων: %s. Διακοπή."
-
-#: gui/gdmchooser.c:451
+#
+# File: gui/gdmchooser.c, line: 449
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Αποτυχία ανοίγματος εξ'ορισμού εικονιδίου συστήματος: %s"
-
+#
 #. Buttons
-#: gui/gdmchooser.c:518
+# File: gui/gdmchooser.c, line: 516
 msgid "Connect"
 msgstr "Σύνδεση"
-
-#: gui/gdmchooser.c:525
+#
+# File: gui/gdmchooser.c, line: 523
 msgid "Rescan"
 msgstr "Σάρωση ξανά"
-
-#: gui/gdmchooser.c:531
+#
+# File: gui/gdmchooser.c, line: 529
 msgid "Cancel"
 msgstr "Ακύρωση"
-
-#: gui/gdmchooser.c:582
+#
+# File: gui/gdmchooser.c, line: 580
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Σφάλμα στη ρύθμιση του χειριστή σήματος HUP"
-
-#: gui/gdmchooser.c:585
+#
+# File: gui/gdmchooser.c, line: 583
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Σφάλμα στη ρύθμιση του χειριστή σήματος INT"
-
-#: gui/gdmchooser.c:588
+#
+# File: gui/gdmchooser.c, line: 586
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Σφάλμα στη ρύθμιση του χειριστή σήματος TERM"
-
-#: gui/gdmchooser.c:596 gui/gdmlogin.c:1532
+#
+# File: gui/gdmchooser.c, line: 594
+# File: gui/gdmlogin.c, line: 1542
 msgid "Could not set signal mask!"
 msgstr "Αποτυχία ρύθμισης μάσκας σινιάλων!"
-
-#: gui/gdmlogin.c:271
+#
+# File: gui/gdmlogin.c, line: 268
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Αλφαριθμητικό πολύ μεγάλο!"
-
-#: gui/gdmlogin.c:272
+#
+# File: gui/gdmlogin.c, line: 269
 #, c-format
 msgid "Welcome to %s"
 msgstr "Καλώς ήλθατε στο %s"
-
-#: gui/gdmlogin.c:276
+#
+# File: gui/gdmlogin.c, line: 273
 msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
 msgstr "gdm_parse_enriched_string: Αποτυχία δέσμευσης προσωρινού ενταμιευτή!"
-
-#: gui/gdmlogin.c:358
+#
+# File: gui/gdmlogin.c, line: 355
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Θέλετε σίγουρα να επανεκκινήσετε τον υπολογιστή;"
-
-#: gui/gdmlogin.c:371
+#
+# File: gui/gdmlogin.c, line: 368
 msgid "Are you sure you want to halt the machine?"
 msgstr "Θέλετε σίγουρα να κλείσετε τον υπολογιστή;"
-
-#: gui/gdmlogin.c:388
+#
+# File: gui/gdmlogin.c, line: 385
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config: Κανένα αρχείο ρυθμίσεων: %s. Διακοπή."
-
-#: gui/gdmlogin.c:484
+#
+# File: gui/gdmlogin.c, line: 481
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -639,8 +630,9 @@ msgstr ""
 "Το προτιμητέο σας είδος συνεδρίας %s δεν είναι εγκατεστημένο σε αυτόν τον "
 "υπολογιστή.\n"
 "Θέλετε να κάνετε το %s την εξ'ορισμού επιλογή για μελλοντικές συνεδρίες;"
-
-#: gui/gdmlogin.c:499 gui/gdmlogin.c:541
+#
+# File: gui/gdmlogin.c, line: 496
+# File: gui/gdmlogin.c, line: 538
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -648,94 +640,109 @@ msgid ""
 msgstr ""
 "Έχετε επιλέξει %s για αυτή τη συνεδρία, αλλά η εξ'ορισμού επιλογή είναι %s.\n"
 "Θέλετε να κάνετε το %s την εξ'ορισμού επιλογή για μελλοντικές συνεδρίες;"
-
-#: gui/gdmlogin.c:600
+#
+# File: gui/gdmlogin.c, line: 597
 #, c-format
 msgid "%s session selected"
 msgstr "Επιλογή της συνεδρίας %s"
-
-#: gui/gdmlogin.c:616 gui/gdmlogin.c:719
+#
+# File: gui/gdmlogin.c, line: 613
+# File: gui/gdmlogin.c, line: 716
 msgid "Last"
 msgstr "Τελευταίο"
-
-#: gui/gdmlogin.c:631
+#
+# File: gui/gdmlogin.c, line: 628
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Κατάλογος σκριπτ συνεδρίας δε βρέθηκε!"
-
-#: gui/gdmlogin.c:684
+#
+# File: gui/gdmlogin.c, line: 681
 msgid "No session scripts found. Aborting!"
 msgstr "Δε βρέθηκαν σκριπτ συνεδρίας. Διακοπή!"
-
-#: gui/gdmlogin.c:688
+#
+# File: gui/gdmlogin.c, line: 685
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Δε βρέθηκε εξ'ορισμού σύνδεση συνεδρίας. Χρήση του %s.\n"
-
-#: gui/gdmlogin.c:702
+#
+# File: gui/gdmlogin.c, line: 699
 #, c-format
 msgid "%s language selected"
 msgstr "Επιλογή της γλώσσας %s"
-
-#: gui/gdmlogin.c:734
+#
+# File: gui/gdmlogin.c, line: 731
 msgid "A-M"
 msgstr "A-M"
-
-#: gui/gdmlogin.c:740
+#
+# File: gui/gdmlogin.c, line: 737
 msgid "N-Z"
 msgstr "N-Z"
-
-#: gui/gdmlogin.c:746
+#
+# File: gui/gdmlogin.c, line: 743
 msgid "Other"
 msgstr "Άλλο"
-
-#: gui/gdmlogin.c:1052
+#
+# File: gui/gdmlogin.c, line: 1062
 msgid "Session"
 msgstr "Συνεδρία"
-
-#: gui/gdmlogin.c:1059
+#
+# File: gui/gdmlogin.c, line: 1069
 msgid "Language"
 msgstr "Γλώσσα"
-
-#: gui/gdmlogin.c:1066
+#
+# File: gui/gdmlogin.c, line: 1076
 msgid "Reboot..."
 msgstr "Επανεκκίνηση..."
-
-#: gui/gdmlogin.c:1073
+#
+# File: gui/gdmlogin.c, line: 1083
 msgid "Halt..."
 msgstr "Κλείσιμο..."
-
-#: gui/gdmlogin.c:1080
+#
+# File: gui/gdmlogin.c, line: 1090
 msgid "System"
 msgstr "Σύστημα"
-
-#: gui/gdmlogin.c:1088
+#
+# File: gui/gdmlogin.c, line: 1098
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr ""
 "Αποτυχία ανοίγματος αρχείου εικονιδίου: %s. Αναστολή χαρακτηριστικού "
 "ελαχιστοποίησης!"
-
-#: gui/gdmlogin.c:1091
+#
+# File: gui/gdmlogin.c, line: 1101
 msgid "Iconify"
 msgstr "Ελαχιστοποίηση"
-
-#: gui/gdmlogin.c:1255
+#
+# File: gui/gdmlogin.c, line: 1265
 msgid "Please enter your login"
 msgstr "Παρακαλώ εισάγετε το όνομα χρήστη"
-
-#: gui/gdmlogin.c:1436
+#
+# File: gui/gdmlogin.c, line: 1446
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Αποτυχία ανοίγματος του DefaultImage: %s. Αναστολή του face browser!"
-
-#: gui/gdmlogin.c:1518
+#
+# File: gui/gdmlogin.c, line: 1528
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος HUP"
-
-#: gui/gdmlogin.c:1521
+#
+# File: gui/gdmlogin.c, line: 1531
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος INT"
-
-#: gui/gdmlogin.c:1524
+#
+# File: gui/gdmlogin.c, line: 1534
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος TERM"
+#
+#~ msgid "gdm_display_manage: Failed forking gdm slave process for %d"
+#~ msgstr ""
+#~ "gdm_display_manage: Αποτυχία στη διχάλωση θυγατρικής διεργασίας gdm για %d"
+#
+#~ msgid ""
+#~ "According to %s, gdm was already running (%d),\n"
+#~ "but seems to have been murdered mysteriously.\n"
+#~ msgstr ""
+#~ "Σύμφωνα με το %s, το gdm εκτελέιται ήδη (%d),\n"
+#~ "άλλα φαίνεται ότι έχει θανατωθεί μυστηριωδώς.\n"
+#
+#~ msgid "gdm_server_stop: Could not unlink auth file: %s!"
+#~ msgstr "gdm_server_stop: Αποτυχία διαγραφής αρχείου ελέγχου auth: %s!"
