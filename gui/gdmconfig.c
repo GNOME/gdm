@@ -109,6 +109,7 @@ gdm_config_parse_most (void)
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
     
     /* Fill the widgets in GDM tab */
+    gdm_entry_set("automatic_login", gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN));
     gdm_entry_set("chooser_binary", gnome_config_get_string (GDM_KEY_CHOOSER));
     gdm_entry_set("greeter_binary", gnome_config_get_string (GDM_KEY_GREETER));
     gdm_entry_set("halt_command", gnome_config_get_string (GDM_KEY_HALT));
@@ -160,6 +161,11 @@ gdm_config_parse_most (void)
     
     gdm_toggle_set("show_system", gnome_config_get_bool (GDM_KEY_SYSMENU));
     gdm_toggle_set("quiver", gnome_config_get_bool (GDM_KEY_QUIVER));
+    gdm_entry_set ("background_program", gnome_config_get_string (GDM_KEY_BACKGROUNDPROG));
+    gdm_toggle_set ("lock_position", gnome_config_get_bool (GDM_KEY_LOCK_POSITION));
+    gdm_toggle_set ("set_position", gnome_config_get_bool (GDM_KEY_SET_POSITION));
+    gdm_spin_set ("position_x", gnome_config_get_int (GDM_KEY_POSITIONX));
+    gdm_spin_set ("position_y", gnome_config_get_int (GDM_KEY_POSITIONY));
     
     gdm_entry_set("exclude_users", gnome_config_get_string (GDM_KEY_EXCLUDE));
     /* font picker is in parse_remaining() */

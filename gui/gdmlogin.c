@@ -475,8 +475,8 @@ gdm_login_parse_config (void)
     GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
     GdmLockPosition = gnome_config_get_bool (GDM_KEY_LOCK_POSITION);
     GdmSetPosition = gnome_config_get_bool (GDM_KEY_SET_POSITION);
-    GdmPositionX = gnome_config_get_int (GDM_KEY_LOCK_POSITION);
-    GdmPositionY = gnome_config_get_int (GDM_KEY_SET_POSITION);
+    GdmPositionX = gnome_config_get_int (GDM_KEY_POSITIONX);
+    GdmPositionY = gnome_config_get_int (GDM_KEY_POSITIONY);
 
     gnome_config_pop_prefix();
 
