@@ -421,16 +421,47 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 		      item);
 }
 
+/* This is so evil it hurts */
+static char *
+make_ugly_long_string_with_line_breaks (const char *orig)
+{
+	const char *p;
+	int n_chars, i;
+	GString *foo = g_string_new (NULL);
+	gboolean in_element = FALSE;
+
+	n_chars = g_utf8_strlen (orig, -1);
+	p = orig;
+
+	i = 0;
+	while (i < n_chars) {
+		gunichar ch = g_utf8_get_char (p);
+		if (ch == '<')
+			in_element = TRUE;
+		else if (ch == '>')
+			in_element = FALSE;
+		g_string_append_unichar (foo, ch);
+		if ( ! in_element)
+		g_string_append_unichar (foo, '\n');
+		p = g_utf8_next_char (p);
+		i++;
+	}
+
+	return g_string_free (foo, FALSE);
+}
+
+/* This function is very VERY evil */
 static gboolean
-append_word (GString *str, GString *line, GString *word, int max_width, const char *textattr, GnomeCanvasItem *canvas_item)
+append_word (GString *str, GString *line, GString *word, const char *after, int max_width, const char *textattr, GnomeCanvasItem *canvas_item)
 {
 	int width, height;
-	char *try = g_strconcat (line->str, word->str, NULL);
+	char *post = make_ugly_long_string_with_line_breaks (after);
+	char *try = g_strconcat (str->str, word->str, "\n", post, NULL);
+	g_free (post);
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), textattr, try, NULL);
 	g_free (try);
 
 	pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (canvas_item)->layout, &width, &height);
-
 
 	if (width > max_width) {
 		if ( ! ve_string_empty (line->str)) {
@@ -454,6 +485,11 @@ append_word (GString *str, GString *line, GString *word, int max_width, const ch
 	}
 }
 
+/* This function is very VERY evil */
+/* Note that it should just use pango and do all the right things rather then
+   the utter hacks it tries to do.  But I couldn't figure out how to do this
+   simply with pango and how to interact with markup properly (it seems easy
+   to do if there is no markup */
 void
 greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 				      const char *orig,
@@ -475,11 +511,19 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 	const char *p;
 	int in_current_row;
 	GnomeCanvasItem *canvas_item;
-	const char *textattr = markup ? "markup" : "text";
+	const char *textattr;
+	int lwidth, lheight;
 
 	str = g_string_new (NULL);
 	word = g_string_new (NULL);
 	line = g_string_new (NULL);
+
+	/* avoid errors and even possible crashes */
+	if (markup && ! pango_parse_markup (orig, -1, 0, NULL, NULL, NULL, NULL)) {
+		markup = FALSE;
+	}
+
+	textattr = markup ? "markup" : "text";
 
 	/* A gross hack */
 	if (real_item != NULL)
@@ -505,6 +549,17 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 	n_chars = g_utf8_strlen (orig, -1);
 
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), textattr, orig, NULL);
+	pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (canvas_item)->layout, &lwidth, &lheight);
+	if (lwidth <= max_width) {
+		if (width != NULL)
+			*width = lwidth;
+		if (height != NULL)
+			*height = lheight;
+		if (real_item != canvas_item)
+			gtk_object_destroy (GTK_OBJECT (canvas_item));
+		return;
+	}
+
 	pango_layout_get_log_attrs (GNOME_CANVAS_TEXT (canvas_item)->layout, &attrs, &n_attrs);
 
 	i = 0;
@@ -534,7 +589,7 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 		}	
 
 		if (attrs[ia].is_line_break && in_current_row > 0) {
-			if (append_word (str, line, word, max_width, textattr, canvas_item))
+			if (append_word (str, line, word, p, max_width, textattr, canvas_item))
 				in_current_row = 0;
 		}
 
@@ -558,7 +613,7 @@ greeter_canvas_item_break_set_string (GreeterItemInfo *info,
 	}
 
 	if ( ! ve_string_empty (word->str))
-		append_word (str, line, word, max_width, textattr, canvas_item);
+		append_word (str, line, word, "", max_width, textattr, canvas_item);
 
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), textattr, str->str, NULL);
 	pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (canvas_item)->layout, width, height);
