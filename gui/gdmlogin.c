@@ -52,7 +52,7 @@ static gboolean GdmQuiver;
 static gint  GdmRelaxPerms;
 static gboolean GdmSystemMenu;
 static gint  GdmUserMaxFile;
-static gint  GdmXineramaScreen;
+static gint GdmXineramaScreen;
 static gchar *GdmLogo;
 static gchar *GdmWelcome;
 static gchar *GdmBackgroundProg;
@@ -67,8 +67,8 @@ static gchar *GdmGlobalFaceDir;
 static gchar *GdmDefaultFace;
 static gboolean GdmLockPosition;
 static gboolean GdmSetPosition;
-static int GdmPositionX;
-static int GdmPositionY;
+static gint GdmPositionX;
+static gint GdmPositionY;
 
 static GtkWidget *login;
 static GtkWidget *label;
@@ -549,9 +549,13 @@ gdm_login_parse_config (void)
 
     gnome_config_pop_prefix();
 
+    if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
+    if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
+    if (GdmUserMaxFile < 0) GdmUserMaxFile = 32768;
+    if (GdmXineramaScreen < 0) GdmXineramaScreen = 0;
+
     if (stat (GdmLocaleFile, &unused) == -1)
 	gdm_login_abort ("gdm_login_parse_config: Could not open locale file %s. Aborting!", GdmLocaleFile);
-
 
     /* Disable System menu on non-local displays */
     display = g_getenv ("DISPLAY");

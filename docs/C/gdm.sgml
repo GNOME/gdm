@@ -554,7 +554,7 @@
 	  <varlistentry>
 	    <term>KillInitClients</term>
 	    <listitem>
-	      <synopsis>KillInitClients=1</synopsis>
+	      <synopsis>KillInitClients=true</synopsis>
 	      <para>
 		Determines whether GDM should kill X clients started by
 		the init scripts when the user logs in.
@@ -713,10 +713,10 @@
 	  <varlistentry>
 	    <term>AllowRoot</term>
 	    <listitem>
-	      <synopsis>AllowRoot=0</synopsis>
+	      <synopsis>AllowRoot=true</synopsis>
 	      <para>
 		Graphical root logins are disallowed by default.  Set
-		this value to 1 to enable priviledged user logins.
+		this value to true to enable priviledged user logins.
 	      </para>
 	      <para>
 		On systems that support PAM, this parameter is
@@ -787,7 +787,7 @@
 	  <varlistentry>
 	    <term>VerboseAuth</term>
 	    <listitem>
-	      <synopsis>VerboseAuth=0</synopsis>
+	      <synopsis>VerboseAuth=true</synopsis>
 	      <para>
 		Specifies whether GDM should print authentication errors
 		in the message field in the greeter. 
@@ -826,9 +826,9 @@
 	  <varlistentry>
 	    <term>Enable</term>
 	    <listitem>
-	      <synopsis>Enable=0</synopsis>
+	      <synopsis>Enable=false</synopsis>
 	      <para>
-		Setting this to 1 enables XDMCP support allowing remote displays/X
+		Setting this to true enables XDMCP support allowing remote displays/X
 		terminals to be managed by GDM.
 	      </para>
 	      
@@ -867,7 +867,7 @@
 	  <varlistentry>
 	    <term>HonorIndirect</term>
 	    <listitem>
-	      <synopsis>HonorIndirect=1</synopsis>
+	      <synopsis>HonorIndirect=true</synopsis>
 	      <para>
 		Enables XDMCP INDIRECT choosing (i.e. remote execution
 		of <filename>gdmchooser</filename>) for X-terminals
@@ -1027,9 +1027,9 @@
 	  <varlistentry>
 	    <term>Browser</term>
 	    <listitem>
-	      <synopsis>Browser=0</synopsis>
+	      <synopsis>Browser=true</synopsis>
 	      <para>
-		Set to 1 to enable the face browser. See the ``Greeter''
+		Set to true to enable the face browser. See the ``Greeter''
 		section for more information on the face browser.
 	      </para>
 	    </listitem>
@@ -1152,7 +1152,7 @@
 	  <varlistentry>
 	    <term>Quiver</term>
 	    <listitem>
-	      <synopsis>Quiver=1</synopsis>
+	      <synopsis>Quiver=true</synopsis>
 	      <para>
 		Controls whether <filename>gdmlogin</filename> should
 		shake the display when an incorrect username/password is
@@ -1164,7 +1164,7 @@
 	  <varlistentry>
 	    <term>SystemMenu</term>
 	    <listitem>
-	      <synopsis>SystemMenu=0</synopsis>
+	      <synopsis>SystemMenu=false</synopsis>
 	      <para>
 		Turns the Shutdown/Halt menu on/off.
 	      </para>
@@ -1210,8 +1210,63 @@
 	      	      
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>XineramaScreen</term>
+	    <listitem>
+	      <synopsis>XineramaScreen=1</synopsis>
+	      <para>
+		If the Xinerama extension is active the login window
+                will be centered on this physical screen (use 0 for
+                the first screen, 1 for the second..).
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundProgram</term>
+	    <listitem>
+	      <synopsis>BackgroundProgram=/usr/bin/xeyes</synopsis>
+	      <para>
+		If set this program will be run in the background while
+                the login window is being displayed.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>SetPosition</term>
+	    <listitem>
+	      <synopsis>BackgroundProgram=true</synopsis>
+	      <para>
+		If true the position of the login window is determined
+                by PositionX/PositionY.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>PositionX</term>
+	    <listitem>
+	      <synopsis>PositionX=200</synopsis>
+	      <para>
+		The horizontal position of the login window.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>PositionY</term>
+	    <listitem>
+	      <synopsis>PositionY=100</synopsis>
+	      <para>
+		The vertical position of the login window.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
 	</variablelist>
-	
+
       </sect2>
 
       <sect2>

@@ -75,7 +75,7 @@ static GSList *bcaddr;
 
 static gint  GdmIconMaxHeight;
 static gint  GdmIconMaxWidth;
-static gint  GdmDebug;
+static gboolean  GdmDebug;
 static gint  GdmScanTime;
 static gchar *GdmHostIconDir;
 static gchar *GdmHostDefaultIcon;
@@ -347,7 +347,11 @@ gdm_chooser_parse_config (void)
     GdmHostIconDir = gnome_config_get_string (GDM_KEY_HOSTDIR);
     GdmIconMaxWidth = gnome_config_get_int (GDM_KEY_ICONWIDTH);
     GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
-    GdmDebug = gnome_config_get_int (GDM_KEY_DEBUG);
+    GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
+
+    if (GdmScanTime < 1) GdmScanTime = 1;
+    if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
+    if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
 
     gnome_config_pop_prefix();
 }
