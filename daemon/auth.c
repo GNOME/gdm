@@ -493,6 +493,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     gboolean automatic_tmp_dir = FALSE;
     gboolean authdir_is_tmp_dir = FALSE;
     gboolean locked;
+    gboolean user_auth_exists;
 
     if (!d)
 	return FALSE;
@@ -536,6 +537,9 @@ try_user_add_again:
     else
 	    d->userauth = g_build_filename (authdir, GdmUserAuthFile, NULL);
 
+    user_auth_exists = (d->userauth != NULL &&
+			access (d->userauth, F_OK) == 0);
+
     /* Find out if the Xauthority file passes the paranoia check */
     /* Note that this is not very efficient, we stat the files over
        and over, but we don't care, we don't do this too often */
@@ -557,6 +561,14 @@ try_user_add_again:
 	   then this is a NFS mounted directory with root squashing,
 	   and we don't want to write cookies over NFS */
 	! try_open_read_as_root (d->userauth)) {
+
+        /* if the userauth file didn't exist and we were looking at it,
+	   it likely exists now but empty, so just whack it
+	   (it may not exist if the file didn't exist and the directory
+	    was of wrong permissions, but more likely this is
+	    file on NFS dir with root-squashing enabled) */
+        if ( ! user_auth_exists && d->userauth != NULL)
+		unlink (d->userauth);
 
 	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp)
 	 * or perhaps GdmUserAuth directory (usually would be /tmp) */
