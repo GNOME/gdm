@@ -102,6 +102,14 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
     gchar *login, *passwd, *ppasswd;
     struct passwd *pwent;
     struct spwd *sp;
+#if defined(HAVE_PASSWDEXPIRED) && defined(HAVE_CHPASS) \
+    || defined(HAVE_LOGINRESTRICTIONS)
+    gchar *message = NULL;
+#endif
+#if defined(HAVE_PASSWDEXPIRED) && defined(HAVE_CHPASS)
+    gchar *info_msg = NULL, *response = NULL;
+    gint reEnter, ret;
+#endif
 
     if (local)
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
@@ -226,6 +234,28 @@ authenticate_again:
 	    return NULL;
     }
 
+#ifdef HAVE_LOGINRESTRICTIONS
+
+    /* Check with the 'loginrestrictions' function
+       if the user has been disallowed */
+    if (loginrestrictions (login, 0, NULL, &message)) {
+	    gdm_error (_("User %s not allowed to log in"), login);
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					  _("\nThe system administrator "
+					    "has disabled your "
+					    "account."));
+	    g_free (login);
+	    g_free (passwd);
+	    g_free (ppasswd);
+	    g_free (message);
+	    return NULL;
+    }
+    
+    g_free (message);
+    message = NULL;
+
+#else /* ! HAVE_LOGINRESTRICTIONS */
+
     /* check for the standard method of disallowing users */
     if (pwent->pw_shell != NULL &&
 	(strcmp (pwent->pw_shell, "/sbin/nologin") == 0 ||
@@ -243,6 +273,9 @@ authenticate_again:
 	    g_free (ppasswd);
 	    return NULL;
     }	
+
+#endif /* HAVE_LOGINRESTRICTIONS */
+
     g_free (passwd);
     g_free (ppasswd);
 
@@ -255,6 +288,74 @@ authenticate_again:
 	    g_free (login);
 	    return NULL;
     }
+
+#if defined(HAVE_PASSWDEXPIRED) && defined (HAVE_CHPASS)
+
+    switch (passwdexpired (login, &info_msg)) {
+    case 1 :
+	    gdm_error (_("Password of %s has expired"), login);
+	    gdm_error_box (d, GTK_MESSAGE_ERROR,
+			   _("You are required to change your password.\n"
+			     "Please choose a new one."));
+	    g_free (info_msg);
+
+	    do {
+		    ret = chpass (login, response, &reEnter, &message);
+		    g_free (response);
+
+		    if (ret != 1) {
+			    if (ret != 0) {
+				    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+								  _("\nCannot change your password, "
+								    "you will not be able to log in, "
+								    "please try again later or contact "
+								    "your system administrator."));
+			    } else if ((reEnter != 0) && (message)) {
+				    response = gdm_slave_greeter_ctl (GDM_NOECHO, message);
+				    if (response == NULL)
+					    response = g_strdup ("");
+			    }
+		    }
+
+		    g_free(message);
+		    message = NULL;
+
+	    } while ( ((reEnter != 0) && (ret == 0))
+		      || (ret ==1) );
+
+	    g_free (response);
+	    g_free (message);
+
+	    if ((ret != 0) || (reEnter != 0)) {
+		    return NULL;
+	    }
+
+	    break;
+
+    case 2 :
+	    gdm_error (_("Password of %s has expired"), login);
+	    gdm_error_box (d, GTK_MESSAGE_ERROR,
+			   _("Your password has expired.\n"
+			     "Only a system administrator can now change it"));
+	    g_free (info_msg);
+	    return NULL;
+	    break;    
+
+    case -1 :
+	    gdm_error (_("Internal error on passwdexpired"));
+	    gdm_error_box (d, GTK_MESSAGE_ERROR,
+			   _("An internal error occured, you will not be able to log in.\n"
+			     "Please try again later or contact your system administrator."));
+	    g_free (info_msg);
+	    return NULL;
+	    break;    
+
+    default :
+	    g_free (info_msg);
+	    break;
+    }
+
+#endif /* HAVE_PASSWDEXPIRED && HAVE_CHPASS */
 
     return login;
 }

@@ -289,6 +289,9 @@ if test x$have_pam = xno; then
   	fi
   fi
 
+  # Check if the function 'passwdexpired' and 'chpass' exist
+  # (only used in 'verify-crypt.c')
+  AC_CHECK_FUNCS(loginrestrictions passwdexpired chpass)
 fi
 
 AC_SUBST(VRFY)
