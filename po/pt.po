@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.6\n"
 "Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
-"POT-Creation-Date: 2004-02-15 23:13+0000\n"
-"PO-Revision-Date: 2004-02-15 23:15+0000\n"
+"POT-Creation-Date: 2004-02-28 14:04+0000\n"
+"PO-Revision-Date: 2004-02-28 14:05+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -206,12 +206,12 @@ msgstr ""
 "provável que se esteja a passar algo estranho. Terá de aguardar 2 minutos "
 "antes de tentar novamente no ecrã %s."
 
-#: daemon/display.c:243
+#: daemon/display.c:244
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s: Incapaz de criar canal"
 
-#: daemon/display.c:315
+#: daemon/display.c:316
 #, c-format
 msgid "%s: Failed forking gdm slave process for %s"
 msgstr "%s: Falha ao efectuar fork do processo escravo gdm para %s"
@@ -572,7 +572,7 @@ msgid "%s: fork() failed!"
 msgstr "%s: falha ao efectuar fork()!"
 
 #. should never happen
-#: daemon/gdm.c:859 daemon/slave.c:3373
+#: daemon/gdm.c:859 daemon/slave.c:3374
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: falha ao efectuar setsid(): %s!"
@@ -712,7 +712,7 @@ msgstr "Apenas o root quer executar o gdm\n"
 #: daemon/gdm.c:2084 daemon/gdm.c:2088 daemon/gdm.c:2098 daemon/gdm.c:2104
 #: daemon/gdm.c:2115 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
 #: daemon/misc.c:1618 daemon/misc.c:1622 daemon/misc.c:1626
-#: daemon/server.c:510 daemon/server.c:523 daemon/slave.c:805
+#: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:805
 #: daemon/slave.c:819 daemon/slave.c:829 daemon/slave.c:839 daemon/slave.c:851
 #: gui/gdmchooser.c:1924 gui/gdmchooser.c:1927 gui/gdmchooser.c:1930
 #: gui/gdmlogin.c:3928 gui/gdmlogin.c:3936 gui/gdmlogin.c:3939
@@ -806,7 +806,7 @@ msgstr ""
 msgid "Can not start fallback console"
 msgstr "Incapaz de iniciar consola de recurso"
 
-#: daemon/server.c:330
+#: daemon/server.c:341
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -817,7 +817,7 @@ msgstr ""
 "outro número de ecrã?  Se a sua resposta for não, tentar-se-á novamente "
 "iniciar o servidor em %s.%s"
 
-#: daemon/server.c:337
+#: daemon/server.c:348
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -827,89 +827,89 @@ msgstr ""
 "como Ctrl-Alt-F7 para ir para a consola 7.  Normalmente os servidores X são "
 "executados na 7 e superiores.)"
 
-#: daemon/server.c:383
+#: daemon/server.c:394
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Ecrã '%s' não pode ser aberto pelo Xnest"
 
-#: daemon/server.c:414
+#: daemon/server.c:425
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "Ecrã %s está ocupado. Já existe outro servidor X em execução."
 
-#: daemon/server.c:498
+#: daemon/server.c:509
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Erro na abertura de canal: %s"
 
 #. Send X too busy
-#: daemon/server.c:780
+#: daemon/server.c:794
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s: Incapaz de encontrar um número de ecrã livre"
 
-#: daemon/server.c:795
+#: daemon/server.c:821
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s: Ecrã %s ocupado.  A tentar outro número de ecrã."
 
-#: daemon/server.c:889
+#: daemon/server.c:916
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Comando de servidor '%s' inválido"
 
-#: daemon/server.c:894
+#: daemon/server.c:921
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "Nome de servidor '%s' não encontrado, a utilizar servidor standard"
 
-#: daemon/server.c:1070
+#: daemon/server.c:1097
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Incapaz de abrir ficheiro de registo para ecrã %s!"
 
-#: daemon/server.c:1083 daemon/server.c:1089 daemon/server.c:1094
+#: daemon/server.c:1110 daemon/server.c:1116 daemon/server.c:1121
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Erro ao definir %s como %s"
 
-#: daemon/server.c:1131
+#: daemon/server.c:1158
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Comando de servidor vazio para o ecrã %s"
 
-#: daemon/server.c:1145
+#: daemon/server.c:1172
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
 "%s: Servidor iria ser criado para o uid %d mas este utilizador não existe"
 
-#: daemon/server.c:1160 daemon/slave.c:2493 daemon/slave.c:2971
+#: daemon/server.c:1187 daemon/slave.c:2494 daemon/slave.c:2972
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Incapaz de definir id de grupo para %d"
 
-#: daemon/server.c:1166 daemon/slave.c:2498 daemon/slave.c:2976
+#: daemon/server.c:1193 daemon/slave.c:2499 daemon/slave.c:2977
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgroups() falhou para %s"
 
-#: daemon/server.c:1172 daemon/slave.c:2503 daemon/slave.c:2981
+#: daemon/server.c:1199 daemon/slave.c:2504 daemon/slave.c:2982
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Incapaz de definir id de utilizador para %d"
 
-#: daemon/server.c:1179
+#: daemon/server.c:1206
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: Incapaz de definir id de grupo para 0"
 
-#: daemon/server.c:1190
+#: daemon/server.c:1217
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: Xserver não encontrado: %s"
 
-#: daemon/server.c:1198
+#: daemon/server.c:1225
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: Incapaz de efectuar fork do processo Xserver!"
@@ -948,7 +948,7 @@ msgstr ""
 "Já tem uma sessão iniciada.  Ainda assim pode iniciar sessão ou abortar este "
 "início de sessão"
 
-#: daemon/slave.c:1214
+#: daemon/slave.c:1215
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -968,17 +968,17 @@ msgstr ""
 "Reinicie o gdm quando o problema\n"
 "estiver corrigido."
 
-#: daemon/slave.c:1463
+#: daemon/slave.c:1464
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: incapaz de efectuar fork"
 
-#: daemon/slave.c:1510
+#: daemon/slave.c:1511
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: incapaz de abrir ecrã %s"
 
-#: daemon/slave.c:1661
+#: daemon/slave.c:1662
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file.  I will attempt to start it from the "
@@ -988,7 +988,7 @@ msgstr ""
 "caminho está correctamente definido no ficheiro de configuração. Tentar-se-á "
 "iniciá-la a partir do local por omissão."
 
-#: daemon/slave.c:1675
+#: daemon/slave.c:1676
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file."
@@ -996,7 +996,7 @@ msgstr ""
 "Incapaz de executar a aplicação de configuração.  Certifique-se de que o seu "
 "caminho está correctamente definido no ficheiro de configuração."
 
-#: daemon/slave.c:1805
+#: daemon/slave.c:1806
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -1004,12 +1004,12 @@ msgstr ""
 "Introduza a senha de root\n"
 "para executar a configuração."
 
-#: daemon/slave.c:2447 daemon/slave.c:2452
+#: daemon/slave.c:2448 daemon/slave.c:2453
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Incapaz de iniciar canal para o gdmgreeter"
 
-#: daemon/slave.c:2575
+#: daemon/slave.c:2576
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  So I have started a single server "
@@ -1021,7 +1021,7 @@ msgstr ""
 "um único servidor.  Deverá iniciar uma sessão e corrigir a configuração. "
 "Note que inícios de sessão automáticos e temporizados estão agora inactivos."
 
-#: daemon/slave.c:2589
+#: daemon/slave.c:2590
 msgid ""
 "I could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -1031,7 +1031,7 @@ msgstr ""
 "este é um servidor X de recurso.  Deverá iniciar uma sessão e configurar "
 "correctamente o seu servidor X."
 
-#: daemon/slave.c:2598
+#: daemon/slave.c:2599
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1040,7 +1040,7 @@ msgstr ""
 "O número de ecrã indicado estava ocupado, pelo que este servidor foi "
 "iniciado no ecrã %s."
 
-#: daemon/slave.c:2618
+#: daemon/slave.c:2619
 msgid ""
 "The greeter program appears to be crashing.\n"
 "I will attempt to use a different one."
@@ -1049,19 +1049,19 @@ msgstr ""
 "Será tentada uma aplicação diferente."
 
 #. Something went wrong
-#: daemon/slave.c:2639
+#: daemon/slave.c:2640
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 "%s: Incapaz de iniciar as boas vindas com módulos gtk: %s. A tentar sem "
 "módulos"
 
-#: daemon/slave.c:2646
+#: daemon/slave.c:2647
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: Incapaz de iniciar as boas vindas, a tentar omissão: %s"
 
-#: daemon/slave.c:2658
+#: daemon/slave.c:2659
 msgid ""
 "Cannot start the greeter program, you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1072,27 +1072,27 @@ msgstr ""
 "forma e editar o ficheiro de configuração"
 
 #. If no greeter we really have to disable the display
-#: daemon/slave.c:2665
+#: daemon/slave.c:2666
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Erro ao iniciar boas vindas no ecrã %s"
 
-#: daemon/slave.c:2669
+#: daemon/slave.c:2670
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Incapaz de efectuar fork do processo gdmgreeter"
 
-#: daemon/slave.c:2754
+#: daemon/slave.c:2755
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Incapaz de abrir fifo!"
 
-#: daemon/slave.c:2930
+#: daemon/slave.c:2931
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: Incapaz de iniciar canal para o gdmchooser"
 
-#: daemon/slave.c:3028
+#: daemon/slave.c:3029
 msgid ""
 "Cannot start the chooser program, you will probably not be able to log in.  "
 "Please contact the system administrator."
@@ -1100,57 +1100,57 @@ msgstr ""
 "Incapaz de iniciar a aplicação selectora, provavelmente não lhe será "
 "possível iniciar sessão. Contacte o administrador do sistema."
 
-#: daemon/slave.c:3032
+#: daemon/slave.c:3033
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: Erro ao iniciar selector no ecrã %s"
 
-#: daemon/slave.c:3035
+#: daemon/slave.c:3036
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: Incapaz de efectuar fork do processo gdmchooser"
 
-#: daemon/slave.c:3279
+#: daemon/slave.c:3280
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Incapaz de abrir ~/.xsession-errors"
 
-#: daemon/slave.c:3410
+#: daemon/slave.c:3411
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: Execução do script pré-sessão devolveu > 0. A abortar."
 
-#: daemon/slave.c:3439
+#: daemon/slave.c:3440
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "Idioma %s não existe, a utilizar %s"
 
-#: daemon/slave.c:3440
+#: daemon/slave.c:3441
 msgid "System default"
 msgstr "Por omissão de sistema"
 
-#: daemon/slave.c:3456
+#: daemon/slave.c:3457
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Incapaz de configurar ambiente para %s. A abortar."
 
-#: daemon/slave.c:3477
+#: daemon/slave.c:3478
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: setusercontext() falhou para %s. A abortar."
 
-#: daemon/slave.c:3483
+#: daemon/slave.c:3484
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Incapaz de se tornar %s. A abortar."
 
-#: daemon/slave.c:3543
+#: daemon/slave.c:3544
 #, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
 msgstr ""
 "%s: Nenhuma linha Exec no ficheiro de sessão: %s, a iniciar GNOME de recurso"
 
-#: daemon/slave.c:3549
+#: daemon/slave.c:3550
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
@@ -1158,7 +1158,7 @@ msgstr ""
 "A sessão que seleccionou não parece válida.  Será executada a sessão de "
 "recurso GNOME."
 
-#: daemon/slave.c:3563
+#: daemon/slave.c:3564
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
@@ -1166,7 +1166,7 @@ msgstr ""
 "%s: Incapaz de encontrar ou executar o script Xsession base, a tentar GNOME "
 "de recurso"
 
-#: daemon/slave.c:3569
+#: daemon/slave.c:3570
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
@@ -1175,14 +1175,14 @@ msgstr ""
 "de recurso"
 
 #. yaikes
-#: daemon/slave.c:3584
+#: daemon/slave.c:3585
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s: gnome-session não encontrado para uma sessão GNOME de recurso, a tentar "
 "xterm"
 
-#: daemon/slave.c:3589
+#: daemon/slave.c:3590
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
@@ -1190,7 +1190,7 @@ msgstr ""
 "Incapaz de encontrar a instalação GNOME, tentar-se-á executar a sessão "
 "\"xterm de recurso\"."
 
-#: daemon/slave.c:3597
+#: daemon/slave.c:3598
 msgid ""
 "This is the Failsafe Gnome session.  You will be logged into the 'Default' "
 "session of Gnome with no startup scripts run.  This is only to fix problems "
@@ -1200,11 +1200,11 @@ msgstr ""
 "Gnome sem que sejam executados scripts iniciais.  Isto serve apenas para "
 "poder resolver os problemas na sua instalação."
 
-#: daemon/slave.c:3612
+#: daemon/slave.c:3613
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Incapaz de encontrar \"xterm\" para iniciar uma sessão de recurso."
 
-#: daemon/slave.c:3625
+#: daemon/slave.c:3626
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1215,41 +1215,41 @@ msgstr ""
 "sessão de qualquer outra forma.  Para sair do emulador de terminal, escreva "
 "'exit' e prima enter na janela."
 
-#: daemon/slave.c:3652
+#: daemon/slave.c:3653
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Utilizador não autorizado a iniciar sessão"
 
-#: daemon/slave.c:3655
+#: daemon/slave.c:3656
 msgid "The system administrator has disabled your account."
 msgstr "O administrador do sistema desactivou a sua conta."
 
-#: daemon/slave.c:3668
+#: daemon/slave.c:3669
 msgid "Error! Unable to set executable context."
 msgstr "Erro! Incapaz de definir contexto executável."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3676 daemon/slave.c:3681
+#: daemon/slave.c:3677 daemon/slave.c:3682
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Incapaz de executar %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3692
+#: daemon/slave.c:3693
 msgid "Cannot start the session due to some internal error."
 msgstr "Incapaz de iniciar a sessão devido a um erro interno."
 
-#: daemon/slave.c:3746
+#: daemon/slave.c:3747
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Utilizador passou o auth mas o getpwnam(%s) falhou!"
 
-#: daemon/slave.c:3760
+#: daemon/slave.c:3761
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Execução do script pós-sessão devolveu > 0. A abortar."
 
-#: daemon/slave.c:3769
+#: daemon/slave.c:3770
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1266,12 +1266,12 @@ msgstr ""
 "\n"
 "É improvável que algo funcione excepto se utilizar uma sessão de recurso."
 
-#: daemon/slave.c:3777
+#: daemon/slave.c:3778
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Directório pessoal para %s: '%s' não existe!"
 
-#: daemon/slave.c:3940
+#: daemon/slave.c:3941
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1283,12 +1283,12 @@ msgstr ""
 "pode ser aberto para escrita.  Em qualquer um dos casos, não é possível "
 "iniciar sessão.  Contacte o seu administrador de sistema"
 
-#: daemon/slave.c:4016
+#: daemon/slave.c:4017
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Erro ao efectuar fork da sessão do utilizador"
 
-#: daemon/slave.c:4097
+#: daemon/slave.c:4098
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1300,25 +1300,25 @@ msgstr ""
 "estar sem espaço livre em disco.  Tente iniciar uma sessão com uma das "
 "sessões de recurso para tentar resolver este problema."
 
-#: daemon/slave.c:4105
+#: daemon/slave.c:4106
 msgid "View details (~/.xsession-errors file)"
 msgstr "Consultar detalhes (ficheiro ~/.xsession-errors)"
 
-#: daemon/slave.c:4249
+#: daemon/slave.c:4250
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM detectou uma acção de reiniciar ou desligar em curso."
 
-#: daemon/slave.c:4343
+#: daemon/slave.c:4344
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping para %s falhou, a terminar ecrã!"
 
-#: daemon/slave.c:4623
+#: daemon/slave.c:4630
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Erro X fatal - A reiniciar %s"
 
-#: daemon/slave.c:4717
+#: daemon/slave.c:4724
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1326,22 +1326,22 @@ msgstr ""
 "Pedido de som de início de sessão num ecrã não-local ou a aplicação de "
 "reprodução não pode ser executada ou o som não existe"
 
-#: daemon/slave.c:5072
+#: daemon/slave.c:5079
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Falha ao iniciar: %s"
 
-#: daemon/slave.c:5080 daemon/slave.c:5219
+#: daemon/slave.c:5087 daemon/slave.c:5226
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Incapaz de efectuar fork do processo script!"
 
-#: daemon/slave.c:5174
+#: daemon/slave.c:5181
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Falha ao criar canal"
 
-#: daemon/slave.c:5213
+#: daemon/slave.c:5220
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Falha ao executar: %s"
@@ -1461,8 +1461,8 @@ msgid ""
 "Your password has been changed but you may have to change it again, please "
 "try again later or contact your system administrator."
 msgstr ""
-"A sua senha foi alterada mas poderá ter de a alterar novamente, tente "
-"mais tarde ou contacte o administrador do sistema."
+"A sua senha foi alterada mas poderá ter de a alterar novamente, tente mais "
+"tarde ou contacte o administrador do sistema."
 
 #: daemon/verify-crypt.c:366 daemon/verify-shadow.c:385
 msgid ""
@@ -2406,278 +2406,293 @@ msgstr "A-M|Inglês (Britânico)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:97
+msgid "A-M|English (Canadian)"
+msgstr "A-M|Inglês (Canadiano)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:99
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Inglês (Irlandês)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:101
 msgid "A-M|Estonian"
 msgstr "A-M|Estónio"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:103
 msgid "A-M|Finnish"
 msgstr "N-Z|Finlandês"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
+#: gui/gdmlanguages.c:105
 msgid "A-M|French"
 msgstr "A-M|Francês"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:107
 msgid "A-M|Galician"
 msgstr "A-M|Galiciano"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:109
 msgid "A-M|German"
 msgstr "A-M|Alemão"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:111
 msgid "A-M|Greek"
 msgstr "A-M|Grego"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:113
 msgid "A-M|Gujarati"
 msgstr "A-M|Gujarati"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:113 gui/gdmlanguages.c:115
+#: gui/gdmlanguages.c:115 gui/gdmlanguages.c:117
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebreu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:117
+#: gui/gdmlanguages.c:119
 msgid "A-M|Hindi"
 msgstr "N-Z|Hindi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:119
+#: gui/gdmlanguages.c:121
 msgid "A-M|Hungarian"
 msgstr "A-M|Húngaro"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:123
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandês"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:125
 msgid "A-M|Indonesian"
 msgstr "A-M|Indonésio"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:127
 msgid "A-M|Interlingua"
 msgstr "A-M|Interlíngua"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:127
+#: gui/gdmlanguages.c:129
 msgid "A-M|Irish"
 msgstr "A-M|Irlandês"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:131
 msgid "A-M|Italian"
 msgstr "A-M|Italiano"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:133
 msgid "A-M|Japanese"
 msgstr "A-M|Japonês"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:133
+#: gui/gdmlanguages.c:135
 msgid "A-M|Kannada"
 msgstr "A-M|Canadiano"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:137
 msgid "A-M|Korean"
 msgstr "A-M|Coreano"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:137
+#: gui/gdmlanguages.c:139
 msgid "A-M|Latvian"
 msgstr "A-M|Letónia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:139
+#: gui/gdmlanguages.c:141
 msgid "A-M|Lithuanian"
 msgstr "A-M|Lituano"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:141
+#: gui/gdmlanguages.c:143
 msgid "A-M|Macedonian"
 msgstr "A-M|Macedónio"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:143
+#: gui/gdmlanguages.c:145
 msgid "A-M|Malay"
 msgstr "A-M|Malaio"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:145
+#: gui/gdmlanguages.c:147
 msgid "A-M|Malayalam"
 msgstr "A-M|Malaialam"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:147
+#: gui/gdmlanguages.c:149
 msgid "A-M|Marathi"
 msgstr "A-M|Marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:149
+#: gui/gdmlanguages.c:151
 msgid "A-M|Mongolian"
 msgstr "A-M|Mongól"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:151
+#: gui/gdmlanguages.c:153
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norueguês (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:153
+#: gui/gdmlanguages.c:155
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norueguês (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:155
+#: gui/gdmlanguages.c:157
 msgid "N-Z|Oriya"
 msgstr "A-M|Oriya"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:157
+#: gui/gdmlanguages.c:159
 msgid "N-Z|Panjabi"
 msgstr "A-M|Panjabi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:159
+#: gui/gdmlanguages.c:161
 msgid "N-Z|Persian"
 msgstr "N-Z|Persa"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:161
+#: gui/gdmlanguages.c:163
 msgid "N-Z|Polish"
 msgstr "N-Z|Polaco"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:163
+#: gui/gdmlanguages.c:165
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Português"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:165
+#: gui/gdmlanguages.c:167
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Português (Brasileiro)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:167
+#: gui/gdmlanguages.c:169
 msgid "N-Z|Romanian"
 msgstr "N-Z|Romeno"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:169
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Russian"
 msgstr "N-Z|Russo"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:171
+#: gui/gdmlanguages.c:173 gui/gdmlanguages.c:175
 msgid "N-Z|Serbian"
 msgstr "A-M|Sérvio"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:173
+#: gui/gdmlanguages.c:177
+msgid "N-Z|Serbian (Latin)"
+msgstr "A-M|Sérvio (Latino)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:179
+msgid "N-Z|Serbian (Jekavian)"
+msgstr "A-M|Sérvio (Jekavian)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Slovak"
 msgstr "A-M|Eslovaco"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:175
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Slovenian"
 msgstr "A-M|Esloveno"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:177
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Spanish"
 msgstr "A-M|Espanhol"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:179
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Spanish (Mexico)"
 msgstr "A-M|Espanhol (Mexicano)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:181
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Swedish"
 msgstr "N-Z|Sueco"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:183
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Sueco (Finlandês)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:185
+#: gui/gdmlanguages.c:193
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamil"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:187
+#: gui/gdmlanguages.c:195
 msgid "N-Z|Telugu"
 msgstr "N-Z|Telugu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:189
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Thai"
 msgstr "N-Z|Tailandês"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:191
+#: gui/gdmlanguages.c:199
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turco"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:193
+#: gui/gdmlanguages.c:201
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ucraniano"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:195
+#: gui/gdmlanguages.c:203
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamita"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:197
+#: gui/gdmlanguages.c:205
 msgid "N-Z|Walloon"
 msgstr "N-Z|Walloon"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:199
+#: gui/gdmlanguages.c:207
 msgid "N-Z|Welsh"
 msgstr "N-Z|Galês"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:201
+#: gui/gdmlanguages.c:209
 msgid "N-Z|Yiddish"
 msgstr "N-Z|Yiddish"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:203
+#: gui/gdmlanguages.c:211
 msgid "Other|POSIX/C English"
 msgstr "Outra|Inglês POSIX/C"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:378
+#: gui/gdmlanguages.c:407
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:386
+#: gui/gdmlanguages.c:415
 msgid "N-Z"
 msgstr "N-Z"
 
