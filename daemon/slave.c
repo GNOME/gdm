@@ -1479,11 +1479,10 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		setuid (0);
 		setgid (0);
+		gdm_desetuid ();
 
 		/* setup environment */
-		/* FIXME: clearing environment is likely fairly stupid,
-		 * is there any reason we should do it anyway? */
-		/* gdm_clearenv_no_lang (); */
+		gdm_restoreenv ();
 
 		/* root here */
 		ve_setenv ("XAUTHORITY", GDM_AUTHFILE (display), TRUE);

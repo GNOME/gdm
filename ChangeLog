@@ -1,3 +1,11 @@
+Thu Sep 25 11:23:24 2003  George Lebl <jirka@5z.com>
+
+	* daemon/errorgui.c, daemon/slave.c: be even analer (is that 
+	  a word?) about the setuid stuff here (it can't actually
+	  fail, but just in case, we're being paranoid)  Also reset
+	  the environment and desetuid for the setup program even
+	  though that's not really needed.
+
 Thu Sep 25 10:37:38 2003  George Lebl <jirka@5z.com>
 
 	* daemon/auth.c, daemon/filecheck.[ch], daemon/gdm.[ch],

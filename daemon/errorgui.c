@@ -306,9 +306,14 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		if (uid != 0) {
 			gid_t groups[1] = { gid };
 
-			setgid (gid);
-			setgroups (1, groups);
-			setuid (uid);
+			/* if we for some reason fail here
+			   don't allow the file */
+			if G_UNLIKELY (setgid (gid) != 0)
+				details_file = NULL;
+			if G_UNLIKELY (setgroups (1, groups) != 0)
+				details_file = NULL;
+			if G_UNLIKELY (setuid (uid) != 0)
+				details_file = NULL;
 
 			gdm_desetuid ();
 		}
