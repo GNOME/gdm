@@ -84,19 +84,26 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
     
     if (sp)
 	ppasswd = sp->sp_pwdp;
+    else
+	ppasswd = NULL;
     
     endspent();
 
     /* Request the user's password */
-    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
-    if (passwd == NULL)
+    if (gdm_string_empty (ppasswd)) {
+	    /* eeek a passwordless account */
 	    passwd = g_strdup ("");
-    if (gdm_slave_greeter_check_interruption (passwd)) {
-	    if (local)
-		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-	    g_free (login);
-	    g_free (passwd);
-	    return NULL;
+    } else {
+	    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
+	    if (passwd == NULL)
+		    passwd = g_strdup ("");
+	    if (gdm_slave_greeter_check_interruption (passwd)) {
+		    if (local)
+			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+		    g_free (login);
+		    g_free (passwd);
+		    return NULL;
+	    }
     }
 
     if (local)
@@ -105,6 +112,15 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
     if (!pwent) {
 	    gdm_error (_("Couldn't authenticate %s"), login);
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
+	    return NULL;
+    }
+
+    /* Check whether password is valid */
+    if (ppasswd == NULL || (ppasswd[0] != '\0' &&
+			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
+	    g_free (login);
+	    g_free (passwd);
 	    return NULL;
     }
 
@@ -119,6 +135,8 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
 						  _("Login incorrect"));
 	    }
+	    g_free (login);
+	    g_free (passwd);
 	    return NULL;
     }
 
@@ -133,14 +151,11 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
 						  _("Login incorrect"));
 	    }
+	    g_free (login);
+	    g_free (passwd);
 	    return NULL;
     }	
-
-    /* Check whether password is valid */
-    if (!passwd || !ppasswd || strcmp (crypt (passwd, ppasswd), ppasswd)) {
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
-	    return NULL;
-    }
+    g_free (passwd);
 
     return login;
 }

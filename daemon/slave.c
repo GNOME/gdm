@@ -363,6 +363,65 @@ gdm_slave_whack_greeter (void)
 	sigprocmask (SIG_SETMASK, &omask, NULL);
 }
 
+/* A hack really, this will wait around until the first mapped window
+ * with this class and focus it */
+static void
+focus_first_x_window (const char *class_res_name)
+{
+	pid_t pid;
+	Display *disp;
+	XWindowAttributes attribs = { 0, };
+
+	pid = fork ();
+	if (pid < 0) {
+		gdm_error (_("focus_first_x_window: cannot fork"));
+		return;
+	}
+	/* parent */
+	if (pid > 0) {
+		return;
+	}
+
+	disp = XOpenDisplay (d->name);
+	if (disp == NULL) {
+		gdm_error (_("focus_first_x_window: cannot open display %s"),
+			   d->name);
+		_exit (0);
+	}
+
+	/* set event mask for events on root window */
+	XGetWindowAttributes (disp,
+			      DefaultRootWindow (disp),
+			      &attribs);
+	XSelectInput (disp,
+		      DefaultRootWindow (disp),
+		      attribs.your_event_mask |
+		      SubstructureNotifyMask);
+	
+	for (;;) {
+		XEvent event = { 0, };
+		XClassHint hint = { NULL, NULL };
+
+		XNextEvent (disp, &event);
+
+		if (event.type == MapNotify &&
+		    XGetClassHint (disp,
+				   event.xmap.window,
+				   &hint) &&
+		    hint.res_name != NULL &&
+		    strcmp (hint.res_name, class_res_name) == 0) {
+			XSetInputFocus (disp,
+					event.xmap.window,
+					RevertToPointerRoot,
+					CurrentTime);
+			XSync (disp, True);
+			XCloseDisplay (disp);
+
+			_exit (0);
+		}
+	}
+}
+
 /* A hack really, this pretends to be a standalone gtk program */
 /* this should only be called once forked and all thingies are closed */
 static void
@@ -1252,6 +1311,7 @@ gdm_slave_session_start (void)
 				   "if you cannot log in any other way.\n"
 				   "To exit the terminal emulator, type\n"
 				   "'exit' and an enter into the window."));
+			focus_first_x_window ("xterm");
 		}
 	} 
 

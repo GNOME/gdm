@@ -81,15 +81,21 @@ gdm_verify_user (const char *username,
     ppasswd = !pwent ? NULL : pwent->pw_passwd;
     
     /* Request the user's password */
-    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
-    if (passwd == NULL)
+    if (gdm_string_empty (ppasswd)) {
+	    /* eeek a passwordless account */
 	    passwd = g_strdup ("");
-    if (gdm_slave_greeter_check_interruption (passwd)) {
-	    if (local)
-		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-	    g_free (login);
-	    g_free (passwd);
-	    return NULL;
+    } else {
+	    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
+	    if (passwd == NULL)
+		    passwd = g_strdup ("");
+	    if (gdm_slave_greeter_check_interruption (passwd)) {
+		    if (local)
+			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+		    g_free (login);
+		    g_free (passwd);
+		    return NULL;
+    }
+
     }
 
     if (local)
@@ -98,6 +104,17 @@ gdm_verify_user (const char *username,
     if (pwent == NULL) {
 	    gdm_error (_("Couldn't authenticate %s"), login);
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
+	    g_free (login);
+	    g_free (passwd);
+	    return NULL;
+    }
+
+    /* Check whether password is valid */
+    if (ppasswd == NULL || (ppasswd[0] != '\0' &&
+			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
+	    g_free (login);
+	    g_free (passwd);
 	    return NULL;
     }
 
@@ -112,6 +129,8 @@ gdm_verify_user (const char *username,
 		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
 						  _("Login incorrect"));
 	    }
+	    g_free (login);
+	    g_free (passwd);
 	    return NULL;
     }
 
@@ -129,11 +148,7 @@ gdm_verify_user (const char *username,
 	    return NULL;
     }	
 
-    /* Check whether password is valid */
-    if (!passwd || !ppasswd || strcmp (crypt (passwd, ppasswd), ppasswd)) {
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
-	    return NULL;
-    }
+    g_free (passwd);
     
     return login;
 }
@@ -156,10 +171,11 @@ gdm_verify_setup_user (const gchar *login, const gchar *display)
 /**
  * gdm_verify_cleanup:
  *
- * Unregister the user's session */
+ * Unregister the user's session
+ */
 
 void
-gdm_verify_check (void)
+gdm_verify_cleanup (void)
 {
 }
 

@@ -1,3 +1,17 @@
+Sat May 12 23:44:38 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: add configuration summary, fix libwrap detection
+	  and add configuration options to enable/disable xinerama
+	  tcpwrappers and choose the authentication scheme
+
+	* daemon/verify-crypt.c, daemon/verify-shadow.c:  don't ask for
+	  passwords on passwordless logins, fix a leak, and make crypt
+	  support actually compile.  Also check password before testing if
+	  the account is disabled.
+
+	* daemon/slave.c:  Focus first X window with res_name "xterm" when
+	  running the failsafe xterm session
+
 Sat May 12 19:32:31 2001  George Lebl <jirka@5z.com>
 
 	* configure.in: when we don't find the wrappers library don't add
