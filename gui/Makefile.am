@@ -37,7 +37,9 @@ gdmXnestchooser_SOURCES = \
 	gdmXnestchooser.c
 
 gdmflexiserver_SOURCES = \
-	gdmflexiserver.c
+	gdmflexiserver.c	\
+	gdmcomm.c		\
+	gdmcomm.h
 
 libgdmwm_a_SOURCES = \
 	gdmwm.c			\
@@ -63,6 +65,8 @@ gdmconfig_SOURCES = \
 
 gdmsetup_SOURCES = \
 	gdmsetup.c		\
+	gdmcomm.c		\
+	gdmcomm.h		\
 	misc.c			\
 	misc.h
 

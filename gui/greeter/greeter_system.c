@@ -7,6 +7,7 @@
 #include "greeter_item.h"
 
 #include <syslog.h>
+#include <unistd.h>
 
 #include "gdm.h"
 #include "gdmwm.h"

@@ -34,6 +34,7 @@
 
 #include "gdm.h"
 #include "misc.h"
+#include "gdmcomm.h"
 
 /* set the DOING_GDM_DEVELOPMENT env variable if you want to
  * search for the glade file in the current dir and not the system
@@ -42,6 +43,8 @@
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 
 static gboolean RUNNING_UNDER_GDM = FALSE;
+
+static gboolean gdm_running = FALSE;
 
 static GladeXML *xml;
 
@@ -141,6 +144,43 @@ gdm_event (GSignalInvocationHint *ihint,
 	return TRUE;
 }      
 
+static void
+update_greeters (void)
+{
+	char *p, *ret;
+	long pid;
+
+	if ( ! gdm_running)
+		return;
+
+	ret = gdmcomm_call_gdm (GDM_SUP_GREETERPIDS,
+				NULL /* auth_cookie */,
+				"2.3.90.2",
+				5);
+	if (ret == NULL)
+		return;
+	p = strchr (ret, ' ');
+	if (p == NULL) {
+		g_free (ret);
+		return;
+	}
+	p++;
+
+	for (;;) {
+		if (sscanf (p, "%ld", &pid) != 1) {
+			g_free (ret);
+			return;
+		}
+		kill (pid, SIGHUP);
+		p = strchr (p, ';');
+		if (p == NULL) {
+			g_free (ret);
+			return;
+		}
+		p++;
+	}
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -161,6 +201,8 @@ main (int argc, char *argv[])
 			    NULL);
 
 	glade_gnome_init();
+
+	gdm_running = gdmcomm_check (FALSE /* gui_bitching */);
 
 	if (RUNNING_UNDER_GDM) {
 		char *gtkrc;
