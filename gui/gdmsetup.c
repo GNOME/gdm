@@ -1207,6 +1207,7 @@ install_ok (GtkWidget *button, gpointer data)
 	GtkTreeSelection *selection;
 	char *error;
 	DIR *dp;
+	gboolean success = FALSE;
 
 	cwd = g_get_current_dir ();
 	theme_dir = get_theme_dir ();
@@ -1258,9 +1259,22 @@ install_ok (GtkWidget *button, gpointer data)
 	g_assert (untar_cmd != NULL);
 
 	if (chdir (theme_dir) == 0) {
-		system (untar_cmd);
-		/* FIXME: check for errors */
+		if (system (untar_cmd) == 0)
+			success = TRUE;
 		chdir (cwd);
+	}
+
+	if ( ! success) {
+		GtkWidget *dlg =
+			gtk_message_dialog_new (GTK_WINDOW (fs),
+						GTK_DIALOG_MODAL | 
+						GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_OK,
+						_("Some error occured when "
+						  "installing the theme"));
+		gtk_dialog_run (GTK_DIALOG (dlg));
+		gtk_widget_destroy (dlg);
 	}
 
 	gtk_list_store_clear (store);
