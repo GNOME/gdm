@@ -734,6 +734,8 @@ setup_background_support (void)
 }
 
 enum {
+	THEME_COLUMN_SELECTED,
+	THEME_COLUMN_DIR,
 	THEME_COLUMN_FILE,
 	THEME_COLUMN_NAME,
 	THEME_COLUMN_DESCRIPTION,
@@ -743,13 +745,15 @@ enum {
 	THEME_NUM_COLUMNS
 };
 
+static char *selected_theme = NULL;
+
 static char *
 get_theme_dir (void)
 {
 	char *theme_dir;
 
 	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	theme_dir = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME);
+	theme_dir = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME_DIR);
 	gnome_config_pop_prefix ();
 
 	if (theme_dir == NULL ||
@@ -766,14 +770,12 @@ static void
 selection_changed (GtkTreeSelection *selection,
 		   GtkWidget        *dialog)
 {
-        GtkWidget *label = glade_helper_get (xml, "gg_desc_label",
-					     GTK_TYPE_LABEL);
+        GtkWidget *label;
         GtkWidget *preview = glade_helper_get (xml, "gg_theme_preview",
 					       GTK_TYPE_IMAGE);
         GtkWidget *no_preview = glade_helper_get (xml, "gg_theme_no_preview",
 						  GTK_TYPE_WIDGET);
-        char *author, *copyright, *desc, *screenshot;
-        char *str;
+        char *screenshot;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GValue value = {0, };
@@ -784,33 +786,29 @@ selection_changed (GtkTreeSelection *selection,
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_AUTHOR,
 				  &value);
-	author = g_strdup (g_value_get_string (&value));
+        label = glade_helper_get (xml, "gg_author_label",
+				  GTK_TYPE_LABEL);
+	gtk_label_set_text (GTK_LABEL (label),
+			    ve_sure_string (g_value_get_string (&value)));
 	g_value_unset (&value);
 
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_COPYRIGHT,
 				  &value);
-	copyright = g_strdup (g_value_get_string (&value));
+        label = glade_helper_get (xml, "gg_copyright_label",
+				  GTK_TYPE_LABEL);
+	gtk_label_set_text (GTK_LABEL (label),
+			    ve_sure_string (g_value_get_string (&value)));
 	g_value_unset (&value);
 
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_DESCRIPTION,
 				  &value);
-	desc = g_strdup (g_value_get_string (&value));
+        label = glade_helper_get (xml, "gg_desc_label",
+				  GTK_TYPE_LABEL);
+	gtk_label_set_text (GTK_LABEL (label),
+			    ve_sure_string (g_value_get_string (&value)));
 	g_value_unset (&value);
-
-	str = g_strdup_printf (_("<b>Author:</b> %s\n"
-				 "<b>Copyright:</b> %s\n"
-				 "<b>Description:</b> %s"),
-			       ve_sure_string (author),
-			       ve_sure_string (copyright),
-			       ve_sure_string (desc));
-	g_free (author);
-	g_free (copyright);
-	g_free (desc);
-
-	gtk_label_set_markup (GTK_LABEL (label), str);
-	g_free (str);
 
 	gtk_tree_model_get_value (model, &iter,
 				  THEME_COLUMN_SCREENSHOT,
@@ -845,19 +843,19 @@ selection_changed (GtkTreeSelection *selection,
 	}
 
 	g_free (screenshot);
-
-	/* FIXME: save this choice */
 }
 
-static void
+static GtkTreeIter *
 read_themes (GtkListStore *store, const char *theme_dir, DIR *dir)
 {
 	struct dirent *dent;
+	GtkTreeIter *select_iter = NULL;
 
 	while ((dent = readdir (dir)) != NULL) {
 		char *n, *key, *file, *name, *desc, *author, *copyright, *ss;
 		char *full;
 		GtkTreeIter iter;
+		gboolean sel;
 		if (dent->d_name[0] == '.')
 			continue;
 		n = g_strconcat (theme_dir, "/", dent->d_name,
@@ -887,6 +885,11 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir)
 			continue;
 		}
 		g_free (full);
+		if (selected_theme != NULL &&
+		    strcmp (dent->d_name, selected_theme) == 0)
+			sel = TRUE;
+		else
+			sel = FALSE;
 
 		name = gnome_config_get_translated_string ("Name");
 		if (ve_string_empty (name)) {
@@ -907,6 +910,8 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir)
 
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter,
+				    THEME_COLUMN_SELECTED, sel,
+				    THEME_COLUMN_DIR, dent->d_name,
 				    THEME_COLUMN_FILE, file,
 				    THEME_COLUMN_NAME, name,
 				    THEME_COLUMN_DESCRIPTION, desc,
@@ -914,6 +919,12 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir)
 				    THEME_COLUMN_COPYRIGHT, copyright,
 				    THEME_COLUMN_SCREENSHOT, full,
 				    -1);
+
+		if (sel) {
+			/* anality */ g_free (select_iter);
+			select_iter = g_new0 (GtkTreeIter, 1);
+			*select_iter = iter;
+		}
 
 		g_free (file);
 		g_free (name);
@@ -924,6 +935,73 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir)
 		g_free (full);
 		g_free (n);
 	}
+	{
+		GtkTreeIter iter;
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
+				    THEME_COLUMN_DIR, "dir",
+				    THEME_COLUMN_FILE, "file",
+				    THEME_COLUMN_NAME, "foo",
+				    THEME_COLUMN_DESCRIPTION, "desc",
+				    THEME_COLUMN_AUTHOR, "author",
+				    THEME_COLUMN_COPYRIGHT, "copyright",
+				    THEME_COLUMN_SCREENSHOT, NULL,
+				    THEME_COLUMN_SELECTED, FALSE,
+				    -1);
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
+				    THEME_COLUMN_DIR, "dir2",
+				    THEME_COLUMN_FILE, "file2",
+				    THEME_COLUMN_NAME, "foo2",
+				    THEME_COLUMN_DESCRIPTION, "desc2",
+				    THEME_COLUMN_AUTHOR, "author2",
+				    THEME_COLUMN_COPYRIGHT, "copyright2",
+				    THEME_COLUMN_SCREENSHOT, NULL,
+				    THEME_COLUMN_SELECTED, FALSE,
+				    -1);
+	}
+
+	return select_iter;
+}
+
+static void
+selected_toggled (GtkCellRendererToggle *cell,
+		  char                  *path_str,
+		  gpointer               data)
+{
+	GtkTreeModel *model = GTK_TREE_MODEL (data);
+	GtkTreeIter selected_iter;
+	GtkTreeIter iter;
+	GtkTreePath *sel_path = gtk_tree_path_new_from_string (path_str);
+	GtkTreePath *path;
+
+	gtk_tree_model_get_iter (model, &selected_iter, sel_path);
+
+	g_free (selected_theme);
+	gtk_tree_model_get (model, &selected_iter,
+			    THEME_COLUMN_DIR, &selected_theme,
+			    -1);
+
+	/* FIXME: queue a save and update */
+
+	path = gtk_tree_path_new_first ();
+	while (gtk_tree_model_get_iter (model, &iter, path)) {
+
+		if (gtk_tree_path_compare (path, sel_path) == 0) {
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					    THEME_COLUMN_SELECTED, TRUE,
+					    -1);
+		} else {
+			gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+					    THEME_COLUMN_SELECTED, FALSE,
+					    -1);
+		}
+
+		gtk_tree_path_next (path);
+	}
+
+	gtk_tree_path_free (path);
+	gtk_tree_path_free (sel_path);
 }
 
 static void
@@ -934,13 +1012,20 @@ setup_graphical_themes (void)
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
+	GtkTreeIter *select_iter = NULL;
 	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
 						  GTK_TYPE_TREE_VIEW);
 
 	char *theme_dir = get_theme_dir ();
 
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	selected_theme = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME);
+	gnome_config_pop_prefix ();
+
 	/* create list store */
 	store = gtk_list_store_new (THEME_NUM_COLUMNS,
+				    G_TYPE_BOOLEAN /* selected */,
+				    G_TYPE_STRING /* dir */,
 				    G_TYPE_STRING /* file */,
 				    G_TYPE_STRING /* name */,
 				    G_TYPE_STRING /* desc */,
@@ -951,7 +1036,7 @@ setup_graphical_themes (void)
 	dir = opendir (theme_dir);
 
 	if (dir != NULL) {
-		read_themes (store, theme_dir, dir);
+		select_iter = read_themes (store, theme_dir, dir);
 		closedir (dir);
 	}
 
@@ -960,14 +1045,39 @@ setup_graphical_themes (void)
 	gtk_tree_view_set_model (GTK_TREE_VIEW (theme_list), 
 				 GTK_TREE_MODEL (store));
 
+	/* The toggle column */
+
 	column = gtk_tree_view_column_new ();
+
+	renderer = gtk_cell_renderer_toggle_new ();
+	gtk_cell_renderer_toggle_set_radio (GTK_CELL_RENDERER_TOGGLE (renderer),
+					    TRUE);
+        gtk_tree_view_column_pack_start (column, renderer, FALSE);
+
+        gtk_tree_view_column_set_attributes (column, renderer,
+                                             "active", THEME_COLUMN_SELECTED,
+                                             NULL);
+
+	g_signal_connect (G_OBJECT (renderer), "toggled",
+			  G_CALLBACK (selected_toggled), store);
+
+	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
+
+	/* The text column */
+
+	column = gtk_tree_view_column_new ();
+
+
 	renderer = gtk_cell_renderer_text_new ();
         gtk_tree_view_column_pack_start (column, renderer, TRUE);
 
         gtk_tree_view_column_set_attributes (column, renderer,
                                              "text", THEME_COLUMN_NAME,
                                              NULL);
+
 	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
+
+	/* Selection setup */
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
 
@@ -977,6 +1087,10 @@ setup_graphical_themes (void)
 			  G_CALLBACK (selection_changed),
 			  NULL);
 
+	if (select_iter != NULL) {
+		gtk_tree_selection_select_iter (selection, select_iter);
+		g_free (select_iter);
+	}
 }
 
 static void
