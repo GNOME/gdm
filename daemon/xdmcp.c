@@ -859,7 +859,7 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 			    g_free (last_status);
 			    last_status = g_strdup (sysid);
 		    }
-		    fclose (fd);
+		    pclose (fd);
 	    } else {
 		    g_free (last_status);
 		    last_status = g_strdup (sysid);
