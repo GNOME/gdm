@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.2.2.2\n"
-"POT-Creation-Date: 2001-12-14 23:27+0100\n"
-"PO-Revision-Date: 2001-12-14 23:33+0100\n"
+"POT-Creation-Date: 2002-02-01 00:25+0100\n"
+"PO-Revision-Date: 2002-02-01 00:26+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -185,7 +185,9 @@ msgstr ""
 msgid ""
 "Xdmcp is disabled and gdm cannot find any local server to start.  Aborting!  "
 "Please correct the configuration %sand restart gdm."
-msgstr "Xdmcp er deaktivert og gdm kan ikke finne en lokal tjener å starte. Avbryter!  Vennligst korriger konfigurasjonen %s og start gdm på nytt."
+msgstr ""
+"Xdmcp er deaktivert og gdm kan ikke finne en lokal tjener å starte. "
+"Avbryter!  Vennligst korriger konfigurasjonen %s og start gdm på nytt."
 
 #: daemon/gdm.c:468
 msgid ""
@@ -203,7 +205,9 @@ msgstr "gdm_config_parse: Kan ikke finne gdm brukeren (%s). Prøver 'nobody'!"
 msgid ""
 "The gdm user does not exist.  Please correct gdm configuration %s and "
 "restart gdm."
-msgstr "Gdm-brukeren eksisterer ikke. Vennligst korriger konfigurasjonen %s og start gdm på nytt."
+msgstr ""
+"Gdm-brukeren eksisterer ikke. Vennligst korriger konfigurasjonen %s og start "
+"gdm på nytt."
 
 #: daemon/gdm.c:488
 #, c-format
@@ -216,6 +220,9 @@ msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"Gdm-bruker er satt til root, men dette tillates ikke siden det kan være en "
+"sikkerhetsrisiko. Vennligst korriger gdm-konfigurasjon %s og start gdm på "
+"nytt."
 
 #: daemon/gdm.c:500
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
@@ -231,7 +238,9 @@ msgstr "gdm_config_parse: Kan ikke finne gdm gruppen (%s). Prøver 'nobody'!"
 msgid ""
 "The gdm group does not exist.  Please correct gdm configuration %s and "
 "restart gdm."
-msgstr "gdm-gruppen eksisterer ikke.  Vennligst korriger konfigurasjonen %s og start gdm på nytt."
+msgstr ""
+"gdm-gruppen eksisterer ikke.  Vennligst korriger konfigurasjonen %s og start "
+"gdm på nytt."
 
 #: daemon/gdm.c:518
 #, c-format
@@ -244,6 +253,9 @@ msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"Gdm-gruppe er satt til root, men dette tillates ikke siden det kan være en "
+"sikkerhetsrisiko. Vennligst korriger gdm-konfigurasjon %s og start gdm på "
+"nytt."
 
 #: daemon/gdm.c:530
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
@@ -265,6 +277,9 @@ msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
 "does not exist.  Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"Autorisasjonskatalog for tjener (daemon/ServAuthDir) er satt til %s, men "
+"denne eksisterer ikke. Vennligst korriger gdm-konfigurasjon %s og start gdm "
+"på nytt."
 
 #: daemon/gdm.c:568
 #, c-format
@@ -278,6 +293,9 @@ msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
 "not a directory.  Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"Autorisasjonskatalog for tjener (daemon/ServAuthDir) er satt til %s, men "
+"dette er ikke en katalog. Vennligst korriger gdm-konfigurasjon %s og start "
+"gdm på nytt."
 
 #: daemon/gdm.c:579
 #, c-format
@@ -292,6 +310,9 @@ msgid ""
 "owned by user %s and group %s.  Please correct the ownership or gdm "
 "configuration %s and restart gdm."
 msgstr ""
+"Autorisasjonskatalog for tjener (daemon/ServAuthDir) er satt til %s men er "
+"ikke eid av bruker %s og gruppe %s. Vennligst korriger eierskap eller gdm-"
+"konfigurasjon %s og start gdm på nytt."
 
 #: daemon/gdm.c:592
 #, c-format
@@ -305,16 +326,22 @@ msgstr ""
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
-"wrong permissions, it should have permissions of 0750.Please correct the "
+"wrong permissions, it should have permissions of 0750. Please correct the "
 "permissions or the gdm configuration %s and restart gdm."
 msgstr ""
+"Autorisasjonskatalog for tjener (daemon/ServAuthDir) er satt til %s men har "
+"ikke riktige rettigheter. Den burde ha tilgangsrettigheter lik 0750. "
+"Vennligst korriger rettighetene eller gdm-konfigurasjon %s og start gdm på "
+"nytt."
 
 #: daemon/gdm.c:606
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. "
 "Aborting."
-msgstr "gdm_config_parse: Autentiseringskatalogen %s har uriktige tilgangsrettigheter %o. Skal være 0750. Avbryter."
+msgstr ""
+"gdm_config_parse: Autentiseringskatalogen %s har uriktige "
+"tilgangsrettigheter %o. Skal være 0750. Avbryter."
 
 #: daemon/gdm.c:661
 msgid "gdm_daemonify: fork() failed!"
@@ -845,13 +872,13 @@ msgstr "gdm_slave_chooser: Kan ikke kjøre fork() på gdmchooser prosess"
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Kunne sette opp miljø for %s. Avbryter."
 
-#: daemon/slave.c:1873
+#: daemon/slave.c:1877
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Kunne ikke bli %s. Avbryter."
 
 #. yaikes
-#: daemon/slave.c:1939
+#: daemon/slave.c:1943
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -859,7 +886,7 @@ msgstr ""
 "gdm_slave_session_start: gnome-session ble ikke funnet for en feilsikker "
 "gnome sesjon, prøver xterm"
 
-#: daemon/slave.c:1943
+#: daemon/slave.c:1947
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -869,7 +896,7 @@ msgstr ""
 "vil forsøke å kjøre \"Feilsikker xterm\"-\n"
 "sesjonen."
 
-#: daemon/slave.c:1949
+#: daemon/slave.c:1953
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -883,11 +910,11 @@ msgstr ""
 "skript. Bruk denne kun for å rette opp\n"
 "problemer med installasjonen."
 
-#: daemon/slave.c:1968
+#: daemon/slave.c:1972
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Kan ikke finne \"xterm\" for en feilsikker sesjon."
 
-#: daemon/slave.c:1975
+#: daemon/slave.c:1979
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -904,16 +931,16 @@ msgstr ""
 "terminalemulatoren, skriv 'exit' og\n"
 "trykk linjeskift."
 
-#: daemon/slave.c:1997
+#: daemon/slave.c:2001
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "Kjører %s for %s på %s"
 
-#: daemon/slave.c:2011
+#: daemon/slave.c:2015
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: Bruker har ikke tillatelse til å logge inn"
 
-#: daemon/slave.c:2013
+#: daemon/slave.c:2017
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -921,12 +948,12 @@ msgstr ""
 "Systemadministrator har\n"
 "deaktivert din konto."
 
-#: daemon/slave.c:2016
+#: daemon/slave.c:2020
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: Kunne ikke finne/kjøre sesjon `%s'"
 
-#: daemon/slave.c:2021
+#: daemon/slave.c:2025
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -938,12 +965,12 @@ msgstr ""
 "med tilgjengelige sesjoner i innloggings-\n"
 "vinduet."
 
-#: daemon/slave.c:2029
+#: daemon/slave.c:2033
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Kunne ikke starte sesjon `%s'"
 
-#: daemon/slave.c:2032
+#: daemon/slave.c:2036
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -953,14 +980,14 @@ msgstr ""
 "systemadministrator har deaktivert innlogging.\n"
 "Det kan også indikere en feil med din konto.\n"
 
-#: daemon/slave.c:2064
+#: daemon/slave.c:2068
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: Bruker passerte autentisering men getpwnam(%s) "
 "feilet.!"
 
-#: daemon/slave.c:2070
+#: daemon/slave.c:2074
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -981,16 +1008,16 @@ msgstr ""
 "Det er sannsynlig av dette ikke vil fungere\n"
 "med mindre du velger en feilsikker sesjon."
 
-#: daemon/slave.c:2078
+#: daemon/slave.c:2082
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Hjemmekatalog for %s: «%s» eksisterer ikke!"
 
-#: daemon/slave.c:2225
+#: daemon/slave.c:2229
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr "gdm_slave_session_start: Autentisering fullført. Fjerner greeter."
 
-#: daemon/slave.c:2243
+#: daemon/slave.c:2247
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -998,64 +1025,64 @@ msgstr ""
 "gdm_slave_session_start: Kjøring av PreSession skript returnerte > 0. "
 "Avbryter."
 
-#: daemon/slave.c:2280
+#: daemon/slave.c:2284
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Feil under forking av brukersesjon"
 
-#: daemon/slave.c:2464
+#: daemon/slave.c:2468
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping til %s feilet. Dæjå!"
 
-#: daemon/slave.c:2585
+#: daemon/slave.c:2589
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Fatal X feil - Starter %s på nytt"
 
-#: daemon/slave.c:2776
+#: daemon/slave.c:2780
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Feil under oppstart: %s"
 
-#: daemon/slave.c:2782
+#: daemon/slave.c:2786
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Kan ikke kjøre fork på skriptprosessen!"
 
-#: daemon/slave.c:2906
+#: daemon/slave.c:2910
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "gdm_parse_enriched_login: Feil under oppretting av rør"
 
-#: daemon/slave.c:2928
+#: daemon/slave.c:2932
 #, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "gdm_parse_enriched_login: Feil under kjøring: %s"
 
-#: daemon/slave.c:2933
+#: daemon/slave.c:2937
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login: Kan ikke kjøre fork på skriptprosessen!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:68 daemon/verify-pam.c:295 daemon/verify-shadow.c:67
-#: gui/gdmlogin.c:3127
+#: daemon/verify-crypt.c:69 daemon/verify-pam.c:296 daemon/verify-shadow.c:68
+#: gui/gdmlogin.c:3146
 msgid "Please enter your username"
 msgstr "Vennligst skriv inn brukernavn"
 
-#: daemon/verify-crypt.c:69 daemon/verify-pam.c:296 daemon/verify-shadow.c:68
-#: gui/gdmlogin.c:3090
+#: daemon/verify-crypt.c:70 daemon/verify-pam.c:297 daemon/verify-shadow.c:69
+#: gui/gdmlogin.c:3109
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: daemon/verify-crypt.c:91 daemon/verify-shadow.c:100
+#: daemon/verify-crypt.c:92 daemon/verify-shadow.c:101
 msgid "Password: "
 msgstr "Passord: "
 
-#: daemon/verify-crypt.c:109 daemon/verify-pam.c:329 daemon/verify-pam.c:489
-#: daemon/verify-shadow.c:118
+#: daemon/verify-crypt.c:110 daemon/verify-pam.c:330 daemon/verify-pam.c:496
+#: daemon/verify-shadow.c:119
 msgid "Couldn't authenticate user"
 msgstr "Kunne ikke autentisere"
 
-#: daemon/verify-crypt.c:115 daemon/verify-crypt.c:135 daemon/verify-pam.c:435
-#: daemon/verify-shadow.c:124 daemon/verify-shadow.c:144
+#: daemon/verify-crypt.c:116 daemon/verify-crypt.c:136 daemon/verify-pam.c:438
+#: daemon/verify-shadow.c:125 daemon/verify-shadow.c:145
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case.  "
@@ -1065,24 +1092,24 @@ msgstr ""
 "Ugyldig brukernavn eller passord. Det må tas hensyn til små/store bokstaver. "
 "Vennligst sjekk at ikke Caps Lock tasten er aktivert"
 
-#: daemon/verify-crypt.c:149 daemon/verify-pam.c:342
-#: daemon/verify-shadow.c:158
+#: daemon/verify-crypt.c:150 daemon/verify-pam.c:343
+#: daemon/verify-shadow.c:159
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Root innlogging ikke tillatt på skjerm '%s'"
 
-#: daemon/verify-crypt.c:151 daemon/verify-shadow.c:160
+#: daemon/verify-crypt.c:152 daemon/verify-shadow.c:161
 msgid "The system administrator is not allowed to login from this screen"
 msgstr ""
 "Systemadministrator har ikke tillatelse til å logge inn fra denne skjermen"
 
-#: daemon/verify-crypt.c:167 daemon/verify-shadow.c:176
+#: daemon/verify-crypt.c:168 daemon/verify-shadow.c:177
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Bruker %s har ikke tillatelse til å logge inn"
 
-#: daemon/verify-crypt.c:169 daemon/verify-pam.c:372 daemon/verify-pam.c:522
-#: daemon/verify-shadow.c:178
+#: daemon/verify-crypt.c:170 daemon/verify-pam.c:373 daemon/verify-pam.c:529
+#: daemon/verify-shadow.c:179
 msgid ""
 "\n"
 "The system administrator has disabled your account."
@@ -1090,23 +1117,26 @@ msgstr ""
 "\n"
 "Systemadministrator har deaktivert din konto."
 
-#: daemon/verify-crypt.c:184 daemon/verify-crypt.c:218 daemon/verify-pam.c:390
-#: daemon/verify-pam.c:539 daemon/verify-shadow.c:192
-#: daemon/verify-shadow.c:225
+#: daemon/verify-crypt.c:185 daemon/verify-crypt.c:219 daemon/verify-pam.c:391
+#: daemon/verify-pam.c:546 daemon/verify-shadow.c:193
+#: daemon/verify-shadow.c:226
 #, c-format
 msgid "Cannot set user group for %s"
-msgstr ""
+msgstr "Kan ikke sette brukergruppe for %s"
 
-#: daemon/verify-crypt.c:186 daemon/verify-crypt.c:221 daemon/verify-pam.c:392
-#: daemon/verify-pam.c:542 daemon/verify-shadow.c:194
-#: daemon/verify-shadow.c:228
+#: daemon/verify-crypt.c:187 daemon/verify-crypt.c:222 daemon/verify-pam.c:393
+#: daemon/verify-pam.c:549 daemon/verify-shadow.c:195
+#: daemon/verify-shadow.c:229
 msgid ""
 "\n"
 "Cannot set your user group, you will not be able to log in, please contact "
 "your system administrator."
-msgstr "\nKan ikke sette din brukergruppe. Du vil ikke kunne logge inn. Vennligst kontakt din systemadministrator."
+msgstr ""
+"\n"
+"Kan ikke sette din brukergruppe. Du vil ikke kunne logge inn. Vennligst "
+"kontakt din systemadministrator."
 
-#: daemon/verify-crypt.c:213 daemon/verify-shadow.c:220
+#: daemon/verify-crypt.c:214 daemon/verify-shadow.c:221
 #, c-format
 msgid "Cannot get passwd structure for %s"
 msgstr "Kan ikke finne passwd-struktur for %s"
@@ -1135,7 +1165,7 @@ msgstr "Kan ikke sette PAM_RUSER=%s"
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Kan ikke sette PAM_RHOST=%s"
 
-#: daemon/verify-pam.c:345
+#: daemon/verify-pam.c:346
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1143,63 +1173,71 @@ msgstr ""
 "\n"
 "Systemadministrator kan ikke logge inn fra denne skjermen"
 
-#: daemon/verify-pam.c:361
+#: daemon/verify-pam.c:362
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Endring av autentiseringsegn feilet for bruker %s"
 
-#: daemon/verify-pam.c:363
+#: daemon/verify-pam.c:364
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
-"cantact the system administrator."
+"contact the system administrator."
 msgstr ""
+"\n"
+"Endring av autentiseringstegn feilet. Vennligst prøv igjen senere eller "
+"kontakt systemadministrator."
 
-#: daemon/verify-pam.c:370 daemon/verify-pam.c:519
+#: daemon/verify-pam.c:371 daemon/verify-pam.c:526
 #, c-format
 msgid "User %s no longer permitted to access the system"
-msgstr ""
+msgstr "Bruker %s har ikke rett til å aksessere systemet lenger"
 
-#: daemon/verify-pam.c:376 daemon/verify-pam.c:525
+#: daemon/verify-pam.c:377 daemon/verify-pam.c:532
 #, c-format
 msgid "User %s not permitted to gain access at this time"
-msgstr ""
+msgstr "Bruker %s har ikke rett til å aksessere systemet nå"
 
-#: daemon/verify-pam.c:378
+#: daemon/verify-pam.c:379
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporary."
-msgstr "\nSystemadministrator har deaktivert tilgagn til systemet midlertidig."
+msgstr ""
+"\n"
+"Systemadministrator har deaktivert tilgagn til systemet midlertidig."
 
-#: daemon/verify-pam.c:383 daemon/verify-pam.c:532
+#: daemon/verify-pam.c:384 daemon/verify-pam.c:539
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Kunne ikke sette kontohåndtering for %s"
 
-#: daemon/verify-pam.c:402 daemon/verify-pam.c:552
-#, c-format
-msgid "Couldn't open session for %s"
-msgstr "Kunne ikke åpne sesjon for %s"
-
-#: daemon/verify-pam.c:410 daemon/verify-pam.c:560
+#: daemon/verify-pam.c:403 daemon/verify-pam.c:567
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Kunne ikke sette credentials for %s"
 
-#: daemon/verify-pam.c:441 daemon/verify-pam.c:492
+#: daemon/verify-pam.c:413 daemon/verify-pam.c:559
+#, c-format
+msgid "Couldn't open session for %s"
+msgstr "Kunne ikke åpne sesjon for %s"
+
+#: daemon/verify-pam.c:444 daemon/verify-pam.c:499
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
 
-#: daemon/verify-pam.c:528
+#: daemon/verify-pam.c:535
 msgid ""
 "\n"
 "The system administrator has your disabled access to the system temporary."
-msgstr "\nSystemadministrator har deaktivert din tilgang til systemet midlertidig."
+msgstr ""
+"\n"
+"Systemadministrator har deaktivert din tilgang til systemet midlertidig."
 
-#: daemon/verify-pam.c:645
+#: daemon/verify-pam.c:652
 #, c-format
 msgid "Can't find PAM configuration file for gdm. I've tried %s, %s, %s and %s"
-msgstr "Kan ikke finne PAM konfigurasjonsfil for gdm. Har prøvd %s, %s, %s og %s"
+msgstr ""
+"Kan ikke finne PAM konfigurasjonsfil for gdm. Har prøvd %s, %s, %s og %s"
 
 #: daemon/xdmcp.c:238
 #, c-format
@@ -1410,7 +1448,7 @@ msgstr "gdm_signals_init: Feil under oppsett av INT signalhåndtereren"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Feil under oppsett av TERM signalhåndtereren"
 
-#: gui/gdmchooser.c:760 gui/gdmlogin.c:3767
+#: gui/gdmchooser.c:760 gui/gdmlogin.c:3786
 msgid "Could not set signal mask!"
 msgstr "Kunne ikke sette signalmaske!"
 
@@ -1487,7 +1525,7 @@ msgstr "Hjelp"
 msgid "Exit the application"
 msgstr "Avslutt applikasjonen"
 
-#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2885
+#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2904
 msgid "Quit"
 msgstr "Avslutt"
 
@@ -1531,7 +1569,7 @@ msgstr "Grunnleggende"
 msgid "Expert"
 msgstr "Ekspert"
 
-#: gui/gdmconfig.c:58 gui/gdmlogin.c:2871
+#: gui/gdmconfig.c:58 gui/gdmlogin.c:2890
 msgid "System"
 msgstr "System"
 
@@ -1636,8 +1674,8 @@ msgstr ""
 "Konfigurasjonsfilen: %s\n"
 "eksisterer ikke! Bruker standardverdier."
 
-#: gui/gdmconfig.c:738 gui/gdmconfig.c:1090 gui/gdmconfig.c:1953
-#: gui/gdmconfig.c:2175 gui/gdmflexiserver.c:449
+#: gui/gdmconfig.c:738 gui/gdmconfig.c:1090 gui/gdmconfig.c:1984
+#: gui/gdmconfig.c:2206 gui/gdmflexiserver.c:449
 msgid "Standard server"
 msgstr "Forvalgt tjener"
 
@@ -1649,12 +1687,12 @@ msgstr "Feil under lesing av sesjonsskript!"
 msgid "Error reading this session script"
 msgstr "Feil under lesing av dette sesjonsskriptet"
 
-#: gui/gdmconfig.c:1049 gui/gdmconfig.c:1095 gui/gdmconfig.c:1937
-#: gui/gdmconfig.c:2015 gui/gdmconfig.c:2031
+#: gui/gdmconfig.c:1049 gui/gdmconfig.c:1095 gui/gdmconfig.c:1534
+#: gui/gdmconfig.c:1968 gui/gdmconfig.c:2046 gui/gdmconfig.c:2062
 msgid "Yes"
 msgstr "Ja"
 
-#: gui/gdmconfig.c:1051 gui/gdmconfig.c:2019 gui/gdmconfig.c:2033
+#: gui/gdmconfig.c:1051 gui/gdmconfig.c:2050 gui/gdmconfig.c:2064
 msgid "No"
 msgstr "Nei"
 
@@ -1708,7 +1746,7 @@ msgstr ""
 "bruk før gdm startes på nytt, eller maskinen startes\n"
 "på nytt"
 
-#: gui/gdmconfig.c:1355
+#: gui/gdmconfig.c:1356
 msgid ""
 "You have not defined any local servers.\n"
 "Usually this is not a good idea unless you\n"
@@ -1726,7 +1764,7 @@ msgstr ""
 "\n"
 "Er du sikker på at du vil bruke disse innstillingene?"
 
-#: gui/gdmconfig.c:1539
+#: gui/gdmconfig.c:1570
 #, c-format
 msgid ""
 "\n"
@@ -1737,7 +1775,7 @@ msgstr ""
 "Kunne ikke slette sesjon %s\n"
 "   Feil: %s"
 
-#: gui/gdmconfig.c:1575
+#: gui/gdmconfig.c:1606
 #, c-format
 msgid ""
 "\n"
@@ -1748,7 +1786,7 @@ msgstr ""
 "Kunne ikke fjerne sesjon %s\n"
 "   Feil: %s"
 
-#: gui/gdmconfig.c:1618
+#: gui/gdmconfig.c:1649
 #, c-format
 msgid ""
 "\n"
@@ -1759,7 +1797,7 @@ msgstr ""
 "Kunne ikke skrive sesjon %s\n"
 "   Feil: %s"
 
-#: gui/gdmconfig.c:1629
+#: gui/gdmconfig.c:1660
 #, c-format
 msgid ""
 "\n"
@@ -1770,7 +1808,7 @@ msgstr ""
 "Kunne ikke skrive innhold til sesjon %s\n"
 "   Feil: %s"
 
-#: gui/gdmconfig.c:1654
+#: gui/gdmconfig.c:1685
 #, c-format
 msgid ""
 "\n"
@@ -1781,7 +1819,7 @@ msgstr ""
 "Kunne ikke slette lenke til gammel standard sesjon\n"
 "   Feil: %s"
 
-#: gui/gdmconfig.c:1693
+#: gui/gdmconfig.c:1724
 msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
@@ -1789,7 +1827,7 @@ msgstr ""
 "\n"
 "Kunne ikke finne et passende navn for lenken for standard sesjon"
 
-#: gui/gdmconfig.c:1702
+#: gui/gdmconfig.c:1733
 #, c-format
 msgid ""
 "\n"
@@ -1800,7 +1838,7 @@ msgstr ""
 "Kunne ikke lage lenke til ny standard sesjon\n"
 "   Feil: %s"
 
-#: gui/gdmconfig.c:1722
+#: gui/gdmconfig.c:1753
 msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
@@ -1808,7 +1846,7 @@ msgstr ""
 "En feil oppsto under skriving av endringer til sesjonsfilene.\n"
 "Konfigurasjonen er kanskje ikke fullstendig lagret.\n"
 
-#: gui/gdmconfig.c:1742
+#: gui/gdmconfig.c:1773
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -1816,7 +1854,7 @@ msgstr ""
 "Dette vil ødelegge alle endringer gjort i denne sesjonen.\n"
 "Er du sikker på at du vil gjøre dette?"
 
-#: gui/gdmconfig.c:1753
+#: gui/gdmconfig.c:1784
 msgid ""
 "This will destroy any changes made in the configuration.\n"
 "Are you sure you want to do this?"
@@ -1824,23 +1862,23 @@ msgstr ""
 "Dette vil ødelegge alle endringer gjort i konfigurasjonen.\n"
 "Er du sikker på at du vil gjøre dette?"
 
-#: gui/gdmconfig.c:1974 gui/gdmconfig.c:2305
+#: gui/gdmconfig.c:2005 gui/gdmconfig.c:2336
 msgid "A command line must start with a forward slash ('/')"
 msgstr "En kommandolinje må starte med skråstrek ('/')"
 
-#: gui/gdmconfig.c:1978
+#: gui/gdmconfig.c:2009
 msgid "A descriptive server name must be supplied"
 msgstr "Et beskrivende tjenernavn på oppgis"
 
-#: gui/gdmconfig.c:2645
+#: gui/gdmconfig.c:2676
 msgid "A session name must be unique and not empty"
 msgstr "Et sesjonsnavn må være unikt og ikke blankt"
 
-#: gui/gdmconfig.c:2658
+#: gui/gdmconfig.c:2689
 msgid "Enter a name for the new session"
 msgstr "Skriv inn et navn for den nye sesjonen"
 
-#: gui/gdmconfig.c:2773
+#: gui/gdmconfig.c:2804
 msgid ""
 "You have modified the sessions directory.\n"
 "Your session changes will still get written\n"
@@ -2776,7 +2814,7 @@ msgstr "Tilgjengelige sesjoner"
 msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
 msgstr "Vis GNOME chooser sesjonen hvis en sesjon med navn 'Gnome' finnes"
 
-#: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:64 gui/gdmlogin.c:1415
+#: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:64 gui/gdmlogin.c:1434
 msgid "Gnome Chooser"
 msgstr "GNOME velger"
 
@@ -3000,7 +3038,7 @@ msgstr "Ekstra argumenter:"
 msgid "Custom command line:"
 msgstr "Egendefinert kommandolinje:"
 
-#: gui/gdmconfig-strings.c:277 gui/gdmlogin.c:1815
+#: gui/gdmconfig-strings.c:277 gui/gdmlogin.c:1834
 msgid "Name: "
 msgstr "Navn: "
 
@@ -3143,194 +3181,194 @@ msgid "New login in a nested window"
 msgstr "Ny innlogging i et \"nested\" vindu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:36
+#: gui/gdmlanguages.c:40
 msgid "A-M|Catalan"
 msgstr "A-M|Katalansk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:38
+#: gui/gdmlanguages.c:42
 msgid "A-M|Chinese (simplified)"
 msgstr "A-M|Kinesisk (forenklet)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:40
+#: gui/gdmlanguages.c:44
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|Kinesisk (tradisjonell)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:42
+#: gui/gdmlanguages.c:46
 msgid "A-M|Croatian"
 msgstr "A-M|Kroatisk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:44
+#: gui/gdmlanguages.c:48
 msgid "A-M|Czech"
 msgstr "N-Z|Tjekkisk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:46
+#: gui/gdmlanguages.c:50
 msgid "A-M|Danish"
 msgstr "A-M|Dansk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:48
+#: gui/gdmlanguages.c:52
 msgid "A-M|Dutch"
 msgstr "N-Z|Nederlandsk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:50
+#: gui/gdmlanguages.c:54
 msgid "A-M|English"
 msgstr "A-M|Engelsk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:52
+#: gui/gdmlanguages.c:56
 msgid "A-M|American English"
 msgstr "A-M|Amerikansk engelsk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:54
+#: gui/gdmlanguages.c:58
 msgid "A-M|British English"
 msgstr "A-M|Britisk engelsk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:56
+#: gui/gdmlanguages.c:60
 msgid "A-M|Finnish"
 msgstr "A-M|Finsk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:58
+#: gui/gdmlanguages.c:62
 msgid "A-M|French"
 msgstr "A-M|Fransk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:60
+#: gui/gdmlanguages.c:64
 msgid "A-M|Galician"
 msgstr "A-M|Galisisk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:62
+#: gui/gdmlanguages.c:66
 msgid "A-M|German"
 msgstr "N-Z|Tysk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:64
+#: gui/gdmlanguages.c:68
 msgid "A-M|Greek"
 msgstr "A-M|Gresk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:66
+#: gui/gdmlanguages.c:70
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebraisk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:68
+#: gui/gdmlanguages.c:72
 msgid "A-M|Hungarian"
 msgstr "N-Z|Ungarsk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:70
+#: gui/gdmlanguages.c:74
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandsk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:72
+#: gui/gdmlanguages.c:76
 msgid "A-M|Italian"
 msgstr "A-M|Italiensk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:74
+#: gui/gdmlanguages.c:78
 msgid "A-M|Japanese"
 msgstr "A-M|Japansk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:76
+#: gui/gdmlanguages.c:80
 msgid "A-M|Korean"
 msgstr "A-M|Koreansk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:78
+#: gui/gdmlanguages.c:82
 msgid "A-M|Lithuanian"
 msgstr "A-M|Litauisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:80
+#: gui/gdmlanguages.c:84
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norsk (bokmål)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:82
+#: gui/gdmlanguages.c:86
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norsk (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:84
+#: gui/gdmlanguages.c:88
 msgid "N-Z|Polish"
 msgstr "N-Z|Polsk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:86
+#: gui/gdmlanguages.c:90
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugisisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:88
+#: gui/gdmlanguages.c:92
 msgid "N-Z|Brazilian Portuguese"
 msgstr "N-Z|Brasiliensk portugisisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:90
+#: gui/gdmlanguages.c:94
 msgid "N-Z|Romanian"
 msgstr "N-Z|Rumensk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:92
+#: gui/gdmlanguages.c:96
 msgid "N-Z|Russian"
 msgstr "N-Z|Russisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:94
+#: gui/gdmlanguages.c:98
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovakisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:96
+#: gui/gdmlanguages.c:100
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovensk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:98
+#: gui/gdmlanguages.c:102
 msgid "N-Z|Spanish"
 msgstr "N-Z|Spansk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:100
+#: gui/gdmlanguages.c:104
 msgid "N-Z|Swedish"
 msgstr "N-Z|Svensk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:102
+#: gui/gdmlanguages.c:106
 msgid "N-Z|Turkish"
 msgstr "N-Z|Tyrkisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:104
+#: gui/gdmlanguages.c:108
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrainsk"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:106
+#: gui/gdmlanguages.c:110
 msgid "Other|POSIX/C English"
 msgstr "Annet|POSIX/C engelsk"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:233
+#: gui/gdmlanguages.c:237
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:241
+#: gui/gdmlanguages.c:245
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -3340,7 +3378,7 @@ msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:59 gui/gdmlogin.c:1770 gui/gdmlogin.c:1792
+#: gui/gdmlogin.c:59 gui/gdmlogin.c:1789 gui/gdmlogin.c:1811
 msgid "Default"
 msgstr "Standard"
 
@@ -3365,23 +3403,23 @@ msgstr "Forrige"
 msgid "User %s will login in %d seconds"
 msgstr "Bruker %s vil logge på om %d sekunder"
 
-#: gui/gdmlogin.c:446
+#: gui/gdmlogin.c:452
 msgid ""
 "Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr ""
 "Dobbelklikk her for å av-ikonifisere innloggingsvinduet, slik at du kan "
 "logge inn."
 
-#: gui/gdmlogin.c:526 gui/gdmlogin.c:532 gui/gdmlogin.c:539
+#: gui/gdmlogin.c:532 gui/gdmlogin.c:538 gui/gdmlogin.c:545
 #, c-format
 msgid "Welcome to %s"
 msgstr "Velkommen til %s"
 
-#: gui/gdmlogin.c:537
+#: gui/gdmlogin.c:543
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Strengen er for lang!"
 
-#: gui/gdmlogin.c:676
+#: gui/gdmlogin.c:695
 msgid ""
 "Could not fork a new process!\n"
 "\n"
@@ -3391,36 +3429,36 @@ msgstr ""
 "\n"
 "Du vil sannsynligvis ikke kunne logge inn heller."
 
-#: gui/gdmlogin.c:723
+#: gui/gdmlogin.c:742
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Er du sikker på at du vil starte maskinen på nytt?"
 
-#: gui/gdmlogin.c:735
+#: gui/gdmlogin.c:754
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Er du sikker på at du vil slå av maskinen?"
 
-#: gui/gdmlogin.c:746
+#: gui/gdmlogin.c:765
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Er du sikker på at du vil sette maskinen i hvilemodus?"
 
-#: gui/gdmlogin.c:760
+#: gui/gdmlogin.c:779
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr "gdm_login_parse_config: Ingen konfigurasjonsfil: %s. Bruker forvalg."
 
-#: gui/gdmlogin.c:826
+#: gui/gdmlogin.c:845
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr "TimedLoginDelay var mindre enn 5. Bruker 5."
 
-#: gui/gdmlogin.c:888 gui/gdmlogin.c:1463
+#: gui/gdmlogin.c:907 gui/gdmlogin.c:1482
 msgid "Failsafe Gnome"
 msgstr "Feilsikker GNOME"
 
-#: gui/gdmlogin.c:890 gui/gdmlogin.c:1488
+#: gui/gdmlogin.c:909 gui/gdmlogin.c:1507
 msgid "Failsafe xterm"
 msgstr "Feilsikker xterm"
 
-#: gui/gdmlogin.c:936
+#: gui/gdmlogin.c:955
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -3429,7 +3467,7 @@ msgstr ""
 "Din foretrukne sesjonstype %s er ikke installert på denne maskinen.\n"
 "Ønsker du å gjøre %s forvalgt for fremtidige sesjoner?"
 
-#: gui/gdmlogin.c:961 gui/gdmlogin.c:1049
+#: gui/gdmlogin.c:980 gui/gdmlogin.c:1068
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -3443,7 +3481,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:977
+#: gui/gdmlogin.c:996
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -3456,25 +3494,25 @@ msgstr ""
 "kjør programmet 'switchdesk'\n"
 "(System->Bytt skrivebord fra panel-menyen)."
 
-#: gui/gdmlogin.c:1272
+#: gui/gdmlogin.c:1291
 #, c-format
 msgid "%s session selected"
 msgstr "%s sesjon valgt"
 
-#: gui/gdmlogin.c:1305
+#: gui/gdmlogin.c:1324
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Logg inn med sesjonen du brukte ved forrige innlogging"
 
-#: gui/gdmlogin.c:1318
+#: gui/gdmlogin.c:1337
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Sesjonens skriptkatalog ikke funnet!"
 
-#: gui/gdmlogin.c:1403
+#: gui/gdmlogin.c:1422
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr "Denne sesjonen vil logge deg direkte inn til GNOME, med aktiv sesjon."
 
-#: gui/gdmlogin.c:1418
+#: gui/gdmlogin.c:1437
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
@@ -3482,11 +3520,11 @@ msgstr ""
 "Denne sesjonen vil logge deg inn til GNOME og du vil kunne velge hvilken av "
 "GNOME-sesjonene du ønsker å bruke."
 
-#: gui/gdmlogin.c:1453
+#: gui/gdmlogin.c:1472
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Hjelp, ingenting funnet i sesjonskatalogen."
 
-#: gui/gdmlogin.c:1465
+#: gui/gdmlogin.c:1484
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -3496,7 +3534,7 @@ msgstr ""
 "oppstartsskript vil kjøres og den bør kun brukes hvis du ikke kan logge inn "
 "på annen måte. GNOME vil bruke 'Forvalgt' sesjon."
 
-#: gui/gdmlogin.c:1490
+#: gui/gdmlogin.c:1509
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3506,124 +3544,124 @@ msgstr ""
 "oppstartsskript vil kjøres og den bør bare brukes hvis du ikke kan logge inn "
 "på annen måte. Skriv 'exit' for å avslutte terminalen."
 
-#: gui/gdmlogin.c:1511
+#: gui/gdmlogin.c:1530
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "Ingen forvalgt sesjonlenke funnet. Bruker Feilsikker GNOME.\n"
 
-#: gui/gdmlogin.c:1551
+#: gui/gdmlogin.c:1570
 #, c-format
 msgid "%s language selected"
 msgstr "språk %s valgt"
 
-#: gui/gdmlogin.c:1589
+#: gui/gdmlogin.c:1608
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "Logg inn med språket du brukte ved forrige innlogging"
 
-#: gui/gdmlogin.c:1610
+#: gui/gdmlogin.c:1629
 msgid "Other"
 msgstr "Annet"
 
-#: gui/gdmlogin.c:1730 gui/gdmlogin.c:1739
+#: gui/gdmlogin.c:1749 gui/gdmlogin.c:1758
 msgid "Select GNOME session"
 msgstr "Veg GNOME sesjon"
 
-#: gui/gdmlogin.c:1806
+#: gui/gdmlogin.c:1825
 msgid "Create new session"
 msgstr "Opprett ny sesjon"
 
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
-#: gui/gdmlogin.c:1836
+#: gui/gdmlogin.c:1855
 msgid "Remember this setting"
 msgstr "Husk denne innstillingen"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:2166
+#: gui/gdmlogin.c:2185
 msgid "Please insert 25 cents to log in."
 msgstr "Vennligst legg på 5 kroner for å logge inn."
 
-#: gui/gdmlogin.c:2520
+#: gui/gdmlogin.c:2539
 msgid "GNOME Desktop Manager"
 msgstr "GNOME skrivebordshåndterer"
 
-#: gui/gdmlogin.c:2528
+#: gui/gdmlogin.c:2547
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Kan ikke åpne ikonfilen: %s. Suspenderer ikonofiseringsfunksjonen!"
 
-#: gui/gdmlogin.c:2550
+#: gui/gdmlogin.c:2569
 msgid "Iconify the login window"
 msgstr "Ikonifiser innloggingsvinduet"
 
-#: gui/gdmlogin.c:2610
+#: gui/gdmlogin.c:2629
 msgid "%a %b %d, %H:%M"
 msgstr "%a %b %d, %H:%M"
 
-#: gui/gdmlogin.c:2617
+#: gui/gdmlogin.c:2636
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a %b %d, %I:%M %p"
 
-#: gui/gdmlogin.c:2676
+#: gui/gdmlogin.c:2695
 msgid "Finger"
 msgstr "Finger"
 
-#: gui/gdmlogin.c:2746
+#: gui/gdmlogin.c:2765
 msgid "GDM Login"
 msgstr "GDM innlogging"
 
-#: gui/gdmlogin.c:2792
+#: gui/gdmlogin.c:2811
 msgid "Session"
 msgstr "Sesjon"
 
-#: gui/gdmlogin.c:2803
+#: gui/gdmlogin.c:2822
 msgid "Language"
 msgstr "Språk"
 
-#: gui/gdmlogin.c:2817
+#: gui/gdmlogin.c:2836
 msgid "Configure..."
 msgstr "Konfigurer..."
 
-#: gui/gdmlogin.c:2824
+#: gui/gdmlogin.c:2843
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "Konfigurer GDM (denne innloggingshåndtereren). Dette krever root-passordet."
 
-#: gui/gdmlogin.c:2831
+#: gui/gdmlogin.c:2850
 msgid "Reboot..."
 msgstr "Omstart..."
 
-#: gui/gdmlogin.c:2838
+#: gui/gdmlogin.c:2857
 msgid "Reboot your computer"
 msgstr "Start din datamaskin på nytt"
 
-#: gui/gdmlogin.c:2844
+#: gui/gdmlogin.c:2863
 msgid "Shut down..."
 msgstr "Slå av..."
 
-#: gui/gdmlogin.c:2851
+#: gui/gdmlogin.c:2870
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Steng ned din datamaskin slik at du kan skru den av."
 
-#: gui/gdmlogin.c:2858
+#: gui/gdmlogin.c:2877
 msgid "Suspend..."
 msgstr "Hvilemodus..."
 
-#: gui/gdmlogin.c:2865
+#: gui/gdmlogin.c:2884
 msgid "Suspend your computer"
 msgstr "Sett datamaskinen i hvilemodus"
 
-#: gui/gdmlogin.c:2887
+#: gui/gdmlogin.c:2906
 msgid "Disconnect"
 msgstr "Koble fra"
 
-#: gui/gdmlogin.c:3371
+#: gui/gdmlogin.c:3390
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Kan ikke åpne DefaultImage: %s. Suspenderer ansiktsvisning!"
 
-#: gui/gdmlogin.c:3634 gui/gdmlogin.c:3662
+#: gui/gdmlogin.c:3653 gui/gdmlogin.c:3681
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3634,11 +3672,11 @@ msgstr ""
 "Du har sannsynligvis nettopp oppgradert gdm.\n"
 "Vennligst start gdm-daemonen eller maskinen på nytt."
 
-#: gui/gdmlogin.c:3669 gui/gdmlogin.c:3707
+#: gui/gdmlogin.c:3688 gui/gdmlogin.c:3726
 msgid "Reboot"
 msgstr "Omstart"
 
-#: gui/gdmlogin.c:3699
+#: gui/gdmlogin.c:3718
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3649,27 +3687,27 @@ msgstr ""
 "Du har sannsynligvis nettopp oppgradert gdm.\n"
 "Vennligst start gdm daemonen eller maskinen på nytt."
 
-#: gui/gdmlogin.c:3706
+#: gui/gdmlogin.c:3725
 msgid "Restart"
 msgstr "Søk på nytt"
 
-#: gui/gdmlogin.c:3744
+#: gui/gdmlogin.c:3763
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Feil under oppsett av HUP signalhåndtereren"
 
-#: gui/gdmlogin.c:3747
+#: gui/gdmlogin.c:3766
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Feil under oppsett av INT signalhåndtereren"
 
-#: gui/gdmlogin.c:3750
+#: gui/gdmlogin.c:3769
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Feil under oppsett av TERM signalhåndtereren"
 
-#: gui/gdmlogin.c:3758
+#: gui/gdmlogin.c:3777
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Feil under oppsett av CHLD signalhåndtereren"
 
-#: gui/gdmlogin.c:3823
+#: gui/gdmlogin.c:3842
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -3681,7 +3719,7 @@ msgstr ""
 "Du har to tilgjengelige sesjoner du kan bruke, men\n"
 "du bør logge inn og korrigere gdm konfigurasjonen."
 
-#: gui/gdmlogin.c:3839
+#: gui/gdmlogin.c:3858
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -3691,7 +3729,7 @@ msgstr ""
 "linje for innloggingsdialogen. Kjørte derfor forvalgt\n"
 "kommando. Vennligst rett opp din konfigurasjon."
 
-#: gui/gdmlogin.c:3856
+#: gui/gdmlogin.c:3875
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -3971,6 +4009,3 @@ msgid ""
 msgstr ""
 "Vil du at jeg skal prøve å kjøre konfigurasjonsprogrammet for musen? Merk at "
 "du må ha passordet for \"root\" for å gjøre dette."
-
-#~ msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
-#~ msgstr "gdm_slave_session_start: initgroups() feilet for %s. Avbryter."
