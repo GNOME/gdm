@@ -8,7 +8,6 @@ INCLUDES = \
 	-DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\" 	\
-	$(WARN_CFLAGS)					\
 	$(GREETER_CFLAGS)
 
 bin_PROGRAMS = \

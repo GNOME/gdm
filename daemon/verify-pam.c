@@ -57,8 +57,8 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		     struct pam_response **resp,
 		     void *appdata_ptr)
 {
-    gint replies = 0;
-    gchar *s;
+    int replies = 0;
+    char *s, *utf8;
     struct pam_response *reply = NULL;
     
     reply = malloc (sizeof (struct pam_response) * num_msg);
@@ -73,13 +73,18 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	switch (msg[replies]->msg_style) {
 	    
 	case PAM_PROMPT_ECHO_ON:
+	    utf8 = g_locale_to_utf8 (msg[replies]->msg, -1, NULL, NULL, NULL);
+
 	    /* PAM requested textual input with echo on */
-	    s = gdm_slave_greeter_ctl (GDM_PROMPT, _((gchar *) msg[replies]->msg));
+	    s = gdm_slave_greeter_ctl (GDM_PROMPT, utf8);
+	    g_free (utf8);
+
 	    if (gdm_slave_greeter_check_interruption (s)) {
 		    g_free (s);
 		    free (reply);
 		    return PAM_CONV_ERR;
 	    }
+	    /* FIXME: convert to locale? */
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = strdup (ve_sure_string (s));
 	    g_free (s);
@@ -87,12 +92,15 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_PROMPT_ECHO_OFF:
 	    /* PAM requested textual input with echo off */
-	    s = gdm_slave_greeter_ctl (GDM_NOECHO, _((gchar *) msg[replies]->msg));
+	    utf8 = g_locale_to_utf8 (msg[replies]->msg, -1, NULL, NULL, NULL);
+	    s = gdm_slave_greeter_ctl (GDM_NOECHO, utf8);
+	    g_free (utf8);
 	    if (gdm_slave_greeter_check_interruption (s)) {
 		    g_free (s);
 		    free (reply);
 		    return PAM_CONV_ERR;
 	    }
+	    /* FIXME: convert to locale? */
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = strdup (ve_sure_string (s));
 	    g_free (s);
@@ -100,13 +108,17 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_ERROR_MSG:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, _((gchar *) msg[replies]->msg));
+	    utf8 = g_locale_to_utf8 (msg[replies]->msg, -1, NULL, NULL, NULL);
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, utf8);
+	    g_free (utf8);
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
 	case PAM_TEXT_INFO:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _((gchar *) msg[replies]->msg));
+	    utf8 = g_locale_to_utf8 (msg[replies]->msg, -1, NULL, NULL, NULL);
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, utf8);
+	    g_free (utf8);
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;

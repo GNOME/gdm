@@ -2633,6 +2633,7 @@ static gboolean
 update_clock (gpointer data)
 {
 	struct tm *the_tm;
+	char *utf8;
 	time_t the_time;
 	char str[256];
 	gint time_til_next_min;
@@ -2660,8 +2661,9 @@ update_clock (gpointer data)
   	}
 	str [sizeof(str)-1] = '\0'; /* just for sanity */
 
-	gtk_label_set_text (GTK_LABEL (clock_label), str);
-
+	utf8 = g_locale_to_utf8 (str, -1, NULL, NULL, NULL);
+	gtk_label_set_text (GTK_LABEL (clock_label), utf8);
+	g_free (utf8);
 
 	/* account for leap seconds */
 	time_til_next_min = 60 - the_tm->tm_sec;
@@ -3760,6 +3762,13 @@ main (int argc, char *argv[])
 
     openlog ("gdmlogin", LOG_PID, LOG_DAEMON);
 
+    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    textdomain (GETTEXT_PACKAGE);
+
+    gtk_init (&argc, &argv);
+
+#if 0
     gnome_program_init ("gdmlogin", VERSION, 
 			/* FIXME: oh fuck this inits way too much
 			 * shit that we don't want */
@@ -3768,6 +3777,7 @@ main (int argc, char *argv[])
 			GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
 			GNOME_PARAM_ENABLE_SOUND, FALSE,
 			NULL);
+#endif
 
     gdm_login_parse_config ();
 
@@ -3779,10 +3789,6 @@ main (int argc, char *argv[])
     } else {
 	    setlocale (LC_ALL, "");
     }
-
-    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-    textdomain (GETTEXT_PACKAGE);
 
     setup_cursor (GDK_LEFT_PTR);
 
