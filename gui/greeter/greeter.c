@@ -91,108 +91,29 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	conversation_info = greeter_lookup_id ("pam-conversation");
-	entry_info = greeter_lookup_id ("user-pw-entry");
-	
-	if (conversation_info)
-	  g_object_set (G_OBJECT (conversation_info->item),
-			"text",	buf,
-			NULL);
-
-	if (entry_info && entry_info->item &&
-	    GNOME_IS_CANVAS_WIDGET (entry_info->item))
-	  {
-	    GtkWidget *entry;
-	    entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
-	    gtk_widget_grab_focus (entry);
-	    gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
-	    gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
-	    gtk_entry_set_text (GTK_ENTRY (entry), "");
-	  }
-
+	greeter_item_pam_prompt (buf, 32, TRUE);
 	break;
 
     case GDM_PROMPT:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	conversation_info = greeter_lookup_id ("pam-conversation");
-	entry_info = greeter_lookup_id ("user-pw-entry");
-	
-	if (conversation_info)
-	  g_object_set (G_OBJECT (conversation_info->item),
-			"text",	buf,
-			NULL);
-
-	if (entry_info && entry_info->item &&
-	    GNOME_IS_CANVAS_WIDGET (entry_info->item))
-	  {
-	    GtkWidget *entry;
-	    entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
-	    gtk_widget_grab_focus (entry);
-	    gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
-	    gtk_entry_set_text (GTK_ENTRY (entry), "");
-	    gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
-	  }
-
+	greeter_item_pam_prompt (buf, 128, TRUE);
 	break;
 
     case GDM_NOECHO:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	conversation_info = greeter_lookup_id ("pam-conversation");
-	entry_info = greeter_lookup_id ("user-pw-entry");
-	
-	if (conversation_info)
-	  g_object_set (G_OBJECT (conversation_info->item),
-			"text",	buf,
-			NULL);
-
-	if (entry_info && entry_info->item &&
-	    GNOME_IS_CANVAS_WIDGET (entry_info->item))
-	  {
-	    GtkWidget *entry;
-	    entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
-	    gtk_widget_grab_focus (entry);
-	    gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
-	    gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
-	    gtk_entry_set_text (GTK_ENTRY (entry), "");
-	  }
-
+	greeter_item_pam_prompt (buf, 128, FALSE);
 	break;
 
     case GDM_MSG:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-#ifdef TODO
-	/* the user has not yet seen messages */
-	messages_to_give = TRUE;
+	greeter_item_pam_message (buf);
 
-	/* HAAAAAAACK.  Sometimes pam sends many many messages, SO
-	 * we try to collect them until the next prompt or reset or
-	 * whatnot */
-	if ( ! replace_msg) {
-		const char *oldtext;
-		oldtext = gtk_label_get_text (GTK_LABEL (msg));
-		if ( ! ve_string_empty (oldtext)) {
-			char *newtext;
-			newtext = g_strdup_printf ("%s\n%s", oldtext, buf);
-			gtk_label_set_text (GTK_LABEL (msg), newtext);
-			g_free (newtext);
-		} else {
-			gtk_label_set_text (GTK_LABEL (msg), buf);
-		}
-	} else {
-		gtk_label_set_text (GTK_LABEL (msg), buf);
-	}
-	replace_msg = FALSE;
-
-	gtk_widget_show (GTK_WIDGET (msg));
-
-#endif
-	
 	g_print ("%c\n", STX);
 
 	break;
@@ -201,17 +122,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-#ifdef TODO	
-	gtk_label_set_text (GTK_LABEL (err_box), buf);
-	if (err_box_clear_handler > 0)
-		gtk_timeout_remove (err_box_clear_handler);
-	if (ve_string_empty (buf))
-		err_box_clear_handler = 0;
-	else
-		err_box_clear_handler = gtk_timeout_add (30000,
-							 err_box_clear,
-							 NULL);
-#endif
+	greeter_item_pam_error (buf);
 	
 	g_print ("%c\n", STX);
 	break;
@@ -220,7 +131,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-#ifdef TODO	
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
@@ -236,7 +146,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	gdm_wm_no_login_focus_push ();
 	gtk_dialog_run (GTK_DIALOG (dlg));
 	gdm_wm_no_login_focus_pop ();
-#endif
 	
 	g_print ("%c\n", STX);
 	break;
