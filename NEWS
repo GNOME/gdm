@@ -1,5 +1,43 @@
 Ahh news...
 
+2.5.90.2 stuff:
+
+- Support for GTK+ theming (accessibility) and ability to change current
+  theme in the standard login, fixes #125070 (Muktha, me)
+
+- Hindi was written wrong in the language menu fixes #134372
+  (Guntupalli Karunakar)
+
+- When restarting a server by whacking it and starting it again, wait
+  for 1 sec to allow things to "settle", plus be a lot milder on X
+  server's lock files / sockets to avoid whacking ones currently in use
+
+- Make language dialog in the graphical greeter come up quicker and init
+  the languages lazily
+
+- Fix #135232 by using code@mod for the translation matrix (me), and added
+  Serbian variants there (Danilo Segan)
+
+- Fix #135053 by adding canadian english (Adam Weinberger, Danilo Segan)
+
+- Fix sourcing of environment on AIX, #135401 (Vincent Berger)
+
+- Fix displaying of ~/.xsession-errors file
+
+- Attempt to handle out of user diskspace more gracefully by whacking old
+  .xsession-errors in case we fail.
+
+- Translation updates (Nikos Charonitakis, Jordi Mallach, Funda Wang,
+  Tommi Vainikainen, Kostas Papadimas, Kjartan Maraas, Miloslav Trmac,
+  Laurent Dhima, Zygimantas Berucka, Christian Rose, Changwoo Ryu,
+  Yukihiro Nakai, Duarte Loreto, Christophe Merlet,
+  Francisco Javier F. Serrador, Artur Flinta, Alastair McKinstry,
+  Guntupalli Karunakar, Takeshi AIHANA, Paisa Seeluangsawat,
+  Surichat Sumrit, Supranee Thirawatthanasuk, Chanchai Junlouchai,
+  Adam Weinberger, Christian Neumair, Hasbullah Bin Pit,
+  Pauli Virtanen, Ole Laursen, Asmund Skjaeveland, Metin Amiroff,
+  Vincent van Adrighem, Tino Meinen, GNOME PL Team)
+
 2.5.90.1 stuff:
 
 - Login field was not clearned when x server / slave crashed (#131389)
