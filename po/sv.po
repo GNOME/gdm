@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 0.5\n"
-"POT-Creation-Date: 1999-12-27 13:01+0100\n"
+"POT-Creation-Date: 1999-12-30 14:20+0100\n"
 "PO-Revision-Date: 1999-09-27 21:20+0200\n"
 "Last-Translator: Richard Hult <rhult@hem2.passagen.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -13,79 +13,70 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: daemon/gdm.c:169
+#: daemon/gdm.c:113
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Aborting."
 msgstr "gdm_config_parse: Ingen konfigurationsfil kunde hittas: %s. Avbryter."
 
-#: daemon/gdm.c:217
-#, fuzzy
+#: daemon/gdm.c:161
 msgid "gdm_config_parse: No greeter specified."
-msgstr ""
-"gdm_config_parse: Ingen hälsare angiven och standardhälsare kunde inte "
-"hittas."
+msgstr "gdm_config_parse: Ingen hälsare angiven."
 
-#: daemon/gdm.c:220
-#, fuzzy
+#: daemon/gdm.c:164
 msgid "gdm_config_parse: No authdir specified."
-msgstr ""
-"gdm_config_parse: Ingen authdir angiven och standardauthdir kunde inte "
-"hittas."
+msgstr "gdm_config_parse: Ingen authdir angiven."
 
-#: daemon/gdm.c:226
-#, fuzzy
+#: daemon/gdm.c:170
 msgid "gdm_config_parse: No sessions directory specified."
-msgstr ""
-"gdm_config_parse: Ingen sessions-katalog angiven och standardkatalog kunde "
-"inte hittas."
+msgstr "gdm_config_parse: Ingen sessions-katalog angiven."
 
-#: daemon/gdm.c:238
+#: daemon/gdm.c:182
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr "gdm_config_parse: Ogiltig server-rad i konfigurationsfil. Ignorerar!"
 
-#: daemon/gdm.c:244
+#: daemon/gdm.c:188
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr ""
 "gdm_config_parse: Xdmcp avaktiverat och inga lokala servrar är definierade. "
 "Avbryter!"
 
-#: daemon/gdm.c:251
+#: daemon/gdm.c:195
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
 msgstr "gdm_config_parse: Kan inte hitta gdm-användaren (%s). Avbryter!"
 
-#: daemon/gdm.c:256
+#: daemon/gdm.c:200
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr "gdm_config_parse: gdm-användaren ska inte vara root. Avbryter!"
 
-#: daemon/gdm.c:261
+#: daemon/gdm.c:205
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
 msgstr "gdm_config_parse: Kan inte hitta gdm-gruppen (%s). Avbryter!"
 
-#: daemon/gdm.c:266
+#: daemon/gdm.c:210
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
 msgstr "gdm_config_parse: gdm-gruppen ska inte vara root. Avbryter!"
 
-#: daemon/gdm.c:302
+#: daemon/gdm.c:246
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr "gdm_config_parse Authdir %s existerar inte. Avbryter."
 
-#: daemon/gdm.c:305
+#: daemon/gdm.c:249
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
 msgstr "gdm_config_parse: Authdir %s är inte en katalog. Avbryter."
 
-#: daemon/gdm.c:308
+#: daemon/gdm.c:252
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "gdm_config_parse: Authdir %s ägs inte av användare %s, grupp %s. Avbryter."
 
-#: daemon/gdm.c:312
+#: daemon/gdm.c:256
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
@@ -93,63 +84,55 @@ msgstr ""
 "gdm_config_parse: Authdir %s har felaktiga rättigheter. Ska vara 750. "
 "Avbryter."
 
-#: daemon/gdm.c:389
-#, c-format
-msgid "gdm_display_manage: Failed forking gdm slave process for %d"
-msgstr "gdm_display_manage: Kunde inte dela gdm-slav-process för %d"
-
-#: daemon/gdm.c:478
-#, c-format
-msgid "gdm_child_action: Aborting display %s"
-msgstr "gdm_child_action: Avbryter %s"
-
-#: daemon/gdm.c:483
-msgid "gdm_child_action: Master rebooting..."
-msgstr "gdm_child_action: Master startar om..."
-
-#: daemon/gdm.c:489
-#, c-format
-msgid "gdm_child_action: Reboot failed: %s"
-msgstr "gdm_child_action: Kunde inte starta om: %s"
-
-#: daemon/gdm.c:493
-msgid "gdm_child_action: Master halting..."
-msgstr "gdm_child_action: Master stannar..."
-
-#: daemon/gdm.c:499
-#, c-format
-msgid "gdm_child_action: Halt failed: %s"
-msgstr "gdm_child_action: Kunde inte stanna: %s"
-
-#: daemon/gdm.c:619
+#: daemon/gdm.c:290
 msgid "gdm_daemonify: fork() failed!"
 msgstr "gdm_daemonify: fork() misslyckades!"
 
-#: daemon/gdm.c:622
+#: daemon/gdm.c:293
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid() misslyckades: %s!"
 
-#: daemon/gdm.c:651
+#: daemon/gdm.c:376
+#, c-format
+msgid "gdm_child_action: Aborting display %s"
+msgstr "gdm_child_action: Avbryter %s"
+
+#: daemon/gdm.c:381
+msgid "gdm_child_action: Master rebooting..."
+msgstr "gdm_child_action: Master startar om..."
+
+#: daemon/gdm.c:387
+#, c-format
+msgid "gdm_child_action: Reboot failed: %s"
+msgstr "gdm_child_action: Kunde inte starta om: %s"
+
+#: daemon/gdm.c:391
+msgid "gdm_child_action: Master halting..."
+msgstr "gdm_child_action: Master stannar..."
+
+#: daemon/gdm.c:397
+#, c-format
+msgid "gdm_child_action: Halt failed: %s"
+msgstr "gdm_child_action: Kunde inte stanna: %s"
+
+#: daemon/gdm.c:466
 msgid "Only root wants to run x^hgdm\n"
 msgstr "Endast root ska köra x^gdm\n"
 
-#: daemon/gdm.c:672
-#, fuzzy
+#: daemon/gdm.c:487
 msgid "gdm already running. Aborting!"
-msgstr ""
-"gdm körs redan. Avbryter!\n"
-"\n"
+msgstr "gdm körs redan. Avbryter!"
 
-#: daemon/gdm.c:693
+#: daemon/gdm.c:508
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr "gdm_main: Fel vid installering av TERM signal-hanterare"
 
-#: daemon/gdm.c:696
+#: daemon/gdm.c:511
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr "gdm_main: Fel vid installering av TERM signal-hanterare"
 
-#: daemon/gdm.c:704
+#: daemon/gdm.c:519
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr "gdm_main: Fel vid installering av CHLD signal-hanterare"
 
@@ -215,29 +198,26 @@ msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr "gdm_server_start: Fel vid installering av USR1 signal-hanterare"
 
 #: daemon/server.c:179
-#, fuzzy
 msgid "gdm_server_start: Error setting up CHLD signal handler"
-msgstr "gdm_server_start: Fel vid installering av USR1 signal-hanterare"
+msgstr "gdm_server_start: Fel vid installering av CHLD signal-hanterare"
 
 #: daemon/server.c:196
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
-msgstr "gdm_server_start: Kan inte öppna logg-fil för %s!"
+msgstr "gdm_server_spawn: Kan inte öppna logg-fil för display %s!"
 
 #: daemon/server.c:221
-#, fuzzy
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
-msgstr "gdm_server_start: Kunde inte sätta USR1 till SIG_IGNORE"
+msgstr "gdm_server_spawn: Kunde inte sätta USR1 till SIG_IGN"
 
 #: daemon/server.c:237
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
-msgstr "gdm_server_start: Xserver kan inte hittas: %s"
+msgstr "gdm_server_spawn: Xserver kan inte hittas: %s"
 
 #: daemon/server.c:242
-#, fuzzy
 msgid "gdm_server_spawn: Can't fork Xserver process!"
-msgstr "gdm_server_start: Kan inte dela script-process"
+msgstr "gdm_server_spawn: Kan inte dela Xserver-process"
 
 #: daemon/slave.c:115
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
@@ -274,40 +254,40 @@ msgstr "gdm_slave_greeter: Kan inte dela gdmgreeter-process"
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
+"gdm_slave_session_start: Användare autentiserades men getpwnam(%s) "
+"misslyckades!"
 
 #: daemon/slave.c:351
-#, fuzzy
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
 msgstr ""
-"gdm_slave_session_init: Körning av PreSession-script returnerade > 0. "
+"gdm_slave_session_start: Körning av PreSession-script returnerade > 0. "
 "Avbryter."
 
 #: daemon/slave.c:375
-#, fuzzy
 msgid "gdm_slave_session_start: Error forking user session"
-msgstr "gdm_slave_session_init: Fel vid delning av användarsession"
+msgstr "gdm_slave_session_start: Fel vid delning av användarsession"
 
 #: daemon/slave.c:384
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
-msgstr "gdm_slave_session_init: Kunde inte setgid %d. Avbryter."
+msgstr "gdm_slave_session_start: Kunde inte göra setgid %d. Avbryter."
 
 #: daemon/slave.c:388
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
-msgstr "gdm_slave_session_init: initgroups() misslyckades för %s. Avbryter."
+msgstr "gdm_slave_session_start: initgroups() misslyckades för %s. Avbryter."
 
 #: daemon/slave.c:392
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
-msgstr "gdm_slave_session_init: Kunde inte bli %s. Avbryter."
+msgstr "gdm_slave_session_start: Kunde inte bli %s. Avbryter."
 
 #: daemon/slave.c:428
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
-msgstr "gdm_slave_session_init: Kunde inte starta session '%s'"
+msgstr "gdm_slave_session_start: Kunde inte starta session '%s'"
 
 #: daemon/slave.c:609
 #, c-format
@@ -320,14 +300,13 @@ msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
 msgstr "gdm_slave_xsync_ping: Fel vid installering av ALARM-signalhanterare"
 
 #: daemon/slave.c:743
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
-msgstr "gdm_exec_script: Fel vid start av: %s"
+msgstr "gdm_slave_exec_script: Fel vid start av: %s"
 
 #: daemon/slave.c:747
-#, fuzzy
 msgid "gdm_slave_exec_script: Can't fork script process!"
-msgstr "gdm_exec_script: Kan inte dela script-process"
+msgstr "gdm_slave_exec_script: Kan inte dela script-process"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:123 daemon/verify-shadow.c:60
@@ -712,6 +691,9 @@ msgstr "main: Fel vid installering av INT signalhanterare"
 #: gui/gdmlogin.c:1534
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Fel vid installering av TERM signalhanterare"
+
+#~ msgid "gdm_display_manage: Failed forking gdm slave process for %d"
+#~ msgstr "gdm_display_manage: Kunde inte dela gdm-slav-process för %d"
 
 #~ msgid ""
 #~ "According to %s, gdm was already running (%d),\n"
