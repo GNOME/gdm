@@ -310,6 +310,7 @@ greeter_ctrl_handler (GIOChannel *source,
 				      "%s",
 				      tmp);
 	g_free (tmp);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
 
@@ -623,6 +624,7 @@ verify_gdm_version (void)
 					 "You have probably just upgraded gdm.\n"
 					 "Please restart the gdm daemon or reboot the computer."),
 				       VERSION);
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -652,6 +654,7 @@ verify_gdm_version (void)
 					 "You have probably just upgraded gdm.\n"
 					 "Please restart the gdm daemon or reboot the computer."),
 				       VERSION);
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 			      _("Reboot"),
 			      RESPONSE_REBOOT,
@@ -695,6 +698,7 @@ verify_gdm_version (void)
 					 "You have probably just upgraded gdm.\n"
 					 "Please restart the gdm daemon or reboot the computer."),
 				       VERSION, gdm_version);
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 			      _("Restart"),
 			      RESPONSE_RESTART,
@@ -743,6 +747,7 @@ greeter_message (const gchar *msg)
 				GTK_BUTTONS_CLOSE,
 				"%s",
 				msg);
+  gtk_dialog_set_has_separator (GTK_DIALOG (req), FALSE);
   g_signal_connect (G_OBJECT (req), "destroy",
 		    G_CALLBACK (gtk_widget_destroyed),
 		    &req);
@@ -773,6 +778,7 @@ greeter_query (const gchar *msg)
 				      GTK_BUTTONS_YES_NO,
 				      "%s",
 				      msg);
+	gtk_dialog_set_has_separator (GTK_DIALOG (req), FALSE);
 	gtk_label_set_use_markup
 		(GTK_LABEL (GTK_MESSAGE_DIALOG (req)->label), TRUE);
 
@@ -1234,6 +1240,7 @@ main (int argc, char *argv[])
 				         _("There was an error loading the "
 					   "theme %s"),
 					 g_getenv ("GDM_THEME"));
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
     
         gtk_widget_show_all (dialog);
         gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1273,6 +1280,7 @@ main (int argc, char *argv[])
 					 "is corrupt.  It does not contain "
 					 "definition for the username/password "
 					 "entry element."));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1307,6 +1315,7 @@ main (int argc, char *argv[])
 					 "also could not have been loaded, "
 					 "I will attempt to start the "
 					 "standard greeter"));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1327,6 +1336,7 @@ main (int argc, char *argv[])
 					 "and you may have to login another "
 					 "way and fix the installation of "
 					 "gdm"));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1372,6 +1382,7 @@ main (int argc, char *argv[])
 				       _("Your session directory is missing or empty!\n\n"
 					 "There are two available sessions you can use, but\n"
 					 "you should log in and correct the gdm configuration."));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -1396,6 +1407,7 @@ main (int argc, char *argv[])
 				       _("The configuration file contains an invalid command\n"
 					 "line for the login dialog, and thus I ran the\n"
 					 "default command.  Please fix your configuration."));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -1422,6 +1434,7 @@ main (int argc, char *argv[])
 					 "defaults to run this session.  You should log in\n"
 					 "and create a configuration file with the GDM\n"
 					 "configuration program."));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 

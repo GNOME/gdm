@@ -574,6 +574,8 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
                                                     "which is linked to (%s)"),
                                                     action,
                                                     curr_binding->binding_str);
+			  gtk_dialog_set_has_separator (GTK_DIALOG (dialog),
+							FALSE);
                           g_signal_connect (dialog, "response",
                                             G_CALLBACK (gtk_widget_destroy),
                                             NULL);

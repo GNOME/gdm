@@ -627,6 +627,8 @@ gestures_filter (GdkXEvent *gdk_xevent,
 							"which is linked to (%s)"),
 							action,
 							curr_gesture->gesture_str);
+					gtk_dialog_set_has_separator (GTK_DIALOG (dialog),
+								      FALSE);
 					g_signal_connect (dialog, "response",
 						G_CALLBACK (gtk_widget_destroy),
 						NULL);
