@@ -1078,6 +1078,8 @@ gdm_cleanup_children (void)
 	    break;
     }
 
+start_autopsy:
+
     /* Autopsy */
     switch (status) {
 	
@@ -1097,33 +1099,45 @@ gdm_cleanup_children (void)
 	gdm_info (_("gdm_child_action: Master rebooting..."));
 
 	final_cleanup ();
+	chdir ("/");
 
 	argv = ve_split (GdmReboot);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Reboot failed: %s"), strerror (errno));
+
+	status = DISPLAY_REMANAGE;
+	goto start_autopsy;
 	break;
 	
     case DISPLAY_HALT:		/* Halt machine */
 	gdm_info (_("gdm_child_action: Master halting..."));
 
 	final_cleanup ();
+	chdir ("/");
 
 	argv = ve_split (GdmHalt);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
+
+	status = DISPLAY_REMANAGE;
+	goto start_autopsy;
 	break;
 
     case DISPLAY_SUSPEND:	/* Suspend machine */
 	gdm_info (_("gdm_child_action: Master suspending..."));
 
 	final_cleanup ();
+	chdir ("/");
 
 	argv = ve_split (GdmSuspend);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Suspend failed: %s"), strerror (errno));
+
+	status = DISPLAY_REMANAGE;
+	goto start_autopsy;
 	break;
 
     case DISPLAY_RESTARTGDM:
@@ -1280,6 +1294,7 @@ static void
 signal_notify (int sig)
 {
 	gdm_signal_notify (sig);
+	g_main_context_wakeup (NULL);
 }
 
 /*

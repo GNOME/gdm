@@ -213,7 +213,7 @@ enum {
 #define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
 #define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="
 #define GDM_KEY_BACKGROUNDIMAGE "greeter/BackgroundImage="
-#define GDM_KEY_BACKGROUNDCOLOR "greeter/BackgroundColor=#007777"
+#define GDM_KEY_BACKGROUNDCOLOR "greeter/BackgroundColor=#363047"
 #define GDM_KEY_BACKGROUNDTYPE "greeter/BackgroundType=2"
 #define GDM_KEY_BACKGROUNDSCALETOFIT "greeter/BackgroundScaleToFit=true"
 #define GDM_KEY_BACKGROUNDREMOTEONLYCOLOR "greeter/BackgroundRemoteOnlyColor=true"

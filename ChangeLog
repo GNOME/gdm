@@ -1,3 +1,26 @@
+Tue Jul 23 11:20:56 2002  George Lebl <jirka@5z.com>
+
+	* config/gnomerc.in, config/Makefile.am, config/Xsesssion.in,
+	  config/Gnome.in:  prefer the gnome-session in PATH, fix some
+	  startup stuff add gnome-volume-control init to gnomerc,
+	  whack the redhat specific setup, and copy parts of the redhat's
+	  Xsession file to our own and if switchdesk is installed make
+	  Xsession the default, so now all the good stuff happens on
+	  redhat even if you leave the default session.  And this Xsession
+	  file should work on other systems just as well.
+
+	* config/gdm.conf.in, config/PreSession, daemon/gdm.h:  My gf doesn't
+	  like those ugly green backgrounds so change the color to what
+	  ximian uses as I kind of like that, (and did I mention that
+	  this way it's not green?).  Also set the background in PreSession
+	  so that you get it for all sessions as default.
+
+	* daemon/gdm.c: fix error handling of bad reboot/suspend/halt,
+	  add chdir ("/") from the hpux ximain patches, in the signal_notify
+	  add a main loop wakeup function which may fix some issues possibly
+	  the freebsd issues and should make this work on hpux just like the
+	  complicated and mostly weird ximian patch.
+
 Tue Jul 23 07:47:11 2002  George Lebl <jirka@5z.com>
 
 	* config/Gnome.in, config/Xsession: read the xdm Xresources file as

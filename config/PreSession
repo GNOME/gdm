@@ -8,6 +8,10 @@
 #
 PATH=/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin:$PATH
 
+if command -v xsetroot > /dev/null 2>&1; then
+	xsetroot -cursor_name left_ptr -solid "#363047"
+fi
+
 if command -v sessreg > /dev/null 2>&1; then
 	# some output for easy debugging
 	echo "$0: Registering your session with wtmp and utmp"

@@ -15,14 +15,13 @@ EXTRA_DIST = \
 	gdm.conf.in \
 	Gnome.in \
 	gnomerc.in \
-	Xsession \
+	Xsession.in \
 	gdm \
 	gdm-autologin \
 	locale.alias \
 	Default \
 	PostSession \
 	PreSession \
-	Default.redhat \
 	XKeepsCrashing \
 	gettextfoo.h \
 	extract-shell.sh
@@ -30,7 +29,7 @@ EXTRA_DIST = \
 gettextfoo.h: XKeepsCrashing
 	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
 
-install-data-hook: gdm.conf gnomerc Gnome
+install-data-hook: gdm.conf gnomerc Gnome Xsession
 	if test '!' -d $(DESTDIR)$(confdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
@@ -62,11 +61,11 @@ install-data-hook: gdm.conf gnomerc Gnome
 	fi
 	$(INSTALL_SCRIPT) Gnome $(DESTDIR)$(sessdir)/Gnome
 
-	-if test -f /etc/redhat-release; then \
+	-if test -f /usr/bin/switchdesk; then \
 		if test -f $(DESTDIR)$(sessdir)/Default; then \
 			cp $(DESTDIR)$(sessdir)/Default $(DESTDIR)$(sessdir)/Default.orig; \
 		fi; \
-		$(INSTALL_SCRIPT) $(srcdir)/Default.redhat $(DESTDIR)$(sessdir)/Default; \
+		$(LN_S) -f $(sessdir)/Xsession $(DESTDIR)$(sessdir)/Default; \
 	fi
 
 	if test '!' -d $(DESTDIR)$(initdir); then \

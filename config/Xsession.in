@@ -5,7 +5,7 @@ case $# in
 1)
 	case $1 in
 	failsafe)
-		exec xterm -geometry 80x24-0-0
+		exec xterm -geometry 80x24+0+0
 		;;
 	esac
 esac
@@ -90,6 +90,57 @@ if [ -z "$XKB_IN_USE" ]; then
 fi
 
 unset XKB_IN_USE
+
+# run all system xinitrc shell scripts.
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+    for i in /etc/X11/xinit/xinitrc.d/* ; do
+        if [ -x "$i" ]; then
+	    . "$i"
+        fi
+    done
+fi
+
+# now, we see if xdm/gdm/kdm has asked for a specific environment
+case $# in
+1)
+    if [ -x "/usr/share/apps/switchdesk/Xclients.$1" ]; then
+       exec /bin/sh "/usr/share/apps/switchdesk/Xclients.$1";
+    fi;
+
+    case $1 in
+    failsafe)
+       exec xterm -geometry 80x24+0+0
+       ;;
+    gnome)
+       exec -l $SHELL -c "gnome-session"
+       if [ -x "$HOME/.gnomerc" ]; then
+	   exec $HOME/.gnomerc
+       elif [ -x @EXPANDED_SYSCONFDIR@/gdm/gnomerc ]; then
+	   exec @EXPANDED_SYSCONFDIR@/gdm/gnomerc
+       else
+	   # as fallback in case the config is screwed
+	   exec gnome-session
+       fi
+       ;;
+    kde|kde1|kde2)
+       if [ -x "/usr/share/apps/switchdesk/Xclients.kde" ]; then
+           exec "/usr/share/apps/switchdesk/Xclients.kde"
+       else
+           #fallback for non-redhat
+           exec startkde
+       fi
+       ;;
+    twm)
+       # fall back to twm
+       if [ -x "/usr/share/apps/switchdesk/Xclients.twm" ]; then
+           exec "/usr/share/apps/switchdesk/Xclients.twm"
+       else
+           #fallback for non-redhat
+           exec twm
+       fi
+       ;;
+    esac
+esac
 
 if [ -x "$startup" ]; then
 	exec "$startup"

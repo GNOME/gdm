@@ -1,15 +1,5 @@
 #!/bin/sh
 
-for errfile in "$HOME/.gnomerc-errors" "${TMPDIR-/tmp}/gnomerc-$USER" "/tmp/gnomerc-$USER"
-do
-	if ( cp /dev/null "$errfile" 2> /dev/null )
-	then
-		chmod 600 "$errfile"
-		exec > "$errfile" 2>&1
-		break
-	fi
-done
-
 #
 #  Distributors:
 #  You should modify the paths here to fit your distro
