@@ -173,8 +173,10 @@ greeter_item_expand_text (const char *text)
 	  if (underline >= 0)
 	    {
 	      underline--;
-	      if (underline == 0)
+	      if (underline == 0) {
 	        g_string_append (str, "</u>");
+		underline = -1;
+	      }
 	    }
 	}
       p++;
