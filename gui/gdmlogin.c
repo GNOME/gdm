@@ -102,6 +102,40 @@ static gint maxwidth;
 
 static pid_t backgroundpid = 0;
 
+static GHashTable *back_locales = NULL;
+
+static const char *
+gdm_lookup_locale_name (const char *locale)
+{
+	const char *ret;
+	char *shortname;
+	char *p;
+
+	if (locale == NULL ||
+	    back_locales == NULL)
+		return locale;
+
+	ret = g_hash_table_lookup (back_locales, locale);
+	if (ret != NULL)
+		return ret;
+
+	/* Cut the string at the dot */
+	shortname = g_strdup (locale);
+	p = strchr (shortname, '.');
+	if (p == NULL) {
+		g_free (shortname);
+		return locale;
+	}
+	*p = '\0';
+
+	ret = g_hash_table_lookup (back_locales, shortname);
+
+	if (ret != NULL)
+		return ret;
+	else
+		return locale;
+}
+
 static void
 gdm_greeter_chld (int sig)
 {
@@ -593,16 +627,24 @@ gdm_login_language_lookup (const gchar* savedlang)
     gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
 
     /* Previously saved language not found in ~user/.gnome/gdm */
-    if (savedlang && ! strlen (savedlang)) {
-	/* If "Last" is chosen use Default, else use current selection */
+    if (savedlang == NULL ||
+	savedlang[0] == '\0') {
+	/* If "Last" is chosen use Default, which is the current language,
+	 * or the GdmDefaultLocale if that's not set or is "C"
+	 * else use current selection */
 	g_free (language);
-	if (g_strcasecmp (curlang, lastlang) == 0)
-	    language = g_strdup (GdmDefaultLocale);
-	else
-	    language = g_strdup (curlang);
-
-	/* Now this is utterly ugly, but I suppose it works */
-	language[0] = tolower (language[0]);
+	if (g_strcasecmp (curlang, lastlang) == 0) {
+		char *lang = g_getenv ("LANG");
+		if (lang == NULL ||
+		    lang[0] == '\0' ||
+		    g_strcasecmp (lang, "C") == 0) {
+			language = g_strdup (GdmDefaultLocale);
+		} else {
+			language = g_strdup (lang);
+		}
+	} else {
+		language = g_strdup (curlang);
+	}
 
 	savelang = TRUE;
 	return;
@@ -619,7 +661,9 @@ gdm_login_language_lookup (const gchar* savedlang)
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is " \
 				     "%s.\nDo you wish to make %s the default for future sessions?"),
-				   curlang, savedlang, curlang);
+				   gdm_lookup_locale_name (curlang),
+				   gdm_lookup_locale_name (savedlang),
+				   gdm_lookup_locale_name (curlang));
 	    savelang = gdm_login_query (msg);
 	    g_free (msg);
 	}
@@ -627,9 +671,6 @@ gdm_login_language_lookup (const gchar* savedlang)
 	g_free (language);
 	language = g_strdup (savedlang);
     }
-
-    /* Now this is utterly ugly, but I suppose it works */
-    language[0] = tolower (language[0]);
 }
 
 static int dance_handler = 0;
@@ -834,8 +875,9 @@ gdm_login_language_handler (GtkWidget *widget)
     if (!widget)
 	return;
 
-    gtk_label_get (GTK_LABEL (GTK_BIN (widget)->child), &curlang);
-    s = g_strdup_printf (_("%s language selected"), curlang);
+    curlang = gtk_object_get_data (GTK_OBJECT (widget), "Language");
+    s = g_strdup_printf (_("%s language selected"),
+			 gdm_lookup_locale_name (curlang));
     gtk_label_set (GTK_LABEL (msg), s);
     g_free (s);
 }
@@ -847,8 +889,7 @@ gdm_login_language_init (GtkWidget *menu)
     GtkWidget *item, *ammenu, *nzmenu, *omenu;
     FILE *langlist;
     char curline[256];
-    char *ctmp, *ctmp1, *ctmp2;
-    int has_other_locale = FALSE;
+    gboolean has_other_locale = FALSE;
     GtkWidget *other_menu;
 
     if (!menu)
@@ -864,6 +905,9 @@ gdm_login_language_init (GtkWidget *menu)
 			GTK_SIGNAL_FUNC (gdm_login_language_handler), 
 			NULL);
     gtk_widget_show (GTK_WIDGET (item));
+    gtk_object_set_data (GTK_OBJECT (item),
+			 "Language",
+			 lastlang);
 
     item = gtk_menu_item_new();
     gtk_menu_append (GTK_MENU (menu), item);
@@ -893,42 +937,51 @@ gdm_login_language_init (GtkWidget *menu)
 	return;
         
     while (fgets (curline, sizeof (curline), langlist)) {
+	    char *name;
+	    char *lang;
 
-	if (!isalpha (curline[0])) 
-	    continue;
+	    if (!isalpha (curline[0])) 
+		    continue;
+
+	    name = strtok (curline, " \t");
+	    if (name == NULL)
+		    continue;
+
+	    lang = strtok (NULL, " \t");
+	    if (lang == NULL)
+		    continue;
+
+	    name[0] = toupper (name[0]);
+
+	    if (back_locales == NULL)
+		    back_locales = g_hash_table_new (g_str_hash, g_str_equal);
+	    g_hash_table_insert (back_locales,
+				 g_strdup (lang),
+				 g_strdup (name));
 	
-	ctmp1 = strchr (curline, ' ');
-	ctmp2 = strchr (curline, '\t');
-	ctmp = curline + strlen (curline) - 1;
+	    item = gtk_radio_menu_item_new_with_label (languages, name);
+	    languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+	    gtk_object_set_data_full (GTK_OBJECT (item),
+				      "Language",
+				      g_strdup (lang),
+				      (GtkDestroyNotify) g_free);
 
-	if (ctmp1 && (ctmp1 < ctmp))
-	    ctmp = ctmp1;
-
-	if (ctmp2 && (ctmp2 < ctmp))
-	    ctmp = ctmp2;
-
-	*ctmp = '\0';
-	curline[0] = toupper (curline[0]);
-	
-	item = gtk_radio_menu_item_new_with_label (languages, curline);
-	languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-
-	if (curline[0] >= 'A' && curline[0] <= 'M')
-	    gtk_menu_append (GTK_MENU (ammenu), item);
-	else if (curline[0] >= 'N' && curline[0] <= 'Z')
-	    gtk_menu_append (GTK_MENU (nzmenu), item);
-	else {
-	    gtk_menu_append (GTK_MENU (omenu), item);
-	    has_other_locale = 1;
-	}
+	    if (curline[0] >= 'A' && curline[0] <= 'M') {
+		    gtk_menu_append (GTK_MENU (ammenu), item);
+	    } else if (curline[0] >= 'N' && curline[0] <= 'Z') {
+		    gtk_menu_append (GTK_MENU (nzmenu), item);
+	    } else {
+		    gtk_menu_append (GTK_MENU (omenu), item);
+		    has_other_locale = TRUE;
+	    }
 
 	gtk_signal_connect (GTK_OBJECT (item), "activate", 
 			    GTK_SIGNAL_FUNC (gdm_login_language_handler), 
 			    NULL);
 	gtk_widget_show (GTK_WIDGET (item));
     }
-    if (!has_other_locale) 
-        gtk_widget_destroy(other_menu);
+    if ( ! has_other_locale) 
+	    gtk_widget_destroy (other_menu);
     
     fclose (langlist);
 }

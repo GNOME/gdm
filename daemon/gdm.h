@@ -45,8 +45,6 @@
 #define DISPLAY_REBOOT 8	/* Rebewt */
 #define DISPLAY_HALT 16		/* Halt */
 #define DISPLAY_DEAD 32		/* Display not configured/started yet */
-#define DISPLAY_GREETERSEGV 64	/* Greeter died with a segv or something
-				   unhandled, bad greeter */
 
 #define XDMCP_DEAD 0
 #define XDMCP_PENDING 1
@@ -157,7 +155,6 @@ struct _GdmDisplay {
     guint8 dispstat;
     guint16 dispnum;
     guint8 servstat;
-    guint8 servtries;
     guint8 type;
     pid_t greetpid;
     pid_t servpid;
@@ -165,10 +162,12 @@ struct _GdmDisplay {
     pid_t slavepid;
     pid_t chooserpid;
     time_t acctime;
+
     time_t last_start_time;
     gint retry_count;
-    time_t slave_last_start_time;
-    gint slave_retry_count;
+
+    int sleep_before_run;
+
     gboolean disabled;
 };
 

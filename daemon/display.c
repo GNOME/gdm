@@ -24,6 +24,7 @@
 #include <X11/Xauth.h>
 
 #include "gdm.h"
+#include "server.h"
 #include "display.h"
 #include "slave.h"
 #include "misc.h"
@@ -36,6 +37,84 @@ extern gboolean GdmXdmcp;
 extern gint sessions;
 extern gint pending;
 extern GSList *displays;
+
+static gboolean
+gdm_display_check_loop (GdmDisplay *disp)
+{
+  time_t now;
+  time_t since_last;
+  
+  now = time (NULL);
+
+  if (disp->disabled)
+    return FALSE;
+  
+  if (disp->last_start_time > now || disp->last_start_time == 0)
+    {
+      /* Reset everything if this is the first time in this
+       * function, or if the system clock got reset backward.
+       */
+      disp->last_start_time = now;
+      disp->retry_count = 1;
+
+      gdm_debug ("Resetting counts for loop of death detection");
+      
+      return TRUE;
+    }
+
+  since_last = now - disp->last_start_time;
+
+  /* If it's been at least 1.5 minutes since the last startup
+   * attempt, then we reset everything.
+   */
+
+  if (since_last >= 90)
+    {
+      disp->last_start_time = now;
+      disp->retry_count = 1;
+
+      gdm_debug ("Resetting counts for loop of death detection, 90 seconds elapsed.");
+      
+      return TRUE;
+    }
+
+  /* If we've tried too many times we bail out. i.e. this means we
+   * tried too many times in the 90-second period.
+   */
+  if (disp->retry_count > 4)
+    {
+      gchar *msg;
+      msg = g_strdup_printf (_("Failed to start X server several times in a short time period; disabling display %s"), disp->name);
+      gdm_error (msg);
+      g_free (msg);
+      disp->disabled = TRUE;
+
+      gdm_debug ("Failed to start X server after several retries; aborting.");
+      
+      return FALSE;
+    }
+  
+  /* At least 8 seconds between start attempts,
+   * so you can try to kill gdm from the console
+   * in these gaps.
+   */
+  if (since_last < 8)
+    {
+      gdm_debug ("Will sleep %d seconds before next X server restart attempt",
+                 8 - since_last);
+      now = time (NULL) + 8 - since_last;
+      disp->sleep_before_run = 8 - since_last;
+    }
+  else
+    {
+      disp->sleep_before_run = 0;
+    }
+
+  disp->retry_count += 1;
+  disp->last_start_time = now;
+
+  return TRUE;
+}
 
 
 /**
@@ -54,6 +133,9 @@ gdm_display_manage (GdmDisplay *d)
 	return FALSE;
 
     gdm_debug ("gdm_display_manage: Managing %s", d->name);
+
+    if ( ! gdm_display_check_loop (d))
+	    return FALSE;
 
     /* If we have an old slave process hanging around, kill it */
     if (d->slavepid) {
@@ -82,12 +164,19 @@ gdm_display_manage (GdmDisplay *d)
 	if (d->type == TYPE_LOCAL) {
 	    gdm_slave_start (d);
 	    /* if we ever return, bad things are happening */
+	    gdm_server_stop (d);
 	    _exit (DISPLAY_ABORT);
 	} else if (d->type == TYPE_XDMCP && d->dispstat == XDMCP_MANAGED) {
 	    gdm_slave_start (d);
+	    gdm_server_stop (d);
 	    /* we expect to return after the session finishes */
 	    _exit (DISPLAY_REMANAGE);
 	}
+
+	/* yaikes, how did we ever get here, though I suppose
+	 * it could be possible if XMDCP thing wasn't really set up */
+	gdm_server_stop (d);
+	_exit (DISPLAY_ABORT);
 
 	break;
 
@@ -100,6 +189,9 @@ gdm_display_manage (GdmDisplay *d)
 	gdm_debug ("gdm_display_manage: Forked slave: %d", d->slavepid);
 	break;
     }
+
+    /* reset sleep to 0 */
+    d->sleep_before_run = 0;
 
     return TRUE;
 }

@@ -52,6 +52,7 @@ static gchar *login = NULL;
 static sigset_t mask, omask;
 static gboolean greet = FALSE;
 static FILE *greeter;
+static pid_t last_killed_pid = 0;
 
 extern gboolean gdm_first_login;
 
@@ -165,6 +166,12 @@ gdm_slave_run (GdmDisplay *display)
     
     d = display;
 
+    if (d->sleep_before_run > 0) {
+	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
+	    sleep (d->sleep_before_run);
+	    d->sleep_before_run = 0;
+    }
+
     /* if this is local display start a server if one doesn't
      * exist */
     if (d->type == TYPE_LOCAL &&
@@ -228,7 +235,7 @@ gdm_slave_run (GdmDisplay *display)
 	}
     } else {
 	gdm_server_stop (d);
-	exit (DISPLAY_ABORT);
+	_exit (DISPLAY_ABORT);
     }
 }
 
@@ -270,6 +277,9 @@ gdm_slave_greeter (void)
     greet = TRUE;
 
     /* Fork. Parent is gdmslave, child is greeter process. */
+    last_killed_pid = 0; /* race condition wrapper,
+			  * it could be that we recieve sigchld before
+			  * we can set greetpid.  eek! */
     switch (d->greetpid = fork()) {
 	
     case 0:
@@ -309,6 +319,14 @@ gdm_slave_greeter (void)
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't fork gdmgreeter process"));
 	
     default:
+	if (last_killed_pid == d->greetpid) {
+		/* foo, this is a bad case really.  We always remanage since
+		 * we assume that the greeter died, we should probably store
+		 * the status.  But this race is not likely to happen
+		 * normally. */
+		gdm_server_stop (d);
+		_exit (DISPLAY_REMANAGE);
+	}
 	close (pipe1[0]);
 	close (pipe2[1]);
 
@@ -483,7 +501,7 @@ gdm_slave_session_start (void)
 	gdm_slave_session_cleanup ();
 	
 	gdm_server_stop (d);
-	exit (DISPLAY_REMANAGE);
+	_exit (DISPLAY_REMANAGE);
     } 
 
     /* Start user process */
@@ -554,7 +572,7 @@ gdm_slave_session_start (void)
 	gdm_slave_session_cleanup ();
 	
 	gdm_server_stop (d);
-	exit (DISPLAY_REMANAGE);
+	_exit (DISPLAY_REMANAGE);
 	
     default:
 	break;
@@ -565,8 +583,10 @@ gdm_slave_session_start (void)
 
     sesspid = d->sesspid;
 
-    /* Wait for the user's session to exit */
-    waitpid (d->sesspid, 0, 0);
+    /* Wait for the user's session to exit, but by this time the
+     * session might have ended, so check for 0 */
+    if (d->sesspid > 0)
+	    waitpid (d->sesspid, NULL, 0);
     d->sesspid = 0;
 
     gdm_debug ("gdm_slave_session_start: Session ended OK");
@@ -674,7 +694,7 @@ gdm_slave_term_handler (int sig)
     gdm_debug ("gdm_slave_term_handler: Whacking server");
 
     gdm_server_stop (d);
-    exit (DISPLAY_ABORT);
+    _exit (DISPLAY_ABORT);
 }
 
 
@@ -696,33 +716,22 @@ gdm_slave_child_handler (int sig)
 	if (WIFSIGNALED (status))
 	    gdm_debug ("gdm_slave_child_handler: %d died of %d",
 		       (int)pid, (int)WTERMSIG (status));
-	
-	if (pid == d->greetpid && greet) {
-	    if (WIFEXITED (status)) {
-		gdm_server_stop (d);
-		exit (WEXITSTATUS (status));
-	    } else if (WIFSIGNALED (status) &&
-		       WTERMSIG (status) != SIGQUIT &&
-		       WTERMSIG (status) != SIGKILL &&
-		       WTERMSIG (status) != SIGTERM &&
-		       WTERMSIG (status) != SIGINT) {
-		    /* if we died of some weird signal, we are broken */
-		    gdm_server_stop (d);
-		    exit (DISPLAY_GREETERSEGV);
-	    } else {
-		gdm_server_stop (d);
-		exit (DISPLAY_REMANAGE);
-	    }
-	}
 
-	if (pid && pid == d->sesspid) {
+	if (pid == d->greetpid && greet) {
+		gdm_server_stop (d);
+		if (WIFEXITED (status)) {
+			_exit (WEXITSTATUS (status));
+		} else {
+			_exit (DISPLAY_REMANAGE);
+		}
+	} else if (pid != 0 && pid == d->sesspid) {
 		d->sesspid = 0;
-	}
-	
-	if (pid && pid == d->servpid) {
+	} else if (pid != 0 && pid == d->servpid) {
 		d->servstat = SERVER_DEAD;
 		d->servpid = 0;
 		unlink (d->authfile);
+	} else if (pid != 0) {
+		last_killed_pid = pid;
 	}
     }
 }
@@ -748,7 +757,7 @@ gdm_slave_xioerror_handler (Display *disp)
     gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
 
     gdm_server_stop (d);
-    exit (DISPLAY_REMANAGE);
+    _exit (DISPLAY_REMANAGE);
 }
 
 gchar * 
@@ -792,6 +801,8 @@ gdm_slave_exit (gint status, const gchar *format, ...)
     
     g_free (s);
 
+    gdm_server_stop (d);
+
     /* Kill children where applicable */
     if (d->greetpid != 0)
 	kill (d->greetpid, SIGTERM);
@@ -809,7 +820,7 @@ gdm_slave_exit (gint status, const gchar *format, ...)
 	kill (d->servpid, SIGTERM);
     d->servpid = 0;
 
-    exit (status);
+    _exit (status);
 }
 
 

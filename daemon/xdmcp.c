@@ -936,7 +936,7 @@ gdm_xdmcp_display_alloc (struct sockaddr_in *clnt_sa, gint displaynum)
     GdmDisplay *d = NULL;
     struct hostent *client_he = NULL;
     
-    d = g_malloc (sizeof (GdmDisplay));
+    d = g_new0 (GdmDisplay, 1);
     d->authfile = NULL;
     d->auths = NULL;
     d->userauth = NULL;
@@ -952,6 +952,8 @@ gdm_xdmcp_display_alloc (struct sockaddr_in *clnt_sa, gint displaynum)
     d->sessionid = globsessid++;
     d->acctime = time (NULL);
     d->dispnum = displaynum;
+
+    d->sleep_before_run = 0;
     
     /* Find client hostname */
     client_he = gethostbyaddr ((gchar *) &clnt_sa->sin_addr,

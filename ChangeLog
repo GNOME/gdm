@@ -1,3 +1,27 @@
+Thu Feb 01 04:49:11 2001  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in:  Add gdm to the list of default excludes
+
+	* daemon/gdm.c:  take HUP signal, which will unmanage all displays and
+	  then re-exec itself.  This is a poor-mans reset, not integrated
+	  with the configurator yet.
+
+	* daemon/display.c, daemon/gdm.[ch], daemon/server.c, daemon/slave.c,
+	  daemon/xdmcp.c:  Remove all loop of death catches except for the
+	  slave restart one.  Move the server loop of death to display.c
+	  as it must run in the master process, and it can now catch all
+	  the error conditions without races.  Move sleeping to slave.
+	  Kill many race conditions, some of them quite evil.  Kill the
+	  greeter segfault detection, loop of death in display.c is enough
+	  here.
+
+	* gui/gdmlogin.c:  If LANG is set, use that for a default language,
+	  preferring the DefaultLocale setting and use that only as fallback.
+	  Instead of setting LANG to the name of the language, set it to
+	  the proper unaliased string since our alias file may be different
+	  from the system one.   And add a way to sort of get from codes to
+	  langauge names.  Remove tolower ugly hack.
+
 2001-01-31  Gediminas Paulasukas <menesis@delfi.lt>
 
 	* gui/gdmconfig-strings.c, gui/gdmconfig.glade: fix some mistakes in

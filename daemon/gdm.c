@@ -92,6 +92,10 @@ gboolean  GdmAllowRoot = FALSE;
 gint  GdmRelaxPerms = 0;
 gint  GdmRetryDelay = 0;
 
+/* set in the main function */
+static char **stored_argv = NULL;
+static int stored_argc = 0;
+
 
 /**
  * gdm_config_parse:
@@ -327,7 +331,8 @@ gdm_local_servers_start (GdmDisplay *d)
 {
     if (d && d->type == TYPE_LOCAL) {
 	gdm_debug ("gdm_local_servers_start: Starting %s", d->name);
-	gdm_display_manage (d);
+	if ( ! gdm_display_manage (d))
+		gdm_display_unmanage (d);
 
 	/* only the first local display gets autologged in */
 	gdm_first_login = FALSE;
@@ -398,43 +403,18 @@ gdm_cleanup_children (void)
 	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
 	break;
 
-    case DISPLAY_GREETERSEGV:
-	/* hmmm this may have been caused by something weird, so we should try
-	 * again */
-	{
-		time_t now = time (NULL);
-
-		/* if we segv more then 4 times in 40 seconds
-		 * then we don't want to do anything with this display
-		 * anymore it's defective */
-		if (d->slave_last_start_time > now ||
-		    d->slave_last_start_time == 0 ||
-		    d->slave_last_start_time + 40 < now) {
-			d->slave_retry_count = 1;
-			/*fall through to remanage */
-		} else if (d->slave_retry_count > 4) {
-			gdm_info (_("gdm_child_action: Greeter segfaulted too many times in the last 40 seconds for display %s, killing it"), d->name);
-
-			gdm_display_unmanage (d);
-			/* don't fall through, just get out */
-			break;
-		} else {
-			d->slave_retry_count ++;
-		}
-	
-		d->slave_last_start_time = now;
-		/* fall through */
-	}
     case DISPLAY_REMANAGE:	/* Remanage display */
     default:
 	gdm_debug ("gdm_child_action: Slave process returned %d", status);
 	
 	/* This is a local server so we start a new slave */
-	if (d->type == TYPE_LOCAL)
-	    gdm_display_manage (d);
+	if (d->type == TYPE_LOCAL) {
+		if ( ! gdm_display_manage (d))
+			gdm_display_unmanage (d);
 	/* Remote displays will send a request to be managed */
-	else if (d->type == TYPE_XDMCP)
-	    gdm_display_unmanage (d);
+	} else if (d->type == TYPE_XDMCP) {
+		gdm_display_unmanage (d);
+	}
 	
 	break;
     }
@@ -457,9 +437,9 @@ term_cleanup (void)
    
   closelog();
   unlink (GdmPidFile);
-  
-  exit (EXIT_SUCCESS);
 }
+
+
 
 static gboolean
 mainloop_sig_callback (gint8 sig, gpointer data)
@@ -474,6 +454,12 @@ mainloop_sig_callback (gint8 sig, gpointer data)
     case SIGINT:
     case SIGTERM:
       term_cleanup ();
+      exit (EXIT_SUCCESS);
+      break;
+
+    case SIGHUP:
+      term_cleanup ();
+      execvp (stored_argv[0], stored_argv);
       break;
  
     default:
@@ -495,13 +481,27 @@ signal_notify (int sig)
 
 static GMainLoop *main_loop;    
 
+static void
+store_argv (int argc, char *argv[])
+{
+	int i;
+
+	stored_argv = g_new0 (char *, argc + 1);
+	for (i = 0; i < argc; i++)
+		stored_argv[i] = g_strdup (argv[i]);
+	stored_argv[i] = NULL;
+	stored_argc = argc;
+}
+
 int 
 main (int argc, char *argv[])
 {
     sigset_t mask;
     struct sigaction term, child;
     FILE *pf;
- 
+
+    store_argv (argc, argv);
+
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, GNOMELOCALEDIR);
     textdomain(PACKAGE);
@@ -550,6 +550,7 @@ main (int argc, char *argv[])
     g_signal_add (SIGCHLD, mainloop_sig_callback, NULL);
     g_signal_add (SIGTERM, mainloop_sig_callback, NULL);
     g_signal_add (SIGINT, mainloop_sig_callback, NULL);
+    g_signal_add (SIGHUP, mainloop_sig_callback, NULL);
     
     term.sa_handler = signal_notify;
     term.sa_flags = SA_RESTART;
@@ -560,6 +561,9 @@ main (int argc, char *argv[])
 
     if (sigaction (SIGINT, &term, NULL) < 0) 
 	gdm_fail (_("gdm_main: Error setting up INT signal handler"));
+
+    if (sigaction (SIGHUP, &term, NULL) < 0) 
+	gdm_fail (_("gdm_main: Error setting up HUP signal handler"));
 
     child.sa_handler = signal_notify;
     child.sa_flags = SA_RESTART|SA_NOCLDSTOP;
@@ -573,6 +577,7 @@ main (int argc, char *argv[])
     sigaddset (&mask, SIGINT);
     sigaddset (&mask, SIGTERM);
     sigaddset (&mask, SIGCHLD);
+    sigaddset (&mask, SIGHUP);
     sigprocmask (SIG_UNBLOCK, &mask, &sysmask); /* Save system sigmask */
 
     gdm_debug ("gdm_main: Here we go...");

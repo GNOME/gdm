@@ -40,6 +40,8 @@
 
 static const gchar RCSid[]="$Id$";
 
+#define SERVER_WAIT_ALARM 10
+
 
 /* Local prototypes */
 static void gdm_server_spawn (GdmDisplay *d);
@@ -57,80 +59,6 @@ extern sigset_t sysmask;
 
 /* Global vars */
 static GdmDisplay *d = NULL;
-
-static gboolean
-gdm_server_check_loop (GdmDisplay *disp)
-{
-  time_t now;
-  time_t since_last;
-  
-  now = time (NULL);
-
-  if (disp->disabled)
-    return FALSE;
-  
-  if (disp->last_start_time > now || disp->last_start_time == 0)
-    {
-      /* Reset everything if this is the first time in this
-       * function, or if the system clock got reset backward.
-       */
-      disp->last_start_time = now;
-      disp->retry_count = 1;
-
-      gdm_debug ("Resetting counts for loop of death detection");
-      
-      return TRUE;
-    }
-
-  since_last = now - disp->last_start_time;
-
-  /* If it's been at least 1.5 minutes since the last startup
-   * attempt, then we reset everything.
-   */
-
-  if (since_last >= 90)
-    {
-      disp->last_start_time = now;
-      disp->retry_count = 1;
-
-      gdm_debug ("Resetting counts for loop of death detection, 90 seconds elapsed.");
-      
-      return TRUE;
-    }
-
-  /* If we've tried too many times we bail out. i.e. this means we
-   * tried too many times in the 90-second period.
-   */
-  if (disp->retry_count > 4)
-    {
-      gchar *msg;
-      msg = g_strdup_printf (_("Failed to start X server several times in a short time period; disabling display %s"), disp->name);
-      gdm_error (msg);
-      g_free (msg);
-      disp->disabled = TRUE;
-
-      gdm_debug ("Failed to start X server after several retries; aborting.");
-      
-      exit (SERVER_ABORT);
-    }
-  
-  /* At least 8 seconds between start attempts,
-   * so you can try to kill gdm from the console
-   * in these gaps.
-   */
-  if (since_last < 8)
-    {
-      gdm_debug ("Sleeping %d seconds before next X server restart attempt",
-                 8 - since_last);
-      sleep (8 - since_last);
-      now = time (NULL);
-    }
-
-  disp->retry_count += 1;
-  disp->last_start_time = now;
-
-  return TRUE;
-}
 
 /**
  * gdm_server_reinit:
@@ -216,18 +144,12 @@ gdm_server_start (GdmDisplay *disp)
 	return FALSE;
     
     d = disp;
-    d->servtries = 0;
 
     /* if an X server exists, wipe it */
     gdm_server_stop (d);
 
     gdm_debug ("gdm_server_start: %s", d->name);
 
-    if (!gdm_server_check_loop (disp))
-      return FALSE;
-
-    gdm_debug ("Attempting to start X server");
-    
     /* Create new cookie */
     gdm_auth_secure_display (d);
     gdm_setenv ("DISPLAY", d->name);
@@ -277,7 +199,9 @@ gdm_server_start (GdmDisplay *disp)
      * sockets etc. If the old X server isn't completely dead, the new
      * one will fail and we'll hang here forever */
 
-    alarm (10);
+    alarm (SERVER_WAIT_ALARM);
+
+    d->servstat = SERVER_DEAD;
     
     /* fork X server process */
     gdm_server_spawn (d);
@@ -285,64 +209,39 @@ gdm_server_start (GdmDisplay *disp)
     retvalue = FALSE;
 
     /* Wait for X server to send ready signal */
-    while (d->servtries < 5) {
-	if (d->servstat == SERVER_STARTED)
-		gdm_run ();
+    if (d->servstat == SERVER_STARTED)
+	    gdm_run ();
 
-	switch (d->servstat) {
+    /* Unset alarm */
+    alarm (0);
 
-	case SERVER_TIMEOUT:
-	    /* Unset alarm and try again */
-	    alarm (0);
-	    waitpid (d->servpid, 0, WNOHANG);
+    switch (d->servstat) {
 
+    case SERVER_TIMEOUT:
 	    gdm_debug ("gdm_server_start: Temporary server failure (%d)", d->name);
-	    sleep (1 + d->servtries*2);
-    
-	    /* We add a timeout in case the X server fails to start. This
-	     * might happen because X servers take a while to die, close their
-	     * sockets etc. If the old X server isn't completely dead, the new
-	     * one will fail and we'll hang here forever */
-
-	    alarm (10);
-
-	    gdm_server_spawn (d);
-	    
 	    break;
 
-	case SERVER_RUNNING:
-	    /* Unset alarm */
-	    alarm (0);
-	    
+    case SERVER_ABORT:
+	    gdm_debug ("gdm_server_start: Server %s died during startup!", d->name);
+	    break;
+
+    case SERVER_RUNNING:
 	    gdm_debug ("gdm_server_start: Completed %s!", d->name);
 
 	    retvalue = TRUE;
 	    goto spawn_done;
 
-	case SERVER_ABORT:
-	    /* Unset alarm */
-	    alarm (0);
-	    gdm_debug ("gdm_server_start: Server %s died during startup!", d->name);
-	    sleep (1 + d->servtries*2);
-
-	    /* We add a timeout in case the X server fails to start. This
-	     * might happen because X servers take a while to die, close their
-	     * sockets etc. If the old X server isn't completely dead, the new
-	     * one will fail and we'll hang here forever */
-
-	    alarm (10);
-
-	    gdm_server_spawn (d);
-
+    default:
 	    break;
-
-	default:
-	    break;
-	}
-
-	d->servtries ++;
     }
 
+    /* bad things are happening */
+    if (d->servpid > 0) {
+	    if (kill (d->servpid, SIGTERM) == 0)
+		    waitpid (d->servpid, NULL, 0);
+	    d->servpid = 0;
+    }
+    _exit (DISPLAY_REMANAGE);
 
 spawn_done:
 
@@ -389,12 +288,20 @@ gdm_server_spawn (GdmDisplay *d)
     else
 	gdm_error (_("gdm_server_spawn: Could not open logfile for display %s!"), d->name);
 
+    /* eek, some previous copy, just wipe it */
+    if (d->servpid > 0) {
+	    if (kill (d->servpid, SIGTERM) == 0)
+		    waitpid (d->servpid, NULL, 0);
+    }
+
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
     
     switch (d->servpid = fork()) {
 	
     case 0:
+        alarm (0);
+
 	/* Close the XDMCP fd inherited by the daemon process */
 	if (GdmXdmcp)
 	    gdm_xdmcp_close();
@@ -406,7 +313,7 @@ gdm_server_spawn (GdmDisplay *d)
 
 	if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
 	    gdm_error (_("gdm_server_spawn: Error setting USR1 to SIG_IGN"));
-	    exit (SERVER_ABORT);
+	    _exit (SERVER_ABORT);
 	}
 
 	/* And HUP and TERM should be at default */
@@ -416,11 +323,11 @@ gdm_server_spawn (GdmDisplay *d)
 
 	if (sigaction (SIGHUP, &dfl_signal, NULL) < 0) {
 	    gdm_error (_("gdm_server_spawn: Error setting HUP to SIG_DFL"));
-	    exit (SERVER_ABORT);
+	    _exit (SERVER_ABORT);
 	}
 	if (sigaction (SIGTERM, &dfl_signal, NULL) < 0) {
 	    gdm_error (_("gdm_server_spawn: Error setting TERM to SIG_DFL"));
-	    exit (SERVER_ABORT);
+	    _exit (SERVER_ABORT);
 	}
 
 	/* unblock HUP/TERM/USR1 so that we can control the
@@ -446,7 +353,7 @@ gdm_server_spawn (GdmDisplay *d)
 	
 	gdm_error (_("gdm_server_spawn: Xserver not found: %s"), d->command);
 	
-	exit (SERVER_ABORT);
+	_exit (SERVER_ABORT);
 	
     case -1:
 	gdm_error (_("gdm_server_spawn: Can't fork Xserver process!"));
@@ -473,6 +380,8 @@ gdm_server_usr1_handler (gint sig)
 {
     d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
 
+    gdm_debug ("gdm_server_usr1_handler: Got SIGUSR1, server running");
+
     gdm_quit ();
 }
 
@@ -488,6 +397,8 @@ static void
 gdm_server_alarm_handler (gint signal)
 {
     d->servstat = SERVER_TIMEOUT; /* Server didn't start */
+
+    gdm_debug ("gdm_server_alarm_handler: Got SIGALRM, server abort");
 
     gdm_quit ();
 }
@@ -552,6 +463,7 @@ gdm_server_alloc (gint id, const gchar *command)
     d->last_start_time = 0;
     d->retry_count = 0;
     d->disabled = FALSE;
+    d->sleep_before_run = 0;
     
     g_free (hostname);
 
