@@ -71,7 +71,9 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Lithuanian"), "lt_LT", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Norwegian"), "no_NO", 0 },
+	{ N_("N-Z|Norwegian (bokmal)"), "no_NO", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Norwegian (nynorsk)"), "nn_NO", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Polish"), "pl_PL", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
