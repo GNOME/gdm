@@ -1,8 +1,8 @@
 [daemon]
-Chooser=@bindir@/gdmchooser --disable-sound
-DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin
+Chooser=@bindir@/gdmchooser --disable-sound --disable-crash-dialog
+DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:@bindir@
 DisplayInitDir=@sysconfdir@/gdm/Init
-Greeter=@bindir@/gdmlogin --disable-sound
+Greeter=@bindir@/gdmlogin --disable-sound --disable-crash-dialog
 Group=gdm
 HaltCommand=/sbin/shutdown -h now
 KillInitClients=1
@@ -11,7 +11,7 @@ PidFile=/var/run/gdm.pid
 PostSessionScriptDir=@sysconfdir@/gdm/PostSession/
 PreSessionScriptDir=@sysconfdir@/gdm/PreSession/
 RebootCommand=/sbin/shutdown -r now
-RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin
+RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:@bindir@
 ServAuthDir=@authdir@
 SessionDir=@sysconfdir@/gdm/Sessions/
 User=gdm

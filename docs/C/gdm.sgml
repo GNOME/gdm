@@ -70,7 +70,7 @@
 
     <para>
       Paths without a leading '/' are relative to the installation
-      prefix. I.e. <filename>share/pixmaps/</filename> refer to
+      prefix. I.e. <filename>share/pixmaps/</filename> refers to
       <filename>/usr/share/pixmaps</filename> if GDM was configured
       with <filename>--prefix=/usr</filename>.
     </para>
@@ -87,7 +87,7 @@
     </para>
 
     <sect1 id="overview">
-      <title>Theory of Operation</title>
+      <title>Daemon Overview</title>
       
       <para> 
 	GDM was written with simplicity and security in mind. The
@@ -96,14 +96,14 @@
       
       <para> 
 	Upon startup the <filename>gdm</filename> daemon parses its config file
-	<filename>gdm.conf</filename>.  For each of the local displays gdm
-	forks an Xserver and a slave process. The main gdm process
+	<filename>gdm.conf</filename>.  For each of the local displays <filename /gdm/
+	forks an Xserver and a slave process. The main <filename /gdm/ process
 	will then listen to XDMCP requests from remote displays and
 	monitor the local display sessions.
       </para>
       
       <para> 
-	The gdm slave process opens the display and starts
+	The <filename /gdm/ slave process opens the display and starts
 	<filename>gdmlogin</filename>, the graphical login
 	program. <filename>gdmlogin</filename> runs as a dedicated
 	user and communicates asynchronously with the slave process
@@ -113,13 +113,55 @@
       <para> 
 	GDM relies heavily on the presence of PAM, Pluggable
 	Authentication Modules, but supports regular crypt() 
-	and shadow passwords.
+	and shadow passwords on legacy systems.
+      </para>
+
+      <para>
+	Remote displays can connect to the XDMCP port on the GDM
+	host. <filename /gdm/ will grant access to hosts specified in
+	the gdm service section in your TCP Wrappers configuration
+	file. GDM does not support remote display access control on
+	systems without TCP Wrappers. XDMCP support can be turned off
+	completely, however.
+      </para>
+
+      <para>
+	GDM includes several measures making it more resistant to
+	denial of service attacks on the XDMCP service. A lot of the
+	protocol parameters, handshaking timeouts etc. can be fine
+	tuned. The defaults should work for most systems, however.
+	Don't change them unless you know what you're doing.
+      </para>
+
+      <para>
+	In general GDM is very reluctant regarding reading/writing of
+	user files. For instance it refuses to touch anything but
+	regular files.  Links, sockets and devices are ignored.  The
+	value of the RelaxPermissions parameter determines whether GDM
+	should accept files writable by the user's group or others.
+	These are ignored by default.
+      </para>
+
+      <para>
+	All operations on user files are done with the effective
+	userid of the user. If the sanity check fails on the user's
+	<filename /.Xauthority/ file, a fallback cookie is created in
+	<filename>/tmp</filename>.
+      </para>
+
+      <para>
+	Finally, the sysadmin can specify the maximum file size GDM
+	should accept, and, if the face browser is enabled, a tunable
+	maximum icon size is also enforced.  On large systems it is
+	still advised to turn off the face browser for performance
+	reasons. Looking up icons in homedirs, scaling and rendering
+	face icons can take quite a long time. YMMV.
       </para>
 
     </sect1>
   </chapter>
 
-  <chapter id="Configuration">
+  <chapter id="ConfigurationOverview">
     <title>The Configuration Directory</title>
 
     <para> 
@@ -144,28 +186,37 @@
       options will be described later in this chapter.
     </para>
 
+    <para>
+      <filename /gdm.conf/ is configuration file for both <filename
+      /gdm/, <filename /gdmlogin/, and <filename /gdmchooser/ since a
+      lot of parameters overlap.
+    </para>
+
     <para> 
       The remaining configuration is done by dropping scripts in the
       subdirectories of the <filename>etc/gdm</filename> folder. This
       approach makes it easy for package management systems to install
       window managers and different session types without requiring
-      the sysadmin/user to edit files.
+      the sysadmin to edit files.
     </para>
 
     <sect1>
       <title>The Script Directories</title>
       
       <para>
-	In this section we will explain the Init, PreRoot and PostRoot
-	directories as they are very similar.
+	In this section we will explain the <filename /Init/,
+	<filename /PreRoot/ and <filename /PostRoot/ directories as
+	they are very similar.
       </para>
 
       <para>
 	When the X server has been successfully started, GDM will try
-	to run the script called Init/&lt;displayname&gt;. I.e. Init/:0 for
-	the first local display.  If this file is not found, GDM will
-	attempt to to run Init/Default. The script will be run as root
-	and GDM blocks until it terminates. Use the Init/* script for
+	to run the script called
+	<filename>Init/&lt;displayname&gt;</filename>. I.e. <filename>Init/:0</filename>
+	for the first local display.  If this file is not found, GDM
+	will attempt to to run <filename>Init/Default</filename>. The
+	script will be run as root and GDM blocks until it
+	terminates. Use the <filename>Init/*</filename> script for
 	programs that are supposed to run alongside with the GDM login
 	window. xconsole for instance.  Commands to set the background
 	etc. goes in this file too.
@@ -174,43 +225,46 @@
       <para> 
 	It is up to the sysadmin to decide whether clients started by
 	the Init script should be killed before starting the user
-	session. This is controlled with the KillInitClient option in
+	session. This is controlled with the KillInitClients option in
 	<filename>gdm.conf</filename>.
       </para>
 
       <para>
 	When the user has been successfully authenticated, GDM tries
 	to run the PreSession script. Similar to the Init-scripts,
-	PreSession/&lt;displayname&gt; will be executed first, if that is
-	not found GDM will attempt to run PreSession/Default. The
-	script will be run as root and GDM blocks until it
-	terminates. Use this script for local session management or
-	accounting stuff. The USER environment variable contains the
-	login of the authenticated user. The script should return 0 on
-	success. Any other value will cause GDM to terminate the
-	current login process.
+	<filename>PreSession/&lt;displayname&gt;</filename> will be
+	executed, if this file doesn't exist, GDM will attempt to run
+	<filename>PreSession/Default</filename>. The script will be
+	run as root and GDM blocks until it terminates. Use this
+	script for local session management or accounting stuff. The
+	$USER environment variable contains the login of the
+	authenticated user. The script should return 0 on success. Any
+	other value will cause GDM to terminate the current login
+	process.
       </para>
 
       <para>
 	Then the session script is run. Session scripts are located in
 	the <filename>etc/gdm/Session</filename> directory. Which one
-	GDM runs depends on the session the user chose in the
-	Sessions-menu in the GDM greeter. If no session is selected
-	and the user has no last session stored in his
+	GDM runs, depends on the session the user chose in the
+	Sessions-menu in the greeter. If no session is selected and
+	the user has no last session stored in his
 	<filename>~/.gnome/gdm</filename> file, the system will choose
 	or first script found or -- if
 	<filename>Sessions/Default</filename> exists -- this will be
-	run. For instance you can create a symlink from <filename>Gnome</filename> to <filename>Default</filename> to make Gnome the default
-	desktop environment.
+	run. For instance you can create a symlink from
+	<filename>Gnome</filename> to <filename>Default</filename> to
+	make Gnome the default desktop environment.
       </para>
 
       <para> 
-	When the user terminates his session the PostSession script
+	When the user terminates his session, the PostSession script
 	will be run. Operation is similar to Init and PreSession. That
 	is, GDM will attempt to execute the script
-	PostSession/&lt;displayname&gt; and if that doesn't exist:
-	PostSession/Default. Again the script will be run with root
-	priviledges, the slave daemon will block and the USER
+	<filename>PostSession/&lt;displayname&gt;</filename> and if
+	that doesn't exist <filename>PostSession/Default</filename>
+	will be run. Again the script will be run with root
+	priviledges, the slave daemon will block and the $USER
 	environment variable will contain the name of the user who
 	just logged out.
       </para>
@@ -472,7 +526,7 @@
 	    <listitem>
 	      <synopsis>UserAuthFile=.Xauthority</synopsis>
 	      <para>
-		Name of the file used for storing user cookies in.  
+		Name of the file used for storing user cookies.  
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -493,6 +547,11 @@
 	      <para>
 		Graphical root logins are disallowed by default.  Set
 		this value to 1 to enable priviledged user logins.
+	      </para>
+	      <para>
+		On systems that support PAM, this parameter is
+		ignored. It's up to the PAM libraries to determine
+		whether the user is on a local display or not.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -657,8 +716,8 @@
 	    <listitem>
 	      <synopsis>MaxPendingIndirect=4</synopsis>
 	      <para>
-		Specifies the number of remote displays that can be in
-		choose mode simultaneously. FIXME!
+		GDM will only provide MaxPendingIndirect displays with
+		host choosers simultaneously.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -704,7 +763,12 @@
 	    <listitem>
 	      <synopsis>MaxWaitIndirect=30</synopsis>
 	      <para>
-		FIXME
+		The MaxWaitIndirect parameter determines the maximum
+		number of seconds between the time where a display
+		requests a chooser and completion of protocol
+		negotiation. If the timeout is exceeded, GDM will
+		remove the display from the pending list freeing up
+		the slot for other displays.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -749,7 +813,7 @@
 	      <para>
 		Specifies the maximum icon width (in pixels) that the
 		face browser will display. Icons larger than this will
-		be scaled down.
+		be scaled.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -761,7 +825,7 @@
 	      <para>
 		Specifies the maximum icon height (in pixels) that the
 		face browser will display. Icons larger than this will
-		be scaled down.
+		be scaled.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -926,7 +990,7 @@
 	  <varlistentry>
 	    <term>Welcome</term>
 	    <listitem>
-	      <synopsis>Welcome=Welcome to %s</synopsis>
+	      <synopsis>Welcome=Welcome to %n</synopsis>
 	      <para>
 		Controls which text to display next to the logo image in the
 		greeter. The following control chars are supported:
@@ -945,6 +1009,10 @@
 	      </para>
 
 	      <para>
+		%m	machine (processor type)
+	      </para>
+
+	      <para>
 		%n	Nodename (i.e. hostname without .domain)
 	      </para>
 	      
@@ -955,11 +1023,7 @@
 	      <para>
 		%s	sysname (i.e. OS)
 	      </para>
-	      
-	      <para>
-		%m	machine (processor type)
-	      </para>
-	      
+	      	      
 	    </listitem>
 	  </varlistentry>
 	</variablelist>

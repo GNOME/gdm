@@ -109,6 +109,7 @@ extern gint GdmMaxManageWait;	/* Dispose sessions not responding with MANAGE aft
 extern gint GdmMaxSessions;	/* Maximum number of remote sessions */
 extern gint GdmPort;		/* UDP port number */
 extern gint GdmIndirect;	/* Honor XDMCP_INDIRECT, i.e. choosing */
+extern gint GdmMaxIndirectWait;	/* Max wait between INDIRECT_QUERY and MANAGE */
 
 /* 
  * We don't support XDM-AUTHENTICATION-1 and XDM-AUTHORIZATION-1.
@@ -141,12 +142,16 @@ extern gboolean gdm_auth_secure_display (GdmDisplay *d);
 extern gint gdm_display_manage (GdmDisplay *d);
 extern void gdm_display_dispose (GdmDisplay *d);
 extern gboolean gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd);
+extern GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
+extern GdmIndirectDisplay *gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
+
 
 int gdm_xdmcp_init (void);
 void gdm_xdmcp_run (void);
 void gdm_xdmcp_close (void);
 static void gdm_xdmcp_decode_packet (void);
 static void gdm_xdmcp_handle_query  (struct sockaddr_in *clnt_sa, gint len, gint type);
+static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist);
 static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
@@ -268,6 +273,12 @@ gdm_xdmcp_decode_packet (void)
     struct sockaddr_in clnt_sa;
     gint sa_len = sizeof (clnt_sa);
     XdmcpHeader header;
+    static const char * const opcode_names[] = {
+	NULL,
+	"BROADCAST_QUERY", "QUERY", "INDIRECT_QUERY", "FORWARD_QUERY",
+	"WILLING", "UNWILLING", "REQUEST", "ACCEPT", "DECLINE", "MANAGE", "REFUSE",
+	"FAILED", "KEEPALIVE", "ALIVE"
+    };
     
     if (!XdmcpFill (xdmcpfd, &buf, &clnt_sa, &sa_len)) {
 	gdm_error (_("gdm_xdmcp_decode: Could not create XDMCP buffer!"));
@@ -283,7 +294,10 @@ gdm_xdmcp_decode_packet (void)
 	gdm_error (_("gdm_xdmcp_decode: Incorrect XDMCP version!"));
 	return;
     }
-    
+
+    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", 
+	       opcode_names[header.opcode], inet_ntoa (clnt_sa.sin_addr));
+
     switch (header.opcode) {
 	
     case BROADCAST_QUERY:
@@ -349,14 +363,54 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 	return;
     }
     
-    /* Don't negotiate authentication - Unsupported */
-    XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
-    
     /* Check with tcp_wrappers if client is allowed to access */
-    if (gdm_xdmcp_host_allow (clnt_sa)) 
+    if (gdm_xdmcp_host_allow (clnt_sa)) {
+
+	/* If this is an INDIRECT_QUERY, try to look up the display in
+ 	 * the pending list. If found send a FORWARD_QUERY to the
+ 	 * chosen manager. Otherwise alloc a new indirect display. */
+
+	if (GdmIndirect && type==INDIRECT_QUERY) {
+	    GdmIndirectDisplay *id = gdm_choose_indirect_lookup (clnt_sa);
+
+	    if (id) 
+		if (id->acctime + GdmMaxIndirectWait < time (NULL)) /* Expired? */
+		    gdm_xdmcp_send_forward_query (id, &clnt_authlist);
+		else
+		    gdm_xdmcp_send_unwilling (clnt_sa, type);
+	    else
+		gdm_choose_indirect_alloc (clnt_sa);
+	}
+
 	gdm_xdmcp_send_willing (clnt_sa);
+    }
     else
 	gdm_xdmcp_send_unwilling (clnt_sa, type);
+
+    /* Dispose authlist from remote display */
+    XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
+}
+
+
+static void
+gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist)
+{
+    ARRAY8 status;
+    XdmcpHeader header;
+    
+    status.data = sysid;
+    status.length = strlen (sysid);
+    
+    header.opcode = (CARD16) WILLING;
+    header.length = 6 + serv_authlist.authentication.length;
+    header.length += servhost.length + status.length;
+    header.version = XDM_PROTOCOL_VERSION;
+    XdmcpWriteHeader (&buf, &header);
+    
+    XdmcpWriteARRAY8 (&buf, &serv_authlist.authentication); /* Hardcoded authentication */
+    XdmcpWriteARRAY8 (&buf, &servhost);
+    XdmcpWriteARRAY8 (&buf, &status);
+    /* XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));*/
 }
 
 
@@ -649,7 +703,7 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa)
     authendata.data = (CARD8 *) 0;
     authendata.length = (CARD16) 0;
     
-    status.data = "Service refused";
+    status.data = "Session refused";
     status.length = strlen (status.data);
     
     header.version = XDM_PROTOCOL_VERSION;
@@ -873,7 +927,7 @@ gdm_xdmcp_display_alloc (struct sockaddr_in *clnt_sa, gint displaynum)
     d->sessionid = 0;
     d->sesspid = 0;
     d->slavepid = 0;
-    d->type = DISPLAY_XDMCP;
+    d->type = TYPE_XDMCP;
     d->dispstat = XDMCP_PENDING;
     d->sessionid = globsessid++;
     d->acctime = time (NULL);
@@ -967,7 +1021,7 @@ gdm_xdmcp_displays_check (void)
 	d = (GdmDisplay *) dlist->data;
 	
 	if (d &&
-	    d->type == DISPLAY_XDMCP &&
+	    d->type == TYPE_XDMCP &&
 	    d->dispstat == XDMCP_PENDING &&
 	    time (NULL) > d->acctime + GdmMaxManageWait)
 	{

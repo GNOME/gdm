@@ -1,7 +1,27 @@
-1999-09-13  Jaka Mocnik  <jaka.mocnik@kiss.uni-lj.si>
+1999-09-23    <mkp@mkp.net>
 
-	* gui/gdmlogin.c (gdm_login_browser_select): set curuser on
-	double click.
+	* Ripped out some work-in-progress code that didn't make it in
+ 	time for beta3. Postponed for beta4.
+	
+	* Loads of fixes. Thanks to Elliot.
+
+	* daemon/filecheck.c (gdm_file_check): Log warning if critical
+ 	files are missing.
+
+1999-09-21    <mkp@mkp.net>
+
+	* daemon/verify.c (gdm_verify_user): Avoid exposing usernames on
+ 	getpwent() failure. GdmAllowRoot is now used for non-PAM
+ 	configurations only.
+
+1999-09-13    <mkp@mkp.net>
+
+	* daemon/verify.c (gdm_verify_user): Fix root logins.
+
+1999-09-07    <mkp@mkp.net>
+
+	* gui/gdmlogin.c (gdm_login_browser_select): Fixed the obscure
+ 	curuser==NULL on doubleclick bug reported by Nils/Elliot.
 
 1999-09-03  Zbigniew Chyla  <chyla@alice.ci.pwr.wroc.pl>
 

@@ -85,7 +85,7 @@ gdm_auth_secure_display (GdmDisplay *d)
      * have to eat up old authentication cookies before baking new
      * ones...
      */
-    if (d->type == DISPLAY_LOCAL && d->auths) {
+    if (d->type == TYPE_LOCAL && d->auths) {
 	GSList *alist = d->auths;
 
 	while (alist && alist->data) {
@@ -114,7 +114,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     }
 
     /* Local access */
-    if (d->type == DISPLAY_LOCAL) {
+    if (d->type == TYPE_LOCAL) {
 	gdm_debug ("gdm_auth_secure_display: Setting up socket access");
 
 	xa = g_new0 (Xauth, 1);
@@ -189,7 +189,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
     FILE *af;
     GSList *auths = NULL;
 
-    if (!d || !user)
+    if (!d)
 	return (FALSE);
 
     gdm_debug ("gdm_auth_user_add: Adding cookie for %d", user);

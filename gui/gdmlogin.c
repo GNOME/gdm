@@ -94,12 +94,7 @@ gint maxwidth;
 static void
 gdm_login_done (void)
 {
-    gdk_keyboard_ungrab (CurrentTime);
-
-    closelog();
-    gtk_main_quit();
-
-    exit (DISPLAY_SUCCESS);
+    _exit (DISPLAY_SUCCESS);
 }
 
 
@@ -274,7 +269,7 @@ gdm_parse_enriched_string (gchar *s)
 
     if (strlen (s) > 1023) {
 	syslog (LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
-	return (g_strconcat (_("Welcome to "), hostname, NULL));
+	return (g_strdup_printf (_("Welcome to %s"), hostname));
     }
 
     if (!(buffer = g_malloc (4096))) {
@@ -464,13 +459,17 @@ gdm_login_sesslang_lookup (void)	/* Input validation sucks */
 
     if(!curuser)
 	gdm_login_abort("gdm_login_sesslang_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
-			"information on your PAM setup");
+			"information on your PAM and user database  setup");
 
     gtk_widget_set_sensitive (GTK_WIDGET (sessmenu), FALSE);
     gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
 
     /* Lookup verified user */
     pwent = getpwnam (curuser);
+
+    if(!pwent)
+	gdm_login_abort("gdm_login_sesslang_lookup: pwent==NULL. Mail <mkp@mkp.net> with " \
+			"information on your PAM and user database setup");
 
     dir = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
     fileok = gdm_file_check ("gdm_login_sesslang_lookup", pwent->pw_uid, dir, "gdm", TRUE, GdmUserMaxFile, GdmRelaxPerms);
@@ -989,6 +988,7 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 	if (!curuser)
 	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
 
+	gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 	g_print ("%s\n", gtk_entry_get_text (GTK_ENTRY (entry)));
 	break;
@@ -1187,6 +1187,11 @@ gdm_login_gui_init (void)
 	gtk_box_pack_start (GTK_BOX (bbox), GTK_WIDGET (bframe), 1, 1, 0);
 	gtk_box_pack_start (GTK_BOX (bbox), GTK_WIDGET (scrollbar), 0, 0, 0);
 	gtk_widget_show_all (GTK_WIDGET (bbox));
+
+	/* FIXME */
+	gtk_widget_set_usize (GTK_WIDGET (bbox),
+			      (gint) gdk_screen_width () * 0.5,
+			      (gint) gdk_screen_height () * 0.25);
     }
 
     if (GdmLogo && !access (GdmLogo, R_OK)) {
@@ -1322,17 +1327,7 @@ gdm_login_gui_init (void)
     gtk_window_set_policy (GTK_WINDOW (login), 1, 1, 1);
     gtk_window_position (GTK_WINDOW (login), GTK_WIN_POS_CENTER);
 
-    if (GdmBrowser)
-	gtk_widget_set_usize (GTK_WIDGET (login), 
-			      (gint) gdk_screen_width() * 0.6,
-			      (gint) gdk_screen_height() * 0.8);
-    else
-	gtk_widget_set_usize (GTK_WIDGET (login), 
-			      (gint) gdk_screen_width() * 0.5, 
-			      0);
-
     gtk_widget_show_all (GTK_WIDGET (login));
-    gdk_keyboard_grab (rootwin, TRUE, CurrentTime);
 }
 
 
@@ -1418,18 +1413,24 @@ gdm_login_user_alloc (gchar *logname, uid_t uid, gchar *homedir)
 
 
 static gint
-gdm_login_check_exclude (gchar *logname)
+gdm_login_check_exclude (struct passwd *pwent)
 {
+    const char * const lockout_passes[] = { "*", "!!", NULL };
     GSList *list = exclude;
+    gint i;
 
-    while (list && list->data) {
-	if (! strcasecmp (logname, (gchar *) list->data))
+    for (i=0 ; lockout_passes[i] ; i++) 
+	if(! strcmp (lockout_passes[i], pwent->pw_passwd))
 	    return (TRUE);
+ 
+     while (list && list->data) {
+	 if (! strcasecmp (pwent->pw_name, (gchar *) list->data))
+	     return (TRUE);
 
-	list = list->next;
-    }
+	 list = list->next;
+     }
 
-    return (FALSE);
+     return (FALSE);
 }
 
 
@@ -1479,7 +1480,7 @@ gdm_login_users_init (void)
 	
 	if (pwent->pw_shell && 
 	    gdm_login_check_shell (pwent->pw_shell) &&
-	    !gdm_login_check_exclude (pwent->pw_name)) {
+	    !gdm_login_check_exclude (pwent)) {
 
 	    user = gdm_login_user_alloc(pwent->pw_name,
 					pwent->pw_uid,
@@ -1499,6 +1500,8 @@ gdm_login_users_init (void)
 int 
 main (int argc, char *argv[])
 {
+    gchar **fixedargv;
+    gint fixedargc, i;
     struct sigaction hup;
     sigset_t mask;
     GIOChannel *ctrlch;
@@ -1508,8 +1511,16 @@ main (int argc, char *argv[])
 
     openlog ("gdmlogin", LOG_PID, LOG_DAEMON);
 
-    gnome_init ("gdmlogin", VERSION, argc, argv);
-    gnome_sound_shutdown();
+    fixedargc = argc + 1;
+    fixedargv = g_new0 (gchar *, fixedargc);
+
+    for (i=0; i < argc; i++)
+	fixedargv[i] = argv[i];
+    
+    fixedargv[fixedargc-1] = "--disable-sound";
+    gnome_init ("gdmlogin", VERSION, fixedargc, fixedargv);
+    g_free (fixedargv);
+
     gnome_preferences_set_dialog_position (GTK_WIN_POS_CENTER);
     
     gdm_login_parse_config();

@@ -27,7 +27,6 @@ gnomerc: gnomerc.in Makefile
 	    < $(srcdir)/gnomerc.in > gnomerc.tmp \
 	    && mv -f gnomerc.tmp gnomerc
 
-noinst_SCRIPTS = Gnome gnomerc
 noinst_DATA = gdm.conf
 
 EXTRA_DIST = \

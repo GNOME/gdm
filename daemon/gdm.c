@@ -45,7 +45,6 @@ extern void gdm_error (const gchar *, ...);
 extern GdmDisplay *gdm_server_alloc (gint id, gchar *command);
 extern void gdm_server_start (GdmDisplay *d);
 extern void gdm_server_stop (GdmDisplay *d);
-extern void gdm_server_restart (GdmDisplay *d);
 extern void gdm_debug (const gchar *format, ...);
 extern int  gdm_xdmcp_init (void);
 extern void gdm_xdmcp_run (void);
@@ -109,7 +108,7 @@ gdm_display_dispose (GdmDisplay *d)
     if (!d)
 	return;
 
-    if (d->type == DISPLAY_XDMCP) {
+    if (d->type == TYPE_XDMCP) {
 	displays = g_slist_remove (displays, d);
 	sessions--;
     }
@@ -313,7 +312,7 @@ gdm_config_parse (void)
 static void 
 gdm_local_servers_start (GdmDisplay *d)
 {
-    if (d && d->type == DISPLAY_LOCAL) {
+    if (d && d->type == TYPE_LOCAL) {
 	gdm_debug ("gdm_local_servers_start: Starting %s", d->name);
 	gdm_server_start (d);
     }
@@ -352,10 +351,10 @@ gdm_display_manage (GdmDisplay *d)
 	if (GdmXdmcp)
 	    gdm_xdmcp_close();
 
-	if (d->type == DISPLAY_LOCAL && d->servstat == SERVER_RUNNING)
+	if (d->type == TYPE_LOCAL && d->servstat == SERVER_RUNNING)
 	    gdm_slave_start (d);
 
-	if (d->type == DISPLAY_XDMCP && d->dispstat == XDMCP_MANAGED)
+	if (d->type == TYPE_XDMCP && d->dispstat == XDMCP_MANAGED)
 	    gdm_slave_start (d);
 
 	break;
@@ -429,12 +428,12 @@ gdm_child_handler (gint sig)
 
 		case DISPLAY_REMANAGE:
 
-		    if (d->type == DISPLAY_LOCAL && d->dispstat != DISPLAY_ABORT) {
+		    if (d->type == TYPE_LOCAL && d->dispstat != DISPLAY_ABORT) {
 			d->dispstat = DISPLAY_DEAD;
-			gdm_server_restart (d);
+			gdm_server_start (d);
 		    }
 		    
-		    if (d->type == DISPLAY_XDMCP)
+		    if (d->type == TYPE_XDMCP)
 			gdm_display_unmanage (d);
 		    
 		    break;
@@ -468,12 +467,12 @@ gdm_child_handler (gint sig)
 		default:
 		    gdm_debug ("gdm_child_action: Slave process returned %d", status);
 
-		    if (d->type == DISPLAY_LOCAL && d->dispstat != DISPLAY_ABORT) {
+		    if (d->type == TYPE_LOCAL && d->dispstat != DISPLAY_ABORT) {
 			d->dispstat = DISPLAY_DEAD;
 			gdm_server_start (d);
 		    }
 		    
-		    if (d->type == DISPLAY_XDMCP)
+		    if (d->type == TYPE_XDMCP)
 			gdm_display_unmanage (d);
 		    
 		    break;
@@ -494,7 +493,7 @@ gdm_display_unmanage (GdmDisplay *d)
 
     gdm_debug ("gdm_display_unmanage: Stopping %s", d->name);
 
-    if (d->type == DISPLAY_LOCAL) {
+    if (d->type == TYPE_LOCAL) {
 
 	/* Kill slave and all its children */
 	if (d->slavepid) {
@@ -509,7 +508,7 @@ gdm_display_unmanage (GdmDisplay *d)
 
 	d->dispstat = DISPLAY_DEAD;
     }
-    else { /* DISPLAY_XDMCP */
+    else { /* TYPE_XDMCP */
 	if (d->slavepid) {
 	    kill (d->slavepid, SIGTERM);
 	    waitpid (d->slavepid, 0, 0);

@@ -192,6 +192,7 @@ gdm_server_restart (GdmDisplay *d)
 	gdm_debug ("gdm_server_restart: Old server for %s still alive. Killing!", d->name);
 	gdm_server_stop (d);
 	gdm_server_start (d);
+	return;
     }
     
     /* Create new cookie */
@@ -218,7 +219,7 @@ gdm_server_restart (GdmDisplay *d)
     gdm_debug ("gdm_server_restart: Servpid=%d", d->servpid);
     kill (d->servpid, SIGHUP);
     
-    d->servstat=SERVER_STARTED;
+    d->servstat = SERVER_STARTED;
     
     /* We add a timeout in case the X server fails to start. This
      * might happen because X servers take a while to die, close their
@@ -307,7 +308,7 @@ gdm_server_alloc (gint id, gchar *command)
     d->sessionid = 0;
     d->sesspid = 0;
     d->slavepid = 0;
-    d->type = DISPLAY_LOCAL;
+    d->type = TYPE_LOCAL;
     d->sessionid = 0;
     d->acctime = 0;
     d->dsp = NULL;

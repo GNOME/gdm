@@ -125,32 +125,11 @@ gdm_verify_user (gchar *display)
     gint pamerr, i;
     gchar *login;
     gchar **pamenv;
-    struct passwd *pwent;
     
     login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Login:"));
     
     if (!login)
 	return (NULL);
-    
-    pwent = getpwnam (login);
-    
-    if (!pwent) {
-	gdm_error (_("Couldn't authenticate %s"), login);
-	
-	if (GdmVerboseAuth)
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("User unknown"));
-	
-	return (NULL);
-    }
-    
-    if (GdmAllowRoot && pwent->pw_uid == 0) {
-	gdm_error (_("Root login disallowed on display '%s'"), display);
-	
-	if (GdmVerboseAuth)
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Root login disallowed"));
-	
-	return (NULL);
-    }
     
     if ((pamerr = pam_start ("gdm", login, &pamc, &pamh)) != PAM_SUCCESS) {
 	gdm_error (_("Can't find /etc/pam.d/gdm!"));
@@ -221,25 +200,7 @@ gdm_verify_user (gchar *display)
     
     login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Login:"));
     pwent = getpwnam (login);
-    
-    if (!pwent) {
-	gdm_error (_("Couldn't authenticate %s"), login);
-	
-	if (GdmVerboseAuth)
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("User unknown"));
-	
-	return (NULL);
-    }
-    
-    if (GdmAllowRoot && pwent->pw_uid == 0) {
-	gdm_error (_("Root login disallowed on display '%s'"), display);
-	
-	if (GdmVerboseAuth)
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Root login disallowed"));
-	
-	return (NULL);
-    }	
-    
+        
     ppasswd = !pwent ? NULL : pwent->pw_passwd;
     
 #ifdef HAVE_SHADOW
@@ -254,9 +215,24 @@ gdm_verify_user (gchar *display)
 #endif /* HAVE_SHADOW */
     
     passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password:"));
+
+    if (GdmVerboseAuth) {
+
+	if (!pwent) {
+	    gdm_error (_("Couldn't authenticate %s"), login);
+	    gdm_slave_greeter_ctl (GDM_MSGERR, _("User unknown"));
+	    return (NULL);
+	}
     
+	if (pwent->pw_uid == 0) {
+	    gdm_error (_("Root login disallowed on display '%s'"), display);
+	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Root login disallowed"));
+	    return (NULL);
+	}	
+    }
+
     if (!passwd || !ppasswd || strcmp (crypt (passwd, ppasswd), ppasswd)) {
-	
+
 	if (GdmVerboseAuth)
 	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Incorrect password"));
 	

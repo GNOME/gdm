@@ -19,8 +19,8 @@
 #ifndef __GDM_H__
 #define __GDM_H__
 
-#define DISPLAY_LOCAL 1		/* Local X server */
-#define DISPLAY_XDMCP 2		/* Remote display */
+#define TYPE_LOCAL 1		/* Local X server */
+#define TYPE_XDMCP 2		/* Remote display */
 
 #define SERVER_SUCCESS 0	/* X server default */
 #define SERVER_FAILURE 1	/* X server default */
@@ -141,10 +141,10 @@ struct _GdmDisplay {
     gchar *bcookie;
     gchar *name;
     gchar *hostname;
-    gint dispstat;
-    gint dispnum;
-    gint servstat;
-    gint type;
+    guint8 dispstat;
+    guint16 dispnum;
+    guint8 servstat;
+    guint8 type;
     pid_t greetpid;
     pid_t servpid;
     pid_t sesspid;
@@ -156,8 +156,16 @@ struct _GdmDisplay {
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
 
 struct _GdmIndirectDisplay {
-    struct in_addr *addr;
-    gint dispnum;
+    struct sockaddr_in* dsp_sa;
+    time_t acctime;
+};
+
+
+typedef struct _GdmChooserDisplay GdmChooserDisplay;
+
+struct _GdmChooserDisplay {
+    struct sockaddr_in* dsp_sa;
+    guint16 dispnum;
     gchar *manager;
     time_t acctime;
 };

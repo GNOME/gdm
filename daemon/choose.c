@@ -54,8 +54,8 @@ extern gint GdmMaxIndirectWait;	/* Maximum age before a pending session is remov
 extern void gdm_debug (gchar *, ...);
 
 
-static GdmIndirectDisplay *gdm_choose_indirect_alloc (struct in_addr *);
-static GdmIndirectDisplay *gdm_choose_indirect_lookup (struct in_addr *);
+GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
+GdmIndirectDisplay *gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
 static void gdm_choose_indirect_dispose (GdmIndirectDisplay *);
 gboolean gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd);
 
@@ -74,78 +74,80 @@ gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
     gdm_debug ("gdm_choose_socket_handler: Read `%s'", buf);
 
+    /* gdm_choose_indirect_alloc (); */
+
     return (TRUE);
 }
 
 
-static GdmIndirectDisplay *
-gdm_choose_indirect_alloc (struct in_addr *addr)
+GdmIndirectDisplay *
+gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa)
 {
-    GdmIndirectDisplay *i;
+    GdmIndirectDisplay *id;
 
-    if (!addr)
+    if (!clnt_sa)
 	return (NULL);
 
-    i = g_new0 (GdmIndirectDisplay, 1);
+    id = g_new0 (GdmIndirectDisplay, 1);
 
-    if (!i)
+    if (!id)
 	return (NULL);
 
-    i->addr->s_addr = addr->s_addr;
-    i->dispnum = -1;
-    i->manager = NULL;
-    i->acctime = time (NULL);
+    id->dsp_sa = g_new0 (struct sockaddr_in, 1);
+    memcpy (id->dsp_sa, clnt_sa, sizeof (struct sockaddr_in));
+    id->acctime = time (NULL);
     
-    indirect = g_slist_append (indirect, i);
+    indirect = g_slist_append (indirect, id);
     ipending++;
     
     gdm_debug ("gdm_choose_display_alloc: display=%s, pending=%d ",
-	       inet_ntoa (*i->addr), ipending);
-    
-    return (i);
+	       inet_ntoa (id->dsp_sa->sin_addr), ipending);
+
+    return (id);
 }
 
 
-static GdmIndirectDisplay *
-gdm_choose_indirect_lookup (struct in_addr *addr)
+GdmIndirectDisplay *
+gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 {
     GSList *ilist = indirect;
-    GdmIndirectDisplay *i;
+    GdmIndirectDisplay *id;
     
     while (ilist) {
-        i = (GdmIndirectDisplay *) ilist->data;
+        id = (GdmIndirectDisplay *) ilist->data;
 
-	if (i && time (NULL) > i->acctime + GdmMaxIndirectWait)	{
+	if (id && time (NULL) > id->acctime + GdmMaxIndirectWait)	{
 	    gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",
-		       inet_ntoa (*i->addr));
-	    gdm_choose_indirect_dispose (i);
+		       inet_ntoa (clnt_sa->sin_addr));
+	    gdm_choose_indirect_dispose (id);
 	}
 	
-        if (i && i->addr->s_addr == addr->s_addr)
-            return (i);
+	if (id && id->dsp_sa->sin_addr.s_addr == clnt_sa->sin_addr.s_addr)
+	return (id);
 	
         ilist = ilist->next;
     }
-
+    
     gdm_debug ("gdm_choose_indirect_lookup: Host %s not found", 
-	       inet_ntoa (*addr));
+	       inet_ntoa (clnt_sa->sin_addr));
 
     return (NULL);
 }
 
 
 static void
-gdm_choose_indirect_dispose (GdmIndirectDisplay *i)
+gdm_choose_indirect_dispose (GdmIndirectDisplay *id)
 {
-    gdm_debug ("gdm_choose_indirect_dispose: Disposing %s", inet_ntoa (*i->addr));
+    if (!id)
+	return;
 
-    if (i->addr)
-	g_free (i->addr);
+    gdm_debug ("gdm_choose_indirect_dispose: Disposing %d", 
+	       inet_ntoa (id->dsp_sa->sin_addr));
 
-    if (i->manager)
-	g_free (i->manager);
+    if (id->dsp_sa)
+	g_free (id->dsp_sa);
 
-    g_free (i);
+    g_free (id);
 
     ipending--;
 }

@@ -81,18 +81,21 @@ gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file,
 
     /* Stat file */
     if (stat (fullpath, &statbuf) == -1) {
-	g_free (fullpath);
-
-	/* Return true if file does not exist and that is ok */
-	if (absentok)
+        /* Return true if file does not exist and that is ok */
+	if (absentok) { 
+	    g_free (fullpath);
 	    return (TRUE);
-	else
+	}
+	else {
+	    syslog (LOG_WARNING,_("%s: does not exist and must."), caller, fullpath);
+	    g_free (fullpath);
 	    return (FALSE);
+	}
     }
 
     /* Check that it is a regular file ... */
     if (! S_ISREG (statbuf.st_mode)) {
-	syslog (LOG_WARNING,_("%s: %s is not a regular file."), caller, fullpath);
+	syslog (LOG_WARNING, _("%s: %s is not a regular file."), caller, fullpath);
 	g_free (fullpath);
 	return (FALSE);
     }
