@@ -50,6 +50,8 @@ struct _Language {
  * The available languages come from the supplied locale.alias */
 static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Afrikaans"), "af_ZA", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Albanian"), "sq_AL", "Shqip", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Amharic"), "am_ET", NULL, 0 },
@@ -101,6 +103,8 @@ static Language languages [] = {
 	{ N_("A-M|English (Ireland)"), "en_IE", "Irish English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|English (Denmark)"), "en_IE", "Danish English", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|English (South Africa)"), "en_ZA", "South African English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Estonian"), "et_EE", "Eesti", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -161,6 +165,8 @@ static Language languages [] = {
         { N_("A-M|Marathi"), "mr_IN", NULL, 0 },
         /*Note translate the A-M to the A-M you used in the group label */
         { N_("A-M|Mongolian"), "mn_MN", "Монгол", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Northern Sotho"), "nso_ZA", "Sesotho sa Leboa", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Norwegian (bokmal)"), "no_NO", "Norsk (bokmål)", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
