@@ -3,6 +3,8 @@
 #    1) we read the standard system env vars
 #    2) syadmins/integrators can add their own private options etc...
 
+test -f /etc/profile && source /etc/profile
+
 exec @EXPANDED_BINDIR@/gdm-binary "$@"
 
 # fallback, use PATH
