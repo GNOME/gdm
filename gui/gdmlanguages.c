@@ -149,6 +149,8 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Tamil"), "ta_IN", NULL, 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Thai"), "th_TH", "ไทย", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Turkish"), "tr_TR", "Türkçe", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Ukrainian"), "uk_UA", "Українська", 0 },
