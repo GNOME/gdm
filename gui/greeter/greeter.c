@@ -18,17 +18,23 @@
 #include "greeter_item_pam.h"
 #include "greeter_events.h"
 #include "greeter_action_language.h"
+#include "greeter_session.h"
 
 gboolean DOING_GDM_DEVELOPMENT = FALSE;
-
-#define DEBUG_GREETER 1
 
 GtkWidget *window;
 GtkWidget *canvas;
 
 static char *GreeterConfTheme = NULL;
 static char *GdmDefaultLocale = NULL;
+gboolean GdmShowGnomeChooserSession = FALSE;
+gboolean GdmShowGnomeFailsafeSession = FALSE;
+gboolean GdmShowXtermFailsafeSession = FALSE;
+gboolean GdmShowLastSession = FALSE;
+gchar *GdmSessionDir = NULL;
 int greeter_use_circles_in_entry = FALSE;
+
+
 
 static void 
 greeter_parse_config (void)
@@ -42,6 +48,12 @@ greeter_parse_config (void)
     GreeterConfTheme = gnome_config_get_string (GREETER_KEY_THEME);
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     greeter_use_circles_in_entry = gnome_config_get_bool (GREETER_KEY_ENTRY_CIRCLES);
+
+    GdmShowXtermFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE);
+    GdmShowGnomeFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_FAILSAFE);
+    GdmShowGnomeChooserSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_CHOOSER);
+    GdmShowLastSession = gnome_config_get_bool (GDM_KEY_SHOW_LAST_SESSION);
+    GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     
     gnome_config_pop_prefix();
 }
@@ -53,12 +65,9 @@ greeter_ctrl_handler (GIOChannel *source,
 {
     gchar buf[PIPE_SIZE];
     gsize len;
-    gint i, x, y;
     GtkWidget *dlg;
-    static gboolean replace_msg = TRUE;
-    static gboolean messages_to_give = FALSE;
+    char *session;
     GreeterItemInfo *conversation_info;
-    GreeterItemInfo *entry_info;
 
     /* If this is not incoming i/o then return */
     if (cond != G_IO_IN) 
@@ -86,28 +95,30 @@ greeter_ctrl_handler (GIOChannel *source,
 	 * wants to log in, and well, we are the gullible kind */
         g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-	/* TODO: set current user to buf */
+	
+	greeter_item_pam_set_user (buf);
+	
 	g_print ("%c\n", STX);
 	break;
     case GDM_LOGIN:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	greeter_item_pam_prompt (buf, 32, TRUE);
+	greeter_item_pam_prompt (buf, 32, TRUE, TRUE);
 	break;
 
     case GDM_PROMPT:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	greeter_item_pam_prompt (buf, 128, TRUE);
+	greeter_item_pam_prompt (buf, 128, TRUE, FALSE);
 	break;
 
     case GDM_NOECHO:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	greeter_item_pam_prompt (buf, 128, FALSE);
+	greeter_item_pam_prompt (buf, 128, FALSE, FALSE);
 	break;
 
     case GDM_MSG:
@@ -155,12 +166,10 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_SESS:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 	buf[len-1] = '\0';
-#ifdef TODO	
-	gdm_login_session_lookup (buf);
+
+	session = greeter_session_lookup (buf);
 	g_print ("%c%s\n", STX, session);
-#else
-	g_print ("%c%s\n", STX, "Gnome");
-#endif
+	g_free (session);
 	break;
 
     case GDM_LANG:
@@ -177,12 +186,10 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_SSESS:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
-#ifdef TODO	
-	if (savesess)
-	    g_print ("%cY\n", STX);
+	if (greeter_save_session ())
+	  g_print ("%cY\n", STX);
 	else
-#endif
-	    g_print ("%c\n", STX);
+	  g_print ("%c\n", STX);
 	
 	break;
 
@@ -229,7 +236,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_GNOMESESS:
-#ifdef TODO
 	{
 		char *sess;
 		GString *str = g_string_new (NULL);
@@ -241,7 +247,7 @@ greeter_ctrl_handler (GIOChannel *source,
 		} while (len == PIPE_SIZE-1);
 
 
-		sess = get_gnome_session (str->str);
+		sess = greeter_get_gnome_session (str->str);
 
 		g_string_free (str, TRUE);
 
@@ -249,19 +255,14 @@ greeter_ctrl_handler (GIOChannel *source,
 
 		g_free (sess);
 	}
-#else
-		g_print ("%c%s\n", STX, "Gnome");
-#endif
 	break;
 
     case GDM_SGNOMESESS:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
-#ifdef TODO
-	if (remember_gnome_session)
+	if (greeter_save_gnome_session ())
 	    g_print ("%cY\n", STX);
 	else
-#endif
 	    g_print ("%c\n", STX);
 
 	break;
@@ -317,19 +318,18 @@ greeter_ctrl_handler (GIOChannel *source,
     return (TRUE);
 }
 
-#ifdef DEBUG_GREETER
 static gboolean
 key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
 {
-	if (key->keyval == GDK_Escape) {
-		gtk_main_quit ();
-
-		return TRUE;
-	}
-
-	return FALSE;
+  if (DOING_GDM_DEVELOPMENT && (key->keyval == GDK_Escape))
+    {
+      gtk_main_quit ();
+      
+      return TRUE;
+    }
+  
+  return FALSE;
 }
-#endif
 
 static void
 greeter_setup_items (void)
@@ -342,7 +342,7 @@ greeter_setup_items (void)
 					 greeter_action_language,
 					 window);
   greeter_item_system_setup ();
-
+  greeter_item_session_setup ();
 }
 
 enum {
@@ -474,6 +474,93 @@ verify_gdm_version ()
   return 0;
 }
 
+void
+greeter_message (const gchar *msg)
+{
+ GtkWidget *req = NULL;
+  
+  /* we should be now fine for focusing new windows */
+  gdm_wm_focus_new_windows (TRUE);
+  
+  req = gtk_message_dialog_new (NULL /* parent */,
+				GTK_DIALOG_MODAL /* flags */,
+				GTK_MESSAGE_INFO,
+				GTK_BUTTONS_CLOSE,
+				"%s",
+				msg);
+  g_signal_connect (G_OBJECT (req), "destroy",
+		    G_CALLBACK (gtk_widget_destroyed),
+		    &req);
+  
+  gdm_wm_center_window (GTK_WINDOW (req));
+  
+  gdm_wm_no_login_focus_push ();
+  gtk_dialog_run (GTK_DIALOG (req));
+  gdm_wm_no_login_focus_pop ();
+
+  if (req)
+    gtk_widget_destroy (req);
+}
+
+
+gboolean
+greeter_query (const gchar *msg)
+{
+	int ret;
+	GtkWidget *req;
+
+	/* we should be now fine for focusing new windows */
+	gdm_wm_focus_new_windows (TRUE);
+
+	req = gtk_message_dialog_new (NULL /* parent */,
+				      GTK_DIALOG_MODAL /* flags */,
+				      GTK_MESSAGE_QUESTION,
+				      GTK_BUTTONS_YES_NO,
+				      "%s",
+				      msg);
+
+	g_signal_connect (G_OBJECT (req), "destroy",
+			  G_CALLBACK (gtk_widget_destroyed),
+			  &req);
+
+	gdm_wm_center_window (GTK_WINDOW (req));
+
+	gdm_wm_no_login_focus_push ();
+	ret = gtk_dialog_run (GTK_DIALOG (req));
+	gdm_wm_no_login_focus_pop ();
+
+	if (req != NULL)
+	  gtk_widget_destroy (req);
+
+	if (ret == GTK_RESPONSE_YES)
+		return TRUE;
+	else /* this includes window close */
+		return FALSE;
+}
+
+void
+greeter_abort (const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    if (!format) {
+	_exit (DISPLAY_ABORT);
+    }
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+    
+    syslog (LOG_ERR, "%s", s);
+    closelog();
+
+    g_free (s);
+
+    _exit (DISPLAY_ABORT);
+}
+
+
 static void
 greeter_done (int sig)
 {
@@ -522,6 +609,8 @@ main (int argc, char *argv[])
   if (r != 0)
     return r;
 
+  greeter_session_init ();
+  
   hup.sa_handler = greeter_done;
   hup.sa_flags = 0;
   sigemptyset(&hup.sa_mask);
@@ -561,10 +650,9 @@ main (int argc, char *argv[])
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-#ifdef DEBUG_GREETER
-  gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
-		      GTK_SIGNAL_FUNC (key_press_event), NULL);
-#endif
+  if (DOING_GDM_DEVELOPMENT)
+    gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
+			GTK_SIGNAL_FUNC (key_press_event), NULL);
   
   canvas = gnome_canvas_new_aa ();
   gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas),

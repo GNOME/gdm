@@ -1,3 +1,26 @@
+2002-02-06  Alex Larsson  <alexl@redhat.com>
+
+	* gui/greeter/Makefile.am:
+	Add greeter_session.[ch].
+
+	* gui/greeter/greeter.[ch]:
+	* gui/greeter/greeter_configuration.h:
+	Hook up session code.
+	Read more config settings.
+	Export greeter_message(), greeter_query()
+	and greeter_abort()
+
+	* gui/greeter/greeter_item_pam.[ch]:
+	New function greeter_item_pam_set_user().
+	Export greeter_current_user.
+	add is_login argument to greeter_item_pam_prompt().
+
+	* gui/greeter/greeter_system.c:
+	Move greeter_query to greeter.c
+
+	* gui/greeter/themes/circles/circles.xml:
+	Test the session code.
+	
 2002-02-06  jacob berkman  <jacob@ximian.com>
 
 	* gui/greeter/Makefile.am (gdmgreeter_SOURCES): add greeter.h

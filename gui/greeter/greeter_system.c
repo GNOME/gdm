@@ -11,42 +11,6 @@
 #include "gdm.h"
 #include "gdmwm.h"
 
-static gboolean
-greeter_query (const gchar *msg)
-{
-	int ret;
-	GtkWidget *req;
-
-	/* we should be now fine for focusing new windows */
-	gdm_wm_focus_new_windows (TRUE);
-
-	req = gtk_message_dialog_new (NULL /* parent */,
-				      GTK_DIALOG_MODAL /* flags */,
-				      GTK_MESSAGE_QUESTION,
-				      GTK_BUTTONS_YES_NO,
-				      "%s",
-				      msg);
-
-	g_signal_connect (G_OBJECT (req), "destroy",
-			  G_CALLBACK (gtk_widget_destroyed),
-			  &req);
-
-	gdm_wm_center_window (GTK_WINDOW (req));
-
-	gdm_wm_no_login_focus_push ();
-	ret = gtk_dialog_run (GTK_DIALOG (req));
-	gdm_wm_no_login_focus_pop ();
-
-	if (req != NULL)
-	  gtk_widget_destroy (req);
-
-	if (ret == GTK_RESPONSE_YES)
-		return TRUE;
-	else /* this includes window close */
-		return FALSE;
-}
-
-
 static void
 greeter_reboot_handler (void)
 {

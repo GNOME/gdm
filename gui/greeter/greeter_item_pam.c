@@ -8,6 +8,16 @@
 static gboolean messages_to_give = FALSE;
 static gboolean replace_msg = TRUE;
 static guint err_box_clear_handler = 0;
+static gboolean entry_is_login = FALSE;
+
+gchar *greeter_current_user = NULL;
+
+void
+greeter_item_pam_set_user (const char *user)
+{
+  g_free (greeter_current_user);
+  greeter_current_user = g_strdup (user);
+}
 
 static void
 user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
@@ -16,10 +26,18 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   GreeterItemInfo *error_info;
   GreeterItemInfo *message_info;
   
-  g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
-
   gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 
+  /* Save login. I'm making the assumption that login is always
+   * the first thing entered. This might not be true for all PAM
+   * setups. Needs thinking! 
+   */
+  
+  if (entry_is_login) {
+    g_free (greeter_current_user);
+    greeter_current_user = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+  }
+  
   /* somewhat ugly thing to clear the initial message */
   if (first_return) {
     first_return = FALSE;
@@ -41,6 +59,10 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
     g_object_set (G_OBJECT (error_info->item),
 		  "text", "",
 		  NULL);
+  
+  entry_is_login = FALSE;
+
+  g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
 }
 
 gboolean
@@ -66,11 +88,14 @@ greeter_item_pam_setup (void)
 void
 greeter_item_pam_prompt (const char *message,
 			 int         entry_len,
-			 gboolean    entry_visible)
+			 gboolean    entry_visible,
+			 gboolean    is_login)
 {
   GreeterItemInfo *conversation_info;
   GreeterItemInfo *entry_info;
   GtkWidget *entry;
+
+  entry_is_login = is_login;
   
   conversation_info = greeter_lookup_id ("pam-prompt");
   entry_info = greeter_lookup_id ("user-pw-entry");
