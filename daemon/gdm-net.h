@@ -53,6 +53,10 @@ void		gdm_connection_set_handler (GdmConnection *conn,
 					    gpointer data,
 					    GDestroyNotify destroy_notify);
 
+gboolean	gdm_connection_get_nonblock   (GdmConnection *conn);
+void		gdm_connection_set_nonblock   (GdmConnection *conn,
+					       gboolean nonblock);
+
 guint32		gdm_connection_get_user_flags (GdmConnection *conn);
 void		gdm_connection_set_user_flags (GdmConnection *conn,
 					       guint32 flags);
@@ -66,6 +70,9 @@ void		gdm_connection_set_user_flags (GdmConnection *conn,
 			_flags &= ~flag;					\
 			gdm_connection_set_user_flags (conn, _flags);		\
 		}
+
+int		gdm_connection_get_message_count (GdmConnection *conn);
+
 
 void		gdm_connection_close (GdmConnection *conn);
 

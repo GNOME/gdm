@@ -48,6 +48,10 @@ struct _GdmConnection {
 
 	GString *buffer;
 
+	int message_count;
+
+	gboolean nonblock;
+
 	int close_level; /* 0 - normal
 			    1 - no close, when called raise to 2
 			    2 - close was requested */
@@ -115,8 +119,11 @@ gdm_connection_handler (GIOChannel *source,
 		     ve_string_empty (conn->buffer->str)))
 			/*ignore \r or empty lines*/
 			continue;
-		if (*p == '\n') {
+		if (*p == '\n' || 
+		    /* cut lines short at 4096 to prevent DoS attacks */
+		    conn->buffer->len > 4096) {
 			conn->close_level = 1;
+			conn->message_count ++;
 			conn->handler (conn, conn->buffer->str,
 				       conn->data);
 			if (conn->close_level == 2) {
@@ -147,6 +154,8 @@ gboolean
 gdm_connection_write (GdmConnection *conn, const char *str)
 {
 	int ret;
+	int save_errno;
+	int flags = 0;
 #ifndef MSG_NOSIGNAL
 	void (*old_handler)(int);
 #endif
@@ -157,13 +166,23 @@ gdm_connection_write (GdmConnection *conn, const char *str)
 	if G_UNLIKELY ( ! conn->writable)
 		return FALSE;
 
+#ifdef MSG_DONTWAIT
+	if (conn->nonblock)
+		flags |= MSG_DONTWAIT;
+#endif
+
 #ifdef MSG_NOSIGNAL
-	IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), MSG_NOSIGNAL));
+	IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), MSG_NOSIGNAL | flags));
+	save_errno = errno;
 #else
 	old_handler = signal (SIGPIPE, SIG_IGN);
-	IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), 0));
+	IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), flags));
+	save_errno = errno;
 	signal (SIGPIPE, old_handler);
 #endif
+
+	/* just so that 'signal' doesn't whack it */
+	errno = save_errno;
 
 	if G_UNLIKELY (ret < 0)
 		return FALSE;
@@ -197,6 +216,8 @@ gdm_socket_handler (GIOChannel *source,
 	gdm_debug ("gdm_socket_handler: Accepting new connection fd %d", fd);
 
 	newconn = g_new0 (GdmConnection, 1);
+	newconn->message_count = 0;
+	newconn->nonblock = conn->nonblock;
 	newconn->close_level = 0;
 	newconn->fd = fd;
 	newconn->writable = TRUE;
@@ -288,6 +309,8 @@ try_again:
 	IGNORE_EINTR (chmod (sockname, mode));
 
 	conn = g_new0 (GdmConnection, 1);
+	conn->message_count = 0;
+	conn->nonblock = FALSE;
 	conn->close_level = 0;
 	conn->fd = fd;
 	conn->writable = FALSE;
@@ -322,6 +345,8 @@ gdm_connection_open_fd (int fd)
 	g_return_val_if_fail (fd >= 0, NULL);
 
 	conn = g_new0 (GdmConnection, 1);
+	conn->message_count = 0;
+	conn->nonblock = FALSE;
 	conn->close_level = 0;
 	conn->fd = fd;
 	conn->writable = FALSE;
@@ -371,6 +396,8 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	IGNORE_EINTR (chmod (fifo, mode));
 
 	conn = g_new0 (GdmConnection, 1);
+	conn->message_count = 0;
+	conn->nonblock = FALSE;
 	conn->close_level = 0;
 	conn->fd = fd;
 	conn->writable = FALSE;
@@ -517,6 +544,28 @@ gdm_connection_printf (GdmConnection *conn, const gchar *format, ...)
 	g_free (s);
 
 	return ret;
+}
+
+int
+gdm_connection_get_message_count (GdmConnection *conn)
+{
+	g_return_val_if_fail (conn != NULL, -1);
+	return conn->message_count;
+}
+
+gboolean
+gdm_connection_get_nonblock (GdmConnection *conn)
+{
+	g_return_val_if_fail (conn != NULL, FALSE);
+	return conn->nonblock;
+}
+
+void
+gdm_connection_set_nonblock (GdmConnection *conn,
+			     gboolean nonblock)
+{
+	g_return_if_fail (conn != NULL);
+	conn->nonblock = nonblock;
 }
 
 /* EOF */

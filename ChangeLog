@@ -1,3 +1,17 @@
+Thu Oct 16 09:13:48 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/gdm-net.[ch]: Make the socket connection
+	  non-blocking and limit conversations to 20 requests.  Also
+	  cut lines short at 4096.  Fixes CAN-2003-0793 and CAN-2003-0794
+	  respectively.
+
+	* daemon/slave.c: fix #123958 by clearing the message after
+	  authentication is done for the configurator.
+
+	* daemon/Makefile.am, gui/greeter/Makefile.am, gui/Makefile.am,
+	  gui/modules/Makefile.am:  The disable_deprecated defines should
+	  only be on for conformance testing I suppose.  Fixes #124680
+
 Wed Oct 15 14:19:59 2003  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter_item.c: the rich string parsing routine was

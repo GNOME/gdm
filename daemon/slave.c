@@ -1743,6 +1743,10 @@ gdm_slave_wait_for_login (void)
 			login = NULL;
 			/* clear any error */
 			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, "");
+			/* FIXME: what if the root has different 
+			   authentication?  This message ought to be changed
+			   to be more general, like "you must authenticate as root"
+			   or some such */
 			gdm_slave_greeter_ctl_no_ret
 				(GDM_MSG,
 				 _("Enter the root password\n"
@@ -1765,6 +1769,9 @@ gdm_slave_wait_for_login (void)
 						 d->name,
 						 d->console);
 			GdmAllowRoot = oldAllowRoot;
+
+			/* Clear message */
+			gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
 
 			if G_UNLIKELY (do_restart_greeter) {
 				g_free (login);

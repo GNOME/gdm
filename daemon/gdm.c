@@ -1703,6 +1703,7 @@ create_connections (void)
 					    gdm_handle_user_message,
 					    NULL /* data */,
 					    NULL /* destroy_notify */);
+		gdm_connection_set_nonblock (unixconn, TRUE);
 		gdm_connection_set_close_notify (unixconn,
 						 &unixconn,
 						 close_notify);
@@ -3218,6 +3219,12 @@ static void
 gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	gdm_debug ("Handling user message: '%s'", msg);
+
+	if (gdm_connection_get_message_count (conn) > 20) {
+		gdm_connection_write (conn, "ERROR 200 Too many messages\n");
+		gdm_connection_close (conn);
+		return;
+	}
 
 	if (strncmp (msg, GDM_SUP_AUTH_LOCAL " ",
 		     strlen (GDM_SUP_AUTH_LOCAL " ")) == 0) {
