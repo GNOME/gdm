@@ -251,11 +251,11 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 		return NULL;
 	}
 
+	memset(&addr, 0, sizeof(addr));
 	strcpy (addr.sun_path, sockname);
 	addr.sun_family = AF_UNIX;
 	if (bind (fd,
-		  (struct sockaddr *) &addr, strlen (addr.sun_path) +
-		  sizeof (addr.sun_family)) < 0) {
+		  (struct sockaddr *) &addr, sizeof (addr)) < 0) {
 		gdm_error (_("%s: Could not bind socket"),
 			   "gdm_connection_open_unix");
 		close (fd);
