@@ -3,6 +3,7 @@
 # Kenneth Christiansen <kenneth@ripen.dk>, 1998, 1999.
 # Birger Langkjer <birger.langkjer@image.dk>, 2000.
 # Ole Laursen <olau@hardworking.dk>, 2001.
+# Keld Simonsen <keld@dkuug.dk>, 2001
 #
 # Konventioner:
 #
@@ -19,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.2.4.2\n"
 "POT-Creation-Date: 2001-09-13 11:56+0200\n"
-"PO-Revision-Date: 2001-09-11 11:43+0200\n"
+"PO-Revision-Date: 2001-09-14 11:43+0200\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Dansk/Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -28,9 +29,9 @@ msgstr ""
 
 # src/gdmauth.c:96
 #: daemon/auth.c:146
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not make new cookie file in %s"
-msgstr "gdm_auth_user_add: Kunne ikke åbne infokagen %s"
+msgstr "%s: Kunne ikke lave ny infokage i %s"
 
 # src/gdmauth.c:96
 #. Really no need to clean up here - this process is a goner anyway
@@ -619,24 +620,25 @@ msgstr "%s: Tom serverkommando til terminalen %s"
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
+"%s: Server skulle være startet af uid %d, men den bruger eksisterer ikke"
 
 # src/gdmslave.c:184
 #: daemon/server.c:718 daemon/slave.c:1048 daemon/slave.c:1365
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Couldn't set groupid to %d"
-msgstr "gdm_slave_chooser: Kunne ikke sætte gruppe-id til %d"
+msgstr "%s: Kunne ikke sætte gruppe-id til %d"
 
 # src/gdmslave.c:365
 #: daemon/server.c:724 daemon/slave.c:1053 daemon/slave.c:1370
-#, fuzzy, c-format
+#, c-format
 msgid "%s: initgroups() failed for %s"
-msgstr "gdm_slave_chooser: initgroups() mislykkedes for %s"
+msgstr "%s: initgroups() mislykkedes for %s"
 
 # src/gdmslave.c:187
 #: daemon/server.c:730 daemon/slave.c:1058 daemon/slave.c:1375
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Couldn't set userid to %d"
-msgstr "gdm_slave_chooser: Kunne ikke sætte bruger-id til %d"
+msgstr "%s: Kunne ikke sætte bruger-id til %d"
 
 # src/gdm.c:268
 #: daemon/server.c:738
@@ -2177,10 +2179,12 @@ msgid ""
 "Always use the 24 hour format for the clock in the greeter, even if the norm "
 "for the current locale is 12 hour"
 msgstr ""
+"Brug altid 24-timers formatet for velkomstbyderens klokke, selv hvis normen "
+"for det aktuelle lokale er 12-timers"
 
 #: gui/gdmconfig-strings.c:81
 msgid "Always use 24 hour clock format"
-msgstr ""
+msgstr "Brug altid 24-timers format for tid"
 
 #: gui/gdmconfig-strings.c:82
 msgid "Position"
@@ -3062,7 +3066,7 @@ msgstr "Xnest-modus"
 
 #: gui/gdmflexiserver.c:488
 msgid "Do not lock current screen"
-msgstr "Lås ikke aktule skærm"
+msgstr "Lås ikke aktuelle skærm"
 
 #: gui/gdmflexiserver.c:489
 msgid "Debugging output"
@@ -3070,7 +3074,7 @@ msgstr "Fejlsøgingsinformation"
 
 #: gui/gdmflexiserver.c:490
 msgid "Authenticate before running --command"
-msgstr "Autenticer før kørsel af --command"
+msgstr "Autenticér før kørsel af --command"
 
 #: gui/gdmXnestchooser.c:153 gui/gdmflexiserver.c:538
 msgid ""
@@ -3090,6 +3094,8 @@ msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
+"Du ser ikke ud til at have bemyndigelse krævet for denne handling. Måske er "
+"din .Xauthority-fil ikke sat op korrekt."
 
 #: gui/gdmflexiserver.c:593
 msgid ""
@@ -3105,7 +3111,7 @@ msgstr "Kan ikke låse skærm"
 
 #: gui/gdmflexiserver.c:622
 msgid "Can't disable xscreensaver display hacks"
-msgstr "Kan ikke deaktivere xscreensaver rettelser"
+msgstr "Kan ikke deaktivere xscreensaver-rettelser"
 
 #: gui/gdmflexiserver.c:637
 msgid "The allowed limit of flexible X servers reached."
@@ -3589,7 +3595,6 @@ msgid "Iconify the login window"
 msgstr "Minimér logindvinduet"
 
 #: gui/gdmlogin.c:2547
-#, fuzzy
 msgid "%a %b %d, %H:%M"
 msgstr "%a. %e. %b., kl. %H:%M"
 
