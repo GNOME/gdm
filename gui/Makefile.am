@@ -138,7 +138,6 @@ Glade_DATA = gdmconfig.glade gdmsetup.glade gdmchooser.glade
 
 EXTRA_DIST = \
 	gdmconfig-strings.c	\
-	gdmsetup-strings.c	\
 	gdmchooser-strings.c	\
 	$(Glade_DATA)		\
 	$(System_DATA)		\
