@@ -238,6 +238,8 @@ parse_pos (xmlNodePtr       node,
       else
 	{
 	  info->width = g_ascii_strtod (prop, &p);
+
+	  printf ("width == '%s' == '%g'\n", prop, info->width);
       
 	  if ((char *)prop == p)
 	    {
@@ -1071,6 +1073,31 @@ parse_stock (xmlNodePtr node,
     }
 }
 
+static void
+do_font_size_reduction (GreeterItemInfo *info)
+{
+  double size_reduction = 1.0;
+  int i;
+
+  if (gdm_wm_screen.width <= 800 &&
+      gdm_wm_screen.width > 640)
+    size_reduction = PANGO_SCALE_SMALL;
+  else if (gdm_wm_screen.width <= 640)
+    size_reduction = PANGO_SCALE_X_SMALL;
+
+  if (size_reduction < 0.99)
+    {
+      for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
+        {
+          if (info->fonts[i] != NULL)
+	    {
+	      int old_size = pango_font_description_get_size (info->fonts[i]);
+	      pango_font_description_set_size (info->fonts[i], old_size * size_reduction);
+	    }
+	}
+    }
+}
+
 static gboolean
 parse_label (xmlNodePtr        node,
 	     GreeterItemInfo  *info,
@@ -1078,7 +1105,6 @@ parse_label (xmlNodePtr        node,
 {
   xmlNodePtr child;
   int i;
-  double size_reduction = 1.0;
   char *translated_text;
   gint translation_score = 1000;
   
@@ -1170,23 +1196,7 @@ parse_label (xmlNodePtr        node,
   if (info->fonts[GREETER_ITEM_STATE_NORMAL] == NULL)
     info->fonts[GREETER_ITEM_STATE_NORMAL] = pango_font_description_from_string ("Sans");
 
-  if (gdm_wm_screen.width <= 800 &&
-      gdm_wm_screen.width > 640)
-    size_reduction = PANGO_SCALE_SMALL;
-  else if (gdm_wm_screen.width <= 640)
-    size_reduction = PANGO_SCALE_X_SMALL;
-
-  if (size_reduction < 0.99)
-    {
-      for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
-        {
-          if (info->fonts[i] != NULL)
-	    {
-	      int old_size = pango_font_description_get_size (info->fonts[i]);
-	      pango_font_description_set_size (info->fonts[i], old_size * size_reduction);
-	    }
-	}
-    }
+  do_font_size_reduction (info);
 
   info->orig_text = translated_text;
   
@@ -1317,7 +1327,12 @@ parse_entry (xmlNodePtr        node,
   child = node->children;
   while (child)
     {
-      if (strcmp (child->name, "pos") == 0)
+      if (strcmp (child->name, "normal") == 0)
+	{
+	  if G_UNLIKELY (!parse_state_text (child, info, GREETER_ITEM_STATE_NORMAL, error))
+	    return FALSE;
+	}
+      else if (strcmp (child->name, "pos") == 0)
 	{
 	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
@@ -1339,6 +1354,8 @@ parse_entry (xmlNodePtr        node,
     
       child = child->next;
     }
+
+  do_font_size_reduction (info);
 
   return TRUE;
 }

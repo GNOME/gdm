@@ -164,6 +164,15 @@ make_menubar (void)
 	return menubar;
 }
 
+static void
+get_gdk_color_from_rgb (GdkColor *c, guint32 rgb)
+{
+	c->red = ((rgb & 0xff0000) >> 16) * 0x101;
+	c->green = ((rgb & 0xff00) >> 8) * 0x101;
+	c->blue = (rgb & 0xff) * 0x101;
+	c->pixel = 0;
+}
+
 void
 greeter_item_create_canvas_item (GreeterItemInfo *item)
 {
@@ -178,6 +187,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   char *text;
   GtkTooltips *tooltips;
   char *num_locale;
+  GdkColor c;
 
   if (item->item != NULL)
     return;
@@ -328,6 +338,10 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
     if (GdmUseCirclesInEntry)
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
+    gtk_widget_modify_font (entry, item->fonts[GREETER_ITEM_STATE_NORMAL]);
+
+    get_gdk_color_from_rgb (&c, item->colors[GREETER_ITEM_STATE_NORMAL]);
+    gtk_widget_modify_text (entry, GTK_STATE_NORMAL, &c);
     
     if (item->id != NULL && strcmp (item->id, "user-pw-entry") == 0) {
 	    /* HACK! Add a menubar, this is kind of evil isn't it,
