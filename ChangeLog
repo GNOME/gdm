@@ -14,7 +14,10 @@ Fri May 30 12:02:59 2003  George Lebl <jirka@5z.com>
 	  over 30 secs.  Also the sleep time is now 8 seconds ONLY after 2
 	  tries which makes the chooser normally pop up faster.  Also the
 	  DISPLAY_RUN_CHOOSER thing resets the loop of death since we are
-	  expecting a short session. 
+	  expecting a short session.  Also if the loop of death is caught,
+	  no longer abort the display but wait 2 minutes before starting
+	  again.  This way a malicious local user at an internet cafe can't
+	  whack gdm into disabling the local display.
 
 Fri May 30 09:40:31 2003  George Lebl <jirka@5z.com>
 
