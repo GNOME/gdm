@@ -79,8 +79,6 @@ static Language languages [] = {
 	{ N_("A-M|Catalan"), "ca_ES", "Català", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Chinese (simplified)"), "zh_CN", "中文 (简体)", 0 },
-        /*Note translate the A-M to the A-M you used in the group label */
-        { N_("A-M|Chinese (HongKong)"), "zh_HK", "\344\270\255\346\226\207 (\351\246\231\346\270\257)", 0},
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Chinese (traditional)"), "zh_TW", "中文 (繁體)", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
