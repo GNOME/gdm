@@ -65,12 +65,16 @@ static Atom XA_WM_PROTOCOLS = 0;
 static Atom XA_WM_STATE = 0;
 static Atom XA_WM_TAKE_FOCUS = 0;
 static Atom XA_COMPOUND_TEXT = 0;
+static Atom XA_NET_WM_STRUT = 0;
 
 static int trap_depth = 0;
 
 GdkRectangle *gdm_wm_allscreens = NULL;
 int gdm_wm_screens = 0;
 GdkRectangle gdm_wm_screen = {0,0,0,0};
+
+static Window strut_owners[4] = {None, None, None, None};
+static guint save_struts[4] = {0, 0, 0, 0};
 
 void 
 gdm_wm_screen_init (int cur_screen_num)
@@ -380,6 +384,34 @@ get_typed_property_data (Display *xdisplay,
   return data;
 }
 
+/* 
+ * Update the gdm_wm_screen 'effective' screen area when a window reserves struts.
+ * This only works if struts don't "collide", i.e. there is a max of one strut setter
+ * per edge.  Of course this should be the case at gdm time...
+ */
+static void
+gdm_wm_update_struts (Display *xdisplay, Window xwindow)
+{
+	gint     size = 0;
+	guint32 *struts = get_typed_property_data (xdisplay, xwindow, XA_NET_WM_STRUT, 
+						   XA_CARDINAL, &size, 32);
+	if (size == 16)
+	{
+		gint i;
+		for (i = 0; i < 4; ++i) 
+		{
+			/* strut owners are the only windows whose 'zero' struts are reflected */
+			if (struts[i] != 0 || (strut_owners[i] == xwindow))
+			{
+			/* if any window re-specifies a strut, it becomes the new owner */
+				strut_owners[i] = xwindow;
+				save_struts[i] = struts[i];
+			}
+		}
+	}
+	g_free (struts);
+}
+
 /* stolen from gwmh */
 static gboolean
 wm_protocol_check_support (Window xwin,
@@ -503,6 +535,71 @@ gdm_wm_focus_window (Window window)
 	trap_pop ();
 
 	wm_focus_window = window;
+}
+
+static void
+constrain_window (GdmWindow *gw)
+{
+/* constrain window to lie within screen geometry, with struts reserved */
+	int x, y, screen_x = 0, screen_y = 0;
+	Window root;
+	unsigned int width, height, border, depth;
+	unsigned int screen_width = gdk_screen_width (), screen_height = gdk_screen_height ();
+
+	/* exclude any strut areas not owned by this window */
+	if (strut_owners[0] != gw->win) 
+	{
+		screen_x = save_struts[0];
+		screen_width -= save_struts[0];
+	}
+	if (strut_owners[2] != gw->win) 
+	{
+		screen_y = save_struts[2];
+		screen_height -= save_struts[2];
+	}
+	if (strut_owners[1] != gw->win) 
+		screen_width -= save_struts[1];
+	if (strut_owners[3] != gw->win) 
+		screen_height -= save_struts[3];
+	
+	if (gw->deco == None) 
+	    return;
+
+	trap_push ();
+
+	XGetGeometry (wm_disp, gw->deco,
+		      &root, &x, &y, &width, &height, &border, &depth);
+
+	if (width > screen_width)
+	    width = screen_width;
+	if (height > screen_height)
+	    height = screen_height;
+	
+	if (x < screen_x)
+	    x = screen_x;
+	if (y < screen_y)
+	    y = screen_y;
+	if ((x - screen_x + width) > screen_width)
+	    x = screen_width - width;
+	if ((y - screen_y + height) > screen_height)
+	    y = screen_height - height;
+
+	XMoveResizeWindow (wm_disp, gw->deco, x, y, width, height);
+
+	trap_pop ();
+}
+
+static void
+constrain_all_windows (void)
+{
+	GList *winlist = windows;
+
+	while (winlist)
+	{
+		GdmWindow *gw = winlist->data;
+		constrain_window (gw);
+		winlist = winlist->next;
+	}
 }
 
 static void
@@ -649,6 +746,11 @@ add_deco (GdmWindow *w, gboolean is_mapped)
 
 	trap_push ();
 
+	XGetWindowAttributes (wm_disp, w->win, &attribs);
+	XSelectInput (wm_disp, w->win,
+		      attribs.your_event_mask |
+		      PropertyChangeMask);
+
 	if ( ! has_deco (w->win)) {
 		trap_pop ();
 		return;
@@ -684,6 +786,7 @@ add_deco (GdmWindow *w, gboolean is_mapped)
 	XSelectInput (wm_disp, w->deco,
 		      attribs.your_event_mask |
 		      EnterWindowMask |
+		      PropertyChangeMask |
 		      SubstructureNotifyMask |
 		      SubstructureRedirectMask);
 
@@ -1077,6 +1180,14 @@ event_process (XEvent *ev)
 		if (gw != NULL)
 			gdm_wm_focus_window (gw->win);
 		break;
+	case PropertyNotify:
+		if (ev->xproperty.atom == XA_NET_WM_STRUT)
+		{
+			gdm_wm_update_struts (ev->xproperty.display, 
+					      ev->xproperty.window);
+			constrain_all_windows ();
+		}
+		break;
 	default:
 		break;
 	}
@@ -1185,6 +1296,7 @@ gdm_wm_init (Window login_window)
 	XA_WM_TAKE_FOCUS = XInternAtom (wm_disp, "WM_TAKE_FOCUS", False);
 
 	XA_COMPOUND_TEXT = XInternAtom (wm_disp, "COMPOUND_TEXT", False);
+	XA_NET_WM_STRUT = XInternAtom (wm_disp, "_NET_WM_STRUT", False);
 
 	wm_root = DefaultRootWindow (wm_disp);
 

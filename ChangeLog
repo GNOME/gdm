@@ -1,5 +1,21 @@
+Thu Feb 14 16:25:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	Patch provided by Bill Haneman.
+        * gui/gdmwm.c:
+        (add_deco): Add PropertyChangeMask to notify mask.
+        (gdm_wm_update_struts): New, listen for strut changes.
+        (constrain_window): New, make sure a window doesn't overlap
+        struts that it doesn't own.
+        (event_process): Handle PropertyNotify events,
+        and call gdm_wm_update_struts and constrain_all_windows
+        if _NET_WM_STRUT property changes.
+        (constrain_all_windows): New, constrain all windows in the
+        gdmwm list.
+        Fixes bug #143634.
+
 Thu Feb 14 16:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
+	Patch provided by Bill Haneman.
 	* acconfig.h, gui/modules/Makefile.am, 
 	  gui/modules/dwellmouselistener.c,
 	  gui/modules/keymouselistener.c:  Updated files to 
@@ -7,6 +23,7 @@ Thu Feb 14 16:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 	
 Thu Feb 14 15:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
+	Patch provided by Bill Haneman.
 	* configure.in, gui/modules/AccessKeyMouseEvents.in,
 	  gui/modules/Makefile.am, gui/modules/dwellmouselistener.c,
 	  gui/modules/keymouselistener.c: Update gesture 
