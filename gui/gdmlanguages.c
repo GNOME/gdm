@@ -114,7 +114,7 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Hebrew"), "iw_IL", "עברית", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Hindi"), "hi_IN", "বাংলা", 0 },
+	{ N_("A-M|Hindi"), "hi_IN", "हिंदी", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Hungarian"), "hu_HU", "Magyar", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
