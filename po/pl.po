@@ -1,10 +1,11 @@
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2 2.0\n"
-"POT-Creation-Date: 1999-09-26 01:07+0200\n"
-"PO-Revision-Date: 1999-08-30 22:15+0200\n"
-"Last-Translator: GNOME PL Team\n"
-"Language-Team: Polish <gnomepl@pandora.info.bielsko.pl>\n"
+"Project-Id-Version: gdm2\n"
+"POT-Creation-Date: 2000-04-04 18:59+0200\n"
+"PO-Revision-Date: 2000-04-04 18:59+0200\n"
+"Last-Translator: GNOME PL Team <gnomepl@pandora.info.bielsko.pl>\n"
+"Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,20 +16,16 @@ msgid "gdm_config_parse: No configuration file: %s. Aborting."
 msgstr "gdm_config_parse: Brak pliku konfiguracyjnego: %s. Rezygnacja."
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: No greeter specified and default not found."
-msgstr "gdm_config_parse: Nie okre¶lono greetera i nie odnaleziono domy¶lnego."
+msgid "gdm_config_parse: No greeter specified."
+msgstr "gdm_config_parse: Nie okre¶lono greetera."
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: No authdir specified and default not found."
-msgstr ""
-"gdm_config_parse: Nie okre¶lono katalogu autoryzacji i nie odnaleziono "
-"domy¶lnego."
+msgid "gdm_config_parse: No authdir specified."
+msgstr "gdm_config_parse: Nie okre¶lono katalogu autoryzacji."
 
 #: daemon/gdm.c:1
-msgid ""
-"gdm_config_parse: No sessions directory specified and default not found."
-msgstr ""
-"gdm_config_parse: Nie okre¶lono katalogu sesji i nie odnaleziono domy¶lego."
+msgid "gdm_config_parse: No sessions directory specified."
+msgstr "gdm_config_parse: Nie okre¶lono katalogu sesji."
 
 #: daemon/gdm.c:1
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
@@ -91,9 +88,13 @@ msgstr ""
 "750. Rezygnacja."
 
 #: daemon/gdm.c:1
+msgid "gdm_daemonify: fork() failed!"
+msgstr "gdm_daemonify: funkcja fork() nie powiod³a siê!"
+
+#: daemon/gdm.c:1
 #, c-format
-msgid "gdm_display_manage: Failed forking gdm slave process for %d"
-msgstr "gdm_display_manage: B³±d przy tworzeniu procesu potomnego gdm dla %d"
+msgid "gdm_daemonify: setsid() failed: %s!"
+msgstr "gdm_daemonify: Funkcja setsid() nie powiod³a siê: %s!"
 
 #: daemon/gdm.c:1
 #, c-format
@@ -119,35 +120,12 @@ msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: Zamkniêcie nie powiod³o siê: %s"
 
 #: daemon/gdm.c:1
-msgid "gdm_daemonify: fork() failed!"
-msgstr "gdm_daemonify: funkcja fork() nie powiod³a siê!"
-
-#: daemon/gdm.c:1
-#, c-format
-msgid "gdm_daemonify: setsid() failed: %s!"
-msgstr "gdm_daemonify: Funkcja setsid() nie powiod³a siê: %s!"
-
-#. XDM compliant error message
-#: daemon/gdm.c:1
 msgid "Only root wants to run x^hgdm\n"
 msgstr "Tylko nadzorca mo¿e uruchamiaæ x^hgdm\n"
 
 #: daemon/gdm.c:1
-msgid ""
-"gdm already running. Aborting!\n"
-"\n"
-msgstr ""
-"gdm zosta³ ju¿ uruchomiony. Rezygnacja!\n"
-"\n"
-
-#: daemon/gdm.c:1
-#, c-format
-msgid ""
-"According to %s, gdm was already running (%d),\n"
-"but seems to have been murdered mysteriously.\n"
-msgstr ""
-"Zgodnie z %s, gdm zosta³ ju¿ uruchomiony (%d),\n"
-"jednak musia³ zostaæ zabity.\n"
+msgid "gdm already running. Aborting!"
+msgstr "gdm zosta³ ju¿ uruchomiony. Rezygnacja!"
 
 #: daemon/gdm.c:1
 msgid "gdm_main: Error setting up TERM signal handler"
@@ -161,7 +139,6 @@ msgstr "gdm_main: B³±d przy ustalaniu obs³ugi przerwania INT"
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr "gdm_main: B³±d przy ustalaniu obs³ugi przerwania CHLD"
 
-#. Really no need to clean up here - this process is a goner anyway
 #: daemon/auth.c:1 daemon/auth.c:1
 #, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
@@ -221,45 +198,35 @@ msgstr ""
 "%s: %s jest wiêkszy ni¿ okre¶lony przez administratora maksymalny rozmiar "
 "pliku."
 
-#: daemon/misc.c:1
-#, c-format
-msgid "gdm_exec_script: Failed starting: %s"
-msgstr "gdm_exec_script: B³±d przy uruchamianiu: %s"
-
-#: daemon/misc.c:1
-msgid "gdm_exec_script: Can't fork script process!"
-msgstr "gdm_exec_script: Nie mo¿na utworzyæ procesu dla skryptu!"
-
-#: daemon/server.c:1 daemon/server.c:1
+#: daemon/server.c:1
 msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr "gdm_server_start: B³±d przy ustalaniu obs³ugi przerwania USR1"
 
 #: daemon/server.c:1
-#, c-format
-msgid "gdm_server_start: Could not open logfile for display %s!"
-msgstr "gdm_server_start: Nie mo¿na otworzyæ pliku dziennika dla ekranu %s!"
+msgid "gdm_server_start: Error setting up CHLD signal handler"
+msgstr "gdm_server_start: B³±d przy ustalaniu obs³ugi przerwania CHLD"
 
 #: daemon/server.c:1
-msgid "gdm_server_start: Error setting USR1 to SIG_IGN"
-msgstr "gdm_server_start: B³±d przy ustawianiu USR1 na SIG_IGN"
-
-#: daemon/server.c:1
-#, c-format
-msgid "gdm_server_start: Xserver not found: %s"
-msgstr "gdm_server_start: Nie odnaleziono X-serwera: %s"
-
-#: daemon/server.c:1
-msgid "gdm_server_start: Can't fork Xserver process!"
-msgstr "gdm_server_start: Nie mo¿na utworzyæ procesu dla X-serwera!"
+msgid "gdm_server_start: Error setting up ALRM signal handler"
+msgstr "gdm_server_start: B³±d przy ustalaniu obs³ugi przerwania ALRM"
 
 #: daemon/server.c:1
 #, c-format
-msgid "gdm_server_stop: Could not unlink auth file: %s!"
-msgstr "gdm_server_stop: Nie mo¿na usun±æ pliku autoryzacji: %s!"
+msgid "gdm_server_spawn: Could not open logfile for display %s!"
+msgstr "gdm_server_spawn: Nie mo¿na otworzyæ pliku dziennika dla ekranu %s!"
 
 #: daemon/server.c:1
-msgid "gdm_server_restart: Error setting up ALARM signal handler"
-msgstr "gdm_server_restart: B³±d przy ustalaniu obs³ugi przerwania ALARM"
+msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
+msgstr "gdm_server_spawn: B³±d przy ustawianiu USR1 na SIG_IGN"
+
+#: daemon/server.c:1
+#, c-format
+msgid "gdm_server_spawn: Xserver not found: %s"
+msgstr "gdm_server_spawn: Nie odnaleziono X-serwera: %s"
+
+#: daemon/server.c:1
+msgid "gdm_server_spawn: Can't fork Xserver process!"
+msgstr "gdm_server_spawn: Nie mo¿na utworzyæ procesu dla X-serwera!"
 
 #: daemon/slave.c:1
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
@@ -294,42 +261,44 @@ msgstr "gdm_slave_greeter: Nie mo¿na utworzyæ procesu dla gdmgreetera"
 
 #: daemon/slave.c:1
 #, c-format
-msgid "gdm_slave_session_init: User '%s' not found. Aborting."
-msgstr "gdm_slave_session_init: Nie odnaleziono u¿ytkownika '%s'. Rezygnacja."
+msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
+msgstr ""
+"gdm_slave_session_start: U¿ytkownik zosta³ uwierzytelniony, lecz funkcja "
+"getpwnam(%s) nie powiod³a siê."
 
 #: daemon/slave.c:1
 msgid ""
-"gdm_slave_session_init: Execution of PreSession script returned > 0. "
+"gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
 msgstr ""
-"gdm_slave_session_init: Skrypt PreSession zwróci³ status > 0. Rezygnacja."
+"gdm_slave_session_start: Skrypt PreSession zwróci³ status > 0. Rezygnacja."
 
 #: daemon/slave.c:1
-msgid "gdm_slave_session_init: Error forking user session"
-msgstr "gdm_slave_session_init: B³±d przy tworzeniu procesu sesji u¿ytkownika"
-
-#: daemon/slave.c:1
-#, c-format
-msgid "gdm_slave_session_init: Could not setgid %d. Aborting."
-msgstr "gdm_slave_session_init: Nie mo¿na wykonaæ setgid %d. Rezygnacja."
+msgid "gdm_slave_session_start: Error forking user session"
+msgstr "gdm_slave_session_start: B³±d przy tworzeniu procesu sesji u¿ytkownika"
 
 #: daemon/slave.c:1
 #, c-format
-msgid "gdm_slave_session_init: initgroups() failed for %s. Aborting."
+msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
+msgstr "gdm_slave_session_start: Nie mo¿na wykonaæ setgid %d. Rezygnacja."
+
+#: daemon/slave.c:1
+#, c-format
+msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr ""
-"gdm_slave_session_init: Funkcja initgroups() dla %s nie powiod³a siê. "
+"gdm_slave_session_start: Funkcja initgroups() dla %s nie powiod³a siê. "
 "Rezygnacja."
 
 #: daemon/slave.c:1
 #, c-format
-msgid "gdm_slave_session_init: Could not become %s. Aborting."
+msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr ""
-"gdm_slave_session_init: Nie mo¿na zmieniæ u¿ytkownika na %s. Rezygnacja."
+"gdm_slave_session_start: Nie mo¿na zmieniæ u¿ytkownika na %s. Rezygnacja."
 
 #: daemon/slave.c:1
 #, c-format
-msgid "gdm_slave_session_init: Could not start session `%s'"
-msgstr "gdm_slave_session_init: Nie mo¿na rozpocz±æ sesji `%s'"
+msgid "gdm_slave_session_start: Could not start session `%s'"
+msgstr "gdm_slave_session_start: Nie mo¿na rozpocz±æ sesji `%s'"
 
 #: daemon/slave.c:1
 #, c-format
@@ -341,64 +310,74 @@ msgstr ""
 msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
 msgstr "gdm_slave_xsync_ping: B³±d przy ustalaniu obs³ugi przerwania ALARM"
 
-#: daemon/verify.c:1 daemon/verify.c:1 gui/gdmlogin.c:1
+#: daemon/slave.c:1
+#, c-format
+msgid "gdm_slave_exec_script: Failed starting: %s"
+msgstr "gdm_slave_exec_script: B³±d przy uruchamianiu: %s"
+
+#: daemon/slave.c:1
+msgid "gdm_slave_exec_script: Can't fork script process!"
+msgstr "gdm_slave_exec_script: Nie mo¿na utworzyæ procesu dla skryptu!"
+
+#: daemon/verify-crypt.c:1 daemon/verify-pam.c:1 daemon/verify-shadow.c:1
+#: gui/gdmlogin.c:1
 msgid "Login:"
 msgstr "Login:"
 
-#: daemon/verify.c:1
+#: daemon/verify-pam.c:1
 msgid "Can't find /etc/pam.d/gdm!"
 msgstr "Nie mo¿na odnale¼æ /etc/pam.d/gdm!"
 
-#: daemon/verify.c:1
+#: daemon/verify-pam.c:1
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Nie mo¿na ustawiæ PAM_TTY=%s"
 
-#: daemon/verify.c:1 daemon/verify.c:1
+#: daemon/verify-crypt.c:1 daemon/verify-pam.c:1 daemon/verify-shadow.c:1
 #, c-format
 msgid "Couldn't authenticate %s"
-msgstr "Autoryzacja %s nie powiod³a siê"
+msgstr "Uwierzytelnienie %s nie powiod³o siê"
 
-#: daemon/verify.c:1
+#: daemon/verify-pam.c:1
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Operacja pam_acct_mgmt() dla %s nie powiod³a siê"
 
-#: daemon/verify.c:1
+#: daemon/verify-pam.c:1
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Nie mo¿na ustawiæ wierzytelno¶ci dla %s"
 
-#: daemon/verify.c:1
+#: daemon/verify-pam.c:1
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Nie mo¿na otworzyæ sesji dla %s"
 
-#: daemon/verify.c:1
+#: daemon/verify-pam.c:1
+msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
+msgstr ""
+"gdm_verify_check: Nie mo¿na odnale¼æ pliku konfiguracyjnego PAM dla gdm"
+
+#: daemon/verify-crypt.c:1 daemon/verify-shadow.c:1
 msgid "Password:"
 msgstr "Has³o:"
 
-#: daemon/verify.c:1
+#: daemon/verify-crypt.c:1 daemon/verify-shadow.c:1
 msgid "User unknown"
 msgstr "Nieznany u¿ytkownik"
 
-#: daemon/verify.c:1
+#: daemon/verify-crypt.c:1 daemon/verify-shadow.c:1
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Zablokowano logowanie u¿ytkownika \"root\" na ekranie '%s'"
 
-#: daemon/verify.c:1
+#: daemon/verify-crypt.c:1 daemon/verify-shadow.c:1
 msgid "Root login disallowed"
 msgstr "Zablokowano logowanie u¿ytkownika \"root\""
 
-#: daemon/verify.c:1
+#: daemon/verify-crypt.c:1 daemon/verify-shadow.c:1
 msgid "Incorrect password"
 msgstr "Niew³a¶ciwe has³o"
-
-#: daemon/verify.c:1
-msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
-msgstr ""
-"gdm_verify_check: Nie mo¿na odnale¼æ pliku konfiguracyjnego PAM dla gdm"
 
 #: daemon/xdmcp.c:1
 #, c-format
@@ -497,11 +476,11 @@ msgstr "gdm_xdmcp_handle_request: Nie mo¿na odczytaæ adresu klienta"
 
 #: daemon/xdmcp.c:1
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
-msgstr "gdm_xdmcp_handle_request: Nie mo¿na odczytaæ typu autoryzacji"
+msgstr "gdm_xdmcp_handle_request: Nie mo¿na odczytaæ typu uwierzytelnienia"
 
 #: daemon/xdmcp.c:1
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
-msgstr "gdm_xdmcp_handle_request: Nie mo¿na odczytaæ danych autoryzacji"
+msgstr "gdm_xdmcp_handle_request: Nie mo¿na odczytaæ danych uwierzytelnienia"
 
 #: daemon/xdmcp.c:1
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
@@ -565,7 +544,6 @@ msgstr "gdm_chooser_parse_config: Brak pliku konfiguracyjnego: %s. Rezygnacja."
 msgid "Can't open default host icon: %s"
 msgstr "Nie mo¿na otworzyæ ikony hosta: %s"
 
-#. Buttons
 #: gui/gdmchooser.c:1
 msgid "Connect"
 msgstr "Po³±cz"
