@@ -388,6 +388,7 @@ create_pamh (GdmDisplay *d,
 
 	/* Initialize a PAM session for the user */
 	if ((*pamerr = pam_start (service, login, conv, &pamh)) != PAM_SUCCESS) {
+		pamh = NULL; /* be anal */
 		if (gdm_slave_should_complain ())
 			gdm_error (_("Unable to establish service %s: %s\n"),
 				   service, pam_strerror (NULL, *pamerr));
@@ -400,17 +401,6 @@ create_pamh (GdmDisplay *d,
 			gdm_error (_("Can't set PAM_TTY=%s"), display);
 		return FALSE;
 	}
-
-#if 0
-	/* Apparently we should not set RUSER, docs are unclear but the sun
-           guys are saying don't do it */
-	/* gdm is requesting the login */
-	if ((*pamerr = pam_set_item (pamh, PAM_RUSER, GdmUser)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
-			gdm_error (_("Can't set PAM_RUSER=%s"), GdmUser);
-		return FALSE;
-	}
-#endif
 
 	if ( ! d->console) {
 		/* Only set RHOST if host is remote */
@@ -468,15 +458,6 @@ gdm_verify_user (GdmDisplay *d,
 
     cur_gdm_disp = d;
 
-    /* Initialize a PAM session for the user */
-    if ( ! create_pamh (d, "gdm", username, &pamc, display, &pamerr)) {
-	    if (started_timer)
-		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-	    goto pamerr;
-    }
-
-    pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
-
     /* A Solaris thing: */
 #ifdef HAVE_DEFOPEN
     if (defopen(DEFLT"/login") == 0) {
@@ -495,14 +476,24 @@ gdm_verify_user (GdmDisplay *d,
     }
 #endif
 	    
-#ifdef PAM_FAIL_DELAY
-    pam_fail_delay (pamh, GdmRetryDelay * 1000);
-#endif /* PAM_FAIL_DELAY */
-
 authenticate_again:
+
     /* hack */
     g_free (tmp_PAM_USER);
     tmp_PAM_USER = NULL;
+
+    /* Initialize a PAM session for the user */
+    if ( ! create_pamh (d, "gdm", login, &pamc, display, &pamerr)) {
+	    if (started_timer)
+		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+	    goto pamerr;
+    }
+
+    pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
+
+#ifdef PAM_FAIL_DELAY
+    pam_fail_delay (pamh, GdmRetryDelay * 1000);
+#endif /* PAM_FAIL_DELAY */
 
     did_we_ask_for_password = FALSE;
 
@@ -510,11 +501,31 @@ authenticate_again:
     /* Start authentication session */
     if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
 	    if ( ! ve_string_empty (selected_user)) {
+		    pam_handle_t *tmp_pamh;
+
+		    /* Face browser was used to select a user,
+		       just completely rewhack everything since it
+		       seems various PAM implementations are
+		       having goats with just setting PAM_USER
+		       and trying to pam_authenticate again */
+
+		    g_free (login);
+		    login = selected_user;
+		    selected_user = NULL;
+
+		    gdm_sigterm_block_push ();
+		    gdm_sigchld_block_push ();
+		    tmp_pamh = pamh;
+		    pamh = NULL;
+		    gdm_sigchld_block_pop ();
+		    gdm_sigterm_block_pop ();
+
 		    /* FIXME: what about errors */
-		    pam_set_item (pamh, PAM_USER, selected_user);
-		    /* Note that the GDM_SETUSER will be sent in the
-		       authenticate conversation.  This is a more robust
-		       solution. */
+		    /* really this has been a sucess, not a failure */
+		    pam_end (tmp_pamh, PAM_SUCCESS);
+
+		    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
+
 		    goto authenticate_again;
 	    }
 	    if (started_timer)
@@ -1013,6 +1024,8 @@ gdm_verify_check (void)
 	pam_handle_t *ph = NULL;
 
 	if (pam_start ("gdm", NULL, &standalone_pamc, &ph) != PAM_SUCCESS) {
+		ph = NULL; /* be anal */
+
 		closelog ();
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 

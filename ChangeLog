@@ -1,3 +1,12 @@
+Fri Jul 25 17:09:52 2003  George Lebl <jirka@5z.com>
+
+	* daemon/verify-pam.c: apparently pam can is on crack and so the
+	  best and apparently most portable way of handling the face browser
+	  is by reseting the pam handle after a user has been selected.
+	  This works just as well and we dump any possibly dangerous
+	  state from the pam handle's previous invocation of
+	  pam_authenticate
+
 Fri Jul 25 16:31:24 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c:  Fix updating the gdm_main_pid, which fixes gdm_fail
