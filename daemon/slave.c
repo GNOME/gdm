@@ -2190,28 +2190,32 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 }
 
 static void
-exec_in_shell (const char *command)
+exec_command (const char *command, const char *extra_arg)
 {
-	char *shell_cmd;
-	char *argv[10];
-	char *first_word = ve_first_word (command);
+	char **argv = ve_split (command);
 
-	if (access (first_word, X_OK) != 0)
+	if (argv == NULL ||
+	    ve_string_empty (argv[0]))
 		return;
 
-	if (access ("/bin/bash", X_OK) == 0) {
-		shell_cmd = "/bin/bash";
-		argv[0] = "-/bin/bash";
-	} else {
-		shell_cmd = "/bin/sh";
-		argv[0] = "-/bin/sh";
+	if (access (argv[0], X_OK) != 0)
+		return;
+
+	if (extra_arg != NULL) {
+		char **new_argv;
+		int i;
+		for (i = 0; argv[i] != NULL; i++)
+			;
+		new_argv = g_new0 (char *, i+2);
+		for (i = 0; argv[i] != NULL; i++)
+			new_argv[i] = argv[i];
+		new_argv[i++] = (char *)extra_arg;
+		new_argv[i++] = NULL;
+
+		argv = new_argv;
 	}
 
-	argv[1] = "-c";
-	argv[2] = g_strdup_printf ("exec %s", command);
-	argv[3] = NULL;
-
-	IGNORE_EINTR (execv (shell_cmd, argv));
+	IGNORE_EINTR (execv (argv[0], argv));
 }
 
 static void
@@ -2289,11 +2293,9 @@ gdm_slave_greeter (void)
 	    gdm_child_exit (DISPLAY_ABORT,
 			    _("%s: Couldn't set userid to %d"),
 			    "gdm_slave_greeter", GdmUserId);
-	
-	/* FIXME: clearing environment is likely fairly stupid,
-	 * is there any reason we should do it anyway? */
-	/* gdm_clearenv_no_lang (); */
 
+	gdm_restoreenv ();
+	
 	ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 	ve_setenv ("DISPLAY", d->name, TRUE);
 
@@ -2321,7 +2323,11 @@ gdm_slave_greeter (void)
 		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE); /* Hack */
 		ve_setenv ("SHELL", "/bin/sh", TRUE);
 	}
-	ve_setenv ("PATH", GdmDefaultPath, TRUE);
+	if (ve_string_empty (g_getenv ("PATH"))) {
+		ve_setenv ("PATH", GdmDefaultPath, TRUE);
+	} else if ( ! ve_string_empty (GdmDefaultPath)) {
+		ve_setenv ("PATH", g_strconcat (g_getenv ("PATH"), ":", GdmDefaultPath, NULL), TRUE);
+	}
 	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
 	/* Note that this is just informative, the slave will not listen to
@@ -2416,15 +2422,15 @@ gdm_slave_greeter (void)
 	    /* don't add modules if we're trying to prevent crashes,
 	       perhaps it's the modules causing the problem in the first place */
 	    ! d->try_different_greeter) {
-		gchar *modules = g_strdup_printf("%s --gtk-module=%s", command, GdmGtkModulesList);
-		exec_in_shell (modules);
+		gchar *modules = g_strdup_printf ("--gtk-module=%s", GdmGtkModulesList);
+		exec_command (command, modules);
 		/* Something went wrong */
 		gdm_error (_("%s: Cannot start greeter with gtk modules: %s. Trying without modules"),
 			   "gdm_slave_greeter",
 			   GdmGtkModulesList);
-		g_free(modules);
+		g_free (modules);
 	}
-	exec_in_shell (command);
+	exec_command (command, NULL);
 
 	gdm_error (_("%s: Cannot start greeter trying default: %s"),
 		   "gdm_slave_greeter",
@@ -2432,7 +2438,7 @@ gdm_slave_greeter (void)
 
 	ve_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
 
-	exec_in_shell (EXPANDED_BINDIR "/gdmlogin");
+	exec_command (EXPANDED_BINDIR "/gdmlogin", NULL);
 
 	IGNORE_EINTR (execl (EXPANDED_BINDIR "/gdmlogin", EXPANDED_BINDIR "/gdmlogin", NULL));
 
@@ -2677,7 +2683,6 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 static void
 gdm_slave_chooser (void)
 {
-	char *cmd;
 	gint p[2];
 	struct passwd *pwent;
 	char buf[1024];
@@ -2743,9 +2748,7 @@ gdm_slave_chooser (void)
 					_("%s: Couldn't set userid to %d"),
 					"gdm_slave_chooser", GdmUserId);
 
-		/* FIXME: clearing environment is likely fairly stupid,
-		 * is there any reason we should do it anyway? */
-		/* gdm_clearenv_no_lang (); */
+		gdm_restoreenv ();
 
 		ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 		ve_setenv ("DISPLAY", d->name, TRUE);
@@ -2770,20 +2773,20 @@ gdm_slave_chooser (void)
 			ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE); /* Hack */
 			ve_setenv ("SHELL", "/bin/sh", TRUE);
 		}
-		ve_setenv ("PATH", GdmDefaultPath, TRUE);
+		if (ve_string_empty (g_getenv ("PATH"))) {
+			ve_setenv ("PATH", GdmDefaultPath, TRUE);
+		} else if ( ! ve_string_empty (GdmDefaultPath)) {
+			ve_setenv ("PATH", g_strconcat (g_getenv ("PATH"), ":", GdmDefaultPath, NULL), TRUE);
+		}
 		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-
-		cmd = GdmChooser;
 
 		if (GdmAddGtkModules &&
 		    ! ve_string_empty (GdmGtkModulesList)) {
-			cmd = g_strdup_printf("%s --gtk-module=%s", GdmChooser, GdmGtkModulesList);
+			char *modules = g_strdup_printf ("--gtk-module=%s", GdmGtkModulesList);
+			exec_command (GdmChooser, modules);
 		}
 
-		exec_in_shell (cmd);
-
-		/* anality */
-		exec_in_shell (GdmChooser);
+		exec_command (GdmChooser, NULL);
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,

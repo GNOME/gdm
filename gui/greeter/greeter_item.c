@@ -32,9 +32,14 @@ greeter_item_info_new (GreeterItemInfo *parent,
   info->width_type = GREETER_ITEM_SIZE_UNSET;
   info->height_type = GREETER_ITEM_SIZE_UNSET;
 
-  for (i=0; i< GREETER_ITEM_STATE_MAX; i++)
+  if (type != GREETER_ITEM_TYPE_LIST)
     {
-      info->alphas[i] = 1.0;
+      for (i=0; i< GREETER_ITEM_STATE_MAX; i++)
+        {
+	  /* these happen to coincide for all
+	     items but list */
+          info->data.rect.alphas[i] = 0xff;
+        }
     }
 
   info->box_orientation = GTK_ORIENTATION_VERTICAL;
@@ -45,6 +50,13 @@ greeter_item_info_new (GreeterItemInfo *parent,
   info->show_modes = GREETER_ITEM_SHOW_EVERYWHERE;
 
   info->button = FALSE;
+
+  if (GREETER_ITEM_TYPE_IS_TEXT (info))
+    {
+      info->data.text.max_width = 0xffff;
+      info->data.text.max_screen_percent_width = 90;
+      info->data.text.real_max_width = 0;
+    }
 
   return info;
 }
@@ -57,12 +69,18 @@ greeter_item_info_free (GreeterItemInfo *info)
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
     {
-      if (info->pixbufs[i])
-        g_object_unref (G_OBJECT (info->pixbufs[i]));
-      if (info->files[i])
-        g_free (info->files[i]);
-      if (info->fonts[i])
-        pango_font_description_free (info->fonts[i]);
+      if (GREETER_ITEM_TYPE_IS_PIXMAP (info))
+        {
+          if (info->data.pixmap.pixbufs[i] != NULL)
+            g_object_unref (G_OBJECT (info->data.pixmap.pixbufs[i]));
+          if (info->data.pixmap.files[i] != NULL)
+            g_free (info->data.pixmap.files[i]);
+	}
+      else if (GREETER_ITEM_TYPE_IS_TEXT (info))
+        {
+          if (info->data.text.fonts[i] != NULL)
+            pango_font_description_free (info->data.text.fonts[i]);
+	}
     }
 
   list = info->fixed_children;
@@ -75,8 +93,12 @@ greeter_item_info_free (GreeterItemInfo *info)
   g_list_foreach (list, (GFunc) greeter_item_info_free, NULL);
   g_list_free (list);
 
+  if (GREETER_ITEM_TYPE_IS_TEXT (info))
+    g_free (info->data.text.orig_text);
+
+  /* FIXME: what about custom list items! */
+
   g_free (info->id);
-  g_free (info->orig_text);
   g_free (info->show_type);
 
   memset (info, 0, sizeof (GreeterItemInfo));
@@ -88,9 +110,10 @@ greeter_item_update_text (GreeterItemInfo *info)
 {
   char *text;
   if (info && info->item &&
-      GNOME_IS_CANVAS_TEXT (info->item))
+      GNOME_IS_CANVAS_TEXT (info->item) &&
+      GREETER_ITEM_TYPE_IS_TEXT (info))
     {
-      text = greeter_item_expand_text (info->orig_text);
+      text = greeter_item_expand_text (info->data.text.orig_text);
 
       g_object_set (G_OBJECT (info->item),
 		    "markup", text,
@@ -139,7 +162,21 @@ greeter_item_expand_text (const char *text)
   
   while (*p)
     {
-      if (*p == '%')
+      /* Backslash commands */
+      if (*p == '\\')
+        {
+	  p++;
+	  if (*p == '\n')
+	    g_string_append_c (str, '\n');
+	  else if (*p != '\0')
+	    g_string_append_c (str, *p);
+	  else
+	    {
+	      g_warning ("Unescaped \\ at end of text\n");
+	      goto bail;
+	    }
+	}
+      else if (*p == '%')
 	{
 	  p++;
 	  switch (*p)

@@ -1,3 +1,35 @@
+Wed Sep 24 13:21:43 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: don't exec chooser/greeter in shell that's kind of
+	  evil and resets too many env vars.  Instead reset to the original
+	  env first and then setup our env vars and exec the greeter or
+	  chooser.
+
+	* gui/greeter/greeter.c, gui/greeter/greeter_canvas_item.[ch],
+	  gui/greeter/greeter_events.c, gui/greeter/greeter_geometry.c,
+	  gui/greeter/greeter_item.[ch],
+	  gui/greeter/greeter_item_customlist.c,
+	  gui/greeter/greeter_item_pam.c, gui/greeter/greeter_parser.c:
+	  Fix bug #123017 with use of evil hacks (as if the original
+	  text code was not evil). Check max-width and
+	  max-screen-percent-width attributes for label pos elements.
+	  Wrap text if it goes over it's width or the max-width
+	  (Mental note: the greeter layout stuff is on complete crack
+	  and should be rewritten with great prejudice).  Also while
+	  at it save an extra 112 bytes off every element by using
+	  more appropriate types and some unions, adds up to about
+	  5k for Bluecurve so it's not much actually.  Also fix
+	  the enriched string parsing to understand \n just like
+	  gdmlogin does
+
+	* gui/greeter/themes/circles/circles.xml.in,
+	  gui/greeter/themes/happygnome/happygnome.xml.in,
+	  gui/greeter/themes/happygnome-list/happygnome.xml.in:
+	  For some reason the canvas now gives me larger fonts, so
+	  use smaller fonts and tweak the layout a bit.
+
+	* docs/C/gdm.xml: update the docs a bit
+
 Tue Sep 23 10:16:08 2003  George Lebl <jirka@5z.com>
 
 	* gui/greeter/gdmthemetester: fix shell parse error

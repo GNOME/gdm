@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.4.4.2"> 
-    <!ENTITY date "9/22/2003"> 
+    <!ENTITY version "2.4.4.3"> 
+    <!ENTITY date "9/23/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -3119,6 +3119,30 @@
 	  If the box is homogeneous then the children are allocated equal
 	  amount of space.
 	</para>
+
+	<para>
+	  The "min-width" must be specified in pixels.  Obviously there is
+	  also a corresponding "min-height" property as well.
+	</para>
+      </sect3>
+
+      <sect3 id="fixednodes">
+        <title>Fixed Nodes</title>
+
+        <para>
+	  Fixed is a container that just has it's children scattered about
+	  layed out with precise coordinates.  The size of this container
+	  is the biggest rectangle that contains all the children.  Fixed
+	  has no extra properties and so you just use:
+      <screen>
+     &lt;fixed&gt;
+</screen>
+	  Then you put other items with proper position nodes inside this.
+        </para>
+
+	<para>
+	  The "toplevel" node is really just like a fixed node.
+	</para>
       </sect3>
 
       <sect3 id="itemnodes">
@@ -3458,6 +3482,21 @@
 	  or false.  If true then the child will be expanded in the box
 	  as much as possible (that is it will be given more space if available).
 	</para>
+
+	<para>
+	  There are two extra properties you can specify (as of 2.4.4.3) for
+	  labels (and labels only).  The first
+	  is "max-width" which will specify the maximum width of the label in
+	  pixels.  And the second is "max-screen-percent-width" which specifies
+	  the maximum percentage of the screen width that the label can occupy.
+	  By default no label will occupy more then 90% of the screen by width.
+	  An example may be:
+	<screen>
+	&lt;item type="label"&gt;
+          &lt;pos x="10%" max-screen-percent-width="50%"/&gt;
+</screen>
+        </para>
+
       </sect3>
 
       <sect3 id="shownodes">

@@ -119,7 +119,7 @@ parse_button (xmlNodePtr node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "bad button spec %s\n", prop);
+		       "bad button spec %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -168,7 +168,7 @@ parse_pos (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Unknown anchor type %s\n", prop);
+		       "Unknown anchor type %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -186,7 +186,7 @@ parse_pos (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad position specifier %s\n", prop);
+		       "Bad position specifier %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -213,7 +213,7 @@ parse_pos (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad position specifier %s\n", prop);
+		       "Bad position specifier %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -239,14 +239,12 @@ parse_pos (xmlNodePtr       node,
 	{
 	  info->width = g_ascii_strtod (prop, &p);
 
-	  printf ("width == '%s' == '%g'\n", prop, info->width);
-      
 	  if ((char *)prop == p)
 	    {
 	      g_set_error (error,
 			   GREETER_PARSER_ERROR,
 			   GREETER_PARSER_ERROR_BAD_SPEC,
-			   "Bad size specifier %s\n", prop);
+			   "Bad size specifier %s", prop);
 	      xmlFree (prop);
 	      return FALSE;
 	    }
@@ -273,7 +271,7 @@ parse_pos (xmlNodePtr       node,
 	      g_set_error (error,
 			   GREETER_PARSER_ERROR,
 			   GREETER_PARSER_ERROR_BAD_SPEC,
-			   "Bad size specifier %s\n", prop);
+			   "Bad size specifier %s", prop);
 	      xmlFree (prop);
 	      return FALSE;
 	    }
@@ -302,7 +300,7 @@ parse_pos (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad expand spec %s\n", prop);
+		       "Bad expand spec %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -441,7 +439,7 @@ parse_box (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad orientation %s\n", prop);
+		       "Bad orientation %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -465,7 +463,7 @@ parse_box (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad homogenous spec %s\n", prop);
+		       "Bad homogenous spec %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -484,7 +482,7 @@ parse_box (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad padding specification %s\n", prop);
+		       "Bad padding specification %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -501,7 +499,7 @@ parse_box (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad padding specification %s\n", prop);
+		       "Bad padding specification %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -518,7 +516,7 @@ parse_box (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad min-width specification %s\n", prop);
+		       "Bad min-width specification %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -535,7 +533,7 @@ parse_box (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad min-height specification %s\n", prop);
+		       "Bad min-height specification %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -552,7 +550,7 @@ parse_box (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad spacing specification %s\n", prop);
+		       "Bad spacing specification %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -579,7 +577,7 @@ parse_color (const char *str,
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_BAD_SPEC,
-		   "colors must start with #, %s is an invalid color\n", str);
+		   "colors must start with #, %s is an invalid color", str);
       return FALSE;
     }
   if G_UNLIKELY (strlen (str) != 7)
@@ -587,7 +585,7 @@ parse_color (const char *str,
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_BAD_SPEC,
-		   "Colors must be on the format #xxxxxx, %s is an invalid color\n", str);
+		   "Colors must be on the format #xxxxxx, %s is an invalid color", str);
       return FALSE;
     }
 
@@ -602,10 +600,10 @@ parse_color (const char *str,
 }
 
 static gboolean
-parse_state_file (xmlNodePtr node,
-		  GreeterItemInfo  *info,
-		  GreeterItemState state,
-		  GError         **error)
+parse_state_file_pixmap (xmlNodePtr node,
+			 GreeterItemInfo  *info,
+			 GreeterItemState state,
+			 GError         **error)
 {
   xmlChar *prop;
   char *p;
@@ -616,9 +614,9 @@ parse_state_file (xmlNodePtr node,
   if (prop)
     {
       if (g_path_is_absolute (prop))
-	info->files[state] = g_strdup (prop);
+	info->data.pixmap.files[state] = g_strdup (prop);
       else
-	info->files[state] = g_build_filename (file_search_path,
+	info->data.pixmap.files[state] = g_build_filename (file_search_path,
 					       prop,
 					       NULL);
 	
@@ -628,37 +626,44 @@ parse_state_file (xmlNodePtr node,
   prop = xmlGetProp (node, "tint");
   if (prop)
     {
-      if (!parse_color (prop, &info->tints[state], error))
+      if (!parse_color (prop, &info->data.pixmap.tints[state], error))
 	return FALSE;
-      info->have_tint |= (1<<state);
+      info->data.pixmap.have_tint |= (1<<state);
       xmlFree (prop);
     }
 
   prop = xmlGetProp (node, "alpha");
   if (prop)
     {
-      info->alphas[state] = g_ascii_strtod (prop, &p);
+      double alpha = g_ascii_strtod (prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad alpha specifier format %s\n", prop);
+		       "Bad alpha specifier format %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
+
+      if (alpha >= 1.0)
+        info->data.pixmap.alphas[state] = 0xff;
+      else if (alpha < 0)
+        info->data.pixmap.alphas[state] = 0;
+      else
+        info->data.pixmap.alphas[state] = floor (alpha * 0xff);
     }
   
   return TRUE;
 }
 
 static gboolean
-parse_state_color (xmlNodePtr node,
-		   GreeterItemInfo  *info,
-		   GreeterItemState state,
-		   GError         **error)
+parse_state_color_rect (xmlNodePtr node,
+			GreeterItemInfo  *info,
+			GreeterItemState state,
+			GError         **error)
 {
   xmlChar *prop;
   char *p;
@@ -668,27 +673,34 @@ parse_state_color (xmlNodePtr node,
   prop = xmlGetProp (node, "color");
   if (prop)
     {
-      if G_UNLIKELY (!parse_color (prop, &info->colors[state], error))
+      if G_UNLIKELY (!parse_color (prop, &info->data.rect.colors[state], error))
 	return FALSE;
-      info->have_color |= (1<<state);
+      info->data.rect.have_color |= (1<<state);
       xmlFree (prop);
     }
 
   prop = xmlGetProp (node, "alpha");
   if (prop)
     {
-      info->alphas[state] = g_ascii_strtod (prop, &p);
+      double alpha = g_ascii_strtod (prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad alpha specifier format %s\n", prop);
+		       "Bad alpha specifier format %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
+
+      if (alpha >= 1.0)
+        info->data.rect.alphas[state] = 0xff;
+      else if (alpha < 0)
+        info->data.rect.alphas[state] = 0;
+      else
+        info->data.rect.alphas[state] = floor (alpha * 0xff);
     }
   
   return TRUE;
@@ -709,17 +721,17 @@ parse_pixmap (xmlNodePtr        node,
     {
       if (strcmp (child->name, "normal") == 0)
 	{
-	  if G_UNLIKELY (!parse_state_file (child, info, GREETER_ITEM_STATE_NORMAL, error))
+	  if G_UNLIKELY (!parse_state_file_pixmap (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "prelight") == 0)
 	{
-	  if G_UNLIKELY (!parse_state_file (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
+	  if G_UNLIKELY (!parse_state_file_pixmap (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "active") == 0)
 	{
-	  if G_UNLIKELY (!parse_state_file (child, info, GREETER_ITEM_STATE_ACTIVE, error))
+	  if G_UNLIKELY (!parse_state_file_pixmap (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "pos") == 0)
@@ -746,7 +758,7 @@ parse_pixmap (xmlNodePtr        node,
       child = child->next;
     }
 
-  if G_UNLIKELY (!info->files[GREETER_ITEM_STATE_NORMAL])
+  if G_UNLIKELY (!info->data.pixmap.files[GREETER_ITEM_STATE_NORMAL])
     {
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
@@ -759,15 +771,15 @@ parse_pixmap (xmlNodePtr        node,
     {
       for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
 	{
-	  if (info->files[i] != NULL)
+	  if (info->data.pixmap.files[i] != NULL)
 	    {
-	      info->pixbufs[i] = load_pixbuf (info->files[i], error);
+	      info->data.pixmap.pixbufs[i] = load_pixbuf (info->data.pixmap.files[i], error);
 	      
-	      if G_UNLIKELY (info->pixbufs[i] == NULL)
+	      if G_UNLIKELY (info->data.pixmap.pixbufs[i] == NULL)
 		return FALSE;
 	    }
 	  else
-	    info->pixbufs[i] = NULL;
+	    info->data.pixmap.pixbufs[i] = NULL;
 	}
     }
 
@@ -788,17 +800,17 @@ parse_rect (xmlNodePtr node,
     {
       if (strcmp (child->name, "normal") == 0)
 	{
-	  if G_UNLIKELY (!parse_state_color (child, info, GREETER_ITEM_STATE_NORMAL, error))
+	  if G_UNLIKELY (!parse_state_color_rect (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "prelight") == 0)
 	{
-	  if G_UNLIKELY (!parse_state_color (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
+	  if G_UNLIKELY (!parse_state_color_rect (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "active") == 0)
 	{
-	  if G_UNLIKELY (!parse_state_color (child, info, GREETER_ITEM_STATE_ACTIVE, error))
+	  if G_UNLIKELY (!parse_state_color_rect (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "pos") == 0)
@@ -827,15 +839,10 @@ parse_rect (xmlNodePtr node,
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
     {
-      if ( ! (info->have_color & (1<<i)))
+      if ( ! (info->data.rect.have_color & (1<<i)))
 	continue;
       
-      if (info->alphas[i] >= 1.0)
-	info->colors[i] = (info->colors[i] << 8) | 0xff;
-      else if (info->alphas[i] > 0)
-	info->colors[i] = (info->colors[i] << 8) | (guint) floor (0xff*info->alphas[i]);
-      else
-	info->colors[i] = 0;
+      info->data.rect.colors[i] = (info->data.rect.colors[i] << 8) | (guint) info->data.rect.alphas[i];
     }
   
   return TRUE;
@@ -856,13 +863,13 @@ parse_state_text (xmlNodePtr node,
   prop = xmlGetProp (node, "font");
   if (prop)
     {
-      info->fonts[state] = pango_font_description_from_string (prop);
-      if G_UNLIKELY (info->fonts[state] == NULL)
+      info->data.text.fonts[state] = pango_font_description_from_string (prop);
+      if G_UNLIKELY (info->data.text.fonts[state] == NULL)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad font specification %s\n", prop);
+		       "Bad font specification %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -872,27 +879,34 @@ parse_state_text (xmlNodePtr node,
   prop = xmlGetProp (node, "color");
   if (prop)
     {
-      if G_UNLIKELY (!parse_color (prop, &info->colors[state], error))
+      if G_UNLIKELY (!parse_color (prop, &info->data.text.colors[state], error))
 	return FALSE;
-      info->have_color |= (1<<state);
+      info->data.text.have_color |= (1<<state);
       xmlFree (prop);
    }
 
   prop = xmlGetProp (node, "alpha");
   if (prop)
     {
-      info->alphas[state] = g_ascii_strtod (prop, &p);
+      double alpha = g_ascii_strtod (prop, &p);
       
       if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad alpha specifier format %s\n", prop);
+		       "Bad alpha specifier format %s", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
+
+      if (alpha >= 1.0)
+        info->data.rect.alphas[state] = 0xff;
+      else if (alpha < 0)
+        info->data.rect.alphas[state] = 0;
+      else
+        info->data.rect.alphas[state] = floor (alpha * 0xff);
     }
   
   return TRUE;
@@ -1051,7 +1065,7 @@ parse_stock (xmlNodePtr node,
           g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad stock label type\n");
+		       "Bad stock label type");
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -1068,7 +1082,7 @@ parse_stock (xmlNodePtr node,
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_BAD_SPEC,
-		   "Stock type not specified\n");
+		   "Stock type not specified");
       return FALSE;
     }
 }
@@ -1089,14 +1103,61 @@ do_font_size_reduction (GreeterItemInfo *info)
     {
       for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
         {
-          if (info->fonts[i] != NULL)
+          if (info->data.text.fonts[i] != NULL)
 	    {
-	      int old_size = pango_font_description_get_size (info->fonts[i]);
-	      pango_font_description_set_size (info->fonts[i], old_size * size_reduction);
+	      int old_size = pango_font_description_get_size (info->data.text.fonts[i]);
+	      pango_font_description_set_size (info->data.text.fonts[i], old_size * size_reduction);
 	    }
 	}
     }
 }
+
+
+static gboolean
+parse_label_pos_extras (xmlNodePtr       node,
+			GreeterItemInfo *info,
+			GError         **error)
+{
+  xmlChar *prop;
+  char *p;
+  
+  prop = xmlGetProp (node, "max-width");
+  if (prop)
+    {
+      info->data.text.max_width = g_ascii_strtod (prop, &p);
+      
+      if G_UNLIKELY ((char *)prop == p)
+	{
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad max-width specification %s", prop);
+	  xmlFree (prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
+
+  prop = xmlGetProp (node, "max-screen-percent-width");
+  if (prop)
+    {
+      info->data.text.max_screen_percent_width = g_ascii_strtod (prop, &p);
+      
+      if G_UNLIKELY ((char *)prop == p)
+	{
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad max-screen-percent-width specification %s", prop);
+	  xmlFree (prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
+
+  return TRUE;
+}
+  
 
 static gboolean
 parse_label (xmlNodePtr        node,
@@ -1109,7 +1170,7 @@ parse_label (xmlNodePtr        node,
   gint translation_score = 1000;
   
   translated_text = NULL;
-  
+
   child = node->children;
   while (child)
     {
@@ -1131,6 +1192,8 @@ parse_label (xmlNodePtr        node,
       else if (strcmp (child->name, "pos") == 0)
 	{
 	  if G_UNLIKELY (!parse_pos (child, info, error))
+	    return FALSE;
+	  if G_UNLIKELY (!parse_label_pos_extras (child, info, error))
 	    return FALSE;
 	}
       else if (child->type == XML_ELEMENT_NODE &&
@@ -1182,23 +1245,18 @@ parse_label (xmlNodePtr        node,
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
     {
-      if ( ! (info->have_color & (1<<i)))
+      if ( ! (info->data.text.have_color & (1<<i)))
 	continue;
       
-      if (info->alphas[i] >= 1.0)
-	info->colors[i] = (info->colors[i] << 8) | 0xff;
-      else if (info->alphas[i] > 0)
-	info->colors[i] = (info->colors[i] << 8) | (guint) floor (0xff*info->alphas[i]);
-      else
-	info->colors[i] = 0;
+      info->data.text.colors[i] = (info->data.text.colors[i] << 8) | (guint) info->data.text.alphas[i];
     }
   
-  if (info->fonts[GREETER_ITEM_STATE_NORMAL] == NULL)
-    info->fonts[GREETER_ITEM_STATE_NORMAL] = pango_font_description_from_string ("Sans");
+  if (info->data.text.fonts[GREETER_ITEM_STATE_NORMAL] == NULL)
+    info->data.text.fonts[GREETER_ITEM_STATE_NORMAL] = pango_font_description_from_string ("Sans");
 
   do_font_size_reduction (info);
 
-  info->orig_text = translated_text;
+  info->data.text.orig_text = translated_text;
   
   return TRUE;
 }
@@ -1260,7 +1318,7 @@ parse_listitem (xmlNodePtr        node,
     }
   li->text = translated_text;
 
-  info->list_items = g_list_append (info->list_items, li);
+  info->data.list.items = g_list_append (info->data.list.items, li);
 
   return TRUE;
 }
@@ -1303,7 +1361,7 @@ parse_list (xmlNodePtr        node,
       child = child->next;
     }
 
-  if (info->list_items != NULL) {
+  if (info->data.list.items != NULL) {
     if G_UNLIKELY (strcmp (info->id, "userlist") == 0) {
       g_set_error (error,
 		   GREETER_PARSER_ERROR,

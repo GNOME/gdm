@@ -24,17 +24,21 @@ state_run (GreeterItemInfo *info,
       info->have_state != (1<<GREETER_ITEM_STATE_NORMAL) &&
       info->item != NULL)
     {
-      if (info->pixbufs[info->state])
+      if (GREETER_ITEM_TYPE_IS_PIXMAP (info) &&
+	  info->data.pixmap.pixbufs[info->state] != NULL)
         gnome_canvas_item_set (info->item,
-			       "pixbuf", info->pixbufs[info->state],
+			       "pixbuf", info->data.pixmap.pixbufs[info->state],
 			       NULL);
-      if (info->have_color & (1<<(info->state)))
+      if ((GREETER_ITEM_TYPE_IS_TEXT (info) ||
+	   GREETER_ITEM_TYPE_IS_RECT (info)) &&
+	  info->data.rect.have_color & (1<<(info->state)))
 	gnome_canvas_item_set (info->item,
-			       "fill_color_rgba", info->colors[info->state],
+			       "fill_color_rgba", info->data.rect.colors[info->state],
 			       NULL);
-      if (info->fonts[info->state])
+      if (GREETER_ITEM_TYPE_IS_TEXT (info) &&
+	  info->data.text.fonts[info->state] != NULL)
 	gnome_canvas_item_set (info->item,
-			       "font_desc", info->fonts[info->state],
+			       "font_desc", info->data.text.fonts[info->state],
 			       NULL);
     }
 }

@@ -93,7 +93,7 @@ setup_customlist (GtkWidget *tv, GreeterItemInfo *item)
 	   NULL);
   gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column);
 
-  populate_list (tm, selection, item->list_items);
+  populate_list (tm, selection, item->data.list.items);
 }
 
 gboolean

@@ -174,6 +174,73 @@ get_gdk_color_from_rgb (GdkColor *c, guint32 rgb)
 }
 
 void
+greeter_item_recreate_label (GreeterItemInfo *item, const char *text, gboolean markup)
+{
+    GtkJustification just;
+    GnomeCanvasGroup *group;
+    double x1, y1, x2, y2;
+    GtkAllocation rect;
+    int width, height;
+
+    if ( ! greeter_item_is_visible (item))
+      return;
+
+    rect = item->allocation;
+
+    x1 = (gdouble) rect.x;
+    y1 = (gdouble) rect.y;
+    x2 = (gdouble) rect.x + rect.width;
+    y2 = (gdouble) rect.y + rect.height;
+
+    group = item->group_item;
+    if (group == NULL)
+      group = item->parent->group_item;
+
+    if (item->item != NULL)
+      gtk_object_destroy (GTK_OBJECT (item->item));
+
+    /* Justification is taken from the anchor */
+    if (item->anchor == GTK_ANCHOR_NORTH_WEST ||
+	item->anchor == GTK_ANCHOR_SOUTH_WEST ||
+	item->anchor == GTK_ANCHOR_WEST) {
+	    just = GTK_JUSTIFY_LEFT;
+    } else if (item->anchor == GTK_ANCHOR_NORTH_EAST ||
+	     item->anchor == GTK_ANCHOR_SOUTH_EAST ||
+	     item->anchor == GTK_ANCHOR_EAST) {
+	    just = GTK_JUSTIFY_RIGHT;
+    } else {
+	    just = GTK_JUSTIFY_CENTER;
+    }
+
+    item->item = gnome_canvas_item_new (group,
+					GNOME_TYPE_CANVAS_TEXT,
+					markup ? "markup" : "text", text,
+					"x", x1,
+					"y", y1,
+					"anchor", item->anchor,
+					"font_desc", item->data.text.fonts[GREETER_ITEM_STATE_NORMAL],
+					"fill_color_rgba", item->data.text.colors[GREETER_ITEM_STATE_NORMAL],
+					"justification", just,
+					NULL);
+
+
+    pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (item->item)->layout, &width, &height);
+
+    if (item->data.text.real_max_width > 0 &&
+	width > item->data.text.real_max_width) {
+	    pango_layout_set_wrap (GNOME_CANVAS_TEXT (item->item)->layout, PANGO_WRAP_WORD_CHAR);
+	    pango_layout_set_width (GNOME_CANVAS_TEXT (item->item)->layout,
+				    (item->data.text.real_max_width * PANGO_SCALE) - PANGO_SCALE/2);
+    }
+
+    /* Hack, we may have done something to the layout this will force
+       a redraw using the new layout thingie */
+    gnome_canvas_item_set (item->item,
+			   "justification", just,
+			   NULL);
+}
+
+void
 greeter_item_create_canvas_item (GreeterItemInfo *item)
 {
   GnomeCanvasGroup *group;
@@ -183,7 +250,6 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   double x1, y1, x2, y2;
   int i;
   GtkAllocation rect;
-  GtkJustification just;
   char *text;
   GtkTooltips *tooltips;
   char *num_locale;
@@ -227,7 +293,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					"y1", y1,
 					"x2", x2,
 					"y2", y2,
-					"fill_color_rgba", item->colors[GREETER_ITEM_STATE_NORMAL],
+					"fill_color_rgba", item->data.rect.colors[GREETER_ITEM_STATE_NORMAL],
 					NULL);
     break;
   case GREETER_ITEM_TYPE_SVG:
@@ -235,21 +301,21 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     setlocale (LC_NUMERIC, "C");
     for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
       {
-	if (item->files[i] != NULL)
+	if (item->data.pixmap.files[i] != NULL)
 	  {
 	    if (i > 0 &&
-		item->files[0] != NULL &&
-		item->pixbufs[0] != NULL &&
-		strcmp (item->files[0], item->files[i]) == 0)
-	      item->pixbufs[i] = g_object_ref (item->pixbufs[0]);
+		item->data.pixmap.files[0] != NULL &&
+		item->data.pixmap.pixbufs[0] != NULL &&
+		strcmp (item->data.pixmap.files[0], item->data.pixmap.files[i]) == 0)
+	      item->data.pixmap.pixbufs[i] = g_object_ref (item->data.pixmap.pixbufs[0]);
 	    else
-	      item->pixbufs[i] =
-	        rsvg_pixbuf_from_file_at_size (item->files[i],
+	      item->data.pixmap.pixbufs[i] =
+	        rsvg_pixbuf_from_file_at_size (item->data.pixmap.files[i],
 					       rect.width, rect.height,
 					       NULL);
 	  }
 	else
-	  item->pixbufs[i] = NULL;
+	  item->data.pixmap.pixbufs[i] = NULL;
       }
     setlocale (LC_NUMERIC, num_locale);
     g_free (num_locale);
@@ -259,56 +325,35 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   case GREETER_ITEM_TYPE_PIXMAP:
     for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
       {
-	GdkPixbuf *pb = item->pixbufs[i];
+	GdkPixbuf *pb = item->data.pixmap.pixbufs[i];
 	if (pb != NULL)
 	  {
-	    item->pixbufs[i] =
+	    item->data.pixmap.pixbufs[i] =
 	      transform_pixbuf (pb,
-				(item->have_tint & (1<<i)), item->tints[i],
-				item->alphas[i], rect.width, rect.height);
+				(item->data.pixmap.have_tint & (1<<i)), item->data.pixmap.tints[i],
+				(double)item->data.pixmap.alphas[i] / 256.0, rect.width, rect.height);
 	    g_object_unref (pb);
 	  }
       }
     
-    if (item->pixbufs[GREETER_ITEM_STATE_NORMAL] != NULL)
+    if (item->data.pixmap.pixbufs[GREETER_ITEM_STATE_NORMAL] != NULL)
       item->item = gnome_canvas_item_new (group,
 					  GNOME_TYPE_CANVAS_PIXBUF,
 					  "x", (gdouble) x1,
 					  "y", (gdouble) y1,
-					  "pixbuf", item->pixbufs[GREETER_ITEM_STATE_NORMAL],
+					  "pixbuf", item->data.pixmap.pixbufs[GREETER_ITEM_STATE_NORMAL],
 					  NULL);
     break;
   case GREETER_ITEM_TYPE_LABEL:
-    text = greeter_item_expand_text (item->orig_text);
-
-    /* Justification is taken from the anchor */
-    if (item->anchor == GTK_ANCHOR_NORTH_WEST ||
-	item->anchor == GTK_ANCHOR_SOUTH_WEST ||
-	item->anchor == GTK_ANCHOR_WEST)
-	    just = GTK_JUSTIFY_LEFT;
-    else if (item->anchor == GTK_ANCHOR_NORTH_EAST ||
-	     item->anchor == GTK_ANCHOR_SOUTH_EAST ||
-	     item->anchor == GTK_ANCHOR_EAST)
-	    just = GTK_JUSTIFY_RIGHT;
-    else
-	    just = GTK_JUSTIFY_CENTER;
-
-    item->item = gnome_canvas_item_new (group,
-					GNOME_TYPE_CANVAS_TEXT,
-					"markup", text,
-					"x", x1,
-					"y", y1,
-					"anchor", item->anchor,
-					"font_desc", item->fonts[GREETER_ITEM_STATE_NORMAL],
-					"fill_color_rgba", item->colors[GREETER_ITEM_STATE_NORMAL],
-					"justification", just,
-					NULL);
+    text = greeter_item_expand_text (item->data.text.orig_text);
+    greeter_item_recreate_label (item, text, TRUE /* markup */);
+    g_free (text);
 
     /* if there is an accelerator we do an INCREDIBLE hack */
-    if (strchr (item->orig_text, '_') != NULL)
+    if (strchr (item->data.text.orig_text, '_') != NULL)
       {
 	GreeterItemInfo *button;
-	GtkWidget *fake_button = gtk_button_new_with_mnemonic (item->orig_text);
+	GtkWidget *fake_button = gtk_button_new_with_mnemonic (item->data.text.orig_text);
 	gtk_widget_show (fake_button);
 	GTK_WIDGET_UNSET_FLAGS (fake_button, GTK_CAN_FOCUS);
 	gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
@@ -328,8 +373,6 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 			       (GClosureNotify)g_free,
 			       0 /* connect_flags */);
       }
-
-    g_free (text);
     
     break;
     
@@ -338,9 +381,9 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
     if (GdmUseCirclesInEntry)
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
-    gtk_widget_modify_font (entry, item->fonts[GREETER_ITEM_STATE_NORMAL]);
+    gtk_widget_modify_font (entry, item->data.text.fonts[GREETER_ITEM_STATE_NORMAL]);
 
-    get_gdk_color_from_rgb (&c, item->colors[GREETER_ITEM_STATE_NORMAL]);
+    get_gdk_color_from_rgb (&c, item->data.text.colors[GREETER_ITEM_STATE_NORMAL]);
     gtk_widget_modify_text (entry, GTK_STATE_NORMAL, &c);
     
     if (item->id != NULL && strcmp (item->id, "user-pw-entry") == 0) {

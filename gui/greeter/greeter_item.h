@@ -17,7 +17,7 @@ enum _GreeterItemState {
   GREETER_ITEM_STATE_NORMAL,
   GREETER_ITEM_STATE_PRELIGHT,
   GREETER_ITEM_STATE_ACTIVE,
-  GREETER_ITEM_STATE_MAX,
+  GREETER_ITEM_STATE_MAX
 };
 
 /* Make sure to adjust the bitfield in the structure if
@@ -28,7 +28,7 @@ enum _GreeterItemType {
   GREETER_ITEM_TYPE_PIXMAP,
   GREETER_ITEM_TYPE_LABEL,
   GREETER_ITEM_TYPE_ENTRY,
-  GREETER_ITEM_TYPE_LIST,
+  GREETER_ITEM_TYPE_LIST
 };
 
 /* Make sure to adjust the bitfield in the structure if
@@ -37,7 +37,7 @@ enum _GreeterItemSizeType {
   GREETER_ITEM_SIZE_UNSET,
   GREETER_ITEM_SIZE_ABSOLUTE,
   GREETER_ITEM_SIZE_RELATIVE,
-  GREETER_ITEM_SIZE_BOX,
+  GREETER_ITEM_SIZE_BOX
 };
 
 /* Make sure to adjust the bitfield in the structure if
@@ -45,7 +45,7 @@ enum _GreeterItemSizeType {
 enum _GreeterItemPosType {
   GREETER_ITEM_POS_UNSET,
   GREETER_ITEM_POS_ABSOLUTE,
-  GREETER_ITEM_POS_RELATIVE,
+  GREETER_ITEM_POS_RELATIVE
 };
 
 /* Make sure to adjust the bitfield in the structure if
@@ -65,10 +65,14 @@ struct _GreeterItemInfo {
   GreeterItemInfo *parent;
   
   GtkAnchorType anchor;
-  double x;
-  double y;
+  float x;
+  float y;
+  float width;
+  float height;
   GreeterItemPosType x_type:2;
   GreeterItemPosType y_type:2;
+  GreeterItemSizeType width_type:2;
+  GreeterItemSizeType height_type:2;
   gboolean x_negative:1; /* needed for -0 */
   gboolean y_negative:1; /* needed for -0 */
 
@@ -79,66 +83,95 @@ struct _GreeterItemInfo {
   GreeterItemType item_type:4;
 
   GreeterItemShowModes show_modes:4;
-  char *show_type; /* timed, system, config, chooser, halt, suspend, reboot */
-  
-  GreeterItemSizeType width_type:2;
-  GreeterItemSizeType height_type:2;
-  double width;
-  double height;
 
-  char *id;
-
-  /* Button can propagate states and collect states from underlying items,
-   * it should be a parent of this item */
-  gboolean button;
-  GreeterItemInfo *my_button;
-
-  char *files[GREETER_ITEM_STATE_MAX];
-  gdouble alphas[GREETER_ITEM_STATE_MAX];
-  GdkPixbuf *pixbufs[GREETER_ITEM_STATE_MAX];
-  guint32 tints[GREETER_ITEM_STATE_MAX];
-  guint32 colors[GREETER_ITEM_STATE_MAX];
-
-  guint8 have_color; /* this is a bitfield since these are
-			true/false values */
-  guint8 have_tint; /* this is a bitfield since these are
-		       true/false values */
-  guint8 have_state; /* this is a bitfield since these are
-			true/false values */
-
-  PangoFontDescription *fonts[GREETER_ITEM_STATE_MAX];
-  char *orig_text;
-
-  /* If this is a custom list, then these are the items
-     to pick from */
-  GList *list_items;
-
-  /* Container data */
-  GList *fixed_children;
-
-  GtkOrientation box_orientation;
-  gboolean box_homogeneous:1;
-  double box_x_padding;
-  double box_y_padding;
-  double box_min_width;
-  double box_min_height;
-  double box_spacing;
-  GList *box_children;
-  
   /* Runtime state: */
   GreeterItemState state:2;
   GreeterItemState base_state:2;
   gboolean mouse_down:1;
   gboolean mouse_over:1;
 
-  /* Canvas data: */
-  GnomeCanvasItem *item;
-  GnomeCanvasGroup *group_item;
+  /* box flags */
+  gboolean box_homogeneous:1;
+
+  /* is a button (see my_button comment) */
+  gboolean button:1;
 
   /* geometry handling: */
   gboolean has_requisition:1;
   GtkRequisition requisition;
   GtkAllocation allocation;
+
+  /* Button can propagate states and collect states from underlying items,
+   * it should be a parent of this item */
+  GreeterItemInfo *my_button;
+
+  char *show_type; /* timed, system, config, chooser, halt, suspend, reboot */
+
+  char *id;
+
+  GList *box_children;
+  GtkOrientation box_orientation;
+  guint16 box_x_padding;
+  guint16 box_y_padding;
+  guint16 box_min_width;
+  guint16 box_min_height;
+  guint16 box_spacing;
+
+  /* Container data */
+  GList *fixed_children;
+
+  union {
+	  /* Note: we want to have alphas, colors and have_color coincide for all types
+	     that have it */
+#define GREETER_ITEM_TYPE_IS_TEXT(info) ((info)->item_type == GREETER_ITEM_TYPE_LABEL || (info)->item_type == GREETER_ITEM_TYPE_ENTRY)
+	  struct {
+		  guint8 alphas[GREETER_ITEM_STATE_MAX];
+		  guint32 colors[GREETER_ITEM_STATE_MAX];
+
+		  guint8 have_color; /* this is a bitfield since these are
+					true/false values */
+
+		  PangoFontDescription *fonts[GREETER_ITEM_STATE_MAX];
+		  char *orig_text;
+		  guint16 max_width;
+		  guint8 max_screen_percent_width;
+		  guint16 real_max_width;
+	  } text; /* text and entry (entry only uses fonts) */
+
+#define GREETER_ITEM_TYPE_IS_PIXMAP(info) ((info)->item_type == GREETER_ITEM_TYPE_PIXMAP || (info)->item_type == GREETER_ITEM_TYPE_SVG)
+	  struct {
+		  guint8 alphas[GREETER_ITEM_STATE_MAX];
+		  guint32 tints[GREETER_ITEM_STATE_MAX];
+		  guint8 have_tint; /* this is a bitfield since these are
+				       true/false values */
+
+		  char *files[GREETER_ITEM_STATE_MAX];
+		  GdkPixbuf *pixbufs[GREETER_ITEM_STATE_MAX];
+	  } pixmap;
+
+#define GREETER_ITEM_TYPE_IS_LIST(info) ((info)->item_type == GREETER_ITEM_TYPE_LIST)
+	  struct {
+		  /* If this is a custom list, then these are the items
+		     to pick from */
+		  GList *items;
+	  } list;
+
+#define GREETER_ITEM_TYPE_IS_RECT(info) ((info)->item_type == GREETER_ITEM_TYPE_RECT)
+	  struct {
+		  guint8 alphas[GREETER_ITEM_STATE_MAX];
+		  guint32 colors[GREETER_ITEM_STATE_MAX];
+
+		  guint8 have_color; /* this is a bitfield since these are
+					true/false values */
+	  } rect;
+  } data;
+
+  guint8 have_state; /* this is a bitfield since these are
+			true/false values */
+
+  /* Canvas data: */
+  GnomeCanvasItem *item;
+  GnomeCanvasGroup *group_item;
 };
 
 struct _GreeterItemListItem {

@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include <gtk/gtk.h>
+#include "gdmwm.h"
 #include "greeter_geometry.h"
 #include "greeter_canvas_item.h"
 
@@ -18,6 +19,17 @@ static void greeter_size_allocate_box   (GreeterItemInfo *box,
 					 GtkAllocation   *allocation);
 static void fixup_from_anchor           (GtkAllocation   *rect,
 					 GtkAnchorType    anchor);
+static void update_real_max_width	(GreeterItemInfo *info,
+					 int              max_width);
+
+static void
+update_real_max_width (GreeterItemInfo *info, int max_width)
+{
+	if (info->data.text.real_max_width == 0 ||
+	    info->data.text.real_max_width > max_width)
+		info->data.text.real_max_width = max_width;
+}
+
 
 /* Position the item */
 static void
@@ -283,7 +295,12 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 	  
 	  child_allocation.width = child_requisition.width;
 	  child_allocation.height = child_requisition.height;
-	  
+
+	  if (box->box_orientation == GTK_ORIENTATION_VERTICAL &&
+	      child->item_type == GREETER_ITEM_TYPE_LABEL) {
+		  update_real_max_width (child, allocation->width);
+	  }
+
 	  if (box->box_orientation == GTK_ORIENTATION_HORIZONTAL)
 	    {
 	      child_allocation.x = major;
@@ -403,7 +420,6 @@ greeter_size_request_box (GreeterItemInfo *box,
   requisition->height = MAX (requisition->height, box->box_min_height);
 }
 
-
 /* Calculate the requested minimum size of the item */
 static void
 greeter_item_size_request (GreeterItemInfo *item,
@@ -414,6 +430,8 @@ greeter_item_size_request (GreeterItemInfo *item,
 {
   GtkRequisition *req;
   GtkRequisition box_requisition; 
+  int set_width = 0;
+  int set_height = 0;
   
   if (item->has_requisition)
     {
@@ -426,41 +444,6 @@ greeter_item_size_request (GreeterItemInfo *item,
   req->width = 0;
   req->height = 0;
 
-  if (item->item_type == GREETER_ITEM_TYPE_LABEL)
-    {
-      GnomeCanvasItem *canvas_item;
-      double x1, y1, x2, y2;
-      char *text;
-
-      /* This is not the ugly hack you're looking for.
-       * You can go about your business.
-       * Move Along
-       */
-      text = greeter_item_expand_text (item->orig_text);
-      
-      canvas_item = gnome_canvas_item_new (gnome_canvas_root (canvas),
-					   GNOME_TYPE_CANVAS_TEXT,
-					   "markup", text,
-					   "x", 0.0,
-					   "y", 0.0,
-					   "font_desc", item->fonts[GREETER_ITEM_STATE_NORMAL],
-					   NULL);
-
-      gnome_canvas_item_get_bounds (canvas_item,
-				    &x1, &y1, &x2, &y2);
-      req->width = x2 - x1;
-      req->height = y2 - y1;
-
-      gtk_object_destroy (GTK_OBJECT (canvas_item));
-      g_free (text);
-    }
-
-  if (item->item_type == GREETER_ITEM_TYPE_PIXMAP)
-    {
-      req->width = gdk_pixbuf_get_width (item->pixbufs[0]);
-      req->height = gdk_pixbuf_get_height (item->pixbufs[0]);
-    }
-  
   if (item->width_type == GREETER_ITEM_SIZE_BOX ||
       item->height_type == GREETER_ITEM_SIZE_BOX)
     {
@@ -472,13 +455,13 @@ greeter_item_size_request (GreeterItemInfo *item,
   switch (item->width_type)
     {
     case GREETER_ITEM_SIZE_ABSOLUTE:
-      req->width = (item->width > 0) ? item->width : parent_width + item->width;
+      set_width = (item->width > 0) ? item->width : parent_width + item->width;
       break;
     case GREETER_ITEM_SIZE_RELATIVE:
-      req->width = item->width*parent_width / 100.0;
+      set_width = item->width*parent_width / 100.0;
       break;
     case GREETER_ITEM_SIZE_BOX:
-      req->width = box_requisition.width;
+      set_width = box_requisition.width;
       break;
     case GREETER_ITEM_SIZE_UNSET:
       break;
@@ -487,17 +470,75 @@ greeter_item_size_request (GreeterItemInfo *item,
   switch (item->height_type)
     {
     case GREETER_ITEM_SIZE_ABSOLUTE:
-      req->height = (item->height > 0) ? item->height : parent_height + item->height;
+      set_height = (item->height > 0) ? item->height : parent_height + item->height;
       break;
     case GREETER_ITEM_SIZE_RELATIVE:
-      req->height = item->height*parent_height / 100.0;
+      set_height = item->height*parent_height / 100.0;
       break;
     case GREETER_ITEM_SIZE_BOX:
-      req->height = box_requisition.height;
+      set_height = box_requisition.height;
       break;
     case GREETER_ITEM_SIZE_UNSET:
       break;
     }
+
+  if (item->item_type == GREETER_ITEM_TYPE_LABEL)
+    {
+      GnomeCanvasItem *canvas_item;
+      int width, height;
+      char *text;
+      int max_width = G_MAXINT;
+
+      /* This is not the ugly hack you're looking for.
+       * You can go about your business.
+       * Move Along
+       */
+      text = greeter_item_expand_text (item->data.text.orig_text);
+      
+      canvas_item = gnome_canvas_item_new (gnome_canvas_root (canvas),
+					   GNOME_TYPE_CANVAS_TEXT,
+					   "markup", text,
+					   "x", 0.0,
+					   "y", 0.0,
+					   "font_desc", item->data.text.fonts[GREETER_ITEM_STATE_NORMAL],
+					   NULL);
+
+      if (set_width > 0)
+	      max_width = set_width;
+
+      if (item->data.text.max_width < max_width)
+	      max_width = item->data.text.max_width;
+
+      if (item->data.text.max_screen_percent_width/100.0 * gdm_wm_screen.width < max_width)
+	      max_width = item->data.text.max_screen_percent_width/100.0 * gdm_wm_screen.width;
+
+      if (max_width < G_MAXINT) {
+	      pango_layout_set_wrap (GNOME_CANVAS_TEXT (canvas_item)->layout, PANGO_WRAP_WORD_CHAR);
+	      pango_layout_set_width (GNOME_CANVAS_TEXT (canvas_item)->layout, (max_width * PANGO_SCALE) - PANGO_SCALE/2);
+	      /* HACK: this forces the thing to relayout */
+	      gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), "justification", GTK_JUSTIFY_CENTER, NULL);
+	      update_real_max_width (item, max_width);
+      }
+
+      pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (canvas_item)->layout, &width, &height);
+
+      req->width = width;
+      req->height = height;
+
+      gtk_object_destroy (GTK_OBJECT (canvas_item));
+      g_free (text);
+    }
+
+  if (item->item_type == GREETER_ITEM_TYPE_PIXMAP)
+    {
+      req->width = gdk_pixbuf_get_width (item->data.pixmap.pixbufs[0]);
+      req->height = gdk_pixbuf_get_height (item->data.pixmap.pixbufs[0]);
+    }
+  
+  if (set_width > 0)
+    req->width = set_width;
+  if (set_height > 0)
+    req->height = set_height;
 
   *requisition_out = item->requisition;
   item->has_requisition = TRUE;

@@ -964,8 +964,8 @@ greeter_reread_config (int sig, gpointer data)
 		g_free (GdmWelcome);
 		GdmWelcome = str;
 		if (welcome_string_info != NULL) {
-			g_free (welcome_string_info->orig_text);
-			welcome_string_info->orig_text = g_strdup (str);
+			g_free (welcome_string_info->data.text.orig_text);
+			welcome_string_info->data.text.orig_text = g_strdup (str);
 			greeter_item_update_text (welcome_string_info);
 		}
 	} else {
@@ -1136,9 +1136,9 @@ main (int argc, char *argv[])
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 
-  greeter_parse_config ();
-
   setlocale (LC_ALL, "");
+
+  greeter_parse_config ();
 
   gtk_init (&argc, &argv);
 

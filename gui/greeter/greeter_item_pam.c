@@ -9,6 +9,7 @@
 #include "greeter_item_timed.h"
 #include "greeter_parser.h"
 #include "greeter_configuration.h"
+#include "greeter_canvas_item.h"
 #include "gdm.h"
 #include "gdmwm.h"
 #include "vicious.h"
@@ -24,57 +25,6 @@ gchar *greeter_current_user = NULL;
 gboolean require_quarter = FALSE;
 
 extern gboolean greeter_probably_login_prompt;
-
-static char *
-break_at (const char *orig, int columns)
-{
-  PangoLogAttr *attrs;
-  int n_chars;
-  GString *str;
-  int i;
-  int in_current_row;
-  const char *p;
-  
-  str = g_string_new (NULL);
-  n_chars = g_utf8_strlen (orig, -1);
-
-  attrs = g_new0 (PangoLogAttr, n_chars + 1);
-  pango_get_log_attrs (orig, -1,
-                       0, gtk_get_default_language (),
-                       attrs, n_chars + 1);  
-
-  in_current_row = 0;
-  i = 0;
-  p = orig;
-  while (i < n_chars)
-    {
-      gunichar ch;
-
-      ch = g_utf8_get_char (p);
-      
-      /* Broken algorithm for simplicity; we just break
-       * at the first place we can within 10 of the end
-       */
-      
-      if (in_current_row > (columns - 10) &&
-          attrs[i].is_line_break)
-        {
-          in_current_row = 0;
-          g_string_append_unichar (str, '\n');
-        }
-
-      ++in_current_row;
-      g_string_append_unichar (str, ch);
-      
-      p = g_utf8_next_char (p);
-      ++i;
-    }
-  
-  g_free (attrs);
-
-  return g_string_free (str, FALSE);
-}
-
 
 void
 greeter_item_pam_set_user (const char *user)
@@ -105,6 +55,19 @@ evil (GtkEntry *entry, const char *user)
 	}
 
 	return FALSE;
+}
+
+static void
+set_text (GreeterItemInfo *info, const char *text)
+{
+	greeter_item_recreate_label (info, text, FALSE /* markup */);
+	/*
+      g_object_set (G_OBJECT (info->item),
+		    "text", text,
+		    "font_desc", info->data.text.fonts[info->state],
+		    "justification", GTK_JUSTIFY_CENTER,
+		    NULL);
+		    */
 }
 
 static void
@@ -145,9 +108,7 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
     }
   error_info = greeter_lookup_id ("pam-error");
   if (error_info)
-    g_object_set (G_OBJECT (error_info->item),
-		  "text", "",
-		  NULL);
+    set_text (error_info, "");
   
   tmp = ve_locale_from_utf8 (str);
   printf ("%c%s\n", STX, tmp);
@@ -220,19 +181,7 @@ greeter_item_pam_prompt (const char *message,
 
   if (conversation_info)
     {
-      char *text;
-
-      /* This is a bad hack that I added because
-       * the canvas text item doesn't support
-       * text wrapping...
-       */
-      text = break_at (message, 50);
-
-      g_object_set (G_OBJECT (conversation_info->item),
-		    "text", text,
-		    NULL);
-
-      g_free (text);
+      set_text (conversation_info, message);
     }
   
   if (entry_info && entry_info->item &&
@@ -265,14 +214,6 @@ greeter_item_pam_message (const char *message)
 
   if (message_info)
     {
-      char *text;
-
-      /* This is a bad hack that I added because
-       * the canvas text item doesn't support
-       * text wrapping...
-       */
-      text = break_at (message, 50);
-
       /* HAAAAAAACK.  Sometimes pam sends many many messages, SO
        * we try to collect them until the next prompt or reset or
        * whatnot */
@@ -284,22 +225,14 @@ greeter_item_pam_message (const char *message)
 	  if (strlen (oldtext) > 0)
 	    {
 	      newtext = g_strdup_printf ("%s\n%s", oldtext, message);
-	      g_object_set (G_OBJECT (message_info->item),
-			    "text", newtext,
-			    NULL);
+	      set_text (message_info, newtext);
 	      g_free (newtext);
 	    }
 	  else
-	    g_object_set (G_OBJECT (message_info->item),
-			  "text", text,
-			  NULL);
+	    set_text (message_info, message);
 	}
       else
-	g_object_set (G_OBJECT (message_info->item),
-		      "text", text,
-		      NULL);
-
-      g_free (text);
+        set_text (message_info, message);
     }
   replace_msg = FALSE;
 }
@@ -310,9 +243,7 @@ error_clear (gpointer data)
 {
 	GreeterItemInfo *error_info = data;
 
-	g_object_set (G_OBJECT (error_info->item),
-		      "text", "",
-		      NULL);
+        set_text (error_info, "");
 
 	err_box_clear_handler = 0;
 	return FALSE;
@@ -322,7 +253,6 @@ void
 greeter_item_pam_error (const char *message)
 {
   GreeterItemInfo *error_info;
-  char *text;
 
   /* The message I got from pam had a silly newline
    * in the beginning. That may make sense for a
@@ -335,16 +265,7 @@ greeter_item_pam_error (const char *message)
   error_info = greeter_lookup_id ("pam-error");
   if (error_info)
     {
-      /* This is a bad hack that I added because
-       * the canvas text item doesn't support
-       * text wrapping...
-       */
-      text = break_at (message, 50);
-
-      g_object_set (G_OBJECT (error_info->item),
-		    "text", text,
-		    NULL);
-      g_free (text);
+      set_text (error_info, message);
       
       if (err_box_clear_handler > 0)
 	g_source_remove (err_box_clear_handler);
