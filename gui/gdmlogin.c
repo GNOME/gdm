@@ -35,7 +35,9 @@
 #include <X11/Xlib.h>
 #include <pwd.h>
 #include <sys/utsname.h>
-
+#ifdef HAVE_LIBXINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
 #include "gdmlogin.h"
 #include "gdm.h"
 #include "filecheck.h"
@@ -50,6 +52,7 @@ static gboolean GdmQuiver;
 static gint  GdmRelaxPerms;
 static gboolean GdmSystemMenu;
 static gint  GdmUserMaxFile;
+static gint  GdmXineramaScreen;
 static gchar *GdmLogo;
 static gchar *GdmWelcome;
 static gchar *GdmBackgroundProg;
@@ -77,6 +80,7 @@ static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
 static GdkWindow *rootwin;
 static GdkWindow *rootwin_overlay = NULL;
+static GdkRectangle screen;
 
 static GnomeIconList *browser;
 static GdkImlibImage *defface;
@@ -429,6 +433,18 @@ gdm_parse_enriched_string (const gchar *s)
     return buffer;
 }
 
+static void
+gdm_center_window (GtkWindow *cw) 
+{
+	GtkRequisition req;
+        gint x, y;
+
+	gtk_widget_size_request (GTK_WIDGET (cw), &req);
+
+	x = screen.x + (screen.width - req.width)/2;
+	y = screen.y + (screen.height - req.height)/2;	
+ 	gtk_widget_set_uposition (GTK_WIDGET (cw), x, y);	
+}
 
 static gboolean
 gdm_login_query (const gchar *msg)
@@ -442,8 +458,7 @@ gdm_login_query (const gchar *msg)
 				 NULL);
 	    
     gtk_window_set_modal (GTK_WINDOW (req), TRUE);
-    gtk_window_set_position (GTK_WINDOW (req), GTK_WIN_POS_CENTER);
-
+    gdm_center_window (GTK_WINDOW (req));
     return (!gnome_dialog_run (GNOME_DIALOG(req)));
 }
 
@@ -507,6 +522,7 @@ gdm_login_parse_config (void)
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
     GdmIconMaxWidth = gnome_config_get_int (GDM_KEY_ICONWIDTH);
     GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
+    GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
     GdmLockPosition = gnome_config_get_bool (GDM_KEY_LOCK_POSITION);
     GdmSetPosition = gnome_config_get_bool (GDM_KEY_SET_POSITION);
     GdmPositionX = gnome_config_get_int (GDM_KEY_POSITIONX);
@@ -1377,7 +1393,6 @@ gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
     GdmSetPosition = TRUE;
     GdmPositionX = xp - p->x;
     GdmPositionY = yp - p->y;
-    gtk_window_position (GTK_WINDOW (login), GTK_WIN_POS_NONE);
 
     return TRUE;
 }
@@ -1484,6 +1499,7 @@ gdm_login_gui_init (void)
 
     if(*GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
+
 
     rootwin = gdk_window_foreign_new (GDK_ROOT_WINDOW ());
 
@@ -1628,8 +1644,8 @@ gdm_login_gui_init (void)
 
 	/* FIXME */
 	gtk_widget_set_usize (GTK_WIDGET (bbox),
-			      (gint) gdk_screen_width () * 0.5,
-			      (gint) gdk_screen_height () * 0.25);
+			      (gint) screen.width * 0.5,
+			      (gint) screen.height * 0.25);
     }
 
     if (GdmLogo && !access (GdmLogo, R_OK)) {
@@ -1763,7 +1779,7 @@ gdm_login_gui_init (void)
     if (GdmSetPosition) {
 	    set_screen_pos (login, GdmPositionX, GdmPositionY);
     } else {
-	    gtk_window_position (GTK_WINDOW (login), GTK_WIN_POS_CENTER);
+	    gdm_center_window (GTK_WINDOW (login));
     }
 
     gtk_widget_show_all (GTK_WIDGET (login));
@@ -1936,6 +1952,39 @@ gdm_login_users_init (void)
 }
 
 
+static void 
+gdm_screen_init (void) 
+{
+#ifdef HAVE_LIBXINERAMA
+    if (XineramaIsActive (GDK_DISPLAY ())) {
+	int screen_num;
+	XineramaScreenInfo *screens = XineramaQueryScreens (GDK_DISPLAY (),
+							    &screen_num);
+
+
+	if (screen_num <= 0) 
+	    gdm_login_abort ("Xinerama active, but <= 0 screens?");
+
+	if (screen_num < GdmXineramaScreen)
+	    GdmXineramaScreen = 0;
+
+	screen.x = screens[GdmXineramaScreen].x_org;
+	screen.y = screens[GdmXineramaScreen].y_org;
+	screen.width = screens[GdmXineramaScreen].width;
+	screen.height = screens[GdmXineramaScreen].height;
+	XFree (screens);
+    }
+    else 
+#endif
+    {
+	screen.x = 0;
+	screen.y = 0;
+	screen.width = gdk_screen_width ();
+	screen.height = gdk_screen_height ();
+    }
+}
+
+
 int 
 main (int argc, char *argv[])
 {
@@ -1964,17 +2013,20 @@ main (int argc, char *argv[])
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
 
+    /* XXX: with our own centering this should not be neccessary, is it? */
     gnome_preferences_set_dialog_position (GTK_WIN_POS_CENTER);
     
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
 
-    gdm_login_parse_config();
+    gdm_login_parse_config ();
+
+    gdm_screen_init ();
 
     if (GdmBrowser)
 	gdm_login_users_init ();
 
-    gdm_login_gui_init();
+    gdm_login_gui_init ();
 
     if (GdmBrowser)
 	gdm_login_browser_update();
@@ -2035,10 +2087,11 @@ main (int argc, char *argv[])
 		    NULL);
     g_io_channel_unref (ctrlch);
 
-    gtk_main();
+    gtk_main ();
 
     kill_background ();
-    exit(EXIT_SUCCESS);
+
+    return EXIT_SUCCESS;
 }
 
 /* EOF */

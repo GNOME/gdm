@@ -55,10 +55,9 @@ gchar *s = N_("Select a log to be displayed during login");
 gchar *s = N_("Greeter Look and Feel");
 gchar *s = N_("Show the 'system' menu, (for reboot, shutdown etc.)");
 gchar *s = N_("Quiver on failure");
-gchar *s = N_("Welcome to %n\n"
-              "%n\n"
-              "This is %n\n"
-              "");
+gchar *s = N_("Welcome to %n");
+gchar *s = N_("%n");
+gchar *s = N_("This is %n");
 gchar *s = N_("This is %n");
 gchar *s = N_("Default font: ");
 gchar *s = N_("Exclude these users: ");
@@ -68,10 +67,11 @@ gchar *s = N_("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz");
 gchar *s = N_("Background Program: ");
 gchar *s = N_("Select a file containing Locale information");
 gchar *s = N_("Position");
-gchar *s = N_("Set position");
+gchar *s = N_("Manually set position");
 gchar *s = N_("Lock position");
 gchar *s = N_("X position: ");
 gchar *s = N_("Y position: ");
+gchar *s = N_("Xinerama screen: ");
 gchar *s = N_("User Interface");
 gchar *s = N_("Face browser");
 gchar *s = N_("Show choosable user images (enable face browser)");

@@ -129,6 +129,12 @@ fi
 
 AC_SUBST(VRFY)
 
+# X11 Xinerama extension
+AC_CHECK_HEADER(X11/extensions/Xinerama.h, [
+	AC_CHECK_LIB(Xinerama, XineramaQueryScreens,,, $GTK_LIBS)
+])
+
+
 AC_OUTPUT([
 Makefile
 daemon/Makefile

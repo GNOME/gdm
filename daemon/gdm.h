@@ -123,6 +123,7 @@
 #define GDM_KEY_QUIVER "greeter/Quiver=1"
 #define GDM_KEY_SYSMENU "greeter/SystemMenu=0"
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %h"
+#define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
 #define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="
 #define GDM_KEY_LOCK_POSITION "greeter/LockPosition=false"
 #define GDM_KEY_SET_POSITION "greeter/SetPosition=false"
@@ -136,6 +137,7 @@
 #define GDM_KEY_DEBUG "debug/Enable=0"
 
 #define GDM_KEY_SERVERS "servers"
+
 
 
 typedef struct _GdmDisplay GdmDisplay;

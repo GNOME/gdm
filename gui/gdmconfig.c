@@ -166,6 +166,7 @@ gdm_config_parse_most (void)
     gdm_toggle_set ("set_position", gnome_config_get_bool (GDM_KEY_SET_POSITION));
     gdm_spin_set ("position_x", gnome_config_get_int (GDM_KEY_POSITIONX));
     gdm_spin_set ("position_y", gnome_config_get_int (GDM_KEY_POSITIONY));
+    gdm_spin_set ("xinerama_screen", gnome_config_get_int (GDM_KEY_XINERAMASCREEN));
     
     gdm_entry_set("exclude_users", gnome_config_get_string (GDM_KEY_EXCLUDE));
     /* font picker is in parse_remaining() */
@@ -322,6 +323,7 @@ write_new_config_file                  (GnomePropertyBox *gnomepropertybox,
     gdm_toggle_write("set_position", GDM_KEY_SET_POSITION);
     gdm_spin_write("position_x", GDM_KEY_POSITIONX);
     gdm_spin_write("position_y", GDM_KEY_POSITIONY);
+    gdm_spin_write("xinerama_screen", GDM_KEY_XINERAMASCREEN);
     
     gdm_entry_write("exclude_users", GDM_KEY_EXCLUDE);
     gdm_font_write("font_picker", GDM_KEY_FONT);
