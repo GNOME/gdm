@@ -379,6 +379,8 @@ main (int argc, char *argv[])
 		glade_filename = g_strdup ("gdmconfig.glade");
 	}
 
+	glade_helper_add_glade_directory (GDM_GLADE_DIR);
+
 	/* Build the user interface */
 	GUI = glade_xml_new(glade_filename, "gdmconfigurator");
 	basic_notebook = glade_xml_new(glade_filename, "basic_notebook");
@@ -552,7 +554,8 @@ gdm_config_parse_most (gboolean factory)
      */
     if (!g_file_exists(config_file))
       {
-	      char *a_server[2];
+	      char *a_server[3];
+	      int row;
 	      char *error = g_strdup_printf (_("The configuration file: %s\n"
 					       "does not exist! Using "
 					       "default values."),
@@ -564,9 +567,15 @@ gdm_config_parse_most (gboolean factory)
 	      gnome_dialog_run_and_close(GNOME_DIALOG(error_dialog));
 
 	      a_server[0] = "0";
-	      a_server[1] = "/usr/bin/X11/X";
-	      gtk_clist_append (GTK_CLIST (get_widget ("server_clist")),
-				a_server);
+	      a_server[1] = _("Standard server");
+	      a_server[2] = "";
+	      row = gtk_clist_append (GTK_CLIST (get_widget ("server_clist")),
+				      a_server);
+	      gtk_clist_set_row_data_full
+		      (GTK_CLIST (get_widget ("server_clist")), 
+		       row,
+		       g_strdup (GDM_STANDARD),
+		       (GDestroyNotify) g_free);
 	      number_of_servers = 1;
       }
 
@@ -834,6 +843,10 @@ gdm_config_parse_most (gboolean factory)
 	    (GTK_CLIST (get_widget ("server_def_clist")), 0, TRUE);
     gtk_clist_set_column_auto_resize
 	    (GTK_CLIST (get_widget ("server_def_clist")), 1, TRUE);
+    gtk_clist_set_column_auto_resize
+	    (GTK_CLIST (get_widget ("server_clist")), 0, TRUE);
+    gtk_clist_set_column_auto_resize
+	    (GTK_CLIST (get_widget ("server_clist")), 1, TRUE);
 
     got_standard_server = FALSE;
     got_any_servers = FALSE;
@@ -935,20 +948,42 @@ gdm_config_parse_most (gboolean factory)
     iter=gnome_config_iterator_next (iter, &key, &value);
     
     while (iter) {
-	char *a_server[2];
+	char *a_server[3];
 	
-	if(isdigit(*key)) 
-	  {
-	      a_server[0] = key;
-	      a_server[1] = value;
-	      gtk_clist_append(GTK_CLIST(get_widget("server_clist")), a_server);
-	      number_of_servers++;
-	  }
-	else
-	  {
+	if (isdigit (*key)) {
+		char *first = ve_first_word (ve_sure_string (value));
+		a_server[0] = key;
+		if (first[0] == '/') {
+			a_server[1] = value;
+			a_server[2] = "";
+			gtk_clist_append
+				(GTK_CLIST (get_widget ("server_clist")),
+				 a_server);
+			g_free (first);
+		} else {
+			int row;
+			char *rest = ve_rest (value);
+			if (rest == NULL)
+				rest = g_strdup ("");
+			/* FIXME: */
+			a_server[1] = _("FIXME");
+			a_server[2] = rest;
+			row = gtk_clist_append
+				(GTK_CLIST (get_widget ("server_clist")),
+				 a_server);
+			gtk_clist_set_row_data_full
+				(GTK_CLIST (get_widget ("server_clist")),
+				 row,
+				 first,
+				 (GDestroyNotify) g_free);
+		}
+		number_of_servers++;
+	} else {
 	      gnome_warning_dialog_parented(_("gdm_config_parse_most: Invalid server line in config file. Ignoring!"),
 					    GTK_WINDOW(GDMconfigurator));
-	  }
+	}
+	g_free (key);
+	g_free (value);
 	iter=gnome_config_iterator_next (iter, &key, &value);
     }
     /* FIXME: Could do something nicer with the 'exclude users' GUI sometime */
@@ -1098,6 +1133,7 @@ run_warn_reset_dialog (void)
 		       "take effect until gdm is restarted or the computer is\n"
 		       "rebooted"),
 		     GTK_WINDOW (GDMconfigurator));
+		gtk_window_set_modal (GTK_WINDOW (w), TRUE);
 		gnome_dialog_run_and_close (GNOME_DIALOG (w));
 	}
 	/* Don't apply identical settings again. */
@@ -1468,6 +1504,7 @@ write_config (void)
 				"saved.\n"));
 	    dlg = gnome_error_dialog_parented (errors->str,
 					       GTK_WINDOW(GDMconfigurator));
+	    gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
 	    gnome_dialog_run_and_close (GNOME_DIALOG (dlg));
 	    g_string_free (errors, TRUE);
     }
@@ -1635,14 +1672,57 @@ change_timed_sensitivity (GtkButton *button,
 void
 add_new_server_def (GtkButton *button, gpointer user_data)
 {
+	GladeXML *xml = glade_helper_load ("gdmconfig.glade", "svr_def",
+					   gnome_dialog_get_type (),
+					   TRUE /* dump on destroy */);
+	GtkWidget *dialog = glade_helper_get (xml, "svr_def",
+					      gnome_dialog_get_type ());
+
+	gnome_dialog_set_parent (GNOME_DIALOG (dialog), 
+				 (GtkWindow *) GDMconfigurator);
+	gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
+	case 0:
+		/* OK */
+		break;
+	default:
+		/* Cancel, close */
+		break;
+	}
+	/* FIXME: */
+
+	gtk_widget_destroy (dialog);
 }
 
 
 void
 edit_selected_server_def (GtkButton *button, gpointer user_data)
 {
-}
+	GladeXML *xml = glade_helper_load ("gdmconfig.glade", "svr_def",
+					   gnome_dialog_get_type (),
+					   TRUE /* dump on destroy */);
+	GtkWidget *dialog = glade_helper_get (xml, "svr_def",
+					      gnome_dialog_get_type ());
 
+	gnome_dialog_set_parent (GNOME_DIALOG (dialog), 
+				 (GtkWindow *) GDMconfigurator);
+	gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
+	case 0:
+		/* OK */
+		break;
+	default:
+		/* Cancel, close */
+		break;
+	}
+	/* FIXME: */
+
+	gtk_widget_destroy (dialog);
+}
 
 void
 delete_selected_server_def (GtkButton *button, gpointer user_data)
@@ -1661,6 +1741,7 @@ delete_selected_server_def (GtkButton *button, gpointer user_data)
 void
 make_server_def_default (GtkButton *button, gpointer user_data)
 {
+	/* FIXME: */
 }
 
 void
@@ -1682,10 +1763,11 @@ void handle_server_add_or_edit         (gchar           *string,
     /* Add a new server to the end of the server CList */
     if (strcmp("add", (char *)user_data) == 0)
       {
-	  gchar *new_server[2];
+	  gchar *new_server[3];
 
 	  new_server[0] = g_strdup_printf("%d", number_of_servers);;
 	  new_server[1] = string;
+	  new_server[2] = "";
 	  /* We now have an extra server */
 	  number_of_servers++;
 	  gtk_clist_append(GTK_CLIST(get_widget("server_clist")), new_server);
@@ -1699,36 +1781,189 @@ void handle_server_add_or_edit         (gchar           *string,
       }
 }
 
-
-void
-add_new_server                         (GtkButton       *button,
-                                        gpointer         user_data)
+static void
+fill_svr_select_list (GladeXML *xml)
 {
-    /* Request the command line for this new server */
-    gnome_request_dialog(FALSE, _("Enter the path to the X server,and\nany parameters that should be passed to it."),
-			 "/usr/bin/X11/X",
-			 -1, handle_server_add_or_edit,
-			 (gpointer)"add", (GtkWindow *)GDMconfigurator);
+	int i;
+	GtkCList *svr_clist = (GtkCList *)get_widget ("server_def_clist");
+	GtkCList *clist =
+		(GtkCList *)glade_helper_get_clist (xml,
+						    "svr_select_clist",
+						    gtk_clist_get_type (),
+						    1);
+	for (i = 0; i < svr_clist->rows; i++) {
+		int row;
+		char *text = NULL;
+		char *id = NULL;
+		gtk_clist_get_text (svr_clist, i, 0, &text);
+		id = gtk_clist_get_row_data (clist, i);
+		if (text != NULL) {
+			row = gtk_clist_append (clist, &text);
+			gtk_clist_set_row_data_full
+				(clist, row,
+				 g_strdup (id),
+				 (GDestroyNotify) g_free);
+		}
+	}
+
+	if (i == 0) {
+		int row;
+		char *text = _("Standard server");
+		row = gtk_clist_append (clist, &text);
+		gtk_clist_set_row_data_full
+			(clist, row,
+			 g_strdup (GDM_STANDARD),
+			 (GDestroyNotify) g_free);
+	}
 }
 
-
-void
-edit_selected_server                   (GtkButton       *button,
-                                        gpointer         user_data)
+static void
+custom_toggled (GtkWidget *w, gpointer data)
 {
-    char *current_server;
+	GladeXML *xml = data;
+	GtkWidget *clist = glade_helper_get_clist (xml, "svr_select_clist",
+						   gtk_clist_get_type (), 1);
+	GtkWidget *cmdline = glade_helper_get (xml, "svr_select_command_line",
+					       gtk_entry_get_type ());
+	GtkWidget *extra = glade_helper_get (xml, "svr_select_arguments",
+					     gtk_entry_get_type ());
+
+	if (GTK_TOGGLE_BUTTON (w)->active) {
+		gtk_widget_set_sensitive (clist, FALSE);
+		gtk_widget_set_sensitive (extra, FALSE);
+		gtk_widget_set_sensitive (cmdline, TRUE);
+	} else {
+		gtk_widget_set_sensitive (clist, TRUE);
+		gtk_widget_set_sensitive (extra, TRUE);
+		gtk_widget_set_sensitive (cmdline, FALSE);
+	}
+}
+
+static void
+connect_custom (GladeXML *xml)
+{
+	GtkWidget *button = glade_helper_get (xml, "svr_select_custom_cb",
+					      gtk_toggle_button_get_type ());
+
+	gtk_object_ref (GTK_OBJECT (xml));
+	gtk_signal_connect_full (GTK_OBJECT (button), "toggled",
+				 GTK_SIGNAL_FUNC (custom_toggled),
+				 NULL /* marshal*/,
+				 xml,
+				 (GtkDestroyNotify) gtk_object_unref,
+				 FALSE /*object_signal*/,
+				 FALSE /*after*/);
+
+	/* setup sensitivities */
+	custom_toggled (button, xml);
+}
+
+static void
+select_svr (GtkCList *clist, const char *current_id)
+{
+	int i;
+
+	for (i = 0; i < clist->rows; i++) {
+		char *id = NULL;
+		id = gtk_clist_get_row_data (clist, i);
+		if (id != NULL && current_id != NULL &&
+		    strcmp (id, current_id) == 0) {
+			gtk_clist_select_row (clist, i, 0);
+			return;
+		}
+	}
+}
+
+static void
+handle_server_edit (gboolean edit)
+{
+	GladeXML *xml;
+	GtkWidget *dialog, *custom_cb, *clist, *cmdline, *extra;
+	char *current_server = NULL, *current_extra = NULL;
+	char *current_id;
     
-    if (selected_server_row < 0)
-      return;
+	if (edit && selected_server_row < 0)
+		return;
+
+	xml = glade_helper_load ("gdmconfig.glade", "svr_select",
+				 gnome_dialog_get_type (),
+				 TRUE /* dump on destroy */);
+	dialog = glade_helper_get (xml, "svr_select",
+				   gnome_dialog_get_type ());
+	custom_cb = glade_helper_get (xml, "svr_select_custom_cb",
+				      gtk_toggle_button_get_type ());
+	clist = glade_helper_get_clist (xml, "svr_select_clist",
+					gtk_clist_get_type (), 1);
+	cmdline = glade_helper_get (xml, "svr_select_command_line",
+				    gtk_entry_get_type ());
+	extra = glade_helper_get (xml, "svr_select_arguments",
+				  gtk_entry_get_type ());
+
+	fill_svr_select_list (xml);
+	connect_custom (xml);
+
+	gtk_entry_set_text (GTK_ENTRY (cmdline), "/usr/bin/X11/X");
+
+	if (edit) {
+		gtk_clist_get_text (GTK_CLIST (get_widget ("server_clist")),
+				    selected_server_row, 1, &current_server);
+		gtk_clist_get_text (GTK_CLIST (get_widget ("server_clist")),
+				    selected_server_row, 2, &current_extra);
+		current_id = gtk_clist_get_row_data
+			(GTK_CLIST (get_widget ("server_clist")),
+			 selected_server_row);
+
+		gtk_entry_set_text (GTK_ENTRY (extra),
+				    ve_sure_string (current_extra));
+		if (current_id == NULL) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON (custom_cb), TRUE);
+			gtk_entry_set_text (GTK_ENTRY (cmdline),
+					    ve_sure_string (current_server));
+		} else {
+			select_svr (GTK_CLIST (clist), current_id);
+		}
+	}
+
+	gnome_dialog_set_parent (GNOME_DIALOG (dialog), 
+				 (GtkWindow *) GDMconfigurator);
+	gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
+	case 0:
+		/* OK */
+		break;
+	default:
+		/* Cancel, close */
+		break;
+	}
+	/* FIXME: */
+
+	gtk_widget_destroy (dialog);
 
     /* Ask for the new name of this server */
+	/*
     gtk_clist_get_text(GTK_CLIST(get_widget("server_clist")),
 		       selected_server_row, 1, &current_server);
     gnome_request_dialog(FALSE, _("Enter the path to the X server,and\nany parameters that should be passed to it."),
 			 current_server,
 			 -1, handle_server_add_or_edit,
 			 (gpointer)"edit", (GtkWindow *)GDMconfigurator);
+			 */
+}
 
+void
+add_new_server (GtkButton *button, gpointer user_data)
+{
+	handle_server_edit (FALSE /*edit*/);
+}
+
+void
+edit_selected_server                   (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	handle_server_edit (TRUE /*edit*/);
 }
 
 
@@ -1945,6 +2180,7 @@ add_session_real (gchar *new_session_name, gpointer data)
 					 "not empty"));
 	   gnome_dialog_set_parent (GNOME_DIALOG (error_dialog), 
 				   (GtkWindow *) GDMconfigurator);
+	   gtk_window_set_modal (GTK_WINDOW (error_dialog), TRUE);
 	   gnome_dialog_run_and_close (GNOME_DIALOG (error_dialog));
    }
 }
