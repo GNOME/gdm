@@ -12,6 +12,14 @@ if test ! -d $srcdir/vicious-extensions; then
 	exit 1
 fi
 
+if grep VICIOUS_CFLAGS $srcdir/vicious-extensions/Makefile.am > /dev/null; then 
+	echo "**Error**: Use the gnome-2-6 branch of vicious-extensions "
+	echo "for now, you have to do: cvs -z3 update -rgnome-2-6"
+	echo "in the vicious-extensions subdirectory."
+	echo "This will be fixed up after 2.6 is released ..."
+	exit 1
+fi
+
 (test -f $srcdir/configure.in \
   && test -d $srcdir/daemon \
   && test -f $srcdir/daemon/gdm.h) || {
