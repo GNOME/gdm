@@ -546,7 +546,15 @@ gdm_lang_read_locale_file (const char *locale_file)
 		} else {
 			language = g_new0 (Language, 1);
 			language->found = 1;
-			language->name = g_strdup (name);
+			/* add a space before an open bracket to match
+			   the style used in the internal list.
+			   e.g. change "English(India)" to "English (India)" */
+			p = strchr (name, '(');
+			if (p != NULL && p > name && *(p-1) != ' ') {
+			  *p = 0;
+			  language->name= g_strconcat(name, " (", p+1, NULL);
+			} else
+			  language->name = g_strdup (name);
  			/* only store the "lang_country" part of the locale code, so that we notice
  			 * if there is more than one encoding of this language. See bug 132629. */
 			p = strchr (lang, '.');
