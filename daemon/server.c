@@ -112,6 +112,14 @@ gdm_server_reinit (GdmDisplay *disp)
 	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
 
 	kill (disp->servpid, SIGHUP);
+
+	/* HACK! the Xserver can't really tell us when it got the hup signal,
+	 * so we are really stuck just going to sleep for a bit hoping that
+	 * the kernel will tell the X server and that will run, else we will
+	 * get whacked ourselves after we open the connection and we'll think
+	 * it's an X screwup, which is really OK to happen and will just
+	 * restart the Xserver, it's just more nasty.  Oh how fun */
+	sleep (1);
 }
 
 /**

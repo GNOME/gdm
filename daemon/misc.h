@@ -75,6 +75,8 @@ gboolean gdm_test_opt (const char *cmd, const char *help, const char *option);
 
 void gdm_close_all_descriptors (int from, int except);
 
+gboolean gdm_is_a_no_password_user (const char *user);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

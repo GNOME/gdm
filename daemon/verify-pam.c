@@ -282,12 +282,13 @@ gdm_verify_user (GdmDisplay *d,
 		 gboolean local) 
 {
     gint pamerr = 0;
-    gchar *login;
+    char *login;
+    const char *service = "gdm";
     struct passwd *pwent;
     gboolean error_msg_given = FALSE;
     gboolean credentials_set = FALSE;
     gboolean started_timer = FALSE;
-    gchar *auth_errmsg;
+    char *auth_errmsg;
 
     /* start the timer for timed logins */
     if ( ! ve_string_empty (GdmTimedLogin) &&
@@ -312,10 +313,17 @@ gdm_verify_user (GdmDisplay *d,
 	    login = g_strdup (username);
     }
 
+    if (local &&
+	gdm_is_a_no_password_user (login)) {
+	    service = "gdm-autologin";
+    } else {
+	    service = "gdm";
+    }
+
     cur_gdm_disp = d;
 
     /* Initialize a PAM session for the user */
-    if ( ! create_pamh (d, "gdm", login, &pamc, display, &pamerr)) {
+    if ( ! create_pamh (d, service, login, &pamc, display, &pamerr)) {
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 	    goto pamerr;

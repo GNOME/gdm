@@ -101,6 +101,7 @@ gchar *GdmLocaleFile = NULL;
 gchar *GdmGnomeDefaultSession = NULL;
 gchar *GdmAutomaticLogin = NULL;
 gboolean GdmAutomaticLoginEnable = FALSE;
+gchar *GdmLocalNoPasswordUsers = NULL;
 gboolean GdmAlwaysRestartServer = FALSE;
 gchar *GdmConfigurator = NULL;
 gboolean GdmConfigAvailable = FALSE;
@@ -119,8 +120,11 @@ gchar *GdmPostSession = NULL;
 gchar *GdmFailsafeXServer = NULL;
 gchar *GdmXKeepsCrashing = NULL;
 gchar *GdmHalt = NULL;
+gchar *GdmHaltReal = NULL;
 gchar *GdmReboot = NULL;
+gchar *GdmRebootReal = NULL;
 gchar *GdmSuspend = NULL;
+gchar *GdmSuspendReal = NULL;
 gchar *GdmServAuthDir = NULL;
 gchar *GdmUserAuthDir = NULL;
 gchar *GdmUserAuthFile = NULL;
@@ -227,6 +231,7 @@ gdm_config_parse (void)
     GdmDisplayInit = gnome_config_get_string (GDM_KEY_INITDIR);
     GdmAutomaticLoginEnable = gnome_config_get_bool (GDM_KEY_AUTOMATICLOGIN_ENABLE);
     GdmAutomaticLogin = gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN);
+    GdmLocalNoPasswordUsers = gnome_config_get_string (GDM_KEY_LOCALNOPASSWORDUSERS);
     GdmAlwaysRestartServer = gnome_config_get_bool (GDM_KEY_ALWAYSRESTARTSERVER);
     GdmGreeter = gnome_config_get_string (GDM_KEY_GREETER);
     GdmRemoteGreeter = gnome_config_get_string (GDM_KEY_REMOTEGREETER);
@@ -578,6 +583,11 @@ gdm_config_parse (void)
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: The gdm group should not be root. Aborting!"), "gdm_config_parse");
     }
+
+    /* get the actual commands to use */
+    GdmHaltReal = ve_get_first_working_command (GdmHalt, FALSE);
+    GdmRebootReal = ve_get_first_working_command (GdmReboot, FALSE);
+    GdmSuspendReal = ve_get_first_working_command (GdmSuspend, FALSE);
 
     setegid (GdmGroupId);	/* gid remains `gdm' */
     seteuid (GdmUserId);
@@ -939,26 +949,6 @@ deal_with_x_crashes (GdmDisplay *d)
     return FALSE;
 }
 
-static gboolean
-bin_executable (const char *command)
-{
-	char **argv;
-
-	if (ve_string_empty (command))
-		return FALSE;
-
-	argv = ve_split (command);
-	if (argv != NULL &&
-	    argv[0] != NULL &&
-	    access (argv[0], X_OK) == 0) {
-		g_strfreev (argv);
-		return TRUE;
-	} else {
-		g_strfreev (argv);
-		return FALSE;
-	}
-}
-
 static gboolean 
 gdm_cleanup_children (void)
 {
@@ -1063,15 +1053,15 @@ gdm_cleanup_children (void)
     /* checkout if we can actually do stuff */
     switch (status) {
     case DISPLAY_REBOOT:
-	    if ( ! bin_executable (GdmReboot))
+	    if (GdmRebootReal == NULL)
 		    status = DISPLAY_REMANAGE;
 	    break;
     case DISPLAY_HALT:
-	    if ( ! bin_executable (GdmHalt))
+	    if (GdmHaltReal == NULL)
 		    status = DISPLAY_REMANAGE;
 	    break;
     case DISPLAY_SUSPEND:
-	    if ( ! bin_executable (GdmSuspend))
+	    if (GdmSuspendReal == NULL)
 		    status = DISPLAY_REMANAGE;
 	    break;
     default:
@@ -1101,7 +1091,7 @@ start_autopsy:
 	final_cleanup ();
 	chdir ("/");
 
-	argv = ve_split (GdmReboot);
+	argv = ve_split (GdmRebootReal);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Reboot failed: %s"), strerror (errno));
@@ -1116,7 +1106,7 @@ start_autopsy:
 	final_cleanup ();
 	chdir ("/");
 
-	argv = ve_split (GdmHalt);
+	argv = ve_split (GdmHaltReal);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
@@ -1131,7 +1121,7 @@ start_autopsy:
 	final_cleanup ();
 	chdir ("/");
 
-	argv = ve_split (GdmSuspend);
+	argv = ve_split (GdmSuspendReal);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Suspend failed: %s"), strerror (errno));

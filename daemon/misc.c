@@ -46,6 +46,7 @@
 
 /* Configuration option variables */
 extern gchar *GdmPidFile;
+extern gchar *GdmLocalNoPasswordUsers;
 extern gboolean GdmDebug;
 extern GSList *displays;
 extern int gdm_xdmcpfd;
@@ -977,5 +978,28 @@ gdm_close_all_descriptors (int from, int except)
 			close(i);
 	}
 }
+
+gboolean
+gdm_is_a_no_password_user (const char *user)
+{
+	char **vector = NULL;
+	int i;
+
+	if (ve_string_empty (GdmLocalNoPasswordUsers) ||
+	    ve_string_empty (user) ||
+	    strcmp (user, "root") == 0)
+		return FALSE;
+
+	vector = g_strsplit (GdmLocalNoPasswordUsers, ",", -1);
+	for (i = 0; vector[i] != NULL; i++) {
+		if (strcmp (vector[i], user) == 0) {
+			g_strfreev (vector);
+			return TRUE;
+		}
+	}
+	g_strfreev (vector);
+	return FALSE;
+}
+
 
 /* EOF */

@@ -35,6 +35,17 @@ bin_exists (const char *command)
 	}
 }
 
+static gboolean
+working_command_exists (const char *commands)
+{
+	char *command = ve_get_first_working_command
+		(commands, TRUE /* only_existance */);
+	if (command == NULL)
+		return FALSE;
+	g_free (command);
+	return TRUE;
+}
+
 static void
 greeter_reboot_handler (void)
 {
@@ -103,7 +114,7 @@ greeter_system_handler (GreeterItemInfo *info,
 
   dialog = gtk_dialog_new ();
 
-  if (bin_exists (GdmHalt)) {
+  if (working_command_exists (GdmHalt)) {
 	  halt_radio = gtk_radio_button_new_with_mnemonic (NULL,
 							   _("Shut down the computer"));
 	  group_radio = halt_radio;
@@ -113,7 +124,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_widget_show (halt_radio);
   }
 
-  if (bin_exists (GdmSuspend)) {
+  if (working_command_exists (GdmSuspend)) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  suspend_radio = gtk_radio_button_new_with_mnemonic (radio_group,
@@ -125,7 +136,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_widget_show (suspend_radio);
   }
   
-  if (bin_exists (GdmReboot)) {
+  if (working_command_exists (GdmReboot)) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  reboot_radio = gtk_radio_button_new_with_mnemonic (radio_group,

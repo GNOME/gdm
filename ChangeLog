@@ -1,3 +1,20 @@
+Tue Aug 13 16:15:08 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], gui/gdmlogin.c, gui/greeter/greeter_system.c,
+	  config/gdm.conf.in: The Shutdown/Halt/Suspend keys can now be
+	  a list of commands.  If this is the case, the first working one
+	  will be used.  This way we can find the most appropriate command
+	  to use and distros will not have to redo the config as much.
+
+	* daemon/gdm.[ch], daemon/misc.[ch], daemon/verify-*.c,
+	  config/gdm.conf.in: Add a long standing feature request of no
+	  password logins for certain users on the local console.  Just
+	  set LocalNoPasswordUsers to a list of such users.  Fixes #51908
+
+	* daemon/server.c: on reinit of server do a sleep(1) after the
+	  kill (pid, SIGHUP) as an incredible hack to avoid a race.  Fun
+	  fun fun with the X server.
+
 Tue Aug 13 12:49:18 2002  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in: update this, add MinimalUID, add a bunch of

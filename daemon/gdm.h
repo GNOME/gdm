@@ -124,11 +124,12 @@ enum {
  * to nothing */
 #define GDM_KEY_AUTOMATICLOGIN_ENABLE "daemon/AutomaticLoginEnable=true"
 #define GDM_KEY_AUTOMATICLOGIN "daemon/AutomaticLogin="
+#define GDM_KEY_LOCALNOPASSWORDUSERS "daemon/LocalNoPasswordUsers="
 #define GDM_KEY_ALWAYSRESTARTSERVER "daemon/AlwaysRestartServer=false"
 #define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin"
 #define GDM_KEY_REMOTEGREETER "daemon/RemoteGreeter=" EXPANDED_BINDIR "/gdmlogin"
 #define GDM_KEY_GROUP "daemon/Group=gdm"
-#define GDM_KEY_HALT "daemon/HaltCommand=/sbin/shutdown -h now"
+#define GDM_KEY_HALT "daemon/HaltCommand=/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
 #define GDM_KEY_INITDIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
 #define GDM_KEY_KILLIC "daemon/KillInitClients=true"
 #define GDM_KEY_LOGDIR "daemon/LogDir=" EXPANDED_AUTHDIR
@@ -138,7 +139,7 @@ enum {
 #define GDM_KEY_PRESESS "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
 #define GDM_KEY_FAILSAFE_XSERVER "daemon/FailsafeXServer="
 #define GDM_KEY_XKEEPSCRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
-#define GDM_KEY_REBOOT "daemon/RebootCommand=/sbin/shutdown -r now"
+#define GDM_KEY_REBOOT "daemon/RebootCommand=/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
 #define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:" EXPANDED_BINDIR
 #define GDM_KEY_GNOMEDEFAULTSESSION "daemon/GnomeDefaultSession=" EXPANDED_DATADIR "/gnome/default.session"
 #define GDM_KEY_SERVAUTH "daemon/ServAuthDir=" EXPANDED_AUTHDIR

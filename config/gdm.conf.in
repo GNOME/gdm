@@ -23,6 +23,10 @@ AutomaticLogin=
 TimedLoginEnable=false
 TimedLogin=
 TimedLoginDelay=30
+# A comma separated list of users that will be logged in without having
+# to authenticate on local screens (not over xdmcp).  Note that 'root'
+# is ignored and will always have to authenticate.
+LocalNoPasswordUsers=
 # If you are having trouble with using a single server for a long time and
 # want gdm to kill/restart the server, turn this on
 AlwaysRestartServer=false
@@ -33,7 +37,10 @@ GnomeDefaultSession=@EXPANDED_DATADIR@/gnome/default.session
 # The chooser program.  Must output the chosen host on stdout, probably you
 # should leave this alone
 Chooser=@EXPANDED_BINDIR@/gdmchooser
+# Default path to set.  The profile scripts will likely override this
 DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:@EXPANDED_BINDIR@
+# Default path for root.  The profile scripts will likely override this
+RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:@EXPANDED_BINDIR@
 DisplayInitDir=@EXPANDED_SYSCONFDIR@/gdm/Init
 # Greeter for local (non-xdmcp) logins.  Change gdmlogin to gdmgreeter to
 # get the new graphical greeter.
@@ -62,11 +69,11 @@ FailsafeXServer=
 # of cool stuff to figure out what to tell the user and such and can
 # run an X configuration program.
 XKeepsCrashing=@EXPANDED_SYSCONFDIR@/gdm/XKeepsCrashing
-# Reboot, Halt and suspend commands
-RebootCommand=/sbin/shutdown -r now
-HaltCommand=/sbin/shutdown -h now
+# Reboot, Halt and suspend commands, you can add different commands
+# separated by a semicolon and gdm will use the first one it can find
+RebootCommand=/sbin/shutdown -r now;/usr/sbin/shutdown -r now
+HaltCommand=/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now
 SuspendCommand=
-RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:@EXPANDED_BINDIR@
 ServAuthDir=@EXPANDED_AUTHDIR@
 SessionDir=@EXPANDED_SYSCONFDIR@/gdm/Sessions/
 UserAuthDir=
@@ -176,6 +183,10 @@ Broadcast=true
 Enable=false
 
 [servers]
+# These are the standard servers.  You can add as many you want here
+# and they will always be started.  Each line must start with a unique
+# number and that will be the display number of that server.  Usually just
+# the 0 server is used.
 0=Standard
 #1=Standard
 #Note: If you want to make sure X runs on a specific virtual console on linux,
@@ -183,7 +194,7 @@ Enable=false
 #      problems for some users.  Be careful about this, getting this wrong
 #      can lead to an unusable console.  Best solution is to make sure gdm
 #      starts as the last thing, and that will make it not neccessary to
-#      do hacks like this.
+#      do hacks like this since X will itself find the first free console
 #0=Standard vt7
 #
 #Note: If you want to run an X terminal you could add an X server such as this
@@ -191,6 +202,7 @@ Enable=false
 # or for a chooser (optionally serverhostname could be localhost)
 #0=Terminal -indirect serverhostname
 
+# Definition of the standard X server.
 [server-Standard]
 name=Standard server
 command=/usr/X11R6/bin/X

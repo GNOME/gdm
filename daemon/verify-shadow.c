@@ -97,7 +97,8 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 
     /* Request the user's password */
     if (pwent != NULL &&
-        ve_string_empty (ppasswd)) {
+        (ve_string_empty (ppasswd) ||
+	 (local && gdm_is_a_no_password_user (login)))) {
 	    /* eeek a passwordless account */
 	    passwd = g_strdup ("");
     } else {
