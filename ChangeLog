@@ -1,3 +1,19 @@
+Sun Jul 20 11:01:01 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmsetup.c: mention the GDM manual in the help dialog box.
+	  Connecting to the manual is a bit harder since this is usually
+	  running as root or on the GDM screen
+
+	* gui/gdmchooser.(c|glade): Fixed most issues from #117784, there is
+	  proper keynav, the add button is sensitive only when there is
+	  something to add, the messages are shortened a bit to make the
+	  interface saner and not have the window change sizes, buttons
+	  are reordered, and hostnames in the list are now bold.  Also
+	  cap status text at max of 256 chars for sanity of display (maybe
+	  should be shortened even more).
+
+	* configure.in: raise version to 2.4.2.98
+
 Sun Jul 20 08:59:19 2003  George Lebl <jirka@5z.com>
 
 	* docs/C/gdm.xml: fix docbook errors

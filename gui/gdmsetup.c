@@ -2000,7 +2000,9 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 			   "will take effect immediately.\n\n"
 			   "Note that not all configuration options "
 			   "are listed here.  You may want to edit %s "
-			   "if you cannot find what you are looking for."),
+			   "if you cannot find what you are looking for.\n\n"
+			   "For complete documentation see the GNOME help browser "
+			   "Under the category GNOME/System."),
 			 GDM_CONFIG_FILE);
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		g_signal_connect (G_OBJECT (dlg), "destroy",

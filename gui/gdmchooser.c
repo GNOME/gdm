@@ -72,9 +72,9 @@ struct _GdmChooserHost {
 };
 
 
-static const gchar *scanning_message = N_("Please wait: scanning local network for XDMCP-enabled hosts...");
+static const gchar *scanning_message = N_("Please wait: scanning local network...");
 static const gchar *empty_network = N_("No serving hosts were found.");
-static const gchar *active_network = N_("Choose a host to connect to from the selection below.");
+static const gchar *active_network = N_("Choose a ho_st to connect to:");
 
 /* XDM chooser style stuff */
 static gchar *xdm_address = NULL;
@@ -87,6 +87,7 @@ static void gdm_chooser_warn (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 /* Exported for glade */
 void gdm_chooser_cancel (void);
 void gdm_chooser_add_host (void);
+void gdm_chooser_add_entry_changed (void);
 void gdm_chooser_manage (GtkButton *button, gpointer data);
 void gdm_chooser_browser_select (GtkWidget *widget,
 				 gint selected,
@@ -152,7 +153,7 @@ enum {
 };
 
 static GladeXML *chooser_app;
-static GtkWidget *chooser, *manage, *rescan, *cancel, *add_entry;
+static GtkWidget *chooser, *manage, *rescan, *cancel, *add_entry, *add_button;
 static GtkWidget *status_label;
 
 static GIOChannel *channel;
@@ -270,16 +271,23 @@ gdm_chooser_browser_add_host (GdmChooserHost *host)
 	    GtkTreeIter iter = {0};
 	    const char *addr = inet_ntoa (host->ia);
 	    char *label;
+	    char *name, *desc;
+
+	    name = g_markup_escape_text (host->name, -1);
+	    desc = g_markup_escape_text (host->desc, -1);
 
 	    if (strcmp (addr, host->name) == 0)
-		    label = g_strdup_printf ("%s\n%s",
-					     host->name,
-					     host->desc);
+		    label = g_strdup_printf ("<b>%s</b>\n%s",
+					     name,
+					     desc);
 	    else
-		    label = g_strdup_printf ("%s (%s)\n%s",
-					     host->name,
+		    label = g_strdup_printf ("<b>%s</b> (%s)\n%s",
+					     name,
 					     addr,
-					     host->desc);
+					     desc);
+
+	    g_free (name);
+	    g_free (desc);
 
 	    gtk_list_store_append (GTK_LIST_STORE (browser_model), &iter);
 	    gtk_list_store_set (GTK_LIST_STORE (browser_model), &iter,
@@ -388,7 +396,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 	    if (! XdmcpReadARRAY8 (&buf, &stat))
 		    goto done;
 
-	    status = g_strndup (stat.data, stat.length);
+	    status = g_strndup (stat.data, MIN (stat.length, 256));
     } else if (header.opcode == UNWILLING) {
 	    /* immaterial, will not be shown */
 	    status = NULL;
@@ -558,9 +566,9 @@ chooser_scan_time_update (gpointer data)
 			break;
 	}
 	if (li != NULL /* something was found */) {
-		gtk_label_set_text (GTK_LABEL (status_label), _(active_network));
+		gtk_label_set_label (GTK_LABEL (status_label), _(active_network));
 	} else {
-		gtk_label_set_text (GTK_LABEL (status_label), _(empty_network));
+		gtk_label_set_label (GTK_LABEL (status_label), _(empty_network));
 	}
 	gtk_widget_set_sensitive (GTK_WIDGET (rescan), TRUE);
 	return FALSE;
@@ -623,8 +631,8 @@ gdm_chooser_xdmcp_discover (void)
     gtk_widget_set_sensitive (GTK_WIDGET (rescan), FALSE);
     gtk_list_store_clear (GTK_LIST_STORE (browser_model));
     gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
-    gtk_label_set_text (GTK_LABEL (status_label),
-			_(scanning_message));
+    gtk_label_set_label (GTK_LABEL (status_label),
+			 _(scanning_message));
 
     while (hl) {
 	gdm_chooser_host_dispose ((GdmChooserHost *) hl->data);
@@ -951,6 +959,15 @@ gdm_chooser_add_host (void)
 }
 
 void
+gdm_chooser_add_entry_changed (void)
+{
+	const char *name;
+
+	name = gtk_entry_get_text (GTK_ENTRY (add_entry));
+	gtk_widget_set_sensitive (add_button, ! ve_string_empty (name));
+}
+
+void
 gdm_chooser_cancel (void)
 {
     if (scan_time_handler > 0) {
@@ -1157,6 +1174,8 @@ gdm_chooser_gui_init (void)
 				     GTK_TYPE_LABEL);
     add_entry = glade_helper_get (chooser_app, "add_entry",
 				  GTK_TYPE_ENTRY);
+    add_button = glade_helper_get (chooser_app, "add_button",
+				   GTK_TYPE_BUTTON);
 
     browser = glade_helper_get (chooser_app, "chooser_iconlist",
 				GTK_TYPE_TREE_VIEW);
@@ -1190,7 +1209,7 @@ gdm_chooser_gui_init (void)
     column = gtk_tree_view_column_new_with_attributes
 	    ("Hostname",
 	     gtk_cell_renderer_text_new (),
-	     "text", CHOOSER_LIST_LABEL_COLUMN,
+	     "markup", CHOOSER_LIST_LABEL_COLUMN,
 	     NULL);
     gtk_tree_view_append_column (GTK_TREE_VIEW (browser), column);
 
@@ -1458,6 +1477,8 @@ main (int argc, char *argv[])
 
     if (GdmAllowAdd)
 	    gtk_widget_grab_focus (add_entry);
+
+    gdm_chooser_add_entry_changed ();
 
     gtk_main();
 

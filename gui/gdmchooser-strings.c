@@ -6,12 +6,12 @@
 
 gchar *s = N_("GDM Host Chooser");
 gchar *s = N_("How to use this application");
-gchar *s = N_("Open a session to the selected host");
-gchar *s = N_("C_onnect");
 gchar *s = N_("Probe the network");
 gchar *s = N_("Exit the application");
+gchar *s = N_("Open a session to the selected host");
+gchar *s = N_("C_onnect");
 gchar *s = N_("Status");
-gchar *s = N_("Add host: ");
+gchar *s = N_("A_dd host: ");
 gchar *s = N_("*");
 gchar *s = N_("Query and add this host to the above list");
-gchar *s = N_("Add");
+gchar *s = N_("_Add");
