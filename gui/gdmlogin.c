@@ -201,7 +201,7 @@ gdm_timer (gpointer data)
 		gchar *autologin_msg = 
 			g_strdup_printf (_("User %s will login in %d seconds"),
 					 GdmTimedLogin, curdelay);
-		gtk_label_set (GTK_LABEL (msg), autologin_msg);
+		gtk_label_set_text (GTK_LABEL (msg), autologin_msg);
 		gtk_widget_show (GTK_WIDGET (msg));
 		g_free (autologin_msg);
 	}
@@ -298,7 +298,7 @@ set_screen_pos (GtkWidget *widget, int x, int y)
 	if (y > gdm_wm_screen.y + gdm_wm_screen.height - widget->allocation.height)
 		y = gdm_wm_screen.y + gdm_wm_screen.height - widget->allocation.height;
 
-	gtk_widget_set_uposition (widget, x, y);
+	gtk_window_move (GTK_WINDOW (widget), x, y);
 }
 
 typedef struct _CursorOffset {
@@ -312,7 +312,7 @@ gdm_login_icon_released (GtkWidget *widget)
 	gtk_grab_remove (widget);
 	gdk_pointer_ungrab (GDK_CURRENT_TIME);
 
-	gtk_object_remove_data (GTK_OBJECT (widget), "offset");
+	g_object_set_data (G_OBJECT (widget), "offset", NULL);
 
 	return TRUE;
 }
@@ -340,8 +340,8 @@ gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
     
 
     p = g_new0 (CursorOffset, 1);
-    gtk_object_set_data_full (GTK_OBJECT (widget), "offset", p,
-			      (GtkDestroyNotify)g_free);
+    g_object_set_data_full (G_OBJECT (widget), "offset", p,
+			    (GDestroyNotify)g_free);
     p->x = (gint) event->x;
     p->y = (gint) event->y;
 
@@ -395,7 +395,7 @@ gdm_login_icon_motion (GtkWidget *widget, GdkEventMotion *event)
 	CursorOffset *p;
 	GdkModifierType mask;
 
-	p = gtk_object_get_data (GTK_OBJECT (widget), "offset");
+	p = g_object_get_data (G_OBJECT (widget), "offset");
 
 	if (p == NULL)
 		return FALSE;
@@ -446,7 +446,7 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
     } else {
 	    /* sanity fallback */
 	    icon = gtk_event_box_new ();
-	    gtk_widget_set_usize (icon, 64, 64);
+	    gtk_widget_set_size_request (icon, 64, 64);
 	    iw = ih = 64;
     }
     gtk_tooltips_set_tip (tooltips, GTK_WIDGET (icon_win),
@@ -457,12 +457,12 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
     gtk_fixed_put(GTK_FIXED (fixed), GTK_WIDGET (icon), 0, 0);
     gtk_widget_show(GTK_WIDGET (icon));
 
-    gtk_signal_connect (GTK_OBJECT (icon_win), "button_press_event",
-			GTK_SIGNAL_FUNC (gdm_login_icon_pressed),NULL);
-    gtk_signal_connect (GTK_OBJECT (icon_win), "button_release_event",
-			GTK_SIGNAL_FUNC (gdm_login_icon_released),NULL);
-    gtk_signal_connect (GTK_OBJECT (icon_win), "motion_notify_event",
-			GTK_SIGNAL_FUNC (gdm_login_icon_motion),NULL);
+    g_signal_connect (G_OBJECT (icon_win), "button_press_event",
+		      G_CALLBACK (gdm_login_icon_pressed),NULL);
+    g_signal_connect (G_OBJECT (icon_win), "button_release_event",
+		      G_CALLBACK (gdm_login_icon_released),NULL);
+    g_signal_connect (G_OBJECT (icon_win), "motion_notify_event",
+		      G_CALLBACK (gdm_login_icon_motion),NULL);
 
     gtk_widget_show (GTK_WIDGET (icon_win));
 
@@ -624,7 +624,6 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 static void
 gdm_login_message (const gchar *msg)
 {
-	int ret;
 	static GtkWidget *req = NULL;
 
 	if (req != NULL)
@@ -633,19 +632,20 @@ gdm_login_message (const gchar *msg)
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	req = gnome_message_box_new (msg,
-				     GNOME_MESSAGE_BOX_INFO,
-                                     GNOME_STOCK_BUTTON_CLOSE,
-				     NULL);
-	gtk_signal_connect (GTK_OBJECT (req), "destroy",
-			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
-			    &req);
+	req = gtk_message_dialog_new (NULL /* parent */,
+				      GTK_DIALOG_MODAL /* flags */,
+				      GTK_MESSAGE_INFO,
+				      GTK_BUTTONS_CLOSE,
+				      "%s",
+				      msg);
+	g_signal_connect (G_OBJECT (req), "destroy",
+			  G_CALLBACK (gtk_widget_destroyed),
+			  &req);
 
-	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
 	gdm_wm_center_window (GTK_WINDOW (req));
 
 	gdm_wm_no_login_focus_push ();
-	ret = gnome_dialog_run (GNOME_DIALOG (req));
+	gtk_dialog_run (GTK_DIALOG (req));
 	gdm_wm_no_login_focus_pop ();
 }
 
@@ -661,25 +661,26 @@ gdm_login_query (const gchar *msg)
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	req = gnome_message_box_new (msg,
-				     GNOME_MESSAGE_BOX_QUESTION,
-				     GNOME_STOCK_BUTTON_YES,
-				     GNOME_STOCK_BUTTON_NO,
-				     NULL);
-	gtk_signal_connect (GTK_OBJECT (req), "destroy",
-			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
-			    &req);
+	req = gtk_message_dialog_new (NULL /* parent */,
+				      GTK_DIALOG_MODAL /* flags */,
+				      GTK_MESSAGE_QUESTION,
+				      GTK_BUTTONS_YES_NO,
+				      "%s",
+				      msg);
 
-	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
+	g_signal_connect (G_OBJECT (req), "destroy",
+			  G_CALLBACK (gtk_widget_destroyed),
+			  &req);
+
 	gdm_wm_center_window (GTK_WINDOW (req));
 
 	gdm_wm_no_login_focus_push ();
-	ret = gnome_dialog_run (GNOME_DIALOG (req));
+	ret = gtk_dialog_run (GTK_DIALOG (req));
 	gdm_wm_no_login_focus_pop ();
 
-	if (ret == 0)
+	if (ret == GTK_RESPONSE_YES)
 		return TRUE;
-	else /* this includes -1 which is "destroyed" */
+	else /* this includes window close */
 		return FALSE;
 }
 
@@ -695,15 +696,17 @@ gdm_run_command (const char *command)
 		GtkWidget *dialog;
 		/* We can't fork, that means we're pretty much up shit creek
 		 * without a paddle. */
-		dialog = gnome_error_dialog
-			(_("Could not fork a new process!\n\n"
-			   "You likely won't be able to log "
-			   "in either."));
+		dialog = gtk_message_dialog_new (NULL /* parent */,
+						 GTK_DIALOG_MODAL /* flags */,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_OK,
+						 _("Could not fork a new process!\n\n"
+						   "You likely won't be able to log "
+						   "in either."));
 		gtk_widget_show_all (dialog);
 		gdm_wm_center_window (GTK_WINDOW (dialog));
-		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+		gtk_dialog_run (GTK_DIALOG (dialog));
 	} else if (pid == 0) {
 		int i;
 
@@ -1218,14 +1221,14 @@ gdm_login_enter (GtkWidget *entry)
 	/* somewhat ugly thing to clear the initial message */
 	if (first_return) {
 	       first_return = FALSE;
-	       gtk_label_set (GTK_LABEL (msg), "");
+	       gtk_label_set_text (GTK_LABEL (msg), "");
 	}
 
 	/* clear the err_box */
 	if (err_box_clear_handler > 0)
 		gtk_timeout_remove (err_box_clear_handler);
 	err_box_clear_handler = 0;
-	gtk_label_set (GTK_LABEL (err_box), "");
+	gtk_label_set_text (GTK_LABEL (err_box), "");
 
 	login_entry = FALSE;
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
@@ -1253,7 +1256,7 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	case GDK_Up:
 	case GDK_Down:
 	case GDK_Tab:
-		gtk_signal_emit_stop_by_name (GTK_OBJECT (entry), "key_press_event");
+		g_signal_stop_emission_by_name (G_OBJECT (entry), "key_press_event");
 		return TRUE;
 
 	default:
@@ -1289,11 +1292,11 @@ gdm_login_session_handler (GtkWidget *widget)
 {
     gchar *s;
 
-    cursess = gtk_object_get_data (GTK_OBJECT (widget), SESSION_NAME);
+    cursess = g_object_get_data (G_OBJECT (widget), SESSION_NAME);
 
     s = g_strdup_printf (_("%s session selected"), translate_session (cursess));
 
-    gtk_label_set (GTK_LABEL (msg), s);
+    gtk_label_set_text (GTK_LABEL (msg), s);
     g_free (s);
 }
 
@@ -1314,14 +1317,14 @@ gdm_login_session_init (GtkWidget *menu)
     if (GdmShowLastSession) {
             cursess = LAST_SESSION;
             item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_SESSION));
-            gtk_object_set_data (GTK_OBJECT (item),
-                                 SESSION_NAME,
-                                 LAST_SESSION);
+            g_object_set_data (G_OBJECT (item),
+			       SESSION_NAME,
+			       LAST_SESSION);
             sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-            gtk_menu_append (GTK_MENU (menu), item);
-            gtk_signal_connect (GTK_OBJECT (item), "activate",
-                                GTK_SIGNAL_FUNC (gdm_login_session_handler),
-                                NULL);
+            gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+            g_signal_connect (G_OBJECT (item), "activate",
+			      G_CALLBACK (gdm_login_session_handler),
+			      NULL);
             gtk_widget_show (GTK_WIDGET (item));
             gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
                                   _("Log in using the session that you have used "
@@ -1330,7 +1333,7 @@ gdm_login_session_init (GtkWidget *menu)
       
             item = gtk_menu_item_new();
             gtk_widget_set_sensitive (item, FALSE);
-            gtk_menu_append (GTK_MENU (menu), item);
+            gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
             gtk_widget_show (GTK_WIDGET (item));
     }
     
@@ -1391,17 +1394,17 @@ gdm_login_session_init (GtkWidget *menu)
 		(statbuf.st_mode & (S_IROTH|S_IXOTH)) == (S_IROTH|S_IXOTH)) 
 	    {
 		item = gtk_radio_menu_item_new_with_label (sessgrp, _(dent->d_name));
-		gtk_object_set_data_full (GTK_OBJECT (item),
-					  SESSION_NAME,
-					  g_strdup (dent->d_name),
-					  (GtkDestroyNotify) g_free);
+		g_object_set_data_full (G_OBJECT (item),
+					SESSION_NAME,
+					g_strdup (dent->d_name),
+					(GDestroyNotify) g_free);
 
 		sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
 		sessions = g_slist_append (sessions, g_strdup (dent->d_name));
-		gtk_menu_append (GTK_MENU (menu), item);
-		gtk_signal_connect (GTK_OBJECT (item), "activate",
-				    GTK_SIGNAL_FUNC (gdm_login_session_handler),
-				    NULL);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		g_signal_connect (G_OBJECT (item), "activate",
+				  G_CALLBACK (gdm_login_session_handler),
+				  NULL);
 		gtk_widget_show (GTK_WIDGET (item));
 
 		/* if there is a session called Default, use that as default
@@ -1442,17 +1445,17 @@ gdm_login_session_init (GtkWidget *menu)
                                            "one of the GNOME sessions you want to "
                                            "use."),
                                          NULL);
-                                gtk_object_set_data (GTK_OBJECT (item),
-                                                     SESSION_NAME,
-                                                     GDM_SESSION_GNOME_CHOOSER);
+                                g_object_set_data (G_OBJECT (item),
+						   SESSION_NAME,
+						   GDM_SESSION_GNOME_CHOOSER);
 
                                 sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
                                 sessions = g_slist_append (sessions,
                                                            g_strdup (GDM_SESSION_GNOME_CHOOSER));
-                                gtk_menu_append (GTK_MENU (menu), item);
-                                gtk_signal_connect (GTK_OBJECT (item), "activate",
-                                                    GTK_SIGNAL_FUNC (gdm_login_session_handler),
-                                                    NULL);
+                                gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+                                g_signal_connect (G_OBJECT (item), "activate",
+						  G_CALLBACK (gdm_login_session_handler),
+						  NULL);
                                 gtk_widget_show (GTK_WIDGET (item));
                         }
 		}
@@ -1490,16 +1493,16 @@ gdm_login_session_init (GtkWidget *menu)
                                     "in otherwise.  GNOME will use the 'Default' "
                                     "session."),
                                   NULL);
-            gtk_object_set_data (GTK_OBJECT (item),
-                                 SESSION_NAME, GDM_SESSION_FAILSAFE_GNOME);
+            g_object_set_data (G_OBJECT (item),
+			       SESSION_NAME, GDM_SESSION_FAILSAFE_GNOME);
 
             sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
             sessions = g_slist_append (sessions,
                                        g_strdup (GDM_SESSION_FAILSAFE_GNOME));
-            gtk_menu_append (GTK_MENU (menu), item);
-            gtk_signal_connect (GTK_OBJECT (item), "activate",
-                                GTK_SIGNAL_FUNC (gdm_login_session_handler),
-                                NULL);
+            gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+            g_signal_connect (G_OBJECT (item), "activate",
+			      G_CALLBACK (gdm_login_session_handler),
+			      NULL);
             gtk_widget_show (GTK_WIDGET (item));
     }
 
@@ -1515,16 +1518,16 @@ gdm_login_session_init (GtkWidget *menu)
                                     "in otherwise.  To exit the terminal, "
                                     "type 'exit'."),
                                   NULL);
-            gtk_object_set_data (GTK_OBJECT (item),
-                                 SESSION_NAME, GDM_SESSION_FAILSAFE_XTERM);
+            g_object_set_data (G_OBJECT (item),
+			       SESSION_NAME, GDM_SESSION_FAILSAFE_XTERM);
 
             sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
             sessions = g_slist_append (sessions,
                                        g_strdup (GDM_SESSION_FAILSAFE_XTERM));
-            gtk_menu_append (GTK_MENU (menu), item);
-            gtk_signal_connect (GTK_OBJECT (item), "activate",
-                                GTK_SIGNAL_FUNC (gdm_login_session_handler),
-                                NULL);
+            gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+            g_signal_connect (G_OBJECT (item), "activate",
+			      G_CALLBACK (gdm_login_session_handler),
+			      NULL);
             gtk_widget_show (GTK_WIDGET (item));
     }
                     
@@ -1545,7 +1548,7 @@ gdm_login_session_init (GtkWidget *menu)
                     GtkWidget *w = tmp->data;
                     const char *n;
 
-                    n = gtk_object_get_data (GTK_OBJECT (w), SESSION_NAME);
+                    n = g_object_get_data (G_OBJECT (w), SESSION_NAME);
                     
                     if (n && strcmp (n, cursess) == 0) {
                             gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w),
@@ -1568,11 +1571,11 @@ gdm_login_language_handler (GtkWidget *widget)
     if (!widget)
 	return;
 
-    curlang = gtk_object_get_data (GTK_OBJECT (widget), "Language");
+    curlang = g_object_get_data (G_OBJECT (widget), "Language");
     name = gdm_lang_name (NULL, curlang, FALSE, TRUE);
     s = g_strdup_printf (_("%s language selected"), name);
     g_free (name);
-    gtk_label_set (GTK_LABEL (msg), s);
+    gtk_label_set_text (GTK_LABEL (msg), s);
     g_free (s);
 }
 
@@ -1599,14 +1602,14 @@ gdm_login_language_menu_new (void)
 
     item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_LANGUAGE));
     languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-    gtk_menu_append (GTK_MENU(menu), item);
-    gtk_signal_connect (GTK_OBJECT (item), "activate", 
-			GTK_SIGNAL_FUNC (gdm_login_language_handler), 
-			NULL);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+    g_signal_connect (G_OBJECT (item), "activate", 
+		      G_CALLBACK (gdm_login_language_handler), 
+		      NULL);
     gtk_widget_show (GTK_WIDGET (item));
-    gtk_object_set_data (GTK_OBJECT (item),
-			 "Language",
-			 LAST_LANGUAGE);
+    g_object_set_data (G_OBJECT (item),
+		       "Language",
+		       LAST_LANGUAGE);
     gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
 			  _("Log in using the language that you have used "
 			    "last time you logged in"),
@@ -1614,25 +1617,25 @@ gdm_login_language_menu_new (void)
 
     item = gtk_menu_item_new();
     gtk_widget_set_sensitive (item, FALSE);
-    gtk_menu_append (GTK_MENU (menu), item);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
     item = gtk_menu_item_new_with_label (gdm_lang_group1 ());
     ammenu = gtk_menu_new();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), GTK_WIDGET (ammenu));
-    gtk_menu_append (GTK_MENU (menu), item);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
     item = gtk_menu_item_new_with_label (gdm_lang_group2 ());
     nzmenu = gtk_menu_new();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), nzmenu);
-    gtk_menu_append (GTK_MENU (menu), item);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show(GTK_WIDGET (item));
 
     other_menu = item = gtk_menu_item_new_with_label (_("Other"));
     omenu = gtk_menu_new();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), omenu);
-    gtk_menu_append (GTK_MENU (menu), item);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
     g1 = gdm_lang_group1 ();
@@ -1660,23 +1663,23 @@ gdm_login_language_menu_new (void)
 
 	    item = gtk_radio_menu_item_new_with_label (languages, name);
 	    languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-	    gtk_object_set_data_full (GTK_OBJECT (item),
-				      "Language",
-				      g_strdup (lang),
-				      (GtkDestroyNotify) g_free);
+	    g_object_set_data_full (G_OBJECT (item),
+				    "Language",
+				    g_strdup (lang),
+				    (GDestroyNotify) g_free);
 
 	    if (strcmp (group, g1) == 0) {
-		    gtk_menu_append (GTK_MENU (ammenu), item);
+		    gtk_menu_shell_append (GTK_MENU_SHELL (ammenu), item);
 	    } else if (strcmp (group, g2) == 0) {
-		    gtk_menu_append (GTK_MENU (nzmenu), item);
+		    gtk_menu_shell_append (GTK_MENU_SHELL (nzmenu), item);
 	    } else {
-		    gtk_menu_append (GTK_MENU (omenu), item);
+		    gtk_menu_shell_append (GTK_MENU_SHELL (omenu), item);
 		    has_other_locale = TRUE;
 	    }
 
-	    gtk_signal_connect (GTK_OBJECT (item), "activate", 
-				GTK_SIGNAL_FUNC (gdm_login_language_handler), 
-				NULL);
+	    g_signal_connect (G_OBJECT (item), "activate", 
+			      G_CALLBACK (gdm_login_language_handler), 
+			      NULL);
 	    gtk_widget_show (GTK_WIDGET (item));
 
 	    g_free (lang);
@@ -1703,13 +1706,6 @@ toggle_insensitize (GtkWidget *w, gpointer data)
 				  ! GTK_TOGGLE_BUTTON (w)->active);
 }
 
-static gboolean
-selector_delete_event (GtkWidget *dlg, GdkEvent *event, gpointer data)
-{
-	gnome_dialog_close (GNOME_DIALOG (dlg));
-	return TRUE;
-}
-
 static void
 clist_double_click_closes (GtkCList *clist,
 			   int row,
@@ -1717,9 +1713,21 @@ clist_double_click_closes (GtkCList *clist,
 			   GdkEvent *event,
 			   gpointer data)
 {
+	GtkWidget *dlg = data;
 	if (event != NULL &&
-	    event->type == GDK_2BUTTON_PRESS)
-		gnome_dialog_close (GNOME_DIALOG (data));
+	    event->type == GDK_2BUTTON_PRESS) {
+		/* OK, pressed */
+		gtk_dialog_response (GTK_DIALOG (dlg),
+				     GTK_RESPONSE_OK);
+	}
+}
+
+static void
+ok_dialog (GtkWidget *entry, gpointer data)
+{
+	GtkWidget *dlg = data;
+	gtk_dialog_response (GTK_DIALOG (dlg),
+			     GTK_RESPONSE_OK);
 }
 
 static char *
@@ -1749,18 +1757,16 @@ get_gnome_session (const char *sess_string)
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	d = gnome_dialog_new (_("Select GNOME session"),
-			      GNOME_STOCK_BUTTON_OK,
-			      NULL);
-	gnome_dialog_close_hides (GNOME_DIALOG (d), TRUE);
-	gtk_signal_connect (GTK_OBJECT (d), "delete_event",
-			    GTK_SIGNAL_FUNC (selector_delete_event),
-			    NULL);
-
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox),
+	d = gtk_dialog_new_with_buttons (_("Select GNOME session"),
+					 NULL /* parent */,
+					 0 /* flags */,
+					 GTK_STOCK_OK,
+					 GTK_RESPONSE_OK,
+					 NULL);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox),
 			    gtk_label_new (_("Select GNOME session")),
 			    FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox),
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox),
 			    gtk_hseparator_new (),
 			    FALSE, FALSE, 0);
 
@@ -1768,16 +1774,16 @@ get_gnome_session (const char *sess_string)
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), sw,
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox), sw,
 			    TRUE, TRUE, 0);
 	clist = gtk_clist_new (1);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (clist), 0, TRUE);
 	gtk_container_add (GTK_CONTAINER (sw), clist);
-	gtk_widget_set_usize (sw, 120, 180);
+	gtk_widget_set_size_request (sw, 120, 180);
 
-	gtk_signal_connect (GTK_OBJECT (clist), "select_row",
-			    GTK_SIGNAL_FUNC (clist_double_click_closes),
-			    d);
+	g_signal_connect (G_OBJECT (clist), "select_row",
+			  G_CALLBACK (clist_double_click_closes),
+			  d);
 
 	got_default = FALSE;
 	if (sessions != NULL &&
@@ -1826,11 +1832,11 @@ get_gnome_session (const char *sess_string)
 	g_strfreev (sessions);
 
 	newcb = gtk_check_button_new_with_label (_("Create new session"));
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), newcb,
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox), newcb,
 			    FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), hbox,
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox), hbox,
 			    FALSE, FALSE, 0);
 
 	gtk_box_pack_start (GTK_BOX (hbox),
@@ -1838,26 +1844,27 @@ get_gnome_session (const char *sess_string)
 			    FALSE, FALSE, 0);
 
 	entry = gtk_entry_new ();
-	gnome_dialog_editable_enters (GNOME_DIALOG (d), GTK_EDITABLE (entry));
+	g_signal_connect (G_OBJECT (entry), "activate",
+			  G_CALLBACK (ok_dialog), d);
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    entry,
 			    TRUE, TRUE, 0);
 
 	gtk_widget_set_sensitive (hbox, FALSE);
 
-	gtk_signal_connect (GTK_OBJECT (newcb), "toggled",
-			    GTK_SIGNAL_FUNC (toggle_sensitize),
-			    hbox);
-	gtk_signal_connect (GTK_OBJECT (newcb), "toggled",
-			    GTK_SIGNAL_FUNC (toggle_insensitize),
-			    clist);
+	g_signal_connect (G_OBJECT (newcb), "toggled",
+			  G_CALLBACK (toggle_sensitize),
+			  hbox);
+	g_signal_connect (G_OBJECT (newcb), "toggled",
+			  G_CALLBACK (toggle_insensitize),
+			  clist);
 
 	remembercb = gtk_check_button_new_with_label
 		/* Translators: this is to remember the chosen gnome session
 		 * for next time */
 	       	(_("Remember this setting"));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (remembercb), TRUE);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), remembercb,
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox), remembercb,
 			    FALSE, FALSE, 0);
 
 	gtk_window_set_modal (GTK_WINDOW (d), TRUE);
@@ -1866,7 +1873,7 @@ get_gnome_session (const char *sess_string)
 
 	gdm_wm_center_window (GTK_WINDOW (d));
 	gdm_wm_no_login_focus_push ();
-	gnome_dialog_run (GNOME_DIALOG (d));
+	gtk_dialog_run (GTK_DIALOG (d));
 	gdm_wm_no_login_focus_pop ();
 
 	remember_gnome_session = GTK_TOGGLE_BUTTON (remembercb)->active;
@@ -1947,7 +1954,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	gtk_label_set (GTK_LABEL (label), buf);
+	gtk_label_set_text (GTK_LABEL (label), buf);
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
@@ -1975,7 +1982,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	gtk_label_set (GTK_LABEL (label), buf);
+	gtk_label_set_text (GTK_LABEL (label), buf);
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
@@ -2003,7 +2010,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	gtk_label_set (GTK_LABEL(label), buf);
+	gtk_label_set_text (GTK_LABEL(label), buf);
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
@@ -2038,18 +2045,18 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	 * we try to collect them until the next prompt or reset or
 	 * whatnot */
 	if ( ! replace_msg) {
-		char *oldtext;
-		gtk_label_get (GTK_LABEL (msg), &oldtext);
+		const char *oldtext;
+		oldtext = gtk_label_get_text (GTK_LABEL (msg));
 		if ( ! ve_string_empty (oldtext)) {
 			char *newtext;
 			newtext = g_strdup_printf ("%s\n%s", oldtext, buf);
-			gtk_label_set (GTK_LABEL (msg), newtext);
+			gtk_label_set_text (GTK_LABEL (msg), newtext);
 			g_free (newtext);
 		} else {
-			gtk_label_set (GTK_LABEL (msg), buf);
+			gtk_label_set_text (GTK_LABEL (msg), buf);
 		}
 	} else {
-		gtk_label_set (GTK_LABEL (msg), buf);
+		gtk_label_set_text (GTK_LABEL (msg), buf);
 	}
 	replace_msg = FALSE;
 
@@ -2080,15 +2087,17 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	dlg = gnome_message_box_new (buf,
-				   GNOME_MESSAGE_BOX_ERROR,
-				   GNOME_STOCK_BUTTON_OK,
-				   NULL);
-	gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
+	dlg = gtk_message_dialog_new (NULL /* parent */,
+				      GTK_DIALOG_MODAL /* flags */,
+				      GTK_MESSAGE_ERROR,
+				      GTK_BUTTONS_OK,
+				      "%s",
+				      buf);
+
 	gdm_wm_center_window (GTK_WINDOW (dlg));
 
 	gdm_wm_no_login_focus_push ();
-	gnome_dialog_run (GNOME_DIALOG (dlg));
+	gtk_dialog_run (GTK_DIALOG (dlg));
 	gdm_wm_no_login_focus_pop ();
 
 	g_print ("%c\n", STX);
@@ -2165,7 +2174,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
 
-	gtk_label_set (GTK_LABEL (msg), buf);
+	gtk_label_set_text (GTK_LABEL (msg), buf);
 	gtk_widget_show (GTK_WIDGET (msg));
 
 	g_print ("%c\n", STX);
@@ -2185,16 +2194,16 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 		/* translators:  This is a nice and evil eggie text, translate
 		 * to your favourite currency */
-		dlg = gnome_message_box_new (_("Please insert 25 cents "
-					       "to log in."),
-					     GNOME_MESSAGE_BOX_INFO,
-					     GNOME_STOCK_BUTTON_OK,
-					   NULL);
-		gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
+		dlg = gtk_message_dialog_new (NULL /* parent */,
+					      GTK_DIALOG_MODAL /* flags */,
+					      GTK_MESSAGE_INFO,
+					      GTK_BUTTONS_OK,
+					      _("Please insert 25 cents "
+						"to log in."));
 		gdm_wm_center_window (GTK_WINDOW (dlg));
 
 		gdm_wm_no_login_focus_push ();
-		gnome_dialog_run (GNOME_DIALOG (dlg));
+		gtk_dialog_run (GTK_DIALOG (dlg));
 		gdm_wm_no_login_focus_pop ();
 	}
 
@@ -2202,24 +2211,24 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_hide (login);
 
 	if (messages_to_give) {
-		char *oldtext;
-		gtk_label_get (GTK_LABEL (msg), &oldtext);
+		const char *oldtext;
+		oldtext = gtk_label_get_text (GTK_LABEL (msg));
 
 		if ( ! ve_string_empty (oldtext)) {
 			/* we should be now fine for focusing new windows */
 			gdm_wm_focus_new_windows (TRUE);
 
-			/* translators:  This is a nice and evil eggie text, translate
-			 * to your favourite currency */
-			dlg = gnome_message_box_new (oldtext,
-						     GNOME_MESSAGE_BOX_INFO,
-						     GNOME_STOCK_BUTTON_OK,
-						     NULL);
+			dlg = gtk_message_dialog_new (NULL /* parent */,
+						      GTK_DIALOG_MODAL /* flags */,
+						      GTK_MESSAGE_INFO,
+						      GTK_BUTTONS_OK,
+						      "%s",
+						      oldtext);
 			gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
 			gdm_wm_center_window (GTK_WINDOW (dlg));
 
 			gdm_wm_no_login_focus_push ();
-			gnome_dialog_run (GNOME_DIALOG (dlg));
+			gtk_dialog_run (GTK_DIALOG (dlg));
 			gdm_wm_no_login_focus_pop ();
 		}
 		messages_to_give = FALSE;
@@ -2439,8 +2448,8 @@ gdm_login_handle_pressed (GtkWidget *widget, GdkEventButton *event)
     gdk_window_raise (login->window);
 
     p = g_new0 (CursorOffset, 1);
-    gtk_object_set_data_full (GTK_OBJECT (widget), "offset", p,
-			      (GtkDestroyNotify)g_free);
+    g_object_set_data_full (G_OBJECT (widget), "offset", p,
+			    (GDestroyNotify)g_free);
     
     gdk_window_get_pointer (login->window, &xp, &yp, &mask);
     p->x = xp;
@@ -2467,7 +2476,7 @@ gdm_login_handle_released (GtkWidget *widget, GdkEventButton *event)
 	gtk_grab_remove (widget);
 	gdk_pointer_ungrab (GDK_CURRENT_TIME);
 
-	gtk_object_remove_data (GTK_OBJECT (widget), "offset");
+	g_object_set_data (G_OBJECT (widget), "offset", NULL);
 
 	return TRUE;
 }
@@ -2480,7 +2489,7 @@ gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
     CursorOffset *p;
     GdkModifierType mask;
 
-    p = gtk_object_get_data (GTK_OBJECT (widget), "offset");
+    p = g_object_get_data (G_OBJECT (widget), "offset");
 
     if (p == NULL)
 	    return FALSE;
@@ -2529,15 +2538,15 @@ create_handle (void)
 	GtkWidget *hbox, *w;
 
 	title_box = gtk_event_box_new ();
-	gtk_signal_connect (GTK_OBJECT (title_box), "button_press_event",
-			    GTK_SIGNAL_FUNC (gdm_login_handle_pressed),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT (title_box), "button_release_event",
-			    GTK_SIGNAL_FUNC (gdm_login_handle_released),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT (title_box), "motion_notify_event",
-			    GTK_SIGNAL_FUNC (gdm_login_handle_motion),
-			    NULL);
+	g_signal_connect (G_OBJECT (title_box), "button_press_event",
+			  G_CALLBACK (gdm_login_handle_pressed),
+			  NULL);
+	g_signal_connect (G_OBJECT (title_box), "button_release_event",
+			  G_CALLBACK (gdm_login_handle_released),
+			  NULL);
+	g_signal_connect (G_OBJECT (title_box), "motion_notify_event",
+			  G_CALLBACK (gdm_login_handle_motion),
+			  NULL);
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (title_box), hbox);
@@ -2554,17 +2563,17 @@ create_handle (void)
 		} else {
 			GtkWidget *icon;
 			icon_button = gtk_button_new ();
-			gtk_container_border_width
+			gtk_container_set_border_width
 				(GTK_CONTAINER (icon_button), 2);
 			icon = gtk_drawing_area_new ();
-			gtk_signal_connect (GTK_OBJECT (icon), "expose_event",
-					    GTK_SIGNAL_FUNC (minimize_expose),
-					    NULL);
-			gtk_widget_set_usize (icon, 16, -1);
+			g_signal_connect (G_OBJECT (icon), "expose_event",
+					  G_CALLBACK (minimize_expose),
+					  NULL);
+			gtk_widget_set_size_request (icon, 16, -1);
 			gtk_container_add (GTK_CONTAINER (icon_button), icon);
-			gtk_signal_connect
-				(GTK_OBJECT (icon_button), "clicked",
-				 GTK_SIGNAL_FUNC (gdm_login_iconify_handler), 
+			g_signal_connect
+				(G_OBJECT (icon_button), "clicked",
+				 G_CALLBACK (gdm_login_iconify_handler), 
 				 NULL);
 			GTK_WIDGET_UNSET_FLAGS (icon_button, GTK_CAN_FOCUS);
 			GTK_WIDGET_UNSET_FLAGS (icon_button, GTK_CAN_DEFAULT);
@@ -2623,7 +2632,7 @@ update_clock (gpointer data)
   	}
 	str [sizeof(str)-1] = '\0'; /* just for sanity */
 
-	gtk_label_set (GTK_LABEL (clock_label), str);
+	gtk_label_set_text (GTK_LABEL (clock_label), str);
 
 
 	/* account for leap seconds */
@@ -2675,12 +2684,15 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 		    selected_browser_user != NULL) {
 			GtkWidget *d, *less;
 			char *command;
-			d = gnome_dialog_new (_("Finger"),
-					      GNOME_STOCK_BUTTON_OK,
-					      NULL);
+			d = gtk_dialog_new_with_buttons (_("Finger"),
+							 NULL /* parent */,
+							 0 /* flags */,
+							 GTK_STOCK_OK,
+							 GTK_RESPONSE_OK,
+							 NULL);
 			less = gnome_less_new ();
 			gtk_widget_show (less);
-			gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox),
+			gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox),
 					    less,
 					    TRUE,
 					    TRUE,
@@ -2696,7 +2708,7 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 				for (i = 0; i < 81; i++)
 					buf[i] = 'X';
 				buf[i] = '\0';
-				gtk_widget_set_usize
+				gtk_widget_set_size_request
 					(text,
 					 gdk_string_width (font, buf) + 30,
 					 gdk_string_height (font, buf)*24+30);
@@ -2713,7 +2725,7 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 			gdm_wm_center_window (GTK_WINDOW (d));
 
 			gdm_wm_no_login_focus_push ();
-			gnome_dialog_run_and_close (GNOME_DIALOG (d));
+			gtk_dialog_run (GTK_DIALOG (d));
 			gdm_wm_no_login_focus_pop ();
 		}
 		break;
@@ -2744,40 +2756,40 @@ gdm_login_gui_init (void)
 
     login = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_widget_ref (login);
-    gtk_object_set_data_full (GTK_OBJECT (login), "login", login,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "login", login,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_window_set_title (GTK_WINDOW (login), _("GDM Login"));
     /* connect for fingering */
     if (GdmBrowser)
-	    gtk_signal_connect (GTK_OBJECT (login), "event",
-				GTK_SIGNAL_FUNC (window_browser_event),
-				NULL);
+	    g_signal_connect (G_OBJECT (login), "event",
+			      G_CALLBACK (window_browser_event),
+			      NULL);
 
     accel = gtk_accel_group_new ();
     gtk_window_add_accel_group (GTK_WINDOW (login), accel);
 
     frame1 = gtk_frame_new (NULL);
     gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_OUT);
-    gtk_container_border_width (GTK_CONTAINER (frame1), 0);
+    gtk_container_set_border_width (GTK_CONTAINER (frame1), 0);
     gtk_container_add (GTK_CONTAINER (login), frame1);
-    gtk_object_set_data_full (GTK_OBJECT (login), "frame1", frame1,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "frame1", frame1,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_ref (GTK_WIDGET (frame1));
     gtk_widget_show (GTK_WIDGET (frame1));
 
     frame2 = gtk_frame_new(NULL);
     gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_IN);
-    gtk_container_border_width (GTK_CONTAINER (frame2), 2);
+    gtk_container_set_border_width (GTK_CONTAINER (frame2), 2);
     gtk_container_add (GTK_CONTAINER (frame1), frame2);
-    gtk_object_set_data_full (GTK_OBJECT (login), "frame2", frame2,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "frame2", frame2,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_ref (GTK_WIDGET (frame2));
     gtk_widget_show (GTK_WIDGET (frame2));
 
     mbox = gtk_vbox_new (FALSE, 0);
     gtk_widget_ref (mbox);
-    gtk_object_set_data_full (GTK_OBJECT (login), "mbox", mbox,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "mbox", mbox,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (mbox);
     gtk_container_add (GTK_CONTAINER (frame2), mbox);
 
@@ -2793,7 +2805,7 @@ gdm_login_gui_init (void)
     menu = gtk_menu_new();
     gdm_login_session_init (menu);
     sessmenu = gtk_menu_item_new_with_label (_("Session"));
-    gtk_menu_bar_append (GTK_MENU_BAR(menubar), sessmenu);
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), sessmenu);
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (sessmenu), menu);
     gtk_widget_add_accelerator (sessmenu, "activate", accel,
 				GDK_Escape, 0, 0);
@@ -2804,7 +2816,7 @@ gdm_login_gui_init (void)
     menu = gdm_login_language_menu_new ();
     if (menu != NULL) {
 	langmenu = gtk_menu_item_new_with_label (_("Language"));
-	gtk_menu_bar_append (GTK_MENU_BAR (menubar), langmenu);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menubar), langmenu);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (langmenu), menu);
 	gtk_widget_add_accelerator (langmenu, "activate", accel,
 				    GDK_l, GDK_MOD1_MASK, 0);
@@ -2818,10 +2830,10 @@ gdm_login_gui_init (void)
 	if (GdmConfigAvailable &&
 	    bin_exists (GdmConfigurator)) {
 		item = gtk_menu_item_new_with_label (_("Configure..."));
-		gtk_menu_append (GTK_MENU (menu), item);
-		gtk_signal_connect (GTK_OBJECT (item), "activate",
-				    GTK_SIGNAL_FUNC (gdm_run_gdmconfig),
-				    NULL);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		g_signal_connect (G_OBJECT (item), "activate",
+				  G_CALLBACK (gdm_run_gdmconfig),
+				  NULL);
 		gtk_widget_show (item);
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
 				      _("Configure GDM (this login manager). "
@@ -2832,10 +2844,10 @@ gdm_login_gui_init (void)
 
 	if (bin_exists (GdmReboot)) {
 		item = gtk_menu_item_new_with_label (_("Reboot..."));
-		gtk_menu_append (GTK_MENU (menu), item);
-		gtk_signal_connect (GTK_OBJECT (item), "activate",
-				    GTK_SIGNAL_FUNC (gdm_login_reboot_handler), 
-				    NULL);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		g_signal_connect (G_OBJECT (item), "activate",
+				  G_CALLBACK (gdm_login_reboot_handler), 
+				  NULL);
 		gtk_widget_show (GTK_WIDGET (item));
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
 				      _("Reboot your computer"),
@@ -2845,10 +2857,10 @@ gdm_login_gui_init (void)
 	
 	if (bin_exists (GdmHalt)) {
 		item = gtk_menu_item_new_with_label (_("Shut down..."));
-		gtk_menu_append (GTK_MENU (menu), item);
-		gtk_signal_connect (GTK_OBJECT (item), "activate",
-				    GTK_SIGNAL_FUNC (gdm_login_halt_handler), 
-				    NULL);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		g_signal_connect (G_OBJECT (item), "activate",
+				  G_CALLBACK (gdm_login_halt_handler), 
+				  NULL);
 		gtk_widget_show (GTK_WIDGET (item));
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
 				      _("Shut down your computer so that "
@@ -2859,10 +2871,10 @@ gdm_login_gui_init (void)
 
 	if (bin_exists (GdmSuspend)) {
 		item = gtk_menu_item_new_with_label (_("Suspend..."));
-		gtk_menu_append (GTK_MENU (menu), item);
-		gtk_signal_connect (GTK_OBJECT (item), "activate",
-				    GTK_SIGNAL_FUNC (gdm_login_suspend_handler), 
-				    NULL);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		g_signal_connect (G_OBJECT (item), "activate",
+				  G_CALLBACK (gdm_login_suspend_handler), 
+				  NULL);
 		gtk_widget_show (GTK_WIDGET (item));
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
 				      _("Suspend your computer"),
@@ -2872,7 +2884,7 @@ gdm_login_gui_init (void)
 	
 	if (got_anything) {
 		item = gtk_menu_item_new_with_label (_("System"));
-		gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menubar), item);
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
 		gtk_widget_add_accelerator (item, "activate", accel,
 					    GDK_y, GDK_MOD1_MASK, 0);
@@ -2892,12 +2904,12 @@ gdm_login_gui_init (void)
 	    item = NULL;
     }
     if (item != NULL) {
-	    gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
+	    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), item);
 	    gtk_widget_add_accelerator (item, "activate", accel,
 					GDK_q, GDK_MOD1_MASK, 0);
 	    gtk_widget_show (GTK_WIDGET (item));
-	    gtk_signal_connect (GTK_OBJECT (item), "activate",
-				GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+	    g_signal_connect (G_OBJECT (item), "activate",
+			      G_CALLBACK (gtk_main_quit), NULL);
     }
 
     /* The clock */
@@ -2909,19 +2921,19 @@ gdm_login_gui_init (void)
     item = gtk_menu_item_new ();
     gtk_container_add (GTK_CONTAINER (item), ebox);
     gtk_widget_show (item);
-    gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
-    gtk_menu_item_right_justify (GTK_MENU_ITEM (item));
+    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), item);
+    gtk_menu_item_set_right_justified (GTK_MENU_ITEM (item), TRUE);
     gtk_widget_set_sensitive (item, FALSE);
 
     /* hack */
     clock_label->state = GTK_STATE_NORMAL;
-    gtk_signal_connect (GTK_OBJECT (clock_label), "state_changed",
-			GTK_SIGNAL_FUNC (clock_state_changed),
-			NULL);
+    g_signal_connect (G_OBJECT (clock_label), "state_changed",
+		      G_CALLBACK (clock_state_changed),
+		      NULL);
 
-    gtk_signal_connect (GTK_OBJECT (clock_label), "destroy",
-			GTK_SIGNAL_FUNC (gtk_widget_destroyed),
-			&clock_label);
+    g_signal_connect (G_OBJECT (clock_label), "destroy",
+		      G_CALLBACK (gtk_widget_destroyed),
+		      &clock_label);
 
     update_clock (NULL); 
 
@@ -2937,8 +2949,8 @@ gdm_login_gui_init (void)
 
     table = gtk_table_new (rows, cols, FALSE);
     gtk_widget_ref (table);
-    gtk_object_set_data_full (GTK_OBJECT (login), "table", table,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "table", table,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (table);
     gtk_box_pack_start (GTK_BOX (mbox), table, TRUE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (table), 10);
@@ -2984,10 +2996,10 @@ gdm_login_gui_init (void)
 	gnome_icon_list_set_icon_border (GNOME_ICON_LIST (browser), 2);
 	gnome_icon_list_set_text_spacing (GNOME_ICON_LIST (browser), 2);
 	gnome_icon_list_set_selection_mode (GNOME_ICON_LIST (browser), GTK_SELECTION_SINGLE);
-	gtk_signal_connect (GTK_OBJECT (browser), "select_icon",
-			    GTK_SIGNAL_FUNC (gdm_login_browser_select), NULL);
-	gtk_signal_connect (GTK_OBJECT (browser), "unselect_icon",
-			    GTK_SIGNAL_FUNC (gdm_login_browser_unselect), NULL);
+	g_signal_connect (G_OBJECT (browser), "select_icon",
+			  G_CALLBACK (gdm_login_browser_select), NULL);
+	g_signal_connect (G_OBJECT (browser), "unselect_icon",
+			  G_CALLBACK (gdm_login_browser_unselect), NULL);
 #if 0
 	gtk_widget_pop_style();
 #endif
@@ -3014,7 +3026,7 @@ gdm_login_gui_init (void)
 	if (height > gdm_wm_screen.height * 0.25)
 		height = gdm_wm_screen.height * 0.25;
 
-	gtk_widget_set_usize (GTK_WIDGET (bbox), width, height);
+	gtk_widget_set_size_request (GTK_WIDGET (bbox), width, height);
     }
 
     if (GdmLogo != NULL &&
@@ -3057,15 +3069,15 @@ gdm_login_gui_init (void)
 		else
 			lh = -1;
 		if (lw > -1 || lh > -1)
-			gtk_widget_set_usize (logo, lw, lh);
+			gtk_widget_set_size_request (logo, lw, lh);
 		gtk_widget_show (GTK_WIDGET (logo));
 	}
     }
 
     stack = gtk_table_new (7, 1, FALSE);
     gtk_widget_ref (stack);
-    gtk_object_set_data_full (GTK_OBJECT (login), "stack", stack,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "stack", stack,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (stack);
 
     greeting = gdm_parse_enriched_string ("<big>", GdmWelcome, "</big>");    
@@ -3074,8 +3086,8 @@ gdm_login_gui_init (void)
     gtk_widget_set_name (welcome, "Welcome");
     g_free (greeting);
     gtk_widget_ref (welcome);
-    gtk_object_set_data_full (GTK_OBJECT (login), "welcome", welcome,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "welcome", welcome,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (welcome);
     gtk_table_attach (GTK_TABLE (stack), welcome, 0, 1, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3085,9 +3097,9 @@ gdm_login_gui_init (void)
 
     err_box = gtk_label_new (0);
     gtk_widget_set_name (err_box, "Error box");
-    gtk_signal_connect (GTK_OBJECT (err_box), "destroy",
-			GTK_SIGNAL_FUNC (gtk_widget_destroyed),
-			&err_box);
+    g_signal_connect (G_OBJECT (err_box), "destroy",
+		      G_CALLBACK (gtk_widget_destroyed),
+		      &err_box);
     gtk_label_set_line_wrap (GTK_LABEL (err_box), TRUE);
     gtk_table_attach (GTK_TABLE (stack), err_box, 0, 1, 1, 2,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3096,8 +3108,8 @@ gdm_login_gui_init (void)
 
     hline1 = gtk_hseparator_new ();
     gtk_widget_ref (hline1);
-    gtk_object_set_data_full (GTK_OBJECT (login), "hline1", hline1,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "hline1", hline1,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (hline1);
     gtk_table_attach (GTK_TABLE (stack), hline1, 0, 1, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3105,8 +3117,8 @@ gdm_login_gui_init (void)
     
     label = gtk_label_new (_("Username:"));
     gtk_widget_ref (label);
-    gtk_object_set_data_full (GTK_OBJECT (login), "label", label,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "label", label,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label);
     gtk_table_attach (GTK_TABLE (stack), label, 0, 1, 3, 4,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3116,24 +3128,25 @@ gdm_login_gui_init (void)
     gtk_misc_set_padding (GTK_MISC (label), 10, 5);
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     
-    entry = gtk_entry_new_with_max_length (32);
-    gtk_widget_set_usize (entry, 250, -1);
+    entry = gtk_entry_new ();
+    gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
+    gtk_widget_set_size_request (entry, 250, -1);
     gtk_widget_ref (entry);
-    gtk_object_set_data_full (GTK_OBJECT (login), "entry", entry,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "entry", entry,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_entry_set_text (GTK_ENTRY (entry), "");
     gtk_widget_show (entry);
     gtk_table_attach (GTK_TABLE (stack), entry, 0, 1, 4, 5,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (0), 10, 0);
-    gtk_signal_connect (GTK_OBJECT(entry), "key_press_event", 
-			GTK_SIGNAL_FUNC (gdm_login_entry_handler),
-			NULL);
+    g_signal_connect (G_OBJECT(entry), "key_press_event", 
+		      G_CALLBACK (gdm_login_entry_handler),
+		      NULL);
     
     hline2 = gtk_hseparator_new ();
     gtk_widget_ref (hline2);
-    gtk_object_set_data_full (GTK_OBJECT (login), "hline2", hline2,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "hline2", hline2,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (hline2);
     gtk_table_attach (GTK_TABLE (stack), hline2, 0, 1, 5, 6,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3146,8 +3159,8 @@ gdm_login_gui_init (void)
     gtk_label_set_justify (GTK_LABEL (msg), GTK_JUSTIFY_LEFT);
     
     gtk_widget_ref (msg);
-    gtk_object_set_data_full (GTK_OBJECT (login), "msg", msg,
-			      (GtkDestroyNotify) gtk_widget_unref);
+    g_object_set_data_full (G_OBJECT (login), "msg", msg,
+			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (msg);
 
     /* FIXME: No Documentation yet.... */
@@ -3155,9 +3168,9 @@ gdm_login_gui_init (void)
     gtk_widget_show (help_button);*/
 
     ok_button = gtk_button_new_from_stock (GTK_STOCK_OK);
-    gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
-			GTK_SIGNAL_FUNC (gdm_login_ok_button_press),
-			entry);
+    g_signal_connect (G_OBJECT (ok_button), "clicked",
+		      G_CALLBACK (gdm_login_ok_button_press),
+		      entry);
     gtk_widget_show (ok_button);
 
     button_box = gtk_hbox_new (0, 5);
@@ -3207,23 +3220,27 @@ gdm_login_gui_init (void)
     
     gtk_widget_grab_focus (entry);	
     gtk_window_set_focus (GTK_WINDOW (login), entry);	
-    gtk_window_set_policy (GTK_WINDOW (login), 1, 1, 1);
+    g_object_set (G_OBJECT (login),
+		  "allow_grow", TRUE,
+		  "allow_shrink", TRUE,
+		  "resizable", TRUE,
+		  NULL);
     
     if (GdmSetPosition) {
 	    set_screen_pos (login, GdmPositionX, GdmPositionY);
-	    gtk_signal_connect (GTK_OBJECT (login), "realize",
-				GTK_SIGNAL_FUNC (login_realized),
-				NULL);
+	    g_signal_connect (G_OBJECT (login), "realize",
+			      G_CALLBACK (login_realized),
+			      NULL);
     } else {
 	    gdm_wm_center_window (GTK_WINDOW (login));
     }
 
-    gtk_signal_connect (GTK_OBJECT (login), "focus_in_event", 
-			GTK_SIGNAL_FUNC (gdm_login_focus_in),
-			NULL);
-    gtk_signal_connect (GTK_OBJECT (login), "focus_out_event", 
-			GTK_SIGNAL_FUNC (gdm_login_focus_out),
-			NULL);
+    g_signal_connect (G_OBJECT (login), "focus_in_event", 
+		      G_CALLBACK (gdm_login_focus_in),
+		      NULL);
+    g_signal_connect (G_OBJECT (login), "focus_out_event", 
+		      G_CALLBACK (gdm_login_focus_out),
+		      NULL);
 
     gtk_widget_show_all (GTK_WIDGET (login));
 }
@@ -3590,6 +3607,12 @@ run_backgrounds (void)
 	}
 }
 
+enum {
+	RESPONSE_RESTART,
+	RESPONSE_REBOOT,
+	RESPONSE_CLOSE
+};
+
 int 
 main (int argc, char *argv[])
 {
@@ -3643,28 +3666,27 @@ main (int argc, char *argv[])
 	  (gdm_protocol_version == NULL &&
 	   (gdm_version == NULL ||
 	    strcmp (gdm_version, VERSION) != 0))) &&
-	ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-	    char *msg;
+	 ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    GtkWidget *dialog;
 
 	    gdm_wm_init (0);
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    msg = g_strdup_printf
-		    (_("The greeter version (%s) does not match the daemon "
-		       "version.\n"
-		       "You have probably just upgraded gdm.\n"
-		       "Please restart the gdm daemon or reboot the computer."),
-		     VERSION);
-	    dialog = gnome_error_dialog (msg);
-	    g_free (msg);
+	    dialog = gtk_message_dialog_new (NULL /* parent */,
+					     GTK_DIALOG_MODAL /* flags */,
+					     GTK_MESSAGE_ERROR,
+					     GTK_BUTTONS_OK,
+					     _("The greeter version (%s) does not match the daemon "
+					       "version.\n"
+					       "You have probably just upgraded gdm.\n"
+					       "Please restart the gdm daemon or reboot the computer."),
+					     VERSION);
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
-	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	    gtk_dialog_run (GTK_DIALOG (dialog));
 
 	    return EXIT_SUCCESS;
     }
@@ -3672,32 +3694,33 @@ main (int argc, char *argv[])
     if ( ! DOING_GDM_DEVELOPMENT &&
 	gdm_protocol_version == NULL &&
 	gdm_version == NULL) {
-	    char *msg;
 	    GtkWidget *dialog;
 
 	    gdm_wm_init (0);
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    msg = g_strdup_printf
-		    (_("The greeter version (%s) does not match the daemon "
-		       "version.\n"
-		       "You have probably just upgraded gdm.\n"
-		       "Please restart the gdm daemon or reboot the computer."),
-		     VERSION);
-	    dialog = gnome_message_box_new (msg,
-					    GNOME_MESSAGE_BOX_WARNING,
-					    _("Reboot"),
-					    GNOME_STOCK_BUTTON_CLOSE,
-					    NULL);
-	    g_free (msg);
+	    dialog = gtk_message_dialog_new (NULL /* parent */,
+					     GTK_DIALOG_MODAL /* flags */,
+					     GTK_MESSAGE_WARNING,
+					     GTK_BUTTONS_NONE,
+					     _("The greeter version (%s) does not match the daemon "
+					       "version.\n"
+					       "You have probably just upgraded gdm.\n"
+					       "Please restart the gdm daemon or reboot the computer."),
+					     VERSION);
+	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+				    _("Reboot"),
+				    RESPONSE_REBOOT,
+				    GTK_STOCK_CLOSE,
+				    RESPONSE_CLOSE,
+				    NULL);
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
-	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-	    switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
-	    case 0:
+	    switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
+	    case RESPONSE_REBOOT:
 		    return DISPLAY_REBOOT;
 	    default:
 		    return DISPLAY_ABORT;
@@ -3709,39 +3732,40 @@ main (int argc, char *argv[])
 	   strcmp (gdm_protocol_version, GDM_GREETER_PROTOCOL_VERSION) != 0) ||
 	  (gdm_protocol_version == NULL &&
 	   strcmp (gdm_version, VERSION) != 0))) {
-	    char *msg;
 	    GtkWidget *dialog;
 
 	    gdm_wm_init (0);
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    msg = g_strdup_printf
-		    (_("The greeter version (%s) does not match the daemon "
-		       "version (%s).\n"
-		       "You have probably just upgraded gdm.\n"
-		       "Please restart the gdm daemon or reboot the computer."),
-		     VERSION, gdm_version);
-	    dialog = gnome_message_box_new (msg,
-					    GNOME_MESSAGE_BOX_WARNING,
-					    _("Restart"),
-					    _("Reboot"),
-					    GNOME_STOCK_BUTTON_CLOSE,
-					    NULL);
-	    g_free (msg);
+	    dialog = gtk_message_dialog_new (NULL /* parent */,
+					     GTK_DIALOG_MODAL /* flags */,
+					     GTK_MESSAGE_WARNING,
+					     GTK_BUTTONS_NONE,
+					     _("The greeter version (%s) does not match the daemon "
+					       "version (%s).\n"
+					       "You have probably just upgraded gdm.\n"
+					       "Please restart the gdm daemon or reboot the computer."),
+					     VERSION, gdm_version);
+	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+				    _("Restart"),
+				    RESPONSE_RESTART,
+				    _("Reboot"),
+				    RESPONSE_REBOOT,
+				    GTK_STOCK_CLOSE,
+				    RESPONSE_CLOSE,
+				    NULL);
+
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
-	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	    gtk_widget_show_now (dialog);
 
-	    gnome_dialog_set_default (GNOME_DIALOG (dialog), 0);
-	    gnome_dialog_grab_focus (GNOME_DIALOG (dialog), 0);
+	    gtk_dialog_set_default_response (GTK_DIALOG (dialog), RESPONSE_RESTART);
 
-	    switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
-	    case 0:
+	    switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
+	    case RESPONSE_RESTART:
 		    return DISPLAY_RESTARTGDM;
-	    case 1:
+	    case RESPONSE_REBOOT:
 		    return DISPLAY_REBOOT;
 	    default:
 		    return DISPLAY_ABORT;
@@ -3846,15 +3870,17 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gnome_error_dialog
-		    (_("Your session directory is missing or empty!\n\n"
-		       "There are two available sessions you can use, but\n"
-		       "you should log in and correct the gdm configuration."));
+	    dialog = gtk_message_dialog_new (NULL /* parent */,
+					     GTK_DIALOG_MODAL /* flags */,
+					     GTK_MESSAGE_ERROR,
+					     GTK_BUTTONS_OK,
+					     _("Your session directory is missing or empty!\n\n"
+					       "There are two available sessions you can use, but\n"
+					       "you should log in and correct the gdm configuration."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
-	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	    gtk_dialog_run (GTK_DIALOG (dialog));
     }
 
     if (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL) {
@@ -3862,15 +3888,17 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gnome_error_dialog
-		    (_("The configuration file contains an invalid command\n"
-		       "line for the login dialog, and thus I ran the\n"
-		       "default command.  Please fix your configuration."));
+	    dialog = gtk_message_dialog_new (NULL /* parent */,
+					     GTK_DIALOG_MODAL /* flags */,
+					     GTK_MESSAGE_ERROR,
+					     GTK_BUTTONS_OK,
+					     _("The configuration file contains an invalid command\n"
+					       "line for the login dialog, and thus I ran the\n"
+					       "default command.  Please fix your configuration."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
-	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	    gtk_dialog_run (GTK_DIALOG (dialog));
     }
 
     /* There was no config file */
@@ -3879,16 +3907,18 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gnome_error_dialog
-		    (_("The configuration was not found.  GDM is using\n"
-		       "defaults to run this session.  You should log in\n"
-		       "and create a configuration file with the GDM\n"
-		       "configuration program."));
+	    dialog = gtk_message_dialog_new (NULL /* parent */,
+					     GTK_DIALOG_MODAL /* flags */,
+					     GTK_MESSAGE_ERROR,
+					     GTK_BUTTONS_OK,
+					     _("The configuration was not found.  GDM is using\n"
+					       "defaults to run this session.  You should log in\n"
+					       "and create a configuration file with the GDM\n"
+					       "configuration program."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
-	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	    gtk_dialog_run (GTK_DIALOG (dialog));
     }
 
     g_atexit (kill_thingies);

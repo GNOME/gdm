@@ -277,11 +277,11 @@ gdm_chooser_browser_update (void)
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
 
     if (any) {
-      gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
-		     _(active_network));
+      gtk_label_set_text (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
+			  _(active_network));
     } else {
-      gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
-		     _(empty_network));
+      gtk_label_set_text (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
+			  _(empty_network));
     }
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
     gtk_widget_set_sensitive (GTK_WIDGET (rescan), TRUE);
@@ -516,8 +516,8 @@ gdm_chooser_xdmcp_discover (void)
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
     gnome_icon_list_clear (GNOME_ICON_LIST (browser));
     gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
-    gtk_label_set (GTK_LABEL (status_label),
-		   _(scanning_message));
+    gtk_label_set_text (GTK_LABEL (status_label),
+			_(scanning_message));
 
     while (hl) {
 	gdm_chooser_host_dispose ((GdmChooserHost *) hl->data);
@@ -879,7 +879,7 @@ gdm_chooser_gui_init (void)
      */
 	
     if ( ! DOING_GDM_DEVELOPMENT) {
-	    if (g_file_exists (GDM_GLADE_DIR "/gdmchooser.glade")) {
+	    if (g_file_test (GDM_GLADE_DIR "/gdmchooser.glade", G_FILE_TEST_EXISTS)) {
 		    glade_filename = g_strdup (GDM_GLADE_DIR
 					       "/gdmchooser.glade");
 	    } else {
@@ -906,12 +906,16 @@ gdm_chooser_gui_init (void)
     chooser_app = glade_xml_new (glade_filename, "gdmchooser_main", PACKAGE);
     if (chooser_app == NULL) {
 	    GtkWidget *fatal_error = 
-		    gnome_error_dialog(_("Cannot find the glade interface description\n"
-					 "file, cannot run gdmchooser.\n"
-					 "Please check your installation and the\n"
-					 "location of the gdmchooser.glade file."));
-	    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
-	    exit(EXIT_FAILURE);
+		    gtk_message_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("Cannot find the glade interface description\n"
+					      "file, cannot run gdmchooser.\n"
+					      "Please check your installation and the\n"
+					      "location of the gdmchooser.glade file."));
+	    gtk_dialog_run (GTK_DIALOG (fatal_error));
+	    exit (EXIT_FAILURE);
     }
     glade_xml_signal_autoconnect (chooser_app);
    
@@ -927,10 +931,14 @@ gdm_chooser_gui_init (void)
 	cancel == NULL ||
 	status_label == NULL) {
 	    GtkWidget *fatal_error = 
-		    gnome_error_dialog(_("The glade interface description file\n"
-					 "appears to be corrupted.\n"
-					 "Please check your installation."));
-	    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
+		    gtk_message_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("The glade interface description file\n"
+					      "appears to be corrupted.\n"
+					      "Please check your installation."));
+	    gtk_dialog_run (GTK_DIALOG (fatal_error));
 	    exit(EXIT_FAILURE);
 	}
    
@@ -956,9 +964,9 @@ gdm_chooser_gui_init (void)
 #endif
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
 
-    gtk_widget_set_usize (GTK_WIDGET (chooser), 
-			  (gint) gdk_screen_width() * 0.4, 
-			  (gint) gdk_screen_height() * 0.6);
+    gtk_widget_set_size_request (GTK_WIDGET (chooser), 
+				 (gint) gdk_screen_width() * 0.4, 
+				 (gint) gdk_screen_height() * 0.6);
 
     gdm_wm_center_window (GTK_WINDOW (chooser));
 }
@@ -1103,25 +1111,26 @@ main (int argc, char *argv[])
 
     if (gdm_version != NULL &&
 	strcmp (gdm_version, VERSION) != 0) {
-	    char *msg;
 	    GtkWidget *dialog;
 
 	    gdm_wm_init (0);
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    msg = g_strdup_printf
-		    (_("The chooser version (%s) does not match the daemon "
-		       "version (%s).\n"
-		       "You have probably just upgraded gdm.\n"
-		       "Please restart the gdm daemon or reboot the computer."),
-		     VERSION, gdm_version);
-	    dialog = gnome_error_dialog (msg);
-	    g_free (msg);
+	    dialog = gtk_message_dialog_new (NULL /* parent */,
+					     GTK_DIALOG_MODAL /* flags */,
+					     GTK_MESSAGE_ERROR,
+					     GTK_BUTTONS_OK,
+					     _("The chooser version (%s) does not match the daemon "
+					       "version (%s).\n"
+					       "You have probably just upgraded gdm.\n"
+					       "Please restart the gdm daemon or reboot the computer."),
+					     VERSION, gdm_version);
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
-	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	    gtk_dialog_run (GTK_DIALOG (dialog));
 
 	    return EXIT_SUCCESS;
     }

@@ -171,7 +171,7 @@ gdm_wm_center_window (GtkWindow *cw)
 	if (y < gdm_wm_screen.y)
 		y = gdm_wm_screen.y;
 
- 	gtk_widget_set_uposition (GTK_WIDGET (cw), x, y);	
+ 	gtk_window_move (GTK_WINDOW (cw), x, y);	
 }
 
 

@@ -133,16 +133,18 @@ GtkWidget *get_widget(const gchar *widget_name)
 	}
 
 	if (ret == NULL) {
-		char *error =
-			g_strdup_printf (_("The glade ui description file "
-					   "doesn't seem to contain the\n"
-					   "widget \"%s\".  "
-					   "Unfortunately I cannot continue.\n"
-					   "Please check your installation."),
-					 widget_name);
-		GtkWidget *fatal_error = gnome_error_dialog (error);
-		g_free (error);
-		gnome_dialog_run_and_close (GNOME_DIALOG (fatal_error));
+		GtkWidget *fatal_error =
+			gtk_message_dialog_new (NULL /* parent */,
+						GTK_DIALOG_MODAL /* flags */,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_OK,
+						_("The glade ui description file "
+						  "doesn't seem to contain the\n"
+						  "widget \"%s\".  "
+						  "Unfortunately I cannot continue.\n"
+						  "Please check your installation."),
+						widget_name);
+		gtk_dialog_run (GTK_DIALOG (fatal_error));
 		exit (EXIT_FAILURE);
 	}
 
@@ -285,9 +287,9 @@ connect_binary_checks (void)
 		NULL
 	};
 	for (i = 0; binaries[i] != NULL; i++)
-		gtk_signal_connect (GTK_OBJECT (get_widget (binaries[i])),
-				    "changed",
-				    GTK_SIGNAL_FUNC (check_binary), NULL);
+		g_signal_connect (G_OBJECT (get_widget (binaries[i])),
+				  "changed",
+				  G_CALLBACK (check_binary), NULL);
 }
 
 static void
@@ -307,9 +309,9 @@ connect_dir_checks (void)
 		NULL
 	};
 	for (i = 0; dirs[i] != NULL; i++)
-		gtk_signal_connect (GTK_OBJECT (get_widget (dirs[i])),
-				    "changed",
-				    GTK_SIGNAL_FUNC (check_dir), NULL);
+		g_signal_connect (G_OBJECT (get_widget (dirs[i])),
+				  "changed",
+				  G_CALLBACK (check_dir), NULL);
 }
 
 static void
@@ -321,9 +323,9 @@ connect_dirname_checks (void)
 		NULL
 	};
 	for (i = 0; dirs[i] != NULL; i++)
-		gtk_signal_connect (GTK_OBJECT (get_widget (dirs[i])),
-				    "changed",
-				    GTK_SIGNAL_FUNC (check_dirname), NULL);
+		g_signal_connect (G_OBJECT (get_widget (dirs[i])),
+				  "changed",
+				  G_CALLBACK (check_dirname), NULL);
 }
 
 static void
@@ -341,9 +343,9 @@ connect_file_checks (void)
 		NULL
 	};
 	for (i = 0; files[i] != NULL; i++)
-		gtk_signal_connect (GTK_OBJECT (get_widget (files[i])),
-				    "changed",
-				    GTK_SIGNAL_FUNC (check_file), NULL);
+		g_signal_connect (G_OBJECT (get_widget (files[i])),
+				  "changed",
+				  G_CALLBACK (check_file), NULL);
 }
 
 
@@ -374,14 +376,16 @@ main (int argc, char *argv[])
 	 * GDM's configuration.
 	 */
 
-	if ( ! DOING_GDM_DEVELOPMENT) {
-		if (geteuid() != 0)
-		{
-			GtkWidget *fatal_error = 
-				gnome_error_dialog(_("You must be the superuser (root) to configure GDM.\n"));
-			gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
-			exit(EXIT_FAILURE);
-		}
+	if ( ! DOING_GDM_DEVELOPMENT &&
+	     geteuid() != 0) {
+		GtkWidget *fatal_error = 
+			gtk_message_dialog_new (NULL /* parent */,
+						GTK_DIALOG_MODAL /* flags */,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_OK,
+						_("You must be the superuser (root) to configure GDM.\n"));
+		gtk_dialog_run (GTK_DIALOG (fatal_error));
+		exit (EXIT_FAILURE);
 	}
 
 	/* Look for the glade file in $(datadir)/gdm or, failing that,
@@ -420,12 +424,16 @@ main (int argc, char *argv[])
 	    system_notebook == NULL ||
 	    expert_notebook == NULL) {
 		GtkWidget *fatal_error = 
-			gnome_error_dialog(_("Cannot find the glade interface description\n"
-					     "file, cannot run gdmconfig.\n"
-					     "Please check your installation and the\n"
-					     "location of the gdmconfig.glade file."));
-		gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
-		exit(EXIT_FAILURE);
+			gtk_message_dialog_new (NULL /* parent */,
+						GTK_DIALOG_MODAL /* flags */,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_OK,
+						_("Cannot find the glade interface description\n"
+						  "file, cannot run gdmconfig.\n"
+						  "Please check your installation and the\n"
+						  "location of the gdmconfig.glade file."));
+		gtk_dialog_run (GTK_DIALOG (fatal_error));
+		exit (EXIT_FAILURE);
 	}
 
 	invisible_notebook = gtk_notebook_new();
@@ -449,11 +457,15 @@ main (int argc, char *argv[])
 	GDMconfigurator = get_widget("gdmconfigurator");
 	if (GDMconfigurator == NULL) {
 		GtkWidget *fatal_error = 
-			gnome_error_dialog(_("Cannot find the gdmconfigurator widget in\n"
-					     "the glade interface description file\n"
-					     "Please check your installation."));
-		gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
-		exit(EXIT_FAILURE);
+			gtk_message_dialog_new (NULL /* parent */,
+						GTK_DIALOG_MODAL /* flags */,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_OK,
+						_("Cannot find the gdmconfigurator widget in\n"
+						  "the glade interface description file\n"
+						  "Please check your installation."));
+		gtk_dialog_run (GTK_DIALOG (fatal_error));
+		exit (EXIT_FAILURE);
 	}
 
 	/* connect the checker signals before parsing */
@@ -469,10 +481,10 @@ main (int argc, char *argv[])
 	gdm_config_parse_most(FALSE);
 	glade_xml_signal_autoconnect(GUI);
 
-	gtk_signal_connect (GTK_OBJECT (get_widget ("gdm_icon")),
-			    "changed",
-			    GTK_SIGNAL_FUNC (can_apply_now),
-			    NULL);
+	g_signal_connect (G_OBJECT (get_widget ("gdm_icon")),
+			  "changed",
+			  G_CALLBACK (can_apply_now),
+			  NULL);
 
 	glade_xml_signal_autoconnect(basic_notebook);
 	glade_xml_signal_autoconnect(expert_notebook);
@@ -521,23 +533,25 @@ main (int argc, char *argv[])
 	return 0;
 }
 
-void user_level_row_selected(GtkCList *clist, gint row,
-			     gint column, GdkEvent *event, gpointer data) {
+void
+user_level_row_selected (GtkCList *clist, gint row,
+			gint column, GdkEvent *event, gpointer data)
+{
    g_assert (row >= 0 && row < 3);
    gtk_notebook_set_page (GTK_NOTEBOOK (invisible_notebook), row);
 
    switch (row) {
    case 0:
-	   gtk_label_set(GTK_LABEL(get_widget("info_label")),
-			 _(desc1));
+	   gtk_label_set_text (GTK_LABEL (get_widget ("info_label")),
+			       _(desc1));
 	   break;
    case 1:
-	   gtk_label_set(GTK_LABEL(get_widget("info_label")),
-			 _(desc2));
+	   gtk_label_set_text (GTK_LABEL (get_widget ("info_label")),
+			       _(desc2));
 	   break;
    case 2:
-	   gtk_label_set(GTK_LABEL(get_widget("info_label")),
-			 _(desc3));
+	   gtk_label_set_text (GTK_LABEL (get_widget ("info_label")),
+			       _(desc3));
 	   break;
    default:
 	   g_assert_not_reached();
@@ -551,8 +565,7 @@ show_about_box (void)
 	static GtkWidget *dialog = NULL;
 
 	if (dialog != NULL) {
-		gtk_widget_show_now (dialog);
-		gdk_window_raise (dialog->window);
+		gtk_window_present (GTK_WINDOW (dialog));
 		return;
 	}
 
@@ -564,9 +577,9 @@ show_about_box (void)
 				   gnome_about_get_type ());
 	gnome_dialog_set_parent (GNOME_DIALOG (dialog), 
 				 (GtkWindow *) GDMconfigurator);
-	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
-			    &dialog);
+	g_signal_connect (G_OBJECT (dialog), "destroy",
+			  G_CALLBACK (gtk_widget_destroyed),
+			  &dialog);
 }
 
 static int
@@ -725,15 +738,16 @@ gdm_config_parse_most (gboolean factory)
       {
 	      char *a_server[3];
 	      int row;
-	      char *error = g_strdup_printf (_("The configuration file: %s\n"
-					       "does not exist! Using "
-					       "default values."),
-					     config_file);
-	      GtkWidget *error_dialog = gnome_error_dialog(error);
-	      g_free (error);
-	      gnome_dialog_set_parent(GNOME_DIALOG(error_dialog), 
-				      (GtkWindow *) GDMconfigurator);
-	      gnome_dialog_run_and_close(GNOME_DIALOG(error_dialog));
+	      GtkWidget *error_dialog =
+			gtk_message_dialog_new ((GtkWindow *)GDMconfigurator /* parent */,
+						GTK_DIALOG_MODAL /* flags */,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_OK,
+						_("The configuration file: %s\n"
+						  "does not exist! Using "
+						  "default values."),
+						config_file);
+	      gtk_dialog_run (GTK_DIALOG (error_dialog));
 
 	      a_server[0] = "0";
 	      a_server[1] = _("Standard server");
@@ -1246,16 +1260,14 @@ run_query (const gchar *msg)
 {
 	GtkWidget *req;
 
-	req = gnome_message_box_new (msg,
-				     GNOME_MESSAGE_BOX_QUESTION,
-				     GNOME_STOCK_BUTTON_YES,
-				     GNOME_STOCK_BUTTON_NO,
-				     NULL);
+	req = gtk_message_dialog_new ((GtkWindow *)GDMconfigurator /* parent */,
+				      GTK_DIALOG_MODAL /* flags */,
+				      GTK_MESSAGE_QUESTION,
+				      GTK_BUTTONS_YES_NO,
+				      "%s",
+				      msg);
 
-	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
-	gnome_dialog_set_parent (GNOME_DIALOG (req),
-				 GTK_WINDOW (GDMconfigurator));
-	return (!gnome_dialog_run (GNOME_DIALOG(req)));
+	return gtk_dialog_run (GTK_DIALOG (req)) == GTK_RESPONSE_YES;
 }
 
 static int

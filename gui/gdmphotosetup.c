@@ -63,7 +63,10 @@ main (int argc, char *argv[])
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 
-	gnome_init ("gdmphotosetup", VERSION, argc, argv);
+	gnome_program_init ("gdmphotosetup", VERSION, 
+			    LIBGNOMEUI_MODULE /* module_info */,
+			    argc, argv,
+			    NULL);
 
 	last_pix = gnome_config_get_string ("/gdmphotosetup/last/picture");
 
@@ -74,12 +77,16 @@ main (int argc, char *argv[])
 
 	if ( ! face_browser) {
 		GtkWidget *d;
-		d = gnome_warning_dialog (_("The face browser is not "
-					    "configured,\nplease ask your "
-					    "system administrator to enable "
-					    "it\nin the GDM configurator "
-					    "program."));
-		gnome_dialog_run_and_close (GNOME_DIALOG (d));
+		d = gtk_message_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_WARNING,
+					    GTK_BUTTONS_OK,
+					    _("The face browser is not "
+					      "configured,\nplease ask your "
+					      "system administrator to enable "
+					      "it\nin the GDM configurator "
+					      "program."));
+		gtk_dialog_run (GTK_DIALOG (d));
 	}
 
 	dialog = gnome_dialog_new (_("Select a photo"),
@@ -111,8 +118,12 @@ main (int argc, char *argv[])
 		if (ve_string_empty (pixmap) ||
 		    stat (pixmap, &s) < 0) {
 			GtkWidget *d;
-			d = gnome_warning_dialog (_("No picture selected."));
-			gnome_dialog_run_and_close (GNOME_DIALOG (d));
+			d = gtk_message_dialog_new (NULL /* parent */,
+						    GTK_DIALOG_MODAL /* flags */,
+						    GTK_MESSAGE_WARNING,
+						    GTK_BUTTONS_OK,
+						    _("No picture selected."));
+			gtk_dialog_run (GTK_DIALOG (d));
 		} else if (is_in_trusted_pic_dir (pixmap)) {
 			/* Picture is in trusted dir, no need to copy nor
 			 * check it */
@@ -128,16 +139,18 @@ main (int argc, char *argv[])
 			chmod (cfg_file, 0600);
 			break;
 		} else if (s.st_size > max_size) {
-			char *msg;
 			GtkWidget *d;
-			msg = g_strdup_printf (_("The picture is too large and "
-						 "the system administrator\n"
-						 "disallowed pictures larger "
-						 "then %d bytes to\n"
-						 "show in the face browser"),
-					       max_size);
-			d = gnome_warning_dialog (msg);
-			gnome_dialog_run_and_close (GNOME_DIALOG (d));
+			d = gtk_message_dialog_new (NULL /* parent */,
+						    GTK_DIALOG_MODAL /* flags */,
+						    GTK_MESSAGE_WARNING,
+						    GTK_BUTTONS_OK,
+						    _("The picture is too large and "
+						      "the system administrator\n"
+						      "disallowed pictures larger "
+						      "then %d bytes to\n"
+						      "show in the face browser"),
+						    max_size);
+			gtk_dialog_run (GTK_DIALOG (d));
 		} else {
 			char buf[4096];
 			size_t size;
@@ -153,13 +166,15 @@ main (int argc, char *argv[])
 			fdsrc = open (pixmap, O_RDONLY);
 			if (fdsrc < 0) {
 				GtkWidget *d;
-				char *msg = g_strdup_printf
-					(_("File %s cannot be open for "
-					   "reading\nError: %s"),
-					 pixmap,
-					 g_strerror (errno));
-				d = gnome_warning_dialog (msg);
-				gnome_dialog_run_and_close (GNOME_DIALOG (d));
+				d = gtk_message_dialog_new (NULL /* parent */,
+							    GTK_DIALOG_MODAL /* flags */,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("File %s cannot be open for "
+							      "reading\nError: %s"),
+							    pixmap,
+							    g_strerror (errno));
+				gtk_dialog_run (GTK_DIALOG (d));
 				g_free (cfg_file);
 				g_free (photofile);
 				continue;
@@ -168,13 +183,15 @@ main (int argc, char *argv[])
 			fddest = open (photofile, O_WRONLY | O_CREAT);
 			if (fddest < 0) {
 				GtkWidget *d;
-				char *msg = g_strdup_printf
-					(_("File %s cannot be open for "
-					   "writing\nError: %s"),
-					 photofile,
-					 g_strerror (errno));
-				d = gnome_warning_dialog (msg);
-				gnome_dialog_run_and_close (GNOME_DIALOG (d));
+				d = gtk_message_dialog_new (NULL /* parent */,
+							    GTK_DIALOG_MODAL /* flags */,
+							    GTK_MESSAGE_ERROR,
+							    GTK_BUTTONS_OK,
+							    _("File %s cannot be open for "
+							      "writing\nError: %s"),
+							    photofile,
+							    g_strerror (errno));
+				gtk_dialog_run (GTK_DIALOG (d));
 				g_free (cfg_file);
 				g_free (photofile);
 				close (fdsrc);
