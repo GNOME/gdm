@@ -10,9 +10,27 @@
           <address><email>mkp@mkp.net</email></address>
         </affiliation>
       </author>
+      <author>
+        <firstname>George</firstname><surname>Lebl</surname>
+        <affiliation>
+          <address><email>jirka@5z.com</email></address>
+        </affiliation>
+      </author>
+      <author>
+        <firstname>Tim</firstname><surname>Jansen</surname>
+        <affiliation>
+          <address><email>tim@tjansen.de</email></address>
+        </affiliation>
+      </author>
     </authorgroup>
     <copyright>
       <year>1998, 1999</year> <holder>Martin K. Petersen</holder>
+    </copyright>
+    <copyright>
+      <year>2001</year> <holder>Tim Jansen</holder>
+    </copyright>
+    <copyright>
+      <year>2001</year> <holder>George Lebl</holder>
     </copyright>
 
     <legalnotice>
@@ -66,6 +84,10 @@
     <para>
       Chooser - The host chooser which appears on remote displays
       sending INDIRECT queries (<filename>gdmchooser</filename>).
+    </para>
+
+    <para>
+      Configurator - The configuration program (<filename>gdmconfig</filename>).
     </para>
 
     <para>
@@ -476,23 +498,60 @@
 	equal sign represents their value.
       </para>
 
-      <para>
-	In general, 0 represents disable and 1 represents enable for
-	boolean configuration options.
-      </para>
-
       <sect2>
 	<title>Daemon Configuration</title>
 
 	<variablelist>
 	  <title>[daemon]</title>
+
+	  <varlistentry>
+	    <term>AutomaticLoginEnable</term>
+	    <listitem>
+	      <synopsis>AutomaticLoginEnable=false</synopsis>
+	      <para>
+	 	If the user given in AutomaticLogin should be logged in upon
+		first bootup.  No password will be asked.  This is useful
+		for single user workstations where local console security
+		is not an issue.  Also could be useful for public terminals,
+		although there see TimedLogin.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>AutomaticLogin</term>
+	    <listitem>
+	      <synopsis>AutomaticLogin=</synopsis>
+	      <para>
+		This user should be automatically logged in on first bootup.
+		AutomaticLoginEnable must be true and this must be
+		a valid user for this to happen.  "root" can never be
+		autologged in however and gdm will just refuse to do it even
+		if you set it up.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>Chooser</term>
 	    <listitem>
-	      <synopsis>Chooser=bin/gdmchooser --disable-sound</synopsis>
+	      <synopsis>Chooser=bin/gdmchooser --disable-sound --disable-crash-dialog</synopsis>
 	      <para>
 		Full path and name of the chooser executable followed by optional arguments.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Configurator</term>
+	    <listitem>
+	      <synopsis>Configurator=/usr/bin/gdmconfig --disable-sound --disable-crash-dialog</synopsis>
+	      <para>
+		The pathname to the configurator binary.  If the greeter
+		ConfigAvailable option is set to true then run this binary
+		when somebody chooses Configuration from the system menu.
+		Of course GDM will first ask for root password however.
+		And it will never allow this to happen from a remote display.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -517,11 +576,23 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>GnomeDefaultSession</term>
+	    <listitem>
+	      <synopsis>GnomeDefaultSession=share/gnome/default.session</synopsis>
+	      <para>
+		The filename which GDM should read if there is no per user
+		GNOME session file, and the user has requested the Gnome
+		Chooser session.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>Greeter</term>
 	    <listitem>
-	      <synopsis>Greeter=bin/gdmlogin --disable-sound</synopsis>
+	      <synopsis>Greeter=bin/gdmlogin --disable-sound --disable-crash-dialog</synopsis>
 	      <para>
 		Full path and name of the greeter executable followed by optional arguments.
 	      </para>
@@ -654,6 +725,46 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>TimedLoginEnable</term>
+	    <listitem>
+	      <synopsis>TimedLoginEnable=false</synopsis>
+	      <para>
+	 	If the user given in TimedLogin should be logged in after
+		a number of seconds (set with TimedLoginDelay) of inactivity
+		on the login screen.  This is useful for public access
+		terminals or perhaps even home use.  If the user uses the
+		keyboard or browses the menus, the timeout will be reset to
+		TimedLoginDelay or 30 seconds, whichever is higher.  Note that
+		no password will be asked for this user so you should be
+		careful.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>TimedLogin</term>
+	    <listitem>
+	      <synopsis>TimedLogin=</synopsis>
+	      <para>
+		This is the user that should be logged in after a specified
+		number of seconds of inactivity.  This can never be "root"
+		and gdm will refuse to log in root this way.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>TimedLoginDelay</term>
+	    <listitem>
+	      <synopsis>TimedLoginDelay=30</synopsis>
+	      <para>
+		This is the delay before the TimedLogin user will be logged
+		in.  It must be greater then or equal to 10.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>User</term>
@@ -715,8 +826,26 @@
 	    <listitem>
 	      <synopsis>AllowRoot=true</synopsis>
 	      <para>
-		Graphical root logins are disallowed by default.  Set
-		this value to true to enable priviledged user logins.
+		Allow root (privilaged user) to log in through GDM.  Set
+		this to false if you want to disallow such logins.
+	      </para>
+	      <para>
+		On systems that support PAM, this parameter is
+		not as useful as you can use PAM to do the same thing,
+		and in fact do even more.  However it is still followed,
+		so you should probably leave it true for PAM systems.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>AllowRemoteRoot</term>
+	    <listitem>
+	      <synopsis>AllowRemoteRoot=true</synopsis>
+	      <para>
+		Allow root (privilaged user) to log in remotely through GDM.
+		Set this to false if you want to disallow such logins.  Remote
+		logins are any logins that come in through the xdmcp.
 	      </para>
 	      <para>
 		On systems that support PAM, this parameter is
@@ -760,6 +889,36 @@
 	      <para>
 		The number of seconds GDM should wait before
 		reactivating the entry field after a failed login.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>SessionMaxFile</term>
+	    <listitem>
+	      <synopsis>SessionMaxFile=524288</synopsis>
+	      <para>
+	      	GDM will refuse to read session files bigger than this
+	      	number (specified in bytes).  This can be bigger then
+		UserMaxFile, since these are never read into memory, and
+		so it is harder to "attack" gdm in this way.
+	      </para>
+	      
+	      <para>
+        	In addition to the size check both
+        	<filename>gdm</filename> and
+        	<filename>gdmlogin</filename> are extremely picky
+        	about accessing files in user directories. Neither
+        	will follow symlinks and they can optionally refuse to
+        	read files and directories writable by other than the
+        	owner. See the RelaxPermissions option for more info.
+	      </para>
+
+	      <para>
+		However for the session files, GDM is not as picky.  If you
+		set RelaxPermissions to 0, GDM will assume it to be 1 for
+		the case of session files.  This is unfortunately because
+		the session files would then never be able to be read in.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1037,6 +1196,19 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>ConfigAvailable</term>
+	    <listitem>
+	      <synopsis>ConfigAvailable=true</synopsis>
+	      <para>
+		Allow the configurator to be run from the greeter.  Note that
+		the user will need to type in the root password before the
+		configurator is run however.  See the Configurator option
+		in the daemon section.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>DefaultFace</term>
@@ -1173,6 +1345,16 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>TitleBar</term>
+	    <listitem>
+	      <synopsis>TitleBar=true</synopsis>
+	      <para>
+		Display the title bar in the greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>Welcome</term>
@@ -1217,11 +1399,35 @@
 	  <varlistentry>
 	    <term>XineramaScreen</term>
 	    <listitem>
-	      <synopsis>XineramaScreen=1</synopsis>
+	      <synopsis>XineramaScreen=0</synopsis>
 	      <para>
 		If the Xinerama extension is active the login window
                 will be centered on this physical screen (use 0 for
                 the first screen, 1 for the second..).
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundColor</term>
+	    <listitem>
+	      <synopsis>BackgroundColor=#007777</synopsis>
+	      <para>
+		If the BackgroundType is 2, use this color in the background
+		of the greeter.  Also use it as the back of transparent images
+		set on the background and if the BackgroundRemoteOnlyColor
+		is set and this is a remote display.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundImage</term>
+	    <listitem>
+	      <synopsis>BackgroundImage=somefile.png</synopsis>
+	      <para>
+		If the BackgroundType is 1, then display this file as the
+		bacground in the greeter.
 	      </para>
 	    </listitem>
 	  </varlistentry>	
@@ -1232,15 +1438,52 @@
 	      <synopsis>BackgroundProgram=/usr/bin/xeyes</synopsis>
 	      <para>
 		If set this program will be run in the background while
-                the login window is being displayed.
+                the login window is being displayed.  Note that not all
+		programs will run this way, since gdm does not usually have
+		a home directory.  You could set up home directory for the
+		gdm user if you wish to run applications which require it.
 	      </para>
 	    </listitem>
 	  </varlistentry>	
 
 	  <varlistentry>
+	    <term>BackgroundRemoteOnlyColor</term>
+	    <listitem>
+	      <synopsis>BackgroundRemoteOnlyColor=true</synopsis>
+	      <para>
+		On remote displays only set the color background.  This is
+		to make network load lighter.  The BackgroundProgram is also
+		not run.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundScaleToFit</term>
+	    <listitem>
+	      <synopsis>BackgroundScaleToFit=true</synopsis>
+	      <para>
+		Scale background image to fit the screen.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundType</term>
+	    <listitem>
+	      <synopsis>BackgroundType=2</synopsis>
+	      <para>
+		The type of background to set.  0 is none, 1 is image and 2
+		is color.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+
+	  <varlistentry>
 	    <term>SetPosition</term>
 	    <listitem>
-	      <synopsis>BackgroundProgram=true</synopsis>
+	      <synopsis>SetPosition=true</synopsis>
 	      <para>
 		If true the position of the login window is determined
                 by PositionX/PositionY.
@@ -1346,6 +1589,13 @@
 		GDM will append "<filename>-auth
 		  &lt;ServAuthDir&gt;/:n.Xauth :n</filename>", where n is
 		the display number.
+	      </para>
+
+	      <para>
+		On some systems it is necessary for gdm to know on which
+		virtual consoles to run the X server.  In this case,
+		(if running XFree86) add "vt7" to the command line for example
+		to run on virtual console 7.
 	      </para>
 	    </listitem>
 	  </varlistentry>
