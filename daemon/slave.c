@@ -3775,6 +3775,8 @@ session_child_run (struct passwd *pwent,
 		char *env_str = g_strdup (newenv[i]);
 		char *p = strchr (env_str, '=');
 		if (p != NULL) {
+			/* Add a NULL byte to terminate the variable name */
+			p[0] = '\0';
 			/* Add the variable to the env */
 			ve_setenv (env_str, &p[1], TRUE);
 		}
