@@ -25,8 +25,10 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <fcntl.h>
 #include <netinet/in.h>
+#include <net/if.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <errno.h>
@@ -713,7 +715,9 @@ gdm_peek_local_address_list (void)
 		g_free (buf);
 		if (sockfd != gdm_xdmcpfd)
 			close (sockfd);
-		return NULL;
+		addr = g_new0 (struct in_addr, 1);
+		addr->s_addr = INADDR_LOOPBACK;
+		return g_list_append (NULL, addr);
 	}
 
 	ifr = ifc.ifc_req;
@@ -749,16 +753,20 @@ gdm_peek_local_address_list (void)
 	/* host based fallback, will likely only get 127.0.0.1 i think */
 
 	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
-		gdm_error (_("%s: Could not get server hostname: %s!"),
+		gdm_debug ("%s: Could not get server hostname: %s!",
 			   "gdm_peek_local_address_list",
 			   g_strerror (errno));
-		return NULL;
+		addr = g_new0 (struct in_addr, 1);
+		addr->s_addr = INADDR_LOOPBACK;
+		return g_list_append (NULL, addr);
 	}
 	he = gethostbyname (hostbuf);
 	if (he == NULL) {
-		gdm_error (_("%s: Could not get address from hostname!"),
+		gdm_debug ("%s: Could not get address from hostname!",
 			   "gdm_peek_local_address_list");
-		return NULL;
+		addr = g_new0 (struct in_addr, 1);
+		addr->s_addr = INADDR_LOOPBACK;
+		return g_list_append (NULL, addr);
 	}
 	for (i = 0; he->h_addr_list[i] != NULL; i++) {
 		struct in_addr *laddr = (struct in_addr *)he->h_addr_list[i];

@@ -105,7 +105,8 @@ gint pending = 0;
 gint allow_severity = LOG_INFO;
 gint deny_severity = LOG_WARNING;
 
-static gint gdm_xdmcpfd = -1;
+int gdm_xdmcpfd = -1;
+
 static guint xdmcp_source = 0;
 static gint globsessid;
 static gchar *sysid;
@@ -241,8 +242,7 @@ gdm_xdmcp_init (void)
     /* Fetch and store local hostname in XDMCP friendly format */
     if (gethostname (hostbuf, 255) != 0) {
 	gdm_error (_("gdm_xdmcp_init: Could not get server hostname: %s!"), strerror (errno));
-	GdmXdmcp = FALSE;
-	return FALSE;
+	strcmp (hostbuf, "localhost.localdomain");
     }
 
     if ( ! initted) {

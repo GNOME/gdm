@@ -1,3 +1,12 @@
+Tue May 21 15:44:00 2002  George Lebl <jirka@5z.com>
+
+	* daemon/misc.c: make the interface querying work again
+
+	* daemon/server.c, daemon/xdmcp.c, daemon/misc.c: don't completely
+	  fail when gethostname fails, just assume "localhost.localdomain"
+	  in that case.  Should fix some of the hostname bugs and make
+	  things work on more broken setups.
+
 Tue May 22 23:55:00 2002  Carlos Perello Marin <carlos@gnome-db.org>
 
 	* configure.in: Added AC_PREREQ(2.52) to force the 2.52 use if you

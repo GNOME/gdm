@@ -981,7 +981,7 @@ gdm_server_alloc (gint id, const gchar *command)
     GdmDisplay *d;
     
     if (gethostname (hostname, 1023) == -1)
-	return NULL;
+	    strcmp (hostname, "localhost.localdomain");
 
     d = g_new0 (GdmDisplay, 1);
 
