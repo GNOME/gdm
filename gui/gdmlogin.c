@@ -733,6 +733,7 @@ gdm_login_parse_config (void)
     GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
     GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
+    GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
     GdmTitleBar = gnome_config_get_bool (GDM_KEY_TITLE_BAR);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
@@ -765,6 +766,9 @@ gdm_login_parse_config (void)
     
     GdmTimedLoginEnable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
 
+    /* Note: TimedLogin here is not gotten out of the config
+     * but from the daemon since it's been munged on by the daemon a bit
+     * already maybe */
     if (GdmTimedLoginEnable) {
 	    GdmTimedLogin = g_getenv("GDM_TIMED_LOGIN_OK");
             if (gdm_string_empty (GdmTimedLogin)) {
@@ -2426,6 +2430,7 @@ bin_exists (const char *command)
 	if (gdm_string_empty (command))
 		return FALSE;
 
+	/* Note, check only for existance, not for executability */
 	argv = g_strsplit (command, " ", MAX_ARGS);	
 	if (argv != NULL &&
 	    argv[0] != NULL &&
