@@ -81,6 +81,7 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <fcntl.h>
+#include <sys/sockio.h>
 
 #ifdef HAVE_TCPWRAPPERS
   #include <tcpd.h>
