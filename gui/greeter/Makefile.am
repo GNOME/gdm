@@ -2,7 +2,7 @@ SUBDIRS = themes
 
 INCLUDES = \
 	-I.						\
-	-I..						\
+	-I$(top_srcdir)/gui				\
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\
 	-DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
