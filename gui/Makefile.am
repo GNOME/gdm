@@ -70,6 +70,7 @@ gdmsetup_SOURCES = \
 
 gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
+	$(EXTRA_CHOOSER_LIBS)	\
 	libgdmwm.a		\
 	$(GUIGLADE_LIBS)	\
 	$(X_LIBS)		\
