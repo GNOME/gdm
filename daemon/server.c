@@ -553,6 +553,30 @@ gdm_server_checklog (GdmDisplay *disp)
 #endif
 }
 
+static void
+rotate_logs (const char *dname)
+{
+	/* I'm too lazy to write a loop damnit */
+	char *fname4 = g_strconcat (GdmLogDir, "/", dname, ".log.4", NULL);
+	char *fname3 = g_strconcat (GdmLogDir, "/", dname, ".log.3", NULL);
+	char *fname2 = g_strconcat (GdmLogDir, "/", dname, ".log.2", NULL);
+	char *fname1 = g_strconcat (GdmLogDir, "/", dname, ".log.1", NULL);
+	char *fname = g_strconcat (GdmLogDir, "/", dname, ".log", NULL);
+
+	/* Rotate the logs (keep 4 last) */
+	unlink (fname4);
+	rename (fname3, fname4);
+	rename (fname2, fname3);
+	rename (fname1, fname2);
+	rename (fname, fname1);
+
+	g_free (fname4);
+	g_free (fname3);
+	g_free (fname2);
+	g_free (fname1);
+	g_free (fname);
+}
+
 /**
  * gdm_server_spawn:
  * @disp: Pointer to a GdmDisplay structure
@@ -589,7 +613,7 @@ gdm_server_spawn (GdmDisplay *d)
 	    if (kill (pid, SIGTERM) == 0)
 		    waitpid (pid, NULL, 0);
     }
-    
+
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
 
@@ -616,6 +640,9 @@ gdm_server_spawn (GdmDisplay *d)
 	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+	/* Rotate the X server logs */
+	rotate_logs (d->name);
 
         /* Log all output from spawned programs to a file */
 	logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),

@@ -872,7 +872,9 @@ run_pictures (void)
 	FILE *fp;
 	char *cfgdir;
 
+	response = NULL;
 	for (;;) {
+		g_free (response);
 		response = gdm_slave_greeter_ctl (GDM_NEEDPIC, "");
 		if (ve_string_empty (response)) {
 			g_free (response);
@@ -1044,6 +1046,7 @@ run_pictures (void)
 		seteuid (0);
 		setegid (GdmGroupId);
 	}
+	g_free (response);
 }
 
 static void
@@ -1266,8 +1269,9 @@ gdm_slave_send (const char *str, gboolean wait_for_usr2)
 		gdm_got_usr2 = FALSE;
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
-
 	fd = open (fifopath, O_WRONLY);
+	g_free (fifopath);
+
 	/* eek */
 	if (fd < 0) {
 		gdm_error (_("%s: Can't open fifo!"), "gdm_slave_send");
@@ -1353,6 +1357,8 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 
 	fd = open (fifopath, O_WRONLY);
+
+	g_free (fifopath);
 
 	/* eek */
 	if (fd < 0) {
@@ -2690,7 +2696,8 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		       struct passwd *pwent)
 {
     pid_t pid;
-    gchar *script, *defscript, *scr;
+    gchar *script, *defscript;
+    const char *scr;
     gchar **argv;
     gint status;
     int i;
@@ -2701,12 +2708,15 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     script = g_strconcat (dir, "/", d->name, NULL);
     defscript = g_strconcat (dir, "/Default", NULL);
 
-    if (! access (script, R_OK|X_OK))
-	scr = script;
-    else if (! access (defscript, R_OK|X_OK)) 
-	scr = defscript;
-    else
-	return EXIT_SUCCESS;
+    if (! access (script, R_OK|X_OK)) {
+	    scr = script;
+    } else if (! access (defscript, R_OK|X_OK))  {
+	    scr = defscript;
+    } else {
+	    g_free (script);
+	    g_free (defscript);
+	    return EXIT_SUCCESS;
+    }
 
     pid = gdm_fork_extra ();
 
@@ -2754,11 +2764,16 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	_exit (EXIT_SUCCESS);
 	    
     case -1:
+	g_free (script);
+	g_free (defscript);
 	syslog (LOG_ERR, _("gdm_slave_exec_script: Can't fork script process!"));
 	return EXIT_SUCCESS;
 	
     default:
 	gdm_wait_for_extra (&status);
+
+	g_free (script);
+	g_free (defscript);
 
 	if (WIFEXITED (status))
 	    return WEXITSTATUS (status);

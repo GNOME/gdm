@@ -42,6 +42,7 @@ struct _GdmWindow {
 	gboolean ignore_size_hints; /* for gdm windows */
 	gboolean center; /* do centering */
 	gboolean recenter; /* do re-centering */
+        gboolean takefocus; /* permit take focus */
 };
 
 static GList *windows = NULL;
@@ -357,13 +358,48 @@ wm_protocol_check_support (Window xwin,
   return is_supported;
 }
 
+static GList *
+find_window_list (Window w, gboolean deco_ok)
+{
+	GList *li;
+
+	for (li = windows; li != NULL; li = li->next) {
+		GdmWindow *gw = li->data;
+
+		if (gw->win == w)
+			return li;
+		if (deco_ok &&
+		    (gw->deco == w ||
+		     gw->shadow == w))
+			return li;
+	}
+
+	return NULL;
+}
+
+static GdmWindow *
+find_window (Window w, gboolean deco_ok)
+{
+	GList *li = find_window_list (w, deco_ok);
+	if (li == NULL)
+		return NULL;
+	else
+		return li->data;
+}
+
 void
 gdm_wm_focus_window (Window window)
 {
 	XWindowAttributes attribs = {0};
+	GdmWindow *win;
 
 	if (no_focus_login > 0 &&
 	    window == wm_login_window)
+		return;
+
+	win = find_window (window, TRUE);
+	if (win != NULL &&
+	    ! win->takefocus)
 		return;
 
 	trap_push ();
@@ -393,35 +429,6 @@ gdm_wm_focus_window (Window window)
 			RevertToPointerRoot,
 			CurrentTime);
 	trap_pop ();
-}
-
-static GList *
-find_window_list (Window w, gboolean deco_ok)
-{
-	GList *li;
-
-	for (li = windows; li != NULL; li = li->next) {
-		GdmWindow *gw = li->data;
-
-		if (gw->win == w)
-			return li;
-		if (deco_ok &&
-		    (gw->deco == w ||
-		     gw->shadow == w))
-			return li;
-	}
-
-	return NULL;
-}
-
-static GdmWindow *
-find_window (Window w, gboolean deco_ok)
-{
-	GList *li = find_window_list (w, deco_ok);
-	if (li == NULL)
-		return NULL;
-	else
-		return li->data;
 }
 
 static void
@@ -635,6 +642,7 @@ add_window (Window w, gboolean center)
 	gw = find_window (w, FALSE);
 	if (gw == NULL) {
 		XClassHint hint = { NULL, NULL };
+		XWMHints *wmhints;
 		int x, y;
 		Window root;
 		unsigned int width, height, border, depth;
@@ -649,6 +657,17 @@ add_window (Window w, gboolean center)
 		gw->ignore_size_hints = FALSE;
 		gw->center = center;
 		gw->recenter = FALSE;
+		gw->takefocus = TRUE;
+
+		wmhints = XGetWMHints (wm_disp, w);
+		if (wmhints != NULL) {
+			/* NoInput windows */
+			if ((wmhints->flags & InputHint) &&
+			    ! wmhints->input) {
+				gw->takefocus = FALSE;
+			}
+			XFree (wmhints);
+		}
 
 		/* hack, set USpos/size on login window */
 		if (w == wm_login_window) {
@@ -670,6 +689,9 @@ add_window (Window w, gboolean center)
 				 * such stuff */
 				gw->center = FALSE;
 				gw->recenter = FALSE;
+			} else if (is_wm_class (&hint, "xscribble", 0)) {
+				/* hack, xscribble mustn't take focus */
+				gw->takefocus = FALSE;
 			}
 			if (hint.res_name != NULL)
 				XFree (hint.res_name);

@@ -766,6 +766,7 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 		    last_status = g_strdup (sysid);
 	    }
 	    last_willing = time (NULL);
+	    g_free (bin);
     }
 
     if ( ! gdm_is_local_addr (&(clnt_sa->sin_addr)) &&

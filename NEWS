@@ -1,5 +1,27 @@
 Ahh news...
 
+2.2.5.2 stuff:
+
+- If multiple local servers are setup, then wait until one has started
+  plus 3 more seconds before starting the next one, this prevents such
+  not-good things such as full lockups happening
+
+- Fix crash of greeter for timed login setups
+
+- Keep 4 old copies of the X server logs to make debugging bad
+  X setups easy
+
+- The WM now supports NoInput windows, which improves gdm
+  accessibility and makes it possible to run things like xscribble
+  (Crossfire (from debian bug report) and moi)
+
+- Minor leak fixes
+
+- spec file updates (Gregory Leblanc)
+
+- Translation updates (Roy-Magne Mo, Carlos Perelló Marín,
+  Christophe Merlet, Khairulanuar Abd Majid)
+
 2.2.5.1 stuff:
 
 - IMPORTANT: XKeepsCrashing now has different semantics,
