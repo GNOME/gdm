@@ -378,16 +378,8 @@ gdm_lang_name (const char *language,
 
 	if (lang->untranslated != NULL && untranslated) {
 		char *full;
-		if (markup) {
-			full = g_strdup_printf
-				("%s (%s)",
-				 name,
-				 lang->code,
-				 lang->untranslated);
-		} else {
-			full = g_strdup_printf ("%s (%s)",
-						name, lang->untranslated);
-		}
+		full = g_strdup_printf ("%s (%s)",
+			name, lang->untranslated);
 		g_free (name);
 		name = full;
 	}
@@ -416,13 +408,7 @@ gdm_lang_untranslated_name (const char *language,
 	if (lang == NULL)
 		return NULL;
 
-	if (markup && lang->untranslated != NULL) {
-		return g_strdup_printf ("%s",
-					lang->code,
-					lang->untranslated);
-	} else {
-		return g_strdup (lang->untranslated);
-	}
+	return g_strdup (lang->untranslated);
 }
 
 const char *
