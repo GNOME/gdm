@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.2.4.2\n"
-"POT-Creation-Date: 2001-09-18 12:37+0200\n"
-"PO-Revision-Date: 2001-09-18 13:44CET\n"
+"POT-Creation-Date: 2001-09-28 11:05+0200\n"
+"PO-Revision-Date: 2001-09-28 11:07CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -56,6 +56,14 @@ msgstr "gdm_error_box: Nepodarilo sa spusti» seba samého"
 #: daemon/errorgui.c:171
 msgid "gdm_error_box: Cannot fork to display error/info box"
 msgstr "gdm_error_box: Nepodarilo sa spustenie pre zobrazenie chyby/informácie"
+
+#: daemon/errorgui.c:307
+msgid "gdm_failsafe_question: Failed to execute self"
+msgstr "gdm_failsafe_question: Nepodarilo sa spusti» seba samého"
+
+#: daemon/errorgui.c:323
+msgid "gdm_failsafe_question: Cannot fork to display error/info box"
+msgstr "gdm_failsafe_question: Nepodarilo sa spustenie pre zobrazenie chyby/informácie"
 
 #: daemon/filecheck.c:51
 #, c-format
@@ -160,8 +168,8 @@ msgid ""
 "%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
 "d to allow configuration!"
 msgstr ""
-"%s: Xdmcp zakázané a nedefinovaný ¾iadny lokálny server. "
-"Pridajte /usr/bin/X11/X na :%d pre mo¾nos» nastavenia!"
+"%s: Xdmcp zakázané a nedefinovaný ¾iadny lokálny server. Pridajte /usr/bin/"
+"X11/X na :%d pre mo¾nos» nastavenia!"
 
 #: daemon/gdm.c:451
 msgid "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
@@ -230,8 +238,8 @@ msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
 "Aborting."
 msgstr ""
-"gdm_config_parse: Overovací prieèinok %s má nesprávne práva %o. Majú by» 750. "
-"Konèím."
+"gdm_config_parse: Overovací prieèinok %s má nesprávne práva %o. Majú by» "
+"750. Konèím."
 
 #: daemon/gdm.c:584
 msgid "gdm_daemonify: fork() failed!"
@@ -269,8 +277,8 @@ msgid ""
 "Would you like me to try to run the X configuration program?  Note that you "
 "will need the root password for this."
 msgstr ""
-"Chcete, aby som sa pokúsil spusti» program pre jeho nastavenie? "
-"Uvedomte si, ¾e na to budete potrebova» heslo pre roota."
+"Chcete, aby som sa pokúsil spusti» program pre jeho nastavenie? Uvedomte si, "
+"¾e na to budete potrebova» heslo pre roota."
 
 #: daemon/gdm.c:755
 msgid "Please type in the root (privilaged user) password."
@@ -293,8 +301,8 @@ msgid ""
 "diagnose the problem?"
 msgstr ""
 "Nie je mo¾né spusti» X server (grafické rozhranie). Asi nie je správne "
-"nastavený. Chcete zobrazi» výstup X serveru, aby ste mohli "
-"identifikova» problém?"
+"nastavený. Chcete zobrazi» výstup X serveru, aby ste mohli identifikova» "
+"problém?"
 
 #. else {
 #. * At this point .... screw the user, we don't know how to
@@ -370,50 +378,50 @@ msgstr "Gdm sa re¹tartuje..."
 msgid "Failed to restart self"
 msgstr "Re¹tart sa nepodaril."
 
-#: daemon/gdm.c:1239
+#: daemon/gdm.c:1258
 msgid "Only root wants to run gdm\n"
 msgstr "Len root mô¾e spú¹»a» gdm\n"
 
-#: daemon/gdm.c:1267
+#: daemon/gdm.c:1286
 msgid "gdm already running. Aborting!"
 msgstr "gdm u¾ be¾í. Konèím!"
 
-#: daemon/gdm.c:1298
+#: daemon/gdm.c:1317
 #, c-format
 msgid "%s: Error setting up TERM signal handler"
 msgstr "%s: Chyba pri nastavovaní ovládaèa signálu TERM"
 
-#: daemon/gdm.c:1302
+#: daemon/gdm.c:1321
 #, c-format
 msgid "%s: Error setting up INT signal handler"
 msgstr "%s: Chyba pri nastavovaní ovládaèa signálu INT"
 
-#: daemon/gdm.c:1306
+#: daemon/gdm.c:1325
 #, c-format
 msgid "%s: Error setting up HUP signal handler"
 msgstr "%s: Chyba pri nastavovaní ovládaèa signálu HUP"
 
-#: daemon/gdm.c:1310
+#: daemon/gdm.c:1329
 #, c-format
 msgid "%s: Error setting up USR1 signal handler"
 msgstr "%s: Chyba pri nastavovaní ovládaèa signálu USR1"
 
-#: daemon/gdm.c:1319
+#: daemon/gdm.c:1338
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Chyba pri nastavovaní ovládaèa signálu CHLD"
 
-#: daemon/gdm.c:2090 daemon/gdm.c:2107
+#: daemon/gdm.c:2109 daemon/gdm.c:2126
 msgid "Flexible server request denied: Not authenticated"
 msgstr "Odmietnutá po¾iadavka flexibilného serveru: Neprihlásený"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:2125
+#: daemon/gdm.c:2144
 msgid "Unknown server type requested, using standard server."
 msgstr "Po¾iadavka na neznámy typu serveru, pou¾ijem ¹tandardný server."
 
-#: daemon/gdm.c:2129
+#: daemon/gdm.c:2148
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -422,22 +430,22 @@ msgstr ""
 "Po¾adovaný server %s nie je povolený pre pou¾itie s flexibilnými servermi, "
 "pou¾ijem ¹tandardný server."
 
-#: daemon/gdm-net.c:236
+#: daemon/gdm-net.c:249
 #, c-format
 msgid "%s: Could not make socket"
 msgstr "%s: Nemô¾em vytvori» soket"
 
-#: daemon/gdm-net.c:246
+#: daemon/gdm-net.c:259
 #, c-format
 msgid "%s: Could not bind socket"
 msgstr "%s: Nemô¾em pripoji» soket"
 
-#: daemon/gdm-net.c:287
+#: daemon/gdm-net.c:300
 #, c-format
 msgid "%s: Could not make FIFO"
 msgstr "%s: Nemô¾em vytvori» FIFO"
 
-#: daemon/gdm-net.c:295
+#: daemon/gdm-net.c:308
 #, c-format
 msgid "%s: Could not open FIFO"
 msgstr "%s: Nemô¾em otvori» FIFO"
@@ -545,17 +553,17 @@ msgstr "%s: Prázdny príkaz serveru pre displej %s"
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: Server bol spustený suid %d, ale taký pou¾ívateµ neexistuje"
 
-#: daemon/server.c:718 daemon/slave.c:1048 daemon/slave.c:1365
+#: daemon/server.c:718 daemon/slave.c:1050 daemon/slave.c:1367
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Nemô¾em nastavi» groupid na %d"
 
-#: daemon/server.c:724 daemon/slave.c:1053 daemon/slave.c:1370
+#: daemon/server.c:724 daemon/slave.c:1055 daemon/slave.c:1372
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgroups() zlyhalo pre %s"
 
-#: daemon/server.c:730 daemon/slave.c:1058 daemon/slave.c:1375
+#: daemon/server.c:730 daemon/slave.c:1060 daemon/slave.c:1377
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Nemô¾em nastavi» userid na %d"
@@ -618,7 +626,7 @@ msgstr ""
 "Overte, ¾e ho máte správne nastavený\n"
 "v konfiguraènom súbore."
 
-#: daemon/slave.c:701
+#: daemon/slave.c:702
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -626,15 +634,15 @@ msgstr ""
 "Zadajte heslo roota\n"
 "pre spustenie nastavenia."
 
-#: daemon/slave.c:715 daemon/slave.c:781
+#: daemon/slave.c:717 daemon/slave.c:783
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: Bez prihlásenia/Nesprávne prihlásenie"
 
-#: daemon/slave.c:1016
+#: daemon/slave.c:1018
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr "gdm_slave_greeter: Nemô¾em inicializova» rúru do privítania gdmgreeter"
 
-#: daemon/slave.c:1116
+#: daemon/slave.c:1118
 msgid ""
 "No servers were defined in the\n"
 "configuration file and xdmcp was\n"
@@ -655,7 +663,7 @@ msgstr ""
 "a èasované prihlásenia sú momentálne\n"
 "zakázané."
 
-#: daemon/slave.c:1130
+#: daemon/slave.c:1132
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -669,19 +677,19 @@ msgstr ""
 "Mali by ste sa prihlási» a správne\n"
 "nastavi» X server."
 
-#: daemon/slave.c:1139
+#: daemon/slave.c:1141
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr "Zadané èíslo displeja je zaneprázdnené, tak¾e tento server pou¾íva %s."
 
-#: daemon/slave.c:1149
+#: daemon/slave.c:1151
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr "gdm_slave_greeter: Nie je mo¾né spusti» privítanie, skúsim ¹tandardné: %s"
 
-#: daemon/slave.c:1161
+#: daemon/slave.c:1163
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -695,25 +703,25 @@ msgstr ""
 "Skúste sa prihlási» inak a upravte\n"
 "konfiguraèný súbor."
 
-#: daemon/slave.c:1167
+#: daemon/slave.c:1169
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr "gdm_slave_greeter: Chyba pri ¹tarte privítania na displeji %s"
 
-#: daemon/slave.c:1170
+#: daemon/slave.c:1172
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Nemô¾em vykona» fork pre proces gdmgreeter"
 
-#: daemon/slave.c:1219 daemon/slave.c:1263 daemon/slave.c:1304
+#: daemon/slave.c:1221 daemon/slave.c:1265 daemon/slave.c:1306
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Nepodarilo sa otvori» rúru!"
 
-#: daemon/slave.c:1334
+#: daemon/slave.c:1336
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
 msgstr "gdm_slave_chooser: Nemô¾em inicializova» rúru do gdmchooser"
 
-#: daemon/slave.c:1408
+#: daemon/slave.c:1410
 msgid ""
 "Cannot start the chooser program,\n"
 "you will not be able to log in.\n"
@@ -723,56 +731,56 @@ msgstr ""
 "a nebude mo¾né sa prihlási». Prosím, kontaktujte\n"
 "administrátora systému.\n"
 
-#: daemon/slave.c:1412
+#: daemon/slave.c:1414
 #, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr "gdm_slave_chooser: Chyba pri ¹tarte výberu na displeji %s"
 
-#: daemon/slave.c:1415
+#: daemon/slave.c:1417
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr "gdm_slave_chooser: Nemô¾em vykona» fork pre proces gdmchooser"
 
-#: daemon/slave.c:1739
+#: daemon/slave.c:1741
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr "gdm_slave_session_start: Pou¾ívateµ bol overený, ale getpwnam(%s) zlyhalo!"
 
-#: daemon/slave.c:1861
+#: daemon/slave.c:1863
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr "gdm_slave_session_start: Overenie dokonèené. Spú¹»am uvítanie"
 
-#: daemon/slave.c:1876
+#: daemon/slave.c:1878
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
 msgstr "gdm_slave_session_start: Vykonanie skriptu PreSession vrátilo > 0. Konèím."
 
-#: daemon/slave.c:1903
+#: daemon/slave.c:1905
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Chyba pri forku pou¾ívateµského sedenia"
 
-#: daemon/slave.c:1948
+#: daemon/slave.c:1950
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: Nemô¾em nastavi» setgid %d. Konèím."
 
-#: daemon/slave.c:1952
+#: daemon/slave.c:1954
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr "gdm_slave_session_start: initgroups() zlyhalo pre %s. Konèím."
 
-#: daemon/slave.c:1958
+#: daemon/slave.c:1960
 #, c-format
 msgid "%s: Could not open session for %s. Aborting."
 msgstr "%s: Nemô¾em otvori» sedenie pre %s. Konèím."
 
-#: daemon/slave.c:1964
+#: daemon/slave.c:1966
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Nemô¾em sa zmeni» na %s. Konèím."
 
 #. yaikes
-#: daemon/slave.c:2034
+#: daemon/slave.c:2036
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -780,7 +788,7 @@ msgstr ""
 "gdm_slave_session_start: gnome-session nenájdený pre záchranné sedenie "
 "GNOME, skú¹am xterm"
 
-#: daemon/slave.c:2039
+#: daemon/slave.c:2041
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -789,7 +797,7 @@ msgstr ""
 "Nie je mo¾né nájs» in¹taláciu GNOME,\n"
 "pokúsim sa spusti» \"Záchranné sedenie xterm\"."
 
-#: daemon/slave.c:2045
+#: daemon/slave.c:2047
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -804,11 +812,11 @@ msgstr ""
 "Tento typ sedenia je urèený pre prípady,\n"
 "keï máte problémy s in¹taláciou."
 
-#: daemon/slave.c:2064
+#: daemon/slave.c:2066
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Nie je mo¾né nájs» \"xterm\" pre spustenie záchranného sedenia."
 
-#: daemon/slave.c:2071
+#: daemon/slave.c:2073
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -824,16 +832,16 @@ msgstr ""
 "prihlási». Pre ukonèenie emulátora\n"
 "zadajte príkaz 'exit'."
 
-#: daemon/slave.c:2093
+#: daemon/slave.c:2095
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "Spú¹»am %s pre %s na %s"
 
-#: daemon/slave.c:2107
+#: daemon/slave.c:2109
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: Pou¾ívateµ nemá dovolené prihlási» sa"
 
-#: daemon/slave.c:2109
+#: daemon/slave.c:2111
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -841,12 +849,12 @@ msgstr ""
 "Administrátor systému vám zakázal\n"
 "pou¾itie tohto úètu."
 
-#: daemon/slave.c:2112
+#: daemon/slave.c:2114
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: Nemô¾em nájs»/spusti» sedenie `%s'"
 
-#: daemon/slave.c:2117
+#: daemon/slave.c:2119
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -857,12 +865,12 @@ msgstr ""
 "neexistuje. Prosím, vyberte zo zoznamu\n"
 "dostupných sedení v okne prihlásenia."
 
-#: daemon/slave.c:2125
+#: daemon/slave.c:2127
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Nemô¾em spusti» sedenie `%s'"
 
-#: daemon/slave.c:2128
+#: daemon/slave.c:2130
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -872,54 +880,54 @@ msgstr ""
 "administrátor systému zakázal úèet.\n"
 "Alebo to mô¾e znamena» chybu vo va¹om úète.\n"
 
-#: daemon/slave.c:2289
+#: daemon/slave.c:2291
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping na %s zlyhal, zabitý displej!"
 
-#: daemon/slave.c:2395
+#: daemon/slave.c:2397
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Záva¾ná chyba X  - Re¹tartujem %s"
 
-#: daemon/slave.c:2567
+#: daemon/slave.c:2569
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Zlyhal ¹tart: %s"
 
-#: daemon/slave.c:2571
+#: daemon/slave.c:2573
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Nemô¾em spusti» proces skriptu!"
 
-#: daemon/slave.c:2695
+#: daemon/slave.c:2697
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "gdm_parse_enriched_string: Nepodarilo sa vytvori» rúru"
 
-#: daemon/slave.c:2717
+#: daemon/slave.c:2719
 #, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "gdm_parse_enriched_login: Zlyhal ¹tart: %s"
 
-#: daemon/slave.c:2722
+#: daemon/slave.c:2724
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login: Nemô¾em spusti» proces skriptu!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:69 daemon/verify-pam.c:172 daemon/verify-shadow.c:68
+#: daemon/verify-crypt.c:70 daemon/verify-pam.c:242 daemon/verify-shadow.c:68
 #: gui/gdmlogin.c:3030
 msgid "Username:"
 msgstr "Pou¾ívateµské meno:"
 
-#: daemon/verify-crypt.c:91 daemon/verify-shadow.c:100
+#: daemon/verify-crypt.c:92 daemon/verify-shadow.c:100
 msgid "Password: "
 msgstr "Heslo:"
 
-#: daemon/verify-crypt.c:108 daemon/verify-pam.c:207
+#: daemon/verify-crypt.c:109 daemon/verify-pam.c:299
 #: daemon/verify-shadow.c:117
 msgid "Couldn't authenticate user"
 msgstr "Nemô¾em prihlási» pou¾ívateµa"
 
-#: daemon/verify-crypt.c:111 daemon/verify-crypt.c:131 daemon/verify-pam.c:288
+#: daemon/verify-crypt.c:112 daemon/verify-crypt.c:132 daemon/verify-pam.c:380
 #: daemon/verify-shadow.c:120 daemon/verify-shadow.c:140
 msgid ""
 "\n"
@@ -927,33 +935,33 @@ msgid ""
 "Please be sure the Caps Lock key is not enabled"
 msgstr ""
 "\n"
-"Neplatné meno alebo heslo. Veµkos» písmen sa rozli¹uje. "
-"Skontrolujte, ¾e nemáte zapnutý Caps Lock."
+"Neplatné meno alebo heslo. Veµkos» písmen sa rozli¹uje. Skontrolujte, ¾e "
+"nemáte zapnutý Caps Lock."
 
-#: daemon/verify-crypt.c:118 daemon/verify-crypt.c:138
-#: daemon/verify-crypt.c:159 daemon/verify-crypt.c:182
+#: daemon/verify-crypt.c:119 daemon/verify-crypt.c:139
+#: daemon/verify-crypt.c:160 daemon/verify-crypt.c:183
 #: daemon/verify-shadow.c:127 daemon/verify-shadow.c:147
 #: daemon/verify-shadow.c:168 daemon/verify-shadow.c:191
 msgid "Login incorrect"
 msgstr "Neplatné prihlásenie"
 
-#: daemon/verify-crypt.c:149 daemon/verify-pam.c:220
+#: daemon/verify-crypt.c:150 daemon/verify-pam.c:312
 #: daemon/verify-shadow.c:158
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Prihlásenie ako root je zakázané na displeji '%s'"
 
-#: daemon/verify-crypt.c:152 daemon/verify-shadow.c:161
+#: daemon/verify-crypt.c:153 daemon/verify-shadow.c:161
 msgid "The system administrator is not allowed to login from this screen"
 msgstr "Administrátor systému sa nesmie pomocou tejto obrazovky prihlási»"
 
-#: daemon/verify-crypt.c:172 daemon/verify-pam.c:240
+#: daemon/verify-crypt.c:173 daemon/verify-pam.c:332
 #: daemon/verify-shadow.c:181
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Pou¾ívateµ %s nemá dovolené prihlási» sa"
 
-#: daemon/verify-crypt.c:175 daemon/verify-pam.c:243
+#: daemon/verify-crypt.c:176 daemon/verify-pam.c:335
 #: daemon/verify-shadow.c:184
 msgid ""
 "\n"
@@ -962,18 +970,26 @@ msgstr ""
 "\n"
 "Administrátor systému vám zakázal pou¾itie tohto úètu."
 
-#: daemon/verify-pam.c:189 daemon/verify-pam.c:338 daemon/verify-pam.c:410
-#: daemon/verify-pam.c:474
+#: daemon/verify-pam.c:261 daemon/verify-pam.c:480
 msgid "Can't find /etc/pam.d/gdm!"
 msgstr "Nemô¾em nájs» /etc/pam.d/gdm!"
 
-#: daemon/verify-pam.c:198 daemon/verify-pam.c:345 daemon/verify-pam.c:419
-#: daemon/verify-pam.c:483
+#: daemon/verify-pam.c:270 daemon/verify-pam.c:487
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Nemô¾em nastavi» PAM_TTY=%s"
 
-#: daemon/verify-pam.c:224
+#: daemon/verify-pam.c:279 daemon/verify-pam.c:494
+#, c-format
+msgid "Can't set PAM_RUSER=%s"
+msgstr "Nemô¾em nastavi» PAM_RUSER=%s"
+
+#: daemon/verify-pam.c:289 daemon/verify-pam.c:502
+#, c-format
+msgid "Can't set PAM_RHOST=%s"
+msgstr "Nemô¾em nastavi» PAM_RHOST=%s"
+
+#: daemon/verify-pam.c:316
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -981,25 +997,29 @@ msgstr ""
 "\n"
 "Administrátor systému vám zakázal prihlásenie z tejto obrazovky."
 
-#: daemon/verify-pam.c:261 daemon/verify-pam.c:358
+#: daemon/verify-pam.c:353 daemon/verify-pam.c:544
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Nemô¾em nastavi» acct. mgmt pre %s"
 
-#: daemon/verify-pam.c:294
+#: daemon/verify-pam.c:386
 msgid "Authentication failed"
 msgstr "Overenie zlyhalo"
 
-#: daemon/verify-pam.c:456
+#: daemon/verify-pam.c:422
+msgid "Cannot setup pam handle with null login and/or display"
+msgstr "Nepodarilo sa nastavi» pam s pou¾ívateµským menom a displejom null"
+
+#: daemon/verify-pam.c:638
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
 msgstr "gdm_verify_check: Nemô¾em nájs» konfiguraèný súbor PAM pre gdm"
 
-#: daemon/verify-pam.c:490
+#: daemon/verify-pam.c:661
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Nemô¾em otvori» sedenie pre %s"
 
-#: daemon/verify-pam.c:498
+#: daemon/verify-pam.c:669
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Nemô¾em nastavi» poverenia pre %s"
@@ -1453,7 +1473,7 @@ msgstr ""
 "neexistuje! Pou¾ijem ¹tandardné nastavenie."
 
 #: gui/gdmconfig.c:738 gui/gdmconfig.c:1092 gui/gdmconfig.c:1957
-#: gui/gdmconfig.c:2179 gui/gdmflexiserver.c:436
+#: gui/gdmconfig.c:2179 gui/gdmflexiserver.c:449
 msgid "Standard server"
 msgstr "©tandardný server"
 
@@ -1982,8 +2002,8 @@ msgid ""
 "Always use the 24 hour format for the clock in the greeter, even if the norm "
 "for the current locale is 12 hour"
 msgstr ""
-"V¾dy pou¾i» 24-hodinový formát èasu v privítaní, aj keï je momentálne nastavené "
-"zobrazovanie v 12-hodinovom formáte."
+"V¾dy pou¾i» 24-hodinový formát èasu v privítaní, aj keï je momentálne "
+"nastavené zobrazovanie v 12-hodinovom formáte."
 
 #: gui/gdmconfig-strings.c:81
 msgid "Always use 24 hour clock format"
@@ -2422,8 +2442,8 @@ msgid ""
 "sent.  Only the first line of output from this script is read."
 msgstr ""
 "Skript spú¹»aný, keï server po¹le odpoveï WILLING na QUERY. Ak je prázdny, "
-"alebo neexistuje, po¹le sa ¹tandardná správa s identifikáciou systému. Ako správa "
-"sa pou¾ije iba prvý riadok výstupu tohto skriptu."
+"alebo neexistuje, po¹le sa ¹tandardná správa s identifikáciou systému. Ako "
+"správa sa pou¾ije iba prvý riadok výstupu tohto skriptu."
 
 #: gui/gdmconfig-strings.c:181
 msgid "Willing script (optional):"
@@ -2434,8 +2454,9 @@ msgid ""
 "Maximum displays per single host.  You can use this to prevent attacks by "
 "hogging all the possible displays.  Does not apply to local connections."
 msgstr ""
-"Maximálny poèet displejov pre jednoho hostiteµa. Toto sa dá pou¾i», aby ste zabránili "
-"útokom typu \"pou¾itie v¹etkých mo¾ných displejov\". Nemá vplyv na lokálne spojenia."
+"Maximálny poèet displejov pre jednoho hostiteµa. Toto sa dá pou¾i», aby ste "
+"zabránili útokom typu \"pou¾itie v¹etkých mo¾ných displejov\". Nemá vplyv na "
+"lokálne spojenia."
 
 #: gui/gdmconfig-strings.c:183
 msgid "Displays per host:"
@@ -2833,39 +2854,39 @@ msgstr "Povoli» ako flexibilný server"
 msgid "Make this the default server"
 msgstr "Pou¾i» ako ¹tandardný server"
 
-#: gui/gdmflexiserver.c:424
+#: gui/gdmflexiserver.c:437
 msgid "Choose server"
 msgstr "Výber serveru"
 
-#: gui/gdmflexiserver.c:430
+#: gui/gdmflexiserver.c:443
 msgid "Choose the X server to start"
 msgstr "Vyberte X server, ktorý sa má spusti»"
 
-#: gui/gdmflexiserver.c:486
+#: gui/gdmflexiserver.c:499
 msgid "Send the specified protocol command to gdm"
 msgstr "Posla» gdm zadaný príkaz protokolu"
 
-#: gui/gdmflexiserver.c:486
+#: gui/gdmflexiserver.c:499
 msgid "COMMAND"
 msgstr "PRÍKAZ"
 
-#: gui/gdmflexiserver.c:487
+#: gui/gdmflexiserver.c:500
 msgid "Xnest mode"
 msgstr "Mód Xnest"
 
-#: gui/gdmflexiserver.c:488
+#: gui/gdmflexiserver.c:501
 msgid "Do not lock current screen"
 msgstr "Nezamyka» aktuálnu obrazovku"
 
-#: gui/gdmflexiserver.c:489
+#: gui/gdmflexiserver.c:502
 msgid "Debugging output"
 msgstr "Ladiaci výstup"
 
-#: gui/gdmflexiserver.c:490
+#: gui/gdmflexiserver.c:503
 msgid "Authenticate before running --command"
 msgstr "Prihlási» pred spustením --command"
 
-#: gui/gdmXnestchooser.c:153 gui/gdmflexiserver.c:538
+#: gui/gdmXnestchooser.c:153 gui/gdmflexiserver.c:551
 msgid ""
 "GDM is not running.\n"
 "Please ask your system administrator to start it."
@@ -2873,12 +2894,12 @@ msgstr ""
 "GDM nebe¾í.\n"
 "Prosím, po¾iadajte administrátora, aby ho spustil."
 
-#: gui/gdmflexiserver.c:547 gui/gdmflexiserver.c:563 gui/gdmflexiserver.c:631
-#: gui/gdmflexiserver.c:634
+#: gui/gdmflexiserver.c:560 gui/gdmflexiserver.c:576 gui/gdmflexiserver.c:644
+#: gui/gdmflexiserver.c:647
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr "Komunikácia s gdm nie je mo¾ná, mo¾no pou¾ívate starú verziu."
 
-#: gui/gdmflexiserver.c:574 gui/gdmflexiserver.c:660
+#: gui/gdmflexiserver.c:587 gui/gdmflexiserver.c:673
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
@@ -2886,39 +2907,39 @@ msgstr ""
 "Vyzerá to, ¾e nemáte potrebné prihlásenie pre túto operáciu. Mo¾no nemáte "
 "správne nastavený súbor .Xauthority."
 
-#: gui/gdmflexiserver.c:593
+#: gui/gdmflexiserver.c:606
 msgid ""
 "You do not seem to be logged in on the console.  Starting a new login only "
 "works correctly on the console."
 msgstr ""
-"Vyzerá to, ¾e nie ste prihlásený na konzoli. Spustenie nového prihlásenia funguje "
-"správne iba na konzoli."
+"Vyzerá to, ¾e nie ste prihlásený na konzoli. Spustenie nového prihlásenia "
+"funguje správne iba na konzoli."
 
-#: gui/gdmflexiserver.c:619
+#: gui/gdmflexiserver.c:632
 msgid "Can't lock screen"
 msgstr "Nie je mo¾né zamknú» obrazovku"
 
-#: gui/gdmflexiserver.c:622
+#: gui/gdmflexiserver.c:635
 msgid "Can't disable xscreensaver display hacks"
 msgstr "Nie je mo¾né vypnú» úpravy od xscreensaver"
 
-#: gui/gdmflexiserver.c:637
+#: gui/gdmflexiserver.c:650
 msgid "The allowed limit of flexible X servers reached."
 msgstr "Dosiahnutý povolený limit flexibilných X serverov."
 
-#: gui/gdmflexiserver.c:639
+#: gui/gdmflexiserver.c:652
 msgid "There were errors trying to start the X server."
 msgstr "Nastali chyby pri pokuse o spustenie X serveru."
 
-#: gui/gdmflexiserver.c:641
+#: gui/gdmflexiserver.c:654
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "X server zlyhal. Mo¾no nie je správne nastavený."
 
-#: gui/gdmflexiserver.c:644
+#: gui/gdmflexiserver.c:657
 msgid "Too many X sessions running."
 msgstr "Príli¹ veµa be¾iacich sedení."
 
-#: gui/gdmflexiserver.c:646
+#: gui/gdmflexiserver.c:659
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
@@ -2926,19 +2947,20 @@ msgstr ""
 "Vnorený X server (Xnest) sa nemô¾e spoji» s va¹ích aktuálnym X serverom. "
 "Mo¾no chýba prihlasovací súbor X."
 
-#: gui/gdmflexiserver.c:651
+#: gui/gdmflexiserver.c:664
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
 msgstr ""
-"Vnorený X server (Xnest) nie je k dispozícii, alebo nie je správne nastavený gdm.\n"
+"Vnorený X server (Xnest) nie je k dispozícii, alebo nie je správne nastavený "
+"gdm.\n"
 "Prosím, nain¹talujte balík Xnset, aby ste mohli pou¾íva» vnorené prihlásenie."
 
-#: gui/gdmflexiserver.c:656
+#: gui/gdmflexiserver.c:669
 msgid "The X server is not available, it is likely that gdm is badly configured."
 msgstr "X server nie je dostupný, asi je gdm zle nastavený."
 
-#: gui/gdmflexiserver.c:664
+#: gui/gdmflexiserver.c:677
 msgid "Unknown error occured."
 msgstr "Nastala neznáma chyba."
 
