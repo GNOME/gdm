@@ -419,7 +419,7 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 	"MANAGED_FORWARD"
     };
     
-    if (!XdmcpFill (xdmcpfd, &buf, &clnt_sa, &sa_len)) {
+    if (!XdmcpFill (xdmcpfd, &buf, (XdmcpNetaddr)&clnt_sa, &sa_len)) {
 	gdm_error (_("gdm_xdmcp_decode: Could not create XDMCP buffer!"));
 	return TRUE;
     }

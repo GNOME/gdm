@@ -74,6 +74,7 @@ static gchar *ParsedTimedLogin = NULL;
 
 extern gboolean gdm_first_login;
 extern gboolean gdm_emergency_server;
+extern pid_t extra_process;
 
 /* Configuration option variables */
 extern gchar *GdmUser;
@@ -356,6 +357,7 @@ gdm_slave_run (GdmDisplay *display)
     if (SERVER_IS_LOCAL (d) &&
 	d->servpid <= 0) {
 	    gdm_server_start (d,
+			      FALSE /* treat_as_flexi */,
 			      20 /* min_flexi_disp */,
 			      5 /* flexi_retries */);
 	    gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
@@ -1103,6 +1105,15 @@ gdm_slave_greeter (void)
 				 "and so this is a failsafe X server.\n"
 				 "You should log in and properly\n"
 				 "configure the X server."));
+	}
+
+	if (d->busy_display) {
+		char *msg = g_strdup_printf
+			(_("The specified display number was busy, so "
+			   "this server was started on display %s."),
+			 d->name);
+		gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR, msg);
+		g_free (msg);
 	}
 
 	argv = ve_split (GdmGreeter);
@@ -2063,7 +2074,9 @@ gdm_slave_session_start (void)
 
 	/* just a stupid test, the below would fail, but this gives a better
 	 * message */
-	if (strcmp (shell, "/bin/false") == 0) {
+	if (strcmp (shell, "/sbin/nologin") == 0 ||
+	    strcmp (shell, "/bin/false") == 0 ||
+	    strcmp (shell, "/bin/true") == 0) {
 		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
 		gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR,
 			       _("The system administrator has\n"
@@ -2196,6 +2209,12 @@ gdm_slave_term_handler (int sig)
 	sigaddset (&tmask, SIGCHLD);
 	sigprocmask (SIG_BLOCK, &tmask, &omask);  
 
+	if (extra_process > 1) {
+		/* we sigterm extra processes, and we
+		 * don't wait */
+		kill (extra_process, SIGTERM);
+		extra_process = -1;
+	}
 
 	if (d->greetpid != 0) {
 		greet = FALSE;
@@ -2461,6 +2480,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     gchar *script, *defscript, *scr;
     gchar **argv;
     gint status;
+    int i;
 
     if (!d || !dir)
 	return EXIT_SUCCESS;
@@ -2475,9 +2495,19 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     else
 	return EXIT_SUCCESS;
 
-    switch (pid = fork()) {
+    extra_process = pid = fork();
+    switch (pid) {
 	    
     case 0:
+        for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+	    close (i);
+
+        /* No error checking here - if it's messed the best response
+         * is to ignore & try to continue */
+        open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+        open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+        open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
         if (login != NULL) {
 	        ve_setenv ("LOGNAME", login, TRUE);
 	        ve_setenv ("USER", login, TRUE);
@@ -2511,6 +2541,8 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	
     default:
 	waitpid (pid, &status, 0);	/* Wait for script to finish */
+
+	extra_process = -1;
 
 	if (WIFEXITED (status))
 	    return WEXITSTATUS (status);
@@ -2630,7 +2662,8 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
       if (pipe(pipe1) < 0)
         syslog (LOG_ERR, _("gdm_parse_enriched_login: Failed creating pipe"));
 
-      switch (pid = fork()) {
+      extra_process = pid = fork();
+      switch (pid) {
 	    
       case 0:
 	  /* The child will write the username to stdout based on the DISPLAY
@@ -2670,6 +2703,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 
           close(pipe1[0]);
 	  waitpid (pid, &status, 0);	/* Wait for script to finish */
+	  extra_process = -1;
       }
     }
 

@@ -1,3 +1,47 @@
+Wed Aug 22 23:01:59 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, Makefile.am, utils/gdmopen.c, utils/gdmaskpass.c:
+	  Add two new small sbin utils.  gdmopen is like open (based on it)
+	  but better suited for gdm.  Exitcode is returned so no temp files
+	  are needed.  Process is cleaned up on a signal, the new vt is
+	  deallocated after use.  And unlike openvt this thing actually waits
+	  for the child.  Gdmaskpass just asks for the root password, for
+	  use in the XKeepsCrashing script.  Both of these things will only
+	  run as root as I'm too paranoid and it doesn't make sense for
+	  them to run otherwise for gdm anyway.
+
+	* configure.in: Fix sbin expansion.
+
+	* daemon/gdm.c, daemon/misc.[ch], daemon/slave.c, daemon/server.c:
+	  Use gdmopen to run dialog and add helper functions for doing this.
+
+	* daemon/gdm.h, daemon/slave.c, daemon/server.[ch]:  When a server is
+	  busy, ask the user if we want to run it on a new display number
+	  or retry.
+
+	* daemon/gdm.c, daemon/misc.c, daemon/slave.c: Make sure to whack
+	  any extra helper processes we launch when we are killed so that
+	  we don't leave things like 'dialog' processes around
+
+	* daemon/gdm.c, config/XKeepsCrashing:  Use gdmaskpass, ask if
+	  the user wants to view X logs if X is crashing.  And use gdmopen
+	  in the script and correctly abort with exit 32.  Also make it
+	  not use the ugly tempfile stuff (Though a tempfile is still given
+	  to the script for now)
+
+	* gdm.spec.in: raise epoch to 1, people abuse this field, and if they
+	  do abuse it again and raise it beyond 1, I'll just max it out since
+	  it makes package upgrading not work.
+
+	* daemon/slave.c, daemon/verify-(pam|crypt|shadow).c: add
+	  /sbin/nologin as a thing to test for for disabled logins in
+	  addition to /bin/false and /bin/true (it worked, but this adds a
+	  nicer message)
+
+	* daemon/xdmcp.c: fix a warning.
+
+	* gui/gdmflexiserver.desktop.in: kill TryExec here
+
 Tue Aug 21 04:42:05 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmconfig.[ch]:  Finish the editting of the server definitions.

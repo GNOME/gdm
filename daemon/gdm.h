@@ -268,6 +268,8 @@ struct _GdmDisplay {
     int vt;
 #endif
 
+    gboolean busy_display;
+
     gboolean console;
 
     time_t last_start_time;

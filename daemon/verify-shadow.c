@@ -175,7 +175,8 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 
     /* check for the standard method of disallowing users */
     if (pwent->pw_shell != NULL &&
-	(strcmp (pwent->pw_shell, "/bin/true") == 0 ||
+	(strcmp (pwent->pw_shell, "/sbin/nologin") == 0 ||
+	 strcmp (pwent->pw_shell, "/bin/true") == 0 ||
 	 strcmp (pwent->pw_shell, "/bin/false") == 0)) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    if (GdmVerboseAuth) {

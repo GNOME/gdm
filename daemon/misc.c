@@ -16,12 +16,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <config.h>
+#include "config.h"
 #include <gnome.h>
 #include <syslog.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <sys/socket.h>
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
@@ -40,6 +42,8 @@ extern gboolean GdmDebug;
 extern GSList *displays;
 
 extern char **environ;
+
+extern pid_t extra_process;
 
 
 /**
@@ -216,7 +220,8 @@ gdm_get_free_display (int start, int server_uid)
 		serv_addr.sin_port = htons (6000 + i);
 
 		errno = 0;
-		if (connect (sock, &serv_addr, sizeof (serv_addr)) >= 0 ||
+		if (connect (sock, (struct sockaddr *)&serv_addr,
+			     sizeof (serv_addr)) >= 0 ||
 		    errno != ECONNREFUSED) {
 			close (sock);
 			continue;
@@ -239,6 +244,189 @@ gdm_get_free_display (int start, int server_uid)
 	}
 
 	return -1;
+}
+
+gboolean
+gdm_text_message_dialog (const char *msg)
+{
+	char *dialog; /* do we have dialog?*/
+
+	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
+		return FALSE;
+
+	dialog = gnome_is_program_in_path ("dialog");
+	if (dialog == NULL)
+		dialog = gnome_is_program_in_path ("gdialog");
+	if (dialog != NULL) {
+		char *argv[7];
+
+		argv[0] = EXPANDED_SBINDIR "/gdmopen";
+		argv[1] = dialog;
+		argv[2] = "--msgbox";
+		argv[3] = (char *)msg;
+		argv[4] = "11";
+		argv[5] = "70";
+		argv[6] = NULL;
+
+		if (gdm_exec_wait (argv) < 0) {
+			g_free (dialog);
+			return FALSE;
+		}
+
+		g_free (dialog);
+	} else {
+		char *argv[5];
+
+		argv[0] = EXPANDED_SBINDIR "/gdmopen";
+		argv[1] = "/bin/sh";
+		argv[2] = "-c";
+		argv[3] = g_strdup_printf
+			("clear ; "
+			 "echo \"%s\" ; read ; clear",
+			 msg);
+		argv[4] = NULL;
+
+		if (gdm_exec_wait (argv) < 0) {
+			g_free (argv[3]);
+			return FALSE;
+		}
+		g_free (argv[3]);
+	}
+	return TRUE;
+}
+
+gboolean
+gdm_text_yesno_dialog (const char *msg, gboolean *ret)
+{
+	char *dialog; /* do we have dialog?*/
+
+	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
+		return FALSE;
+
+	if (ret != NULL)
+		*ret = FALSE;
+
+	dialog = gnome_is_program_in_path ("dialog");
+	if (dialog == NULL)
+		dialog = gnome_is_program_in_path ("gdialog");
+	if (dialog != NULL) {
+		char *argv[7];
+		int retint;
+
+		argv[0] = EXPANDED_SBINDIR "/gdmopen";
+		argv[1] = dialog;
+		argv[2] = "--yesno";
+		argv[3] = (char *)msg;
+		argv[4] = "11";
+		argv[5] = "70";
+		argv[6] = NULL;
+
+		retint = gdm_exec_wait (argv);
+		if (retint < 0) {
+			g_free (dialog);
+			return FALSE;
+		}
+
+		if (ret != NULL)
+			*ret = (retint == 0) ? TRUE : FALSE;
+
+		g_free (dialog);
+
+		return TRUE;
+	} else {
+		char tempname[] = "/tmp/gdm-yesno-XXXXXX";
+		int tempfd;
+		FILE *fp;
+		char buf[256];
+		char *argv[5];
+
+		tempfd = mkstemp (tempname);
+		if (tempfd < 0)
+			return FALSE;
+
+		close (tempfd);
+
+		argv[0] = EXPANDED_SBINDIR "/gdmopen";
+		argv[1] = "/bin/sh";
+		argv[2] = "-c";
+		argv[3] = g_strdup_printf
+			("clear ; "
+			 "echo \"%s\" ; echo ; echo \"%s\" ; "
+			 "read RETURN ; echo $RETURN > %s ; clear'",
+			 msg,
+			 /* Translators, don't translate the 'y' and 'n' */
+			 _("y = Yes or n = No? >"),
+			 tempname);
+		argv[4] = NULL;
+
+		if (gdm_exec_wait (argv) < 0) {
+			g_free (argv[3]);
+			return FALSE;
+		}
+		g_free (argv[3]);
+
+		if (ret != NULL) {
+			fp = fopen (tempname, "r");
+			if (fp != NULL) {
+				if (fgets (buf, sizeof (buf), fp) != NULL &&
+				    (buf[0] == 'y' || buf[0] == 'Y'))
+					*ret = TRUE;
+				fclose (fp);
+			} else {
+				return FALSE;
+			}
+		}
+
+		unlink (tempname);
+
+		return TRUE;
+	}
+}
+
+int
+gdm_exec_wait (char * const *argv)
+{
+	int status;
+	pid_t pid;
+
+	if (argv == NULL ||
+	    argv[0] == NULL ||
+	    access (argv[0], X_OK) != 0)
+		return -1;
+
+	/* Note a fun and unavoidable (also almost
+	 * impossible to happen race.  If the parent gets
+	 * whacked before it executes any code, it will
+	 * not whack the child.  Oh well. */
+	extra_process = pid = fork ();
+	if (pid == 0) {
+		int i;
+
+		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+			close (i);
+
+		/* No error checking here - if it's messed the best response
+		 * is to ignore & try to continue */
+		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+		
+		execv (argv[0], argv);
+
+		_exit (-1);
+	}
+
+	if (pid < 0)
+		return -1;
+
+	waitpid (pid, &status, 0);
+
+	extra_process = -1;
+
+	if (WIFEXITED (status))
+		return WEXITSTATUS (status);
+	else
+		return -1;
 }
 
 /* EOF */

@@ -70,6 +70,8 @@ gint flexi_servers = 0;		/* Number of flexi servers */
 sigset_t sysmask;		/* Inherited system signal mask */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
+pid_t extra_process = -1;	/* An extra process.  Used for quickie 
+				   processes, so that they also get whacked */
 
 static GdmConnection *fifoconn = NULL; /* Fifo connection */
 static GdmConnection *unixconn = NULL; /* UNIX Socket connection */
@@ -602,6 +604,13 @@ final_cleanup (void)
 	sigaddset (&mask, SIGCHLD);
 	sigprocmask (SIG_BLOCK, &mask, NULL); 
 
+	if (extra_process > 1) {
+		/* we sigterm extra processes, and we
+		 * don't wait */
+		kill (extra_process, SIGTERM);
+		extra_process = -1;
+	}
+
 	list = g_slist_copy (displays);
 	g_slist_foreach (list, (GFunc) gdm_display_unmanage, NULL);
 	g_slist_free (list);
@@ -658,19 +667,25 @@ deal_with_x_crashes (GdmDisplay *d)
 	    if (configurators[i] != NULL) {
 		    strcpy (tempname, "/tmp/gdm-X-failed-XXXXXX");
 		    tempfd = mkstemp (tempname);
-		    close (tempfd);
+		    if (tempfd >= 0) {
+			    close (tempfd);
 
-		    gdm_info (_("deal_with_x_crashes: Running the "
-				"XKeepsCrashing script"));
+			    gdm_info (_("deal_with_x_crashes: Running the "
+					"XKeepsCrashing script"));
 
-		    pid = fork ();
+			    extra_process = pid = fork ();
+		    } else {
+			    /* no forking, we're screwing this */
+			    pid = -1;
+		    }
 	    } else {
 		    tempfd = -1;
 		    /* no forking, we're screwing this */
 		    pid = -1;
 	    }
 	    if (pid == 0) {
-		    char *argv[9];
+		    char *argv[10];
+		    char *xlog = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
 
 		    argv[0] = GdmXKeepsCrashing;
 		    argv[1] = configurators[i];
@@ -680,9 +695,7 @@ deal_with_x_crashes (GdmDisplay *d)
 				"up correctly.  You will need to log in on a "
 				"console and rerun the X configuration "
 				"program.  Then restart GDM.");
-		    argv[4] = _("I cannot start the X server (your graphical "
-				"interface).  It is likely that it is not set "
-				"up correctly.  Would you like me to try to "
+		    argv[4] = _("Would you like me to try to "
 				"run the X configuration program?  Note that "
 				"you will need the root password for this.");
 		    argv[5] = _("Please type in the root (privilaged user) "
@@ -691,7 +704,15 @@ deal_with_x_crashes (GdmDisplay *d)
 				"again.");
 		    argv[7] = _("I will disable this X server for now.  "
 				"Restart GDM when it is configured correctly.");
-		    argv[8] = NULL;
+		    argv[8] = _("I cannot start the X server (your graphical "
+				"interface).  It is likely that it is not set "
+				"up correctly.  Would you like to view the "
+				"X server output to diagnose the problem?");
+		    argv[9] = NULL;
+
+		    ve_setenv ("XLOG", xlog, TRUE);
+		    ve_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
+		    ve_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
 
 		    execv (argv[0], argv);
 	
@@ -700,13 +721,16 @@ deal_with_x_crashes (GdmDisplay *d)
 	    } else if (pid > 0) {
 		    int status;
 		    waitpid (pid, &status, 0);
+
+		    extra_process = -1;
+
 		    if (WIFEXITED (status) &&
 			WEXITSTATUS (status) == 0) {
 			    /* Yay, the user wants to try again, so
 			     * here we go */
 			    return TRUE;
 		    } else if (WIFEXITED (status) &&
-			     WEXITSTATUS (status) == 32) {
+			       WEXITSTATUS (status) == 32) {
 			    /* We couldn't run the script, just drop through */
 			    ;
 		    } else {
@@ -726,9 +750,7 @@ deal_with_x_crashes (GdmDisplay *d)
     /* if we have "open" we can talk to the user, not as user
      * friendly as the above script, but getting there */
     if ( ! just_abort &&
-	access ("/usr/bin/open", X_OK) == 0) {
-	    char *dialog; /* do we have dialog?*/
-
+	access (EXPANDED_SBINDIR "/gdmopen", X_OK) == 0) {
 	    /* Shit if we knew what the program was to tell the user,
 	     * the above script would have been defined and we'd run
 	     * it for them */
@@ -737,29 +759,7 @@ deal_with_x_crashes (GdmDisplay *d)
 			    "up correctly.  You will need to log in on a "
 			    "console and rerun the X configuration "
 			    "program.  Then restart GDM.");
-
-	    dialog = gnome_is_program_in_path ("dialog");
-	    if (dialog == NULL)
-		    dialog = gnome_is_program_in_path ("gdialog");
-	    if (dialog != NULL) {
-		    char *command = 
-			    g_strdup_printf
-			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
-			     "%s --msgbox \"%s\" 10 70 ; clear'",
-			     dialog,
-			     error);
-		    system (command);
-		    g_free (command);
-		    g_free (dialog);
-	    } else {
-		    char *command = 
-			    g_strdup_printf
-			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
-			     "echo \"%s\" 10 70 ; read ; clear'",
-			     error);
-		    system (command);
-		    g_free (command);
-	    }
+	    gdm_text_message_dialog (error);
     } /* else {
        * At this point .... screw the user, we don't know how to
        * talk to him.  He's on some 'l33t system anyway, so syslog

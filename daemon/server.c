@@ -127,55 +127,37 @@ gdm_server_stop (GdmDisplay *disp)
     unlink (disp->authfile);
 }
 
-static void
-busy_inform_user (GdmDisplay *disp)
+static gboolean
+busy_ask_user (GdmDisplay *disp)
 {
     /* if we have "open" we can talk to the user */
-    if (access ("/usr/bin/open", X_OK) == 0) {
-	    char *dialog; /* do we have dialog?*/
+    if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) == 0) {
 	    char *error = g_strdup_printf
 		    (_("There already appears to be an X server "
-		       "running on display %s.  Please quit this "
-		       "server and then press Enter.%s"),
+		       "running on display %s.  Should I try another "
+		       "display number?  If you answer no, I will "
+		       "attempt to start the server on %s again.%s"),
+		     disp->name,
 		     disp->name,
 #ifdef __linux__
-		     _("  You can change consoles by pressing Ctrl-Alt "
+		     _("  (You can change consoles by pressing Ctrl-Alt "
 		       "plus a function key, such as Ctrl-Alt-F7 to go "
 		       "to console 7.  X servers usually run on consoles "
-		       "7 and higher.")
+		       "7 and higher.)")
 #else /* ! __linux__ */
 		     /* no info for non linux users */
 		     ""
 #endif /* __linux__ */
 		     );
-	    dialog = gnome_is_program_in_path ("dialog");
-	    if (dialog == NULL)
-		    dialog = gnome_is_program_in_path ("gdialog");
-	    if (dialog != NULL) {
-		    char *command = 
-			    g_strdup_printf
-			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
-			     "%s --msgbox \"%s\" 10 70 ; clear'",
-			     dialog,
-			     error);
-		    system (command);
-		    g_free (command);
-		    g_free (dialog);
-	    } else {
-		    char *command = 
-			    g_strdup_printf
-			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
-			     "echo \"%s\" 10 70 ; read ; clear'",
-			     error);
-		    system (command);
-		    g_free (command);
-	    }
+	    gboolean ret = TRUE;
+	    /* default ret to TRUE */
+	    if ( ! gdm_text_yesno_dialog (error, &ret))
+		    ret = TRUE;
 	    g_free (error);
+	    return ret;
     } else {
-	    /* If we can't ask, sleep 30 seconds and try again */
-	    gdm_info (_("Sleeping 30 seconds before retrying display %s"),
-		      disp->name);
-	    sleep (30);
+	    /* Well we'll just try another display number */
+	    return TRUE;
     }
 }
 
@@ -276,7 +258,8 @@ display_vt (GdmDisplay *disp)
  */
 
 gboolean
-gdm_server_start (GdmDisplay *disp, int min_flexi_disp, int flexi_retries)
+gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
+		  int min_flexi_disp, int flexi_retries)
 {
     struct sigaction usr1, chld, alrm;
     struct sigaction old_usr1, old_chld, old_alrm;
@@ -291,7 +274,8 @@ gdm_server_start (GdmDisplay *disp, int min_flexi_disp, int flexi_retries)
     /* if an X server exists, wipe it */
     gdm_server_stop (d);
 
-    if (SERVER_IS_FLEXI (d)) {
+    if (SERVER_IS_FLEXI (d) ||
+	treat_as_flexi) {
 	    flexi_disp = gdm_get_free_display
 		    (MAX (high_display_num + 1, min_flexi_disp) /* start */,
 		     0 /* server uid */);
@@ -432,25 +416,37 @@ gdm_server_start (GdmDisplay *disp, int min_flexi_disp, int flexi_retries)
      * this we'll exit with DISPLAY_REMANAGE to try again if the
      * user wants to, or abort this display */
     if (display_busy (disp)) {
-	    if (SERVER_IS_FLEXI (disp)) {
+	    if (SERVER_IS_FLEXI (disp) ||
+		treat_as_flexi) {
 		    /* for flexi displays, try again a few times with different
 		     * display numbers */
 		    if (flexi_retries <= 0) {
 			    /* Send X too busy */
-			    gdm_slave_send_num (GDM_SOP_FLEXI_ERR,
-						4 /* X too busy */);
+			    gdm_error (_("%s: Cannot find a free "
+					 "display number"),
+				       "gdm_server_start");
+			    if (SERVER_IS_FLEXI (disp)) {
+				    gdm_slave_send_num (GDM_SOP_FLEXI_ERR,
+							4 /* X too busy */);
+			    }
 			    /* eki eki */
 			    _exit (DISPLAY_REMANAGE);
 		    }
-		    return gdm_server_start (d, flexi_disp + 1,
+		    return gdm_server_start (d, treat_as_flexi,
+					     flexi_disp + 1,
 					     flexi_retries - 1);
 	    } else {
-		    /* FIXME: find first free display here above
-		     * high_display_num optionally, and if the user
-		     * has no dialog/gdialog, then just do that
-		     * immediately.  Must give an error as well on
-		     * the X server once greeter is up. */
-		    busy_inform_user (disp);
+		    if (busy_ask_user (disp)) {
+			    gdm_error (_("%s: Display %s busy.  Trying "
+					 "another display number."),
+				       "gdm_server_start",
+				       d->name);
+			    d->busy_display = TRUE;
+			    return gdm_server_start (d,
+						     TRUE /* treat as flexi */,
+						     high_display_num + 1,
+						     flexi_retries - 1);
+		    }
 		    _exit (DISPLAY_REMANAGE);
 	    }
     }

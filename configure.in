@@ -193,6 +193,13 @@ fi
 AC_MSG_CHECKING("for corrupt government")
 AC_MSG_RESULT(yes)
 
+dnl ## gdmopen building
+dnl There are perhaps others where this works
+GDMOPEN=
+AC_CHECK_HEADERS(linux/vt.h, [
+		 GDMOPEN=gdmopen])
+AC_SUBST(GDMOPEN)
+
 dnl ## Autentication scheme
 have_pam=no
 VRFY="verify-crypt"
@@ -204,6 +211,13 @@ if test x$enable_authentication_scheme != xcrypt -a \
         	VRFY="verify-pam"
         	AC_DEFINE(HAVE_PAM)])
 fi
+
+GDMASKPASS=
+if test x$have_pam = xyes ; then
+	AC_CHECK_HEADERS(security/pam_misc.h, [
+			 GDMASKPASS=gdmaskpass])
+fi
+AC_SUBST(GDMASKPASS)
 
 if test x$enable_authentication_scheme = xpam -a x$have_pam = xno ; then
 	AC_MSG_ERROR(PAM support requested but not available)
@@ -327,7 +341,7 @@ EXPANDED_BINDIR=`eval echo $BINDIR_TMP`
 AC_SUBST(EXPANDED_BINDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_BINDIR,"$EXPANDED_BINDIR")
 
-SBINDIR_TMP="$bindir"
+SBINDIR_TMP="$sbindir"
 EXPANDED_SBINDIR=`eval echo $SBINDIR_TMP`
 AC_SUBST(EXPANDED_SBINDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_SBINDIR,"$EXPANDED_SBINDIR")
@@ -382,6 +396,7 @@ AC_OUTPUT([
 Makefile
 daemon/Makefile
 gui/Makefile
+utils/Makefile
 pixmaps/Makefile
 macros/Makefile
 config/Makefile

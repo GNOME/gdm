@@ -33,6 +33,10 @@ void gdm_clearenv_no_lang (void);
 
 int gdm_get_free_display (int start, int server_uid);
 
+gboolean gdm_text_message_dialog (const char *msg);
+gboolean gdm_text_yesno_dialog (const char *msg, gboolean *ret);
+int	gdm_exec_wait (char * const *argv);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

@@ -22,6 +22,7 @@
 #include "gdm.h"
 
 gboolean	gdm_server_start	(GdmDisplay *d,
+					 gboolean treat_as_flexi,
 					 int min_flexi_disp,
 					 int flexi_retries);
 void		gdm_server_stop		(GdmDisplay *d);

@@ -1,5 +1,5 @@
 SUBDIRS = config macros pixmaps intl vicious-extensions \
-	daemon gui docs omf-install po
+	daemon gui utils docs omf-install po
 
 EXTRA_DIST = \
 	ChangeLog		\
