@@ -18,9 +18,6 @@
 
 #include <config.h>
 
-/* for GtkCList */
-#undef GTK_DISABLE_DEPRECATED
-
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
 #include <math.h>
@@ -2643,10 +2640,12 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 			  gtk_entry_set_text (GTK_ENTRY (entry), login);
 		  }
 		  selected_browser_user = g_strdup (login);
-		  if (selecting_user)
+		  if (selecting_user) {
 			  gtk_label_set_text (GTK_LABEL (msg),
 					      _("Doubleclick on the user "
 						"to log in"));
+			  login_window_resize (FALSE /* force */);
+		  }
 	  }
   }
 }
