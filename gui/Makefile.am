@@ -1,4 +1,4 @@
-SUBDIRS = greeter
+SUBDIRS = . greeter
 
 ## Process this file with automake to produce makefile.in
 CFLAGS = @CFLAGS@ -g -Wall 	\
@@ -18,6 +18,8 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(GUI_CFLAGS)
 
+noinst_LIBRARIES = libgdmwm.a
+
 bin_PROGRAMS = \
 	@GDMCHOOSER@ 		\
 	gdmlogin 		\
@@ -36,19 +38,19 @@ gdmXnestchooser_SOURCES = \
 gdmflexiserver_SOURCES = \
 	gdmflexiserver.c
 
+libgdmwm_a_SOURCES = \
+	gdmwm.c			\
+	gdmwm.h
+
 gdmchooser_SOURCES = \
 	gdmchooser.c		\
 	misc.c			\
-	misc.h			\
-	gdmwm.c			\
-	gdmwm.h
+	misc.h			
 
 gdmlogin_SOURCES = \
 	gdmlogin.c		\
 	gdmlanguages.c		\
 	gdmlanguages.h		\
-	gdmwm.c			\
-	gdmwm.h			\
 	misc.c			\
 	misc.h
 
@@ -60,6 +62,7 @@ gdmconfig_SOURCES = \
 
 gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
+	libgdmwm.a		\
 	$(GUI_LIBS)		\
 	$(XDMCP_LIBS)		\
 	-lX11			\
@@ -70,6 +73,7 @@ gdmchooser_LDADD = \
 	-lviciousui
 
 gdmlogin_LDADD = \
+	libgdmwm.a		\
 	$(GUI_LIBS)		\
 	$(XINERAMA_LIBS)	\
 	$(INTLLIBS)		\

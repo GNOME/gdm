@@ -29,6 +29,8 @@ gdmgreeter_SOURCES =  \
 	greeter_parser.h
 
 gdmgreeter_LDADD = \
+	../libgdmwm.a 		\
+	$(XINERAMA_LIBS)	\
 	$(GREETER_LIBS)
 
 EXTRA_DIST = \

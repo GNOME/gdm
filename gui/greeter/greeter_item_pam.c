@@ -2,6 +2,7 @@
 #include <gdk/gdkkeysyms.h>
 #include "greeter_item_pam.h"
 #include "greeter_parser.h"
+#include "gdm.h"
 #include <string.h>
 
 
@@ -15,8 +16,11 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   const char *tmp;
   const char *password;
 
-  pam_info = greeter_lookup_id ("pam-conversation");
+  g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
 
+#if 0
+  pam_info = greeter_lookup_id ("pam-conversation");
+  
   if (!got_username)
     {
       tmp = gtk_entry_get_text (entry);
@@ -54,6 +58,7 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
       got_username = FALSE;
       g_free (username);
     }
+#endif
 }
 
 gboolean

@@ -1,3 +1,20 @@
+2002-01-18  Alex Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Greeter needs libgnomeui, due to gdmwm!?
+
+	* gui/Makefile.am:
+	Build gdmwm as a helper library.
+
+	* gui/greeter/Makefile.am:
+	Link to xinerama and libgdmwm.
+
+	* gui/greeter/greeter.c:
+	Initial greeter communication.
+
+	* gui/greeter/greeter_item_pam.c:
+	Just print out anything gotten from the entry.
+
 2002-01-16  Alex Larsson  <alexl@redhat.com>
 
 	* gui/gdmlogin.c (gdm_event):
