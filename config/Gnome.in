@@ -13,6 +13,6 @@ done
 if [ -x "$HOME/.gnomerc" ]; then
 	exec "$HOME/.gnomerc"
 else
-	exec "@sysconfdir@/gdm/gnomerc"
+	exec "@EXPANDED_SYSCONFDIR@/gdm/gnomerc"
 fi
 

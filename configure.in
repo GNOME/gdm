@@ -1,7 +1,7 @@
 AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.0.98)
+AM_INIT_AUTOMAKE(gdm,2.0.98.1)
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
@@ -134,10 +134,61 @@ AC_CHECK_HEADER(X11/extensions/Xinerama.h, [
 	AC_CHECK_LIB(Xinerama, XineramaQueryScreens,,, $GTK_LIBS)
 ])
 
-pixmapdir=${datadir}/pixmaps
-AC_SUBST(pixmapdir)
-localedir=${sysconfdir}/gdm
-AC_SUBST(localedir)
+#
+# Configuration file foo, we need to get expanded versions of a bunch of things
+# if you actually know how to code shell then fix this :-) 
+# Stolen mostly from GConf
+#
+
+# find the actual value for $prefix that we'll end up with
+REAL_PREFIX=
+if test "x$prefix" = "xNONE"; then
+  REAL_PREFIX=$ac_default_prefix
+else
+  REAL_PREFIX=$prefix
+fi
+old_prefix=$prefix
+prefix=$REAL_PREFIX
+
+REAL_EXEC_PREFIX=
+if test "x$exec_prefix" = "xNONE"; then
+  REAL_EXEC_PREFIX=$prefix
+else
+  REAL_EXEC_PREFIX=$exec_prefix
+fi
+old_exec_prefix=$exec_prefix
+exec_prefix=$REAL_EXEC_PREFIX
+
+DATADIR_TMP="$datadir"
+EXPANDED_DATADIR=`eval echo $DATADIR_TMP`
+AC_SUBST(EXPANDED_DATADIR)
+
+PIXMAPDIR_TMP="$datadir/pixmaps"
+EXPANDED_PIXMAPDIR=`eval echo $PIXMAPDIR_TMP`
+AC_SUBST(EXPANDED_PIXMAPDIR)
+
+BINDIR_TMP="$bindir"
+EXPANDED_BINDIR=`eval echo $BINDIR_TMP`
+AC_SUBST(EXPANDED_BINDIR)
+
+LOCALEDIR_TMP="$sysconfdir/gdm"
+EXPANDED_LOCALEDIR=`eval echo $LOCALEDIR_TMP`
+AC_SUBST(EXPANDED_LOCALEDIR)
+
+AUTHDIR_TMP="$localstatedir/gdm"
+EXPANDED_AUTHDIR=`eval echo $AUTHDIR_TMP`
+AC_SUBST(EXPANDED_AUTHDIR)
+
+SYSCONFDIR_TMP="$sysconfdir"
+EXPANDED_SYSCONFDIR=`eval echo $SYSCONFDIR_TMP`
+AC_SUBST(EXPANDED_SYSCONFDIR)
+
+SESSDIR_TMP="$sysconfdir/gdm/Sessions"
+EXPANDED_SESSDIR=`eval echo $SESSDIR_TMP`
+AC_SUBST(EXPANDED_SESSDIR)
+
+prefix=$old_prefix
+exec_prefix=$old_exec_prefix
 
 AC_OUTPUT([
 Makefile
