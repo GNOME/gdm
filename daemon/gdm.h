@@ -752,7 +752,8 @@ void		gdm_final_cleanup	(void);
  * Answers:
  *   OK <action>;<action>;...
  *      Where action is one of HALT, REBOOT or SUSPEND.  An empty list
- *      can also be returned if no action is possible
+ *      can also be returned if no action is possible.  A '!' is appended
+ *      to an action if it was already set with SET_LOGOUT_ACTION
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      100 = Not authenticanted

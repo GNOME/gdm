@@ -3456,6 +3456,8 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			gdm_connection_printf (conn, "%s%s",
 					       sep,
 					       GDM_SUP_LOGOUT_ACTION_HALT);
+			if (disp->logout_action == GDM_LOGOUT_ACTION_HALT)
+				gdm_connection_write (conn, "!");
 			sep = ";";
 		}
 		if (GdmSystemMenu &&
@@ -3465,6 +3467,8 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			gdm_connection_printf (conn, "%s%s",
 					       sep,
 					       GDM_SUP_LOGOUT_ACTION_REBOOT);
+			if (disp->logout_action == GDM_LOGOUT_ACTION_REBOOT)
+				gdm_connection_write (conn, "!");
 			sep = ";";
 		}
 		if (GdmSystemMenu &&
@@ -3473,6 +3477,8 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			gdm_connection_printf (conn, "%s%s",
 					       sep,
 					       GDM_SUP_LOGOUT_ACTION_SUSPEND);
+			if (disp->logout_action == GDM_LOGOUT_ACTION_SUSPEND)
+				gdm_connection_write (conn, "!");
 			sep = ";";
 		}
 		gdm_connection_write (conn, "\n");
