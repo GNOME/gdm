@@ -86,14 +86,14 @@ static void gdm_chooser_warn (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 /* Exported for glade */
 gboolean gdm_chooser_cancel (void);
-gboolean gdm_chooser_manage (GtkButton *button, gpointer data);
-gboolean gdm_chooser_browser_select (GtkWidget *widget,
-				     gint selected,
-				     GdkEvent *event);
-gboolean gdm_chooser_browser_unselect (GtkWidget *widget,
-				       gint selected,
-				       GdkEvent *event);
-gboolean gdm_chooser_xdmcp_discover (void);
+void gdm_chooser_manage (GtkButton *button, gpointer data);
+void gdm_chooser_browser_select (GtkWidget *widget,
+				 gint selected,
+				 GdkEvent *event);
+void gdm_chooser_browser_unselect (GtkWidget *widget,
+				   gint selected,
+				   GdkEvent *event);
+void gdm_chooser_xdmcp_discover (void);
 void display_chooser_information (void);
 
 static guint scan_time_handler = 0;
@@ -522,7 +522,7 @@ ping_try (gpointer data)
 		return TRUE;
 }
 
-gboolean 
+void
 gdm_chooser_xdmcp_discover (void)
 {
     GList *hl = hosts;
@@ -554,8 +554,6 @@ gdm_chooser_xdmcp_discover (void)
     if (ping_try_handler > 0)
 	    g_source_remove (ping_try_handler);
     ping_try_handler = g_timeout_add (PING_TIMEOUT, ping_try, NULL);
-
-    return TRUE;
 }
 
 #ifndef ishexdigit
@@ -729,7 +727,7 @@ gdm_chooser_cancel (void)
 }
 
 
-gboolean
+void
 gdm_chooser_manage (GtkButton *button, gpointer data)
 {
     if (scan_time_handler > 0) {
@@ -742,8 +740,6 @@ gdm_chooser_manage (GtkButton *button, gpointer data)
    
     closelog();
     gtk_main_quit();
-   
-    return TRUE;
 }
 
 
@@ -842,52 +838,24 @@ gdm_nth_willing_host (int n)
 }
 
 
-gboolean 
+void
 gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 {
-    if (!widget || !event)
-	return TRUE;
-
-    switch (event->type) {
-	
-    case GDK_BUTTON_PRESS:
-    case GDK_BUTTON_RELEASE:
 	curhost = gdm_nth_willing_host (selected);
 	gtk_widget_set_sensitive (manage, TRUE);
-	break;
 
-    case GDK_2BUTTON_PRESS:
-	curhost = gdm_nth_willing_host (selected);
-	gdm_chooser_manage (NULL, NULL);
-	break;
-	
-    default: 
-	break;
-    }
-    
-    return TRUE;
+	if (event != NULL &&
+	    event->type == GDK_2BUTTON_PRESS) {
+		gdm_chooser_manage (NULL, NULL);
+	}
 }
 
 
-gboolean
+void
 gdm_chooser_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
 {
-    if (!event) 
-	return TRUE;
-
-    switch (event->type) {
-	
-    case GDK_BUTTON_PRESS:
-    case GDK_BUTTON_RELEASE:
 	curhost = NULL;
 	gtk_widget_set_sensitive (manage, FALSE);
-	break;
-	
-    default:
-	break;
-    }
-
-    return TRUE;
 }
 
 void
@@ -1187,6 +1155,16 @@ main (int argc, char *argv[])
 	     * since gdm_wm_init will set the display to the gdk one
 	     * if it fails */
 	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
+    }
+
+    /* FIXME:*/
+    {
+	    struct in_addr ia = {0};
+     
+gdm_chooser_host_alloc ("foo1", "foo-desc",
+			&ia, TRUE);
+gdm_chooser_host_alloc ("foo2", "foo2-desc",
+			&ia, TRUE);
     }
 
     setup_cursor (GDK_LEFT_PTR);
