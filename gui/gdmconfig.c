@@ -631,6 +631,10 @@ gdm_config_parse_most (gboolean factory)
     gdm_spin_set("max_indirect_wait_time", gnome_config_get_int(GDM_KEY_MAXINDWAIT));
     gdm_spin_set("ping_interval", gnome_config_get_int(GDM_KEY_PINGINTERVAL));
     
+    /* Fill the widgets in Sessions tab */
+    gdm_toggle_set ("gnome_chooser_session", gnome_config_get_bool (GDM_KEY_SHOW_GNOME_CHOOSER));
+    gdm_toggle_set ("gnome_failsafe_session", gnome_config_get_bool (GDM_KEY_SHOW_GNOME_FAILSAFE));
+    gdm_toggle_set ("xterm_failsafe_session", gnome_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE));
     
     /* Fill the widgets in User Interface tab */
     gdm_entry_set("gtkrc_file", gnome_config_get_string (GDM_KEY_GTKRC));
@@ -1035,6 +1039,10 @@ write_config (void)
     gdm_spin_write("max_indirect_wait_time", GDM_KEY_MAXINDWAIT);
     gdm_spin_write("ping_interval", GDM_KEY_PINGINTERVAL);
     
+    /* write out the widget contents of the Sessions tab */
+    gdm_toggle_write ("gnome_chooser_session", GDM_KEY_SHOW_GNOME_CHOOSER);
+    gdm_toggle_write ("gnome_failsafe_session", GDM_KEY_SHOW_GNOME_FAILSAFE);
+    gdm_toggle_write ("xterm_failsafe_session", GDM_KEY_SHOW_XTERM_FAILSAFE);
     
     /* Write out the widget contents of the User Interface tab */
     gdm_entry_write("gtkrc_file", GDM_KEY_GTKRC);

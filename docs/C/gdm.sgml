@@ -1157,11 +1157,11 @@
 	      <synopsis>MaxWaitIndirect=30</synopsis>
 	      <para>
 		The MaxWaitIndirect parameter determines the maximum
-		number of seconds between the time where a display
-		requests a chooser and completion of protocol
-		negotiation. If the timeout is exceeded, GDM will
-		remove the display from the pending list freeing up
-		the slot for other displays.
+		number of seconds between the time where a user chooses
+		a host and the subsequent indirect query where the user is
+		connected to the host.  When the timeout is exceeded, the
+		information about the chosen host is removed and the indirect
+		slot freed up for under displays.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1567,6 +1567,39 @@
 	      <synopsis>PositionY=100</synopsis>
 	      <para>
 		The vertical position of the login window.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>ShowGnomeChooserSession</term>
+	    <listitem>
+	      <synopsis>ShowGnomeChooserSession=true</synopsis>
+	      <para>
+		Should the greeter show the Gnome Chooser session, when
+		a session named 'Gnome' session is also present
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>ShowGnomeFailsafeSession</term>
+	    <listitem>
+	      <synopsis>ShowGnomeFailsafeSession=true</synopsis>
+	      <para>
+		Should the greeter show the Gnome Failsafe session
+		in the sessions list.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>ShowXtermFailsafeSession</term>
+	    <listitem>
+	      <synopsis>ShowXtermFailsafeSession=true</synopsis>
+	      <para>
+		Should the greeter show the Xterm Failsafe session
+		in the sessions list.
 	      </para>
 	    </listitem>
 	  </varlistentry>	
