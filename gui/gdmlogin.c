@@ -366,15 +366,34 @@ gdm_parse_enriched_string (const gchar *s)
     gethostname (hostbuf, 255);
     hostname = g_strdup (hostbuf);
     
-    if (hostname != NULL) 
+    if (hostname == NULL) 
 	hostname = g_strdup ("Gnome");
 
     uname (&name);
 
+    /* HAAAAAAAAAAAAAAAAAAAAAAAACK!, do not translate the next line!,
+     * Since this is the default string we might as well use the gettext
+     * translation as we will likely have better translations there.
+     * Yes ugly as fuck, but oh well, unfortunately two standard defaults
+     * are in circulation */
+    if (strcmp (s, "Welcome to %h") == 0) {
+	g_free (display);
+	buffer = g_strdup_printf (_("Welcome to %s"), hostname);
+	g_free (hostname);
+	return buffer;
+    } else if (strcmp (s, "Welcome to %n") == 0) {
+	g_free (display);
+	g_free (hostname);
+	buffer = g_strdup_printf (_("Welcome to %s"), name.nodename);
+	return buffer;
+    }
+
     if (strlen (s) > 1023) {
 	syslog (LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
 	g_free (display);
-	return (g_strdup_printf (_("Welcome to %s"), hostname));
+	buffer = g_strdup_printf (_("Welcome to %s"), hostname);
+	g_free (hostname);
+	return buffer;
     }
 
     str = g_string_new (NULL);
