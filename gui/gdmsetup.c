@@ -83,6 +83,11 @@ update_greeters (void)
 			g_free (ret);
 			goto check_update_error;
 		}
+
+		/* sanity */
+		if (pid <= 0)
+			continue;
+
 		if (kill (pid, SIGHUP) != 0)
 			have_error = TRUE;
 		p = strchr (p, ';');
