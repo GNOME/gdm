@@ -1,6 +1,6 @@
 /*
  *    GDMcommunication routines
- *    (c)2001 Queen of England, (c)2002 George Lebl
+ *    (c)2001 Queen of England, (c)2002,2003 George Lebl
  *    
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -365,6 +365,8 @@ gdmcomm_check (gboolean gui_bitching)
 	FILE *fp = NULL;
 	long pid;
 	char *pidfile;
+	struct stat s;
+	int statret;
 
 	pidfile = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 					GDM_KEY_PIDFILE);
@@ -407,7 +409,10 @@ gdmcomm_check (gboolean gui_bitching)
 		return FALSE;
 	}
 
-	if (access (GDM_SUP_SOCKET, R_OK|W_OK)) {
+	IGNORE_EINTR (statret = stat (GDM_SUP_SOCKET, &s));
+	if (statret < 0 ||
+	    s.st_uid != 0 ||
+	    access (GDM_SUP_SOCKET, R_OK|W_OK) != 0) {
 		if (gui_bitching) {
 			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
