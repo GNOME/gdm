@@ -24,6 +24,11 @@ Wed Jun 25 15:38:29 2003  George Lebl <jirka@5z.com>
 	* daemon/verify-pam.c: don't refer to the /etc/pam.d/ dir since
 	  that's linux-pam specific
 
+	* daemon/gdm.[ch]: add ALL_SERVERS command which returns all the
+	  displays on the system similarly to CONSOLE_SERVERS except it
+	  does not return any vt information and returns even remote
+	  and non-console xnest servers
+
 2003-06-16  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* gui/greeter/greeter_session.c: (greeter_session_init):
