@@ -1,0 +1,23 @@
+QUICK NOTES ON INSTALLATION/USE:
+
+For security reasons a dedicated group id is needed for proper
+operation! gdm assumes that the group is called `gdm'. Furthermore gdm
+relies on the existence of a `nobody' user. Create these before
+running make install.
+
+You should run ``make install'' as root to get the permissions right
+on the authentication directory.
+
+Configuration is done by editing the gdm.conf file (located in
+<prefix>/etc/gdm/gdm.conf). If no config file exists, make install
+will create one for you.
+
+Put your (jpg, gif, png, xpm) picture in ~/.gnome/photo to make it
+appear in the face browser.
+
+When reporting bugs you should first turn on debugging in
+gdm.conf. Your syslog daemon might not log debug information per
+default so you should make sure daemon.debug events are logged to a
+file. Include the resulting log in your bug report.
+
+

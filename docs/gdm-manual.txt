@@ -1,0 +1,352 @@
+
+The Gnome Display Manager
+
+1. Theory of operation
+
+gdm is a replacement for xdm, the X Display Manager. Unlike its
+competitors (x3dm, kdm, wdm) gdm was written from scratch and does not
+contain any original xdm code.
+
+gdm was written with simplicity and security in mind. The overall
+design concept is this:
+
+When gdm starts it parses the config file gdm.conf. For each of the
+local displays gdm forks a slave process. The main gdm process will
+listen to XDMCP requests from remote displays and monitor the local
+display sessions.
+
+The gdm slave process starts an Xserver according to information read
+from the config file. gdm sets up proper X authentication and starts
+up the greeter window requesting the user for login and password. 
+
+The gdm master and slave processes are deliberately kept small and
+they are believed to be secure. The program providing the user
+interface is significantly more complex and is linked to several
+unaudited libraries. Therefore it runs as a dedicated gdm user and
+communicates with gdm through a pipe.
+
+
+2. Overview of the config directory.
+
+The configuration files for gdm are located in the <prefix>/etc/gdm/
+directory.
+
+This is a listing of the config directory contents:
+
+	Init/
+	PostSession/
+	PreSession/
+	Sessions/
+	gdm.conf
+
+gdm.conf is the main gdm configuration file. The options will be
+described later in this document.
+
+The remaining configuration is done by dropping scripts in the
+subdirectories of the gdm folder. This approach makes it easy for
+package management systems to install window managers and different
+session types without requiring the sysadmin/user to edit files.
+
+In this section we will explain the Init, PreRoot and PostRoot
+directories as they are very similar.
+
+When the X server has been successfully started, gdm will try to run
+the script called Init/<displayname>. I.e. Init/:0 for the first local
+display.  If this file is not found, gdm will attempt to to run
+Init/Default. The script will be run as root and gdm blocks until it
+terminates. Use the Init/* script for programs that are supposed to
+run alongside with the gdm login window. xconsole for
+instance. Commands to set the background etc. goes in this file too.
+
+It is up to the sysadmin to decide whether clients started by the Init
+script should be killed before starting the user session. This is
+controlled with the KillInitClient option in gdm.conf.
+
+When the user has been successfully authenticated, gdm tries to run
+the PreSession script. Similar to the Init-scripts,
+PreSession/<displayname> will be executed first, if that is not found
+gdm will attempt to run PreSession/Default. The script will be run as
+root and gdm blocks until it terminates. Use this script for local
+session management or accounting stuff. The USER environment variable
+contains the login of the authenticated user. The script should return
+0 on success. Any other value will cause gdm to terminate the current
+login process.
+
+Then the session script is run. Session scripts are located in the
+etc/gdm/Session directory. Which one gdm runs depends on the session
+the user chose in the Sessions-menu in the gdm greeter. If no session
+is selected and the user has no last session stored in his
+~/.gnome/gdm file, the system will choose or first script found or --
+if Sessions/Default exists -- this will be run. For instance you can
+create a symlink from Gnome to Default to make Gnome the default
+desktop environment.
+
+When the user terminates his session the PostSession script will be
+run. Operation is similar to Init and PreSession. That is, gdm will
+attempt to execute the script PostSession/<displayname> and if that
+doesn't exist: PostSession/Default. Again the script will be run with
+root priviledges, gdm will block and the USER environment variable
+will contain the name of the user who just logged out.
+
+Neither of the Init, PreSession or PostSession scripts are necessary
+and can be left out. At least one session script is required for
+proper operation.
+
+
+3. The Login Window
+
+gdm supports two different login modes (which happen to be selected
+by changing greeter programs).
+
+
+The gdmlogin program is a bare bones gui application providing only a
+few menus and a login prompt. A graphical version of the textmode
+login program, if you wish.
+
+gdmlogin was designed for use in environments, where usernames can't
+be exposed.
+
+
+gdmgreeter is slightly more powerful. It consists of a browser window
+containing faces of all users on the system.
+
+~user/.gnome/photo is expected to contain an Imlib supported
+image. gdmgreeter will scale down large images to the sysadmin
+specified maximum.
+
+
+4. The config file
+
+
+4.1 Section: [appearance]
+
+LogoImage=@pixmapdir@/gnome-logo-large.png
+	Filename to display in the logo box. The image must be in an
+	Imlib supported format and it must be readable for the gdm
+	user.
+
+Quiver=1
+	Controls whether gdmgreeter should shake the display when an
+	incorrect username/password is entered. Default: 1.
+
+Iconify=1
+	The greeter window can be iconified (For TV and fish). You can
+	turn the iconify option off by setting this to 0. Default: 1.
+
+IconFile=@pixmapdir@/gdm.xpm
+	File to use for gdmgreeter when it's in iconified state. The
+	image must be in an Imlib supported format and it must be
+	readable for the gdm user.
+
+Gtkrc=
+	Path to a gtkrc containing the theme for use in
+	gdmgreeter/gdmlogin/gdmchooser.
+
+NoFaceImage=@pixmapdir@/nophoto.png
+	(Only used by gdmgreeter)
+
+	Default icon file for users without a personal picture in
+	~/gnome/photo. The image must be in an Imlib supported format
+	and it must be readable for the gdm user.
+
+GlobalImageDir=@datadir@/faces/
+	(Only used by gdmgreeter)
+
+	Systemwide directory for icon files. The sysadmin can place
+	icons for users here without touching their homedirs. The
+	iconname represents a user name. I.e. GlobalImageDir/johndoe
+	would contain the icon for the user johndoe (No
+	extension!). The images must be in an Imlib supported format
+	and they must be readable for the gdm user.
+
+	A user's own icon file will take precedence over the sysadmin
+	provided one.
+
+
+4.2 Section: [system]
+
+ShutdownMenu=0
+	Turns the Shutdown/Halt menu on/off. Default: 0
+
+SuspendCommand=
+	If specified a Suspend item will appear in the System menu in
+	gdmgreeter. The command specified here will be executed
+	asynchronously. Please use full path!
+
+	For instance
+
+		SuspendCommand=/usr/bin/apm --suspend 
+
+UserFileCutoffSize=65535
+	User files larger than this value (in bytes) will be ignored
+	by gdm/gdmgreeter. Handy for users putting gigantic pictures
+	in their ~/.gnome/photo.
+
+	In addition to the size check both gdm and gdmgreeter are
+	extremely picky about accessing files in user directories.
+	Neither will follow symlinks and they refuse to read files and
+	directories writable by other than the owner.
+
+UserIconMaxWidth=128
+UserIconMaxHeight=128
+	Specifies the maximum icon sizes in the face browser.
+
+DefaultPath=@bindir@:/usr/local/bin:/usr/bin/X11:/usr/bin:/bin
+	Specifies the path which will be set in the user's session.
+
+VerboseAuth=0
+	Specifies whether gdm should print authentication
+	errors. Depending on authentication type usernames might be
+	exposed when this option is on.
+
+AllowRoot=0
+	Set to 1 to enable root logins.
+
+RelaxPermissions=0
+	By default gdm ignores files/dirs writable to other users than
+	the owner. 
+
+	Changing the value of RelaxPermissions makes it possible to
+	alter this behaviour:
+
+	0 - Paranoia option. Only accepts user owned files and dirs.
+	1 - Allow group writable files/dirs
+	2 - Allow world writable files/dirs 
+
+RetryDelay=3
+	The number of seconds gdm should wait before reactivating the
+	entry field after a failed login.
+
+
+4.3 Section: [messages]
+
+Welcome=Welcome to %h
+	Controls which text to display next to the logo image in the
+	greeter. 
+
+	  `%h' will be expanded to the hostname
+	  `%d' will be replaced by the display's hostname 
+	  `%%' will print the %-character
+
+
+4.4 Section: [daemon]
+
+SessionDir=@sysconfdir@/gdm/Sessions
+	Directory containing the Session scripts.
+
+PidFile=/var/run/gdm.pid
+	Name of the gdm daemon pidfile.
+
+Greeter=@bindir@/gdmgreeter
+	Path and name of the login program executable.
+
+	@bindir@/gdmlogin for the secure login window.
+
+	@bindir@/gdmgreeter for the face browser.
+
+Chooser=@bindir@/gdmchooser
+	Path and name of the gdmchooser executable.
+
+User=gdm
+	The username under which gdm is run.
+
+Group=gdm
+	The group id under which gdmgreeter is run.
+
+DisplayInitDir=@sysconfdir@/gdm/Init
+	Directory containing the Init scripts.
+
+KillInitClients=1
+	Determines whether gdm should kill X clients started by the
+	Init scripts when the user logs in. Default: 1.
+
+PreSessionScriptDir=@sysconfdir@/gdm/PreSession
+	Directory containing the PreSession scripts.
+
+PostSessionScriptDir=@sysconfdir@/gdm/PostSession
+	Directory containing the PostSession scripts.
+
+AuthDir=@authdir@
+	Directory containing the X authentication files for the
+	displays. Should be owned by gdm.gdm with permissions 750.
+
+LogDir=@authdir@
+	Directory containing the log files for the displays. By
+	default this is the same as the AuthDir.
+
+
+4.5 Section: [servers]
+
+0=/usr/bin/X11/X
+1=/usr/bin/X11/X -bpp 8
+
+	Control section for local X servers. Each line indicates the
+	local display number and which command needs to be run to
+	start the X server(s).
+
+
+4.6 Section: [xdmcp]
+
+Enable=1
+	Enables XDMCP support allowing remote displays/X terminals to
+	be managed by gdm.
+
+	gdm listens for requests on UDP port 177. Access from remote
+	displays is controlled by the TCP Wrappers library. The
+	service name is `gdm'.
+
+	You should add 
+
+		gdm:	.my.domain
+
+	or something similar to /etc/hosts.allow. See the
+	hosts_access(5) man page for details.
+
+	Please note that XDMCP is not a particularly secure protocol
+	and that it is a good idea to block UDP port 177 on your
+	firewall unless you really need it.
+
+MaxPending=4
+	To avoid denial of service attacks, gdm has fixed size queue
+	of pending connections. Only MaxPending displays can start at
+	the same time. 
+
+	Please note that this parameter does *not* limit the number of
+	remote displays which can be managed. It only limits the
+	number of simultaneous displays initiating a connection.
+
+MaxManageWait=20
+	When gdm is ready to manage a display an ACCEPT packet is sent
+	to it containing a unique session id which will be used in
+	future conversations.
+
+	gdm will then place the session id in the pending queue
+	waiting for the display to respond with a MANAGE request.
+
+	If no response is received within MaxManageWait seconds, gdm
+	will declare the display dead and erase it from the pending
+	queue freeing up the slot for other displays.
+
+MaxSessions=4
+	Determines the maximum number of remote display connections
+	which will be accepted.
+
+Port=177
+	The UDP port number gdm should listen to for XDMCP requests.
+
+
+4.7 Section: [chooser]
+
+ImageDir=@datadir@/hosts
+	Repository for host icon files. The sysadmin can place icons
+	for remote hosts here and they will appear in gdmchooser.
+
+	The file name must match the FQDN for the host (No extension!). 
+	Icons must be in an Imlib supported format and must be
+	readable to the gdm user.
+
+DefaultImage=@pixmapdir@/nohost.png
+	File name for the default host icon.
+
+
+$Id$

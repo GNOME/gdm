@@ -1,0 +1,106 @@
+/* GDM - The Gnome Display Manager
+ * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/*
+ * Functions for generating MIT-MAGIC-COOKIEs. 
+ * 
+ * This code was derived (stolen!) from mcookie.c written by Rik Faith
+ * <faith@cs.unc.edu>
+ *  
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <syslog.h>
+#include <string.h>
+#include <fcntl.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <gnome.h>
+
+#include "gdm.h"
+#include "md5.h"
+
+#define MAXBUFFERSIZE 512
+
+struct rngs {
+   const char *path;
+   int        length;
+} rngs[] = {
+   { "/dev/random",              16 },
+   { "/dev/urandom",            128 },
+   { "/proc/stat",    MAXBUFFERSIZE },
+   { "/proc/loadavg", MAXBUFFERSIZE },
+   { "/dev/audio",    MAXBUFFERSIZE },
+};
+
+#define RNGS (sizeof(rngs)/sizeof(struct rngs))
+
+void gdm_cookie_generate(GdmDisplay *);
+
+void 
+gdm_cookie_generate(GdmDisplay *d)
+{
+    int i;
+    struct MD5Context ctx;
+    unsigned char digest[16];
+    unsigned char buf[MAXBUFFERSIZE];
+    int fd;
+    pid_t pid;
+    int r;
+    struct timeval tv;
+    struct timezone tz;
+    char sub[8];
+    char cookie[40];
+
+    sub[0]='\0';
+    cookie[0]='\0';
+
+    MD5Init( &ctx );
+        gettimeofday( &tv, &tz );
+    MD5Update( &ctx, (unsigned char *)&tv, sizeof( tv ) );
+    pid = getppid();
+    MD5Update( &ctx, (unsigned char *)&pid, sizeof( pid ));
+    pid = getpid();
+    MD5Update( &ctx, (unsigned char *)&pid, sizeof( pid ));
+        
+    for (i = 0; i < RNGS; i++) {
+	if ((fd = open( rngs[i].path, O_RDONLY|O_NONBLOCK )) >= 0) {
+	    r = read( fd, buf, sizeof( buf ) );
+	    if (r > 0)
+		MD5Update( &ctx, buf, r );
+	    else
+		r = 0;
+	    close( fd );
+	    if (r >= rngs[i].length) break;
+	}
+    }
+    
+    MD5Final(digest, &ctx);
+
+    for (i = 0; i < 16; i++) {
+	sprintf(sub, "%02x", digest[i]);
+	strcat(cookie, sub);
+    }
+
+    d->cookie=g_strdup(cookie);
+    d->bcookie=g_strndup(digest, 16);
+}
+
+
+/* EOF */

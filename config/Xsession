@@ -1,0 +1,41 @@
+#!/bin/bash -login
+# $XConsortium: Xsession /main/10 1995/12/18 18:21:28 gildea $
+
+case $# in
+1)
+	case $1 in
+	failsafe)
+		exec xterm -geometry 80x24-0-0
+		;;
+	esac
+esac
+
+# redirect errors to a file in user's home directory if we can
+for errfile in "$HOME/.xsession-errors" "${TMPDIR-/tmp}/xses-$USER" "/tmp/xses-$USER"
+do
+	if ( cp /dev/null "$errfile" 2> /dev/null )
+	then
+		chmod 600 "$errfile"
+		exec > "$errfile" 2>&1
+		break
+	fi
+done
+
+# clean up after xbanner
+freetemp
+
+startup=$HOME/.xsession
+resources=$HOME/.Xresources
+
+if [ -x "$startup" ]; then
+	exec "$startup"
+elif [ -x "$HOME/.Xclients" ]; then
+	exec "$HOME/.Xclients"
+elif [ -x /etc/X11/xinit/Xclients ]; then
+	exec /etc/X11/xinit/Xclients
+else
+	if [ -f "$resources" ]; then
+		xrdb -load "$resources"
+	fi
+	exec xsm
+fi

@@ -1,0 +1,108 @@
+AC_INIT(daemon/gdm.h)
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(gdm,2.0.0)
+AM_MAINTAINER_MODE
+AM_ACLOCAL_INCLUDE(macros)
+
+GNOME_INIT
+
+AC_ISC_POSIX
+AC_PROG_CC
+AC_STDC_HEADERS
+AC_ARG_PROGRAM
+AM_PROG_LIBTOOL
+
+GNOME_X_CHECKS
+
+AC_SUBST(CFLAGS)
+AC_SUBST(CPPFLAGS)
+AC_SUBST(LDFLAGS)
+
+dnl ## internationalization support
+ALL_LINGUAS="de es fr no"
+AM_GNOME_GETTEXT
+
+dnl ## Autentication scheme
+have_pam=no
+AC_CHECK_HEADERS(security/pam_appl.h, [
+	have_pam=yes
+        LIBS="$LIBS -lpam"
+        AC_DEFINE(HAVE_PAM)])
+
+if test $have_pam = no; then
+
+# Check if -lcrypt is necessary
+AC_CHECK_LIB(crypt, crypt, [
+        LIBS="$LIBS -lcrypt"])
+
+# Check for shadow passwords (hack)
+  AC_MSG_CHECKING("for /etc/shadow")
+
+  if test -e /etc/shadow; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(HAVE_SHADOW)
+  else	
+	AC_MSG_RESULT(no)
+  fi
+
+fi
+
+
+# TCP Wrappers for XDMCP access control
+AC_MSG_CHECKING("whether to use TCP wrappers")
+LIBWRAP_PATH=""
+for I in $LDFLAGS $LIBS -L/usr/lib; do
+	case "$I" in
+	-L*)
+	THEFILE="`echo $I | sed -e 's,^-L,,'`"
+	echo "From $I, checking in dir $THEFILE for libwrap.a" 1>&5
+	if test -f $THEFILE/libwrap.a; then
+		LIBWRAP_PATH=$THEFILE/libwrap.a
+		echo "Found $LIBWRAP_PATH" 1>&5
+		break
+	fi
+	esac
+done
+if test -n "$LIBWRAP_PATH"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
+if test -n "$LIBWRAP_PATH"; then
+	nm $LIBWRAP_PATH | grep 'T setenv' && LIBWRAP_PATH=""
+	if test -z "$LIBWRAP_PATH"; then
+		echo "*********************************************************"
+	        echo " You have a broken TCP wrappers library (setenv included)"
+		echo " Please get the latest TCP wrappers package from your OS"
+		echo " vendor, or recompile TCP wrappers to not include a"
+		echo " setenv() implementation."
+		echo
+		echo "Not using TCP wrappers after all."
+		echo "*********************************************************"
+	else
+                AC_DEFINE(HAVE_TCPWRAPPERS)
+	fi
+fi
+LIBS="$LIBS $LIBWRAP_PATH"
+
+AC_PATH_PROG(ac_xauth, xauth)
+GDM_XAUTH_PATH=$ac_xauth
+
+AC_DEFINE_UNQUOTED(GDM_XAUTH_PATH, "$ac_xauth")
+
+
+AC_OUTPUT([
+Makefile
+daemon/Makefile
+gui/Makefile
+pixmaps/Makefile
+macros/Makefile
+config/Makefile
+docs/Makefile
+po/Makefile.in
+intl/Makefile
+stamp.h],[sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile])
+
+

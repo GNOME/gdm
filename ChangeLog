@@ -1,0 +1,672 @@
+1999-03-28  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* gui/gdmgreeter.c (gdm_greeter_user_alloc): Icon size bug
+ 	reported by Clifford Wright.
+
+1999-03-07  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* configure.in, src/Makefile.am: Pass -DGDM_CONFIG_PATH to
+ 	compiler to avoid ${prefix}/blah bug in Owen's patch.
+
+1999-03-06  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_user_alloc): Fixed a memory
+ 	corruption bug (Reported by Centove).
+
+1999-03-05  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* gdm.spec: Fix spec file.
+
+	* Misc fixes.
+
+1999-03-03  Martin Kasper Petersen  <mkp@mkp.net>
+	
+	* config/Makefile.am, configure.in: Patch from Owen.
+
+	* po/de.po: Added (Patch from Karsten Weiss
+ 	<karsten@addx.au.s.shuttle.de>).
+
+1999-02-26  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (main): Force completion mode on for the time
+ 	being. I'll implement a real PAM conversation function within the
+ 	next couple of days to take care of the exposed usernames issue.
+
+1999-02-25  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmchooser.c: Done!
+	
+	* src/gdmchooser.c: First shot at reimplementing the code I
+ 	lost. Doesn't actually work yet.	
+
+1999-02-24  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmxdmcp.c: Fix gethostbyaddr() lookups.
+
+	* src/gdmslave.c: Various fixes.
+
+	* src/gdm.c (gdm_display_dispose): Call XCloseDisplay to close
+ 	remote connections.
+	
+	(gdm_child_handler): Fix wrong debug output.
+
+	* config/Makefile.am: Create Default display init file.
+
+1999-02-23  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmverify.c (gdm_verify_user): Added shadow support (Patch
+ 	from Timo Sirainen).
+
+	* src/gdmgreeter.c (main): Added GtkRC support
+ 	(Patch from Daniel_Burrows@brown.edu).
+
+1999-02-23  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+	
+	* src/gdmgreeter.c (main): Call gnome sound shutdown here. 
+
+	* src/gdm.c (main): Show a descriptive message to let the user
+	locate the stale pid file.
+
+	* configure.in (LIBWRAP_PATH): Use the same configuration
+	mechanism for detecting a working libwrap library on the system
+	(fixes crash).
+
+	* src/gdmslave.c (gdm_slave_greeter): Do not use sscanf to get the
+	password, as it might contain spaces, just copy the string.
+	(gdm_slave_get_opts): Use fgets directly on the target buffer. 
+	(gdm_slave_get_opts): Make the strings empty at startup.
+
+	* src/gdmgreeter.c (gdm_greeter_logo_init): Use gnome-pixmap
+	widget instead of gtk-pixmap.  Gnome-pixmap correctly uses the
+	right visual and is simpler to use (and does not crash on
+	multidepth visuals).
+	(gdm_greeter_iconify_handler): Use gnome-pixmao here too.
+
+1999-02-16  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdm.c: Ignore invalid lines in [servers] section.
+
+1999-02-14  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmserver.c: Changed SA_ONESHOT to SA_RESETHAND.
+
+1999-02-08  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_parse_config): Disable shutdown
+ 	menu on non-local displays.
+
+	* src/gdm.c (gdm_config_parse): Default path belongs in
+ 	[system] (msw).
+
+	* src/gdmxdmcp.c (gdm_xdmcp_init): Use GIOChannel to monitor fds.
+
+	* src/gdmmisc.c (gdm_parse_enriched_string): Support %d expansion
+ 	for display name.
+
+1999-02-06  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmxdmcp.c (gdm_xdmcp_send_accept): MIT cookies work for
+ 	remote displays now.
+
+	* src/gdmslave.c: Lots of fixes. Should be stable again.
+
+1999-02-04  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_child_handler): Only xping remote
+ 	displays to avoid DISPLAY_ABORT for murdered greeters/Xservers.
+
+	* src/gdmmisc.c (gdm_exec_script): Set default path before
+ 	executing.
+
+1999-02-03  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* Makefile.am: Stuff the docs dir back in and add the appropriate
+ 	Makefile.am.
+
+1999-02-02  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c: Fixes for XDMCP vs. local display handling.
+
+	* src/gdmxdmcp.c: Numerous fixes.
+
+1999-01-31  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmxdmcp.c: First shot at XDMCP implentation.
+
+1999-01-28  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* configure.in/Makefile.am: Generate Makefile in docs. Added
+ 	README.install to EXTRA_DIST.
+
+1999-01-27  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_info): Fixed the annoying hanging
+ 	Gtk bug caused by my inability to program user interfaces. Ahem.
+
+	* configure.in: Stuff GNOME_GETTEXT back in.
+
+1999-01-25  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_session_start): Moved english->C
+ 	locale here. Ugly, but it became a mess in greeter too.
+
+	* src/gdmverify.c (gdm_verify_user): Repetetetive pam_setcred
+ 	spotted by gb. Fixed.
+
+1999-01-22  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmverify.c (gdm_verify_user): syslog ident workaround.
+
+	* src/gdmgreeter.c (gdm_greeter_session_init): Used widget pointer
+ 	as session name if no default was found. Fixed.
+
+	* src/gdm.c (gdm_display_unmanage): Avoid killing master daemon
+ 	when unmanaging displays.
+
+	* src/gdmslave.c (gdm_slave_session_start): Added call to
+ 	initgroups() to set up additional group memberships.
+	
+	* src/gdmverify.c (gdm_verify_user): Fix non-PAM password
+ 	checking.
+
+1999-01-20  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmverify.c (gdm_verify_user): Updated PAM stuff.
+
+1999-01-19  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+	* src/gdmslave.c (gdm_slave_session_start): Set the umask.
+
+1999-01-19  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmverify.c (gdm_verify_pam_conv): Quick workaround for PAM
+ 	stuff. Real solution due tomorrow.
+
+	* src/gdmgreeter.c: Lots of new stuff. Non completion mode
+ 	deprecated. On demand NFS lookups. Language selection.
+
+	* src/gdmslave.c (gdm_slave_greeter): New session/language
+ 	selection support.
+
+1999-01-18  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_session_start): Fixed memleak.
+
+1999-01-15  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+	* src/gdmslave.c (gdm_slave_greeter): Check return values from
+	sscanf.  Because "\n" scanned with %s returns -1 and the target
+	buffer has an undefined value.
+
+	* src/gdm.c (main): Set the umask to 066 to make any
+	default file created indirectly by gnome-config be of mode 066. 
+
+1999-01-13  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_sessions_init): Check that Session
+ 	scripts are executable before adding them to the list.
+
+	* src/gdmmisc.c (gdm_file_check): Added an option making the
+ 	function return TRUE if it is ok that a file is absent. I.e. the
+ 	user has no existing .Xauthority, .gnome/gdm or whatever.
+
+	* src/gdmslave.c (gdm_slave_session_start): Added default
+ 	path. Create ~user/.gnome if it doesn't exist.	
+
+	* src/gdmslave.c (gdm_slave_session_stop): More setegid().
+
+	* src/gdmslave.c (gdm_slave_session_start): Added setgid().
+	(gdm_slave_greeter): Fixed sigmask.
+
+	* src/gdmauth.c (gdm_auth_user_{add|remove}): Added -i to xauth to
+ 	ignore hanging locks.
+
+	* src/gdmgreeter.c (main): Resize only when browser is enabled.
+	
+	* src/gdmgreeter.c (gdm_greeter_message_init): Removed debug msg.
+
+	* src/gdm.c (gdm_config_parse): Bail out if gdm user/group doesn't
+ 	exist. Root failover made people lazy. 
+	
+	* src/gdm.c (gdm_child_handler): Minor fix to make gdm work with
+ 	more than one local Xserver.
+
+1999-01-12  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* config/gdm.conf.in ([system]): Added UserIconMax{Width,Height}.
+
+	* src/gdmgreeter.c (gdm_greeter_user_alloc): Scales user icons to
+ 	sysadmin specified max size.
+	
+	* src/gdmgreeter.c (gdm_greeter_iconify_handler): Fixed
+ 	iconification bug.
+
+	(gdm_greeter_login_key_handler): Cursor/Tab key restriction.
+
+	* src/gdmslave.c (gdm_slave_greeter): Forgot to setgid()
+	
+	(gdm_slave_greeter): Workaround for getenv("HOME") until miguel
+ 	fixes gnome_init().
+
+	* src/gdmmisc.c (gdm_parse_enriched_string): Fallback if
+ 	getenv("HOSTNAME")==NULL.
+
+1999-01-11  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/<younameit>.[ch] Done rewriting the daemon code to avoid the
+ 	race condition caused by simultaneous greeter/session and Xserver
+ 	death.
+
+1998-12-30  Jeff Garzik  <jgarzik@pobox.com>
+
+	* src/gdmauth.c, src/gdmgreeter.c, src/gdmmisc.c,
+	  src/gdmslave.c, src/gdmxdmcp.c:
+	s/g_copy_strings/g_strconcat/
+
+1998-12-28  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/*.c: Loads of fixes over the past couple of days.
+
+	* src/gdmgreeter.c (gdm_greeter_parse_config): gdmUserMaxFile
+ 	tunable.
+
+	* src/gdmmisc.c (gdm_file_check): Moved gdm_greeter_file_check
+ 	here. Now a generic function.
+
+	* src/gdmslave.c (gdm_slave_windows_kill_error_handler): Ok,
+ 	nailed down the bug which caused gdmslave to exit(1)
+ 	mysteriously. A race in the windows_recursive_kill function caused
+ 	the X default error handler to kick in. Blam. You're dead.
+	
+	(gdm_slave_session_init): Run sanity check on ~user/.Xauthority
+ 	and ~user/.gnome/gdm.
+
+	(gdm_slave_exec_command): Use the passed pointer instead of
+ 	gdmSuspend.
+
+	(gdm_slave_session_init): Added SHELL environment variable so the
+ 	user's shell is executed. Not just root's..
+	
+1998-12-25  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_user_alloc): Rewritten to use
+ 	sanity check.
+	
+	(gdm_greeter_file_check): New function. Checks file size,
+ 	ownership etc. to avoid DoS attacks on greeter.
+
+1998-12-23  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdm.c (gdm_abort): New function for error logging and
+ 	aborting. 
+	
+	(gdm_config_parse): luser proof permissions checking on authdir.
+	
+	* src/gdmgreeter.c: Several oddities fixed.
+	
+	* src/gdmgreeter.c (gdm_greeter_buttons_init): Mark login button
+ 	as default.
+	
+	* src/gdmgreeter.c (gdm_greeter_login_entry_handler): Fixed event
+ 	handlers to avoid the obscure emit_stop bug. Turns out my ancient
+ 	event handlers were doing the right thing all along. Only the
+ 	recent ones were br0ked. *sigh*. Thanks Owen!
+
+1998-12-22  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_greet_init): Removed debug logging of
+ 	username and password. Ahem. Thanks Sopwith!
+
+	* src/gdmgreeter.c (gdm_greeter_login_entry_handler):
+ 	Fixes. gtk_signal_emit_stop_by_name workaround.
+
+1998-12-20  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_invalid_passwd_req): Minor hack to
+ 	avoid greeter to be reactivated during dialog.
+	
+	* src/(gdm_greeter_entry_init): Limit input length in login and
+ 	password entry fields.
+
+	* src/gdmslave.c (gdm_slave_greet_init): Avoid potential buffer
+ 	overflow, in case something/someone breaks greeter.
+
+1998-12-15  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmverify.c (gdm_verify_user): Two buglets reported by
+ 	<kvajk@ricochet.net>.
+
+1998-12-14  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_browser_unselect): Catch
+ 	BUTTON_RELEASE.
+
+1998-12-13  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_{reboot,halt}_handler): Use
+ 	gnome_question_dialog instead of message_box.
+
+1998-12-03  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* config/Makefile.am: Fixed gnomerc. Both path and INSTALL_SCRIPT
+ 	were wrong -- No wonder people have been complaining. *sigh*
+
+	* src/gdm.c (main): Abort with (xdm compliant :) error message if
+ 	gdm isn't started by root.
+
+1998-12-01  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* docs/gdm-manual.txt: Crude manual draft.
+
+	* src/gdm.c, config/gdm.conf.in: The PreRoot and PostRoot
+ 	directories have been renamed PreSession and PostSession to avoid
+ 	confusion.
+
+1998-11-30  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_message_init): Calls the enriched
+ 	string function on the message string to support ``Welcome to
+ 	<hostname>''. Need to supply both server and client macros.
+
+	* src/gdmmisc.c (gdm_parse_enriched_string): New function for %h
+ 	expansion in strings.
+
+	* src/gdmgreeter.c: Removed legacy labels and such. gettext takes
+ 	it from here.
+
+	* src/gdm.c (gdm_config_parse): Check for correct permissions on
+ 	vardir.
+
+1998-11-29  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+	* src/gdmgreeter.c (gdm_greeter_browser_init): IconList now starts
+	life in thawed mode.
+
+1998-11-22  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_browser_select): Reverted to the
+ 	old event types (GDK_BUTTON_PRESS) for gnome-icon-list.
+
+	* src/gdmslave.c, src/gdmgreeter.c, src/gdm.c: Added support for
+ 	suspending APM-aware machines from greeter.
+
+1998-11-20  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c: Fixed X server restart stuff. gdmslave rewrite
+ 	done.
+
+	* src/gdmslave.c, src/gdm.c, config/gdm.conf.in: Implemented
+ 	KillInitClients option (Requested by sct).
+
+1998-11-18  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_display_init): Finally nailed down the
+ 	bug that has been haunting me for the past week causing
+ 	gdm_slave_windows_kill to hang on second login. The X server takes
+ 	a while to recover consciousness after a reset. I take this into
+ 	account by sleeping for a while if XOpenDisplay fails.
+  	Unfortunately, dsp was already initialized in second run
+ 	(but invalid after the X server reset) causing my retry condition
+ 	to be ignored. Always check your pointers! *sigh*
+
+	So, the new gdm should be as fast as xdm (i.e. fewer resets
+ 	causing garbled displays and momentary flicker. Visual annoyances
+ 	beyond this point - Go bug the X server people).
+	
+	SANE tutorial coming up in 6 hours. *Thud*
+	
+1998-11-09  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c More or less a rewrite.
+
+1998-11-08  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_init): Add d->name when starting X
+ 	server.
+
+	* src/gdm.c (gdm_config_parse): Added intelligent AuthDir
+ 	searching and gdmLogDir. gdmLogFile deprecated.
+
+	* src/gdmslave.c (gdm_slave_init): Moved stdout, stderr logging
+ 	here. Logs are now per-display.
+
+1998-11-08  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* #include<errno.h> in *.c.
+
+1998-11-02  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_session_init): Reset display instead
+ 	of restarting the X server every time.
+
+1998-11-01  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_session_init): If PreRoot script
+ 	returns > 0 abort session.
+
+1998-10-31  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmauth.c (gdm_auth_user_add): New function.
+	(gdm_auth_user_remove): New function. ~/.Xauthority management.
+
+1998-10-30  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmmisc.c (gdm_arg_munch): Zero out the remaining
+ 	argv-entries. We use the static array several times.
+
+	* src/gdmslave.c (gdm_slave_session_init): Removed malloc(pwent) -
+ 	Duh!.
+
+	* src/gdm.c (gdm_config_parse): Added group lookup. Removed
+ 	malloc(pwent).
+
+1998-10-26  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* config/gdm.conf.in: New User and Group keys override NobodyUser
+
+1998-10-21  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdm.c (gdm_restart_slave): Implemented reboot and halt.
+
+	* src/gdmverify.c: #ifdefs to make it compile on non PAM systems.
+
+	* src/Makefile.am (gdm_SOURCES): Added gdmmisc.c
+
+	* src/gdmmisc.c: Moved arg_much to a seperate file. It is now used
+ 	by both gdm.c and gdmslave.c.
+
+1998-10-20  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c: Send STX through pipeline before sending a
+ 	command.
+
+	* src/gdmslave.c (gdm_slave_display_init): Added STX for greeter
+ 	communications to avoid problems with Gtk debug errors to stdout.
+
+1998-10-19  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_browser_init): Added background
+ 	color in browser.
+
+	* src/gdmgreeter.c (gdm_greeter_browser_select): Change
+ 	GDK_BUTTON_PRESS to ditto RELEASE due to gil.
+
+	* src/gdmgreeter.c (main): Removed buggy icon list workaround.
+	(main): Center window before realizing it.
+	(gdm_greeter_browser_init): Added 3D frame to new icon list.
+
+1998-10-18  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+	* src/gdmgreeter.c (gdm_greeter_browser_init): Icon List is born
+	in frozen state, calling freeze and thaw leaves it still in frozen
+	state (as we have a frozen counter instead of a flag these days.).
+
+1998-10-16  Christopher Blizzard  <blizzard@appliedtheory.com>
+
+	* config/Makefile.am (install-data-hook): Make sure that
+ 	install-data-hook depends on targets gdm.conf gnomerc and Gnome.
+  	Otherwise they are never built.  Also, if the directories that
+ 	these files are supposed to go in don't exist, create them with
+ 	the proper mode.
+
+1998-10-13  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+	* src/gdmgreeter.c (gdm_greeter_login_entry_handler): Fix use of
+	the gnome_icon_list_moveto routine
+	(gdm_greeter_browser_update): ditto.
+	(gdm_greeter_browser_init): Adapt to the new gnome-icon-list api.
+	(gdm_greeter_login_entry_handler): Thaw before attempting to use moveto
+
+	Martin, is there any reason why you clear() the icon lists
+	contents and then reload them when the user changes from the login
+	field to the password one?
+	
+1998-10-13  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_exec_script): New function.
+	(gdm_slave_display_init): Add support for display init script.
+	(gdm_slave_session_init): Add support for root pre-login script.
+	(gdm_slave_session_init): Add support for root post-login script.
+
+	* src/gdm.c (gdm_config_parse): Added new config options for
+ 	scripts.
+
+	* config/gdm.conf.in ([daemon]): Default config options for
+ 	scripts.
+
+1998-10-11  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdm.c (main): Redirect all output to a logfile.
+	
+	* src/gdm.c (main): Moved the pid checking code to main to avoid
+ 	/sbin/init respawns. Checks whether gdm is started by init and
+ 	stops forking if this is the case (actually works this time).
+
+	* config/gdm.conf.in (PidFile): I've been ignoring all bug reports
+ 	caused by this one. Turns out I made a typo in the config template
+ 	file. *sigh*
+
+1998-10-11  Carsten Schaar  <nhadcasc@fs-maphy.uni-hannover.de>
+
+	* src/Makefile.am (gdm_LDADD): Added '$(INTLLIBS).
+	(gdmgreeter_LDADD): Likewise.
+
+1998-10-10  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* config/gdm.conf.in ([servers]): Modified to default X server
+ 	entry to exclude display depth option.
+
+	* config/Makefile.am (install-data-hook): Avoid overwriting
+ 	existing config files.
+
+	* acconfig.h: Added HAVE_PAM
+
+	* src/gdmverify.c (gdm_verify_user): Change USE_PAM to HAVE_PAM to
+ 	follow conventions.
+
+	* configure.in (have_pam): PAM autodetection.
+
+1998-10-08  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_invalid_passwd_req): Set focus to
+ 	passwd field when auth fails.
+
+	* src/gdmslave.c: Finished the rewrite. Should be almost usable
+ 	again.
+
+	* config/Makefile.am: TODO: Need to find a way to prevent
+ 	overwriting gdm.conf when doing a make install.
+
+1998-10-07  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_login): Completely new
+ 	communication scheme. Easier to parse in gdmslave.c.
+
+1998-10-06  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmverify.c: New file. TODO: PAM detection in autoconf.
+
+	* src/gdmslave.c: Gave up on merging CVS and my .ch-work. Started
+ 	major rewrite instead.
+
+	* src/gdmgreeter.c: Removed `:' in pipe communication
+ 	protocol. Waste.
+
+1998-10-05  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c: Fixed the race reported on gnome-list the right
+ 	way. The posted fix broke X USR1 signalling.
+
+	* src/gdmgreeter.c (gdm_greeter_about): Bumped version
+ 	number. Whee.
+	(gdm_greeter_done): New function. Partly replaces parse_results().
+	(gdm_greeter_login): Former login_button_handler. Now passes
+ 	password through pipe. Disables input while gdmslave is thinking.
+	(gdm_greeter_passwd_entry_handler): Replaced parse_results with
+ 	gdm_greeter_login to reflect the auth redesign.
+	(gdm_greeter_invalid_passwd_req): Re-enable input and reset cursor
+ 	after requester has been acked.
+	(main): Added signal handling for gdmslave communication.
+
+1998-10-04  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdm.c: signal->sigaction stuff.
+	(gdm_daemonify): Moved openlog to main.
+	(main): Stop forking when ppid is init.
+
+1998-10-01  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+	* src/gdmslave.c (gdm_slave_init): Setup the signal before
+	forking.  FIXME: We need to use sigaction all over the place
+	instead of signal.
+
+Thu Sep 24 22:09:39 CEST 1998 Jochen Friedrich <jochen@scram.de>
+
+	* src/gdmgreeter.c: Fixed a memory corruption.
+
+1998-09-15  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmslave.c (gdm_slave_usr1_handler): Added support for
+ 	setting last session in ~/.gnome/gdm/session/last. I had forgotten
+ 	all about it after I removed it from greeter.
+
+	* src/gdm.c Gazillions of fixes
+
+	* src/gdmslave.c Gazillions of fixes
+
+1998-09-14  Martin Kasper Petersen  <mkp@mkp.net>
+
+	* src/gdmgreeter.c (gdm_greeter_verify_user): Replaced annoying
+ 	LOG_AUTH with LOG_ERR.
+
+	* config/Makefile.am: Changed _DATA to _SCRIPTS for gnomerc et al.
+
+1998-09-10  Miguel de Icaza  <miguel@nuclecu.unam.mx>
+
+        * src/gdm.c (gdm_config_parse): Simplify as well.
+
+	* src/gdmgreeter.c (gdm_greeter_user_alloc): Fix my oversimplication
+	from last night.
+
+	* src/gdmgreeter.c (gdm_greeter_user_alloc): More simplification
+	of the use of gnome-config.  I think I really should document it. 
+
+	* src/gdm.h (gdm_slave_init): Add prototype.  Remove include to
+	gnome.h.
+
+	* src/gdmslave.c (gdm_slave_usr1_handler): Log errors when the
+	session can not be launched.
+	Simplify the includes.
+
+	* src/gdmgreeter.c (gdm_greeter_parse_config): Simplify the code
+	by using gnome_config_push_prefix
+	(gdm_greeter_parse_config): Do not strdup the resulting strings,
+	they are already dupped
+	(gdm_greeter_sessions_init): Removed dependency on static buffer
+	for s.  Find correcly the default session.
+
+Tue Sep  8 16:11:49 EDT 1998 Gregory McLean
+
+	* acconfig.h : added this file so one can cvs -z3 co gdm, cd gdm
+	./autogen.sh; make and have an executable be spit out.
+

@@ -1,0 +1,64 @@
+
+
+		    GDM - GNOME DISPLAY MANAGER
+
+
+The Gnome Display Manager is a re-implementation of the well known xdm
+program. gdm consists of four separate parts: A small daemon, two
+slightly different graphical login programs and a host chooser.
+
+gdm 2.0 implements all significant features required for managing
+local and remote displays.
+
+gdm daemon:
+
+ o X Authentication
+ o Default and per-display initialization scripts
+ o Pre and post session scripts
+ o Pluggable Authentication Modules
+ o XDMCP
+ o TCP Wrappers for access control
+
+gdmgreeter:
+
+ o Logo image (in any GdkImlib supported format)
+ o A face browser like the one on NeXT/SGI
+ o Tab-completion (no, doesn't work on passwords)
+ o Halt, reboot and laptop suspend
+ o Iconified login window (i.e. for xfishtank)
+ o Session selection support (Package manager friendly)
+ o Language selection support
+
+gdmlogin:
+
+ o Logo image
+ o Halt and reboot
+ o Iconified login window
+ o Session selection support
+ o Language selection support
+
+gdmchooser:
+
+ o Visual host browser 
+ o Customizable icons
+
+
+Most features can be turned on and off in the configuration file by
+the sysadmin.
+
+Availability:
+
+   ftp://ftp.gnome.org/pub/GNOME/sources/gdm/
+
+
+Please consult README.install for instructions on how to configure and
+install gdm.
+
+Send suggestions, patches, bug reports etc. to mkp@SunSITE.auc.dk.
+Bear in mind that this is beta software and please enable debug
+logging (see README.install) and include your syslog and
+<vardir>/gdm/<display>.log when sending bug reports.
+
+
+Martin K. Petersen, The Gnome Project
+
