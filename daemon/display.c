@@ -269,6 +269,10 @@ gdm_display_manage (GdmDisplay *d)
      * that we are hanging */
     whack_old_slave (d);
 
+    /* Ensure that /tmp/.ICE-unix and /tmp/.X11-unix exist and have the
+     * correct permissions */
+    gdm_ensure_sanity ();
+
     d->managetime = time (NULL);
 
     /* Fork slave process */

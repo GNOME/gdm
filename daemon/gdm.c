@@ -2159,7 +2159,8 @@ main (int argc, char *argv[])
 
     create_connections ();
 
-    /* make sure things (currently /tmp/.ICE-unix) are sane */
+    /* make sure things (currently /tmp/.ICE-unix and /tmp/.X11-unix)
+     * are sane */
     gdm_ensure_sanity () ;
 
     /* Start local X servers */

@@ -842,13 +842,45 @@ gdm_wait_for_extra (int *status)
 	gdm_sigchld_block_pop ();
 }
 
-/* done before each login and on startup.  This can do some
- * sanity ensuring, one of the things it does now is make
- * sure /tmp/.ICE-unix exists and has the correct permissions */
+static void
+ensure_tmp_socket_dir (const char *dir)
+{
+	mode_t old_umask;
+
+	/* The /tmp/.ICE-unix / .X11-unix check, note that we do
+	 * ignore errors, since it's not deadly to run
+	 * if we can't perform this task :) */
+	old_umask = umask (0);
+
+        if G_UNLIKELY (mkdir (dir, 01777) != 0) {
+		/* if we can't create it, perhaps it
+		   already exists, in which case ensure the
+		   correct permissions */
+		struct stat s;
+		int r;
+		VE_IGNORE_EINTR (r = lstat (dir, &s));
+		if G_LIKELY (r == 0 && S_ISDIR (s.st_mode)) {
+			/* Make sure it is root and sticky */
+			VE_IGNORE_EINTR (chown (dir, 0, 0));
+			VE_IGNORE_EINTR (chmod (dir, 01777));
+		} else {
+			/* There is a file/link/whatever of the same name?
+			   whack and try mkdir */
+			VE_IGNORE_EINTR (unlink (dir));
+			mkdir (dir, 01777);
+		}
+	}
+
+	umask (old_umask);
+}
+
+/* done on startup and when running display_manage
+ * This can do some sanity ensuring, one of the things it does now is make
+ * sure /tmp/.ICE-unix and /tmp/.X11-unix exist and have the correct
+ * permissions */
 void
 gdm_ensure_sanity (void)
 {
-	mode_t old_umask;
 	uid_t old_euid;
 	gid_t old_egid;
 
@@ -857,30 +889,8 @@ gdm_ensure_sanity (void)
 
 	NEVER_FAILS_root_set_euid_egid (0, 0);
 
-	/* The /tmp/.ICE-unix check, note that we do
-	 * ignore errors, since it's not deadly to run
-	 * if we can't perform this task :) */
-	old_umask = umask (0);
-
-        if G_UNLIKELY (mkdir ("/tmp/.ICE-unix", 01777) != 0) {
-		/* if we can't create it, perhaps it
-		   already exists, in which case ensure the
-		   correct permissions */
-		struct stat s;
-		int r;
-		VE_IGNORE_EINTR (r = lstat ("/tmp/.ICE-unix", &s));
-		if G_LIKELY (r == 0 && S_ISDIR (s.st_mode)) {
-			/* Make sure it is root and sticky */
-			VE_IGNORE_EINTR (chown ("/tmp/.ICE-unix", 0, 0));
-			VE_IGNORE_EINTR (chmod ("/tmp/.ICE-unix", 01777));
-		} else {
-			/* There is a file/link/whatever called .ICE-unix? whack and try mkdir */
-			VE_IGNORE_EINTR (unlink ("/tmp/.ICE-unix"));
-			mkdir ("/tmp/.ICE-unix", 01777);
-		}
-	}
-
-	umask (old_umask);
+	ensure_tmp_socket_dir ("/tmp/.ICE-unix");
+	ensure_tmp_socket_dir ("/tmp/.X11-unix");
 
 	NEVER_FAILS_root_set_euid_egid (old_euid, old_egid);
 }

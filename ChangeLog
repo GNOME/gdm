@@ -1,3 +1,10 @@
+Sun Apr 04 11:12:55 2004  George Lebl <jirka@5z.com>
+
+	* daemon/misc.c, daemon/slave.c, daemon/display.c, daemon/gdm.c:
+	  The ensure_sanity is now always called only from the main daemon
+	  on display_manage (to avoid stepping on ones toes) and also it
+	  checks /tmp/.X11-unix to have correct permissions as well.
+
 Tue Mar 30 15:47:33 2004  George Lebl <jirka@5z.com>
 
 	Fixes from: Jerry Wall <Jerry.Wall@Sun.COM>

@@ -3986,9 +3986,6 @@ gdm_slave_session_start (void)
 	    gdm_slave_whack_greeter ();
     }
 
-    /* Ensure some sanity in this world */
-    gdm_ensure_sanity ();
-
     if (GdmKillInitClients)
 	    gdm_server_whack_clients (d);
 
