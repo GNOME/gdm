@@ -1,3 +1,18 @@
+Fri Jun 06 13:05:14 2003  George Lebl <jirka@5z.com>
+
+	* daemon/filecheck.[ch], daemon/slave.c, daemon/auth.c: add another
+	  argument to the file check to silence warnings about some missing
+	  dirs where it is ok for them to be missing (in "run_pictures")
+
+	* daemon/slave.c, daemon/gdm.c: On Linux detect the runlevel, and if
+	  the runlevel is 0 or 6 after session stops (and we weren't started
+	  in 0 or 6) then wait 30 seconds after the session stops.  This
+	  should fix login coming up again when the user selected reboot
+	  or halt from the logout menu.  Also when we do reboot or shutdown
+	  ourselves on linux, change to vt1, clear the screen and print a nice
+	  message about it, otherwise the shtudown/reboot looks kind of
+	  crap I think.
+
 Fri Jun 06 11:21:44 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.h, gui/gdmlogin.c, gui/greeter/greeter.c,

@@ -31,6 +31,7 @@
  * @dir: Directory to be examined.
  * @file: File to be examined.
  * @absentok: Accept absent files if TRUE.
+ * @absentdirok: Absent directory returns FALSE but without complaining
  * @maxsize: Maximum acceptable filesize in KB. 0 to disable.
  * @perms: 0 to allow user writable file/dir only. 1 to allow group and 2 to allow global writable file/dir.
  *
@@ -39,16 +40,18 @@
 
 gboolean
 gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
-		const gchar *file, gboolean absentok, gint maxsize, gint perms)
+		const gchar *file, gboolean absentok,
+		gboolean absentdirok, gint maxsize, gint perms)
 {
     struct stat statbuf;
     gchar *fullpath;
 
     /* Stat directory */
     if (stat (dir, &statbuf) == -1) {
-	syslog (LOG_WARNING, _("%s: Directory %s does not exist."),
-		caller, dir);
-	return FALSE;
+	    if ( ! absentdirok)
+		 syslog (LOG_WARNING, _("%s: Directory %s does not exist."),
+			 caller, dir);
+	    return FALSE;
     }
 
     /* Check if dir is owned by the user ... */

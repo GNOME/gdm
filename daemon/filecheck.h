@@ -20,8 +20,8 @@
 #define GDM_FILECHECK_H
 
 gboolean gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
-			 const gchar *file, gboolean absentok, gint maxsize,
-			 gint perms);
+			 const gchar *file, gboolean absentok,
+			 gboolean absentdirok, gint maxsize, gint perms);
 
 #endif /* GDM_FILECHECK_H */
 

@@ -82,6 +82,9 @@ static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
 static int check_notifies_immediately = 0; /* check notifies as they come */
 static gboolean gdm_wait_for_ack = TRUE; /* wait for ack on all messages to
 				      * the daemon */
+static int in_session_stop = 0;
+static gboolean need_to_abort_after_session_stop = FALSE;
+static gboolean just_abort_on_TERM = FALSE;
 static gboolean greeter_disabled = FALSE;
 static gboolean greeter_no_focus = FALSE;
 
@@ -97,6 +100,7 @@ extern gboolean gdm_emergency_server;
 extern pid_t extra_process;
 extern int extra_status;
 extern int gdm_in_signal;
+extern int gdm_normal_runlevel;
 
 /* Configuration option variables */
 extern gchar *GdmUser;
@@ -151,7 +155,8 @@ static void	gdm_slave_wait_for_login (void);
 static void     gdm_slave_greeter (void);
 static void     gdm_slave_chooser (void);
 static void     gdm_slave_session_start (void);
-static void     gdm_slave_session_stop (gboolean run_post_session);
+static void     gdm_slave_session_stop (gboolean run_post_session,
+					gboolean no_shutdown_check);
 static void     gdm_slave_alrm_handler (int sig);
 static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);
@@ -1272,7 +1277,7 @@ run_pictures (void)
 		/* Sanity check on ~user/.gnome2/gdm */
 		cfgdir = g_strconcat (pwent->pw_dir, "/.gnome2/gdm", NULL);
 		if (gdm_file_check ("run_pictures", pwent->pw_uid,
-				    cfgdir, "gdm", TRUE, GdmUserMaxFile,
+				    cfgdir, "gdm", TRUE, TRUE, GdmUserMaxFile,
 				    GdmRelaxPerms)) {
 			char *cfgstr;
 
@@ -1315,7 +1320,7 @@ run_pictures (void)
 				 * user.  This setting should ONLY point to pics in trusted
 				 * dirs. */
 				if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-						       dir, base, TRUE, GdmUserMaxFile,
+						       dir, base, TRUE, TRUE, GdmUserMaxFile,
 						       GdmRelaxPerms)) {
 					g_free (picfile);
 					picfile = NULL;
@@ -1371,7 +1376,7 @@ run_pictures (void)
 
 			/* Sanity check on ~user/.gnome[2]/photo */
 			if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-					       picdir, "photo", TRUE, GdmUserMaxFile,
+					       picdir, "photo", TRUE, TRUE, GdmUserMaxFile,
 					       GdmRelaxPerms)) {
 				g_free (picdir);
 
@@ -2078,12 +2083,12 @@ gdm_get_sessions (struct passwd *pwent)
 	/* Sanity check on ~user/.gnome2/session */
 	session_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
 				     cfgdir, "session",
-				     TRUE, GdmSessionMaxFile,
+				     TRUE, FALSE, GdmSessionMaxFile,
 				     session_relax_perms);
 	/* Sanity check on ~user/.gnome2/session-options */
 	options_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
 				     cfgdir, "session-options",
-				     TRUE, GdmUserMaxFile,
+				     TRUE, FALSE, GdmUserMaxFile,
 				     session_relax_perms);
 
 	g_free (cfgdir);
@@ -2718,11 +2723,11 @@ gdm_slave_session_start (void)
 
 	    /* Sanity check on ~user/.gnome2/gdm */
 	    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
-				       cfgdir, "gdm", TRUE, GdmUserMaxFile,
+				       cfgdir, "gdm", TRUE, FALSE, GdmUserMaxFile,
 				       GdmRelaxPerms);
 	    /* Sanity check on ~user/.gnome2/session-options */
 	    sessoptok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
-					cfgdir, "session-options", TRUE, GdmUserMaxFile,
+					cfgdir, "session-options", TRUE, FALSE, GdmUserMaxFile,
 					/* We cannot be absolutely strict about the
 					 * session permissions, since by default they
 					 * will be writable by group and there's
@@ -2855,7 +2860,8 @@ gdm_slave_session_start (void)
 			     "is not possible to log in.  Please contact\n"
 			     "your system administrator"));
 
-	    gdm_slave_session_stop (FALSE /* run_post_session */);
+	    gdm_slave_session_stop (FALSE /* run_post_session */,
+				    FALSE /* no_shutdown_check */);
 
 	    gdm_slave_quick_exit (DISPLAY_REMANAGE);
     }
@@ -2956,17 +2962,21 @@ gdm_slave_session_start (void)
 
     gdm_debug ("gdm_slave_session_start: Session ended OK");
 
-    gdm_slave_session_stop (pid != 0);
+    gdm_slave_session_stop (pid != 0 /* run_post_session */,
+			    FALSE /* no_shutdown_check */);
 }
 
 
 /* Stop any in progress sessions */
 static void
-gdm_slave_session_stop (gboolean run_post_session)
+gdm_slave_session_stop (gboolean run_post_session,
+			gboolean no_shutdown_check)
 {
     struct passwd *pwent;
     char *x_servers_file;
     char *local_login;
+
+    in_session_stop ++;
 
     local_login = login;
     login = NULL;
@@ -3043,6 +3053,52 @@ gdm_slave_session_stop (gboolean run_post_session)
 	    XCloseDisplay (d->dsp);
 	    d->dsp = NULL;
     }
+
+    in_session_stop --;
+
+    if (need_to_abort_after_session_stop) {
+	    gdm_debug ("gdm_slave_session_stop: Final cleanup");
+
+	    gdm_slave_quick_exit (DISPLAY_ABORT);
+    }
+
+#ifdef __linux__
+    /* If on linux and the runlevel is 0 or 6 and not the runlevel that
+       we were started in, then we are rebooting or halting.
+       Probably the user selected shutdown or reboot from the logout
+       menu.  In this case we can really just sleep for a few seconds and
+       basically wait to be killed.  I'll set the default for 30 seconds
+       and let people yell at me if this breaks something.  It shouldn't.
+       In fact it should fix things so that the login screen is not brought
+       up again and then whacked.  Waiting is safer then DISPLAY_ABORT,
+       since if we really do get this wrong, then at the worst case the
+       user will wait for a few moments. */
+    if ( ! need_to_abort_after_session_stop &&
+	 ! no_shutdown_check &&
+	access ("/sbin/runlevel", X_OK) == 0) {
+	    char ign;
+	    int rnl;
+	    FILE *fp = fopen ("/sbin/runlevel", "r");
+	    if (fscanf (fp, "%c %d", &ign, &rnl) == 2 &&
+		(rnl == 0 || rnl == 6) &&
+		rnl != gdm_normal_runlevel) {
+		    /* this is a stupid loop, but we may be getting signals,
+		       so we don't want to just do sleep (30) */
+		    time_t c = time (NULL);
+		    just_abort_on_TERM = TRUE;
+		    gdm_info (_("GDM detected a shutdown or reboot "
+				"in progress."));
+		    fclose (fp);
+		    while (c + 30 > time (NULL)) {
+			    sleep (5);
+		    }
+		    /* hmm, didn't get TERM, weird */
+		    just_abort_on_TERM = FALSE;
+	    } else {
+		    fclose (fp);
+	    }
+    }
+#endif /* __linux__ */
 }
 
 static void
@@ -3053,7 +3109,19 @@ gdm_slave_term_handler (int sig)
 
 	gdm_debug ("gdm_slave_term_handler: %s got TERM/INT signal", d->name);
 
-	gdm_slave_session_stop (d->logged_in && login != NULL);
+	if ( ! just_abort_on_TERM) {
+		/* this should stop some races */
+		if (in_session_stop > 0 && ! need_to_abort_after_session_stop) {
+			need_to_abort_after_session_stop = TRUE;
+			return;
+		}
+
+		/* only if we're not hanging in session stop and getting a
+		   TERM signal again */
+		if (in_session_stop == 0)
+			gdm_slave_session_stop (d->logged_in && login != NULL,
+						TRUE /* no_shutdown_check */);
+	}
 
 	gdm_debug ("gdm_slave_term_handler: Final cleanup");
 
@@ -3079,7 +3147,8 @@ gdm_slave_alrm_handler (int sig)
 
 	if (in_ping) {
 		/* darn, the last ping didn't succeed, wipe this display */
-		gdm_slave_session_stop (d->logged_in && login != NULL);
+		gdm_slave_session_stop (d->logged_in && login != NULL,
+					FALSE /* no_shutdown_check */);
 
 		gdm_slave_exit (DISPLAY_REMANAGE, 
 				_("Ping to %s failed, whacking display!"),
@@ -3281,7 +3350,8 @@ gdm_slave_xioerror_handler (Display *disp)
 
 	gdm_debug ("gdm_slave_xioerror_handler: I/O error for display %s", d->name);
 
-	gdm_slave_session_stop (d->logged_in && login != NULL);
+	gdm_slave_session_stop (d->logged_in && login != NULL,
+				FALSE /* no_shutdown_check */);
 
 	gdm_error (_("%s: Fatal X error - Restarting %s"), 
 		   "gdm_slave_xioerror_handler", d->name);

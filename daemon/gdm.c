@@ -84,6 +84,8 @@ GdmConnection *unixconn = NULL; /* UNIX Socket connection */
 
 char *gdm_charset = NULL;
 
+int gdm_normal_runlevel = -1; /* runlevel on linux that gdm was started in */
+
 /* True if the server that was run was in actuallity not specified in the
  * config file.  That is if xdmcp was disabled and no local servers were
  * defined.  If the user kills all his local servers by mistake and keeps
@@ -1014,6 +1016,35 @@ suspend_machine (void)
 	}
 }
 
+#ifdef __linux__
+static void
+change_to_first_and_clear (gboolean reboot)
+{
+	/* kind of hack, we could do it ourselves if we weren't lazy */
+	if (access ("/usr/bin/chvt", X_OK) == 0)
+		system ("/usr/bin/chvt 1");
+	else if (access ("/bin/chvt", X_OK) == 0)
+		system ("/bin/chvt 1");
+	else
+		return;
+	close (1);
+	close (2);
+	open ("/dev/tty1", O_WRONLY);
+	open ("/dev/tty1", O_WRONLY);
+	/* yet again lazy */
+	if (access ("/usr/bin/clear", X_OK) == 0)
+		system ("/usr/bin/clear");
+	else if (access ("/bin/clear", X_OK) == 0)
+		system ("/bin/clear");
+	printf ("\n\n\n");
+	if (reboot)
+		printf (_("System is rebooting, please wait ..."));
+	else
+		printf (_("System is shutting down, please wait ..."));
+	printf ("\n\n\n");
+}
+#endif /* __linux__ */
+
 
 static gboolean 
 gdm_cleanup_children (void)
@@ -1168,6 +1199,8 @@ start_autopsy:
 	gdm_final_cleanup ();
 	chdir ("/");
 
+	change_to_first_and_clear (TRUE /* reboot */);
+
 	argv = ve_split (GdmRebootReal);
 	execv (argv[0], argv);
 
@@ -1183,6 +1216,8 @@ start_autopsy:
 
 	gdm_final_cleanup ();
 	chdir ("/");
+
+	change_to_first_and_clear (FALSE /* reboot */);
 
 	argv = ve_split (GdmHaltReal);
 	execv (argv[0], argv);
@@ -1462,6 +1497,24 @@ ensure_desc_012 (void)
 	}
 }
 
+static void
+gdm_get_our_runlevel (void)
+{
+#ifdef __linux__
+	/* on linux we get our current runlevel, for use later
+	 * to detect a shutdown going on, and not mess up. */
+	if (access ("/sbin/runlevel", X_OK) == 0) {
+		char ign;
+		int rnl;
+		FILE *fp = fopen ("/sbin/runlevel", "r");
+		if (fscanf (fp, "%c %d", &ign, &rnl) == 2) {
+			gdm_normal_runlevel = rnl;
+		}
+		fclose (fp);
+	}
+#endif /* __linux__ */
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -1479,6 +1532,8 @@ main (int argc, char *argv[])
 
     store_argv (argc, argv);
     gdm_saveenv ();
+
+    gdm_get_our_runlevel ();
 
     bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
     textdomain (GETTEXT_PACKAGE);

@@ -424,7 +424,7 @@ try_user_add_again:
     if (automatic_tmp_dir ||
 	authdir == NULL ||
 	! gdm_file_check ("gdm_auth_user_add", user, authdir, GdmUserAuthFile, 
-			  TRUE, GdmUserMaxFile, GdmRelaxPerms) ||
+			  TRUE, FALSE, GdmUserMaxFile, GdmRelaxPerms) ||
 	! try_open_append (d->userauth)) {
 
 	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp) */
@@ -574,7 +574,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
      * to it. So we better play it safe... */
 
     if ( ! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
-			   TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
+			   TRUE, FALSE, GdmUserMaxFile, GdmRelaxPerms)) {
 	    g_free (authdir);
 	    g_free (authfile);
 	    gdm_error (_("%s: Ignoring suspiciously looking cookie file %s"),
