@@ -664,6 +664,12 @@ gdm_login_session_init (GtkWidget *menu)
     while (dent != NULL) {
 	gchar *s;
 
+	/* Ignore backups and rpmsave files */
+	if ((strstr (dent->d_name, "~")) || (strstr (dent->d_name, ".rpmsave"))) {
+	    dent = readdir (sessdir);
+	    continue;
+	}
+
 	s = g_strconcat (GdmSessionDir, "/", dent->d_name, NULL);
 	lstat (s, &statbuf);
 

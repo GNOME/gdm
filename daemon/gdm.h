@@ -19,9 +19,6 @@
 #ifndef __GDM_H__
 #define __GDM_H__
 
-#include <X11/Xmd.h>
-#include <X11/Xdmcp.h>
-
 #define DISPLAY_LOCAL 1		/* Local X server */
 #define DISPLAY_XDMCP 2		/* Remote display */
 
@@ -159,7 +156,7 @@ struct _GdmDisplay {
 typedef struct _GdmIndirectHost GdmIndirectHost;
 
 struct _GdmIndirectHost {
-    ARRAY8Ptr addr;
+    struct in_addr *addr;
     time_t acctime;
 };
 

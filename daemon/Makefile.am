@@ -22,6 +22,7 @@ gdm_SOURCES = \
 	auth.c \
 	cookie.c \
 	xdmcp.c \
+	choose.c \
 	filecheck.c \
 	md5.c \
 	md5.h 

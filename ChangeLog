@@ -1,5 +1,16 @@
 1999-08-15    <mkp@mkp.net>
 
+	* daemon/choose.c: New file. Doing INDIRECT choosing the right
+ 	way.
+
+	* daemon/auth.c: Purge all instances of current display in user
+ 	cookie file.
+	(gdm_auth_user_remove): Fix stupid segfault.
+
+	* daemon/slave.c (gdm_slave_session_start): Avoid saving language
+ 	and session if ~user/.gnome/gdm isn't kosher instead of bailing
+ 	out.
+
 	* daemon/auth.c: Fixed cookie problems for local displays.
 
 	* daemon/gdm.c (gdm_display_dispose): Free Xauth.

@@ -282,6 +282,7 @@ gdm_slave_session_start (gchar *login, gchar *session, gboolean savesess, gchar 
     gchar *sessdir, *cfgdir, *cfgstr;
     struct stat statbuf;
     gboolean authok;
+    gboolean usercfgok;
     
     if (!login || !session || !lang) {
 	gdm_debug ("gdm_slave_session_start: Insufficient parameters");
@@ -369,16 +370,12 @@ gdm_slave_session_start (gchar *login, gchar *session, gboolean savesess, gchar 
 	}
 	
 	/* Sanity check on ~user/.gnome/gdm */
-	if (!gdm_file_check ("gdm_slave_session_init", pwent->pw_uid, cfgdir, "gdm", 
-			     TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
-	    gdm_slave_session_cleanup();
-	    XCloseDisplay (d->dsp);
-	    exit (DISPLAY_REMANAGE);
-	}
+	usercfgok = gdm_file_check ("gdm_slave_session_init", pwent->pw_uid, cfgdir, "gdm", 
+				TRUE, GdmUserMaxFile, GdmRelaxPerms);
 	
 	g_free (cfgdir);
 	
-	if (savesess) {
+	if (usercfgok && savesess) {
 	    /* libgnome sets home to ~root, so we have to write the path ourselves */
 	    cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/last", NULL);
 	    gnome_config_set_string (cfgstr, session);
@@ -386,7 +383,7 @@ gdm_slave_session_start (gchar *login, gchar *session, gboolean savesess, gchar 
 	    g_free (cfgstr);
 	}
 	
-	if (savelang) {
+	if (usercfgok && savelang) {
 	    cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/lang", NULL);
 	    gnome_config_set_string (cfgstr, lang);
 	    gnome_config_sync();

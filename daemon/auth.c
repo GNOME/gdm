@@ -53,6 +53,7 @@ extern gboolean gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *fi
 gboolean gdm_auth_secure_display (GdmDisplay *d);
 gboolean gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir);
 void gdm_auth_user_remove (GdmDisplay *d, uid_t user);
+static void gdm_auth_purge (GdmDisplay *d, FILE *af);
 
 
 gboolean
@@ -82,7 +83,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 
     /* If this is a local display the struct hasn't changed and we
      * have to clean up old authentication cookies before baking new
-     * ones 
+     * ones...
      */
     if (d->type == DISPLAY_LOCAL && d->auths) {
 	GSList *alist = d->auths;
@@ -173,7 +174,8 @@ gdm_auth_secure_display (GdmDisplay *d)
     fclose (af);
     setenv ("XAUTHORITY", d->authfile, TRUE);
 
-    gdm_debug ("gdm_auth_secure_display: Setting up access for %s ... done", d->name);
+    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
+	       d->name, g_slist_length (d->auths));
 
     return (TRUE);
 }
@@ -210,6 +212,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 	authfd = mkstemp (d->userauth);
 
 	if (authfd == -1) {
+	    gdm_error (_("gdm_auth_user_add: Could not open cookie file %s"), d->userauth);
 	    g_free (d->userauth);
 	    d->userauth = NULL;
 	    return (FALSE);
@@ -223,16 +226,18 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 
 	/* FIXME: Better implement my own locking. The libXau one is not kosher */
 	if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS) {
+	    gdm_error (_("gdm_auth_user_add: Could not lock cookie file %s"), d->userauth);
 	    g_free (d->userauth);
 	    d->userauth = NULL;
 	    return (FALSE);
 	}
 
-	af = fopen (d->userauth, "a+");	
+	af = fopen (d->userauth, "a+");
     }
 
     if (!af) {
 	/* Really no need to clean up here - this process is a goner anyway */
+	gdm_error (_("gdm_auth_user_add: Could not open cookie file %s"), d->userauth);
 	XauUnlockAuth (d->userauth);
 	g_free (d->userauth);
 	d->userauth = NULL;
@@ -241,7 +246,11 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 
     gdm_debug ("gdm_auth_user_add: Using %s for cookies", d->userauth);
 
-    /* Write the authlist for the display to the cookie file */
+    /* If not fallbackfile, nuke any existing cookies for this display */
+    if (! d->authfb)
+	gdm_auth_purge (d, af);
+
+    /* Append the authlist for this display to the cookie file */
     auths = d->auths;
 
     while (auths) {
@@ -263,8 +272,6 @@ void
 gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 {
     FILE *af;
-    Xauth *xa;
-    GSList *keep = NULL;
     gchar *authfile, *authdir;
 
     if (!d || !d->userauth)
@@ -285,53 +292,28 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     authdir = g_dirname (d->userauth);
 
     /* Now, the cookie file could be owned by a malicious user who
-     * decided to concatenate something like /dev/kcore or his entire
-     * MP3 collection to it. So we better play it safe... */
+     * decided to concatenate something like his entire MP3 collection
+     * to it. So we better play it safe... */
 
     if (! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
 			  FALSE, GdmUserMaxFile, GdmRelaxPerms)) {
-	gdm_error (_("gdm_auth_user_remove: Ignoring suspicious looking cookie file %s"), d->userauth);
+	gdm_error (_("gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"), d->userauth);
 	return; 
     }
 
-    g_free (authfile);
     g_free (authdir);
 
     if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS)
 	return;
 
-    af = fopen (d->userauth, "r");
+    af = fopen (d->userauth, "a+");
 
     if (!af) {
 	XauUnlockAuth (d->userauth);
 	return;
     }
 
-    /* Read the user's entire Xauth file into memory to avoid temporary file
-     * issues */
-    while ( (xa = XauReadAuth (af)) ) 
-	if (memcmp (d->bcookie, xa->data, xa->data_length)) 
-	    keep = g_slist_append (keep, xa);
-	else
-	    XauDisposeAuth (xa);
-
-    fclose (af);
-
-    /* Truncate and write out all cookies not belonging to this display */
-    af = fopen (d->userauth, "w");
-
-    if (!af) {
-	XauUnlockAuth (d->userauth);
-	return;
-    }
-
-    while (keep) {
-	XauWriteAuth (af, keep->data);
-	XauDisposeAuth (keep->data);
-	keep = keep->next;
-    }
-
-    g_slist_free (keep);
+    gdm_auth_purge (d, af);
 
     fclose (af);
     XauUnlockAuth (d->userauth);
@@ -340,6 +322,61 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     d->userauth = NULL;
 
     return;
+}
+
+
+static void
+gdm_auth_purge (GdmDisplay *d, FILE *af)
+{
+    Xauth *xa;
+    GSList *keep = NULL;
+
+    if (!d || !af)
+	return;
+
+    gdm_debug ("gdm_auth_purge: %s", d->name);
+
+    if (fseek (af, 0L, SEEK_SET))
+	gdm_debug ("Error seeking...");
+
+    /* Read the user's entire Xauth file into memory to avoid
+     * temporary file issues. Remove any instance of this display in
+     * the cookie jar... */
+
+    while ( (xa = XauReadAuth (af)) ) {
+	gboolean match = FALSE;
+	GSList *alist = d->auths;
+
+	while (alist) {
+	    Xauth *da = alist->data;
+
+	    if (! memcmp (da->address, xa->address, xa->address_length) &&
+		! memcmp (da->number, xa->number, xa->number_length))
+		match = TRUE;
+	    alist = alist->next;
+	}
+
+	if (match)
+	    XauDisposeAuth (xa);
+	else
+	    keep = g_slist_append (keep, xa);
+    }
+
+    af = freopen (d->userauth, "w", af);
+
+    if (!af) {
+	XauUnlockAuth (d->userauth);
+	return;
+    }
+
+    /* Write out remaining entries */
+    while (keep) {
+	XauWriteAuth (af, keep->data);
+	XauDisposeAuth (keep->data);
+	keep = keep->next;
+    }
+
+    g_slist_free (keep);
 }
 
 
