@@ -827,9 +827,26 @@ gdm_daemonify (void)
     pid = fork ();
     if (pid > 0) {
 
+        errno = 0;
 	if ((pf = gdm_safe_fopen_w (GdmPidFile)) != NULL) {
+	    errno = 0;
 	    fprintf (pf, "%d\n", (int)pid);
 	    fclose (pf);
+	    if (errno != 0) {
+		    /* FIXME: how to handle this? */
+		    gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
+				  GdmPidFile, strerror (errno));
+		    gdm_error ("Cannot write PID file %s, possibly out of diskspace.  Error: %s",
+			       GdmPidFile, strerror (errno));
+
+	    }
+	} else if (errno != 0) {
+	    /* FIXME: how to handle this? */
+	    gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
+			  GdmPidFile, strerror (errno));
+	    gdm_error ("Cannot write PID file %s, possibly out of diskspace.  Error: %s",
+		       GdmPidFile, strerror (errno));
+
 	}
 
         exit (EXIT_SUCCESS);
@@ -1753,11 +1770,13 @@ gdm_get_our_runlevel (void)
 	if (access ("/sbin/runlevel", X_OK) == 0) {
 		char ign;
 		int rnl;
-		FILE *fp = fopen ("/sbin/runlevel", "r");
-		if (fscanf (fp, "%c %d", &ign, &rnl) == 2) {
-			gdm_normal_runlevel = rnl;
+		FILE *fp = popen ("/sbin/runlevel", "r");
+		if (fp != NULL) {
+			if (fscanf (fp, "%c %d", &ign, &rnl) == 2) {
+				gdm_normal_runlevel = rnl;
+			}
+			pclose (fp);
 		}
-		fclose (fp);
 	}
 #endif /* __linux__ */
 }
@@ -1877,9 +1896,26 @@ main (int argc, char *argv[])
     if (no_daemon || getppid() == 1) {
 
 	/* Write pid to pidfile */
+	errno = 0;
 	if ((pf = gdm_safe_fopen_w (GdmPidFile)) != NULL) {
+	    errno = 0;
 	    fprintf (pf, "%d\n", (int)getpid());
 	    fclose (pf);
+	    if (errno != 0) {
+		    /* FIXME: how to handle this? */
+		    gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
+				  GdmPidFile, strerror (errno));
+		    gdm_error ("Cannot write PID file %s, possibly out of diskspace.  Error: %s",
+			       GdmPidFile, strerror (errno));
+
+	    }
+	} else if (errno != 0) {
+	    /* FIXME: how to handle this? */
+		gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
+			      GdmPidFile, strerror (errno));
+	    gdm_error ("Cannot write PID file %s, possibly out of diskspace.  Error: %s",
+		       GdmPidFile, strerror (errno));
+
 	}
 
 	IGNORE_EINTR (chdir (GdmServAuthDir));
@@ -2079,6 +2115,7 @@ write_x_servers (GdmDisplay *d)
 		g_free (command);
 	}
 
+	/* FIXME: What about out of disk space errors? */
 	fclose (fp);
 }
 

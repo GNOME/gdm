@@ -68,6 +68,7 @@
 #include "choose.h"
 #include "getvt.h"
 #include "errorgui.h"
+#include "cookie.h"
 
 /* Some per slave globals */
 static GdmDisplay *d;
@@ -3507,8 +3508,9 @@ gdm_slave_session_stop (gboolean run_post_session,
 	access ("/sbin/runlevel", X_OK) == 0) {
 	    char ign;
 	    int rnl;
-	    FILE *fp = fopen ("/sbin/runlevel", "r");
-	    if (fscanf (fp, "%c %d", &ign, &rnl) == 2 &&
+	    FILE *fp = popen ("/sbin/runlevel", "r");
+	    if (fp != NULL &&
+		fscanf (fp, "%c %d", &ign, &rnl) == 2 &&
 		(rnl == 0 || rnl == 6) &&
 		rnl != gdm_normal_runlevel) {
 		    /* this is a stupid loop, but we may be getting signals,
@@ -3516,7 +3518,7 @@ gdm_slave_session_stop (gboolean run_post_session,
 		    time_t c = time (NULL);
 		    gdm_info (_("GDM detected a shutdown or reboot "
 				"in progress."));
-		    fclose (fp);
+		    pclose (fp);
 		    while (c + 30 >= time (NULL)) {
 			    struct timeval tv;
 			    /* Wait 30 seconds. */
@@ -3527,8 +3529,8 @@ gdm_slave_session_stop (gboolean run_post_session,
 			       for pinging */
 		    }
 		    /* hmm, didn't get TERM, weird */
-	    } else {
-		    fclose (fp);
+	    } else if (fp != NULL) {
+		    pclose (fp);
 	    }
     }
 #endif /* __linux__ */

@@ -434,7 +434,7 @@ gdm_text_message_dialog (const char *msg)
 		argv[1] = "-l";
 		argv[2] = "/bin/sh";
 		argv[3] = "-c";
-		argv[4] = g_strdup_printf ("%s --msgbox %s 11 70",
+		argv[4] = g_strdup_printf ("%s --msgbox %s 16 70",
 					   dialog, msg_quoted);
 		argv[5] = NULL;
 
@@ -504,7 +504,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		argv[1] = "-l";
 		argv[2] = "/bin/sh";
 		argv[3] = "-c";
-		argv[4] = g_strdup_printf ("%s --yesno %s 11 70",
+		argv[4] = g_strdup_printf ("%s --yesno %s 16 70",
 					   dialog, msg_quoted);
 		argv[5] = NULL;
 

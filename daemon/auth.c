@@ -85,15 +85,20 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 		return FALSE;
 
 	xa->family = family;
-	xa->address = malloc (addrlen);
-	if G_UNLIKELY (xa->address == NULL) {
-		free (xa);
-		return FALSE;
+	if (addrlen == 0) {
+		xa->address = NULL;
+		xa->address_length = 0;
+	} else {
+		xa->address = malloc (addrlen);
+		if G_UNLIKELY (xa->address == NULL) {
+			free (xa);
+			return FALSE;
+		}
+
+
+		memcpy (xa->address, addr, addrlen);
+		xa->address_length = addrlen;
 	}
-
-
-	memcpy (xa->address, addr, addrlen);
-	xa->address_length = addrlen;
 
 	dispnum = g_strdup_printf ("%d", d->dispnum);
 	xa->number = strdup (dispnum);
@@ -364,9 +369,16 @@ gdm_auth_secure_display (GdmDisplay *d)
 		    return FALSE;
     }
 
-    fclose (af);
-    if (af_gdm != NULL)
-	    fclose (af_gdm);
+    if G_UNLIKELY (fclose (af) < 0) {
+	    display_add_error (d);
+	    return FALSE;
+    }
+    if (af_gdm != NULL) {
+	    if G_UNLIKELY (fclose (af_gdm) < 0) {
+		    display_add_error (d);
+		    return FALSE;
+	    }
+    }
     ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 
     gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
@@ -588,7 +600,22 @@ try_user_add_again:
 	auths = auths->next;
     }
 
-    fclose (af);
+    if G_UNLIKELY (fclose (af) < 0) {
+	    gdm_error (_("%s: Could not write cookie"),
+		       "gdm_auth_user_add");
+
+	    if ( ! d->authfb) {
+		    if (locked)
+			    XauUnlockAuth (d->userauth);
+		    g_free (d->userauth);
+		    d->userauth = NULL;
+		    automatic_tmp_dir = TRUE;
+		    goto try_user_add_again;
+	    }
+
+	    ret = FALSE;
+    }
+
     if (locked)
 	    XauUnlockAuth (d->userauth);
 
@@ -686,6 +713,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 
     /* Close the file and unlock it */
     fclose (af);
+    /* FIXME: what about out of diskspace errors on errors close */
     XauUnlockAuth (d->userauth);
 
     g_free (d->userauth);
@@ -706,6 +734,8 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
 {
     Xauth *xa;
     GSList *keep = NULL, *li;
+    char *dispnum;
+    int displen;
 
     if G_UNLIKELY (!d || !af)
 	return af;
@@ -718,27 +748,21 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
      * temporary file issues. Then remove any instance of this display
      * in the cookie jar... */
 
+    dispnum = g_strdup_printf ("%d", d->dispnum);
+    displen = strlen (dispnum);
+
     while ( (xa = XauReadAuth (af)) != NULL ) {
-	gboolean match = FALSE;
-	GSList *alist = d->auths;
 
-	while (alist) {
-	    Xauth *da = alist->data;
-
-	    if (xa->address_length == da->address_length &&
-		xa->number_length == da->number_length &&
-		memcmp (da->address, xa->address, xa->address_length) == 0 &&
-		memcmp (da->number, xa->number, xa->number_length) == 0)
-		match = TRUE;
-
-	    alist = alist->next;
-	}
-
-	if (match)
-	    XauDisposeAuth (xa);
+	if (xa->number_length == displen &&
+	    xa->name_length == strlen ("MIT-MAGIC-COOKIE-1") &&
+	    memcmp ("MIT-MAGIC-COOKIE-1", xa->name, xa->name_length) == 0 &&
+	    memcmp (dispnum, xa->number, xa->number_length) == 0)
+		XauDisposeAuth (xa);
 	else
-	    keep = g_slist_append (keep, xa);
+		keep = g_slist_append (keep, xa);
     }
+
+    g_free (dispnum);
 
     /* Rewind the file */
     fclose (af);
@@ -750,6 +774,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
 	     * this is quite crap isn't it ... */
 	    if G_LIKELY (af != NULL)
 		    XauWriteAuth (af, li->data);
+	            /* FIXME: what about errors? */
 	    XauDisposeAuth (li->data);
 	    li->data = NULL;
     }

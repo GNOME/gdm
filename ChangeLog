@@ -1,3 +1,17 @@
+Fri Aug 15 18:32:54 2003  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c: handle NULL addresses, purge by number and name,
+	  not by number and address
+
+	* daemon/auth.c, daemon/gdm.c: Correctly handle out of diskspace
+	  errors on auth files and on the PID file
+
+	* daemon/slave.c, daemon/gdm.c: fix the runlevel checking code,
+	  damnit, it's popen, not fopen.  DOH!
+
+	* daemon/misc.c: use 16 lines of output for text dialogs, since
+	  some of the strings we use are quite long.
+
 Fri Aug 15 12:36:30 2003  George Lebl <jirka@5z.com>
 
 	* docs/C/gdm.xml: added more notes on the MIT-MAGIC-COOKIE-1
