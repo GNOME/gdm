@@ -542,7 +542,7 @@ gdm_slave_run (GdmDisplay *display)
 	    /* this usually doesn't return */
 	    gdm_slave_chooser ();  /* Run the chooser */
 	    return;
-    } else if ((d->console || GdmAllowRemoteAutoLogin) &&
+    } else if (d->type == TYPE_LOCAL &&
 	       gdm_first_login &&
 	       ! ve_string_empty (ParsedAutomaticLogin) &&
 	       strcmp (ParsedAutomaticLogin, "root") != 0) {
