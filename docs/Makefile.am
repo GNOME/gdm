@@ -1,3 +1,1 @@
-SUBDIRS = C
-
-EXTRA_DIST = sgmldocs.make GdmGreeterThemeManual.txt
+EXTRA_DIST = GdmGreeterThemeManual.txt

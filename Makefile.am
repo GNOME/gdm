@@ -5,7 +5,8 @@ SUBDIRS = \
 	vicious-extensions \
 	daemon \
 	gui \
-	utils
+	utils \
+	docs
 
 # add these when help gets added back
 # docs omf-install
