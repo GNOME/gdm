@@ -1,3 +1,8 @@
+Fri Dec 19 12:28:10 2003  George Lebl <jirka@5z.com>
+
+	* daemon/xdmcp.c: protect the sys/sockio.h include with
+	  the HAVE_SYS_SOCKIO_H define check to fix compilation on linux
+
 Fri Dec 19 12:22:18 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.h, daemon/*.c, gui/*.c: use VE_IGNORE_EINTR instead
