@@ -40,6 +40,17 @@
 #include "gdm.h"
 #include "gdmcomm.h"
 
+static pid_t xnest_pid = 0;
+
+static void
+term_handler (int sig)
+{
+	if (xnest_pid != 0)
+		kill (xnest_pid, SIGTERM);
+	else
+		exit (0);
+}
+
 static int
 get_free_display (void)
 {
@@ -404,7 +415,7 @@ main (int argc, char *argv[])
 	const char **args;
 	char *xnest;
 	char **execvec;
-	pid_t pid;
+	struct sigaction term;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -556,8 +567,16 @@ main (int argc, char *argv[])
 		open ("/dev/null", O_RDONLY);
 	}
 
-	pid = fork ();
-	if (pid == 0) {
+	term.sa_handler = term_handler;
+	term.sa_flags = SA_RESTART;
+	sigemptyset (&term.sa_mask);
+
+	sigaction (SIGTERM, &term, NULL);
+	sigaction (SIGINT, &term, NULL);
+	sigaction (SIGHUP, &term, NULL);
+
+	xnest_pid = fork ();
+	if (xnest_pid == 0) {
 		execvp (execvec[0], execvec);
 		g_warning ("Can't exec, trying Xnest");
 		execvec[0] = "Xnest";
@@ -565,13 +584,14 @@ main (int argc, char *argv[])
 		g_warning ("Can't exec that either, giving up");
 		/* FIXME: this should be handled in the GUI */
 		_exit (1);
-	} else if (pid < 0) {
+	} else if (xnest_pid < 0) {
 		/* eeeek */
 		g_warning ("Can't fork");
 		_exit (1);
 	}
 
-	ve_waitpid_no_signal (pid, 0, 0);
+	ve_waitpid_no_signal (xnest_pid, 0, 0);
+	xnest_pid = 0;
 
 	socket = g_strdup_printf ("/tmp/.X11-unix/X%d", display);
 	unlink (socket);
