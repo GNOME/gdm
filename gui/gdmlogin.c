@@ -484,6 +484,8 @@ gdm_login_abort (const gchar *format, ...)
     syslog (LOG_ERR, "%s", s);
     closelog();
 
+    g_free (s);
+
     kill_thingies ();
     _exit (DISPLAY_ABORT);
 }
@@ -494,7 +496,7 @@ static gchar *
 gdm_parse_enriched_string (const gchar *s)
 {
     gchar cmd, *buffer;
-    gchar hostbuf[256];
+    gchar hostbuf[256] = "";
     gchar *hostname, *display;
     struct utsname name;
     GString *str;
@@ -507,12 +509,11 @@ gdm_parse_enriched_string (const gchar *s)
     if (display == NULL)
 	return(NULL);
 
-    gethostname (hostbuf, 255);
-    hostname = g_strdup (hostbuf);
+    if (gethostname (hostbuf, sizeof (hostbuf) - 1) < 0)
+	    hostname = g_strdup ("Gnome");
+    else
+	    hostname = g_strdup (hostbuf);
     
-    if (hostname == NULL) 
-	hostname = g_strdup ("Gnome");
-
     uname (&name);
 
     /* HAAAAAAAAAAAAAAAAAAAAAAAACK!, do not translate the next line!,
@@ -930,10 +931,13 @@ gdm_login_session_lookup (const gchar* savedsess)
 
 	    g_free (session);
 	    session = g_strdup (defsess);
-            msg = g_strdup_printf (_("Your preferred session type %s is not installed on this machine.\n" \
-                                     "Do you wish to make %s the default for future sessions?"),
+            msg = g_strdup_printf (_("Your preferred session type %s is not "
+				     "installed on this machine.\n"
+                                     "Do you wish to make %s the default for "
+				     "future sessions?"),
                                    translate_session (savedsess),
                                    translate_session (defsess));	    
+	    savesess = gdm_login_query (msg);                                   
 	    g_free (msg);
 	}
     }
@@ -2001,6 +2005,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 			char *newtext;
 			newtext = g_strdup_printf ("%s\n%s", oldtext, buf);
 			gtk_label_set (GTK_LABEL (msg), newtext);
+			g_free (newtext);
 		} else {
 			gtk_label_set (GTK_LABEL (msg), buf);
 		}

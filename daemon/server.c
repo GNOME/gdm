@@ -730,11 +730,13 @@ gdm_server_child_handler (gint signal)
 GdmDisplay * 
 gdm_server_alloc (gint id, const gchar *command)
 {
-    gchar *hostname = g_new0 (gchar, 1024);
-    GdmDisplay *d = g_new0 (GdmDisplay, 1);
+    gchar hostname[1024];
+    GdmDisplay *d;
     
     if (gethostname (hostname, 1023) == -1)
 	return NULL;
+
+    d = g_new0 (GdmDisplay, 1);
 
     d->authfile = NULL;
     d->auths = NULL;
@@ -745,6 +747,8 @@ gdm_server_alloc (gint id, const gchar *command)
     d->greetpid = 0;
     d->name = g_strdup_printf (":%d", id);  
     d->hostname = g_strdup (hostname);
+    /* Not really used for not XDMCP */
+    memset (&(d->addr), 0, sizeof (struct in_addr));
     d->dispnum = id;
     d->servpid = 0;
     d->servstat = SERVER_DEAD;
@@ -771,8 +775,6 @@ gdm_server_alloc (gint id, const gchar *command)
 
     d->timed_login_ok = FALSE;
     
-    g_free (hostname);
-
     return d;
 }
 

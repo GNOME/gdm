@@ -23,6 +23,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
 #include <X11/Xauth.h>
+#include <netinet/in.h>
 
 #define STX 0x2			/* Start of txt */
 #define BEL 0x7			/* Bell, used to interrupt login for
@@ -254,6 +255,7 @@ struct _GdmDisplay {
     gchar *bcookie;
     gchar *name;
     gchar *hostname;
+    struct in_addr addr;
     guint8 dispstat;
     guint16 dispnum;
     guint8 servstat;

@@ -305,6 +305,7 @@ gdm_display_dispose (GdmDisplay *d)
 
 	while (tmpauth && tmpauth->data) {
 	    XauDisposeAuth ((Xauth *) tmpauth->data);
+	    tmpauth->data = NULL;
 	    tmpauth = tmpauth->next;
 	}
 

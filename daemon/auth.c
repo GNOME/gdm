@@ -67,8 +67,10 @@ add_auth_entry (GdmDisplay *d, FILE *af,
 
 	xa->family = family;
 	xa->address = malloc (addrlen);
-	if (xa->address == NULL)
+	if (xa->address == NULL) {
+		free (xa);
 		return FALSE;
+	}
 	memcpy (xa->address, addr, addrlen);
 	xa->address_length = addrlen;
 	xa->number = strdup (dispnum);
@@ -76,8 +78,13 @@ add_auth_entry (GdmDisplay *d, FILE *af,
 	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
 	xa->name_length = strlen ("MIT-MAGIC-COOKIE-1");
 	xa->data = malloc (16);
-	if (xa->data == NULL)
+	if (xa->data == NULL) {
+		free (xa->number);
+		free (xa->name);
+		free (xa->address);
+		free (xa);
 		return FALSE;
+	}
 	memcpy (xa->data, d->bcookie, 16);
 	xa->data_length = 16;
 

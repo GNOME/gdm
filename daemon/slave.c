@@ -1557,6 +1557,8 @@ gdm_get_sessions (struct passwd *pwent)
 		g_string_append (sessions, def);
 	}
 
+	g_free (def);
+
 	seteuid (0);
 	setegid (GdmGroupId);
 

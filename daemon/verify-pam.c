@@ -77,7 +77,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		    return PAM_CONV_ERR;
 	    }
 	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = strdup (s != NULL ? s : "");
+	    reply[replies].resp = strdup (ve_sure_string (s));
 	    g_free (s);
 	    break;
 	    
@@ -90,7 +90,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		    return PAM_CONV_ERR;
 	    }
 	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = strdup (s != NULL ? s : "");
+	    reply[replies].resp = strdup (ve_sure_string (s));
 	    g_free (s);
 	    break;
 	    
@@ -295,7 +295,7 @@ gdm_verify_user (const char *username,
 	    }
 
 	    /*sleep (3);
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Please enter your login"));*/
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Please enter your username"));*/
     }
 
     pam_end (pamh, pamerr);
@@ -308,6 +308,8 @@ gdm_verify_user (const char *username,
     current_login = NULL;
     g_free (current_display);
     current_display = NULL;
+
+    g_free (login);
     
     return NULL;
 }
@@ -499,6 +501,7 @@ gdm_verify_open_session (void)
 	}
 
 	/* Migrate any PAM env. variables to the user's environment */
+	/* This leaks, oh well */
 	if ((pamenv = pam_getenvlist (pamh))) {
 		gint i;
 

@@ -1,3 +1,25 @@
+Sat Sep 01 00:47:36 2001  George Lebl <jirka@5z.com>
+
+	* daemon/xdmcp.c, daemon/gdm.[ch], daemon/server.c: Implement
+	  DisplaysPerHost which was documented so it should have worked
+	  in the first place
+
+	* daemon/xdmcp.c, daemon/server.c, daemon/auth.c, daemon/gdm.c,
+	  daemon/choose.c, daemon/cookie.c, daemon/display.c, daemon/slave.c,
+	  gui/gdmlogin.c: fix some memleaks, none really dangerous
+
+	* daemon/xdmcp.c: messages such as status information shouldn't be
+	  translated.  Because they go over a wire with no specification of
+	  charset or language.
+
+	* gui/gdmlogin.c: Fix broken "session don't exist wanna save new one"
+	  message
+
+	* daemon/gdm.c: Make sure static display numbers are unique.
+	  and fix a possible crash in flexible server code
+
+	* docs/C/gdm.sgml: a small update
+
 Fri Aug 31 20:22:33 2001  George Lebl <jirka@5z.com>
 
 	* docs/C/gdm.sgml: Update for all the server def stuff.

@@ -41,6 +41,7 @@
 static GSList *xservers = NULL;
 static gboolean got_standard = FALSE;
 static gboolean use_xnest = FALSE;
+static gboolean authenticate = FALSE;
 static const char *send_command = NULL;
 static const char *server = NULL;
 static const char *chosen_server = NULL;
@@ -414,6 +415,7 @@ struct poptOption options [] = {
 	{ "command", 'c', POPT_ARG_STRING, &send_command, 0, N_("Send the specified protocol command to gdm"), N_("COMMAND") },
 	{ "xnest", 'n', POPT_ARG_NONE, &use_xnest, 0, N_("Xnest mode"), NULL },
 	{ "debug", 'd', POPT_ARG_NONE, &debug, 0, N_("Debugging output"), NULL },
+	{ "authenticate", 'a', POPT_ARG_NONE, &authenticate, 0, N_("Authenticate before running --command"), NULL },
 	POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
 };
@@ -477,7 +479,9 @@ main (int argc, char *argv[])
 	}
 
 	if (send_command != NULL) {
-		ret = call_gdm (send_command, NULL /* auth cookie */,
+		if (authenticate)
+			auth_cookie = get_auth_cookie ();
+		ret = call_gdm (send_command, auth_cookie,
 				"2.2.4.0", 5);
 		if (ret != NULL) {
 			g_print ("%s\n", ret);

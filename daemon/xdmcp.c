@@ -156,10 +156,11 @@ static void gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa);
 static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *cnlt_sa);
-static GdmDisplay *gdm_xdmcp_display_alloc (const char *hostname, gint);
+static GdmDisplay *gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
 static void gdm_xdmcp_display_dispose_check (const gchar *name);
 static void gdm_xdmcp_displays_check (void);
+static int gdm_xdmcp_displays_from_host (struct in_addr *addr);
 
 static GdmForwardQuery * gdm_forward_query_alloc (struct sockaddr_in *mgr_sa,
 						  struct sockaddr_in *dsp_sa);
@@ -233,6 +234,7 @@ peek_local_address_list (void)
 	if (ioctl (xdmcpfd, SIOCGIFCONF, &ifc) < 0) {
 		gdm_error (_("%s: Cannot get local addresses!"),
 			   "peek_local_address_list");
+		g_free (buf);
 		return NULL;
 	}
 
@@ -287,6 +289,22 @@ peek_local_address_list (void)
 #endif
 
 	return the_list;
+}
+
+static int
+gdm_xdmcp_displays_from_host (struct in_addr *addr)
+{
+	GSList *li;
+	int count = 0;
+
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->type == TYPE_XDMCP &&
+		    memcmp (&disp->addr, addr, sizeof (struct in_addr)) == 0)
+			count ++;
+	}
+
+	return count;
 }
 
 
@@ -863,8 +881,15 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 	    last_willing = time (NULL);
     }
 
-    status.data = last_status;
-    status.length = strlen (last_status);
+    if ( ! is_local_addr (&(clnt_sa->sin_addr)) &&
+	 gdm_xdmcp_displays_from_host (&(clnt_sa->sin_addr)) >= GdmDispPerHost) {
+	    /* Don't translate, this goes over the wire to servers where we
+	     * don't know the charset or language, so it must be ascii */
+	    status.data = g_strdup_printf ("%s (Server is busy)", last_status);
+    } else {
+	    status.data = g_strdup (last_status);
+    }
+    status.length = strlen (status.data);
     
     header.opcode = (CARD16) WILLING;
     header.length = 6 + serv_authlist.authentication.length;
@@ -877,6 +902,8 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
     XdmcpWriteARRAY8 (&buf, &status);
     XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
+
+    g_free (status.data);
 }
 
 static void
@@ -889,7 +916,9 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     
     gdm_error (_("Denied XDMCP query from host %s"), inet_ntoa (clnt_sa->sin_addr));
     
-    status.data = _("Display not authorized to connect");
+    /* Don't translate, this goes over the wire to servers where we
+     * don't know the charset or language, so it must be ascii */
+    status.data = "Display not authorized to connect";
     status.length = strlen (status.data);
     
     header.opcode = (CARD16) UNWILLING;
@@ -908,12 +937,12 @@ gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa)
 {
 	ARRAY8 hostname;
 	XdmcpHeader header;
+	char buffer[1024] = "";
 
 	gdm_debug ("gdm_xdmcp_send_managed_forward: Sending MANAGED_FORWARD to %s", inet_ntoa (clnt_sa->sin_addr));
 
-	hostname.data = g_new0 (char, 1024);
+	hostname.data = buffer;
 	if (gethostname (hostname.data, 1023) != 0) {
-		g_free (hostname.data);
 		/* eek ! */
 		return;
 	}
@@ -1063,9 +1092,12 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     gdm_debug ("gdm_xdmcp_handle_request: pending=%d, MaxPending=%d, sessions=%d, MaxSessions=%d",
 	       pending, GdmMaxPending, sessions, GdmMaxSessions);
 
+
     /* Check if ok to manage display */
     if (mitauth &&
-	sessions < GdmMaxSessions) {
+	sessions < GdmMaxSessions &&
+	(is_local_addr (&(clnt_sa->sin_addr)) ||
+	 gdm_xdmcp_displays_from_host (&(clnt_sa->sin_addr)) < GdmDispPerHost)) {
 	    char *disp;
 	    char *hostname = get_host_from_addr (clnt_sa);
 	    disp = g_strdup_printf ("%s:%d", hostname, clnt_dspnum);
@@ -1107,7 +1139,7 @@ gdm_xdmcp_send_accept (const char *hostname,
     ARRAY8 authdata;
     GdmDisplay *d;
     
-    d = gdm_xdmcp_display_alloc (hostname, displaynum);
+    d = gdm_xdmcp_display_alloc (&(clnt_sa->sin_addr), hostname, displaynum);
     
     authentype.data = (CARD8 *) 0;
     authentype.length = (CARD16) 0;
@@ -1162,6 +1194,8 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa)
     authendata.data = (CARD8 *) 0;
     authendata.length = (CARD16) 0;
     
+    /* Don't translate, this goes over the wire to servers where we
+     * don't know the charset or language, so it must be ascii */
     status.data = "Session refused";
     status.length = strlen (status.data);
     
@@ -1346,6 +1380,8 @@ gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid)
     
     gdm_debug ("gdm_xdmcp_send_failed: Sending FAILED to %ld", (long)sessid);
     
+    /* Don't translate, this goes over the wire to servers where we
+     * don't know the charset or language, so it must be ascii */
     status.data = "Failed to start session";
     status.length = strlen (status.data);
     
@@ -1441,7 +1477,7 @@ gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa)
 
 
 static GdmDisplay *
-gdm_xdmcp_display_alloc (const char *hostname, gint displaynum)
+gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint displaynum)
 {
     GdmDisplay *d = NULL;
     
@@ -1481,6 +1517,7 @@ gdm_xdmcp_display_alloc (const char *hostname, gint displaynum)
     d->name = g_strdup_printf ("%s:%d", hostname,
 			       displaynum);
     d->hostname = g_strdup (hostname);
+    memcpy (&d->addr, addr, sizeof (struct in_addr));
     
     /* Secure display with cookie */
     if (! gdm_auth_secure_display (d))

@@ -24,6 +24,7 @@
  *  
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
@@ -102,7 +103,9 @@ gdm_cookie_generate (GdmDisplay *d)
 	    strcat (cookie, sub);
     }
 
+    g_free (d->cookie);
     d->cookie = g_strdup (cookie);
+    g_free (d->bcookie);
     d->bcookie = g_new (char, 16);
     memcpy (d->bcookie, digest, 16);
 }

@@ -105,6 +105,8 @@ gdm_choose_data (const char *data)
 		return FALSE;
 	}
 
+	g_free (msg);
+
 	gdm_debug ("gdm_choose_data: got indirect id: %d address: %s",
 		   id, inet_ntoa (addr));
 

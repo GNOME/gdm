@@ -157,6 +157,19 @@ char *stored_path = NULL;
 
 static gboolean gdm_restart_mode = FALSE;
 
+static gboolean
+display_exists (int num)
+{
+	GSList *li;
+
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->dispnum == num)
+			return TRUE;
+	}
+	return FALSE;
+}
+
 
 /**
  * gdm_config_parse:
@@ -246,8 +259,10 @@ gdm_config_parse (void)
     GdmWilling = gnome_config_get_string (GDM_KEY_WILLING);    
 
     GdmStandardXServer = gnome_config_get_string (GDM_KEY_STANDARD_XSERVER);    
-    if (ve_string_empty (GdmStandardXServer))
+    if (ve_string_empty (GdmStandardXServer)) {
+	    g_free (GdmStandardXServer);
 	    GdmStandardXServer = g_strdup ("/usr/bin/X11/X");
+    }
     GdmFlexibleXServers = gnome_config_get_int (GDM_KEY_FLEXIBLE_XSERVERS);    
     GdmXnest = gnome_config_get_string (GDM_KEY_XNEST);    
     if (ve_string_empty (GdmXnest))
@@ -375,7 +390,18 @@ gdm_config_parse (void)
     while (iter) {
 	    if (isdigit (*k)) {
 		    int disp_num = atoi (k);
-		    GdmDisplay *disp = gdm_server_alloc (disp_num, v);
+		    GdmDisplay *disp;
+
+		    while (display_exists (disp_num)) {
+			    disp_num++;
+		    }
+
+		    if (disp_num != atoi (k)) {
+			    gdm_error (_("%s: Display number %d in use!  I will use %d"),
+				       "gdm_config_parse", atoi (k), disp_num);
+		    }
+
+		    disp = gdm_server_alloc (disp_num, v);
 		    if (disp == NULL) {
 			    g_free (k);
 			    g_free (v);
@@ -1705,6 +1731,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 								 NULL, NULL);
 				if ( ! gdm_connection_write (conn, msg))
 					gdm_display_unmanage (d);
+				g_free (msg);
 			}
 			
 			gdm_debug ("Got FLEXI_OK");
@@ -1925,7 +1952,6 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 
 		svr = gdm_find_x_server (name);
-		g_free (name);
 		if (svr == NULL) {
 			/* Don't print the name to syslog as it might be
 			 * long and dangerous */
@@ -1940,6 +1966,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		} else {
 			command = svr->command;
 		}
+		g_free (name);
 
 		handle_flexi_server (conn, TYPE_FLEXI, command, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
