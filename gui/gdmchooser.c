@@ -48,7 +48,7 @@
 #include "gdm.h"
 #include "misc.h"
 
-/* set the DOING_GDM_DEVELOPMENT env variable to "yes" if you want to
+/* set the DOING_GDM_DEVELOPMENT env variable if you want to
  * search for the glade file in the current dir and not the system
  * install dir, better then something you have to change
  * in the source and recompile */
@@ -816,8 +816,7 @@ main (int argc, char *argv[])
     gchar **hosts;
     poptContext ctx;
 
-    if (g_getenv ("DOING_GDM_DEVELOPMENT") != 0 &&
-	strcasecmp_no_locale (g_getenv ("DOING_GDM_DEVELOPMENT"), "yes") == 0)
+    if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
 
     /* Avoid creating ~gdm/.gnome stuff */

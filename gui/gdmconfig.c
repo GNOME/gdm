@@ -29,7 +29,7 @@
 #include "icon-entry-hack.h"
 #include "misc.h"
 
-/* set the DOING_GDM_DEVELOPMENT env variable to "yes" if you don't
+/* set the DOING_GDM_DEVELOPMENT env variable if you don't
  * want to do that root stuff, better then something you have to change
  * in the source and recompile */
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
@@ -161,13 +161,172 @@ gdm_event (GtkObject *object,
 	return TRUE;
 }      
 
+static void
+check_binary (GtkEntry *entry)
+{
+	char *p;
+	char *text = g_strdup (gtk_entry_get_text (entry));
+
+	/* paranoia */
+	if (text == NULL)
+		return;
+
+	p = strchr (text, ' ');
+	if (p != NULL)
+		*p = '\0';
+
+	if ( ! gdm_string_empty (text) &&
+	    access (text, X_OK) == 0)
+		entry_set_red (GTK_WIDGET (entry), FALSE);
+	else
+		entry_set_red (GTK_WIDGET (entry), TRUE);
+
+	g_free (text);
+}
+
+static void
+check_dir (GtkEntry *entry)
+{
+	char *text = gtk_entry_get_text (entry);
+
+	/* first try access as it's a LOT faster then stat */
+	if ( ! gdm_string_empty (text) &&
+	    access (text, R_OK) == 0) {
+		struct stat sbuf;
+		/* check for this being a directory */
+		if (stat (text, &sbuf) < 0 ||
+		    ! S_ISDIR (sbuf.st_mode))
+			entry_set_red (GTK_WIDGET (entry), TRUE);
+		else
+			entry_set_red (GTK_WIDGET (entry), FALSE);
+	} else {
+		entry_set_red (GTK_WIDGET (entry), TRUE);
+	}
+}
+
+static void
+check_dirname (GtkEntry *entry)
+{
+	char *text = gtk_entry_get_text (entry);
+	char *dir;
+
+	if (text == NULL)
+		return;
+	dir = g_dirname (text);
+	if (dir == NULL)
+		return;
+
+	/* first try access as it's a LOT faster then stat */
+	if ( ! gdm_string_empty (dir) &&
+	    access (dir, R_OK) == 0) {
+		struct stat sbuf;
+		/* check for this being a directory */
+		if (stat (dir, &sbuf) < 0 ||
+		    ! S_ISDIR (sbuf.st_mode))
+			entry_set_red (GTK_WIDGET (entry), TRUE);
+		else
+			entry_set_red (GTK_WIDGET (entry), FALSE);
+	} else {
+		entry_set_red (GTK_WIDGET (entry), TRUE);
+	}
+
+	g_free (dir);
+}
+
+static void
+check_file (GtkEntry *entry)
+{
+	char *text = gtk_entry_get_text (entry);
+
+	if ( ! gdm_string_empty (text) &&
+	    access (text, R_OK) == 0) {
+		entry_set_red (GTK_WIDGET (entry), FALSE);
+	} else {
+		entry_set_red (GTK_WIDGET (entry), TRUE);
+	}
+}
+
+static void
+connect_binary_checks (void)
+{
+	int i;
+	char *binaries [] = {
+		"chooser_binary",
+		"config_binary",
+		"greeter_binary",
+		"halt_command",
+		"reboot_command",
+		"background_program",
+		NULL
+	};
+	for (i = 0; binaries[i] != NULL; i++)
+		gtk_signal_connect (GTK_OBJECT (get_widget (binaries[i])),
+				    "changed",
+				    GTK_SIGNAL_FUNC (check_binary), NULL);
+}
+
+static void
+connect_dir_checks (void)
+{
+	int i;
+	char *dirs [] = {
+		"init_dir",
+		"log_dir",
+		"session_dir",
+		"pre_session_dir",
+		"post_session_dir",
+		"user_auth_dir",
+		"user_auth_fb_dir",
+		"global_faces_dir",
+		"host_images_dir",
+		NULL
+	};
+	for (i = 0; dirs[i] != NULL; i++)
+		gtk_signal_connect (GTK_OBJECT (get_widget (dirs[i])),
+				    "changed",
+				    GTK_SIGNAL_FUNC (check_dir), NULL);
+}
+
+static void
+connect_dirname_checks (void)
+{
+	int i;
+	char *dirs [] = {
+		"pid_file",
+		NULL
+	};
+	for (i = 0; dirs[i] != NULL; i++)
+		gtk_signal_connect (GTK_OBJECT (get_widget (dirs[i])),
+				    "changed",
+				    GTK_SIGNAL_FUNC (check_dirname), NULL);
+}
+
+static void
+connect_file_checks (void)
+{
+	int i;
+	char *files [] = {
+		"gnome_default_session",
+		"gtkrc_file",
+		"logo_file",
+		"gdm_icon",
+		"background_image",
+		"default_face_file",
+		"locale_file",
+		"default_host_image_file",
+		NULL
+	};
+	for (i = 0; files[i] != NULL; i++)
+		gtk_signal_connect (GTK_OBJECT (get_widget (files[i])),
+				    "changed",
+				    GTK_SIGNAL_FUNC (check_file), NULL);
+}
 
 
 int
 main (int argc, char *argv[])
 {
-    if (g_getenv ("DOING_GDM_DEVELOPMENT") != 0 &&
-	strcasecmp_no_locale (g_getenv ("DOING_GDM_DEVELOPMENT"), "yes") == 0)
+    if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
 
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
@@ -251,6 +410,12 @@ main (int argc, char *argv[])
 	    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
 	    exit(EXIT_FAILURE);
 	}
+
+    /* connect the checker signals before parsing */
+    connect_binary_checks ();
+    connect_dir_checks ();
+    connect_dirname_checks ();
+    connect_file_checks ();
 
     /* We set most of the user interface NOT wanting signals to get triggered as
      * we do it. Then we hook up the signals, and THEN set a few remaining elements.

@@ -289,8 +289,8 @@ gdm_config_parse (void)
     if (stemp) {
 	*stemp = '\0';
 
-	if (access (gtemp, R_OK|X_OK))
-	    gdm_fail ("gdm_config_parse: Greeter not found or can't be executed by the gdm user", gtemp);
+	if (access (gtemp, X_OK))
+	    gdm_error ("gdm_config_parse: Greeter not found or can't be executed by the gdm user", gtemp);
     }
 
     g_free (gtemp);
@@ -303,8 +303,8 @@ gdm_config_parse (void)
     if (GdmIndirect && stemp) {
 	*stemp = '\0';
 
-	if (access (gtemp, R_OK|X_OK))
-	    gdm_fail ("gdm_config_parse: Chooser not found or it can't be executed by the gdm user", gtemp);
+	if (access (gtemp, X_OK))
+	    gdm_error ("gdm_config_parse: Chooser not found or it can't be executed by the gdm user", gtemp);
     }
     
     g_free (gtemp);

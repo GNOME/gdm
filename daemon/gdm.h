@@ -158,7 +158,7 @@
 #define GDM_KEY_LOGO "greeter/Logo=" EXPANDED_PIXMAPDIR "/gnome-logo-large.png"
 #define GDM_KEY_QUIVER "greeter/Quiver=true"
 #define GDM_KEY_SYSMENU "greeter/SystemMenu=true"
-#define GDM_KEY_CONFIGURATOR "daemon/Configurator=/usr/bin/gdmconfig --disable-sound --disable-crash-dialog"
+#define GDM_KEY_CONFIGURATOR "daemon/Configurator=" EXPANDED_GDMCONFIGDIR "/gdmconfig --disable-sound --disable-crash-dialog"
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %n"

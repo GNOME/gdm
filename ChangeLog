@@ -1,3 +1,19 @@
+Tue May 15 15:28:57 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, daemon/slave.c: Don't abort when a binary isn't
+	  found, instead try running the default binary and always give
+	  graphical errors.  Since we allow graphical hosification, we need
+	  to allow graphical unhosification as well, and thus gdm must be
+	  able to run in some default mode under adverse conditions.  It is
+	  still possible to utterly hose the system, but less so now.
+
+	* gui/gdmconfig.c:  Interactively check commands, directories and
+	  files for existance and display them in red if they don't.  This
+	  way the user has immediate feedback that he is going to hose stuff
+	  without having to actually try the hosing.
+
+	* configure.in:  Fix the standard path defines
+
 Tue May 15 02:39:23 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmwm.c: fix focusing windows on enter notify 

@@ -555,7 +555,21 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		/* exec the configurator */
-		argv = g_strsplit (GdmConfigurator, " ", MAX_ARGS);	
+		argv = g_strsplit (GdmConfigurator, " ", MAX_ARGS);
+		if (access (argv[0], X_OK) == 0)
+			execv (argv[0], argv);
+
+		run_error_dialog (_("Could not execute the configuration\n"
+				    "program.  Make sure it's path is set\n"
+				    "correctly in the configuration file.\n"
+				    "I will attempt to start it from the\n"
+				    "default location.  If I succeed, you\n"
+				    "should fix your configuration."));
+
+		argv = g_strsplit
+			(EXPANDED_GDMCONFIGDIR
+			 "/gdmconfig --disable-sound --disable-crash-dialog",
+			 " ", MAX_ARGS);
 		if (access (argv[0], X_OK) == 0)
 			execv (argv[0], argv);
 
@@ -896,6 +910,17 @@ gdm_slave_greeter (void)
 	}
 
 	argv = g_strsplit (GdmGreeter, argdelim, MAX_ARGS);
+	execv (argv[0], argv);
+
+	gdm_error (_("gdm_slave_greeter: Cannot start greeter trying default: %s"),
+		   EXPANDED_BINDIR
+		   "/gdmlogin --disable-sound --disable-crash-dialog");
+
+	gdm_setenv ("GDM_WHACKED_GREETER_CONFIG", "true");
+
+	argv = g_strsplit (EXPANDED_BINDIR
+			   "/gdmlogin --disable-sound --disable-crash-dialog",
+			   argdelim, MAX_ARGS);
 	execv (argv[0], argv);
 	
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Error starting greeter on display %s"), d->name);

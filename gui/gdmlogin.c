@@ -46,6 +46,10 @@
 #include "gdmlanguages.h"
 #include "misc.h"
 
+/* set the DOING_GDM_DEVELOPMENT env variable if you aren't running
+ * within the protocol */
+static gboolean DOING_GDM_DEVELOPMENT = FALSE;
+
 static const gchar RCSid[]="$Id$";
 
 /* Some strings that are in other files that we may want to
@@ -637,11 +641,18 @@ gdm_run_command (const char *command)
 	pid = fork ();
 
 	if (pid == -1) {
+		GtkWidget *dialog;
 		/* We can't fork, that means we're pretty much up shit creek
 		 * without a paddle. */
-		gnome_error_dialog (_("Could not fork a new procss!\n\n"
-				      "You likely won't be able to log "
-				      "in either."));
+		dialog = gnome_error_dialog
+			(_("Could not fork a new process!\n\n"
+			   "You likely won't be able to log "
+			   "in either."));
+		gtk_widget_show_all (dialog);
+		gdm_center_window (GTK_WINDOW (dialog));
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 	} else if (pid == 0) {
 		int i;
 
@@ -2748,6 +2759,10 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 	user->homedir = g_strdup (homedir);
 	user->picture = defface;
 
+	/* don't read faces, since that requires the daemon */
+	if (DOING_GDM_DEVELOPMENT)
+		return user;
+
 	/* read initial request */
 	do {
 		while (read (STDIN_FILENO, buf, 1) == 1)
@@ -3147,6 +3162,9 @@ main (int argc, char *argv[])
     sigset_t mask;
     GIOChannel *ctrlch;
 
+    if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
+	    DOING_GDM_DEVELOPMENT = TRUE;
+
     /* Avoid creating ~gdm/.gnome stuff */
     gnome_do_not_create_directories = TRUE;
 
@@ -3223,13 +3241,15 @@ main (int argc, char *argv[])
 
     run_backgrounds ();
 
-    ctrlch = g_io_channel_unix_new (STDIN_FILENO);
-    g_io_channel_init (ctrlch);
-    g_io_add_watch (ctrlch, 
-		    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
-		    (GIOFunc) gdm_login_ctrl_handler,
-		    NULL);
-    g_io_channel_unref (ctrlch);
+    if ( ! DOING_GDM_DEVELOPMENT) {
+	    ctrlch = g_io_channel_unix_new (STDIN_FILENO);
+	    g_io_channel_init (ctrlch);
+	    g_io_add_watch (ctrlch, 
+			    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
+			    (GIOFunc) gdm_login_ctrl_handler,
+			    NULL);
+	    g_io_channel_unref (ctrlch);
+    }
 
     /* if in timed mode, delay timeout on keyboard or menu
      * activity */
@@ -3276,6 +3296,22 @@ main (int argc, char *argv[])
 		    (_("Your session directory is missing or empty!\n\n"
 		       "There are two available sessions you can use, but\n"
 		       "you should log in and correct the gdm configuration."));
+	    gtk_widget_show_all (dialog);
+	    gdm_center_window (GTK_WINDOW (dialog));
+	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+    }
+
+    if (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL) {
+	    GtkWidget *dialog;
+
+	    gdm_wm_focus_new_windows (TRUE);
+
+	    dialog = gnome_error_dialog
+		    (_("The configuration file contains an invalid command\n"
+		       "line for the login dialog, and thus I ran the\n"
+		       "default command.  Please fix your configuration."));
 	    gtk_widget_show_all (dialog);
 	    gdm_center_window (GTK_WINDOW (dialog));
 	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
