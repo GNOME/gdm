@@ -89,10 +89,12 @@ static gint  GdmIconMaxHeight;
 static gint  GdmIconMaxWidth;
 static gboolean GdmQuiver;
 static gboolean GdmSystemMenu;
+static gboolean GdmSystemMenuReal;
 static gchar *GdmHalt;
 static gchar *GdmReboot;
 static gchar *GdmSuspend;
 static gboolean GdmConfigAvailable;
+static gboolean GdmConfigAvailableReal;
 static gchar *GdmConfigurator;
 static gint GdmXineramaScreen;
 static gchar *GdmLogo;
@@ -865,11 +867,11 @@ gdm_login_parse_config (void)
 	    GdmIcon = g_strdup (EXPANDED_PIXMAPDIR "/gdm.png");
     }
     GdmQuiver = ve_config_get_bool (config, GDM_KEY_QUIVER);
-    GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
+    GdmSystemMenuReal = GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
     GdmHalt = ve_config_get_string (config, GDM_KEY_HALT);
     GdmReboot = ve_config_get_string (config, GDM_KEY_REBOOT);
     GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
-    GdmConfigAvailable = ve_config_get_bool (config, GDM_KEY_CONFIG_AVAILABLE);
+    GdmConfigAvailableReal = GdmConfigAvailable = ve_config_get_bool (config, GDM_KEY_CONFIG_AVAILABLE);
     GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
     GdmTitleBar = ve_config_get_bool (config, GDM_KEY_TITLE_BAR);
     GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
@@ -940,8 +942,8 @@ gdm_login_parse_config (void)
 
     /* Disable System menu on non-local displays */
     if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-	    GdmSystemMenu = FALSE;
-	    GdmConfigAvailable = FALSE;
+	    GdmSystemMenuReal = FALSE;
+	    GdmConfigAvailableReal = FALSE;
 	    if (GdmBackgroundRemoteOnlyColor &&
 		GdmBackgroundType == GDM_BACKGROUND_IMAGE)
 		    GdmBackgroundType = GDM_BACKGROUND_COLOR;
@@ -1303,37 +1305,6 @@ static void
 gdm_login_ok_button_press (GtkButton *button, GtkWidget *entry)
 {
 	gdm_login_enter (entry);
-}
-
-static gboolean
-gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
-{
-	if (event == NULL)
-		return FALSE;
-
-	switch (event->keyval) {
-
-	case GDK_Return:
-	case GDK_KP_Enter:
-		gdm_login_enter (entry);
-		return TRUE;
-
-	case GDK_Up:
-	case GDK_Down:
-	case GDK_Tab:
-	case GDK_ISO_Left_Tab:
-	case GDK_KP_Up:
-	case GDK_KP_Down:
-	case GDK_KP_Tab:
-		g_signal_stop_emission_by_name (G_OBJECT (entry), "key_press_event");
-		return TRUE;
-
-	default:
-		g_print ("0x%x\n", (int)event->keyval);
-		break;
-	}
-
-	return FALSE;
 }
 
 static gboolean
@@ -3029,11 +3000,11 @@ gdm_login_gui_init (void)
 	gtk_widget_show (GTK_WIDGET (langmenu));
     }
 
-    if (GdmSystemMenu) {
+    if (GdmSystemMenuReal) {
         gboolean got_anything = FALSE;
 
 	menu = gtk_menu_new();
-	if (GdmConfigAvailable &&
+	if (GdmConfigAvailableReal &&
 	    bin_exists (GdmConfigurator)) {
 		item = gtk_menu_item_new_with_mnemonic (_("_Configure..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -3339,8 +3310,8 @@ gdm_login_gui_init (void)
     gtk_table_attach (GTK_TABLE (stack), entry, 0, 1, 4, 5,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (0), 10, 0);
-    g_signal_connect (G_OBJECT(entry), "key_press_event", 
-		      G_CALLBACK (gdm_login_entry_handler),
+    g_signal_connect (G_OBJECT(entry), "activate", 
+		      G_CALLBACK (gdm_login_enter),
 		      NULL);
     
     hline2 = gtk_hseparator_new ();
@@ -3365,9 +3336,11 @@ gdm_login_gui_init (void)
 
     /* FIXME: No Documentation yet.... */
     /*help_button = gtk_button_new_from_stock (GTK_STOCK_OK);
+    GTK_WIDGET_UNSET_FLAGS (help_button, GTK_CAN_FOCUS);
     gtk_widget_show (help_button);*/
 
     ok_button = gtk_button_new_from_stock (GTK_STOCK_OK);
+    GTK_WIDGET_UNSET_FLAGS (ok_button, GTK_CAN_FOCUS);
     g_signal_connect (G_OBJECT (ok_button), "clicked",
 		      G_CALLBACK (gdm_login_ok_button_press),
 		      entry);

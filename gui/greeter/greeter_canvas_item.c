@@ -3,7 +3,9 @@
 #include <math.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <libgnome/libgnome.h>
 #include <librsvg/rsvg.h>
+#include "vicious.h"
 
 #include "greeter.h"
 #include "greeter_item.h"
@@ -96,11 +98,70 @@ transform_pixbuf (GdkPixbuf *orig,
 }
 
 static void
-fake_button_clicked (GtkWidget *widget, gpointer data)
+activate_button (GtkWidget *widget, gpointer data)
 {
 	const char *id = data;
 	if (id != NULL)
 		greeter_item_run_action_callback (id);
+}
+
+static GtkWidget *
+make_menubar (void)
+{
+	GtkWidget *w, *menu;
+	GtkWidget *menubar = gtk_menu_bar_new();
+
+	/* FIXME: add translatable string here */
+	w = gtk_menu_item_new_with_label ("Menu");
+	gtk_menu_shell_append (GTK_MENU_SHELL (menubar), w);
+	gtk_widget_show (GTK_WIDGET (w));
+
+	menu = gtk_menu_new();
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (w), menu);
+
+	w = gtk_menu_item_new_with_mnemonic (_("_Language"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+	gtk_widget_show (GTK_WIDGET (w));
+	g_signal_connect (G_OBJECT (w), "activate",
+			  G_CALLBACK (activate_button),
+			  "language_button");
+
+	w = gtk_menu_item_new_with_mnemonic (_("_Session"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+	gtk_widget_show (GTK_WIDGET (w));
+	g_signal_connect (G_OBJECT (w), "activate",
+			  G_CALLBACK (activate_button),
+			  "session_button");
+
+	if (GdmSystemMenu &&
+	    !  ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+		w = gtk_menu_item_new_with_mnemonic (_("S_ystem"));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+		gtk_widget_show (GTK_WIDGET (w));
+		g_signal_connect (G_OBJECT (w), "activate",
+				  G_CALLBACK (activate_button),
+				  "system_button");
+	}
+
+	/* Add a quit/disconnect item when in xdmcp mode or flexi mode */
+	/* Do note that the order is important, we always want "Quit" for
+	 * flexi, even if not local (non-local xnest).  and Disconnect
+	 * only for xdmcp */
+	if ( ! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER"))) {
+		w = gtk_menu_item_new_with_mnemonic (_("_Quit"));
+	} else if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+		w = gtk_menu_item_new_with_mnemonic (_("D_isconnect"));
+	} else {
+		w = NULL;
+	}
+	if (w != NULL) {
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
+		gtk_widget_show (GTK_WIDGET (w));
+		g_signal_connect (G_OBJECT (w), "activate",
+				  G_CALLBACK (gtk_main_quit), NULL);
+	}
+
+	return menubar;
 }
 
 void
@@ -205,7 +266,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 	GreeterItemInfo *button;
 	GtkWidget *fake_button = gtk_button_new_with_mnemonic (item->orig_text);
 	gtk_widget_show (fake_button);
-	GTK_WIDGET_SET_FLAGS (fake_button, GTK_CAN_FOCUS);
+	GTK_WIDGET_UNSET_FLAGS (fake_button, GTK_CAN_FOCUS);
 	gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
 			       GNOME_TYPE_CANVAS_WIDGET,
 			       "widget", fake_button,
@@ -218,7 +279,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 	if (button == NULL)
 	  button = item;
 	g_signal_connect_data (G_OBJECT (fake_button), "clicked",
-			       G_CALLBACK (fake_button_clicked),
+			       G_CALLBACK (activate_button),
 			       g_strdup (button->id),
 			       (GClosureNotify)g_free,
 			       0 /* connect_flags */);
@@ -234,6 +295,20 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     if (GdmUseCirclesInEntry)
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
     
+    if (item->id != NULL && strcmp (item->id, "user-pw-entry") == 0) {
+	    /* HACK! Add a menubar, this is kind of evil isn't it */
+	    GtkWidget *menubar = make_menubar ();
+
+	    gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
+				   GNOME_TYPE_CANVAS_WIDGET,
+				   "widget", menubar,
+				   "x", (double)x1,
+				   "y", (double)y1,
+				   "height", (double)rect.height,
+				   "width", (double)rect.width,
+				   NULL);
+    }
+
     item->item = gnome_canvas_item_new (group,
 					GNOME_TYPE_CANVAS_WIDGET,
 					"widget", entry,
@@ -242,6 +317,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					"height", (double)rect.height,
 					"width", (double)rect.width,
 					NULL);
+
     break;
   }
 

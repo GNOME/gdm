@@ -1,3 +1,20 @@
+Wed Aug 14 12:16:30 2002  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c: whack old debug printf (it wasn't harmful due to
+	  the way we do things, but still it was evil)
+
+	* gui/gdmlogin.c, gui/greeter/greeter.c,
+	  gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_item_pam.c:
+	  Do the focus stuff correctly instead of trapping tab and all that,
+	  unset CAN_FOCUS on widgets other then the entry.  Make sure that
+	  an entry exists in the graphical greeter.  Add a fake menubar
+	  below the entry in the graphical greeter so that we always can get
+	  to all the commands even on a whacked out theme.  Plus it may be
+	  nicer to use then the mnemonics if you just use F10.  Now the whole
+	  thing should be more accessibility friendly as well.  When
+	  'doing_development' make the entry sensitive.  Must make a
+	  theme tester.
+
 Tue Aug 13 17:05:55 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.[ch], daemon/gdm.[ch], daemon/misc.[ch],

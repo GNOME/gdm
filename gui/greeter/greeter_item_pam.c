@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include <gtk/gtk.h>
+#include <libgnome/libgnome.h>
 #include <gdk/gdkkeysyms.h>
 #include "greeter_item_pam.h"
 #include "greeter_parser.h"
@@ -13,6 +14,9 @@ static gboolean messages_to_give = FALSE;
 static gboolean replace_msg = TRUE;
 static guint err_box_clear_handler = 0;
 static gboolean entry_is_login = FALSE;
+
+extern gboolean DOING_GDM_DEVELOPMENT;
+extern gboolean GdmSystemMenu;
 
 gchar *greeter_current_user = NULL;
 
@@ -61,32 +65,6 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   g_free (tmp);
 }
 
-static gboolean
-key_press_handler (GtkWidget *widget, GdkEventKey *event)
-{
-	if (event == NULL)
-		return FALSE;
-
-	switch (event->keyval) {
-
-	case GDK_Up:
-	case GDK_Down:
-	case GDK_Tab:
-	case GDK_ISO_Left_Tab:
-	case GDK_KP_Up:
-	case GDK_KP_Down:
-	case GDK_KP_Tab:
-		g_signal_stop_emission_by_name (G_OBJECT (widget),
-						"key_press_event");
-		return TRUE;
-
-	default:
-		break;
-	}
-
-	return FALSE;
-}
-
 gboolean
 greeter_item_pam_setup (void)
 {
@@ -100,20 +78,20 @@ greeter_item_pam_setup (void)
       entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
       gtk_widget_grab_focus (entry);
 
-      /* hack.  For some reason if we leave it blank,
-       * we'll get a little bit of activity on first keystroke,
-       * this way we get rid of it, it will be cleared for the
-       * first prompt anyway. */
-      gtk_entry_set_text (GTK_ENTRY (entry), "...");
+      if ( ! DOING_GDM_DEVELOPMENT)
+        {
+          /* hack.  For some reason if we leave it blank,
+           * we'll get a little bit of activity on first keystroke,
+           * this way we get rid of it, it will be cleared for the
+           * first prompt anyway. */
+          gtk_entry_set_text (GTK_ENTRY (entry), "...");
 
-      /* initially insensitive */
-      gtk_widget_set_sensitive (entry, FALSE);
+          /* initially insensitive */
+          gtk_widget_set_sensitive (entry, FALSE);
+	}
 
       g_signal_connect (entry, "activate",
 			GTK_SIGNAL_FUNC (user_pw_activate), entry_info);
-      g_signal_connect (entry, "key_press_event", 
-			G_CALLBACK (key_press_handler),
-			NULL);
     }
   return TRUE;
 }

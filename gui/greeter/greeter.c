@@ -1060,6 +1060,7 @@ main (int argc, char *argv[])
 		      G_CALLBACK (key_press_event), NULL);
   
   canvas = gnome_canvas_new_aa ();
+  GTK_WIDGET_UNSET_FLAGS (canvas, GTK_CAN_FOCUS);
   gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas),
 				  0.0, 0.0,
 				  (double) gdm_wm_screen.width,
@@ -1090,6 +1091,17 @@ main (int argc, char *argv[])
 			    gdm_wm_screen.width,
 			    gdm_wm_screen.height,
 			    NULL);
+    }
+
+  /* FIXME: beter information should be printed */
+  if (greeter_lookup_id ("user-pw-entry") == NULL)
+    root = NULL;
+
+  /* FIXME: beter information should be printed */
+  if (DOING_GDM_DEVELOPMENT && root == NULL)
+    {
+      g_warning ("No theme could be loaded");
+      exit(1);
     }
 
   if (root == NULL)
