@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.5.0.90\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-11 12:03+0100\n"
-"PO-Revision-Date: 2004-01-11 12:18+0100\n"
+"POT-Creation-Date: 2004-01-13 21:06+0100\n"
+"PO-Revision-Date: 2004-01-13 17:11+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -126,18 +126,18 @@ msgstr "GNOME"
 msgid "This session logs you into GNOME"
 msgstr "Denne sesjonen logger deg inn til GNOME"
 
-#: daemon/auth.c:57
+#: daemon/auth.c:58
 #, c-format
 msgid "%s: Could not write new authorization entry: %s"
 msgstr "%s: Kunne ikke skrive ny autorisasjonsoppføring: %s"
 
-#: daemon/auth.c:60
+#: daemon/auth.c:61
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
 msgstr ""
 "%s: Kunne ikke skrive ny autorisasjonsoppføring. Muligens tom for diskplass"
 
-#: daemon/auth.c:65
+#: daemon/auth.c:66
 #, c-format
 msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
@@ -146,38 +146,38 @@ msgstr ""
 "GDM kunne ikke skrive en ny autorisasjonsoppføring til disk. Muligens tom "
 "for diskplass. %s%s"
 
-#: daemon/auth.c:195
+#: daemon/auth.c:196
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: Kunne ikke lage ny cookie-fil i %s"
 
-#: daemon/auth.c:219 daemon/auth.c:236 daemon/auth.c:870
+#: daemon/auth.c:220 daemon/auth.c:237 daemon/auth.c:871
 #, c-format
 msgid "%s: Cannot safely open %s"
 msgstr "%s: Kan ikke åpne %s på en sikker måte"
 
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:668 daemon/auth.c:708
+#: daemon/auth.c:669 daemon/auth.c:709
 #, c-format
 msgid "%s: Could not open cookie file %s"
 msgstr "%s: Kunne ikke åpne cookie-fil %s"
 
-#: daemon/auth.c:689
+#: daemon/auth.c:690
 #, c-format
 msgid "%s: Could not lock cookie file %s"
 msgstr "%s: Kunne ikke låse cookie-fil %s"
 
-#: daemon/auth.c:739 daemon/auth.c:761
+#: daemon/auth.c:740 daemon/auth.c:762
 #, c-format
 msgid "%s: Could not write cookie"
 msgstr "%s: Kunne ikke skrive informasjonskapsel"
 
-#: daemon/auth.c:846
+#: daemon/auth.c:847
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Overser suspekt cookie-fil %s"
 
-#: daemon/auth.c:889 daemon/gdm.c:2219
+#: daemon/auth.c:890 daemon/gdm.c:2219
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Kan ikke skrive til %s: %s"
@@ -549,12 +549,12 @@ msgstr ""
 #: daemon/gdm.c:832 daemon/gdm.c:840 daemon/gdm.c:2003 daemon/gdm.c:2011
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
-msgstr ""
+msgstr "Kan ikke skrive PID-fil %s. Kan være tom for diskplass. Feil: %s\n"
 
 #: daemon/gdm.c:834 daemon/gdm.c:842 daemon/gdm.c:2005 daemon/gdm.c:2013
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
-msgstr ""
+msgstr "Kan ikke skrive PID-fil %s. Kan være tom for diskplass. Feil: %s"
 
 #: daemon/gdm.c:852
 #, c-format
@@ -660,7 +660,7 @@ msgstr "Feil under gjenoppstarting"
 #. FIXME: note that this could mean out of memory
 #: daemon/gdm.c:1658
 msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
-msgstr ""
+msgstr "hoveddaemon: Mottok SIGABRT. Noe gikk veldig galt. Går ned!"
 
 #: daemon/gdm.c:1796
 msgid "Do not fork into the background"
@@ -680,7 +680,7 @@ msgstr "Skriv ut GDM-versjon"
 
 #: daemon/gdm.c:1804
 msgid "Start the first X server but then halt until we get a GO in the fifo"
-msgstr ""
+msgstr "Start første X-tjener, men vent til vi får startsignal i fifo"
 
 #: daemon/gdm.c:1923 gui/gdmchooser.c:2023
 #, c-format
@@ -749,7 +749,8 @@ msgstr "Forespørsel om handling for utlogging nektet: Ikke autentisert"
 
 #: daemon/gdm.c:3646 daemon/gdm.c:3701
 msgid "Set logout action request denied: Not authenticated"
-msgstr "Forespørsel om setting av handling for utlogging nektet: Ikke autentisert"
+msgstr ""
+"Forespørsel om setting av handling for utlogging nektet: Ikke autentisert"
 
 #: daemon/gdm.c:3746 daemon/gdm.c:3773
 msgid "Query vt request denied: Not authenticated"
@@ -1305,6 +1306,8 @@ msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
 msgstr ""
+"Lyd for innlogging forespurt på ikke-lokal skjerm. Andre mulige feil kan "
+"være at avspillingsprogrammet ikke kan kjøre eller at lyden ikke eksisterer"
 
 #: daemon/slave.c:5057
 #, c-format
@@ -1429,7 +1432,10 @@ msgid ""
 "\n"
 "Cannot change your password, you will not be able to log in, please try "
 "again later or contact your system administrator."
-msgstr "\nKan ikke endre ditt passord. Du vil ikke kunne logge inn. Vennligst prøv igjen senere, eller kontakt din systemadministrator."
+msgstr ""
+"\n"
+"Kan ikke endre ditt passord. Du vil ikke kunne logge inn. Vennligst prøv "
+"igjen senere, eller kontakt din systemadministrator."
 
 #: daemon/verify-crypt.c:329 daemon/verify-shadow.c:347
 msgid ""
@@ -2088,6 +2094,8 @@ msgid ""
 "Trying to set an unknown logout action, or trying to set a logout action "
 "which is not available."
 msgstr ""
+"Prøver å sette en ukjent handling eller en handling som ikke er tilgjengelig "
+"for utlogging."
 
 #: gui/gdmcomm.c:485
 msgid "Virtual terminals not supported."
@@ -2095,7 +2103,7 @@ msgstr "Virtuelle terminaler er ikke støttet."
 
 #: gui/gdmcomm.c:487
 msgid "Trying to change to an invalid virtual terminal number."
-msgstr ""
+msgstr "Prøver å endre til en ugyldig virtuell terminal."
 
 #: gui/gdmcomm.c:489
 msgid "Trying to update an unsupported configuration key."
@@ -2111,7 +2119,7 @@ msgstr ""
 
 #: gui/gdmcomm.c:495
 msgid "Too many messages were sent to gdm and it hung upon us."
-msgstr ""
+msgstr "For mange meldinger ble sendt til gdm og den gikk i heng."
 
 #: gui/gdmcomm.c:498
 msgid "Unknown error occured."
@@ -2142,7 +2150,7 @@ msgstr "Skjerm %s på virtuell terminal %d"
 #: gui/gdmflexiserver.c:216
 #, c-format
 msgid "Nested display %s on virtual terminal %d"
-msgstr ""
+msgstr "Innbakt skjerm %s på virtuell terminal %d"
 
 #: gui/gdmflexiserver.c:246 gui/gdmlogin.c:2760
 #: gui/greeter/greeter_item_ulist.c:436
@@ -2172,6 +2180,8 @@ msgid ""
 "There are some displays already open.  You can select one from the list "
 "below or open a new one."
 msgstr ""
+"Noen skjermer er allerede åpne. Du kan velge en fra listen under eller åpne "
+"en ny."
 
 #: gui/gdmflexiserver.c:389 gui/gdmflexiserver.c:759
 msgid "Can't lock screen"
@@ -3456,7 +3466,7 @@ msgstr ""
 #: gui/gdmsetup.c:470
 msgid ""
 "Autologin or timed login to the superuser (root) account is not allowed."
-msgstr ""
+msgstr "Automatisk innlogging til superbrukerkontoen (root) er ikke tillatt."
 
 #: gui/gdmsetup.c:1698
 msgid "Archive is not of a subdirectory"
@@ -3837,9 +3847,3 @@ msgstr "Ingen grensesnitt kunne lastes! (fil: %s)"
 #: vicious-extensions/ve-nongnome.c:135
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr "For mange aliasnivå¨for et locale. Kan indikere en løkke"
-
-#~ msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
-#~ msgstr "%s: Kan ikke finne gdm-bruker (%s). Prøver «nobody»!"
-
-#~ msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
-#~ msgstr "%s: Kan ikke finne gdm-gruppe (%s). Prøver «nobody»!"
