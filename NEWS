@@ -1,5 +1,41 @@
 Ahh news...
 
+2.4.0.5 stuff:
+
+- Applied patch from #89454 (Havoc/Owen, me) to change .gnome to .gnome2,
+  to fix interaction with gnome2.  This mostly applies to the session
+  chooser.  Unfortunately this resets your saved language and session
+  type.
+
+- Fix the pid checking routine on non-linux systems
+
+- Use internal routines for writing of the config file so that things
+  such as comments are now preserved, and some related problems are
+  fixed.
+
+- A whole bunch of minor fixes and cleanups, including some possible races
+  and hangs
+
+- Don't use deprecated stuff except for the occasional CList usage
+
+- Fix io channel stuff in the greeters (actually set unbuffered and NULL
+  encoding, this may just fix all the FreeBSD issues)
+
+- Recheck for gdm running before sending any update from gdmsetup, this means
+  that even if you run gdmsetup before gdm, things will still work.
+
+- Update background and logo on the fly in the standard greeter
+
+- Properly resize window in the standard greeter when we can't fit
+
+- Added several more untranslated strings to the language list
+  (Yanko Kaneti, me)
+
+- Remove the failsafe 'C' locale addition and replace it with en_US,
+  in case no en_* language is installed.
+
+- Translation updates (Fatih Demir, Pablo Saratxaga, me)
+
 2.4.0.4 stuff:
 
 - Fix George's stupidity to allow people to log in (Jacob)
