@@ -134,8 +134,7 @@ main (int argc, char *argv[])
 		} else if (is_in_trusted_pic_dir (pixmap)) {
 			/* Picture is in trusted dir, no need to copy nor
 			 * check it */
-			char *homedir = g_get_home_dir ();
-			char *cfg_file = g_strconcat (homedir,
+			char *cfg_file = g_strconcat (g_get_home_dir (),
 						      "/.gnome/gdm",
 						      NULL);
 			gnome_config_set_string ("/gdm/face/picture",
@@ -144,7 +143,6 @@ main (int argc, char *argv[])
 			/* ensure proper permissions */
 			chmod (cfg_file, 0600);
 			g_free (cfg_file);
-			g_free (homedir);
 			break;
 		} else if (s.st_size > max_size) {
 			GtkWidget *d;
@@ -163,11 +161,10 @@ main (int argc, char *argv[])
 		} else {
 			char buf[4096];
 			size_t size;
-			char *homedir = g_get_home_dir ();
-			char *photofile = g_strconcat (homedir,
+			char *photofile = g_strconcat (g_get_home_dir (),
 						       "/.gnome/photo",
 						       NULL);
-			char *cfg_file = g_strconcat (homedir,
+			char *cfg_file = g_strconcat (g_get_home_dir (),
 						      "/.gnome/gdm",
 						      NULL);
 			int fddest, fdsrc;
@@ -185,7 +182,6 @@ main (int argc, char *argv[])
 							    g_strerror (errno));
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
-				g_free (homedir);
 				g_free (cfg_file);
 				g_free (photofile);
 				continue;
@@ -205,7 +201,6 @@ main (int argc, char *argv[])
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
 				g_free (cfg_file);
-				g_free (homedir);
 				g_free (photofile);
 				close (fdsrc);
 				continue;
@@ -223,7 +218,6 @@ main (int argc, char *argv[])
 			/* ensure proper permissions */
 			chmod (cfg_file, 0600);
 			g_free (cfg_file);
-			g_free (homedir);
 			g_free (photofile);
 			break;
 		}
