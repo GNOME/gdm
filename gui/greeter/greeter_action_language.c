@@ -175,6 +175,23 @@ selection_changed (GtkTreeSelection *selection,
   gtk_tree_model_get (GTK_TREE_MODEL (lang_model), &iter, LOCALE_COLUMN, &dialog_selected_language, -1);
 }
 
+static void
+tree_row_activated (GtkTreeView         *view,
+                    GtkTreePath         *path,
+                    GtkTreeViewColumn   *column,
+                    gpointer            data)
+{
+  GtkTreeIter iter;
+  if (gtk_tree_model_get_iter (GTK_TREE_MODEL (lang_model), &iter, path))
+    {
+      g_free (dialog_selected_language);
+      gtk_tree_model_get (GTK_TREE_MODEL (lang_model), &iter,
+			  LOCALE_COLUMN, &dialog_selected_language,
+			  -1);
+      gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+  }
+}
+
 void
 greeter_action_language (GreeterItemInfo *info,
 			 gpointer         user_data)
@@ -242,6 +259,10 @@ greeter_action_language (GreeterItemInfo *info,
 			"changed",
 			(GCallback) selection_changed,
 			NULL);
+      g_signal_connect(G_OBJECT (view),
+                        "row_activated",
+                        (GCallback) tree_row_activated,
+                        NULL);
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
     }
