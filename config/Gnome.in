@@ -10,7 +10,9 @@ do
 	fi
 done
 
-if [ -x "$HOME/.gnomerc" ]; then
+if [ x != x$GNOME_SESSION ]; then
+	exec /usr/bin/gnome-session --choose-session "$GNOME_SESSION"
+elif [ -x "$HOME/.gnomerc" ]; then
 	exec "$HOME/.gnomerc"
 else
 	exec "@EXPANDED_SYSCONFDIR@/gdm/gnomerc"
