@@ -1,3 +1,15 @@
+Thu Sep 18 03:33:44 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c, daemon/cookie.c: Can't sleep, so re-clean the random
+	  stuff.  This time really think about what's happening and document
+	  the random tick stuff.  The random tick is now a lot faster too
+	  after browsing the MT pseudorandom thing, what we were doing before
+	  was just slow crap (not that slow, we're talking 'too slow for
+	  sopwith').  But it was kind of embarassing I suppose.  I need to
+	  think about such code before I use it.  Also really get all the
+	  entropy we can get from the current time instead of just around
+	  20 lousy bits.  So we need less ticks to get better entropy.
+
 Wed Sep 17 10:14:27 2003  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in: the sessions dir is now commented out so that

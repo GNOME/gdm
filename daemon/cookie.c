@@ -77,7 +77,32 @@ struct rngs {
 /* Some semi random spinners to spin,
  * this is 20 bytes of semi random data */
 #define RANDNUMS 5
-static int randnums[RANDNUMS];
+static guint32 randnums[RANDNUMS];
+
+/* stolen from XDM which in turn stole this
+   from the C standard */
+static guint32
+next_rand_15 (guint32 num)
+{
+	num = num * 1103515245 + 12345;
+	return (unsigned int)(num/65536) % 32768;
+}
+
+/* really quite apparently only 31 bits of entropy result (from tests),
+   but oh well */
+static guint32
+next_rand_32 (guint32 num)
+{
+	int i;
+	guint32 ret;
+	guint8 *p = (guint8 *)&ret;
+
+	for (i = 0; i < 4; i++)  {
+		num = next_rand_15 (num);
+		p[i] = (num & 0xff00) >> 8;
+	}
+	return ret;
+}
 
 /* This adds a little bit of entropy to our buffer,
    just in case /dev/random doesn't work out for us
@@ -88,22 +113,31 @@ gdm_random_tick (void)
 {
 	struct timeval tv;
 	struct timezone tz;
-	static GRand *rnd = NULL;
 
 	gettimeofday (&tv, &tz);
 
-	if G_UNLIKELY (rnd == NULL)
-		rnd = g_rand_new_with_seed (tv.tv_usec ^ tv.tv_sec);
-	else
-		g_rand_set_seed (rnd, tv.tv_usec ^ tv.tv_sec);
-	randnums[0] ^= g_rand_int (rnd);
-	randnums[1] ^= g_random_int ();
-	randnums[2] ^= rand ();
-	randnums[3] ^= random ();
+	/* the higher order bits of the seconds
+	   are quite uninteresting */
+	randnums[0] ^= next_rand_32 ((tv.tv_sec << 20) ^ tv.tv_usec);
 
-	/* a little bit of dependence on speed of execution */
-	gettimeofday (&tv, &tz);
-	randnums[4] ^= (tv.tv_usec ^ randnums[3]);
+	/* different method of combining */
+	randnums[1] ^= next_rand_32 (tv.tv_sec) ^ next_rand_32 (tv.tv_usec);
+
+	/* probably unneeded, but just being anal */
+	randnums[2] ^= (tv.tv_sec << 20) ^ tv.tv_usec;
+
+	/* probably unneeded, to guess above
+	   the number of invocation is likely needed
+	   anyway */
+	randnums[3] ++;
+
+	/* also hope that other places call
+	   g_random_int.  Note that on systems
+	   without /dev/urandom, this will yet again
+	   measure time the first time it's called and
+	   we'll add entropy based on the speed of the
+	   computer.  Yay */
+	randnums[4] ^= g_random_int ();
 }
 
 /* check a few values and if we get the same
@@ -153,7 +187,7 @@ gdm_cookie_generate (GdmDisplay *d)
     gdm_md5_update (&ctx, old_cookie, 16);
 
     /* use some uninitialized stack space */
-    gdm_md5_update (&ctx, digest, 16);
+    gdm_md5_update (&ctx, cookie, sizeof (cookie));
 
     pid = getppid();
     gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));

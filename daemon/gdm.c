@@ -872,6 +872,9 @@ gdm_start_first_unborn_local (int delay)
 {
 	GSList *li;
 
+	/* tickle the random stuff */
+	gdm_random_tick ();
+
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *d = li->data;
 
@@ -1801,8 +1804,6 @@ main (int argc, char *argv[])
 
     /* semi init pseudorandomness */
     gdm_random_tick ();
-    srand (g_random_int ());
-    srandom (g_random_int ());
 
     gdm_main_pid = getpid ();
 
