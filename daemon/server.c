@@ -55,6 +55,7 @@ static void gdm_server_child_handler (gint);
 extern gchar *GdmDisplayInit;
 extern gchar *GdmServAuthDir;
 extern gchar *GdmLogDir;
+extern gchar *GdmStandardXServer;
 extern gboolean GdmXdmcp;
 extern sigset_t sysmask;
 
@@ -365,6 +366,7 @@ gdm_server_spawn (GdmDisplay *d)
     gchar **argv = NULL;
     int logfd;
     int len, i;
+    const char *command;
 
     if (d == NULL ||
 	ve_string_empty (d->command)) {
@@ -444,7 +446,12 @@ gdm_server_spawn (GdmDisplay *d)
 	sigaddset (&mask, SIGTERM);
 	sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
-	argv = ve_split (d->command);
+	if (strcmp (d->command, GDM_STANDARD) == 0)
+		command = GdmStandardXServer;
+	else
+		command = d->command;
+
+	argv = ve_split (command);
 	for (len = 0; argv != NULL && argv[len] != NULL; len++)
 		;
 
@@ -473,7 +480,7 @@ gdm_server_spawn (GdmDisplay *d)
 	setpgid (0, 0);
 	execv (argv[0], argv);
 	
-	gdm_error (_("gdm_server_spawn: Xserver not found: %s"), d->command);
+	gdm_error (_("gdm_server_spawn: Xserver not found: %s"), command);
 	
 	_exit (SERVER_ABORT);
 	

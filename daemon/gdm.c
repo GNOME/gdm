@@ -43,6 +43,7 @@
 #include "display.h"
 #include "choose.h"
 #include "errorgui.h"
+#include "gdm-net.h"
 
 static const gchar RCSid[]="$Id$";
 
@@ -50,10 +51,13 @@ static const gchar RCSid[]="$Id$";
 /* Local functions */
 static void gdm_config_parse (void);
 static void gdm_local_servers_start (GdmDisplay *d);
+static void gdm_handle_message (GdmConnection *conn,
+				const char *msg,
+				gpointer data);
+static void gdm_handle_user_message (GdmConnection *conn,
+				     const char *msg,
+				     gpointer data);
 static void gdm_daemonify (void);
-static gboolean gdm_slave_socket_handler (GIOChannel *source,
-					  GIOCondition cond,
-					  gpointer data);
 static void gdm_safe_restart (void);
 static void gdm_restart_now (void);
 
@@ -63,8 +67,9 @@ gint sessions = 0;		/* Number of remote sessions */
 sigset_t sysmask;		/* Inherited system signal mask */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
-int fifofd = -1;		/* fifo fd for the slave communication fifo */
-guint fifo_source = 0;		/* source for the above */
+
+static GdmConnection *fifoconn = NULL; /* Fifo connection */
+static GdmConnection *unixconn = NULL; /* UNIX Socket connection */
 
 /* True if the server that was run was in actuallity not specified in the
  * config file.  That is if xdmcp was disabled and no local servers were
@@ -135,6 +140,8 @@ gint  GdmRetryDelay = 0;
 gchar *GdmTimedLogin = NULL;
 gboolean GdmTimedLoginEnable = FALSE;
 gint GdmTimedLoginDelay = 0;
+gchar *GdmStandardXServer = NULL;
+gint  GdmFlexibleXServers = 5;
 
 /* set in the main function */
 char **stored_argv = NULL;
@@ -228,6 +235,9 @@ gdm_config_parse (void)
     GdmMaxIndirect = gnome_config_get_int (GDM_KEY_MAXINDIR);
     GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);    
     GdmPingInterval = gnome_config_get_int (GDM_KEY_PINGINTERVAL);    
+
+    GdmStandardXServer = gnome_config_get_string (GDM_STANDARD_XSERVER);    
+    GdmFlexibleXServers = gnome_config_get_int (GDM_FLEXIBLE_XSERVERS);    
 
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
 
@@ -474,7 +484,6 @@ gdm_local_servers_start (GdmDisplay *d)
 		/* only the first local display gets autologged in */
 		gdm_first_login = FALSE;
 	}
-
     }
 }
 
@@ -495,7 +504,10 @@ final_cleanup (void)
 	g_slist_free (list);
 
 	gdm_xdmcp_close ();
-	gdm_fifo_close ();
+	gdm_connection_close (fifoconn);
+	fifoconn = NULL;
+	gdm_connection_close (unixconn);
+	unixconn = NULL;
 
 	closelog();
 	unlink (GdmPidFile);
@@ -756,7 +768,7 @@ gdm_cleanup_children (void)
 	    status = DISPLAY_REMANAGE;
     }
 
-    if (d->type != TYPE_LOCAL &&
+    if ( ! SERVER_IS_LOCAL (d) &&
 	(status == DISPLAY_RESTARTGDM ||
 	 status == DISPLAY_REBOOT ||
 	 status == DISPLAY_HALT)) {
@@ -843,7 +855,7 @@ gdm_cleanup_children (void)
 	if (gdm_restart_mode)
 		gdm_safe_restart ();
 
-	/* in remote case just drop to _REMANAGE */
+	/* in remote/flexi case just drop to _REMANAGE */
 	if (d->type == TYPE_LOCAL) {
 		time_t now = time (NULL);
 		d->x_faileds ++;
@@ -885,7 +897,7 @@ gdm_cleanup_children (void)
 		if ( ! gdm_display_manage (d))
 			gdm_display_unmanage (d);
 	/* Remote displays will send a request to be managed */
-	} else if (d->type == TYPE_XDMCP) {
+	} else /* TYPE_XDMCP, TYPE_FLEXI_LOCAL, TYPE_FLEXI_XNEST */ {
 		gdm_display_unmanage (d);
 	}
 	
@@ -985,39 +997,27 @@ store_argv (int argc, char *argv[])
 }
 
 static void
-create_fifo (void)
+create_connections (void)
 {
-	gchar *fifopath;
-	GIOChannel *fifochan;
+	gchar *path;
 
-	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+	path = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+	fifoconn = gdm_connection_open_fifo (path, 0660);
+	g_free (path);
 
-	unlink (fifopath);
+	if (fifoconn != NULL)
+		gdm_connection_set_handler (fifoconn,
+					    gdm_handle_message,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
 
-	if (mkfifo (fifopath, 0660) < 0) {
-		gdm_fail (_("%s: Could not make FIFO"),
-			  "create_fifo");
-		return;
-	}
+	unixconn = gdm_connection_open_unix (GDM_SUP_SOCKET, 0666);
 
-	fifofd = open (fifopath, O_RDWR); /* Open with write to avoid EOF */
-
-	if (fifofd < 0) {
-		gdm_fail (_("%s: Could not open FIFO"),
-			  "create_fifo");
-		return;
-	}
-
-	chmod (fifopath, 0660);
-
-	g_free (fifopath);
-
-	fifochan = g_io_channel_unix_new (fifofd);
-	fifo_source = g_io_add_watch_full
-		(fifochan, G_PRIORITY_DEFAULT,
-		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
-		 gdm_slave_socket_handler, NULL, NULL);
-	g_io_channel_unref (fifochan);
+	if (unixconn != NULL)
+		gdm_connection_set_handler (unixconn,
+					    gdm_handle_user_message,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
 }
 
 int 
@@ -1141,7 +1141,7 @@ main (int argc, char *argv[])
     if (GdmXdmcp)
 	gdm_xdmcp_init();
 
-    create_fifo ();
+    create_connections ();
 
     /* Start local X servers */
     g_slist_foreach (displays, (GFunc) gdm_local_servers_start, NULL);
@@ -1281,7 +1281,7 @@ gdm_quit (void)
 }
 
 static void
-handle_message (const char *msg)
+gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	gdm_debug ("Handeling message: '%s'", msg);
 
@@ -1289,7 +1289,7 @@ handle_message (const char *msg)
 		     strlen (GDM_SOP_CHOSEN " ")) == 0) {
 		gdm_choose_data (msg);
 	} else if (strncmp (msg, GDM_SOP_XPID " ",
-		     strlen (GDM_SOP_XPID " ")) == 0) {
+		            strlen (GDM_SOP_XPID " ")) == 0) {
 		GdmDisplay *d;
 		long slave_pid, pid;
 
@@ -1307,7 +1307,7 @@ handle_message (const char *msg)
 			kill (slave_pid, SIGUSR2);
 		}
 	} else if (strncmp (msg, GDM_SOP_SESSPID " ",
-		     strlen (GDM_SOP_SESSPID " ")) == 0) {
+		            strlen (GDM_SOP_SESSPID " ")) == 0) {
 		GdmDisplay *d;
 		long slave_pid, pid;
 
@@ -1325,7 +1325,7 @@ handle_message (const char *msg)
 			kill (slave_pid, SIGUSR2);
 		}
 	} else if (strncmp (msg, GDM_SOP_GREETPID " ",
-		     strlen (GDM_SOP_GREETPID " ")) == 0) {
+		            strlen (GDM_SOP_GREETPID " ")) == 0) {
 		GdmDisplay *d;
 		long slave_pid, pid;
 
@@ -1343,7 +1343,7 @@ handle_message (const char *msg)
 			kill (slave_pid, SIGUSR2);
 		}
 	} else if (strncmp (msg, GDM_SOP_CHOOSERPID " ",
-		     strlen (GDM_SOP_CHOOSERPID " ")) == 0) {
+		            strlen (GDM_SOP_CHOOSERPID " ")) == 0) {
 		GdmDisplay *d;
 		long slave_pid, pid;
 
@@ -1361,7 +1361,7 @@ handle_message (const char *msg)
 			kill (slave_pid, SIGUSR2);
 		}
 	} else if (strncmp (msg, GDM_SOP_LOGGED_IN " ",
-		     strlen (GDM_SOP_LOGGED_IN " ")) == 0) {
+		            strlen (GDM_SOP_LOGGED_IN " ")) == 0) {
 		GdmDisplay *d;
 		long slave_pid;
 		int logged_in;
@@ -1392,55 +1392,23 @@ handle_message (const char *msg)
 	}
 }
 
-static gboolean
-gdm_slave_socket_handler (GIOChannel *source,
-			  GIOCondition cond,
-			  gpointer data)
+static void
+gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 {
-	gchar buf[PIPE_SIZE];
-	char *p;
-	gint len;
+	gdm_debug ("Handeling user message: '%s'", msg);
 
-	if (cond != G_IO_IN) 
-		return TRUE;
-
-	if (g_io_channel_read (source, buf, sizeof (buf) - 1, &len)
-	    != G_IO_ERROR_NONE)
-		return TRUE;
-
-	if (len <= 0)
-		return TRUE;
-
-	/* null terminate as the string is NOT */
-	buf[len] = '\0';
-
-	p = strtok (buf, "\n");
-	while (p != NULL) {
-		handle_message (p);
-		p = strtok (NULL, "\n");
+	if (strcmp (msg, GDM_SUP_FLEXI_XSERVER) == 0) {
+		/* FIXME: */
+		gdm_connection_write (conn, "ERROR 0 Not implemented\n");
+	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
+		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
+		/* FIXME: */
+		gdm_connection_write (conn, "ERROR 0 Not implemented\n");
+	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
+		gdm_connection_write (conn, "VERSION " VERSION "\n");
+	} else if (strcmp (msg, GDM_SUP_CLOSE) == 0) {
+		gdm_connection_close (conn);
 	}
-
-	return TRUE;
-}
-
-void
-gdm_fifo_close (void)
-{
-	gchar *fifopath;
-
-	if (fifo_source > 0) {
-		g_source_remove (fifo_source);
-		fifo_source = 0;
-	}
-
-	if (fifofd > 0) {
-		close (fifofd);
-		fifofd = -1;
-	}
-
-	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
-	unlink (fifopath);
-	g_free (fifopath);
 }
 
 /* EOF */

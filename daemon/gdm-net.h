@@ -16,23 +16,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef GDM_MISC_H
-#define GDM_MISC_H
+#ifndef GDM_NET_H
+#define GDM_NET_H
 
-#include "config.h"
-#include "gdm.h"
+#include <glib.h>
 
-void gdm_fail   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-void gdm_info   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-void gdm_error  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-void gdm_debug  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+typedef struct _GdmConnection GdmConnection;
 
-/* clear environment, but keep the i18n ones (LANG, LC_ALL, etc...),
- * note that this leak memory so only use before exec */
-void gdm_clearenv_no_lang (void);
+/* Something that will get stuff line by line */
+typedef void (* GdmConnectionHandler) (GdmConnection *conn,
+				       const char *str,
+				       gpointer data);
 
-int gdm_get_free_display (int start, int server_uid);
+gboolean	gdm_connection_is_writable (GdmConnection *conn);
+gboolean	gdm_connection_write (GdmConnection *conn,
+		                      const char *str);
 
-#endif /* GDM_MISC_H */
+GdmConnection *	gdm_connection_open_unix (const char *sockname,
+					  mode_t mode);
+GdmConnection *	gdm_connection_open_fifo (const char *fifo,
+					  mode_t mode);
+
+void		gdm_connection_set_handler (GdmConnection *conn,
+					    GdmConnectionHandler handler,
+					    gpointer data,
+					    GDestroyNotify destroy_notify);
+
+void		gdm_connection_close (GdmConnection *conn);
+
+#endif /* GDM_NET_H */
 
 /* EOF */

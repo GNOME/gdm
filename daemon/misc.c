@@ -19,6 +19,12 @@
 #include <config.h>
 #include <gnome.h>
 #include <syslog.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <errno.h>
 
 #include <vicious.h>
 
@@ -175,10 +181,50 @@ gdm_clearenv_no_lang (void)
 	g_list_free (envs);
 }
 
+/* Evil function to figure out which display number is free */
+int
+gdm_get_free_display (int start, int server_uid)
+{
+	int sock;
+	int i;
+	struct sockaddr_in serv_addr = {0}; 
+
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
+
+	/* Cap this at 3000, I'm not sure we can ever seriously
+	 * go that far */
+	for (i = start; i < 3000; i ++) {
+		struct stat s;
+		char buf[256];
+		sock = socket (AF_INET, SOCK_STREAM, 0);
+
+		serv_addr.sin_port = htons (6000 + i);
+
+		errno = 0;
+		if (connect (sock, &serv_addr, sizeof (serv_addr)) >= 0 ||
+		    errno != ECONNREFUSED) {
+			close (sock);
+			continue;
+		}
+
+		/* if starting as root, we'll be able to overwrite any
+		 * stale sockets, but a user may not be able to */
+		if (server_uid > 0) {
+			g_snprintf (buf, sizeof (buf),
+				    "/tmp/.X11-unix/X%d", i);
+			if (stat (buf, &s) == 0 &&
+			    s.st_uid != server_uid) {
+				close (sock);
+				continue;
+			}
+		}
+
+		close (sock);
+		return i;
+	}
+
+	return -1;
+}
+
 /* EOF */
-
-
-
-
-
-

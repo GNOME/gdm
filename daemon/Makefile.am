@@ -42,7 +42,9 @@ gdm_SOURCES = \
 	@VRFY@.c \
 	verify.h \
 	errorgui.c \
-	errorgui.h
+	errorgui.h \
+	gdm-net.c \
+	gdm-net.h
 
 EXTRA_gdm_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
 

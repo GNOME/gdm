@@ -166,6 +166,12 @@ gdm_display_manage (GdmDisplay *d)
 	    /* if we ever return, bad things are happening */
 	    gdm_server_stop (d);
 	    _exit (DISPLAY_ABORT);
+	} else if (d->type == TYPE_FLEXI_LOCAL ||
+		   d->type == TYPE_FLEXI_XNEST) {
+	    gdm_slave_start (d);
+	    gdm_server_stop (d);
+	    /* we expect to return after the session finishes */
+	    _exit (DISPLAY_REMANAGE);
 	} else if (d->type == TYPE_XDMCP && d->dispstat == XDMCP_MANAGED) {
 	    gdm_slave_start (d);
 	    gdm_server_stop (d);
@@ -190,7 +196,7 @@ gdm_display_manage (GdmDisplay *d)
 	break;
     }
 
-    if (d->type == TYPE_LOCAL) {
+    if (SERVER_IS_LOCAL (d)) {
 	    d->dispstat = DISPLAY_SUCCESS;
     }
 
@@ -226,7 +232,7 @@ gdm_display_unmanage (GdmDisplay *d)
     
     if (d->type == TYPE_LOCAL)
 	d->dispstat = DISPLAY_DEAD;
-    else /* TYPE_XDMCP */
+    else /* TYPE_XDMCP,TYPE_FLEXI_LOCAL,TYPE_FLEXI_XNEST */
 	gdm_display_dispose (d);
 }
 

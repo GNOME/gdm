@@ -1,3 +1,22 @@
+Wed Aug 15 01:54:02 2001  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in: Added StandardXServer and FlexibleXServers
+	  and font includes a ,*.  Also Xservers use the "Standard"
+	  definition, which all probably doesn't work
+
+	* daemon/Makefile.am, daemon/gdm-net.[ch]: Move the fifo stuff here
+	  and generalize it and add an interface for unix sockets
+
+	* daemon/gdm.[ch]: Add support for the user protocol using unix
+	  domain sockets
+
+	* daemon/gdm.[ch], daemon/auth.c, daemon/display.c, daemon/server.c,
+	  daemon/slave.c:  Do some Standard and Flexible/Xnest servers dance. 
+	  Mostly doesn't work now still.
+
+	* daaemon/misc.c: implement an incredibly evil function to figure out
+	  a free X display number
+
 2001-08-14  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* docs/C/gdm.sgml: Fix sgml up a bit.

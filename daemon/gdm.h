@@ -31,6 +31,14 @@
 
 #define TYPE_LOCAL 1		/* Local X server */
 #define TYPE_XDMCP 2		/* Remote display */
+#define TYPE_FLEXI_LOCAL 3	/* Local Flexi X server */
+#define TYPE_FLEXI_XNEST 4	/* Local Flexi Xnest server */
+
+#define SERVER_IS_LOCAL(d) (d->type == TYPE_LOCAL || \
+			    d->type == TYPE_FLEXI_LOCAL || \
+			    d->type == TYPE_FLEXI_XNEST)
+#define SERVER_IS_OURS(d) (d->type == TYPE_LOCAL || \
+			   d->type == TYPE_FLEXI_LOCAL)
 
 #define SERVER_SUCCESS 0	/* X server default */
 #define SERVER_FAILURE 1	/* X server default */
@@ -138,6 +146,9 @@
 #define GDM_KEY_TIMED_LOGIN "daemon/TimedLogin="
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=30"
 
+#define GDM_STANDARD_XSERVER "daemon/StandardXServer=/usr/bin/X11/X"
+#define GDM_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
+
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
 #define GDM_KEY_ALLOWREMOTEAUTOLOGIN "security/AllowRemoteAutoLogin=false"
@@ -210,6 +221,7 @@
 #define GDM_SESSION_FAILSAFE_XTERM "GDM_Failsafe.XTERM"
 #define GDM_SESSION_GNOME_CHOOSER "Gnome Chooser"
 
+#define GDM_STANDARD "Standard"
 
 typedef struct _GdmDisplay GdmDisplay;
 
@@ -259,6 +271,11 @@ struct _GdmDisplay {
     int screenheight;
 };
 
+typedef struct _GdmXServer GdmXServer;
+struct _GdmXServer {
+	char *name;
+	char *command;
+};
 
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
 struct _GdmIndirectDisplay {
@@ -318,6 +335,7 @@ void gdm_quit (void);
 
 /* The ones that pass a <slave pid> must be from a valid slave, and
  * the slave will be sent a SIGUSR2 */
+/* The fifo protocol, used only by gdm internally */
 #define GDM_SOP_CHOSEN       "CHOSEN" /* <indirect id> <ip addr> */
 #define GDM_SOP_XPID         "XPID" /* <slave pid> <xpid> */
 #define GDM_SOP_SESSPID      "SESSPID" /* <slave pid> <sesspid> */
@@ -326,7 +344,34 @@ void gdm_quit (void);
 #define GDM_SOP_LOGGED_IN    "LOGGED_IN" /* <slave pid> <logged_in as int> */
 #define GDM_SOP_SOFT_RESTART "SOFT_RESTART" /* no arguments */
 
-void gdm_fifo_close (void);
+#define GDM_SUP_SOCKET "/tmp/.gdm_socket"
+
+/* The user protocol, using /tmp/.gdm_socket */
+#define GDM_SUP_VERSION "VERSION" /* no arguments */
+/* VERSION: Query version
+ * Arguments:  None
+ * Answers:
+ *   VERSION <gdm version>
+ */
+#define GDM_SUP_FLEXI_XSERVER "FLEXI_XSERVER" /* no arguments */
+/* FLEXI_XSERVER: Start a new X flexible server
+ * Arguments:  None currently, in the future, the type of X server
+ * Answers:
+ *   OK <display>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ */
+#define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <ascii xauth data> */
+/* FLEXI_XNEXT: Start a new flexible Xnest server
+ * Arguments:  <display> <ascii xauth data from "xauth nextract - $DISPLAY">
+ * Answers:
+ *   OK <display>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ */
+#define GDM_SUP_CLOSE        "CLOSE" /* no arguments */
+/* CLOSE Answers: None
+ */
 
 #endif /* GDM_H */
 

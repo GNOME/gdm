@@ -160,7 +160,7 @@ gdm_slave_start (GdmDisplay *display)
 		return;
 
 	gdm_debug ("gdm_slave_start: Starting slave process for %s", display->name);
-	if (display->type != TYPE_LOCAL &&
+	if (display->type == TYPE_XDMCP &&
 	    GdmPingInterval > 0) {
 		/* Handle a ALRM signals from our ping alarms */
 		alrm.sa_handler = gdm_slave_alrm_handler;
@@ -207,7 +207,7 @@ gdm_slave_start (GdmDisplay *display)
 	sigdelset (&mask, SIGTERM);
 	sigdelset (&mask, SIGCHLD);
 	sigdelset (&mask, SIGUSR2);
-	if (display->type != TYPE_LOCAL &&
+	if (display->type == TYPE_XDMCP &&
 	    GdmPingInterval > 0) {
 		sigdelset (&mask, SIGALRM);
 	}
@@ -222,6 +222,7 @@ gdm_slave_start (GdmDisplay *display)
 		gdm_debug ("gdm_slave_start: Loop Thingie");
 		gdm_slave_run (display);
 
+		/* remote and flexi only run once */
 		if (display->type != TYPE_LOCAL)
 			break;
 
@@ -353,7 +354,7 @@ gdm_slave_run (GdmDisplay *display)
 
     /* if this is local display start a server if one doesn't
      * exist */
-    if (d->type == TYPE_LOCAL &&
+    if (SERVER_IS_OURS (d) &&
 	d->servpid <= 0) {
 	    gdm_server_start (d);
 	    gdm_send_pid (GDM_SOP_XPID, d->servpid);
@@ -375,7 +376,7 @@ gdm_slave_run (GdmDisplay *display)
 
     /* if local then the the server should be ready for openning, so
      * don't try so long before killing it and trying again */
-    if (d->type == TYPE_LOCAL)
+    if (SERVER_IS_LOCAL (d))
 	    maxtries = 2;
     else
 	    maxtries = 10;
@@ -391,8 +392,8 @@ gdm_slave_run (GdmDisplay *display)
 	}
     }
 
-    /* something may have gone wrong, try remanaging, if local, the toplevel
-     * loop of death will handle us */ 
+    /* something may have gone wrong, try remanaging, if local (non-flexi),
+     * the toplevel loop of death will handle us */ 
     if (d->dsp == NULL) {
 	    gdm_server_stop (d);
 	    if (d->type == TYPE_LOCAL)
@@ -414,7 +415,7 @@ gdm_slave_run (GdmDisplay *display)
     do_xfailed_on_xio_error = FALSE;
 
     /* If XDMCP setup pinging */
-    if (d->type != TYPE_LOCAL &&
+    if (d->type == TYPE_XDMCP &&
 	GdmPingInterval > 0) {
 	    alarm (GdmPingInterval * 60);
     }
@@ -425,7 +426,7 @@ gdm_slave_run (GdmDisplay *display)
     if (d->use_chooser) {
 	    /* this usually doesn't return */
 	    gdm_slave_chooser ();  /* Run the chooser */
-    } else if ((d->type == TYPE_LOCAL || GdmAllowRemoteAutoLogin) &&
+    } else if ((SERVER_IS_LOCAL (d) || GdmAllowRemoteAutoLogin) &&
 	       gdm_first_login &&
 	       ! ve_string_empty (ParsedAutomaticLogin) &&
 	       strcmp (ParsedAutomaticLogin, "root") != 0) {
@@ -651,7 +652,7 @@ gdm_slave_wait_for_login (void)
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
 		login = gdm_verify_user (NULL /* username*/,
 					 d->name,
-					 d->type == TYPE_LOCAL);
+					 SERVER_IS_LOCAL (d));
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
 			   ve_sure_string (login));
 		/* Complex, make sure to always handle the do_configurator
@@ -677,7 +678,7 @@ gdm_slave_wait_for_login (void)
 			gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, "root");
 			login = gdm_verify_user ("root",
 						 d->name,
-						 d->type == TYPE_LOCAL);
+						 SERVER_IS_LOCAL (d));
 			GdmAllowRoot = oldAllowRoot;
 
 			/* the wanker can't remember his password */
@@ -1044,7 +1045,7 @@ gdm_slave_greeter (void)
 	/* Note that this is just informative, the slave will not listen to
 	 * the greeter even if it does something it shouldn't on a non-local
 	 * display so it's not a security risk */
-	if (d->type == TYPE_LOCAL) {
+	if (SERVER_IS_LOCAL (d)) {
 		ve_setenv ("GDM_IS_LOCAL", "yes", TRUE);
 	} else {
 		ve_unsetenv ("GDM_IS_LOCAL");
@@ -2507,7 +2508,7 @@ gdm_slave_greeter_check_interruption (const char *msg)
 			 * it is allowed for this display (it's only allowed
 			 * for the first local display) and if it's set up
 			 * correctly */
-			if ((d->type == TYPE_LOCAL || GdmAllowRemoteAutoLogin) 
+			if ((SERVER_IS_LOCAL (d) || GdmAllowRemoteAutoLogin) 
                             && d->timed_login_ok &&
 			    ! ve_string_empty (ParsedTimedLogin) &&
                             strcmp (ParsedTimedLogin, "root") != 0 &&
@@ -2517,7 +2518,7 @@ gdm_slave_greeter_check_interruption (const char *msg)
 			}
 			break;
 		case GDM_INTERRUPT_CONFIGURE:
-			if (d->type == TYPE_LOCAL &&
+			if (SERVER_IS_LOCAL (d) &&
 			    GdmConfigAvailable &&
 			    GdmSystemMenu &&
 			    ! ve_string_empty (GdmConfigurator)) {

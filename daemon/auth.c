@@ -128,7 +128,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     /* If this is a local display the struct hasn't changed and we
      * have to eat up old authentication cookies before baking new
      * ones... */
-    if (d->type == TYPE_LOCAL && d->auths) {
+    if (SERVER_IS_OURS (d) && d->auths) {
 	GSList *alist = d->auths;
 
 	while (alist && alist->data) {
@@ -150,14 +150,13 @@ gdm_auth_secure_display (GdmDisplay *d)
     gdm_cookie_generate (d);
 
     /* reget local host if local as it may have changed */
-    if (d->type == TYPE_LOCAL) {
-	    char * hostname = g_new0 (gchar, 1024);
+    if (SERVER_IS_LOCAL (d)) {
+	    char hostname[1024];
 
 	    if (gethostname (hostname, 1023) == 0) {
-		    g_free( d->hostname );
-		    d->hostname = g_strdup( hostname );
+		    g_free (d->hostname);
+		    d->hostname = g_strdup (hostname);
 	    }
-	    g_free (hostname);
     }
 
     /* Find FQDN or IP of display host */
@@ -172,7 +171,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     ia = (struct in_addr *) hentry->h_addr_list[0];
 
     /* Local access also in case the host is very local */
-    if (d->type == TYPE_LOCAL || memcmp (&ia->s_addr, lo, 4) == 0) {
+    if (SERVER_IS_LOCAL (d) || memcmp (&ia->s_addr, lo, 4) == 0) {
 
 	    gdm_debug ("gdm_auth_secure_display: Setting up socket access");
 
@@ -183,8 +182,8 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    /* local machine but not local if you get my meaning, add
 	     * the host gotten by gethostname as well if it's different
 	     * since the above is probably localhost */
-	    if (d->type != TYPE_LOCAL) {
-		    char * hostname = g_new0 (gchar, 1024);
+	    if ( ! SERVER_IS_LOCAL (d)) {
+		    char hostname[1024];
 
 		    if (gethostname (hostname, 1023) == 0 &&
 			strcmp (hostname, d->hostname) != 0) {
@@ -193,7 +192,6 @@ gdm_auth_secure_display (GdmDisplay *d)
 						   strlen (hostname)))
 				    return FALSE;
 		    }
-		    g_free (hostname);
 	    }
     }
 
