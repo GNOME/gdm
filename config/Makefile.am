@@ -95,7 +95,7 @@ install-data-hook: gdm.conf gnomerc Gnome
 		chmod 755 $(gnomercdir); \
 	fi
 	if test '!' -f $(gnomercdir)/gnomerc; then \
-		$(INSTALL_SCRIPT) $(srcdir)/gnomerc $(gnomercdir)/gnomerc; \
+		$(INSTALL_SCRIPT) gnomerc $(gnomercdir)/gnomerc; \
 	fi
 
 	if test '!' -d $(authdir); then \

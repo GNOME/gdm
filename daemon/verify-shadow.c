@@ -109,7 +109,7 @@ gdm_verify_user (const gchar *display)
  * Unregister the user's session */
 
 void
-gdm_verify_check (void)
+gdm_verify_cleanup (void)
 {
 }
 
