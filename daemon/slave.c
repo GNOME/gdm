@@ -922,6 +922,14 @@ gdm_slave_greeter (void)
 		gdm_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
+	if (d->failsafe_xserver) {
+		run_error_dialog (_("I could not start the regular X\n"
+				    "server (your graphical environment)\n"
+				    "and so this is a failsafe X server.\n"
+				    "You should log in and properly\n"
+				    "configure the X server."));
+	}
+
 	argv = g_strsplit (GdmGreeter, argdelim, MAX_ARGS);
 	execv (argv[0], argv);
 

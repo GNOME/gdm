@@ -578,6 +578,19 @@
 	  </varlistentry>
 
 	  <varlistentry>
+	    <term>FailsafeXServer</term>
+	    <listitem>
+	      <synopsis>FailsafeXServer=</synopsis>
+	      <para>
+		An X command line in case we can't start the normal X server.
+		should probably be some sort of a script that runs an
+		appropriate low resolution server that will just work.
+		This is tried before the XKeepsCrashing script is run.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>GnomeDefaultSession</term>
 	    <listitem>
 	      <synopsis>GnomeDefaultSession=share/gnome/default.session</synopsis>
@@ -825,6 +838,11 @@
 		be used for any purpose within the script.  The rest of the
 		arguments are translated messages.  Please see the standard
 		installed script for further details.
+	      </para>
+	      <para>
+		In case FailsafeXServer is setup, that will be tried first.
+		and this only used as a backup if even that server keeps
+		crashing.
 	      </para>
 	    </listitem>
 	  </varlistentry>

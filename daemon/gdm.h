@@ -108,6 +108,7 @@
 #define GDM_KEY_PIDFILE "daemon/PidFile=/var/run/gdm.pid"
 #define GDM_KEY_POSTSESS "daemon/PostSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PostSession/"
 #define GDM_KEY_PRESESS "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
+#define GDM_KEY_FAILSAFE_XSERVER "daemon/FailsafeXServer="
 #define GDM_KEY_XKEEPSCRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
 #define GDM_KEY_XKEEPSCRASHING_CONFIGURATORS "daemon/XKeepsCrashingConfigurators=/usr/bin/X11/XF86Setup /usr/bin/X11/Xconfigurator"
 #define GDM_KEY_REBOOT "daemon/RebootCommand=/sbin/shutdown -r now"
@@ -203,6 +204,7 @@ struct _GdmDisplay {
     gchar *userauth;
     gboolean authfb;
     gchar *command;
+    gboolean failsafe_xserver;
     gchar *cookie;
     gchar *bcookie;
     gchar *name;

@@ -82,6 +82,7 @@ gchar *GdmDisplayInit = NULL;
 gchar *GdmSessionDir = NULL;
 gchar *GdmPreSession = NULL;
 gchar *GdmPostSession = NULL;
+gchar *GdmFailsafeXServer = NULL;
 gchar *GdmXKeepsCrashing = NULL;
 gchar *GdmXKeepsCrashingConfigurators = NULL;
 gchar *GdmHalt = NULL;
@@ -159,6 +160,7 @@ gdm_config_parse (void)
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmPreSession = gnome_config_get_string (GDM_KEY_PRESESS);
     GdmPostSession = gnome_config_get_string (GDM_KEY_POSTSESS);
+    GdmFailsafeXServer = gnome_config_get_string (GDM_KEY_FAILSAFE_XSERVER);
     GdmXKeepsCrashing = gnome_config_get_string (GDM_KEY_XKEEPSCRASHING);
     GdmXKeepsCrashingConfigurators = gnome_config_get_string (GDM_KEY_XKEEPSCRASHING_CONFIGURATORS);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
@@ -469,6 +471,26 @@ static gboolean
 deal_with_x_crashes (GdmDisplay *d)
 {
     gboolean just_abort = FALSE;
+    char *msg;
+
+    if ( ! d->failsafe_xserver &&
+	 ! gdm_string_empty (GdmFailsafeXServer)) {
+	    char *bin = g_strdup (GdmFailsafeXServer);
+	    char *p = strchr (bin, argdelim);
+	    if (p != NULL)
+		    *p = '\0';
+	    /* Yay we have a failsafe */
+	    if (access (bin, X_OK) == 0) {
+		    gdm_info (_("deal_with_x_crashes: Trying failsafe X "
+				"server %s"), GdmFailsafeXServer);
+		    g_free (bin);
+		    g_free (d->command);
+		    d->command = g_strdup (GdmFailsafeXServer);
+		    d->failsafe_xserver = TRUE;
+		    return TRUE;
+	    }
+	    g_free (bin);
+    }
 
     /* Eeek X keeps crashing, let's try the XKeepsCrashing script */
     if ( ! gdm_string_empty (GdmXKeepsCrashing) &&
@@ -491,6 +513,9 @@ deal_with_x_crashes (GdmDisplay *d)
 		    strcpy (tempname, "/tmp/gdm-X-failed-XXXXXX");
 		    tempfd = mkstemp (tempname);
 		    close (tempfd);
+
+		    gdm_info (_("deal_with_x_crashes: Running the "
+				"XKeepsCrashing script"));
 
 		    pid = fork ();
 	    } else {
@@ -588,15 +613,15 @@ deal_with_x_crashes (GdmDisplay *d)
 		     * it for them */
 		    system (command);
 	    }
-    } else {
-	    /* At this point .... screw the user, we don't know how to
-	     * talk to him.  He's on some 'l33t system anyway, so syslog
-	     * reading will do him good */
-	    gchar *msg;
-	    msg = g_strdup_printf (_("Failed to start X server several times in a short time period; disabling display %s"), d->name);
-	    gdm_error (msg);
-	    g_free (msg);
-    }
+    } /* else {
+       * At this point .... screw the user, we don't know how to
+       * talk to him.  He's on some 'l33t system anyway, so syslog
+       * reading will do him good 
+       * } */
+
+    msg = g_strdup_printf (_("Failed to start X server several times in a short time period; disabling display %s"), d->name);
+    gdm_error (msg);
+    g_free (msg);
 
     return FALSE;
 }

@@ -258,6 +258,7 @@ connect_binary_checks (void)
 		"halt_command",
 		"reboot_command",
 		"background_program",
+		"failsafe_x_server",
 		"x_keeps_crashing",
 		NULL
 	};
@@ -580,6 +581,7 @@ gdm_config_parse_most (gboolean factory)
     gdm_entry_set("session_dir", gnome_config_get_string (GDM_KEY_SESSDIR));
     gdm_entry_set("pre_session_dir", gnome_config_get_string (GDM_KEY_PRESESS));
     gdm_entry_set("post_session_dir", gnome_config_get_string (GDM_KEY_POSTSESS));
+    gdm_entry_set("failsafe_x_server", gnome_config_get_string (GDM_KEY_FAILSAFE_XSERVER));
     gdm_entry_set("x_keeps_crashing", gnome_config_get_string (GDM_KEY_XKEEPSCRASHING));
     gdm_entry_set("x_keeps_crashing_configurators", gnome_config_get_string (GDM_KEY_XKEEPSCRASHING_CONFIGURATORS));
 
@@ -982,6 +984,7 @@ write_config (void)
     gdm_entry_write("session_dir", GDM_KEY_SESSDIR);
     gdm_entry_write("pre_session_dir", GDM_KEY_PRESESS);
     gdm_entry_write("post_session_dir", GDM_KEY_POSTSESS);
+    gdm_entry_write("failsafe_x_server", GDM_KEY_FAILSAFE_XSERVER);
     gdm_entry_write("x_keeps_crashing", GDM_KEY_XKEEPSCRASHING);
     gdm_entry_write("x_keeps_crashing_configurators", GDM_KEY_XKEEPSCRASHING_CONFIGURATORS);
 
