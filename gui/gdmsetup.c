@@ -2011,6 +2011,7 @@ setup_gui (void)
 	add_to_size_group (sg, "autologin_combo");
 	add_to_size_group (sg, "timedlogin_combo");
 	add_to_size_group (sg, "timedlogin_seconds");
+	g_object_unref (G_OBJECT (sg));
 
        	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	add_to_size_group (sg, "local_greeter_label");
@@ -2020,16 +2021,19 @@ setup_gui (void)
 	add_to_size_group (sg, "autologin_label");
 	add_to_size_group (sg, "timed_login_label");
 	add_to_size_group (sg, "timedlogin_seconds_label");
+	g_object_unref (G_OBJECT (sg));
 
        	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	add_to_size_group (sg, "greeter_table");
 	add_to_size_group (sg, "autologin_table");
 	add_to_size_group (sg, "timed_login_table");
+	g_object_unref (G_OBJECT (sg));
 
        	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	add_to_size_group (sg, "sg_use_24_clock");
 	add_to_size_group (sg, "autologin");
 	add_to_size_group (sg, "timedlogin");
+	g_object_unref (G_OBJECT (sg));
 
 	setup_user_combo ("autologin_combo",
 			  GDM_KEY_AUTOMATICLOGIN);

@@ -1,5 +1,32 @@
 Ahh news...
 
+2.4.2.97 stuff:
+
+- HIGify almost all the alert boxes.
+
+- Fix install of the sessions setup by creating the /etc/X11/dm
+  dir fixes #116836
+
+- Fix DNS lookup stuff in XDMCP for places without DNS.  Also cache
+  last result of DNS lookup to cut down traffic during session setup.
+
+- Checking for free display numbers was only taking into account
+  servers listening on tcp.
+
+- The .desktop files include correct Terminal and StartupNotify
+  entries (Jordi Mallach)
+
+- Fallback for home is now /tmp instead of / and for shell
+  we use /bin/sh consistently (rather then /bin/bash)
+
+- The full error dialog is now run as the gdm user for security
+  (no more gtk code run as root)
+
+- No translatable message contains unneccessary markup now
+  (fixes #101794 and #101795)
+
+- Random other minor fixes
+
 2.4.2.96 stuff:
 
 - When you log in twice on a different server, gdm warns you and if

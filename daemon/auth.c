@@ -115,6 +115,11 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 
 	errno = 0;
 	if ( ! XauWriteAuth (af, xa)) {
+		free (xa->data);
+		free (xa->number);
+		free (xa->name);
+		free (xa->address);
+		free (xa);
 		display_add_error (d);
 		return FALSE;
 	}
@@ -122,6 +127,11 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 	if (af2 != NULL) {
 		errno = 0;
 		if ( ! XauWriteAuth (af2, xa)) {
+			free (xa->data);
+			free (xa->number);
+			free (xa->name);
+			free (xa->address);
+			free (xa);
 			display_add_error (d);
 			return FALSE;
 		}
