@@ -581,7 +581,8 @@ gdm_slave_start (GdmDisplay *display)
 		gdm_slave_run (display);
 
 		/* remote and flexi only run once */
-		if (display->type != TYPE_LOCAL) {
+		if (display->type != TYPE_LOCAL ||
+		    ! parent_exists ()) {
 			gdm_server_stop (display);
 			gdm_slave_send_num (GDM_SOP_XPID, 0);
 			gdm_slave_quick_exit (DISPLAY_REMANAGE);
@@ -600,7 +601,6 @@ gdm_slave_start (GdmDisplay *display)
 		}
 
 		gdm_debug ("gdm_slave_start: Reinitializing things");
-
 
 		if (GdmAlwaysRestartServer) {
 			/* Whack the server if we want to restart it next time

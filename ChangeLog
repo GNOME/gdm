@@ -1,3 +1,9 @@
+Wed Aug 13 11:17:15 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: when the parent process doesn't exist,
+	  we die after session ended.  This is a semi decent (not really,
+	  but it's simple) way to handle the main daemon crashing.
+
 Wed Aug 13 10:56:52 2003  George Lebl <jirka@5z.com>
 
 	* daemon/misc.c: try /dev/fd (FreeBSD equivalent of /proc/self/fd) as
