@@ -3028,6 +3028,12 @@ gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 		GdmAllowRemoteRoot = val;
 	} else if (sscanf (msg, GDM_NOTIFY_ALLOWREMOTEAUTOLOGIN " %d", &val) == 1) {
 		GdmAllowRemoteAutoLogin = val;
+	} else if (sscanf (msg, GDM_NOTIFY_SYSMENU " %d", &val) == 1) {
+		GdmSystemMenu = val;
+		kill (display->greetpid, SIGHUP);
+	} else if (sscanf (msg, GDM_NOTIFY_CONFIG_AVAILABLE " %d", &val) == 1) {
+		GdmConfigAvailable = val;
+		kill (display->greetpid, SIGHUP);
 	} else if (sscanf (msg, GDM_NOTIFY_RETRYDELAY " %d", &val) == 1) {
 		GdmRetryDelay = val;
 	} else if (strncmp (msg, GDM_NOTIFY_GREETER " ",

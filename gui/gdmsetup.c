@@ -49,6 +49,43 @@ static gboolean gdm_running = FALSE;
 static GladeXML *xml;
 
 static void
+update_greeters (void)
+{
+	char *p, *ret;
+	long pid;
+
+	if ( ! gdm_running)
+		return;
+
+	ret = gdmcomm_call_gdm (GDM_SUP_GREETERPIDS,
+				NULL /* auth_cookie */,
+				"2.3.90.2",
+				5);
+	if (ret == NULL)
+		return;
+	p = strchr (ret, ' ');
+	if (p == NULL) {
+		g_free (ret);
+		return;
+	}
+	p++;
+
+	for (;;) {
+		if (sscanf (p, "%ld", &pid) != 1) {
+			g_free (ret);
+			return;
+		}
+		kill (pid, SIGHUP);
+		p = strchr (p, ';');
+		if (p == NULL) {
+			g_free (ret);
+			return;
+		}
+		p++;
+	}
+}
+
+static void
 run_timeout (GtkWidget *widget, guint tm, gboolean (*func) (GtkWidget *))
 {
 	guint id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
@@ -326,6 +363,102 @@ setup_intspin (const char *name,
 			  G_CALLBACK (timeout_remove), NULL);
 }
 
+static gboolean
+greeter_toggle_timeout (GtkWidget *toggle)
+{
+	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	gnome_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
+	gnome_config_pop_prefix ();
+
+	gnome_config_sync ();
+
+	update_greeters ();
+
+	return FALSE;
+}
+
+static void
+greeter_toggle_toggled (GtkWidget *toggle)
+{
+	run_timeout (toggle, 500, greeter_toggle_timeout);
+}
+
+static void
+setup_greeter_toggle (const char *name,
+		      const char *key)
+{
+	GtkWidget *toggle = glade_helper_get (xml, name,
+					      GTK_TYPE_TOGGLE_BUTTON);
+	gboolean val;
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	val = gnome_config_get_bool (key);
+	gnome_config_pop_prefix ();
+
+	g_object_set_data_full (G_OBJECT (toggle),
+				"key", g_strdup (key),
+				(GDestroyNotify) g_free);
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), val);
+
+	g_signal_connect (G_OBJECT (toggle), "toggled",
+			  G_CALLBACK (greeter_toggle_toggled), NULL);
+	g_signal_connect (G_OBJECT (toggle), "destroy",
+			  G_CALLBACK (timeout_remove), NULL);
+}
+
+static gboolean
+greeter_entry_timeout (GtkWidget *entry)
+{
+	const char *key = g_object_get_data (G_OBJECT (entry), "key");
+	const char *text;
+
+	text = gtk_entry_get_text (GTK_ENTRY (entry));
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	gnome_config_set_string (key, ve_sure_string (text));
+	gnome_config_pop_prefix ();
+
+	gnome_config_sync ();
+
+	update_greeters ();
+
+	return FALSE;
+}
+
+static void
+greeter_entry_changed (GtkWidget *toggle)
+{
+	run_timeout (toggle, 500, greeter_entry_timeout);
+}
+
+static void
+setup_greeter_entry (const char *name,
+		     const char *key)
+{
+	GtkWidget *entry = glade_helper_get (xml, name, GTK_TYPE_ENTRY);
+	char *val;
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	val = gnome_config_get_string (key);
+	gnome_config_pop_prefix ();
+
+	g_object_set_data_full (G_OBJECT (entry),
+				"key", g_strdup (key),
+				(GDestroyNotify) g_free);
+
+	gtk_entry_set_text (GTK_ENTRY (entry), ve_sure_string (val));
+
+	g_signal_connect (G_OBJECT (entry), "changed",
+			  G_CALLBACK (greeter_entry_changed), NULL);
+	g_signal_connect (G_OBJECT (entry), "destroy",
+			  G_CALLBACK (timeout_remove), NULL);
+
+	g_free (val);
+}
+
 static void
 add_menuitem (GtkWidget *menu, const char *str, const char *label,
 	      const char *select, GtkWidget **selected)
@@ -355,6 +488,12 @@ setup_greeter_option (const char *name,
 	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 	val = gnome_config_get_string (key);
 	gnome_config_pop_prefix ();
+
+	if (val != NULL &&
+	    strcmp (val, EXPANDED_BINDIR "/gdmlogin --disable-sound --disable-crash-dialog") == 0) {
+		g_free (val);
+		val = g_strdup (EXPANDED_BINDIR "/gdmlogin");
+	}
 
 	menu = gtk_menu_new ();
 
@@ -415,6 +554,68 @@ setup_xdmcp_support (void)
 }
 
 static void
+background_toggled (void)
+{
+	GtkWidget *no_bg = glade_helper_get (xml, "sg_no_bg_rb", GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *image_bg = glade_helper_get (xml, "sg_image_bg_rb", GTK_TYPE_TOGGLE_BUTTON);
+	/*GtkWidget *color_bg = glade_helper_get (xml, "sg_color_bg_rb", GTK_TYPE_TOGGLE_BUTTON);*/
+	GtkWidget *scale = glade_helper_get (xml, "sg_scale_background", GTK_TYPE_WIDGET);
+	GtkWidget *image = glade_helper_get (xml, "sg_backimage", GTK_TYPE_WIDGET);
+	GtkWidget *onlycolor = glade_helper_get (xml, "sg_remote_color_only", GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *color_label = glade_helper_get (xml, "sg_backcolor_label", GTK_TYPE_WIDGET);
+	GtkWidget *color = glade_helper_get (xml, "sg_backcolor", GTK_TYPE_WIDGET);
+
+	if (GTK_TOGGLE_BUTTON (no_bg)->active) {
+		gtk_widget_set_sensitive (scale, FALSE);
+		gtk_widget_set_sensitive (image, FALSE);
+		gtk_widget_set_sensitive (onlycolor, FALSE);
+		gtk_widget_set_sensitive (color_label, FALSE);
+		gtk_widget_set_sensitive (color, FALSE);
+	} else if (GTK_TOGGLE_BUTTON (image_bg)->active) {
+		gtk_widget_set_sensitive (scale, TRUE);
+		gtk_widget_set_sensitive (image, TRUE);
+		gtk_widget_set_sensitive (onlycolor, TRUE);
+		if (GTK_TOGGLE_BUTTON (onlycolor)->active) {
+			gtk_widget_set_sensitive (color_label, TRUE);
+			gtk_widget_set_sensitive (color, TRUE);
+		} else {
+			gtk_widget_set_sensitive (color_label, FALSE);
+			gtk_widget_set_sensitive (color, FALSE);
+		}
+	} else /* if (GTK_TOGGLE_BUTTON (color_bg)->active) */ {
+		gtk_widget_set_sensitive (scale, FALSE);
+		gtk_widget_set_sensitive (image, FALSE);
+		gtk_widget_set_sensitive (onlycolor, FALSE);
+		gtk_widget_set_sensitive (color_label, TRUE);
+		gtk_widget_set_sensitive (color, TRUE);
+	}
+}
+
+static void
+setup_background_support (void)
+{
+	GtkWidget *no_bg = glade_helper_get (xml, "sg_no_bg_rb", GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *image_bg = glade_helper_get (xml, "sg_image_bg_rb", GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *color_bg = glade_helper_get (xml, "sg_color_bg_rb", GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *onlycolor = glade_helper_get (xml, "sg_remote_color_only", GTK_TYPE_TOGGLE_BUTTON);
+
+	g_signal_connect (G_OBJECT (no_bg), "toggled",
+			  G_CALLBACK (background_toggled),
+			  NULL);
+	g_signal_connect (G_OBJECT (image_bg), "toggled",
+			  G_CALLBACK (background_toggled),
+			  NULL);
+	g_signal_connect (G_OBJECT (color_bg), "toggled",
+			  G_CALLBACK (background_toggled),
+			  NULL);
+	g_signal_connect (G_OBJECT (onlycolor), "toggled",
+			  G_CALLBACK (background_toggled),
+			  NULL);
+
+	background_toggled ();
+}
+
+static void
 dialog_response (GtkWidget *dlg, int response, gpointer data)
 {
 	if (response == GTK_RESPONSE_CLOSE) {
@@ -440,6 +641,7 @@ setup_gui (void)
 			  G_CALLBACK (dialog_response), NULL);
 
 	setup_xdmcp_support ();
+	setup_background_support ();
 
 	setup_user_combo ("autologin_combo",
 			  GDM_KEY_AUTOMATICLOGIN);
@@ -462,6 +664,12 @@ setup_gui (void)
 	setup_notify_toggle ("allowremoteauto",
 			     GDM_KEY_ALLOWREMOTEAUTOLOGIN,
 			     GDM_KEY_ALLOWREMOTEAUTOLOGIN /* notify_key */);
+	setup_notify_toggle ("sysmenu",
+			     GDM_KEY_SYSMENU,
+			     GDM_KEY_SYSMENU /* notify_key */);
+	setup_notify_toggle ("config_available",
+			     GDM_KEY_CONFIG_AVAILABLE,
+			     GDM_KEY_CONFIG_AVAILABLE /* notify_key */);
 
 	setup_notify_toggle ("enable_xdmcp",
 			     GDM_KEY_XDMCP,
@@ -505,6 +713,20 @@ setup_gui (void)
 
 	setup_greeter_option ("local_greeter", GDM_KEY_GREETER);
 	setup_greeter_option ("remote_greeter", GDM_KEY_REMOTEGREETER);
+
+	/* Greeter configurations */
+
+	setup_greeter_toggle ("sg_use_24_clock",
+			      GDM_KEY_USE_24_CLOCK);
+	setup_greeter_toggle ("sg_browser",
+			      GDM_KEY_BROWSER);
+	setup_greeter_toggle ("sg_scale_background",
+			      GDM_KEY_BACKGROUNDSCALETOFIT);
+	setup_greeter_toggle ("sg_remote_color_only",
+			      GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
+
+	setup_greeter_entry ("sg_welcome",
+			     GDM_KEY_WELCOME);
 }
 
 static gboolean
@@ -527,43 +749,6 @@ gdm_event (GSignalInvocationHint *ihint,
 
 	return TRUE;
 }      
-
-static void
-update_greeters (void)
-{
-	char *p, *ret;
-	long pid;
-
-	if ( ! gdm_running)
-		return;
-
-	ret = gdmcomm_call_gdm (GDM_SUP_GREETERPIDS,
-				NULL /* auth_cookie */,
-				"2.3.90.2",
-				5);
-	if (ret == NULL)
-		return;
-	p = strchr (ret, ' ');
-	if (p == NULL) {
-		g_free (ret);
-		return;
-	}
-	p++;
-
-	for (;;) {
-		if (sscanf (p, "%ld", &pid) != 1) {
-			g_free (ret);
-			return;
-		}
-		kill (pid, SIGHUP);
-		p = strchr (p, ';');
-		if (p == NULL) {
-			g_free (ret);
-			return;
-		}
-		p++;
-	}
-}
 
 int 
 main (int argc, char *argv[])

@@ -2222,6 +2222,24 @@ update_config (const char *key)
 		notify_displays_int (GDM_NOTIFY_ALLOWREMOTEAUTOLOGIN, val);
 
 		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_SYSMENU)) {
+		gboolean val = gnome_config_get_bool (GDM_KEY_SYSMENU);
+		if (ve_bool_equal (val, GdmSystemMenu))
+			goto update_config_ok;
+		GdmSystemMenu = val;
+
+		notify_displays_int (GDM_NOTIFY_SYSMENU, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_CONFIG_AVAILABLE)) {
+		gboolean val = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
+		if (ve_bool_equal (val, GdmConfigAvailable))
+			goto update_config_ok;
+		GdmConfigAvailable = val;
+
+		notify_displays_int (GDM_NOTIFY_CONFIG_AVAILABLE, val);
+
+		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_RETRYDELAY)) {
 		int val = gnome_config_get_int (GDM_KEY_RETRYDELAY);
 		if (val == GdmRetryDelay)
