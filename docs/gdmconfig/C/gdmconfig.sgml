@@ -1,23 +1,10 @@
 <!DOCTYPE article PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
         <!-- if not using PNG graphic, replace reference above with
              .....PUBLIC "-//OASIS//DTD DocBook V3.1//EN"[
+	     .....PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
          -->
-<!ENTITY version "2.0.97.1"> <!-- replace with application version -->
+<!ENTITY version "2.0.97.1"> 
 ]>
-
-
-<!-- 
-  This is a GNOME documentation template, designed by the GNOME
-  Documentation Project Team. Please use it for writing GNOME
-  documentation, making obvious changes. In particular, all the words
-  written in UPPERCASE (with the exception of GNOME) should be
-  replaced. As for "legalnotice", please leave the reference
-  unchanged.
-
-  Remember that this is a guide, rather than a perfect model to follow
-  slavishly. Make your manual logical and readable.  And don't forget
-  to remove these comments in your final documentation!  ;-)
--->
 
 <!-- 
       (Do not remove this comment block.)
@@ -27,11 +14,7 @@
   Template last modified: Nov 16, 2000
 -->
 
-
-<!-- =============Document Header ============================= -->
-
-<article id="index"> <!-- please do not change the id -->
-
+<article id="index"> 
   <artheader>
     <title>Gdmconfig Manual</title>
     <copyright>
@@ -47,10 +30,6 @@
   </copyright>
 
    -->
-
-  <!-- do not put authorname in the header except in copyright - use
-  section "authors" below -->
-
   <!-- Use this legal notice for online documents which depend on -->
   <!-- core GNOME packages.                                       -->
   <legalnotice id="legalnotice">
@@ -72,7 +51,7 @@
    </para>
   </legalnotice>
 
-  <!-- Use this legal notice for documents which are placed on  -->
+   <!-- Use this legal notice for documents which are placed on  -->
   <!-- the web, shipped in any way other than online documents  -->
   <!-- (eg. PS, PDF, or RTF), or which do not depend on the     -->
   <!-- core GNOME distribution.                                 -->
@@ -85,6 +64,8 @@
   <!-- after the last </sect1>.                                 -->
   <!--   &FDL;                                                  -->
   <!--
+ 
+
   <legalnotice id="legalnotice">
    <para>
     Permission is granted to copy, distribute and/or modify this document
@@ -104,21 +85,18 @@
   </legalnotice>
   -->
 
-  <!-- This is the manual version, not application version. --> 
     <releaseinfo>
        This is version 1.0 of manual.
     </releaseinfo>
 
   </artheader>
 
- <!-- ============= Document Body ============================= -->
-
- <!-- ============= Introduction ============================== -->
   <sect1 id="intro">
     <title>Introduction</title>
 
     <para>
-     <application>GDM Configurator, (GNOME Display Manager Configurator)</application> is a configuration application
+     <application>GDM Configurator, (GNOME Display Manager
+     Configurator)</application>  is a configuration application
      for the GDM (Gnome Display Manager). Typically, when running your
      system in a
      graphical login mode, the GDM is the application that facilites
@@ -149,10 +127,6 @@
     </para>
   </sect1>
 
-
- <!-- ================ Usage ================================ -->
- <!-- This section should describe basic usage of the application. -->
-
   <sect1 id="usage">
     <title>Using Gnome Display Manager Configurator</title>
     <para>
@@ -163,7 +137,6 @@
       <application>GDM Configurator</application>.
     </para>
 
-    <!-- ========= Basic Usage =========================== -->
     <sect2 id="mainwin">
       <title>Basic usage</title>
       <para>
@@ -171,32 +144,85 @@
         <interface>Main window</interface>, shown in <xref
         linkend="mainwindow-fig">. This window contains all
         options relating to the GDM's configuration.
+      </para>
 
-        <!-- ==== Figure ==== -->
         <figure id="mainwindow-fig">
-	  <title>MY-GNOME-APP Main Window</title>
+	  <title>GDM Configurator Main Window</title>
 	  <screenshot>
-	    <screeninfo>MY-GNOME-APP Main Window</screeninfo>
-	    <graphic fileref="SCREENSHOT" format="png" srccredit="ME">
+	    <screeninfo>GDM Configurator Main Window</screeninfo>
+	    <graphic fileref="figures/GDM_full.png" format="png" srccredit="Trevor
+	    Curtis">
             </graphic>
 	  </screenshot>
 	</figure>
-    <!-- ==== End of Figure ==== -->
-      </para> 
+   </sect2>
 
+   <sect2 id="menubar">
+      <title>Toolbar</title>
+      <para>
+        Toolbar Menus
+      </para>
 
- <!-- For this app, one could put "proving" or "edit" (probably even
-      both of them) as sect2's seperate from the main window
-      section. Since they were both so closely involved with the main
-      window, I decided to have them as sect3's isntead. Judgement
-      call. -->
+      <figure id="menu-fig">
+	  <title>The login appearance tab</title>
+	  <screenshot>
+	    <screeninfo>The login appearance tab</screeninfo>
+	    <graphic fileref="figures/GDM_menubar" format="png" srccredit="Trevor
+	    Curtis">
+            </graphic>
+	  </screenshot>
+	</figure>
+       <variablelist><title><guimenu>Configuration
+	</guimenu></title>
+	  <varlistentry>
+	    <term><guimenuitem>Revert settings</guimenuitem></term>
+	    <listitem>
+	      <para>
+                Reset current changes to initial settings
+              </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><guimenuitem>Apply</guimenuitem></term>
+	    <listitem>
+	      <para>
+                Apply current changes  
+              </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+       
+       <para>
+       <variablelist><title><guimenu>Help</guimenu></title>
+         <varlistentry>
+           <term><guimenuitem>GDM
+             Configurator
+             users guide</guimenuitem>
+           </term>
+	   <listitem>
+	     <para>How to get this document from within <application>GDM
+	       Configurator</application>.
+	     </para>
+	   </listitem>
+	 </varlistentry>
+	 <varlistentry>
+	   <term><guimenuitem>About...</guimenuitem></term>
+	   <listitem>
+	     <para>A little bit of kudos for all of the very hard
+	       working guys/gals who made it all possible	
+	     </para>
+	   </listitem>
+	 </varlistentry>
+       </variablelist>
+       </para>
+    </sect2>
 
-      <sect3 id="options">
+      <sect2 id="options">
 	<title>Options</title>
 	<para>
           The <guilabel>Options</guilabel> box in the upper left hand
           corner controls the level of detail and customization
-          offered on the tabs to its right. Below the the Options box
+          offered on the tabs to its right. Below the Options box
           is a brief description of the level chosen, and what can be
           done in that level. The levels are explained below.
         </para>
@@ -238,13 +264,11 @@
             </varlistentry>
 	  </variablelist>
           </para>
-
-   <!-- You might want to include a note, warning, or tip, e.g. -->
 	
 	<caution>
 	  <title>Expert option and security</title>
 	  <para>
-	    Enabling export mode, allows for changes in GDM's
+	    Enabling the expert option, allows for changes in GDM's
 	    security to be made. Improper configuration may lead to
 	    vulnerabilities for attackers.
           </para>
@@ -252,22 +276,40 @@
 	<warning>
 	  <title>System option and system health</title>
 	  <para>
-	    Enabling system mode, allows for very specific changes
+	    Enabling the system option, allows for very specific changes
 	    which can impact the operation of your system. This option
 	    is only recommended for those who know exactly what they
-	    are doing.  You have been warned!
+	    are doing.
 	  </para>
 	</warning>
-      </sect3>
-      <sect3 id="basic">
-	<title>The Basic options</title>
+      </sect2>
+  </sect1>
+
+
+      <sect1 id="basic">
+	<title>The Basic Options</title>
 	<para>
 	  Below are the options for the <guilabel>Login
 	  appearance</guilabel>, <guilabel>Login behaviour</guilabel>
-	  and <guilabel>Face browser</guilabel> tabs.
+	  ,<guilabel>Face browser</guilabel>, and <guilabel> Automatic
+         login</guilabel> tabs.
         </para>
+ <variablelist><title><guilabel>Login appearance</guilabel></title>
+	    <varlistentry>
+	      <term></term>
+	      <listitem>
+	<figure id="loginappearance-fig">
+	  <title>The login appearance tab</title>
+	  <screenshot>
+	    <screeninfo>The login appearance tab</screeninfo>
+	    <graphic fileref="figures/GDM_login_appear" format="png" srccredit="Trevor
+	    Curtis">
+            </graphic>
+	  </screenshot>
+	</figure>
+	      </listitem>
+	    </varlistentry>
 
-     <variablelist><title><guilabel>Login appearance</guilabel></title>
 	    <varlistentry>
 	      <term><guibutton>Minimised Icon:</guibutton></term>
 	      <listitem>
@@ -296,13 +338,20 @@
 	    </varlistentry>
 	 </variablelist>
 
-     <variablelist><title><guilabel>Login behaviour</guilabel></title>
+	 <variablelist><title><guilabel>Login behaviour</guilabel></title>
 	    <varlistentry>
-	      <term><guibutton>Show the 'system' menu:</guibutton></term>
+	      <term></term>
 	      <listitem>
-	        <para>
-		  Enable shutdown, and reboots from the login screen
-		</para>
+   	        <figure id="loginbehaviour-fig">
+	          <title>The login behaviour tab</title>
+	          <screenshot>
+	            <screeninfo>The login behaviour tab</screeninfo>
+	            <graphic fileref="figures/GDM_login_behav"
+		      format="png" srccredit="Trevor Curtis">
+                    </graphic>
+	          </screenshot>
+	        </figure>
+
 	      </listitem>
 	    </varlistentry>
 	    <varlistentry>
@@ -348,7 +397,9 @@
 	    <varlistentry>
 	      <term><guilabel>Background Program</guilabel></term>
 	      <listitem>
-	        <para> ????????????? 
+	        <para>This allows you to run a given script, or
+	        application in the background whilst the login prompt
+	        is displayed.
 		</para>
 	      </listitem>
 	    </varlistentry>
@@ -394,18 +445,33 @@
 	    <varlistentry>
 	      <term><guilabel>Xinerama screen</guilabel></term>
 	      <listitem>
-	        <para>???????????
+	        <para>This option allows one to specify on which monitor,
+	        in a multi-monitor setup, the GDM login screen will be
+	        displayed.
 		</para>
               </listitem>
 	    </varlistentry>
 	 </variablelist>
 
-	 <variablelist><title><guilabel>Face browser</guilabel>
+         <variablelist><title><guilabel>Face browser</guilabel>
 	                    </title>
-	   <varlistentry>
-	     <term><guibutton>Show choosable user
-	     images</guibutton></term>
-	     <listitem>
+	  <varlistentry>
+	    <term></term>
+	    <listitem>
+               <figure id="facebrowser-fig">
+	         <title>The face browser tab</title>
+	         <screenshot>
+	           <screeninfo>The face browser tab</screeninfo>
+	           <graphic fileref="figures/GDM_face_brow" format="png"
+		     srccredit="Trevor Curtis">
+                   </graphic>
+	         </screenshot>
+	       </figure>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>Show choosable user images</term>
+	    <listitem>
 	       <para>Customization of user images in the face
 	         browser
 	       </para>
@@ -442,97 +508,620 @@
 	     </listitem>
 	   </varlistentry>
 	 </variablelist>
-      </sect3>
 
-
-  <!-- If there are other functions performed from the main window,
-       they belong here.   -->
-
-    </sect2>
- 
-    <!-- ========================================================= 
-      Additional Sect2's should describe additional windows, such as
-      larger dialog boxes, or functionality that differs significantly
-      from the most immediate functions of the application. Make the
-      structure logical.
-      =============================================================  -->
-
-
-    <sect2 id="menubar">
-      <title>Toolbar</title>
-      <para>
-        Toolbar Menus
-      </para>
-      <para>
-        <figure id="figure-usage-toolbar">
-	  <title><application>GDM Configurator</application> Toolbar</title>
-	  <screenshot>
-	    <screeninfo><application>GDM Configurator</application> 
-	                   Toolbar</screeninfo>
-	    <graphic fileref="usage-toolbar.png" format="png"></graphic>
-	  </screenshot>
-	</figure>
-        <variablelist><title><guimenu>Configuration
-	</guimenu></title>
-	  <varlistentry>
-	    <term><guimenuitem>Revert settings</guimenuitem></term>
-	    <listitem>
-	      <para>
-                Reset current changes to initial settings
-              </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><guimenuitem>Apply</guimenuitem></term>
-	    <listitem>
-	      <para>
-                Apply current changes  
-              </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
-       </para>
-       
-       <para>
-       <variablelist><title><guimenu>Help</guimenu></title>
+         <variablelist><title><guimenu>Background</guimenu></title>
+                <varlistentry><term></term><listitem>
+             <figure id="background-fig">
+	         <title>The background tab</title>
+	         <screenshot>
+	           <screeninfo>The background tab</screeninfo>
+	           <graphic fileref="figures/GDM_background" format="png"
+		     srccredit="Trevor Curtis">
+                   </graphic>
+	         </screenshot>
+	       </figure>
+                </listitem>
+                </varlistentry>
+           <varlistentry>
+           <term><guimenuitem>Background type</guimenuitem></term>
+           <listitem>
+             <para>
+                Selection of background type. Options are backgrounds by 
+                colour, image, or none at all.
+             </para>
+           </listitem>
+         </varlistentry>
          <varlistentry>
-           <term><guimenuitem>GDM
-             Configurator
-             users guide</guimenuitem>
-           </term>
-	   <listitem>
-	     <para>How to get this document from within <application>GDM
-	       Configurator</application>.
-	     </para>
-	   </listitem>
-	 </varlistentry>
-	 <varlistentry>
-	   <term><guimenuitem>About...</guimenuitem></term>
-	   <listitem>
-	     <para>A little bit of kudos for all of the very hard
-	       working guys/gals who made it all possible	
-	     </para>
-	   </listitem>
-	 </varlistentry>
-       </variablelist>
-       </para>
-       
-    </sect2>
- </sect1>
-    
- <!-- ============= Bugs ================================== -->
- <!-- This section should describe known bugs and limitations of
-      the program if there are any - please be frank and list all
-      problems you know of. -->
+           <term><guilabel>Scale background image to fit</guilabel></term>
+           <listitem>
+             <para>
+                Allow an image, if selected above, to be scaled to fit alloted
+                space.
+             </para>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term><guilabel>Only color on remote displays</guilabel></term>
+           <listitem>
+              <para>
+                Enable a colour to be displayed only on remote systems
+              </para>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term><guilabel>Background program</guilabel></term>
+           <listitem>
+             <para>
+               Allow a program to be run in the background
+             </para>
+           </listitem>
+         </varlistentry>
+        </variablelist>
+
+
+
+        
+         <variablelist><title><guimenu>Automatic login</guimenu></title>
+                <varlistentry><term></term><listitem>
+           <figure id="autologin-fig">
+	         <title>The automatic login tab</title>
+	         <screenshot>
+	           <screeninfo>The automatic login tab</screeninfo>
+	           <graphic fileref="figures/GDM_auto_login" format="png"
+		     srccredit="Trevor Curtis">
+                   </graphic>
+	         </screenshot>
+	       </figure>
+                </listitem></varlistentry>
+           <varlistentry>
+           <term><guimenuitem>Login a user automatically on first bootup
+           </guimenuitem></term>
+           <listitem>
+             <para>
+                Enable logging in as the specified user when first starting
+                the system.
+             </para>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term><guimenuitem>Login a user automatically after a specified 
+                number of seconds.</guimenuitem></term>
+           <listitem>
+             <para>
+                Allow the GDM to automatically login after the specified number                 of seconds using the specified user name.
+              </para>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term><guimenuitem>Timed login</guimenuitem></term>
+           <listitem>
+             <para>
+                The specified user to be used to login automaticaly.
+              </para>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term><guimenuitem>Seconds before login</guimenuitem></term>
+           <listitem>
+             <para>
+                The specified number of seconds before the GDM automatically 
+                logs in.
+              </para>
+           </listitem>
+         </varlistentry>
+        </variablelist>
+
+      </sect1>
+      
+      <sect1 id="expert">
+        <title>The Expert Options</title>
+	<para>
+	  Below are the options for the <guilabel>Security
+	  </guilabel>, <guilabel>XDMCP</guilabel>
+	  and <guilabel>X-server setup</guilabel> tabs.
+	</para>
+
+    <!-- add screenshot here -->
+        <variablelist><title><guimenu>Security</guimenu></title>
+                <varlistentry><term></term><listitem>
+         <figure id="security-fig">
+	         <title>The security tab</title>
+	         <screenshot>
+	           <screeninfo>The security tab</screeninfo>
+	           <graphic fileref="figures/GDM_security" format="png"
+		     srccredit="Trevor Curtis">
+                   </graphic>
+	         </screenshot>
+	       </figure>  
+                </listitem></varlistentry>
+	  <varlistentry>
+	    <term><guimenuitem>Allow root to login with GDM
+	    </guimenuitem></term>
+	    <listitem>
+	      <para>
+	        Allow priviledged users, such as root, to login via
+	        the GDM.
+		<note><title>PAM supported systems</title>
+		  <para>On systems that support PAM, this option is
+		    ignored, and it becomes the responsiblity of the PAM
+		    libraries to determine whether the user will be on the
+		    local display or not.
+		  </para>
+		</note>
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><guimenuitem>Kill 'init'
+	      clients</guimenuitem></term>
+	    <listitem>
+	      <para>
+	        Allow the GDM to kill X clients that start from
+	        initialization scripts when a user logs in.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><guimenuitem>Authentication errors should be
+	    verbose</guimenuitem></term>
+	    <listitem>
+	      <para>
+	        Enable errors in authentication to be displayed to the
+	        user(s) in the GDM display.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><guimenuitem>Permissions:</guimenuitem></term>
+	    <listitem>
+	      <para>
+	        Determine the permission levels in relation to writable
+	        directories and files of other users. The
+	        <guimenuitem>World writable</guimenuitem> selection
+	        allows the GDM to view world writable files and
+	        directories. The <guimenuitem>Group
+	        writable</guimenuitem> selection allows the GDM to
+	        view only group writable files and
+	        directories. Finally, the
+	        <guimenuitem>Paranoia</guimenuitem> selection will
+	        only accept files and directories that the user owns.
+	      </para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>GDM runs as this
+	      user</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  Allows the GDM to be run as the specified user.
+		</para>
+              </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>GDM runs as this
+	      group</guimenuitem></term>
+	      <listitem>
+	        <para>
+	          Allows the GDM to be run as the specified group.
+		</para>
+              </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>User 'auth'
+	      directory</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  Allow the directory which contains the user's .Xauthority 
+                  file to be specified
+		</para>
+              </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>User 'auth' FB
+	      directory</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  In case the gdm fails to update the user's .Xauthority file, 
+                  a cookie will be created in the specified directory.
+		</para>
+              </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>User 'auth'
+	      File</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  Specify the name of the file in which to store a user's
+                  cookies. 
+		</para>
+              </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>Retry delay</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  Specify the number of seconds the GDM should wait
+		  before reactivating the entry field after a failed
+		  login attempt.
+		</para>
+              </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>Maximum user file length</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  Allows the maximum size of the largest
+		  readable/writable file to be specified. The GDM will
+		  refuse to read or write to a file bigger than the
+		  given value. The value is specified in bytes.
+		</para>
+              </listitem>
+	    </varlistentry>
+	  </variablelist>
+
+<!-- add screenshot -->
+          <variablelist><title>XDMCP</title>
+                <varlistentry><term></term><listitem>
+                <figure id="xdmcp-fig">
+	         <title>The XDMCP tab</title>
+	         <screenshot>
+	           <screeninfo>The XDMCP tab</screeninfo>
+	           <graphic fileref="figures/GDM_xdmcp" format="png"
+		     srccredit="Trevor Curtis">
+                   </graphic>
+	         </screenshot>
+	       </figure>
+                </listitem></varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>Enable XDMCP</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  Allow a remote X-terminal to request a session from
+		  the current host. Enabling this option makes visible
+		  the connection settings.(X Display Manager Control
+		  Protocol)
+		</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>Honour indirect
+	      requests</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  Enable choosing for X-terminals which don't supply
+		  their own display browser.
+		</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>Listen on UDP
+	      port</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  Listen to UDP(user datagram protocol) requests on
+		  the specified port.
+		</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><guimenuitem>Maximum pending
+	      requests</guimenuitem></term>
+	      <listitem>
+	        <para>
+		  Restrict the GDM to a fixed size queue of the
+		  specified pending connections.
+		  <warning><title>Denial of Service
+		  Attacks</title>
+		    <para>
+		      This option has been included to avoid
+		      DOS(Denial of Service Attacks). This parameter
+		      only limits the number of allowed displays
+		      initiating a connection at any one given time,
+		      and does not limit the number of total remote
+		      displays which can be managed.
+		    </para>
+		  </warning>
+		</para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Max pending indirect
+	        requests</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Allow only the specified number of displays with
+		    the host chooser at any one given time.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Maximum remote
+	        sessions</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Allow only the specified number of remote displays
+		    to be able to use the host.
+		  </para>
+		</listitem>
+              </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Maximum wait
+	        time</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Wait for the specified amount of time in seconds
+		    before the requesting display is removed from the
+		    pending queue.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Maximum indirect wait
+	        time</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Wait for the specified amount of time, in seconds,
+		    between when a display requests a chooser and the
+		    completion of the protocol negotiation before
+		    removing display from the pending list.
+		  </para>
+		</listitem>
+              </varlistentry>
+	    </variablelist>
+	 
+
+	    <variablelist><title>X-server setup</title>
+                <varlistentry><term></term><listitem>
+               <figure id="xservsetup-fig">
+	         <title>The xserver setup tab</title>
+	         <screenshot>
+	           <screeninfo>The xserver setup tab</screeninfo>
+	           <graphic fileref="figures/GDM_xserv_setup" format="png"
+		     srccredit="Trevor Curtis">
+                   </graphic>
+	         </screenshot>
+	       </figure> 
+                </listitem></varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Server
+	        Definitions</guimenuitem></term>
+		<listitem>
+		  <para>
+		    The local display number(s), and the command that
+		    needs to be run to start the X server(s). <guibutton>Add</guibutton>
+		    server brings up a dialog to enter X server and
+		    any parameters that may need to be passed. <guibutton>Edit</guibutton>
+		    server brings up a dialog box to edit the
+		    highlighted entry. <guibutton>Delete
+		    server</guibutton> deletes the hightlighted
+		    entry.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Enable debugging
+	        output</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Allow debugging information to be displayed
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </sect1>
+
+
+
+<!-- System section now -->
+
+          <sect1 id="system">
+	    <title>The System Options</title>
+	    <para>
+	      System menus
+	    </para>
+	  
+<!-- screenshot -->
+            <variablelist><title><guimenuitem>Paths</guimenuitem></title>
+                <varlistentry><term></term><listitem>
+              <figure id="paths-fig">
+	         <title>The paths tab</title>
+	         <screenshot>
+	           <screeninfo>The paths tab</screeninfo>
+	           <graphic fileref="figures/GDM_paths" format="png"
+		     srccredit="Trevor Curtis">
+                   </graphic>
+	         </screenshot>
+	       </figure>
+                </listitem></varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Chooser
+	        command</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Allow selection and customization of the command
+		    that will activate the chooser.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Greeter
+	        command</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Allow selection and customization of the command
+		    that will activate the greeter.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Halt command</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Allow the specified command to halt the host
+		    machine
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Reboot
+	        command</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Allow the specified command to reboot the host
+		    machine
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Display initialization
+	        directory</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Display the directory that contains the scripts
+		    needed for the GDM initilization.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Logging
+	        directory</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Output logging information into a file(s) residing
+		    in the specified directory.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Session
+	        directory</guimenuitem></term>   
+		<listitem>
+		  <para>
+		    Set the specified directory as the directory that
+		    contains the scripts to start a session.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>PRE session scripts
+	        directory</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Look for scripts in the specified directory to run
+		    before starting a session.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>POST session scripts
+	        directory</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Look for scripts in the specified directory to run
+		    after ending a session.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>PID file</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Place the PID file(s) in the specified directory
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+
+	    <variablelist><title><guimenu>Environment</guimenu></title>
+                <varlistentry><term></term><listitem>
+                <figure id="enviro-fig">
+	         <title>The environment tab</title>
+	         <screenshot>
+	           <screeninfo>The environment tab</screeninfo>
+	           <graphic fileref="figures/GDM_enviro" format="png"
+		     srccredit="Trevor Curtis">
+                   </graphic>
+	         </screenshot>
+	       </figure>
+                </listitem></varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Default $PATH</guimenuitem</term>
+		<listitem>
+		  <para>
+		    Set the default PATH variable ($PATH)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Root $PATH</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Set the PATH of the Root user to the specified
+		    directories.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Locale file</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Set the specified file as the main locale file.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	    
+	    <variablelist><title><guimenu>Chooser</guimenu></title>
+                <varlistentry><term></term><listitem>
+                <figure id="chooser-fig">
+	         <title>The chooser tab</title>
+	         <screenshot>
+	           <screeninfo>The chooser tab</screeninfo>
+	           <graphic fileref="figures/GDM_chooser" format="png"
+		     srccredit="Trevor Curtis">
+                   </graphic>
+	         </screenshot>
+	       </figure>
+                </listitem></varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Directory for host
+	        images</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Set the specified directory as the directory to
+		    contain the images to represent hosts.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Default host
+	        image</guimenuitem></term>
+		<listitem>
+		  <para>
+		    Set the selected image as the default image to
+		    represent hosts.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+	        <term><guimenuitem>Scan every 'x'
+	        seconds</guimenuitem></term>
+		<listitem>
+		  <para>
+                    Select the number of seconds after which host images are 
+                    scanned
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </sect1>
+
  <sect1 id="bugs">
   <title>Known Bugs and Limitations</title>
   <para>
    This application has no known bugs.
   </para>
  </sect1>
-
-
-<!-- ============= Authors ================================ -->
 
  <sect1 id="authors">
   <title>Authors</title>
@@ -571,13 +1160,9 @@
    (<email>MYNAME@MYADDRESS</email>). Please send all  comments  and
    suggestions regarding this translation to SOMEWHERE.
   </para>
-
   -->
 
- </sect1>
-
-
- <!-- ============= Application License ============================= -->
+  </sect1>
 
  <sect1 id="license">
   <title>License</title>
@@ -611,12 +1196,3 @@
   </para>
  </sect1>
 </article>
-
-
-
-
-
-
-
-
-
