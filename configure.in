@@ -225,7 +225,7 @@ if test x$have_pam = xno; then
 	AC_DEFINE(HAVE_SHADOW)
   elif test x$enable_authentication_scheme != xcrypt ; then
   	# Check for shadow passwords (hack)
-  	AC_MSG_CHECKING("for /etc/shadow")
+  	AC_MSG_CHECKING(for /etc/shadow)
 
   	if test -f /etc/shadow; then
 		VRFY="verify-shadow"
@@ -503,6 +503,14 @@ LOGDIR_TMP="$localstatedir/log/gdm"
 EXPANDED_LOGDIR=`eval echo $LOGDIR_TMP`
 AC_SUBST(EXPANDED_LOGDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LOGDIR,"$EXPANDED_LOGDIR")
+
+AC_MSG_CHECKING(for fbconsole)
+if test -x /usr/openwin/bin/fbconsole; then
+   AC_DEFINE(HAVE_FBCONSOLE)
+   AC_MSG_RESULT(yes)
+else
+   AC_MSG_RESULT(no)
+fi
 
 if test -x /usr/X11R6/bin/X; then
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"

@@ -4,6 +4,7 @@
 #undef ENABLE_NLS
 #undef HAVE_CATGETS
 #undef HAVE_DEFOPEN
+#undef HAVE_FBCONSOLE
 #undef HAVE_GETTEXT
 #undef HAVE_LC_MESSAGES
 #undef HAVE_STPCPY

@@ -134,6 +134,32 @@ jumpback_xioerror_handler (Display *disp)
 	Longjmp (reinitjmp, 1);
 }
 
+#ifdef HAVE_FBCONSOLE
+#define FBCONSOLE "/usr/openwin/bin/fbconsole"
+
+static void
+gdm_exec_fbconsole(GdmDisplay *disp)
+{
+        pid_t pid;
+        char *argv[6];
+
+        argv[0] = FBCONSOLE;
+        argv[1] = "-d";
+        argv[2] = disp->name;
+        argv[3] = NULL;
+
+        pid = fork ();
+        if (pid == 0) {
+                gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */)
+;
+                IGNORE_EINTR (execv (argv[0], argv));
+        }
+        if (pid == -1) {
+                gdm_error (_("Can not start fallback console"));
+        }
+}
+#endif
+
 /**
  * gdm_server_reinit:
  * @disp: Pointer to a GdmDisplay structure
@@ -215,10 +241,14 @@ gdm_server_reinit (GdmDisplay *disp)
 	/* Wait for the SIGUSR1 */
 	do_server_wait (d);
 
-	if (d->servstat == SERVER_RUNNING)
+	if (d->servstat == SERVER_RUNNING) {
+#ifdef HAVE_FBCONSOLE
+		gdm_exec_fbconsole(d);
+#endif
 		return TRUE;
-	else
+        } else {
 		return FALSE;
+	}
 }
 
 /**
@@ -686,6 +716,10 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		    if (d->vt >= 0)
 			    gdm_slave_send_num (GDM_SOP_VT_NUM, d->vt);
 	    }
+
+#ifdef HAVE_FBCONSOLE
+            gdm_exec_fbconsole(d);
+#endif
 
 	    return TRUE;
     default:
