@@ -68,7 +68,7 @@ query_greeter_halt_handler (void)
 {
 	if (gdm_common_query (_("Are you sure you want to shut down the machine?"),
 			   FALSE /* markup */,
-			   _("Shut_down"), GTK_STOCK_CANCEL)) {
+			   _("Shut _Down"), GTK_STOCK_CANCEL)) {
 		closelog();
 
 		_exit (DISPLAY_HALT);
@@ -193,7 +193,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (add_halt) {
-		w = gtk_menu_item_new_with_mnemonic (_("Shut_down"));
+		w = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",

@@ -2773,7 +2773,7 @@ gdm_login_gui_init (void)
 	}
 	
 	if (working_command_exists (GdmHalt)) {
-		item = gtk_menu_item_new_with_mnemonic (_("Shut_down"));
+		item = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_login_halt_handler), 

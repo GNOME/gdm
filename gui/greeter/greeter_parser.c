@@ -1014,7 +1014,7 @@ parse_stock (xmlNodePtr node,
       else if (g_ascii_strcasecmp (prop, "halt") == 0)
         {
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (_("Shut_down"));
+	  *translated_text = g_strdup (_("Shut _Down"));
 	}
       else if (g_ascii_strcasecmp (prop, "suspend") == 0)
         {

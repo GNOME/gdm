@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.6.0.1"> 
-    <!ENTITY date "4/16/2004"> 
+    <!ENTITY version "2.6.0.4"> 
+    <!ENTITY date "7/13/2004"> 
 ]>
 
 <article id="index" lang="en">
@@ -1662,8 +1662,10 @@
 	      <synopsis>VTAllocation=true</synopsis>
 	      <para>
 		On systems where GDM supports automatic VT (virtual terminal)
-		allocation (currently Linux only), you can have GDM automatically append the vt argument
-		to the X server executable.  This way races that come up from each X
+		allocation (currently Linux and FreeBSD only),
+		you can have GDM automatically append the vt argument
+		to the X server executable.  This way races that come up from
+		each X
 		server managing it's own vt allocation can be avoided.
 		See also <filename>FirstVT</filename>.
 	      </para>
@@ -2975,7 +2977,8 @@
 		On some systems it is necessary for gdm to know on which
 		virtual consoles to run the X server.  In this case,
 		(if running XFree86) add "vt7" to the command line for example
-		to run on virtual console 7.  However on Linux this is normally
+		to run on virtual console 7.  However on Linux and
+		FreeBSD this is normally
 		done automatically if <filename>VTAllocation</filename> key
 		is set.
 	      </para>
