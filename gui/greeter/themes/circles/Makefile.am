@@ -6,3 +6,4 @@ circles_DATA = \
 	help.png \
 	options.png
 
+EXTRA_DIST = $(circles_DATA)
