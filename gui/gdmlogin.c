@@ -2400,6 +2400,9 @@ create_handle (void)
 			GTK_WIDGET_UNSET_FLAGS (w, GTK_CAN_FOCUS);
 			GTK_WIDGET_UNSET_FLAGS (w, GTK_CAN_DEFAULT);
 			gtk_box_pack_start (GTK_BOX (hbox), w, FALSE, FALSE, 0);
+			gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
+					      _("Iconify the login window"),
+					      NULL);
 		}
 	}
 
