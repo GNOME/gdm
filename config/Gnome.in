@@ -28,6 +28,19 @@ sysxkbmap=/etc/X11/Xkbmap
 rh6sysresources=/etc/X11/xinit/Xresources 
 rh6sysmodmap=/etc/X11/xinit/Xmodmap 
 
+if [ -x "$HOME/.gnomerc" ]; then
+	command="$HOME/.gnomerc"
+elif [ -x @EXPANDED_SYSCONFDIR@/gdm/gnomerc ]; then
+	command="@EXPANDED_SYSCONFDIR@/gdm/gnomerc"
+else
+	# as fallback in case the config is screwed
+	command=`which gnome-session`
+fi
+
+sshagent=`which ssh-agent`
+if [ -n "$sshagent" ] && [ -x "$sshagent" ] && [ -z "$SSH_AUTH_SOCK" ]; then
+    command="$sshagent -- $command"
+fi
 
 # merge in defaults
 if [ -f "$rh6sysresources" ]; then
@@ -56,7 +69,7 @@ fi
 #
 # Eeek, this seems like too much magic here
 #
-if [ -z "$XKB_IN_USE" -a ! -L /etc/X11/X ]; then
+if [ -z "$XKB_IN_USE" ] && [ ! -L /etc/X11/X ]; then
     if grep '^exec.*/Xsun' /etc/X11/X > /dev/null 2>&1 && [ -f /etc/X11/XF86Config ]; then
        xkbsymbols=`sed -n -e 's/^[     ]*XkbSymbols[   ]*"\(.*\)".*$/\1/p' /etc/X11/XF86Config`
        if [ -n "$xkbsymbols" ]; then
@@ -92,9 +105,5 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
     done
 fi
 
-if [ -x "$HOME/.gnomerc" ]; then
-	exec "$HOME/.gnomerc"
-else
-	exec "@EXPANDED_SYSCONFDIR@/gdm/gnomerc"
-fi
+exec $command
 
