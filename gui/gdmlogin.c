@@ -660,6 +660,7 @@ gdm_login_message (const gchar *msg)
 
 	gdm_wm_no_login_focus_push ();
 	gtk_dialog_run (GTK_DIALOG (req));
+	gtk_widget_destroy (req);
 	gdm_wm_no_login_focus_pop ();
 }
 
@@ -690,6 +691,7 @@ gdm_login_query (const gchar *msg)
 
 	gdm_wm_no_login_focus_push ();
 	ret = gtk_dialog_run (GTK_DIALOG (req));
+	gtk_widget_destroy (req);
 	gdm_wm_no_login_focus_pop ();
 
 	if (ret == GTK_RESPONSE_YES)
@@ -721,6 +723,7 @@ gdm_run_command (const char *command)
 		gdm_wm_center_window (GTK_WINDOW (dialog));
 
 		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
 	} else if (pid == 0) {
 		int i;
 
@@ -1890,6 +1893,7 @@ get_gnome_session (const char *sess_string)
 	gdm_wm_center_window (GTK_WINDOW (d));
 	gdm_wm_no_login_focus_push ();
 	gtk_dialog_run (GTK_DIALOG (d));
+	gtk_widget_destroy (d);
 	gdm_wm_no_login_focus_pop ();
 
 	remember_gnome_session = GTK_TOGGLE_BUTTON (remembercb)->active;
@@ -2114,6 +2118,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	gdm_wm_no_login_focus_push ();
 	gtk_dialog_run (GTK_DIALOG (dlg));
+	gtk_widget_destroy (dlg);
 	gdm_wm_no_login_focus_pop ();
 
 	g_print ("%c\n", STX);
@@ -2220,6 +2225,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 		gdm_wm_no_login_focus_push ();
 		gtk_dialog_run (GTK_DIALOG (dlg));
+		gtk_widget_destroy (dlg);
 		gdm_wm_no_login_focus_pop ();
 	}
 
@@ -2245,6 +2251,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 			gdm_wm_no_login_focus_push ();
 			gtk_dialog_run (GTK_DIALOG (dlg));
+			gtk_widget_destroy (dlg);
 			gdm_wm_no_login_focus_pop ();
 		}
 		messages_to_give = FALSE;
@@ -2747,6 +2754,7 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 
 			gdm_wm_no_login_focus_push ();
 			gtk_dialog_run (GTK_DIALOG (d));
+			gtk_widget_destroy (d);
 			gdm_wm_no_login_focus_pop ();
 		}
 		break;
@@ -3789,8 +3797,10 @@ main (int argc, char *argv[])
 
 	    switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
 	    case RESPONSE_REBOOT:
+		    gtk_widget_destroy (dialog);
 		    return DISPLAY_REBOOT;
 	    default:
+		    gtk_widget_destroy (dialog);
 		    return DISPLAY_ABORT;
 	    }
     }
@@ -3832,10 +3842,13 @@ main (int argc, char *argv[])
 
 	    switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
 	    case RESPONSE_RESTART:
+		    gtk_widget_destroy (dialog);
 		    return DISPLAY_RESTARTGDM;
 	    case RESPONSE_REBOOT:
+		    gtk_widget_destroy (dialog);
 		    return DISPLAY_REBOOT;
 	    default:
+		    gtk_widget_destroy (dialog);
 		    return DISPLAY_ABORT;
 	    }
     }
@@ -3954,6 +3967,7 @@ main (int argc, char *argv[])
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
 	    gtk_dialog_run (GTK_DIALOG (dialog));
+	    gtk_widget_destroy (dialog);
     }
 
     if (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL) {
@@ -3972,6 +3986,7 @@ main (int argc, char *argv[])
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
 	    gtk_dialog_run (GTK_DIALOG (dialog));
+	    gtk_widget_destroy (dialog);
     }
 
     /* There was no config file */
@@ -3992,6 +4007,7 @@ main (int argc, char *argv[])
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
 	    gtk_dialog_run (GTK_DIALOG (dialog));
+	    gtk_widget_destroy (dialog);
     }
 
     g_atexit (kill_thingies);

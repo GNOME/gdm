@@ -162,6 +162,7 @@ greeter_ctrl_handler (GIOChannel *source,
 
 	gdm_wm_no_login_focus_push ();
 	gtk_dialog_run (GTK_DIALOG (dlg));
+	gtk_widget_destroy (dlg);
 	gdm_wm_no_login_focus_pop ();
 	
 	g_print ("%c\n", STX);
@@ -351,7 +352,7 @@ enum {
 };
 
 static int
-verify_gdm_version ()
+verify_gdm_version (void)
 {
   const char *gdm_version;
   const char *gdm_protocol_version;
@@ -419,8 +420,10 @@ verify_gdm_version ()
       switch (gtk_dialog_run (GTK_DIALOG (dialog)))
 	{
 	case RESPONSE_REBOOT:
+	  gtk_widget_destroy (dialog);
 	  return DISPLAY_REBOOT;
 	default:
+	  gtk_widget_destroy (dialog);
 	  return DISPLAY_ABORT;
 	}
     }
@@ -462,10 +465,13 @@ verify_gdm_version ()
       switch (gtk_dialog_run (GTK_DIALOG (dialog)))
 	{
 	case RESPONSE_RESTART:
+	  gtk_widget_destroy (dialog);
 	  return DISPLAY_RESTARTGDM;
 	case RESPONSE_REBOOT:
+	  gtk_widget_destroy (dialog);
 	  return DISPLAY_REBOOT;
 	default:
+	  gtk_widget_destroy (dialog);
 	  return DISPLAY_ABORT;
 	}
     }
