@@ -303,18 +303,15 @@ gdm_display_dispose (GdmDisplay *d)
 GdmDisplay *
 gdm_display_lookup (pid_t pid)
 {
-    GSList *list = displays;
-    GdmDisplay *d = NULL;
+    GSList *li;
 
     /* Find slave in display list */
-    while (list && list->data) {
-	d = list->data;
+    for (li = displays; li != NULL; li = li->next) {
+	    GdmDisplay *d = li->data;
 
-	if (pid == d->slavepid) {
-	    return d;
-
-	    list = list->next;
-	}
+	    if (d != NULL &&
+		pid == d->slavepid)
+		    return d;
     }
      
     /* Slave not found */
