@@ -47,6 +47,37 @@ working_command_exists (const char *commands)
 }
 
 static void
+query_greeter_reboot_handler (void)
+{
+	if (greeter_query (_("Are you sure you want to reboot the machine?"))) {
+		closelog();
+		
+		_exit (DISPLAY_REBOOT);
+	}
+}
+
+
+static void
+query_greeter_halt_handler (void)
+{
+	if (greeter_query (_("Are you sure you want to shut down the machine?"))) {
+		closelog();
+
+		_exit (DISPLAY_HALT);
+	}
+}
+
+static void
+query_greeter_suspend_handler (void)
+{
+	if (greeter_query (_("Are you sure you want to suspend the machine?"))) {
+		closelog();
+
+		_exit (DISPLAY_SUSPEND);
+	}
+}
+
+static void
 greeter_reboot_handler (void)
 {
 	/*if (greeter_query (_("Are you sure you want to reboot the machine?"))) {*/
@@ -199,13 +230,13 @@ void
 greeter_item_system_setup (void)
 {
   greeter_item_register_action_callback ("reboot_button",
-					 (ActionFunc)greeter_reboot_handler,
+					 (ActionFunc)query_greeter_reboot_handler,
 					 NULL);
   greeter_item_register_action_callback ("halt_button",
-					 (ActionFunc)greeter_halt_handler,
+					 (ActionFunc)query_greeter_halt_handler,
 					 NULL);
   greeter_item_register_action_callback ("suspend_button",
-					 (ActionFunc)greeter_suspend_handler,
+					 (ActionFunc)query_greeter_suspend_handler,
 					 NULL);
   greeter_item_register_action_callback ("system_button",
 					 (ActionFunc)greeter_system_handler,
