@@ -2221,12 +2221,6 @@ session_child_run (struct passwd *pwent,
 	if ( ! def_language) {
 		gnome_setenv ("LANG", language, TRUE);
 		gnome_setenv ("GDM_LANG", language, TRUE);
-	} else {
-		if (g_getenv ("LANG") == NULL)
-			gnome_unsetenv ("GDM_LANG");
-		else
-			/* setusercontext sets up user languages */
-			gnome_setenv ("GDM_LANG", g_getenv ("LANG"), TRUE);
 	}
 #else
 	if (setuid (pwent->pw_uid) < 0) 
@@ -2235,7 +2229,11 @@ session_child_run (struct passwd *pwent,
 
 	/* Set locale */
 	gnome_setenv ("LANG", language, TRUE);
-	gnome_setenv ("GDM_LANG", language, TRUE);
+	/* Only force GDM_LANG to something if there is other then
+	 * default selected.  Else let the session do whatever it
+	 * does since we're using sys default */
+	if ( ! def_language)
+		gnome_setenv ("GDM_LANG", language, TRUE);
 #endif
 	
 	chdir (home_dir);

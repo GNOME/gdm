@@ -1,3 +1,17 @@
+Wed Aug 07 14:10:57 2002  George Lebl <jirka@5z.com>
+
+	* config/Makefile.am: overwrite gnomerc and create .orig as with the
+	  other scripts
+
+	* daemon/slave.c: don't set GDM_LANG unless the user actually
+	  selected something.  This should make things nicer on system
+	  langauge sensing things.
+
+	* config/Gnome.in, config/Xsession.in: normalize langauge stuff in
+	  case the user selected a language.  whack LC_ALL, LANGUAGE and
+	  LINGUAS if they differ from GDM_LANG if this was set (if not
+	  using 'System default' language setting).  Should fix #89970
+
 Wed Aug 07 12:01:06 2002  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch], daemon/slave.c: add a SOFT_RESTART_SERVERS

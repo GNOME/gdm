@@ -100,9 +100,10 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		chmod 755 $(DESTDIR)$(gnomercdir); \
 	fi
 
-	if test '!' -f $(DESTDIR)$(gnomercdir)/gnomerc; then \
-		$(INSTALL_SCRIPT) gnomerc $(DESTDIR)$(gnomercdir)/gnomerc; \
+	-if test -f $(DESTDIR)$(gnomercdir)/gnomerc; then \
+		cp $(DESTDIR)$(gnomercdir)/gnomerc $(DESTDIR)$(gnomercdir)/gnomerc.orig; \
 	fi
+	$(INSTALL_SCRIPT) gnomerc $(DESTDIR)$(gnomercdir)/gnomerc
 
 	if test '!' -d $(DESTDIR)$(authdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(authdir); \
