@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 \n"
-"POT-Creation-Date: 2001-05-04 16:18-0700\n"
-"PO-Revision-Date: 2001-04-25 23:37+0200\n"
+"POT-Creation-Date: 2001-05-08 13:28+0000\n"
+"PO-Revision-Date: 2001-05-08 23:37+0200\n"
 "Last-Translator: Jarkko Ranta <jjranta@cc.joensuu.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,14 +23,19 @@ msgstr "gdm_config_parse: Ei asetustiedostoa: %s. Keskeytet‰‰n."
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
+"gdm_config_parse: P‰‰k‰ytt‰j‰‰ ei voida automaattikirjata. Ohitetaan "
+"automaattinen kirjautuminen."
 
 #: daemon/gdm.c:205
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
+"gdm_config_parse: P‰‰k‰ytt‰j‰‰ ei voida automaattikirjata. Ohitetaan "
+"ajastettu automaattinen kirjautuminen."
 
 #: daemon/gdm.c:211
 msgid "gdm_config_parse: TimedLoginDelay less then 10, so I will just use 10."
 msgstr ""
+"gdm_config_parse: TimedLoginDelay on v‰hemm‰n kuin 10, joten k‰yt‰n arvoa 10."
 
 #: daemon/gdm.c:217
 msgid "gdm_config_parse: No greeter specified."
@@ -116,11 +121,14 @@ msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
 "display %s"
 msgstr ""
+"gdm_child_action: Uudelleenk‰ynnistys- tai keskeytyspyyntˆ, vaikka n‰ytˆll‰ "
+"%s ei ole j‰rjestelm‰valikkoa."
 
 #: daemon/gdm.c:454
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_child_action: Reboot or Halt request from a non-local display %s"
-msgstr "gdm_child_action: N‰yttˆ %s keskeytet‰‰n"
+msgstr ""
+"gdm_child_action: Uudelleenk‰ynnistys- tai sammutuspyyntˆ et‰n‰ytˆlt‰ %s"
 
 #. Bury this display for good
 #: daemon/gdm.c:462
@@ -294,72 +302,76 @@ msgstr "gdm_slave_init: Virhe asetettaessa TERM/INT-signaalien k‰sittelij‰‰"
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr "gdm_slave_init: Virhe asetettaessa CHLD-signaalin k‰sittelij‰‰"
 
-#: daemon/slave.c:311
-#, fuzzy
+#: daemon/slave.c:315
 msgid "Cannot start session"
-msgstr "Luo uusi istunto"
+msgstr "Istuntoa ei voida aloittaa"
 
-#: daemon/slave.c:320
+#: daemon/slave.c:324
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
-#: daemon/slave.c:376
+#: daemon/slave.c:388
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
 "correctly in the configuration file."
 msgstr ""
+"Asetusohjelman ajaminen ei onnistunut.\n"
+"Varmista ett‰ sen polku on asetettu\n"
+"oikein asetustiedostossa."
 
-#: daemon/slave.c:418
+#: daemon/slave.c:430
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
 msgstr ""
+"Anna p‰‰k‰ytt‰j‰n salasana\n"
+"ajaaksesi asetusohjelman."
 
-#: daemon/slave.c:432 daemon/slave.c:492
+#: daemon/slave.c:444 daemon/slave.c:504
 msgid "gdm_slave_wait_for_login: No login/Bad login"
-msgstr ""
+msgstr "gdm_slave_wait_for_login: Ei kirjautumista/Ep‰kelpo kirjautuminen"
 
-#: daemon/slave.c:523
+#: daemon/slave.c:535
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr "gdm_slave_greeter: Putkea gdmgreeter-tervehtij‰‰n ei voitu avata"
 
-#: daemon/slave.c:551
+#: daemon/slave.c:563
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr "gdm_slave_greeter: Ryhm‰tunnusta ei voitu asettaa %d:ksi."
 
-#: daemon/slave.c:554
+#: daemon/slave.c:566
 #, c-format
 msgid "gdm_slave_greeter: initgroups() failed for %s"
 msgstr "gdm_slave_greeter: initgroups() ep‰onnistui %s:lle"
 
-#: daemon/slave.c:557
+#: daemon/slave.c:569
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr "gdm_slave_greeter: K‰ytt‰j‰tunnusta ei voitu asettaa %d:ksi."
 
-#: daemon/slave.c:585
+#: daemon/slave.c:597
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr "gdm_slave_greeter: Virhe k‰ynnistett‰ess‰ tervehtij‰‰ n‰ytˆlle %s"
 
-#: daemon/slave.c:588
+#: daemon/slave.c:600
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Gdmgreeter-tervehtij‰‰ ei voitu k‰ynnist‰‰"
 
-#: daemon/slave.c:801
+#: daemon/slave.c:846
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: K‰ytt‰j‰ l‰p‰isi todentamisen, mutta getpwnam(%s) "
 "ep‰onnistui."
 
-#: daemon/slave.c:905
+#: daemon/slave.c:950
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr "gdm_slave_session_start: Todennus suoritettu."
 
-#: daemon/slave.c:934
+#: daemon/slave.c:979
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -367,95 +379,146 @@ msgstr ""
 "gdm_slave_session_start: Esi-istuntokomentojonon suoritus palautti > 0. "
 "Keskeytet‰‰n."
 
-#: daemon/slave.c:967
+#: daemon/slave.c:1012
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Virhe k‰ynnistett‰ess‰ k‰ytt‰j‰n istuntoa."
 
-#: daemon/slave.c:1011
+#: daemon/slave.c:1056
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: Setgid %d ep‰onnistui. Keskeytet‰‰n."
 
-#: daemon/slave.c:1015
+#: daemon/slave.c:1060
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr ""
 "gdm_slave_session_start: initgroups() ep‰onnistui %s:lle. Keskeytet‰‰n."
 
-#: daemon/slave.c:1019
+#: daemon/slave.c:1064
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Ei voitu muuttua %s:ksi. Keskeytet‰‰n."
 
 #. yaikes
-#: daemon/slave.c:1084
+#: daemon/slave.c:1121
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
 msgstr ""
+"gdm_slave_session_start: gnome-session:ia ei lˆytynyt vikasietoiselle "
+"gnome-istunnolle. Kokeillaan xterm:i‰"
 
-#: daemon/slave.c:1104
-msgid "Cannot find \"xterm\" to start a failsafe session."
+#: daemon/slave.c:1125
+msgid ""
+"Could not find the GNOME installation,\n"
+"will try running the \"Failsafe xterm\"\n"
+"session."
 msgstr ""
+"GNOME:n asennusta ei lˆytynyt.\n"
+"Koitetaan ajaa \"Vikasietoinen xterm\"\n"
+"-istunto."
 
-#: daemon/slave.c:1119
+#: daemon/slave.c:1130
+msgid ""
+"This is the Failsafe Gnome session.\n"
+"You will be logged into the 'Default'\n"
+"session of Gnome with no startup scripts\n"
+"run.  This is only to fix problems in\n"
+"your installation."
+msgstr ""
+"T‰m‰ on Gnomen vikasietoinen istunto.\n"
+"Sinut kirjataan Gnomen 'Oletus'-istuntoon\n"
+"ilman k‰ynnistysskriptej‰.\n"
+"N‰in tehd‰‰n siksi jotta asennuksessasi\n"
+"olevien vikojen korjaaminen olisi mahdollista."
+
+#: daemon/slave.c:1145
+msgid "Cannot find \"xterm\" to start a failsafe session."
+msgstr "Vikasietoisen istunnon ajamiseksi tarvittavaa \"xterm\":i‰ ei lˆydy."
+
+#: daemon/slave.c:1151
+msgid ""
+"This is the Failsafe xterm session.\n"
+"You will be logged into a terminal\n"
+"console so that you may fix your system\n"
+"if you cannot log in any other way.\n"
+"To exit the terminal emulator, type\n"
+"'exit'and an enter into the window."
+msgstr ""
+"T‰m‰ on vikasietoinen xterm-istunto.\n"
+"Sinut kirjataan sis‰‰n p‰‰te-\n"
+"ikkunaan, jotta voisit korjata j‰rjestelm‰si\n"
+"mik‰li et pysty kirjautumaan muilla tavoin sis‰lle.\n"
+"Poistuaksesi p‰‰te-emulaattorista, kirjoita\n"
+"'exit' ja paina rivinvaihtoa ikkunassa."
+
+#: daemon/slave.c:1167
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr ""
 
-#: daemon/slave.c:1132
+#: daemon/slave.c:1180
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: K‰ytt‰j‰ll‰ ei ole lupaa kirjautua sis‰lle"
 
-#: daemon/slave.c:1133
+#: daemon/slave.c:1181
 msgid ""
 "The system administrator has\n"
 "disabled your account."
 msgstr ""
+"J‰rjestelm‰nvalvoja on\n"
+"postanut tilisi pois k‰ytˆst‰."
 
-#: daemon/slave.c:1136
-#, fuzzy, c-format
+#: daemon/slave.c:1184
+#, c-format
 msgid "gdm_slave_session_start: Could not find session `%s'"
-msgstr "gdm_slave_session_start: Ei voitu k‰ynnist‰‰ istuntoa '%s'"
+msgstr "gdm_slave_session_start: Istuntoa '%s' ei lˆytynyt"
 
-#: daemon/slave.c:1140
+#: daemon/slave.c:1188
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
 "the list of available sessions in the login\n"
 "dialog window."
 msgstr ""
+"Istuntoa ei voitu aloittaa. Luultavasti\n"
+"istuntoa ei ole olemassa.  Valitse istunto\n"
+"kirjautumisikkunan istuntoluettelosta\n"
+" "
 
-#: daemon/slave.c:1148
+#: daemon/slave.c:1196
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Ei voitu k‰ynnist‰‰ istuntoa '%s'"
 
-#: daemon/slave.c:1150
+#: daemon/slave.c:1198
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
 "It could also indicate an error with your account.\n"
 msgstr ""
+"Kuoren k‰ynnistys ei onnistu. J‰rjestelm‰nvalvoja\n"
+"on mahdollisesti poistanut tilisi k‰ytˆst‰.\n"
+"Syy saattaa olla myˆs virheellisess‰ tiliss‰.\n"
 
-#: daemon/slave.c:1315
+#: daemon/slave.c:1363
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 "gdm_slave_xioerror_handler: Vakava X-virhe - %s k‰ynnistet‰‰n uudelleen"
 
-#: daemon/slave.c:1426
+#: daemon/slave.c:1474
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: K‰ynnistys ep‰onnistui: %s"
 
-#: daemon/slave.c:1430
+#: daemon/slave.c:1478
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Komentojonoprosessia ei voitu k‰ynnist‰‰."
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:67 daemon/verify-pam.c:159 daemon/verify-shadow.c:66
-#: gui/gdmlogin.c:2603
+#: gui/gdmlogin.c:2662
 msgid "Login:"
 msgstr "Tunnus:"
 
@@ -708,6 +771,10 @@ msgid ""
 "Please check your installation and the\n"
 "location of the gdmchooser.glade file."
 msgstr ""
+"gladen k‰yttˆliittym‰n kuvaustiedostoa ei lˆydy,\n"
+"joten valitsimen ajaminen ei onnistu.\n"
+"Tarkista asennuksesi toimivuus ja\n"
+"gdmchooser.glade -tiedoston sijainti."
 
 #: gui/gdmchooser.c:555
 msgid ""
@@ -715,6 +782,9 @@ msgid ""
 "appears to be corrupted.\n"
 "Please check your installation."
 msgstr ""
+"gladen k‰yttˆliittym‰n kuvaustiedostossa\n"
+"ilmeni virheit‰.\n"
+"Tarkista asennuksesi toimivuus."
 
 #: gui/gdmchooser.c:604
 msgid "gdm_signals_init: Error setting up HUP signal handler"
@@ -728,7 +798,7 @@ msgstr "gdm_signals_init: Virhe asetettaessa INT-signaalin k‰sittelij‰‰"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Virhe asetettaessa TERM-signaalin k‰sittelij‰‰"
 
-#: gui/gdmchooser.c:618 gui/gdmlogin.c:3259
+#: gui/gdmchooser.c:618 gui/gdmlogin.c:3358
 msgid "Could not set signal mask!"
 msgstr "Signaalimaskia ei voitu asettaa."
 
@@ -738,7 +808,7 @@ msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:54 gui/gdmlogin.c:1623 gui/gdmlogin.c:1645
+#: gui/gdmlogin.c:54 gui/gdmlogin.c:1682 gui/gdmlogin.c:1704
 msgid "Default"
 msgstr "Oletus"
 
@@ -756,13 +826,13 @@ msgstr "KDE"
 
 #: gui/gdmlogin.c:58
 msgid "XSession"
-msgstr ""
+msgstr "XSession"
 
 #. Add the chooser session, this one doesn't have a script
 #. * really, it's a fake, it runs the Gnome script
 #. For translators:  This is the login that lets users choose the
 #. * specific gnome session they want to use
-#: gui/gdmlogin.c:59 gui/gdmlogin.c:1331
+#: gui/gdmlogin.c:59 gui/gdmlogin.c:1369
 msgid "Gnome Chooser"
 msgstr "Gnome-istuntovalitsin"
 
@@ -770,47 +840,58 @@ msgstr "Gnome-istuntovalitsin"
 msgid "Last"
 msgstr "Edellinen"
 
-#: gui/gdmlogin.c:343
+#: gui/gdmlogin.c:345
 #, c-format
 msgid "User %s will login in %d seconds"
-msgstr ""
+msgstr "k‰ytt‰j‰ %s kirjautuu %d sekunnin kuluttua"
 
-#: gui/gdmlogin.c:647 gui/gdmlogin.c:653 gui/gdmlogin.c:660
+#: gui/gdmlogin.c:649 gui/gdmlogin.c:655 gui/gdmlogin.c:662
 #, c-format
 msgid "Welcome to %s"
 msgstr "%s - tervetuloa."
 
-#: gui/gdmlogin.c:658
+#: gui/gdmlogin.c:660
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Merkkijono liian pitk‰."
 
 #. We can't fork, that means we're pretty much up shit creek
 #. * without a paddle.
-#: gui/gdmlogin.c:780
+#: gui/gdmlogin.c:782
 msgid ""
 "Could not fork a new procss!\n"
 "\n"
 "You likely won't be able to log in either."
 msgstr ""
+"Uuden prosessin haaroittaminen ep‰onnistui!\n"
+"\n"
+"On todenn‰kˆist‰ ettei kirjautumisesi onnistu."
 
-#: gui/gdmlogin.c:822
+#: gui/gdmlogin.c:824
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Haluatko varmasti k‰ynnist‰‰ koneen uudestaan?"
 
-#: gui/gdmlogin.c:836
+#: gui/gdmlogin.c:838
 msgid "Are you sure you want to halt the machine?"
 msgstr "Haluatko varmasti sammuttaa koneen?"
 
-#: gui/gdmlogin.c:853
+#: gui/gdmlogin.c:855
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config: Ei asetustiedostoa: %s. Keskeytet‰‰n."
 
-#: gui/gdmlogin.c:892
+#: gui/gdmlogin.c:894
 msgid "TimedLoginDelay was less then 10.  I'll just use 10."
-msgstr ""
+msgstr "TimedLoginDelay pienempi kuin 10. K‰ytet‰‰n arvoa 10."
 
-#: gui/gdmlogin.c:975
+#: gui/gdmlogin.c:945 gui/gdmlogin.c:1414
+msgid "Failsafe Gnome"
+msgstr "Vikasietoinen Gnome"
+
+#: gui/gdmlogin.c:947 gui/gdmlogin.c:1436
+msgid "Failsafe xterm"
+msgstr "Vikasietoinen xterm"
+
+#: gui/gdmlogin.c:992
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -819,7 +900,7 @@ msgstr ""
 "Ensisijaista istuntotyyppi‰si %s ei ole asennettu t‰lle koneelle.\n"
 "Haluatko muuttaa %s:n ensisijaiseksi istuntotyypiksesi?"
 
-#: gui/gdmlogin.c:991 gui/gdmlogin.c:1046
+#: gui/gdmlogin.c:1009 gui/gdmlogin.c:1066
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -828,138 +909,166 @@ msgstr ""
 "Olet valinnut %s:n t‰m‰n istunnon ajaksi, mutta oletusarvosi on %s.\n"
 "Haluatko muuttaa %s:n ensisijaiseksi istuntotyypiksesi?"
 
-#: gui/gdmlogin.c:1224
+#: gui/gdmlogin.c:1244
 #, c-format
 msgid "%s session selected"
 msgstr "Istunto %s valittu"
 
-#: gui/gdmlogin.c:1261
+#: gui/gdmlogin.c:1282
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Istuntokomentojonohakemistoa ei lˆytynyt."
 
-#: gui/gdmlogin.c:1360
-msgid "Yaikes, nothing found in the session directory."
+#: gui/gdmlogin.c:1361
+msgid ""
+"This session will log you directly into GNOME, into your current session."
+msgstr "T‰m‰ istunto kirjaa sinut suoraan GNOME:een, nykyiseen istuntoosi."
+
+#: gui/gdmlogin.c:1372
+msgid ""
+"This session will log you into GNOME and it will let you choose which one of "
+"the GNOME sessions you want to use."
 msgstr ""
+"T‰m‰ istunto kirjaa sinut GNOME:een, ja antaa sinun valita, mit‰ "
+"GNOME-istunnoista haluat k‰ytt‰‰."
 
-#: gui/gdmlogin.c:1368
-#, fuzzy
-msgid "Failsafe Gnome"
-msgstr "Vikasieto"
+#: gui/gdmlogin.c:1405
+msgid "Yaikes, nothing found in the session directory."
+msgstr "Auts! Istuntohakemistosta ei lˆytynyt ainuttakaan istuntoa."
 
-#: gui/gdmlogin.c:1383
-#, fuzzy
-msgid "Failsafe xterm"
-msgstr "Vikasieto"
+#: gui/gdmlogin.c:1416
+msgid ""
+"This is a failsafe session that will log you into GNOME.  No startup scripts "
+"will be read and it is only to be used when you can't log in otherwise.  "
+"GNOME will use the 'Default' session."
+msgstr ""
+"T‰m‰ on vikasietoinen istunto joka kirjaa sinut GNOME:een. "
+"K‰ynnistysskriptej‰ ei lueta, ja istuntoa tuleekin k‰ytt‰‰ ainoastaan jos "
+"muu kirjautuminen ei onnistu.  GNOME k‰ytt‰‰ kirjautuessaan "
+"'Oletus'-istuntoa."
 
-#: gui/gdmlogin.c:1398
+#: gui/gdmlogin.c:1438
+msgid ""
+"This is a failsafe session that will log you into a terminal.  No startup "
+"scripts will be read and it is only to be used when you can't log in "
+"otherwise.  To exit the terminal, type 'exit'."
+msgstr ""
+"T‰m‰ on vikasietoinen istunto joka kirjaa sinut p‰‰tteelle.  "
+"K‰ynnistysskriptej‰ ei lueta, ja istuntoa tuleekin k‰ytt‰‰ ainoastaan jos "
+"muu kirjautuminen ei onnistu.  Poistuaksesi p‰‰tteest‰ kirjoita 'exit'."
+
+#: gui/gdmlogin.c:1457
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Oletusarvoisen istunnon linkki‰ ei lˆytynyt. K‰ytet‰‰n %s:a.\n"
 
-#: gui/gdmlogin.c:1413
+#: gui/gdmlogin.c:1472
 #, c-format
 msgid "%s language selected"
 msgstr "Valittu kieleksi %s"
 
-#: gui/gdmlogin.c:1455
+#: gui/gdmlogin.c:1514
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:1461
+#: gui/gdmlogin.c:1520
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:1467
+#: gui/gdmlogin.c:1526
 msgid "Other"
 msgstr "Muu"
 
-#: gui/gdmlogin.c:1583 gui/gdmlogin.c:1592
+#: gui/gdmlogin.c:1642 gui/gdmlogin.c:1651
 msgid "Select GNOME session"
 msgstr "Valitse GNOME-istunto"
 
-#: gui/gdmlogin.c:1659
+#: gui/gdmlogin.c:1718
 msgid "Create new session"
 msgstr "Luo uusi istunto"
 
-#: gui/gdmlogin.c:1668
+#: gui/gdmlogin.c:1727
 msgid "Name: "
 msgstr "Nimi: "
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:1943
+#: gui/gdmlogin.c:2002
 msgid "Please insert 25 cents to log in."
 msgstr "Syˆt‰ markka raha-aukkoon."
 
-#: gui/gdmlogin.c:2241
+#: gui/gdmlogin.c:2300
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Desktop Manager"
 
-#: gui/gdmlogin.c:2253
+#: gui/gdmlogin.c:2312
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Ikonitiedostoa ei voitu avata: %s. Pienennysominaisuus ei k‰ytˆss‰."
 
-#: gui/gdmlogin.c:2369
+#: gui/gdmlogin.c:2428
 msgid "GDM Login"
 msgstr "GDM-kirjautuminen"
 
-#: gui/gdmlogin.c:2413
+#: gui/gdmlogin.c:2472
 msgid "Session"
 msgstr "Istunto"
 
-#: gui/gdmlogin.c:2424
+#: gui/gdmlogin.c:2483
 msgid "Language"
 msgstr "Kieli"
 
-#: gui/gdmlogin.c:2435
+#: gui/gdmlogin.c:2494
 msgid "Configure..."
 msgstr "Aseta..."
 
-#: gui/gdmlogin.c:2443
+#: gui/gdmlogin.c:2502
 msgid "Reboot..."
 msgstr "K‰ynnist‰ uudelleen..."
 
-#: gui/gdmlogin.c:2450
+#: gui/gdmlogin.c:2509
 msgid "Halt..."
 msgstr "Sammuta..."
 
-#: gui/gdmconfig.c:53 gui/gdmlogin.c:2457
+#: gui/gdmconfig.c:53 gui/gdmlogin.c:2516
 msgid "System"
 msgstr "J‰rjestelm‰asetukset"
 
-#: gui/gdmlogin.c:2639
+#: gui/gdmlogin.c:2698
 msgid "Please enter your login"
 msgstr "Ole hyv‰ ja anna k‰ytt‰j‰tunnuksesi"
 
-#: gui/gdmlogin.c:2828
+#: gui/gdmlogin.c:2887
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Oletuskuvaa ei voitu avata: %s. Kasvoselain ei k‰ytˆss‰."
 
-#: gui/gdmlogin.c:3236
+#: gui/gdmlogin.c:3335
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Virhe asetettaessa HUP-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:3239
+#: gui/gdmlogin.c:3338
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Virhe asetettaessa INT-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:3242
+#: gui/gdmlogin.c:3341
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Virhe asetettaessa TERM-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:3250
+#: gui/gdmlogin.c:3349
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Virhe asetettaessa CHLD-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:3311
+#: gui/gdmlogin.c:3410
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
 "There are two available sessions you can use, but\n"
 "you should log in and correct the gdm configuration."
 msgstr ""
+"Istuntohakemistoasi ei ole olemassa tai sitten se on tyhj‰!\n"
+"\n"
+"K‰ytˆss‰si on kaksi istuntotyyppi‰, mutta sinun\n"
+"tulisi kirjautumisesi j‰lkeen korjata gdm:n asetukset."
 
 #. 3 user levels are present in the CList
 #: gui/gdmconfig.c:51
@@ -989,7 +1098,6 @@ msgstr ""
 "asetuksia."
 
 #: gui/gdmconfig.c:60
-#, fuzzy
 msgid ""
 "This panel displays the more advanced options of GDM.\n"
 "\n"
@@ -1028,6 +1136,9 @@ msgid ""
 "widget \"%s\".  Unfortunately I cannot continue.\n"
 "Please check your installation."
 msgstr ""
+"Gladen k‰yttˆliittym‰n kuvaustiedosto ei tunnu sis‰lt‰v‰n\n"
+"kohtaa \"%s\".  Valitettavasti en voi jatkaa.\n"
+"Tarkista asennuksesi toimivuus."
 
 #: gui/gdmconfig.c:164
 msgid "You must be the superuser (root) to configure GDM.\n"
@@ -1040,6 +1151,10 @@ msgid ""
 "Please check your installation and the\n"
 "location of the gdmconfig.glade file."
 msgstr ""
+"Gladen k‰yttˆliittym‰n kuvaustiedostoa ei lˆydy,\n"
+"joten gdmconfig:n ajaminen ei onnistu.\n"
+"Tarkista asennuksesi toimivuus ja\n"
+"gdmconfig.glade -tiedoston sijainti."
 
 #: gui/gdmconfig.c:225
 msgid ""
@@ -1058,14 +1173,16 @@ msgid ""
 "The configuration file: %s\n"
 "does not exist! Using default values."
 msgstr ""
+"Asetustiedostoa: %s\n"
+"ei ole olemassa! K‰ytet‰‰n oletusarvoja."
 
 #: gui/gdmconfig.c:497
 msgid "Error reading session script!"
-msgstr ""
+msgstr "Virhe luettaessa istuntoskripti‰!"
 
 #: gui/gdmconfig.c:499
 msgid "Error reading this session script"
-msgstr ""
+msgstr "Virhe luettaessa istuntoskripti‰"
 
 #: gui/gdmconfig.c:588
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
@@ -1108,64 +1225,86 @@ msgstr ""
 "uudelleen."
 
 #: gui/gdmconfig.c:832
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not delete session %s\n"
 "   Error: %s"
-msgstr "Ei voitu avata istuntoa %s:lle"
+msgstr ""
+"\n"
+"Ei voitu tuhota istuntoa %s\n"
+"   Virhe: %s"
 
 #: gui/gdmconfig.c:868
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not remove session %s\n"
 "   Error: %s"
-msgstr "Ei voitu avata istuntoa %s:lle"
+msgstr ""
+"\n"
+"Ei voitu poistaa istuntoa %s\n"
+"   Virhe: %s"
 
 #: gui/gdmconfig.c:912
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not write session %s\n"
 "   Error: %s"
-msgstr "Ei voitu avata istuntoa %s:lle"
+msgstr ""
+"\n"
+"Ei voitu kirjoittaa istuntoa %s\n"
+"   Virhe: %s"
 
 #: gui/gdmconfig.c:923
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not write contents to session %s\n"
 "   Error: %s"
-msgstr "Ei voitu avata istuntoa %s:lle"
+msgstr ""
+"\n"
+"Ei voitu kirjoittaa sis‰ltˆ‰ istunnolle %s\n"
+"   Virhe: %s"
 
 #: gui/gdmconfig.c:949
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not unlink old default session\n"
 "   Error: %s"
-msgstr "Ei voitu avata istuntoa %s:lle"
+msgstr ""
+"\n"
+"Ei voitu poistaa linkityst‰ vanhaan oletusistuntoon\n"
+"   Virhe: %s"
 
 #: gui/gdmconfig.c:988
 msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
 msgstr ""
+"\n"
+"Ei lˆydetty sopivaa nime‰ oletusistunnon linkille"
 
 #: gui/gdmconfig.c:997
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not link new default session\n"
 "   Error: %s"
-msgstr "Ei voitu avata istuntoa %s:lle"
+msgstr ""
+"\n"
+"Ei voitu linkitt‰‰ uutta oletusistuntoa\n"
+"   Virhe: %s"
 
 #: gui/gdmconfig.c:1017
 msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
 msgstr ""
+"Istuntotiedostojen kirjoittamisessa on tapahtunut virheit‰.\n"
+"Asetukset eiv‰t ole v‰ltt‰m‰tt‰ tallentuneet kokonaan.\n"
 
 #: gui/gdmconfig.c:1034
 msgid ""
@@ -1180,6 +1319,8 @@ msgid ""
 "Documentation is being written but is not yet finished.\n"
 "Please be patient."
 msgstr ""
+"Dokumentaatiota kirjoitetaan parhaillaan, mutta se ei ole viel‰ valmis.\n"
+"K‰rsiv‰llisyytt‰."
 
 #. Request the command line for this new server
 #: gui/gdmconfig.c:1156 gui/gdmconfig.c:1175
@@ -1192,12 +1333,11 @@ msgstr ""
 
 #: gui/gdmconfig.c:1389
 msgid "A session name must be unique and not empty"
-msgstr ""
+msgstr "Istunnon nimen t‰ytyy olla yksiselitteinen ja ei-tyhj‰"
 
 #: gui/gdmconfig.c:1401
-#, fuzzy
 msgid "Enter a name for the new session"
-msgstr "Luo uusi istunto"
+msgstr "Anna nimi uudelle istunnolle"
 
 #: gui/gdmconfig.c:1507
 msgid ""
@@ -1206,6 +1346,10 @@ msgid ""
 "to the old directory however, until you reload\n"
 "the configuration dialog again."
 msgstr ""
+"Olet muuttanut istuntohakemistoa.\n"
+"Istuntotietosi tallennetaan yh‰\n"
+"vanhaan hakemistoon, kunnes lataat\n"
+"asetusikkunan uudelleen."
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -1218,7 +1362,7 @@ msgstr "GDM:n asetustyˆkalu"
 
 #: gui/gdmconfig-strings.c:8
 msgid "_Configuration"
-msgstr "Asetukset"
+msgstr "_Asetukset"
 
 #: gui/gdmconfig-strings.c:9
 msgid "Revert settings"
@@ -1278,7 +1422,7 @@ msgstr "N‰yt‰ 'j‰rjestelm‰'-valikko (uudelleenk‰ynnistys, sammutus jne.)"
 
 #: gui/gdmconfig-strings.c:23
 msgid "Allow users to run the configurator from the system menu"
-msgstr ""
+msgstr "Salli k‰ytt‰jien ajaa asetusohjelma j‰rjestelm‰valikosta"
 
 #: gui/gdmconfig-strings.c:24
 msgid "Quiver on failure"
@@ -1337,7 +1481,7 @@ msgstr "Sijainti"
 
 #: gui/gdmconfig-strings.c:38
 msgid "Set the initial position of the login window to the values below"
-msgstr ""
+msgstr "M‰‰rit‰ kirjautumisikkunan sijainti alla olevilla arvoilla"
 
 #: gui/gdmconfig-strings.c:39
 msgid "Manually set position"
@@ -1345,7 +1489,7 @@ msgstr "Aseta sijainti manuaalisesti"
 
 #: gui/gdmconfig-strings.c:40
 msgid "Do note allow the user to drag the login window around"
-msgstr ""
+msgstr "ƒl‰ salli k‰ytt‰j‰n siirt‰‰ kirjautumisikkunaa"
 
 #: gui/gdmconfig-strings.c:41
 msgid "Lock position"
@@ -1368,6 +1512,8 @@ msgid ""
 "If you have xinerama multi display setup which screen should the loginw "
 "indow appear on.  0 will usually do just fine."
 msgstr ""
+"Jos k‰yt‰t xinerama-monin‰yttˆtoimintoa, aseta mille ruudulle "
+"kirjautumisikkuna ilmestyy.  0 on yleens‰ hyv‰ valinta."
 
 #: gui/gdmconfig-strings.c:46
 msgid "Login behaviour"
@@ -1430,6 +1576,8 @@ msgid ""
 "Scale background image to fit the entire screen. If this is not set then the "
 "image will be tiled on the background."
 msgstr ""
+"Sovita taustakuva koko ruudun kokoiseksi. Muussa tapauksessa taustakuva "
+"esitet‰‰n vierekk‰isin‰ kuvina."
 
 #: gui/gdmconfig-strings.c:62
 msgid "Scale background image to fit"
@@ -1461,38 +1609,38 @@ msgstr "Valitse tiedosto joka sis‰lt‰‰ lokaalitiedot"
 
 #: gui/gdmconfig-strings.c:69
 msgid "The program to run in the background of the login."
-msgstr ""
+msgstr "Ohjelma joka ajetaan kirjautumisen taustalla."
 
 #: gui/gdmconfig-strings.c:71 gui/gdmconfig-strings.c:78
-#, fuzzy
 msgid "Automatic login"
-msgstr "Automaattinen kirjautuminen: "
+msgstr "Automaattinen kirjautuminen"
 
 #: gui/gdmconfig-strings.c:72
-#, fuzzy
 msgid "Automatic login: "
 msgstr "Automaattinen kirjautuminen: "
 
 #: gui/gdmconfig-strings.c:73
 msgid "User to log in automatically on first bootup."
 msgstr ""
+"K‰ytt‰j‰ joka kirjataan automaattisesti sis‰‰n k‰ynnistyksen yhteydess‰."
 
 #: gui/gdmconfig-strings.c:74
 msgid "Timed login"
-msgstr ""
+msgstr "Ajastettu kirjautuminen"
 
 #: gui/gdmconfig-strings.c:75
-#, fuzzy
 msgid "Timed login: "
-msgstr "Pienoiskuvake: "
+msgstr "Ajastettu kirjautuminen: "
 
 #: gui/gdmconfig-strings.c:76
 msgid "User to log in automatically after the specified number of seconds."
 msgstr ""
+"K‰ytt‰j‰ joka kirjataan automaattisesti sis‰‰n kun m‰‰ritelty aika on "
+"kulunut."
 
 #: gui/gdmconfig-strings.c:77
 msgid "Seconds before login: "
-msgstr ""
+msgstr "Sekuntia kirjautumiseen: "
 
 #: gui/gdmconfig-strings.c:79
 msgid "expert"
@@ -1500,29 +1648,30 @@ msgstr "lis‰asetukset"
 
 #: gui/gdmconfig-strings.c:81
 msgid "Allow logging in as root (administrator) user."
-msgstr ""
+msgstr "Salli kirjautuminen p‰‰k‰ytt‰j‰n‰."
 
 #: gui/gdmconfig-strings.c:82
 msgid "Allow root to login with GDM"
-msgstr "Anna p‰‰k‰ytt‰j‰n kirjautua k‰ytt‰en GDM:‰‰"
+msgstr "Salli p‰‰k‰ytt‰j‰n kirjautua k‰ytt‰en GDM:‰‰"
 
 #: gui/gdmconfig-strings.c:83
 msgid ""
 "Allow logging in as root (administrator) user from a remote host using GDM.  "
 "This is only relevant if you enable the XDMCP protocol."
 msgstr ""
+"Salli p‰‰k‰ytt‰j‰n kirjautua et‰-is‰nn‰lt‰ k‰ytt‰en GDM:‰‰.  Toiminto on "
+"k‰ytett‰viss‰ ainoastaan jos sallit XDMCP-protokollan."
 
 #: gui/gdmconfig-strings.c:84
-#, fuzzy
 msgid "Allow root to login remotely with GDM"
-msgstr "Anna p‰‰k‰ytt‰j‰n kirjautua k‰ytt‰en GDM:‰‰"
+msgstr "Anna p‰‰k‰ytt‰j‰n et‰kirjautua GDM:‰‰"
 
 #: gui/gdmconfig-strings.c:85
 msgid ""
 "Determines whether GDM should kill X clients started by the init scripts "
 "when the user logs in."
 msgstr ""
-"M‰‰ritt‰‰ josko GDM:n tulee tappaa init-skriptien k‰ynnist‰m‰t X-asiakkaat "
+"M‰‰ritt‰‰ tuleeko GDM:n tulee tappaa init-skriptien k‰ynnist‰m‰t X-asiakkaat "
 "kun k‰ytt‰j‰n kirjautuessa sis‰‰n."
 
 #: gui/gdmconfig-strings.c:86
@@ -1601,6 +1750,8 @@ msgstr "Rajoitukset"
 msgid ""
 "The number of seconds before a login is allowed after an unsuccesful try."
 msgstr ""
+"Aika (sekunneissa), jonka j‰lkeen sallitaan uusi kirjautumisyritys "
+"ep‰onnistuneen kirjautumisyrityksen j‰lkeen."
 
 #: gui/gdmconfig-strings.c:105
 msgid ""
@@ -1608,6 +1759,9 @@ msgid ""
 "that are read into memory and so you don't want users \"attacking\" gdm by "
 "having large files."
 msgstr ""
+"Suurin tiedostokoko jota gdm yritt‰‰ lukea.  T‰m‰ koskee tiedostoja jotka "
+"luetaan muistiin, etk‰ halua ett‰ gdm:n kimppuun voidaan \"hyˆk‰t‰\" "
+"k‰ytt‰en liian suuria tiedostoja."
 
 #: gui/gdmconfig-strings.c:106
 msgid "Retry delay: "
@@ -1618,15 +1772,16 @@ msgid "Maximum user file length: "
 msgstr "K‰ytt‰j‰tiedoston maksimipituus: "
 
 #: gui/gdmconfig-strings.c:108
-#, fuzzy
 msgid "Maximum session file length: "
-msgstr "K‰ytt‰j‰tiedoston maksimipituus: "
+msgstr "Istuntotiedoston maksimipituus: "
 
 #: gui/gdmconfig-strings.c:109
 msgid ""
 "The session file is read in a way where a higher limit is still ok.  That is "
 "it is never stored in memory."
 msgstr ""
+"Istuntotiedosto luetaan tavalla, jolla korkeampi rajoitus on yh‰ ok.Sit‰ ei "
+"siis koskaan tallenneta muistiin."
 
 #: gui/gdmconfig-strings.c:110
 msgid "Security"
@@ -1709,9 +1864,8 @@ msgid "X-server setup"
 msgstr "X-palvelimen asetukset"
 
 #: gui/gdmconfig-strings.c:130
-#, fuzzy
 msgid "Session configuration"
-msgstr "Asetukset"
+msgstr "Istuntoasetukset"
 
 #: gui/gdmconfig-strings.c:131
 msgid "Session directory: "
@@ -1719,30 +1873,27 @@ msgstr "Istuntohakemisto: "
 
 #: gui/gdmconfig-strings.c:132
 msgid "Select a directory to be used for system-wide session scripts"
-msgstr ""
+msgstr "Valitse hakemisto josta j‰rjestelm‰nlaajuiset istuntoskriptit haetaan"
 
 #: gui/gdmconfig-strings.c:133
 msgid "Available Sessions"
-msgstr ""
+msgstr "K‰ytett‰viss‰ olevat istunnot"
 
 #: gui/gdmconfig-strings.c:134
-#, fuzzy
 msgid "Add session"
-msgstr "Istunto"
+msgstr "Lis‰‰ istunto"
 
 #: gui/gdmconfig-strings.c:135
-#, fuzzy
 msgid "Remove session"
-msgstr "Luo uusi istunto"
+msgstr "Poista istunto"
 
 #: gui/gdmconfig-strings.c:136
 msgid "Set as default"
-msgstr ""
+msgstr "Aseta oletukseksi"
 
 #: gui/gdmconfig-strings.c:137
-#, fuzzy
 msgid "Selected session name: "
-msgstr "Valitse GNOME-istunto"
+msgstr "Valitun istunnon nimi: "
 
 #: gui/gdmconfig-strings.c:138
 msgid ""
@@ -1752,9 +1903,8 @@ msgid ""
 msgstr ""
 
 #: gui/gdmconfig-strings.c:142
-#, fuzzy
 msgid "Login sessions"
-msgstr "Kirjautumisk‰ytt‰ytyminen"
+msgstr ""
 
 #: gui/gdmconfig-strings.c:143
 msgid "system_setup"
@@ -1781,9 +1931,8 @@ msgid "Reboot command: "
 msgstr "Uudelleenk‰ynnistyskomento: "
 
 #: gui/gdmconfig-strings.c:149
-#, fuzzy
 msgid "Configurator command: "
-msgstr "Valitsinkomento: "
+msgstr "Asetusohjelman komento: "
 
 #: gui/gdmconfig-strings.c:150
 msgid "Directories"
@@ -1814,9 +1963,8 @@ msgid "PID file: "
 msgstr "PID-tiedosto: "
 
 #: gui/gdmconfig-strings.c:157
-#, fuzzy
 msgid "Default GNOME session file: "
-msgstr "Valitse GNOME-istunto"
+msgstr "GNOME:n oletusistuntotiedosto: "
 
 #: gui/gdmconfig-strings.c:158
 msgid "Paths"
@@ -1880,28 +2028,14 @@ msgstr ""
 "L‰het‰ mahdolliset virheraportit tai ehdotukset osoitteeseen "
 "http://bugzilla.gnome.org otsikon 'gdm' alle."
 
-#: gui/icon-entry-hack.c:234
+#: gui/icon-entry-hack.c:268
 msgid "Choose an icon"
 msgstr "Valitse kuvake"
 
 #: gui/gdmconfig.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr ""
+msgstr "Gnomen kirjautumisohjelman (GDM) graafinen asetusohjelma"
 
 #: gui/gdmconfig.desktop.in.h:2
-#, fuzzy
 msgid "GDM Configurator"
-msgstr "Asetukset"
-
-#~ msgid ""
-#~ "Could not launch gdmconfig.\n"
-#~ "Your GDM installation may have been built incorrectly.\n"
-#~ msgstr ""
-#~ "Gdmconfigin k‰ynnistys ep‰onnistui.\n"
-#~ "GDM:si asennus on mahdollisesti virheellinen.\n"
-
-#~ msgid "No session scripts found. Aborting!"
-#~ msgstr "Istuntokomentojonoja ei lˆytynyt. Keskeytet‰‰n."
-
-#~ msgid "The configuration file: "
-#~ msgstr "Asetustiedosto: "
+msgstr "GDM:n Asetusohjelma"
