@@ -81,6 +81,7 @@ extern gchar *GdmDefaultLocale;
 extern gchar *GdmTimedLogin;
 extern gint GdmTimedLoginDelay;
 extern gint GdmUserMaxFile;
+extern gint GdmSessionMaxFile;
 extern gint GdmRelaxPerms;
 extern gboolean GdmKillInitClients;
 extern gint GdmRetryDelay;
@@ -619,7 +620,7 @@ gdm_get_sessions (struct passwd *pwent)
 	/* Sanity check on ~user/.gnome/session */
 	session_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
 				     cfgdir, "session",
-				     TRUE, GdmUserMaxFile,
+				     TRUE, GdmSessionMaxFile,
 				     session_relax_perms);
 	/* Sanity check on ~user/.gnome/session-options */
 	options_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
@@ -678,6 +679,92 @@ gdm_get_sessions (struct passwd *pwent)
 		g_string_free (sessions, FALSE);
 		return ret;
 	}
+}
+
+static gboolean
+is_session_ok (const char *session_name)
+{
+	char *file;
+
+	if (gdm_string_empty (GdmSessDir))
+		return FALSE;
+
+	file = g_strconcat (GdmSessDir, "/", session_name, NULL);
+	if (access (file, X_OK) == 0) {
+		g_free (file);
+		return TRUE;
+	}
+	g_free (file);
+	return FALSE;
+}
+
+static char *
+find_a_session (void)
+{
+	char *try[] = {
+		"Gnome",
+		"gnome",
+		"GNOME",
+		"Default",
+		"default",
+		"Xsession",
+		"Failsafe",
+		"failsafe",
+		NULL
+	};
+	int i;
+	char *session;
+
+	session = NULL;
+	for (i = 0; try[i] != NULL && session == NULL; i ++) {
+		if (is_session_ok (try[i]))
+			session = g_strdup (try[i]);
+	}
+	return session;
+}
+
+/* A hack really, this pretends to be a standalone gtk program */
+static void
+run_error_dialog (void)
+{
+	char *argv_s[] = { "error", NULL };
+	char **argv = argv_s;
+	int argc = 1;
+	GtkWidget *dialog;
+	GtkWidget *label;
+	GtkWidget *button;
+
+	gtk_init (&argc, &argv);
+
+	dialog = gtk_dialog_new ();
+
+	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+			    GTK_SIGNAL_FUNC(gtk_main_quit),
+			    NULL);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Cannot start session"));
+
+	label = gtk_label_new (_("Cannot start the session, most likely the\n"
+				 "session does not exist.  Please select from\n"
+				 "the list of available sessions in the login\n"
+				 "dialog window."));
+
+	gtk_container_set_border_width
+		(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
+			    TRUE, TRUE, 0);
+
+	button = gtk_button_new_with_label (_("OK"));
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
+			    button, TRUE, TRUE, 0);
+
+	gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
+				   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
+				   GTK_OBJECT (dialog));
+
+	gtk_widget_show_all (dialog);
+
+	gtk_main ();
 }
 
 static void
@@ -752,7 +839,11 @@ gdm_slave_session_start (void)
     if (session == NULL ||
 	session[0] == '\0') {
 	    g_free (session);
-	    session = g_strdup ("Default");
+	    session = find_a_session ();
+	    if (session == NULL) {
+		    /* we're running out of options */
+		    session = g_strdup ("Default");
+	    }
     }
 
     if (language == NULL ||
@@ -965,19 +1056,20 @@ gdm_slave_session_start (void)
 	 * message */
 	if (strcmp (shell, "/bin/false") == 0) {
 		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
+	} else if (access (sesspath, X_OK|R_OK) != 0) {
+		/* if we can't read and exec the session, then make a nice
+		 * error dialog */
+		run_error_dialog ();
+
+		/* ends as if nothing bad happened */
+		_exit (0);
 	} else {
 		execl (shell, "-", "-c", sesspath, NULL);
 
 		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
 	}
-
- 	g_free (sesspath);
 	
-	gdm_slave_session_stop (0);
-	gdm_slave_session_cleanup ();
-	
-	gdm_server_stop (d);
-	_exit (DISPLAY_REMANAGE);
+	_exit (0);
 	
     default:
 	break;

@@ -39,5 +39,5 @@ gdm_SOURCES = \
 
 EXTRA_gdm_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
 
-gdm_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) -lXdmcp -lXau -lX11 $(INTLLIBS)
+gdm_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GTK_LIBS) -lXdmcp -lXau -lX11 $(INTLLIBS)
 

@@ -317,6 +317,7 @@ gdm_config_parse_most (void)
 
     gdm_spin_set("retry_delay", gnome_config_get_int(GDM_KEY_RETRYDELAY));
     gdm_spin_set("max_user_length", gnome_config_get_int(GDM_KEY_MAXFILE));
+    gdm_spin_set("max_session_length", gnome_config_get_int(GDM_KEY_SESSIONMAXFILE));
     
 
     /* Fill the widgets in the XDMCP tab */
@@ -653,6 +654,7 @@ write_new_config_file                  (GtkButton *button,
 
     gdm_spin_write("retry_delay", GDM_KEY_RETRYDELAY);
     gdm_spin_write("max_user_length", GDM_KEY_MAXFILE);
+    gdm_spin_write("max_session_length", GDM_KEY_SESSIONMAXFILE);
     
 
     /* Write out the widget contents of the XDMCP tab */

@@ -67,6 +67,7 @@ gchar *GdmGreeter = NULL;
 gchar *GdmChooser = NULL;
 gchar *GdmLogDir = NULL;
 gchar *GdmDisplayInit = NULL;
+gchar *GdmSessionDir = NULL;
 gchar *GdmPreSession = NULL;
 gchar *GdmPostSession = NULL;
 gchar *GdmHalt = NULL;
@@ -81,6 +82,7 @@ gchar *GdmRootPath = NULL;
 gchar *GdmDefaultLocale = NULL;
 gboolean  GdmKillInitClients = FALSE;
 gint  GdmUserMaxFile = 0;
+gint  GdmSessionMaxFile = 0;
 gboolean  GdmXdmcp = FALSE;
 gint  GdmDispPerHost = 0;
 gint  GdmMaxPending = 0;
@@ -137,8 +139,9 @@ gdm_config_parse (void)
     GdmKillInitClients = gnome_config_get_bool (GDM_KEY_KILLIC);
     GdmLogDir= gnome_config_get_string (GDM_KEY_LOGDIR);
     GdmPidFile = gnome_config_get_string (GDM_KEY_PIDFILE);
-    GdmPostSession = gnome_config_get_string (GDM_KEY_POSTSESS);
+    GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmPreSession = gnome_config_get_string (GDM_KEY_PRESESS);
+    GdmPostSession = gnome_config_get_string (GDM_KEY_POSTSESS);
     GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
@@ -159,6 +162,7 @@ gdm_config_parse (void)
     GdmAllowRoot = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
     GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
+    GdmSessionMaxFile = gnome_config_get_int (GDM_KEY_SESSIONMAXFILE);
     GdmVerboseAuth = gnome_config_get_bool (GDM_KEY_VERBAUTH);
 
     GdmXdmcp = gnome_config_get_bool (GDM_KEY_XDMCP);

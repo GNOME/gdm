@@ -70,10 +70,8 @@ static gboolean GdmDebug;
 static gint  GdmIconMaxHeight;
 static gint  GdmIconMaxWidth;
 static gboolean GdmQuiver;
-static gint  GdmRelaxPerms;
 static gboolean GdmSystemMenu;
 static gboolean GdmConfigAvailable;
-static gint  GdmUserMaxFile;
 static gint GdmXineramaScreen;
 static gchar *GdmLogo;
 static gchar *GdmWelcome;
@@ -852,8 +850,6 @@ gdm_login_parse_config (void)
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
     GdmTitleBar = gnome_config_get_bool (GDM_KEY_TITLE_BAR);
-    GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
-    GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
@@ -889,7 +885,6 @@ gdm_login_parse_config (void)
 
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
     if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
-    if (GdmUserMaxFile < 0) GdmUserMaxFile = 65536;
     if (GdmXineramaScreen < 0) GdmXineramaScreen = 0;
 
     /* Disable System menu on non-local displays */
