@@ -20,6 +20,8 @@ gettextfunc () {
   fi
 }
 
+OLD_IFS=$IFS
+
 gdmwhich () {
   COMMAND="$1"
   OUTPUT=
@@ -32,7 +34,7 @@ gdmwhich () {
       fi
     fi
   done
-  unset IFS
+  IFS=$OLD_IFS
   echo "$OUTPUT"
 }
 

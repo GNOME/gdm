@@ -4,6 +4,7 @@
 #  -George
 
 PATH=@X_PATH@:$PATH
+OLD_IFS=$IFS
 
 gdmwhich () {
   COMMAND="$1"
@@ -17,7 +18,7 @@ gdmwhich () {
       fi
     fi
   done
-  unset IFS
+  IFS=$OLD_IFS 
   echo "$OUTPUT"
 }
 
@@ -32,6 +33,24 @@ if [ x$XMODMAP != x ] ; then
     fi
   else
     ( DISPLAY=$GDM_PARENT_DISPLAY XAUTHORITY=$GDM_PARENT_XAUTHORITY $XMODMAP -pke ) | $XMODMAP -
+  fi
+
+  #
+  # Switch Sun's Alt and Meta mod mappings
+  #
+
+  UNAME=`gdmwhich uname`
+  PROCESSOR=`$UNAME -p`
+  if [ x$PROCESSOR = xsparc ]; then
+    if $XMODMAP | /usr/bin/grep mod4 | /usr/bin/grep Alt > /dev/null 2>/dev/null
+    then
+      $XMODMAP -e "clear Mod1" \
+               -e "clear Mod4" \
+               -e "add Mod1 = Alt_L" \
+               -e "add Mod1 = Alt_R" \
+               -e "add Mod4 = Meta_L" \
+               -e "add Mod4 = Meta_R"
+    fi
   fi
 fi
 

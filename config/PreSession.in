@@ -7,6 +7,7 @@
 # Note that output goes into the .xsession-errors file for easy debugging
 #
 PATH="@X_PATH@:$PATH:/bin:/usr/bin"
+OLD_IFS=$IFS
 
 gdmwhich () {
   COMMAND="$1"
@@ -20,7 +21,7 @@ gdmwhich () {
       fi
     fi
   done
-  unset IFS
+  IFS=$OLD_IFS 
   echo "$OUTPUT"
 }
 
