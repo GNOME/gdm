@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-15 21:16+0200\n"
-"PO-Revision-Date: 2004-02-15 21:15+0200\n"
+"POT-Creation-Date: 2004-02-28 19:55+0200\n"
+"PO-Revision-Date: 2004-02-28 19:50+0200\n"
 "Last-Translator: Žygimantas Beručka <uid0@tuxfamily.org>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
@@ -209,12 +209,12 @@ msgstr ""
 "greičiausiai vyksta kažkas negero.  Prieš bandydamas vėl ekrane %s aš 2 "
 "minutes palauksiu."
 
-#: daemon/display.c:243
+#: daemon/display.c:244
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s: Negaliu sukurti konvejerio"
 
-#: daemon/display.c:315
+#: daemon/display.c:316
 #, c-format
 msgid "%s: Failed forking gdm slave process for %s"
 msgstr "%s: Nepavyko atšakoti gdm vergo proceso skirto %s"
@@ -567,7 +567,7 @@ msgid "%s: fork() failed!"
 msgstr "%s: fork() nepavyko!"
 
 #. should never happen
-#: daemon/gdm.c:859 daemon/slave.c:3373
+#: daemon/gdm.c:859 daemon/slave.c:3374
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() nepavyko: %s!"
@@ -707,7 +707,7 @@ msgstr "Tik root'as nori paleisti gdm\n"
 #: daemon/gdm.c:2084 daemon/gdm.c:2088 daemon/gdm.c:2098 daemon/gdm.c:2104
 #: daemon/gdm.c:2115 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
 #: daemon/misc.c:1618 daemon/misc.c:1622 daemon/misc.c:1626
-#: daemon/server.c:510 daemon/server.c:523 daemon/slave.c:805
+#: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:805
 #: daemon/slave.c:819 daemon/slave.c:829 daemon/slave.c:839 daemon/slave.c:851
 #: gui/gdmchooser.c:1924 gui/gdmchooser.c:1927 gui/gdmchooser.c:1930
 #: gui/gdmlogin.c:3928 gui/gdmlogin.c:3936 gui/gdmlogin.c:3939
@@ -801,7 +801,7 @@ msgstr ""
 msgid "Can not start fallback console"
 msgstr "Negaliu paleisti atsarginės konsolės"
 
-#: daemon/server.c:330
+#: daemon/server.c:341
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -812,7 +812,7 @@ msgstr ""
 "kitą ekrano numerį?  Jeigu atsakysite neigiamai, aš pabandysiu paleisti "
 "serverį ekrane %s dar kartą.%s"
 
-#: daemon/server.c:337
+#: daemon/server.c:348
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -822,88 +822,88 @@ msgstr ""
 "pvz. Ctrl-Alt-F7 eiti į konsolę 7.  X serveriai paprastai veikia konsolėse 7 "
 "ir didesnėse.)"
 
-#: daemon/server.c:383
+#: daemon/server.c:394
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Xnest negali atidaryti ekrano „%s“"
 
-#: daemon/server.c:414
+#: daemon/server.c:425
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "Ekranas %s yra užimtas. Jau veikia kitas X serveris."
 
-#: daemon/server.c:498
+#: daemon/server.c:509
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Klaida atidarant konvejerį: %s"
 
 #. Send X too busy
-#: daemon/server.c:780
+#: daemon/server.c:794
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s: Negaliu rasti laisvo ekrano numerio"
 
-#: daemon/server.c:795
+#: daemon/server.c:821
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s: Ekranas %s užimtas.  Bandau kitą ekraną."
 
-#: daemon/server.c:889
+#: daemon/server.c:916
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Neteisinga serverio komanda '%s'"
 
-#: daemon/server.c:894
+#: daemon/server.c:921
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "Serverio vardas '%s' nerastas, naudojamas standartinis serveris"
 
-#: daemon/server.c:1070
+#: daemon/server.c:1097
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Negaliu atidaryti ekrano %s žurnalo bylos!"
 
-#: daemon/server.c:1083 daemon/server.c:1089 daemon/server.c:1094
+#: daemon/server.c:1110 daemon/server.c:1116 daemon/server.c:1121
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Klaida nustatant %s į %s"
 
-#: daemon/server.c:1131
+#: daemon/server.c:1158
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tuščia serverio komanda ekranui %s"
 
-#: daemon/server.c:1145
+#: daemon/server.c:1172
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: Serveris buvo sukurtas uid %d, bet toks vartotojas neegzistuoja"
 
-#: daemon/server.c:1160 daemon/slave.c:2493 daemon/slave.c:2971
+#: daemon/server.c:1187 daemon/slave.c:2494 daemon/slave.c:2972
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Negaliu pakeisti groupid į %d"
 
-#: daemon/server.c:1166 daemon/slave.c:2498 daemon/slave.c:2976
+#: daemon/server.c:1193 daemon/slave.c:2499 daemon/slave.c:2977
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgroups() %s nepavyko"
 
-#: daemon/server.c:1172 daemon/slave.c:2503 daemon/slave.c:2981
+#: daemon/server.c:1199 daemon/slave.c:2504 daemon/slave.c:2982
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Negalėjau pakeisti userid į %d"
 
-#: daemon/server.c:1179
+#: daemon/server.c:1206
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: Negalėjau nustatyti groupid į 0"
 
-#: daemon/server.c:1190
+#: daemon/server.c:1217
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: Nerastas Xserver: %s"
 
-#: daemon/server.c:1198
+#: daemon/server.c:1225
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: Negaliu atšakoti Xserver proceso!"
@@ -942,7 +942,7 @@ msgstr ""
 "Jūs jau prisijungęs.  Jūs galite vistiek prisijungti arba nutraukti šį "
 "prisijungimą"
 
-#: daemon/slave.c:1214
+#: daemon/slave.c:1215
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -963,17 +963,17 @@ msgstr ""
 "Prašau perleisti gdm kai problema bus\n"
 "išspręsta."
 
-#: daemon/slave.c:1463
+#: daemon/slave.c:1464
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: negaliu atšakoti"
 
-#: daemon/slave.c:1510
+#: daemon/slave.c:1511
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: negaliu atidaryti ekrano %s"
 
-#: daemon/slave.c:1661
+#: daemon/slave.c:1662
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file.  I will attempt to start it from the "
@@ -983,7 +983,7 @@ msgstr ""
 "byloje jos kelias nurodytas teisingai.  Aš pabandysiu ją paleisti iš "
 "įprastos vietos."
 
-#: daemon/slave.c:1675
+#: daemon/slave.c:1676
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file."
@@ -991,7 +991,7 @@ msgstr ""
 "Negaliu paleisti konfigūravimo programos.  Įsitikinkite, kad konfigūracinėje "
 "byloje jos kelias nurodytas teisingai."
 
-#: daemon/slave.c:1805
+#: daemon/slave.c:1806
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -999,12 +999,12 @@ msgstr ""
 "Įveskite root slaptažodį,\n"
 "jei norite keisti nustatymus."
 
-#: daemon/slave.c:2447 daemon/slave.c:2452
+#: daemon/slave.c:2448 daemon/slave.c:2453
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Negaliu sukurti konvejerio į gdmgreeter"
 
-#: daemon/slave.c:2575
+#: daemon/slave.c:2576
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  So I have started a single server "
@@ -1016,7 +1016,7 @@ msgstr ""
 "vieną serverį.  Jūs turėtumėte prisijungti ir pataisyti konfigūraciją.  "
 "Pastaba: automatiniai ir uždelsti prisijungimai dabar yra išjungti."
 
-#: daemon/slave.c:2589
+#: daemon/slave.c:2590
 msgid ""
 "I could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -1026,7 +1026,7 @@ msgstr ""
 "failsafe X serveris.  Jūs turėtumėte prisijungti ir tinkamai nustatyti X "
 "serverį."
 
-#: daemon/slave.c:2598
+#: daemon/slave.c:2599
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1035,7 +1035,7 @@ msgstr ""
 "Nurodytas ekrano numeris buvo užimtas, taigi šis serveris buvo paleistas "
 "ekrane %s."
 
-#: daemon/slave.c:2618
+#: daemon/slave.c:2619
 msgid ""
 "The greeter program appears to be crashing.\n"
 "I will attempt to use a different one."
@@ -1044,18 +1044,18 @@ msgstr ""
 "Bandysiu naudoti kitą."
 
 #. Something went wrong
-#: daemon/slave.c:2639
+#: daemon/slave.c:2640
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 "%s: Negaliu paleisti pasveikintojo su gtk moduliais: %s. Bandau be modulių"
 
-#: daemon/slave.c:2646
+#: daemon/slave.c:2647
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: Negaliu paleisti pasveikintojo, bandau įprastą: %s"
 
-#: daemon/slave.c:2658
+#: daemon/slave.c:2659
 msgid ""
 "Cannot start the greeter program, you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1066,27 +1066,27 @@ msgstr ""
 "paredaguokit konfigūracijos bylą."
 
 #. If no greeter we really have to disable the display
-#: daemon/slave.c:2665
+#: daemon/slave.c:2666
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Klaida paleidžiant pasveikintoją ekrane %s"
 
-#: daemon/slave.c:2669
+#: daemon/slave.c:2670
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Negaliu atšakoti gdmgreeter proceso"
 
-#: daemon/slave.c:2754
+#: daemon/slave.c:2755
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Negaliu atidaryti fifo!"
 
-#: daemon/slave.c:2930
+#: daemon/slave.c:2931
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: Negaliu sukurti konvejerio į gdmchooser"
 
-#: daemon/slave.c:3028
+#: daemon/slave.c:3029
 msgid ""
 "Cannot start the chooser program, you will probably not be able to log in.  "
 "Please contact the system administrator."
@@ -1094,56 +1094,56 @@ msgstr ""
 "Negaliu paleisti parinkiklio programos, Jūs greičiausiai negalėsite "
 "prisijungti.  Prašom susisiekti su sistemos administratoriumi."
 
-#: daemon/slave.c:3032
+#: daemon/slave.c:3033
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: Klaida paleidžiant parinkiklį ekrane %s"
 
-#: daemon/slave.c:3035
+#: daemon/slave.c:3036
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: Negaliu atšakoti gdmchooser proceso"
 
-#: daemon/slave.c:3279
+#: daemon/slave.c:3280
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Negalėjau atidaryti ~/.xsession-errors"
 
-#: daemon/slave.c:3410
+#: daemon/slave.c:3411
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: Vykdant PreSession skriptą, gautas rezultatas > 0. Nutraukiu."
 
-#: daemon/slave.c:3439
+#: daemon/slave.c:3440
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "Kalba %s neegzistuoja, naudoju %s"
 
-#: daemon/slave.c:3440
+#: daemon/slave.c:3441
 msgid "System default"
 msgstr "Sistemos įprasta"
 
-#: daemon/slave.c:3456
+#: daemon/slave.c:3457
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Negalėjau sukurti aplinkos skirtos %s. Nutraukiu."
 
-#: daemon/slave.c:3477
+#: daemon/slave.c:3478
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: setusercontext() %s nepavyko. Nutraukiama."
 
-#: daemon/slave.c:3483
+#: daemon/slave.c:3484
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Negalėjau tapti %s. Nutraukiama."
 
-#: daemon/slave.c:3543
+#: daemon/slave.c:3544
 #, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
 msgstr "%s: Sesijos byloje nerasta Exec eilutė: %s, leidžiu failsafe GNOME"
 
-#: daemon/slave.c:3549
+#: daemon/slave.c:3550
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
@@ -1151,7 +1151,7 @@ msgstr ""
 "Jūsų pasirinkta sesija neatrodo tinkama.  Aš Jums paleisiu GNOME failsafe "
 "sesiją."
 
-#: daemon/slave.c:3563
+#: daemon/slave.c:3564
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
@@ -1159,7 +1159,7 @@ msgstr ""
 "%s: Negaliu rasti ar paleisti pagrindinio Xsession skripto, bandysiu "
 "failsafe GNOME"
 
-#: daemon/slave.c:3569
+#: daemon/slave.c:3570
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
@@ -1168,18 +1168,18 @@ msgstr ""
 "failsafe sesiją."
 
 #. yaikes
-#: daemon/slave.c:3584
+#: daemon/slave.c:3585
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr "%s: gnome-session nerasta failsafe GNOME sesijai, bandau xterm"
 
-#: daemon/slave.c:3589
+#: daemon/slave.c:3590
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
 msgstr "Neradau įdiegto GNOME, bandysiu paleisti \"Failsafe xterm\" sesiją."
 
-#: daemon/slave.c:3597
+#: daemon/slave.c:3598
 msgid ""
 "This is the Failsafe Gnome session.  You will be logged into the 'Default' "
 "session of Gnome with no startup scripts run.  This is only to fix problems "
@@ -1189,11 +1189,11 @@ msgstr ""
 "Gnome sesijos nepaleidžiant jokių startinių skriptų. Ši sesija naudojama tik "
 "jei reikia taisyti jūsų Gnome aplinkos problemas."
 
-#: daemon/slave.c:3612
+#: daemon/slave.c:3613
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Nerandu \"xterm\" kad paleisti failsafe sesiją."
 
-#: daemon/slave.c:3625
+#: daemon/slave.c:3626
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1203,41 +1203,41 @@ msgstr ""
 "ir galėsite pataisyti savo sistemą jei negalite prisijungti kitu būdu. Kad "
 "išeiti iš terminalo parašykite 'exit' ir paspauskite 'Enter' terminalo lange."
 
-#: daemon/slave.c:3652
+#: daemon/slave.c:3653
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Vartotojui prisijungti neleidžiama"
 
-#: daemon/slave.c:3655
+#: daemon/slave.c:3656
 msgid "The system administrator has disabled your account."
 msgstr "Sistemos administratorius atjungė Jūsų abonementą."
 
-#: daemon/slave.c:3668
+#: daemon/slave.c:3669
 msgid "Error! Unable to set executable context."
 msgstr "Klaida! Nepavyko įjungti vykdomojo konteksto."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3676 daemon/slave.c:3681
+#: daemon/slave.c:3677 daemon/slave.c:3682
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Negalėjau paleisti %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3692
+#: daemon/slave.c:3693
 msgid "Cannot start the session due to some internal error."
 msgstr "Negaliu paleisti sesijos, dėl kažkokios vidinės klaidos."
 
-#: daemon/slave.c:3746
+#: daemon/slave.c:3747
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Vartotojo tapatybė patvirtinta, bet getpwnam(%s) nepavyko!"
 
-#: daemon/slave.c:3760
+#: daemon/slave.c:3761
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Vykdant PostLogin skriptą, gautasrezultatas > 0. Nutraukiu."
 
-#: daemon/slave.c:3769
+#: daemon/slave.c:3770
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1254,12 +1254,12 @@ msgstr ""
 "\n"
 "Vargu ar kas veiks, nebent Jūs naudosite failsafe sesiją."
 
-#: daemon/slave.c:3777
+#: daemon/slave.c:3778
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: %s namų katalogas: '%s' neegzistuoja !"
 
-#: daemon/slave.c:3940
+#: daemon/slave.c:3941
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1270,12 +1270,12 @@ msgstr ""
 "trūksta laisvos vietos arba į jūsų namų katalogą uždraustas rašymas. "
 "Pasiklauskite savo sistemos administratoriaus."
 
-#: daemon/slave.c:4016
+#: daemon/slave.c:4017
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Klaida atšakojant vartotojo sesiją"
 
-#: daemon/slave.c:4097
+#: daemon/slave.c:4098
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1287,25 +1287,25 @@ msgstr ""
 "pritrūkote laisvos vietos diske.  Pabandykit prisijungti su viena iš "
 "failsafe sesijų tam, kad pamatyti ar Jūs galite sutvarkyti šią problemą."
 
-#: daemon/slave.c:4105
+#: daemon/slave.c:4106
 msgid "View details (~/.xsession-errors file)"
 msgstr "Žiūrėti detales (~/.xsession-errors byla)"
 
-#: daemon/slave.c:4249
+#: daemon/slave.c:4250
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM aptiko vykstantį išjungimą arba perkrovimą."
 
-#: daemon/slave.c:4343
+#: daemon/slave.c:4344
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping'as į %s nepavyko, mušu ekraną!"
 
-#: daemon/slave.c:4623
+#: daemon/slave.c:4630
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Lemtinga X klaida - Perkraunu %s"
 
-#: daemon/slave.c:4717
+#: daemon/slave.c:4724
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1313,22 +1313,22 @@ msgstr ""
 "Paprašytas prisijungimo garsas ne vietiniame ekrane arba grojimo programa "
 "negali būti paleista, arba garsas neegzistuoja."
 
-#: daemon/slave.c:5072
+#: daemon/slave.c:5079
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Nepavyko paleisti: %s"
 
-#: daemon/slave.c:5080 daemon/slave.c:5219
+#: daemon/slave.c:5087 daemon/slave.c:5226
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Negaliu atšakoti skripto proceso!"
 
-#: daemon/slave.c:5174
+#: daemon/slave.c:5181
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Nepavyko sukurti konvejerio"
 
-#: daemon/slave.c:5213
+#: daemon/slave.c:5220
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Nepavyko paleisti: %s"
@@ -2391,278 +2391,293 @@ msgstr "A-M|Anglų (Britų)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:97
+msgid "A-M|English (Canadian)"
+msgstr "A-M|Anglų (Kanadiečių)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:99
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Anglų (Airių)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:101
 msgid "A-M|Estonian"
 msgstr "A-M|Estų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:103
 msgid "A-M|Finnish"
 msgstr "N-Z|Suomių"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
+#: gui/gdmlanguages.c:105
 msgid "A-M|French"
 msgstr "N-Z|Prancūzų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:107
 msgid "A-M|Galician"
 msgstr "A-M|Galician"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:109
 msgid "A-M|German"
 msgstr "N-Z|Vokiečių"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:111
 msgid "A-M|Greek"
 msgstr "A-M|Graikų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:113
 msgid "A-M|Gujarati"
 msgstr "A-M|Gujarati"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:113 gui/gdmlanguages.c:115
+#: gui/gdmlanguages.c:115 gui/gdmlanguages.c:117
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebrajų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:117
+#: gui/gdmlanguages.c:119
 msgid "A-M|Hindi"
 msgstr "A-M|Hindi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:119
+#: gui/gdmlanguages.c:121
 msgid "A-M|Hungarian"
 msgstr "N-Z|Vengrų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:123
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:125
 msgid "A-M|Indonesian"
 msgstr "A-M|Indoneziečių"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:127
 msgid "A-M|Interlingua"
 msgstr "N-Z|Tarptautinė kalba"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:127
+#: gui/gdmlanguages.c:129
 msgid "A-M|Irish"
 msgstr "A-M|Airių"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:131
 msgid "A-M|Italian"
 msgstr "A-M|Italų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:133
 msgid "A-M|Japanese"
 msgstr "A-M|Japonų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:133
+#: gui/gdmlanguages.c:135
 msgid "A-M|Kannada"
 msgstr "A-M|Kanadiečių"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:137
 msgid "A-M|Korean"
 msgstr "A-M|Korėjiečių"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:137
+#: gui/gdmlanguages.c:139
 msgid "A-M|Latvian"
 msgstr "A-M|Latvių"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:139
+#: gui/gdmlanguages.c:141
 msgid "A-M|Lithuanian"
 msgstr "A-M|Lietuvių"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:141
+#: gui/gdmlanguages.c:143
 msgid "A-M|Macedonian"
 msgstr "A-M|Makedonų"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:143
+#: gui/gdmlanguages.c:145
 msgid "A-M|Malay"
 msgstr "A-M|Malajiečių"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:145
+#: gui/gdmlanguages.c:147
 msgid "A-M|Malayalam"
 msgstr "A-M|Malayalam"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:147
+#: gui/gdmlanguages.c:149
 msgid "A-M|Marathi"
 msgstr "A-M|Marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:149
+#: gui/gdmlanguages.c:151
 msgid "A-M|Mongolian"
 msgstr "A-M|Mongolų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:151
+#: gui/gdmlanguages.c:153
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|(Norvegų (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:153
+#: gui/gdmlanguages.c:155
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norvegų (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:155
+#: gui/gdmlanguages.c:157
 msgid "N-Z|Oriya"
 msgstr "N-Z|Oriya"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:157
+#: gui/gdmlanguages.c:159
 msgid "N-Z|Panjabi"
 msgstr "A-M|Panjabi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:159
+#: gui/gdmlanguages.c:161
 msgid "N-Z|Persian"
 msgstr "N-Z|Persų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:161
+#: gui/gdmlanguages.c:163
 msgid "N-Z|Polish"
 msgstr "A-M|Lenkų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:163
+#: gui/gdmlanguages.c:165
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugalų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:165
+#: gui/gdmlanguages.c:167
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portugalų (Brazilų)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:167
+#: gui/gdmlanguages.c:169
 msgid "N-Z|Romanian"
 msgstr "N-Z|Rumunų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:169
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Russian"
 msgstr "N-Z|Rusų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:171
+#: gui/gdmlanguages.c:173 gui/gdmlanguages.c:175
 msgid "N-Z|Serbian"
 msgstr "N-Z|Serbų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:173
+#: gui/gdmlanguages.c:177
+msgid "N-Z|Serbian (Latin)"
+msgstr "N-Z|Serbų (Lotynų)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:179
+msgid "N-Z|Serbian (Jekavian)"
+msgstr "N-Z|Serbų (Jekavian)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovakų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:175
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovėnų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:177
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Spanish"
 msgstr "A-M|Ispanų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:179
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Spanish (Mexico)"
 msgstr "A-M|Ispanų (Meksikiečių)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:181
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Swedish"
 msgstr "N-Z|Švedų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:183
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Švedų (Suomių)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:185
+#: gui/gdmlanguages.c:193
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamilų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:187
+#: gui/gdmlanguages.c:195
 msgid "N-Z|Telugu"
 msgstr "N-Z|Telugu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:189
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Thai"
 msgstr "N-Z|Tajų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:191
+#: gui/gdmlanguages.c:199
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turkų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:193
+#: gui/gdmlanguages.c:201
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrainiečių"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:195
+#: gui/gdmlanguages.c:203
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamiečių"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:197
+#: gui/gdmlanguages.c:205
 msgid "N-Z|Walloon"
 msgstr "N-Z|Valonų"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:199
+#: gui/gdmlanguages.c:207
 msgid "N-Z|Welsh"
 msgstr "A-M|Velso"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:201
+#: gui/gdmlanguages.c:209
 msgid "N-Z|Yiddish"
 msgstr "A-M|Jidiš"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:203
+#: gui/gdmlanguages.c:211
 msgid "Other|POSIX/C English"
 msgstr "Other|POSIX/C Anglų"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:378
+#: gui/gdmlanguages.c:407
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:386
+#: gui/gdmlanguages.c:415
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -3877,267 +3892,3 @@ msgstr "Jokia sąsaja negali būti įkelta, BLOGAI! (byla: %s)"
 #: vicious-extensions/ve-nongnome.c:135
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr "Perdaug alt.vardų lygių lokalei, gali reikšti ciklą"
-
-#~ msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
-#~ msgstr "%s: Negaliu rasti gdm vartotojo (%s). Bandau 'nobody'!"
-
-#~ msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
-#~ msgstr "%s: Negaliu rasti gdm grupės (%s). Bandau 'nobody'!"
-
-#~ msgid "gdm_auth_user_add: Could not open cookie file %s"
-#~ msgstr "gdm_auth_user_add: Negalėjau atidaryti sausainio bylos %s"
-
-#~ msgid "gdm_auth_user_add: Could not lock cookie file %s"
-#~ msgstr "gdm_auth_user_add: Negalėjau užrakinti sausainio bylos %s"
-
-#~ msgid ""
-#~ "Failed to start the display server several times in a short time period; "
-#~ "disabling display %s"
-#~ msgstr ""
-#~ "Nepavyko paleisti vaizdavimo serverio kelis kartus per trumpą laiko "
-#~ "tarpą, uždraudžiu ekraną %s"
-
-#~ msgid "gdm_child_action: Reboot failed: %s"
-#~ msgstr "gdm_child_action: Perkrauti nepavyko: %s"
-
-#~ msgid "gdm_child_action: Halt failed: %s"
-#~ msgstr "gdm_child_action: Išjungti nepavyko: %s"
-
-#, fuzzy
-#~ msgid "gdm_child_action: Suspend failed: %s"
-#~ msgstr "gdm_child_action: Perkrauti nepavyko: %s"
-
-#, fuzzy
-#~ msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
-#~ msgstr "gdm_slave_greeter: Negaliu pakeisti groupid id į %d"
-
-#~ msgid "gdm_slave_session_start: Could not become %s. Aborting."
-#~ msgstr "gdm_slave_session_start: Negalėjau tapti %s. Nutraukiu."
-
-#, fuzzy
-#~ msgid "gdm_slave_session_start: User not allowed to log in"
-#~ msgstr "gdm_slave_session_start: Negalėjau tapti %s. Nutraukiu."
-
-#, fuzzy
-#~ msgid "gdm_slave_session_start: Could not find/run session `%s'"
-#~ msgstr "gdm_slave_session_start: Negalėjau paleisti sesijos „%s“"
-
-#~ msgid "gdm_slave_session_start: Could not start session `%s'"
-#~ msgstr "gdm_slave_session_start: Negalėjau paleisti sesijos „%s“"
-
-#, fuzzy
-#~ msgid "Can't find /etc/pam.d/%s!"
-#~ msgstr "Negaliu rasti /etc/pam.d/gdm!"
-
-#, fuzzy
-#~ msgid "Can't set PAM_RUSER=%s"
-#~ msgstr "Negaliu nustatyti PAM_TTY=%s"
-
-#~ msgid ""
-#~ "\n"
-#~ "Incorrect username or password. Letters must be typed in the correct "
-#~ "case. Please make sure the Caps Lock key is not enabled."
-#~ msgstr ""
-#~ "\n"
-#~ "Neteisingai įvestas vartotojo vardas ar slaptažodis. Gal suklydote ir "
-#~ "rašėte didžiosiomis raidėmis vietoj mažųjų ? Įsitikinkite kad neįjungtas "
-#~ "Caps Lock."
-
-#~ msgid "gdm_xdmcp_init: Could not create socket!"
-#~ msgstr "gdm_xdmcp_init: Negalėjau sukurti lizdo!"
-
-#, fuzzy
-#~ msgid "gdm_xdmcp_handle_forward_query: Bad address"
-#~ msgstr "gdm_xdmcp_handle_forward_query: Negalėjau perskaityti ekrano adreso"
-
-#, fuzzy
-#~ msgid "gdm_xdmcp_init: No XDMCP support"
-#~ msgstr "gdm_xdmcp_init: Negalėjau sukurti lizdo!"
-
-#, fuzzy
-#~ msgid "gdm_xdmcp_run: No XDMCP support"
-#~ msgstr "gdm_xdmcp_decode: Neteisinga XDMCP versija!"
-
-#~ msgid "Information"
-#~ msgstr "Informacija"
-
-#~ msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
-#~ msgstr "gdm_chooser_parse_config: Nėra konfigūracijos bylos: %s. Nutraukiu."
-
-#~ msgid "A-M|American English"
-#~ msgstr "A-M|Anglų (JAV)"
-
-#~ msgid "A-M|British English"
-#~ msgstr "A-M|Anglų (D. Britanija)"
-
-#~ msgid "XSession"
-#~ msgstr "XSesija"
-
-#~ msgid ""
-#~ "Doubleclick here to un-iconify the login window, so that you may log in."
-#~ msgstr ""
-#~ "Paspauskite čia du kartus su pele, jei norite pamatyti prisijungimo langą "
-#~ "ir prisijungti."
-
-#, fuzzy
-#~ msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
-#~ msgstr "gdm_login_parse_config: Nėra konfigūracijos bylos: %s. Nutraukiu."
-
-#~ msgid "gdm_login_session_init: Session script directory not found!"
-#~ msgstr "gdm_login_session_init: Nerastas sesijos skriptų katalogas!"
-
-#~ msgid ""
-#~ "This session will log you directly into GNOME, into your current session."
-#~ msgstr "Ši sesija jus prijungs tiesiai į jūsų einamąją GNOME sesiją"
-
-#~ msgid ""
-#~ "This session will log you into GNOME and it will let you choose which one "
-#~ "of the GNOME sessions you want to use."
-#~ msgstr ""
-#~ "Ši sesija jus prijungs į GNOME ir leis jums pasirinkti, kurią iš GNOME "
-#~ "sesijų jūs norėsite naudoti."
-
-#~ msgid "Name: "
-#~ msgstr "Vardas:"
-
-#~ msgid "Remember this setting"
-#~ msgstr "Prisiminti šį nustatymą"
-
-#~ msgid "Can't open icon file: %s. Suspending iconify feature!"
-#~ msgstr "Negaliu atidaryti ikonos bylos: %s. Nebus įmanoma sumažinti!"
-
-#~ msgid "Iconify the login window"
-#~ msgstr "Sumažinti prisijungimo langą iki ikonos"
-
-#~ msgid "_Reboot..."
-#~ msgstr "_Perkrauti..."
-
-#~ msgid "S_ystem"
-#~ msgstr "S_istema"
-
-#~ msgid "Select a photo"
-#~ msgstr "Pasirinkite nuotrauką"
-
-#~ msgid "GDM Setup"
-#~ msgstr "GDM nustatymai"
-
-#~ msgid "Welcome string: "
-#~ msgstr "Pasveikinimo pranešimas:"
-
-#~ msgid "GDM Configurator"
-#~ msgstr "GDM konfigūracija"
-
-#, fuzzy
-#~ msgid "greeter_parse_config: No configuration file: %s. Using defaults."
-#~ msgstr "gdm_login_parse_config: Nėra konfigūracijos bylos: %s. Nutraukiu."
-
-#~ msgid "Catalan"
-#~ msgstr "Katalonų"
-
-#~ msgid "Chinese (simplified)"
-#~ msgstr "Kinų (supaprastinta)"
-
-#~ msgid "Chinese (traditional)"
-#~ msgstr "Kinų (tradicinė)"
-
-#~ msgid "Croatian"
-#~ msgstr "Kroatų"
-
-#~ msgid "Czech"
-#~ msgstr "Čekų"
-
-#~ msgid "Danish"
-#~ msgstr "Danų"
-
-#~ msgid "Dutch"
-#~ msgstr "Olandų"
-
-#~ msgid "English"
-#~ msgstr "Anglų"
-
-#~ msgid "American English"
-#~ msgstr "Anglų (JAV)"
-
-#~ msgid "British English"
-#~ msgstr "Anglų (D. Britanija)"
-
-#~ msgid "Estonian"
-#~ msgstr "Estų"
-
-#~ msgid "Finnish"
-#~ msgstr "Suomių"
-
-#~ msgid "French"
-#~ msgstr "Prancūzų"
-
-#~ msgid "German"
-#~ msgstr "Vokiečių"
-
-#~ msgid "Greek"
-#~ msgstr "Graikų"
-
-#~ msgid "Hebrew"
-#~ msgstr "Hebrajų"
-
-#~ msgid "Hungarian"
-#~ msgstr "Vengrų"
-
-#~ msgid "Icelandic"
-#~ msgstr "Islandų"
-
-#~ msgid "Italian"
-#~ msgstr "Italų"
-
-#~ msgid "Japanese"
-#~ msgstr "Japonų"
-
-#~ msgid "Korean"
-#~ msgstr "Korėjiečių"
-
-#~ msgid "Lithuanian"
-#~ msgstr "Lietuvių"
-
-#~ msgid "Norwegian (bokmal)"
-#~ msgstr "Norvegų (bokmal)"
-
-#~ msgid "Norwegian (nynorsk)"
-#~ msgstr "Norvegų (nynorsk)"
-
-#~ msgid "Polish"
-#~ msgstr "Lenkų"
-
-#~ msgid "Portuguese"
-#~ msgstr "Portugalų"
-
-#~ msgid "Brazilian Portuguese"
-#~ msgstr "Brazilijos portugalų"
-
-#~ msgid "Romanian"
-#~ msgstr "Rumunų"
-
-#~ msgid "Russian"
-#~ msgstr "Rusų"
-
-#~ msgid "Slovak"
-#~ msgstr "Slovakų"
-
-#~ msgid "Slovenian"
-#~ msgstr "Slovėnų"
-
-#~ msgid "Spanish"
-#~ msgstr "Ispanų"
-
-#~ msgid "Swedish"
-#~ msgstr "Švedų"
-
-#~ msgid "Turkish"
-#~ msgstr "Turkų"
-
-#~ msgid "Disconnect"
-#~ msgstr "Atsijungti"
-
-#~ msgid "Option"
-#~ msgstr "Parinktis"
-
-#~ msgid "Quit"
-#~ msgstr "Išeiti"
