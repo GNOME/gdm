@@ -1,3 +1,30 @@
+Fri Aug 15 12:14:58 2003  George Lebl <jirka@5z.com>
+
+	* daemon/cookie.[ch], daemon/slave.c, daemon/xdmcp.c, daemon/gdm.c:
+	  Add some semi randomness spinners which are spun on somewhat random
+	  occasions.  This should add to our entropy a bit especially on
+	  systems without /dev/random (20 bytes of semi randomness is added
+	  this way).  And try /dev/srandom on openbsd.
+
+	* daemon/cookie.c: don't read the buffer max from /dev/random, but
+	  only the required size, the (there's no need to md5 512 bytes of
+	  truly random data just to get 16 bytes).  Require 32 bytes from
+	  /dev/random (this is what openssl does apparently), also from
+	  openssl, /dev/random still sometimes blocks, so set up a select
+	  loop for it that waits 10ms at most.  Also try /dev/mem as one of
+	  the files in case we can't get enough entropy from /dev/random.
+
+	* daemon/slave.c: some G_UNLIKELY/G_LIKELY code from yesterday
+	  that was still uncommitted
+
+	* daemon/auth.c: set egid as well as euid when testing for root
+	  squashing
+
+	* gui/gdmXnestchooser.c: add some IGNORE_EINTR
+
+	* gui/gdmchooser.c: make sure the ARRAY8's are initialized
+	  to zero so that we don't possibly crash on bad return packet.
+
 Fri Aug 15  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* daemon/misc.h: Provide a #define for __PRETTY_FUNCTION__

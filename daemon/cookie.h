@@ -22,6 +22,9 @@
 #include "gdm.h"
 
 void gdm_cookie_generate (GdmDisplay *);
+/* Add some more time based randomness, should be done
+ * at less predictable events */
+void gdm_random_tick (void);
 
 #endif /* GDM_COOKIE_H */
 

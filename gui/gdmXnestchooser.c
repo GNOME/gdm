@@ -73,11 +73,11 @@ get_free_display (void)
 		if (connect (sock, (struct sockaddr *)&serv_addr,
 			     sizeof (serv_addr)) >= 0 ||
 		    errno != ECONNREFUSED) {
-			close (sock);
+			IGNORE_EINTR (close (sock));
 			continue;
 		}
 
-		close (sock);
+		IGNORE_EINTR (close (sock));
 
 		/* if lock file exists and the process exists */
 		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
@@ -602,9 +602,9 @@ main (int argc, char *argv[])
 		if (fork () > 0) {
 			_exit (0);
 		}
-		close (0);
-		close (1);
-		close (2);
+		IGNORE_EINTR (close (0));
+		IGNORE_EINTR (close (1));
+		IGNORE_EINTR (close (2));
 		open ("/dev/null", O_RDWR);
 		open ("/dev/null", O_RDONLY);
 		open ("/dev/null", O_RDONLY);

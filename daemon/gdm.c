@@ -56,6 +56,7 @@
 #include "choose.h"
 #include "getvt.h"
 #include "gdm-net.h"
+#include "cookie.h"
 
 /* Local functions */
 static void gdm_config_parse (void);
@@ -1560,6 +1561,9 @@ main_daemon_abrt (int sig)
 static gboolean
 mainloop_sig_callback (int sig, gpointer data)
 {
+  /* signals are at somewhat random times aren't they? */
+  gdm_random_tick ();
+
   gdm_debug ("mainloop_sig_callback: Got signal %d", (int)sig);
   switch (sig)
     {
@@ -1777,6 +1781,8 @@ main (int argc, char *argv[])
     poptContext ctx;
     int nextopt;
     const char *charset;
+
+    gdm_random_tick ();
 
     gdm_main_pid = getpid ();
 

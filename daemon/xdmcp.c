@@ -96,6 +96,7 @@
 #include "misc.h"
 #include "choose.h"
 #include "xdmcp.h"
+#include "cookie.h"
 
 int gdm_xdmcpfd = -1;
 
@@ -358,6 +359,9 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
     static const char * const gdm_opcode_names[] = {
 	"MANAGED_FORWARD", "GOT_MANAGED_FORWARD"
     };
+
+    /* packets come at somewhat random times */
+    gdm_random_tick ();
 
     if (cond != G_IO_IN)
 	    gdm_debug ("gdm_xdmcp_decode_packet: GIOCondition %d", (int)cond);

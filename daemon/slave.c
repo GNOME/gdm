@@ -515,7 +515,7 @@ gdm_slave_start (GdmDisplay *display)
 	sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
 
-	if (display == NULL) {
+	if G_UNLIKELY (display == NULL) {
 		/* saaay ... what? */
 		_exit (DISPLAY_REMANAGE);
 	}
@@ -545,7 +545,7 @@ gdm_slave_start (GdmDisplay *display)
 		sigemptyset (&alrm.sa_mask);
 		sigaddset (&alrm.sa_mask, SIGALRM);
 
-		if (sigaction (SIGALRM, &alrm, NULL) < 0)
+		if G_UNLIKELY (sigaction (SIGALRM, &alrm, NULL) < 0)
 			gdm_slave_exit (DISPLAY_ABORT,
 					_("%s: Error setting up %s signal handler: %s"),
 					"gdm_slave_start", "ALRM", strerror (errno));
@@ -558,8 +558,8 @@ gdm_slave_start (GdmDisplay *display)
 	sigaddset (&term.sa_mask, SIGTERM);
 	sigaddset (&term.sa_mask, SIGINT);
 
-	if ((sigaction (SIGTERM, &term, NULL) < 0) ||
-	    (sigaction (SIGINT, &term, NULL) < 0))
+	if G_UNLIKELY ((sigaction (SIGTERM, &term, NULL) < 0) ||
+		       (sigaction (SIGINT, &term, NULL) < 0))
 		gdm_slave_exit (DISPLAY_ABORT,
 				_("%s: Error setting up %s signal handler: %s"),
 				"gdm_slave_start", "TERM/INT", strerror (errno));
@@ -570,7 +570,7 @@ gdm_slave_start (GdmDisplay *display)
 	sigemptyset (&child.sa_mask);
 	sigaddset (&child.sa_mask, SIGCHLD);
 
-	if (sigaction (SIGCHLD, &child, NULL) < 0) 
+	if G_UNLIKELY (sigaction (SIGCHLD, &child, NULL) < 0) 
 		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up %s signal handler: %s"),
 				"gdm_slave_start", "CHLD", strerror (errno));
 
@@ -580,7 +580,7 @@ gdm_slave_start (GdmDisplay *display)
 	sigemptyset (&usr2.sa_mask);
 	sigaddset (&usr2.sa_mask, SIGUSR2);
 
-	if (sigaction (SIGUSR2, &usr2, NULL) < 0)
+	if G_UNLIKELY (sigaction (SIGUSR2, &usr2, NULL) < 0)
 		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up %s signal handler: %s"),
 				"gdm_slave_start", "USR2", strerror (errno));
 
@@ -611,7 +611,7 @@ gdm_slave_start (GdmDisplay *display)
 		    (the_time - first_time) > 60) {
 			first_time = the_time;
 			death_count = 0;
-		} else if (death_count > 6) {
+		} else if G_UNLIKELY (death_count > 6) {
 			gdm_slave_quick_exit (DISPLAY_ABORT);
 		}
 
@@ -625,12 +625,12 @@ gdm_slave_start (GdmDisplay *display)
 		} else {
 			/* OK about to start again so rebake our cookies and reinit
 			 * the server */
-			if ( ! gdm_auth_secure_display (d)) {
+			if G_UNLIKELY ( ! gdm_auth_secure_display (d)) {
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}
 			gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
 
-			if ( ! gdm_server_reinit (d)) {
+			if G_UNLIKELY ( ! gdm_server_reinit (d)) {
 				gdm_error ("Error reinitilizing server");
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}
@@ -825,7 +825,7 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 		return TRUE;
 
 	gdm_slave_send_string (GDM_SOP_QUERYLOGIN, user);
-	if (gdm_ack_response == NULL)
+	if G_LIKELY (ve_string_empty (gdm_ack_response))
 	       return TRUE;	
 	vec = g_strsplit (gdm_ack_response, ",", -1);
 	if (vec == NULL)
@@ -840,7 +840,7 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 
 	g_strfreev (vec);
 
-	if G_LIKELY ( ! loggedin)
+	if ( ! loggedin)
 		return TRUE;
 
 	but[0] = _("Log in anyway");
@@ -915,6 +915,8 @@ gdm_slave_run (GdmDisplay *display)
     gint maxtries = 0;
     
     d = display;
+
+    gdm_random_tick ();
 
     if G_UNLIKELY (d->sleep_before_run > 0) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
@@ -1357,14 +1359,14 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		IGNORE_EINTR (chdir (pwent->pw_dir));
-		if (errno != 0)
+		if G_UNLIKELY (errno != 0)
 			IGNORE_EINTR (chdir ("/"));
 
 		/* exec the configurator */
 		argv = ve_split (GdmConfigurator);
-		if (argv != NULL &&
-		    argv[0] != NULL &&
-		    access (argv[0], X_OK) == 0)
+		if G_LIKELY (argv != NULL &&
+			     argv[0] != NULL &&
+			     access (argv[0], X_OK) == 0)
 			IGNORE_EINTR (execv (argv[0], argv));
 
 		gdm_error_box (d,
@@ -1461,7 +1463,7 @@ gdm_slave_wait_for_login (void)
 		do_timed_login = FALSE;
 		do_configurator = FALSE;
 
-		if (do_restart_greeter) {
+		if G_UNLIKELY (do_restart_greeter) {
 			do_restart_greeter = FALSE;
 			restart_the_greeter ();
 		}
@@ -1487,7 +1489,7 @@ gdm_slave_wait_for_login (void)
 		 * do_timed_login and do_restart_greeter after any call
 		 * to gdm_verify_user */
 
-		if (do_restart_greeter) {
+		if G_UNLIKELY (do_restart_greeter) {
 			do_restart_greeter = FALSE;
 			restart_the_greeter ();
 			continue;
@@ -1495,7 +1497,7 @@ gdm_slave_wait_for_login (void)
 
 		check_notifies_now ();
 
-		if (do_configurator) {
+		if G_UNLIKELY (do_configurator) {
 			struct passwd *pwent;
 			gboolean oldAllowRoot;
 
@@ -1527,7 +1529,7 @@ gdm_slave_wait_for_login (void)
 						 d->console);
 			GdmAllowRoot = oldAllowRoot;
 
-			if (do_restart_greeter) {
+			if G_UNLIKELY (do_restart_greeter) {
 				do_restart_greeter = FALSE;
 				restart_the_greeter ();
 				continue;
@@ -1555,7 +1557,7 @@ gdm_slave_wait_for_login (void)
 			}
 
 			/* the user is a wanker */
-			if (do_configurator) {
+			if G_UNLIKELY (do_configurator) {
 				do_configurator = FALSE;
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 				continue;
@@ -1840,7 +1842,7 @@ run_pictures (void)
 
 		fp = fopen (picfile, "r");
 		g_free (picfile);
-		if (fp == NULL) {
+		if G_UNLIKELY (fp == NULL) {
 			seteuid (0);
 			setegid (GdmGroupId);
 
@@ -1852,7 +1854,7 @@ run_pictures (void)
 		ret = gdm_slave_greeter_ctl (GDM_READPIC, tmp);
 		g_free (tmp);
 
-		if (ret == NULL || strcmp (ret, "OK") != 0) {
+		if G_UNLIKELY (ret == NULL || strcmp (ret, "OK") != 0) {
 			fclose (fp);
 			g_free (ret);
 			seteuid (0);
@@ -1882,7 +1884,7 @@ run_pictures (void)
 
 			/* write until we succeed in writing something */
 			IGNORE_EINTR (written = write (greeter_fd_out, buf, bytes));
-			if (written < 0 && errno == EPIPE) {
+			if G_UNLIKELY (written < 0 && errno == EPIPE) {
 				/* something very, very bad has happened */
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}
@@ -1906,11 +1908,11 @@ run_pictures (void)
 		fclose (fp);
 
 		/* eek, this "could" happen, so just send some garbage */
-		while (i < s.st_size) {
+		while G_UNLIKELY (i < s.st_size) {
 			bytes = MIN (sizeof (buf), s.st_size - i);
 			errno = 0;
 			bytes = write (greeter_fd_out, buf, bytes);
-			if (bytes < 0 && errno == EPIPE) {
+			if G_UNLIKELY (bytes < 0 && errno == EPIPE) {
 				/* something very, very bad has happened */
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}
@@ -2055,17 +2057,17 @@ gdm_slave_greeter (void)
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
-	if (setgid (GdmGroupId) < 0) 
+	if G_UNLIKELY (setgid (GdmGroupId) < 0) 
 	    gdm_child_exit (DISPLAY_ABORT,
 			    _("%s: Couldn't set groupid to %d"),
 			    "gdm_slave_greeter", GdmGroupId);
 
-	if (initgroups (GdmUser, GdmGroupId) < 0)
+	if G_UNLIKELY (initgroups (GdmUser, GdmGroupId) < 0)
             gdm_child_exit (DISPLAY_ABORT,
 			    _("%s: initgroups() failed for %s"),
 			    "gdm_slave_greeter", GdmUser);
 	
-	if (setuid (GdmUserId) < 0) 
+	if G_UNLIKELY (setuid (GdmUserId) < 0) 
 	    gdm_child_exit (DISPLAY_ABORT,
 			    _("%s: Couldn't set userid to %d"),
 			    "gdm_slave_greeter", GdmUserId);
@@ -3996,6 +3998,9 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 	      return NULL;
       }
     } while (check_for_interruption (buf) && ! interrupted);
+
+    /* user responses take kind of random amount of time */
+    gdm_random_tick ();
 
     if ( ! ve_string_empty (buf)) {
 	    return buf;

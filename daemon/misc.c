@@ -1546,7 +1546,14 @@ gdm_safe_fopen_w (const char *file)
 {
 	int fd;
 	IGNORE_EINTR (unlink (file));
-	fd = open (file, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644);
+	fd = open (file, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY
+#ifdef O_NOCTTY
+		   |O_NOCTTY
+#endif
+#ifdef O_NOFOLLOW
+		   |O_NOFOLLOW
+#endif
+		   , 0644);
 	if (fd < 0)
 		return NULL;
 	return fdopen (fd, "w");
@@ -1559,14 +1566,24 @@ gdm_safe_fopen_ap (const char *file)
 	int fd;
 
 	if (access (file, F_OK) == 0) {
-#ifdef O_NOFOLLOW
-		fd = open (file, O_APPEND|O_RDWR|O_NOFOLLOW);
-#else
-		fd = open (file, O_APPEND|O_RDWR);
+		fd = open (file, O_APPEND|O_RDWR
+#ifdef O_NOCTTY
+			   |O_NOCTTY
 #endif
+#ifdef O_NOFOLLOW
+			   |O_NOFOLLOW
+#endif
+			  );
 	} else {
 		/* doesn't exist, open with O_EXCL */
-		fd = open (file, O_EXCL|O_CREAT|O_RDWR, 0644);
+		fd = open (file, O_EXCL|O_CREAT|O_RDWR
+#ifdef O_NOCTTY
+			   |O_NOCTTY
+#endif
+#ifdef O_NOFOLLOW
+			   |O_NOFOLLOW
+#endif
+			   , 0644);
 	}
 	if (fd < 0)
 		return NULL;

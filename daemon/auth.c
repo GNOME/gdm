@@ -395,15 +395,19 @@ try_open_read_as_root (const char *file)
 {
 	int fd;
 	uid_t oldeuid = geteuid ();
+	uid_t oldegid = getegid ();
+	setegid (0);
 	seteuid (0);
 
 	fd = open (file, O_RDONLY);
 	if G_UNLIKELY (fd < 0) {
 		seteuid (oldeuid);
+		setegid (oldegid);
 		return FALSE;
 	} else {
 		close (fd);
 		seteuid (oldeuid);
+		setegid (oldegid);
 		return TRUE;
 	}
 }

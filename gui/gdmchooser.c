@@ -380,7 +380,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
     struct hostent *he;
     gchar *hostname = NULL;
     gchar *status = NULL;
-    ARRAY8 auth, host, stat;
+    ARRAY8 auth = {0}, host = {0}, stat = {0};
     GdmChooserHost *gh;
     int pipe_buf;
 
