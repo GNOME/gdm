@@ -45,7 +45,6 @@ static const gchar RCSid[]="$Id$";
 
 gint ipending = 0;
 GSList *indirect = NULL;
-GSList *i2 = NULL;
 
 /* Tunables */
 extern gint GdmMaxIndirect;	/* Maximum pending indirects, i.e. simultaneous choosing sessions */

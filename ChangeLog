@@ -1,3 +1,25 @@
+Wed Jun 06 00:41:23 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, gui/Makefile.am: when compiling without xdmcp
+	  don't compile the chooser
+
+	* gui/Makefile.am, gui/gdmchooser.c: Use gdmwm for window management
+	  and query xinerama as well.  Also do manage on doubleclick
+
+	* daemon/choose.c, daemon/xdmcp.c: Some obvious fixes, note that
+	  indirect lookup will NOT return an expired Indirect thingie. 
+	  Still need to figure out where does the chooser plug in.
+
+	* gui/gdmlogin.c, gui/gdmchooser.c: run gdmwm only when not debugging
+
+	* daemon/slave.c, daemon/gdm.c, daemon/errorgui.[ch],
+	  daemon/Makefile.am:  Deal with the hanging bugs by doing an exec
+	  before running the gtk gui.  Also make the gui use GNOME to be
+	  prettier.  I'm less and less sure I like this hack and it might
+	  move into a separate binary, though this way it is faster as
+	  gdm is already paged in.  This also fixes some i18n problems
+	  with the error dialog.
+
 Tue Jun 05 21:27:52 2001  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: fix hanging related to centering of dialogs.

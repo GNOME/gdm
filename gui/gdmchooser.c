@@ -44,9 +44,14 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 
+#ifdef HAVE_LIBXINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
+
 #include "gdmchooser.h"
 #include "gdm.h"
 #include "misc.h"
+#include "gdmwm.h"
 
 /* set the DOING_GDM_DEVELOPMENT env variable if you want to
  * search for the glade file in the current dir and not the system
@@ -92,6 +97,7 @@ static XdmcpBuffer querybuf;
 static GSList *bcaddr;
 static GSList *queryaddr;
 
+static gint  GdmXineramaScreen;
 static gint  GdmIconMaxHeight;
 static gint  GdmIconMaxWidth;
 static gboolean  GdmDebug;
@@ -110,6 +116,97 @@ static GList *hosts = NULL;
 static GdkImlibImage *defhostimg;
 static GnomeIconList *browser;
 static GdmChooserHost *curhost;
+
+GdkRectangle screen; /* this is an extern since it's used in gdmwm as well */
+
+static void 
+gdm_screen_init (void) 
+{
+#ifdef HAVE_LIBXINERAMA
+	gboolean have_xinerama = FALSE;
+
+	gdk_flush ();
+	gdk_error_trap_push ();
+	have_xinerama = XineramaIsActive (GDK_DISPLAY ());
+	gdk_flush ();
+	if (gdk_error_trap_pop () != 0)
+		have_xinerama = FALSE;
+
+	if (have_xinerama) {
+		int screen_num, i;
+		XineramaScreenInfo *xscreens =
+			XineramaQueryScreens (GDK_DISPLAY (),
+					      &screen_num);
+
+
+		if (screen_num <= 0) {
+			/* should NEVER EVER happen */
+			syslog (LOG_ERR, "Xinerama active, but <= 0 screens?");
+			screen.x = 0;
+			screen.y = 0;
+			screen.width = gdk_screen_width ();
+			screen.height = gdk_screen_height ();
+
+			allscreens = g_new0 (GdkRectangle, 1);
+			allscreens[0] = screen;
+			screens = 1;
+			return;
+		}
+
+		if (screen_num <= GdmXineramaScreen)
+			GdmXineramaScreen = 0;
+
+		screen.x = xscreens[GdmXineramaScreen].x_org;
+		screen.y = xscreens[GdmXineramaScreen].y_org;
+		screen.width = xscreens[GdmXineramaScreen].width;
+		screen.height = xscreens[GdmXineramaScreen].height;
+
+		XFree (xscreens);
+	} else
+#endif
+	{
+		screen.x = 0;
+		screen.y = 0;
+		screen.width = gdk_screen_width ();
+		screen.height = gdk_screen_height ();
+	}
+#if 0
+	/* for testing Xinerama support on non-xinerama setups */
+	{
+		screen.x = 100;
+		screen.y = 100;
+		screen.width = gdk_screen_width () / 2 - 100;
+		screen.height = gdk_screen_height () / 2 - 100;
+
+		allscreens = g_new0 (GdkRectangle, 2);
+		allscreens[0] = screen;
+		allscreens[1].x = gdk_screen_width () / 2;
+		allscreens[1].y = gdk_screen_height () / 2;
+		allscreens[1].width = gdk_screen_width () / 2;
+		allscreens[1].height = gdk_screen_height () / 2;
+		screens = 2;
+	}
+#endif
+}
+
+static void
+gdm_center_window (GtkWindow *cw) 
+{
+	GtkRequisition req;
+        gint x, y;
+
+	gtk_widget_size_request (GTK_WIDGET (cw), &req);
+
+	x = screen.x + (screen.width - req.width)/2;
+	y = screen.y + (screen.height - req.height)/2;	
+
+	if (x < screen.x)
+		x = screen.x;
+	if (y < screen.y)
+		y = screen.y;
+
+ 	gtk_widget_set_uposition (GTK_WIDGET (cw), x, y);	
+}
 
 
 static gint 
@@ -387,6 +484,7 @@ gdm_chooser_parse_config (void)
 
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
+    GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
     GdmGtkRC = gnome_config_get_string (GDM_KEY_GTKRC);
     GdmScanTime = gnome_config_get_int (GDM_KEY_SCAN);
     GdmHostDefaultIcon = gnome_config_get_string (GDM_KEY_HOST);
@@ -415,6 +513,11 @@ gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
     case GDK_BUTTON_RELEASE:
 	curhost = g_list_nth_data (hosts, selected);
 	gtk_widget_set_sensitive (manage, TRUE);
+	break;
+
+    case GDK_2BUTTON_PRESS:
+	curhost = g_list_nth_data (hosts, selected);
+	gdm_chooser_manage (NULL, NULL);
 	break;
 	
     default: 
@@ -491,7 +594,6 @@ display_chooser_information (void)
 static void 
 gdm_chooser_gui_init (void)
 {
-    GdkWindow *rootwin;
     GtkStyle  *style;
     GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
     struct    stat statbuf;
@@ -527,9 +629,6 @@ gdm_chooser_gui_init (void)
 	defhostimg = gdk_imlib_load_image (GdmHostDefaultIcon);
 	maxwidth = defhostimg->rgb_width;
     }
-
-    /* Root Window */
-    rootwin = gdk_window_foreign_new (GDK_ROOT_WINDOW ());
 
     /* Main window */
     g_assert (glade_filename != NULL);
@@ -590,8 +689,7 @@ gdm_chooser_gui_init (void)
 			  (gint) gdk_screen_width() * 0.4, 
 			  (gint) gdk_screen_height() * 0.6);
 
-    /* FIXME: This should probably obey some user-specified geometry? */
-    gtk_window_position (GTK_WINDOW (chooser), GTK_WIN_POS_CENTER);
+    gdm_center_window (GTK_WINDOW (chooser));
 }
 
 
@@ -843,7 +941,7 @@ main (int argc, char *argv[])
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
 
-    gnome_preferences_set_dialog_position(GTK_WIN_POS_CENTER);
+    gdm_screen_init ();
     
     gdm_chooser_parse_config();
     gdm_chooser_gui_init();
@@ -852,6 +950,20 @@ main (int argc, char *argv[])
     hosts = (gchar **) poptGetArgs (ctx);
     gdm_chooser_xdmcp_init (hosts);
     poptFreeContext (ctx);
+
+    gtk_widget_show_now (chooser);
+
+    if ( ! DOING_GDM_DEVELOPMENT) {
+	    /* can it ever happen that it'd be NULL here ??? */
+	    if (chooser->window != NULL) {
+		    gdm_wm_init (GDK_WINDOW_XWINDOW (chooser->window));
+
+		    /* Run the focus, note that this will work no matter what
+		     * since gdm_wm_init will set the display to the gdk one
+		     * if it fails */
+		    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
+	    }
+    }
 
     gtk_main();
 

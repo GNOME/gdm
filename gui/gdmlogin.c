@@ -3375,14 +3375,16 @@ main (int argc, char *argv[])
 
     gtk_widget_show_now (login);
 
-    /* can it ever happen that it'd be NULL here ??? */
-    if (login->window != NULL) {
-	    gdm_wm_init (GDK_WINDOW_XWINDOW (login->window));
+    if ( ! DOING_GDM_DEVELOPMENT) {
+	    /* can it ever happen that it'd be NULL here ??? */
+	    if (login->window != NULL) {
+		    gdm_wm_init (GDK_WINDOW_XWINDOW (login->window));
 
-	    /* Run the focus, note that this will work no matter what
-	     * since gdm_wm_init will set the display to the gdk one
-	     * if it fails */
-	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (login->window));
+		    /* Run the focus, note that this will work no matter what
+		     * since gdm_wm_init will set the display to the gdk one
+		     * if it fails */
+		    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (login->window));
+	    }
     }
 
     if (session_dir_whacked_out) {

@@ -406,13 +406,11 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 	if (GdmIndirect && type==INDIRECT_QUERY) {
 	    GdmIndirectDisplay *id = gdm_choose_indirect_lookup (clnt_sa);
 
-	    if (id) 
-		if (id->acctime + GdmMaxIndirectWait < time (NULL)) /* Expired? */
+	    if (id) {
 		    gdm_xdmcp_send_forward_query (id, &clnt_authlist);
-		else
-		    gdm_xdmcp_send_unwilling (clnt_sa, type);
-	    else
-		gdm_choose_indirect_alloc (clnt_sa);
+	    } else {
+		    gdm_choose_indirect_alloc (clnt_sa);
+	    }
 	}
 
 	gdm_xdmcp_send_willing (clnt_sa);

@@ -35,9 +35,11 @@ gdm_SOURCES = \
 	md5.c \
 	md5.h \
 	@VRFY@.c \
-	verify.h
+	verify.h \
+	errorgui.c \
+	errorgui.h
 
 EXTRA_gdm_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
 
-gdm_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GTK_LIBS) $(XDMCP_LIBS) -lXau -lX11 $(INTLLIBS)
+gdm_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(GTK_LIBS) $(XDMCP_LIBS) -lXau -lX11 $(INTLLIBS)
 

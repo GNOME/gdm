@@ -35,6 +35,7 @@
 #include "xdmcp.h"
 #include "verify.h"
 #include "display.h"
+#include "errorgui.h"
 
 static const gchar RCSid[]="$Id$";
 
@@ -120,8 +121,9 @@ gboolean GdmTimedLoginEnable = FALSE;
 gint GdmTimedLoginDelay = 0;
 
 /* set in the main function */
-static char **stored_argv = NULL;
-static int stored_argc = 0;
+char **stored_argv = NULL;
+int stored_argc = 0;
+char *stored_path = NULL;
 
 
 /**
@@ -791,6 +793,8 @@ mainloop_sig_callback (gint8 sig, gpointer data)
 
     case SIGHUP:
       term_cleanup ();
+      if (stored_path != NULL)
+	      putenv (stored_path);
       execvp (stored_argv[0], stored_argv);
       gdm_error (_("Failed to restart self"));
       _exit (1);
@@ -820,6 +824,8 @@ store_argv (int argc, char *argv[])
 {
 	int i;
 
+	stored_path = g_strdup (g_getenv ("PATH"));
+
 	stored_argv = g_new0 (char *, argc + 1);
 	for (i = 0; i < argc; i++)
 		stored_argv[i] = g_strdup (argv[i]);
@@ -839,6 +845,20 @@ main (int argc, char *argv[])
     setlocale(LC_ALL, "");
     bindtextdomain(PACKAGE, GNOMELOCALEDIR);
     textdomain(PACKAGE);
+
+    /* This is an utter hack.  BUT we don't want to have the message in
+     * another program as it is supposed to be a last ditch effort to talk
+     * to the user, so what happens is that we respawn ourselves with
+     * an argument --run-error-dialog error dialog_type <x>:<y>:<width>:<height>
+     * the coordinates are the coordinates of this screen (when using
+     * xinerama) they can all be 0 */
+    if (argc == 5 &&
+	strcmp (argv[1], "--run-error-dialog") == 0) {
+	    int x = 0, y = 0, width = 0, height = 0;
+	    sscanf (argv[4], "%d:%d:%d:%d", &x, &y, &width, &height);
+	    gdm_run_errorgui (argv[2], argv[3], x, y, width, height);
+	    _exit (0);
+    }
 
     /* XDM compliant error message */
     if (getuid() != 0)

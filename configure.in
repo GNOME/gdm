@@ -257,6 +257,12 @@ if test x$with_xdmcp != xno ; then
 fi
 AC_SUBST(XDMCP_LIBS)
 
+if test x$XDMCP_SUPPORT = xyes ; then
+	AM_CONDITIONAL(XDMCP_SUPPORT, true)
+else
+	AM_CONDITIONAL(XDMCP_SUPPORT, false)
+fi
+
 #
 # X11 Xinerama extension
 #

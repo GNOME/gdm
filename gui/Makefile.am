@@ -13,16 +13,26 @@ INCLUDES = -I. -I.. -I$(top_srcdir)/daemon -I$(includedir)		\
 	@PIXBUF_CFLAGS@					\
 	$(GNOME_INCLUDEDIR)
 
-bin_PROGRAMS = gdmchooser gdmlogin gdmconfig gdmphotosetup
+if XDMCP_SUPPORT
+gdmchooser=gdmchooser
+else
+gdmchooser=
+endif
+
+bin_PROGRAMS = $(gdmchooser) gdmlogin gdmconfig gdmphotosetup
 
 gdmphotosetup_SOURCES = \
 	gdmphotosetup.c
 
-gdmchooser_SOURCES = \
-	gdmchooser.c		\
-	gdmchooser.h		\
-	misc.c			\
-	misc.h
+if XDMCP_SUPPORT
+	gdmchooser_SOURCES = \
+		gdmchooser.c		\
+		gdmchooser.h		\
+		misc.c			\
+		misc.h			\
+		gdmwm.c			\
+		gdmwm.h
+endif
 
 gdmlogin_SOURCES = \
 	gdmlogin.c		\
@@ -42,17 +52,45 @@ gdmconfig_SOURCES = \
 	misc.c			\
 	misc.h
 
-gdmchooser_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) -lXdmcp -lX11 $(INTLLIBS) @LIBGLADE_LIBS@
-gdmlogin_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) @PIXBUF_LIBS@
-gdmconfig_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) @LIBGLADE_LIBS@
-gdmphotosetup_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS)
+if XDMCP_SUPPORT
+	gdmchooser_LDADD = \
+		$(GNOME_LIBDIR)		\
+		$(GNOME_LIBS)		\
+		$(GNOMEUI_LIBS)		\
+		$(XDMCP_LIBS)		\
+		-lX11			\
+		$(INTLLIBS)		\
+		$(LIBGLADE_LIBS)
+endif
+
+gdmlogin_LDADD = \
+	$(GNOME_LIBDIR)		\
+	$(GNOME_LIBS)		\
+	$(GNOMEUI_LIBS)		\
+	$(INTLLIBS)		\
+	$(PIXBUF_LIBS)
+
+gdmconfig_LDADD = \
+	$(GNOME_LIBDIR)		\
+	$(GNOME_LIBS)		\
+	$(GNOMEUI_LIBS)		\
+	$(INTLLIBS)		\
+	$(LIBGLADE_LIBS)
+
+gdmphotosetup_LDADD = \
+	$(GNOME_LIBDIR)		\
+	$(GNOME_LIBS)		\
+	$(GNOMEUI_LIBS)		\
+	$(INTLLIBS)
  
 Settingsdir = $(datadir)/gnome/apps/Settings
 Settings_in_files = gdmphotosetup.desktop.in
 Settings_DATA = $(Settings_in_files:.desktop.in=.desktop)
+
 Systemdir = $(datadir)/gnome/apps/System
 System_in_files = gdmconfig.desktop.in
 System_DATA = $(System_in_files:.desktop.in=.desktop)
+
 @XML_I18N_MERGE_DESKTOP_RULE@
 
 Gladedir = $(datadir)/gdm
@@ -65,4 +103,6 @@ EXTRA_DIST = \
 	$(System_DATA)		\
 	$(System_in_files)	\
 	$(Settings_DATA)	\
-	$(Settings_in_files)
+	$(Settings_in_files)	\
+	gdmchooser.c		\
+	gdmchooser.h

@@ -46,6 +46,7 @@
 #include "filecheck.h"
 #include "auth.h"
 #include "server.h"
+#include "errorgui.h"
 
 
 static const gchar RCSid[]="$Id$";
@@ -486,118 +487,6 @@ focus_first_x_window (const char *class_res_name)
 	}
 }
 
-static gboolean
-accept_both_clicks (GtkWidget *w,
-		    GdkEvent *event,
-		    gpointer data)
-{
-	/* HAAAAAAAAAAAAAAAAACK */
-	/* Since the user has not logged in yet and may have left/right
-	 * mouse buttons switched, we just translate every right mouse click
-	 * to a left mouse click */
-	if ((event->type == GDK_BUTTON_PRESS ||
-	     event->type == GDK_2BUTTON_PRESS ||
-	     event->type == GDK_3BUTTON_PRESS ||
-	     event->type == GDK_BUTTON_RELEASE)
-	    && event->button.button == 3)
-		event->button.button = 1;
-
-	return FALSE;
-}      
-
-/* A hack really, this pretends to be a standalone gtk program */
-/* this should only be called once forked and all thingies are closed */
-static void
-run_error_dialog (const char *error)
-{
-	char *argv_s[] = { "error", NULL };
-	char **argv = argv_s;
-	int argc = 1;
-	GtkWidget *dialog;
-	GtkWidget *label;
-	GtkWidget *button;
-	pid_t pid;
-
-	pid = fork ();
-	/* if we can't fork or we are a child */
-	if (pid <= 0) {
-		GtkRequisition req;
-
-		gtk_init (&argc, &argv);
-
-		dialog = gtk_dialog_new ();
-
-		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-				    GTK_SIGNAL_FUNC(gtk_main_quit),
-				    NULL);
-
-		/* bogus, no title will be displayed anyway, there is no WM */
-		gtk_window_set_title (GTK_WINDOW (dialog), "GDM");
-
-		label = gtk_label_new (error);
-		gtk_widget_show (label);
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
-		gtk_box_pack_start
-			(GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
-			 TRUE, TRUE, 0);
-
-		gtk_container_set_border_width
-			(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
-
-		button = gtk_button_new_with_label (_("OK"));
-		gtk_widget_show (button);
-		gtk_signal_connect (GTK_OBJECT (button), "event",
-				    GTK_SIGNAL_FUNC (accept_both_clicks),
-				    NULL);
-		gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dialog)->action_area),
-				  button, TRUE, TRUE, 0);
-
-		gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
-					   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
-					   GTK_OBJECT (dialog));
-		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-		gtk_widget_grab_default (button);
-
-		gtk_widget_size_request (dialog, &req);
-
-		if (d->screenwidth <= 0)
-			d->screenwidth = gdk_screen_width ();
-		if (d->screenheight <= 0)
-			d->screenheight = gdk_screen_height ();
-
-		gtk_widget_set_uposition (dialog,
-					  d->screenx +
-					    (d->screenwidth / 2) -
-					    (req.width / 2),
-					  d->screeny +
-					    (d->screenheight / 2) -
-					    (req.height / 2));
-
-		gtk_widget_grab_focus (button);
-
-		gtk_widget_show_now (dialog);
-
-		if (dialog->window != NULL) {
-			gdk_error_trap_push ();
-			XSetInputFocus (GDK_DISPLAY (),
-					GDK_WINDOW_XWINDOW (dialog->window),
-					RevertToPointerRoot,
-					CurrentTime);
-			gdk_flush ();
-			gdk_error_trap_pop ();
-		}
-
-		gtk_main ();
-
-		if (pid == 0)
-			_exit (0);
-	}
-
-	if (pid > 0) {
-		waitpid (pid, 0, 0);
-	}
-}
-
 static void
 run_config (GdmDisplay *display, struct passwd *pwent)
 {
@@ -642,11 +531,13 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		if (access (argv[0], X_OK) == 0)
 			execv (argv[0], argv);
 
-		run_error_dialog (_("Could not execute the configuration\n"
-				    "program.  Make sure it's path is set\n"
-				    "correctly in the configuration file.\n"
-				    "I will attempt to start it from the\n"
-				    "default location."));
+		gdm_error_box (d,
+			       GNOME_MESSAGE_BOX_ERROR,
+			       _("Could not execute the configuration\n"
+				 "program.  Make sure it's path is set\n"
+				 "correctly in the configuration file.\n"
+				 "I will attempt to start it from the\n"
+				 "default location."));
 
 		argv = g_strsplit
 			(EXPANDED_GDMCONFIGDIR
@@ -655,9 +546,11 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		if (access (argv[0], X_OK) == 0)
 			execv (argv[0], argv);
 
-		run_error_dialog (_("Could not execute the configuration\n"
-				    "program.  Make sure it's path is set\n"
-				    "correctly in the configuration file."));
+		gdm_error_box (d,
+			       GNOME_MESSAGE_BOX_ERROR,
+			       _("Could not execute the configuration\n"
+				 "program.  Make sure it's path is set\n"
+				 "correctly in the configuration file."));
 
 		_exit (0);
 	} else {
@@ -1004,23 +897,27 @@ gdm_slave_greeter (void)
 	}
 
 	if(gdm_emergency_server) {
-		run_error_dialog (_("No servers were defined in the\n"
-				    "configuration file and xdmcp was\n"
-				    "disabled.  This can only be a\n"
-				    "configuration error.  So I have started\n"
-				    "a single server for you.  You should\n"
-				    "log in and fix the configuration.\n"
-				    "Note that automatic and timed logins\n"
-				    "are disabled now."));
+		gdm_error_box (d,
+			       GNOME_MESSAGE_BOX_ERROR,
+			       _("No servers were defined in the\n"
+				 "configuration file and xdmcp was\n"
+				 "disabled.  This can only be a\n"
+				 "configuration error.  So I have started\n"
+				 "a single server for you.  You should\n"
+				 "log in and fix the configuration.\n"
+				 "Note that automatic and timed logins\n"
+				 "are disabled now."));
 		gdm_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
 	if (d->failsafe_xserver) {
-		run_error_dialog (_("I could not start the regular X\n"
-				    "server (your graphical environment)\n"
-				    "and so this is a failsafe X server.\n"
-				    "You should log in and properly\n"
-				    "configure the X server."));
+		gdm_error_box (d,
+			       GNOME_MESSAGE_BOX_ERROR,
+			       _("I could not start the regular X\n"
+				 "server (your graphical environment)\n"
+				 "and so this is a failsafe X server.\n"
+				 "You should log in and properly\n"
+				 "configure the X server."));
 	}
 
 	argv = g_strsplit (GdmGreeter, argdelim, MAX_ARGS);
@@ -1037,11 +934,13 @@ gdm_slave_greeter (void)
 			   argdelim, MAX_ARGS);
 	execv (argv[0], argv);
 
-	run_error_dialog (_("Cannot start the greeter program,\n"
-			    "you will not be able to log in.\n"
-			    "This display will be disabled.\n"
-			    "Try logging in by other means and\n"
-			    "editting the configuration file"));
+	gdm_error_box (d,
+		       GNOME_MESSAGE_BOX_ERROR,
+		       _("Cannot start the greeter program,\n"
+			 "you will not be able to log in.\n"
+			 "This display will be disabled.\n"
+			 "Try logging in by other means and\n"
+			 "editting the configuration file"));
 	
 	gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Error starting greeter on display %s"), d->name);
 	
@@ -1657,13 +1556,15 @@ gdm_slave_session_start (void)
 			gdm_error (_("gdm_slave_session_start: gnome-session not found for a failsafe gnome session, trying xterm"));
 			g_free (session);
 			session = g_strdup (GDM_SESSION_FAILSAFE_XTERM);
-			run_error_dialog
-				(_("Could not find the GNOME installation,\n"
+			gdm_error_box
+				(d, GNOME_MESSAGE_BOX_ERROR,
+				 _("Could not find the GNOME installation,\n"
 				   "will try running the \"Failsafe xterm\"\n"
 				   "session."));
 		} else {
-			run_error_dialog
-				(_("This is the Failsafe Gnome session.\n"
+			gdm_error_box
+				(d, GNOME_MESSAGE_BOX_INFO,
+				 _("This is the Failsafe Gnome session.\n"
 				   "You will be logged into the 'Default'\n"
 				   "session of Gnome with no startup scripts\n"
 				   "run.  This is only to fix problems in\n"
@@ -1681,14 +1582,15 @@ gdm_slave_session_start (void)
 				      &sessexec);
 		g_free (params);
 		if (sesspath == NULL) {
-			run_error_dialog
-				(_("Cannot find \"xterm\" to start "
-				   "a failsafe session."));
+			gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR,
+				       _("Cannot find \"xterm\" to start "
+					 "a failsafe session."));
 			/* nyah nyah nyah nyah nyah */
 			_exit (0);
 		} else {
-			run_error_dialog
-				(_("This is the Failsafe xterm session.\n"
+			gdm_error_box
+				(d, GNOME_MESSAGE_BOX_INFO,
+				 _("This is the Failsafe xterm session.\n"
 				   "You will be logged into a terminal\n"
 				   "console so that you may fix your system\n"
 				   "if you cannot log in any other way.\n"
@@ -1719,14 +1621,16 @@ gdm_slave_session_start (void)
 	 * message */
 	if (strcmp (shell, "/bin/false") == 0) {
 		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
-		run_error_dialog (_("The system administrator has\n"
-				    "disabled your account."));
+		gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR,
+			       _("The system administrator has\n"
+				 "disabled your account."));
 	} else if (access (sessexec != NULL ? sessexec : sesspath, X_OK) != 0) {
 		gdm_error (_("gdm_slave_session_start: Could not find/run session `%s'"), sesspath);
 		/* if we can't read and exec the session, then make a nice
 		 * error dialog */
-		run_error_dialog
-			(_("Cannot start the session, most likely the\n"
+		gdm_error_box
+			(d, GNOME_MESSAGE_BOX_ERROR,
+			 _("Cannot start the session, most likely the\n"
 			   "session does not exist.  Please select from\n"
 			   "the list of available sessions in the login\n"
 			   "dialog window."));
@@ -1735,8 +1639,9 @@ gdm_slave_session_start (void)
 		execl (shell, "-", "-c", exec, NULL);
 
 		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
-		run_error_dialog
-			(_("Cannot start your shell.  It could be that the\n"
+		gdm_error_box
+			(d, GNOME_MESSAGE_BOX_ERROR,
+			 _("Cannot start your shell.  It could be that the\n"
 			   "system administrator has disabled your login.\n"
 			   "It could also indicate an error with your account.\n"));
 	}
