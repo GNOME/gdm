@@ -382,6 +382,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
     gchar *status = NULL;
     ARRAY8 auth, host, stat;
     GdmChooserHost *gh;
+    int pipe_buf;
 
     if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt_sa, &sa_len))
 	return TRUE;
@@ -417,10 +418,6 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 
 	    hostname = (he && he->h_name) ? he->h_name : inet_ntoa (clnt_sa.sin_addr);
 
-	    /* We can't pipe hostnames larger than this */
-	    if (strlen (hostname)+1 > PIPE_BUF)
-		    goto done;
-
 	    hostname = g_strdup (hostname);
     } else {
 	    hostname = g_new0 (char, 1024);
@@ -428,6 +425,20 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 		    g_free (hostname);
 		    goto done;
 	    }
+    }
+
+#ifdef PIPE_BUF
+    pipe_buf = PIPE_BUF;
+#else
+    /* apparently Hurd doesn't have PIPE_BUF */
+    pipe_buf = fpathconf (1 /*stdout*/, _PC_PIPE_BUF);
+    /* could return -1 if no limit */
+#endif
+
+    /* We can't pipe hostnames larger than this */
+    if (pipe_buf > 0 && strlen (hostname)+1 > pipe_buf) {
+	    g_free (hostname);
+	    goto done;
     }
 
     gh = gdm_host_known (&clnt_sa.sin_addr);
