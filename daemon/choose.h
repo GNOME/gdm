@@ -21,8 +21,14 @@
 
 #include "gdm.h"
 
+#ifdef ENABLE_IPV6
+GdmIndirectDisplay *   gdm_choose_indirect_alloc (struct sockaddr_storage *clnt_sa);
+GdmIndirectDisplay * gdm_choose_indirect_lookup (struct sockaddr_storage *clnt_sa);
+GdmIndirectDisplay * gdm_choose_indirect_lookup_by_chosen6 (struct in6_addr *chosen, struct in6_addr *origin);
+#else
 GdmIndirectDisplay *	gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
 GdmIndirectDisplay *	gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
+#endif
 GdmIndirectDisplay *	gdm_choose_indirect_lookup_by_chosen (struct in_addr *chosen,
 							      struct in_addr *origin);
 void			gdm_choose_indirect_dispose (GdmIndirectDisplay *id);

@@ -85,18 +85,31 @@ const GList * gdm_peek_local_address_list (void);
 gboolean gdm_is_local_addr (struct in_addr *ia);
 gboolean gdm_is_loopback_addr (struct in_addr *ia);
 
+#ifdef ENABLE_IPV6
+gboolean gdm_is_local_addr6 (struct in6_addr* ia);
+gboolean gdm_is_loopback_addr6 (struct in6_addr *ia);
+#endif
+
 typedef struct {
 	gboolean not_found; /* hostname below set to fallback,
 			       as gethostbyaddr/name failed */
 	char *hostname; /* never a bogus dot, if
 			   invalid/unknown, then set to the
 			   ip address in string form */
+#ifdef ENABLE_IPV6
+	struct sockaddr_storage *addrs;
+#else
 	struct in_addr *addrs; /* array */
+#endif
 	int addr_count;
 } GdmHostent;
 
 GdmHostent * gdm_gethostbyname (const char *name);
-GdmHostent * gdm_gethostbyaddr (struct in_addr *ia);
+#ifdef ENABLE_IPV6
+GdmHostent *gdm_gethostbyaddr (struct sockaddr_storage *ia);
+#else
+GdmHostent * gdm_gethostbyaddr (struct sockaddr_in *ia);
+#endif
 GdmHostent * gdm_hostent_copy (GdmHostent *he);
 void gdm_hostent_free (GdmHostent *he);
 

@@ -246,6 +246,10 @@ enum {
 #define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
 #define GDM_KEY_HOSTDIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
 #define GDM_KEY_HOSTS "chooser/Hosts="
+#ifdef ENABLE_IPV6
+#define GDM_KEY_MULTICAST "chooser/Multicast=true"
+#define GDM_KEY_MULTICAST_ADDR "chooser/MulticastAddr=ff02::1"
+#endif
 #define GDM_KEY_BROADCAST "chooser/Broadcast=true"
 #define GDM_KEY_ALLOWADD "chooser/AllowAdd=true"
 
@@ -300,7 +304,13 @@ struct _GdmDisplay {
     gchar *name;
     gchar *hostname;
     struct in_addr addr;
+#ifdef ENABLE_IPV6
+    struct in6_addr addr6;
+    struct sockaddr_storage *addrs; /* array of addresses */
+#else
     struct in_addr *addrs; /* array of addresses */
+#endif
+    int addrtype;        /* Specifying the variable used, addr or addr6  */
     int addr_count; /* number of addresses in array */
     /* Note that the above may in fact be empty even though
        addr is set, these are just extra addresses
@@ -392,7 +402,12 @@ struct _GdmXServer {
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
 struct _GdmIndirectDisplay {
 	int id;
+#ifdef ENABLE_IPV6
+       struct sockaddr_storage* dsp_sa;
+       struct in6_addr* chosen_host6;
+#else
 	struct sockaddr_in* dsp_sa;
+#endif
 	time_t acctime;
 	struct in_addr *chosen_host;
 };
@@ -401,8 +416,13 @@ struct _GdmIndirectDisplay {
 typedef struct _GdmForwardQuery GdmForwardQuery;
 struct _GdmForwardQuery {
 	time_t acctime;
+#ifdef ENABLE_IPV6
+       struct sockaddr_storage* dsp_sa;
+       struct sockaddr_storage* from_sa;
+#else
 	struct sockaddr_in* dsp_sa;
 	struct sockaddr_in* from_sa;
+#endif
 };
 #define GDM_MAX_FORWARD_QUERIES 10
 #define GDM_FORWARD_QUERY_TIMEOUT 30

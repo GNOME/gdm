@@ -42,6 +42,21 @@
 
 static pid_t xnest_pid = 0;
 
+#ifdef ENABLE_IPV6
+static gboolean have_ipv6 () {
+	gint s;
+
+	s = socket (AF_INET6, SOCK_STREAM, 0);
+
+	if (s != -1) {
+		IGNORE_EINTR (close (s));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+#endif
+
 static void
 term_handler (int sig)
 {
@@ -65,16 +80,35 @@ get_free_display (void)
 		struct stat s;
 		char buf[256];
 		FILE *fp;
-		sock = socket (AF_INET, SOCK_STREAM, 0);
+#ifdef ENABLE_IPV6
+		if (have_ipv6()) {
+			struct sockaddr_in6 serv6_addr = {0};
 
-		serv_addr.sin_port = htons (6000 + i);
+			sock = socket (AF_INET6, SOCK_STREAM, 0);
+			serv6_addr.sin6_family = AF_INET6;
+			serv6_addr.sin6_addr =  in6addr_loopback;
+			serv6_addr.sin6_port = htons (6000 + i);
 
-		errno = 0;
-		if (connect (sock, (struct sockaddr *)&serv_addr,
+			if (connect (sock, (struct sockaddr *)&serv6_addr, sizeof(serv6_addr)) >= 0 ||  errno != ECONNREFUSED) {
+				IGNORE_EINTR (close (sock));
+				continue;
+			      }
+		}
+		else
+#endif
+		{
+
+			sock = socket (AF_INET, SOCK_STREAM, 0);
+
+			serv_addr.sin_port = htons (6000 + i);
+
+			errno = 0;
+			if (connect (sock, (struct sockaddr *)&serv_addr,
 			     sizeof (serv_addr)) >= 0 ||
-		    errno != ECONNREFUSED) {
-			IGNORE_EINTR (close (sock));
-			continue;
+			    errno != ECONNREFUSED) {
+				IGNORE_EINTR (close (sock));
+				continue;
+			}
 		}
 
 		IGNORE_EINTR (close (sock));

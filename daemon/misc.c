@@ -69,6 +69,22 @@ extern gboolean no_console;
 
 extern char *gdm_charset;
 
+#ifdef ENABLE_IPV6
+static gboolean have_ipv6 (void)
+{
+	int s;
+
+	s = socket (AF_INET6, SOCK_STREAM, 0);
+	if (s != -1) {
+		IGNORE_EINTR (close (s));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+#endif
+
+
 static void
 do_syslog (int type, const char *s)
 {
@@ -375,14 +391,32 @@ gdm_get_free_display (int start, uid_t server_uid)
 			continue;
 		}
 
-		sock = socket (AF_INET, SOCK_STREAM, 0);
+#ifdef ENABLE_IPV6
+		if (have_ipv6 ()) {
+			struct sockaddr_in6 serv6_addr= {0};
 
-		serv_addr.sin_port = htons (6000 + i);
+			sock = socket (AF_INET6, SOCK_STREAM,0);
 
-		errno = 0;
-		IGNORE_EINTR (connect (sock,
+			serv6_addr.sin6_family = AF_INET6;
+			serv6_addr.sin6_addr = in6addr_loopback;
+			serv6_addr.sin6_port = htons (6000 + i);
+			errno = 0;
+			IGNORE_EINTR (connect (sock,
+                                      (struct sockaddr *)&serv6_addr,
+                                      sizeof (serv6_addr)));
+		}
+		else
+#endif
+		{
+			sock = socket (AF_INET, SOCK_STREAM, 0);
+
+			serv_addr.sin_port = htons (6000 + i);
+
+			errno = 0;
+			IGNORE_EINTR (connect (sock,
 				       (struct sockaddr *)&serv_addr,
 				       sizeof (serv_addr)));
+		}
 		if (errno != 0 && errno != ECONNREFUSED) {
 			IGNORE_EINTR (close (sock));
 			continue;
@@ -855,18 +889,22 @@ gdm_peek_local_address_list (void)
 {
 	static GList *the_list = NULL;
 	static time_t last_time = 0;
-	struct in_addr *addr;
-#ifdef SIOCGIFCONF
 	struct sockaddr_in *sin;
+#ifdef ENABLE_IPV6
+	char hostbuf[BUFSIZ];
+	struct sockaddr_in6 *sin6;
+	struct addrinfo hints, *result, *res;
+#else /* ENABLE_IPV6 */
+	int sockfd;
+#ifdef SIOCGIFCONF
 	struct ifconf ifc;
 	struct ifreq *ifr;
 	char *buf;
 	int num;
-	int sockfd;
 #else /* SIOCGIFCONF */
 	char hostbuf[BUFSIZ];
 	struct hostent *he;
-	int i;
+#endif
 #endif
 
 	/* don't check more then every 5 seconds */
@@ -878,13 +916,51 @@ gdm_peek_local_address_list (void)
 	the_list = NULL;
 
 	last_time = time (NULL);
+#ifdef ENABLE_IPV6
+	hostbuf[BUFSIZ-1] = '\0';
+	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
+		gdm_debug ("%s: Could not get server hostname", "gdm_peek_local_address_list");
+
+		sin6 = g_new0 (struct sockaddr_in6, 1);
+		sin6->sin6_family = AF_INET6;
+		sin6->sin6_addr = in6addr_loopback;
+		return g_list_append (the_list, sin6);
+	}
+
+	if (getaddrinfo (hostbuf, NULL, &hints, &result) != 0) {
+		gdm_debug ("%s: Could not get address from hostname!", "gdm_peek_local_address_list");
+
+		sin6 = g_new0 (struct sockaddr_in6, 1);
+		sin6->sin6_family = AF_INET6;
+		sin6->sin6_addr = in6addr_loopback;
+		return g_list_append (the_list, sin6);
+	}
+
+	for (res = result; res; res = res->ai_next) {
+		if (res->ai_family == AF_INET6) {
+			sin6 = g_new0 (struct sockaddr_in6, 1);
+			sin6->sin6_family = AF_INET6;
+			memcpy (sin6, res->ai_addr, res->ai_addrlen);
+			the_list = g_list_append (the_list, sin6);
+               }
+               else if (res->ai_family == AF_INET) {
+			sin = g_new0 (struct sockaddr_in, 1);
+			sin->sin_family = AF_INET;
+			memcpy (sin, res->ai_addr, res->ai_addrlen);
+			the_list = g_list_append (the_list, sin);
+               }
+	}
+
+	if (result) {
+		freeaddrinfo (result);
+		result = NULL;
+	}
+
+#else  /* ENABLE_IPV6 */
 
 #ifdef SIOCGIFCONF
-	if (gdm_xdmcpfd > 0)
-		sockfd = gdm_xdmcpfd;
-	else
-		/* Open a bogus socket */
-		sockfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
+/* Create an IPv4 socket to pick IPv4 addresses */
+	sockfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
 
 #ifdef SIOCGIFNUM
 	if (ioctl (sockfd, SIOCGIFNUM, &num) < 0) {
@@ -900,16 +976,18 @@ gdm_peek_local_address_list (void)
 		gdm_error (_("%s: Cannot get local addresses!"),
 			   "gdm_peek_local_address_list");
 		g_free (buf);
-		if (sockfd != gdm_xdmcpfd)
-			IGNORE_EINTR (close (sockfd));
-		addr = g_new0 (struct in_addr, 1);
-		addr->s_addr = INADDR_LOOPBACK;
-		return g_list_append (NULL, addr);
+		IGNORE_EINTR (close (sockfd));
+		sin = g_new0 (struct sockaddr_in, 1);
+		sin->sin_family = AF_INET;
+		sin->sin_addr.s_addr = INADDR_LOOPBACK;
+		return g_list_append (NULL, sin);
 	}
 
 	ifr = ifc.ifc_req;
 	num = ifc.ifc_len / sizeof(struct ifreq);
 	for (; num-- > 0; ifr++) {
+		struct sockaddr_in *addr;
+
 		if (ioctl (sockfd, SIOCGIFFLAGS, ifr) < 0 ||
 		    ! (ifr->ifr_flags & IFF_UP))
 			continue;
@@ -926,47 +1004,70 @@ gdm_peek_local_address_list (void)
 		    sin->sin_addr.s_addr == INADDR_ANY ||
 		    sin->sin_addr.s_addr == INADDR_LOOPBACK)
 			continue;
-		addr = g_new0 (struct in_addr, 1);
-		memcpy (addr, &(sin->sin_addr.s_addr),
-			sizeof (struct in_addr));
+		addr = g_new0 (struct sockaddr_in, 1);
+		memcpy (addr, sin, sizeof (struct sockaddr_in));
 		the_list = g_list_append (the_list, addr);
 	}
 
-	if (sockfd != gdm_xdmcpfd)
 		IGNORE_EINTR (close (sockfd));
-
 	g_free (buf);
 #else /* SIOCGIFCONF */
 	/* host based fallback, will likely only get 127.0.0.1 i think */
 
 	hostbuf[BUFSIZ-1] = '\0';
+	sin = g_new0 (struct sockaddr_in, 1);
+	sin->sin_family = AF_INET;
 	if G_UNLIKELY (gethostname (hostbuf, BUFSIZ-1) != 0) {
 		gdm_debug ("%s: Could not get server hostname: %s!",
 			   "gdm_peek_local_address_list",
 			   strerror (errno));
-		addr = g_new0 (struct in_addr, 1);
-		addr->s_addr = INADDR_LOOPBACK;
-		return g_list_append (NULL, addr);
+		sin->sin_addr.s_addr = INADDR_LOOPBACK;
+		return g_list_append (NULL, sin);
 	}
 	he = gethostbyname (hostbuf);
 	if G_UNLIKELY (he == NULL) {
 		gdm_debug ("%s: Could not get address from hostname!",
 			   "gdm_peek_local_address_list");
-		addr = g_new0 (struct in_addr, 1);
-		addr->s_addr = INADDR_LOOPBACK;
-		return g_list_append (NULL, addr);
+		sin->sin_addr.s_addr = INADDR_LOOPBACK;
+		return g_list_append (NULL, sin);
 	}
 	for (i = 0; he->h_addr_list[i] != NULL; i++) {
 		struct in_addr *laddr = (struct in_addr *)he->h_addr_list[i];
 
-		addr = g_new0 (struct in_addr, 1);
-		memcpy (addr, laddr, sizeof (struct in_addr));
-		the_list = g_list_append (the_list, addr);
+		memcpy (&sin->sin_addr, laddr, sizeof (struct in_addr));
+		the_list = g_list_append (the_list, sin);
 	}
 #endif
+#endif /* ENABLE_IPV6 */
 
 	return the_list;
 }
+
+#ifdef ENABLE_IPV6
+gboolean
+gdm_is_local_addr6 (struct in6_addr* ia)
+{
+
+	if (IN6_IS_ADDR_LOOPBACK (ia)) {
+		return TRUE;
+
+	} else {
+		const GList *list = gdm_peek_local_address_list ();
+
+		while (list != NULL) {
+			struct sockaddr *addr = list->data;
+
+			if ((addr->sa_family == AF_INET6) && (memcmp (ia, &(((struct sockaddr_in6 *)addr)->sin6_addr), sizeof (struct in6_addr)) == 0)) {
+				return TRUE;
+			}
+
+			list = list->next;
+		}
+
+		return FALSE;
+	}
+}
+#endif
 
 gboolean
 gdm_is_local_addr (struct in_addr *ia)
@@ -980,9 +1081,10 @@ gdm_is_local_addr (struct in_addr *ia)
 		const GList *list = gdm_peek_local_address_list ();
 
 		while (list != NULL) {
-			struct in_addr *addr = list->data;
+			struct sockaddr *addr = list->data;
 
-			if (memcmp (&ia->s_addr, &addr->s_addr, 4) == 0) {
+			if ((addr->sa_family == AF_INET ) && 
+			    (memcmp (ia, &(((struct sockaddr_in *)addr)->sin_addr), 4) == 0)) {
 				return TRUE;
 			}
 
@@ -992,6 +1094,17 @@ gdm_is_local_addr (struct in_addr *ia)
 		return FALSE;
 	}
 }
+
+#ifdef ENABLE_IPV6
+gboolean
+gdm_is_loopback_addr6 (struct in6_addr *ia)
+{
+	if (IN6_IS_ADDR_LOOPBACK(ia))
+		return TRUE;
+
+	return FALSE;
+}
+#endif
 
 gboolean
 gdm_is_loopback_addr (struct in_addr *ia)
@@ -1331,10 +1444,19 @@ gdm_locale_from_utf8 (const char *text)
 }
 
 static GdmHostent *
+#ifdef ENABLE_IPV6
+fillout_addrinfo (struct addrinfo *res, struct sockaddr *ia, const char *name)
+#else
 fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
+#endif
 {
 	GdmHostent *he;
 
+#ifdef ENABLE_IPV6
+	gint i;
+	gint addr_count = 0;
+	struct addrinfo *tempaddrinfo;
+#endif
 	he = g_new0 (GdmHostent, 1);
 
 	he->addrs = NULL;
@@ -1343,6 +1465,56 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 	/* Sometimes if we can't look things up, we could end
 	   up with a dot in the name field which would screw
 	   us up.  Weird but apparently possible */
+#ifdef ENABLE_IPV6
+	if (res != NULL && res->ai_canonname != NULL) {
+		he->hostname = g_strdup (res->ai_canonname);
+		he->not_found = FALSE;
+	} else {
+		he->not_found = TRUE;
+		if (name != NULL)
+			he->hostname = g_strdup (name);
+		else {
+			static char buffer6[INET6_ADDRSTRLEN], buffer[INET_ADDRSTRLEN];
+			const char *new = NULL;
+
+			if (ia->sa_family == AF_INET6) {
+				if (IN6_IS_ADDR_V4MAPPED (&((struct sockaddr_in6 *)ia)->sin6_addr))
+					new = inet_ntop (AF_INET, &(((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr[12]), buffer, sizeof (buffer));
+
+				else
+					new = inet_ntop (AF_INET6, &((struct sockaddr_in6 *)ia)->sin6_addr, buffer6, sizeof (buffer6));
+			}
+			else if (ia->sa_family == AF_INET)
+				new = inet_ntop (AF_INET, &((struct sockaddr_in *)ia)->sin_addr, buffer, sizeof (buffer));
+
+			if (new)
+				he->hostname = g_strdup (new);
+			else
+				he->hostname = NULL;
+		}
+	}
+
+	tempaddrinfo = res;
+
+	while (res != NULL) {
+		addr_count ++;
+		res = res->ai_next;
+	}
+
+	he->addrs = g_new0 (struct sockaddr_storage, addr_count);
+	he->addr_count = addr_count;
+	res = tempaddrinfo;
+	for (i = 0; ;i++) {
+		if (res == NULL)
+			break;
+
+		if ((res->ai_family == AF_INET) || (res->ai_family == AF_INET6)) {
+			(he->addrs)[i] = *(struct sockaddr_storage *)(res->ai_addr);
+		}
+
+		res = res->ai_next;
+	}
+#else
 	if (he_ != NULL &&
 	    he_->h_name != NULL &&
 	    he_->h_name[0] != '\0' &&
@@ -1373,6 +1545,7 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 			(he->addrs)[i] = *ia_;
 		}
 	}
+#endif
 	return he;
 }
 
@@ -1455,8 +1628,14 @@ jumpback_sighandler (int signal)
 GdmHostent *
 gdm_gethostbyname (const char *name)
 {
+#ifdef ENABLE_IPV6
+	struct addrinfo hints;
+	/* static because of Setjmp */
+	static struct addrinfo *result;
+#else
 	/* static because of Setjmp */
 	static struct hostent * he_;
+#endif
 	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
 	/* the cached address */
@@ -1464,7 +1643,9 @@ gdm_gethostbyname (const char *name)
 	static time_t last_time = 0;
 	static char *cached_hostname = NULL;
 
+#ifndef ENABLE_IPV6
 	he_ = NULL;
+#endif
 
 	if (cached_hostname != NULL &&
 	    strcmp (cached_hostname, name) == 0) {
@@ -1478,12 +1659,30 @@ gdm_gethostbyname (const char *name)
 	if (Setjmp (signal_jumpback) == 0) {
 		do_jumpback = TRUE;
 		/* Find client hostname */
+#ifdef ENABLE_IPV6
+		memset (&hints, 0, sizeof (hints));
+		hints.ai_socktype = SOCK_DGRAM;
+		hints.ai_flags = AI_CANONNAME;
+
+		if (result) {
+			freeaddrinfo (result);
+			result = NULL;
+		}
+
+		getaddrinfo (name, NULL, &hints, &result);
+		do_jumpback = FALSE;
+	} else {
+               /* here we got interrupted */
+		result = NULL;
+	}
+#else
 		he_ = gethostbyname (name);
 		do_jumpback = FALSE;
 	} else {
 		/* here we got interrupted */
 		he_ = NULL;
 	}
+#endif
 
 	SETUP_INTERRUPTS_FOR_TERM_TEARDOWN
 
@@ -1491,17 +1690,34 @@ gdm_gethostbyname (const char *name)
 	cached_hostname = g_strdup (name);
 
 	gdm_hostent_free (he);
+#ifdef ENABLE_IPV6
+	he = fillout_addrinfo (result, NULL, name);
+#else
 	he = fillout_hostent (he_, NULL, name);
+#endif
 
 	last_time = time (NULL);
 	return gdm_hostent_copy (he);
 }
 
 GdmHostent *
-gdm_gethostbyaddr (struct in_addr *ia)
+#ifdef ENABLE_IPV6
+gdm_gethostbyaddr (struct  sockaddr_storage *ia)
+#else
+gdm_gethostbyaddr (struct sockaddr_in *ia)
+#endif
 {
+#ifdef ENABLE_IPV6
+	struct addrinfo hints;
+	/* static because of Setjmp */
+	static struct addrinfo *result = NULL;
+	struct sockaddr_in6 sin6;
+	struct sockaddr_in sin;
+	static struct in6_addr cached_addr6;
+#else
 	/* static because of Setjmp */
 	static struct hostent * he_;
+#endif
 	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
 	/* the cached address */
@@ -1509,13 +1725,25 @@ gdm_gethostbyaddr (struct in_addr *ia)
 	static time_t last_time = 0;
 	static struct in_addr cached_addr;
 
+#ifndef ENABLE_IPV6
 	he_ = NULL;
+#endif
 
-	if (last_time != 0 &&
-	    memcmp (&cached_addr, ia, sizeof (struct in_addr)) == 0) {
-		/* don't check more then every 60 seconds */
-		if (last_time + 60 > time (NULL))
-			return gdm_hostent_copy (he);
+	if (last_time != 0) {
+#ifdef ENABLE_IPV6
+		if ((ia->ss_family == AF_INET6) && (memcmp (cached_addr6.s6_addr, ((struct sockaddr_in6 *) ia)->sin6_addr.s6_addr, sizeof (struct in6_addr)) == 0)) {
+			/* don't check more then every 60 seconds */
+			if (last_time + 60 > time (NULL))
+				return gdm_hostent_copy (he);
+		} else if (ia->ss_family == AF_INET)
+#endif
+		{
+			if (memcmp (&cached_addr, &(((struct sockaddr_in *)ia)->sin_addr), sizeof (struct in_addr)) == 0) {
+				/* don't check more then every 60 seconds */
+				if (last_time + 60 > time (NULL))
+					return gdm_hostent_copy (he);
+			}
+		}
 	}
 
 	SETUP_INTERRUPTS_FOR_TERM_SETUP
@@ -1523,20 +1751,73 @@ gdm_gethostbyaddr (struct in_addr *ia)
 	if (Setjmp (signal_jumpback) == 0) {
 		do_jumpback = TRUE;
 		/* Find client hostname */
-		he_ = gethostbyaddr ((gchar *) ia, sizeof (struct in_addr), AF_INET);
+
+#ifdef ENABLE_IPV6
+		memset (&hints, 0, sizeof (hints));
+		hints.ai_socktype = SOCK_DGRAM;
+		hints.ai_flags = AI_CANONNAME;
+
+		if (result) {
+			freeaddrinfo (result);
+			result = NULL;
+		}
+
+		if (ia->ss_family == AF_INET6) {
+			char buffer6[INET6_ADDRSTRLEN];
+
+			inet_ntop (AF_INET6, &((struct sockaddr_in6 *)ia)->sin6_addr, buffer6, sizeof (buffer6));
+
+			/* In the case of IPv6 mapped address strip the ::ffff: and lookup as an IPv4 address */
+			if (strncmp (buffer6, "::ffff:", 7) == 0) {
+				char *temp= (buffer6 + 7);
+				strcpy (buffer6, temp);
+			}
+			getaddrinfo (buffer6, NULL, &hints, &result);
+		}
+		else if (ia->ss_family == AF_INET) {
+			char buffer[INET_ADDRSTRLEN];
+
+			inet_ntop (AF_INET, &((struct sockaddr_in *)ia)->sin_addr, buffer, sizeof (buffer));
+
+			getaddrinfo (buffer, NULL, &hints, &result);
+		}
+
+		do_jumpback = FALSE;
+	} else {
+		/* here we got interrupted */
+		result = NULL;
+	}
+#else
+		he_ = NULL;
+		he_ = gethostbyaddr ((gchar *) &(ia->sin_addr), sizeof (struct in_addr), AF_INET);
 		do_jumpback = FALSE;
 	} else {
 		/* here we got interrupted */
 		he_ = NULL;
 	}
+#endif
 
 	SETUP_INTERRUPTS_FOR_TERM_TEARDOWN
 
-	cached_addr = *ia;
-
-	gdm_hostent_free (he);
-	he = fillout_hostent (he_, ia, NULL);
-
+#ifdef ENABLE_IPV6
+	if (ia->ss_family == AF_INET6) {
+		memcpy (cached_addr6.s6_addr, ((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr, sizeof (struct in6_addr));
+		memset (&sin6, 0, sizeof (sin6));
+		memcpy (sin6.sin6_addr.s6_addr, cached_addr6.s6_addr, sizeof (struct in6_addr));
+		sin6.sin6_family = AF_INET6;
+		he = fillout_addrinfo (result, (struct sockaddr *)&sin6, NULL);
+	}
+	else if (ia->ss_family == AF_INET) {
+		memcpy (&(cached_addr.s_addr), &(((struct sockaddr_in *)ia)->sin_addr.s_addr), sizeof (struct in_addr));
+		memset (&sin, 0, sizeof (sin));
+		memcpy (&sin.sin_addr, &cached_addr, sizeof (struct in_addr));
+		sin.sin_family = AF_INET;
+		he = fillout_addrinfo (result, (struct sockaddr *)&sin, NULL);
+	}
+#else
+	cached_addr = ia->sin_addr;
+	he = fillout_hostent (he_, &(ia->sin_addr), NULL);
+#endif
 	last_time = time (NULL);
 	return gdm_hostent_copy (he);
 }
@@ -1557,8 +1838,13 @@ gdm_hostent_copy (GdmHostent *he)
 		cpy->addrs = NULL;
 	} else {
 		cpy->addr_count = he->addr_count;
+#ifdef ENABLE_IPV6
+		cpy->addrs = g_new0 (struct sockaddr_storage, he->addr_count);
+		memcpy (cpy->addrs, he->addrs, sizeof (struct sockaddr_storage) * he->addr_count);
+#else
 		cpy->addrs = g_new0 (struct in_addr, he->addr_count);
 		memcpy (cpy->addrs, he->addrs, sizeof (struct in_addr) * he->addr_count);
+#endif
 	}
 	return cpy;
 }

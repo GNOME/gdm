@@ -66,7 +66,11 @@ typedef struct _GdmChooserHost GdmChooserHost;
 struct _GdmChooserHost {
     gchar *name;
     gchar *desc;
+#ifdef ENABLE_IPV6
+    struct in6_addr ia6;
+#endif
     struct in_addr ia;
+    gint addrtype;    /* Address stored is IPv4 or IPv6 */
     GdkPixbuf *picture;
     gboolean willing;
 };
@@ -103,6 +107,9 @@ void display_chooser_information (void);
 static guint add_check_handler = 0;
 
 /* if this is received, select that host automatically */
+#ifdef ENABLE_IPV6 
+static struct in6_addr *added6_addr = NULL;
+#endif
 static struct in_addr *added_addr = NULL;
 static char *added_host = NULL;
 
@@ -152,6 +159,12 @@ static gboolean GdmBroadcast;
 static gboolean GdmAllowAdd;
 static gchar *GdmBackgroundColor;
 static int GdmBackgroundType;
+
+#ifdef ENABLE_IPV6
+static gboolean GdmMulticast;
+static gchar *GdmMulticastAddr;
+#endif
+
 enum {
 	GDM_BACKGROUND_NONE = 0,
 	GDM_BACKGROUND_IMAGE = 1,
@@ -168,6 +181,8 @@ static GdkPixbuf *defhostimg;
 static GtkWidget *browser;
 static GtkTreeModel *browser_model;
 static GdmChooserHost *curhost;
+
+static gboolean have_ipv6;      /* Socket is IPv4 or IPv6 */
 
 static gboolean
 find_host_in_list (GdmChooserHost *host, GtkTreeIter *iter)
@@ -213,7 +228,8 @@ gdm_chooser_host_dispose (GdmChooserHost *host)
 static GdmChooserHost * 
 gdm_chooser_host_alloc (const char *hostname,
 			const char *description,
-			struct in_addr *ia,
+			char *ia,
+			int family,
 			gboolean willing)
 {
     GdmChooserHost *host;
@@ -223,9 +239,15 @@ gdm_chooser_host_alloc (const char *hostname,
     host = g_new0 (GdmChooserHost, 1);
     host->name = g_strdup (hostname);
     host->desc = g_strdup (description);
-    memcpy (&host->ia, ia, sizeof (struct in_addr));
     host->willing = willing;
+#ifdef ENABLE_IPV6
+    if (family == AF_INET6)
+	    memcpy (&host->ia6, (struct in6_addr *)ia, sizeof (struct in6_addr));
+    else
+#endif
+	    memcpy (&host->ia, (struct in_addr *)ia, sizeof (struct in_addr));
 
+    host->addrtype = family;
     hosts = g_list_prepend (hosts, host);
     
     if ( ! willing)
@@ -273,11 +295,24 @@ gdm_chooser_host_alloc (const char *hostname,
 static void
 gdm_chooser_browser_add_host (GdmChooserHost *host)
 {
+    gboolean add_this_host = FALSE;
+
     if (host->willing) {
 	    GtkTreeIter iter = {0};
-	    const char *addr = inet_ntoa (host->ia);
+	    const char *addr;
 	    char *label;
 	    char *name, *desc;
+#ifdef ENABLE_IPV6
+	    if (host->addrtype == AF_INET6) {   /* IPv6 address */
+		static char buffer6[INET6_ADDRSTRLEN];
+
+		addr = inet_ntop (AF_INET6, host->ia6.s6_addr, buffer6, INET6_ADDRSTRLEN);
+	    }
+	    else /* IPv4 address */
+#endif
+	    {
+		addr = inet_ntoa (host->ia);
+	    }
 
 	    name = g_markup_escape_text (host->name, -1);
 	    desc = g_markup_escape_text (host->desc, -1);
@@ -303,9 +338,21 @@ gdm_chooser_browser_add_host (GdmChooserHost *host)
 				-1);
 	    g_free (label);
 
+#ifdef ENABLE_IPV6
+	    if (added6_addr != NULL && memcmp (&host->ia6, added6_addr,
+                                   sizeof (struct in6_addr)) == 0) {
+		added6_addr = NULL;
+		add_this_host = TRUE;
+	    }
+#else
 	    if (added_addr != NULL &&
 		memcmp (&host->ia, added_addr,
 			sizeof (struct in_addr)) == 0) {
+		added_addr = NULL;
+		add_this_host = TRUE;
+	    }
+#endif
+	    if (add_this_host) {
 		    GtkTreeSelection *selection;
 		    GtkTreePath *path = gtk_tree_model_get_path (browser_model, &iter);
 		    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
@@ -318,7 +365,6 @@ gdm_chooser_browser_add_host (GdmChooserHost *host)
 	    }
 	    g_free (added_host);
 	    added_host = NULL;
-	    added_addr = NULL;
 	    if (add_check_handler > 0)
 		    g_source_remove (add_check_handler);
 	    add_check_handler = 0;
@@ -328,44 +374,79 @@ gdm_chooser_browser_add_host (GdmChooserHost *host)
 }
 
 static GdmChooserHost *
-gdm_host_known (struct in_addr *ia)
+gdm_host_known (char *ia, gint family)
 {
 	GList *li;
 
 	for (li = hosts; li != NULL; li = li->next) {
 		GdmChooserHost *host = li->data;
-		if (memcmp (&host->ia, ia, sizeof (struct in_addr)) == 0) {
-			return host;
+#ifdef ENABLE_IPV6
+		if (family == AF_INET6) {
+			if (host->addrtype != AF_INET6)
+				continue;
+			if ( ! memcmp (&host->ia6, (struct in6_addr *)ia, sizeof (struct in6_addr)))
+				return host;
+		}
+		else
+#endif
+		if (family == AF_INET) {
+			if (host->addrtype != AF_INET)
+				continue;
+			if ( ! memcmp (&host->ia, (struct in_addr *)ia, sizeof (struct in_addr)))
+				return host;
 		}
 	}
 	return NULL;
 }
 
 static gboolean
-is_loopback_addr (struct in_addr *ia)
+is_loopback_addr (char *ia, gint family)
 {
 	const char lo[] = {127,0,0,1};
 
-	if (ia->s_addr == INADDR_LOOPBACK ||
-	    memcmp (&ia->s_addr, lo, 4) == 0) {
-		return TRUE;
-	} else {
-		return FALSE;
+#ifdef ENABLE_IPV6
+	if (family == AF_INET6 && IN6_IS_ADDR_LOOPBACK ((struct in6_addr *)ia)) {
+	    return TRUE;
+	} else
+#endif
+	if (((family == AF_INET) && (((struct in_addr *) ia)->s_addr == INADDR_LOOPBACK)) || memcmp (&((struct in_addr *)ia)->s_addr, lo, 4) == 0) {
+	    return TRUE;
+	}
+	else {
+	    return FALSE;
 	}
 }
 
-static struct in_addr *
-gdm_addr_known (struct in_addr *ia)
+static gboolean
+gdm_addr_known (char *ia, gint family)
 {
 	GSList *li;
 
 	for (li = queryaddr; li != NULL; li = li->next) {
-		struct in_addr *a = li->data;
-		if (memcmp (a, ia, sizeof (struct in_addr)) == 0) {
-			return a;
+		struct sockaddr *sa = li->data;
+
+#ifdef ENABLE_IPV6
+		if (sa->sa_family == AF_INET6) {
+			if (family != AF_INET6)
+				continue;
+
+			if (!memcmp (&((struct sockaddr_in6 *)sa)->sin6_addr, (struct in6_addr *)ia , sizeof (struct in6_addr)))
+				return TRUE;
 		}
+		else if (sa->sa_family == AF_INET) {
+			if (family != AF_INET)
+				continue;
+
+			if (!memcmp (&((struct sockaddr_in *)sa)->sin_addr, (struct in_addr *)ia, sizeof (struct in_addr)))
+				return TRUE;
+
+		}
+#else
+		if (memcmp (&((struct sockaddr_in *)sa)->sin_addr, (struct in_addr *)ia, sizeof (struct in_addr)) == 0)
+			return TRUE;
+#endif
 	}
-	return NULL;
+	return FALSE;
 }
 
 static gboolean
@@ -373,8 +454,12 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 			   GIOCondition  condition,
 			   gpointer      data)
 {
+#ifdef ENABLE_IPV6
+    char hbuf[NI_MAXHOST];
+    struct sockaddr_in6 clnt6_sa;
+#endif
     struct sockaddr_in clnt_sa;
-    gint sa_len = sizeof (clnt_sa);
+    gint sa_len;
     static XdmcpBuffer buf;
     XdmcpHeader header;
     struct hostent *he;
@@ -383,11 +468,18 @@ gdm_chooser_decode_packet (GIOChannel   *source,
     ARRAY8 auth = {0}, host = {0}, stat = {0};
     GdmChooserHost *gh;
     int pipe_buf;
+    gboolean host_not_willing = FALSE;
 
     if ( ! (condition & G_IO_IN)) 
         return TRUE;
 
+#ifdef ENABLE_IPV6
+    sa_len = sizeof (struct sockaddr_in6);
+    if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt6_sa, &sa_len))
+#else
+    sa_len = sizeof (struct sockaddr_in);
     if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt_sa, &sa_len))
+#endif
 	return TRUE;
 
     if (! XdmcpReadHeader (&buf, &header))
@@ -413,21 +505,59 @@ gdm_chooser_decode_packet (GIOChannel   *source,
     } else {
 	    return TRUE;
     }
+#ifdef ENABLE_IPV6
+    /*Since, IPv4 addresses will get extracted as V4 mapped IPv6 address*/
 
-    if ( ! is_loopback_addr (&clnt_sa.sin_addr)) {
+    if (IN6_IS_ADDR_V4MAPPED (&(clnt6_sa.sin6_addr))) {
+        memset (&clnt_sa, 0, sizeof (clnt_sa));
+        memcpy (&(clnt_sa.sin_addr), &(clnt6_sa.sin6_addr.s6_addr[12]), 4);
+        clnt_sa.sin_family = AF_INET;
+        clnt_sa.sin_port = clnt6_sa.sin6_port;
+        clnt6_sa.sin6_family = AF_INET;
+    }
+
+    if (((struct sockaddr *) &clnt6_sa)->sa_family == AF_INET6) {
+        if ( ! is_loopback_addr ((gchar *) &clnt6_sa.sin6_addr, AF_INET6)) {
+	    clnt6_sa.sin6_scope_id = 0;
+	
+	    getnameinfo ((struct sockaddr *)&clnt6_sa, sizeof (struct sockaddr_in6), hbuf, sizeof(hbuf), NULL, 0, 0);
+
+	    hostname = hbuf;
+
+	    if (strlen (hostname)+1 > PIPE_BUF)
+		goto done;
+	    hostname = g_strdup (hostname);
+
+        } else {
+	    hostname = g_new0 (char, 1024);
+	
+	    if (gethostname (hostname, 1023) != 0) {
+		g_free (hostname);
+		goto done;
+	    }
+	    added6_addr = NULL;
+	    gh = gdm_host_known ((char *)&clnt6_sa.sin6_addr, AF_INET6);
+        }
+    } else
+#endif
+    {
+        if ( !is_loopback_addr ((char *)&clnt_sa.sin_addr, AF_INET)) {
 	    he = gethostbyaddr ((gchar *) &clnt_sa.sin_addr,
 				sizeof (struct in_addr),
 				AF_INET);
 
 	    hostname = (he && he->h_name) ? he->h_name : inet_ntoa (clnt_sa.sin_addr);
+	    if (strlen (hostname)+1 > PIPE_BUF)
+                   goto done;
 
 	    hostname = g_strdup (hostname);
-    } else {
+        } else {
 	    hostname = g_new0 (char, 1024);
 	    if (gethostname (hostname, 1023) != 0) {
 		    g_free (hostname);
 		    goto done;
 	    }
+        }
     }
 
 #ifdef PIPE_BUF
@@ -444,17 +574,24 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 	    goto done;
     }
 
-    gh = gdm_host_known (&clnt_sa.sin_addr);
-    if (gh == NULL) {
-	    gh = gdm_chooser_host_alloc (hostname,
-					 status,
-					 &clnt_sa.sin_addr,
-					 header.opcode == WILLING);
-
-
-	    gdm_chooser_browser_add_host (gh);
-    } else {
-	    /* server changed it's mind */
+#ifdef ENABLE_IPV6
+    if (((struct sockaddr *) &clnt6_sa)->sa_family == AF_INET6) {
+	    gh = gdm_host_known ((char *)&clnt6_sa.sin6_addr, AF_INET6);
+	    if (gh == NULL) {
+		gh = gdm_chooser_host_alloc (hostname, status, (char *)&clnt6_sa.sin6_addr, AF_INET6, header.opcode == WILLING);
+		gdm_chooser_browser_add_host (gh);
+	    }
+    } else
+#endif
+    {
+	    gh = gdm_host_known ((char *)&clnt_sa.sin_addr, AF_INET);
+	    if (gh == NULL) {
+		gh = gdm_chooser_host_alloc (hostname, status, (char *)&clnt_sa.sin_addr, AF_INET, header.opcode == WILLING);
+		gdm_chooser_browser_add_host (gh);
+	    }
+    }
+    if (gh != NULL) {
+      /* server changed it's mind */
 	    if (header.opcode == WILLING &&
 		! gh->willing) {
 		    gh->willing = TRUE;
@@ -464,14 +601,29 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 	       for now, it's kind of confusing to just remove
 	       servers really */
     }
+#ifdef ENABLE_IPV6
+    if (((struct sockaddr *) &clnt6_sa)->sa_family == AF_INET6 &&
+         ! gh->willing && added6_addr != NULL &&
+         memcmp (&gh->ia6, added6_addr, sizeof (struct in6_addr)) == 0) {
 
-    if ( ! gh->willing &&
+	    added6_addr = NULL;
+	    host_not_willing = TRUE;
+    }
+    else
+#endif
+    if (clnt_sa.sin_family == AF_INET &&
+       ! gh->willing &&
 	added_addr != NULL &&
 	memcmp (&gh->ia, added_addr,
 		sizeof (struct in_addr)) == 0) {
-	    GtkWidget *dialog;
 
 	    added_addr = NULL;
+	    host_not_willing = TRUE;
+    }
+
+    if (host_not_willing) {
+	    GtkWidget *dialog;
+
 	    if (add_check_handler > 0)
 		    g_source_remove (add_check_handler);
 	    add_check_handler = 0;
@@ -520,13 +672,14 @@ static void
 gdm_chooser_find_bcaddr (void)
 {
 	int i = 0, num;
+	int sock;
 	struct ifconf ifc;
 	char *buf;
 	struct ifreq *ifr;
-	struct in_addr *ia;
 
+	sock = socket (AF_INET, SOCK_DGRAM, 0);
 #ifdef SIOCGIFNUM
-	if (ioctl (sockfd, SIOCGIFNUM, &num) < 0) {
+	if (ioctl (sock, SIOCGIFNUM, &num) < 0) {
 		num = 64;
 	}
 #else
@@ -535,9 +688,10 @@ gdm_chooser_find_bcaddr (void)
 
 	ifc.ifc_len = sizeof (struct ifreq) * num;
 	ifc.ifc_buf = buf = g_malloc0 (ifc.ifc_len);
-	if (ioctl (sockfd, SIOCGIFCONF, &ifc) < 0) {
+	if (ioctl (sock, SIOCGIFCONF, &ifc) < 0) {
 		g_free (buf);
 		gdm_chooser_warn ("Cannot get local addresses!");
+		close (sock);
 		return;
 	}
 
@@ -547,6 +701,7 @@ gdm_chooser_find_bcaddr (void)
 		if ( ! ve_string_empty (ifr[i].ifr_name)) {
 			struct ifreq ifreq;
 			struct sockaddr_in *ba = NULL;
+			struct sockaddr_in *sin = NULL;
 
 			memset (&ifreq, 0, sizeof (ifreq));
 
@@ -555,26 +710,84 @@ gdm_chooser_find_bcaddr (void)
 			/* paranoia */
 			ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
 
-			if (ioctl (sockfd, SIOCGIFFLAGS, &ifreq) < 0) 
+			if (ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0) 
 				gdm_chooser_warn ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
 
 			if ((ifreq.ifr_flags & IFF_UP) == 0 ||
 			    (ifreq.ifr_flags & IFF_BROADCAST) == 0 ||
-			    ioctl (sockfd, SIOCGIFBRDADDR, &ifreq) < 0)
+			    ioctl (sock, SIOCGIFBRDADDR, &ifreq) < 0)
 				continue;
 
 			ba = (struct sockaddr_in *) &ifreq.ifr_broadaddr;
 
-			ia = g_new0 (struct in_addr, 1);
+			sin = g_new0 (struct sockaddr_in, 1);
 
-			ia->s_addr = ba->sin_addr.s_addr;
-
-			bcaddr = g_slist_append (bcaddr, ia);
+			sin->sin_family = AF_INET;
+			memcpy (&sin->sin_addr, &ba->sin_addr, sizeof (ba->sin_addr));
+			bcaddr =  g_slist_append (bcaddr, sin);
 		}
 	}
 
 	g_free (buf);
 }
+
+/* Append multicast address into the list */
+#ifdef ENABLE_IPV6
+static void
+gdm_chooser_find_mcaddr (void)
+{
+	struct sockaddr_in6 *sin6;
+	int sock;       /* Temporary socket for getting information about available interfaces */
+	u_char loop = 0; /* Disable multicast for loopback interface */
+	int i, num;
+	char *buf;
+	/* For interfaces' list */
+	struct ifconf ifc;
+	struct ifreq *ifr = NULL;
+
+	sock = socket (AF_INET, SOCK_DGRAM, 0);
+#ifdef SIOCGIFNUM
+	if (ioctl (sock, SIOCGIFNUM, &num) < 0) {
+		num = 64;
+	}
+#else
+	num = 64;
+#endif
+	ifc.ifc_len = sizeof (struct ifreq) * num;
+	ifc.ifc_buf = buf = malloc (ifc.ifc_len);
+
+	if (setsockopt (sock, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, &loop, sizeof (loop)) < 0)
+		gdm_chooser_warn ("setsockopt: Can't disable loopback interface for multicasting\n");
+
+	if (ioctl (sock, SIOCGIFCONF, &ifc) >= 0)
+		ifr = ifc.ifc_req;
+		num = ifc.ifc_len / sizeof (struct ifreq); /* No of interfaces */
+		for (i = 0 ; i < num ; i++) {
+			struct ifreq ifreq;
+			int ifindex;
+                                                            
+			memset (&ifreq, 0, sizeof (ifreq));
+			strncpy (ifreq.ifr_name, ifr[i].ifr_name, sizeof (ifreq.ifr_name));
+			ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
+
+			if (ioctl (sock, SIOCGIFFLAGS, &ifreq) < 0)
+				gdm_chooser_warn ("Could not get interface flags for %s\n", ifr[i].ifr_name); 
+			ifindex = if_nametoindex (ifr[i].ifr_name);
+                                                            
+			if ((!(ifreq.ifr_flags & IFF_UP) || (!(ifreq.ifr_flags & IFF_MULTICAST))) || (ifindex == 0 )) {
+			/* Not a valid interface or Not up */
+				continue;
+			}
+
+			sin6 = g_new0 (struct sockaddr_in6, 1);
+			sin6->sin6_family = AF_INET6;
+			sin6->sin6_port = htons (XDM_UDP_PORT);
+			sin6->sin6_scope_id = ifindex;
+			inet_pton (AF_INET6, GdmMulticastAddr, &sin6->sin6_addr);
+			bcaddr = g_slist_append (bcaddr, sin6);   /* bcaddr is also serving for multicast address for IPv6 */
+		}
+}
+#endif
 
 static gboolean
 chooser_scan_time_update (gpointer data)
@@ -601,24 +814,80 @@ do_ping (gboolean full)
     struct sockaddr_in sock;
     GSList *bl = bcaddr;
     GSList *ql = queryaddr;
-    struct in_addr *ia;
+    struct sockaddr *ia;
+#ifdef ENABLE_IPV6
+    struct sockaddr_in6 sock6;
+
+    memset (&sock6, 0, sizeof (sock6));
+    sock6.sin6_family = AF_INET6;
+    sock6.sin6_port = htons (XDM_UDP_PORT);
+#endif
 
     sock.sin_family = AF_INET;
     sock.sin_port = htons (XDM_UDP_PORT);
 
     while (bl) {
-	    ia = (struct in_addr *) bl->data;
-	    sock.sin_addr.s_addr = ia->s_addr; 
-	    XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
+	    ia = (struct sockaddr *) bl->data;
+#ifdef ENABLE_IPV6
+            if (have_ipv6) {    /* Convert the IPv4 broadcast address to v4 mapped v6 address.*/
+		if (ia->sa_family == AF_INET) {
+		    char tmpaddr[30];
+		    struct in6_addr in6;
+
+		    sprintf (tmpaddr, "::ffff:%s", inet_ntoa(((struct sockaddr_in *)(ia))->sin_addr));
+		    inet_pton (AF_INET6, tmpaddr, &in6);
+		    memcpy (sock6.sin6_addr.s6_addr, in6.s6_addr, sizeof (struct in6_addr));
+		    XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock6, (int) sizeof (struct sockaddr_in6));
+		}
+
+		else if (ia->sa_family == AF_INET6) {
+		    memcpy (sock6.sin6_addr.s6_addr, ((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr, sizeof (struct in6_addr));
+		    XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock6, (int) sizeof (struct sockaddr_in6));
+		}
+	    }
+	    else
+#endif
+	    {
+		if (ia->sa_family == AF_INET) {
+		    sock.sin_addr.s_addr = ((struct sockaddr_in *)ia)->sin_addr.s_addr;
+		    XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
+		}
+	    }
 	    bl = bl->next;
     }
 
     while (ql != NULL) {
-	    ia = (struct in_addr *) ql->data;
-	    if (full ||
-		! gdm_host_known (ia)) {
-		    sock.sin_addr.s_addr = ia->s_addr;
+	    ia = (struct sockaddr *) ql->data;
+
+#ifdef ENABLE_IPV6
+	    if (have_ipv6) {
+		if (ia->sa_family == AF_INET) {
+		    char tmpaddr[30];
+		    struct in6_addr in6;
+
+		    sprintf (tmpaddr, "::ffff:%s", inet_ntoa(((struct sockaddr_in *)(ia))->sin_addr));
+		    inet_pton (AF_INET6, tmpaddr, &in6);
+
+		    if (full || ! gdm_host_known ((char *)&((struct sockaddr_in6 *)ia)->sin6_addr, AF_INET6)) {
+			memcpy (sock6.sin6_addr.s6_addr, in6.s6_addr, sizeof (struct in6_addr));
+			XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock6, (int) sizeof (struct sockaddr_in6));
+		    }
+		}
+
+		if (ia->sa_family == AF_INET6) {
+		    if (full || ! gdm_host_known ((char *)&((struct sockaddr_in6 *)ia)->sin6_addr, AF_INET6)) {
+			memcpy (&sock6.sin6_addr, &((struct sockaddr_in6 *)ia)->sin6_addr, sizeof (struct in6_addr));
+			XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock6, (int) sizeof (struct sockaddr_in6));
+		    }
+		}
+	    }
+	    else
+#endif
+	    {
+		if (full || ! gdm_host_known ((char *)&((struct sockaddr_in *)ia)->sin_addr, AF_INET)) {
+		    sock.sin_addr.s_addr = ((struct sockaddr_in *)ia)->sin_addr.s_addr;
 		    XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
+		}
 	    }
 	    ql = ql->next;
     }
@@ -643,6 +912,9 @@ gdm_chooser_xdmcp_discover (void)
 
     g_free (added_host);
     added_host = NULL;
+#ifdef ENABLE_IPV6
+    added6_addr = NULL;
+#endif
     added_addr = NULL;
     if (add_check_handler > 0)
 	    g_source_remove (add_check_handler);
@@ -707,8 +979,12 @@ static void
 gdm_chooser_add_hosts (char **hosts)
 {
 	struct hostent *hostent;
-	struct sockaddr_in qa;
-	struct in_addr *ia;
+#ifdef ENABLE_IPV6
+	struct sockaddr_in6 *qa6 = NULL;
+	struct addrinfo hints, *result, *res;
+#endif
+	struct sockaddr_in* qa = NULL;
+	int used_addr = 0;
 	int i;
 
 	for (i = 0; hosts != NULL && hosts[i] != NULL; i++) {
@@ -718,23 +994,97 @@ gdm_chooser_add_hosts (char **hosts)
 			gdm_chooser_find_bcaddr ();
 			continue;
 		}
-		if (strlen (name) == 8 &&
-		    from_hex (name, (char *) &qa.sin_addr, strlen (name)) == 0)
-			qa.sin_family = AF_INET;
-		else if ((qa.sin_addr.s_addr = inet_addr (name)) != -1)
-			qa.sin_family = AF_INET;
-		else if ((hostent = gethostbyname (name)) != NULL
+#ifdef ENABLE_IPV6
+		if (strcmp (name, "MULTICAST") == 0) {
+			gdm_chooser_find_mcaddr ();
+			continue;
+		}
+#endif
+		if (used_addr == AF_INET || !qa) {
+			qa = g_new0 (struct sockaddr_in, 1);
+			memset (qa, 0, sizeof (*qa));
+			qa->sin_family = AF_INET;
+		}
+#ifdef ENABLE_IPV6
+		if (used_addr == AF_INET6 || !qa6) {
+			 qa6 = g_new0 (struct sockaddr_in6, 1);
+			 memset (qa6, 0, sizeof (qa6));
+			 qa6->sin6_family = AF_INET6;
+		}
+
+		result = NULL;
+		memset (&hints, 0, sizeof (hints));
+		hints.ai_socktype = SOCK_STREAM;
+
+		if ((strlen (name) == 32) && from_hex (name, (char *) &qa6->sin6_addr, strlen (name)) == 0) {
+			queryaddr = g_slist_append (queryaddr, qa6);
+			g_free (qa);
+			qa = NULL;
+			used_addr = AF_INET6;
+		}
+		else
+#endif
+		if ((strlen (name) == 8) && (from_hex (name, (char *) &qa->sin_addr, strlen (name)) == 0)) {
+			queryaddr = g_slist_append (queryaddr, qa);
+#ifdef ENABLE_IPV6
+			g_free (qa6);
+			qa6 = NULL;
+#endif
+			used_addr = AF_INET;
+		}
+		else
+#ifdef ENABLE_IPV6
+		if (inet_pton (AF_INET6, name, &qa6->sin6_addr) > 0) {
+			queryaddr = g_slist_append (queryaddr, qa6);
+			g_free (qa);
+			qa = NULL;
+			used_addr = AF_INET6;
+		}
+		else
+#endif
+		if ((qa->sin_addr.s_addr = inet_addr (name)) != -1) {
+			queryaddr = g_slist_append (queryaddr, qa);
+#ifdef ENABLE_IPV6
+			g_free (qa6);
+			qa6 = NULL;
+#endif
+			used_addr = AF_INET;
+		}
+		else
+#ifdef ENABLE_IPV6
+		if (getaddrinfo (name, NULL, &hints, &result) == 0) {
+			for (res = result; res; res = res->ai_next) {
+				if (res && res->ai_family == AF_INET6) {
+					memmove (qa6, res->ai_addr, res->ai_addrlen);
+					queryaddr = g_slist_append (queryaddr, qa6);
+					g_free (qa);
+					qa = NULL;
+					used_addr = AF_INET6;
+                           }
+				if (res && res->ai_family == AF_INET) {
+					memmove (qa, res->ai_addr, res->ai_addrlen);
+					queryaddr = g_slist_append (queryaddr, qa);
+					g_free (qa6);
+					qa6 = NULL;
+					used_addr = AF_INET;
+				}
+			}
+		} else
+#endif
+		if ((hostent = gethostbyname (name)) != NULL
 			 && hostent->h_addrtype == AF_INET
 			 && hostent->h_length == 4) {
-			qa.sin_family = AF_INET;
-			memmove (&qa.sin_addr, hostent->h_addr, 4);
+			qa->sin_family = AF_INET;
+			memmove (&qa->sin_addr, hostent->h_addr, 4);
+			queryaddr = g_slist_append (queryaddr, qa);
+#ifdef ENABLE_IPV6
+			g_free (qa6);
+			qa6 = NULL;
+#endif
+			used_addr = AF_INET;
 		} else {
 			continue; /* not a valid address */
 		}
-
-		ia = g_new0 (struct in_addr, 1);
-		ia->s_addr = qa.sin_addr.s_addr;
-		queryaddr = g_slist_append (queryaddr, ia);
 	}
 
 	if (bcaddr == NULL &&
@@ -749,8 +1099,17 @@ gdm_chooser_xdmcp_init (char **hosts)
     gint sockopts = 1;
 
     /* Open socket for communication */
-    if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) == -1)
-	gdm_chooser_abort ("Could not create socket()!");
+#ifdef ENABLE_IPV6
+    if ((sockfd = socket (AF_INET6, SOCK_DGRAM, 0)) == -1)
+	have_ipv6 = FALSE;
+    else
+	have_ipv6 = TRUE;
+#endif
+    if (have_ipv6 == FALSE) {
+	if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) == -1) {
+	    gdm_chooser_abort ("Could not create socket()!");
+	}
+    }
 
     if (setsockopt (sockfd, SOL_SOCKET, SO_BROADCAST, (char *) &sockopts, sizeof (sockopts)) < 0)
 	gdm_chooser_abort ("Could not set socket options!");
@@ -787,11 +1146,18 @@ static void
 gdm_chooser_choose_host (const char *hostname)
 {
   ARRAY8 tmparr;
+#ifndef ENABLE_IPV6
   struct hostent *hentry;
+#endif
 
   printf ("%s\n", curhost->name);
   fflush (stdout);
   if (xdm_address != NULL) {
+#ifdef ENABLE_IPV6
+      int status;
+      struct sockaddr_in6 in6_addr;
+      struct addrinfo hints, *result;
+#endif
       struct sockaddr_in in_addr;
       char xdm_addr[32];
       char client_addr[32];
@@ -799,21 +1165,37 @@ gdm_chooser_choose_host (const char *hostname)
       char buf[1024];
       XdmcpBuffer buffer;
       long family, port, addr;
+
       if (strlen (xdm_address) > 64 ||
 	  from_hex (xdm_address, xdm_addr, strlen (xdm_address)) != 0)
 	      gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid xdm address.");
 
       family = (xdm_addr[0] << 8) | xdm_addr[1];
       port = (xdm_addr[2] << 8) | xdm_addr[3];
-      addr = (xdm_addr[4] << 24) | (xdm_addr[5] << 16) | (xdm_addr[6] << 8) | xdm_addr[7];
-      in_addr.sin_family = AF_INET;
-      in_addr.sin_port = htons (port);
-      in_addr.sin_addr.s_addr = htonl (addr);
-      if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't create response socket.");
 
-      if (connect (fd, (struct sockaddr *) &in_addr, sizeof (in_addr)) == -1)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
+#ifdef ENABLE_IPV6
+      if (family == AF_INET6) {
+	      memset (&in6_addr, 0, sizeof (in6_addr));
+	      in6_addr.sin6_port = htons (port);
+	      in6_addr.sin6_family = AF_INET6;
+	      memcpy (&in6_addr.sin6_addr, &xdm_address[4], 16);
+	      if ((fd = socket (PF_INET6, SOCK_STREAM, 0)) == -1)
+		      gdm_chooser_abort ("gdm_chooser_choose_host: Couldn't create response socket.");
+	      if (connect (fd, (struct sockaddr *) &in6_addr, sizeof (in6_addr)) == -1)
+		      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
+      } else
+#endif
+      {
+	      addr = (xdm_addr[4] << 24) | (xdm_addr[5] << 16) | (xdm_addr[6] << 8) | xdm_addr[7];
+	      in_addr.sin_family = AF_INET;
+	      in_addr.sin_port = htons (port);
+	      in_addr.sin_addr.s_addr = htonl (addr);
+	      if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1)
+		      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't create response socket.");
+
+	      if (connect (fd, (struct sockaddr *) &in_addr, sizeof (in_addr)) == -1)
+		      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
+      }
       buffer.data = (BYTE *) buf;
       buffer.size = sizeof (buf);
       buffer.pointer = 0;
@@ -825,6 +1207,22 @@ gdm_chooser_choose_host (const char *hostname)
       tmparr.length = strlen (client_address) / 2;
       XdmcpWriteARRAY8 (&buffer, &tmparr);
       XdmcpWriteCARD16 (&buffer, (CARD16) connection_type);
+#ifdef ENABLE_IPV6
+      result = NULL;
+      memset (&hints, 0, sizeof (hints));
+      hints.ai_socktype = SOCK_STREAM;
+
+      status = getaddrinfo (hostname, NULL, &hints, &result);
+
+      if (status != 0)
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't get host entry for %s", hostname);
+
+      if (result->ai_family == AF_INET6)
+	      tmparr.length = 16;
+      if (result->ai_family == AF_INET)
+	      tmparr.length = 4;
+      tmparr.data = (BYTE *) result->ai_addr;
+#else
       hentry = gethostbyname (hostname);
       if (!hentry)
 	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't get host entry for %s", hostname);
@@ -832,6 +1230,7 @@ gdm_chooser_choose_host (const char *hostname)
       tmparr.data = (BYTE *) hentry->h_addr_list[0]; /* XXX */
       tmparr.length = 4;
 
+#endif
       XdmcpWriteARRAY8 (&buffer, &tmparr);
       write (fd, (char *) buffer.data, buffer.pointer);
       close (fd);
@@ -841,7 +1240,17 @@ gdm_chooser_choose_host (const char *hostname)
 static gboolean
 add_check (gpointer data)
 {
-	if (added_addr != NULL) {
+gboolean check = FALSE;
+
+#ifdef ENABLE_IPV6
+	if (have_ipv6 && added6_addr != NULL)
+		check = TRUE;
+	else
+#endif
+	if ((! have_ipv6) && added_addr != NULL)
+		check = TRUE;
+
+	if (check) {
 		GtkWidget *dialog;
 
 		dialog = ve_hig_dialog_new
@@ -875,61 +1284,130 @@ void
 gdm_chooser_add_host (void)
 {
 	struct hostent *hostent;
-	struct sockaddr_in qa;
-	struct in_addr *ia;
-	GdmChooserHost *host;
+	struct sockaddr_in *qa;
+	GdmChooserHost *host = NULL;
 	struct sockaddr_in sock;
+	gboolean status  = FALSE;
 	const char *name;
+#ifdef ENABLE_IPV6
+	struct sockaddr_in6 *qa6;
+	struct sockaddr_in6 sock6;
+	struct addrinfo hints, *result;
+
+	result = NULL;
+	memset (&hints, 0, sizeof (hints));
+	hints.ai_socktype = SOCK_DGRAM;
+#endif
 
 	name = gtk_entry_get_text (GTK_ENTRY (add_entry));
 	if (ve_string_empty (name))
 		return;
 
-	if (strlen (name) == 8 &&
-	    from_hex (name, (char *) &qa.sin_addr, strlen (name)) == 0)
-		qa.sin_family = AF_INET;
-	else if ((qa.sin_addr.s_addr = inet_addr (name)) != -1)
-		qa.sin_family = AF_INET;
-	else if ((hostent = gethostbyname (name)) != NULL
-		 && hostent->h_addrtype == AF_INET
-		 && hostent->h_length == 4) {
-		qa.sin_family = AF_INET;
-		memmove (&qa.sin_addr, hostent->h_addr, 4);
+	qa = g_new0 (struct sockaddr_in, 1);
+	qa->sin_family = AF_INET;
+#ifdef ENABLE_IPV6
+	qa6 = g_new0 (struct sockaddr_in6, 1);
+	qa6->sin6_family = AF_INET6;
+
+	if (have_ipv6 && strlen (name) == 32 && from_hex (name, (char *) &qa6->sin6_addr, strlen (name)) == 0) ;
+
+	else
+#endif
+	if (strlen (name) == 8 && from_hex (name, (char *) &qa->sin_addr, strlen (name)) == 0) {
+#ifdef ENABLE_IPV6
+		if (have_ipv6) {
+			char tmpaddr[30];
+
+			sprintf (tmpaddr, "::ffff:%s", inet_ntoa (qa->sin_addr));
+			inet_pton (AF_INET6, tmpaddr, &qa6->sin6_addr);
+		}
+#endif
+	}
+	else
+#ifdef ENABLE_IPV6
+	if (have_ipv6 && inet_pton (AF_INET6, name, &qa6->sin6_addr) > 0) ;
+	else
+#endif
+	if (inet_aton (name, &(qa->sin_addr))) {
+#ifdef ENABLE_IPV6
+		if (have_ipv6) {
+			char tmpaddr[30];
+
+			sprintf (tmpaddr, "::ffff:%s", inet_ntoa (qa->sin_addr));
+			inet_pton (AF_INET6, tmpaddr, &qa6->sin6_addr);
+		}
+#endif
+	}
+	else
+#ifdef ENABLE_IPV6
+	if (getaddrinfo (name, NULL, &hints, &result) == 0) {
+		if (result->ai_family == AF_INET6) {
+			memcpy (qa6, (struct sockaddr_in6 *)result->ai_addr, result->ai_addrlen);
+		}
+		else if (result->ai_family == AF_INET) {
+			if (have_ipv6) {
+				char tmpaddr [30];
+
+				sprintf (tmpaddr, "::ffff:%s", inet_ntoa(((struct sockaddr_in *)result->ai_addr)->sin_addr));
+				inet_pton (AF_INET6, tmpaddr, &qa6->sin6_addr);
+			}
+		}
+	}
+	else
+#endif
+	if ((hostent = gethostbyname (name)) != NULL && hostent->h_addrtype == AF_INET && hostent->h_length == 4) {
+					memmove (&qa->sin_addr, hostent->h_addr, 4);
 	} else {
-		GtkWidget *dialog;
+					GtkWidget *dialog;
 
-		dialog = ve_hig_dialog_new
-			(GTK_WINDOW (chooser) /* parent */,
-			 GTK_DIALOG_MODAL /* flags */,
-			 GTK_MESSAGE_ERROR,
-			 GTK_BUTTONS_OK,
-			 FALSE /* markup */,
-			 _("Cannot find host"),
-			 _("I cannot find the host \"%s\", "
-			   "perhaps you have mistyped it."),
-			 name);
+					dialog = ve_hig_dialog_new
+					(GTK_WINDOW (chooser) /* parent */,
+					 GTK_DIALOG_MODAL /* flags */,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 FALSE,
+					 _("Cannot find host"),
+					 _("I cannot find the host \"%s\", "
+					   "perhaps you have mistyped it."),
+					 name);
 
-		if (RUNNING_UNDER_GDM)
-			gdm_wm_center_window (GTK_WINDOW (dialog));
+					if (RUNNING_UNDER_GDM)
+						gdm_wm_center_window (GTK_WINDOW (dialog));
 
-		gdm_wm_no_login_focus_push ();
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
-		gdm_wm_no_login_focus_pop ();
-		return; /* not a valid address */
+					gdm_wm_no_login_focus_push ();
+					gtk_dialog_run (GTK_DIALOG (dialog));
+					gtk_widget_destroy (dialog);
+					gdm_wm_no_login_focus_pop ();
+					return; /* not a valid address */
+				}
+#ifdef ENABLE_IPV6
+	if (have_ipv6) {
+		memset (&sock6, 0, sizeof (struct sockaddr_in6));
+		sock6.sin6_family = AF_INET6;
+		sock6.sin6_port = htons (XDM_UDP_PORT);
+		status = gdm_addr_known ((char *)&qa6->sin6_addr, AF_INET6);
+		if (status == FALSE) {
+			queryaddr = g_slist_append (queryaddr, qa6);
+		}
+		if (IN6_IS_ADDR_V4MAPPED (&qa6->sin6_addr)) {
+			memcpy (&qa->sin_addr, &(qa6->sin6_addr.s6_addr[12]), 4);
+			host = gdm_host_known ((char *) &qa->sin_addr, AF_INET);
+		}
+		else
+			host = gdm_host_known ((char *) &qa6->sin6_addr, AF_INET6);
+	} else
+#endif
+	{
+		memset (&sock, 0, sizeof (struct sockaddr_in));
+		sock.sin_family = AF_INET;
+		sock.sin_port = htons (XDM_UDP_PORT);
+		status = gdm_addr_known ((char *)&qa->sin_addr, AF_INET);
+		if (status == FALSE) {
+			queryaddr = g_slist_append (queryaddr, qa);
+		}
+		host = gdm_host_known ((char *) &qa->sin_addr, AF_INET);
 	}
 
-	sock.sin_family = AF_INET;
-	sock.sin_port = htons (XDM_UDP_PORT);
-
-	ia = gdm_addr_known (&qa.sin_addr);
-	if (ia == NULL) {
-		ia = g_new0 (struct in_addr, 1);
-		ia->s_addr = qa.sin_addr.s_addr;
-		queryaddr = g_slist_append (queryaddr, ia);
-	}
-
-	host = gdm_host_known (ia);
 	if (host != NULL) {
 		GtkTreeIter iter = {0};
 		if (find_host_in_list (host, &iter)) {
@@ -945,11 +1423,20 @@ gdm_chooser_add_host (void)
 		} else {
 			/* hmm, probably not willing, ping the host then for
 			   good measure */
-			sock.sin_addr.s_addr = ia->s_addr;
-			XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock,
-				    (int)sizeof (struct sockaddr_in));
-
-			added_addr = ia;
+#ifdef ENABLE_IPV6
+			if (have_ipv6) {
+				memcpy (&sock6.sin6_addr, &qa6->sin6_addr, sizeof (qa6->sin6_addr));
+				XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock6, (int) sizeof (struct sockaddr_in6));
+				added6_addr = &qa6->sin6_addr;
+				if (IN6_IS_ADDR_V4MAPPED (added6_addr))
+					added_addr = (struct in_addr *)&(qa6->sin6_addr.s6_addr[12]);
+			} else
+#endif
+			{
+				sock.sin_addr.s_addr = qa->sin_addr.s_addr;
+				XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
+				added_addr = &qa->sin_addr;
+			}
 			g_free (added_host);
 			added_host = g_strdup (name);
 
@@ -963,15 +1450,26 @@ gdm_chooser_add_host (void)
 		gtk_entry_set_text (GTK_ENTRY (add_entry), "");
 		return;
 	}
+#ifdef ENABLE_IPV6
+	if (have_ipv6) {
+		added6_addr = &qa6->sin6_addr;
 
-	added_addr = ia;
+		if (IN6_IS_ADDR_V4MAPPED (added6_addr))
+			added_addr = (struct in_addr *)&(qa6->sin6_addr.s6_addr[12]);
+
+		memcpy (&sock6.sin6_addr, &qa6->sin6_addr, sizeof (struct in6_addr));
+		XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock6, (int)sizeof (struct sockaddr_in6));
+	} else
+#endif
+	{
+		added_addr = &qa->sin_addr;
+
+		/* and send out the query */
+		sock.sin_addr.s_addr = qa->sin_addr.s_addr;
+		XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
+	}
 	g_free (added_host);
 	added_host = g_strdup (name);
-
-	/* and send out the query */
-	sock.sin_addr.s_addr = ia->s_addr;
-	XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
-
 	if (add_check_handler > 0)
 		g_source_remove (add_check_handler);
 	add_check_handler = g_timeout_add (ADD_TIMEOUT,
@@ -979,6 +1477,13 @@ gdm_chooser_add_host (void)
 
 	/* empty the text entry to indicate success */
 	gtk_entry_set_text (GTK_ENTRY (add_entry), "");
+
+	if (have_ipv6)
+		g_free (qa);
+#ifdef ENABLE_IPV6
+	else
+		g_free (qa6);
+#endif
 }
 
 void
@@ -1073,6 +1578,10 @@ gdm_chooser_parse_config (void)
 
     GdmBackgroundColor = ve_config_get_string (cfg, GDM_KEY_BACKGROUNDCOLOR);
     GdmBackgroundType = ve_config_get_int (cfg, GDM_KEY_BACKGROUNDTYPE);
+#ifdef ENABLE_IPV6
+    GdmMulticast = ve_config_get_bool (cfg, GDM_KEY_MULTICAST);
+    GdmMulticastAddr = ve_config_get_string (cfg, GDM_KEY_MULTICAST_ADDR);
+#endif
 
     GdmAllowAdd = ve_config_get_bool (cfg, GDM_KEY_ALLOWADD);
 
@@ -1092,6 +1601,16 @@ gdm_chooser_parse_config (void)
 	    }
     }
 
+#ifdef ENABLE_IPV6
+    if (GdmMulticast) {
+	    if (ve_string_empty (GdmHosts)) {
+		    g_free (GdmHosts);
+		    GdmHosts = "MULTICAST";
+	    } else {
+		    GdmHosts = g_strconcat (GdmHosts, ",MULTICAST", NULL);
+	    }
+    }
+#endif
     if (GdmScanTime < 1) GdmScanTime = 1;
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
     if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;

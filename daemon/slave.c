@@ -2818,7 +2818,10 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 {
 	GdmHostent *host;
 	struct in_addr ia;
-	char *str;
+#ifdef ENABLE_IPV6
+	struct sockaddr_storage ss;
+#endif
+	char *str = NULL;
 
 	host = gdm_gethostbyname (hostname);
 
@@ -2828,6 +2831,26 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 		return;
 	}
 	/* take first address */
+#ifdef ENABLE_IPV6
+	memcpy (&ss, &host->addrs[0], sizeof (struct sockaddr_storage));
+	if (ss.ss_family == AF_INET6) {
+		struct in6_addr ia6;
+		char buffer6[INET6_ADDRSTRLEN];
+
+		memcpy (&ia6, &((struct sockaddr_in6 *)&ss)->sin6_addr, sizeof (struct in6_addr));
+		gdm_hostent_free (host);
+		gdm_debug ("Sending chosen host address (%s) %s", hostname, inet_ntop (AF_INET6, &ia6, buffer6, sizeof (buffer6)));
+		str = g_strdup_printf ("%s %d %s", GDM_SOP_CHOSEN, disp->indirect_id, buffer6);
+	}
+	else if (ss.ss_family == AF_INET) {
+		char buffer[INET_ADDRSTRLEN];
+
+		memcpy (&ia, &((struct sockaddr_in *)&ss)->sin_addr, sizeof (struct in_addr));
+		gdm_hostent_free (host);
+		gdm_debug ("Sending chosen host address (%s) %s", hostname, inet_ntop (AF_INET, &ia, buffer, sizeof (buffer)));
+		str = g_strdup_printf ("%s %d %s", GDM_SOP_CHOSEN, disp->indirect_id, buffer);
+	}
+#else
 	ia = host->addrs[0];
 	gdm_hostent_free (host);
 
@@ -2838,6 +2861,7 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 			       disp->indirect_id,
 			       inet_ntoa (ia));
 
+#endif
 	gdm_slave_send (str, FALSE);
 
 	g_free (str);

@@ -300,6 +300,9 @@ get_local_auths (GdmDisplay *d)
 {
     gboolean is_local = FALSE;
     const char lo[] = {127,0,0,1};
+#ifdef ENABLE_IPV6
+    const char lo6[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+#endif
     guint i;
     const GList *local_addys = NULL;
     gboolean added_lo = FALSE;
@@ -323,12 +326,33 @@ get_local_auths (GdmDisplay *d)
 	    is_local = TRUE;
     } else  {
 	    is_local = FALSE;
-	    if (gdm_is_local_addr (&(d->addr)))
-		    is_local = TRUE;
-	    for (i = 0; ! is_local && i < d->addr_count; i++) {
-		    if (gdm_is_local_addr (&(d->addrs[i]))) {
+#ifdef ENABLE_IPV6
+	    if (d->addrtype == AF_INET6) {
+		    if (gdm_is_local_addr6 (&(d->addr6)))
 			    is_local = TRUE;
-			    break;
+	    }
+	    else
+#endif
+	    {
+		    if (gdm_is_local_addr (&(d->addr)))
+			    is_local = TRUE;
+	    }
+
+	    for (i = 0; ! is_local && i < d->addr_count; i++) {
+#ifdef ENABLE_IPV6
+		    if (d->addrs[i].ss_family == AF_INET6) {
+			    if (gdm_is_local_addr6 (&((struct sockaddr_in6 *)(&(d->addrs[i])))->sin6_addr)) {
+				    is_local = TRUE;
+				    break;
+			    }
+		    }
+		    else
+#endif
+		    {
+			    if (gdm_is_local_addr (&((struct sockaddr_in *)(&(d->addrs[i])))->sin_addr)) {
+				    is_local = TRUE;
+				    break;
+			    }
 		    }
 	    }
     }
@@ -374,51 +398,100 @@ get_local_auths (GdmDisplay *d)
     if ( ! SERVER_IS_LOCAL (d)) {
 	    /* we should write out an entry for d->addr since
 	       possibly it is not in d->addrs */
-	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
-				   (char *)&(d->addr), 4))
+#ifdef ENABLE_IPV6
+	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, (char *)((d->addr6).s6_addr), sizeof (struct in6_addr)))
+		    goto get_local_auth_error;
+	    else
+#endif
+	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, (char *)&(d->addr), sizeof (struct in_addr)))
 		    goto get_local_auth_error;
 
-	    if (gdm_is_loopback_addr (&(d->addr)))
-		    added_lo = TRUE;
+#ifdef ENABLE_IPV6
+	    if (d->addrtype == AF_INET6 &&  gdm_is_loopback_addr6 (&(d->addr6)))
+		added_lo = TRUE;
+#endif
+	    if (d->addrtype == AF_INET && gdm_is_loopback_addr (&(d->addr)))
+		added_lo = TRUE;
     }
     
     /* Network access: Write out an authentication entry for each of
      * this host's official addresses */
     for (i = 0; i < d->addr_count; i++) {
-	    struct in_addr *ia = &(d->addrs[i]);
+#ifdef ENABLE_IPV6
+	    struct in6_addr *ia6;
+#endif   
+	    struct in_addr *ia;
 
-	    if (memcmp (ia, &(d->addr), sizeof (struct in_addr)) == 0)
-		    continue;
+#ifdef ENABLE_IPV6
+	    if (d->addrs[i].ss_family == AF_INET6) {
+		    ia6 = &(((struct sockaddr_in6 *)(&(d->addrs[i])))->sin6_addr);
+		    if (memcmp (ia6, &(d->addr6), sizeof (struct in6_addr)) == 0)
+			    continue;
 
-	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
-				   (char *)&ia->s_addr, 4))
-		    goto get_local_auth_error;
+		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, (char *)(ia6->s6_addr), sizeof (struct in6_addr)))
+			    goto get_local_auth_error;
 
-	    if (gdm_is_loopback_addr (ia))
-		    added_lo = TRUE;
+		    if (gdm_is_loopback_addr6 (ia6))
+			    added_lo = TRUE;
+	    }
+	    else
+#endif   
+	    {
+		    ia = &(((struct sockaddr_in *)(&(d->addrs[i])))->sin_addr);
+		    if (memcmp (ia, &(d->addr), sizeof (struct in_addr)) == 0)
+			    continue;
+
+		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, (char *)&ia->s_addr, sizeof (struct in_addr)))
+			    goto get_local_auth_error;
+
+		    if (gdm_is_loopback_addr (ia))
+			    added_lo = TRUE;
+	    }
     }
 
     /* Network access: Write out an authentication entry for each of
      * this host's local addresses if any */
     for (; local_addys != NULL; local_addys = local_addys->next) {
-	    struct in_addr *ia = (struct in_addr *) local_addys->data;
+	    struct sockaddr *ia = (struct sockaddr *) local_addys->data;
 
 	    if (ia == NULL)
 		    break;
 
-	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
-				   (char *)&ia->s_addr, 4))
-		    goto get_local_auth_error;
+#ifdef ENABLE_IPV6
+	    if (ia->sa_family == AF_INET6) {
+		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, (char *)(((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr), sizeof (struct in6_addr)))
+			    goto get_local_auth_error;
 
-	    if (gdm_is_loopback_addr (ia))
-		    added_lo = TRUE;
+		    if (gdm_is_loopback_addr6 (&((struct sockaddr_in6 *)ia)->sin6_addr))
+			    added_lo = TRUE;
+	    }
+	    else
+#endif
+	    {
+		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, (char *)&((struct sockaddr_in *)ia)->sin_addr, sizeof (struct in_addr)))
+			    goto get_local_auth_error;
+
+		    if (gdm_is_loopback_addr (&((struct sockaddr_in *)ia)->sin_addr))
+			    added_lo = TRUE;
+
+	    }
     }
 
     /* if local server add loopback */
     if (SERVER_IS_LOCAL (d) && ! added_lo && ! d->tcp_disallowed) {
-	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
-				   lo, 4))
-		    goto get_local_auth_error;
+
+#ifdef ENABLE_IPV6
+	    if (d->addrtype == AF_INET6) {
+		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, lo6, sizeof (struct in6_addr)))
+			    goto get_local_auth_error;
+	    }
+	    else
+#endif
+	    {
+		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, lo, sizeof (struct in_addr)))
+			    goto get_local_auth_error;
+	    }
+
     }
 
     if G_UNLIKELY (GdmDebug)

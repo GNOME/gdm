@@ -323,7 +323,12 @@ HostImageDir=@EXPANDED_DATADIR@/hosts/
 # reach.
 Hosts=
 # Broadcast a query to get all hosts on the current network that answer
-#Broadcast=true
+Broadcast=true
+# Set it to true if you want to send a multicast query to hosts.
+Multicast=false
+# It is an IPv6 multicast address.It is hardcoded here and will be replaced when
+# officially registered xdmcp multicast address of TBD will be available
+#Multicast_Addr=ff02::1
 # Allow adding random hosts to the list by typing in their names
 #AllowAdd=true
 

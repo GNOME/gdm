@@ -685,7 +685,6 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     gdm_server_spawn (d, vtarg);
 
     /* we can now use d->handled since that's set up above */
-
     do_server_wait (d);
 
     /* If we were holding a vt open for the server, close it now as it has
@@ -1281,7 +1280,7 @@ gdm_server_alloc (gint id, const gchar *command)
     d->name = g_strdup_printf (":%d", id);  
     d->hostname = g_strdup (hostname);
     /* Not really used for not XDMCP */
-    memset (&(d->addr), 0, sizeof (struct in_addr));
+    memset (&(d->addr), 0, sizeof (d->addr));
     d->dispnum = id;
     d->servpid = 0;
     d->servstat = SERVER_DEAD;
