@@ -1169,7 +1169,7 @@ gdm_login_session_init (GtkWidget *menu)
     cursess = LAST_SESSION;
     item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_SESSION));
     gtk_object_set_data (GTK_OBJECT (item),
-			 "SessionName",
+			 SESSION_NAME,
 			 LAST_SESSION);
     sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
     gtk_menu_append (GTK_MENU (menu), item);
@@ -1211,6 +1211,7 @@ gdm_login_session_init (GtkWidget *menu)
 	/* Ignore backups and rpmsave files */
 	if ((strstr (dent->d_name, "~")) ||
 	    (strstr (dent->d_name, ".rpmsave")) ||
+	    (strstr (dent->d_name, ".rpmorig")) ||
 	    (strstr (dent->d_name, ".dpkg-old")) ||
 	    (strstr (dent->d_name, ".deleted")) ||
 	    (strstr (dent->d_name, ".desc")) /* description file */ ||
@@ -1244,7 +1245,7 @@ gdm_login_session_init (GtkWidget *menu)
 	    {
 		item = gtk_radio_menu_item_new_with_label (sessgrp, _(dent->d_name));
 		gtk_object_set_data_full (GTK_OBJECT (item),
-					  "SessionName",
+					  SESSION_NAME,
 					  g_strdup (dent->d_name),
 					  (GtkDestroyNotify) g_free);
 
@@ -1291,7 +1292,7 @@ gdm_login_session_init (GtkWidget *menu)
 				   "use."),
 				 NULL);
 			gtk_object_set_data (GTK_OBJECT (item),
-					     "SessionName",
+					     SESSION_NAME,
 					     GDM_SESSION_GNOME_CHOOSER);
 
 			sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
@@ -1337,7 +1338,7 @@ gdm_login_session_init (GtkWidget *menu)
 			    "session."),
 			  NULL);
     gtk_object_set_data (GTK_OBJECT (item),
-			 "SessionName", GDM_SESSION_FAILSAFE_GNOME);
+			 SESSION_NAME, GDM_SESSION_FAILSAFE_GNOME);
 
     sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
     sessions = g_slist_append (sessions,
@@ -1360,7 +1361,7 @@ gdm_login_session_init (GtkWidget *menu)
 			    "type 'exit'."),
 			  NULL);
     gtk_object_set_data (GTK_OBJECT (item),
-			 "SessionName", GDM_SESSION_FAILSAFE_XTERM);
+			 SESSION_NAME, GDM_SESSION_FAILSAFE_XTERM);
 
     sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
     sessions = g_slist_append (sessions,
@@ -1816,7 +1817,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	/* HAAAAAAACK.  Sometimes pam send many many messages, SO
+	/* HAAAAAAACK.  Sometimes pam sends many many messages, SO
 	 * we try to collect them until the next prompt or reset or
 	 * whatnot */
 	if ( ! replace_msg) {
@@ -1890,6 +1891,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 			usleep (200);
 		}
 	}
+	/* fall thru to reset */
 
     case GDM_RESETOK:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
