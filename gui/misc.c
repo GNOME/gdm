@@ -23,6 +23,79 @@
 
 #include "misc.h"
 
-/* For now empty */
+#define INDEX_FILE1 "index.theme"
+#define INDEX_FILE2 "index.theme.disabled"
+
+static char *
+gdm_get_font (const char *theme_name)
+{
+	char *font_name;
+	char *theme_dir;
+	char *file_name;
+	char buf[512];
+	GtkStyle *style;
+	FILE *fp;
+
+	style = gtk_widget_get_default_style ();
+	font_name = pango_font_description_to_string (style->font_desc);
+
+	theme_dir = gtk_rc_get_theme_dir ();
+	file_name = g_build_filename (theme_dir, theme_name, INDEX_FILE1, NULL);
+	if ( ! g_file_test (file_name, G_FILE_TEST_EXISTS)) {
+		g_free (file_name);
+		file_name = g_build_filename (theme_dir, theme_name, INDEX_FILE2, NULL);
+		if ( ! g_file_test (file_name, G_FILE_TEST_EXISTS)) {
+			g_free (theme_dir);
+			g_free (file_name);
+			return font_name;
+		}
+	} 
+	g_free (theme_dir);
+
+	/*
+	 * FIXME: this is evil!
+	 */
+	fp = fopen (file_name, "r");
+	if (fp != NULL) {
+		while (fgets (buf, 512, fp) != NULL) {
+			if (strncmp ("ApplicationFont", buf, 15) == 0) {
+				char *tmp_name;
+				tmp_name = strchr (buf, '=');
+
+				if (tmp_name != NULL) {
+					g_free (font_name);
+					font_name = strdup (tmp_name + 1);
+				}
+
+				fclose (fp);
+				g_free (file_name);
+				return font_name;
+			}
+		}
+		fclose (fp);
+	}
+	g_free (file_name);
+	return font_name;
+}
+
+/* perhaps needs to do something like:
+    login_window_resize (FALSE);
+    gdm_wm_center_window (GTK_WINDOW (login));
+   after calling if doing during runtime
+  */
+void
+gdm_set_theme (const char *theme_name)
+{
+	char *font_name;
+	GtkSettings *settings = gtk_settings_get_default ();
+
+	font_name = gdm_get_font (theme_name);
+
+	gtk_settings_set_string_property (settings,
+					  "gtk-theme-name", theme_name, "gdm");
+	gtk_settings_set_string_property (settings,
+					  "gtk-font-name", font_name, "gdm");
+	g_free (font_name);
+}
 
 /* EOF */

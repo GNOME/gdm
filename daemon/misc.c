@@ -1473,9 +1473,6 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 	he->addrs = NULL;
 	he->addr_count = 0;
 
-	/* Sometimes if we can't look things up, we could end
-	   up with a dot in the name field which would screw
-	   us up.  Weird but apparently possible */
 #ifdef ENABLE_IPV6
 	if (res != NULL && res->ai_canonname != NULL) {
 		he->hostname = g_strdup (res->ai_canonname);
@@ -1525,7 +1522,16 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 
 		res = res->ai_next;
 	}
+
+	/* We don't want the ::ffff: that could arise here */
+	if (he->hostname != NULL &&
+	    strncmp (he->hostname, "::ffff:", 7) == 0) {
+		strcpy (he->hostname, he->hostname + 7);
+	}
 #else
+	/* Sometimes if we can't look things up, we could end
+	   up with a dot in the name field which would screw
+	   us up.  Weird but apparently possible */
 	if (he_ != NULL &&
 	    he_->h_name != NULL &&
 	    he_->h_name[0] != '\0' &&

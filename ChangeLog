@@ -1,3 +1,21 @@
+Thu May 06 09:59:48 2004  George Lebl <jirka@5z.com>
+
+	* gui/misc.[ch], gui/gdmlogin.c, gui/gdmsetup.c,
+	  gui/gdmchooser.c, gui/greeter/greeter.c: Apply and heavily
+	  massage a patch from Muktha to add font setting to the theming
+	  and finally fix #125070 hopefully 
+
+	* daemon/misc.c: our gethostent should strip the ::ffff: since it's
+	  confusing to rest of gdm and X in particular apparently, so whack
+	  it from the hostname so that it doesn't get into the display
+	  name.  Should fix #133246
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_pam.c: fix #123958
+	  by having an empty message clear the message string rather then
+	  append an empty string.  Evil, but it fixes the bug.  PAM is one
+	  large bug in fact, and would require a rather large flywatter to
+	  fix, based on a patch from Frederic Crozat
+
 Tue May 04 09:47:21 2004  George Lebl <jirka@5z.com>
 
 	* daemon/display.c: Don't whack the socket_conn on display_manage

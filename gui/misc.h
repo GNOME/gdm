@@ -19,6 +19,8 @@
 #ifndef MISC_H
 #define MISC_H
 
+void	gdm_set_theme			(const char *theme_name);
+
 #endif /* MISC_H */
 
 /* EOF */

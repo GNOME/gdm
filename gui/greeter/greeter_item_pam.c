@@ -218,7 +218,9 @@ greeter_item_pam_message (const char *message)
       /* HAAAAAAACK.  Sometimes pam sends many many messages, SO
        * we try to collect them until the next prompt or reset or
        * whatnot */
-      if (!replace_msg)
+      if ( ! replace_msg &&
+	   /* empty message is for clearing */
+	   ! ve_string_empty (message))
 	{
 	  g_object_get (G_OBJECT (message_info->item),
 			"text", &oldtext,

@@ -1054,14 +1054,7 @@ main (int argc, char *argv[])
 	  gdm_gtk_theme = GdmGtkTheme;
 
   if ( ! ve_string_empty (gdm_gtk_theme)) {
-	  gchar *theme_gtk_dir = gtk_rc_get_theme_dir ();
-	  char *theme = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_gtk_dir, gdm_gtk_theme);
-	  g_free (theme_gtk_dir);
-
-	  if( ! ve_string_empty (theme))
-		  gtk_rc_parse (theme);
-
-	  g_free (theme);
+	  gdm_set_theme (gdm_gtk_theme);
   }
   
   gdm_wm_screen_init (GdmXineramaScreen);

@@ -628,16 +628,16 @@ gdm_login_suspend_handler (void)
 static void
 gdm_theme_handler (GtkWidget *widget, gpointer data)
 {
-    char *theme_name;
+    const char *theme_name = (const char *)data;
 
-    theme_name = g_strdup((char *)data);
     printf ("%c%c%c%s\n", STX, BEL, GDM_INTERRUPT_THEME, theme_name);
   
     fflush (stdout);
 
-    gtk_settings_set_string_property (gtk_settings_get_default (), 
-				      "gtk-theme-name", theme_name, "gdm");
-    g_free (theme_name);
+    gdm_set_theme (theme_name);
+
+    login_window_resize (FALSE);
+    gdm_wm_center_window (GTK_WINDOW (login));
 }
 
 static void 
@@ -1938,7 +1938,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	/* HAAAAAAACK.  Sometimes pam sends many many messages, SO
 	 * we try to collect them until the next prompt or reset or
 	 * whatnot */
-	if ( ! replace_msg) {
+	if ( ! replace_msg &&
+	   /* empty message is for clearing */
+	   ! ve_string_empty (buf)) {
 		const char *oldtext;
 		oldtext = gtk_label_get_text (GTK_LABEL (msg));
 		if ( ! ve_string_empty (oldtext)) {
@@ -2656,14 +2658,7 @@ gdm_login_gui_init (void)
 	    gtk_rc_parse (GdmGtkRC);
 
     if ( ! ve_string_empty (theme_name)) {
-	    gchar *theme_dir = gtk_rc_get_theme_dir ();
-	    char *theme = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
-	    g_free (theme_dir);
-
-	    if( ! ve_string_empty (theme))
-		    gtk_rc_parse (theme);
-
-	    g_free (theme);
+	    gdm_set_theme (theme_name);
     }
 
     login = gtk_window_new (GTK_WINDOW_TOPLEVEL);

@@ -1702,14 +1702,7 @@ gdm_chooser_gui_init (void)
 		theme_name = GdmGtkTheme;
 
 	if ( ! ve_string_empty (theme_name)) {
-		gchar *theme_dir = gtk_rc_get_theme_dir ();
-		char *theme = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
-		g_free (theme_dir);
-
-		if( ! ve_string_empty (theme))
-			gtk_rc_parse (theme);
-
-		g_free (theme);
+		gdm_set_theme (theme_name);
 	}
     }
 

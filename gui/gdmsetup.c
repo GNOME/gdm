@@ -2691,15 +2691,7 @@ main (int argc, char *argv[])
 		}
 
 		if ( ! ve_string_empty (theme_name)) {
-			char *theme_dir = gtk_rc_get_theme_dir ();
-			/* If we are running under gdm parse the GDM gtkRC */
-			gtkrc = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, 
-						 theme_name);
-			g_free (theme_dir);
-
-			if ( ! ve_string_empty (gtkrc))
-				gtk_rc_parse (gtkrc);
-			g_free (gtkrc);
+			gdm_set_theme (theme_name);
 		}
 
 		/* evil, but oh well */

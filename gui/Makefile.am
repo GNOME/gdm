@@ -57,6 +57,8 @@ libgdmwm_a_SOURCES = \
 libgdmcommon_a_SOURCES = \
 	gdmlanguages.c		\
 	gdmlanguages.h		\
+	misc.c			\
+	misc.h			\
 	gdmcommon.c		\
 	gdmcommon.h
 
@@ -66,9 +68,7 @@ gdmchooser_SOURCES = \
 	misc.h			
 
 gdmlogin_SOURCES = \
-	gdmlogin.c		\
-	misc.c			\
-	misc.h
+	gdmlogin.c
 
 gdmsetup_SOURCES = \
 	gdmsetup.c		\
