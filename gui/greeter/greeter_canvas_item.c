@@ -166,20 +166,19 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					GNOME_TYPE_CANVAS_PIXBUF,
 					"x", (gdouble) x1,
 					"y", (gdouble) y1,
-					//					"anchor", item->anchor,
 					"pixbuf", item->pixbufs[GREETER_ITEM_STATE_NORMAL],
 					NULL);
     break;
   case GREETER_ITEM_TYPE_LABEL:
     text = greeter_item_expand_text (item->orig_text);
-    
+
     item->item = gnome_canvas_item_new (group,
 					GNOME_TYPE_CANVAS_TEXT,
 					"text", text,
 					"x", x1,
 					"y", y1,
 					"anchor", item->anchor,
-					"font", item->fonts[GREETER_ITEM_STATE_NORMAL],
+					"font_desc", item->fonts[GREETER_ITEM_STATE_NORMAL],
 					"fill_color_rgba", item->colors[GREETER_ITEM_STATE_NORMAL],
 					NULL);
     g_free (text);
@@ -197,7 +196,6 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					"y", y1,
 					"height", (double)rect.height,
 					"width", (double)rect.width,
-					//"anchor", item->anchor,
 					NULL);
     break;
   }

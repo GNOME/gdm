@@ -425,7 +425,7 @@ greeter_item_size_request (GreeterItemInfo *item,
 					   "text", text,
 					   "x", 0.0,
 					   "y", 0.0,
-					   "font", item->fonts[GREETER_ITEM_STATE_NORMAL],
+					   "font_desc", item->fonts[GREETER_ITEM_STATE_NORMAL],
 					   NULL);
 
       gnome_canvas_item_get_bounds (canvas_item,
