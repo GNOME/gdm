@@ -73,6 +73,8 @@ static void gdm_chooser_host_dispose (GdmChooserHost *host);
 static void gdm_chooser_choose_host (const gchar *hostname);
 static void gdm_chooser_add_hosts (const char **hosts);
 
+static guint scan_time_handler = 0;
+
 /* Fixetyfix */
 int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);
 
@@ -248,6 +250,13 @@ gdm_chooser_find_bcaddr (void)
 	}
 }
 
+static gboolean
+chooser_scan_time_update (gpointer data)
+{
+	scan_time_handler = 0;
+	gdm_chooser_browser_update ();
+	return FALSE;
+}
 
 gboolean 
 gdm_chooser_xdmcp_discover (void)
@@ -283,11 +292,10 @@ gdm_chooser_xdmcp_discover (void)
 	bl = bl->next;
     }
 
-    /* FIXME: implement GdmScanTime */
-    /*
-    tid = g_timeout_add (GdmScanTime * 1000, 
-			 (GSourceFunc) gdm_chooser_browser_update, NULL);
-     */
+    if (scan_time_handler > 0)
+	    g_source_remove (scan_time_handler);
+    scan_time_handler = g_timeout_add (GdmScanTime * 1000, 
+				       chooser_scan_time_update, NULL);
     while (ql != NULL) {
 	    ia = (struct in_addr *) ql->data;
 	    sock.sin_addr.s_addr = ia->s_addr;
@@ -352,6 +360,11 @@ gdm_chooser_cancel (void)
 gboolean
 gdm_chooser_manage (GtkButton *button, gpointer data)
 {
+    if (scan_time_handler > 0) {
+	    g_source_remove (scan_time_handler);
+	    scan_time_handler = 0;
+    }
+
     if (curhost)
       gdm_chooser_choose_host (curhost->name);
    
