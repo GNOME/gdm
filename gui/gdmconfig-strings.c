@@ -4,13 +4,6 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("GDM");
-gchar *s = N_("Security");
-gchar *s = N_("XDMCP");
-gchar *s = N_("User Interface");
-gchar *s = N_("Greeter");
-gchar *s = N_("Chooser");
-gchar *s = N_("Servers");
 gchar *s = N_("GDM Configuration Utility");
 gchar *s = N_("_Configuration");
 gchar *s = N_("Revert settings");
@@ -62,9 +55,18 @@ gchar *s = N_("Face browser");
 gchar *s = N_("expert");
 gchar *s = N_("Options");
 gchar *s = N_("Allow root to login with GDM");
+gchar *s = N_("Determines whether GDM should kill X clients started by the init scripts when the user logs in.");
 gchar *s = N_("Kill 'init' clients");
-gchar *s = N_("Relax permissions");
+gchar *s = N_("Should GDM print authentication errors in the greeter");
 gchar *s = N_("Authentication errors should be verbose");
+gchar *s = N_("Select how relaxed permissions are");
+gchar *s = N_("Permissions: ");
+gchar *s = N_("Allow world writable files and directories");
+gchar *s = N_("World writable");
+gchar *s = N_("Allow group writable files and directories");
+gchar *s = N_("Group writable");
+gchar *s = N_("Only accept user owned files and directories");
+gchar *s = N_("Paranoia");
 gchar *s = N_("Authorization Details");
 gchar *s = N_("GDM runs as this user: ");
 gchar *s = N_("User 'auth' directory: ");

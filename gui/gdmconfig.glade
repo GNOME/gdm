@@ -16,210 +16,6 @@
 </project>
 
 <widget>
-  <class>GnomePropertyBox</class>
-  <name>oldgdmconfigurator</name>
-  <signal>
-    <name>apply</name>
-    <handler>write_new_config_file</handler>
-    <last_modification_time>Tue, 21 Mar 2000 21:39:36 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>help</name>
-    <handler>open_help_page</handler>
-    <last_modification_time>Tue, 21 Mar 2000 21:39:50 GMT</last_modification_time>
-  </signal>
-  <signal>
-    <name>close</name>
-    <handler>exit_configurator</handler>
-    <last_modification_time>Tue, 21 Mar 2000 21:40:07 GMT</last_modification_time>
-  </signal>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkNotebook</class>
-    <child_name>GnomePropertyBox:notebook</child_name>
-    <name>notebook1</name>
-    <can_focus>True</can_focus>
-    <show_tabs>True</show_tabs>
-    <show_border>True</show_border>
-    <tab_pos>GTK_POS_TOP</tab_pos>
-    <scrollable>False</scrollable>
-    <tab_hborder>2</tab_hborder>
-    <tab_vborder>2</tab_vborder>
-    <popup_enable>False</popup_enable>
-    <child>
-      <padding>0</padding>
-      <expand>True</expand>
-      <fill>True</fill>
-    </child>
-
-    <widget>
-      <class>GtkVBox</class>
-      <name>vbox1</name>
-      <homogeneous>False</homogeneous>
-      <spacing>0</spacing>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <child_name>Notebook:tab</child_name>
-      <name>label1</name>
-      <label>GDM</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>Placeholder</class>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <child_name>Notebook:tab</child_name>
-      <name>label2</name>
-      <label>Security</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>Placeholder</class>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <child_name>Notebook:tab</child_name>
-      <name>label3</name>
-      <label>XDMCP</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkVBox</class>
-      <name>vbox14</name>
-      <homogeneous>False</homogeneous>
-      <spacing>0</spacing>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <child_name>Notebook:tab</child_name>
-      <name>label4</name>
-      <label>User Interface</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkVBox</class>
-      <name>vbox6</name>
-      <homogeneous>False</homogeneous>
-      <spacing>0</spacing>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-
-      <widget>
-	<class>Placeholder</class>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <child_name>Notebook:tab</child_name>
-      <name>label5</name>
-      <label>Greeter</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>Placeholder</class>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <child_name>Notebook:tab</child_name>
-      <name>label6</name>
-      <label>Chooser</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>Placeholder</class>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <child_name>Notebook:tab</child_name>
-      <name>label8</name>
-      <label>Servers</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
   <class>GnomeApp</class>
   <name>gdmconfigurator</name>
   <signal>
@@ -1989,60 +1785,166 @@ This is %n
 	  </widget>
 
 	  <widget>
-	    <class>GtkCheckButton</class>
-	    <name>kill_init_clients</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>can_apply_now</handler>
-	      <last_modification_time>Tue, 21 Mar 2000 21:37:28 GMT</last_modification_time>
-	    </signal>
-	    <label>Kill 'init' clients</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
+	    <class>GtkEventBox</class>
+	    <name>eventbox4</name>
+	    <tooltip>Determines whether GDM should kill X clients started by the init scripts when the user logs in.</tooltip>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
 	      <fill>False</fill>
 	    </child>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>kill_init_clients</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>can_apply_now</handler>
+		<last_modification_time>Tue, 21 Mar 2000 21:37:28 GMT</last_modification_time>
+	      </signal>
+	      <label>Kill 'init' clients</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	    </widget>
 	  </widget>
 
 	  <widget>
-	    <class>GtkCheckButton</class>
-	    <name>relax_perms</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>can_apply_now</handler>
-	      <last_modification_time>Tue, 21 Mar 2000 21:29:58 GMT</last_modification_time>
-	    </signal>
-	    <label>Relax permissions</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
+	    <class>GtkEventBox</class>
+	    <name>eventbox5</name>
+	    <tooltip>Should GDM print authentication errors in the greeter</tooltip>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
 	      <fill>False</fill>
 	    </child>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>verbose_auth</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>can_apply_now</handler>
+		<last_modification_time>Tue, 21 Mar 2000 21:30:04 GMT</last_modification_time>
+	      </signal>
+	      <label>Authentication errors should be verbose</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	    </widget>
 	  </widget>
 
 	  <widget>
-	    <class>GtkCheckButton</class>
-	    <name>verbose_auth</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>can_apply_now</handler>
-	      <last_modification_time>Tue, 21 Mar 2000 21:30:04 GMT</last_modification_time>
-	    </signal>
-	    <label>Authentication errors should be verbose</label>
-	    <active>False</active>
-	    <draw_indicator>True</draw_indicator>
+	    <class>GtkHBox</class>
+	    <name>hbox6</name>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
 	    <child>
 	      <padding>0</padding>
 	      <expand>False</expand>
 	      <fill>False</fill>
 	    </child>
+
+	    <widget>
+	      <class>GtkEventBox</class>
+	      <name>eventbox6</name>
+	      <tooltip>Select how relaxed permissions are</tooltip>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label232</name>
+		<label>Permissions: </label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>3</xpad>
+		<ypad>0</ypad>
+	      </widget>
+	    </widget>
+
+	    <widget>
+	      <class>GtkEventBox</class>
+	      <name>eventbox1</name>
+	      <tooltip>Allow world writable files and directories</tooltip>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>relax_perms_2</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>can_apply_now</handler>
+		  <last_modification_time>Mon, 05 Mar 2001 23:35:23 GMT</last_modification_time>
+		</signal>
+		<label>World writable</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>relax_perms_group</group>
+	      </widget>
+	    </widget>
+
+	    <widget>
+	      <class>GtkEventBox</class>
+	      <name>eventbox2</name>
+	      <tooltip>Allow group writable files and directories</tooltip>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>relax_perms_1</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>can_apply_now</handler>
+		  <last_modification_time>Mon, 05 Mar 2001 23:35:33 GMT</last_modification_time>
+		</signal>
+		<label>Group writable</label>
+		<active>False</active>
+		<draw_indicator>True</draw_indicator>
+		<group>relax_perms_group</group>
+	      </widget>
+	    </widget>
+
+	    <widget>
+	      <class>GtkEventBox</class>
+	      <name>eventbox3</name>
+	      <tooltip>Only accept user owned files and directories</tooltip>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkRadioButton</class>
+		<name>relax_perms_0</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>clicked</name>
+		  <handler>can_apply_now</handler>
+		  <last_modification_time>Mon, 05 Mar 2001 23:35:43 GMT</last_modification_time>
+		</signal>
+		<label>Paranoia</label>
+		<active>True</active>
+		<draw_indicator>True</draw_indicator>
+		<group>relax_perms_group</group>
+	      </widget>
+	    </widget>
 	  </widget>
 	</widget>
       </widget>

@@ -43,6 +43,12 @@ GtkWidget *get_widget(gchar *widget_name);
                               (char *)value); \
            g_free(value); \
         }
+#define gdm_radio_set(radio_name, value) \
+        if (value >= 0) { \
+	   gchar *widget_name = g_strdup_printf ("%s_%d", radio_name, value); \
+           gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(get_widget(widget_name)), TRUE); \
+	   g_free (widget_name); \
+	}
 
 #define gdm_spin_set(spin_button_name, value) \
         if (value) \
@@ -73,6 +79,8 @@ GtkWidget *get_widget(gchar *widget_name);
 
 #define gdm_toggle_write(toggle_name, key) \
         gnome_config_set_bool(key, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_widget(toggle_name)))?TRUE:FALSE);
+
+/* This one is not used */
 #define gdm_toggle_write_int(toggle_name, key) \
         gnome_config_set_int(key, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_widget(toggle_name)))?1:0);
 
@@ -88,8 +96,16 @@ GtkWidget *get_widget(gchar *widget_name);
 
 /* Function Prototypes */
 
+/* This function examines a set of commonly named radio buttons and writes out an integer
+ * with gnome_config under 'key'. It looks for max_value number of radio buttons, and writes
+ * the integer with the value of the earliest named radio button it finds.
+ */
+void gdm_radio_write (gchar *radio_base_name, 
+		      gchar *key, 
+		      int max_value);
+
 void user_level_row_selected(GtkCList *clist, gint row,
-							 gint column, GdkEvent *event, gpointer data);
+			     gint column, GdkEvent *event, gpointer data);
 void show_about_box(void);
 void 
 gdm_config_parse_most                  (void);

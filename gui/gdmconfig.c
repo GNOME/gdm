@@ -83,6 +83,29 @@ GtkWidget *get_widget(gchar *widget_name)
 	return ret;
 }
 
+
+/* This function examines a set of commonly named radio buttons and writes out an integer
+ * with gnome_config under 'key'. It looks for max_value number of radio buttons, and writes
+ * the integer with the value of the earliest named radio button it finds.
+ */
+void gdm_radio_write (gchar *radio_base_name, 
+		      gchar *key, 
+		      int max_value)
+{
+   int i = 0;
+   while (i <= max_value) {
+      gchar *widget_name = g_strdup_printf ("%s_%d", radio_base_name, i);
+      if (GTK_TOGGLE_BUTTON (get_widget(widget_name))->active == TRUE) {
+	 gnome_config_set_int(key, i);
+	 g_free (widget_name);
+	 return;
+      }
+      g_free (widget_name);
+      i++;
+   }
+}
+
+
 int
 main (int argc, char *argv[])
 {
@@ -256,8 +279,7 @@ gdm_config_parse_most (void)
     /* Fill the widgets in Security tab */
     gdm_toggle_set("allow_root", gnome_config_get_bool(GDM_KEY_ALLOWROOT));
     gdm_toggle_set("kill_init_clients", gnome_config_get_bool(GDM_KEY_KILLIC));
-    /* FIXME: see comment on _set for relax_perms */
-    gdm_toggle_set("relax_perms", gnome_config_get_int(GDM_KEY_RELAXPERM));
+    gdm_radio_set ("relax_perms", gnome_config_get_int(GDM_KEY_RELAXPERM));
     gdm_toggle_set("verbose_auth", gnome_config_get_bool(GDM_KEY_VERBAUTH));
 
     gdm_entry_set("gdm_runs_as_user", gnome_config_get_string (GDM_KEY_USER));
@@ -456,8 +478,7 @@ write_new_config_file                  (GtkButton *button,
     /* Write out the widget contents of the Security tab */
     gdm_toggle_write("allow_root", GDM_KEY_ALLOWROOT);
     gdm_toggle_write("kill_init_clients", GDM_KEY_KILLIC);
-    /* FIXME: This should allow 0, 1, 2 levels, it should really be an enum! */
-    gdm_toggle_write_int("relax_perms", GDM_KEY_RELAXPERM);
+    gdm_radio_write ("relax_perms", GDM_KEY_RELAXPERM, 2);
     gdm_toggle_write("verbose_auth", GDM_KEY_VERBAUTH);
 
     gdm_entry_write("gdm_runs_as_user", GDM_KEY_USER);
