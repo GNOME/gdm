@@ -73,7 +73,6 @@ static GtkWidget *login;
 static GtkWidget *label;
 static GtkWidget *entry;
 static GtkWidget *msg;
-static gboolean first_message = TRUE;
 static gboolean require_quater = FALSE;
 static GtkWidget *win;
 static GtkWidget *sessmenu;
@@ -803,6 +802,8 @@ evil (const char *user)
 static gboolean
 gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 {
+    static gboolean first_return = TRUE;
+
     if (!event)
 	return(TRUE);
 
@@ -830,6 +831,12 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 		    gtk_widget_grab_focus (entry);	
 		    return TRUE;
 	    }
+	}
+
+	/* somewhat ugly thing to clear the initial message */
+	if (first_return) {
+	       first_return = FALSE;
+	       gtk_label_set (GTK_LABEL (msg), "");
 	}
 
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
@@ -1077,6 +1084,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     gchar buf[PIPE_SIZE];
     gint len;
     gint i, x, y;
+    static gboolean replace_msg = TRUE;
 
     /* If this is not incoming i/o then return */
     if (cond != G_IO_IN) 
@@ -1105,14 +1113,6 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	/* Turn off the message whenever the prompt changes,
-	   this is sort of a hack. Also, don't turn it off
-	   the first time. Yeah I know.  */
-	if (first_message)
-	  first_message = FALSE;
-	else
-	  gtk_label_set (GTK_LABEL(msg), "");
-
 	gtk_label_set (GTK_LABEL (label), buf);
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
@@ -1120,19 +1120,14 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_grab_focus (entry);	
 	gtk_widget_show (entry);
+
+	/* replace rapther then append next message string */
+	replace_msg = TRUE;
 	break;
 
     case GDM_NOECHO:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-
-	/* Turn off the message whenever the prompt changes,
-	   this is sort of a hack. Also, don't turn it off
-	   the first time. Yeah I know.  */
-	if (first_message)
-	  first_message = FALSE;
-	else
-	  gtk_label_set (GTK_LABEL(msg), "");
 
 	gtk_label_set (GTK_LABEL(label), buf);
 	gtk_widget_show (GTK_WIDGET (label));
@@ -1141,12 +1136,33 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_grab_focus (entry);	
 	gtk_widget_show (entry);
+
+	/* replace rapther then append next message string */
+	replace_msg = TRUE;
 	break;
 
     case GDM_MSGERR:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-	gtk_label_set (GTK_LABEL (msg), buf);
+
+	/* HAAAAAAACK.  Sometimes pam send many many messages, SO
+	 * we try to collect them until the next prompt or reset or
+	 * whatnot */
+	if ( ! replace_msg) {
+		char *oldtext;
+		gtk_label_get (GTK_LABEL (msg), &oldtext);
+		if (oldtext != NULL && oldtext[0] != '\0') {
+			char *newtext;
+			newtext = g_strdup_printf ("%s\n%s", oldtext, buf);
+			gtk_label_set (GTK_LABEL (msg), newtext);
+		} else {
+			gtk_label_set (GTK_LABEL (msg), buf);
+		}
+	} else {
+		gtk_label_set (GTK_LABEL (msg), buf);
+	}
+	replace_msg = FALSE;
+
 	gtk_widget_show (GTK_WIDGET (msg));
 	g_print ("%c\n", STX);
 
@@ -1218,6 +1234,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
+
+	gtk_label_set (GTK_LABEL (msg), buf);
+	gtk_widget_show (GTK_WIDGET (msg));
 
 	g_print ("%c\n", STX);
 	break;
@@ -1818,7 +1837,6 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
         
     msg = gtk_label_new (_("Please enter your login"));
-    first_message = TRUE;
     gtk_widget_set_name(msg, "Message");
     gtk_widget_ref (msg);
     gtk_object_set_data_full (GTK_OBJECT (login), "msg", msg,

@@ -1,3 +1,11 @@
+Sat Mar 10 19:36:18 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c: remove the clear message before first prompt hack,
+	  and make it, clear after first return hack.  Also add a hack to
+	  accumulate pam messages rather then replacing them in between
+	  queries.  This fixes the weird clearing bugs with respect to
+	  say expiring passwords.  Also clear message on GDM_RESET
+
 Thu Mar 08 21:00:03 2001  Lee Mallabone <lee0@callnetuk.com>
 
 	* gui/gdmconfig.c: Change (lack of) help message.
