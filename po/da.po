@@ -13,12 +13,13 @@
 # Device/Display/Desktop Manager -> logindhåndtering
 # face browser -> ansigtsvælger
 # RC file -> opsætningsfil (RC = run control)
+# suspend -> gå i dvale
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0beta3\n"
-"POT-Creation-Date: 2001-06-16 16:34+0200\n"
-"PO-Revision-Date: 2001-06-16 16:34+02:00\n"
+"POT-Creation-Date: 2001-06-25 17:20+0200\n"
+"PO-Revision-Date: 2001-06-25 17:20+02:00\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Dansk/Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -26,12 +27,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 # src/gdm.c:135
-#: daemon/gdm.c:148
+#: daemon/gdm.c:151
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Using defaults."
 msgstr "gdm_config_parse: Ingen konfigurationsfil: %s. Bruger standardværdier."
 
-#: daemon/gdm.c:219
+#: daemon/gdm.c:225
 msgid ""
 "gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
 "it off"
@@ -39,47 +40,47 @@ msgstr ""
 "gdm_config_parse: XDMCP var slået til, men der er ingen "
 "XDMCP-understøttelse, slår det fra igen"
 
-#: daemon/gdm.c:232
+#: daemon/gdm.c:238
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
 "gdm_config_parse: Systemadministrator kan ikke blive logget på automatisk, "
 "slår automatisk logind fra"
 
-#: daemon/gdm.c:245
+#: daemon/gdm.c:251
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
 "gdm_config_parse: Systemadministrator kan ikke blive logget på automatisk, "
 "slår tidsindstillet logind fra"
 
-#: daemon/gdm.c:251
+#: daemon/gdm.c:257
 msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
 msgstr ""
 "gdm_config_parse: Pausen før tidsindstillet logind er mindre end 5, så 5 "
 "benyttes i stedet."
 
 # src/gdm.c:173
-#: daemon/gdm.c:257
+#: daemon/gdm.c:263
 msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse: Ingen velkomstbyder angivet."
 
 # src/gdm.c:185
-#: daemon/gdm.c:261
+#: daemon/gdm.c:267
 msgid "gdm_config_parse: No authdir specified."
 msgstr "gdm_config_parse: Ingen auth-mappe angivet."
 
 # src/gdm.c:203
-#: daemon/gdm.c:267
+#: daemon/gdm.c:273
 msgid "gdm_config_parse: No sessions directory specified."
 msgstr "gdm_config_parse: Ingen sessionsmappe angivet."
 
 # src/gdm.c:215
-#: daemon/gdm.c:279
+#: daemon/gdm.c:285
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr "gdm_config_parse: Ugyldig serverlinie i konfigurationsfil. Ignorerer!"
 
 # src/gdm.c:221
-#: daemon/gdm.c:287
+#: daemon/gdm.c:293
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Adding "
 "/usr/bin/X11/X on :0 to allow configuration!"
@@ -88,62 +89,62 @@ msgstr ""
 "/usr/bin/X11/X på :0 for at muliggøre konfiguration!"
 
 # src/gdm.c:221
-#: daemon/gdm.c:299
+#: daemon/gdm.c:305
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr ""
 "gdm_config_parse: Xdmcp slået fra og ingen lokale servere angivet. Afbryder!"
 
 # src/gdm.c:226
-#: daemon/gdm.c:308
+#: daemon/gdm.c:314
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
 msgstr ""
 "gdm_config_parse: Kan ikke finde gdm-brugeren (%s). Forsøger med 'nobody'!"
 
 # src/gdm.c:226
-#: daemon/gdm.c:315
+#: daemon/gdm.c:321
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
 msgstr "gdm_config_parse: Kan ikke finde gdm-brugeren (%s). Afbryder!"
 
 # src/gdm.c:231
-#: daemon/gdm.c:320
+#: daemon/gdm.c:326
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr "gdm_config_parse: Gdm-brugeren må ikke være root. Afbryder!"
 
 # src/gdm.c:236
-#: daemon/gdm.c:325
+#: daemon/gdm.c:331
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
 msgstr ""
 "gdm_config_parse: Kan ikke finde gdm-gruppen (%s). Forsøger med 'nobody'!."
 
 # src/gdm.c:236
-#: daemon/gdm.c:332
+#: daemon/gdm.c:338
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
 msgstr "gdm_config_parse: Kan ikke finde gdm-gruppen (%s). Afbryder."
 
 # src/gdm.c:242
-#: daemon/gdm.c:337
+#: daemon/gdm.c:343
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
 msgstr "gdm_config_parse: Gdm-gruppen må ikke være root. Afbryder!"
 
 # src/gdm.c:249
-#: daemon/gdm.c:373
+#: daemon/gdm.c:379
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr "gdm_config_parse: Auth-mappe %s eksisterer ikke. Afbryder."
 
 # src/gdm.c:252
-#: daemon/gdm.c:376
+#: daemon/gdm.c:382
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
 msgstr "gdm_config_parse: Auth-mappe %s er ikke en mappe. Afbryder."
 
 # src/gdm.c:255
-#: daemon/gdm.c:379
+#: daemon/gdm.c:385
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
@@ -152,7 +153,7 @@ msgstr ""
 "Afbryder."
 
 # src/gdm.c:258
-#: daemon/gdm.c:383
+#: daemon/gdm.c:389
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
@@ -161,26 +162,26 @@ msgstr ""
 "Afbryder."
 
 # src/gdm.c:517
-#: daemon/gdm.c:417
+#: daemon/gdm.c:423
 msgid "gdm_daemonify: fork() failed!"
 msgstr "gdm_daemonify: fork() fejlede!"
 
 # src/gdm.c:520
-#: daemon/gdm.c:420
+#: daemon/gdm.c:426
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid() fejlet: %s!"
 
-#: daemon/gdm.c:497
+#: daemon/gdm.c:503
 #, c-format
 msgid "deal_with_x_crashes: Trying failsafe X server %s"
 msgstr "deal_with_x_crashes: Forsøger den fejlsikrede X-server %s"
 
-#: daemon/gdm.c:530
+#: daemon/gdm.c:536
 msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
 msgstr "deal_with_x_crashes: Kører XKeepsCrashing-programmet"
 
-#: daemon/gdm.c:545 daemon/gdm.c:607 daemon/gdm.c:621
+#: daemon/gdm.c:551 daemon/gdm.c:613 daemon/gdm.c:627
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  You will need to log in on a console and rerun "
@@ -190,7 +191,7 @@ msgstr ""
 "den ikke indstillet korrekt. Du bliver nødt til at logge ind ved en konsol "
 "og køre opsætningsprogrammet til X igen. Genstart derefter GDM."
 
-#: daemon/gdm.c:550
+#: daemon/gdm.c:556
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  Would you like me to try to run the X "
@@ -201,15 +202,15 @@ msgstr ""
 "opsætningsprogrammet til X? Bemærk at du skal bruge administratorkodeordet "
 "til dette."
 
-#: daemon/gdm.c:555
+#: daemon/gdm.c:561
 msgid "Please type in the root (privilaged user) password."
 msgstr "Indtast venligst administratorkodeordet (root)."
 
-#: daemon/gdm.c:557
+#: daemon/gdm.c:563
 msgid "I will now try to restart the X server again."
 msgstr "X-serveren forsøges nu startet igen."
 
-#: daemon/gdm.c:559
+#: daemon/gdm.c:565
 msgid ""
 "I will disable this X server for now.  Restart GDM when it is configured "
 "correctly."
@@ -222,7 +223,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:637
+#: daemon/gdm.c:643
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -231,7 +232,7 @@ msgstr ""
 "Kunne ikke starte X-server adskillige gange inden for en kort tidsperiode; "
 "deaktiverer terminalen %s"
 
-#: daemon/gdm.c:678
+#: daemon/gdm.c:704
 #, c-format
 msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
@@ -241,7 +242,7 @@ msgstr ""
 "systemmenu ved terminalen %s"
 
 # src/gdm.c:390
-#: daemon/gdm.c:686
+#: daemon/gdm.c:712
 #, c-format
 msgid ""
 "gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
@@ -251,66 +252,78 @@ msgstr ""
 
 # src/gdm.c:390
 #. Bury this display for good
-#: daemon/gdm.c:694
+#: daemon/gdm.c:738
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action: Afbryder terminal %s"
 
 # src/gdm.c:395
 #. Reboot machine
-#: daemon/gdm.c:700
+#: daemon/gdm.c:744
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action: Maskinen genstarter..."
 
 # src/gdm.c:401
-#: daemon/gdm.c:707
+#: daemon/gdm.c:751
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action: Genstart mislykkedes: %s"
 
 # src/gdm.c:405
 #. Halt machine
-#: daemon/gdm.c:711
+#: daemon/gdm.c:755
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action: Maskinen stopper..."
 
 # src/gdm.c:411
-#: daemon/gdm.c:718
+#: daemon/gdm.c:762
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: Stop mislykkedes: %s"
 
-#: daemon/gdm.c:726 daemon/gdm.c:811
+# src/gdm.c:395
+#. Suspend machine
+#: daemon/gdm.c:766
+msgid "gdm_child_action: Master suspending..."
+msgstr "gdm_child_action: Maskinen går i dvale..."
+
+# src/gdm.c:401
+#: daemon/gdm.c:773
+#, c-format
+msgid "gdm_child_action: Suspend failed: %s"
+msgstr "gdm_child_action: Dvale mislykkedes: %s"
+
+#: daemon/gdm.c:782 daemon/gdm.c:867
 msgid "Failed to restart self"
 msgstr "Genstart af programmet mislykkedes"
 
 # src/gdm.c:545
-#: daemon/gdm.c:877
+#: daemon/gdm.c:933
 msgid "Only root wants to run gdm\n"
 msgstr "Kun root bør køre gdm\n"
 
 # src/gdm.c:563
-#: daemon/gdm.c:902
+#: daemon/gdm.c:958
 msgid "gdm already running. Aborting!"
 msgstr "gdm kører allerede. Afbryder!"
 
 # src/gdm.c:589
-#: daemon/gdm.c:931
+#: daemon/gdm.c:987
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr "gdm_main: Fejl under opsætning af TERM-signalhåndtering"
 
 # src/gdm.c:592
-#: daemon/gdm.c:934
+#: daemon/gdm.c:990
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr "gdm_main: Fejl under opsætning af INT-signalhåndtering"
 
 # src/gdmgreeter.c:1597
-#: daemon/gdm.c:937
+#: daemon/gdm.c:993
 msgid "gdm_main: Error setting up HUP signal handler"
 msgstr "gdm_main: Fejl under opsætning af HUP-signalhåndtering"
 
 # src/gdm.c:600
-#: daemon/gdm.c:945
+#: daemon/gdm.c:1001
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr "gdm_main: Fejl under opsætning af CHLD-signalhåndtering"
 
@@ -333,7 +346,7 @@ msgstr "gdm_auth_user_add: Kunne ikke låse infokage %s"
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr "gdm_auth_user_remove: Fjerner suspekt udseende infokage %s"
 
-#: daemon/display.c:87
+#: daemon/display.c:88
 #, c-format
 msgid ""
 "Failed to start the display server several times in a short time period; "
@@ -342,7 +355,7 @@ msgstr ""
 "Kunne ikke starte terminalens server selv med adskillige forsøg inden for en "
 "kort tidsperiode; deaktiverer terminalen %s"
 
-#: daemon/display.c:183
+#: daemon/display.c:184
 #, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %d"
 msgstr "gdm_display_image: Forspaltning af gdm slaveproces mislykkedes for %d"
@@ -446,30 +459,30 @@ msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: Kan ikke splitte X-serverproces!"
 
 # src/gdmslave.c:124
-#: daemon/slave.c:169
+#: daemon/slave.c:174
 msgid "gdm_slave_init: Error setting up ALRM signal handler"
 msgstr "gdm_slave_init: Fejl under opsætning af ALRM-signalhåndtering"
 
 # src/gdmslave.c:116
-#: daemon/slave.c:181
+#: daemon/slave.c:186
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
 msgstr "gdm_slave_init: Fejl under opsætning af TERM/INT-signalhåndtering"
 
 # src/gdmslave.c:124
-#: daemon/slave.c:190
+#: daemon/slave.c:195
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr "gdm_slave_init: Fejl under opsætning af CHLD-signalhåndtering"
 
-#: daemon/slave.c:453
+#: daemon/slave.c:478
 msgid "focus_first_x_window: cannot fork"
 msgstr "focus_first_x_window: kan ikke fraspalte proces"
 
-#: daemon/slave.c:463
+#: daemon/slave.c:488
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr "focus_first_x_window: kan ikke åbne terminalen %s"
 
-#: daemon/slave.c:558
+#: daemon/slave.c:585
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -482,7 +495,7 @@ msgstr ""
 "konfigurationsfilen. Der forsøges at\n"
 "starte det fra standardstedet."
 
-#: daemon/slave.c:573
+#: daemon/slave.c:600
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -492,7 +505,7 @@ msgstr ""
 "Sikr dig at stien er sat korrekt i\n"
 "konfigurationsfilen."
 
-#: daemon/slave.c:621
+#: daemon/slave.c:648
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -500,34 +513,34 @@ msgstr ""
 "Indtast root-kodeordet for at\n"
 "få adgang til indstillingerne."
 
-#: daemon/slave.c:635 daemon/slave.c:695
+#: daemon/slave.c:662 daemon/slave.c:722
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: Ingen logind eller ugyldigt logind"
 
 # src/gdmslave.c:162
-#: daemon/slave.c:844
+#: daemon/slave.c:956
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
-msgstr "gdm_slave_greeter: Kan ikke åbne ledning til gdm-velkomstbyder"
+msgstr "gdm_slave_greeter: Kan ikke åbne videreledning til gdm-velkomstbyder"
 
 # src/gdmslave.c:184
-#: daemon/slave.c:872
+#: daemon/slave.c:984
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr "gdm_slave_greeter: Kunne ikke sætte gruppe-id til %d"
 
 # src/gdmslave.c:365
-#: daemon/slave.c:875
+#: daemon/slave.c:987
 #, c-format
 msgid "gdm_slave_greeter: initgroups() failed for %s"
 msgstr "gdm_slave_session_start: initgroups() mislykkedes for %s"
 
 # src/gdmslave.c:187
-#: daemon/slave.c:878
+#: daemon/slave.c:990
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr "gdm_slave_greeter: Kunne ikke sætte bruger-id til %d"
 
-#: daemon/slave.c:925
+#: daemon/slave.c:1037
 msgid ""
 "No servers were defined in the\n"
 "configuration file and xdmcp was\n"
@@ -547,7 +560,7 @@ msgstr ""
 "automatisk og tidsindstillet logind er\n"
 "deaktiveret nu."
 
-#: daemon/slave.c:939
+#: daemon/slave.c:1051
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -562,14 +575,14 @@ msgstr ""
 "X-serveren korrekt op."
 
 # src/gdmslave.c:197
-#: daemon/slave.c:949
+#: daemon/slave.c:1061
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr ""
 "gdm_slave_greeter: Kan ikke starte velkomstbyder, forsøger "
 "fabriksindstilling: %s"
 
-#: daemon/slave.c:962
+#: daemon/slave.c:1074
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -584,41 +597,41 @@ msgstr ""
 "anden måde og ret konfigurationsfilen."
 
 # src/gdmslave.c:197
-#: daemon/slave.c:968
+#: daemon/slave.c:1080
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr ""
 "gdm_slave_greeter: Fejl under opstart af velkomstbyder på terminalen %s"
 
 # src/gdmslave.c:200
-#: daemon/slave.c:971
+#: daemon/slave.c:1083
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Kan ikke fraspalte gdmvelkomstbyder-proces"
 
 # src/gdmslave.c:162
-#: daemon/slave.c:1051
+#: daemon/slave.c:1163
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
-msgstr "gdm_slave_chooser: Kan ikke åbne ledning til gdmchooser"
+msgstr "gdm_slave_chooser: Kan ikke åbne videreledning til gdmchooser"
 
 # src/gdmslave.c:184
-#: daemon/slave.c:1076
+#: daemon/slave.c:1188
 #, c-format
 msgid "gdm_slave_chooser: Couldn't set groupid to %d"
 msgstr "gdm_slave_chooser: Kunne ikke sætte gruppe-id til %d"
 
 # src/gdmslave.c:365
-#: daemon/slave.c:1079
+#: daemon/slave.c:1191
 #, c-format
 msgid "gdm_slave_chooser: initgroups() failed for %s"
 msgstr "gdm_slave_chooser: initgroups() mislykkedes for %s"
 
 # src/gdmslave.c:187
-#: daemon/slave.c:1082
+#: daemon/slave.c:1194
 #, c-format
 msgid "gdm_slave_chooser: Couldn't set userid to %d"
 msgstr "gdm_slave_chooser: Kunne ikke sætte bruger-id til %d"
 
-#: daemon/slave.c:1114
+#: daemon/slave.c:1226
 msgid ""
 "Cannot start the chooser program,\n"
 "you will not be able to log in.\n"
@@ -630,31 +643,31 @@ msgstr ""
 "systemadministratoren.\n"
 
 # src/gdmslave.c:197
-#: daemon/slave.c:1118
+#: daemon/slave.c:1230
 #, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr "gdm_slave_chooser: Fejl under opstart af vælger på terminalen %s"
 
 # src/gdmslave.c:200
-#: daemon/slave.c:1121
+#: daemon/slave.c:1233
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr "gdm_slave_chooser: Kan ikke fraspalte gdmchooser-proces"
 
 # src/gdmslave.c:326
-#: daemon/slave.c:1420
+#: daemon/slave.c:1532
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: Bruger klarede auth, men getpwnam(%s) fejlede!"
 
 # src/gdmslave.c:368
-#: daemon/slave.c:1542
+#: daemon/slave.c:1654
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr ""
 "gdm_slave_session_start: Godkendelseproces færdig. Slår velkomstbyderen ned."
 
 # src/gdmslave.c:351
-#: daemon/slave.c:1557
+#: daemon/slave.c:1669
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -663,30 +676,30 @@ msgstr ""
 "Afbryder."
 
 # src/gdmslave.c:356
-#: daemon/slave.c:1583
+#: daemon/slave.c:1695
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Fejl under fraspaltning af brugersession"
 
 # src/gdmslave.c:362
-#: daemon/slave.c:1631
+#: daemon/slave.c:1743
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: Kunne ikke udføre setgid %d. Afbryder."
 
 # src/gdmslave.c:365
-#: daemon/slave.c:1635
+#: daemon/slave.c:1747
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr "gdm_slave_session_start: initgroups() fejlede for %s. Afbryder."
 
 # src/gdmslave.c:368
-#: daemon/slave.c:1639
+#: daemon/slave.c:1751
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Kunne ikke blive %s. Afbryder."
 
 #. yaikes
-#: daemon/slave.c:1717
+#: daemon/slave.c:1829
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -694,7 +707,7 @@ msgstr ""
 "gdm_slave_session_start: gnome-session ikke fundet til en fejlsikret "
 "Gnome-session, prøver xterm"
 
-#: daemon/slave.c:1722
+#: daemon/slave.c:1834
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -704,7 +717,7 @@ msgstr ""
 "prøver at køre sessionen 'Fejlsikret\n"
 "xterm'."
 
-#: daemon/slave.c:1728
+#: daemon/slave.c:1840
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -718,11 +731,11 @@ msgstr ""
 "udført. Dette bør kun bruges til at ordne\n"
 "problemer i din installation."
 
-#: daemon/slave.c:1747
+#: daemon/slave.c:1859
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Kan ikke finde 'xterm' til at starte en fejlsikret session."
 
-#: daemon/slave.c:1754
+#: daemon/slave.c:1866
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -739,17 +752,17 @@ msgstr ""
 "terminalemuleringen, indtast 'exit' i\n"
 "vinduet og tryk på retur på tastaturet."
 
-#: daemon/slave.c:1771
+#: daemon/slave.c:1883
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "Kører %s for %s på %s"
 
 # src/gdmslave.c:362
-#: daemon/slave.c:1783
+#: daemon/slave.c:1895
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: Brugeren har ikke tilladelse til at logge på"
 
-#: daemon/slave.c:1785
+#: daemon/slave.c:1897
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -758,12 +771,12 @@ msgstr ""
 "deaktiveret din adgang."
 
 # src/gdmslave.c:415
-#: daemon/slave.c:1788
+#: daemon/slave.c:1900
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: Kunne ikke finde/starte sessionen '%s'"
 
-#: daemon/slave.c:1793
+#: daemon/slave.c:1905
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -776,12 +789,12 @@ msgstr ""
 "i logind-vinduet."
 
 # src/gdmslave.c:415
-#: daemon/slave.c:1801
+#: daemon/slave.c:1913
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Kunne ikke starte sessionen '%s'"
 
-#: daemon/slave.c:1804
+#: daemon/slave.c:1916
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -791,99 +804,115 @@ msgstr ""
 "at systemadministrator har deaktiveret din adgang,\n"
 "men kan også indikere ind fejl i den.\n"
 
-#: daemon/slave.c:1951
+#: daemon/slave.c:2069
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Pingning af %s mislykkedes, deaktiver terminal!"
 
 # src/gdmslave.c:579
-#: daemon/slave.c:2047
+#: daemon/slave.c:2165
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Fatal X-fejl - genstarter %s"
 
 # src/gdmmisc.c:273
-#: daemon/slave.c:2207
+#: daemon/slave.c:2325
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Fejl under opstart: %s"
 
 # src/gdmmisc.c:277
-#: daemon/slave.c:2211
+#: daemon/slave.c:2329
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Kan ikke fraspalte skriptproces!"
 
+# src/gdmmisc.c:202
+#: daemon/slave.c:2451
+msgid "gdm_parse_enriched_login: Failed creating pipe"
+msgstr "gdm_parse_enriched_login: Det mislykkedes at oprette videreledning"
+
+# src/gdmmisc.c:273
+#: daemon/slave.c:2470
+#, c-format
+msgid "gdm_parse_enriched_login: Failed executing: %s"
+msgstr "gdm_parse_enriched_login: Det mislykkedes at køre: %s"
+
+# src/gdmmisc.c:277
+#: daemon/slave.c:2475
+msgid "gdm_parse_enriched_login: Can't fork script process!"
+msgstr "gdm_parse_enriched_login: Kan ikke fraspalte script-proces!"
+
 # src/gdmgreeter.c:1285
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:67 daemon/verify-pam.c:160 daemon/verify-shadow.c:66
-#: gui/gdmlogin.c:2726
+#: daemon/verify-crypt.c:67 daemon/verify-pam.c:166 daemon/verify-shadow.c:66
+#: gui/gdmlogin.c:2756
 msgid "Login:"
 msgstr "Logind:"
 
 # src/gdmverify.c:106
-#: daemon/verify-pam.c:177 daemon/verify-pam.c:303
+#: daemon/verify-pam.c:183 daemon/verify-pam.c:309
 msgid "Can't find /etc/pam.d/gdm!"
 msgstr "Kan ikke finde /etc/pam.d/gdm!"
 
 # src/gdmverify.c:113
-#: daemon/verify-pam.c:186 daemon/verify-pam.c:310
+#: daemon/verify-pam.c:192 daemon/verify-pam.c:316
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Kan ikke sætte PAM_TTY=%s"
 
 # src/gdmverify.c:120 src/gdmverify.c:173
-#: daemon/verify-crypt.c:105 daemon/verify-pam.c:195
+#: daemon/verify-crypt.c:105 daemon/verify-pam.c:201
 #: daemon/verify-shadow.c:113
 #, c-format
 msgid "Couldn't authenticate %s"
 msgstr "Kunne ikke godkende %s"
 
-#: daemon/verify-crypt.c:124 daemon/verify-pam.c:208
+#: daemon/verify-crypt.c:124 daemon/verify-pam.c:214
 #: daemon/verify-shadow.c:130
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Root-logind ikke tilladt på terminalen '%s'"
 
-#: daemon/verify-crypt.c:127 daemon/verify-pam.c:212
+#: daemon/verify-crypt.c:127 daemon/verify-pam.c:218
 #: daemon/verify-shadow.c:133
 msgid "Root login disallowed"
 msgstr "Root-logind ikke tilladt"
 
-#: daemon/verify-crypt.c:140 daemon/verify-pam.c:222
+#: daemon/verify-crypt.c:140 daemon/verify-pam.c:228
 #: daemon/verify-shadow.c:146
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Brugeren %s har ikke tilladelse til at logge på"
 
-#: daemon/verify-crypt.c:143 daemon/verify-pam.c:225
+#: daemon/verify-crypt.c:143 daemon/verify-pam.c:231
 #: daemon/verify-shadow.c:149
 msgid "Login disabled"
 msgstr "Logind deaktiveret"
 
 # src/gdmverify.c:127
-#: daemon/verify-pam.c:239 daemon/verify-pam.c:323
+#: daemon/verify-pam.c:245 daemon/verify-pam.c:329
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Kunne ikke sætte kontohåndtering for %s"
 
 # src/gdmverify.c:141
-#: daemon/verify-pam.c:246 daemon/verify-pam.c:331
+#: daemon/verify-pam.c:252 daemon/verify-pam.c:337
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Kunne ikke åbne session for %s"
 
 # src/gdmverify.c:134
-#: daemon/verify-pam.c:255 daemon/verify-pam.c:340
+#: daemon/verify-pam.c:261 daemon/verify-pam.c:346
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Kunne ikke sætte akkreditiver for %s"
 
 # dækker vist nogenlunde, test før der rettes til noget andet
-#: daemon/verify-pam.c:268
+#: daemon/verify-pam.c:274
 msgid "Authentication failed"
 msgstr "Logind ikke godkendt"
 
-#: daemon/verify-pam.c:395
+#: daemon/verify-pam.c:401
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
 msgstr "gdm_verify_check: Kan ikke finde PAM-konfigurationsfil for gdm"
 
@@ -900,198 +929,212 @@ msgid "Login incorrect"
 msgstr "Ugyldig logind"
 
 # src/gdmxdmcp.c:170
-#: daemon/xdmcp.c:214
+#: daemon/xdmcp.c:196
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr "gdm_xdmcp_init: Kunne ikke få serverens værtsnavn: %s!"
 
 # src/gdmxdmcp.c:181
-#: daemon/xdmcp.c:231
+#: daemon/xdmcp.c:213
 msgid "gdm_xdmcp_init: Could not create socket!"
 msgstr "gdm_xdmcp_init: Kunne ikke oprette sokkel!"
 
 # src/gdmxdmcp.c:188
-#: daemon/xdmcp.c:241
+#: daemon/xdmcp.c:223
 msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
 msgstr "gdm_xdmcp_init: Kunne ikke binde til XDMCP-sokkel!"
 
 # src/gdmxdmcp.c:181
-#: daemon/xdmcp.c:256
+#: daemon/xdmcp.c:238
 msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
 msgstr "gdm_xdmcp_init: Kunne ikke oprette FIFO for vælger"
 
 # src/gdmxdmcp.c:181
-#: daemon/xdmcp.c:266
+#: daemon/xdmcp.c:248
 msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
 msgstr "gdm_xdmcp_init: Kunne ikke åbne FIFO for vælger"
 
 # src/gdmxdmcp.c:209
-#: daemon/xdmcp.c:337
+#: daemon/xdmcp.c:319
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
 msgstr "gdm_xdmcp_decode: Kunne ikke oprette XDMCP-buffer!"
 
 # src/gdmxdmcp.c:214
-#: daemon/xdmcp.c:342
+#: daemon/xdmcp.c:324
 msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode: Kunne ikke læse XDMCP-hoved!"
 
 # src/gdmxdmcp.c:219
-#: daemon/xdmcp.c:347
+#: daemon/xdmcp.c:329
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: Forkert XDMCP version!"
 
 # src/gdmxdmcp.c:255
-#: daemon/xdmcp.c:387
+#: daemon/xdmcp.c:369
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr "gdm_xdmcp_decode_packet: Ukendt instruktion/kode fra vært %s"
 
 # src/gdmxdmcp.c:273
-#: daemon/xdmcp.c:406
+#: daemon/xdmcp.c:388
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
 msgstr "gdm_xdmcp_query: Kunne ikke skaffe auth-liste fra pakke"
 
 # src/gdmxdmcp.c:284
-#: daemon/xdmcp.c:417
+#: daemon/xdmcp.c:399
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: Fejl i tjeksum"
 
 # src/gdmxdmcp.c:373
-#: daemon/xdmcp.c:529
+#: daemon/xdmcp.c:521
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr "gdm_xdmcp_handle_forward_query: Kunne ikke læse terminaladresse"
 
 # src/gdmxdmcp.c:373
-#: daemon/xdmcp.c:536
+#: daemon/xdmcp.c:528
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr "gdm_xdmcp_handle_forward_query: Kunne ikke læse terminalportnummer"
 
 # src/gdmxdmcp.c:273
-#: daemon/xdmcp.c:544
+#: daemon/xdmcp.c:536
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr "gdm_xdmcp_handle_forward_query: Kunne ikke skaffe auth-liste fra pakke"
 
 # src/gdmxdmcp.c:284
-#: daemon/xdmcp.c:559
+#: daemon/xdmcp.c:551
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: Fejl i tjeksum"
 
-#: daemon/xdmcp.c:623
+# src/gdmxdmcp.c:373
+#: daemon/xdmcp.c:557
+msgid "gdm_xdmcp_handle_forward_query: Bad address"
+msgstr "gdm_xdmcp_handle_forward_query: Ugyldig adresse"
+
+#: daemon/xdmcp.c:615
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Vært %s tillod ikke XDMCP forespørgsel"
 
 # src/gdmxdmcp.c:333
-#: daemon/xdmcp.c:625
+#: daemon/xdmcp.c:617
 msgid "Display not authorized to connect"
 msgstr "Terminal ikke autoriseret til at forbinde"
 
 # src/gdmxdmcp.c:366
-#: daemon/xdmcp.c:658
+#: daemon/xdmcp.c:650
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: Modtog REQUEST fra bandlyst vært %s"
 
 # src/gdmxdmcp.c:373
-#: daemon/xdmcp.c:665
+#: daemon/xdmcp.c:657
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: Kunne ikke læse terminalnummer"
 
 # src/gdmxdmcp.c:379
-#: daemon/xdmcp.c:671
+#: daemon/xdmcp.c:663
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: Kunne ikke læse forbindelsestype"
 
 # src/gdmxdmcp.c:385
-#: daemon/xdmcp.c:677
+#: daemon/xdmcp.c:669
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr "gdm_xdmcp_handle_request: Kunne ikke læse klientadresse"
 
 # src/gdmxdmcp.c:391
-#: daemon/xdmcp.c:684
+#: daemon/xdmcp.c:676
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr "gdm_xdmcp_handle_request: Kunne ikke læse godkendelsesnavne"
 
 # src/gdmxdmcp.c:397
-#: daemon/xdmcp.c:692
+#: daemon/xdmcp.c:684
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr "gdm_xdmcp_handle_request: Kunne ikke læse godkendelsedata"
 
 # src/gdmxdmcp.c:403
-#: daemon/xdmcp.c:701
+#: daemon/xdmcp.c:693
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr "gdm_xdmcp_handle_request: Kunne ikke læse autorisationslisten"
 
 # src/gdmxdmcp.c:414
-#: daemon/xdmcp.c:716
+#: daemon/xdmcp.c:708
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr "gdm_xdmcp_handle_request: Kunne ikke læse producent-id"
 
 # src/gdmxdmcp.c:432
-#: daemon/xdmcp.c:739
+#: daemon/xdmcp.c:731
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: Fejlede tjeksum fra %s"
 
 # src/gdmxdmcp.c:551
-#: daemon/xdmcp.c:866
+#: daemon/xdmcp.c:858
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr "gdm_xdmcp_handle_manage: Modtog Manage fra bandlyst vært %s"
 
 # src/gdmxdmcp.c:558
-#: daemon/xdmcp.c:873
+#: daemon/xdmcp.c:865
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage: Kunne ikke læse sessions-id"
 
 # src/gdmxdmcp.c:564
-#: daemon/xdmcp.c:879
+#: daemon/xdmcp.c:871
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: Kunne ikke læse terminalnummer"
 
 # src/gdmxdmcp.c:573
-#: daemon/xdmcp.c:888
+#: daemon/xdmcp.c:880
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
 msgstr "gdm_xdmcp_handle_manage: Kunne ikke læse terminalklasse"
 
 # src/gdmxdmcp.c:592
-#: daemon/xdmcp.c:922
+#: daemon/xdmcp.c:923
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr "gdm_xdmcp_handle_manage: Kunne ikke åbne logfil til terminalen %s!"
 
 # src/gdmxdmcp.c:686
-#: daemon/xdmcp.c:997
+#: daemon/xdmcp.c:998
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr "gdm_xdmcp_handle_keepalive: Modtog KEEPALIVE fra bandlyst vært %s"
 
 # src/gdmxdmcp.c:693
-#: daemon/xdmcp.c:1004
+#: daemon/xdmcp.c:1005
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_keepalive: Kunne ikke læse terminalnummer"
 
 # src/gdmxdmcp.c:699
-#: daemon/xdmcp.c:1010
+#: daemon/xdmcp.c:1011
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Kunne ikke læse sessions-id"
 
 # src/gdmxdmcp.c:188
-#: daemon/xdmcp.c:1199
+#: daemon/xdmcp.c:1212
 msgid "gdm_xdmcp_init: No XDMCP support"
 msgstr "gdm_xdmcp_init: Ingen XDMCP-understøttelse"
 
 # src/gdmxdmcp.c:188
-#: daemon/xdmcp.c:1206
+#: daemon/xdmcp.c:1219
 msgid "gdm_xdmcp_run: No XDMCP support"
 msgstr "gdm_xdmcp_run: Ingen XDMCP-understøttelse"
 
 # src/gdmxdmcp.c:219
-#: daemon/xdmcp.c:1212
+#: daemon/xdmcp.c:1225
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_close: Ingen XDMCP-understøttelse"
 
-#: gui/gdmphotosetup.c:52
+#: daemon/errorgui.c:152
+msgid "gdm_error_box: Failed to execute self"
+msgstr "gdm_error_box: Det mislykkedes at køre programmet selv"
+
+#: daemon/errorgui.c:157
+msgid "gdm_error_box: Cannot fork to display error/info box"
+msgstr ""
+"gdm_error_box: Kan ikke fraspalte en process til at vise fejl/info-boks"
+
+#: gui/gdmphotosetup.c:73
 msgid ""
 "The face browser is not configured,\n"
 "please ask your system administrator to enable it\n"
@@ -1101,23 +1144,23 @@ msgstr ""
 "din systemadministrator om at aktivere den\n"
 "i GDM-opsætningsprogrammet."
 
-#: gui/gdmphotosetup.c:61
+#: gui/gdmphotosetup.c:82
 msgid "Select a photo"
 msgstr "Vælg et fotografi"
 
-#: gui/gdmphotosetup.c:66
+#: gui/gdmphotosetup.c:87
 msgid "Select a photograph to show in the facebrowser:"
 msgstr "Vælg et fotografi der skal vises i ansigtsvælgeren:"
 
-#: gui/gdmphotosetup.c:71
+#: gui/gdmphotosetup.c:92
 msgid "Browse"
 msgstr "Gennemse"
 
-#: gui/gdmphotosetup.c:90
+#: gui/gdmphotosetup.c:111
 msgid "No picture selected."
 msgstr "Intet billede valgt."
 
-#: gui/gdmphotosetup.c:95
+#: gui/gdmphotosetup.c:130
 #, c-format
 msgid ""
 "The picture is too large and the system administrator\n"
@@ -1128,7 +1171,7 @@ msgstr ""
 "har forbudt billeder større end %d byte til\n"
 "ansigtsvælgeren."
 
-#: gui/gdmphotosetup.c:116
+#: gui/gdmphotosetup.c:154
 #, c-format
 msgid ""
 "File %s cannot be open for reading\n"
@@ -1137,7 +1180,7 @@ msgstr ""
 "Filen %s kan ikke åbnes til læsning.\n"
 "Fejl: %s"
 
-#: gui/gdmphotosetup.c:129
+#: gui/gdmphotosetup.c:167
 #, c-format
 msgid ""
 "File %s cannot be open for writing\n"
@@ -1146,31 +1189,31 @@ msgstr ""
 "Filen %s kan ikke åbnes til skrivning.\n"
 "Fejl: %s"
 
-#: gui/gdmchooser.c:66
+#: gui/gdmchooser.c:62
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
 msgstr "Vent venligst: skanner lokalnetværket efter XDMCP-værter..."
 
-#: gui/gdmchooser.c:67
+#: gui/gdmchooser.c:63
 msgid "No serving hosts were found."
 msgstr "Ingen betjenende værter fundet."
 
-#: gui/gdmchooser.c:68
+#: gui/gdmchooser.c:64
 msgid "Choose a host to connect to from the selection below."
 msgstr "Vælg en vært fra listen nedenunder."
 
 # src/gdmgreeter.c:224
-#: gui/gdmchooser.c:485
+#: gui/gdmchooser.c:401
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_chooser_parse_config: Ingen konfigurationsfil: %s. Afbryder."
 
 # src/gdmverify.c:141
-#: gui/gdmchooser.c:630
+#: gui/gdmchooser.c:544
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Kunne ikke åbne standard-værtsikon: %s"
 
-#: gui/gdmchooser.c:639
+#: gui/gdmchooser.c:553
 msgid ""
 "Cannot find the glade interface description\n"
 "file, cannot run gdmchooser.\n"
@@ -1182,7 +1225,7 @@ msgstr ""
 "installation og placeringen af\n"
 "gdmchooser.glade-filen."
 
-#: gui/gdmchooser.c:660
+#: gui/gdmchooser.c:574
 msgid ""
 "The glade interface description file\n"
 "appears to be corrupted.\n"
@@ -1193,57 +1236,49 @@ msgstr ""
 "installation."
 
 # src/gdmslave.c:124
-#: gui/gdmchooser.c:704
+#: gui/gdmchooser.c:618
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Fejl under opsætning af HUP-signalhåndtering"
 
 # src/gdm.c:592
-#: gui/gdmchooser.c:707
+#: gui/gdmchooser.c:621
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Fejl under opsætning af INT-signalhåndtering"
 
 # src/gdm.c:589
-#: gui/gdmchooser.c:710
+#: gui/gdmchooser.c:624
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Fejl under opsætning af TERM-signalhåndtering"
 
-#: gui/gdmchooser.c:718 gui/gdmlogin.c:3440
+#: gui/gdmchooser.c:632 gui/gdmlogin.c:3387
 msgid "Could not set signal mask!"
 msgstr "Kunne ikke sætte signalmaske!"
 
-#: gui/gdmchooser.c:785
+#: gui/gdmchooser.c:699
 msgid "Socket for xdm communication"
 msgstr "Sokkel til XDM-kommunikation"
 
-#: gui/gdmchooser.c:785
+#: gui/gdmchooser.c:699
 msgid "SOCKET"
 msgstr "SOKKEL"
 
-#: gui/gdmchooser.c:785
+#: gui/gdmchooser.c:699
 msgid "Client address to return in response to xdm"
 msgstr "Klientadresse der skal returneres som svar til XDM"
 
-#: gui/gdmchooser.c:785
+#: gui/gdmchooser.c:699
 msgid "ADDRESS"
 msgstr "ADRESSE"
 
-#: gui/gdmchooser.c:786
+#: gui/gdmchooser.c:700
 msgid "Connection type to return in response to xdm"
 msgstr "Forbindelsestype der skal returneres som svar til XDM"
 
-#: gui/gdmchooser.c:786
+#: gui/gdmchooser.c:700
 msgid "TYPE"
 msgstr "TYPE"
 
-#: gui/gdmchooser.c:919
-msgid ""
-"The maximum wait time exceeded for choosing a session.\n"
-"Please press OK and try again."
-msgstr ""
-"Den maksimale ventetid til at vælge en session er overskredet.\n"
-"Tryk venligst O.k. og prøv igen."
-
-#: gui/gdmchooser.c:979
+#: gui/gdmchooser.c:872
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).\n"
@@ -1254,64 +1289,64 @@ msgstr ""
 "Du har sandsynligvis lige opgraderet GDM. Genstart venligst\n"
 "enten GDM-dæmonen eller maskinen."
 
-#: gui/gdmlogin.c:59
+#: gui/gdmlogin.c:56
 msgid "AnotherLevel"
 msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:60 gui/gdmlogin.c:1633 gui/gdmlogin.c:1655
+#: gui/gdmlogin.c:57 gui/gdmlogin.c:1617 gui/gdmlogin.c:1639
 msgid "Default"
 msgstr "Standard"
 
-#: gui/gdmconfig-strings.c:180 gui/gdmlogin.c:61
+#: gui/gdmconfig-strings.c:184 gui/gdmlogin.c:58
 msgid "Failsafe"
 msgstr "Fejlsikret"
 
-#: gui/gdmlogin.c:62
+#: gui/gdmlogin.c:59
 msgid "Gnome"
 msgstr "Gnome"
 
-#: gui/gdmlogin.c:63
+#: gui/gdmlogin.c:60
 msgid "KDE"
 msgstr "KDE"
 
 # src/gdmgreeter.c:963
-#: gui/gdmlogin.c:64
+#: gui/gdmlogin.c:61
 msgid "XSession"
 msgstr "XSession"
 
-#: gui/gdmlogin.c:65 gui/gdmlogin.c:1301
+#: gui/gdmconfig-strings.c:197 gui/gdmlogin.c:62 gui/gdmlogin.c:1285
 msgid "Gnome Chooser"
 msgstr "Med Gnome-sessionsvalg"
 
 # som i 'sidste session'
-#: gui/gdmlogin.c:66
+#: gui/gdmlogin.c:63
 msgid "Last"
 msgstr "Forrige"
 
-#: gui/gdmlogin.c:187
+#: gui/gdmlogin.c:182
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Brugeren %s logger på om %d sekunder"
 
-#: gui/gdmlogin.c:437
+#: gui/gdmlogin.c:431
 msgid ""
 "Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr "Dobbeltklik her for at gendanne logindvinduet så du kan logge på."
 
 # src/gdmmisc.c:203
-#: gui/gdmlogin.c:516 gui/gdmlogin.c:522 gui/gdmlogin.c:529
+#: gui/gdmlogin.c:510 gui/gdmlogin.c:516 gui/gdmlogin.c:523
 #, c-format
 msgid "Welcome to %s"
 msgstr "Velkommen til %s"
 
 # src/gdmmisc.c:202
-#: gui/gdmlogin.c:527
+#: gui/gdmlogin.c:521
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Strengen er for lang!"
 
-#: gui/gdmlogin.c:656
+#: gui/gdmlogin.c:631
 msgid ""
 "Could not fork a new process!\n"
 "\n"
@@ -1322,37 +1357,42 @@ msgstr ""
 "Du kan sandsynligvis heller ikke logge på."
 
 # src/gdmgreeter.c:451
-#: gui/gdmlogin.c:703
+#: gui/gdmlogin.c:678
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Er du sikker på at du vil genstarte maskinen?"
 
 # src/gdmgreeter.c:480
-#: gui/gdmlogin.c:717
+#: gui/gdmlogin.c:690
 msgid "Are you sure you want to halt the machine?"
 msgstr "Er du sikker på at du vil stoppe maskinen?"
 
+# src/gdmgreeter.c:451
+#: gui/gdmlogin.c:701
+msgid "Are you sure you want to suspend the machine?"
+msgstr "Er du sikker på at du vil lade maskinen gå i dvale?"
+
 # src/gdmgreeter.c:224
-#: gui/gdmlogin.c:734
+#: gui/gdmlogin.c:715
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
 "gdm_login_parse_config: Ingen konfigurationsfil: %s. Bruger standardværdier."
 
-#: gui/gdmlogin.c:786
+#: gui/gdmlogin.c:776
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr ""
 "Pausen før tidsindstillet logind var mindre end 5, så 5 benyttes i stedet."
 
-#: gui/gdmlogin.c:852 gui/gdmlogin.c:1349
+#: gui/gdmlogin.c:836 gui/gdmlogin.c:1333
 msgid "Failsafe Gnome"
 msgstr "Fejlsikret Gnome"
 
-#: gui/gdmlogin.c:854 gui/gdmlogin.c:1374
+#: gui/gdmlogin.c:838 gui/gdmlogin.c:1358
 msgid "Failsafe xterm"
 msgstr "Fejlsikret xterm"
 
 # src/gdmgreeter.c:357
-#: gui/gdmlogin.c:900
+#: gui/gdmlogin.c:884
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -1362,7 +1402,7 @@ msgstr ""
 "Ønsker du at gøre %s til den automatisk valgte ved fremtidige sessioner?"
 
 # src/gdmgreeter.c:349
-#: gui/gdmlogin.c:917 gui/gdmlogin.c:983
+#: gui/gdmlogin.c:901 gui/gdmlogin.c:967
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -1371,26 +1411,26 @@ msgstr ""
 "Du har valgt %s for denne session, men den forvalgte indstilling er %s.\n"
 "Ønsker du at gøre %s til den automatisk valgte ved fremtidige sessioner?"
 
-#: gui/gdmlogin.c:1162
+#: gui/gdmlogin.c:1146
 #, c-format
 msgid "%s session selected"
 msgstr "%s-session valgt"
 
-#: gui/gdmlogin.c:1192
+#: gui/gdmlogin.c:1176
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Log ind med den session du brugte sidste gang du loggede på"
 
 # src/gdmgreeter.c:737
-#: gui/gdmlogin.c:1204
+#: gui/gdmlogin.c:1188
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "egdm_login_session_init: Sessionens programmappe ikke fundet!"
 
-#: gui/gdmlogin.c:1289
+#: gui/gdmlogin.c:1273
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr "Denne session logger dig direkte på Gnome i din nuværende session."
 
-#: gui/gdmlogin.c:1304
+#: gui/gdmlogin.c:1288
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
@@ -1398,11 +1438,11 @@ msgstr ""
 "Den session logger dig på Gnome og lader dig vælge hvilken en af "
 "Gnome-sessionerne du ønsker at benytte."
 
-#: gui/gdmlogin.c:1339
+#: gui/gdmlogin.c:1323
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Hjælp, intet fundet i sessionsmappen."
 
-#: gui/gdmlogin.c:1351
+#: gui/gdmlogin.c:1335
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -1412,7 +1452,7 @@ msgstr ""
 "opstartsprogrammer bliver kørt, og session er kun beregnet til når du ellers "
 "ikke kan logge på. Gnome vil bruge standardsessionen."
 
-#: gui/gdmlogin.c:1376
+#: gui/gdmlogin.c:1360
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -1423,125 +1463,133 @@ msgstr ""
 "ikke kan logge på. For at afslutte terminalen, skriv 'exit'."
 
 # src/gdmgreeter.c:794
-#: gui/gdmlogin.c:1397
+#: gui/gdmlogin.c:1381
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 "Ingen automatisk valgt sessionshenvisning fundet. Bruger fejlsikret Gnome.\n"
 
-#: gui/gdmlogin.c:1414
+#: gui/gdmlogin.c:1398
 #, c-format
 msgid "%s language selected"
 msgstr "%s sprog valgt"
 
-#: gui/gdmlogin.c:1452
+#: gui/gdmlogin.c:1436
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "Log på med det sprog der blev benyttet ved sidste logind."
 
-#: gui/gdmlogin.c:1473
+#: gui/gdmlogin.c:1457
 msgid "Other"
 msgstr "Andre"
 
-#: gui/gdmlogin.c:1593 gui/gdmlogin.c:1602
+#: gui/gdmlogin.c:1577 gui/gdmlogin.c:1586
 msgid "Select GNOME session"
 msgstr "Vælg Gnome-session"
 
-#: gui/gdmlogin.c:1669
+#: gui/gdmlogin.c:1653
 msgid "Create new session"
 msgstr "Opret ny session"
 
-#: gui/gdmlogin.c:1678
+#: gui/gdmlogin.c:1662
 msgid "Name: "
 msgstr "Navn: "
 
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
-#: gui/gdmlogin.c:1699
+#: gui/gdmlogin.c:1683
 msgid "Remember this setting"
 msgstr "Husk dette valg"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:1963
+#: gui/gdmlogin.c:1947
 msgid "Please insert 25 cents to log in."
 msgstr "Indsæt venligst 50 øre for at logge på."
 
 # et forsøg på at finde på noget mere dækkende
-#: gui/gdmlogin.c:2309
+#: gui/gdmlogin.c:2293
 msgid "GNOME Desktop Manager"
 msgstr "Gnome logindhåndtering"
 
 # src/gdmgreeter.c:1008
-#: gui/gdmlogin.c:2321
+#: gui/gdmlogin.c:2305
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Kan ikke åbne ikonfilen: %s. Suspenderer minimeringsfunktionen!"
 
-#: gui/gdmlogin.c:2340
+#: gui/gdmlogin.c:2324
 msgid "Iconify the login window"
 msgstr "Minimér logindvinduet"
 
-#: gui/gdmlogin.c:2399
+#: gui/gdmlogin.c:2383
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a. %e. %b., kl. %H:%M"
 
 # src/gdmgreeter.c:1285
-#: gui/gdmlogin.c:2445
+#: gui/gdmlogin.c:2450
 msgid "GDM Login"
 msgstr "GDM logind"
 
 # src/gdmgreeter.c:963
-#: gui/gdmlogin.c:2486
+#: gui/gdmlogin.c:2491
 msgid "Session"
 msgstr "Session"
 
 # src/gdmgreeter.c:970
-#: gui/gdmlogin.c:2497
+#: gui/gdmlogin.c:2502
 msgid "Language"
 msgstr "Sprog"
 
-#: gui/gdmlogin.c:2508
+#: gui/gdmlogin.c:2516
 msgid "Configure..."
 msgstr "Indstillinger..."
 
-#: gui/gdmlogin.c:2515
+#: gui/gdmlogin.c:2523
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr "Opsæt GDM (dette logindprogram). Dette kræver root-kodeordet."
 
 # src/gdmgreeter.c:980
-#: gui/gdmlogin.c:2520
+#: gui/gdmlogin.c:2530
 msgid "Reboot..."
 msgstr "Genstart..."
 
-#: gui/gdmlogin.c:2527
+#: gui/gdmlogin.c:2537
 msgid "Reboot your computer"
 msgstr "Genstart maskinen"
 
 # src/gdmgreeter.c:986
-#: gui/gdmlogin.c:2530
+#: gui/gdmlogin.c:2543
 msgid "Halt..."
 msgstr "Luk ned..."
 
-#: gui/gdmlogin.c:2537
+#: gui/gdmlogin.c:2550
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Luk maskinen ned så den kan slukkes."
 
+#: gui/gdmlogin.c:2557
+msgid "Suspend..."
+msgstr "Dvale..."
+
+#: gui/gdmlogin.c:2564
+msgid "Suspend your computer"
+msgstr "Lad maskinen gå i dvale"
+
 # src/gdmgreeter.c:1000
-#: gui/gdmconfig.c:54 gui/gdmlogin.c:2541
+#: gui/gdmconfig.c:54 gui/gdmlogin.c:2570
 msgid "System"
 msgstr "System"
 
-#: gui/gdmlogin.c:2762
+#: gui/gdmlogin.c:2792
 msgid "Please enter your login"
 msgstr "Indtast venligst dit brugernavn"
 
 # src/gdmgreeter.c:1453
-#: gui/gdmlogin.c:2975
+#: gui/gdmlogin.c:3005
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Kan ikke åbne standardbillede: %s. Bruger ikke ansigtsvælger!"
 
-#: gui/gdmlogin.c:3315 gui/gdmlogin.c:3339
+#: gui/gdmlogin.c:3262 gui/gdmlogin.c:3286
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -1553,11 +1601,11 @@ msgstr ""
 "enten GDM-dæmonen eller maskinen."
 
 # src/gdmgreeter.c:980
-#: gui/gdmlogin.c:3346 gui/gdmlogin.c:3380
+#: gui/gdmlogin.c:3293 gui/gdmlogin.c:3327
 msgid "Reboot"
 msgstr "Genstart maskinen"
 
-#: gui/gdmlogin.c:3372
+#: gui/gdmlogin.c:3319
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -1568,31 +1616,31 @@ msgstr ""
 "Du har sandsynligvis lige opgraderet GDM. Genstart venligst\n"
 "enten GDM-dæmonen eller maskinen."
 
-#: gui/gdmlogin.c:3379
+#: gui/gdmlogin.c:3326
 msgid "Restart"
 msgstr "Genstart"
 
 # src/gdmgreeter.c:1597
-#: gui/gdmlogin.c:3417
+#: gui/gdmlogin.c:3364
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Fejl under opsætning af HUP-signalhåndtering"
 
 # src/gdmgreeter.c:1600
-#: gui/gdmlogin.c:3420
+#: gui/gdmlogin.c:3367
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Fejl under opsætning af INT-signalhåndtering"
 
 # src/gdmgreeter.c:1603
-#: gui/gdmlogin.c:3423
+#: gui/gdmlogin.c:3370
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Fejl under opsætning af TERM-signalhåndtering"
 
 # src/gdm.c:600
-#: gui/gdmlogin.c:3431
+#: gui/gdmlogin.c:3378
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Fejl under opsætning af CHLD-signalhåndtering"
 
-#: gui/gdmlogin.c:3498
+#: gui/gdmlogin.c:3445
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -1604,7 +1652,7 @@ msgstr ""
 "Der er så to sessioner tilgængelige, men du bør\n"
 "logge på og straks rette opsætningen af GDM."
 
-#: gui/gdmlogin.c:3514
+#: gui/gdmlogin.c:3461
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -1615,7 +1663,7 @@ msgstr ""
 "standardkommandoen er kørt i stedet. Ret\n"
 "venligst opsætningen."
 
-#: gui/gdmlogin.c:3531
+#: gui/gdmlogin.c:3478
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -1697,11 +1745,11 @@ msgstr ""
 "kontrollen '%s'. Desværre er det umuligt at fortsætte.\n"
 "Tjek venligst din installation."
 
-#: gui/gdmconfig.c:359
+#: gui/gdmconfig.c:360
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "Du skal være superbruger (root) for at konfigurere GDM.\n"
 
-#: gui/gdmconfig.c:396
+#: gui/gdmconfig.c:397
 msgid ""
 "Cannot find the glade interface description\n"
 "file, cannot run gdmconfig.\n"
@@ -1713,7 +1761,7 @@ msgstr ""
 "installation og placeringen af\n"
 "gdmconfig.glade-filen."
 
-#: gui/gdmconfig.c:425
+#: gui/gdmconfig.c:426
 msgid ""
 "Cannot find the gdmconfigurator widget in\n"
 "the glade interface description file\n"
@@ -1723,11 +1771,11 @@ msgstr ""
 "Glade-grænsefladeinfofilen. Tjek venligst\n"
 "din installation."
 
-#: gui/gdmconfig.c:483
+#: gui/gdmconfig.c:484
 msgid "GNOME Display Manager Configurator"
 msgstr "Opsætning til Gnomes logindhåndtering"
 
-#: gui/gdmconfig.c:556
+#: gui/gdmconfig.c:557
 #, c-format
 msgid ""
 "The configuration file: %s\n"
@@ -1736,22 +1784,22 @@ msgstr ""
 "Konfigurationsfilen '%s'\n"
 "eksisterer ikke! Bruger standardværdier."
 
-#: gui/gdmconfig.c:747
+#: gui/gdmconfig.c:755
 msgid "Error reading session script!"
 msgstr "Fejl ved læsning af sessionsprogram!"
 
 # står som en fejlmeddelelse i stedet for det rigtige indhold
-#: gui/gdmconfig.c:749
+#: gui/gdmconfig.c:757
 msgid "Error reading this session script"
 msgstr "Fejl ved læsning af dette sessionsprogram!"
 
 # src/gdm.c:215
-#: gui/gdmconfig.c:838
+#: gui/gdmconfig.c:846
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse:most: Ugyldig serverlinje i konfigurationsfil. Ignorerer!"
 
-#: gui/gdmconfig.c:939
+#: gui/gdmconfig.c:947
 msgid ""
 "The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
@@ -1767,7 +1815,7 @@ msgstr ""
 "Dette vil dræbe alle de nuværende sessioner,\n"
 "og alle ugemte data mistes!"
 
-#: gui/gdmconfig.c:944
+#: gui/gdmconfig.c:952
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
@@ -1775,7 +1823,7 @@ msgstr ""
 "Er du sikker på at du ønsker at genstarte GDM\n"
 "og miste alle ugemte data?"
 
-#: gui/gdmconfig.c:951
+#: gui/gdmconfig.c:959
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -1787,7 +1835,7 @@ msgstr ""
 "før GDM eller maskinen bliver genstartet."
 
 # lettere omformulering nødvendig for at undgå mystisk sætningskonstruktion
-#: gui/gdmconfig.c:972
+#: gui/gdmconfig.c:980
 msgid ""
 "You have not defined any local servers.\n"
 "Usually this is not a good idea unless you\n"
@@ -1808,7 +1856,7 @@ msgstr ""
 "indstillinger?"
 
 # src/gdmverify.c:141
-#: gui/gdmconfig.c:1127
+#: gui/gdmconfig.c:1143
 #, c-format
 msgid ""
 "\n"
@@ -1821,7 +1869,7 @@ msgstr ""
 "Fejl: %s"
 
 # src/gdmverify.c:141
-#: gui/gdmconfig.c:1163
+#: gui/gdmconfig.c:1179
 #, c-format
 msgid ""
 "\n"
@@ -1834,7 +1882,7 @@ msgstr ""
 "Fejl: %s"
 
 # src/gdmverify.c:141
-#: gui/gdmconfig.c:1207
+#: gui/gdmconfig.c:1223
 #, c-format
 msgid ""
 "\n"
@@ -1847,7 +1895,7 @@ msgstr ""
 "Fejl: %s"
 
 # src/gdmverify.c:141
-#: gui/gdmconfig.c:1218
+#: gui/gdmconfig.c:1234
 #, c-format
 msgid ""
 "\n"
@@ -1860,7 +1908,7 @@ msgstr ""
 "Fejl: %s"
 
 # src/gdmverify.c:141
-#: gui/gdmconfig.c:1244
+#: gui/gdmconfig.c:1260
 #, c-format
 msgid ""
 "\n"
@@ -1872,7 +1920,7 @@ msgstr ""
 "\n"
 "Fejl: %s"
 
-#: gui/gdmconfig.c:1283
+#: gui/gdmconfig.c:1299
 msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
@@ -1882,7 +1930,7 @@ msgstr ""
 "session"
 
 # src/gdmverify.c:141
-#: gui/gdmconfig.c:1292
+#: gui/gdmconfig.c:1308
 #, c-format
 msgid ""
 "\n"
@@ -1894,7 +1942,7 @@ msgstr ""
 "\n"
 "Fejl: %s"
 
-#: gui/gdmconfig.c:1312
+#: gui/gdmconfig.c:1328
 msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
@@ -1902,7 +1950,7 @@ msgstr ""
 "Der opstod fejl i forbindelse med at skrive ændringerne til\n"
 "sessionfilerne. Indstillingerne er muligvis ikke gemt helt.\n"
 
-#: gui/gdmconfig.c:1331
+#: gui/gdmconfig.c:1347
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -1910,7 +1958,7 @@ msgstr ""
 "Det vil ødelægge alle ændringer lavet i denne session.\n"
 "Er du sikker på at du vil fortsætte?"
 
-#: gui/gdmconfig.c:1342
+#: gui/gdmconfig.c:1358
 msgid ""
 "This will destroy any changes made in the configuration.\n"
 "Are you sure you want to do this?"
@@ -1919,7 +1967,7 @@ msgstr ""
 "Er du sikker på at du vil gøre det?"
 
 #. Request the command line for this new server
-#: gui/gdmconfig.c:1516 gui/gdmconfig.c:1535
+#: gui/gdmconfig.c:1532 gui/gdmconfig.c:1551
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
@@ -1927,15 +1975,15 @@ msgstr ""
 "Enter stien til X-serveren og eventuelle\n"
 "parametre som den skal have med."
 
-#: gui/gdmconfig.c:1752
+#: gui/gdmconfig.c:1768
 msgid "A session name must be unique and not empty"
 msgstr "Et sessionsnavn skal være unikt og ikke tomt"
 
-#: gui/gdmconfig.c:1764
+#: gui/gdmconfig.c:1780
 msgid "Enter a name for the new session"
 msgstr "Indtast et navn til den nye session"
 
-#: gui/gdmconfig.c:1879
+#: gui/gdmconfig.c:1895
 msgid ""
 "You have modified the sessions directory.\n"
 "Your session changes will still get written\n"
@@ -2044,68 +2092,73 @@ msgstr "A-M|Litauisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:74
-msgid "N-Z|Norwegian"
-msgstr "N-Å|Norsk"
+msgid "N-Z|Norwegian (bokmal)"
+msgstr "N-Å|Norsk (bokmål)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:76
+msgid "N-Z|Norwegian (nynorsk)"
+msgstr "N-Å|Norsk (nynorsk)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:78
 msgid "N-Z|Polish"
 msgstr "N-Å|Polsk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:78
+#: gui/gdmlanguages.c:80
 msgid "N-Z|Portuguese"
 msgstr "N-Å|Portugisisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:80
+#: gui/gdmlanguages.c:82
 msgid "N-Z|Romanian"
 msgstr "N-Å|Romansk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:82
+#: gui/gdmlanguages.c:84
 msgid "N-Z|Russian"
 msgstr "N-Å|Russisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:84
+#: gui/gdmlanguages.c:86
 msgid "N-Z|Slovak"
 msgstr "N-Å|Slovakisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:86
+#: gui/gdmlanguages.c:88
 msgid "N-Z|Slovenian"
 msgstr "N-Å|Slovensk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:88
+#: gui/gdmlanguages.c:90
 msgid "N-Z|Spanish"
 msgstr "N-Å|Spansk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:90
+#: gui/gdmlanguages.c:92
 msgid "N-Z|Swedish"
 msgstr "N-Å|Svensk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:92
+#: gui/gdmlanguages.c:94
 msgid "N-Z|Turkish"
 msgstr "N-Å|Tyrkisk"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:94
+#: gui/gdmlanguages.c:96
 msgid "Other|POSIX/C English"
 msgstr "Andre|POSIX/C engelsk"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:221
+#: gui/gdmlanguages.c:223
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:229
+#: gui/gdmlanguages.c:231
 msgid "N-Z"
 msgstr "N-Å"
 
@@ -2582,7 +2635,7 @@ msgstr "Baggrundsprogram"
 msgid "Background program: "
 msgstr "Baggrundsprogram: "
 
-#: gui/gdmconfig-strings.c:117 gui/gdmconfig-strings.c:225
+#: gui/gdmconfig-strings.c:117 gui/gdmconfig-strings.c:236
 msgid "Select a file containing Locale information"
 msgstr "Vælg en fil med regionaldata"
 
@@ -2644,91 +2697,107 @@ msgstr "Tillad root at logge ind fjernt med GDM"
 
 #: gui/gdmconfig-strings.c:134
 msgid ""
+"Allow logging in using the timed from a remote host using GDM.  This is only "
+"relevant if you enable the XDMCP protocol.  Note that this is insecure since "
+"remote hosts can gain access to this computer without the use of a password, "
+"so be careful."
+msgstr ""
+"Tillad tidsindstillede logind fra en fjernvært med GDM. Dette er kun "
+"relevant hvis du slå XDMCP-protokollen til. Bemærk at dette ikke er helt "
+"sikkert eftersom fjerne værter kan få adgang til denne maskine uden at bruge "
+"en adgangskode så vær forsigtig."
+
+#: gui/gdmconfig-strings.c:135
+msgid "Allow remote timed logins"
+msgstr "Tillad fjerne tidsindstillede logind"
+
+#: gui/gdmconfig-strings.c:136
+msgid ""
 "Determines whether GDM should kill X clients started by the init scripts "
 "when the user logs in."
 msgstr ""
 "Afgører om GDM skal dræbe X-klienter der er startet af 'init'-programmer når "
 "brugeren logger ind."
 
-#: gui/gdmconfig-strings.c:135
+#: gui/gdmconfig-strings.c:137
 msgid "Kill 'init' clients"
 msgstr "Dræb 'init'-klienter"
 
-#: gui/gdmconfig-strings.c:136
+#: gui/gdmconfig-strings.c:138
 msgid "Should GDM print authentication errors in the greeter"
 msgstr "Afgører om GDM udskriver godkendelsesfejl i velkomstbyderen"
 
-#: gui/gdmconfig-strings.c:137
+#: gui/gdmconfig-strings.c:139
 msgid "Authentication errors should be verbose"
 msgstr "Godkendelsesfejl skal være med megen info"
 
-#: gui/gdmconfig-strings.c:138
+#: gui/gdmconfig-strings.c:140
 msgid "Select how relaxed permissions are"
 msgstr "Vælg hvor afslappede rettighederne skal være"
 
-#: gui/gdmconfig-strings.c:139
+#: gui/gdmconfig-strings.c:141
 msgid "Permissions: "
 msgstr "Rettigheder"
 
-#: gui/gdmconfig-strings.c:140
+#: gui/gdmconfig-strings.c:142
 msgid "Allow world writable files and directories"
 msgstr "Tillad filer og kataloger der kan skrives til af alle"
 
-#: gui/gdmconfig-strings.c:141
+#: gui/gdmconfig-strings.c:143
 msgid "World writable"
 msgstr "Kan skrives til af alle"
 
-#: gui/gdmconfig-strings.c:142
+#: gui/gdmconfig-strings.c:144
 msgid "Allow group writable files and directories"
 msgstr "Tillad filer og kataloger der kan skrives til af gruppen"
 
-#: gui/gdmconfig-strings.c:143
+#: gui/gdmconfig-strings.c:145
 msgid "Group writable"
 msgstr "Kan skrives til af gruppen"
 
-#: gui/gdmconfig-strings.c:144
+#: gui/gdmconfig-strings.c:146
 msgid "Only accept user owned files and directories"
 msgstr "Acceptér kun bruger-ejede filer og kataloger"
 
-#: gui/gdmconfig-strings.c:145
+#: gui/gdmconfig-strings.c:147
 msgid "Paranoia"
 msgstr "Paranoia"
 
-#: gui/gdmconfig-strings.c:146
+#: gui/gdmconfig-strings.c:148
 msgid "Authorization Details"
 msgstr "Godkendelsesdetaljer"
 
-#: gui/gdmconfig-strings.c:147
+#: gui/gdmconfig-strings.c:149
 msgid "GDM runs as this user: "
 msgstr "GDM kører som denne bruger: "
 
-#: gui/gdmconfig-strings.c:148
+#: gui/gdmconfig-strings.c:150
 msgid "User 'auth' directory: "
 msgstr "Bruger-'auth'-mappe"
 
-#: gui/gdmconfig-strings.c:149
+#: gui/gdmconfig-strings.c:151
 msgid "User 'auth' FB directory: "
 msgstr "Bruger-'auth'-fb-mappe"
 
-#: gui/gdmconfig-strings.c:150
+#: gui/gdmconfig-strings.c:152
 msgid "User 'auth' file: "
 msgstr "Bruger-'auth'-fil"
 
-#: gui/gdmconfig-strings.c:151
+#: gui/gdmconfig-strings.c:153
 msgid "GDM runs as this group: "
 msgstr "GDM kører som denne gruppe: "
 
-#: gui/gdmconfig-strings.c:152
+#: gui/gdmconfig-strings.c:154
 msgid "Limits"
 msgstr "Begrænsninger"
 
-#: gui/gdmconfig-strings.c:153
+#: gui/gdmconfig-strings.c:155
 msgid ""
 "The number of seconds before a login is allowed after an unsuccesful try."
 msgstr ""
 "Pausen i sekunder før et nyt logindforsøg tillades efter et mislykket ét."
 
-#: gui/gdmconfig-strings.c:154
+#: gui/gdmconfig-strings.c:156
 msgid ""
 "The maximum size of a file that gdm will attempt to read.  This is for files "
 "that are read into memory and so you don't want users \"attacking\" gdm by "
@@ -2738,19 +2807,19 @@ msgstr ""
 "for filer som bliver indlæst i hukommelsen hvor det kan være en god idé at "
 "forhindre brugere i at angribe GDM ved at vælge abnormt store filer."
 
-#: gui/gdmconfig-strings.c:155
+#: gui/gdmconfig-strings.c:157
 msgid "Retry delay: "
 msgstr "Pause mellem gentagne forsøg:"
 
-#: gui/gdmconfig-strings.c:156
+#: gui/gdmconfig-strings.c:158
 msgid "Maximum user file length: "
 msgstr "Maksimal brugerfillængde:"
 
-#: gui/gdmconfig-strings.c:157
+#: gui/gdmconfig-strings.c:159
 msgid "Maximum session file length: "
 msgstr "Maksimal sessionsfillængde: "
 
-#: gui/gdmconfig-strings.c:158
+#: gui/gdmconfig-strings.c:160
 msgid ""
 "The session file is read in a way where a higher limit is still ok.  That is "
 "it is never stored in memory."
@@ -2758,11 +2827,11 @@ msgstr ""
 "Sessionsfilen bliver gemt på en måde så en højere grænse stadig er i orden - "
 "den bliver aldrig gemt i hukommelsen."
 
-#: gui/gdmconfig-strings.c:159
+#: gui/gdmconfig-strings.c:161
 msgid "Security"
 msgstr "Sikkerhed"
 
-#: gui/gdmconfig-strings.c:160
+#: gui/gdmconfig-strings.c:162
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -2771,51 +2840,51 @@ msgstr ""
 "XDMCP-understøttelse bliver du nødt til at oversætte GDM igen med "
 "XDMCP-rutinebibliotekerne."
 
-#: gui/gdmconfig-strings.c:161
+#: gui/gdmconfig-strings.c:163
 msgid "Enable XDMCP, a protocol to allow others to log in remotely"
 msgstr "Aktivér XDMCP, en protokol der tillader fjernbrugere at logge på"
 
-#: gui/gdmconfig-strings.c:162
+#: gui/gdmconfig-strings.c:164
 msgid "Enable XDMCP"
 msgstr "Anvend XDMCP"
 
-#: gui/gdmconfig-strings.c:163
+#: gui/gdmconfig-strings.c:165
 msgid "Connection Settings"
 msgstr "Forbindelsesindstillinger"
 
-#: gui/gdmconfig-strings.c:164
+#: gui/gdmconfig-strings.c:166
 msgid "Honour indirect requests"
 msgstr "Tillad indirekte forespørgsler"
 
-#: gui/gdmconfig-strings.c:165
+#: gui/gdmconfig-strings.c:167
 msgid "Maximum indirect wait time: "
 msgstr "Maksimal indirekte ventetid: "
 
-#: gui/gdmconfig-strings.c:166
+#: gui/gdmconfig-strings.c:168
 msgid "Maximum wait time: "
 msgstr "Maksimal ventetid: "
 
-#: gui/gdmconfig-strings.c:167
+#: gui/gdmconfig-strings.c:169
 msgid "Maximum remote sessions: "
 msgstr "Maksimalt antal fjernsessioner:"
 
-#: gui/gdmconfig-strings.c:168
+#: gui/gdmconfig-strings.c:170
 msgid "Max pending indirect requests: "
 msgstr "Maks. ventende indirekte forespørgsler: "
 
-#: gui/gdmconfig-strings.c:169
+#: gui/gdmconfig-strings.c:171
 msgid "Maximum pending requests: "
 msgstr "Maks. ventende forespørgsler: "
 
-#: gui/gdmconfig-strings.c:170
+#: gui/gdmconfig-strings.c:172
 msgid "Listen on UDP port: "
 msgstr "Lyt på UDP-port: "
 
-#: gui/gdmconfig-strings.c:171
+#: gui/gdmconfig-strings.c:173
 msgid "Ping interval (minutes):"
 msgstr "Ping-interval (minutter):"
 
-#: gui/gdmconfig-strings.c:172
+#: gui/gdmconfig-strings.c:174
 msgid ""
 "Interval in minutes in which to ping the server.  If the server doesn't "
 "respond in this many minutes (that is before the next time we ping it) the "
@@ -2825,50 +2894,62 @@ msgstr ""
 "svarer før dette antal minutter er gået (dvs. før næste gang den bliver "
 "pinget), vil terminal blive deaktiveret."
 
-#: gui/gdmconfig-strings.c:173
+#: gui/gdmconfig-strings.c:175
 msgid "XDMCP"
 msgstr "XDMCP"
 
-#: gui/gdmconfig-strings.c:174
+#: gui/gdmconfig-strings.c:176
 msgid "Server Definitions"
 msgstr "Serverdefinitioner"
 
-#: gui/gdmconfig-strings.c:175
+#: gui/gdmconfig-strings.c:177
 msgid "No."
 msgstr "Nej."
 
-#: gui/gdmconfig-strings.c:176
+#: gui/gdmconfig-strings.c:178
 msgid "Path to X server"
 msgstr "Sti til X-server"
 
-#: gui/gdmconfig-strings.c:177
+#: gui/gdmconfig-strings.c:179
+msgid ""
+"Instead of reinitializing running servers when a user logs out.  Always kill "
+"and then start the server again."
+msgstr ""
+"I stedet for at klargøre kørende servere igen når en bruger logger ud, slå "
+"altid server ihjel og start dem igen bagefter."
+
+#: gui/gdmconfig-strings.c:180
+msgid "Always restart X servers"
+msgstr "Genstart altid X-servere"
+
+#: gui/gdmconfig-strings.c:181
 msgid "Add Server"
 msgstr "Tilføj server"
 
-#: gui/gdmconfig-strings.c:178
+#: gui/gdmconfig-strings.c:182
 msgid "Edit Server"
 msgstr "Ændr server"
 
-#: gui/gdmconfig-strings.c:179
+#: gui/gdmconfig-strings.c:183
 msgid "Delete Server"
 msgstr "Fjern server"
 
-#: gui/gdmconfig-strings.c:181
+#: gui/gdmconfig-strings.c:185
 msgid "Script to run when X is crashing: "
 msgstr "Program der skal køres når X går ned:"
 
-#: gui/gdmconfig-strings.c:182
+#: gui/gdmconfig-strings.c:186
 msgid "X configurator binaries to try: "
 msgstr "X-opsætningsprogrammer:"
 
-#: gui/gdmconfig-strings.c:183
+#: gui/gdmconfig-strings.c:187
 msgid ""
 "A list of X setup programs to try for the above script, separated by spaces"
 msgstr ""
 "En mellemrumssepareret liste af opsætningsprogrammer til X der skal prøves "
 "med det ovenstående program"
 
-#: gui/gdmconfig-strings.c:184
+#: gui/gdmconfig-strings.c:188
 msgid ""
 "A script to run when the X server keeps crashing and the failsafe X server "
 "is either empty or also didn't take.  This will run an X setup program "
@@ -2878,11 +2959,11 @@ msgstr ""
 "fejlsikrede X-server enten ikke eksisterer eller heller ikke virker. "
 "Programmet kører et opsætningsprogram til X som angivet nedenfor."
 
-#: gui/gdmconfig-strings.c:185
+#: gui/gdmconfig-strings.c:189
 msgid "Failsafe X server:"
 msgstr "Fejlsikret X-server"
 
-#: gui/gdmconfig-strings.c:186
+#: gui/gdmconfig-strings.c:190
 msgid ""
 "An X server binary to run if the standard one keeps crashing.  If this fails "
 "the script below will be run."
@@ -2890,43 +2971,64 @@ msgstr ""
 "En X-server som skal køres hvis standardserver bliver ved med at gå ned. "
 "Hvis dette mislykkes, vil programmet nedenfor blive kørt."
 
-#: gui/gdmconfig-strings.c:187
+#: gui/gdmconfig-strings.c:191
 msgid "X-server setup"
 msgstr "X-serveropsætning"
 
-#: gui/gdmconfig-strings.c:188
+#: gui/gdmconfig-strings.c:192
 msgid "Session configuration"
 msgstr "Sessionsindstillinger"
 
-#: gui/gdmconfig-strings.c:189
+#: gui/gdmconfig-strings.c:193
 msgid "Session directory: "
 msgstr "Sessionsmappe: "
 
-#: gui/gdmconfig-strings.c:190
+#: gui/gdmconfig-strings.c:194
 msgid "Select a directory to be used for system-wide session scripts"
 msgstr "Vælg en mappe til sessionsprogrammer for hele systemet"
 
-#: gui/gdmconfig-strings.c:191
+#: gui/gdmconfig-strings.c:195
 msgid "Available Sessions"
 msgstr "Tilgængelige sessioner"
 
-#: gui/gdmconfig-strings.c:192
+#: gui/gdmconfig-strings.c:196
+msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
+msgstr ""
+"Vis Gnome-vælger-sessionen hvis en session med navnet 'Gnome' er til stede"
+
+#: gui/gdmconfig-strings.c:198
+msgid "Show the Gnome failsafe session"
+msgstr "Vis den fejlsikrede Gnome-session"
+
+#: gui/gdmconfig-strings.c:199
+msgid "Gnome Failsafe"
+msgstr "Fejlsikret Gnome"
+
+#: gui/gdmconfig-strings.c:200
+msgid "Show the Xterm failsafe session"
+msgstr "Vis den fejlsikrede X-term-session"
+
+#: gui/gdmconfig-strings.c:201
+msgid "Xterm Failsafe"
+msgstr "Fejlsikret X-term"
+
+#: gui/gdmconfig-strings.c:202
 msgid "Add session"
 msgstr "Tilføj session"
 
-#: gui/gdmconfig-strings.c:193
+#: gui/gdmconfig-strings.c:203
 msgid "Remove session"
 msgstr "Fjern session"
 
-#: gui/gdmconfig-strings.c:194
+#: gui/gdmconfig-strings.c:204
 msgid "Set as default"
 msgstr "Sæt som forvalg"
 
-#: gui/gdmconfig-strings.c:195
+#: gui/gdmconfig-strings.c:205
 msgid "Selected session name: "
 msgstr "Vælg sessionsnavn: "
 
-#: gui/gdmconfig-strings.c:196
+#: gui/gdmconfig-strings.c:206
 msgid ""
 "The exact script details of a session\n"
 "will appear here when you select\n"
@@ -2936,15 +3038,15 @@ msgstr ""
 "fremgår af her når du vælger et\n"
 "fra listen til venstre.\n"
 
-#: gui/gdmconfig-strings.c:200
+#: gui/gdmconfig-strings.c:210
 msgid "Login sessions"
 msgstr "Logindsessioner"
 
-#: gui/gdmconfig-strings.c:201
+#: gui/gdmconfig-strings.c:211
 msgid "Debugging"
 msgstr "Fejlretning"
 
-#: gui/gdmconfig-strings.c:202
+#: gui/gdmconfig-strings.c:212
 msgid ""
 "Enable debugging output to be printed into the syslog.  Useful for tracking "
 "down problems.  But not so useful for normal usage as it can fill up your "
@@ -2954,125 +3056,129 @@ msgstr ""
 "diagnosticere problemer, men ikke så anvendeligt til normalt brug eftersom "
 "det hurtigt kan fylde loggen op."
 
-#: gui/gdmconfig-strings.c:203
+#: gui/gdmconfig-strings.c:213
 msgid "Enable debugging output"
 msgstr "Slå fejlfindingsoplysninger til"
 
-#: gui/gdmconfig-strings.c:204 gui/gdmconfig-strings.c:217
-#: gui/gdmconfig-strings.c:221
+#: gui/gdmconfig-strings.c:214 gui/gdmconfig-strings.c:228
+#: gui/gdmconfig-strings.c:232
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: gui/gdmconfig-strings.c:205
+#: gui/gdmconfig-strings.c:215
 msgid "system_setup"
 msgstr "systemopsætning"
 
-#: gui/gdmconfig-strings.c:206
+#: gui/gdmconfig-strings.c:216
 msgid "Executables"
 msgstr "Kørbare"
 
-#: gui/gdmconfig-strings.c:207
+#: gui/gdmconfig-strings.c:217
 msgid "Chooser command: "
 msgstr "Vælger-kommando: "
 
-#: gui/gdmconfig-strings.c:208
+#: gui/gdmconfig-strings.c:218
 msgid "Greeter command: "
 msgstr "Velkomstbyder-kommando: "
 
-#: gui/gdmconfig-strings.c:209
+#: gui/gdmconfig-strings.c:219
 msgid "Halt command: "
 msgstr "Luk ned-kommando: "
 
-#: gui/gdmconfig-strings.c:210
+#: gui/gdmconfig-strings.c:220
 msgid "Reboot command: "
 msgstr "Genstart-kommando: "
 
-#: gui/gdmconfig-strings.c:211
+#: gui/gdmconfig-strings.c:221
 msgid "Configurator command: "
 msgstr "Indstillingskommando: "
 
-#: gui/gdmconfig-strings.c:212
+#: gui/gdmconfig-strings.c:222
+msgid "Suspend command: "
+msgstr "Dvalekommando: "
+
+#: gui/gdmconfig-strings.c:223
 msgid "Directories"
 msgstr "Mapper"
 
 # src/gdmgreeter.c:790
-#: gui/gdmconfig-strings.c:213
+#: gui/gdmconfig-strings.c:224
 msgid "PRE session scripts directory: "
 msgstr "PRE sessionsskriptsmappe: "
 
-#: gui/gdmconfig-strings.c:214
+#: gui/gdmconfig-strings.c:225
 msgid "POST session scripts directory: "
 msgstr "POST sessionsskriptsmappe: "
 
-#: gui/gdmconfig-strings.c:215
+#: gui/gdmconfig-strings.c:226
 msgid "Logging directory: "
 msgstr "Logmappe: "
 
-#: gui/gdmconfig-strings.c:216
+#: gui/gdmconfig-strings.c:227
 msgid "Display initialization directory: "
 msgstr "Terminalklargøringsmappe: "
 
-#: gui/gdmconfig-strings.c:218
+#: gui/gdmconfig-strings.c:229
 msgid "PID file: "
 msgstr "pid-fil: "
 
-#: gui/gdmconfig-strings.c:219
+#: gui/gdmconfig-strings.c:230
 msgid "Default GNOME session file: "
 msgstr "Forvalgt Gnome-sessionsfil"
 
-#: gui/gdmconfig-strings.c:220
+#: gui/gdmconfig-strings.c:231
 msgid "Paths"
 msgstr "Stier"
 
-#: gui/gdmconfig-strings.c:222
+#: gui/gdmconfig-strings.c:233
 msgid "Default $PATH: "
 msgstr "Standard-$PATH: "
 
-#: gui/gdmconfig-strings.c:223
+#: gui/gdmconfig-strings.c:234
 msgid "Root $PATH: "
 msgstr "Root-$PATH: "
 
-#: gui/gdmconfig-strings.c:224
+#: gui/gdmconfig-strings.c:235
 msgid "Localization"
 msgstr "Lokalisering"
 
-#: gui/gdmconfig-strings.c:226
+#: gui/gdmconfig-strings.c:237
 msgid "Locale file: "
 msgstr "Regionaldatafil: "
 
-#: gui/gdmconfig-strings.c:227
+#: gui/gdmconfig-strings.c:238
 msgid "Environment"
 msgstr "Miljø"
 
-#: gui/gdmconfig-strings.c:228
+#: gui/gdmconfig-strings.c:239
 msgid "Appearance"
 msgstr "Udseende"
 
-#: gui/gdmconfig-strings.c:229
+#: gui/gdmconfig-strings.c:240
 msgid "Directory for host images: "
 msgstr "Mappe til værtsbilleder: "
 
-#: gui/gdmconfig-strings.c:230
+#: gui/gdmconfig-strings.c:241
 msgid "Default host image:"
 msgstr "Standard-værtsbillede:"
 
-#: gui/gdmconfig-strings.c:231
+#: gui/gdmconfig-strings.c:242
 msgid "Refresh"
 msgstr "Opdatér"
 
-#: gui/gdmconfig-strings.c:232
+#: gui/gdmconfig-strings.c:243
 msgid "Scan every 'x' seconds: "
 msgstr "Skan med mellemrum på (sekunder): "
 
-#: gui/gdmconfig-strings.c:233
+#: gui/gdmconfig-strings.c:244
 msgid "Chooser"
 msgstr "Vælger"
 
-#: gui/gdmconfig-strings.c:234
+#: gui/gdmconfig-strings.c:245
 msgid "(C) 2001 Lee Mallabone"
 msgstr "© 2001 Lee Mallabone"
 
-#: gui/gdmconfig-strings.c:235
+#: gui/gdmconfig-strings.c:246
 msgid ""
 "Configure the GNOME Display Manager.\n"
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
@@ -3166,9 +3272,10 @@ msgstr ""
 msgid "GDM Configurator"
 msgstr "GDM-indstillinger"
 
+# optræder i fodmenuen så dette ser pænest ud
 #: gui/gdmphotosetup.desktop.in.h:1
 msgid "Setup my GDM Face"
-msgstr "Vælg mit GDM-ansigt"
+msgstr "Vælg logind-ansigt"
 
 #: gui/gdmphotosetup.desktop.in.h:2
 msgid ""
