@@ -141,8 +141,12 @@ gdm_server_stop (GdmDisplay *disp)
 	    /* avoid SIGCHLD race */
 	    disp->servpid = 0;
 
+	    gdm_debug ("gdm_server_stop: Killing server pid %d", (int)servpid);
+
 	    if (kill (servpid, SIGTERM) == 0)
 		    waitpid (servpid, 0, 0);
+
+	    gdm_debug ("gdm_server_stop: Server pid %d dead", (int)servpid);
     }
 
     gdm_server_wipe_cookies (disp);

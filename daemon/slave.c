@@ -1741,9 +1741,34 @@ gdm_slave_session_start (void)
 
     pwent = getpwnam (login);
 
-    if (!pwent) 
-	gdm_slave_exit (DISPLAY_REMANAGE,
-			_("gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"), login);
+    if (pwent == NULL)  {
+	    /* This is sort of an "assert", this should NEVER happen */
+	    if (greet)
+		    gdm_slave_whack_greeter();
+	    gdm_slave_exit (DISPLAY_REMANAGE,
+			    _("gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"), login);
+    }
+
+    if (pwent->pw_dir == NULL ||
+	! g_file_test (pwent->pw_dir, G_FILE_TEST_ISDIR)) {
+	    char *msg = g_strdup_printf (
+		     _("Your home directory is listed as '%s'\n"
+		       "but it does not appear to exist.\n"
+		       "GDM cannot log you in unless you have\n"
+		       "a valid home directory."),
+		     ve_sure_string (pwent->pw_dir));
+	    /* pretend we "logged in" */
+	    if (greet)
+		    gdm_slave_whack_greeter();
+	    /* then tell the user to piss off */
+	    gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR, msg);
+
+	    gdm_error (_("%s: Home directory for %s: '%s' does not exist!"),
+		       "gdm_slave_session_start",
+		       login,
+		       ve_sure_string (pwent->pw_dir));
+	    return;
+    }
 
     setegid (pwent->pw_gid);
     seteuid (pwent->pw_uid);
@@ -1902,6 +1927,8 @@ gdm_slave_session_start (void)
 	gdm_slave_session_cleanup ();
 	
 	gdm_server_stop (d);
+	gdm_verify_cleanup (d);
+
 	_exit (DISPLAY_REMANAGE);
     } 
 
@@ -2234,7 +2261,7 @@ gdm_slave_session_cleanup (void)
 static void
 gdm_slave_term_handler (int sig)
 {
-	sigset_t tmask, omask;
+	sigset_t tmask;
 
 	gdm_debug ("gdm_slave_term_handler: %s got TERM/INT signal", d->name);
 
@@ -2244,7 +2271,7 @@ gdm_slave_term_handler (int sig)
 
 	sigemptyset (&tmask);
 	sigaddset (&tmask, SIGCHLD);
-	sigprocmask (SIG_BLOCK, &tmask, &omask);  
+	sigprocmask (SIG_BLOCK, &tmask, NULL);  
 
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
@@ -2254,17 +2281,24 @@ gdm_slave_term_handler (int sig)
 	}
 
 	if (d->greetpid != 0) {
+		pid_t pid = d->greetpid;
+		d->greetpid = 0;
 		greet = FALSE;
 		gdm_debug ("gdm_slave_term_handler: Whacking greeter");
-		if (kill (d->greetpid, sig) == 0)
-			waitpid (d->greetpid, 0, 0); 
-		d->greetpid = 0;
+		if (kill (pid, sig) == 0)
+			waitpid (pid, 0, 0); 
 	} else if (login != NULL) {
 		gdm_slave_session_stop (d->sesspid);
 		gdm_slave_session_cleanup ();
 	}
 
-	sigprocmask (SIG_SETMASK, &omask, NULL);
+	if (d->chooserpid != 0) {
+		pid_t pid = d->chooserpid;
+		d->chooserpid = 0;
+		gdm_debug ("gdm_slave_term_handler: Whacking chooser");
+		if (kill (pid, sig) == 0)
+			waitpid (pid, 0, 0); 
+	}
 
 	gdm_debug ("gdm_slave_term_handler: Whacking server");
 
@@ -2377,7 +2411,7 @@ gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
 static gint
 gdm_slave_xioerror_handler (Display *disp)
 {
-	sigset_t tmask, omask;
+	sigset_t tmask;
 
 	gdm_debug ("gdm_slave_xioerror_handler: I/O error for display %s", d->name);
 
@@ -2387,16 +2421,24 @@ gdm_slave_xioerror_handler (Display *disp)
 
 	sigemptyset (&tmask);
 	sigaddset (&tmask, SIGCHLD);
-	sigprocmask (SIG_BLOCK, &tmask, &omask);  
+	sigprocmask (SIG_BLOCK, &tmask, NULL);  
 
 	if (d->greetpid != 0) {
-		greet = FALSE;
-		if (kill (d->greetpid, SIGINT) == 0)
-			waitpid (d->greetpid, 0, 0); 
+		pid_t pid = d->greetpid;
 		d->greetpid = 0;
+		greet = FALSE;
+		if (kill (pid, SIGINT) == 0)
+			waitpid (pid, 0, 0); 
 	} else if (login != NULL) {
 		gdm_slave_session_stop (d->sesspid);
 		gdm_slave_session_cleanup ();
+	}
+
+	if (d->chooserpid != 0) {
+		pid_t pid = d->chooserpid;
+		d->chooserpid = 0;
+		if (kill (pid, SIGINT) == 0)
+			waitpid (pid, 0, 0); 
 	}
     
 	gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
@@ -2469,25 +2511,33 @@ gdm_slave_exit (gint status, const gchar *format, ...)
     seteuid (0);
     setegid (0);
 
-    gdm_server_stop (d);
-    gdm_verify_cleanup (d);
+    if (d != NULL) {
+	    sigset_t tmask;
 
-    /* Kill children where applicable */
-    if (d->greetpid != 0)
-	kill (d->greetpid, SIGTERM);
-    d->greetpid = 0;
+	    sigemptyset (&tmask);
+	    sigaddset (&tmask, SIGCHLD);
+	    sigprocmask (SIG_BLOCK, &tmask, NULL);  
 
-    if (d->chooserpid != 0)
-	kill (d->chooserpid, SIGTERM);
-    d->chooserpid = 0;
+	    /* Kill children where applicable */
+	    if (d->greetpid != 0)
+		    kill (d->greetpid, SIGTERM);
+	    d->greetpid = 0;
 
-    if (d->sesspid != 0)
-	kill (-(d->sesspid), SIGTERM);
-    d->sesspid = 0;
+	    if (d->chooserpid != 0)
+		    kill (d->chooserpid, SIGTERM);
+	    d->chooserpid = 0;
 
-    if (d->servpid != 0)
-	kill (d->servpid, SIGTERM);
-    d->servpid = 0;
+	    if (d->sesspid != 0)
+		    kill (-(d->sesspid), SIGTERM);
+	    d->sesspid = 0;
+
+	    gdm_server_stop (d);
+	    gdm_verify_cleanup (d);
+
+	    if (d->servpid != 0)
+		    kill (d->servpid, SIGTERM);
+	    d->servpid = 0;
+    }
 
     _exit (status);
 }

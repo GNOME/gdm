@@ -1,3 +1,16 @@
+Sat Oct 20 14:11:02 2001  George Lebl <jirka@5z.com>
+
+	* daemon/errorgui.c, daemon/server.c: a bit of debug output.
+
+	* daemon/slave.c: check the home dir, if it doesn't exist (or is not
+	  a directory, then tell the user and try again.  Maybe we should
+	  continue and let the session fail, should we?  I don't see any
+	  merit in trying to log in with no home dir.  Also, clean up verify
+	  on auth problems, in term handler don't reset the signal mask,
+	  and fix some possible races and whack the chooser, same in
+	  xioerror handler.  In slave_exit, mask the CHLD signal to avoid
+	  races, and other race fixes
+
 Sat Oct 20 13:31:07 2001  George Lebl <jirka@5z.com>
 
 	* utils/gdmopen.c: set VT_NUMBER env var

@@ -139,7 +139,7 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 			close(i);
 
 		/* No error checking here - if it's messed the best response
-		* is to ignore & try to continue */
+		 * is to ignore & try to continue */
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
@@ -165,7 +165,9 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 		gdm_error (_("gdm_error_box: Failed to execute self"));
 		_exit (1);
 	} else if (pid > 0) {
+		gdm_debug ("gdm_error_box: Ran error box, waiting...");
 		waitpid (pid, 0, 0);
+		gdm_debug ("gdm_error_box: Wait done");
 		extra_process = -1;
 	} else {
 		gdm_error (_("gdm_error_box: Cannot fork to display error/info box"));
