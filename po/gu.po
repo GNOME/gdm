@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-30 22:29+0100\n"
-"PO-Revision-Date: 2005-01-31 09:41+0530\n"
+"POT-Creation-Date: 2005-02-04 06:34+0100\n"
+"PO-Revision-Date: 2005-02-04 16:53+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati <gu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -15,11 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "<magnet@magnet-i.com>\n"
 "X-Generator: KBabel 1.9\n"
-"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"\n"
-"\n"
-"\n"
-"\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 
 #: config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -712,9 +708,11 @@ msgstr "gdm પહેલેથી જ ચાલે છે. બંધ કરી �
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: CHLD સંકેત ધ્યાન રાખનારને સુયોજિત કરવામાં ભૂલ"
 
-#: daemon/gdm.c:3633 daemon/gdm.c:3652
-msgid "FLEXI_XSERVER request denied: Not authenticated"
-msgstr "FLEXI_XSERVER માંગણી સ્વીકારાઈ નહિં: સત્તાધિકરણ નથી"
+#: daemon/gdm.c:3633 daemon/gdm.c:3652 daemon/gdm.c:3796 daemon/gdm.c:3854
+#: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
+#, c-format
+msgid "%s request denied: Not authenticated"
+msgstr "%s અરજી નામંજૂર થઈ: સત્તાધિકારીત થયેલ નથી"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -730,18 +728,6 @@ msgid ""
 msgstr ""
 "મૂળભુત સર્વરનો ઉપયોગ કરીને, સહેલાઇથી બદલી શકાતા સર્વર માટે વિનંતી કરેલ સર્વર %s ના "
 "ઉપયોગની પરવાનગી નથી."
-
-#: daemon/gdm.c:3796
-msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "QUERY_LOGOUT_ACTION માંગણી સ્વીકારાઈ નહિં: સત્તાધિકરણ નથી"
-
-#: daemon/gdm.c:3854 daemon/gdm.c:3909
-msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "SET_LOGOUT_ACTION માંગણી સ્વીકારાઈ નહિં: સત્તાધિકરણ નથી"
-
-#: daemon/gdm.c:3954 daemon/gdm.c:3981
-msgid "QUERY_VT request denied: Not authenticated"
-msgstr "QUERY_VT માંગણી સ્વીકારાઈ નહિં: સત્તાધિકરણ નથી"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:652
@@ -1029,7 +1015,9 @@ msgid ""
 "Cannot start the greeter program; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
-msgstr "આવકાર કાર્યક્રમ શરૂ કરી શકાતો નથી, તમે પ્રવેશવા સમર્થ નથી.  આ ડિસ્પ્લે નિષ્ક્રિય થઈ જશે.  બીજી રીતે પ્રવેશ કરવાનો અને રૂપરેખાંકન ફાઇલમાં ફેરફાર કરવાનો પ્રયત્ન કરો"
+msgstr ""
+"આવકાર કાર્યક્રમ શરૂ કરી શકાતો નથી, તમે પ્રવેશવા સમર્થ નથી.  આ ડિસ્પ્લે નિષ્ક્રિય થઈ જશે.  "
+"બીજી રીતે પ્રવેશ કરવાનો અને રૂપરેખાંકન ફાઇલમાં ફેરફાર કરવાનો પ્રયત્ન કરો"
 
 #. If no greeter we really have to disable the display
 #: daemon/slave.c:2672
@@ -1180,32 +1168,32 @@ msgstr "%s: વપરાશકર્તાને પ્રવેશ માટે
 msgid "The system administrator has disabled your account."
 msgstr "સિસ્ટમ સંચાલકે તમારુ ખાતુ નિષ્ક્રિય કરી દીધુ છે."
 
-#: daemon/slave.c:3790
+#: daemon/slave.c:3792
 msgid "Error! Unable to set executable context."
 msgstr "ભૂલ! ચલાવી શકાય તેવો સંદર્ભ સુયોજિત કરી શકાય એમ નથી."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3798 daemon/slave.c:3803
+#: daemon/slave.c:3800 daemon/slave.c:3805
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s : %s %s %s ને ચલાવી શકાયુ નહિ"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3814
+#: daemon/slave.c:3816
 msgid "Cannot start the session due to some internal error."
 msgstr "કોઇક આંતરિક ભૂલને લાધે સત્ર ચાલુ કરી શકાયુ નહિ."
 
-#: daemon/slave.c:3868
+#: daemon/slave.c:3870
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: વપરાશકર્તાને સત્તાધિકાર મળી ગયા પરંતુ getpwnam(%s) નિષ્ફળ ગયું!"
 
-#: daemon/slave.c:3882
+#: daemon/slave.c:3884
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: પ્રવેશ પ્રક્રિયા પછીની લીપીએ ચાલ્યા પછી > ૦ પાછું મોકલ્યુ હતું. અડધેથી બંધ કરી રહ્યા છે."
 
-#: daemon/slave.c:3891
+#: daemon/slave.c:3893
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1219,12 +1207,12 @@ msgstr ""
 "નથી. શું તમે રુટ ડિરૅક્ટરીને તમારી ઘર ડિરૅક્ટરી રાખીને પ્રવેશ કરવા માગો છો? જ્યાં સુધી તમે "
 "નિષ્ફળ નહિ જાય તેવુ સત્ર નહિ વાપરો ત્યાં સુધી કંઇપણ બરાબર થાય તેવી શક્યતા નથી."
 
-#: daemon/slave.c:3899
+#: daemon/slave.c:3901
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: %s માટેની ઘર ડિરૅક્ટરી અસ્તિત્વ ધરાવતી નથી: '%s' અસ્તિત્વ ધરાવતુ નથી!"
 
-#: daemon/slave.c:4076
+#: daemon/slave.c:4078
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1235,12 +1223,12 @@ msgstr ""
 "ડિસ્કની જગ્યા ખૂટી ગઇ છે અથવા તમારી ઘર ડિરૅક્ટરી ખોલી શકાતી નથી. કોઇપણ સંજોગોમાં "
 "પ્રવેશ શક્ય નથી. મહેરબાની કરીને તમારા સિસ્ટમ સંચાલકનો સંપર્ક કરો"
 
-#: daemon/slave.c:4152
+#: daemon/slave.c:4154
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: વપરાશકર્તાના સત્રને fork કરવામાં નિષ્ફળ"
 
-#: daemon/slave.c:4233
+#: daemon/slave.c:4235
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1251,25 +1239,25 @@ msgstr ""
 "શકે કે સ્થાપનામાં ભૂલ હતી અથવા તમારી ડિસ્કની જગ્યા ખૂટી ગઇ હશે. તમે આ સમસ્યા સુધારી શકો "
 "છો કે નહિ તે જોવા માટે નિષ્ફળ ન જાય તેવા સત્ર વડે પ્રવેશ કરી જુઓ."
 
-#: daemon/slave.c:4241
+#: daemon/slave.c:4243
 msgid "View details (~/.xsession-errors file)"
 msgstr "વિગતો જુઓ (~/.xsession-errors ફાઈલ)"
 
-#: daemon/slave.c:4385
+#: daemon/slave.c:4387
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDMને બંધ કરવાની અથવા ફરીથી બુટ કરવાની પ્રક્રિયા ચાલતી દેખાઇ."
 
-#: daemon/slave.c:4479
+#: daemon/slave.c:4481
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "%s માટે પિંગ નિષ્ફળ ગયું, ડિસ્પ્લે ઊડાડી રહ્યા છે!"
 
-#: daemon/slave.c:4765
+#: daemon/slave.c:4767
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: ઘાતક X ભૂલ - %s ફરીથી શરુ કરી રહ્યા છે"
 
-#: daemon/slave.c:4859
+#: daemon/slave.c:4861
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1277,22 +1265,22 @@ msgstr ""
 "બિન-સ્થાનિક ડિસ્પ્લે પર પ્રવેશ ધ્વનિની વિનંતિ થઈ અથવા વગાડવાનુ સોફ્ટવેર ચાલી શકે એમ નથી "
 "અથવા ધ્વનિ અસ્તિત્વમાં નથી"
 
-#: daemon/slave.c:5214
+#: daemon/slave.c:5216
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s શરુ કરવામાં નિષ્ફળ: %s"
 
-#: daemon/slave.c:5222 daemon/slave.c:5361
+#: daemon/slave.c:5224 daemon/slave.c:5363
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: લિપિ માટેની પ્રક્રિયાને fork કરી શકાઈ નહિ!"
 
-#: daemon/slave.c:5316
+#: daemon/slave.c:5318
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: પાઇપ બનાવવામાં નિષ્ફળ"
 
-#: daemon/slave.c:5355
+#: daemon/slave.c:5357
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: ચલાવવામાં નિષ્ફળ: %s"
@@ -1320,7 +1308,7 @@ msgstr "મહેરબાની કરીને વપરાશકર્તા�
 #: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
-#: gui/greeter/greeter_parser.c:1061
+#: gui/greeter/greeter_parser.c:1065
 msgid "Username:"
 msgstr "વપરાશકર્તાનું નામ:"
 
@@ -2681,7 +2669,7 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:222 gui/greeter/greeter_parser.c:1047
+#: gui/gdmlogin.c:222
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "%s વપરાશકર્તા %d સેકન્ડમાં પ્રવેશ મેળવશે"
@@ -3581,8 +3569,8 @@ msgstr "જીડીએમની રુપરેખા બદલવા માટ
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr "જીનોમ ડિસ્પ્લે વ્યવસ્થાપક (જીડીએમ) ની રૂપરેખા બદલવા માટેનો ચિત્રાત્મક કાર્યક્રમ"
+msgid "Configure the login screen (Gnome Display Manager)"
+msgstr "પ્રવેશ સ્ક્રીનને રૂપરેખાંકિત કરો (જીનોમ ડિસ્પ્લે વ્યવસ્થાપક)"
 
 #: gui/greeter/greeter.c:638 gui/greeter/greeter.c:670
 #, c-format
@@ -3693,6 +3681,13 @@ msgstr "રૂપરેખાંકન કરો (_C)"
 msgid "You've got capslock on!"
 msgstr "તમારુ capslock ચાલુ છે!"
 
+#: gui/greeter/greeter_parser.c:1047
+#, c-format
+msgid "User %s will login in %d second"
+msgid_plural "User %s will login in %d seconds"
+msgstr[0] "વપરાશકર્તા %s %d સેકન્ડમાં પ્રવેશ મેળવશે"
+msgstr[1] "%s વપરાશકર્તા %d સેકન્ડમાં પ્રવેશ મેળવશે"
+
 #: gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
 msgstr "સત્ર પસંદ કરો"
@@ -3797,7 +3792,7 @@ msgstr "(મેમરી બફર"
 
 #. markup
 #: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:301
 msgid "Cannot load user interface"
 msgstr "વપરાશકર્તા ઇન્ટરફૅસ ચાલુ કરી શક્યો નહિ"
 
@@ -3825,17 +3820,23 @@ msgstr ""
 #: vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %"
-"s.  CList type widget should have %d columns.  Possibly the glade interface "
-"description was corrupted.  %s cannot continue and will exit now.  You "
-"should check your installation of %s or reinstall %s."
-msgstr ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d column. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgid_plural ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d columns. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgstr[0] "વપરાશકર્તા ઇન્ટરફૅસ ઘટક %s%s ને ફાઇલ %s માંથી ખોલતી વખતે ભૂલ થઇ હતી. યાદી પ્રકારના વિજેટ પાસે %d સ્તંભ હોવી જોઇએ. સંભવિત રીતે glade ઇન્ટરફૅસનુ વર્ણન ખામીયુક્ત હતુ. %s આગળ વધી શકશે નહિ અને હવે બહાર નીકળશે. તમારે %s નું સ્થાપન ચકાસવું જોઇએ અથવા %s ફરીથી સ્થાપિત કરવું જોઈએ."
+msgstr[1] ""
 "વપરાશકર્તા ઇન્ટરફૅસ %s%s ભાગને ફાઇલ %s માંથી ખોલતી વખતે ભૂલ થઇ હતી. યાદી પ્રકારના "
 "વિજેટ પાસે %d સ્તંભ હોવી જોઇએ. સંભવિત રીતે glade ઇન્ટરફૅસનુ વર્ણન ખામીયુક્ત હતુ. %s આગળ "
 "વધી શકશે નહિ અને હવે બહાર નીકળશે. તમારે તમારી %s ની સ્થાપના તપાસવી જોઇએ અથવા %s નું "
 "ફરીથી સ્થાપિત કરો."
 
-#: vicious-extensions/glade-helper.c:266
+#: vicious-extensions/glade-helper.c:277
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3844,7 +3845,7 @@ msgstr ""
 "glade ફાઇલ બગડી ગઇ! તપાસો કે સાચી ફાઇલ સ્થપિત છે!\n"
 "ફાઇલ %s વિજેટ: %s ઇચ્છનીય સીયાદી સ્તંભ: %d"
 
-#: vicious-extensions/glade-helper.c:291
+#: vicious-extensions/glade-helper.c:302
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -3855,7 +3856,7 @@ msgstr ""
 "વર્ણન મળ્યુ ન હતું. %s આગળ વધી શકશે નહિ અને હવે બહાર નીકળશે. તમારે તમારી %s ની સ્થાપના "
 "તપાસવી જોઇએ અથવા %s ફરીથી સ્થાપિત કરવી જોઈએ."
 
-#: vicious-extensions/glade-helper.c:303
+#: vicious-extensions/glade-helper.c:314
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "કોઇ ઇન્ટરફૅસ ખોલી શકાયુ નહિ, ખરાબ! (ફાઇલ: %s)"
