@@ -1021,7 +1021,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 		char *lang = g_getenv ("LANG");
 		if (lang == NULL ||
 		    lang[0] == '\0' ||
-		    g_strcasecmp (lang, "C") == 0) {
+		    strcasecmp_no_locale (lang, "C") == 0) {
 			language = g_strdup (GdmDefaultLocale);
 		} else {
 			language = g_strdup (lang);
@@ -1291,7 +1291,7 @@ gdm_login_session_init (GtkWidget *menu)
 
 	/* If default session link exists, find out what it points to */
 	if (S_ISLNK (statbuf.st_mode) &&
-	    g_strcasecmp (dent->d_name, "default") == 0) {
+	    strcasecmp_no_locale (dent->d_name, "default") == 0) {
 	    gchar t[_POSIX_PATH_MAX];
 	    
 	    linklen = readlink (s, t, _POSIX_PATH_MAX);
@@ -1320,9 +1320,9 @@ gdm_login_session_init (GtkWidget *menu)
 				    NULL);
 		gtk_widget_show (GTK_WIDGET (item));
 
-		if (g_strcasecmp (dent->d_name, "Gnome") == 0) {
+		if (strcasecmp_no_locale (dent->d_name, "Gnome") == 0) {
 			if (defsess == NULL)
-				defsess = "Gnome";
+				defsess = g_strdup (dent->d_name);
 
 			/* Add the chooser session, this one doesn't have a script
 			 * really, it's a fake, it runs the Gnome script */
@@ -2786,7 +2786,8 @@ gdm_login_check_exclude (struct passwd *pwent)
 		excludes = g_strsplit (GdmExclude, ",", 0);
 
 		for (i=0 ; excludes[i] != NULL ; i++)  {
-			if (g_strcasecmp (excludes[i], pwent->pw_name) == 0) {
+			if (strcasecmp_no_locale (excludes[i],
+						  pwent->pw_name) == 0) {
 				g_strfreev (excludes);
 				return TRUE;
 			}

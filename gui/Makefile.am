@@ -14,18 +14,24 @@ INCLUDES = -I. -I.. -I$(top_srcdir)/daemon -I$(includedir)		\
 bin_PROGRAMS = gdmchooser gdmlogin gdmconfig
 
 gdmchooser_SOURCES = \
-	gdmchooser.c \
-	gdmchooser.h 
+	gdmchooser.c		\
+	gdmchooser.h		\
+	misc.c			\
+	misc.h
 
 gdmlogin_SOURCES = \
-	gdmlogin.c \
-	gdmlogin.h
+	gdmlogin.c		\
+	gdmlogin.h		\
+	misc.c			\
+	misc.h
 
 gdmconfig_SOURCES = \
-	icon-entry-hack.c \
-	icon-entry-hack.h \
-	gdmconfig.c \
-	gdmconfig.h
+	icon-entry-hack.c	\
+	icon-entry-hack.h	\
+	gdmconfig.c		\
+	gdmconfig.h		\
+	misc.c			\
+	misc.h
 
 gdmchooser_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) -lXdmcp -lX11 $(INTLLIBS) @LIBGLADE_LIBS@
 gdmlogin_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) @PIXBUF_LIBS@

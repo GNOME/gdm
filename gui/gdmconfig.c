@@ -27,6 +27,7 @@
 #include <syslog.h>
 #include "gdmconfig.h"
 #include "icon-entry-hack.h"
+#include "misc.h"
 
 /* set the DOING_GDM_DEVELOPMENT env variable to "yes" if you don't
  * want to do that root stuff, better then something you have to change
@@ -143,7 +144,7 @@ int
 main (int argc, char *argv[])
 {
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != 0 &&
-	 g_strcasecmp (g_getenv ("DOING_GDM_DEVELOPMENT"), "yes") == 0)
+	strcasecmp_no_locale (g_getenv ("DOING_GDM_DEVELOPMENT"), "yes") == 0)
 	    DOING_GDM_DEVELOPMENT = TRUE;
 
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
@@ -458,7 +459,7 @@ gdm_config_parse_most (void)
 
         /* If default session link exists, find out what it points to */
 	if (S_ISLNK (statbuf.st_mode) &&
-	    g_strcasecmp (dent->d_name, "default") == 0) 
+	    strcasecmp_no_locale (dent->d_name, "default") == 0) 
 	 {
 	    gchar t[_POSIX_PATH_MAX];
 	    
@@ -1262,28 +1263,6 @@ move_server_down                       (GtkButton       *button,
 			 ++selected_server_row, 0);
     gtk_clist_set_text(GTK_CLIST(get_widget("server_clist")),
 		       selected_server_row, 0, g_strdup_printf("%d", selected_server_row));
-}
-
-static void
-entry_set_red (GtkWidget *w, gboolean state)
-{
-	if (state) {
-		GtkStyle *ns;
-		GdkColor red = { 0, 65535, 0, 0 };
-
-		ns = gtk_style_copy (w->style);
-		gtk_style_ref (ns);
-
-		ns->fg[GTK_STATE_NORMAL] = red;
-		ns->text[GTK_STATE_NORMAL] = red;
-
-		gtk_widget_set_style (w, ns);
-		gtk_style_unref (ns);
-
-		gtk_widget_queue_draw (w);
-	} else {
-		gtk_widget_set_rc_style (w);
-	}
 }
 
 void
