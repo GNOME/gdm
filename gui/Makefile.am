@@ -11,28 +11,22 @@ INCLUDES = -I. -I.. -I$(top_srcdir)/daemon -I$(includedir)		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	@LIBGLADE_CFLAGS@				\
 	@PIXBUF_CFLAGS@					\
+	$(GNOME_CFLAGS)					\
 	$(GNOME_INCLUDEDIR)
 
-if XDMCP_SUPPORT
-gdmchooser=gdmchooser
-else
-gdmchooser=
-endif
-
-bin_PROGRAMS = $(gdmchooser) gdmlogin gdmconfig gdmphotosetup
+bin_PROGRAMS = @GDMCHOOSER@ gdmlogin gdmconfig gdmphotosetup
+EXTRA_PROGRAMS = gdmchooser
 
 gdmphotosetup_SOURCES = \
 	gdmphotosetup.c
 
-if XDMCP_SUPPORT
-	gdmchooser_SOURCES = \
-		gdmchooser.c		\
-		gdmchooser.h		\
-		misc.c			\
-		misc.h			\
-		gdmwm.c			\
-		gdmwm.h
-endif
+gdmchooser_SOURCES = \
+	gdmchooser.c		\
+	gdmchooser.h		\
+	misc.c			\
+	misc.h			\
+	gdmwm.c			\
+	gdmwm.h
 
 gdmlogin_SOURCES = \
 	gdmlogin.c		\
@@ -52,16 +46,14 @@ gdmconfig_SOURCES = \
 	misc.c			\
 	misc.h
 
-if XDMCP_SUPPORT
-	gdmchooser_LDADD = \
-		$(GNOME_LIBDIR)		\
-		$(GNOME_LIBS)		\
-		$(GNOMEUI_LIBS)		\
-		$(XDMCP_LIBS)		\
-		-lX11			\
-		$(INTLLIBS)		\
-		$(LIBGLADE_LIBS)
-endif
+gdmchooser_LDADD = \
+	$(GNOME_LIBDIR)		\
+	$(GNOME_LIBS)		\
+	$(GNOMEUI_LIBS)		\
+	$(XDMCP_LIBS)		\
+	-lX11			\
+	$(INTLLIBS)		\
+	$(LIBGLADE_LIBS)
 
 gdmlogin_LDADD = \
 	$(GNOME_LIBDIR)		\

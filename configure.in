@@ -259,9 +259,12 @@ AC_SUBST(XDMCP_LIBS)
 
 if test x$XDMCP_SUPPORT = xyes ; then
 	AM_CONDITIONAL(XDMCP_SUPPORT, true)
+	GDMCHOOSER=gdmchooser
 else
 	AM_CONDITIONAL(XDMCP_SUPPORT, false)
+	GDMCHOOSER=
 fi
+AC_SUBST(GDMCHOOSER)
 
 #
 # X11 Xinerama extension
