@@ -1,3 +1,5 @@
+SUBDIRS = greeter
+
 ## Process this file with automake to produce makefile.in
 CFLAGS = @CFLAGS@ -g -Wall 	\
 	-Wpointer-arith  	\

@@ -1,0 +1,40 @@
+<!-- dtd for greeter -->
+
+<!ENTITY % colorattrs
+	"file CDATA #IMPLIED
+	color CDATA #IMPLIED
+	font CDATA #IMPLIED
+	tint CDATA #IMPLIED"
+>
+
+<!ELEMENT greeter (item+)>
+<!ELEMENT item (pos,normal?,active?,prelight?,children?)>
+<!ELEMENT children (item+)>
+<!ELEMENT pos EMPTY>
+<!ELEMENT text EMPTY>
+<!ELEMENT normal EMPTY>
+<!ELEMENT active EMPTY>
+<!ELEMENT prelight EMPTY>
+
+<!ATTLIST item
+ 	type CDATA #REQUIRED
+	id CDATA #IMPLIED
+>
+
+<!ATTLIST pos
+	x CDATA #REQUIRED
+	y CDATA #REQUIRED
+	anchor CDATA "c"
+	width CDATA #IMPLIED
+	height CDATA #IMPLIED
+>
+
+<!ATTLIST normal
+	%colorattrs;
+>
+<!ATTLIST active
+	%colorattrs;
+>
+<!ATTLIST prelight
+	%colorattrs;
+>
