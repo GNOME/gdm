@@ -100,10 +100,10 @@
 		      <property name="column_spacing">4</property>
 
 		      <child>
-			<widget class="GtkLabel" id="label6">
+			<widget class="GtkLabel" id="local_greeter_label">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Local: </property>
-			  <property name="use_underline">False</property>
+			  <property name="label" translatable="yes">L_ocal: </property>
+			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
 			  <property name="wrap">False</property>
@@ -112,6 +112,10 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">local_greeter</property>
+			  <accessibility>
+			    <atkrelation target="local_greeter" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -124,10 +128,10 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkLabel" id="label7">
+			<widget class="GtkLabel" id="remote_greeter_label">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Remote: </property>
-			  <property name="use_underline">False</property>
+			  <property name="label" translatable="yes">_Remote: </property>
+			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
 			  <property name="wrap">False</property>
@@ -136,6 +140,10 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">remote_greeter</property>
+			  <accessibility>
+			    <atkrelation target="remote_greeter" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -152,6 +160,9 @@
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="history">0</property>
+			  <accessibility>
+			    <atkrelation target="local_greeter_label" type="labelled-by"/>
+			  </accessibility>
 
 			  <child>
 			    <widget class="GtkMenu" id="menu1">
@@ -189,6 +200,9 @@
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="history">0</property>
+			  <accessibility>
+			    <atkrelation target="remote_greeter_label" type="labelled-by"/>
+			  </accessibility>
 
 			  <child>
 			    <widget class="GtkMenu" id="menu2">
@@ -271,7 +285,7 @@
 			<widget class="GtkCheckButton" id="autologin">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Login a user automatically on first bootup</property>
+			  <property name="label" translatable="yes">_Login a user automatically on first bootup</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="active">False</property>
@@ -291,8 +305,8 @@
 		      <child>
 			<widget class="GtkLabel" id="label19">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Automatic login username:</property>
-			  <property name="use_underline">False</property>
+			  <property name="label" translatable="yes">_Automatic login username:</property>
+			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
 			  <property name="wrap">False</property>
@@ -301,6 +315,7 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">autologin_entry</property>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -403,7 +418,7 @@
 			<widget class="GtkCheckButton" id="timedlogin">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Login a user automatically after a specified number of seconds</property>
+			  <property name="label" translatable="yes">Login a user automa_tically after a specified number of seconds</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="active">False</property>
@@ -423,8 +438,8 @@
 		      <child>
 			<widget class="GtkLabel" id="timed_login_label">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Timed login username:</property>
-			  <property name="use_underline">False</property>
+			  <property name="label" translatable="yes">Timed login us_ername:</property>
+			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
 			  <property name="wrap">False</property>
@@ -433,6 +448,7 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">timedlogin_entry</property>
 			  <accessibility>
 			    <atkrelation target="timed_login_label" type="label-for"/>
 			  </accessibility>
@@ -448,10 +464,10 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkLabel" id="label21">
+			<widget class="GtkLabel" id="timedlogin_seconds_label">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Seconds before login:</property>
-			  <property name="use_underline">False</property>
+			  <property name="label" translatable="yes">_Seconds before login:</property>
+			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
 			  <property name="wrap">False</property>
@@ -460,6 +476,10 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">timedlogin_seconds</property>
+			  <accessibility>
+			    <atkrelation target="timedlogin_seconds" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -525,6 +545,9 @@
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
 			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="timedlogin_seconds_label" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="left_attach">1</property>
@@ -653,8 +676,8 @@
 			  <child>
 			    <widget class="GtkLabel" id="sg_welcome_label">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Welcome string: </property>
-			      <property name="use_underline">False</property>
+			      <property name="label" translatable="yes">_Welcome string: </property>
+			      <property name="use_underline">True</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>
 			      <property name="wrap">False</property>
@@ -663,7 +686,9 @@
 			      <property name="yalign">0.5</property>
 			      <property name="xpad">0</property>
 			      <property name="ypad">0</property>
+			      <property name="mnemonic_widget">sg_welcome</property>
 			      <accessibility>
+				<atkproperty name="AtkObject::accessible_name" translatable="yes">Welcome string: </atkproperty>
 				<atkrelation target="sg_welcome" type="label-for"/>
 			      </accessibility>
 			    </widget>
@@ -750,7 +775,7 @@
 			<widget class="GtkCheckButton" id="sg_use_24_clock">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Always use _24 hour clock format</property>
+			  <property name="label" translatable="yes">Always use 24 hour cloc_k format</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="active">False</property>
@@ -768,7 +793,7 @@
 			<widget class="GtkCheckButton" id="sg_browser">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Show choosable user images (face browser)</property>
+			  <property name="label" translatable="yes">Show choosable user images (_face browser)</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="active">False</property>
@@ -874,7 +899,7 @@
 			    <widget class="GtkRadioButton" id="sg_color_bg_rb">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">_Color</property>
+			      <property name="label" translatable="yes">Co_lor</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="active">False</property>
@@ -970,8 +995,8 @@
 			  <child>
 			    <widget class="GtkLabel" id="sg_backcolor_label">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Background color: </property>
-			      <property name="use_underline">False</property>
+			      <property name="label" translatable="yes">_Background color: </property>
+			      <property name="use_underline">True</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>
 			      <property name="wrap">False</property>
@@ -980,6 +1005,7 @@
 			      <property name="yalign">0.5</property>
 			      <property name="xpad">0</property>
 			      <property name="ypad">0</property>
+			      <property name="mnemonic_widget">sg_backcolor</property>
 			      <accessibility>
 				<atkrelation target="sg_backcolor" type="label-for"/>
 			      </accessibility>
@@ -1196,30 +1222,6 @@
 			      <property name="column_spacing">3</property>
 
 			      <child>
-				<widget class="GtkLabel" id="label31">
-				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">&lt;b&gt;Author:&lt;/b&gt;</property>
-				  <property name="use_underline">False</property>
-				  <property name="use_markup">True</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
-				  <property name="wrap">False</property>
-				  <property name="selectable">False</property>
-				  <property name="xalign">0</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				</widget>
-				<packing>
-				  <property name="left_attach">0</property>
-				  <property name="right_attach">1</property>
-				  <property name="top_attach">0</property>
-				  <property name="bottom_attach">1</property>
-				  <property name="x_options">fill</property>
-				  <property name="y_options"></property>
-				</packing>
-			      </child>
-
-			      <child>
 				<widget class="GtkLabel" id="label32">
 				  <property name="visible">True</property>
 				  <property name="label" translatable="yes">&lt;b&gt;Description:&lt;/b&gt;</property>
@@ -1229,7 +1231,7 @@
 				  <property name="wrap">False</property>
 				  <property name="selectable">False</property>
 				  <property name="xalign">0</property>
-				  <property name="yalign">0.5</property>
+				  <property name="yalign">0</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
 				</widget>
@@ -1239,7 +1241,7 @@
 				  <property name="top_attach">1</property>
 				  <property name="bottom_attach">2</property>
 				  <property name="x_options">fill</property>
-				  <property name="y_options"></property>
+				  <property name="y_options">fill</property>
 				</packing>
 			      </child>
 
@@ -1253,7 +1255,7 @@
 				  <property name="wrap">False</property>
 				  <property name="selectable">False</property>
 				  <property name="xalign">0</property>
-				  <property name="yalign">0.5</property>
+				  <property name="yalign">0</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
 				</widget>
@@ -1263,7 +1265,31 @@
 				  <property name="top_attach">2</property>
 				  <property name="bottom_attach">3</property>
 				  <property name="x_options">fill</property>
-				  <property name="y_options"></property>
+				  <property name="y_options">fill</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkLabel" id="label31">
+				  <property name="visible">True</property>
+				  <property name="label" translatable="yes">&lt;b&gt;Author:&lt;/b&gt;</property>
+				  <property name="use_underline">False</property>
+				  <property name="use_markup">True</property>
+				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="wrap">False</property>
+				  <property name="selectable">False</property>
+				  <property name="xalign">0</property>
+				  <property name="yalign">0</property>
+				  <property name="xpad">0</property>
+				  <property name="ypad">0</property>
+				</widget>
+				<packing>
+				  <property name="left_attach">0</property>
+				  <property name="right_attach">1</property>
+				  <property name="top_attach">0</property>
+				  <property name="bottom_attach">1</property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options">fill</property>
 				</packing>
 			      </child>
 
@@ -1278,7 +1304,7 @@
 				  <property name="wrap">True</property>
 				  <property name="selectable">True</property>
 				  <property name="xalign">0</property>
-				  <property name="yalign">0.5</property>
+				  <property name="yalign">0</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
 				</widget>
@@ -1287,7 +1313,8 @@
 				  <property name="right_attach">2</property>
 				  <property name="top_attach">0</property>
 				  <property name="bottom_attach">1</property>
-				  <property name="y_options"></property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options">fill</property>
 				</packing>
 			      </child>
 
@@ -1302,7 +1329,7 @@
 				  <property name="wrap">True</property>
 				  <property name="selectable">True</property>
 				  <property name="xalign">0</property>
-				  <property name="yalign">0.5</property>
+				  <property name="yalign">0</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
 				</widget>
@@ -1311,7 +1338,8 @@
 				  <property name="right_attach">2</property>
 				  <property name="top_attach">1</property>
 				  <property name="bottom_attach">2</property>
-				  <property name="y_options"></property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options">fill</property>
 				</packing>
 			      </child>
 
@@ -1326,7 +1354,7 @@
 				  <property name="wrap">True</property>
 				  <property name="selectable">True</property>
 				  <property name="xalign">0</property>
-				  <property name="yalign">0.5</property>
+				  <property name="yalign">0</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
 				</widget>
@@ -1335,7 +1363,8 @@
 				  <property name="right_attach">2</property>
 				  <property name="top_attach">2</property>
 				  <property name="bottom_attach">3</property>
-				  <property name="y_options"></property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options">fill</property>
 				</packing>
 			      </child>
 			    </widget>
@@ -1503,7 +1532,7 @@
 		    <widget class="GtkCheckButton" id="config_available">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">Allow _configuration from the login screen</property>
+		      <property name="label" translatable="yes">Allow c_onfiguration from the login screen</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="active">False</property>
@@ -1524,10 +1553,10 @@
 		      <property name="spacing">2</property>
 
 		      <child>
-			<widget class="GtkLabel" id="label18">
+			<widget class="GtkLabel" id="retry_delay_label">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Retry delay (seconds) :</property>
-			  <property name="use_underline">False</property>
+			  <property name="label" translatable="yes">Retry _delay (seconds) :</property>
+			  <property name="use_underline">True</property>
 			  <property name="use_markup">False</property>
 			  <property name="justify">GTK_JUSTIFY_LEFT</property>
 			  <property name="wrap">False</property>
@@ -1536,6 +1565,10 @@
 			  <property name="yalign">0.5</property>
 			  <property name="xpad">0</property>
 			  <property name="ypad">0</property>
+			  <property name="mnemonic_widget">retry_delay</property>
+			  <accessibility>
+			    <atkrelation target="retry_delay" type="label-for"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -1555,6 +1588,9 @@
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
 			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <accessibility>
+			    <atkrelation target="retry_delay_label" type="labelled-by"/>
+			  </accessibility>
 			</widget>
 			<packing>
 			  <property name="padding">0</property>
@@ -1666,7 +1702,7 @@
 			<widget class="GtkCheckButton" id="honour_indirect">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Honour indirect requests</property>
+			  <property name="label" translatable="yes">Honour _indirect requests</property>
 			  <property name="use_underline">True</property>
 			  <property name="relief">GTK_RELIEF_NORMAL</property>
 			  <property name="active">False</property>
@@ -2058,7 +2094,7 @@
 		    <widget class="GtkCheckButton" id="enable_xdmcp">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">Enable XDMCP</property>
+		      <property name="label" translatable="yes">Enable _XDMCP</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="active">False</property>
