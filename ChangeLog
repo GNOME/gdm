@@ -1,3 +1,13 @@
+Fri Aug 22 16:11:15 2003  George Lebl <jirka@5z.com>
+
+	* daemon/misc.[ch], daemon/auth.c, daemon/filecheck.c, daemon/gdm.c,
+	  daemon/server.c, daemon/slave.c: construct files properly using
+	  g_build_filename, add a utility for this gdm_make_filename if
+	  we want to build out of dir, name and extension.  Fixes
+	  bug #118040
+
+	* daemon/gdm.c, daemon/slave.c: remove unused variable
+
 Fri Aug 22 13:19:05 2003  George Lebl <jirka@5z.com>
 
 	* AUTHORS: update to be correct UTF-8

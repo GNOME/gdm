@@ -119,7 +119,6 @@ gchar *GdmGroup = NULL;
 gchar *GdmGtkRC = NULL;
 gchar *GdmSessDir = NULL;
 gchar *GdmXsession = NULL;
-gchar *GdmLocaleFile = NULL;
 gchar *GdmAutomaticLogin = NULL;
 gboolean GdmAutomaticLoginEnable = FALSE;
 gboolean GdmAlwaysRestartServer = FALSE;
@@ -351,11 +350,10 @@ gdm_config_parse (void)
 			"gdm_config_parse",
 			EXPANDED_SYSCONFDIR);
 	    g_free (GdmXsession);
-	    GdmXsession = g_strconcat (EXPANDED_SYSCONFDIR, "/gdm/Xsession",
-				       NULL);
+	    GdmXsession = g_build_filename (EXPANDED_SYSCONFDIR,
+					    "gdm", "Xsession", NULL);
     }
     GdmSuspend = ve_config_get_string (cfg, GDM_KEY_SUSPEND);
-    GdmLocaleFile = ve_config_get_string (cfg, GDM_KEY_LOCFILE);
     GdmUser = ve_config_get_string (cfg, GDM_KEY_USER);
     GdmUserAuthDir = ve_config_get_string (cfg, GDM_KEY_UAUTHDIR);
     GdmUserAuthFile = ve_config_get_string (cfg, GDM_KEY_UAUTHFILE);
@@ -989,7 +987,7 @@ gdm_final_cleanup (void)
 	if (fifoconn != NULL) {
 		char *path;
 		gdm_connection_close (fifoconn);
-		path = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+		path = g_build_filename (GdmServAuthDir, ".gdmfifo", NULL);
 		IGNORE_EINTR (unlink (path));
 		g_free (path);
 		fifoconn = NULL;
@@ -1057,7 +1055,7 @@ deal_with_x_crashes (GdmDisplay *d)
 
 	    if (pid == 0) {
 		    char *argv[2];
-		    char *xlog = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+		    char *xlog = gdm_make_filename (GdmLogDir, d->name, ".log");
 
 		    gdm_unset_signals ();
 
@@ -1658,7 +1656,7 @@ create_connections (void)
 	int p[2];
 	gchar *path;
 
-	path = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+	path = g_build_filename (GdmServAuthDir, ".gdmfifo", NULL);
 	fifoconn = gdm_connection_open_fifo (path, 0660);
 	g_free (path);
 
@@ -2090,7 +2088,7 @@ static void
 write_x_servers (GdmDisplay *d)
 {
 	FILE *fp;
-	char *file = g_strconcat (GdmServAuthDir, "/", d->name, ".Xservers", NULL);
+	char *file = gdm_make_filename (GdmServAuthDir, d->name, ".Xservers");
 	int i;
 	int bogusname;
 

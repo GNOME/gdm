@@ -149,6 +149,11 @@ void gdm_signal_default (int signal);
 
 void gdm_sleep_no_signal (int secs);
 
+/* somewhat like g_build_filename, but does somet hing like
+ * <dir> "/" <name> <extension>
+ */
+char * gdm_make_filename (const char *dir, const char *name, const char *extension);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

@@ -359,7 +359,7 @@ busy_ask_user (GdmDisplay *disp)
 static gboolean
 display_xnest_no_connect (GdmDisplay *disp)
 {
-	char *logname = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+	char *logname = gdm_make_filename (GdmLogDir, d->name, ".log");
 	FILE *fp;
 	char buf[256];
 
@@ -388,7 +388,7 @@ display_xnest_no_connect (GdmDisplay *disp)
 static gboolean
 display_busy (GdmDisplay *disp)
 {
-	char *logname = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+	char *logname = gdm_make_filename (GdmLogDir, d->name, ".log");
 	FILE *fp;
 	char buf[256];
 
@@ -440,7 +440,7 @@ open_another_logfile (char buf[256], FILE **fp)
 static int
 display_vt (GdmDisplay *disp)
 {
-	char *logname = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+	char *logname = gdm_make_filename (GdmLogDir, d->name, ".log");
 	FILE *fp;
 	char buf[256];
 	gboolean switched = FALSE;
@@ -841,11 +841,11 @@ static void
 rotate_logs (const char *dname)
 {
 	/* I'm too lazy to write a loop damnit */
-	char *fname4 = g_strconcat (GdmLogDir, "/", dname, ".log.4", NULL);
-	char *fname3 = g_strconcat (GdmLogDir, "/", dname, ".log.3", NULL);
-	char *fname2 = g_strconcat (GdmLogDir, "/", dname, ".log.2", NULL);
-	char *fname1 = g_strconcat (GdmLogDir, "/", dname, ".log.1", NULL);
-	char *fname = g_strconcat (GdmLogDir, "/", dname, ".log", NULL);
+	char *fname4 = gdm_make_filename (GdmLogDir, dname, ".log.4");
+	char *fname3 = gdm_make_filename (GdmLogDir, dname, ".log.3");
+	char *fname2 = gdm_make_filename (GdmLogDir, dname, ".log.2");
+	char *fname1 = gdm_make_filename (GdmLogDir, dname, ".log.1");
+	char *fname = gdm_make_filename (GdmLogDir, dname, ".log");
 
 	/* Rotate the logs (keep 4 last) */
 	IGNORE_EINTR (unlink (fname4));
@@ -1048,7 +1048,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	rotate_logs (d->name);
 
         /* Log all output from spawned programs to a file */
-	logfile = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+	logfile = gdm_make_filename (GdmLogDir, d->name, ".log");
 	IGNORE_EINTR (unlink (logfile));
 	logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644);
 

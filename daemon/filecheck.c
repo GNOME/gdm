@@ -74,7 +74,7 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
 	return FALSE;
     }
 
-    fullpath = g_strconcat(dir, "/", file, NULL);
+    fullpath = g_build_filename (dir, file, NULL);
 
     /* Stat file */
     IGNORE_EINTR (r = stat (fullpath, &statbuf));

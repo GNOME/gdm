@@ -128,7 +128,6 @@ extern gid_t GdmGroupId;
 extern gchar *GdmSessDir;
 extern gchar *GdmXsession;
 extern gchar *GdmDefaultSession;
-extern gchar *GdmLocaleFile;
 extern gchar *GdmAutomaticLogin;
 extern gboolean GdmAllowRemoteAutoLogin;
 extern gboolean GdmAlwaysRestartServer;
@@ -1788,14 +1787,14 @@ run_pictures (void)
 		seteuid (pwent->pw_uid);
 
 		/* Sanity check on ~user/.gnome2/gdm */
-		cfgdir = g_strconcat (pwent->pw_dir, "/.gnome2/gdm", NULL);
+		cfgdir = g_build_filename (pwent->pw_dir, ".gnome2", "gdm", NULL);
 		if (gdm_file_check ("run_pictures", pwent->pw_uid,
 				    cfgdir, "gdm", TRUE, TRUE, GdmUserMaxFile,
 				    GdmRelaxPerms)) {
 			VeConfig *cfg;
 			char *cfgfile;
 
-			cfgfile = g_strconcat (pwent->pw_dir, "/.gnome2/gdm", NULL);
+			cfgfile = g_build_filename (pwent->pw_dir, ".gnome2", "gdm", NULL);
 			cfg = ve_config_new (cfgfile);
 			g_free (cfgfile);
 			picfile = ve_config_get_string (cfg, "face/picture=");
@@ -1868,13 +1867,13 @@ run_pictures (void)
 
 		/* Nothing found yet, try the old location */
 		if (picfile == NULL) {
-			picfile = g_strconcat (pwent->pw_dir, "/.gnome2/photo", NULL);
-			picdir = g_strconcat (pwent->pw_dir, "/.gnome2", NULL);
+			picfile = g_build_filename (pwent->pw_dir, ".gnome2", "photo", NULL);
+			picdir = g_build_filename (pwent->pw_dir, ".gnome2", NULL);
 			if (access (picfile, F_OK) != 0) {
 				g_free (picfile);
-				picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
+				picfile = g_build_filename (pwent->pw_dir, ".gnome", "photo", NULL);
 				g_free (picdir);
-				picdir = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
+				picdir = g_build_filename (pwent->pw_dir, ".gnome", NULL);
 			}
 			if (access (picfile, F_OK) != 0) {
 				seteuid (0);
@@ -1882,8 +1881,8 @@ run_pictures (void)
 
 				g_free (picfile);
 				g_free (picdir);
-				picfile = g_strconcat (GdmGlobalFaceDir, "/",
-						       response, NULL);
+				picfile = g_build_filename (GdmGlobalFaceDir,
+							    response, NULL);
 
 				if (access (picfile, R_OK) == 0) {
 					gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
@@ -1893,8 +1892,8 @@ run_pictures (void)
 				}
 
 				g_free (picfile);
-				picfile = g_strconcat (GdmGlobalFaceDir, "/",
-						       response, ".png", NULL);
+				picfile = gdm_make_filename (GdmGlobalFaceDir,
+							     response, ".png");
 
 				if (access (picfile, R_OK) == 0) {
 					gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
@@ -2047,7 +2046,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 	seteuid (0);
 
-	name = g_strconcat (GdmServAuthDir, "/", d->name, ".XnestAuth", NULL);
+	name = gdm_make_filename (GdmServAuthDir, d->name, ".XnestAuth");
 
 	IGNORE_EINTR (unlink (name));
 	authfd = open (name, O_EXCL|O_TRUNC|O_WRONLY|O_CREAT, 0600);
@@ -3609,8 +3608,8 @@ gdm_slave_session_stop (gboolean run_post_session,
     else
 	    pwent = getpwnam (local_login);	/* PAM overwrites our pwent */
 
-    x_servers_file = g_strconcat (GdmServAuthDir,
-				  "/", d->name, ".Xservers", NULL);
+    x_servers_file = gdm_make_filename (GdmServAuthDir,
+					d->name, ".Xservers");
 
     /* if there was a session that ran, run the PostSession script */
     if (run_post_session) {
@@ -4425,8 +4424,8 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		set_xnest_parent_stuff ();
 
 	/* some env for use with the Pre and Post scripts */
-	x_servers_file = g_strconcat (GdmServAuthDir,
-				      "/", d->name, ".Xservers", NULL);
+	x_servers_file = gdm_make_filename (GdmServAuthDir,
+					    d->name, ".Xservers");
 	ve_setenv ("X_SERVERS", x_servers_file, TRUE);
 	g_free (x_servers_file);
 	if (d->type == TYPE_XDMCP)

@@ -211,7 +211,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 
 	    /* Make another authfile since the greeter can't read the server/user
 	     * readable file */
-	    d->authfile_gdm = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
+	    d->authfile_gdm = gdm_make_filename (GdmServAuthDir, d->name, ".Xauth");
 	    af_gdm = gdm_safe_fopen_w (d->authfile_gdm);
 
 	    if G_UNLIKELY (af_gdm == NULL) {
@@ -228,7 +228,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    }
     } else {
 	    /* gdm and xserver authfile can be the same, server will run as root */
-	    d->authfile = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
+	    d->authfile = gdm_make_filename (GdmServAuthDir, d->name, ".Xauth");
 	    af = gdm_safe_fopen_w (d->authfile);
 
 	    if G_UNLIKELY (af == NULL) {
@@ -467,7 +467,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     if ( ! ve_string_empty (GdmUserAuthDir) &&
 	strcmp (GdmUserAuthDir, "~") != 0) {
 	    if (strncmp (GdmUserAuthDir, "~/", 2) == 0) {
-		    authdir = g_strconcat (homedir, &GdmUserAuthDir[1], NULL);
+		    authdir = g_build_filename (homedir, &GdmUserAuthDir[2], NULL);
 	    } else {
 		    authdir = g_strdup (GdmUserAuthDir);
 		    automatic_tmp_dir = TRUE;

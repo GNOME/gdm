@@ -1809,4 +1809,13 @@ gdm_sleep_no_signal (int secs)
 	}
 }
 
+char *
+gdm_make_filename (const char *dir, const char *name, const char *extension)
+{
+	char *base = g_strconcat (name, extension, NULL);
+	char *full = g_build_filename (dir, base, NULL);
+	g_free (base);
+	return full;
+}
+
 /* EOF */
