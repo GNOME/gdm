@@ -157,6 +157,7 @@ gchar *s = N_("Maximum user file length: ");
 gchar *s = N_("Maximum session file length: ");
 gchar *s = N_("The session file is read in a way where a higher limit is still ok.  That is it is never stored in memory.");
 gchar *s = N_("Security");
+gchar *s = N_("No XDMCP support in the binary.  To enable XDMCP support you must recompile GDM with the XDMCP libraries.");
 gchar *s = N_("Enable XDMCP, a protocol to allow others to log in remotely");
 gchar *s = N_("Enable XDMCP");
 gchar *s = N_("Connection Settings");

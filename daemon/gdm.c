@@ -212,6 +212,13 @@ gdm_config_parse (void)
 
     /* sanitize some values */
 
+#ifndef HAVE_LIBXDMCP
+    if (GdmXdmcp) {
+	    gdm_info (_("gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning it off"));
+	    GdmXdmcp = FALSE;
+    }
+#endif
+
     if ( ! GdmAutomaticLoginEnable ||
 	gdm_string_empty (GdmAutomaticLogin)) {
 	    g_free (GdmAutomaticLogin);
@@ -238,9 +245,9 @@ gdm_config_parse (void)
 	    GdmTimedLogin = NULL;
     }
 
-    if (GdmTimedLoginDelay < 10) {
-	    gdm_info (_("gdm_config_parse: TimedLoginDelay less then 10, so I will just use 10."));
-	    GdmTimedLoginDelay = 10;
+    if (GdmTimedLoginDelay < 5) {
+	    gdm_info (_("gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."));
+	    GdmTimedLoginDelay = 5;
     }
 
     /* Prerequisites */ 

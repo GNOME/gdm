@@ -781,14 +781,14 @@ gdm_login_parse_config (void)
 	    GdmTimedLogin = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
 	    GdmTimedLoginDelay =
 		    gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
-	    if (GdmTimedLoginDelay < 10) {
+	    if (GdmTimedLoginDelay < 5) {
 		    syslog (LOG_WARNING,
-			    _("TimedLoginDelay was less then 10.  I'll just use 10."));
-		    GdmTimedLoginDelay = 10;
+			    _("TimedLoginDelay was less then 5.  I'll just use 5."));
+		    GdmTimedLoginDelay = 5;
 	    }
     } else {
 	    GdmTimedLogin = NULL;
-	    GdmTimedLoginDelay = 10;
+	    GdmTimedLoginDelay = 5;
     }
 
     gnome_config_pop_prefix();

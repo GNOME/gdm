@@ -56,6 +56,8 @@
 
 #include <config.h> 
 #include <gnome.h>
+
+#ifdef HAVE_LIBXDMCP
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
@@ -81,18 +83,21 @@
 #endif
 
 #include "gdm.h"
-#include "xdmcp.h"
 #include "display.h"
-#include "misc.h"
 #include "auth.h"
+#endif /* HAVE_LIBXDMCP */
+
+#include "misc.h"
+#include "xdmcp.h"
 
 static const gchar RCSid[]="$Id$";
+gint pending = 0;
+
+#ifdef HAVE_LIBXDMCP
 
 /* TCP Wrapper syslog control */
 gint allow_severity = LOG_INFO;
 gint deny_severity = LOG_WARNING;
-
-gint pending = 0;
 
 static gint xdmcpfd = -1;
 static gint choosefd = -1;
@@ -167,7 +172,7 @@ extern GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_s
 extern GdmIndirectDisplay *gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
 
 
-int
+gboolean
 gdm_xdmcp_init (void)
 {
     struct sockaddr_in serv_sa;
@@ -1092,6 +1097,30 @@ gdm_xdmcp_displays_check (void)
 		}
 	}
 }
+
+#else /* HAVE_LIBXDMCP */
+
+/* Here come some empty stubs for no XDMCP support */
+int
+gdm_xdmcp_init  (void)
+{
+	gdm_error (_("gdm_xdmcp_init: No XDMCP support"));
+	return FALSE;
+}
+
+void
+gdm_xdmcp_run (void)
+{
+	gdm_error (_("gdm_xdmcp_run: No XDMCP support"));
+}
+
+void
+gdm_xdmcp_close (void)
+{
+	gdm_error (_("gdm_xdmcp_close: No XDMCP support"));
+}
+
+#endif /* HAVE_LIBXDMCP */
 
 
 /* EOF */

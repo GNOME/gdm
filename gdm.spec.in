@@ -29,7 +29,7 @@ several different X sessions on your local machine at the same time.
 CFLAGS="-g $RPM_OPT_FLAGS" ./configure --localstatedir=%{localstatedir} \
     --prefix=%{_prefix} --sysconfdir=%{sysconfdir}/X11 \
     --bindir=%{_bindir} --datadir=%{_datadir} --sbindir=%{_sbindir} \
-    --enable-console-helper
+    --enable-console-helper --with-pam-prefix=/etc
 
 make
 
@@ -59,10 +59,11 @@ ln -sf ../../xdm/Xsetup_0 $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Init/Default
 ln -sf ../../xdm/GiveConsole $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/PreSession/Default
 ln -sf ../../xdm/TakeConsole $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/PostSession/Default
 
+# done right nowdays
 # move pam.d stuff to right place
-mv $RPM_BUILD_ROOT%{sysconfdir}/X11/pam.d $RPM_BUILD_ROOT%{sysconfdir}
+# mv $RPM_BUILD_ROOT%{sysconfdir}/X11/pam.d $RPM_BUILD_ROOT%{sysconfdir}
 # move security stuff to right place
-mv $RPM_BUILD_ROOT%{sysconfdir}/X11/security $RPM_BUILD_ROOT%{sysconfdir}
+# mv $RPM_BUILD_ROOT%{sysconfdir}/X11/security $RPM_BUILD_ROOT%{sysconfdir}
 
 
 %clean

@@ -19,19 +19,24 @@
 #ifndef GDM_XDMCP_H
 #define GDM_XDMCP_H
 
+#ifdef HAVE_LIBXDMCP
 #include <glib.h>
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
 #include <X11/Xauth.h>
 #include <X11/Xdmcp.h>
 #include "gdm.h"
+#endif /* HAVE_LIBXDMCP */
 
-int  gdm_xdmcp_init  (void);
-void gdm_xdmcp_run   (void);
-void gdm_xdmcp_close (void);
+/* Note that these are defined as empty stubs if there is no XDMCP support */
+gboolean	gdm_xdmcp_init	(void);
+void		gdm_xdmcp_run	(void);
+void		gdm_xdmcp_close	(void);
 
+#ifdef HAVE_LIBXDMCP
 /* Fix broken X includes */
 int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);
+#endif /* HAVE_LIBXDMCP */
 
 #endif /* GDM_XDMCP_H */
 

@@ -13,6 +13,26 @@ AM_ACLOCAL_INCLUDE(macros)
 
 GDK_PIXBUF_REQUIRED=0.7.0
 
+# find the actual value for $prefix that we'll end up with
+REAL_PREFIX=
+if test "x$prefix" = "xNONE"; then
+  REAL_PREFIX=$ac_default_prefix
+else
+  REAL_PREFIX=$prefix
+fi
+old_prefix=$prefix
+prefix=$REAL_PREFIX
+
+REAL_EXEC_PREFIX=
+if test "x$exec_prefix" = "xNONE"; then
+  REAL_EXEC_PREFIX=$prefix
+else
+  REAL_EXEC_PREFIX=$exec_prefix
+fi
+old_exec_prefix=$exec_prefix
+exec_prefix=$REAL_EXEC_PREFIX
+
+
 dnl
 dnl Configure arguments
 dnl
@@ -29,9 +49,36 @@ AC_ARG_WITH(xinerama,
   [  --with-xinerama=[auto/yes/no]  Add Xinerama support [default=auto]],,
   with_xinerama=auto)
 
+AC_ARG_WITH(xdmcp,
+  [  --with-xdmcp=[auto/yes/no]  Add XDMCP (remote login) support [default=auto]],,
+  with_xdmcp=auto)
+
 AC_ARG_WITH(tcp-wrappers,
   [  --with-tcp-wrappers=[auto/yes/no]  Use TCP Wrappers [default=auto]],,
   with_tcp_wrappers=auto)
+
+dnl
+dnl PAM prefix
+dnl
+withval=""
+AC_ARG_WITH(pam-prefix,
+[      --with-pam-prefix=<prefix>   specify where pam files go],[
+if test x$withval != x; then
+   AC_MSG_RESULT("PAM files will be installed in prefix ${withval}.")
+fi])
+if test x$withval != x; then
+	PAM_PREFIX_UNEXPANDED="$withval"
+else
+	PAM_PREFIX_UNEXPANDED="$sysconfdir"
+fi
+PAM_PREFIX=`eval echo $PAM_PREFIX_UNEXPANDED`
+AC_SUBST(PAM_PREFIX)
+
+    
+AC_PATH_PROG(CONSOLE_HELPER_TMP,consolehelper,no)
+if test "x$CONSOLE_HELPER" = "xno" -a "x$enable_console_helper" = "xyes" ; then
+	AC_MSG_ERROR(Console helper requested but consolehelper binary not found)
+fi
 
 dnl
 dnl Standard stuff
@@ -191,7 +238,28 @@ fi
 
 AC_SUBST(VRFY)
 
+
+#
+# Xdmcp checking
+#
+XDMCP_LIBS=""
+if test x$with_xdmcp != xno ; then
+	AC_CHECK_HEADER(X11/Xdmcp.h, [
+		AC_CHECK_LIB(Xdmcp, XdmcpFlush, [
+		     	AC_DEFINE(HAVE_LIBXDMCP)
+		     	XDMCP_LIBS="-lXdmcp"
+		     	XDMCP_SUPPORT=yes],, $GTK_LIBS)
+	])
+
+	if test x$with_xdmcp = xyes -a x$XDMCP_SUPPORT = x ; then
+		AC_MSG_ERROR(XDMCP support requested but XDMCP libraries not found)
+	fi
+fi
+AC_SUBST(XDMCP_LIBS)
+
+#
 # X11 Xinerama extension
+#
 if test x$with_xinerama != xno ; then
 	AC_CHECK_HEADER(X11/extensions/Xinerama.h, [
 		AC_CHECK_LIB(Xinerama, XineramaQueryScreens, [
@@ -231,25 +299,6 @@ AC_SUBST(GDK_PIXBUF_REQUIRED)
 # Stolen mostly from GConf
 #
 
-# find the actual value for $prefix that we'll end up with
-REAL_PREFIX=
-if test "x$prefix" = "xNONE"; then
-  REAL_PREFIX=$ac_default_prefix
-else
-  REAL_PREFIX=$prefix
-fi
-old_prefix=$prefix
-prefix=$REAL_PREFIX
-
-REAL_EXEC_PREFIX=
-if test "x$exec_prefix" = "xNONE"; then
-  REAL_EXEC_PREFIX=$prefix
-else
-  REAL_EXEC_PREFIX=$exec_prefix
-fi
-old_exec_prefix=$exec_prefix
-exec_prefix=$REAL_EXEC_PREFIX
-
 DATADIR_TMP="$datadir"
 EXPANDED_DATADIR=`eval echo $DATADIR_TMP`
 AC_SUBST(EXPANDED_DATADIR)
@@ -264,6 +313,11 @@ BINDIR_TMP="$bindir"
 EXPANDED_BINDIR=`eval echo $BINDIR_TMP`
 AC_SUBST(EXPANDED_BINDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_BINDIR,"$EXPANDED_BINDIR")
+
+SBINDIR_TMP="$bindir"
+EXPANDED_SBINDIR=`eval echo $SBINDIR_TMP`
+AC_SUBST(EXPANDED_SBINDIR)
+AC_DEFINE_UNQUOTED(EXPANDED_SBINDIR,"$EXPANDED_SBINDIR")
 
 dnl This is where the binary actually resides,
 dnl not the console helper link
@@ -329,6 +383,7 @@ config/gdm.conf
 config/Gnome
 config/gnomerc
 gdm-restart
+gdmconfig-security
 gdm.spec
 ],[sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile])
 
@@ -344,6 +399,15 @@ echo "CFLAGS : $CFLAGS"
 echo "LDFLAGS : $LDFLAGS"
 echo ""
 
+dnl <= Prefixes =>
+echo "prefix : $prefix"
+echo "sysconf dir : "`eval echo $sysconfdir`
+echo "bin dir : $EXPANDED_BINDIR"
+echo "sbin dir : $EXPANDED_SBINDIR"
+echo "PAM prefix : $PAM_PREFIX"
+echo "data dir : "`eval echo $datadir`
+echo ""
+
 dnl <= TCP Wrappers support? =>
 if test x"$LIBWRAP_PATH" = x ; then
 	echo "TCP Wrappers support              : NO"
@@ -356,6 +420,13 @@ if test x"$XINERAMA_SUPPORT" = xyes ; then
 	echo "Xinerama support                  : YES"
 else
 	echo "Xinerama support                  : NO"
+fi
+
+dnl <= XDMCP =>
+if test x"$XDMCP_SUPPORT" = xyes ; then
+	echo "XDMCP (remote login) support      : YES"
+else
+	echo "XDMCP (remote login) support      : NO"
 fi
 
 dnl <= Console Helper =>

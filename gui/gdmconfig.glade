@@ -2315,8 +2315,8 @@ tr_TR
 	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	    <snap>False</snap>
 	    <wrap>False</wrap>
-	    <value>0</value>
-	    <lower>0</lower>
+	    <value>5</value>
+	    <lower>5</lower>
 	    <upper>32000</upper>
 	    <step>1</step>
 	    <page>10</page>
@@ -3259,6 +3259,24 @@ tr_TR
       <border_width>3</border_width>
       <homogeneous>False</homogeneous>
       <spacing>3</spacing>
+
+      <widget>
+	<class>GtkLabel</class>
+	<name>no_xdmcp_label</name>
+	<visible>False</visible>
+	<label>No XDMCP support in the binary.  To enable XDMCP support you must recompile GDM with the XDMCP libraries.</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>True</wrap>
+	<xalign>0</xalign>
+	<yalign>0.5</yalign>
+	<xpad>5</xpad>
+	<ypad>5</ypad>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
 
       <widget>
 	<class>GtkCheckButton</class>

@@ -328,62 +328,62 @@ connect_file_checks (void)
 int
 main (int argc, char *argv[])
 {
-    if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
-	    DOING_GDM_DEVELOPMENT = TRUE;
+	if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
+		DOING_GDM_DEVELOPMENT = TRUE;
 
-    bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-    textdomain (PACKAGE);
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
 
-    gnome_init ("gdmconfig", VERSION, argc, argv);
-    glade_gnome_init();
+	gnome_init ("gdmconfig", VERSION, argc, argv);
+	glade_gnome_init();
 
-    /* If we are running under gdm parse the GDM gtkRC */
-    if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
-	    char *gtkrc;
-	    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	    gtkrc = gnome_config_get_string (GDM_KEY_GTKRC);
-	    gnome_config_pop_prefix ();
-	    if ( ! gdm_string_empty (gtkrc))
-		    gtk_rc_parse (gtkrc);
-	    g_free (gtkrc);
-    }
+	/* If we are running under gdm parse the GDM gtkRC */
+	if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+		char *gtkrc;
+		gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+		gtkrc = gnome_config_get_string (GDM_KEY_GTKRC);
+		gnome_config_pop_prefix ();
+		if ( ! gdm_string_empty (gtkrc))
+			gtk_rc_parse (gtkrc);
+		g_free (gtkrc);
+	}
 
-    /* Make sure the user is root. If not, they shouldn't be messing with 
-     * GDM's configuration.
-     */
+	/* Make sure the user is root. If not, they shouldn't be messing with 
+	 * GDM's configuration.
+	 */
 
-    if ( ! DOING_GDM_DEVELOPMENT) {
-	    if (geteuid() != 0)
-	    {
-		    GtkWidget *fatal_error = 
-			    gnome_error_dialog(_("You must be the superuser (root) to configure GDM.\n"));
-		    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
-		    exit(EXIT_FAILURE);
-	    }
-    }
+	if ( ! DOING_GDM_DEVELOPMENT) {
+		if (geteuid() != 0)
+		{
+			GtkWidget *fatal_error = 
+				gnome_error_dialog(_("You must be the superuser (root) to configure GDM.\n"));
+			gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
+			exit(EXIT_FAILURE);
+		}
+	}
 
-    /* Look for the glade file in $(datadir)/gdm or, failing that,
-     * look in the current directory.
+	/* Look for the glade file in $(datadir)/gdm or, failing that,
+	 * look in the current directory.
 	 * Except when doing development, we want the app to use the glade file
 	 * in the same directory, so we can actually make changes easily.
-     */
-	
-    if ( ! DOING_GDM_DEVELOPMENT) {
-	    if (g_file_exists (GDM_GLADE_DIR "/gdmconfig.glade")) {
-		    glade_filename = g_strdup (GDM_GLADE_DIR
-					       "/gdmconfig.glade");
-	    } else {
-		    glade_filename = gnome_datadir_file ("gdm/gdmconfig.glade");
-		    if (glade_filename == NULL) {	  
-			    glade_filename = g_strdup ("gdmconfig.glade");
-		    }
-	    }
-    } else {
-	    glade_filename = g_strdup ("gdmconfig.glade");
-    }
-	
-    /* Build the user interface */
-    GUI = glade_xml_new(glade_filename, "gdmconfigurator");
+	 */
+
+	if ( ! DOING_GDM_DEVELOPMENT) {
+		if (g_file_exists (GDM_GLADE_DIR "/gdmconfig.glade")) {
+			glade_filename = g_strdup (GDM_GLADE_DIR
+						   "/gdmconfig.glade");
+		} else {
+			glade_filename = gnome_datadir_file ("gdm/gdmconfig.glade");
+			if (glade_filename == NULL) {	  
+				glade_filename = g_strdup ("gdmconfig.glade");
+			}
+		}
+	} else {
+		glade_filename = g_strdup ("gdmconfig.glade");
+	}
+
+	/* Build the user interface */
+	GUI = glade_xml_new(glade_filename, "gdmconfigurator");
 	basic_notebook = glade_xml_new(glade_filename, "basic_notebook");
 	system_notebook = glade_xml_new(glade_filename, "system_notebook");
 	expert_notebook = glade_xml_new(glade_filename, "expert_notebook");
@@ -392,105 +392,111 @@ main (int argc, char *argv[])
 	    basic_notebook == NULL ||
 	    system_notebook == NULL ||
 	    expert_notebook == NULL) {
-		    GtkWidget *fatal_error = 
-			    gnome_error_dialog(_("Cannot find the glade interface description\n"
-						 "file, cannot run gdmconfig.\n"
-						 "Please check your installation and the\n"
-						 "location of the gdmconfig.glade file."));
-		    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
-		    exit(EXIT_FAILURE);
+		GtkWidget *fatal_error = 
+			gnome_error_dialog(_("Cannot find the glade interface description\n"
+					     "file, cannot run gdmconfig.\n"
+					     "Please check your installation and the\n"
+					     "location of the gdmconfig.glade file."));
+		gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
+		exit(EXIT_FAILURE);
 	}
 
-   invisible_notebook = gtk_notebook_new();
-   gtk_notebook_set_show_tabs (GTK_NOTEBOOK (invisible_notebook), FALSE);
-   gtk_notebook_set_show_border (GTK_NOTEBOOK (invisible_notebook), FALSE);
-   gtk_notebook_set_tab_border (GTK_NOTEBOOK (invisible_notebook), 0);
-   gtk_notebook_append_page (GTK_NOTEBOOK (invisible_notebook),
-			     get_widget ("basic_notebook"),
-			     NULL);
-   gtk_notebook_append_page (GTK_NOTEBOOK (invisible_notebook),
-			     get_widget ("expert_notebook"),
-			     NULL);
-   gtk_notebook_append_page (GTK_NOTEBOOK (invisible_notebook),
-			     get_widget ("system_notebook"),
-			     NULL);
-   gtk_container_add (GTK_CONTAINER (get_widget ("main_container")),
-		      invisible_notebook);
-   gtk_widget_show (invisible_notebook);
+	invisible_notebook = gtk_notebook_new();
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (invisible_notebook), FALSE);
+	gtk_notebook_set_show_border (GTK_NOTEBOOK (invisible_notebook), FALSE);
+	gtk_notebook_set_tab_border (GTK_NOTEBOOK (invisible_notebook), 0);
+	gtk_notebook_append_page (GTK_NOTEBOOK (invisible_notebook),
+				  get_widget ("basic_notebook"),
+				  NULL);
+	gtk_notebook_append_page (GTK_NOTEBOOK (invisible_notebook),
+				  get_widget ("expert_notebook"),
+				  NULL);
+	gtk_notebook_append_page (GTK_NOTEBOOK (invisible_notebook),
+				  get_widget ("system_notebook"),
+				  NULL);
+	gtk_container_add (GTK_CONTAINER (get_widget ("main_container")),
+			   invisible_notebook);
+	gtk_widget_show (invisible_notebook);
 
-    /* Sanity checking */
-    GDMconfigurator = get_widget("gdmconfigurator");
-    if (GDMconfigurator == NULL) {
-	    GtkWidget *fatal_error = 
-		    gnome_error_dialog(_("Cannot find the gdmconfigurator widget in\n"
-					 "the glade interface description file\n"
-					 "Please check your installation."));
-	    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
-	    exit(EXIT_FAILURE);
+	/* Sanity checking */
+	GDMconfigurator = get_widget("gdmconfigurator");
+	if (GDMconfigurator == NULL) {
+		GtkWidget *fatal_error = 
+			gnome_error_dialog(_("Cannot find the gdmconfigurator widget in\n"
+					     "the glade interface description file\n"
+					     "Please check your installation."));
+		gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
+		exit(EXIT_FAILURE);
 	}
 
-    /* connect the checker signals before parsing */
-    connect_binary_checks ();
-    connect_dir_checks ();
-    connect_dirname_checks ();
-    connect_file_checks ();
+	/* connect the checker signals before parsing */
+	connect_binary_checks ();
+	connect_dir_checks ();
+	connect_dirname_checks ();
+	connect_file_checks ();
 
-    /* We set most of the user interface NOT wanting signals to get triggered as
-     * we do it. Then we hook up the signals, and THEN set a few remaining elements.
-     * This ensures sensitivity of some widgets is correct, and that the font picker
-     * gets set properly.
-     */
-    gdm_config_parse_most(FALSE);
-    glade_xml_signal_autoconnect(GUI);
+	/* We set most of the user interface NOT wanting signals to get triggered as
+	 * we do it. Then we hook up the signals, and THEN set a few remaining elements.
+	 * This ensures sensitivity of some widgets is correct, and that the font picker
+	 * gets set properly.
+	 */
+	gdm_config_parse_most(FALSE);
+	glade_xml_signal_autoconnect(GUI);
 
-    /* we hack up our icon entry */
-    hack_icon_entry (GNOME_ICON_ENTRY (get_widget ("gdm_icon")));
-    {
-	    GtkWidget *entry = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY (get_widget ("gdm_icon")));
-	    gtk_signal_connect (GTK_OBJECT (entry), "changed",
-				GTK_SIGNAL_FUNC (can_apply_now),
-				NULL);
-    }
+	/* we hack up our icon entry */
+	hack_icon_entry (GNOME_ICON_ENTRY (get_widget ("gdm_icon")));
+	{
+		GtkWidget *entry = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY (get_widget ("gdm_icon")));
+		gtk_signal_connect (GTK_OBJECT (entry), "changed",
+				    GTK_SIGNAL_FUNC (can_apply_now),
+				    NULL);
+	}
 
 
-	
+
 	glade_xml_signal_autoconnect(basic_notebook);
 	glade_xml_signal_autoconnect(expert_notebook);
 	glade_xml_signal_autoconnect(system_notebook);
 
-    gdm_config_parse_remaining(FALSE);
+	gdm_config_parse_remaining(FALSE);
+
+#ifndef HAVE_LIBXDMCP
+	gtk_widget_show (get_widget ("no_xdmcp_label"));
+	gtk_widget_set_sensitive (get_widget ("enable_xdmcp"), FALSE);
+	gtk_widget_set_sensitive (get_widget ("xdmcp_frame"), FALSE);
+#endif /* ! HAVE_LIBXDMCP */
 
 	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("user_level_clist")));
-   	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("server_clist")));
-      	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("sessions_clist")));
-	
+	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("server_clist")));
+	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("sessions_clist")));
+
 	gtk_clist_append(GTK_CLIST(get_widget("user_level_clist")),
-					  basic_row);					 
+			 basic_row);					 
 	gtk_clist_append(GTK_CLIST(get_widget("user_level_clist")),
-					 expert_row);					 
+			 expert_row);					 
 	gtk_clist_append(GTK_CLIST(get_widget("user_level_clist")),
-					  system_row);
-	
+			 system_row);
+
 	gtk_clist_select_row(GTK_CLIST(get_widget("user_level_clist")), 0,0);
 
-    gtk_window_set_title(GTK_WINDOW(GDMconfigurator),
-						 _("GNOME Display Manager Configurator"));
-    gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply_button")), FALSE);
+	gtk_window_set_title(GTK_WINDOW(GDMconfigurator),
+			     _("GNOME Display Manager Configurator"));
+	gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply_button")), FALSE);
 
-    gtk_widget_show (GDMconfigurator);
+	gtk_widget_show (GDMconfigurator);
 
-    /* If we are running under gdm and not in a normal session we want to
-     * treat the right mouse button like the first */
-    if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
-	    guint sid = gtk_signal_lookup ("event",
-					   GTK_TYPE_WIDGET);
-	    gtk_signal_add_emission_hook (sid,
-					  gdm_event,
-					  NULL);
-    }
-    
-    gtk_main ();
-    return 0;
+	/* If we are running under gdm and not in a normal session we want to
+	 * treat the right mouse button like the first */
+	if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+		guint sid = gtk_signal_lookup ("event",
+					       GTK_TYPE_WIDGET);
+		gtk_signal_add_emission_hook (sid,
+					      gdm_event,
+					      NULL);
+	}
+
+	gtk_main ();
+	return 0;
 }
 
 void user_level_row_selected(GtkCList *clist, gint row,

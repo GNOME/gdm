@@ -6,7 +6,7 @@ EXTRA_DIST = \
 	gdm.spec		\
 	gdm.spec.in		\
 	gdmconfig-pam		\
-	gdmconfig-security	\
+	gdmconfig-security.in	\
 	xml-i18n-extract.in	\
 	xml-i18n-merge.in	\
 	xml-i18n-update.in	\
@@ -14,13 +14,13 @@ EXTRA_DIST = \
 
 sbin_SCRIPTS = gdm-restart
 
-install-data-local:
+install-data-local: gdmconfig-security
 if CONSOLE_HELPER
-	$(INSTALL_DATA) -D gdmconfig-pam $(sysconfdir)/pam.d/gdmconfig
-	$(INSTALL_DATA) -D gdmconfig-security $(sysconfdir)/security/console.apps/gdmconfig
+	$(INSTALL_DATA) -D gdmconfig-pam @PAM_PREFIX@/pam.d/gdmconfig
+	$(INSTALL_DATA) -D gdmconfig-security @PAM_PREFIX@/security/console.apps/gdmconfig
 	$(INSTALL_DATA) -m 755 -d $(sbindir)
 	mv $(bindir)/gdmconfig $(sbindir)
-	$(LN_S) @bindir@/consolehelper $(bindir)/gdmconfig
+	$(LN_S) @CONSOLE_HELPER@ $(bindir)/gdmconfig
 endif
 
 DISTCLEANFILES = \
