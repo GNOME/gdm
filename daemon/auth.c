@@ -403,7 +403,7 @@ get_local_auths (GdmDisplay *d)
 	    /* we should write out an entry for d->addr since
 	       possibly it is not in d->addrs */
 #ifdef ENABLE_IPV6
-	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, (char *)((d->addr6).s6_addr), sizeof (struct in6_addr)))
+	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternetV6, (char *)((d->addr6).s6_addr), sizeof (struct in6_addr)))
 		    goto get_local_auth_error;
 	    else
 #endif
@@ -432,7 +432,7 @@ get_local_auths (GdmDisplay *d)
 		    if (memcmp (ia6, &(d->addr6), sizeof (struct in6_addr)) == 0)
 			    continue;
 
-		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, (char *)(ia6->s6_addr), sizeof (struct in6_addr)))
+		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternetV6, (char *)(ia6->s6_addr), sizeof (struct in6_addr)))
 			    goto get_local_auth_error;
 
 		    if (gdm_is_loopback_addr6 (ia6))
@@ -463,7 +463,7 @@ get_local_auths (GdmDisplay *d)
 
 #ifdef ENABLE_IPV6
 	    if (ia->sa_family == AF_INET6) {
-		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, (char *)(((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr), sizeof (struct in6_addr)))
+		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternetV6, (char *)(((struct sockaddr_in6 *)ia)->sin6_addr.s6_addr), sizeof (struct in6_addr)))
 			    goto get_local_auth_error;
 
 		    if (gdm_is_loopback_addr6 (&((struct sockaddr_in6 *)ia)->sin6_addr))
@@ -486,7 +486,7 @@ get_local_auths (GdmDisplay *d)
 
 #ifdef ENABLE_IPV6
 	    if (d->addrtype == AF_INET6) {
-		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet, lo6, sizeof (struct in6_addr)))
+		    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternetV6, lo6, sizeof (struct in6_addr)))
 			    goto get_local_auth_error;
 	    }
 	    else
