@@ -1,3 +1,14 @@
+Fri Feb 20 10:03:42 2004  George Lebl <jirka@5z.com>
+
+	* display.c, server.[ch], slave.c: When restarting a server by
+	  whacking it and starting it again, wait at least one second to
+	  allow things to "settle".  If local display is busy try again once
+	  in 2 secs before resorting to telling the user so.  Be much milder
+	  in whacking X's lock files / sockets to avoid whacking actual
+	  locks / sockets when displays are in fact busy and used, that is,
+	  only whack locks / sockets when we in fact successfully started
+	  a server.
+
 THu Feb 19 Guntupalli Karunakar <karunakar@freedomink.org>
 
 	* gui/gdmlanguages.c: Fixes #134372, Hindi was incorrectly

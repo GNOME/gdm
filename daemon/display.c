@@ -153,7 +153,8 @@ gdm_display_check_loop (GdmDisplay *disp)
     }
   else
     {
-      disp->sleep_before_run = 0;
+      /* wait one second just for safety (avoids X server races) */
+      disp->sleep_before_run = 1;
       disp->last_start_time = now;
     }
 
@@ -339,8 +340,8 @@ gdm_display_manage (GdmDisplay *d)
 	    d->dispstat = DISPLAY_ALIVE;
     }
 
-    /* reset sleep to 0 */
-    d->sleep_before_run = 0;
+    /* reset sleep to 1, to sleep just in case (avoids X server races) */
+    d->sleep_before_run = 1;
 
     return TRUE;
 }

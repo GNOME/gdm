@@ -28,6 +28,7 @@ void		gdm_server_wipe_cookies	(GdmDisplay *disp);
 void		gdm_server_whack_lockfile (GdmDisplay *disp);
 
 gboolean	gdm_server_start	(GdmDisplay *d,
+					 gboolean try_again_if_busy,
 					 gboolean treat_as_flexi,
 					 int min_flexi_disp,
 					 int flexi_retries);

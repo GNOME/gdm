@@ -1186,7 +1186,7 @@ gdm_slave_run (GdmDisplay *display)
 
     gdm_random_tick ();
 
-    if G_UNLIKELY (d->sleep_before_run > 0) {
+    if (d->sleep_before_run > 0) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
 	    gdm_sleep_no_signal (d->sleep_before_run);
 	    d->sleep_before_run = 0;
@@ -1203,6 +1203,7 @@ gdm_slave_run (GdmDisplay *display)
     if (SERVER_IS_LOCAL (d) &&
 	d->servpid <= 0) {
 	    if G_UNLIKELY ( ! gdm_server_start (d,
+						TRUE /* try_again_if_busy */,
 						FALSE /* treat_as_flexi */,
 						20 /* min_flexi_disp */,
 						5 /* flexi_retries */)) {
@@ -4467,9 +4468,10 @@ gdm_slave_child_handler (int sig)
 	} else if (pid != 0 && pid == d->chooserpid) {
 		d->chooserpid = 0;
 	} else if (pid != 0 && pid == d->servpid) {
+		if (d->servstat == SERVER_RUNNING)
+			gdm_server_whack_lockfile (d);
 		d->servstat = SERVER_DEAD;
 		d->servpid = 0;
-		gdm_server_whack_lockfile (d);
 		gdm_server_wipe_cookies (d);
 		gdm_slave_whack_temp_auth_file ();
 
@@ -4488,6 +4490,11 @@ gdm_slave_child_handler (int sig)
 			gdm_slave_send_num (GDM_SOP_CHOOSERPID, 0);
 			kill (d->chooserpid, SIGTERM);
 		}
+
+		/* just in case we restart again wait at least
+		   one sec to avoid races */
+		if (d->sleep_before_run < 1)
+			d->sleep_before_run = 1;
 	} else if (pid == extra_process) {
 		/* an extra process died, yay! */
 		extra_process = 0;

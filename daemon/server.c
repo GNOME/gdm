@@ -249,6 +249,9 @@ gdm_server_reinit (GdmDisplay *disp)
 #endif
 		return TRUE;
         } else {
+		/* if something really REALLY screwed up, then whack the
+		   lockfiles for safety */
+		gdm_server_whack_lockfile (d);
 		return FALSE;
 	}
 }
@@ -264,6 +267,7 @@ void
 gdm_server_stop (GdmDisplay *disp)
 {
     static gboolean waiting_for_server = FALSE;
+    int old_servstat;
 
     if (disp == NULL)
 	return;
@@ -282,6 +286,7 @@ gdm_server_stop (GdmDisplay *disp)
 
     gdm_debug ("gdm_server_stop: Server for %s going down!", disp->name);
 
+    old_servstat = disp->servstat;
     disp->servstat = SERVER_DEAD;
 
     if (disp->servpid > 0) {
@@ -311,9 +316,15 @@ gdm_server_stop (GdmDisplay *disp)
 
 	    gdm_sigchld_block_pop ();
 
-	    gdm_server_whack_lockfile (disp);
+	    if (old_servstat == SERVER_RUNNING)
+		    gdm_server_whack_lockfile (disp);
 
 	    gdm_debug ("gdm_server_stop: Server pid %d dead", (int)servpid);
+
+	    /* just in case we restart again wait at least
+	       one sec to avoid races */
+	    if (d->sleep_before_run < 1)
+		    d->sleep_before_run = 1;
     }
 
     gdm_server_wipe_cookies (disp);
@@ -628,6 +639,26 @@ do_server_wait (GdmDisplay *d)
     if (d->servpid <= 1) {
 	    d->servstat = SERVER_ABORT;
     }
+
+    if (d->servstat != SERVER_RUNNING) {
+	    /* bad things are happening */
+	    if (d->servpid > 0) {
+		    pid_t pid;
+
+		    d->dsp = NULL;
+
+		    gdm_sigchld_block_push ();
+		    pid = d->servpid;
+		    d->servpid = 0;
+		    if (pid > 1 &&
+			kill (pid, SIGTERM) == 0)
+			    ve_waitpid_no_signal (pid, NULL, 0);
+		    gdm_sigchld_block_pop ();
+	    }
+
+	    /* We will rebake cookies anyway, so wipe these */
+	    gdm_server_wipe_cookies (d);
+    }
 }
 
 /**
@@ -638,8 +669,11 @@ do_server_wait (GdmDisplay *d)
  */
 
 gboolean
-gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
-		  int min_flexi_disp, int flexi_retries)
+gdm_server_start (GdmDisplay *disp,
+		  gboolean try_again_if_busy /* only affects non-flexi servers */,
+		  gboolean treat_as_flexi,
+		  int min_flexi_disp,
+		  int flexi_retries)
 {
     int flexi_disp = 20;
     char *vtarg = NULL;
@@ -739,26 +773,6 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 	    break;
     }
 
-    /* bad things are happening */
-    if (d->servpid > 0) {
-	    pid_t pid;
-
-	    d->dsp = NULL;
-
-	    gdm_sigchld_block_push ();
-	    pid = d->servpid;
-	    d->servpid = 0;
-	    if (pid > 1 &&
-		kill (pid, SIGTERM) == 0)
-		    ve_waitpid_no_signal (pid, NULL, 0);
-	    gdm_sigchld_block_pop ();
-	    
-	    gdm_server_whack_lockfile (disp);
-    }
-
-    /* We will rebake cookies anyway, so wipe these */
-    gdm_server_wipe_cookies (disp);
-
     if (disp->type == TYPE_FLEXI_XNEST &&
 	display_xnest_no_connect (disp)) {
 	    gdm_slave_send_num (GDM_SOP_FLEXI_ERR,
@@ -787,10 +801,22 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 			    /* eki eki */
 			    _exit (DISPLAY_REMANAGE);
 		    }
-		    return gdm_server_start (d, treat_as_flexi,
+		    return gdm_server_start (d, FALSE /*try_again_if_busy */,
+					     treat_as_flexi,
 					     flexi_disp + 1,
 					     flexi_retries - 1);
 	    } else {
+		    if (try_again_if_busy) {
+			    gdm_debug ("%s: Display %s busy.  Trying once again "
+				       "(after 2 sec delay)",
+				       "gdm_server_start", d->name);
+			    gdm_sleep_no_signal (2);
+			    return gdm_server_start (d,
+						     FALSE /* try_again_if_busy */,
+						     treat_as_flexi,
+						     flexi_disp,
+						     flexi_retries);
+		    }
 		    if (busy_ask_user (disp)) {
 			    gdm_error (_("%s: Display %s busy.  Trying "
 					 "another display number."),
@@ -798,6 +824,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 				       d->name);
 			    d->busy_display = TRUE;
 			    return gdm_server_start (d,
+						     FALSE /*try_again_if_busy */,
 						     TRUE /* treat as flexi */,
 						     high_display_num + 1,
 						     flexi_retries - 1);
