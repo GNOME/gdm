@@ -447,6 +447,7 @@ gdm_config_parse_most (void)
 	/* Ignore backups and rpmsave files */
 	if ((strstr (dent->d_name, "~")) ||
 	    (strstr (dent->d_name, ".rpmsave")) ||
+	    (strstr (dent->d_name, ".dpkg-old")) ||
 	    (strstr (dent->d_name, ".deleted")) ||
 	    (strstr (dent->d_name, ".desc")) /* description file */ ||
 	    (strstr (dent->d_name, ".orig"))) {
