@@ -1,3 +1,11 @@
+2003-05-02 Brian Cameron <Brian.Cameron@Sun.COM>
+	* gui/modules/keymouselistener.c, gui/modules/AccessKeyMouseEvents.in
+	Now the keymouselistener does not use grabs, so there is less
+	opportunity for conflict with other programs (like the registryd).
+	Now duration and timeout is specified in ms rather than seconds,
+	which allows more flexibility.  Duration values of 0 to indicate
+	a keypress of any length is now supported.
+
 2003-04-30 Niall Power <Niall.Power@Sun.COM>
 
         * configure.in config/gdm.conf.in gui/Makefile.am gui/gdmlogin.c
@@ -18,6 +26,7 @@
 	  with a configurable list of gtk modules. Needed for accessibility.
 	  Adds two new options to gdm.conf: "AddGtkModules" (boolean) and
 	  "GtkModulesList" (string).
+
 2003-04-09 Niall Power <Niall.Power@Sun.COM>
 	* acconfig.h, configure.in: Detect Xsun xinerama and Xdmcp on 
 	  Solaris. Patch by Brian Cameron <Brian.Cameron@Sun.COM>

@@ -1,19 +1,28 @@
 # This is the configuration file for the keymouselistener.so module.
 # The confiuration syntax is as follows:
+#
 # For keyboard bindings:
 # <modifier>[<modifier>...]key	#times duration timeout		full_executable_path +args
 # e.g.
-# <Control>k	5 1 10		@EXPANDED_BINDIR@/gok
-# Means press Contol-k 5 times, holding the keys down for at least 1 second each time
-# and with no greater interval than 10 seconds between each event in the sequence
-# Completing the sequence will invoke the gnome on screen keyboard program, gok.
+# <Control>k	5 1000 10000		@EXPANDED_BINDIR@/gok
+#
+# Means press Contol-k 5 times, holding each keypress down for at least 1000ms
+# each time and with no greater interval than 10000ms between each event in the
+# sequence.  A duration value of 0 indicates that a keypress of any length is
+# accepted.  The timeout value is only meaningful if the #times value is > 1.
+# Completing the above example sequence will invoke the gnome on screen keyboard
+# program, gok.
+#
 # For mouse button bindings the format is the same except the mouse button number
 # is specified instead of a keybinding
+#
 # <Mouse#>	#times duration timeout		full_executable_path +args
 # e.g.
-# <Mouse2>	4 3 6		@EXPANDED_BINDIR/gnopernicus
+# <Mouse2>	4 3000 6000		@EXPANDED_BINDIR/gnopernicus
+#
 # It is possible to invoke multiple actions from a single binding using the <Add>
 # keyword. Each action must be written on a seperate line along with any arguments
 # beneath the previous mousebutton or key binding. If none exists the line is ignored.
 # e.g.
+#
 # <Add>		@EXPANDED_BINDIR/gnome-mag

@@ -87,8 +87,6 @@ static void load_bindings(gchar *path);
 static gchar ** get_exec_environment (XEvent *xevent);
 static Binding * parse_line(gchar *buf);
 static gboolean binding_already_used (Binding *binding);
-static void do_key_grab (gboolean grab,  Key *key);
-static void do_button_grab (gboolean grab, Button *button);
 static GdkFilterReturn	
 bindings_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data);
 static gint is_mouseX (const gchar *string);
@@ -129,36 +127,19 @@ static void create_event_watcher ()
 {
 	GSList *li;
 	GdkDisplay *display;
-	GdkScreen *screen;
 
 	display = gdk_display_get_default();
-	if(!display) {
+	if (!display) {
 		return;
 	}
+
 	/*
 	 * Switch off keyboard autorepeat
 	 */
 	XAutoRepeatOff(GDK_DISPLAY_XDISPLAY(display));
-
 	load_bindings(CONFIGFILE);
-			
-	for (li = binding_list; li != NULL; li = li->next) {
-		Binding *binding = (Binding*) li->data;
-		switch (binding->type) {
-		case BINDING_TYPE_KEY:
-			do_key_grab(TRUE, &(binding->input.key));
-			break;
-		case BINDING_TYPE_MOUSE:
-			do_button_grab(TRUE, &(binding->input.button));
-			break;
-		default:
-			break;
-		}
-	}
+	gdk_window_add_filter (NULL, bindings_filter, NULL);
 
-	screen = gdk_display_get_screen(display, 0);
-	gdk_window_add_filter (gdk_screen_get_root_window (screen),
-			bindings_filter, NULL);
 	return;
 }
 
@@ -360,7 +341,7 @@ parse_line(gchar *buf)
 		}
 
 		*c++ = '\0';
-		if ((duration=atoi(tmp_string)) <= 0) {
+		if ((duration=atoi(tmp_string)) < 0) {
 				/* Add an error message */
 			return NULL;
 		}
@@ -452,85 +433,6 @@ binding_already_used (Binding *binding)
 	return FALSE;
 }
 
-/* inspired from all_combinations from gnome-panel/gnome-panel/global-keys.c */
-static void
-do_key_grab (gboolean grab, Key *key)
-{
-	gint indexes[N_BITS];/*indexes of bits we need to flip*/
-	gint i, bit, bits_set_cnt;
-	gint uppervalue;
-	guint mask_to_traverse = IGNORED_MODS & ~ key->state;
-	GdkDisplay *dpy = gdk_display_get_default ();
-	gint screen_num = gdk_display_get_n_screens (dpy);
-
-	bit = 0;
-	for (i = 0; i < N_BITS; i++) {
-		if (mask_to_traverse & (1<<i))
-			indexes[bit++]=i;
-	}
-
-	bits_set_cnt = bit;
-
-	uppervalue = 1<<bits_set_cnt;
-	for (i = 0; i < uppervalue; i++) {
-		gint j, k, result = 0;
-
-		for (j = 0; j < bits_set_cnt; j++) {
-			if (i & (1<<j))
-				result |= (1<<indexes[j]);
-		}
-
-		for (k = 0; k < screen_num; k++) {
-			GdkScreen *screen = gdk_display_get_screen (dpy, k);
-			Window xroot = gdk_x11_drawable_get_xid (gdk_screen_get_root_window (screen));
-
-		    if (grab) {
-				XGrabKey (GDK_DISPLAY_XDISPLAY (dpy),
-						key->keycode,
-						(result | key->state),
-						xroot,
-						False,
-						GrabModeAsync,
-						GrabModeAsync);
-		    } else 
-		    	XUngrabKey(GDK_DISPLAY_XDISPLAY (dpy),
-						key->keycode,
-						(result | key->state),
-						xroot);
-		}
-	}
-}
-
-static void
-do_button_grab (gboolean grab, Button *button)
-{
-	gint i;
-	GdkDisplay *dpy = gdk_display_get_default ();
-	gint screen_num = gdk_display_get_n_screens (dpy);
-
-	for (i = 0; i < screen_num; i++) {
-		GdkScreen *screen = gdk_display_get_screen (dpy, i);
-		Window xroot = gdk_x11_drawable_get_xid (gdk_screen_get_root_window (screen));
-		
-		if (grab)
-			XGrabButton (GDK_DISPLAY_XDISPLAY (dpy), 
-					button->number,
-					AnyModifier,
-					xroot,
-					False,
-					ButtonPressMask | ButtonReleaseMask,
-					GrabModeAsync,
-					GrabModeAsync,
-					0,
-					None);
-		else
-			XUngrabButton(GDK_DISPLAY_XDISPLAY (dpy),
-					button->number,
-					AnyModifier,
-					xroot);
-	}
-}
-
 GdkFilterReturn
 bindings_filter (GdkXEvent *gdk_xevent,
 		    GdkEvent *event,
@@ -544,16 +446,18 @@ bindings_filter (GdkXEvent *gdk_xevent,
 	static Binding *curr_binding = NULL;
 	static gint seq_count = 0;
 
-	if(xevent->type != KeyPress &&
-	   xevent->type != KeyRelease &&
-	   xevent->type != ButtonPress &&
-	   xevent->type != ButtonRelease)
-		return GDK_FILTER_CONTINUE;
+	if (xevent->type != KeyPress &&
+	    xevent->type != KeyRelease &&
+	    xevent->type != ButtonPress &&
+	    xevent->type != ButtonRelease)
+	 	return GDK_FILTER_CONTINUE;
 
 	if (!last_event)
 		last_event = g_new0(XEvent, 1);
 
+
 	switch (xevent->type) {
+
 	case KeyPress:
 		if (last_event->type != KeyRelease) {
 			seq_count = 0;
@@ -579,7 +483,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 						curr_binding = binding;
 						if (binding->timeout > 0) {
 							 /* xevent time values are in milliseconds. The config file spec is in seconds */
-							if ((xevent->xkey.time - last_event->xkey.time) > (binding->timeout * 1000))	
+							if ((xevent->xkey.time - last_event->xkey.time) > binding->timeout)	
 								seq_count = 0; /* The timeout has been exceeded. Reset the sequence. */
 						}
 					}
@@ -587,6 +491,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 			}
 		}
 		break;
+
 	case KeyRelease:
 		if ((last_event->type != KeyPress) ||
 			last_event->xkey.keycode != xevent->xkey.keycode ||
@@ -609,8 +514,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 					 */
 					curr_binding = binding;
 					if ((binding->duration > 0) &&
-						((xevent->xkey.time - last_event->xkey.time) < (binding->duration * 1000))
-						)
+						((xevent->xkey.time - last_event->xkey.time) < binding->duration))
 						seq_count = 0;
 					else
 						seq_count++;
@@ -618,6 +522,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 			}
 		}
 		break;
+
 	case ButtonPress:
 		if(last_event->type != ButtonRelease)
 			seq_count = 0;
@@ -640,7 +545,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 						curr_binding = binding;
 						if (binding->timeout > 0 ) {
 							/* xevent time values are in milliseconds. The config file spec is in seconds */
-							if ((xevent->xbutton.time - last_event->xbutton.time) > (binding->timeout * 1000))
+							if ((xevent->xbutton.time - last_event->xbutton.time) > binding->timeout)
 								seq_count = 0; /* Timeout has elapsed. Reset the sequence. */
 						}
 					}
@@ -648,6 +553,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 			}
 		}
 		break;
+
 	case ButtonRelease:
 		if (last_event->type != ButtonPress ||
 			last_event->xbutton.button != xevent->xbutton.button)
@@ -667,8 +573,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 					 */
 					curr_binding = binding;
 					if ((binding->duration > 0) &&
-						((xevent->xbutton.time - last_event->xbutton.time) < (binding->duration * 1000))
-						)
+						((xevent->xbutton.time - last_event->xbutton.time) < binding->duration))
 						seq_count = 0;
 					else
 						seq_count++;
@@ -676,6 +581,7 @@ bindings_filter (GdkXEvent *gdk_xevent,
 			}
 		}
 		break;
+
 	default:
 		break;
 	}
