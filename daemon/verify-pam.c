@@ -1279,6 +1279,11 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     g_free (extra_standalone_message);
     extra_standalone_message = NULL;
 
+#ifdef  HAVE_LOGINDEVPERM
+	if (d->console)
+		(void) di_devperm_login("/dev/console", pwent->pw_uid,
+		    pwent->pw_gid, NULL);
+#endif	/* HAVE_LOGINDEVPERM */
 #ifdef  HAVE_ADT
     audit_success_login(pw_change, pwent);
 #endif	/* HAVE_ADT */
