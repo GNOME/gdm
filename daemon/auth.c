@@ -139,11 +139,10 @@ gdm_auth_secure_display (GdmDisplay *d)
 	g_slist_free (d->auths);
 	d->auths = NULL;
 
-	if (d->cookie)
-	    g_free (d->cookie);
-
-	if (d->bcookie)
-	    g_free (d->bcookie);
+	g_free (d->cookie);
+	d->cookie = NULL;
+	g_free (d->bcookie);
+	d->bcookie = NULL;
     }
 
     /* Create new random cookie */

@@ -1,3 +1,25 @@
+Sun Aug 26 01:45:33 2001  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c, daemon/cookie.c:   Minor cleanup and paranoia
+
+	* daemon/gdm-net.[ch], daemon/gdm.[ch], daemon/server.c,
+	  daemon/slave.[ch]: The daemon now keeps track of the cookies in 
+	  text form at least so that it can do authentication of it's own.
+	  FLEXI_XSERVER now requires an "authenticated" socket connection
+	  using AUTH_LOCAL (a new opcode).  This way only those users that
+	  are logged in from gdm on a console can start new
+	  console/fullscreen flexi servers.  I mean for remote people it
+	  wouldn't work anyway.
+
+	* gui/gdmflexiserver.c: implement AUTH_LOCAL authentication scheme
+	  by reading from the .Xauthority file and looking for FamilyLocal
+	  entries from gdm. (or those looking like it).  Tests all candidates
+	  and find the one that works for gdm.  This could cause some
+	  gdm_info messages in the log, but I suppose that's ok, vast
+	  majority of the time there will only be one that is even tried.
+	  Also added a debug flag and get xauth filename from XauFileName
+	  rather then my own hand created method.
+
 Sat Aug 25 21:35:29 2001  George Lebl <jirka@5z.com>
 
 	* daemon/display.c, daemon/gdm.c: don't use an extra printf, if

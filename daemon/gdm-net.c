@@ -53,8 +53,9 @@ struct _GdmConnection {
 			    1 - no close, when called raise to 2
 			    2 - close was requested */
 
-	char *filename; /* unix socket or fifo filename,
-			 * will be unlinked on close */
+	char *filename; /* unix socket or fifo filename */
+
+	guint32 user_flags;
 
 	GdmConnectionHandler handler;
 	gpointer data;
@@ -170,13 +171,15 @@ gdm_socket_handler (GIOChannel *source,
 	GIOChannel *unixchan;
 	GdmConnection *conn = data;
 	GdmConnection *newconn;
-	struct sockaddr addr;
+	struct sockaddr_un addr;
 	socklen_t addr_size = sizeof (addr);
 
 	if ( ! (cond & G_IO_IN)) 
 		return TRUE;
 
-	fd = accept (conn->fd, &addr, &addr_size);
+	fd = accept (conn->fd,
+		     (struct sockaddr *)&addr,
+		     &addr_size);
 	if (fd < 0) {
 		gdm_debug ("gdm_socket_handler: Rejecting connection");
 		return TRUE;
@@ -189,6 +192,7 @@ gdm_socket_handler (GIOChannel *source,
 	newconn->fd = fd;
 	newconn->writable = TRUE;
 	newconn->filename = NULL;
+	newconn->user_flags = 0;
 	newconn->buffer = NULL;
 	newconn->parent = conn;
 	newconn->subconnections = NULL;
@@ -253,6 +257,7 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 	conn->writable = FALSE;
 	conn->buffer = NULL;
 	conn->filename = g_strdup (sockname);
+	conn->user_flags = 0;
 	conn->parent = NULL;
 	conn->subconnections = NULL;
 	conn->n_subconnections = 0;
@@ -300,6 +305,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	conn->writable = FALSE;
 	conn->buffer = NULL;
 	conn->filename = g_strdup (fifo);
+	conn->user_flags = 0;
 	conn->parent = NULL;
 	conn->subconnections = NULL;
 	conn->n_subconnections = 0;
@@ -328,6 +334,23 @@ gdm_connection_set_handler (GdmConnection *conn,
 	conn->handler = handler;
 	conn->data = data;
 	conn->destroy_notify = destroy_notify;
+}
+
+guint32
+gdm_connection_get_user_flags (GdmConnection *conn)
+{
+	g_return_val_if_fail (conn != NULL, 0);
+
+	return conn->user_flags;
+}
+
+void
+gdm_connection_set_user_flags (GdmConnection *conn,
+			       guint32 flags)
+{
+	g_return_if_fail (conn != NULL);
+
+	conn->user_flags = flags;
 }
 
 void

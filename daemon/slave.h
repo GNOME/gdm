@@ -30,6 +30,7 @@ gboolean gdm_slave_greeter_check_interruption (const char *msg);
 gboolean gdm_slave_should_complain (void);
 
 void	 gdm_slave_send_num	(const char *opcode, long num);
+void     gdm_slave_send_string	(const char *opcode, const char *str);
 
 #endif /* GDM_SLAVE_H */
 

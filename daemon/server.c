@@ -293,6 +293,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     /* Create new cookie */
     if ( ! gdm_auth_secure_display (d))
 	    return FALSE;
+    gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
     ve_setenv ("DISPLAY", d->name, TRUE);
 
     /* Catch USR1 from X server */

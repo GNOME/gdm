@@ -65,10 +65,8 @@ gdm_cookie_generate (GdmDisplay *d)
     int r;
     struct timeval tv;
     struct timezone tz;
-    char sub[8];
-    char cookie[40];
+    char cookie[40 /* 2*16 == 32, so 40 is enough */];
 
-    sub[0] = '\0';
     cookie[0] = '\0';
 
     gdm_md5_init (&ctx);
@@ -99,8 +97,9 @@ gdm_cookie_generate (GdmDisplay *d)
     gdm_md5_final (digest, &ctx);
 
     for (i = 0; i < 16; i++) {
-	g_snprintf (sub, sizeof (sub), "%02x", digest[i]);
-	strcat (cookie, sub);
+	    char sub[3];
+	    g_snprintf (sub, sizeof (sub), "%02x", (guint)digest[i]);
+	    strcat (cookie, sub);
     }
 
     d->cookie = g_strdup (cookie);

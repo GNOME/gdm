@@ -20,8 +20,11 @@
 
 #include "config.h"
 #include <gnome.h>
+#include <gdk/gdkx.h>
+#include <X11/Xauth.h>
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -35,6 +38,15 @@
 
 #include "gdm.h"
 
+static GSList *xservers = NULL;
+static gboolean got_standard = FALSE;
+static gboolean use_xnest = FALSE;
+static const char *send_command = NULL;
+static const char *server = NULL;
+static const char *chosen_server = NULL;
+static gboolean debug = FALSE;
+
+
 static char *
 do_command (int fd, const char *command, gboolean get_response)
 {
@@ -42,7 +54,8 @@ do_command (int fd, const char *command, gboolean get_response)
 	char buf[1];
 	char *cstr;
 
-	/* g_print ("Sending command: '%s'\n", command); */
+	if (debug)
+		g_print ("Sending command: '%s'\n", command);
 
 	cstr = g_strdup_printf ("%s\n", command);
 	if (send (fd, cstr, strlen (cstr), MSG_NOSIGNAL) < 0)
@@ -57,7 +70,8 @@ do_command (int fd, const char *command, gboolean get_response)
 		g_string_append_c (str, buf[0]);
 	}
 
-	/* g_print ("  Got response: '%s'\n", str->str); */
+	if (debug)
+		g_print ("  Got response: '%s'\n", str->str);
 
 	cstr = str->str;
 	g_string_free (str, FALSE);
@@ -85,7 +99,7 @@ version_ok_p (const char *version, const char *min_version)
 }
 
 static char *
-call_gdm (const char *command, const char *min_version, int tries)
+call_gdm (const char *command, const char * auth_cookie, const char *min_version, int tries)
 {
 	struct sockaddr_un addr;
 	int fd;
@@ -96,7 +110,7 @@ call_gdm (const char *command, const char *min_version, int tries)
 
 	fd = socket (AF_UNIX, SOCK_STREAM, 0);
 	if (fd < 0) {
-		return call_gdm (command, min_version, tries - 1);
+		return call_gdm (command, auth_cookie, min_version, tries - 1);
 	}
 
 	strcpy (addr.sun_path, GDM_SUP_SOCKET);
@@ -104,14 +118,14 @@ call_gdm (const char *command, const char *min_version, int tries)
 
 	if (connect (fd, (struct sockaddr *)&addr, sizeof (addr)) < 0) {
 		close (fd);
-		return call_gdm (command, min_version, tries - 1);
+		return call_gdm (command, auth_cookie, min_version, tries - 1);
 	}
 
 	/* Version check first */
 	ret = do_command (fd, GDM_SUP_VERSION, TRUE /* get_response */);
 	if (ret == NULL) {
 		close (fd);
-		return call_gdm (command, min_version, tries - 1);
+		return call_gdm (command, auth_cookie, min_version, tries - 1);
 	}
 	if (strncmp (ret, "GDM ", strlen ("GDM ")) != 0) {
 		g_free (ret);
@@ -124,11 +138,34 @@ call_gdm (const char *command, const char *min_version, int tries)
 		close (fd);
 		return NULL;
 	}
+	g_free (ret);
+
+	/* require authentication */
+	if (auth_cookie != NULL)  {
+		char *auth_cmd = g_strdup_printf
+			(GDM_SUP_AUTH_LOCAL " %s", auth_cookie);
+		ret = do_command (fd, auth_cmd, TRUE /* get_response */);
+		g_free (auth_cmd);
+		if (ret == NULL) {
+			close (fd);
+			return call_gdm (command, auth_cookie,
+					 min_version, tries - 1);
+		}
+		/* not auth'ed */
+		if (strcmp (ret, "OK") != 0) {
+			do_command (fd, GDM_SUP_CLOSE,
+				    FALSE /* get_response */);
+			close (fd);
+			/* returns the error */
+			return ret;
+		}
+		g_free (ret);
+	}
 
 	ret = do_command (fd, command, TRUE /* get_response */);
 	if (ret == NULL) {
 		close (fd);
-		return call_gdm (command, min_version, tries - 1);
+		return call_gdm (command, auth_cookie, min_version, tries - 1);
 	}
 
 	do_command (fd, GDM_SUP_CLOSE, FALSE /* get_response */);
@@ -144,39 +181,97 @@ get_display (void)
 	static char *display = NULL;
 
 	if (display == NULL) {
-		display = g_strdup (g_getenv ("DISPLAY"));
-		if (display == NULL) /*eek!*/
-			display = g_strdup (":0");
+		display = g_strdup (gdk_display_name);
+		if (display == NULL) {
+			display = g_strdup (g_getenv ("DISPLAY"));
+			if (display == NULL) /*eek!*/ {
+				display = g_strdup (":0");
+			}
+		}
 	}
 
 	return display;
 }
 
 static char *
-get_xauthfile (void)
+get_auth_cookie (void)
 {
-	static char *xauthfile = NULL;
+	FILE *fp;
+	char *number;
+	static gboolean tried = FALSE;
+	static char *cookie = NULL;
+	Xauth *xau;
 
-	if (xauthfile == NULL) {
-		xauthfile = g_strdup (g_getenv ("XAUTHORITY"));
-		if (ve_string_empty (xauthfile)) {
-			g_strdup (xauthfile);
-			xauthfile = g_concat_dir_and_file (g_get_home_dir (),
-							   ".Xauthority");
-			/* FIXME: perhaps if it doesn't exist, run
-			 * xauth generate on this */
-		}
+	if (tried)
+		return cookie;
+
+	fp = fopen (XauFileName (), "r");
+	if (fp == NULL) {
+		cookie = NULL;
+		tried = TRUE;
+		return NULL;
 	}
 
-	return xauthfile;
-}
+	number = get_display ();
 
-static GSList *xservers = NULL;
-static gboolean got_standard = FALSE;
-static gboolean use_xnest = FALSE;
-const char *send_command = NULL;
-const char *server = NULL;
-const char *chosen_server = NULL;
+	/* whee! handles even DECnet crap */
+	number = strchr (number, ':');
+	if (number != NULL) {
+		while (*number == ':') {
+		       number++;
+		}
+	} else {
+		number = "0";
+	}
+
+	cookie = NULL;
+
+	while ((xau = XauReadAuth (fp)) != NULL) {
+		char *cmd;
+		char *ret;
+		int i;
+		char buffer[40 /* 2*16 == 32, so 40 is enough */];
+
+		/* Only Family local things are considered, all console
+		 * logins DO have this family (and even some local xdmcp
+		 * logins, though those will not pass by gdm itself of
+		 * course) */
+		if (xau->family != FamilyLocal ||
+		    xau->number == NULL ||
+		    strncmp (xau->number, number, xau->number_length) != 0 ||
+		    /* gdm sends MIT-MAGIC-COOKIE-1 cookies of length 16,
+		     * so just do those */
+		    xau->name_length != strlen ("MIT-MAGIC-COOKIE-1") ||
+		    strncmp (xau->name, "MIT-MAGIC-COOKIE-1", xau->name_length) != 0 ||
+		    xau->data_length != 16) {
+			XauDisposeAuth (xau);
+			continue;
+		}
+
+		buffer[0] = '\0';
+		for (i = 0; i < 16; i++) {
+			char sub[3];
+			g_snprintf (sub, sizeof (sub), "%02x", (guint)(guchar)xau->data[i]);
+			strcat (buffer, sub);
+		}
+
+		XauDisposeAuth (xau);
+
+		cmd = g_strdup_printf (GDM_SUP_AUTH_LOCAL " %s", buffer);
+		ret = call_gdm (cmd, NULL /* auth cookie */, "2.2.4.0", 5);
+		if (ret != NULL &&
+		    strcmp (ret, "OK") == 0) {
+			g_free (ret);
+			cookie = g_strdup (buffer);
+			break;
+		}
+		g_free (ret);
+	}
+	fclose (fp);
+
+	tried = TRUE;
+	return cookie;
+}
 
 static void
 read_servers (void)
@@ -318,6 +413,7 @@ choose_server (void)
 struct poptOption options [] = {
 	{ "command", 'c', POPT_ARG_STRING, &send_command, 0, N_("Send the specified protocol command to gdm"), N_("COMMAND") },
 	{ "xnest", 'n', POPT_ARG_NONE, &use_xnest, 0, N_("Xnest mode"), NULL },
+	{ "debug", 'd', POPT_ARG_NONE, &debug, 0, N_("Debugging output"), NULL },
 	POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
 };
@@ -334,6 +430,7 @@ main (int argc, char *argv[])
 	char *version;
 	char *ret;
 	char *message;
+	char *auth_cookie = NULL;
 	poptContext ctx;
 	const char **args;
 
@@ -380,7 +477,8 @@ main (int argc, char *argv[])
 	}
 
 	if (send_command != NULL) {
-		ret = call_gdm (send_command, "2.2.3.2", 5);
+		ret = call_gdm (send_command, NULL /* auth cookie */,
+				"2.2.4.0", 5);
 		if (ret != NULL) {
 			g_print ("%s\n", ret);
 			return 0;
@@ -397,21 +495,13 @@ main (int argc, char *argv[])
 		command = g_strdup_printf (GDM_SUP_FLEXI_XNEST
 					   " %s %s",
 					   get_display (),
-					   get_xauthfile ());
-		version = "2.2.3.2";
+					   XauFileName ());
+		version = "2.2.4.0";
+		auth_cookie = NULL;
 	} else {
-		char *disp = ve_sure_string (g_getenv ("DISPLAY"));
-		char hostname[1024];
+		auth_cookie = get_auth_cookie ();
 
-		if (gethostname (hostname, sizeof (hostname)) < 0)
-			strcpy (hostname, "localhost");
-
-		if (disp[0] != ':' &&
-		    strncmp ("localhost:", disp,
-			     strlen ("localhost:")) != 0 &&
-		    strncmp ("localhost.localdomain:", disp,
-			     strlen ("localhost.localdomain:")) != 0 &&
-		    strncmp (hostname, disp, strlen (hostname)) != 0) {
+		if (auth_cookie == NULL) {
 			dialog = gnome_warning_dialog
 				(_("You do not seem to be logged in on the "
 				   "console.  Starting a new login only "
@@ -427,10 +517,10 @@ main (int argc, char *argv[])
 		else
 			command = g_strdup_printf (GDM_SUP_FLEXI_XSERVER " %s",
 						   server);
-		version = "2.2.3.2";
+		version = "2.2.4.0";
 	}
 
-	ret = call_gdm (command, version, 5);
+	ret = call_gdm (command, auth_cookie, version, 5);
 	if (ret != NULL &&
 	    strncmp (ret, "OK ", 3) == 0) {
 		/* all fine and dandy */
@@ -467,6 +557,10 @@ main (int argc, char *argv[])
 			message = _("The X server is not available, "
 				    "it is likely that gdm is badly "
 				    "configured.");
+	} else if (strncmp (ret, "ERROR 100 ", strlen ("ERROR 100 ")) == 0) {
+		message = _("You do not seem to be logged in on the "
+			    "console.  Starting a new login only "
+			    "works correctly on the console.");
 	} else {
 		message = _("Unknown error occured.");
 	}

@@ -49,6 +49,20 @@ void		gdm_connection_set_handler (GdmConnection *conn,
 					    gpointer data,
 					    GDestroyNotify destroy_notify);
 
+guint32		gdm_connection_get_user_flags (GdmConnection *conn);
+void		gdm_connection_set_user_flags (GdmConnection *conn,
+					       guint32 flags);
+#define		GDM_CONNECTION_SET_USER_FLAG(conn,flag) {			\
+			guint32 _flags = gdm_connection_get_user_flags (conn);	\
+			_flags |= flag;						\
+			gdm_connection_set_user_flags (conn, _flags);		\
+		}
+#define		GDM_CONNECTION_UNSET_USER_FLAG(conn,flag) {			\
+			guint32 _flags = gdm_connection_get_user_flags (conn);	\
+			_flags &= ~flag;					\
+			gdm_connection_set_user_flags (conn, _flags);		\
+		}
+
 void		gdm_connection_close (GdmConnection *conn);
 
 #endif /* GDM_NET_H */

@@ -1432,7 +1432,19 @@ gdm_quit (void)
 static void
 gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 {
-	gdm_debug ("Handeling message: '%s'", msg);
+	/* Evil!, all this for debugging? */
+	if (GdmDebug) {
+		if (strncmp (msg, GDM_SOP_COOKIE " ",
+			     strlen (GDM_SOP_COOKIE " ")) == 0) {
+			char *s = g_strndup
+				(msg, strlen (GDM_SOP_COOKIE " XXXX XX"));
+			/* cut off most of the cookie for "security" */
+			gdm_debug ("Handeling message: '%s...'", s);
+			g_free (s);
+		} else {
+			gdm_debug ("Handeling message: '%s'", msg);
+		}
+	}
 
 	if (strncmp (msg, GDM_SOP_CHOSEN " ",
 		     strlen (GDM_SOP_CHOSEN " ")) == 0) {
@@ -1601,6 +1613,33 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			g_free (d->login);
 			d->login = g_strdup (p);
 			gdm_debug ("Got LOGIN == %s", p);
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
+	} else if (strncmp (msg, GDM_SOP_COOKIE " ",
+		            strlen (GDM_SOP_COOKIE " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		char *p;
+
+		if (sscanf (msg, GDM_SOP_COOKIE " %ld",
+			    &slave_pid) != 1)
+			return;
+		p = strchr (msg, ' ');
+		if (p != NULL)
+			p = strchr (p+1, ' ');
+		if (p == NULL)
+			return;
+
+		p++;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			g_free (d->cookie);
+			d->cookie = g_strdup (p);
+			gdm_debug ("Got COOKIE == <secret>");
 			/* send ack */
 			kill (slave_pid, SIGUSR2);
 		}
@@ -1815,16 +1854,68 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	gdm_debug ("Handeling user message: '%s'", msg);
 
-	if (strcmp (msg, GDM_SUP_FLEXI_XSERVER) == 0) {
+	if (strncmp (msg, GDM_SUP_AUTH_LOCAL " ",
+		     strlen (GDM_SUP_AUTH_LOCAL " ")) == 0) {
+		GSList *li;
+		char *cookie = g_strdup
+			(&msg[strlen (GDM_SUP_AUTH_LOCAL " ")]);
+		g_strstrip (cookie);
+		if (strlen (cookie) != 16*2) /* 16 bytes in hex form */ {
+			/* evil, just whack the connection in this case */
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			gdm_connection_close (conn);
+			g_free (cookie);
+			return;
+		}
+		/* check if cookie matches one of the console displays */
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *disp = li->data;
+			if (disp->console &&
+			    disp->cookie != NULL &&
+			    strcmp (disp->cookie, cookie) == 0) {
+				g_free (cookie);
+				GDM_CONNECTION_SET_USER_FLAG
+					(conn, GDM_SUP_FLAG_AUTHENTICATED);
+				gdm_connection_write (conn, "OK\n");
+				return;
+			}
+		}
+
+		/* Hmmm, perhaps this is better defined behaviour */
+		GDM_CONNECTION_UNSET_USER_FLAG
+			(conn, GDM_SUP_FLAG_AUTHENTICATED);
+		gdm_connection_write (conn, "ERROR 100 Not authenticated\n");
+		g_free (cookie);
+	} else if (strcmp (msg, GDM_SUP_FLEXI_XSERVER) == 0) {
+		/* Only allow locally authenticated connections */
+		if ( ! (gdm_connection_get_user_flags (conn) &
+			GDM_SUP_FLAG_AUTHENTICATED)) {
+			gdm_info (_("Flexible server request denied: "
+				    "Not authenticated"));
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
 		handle_flexi_server (conn, TYPE_FLEXI, GdmStandardXServer,
 				     NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
 		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
-		char *name = g_strdup
-			(&msg[strlen (GDM_SUP_FLEXI_XSERVER " ")]);
+		char *name;
 		const char *command = NULL;
 		GdmXServer *svr;
 
+		/* Only allow locally authenticated connections */
+		if ( ! (gdm_connection_get_user_flags (conn) &
+			GDM_SUP_FLAG_AUTHENTICATED)) {
+			gdm_info (_("Flexible server request denied: "
+				    "Not authenticated"));
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
+
+		name = g_strdup (&msg[strlen (GDM_SUP_FLEXI_XSERVER " ")]);
 		g_strstrip (name);
 		if (ve_string_empty (name)) {
 			g_free (name);

@@ -376,6 +376,7 @@ void gdm_quit (void);
 #define GDM_SOP_CHOOSERPID   "CHOOSERPID" /* <slave pid> <chooserpid> */
 #define GDM_SOP_LOGGED_IN    "LOGGED_IN" /* <slave pid> <logged_in as int> */
 #define GDM_SOP_LOGIN        "LOGIN" /* <slave pid> <username> */
+#define GDM_SOP_COOKIE       "COOKIE" /* <slave pid> <cookie> */
 #define GDM_SOP_DISP_NUM     "DISP_NUM" /* <slave pid> <display as int> */
 /* For linux only currently */
 #define GDM_SOP_VT_NUM       "VT_NUM" /* <slave pid> <vt as int> */
@@ -398,6 +399,7 @@ void gdm_quit (void);
  * value.
  */
 /* The user protocol, using /tmp/.gdm_socket */
+
 #define GDM_SUP_VERSION "VERSION" /* no arguments */
 /* VERSION: Query version
  * Supported since: 2.2.4.0
@@ -405,8 +407,26 @@ void gdm_quit (void);
  * Answers:
  *   GDM <gdm version>
  */
+#define GDM_SUP_AUTH_LOCAL "AUTH_LOCAL" /* <xauth cookie> */
+/* AUTH_LOCAL: Setup this connection as authenticated for FLEXI_SERVER
+ *             Because all full blown (non-Xnest) servers can be started
+ *             only from users logged in locally, and here gdm assumes
+ *             only users logged in from gdm.  They must pass the xauth
+ *             MIT-MAGIC-COOKIE-1 that they were passed before the
+ *             connection is authenticated.
+ * Supported since: 2.2.4.0
+ * Arguments:  <xauth cookie>
+ *   <xauth cookie> is in hex form with no 0x prefix
+ * Answers:
+ *   OK
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      100 = Not authenticated
+ *      999 = Unknown error
+ */
 #define GDM_SUP_FLEXI_XSERVER "FLEXI_XSERVER" /* <xserver type> */
 /* FLEXI_XSERVER: Start a new X flexible server
+ *   Only supported on connection that passed AUTH_LOCAL
  * Supported since: 2.2.4.0
  * Arguments:  <xserver type>
  *   If no arguments, starts the standard x server
@@ -419,6 +439,7 @@ void gdm_quit (void);
  *      3 = X failed
  *      4 = X too busy
  *      6 = No server binary
+ *      100 = Not authenticated
  *      999 = Unknown error
  */
 #define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <xauth file> */
@@ -457,6 +478,12 @@ void gdm_quit (void);
 /* CLOSE Answers: None
  * Supported since: 2.2.4.0
  */
+
+/* User flags for the SUP protocol */
+enum {
+	GDM_SUP_FLAG_AUTHENTICATED = 0x1 /* authenticated as a local user,
+					  * from a local display we started */
+};
 
 #endif /* GDM_H */
 

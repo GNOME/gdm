@@ -113,6 +113,7 @@ extern gboolean GdmAllowRoot;
 extern sigset_t sysmask;
 extern gchar *GdmGlobalFaceDir;
 extern gboolean GdmBrowser;
+extern gboolean GdmDebug;
 
 
 /* Local prototypes */
@@ -134,7 +135,6 @@ static void     gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PR
 static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
-static void	gdm_send_login (const char *login);
 
 
 /* Yay thread unsafety */
@@ -249,10 +249,11 @@ gdm_slave_start (GdmDisplay *display)
 			gdm_server_stop (display);
 			gdm_slave_send_num (GDM_SOP_XPID, 0);
 		} else {
-			/* OK about to start again so redo our cookies and reinit
+			/* OK about to start again so rebake our cookies and reinit
 			 * the server */
 			if ( ! gdm_auth_secure_display (d))
 				break;
+			gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
 
 			gdm_server_reinit (d);
 		}
@@ -441,14 +442,14 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_first_login = FALSE;
 
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
-	    gdm_send_login (ParsedAutomaticLogin);
+	    gdm_slave_send_string (GDM_SOP_LOGIN, ParsedAutomaticLogin);
 
 	    setup_automatic_session (d, ParsedAutomaticLogin);
 
 	    gdm_slave_session_start();
 
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
-	    gdm_send_login ("");
+	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
 
 	    gdm_debug ("gdm_slave_run: Automatic login done");
     } else {
@@ -463,14 +464,15 @@ gdm_slave_run (GdmDisplay *display)
 		    /* timed out into a timed login */
 		    do_timed_login = FALSE;
 		    setup_automatic_session (d, ParsedTimedLogin);
-		    gdm_send_login (ParsedTimedLogin);
+		    gdm_slave_send_string (GDM_SOP_LOGIN,
+					   ParsedTimedLogin);
 	    } else {
-		    gdm_send_login (login);
+		    gdm_slave_send_string (GDM_SOP_LOGIN, login);
 	    }
 	    gdm_slave_session_start ();
 
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
-	    gdm_send_login ("");
+	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
     }
 }
 
@@ -746,7 +748,7 @@ gdm_slave_wait_for_login (void)
 
 			gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 			/* Note: nobody really logged in */
-			gdm_send_login ("");
+			gdm_slave_send_string (GDM_SOP_LOGIN, "");
 
 			/* disable the login screen, we don't want people to
 			 * log in in the meantime */
@@ -1230,16 +1232,25 @@ gdm_slave_send_num (const char *opcode, long num)
 		sleep (10);
 }
 
-static void
-gdm_send_login (const char *login)
+void
+gdm_slave_send_string (const char *opcode, const char *str)
 {
 	char *msg;
 	int fd;
 	char *fifopath;
 
-	gdm_debug ("Sending login == %s for slave %ld",
-		   ve_sure_string (login),
-		   (long)getpid ());
+	/* Evil!, all this for debugging? */
+	if (GdmDebug) {
+		if (strcmp (opcode, GDM_SOP_COOKIE) == 0)
+			gdm_debug ("Sending %s == <secret> for slave %ld",
+				   opcode,
+				   (long)getpid ());
+		else
+			gdm_debug ("Sending %s == %s for slave %ld",
+				   opcode,
+				   ve_sure_string (str),
+				   (long)getpid ());
+	}
 
 	gdm_got_usr2 = FALSE;
 
@@ -1248,12 +1259,12 @@ gdm_send_login (const char *login)
 	fd = open (fifopath, O_WRONLY);
 	/* eek */
 	if (fd < 0) {
-		gdm_error (_("%s: Can't open fifo!"), "gdm_send_login");
+		gdm_error (_("%s: Can't open fifo!"), "gdm_slave_send_string");
 		return;
 	}
 
-	msg = g_strdup_printf ("\n%s %ld %s\n", GDM_SOP_LOGIN,
-			       (long)getpid (), ve_sure_string (login));
+	msg = g_strdup_printf ("\n%s %ld %s\n", opcode,
+			       (long)getpid (), ve_sure_string (str));
 
 	write (fd, msg, strlen (msg));
 
