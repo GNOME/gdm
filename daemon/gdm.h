@@ -125,7 +125,7 @@ enum {
 #define GDM_KEY_AUTOMATICLOGIN_ENABLE "daemon/AutomaticLoginEnable=true"
 #define GDM_KEY_AUTOMATICLOGIN "daemon/AutomaticLogin="
 #define GDM_KEY_LOCALNOPASSWORDUSERS "daemon/LocalNoPasswordUsers="
-#define GDM_KEY_ALWAYSRESTARTSERVER "daemon/AlwaysRestartServer=false"
+#define GDM_KEY_ALWAYSRESTARTSERVER "daemon/AlwaysRestartServer=true"
 #define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin"
 #define GDM_KEY_REMOTEGREETER "daemon/RemoteGreeter=" EXPANDED_BINDIR "/gdmlogin"
 #define GDM_KEY_GROUP "daemon/Group=gdm"

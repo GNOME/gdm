@@ -1,3 +1,11 @@
+Sun Jan 12 10:46:25 2003  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in, daemon/gdm.h: make always restart server default
+	  to true, since it's just safer and who cares it flickers.  This
+	  should "fix" a bunch of issues in bugzillas.  I'm now leaning
+	  towards just whacking the server HUP code as that will streamline
+	  the code ...
+
 Thu Jan 09 16:59:21 2003  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter_system.c: query the user in case

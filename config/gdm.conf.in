@@ -29,7 +29,11 @@ TimedLoginDelay=30
 LocalNoPasswordUsers=
 # If you are having trouble with using a single server for a long time and
 # want gdm to kill/restart the server, turn this on
-AlwaysRestartServer=false
+# Note: I've made this default to true now because there seem to be some
+# issues ranging from some things not being reset in the X server to
+# pam issues with the slave.  It is likely that this feature may be removed
+# in the future and we're always going to do server restarts.
+AlwaysRestartServer=true
 # The gdm configuration program that is run from the login screen, you should
 # probably leave this alone
 Configurator=@EXPANDED_GDMCONFIGDIR@/gdmsetup --disable-sound --disable-crash-dialog
