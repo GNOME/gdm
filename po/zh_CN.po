@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-07 14:39+0100\n"
-"PO-Revision-Date: 2004-03-07 23:49+0800\n"
+"POT-Creation-Date: 2004-04-19 03:34+0200\n"
+"PO-Revision-Date: 2004-04-19 13:35+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -116,55 +116,55 @@ msgstr "GNOME"
 msgid "This session logs you into GNOME"
 msgstr "此会话使您登录到 GNOME"
 
-#: daemon/auth.c:58
+#: daemon/auth.c:66
 #, c-format
 msgid "%s: Could not write new authorization entry: %s"
 msgstr "%s：无法写入新认证条目：%s"
 
-#: daemon/auth.c:61
+#: daemon/auth.c:69
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
 msgstr "%s：无法写入新认证条目。硬盘空间可能已耗尽"
 
-#: daemon/auth.c:66
+#: daemon/auth.c:74
 #, c-format
 msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
 "diskspace.%s%s"
 msgstr "GDM 无法将新认证条目写入文件。硬盘空间可能已耗尽。%s%s"
 
-#: daemon/auth.c:196
+#: daemon/auth.c:204
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s：无法在 %s 中创建新 cookie 文件"
 
-#: daemon/auth.c:220 daemon/auth.c:237 daemon/auth.c:871
+#: daemon/auth.c:228 daemon/auth.c:245 daemon/auth.c:879
 #, c-format
 msgid "%s: Cannot safely open %s"
 msgstr "%s：无法安全打开 %s"
 
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:669 daemon/auth.c:709
+#: daemon/auth.c:677 daemon/auth.c:717
 #, c-format
 msgid "%s: Could not open cookie file %s"
 msgstr "%s：无法打开 cookie 文件 %s"
 
-#: daemon/auth.c:690
+#: daemon/auth.c:698
 #, c-format
 msgid "%s: Could not lock cookie file %s"
 msgstr "%s：无法锁定 cookie 文件 %s"
 
-#: daemon/auth.c:740 daemon/auth.c:762
+#: daemon/auth.c:748 daemon/auth.c:770
 #, c-format
 msgid "%s: Could not write cookie"
 msgstr "%s：无法写入 cookie"
 
-#: daemon/auth.c:847
+#: daemon/auth.c:855
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s：忽略可疑 cookie 文件 %s"
 
-#: daemon/auth.c:890 daemon/gdm.c:2259
+#: daemon/auth.c:898 daemon/gdm.c:2261
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "无法写入 %s：%s"
@@ -189,12 +189,12 @@ msgstr ""
 "显示服务器在过去的 90 秒内关闭了六次，这可能意味着系统存在某种问题。我会在再"
 "次显示 %s 前先等两分钟。"
 
-#: daemon/display.c:244
+#: daemon/display.c:258
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s：无法创建管道"
 
-#: daemon/display.c:316
+#: daemon/display.c:334
 #, c-format
 msgid "%s: Failed forking gdm slave process for %s"
 msgstr "%s：为 %s 创建 gdm 从进程失败"
@@ -565,7 +565,7 @@ msgid ""
 "display %s"
 msgstr "在短时间内多次启动 X 服务器失败；禁用显示 %s"
 
-#: daemon/gdm.c:1179 daemon/gdm.c:2762
+#: daemon/gdm.c:1179 daemon/gdm.c:2764
 msgid "Master suspending..."
 msgstr "主人正在挂起..."
 
@@ -661,8 +661,8 @@ msgstr "只有 root 需要运行 gdm\n"
 
 #: daemon/gdm.c:1997 daemon/gdm.c:2001 daemon/gdm.c:2076 daemon/gdm.c:2080
 #: daemon/gdm.c:2084 daemon/gdm.c:2088 daemon/gdm.c:2098 daemon/gdm.c:2104
-#: daemon/gdm.c:2115 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
-#: daemon/misc.c:1618 daemon/misc.c:1622 daemon/misc.c:1626
+#: daemon/gdm.c:2115 daemon/misc.c:1613 daemon/misc.c:1617 daemon/misc.c:1621
+#: daemon/misc.c:1628 daemon/misc.c:1632 daemon/misc.c:1636
 #: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:811
 #: daemon/slave.c:825 daemon/slave.c:835 daemon/slave.c:845 daemon/slave.c:857
 #: gui/gdmchooser.c:1924 gui/gdmchooser.c:1927 gui/gdmchooser.c:1930
@@ -682,37 +682,37 @@ msgstr "gdm 已经运行。中止！"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s：设置 CHLD 信号处理器出错"
 
-#: daemon/gdm.c:2228
+#: daemon/gdm.c:2230
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "无法为写入打开 %s"
 
-#: daemon/gdm.c:3495 daemon/gdm.c:3514
+#: daemon/gdm.c:3497 daemon/gdm.c:3516
 msgid "Flexible server request denied: Not authenticated"
 msgstr "便捷服务器请求被否决：未通过认证"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:3532
+#: daemon/gdm.c:3534
 msgid "Unknown server type requested, using standard server."
 msgstr "请求未知的服务器类型，使用标准服务器。"
 
-#: daemon/gdm.c:3536
+#: daemon/gdm.c:3538
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
 "standard server."
 msgstr "请求的服务器 %s 不能被用于便捷服务器，使用标准服务器。"
 
-#: daemon/gdm.c:3658
+#: daemon/gdm.c:3660
 msgid "Query logout action request denied: Not authenticated"
 msgstr "查找注销动作请求被禁止：未通过认证"
 
-#: daemon/gdm.c:3716 daemon/gdm.c:3771
+#: daemon/gdm.c:3718 daemon/gdm.c:3773
 msgid "Set logout action request denied: Not authenticated"
 msgstr "设置注销动作请求被禁止：未通过认证"
 
-#: daemon/gdm.c:3816 daemon/gdm.c:3843
+#: daemon/gdm.c:3818 daemon/gdm.c:3845
 msgid "Query vt request denied: Not authenticated"
 msgstr "查找 vt 请求被禁止：未通过认证"
 
@@ -721,27 +721,27 @@ msgstr "查找 vt 请求被禁止：未通过认证"
 msgid "y = Yes or n = No? >"
 msgstr "y = 是 或 n = 否？>"
 
-#: daemon/misc.c:977
+#: daemon/misc.c:987
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s：无法获取本地地址！"
 
-#: daemon/misc.c:1129
+#: daemon/misc.c:1139
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "无法调用 setgid %d。中止。"
 
-#: daemon/misc.c:1134
+#: daemon/misc.c:1144
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr "initgroups() 执行 %s 失败。中止。"
 
-#: daemon/misc.c:1371 daemon/misc.c:1385
+#: daemon/misc.c:1381 daemon/misc.c:1395
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s：将信号 %d 设置为 %s 出错"
 
-#: daemon/misc.c:2272
+#: daemon/misc.c:2282
 #, c-format
 msgid ""
 "Last login:\n"
@@ -1186,7 +1186,7 @@ msgstr ""
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s：%s 的主目录不存在：“%s”不存在！"
 
-#: daemon/slave.c:4037
+#: daemon/slave.c:4034
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1196,12 +1196,12 @@ msgstr ""
 "GDM 无法写入您的认证文件。这可能意味着您的硬盘没有空间，或者您的主目录无法以"
 "写方式打开。在这两种情况下都不可能登录。请与您的系统管理员联系"
 
-#: daemon/slave.c:4113
+#: daemon/slave.c:4110
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s：创建用户会话出错"
 
-#: daemon/slave.c:4194
+#: daemon/slave.c:4191
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1212,47 +1212,46 @@ msgstr ""
 "者您的磁盘空间已耗尽。可以试试以某个安全模式会话登录，以便查看是否可以解决此"
 "问题。"
 
-#: daemon/slave.c:4202
+#: daemon/slave.c:4199
 msgid "View details (~/.xsession-errors file)"
 msgstr "查看细节 (~/.xsession-errors 文件)"
 
-#: daemon/slave.c:4346
+#: daemon/slave.c:4343
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM 检测到正在执行关机或重新启动。"
 
-#: daemon/slave.c:4440
+#: daemon/slave.c:4437
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping %s 失败，启动显示！"
 
-#: daemon/slave.c:4726
+#: daemon/slave.c:4723
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s：致命的 X 错误 - 正在重新启动 %s"
 
-#: daemon/slave.c:4820
+#: daemon/slave.c:4817
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
-msgstr ""
-"在非本地显示中请求声音，或者是无法运行播放软件，或者是声音不存在"
+msgstr "在非本地显示中请求声音，或者是无法运行播放软件，或者是声音不存在"
 
-#: daemon/slave.c:5175
+#: daemon/slave.c:5172
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s：启动失败：%s"
 
-#: daemon/slave.c:5183 daemon/slave.c:5322
+#: daemon/slave.c:5180 daemon/slave.c:5319
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s：无法创建脚本进程！"
 
-#: daemon/slave.c:5277
+#: daemon/slave.c:5274
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s：创建管道失败"
 
-#: daemon/slave.c:5316
+#: daemon/slave.c:5313
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s：执行失败：%s"
@@ -2017,8 +2016,7 @@ msgstr "X 服务器不可用，gdm 可能配置错误。"
 msgid ""
 "Trying to set an unknown logout action, or trying to set a logout action "
 "which is not available."
-msgstr ""
-"试图设置位置的注销动作，或者试图设置不可用的注销动作。"
+msgstr "试图设置位置的注销动作，或者试图设置不可用的注销动作。"
 
 #: gui/gdmcomm.c:485
 msgid "Virtual terminals not supported."
@@ -2101,8 +2099,7 @@ msgstr "更改到已有显示(_E)"
 msgid ""
 "There are some displays already open.  You can select one from the list "
 "below or open a new one."
-msgstr ""
-"已经打开了一些显示。您还可以从下面的列表中选择一个或者新开一个。"
+msgstr "已经打开了一些显示。您还可以从下面的列表中选择一个或者新开一个。"
 
 #: gui/gdmflexiserver.c:390 gui/gdmflexiserver.c:785
 msgid "Can't lock screen"
@@ -3081,7 +3078,7 @@ msgstr "    "
 
 #: gui/gdmsetup-strings.c:10 gui/gdmsetup.glade.h:24
 msgid "L_ocal: "
-msgstr "区域设置(_O)："
+msgstr "本地(_O)："
 
 #: gui/gdmsetup-strings.c:11 gui/gdmsetup.glade.h:66
 msgid "_Remote: "
@@ -3390,8 +3387,7 @@ msgstr "试图和登录屏幕交互时出错。不是所有的更新都生效了
 #: gui/gdmsetup.c:470
 msgid ""
 "Autologin or timed login to the superuser (root) account is not allowed."
-msgstr ""
-"不允许自动登录或限时登录到超级用户(root)账户。"
+msgstr "不允许自动登录或限时登录到超级用户(root)账户。"
 
 #: gui/gdmsetup.c:1698
 msgid "Archive is not of a subdirectory"
@@ -3683,22 +3679,22 @@ msgstr "gdmaskpass 只能以 root 身份运行\n"
 msgid "Authentication failure!\n"
 msgstr "认证失败！\n"
 
-#: vicious-extensions/glade-helper.c:83
+#: vicious-extensions/glade-helper.c:84
 msgid "(memory buffer)"
 msgstr "(内存缓冲区)"
 
-#: vicious-extensions/glade-helper.c:115 vicious-extensions/glade-helper.c:137
-#: vicious-extensions/glade-helper.c:157
+#: vicious-extensions/glade-helper.c:116 vicious-extensions/glade-helper.c:138
+#: vicious-extensions/glade-helper.c:158
 msgid "(memory buffer"
 msgstr "(内存缓冲区"
 
 #. markup
-#: vicious-extensions/glade-helper.c:193 vicious-extensions/glade-helper.c:246
-#: vicious-extensions/glade-helper.c:289
+#: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
+#: vicious-extensions/glade-helper.c:290
 msgid "Cannot load user interface"
 msgstr "无法装入用户界面"
 
-#: vicious-extensions/glade-helper.c:194
+#: vicious-extensions/glade-helper.c:195
 #, c-format
 msgid ""
 "An error occured while loading the user interface element %s%s from file %"
@@ -3709,7 +3705,7 @@ msgstr ""
 "从文件 %3$s 中装入用户界面元素 %1$s%2$s 时出现错误。glade 界面描述可能已毁"
 "坏。%4$s 无法继续并将立即退出。您应该检查您安装的 %5$s 或重新安装 %6$s。"
 
-#: vicious-extensions/glade-helper.c:210
+#: vicious-extensions/glade-helper.c:211
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3718,7 +3714,7 @@ msgstr ""
 "Glade 文件已毁坏！确认安装了正确的文件！\n"
 "文件：%s 构件：%s"
 
-#: vicious-extensions/glade-helper.c:247
+#: vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
 "An error occured while loading the user interface element %s%s from file %"
@@ -3730,7 +3726,7 @@ msgstr ""
 "$d 列。Glade 界面描述可能已经毁坏。%5$s 无法继续并将立即退出。您应该检查您安"
 "装的 %6$s 或重新安装 %7$s。"
 
-#: vicious-extensions/glade-helper.c:265
+#: vicious-extensions/glade-helper.c:266
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3739,7 +3735,7 @@ msgstr ""
 "Glade 文件已毁坏！请确认安装了正确的文件！\n"
 "文件：%s 构件：%s 需要 clist 列：%d"
 
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:291
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -3749,11 +3745,11 @@ msgstr ""
 "从文件 %s 中装入用户界面时出现错误。可能找不到 glade 界面描述。%s 无法继续并"
 "将立即退出。您应该检查您安装的 %s 或重新安装 %s。"
 
-#: vicious-extensions/glade-helper.c:302
+#: vicious-extensions/glade-helper.c:303
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "没有可以装入的界面，糟糕！(文件：%s)"
 
-#: vicious-extensions/ve-nongnome.c:135
+#: vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr "一个语系的别名级别太多，可能有无穷循环"
