@@ -9,13 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-31 04:42+0100\n"
-"PO-Revision-Date: 2005-01-31 10:52+0100\n"
+"POT-Creation-Date: 2005-02-04 12:46+0100\n"
+"PO-Revision-Date: 2005-02-04 13:13+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 
 #: config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -727,9 +728,11 @@ msgstr "gdm již běží. Končím!"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Chyba při nastavování zpracování signálu CHLD"
 
-#: daemon/gdm.c:3633 daemon/gdm.c:3652
-msgid "FLEXI_XSERVER request denied: Not authenticated"
-msgstr "Požadavek FLEXI_XSERVER odepřen: Nepřihlášen"
+#: daemon/gdm.c:3633 daemon/gdm.c:3652 daemon/gdm.c:3796 daemon/gdm.c:3854
+#: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
+#, c-format
+msgid "%s request denied: Not authenticated"
+msgstr "Požadavek %s odepřen: Nepřihlášen"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -745,18 +748,6 @@ msgid ""
 msgstr ""
 "Požadovaný server %s nesmí být použit s flexibilními servery, použiji "
 "standardní server."
-
-#: daemon/gdm.c:3796
-msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "Požadavek QUERY_LOGOUT_ACTION odepřen: Nepřihlášen"
-
-#: daemon/gdm.c:3854 daemon/gdm.c:3909
-msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "Požadavek SET_LOGOUT_ACTION odepřen: Nepřihlášen"
-
-#: daemon/gdm.c:3954 daemon/gdm.c:3981
-msgid "QUERY_VT request denied: Not authenticated"
-msgstr "Požadavek QUERY_VT odepřen: Nepřihlášen"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:652
@@ -1056,7 +1047,10 @@ msgid ""
 "Cannot start the greeter program; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
-msgstr "Nemohu spustit program pro přivítání; nebudete se moci přihlásit. Tento displej bude zakázán. Zkuste se přihlásit jiným způsobem a upravit soubor s nastavením"
+msgstr ""
+"Nemohu spustit program pro přivítání; nebudete se moci přihlásit. Tento "
+"displej bude zakázán. Zkuste se přihlásit jiným způsobem a upravit soubor s "
+"nastavením"
 
 #. If no greeter we really have to disable the display
 #: daemon/slave.c:2672
@@ -1208,32 +1202,32 @@ msgstr "%s: Uživateli není dovoleno se přihlásit"
 msgid "The system administrator has disabled your account."
 msgstr "Správce systému zakázal váš účet."
 
-#: daemon/slave.c:3790
+#: daemon/slave.c:3792
 msgid "Error! Unable to set executable context."
 msgstr "Chyba! Nemohu nastavit kontext spustitelného programu."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3798 daemon/slave.c:3803
+#: daemon/slave.c:3800 daemon/slave.c:3805
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Nemohu spustit %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3814
+#: daemon/slave.c:3816
 msgid "Cannot start the session due to some internal error."
 msgstr "Nemohu spustit sezení kvůli nějaké interní chybě."
 
-#: daemon/slave.c:3868
+#: daemon/slave.c:3870
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Uživatel prošel ověřením, ale getpwnam(%s) selhalo!"
 
-#: daemon/slave.c:3882
+#: daemon/slave.c:3884
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Spuštění skriptu PreSession vrátilo > 0. Končím."
 
-#: daemon/slave.c:3891
+#: daemon/slave.c:3893
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1251,12 +1245,12 @@ msgstr ""
 "Je nepravděpodobné, že bude něco fungovat, pokud nepoužijete záchranné "
 "sezení."
 
-#: daemon/slave.c:3899
+#: daemon/slave.c:3901
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Domácí adresář pro %s: '%s' neexistuje."
 
-#: daemon/slave.c:4076
+#: daemon/slave.c:4078
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1268,12 +1262,12 @@ msgstr ""
 "zápis. V každém případě není možné se přihlásit. Kontaktujte prosím svého "
 "správce systému"
 
-#: daemon/slave.c:4152
+#: daemon/slave.c:4154
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Chyba při fork sezení uživatele"
 
-#: daemon/slave.c:4233
+#: daemon/slave.c:4235
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1285,25 +1279,25 @@ msgstr ""
 "chcete zkusit tento problém vyřešit, zkuste se přihlásit pod jedním ze "
 "záchranných sezení."
 
-#: daemon/slave.c:4241
+#: daemon/slave.c:4243
 msgid "View details (~/.xsession-errors file)"
 msgstr "Prohlídnout detaily (soubor ~/.xsession-errors)"
 
-#: daemon/slave.c:4385
+#: daemon/slave.c:4387
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM rozpoznal probíhající vypnutí nebo restart."
 
-#: daemon/slave.c:4479
+#: daemon/slave.c:4481
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping na %s selhal, ruším displej!"
 
-#: daemon/slave.c:4765
+#: daemon/slave.c:4767
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Fatální chyba X - Restartuji %s"
 
-#: daemon/slave.c:4859
+#: daemon/slave.c:4861
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1311,22 +1305,22 @@ msgstr ""
 "Bylo požádáno o zvuk přihlášení mimo místní displej nebo nemůže být spuštěn "
 "přehrávací software nebo zvuk neexistuje"
 
-#: daemon/slave.c:5214
+#: daemon/slave.c:5216
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Chyba při spouštění: %s"
 
-#: daemon/slave.c:5222 daemon/slave.c:5361
+#: daemon/slave.c:5224 daemon/slave.c:5363
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Nemohu fork proces skriptu!"
 
-#: daemon/slave.c:5316
+#: daemon/slave.c:5318
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Nemohu vytvořit rouru"
 
-#: daemon/slave.c:5355
+#: daemon/slave.c:5357
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Chyba při spouštění: %s"
@@ -1354,7 +1348,7 @@ msgstr "Zadejte své uživatelské jméno"
 #: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
-#: gui/greeter/greeter_parser.c:1061
+#: gui/greeter/greeter_parser.c:1065
 msgid "Username:"
 msgstr "Uživatel:"
 
@@ -2727,7 +2721,7 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:222 gui/greeter/greeter_parser.c:1047
+#: gui/gdmlogin.c:222
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Uživatel %s bude přihlášen za %d vteřin"
@@ -3648,8 +3642,8 @@ msgstr "Pro nastavení GDM musíte být superuživatel (root)."
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr "Grafická aplikace pro nastavení správce displeje GNOME (GDM)"
+msgid "Configure the login screen (Gnome Display Manager)"
+msgstr "Nastavit přihlašovací obrazovku (Gnome Display Manager)"
 
 #: gui/greeter/greeter.c:638 gui/greeter/greeter.c:670
 #, c-format
@@ -3763,6 +3757,14 @@ msgstr "_Nastavit"
 msgid "You've got capslock on!"
 msgstr "Máte zapnut Caps Lock!"
 
+#: gui/greeter/greeter_parser.c:1047
+#, c-format
+msgid "User %s will login in %d second"
+msgid_plural "User %s will login in %d seconds"
+msgstr[0] "Uživatel %s bude přihlášen za %d sekundu"
+msgstr[1] "Uživatel %s bude přihlášen za %d sekundy"
+msgstr[2] "Uživatel %s bude přihlášen za %d sekund"
+
 #: gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
 msgstr "Vyberte sezení"
@@ -3867,7 +3869,7 @@ msgstr "(paměť"
 
 #. markup
 #: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:301
 msgid "Cannot load user interface"
 msgstr "Nemohu načíst uživatelské rozhraní"
 
@@ -3896,17 +3898,32 @@ msgstr ""
 #: vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %"
-"s.  CList type widget should have %d columns.  Possibly the glade interface "
-"description was corrupted.  %s cannot continue and will exit now.  You "
-"should check your installation of %s or reinstall %s."
-msgstr ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d column. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgid_plural ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d columns. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgstr[0] ""
+"Při načítání prvku uživatelského rozhraní %s%s ze souboru %s došlo k chybě.\n"
+"Prvek typu CList by měl mít %d sloupec. Možná byl popis rozhraní formátu "
+"glade poškozen. %s nemůže pokračovat a nyní skončí. Měli byste zkontrolovat "
+"svou instalaci %s nebo znovu nainstalovat %s."
+msgstr[1] ""
+"Při načítání prvku uživatelského rozhraní %s%s ze souboru %s došlo k chybě.\n"
+"Prvek typu CList by měl mít %d sloupce. Možná byl popis rozhraní formátu "
+"glade poškozen. %s nemůže pokračovat a nyní skončí. Měli byste zkontrolovat "
+"svou instalaci %s nebo znovu nainstalovat %s."
+msgstr[2] ""
 "Při načítání prvku uživatelského rozhraní %s%s ze souboru %s došlo k chybě.\n"
 "Prvek typu CList by měl mít %d sloupců. Možná byl popis rozhraní formátu "
 "glade poškozen. %s nemůže pokračovat a nyní skončí. Měli byste zkontrolovat "
 "svou instalaci %s nebo znovu nainstalovat %s."
 
-#: vicious-extensions/glade-helper.c:266
+#: vicious-extensions/glade-helper.c:277
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3915,7 +3932,7 @@ msgstr ""
 "Soubor Glade je poškozený! Ujistěte se, že je nainstalovaný správný soubor!\n"
 "soubor: %s prvek: %s očekávaný počet sloupců: %d"
 
-#: vicious-extensions/glade-helper.c:291
+#: vicious-extensions/glade-helper.c:302
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -3926,7 +3943,7 @@ msgstr ""
 "nalezen popis rozhraní ve formátu glade. %s nemůže pokračovat a nyní skončí. "
 "Měli byste zkontrolovat svou instalaci %s nebo znovu nainstalovat %s."
 
-#: vicious-extensions/glade-helper.c:303
+#: vicious-extensions/glade-helper.c:314
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Nelze nalézt rozhraní, což je ŠPATNÉ! (soubor: %s)"
@@ -3934,6 +3951,10 @@ msgstr "Nelze nalézt rozhraní, což je ŠPATNÉ! (soubor: %s)"
 #: vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr "Příliš mnoho úrovní aliasů pro locale, možná znamená smyčku"
+
+#~ msgid ""
+#~ "A graphical application for configuring the GNOME Display Manager (GDM)"
+#~ msgstr "Grafická aplikace pro nastavení správce displeje GNOME (GDM)"
 
 #~ msgid "Shut_down"
 #~ msgstr "_Zastavit"
