@@ -1,5 +1,31 @@
 Ahh news...
 
+2.6.0.4 stuff:
+
+- Allow not checcking directory owners with CheckDirOwner key,
+  (Andreas Schubert)
+
+- FreeBSD support for VTAllocation stuff (Alexander Nedousukov)
+
+- Add de_AT, de_CH, fr_BE, fr_CH, hy_AM to language list (#148349, #139454)
+
+- Add more native versions of language names and fix up existing ones,
+  #148373, #148486, 148356, #148350, #88777
+
+- Fix some strings, fixes #144076, #144077, #147800
+
+- On sun we automatically make the default config add -nobanner to
+  the X server flags (Arvind)
+
+- Fix #144007 where bad .profile could screw up a session start
+
+- Fix #148042 by making GETTEXT_PACKAGE just gdm
+
+- Fix #147940 by properly checking if shutdown/reboot/suspend commands exist
+  in the graphical greeter
+
+- Fix some compiler warnings for new gcc
+
 2.6.0.3 stuff:
 
 - Fix cpu/bandwidth eating on idle displays by not blinking the cursor
