@@ -1,5 +1,5 @@
-circlesdir = $(datadir)/gdm/themes/circles
-circles_DATA = \
+happygnomedir = $(datadir)/gdm/themes/happygnome
+happygnome_DATA = \
 	GdmGreeterTheme.desktop \
 	happygnome.xml \
 	background.svg \
@@ -7,11 +7,11 @@ circles_DATA = \
 	options.png \
 	screenshot.png
 
-circles_in_files = \
+happygnome_in_files = \
 	GdmGreeterTheme.desktop.in \
-	circles.xml.in
+	happygnome.xml.in
 
 @INTLTOOL_XML_RULE@
 @INTLTOOL_DESKTOP_RULE@
 
-EXTRA_DIST = $(circles_DATA) $(circles_in_files)
+EXTRA_DIST = $(happygnome_DATA) $(happygnome_in_files)
