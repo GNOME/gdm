@@ -1,5 +1,8 @@
 SUBDIRS = config pixmaps vicious-extensions \
-	daemon gui utils docs omf-install po
+	daemon gui utils po 
+
+# add these when help gets added back
+# docs omf-install
 
 EXTRA_DIST = \
 	ChangeLog		\
