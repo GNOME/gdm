@@ -353,12 +353,13 @@ gdm_slave_greeter (void)
 static void
 gdm_slave_session_start (void)
 {
-    gchar *cfgdir, *sesspath;
+    char *cfgdir, *sesspath;
     struct stat statbuf;
     struct passwd *pwent;
-    gchar *session = NULL, *language = NULL, *usrsess, *usrlang;
+    char *session = NULL, *language = NULL, *usrsess, *usrlang;
+    char *gnome_session = NULL;
     gboolean savesess = FALSE, savelang = FALSE, usrcfgok = FALSE, authok = FALSE;
-    gint i;
+    int i;
     const char *shell = NULL;
     pid_t sesspid;
 
@@ -437,11 +438,26 @@ gdm_slave_session_start (void)
     }
 
     if (greet) {
-	    if (strlen (gdm_slave_greeter_ctl (GDM_SSESS, "")) > 0)
+	    char *ret = gdm_slave_greeter_ctl (GDM_SSESS, "");
+	    if (ret != NULL && ret[0] != '\0')
 		    savesess = TRUE;
+	    g_free (ret);
 
-	    if (strlen (gdm_slave_greeter_ctl (GDM_SLANG, "")) > 0)
+	    ret = gdm_slave_greeter_ctl (GDM_SLANG, "");
+	    if (ret != NULL && ret[0] != '\0')
 		    savelang = TRUE;
+	    g_free (ret);
+
+	    if (strcmp (session, "Gnome Chooser") == 0) {
+		    ret = gdm_slave_greeter_ctl (GDM_GNOMESESS, /*FIXME: */"Default,Foo,Bar");
+		    if (ret != NULL && ret[0] != '\0') {
+			    gnome_session = ret;
+			    ret = NULL;
+			    g_free (session);
+			    session = g_strdup ("Gnome");
+		    }
+		    g_free (ret);
+	    }
 
 	    gdm_debug (_("gdm_slave_session_start: Authentication completed. Whacking greeter"));
 
@@ -520,6 +536,8 @@ gdm_slave_session_start (void)
 	gdm_setenv ("HOME", pwent->pw_dir);
 	gdm_setenv ("GDMSESSION", session);
 	gdm_setenv ("SHELL", pwent->pw_shell);
+	if (gnome_session != NULL)
+		gdm_setenv ("GNOME_SESSION", gnome_session);
 #if 0
 	gdm_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 #endif
@@ -573,6 +591,14 @@ gdm_slave_session_start (void)
 	    gnome_config_sync();
 	    g_free (cfgstr);
 	}
+
+	/* If "Gnome Chooser" is still set as a session,
+	 * just change that to "Gnome", since "Gnome Chooser" is a
+	 * fake */
+	if (strcmp (session, "Gnome Chooser") == 0) {
+		g_free (session);
+		session = g_strdup ("Gnome");
+	}
 	
 	sesspath = g_strconcat (GdmSessDir, "/", session, NULL);
 	
@@ -622,6 +648,7 @@ gdm_slave_session_start (void)
 
     g_free (session);
     g_free (language);
+    g_free (gnome_session);
 
     sesspid = d->sesspid;
 

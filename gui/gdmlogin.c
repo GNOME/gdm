@@ -45,6 +45,25 @@
 
 static const gchar RCSid[]="$Id$";
 
+/* Some strings that are in other files that we may want to
+ * translate.  This is not actually used anywhere, it's just
+ * to have gettext know about these strings. */
+const char *session_titles[] = {
+	N_("AnotherLevel"),
+	N_("Default"),
+	N_("Failsafe"),
+	N_("Gnome"),
+	N_("KDE"),
+	N_("XSession"),
+	N_("Gnome Chooser"),
+	N_("Last")
+};
+
+#define GNOME_CHOOSER_SESSION "Gnome Chooser"
+#define LAST_SESSION "Last"
+#define LAST_LANGUAGE "Last"
+#define SESSION_NAME "SessionName"
+
 static gboolean GdmBrowser;
 static gboolean GdmDebug;
 static gint  GdmIconMaxHeight;
@@ -104,8 +123,6 @@ static gchar *defsess = NULL;
 static gchar *cursess = NULL;
 static gchar *curlang = NULL;
 static gchar *curuser = NULL;
-static gchar *lastsess = NULL;
-static gchar *lastlang = NULL;
 static gchar *session = NULL;
 static gchar *language = NULL;
 
@@ -635,7 +652,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    /* If "Last" is chosen run Default,
 	     * else run user's current selection */
 	    g_free (session);
-	    if (g_strcasecmp (cursess, lastsess) == 0)
+	    if (g_strcasecmp (cursess, LAST_SESSION) == 0)
 		    session = g_strdup (defsess);
 	    else
 		    session = g_strdup (cursess);
@@ -645,7 +662,7 @@ gdm_login_session_lookup (const gchar* savedsess)
     }
 
     /* If "Last" session is selected */
-    if (g_strcasecmp (cursess, lastsess) == 0) { 
+    if (g_strcasecmp (cursess, LAST_SESSION) == 0) { 
 	g_free (session);
 	session = g_strdup (savedsess);
 
@@ -700,7 +717,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	 * or the GdmDefaultLocale if that's not set or is "C"
 	 * else use current selection */
 	g_free (language);
-	if (g_strcasecmp (curlang, lastlang) == 0) {
+	if (g_strcasecmp (curlang, LAST_LANGUAGE) == 0) {
 		char *lang = g_getenv ("LANG");
 		if (lang == NULL ||
 		    lang[0] == '\0' ||
@@ -718,7 +735,7 @@ gdm_login_language_lookup (const gchar* savedlang)
     }
 
     /* If a different language is selected */
-    if (g_strcasecmp (curlang, lastlang) != 0) {
+    if (g_strcasecmp (curlang, LAST_LANGUAGE) != 0) {
         g_free (language);
 	language = g_strdup (curlang);
 
@@ -726,7 +743,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	if (g_strcasecmp (savedlang, language) != 0) {
 	    gchar *msg;
 
-	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is " \
+	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
 				     "%s.\nDo you wish to make %s the default for future sessions?"),
 				   gdm_lookup_locale_name (curlang),
 				   gdm_lookup_locale_name (savedlang),
@@ -887,8 +904,10 @@ gdm_login_session_handler (GtkWidget *widget)
 {
     gchar *s;
 
-    gtk_label_get (GTK_LABEL (GTK_BIN (widget)->child), &cursess);
-    s = g_strdup_printf (_("%s session selected"), cursess);
+    cursess = gtk_object_get_data (GTK_OBJECT (widget), SESSION_NAME);
+
+    s = g_strdup_printf (_("%s session selected"), _(cursess));
+
     gtk_label_set (GTK_LABEL (msg), s);
     g_free (s);
 }
@@ -903,12 +922,12 @@ gdm_login_session_init (GtkWidget *menu)
     struct dirent *dent;
     struct stat statbuf;
     gint linklen;
-    gboolean have_gnome = FALSE;
 
-    lastsess=_("Last");
-
-    cursess = lastsess;
-    item = gtk_radio_menu_item_new_with_label (NULL, lastsess);
+    cursess = LAST_SESSION;
+    item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_SESSION));
+    gtk_object_set_data (GTK_OBJECT (item),
+			 "SessionName",
+			 LAST_SESSION);
     sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_signal_connect (GTK_OBJECT (item), "activate",
@@ -958,12 +977,12 @@ gdm_login_session_init (GtkWidget *menu)
 		(statbuf.st_mode & (S_IRGRP|S_IXGRP)) == (S_IRGRP|S_IXGRP) &&
 		(statbuf.st_mode & (S_IROTH|S_IXOTH)) == (S_IROTH|S_IXOTH)) 
 	    {
-		item = gtk_radio_menu_item_new_with_label (sessgrp, dent->d_name);
-		if ( ! have_gnome &&
-		     g_strcasecmp (dent->d_name, "Gnome") == 0) {
-			have_gnome = TRUE;
-		}
-			
+		item = gtk_radio_menu_item_new_with_label (sessgrp, _(dent->d_name));
+		gtk_object_set_data_full (GTK_OBJECT (item),
+					  "SessionName",
+					  g_strdup (dent->d_name),
+					  (GtkDestroyNotify) g_free);
+
 		sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
 		sessions = g_slist_append (sessions, dent->d_name);
 		gtk_menu_append (GTK_MENU (menu), item);
@@ -971,6 +990,29 @@ gdm_login_session_init (GtkWidget *menu)
 				    GTK_SIGNAL_FUNC (gdm_login_session_handler),
 				    NULL);
 		gtk_widget_show (GTK_WIDGET (item));
+
+		if (g_strcasecmp (dent->d_name, "Gnome") == 0) {
+			if (defsess == NULL)
+				defsess = "Gnome";
+
+			/* Add the chooser session, this one doesn't have a script
+			 * really, it's a fake, it runs the Gnome script */
+			/* For translators:  This is the login that lets users choose the
+			 * specific gnome session they want to use */
+			item = gtk_radio_menu_item_new_with_label (sessgrp, _("Gnome Chooser"));
+			gtk_object_set_data (GTK_OBJECT (item),
+					     "SessionName",
+					     GNOME_CHOOSER_SESSION);
+
+			sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+			sessions = g_slist_append (sessions, GNOME_CHOOSER_SESSION);
+			gtk_menu_append (GTK_MENU (menu), item);
+			gtk_signal_connect (GTK_OBJECT (item), "activate",
+					    GTK_SIGNAL_FUNC (gdm_login_session_handler),
+					    NULL);
+			gtk_widget_show (GTK_WIDGET (item));
+		}
+			
 	    }
 	    else 
 		syslog (LOG_ERR, "Wrong permissions on %s/%s. Should be readable/executable for all.", 
@@ -986,12 +1028,8 @@ gdm_login_session_init (GtkWidget *menu)
 	gdm_login_abort (_("No session scripts found. Aborting!"));
 
     if (defsess == NULL) {
-	    if (have_gnome) {
-		    defsess = "Gnome";
-	    } else {
-		    gtk_label_get (GTK_LABEL (GTK_BIN (g_slist_nth_data (sessgrp, 0))->child), &defsess);
-		    syslog (LOG_WARNING, _("No default session link found. Using %s.\n"), defsess);
-	    }
+	    defsess = gtk_object_get_data (GTK_OBJECT (sessgrp->data), SESSION_NAME);
+	    syslog (LOG_WARNING, _("No default session link found. Using %s.\n"), defsess);
     }
 }
 
@@ -1029,10 +1067,9 @@ gdm_login_language_menu_new (void)
 
     menu = gtk_menu_new ();
 
-    lastlang = _("Last");
-    curlang = lastlang;
+    curlang = LAST_LANGUAGE;
 
-    item = gtk_radio_menu_item_new_with_label (NULL, lastlang);
+    item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_LANGUAGE));
     languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
     gtk_menu_append (GTK_MENU(menu), item);
     gtk_signal_connect (GTK_OBJECT (item), "activate", 
@@ -1041,7 +1078,7 @@ gdm_login_language_menu_new (void)
     gtk_widget_show (GTK_WIDGET (item));
     gtk_object_set_data (GTK_OBJECT (item),
 			 "Language",
-			 lastlang);
+			 LAST_LANGUAGE);
 
     item = gtk_menu_item_new();
     gtk_widget_set_sensitive (item, FALSE);
@@ -1116,6 +1153,44 @@ gdm_login_language_menu_new (void)
     fclose (langlist);
 
     return menu;
+}
+
+static char *
+get_gnome_session (const char *sess_string)
+{
+	GtkWidget *d;
+	GtkWidget *clist;
+	GtkWidget *hbox;
+	GtkWidget *entry;
+
+	/* translators:  This is a nice and evil eggie text, translate
+	 * to your favourite currency */
+	d = gnome_dialog_new (_("Select GNOME session"),
+			      GNOME_STOCK_BUTTON_OK,
+			      NULL);
+	clist = gtk_clist_new (1);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), clist,
+			    TRUE, TRUE, 0);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), hbox,
+			    FALSE, FALSE, 0);
+
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    gtk_label_new (_("New session: ")),
+			    FALSE, FALSE, 0);
+
+	entry = gtk_entry_new ();
+	gtk_box_pack_start (GTK_BOX (hbox),
+			    entry,
+			    TRUE, TRUE, 0);
+
+	gtk_window_set_modal (GTK_WINDOW (d), TRUE);
+
+	gtk_widget_show_all (d);
+
+	gdm_center_window (GTK_WINDOW (d));
+	gnome_dialog_run (GNOME_DIALOG (d));
 }
 
 static gboolean
@@ -1313,6 +1388,29 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_print ("%c\n", STX);
 
 	gtk_main_quit ();
+	break;
+
+    case GDM_GNOMESESS:
+	{
+		char *sess;
+		GString *str = g_string_new (NULL);
+
+		do {
+			g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+			buf[len-1] = '\0';
+			g_string_append (str, buf);
+		} while (len == PIPE_SIZE-1);
+
+
+		sess = get_gnome_session (str->str);
+
+		g_string_free (str, TRUE);
+
+		g_print ("%s%c\n", sess, STX);
+
+		g_free (sess);
+	}
+
 	break;
 	
     default:

@@ -63,6 +63,7 @@
 #define GDM_RESET  'A'
 #define GDM_QUIT   'P'
 #define GDM_STOP   '!'
+#define GDM_GNOMESESS '?'
 
 /* The dreaded miscellaneous category */
 #define MAX_ARGS 32
