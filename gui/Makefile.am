@@ -125,6 +125,4 @@ EXTRA_DIST = \
 	$(System_DATA)		\
 	$(System_in_files)	\
 	$(Settings_DATA)	\
-	$(Settings_in_files)	\
-	gdmchooser.c		\
-	gdmchooser.h
+	$(Settings_in_files)

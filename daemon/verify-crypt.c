@@ -33,6 +33,7 @@
 #include "misc.h"
 #include "slave.h"
 #include "verify.h"
+#include "errorgui.h"
 
 /* Configuration option variables */
 extern gboolean GdmAllowRoot;

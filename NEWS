@@ -1,5 +1,32 @@
 Ahh news...
 
+2.2.5.3 stuff:
+
+- PAM support revamped.  Session open and credentials are done before
+  we do anything else.  Also we work on one pam handle only, and
+  yet again switch setcred/open_session order (Karsten Petersen, me)
+
+- Autologin is now done with a separate pam configuration.  gdm-autologin
+  service.  This just logs anyone in without asking for a password,
+  but this makes autologin work on some all wankered pam setup.  Of course
+  you must now modify gdm-autologin in addition to 'gdm' if you have
+  some weird pam setup.
+
+- Fix gdmconfig saving of server definitions
+
+- Add possibility of multiline welcome message by use of '\n'
+
+- Use the text dialog interface for more errors including the toplevel
+  loop of death
+
+- Fix a USR2 race in the slave if the main daemon is already dead
+  (this makes 'killall gdm' work right)
+
+- Translation updates (Kjartan Maraas, Gustavo Maciel Dias Vieira,
+  Abel Cheung, Christian Rose, Duarte Loreto, Christian Meyer,
+  Stanislav Visnovsky, Peteris Krisjanis, Artis Trops, Akira TAGOH, 
+  Göran Uddeborg, Ole Laursen)
+
 2.2.5.2 stuff:
 
 - If multiple local servers are setup, then wait until one has started
