@@ -106,12 +106,14 @@ gdm_fail (const gchar *format, ...)
     } else if ( ! gdm_slave_final_cleanup ()) {
 	    /* If we weren't even a slave do some random cleanup only */
 	    /* FIXME: is this all fine? */
+	    gdm_sigchld_block_push ();
 	    if (extra_process > 1 && extra_process != getpid ()) {
 		    /* we sigterm extra processes, and we
 		     * don't wait */
 		    kill (extra_process, SIGTERM);
-		    extra_process = -1;
+		    extra_process = 0;
 	    }
+	    gdm_sigchld_block_pop ();
     }
 
     closelog ();
@@ -625,6 +627,8 @@ gdm_fork_extra (void)
 
 	gdm_sigterm_block_push ();
 	pid = extra_process = fork ();
+	if (pid < 0)
+		extra_process = 0;
 	gdm_sigterm_block_pop ();
 
 	gdm_sigchld_block_pop ();
@@ -640,7 +644,7 @@ gdm_wait_for_extra (int *status)
 	if (extra_process > 0) {
 		ve_waitpid_no_signal (extra_process, &extra_status, 0);
 	}
-	extra_process = -1;
+	extra_process = 0;
 
 	if (status != NULL)
 		*status = extra_status;

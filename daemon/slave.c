@@ -149,6 +149,7 @@ static void     gdm_slave_alrm_handler (int sig);
 static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);
 static void     gdm_slave_usr2_handler (int sig);
+static void     gdm_slave_quick_exit (gint status);
 static void     gdm_slave_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 static void     gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
@@ -515,7 +516,7 @@ gdm_slave_run (GdmDisplay *display)
 			       "In the meantime this display will be\n"
 			       "disabled.  Please restart gdm when\n"
 			       "the problem is corrected."));
-		    _exit (DISPLAY_ABORT);
+		    gdm_slave_quick_exit (DISPLAY_ABORT);
 	    }
 	    gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
 
@@ -598,9 +599,9 @@ gdm_slave_run (GdmDisplay *display)
     if (d->handled && d->dsp == NULL) {
 	    gdm_server_stop (d);
 	    if (d->type == TYPE_LOCAL)
-		    _exit (DISPLAY_XFAILED);
+		    gdm_slave_quick_exit (DISPLAY_XFAILED);
 	    else
-		    _exit (DISPLAY_ABORT);
+		    gdm_slave_quick_exit (DISPLAY_ABORT);
     }
 
     /* Some sort of a bug foo to make some servers work or whatnot,
@@ -634,7 +635,7 @@ gdm_slave_run (GdmDisplay *display)
 	    /* yay, we now wait for the server to die,
 	     * which will in fact just exit, so
 	     * this code is a little bit too anal */
-	    while (d->servpid != 0) {
+	    while (d->servpid > 0) {
 		    select (0, NULL, NULL, NULL, NULL);
 	    }
 	    return;
@@ -663,9 +664,7 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_debug ("gdm_slave_run: Automatic login done");
 	    
 	    if (remanage_asap) {
-		    gdm_server_stop (d);
-		    gdm_verify_cleanup (d);
-		    _exit (DISPLAY_REMANAGE);
+		    gdm_slave_quick_exit (DISPLAY_REMANAGE);
 	    }
 
 	    /* return to gdm_slave_start so that the server
@@ -708,9 +707,7 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
 
 	    if (remanage_asap) {
-		    gdm_server_stop (d);
-		    gdm_verify_cleanup (d);
-		    _exit (DISPLAY_REMANAGE);
+		    gdm_slave_quick_exit (DISPLAY_REMANAGE);
 	    }
 
 	    if (greet) {
@@ -833,21 +830,26 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 	if (pid < 0) {
 		/* return left pointer */
-		Cursor xcursor = XCreateFontCursor (d->dsp, GDK_LEFT_PTR);
+		Cursor xcursor;
+
+		/* can't fork, damnit */
+		display->sesspid = 0;
+	       
+		xcursor = XCreateFontCursor (d->dsp, GDK_LEFT_PTR);
 		XDefineCursor (d->dsp,
 			       DefaultRootWindow (d->dsp),
 			       xcursor);
 		XFreeCursor (d->dsp, xcursor);
 		XSync (d->dsp, False);
 
-		/* can't fork, damnit */
-		display->sesspid = 0;
 		return;
 	}
 
 	if (pid == 0) {
 		char **argv;
 		/* child */
+
+		setsid ();
 
 		setuid (0);
 		setgid (0);
@@ -899,8 +901,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 				 "default location."));
 
 		argv = ve_split
-			(EXPANDED_GDMCONFIGDIR
-			 "/gdmconfig --disable-sound --disable-crash-dialog");
+			(EXPANDED_BINDIR
+			 "/gdmsetup --disable-sound --disable-crash-dialog");
 		if (access (argv[0], X_OK) == 0)
 			execv (argv[0], argv);
 
@@ -1111,9 +1113,7 @@ gdm_slave_wait_for_login (void)
 			d->logged_in = FALSE;
 
 			if (remanage_asap) {
-				gdm_server_stop (d);
-				gdm_verify_cleanup (d);
-				_exit (DISPLAY_REMANAGE);
+				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}
 
 			greeter_no_focus = FALSE;
@@ -1455,6 +1455,8 @@ gdm_slave_greeter (void)
     switch (pid) {
 	
     case 0:
+	setsid ();
+
 	sigfillset (&mask);
 	sigdelset (&mask, SIGINT);
 	sigdelset (&mask, SIGTERM);
@@ -1612,6 +1614,7 @@ gdm_slave_greeter (void)
 	gdm_child_exit (DISPLAY_ABORT, _("%s: Error starting greeter on display %s"), "gdm_slave_greeter", d->name);
 	
     case -1:
+	d->greetpid = 0;
 	gdm_slave_exit (DISPLAY_ABORT, _("%s: Can't fork gdmgreeter process"), "gdm_slave_greeter");
 	
     default:
@@ -1813,6 +1816,8 @@ gdm_slave_chooser (void)
 	switch (pid) {
 
 	case 0:
+		setsid ();
+
 		sigfillset (&mask);
 		sigdelset (&mask, SIGINT);
 		sigdelset (&mask, SIGTERM);
@@ -1923,7 +1928,7 @@ gdm_slave_chooser (void)
 				buf[bytes] ='\0';
 			send_chosen_host (d, buf);
 
-			_exit (DISPLAY_CHOSEN);
+			gdm_slave_quick_exit (DISPLAY_CHOSEN);
 		}
 
 		close (p[0]);
@@ -2816,10 +2821,7 @@ gdm_slave_session_start (void)
 	    gdm_slave_session_stop (0);
 	    gdm_slave_session_cleanup ();
 
-	    gdm_server_stop (d);
-	    gdm_verify_cleanup (d);
-
-	    _exit (DISPLAY_REMANAGE);
+	    gdm_slave_quick_exit (DISPLAY_REMANAGE);
     }
 
     if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
@@ -2958,7 +2960,7 @@ gdm_slave_session_stop (pid_t sesspid)
 				  "/", d->name, ".Xservers", NULL);
 
     /* if there was a session that ran, run the PostSession script */
-    if (sesspid != 0) {
+    if (sesspid > 0) {
 	    /* setup some env for PostSession script */
 	    gnome_setenv ("DISPLAY", d->name, TRUE);
 	    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
@@ -3020,8 +3022,6 @@ gdm_slave_session_cleanup (void)
 static void
 gdm_slave_term_handler (int sig)
 {
-	sigset_t tmask;
-
 	gdm_in_signal++;
 
 	gdm_debug ("gdm_slave_term_handler: %s got TERM/INT signal", d->name);
@@ -3030,43 +3030,46 @@ gdm_slave_term_handler (int sig)
 	seteuid (0);
 	setegid (0);
 
-	sigemptyset (&tmask);
-	sigaddset (&tmask, SIGCHLD);
-	sigprocmask (SIG_BLOCK, &tmask, NULL);  
+	gdm_sigchld_block_push ();
 
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
 		 * don't wait */
 		kill (extra_process, SIGTERM);
-		extra_process = -1;
+		extra_process = 0;
 	}
 
-	if (d->greetpid != 0) {
+	gdm_sigchld_block_pop ();
+
+	if (d->greetpid > 0) {
 		pid_t pid = d->greetpid;
+		gdm_sigchld_block_push ();
 		d->greetpid = 0;
 		greet = FALSE;
 		gdm_debug ("gdm_slave_term_handler: Whacking greeter");
-		if (kill (pid, sig) == 0)
+		if (pid > 0 &&
+		    kill (pid, sig) == 0)
 			ve_waitpid_no_signal (pid, 0, 0); 
+		gdm_sigchld_block_pop ();
 	} else if (login != NULL) {
 		gdm_slave_session_stop (d->sesspid);
 		gdm_slave_session_cleanup ();
 	}
 
-	if (d->chooserpid != 0) {
+	if (d->chooserpid > 0) {
 		pid_t pid = d->chooserpid;
+		gdm_sigchld_block_push ();
 		d->chooserpid = 0;
 		gdm_debug ("gdm_slave_term_handler: Whacking chooser");
-		if (kill (pid, sig) == 0)
+		if (pid > 0 &&
+		    kill (pid, sig) == 0)
 			ve_waitpid_no_signal (pid, 0, 0); 
+		gdm_sigchld_block_pop ();
 	}
 
 	gdm_debug ("gdm_slave_term_handler: Whacking server");
 
-	gdm_server_stop (d);
-	gdm_verify_cleanup (d);
-
-	_exit (DISPLAY_ABORT);
+	gdm_slave_quick_exit (DISPLAY_ABORT);
 }
 
 /* called on alarms to ping */
@@ -3153,6 +3156,12 @@ gdm_slave_child_handler (int sig)
 			return;
 		}
 
+		/* Well now we're just going to kill
+		 * everything including the X server,
+		 * so no need doing XCloseDisplay which
+		 * may just get us an XIOError */
+		d->dsp = NULL;
+
 		whack_greeter_fds ();
 
 		/* just for paranoia's sake */
@@ -3172,9 +3181,9 @@ gdm_slave_child_handler (int sig)
 		     WEXITSTATUS (status) == DISPLAY_HALT ||
 		     WEXITSTATUS (status) == DISPLAY_SUSPEND ||
 		     WEXITSTATUS (status) == DISPLAY_RESTARTGDM)) {
-			_exit (WEXITSTATUS (status));
+			gdm_slave_quick_exit (WEXITSTATUS (status));
 		} else {
-			_exit (DISPLAY_REMANAGE);
+			gdm_slave_quick_exit (DISPLAY_REMANAGE);
 		}
 	} else if (pid != 0 && pid == d->sesspid) {
 		d->sesspid = 0;
@@ -3184,12 +3193,19 @@ gdm_slave_child_handler (int sig)
 		d->servstat = SERVER_DEAD;
 		d->servpid = 0;
 		gdm_server_wipe_cookies (d);
+		gdm_slave_whack_temp_auth_file ();
 
+		/* whack the session good */
+		if (d->sesspid > 0)
+			kill (- (d->sesspid), SIGTERM);
+
+		/* if not handled there is no need for further formalities,
+		 * we just have to die */
 		if ( ! d->handled)
-			_exit (DISPLAY_REMANAGE);
+			gdm_slave_quick_exit (DISPLAY_REMANAGE);
 	} else if (pid == extra_process) {
 		/* an extra process died, yay! */
-		extra_process = -1;
+		extra_process = 0;
 	    	extra_status = status;
 	}
     }
@@ -3250,9 +3266,7 @@ gdm_slave_usr2_handler (int sig)
 				if (d->type != TYPE_FLEXI_XNEST &&
 				    d->type != TYPE_FLEXI) {
 					if ( ! d->logged_in) {
-						gdm_server_stop (d);
-						gdm_verify_cleanup (d);
-						_exit (DISPLAY_REMANAGE);
+						gdm_slave_quick_exit (DISPLAY_REMANAGE);
 					} else {
 						remanage_asap = TRUE;
 					}
@@ -3278,7 +3292,8 @@ gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
 static gint
 gdm_slave_xioerror_handler (Display *disp)
 {
-	sigset_t tmask;
+	/* Display is all gone */
+	d->dsp = NULL;
 
 	gdm_debug ("gdm_slave_xioerror_handler: I/O error for display %s", d->name);
 
@@ -3286,26 +3301,28 @@ gdm_slave_xioerror_handler (Display *disp)
 	seteuid (0);
 	setegid (0);
 
-	sigemptyset (&tmask);
-	sigaddset (&tmask, SIGCHLD);
-	sigprocmask (SIG_BLOCK, &tmask, NULL);  
-
-	if (d->greetpid != 0) {
+	if (d->greetpid > 0) {
 		pid_t pid = d->greetpid;
+		gdm_sigchld_block_push ();
 		d->greetpid = 0;
 		greet = FALSE;
-		if (kill (pid, SIGINT) == 0)
+		if (pid > 0 &&
+		    kill (pid, SIGINT) == 0)
 			ve_waitpid_no_signal (pid, 0, 0); 
+		gdm_sigchld_block_pop ();
 	} else if (login != NULL) {
 		gdm_slave_session_stop (d->sesspid);
 		gdm_slave_session_cleanup ();
 	}
 
-	if (d->chooserpid != 0) {
+	if (d->chooserpid > 0) {
 		pid_t pid = d->chooserpid;
+		gdm_sigchld_block_push ();
 		d->chooserpid = 0;
-		if (kill (pid, SIGINT) == 0)
+		if (pid > 0 &&
+		    kill (pid, SIGINT) == 0)
 			ve_waitpid_no_signal (pid, 0, 0); 
+		gdm_sigchld_block_pop ();
 	}
     
 	gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
@@ -3317,10 +3334,12 @@ gdm_slave_xioerror_handler (Display *disp)
 	     d->type == TYPE_FLEXI) &&
 	    (do_xfailed_on_xio_error ||
 	     d->starttime + 5 >= time (NULL))) {
-		_exit (DISPLAY_XFAILED);
+		gdm_slave_quick_exit (DISPLAY_XFAILED);
 	} else {
-		_exit (DISPLAY_REMANAGE);
+		gdm_slave_quick_exit (DISPLAY_REMANAGE);
 	}
+
+	return 0;
 }
 
 static void
@@ -3422,6 +3441,50 @@ gdm_slave_greeter_ctl_no_ret (char cmd, const char *str)
 	g_free (gdm_slave_greeter_ctl (cmd, str));
 }
 
+static void 
+gdm_slave_quick_exit (gint status)
+{
+    /* just for paranoia's sake */
+    seteuid (0);
+    setegid (0);
+
+    if (d != NULL) {
+	    /* Well now we're just going to kill
+	     * everything including the X server,
+	     * so no need doing XCloseDisplay which
+	     * may just get us an XIOError */
+	    d->dsp = NULL;
+
+	    /* Push and never pop */
+	    gdm_sigchld_block_push ();
+
+	    /* Kill children where applicable */
+	    if (d->greetpid > 0)
+		    kill (d->greetpid, SIGTERM);
+	    d->greetpid = 0;
+
+	    if (d->chooserpid > 0)
+		    kill (d->chooserpid, SIGTERM);
+	    d->chooserpid = 0;
+
+	    if (d->sesspid > 0)
+		    kill (-(d->sesspid), SIGTERM);
+	    d->sesspid = 0;
+
+	    gdm_server_stop (d);
+	    gdm_verify_cleanup (d);
+
+	    if (d->servpid > 0)
+		    kill (d->servpid, SIGTERM);
+	    d->servpid = 0;
+
+	    if (extra_process > 0)
+		    kill (extra_process, SIGTERM);
+	    extra_process = 0;
+    }
+
+    _exit (status);
+}
 
 static void 
 gdm_slave_exit (gint status, const gchar *format, ...)
@@ -3433,43 +3496,11 @@ gdm_slave_exit (gint status, const gchar *format, ...)
     s = g_strdup_vprintf (format, args);
     va_end (args);
     
-    syslog (LOG_ERR, "%s", s);
+    gdm_error ("%s", s);
     
     g_free (s);
 
-    /* just for paranoia's sake */
-    seteuid (0);
-    setegid (0);
-
-    if (d != NULL) {
-	    sigset_t tmask;
-
-	    sigemptyset (&tmask);
-	    sigaddset (&tmask, SIGCHLD);
-	    sigprocmask (SIG_BLOCK, &tmask, NULL);  
-
-	    /* Kill children where applicable */
-	    if (d->greetpid != 0)
-		    kill (d->greetpid, SIGTERM);
-	    d->greetpid = 0;
-
-	    if (d->chooserpid != 0)
-		    kill (d->chooserpid, SIGTERM);
-	    d->chooserpid = 0;
-
-	    if (d->sesspid != 0)
-		    kill (-(d->sesspid), SIGTERM);
-	    d->sesspid = 0;
-
-	    gdm_server_stop (d);
-	    gdm_verify_cleanup (d);
-
-	    if (d->servpid != 0)
-		    kill (d->servpid, SIGTERM);
-	    d->servpid = 0;
-    }
-
-    _exit (status);
+    gdm_slave_quick_exit (status);
 }
 
 static void 
@@ -3855,9 +3886,7 @@ gdm_slave_handle_notify (const char *msg)
 				/* FIXME: can't handle flexi servers like this
 				 * without going all cranky */
 				if ( ! d->logged_in) {
-					gdm_server_stop (d);
-					gdm_verify_cleanup (d);
-					_exit (DISPLAY_REMANAGE);
+					gdm_slave_quick_exit (DISPLAY_REMANAGE);
 				} else {
 					remanage_asap = TRUE;
 				}
@@ -3875,9 +3904,7 @@ gdm_slave_handle_notify (const char *msg)
 				/* FIXME: can't handle flexi servers like this
 				 * without going all cranky */
 				if ( ! d->logged_in) {
-					gdm_server_stop (d);
-					gdm_verify_cleanup (d);
-					_exit (DISPLAY_REMANAGE);
+					gdm_slave_quick_exit (DISPLAY_REMANAGE);
 				} else {
 					remanage_asap = TRUE;
 				}
@@ -3889,9 +3916,7 @@ gdm_slave_handle_notify (const char *msg)
 		/* FIXME: can't handle flexi servers without going all cranky */
 		if (d->type == TYPE_LOCAL || d->type == TYPE_XDMCP) {
 			if ( ! d->logged_in) {
-				gdm_server_stop (d);
-				gdm_verify_cleanup (d);
-				_exit (DISPLAY_REMANAGE);
+				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			} else {
 				remanage_asap = TRUE;
 			}

@@ -169,11 +169,10 @@ gdm_display_manage (GdmDisplay *d)
     gdm_sigchld_block_push ();
 
     /* If we have an old slave process hanging around, kill it */
-    if (d->slavepid) {
-	    if (kill (d->slavepid, SIGINT) == 0)
+    if (d->slavepid > 0 &&
+	kill (d->slavepid, SIGINT) == 0)
 		    ve_waitpid_no_signal (d->slavepid, 0, 0);
-	    d->slavepid = 0;
-    }
+    d->slavepid = 0;
 
     /* Fork slave process */
     gdm_sigterm_block_push ();
@@ -279,11 +278,12 @@ gdm_display_unmanage (GdmDisplay *d)
 	       d->name, (int)d->slavepid);
 
     /* Kill slave */
-    if (d->slavepid != 0) {
-	if (kill (d->slavepid, SIGTERM) == 0)
-		ve_waitpid_no_signal (d->slavepid, 0, 0);
-	d->slavepid = 0;
-    }
+    gdm_sigchld_block_push ();
+    if (d->slavepid > 0 &&
+	kill (d->slavepid, SIGTERM) == 0)
+	    ve_waitpid_no_signal (d->slavepid, 0, 0);
+    d->slavepid = 0;
+    gdm_sigchld_block_pop ();
     
     if (d->type == TYPE_LOCAL)
 	d->dispstat = DISPLAY_DEAD;

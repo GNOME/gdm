@@ -1,3 +1,27 @@
+Fri Aug 23 01:09:36 2002  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c: fix subtle possible race that could kill another
+	  process and simplify code in the meantime.  Ignore SIGCHLD, and
+	  don't wait for the background process until we want to kill it,
+	  that may leave a zombie for a little bit if the process dies early,
+	  but who cares.
+
+	* daemon/display.c, daemon/gdm.c, daemon/misc.c, daemon/server.c,
+	  daemon/slave.c: Fix many many very minor races but such that
+	  could conceivably take things down (a kill (0,...) "could"
+	  very theoretically occur previously).  Fix some worse but still
+	  not very likely races by using the push/pop of sigchld block in
+	  places where we blocked by hand.  Ensure all processes are always
+	  killed on slave exit (probably doing things redundantly in some
+	  cases).  Fix some possible cases of syslog from a signal which
+	  does bad things to our karma sometimes.  When the server dies
+	  make sure we don't do anything with the display (we null the d->dsp
+	  var) to make sure we don't reenter the xioerror_handler.  The
+	  extra_process uses 0 and not -1 as the no value everywhere.
+	  Make sure kills are never called with -1 (probably just anal,
+	  but one never knows).  Do setsid and the init in daemonize
+	  on -nodaemon as well.  Do setsid for greeter/chooser/config.
+
 Thu Aug 22 16:04:56 2002  George Lebl <jirka@5z.com>
 
 	* gui/gdmlanguages.c, config/locale.alias: The locale in the

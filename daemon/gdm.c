@@ -72,7 +72,7 @@ gint sessions = 0;		/* Number of remote sessions */
 gint flexi_servers = 0;		/* Number of flexi servers */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
-pid_t extra_process = -1;	/* An extra process.  Used for quickie 
+pid_t extra_process = 0;	/* An extra process.  Used for quickie 
 				   processes, so that they also get whacked */
 int extra_status = 0;		/* Last status from the last extra process */
 pid_t gdm_main_pid = 0;
@@ -795,20 +795,19 @@ void
 gdm_final_cleanup (void)
 {
 	GSList *list, *li;
-	sigset_t mask;
 
 	gdm_debug ("gdm_final_cleanup");
 
-	sigemptyset (&mask);
-	sigaddset (&mask, SIGCHLD);
-	sigprocmask (SIG_BLOCK, &mask, NULL); 
+	gdm_sigchld_block_push ();
 
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
 		 * don't wait */
 		kill (extra_process, SIGTERM);
-		extra_process = -1;
+		extra_process = 0;
 	}
+
+	gdm_sigchld_block_pop ();
 
 	list = g_slist_copy (displays);
 	for (li = list; li != NULL; li = li->next) {
@@ -1007,7 +1006,7 @@ gdm_cleanup_children (void)
 
     if (pid == extra_process) {
 	    /* an extra process died, yay! */
-	    extra_process = -1;
+	    extra_process = 0;
 	    extra_status = exitstatus;
 	    return TRUE;
     }
@@ -1488,6 +1487,12 @@ main (int argc, char *argv[])
 	    fprintf (pf, "%d\n", (int)getpid());
 	    fclose (pf);
 	}
+
+	/* ignore failing, it MAY fail if it is already the leader */
+	setsid ();
+
+	chdir (GdmServAuthDir);
+	umask (022);
     }
     else
 	gdm_daemonify();
@@ -1646,9 +1651,11 @@ send_slave_ack (GdmDisplay *d)
 		not[1] = '\n';
 		write (d->master_notify_fd, not, 2);
 	}
+	gdm_sigchld_block_push ();
 	if (d->slavepid > 0) {
 		kill (d->slavepid, SIGUSR2);
 	}
+	gdm_sigchld_block_pop ();
 }
 
 static void
@@ -1661,9 +1668,11 @@ send_slave_command (GdmDisplay *d, const char *command)
 		write (d->master_notify_fd, cmd, strlen (cmd));
 		g_free (cmd);
 	}
+	gdm_sigchld_block_push ();
 	if (d->slavepid > 0) {
 		kill (d->slavepid, SIGUSR2);
 	}
+	gdm_sigchld_block_pop ();
 }
 
 
@@ -1996,8 +2005,10 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		GSList *li;
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *d = li->data;
+			gdm_sigchld_block_push ();
 			if (d->greetpid > 0)
 				kill (d->greetpid, SIGHUP);
+			gdm_sigchld_block_pop ();
 		}
 	} else if (strncmp (msg, GDM_SOP_WRITE_X_SERVERS " ",
 		            strlen (GDM_SOP_WRITE_X_SERVERS " ")) == 0) {
@@ -2375,8 +2386,10 @@ notify_displays_int (const char *key, int val)
 			gdm_fdprintf (disp->master_notify_fd,
 				      "%c%s %d\n",
 				      GDM_SLAVE_NOTIFY_KEY, key, val);
+			gdm_sigchld_block_push ();
 			if (disp->slavepid > 0)
 				kill (disp->slavepid, SIGUSR2);
+			gdm_sigchld_block_pop ();
 		}
 	}
 }
@@ -2391,8 +2404,10 @@ notify_displays_string (const char *key, const char *val)
 			gdm_fdprintf (disp->master_notify_fd,
 				      "%c%s %s\n",
 				      GDM_SLAVE_NOTIFY_KEY, key, val);
+			gdm_sigchld_block_push ();
 			if (disp->slavepid > 0)
 				kill (disp->slavepid, SIGUSR2);
+			gdm_sigchld_block_pop ();
 		}
 	}
 }

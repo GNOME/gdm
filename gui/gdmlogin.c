@@ -281,21 +281,12 @@ setup_cursor (GdkCursorType type)
 }
 
 static void
-gdm_greeter_chld (int sig)
-{
-	if (backgroundpid != 0 &&
-	    waitpid (backgroundpid, NULL, WNOHANG) > 0) {
-		backgroundpid = 0;
-	}
-}
-
-static void
 kill_thingies (void)
 {
 	pid_t pid = backgroundpid;
 
 	backgroundpid = 0;
-	if (pid != 0) {
+	if (pid > 0) {
 		if (kill (pid, SIGTERM) == 0)
 			waitpid (pid, NULL, 0);
 	}
@@ -4022,7 +4013,6 @@ main (int argc, char *argv[])
 {
     struct sigaction hup;
     struct sigaction term;
-    struct sigaction chld;
     sigset_t mask;
     GIOChannel *ctrlch;
     const char *gdm_version;
@@ -4212,19 +4202,12 @@ main (int argc, char *argv[])
     if (sigaction (SIGTERM, &term, NULL) < 0) 
         gdm_login_abort (_("main: Error setting up TERM signal handler"));
 
-    chld.sa_handler = gdm_greeter_chld;
-    chld.sa_flags = SA_RESTART;
-    sigemptyset(&chld.sa_mask);
-    sigaddset (&chld.sa_mask, SIGCHLD);
-
-    if (sigaction (SIGCHLD, &chld, NULL) < 0) 
-        gdm_login_abort (_("main: Error setting up CHLD signal handler"));
-
     sigfillset (&mask);
     sigdelset (&mask, SIGTERM);
     sigdelset (&mask, SIGHUP);
     sigdelset (&mask, SIGINT);
-    sigdelset (&mask, SIGCHLD);
+    /* ignore SIGCHLD */
+    sigaddset (&mask, SIGCHLD);
     
     if (sigprocmask (SIG_SETMASK, &mask, NULL) == -1) 
 	gdm_login_abort (_("Could not set signal mask!"));

@@ -113,7 +113,10 @@ gdm_server_reinit (GdmDisplay *disp)
 
 	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
 
-	kill (disp->servpid, SIGHUP);
+	gdm_sigchld_block_push ();
+	if (disp->servpid > 0)
+		kill (disp->servpid, SIGHUP);
+	gdm_sigchld_block_pop ();
 
 	/* HACK! the Xserver can't really tell us when it got the hup signal,
 	 * so we are really stuck just going to sleep for a bit hoping that
@@ -150,7 +153,7 @@ gdm_server_stop (GdmDisplay *disp)
 
     disp->servstat = SERVER_DEAD;
 
-    if (disp->servpid != 0) {
+    if (disp->servpid > 0) {
 	    pid_t servpid;
 
 	    gdm_debug ("gdm_server_stop: Killing server pid %d",
@@ -536,6 +539,8 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     /* bad things are happening */
     if (d->servpid > 0) {
 	    pid_t pid;
+
+	    d->dsp = NULL;
 
 	    gdm_sigchld_block_push ();
 	    pid = d->servpid;
@@ -1048,7 +1053,7 @@ gdm_server_child_handler (int signal)
 			write (server_signal_pipe[1], "Yay!", 4);
 		} else if (pid == extra_process) {
 			/* an extra process died, yay! */
-			extra_process = -1;
+			extra_process = 0;
 			extra_status = status;
 		}
 	}
