@@ -128,8 +128,12 @@ extern gboolean GdmAllowRemoteAutoLogin;
 extern gboolean GdmXdmcp;	/* xdmcp enabled */
 
 /* Local prototypes */
-static gboolean gdm_xdmcp_decode_packet (void);
-static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type);
+static gboolean gdm_xdmcp_decode_packet (GIOChannel *source,
+					 GIOCondition cond,
+					 gpointer data);
+static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa,
+				    gint len,
+				    gint type);
 static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 					  struct sockaddr_in *clnt_sa,
 					  struct in_addr *local_addr,
@@ -148,7 +152,7 @@ static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *cnlt_sa);
 static GdmDisplay *gdm_xdmcp_display_alloc (struct sockaddr_in *, gint);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
-static void gdm_xdmcp_display_dispose_check (gchar *name);
+static void gdm_xdmcp_display_dispose_check (const gchar *name);
 static void gdm_xdmcp_displays_check (void);
 
 
@@ -398,7 +402,7 @@ gdm_xdmcp_run (void)
     xdmcpchan = g_io_channel_unix_new (xdmcpfd);
     g_io_add_watch_full (xdmcpchan, G_PRIORITY_DEFAULT,
 			 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
-			 (GIOFunc) gdm_xdmcp_decode_packet,
+			 gdm_xdmcp_decode_packet,
 			 GINT_TO_POINTER (xdmcpfd), NULL);
     g_io_channel_unref (xdmcpchan);
 
@@ -408,7 +412,7 @@ gdm_xdmcp_run (void)
 	choosechan = g_io_channel_unix_new (choosefd);
 	g_io_add_watch_full (choosechan, G_PRIORITY_DEFAULT,
 			     G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
-			     (GIOFunc) gdm_choose_socket_handler,
+			     gdm_choose_socket_handler,
 			     GINT_TO_POINTER (choosefd), NULL);
 	g_io_channel_unref (choosechan);
     }
@@ -432,7 +436,7 @@ gdm_xdmcp_close (void)
 
 
 static gboolean
-gdm_xdmcp_decode_packet (void)
+gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 {
     struct sockaddr_in clnt_sa;
     gint sa_len = sizeof (clnt_sa);
@@ -1296,7 +1300,7 @@ gdm_xdmcp_display_lookup (CARD32 sessid)
 
 
 static void
-gdm_xdmcp_display_dispose_check (gchar *name)
+gdm_xdmcp_display_dispose_check (const gchar *name)
 {
 	GSList *dlist;
 

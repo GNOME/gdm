@@ -30,7 +30,7 @@ void			gdm_choose_indirect_dispose_empty_id (guint id);
 
 gboolean		gdm_choose_socket_handler (GIOChannel *source,
 						   GIOCondition cond,
-						   gint fd);
+						   gpointer data);
 
 
 

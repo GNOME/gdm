@@ -58,7 +58,7 @@ static guint indirect_id = 1;
 
 
 gboolean
-gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd)
+gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gpointer data)
 {
 	gchar buf[PIPE_SIZE];
 	gint len;
