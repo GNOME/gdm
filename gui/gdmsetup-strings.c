@@ -43,7 +43,6 @@ gchar *s = N_("Standard greeter");
 gchar *s = N_("<b>Preview:</b>");
 gchar *s = N_("No screenshot available");
 gchar *s = N_("<b>Description:</b>");
-gchar *s = N_("<b>Copyright:</b>");
 gchar *s = N_("<b>Author:</b>");
 gchar *s = N_("description\n"
               "widget");
