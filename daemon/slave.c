@@ -111,6 +111,7 @@ extern gboolean GdmAlwaysRestartServer;
 extern gboolean GdmAddGtkModules;
 extern gchar *GdmConfigurator;
 extern gboolean GdmConfigAvailable;
+extern gboolean GdmChooserButton;
 extern gboolean GdmSystemMenu;
 extern gint GdmXineramaScreen;
 extern gchar *GdmGreeter;
@@ -260,6 +261,7 @@ gdm_slave_start (GdmDisplay *display)
 		return;
 
 	gdm_debug ("gdm_slave_start: Starting slave process for %s", display->name);
+
 	if (display->type == TYPE_XDMCP &&
 	    GdmPingInterval > 0) {
 		/* Handle a ALRM signals from our ping alarms */
@@ -1989,12 +1991,19 @@ gdm_slave_chooser (void)
 				buf[bytes-1] ='\0';
 			else
 				buf[bytes] ='\0';
-			send_chosen_host (d, buf);
-
-			gdm_slave_quick_exit (DISPLAY_CHOSEN);
+			if (d->type == TYPE_XDMCP) {
+				send_chosen_host (d, buf);
+				gdm_slave_quick_exit (DISPLAY_CHOSEN);
+			} else {
+				gdm_debug ("Sending locally chosen host %s", buf);
+				gdm_slave_send_string (GDM_SOP_CHOSEN_LOCAL, buf);
+				gdm_slave_quick_exit (DISPLAY_REMANAGE);
+			}
 		}
 
 		close (p[0]);
+
+		gdm_slave_quick_exit (DISPLAY_REMANAGE);
 		break;
 	}
 }
@@ -3126,6 +3135,7 @@ gdm_slave_child_handler (int sig)
 		     WEXITSTATUS (status) == DISPLAY_REBOOT ||
 		     WEXITSTATUS (status) == DISPLAY_HALT ||
 		     WEXITSTATUS (status) == DISPLAY_SUSPEND ||
+		     WEXITSTATUS (status) == DISPLAY_RUN_CHOOSER ||
 		     WEXITSTATUS (status) == DISPLAY_RESTARTGDM)) {
 			gdm_slave_quick_exit (WEXITSTATUS (status));
 		} else {
@@ -3821,6 +3831,10 @@ gdm_slave_handle_notify (const char *msg)
 			kill (d->greetpid, SIGHUP);
 	} else if (sscanf (msg, GDM_NOTIFY_CONFIG_AVAILABLE " %d", &val) == 1) {
 		GdmConfigAvailable = val;
+		if (d->greetpid > 1)
+			kill (d->greetpid, SIGHUP);
+	} else if (sscanf (msg, GDM_NOTIFY_CHOOSER_BUTTON " %d", &val) == 1) {
+		GdmChooserButton = val;
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
 	} else if (sscanf (msg, GDM_NOTIFY_RETRYDELAY " %d", &val) == 1) {

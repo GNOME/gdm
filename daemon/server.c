@@ -774,7 +774,7 @@ rotate_logs (const char *dname)
 
 char **
 gdm_server_resolve_command_line (GdmDisplay *disp,
-				 gboolean resolve_handled,
+				 gboolean resolve_flags,
 				 const char *vtarg)
 {
 	char *bin;
@@ -808,9 +808,15 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 				g_strfreev (old_argv);
 			} 
 
-			if (resolve_handled)
+			if (resolve_flags) {
 				/* Setup the handled function */
 				disp->handled = svr->handled;
+				/* never make use_chooser FALSE,
+				   it may have been set temporarily for
+				   us by the master */
+				if (svr->chooser)
+					disp->use_chooser = TRUE;
+			}
 		}
 	} else {
 		argv = ve_split (disp->command);
@@ -827,7 +833,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 			gotvtarg = TRUE;
 	}
 
-	argv = g_renew (char *, argv, len + 7);
+	argv = g_renew (char *, argv, len + 10);
 	for (i = len - 1; i >= 1; i--) {
 		argv[i+1] = argv[i];
 	}
@@ -843,6 +849,17 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 	if (disp->authfile != NULL) {
 		argv[len++] = g_strdup ("-auth");
 		argv[len++] = g_strdup (disp->authfile);
+	}
+
+	if (resolve_flags && disp->chosen_hostname) {
+		/* this display is NOT handled */
+		disp->handled = FALSE;
+		/* never ever ever use chooser here */
+		disp->use_chooser = FALSE;
+		/* run just one session */
+		argv[len++] = g_strdup ("-terminate");
+		argv[len++] = g_strdup ("-query");
+		argv[len++] = g_strdup (disp->chosen_hostname);
 	}
 
 	if (vtarg != NULL &&
@@ -897,7 +914,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
     /* Figure out the server command */
     argv = gdm_server_resolve_command_line (d,
-					    TRUE /* resolve handled */,
+					    TRUE /* resolve flags */,
 					    vtarg);
 
     command = g_strjoinv (" ", argv);

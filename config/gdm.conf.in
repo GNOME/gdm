@@ -211,8 +211,15 @@ Logo=@EXPANDED_PIXMAPDIR@/gdm-foot-logo.png
 # The standard greeter should shake if a user entered the wrong username or
 # password.  Kind of cool looking
 Quiver=true
-# The system menu is shown in the greeter
+# The system menu is shown in the greeter, this is the menu that contains
+# reboot, shutdown, suspend, config and chooser.  None of these is available
+# if this is off.  They can be turned off individually however
 SystemMenu=true
+# Should the chooser button be shown.  If this is shown, GDM can drop into
+# chooser mode which will run the xdmcp chooser locally and allow the user
+# to connect to some remote host.  Local XDMCP does not need to be enabled
+# however
+ChooserButton=true
 # Note to distributors, if you wish to have a different Welcome string
 # and wish to have this translated you can have entries such as
 # Welcome[cs]=Vitejte na %n
@@ -299,10 +306,14 @@ Enable=false
 # anything but linux since I don't own any non-linux systems.  Feel free to
 # send patches.  X servers will just not get any extra arguments then.
 #
-#Note: If you want to run an X terminal you could add an X server such as this
+# If you want to run an X terminal you could add an X server such as this
 #0=Terminal -query serverhostname
 # or for a chooser (optionally serverhostname could be localhost)
 #0=Terminal -indirect serverhostname
+#
+# If you wish to run the XDMCP chooser on the local display use the following
+# line
+#0=Chooser
 
 ## Note:
 # is your X server not listening to TCP requests?  Perhaps you should look
@@ -319,7 +330,7 @@ flexible=true
 [server-Terminal]
 name=Terminal server
 # Add -terminate to make things behave more nicely
-command=/usr/X11R6/bin/X -terminate
+command=@X_SERVER@ -terminate
 # Make this not appear in the flexible servers (we need extra params
 # anyway, and terminate would be bad for xdmcp choosing).  You can
 # make a terminal server flexible, but not with an indirect query.
@@ -329,3 +340,17 @@ command=/usr/X11R6/bin/X -terminate
 flexible=false
 # Not local, we do not handle the logins for this X server
 handled=false
+
+# To use this server type you should add -query host or -indirect host
+# to the command line
+[server-Chooser]
+name=Chooser server
+command=@X_SERVER@
+# Make this not appear in the flexible servers for now, but if you
+# wish to allow a chooser server then make this true.  This is the
+# only way to make a flexible chooser server that behaves nicely.
+flexible=false
+# Run the chooser instead of the greeter.  When the user chooses a
+# machine they will get this same server but run with
+# "-terminate -query hostname"
+chooser=true

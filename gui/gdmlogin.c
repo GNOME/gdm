@@ -90,6 +90,8 @@ static gint  GdmIconMaxWidth;
 static gboolean GdmQuiver;
 static gboolean GdmSystemMenu;
 static gboolean GdmSystemMenuReal;
+static gboolean GdmChooserButton;
+static gboolean GdmChooserButtonReal;
 static gchar *GdmHalt;
 static gchar *GdmReboot;
 static gchar *GdmSuspend;
@@ -821,6 +823,15 @@ gdm_login_halt_handler (void)
 }
 
 static void
+gdm_login_use_chooser_handler (void)
+{
+	closelog();
+
+	kill_thingies ();
+	_exit (DISPLAY_RUN_CHOOSER);
+}
+
+static void
 gdm_login_suspend_handler (void)
 {
 	if (gdm_login_query (_("Are you sure you want to suspend the machine?"))) {
@@ -857,6 +868,7 @@ gdm_login_parse_config (void)
     }
     GdmQuiver = ve_config_get_bool (config, GDM_KEY_QUIVER);
     GdmSystemMenuReal = GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
+    GdmChooserButtonReal = GdmChooserButton = ve_config_get_bool (config, GDM_KEY_CHOOSER_BUTTON);
     GdmHalt = ve_config_get_string (config, GDM_KEY_HALT);
     GdmReboot = ve_config_get_string (config, GDM_KEY_REBOOT);
     GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
@@ -932,6 +944,7 @@ gdm_login_parse_config (void)
     if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    GdmSystemMenuReal = FALSE;
 	    GdmConfigAvailableReal = FALSE;
+	    GdmChooserButtonReal = FALSE;
 	    if (GdmBackgroundRemoteOnlyColor &&
 		GdmBackgroundType == GDM_BACKGROUND_IMAGE)
 		    GdmBackgroundType = GDM_BACKGROUND_COLOR;
@@ -3013,6 +3026,22 @@ gdm_login_gui_init (void)
         gboolean got_anything = FALSE;
 
 	menu = gtk_menu_new();
+
+	if (GdmChooserButtonReal) {
+		item = gtk_menu_item_new_with_mnemonic (_("Run _XDMCP Chooser"));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		g_signal_connect (G_OBJECT (item), "activate",
+				  G_CALLBACK (gdm_login_use_chooser_handler),
+				  NULL);
+		gtk_widget_show (item);
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+				      _("Run an XDMCP chooser which will allow "
+					"you to log into available remote "
+					"machines, if there are any."),
+				      NULL);
+		got_anything = TRUE;
+	}
+
 	if (GdmConfigAvailableReal &&
 	    bin_exists (GdmConfigurator)) {
 		item = gtk_menu_item_new_with_mnemonic (_("_Configure the login manager..."));
@@ -3909,6 +3938,7 @@ gdm_reread_config (int sig, gpointer data)
 	     ! bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
 	     ! bool_same (config, GdmBrowser, GDM_KEY_BROWSER) ||
 	     ! bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
+	     ! bool_same (config, GdmChooserButton, GDM_KEY_CHOOSER_BUTTON) ||
 	     ! bool_same (config, GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
 		/* Set busy cursor */
 		setup_cursor (GDK_WATCH);

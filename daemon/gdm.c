@@ -109,6 +109,7 @@ gboolean GdmAlwaysRestartServer = FALSE;
 gchar *GdmConfigurator = NULL;
 gboolean GdmConfigAvailable = FALSE;
 gboolean GdmSystemMenu = FALSE;
+gboolean GdmChooserButton = FALSE;
 gboolean GdmBrowser = FALSE;
 gboolean GdmAddGtkModules = FALSE;
 gchar *GdmGlobalFaceDir = NULL;
@@ -260,6 +261,7 @@ gdm_config_parse (void)
     GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
+    GdmChooserButton = gnome_config_get_bool (GDM_KEY_CHOOSER_BUTTON);
     GdmBrowser = gnome_config_get_bool (GDM_KEY_BROWSER);
     GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
     GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
@@ -415,6 +417,8 @@ gdm_config_parse (void)
 			    (GDM_KEY_SERVER_CHOOSABLE);
 		    svr->handled = gnome_config_get_bool
 			    (GDM_KEY_SERVER_HANDLED);
+		    svr->chooser = gnome_config_get_bool
+			    (GDM_KEY_SERVER_CHOOSER);
 
 		    if (ve_string_empty (svr->command)) {
 			    gdm_error (_("%s: Empty server command, "
@@ -1098,6 +1102,14 @@ gdm_cleanup_children (void)
 	    status = DISPLAY_REMANAGE;
     }
 
+    if (status == DISPLAY_RUN_CHOOSER) {
+	    /* use the chooser on the next run (but only if allowed) */
+	    if (GdmSystemMenu &&
+		GdmChooserButton)
+		    d->use_chooser = TRUE;
+	    status = DISPLAY_REMANAGE;
+    }
+
     if (status == DISPLAY_CHOSEN) {
 	    /* forget about this indirect id, since this
 	     * display will be dead very soon, and we don't want it
@@ -1254,8 +1266,20 @@ start_autopsy:
 			 * start them now */
 			gdm_start_first_unborn_local (3 /* delay */);
 		}
+	} else if (d->type == TYPE_FLEXI || d->type == TYPE_FLEXI_XNEST) {
+		/* if this was a chooser session and we have chosen a host,
+		   then we don't want to unmanage, we want to manage and
+		   choose that host */
+		if (d->chosen_hostname != NULL) {
+			if ( ! gdm_display_manage (d)) {
+				gdm_display_unmanage (d);
+			}
+		} else {
+			/* else, this is a one time thing */
+			gdm_display_unmanage (d);
+		}
 	/* Remote displays will send a request to be managed */
-	} else /* TYPE_XDMCP, TYPE_FLEXI, TYPE_FLEXI_XNEST */ {
+	} else /* TYPE_XDMCP */ {
 		gdm_display_unmanage (d);
 	}
 	
@@ -1655,7 +1679,7 @@ write_x_servers (GdmDisplay *d)
 		char **argv;
 		char *command;
 		argv = gdm_server_resolve_command_line
-			(d, FALSE /* resolve_handled */,
+			(d, FALSE /* resolve_flags */,
 			 NULL /* vtarg */);
 		command = g_strjoinv (" ", argv);
 		g_strfreev (argv);
@@ -1724,6 +1748,32 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 	if (strncmp (msg, GDM_SOP_CHOSEN " ",
 		     strlen (GDM_SOP_CHOSEN " ")) == 0) {
 		gdm_choose_data (msg);
+	} else if (strncmp (msg, GDM_SOP_CHOSEN_LOCAL " ",
+		            strlen (GDM_SOP_CHOSEN_LOCAL " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		char *p;
+
+		if (sscanf (msg, GDM_SOP_CHOSEN_LOCAL " %ld", &slave_pid)
+		    != 1)
+			return;
+		p = strchr (msg, ' ');
+		if (p != NULL)
+			p = strchr (p+1, ' ');
+		if (p == NULL)
+			return;
+		p++;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			g_free (d->chosen_hostname);
+			d->chosen_hostname = g_strdup (p);
+			gdm_debug ("Got CHOSEN_LOCAL == %s", p);
+			/* send ack */
+			send_slave_ack (d);
+		}
 	} else if (strncmp (msg, GDM_SOP_XPID " ",
 		            strlen (GDM_SOP_XPID " ")) == 0) {
 		GdmDisplay *d;
@@ -2260,6 +2310,7 @@ check_cookie (const char *file, const char *disp, const char *cookie)
 static void
 handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		     gboolean handled,
+		     gboolean chooser,
 		     const char *xnest_disp, uid_t xnest_uid,
 		     const char *xnest_auth_file,
 		     const char *xnest_cookie)
@@ -2332,7 +2383,12 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 				      "ERROR 2 Startup errors\n");
 		return;
 	}
+
+	/* It is kind of ugly that we don't use
+	   the standard resolution for this, but
+	   oh well, this makes other things simpler */
 	display->handled = handled;
+	display->use_chooser = chooser;
 
 	if (type == TYPE_FLEXI_XNEST) {
 		GdmDisplay *parent;
@@ -2503,6 +2559,15 @@ update_config (const char *key)
 		GdmConfigAvailable = val;
 
 		notify_displays_int (GDM_NOTIFY_CONFIG_AVAILABLE, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_CHOOSER_BUTTON)) {
+		gboolean val = gnome_config_get_bool (GDM_KEY_CHOOSER_BUTTON);
+		if (ve_bool_equal (val, GdmChooserButton))
+			goto update_config_ok;
+		GdmChooserButton = val;
+
+		notify_displays_int (GDM_NOTIFY_CHOOSER_BUTTON, val);
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_RETRYDELAY)) {
@@ -2681,6 +2746,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 		handle_flexi_server (conn, TYPE_FLEXI, GdmStandardXServer,
 				     TRUE /* handled */,
+				     FALSE /* chooser */,
 				     NULL, 0, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
 		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
@@ -2722,7 +2788,12 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 		g_free (name);
 
-		handle_flexi_server (conn, TYPE_FLEXI, command, svr->handled,
+		handle_flexi_server (conn, TYPE_FLEXI, command,
+				     /* It is kind of ugly that we don't use
+					the standard resolution for this, but
+					oh well, this makes other things simpler */
+				     svr->handled,
+				     svr->chooser,
 				     NULL, 0, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
 		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
@@ -2752,6 +2823,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		
 		handle_flexi_server (conn, TYPE_FLEXI_XNEST, GdmXnest,
 				     TRUE /* handled */,
+				     FALSE /* chooser */,
 				     dispname, uid, xauthfile, cookie);
 
 		g_free (dispname);

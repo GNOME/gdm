@@ -8,6 +8,7 @@ extern gboolean GdmShowXtermFailsafeSession;
 extern gboolean GdmShowLastSession;
 extern gboolean GdmSystemMenu;
 extern gboolean GdmConfigAvailable;
+extern gboolean GdmChooserButton;
 extern gchar *GdmHalt;
 extern gchar *GdmReboot;
 extern gchar *GdmSuspend;

@@ -1958,6 +1958,9 @@ setup_gui (void)
 	setup_notify_toggle ("config_available",
 			     GDM_KEY_CONFIG_AVAILABLE,
 			     GDM_KEY_CONFIG_AVAILABLE /* notify_key */);
+	setup_notify_toggle ("chooser_button",
+			     GDM_KEY_CHOOSER_BUTTON,
+			     GDM_KEY_CHOOSER_BUTTON /* notify_key */);
 	setup_notify_toggle ("disallow_tcp",
 			     GDM_KEY_DISALLOWTCP,
 			     GDM_KEY_DISALLOWTCP /* notify_key */);

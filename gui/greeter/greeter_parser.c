@@ -937,6 +937,11 @@ parse_stock (xmlNodePtr node,
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_Quit"));
 	}
+      else if (g_ascii_strcasecmp (prop, "chooser") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("_XDMCP Chooser"));
+	}
       else if (g_ascii_strcasecmp (prop, "caps-lock-warning") == 0)
         {
 	  g_free (*translated_text);

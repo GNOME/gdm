@@ -36,7 +36,7 @@ void		gdm_server_whack_clients (GdmDisplay *disp);
 void		gdm_server_checklog	(GdmDisplay *disp);
 
 char **		gdm_server_resolve_command_line (GdmDisplay *disp,
-						 gboolean resolve_handled,
+						 gboolean resolve_flags,
 						 const char *vtarg);
 
 

@@ -216,9 +216,14 @@ greeter_item_is_visible (GreeterItemInfo *info)
       ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
     return FALSE;
 
-  if ( ! GdmConfigAvailable &&
+  if (( ! GdmConfigAvailable || ! GdmSystemMenu) &&
       info->show_type != NULL &&
       strcmp (info->show_type, "config") == 0)
+	  return FALSE;
+
+  if (( ! GdmChooserButton || ! GdmSystemMenu) &&
+      info->show_type != NULL &&
+      strcmp (info->show_type, "chooser") == 0)
 	  return FALSE;
 
   if ( ! GdmSystemMenu &&

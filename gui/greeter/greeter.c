@@ -50,6 +50,7 @@ gchar *GdmSuspend = NULL;
 gchar *GdmConfigurator = NULL;
 gboolean GdmSystemMenu = TRUE;
 gboolean GdmConfigAvailable = TRUE;
+gboolean GdmChooserButton = TRUE;
 gboolean GdmTimedLoginEnable;
 gboolean GdmUse24Clock;
 gchar *GdmGlobalFaceDir;
@@ -111,6 +112,7 @@ greeter_parse_config (void)
     GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
     GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
     GdmConfigAvailable = ve_config_get_bool (config, GDM_KEY_CONFIG_AVAILABLE);
+    GdmChooserButton = ve_config_get_bool (config, GDM_KEY_CHOOSER_BUTTON);
     GdmHalt = ve_config_get_string (config, GDM_KEY_HALT);
     GdmReboot = ve_config_get_string (config, GDM_KEY_REBOOT);
     GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
@@ -889,6 +891,12 @@ greeter_reread_config (int sig, gpointer data)
 	     ! string_same (config,
 			    GdmConfigurator,
 			    GDM_KEY_CONFIGURATOR) ||
+	     ! bool_same (config,
+			  GdmConfigAvailable,
+			  GDM_KEY_CONFIG_AVAILABLE) ||
+	     ! bool_same (config,
+			  GdmChooserButton,
+			  GDM_KEY_CHOOSER_BUTTON) ||
 	     ! bool_same (config,
 			  GdmTimedLoginEnable,
 			  GDM_KEY_TIMED_LOGIN_ENABLE) ||

@@ -80,32 +80,23 @@ query_greeter_suspend_handler (void)
 static void
 greeter_reboot_handler (void)
 {
-	/*if (greeter_query (_("Are you sure you want to reboot the machine?"))) {*/
-		closelog();
-		
-		_exit (DISPLAY_REBOOT);
-	/*}*/
+	closelog();
+	_exit (DISPLAY_REBOOT);
 }
 
 
 static void
 greeter_halt_handler (void)
 {
-	/* if (greeter_query (_("Are you sure you want to shut down the machine?"))) { */
-		closelog();
-
-		_exit (DISPLAY_HALT);
-	/* } */
+	closelog();
+	_exit (DISPLAY_HALT);
 }
 
 static void
 greeter_suspend_handler (void)
 {
-	/* if (greeter_query (_("Are you sure you want to suspend the machine?"))) { */
-		closelog();
-
-		_exit (DISPLAY_SUSPEND);
-	/* } */
+	printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
+	fflush (stdout);
 }
 
 static void
@@ -125,6 +116,13 @@ greeter_config_handler (void)
 	fflush (stdout);
 }
 
+static void
+greeter_chooser_handler (void)
+{
+	closelog();
+	_exit (DISPLAY_RUN_CHOOSER);
+}
+
 
 static void
 greeter_system_handler (GreeterItemInfo *info,
@@ -136,42 +134,40 @@ greeter_system_handler (GreeterItemInfo *info,
   GtkWidget *suspend_radio = NULL;
   GtkWidget *reboot_radio = NULL;
   GtkWidget *config_radio = NULL;
+  GtkWidget *chooser_radio = NULL;
   int ret;
   GSList *radio_group = NULL;
+  static GtkTooltips *tooltips = NULL;
 
   /* should never be allowed by the UI */
   if ( ! GdmSystemMenu)
 	  return;
 
   dialog = gtk_dialog_new ();
+  if (tooltips == NULL)
+	  tooltips = gtk_tooltips_new ();
 
   if (working_command_exists (GdmHalt)) {
-	  halt_radio = gtk_radio_button_new_with_mnemonic (NULL,
-							   _("Shut down the computer"));
+	  if (group_radio != NULL)
+		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
+	  halt_radio = gtk_radio_button_new_with_mnemonic (radio_group,
+							   _("Shut _down the computer"));
 	  group_radio = halt_radio;
+	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (halt_radio),
+				_("Shut down your computer so that "
+				  "you may turn it off."),
+				NULL);
 	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			      halt_radio,
 			      FALSE, FALSE, 4);
 	  gtk_widget_show (halt_radio);
   }
 
-  if (working_command_exists (GdmSuspend)) {
-	  if (group_radio != NULL)
-		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
-	  suspend_radio = gtk_radio_button_new_with_mnemonic (radio_group,
-							      _("Suspend the computer"));
-	  group_radio = suspend_radio;
-	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			      suspend_radio,
-			      FALSE, FALSE, 4);
-	  gtk_widget_show (suspend_radio);
-  }
-  
   if (working_command_exists (GdmReboot)) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  reboot_radio = gtk_radio_button_new_with_mnemonic (radio_group,
-							     _("Reboot the computer"));
+							     _("_Reboot the computer"));
 	  group_radio = reboot_radio;
 	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			      reboot_radio,
@@ -179,13 +175,46 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_widget_show (reboot_radio);
   }
 
+  if (working_command_exists (GdmSuspend)) {
+	  if (group_radio != NULL)
+		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
+	  suspend_radio = gtk_radio_button_new_with_mnemonic (radio_group,
+							      _("Sus_pend the computer"));
+	  group_radio = suspend_radio;
+	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			      suspend_radio,
+			      FALSE, FALSE, 4);
+	  gtk_widget_show (suspend_radio);
+  }
+
+  if (GdmChooserButton) {
+	  if (group_radio != NULL)
+		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
+	  chooser_radio = gtk_radio_button_new_with_mnemonic (radio_group,
+							     _("Run _XDMCP chooser"));
+	  group_radio = chooser_radio;
+	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (chooser_radio),
+				_("Run an XDMCP chooser which will allow "
+				  "you to log into available remote "
+				  "machines, if there are any."),
+				NULL);
+	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			      chooser_radio,
+			      FALSE, FALSE, 4);
+	  gtk_widget_show (chooser_radio);
+  }
+
   if (GdmConfigAvailable &&
       bin_exists (GdmConfigurator)) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  config_radio = gtk_radio_button_new_with_mnemonic (radio_group,
-							     _("Configure the login manager"));
+							     _("_Configure the login manager"));
 	  group_radio = config_radio;
+	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (config_radio),
+				_("Configure GDM (this login manager). "
+				  "This will require the root password."),
+				NULL);
 	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			      config_radio,
 			      FALSE, FALSE, 4);
@@ -224,6 +253,8 @@ greeter_system_handler (GreeterItemInfo *info,
     greeter_suspend_handler ();
   else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (config_radio)))
     greeter_config_handler ();
+  else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (chooser_radio)))
+    greeter_chooser_handler ();
 
   gtk_widget_destroy (dialog);
 }
@@ -246,5 +277,8 @@ greeter_item_system_setup (void)
 					 NULL);
   greeter_item_register_action_callback ("config_button",
 					 (ActionFunc)greeter_config_handler,
+					 NULL);
+  greeter_item_register_action_callback ("chooser_button",
+					 (ActionFunc)greeter_chooser_handler,
 					 NULL);
 }

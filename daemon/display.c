@@ -263,6 +263,15 @@ gdm_display_manage (GdmDisplay *d)
 	break;
     }
 
+    /* invalidate chosen hostname */
+    g_free (d->chosen_hostname);
+    d->chosen_hostname = NULL;
+
+    /* use_chooser can only be temporary, if you want it permanent you set it up
+       in the server definition with "chooser=true" and it will get set up during
+       server command line resolution */
+    d->use_chooser = FALSE;
+
     if (SERVER_IS_LOCAL (d)) {
 	    d->dispstat = DISPLAY_ALIVE;
     }
@@ -352,6 +361,9 @@ gdm_display_dispose (GdmDisplay *d)
 	g_free (d->name);
 	d->name = NULL;
     }
+    
+    g_free (d->chosen_hostname);
+    d->chosen_hostname = NULL;
 
     g_free (d->hostname);
     d->hostname = NULL;

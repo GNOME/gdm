@@ -50,16 +50,17 @@
 #define SERVER_ABORT 253	/* Server failed badly. Suspending display. */
 
 /* DO NOTE USE 1, that's used as error if x connection fails usually */
-/* Note that there is no reasons why these were a power of two, and note
+/* Note that there is no reason why these were a power of two, and note
  * that they have to fit in 256 */
 /* These are the exit codes */
 #define DISPLAY_REMANAGE 2	/* Restart display */
 #define DISPLAY_ABORT 4		/* Houston, we have a problem */
 #define DISPLAY_REBOOT 8	/* Rebewt */
 #define DISPLAY_HALT 16		/* Halt */
-#define DISPLAY_SUSPEND 17	/* Suspend */
+#define DISPLAY_SUSPEND 17	/* Suspend (don't use, use the interrupt) */
 #define DISPLAY_CHOSEN 20	/* successful chooser session,
 				   restart display */
+#define DISPLAY_RUN_CHOOSER 30	/* Run chooser */
 #define DISPLAY_XFAILED 64	/* X failed */
 #define DISPLAY_RESTARTGREETER 127 /* Restart greeter */
 #define DISPLAY_RESTARTGDM 128	/* Restart GDM */
@@ -179,6 +180,8 @@ enum {
 #define GDM_KEY_SERVER_CHOOSABLE "choosable=false"
 /* Login is handled by gdm, otherwise it's a remote server */
 #define GDM_KEY_SERVER_HANDLED "handled=true"
+/* Instead of the greeter run the chooser */
+#define GDM_KEY_SERVER_CHOOSER "chooser=false"
 
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
@@ -217,6 +220,7 @@ enum {
 #define GDM_KEY_SYSMENU "greeter/SystemMenu=true"
 #define GDM_KEY_CONFIGURATOR "daemon/Configurator=" EXPANDED_GDMCONFIGDIR "/gdmsetup --disable-sound --disable-crash-dialog"
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
+#define GDM_KEY_CHOOSER_BUTTON "greeter/ChooserButton=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %n"
 #define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
@@ -279,7 +283,9 @@ struct _GdmDisplay {
     gboolean authfb;
     gchar *command;
     gboolean failsafe_xserver;
-    gboolean use_chooser;
+    gboolean use_chooser; /* run chooser instead of greeter */
+    gchar *chosen_hostname; /* locally chosen hostname if not NULL,
+			       "-query chosen_hostname" is appened to server command line */
     guint indirect_id;
     gchar *cookie;
     gchar *bcookie;
@@ -350,6 +356,7 @@ struct _GdmXServer {
 	char *command;
 	gboolean flexible;
 	gboolean choosable; /* not implemented yet */
+	gboolean chooser; /* instead of greeter, run chooser */
 	gboolean handled;
 };
 
@@ -413,6 +420,7 @@ void		gdm_final_cleanup	(void);
  * the slave will be sent a SIGUSR2 */
 /* The fifo protocol, used only by gdm internally */
 #define GDM_SOP_CHOSEN       "CHOSEN" /* <indirect id> <ip addr> */
+#define GDM_SOP_CHOSEN_LOCAL "CHOSEN_LOCAL" /* <slave pid> <hostname> */
 #define GDM_SOP_XPID         "XPID" /* <slave pid> <xpid> */
 #define GDM_SOP_SESSPID      "SESSPID" /* <slave pid> <sesspid> */
 #define GDM_SOP_GREETPID     "GREETPID" /* <slave pid> <greetpid> */
@@ -457,6 +465,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_NOTIFY_ALLOWREMOTEAUTOLOGIN "AllowRemoteAutoLogin" /* <true/false as int> */
 #define GDM_NOTIFY_SYSMENU "SystemMenu" /* <true/false as int> */
 #define GDM_NOTIFY_CONFIG_AVAILABLE "ConfigAvailable" /* <true/false as int> */
+#define GDM_NOTIFY_CHOOSER_BUTTON "ChooserButton" /* <true/false as int> */
 #define GDM_NOTIFY_RETRYDELAY "RetryDelay" /* <seconds> */
 #define GDM_NOTIFY_GREETER "Greeter" /* <greeter binary> */
 #define GDM_NOTIFY_REMOTEGREETER "RemoteGreeter" /* <greeter binary> */
@@ -603,6 +612,7 @@ void		gdm_final_cleanup	(void);
  *   		 xdmcp/TimedLoginDelay (2.3.90.3)
  *   		 greeter/SystemMenu (2.3.90.3)
  *   		 greeter/ConfigAvailable (2.3.90.3)
+ *   		 greeter/ChooserButton (2.4.2.0)
  * Supported since: 2.3.90.2
  * Arguments:  <key>
  *   <key> is just the base part of the key such as "security/AllowRemoteRoot"
