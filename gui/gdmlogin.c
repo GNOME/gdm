@@ -1758,6 +1758,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	tmp = ve_locale_to_utf8 (buf);
 	if (strcmp (tmp, _("Username:")) == 0) {
+		gdk_beep ();
 		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Username:"));
 	} else {
 		gtk_label_set_text (GTK_LABEL (label), tmp);

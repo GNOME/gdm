@@ -262,10 +262,12 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	if (tmp != NULL && strcmp (tmp, _("Username:")) == 0)
+	if (tmp != NULL && strcmp (tmp, _("Username:")) == 0) {
+		gdk_beep ();
 		greeter_probably_login_prompt = TRUE;
-	else
+	} else {
 		greeter_probably_login_prompt = FALSE;
+	}
 	greeter_item_pam_prompt (tmp, 128, TRUE);
 	g_free (tmp);
 	break;
