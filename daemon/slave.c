@@ -801,7 +801,13 @@ focus_first_x_window (const char *class_res_name)
 {
 	pid_t pid;
 	Display *disp;
+	int p[2];
 	XWindowAttributes attribs = { 0, };
+
+	if (pipe (p) < 0) {
+		p[0] = -1;
+		p[1] = -1;
+	}
 
 	pid = fork ();
 	if (pid < 0) {
@@ -810,6 +816,24 @@ focus_first_x_window (const char *class_res_name)
 	}
 	/* parent */
 	if (pid > 0) {
+		/* Wait for this subprocess to start-up */
+		if (p[0] >= 0) {
+			fd_set rfds;
+			struct timeval tv;
+
+			close (p[1]);
+
+			FD_ZERO(&rfds);
+			FD_SET(0, &rfds);
+
+			/* Wait up to 2 seconds. */
+			tv.tv_sec = 2;
+			tv.tv_usec = 0;
+
+			select(p[0]+1, &rfds, NULL, NULL, &tv);
+
+			close (p[0]);
+		}
 		return;
 	}
 
@@ -817,7 +841,7 @@ focus_first_x_window (const char *class_res_name)
 
 	closelog ();
 
-	gdm_close_all_descriptors (0 /* from */, -1 /* except */);
+	gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
@@ -845,7 +869,12 @@ focus_first_x_window (const char *class_res_name)
 		      DefaultRootWindow (disp),
 		      attribs.your_event_mask |
 		      SubstructureNotifyMask);
-	
+
+	if (p[1] >= 0) {
+		write (p[1], "!", 1);
+		close (p[1]);
+	}
+
 	for (;;) {
 		XEvent event = { 0, };
 		XClassHint hint = { NULL, NULL };
@@ -2236,9 +2265,8 @@ get_session_exec (const char *desktop)
 }
 
 static char *
-find_prog (const char *name, const char *args, char **retpath)
+find_prog (const char *name)
 {
-	char *ret;
 	char *path;
 	int i;
 	char *try[] = {
@@ -2255,21 +2283,16 @@ find_prog (const char *name, const char *args, char **retpath)
 	path = g_find_program_in_path (name);
 	if (path != NULL &&
 	    access (path, X_OK) == 0) {
-		ret = g_strdup_printf ("%s %s", path, args);
-		*retpath = path;
-		return ret;
+		return path;
 	}
 	g_free (path);
 	for (i = 0; try[i] != NULL; i++) {
 		path = g_strconcat (try[i], name, NULL);
 		if (access (path, X_OK) == 0) {
-			ret = g_strdup_printf ("%s %s", path, args);
-			*retpath = path;
-			return ret;
+			return path;
 		}
 		g_free (path);
 	}
-	*retpath = NULL;
 	return NULL;
 }
 
@@ -2288,13 +2311,11 @@ session_child_run (struct passwd *pwent,
 {
 	int logfd;
 	gboolean failsafe = FALSE;
-	char *sesspath, *sessexec;
 	char *exec;
 	const char *shell = NULL;
 	VeConfig *dmrc = NULL;
 	Display *disp;
-	int argc;
-	char **argv;
+	char *argv[4];
 
 	gdm_unset_signals ();
 
@@ -2524,9 +2545,12 @@ session_child_run (struct passwd *pwent,
 	}
 #endif
 
-	sesspath = NULL;
-	sessexec = NULL;
+	argv[0] = NULL;
+	argv[1] = NULL;
+	argv[2] = NULL;
+	argv[3] = NULL;
 
+	exec = NULL;
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
 	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
 		exec = get_session_exec (session);
@@ -2541,39 +2565,35 @@ session_child_run (struct passwd *pwent,
 		} else {
 			/* HACK!, if failsafe, we really wish to run the
 			   internal one */
-			if (strcmp (exec, "failsafe") == 0)
+			if (strcmp (exec, "failsafe") == 0) {
 				session = GDM_SESSION_FAILSAFE_XTERM;
+				exec = NULL;
+			}
 		}
-	} else {
-		exec = NULL;
 	}
 
-	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
-	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
+	if (exec != NULL) {
+		/* cannot be possibly failsafe */
 		if (access (GdmXsession, X_OK) != 0) {
-			gdm_error (_("%s: Cannot find the base Xsession script, will try GNOME failsafe"),
+			gdm_error (_("%s: Cannot find or run the base Xsession script, will try GNOME failsafe"),
 				   "gdm_slave_session_start");
 			session = GDM_SESSION_FAILSAFE_GNOME;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
-				 _("Cannot find a base session script, will try the GNOME failsafe session for you."));
+				 _("Cannot find or run the base session script, will try the GNOME failsafe session for you."));
 		} else {
-			sesspath = g_strdup (GdmXsession);
 			/* This is where everything is OK, and note that
 			   we really DON'T care about leaks, we are going to
 			   exec in just a bit */
-			sessexec = g_strdup_printf
-				("%s %s",
-				 g_shell_quote (GdmXsession),
-				 g_shell_quote (exec));
+			argv[0] = GdmXsession;
+			argv[1] = exec;
+			argv[2] = NULL;
 		}
 	}
 
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
-		sesspath = find_prog ("gnome-session",
-				      "--failsafe",
-				      &sessexec);
-		if (sesspath == NULL) {
+		argv[0] = find_prog ("gnome-session");
+		if (argv[0] == NULL) {
 			/* yaikes */
 			gdm_error (_("%s: gnome-session not found for a failsafe GNOME session, trying xterm"),
 				   "gdm_slave_session_start");
@@ -2584,6 +2604,8 @@ session_child_run (struct passwd *pwent,
 				   "will try running the \"Failsafe xterm\"\n"
 				   "session."));
 		} else {
+			argv[1] = "--failsafe";
+			argv[2] = NULL;
 			gdm_error_box
 				(d, GTK_MESSAGE_INFO,
 				 _("This is the Failsafe Gnome session.\n"
@@ -2598,20 +2620,19 @@ session_child_run (struct passwd *pwent,
 	/* an if and not an else, we could have done a fall-through
 	 * to here in the above code if we can't find gnome-session */
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
-		char *params = g_strdup_printf ("-geometry 80x24-%d-%d",
-						d->lrh_offsetx,
-						d->lrh_offsety);
-		sesspath = find_prog ("xterm",
-				      params,
-				      &sessexec);
-		g_free (params);
-		if (sesspath == NULL) {
+		argv[0] = find_prog ("xterm");
+		if (argv[0] == NULL) {
 			gdm_error_box (d, GTK_MESSAGE_ERROR,
 				       _("Cannot find \"xterm\" to start "
 					 "a failsafe session."));
 			/* nyah nyah nyah nyah nyah */
 			_exit (0);
 		} else {
+			argv[1] = "-geometry";
+			argv[2] = g_strdup_printf ("80x24-%d-%d",
+						   d->lrh_offsetx,
+						   d->lrh_offsety);
+			argv[3] = NULL;
 			gdm_error_box
 				(d, GTK_MESSAGE_INFO,
 				 _("This is the Failsafe xterm session.\n"
@@ -2625,8 +2646,11 @@ session_child_run (struct passwd *pwent,
 		failsafe = TRUE;
 	} 
 
-	gdm_debug (_("Running %s for %s on %s"),
-		   sesspath, login, d->name);
+	gdm_debug (_("Running %s %s %s for %s on %s"),
+		   argv[0],
+		   ve_sure_string (argv[1]),
+		   ve_sure_string (argv[2]),
+		   login, d->name);
 
 	if ( ! ve_string_empty (pwent->pw_shell)) {
 		shell = pwent->pw_shell;
@@ -2647,30 +2671,19 @@ session_child_run (struct passwd *pwent,
 		_exit (0);
 	}
 
-	if ( ! g_shell_parse_argv (sessexec, &argc, &argv, NULL)) {
-		/* will go to .xsession-errors */
-		fprintf (stderr, _("%s: Could not parse `%s'"), 
-			 "gdm_slave_session_start", sessexec);
-		gdm_error (_("%s: Could not parse `%s'"), 
-			   "gdm_slave_session_start", sessexec);
-		/* if we can't read and exec the session, then make a nice
-		 * error dialog */
-		gdm_error_box
-			(d, GTK_MESSAGE_ERROR,
-			 /* we can't really be any more specific */
-			 _("Cannot start the session due to some "
-			   "internal error."));
-		/* ends as if nothing bad happened */
-		_exit (0);
-	}
+	execv (argv[0], argv);
 
-	execv (sesspath, argv);
-
-		/* will go to .xsession-errors */
-	fprintf (stderr, _("%s: Could not exec %s with as %s"), 
-		 "gdm_slave_session_start", sesspath, sessexec);
-	gdm_error (_("%s: Could not exec %s with as %s"), 
-		   "gdm_slave_session_start", sesspath, sessexec);
+	/* will go to .xsession-errors */
+	fprintf (stderr, _("%s: Could not exec %s %s %s"), 
+		 "gdm_slave_session_start",
+		 argv[0],
+		 ve_sure_string (argv[1]),
+		 ve_sure_string (argv[2]));
+	gdm_error ( _("%s: Could not exec %s %s %s"), 
+		 "gdm_slave_session_start",
+		 argv[0],
+		 ve_sure_string (argv[1]),
+		 ve_sure_string (argv[2]));
 
 	/* if we can't read and exec the session, then make a nice
 	 * error dialog */

@@ -275,6 +275,14 @@ gdm_config_parse (void)
     GdmServAuthDir = gnome_config_get_string (GDM_KEY_SERVAUTH);
     GdmSessDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmXsession = gnome_config_get_string (GDM_KEY_BASEXSESSION);
+    if (ve_string_empty (GdmXsession)) {
+	    gdm_info (_("%s: BaseXsession empty, using %s/gdm/Xsession"),
+			"gdm_config_parse",
+			EXPANDED_SYSCONFDIR);
+	    g_free (GdmXsession);
+	    GdmXsession = g_strconcat (EXPANDED_SYSCONFDIR, "/gdm/Xsession",
+				       NULL);
+    }
     GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
 #if 0
@@ -943,6 +951,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		    gnome_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
 		    gnome_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
 		    gnome_setenv ("LIBEXECDIR", EXPANDED_LIBEXECDIR, TRUE);
+		    gnome_setenv ("SYSCONFDIR", EXPANDED_SYSCONFDIR, TRUE);
 
 		    /* To enable gettext stuff in the script */
 		    gnome_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
