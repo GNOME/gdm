@@ -1461,14 +1461,15 @@ gdm_slave_greeter (void)
 	/* flush our input before we change the piping */
 	fflush (stdin);
 
-	if (pipe1[1] != STDOUT_FILENO) 
+	if (pipe1[1] != STDOUT_FILENO) {
 	    dup2 (pipe1[1], STDOUT_FILENO);
+	    close (pipe1[1]);
+	}
 	
-	if (pipe2[0] != STDIN_FILENO) 
+	if (pipe2[0] != STDIN_FILENO)  {
 	    dup2 (pipe2[0], STDIN_FILENO);
-
-	close (pipe1[1]);
-	close (pipe2[0]);
+	    close (pipe2[0]);
+	}
 	
 	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", (int)pid);
 
