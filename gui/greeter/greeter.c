@@ -3,6 +3,7 @@
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
