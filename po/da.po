@@ -163,9 +163,8 @@ msgstr "gdm_main: Fejl under opsætning af INT signalhåndtering"
 
 # src/gdmgreeter.c:1597
 #: daemon/gdm.c:566
-#, fuzzy
 msgid "gdm_main: Error setting up HUP signal handler"
-msgstr "main: Fejl under opsætning af HUP signalhåndtering"
+msgstr "gdm_main: Fejl under opsætning af HUP-signalhåndtering"
 
 # src/gdm.c:600
 #: daemon/gdm.c:574
@@ -197,6 +196,8 @@ msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr ""
+"Kunne ikke starte X-tjener adskellige gange indenfor et kort tidsperiode; "
+"deaktiverer skærm %s"
 
 #: daemon/display.c:184
 #, c-format
@@ -275,25 +276,23 @@ msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Lykkedes ikke at sætte USR1 til SIG_IGN"
 
 #: daemon/server.c:325
-#, fuzzy
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
-msgstr "gdm_server_spawn: Lykkedes ikke at sætte USR1 til SIG_IGN"
+msgstr "gdm_server_spawn: Lykkedes ikke at sætte HUP til SIG_DFL"
 
 #: daemon/server.c:329
-#, fuzzy
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
-msgstr "gdm_server_spawn: Lykkedes ikke at sætte USR1 til SIG_IGN"
+msgstr "gdm_server_spawn: Lykkedes ikke at sætte TERM til SIG_DFL"
 
 # src/gdm.c:268
 #: daemon/server.c:354
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
-msgstr "gdm_server_spawn: XServer ikke fundet: %s"
+msgstr "gdm_server_spawn: X-tjener ikke fundet: %s"
 
 # src/gdmmisc.c:277
 #: daemon/server.c:359
 msgid "gdm_server_spawn: Can't fork Xserver process!"
-msgstr "gdm_server_spawn: Kan ikke splitte Xserverproces!"
+msgstr "gdm_server_spawn: Kan ikke splitte X-tjenerproces!"
 
 # src/gdmslave.c:116
 #: daemon/slave.c:115
@@ -303,7 +302,7 @@ msgstr "gdm_slave_init: Fejl under opsætning af TERM/INT signalhåndtering"
 # src/gdmslave.c:124
 #: daemon/slave.c:124
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
-msgstr "gdm_slave_init: Fejl under opsætning af CHLD signalhåndtering"
+msgstr "gdm_slave_init: Fejl under opsætning af CHLD-signalhåndtering"
 
 # src/gdmslave.c:162
 #: daemon/slave.c:275
@@ -379,9 +378,9 @@ msgstr "gdm_slave_session_start: Kunne ikke starte session '%s'"
 
 # src/gdmslave.c:579
 #: daemon/slave.c:757
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
-msgstr "gdm_slave_windows_kill_ioerror_handler: Fatal X fejl - Genstarter %s"
+msgstr "gdm_slave_xioerror_handler: Fatal X fejl - Genstarter %s"
 
 # src/gdmmisc.c:273
 #: daemon/slave.c:854
@@ -438,7 +437,7 @@ msgstr "Kunne ikke åbne session for %s"
 
 #: daemon/verify-pam.c:198
 msgid "Authentication failed"
-msgstr ""
+msgstr "Godkendelse fejlede"
 
 #: daemon/verify-pam.c:322
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
@@ -447,23 +446,22 @@ msgstr "gdm_verify_check: Kan ikke finde PAM konfigurationsfil for gdm"
 # src/gdmgreeter.c:1291
 #. Request the user's password
 #: daemon/verify-crypt.c:64 daemon/verify-shadow.c:74
-#, fuzzy
 msgid "Password: "
-msgstr "Adgangskode:"
+msgstr "Adgangskode: "
 
 #: daemon/verify-crypt.c:72 daemon/verify-crypt.c:87 daemon/verify-shadow.c:82
 #: daemon/verify-shadow.c:97
 msgid "Login incorrect"
-msgstr ""
+msgstr "Ugyldig logind"
 
 #: daemon/verify-crypt.c:77 daemon/verify-shadow.c:87
 #, c-format
 msgid "Root login disallowed on display '%s'"
-msgstr "Root logind ikke tilladt på skærm '%s'"
+msgstr "Root-logind ikke tilladt på skærm '%s'"
 
 #: daemon/verify-crypt.c:78 daemon/verify-shadow.c:88
 msgid "Root login disallowed"
-msgstr "Root logind ikke tilladt"
+msgstr "Root-logind ikke tilladt"
 
 # src/gdmxdmcp.c:170
 #: daemon/xdmcp.c:179
@@ -622,9 +620,8 @@ msgstr "gdm_xdmcp_handle_manage: Kunne ikke læse skærmnummer"
 
 # src/gdmxdmcp.c:573
 #: daemon/xdmcp.c:776
-#, fuzzy
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
-msgstr "gdm_xdmcp_manage: Kunne ikke læse skærmklasse"
+msgstr "gdm_xdmcp_handle_manage: Kunne ikke læse skærmklasse"
 
 # src/gdmxdmcp.c:592
 #: daemon/xdmcp.c:798
@@ -783,7 +780,7 @@ msgstr "Andre"
 
 #: gui/gdmlogin.c:1449
 msgid "GNOME Desktop Manager"
-msgstr ""
+msgstr "Gnome skrivebordshåndtering"
 
 # src/gdmgreeter.c:1008
 #: gui/gdmlogin.c:1461
@@ -809,7 +806,7 @@ msgstr "Genstart..."
 # src/gdmgreeter.c:986
 #: gui/gdmlogin.c:1588
 msgid "Halt..."
-msgstr "Stop..."
+msgstr "Luk ned..."
 
 # src/gdmgreeter.c:1000
 #: gui/gdmlogin.c:1595
@@ -843,27 +840,26 @@ msgstr "main: Fejl under opsætning af TERM signalhåndtering"
 
 # src/gdm.c:600
 #: gui/gdmlogin.c:2081
-#, fuzzy
 msgid "main: Error setting up CHLD signal handler"
-msgstr "gdm_main: Fejl under opsætning af CHLD signalhåndtering"
+msgstr "main: Fejl under opsætning af CHLD-signalhåndtering"
 
 #: gui/gdmconfig.c:51
 msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr ""
+msgstr "Du skal være superbruger (root) for at konfigurerer GDM.\n"
 
 #: gui/gdmconfig.c:84
 msgid "GNOME Display Manager Configurator"
-msgstr ""
+msgstr "Skrivebordskonfigurering"
 
 #: gui/gdmconfig.c:103
 msgid "The configuration file: "
-msgstr ""
+msgstr "Konfigurationsfilen: "
 
 # src/gdm.c:215
 #: gui/gdmconfig.c:212
-#, fuzzy
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr "gdm_config_parse: Ugyldig serverlinie i konfigurationsfil. Ignorerer!"
+msgstr "gdm_config_parse:most: Ugyldig betjenerlinje i konfigurationsfil. "
+"Ignorerer!"
 
 #: gui/gdmconfig.c:279
 msgid ""
@@ -879,6 +875,8 @@ msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
 msgstr ""
+"Er du sikker på at du ønsker at renstarte GDM\n"
+"og miste alle ugemte data?"
 
 #: gui/gdmconfig.c:291
 msgid ""
@@ -901,31 +899,31 @@ msgstr ""
 #.
 #: gui/gdmconfig-strings.c:7
 msgid "Executables"
-msgstr ""
+msgstr "Kørbare"
 
 #: gui/gdmconfig-strings.c:8
 msgid "Chooser binary: "
-msgstr ""
+msgstr "Vælger-binær: "
 
 #: gui/gdmconfig-strings.c:9
 msgid "Greeter binary: "
-msgstr ""
+msgstr "Velkommer-binær: "
 
 #: gui/gdmconfig-strings.c:10
 msgid "Halt command: "
-msgstr ""
+msgstr "Lun ned-kommando: "
 
 #: gui/gdmconfig-strings.c:11
 msgid "Reboot command: "
-msgstr ""
+msgstr "Genstart-kommando: "
 
 #: gui/gdmconfig-strings.c:12
 msgid "Directories"
-msgstr ""
+msgstr "Kataloger"
 
 #: gui/gdmconfig-strings.c:13
 msgid "Session directory: "
-msgstr ""
+msgstr "Sessionskatalog: "
 
 # src/gdmgreeter.c:790
 #: gui/gdmconfig-strings.c:14
@@ -939,7 +937,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:16
 msgid "Logging directory: "
-msgstr ""
+msgstr "Logkatalog: "
 
 #: gui/gdmconfig-strings.c:17
 msgid "Display initialization directory: "
@@ -947,39 +945,39 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:18
 msgid "Miscelleaneous"
-msgstr ""
+msgstr "Diverse"
 
 #: gui/gdmconfig-strings.c:19
 msgid "PID file: "
-msgstr ""
+msgstr "PID-fil: "
 
 #: gui/gdmconfig-strings.c:20
 msgid "Default $PATH: "
-msgstr ""
+msgstr "Standard-$PATH: "
 
 #: gui/gdmconfig-strings.c:21
 msgid "Root $PATH: "
-msgstr ""
+msgstr "Root-$PATH: "
 
 #: gui/gdmconfig-strings.c:22
 msgid "Automatic Login: "
-msgstr ""
+msgstr "Automatisk logind: "
 
 #: gui/gdmconfig-strings.c:23
 msgid "GDM"
-msgstr ""
+msgstr "GDM"
 
 #: gui/gdmconfig-strings.c:24
 msgid "Options"
-msgstr ""
+msgstr "Indstillinger"
 
 #: gui/gdmconfig-strings.c:25
 msgid "Allow root to login with GDM"
-msgstr ""
+msgstr "Tillad root at logge ind med GDM"
 
 #: gui/gdmconfig-strings.c:26
 msgid "Kill 'init' clients"
-msgstr ""
+msgstr "Dræb 'init'-klienter"
 
 #: gui/gdmconfig-strings.c:27
 msgid "Relax permissions"
@@ -991,11 +989,11 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:29
 msgid "Authorization Details"
-msgstr ""
+msgstr "Godkendelsesdetaljer"
 
 #: gui/gdmconfig-strings.c:30
 msgid "GDM runs as this user: "
-msgstr ""
+msgstr "GDM kører som denne bruger: "
 
 #: gui/gdmconfig-strings.c:31
 msgid "User 'auth' directory: "
@@ -1015,7 +1013,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:35
 msgid "Limits"
-msgstr ""
+msgstr "Begrænsninger"
 
 #: gui/gdmconfig-strings.c:36
 msgid "Retry delay: "
@@ -1027,11 +1025,11 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:38
 msgid "Security"
-msgstr ""
+msgstr "Sikkerhed"
 
 #: gui/gdmconfig-strings.c:39
 msgid "Enable XDMCP"
-msgstr ""
+msgstr "Anvend XDMCP"
 
 #: gui/gdmconfig-strings.c:40
 msgid "Connection Settings"
@@ -1047,7 +1045,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:43
 msgid "Maximum wait time: "
-msgstr ""
+msgstr "Maksimal ventetid: "
 
 #: gui/gdmconfig-strings.c:44
 msgid "Maximum remote sessions: "
@@ -1067,7 +1065,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:48
 msgid "XDMCP"
-msgstr ""
+msgstr "XDMCP"
 
 #: gui/gdmconfig-strings.c:49
 msgid "General Appearance"
@@ -1075,21 +1073,20 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:50
 msgid "Gtk+ RC file: "
-msgstr ""
+msgstr "Gtk+ RC-fil: "
 
 # src/gdmgreeter.c:1285
 #: gui/gdmconfig-strings.c:51
-#, fuzzy
 msgid "Logo: "
-msgstr "Logind:"
+msgstr "Logo: "
 
 #: gui/gdmconfig-strings.c:52
 msgid "Select a GTK+ theme file (gtkrc)"
-msgstr ""
+msgstr "Vælg en Gtk+-temafil (gtkrc)"
 
 #: gui/gdmconfig-strings.c:53
 msgid "Minimised Icon: "
-msgstr ""
+msgstr "Minimeret ikon: "
 
 #: gui/gdmconfig-strings.c:54
 msgid "Select a log to be displayed during login"
@@ -1109,53 +1106,52 @@ msgstr ""
 
 # src/gdmmisc.c:203
 #: gui/gdmconfig-strings.c:58
-#, fuzzy, c-format
+#, c-format
 msgid "Welcome to %n"
-msgstr "Velkommen til %s"
+msgstr "Velkommen til %n"
 
 #: gui/gdmconfig-strings.c:59
 #, c-format
 msgid "%n"
-msgstr ""
+msgstr "%n"
 
 #: gui/gdmconfig-strings.c:60 gui/gdmconfig-strings.c:61
 #, c-format
 msgid "This is %n"
-msgstr ""
+msgstr "Dette er %n"
 
 #: gui/gdmconfig-strings.c:62
 msgid "Default font: "
-msgstr ""
+msgstr "Standard-skrifttype: "
 
 #: gui/gdmconfig-strings.c:63
 msgid "Exclude these users: "
-msgstr ""
+msgstr "Udeluk disse brugere: "
 
 # src/gdmmisc.c:203
 #: gui/gdmconfig-strings.c:64
-#, fuzzy
 msgid "Welcome message: "
-msgstr "Velkommen til %s"
+msgstr "Velkomstbesked: "
 
 #: gui/gdmconfig-strings.c:65
 msgid "Pick a Font"
-msgstr ""
+msgstr "Vælg skrift"
 
 #: gui/gdmconfig-strings.c:66
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr ""
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzÆæØøÅå"
 
 #: gui/gdmconfig-strings.c:67
 msgid "Background Program: "
-msgstr ""
+msgstr "Baggrundsprogram: "
 
 #: gui/gdmconfig-strings.c:68 gui/gdmconfig-strings.c:85
 msgid "Select a file containing Locale information"
-msgstr ""
+msgstr "Vælg en fil som indeholder Locale-information"
 
 #: gui/gdmconfig-strings.c:69
 msgid "Position"
-msgstr ""
+msgstr "Position"
 
 #: gui/gdmconfig-strings.c:70
 msgid "Manually set position"
@@ -1163,27 +1159,27 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:71
 msgid "Lock position"
-msgstr ""
+msgstr "Lås position"
 
 #: gui/gdmconfig-strings.c:72
 msgid "X position: "
-msgstr ""
+msgstr "X-position: "
 
 #: gui/gdmconfig-strings.c:73
 msgid "Y position: "
-msgstr ""
+msgstr "Y-position: "
 
 #: gui/gdmconfig-strings.c:74
 msgid "Xinerama screen: "
-msgstr ""
+msgstr "Xinerama-skærm: "
 
 #: gui/gdmconfig-strings.c:75
 msgid "User Interface"
-msgstr ""
+msgstr "Brugerglade"
 
 #: gui/gdmconfig-strings.c:76
 msgid "Face browser"
-msgstr ""
+msgstr "Ansigtsbladrer"
 
 #: gui/gdmconfig-strings.c:77
 msgid "Show choosable user images (enable face browser)"
@@ -1215,23 +1211,23 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:84
 msgid "Localization"
-msgstr ""
+msgstr "Lokaliseting"
 
 #: gui/gdmconfig-strings.c:86
 msgid "Locale file: "
-msgstr ""
+msgstr "Locale-fil: "
 
 #: gui/gdmconfig-strings.c:87
 msgid "Default locale: "
-msgstr ""
+msgstr "Standard-locale: "
 
 #: gui/gdmconfig-strings.c:88
 msgid "Greeter"
-msgstr ""
+msgstr "Velkommer"
 
 #: gui/gdmconfig-strings.c:89
 msgid "Appearance"
-msgstr ""
+msgstr "Udseende"
 
 #: gui/gdmconfig-strings.c:90
 msgid "Directory for host images: "
@@ -1243,15 +1239,15 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:92
 msgid "Refresh"
-msgstr ""
+msgstr "Opdatér"
 
 #: gui/gdmconfig-strings.c:93
 msgid "Scan every 'x' seconds: "
-msgstr ""
+msgstr "Skan hver 'x' sekunder: "
 
 #: gui/gdmconfig-strings.c:94
 msgid "Chooser"
-msgstr ""
+msgstr "Vælger"
 
 #: gui/gdmconfig-strings.c:95
 msgid "Server Definitions"
@@ -1259,27 +1255,27 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:96
 msgid "No."
-msgstr ""
+msgstr "Nej."
 
 #: gui/gdmconfig-strings.c:97
 msgid "Path to X server"
-msgstr ""
+msgstr "Sti til X-tjener"
 
 #: gui/gdmconfig-strings.c:98
 msgid "Add Server"
-msgstr ""
+msgstr "Tilføj betjener"
 
 #: gui/gdmconfig-strings.c:99
 msgid "Edit Server"
-msgstr ""
+msgstr "Ændr betjener"
 
 #: gui/gdmconfig-strings.c:100
 msgid "Delete Server"
-msgstr ""
+msgstr "Fjern betjener"
 
 #: gui/gdmconfig-strings.c:101
 msgid "Debugging"
-msgstr ""
+msgstr "Aflusning"
 
 #: gui/gdmconfig-strings.c:102
 msgid "Enable debugging output"
@@ -1287,7 +1283,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:103
 msgid "Servers"
-msgstr ""
+msgstr "Betjenere"
 
 #~ msgid "User unknown"
 #~ msgstr "Bruger ukendt"
