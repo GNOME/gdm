@@ -22,7 +22,9 @@ do
 done
 
 # clean up after xbanner
-freetemp
+if which freetemp 2> /dev/null ; then
+	freetemp
+fi
 
 startup=$HOME/.xsession
 
