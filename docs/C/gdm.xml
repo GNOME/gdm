@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.4.1.102"> 
-    <!ENTITY date "8/25/2003"> 
+    <!ENTITY version "2.4.4.0"> 
+    <!ENTITY date "8/26/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -254,7 +254,7 @@
 	<filename>gdmflexiserver -n</filename>.  These servers
 	are not restarted when the user session ends.  
 	<filename>gdmflexiserver</filename> normally also locks the users
-	screen screen before running a new server with xscreensaver.
+	screen before running a new server with xscreensaver.
       </para>
 
       <para>
@@ -316,7 +316,8 @@
 	using hardware random number generators if available, plus the
 	current time (in microsecond precision), a 20 byte array of pseudorandom
 	numbers, process pid's, plus other random information (possibly using
-	/dev/audio or /dev/mem) to create a large buffer and then run MD5.
+	<filename>/dev/audio</filename> or <filename>/dev/mem</filename>)
+	to create a large buffer and then run MD5.
 	Obviously, all this work is wasted if you send this cookie over
 	an open network or store it on an NFS directory (see
 	<filename>UserAuthDir</filename> configuration key).
@@ -432,12 +433,13 @@
         The menu bar in the top of the greeter enables the user to
         select the requested session type/desktop environment,
         select an appropriate locale/language and optionally
-        shutdown/reboot the machine.
+        shutdown/reboot/suspend the machine, configure GDM (given the user
+	knows the root password) or start an XDMCP chooser.
       </para>
 
       <para>
-        The greeter provides a face browser containing icons for all
-        the users on a system. The icons can be installed globally
+        Optionally the greeter can provide a face browser containing
+	icons for all the users on a system. The icons can be installed globally
         by the sysadmin or in the users' home directories.  If installed
         globally they should be in the <filename>share/faces/</filename>
         directory (though this can be configured with the
@@ -464,7 +466,12 @@
         user home directories can be a very time consuming task.
         Especially on large systems or systems running NIS. The
         browser feature is only intended for systems with relatively
-        few users.
+        few users.  Also if home directories are on an on demand
+	mounted filesystem like AFS, then GDM may mount all the
+	home directories just to check for pictures if the face
+	browser is on.  GDM will try to give up after 5 seconds of activity
+	however and only display the users whoose pictures it
+	has gotten so far.
       </para>
 
       <para>
@@ -477,17 +484,19 @@
 
       <para>
         When the browser is turned on, valid usernames on the
-        machine are inherently exposed to a potential intruder. If
-        your system is connected directly to the Internet, this
-        might be a bad idea.
+        machine are inherently exposed to a potential intruder.
+	This may be a bad idea if you don't know who can get to a login
+	screen.  This is especially true if you run XDMCP.  However
+	you should never run XDMCP on an open network anyway.
       </para>
 
       <para>
         The greeter can optionally display a logo in the login
         window. The image must be in a format readable to the gdk-pixbuf
         library (GIF, JPG, PNG, TIFF, XPM and possibly others), and
-        it must be readable to the gdm user. See the <filename>
-        Logo</filename> option in the reference section below for details.
+        it must be readable to the gdm user. See the
+	<filename>Logo</filename> option in the reference section below
+	for details.
       </para>
 
     </sect2>
@@ -708,11 +717,13 @@
 	PostLogin/
 	PostSession/
 	PreSession/
+	modules/
 	gdm.conf
 	factory-gdm.conf
 	locale.alias
 	Xsession
-	XKeepsCrashing</screen>
+	XKeepsCrashing
+</screen>
 
     <para> 
       <filename>gdm.conf</filename> is the main GDM configuration file. The
@@ -745,6 +756,11 @@
       <filename>gdm.conf</filename> is configuration file for both <filename>
       gdm</filename>, <filename>gdmgreeter</filename>, <filename>gdmlogin</filename>,
       and <filename>gdmchooser</filename> since a lot of parameters overlap.
+    </para>
+
+    <para>
+      Accessibility modules are configured in the <filename>modules/</filename>
+      subdirectory, and are a separate topic.
     </para>
 
     <para>
@@ -801,7 +817,8 @@
 	would be the script where you might setup the home directory
 	if you need to (though you should use the
 	<filename>pam_mount</filename> module if you can for this).
-	You have the $USER and $DISPLAY environment variables set for this script,
+	You have the <filename>$USER</filename> and <filename>$DISPLAY</filename>
+	environment variables set for this script,
 	and again it is run as root.  The script should return 0 on success
 	as otherwise the user won't be logged in.  This is not true for
 	failsafe session however.
@@ -813,12 +830,12 @@
 	directory, again in the same manner as the <filename>Init</filename>
 	directory.  Use this
 	script for local session management or accounting stuff. The
-	$USER environment variable contains the login of the
-	authenticated user and $DISPLAY is set to the current display.
+	<filename>$USER</filename> environment variable contains the login of the
+	authenticated user and <filename>$DISPLAY</filename> is set to the current display.
 	The script should return 0 on success.  Any
 	other value will cause GDM to terminate the current login
 	process.  This is not true for failsafe sessions however.
-	Also $X_SERVERS environmental variable is set and this points
+	Also <filename>$X_SERVERS</filename> environmental variable is set and this points
 	to a fake generated x servers file for use with the
 	sessreg accounting program.
       </para>
@@ -840,10 +857,11 @@
         This script should really load the users profile and generally
 	do all the voodoo that is needed to launch a session.  Since
 	many systems reset the language selections done by GDM, GDM
-	will also set the GDM_LANG variable to the selected language.
+	will also set the <filename>$GDM_LANG</filename> variable to the selected language.
 	You can use this to reset the language environmental
 	variables after you run the users profile.  If the user
-	elected to use the system language, then GDM_LANG is not run. 
+	elected to use the system language, then <filename>$GDM_LANG</filename>
+	is not set. 
       </para>
 
       <para> 
@@ -852,12 +870,12 @@
 	<filename>PostLogin</filename> and
 	<filename>PreSession</filename>.
 	Again the script will be run with root
-	privileges, the slave daemon will block and the $USER
+	privileges, the slave daemon will block and the <filename>$USER</filename>
 	environment variable will contain the name of the user who
-	just logged out and $DISPLAY will be set to the display
+	just logged out and <filename>$DISPLAY</filename> will be set to the display
 	the user used, however note that the X server for this display
 	may already be dead and so you shouldn't try to access it.
-	Also $X_SERVERS environmental variable is set and this points
+	Also <filename>$X_SERVERS</filename> environmental variable is set and this points
 	to a fake generated x servers file for use with the
 	sessreg accounting program.
       </para>
@@ -871,16 +889,20 @@
 
       <para>
 	Except for the <filename>Xsession</filename> script all of these
-	scripts will also have the environment of
-	<filename>RUNNING_UNDER_GDM=yes</filename> set, so that you could
-	perhaps use similar scripts for different display managers.
+	scripts will also have the environment variable
+	<filename>$RUNNING_UNDER_GDM</filename> set to <filename>yes</filename>,
+	so that you could perhaps use similar scripts for different display managers.
+	The <filename>Xsession</filename> will always have the
+	<filename>$GDMSESSION</filename> set to the basename of the
+	session that the user chose to run.
       </para>
 
       <para> 
 	Neither of the <filename>Init</filename>, <filename>PostLogin</filename>,
 	<filename>PreSession</filename> or <filename>PostSession</filename> scripts are
-	necessary and can be left out. At least one session script is
-	required for proper operation.
+	necessary and can be left out.  The <filename>Xsession</filename> script
+	is however required as well as at least one session <filename>.desktop</filename>
+	file.
       </para>
 
     </sect2>
@@ -906,7 +928,11 @@
 	file syntax. Keywords in brackets define sections, strings
 	before an equal sign (=) are variables and the data after
 	equal sign represents their value.  Empty lines or lines
-	starting with the hash mark (#) are ignored.
+	starting with the hash mark (#) are ignored.  The
+	graphical configurator will try to preserve both comments
+	(lines with a hash mark) and the overall structure of the
+	file so you can intermix using the GUI or hand editting the
+	configuration file.
       </para>
 
       <sect3 id="daemonsection">
@@ -920,10 +946,15 @@
 		<listitem>
 	      <synopsis>AddGtkModules=false</synopsis>
 	      <para>
-	    If true, then enables gdmgreeter/gdmlogin to be launched with
-	    additional Gtk+ modules. This is useful when extra features are
-	    required such as accessible login. Note that only "trusted"
-	    modules should be used to minimize security issues.
+	        If true, then enables gdmgreeter/gdmlogin to be launched with
+		additional Gtk+ modules. This is useful when extra features are
+		required such as accessible login. Note that only "trusted"
+		modules should be used to minimize security issues.
+              </para>
+              <para>
+		Usually this is used for accessibility modules.  The modules
+		which are loaded are specified with the
+		<filename>GtkModulesList</filename> key.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1073,7 +1104,8 @@
 	      <para>
 		The session that is used by default if the user does not have
 		a saved preference and has picked 'Last' from the list of
-		sessions.
+		sessions.  Note that 'Last' need not be displayed, see
+		the <filename>ShowLastSession</filename> key.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1085,7 +1117,7 @@
 	      <synopsis>DisplayInitDir=etc/gdm/Init</synopsis>
 	      <para>
 		Directory containing the display init scripts. See the
-		``Script Directories'' section for more info.
+		``The Script Directories'' section for more info.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1111,7 +1143,7 @@
 		An X command line in case we can't start the normal X server.
 		should probably be some sort of a script that runs an
 		appropriate low resolution server that will just work.
-		This is tried before the XKeepsCrashing script is run.
+		This is tried before the <filename>XKeepsCrashing</filename> script is run.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1134,7 +1166,8 @@
 	      <synopsis>FlexibleXServers=5</synopsis>
 	      <para>
 		The maximum number of allowed flexible servers.  These are
-		servers that can be run using the /tmp/.gdm_socket socket
+		servers that can be run using the
+		<filename>/tmp/.gdm_socket</filename> socket
 		connection.  This is used for both full servers and for
 		Xnest servers.
 	      </para>
@@ -1175,11 +1208,11 @@
 	  <varlistentry>
 	    <term>GtkModulesList</term>
 	    <listitem>
-	      <synopsis>GtkModuleList=module-1:module-2:...</synopsis>
+	      <synopsis>GtkModulesList=module-1:module-2:...</synopsis>
 	      <para>
-	    A colon separated list of Gtk+ modules that gdmgreeter/gdmlogin
-	    will be invoked with if AddGtkModules is true. The format is the 
-	    same as the standard Gtk+ module interface.
+	    	A colon separated list of Gtk+ modules that gdmgreeter/gdmlogin
+	    	will be invoked with if <filename>AddGtkModules</filename> is true. The format is the 
+	    	same as the standard Gtk+ module interface.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1190,9 +1223,12 @@
 	      <synopsis>HaltCommand=/sbin/shutdown -h now</synopsis>
 	      <para>
 		Full path and arguments to command to be executed when
-		user selects Shut Down from the Actions menu.  This can be a ';'
+		user selects Shutdown from the Actions menu.  This can be a ';'
 		separated list of commands to try.
-		If missing, the shutdown command is not available.
+		If a value is missing, the shutdown command is not available.
+		Note that the default for this value is not empty so to
+		disable shutdown you must set this explicitly to an empty
+		value.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1238,7 +1274,7 @@
 	      <para>
 		Directory containing the scripts run right after the
 		user logs in, but before any session setup is done.
-		See the ``Script Directories'' section for more info.
+		See the ``The Script Directories'' section for more info.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1249,7 +1285,7 @@
 	      <synopsis>PostSessionScriptDir=etc/gdm/PostSession</synopsis>
 	      <para>
 		Directory containing the scripts run after the user logs
-		out.  See the ``Script Directories'' section for more
+		out.  See the ``The Script Directories'' section for more
 		info.
 	      </para>
 	    </listitem>
@@ -1261,7 +1297,7 @@
 	      <synopsis>PreSessionScriptDir=etc/gdm/PreSession</synopsis>
 	      <para>
 		Directory containing the scripts run before the user
-		logs in.  See the ``Script Directories'' section for
+		logs in.  See the ``The Script Directories'' section for
 		more info.
 	      </para>
 	    </listitem>
@@ -1276,6 +1312,9 @@
 		executed when user selects Reboot from the Actions menu.
 		This can be a ';' separated list of commands to try.
 		If missing, the reboot command is not available.
+		Note that the default for this value is not empty so to
+		disable reboot you must set this explicitly to an empty
+		value.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1338,8 +1377,8 @@
 	    <listitem>
 	      <synopsis>SessionDesktopDir=etc/dm/Sessions</synopsis>
 	      <para>
-		Directory containing the .desktop files which are the available
-		sessions on the system.
+		Directory containing the <filename>.desktop</filename>
+		files which are the available sessions on the system.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1366,6 +1405,9 @@
 		Full path and arguments to command to be executed when
 		user selects Suspend from the Actions menu.  If empty
 		there is no such menu item.
+		Note that the default for this value is not empty so to
+		disable suspend you must set this explicitly to an empty
+		value.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1375,12 +1417,12 @@
 	    <listitem>
 	      <synopsis>TimedLoginEnable=false</synopsis>
 	      <para>
-	 	If the user given in TimedLogin should be logged in after
-		a number of seconds (set with TimedLoginDelay) of inactivity
+	 	If the user given in <filename>TimedLogin</filename> should be logged in after
+		a number of seconds (set with <filename>TimedLoginDelay</filename>) of inactivity
 		on the login screen.  This is useful for public access
 		terminals or perhaps even home use.  If the user uses the
 		keyboard or browses the menus, the timeout will be reset to
-		TimedLoginDelay or 30 seconds, whichever is higher.  Note that
+		<filename>TimedLoginDelay</filename> or 30 seconds, whichever is higher.  Note that
 		no password will be asked for this user so you should be
 		careful.
 	      </para>
@@ -1407,7 +1449,7 @@
 	    <listitem>
 	      <synopsis>TimedLoginDelay=30</synopsis>
 	      <para>
-		This is the delay before the TimedLogin user will be logged
+		This is the delay before the <filename>TimedLogin</filename> user will be logged
 		in.  It must be greater then or equal to 10.
 	      </para>
 	    </listitem>
@@ -1502,12 +1544,12 @@
 		A script to run in case X keeps crashing.  This is for running
 		An X configuration or whatever else to make the X configuration
 		work.  See the script that came with the distribution for an
-		example.  The distributed XKeepsCrashing script is tested
+		example.  The distributed <filename>XKeepsCrashing</filename> script is tested
 		on Red Hat, but may work elsewhere.  Your system integrator should
 		make sure this script is up to date for your particular system.
 	      </para>
 	      <para>
-		In case FailsafeXServer is setup, that will be tried first.
+		In case <filename>FailsafeXServer</filename> is setup, that will be tried first.
 		and this only used as a backup if even that server keeps
 		crashing.
 	      </para>
@@ -1593,7 +1635,8 @@
 	    <listitem>
 	      <synopsis>DisallowTCP=true</synopsis>
 	      <para>
-		If true, then always append "-nolisten tcp" to the command line
+		If true, then always append <filename>-nolisten tcp</filename>
+		to the command line
 		of local X servers, thus disallowing TCP connection.  This is
 		useful if you do not care for allowing remote connections, since
 		the X protocol could really be potentially a security hazard to
@@ -1653,7 +1696,8 @@
         	about accessing files in user directories.  It will not
         	follow symlinks and can optionally refuse to
         	read files and directories writable by other than the
-        	owner. See the RelaxPermissions option for more info.
+        	owner. See the <filename>RelaxPermissions</filename>
+		option for more info.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1676,7 +1720,8 @@
 		queue, GDM will only allow one connection for each
 		remote machine.  If you want to provide display
 		services to machines with more than one screen, you
-		should increase the DisplaysPerHost value accordingly.
+		should increase the <filename>DisplaysPerHost</filename>
+		value accordingly.
 	      </para>
 
 	      <para>
@@ -1710,7 +1755,8 @@
 	      <para>
 		You should add 
 	        <screen>
-  gdm:	.my.domain</screen>
+  gdm:	.my.domain
+</screen>
 		to your <filename>/etc/hosts.allow</filename>, depending on your
 		TCP Wrappers configuration.  See the
 		<ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink> man page for details.
@@ -1760,8 +1806,9 @@
 	    <listitem>
 	      <synopsis>MaxPendingIndirect=4</synopsis>
 	      <para>
-		GDM will only provide MaxPendingIndirect displays with
-		host choosers simultaneously.
+		GDM will only provide <filename>MaxPendingIndirect</filename>
+		displays with host choosers simultaneously.  If more queries
+		from different hosts come in, the oldest ones will be forgotten.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1811,8 +1858,10 @@
 		number of seconds between the time where a user chooses
 		a host and the subsequent indirect query where the user is
 		connected to the host.  When the timeout is exceeded, the
-		information about the chosen host is removed and the indirect
-		slot freed up for under displays.
+		information about the chosen host is forgotten and the indirect
+		slot freed up for other displays.  The information may be
+		forgotten earlier if there are more hosts trying to
+		send indirect queries then <filename>MaxPendingIndirect</filename>.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1974,7 +2023,7 @@
 	      <synopsis>BackgroundRemoteOnlyColor=true</synopsis>
 	      <para>
 		On remote displays only set the color background.  This is
-		to make network load lighter.  The BackgroundProgram is also
+		to make network load lighter.  The <filename>BackgroundProgram</filename> is also
 		not run.  This only affects the Standard Greeter.
 	      </para>
 	    </listitem>
@@ -2230,7 +2279,8 @@
 	      <synopsis>SetPosition=true</synopsis>
 	      <para>
 		If true the position of the login window of the Standard Greeter
-		is determined by PositionX/PositionY.
+		is determined by <filename>PositionX</filename> 
+		/ <filename>PositionY</filename>.
 	      </para>
 	    </listitem>
 	  </varlistentry>	
@@ -2242,6 +2292,24 @@
 	      <para>
 		Should the greeter show the Gnome Failsafe session
 		in the sessions list.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>ShowLastSession</term>
+	    <listitem>
+	      <synopsis>ShowLastSession=true</synopsis>
+	      <para>
+		Should the greeter show the 'Last' session in the
+		session list.  If this is off, then GDM is in the
+		so called 'switchdesk' mode which for example
+		Red Hat uses.  That is, the users can't pick
+		the last session and will just then get the default
+		session (see <filename>DefaultSession</filename>)
+		unless then pick something else for this session
+		only.  So if this is off, this really circumvents
+		saving of the last session.
 	      </para>
 	    </listitem>
 	  </varlistentry>	
@@ -2302,7 +2370,8 @@
 	      <para>
 		Force the use of 24 hour clock even if the locale would default
 		to a 12 hour clock.  In some locales that normally use 24 hour
-		format (like cs_CZ) this setting has no effect.
+		format (like czech, that is <filename>cs_CZ</filename>) this
+		setting has no effect.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -2458,7 +2527,7 @@
 	      <para>
 		The hosts which should be listed in the chooser.  The chooser
 		will only list them if they respond.  This is done in addition
-		to broadcast (if Broadcast is set), so you need not list
+		to broadcast (if <filename>Broadcast</filename> is set), so you need not list
 		hosts on the local network.  This is useful if your
 		networking setup doesn't allow all hosts to be reachable
 		by a broadcast packet.
@@ -2666,7 +2735,8 @@
       <screen>
 	[Desktop]
 	Session=gnome.desktop
-	Language=cs_CZ.UTF-8</screen>
+	Language=cs_CZ.UTF-8
+</screen>
 
       <para>
 	The user can also configure a face image for the face browser.  This is
@@ -2932,7 +3002,8 @@
      Description=Theme with blue circles
      Author=Bond, James Bond
      Copyright=(c) 2002 Bond, James Bond
-     Screenshot=screenshot.png</screen>
+     Screenshot=screenshot.png
+</screen>
 
       <para>
         The Name, Description, Author and Copyright fields can be translated just
@@ -2956,8 +3027,7 @@
         xdmcp connections.  The second argument is the theme name.  So for example
         to test how things look in the xdmcp mode with the circles theme you would
         run:
-      <screen>
-     gdmthemetester xdmcp circles</screen>
+      <screen>gdmthemetester xdmcp circles</screen>
         Be sure to test all the environments with your theme, and make sure to test
         how the caps lock warning looks by pressing caps lock.  This is also a good
         way to take screenshots, just take a screenshot of the Xnest window.  This
@@ -2972,7 +3042,8 @@
         graphical setup program.  You can do this with the commands:
       <screen>
      cd /usr/share/gdm/themes
-     tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/</screen>
+     tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
+</screen>
       </para>
 
     </sect2>
@@ -2988,7 +3059,8 @@
           specified as follows:
       <screen>
      &lt;box orientation="alignment" min-width="num" xpadding="num"
-      ypadding="num" spacing="num" homogeneous="bool"&gt;</screen>
+      ypadding="num" spacing="num" homogeneous="bool"&gt;
+</screen>
 	  Where "num" means number and bool means either "true"
 	  or "false".  The alignment value can be either "horizontal" or "vertical".
 	  If you leave any property off it will default to
@@ -3070,7 +3142,8 @@
         <para>
           For example: 
         <screen>
-       &lt;item type="label"&gt;</screen>
+       &lt;item type="label"&gt;
+</screen>
           Items can specify ID values which gives them a specific look
           and feel or formatting.  Furthermore you can customize the login
           process by adding custom widgets with custom id's for some items
@@ -3195,7 +3268,8 @@
           If an item is of type rect, the item can be a button.  Buttons
           must also include a "button" value as follows:
 	<screen>
-       &lt;item type="rect" id="disconnect_button" button="true"&gt;.</screen>
+       &lt;item type="rect" id="disconnect_button" button="true"&gt;.
+</screen>
         </para>
 
         <para>
@@ -3300,7 +3374,8 @@
           Each item can specify its position and size via the "pos" node.
           For example:
         <screen>
-       &lt;pos x="0" y="4" width="100%" height="100%"/&gt;</screen>
+       &lt;pos x="0" y="4" width="100%" height="100%"/&gt;
+</screen>
         </para>
 
 	<para>
@@ -3321,7 +3396,8 @@
 	  "n", "ne", "e", "se", "s", "sw", "w" and "nw" or "center" which stand
 	  for the different edges/corners or "center" for center.  For example:
         <screen>
-       &lt;pos x="10%" y="50%" anchor="w" width="80%" height="95"/&gt;</screen>
+       &lt;pos x="10%" y="50%" anchor="w" width="80%" height="95"/&gt;
+</screen>
 	</para>
 
 	<para>
@@ -3368,7 +3444,8 @@
 	<para>
 	  For example:
 	<screen>
-       &lt;show modes="flexi,remote"/&gt;</screen>
+       &lt;show modes="flexi,remote"/&gt;
+</screen>
 	</para>
 
         <para>
@@ -3402,7 +3479,8 @@
 	<para>
           For example:
 	<screen>
-       &lt;show modes="console" type="system"/&gt;</screen>
+       &lt;show modes="console" type="system"/&gt;
+</screen>
 	</para>
 
 	<para>
@@ -3433,20 +3511,23 @@
         <para>
 	  When item is "rect" (alpha can be omitted and defaults to 0.0):
 	<screen>
-       &lt;normal color="#ffffff" alpha="0.0"&gt;</screen>
+       &lt;normal color="#ffffff" alpha="0.0"&gt;
+</screen>
         </para>
 
         <para>
 	  When item is "label":
 	<screen>
-       &lt;normal color="#ffffff" font="Sans 14"/&gt;</screen>
+       &lt;normal color="#ffffff" font="Sans 14"/&gt;
+</screen>
         </para>
 
         <para>
 	  When the item type is "pixmap" or "SVG", then the normal, active,
 	  and prelight tags specify the images to use as follows:
 	<screen>
-       &lt;normal file="picture.png" tint="#dddddd"/&gt;</screen>
+       &lt;normal file="picture.png" tint="#dddddd"/&gt;
+</screen>
         </para>
 
         <para>
@@ -3463,7 +3544,8 @@
 	  localized text as follows (if the "xml:lang" attribute is
 	  omitted, the C locale is assumed):
 	<screen>
-       &lt;text xml:lang="fr"&gt;Option&lt;/text&gt;</screen>
+       &lt;text xml:lang="fr"&gt;Option&lt;/text&gt;
+</screen>
         </para>
 
 	<para>
@@ -3471,7 +3553,8 @@
 	  you must encode it.  So for example to have the label of
 	  "foo&lt;sup&gt;bar&lt;/sup&gt;", you must type:
 	<screen>
-       &lt;text"&gt;foo&amp;lt;sup&amp;gt;bar&amp;lt;/sup&amp;gt;&lt;/text&gt;</screen>
+       &lt;text"&gt;foo&amp;lt;sup&amp;gt;bar&amp;lt;/sup&amp;gt;&lt;/text&gt;
+</screen>
 	</para>
 
       </sect3>
@@ -3530,7 +3613,8 @@
         <para>
 	  For example:
 	<screen>
-       &lt;stock type="welcome-label"/&gt;</screen>
+       &lt;stock type="welcome-label"/&gt;
+</screen>
         </para>
 
       </sect3>
@@ -3563,13 +3647,15 @@
       &lt;listitem id="bar"&gt;
         &lt;text&gt;Bar&lt;/text&gt;
       &lt;/listitem&gt;
-    &lt;/item&gt;</screen>
+    &lt;/item&gt;
+</screen>
 
         <para>
 	  Then if the user chooses 'Foo' then <filename>/var/gdm/:0.GreeterInfo</filename> will
 	  contain:
         <screen>
-       custom-config=foo</screen>
+       custom-config=foo
+</screen>
         </para>
 
       </sect3>
@@ -3598,7 +3684,8 @@
 	On <filename>appserver</filename> you enable XDMCP, so you have
         <screen>
    [xdmcp]
-   Enable=true</screen>
+   Enable=true
+</screen>
 	If you want no local screens here, you can then
 	make the <filename>[servers]</filename> section empty.
       </para>
@@ -3612,7 +3699,8 @@
    name=Terminal server
    command=/usr/X11R6/bin/X -terminate
    flexible=false
-   handled=false</screen>
+   handled=false
+</screen>
 	This definition should in fact be included in the standard configuration
 	file.  Notice that we made the <filename>handled</filename> key false
 	since we don't want GDM to handle this server localy.  Also note that
@@ -3621,7 +3709,8 @@
 	our local servers as follows:
 	<screen>
    [servers]
-   0=Terminal -query appserver</screen>
+   0=Terminal -query appserver
+</screen>
 	This will run a direct XDMCP query to the server named
 	<filename>appserver</filename>.
       </para>
@@ -3648,7 +3737,8 @@
     name=Chooser server
     command=/usr/X11R6/bin/X
     flexible=false
-    chooser=true</screen>
+    chooser=true
+</screen>
 	And again this definition should in fact be included in the standard configuration
 	file.  Notice that we made the <filename>chooser</filename> key true here.
 	This will run the XDMCP chooser for this server, and when the user chooses
@@ -3656,7 +3746,8 @@
 	our local servers as follows:
 	<screen>
    [servers]
-   0=Chooser</screen>
+   0=Chooser
+</screen>
       </para>
 
       <para>
@@ -3665,7 +3756,8 @@
 	by a broadcast query, you must add them by hand to the configuration file.
 	So in the <filename>[chooser]</filename> section you would have:
 	<screen>
-   Hosts=appserverone,appservertwo</screen>
+   Hosts=appserverone,appservertwo
+</screen>
 	and any other servers you wish the users to be able to connect to.
       </para>
 
@@ -3676,7 +3768,8 @@
 	enabled on <filename>appserver</filename> and on the X terminals you'd have
 	<screen>
    [servers]
-   0=Terminal -indirect appserver</screen>
+   0=Terminal -indirect appserver
+</screen>
 	This way for example you only have to maintain one <filename>Hosts</filename>
 	entry.  However as a disadvantage then, the <filename>appserver</filename>
 	must then always be available.  So it's not good for situations where

@@ -1,4 +1,3 @@
-%define localstatedir /var/lib
 %define sysconfdir    /etc
 
 Summary:        The GNOME Display Manager.
@@ -27,7 +26,7 @@ several different X sessions on your local machine at the same time.
 %setup -q
 
 %build
-CFLAGS="-g $RPM_OPT_FLAGS" ./configure --localstatedir=%{localstatedir} \
+CFLAGS="-g $RPM_OPT_FLAGS" ./configure --localstatedir=%{_localstatedir} \
     --prefix=%{_prefix} --sysconfdir=%{sysconfdir}/X11 \
     --bindir=%{_bindir} --datadir=%{_datadir} --sbindir=%{_sbindir} \
     --enable-console-helper --with-pam-prefix=%{sysconfdir}
@@ -43,7 +42,7 @@ make sysconfdir=$RPM_BUILD_ROOT%{sysconfdir}/X11 \
     prefix=$RPM_BUILD_ROOT%{_prefix} \
     bindir=$RPM_BUILD_ROOT%{_bindir} \
     datadir=$RPM_BUILD_ROOT%{_datadir} \
-    localstatedir=$RPM_BUILD_ROOT%{localstatedir} \
+    localstatedir=$RPM_BUILD_ROOT%{_localstatedir} \
     sbindir=$RPM_BUILD_ROOT%{_sbindir} \
     PAM_PREFIX=$RPM_BUILD_ROOT%{sysconfdir} \
     install
@@ -82,7 +81,7 @@ exit 0
 # FIXME: this is just way too complex
 FIFOFILE=`grep '^ServAuthDir=' %{sysconfdir}/X11/gdm/gdm.conf | sed -e 's/^ServAuthDir=//'`
 if test x$FIFOFILE = x ; then
-	FIFOFILE=%{localstatedir}/gdm/.gdmfifo
+	FIFOFILE=%{_localstatedir}/gdm/.gdmfifo
 else
 	FIFOFILE="$FIFOFILE"/.gdmfifo
 fi
@@ -107,6 +106,7 @@ exit 0
 %{_bindir}/*
 %{_sbindir}/*
 %{_libexecdir}/*
+%{_libdir}/gtk-2.0/modules/*
 %config %{sysconfdir}/pam.d/*
 %config %{sysconfdir}/X11/dm/Sessions/*
 %config %{sysconfdir}/X11/gdm
@@ -118,28 +118,19 @@ exit 0
 # DOCUMENTATION!
 %{_datadir}/omf/gdm
 %{_datadir}/gnome/help/gdm
-%{_prefix}/man/man1/*
-# %config %{sysconfdir}/security/console.apps/gdmsetup
-# %config %{sysconfdir}/X11/gdm/gnomerc
-# %config %{sysconfdir}/X11/gdm/gdm.conf
-# %config %{sysconfdir}/X11/gdm/locale.alias
-# %config %{sysconfdir}/X11/gdm/Sessions/*
-# %config %{sysconfdir}/X11/gdm/Init/*
-# %config %{sysconfdir}/X11/gdm/PreSession/*
-# %config %{sysconfdir}/X11/gdm/PostSession/*
-# %{_datadir}/gdm/gdmsetup.glade
-# %{_datadir}/gdm/gdmchooser.glade
-# %{_datadir}/gnome/apps/System/gdmsetup.desktop
-# %{_datadir}/gnome/apps/Settings/gdmphotosetup.desktop
-# %{_datadir}/locale/*/*/*
-# %{_datadir}/pixmaps/*
-# %{_datadir}/gnome/help/gdm/*
-# %{_datadir}/gnome/help/gdmsetup/*
-%attr(1770, root, gdm) %dir %{localstatedir}/gdm
-%attr(755, root, root) %dir %{localstatedir}/log/gdm
+%{_prefix}/man/man*/*
+%{_localstatedir}/scrollkeeper/*/*
+%{_localstatedir}/scrollkeeper/scrollkeeper_docs
+
+%attr(1770, root, gdm) %dir %{_localstatedir}/gdm
+%attr(755, root, root) %dir %{_localstatedir}/log/gdm
 
 
 %changelog
+* Mon Aug 26 2003 George Lebl <jirka@5z.com>
+- whack localstatedir
+- update file list
+
 * Mon Aug 25 2003 George Lebl <jirka@5z.com>
 - Updated file list
 
