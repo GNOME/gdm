@@ -126,7 +126,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 	    auth_errmsg = g_strdup_printf
 		    (_("\nIncorrect username or password. "
 		       "Letters must be typed in the correct case. "  
-		       "Please make sure the Caps Lock key is not enabled"));
+		       "Please make sure the Caps Lock key is not enabled."));
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
 	    g_free (auth_errmsg);
 	    g_free (login);
@@ -146,7 +146,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 	    auth_errmsg = g_strdup_printf
 		    (_("\nIncorrect username or password. "
 		       "Letters must be typed in the correct case. "  
-		       "Please make sure the Caps Lock key is not enabled"));
+		       "Please make sure the Caps Lock key is not enabled."));
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
 	    g_free (auth_errmsg);
 	    g_free (login);
