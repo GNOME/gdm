@@ -23,6 +23,16 @@ Fri May 16 20:46:43 2003  George Lebl <jirka@5z.com>
 
 	* daemon/misc.c: fixed warnings and an uninitialized var use
 
+2003-05-15 Brian Cameron <Brian.Cameron@Sun.COM>
+
+	* configure.in: Updated to add AccessDwellMouseEvents.in reference.
+	* gui/modules/Makefile.in: Updated to add dwell listener references.
+	* gui/modules/AccessDwellMouseEvents.in
+	gui/modules/dwellmouselistener.c: Added a gestures listener for
+	dwell events (cursor motion only).
+	* gui/modules/AccessKeyMouseEvents.in gui/modules/keymouselistener.c:
+	Minor cleanup.
+
 Thu May 15 02:17:55 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter_system.c,
@@ -92,6 +102,7 @@ Tue May 13 12:22:45 2003  George Lebl <jirka@5z.com>
 	  purpose utility anyhow.
 
 2003-05-08 Brian Cameron <Brian.Cameron@Sun.COM>
+
 	* gui/greeter/greeter.dtd: Updated so it is no longer
 	out of date.  Patch provided by Aidan.Butler@Sun.COM.
 
@@ -114,6 +125,7 @@ Mon May 05 13:33:28 2003  George Lebl <jirka@5z.com>
 	* config/Makefile.am: fixup link creation (don't use absolute name)
 
 2003-05-02 Brian Cameron <Brian.Cameron@Sun.COM>
+
 	* gui/modules/keymouselistener.c, gui/modules/AccessKeyMouseEvents.in
 	Now the keymouselistener does not use grabs, so there is less
 	opportunity for conflict with other programs (like the registryd).
@@ -136,6 +148,7 @@ Mon May 05 13:33:28 2003  George Lebl <jirka@5z.com>
 	* configure.in: Added 'sq' to ALL_LINGUAS.
 
 2003-04-10 Niall Power <Niall.Power@Sun.COM>
+
 	* config/gdm.conf.in, daemon/gdm.c, daemon/gdm.h daemon/slave.c,
 	  docs/C/gdm.xml: Add support for launching gdmlogin/gdmgreeter
 	  with a configurable list of gtk modules. Needed for accessibility.
@@ -143,6 +156,7 @@ Mon May 05 13:33:28 2003  George Lebl <jirka@5z.com>
 	  "GtkModulesList" (string).
 
 2003-04-09 Niall Power <Niall.Power@Sun.COM>
+
 	* acconfig.h, configure.in: Detect Xsun xinerama and Xdmcp on 
 	  Solaris. Patch by Brian Cameron <Brian.Cameron@Sun.COM>
 	* config/gdm.conf.in: set Xserver paths correctly for both 
