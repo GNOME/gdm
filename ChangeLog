@@ -1,3 +1,12 @@
+Wed Sep 11 12:35:37 2002  George Lebl <jirka@5z.com>
+
+	* daemon/errorgui.c, daemon/gdm.c, daemon/misc.[ch]:  Store initial
+	  environment and use it for the errorgui, use internal routines for
+	  converting to/from utf8 and make sure they always return NULL and
+	  they never use the interal glib iconv cache crack.  This should
+	  fix running gdm in non-utf8 non-english locales with respect to the
+	  internal error gui stuff.
+
 Wed Sep 04 11:29:03 2002  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter_item_pam.c: Apply patch from Havoc from bug

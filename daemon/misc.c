@@ -59,6 +59,8 @@ extern pid_t gdm_main_pid;
 extern gboolean preserve_ld_vars;
 extern int gdm_in_signal;
 
+extern char *gdm_charset;
+
 static void
 do_syslog (int type, const char *s)
 {
@@ -268,6 +270,36 @@ gdm_clearenv (void)
 	}
 
 	g_list_free (envs);
+}
+
+static GList *stored_env = NULL;
+
+void
+gdm_saveenv (void)
+{
+	int i;
+
+	g_list_foreach (stored_env, (GFunc)g_free, NULL);
+	g_list_free (stored_env);
+	stored_env = NULL;
+
+	for (i = 0; environ[i] != NULL; i++) {
+		char *env = environ[i];
+		stored_env = g_list_prepend (stored_env, g_strdup (env));
+	}
+}
+
+/* leaks */
+void
+gdm_restoreenv (void)
+{
+	GList *li;
+
+	gnome_clearenv ();
+
+	for (li = stored_env; li != NULL; li = li->next) {
+		putenv (g_strdup (li->data));
+	}
 }
 
 /* Evil function to figure out which display number is free */
@@ -1058,6 +1090,65 @@ gdm_unset_signals (void)
 	signal (SIGALRM, SIG_DFL);
 	signal (SIGHUP, SIG_DFL);
 }
+
+static char *
+ascify (const char *text)
+{
+	unsigned char *p;
+	char *t = g_strdup (text);
+	for (p = (unsigned char *)t; p != NULL && *p != '\0'; p++) {
+		if (*p > 127)
+			*p = '?';
+	}
+	return t;
+}
+
+char *
+gdm_locale_to_utf8 (const char *text)
+{
+	GIConv cd;
+	char *out;
+	GError *error = NULL;
+
+	if (gdm_charset == NULL) {
+		return g_strdup (text);
+	}
+
+	cd = g_iconv_open ("UTF-8", gdm_charset);
+	if (cd == (GIConv)(-1)) {
+		return ascify (text);
+	}
+
+	out = g_convert_with_iconv (text, -1, cd, NULL, NULL, &error);
+	g_iconv_close (cd);
+	if (out == NULL) {
+		return ascify (text);
+	}
+	return out;
+}
+
+char *
+gdm_locale_from_utf8 (const char *text)
+{
+	GIConv cd;
+	char *out;
+
+	if (gdm_charset == NULL) {
+		return g_strdup (text);
+	}
+
+	cd = g_iconv_open (gdm_charset, "UTF-8");
+	if (cd == (GIConv)(-1)) {
+		return ascify (text);
+	}
+
+	out = g_convert_with_iconv (text, -1, cd, NULL, NULL, NULL);
+	g_iconv_close (cd);
+	if (out == NULL)
+		return ascify (text);
+	return out;
+}
+
 
 
 /* EOF */

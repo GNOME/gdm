@@ -176,6 +176,8 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		GtkWidget *dlg;
 		GtkWidget *button;
 		char *loc;
+		char *display;
+		char *xauthority;
 
 		closelog ();
 
@@ -189,6 +191,20 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 		gdm_desetuid ();
 
+		display = g_strdup (g_getenv ("DISPLAY"));
+		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
+
+		/* restore initial environment */
+		gdm_restoreenv ();
+
+		if (display != NULL)
+			gnome_setenv ("DISPLAY", display, TRUE);
+		if (xauthority != NULL)
+			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
+		/* sanity env stuff */
+		gnome_setenv ("SHELL", "/bin/bash", TRUE);
+		gnome_setenv ("HOME", "/", TRUE);
+
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		argv = g_new0 (char *, 2);
@@ -198,7 +214,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 		get_screen_size (d);
 
-		loc = g_locale_to_utf8 (error, -1, NULL, NULL, NULL);
+		loc = gdm_locale_to_utf8 (error);
 
 		dlg = gtk_message_dialog_new (NULL /* parent */,
 					      0 /* flags */,
@@ -209,8 +225,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		g_free (loc);
 
 		if (details_label != NULL) {
-			loc = g_locale_to_utf8 (details_label,
-						-1, NULL, NULL, NULL);
+			loc = gdm_locale_to_utf8 (details_label);
 			button = gtk_button_new_with_label (loc);
 			g_free (loc);
 
@@ -300,6 +315,8 @@ gdm_failsafe_question (GdmDisplay *d,
 		char **argv;
 		GtkWidget *dlg, *label, *entry;
 		char *loc;
+		char *display;
+		char *xauthority;
 
 		closelog ();
 
@@ -313,6 +330,20 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		gdm_desetuid ();
 
+		display = g_strdup (g_getenv ("DISPLAY"));
+		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
+
+		/* restore initial environment */
+		gdm_restoreenv ();
+
+		if (display != NULL)
+			gnome_setenv ("DISPLAY", display, TRUE);
+		if (xauthority != NULL)
+			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
+		/* sanity env stuff */
+		gnome_setenv ("SHELL", "/bin/bash", TRUE);
+		gnome_setenv ("HOME", "/", TRUE);
+
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		argv = g_new0 (char *, 2);
@@ -322,7 +353,7 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		get_screen_size (d);
 
-		loc = g_locale_to_utf8 (question, -1, NULL, NULL, NULL);
+		loc = gdm_locale_to_utf8 (question);
 
 		dlg = gtk_dialog_new_with_buttons (loc,
 						   NULL /* parent */,
@@ -375,8 +406,7 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		gtk_dialog_run (GTK_DIALOG (dlg));
 
-		loc = g_locale_from_utf8 (ve_sure_string (gtk_entry_get_text (GTK_ENTRY (entry))),
-					  -1, NULL, NULL, NULL);
+		loc = gdm_locale_from_utf8 (ve_sure_string (gtk_entry_get_text (GTK_ENTRY (entry))));
 
 		gdm_fdprintf (p[1], "%s", ve_sure_string (loc));
 
@@ -424,6 +454,8 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		char **argv;
 		GtkWidget *dlg;
 		char *loc;
+		char *display;
+		char *xauthority;
 
 		closelog ();
 
@@ -437,6 +469,20 @@ gdm_failsafe_yesno (GdmDisplay *d,
 
 		gdm_desetuid ();
 
+		display = g_strdup (g_getenv ("DISPLAY"));
+		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
+
+		/* restore initial environment */
+		gdm_restoreenv ();
+
+		if (display != NULL)
+			gnome_setenv ("DISPLAY", display, TRUE);
+		if (xauthority != NULL)
+			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
+		/* sanity env stuff */
+		gnome_setenv ("SHELL", "/bin/bash", TRUE);
+		gnome_setenv ("HOME", "/", TRUE);
+
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		argv = g_new0 (char *, 2);
@@ -446,7 +492,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 
 		get_screen_size (d);
 
-		loc = g_locale_to_utf8 (question, -1, NULL, NULL, NULL);
+		loc = gdm_locale_to_utf8 (question);
 
 		dlg = gtk_message_dialog_new (NULL /* parent */,
 					      0 /* flags */,

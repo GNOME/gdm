@@ -81,6 +81,13 @@ int gdm_open_dev_null (mode_t mode);
 
 void gdm_unset_signals (void);
 
+char * gdm_locale_to_utf8 (const char *text);
+char * gdm_locale_from_utf8 (const char *text);
+
+void gdm_saveenv (void);
+/* leaks */
+void gdm_restoreenv (void);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

@@ -82,6 +82,8 @@ gboolean no_daemon = FALSE;	/* Do not daemonize */
 GdmConnection *fifoconn = NULL; /* Fifo connection */
 GdmConnection *unixconn = NULL; /* UNIX Socket connection */
 
+char *gdm_charset = NULL;
+
 /* True if the server that was run was in actuallity not specified in the
  * config file.  That is if xdmcp was disabled and no local servers were
  * defined.  If the user kills all his local servers by mistake and keeps
@@ -1407,6 +1409,7 @@ main (int argc, char *argv[])
     FILE *pf;
     poptContext ctx;
     int nextopt;
+    const char *charset;
 
     gdm_main_pid = getpid ();
 
@@ -1414,6 +1417,7 @@ main (int argc, char *argv[])
     ensure_desc_012 ();
 
     store_argv (argc, argv);
+    gdm_saveenv ();
 
     bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
     textdomain (GETTEXT_PACKAGE);
@@ -1447,6 +1451,9 @@ main (int argc, char *argv[])
     main_loop = g_main_loop_new (NULL, FALSE);
     openlog ("gdm", LOG_PID, LOG_DAEMON);
 
+    if ( ! g_get_charset (&charset)) {
+	    gdm_charset = g_strdup (charset);
+    }
 
     /* Parse configuration file */
     gdm_config_parse();
