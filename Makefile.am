@@ -1,4 +1,4 @@
-SUBDIRS = config macros pixmaps daemon gui docs intl po
+SUBDIRS = config macros pixmaps intl daemon gui docs po debian
 
 EXTRA_DIST = ChangeLog README.install RELEASENOTES gdm.spec gdm.spec.in \
              gdmconfig-pam gdmconfig-security
