@@ -149,6 +149,11 @@
 #define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
 #define GDM_KEY_XNEST "daemon/Xnest=/usr/bin/X11/Xnest -name Xnest"
 
+/* Per server definitions */
+#define GDM_KEY_SERVER_NAME "name=Standard server"
+#define GDM_KEY_SERVER_COMMAND "command=/usr/bin/X11/X"
+#define GDM_KEY_SERVER_FLEXIBLE "flexible=true"
+
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
 #define GDM_KEY_ALLOWREMOTEAUTOLOGIN "security/AllowRemoteAutoLogin=false"
@@ -283,8 +288,10 @@ struct _GdmDisplay {
 
 typedef struct _GdmXServer GdmXServer;
 struct _GdmXServer {
+	char *id;
 	char *name;
 	char *command;
+	gboolean flexible;
 };
 
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
@@ -336,6 +343,9 @@ guint   g_signal_add_full       (gint           priority,
 				 GDestroyNotify destroy);
 void    g_signal_notify         (gint8          signal);
 
+/* If id == NULL, then get the first X server */
+GdmXServer *	gdm_find_x_server	(const char *id);
+
 
 void gdm_run (void);
 void gdm_quit (void);
@@ -369,9 +379,10 @@ void gdm_quit (void);
  * Answers:
  *   GDM <gdm version>
  */
-#define GDM_SUP_FLEXI_XSERVER "FLEXI_XSERVER" /* no arguments */
+#define GDM_SUP_FLEXI_XSERVER "FLEXI_XSERVER" /* <xserver type> */
 /* FLEXI_XSERVER: Start a new X flexible server
- * Arguments:  None currently, in the future, the type of X server
+ * Arguments:  <xserver type>
+ *   If no arguments, starts the standard x server
  * Answers:
  *   OK <display>
  *   ERROR <err number> <english error description>

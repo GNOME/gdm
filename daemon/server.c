@@ -441,6 +441,7 @@ gdm_server_spawn (GdmDisplay *d)
     int logfd;
     int len, i;
     const char *command;
+    char *bin;
 
     if (d == NULL ||
 	ve_string_empty (d->command)) {
@@ -532,12 +533,42 @@ gdm_server_spawn (GdmDisplay *d)
 			ve_unsetenv ("XAUTHORITY");
 	}
 
-	if (strcmp (d->command, GDM_STANDARD) == 0)
+	bin = ve_first_word (d->command);
+	if (bin == NULL) {
+		gdm_error (_("Invalid server command '%s'"), d->command);
+		argv = ve_split (GdmStandardXServer);
 		command = GdmStandardXServer;
-	else
+	} else if (access (bin, X_OK) != 0) {
+		GdmXServer *svr = gdm_find_x_server (bin);
+		if (svr == NULL) {
+			gdm_error (_("Server name '%s' not found, "
+				     "using standard server"), bin);
+			argv = ve_split (GdmStandardXServer);
+			command = GdmStandardXServer;
+		} else {
+			char **svr_command =
+				ve_split (ve_sure_string (svr->command));
+			argv = ve_split (d->command);
+			if (argv[0] == NULL || argv[1] == NULL) {
+				g_strfreev (argv);
+				argv = svr_command;
+			} else {
+				char **old_argv = argv;
+				argv = ve_vector_merge (svr_command,
+							&old_argv[1]);
+				g_strfreev (svr_command);
+				g_strfreev (old_argv);
+			}
+			/* this is only for information only,
+			 * so doesn't include whole command line */
+			command = svr->command;
+		}
+	} else {
 		command = d->command;
+		argv = ve_split (d->command);
+	}
+	g_free (bin);
 
-	argv = ve_split (command);
 	for (len = 0; argv != NULL && argv[len] != NULL; len++)
 		;
 

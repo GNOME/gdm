@@ -62,7 +62,8 @@ static void gdm_safe_restart (void);
 static void gdm_restart_now (void);
 
 /* Global vars */
-GSList *displays;		/* List of displays managed */
+GSList *displays = NULL;	/* List of displays managed */
+GSList *xservers = NULL;	/* List of x server definitions */
 gint high_display_num = 0;	/* Highest local non-flexi display */
 gint sessions = 0;		/* Number of remote sessions */
 gint flexi_servers = 0;		/* Number of flexi servers */
@@ -310,6 +311,55 @@ gdm_config_parse (void)
     if (ve_string_empty (GdmSessDir))
 	gdm_error (_("gdm_config_parse: No sessions directory specified."));
 
+    /* Find server definitions */
+    iter = gnome_config_init_iterator_sections ("=" GDM_CONFIG_FILE "=/");
+    iter = gnome_config_iterator_next (iter, &k, NULL);
+    
+    while (iter) {
+	    if (strncmp (k, "server-", strlen ("server-")) == 0) {
+		    char *section;
+		    GdmXServer *svr = g_new0 (GdmXServer, 1);
+
+		    section = g_strdup_printf ("=" GDM_CONFIG_FILE "=/%s/", k);
+		    gnome_config_push_prefix (section);
+
+		    svr->id = g_strdup (k + strlen ("server-"));
+		    svr->name = gnome_config_get_string (GDM_KEY_SERVER_NAME);
+		    svr->command = gnome_config_get_string
+			    (GDM_KEY_SERVER_COMMAND);
+		    svr->flexible = gnome_config_get_bool
+			    (GDM_KEY_SERVER_FLEXIBLE);
+
+		    if (ve_string_empty (svr->command)) {
+			    gdm_error (_("%s: Empty server command, "
+					 "using standard one."),
+				       "gdm_config_parse");
+			    g_free (svr->command);
+			    svr->command = g_strdup (GdmStandardXServer);
+		    }
+
+		    g_free (section);
+		    gnome_config_pop_prefix ();
+
+		    xservers = g_slist_append (xservers, svr);
+	    }
+
+	    g_free (k);
+
+	    iter = gnome_config_iterator_next (iter, &k, NULL);
+    }
+
+    if (xservers == NULL ||
+	gdm_find_x_server (GDM_STANDARD) == NULL) {
+	    GdmXServer *svr = g_new0 (GdmXServer, 1);
+
+	    svr->id = g_strdup (GDM_STANDARD);
+	    svr->name = g_strdup ("Standard server");
+	    svr->command = g_strdup (GdmStandardXServer);
+	    svr->flexible = TRUE;
+
+	    xservers = g_slist_append (xservers, svr);
+    }
 
     /* Find local X server definitions */
     iter = gnome_config_init_iterator ("=" GDM_CONFIG_FILE "=/" GDM_KEY_SERVERS);
@@ -325,6 +375,8 @@ gdm_config_parse (void)
 	    } else {
 		    gdm_info (_("gdm_config_parse: Invalid server line in config file. Ignoring!"));
 	    }
+	    g_free (k);
+	    g_free (v);
 
 	    iter = gnome_config_iterator_next (iter, &k, &v);
     }
@@ -443,6 +495,25 @@ gdm_config_parse (void)
     gdm_verify_check ();
 }
 
+/* If id == NULL, then get the first X server */
+GdmXServer *
+gdm_find_x_server (const char *id)
+{
+	GSList *li;
+
+	if (xservers == NULL)
+		return NULL;
+
+	if (id == NULL)
+		return xservers->data;
+
+	for (li = xservers; li != NULL; li = li->next) {
+		GdmXServer *svr = li->data;
+		if (strcmp (svr->id, id) == 0)
+			return svr;
+	}
+	return NULL;
+}
 
 /**
  * gdm_daemonify:
@@ -1619,6 +1690,35 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 	if (strcmp (msg, GDM_SUP_FLEXI_XSERVER) == 0) {
 		handle_flexi_server (conn, TYPE_FLEXI, GdmStandardXServer,
 				     NULL, NULL);
+	} else if (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
+		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
+		char *name = g_strdup
+			(&msg[strlen (GDM_SUP_FLEXI_XSERVER " ")]);
+		GdmXServer *svr;
+		g_strstrip (name);
+		if (ve_string_empty (name)) {
+			g_free (name);
+			name = g_strdup (GDM_STANDARD);
+		}
+
+		svr = gdm_find_x_server (name);
+		if (svr == NULL) {
+			/* Don't print the name to syslog as it might be
+			 * long and dangerous */
+			gdm_error (_("Unknown server type requested, using "
+				     "standard server."));
+			g_free (name);
+			name = g_strdup (GdmStandardXServer);
+		} else if ( ! svr->flexible) {
+			gdm_error (_("Requested server %s not allowed to be "
+				     "used for flexible servers, using "
+				     "standard server."), name);
+			g_free (name);
+			name = g_strdup (GdmStandardXServer);
+		}
+
+		handle_flexi_server (conn, TYPE_FLEXI, name, NULL, NULL);
+		g_free (name);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
 		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
 		char *dispname = NULL, *xauthfile = NULL;

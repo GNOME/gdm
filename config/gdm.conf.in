@@ -32,6 +32,7 @@ TimedLogin=
 TimedLoginDelay=30
 StandardXServer=/usr/bin/X11/X
 FlexibleXServers=5
+Xnest=/usr/bin/X11/Xnest -name Xnest
 
 [security]
 AllowRoot=true
@@ -106,9 +107,15 @@ Broadcast=true
 Enable=false
 
 [servers]
-0=Standard
-#1=Standard
+0=/usr/bin/X11/X
+#1=/usr/bin/X11/X
 #Note: If you want to make sure X runs on a specific virtual console on linux,
 #      you can use the following (for console 7):
 #0=/usr/bin/X11/X vt7
 
+# Not fully implemented yet, do not add more servers here
+#
+[server-Standard]
+name=Standard server
+command=/usr/bin/X11/X
+flexible=true
