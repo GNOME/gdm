@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0.0\n"
-"POT-Creation-Date: 2001-03-06 10:35+0200\n"
+"POT-Creation-Date: 2001-03-21 11:55+0200\n"
 "PO-Revision-Date: 1999-10-07 11:490-0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -298,7 +298,8 @@ msgstr ""
 
 #: daemon/slave.c:438
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
-msgstr "gdm_slave_session_start: Автенф╕кац╕ю завершено. Перех╕д до прив╕тання."
+msgstr ""
+"gdm_slave_session_start: Автенф╕кац╕ю завершено. Перех╕д до прив╕тання."
 
 #: daemon/slave.c:484
 msgid ""
@@ -348,7 +349,7 @@ msgstr "gdm_slave_exec_script: Не вдалося розгалуди скрипт-процес!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1784
+#: gui/gdmlogin.c:1803
 msgid "Login:"
 msgstr "╤м'я:"
 
@@ -561,68 +562,67 @@ msgstr "gdm_xdmcp_handle_keepalive: Не вдалося зчитати номер дисплея"
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Не вдалося зчитати ╕дентиф╕катор сеансу"
 
-#: gui/gdmchooser.c:369
+#: gui/gdmchooser.c:58
+msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
+msgstr "Будь ласка, зачекайте: локальне мережа скану╓ться на наявн╕сть комп'ютер╕в, що п╕дтримують XDMCP..."
+
+#: gui/gdmchooser.c:59
+msgid "No serving hosts were found."
+msgstr "Нема╓ комп'ютер╕в, що обслуговують."
+
+#: gui/gdmchooser.c:60
+msgid "Choose a host to connect to from the selection below."
+msgstr "Вибер╕ть комп'ютер для для п╕д'╓днання з наведеного нижче списку."
+
+#: gui/gdmchooser.c:384
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_chooser_parse_config: Нема╓ файлу конф╕гурац╕╖: %s. Зупинка."
 
-#: gui/gdmchooser.c:483
+#: gui/gdmchooser.c:519
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Неможливо в╕дкрити файл типово╖ п╕ктограми хоста: %s"
 
-#. Buttons
-#: gui/gdmchooser.c:550
-msgid "Connect"
-msgstr "З'╓днання"
-
-#: gui/gdmchooser.c:557
-msgid "Rescan"
-msgstr "Оновити"
-
-#: gui/gdmchooser.c:563
-msgid "Cancel"
-msgstr "В╕дм╕на"
-
-#: gui/gdmchooser.c:614
+#: gui/gdmchooser.c:581
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Помилка встановлення обробника сигналу HUP"
 
-#: gui/gdmchooser.c:617
+#: gui/gdmchooser.c:584
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Помилка встановлення обробника сигналу INT"
 
-#: gui/gdmchooser.c:620
+#: gui/gdmchooser.c:587
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Помилка встановлення обробника сигналу TERM"
 
-#: gui/gdmchooser.c:628 gui/gdmlogin.c:2150
+#: gui/gdmchooser.c:595 gui/gdmlogin.c:2168
 msgid "Could not set signal mask!"
 msgstr "Неможливо встановити маску сигналу!"
 
-#: gui/gdmlogin.c:391 gui/gdmlogin.c:397 gui/gdmlogin.c:404
+#: gui/gdmlogin.c:390 gui/gdmlogin.c:396 gui/gdmlogin.c:403
 #, c-format
 msgid "Welcome to %s"
 msgstr "Ласкаво просимо до %s"
 
-#: gui/gdmlogin.c:402
+#: gui/gdmlogin.c:401
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Рядок надто довгий!"
 
-#: gui/gdmlogin.c:499
+#: gui/gdmlogin.c:498
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Ви д╕йсно хочете перезавантажити машину?"
 
-#: gui/gdmlogin.c:513
+#: gui/gdmlogin.c:512
 msgid "Are you sure you want to halt the machine?"
 msgstr "Ви д╕йсно хочете зупинити машину?"
 
-#: gui/gdmlogin.c:531
+#: gui/gdmlogin.c:530
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config: Нема╓ файлу конф╕гурац╕╖: %s. Зупинка."
 
-#: gui/gdmlogin.c:641
+#: gui/gdmlogin.c:640
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -631,7 +631,7 @@ msgstr ""
 "Обраний вами тип сеансу %s не ╕нстальований на ц╕й машин╕.\n"
 "Чи хочете ви зробити %s типовим для майбутн╕х сенс╕в?"
 
-#: gui/gdmlogin.c:657 gui/gdmlogin.c:712
+#: gui/gdmlogin.c:656 gui/gdmlogin.c:711
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -640,104 +640,104 @@ msgstr ""
 "Ви вибрали %s для цього сеансу зам╕сть вашого звичайоного - %s.\n"
 "Чи хочете ви зробити %s типовим для майбутн╕х сеанс╕в?"
 
-#: gui/gdmlogin.c:858
+#: gui/gdmlogin.c:865
 #, c-format
 msgid "%s session selected"
 msgstr "Вибраний сеанс %s"
 
-#: gui/gdmlogin.c:874 gui/gdmlogin.c:983
+#: gui/gdmlogin.c:881 gui/gdmlogin.c:990
 msgid "Last"
 msgstr "Останн╕й"
 
-#: gui/gdmlogin.c:891
+#: gui/gdmlogin.c:898
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Не знайдено каталогу ╕з скриптами сеанс╕в!"
 
-#: gui/gdmlogin.c:946
+#: gui/gdmlogin.c:953
 msgid "No session scripts found. Aborting!"
 msgstr "Не знайдено н╕ одного скрипта сеансу. Зупинка!"
 
-#: gui/gdmlogin.c:950
+#: gui/gdmlogin.c:957
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Не знайдено зв'язок на типовий сеанс. Буде вибрано %s.\n"
 
-#: gui/gdmlogin.c:964
+#: gui/gdmlogin.c:971
 #, c-format
 msgid "%s language selected"
 msgstr "Вибрана мова: %s"
 
-#: gui/gdmlogin.c:1001
+#: gui/gdmlogin.c:1008
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:1007
+#: gui/gdmlogin.c:1014
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:1013
+#: gui/gdmlogin.c:1020
 msgid "Other"
 msgstr "╤нш╕"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:1233
+#: gui/gdmlogin.c:1252
 msgid "Please insert 25 cents to log in."
 msgstr "Будь-ласка, киньте 25 коп╕йок для входу."
 
-#: gui/gdmlogin.c:1517
+#: gui/gdmlogin.c:1536
 msgid "GNOME Desktop Manager"
 msgstr "Менеджер робочого столу GNOME"
 
-#: gui/gdmlogin.c:1529
+#: gui/gdmlogin.c:1548
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Неможливо в╕дкрити файл п╕ктограми: %s. М╕н╕м╕зац╕ю буде заблоковано!"
 
-#: gui/gdmlogin.c:1636
+#: gui/gdmlogin.c:1655
 msgid "Session"
 msgstr "Сеанс"
 
-#: gui/gdmlogin.c:1643
+#: gui/gdmlogin.c:1662
 msgid "Language"
 msgstr "Мова"
 
-#: gui/gdmlogin.c:1650
+#: gui/gdmlogin.c:1669
 msgid "Reboot..."
 msgstr "Перезавантажити..."
 
-#: gui/gdmlogin.c:1657
+#: gui/gdmlogin.c:1676
 msgid "Halt..."
 msgstr "Зупинити..."
 
-#: gui/gdmconfig.c:41 gui/gdmlogin.c:1664
+#: gui/gdmconfig.c:41 gui/gdmlogin.c:1683
 msgid "System"
 msgstr "Система"
 
-#: gui/gdmlogin.c:1820
+#: gui/gdmlogin.c:1839
 msgid "Please enter your login"
 msgstr "Введ╕ть будь-ласка ваше ╕м'я"
 
-#: gui/gdmlogin.c:2006
+#: gui/gdmlogin.c:2024
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 "Неможливо в╕дкрити типове зображення: %s. Переглядача портрет╕в буде "
 "заблоковано!"
 
-#: gui/gdmlogin.c:2127
+#: gui/gdmlogin.c:2145
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Помилка встановлення обробника сигналу HUP"
 
-#: gui/gdmlogin.c:2130
+#: gui/gdmlogin.c:2148
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Помилка встановлення обробника сигналу INT"
 
-#: gui/gdmlogin.c:2133
+#: gui/gdmlogin.c:2151
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Помилка встановлення обробника сигналу TERM"
 
-#: gui/gdmlogin.c:2141
+#: gui/gdmlogin.c:2159
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Помилка встановлення обробника сигналу CHLD"
 
@@ -801,27 +801,27 @@ msgstr ""
 "Вибер╕ть \"Основн╕\", якщо ви просто хочете зм╕нити зовн╕шн╕й вигляд вашо╖ "
 "ре╓страц╕╖."
 
-#: gui/gdmconfig.c:103
+#: gui/gdmconfig.c:126
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr ""
 "Вам потр╕бно бути заре╓строваним користувачем root для зм╕ни конф╕╜урац╕╖ "
 "GDM.\n"
 
-#: gui/gdmconfig.c:176
+#: gui/gdmconfig.c:203
 msgid "GNOME Display Manager Configurator"
 msgstr "Конф╕╜уратор менеджера дисплея GNOME"
 
-#: gui/gdmconfig.c:230
+#: gui/gdmconfig.c:250
 msgid "The configuration file: "
 msgstr "Конф╕╜урац╕йний файл: "
 
-#: gui/gdmconfig.c:339
+#: gui/gdmconfig.c:358
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse_most: Нев╕рний рядок сервера в файл╕ конф╕гурац╕╖. "
 "Про╕гноровано!"
 
-#: gui/gdmconfig.c:406
+#: gui/gdmconfig.c:425
 msgid ""
 "The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
@@ -835,7 +835,7 @@ msgstr ""
 "Вс╕ ваш╕ поточн╕ сеанси буде закрито\n"
 "╕ ви втратите вс╕ незбережен╕ дан╕!"
 
-#: gui/gdmconfig.c:411
+#: gui/gdmconfig.c:430
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
@@ -843,7 +843,7 @@ msgstr ""
 "Ви впевнен╕, що хочете перезапустити GDM\n"
 "╕ втратити вс╕ незбережен╕ дан╕?"
 
-#: gui/gdmconfig.c:418
+#: gui/gdmconfig.c:437
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -854,7 +854,7 @@ msgstr ""
 "п╕д час в╕дображення. ╤нш╕ установки не матимуть ефекту\n"
 "доки GDM не буде перезапущено чи комп'ютер перезавантажено."
 
-#: gui/gdmconfig.c:545
+#: gui/gdmconfig.c:563
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -863,7 +863,7 @@ msgstr ""
 "Ви переконан╕, що хочете це зробити?"
 
 #. Request the command line for this new server
-#: gui/gdmconfig.c:639 gui/gdmconfig.c:658
+#: gui/gdmconfig.c:657 gui/gdmconfig.c:676
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
@@ -877,450 +877,471 @@ msgstr ""
 #. * DO NOT compile it as part of your application.
 #.
 #: gui/gdmconfig-strings.c:7
-msgid "GDM"
-msgstr "GDM"
-
-#: gui/gdmconfig-strings.c:8 gui/gdmconfig-strings.c:77
-msgid "Security"
-msgstr "Безпека"
-
-#: gui/gdmconfig-strings.c:9 gui/gdmconfig-strings.c:87
-msgid "XDMCP"
-msgstr "XDMCP"
-
-#: gui/gdmconfig-strings.c:10
-msgid "User Interface"
-msgstr "╤нтервейс користувача"
-
-#: gui/gdmconfig-strings.c:11
-msgid "Greeter"
-msgstr "Прив╕тання"
-
-#: gui/gdmconfig-strings.c:12 gui/gdmconfig-strings.c:124
-msgid "Chooser"
-msgstr "Виб╕р"
-
-#: gui/gdmconfig-strings.c:13
-msgid "Servers"
-msgstr "Сервери"
-
-#: gui/gdmconfig-strings.c:14
 msgid "GDM Configuration Utility"
 msgstr "Утил╕та конф╕╜урування GDM"
 
-#: gui/gdmconfig-strings.c:15
+#: gui/gdmconfig-strings.c:8
 msgid "_Configuration"
 msgstr "Конф╕╜урац╕я"
 
-#: gui/gdmconfig-strings.c:16
+#: gui/gdmconfig-strings.c:9
 msgid "Revert settings"
 msgstr "В╕дновити установки"
 
-#: gui/gdmconfig-strings.c:17
+#: gui/gdmconfig-strings.c:10
 msgid "Apply"
 msgstr "Застосувати"
 
-#: gui/gdmconfig-strings.c:18 gui/gdmconfig-strings.c:63
+#: gui/gdmconfig-strings.c:11 gui/gdmconfig-strings.c:55
 msgid "Options"
 msgstr "Параметри"
 
-#: gui/gdmconfig-strings.c:19
+#: gui/gdmconfig-strings.c:12
 msgid " "
 msgstr " "
 
-#: gui/gdmconfig-strings.c:20
+#: gui/gdmconfig-strings.c:13
 msgid "basic_settings"
 msgstr "основн╕ установки"
 
-#: gui/gdmconfig-strings.c:21
+#: gui/gdmconfig-strings.c:14
 msgid "General Appearance"
 msgstr "Загальний вигляд"
 
-#: gui/gdmconfig-strings.c:22
+#: gui/gdmconfig-strings.c:15
 msgid "Logo: "
 msgstr "Логотип: "
 
-#: gui/gdmconfig-strings.c:23
+#: gui/gdmconfig-strings.c:16
 msgid "Select a logo to be displayed during login"
 msgstr "Вибер╕ть логотип, що буде в╕дображатись п╕д час ре╓страц╕╖"
 
-#: gui/gdmconfig-strings.c:24
+#: gui/gdmconfig-strings.c:17
 msgid "Minimised Icon: "
 msgstr "М╕н╕м╕завана п╕ктограма: "
 
-#: gui/gdmconfig-strings.c:25
+#: gui/gdmconfig-strings.c:18
 msgid "Select a GTK+ theme file (gtkrc)"
 msgstr "Вибер╕ть файл теми GTK+ (gtkrc)"
 
-#: gui/gdmconfig-strings.c:26
+#: gui/gdmconfig-strings.c:19
 msgid "Gtk+ RC file: "
 msgstr "RC-файл GTK+: "
 
-#: gui/gdmconfig-strings.c:27
+#: gui/gdmconfig-strings.c:20
 msgid "Login appearance"
 msgstr "Вигляд ре╓страц╕╖"
 
-#: gui/gdmconfig-strings.c:28
+#: gui/gdmconfig-strings.c:21
 msgid "Greeter Look and Feel"
 msgstr "Вигляд прив╕тання"
 
-#: gui/gdmconfig-strings.c:29
+#: gui/gdmconfig-strings.c:22
 msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
 msgstr "Показати системне меню (для перезавантаження, вимкнення тощо)"
 
-#: gui/gdmconfig-strings.c:30
+#: gui/gdmconfig-strings.c:23
 msgid "Quiver on failure"
 msgstr "Здригання на збоях"
 
-#: gui/gdmconfig-strings.c:31
+#: gui/gdmconfig-strings.c:24
 #, c-format
-msgid ""
-"Welcome to %n\n"
-"%n\n"
-"This is %n\n"
-msgstr ""
-"Ласкаво просимо до %s"
-"%n\n"
-"Це -- %n\n"
+msgid "Welcome to %n"
+msgstr "Ласкаво просимо до %n"
 
-#: gui/gdmconfig-strings.c:35
+#: gui/gdmconfig-strings.c:25
+#, c-format
+msgid "%n"
+msgstr "%n"
+
+#: gui/gdmconfig-strings.c:26 gui/gdmconfig-strings.c:27
 #, c-format
 msgid "This is %n"
 msgstr "Це -- %n"
 
-#: gui/gdmconfig-strings.c:36
+#: gui/gdmconfig-strings.c:28
 msgid "Default font: "
 msgstr "Типовий шрифт: "
 
-#: gui/gdmconfig-strings.c:37
+#: gui/gdmconfig-strings.c:29
 msgid "Welcome message: "
 msgstr "Прив╕тальне пов╕домлення: "
 
-#: gui/gdmconfig-strings.c:38
+#: gui/gdmconfig-strings.c:30
 msgid "Pick a Font"
 msgstr "Виб╕р шрифту"
 
-#: gui/gdmconfig-strings.c:39
+#: gui/gdmconfig-strings.c:31
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmАаБбВвГг╫╜ДдЕе╢╓ЖжЗзИи╤╕╥╖"
 
-#: gui/gdmconfig-strings.c:40
+#: gui/gdmconfig-strings.c:32
 msgid "Extras"
 msgstr "Розширення"
 
-#: gui/gdmconfig-strings.c:41
+#: gui/gdmconfig-strings.c:33
 msgid "Background Program: "
 msgstr "Програма на тл╕: "
 
-#: gui/gdmconfig-strings.c:42 gui/gdmconfig-strings.c:116
+#: gui/gdmconfig-strings.c:34 gui/gdmconfig-strings.c:117
 msgid "Select a file containing Locale information"
 msgstr "Вибрати файл, що м╕стить ╕нформац╕ю про локал╕зац╕ю"
 
-#: gui/gdmconfig-strings.c:43
+#: gui/gdmconfig-strings.c:35
 msgid "Default locale: "
 msgstr "Типова локал╕зац╕я: "
 
-#: gui/gdmconfig-strings.c:44
+#: gui/gdmconfig-strings.c:36
 msgid "Exclude these users: "
 msgstr "Виключити таких користувач╕в: "
 
-#: gui/gdmconfig-strings.c:45
+#: gui/gdmconfig-strings.c:37
 msgid "Automatic Login: "
 msgstr "Автоматичний вх╕д: "
 
-#: gui/gdmconfig-strings.c:46
+#: gui/gdmconfig-strings.c:38
 msgid "Position"
 msgstr "Позиц╕я"
 
-#: gui/gdmconfig-strings.c:47
+#: gui/gdmconfig-strings.c:39
 msgid "Manually set position"
 msgstr "Встановити позиц╕ю вручну"
 
-#: gui/gdmconfig-strings.c:48
+#: gui/gdmconfig-strings.c:40
 msgid "Lock position"
 msgstr "Заф╕ксувати позиц╕ю"
 
-#: gui/gdmconfig-strings.c:49
+#: gui/gdmconfig-strings.c:41
 msgid "X position: "
 msgstr "X-позиц╕я: "
 
-#: gui/gdmconfig-strings.c:50
+#: gui/gdmconfig-strings.c:42
 msgid "Y position: "
 msgstr "Y-позиц╕я: "
 
-#: gui/gdmconfig-strings.c:51
+#: gui/gdmconfig-strings.c:43
 msgid "Xinerama screen: "
 msgstr "Екран Xinerama: "
 
-#: gui/gdmconfig-strings.c:52
+#: gui/gdmconfig-strings.c:44
 msgid "Login behaviour"
 msgstr "Режим ре╓страц╕╖"
 
-#: gui/gdmconfig-strings.c:53 gui/gdmconfig-strings.c:61
+#: gui/gdmconfig-strings.c:45 gui/gdmconfig-strings.c:53
 msgid "Face browser"
 msgstr "Перегляд портрет╕в"
 
-#: gui/gdmconfig-strings.c:54
+#: gui/gdmconfig-strings.c:46
 msgid "Show choosable user images (enable face browser)"
 msgstr "Показати зображення користувач╕в"
 
-#: gui/gdmconfig-strings.c:55
+#: gui/gdmconfig-strings.c:47
 msgid "Default face image: "
 msgstr "Типовий портрет: "
 
-#: gui/gdmconfig-strings.c:56
+#: gui/gdmconfig-strings.c:48
 msgid "Global faces directory: "
 msgstr "Загальний каталог портрет╕в: "
 
-#: gui/gdmconfig-strings.c:57
+#: gui/gdmconfig-strings.c:49
 msgid "Maximum face width: "
 msgstr "Максимальна ширина портрета: "
 
-#: gui/gdmconfig-strings.c:58
+#: gui/gdmconfig-strings.c:50
 msgid "Select an image for users with no 'face'"
 msgstr "Вибер╕ть зображення для користувач╕в без портрета"
 
-#: gui/gdmconfig-strings.c:59
+#: gui/gdmconfig-strings.c:51
 msgid "Choose the directory to search for faces"
 msgstr "Вибер╕ть каталог для пошуку портрет╕в"
 
-#: gui/gdmconfig-strings.c:60
+#: gui/gdmconfig-strings.c:52
 msgid "Maximum face height: "
 msgstr "Максимальна висота портета:"
 
-#: gui/gdmconfig-strings.c:62
+#: gui/gdmconfig-strings.c:54
 msgid "expert"
 msgstr "експертн╕"
 
-#: gui/gdmconfig-strings.c:64
+#: gui/gdmconfig-strings.c:56
 msgid "Allow root to login with GDM"
 msgstr "Дозволити вх╕д користувачу root"
 
-#: gui/gdmconfig-strings.c:65
+#: gui/gdmconfig-strings.c:57
+msgid ""
+"Determines whether GDM should kill X clients started by the init scripts "
+"when the user logs in."
+msgstr "Визнача╓, чи буде GDM знищувати X-кл╕╓нт╕в запущених сценар╕ями ╕н╕ц╕ал╕зац╕╖ на вход╕ користувача в систему."
+
+#: gui/gdmconfig-strings.c:58
 msgid "Kill 'init' clients"
 msgstr "Знищити кл╕╓нти \"init\""
 
-#: gui/gdmconfig-strings.c:66
-msgid "Relax permissions"
-msgstr "Уважн╕сть до прав доступу"
+#: gui/gdmconfig-strings.c:59
+msgid "Should GDM print authentication errors in the greeter"
+msgstr "Чи ма╓ GDM друкувати пов╕домлення про помилки автенф╕кац╕╖ у прив╕танн╕"
 
-#: gui/gdmconfig-strings.c:67
+#: gui/gdmconfig-strings.c:60
 msgid "Authentication errors should be verbose"
 msgstr "Пов╕домлення про помилки ре╓страц╕╖ мають бути докладними"
 
+#: gui/gdmconfig-strings.c:61
+msgid "Select how relaxed permissions are"
+msgstr "Вибер╕ть наск╕льк╕ гнучк╕ права"
+
+#: gui/gdmconfig-strings.c:62
+msgid "Permissions: "
+msgstr "Права: "
+
+#: gui/gdmconfig-strings.c:63
+msgid "Allow world writable files and directories"
+msgstr "Дозволити доступн╕ для вс╕х на запис файли й каталоги"
+
+#: gui/gdmconfig-strings.c:64
+msgid "World writable"
+msgstr "Доступн╕ для вс╕х на запис"
+
+#: gui/gdmconfig-strings.c:65
+msgid "Allow group writable files and directories"
+msgstr "Дозволити доступн╕ для групи на запис файли й каталоги"
+
+#: gui/gdmconfig-strings.c:66
+msgid "Group writable"
+msgstr "Доступн╕ для групи на запис"
+
+#: gui/gdmconfig-strings.c:67
+msgid "Only accept user owned files and directories"
+msgstr "Дозволити лише файли й каталоги, що належать користувачу"
+
 #: gui/gdmconfig-strings.c:68
+msgid "Paranoia"
+msgstr "Параноя"
+
+#: gui/gdmconfig-strings.c:69
 msgid "Authorization Details"
 msgstr "Авторизац╕йн╕ подробиц╕"
 
-#: gui/gdmconfig-strings.c:69
+#: gui/gdmconfig-strings.c:70
 msgid "GDM runs as this user: "
 msgstr "GDM викону╓ться в╕д цього користувача: "
 
-#: gui/gdmconfig-strings.c:70
+#: gui/gdmconfig-strings.c:71
 msgid "User 'auth' directory: "
 msgstr "Користувацький каталог авторизац╕╖: "
 
-#: gui/gdmconfig-strings.c:71
+#: gui/gdmconfig-strings.c:72
 msgid "User 'auth' FB directory: "
 msgstr "Користувацький каталог в╕дступу авторизац╕╖: "
 
-#: gui/gdmconfig-strings.c:72
+#: gui/gdmconfig-strings.c:73
 msgid "User 'auth' file: "
 msgstr "Користувацький файл авторизац╕╖: "
 
-#: gui/gdmconfig-strings.c:73
+#: gui/gdmconfig-strings.c:74
 msgid "GDM runs as this group: "
 msgstr "GDM викону╓ться в╕д ц╕╓╖ групи: "
 
-#: gui/gdmconfig-strings.c:74
+#: gui/gdmconfig-strings.c:75
 msgid "Limits"
 msgstr "Обмеження"
 
-#: gui/gdmconfig-strings.c:75
+#: gui/gdmconfig-strings.c:76
 msgid "Retry delay: "
 msgstr "Затримка повтору: "
 
-#: gui/gdmconfig-strings.c:76
+#: gui/gdmconfig-strings.c:77
 msgid "Maximum user file length: "
 msgstr "Максимальна довжина файлу користувача: "
 
 #: gui/gdmconfig-strings.c:78
+msgid "Security"
+msgstr "Безпека"
+
+#: gui/gdmconfig-strings.c:79
 msgid "Enable XDMCP"
 msgstr "Ув╕мкнути XDMCP"
 
-#: gui/gdmconfig-strings.c:79
+#: gui/gdmconfig-strings.c:80
 msgid "Connection Settings"
 msgstr "Установки з'╓днання"
 
-#: gui/gdmconfig-strings.c:80
+#: gui/gdmconfig-strings.c:81
 msgid "Honour indirect requests"
 msgstr "Дозволити непрям╕ запити"
 
-#: gui/gdmconfig-strings.c:81
+#: gui/gdmconfig-strings.c:82
 msgid "Maximum indirect wait time: "
 msgstr "Максимальний час оч╕кування в непрямих запитах: "
 
-#: gui/gdmconfig-strings.c:82
+#: gui/gdmconfig-strings.c:83
 msgid "Maximum wait time: "
 msgstr "Максимальний час оч╕кування: "
 
-#: gui/gdmconfig-strings.c:83
+#: gui/gdmconfig-strings.c:84
 msgid "Maximum remote sessions: "
 msgstr "Максимум в╕ддалених сеанс╕в: "
 
-#: gui/gdmconfig-strings.c:84
+#: gui/gdmconfig-strings.c:85
 msgid "Max pending indirect requests: "
 msgstr "Максимум поточних непрямих запит╕в: "
 
-#: gui/gdmconfig-strings.c:85
+#: gui/gdmconfig-strings.c:86
 msgid "Maximum pending requests: "
 msgstr "Максимум поточних запит╕в: "
 
-#: gui/gdmconfig-strings.c:86
+#: gui/gdmconfig-strings.c:87
 msgid "Listen on UDP port: "
 msgstr "Прослуховування на порту UDP: "
 
 #: gui/gdmconfig-strings.c:88
+msgid "XDMCP"
+msgstr "XDMCP"
+
+#: gui/gdmconfig-strings.c:89
 msgid "Server Definitions"
 msgstr "Визначення сервера"
 
-#: gui/gdmconfig-strings.c:89
+#: gui/gdmconfig-strings.c:90
 msgid "No."
 msgstr "Номер"
 
-#: gui/gdmconfig-strings.c:90
+#: gui/gdmconfig-strings.c:91
 msgid "Path to X server"
 msgstr "Шлях до X-сервера"
 
-#: gui/gdmconfig-strings.c:91
+#: gui/gdmconfig-strings.c:92
 msgid "Add Server"
 msgstr "Додати сервер"
 
-#: gui/gdmconfig-strings.c:92
+#: gui/gdmconfig-strings.c:93
 msgid "Edit Server"
 msgstr "Виправити сервер"
 
-#: gui/gdmconfig-strings.c:93
+#: gui/gdmconfig-strings.c:94
 msgid "Delete Server"
 msgstr "Стерти сервер"
 
-#: gui/gdmconfig-strings.c:94
+#: gui/gdmconfig-strings.c:95
 msgid "Debugging"
 msgstr "Налагодження"
 
-#: gui/gdmconfig-strings.c:95
+#: gui/gdmconfig-strings.c:96
 msgid "Enable debugging output"
 msgstr "Ув╕мкнути налагоджувальний вив╕д"
 
-#: gui/gdmconfig-strings.c:96
+#: gui/gdmconfig-strings.c:97
 msgid "X-server setup"
 msgstr "установки X-сервера"
 
-#: gui/gdmconfig-strings.c:97
+#: gui/gdmconfig-strings.c:98
 msgid "system_setup"
 msgstr "установки системи"
 
-#: gui/gdmconfig-strings.c:98
+#: gui/gdmconfig-strings.c:99
 msgid "Executables"
 msgstr "Виконавч╕"
 
-#: gui/gdmconfig-strings.c:99
+#: gui/gdmconfig-strings.c:100
 msgid "Chooser command: "
 msgstr "Команда вибирання: "
 
-#: gui/gdmconfig-strings.c:100
+#: gui/gdmconfig-strings.c:101
 msgid "Greeter command: "
 msgstr "Команда прив╕тання: "
 
-#: gui/gdmconfig-strings.c:101
+#: gui/gdmconfig-strings.c:102
 msgid "Halt command: "
 msgstr "Команда зупинки:"
 
-#: gui/gdmconfig-strings.c:102
+#: gui/gdmconfig-strings.c:103
 msgid "Reboot command: "
 msgstr "Команда перевантаження:"
 
-#: gui/gdmconfig-strings.c:103
+#: gui/gdmconfig-strings.c:104
 msgid "Directories"
 msgstr "Каталоги"
 
-#: gui/gdmconfig-strings.c:104
+#: gui/gdmconfig-strings.c:105
 msgid "Session directory: "
 msgstr "Каталог сеансу: "
 
-#: gui/gdmconfig-strings.c:105
+#: gui/gdmconfig-strings.c:106
 msgid "PRE session scripts directory: "
 msgstr "Каталог передсеансових сценар╕╖в: "
 
-#: gui/gdmconfig-strings.c:106
+#: gui/gdmconfig-strings.c:107
 msgid "POST session scripts directory: "
 msgstr "Каталог п╕слясеансових сценар╕╖в: "
 
-#: gui/gdmconfig-strings.c:107
+#: gui/gdmconfig-strings.c:108
 msgid "Logging directory: "
 msgstr "Каталог журналювання: "
 
-#: gui/gdmconfig-strings.c:108
+#: gui/gdmconfig-strings.c:109
 msgid "Display initialization directory: "
 msgstr "Каталог ╕н╕ц╕ал╕зац╕╖ дисплея: "
 
-#: gui/gdmconfig-strings.c:109 gui/gdmconfig-strings.c:112
+#: gui/gdmconfig-strings.c:110 gui/gdmconfig-strings.c:113
 msgid "Miscelleaneous"
 msgstr "╤нше"
 
-#: gui/gdmconfig-strings.c:110
+#: gui/gdmconfig-strings.c:111
 msgid "PID file: "
 msgstr "Файл PID: "
 
-#: gui/gdmconfig-strings.c:111
+#: gui/gdmconfig-strings.c:112
 msgid "Paths"
 msgstr "Шляхи"
 
-#: gui/gdmconfig-strings.c:113
+#: gui/gdmconfig-strings.c:114
 msgid "Default $PATH: "
 msgstr "Типовий $PATH: "
 
-#: gui/gdmconfig-strings.c:114
+#: gui/gdmconfig-strings.c:115
 msgid "Root $PATH: "
 msgstr "Кореневий $PATH: "
 
-#: gui/gdmconfig-strings.c:115
+#: gui/gdmconfig-strings.c:116
 msgid "Localization"
 msgstr "Локал╕зац╕я"
 
-#: gui/gdmconfig-strings.c:117
+#: gui/gdmconfig-strings.c:118
 msgid "Locale file: "
 msgstr "Файл локал╕зац╕╖: "
 
-#: gui/gdmconfig-strings.c:118
+#: gui/gdmconfig-strings.c:119
 msgid "Environment"
 msgstr "Середовище"
 
-#: gui/gdmconfig-strings.c:119
+#: gui/gdmconfig-strings.c:120
 msgid "Appearance"
 msgstr "Вигляд"
 
-#: gui/gdmconfig-strings.c:120
+#: gui/gdmconfig-strings.c:121
 msgid "Directory for host images: "
 msgstr "Каталог хостових зображень: "
 
-#: gui/gdmconfig-strings.c:121
+#: gui/gdmconfig-strings.c:122
 msgid "Default host image:"
 msgstr "Типове хостове зображення:"
 
-#: gui/gdmconfig-strings.c:122
+#: gui/gdmconfig-strings.c:123
 msgid "Refresh"
 msgstr "Оновити"
 
-#: gui/gdmconfig-strings.c:123
+#: gui/gdmconfig-strings.c:124
 msgid "Scan every 'x' seconds: "
 msgstr "Пер╕од сканування (у секундах): "
 
 #: gui/gdmconfig-strings.c:125
+msgid "Chooser"
+msgstr "Виб╕р"
+
+#: gui/gdmconfig-strings.c:126
 msgid "(C) 2001 Lee Mallabone"
 msgstr "© 2001 Lee Mallabone"
 
-#: gui/gdmconfig-strings.c:126
+#: gui/gdmconfig-strings.c:127
 msgid ""
 "Configure the GNOME Display Manager.\n"
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
