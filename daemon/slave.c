@@ -1939,6 +1939,13 @@ run_pictures (void)
 
 					/* if in trusted dir, just use it */
 					if (is_in_trusted_pic_dir (picfile)) {
+						struct stat s;
+
+						if (stat (picfile, &s) != 0 ||
+						    ! S_ISREG (s.st_mode)) {
+							g_free (picfile);
+							picfile = g_strdup ("");
+						}
 						NEVER_FAILS_seteuid (0);
 						NEVER_FAILS_setegid (GdmGroupId);
 
