@@ -3,7 +3,7 @@
 #    1) we read the standard system env vars
 #    2) syadmins/integrators can add their own private options etc...
 
-test -f /etc/profile && source /etc/profile
+test -f /etc/profile && . /etc/profile
 
 exec @EXPANDED_BINDIR@/gdm-binary "$@"
 
