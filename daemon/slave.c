@@ -3005,6 +3005,10 @@ gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 		GdmAllowRoot = val;
 	} else if (sscanf (msg, GDM_NOTIFY_ALLOWREMOTEROOT " %d", &val) == 1) {
 		GdmAllowRemoteRoot = val;
+	} else if (sscanf (msg, GDM_NOTIFY_ALLOWREMOTEAUTOLOGIN " %d", &val) == 1) {
+		GdmAllowRemoteAutoLogin = val;
+	} else if (sscanf (msg, GDM_NOTIFY_RETRYDELAY " %d", &val) == 1) {
+		GdmRetryDelay = val;
 	} else if (strncmp (msg, GDM_NOTIFY_GREETER " ",
 			    strlen (GDM_NOTIFY_GREETER) + 1) == 0) {
 		/* FIXME: can't handle flexi servers without going all cranky */

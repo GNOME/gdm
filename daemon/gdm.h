@@ -421,6 +421,8 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 /* Notification protocol */
 #define GDM_NOTIFY_ALLOWREMOTEROOT "AllowRemoteRoot" /* <true/false as int> */
 #define GDM_NOTIFY_ALLOWROOT "AllowRoot" /* <true/false as int> */
+#define GDM_NOTIFY_ALLOWREMOTEAUTOLOGIN "AllowRemoteAutoLogin" /* <true/false as int> */
+#define GDM_NOTIFY_RETRYDELAY "RetryDelay" /* <seconds> */
 #define GDM_NOTIFY_GREETER "Greeter" /* <greeter binary> */
 #define GDM_NOTIFY_REMOTEGREETER "RemoteGreeter" /* <greeter binary> */
 
@@ -530,6 +532,8 @@ GdmXServer *	gdm_find_x_server	(const char *id);
  *             config file.  The keys that are currently supported are:
  *   		 security/AllowRoot (2.3.90.2)
  *   		 security/AllowRemoteRoot (2.3.90.2)
+ *   		 security/AllowRemoteAutoLogin (2.3.90.2)
+ *   		 security/RetryDelay (2.3.90.2)
  *   		 daemon/Greeter (2.3.90.2)
  * Supported since: 2.3.90.2
  * Arguments:  <key>

@@ -295,6 +295,7 @@ greeter_session_init (void)
 		(statbuf.st_mode & (S_IRGRP|S_IXGRP)) == (S_IRGRP|S_IXGRP) &&
 		(statbuf.st_mode & (S_IROTH|S_IXOTH)) == (S_IROTH|S_IXOTH)) 
 	      {
+		      g_print ("Session: %s\n", dent->d_name);
 		radio = gtk_radio_button_new_with_mnemonic (session_group, _(dent->d_name));
 		g_object_set_data_full (G_OBJECT (radio),
 					SESSION_NAME,

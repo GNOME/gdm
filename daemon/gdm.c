@@ -2214,6 +2214,24 @@ update_config (const char *key)
 		notify_displays_int (GDM_NOTIFY_ALLOWREMOTEROOT, val);
 
 		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_ALLOWREMOTEAUTOLOGIN)) {
+		gboolean val = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEAUTOLOGIN);
+		if (ve_bool_equal (val, GdmAllowRemoteAutoLogin))
+			goto update_config_ok;
+		GdmAllowRemoteAutoLogin = val;
+
+		notify_displays_int (GDM_NOTIFY_ALLOWREMOTEAUTOLOGIN, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_RETRYDELAY)) {
+		int val = gnome_config_get_int (GDM_KEY_RETRYDELAY);
+		if (val == GdmRetryDelay)
+			goto update_config_ok;
+		GdmRetryDelay = val;
+
+		notify_displays_int (GDM_NOTIFY_RETRYDELAY, val);
+
+		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_GREETER)) {
 		char *val = gnome_config_get_string (GDM_KEY_GREETER);
 		if (strcmp (ve_sure_string (val), ve_sure_string (GdmGreeter)) == 0) {
