@@ -76,7 +76,7 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Chinese (simplified)"), "zh_CN", "中文 (简体)", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Chinese (traditional)"), "zh_TW", "繁體中文", 0 },
+	{ N_("A-M|Chinese (traditional)"), "zh_TW", "中文 (繁體)", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Croatian"), "hr_HR", "Hrvatski", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
