@@ -434,6 +434,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     
     /* Read display address */
     if (! XdmcpReadARRAY8 (&buf, &clnt_addr)) {
+	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
 	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not read display address"));
 	return;
     }
@@ -441,6 +442,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     /* Read display port */
     if (! XdmcpReadARRAY8 (&buf, &clnt_port)) {
 	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+	XdmcpDisposeARRAYofARRAY8 (&clnt_port);
 	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not read display port number"));
 	return;
     }
@@ -743,7 +745,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 {
     CARD32 clnt_sessid;
     CARD16 clnt_dspnum;
-    static ARRAY8 clnt_dspclass;
+    ARRAY8 clnt_dspclass;
     GdmDisplay *d;
     gint logfd;
     
@@ -773,6 +775,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     
     /* Display Class */
     if (! XdmcpReadARRAY8 (&buf, &clnt_dspclass)) {
+        XdmcpDisposeARRAY8(&clnt_dspclass);
 	gdm_error (_("gdm_xdmcp_handle_manage: Could not read Display Class"));
 	return;
     }
@@ -804,6 +807,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	/* Start greeter/session */
 	if (!gdm_display_manage (d)) {
 	    gdm_xdmcp_send_failed (clnt_sa, clnt_sessid);
+	    XdmcpDisposeARRAY8(&clnt_dspclass);
 	    return;
 	}
     }
