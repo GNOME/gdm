@@ -3323,6 +3323,7 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 	GdkPixbuf *img = NULL;
 	gchar buf[PIPE_SIZE];
 	size_t size;
+	int bufsize;
 
 	user = g_new0 (GdmLoginUser, 1);
 
@@ -3360,13 +3361,48 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 	/* both nul terminate and wipe the trailing \n */
 	buf[size-1] = '\0';
 
-	if (size < 2 ||
-	    access (&buf[1], R_OK) != 0) {
-		g_print ("%c\n", STX);
+	if (size < 2) {
+		img = NULL;
+	} else if (sscanf (&buf[1], "buffer:%d", &bufsize) == 1) {
+		char buffer[2048];
+		int pos = 0;
+		int n;
+		GdkPixbufLoader *loader;
+		/* we trust the daemon, even if it wanted to give us
+		 * bogus bufsize */
+		/* the daemon will now print the buffer */
+		g_print ("%cOK\n", STX);
+
+		while (read (STDIN_FILENO, buf, 1) == 1)
+			if (buf[0] == STX)
+				break;
+
+		loader = gdk_pixbuf_loader_new ();
+
+		while ((n = read (STDIN_FILENO, buffer,
+				  MIN (sizeof (buffer), bufsize-pos))) > 0) {
+			gdk_pixbuf_loader_write (loader, buffer, n, NULL);
+			pos += n;
+			if (pos >= bufsize)
+			       break;	
+		}
+
+		gdk_pixbuf_loader_close (loader, NULL);
+
+		img = gdk_pixbuf_loader_get_pixbuf (loader);
+		if (img != NULL)
+			g_object_ref (G_OBJECT (img));
+
+		g_object_unref (G_OBJECT (loader));
+
+		/* read the "done" bit, but don't check */
+		read (STDIN_FILENO, buf, sizeof (buf));
+	} else if (access (&buf[1], R_OK) == 0) {
+		img = gdk_pixbuf_new_from_file (&buf[1], NULL);
+	} else {
+		img = NULL;
 		return user;
 	}
-
-	img = gdk_pixbuf_new_from_file (&buf[1], NULL);
 
 	/* the daemon is now free to go on */
 	g_print ("%c\n", STX);

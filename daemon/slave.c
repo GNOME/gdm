@@ -127,7 +127,6 @@ extern gint GdmRetryDelay;
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gchar *GdmGlobalFaceDir;
-extern gboolean GdmBrowser;
 extern gboolean GdmDebug;
 
 
@@ -1056,8 +1055,6 @@ static void
 run_pictures (void)
 {
 	char *response;
-	int tempfd;
-	char tempname[256];
 	char buf[1024];
 	size_t bytes;
 	struct passwd *pwent;
@@ -1067,6 +1064,10 @@ run_pictures (void)
 
 	response = NULL;
 	for (;;) {
+		struct stat s;
+		char *tmp, *ret;
+		int i;
+
 		g_free (response);
 		response = gdm_slave_greeter_ctl (GDM_NEEDPIC, "");
 		if (ve_string_empty (response)) {
@@ -1074,13 +1075,6 @@ run_pictures (void)
 			return;
 		}
 		
-		/* don't quit, we don't want to further confuse a confused
-		 * greeter, just don't send it pics */
-		if ( ! GdmBrowser) {
-			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
-			continue;
-		}
-
 		pwent = getpwnam (response);
 		if (pwent == NULL) {
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
@@ -1202,6 +1196,14 @@ run_pictures (void)
 			picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
 		}
 
+		if (stat (picfile, &s) < 0) {
+			seteuid (0);
+			setegid (GdmGroupId);
+
+			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+			continue;
+		}
+
 		fp = fopen (picfile, "r");
 		g_free (picfile);
 		if (fp == NULL) {
@@ -1212,32 +1214,37 @@ run_pictures (void)
 			continue;
 		}
 
-		strcpy (tempname, "/tmp/gdm-user-picture-XXXXXX");
-		tempfd = g_mkstemp (tempname);
+		tmp = g_strdup_printf ("buffer:%d", (int)s.st_size);
+		ret = gdm_slave_greeter_ctl (GDM_READPIC, tmp);
+		g_free (tmp);
 
-		if (tempfd < 0) {
-			fclose (fp);
-
+		if (ret == NULL || strcmp (ret, "OK") != 0) {
+			g_free (ret);
 			seteuid (0);
 			setegid (GdmGroupId);
-
-			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
 		}
+		g_free (ret);
 
-		fchmod (tempfd, 0644);
+		g_print ("%c", STX);
 
+		i = 0;
 		while ((bytes = fread (buf, sizeof (char),
 				       sizeof (buf), fp)) > 0) {
-			write (tempfd, buf, bytes);
+			fwrite (buf, 1, bytes, stdout);
+			i += bytes;
 		}
 
 		fclose (fp);
-		close (tempfd);
 
-		gdm_slave_greeter_ctl_no_ret (GDM_READPIC, tempname);
-
-		unlink (tempname);
+		/* eek, this "could" happen, so just send some garbage */
+		while (i < s.st_size) {
+			bytes = MIN (sizeof (buf), s.st_size - i);
+			fwrite (buf, 1, bytes, stdout);
+			i += bytes;
+		}
+			
+		gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "done");
 
 		seteuid (0);
 		setegid (GdmGroupId);
