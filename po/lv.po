@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2002-12-19 05:43+0100\n"
-"PO-Revision-Date: 2002-12-20 02:38+0200\n"
-"Last-Translator: Artis Trops <hornet@navigator.lv>\n"
+"POT-Creation-Date: 2002-12-23 05:56+0100\n"
+"PO-Revision-Date: 2002-12-25 00:21+0200\n"
+"Last-Translator: Artis Trops <hornet@navigators.lv>\n"
 "Language-Team: Latvian <ll10nt@inbox.lv>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. ALWAYS ADD A CHANGELOG OR I WILL PERSONALLY KICK YOUR ASS!
 #: config/gettextfoo.h:3
 msgid "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  You will need to log in on a console and rerun the X configuration program.  Then restart GDM."
-msgstr "Nevaru palaist X serveri (tavu grafisko saskarni).  Visdrīzāk tā nav pareizi uzstādīta.  Tev vajadzētu ielogoties konsolē un vēlreiz palaist X konfigurācijas programmu.  Tad pārstartē GDM."
+msgstr "Nevaru palaist X serveri (jūsu grafisko saskarni).  Visdrīzāk tā nav pareizi uzstādīta.  Jums vajadzētu pieteikties konsolē un vēlreiz palaist X konfigurācijas programmu.  Tad pārstartēt GDM."
 
 #: config/gettextfoo.h:4
 msgid "Would you like me to try to run the X configuration program?  Note that you will need the root password for this."
@@ -203,17 +203,17 @@ msgstr "%s: XDMCP bija aktivizēts, kaut arī šeit nav XDMCP atbalsta, slēdzu 
 #: daemon/gdm.c:340
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off automatic login"
-msgstr "%s: Root nevar automātiski ieiet, izslēdzu automātisko ielogošanos"
+msgstr "%s: Root nevar autopieteikties, izslēdzu automātisko pieteikšanos"
 
 #: daemon/gdm.c:353
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off timed login"
-msgstr "%s: Root nevar automātiski ielogoties, izslēdzu laika ielogošanos"
+msgstr "%s: Root nevar autopieteikties, izslēdzu laika pieteikšanos"
 
 #: daemon/gdm.c:359
 #, c-format
 msgid "%s: TimedLoginDelay less then 5, so I will just use 5."
-msgstr "%s: LaikaIlogošanāsAizture mazāka par 5, tāpēc es vienkārši lietšu 5."
+msgstr "%s: LaikaIPieteikšanāsAizture mazāka par 5, tāpēc es vienkārši lietšu 5."
 
 #: daemon/gdm.c:369
 #, c-format
@@ -399,7 +399,7 @@ msgstr "deal_with_x_crashes: Palaižu XKeepsCrashing skriptu"
 
 #: daemon/gdm.c:964
 msgid "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly. You will need to log in on a console and rerun the X configuration program.  Then restart GDM."
-msgstr "Nevaru palaist X serveri (tavu grafisko saskarni). Visdrīzāk tā nav pareizi uzstādīta. Tev vajadzēs ielogoties konsolē un vēlreiz palaist X konfigurācijas programmu. Tad pārstartē GDM."
+msgstr "Nevaru palaist X serveri (jūsu grafisko saskarni). Visdrīzāk tā nav pareizi uzstādīta. Jums vajadzēs pieteikties konsolē un vēlreiz palaist X konfigurācijas programmu. Tad pārstartēt GDM."
 
 #. else {
 #. * At this point .... screw the user, we don't know how to
@@ -476,14 +476,22 @@ msgstr "Pasargāt LD_* mainīgos"
 #: daemon/gdm.c:1436
 #: gui/gdmchooser.c:1103
 #, c-format
-msgid "Error on option %s: %s.\n"
+msgid ""
+"Error on option %s: %s.\n"
 "Run '%s --help' to see a full list of available command line options.\n"
-msgstr "Kļūda opcijā %s: %s.\n"
+""
+msgstr ""
+"Kļūda opcijā %s: %s.\n"
 "Palaižiet '%s --help' lai redzētu pilnu sarakstu ar pieejamām komandrindas opcijām.\n"
+""
 
 #: daemon/gdm.c:1448
-msgid "Only root wants to run gdm\n"
-msgstr "Tikai root var gribēt palaist gdm\n"
+msgid ""
+"Only root wants to run gdm\n"
+""
+msgstr ""
+"Tikai root var gribēt palaist gdm\n"
+""
 
 #: daemon/gdm.c:1476
 msgid "gdm already running. Aborting!"
@@ -533,7 +541,7 @@ msgstr "Pieprasīto serveri %s nav atļauts lietot elasīgajiem serveriem, lieto
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:491
 msgid "y = Yes or n = No? >"
-msgstr "j = Jā vai n = Nē? >"
+msgstr "y = Jā vai n = Nē? >"
 
 #: daemon/misc.c:775
 #, c-format
@@ -704,12 +712,12 @@ msgid ""
 "the problem is corrected."
 msgstr ""
 "Nevarēju palaist X serveri\n"
-"(tavu grafisko vidi)\n"
+"(jūsu grafisko vidi)\n"
 "kādas iekšējas kļūdas dēļ.\n"
-"Lūdzu sazinies ar sistēmadministrātoru\n"
-"vai pārbaidi sistēmas žurnālu, lai diagnosticētu.\n"
-"Pa to laiku displejs tiks deaktivizēts\n"
-"Lūdzu pārstartē gdm, kad problēma\n"
+"Lūdzu sazinieties ar sistēmadministrātoru\n"
+"vai pārbaidiet sistēmas žurnālu, lai diagnosticētu.\n"
+"Pa to laiku displejs tiks deaktivizēts.\n"
+"Lūdzu pārstartējier gdm, kad problēma\n"
 "būs izlabota."
 
 #: daemon/slave.c:737
@@ -746,15 +754,17 @@ msgstr ""
 "ir uzstādīts pareizi konfigurācijas failā."
 
 #: daemon/slave.c:1032
-msgid "Enter the root password\n"
+msgid ""
+"Enter the root password\n"
 "to run the configuration."
-msgstr "Ievadi root paroli,\n"
+msgstr ""
+"Ievadi root paroli,\n"
 "lai palaistu konfigurāciju."
 
 #: daemon/slave.c:1055
 #: daemon/slave.c:1139
 msgid "gdm_slave_wait_for_login: No login/Bad login"
-msgstr "gdm_slave_wait_for_login: Nav logina/Slikts logins"
+msgstr "gdm_slave_wait_for_login: Nav login/Slikts login"
 
 #: daemon/slave.c:1445
 #, c-format
@@ -776,11 +786,11 @@ msgstr ""
 "konfigurācijas failā un XDMCP\n"
 "tika deaktivizēts. Tā var būt\n"
 "tikai konfigurācijas kļūda.\n"
-"Tāpēc es palaidu tev vienu serveri.\n"
-"Tev vajadzētu ieiet un salabot\n"
-"konfigurāciju. Paturi prātā, ka\n"
-"automātiskā un aizturētā ielogošanās\n"
-"tagad ir deaktivizēta."
+"Tāpēc palaidu jums vienu serveri.\n"
+"Jums vajadzētu pieteikties un salabot\n"
+"konfigurāciju. Paturiet prātā, ka\n"
+"automātiskā un aizturētā pieteikšanās\n"
+"šobrīd ir deaktivizēta."
 
 #: daemon/slave.c:1574
 msgid ""
@@ -791,9 +801,9 @@ msgid ""
 "configure the X server."
 msgstr ""
 "Nevarēju palaist parasto X serveri\n"
-"(tavu grafisko vidi), tāpēc\n"
+"(jūsu grafisko vidi), tāpēc\n"
 "šis ir avārijdoršais X serveris.\n"
-"Tev vajadzētu ieiet un pienācīgi\n"
+"Jums vajadzētu pieteikties un pienācīgi\n"
 "nokonfigurēt X serveri."
 
 #: daemon/slave.c:1583
@@ -815,9 +825,9 @@ msgid ""
 "editing the configuration file"
 msgstr ""
 "Nevar palaist sveicinātāja programmu,\n"
-"tu nevarēsi ielogoties iekšā.\n"
+"jūs nevarēsiet pieteikties.\n"
 "Šis displejs tiks deaktivizēts.\n"
-"Jebkurā gadījumā mēģini ielogoties\n"
+"Jebkurā gadījumā mēģini pieteikties\n"
 "un rediģēt konfigurācijas failu"
 
 #: daemon/slave.c:1614
@@ -845,10 +855,12 @@ msgid ""
 "Cannot start the chooser program,\n"
 "you will not be able to log in.\n"
 "Please contact the system administrator.\n"
+""
 msgstr ""
 "Nevar palaist izvēlētāja programmu,\n"
-"tu nevarēsi ielogoties.\n"
-"Lūdzu sazinies ar sistēmadministrātoru.\n"
+"jūs nevarēsiet pieteikties.\n"
+"Lūdzu sazinieties ar sistēmadministrātoru.\n"
+""
 
 #: daemon/slave.c:1899
 #, c-format
@@ -864,7 +876,7 @@ msgstr "gdm_slave_chooser: Nevar sazarot gdmchooser procesu"
 #: daemon/slave.c:2253
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
-msgstr "%s: Nevarēju atvērt ~/,xsession-errors"
+msgstr "%s: Nevarēju atvērt ~/.xsession-errors"
 
 #: daemon/slave.c:2275
 msgid "gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."
@@ -878,7 +890,7 @@ msgstr "Valoda %s neeksistē, lietoju %s"
 #: daemon/slave.c:2309
 #: gui/gdmlogin.c:1114
 #: gui/gdmlogin.c:1123
-#: gui/gdmlogin.c:1656
+#: gui/gdmlogin.c:1661
 #: gui/greeter/greeter_action_language.c:52
 #: gui/greeter/greeter_action_language.c:138
 #: gui/greeter/greeter_action_language.c:146
@@ -924,7 +936,7 @@ msgid ""
 "your installation."
 msgstr ""
 "Šī ir Avārijdrošā Gnome sesija.\n"
-"Tu ieiesi 'Noklusētajā' Gnomes\n"
+"Jūs pieteiksieties 'Noklusētajā' Gnomes\n"
 "sesijā bez sāknēšanas skriptu palaišanas.\n"
 "Tas ir domāts tikai tam, lai salabotu savas\n"
 "instalācijas problēmas."
@@ -943,10 +955,10 @@ msgid ""
 "'exit' and an enter into the window."
 msgstr ""
 "Šī ir Avārijdrošā xterm sesija.\n"
-"Tu ielogosies konsolē, lai tu varētu\n"
-"ieiet un salabot savu sistēmu, ja nevari\n"
-"nekādā citā veidā ielogoties. Lai izietu\n"
-"no termināļa emulātora, raksti 'exit' un\n"
+"Jūs pieteiksieties konsolē, lai varētu\n"
+"ieiet un salabot savu sistēmu, ja nevarat\n"
+"nekādā citā veidā pieteikties. Lai izietu\n"
+"no termināļa emulātora, rakstiet 'exit' un\n"
 "tad enter tā logā."
 
 #: daemon/slave.c:2481
@@ -956,12 +968,14 @@ msgstr "Palaižu %s priekš %s uz %s"
 
 #: daemon/slave.c:2495
 msgid "gdm_slave_session_start: User not allowed to log in"
-msgstr "gdm_slave_session_start: Lietotājam nav atļauts ieiet"
+msgstr "gdm_slave_session_start: Lietotājam nav atļauts pieteikties"
 
 #: daemon/slave.c:2497
-msgid "The system administrator has\n"
+msgid ""
+"The system administrator has\n"
 "disabled your account."
-msgstr "Sistēmas administrators ir\n"
+msgstr ""
+"Sistēmas administrators ir\n"
 "deaktivizējis tavu akontu."
 
 #: daemon/slave.c:2500
@@ -990,10 +1004,12 @@ msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
 "It could also indicate an error with your account.\n"
+""
 msgstr ""
 "Nevar palaist tavu čaulu.  Varētu būt, ka\n"
-"sistēmadministrātors ir deaktivizējis tavu ielogošanos.\n"
-"Tas varētu norādīt arī uz kļūdu tavā kontā.\n"
+"sistēmadministrātors ir deaktivizējis jūsu pieteikšanos.\n"
+"Tas varētu norādīt arī uz kļūdu jūsu kontā.\n"
+""
 
 #: daemon/slave.c:2576
 #, c-format
@@ -1018,8 +1034,8 @@ msgstr ""
 "Vai vēlies pieteikties ar saknes\n"
 "kā savas mājas direktoriju?\n"
 "\n"
-"It is unlikely anything will work unless\n"
-"you use a failsafe session."
+"Visdrīzāk nekas nestrādās, ja\n"
+"vien jūs nelietosiet avāridrošu sesiju."
 
 #: daemon/slave.c:2590
 #, c-format
@@ -1038,8 +1054,8 @@ msgstr ""
 "GDM nevarēja ierakstīt jūsu autorizācijas\n"
 "failu. Tas varētu nozīmēt ka jums ir aptrūkusies\n"
 "diska vieta vai arī jūsu direktorija nevar tikt\n"
-"atvērt ierakstam. Jebkurā gadījumā, tu nevari\n"
-"pieteikties šobrīd. Lūdzu sazinies ar\n"
+"atvērt ierakstam. Jebkurā gadījumā, jūs nevarat\n"
+"pieteikties šobrīd. Lūdzu sazinieties ar\n"
 "savas sistēmas administratoru"
 
 #: daemon/slave.c:2790
@@ -1056,12 +1072,12 @@ msgid ""
 "one of the failsafe sessions to see if you\n"
 "can fix this problem."
 msgstr ""
-"Tava sesija ilga mazāk par\n"
+"Jūsu sesija ilga mazāk par\n"
 "10 sekundēm. Ja jūs neizgājāt\n"
-"paši, tad iespējams ka ir kāda\n"
+"paši, tad iespējams, ka ir kāda\n"
 "uzstādījuma problēma vai arī jums varētu\n"
 "būt aptrūkusies diska vieta. Pamēģiniet pieteikties\n"
-"ar kādu no faildrošo sesiju lai redzētu vai jūs\n"
+"ar kādu no avārijdrošajām sesijām, lai redzētu vai jūs\n"
 "varat atrisināt šo problēmu."
 
 #: daemon/slave.c:2856
@@ -1104,14 +1120,14 @@ msgstr "gdm_parse_enriched_login: Nevar sazarot skripta procesu!"
 #: daemon/verify-crypt.c:71
 #: daemon/verify-pam.c:319
 #: daemon/verify-shadow.c:70
-#: gui/gdmlogin.c:3316
+#: gui/gdmlogin.c:3339
 msgid "Please enter your username"
 msgstr "Lūdzu ievadi savu lietotājvārdu"
 
 #: daemon/verify-crypt.c:72
 #: daemon/verify-pam.c:320
 #: daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3276
+#: gui/gdmlogin.c:3297
 #: gui/greeter/themes/circles/circles.xml.in.h:5
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
 msgid "Username:"
@@ -1131,9 +1147,11 @@ msgstr "Nevarēju autentificēt lietotāju"
 
 #: daemon/verify-crypt.c:120
 #: daemon/verify-crypt.c:140
-msgid "\n"
+msgid ""
+"\n"
 "Incorrect username or password.  Letters must be typed in the correct case.  Please be sure the Caps Lock key is not enabled"
-msgstr "\n"
+msgstr ""
+"\n"
 "Nepareizs lietotājvārds vai parole.  Burti jāraksta pareizajā lielumā.  Lūdzu pārliecinies, vai nav aktivizēts Caps Lock taustiņš"
 
 #: daemon/verify-crypt.c:154
@@ -1141,26 +1159,28 @@ msgstr "\n"
 #: daemon/verify-shadow.c:163
 #, c-format
 msgid "Root login disallowed on display '%s'"
-msgstr "Root ielogošanās aizliegta uz displeja '%s'"
+msgstr "Root pieteikšanās aizliegta uz displeja '%s'"
 
 #: daemon/verify-crypt.c:156
 #: daemon/verify-shadow.c:165
 msgid "The system administrator is not allowed to login from this screen"
-msgstr "Sistēmas administratoram nav atļauts ieiet no šī ekrāna"
+msgstr "Sistēmas administratoram nav atļauts pieteikties no šī ekrāna"
 
 #: daemon/verify-crypt.c:172
 #: daemon/verify-shadow.c:181
 #, c-format
 msgid "User %s not allowed to log in"
-msgstr "Lietotājam %s nav atļauts ienākt"
+msgstr "Lietotājam %s nav atļauts pieteikties"
 
 #: daemon/verify-crypt.c:174
 #: daemon/verify-pam.c:404
 #: daemon/verify-pam.c:565
 #: daemon/verify-shadow.c:183
-msgid "\n"
+msgid ""
+"\n"
 "The system administrator has disabled your account."
-msgstr "\n"
+msgstr ""
+"\n"
 "Sistēmas administrātors ir deaktivizējis jūsu kontu."
 
 #: daemon/verify-crypt.c:189
@@ -1179,10 +1199,12 @@ msgstr "Nevarēju izstādīt lietotāja grupu priekš %s"
 #: daemon/verify-pam.c:585
 #: daemon/verify-shadow.c:199
 #: daemon/verify-shadow.c:233
-msgid "\n"
+msgid ""
+"\n"
 "Cannot set your user group, you will not be able to log in, please contact your system administrator."
-msgstr "\n"
-"Nevaru iestādīt jūsu grupu, tu nevarēsi ielogoties, lūdzu sazinies ar savu sistēmadministrātoru."
+msgstr ""
+"\n"
+"Nevaru iestādīt jūsu grupu, jūs nevarēsiet pieteikties, lūdzu sazinieties ar savu sistēmadministrātoru."
 
 #: daemon/verify-crypt.c:218
 #: daemon/verify-shadow.c:225
@@ -1192,7 +1214,7 @@ msgstr "Nevarēju saņemt %s passwd stuktūru"
 
 #: daemon/verify-pam.c:238
 msgid "Cannot setup pam handle with null login and/or display"
-msgstr "Nevar uzstādīt pam noteicēju ar nulles loginu un/vai displeju"
+msgstr "Nevar uzstādīt pam noteicēju ar nulles login un/vai displeju"
 
 #: daemon/verify-pam.c:252
 #, c-format
@@ -1215,10 +1237,12 @@ msgid "Can't set PAM_RHOST=%s"
 msgstr "Nevar iestatīt PAM_RHOST=%s"
 
 #: daemon/verify-pam.c:377
-msgid "\n"
+msgid ""
+"\n"
 "The system administrator is not allowed to login from this screen"
-msgstr "\n"
-"Sistēmas administratoram nav atļauts ieiet no šī ekrāna"
+msgstr ""
+"\n"
+"Sistēmas administratoram nav atļauts pieteikties no šī ekrāna"
 
 #: daemon/verify-pam.c:393
 #, c-format
@@ -1226,9 +1250,11 @@ msgid "Authentication token change failed for user %s"
 msgstr "Autentifikācija zīmes maiņa neizdevās lietotājam %s"
 
 #: daemon/verify-pam.c:395
-msgid "\n"
+msgid ""
+"\n"
 "The change of the authentication token failed. Please try again later or contact the system administrator."
-msgstr "\n"
+msgstr ""
+"\n"
 "Neizdevās izmaiņas autentifikācijas zīmē. Lūdzu vēlāk mēģini vēlreiz vai sazinies ar sistēmadministrātoru."
 
 #: daemon/verify-pam.c:402
@@ -1244,9 +1270,11 @@ msgid "User %s not permitted to gain access at this time"
 msgstr "Šobrīd lietotājam %s nav atļauts iegūt pieeju"
 
 #: daemon/verify-pam.c:410
-msgid "\n"
+msgid ""
+"\n"
 "The system administrator has disabled access to the system temporarily."
-msgstr "\n"
+msgstr ""
+"\n"
 "Sistēmas administrātors ir īslaicīgi aizliedzis pieeju sistēmai."
 
 #: daemon/verify-pam.c:415
@@ -1270,9 +1298,11 @@ msgstr "Nevar atvērt sesiju priekš %s"
 #: daemon/verify-pam.c:470
 #: daemon/verify-shadow.c:129
 #: daemon/verify-shadow.c:149
-msgid "\n"
+msgid ""
+"\n"
 "Incorrect username or password. Letters must be typed in the correct case. Please make sure the Caps Lock key is not enabled."
-msgstr "\n"
+msgstr ""
+"\n"
 "Nepareizs lietotājvārds vai parole. Burti jāraksta pareizajā lielumā. Lūdzu pārliecinies, vai nav aktivizēts Caps Lock taustiņš."
 
 #: daemon/verify-pam.c:475
@@ -1282,14 +1312,16 @@ msgstr "Autentifikācija neveiksmīga"
 
 #: daemon/verify-pam.c:520
 #: gui/gdmsetup-strings.c:19
-#: gui/gdmsetup.glade.h:11
+#: gui/gdmsetup.glade.h:10
 msgid "Automatic login"
-msgstr "Automātiska ielogošanās"
+msgstr "Automātiska pieteikšanās"
 
 #: daemon/verify-pam.c:571
-msgid "\n"
+msgid ""
+"\n"
 "The system administrator has disabled your access to the system temporary."
-msgstr "\n"
+msgstr ""
+"\n"
 "Sistēmas administrātors ir īslaicīgi aizliedzis pieejau sistēmai."
 
 #: daemon/verify-pam.c:698
@@ -1510,10 +1542,11 @@ msgstr ""
 "GDM konfigurācijas programmā."
 
 #: gui/gdmXnestchooser.c:522
-#: gui/gdmcomm.c:390
-msgid "GDM is not running.\n"
+msgid ""
+"GDM is not running.\n"
 "Please ask your system administrator to start it."
-msgstr "GDM nav palaists.\n"
+msgstr ""
+"GDM nav palaists.\n"
 "Palūdz savam sistēmadministrātoram to palaist."
 
 #: gui/gdmXnestchooser.c:539
@@ -1568,14 +1601,9 @@ msgid ""
 "\n"
 "You can rescan the network for new hosts by clicking \"Refresh\". When you have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
-"Galvenā šīs aplikācijas daļa parāda lokālā tīkla resursdatorus,\n"
-"kuriem ir aktivizēts \"XDMCP\". Tas ļauj lietotājiem ielogoties\n"
-"attālināti citos datoros līdzīgi, ja viņi ielogotos, izmantojot\n"
-"konsoli.\n"
+"Galvenā šīs aplikācijas daļa parāda lokālā tīkla resursdatorus, kuriem ir aktivizēts \"XDMCP\". Tas ļauj lietotājiem pieteikties attālināti citos datoros līdzīgi, ja viņi ipieteiktos, izmantojot konsoli.\n"
 "\n"
-"Tu vari pārskanēt tīklu priekš jauniem resursdatoriem, klikšķinot\n"
-" 'Pārskanēt'. Klikšķini uz \"Pieslēgties\", kad esi izvēlējies\n"
-"resursdatoru, uz kura atvērt sesiju."
+"Jūs varat pārskanēt tīklu priekš jauniem resursdatoriem, klikšķinot \"Atsvaidzināt\".Klikšķini uz \"Pieslēgties\", kad esi izvēlējies resursdatoru, uz kura atvērt sesiju."
 
 #: gui/gdmchooser-strings.c:17
 #: gui/gdmchooser.glade.h:5
@@ -1600,14 +1628,9 @@ msgid ""
 "\n"
 "You can rescan the network for new hosts by clicking \"Refresh\".  When you have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
-"Galvenā šīs aplikācijas daļa parāda lokālā tīkla resursdatorus,\n"
-"kuriem ir aktivizēts \"XDMCP\". Tas ļauj lietotājiem ielogoties\n"
-"attālināti citos datoros līdzīgi, ja viņi ielogotos, izmantojot\n"
-"konsoli.\n"
+"Galvenā šīs aplikācijas daļa parāda lokālā tīkla resursdatorus, kuriem ir aktivizēts \"XDMCP\". Tas ļauj lietotājiem pieteikties attālināti citos datoros līdzīgi, ja viņi ipieteiktos, izmantojot konsoli.\n"
 "\n"
-"Tu vari pārskanēt tīklu priekš jauniem resursdatoriem, klikšķinot\n"
-"'Pārskanēt'. Klikšķini uz \"Pieslēgties\", kad esi izvēlējies\n"
-"resursdatoru, uz kura atvērt sesiju."
+"Jūs varat pārskanēt tīklu priekš jauniem resursdatoriem, klikšķinot \"Atsvaidzināt\". Klikšķini uz \"Pieslēgties\", kad esi izvēlējies resursdatoru, uz kura atvērt sesiju."
 
 #: gui/gdmchooser.c:931
 #, c-format
@@ -1627,8 +1650,8 @@ msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Kļūda uzstādot TERM signāla noteicēju"
 
 #: gui/gdmchooser.c:1001
-#: gui/gdmlogin.c:4204
-#: gui/greeter/greeter.c:1039
+#: gui/gdmlogin.c:4227
+#: gui/greeter/greeter.c:1075
 msgid "Could not set signal mask!"
 msgstr "Nevarēja uzstādīt signāla masku!"
 
@@ -1667,62 +1690,80 @@ msgstr ""
 "Iespējams, ka tu tikko atjaunināji  gdm.\n"
 "Lūdzu pārstartē gdm dēmonu vai pārlādē datoru."
 
-#: gui/gdmcomm.c:407
-#: gui/gdmcomm.c:424
-#: gui/gdmcomm.c:427
+#: gui/gdmcomm.c:395
+#: gui/gdmphotosetup.c:68
+msgid ""
+"<b>GDM (The GNOME Display Manager) is not running.</b>\n"
+"\n"
+"You might in fact be using a different display manager, such as KDM (KDE Display Manager or xdm).\n"
+"If you still wish to use this feature, either start GDM your self or ask your system administrator to start GDM."
+msgstr ""
+"<b>GDM (GNOME Displeja Pārvaldnieks) nav palaists.</b>\n"
+"\n"
+"Jūs patiesībā varētu lietot citu displeja pārvaldnieku, tādu kā KDM (KDE Displeja Pārvaldnieks vai xdm).\n"
+"Ja vēljoprojām vēlaties lietot šo iespēju, vai nu pats sāknējiet GDM vai arī vai arī pavaicājiet to izdarīt sistēmas administratoram."
+
+#: gui/gdmcomm.c:417
+msgid "Cannot communicate with GDM (The GNOME Display Manager), perhaps you have an old version running."
+msgstr "Nevar sazināties ar GDM (GNOME Displeja Pārvaldnieku), iespējams, ka jums ir palaista veca versija."
+
+#: gui/gdmcomm.c:435
+#: gui/gdmcomm.c:438
 #: gui/gdmflexiserver.c:252
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr "Nevar komunicēties ar gdm, iespējams, ka tev ir palaista veca versija."
 
-#: gui/gdmcomm.c:430
+#: gui/gdmcomm.c:441
 msgid "The allowed limit of flexible X servers reached."
 msgstr "Pieļautais elastīgo X serveru limits ir sasniegts."
 
-#: gui/gdmcomm.c:432
+#: gui/gdmcomm.c:443
 msgid "There were errors trying to start the X server."
 msgstr "Šeit bija kļūdas, mēģinot palaist X serveri."
 
-#: gui/gdmcomm.c:434
+#: gui/gdmcomm.c:445
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "X serveris nobruka. Iespējams, tas nav pienācīgi nokonfigurēts."
 
-#: gui/gdmcomm.c:437
+#: gui/gdmcomm.c:448
 msgid "Too many X sessions running."
 msgstr "Pārāk daudz palaistu X sesiju."
 
-#: gui/gdmcomm.c:439
+#: gui/gdmcomm.c:450
 msgid "The nested X server (Xnest) cannot connect to your current X server.  You may be missing an X authorization file."
 msgstr "Ligzdveida X serveris (Xnest) nevar pieslēgties tavam pašreizējam X serverim.  Tev varētu trūkt X autorizācijas fails."
 
-#: gui/gdmcomm.c:444
-msgid "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
+#: gui/gdmcomm.c:455
+msgid ""
+"The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
-msgstr "Ligzdveida X serveris (Xnest) nav pieejams, vai arī gdm ir slikti konfigurēts.\n"
-"Lūdzu uzinstalē Xnest pakotni, lai varētu lietot ligzdveida ielogošanos."
+msgstr ""
+"Ligzdveida X serveris (Xnest) nav pieejams, vai arī gdm ir slikti konfigurēts.\n"
+"Lūdzu uzinstalējiet Xnest pakotni, lai varētu lietot ligzdveida pieteikšanos."
 
-#: gui/gdmcomm.c:449
+#: gui/gdmcomm.c:460
 msgid "The X server is not available, it is likely that gdm is badly configured."
 msgstr "X serveris nav pieejams, visdrīzāk, ka gdm ir slikti nokonfigurēts."
 
-#: gui/gdmcomm.c:453
+#: gui/gdmcomm.c:464
 msgid "Trying to update an unsupported configuration key."
 msgstr "Mēģinu atjaunināt neatbalstītu konfigurācijas atslēgu."
 
-#: gui/gdmcomm.c:455
+#: gui/gdmcomm.c:466
 msgid "You do not seem to have authentication needed be for this operation.  Perhaps your .Xauthority file is not set up correctly."
 msgstr "Neizskatās, ka tev ir nepieciešamā autorizācija šai operācijai.  Iespējams, ka tavs .Xauthority fails nav uzstādīts pareizi."
 
-#: gui/gdmcomm.c:459
+#: gui/gdmcomm.c:470
 msgid "Unknown error occured."
 msgstr "Atgadījās nezināma kļūda."
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
-msgstr "Ielogoties kā cits lietotājs ligzdveida logā"
+msgstr "Pieteikties kā cits lietotājs ligzdveida logā"
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:2
 msgid "New login in a nested window"
-msgstr "Jauna ielogošanās ligzdveida logā"
+msgstr "Jauna pieteikšanās ligzdveida logā"
 
 #: gui/gdmflexiserver.c:129
 msgid "Choose server"
@@ -1766,7 +1807,7 @@ msgstr "Neizskatās, ka tev ir nepieciešamā atļauja šai operācijai.  Iespē
 
 #: gui/gdmflexiserver.c:295
 msgid "You do not seem to be logged in on the console.  Starting a new login only works correctly on the console."
-msgstr "Neizskatās, ka tu būtu ielogojies konsolē.  Jaunas pieteikšanās sākšana strādā pareizi tikai konsolē."
+msgstr "Neizskatās, ka jūs būtu pieteicies konsolē.  Jaunas pieteikšanās sākšana strādā pareizi tikai konsolē."
 
 #: gui/gdmflexiserver.c:323
 msgid "Can't lock screen"
@@ -1778,7 +1819,7 @@ msgstr "Nevar deaktivizēt xscreensaver displeja hakojumus"
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without logging out"
-msgstr "Pieteikties kā citam lietotājam bez iziešanas ārā"
+msgstr "Pieteikties kā citam lietotājam bez attiekšanās"
 
 #: gui/gdmflexiserver.desktop.in.h:2
 msgid "New login"
@@ -1791,274 +1832,279 @@ msgstr "A-M|Azerbaidžānu"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:55
+msgid "A-M|Amharic"
+msgstr "A-M|Amharu"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:57
 msgid "A-M|Arabic (Egypt)"
 msgstr "A-M|Arābu (Ēģiptes)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:57
+#: gui/gdmlanguages.c:59
 msgid "A-M|Arabic (Lebanon)"
 msgstr "A-M|Arābu (Lebanonas)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:59
+#: gui/gdmlanguages.c:61
 msgid "A-M|Basque"
 msgstr "A-M|Basku"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:61
+#: gui/gdmlanguages.c:63
 msgid "A-M|Bulgarian"
 msgstr "A-M|Bulgāru"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:63
+#: gui/gdmlanguages.c:65
 msgid "A-M|Catalan"
 msgstr "A-M|Katalīna"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:65
+#: gui/gdmlanguages.c:67
 msgid "A-M|Chinese (simplified)"
 msgstr "A-M|Ķīniešu (vienkāršota)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:67
+#: gui/gdmlanguages.c:69
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|Ķīniešu (tradicionālā)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:69
+#: gui/gdmlanguages.c:71
 msgid "A-M|Croatian"
 msgstr "A-M|Horvātu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:71
+#: gui/gdmlanguages.c:73
 msgid "A-M|Czech"
 msgstr "A-M|Čehu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:73
+#: gui/gdmlanguages.c:75
 msgid "A-M|Danish"
 msgstr "A-M|Dāņu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:75
+#: gui/gdmlanguages.c:77
 msgid "A-M|Dutch"
 msgstr "A-M|Holandiešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:77
+#: gui/gdmlanguages.c:79
 msgid "A-M|English"
 msgstr "A-M|Angļu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:79
+#: gui/gdmlanguages.c:81
 msgid "A-M|Estonian"
 msgstr "A-M|Igauņu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:81
+#: gui/gdmlanguages.c:83
 msgid "A-M|English (American)"
 msgstr "A-M|Angļu (Amerikāņu)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:83
+#: gui/gdmlanguages.c:85
 msgid "A-M|English (Australian)"
 msgstr "A-M|Angļu (Austrāliešu)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:87
 msgid "A-M|English (British)"
 msgstr "A-M|Angļu (Britu)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:89
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Angļu (Īrijas)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:91
 msgid "A-M|Finnish"
 msgstr "A-M|Somu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:93
 msgid "A-M|French"
 msgstr "A-M|Franču"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:95
 msgid "A-M|Galician"
 msgstr "A-M|Gallu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:97
 msgid "A-M|German"
 msgstr "A-M|Vācu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:99
 msgid "A-M|Greek"
 msgstr "A-M|Grieķu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
-#: gui/gdmlanguages.c:100
+#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:102
 msgid "A-M|Hebrew"
 msgstr "A-M|Ebreju"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:102
+#: gui/gdmlanguages.c:104
 msgid "A-M|Hungarian"
 msgstr "A-M|Ungāru"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:104
+#: gui/gdmlanguages.c:106
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandiešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:106
+#: gui/gdmlanguages.c:108
 msgid "A-M|Irish"
 msgstr "A-M|Īru"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:108
+#: gui/gdmlanguages.c:110
 msgid "A-M|Italian"
 msgstr "A-M|Itāļu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:110
+#: gui/gdmlanguages.c:112
 msgid "A-M|Japanese"
 msgstr "A-M|Japāņu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:112
+#: gui/gdmlanguages.c:114
 msgid "A-M|Korean"
 msgstr "A-M|Korejiešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:114
+#: gui/gdmlanguages.c:116
 msgid "A-M|Latvian"
 msgstr "A-M|Latviešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:116
+#: gui/gdmlanguages.c:118
 msgid "A-M|Lithuanian"
 msgstr "A-M|Lietuviešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:118
+#: gui/gdmlanguages.c:120
 msgid "A-M|Macedonian"
 msgstr "A-M|Maķedoniešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:120
+#: gui/gdmlanguages.c:122
 msgid "A-M|Malay"
 msgstr "A-M|Malaju"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:122
+#: gui/gdmlanguages.c:124
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norvēģu (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:124
+#: gui/gdmlanguages.c:126
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norvēģu (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:126
+#: gui/gdmlanguages.c:128
 msgid "N-Z|Polish"
 msgstr "N-Z|Poļu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:128
+#: gui/gdmlanguages.c:130
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugāļu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:130
+#: gui/gdmlanguages.c:132
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portugāļu (Brazīlijas)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:132
+#: gui/gdmlanguages.c:134
 msgid "N-Z|Romanian"
 msgstr "N-Z|Rumāņu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:134
+#: gui/gdmlanguages.c:136
 msgid "N-Z|Russian"
 msgstr "N-Z|Krievu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:136
+#: gui/gdmlanguages.c:138
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovāku"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:138
+#: gui/gdmlanguages.c:140
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovēņu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:140
+#: gui/gdmlanguages.c:142
 msgid "N-Z|Spanish"
 msgstr "N-Z|Spāņu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:142
+#: gui/gdmlanguages.c:144
 msgid "N-Z|Spanish (Mexico)"
 msgstr "N-Z|Spāņu (Meksikas)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:144
+#: gui/gdmlanguages.c:146
 msgid "N-Z|Swedish"
 msgstr "N-Z|Zviedru"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:146
+#: gui/gdmlanguages.c:148
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Zviedru (Somijas)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:148
+#: gui/gdmlanguages.c:150
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamilu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:150
+#: gui/gdmlanguages.c:152
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turku"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:152
+#: gui/gdmlanguages.c:154
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukraiņu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:154
+#: gui/gdmlanguages.c:156
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vjetnamiešu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:156
+#: gui/gdmlanguages.c:158
 msgid "N-Z|Walloon"
 msgstr "N-Z|Walloon"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:158
+#: gui/gdmlanguages.c:160
 msgid "Other|POSIX/C English"
 msgstr "Cita|POSIX/C Angļu"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:333
+#: gui/gdmlanguages.c:335
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:341
+#: gui/gdmlanguages.c:343
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2069,8 +2115,8 @@ msgstr "AnotherLevel"
 #. default is nicely translated
 #. Translators: default GNOME session
 #: gui/gdmlogin.c:70
-#: gui/gdmlogin.c:1879
-#: gui/gdmlogin.c:1901
+#: gui/gdmlogin.c:1884
+#: gui/gdmlogin.c:1906
 msgid "Default"
 msgstr "Noklusētais"
 
@@ -2091,13 +2137,13 @@ msgid "XSession"
 msgstr "Xsesija"
 
 #: gui/gdmlogin.c:75
-#: gui/gdmlogin.c:1472
-#: gui/greeter/greeter_session.c:345
+#: gui/gdmlogin.c:1477
+#: gui/greeter/greeter_session.c:353
 msgid "Gnome Chooser"
 msgstr "Gnome Izvēlētājs"
 
 #: gui/gdmlogin.c:76
-#: gui/gdmlogin.c:1641
+#: gui/gdmlogin.c:1646
 #: gui/greeter/greeter_action_language.c:45
 msgid "Last"
 msgstr "Pēdējā"
@@ -2107,11 +2153,11 @@ msgstr "Pēdējā"
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
 #, no-c-format
 msgid "User %s will login in %d seconds"
-msgstr "Lietotājs %s ielogosies %d sekundēs"
+msgstr "Lietotājs %s pieteiksies %d sekundēs"
 
 #: gui/gdmlogin.c:518
 msgid "Doubleclick here to un-iconify the login window, so that you may log in."
-msgstr "Dubultklikšķis šeit, lai atikonificētu ieejas pieteikumlogu tā, lai tu varētu ielogoties."
+msgstr "Dubultklikšķis šeit, lai atikonificētu pieteikumlogu tā, lai jūs varētu pieteikties."
 
 #: gui/gdmlogin.c:588
 #: gui/gdmlogin.c:600
@@ -2131,7 +2177,7 @@ msgid ""
 msgstr ""
 "Nevarēja sazarot jauno procesu!\n"
 "\n"
-"Tu laikam arī nevarēsi ielogoties."
+"Jūs laikam arī nevarēsiet pieteikties."
 
 #: gui/gdmlogin.c:803
 msgid "Are you sure you want to reboot the machine?"
@@ -2151,7 +2197,7 @@ msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr "gdm_login_parse_config: Nav konfigurācijas fails: %s. Lietoju noklusētos."
 
 #: gui/gdmlogin.c:873
-#: gui/gdmlogin.c:3986
+#: gui/gdmlogin.c:4009
 #, c-format
 msgid "Welcome to %n"
 msgstr "Laipni lūgti %n"
@@ -2159,28 +2205,30 @@ msgstr "Laipni lūgti %n"
 #: gui/gdmlogin.c:918
 #: gui/greeter/greeter.c:128
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
-msgstr "LaikaIeiešanasAizture bija mazāka par 5.  Es vienkārši lietošu 5."
+msgstr "LaikaPieteikšanāsAizture bija mazāka par 5.  Es vienkārši lietošu 5."
 
 #: gui/gdmlogin.c:978
-#: gui/gdmlogin.c:1520
+#: gui/gdmlogin.c:1525
 #: gui/greeter/greeter_session.c:65
-#: gui/greeter/greeter_session.c:392
+#: gui/greeter/greeter_session.c:400
 msgid "Failsafe Gnome"
 msgstr "Avārijdrošā Gnome"
 
 #: gui/gdmlogin.c:980
-#: gui/gdmlogin.c:1545
+#: gui/gdmlogin.c:1550
 #: gui/greeter/greeter_session.c:67
-#: gui/greeter/greeter_session.c:418
+#: gui/greeter/greeter_session.c:426
 msgid "Failsafe xterm"
 msgstr "Avārijdrošais xterm"
 
 #: gui/gdmlogin.c:1026
 #: gui/greeter/greeter_session.c:111
 #, c-format
-msgid "Your preferred session type %s is not installed on this machine.\n"
+msgid ""
+"Your preferred session type %s is not installed on this machine.\n"
 "Do you wish to make %s the default for future sessions?"
-msgstr "Tavs izvēlētais sesijas tips %s nav instalēts šajā mašīnā.\n"
+msgstr ""
+"Tavs izvēlētais sesijas tips %s nav instalēts šajā mašīnā.\n"
 "Vai tu vēlies padarīt %s par noklusēto turpmākajām sesijām?"
 
 #. never_encoding
@@ -2192,9 +2240,11 @@ msgstr "Tavs izvēlētais sesijas tips %s nav instalēts šajā mašīnā.\n"
 #: gui/greeter/greeter_action_language.c:154
 #: gui/greeter/greeter_session.c:139
 #, c-format
-msgid "You have chosen %s for this session, but your default setting is %s.\n"
+msgid ""
+"You have chosen %s for this session, but your default setting is %s.\n"
 "Do you wish to make %s the default for future sessions?"
-msgstr "Tu esi izvēlējies %s šai sesijai, bet tava noklusētā sesija ir %s.\n"
+msgstr ""
+"Tu esi izvēlējies %s šai sesijai, bet tava noklusētā sesija ir %s.\n"
 "Vai tu vēlies padarīt %s par noklusēto turpmākajām sesijām?"
 
 #. if !GdmShowLastSession then our saved session is
@@ -2224,192 +2274,196 @@ msgstr "Izvēlēta %s sesija"
 #: gui/gdmlogin.c:1362
 #: gui/greeter/greeter_session.c:231
 msgid "Log in using the session that you have used last time you logged in"
-msgstr "Ieiet lietojot to sesiju, kuru lietoji pēdējoreiz, kad pieteicāties"
+msgstr "Pieteikties lietojot to sesiju, kuru lietoji pēdējoreiz, kad pieteicāties"
 
 #: gui/gdmlogin.c:1375
 #: gui/greeter/greeter_session.c:244
 msgid "gdm_login_session_init: Session script directory not found!"
-msgstr "gdm_login_session_init: Sesijas skriptu directorijs nav atrasts!"
+msgstr "gdm_login_session_init: Sesijas skriptu directorija nav atrasta!"
 
-#: gui/gdmlogin.c:1460
-#: gui/greeter/greeter_session.c:331
+#: gui/gdmlogin.c:1465
+#: gui/greeter/greeter_session.c:339
 msgid "This session will log you directly into GNOME, into your current session."
-msgstr "Šī sesija tevi ievedīs tieši iekš GNOME, iekš tavas pašreizējās sesijas."
+msgstr "Šī sesija jūs ievedīs tieši GNOME, jūsu pašreizējā sesijā."
 
-#: gui/gdmlogin.c:1475
-#: gui/greeter/greeter_session.c:348
+#: gui/gdmlogin.c:1480
+#: gui/greeter/greeter_session.c:356
 msgid "This session will log you into GNOME and it will let you choose which one of the GNOME sessions you want to use."
-msgstr "Šī sesija ievedīs tevi iekš GNOME un tā atļaus tev izvēlēties, kuru no GNOME sesijām tu vēlies lietot."
+msgstr "Šī sesija ievedīs iekš GNOME un tā atļaus jums izvēlēties, kuru no GNOME sesijām jūs vēlētos lietot."
 
-#: gui/gdmlogin.c:1510
-#: gui/greeter/greeter_session.c:381
+#: gui/gdmlogin.c:1515
+#: gui/greeter/greeter_session.c:389
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Ha, sesijas direktorijā netika atrasts nekas."
 
-#: gui/gdmlogin.c:1522
-#: gui/greeter/greeter_session.c:394
+#: gui/gdmlogin.c:1527
+#: gui/greeter/greeter_session.c:402
 msgid "This is a failsafe session that will log you into GNOME.  No startup scripts will be read and it is only to be used when you can't log in otherwise.  GNOME will use the 'Default' session."
-msgstr "Šī ir avārijdrošā sesija, kura ievedīs tevi iekš GNOME. Netiks lasīti sāknēšanas skripti un tā ir lietojama tikai tad, kad nevari ieiet citādi. GNOME lietos 'Noklusēto' sesiju."
+msgstr "Šī ir avārijdrošā sesija, kura ievedīs jūs iekš GNOME. Netiks lasīti sāknēšanas skripti un tā ir lietojama tikai tad, kad nevari ieiet citādi. GNOME lietos 'Noklusēto' sesiju."
 
-#: gui/gdmlogin.c:1547
-#: gui/greeter/greeter_session.c:420
+#: gui/gdmlogin.c:1552
+#: gui/greeter/greeter_session.c:428
 msgid "This is a failsafe session that will log you into a terminal.  No startup scripts will be read and it is only to be used when you can't log in otherwise.  To exit the terminal, type 'exit'."
-msgstr "Šī ir avārijdrošā sesija, kura ievedīs tevi iekš termināļa. Netiks lasīti sāknēšanas skripti un tā ir lietojama tikai tad, kad nevari ieiet citādi. Lai izietu no termināļa, raksti 'exit'."
+msgstr "Šī ir avārijdrošā sesija, kura ievedīs jūs iekš termināļa. Netiks lasīti sāknēšanas skripti un tā ir lietojama tikai tad, kad nevarat pieteikties citādi. Lai izietu no termināļa, rakstiet 'exit'."
 
-#: gui/gdmlogin.c:1568
-#: gui/greeter/greeter_session.c:442
-msgid "No default session link found. Using Failsafe GNOME.\n"
-msgstr "Nav atrasta noklusētās sesijas saite. Lietoju Avārijdrošo Gnome.\n"
+#: gui/gdmlogin.c:1573
+#: gui/greeter/greeter_session.c:450
+msgid ""
+"No default session link found. Using Failsafe GNOME.\n"
+""
+msgstr ""
+"Nav atrasta noklusētās sesijas saite. Lietoju Avārijdrošo Gnome.\n"
+""
 
 #. never_encoding
 #. no_group
 #. untranslated
 #. makrup
-#: gui/gdmlogin.c:1612
+#: gui/gdmlogin.c:1617
 #, c-format
 msgid "%s language selected"
 msgstr "Izvēlēta %s valoda"
 
-#: gui/gdmlogin.c:1652
+#: gui/gdmlogin.c:1657
 msgid "Log in using the language that you have used last time you logged in"
-msgstr "Ieiet lietojot valodu, kuru tu lietoji pagājušoreiz, kad pieteicies ieiet"
+msgstr "Pieteikties lietojot valodu, kuru tiku lietojis pagājušoreiz, kad pieteicos"
 
-#: gui/gdmlogin.c:1667
+#: gui/gdmlogin.c:1672
 msgid "Log in using the default system language"
 msgstr "Pieteikties izmantojot sistēmas noklusēto valodu"
 
-#: gui/gdmlogin.c:1687
+#: gui/gdmlogin.c:1692
 msgid "Other"
 msgstr "Cits"
 
-#: gui/gdmlogin.c:1841
-#: gui/gdmlogin.c:1848
+#: gui/gdmlogin.c:1846
+#: gui/gdmlogin.c:1853
 msgid "Select GNOME session"
 msgstr "Izvēlies GNOME sesiju"
 
-#: gui/gdmlogin.c:1915
+#: gui/gdmlogin.c:1920
 msgid "Create new session"
 msgstr "Izveidot jaunu sesiju"
 
-#: gui/gdmlogin.c:1924
+#: gui/gdmlogin.c:1929
 msgid "Name: "
 msgstr "Nosaukums: "
 
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
-#: gui/gdmlogin.c:1946
+#: gui/gdmlogin.c:1951
 msgid "Remember this setting"
 msgstr "Atcerēties šo sesiju"
 
-#: gui/gdmlogin.c:2330
+#: gui/gdmlogin.c:2335
 msgid "Please insert 25 cents to log in."
-msgstr "Ievietojiet 25 santīmus, lai ieietu."
+msgstr "Ievietojiet 25 santīmus, lai pieteiktos."
 
-#: gui/gdmlogin.c:2737
+#: gui/gdmlogin.c:2742
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Darbvirsmas Pārvaldnieks"
 
-#: gui/gdmlogin.c:2745
+#: gui/gdmlogin.c:2750
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Nevaru atvērt ikonas failu: %s. Atslēdzu ikonificēšanas iespēju!"
 
-#: gui/gdmlogin.c:2767
+#: gui/gdmlogin.c:2772
 msgid "Iconify the login window"
-msgstr "Minimizēt ieejas pieteikumlogu"
+msgstr "Ikonificēt pieteikumlogu"
 
-#: gui/gdmlogin.c:2792
+#: gui/gdmlogin.c:2797
 #: gui/greeter/greeter_item.c:96
 msgid "%a %b %d, %H:%M"
 msgstr "%a %b %d, %H:%M"
 
-#: gui/gdmlogin.c:2794
+#: gui/gdmlogin.c:2799
 #: gui/greeter/greeter_item.c:100
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a %b %d, %I:%M %p"
 
-#: gui/gdmlogin.c:2860
+#: gui/gdmlogin.c:2865
 msgid "Finger"
 msgstr "Pirksts"
 
-#: gui/gdmlogin.c:2936
+#: gui/gdmlogin.c:2957
 msgid "GDM Login"
-msgstr "GDM Ieeja"
+msgstr "GDM Pieteikšanās"
 
-#: gui/gdmlogin.c:2979
+#: gui/gdmlogin.c:3000
 #: gui/greeter/greeter_canvas_item.c:129
 #: gui/greeter/themes/circles/circles.xml.in.h:11
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
 msgid "_Session"
 msgstr "_Sesija"
 
-#: gui/gdmlogin.c:2986
+#: gui/gdmlogin.c:3007
 #: gui/greeter/greeter_canvas_item.c:122
 #: gui/greeter/themes/circles/circles.xml.in.h:9
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
 msgid "_Language"
 msgstr "_Valoda"
 
-#: gui/gdmlogin.c:2998
+#: gui/gdmlogin.c:3019
 msgid "_Configure..."
 msgstr "_Konfigurēt..."
 
-#: gui/gdmlogin.c:3005
+#: gui/gdmlogin.c:3026
 msgid "Configure GDM (this login manager). This will require the root password."
-msgstr "Konfigurēt GDM (šo ieejas pieteikumu pārvaldnieku). Tam būs nepieciešama root parole."
+msgstr "Konfigurēt GDM (šo pieteikumu pārvaldnieku). Tam būs nepieciešama root parole."
 
-#: gui/gdmlogin.c:3012
+#: gui/gdmlogin.c:3033
 msgid "_Reboot..."
 msgstr "_Pārstartēt..."
 
-#: gui/gdmlogin.c:3019
+#: gui/gdmlogin.c:3040
 msgid "Reboot your computer"
 msgstr "Pārstartē savu datoru"
 
-#: gui/gdmlogin.c:3025
+#: gui/gdmlogin.c:3046
 msgid "Shut _down..."
 msgstr "Iz_slēgt..."
 
-#: gui/gdmlogin.c:3032
+#: gui/gdmlogin.c:3053
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Atslēgt datoru tā, lai tu vēlāk to varētu izslēgt."
 
-#: gui/gdmlogin.c:3039
+#: gui/gdmlogin.c:3060
 msgid "_Suspend..."
 msgstr "_Atslēgt..."
 
-#: gui/gdmlogin.c:3046
+#: gui/gdmlogin.c:3067
 msgid "Suspend your computer"
 msgstr "Atslēgt tavu datoru"
 
-#: gui/gdmlogin.c:3052
+#: gui/gdmlogin.c:3073
 #: gui/greeter/greeter_canvas_item.c:138
 #: gui/greeter/themes/circles/circles.xml.in.h:2
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
 msgid "S_ystem"
 msgstr "S_istēma"
 
-#: gui/gdmlogin.c:3064
+#: gui/gdmlogin.c:3085
 #: gui/greeter/greeter_canvas_item.c:151
 #: gui/greeter/themes/circles/circles.xml.in.h:10
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
 msgid "_Quit"
 msgstr "_Iziet"
 
-#: gui/gdmlogin.c:3066
+#: gui/gdmlogin.c:3087
 #: gui/greeter/greeter_canvas_item.c:153
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "D_isconnect"
 msgstr "A_tslēgties"
 
-#: gui/gdmlogin.c:3621
+#: gui/gdmlogin.c:3644
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Nevaru atvērt NoklusētoAttēlu: %s. Atslēdzu seju pārlūku!"
 
-#: gui/gdmlogin.c:4061
-#: gui/gdmlogin.c:4090
+#: gui/gdmlogin.c:4084
+#: gui/gdmlogin.c:4113
 #: gui/greeter/greeter.c:556
 #: gui/greeter/greeter.c:585
 #, c-format
@@ -2422,14 +2476,14 @@ msgstr ""
 "Iespējams, ka tu tikko atjaunināji  gdm.\n"
 "Lūdzu pārstartē gdm dēmonu vai pārlādē datoru."
 
-#: gui/gdmlogin.c:4096
-#: gui/gdmlogin.c:4140
+#: gui/gdmlogin.c:4119
+#: gui/gdmlogin.c:4163
 #: gui/greeter/greeter.c:591
 #: gui/greeter/greeter.c:636
 msgid "Reboot"
 msgstr "Pārstartēt"
 
-#: gui/gdmlogin.c:4132
+#: gui/gdmlogin.c:4155
 #: gui/greeter/greeter.c:628
 #, c-format
 msgid ""
@@ -2441,41 +2495,41 @@ msgstr ""
 "Iespējams, ka tu tikko atjaunināji  gdm.\n"
 "Lūdzu pārstartē gdm dēmonu vai pārlādē datoru."
 
-#: gui/gdmlogin.c:4138
+#: gui/gdmlogin.c:4161
 #: gui/greeter/greeter.c:634
 msgid "Restart"
 msgstr "Pārstartēt"
 
-#: gui/gdmlogin.c:4183
-#: gui/greeter/greeter.c:1019
+#: gui/gdmlogin.c:4206
+#: gui/greeter/greeter.c:1055
 msgid "main: Error setting up HUP signal handler"
 msgstr "galvenais: Kļūda uzstādot HUP signāla noteicēju"
 
-#: gui/gdmlogin.c:4191
-#: gui/greeter/greeter.c:1027
+#: gui/gdmlogin.c:4214
+#: gui/greeter/greeter.c:1063
 msgid "main: Error setting up INT signal handler"
 msgstr "galvenais: Kļūda uzstādot INT signāla noteicēju"
 
-#: gui/gdmlogin.c:4194
-#: gui/greeter/greeter.c:1030
+#: gui/gdmlogin.c:4217
+#: gui/greeter/greeter.c:1066
 msgid "main: Error setting up TERM signal handler"
 msgstr "galvenais: Kļūda uzstādot TERM signāla noteicēju"
 
-#: gui/gdmlogin.c:4285
-#: gui/greeter/greeter.c:1201
+#: gui/gdmlogin.c:4308
+#: gui/greeter/greeter.c:1279
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
 "There are two available sessions you can use, but\n"
 "you should log in and correct the gdm configuration."
 msgstr ""
-"Sesijas direktorija nav vai arī tas ir tukšs!\n"
+"Sesijas direktorija nav vai arī ir tukša!\n"
 "\n"
-"Ir pieejamsas divas sesijas, kuras tu vari lietot,\n"
-"bet tev ir jāielogojas un jaizlabo konfigurācija."
+"Ir pieejamsas divas sesijas, kuras jūs varat lietot,\n"
+"bet jums vajadzētu pieteikties un izlabot konfigurāciju."
 
-#: gui/gdmlogin.c:4308
-#: gui/greeter/greeter.c:1225
+#: gui/gdmlogin.c:4331
+#: gui/greeter/greeter.c:1303
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -2483,10 +2537,10 @@ msgid ""
 msgstr ""
 "Konfigurācijas fails satur nepareizu komandrindu\n"
 "priekš pieteikumdialoga, tāpēc es palaidu noklusēto\n"
-"komandu.  Lūdzu salabo savu konfigurāciju."
+"komandu.  Lūdzu salabojiet savu konfigurāciju."
 
-#: gui/gdmlogin.c:4332
-#: gui/greeter/greeter.c:1250
+#: gui/gdmlogin.c:4355
+#: gui/greeter/greeter.c:1328
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -2494,11 +2548,11 @@ msgid ""
 "configuration program."
 msgstr ""
 "Konfigurācija nav atrasta.  GDM lieto\n"
-"noklusējumus, lai palaistu šo sesiju.  Tav\n"
-"vajadzētu ielogoties un izveidot konfigurāciju\n"
+"noklusējumus, lai palaistu šo sesiju.  Jums\n"
+"vajadzētu pieteikties un izveidot konfigurāciju\n"
 "ar GDM konfigurācijas programmu."
 
-#: gui/gdmphotosetup.c:73
+#: gui/gdmphotosetup.c:129
 msgid ""
 "The face browser is not configured,\n"
 "please ask your system administrator to enable it\n"
@@ -2508,23 +2562,23 @@ msgstr ""
 "palūdz savams sistēmas administrātoram to aktivizēt\n"
 "GDM konfigurācijas programmā."
 
-#: gui/gdmphotosetup.c:82
+#: gui/gdmphotosetup.c:138
 msgid "Select a photo"
 msgstr "Izvēlies foto"
 
-#: gui/gdmphotosetup.c:91
+#: gui/gdmphotosetup.c:147
 msgid "Select a photograph to show in the facebrowser:"
 msgstr "Izvēlies fotogrāfiju, kuru parādīt seju pārlūkā:"
 
-#: gui/gdmphotosetup.c:96
+#: gui/gdmphotosetup.c:152
 msgid "Browse"
 msgstr "Lūkoties"
 
-#: gui/gdmphotosetup.c:129
+#: gui/gdmphotosetup.c:185
 msgid "No picture selected."
 msgstr "Nav izvēlēta neviena bilde."
 
-#: gui/gdmphotosetup.c:138
+#: gui/gdmphotosetup.c:194
 #, c-format
 msgid ""
 "The picture is too large and the system administrator\n"
@@ -2535,27 +2589,31 @@ msgstr ""
 "aizliedzis seju pārlūkā rādīt bildes lielākas par\n"
 "%d baitiem"
 
-#: gui/gdmphotosetup.c:164
+#: gui/gdmphotosetup.c:220
 #, c-format
-msgid "File %s cannot be open for reading\n"
+msgid ""
+"File %s cannot be open for reading\n"
 "Error: %s"
-msgstr "Fails %s nevar tikt atvērts lasīšanai\n"
+msgstr ""
+"Fails %s nevar tikt atvērts lasīšanai\n"
 "Kļūda: %s"
 
-#: gui/gdmphotosetup.c:182
+#: gui/gdmphotosetup.c:238
 #, c-format
-msgid "File %s cannot be open for writing\n"
+msgid ""
+"File %s cannot be open for writing\n"
 "Error: %s"
-msgstr "Fails %s nevar tikt atvērts rakstīšanai\n"
+msgstr ""
+"Fails %s nevar tikt atvērts rakstīšanai\n"
 "Kļūda: %s"
 
 #: gui/gdmphotosetup.desktop.in.h:1
 msgid "Change the picture that will show in the GDM (login manager) face browser"
-msgstr "Uzstādi bildi, kura tiks parādīta GDM (ieejas pieteikumu pārvaldnieka) seju pārlūkā"
+msgstr "Uzstādiet bildi, kura tiks parādīta GDM (pieteikumu pārvaldnieka) seju pārlūkā"
 
 #: gui/gdmphotosetup.desktop.in.h:2
 msgid "Login Photo"
-msgstr "Ielogošanās Foto"
+msgstr "Pieteikšanās Foto"
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -2563,17 +2621,17 @@ msgstr "Ielogošanās Foto"
 #. * DO NOT compile it as part of your application.
 #.
 #: gui/gdmsetup-strings.c:7
-#: gui/gdmsetup.glade.h:16
+#: gui/gdmsetup.glade.h:15
 msgid "GDM Setup"
 msgstr "GDM Uzstādijumi"
 
 #: gui/gdmsetup-strings.c:8
-#: gui/gdmsetup.glade.h:21
+#: gui/gdmsetup.glade.h:20
 msgid "L_ocal: "
 msgstr "L_okāls: "
 
 #: gui/gdmsetup-strings.c:9
-#: gui/gdmsetup.glade.h:52
+#: gui/gdmsetup.glade.h:51
 msgid "_Remote: "
 msgstr "_Attālināts: "
 
@@ -2581,37 +2639,37 @@ msgstr "_Attālināts: "
 #: gui/gdmsetup-strings.c:12
 #: gui/gdmsetup-strings.c:42
 #: gui/gdmsetup.c:807
-#: gui/gdmsetup.glade.h:40
+#: gui/gdmsetup.glade.h:39
 msgid "Standard greeter"
 msgstr "Standarta sveicinātājs"
 
 #: gui/gdmsetup-strings.c:11
 #: gui/gdmsetup-strings.c:13
-#: gui/gdmsetup-strings.c:53
+#: gui/gdmsetup-strings.c:52
 #: gui/gdmsetup.c:809
-#: gui/gdmsetup.glade.h:18
+#: gui/gdmsetup.glade.h:17
 msgid "Graphical greeter"
 msgstr "Grafiskais sveicinātājs"
 
 #: gui/gdmsetup-strings.c:14
-#: gui/gdmsetup.glade.h:10
+#: gui/gdmsetup.glade.h:9
 msgid "Always use 24 hour cloc_k format"
 msgstr "Vienmēr lietot 24 stundu pul_ksteņa formatu"
 
 #: gui/gdmsetup-strings.c:15
-#: gui/gdmsetup.glade.h:19
+#: gui/gdmsetup.glade.h:18
 msgid "Greeter"
 msgstr "Sveicinātājs"
 
 #: gui/gdmsetup-strings.c:16
-#: gui/gdmsetup.glade.h:49
+#: gui/gdmsetup.glade.h:48
 msgid "_Login a user automatically on first bootup"
-msgstr "_Ielogot lietotāju iekšā automātiski pie pirmās ielādes"
+msgstr "_Pieteikt lietotāju automātiski pie pirmās ielādes"
 
 #: gui/gdmsetup-strings.c:17
-#: gui/gdmsetup.glade.h:45
+#: gui/gdmsetup.glade.h:44
 msgid "_Automatic login username:"
-msgstr "_Automātiskais ielogošanās lietotāja vārds: "
+msgstr "_Automātiskās pieteikšanās lietotājvārds:"
 
 #: gui/gdmsetup-strings.c:18
 #: gui/gdmsetup-strings.c:23
@@ -2623,245 +2681,242 @@ msgid "*"
 msgstr "*"
 
 #: gui/gdmsetup-strings.c:20
-#: gui/gdmsetup.glade.h:23
+#: gui/gdmsetup.glade.h:22
 msgid "Login a user automa_tically after a specified number of seconds"
-msgstr "Ielogot iekšā lie_totāju pēc noteikta sekunžu skaita"
+msgstr "Pieteikt lie_totāju automātiski pēc noteikta sekunžu skaita"
 
 #: gui/gdmsetup-strings.c:21
-#: gui/gdmsetup.glade.h:42
+#: gui/gdmsetup.glade.h:41
 msgid "Timed login us_ername:"
-msgstr "Laika ielogēšanās li_etotāja vārds:"
+msgstr "Laika pieteikšanās li_etotājvārds:"
 
 #: gui/gdmsetup-strings.c:22
-#: gui/gdmsetup.glade.h:54
+#: gui/gdmsetup.glade.h:53
 msgid "_Seconds before login:"
-msgstr "_Sekundes pirms ieiešanas: "
+msgstr "_Sekundes pirms pieteikšanās:"
 
 #: gui/gdmsetup-strings.c:24
-#: gui/gdmsetup.glade.h:41
+#: gui/gdmsetup.glade.h:40
 msgid "Timed login"
-msgstr "Laika ielogošanās"
+msgstr "Laika pieteikšanās"
 
 #: gui/gdmsetup-strings.c:25
-#: gui/gdmsetup.glade.h:17
+#: gui/gdmsetup.glade.h:16
 msgid "General"
 msgstr "Galvenokārt"
 
 #: gui/gdmsetup-strings.c:27
-#: gui/gdmsetup.glade.h:55
+#: gui/gdmsetup.glade.h:54
 msgid "_Welcome string: "
 msgstr "_Sagaidīšanas paziņojums: "
 
 #: gui/gdmsetup-strings.c:28
-#: gui/gdmsetup.glade.h:43
+#: gui/gdmsetup.glade.h:42
 msgid "Welcome string: "
 msgstr "Sagaidīšanas rinda: "
 
 #: gui/gdmsetup-strings.c:30
-#: gui/gdmsetup.glade.h:24
+#: gui/gdmsetup.glade.h:23
 msgid "Logo"
 msgstr "Logo"
 
 #: gui/gdmsetup-strings.c:31
-#: gui/gdmsetup.glade.h:39
+#: gui/gdmsetup.glade.h:38
 msgid "Show choosable user images (_face browser)"
 msgstr "Parādīt lietotāju attēlu izvēli (aktivizēt _seju pārlūku)"
 
 #: gui/gdmsetup-strings.c:32
-#: gui/gdmsetup.glade.h:30
+#: gui/gdmsetup.glade.h:29
 msgid "Miscellaneous"
 msgstr "Dažādi"
 
 #: gui/gdmsetup-strings.c:33
-#: gui/gdmsetup.glade.h:50
+#: gui/gdmsetup.glade.h:49
 msgid "_No background"
 msgstr "_Nav fona"
 
 #: gui/gdmsetup-strings.c:34
-#: gui/gdmsetup.glade.h:47
+#: gui/gdmsetup.glade.h:46
 msgid "_Image"
 msgstr "_Attēls"
 
 #: gui/gdmsetup-strings.c:35
-#: gui/gdmsetup.glade.h:13
+#: gui/gdmsetup.glade.h:12
 msgid "Co_lor"
 msgstr "_Krāsa"
 
 #: gui/gdmsetup-strings.c:36
-#: gui/gdmsetup.glade.h:53
+#: gui/gdmsetup.glade.h:52
 msgid "_Scale background image to fit"
 msgstr "_Mērogot fona attēlu pa visu ekrānu"
 
 #: gui/gdmsetup-strings.c:38
-#: gui/gdmsetup.glade.h:51
+#: gui/gdmsetup.glade.h:50
 msgid "_Only color on remote displays"
 msgstr "_Tikai krāsu uz attālinātiem displejiem"
 
 #: gui/gdmsetup-strings.c:39
-#: gui/gdmsetup.glade.h:46
+#: gui/gdmsetup.glade.h:45
 msgid "_Background color: "
 msgstr "_Fona krāsa: "
 
 #: gui/gdmsetup-strings.c:40
-#: gui/gdmsetup.glade.h:34
+#: gui/gdmsetup.glade.h:33
 msgid "Pick a color"
 msgstr "Izvēlies krāsu"
 
 #: gui/gdmsetup-strings.c:41
-#: gui/gdmsetup.glade.h:12
+#: gui/gdmsetup.glade.h:11
 msgid "Background"
 msgstr "Fons"
 
 #: gui/gdmsetup-strings.c:43
-#: gui/gdmsetup.glade.h:5
+#: gui/gdmsetup.glade.h:4
 msgid "<b>Preview:</b>"
 msgstr "<b>Pirmsapskats:</b>"
 
 #: gui/gdmsetup-strings.c:44
-#: gui/gdmsetup.glade.h:32
+#: gui/gdmsetup.glade.h:31
 msgid "No screenshot available"
 msgstr "Nav ekrānskats pieejams"
 
 #: gui/gdmsetup-strings.c:45
-#: gui/gdmsetup.glade.h:4
+#: gui/gdmsetup.glade.h:3
 msgid "<b>Description:</b>"
 msgstr "<b>Apraksts:</b>"
 
 #: gui/gdmsetup-strings.c:46
-#: gui/gdmsetup.glade.h:3
-msgid "<b>Copyright:</b>"
-msgstr "<b>Autortiesības:</b>"
-
-#: gui/gdmsetup-strings.c:47
 #: gui/gdmsetup.glade.h:2
 msgid "<b>Author:</b>"
 msgstr "<b>Autors:</b>"
 
-#: gui/gdmsetup-strings.c:48
-#: gui/gdmsetup.glade.h:58
-msgid "description\n"
+#: gui/gdmsetup-strings.c:47
+#: gui/gdmsetup.glade.h:57
+msgid ""
+"description\n"
 "widget"
-msgstr "apraksts\n"
+msgstr ""
+"apraksts\n"
 "logdaļa"
 
-#: gui/gdmsetup-strings.c:50
-#: gui/gdmsetup.glade.h:56
+#: gui/gdmsetup-strings.c:49
+#: gui/gdmsetup.glade.h:55
 msgid "author"
 msgstr "autors"
 
-#: gui/gdmsetup-strings.c:51
-#: gui/gdmsetup.glade.h:57
+#: gui/gdmsetup-strings.c:50
+#: gui/gdmsetup.glade.h:56
 msgid "copyright"
 msgstr "autortiesības"
 
-#: gui/gdmsetup-strings.c:52
-#: gui/gdmsetup.glade.h:48
+#: gui/gdmsetup-strings.c:51
+#: gui/gdmsetup.glade.h:47
 msgid "_Install new theme"
 msgstr "_Uzstādīt jaunu tēmu"
 
-#: gui/gdmsetup-strings.c:54
-#: gui/gdmsetup.glade.h:6
+#: gui/gdmsetup-strings.c:53
+#: gui/gdmsetup.glade.h:5
 msgid "Allow _root to login with GDM"
-msgstr "Atļaut _rootam ieiet ar GDM"
+msgstr "Atļaut _root pieteikties ar GDM"
+
+#: gui/gdmsetup-strings.c:54
+#: gui/gdmsetup.glade.h:8
+msgid "Allow root to login r_emotely with GDM"
+msgstr "Atļaut root a_ttālināti pieteikties ar GDM"
 
 #: gui/gdmsetup-strings.c:55
-#: gui/gdmsetup.glade.h:9
-msgid "Allow root to login r_emotely with GDM"
-msgstr "Atļaut rootam attālināti i_eiet ar GDM"
+#: gui/gdmsetup.glade.h:7
+msgid "Allow remote _timed logins"
+msgstr "Atļaut attālinātās _laika pieteikšanās"
 
 #: gui/gdmsetup-strings.c:56
-#: gui/gdmsetup.glade.h:8
-msgid "Allow remote _timed logins"
-msgstr "Atļaut attālinātos _laika loginus"
-
-#: gui/gdmsetup-strings.c:57
-#: gui/gdmsetup.glade.h:38
+#: gui/gdmsetup.glade.h:37
 msgid "Show _system menu"
 msgstr "Parādīt _sistēmas izvēlni"
 
-#: gui/gdmsetup-strings.c:58
-#: gui/gdmsetup.glade.h:7
+#: gui/gdmsetup-strings.c:57
+#: gui/gdmsetup.glade.h:6
 msgid "Allow c_onfiguration from the login screen"
-msgstr "Ļauj lietotājiem palaist k_onfigurātoru no sistēmas izvēlnes"
+msgstr "Atļaut k_onfigurāciju no pieteikšanās ekrāna"
 
-#: gui/gdmsetup-strings.c:59
-#: gui/gdmsetup.glade.h:36
+#: gui/gdmsetup-strings.c:58
+#: gui/gdmsetup.glade.h:35
 msgid "Retry _delay (seconds) :"
 msgstr "Atkārtojuma _aizture (sekundes) : "
 
-#: gui/gdmsetup-strings.c:60
-#: gui/gdmsetup.glade.h:33
+#: gui/gdmsetup-strings.c:59
+#: gui/gdmsetup.glade.h:32
 msgid "Options"
 msgstr "Opcijas"
 
-#: gui/gdmsetup-strings.c:61
-#: gui/gdmsetup.glade.h:37
+#: gui/gdmsetup-strings.c:60
+#: gui/gdmsetup.glade.h:36
 msgid "Security"
 msgstr "Drošība"
 
-#: gui/gdmsetup-strings.c:62
-#: gui/gdmsetup.glade.h:31
+#: gui/gdmsetup-strings.c:61
+#: gui/gdmsetup.glade.h:30
 msgid "No XDMCP support in the binary.  To enable XDMCP support you must recompile GDM with the XDMCP libraries."
 msgstr "Binārajā nav XDMCP atbalsta.  Lai aktivizētu XDMCP atbalstu, tev jāpārkompilē GDM ar XDMCP bibliotēkām."
 
-#: gui/gdmsetup-strings.c:63
-#: gui/gdmsetup.glade.h:20
+#: gui/gdmsetup-strings.c:62
+#: gui/gdmsetup.glade.h:19
 msgid "Honour _indirect requests"
 msgstr "Izpildīt _netiešos pieprasījumus"
 
-#: gui/gdmsetup-strings.c:64
-#: gui/gdmsetup.glade.h:22
+#: gui/gdmsetup-strings.c:63
+#: gui/gdmsetup.glade.h:21
 msgid "Listen on UDP port: "
 msgstr "Klausīties uz UDP porta: "
 
-#: gui/gdmsetup-strings.c:65
-#: gui/gdmsetup.glade.h:27
+#: gui/gdmsetup-strings.c:64
+#: gui/gdmsetup.glade.h:26
 msgid "Maximum pending requests:"
 msgstr "Maksimums neizlemto pieprasījumu:"
 
-#: gui/gdmsetup-strings.c:66
-#: gui/gdmsetup.glade.h:25
+#: gui/gdmsetup-strings.c:65
+#: gui/gdmsetup.glade.h:24
 msgid "Max pending indirect requests:"
 msgstr "Max neizlemtie netiešie pieprasījumi:"
 
-#: gui/gdmsetup-strings.c:67
-#: gui/gdmsetup.glade.h:28
+#: gui/gdmsetup-strings.c:66
+#: gui/gdmsetup.glade.h:27
 msgid "Maximum remote sessions:"
 msgstr "Maksimums attālinmāto sesiju:"
 
-#: gui/gdmsetup-strings.c:68
-#: gui/gdmsetup.glade.h:29
+#: gui/gdmsetup-strings.c:67
+#: gui/gdmsetup.glade.h:28
 msgid "Maximum wait time:"
 msgstr "Maksimālais gaidīšanas laiks:"
 
-#: gui/gdmsetup-strings.c:69
-#: gui/gdmsetup.glade.h:26
+#: gui/gdmsetup-strings.c:68
+#: gui/gdmsetup.glade.h:25
 msgid "Maximum indirect wait time:"
 msgstr "Maksimālais netiešās gaidīšanas laiks:"
 
-#: gui/gdmsetup-strings.c:70
-#: gui/gdmsetup.glade.h:14
+#: gui/gdmsetup-strings.c:69
+#: gui/gdmsetup.glade.h:13
 msgid "Displays per host:"
 msgstr "Displeji resursdatoram:"
 
-#: gui/gdmsetup-strings.c:71
-#: gui/gdmsetup.glade.h:35
+#: gui/gdmsetup-strings.c:70
+#: gui/gdmsetup.glade.h:34
 msgid "Ping interval (minutes):"
 msgstr "Ping intervāls (minūtes):"
 
-#: gui/gdmsetup-strings.c:72
-#: gui/gdmsetup.glade.h:15
+#: gui/gdmsetup-strings.c:71
+#: gui/gdmsetup.glade.h:14
 msgid "Enable _XDMCP"
 msgstr "Aktivizēt _XDMCP"
 
-#: gui/gdmsetup-strings.c:73
-#: gui/gdmsetup.glade.h:44
+#: gui/gdmsetup-strings.c:72
+#: gui/gdmsetup.glade.h:43
 msgid "XDMCP"
 msgstr "XDMCP"
 
 #: gui/gdmsetup.c:145
 msgid "An error occured while trying to contact the login screens.  Not all updates may have taken effect."
-msgstr "Gadījās kļūme mēģinot savienot pieteikšanās ekrānus. Ne visi atjauninājumi varētu tikt aktivizēti."
+msgstr "Gadījās kļūme, mēģinot savienot pieteikšanās ekrānus. Ne visi jauninājumi varētu būt stājušies spēkā."
 
 #: gui/gdmsetup.c:1324
 msgid "Archive is not of a subdirectory"
@@ -2890,9 +2945,11 @@ msgstr "Nav izvēlēts fails"
 
 #: gui/gdmsetup.c:1514
 #, c-format
-msgid "Not a theme archive\n"
+msgid ""
+"Not a theme archive\n"
 "Details: %s"
-msgstr "Ne tēmas arhīvs\n"
+msgstr ""
+"Ne tēmas arhīvs\n"
 "Detaļas: %s"
 
 #: gui/gdmsetup.c:1536
@@ -2916,13 +2973,17 @@ msgid ""
 "\n"
 "Note that not all configuration options are listed here.  You may want to edit %s if you cannot find what you are looking for."
 msgstr ""
-"Šis konfigurācijas logs maina uzstādijumus GDM dēmonam, kas ir grafiskais pieteikšanās ekrāns GNOME. Izmaiņas ko jūs veiksiet stāsies spēkā nekavējoties.\n"
+"Šis konfigurācijas logs maina uzstādijumus GDM dēmonam, kas ir grafiskais pieteikšanās ekrāns GNOME. Izmaiņas, ko jūs veiksiet, stāsies spēkā nekavējoties.\n"
 "\n"
-"Piezīmēju, ka visas iespējamās konfigurācijas opcijas nav šeit parādītas. Jūs varētu vēlēties rediģēt %s ja jūs nevarat atrast to ko jūs meklējat."
+"Piezīmēju, ka visas iespējamās konfigurācijas opcijas nav šeit parādītas. Jūs varētu vēlēties rediģēt %s, ja jūs nevarat atrast to, ko meklējat."
 
 #: gui/gdmsetup.c:2070
-msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr "Tev jābūt superlietotājam (root), lai konfigurētu GDM.\n"
+msgid ""
+"You must be the superuser (root) to configure GDM.\n"
+""
+msgstr ""
+"Tev jābūt superlietotājam (root), lai konfigurētu GDM.\n"
+""
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
@@ -2938,21 +2999,30 @@ msgstr "GDM Konfigurātors"
 msgid "greeter_parse_config: No configuration file: %s. Using defaults."
 msgstr "greeter_parse_config: Nav konfigurācijas fails: %s. Lietoju noklusētos."
 
-#: gui/greeter/greeter.c:1136
+#: gui/greeter/greeter.c:1141
+#, c-format
+msgid "There was an error loading the theme %s"
+msgstr "Bija kļūda lādējot tēmu %s"
+
+#: gui/greeter/greeter.c:1179
+msgid "The theme for the graphical greeter is corrupt.  It does not contain definition for the username/password entry element."
+msgstr "Tēma grafiskajam sveicinātājam ir sabeigta.  Tā nesatur lietotājvārda/paroles ierakstu elementu definīcijas."
+
+#: gui/greeter/greeter.c:1212
 msgid "There was an error loading the theme, and the default theme also could not have been loaded, I will attempt to start the standard greeter"
 msgstr "Ir notikusi kļūda tēmas ielādē un noklusēto tēmu es arī nevarēju ielādēt. Mēģināšu ielādēt standarta sveicinātāju"
 
-#: gui/greeter/greeter.c:1156
+#: gui/greeter/greeter.c:1232
 msgid "I could not start the standard greeter.  This display will abort and you may have to login another way and fix the installation of gdm"
-msgstr "Nevarēju startēt standarta svecinātāju. Šis attēls tiks pātraukts un jums iespējams nāksies atrast citu veidu kā ieiet sistēmā un salabot gdm instalāciju"
+msgstr "Nevarēju startēt standarta svecinātāju. Šis attēls tiks pātraukts un jums varētu nāksies meklēt citu veidu kā pieteikties sistēmā un salabot gdm instalāciju"
 
 #: gui/greeter/greeter_action_language.c:194
 msgid "Select a language"
-msgstr "Izvēlies valodu"
+msgstr "Izvēlieties valodu"
 
 #: gui/greeter/greeter_action_language.c:207
 msgid "Select a language for your session to use:"
-msgstr "Izvēlies valodu savai sesijai:"
+msgstr "Izvēlieties valodu savai sesijai:"
 
 #: gui/greeter/greeter_system.c:119
 msgid "Shut down the computer"
@@ -2972,7 +3042,7 @@ msgstr "Konfigurēt"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
-msgstr "(c) 2002 Bond, James Bond"
+msgstr "© 2002 Bond, James Bond"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:2
 msgid "Bond, James Bond"
@@ -2999,7 +3069,7 @@ msgstr "Tev ir ieslēgts capslock!"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
-msgstr "(c) 2002 GNOME"
+msgstr "© 2002 GNOME"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:2
 msgid "GNOME Art variation of Circles"
@@ -3014,13 +3084,21 @@ msgid "Happy GNOME"
 msgstr "Laimīgais GNOME"
 
 #: utils/gdmaskpass.c:26
-msgid "gdmaskpass only runs as root\n"
-msgstr "gdmaskpass palaižas tikai kā root\n"
+msgid ""
+"gdmaskpass only runs as root\n"
+""
+msgstr ""
+"gdmaskpass palaižas tikai kā root\n"
+""
 
 #: utils/gdmaskpass.c:42
 #: utils/gdmaskpass.c:48
-msgid "Authentication failure!\n"
-msgstr "Autentifikācijas neveiksme!\n"
+msgid ""
+"Authentication failure!\n"
+""
+msgstr ""
+"Autentifikācijas neveiksme!\n"
+""
 
 #: vicious-extensions/glade-helper.c:82
 msgid "(memory buffer)"
@@ -3049,9 +3127,11 @@ msgstr ""
 
 #: vicious-extensions/glade-helper.c:204
 #, c-format
-msgid "Glade file is on crack! Make sure the correct file is installed!\n"
+msgid ""
+"Glade file is on crack! Make sure the correct file is installed!\n"
 "file: %s widget: %s"
-msgstr "Glade fails ir izmainījies! Pārbaudi, vai īstais fails ir instalēts!\n"
+msgstr ""
+"Glade fails ir izmainījies! Pārbaudi, vai īstais fails ir instalēts!\n"
 "fails:%s vidžets: %s"
 
 #: vicious-extensions/glade-helper.c:234
@@ -3073,9 +3153,11 @@ msgstr ""
 
 #: vicious-extensions/glade-helper.c:252
 #, c-format
-msgid "Glade file is on crack! Make sure the correct file is installed!\n"
+msgid ""
+"Glade file is on crack! Make sure the correct file is installed!\n"
 "file: %s widget: %s expected clist columns: %d"
-msgstr "Glade fails ir izmainījies! Pārbaudi, vai īstais fails ir instalēts!\n"
+msgstr ""
+"Glade fails ir izmainījies! Pārbaudi, vai īstais fails ir instalēts!\n"
 "fails: %s vidžets: %s gaidīja clist kolonas: %d"
 
 #: vicious-extensions/glade-helper.c:270
