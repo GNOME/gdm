@@ -144,7 +144,7 @@ gdm_server_start (GdmDisplay *disp)
 {
     struct sigaction usr1, chld, alrm;
     struct sigaction old_usr1, old_chld, old_alrm;
-    sigset_t mask;
+    sigset_t mask, oldmask;
     gboolean retvalue;
     
     if (!disp)
@@ -202,15 +202,10 @@ gdm_server_start (GdmDisplay *disp)
     sigaddset (&mask, SIGUSR1);
     sigaddset (&mask, SIGCHLD);
     sigaddset (&mask, SIGALRM);
-    sigprocmask (SIG_UNBLOCK, &mask, NULL);
+    sigprocmask (SIG_UNBLOCK, &mask, &oldmask);
     
     /* fork X server process */
     gdm_server_spawn (d);
-
-/* hmmm perhaps this is b0rk, dunno, gonna revert to
- * the beta 2/4 or whatever it was way of doing things
- * (with the patches)
- * -George */
 
     retvalue = FALSE;
 
@@ -224,8 +219,10 @@ gdm_server_start (GdmDisplay *disp)
 	    /* Unset alarm and try again */
 	    alarm (0);
 	    waitpid (d->servpid, 0, WNOHANG);
-	    
+
 	    gdm_debug ("gdm_server_start: Temporary server failure (%d)", d->name);
+	    sleep (1 + d->servtries*2);
+
 	    gdm_server_spawn (d);
 	    
 	    break;
@@ -242,17 +239,23 @@ gdm_server_start (GdmDisplay *disp)
 	case SERVER_ABORT:
 	    alarm (0);
 	    gdm_debug ("gdm_server_start: Server %s died during startup!", d->name);
-	    sigprocmask (SIG_SETMASK, &sysmask, NULL);
+	    sleep (1 + d->servtries*2);
 
-	    retvalue = FALSE;
-	    goto spawn_done;
+	    gdm_server_spawn (d);
+
+	    break;
 
 	default:
 	    break;
 	}
+
+	d->servtries ++;
     }
 
+
 spawn_done:
+
+    sigprocmask (SIG_SETMASK, &oldmask, NULL);
 
     /* restore default handlers */
     sigaction (SIGUSR1, &old_usr1, NULL);
