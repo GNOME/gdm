@@ -836,6 +836,7 @@ gdm_config_parse_most (gboolean factory)
     gdm_spin_set ("position_x", gnome_config_get_int (GDM_KEY_POSITIONX));
     gdm_spin_set ("position_y", gnome_config_get_int (GDM_KEY_POSITIONY));
     gdm_spin_set ("xinerama_screen", gnome_config_get_int (GDM_KEY_XINERAMASCREEN));
+    gdm_toggle_set("use_24_clock", gnome_config_get_bool (GDM_KEY_USE_24_CLOCK));
     
     gdm_entry_set("exclude_users", gnome_config_get_string (GDM_KEY_EXCLUDE));
     /* font picker is in parse_remaining() */
@@ -1444,6 +1445,7 @@ write_config (void)
     gdm_spin_write("position_x", GDM_KEY_POSITIONX);
     gdm_spin_write("position_y", GDM_KEY_POSITIONY);
     gdm_spin_write("xinerama_screen", GDM_KEY_XINERAMASCREEN);
+    gdm_toggle_write("use_24_clock", GDM_KEY_USE_24_CLOCK);
     
     gdm_entry_write("exclude_users", GDM_KEY_EXCLUDE);
     gdm_font_write("font_picker", GDM_KEY_FONT);

@@ -215,6 +215,7 @@
 #define GDM_KEY_SET_POSITION "greeter/SetPosition=false"
 #define GDM_KEY_POSITIONX "greeter/PositionX=0"
 #define GDM_KEY_POSITIONY "greeter/PositionY=0"
+#define GDM_KEY_USE_24_CLOCK "greeter/Use24Clock=false"
 
 #define GDM_KEY_SCAN "chooser/ScanTime=3"
 #define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"

@@ -108,6 +108,7 @@ static gchar *GdmExclude;
 static gchar *GdmGlobalFaceDir;
 static gchar *GdmDefaultFace;
 static gboolean GdmTimedLoginEnable;
+static gboolean GdmUse24Clock;
 static gchar *GdmTimedLogin;
 static gint GdmTimedLoginDelay;
 static gboolean GdmLockPosition;
@@ -830,6 +831,8 @@ gdm_login_parse_config (void)
 	    GdmTimedLogin = NULL;
 	    GdmTimedLoginDelay = 5;
     }
+  
+    GdmUse24Clock = gnome_config_get_bool (GDM_KEY_USE_24_CLOCK);
 
     gnome_config_pop_prefix();
 
@@ -2540,12 +2543,21 @@ update_clock (gpointer data)
 	time (&the_time);
 	the_tm = localtime (&the_time);
 
-	if (strftime (str, sizeof (str), _("%a %b %d, %I:%M %p"), the_tm) == 0) {
-		/* according to docs, if the string does not fit, the
-		 * contents of str are undefined, thus just use
-		 * ??? */
-		strcpy (str, "???");
-	}
+	if (GdmUse24Clock) {
+	        if (strftime (str, sizeof (str), _("%a %b %d, %H:%M %p"), the_tm) == 0) {
+		        /* according to docs, if the string does not fit, the
+		        * contents of str are undefined, thus just use
+		        * ??? */
+		        strcpy (str, "???");
+		}
+	} else {
+	       	if (strftime (str, sizeof (str), _("%a %b %d, %I:%M %p"), the_tm) == 0) {
+		        /* according to docs, if the string does not fit, the
+		        * contents of str are undefined, thus just use
+		        * ??? */
+		        strcpy (str, "???");
+		}
+  	}
 	str [sizeof(str)-1] = '\0'; /* just for sanity */
 
 	gtk_label_set (GTK_LABEL (clock_label), str);

@@ -888,7 +888,7 @@ This is %n
 	  <class>GtkTable</class>
 	  <name>table47</name>
 	  <border_width>3</border_width>
-	  <rows>1</rows>
+	  <rows>2</rows>
 	  <columns>2</columns>
 	  <homogeneous>False</homogeneous>
 	  <row_spacing>3</row_spacing>
@@ -992,6 +992,35 @@ tr_TR
 	      <text_max_length>0</text_max_length>
 	      <text>ca_ES</text>
 	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>use_24_clock</name>
+	    <tooltip>Always use the 24 hour format for the clock in the greeter, even if the norm for the current locale is 12 hour</tooltip>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>can_apply_now</handler>
+	      <last_modification_time>Tue, 21 Mar 2000 21:36:47 GMT</last_modification_time>
+	    </signal>
+	    <label>Always use 24 hour clock format</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>1</top_attach>
+	      <bottom_attach>2</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
 	  </widget>
 	</widget>
       </widget>
