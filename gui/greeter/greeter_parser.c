@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <gtk/gtk.h>
 #include <libxml/parser.h>
 #include <string.h>
@@ -7,6 +9,8 @@
 #include <gdk/gdkx.h>
 #include <locale.h>
 #include <libgnome/gnome-i18n.h>
+
+#include <vicious.h>
 
 #include "greeter_parser.h"
 #include "greeter_events.h"
@@ -956,6 +960,14 @@ parse_label (xmlNodePtr        node,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_BAD_SPEC,
 		   "A label must specify the text attribute");
+    }
+  /* FIXME: evil hack to use internally translated strings */
+  if (translation_score == 999 &&
+      ! ve_string_empty (translated_text))
+    {
+      char *foo = g_strdup (_(translated_text));
+      g_free (translated_text);
+      translated_text = foo;
     }
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)

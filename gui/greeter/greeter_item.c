@@ -73,7 +73,7 @@ greeter_item_update_text (GreeterItemInfo *info)
       text = greeter_item_expand_text (info->orig_text);
 
       g_object_set (G_OBJECT (info->item),
-		    "text", text,
+		    "markup", text,
 		    NULL);
 
       g_free (text);
@@ -107,9 +107,9 @@ greeter_item_expand_text (const char *text)
 {
   GString *str;
   const char *p;
-  const char *q;
   char *clock;
   int r;
+  gboolean underline = FALSE;
   char buf[256];
 
   str = g_string_sized_new (strlen (text));
@@ -161,25 +161,26 @@ greeter_item_expand_text (const char *text)
 	    default:
 	      g_warning ("unknown escape code %%%c in text\n", *p);
 	    }
-	  p++;
+	}
+      else if (*p == '_')
+        {
+	  underline = TRUE;
+	  g_string_append (str, "<u>");
 	}
       else
 	{
-	  q = strchr(p, '%');
-	  if (q == NULL)
-	    {
-	      g_string_append (str, p);
-	      break;
-	    }
-	  else
-	    {
-	      g_string_append_len (str, p, q - p);
-	      p = q;
-	    }
+	  g_string_append_c (str, *p);
+	  if (underline)
+	    g_string_append (str, "</u>");
+	  underline = FALSE;
 	}
+      p++;
     }
   
  bail:
+
+  if (underline)
+    g_string_append (str, "</u>");
 
   return g_string_free (str, FALSE);
 }

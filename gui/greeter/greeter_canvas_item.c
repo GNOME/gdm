@@ -1,8 +1,13 @@
+#include "config.h"
+
 #include <math.h>
+#include <string.h>
 #include <gtk/gtk.h>
 #include <librsvg/rsvg.h>
 
+#include "greeter.h"
 #include "greeter_item.h"
+#include "greeter_events.h"
 #include "greeter_canvas_item.h"
 #include "greeter_configuration.h"
 
@@ -88,6 +93,14 @@ transform_pixbuf (GdkPixbuf *orig,
     apply_tint (scaled, tint_color);
 
   return scaled;
+}
+
+static void
+fake_button_clicked (GtkWidget *widget, gpointer data)
+{
+	const char *id = data;
+	if (id != NULL)
+		greeter_item_run_action_callback (id);
 }
 
 void
@@ -178,13 +191,39 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 
     item->item = gnome_canvas_item_new (group,
 					GNOME_TYPE_CANVAS_TEXT,
-					"text", text,
+					"markup", text,
 					"x", x1,
 					"y", y1,
 					"anchor", item->anchor,
 					"font_desc", item->fonts[GREETER_ITEM_STATE_NORMAL],
 					"fill_color_rgba", item->colors[GREETER_ITEM_STATE_NORMAL],
 					NULL);
+
+    /* if there is an accelerator we do an INCREDIBLE hack */
+    if (strchr (item->orig_text, '_') != NULL)
+      {
+	GreeterItemInfo *button;
+	GtkWidget *fake_button = gtk_button_new_with_mnemonic (item->orig_text);
+	gtk_widget_show (fake_button);
+	GTK_WIDGET_SET_FLAGS (fake_button, GTK_CAN_FOCUS);
+	gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (canvas)),
+			       GNOME_TYPE_CANVAS_WIDGET,
+			       "widget", fake_button,
+			       "x", (double)-999.0,
+			       "y", (double)-999.0,
+			       "height", (double)20.0,
+			       "width", (double)20.0,
+			       NULL);
+	button = greeter_item_find_my_button (item);
+	if (button == NULL)
+	  button = item;
+	g_signal_connect_data (G_OBJECT (fake_button), "clicked",
+			       G_CALLBACK (fake_button_clicked),
+			       g_strdup (button->id),
+			       (GClosureNotify)g_free,
+			       0 /* connect_flags */);
+      }
+
     g_free (text);
     
     break;

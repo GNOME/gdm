@@ -4,6 +4,8 @@
 #include <gtk/gtk.h>
 
 extern gboolean DOING_GDM_DEVELOPMENT;
+extern GtkWidget *canvas;
+extern GtkWidget *window;
 
 void     greeter_abort   (const gchar *format, ...);
 gboolean greeter_query   (const gchar *msg);

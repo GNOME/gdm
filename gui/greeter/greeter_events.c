@@ -1,8 +1,11 @@
+#include "config.h"
+
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdlib.h>
 
 #include "greeter_item.h"
+#include "greeter_parser.h"
 #include "greeter_events.h"
 
 struct CallbackInfo {
@@ -87,6 +90,27 @@ propagate_reset_state (GreeterItemInfo *info,
   g_list_foreach (info->box_children, propagate_reset_state_foreach, NULL);
 }
 
+void
+greeter_item_run_action_callback (const char *id)
+{
+  struct CallbackInfo *cb_info;
+  GreeterItemInfo *info;
+
+  g_return_if_fail (id != NULL);
+
+  if (callback_hash == NULL)
+    return;
+
+  info = greeter_lookup_id (id);
+  if (info == NULL)
+    return;
+
+  cb_info = g_hash_table_lookup (callback_hash, info->id);
+
+  if (cb_info)
+    (*cb_info->func) (info, cb_info->user_data);
+}
+
 gint
 greeter_item_event_handler (GnomeCanvasItem *item,
 			    GdkEvent        *event,
@@ -129,14 +153,7 @@ greeter_item_event_handler (GnomeCanvasItem *item,
     info->mouse_down = FALSE;
 
     if (info->mouse_over && info->id && callback_hash)
-      {
-	struct CallbackInfo *cb_info;
-
-	cb_info = g_hash_table_lookup (callback_hash, info->id);
-
-	if (cb_info)
-	  (*cb_info->func) (info, cb_info->user_data);
-      }	    
+      greeter_item_run_action_callback (info->id);
     break;
     
   default:

@@ -1,3 +1,27 @@
+Wed Aug 07 20:20:17 2002  George Lebl <jirka@5z.com>
+
+	* gui/greeter/*.c: include file fixups
+
+	* gui/greeter/greeter_events.[ch], gui/greeter/greeter.[ch],
+	  gui/greeter/greeter_canvas_item.c, gui/greeter/greeter_item.c:
+	  Add an incredible hack for doing mnemonics on the graphical
+	  greeter with offscreen buttons and such stuff.
+
+	* gui/greeter/greeter_system.c: fix window close should do cancel
+	  not ok.
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_pam.c: ignore also
+	  left_tab (shift+tab), and the KP versions of up/down/tab,
+	  so that we don't lose focus
+
+	* gui/greeter/themes/circles/circles.xml.in,
+	  gui/greeter/themes/happygnome/happygnome.xml.in: use the
+	  mnemonic versions of the button labels so that we get some
+	  keynav.
+
+	* gui/greeter/greeter_parser.c: when we can't get any translations,
+	  try our own gettext database to find the text.
+
 Wed Aug 07 18:38:11 2002  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in, daemon/gdm.h: some fixups to the default

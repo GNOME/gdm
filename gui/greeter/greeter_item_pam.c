@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include "greeter_item_pam.h"
@@ -70,6 +72,10 @@ key_press_handler (GtkWidget *widget, GdkEventKey *event)
 	case GDK_Up:
 	case GDK_Down:
 	case GDK_Tab:
+	case GDK_ISO_Left_Tab:
+	case GDK_KP_Up:
+	case GDK_KP_Down:
+	case GDK_KP_Tab:
 		g_signal_stop_emission_by_name (G_OBJECT (widget),
 						"key_press_event");
 		return TRUE;

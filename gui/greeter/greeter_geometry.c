@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <gtk/gtk.h>
 #include "greeter_geometry.h"
 #include "greeter_canvas_item.h"
@@ -438,7 +440,7 @@ greeter_item_size_request (GreeterItemInfo *item,
       
       canvas_item = gnome_canvas_item_new (gnome_canvas_root (canvas),
 					   GNOME_TYPE_CANVAS_TEXT,
-					   "text", text,
+					   "markup", text,
 					   "x", 0.0,
 					   "y", 0.0,
 					   "font_desc", item->fonts[GREETER_ITEM_STATE_NORMAL],

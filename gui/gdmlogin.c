@@ -1311,10 +1311,15 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	case GDK_Up:
 	case GDK_Down:
 	case GDK_Tab:
+	case GDK_ISO_Left_Tab:
+	case GDK_KP_Up:
+	case GDK_KP_Down:
+	case GDK_KP_Tab:
 		g_signal_stop_emission_by_name (G_OBJECT (entry), "key_press_event");
 		return TRUE;
 
 	default:
+		g_print ("0x%x\n", (int)event->keyval);
 		break;
 	}
 

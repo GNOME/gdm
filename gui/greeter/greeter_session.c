@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
+#include <libgnome/libgnome.h>
 
 #include "gdm.h"
 #include "gdmwm.h"

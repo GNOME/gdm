@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <gtk/gtk.h>
 #include <time.h>
 #include "greeter_item_clock.h"

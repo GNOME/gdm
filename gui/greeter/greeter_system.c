@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include <gtk/gtk.h>
+#include <libgnome/libgnome.h>
 #include "greeter.h"
 #include "greeter_configuration.h"
 #include "greeter_system.h"
@@ -164,7 +165,7 @@ greeter_system_handler (GreeterItemInfo *info,
   ret = gtk_dialog_run (GTK_DIALOG (dialog));
   gdm_wm_no_login_focus_pop ();
   
-  if (ret == GTK_RESPONSE_CANCEL)
+  if (ret != GTK_RESPONSE_OK)
     {
       gtk_widget_destroy (dialog);
       return;

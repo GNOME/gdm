@@ -1,5 +1,6 @@
 #include "config.h"
 
+#include <libgnome/libgnome.h>
 #include <gtk/gtk.h>
 #include <string.h>
 
