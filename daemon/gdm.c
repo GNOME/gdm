@@ -258,6 +258,10 @@ gdm_config_parse (void)
 	    GdmTimedLoginDelay = 5;
     }
 
+    if (GdmMaxIndirect < 0) {
+	    GdmMaxIndirect = 0;
+    }
+
     /* Prerequisites */ 
     if (gdm_string_empty (GdmGreeter)) {
 	    gdm_error (_("gdm_config_parse: No greeter specified."));

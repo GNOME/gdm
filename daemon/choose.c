@@ -55,7 +55,30 @@ extern void gdm_debug (gchar *, ...);
 
 static guint indirect_id = 1;
 
+static gboolean
+remove_oldest_pending (void)
+{
+	GSList *li;
+	GdmIndirectDisplay *oldest = NULL;
 
+	for (li = indirect; li != NULL; li = li->next) {
+		GdmIndirectDisplay *idisp = li->data;
+		if (idisp->acctime == 0)
+			continue;
+
+		if (oldest == NULL ||
+		    idisp->acctime < oldest->acctime) {
+			oldest = idisp;
+		}
+	}
+
+	if (oldest != NULL) {
+		gdm_choose_indirect_dispose (oldest);
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
 
 gboolean
 gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gpointer data)
@@ -91,11 +114,20 @@ gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gpointer data)
 	for (li = indirect; li != NULL; li = li->next) {
 		GdmIndirectDisplay *idisp = li->data;
 		if (idisp->id == id) {
+			/* whack the oldest if more then allowed */
+			while (ipending >= GdmMaxIndirect &&
+			       remove_oldest_pending ())
+				;
+
 			idisp->acctime = time (NULL);
 			g_free (idisp->chosen_host);
 			idisp->chosen_host = g_new (struct in_addr, 1);
 			memcpy (idisp->chosen_host, &addr,
 				sizeof (struct in_addr));
+
+			/* Now this display is pending */
+			ipending++;
+
 			return TRUE;
 		}
 	}
@@ -112,9 +144,6 @@ gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa)
     if (clnt_sa == NULL)
 	    return NULL;
 
-    if (ipending >= GdmMaxIndirect)
-	    return NULL;
-
     id = g_new0 (GdmIndirectDisplay, 1);
     id->id = indirect_id++;
     /* deal with a rollover, that will NEVER EVER happen,
@@ -127,7 +156,6 @@ gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa)
     id->chosen_host = NULL;
     
     indirect = g_slist_prepend (indirect, id);
-    ipending++;
     
     gdm_debug ("gdm_choose_display_alloc: display=%s, pending=%d ",
 	       inet_ntoa (id->dsp_sa->sin_addr), ipending);
@@ -164,6 +192,7 @@ gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 {
     GSList *li, *ilist;
     GdmIndirectDisplay *id;
+    time_t curtime = time (NULL);
 
     ilist = g_slist_copy (indirect);
     
@@ -173,7 +202,7 @@ gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 		continue;
 
 	if (id->acctime > 0 &&
-	    time (NULL) > id->acctime + GdmMaxIndirectWait)	{
+	    curtime > id->acctime + GdmMaxIndirectWait)	{
 	    gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",
 		       inet_ntoa (clnt_sa->sin_addr));
 	    gdm_choose_indirect_dispose (id);
@@ -201,6 +230,10 @@ gdm_choose_indirect_dispose (GdmIndirectDisplay *id)
 
     indirect = g_slist_remove (indirect, id);
 
+    if (id->acctime > 0)
+	    ipending--;
+    id->acctime = 0;
+
     gdm_debug ("gdm_choose_indirect_dispose: Disposing %d", 
 	       inet_ntoa (id->dsp_sa->sin_addr));
 
@@ -210,8 +243,6 @@ gdm_choose_indirect_dispose (GdmIndirectDisplay *id)
     id->chosen_host = NULL;
 
     g_free (id);
-
-    ipending--;
 }
 
 

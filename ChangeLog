@@ -1,3 +1,14 @@
+Mon Jul 02 14:11:38 2001  George Lebl <jirka@5z.com>
+
+	* daemon/choose.c, daemon/gdm.c: do not count chooser as pending
+	  indirect displays, they are not.  Only count them when the host has
+	  been chosen, so this allows as many choosers as login screens.
+	  When a new host is chosen and the limit has been reached, whack the
+	  oldest pending indirect display.  Makes choosers much easier to
+	  manage and use, and makes more sense.
+
+	* gui/gdmchooser.c: set the background color if any background is set
+
 Mon Jul 02 12:42:58 2001  George Lebl <jirka@5z.com>
 
 	* daemon/xdmcp.c: remove sources for the watches during xdmcp close

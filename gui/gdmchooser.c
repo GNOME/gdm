@@ -118,6 +118,13 @@ static gchar *GdmHostDefaultIcon;
 static gchar *GdmGtkRC;
 static gchar *GdmHosts;
 static gboolean GdmBroadcast;
+static gchar *GdmBackgroundColor;
+static int GdmBackgroundType;
+enum {
+	GDM_BACKGROUND_NONE = 0,
+	GDM_BACKGROUND_IMAGE = 1,
+	GDM_BACKGROUND_COLOR = 2
+};
 
 static GladeXML *chooser_app;
 static GtkWidget *chooser, *manage, *rescan, *cancel;
@@ -491,6 +498,9 @@ gdm_chooser_parse_config (void)
     GdmIconMaxWidth = gnome_config_get_int (GDM_KEY_ICONWIDTH);
     GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
+
+    GdmBackgroundColor = gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR);
+    GdmBackgroundType = gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE);
 
     /* note that command line arguments will prevail over these */
     GdmHosts = gnome_config_get_string (GDM_KEY_HOSTS);
@@ -963,6 +973,33 @@ gdm_chooser_add_hosts (char **hosts)
 		gdm_chooser_find_bcaddr ();
 }
 
+static void
+set_background (void)
+{
+	if (GdmBackgroundType != GDM_BACKGROUND_NONE) {
+		GdkColor color;
+		GdkColormap *colormap;
+
+		if (gdm_string_empty (GdmBackgroundColor) ||
+		    ! gdk_color_parse (GdmBackgroundColor, &color)) {
+			gdk_color_parse ("#007777", &color);
+		}
+
+		colormap = gdk_window_get_colormap (GDK_ROOT_PARENT ());
+		/* paranoia */
+		if (colormap != NULL) {
+			gdk_error_trap_push ();
+
+			gdk_color_alloc (colormap, &color);
+			gdk_window_set_background (GDK_ROOT_PARENT (), &color);
+			gdk_window_clear (GDK_ROOT_PARENT ());
+
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
+	}
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -1028,6 +1065,8 @@ main (int argc, char *argv[])
     gdm_chooser_parse_config();
     gdm_chooser_gui_init();
     gdm_chooser_signals_init();
+
+    set_background ();
 
     hosts = (char **)poptGetArgs (ctx);
     /* when no hosts on the command line, take them from the config */
