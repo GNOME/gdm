@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2002-05-05 20:11+0200\n"
-"PO-Revision-Date: 2002-05-05 21:45+0200\n"
+"POT-Creation-Date: 2002-05-13 18:08+0200\n"
+"PO-Revision-Date: 2002-05-13 18:12+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1697,342 +1697,100 @@ msgstr ""
 msgid "Unknown error occured."
 msgstr "Wystąpił nieznany błąd."
 
-#. 3 user levels are present in the CList
-#: gui/gdmconfig.c:1
-msgid "Basic"
-msgstr "Podstawowe"
-
-#: gui/gdmconfig.c:1
-msgid "Expert"
-msgstr "Zaawansowane"
-
-#: gui/gdmconfig.c:1 gui/gdmlogin.c:1
-msgid "System"
-msgstr "Systemowe"
-
-#: gui/gdmconfig.c:1
+#: gui/gdmsetup.c:1
 msgid ""
-"This panel displays the basic options for configuring GDM.\n"
-"\n"
-"If you need finer detail, select 'Expert' or 'System' from the list "
-"above,which will display some of the more complex options of GDM that rarely "
-"need to be changed."
+"An error occured while trying to contact the login screens.  Not all updates "
+"may have taken effect."
 msgstr ""
-"Panel ten zawiera podstawowe elementy konfiguracji GDM-a.\n"
-"\n"
-"Aby otrzymać dostęp do bardziej szczegółowych opcji, wybierz z powyższej "
-"listy pozycję \"Zaawansowane\" lub \"Systemowe\". Dodatkowe pozycje "
-"umożliwiają dokonywanie zmian w pewnych bardziej złożonych opcjach, co "
-"zwykle nie jest konieczne."
+"Przy próbie nawiązania połączenia z ekranami logowania wystąpił błąd. Nie "
+"wszystkie aktualizacje weszły w życie."
 
-#: gui/gdmconfig.c:1
-msgid ""
-"This panel displays the more advanced options of GDM.\n"
-"\n"
-"Be sure to take care when manipulating the security options, or you could be "
-"vulnerable to attackers.\n"
-"\n"
-"Choose \"System\" to change fundamental options in GDM."
-msgstr ""
-"Panel ten zawiera zaawansowane elementy konfiguracji GDM-a.\n"
-"\n"
-"Zachowaj szczególną ostrożność przy zmianie ustawień dotyczących "
-"bezpieczeństwa, aby nie otworzyć swego systemu na ataki z zewnątrz.\n"
-"\n"
-"Aby uzyskać dostęp do podstawowych opcji, wybierz z powyższej listy pozycję "
-"\"Podstawowe\"."
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1
+msgid "Standard greeter"
+msgstr "Standardowy greeter"
 
-#: gui/gdmconfig.c:1
-msgid ""
-"This panel displays GDM's fundamental system settings.\n"
-"\n"
-"You should only change these paths if you really know what you are doing, as "
-"an incorrect setup could stop your machine from booting properly.\n"
-"\n"
-"Choose \"Basic\" if you just want to change your machine's login appearance."
-msgstr ""
-"Panel ten zawiera najważniejsze ustawienia systemowe GDM-a.\n"
-"\n"
-"Nie zmieniaj żadnej z podanych tutaj ścieżek, o ile naprawdę nie rozumiesz "
-"ich znaczenia. Niewłaściwe ich skonfigurowanie może spowodować problemy z "
-"uruchomieniem systemu.\n"
-"\n"
-"Jeśli chcesz tylko zmienić wygląd ekranu logowania, lub uzyskać dostęp do "
-"podstawowych opcji, wybierz z powyższej listy pozycję \"Podstawowe\"."
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1
+msgid "Graphical greeter"
+msgstr "Graficzny greeter"
 
-#: gui/gdmconfig.c:1
+#: gui/gdmsetup.c:1
+msgid "Archive is not of a subdirectory"
+msgstr "Archiwum nie zawiera podkatalogu"
+
+#: gui/gdmsetup.c:1
+msgid "Archive is not of a single subdirectory"
+msgstr "Archiwum nie zawiera pojedynczego podkatalogu"
+
+#: gui/gdmsetup.c:1 gui/gdmsetup.c:1
+msgid "File not a tar.gz or tar archive"
+msgstr "Plik nie jest archiwum .tar.gz lub .tar."
+
+#: gui/gdmsetup.c:1
+msgid "Archive does not include a GdmGreeterTheme.info file"
+msgstr "Archiwum nie zawiera pliku GdmGreeterTheme.info."
+
+#: gui/gdmsetup.c:1
+msgid "File does not exist"
+msgstr "Plik nie istnieje"
+
+#: gui/gdmsetup.c:1
+msgid "No file selected"
+msgstr "Nie wybrano pliku"
+
+#: gui/gdmsetup.c:1
 #, c-format
 msgid ""
-"The glade ui description file doesn't seem to contain the\n"
-"widget \"%s\". Unfortunately I cannot continue.\n"
-"Please check your installation."
+"Not a theme archive\n"
+"Details: %s"
 msgstr ""
-"Plik glade, opisujący interfejs użytkownika, nie zawiera\n"
-"widgetu o nazwie \"%s\". Kontynuacja działania nie jest możliwa.\n"
-"Zweryfikuj instalację GDM-a."
+"To nie jest archiwum z motywem\n"
+"Szczegóły: %s"
 
-#: gui/gdmconfig.c:1 gui/gdmsetup.c:1
+#: gui/gdmsetup.c:1
+#, c-format
+msgid ""
+"Theme directory '%s' seems to be already installed, install again anyway?"
+msgstr ""
+"Katalog motywu \"%s\" jest już zainstalowany. Czy pomimo tego zainstalować "
+"ponownie?"
+
+#: gui/gdmsetup.c:1
+msgid "Some error occured when installing the theme"
+msgstr "Przy instalowaniu motywu wystąpił błąd"
+
+#: gui/gdmsetup.c:1
+msgid "Select new theme archive to install"
+msgstr "Wybór archiwum z nowym motywem"
+
+#. This is the temporary help dialog
+#: gui/gdmsetup.c:1
+#, c-format
+msgid ""
+"This configuration window changes settings for the GDM daemon, which is the "
+"graphical login screen for GNOME.  Changes that you make will take effect "
+"immediately.\n"
+"\n"
+"Note that not all configuration options are listed here.  You may want to "
+"edit %s if you cannot find what you are looking for."
+msgstr ""
+"Okno to pozwala na zmianę ustawień demona GDM, który obsługuje graficzny "
+"ekran logowania w GNOME. Wprowadzone zmiany wejdą w życie natychmiast.\n"
+"\n"
+"Uwaga: Nie wszystkie opcje konfiguracyjne są dostępne poprzez to narzędzie. "
+"Jeśli nie możesz odnaleźć jakiejś opcji, spróbuj zmodyfikować plik %s."
+
+#: gui/gdmsetup.c:1
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "Tylko użytkownik root może skonfigurować GDM.\n"
 
-#: gui/gdmconfig.c:1
-msgid ""
-"Cannot find the glade interface description\n"
-"file, cannot run gdmconfig.\n"
-"Please check your installation and the\n"
-"location of the gdmconfig.glade2 file."
-msgstr ""
-"Nie można odnaleźć pliku glade, opisującego\n"
-"interfejs użytkownika, uruchomienie programu\n"
-"gdmconfig nie jest możliwe.\n"
-"Sprawdź poprawność instalacji i położenie pliku\n"
-"gdmconfig.glade2."
-
-#: gui/gdmconfig.c:1
-msgid ""
-"Cannot find the gdmconfigurator widget in\n"
-"the glade interface description file\n"
-"Please check your installation."
-msgstr ""
-"Nie można odnaleźć widgetu gdmconfigurator w\n"
-"pliku glade, opisującym interfejs użytkownika.\n"
-"Sprawdź poprawność instalacji."
-
-#: gui/gdmconfig.c:1
-msgid "GNOME Display Manager Configurator"
-msgstr "Program konfiguracyjny GDM-a"
-
-#: gui/gdmconfig.c:1
-#, c-format
-msgid ""
-"The configuration file: %s\n"
-"does not exist! Using default values."
-msgstr ""
-"Plik konfiguracyjny %s\n"
-"nie istnieje. Użyto wartości domyślnych."
-
-#: gui/gdmconfig.c:1 gui/gdmconfig.c:1 gui/gdmconfig.c:1
-#: gui/gdmconfig.c:1 gui/gdmflexiserver.c:1
-msgid "Standard server"
-msgstr "Standardowy serwer"
-
-#: gui/gdmconfig.c:1
-msgid "Error reading session script!"
-msgstr "Błąd przy wczytywaniu skryptu sesji!"
-
-#: gui/gdmconfig.c:1
-msgid "Error reading this session script"
-msgstr "Błąd podczas odczytu skryptu sesji"
-
-#: gui/gdmconfig.c:1 gui/gdmconfig.c:1 gui/gdmconfig.c:1
-#: gui/gdmconfig.c:1 gui/gdmconfig.c:1 gui/gdmconfig.c:1
-msgid "Yes"
-msgstr "Tak"
-
-#: gui/gdmconfig.c:1 gui/gdmconfig.c:1 gui/gdmconfig.c:1
-msgid "No"
-msgstr "Nie"
-
-#: gui/gdmconfig.c:1
-msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr ""
-"gdm_config_parse_most: Niepoprawny wiersz serwera w pliku konfiguracyjnym. "
-"Zignorowany!"
-
-#: gui/gdmconfig.c:1
-msgid ""
-"The applied settings cannot take effect until gdm\n"
-"is restarted or your computer is rebooted.\n"
-"You can restart GDM when all sessions are\n"
-"closed (when all users log out) or you can\n"
-"restart GDM now (which will kill all current\n"
-"sessions)"
-msgstr ""
-"Zastosowane ustawienia wejdą w życie dopiero po\n"
-"ponownym uruchomieniu GDM-2.\n"
-"Możesz uruchomić ponownie GDM-a po zakończeniu\n"
-"wszystkich sesji (tj. po wylogowaniu się przez\n"
-"użytkowników) lub zrobić to teraz (co spowoduje\n"
-"to przerwanie wszystkich bieżących sesji i utratę\n"
-"niezapisanych danych)"
-
-#: gui/gdmconfig.c:1
-msgid "Restart after logout"
-msgstr "Uruchom ponownie po wylogowaniu"
-
-#: gui/gdmconfig.c:1
-msgid "Restart now"
-msgstr "Uruchom ponownie teraz"
-
-#: gui/gdmconfig.c:1
-msgid ""
-"Are you sure you wish to restart GDM\n"
-"now and lose any unsaved data?"
-msgstr ""
-"Czy na pewno chcesz ponownie uruchomić GDM-a\n"
-"i utracić niezapisane dane?"
-
-#: gui/gdmconfig.c:1
-msgid ""
-"The greeter settings will take effect the next time\n"
-"it is displayed.  The rest of the settings will not\n"
-"take effect until gdm is restarted or the computer is\n"
-"rebooted"
-msgstr ""
-"Ustawienia greetera wejdą w życie przy następnym jego\n"
-"wyświetleniu. Pozostałe ustawienia ulegną zmianie po\n"
-"ponownym uruchomieniu GDM-a."
-
-#: gui/gdmconfig.c:1
-msgid ""
-"You have not defined any local servers.\n"
-"Usually this is not a good idea unless you\n"
-"are sure you do not want users to be able to\n"
-"log in with the graphical interface on the\n"
-"local console and only use the XDMCP service.\n"
-"\n"
-"Are you sure you wish to apply these settings?"
-msgstr ""
-"Nie zdefiniowano żadnych lokalnych serwerów.\n"
-"Zwykle nie jest to pożądana sytuacja, chyba, że\n"
-"z całą pewnością chcesz, aby użytkownicy mogli\n"
-"wykorzystywać interfejs graficzny tylko ze\n"
-"zdalnych komputerów (przy użyciu XDMCP), a nie\n"
-"z lokalnej konsoli.\n"
-"Czy na pewno chcesz zastosować te ustawienia?"
-
-#: gui/gdmconfig.c:1
-#, c-format
-msgid ""
-"\n"
-"Could not delete session %s\n"
-"   Error: %s"
-msgstr ""
-"\n"
-"Nie można wyczyścić sesji %s\n"
-"   Błąd: %s"
-
-#: gui/gdmconfig.c:1
-#, c-format
-msgid ""
-"\n"
-"Could not remove session %s\n"
-"   Error: %s"
-msgstr ""
-"\n"
-"Nie można usunąć sesji %s\n"
-"   Błąd: %s"
-
-#: gui/gdmconfig.c:1
-#, c-format
-msgid ""
-"\n"
-"Could not write session %s\n"
-"   Error: %s"
-msgstr ""
-"\n"
-"Nie można zapisać sesji %s\n"
-"   Błąd: %s"
-
-#: gui/gdmconfig.c:1
-#, c-format
-msgid ""
-"\n"
-"Could not write contents to session %s\n"
-"   Error: %s"
-msgstr ""
-"\n"
-"Nie można zapisać zawartości do sesji %s\n"
-"   Błąd: %s"
-
-#: gui/gdmconfig.c:1
-#, c-format
-msgid ""
-"\n"
-"Could not unlink old default session\n"
-"   Error: %s"
-msgstr ""
-"\n"
-"Nie można usunąć poprzedniej domyślnej sesji\n"
-"   Błąd: %s"
-
-#: gui/gdmconfig.c:1
-msgid ""
-"\n"
-"Could not find a suitable name for the default session link"
-msgstr ""
-"\n"
-"Nie można odnaleźć odpowiedniej nazwy dla odnośnika domyślnej sesji"
-
-#: gui/gdmconfig.c:1
-#, c-format
-msgid ""
-"\n"
-"Could not link new default session\n"
-"   Error: %s"
-msgstr ""
-"\n"
-"Nie można utworzyć odnośnika do domyślnej sesji\n"
-"   Błąd: %s"
-
-#: gui/gdmconfig.c:1
-msgid ""
-"There were errors writing changes to the session files.\n"
-"The configuration may not be completely saved.\n"
-msgstr ""
-"Podczas zapisu zmian w plikach sesji wystąpił błąd.\n"
-"Konfiguracja może nie być w całości zapisana.\n"
-
-#: gui/gdmconfig.c:1
-msgid ""
-"This will destroy any changes made in this session.\n"
-"Are you sure you want to do this?"
-msgstr ""
-"Spowoduje to utratę wszystkich zmian dokonanych w tej sesji.\n"
-"Czy na pewno chcesz to zrobić?"
-
-#: gui/gdmconfig.c:1
-msgid ""
-"This will destroy any changes made in the configuration.\n"
-"Are you sure you want to do this?"
-msgstr ""
-"Zostaną utracone wszystkie zmiany dokonane w konfiguracji.\n"
-"Czy na pewno chcesz to zrobić?"
-
-#: gui/gdmconfig.c:1 gui/gdmconfig.c:1
-msgid "A command line must start with a forward slash ('/')"
-msgstr "Wiersz polecenia musi się rozpoczynać ukośnikiem (\"/\")"
-
-#: gui/gdmconfig.c:1
-msgid "A descriptive server name must be supplied"
-msgstr "Należy podać opisową nazwę serwera"
-
-#: gui/gdmconfig.c:1
-msgid "A session name must be unique and not empty"
-msgstr "Nazwa sesji musi być unikalna i niepusta"
-
-#: gui/gdmconfig.c:1
-msgid "Enter a name for the new session"
-msgstr "Wprowadź nazwę nowej sesji"
-
-#: gui/gdmconfig.c:1
-msgid ""
-"You have modified the sessions directory.\n"
-"Your session changes will still get written\n"
-"to the old directory however, until you reload\n"
-"the configuration dialog again."
-msgstr ""
-"Katalog z sesjami został zmieniony.\n"
-"Zmiany w sesji nadal będą jednak  zapisywane w\n"
-"poprzednim katalogu, dopóki nie zostanie\n"
-"przeładowane okno konfiguracyjne."
-
 #. EOF
-#: gui/gdmconfig.desktop.in.h:1 gui/gdmsetup.desktop.in.h:1
+#: gui/gdmsetup.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr "Aplikacja pozwalająca na konfigurację Menedżera Ekranu GNOME (GDM)"
 
-#: gui/gdmconfig.desktop.in.h:1 gui/gdmsetup.desktop.in.h:1
+#: gui/gdmsetup.desktop.in.h:1
 msgid "GDM Configurator"
 msgstr "Konfigurator GDM"
 
@@ -2041,715 +1799,176 @@ msgstr "Konfigurator GDM"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: gui/gdmconfig-strings.c:1
-msgid "GDM Configuration Utility"
-msgstr "Narzędzie konfiguracyjne GDM"
-
-#: gui/gdmconfig-strings.c:1
-msgid "_Configuration"
-msgstr "_Konfiguracja"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Revert to settings in the configuration file"
-msgstr "Przywróć ustawienia z pliku konfiguracyjnego"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Revert settings"
-msgstr "Przywróć ustawienia"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Revert to settings that were shipped with your system"
-msgstr "Przywraca ustawienia do domyślnych wartości"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Revert to Factory Settings"
-msgstr "Przywróć ustawienia domyślne"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Apply the current changes"
-msgstr "Zastosuj zmiany"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Apply"
-msgstr "Zastosuj"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
 #: gui/gdmsetup-strings.c:1
-msgid "Options"
-msgstr "Opcje"
+msgid "GDM Setup"
+msgstr "Ustawienia GDM-a"
 
-#: gui/gdmconfig-strings.c:1
-msgid " "
-msgstr " "
-
-#: gui/gdmconfig-strings.c:1
-msgid "basic_settings"
-msgstr "usttawienia_podstawowe"
-
-#: gui/gdmconfig-strings.c:1
-msgid "General Appearance"
-msgstr "Wygląd ogólny"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Logo: "
-msgstr "Logo: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Select a logo to be displayed during login"
-msgstr "Wybór logo wyświetlanego przy logowaniu"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Minimised Icon: "
-msgstr "Ikona okna: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Select a GTK+ theme file (gtkrc)"
-msgstr "Wybór pliku z motywem GTK+ (gtkrc)"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"This is the GTK+ RC file that describes the theme that the login window "
-"should use"
-msgstr ""
-"Ścieżka do pliku konfiguracyjnego GTK+, opisującego motyw, wykorzystywany "
-"przez okno logowania."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Gtk+ RC file: "
-msgstr "Plik z konfiguracją GTK+: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Login appearance"
-msgstr "Wygląd ekranu logowania"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Greeter Look and Feel"
-msgstr "Wygląd i zachowanie greetera"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Show the \"System\" menu.  This has the shutdown, reboot and configuration "
-"items"
-msgstr ""
-"Powoduje wyświetlanie menu \"System\", zawierającego elementy \"Koniec "
-"pracy\", \"Restart\" i \"Skonfiguruj\"."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
-msgstr ""
-"Wyświetlanie menu \"system\" (umożliwiającego restart, zakończenie pracy, "
-"itp.)"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Allow users to run the configurator from the system menu"
-msgstr ""
-"Możliwość uruchomienia przez użytkownika programu konfiguracyjnego z menu"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"If the user fails to authenticate himself the login window should Quiver to "
-"indicate failure"
-msgstr ""
-"Powoduje drżenie okna logowania, jeśli uwierzytelnienie użytkownika zakończy "
-"się niepowodzeniem."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Quiver on failure"
-msgstr "Drżenie po błędzie"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Show the title bar on the login window.  If this is off the user won't be "
-"able to move nor iconify the login window"
-msgstr ""
-"Powoduje wyświetlanie paska tutyłu nad oknem logowania. Bez tego paska nie "
-"będzie możliwe przemieszczanie okna logowania, ani zwijanie go do ikony."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Show title bar on login window"
-msgstr "Wyświetlanie paska tytułowego nad oknem logowania"
-
-#: gui/gdmconfig-strings.c:1
-#, c-format
-msgid "Welcome to %n"
-msgstr "%n wita"
-
-#: gui/gdmconfig-strings.c:1
-#, c-format
-msgid "%n"
-msgstr "%n"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-#, c-format
-msgid "This is %n"
-msgstr "To jest %n"
-
-#: gui/gdmconfig-strings.c:1
-msgid "The welcome message displayed on the login window"
-msgstr "Komunikat powitalny, wyświetlany w oknie logowania"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Default font: "
-msgstr "Domyślna czcionka: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Welcome message: "
-msgstr "Komunikat powitalny"
-
-#: gui/gdmconfig-strings.c:1
-msgid "The font to use on the welcome message"
-msgstr "Czcionka wykorzystywana przez komunikat powitalny"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Pick a Font"
-msgstr "Wybór czcionki"
-
-#: gui/gdmconfig-strings.c:1
-msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr "AaĄąBbCcĆćDdEeĘęFfGgHhIiJjKkLlŁłMmNnŃńOoÓóPpQqRrSsŚśTtUuVvWwXxYyZzŹźŻż"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Extras"
-msgstr "Dodatki"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Default locale: "
-msgstr "Domyślne ustawienia narodowe: "
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-msgid "ca_ES"
-msgstr "ca_ES"
-
-#: gui/gdmconfig-strings.c:1
-msgid "cs_CZ"
-msgstr "cs_CZ"
-
-#: gui/gdmconfig-strings.c:1
-msgid "hr_HR"
-msgstr "hr_HR"
-
-#: gui/gdmconfig-strings.c:1
-msgid "da_DK"
-msgstr "da_DK"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-msgid "de_DE"
-msgstr "da_DE"
-
-#: gui/gdmconfig-strings.c:1
-msgid "nl_NL"
-msgstr "nl_NL"
-
-#: gui/gdmconfig-strings.c:1
-msgid "en_US"
-msgstr "en_US"
-
-#: gui/gdmconfig-strings.c:1
-msgid "en_UK"
-msgstr "en_UK"
-
-#: gui/gdmconfig-strings.c:1
-msgid "et_EE"
-msgstr "et_EE"
-
-#: gui/gdmconfig-strings.c:1
-msgid "fi_FI"
-msgstr "fi_FI"
-
-#: gui/gdmconfig-strings.c:1
-msgid "fr_FR"
-msgstr "fr_FR"
-
-#: gui/gdmconfig-strings.c:1
-msgid "gl_ES"
-msgstr "gl_ES"
-
-#: gui/gdmconfig-strings.c:1
-msgid "el_GR"
-msgstr "el_GR"
-
-#: gui/gdmconfig-strings.c:1
-msgid "iw_IL"
-msgstr "iw_IL"
-
-#: gui/gdmconfig-strings.c:1
-msgid "hu_HU"
-msgstr "hu_HU"
-
-#: gui/gdmconfig-strings.c:1
-msgid "is_IS"
-msgstr "is_IS"
-
-#: gui/gdmconfig-strings.c:1
-msgid "it_IT"
-msgstr "it_IT"
-
-#: gui/gdmconfig-strings.c:1
-msgid "ja_JP"
-msgstr "ja_JP"
-
-#: gui/gdmconfig-strings.c:1
-msgid "ko_KR"
-msgstr "ko_KR"
-
-#: gui/gdmconfig-strings.c:1
-msgid "lt_LT"
-msgstr "lt_LT"
-
-#: gui/gdmconfig-strings.c:1
-msgid "nn_NO"
-msgstr "nn_NO"
-
-#: gui/gdmconfig-strings.c:1
-msgid "no_NO"
-msgstr "no_NO"
-
-#: gui/gdmconfig-strings.c:1
-msgid "pl_PL"
-msgstr "pl_PL"
-
-#: gui/gdmconfig-strings.c:1
-msgid "pt_PT"
-msgstr "pt_PT"
-
-#: gui/gdmconfig-strings.c:1
-msgid "pt_BR"
-msgstr "pt_BR"
-
-#: gui/gdmconfig-strings.c:1
-msgid "ro_RO"
-msgstr "ro_RO"
-
-#: gui/gdmconfig-strings.c:1
-msgid "ru_RU"
-msgstr "ru_RU"
-
-#: gui/gdmconfig-strings.c:1
-msgid "sk_SK"
-msgstr "sk_SK"
-
-#: gui/gdmconfig-strings.c:1
-msgid "sl_SI"
-msgstr "sl_SI"
-
-#: gui/gdmconfig-strings.c:1
-msgid "es_ES"
-msgstr "es_ES"
-
-#: gui/gdmconfig-strings.c:1
-msgid "sv_SE"
-msgstr "sv_SE"
-
-#: gui/gdmconfig-strings.c:1
-msgid "tr_TR"
-msgstr "tr_TR"
-
-#: gui/gdmconfig-strings.c:1
-msgid "zh_CN"
-msgstr "zh_CN"
-
-#: gui/gdmconfig-strings.c:1
-msgid "zh_TW"
-msgstr "zh_TW"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"This is the locale that GDM uses when it cannot find what the system locale "
-"is set to.  This should be in the standard format such as \"en_US\" for "
-"American English or \"cs_CZ\" for Czech"
-msgstr ""
-"Określa ustawienia narodowe, jakie powinny zostać wykorzystane, w przypadku, "
-"gdy nie jest możliwe odnalezienie ustawień systemowych. Opis należy podać w "
-"standardowym formacie, np. \"pl_PL\" dla języka polskiego oraz \"de_DE\" dla "
-"niemieckiego."
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Always use the 24 hour format for the clock in the greeter, even if the norm "
-"for the current locale is 12 hour"
-msgstr ""
-"Używa zawsze 24-godzinnego zapisu czasu w greeterze, nawet, jeśli normą dla "
-"aktualnego języka jest zapis 12-godzinny"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Always use 24 hour clock format"
-msgstr "Używanie zawsze 24-godzinnego formatu czasu"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Position"
-msgstr "Położenie"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Set the initial position of the login window to the values below"
-msgstr "Ustala początkowe położenie okna logowania na poniższe wartości"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Manually set position"
-msgstr "Ręczne ustalenie położenia"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Do note allow the user to drag the login window around"
-msgstr "Uniemożliwia użytkownikowi przemieszczanie okna logowania"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Lock position"
-msgstr "Zablokowane położenie"
-
-#: gui/gdmconfig-strings.c:1
-msgid "X position: "
-msgstr "Położenie X: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Y position: "
-msgstr "Położenie Y: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Xinerama screen: "
-msgstr "Ekran Xinerama: "
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"If you have xinerama multi display setup which screen should the login "
-"window appear on.  0 will usually do just fine."
-msgstr ""
-"W przypadku wykorzystania przez serwer X rozszerzenia xinerama, ustawienie "
-"to określa, na którym ekranie powinno być wyświetlane okno logowania. "
-"Pozostawienie wartości 0 jest zwykle odpowiednim rozwiązaniem."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Login behaviour"
-msgstr "Zachowanie ekranu logowania"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-msgid "Face browser"
-msgstr "Przeglądarka twarzy"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Show a browser of user face images. The users can put their picture in "
-"~/.gnome/photo"
-msgstr ""
-"Powoduje wyświetlanie przeglądarki obrazów twarzy użytkowników. Użytkownicy "
-"mogą umieszczać swoje zdjęcia we własnym katalogu ~/.gnome/photo."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Show choosable user images (enable face browser)"
-msgstr "Wyświetlanie przeglądarki użytkowników (z obrazami twarzy)"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Default face image: "
-msgstr "Domyślny obraz twarzy: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Global faces directory: "
-msgstr "Globalny katalog z twarzami: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Maximum face width: "
-msgstr "Maksymalna szerokość obrazu twarzy: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Select an image for users with no 'face'"
-msgstr "Wybór obrazu dla użytkowników bez własnego obrazu twarzy"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Choose the directory to search for faces"
-msgstr "Wybór katalogu z obrazami twarzy"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Maximum face height: "
-msgstr "Maksymalna wysokość obrazu twarzy: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Exclude these users: "
-msgstr "Użytkownicy wyłączeni z listy: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "A comma separated list of users to exclude from the face browser."
-msgstr ""
-"Lista rozdzielonych przecinkami nazw użytkowników, którzy nie powinni być "
-"wyświetlani na liście twarzy."
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
 #: gui/gdmsetup-strings.c:1
-msgid "Background"
-msgstr "Tło"
+msgid "L_ocal: "
+msgstr "_Lokalnie: "
 
-#: gui/gdmconfig-strings.c:1
-msgid "Background type: "
-msgstr "Typ tła: "
+#: gui/gdmsetup-strings.c:1
+msgid "_Remote: "
+msgstr "_Zdalnie: "
 
-#: gui/gdmconfig-strings.c:1
-msgid "The background should be the standard background"
-msgstr "Tło pozostanie niezmienione, a więc zależeć będzie od serwera X"
+#: gui/gdmsetup-strings.c:1
+msgid "Greeter"
+msgstr "Greeter"
 
-#: gui/gdmconfig-strings.c:1
-msgid "None"
-msgstr "Brak"
+#: gui/gdmsetup-strings.c:1
+msgid "_Login a user automatically on first bootup"
+msgstr "Automatyczne _logowanie wybranego użytkownika po uruchomieniu systemu"
 
-#: gui/gdmconfig-strings.c:1
-msgid "The background should be an image"
-msgstr "W tle umieszczony będzie obraz"
+#: gui/gdmsetup-strings.c:1
+msgid "_Automatic login username:"
+msgstr "_Użytkownik logowany automatycznie:"
 
-#: gui/gdmconfig-strings.c:1
-msgid "Image"
-msgstr "Obraz"
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1
+msgid "*"
+msgstr "*"
 
-#: gui/gdmconfig-strings.c:1
-msgid "The background should be a color"
-msgstr "Tło zostanie wypełnione jednolitym kolorem"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Color"
-msgstr "Kolor"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Scale background image to fit the entire screen. If this is not set then the "
-"image will be tiled on the background."
-msgstr ""
-"Powoduje przeskalowanie obrazu do wymiarów ekranu. W przeciwnym wypadku "
-"obraz jest układany w sąsiadujące ze sobą kafelki."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Scale background image to fit"
-msgstr "Skalowanie obrazu w tle do wymiarów ekranu"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
-msgid "Background color: "
-msgstr "Kolor tła: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "The color to use on the background"
-msgstr "Kolor wypełniający tło"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
-msgid "Pick a color"
-msgstr "Wybór koloru"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Background image:"
-msgstr "Obraz w tle:"
-
-#: gui/gdmconfig-strings.c:1
-msgid "On remote login screens only set color to reduce network traffic"
-msgstr ""
-"Powoduje, że, ze względu na ograniczenie ruchu sieciowego, na zdalnych "
-"ekranach tło wypełniał będzie zawsze jednolity kolor."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Only color on remote displays"
-msgstr "Wyświetlanie na zdalnych ekranach tylko jednolitego koloru"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Background program"
-msgstr "Program w tle"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Background program: "
-msgstr "Program w tle: "
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-msgid "Select a file containing Locale information"
-msgstr "Wybór pliku z ustawieniami narodowymi"
-
-#: gui/gdmconfig-strings.c:1
-msgid "The program to run in the background of the login."
-msgstr "Program uruchamiany w tle okna logowania."
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
 #: gui/gdmsetup-strings.c:1
 msgid "Automatic login"
 msgstr "Automatyczne logowanie"
 
-#: gui/gdmconfig-strings.c:1
-msgid "Automatic login: "
-msgstr "Użytkownik logowany automatycznie: "
+#: gui/gdmsetup-strings.c:1
+msgid "Login a user automa_tically after a specified number of seconds"
+msgstr ""
+"Aut_omatyczne logowanie wybranego użytkownika po określonej liczbie sekund"
 
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
-msgid "Login a user automatically on first bootup"
-msgstr "Automatyczne logowanie wybranego użytkownika po uruchomieniu systemu"
+#: gui/gdmsetup-strings.c:1
+msgid "Timed login us_ername:"
+msgstr "Uży_tkownik logowany z opóźnieniem:"
 
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1
+msgid "_Seconds before login:"
+msgstr "Liczba _sekund przed zalogowaniem:"
+
+#: gui/gdmsetup-strings.c:1
 msgid "Timed login"
 msgstr "Logowanie z opóźnieniem czasowym"
 
-#: gui/gdmconfig-strings.c:1
-msgid "Timed login: "
-msgstr "Użytkownik logowany z opóźnieniem: "
+#: gui/gdmsetup-strings.c:1
+msgid "General"
+msgstr "Ogólne"
 
-#: gui/gdmconfig-strings.c:1
-msgid "Seconds before login: "
-msgstr "Liczba sekund przed zalogowaniem: "
+#: gui/gdmsetup-strings.c:1
+msgid "_Welcome string: "
+msgstr "_Komunikat powitalny: "
 
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
-msgid "Login a user automatically after a specified number of seconds"
+#: gui/gdmsetup-strings.c:1
+msgid "Welcome string: "
+msgstr "Komunikat powitalny: "
+
+#: gui/gdmsetup-strings.c:1
+msgid "Logo"
+msgstr "Logo"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Always use 24 hour cloc_k format"
+msgstr "Używanie zawsze _24-godzinnego formatu czasu"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Show choosable user images (_face browser)"
+msgstr "Wyświetlanie przeglądarki użytkowników (z _obrazami twarzy)"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Miscellaneous"
+msgstr "Różne"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_No background"
+msgstr "_Bez tła"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Image"
+msgstr "_Obraz"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Co_lor"
+msgstr "_Kolor"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Scale background image to fit"
+msgstr "_Skalowanie obrazu w tle do wymiarów ekranu"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Only color on remote displays"
+msgstr "Wyświetlanie na zdalnych ekranach _tylko jednolitego koloru"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Background color: "
+msgstr "Kolor _tła: "
+
+#: gui/gdmsetup-strings.c:1
+msgid "Pick a color"
+msgstr "Wybór koloru"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Background"
+msgstr "Tło"
+
+#: gui/gdmsetup-strings.c:1
+msgid "<b>Preview:</b>"
+msgstr "<b>Podgląd:</b>"
+
+#: gui/gdmsetup-strings.c:1
+msgid "No screenshot available"
+msgstr "Brak dostępnego podglądu"
+
+#: gui/gdmsetup-strings.c:1
+msgid "<b>Description:</b>"
+msgstr "<b>Opis:</b>"
+
+#: gui/gdmsetup-strings.c:1
+msgid "<b>Copyright:</b>"
+msgstr "<b>Prawa autorskie:</b>"
+
+#: gui/gdmsetup-strings.c:1
+msgid "<b>Author:</b>"
+msgstr "<b>Autor:</b>"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Install new theme"
+msgstr "Za_instaluj nowy motyw"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Allow _root to login with GDM"
+msgstr "Możliwość logowania się za pomocą GDM-a przez użytkownika _root."
+
+#: gui/gdmsetup-strings.c:1
+msgid "Allow root to login r_emotely with GDM"
 msgstr ""
-"Automatyczne logowanie wybranego użytkownika po określonej liczbie sekund"
+"Możliwość _zdalnego logowania się za pomocą GDM-a przez użytkownika root."
 
-#: gui/gdmconfig-strings.c:1
-msgid "expert"
-msgstr "zaawansowane"
+#: gui/gdmsetup-strings.c:1
+msgid "Allow remote _timed logins"
+msgstr "Możliwość zdalnego logowania z _opóźnieniem czasowym"
 
-#: gui/gdmconfig-strings.c:1
-msgid "Allow logging in as root (administrator) user."
-msgstr "Umożliwia logowanie się jako użytkownik root."
+#: gui/gdmsetup-strings.c:1
+msgid "Show _system menu"
+msgstr "Wyświetlanie menu \"_System\""
 
-#: gui/gdmconfig-strings.c:1
-msgid "Allow root to login with GDM"
-msgstr "Możliwość logowania się za pomocą GDM-a przez użytkownika root."
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Allow logging in as root (administrator) user from a remote host using GDM.  "
-"This is only relevant if you enable the XDMCP protocol."
+#: gui/gdmsetup-strings.c:1
+msgid "Allow c_onfiguration from the login screen"
 msgstr ""
-"Możliwość logowania się za pomocą GDM-a przez użytkownika root ze zdalnych "
-"komputerów. Ustawienie to ma znaczenie tylko przy uaktywnieniu protokołu "
-"XDMCP."
+"Możliwość uruchomienia przez użytkownika programu _konfiguracyjnego z menu"
 
-#: gui/gdmconfig-strings.c:1
-msgid "Allow root to login remotely with GDM"
-msgstr ""
-"Możliwość zdalnego logowania się za pomocą GDM-a przez użytkownika root."
+#: gui/gdmsetup-strings.c:1
+msgid "Retry _delay (seconds) :"
+msgstr "_Opóźnienie przed ponowieniem:"
 
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Allow logging in using the timed from a remote host using GDM.  This is only "
-"relevant if you enable the XDMCP protocol.  Note that this is insecure since "
-"remote hosts can gain access to this computer without the use of a password, "
-"so be careful."
-msgstr ""
-"Umożliwia logowanie z opóźnieniem czasowym przy użyciu GDM-a na zdalnym "
-"komputerze. Odnosi się to tylko do konfiguracji wykorzystującej protokół "
-"XDMCP. Przy ustawieniu tym należy zachować ostrożnosć, ponieważ osłabia ono "
-"bezpieczeństwo systemu, otwierając do niego zdalny dostęp bez podania hasła."
+#: gui/gdmsetup-strings.c:1
+msgid "Options"
+msgstr "Opcje"
 
-#: gui/gdmconfig-strings.c:1
-msgid "Allow remote timed logins"
-msgstr "Możliwość zdalnego logowania z opóźnieniem czasowym"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Determines whether GDM should kill X clients started by the init scripts "
-"when the user logs in."
-msgstr ""
-"Powoduje usuwanie procesów klientów X, uruchamianych przez skrypty init po "
-"zalogowaniu się użytkownika."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Kill 'init' clients"
-msgstr "Usuwanie klientów uruchomionych przez \"init\""
-
-#: gui/gdmconfig-strings.c:1
-msgid "Should GDM print authentication errors in the greeter"
-msgstr ""
-"Określa, czy greeter powinien wyświetlać błędy dotyczące uwierzytelniania"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Select how relaxed permissions are"
-msgstr "Określa, jak restrykcyjne są wymagania w odniesieniu do praw do plików"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Permissions: "
-msgstr "Uprawnienia: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Allow world writable files and directories"
-msgstr "Pozwala na używanie plików i katalogów zapisywalnych przez wszystkich"
-
-#: gui/gdmconfig-strings.c:1
-msgid "World writable"
-msgstr "Zapis przez wszystkich"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Allow group writable files and directories"
-msgstr "Pozwala na używanie plików i katalogów zapisywalnych przez grupę"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Group writable"
-msgstr "Zapis przez grupę"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Only accept user owned files and directories"
-msgstr ""
-"Pozwala tylko na używanie plików i katalogów zapisywalnych przez właściciela"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Paranoia"
-msgstr "Paranoja"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Authorization Details"
-msgstr "Szczegóły autoryzacji"
-
-#: gui/gdmconfig-strings.c:1
-msgid "GDM runs as this user: "
-msgstr "Uruchamianie GDM-a jako użytkownika: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "User 'auth' directory: "
-msgstr "Katalog uwierzytelniający użytkownika: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "User 'auth' FB directory: "
-msgstr "Katalog \"auth\" FB użytkownika: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "User 'auth' file: "
-msgstr "Plik uwierzytelniający użytkownika: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "GDM runs as this group: "
-msgstr "Uruchamianie GDM-a z grupą: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Limits"
-msgstr "Ograniczenia"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"The number of seconds before a login is allowed after an unsuccesful try."
-msgstr ""
-"Liczba sekund, którą należy odczekać po nieudanej próbie zalogowania, aby "
-"móc spróbować ponownie."
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"The maximum size of a file that gdm will attempt to read.  This is for files "
-"that are read into memory and so you don't want users \"attacking\" gdm by "
-"having large files."
-msgstr ""
-"Maksymalny rozmiar pliku, który będzie odczytywany przez GDM-a. Ustawienie "
-"to dotyczy plików, które będą wczytywane do pamięci i ma na celu "
-"ograniczenie \"ataków\" dokonywanych przez użytkowników poprzez "
-"wykorzystywanie dużych plików."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Retry delay: "
-msgstr "Opóźnienie przed ponowieniem: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Maximum user file length: "
-msgstr "Maksymalny rozmiar pliku użytkownika: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Maximum session file length: "
-msgstr "Maksymalny rozmiar pliku sesji: "
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"The session file is read in a way where a higher limit is still ok.  That is "
-"it is never stored in memory."
-msgstr ""
-"Odczyt pliku sesji przebiega w sposób, przy którym jego rozmiar nie ma "
-"większego znaczenia. Nie jest on nigdy zapisywany w pamięci."
-
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1
 msgid "Security"
 msgstr "Bezpieczeństwo"
 
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -2757,482 +1976,49 @@ msgstr ""
 "Używana wersja GDM-a została skompilowana bez wbudowanej obsługi XDMCP. Aby "
 "uaktywnić XDMCP, konieczne jest przekompilowanie GDM-a."
 
-#: gui/gdmconfig-strings.c:1
-msgid "Enable XDMCP, a protocol to allow others to log in remotely"
-msgstr "Uaktywnia XDMCP - protokół pozwalający na zdalne logowanie się"
+#: gui/gdmsetup-strings.c:1
+msgid "Honour _indirect requests"
+msgstr "Przyjmowanie poś_rednich połączeń"
 
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
-msgid "Enable XDMCP"
-msgstr "Uaktywnienie XDMCP"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
-msgid "Connection Settings"
-msgstr "Ustawienia połączenia"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
-msgid "Honour indirect requests"
-msgstr "Przyjmowanie pośrednich połączeń"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Maximum indirect wait time: "
-msgstr "Maksymalny czas oczekiwania przy połączeniach pośrednich: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Maximum wait time: "
-msgstr "Maksymalny czas oczekiwania: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Maximum remote sessions: "
-msgstr "Maksymalna liczba zdalnych sesji: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Max pending indirect requests: "
-msgstr "Maksymalna liczba oczekujących pośrednich połączeń: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Maximum pending requests: "
-msgstr "Maksymalna liczba oczekujących połączeń: "
-
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1
 msgid "Listen on UDP port: "
 msgstr "Nasłuchiwanie na porcie UDP: "
 
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
-msgid "Ping interval (minutes):"
-msgstr "Odstęp pomiędzy pakietami ping (minuty):"
+#: gui/gdmsetup-strings.c:1
+msgid "Maximum pending requests:"
+msgstr "Maksymalna liczba oczekujących połączeń:"
 
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Interval in minutes in which to ping the server.  If the server doesn't "
-"respond in this many minutes (that is before the next time we ping it) the "
-"display will be terminated."
-msgstr ""
-"Okres (w minutach) pomiędzy kolejnymi wysłanymi do serwera pakietami ping. "
-"Jeśli serwer nie odpowie na poprzedni pakiet przed wysłaniem poprzedniego, "
-"ekran zostanie odłączony."
+#: gui/gdmsetup-strings.c:1
+msgid "Max pending indirect requests:"
+msgstr "Maksymalna liczba oczekujących pośrednich połączeń:"
 
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"The script to run when the server sends a WILLING response to a QUERY.  If "
-"this is empty or does not exist, the standard message with the system ID is "
-"sent.  Only the first line of output from this script is read."
-msgstr ""
-"Skrypt uruchamiany, kiedy na żądanie QUERY serwer wysyła odpowiedź WILLING. "
-"Jeśli nie jest on podany lub nie istnieje, wysyłany jest standardowy "
-"komunikat z ID systemu. Odczytywany jest tylko pierwszy wiersz wyjścia ze "
-"skryptu."
+#: gui/gdmsetup-strings.c:1
+msgid "Maximum remote sessions:"
+msgstr "Maksymalna liczba zdalnych sesji:"
 
-#: gui/gdmconfig-strings.c:1
-msgid "Willing script (optional):"
-msgstr "Skrypt \"willing\" (opcjonalny):"
+#: gui/gdmsetup-strings.c:1
+msgid "Maximum wait time:"
+msgstr "Maksymalny czas oczekiwania:"
 
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Maximum displays per single host.  You can use this to prevent attacks by "
-"hogging all the possible displays.  Does not apply to local connections."
-msgstr ""
-"Maksymalna liczba ekranów na jeden komputer.  Opcja ta pozwala na ochronę "
-"przed atakami poprzez zajęcie wszystkich ekranów.  Nie odnosi się do "
-"lokalnych połączeń."
+#: gui/gdmsetup-strings.c:1
+msgid "Maximum indirect wait time:"
+msgstr "Maksymalny czas oczekiwania przy połączeniach pośrednich:"
 
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1
 msgid "Displays per host:"
 msgstr "Ekranów na komputer:"
 
-#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1
+msgid "Ping interval (minutes):"
+msgstr "Odstęp pomiędzy pakietami ping (minuty):"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Enable _XDMCP"
+msgstr "Uaktywnienie _XDMCP"
+
+#: gui/gdmsetup-strings.c:1
 msgid "XDMCP"
 msgstr "XDMCP"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Servers"
-msgstr "Serwery"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Name"
-msgstr "Nazwa"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Command"
-msgstr "Polecenie"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Flexible"
-msgstr "Zagnieżdżony"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-msgid "Add server"
-msgstr "Dodaj serwer"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-msgid "Edit server"
-msgstr "Zmodyfikuj serwer"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-msgid "Delete server"
-msgstr "Usuń serwer"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-msgid "Set as default"
-msgstr "Jako domyślna"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Static Servers (servers to always run)"
-msgstr "Statyczne serwery (zawsze uruchamiane)"
-
-#: gui/gdmconfig-strings.c:1
-msgid "No."
-msgstr "Nr"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Server"
-msgstr "Serwer"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Extra arguments"
-msgstr "Dodatkowe argumenty"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Instead of reinitializing running servers when a user logs out.  Always kill "
-"and then start the server again."
-msgstr ""
-"Ponownie uruchamia serwery, zamiast zmiany ich konfiguracji dopiero po "
-"wylogowaniu się użytkowników."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Always restart X servers"
-msgstr "Każdorazowe ponowne uruchamianie serwera X"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-#: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
-#: gui/gdmsetup-strings.c:1
-msgid "Miscellaneous"
-msgstr "Różne"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Xnest server: "
-msgstr "Serwer Xnest: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Maximum number of flexible servers: "
-msgstr "Maksymalna liczba zagnieżdżonych serwerów: "
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"The Xnest server.  This is a server that can run inside another server, used "
-"for the flexible nested login."
-msgstr ""
-"Serwer Xnest. Jest to serwer uruchamiany wewnątrz innego, wykorzystywany "
-"przy zagnieżdżonym logowaniu."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Standard X server: "
-msgstr "Standardowy serwer X: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "This is the standard X server to run when we are not told otherwise."
-msgstr ""
-"To jest serwer X uruchamiany domyślnie, o ile jawnie nie zmieniono tego "
-"zachowania."
-
-#: gui/gdmconfig-strings.c:1 gui/gdmlogin.c:1
-msgid "Failsafe"
-msgstr "Awaryjna"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Script to run when X is crashing: "
-msgstr "Skrypt uruchamiany przy zwracaniu błędów przez serwer X: "
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"A script to run when the X server keeps crashing and the failsafe X server "
-"is either empty or also didn't take.  This will run an X setup program "
-"defined below."
-msgstr ""
-"Skrypt uruchamiany w przypadku, gdy próby uruchomienia serwer X kończą się "
-"niepowodzeniem oraz sytucja wygląda podobnie z serwerem awaryjnym, ew. w "
-"ogóle nie jest on ustawiony. W tym przypadku zostanie uruchomiony program "
-"konfigurujący serwer X, zdefiniowany poniżej."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Failsafe X server:"
-msgstr "Awaryjny serwer X:"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"An X server binary to run if the standard one keeps crashing.  If this fails "
-"the script below will be run."
-msgstr ""
-"Plik serwera X, który zostanie wykorzystany, jeśli standardowy serwer będzie "
-"zwracał błędy. Jeśli uruchomienie tego serwera również się nie powiedzie, "
-"zostanie uruchomiony poniższy skrypt."
-
-#: gui/gdmconfig-strings.c:1
-msgid "X-server setup"
-msgstr "Ustawienia serwera X"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Session configuration"
-msgstr "Konfiguracja sesji"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Session directory: "
-msgstr "Katalog sesji: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Select a directory to be used for system-wide session scripts"
-msgstr "Wybierz katalog wykorzystywany przez systemowe skrypty sesji"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Available Sessions"
-msgstr "Dostępne sesje"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
-msgstr ""
-"Wyświetla sesję z wyborem sesji GNOME, jeśli istnieje sesja o nazwie "
-"\"Gnome\""
-
-#: gui/gdmconfig-strings.c:1 gui/gdmlogin.c:1 gui/gdmlogin.c:1
-#: gui/greeter/greeter_session.c:1
-msgid "Gnome Chooser"
-msgstr "GNOME - program wybierający"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Show the Gnome failsafe session"
-msgstr "Wyświetla awaryją sesję GNOME"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Gnome Failsafe"
-msgstr "Awaryjny GNOME"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Show the Xterm failsafe session"
-msgstr "Wyświetla awaryją sesję Xterma"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Xterm Failsafe"
-msgstr "Awaryjny Xterm"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Add session"
-msgstr "Dodaj sesję"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Remove session"
-msgstr "Usuń sesję"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Selected session name: "
-msgstr "Nazwa wybranej sesji: "
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"The exact script details of a session\n"
-"will appear here when you select\n"
-"one from the list on the left.\n"
-msgstr ""
-"Po wybraniu sesji z listy po lewej stronie\n"
-"zostanie wyświetlona zawartość odpowiedniego skryptu.\n"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Login sessions"
-msgstr "Sesje logowania"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Appearance"
-msgstr "Wygląd"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Directory for host images: "
-msgstr "Katalog z obrazami komputerów: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Default host image:"
-msgstr "Domyślny obraz komputera:"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Refresh"
-msgstr "Odśwież"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Scan every 'x' seconds: "
-msgstr "Przeszukiwanie co \"x\" sekund: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Hosts"
-msgstr "Komputery"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Send a query to the local network and list all servers that respond"
-msgstr ""
-"Rozgłasza w lokalnej sieci zapytanie i wyświetla listę komputerów, które "
-"udzielą odpowiedzi"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Broadcast query"
-msgstr "Rozgłoszenie zapytania"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Hosts to list: "
-msgstr "Wyświetlane komputery: "
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Comma separated list of hostnames to list in the chooser (in addition to the "
-"broadcast above)"
-msgstr ""
-"Lista rozdzielonych przecinkami nazw komputerów, wyświetlanych przez "
-"choosera (poza wynikiem powyższego rozgłaszania)"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Chooser"
-msgstr "Program wybierający"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Debugging"
-msgstr "Wyszukiwanie błędów"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Enable debugging output to be printed into the syslog.  Useful for tracking "
-"down problems.  But not so useful for normal usage as it can fill up your "
-"logs very quickly."
-msgstr ""
-"Powoduje wypisywanie za pośrednictwem sysloga komunikatów błędów, "
-"przydatnych podczas wyszukiwania błędów oraz problemów z konfiguracją. Nie "
-"należy używać tej opcji, jeśli wszystko działa poprawnie, ponieważ może to "
-"spowodować zapełnienie dzienników systemowych."
-
-#: gui/gdmconfig-strings.c:1
-msgid "Enable debugging output"
-msgstr "Wypisywanie komunikatów wspomagających wyszukiwanie błędów"
-
-#: gui/gdmconfig-strings.c:1
-msgid "system_setup"
-msgstr "ustawienia_systemowe"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Executables"
-msgstr "Programy"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Chooser command: "
-msgstr "Polecenie uruchamiające program wybierający: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Greeter command: "
-msgstr "Polecenie uruchamiające greetera: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Halt command: "
-msgstr "Polecenie kończące pracę systemu: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Reboot command: "
-msgstr "Polecenie restartujące: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Configurator command: "
-msgstr "Polecenie konfiguracyjne: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Suspend command: "
-msgstr "Polecenie usypiające maszynę: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Directories"
-msgstr "Katalogi"
-
-#: gui/gdmconfig-strings.c:1
-msgid "PRE session scripts directory: "
-msgstr "Katalog skryptów wykonywanych przed sesją: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "POST session scripts directory: "
-msgstr "Katalog skryptów wykonywanych po sesji: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Logging directory: "
-msgstr "Katalog dziennika: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Display initialization directory: "
-msgstr "Katalog skryptów inicjujących ekran: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "PID file: "
-msgstr "Plik z PID-em procesu: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Default GNOME session file: "
-msgstr "Domyślny plik sesji GNOME: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Paths"
-msgstr "Ścieżki"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Default $PATH: "
-msgstr "Domyślna wartość zmiennej $PATH: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Root $PATH: "
-msgstr "Wartość zmiennej $PATH dla użytkownika root:"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Localization"
-msgstr "Lokalizacja"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Locale file: "
-msgstr "Plik z ustawieniami narodowymi: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Environment"
-msgstr "Środowisko"
-
-#: gui/gdmconfig-strings.c:1
-msgid "(C) 2001 Lee Mallabone"
-msgstr "(C) 2001 Lee Mallabone"
-
-#: gui/gdmconfig-strings.c:1
-msgid ""
-"Configure the GNOME Display Manager.\n"
-"Please submit any bugs or feature requests at http://bugzilla.gnome.org "
-"under the `gdm' product."
-msgstr ""
-"Konfigurator GDM-a.\n"
-"Prosimy o zgłaszanie błędów lub pomysłów na nowe możliwości za pomocą "
-"witryny http://bugzilla.gnome.org, wykorzystując \"gdm\" jako nazwę produktu."
-
-#: gui/gdmconfig-strings.c:1
-msgid "label273"
-msgstr "etykieta273"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Extra arguments:"
-msgstr "Dodatkowe argumenty:"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Custom command line:"
-msgstr "Dowolny wiersz poleceń:"
-
-#: gui/gdmconfig-strings.c:1 gui/gdmlogin.c:1
-msgid "Name: "
-msgstr "Nazwa: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Command line: "
-msgstr "Wiersz poleceń: "
-
-#: gui/gdmconfig-strings.c:1
-msgid "Allow as flexible server"
-msgstr "Dozwolony jako zagnieżdżony serwer"
-
-#: gui/gdmconfig-strings.c:1
-msgid "Make this the default server"
-msgstr "Używany jako serwer domyślny"
 
 #: gui/gdmflexiserver.c:1
 msgid "Choose server"
@@ -3241,6 +2027,10 @@ msgstr "Wybór serwera"
 #: gui/gdmflexiserver.c:1
 msgid "Choose the X server to start"
 msgstr "Wybierz serwer X, który chcesz uruchomić"
+
+#: gui/gdmflexiserver.c:1
+msgid "Standard server"
+msgstr "Standardowy serwer"
 
 #: gui/gdmflexiserver.c:1
 msgid "Send the specified protocol command to gdm"
@@ -3531,6 +2321,10 @@ msgid "Default"
 msgstr "Domyślna"
 
 #: gui/gdmlogin.c:1
+msgid "Failsafe"
+msgstr "Awaryjna"
+
+#: gui/gdmlogin.c:1
 msgid "Gnome"
 msgstr "GNOME"
 
@@ -3541,6 +2335,10 @@ msgstr "KDE"
 #: gui/gdmlogin.c:1
 msgid "XSession"
 msgstr "XSession"
+
+#: gui/gdmlogin.c:1 gui/gdmlogin.c:1 gui/greeter/greeter_session.c:1
+msgid "Gnome Chooser"
+msgstr "GNOME - program wybierający"
 
 #: gui/gdmlogin.c:1
 msgid "Last"
@@ -3594,6 +2392,11 @@ msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
 "gdm_login_parse_config: Brak pliku konfiguracyjnego: %s. Przyjęto wartości "
 "domyślne."
+
+#: gui/gdmlogin.c:1 gui/gdmlogin.c:1
+#, c-format
+msgid "Welcome to %n"
+msgstr "%n wita"
 
 #: gui/gdmlogin.c:1
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
@@ -3728,6 +2531,10 @@ msgstr "Wybór sesji GNOME"
 msgid "Create new session"
 msgstr "Stwórz nową sesję"
 
+#: gui/gdmlogin.c:1
+msgid "Name: "
+msgstr "Nazwa: "
+
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
 #: gui/gdmlogin.c:1
@@ -3810,6 +2617,10 @@ msgstr "Uśpij..."
 #: gui/gdmlogin.c:1
 msgid "Suspend your computer"
 msgstr "Usypia komputer"
+
+#: gui/gdmlogin.c:1
+msgid "System"
+msgstr "Systemowe"
 
 #: gui/gdmlogin.c:1
 msgid "Quit"
@@ -3973,157 +2784,6 @@ msgstr ""
 #: gui/gdmphotosetup.desktop.in.h:1
 msgid "Login Photo"
 msgstr "Fotografia użytkownika"
-
-#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
-#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1
-msgid "Standard greeter"
-msgstr "Standardowy greeter"
-
-#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
-#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1
-msgid "Graphical greeter"
-msgstr "Graficzny greeter"
-
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: gui/gdmsetup-strings.c:1
-msgid "GDM Setup"
-msgstr "Ustawienia GDM-a"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Local: "
-msgstr "Lokalnie: "
-
-#: gui/gdmsetup-strings.c:1
-msgid "Remote: "
-msgstr "Zdalnie: "
-
-#: gui/gdmsetup-strings.c:1
-msgid "Greeter"
-msgstr "Greeter"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Automatic login username:"
-msgstr "Użytkownik logowany automatycznie:"
-
-#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
-#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
-#: gui/gdmsetup-strings.c:1
-msgid "*"
-msgstr "*"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Timed login username:"
-msgstr "Użytkownik logowany z opóźnieniem:"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Seconds before login:"
-msgstr "Liczba sekund przed zalogowaniem:"
-
-#: gui/gdmsetup-strings.c:1
-msgid "General"
-msgstr "Ogólne"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Welcome string: "
-msgstr "Komunikat powitalny: "
-
-#: gui/gdmsetup-strings.c:1
-msgid "Logo"
-msgstr "Logo"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Always use _24 hour clock format"
-msgstr "Używanie zawsze _24-godzinnego formatu czasu"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Show choosable user images (face browser)"
-msgstr "Wyświetlanie przeglądarki użytkowników (z obrazami twarzy)"
-
-#: gui/gdmsetup-strings.c:1
-msgid "_No background"
-msgstr "_Bez tła"
-
-#: gui/gdmsetup-strings.c:1
-msgid "_Image"
-msgstr "_Obraz"
-
-#: gui/gdmsetup-strings.c:1
-msgid "_Color"
-msgstr "_Kolor"
-
-#: gui/gdmsetup-strings.c:1
-msgid "_Scale background image to fit"
-msgstr "_Skalowanie obrazu w tle do wymiarów ekranu"
-
-#: gui/gdmsetup-strings.c:1
-msgid "_Only color on remote displays"
-msgstr "Wyświetlanie na zdalnych ekranach _tylko jednolitego koloru"
-
-#: gui/gdmsetup-strings.c:1
-msgid "<b>Preview:</b>"
-msgstr "<b>Podgląd:</b>"
-
-#: gui/gdmsetup-strings.c:1
-msgid "No preview available"
-msgstr "Brak dostępnego podglądu"
-
-#: gui/gdmsetup-strings.c:1
-msgid "_Install new theme"
-msgstr "Za_instaluj nowy motyw"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Theme"
-msgstr "Motyw"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Allow _root to login with GDM"
-msgstr "Możliwość logowania się za pomocą GDM-a przez użytkownika _root."
-
-#: gui/gdmsetup-strings.c:1
-msgid "Allow root to login r_emotely with GDM"
-msgstr ""
-"Możliwość _zdalnego logowania się za pomocą GDM-a przez użytkownika root."
-
-#: gui/gdmsetup-strings.c:1
-msgid "Allow remote _timed logins"
-msgstr "Możliwość zdalnego logowania z _opóźnieniem czasowym"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Show _system menu"
-msgstr "Wyświetlanie menu \"_System\""
-
-#: gui/gdmsetup-strings.c:1
-msgid "Allow _configuration from the login screen"
-msgstr ""
-"Możliwość uruchomienia przez użytkownika programu _konfiguracyjnego z menu"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Retry delay (seconds) :"
-msgstr "Opóźnienie przed ponowieniem:"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Maximum pending requests:"
-msgstr "Maksymalna liczba oczekujących połączeń:"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Max pending indirect requests:"
-msgstr "Maksymalna liczba oczekujących pośrednich połączeń:"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Maximum remote sessions:"
-msgstr "Maksymalna liczba zdalnych sesji:"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Maximum wait time:"
-msgstr "Maksymalny czas oczekiwania:"
-
-#: gui/gdmsetup-strings.c:1
-msgid "Maximum indirect wait time:"
-msgstr "Maksymalny czas oczekiwania przy połączeniach pośrednich:"
 
 #: gui/gdmXnestchooser.c:1
 msgid "Xnest command line"
