@@ -164,6 +164,8 @@ enum {
 #define GDM_KEY_TIMED_LOGIN "daemon/TimedLogin="
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=30"
 
+#define GDM_KEY_FLEXI_REAP_DELAY_MINUTES "daemon/FlexiReapDelayMinutes=5"
+
 #define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=" X_SERVER
 #define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
 #define GDM_KEY_XNEST "daemon/Xnest=" X_SERVER_PATH "/Xnest -name Xnest"

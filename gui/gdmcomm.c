@@ -468,12 +468,18 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 			return _("The X server is not available, "
 				 "it is likely that gdm is badly "
 				 "configured.");
+	} else if (strncmp (ret, "ERROR 7 ", strlen ("ERROR 7 ")) == 0) {
+		return _("Trying to set an unknown logout action, or trying "
+			 "to set a logout action which is not available.");
 	} else if (strncmp (ret, "ERROR 50 ", strlen ("ERROR 50 ")) == 0) {
 		return _("Trying to update an unsupported configuration key.");
 	} else if (strncmp (ret, "ERROR 100 ", strlen ("ERROR 100 ")) == 0) {
 		return _("You do not seem to have authentication needed "
 			 "be for this operation.  Perhaps your .Xauthority "
 			 "file is not set up correctly.");
+	} else if (strncmp (ret, "ERROR 200 ", strlen ("ERROR 200 ")) == 0) {
+		return _("Too many messages were sent to gdm and it hung up"
+			 "on us.");
 	} else {
 		return _("Unknown error occured.");
 	}

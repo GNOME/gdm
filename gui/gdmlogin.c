@@ -129,6 +129,7 @@ static gboolean GdmShowXtermFailsafeSession;
 static gboolean GdmShowLastSession;
 
 static gboolean GdmUseCirclesInEntry;
+static gint GdmFlexiReapDelayMinutes;
 
 /* FIXME: Should move everything to externs and move reading to gdmcommon.c */
 gchar *GdmInfoMsgFile;
@@ -236,7 +237,32 @@ gdm_timer_up_delay (GSignalInvocationHint *ihint,
 	if (curdelay < GdmTimedLoginDelay)
 		curdelay = GdmTimedLoginDelay;
 	return TRUE;
+}
+
+/* The reaping stuff */
+static time_t last_reap_delay = 0;
+
+static gboolean
+delay_reaping (GSignalInvocationHint *ihint,
+	       guint	           n_param_values,
+	       const GValue	  *param_values,
+	       gpointer		   data)
+{
+	last_reap_delay = time (NULL);
+	return TRUE;
 }      
+
+static gboolean
+reap_flexiserver (gpointer data)
+{
+	if (GdmFlexiReapDelayMinutes > 0 &&
+	    ((time (NULL) - last_reap_delay) / 60) > GdmFlexiReapDelayMinutes) {
+		gdm_kill_thingies ();
+		_exit (DISPLAY_REMANAGE);
+	}
+	return TRUE;
+}
+
 
 static gboolean
 gdm_event (GSignalInvocationHint *ihint,
@@ -687,6 +713,7 @@ gdm_login_parse_config (void)
 	    GdmTimedLoginDelay = 5;
     }
   
+    GdmFlexiReapDelayMinutes = ve_config_get_int (config, GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
     GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
@@ -3808,6 +3835,39 @@ main (int argc, char *argv[])
 					gdm_timer_up_delay,
 					NULL /* data */,
 					NULL /* destroy_notify */);
+    }
+
+    /* if a flexiserver, reap self after some time */
+    if (GdmFlexiReapDelayMinutes > 0 &&
+	! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER")) &&
+	/* but don't reap Xnest flexis */
+	ve_string_empty (g_getenv ("GDM_PARENT_DISPLAY"))) {
+	    guint sid = g_signal_lookup ("activate",
+					 GTK_TYPE_MENU_ITEM);
+	    g_signal_add_emission_hook (sid,
+					0 /* detail */,
+					delay_reaping,
+					NULL /* data */,
+					NULL /* destroy_notify */);
+
+	    sid = g_signal_lookup ("key_press_event",
+				   GTK_TYPE_WIDGET);
+	    g_signal_add_emission_hook (sid,
+					0 /* detail */,
+					delay_reaping,
+					NULL /* data */,
+					NULL /* destroy_notify */);
+
+	    sid = g_signal_lookup ("button_press_event",
+				   GTK_TYPE_WIDGET);
+	    g_signal_add_emission_hook (sid,
+					0 /* detail */,
+					delay_reaping,
+					NULL /* data */,
+					NULL /* destroy_notify */);
+
+	    last_reap_delay = time (NULL);
+	    g_timeout_add (60*1000, reap_flexiserver, NULL);
     }
 
     if G_LIKELY (g_getenv ("RUNNING_UNDER_GDM") != NULL) {

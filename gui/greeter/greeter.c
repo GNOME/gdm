@@ -72,6 +72,7 @@ gchar *GdmWelcome;
 gchar *GdmServAuthDir;
 gchar *GdmInfoMsgFile;
 gchar *GdmInfoMsgFont;
+gint GdmFlexiReapDelayMinutes;
 
 gboolean GdmUseCirclesInEntry = FALSE;
 
@@ -183,6 +184,8 @@ greeter_parse_config (void)
         GdmTimedLogin = NULL;
       }
     greeter_current_delay = GdmTimedLoginDelay;
+
+    GdmFlexiReapDelayMinutes = ve_config_get_int (config, GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
 
     GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 
@@ -964,6 +967,30 @@ setup_background_color (void)
     }
 }
 
+/* The reaping stuff */
+static time_t last_reap_delay = 0;
+
+static gboolean
+delay_reaping (GSignalInvocationHint *ihint,
+	       guint	           n_param_values,
+	       const GValue	  *param_values,
+	       gpointer		   data)
+{
+	last_reap_delay = time (NULL);
+	return TRUE;
+}      
+
+static gboolean
+reap_flexiserver (gpointer data)
+{
+	if (GdmFlexiReapDelayMinutes > 0 &&
+	    ((time (NULL) - last_reap_delay) / 60) > GdmFlexiReapDelayMinutes) {
+		_exit (DISPLAY_REMANAGE);
+	}
+	return TRUE;
+}
+
+
 void
 gdm_kill_thingies (void)
 {
@@ -1342,6 +1369,40 @@ main (int argc, char *argv[])
       gtk_dialog_run (GTK_DIALOG (dialog));
       gtk_widget_destroy (dialog);
       gdm_wm_no_login_focus_pop ();
+    }
+
+    /* if a flexiserver, reap self after some time */
+  if (GdmFlexiReapDelayMinutes > 0 &&
+      ! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER")) &&
+      /* but don't reap Xnest flexis */
+      ve_string_empty (g_getenv ("GDM_PARENT_DISPLAY")))
+    {
+      guint sid = g_signal_lookup ("activate",
+				   GTK_TYPE_MENU_ITEM);
+      g_signal_add_emission_hook (sid,
+				  0 /* detail */,
+				  delay_reaping,
+				  NULL /* data */,
+				  NULL /* destroy_notify */);
+
+      sid = g_signal_lookup ("key_press_event",
+			     GTK_TYPE_WIDGET);
+      g_signal_add_emission_hook (sid,
+				  0 /* detail */,
+				  delay_reaping,
+				  NULL /* data */,
+				  NULL /* destroy_notify */);
+
+      sid = g_signal_lookup ("button_press_event",
+			     GTK_TYPE_WIDGET);
+      g_signal_add_emission_hook (sid,
+				  0 /* detail */,
+				  delay_reaping,
+				  NULL /* data */,
+				  NULL /* destroy_notify */);
+
+      last_reap_delay = time (NULL);
+      g_timeout_add (60*1000, reap_flexiserver, NULL);
     }
 
   gdm_wm_restore_wm_order ();

@@ -122,6 +122,10 @@ UserAuthFile=.Xauthority
 StandardXServer=@X_SERVER@
 # The maximum number of flexible X servers to run.
 #FlexibleXServers=5
+# And after how many minutes should we reap the flexible server if there is
+# no activity and no one logged on.  Set to 0 to turn off the reaping.
+# Does not affect Xnest flexiservers.
+#FlexiReapDelayMinutes=5
 # the X nest command
 Xnest=@X_SERVER_PATH@/Xnest -audit 0 -name Xnest
 # Automatic VT allocation.  Right now only works on Linux.  This way

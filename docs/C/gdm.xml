@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.4.90.0"> 
-    <!ENTITY date "12/10/2003"> 
+    <!ENTITY date "12/12/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -1231,6 +1231,20 @@
 		<filename>/tmp/.gdm_socket</filename> socket
 		connection.  This is used for both full servers and for
 		Xnest servers.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>FlexiReapDelayMinutes</term>
+	    <listitem>
+	      <synopsis>FlexiReapDelayMinutes=5</synopsis>
+	      <para>
+	      	After how many minutes of inactivity at the login screen
+		should a flexi server be reaped.  This is only in effect before
+		a user logs in.  Also it does not affect the Xnest
+		flexiservers.  To turn off this behaviour set this value to 0.
+	        This was added in version 2.4.90.0.
 	      </para>
 	    </listitem>
 	  </varlistentry>
