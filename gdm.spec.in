@@ -10,11 +10,10 @@ Release:     %rel
 Copyright:   LGPL/GPL
 Group:       User Interface/X
 Source:      ftp://ftp.5z.com/pub/unix/gdm-%{version}.tar.gz
-BuildRoot:   /var/tmp/gdm-%{version}-root
+BuildRoot:   %{_tmppath}/gdm-%{version}-root
 Prereq:      /usr/sbin/useradd
 Requires:    pam >= 0.68
 Requires:    gnome-libs >= 1.0.17
-%define sysconfdir	/etc
 
 %description
 Gdm (the GNOME Display Manager) is a highly configurable
@@ -67,7 +66,7 @@ ln -sf ../../xdm/TakeConsole $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/PostSession/De
 # mv $RPM_BUILD_ROOT%{sysconfdir}/X11/pam.d $RPM_BUILD_ROOT%{sysconfdir}
 # move security stuff to right place
 # mv $RPM_BUILD_ROOT%{sysconfdir}/X11/security $RPM_BUILD_ROOT%{sysconfdir}
-
+%find_lang %{name}
 
 %clean
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
@@ -84,10 +83,14 @@ exit 0
 %doc AUTHORS COPYING ChangeLog NEWS README
 %{_bindir}/*
 %{_sbindir}/*
-%config %{sysconfdir}/*
-%{_datadir}/*
-# %config %{sysconfdir}/pam.d/gdm
-# %config %{sysconfdir}/pam.d/gdmconfig
+%config %{sysconfdir}/pam.d/*
+%config %{sysconfdir}/X11/*
+%config %{sysconfdir}/gdm
+%{_datadir}/pixmaps/*
+%{_datadir}/gdm
+%{_datadir}/gnome/apps/*/*
+%{_datadir}/gnome/help/*
+%{_datadir}/omf/gdm
 # %config %{sysconfdir}/security/console.apps/gdmconfig
 # %config %{sysconfdir}/X11/gdm/gnomerc
 # %config %{sysconfdir}/X11/gdm/gdm.conf
