@@ -68,10 +68,9 @@ TimedLoginDelay=30
 # want gdm to kill/restart the server, turn this on
 #AlwaysRestartServer=false
 
-# User and group that gdm should run as.  Probably should be gdm and gdm and
-# you should create these user and group.  Anyone found running this as
-# someone too privilaged will get a kick in the ass.  This should have
-# access to only the gdm directories and files.
+# User and group used for running gdm GUI applicaitons.  By default this
+# is set to user gdm and group gdm.  This user/group should have very
+# limited permissions and access to ony the gdm directories and files.
 User=gdm
 Group=gdm
 # To try to kill all clients started at greeter time or in the Init script.
@@ -168,8 +167,8 @@ AllowRoot=true
 AllowRemoteRoot=true
 # This will allow remote timed login
 AllowRemoteAutoLogin=false
-# 0 is the most anal, 1 allows group write permissions, 2 allows all write
-# permissions
+# 0 is the most restrictive, 1 allows group write permissions, 2 allows all
+# write permissions
 RelaxPermissions=0
 # Check if directories are owned by logon user.  Set to false, if you have, for
 # example, home directories owned by some other user.
