@@ -381,7 +381,7 @@ gdm_verify_user (GdmDisplay *d,
     case PAM_PERM_DENIED :
 	gdm_error (_("User %s not permitted to gain access at this time"), login);
 	gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, 
-		_("\nThe system administrator has disabled access to the system temporairly."));
+		_("\nThe system administrator has disabled access to the system temporarily."));
 	error_msg_given = TRUE;
 	goto pamerr;
     default :
