@@ -791,7 +791,6 @@ gdm_config_parse_most (gboolean factory)
     gdm_toggle_set("allow_remote_auto_login", gnome_config_get_bool(GDM_KEY_ALLOWREMOTEAUTOLOGIN));
     gdm_toggle_set("kill_init_clients", gnome_config_get_bool(GDM_KEY_KILLIC));
     gdm_radio_set ("relax_perms", gnome_config_get_int(GDM_KEY_RELAXPERM), 2);
-    gdm_toggle_set("verbose_auth", gnome_config_get_bool(GDM_KEY_VERBAUTH));
 
     gdm_entry_set("gdm_runs_as_user", gnome_config_get_string (GDM_KEY_USER));
     gdm_entry_set("gdm_runs_as_group", gnome_config_get_string (GDM_KEY_GROUP));
@@ -1400,7 +1399,6 @@ write_config (void)
     gdm_toggle_write("allow_remote_auto_login", GDM_KEY_ALLOWREMOTEAUTOLOGIN);
     gdm_toggle_write("kill_init_clients", GDM_KEY_KILLIC);
     gdm_radio_write ("relax_perms", GDM_KEY_RELAXPERM, 2);
-    gdm_toggle_write("verbose_auth", GDM_KEY_VERBAUTH);
 
     gdm_entry_write("gdm_runs_as_user", GDM_KEY_USER);
     gdm_entry_write("gdm_runs_as_group", GDM_KEY_GROUP);

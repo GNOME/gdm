@@ -36,7 +36,6 @@ static const gchar RCSid[]="$Id$";
 
 
 /* Configuration option variables */
-extern gboolean GdmVerboseAuth;
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 
@@ -107,17 +106,16 @@ gdm_verify_user (GdmDisplay *d,
 
     if (pwent == NULL) {
 	    gdm_error (_("Couldn't authenticate user"));
-	    if (GdmVerboseAuth) {
-		    auth_errmsg = g_strdup_printf
-			    (_("\nIncorrect username or password.  "
-			       "Letters must be typed in the correct case.  "  
-			       "Please be sure the Caps Lock key is not enabled"));
-		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
-		    g_free (auth_errmsg);
-	    } else {
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-						  _("Login incorrect"));
-	    }
+	    /* FIXME: Hmm, how are we sure that the login is username
+	     * and password.  That is the most common case but not
+	     * neccessairly true, this message needs to be changed
+	     * to allow for such cases */
+	    auth_errmsg = g_strdup_printf
+		    (_("\nIncorrect username or password.  "
+		       "Letters must be typed in the correct case.  "  
+		       "Please be sure the Caps Lock key is not enabled"));
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
+	    g_free (auth_errmsg);
 	    g_free (login);
 	    g_free (passwd);
 	    g_free (ppasswd);
@@ -127,17 +125,16 @@ gdm_verify_user (GdmDisplay *d,
     /* Check whether password is valid */
     if (ppasswd == NULL || (ppasswd[0] != '\0' &&
 			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
-	    if (GdmVerboseAuth) {
-		    auth_errmsg = g_strdup_printf
-			    (_("\nIncorrect username or password.  "
-			       "Letters must be typed in the correct case.  "  
-			       "Please be sure the Caps Lock key is not enabled"));
-		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
-		    g_free (auth_errmsg);
-	    } else {
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-						  _("Login incorrect"));
-	    }
+	    /* FIXME: Hmm, how are we sure that the login is username
+	     * and password.  That is the most common case but not
+	     * neccessairly true, this message needs to be changed
+	     * to allow for such cases */
+	    auth_errmsg = g_strdup_printf
+		    (_("\nIncorrect username or password.  "
+		       "Letters must be typed in the correct case.  "  
+		       "Please be sure the Caps Lock key is not enabled"));
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
+	    g_free (auth_errmsg);
 	    g_free (login);
 	    g_free (passwd);
 	    g_free (ppasswd);
@@ -148,17 +145,12 @@ gdm_verify_user (GdmDisplay *d,
 	  ( ! GdmAllowRemoteRoot && ! local) ) &&
 	pwent->pw_uid == 0) {
 	    gdm_error (_("Root login disallowed on display '%s'"), display);
-  	    if (GdmVerboseAuth) {
- 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-						  _("The system administrator "
-						    "is not allowed to login "
-						    "from this screen"));
- 		    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
- 		      _("Root login disallowed"));*/
-  	    } else {
- 		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-						  _("Login incorrect"));
-  	    }
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					  _("The system administrator "
+					    "is not allowed to login "
+					    "from this screen"));
+	    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+	      _("Root login disallowed"));*/
 	    g_free (login);
 	    g_free (passwd);
 	    g_free (ppasswd);
@@ -171,17 +163,12 @@ gdm_verify_user (GdmDisplay *d,
 	 strcmp (pwent->pw_shell, "/bin/true") == 0 ||
 	 strcmp (pwent->pw_shell, "/bin/false") == 0)) {
 	    gdm_error (_("User %s not allowed to log in"), login);
-	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-						  _("\nThe system administrator"
-						    " has disabled your "
-						    "account."));
-		    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-		      _("Login disabled"));*/
-	    } else {
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-						  _("Login incorrect"));
-	    }
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					  _("\nThe system administrator"
+					    " has disabled your "
+					    "account."));
+	    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+	      _("Login disabled"));*/
 	    g_free (login);
 	    g_free (passwd);
 	    g_free (ppasswd);

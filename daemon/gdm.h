@@ -169,7 +169,6 @@
 #define GDM_KEY_SESSIONMAXFILE "security/SessionMaxFile=524288"
 #define GDM_KEY_RELAXPERM "security/RelaxPermissions=0"
 #define GDM_KEY_RETRYDELAY "security/RetryDelay=3"
-#define GDM_KEY_VERBAUTH "security/VerboseAuth=true"
 
 #define GDM_KEY_XDMCP "xdmcp/Enable=false"
 #define GDM_KEY_MAXPEND "xdmcp/MaxPending=4"

@@ -31,6 +31,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <syslog.h>
+#include <locale.h>
 
 /* This should be moved to auth.c I suppose */
 #include <X11/Xauth.h>
@@ -140,7 +141,6 @@ gint  GdmMaxIndirectWait = 0;
 gint  GdmPingInterval = 0;
 gchar *GdmWilling = NULL;
 gboolean  GdmDebug = FALSE;
-gboolean  GdmVerboseAuth = FALSE;
 gboolean  GdmAllowRoot = FALSE;
 gboolean  GdmAllowRemoteRoot = FALSE;
 gboolean  GdmAllowRemoteAutoLogin = FALSE;
@@ -247,7 +247,6 @@ gdm_config_parse (void)
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
     GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
     GdmSessionMaxFile = gnome_config_get_int (GDM_KEY_SESSIONMAXFILE);
-    GdmVerboseAuth = gnome_config_get_bool (GDM_KEY_VERBAUTH);
 
     GdmXdmcp = gnome_config_get_bool (GDM_KEY_XDMCP);
     GdmDispPerHost = gnome_config_get_int (GDM_KEY_DISPERHOST);

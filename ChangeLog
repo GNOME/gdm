@@ -1,3 +1,13 @@
+Wed Oct 24 01:26:47 2001  George Lebl <jirka@5z.com>
+
+	* bin/gdm.[ch], bin/verify-*.c, config/gdm.conf.in,
+	  gui/gdmconfig.(c|glade):  Remove the VerboseAuth conf variable,
+	  it provided absolutely zero extra security (since it didn't divulge
+	  any info the user cannot get by other means, and making it
+	  false just made the whole thing less usable and more confusing)
+
+	* bin/gdm.c: include locale.h
+
 Tue Oct 23 15:17:23 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmXnestchooser.c: add --broadcast, --direct and

@@ -35,7 +35,6 @@ static const gchar RCSid[]="$Id$";
 
 
 /* Configuration option variables */
-extern gboolean GdmVerboseAuth;
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gchar *GdmTimedLogin;
@@ -311,15 +310,13 @@ gdm_verify_user (GdmDisplay *d,
 	pwent->pw_uid == 0) {
 	    gdm_error (_("Root login disallowed on display '%s'"),
 		       display);
-	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-						  _("\nThe system administrator"
-						    " is not allowed to login "
-						    "from this screen"));
-		    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-		      _("Root login disallowed"));*/
-		    error_msg_given = TRUE;
-	    }
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					  _("\nThe system administrator"
+					    " is not allowed to login "
+					    "from this screen"));
+	    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+	      _("Root login disallowed"));*/
+	    error_msg_given = TRUE;
 	    goto pamerr;
     }
 
@@ -330,15 +327,13 @@ gdm_verify_user (GdmDisplay *d,
 	 strcmp (pwent->pw_shell, "/bin/true") == 0 ||
 	 strcmp (pwent->pw_shell, "/bin/false") == 0)) {
 	    gdm_error (_("User %s not allowed to log in"), login);
-	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-						  _("\nThe system administrator"
-						    " has disabled your "
-						    "account."));
-		    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-		      _("Login disabled"));*/
-		    error_msg_given = TRUE;
-	    }
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+					  _("\nThe system administrator"
+					    " has disabled your "
+					    "account."));
+	    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+	      _("Login disabled"));*/
+	    error_msg_given = TRUE;
 	    goto pamerr;
     }	
 
@@ -374,8 +369,11 @@ gdm_verify_user (GdmDisplay *d,
     if ( ! error_msg_given &&
 	gdm_slave_should_complain ()) {
 	    /* I'm not sure yet if I should display this message for any other issues - heeten */
-	    if (pamerr == PAM_AUTH_ERR &&
-		GdmVerboseAuth) {
+	    if (pamerr == PAM_AUTH_ERR) {
+		    /* FIXME: Hmm, how are we sure that the login is username
+		     * and password.  That is the most common case but not
+		     * neccessairly true, this message needs to be changed
+		     * to allow for such cases */
 		    auth_errmsg = g_strdup_printf
 			    (_("\nIncorrect username or password.  "
 			       "Letters must be typed in the correct case.  "  
