@@ -44,6 +44,7 @@
 
 #include "gdm.h"
 #include "misc.h"
+#include "xdmcp.h"
 #include "slave.h"
 
 /* Configuration option variables */

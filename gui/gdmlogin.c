@@ -106,7 +106,6 @@ enum {
 	GDM_BACKGROUND_COLOR = 2
 };
 static gchar *GdmGtkRC;
-static gchar *GdmIcon;
 static gchar *GdmSessionDir;
 static gchar *GdmDefaultSession;
 static gchar *GdmLocaleFile;
@@ -372,60 +371,6 @@ typedef struct _CursorOffset {
 } CursorOffset;
 
 static gboolean
-gdm_login_icon_released (GtkWidget *widget)
-{
-	gtk_grab_remove (widget);
-	gdk_pointer_ungrab (GDK_CURRENT_TIME);
-
-	g_object_set_data (G_OBJECT (widget), "offset", NULL);
-
-	return TRUE;
-}
-
-static gboolean
-gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
-{
-    CursorOffset *p;
-    GdkCursor *fleur_cursor;
-
-    if (event->type == GDK_2BUTTON_PRESS) {
-	    gdm_login_icon_released (widget);
-	    gtk_widget_destroy (GTK_WIDGET (icon_win));
-	    icon_win = NULL;
-	    gtk_widget_show_now (login);
-	    gdk_window_raise (login->window);
-	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (login->window));
-	    gtk_widget_grab_focus (entry);	
-	    gtk_window_set_focus (GTK_WINDOW (login), entry);	
-	    return TRUE;
-    }
-    
-    if (event->type != GDK_BUTTON_PRESS)
-	return FALSE;
-    
-
-    p = g_new0 (CursorOffset, 1);
-    g_object_set_data_full (G_OBJECT (widget), "offset", p,
-			    (GDestroyNotify)g_free);
-    p->x = (gint) event->x;
-    p->y = (gint) event->y;
-
-    gtk_grab_add (widget);
-    fleur_cursor = gdk_cursor_new (GDK_FLEUR);
-    gdk_pointer_grab (widget->window, TRUE,
-		      GDK_BUTTON_RELEASE_MASK |
-		      GDK_BUTTON_MOTION_MASK |
-		      GDK_POINTER_MOTION_HINT_MASK,
-		      NULL,
-		      fleur_cursor,
-		      GDK_CURRENT_TIME);
-    gdk_cursor_unref (fleur_cursor);
-    gdk_flush ();
-
-    return TRUE;
-}
-
-static gboolean
 within_rect (GdkRectangle *rect, int x, int y)
 {
 	return
@@ -452,92 +397,6 @@ set_screen_to_pos (int x, int y)
 		}
 	}
 }
-
-static gboolean
-gdm_login_icon_motion (GtkWidget *widget, GdkEventMotion *event)
-{
-	gint xp, yp;
-	CursorOffset *p;
-	GdkModifierType mask;
-
-	p = g_object_get_data (G_OBJECT (widget), "offset");
-
-	if (p == NULL)
-		return FALSE;
-
-	gdk_window_get_pointer (gdk_get_default_root_window (),
-				&xp, &yp, &mask);
-
-	set_screen_to_pos (xp, yp);
-
-	set_screen_pos (GTK_WIDGET (widget), xp-p->x, yp-p->y);
-
-	return TRUE;
-}
-
-
-static void
-gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
-{
-    GtkWidget *fixed;
-    GtkWidget *icon;
-    GdkPixbuf *pb;
-    GdkGC *gc;
-    GtkStyle *style;
-    gint rw, rh, iw, ih;
-
-    gtk_widget_hide (login);
-    style = gtk_widget_get_default_style();
-    gc = style->black_gc; 
-    icon_win = gtk_window_new (GTK_WINDOW_POPUP);
-
-    gtk_widget_set_events (icon_win, 
-			   gtk_widget_get_events (GTK_WIDGET (icon_win)) | 
-			   GDK_BUTTON_PRESS_MASK |
-			   GDK_BUTTON_MOTION_MASK |
-			   GDK_POINTER_MOTION_HINT_MASK);
-
-    gtk_widget_realize (GTK_WIDGET (icon_win));
-
-    fixed = gtk_fixed_new();
-    gtk_container_add (GTK_CONTAINER (icon_win), fixed);
-    gtk_widget_show (fixed);
-
-    pb = gdk_pixbuf_new_from_file (GdmIcon, NULL);
-    if (pb != NULL) {
-	    icon = gtk_image_new_from_pixbuf (pb);
-	    iw = gdk_pixbuf_get_width (pb);
-	    ih = gdk_pixbuf_get_height (pb);
-	    g_object_unref (G_OBJECT (pb));
-    } else {
-	    /* sanity fallback */
-	    icon = gtk_event_box_new ();
-	    gtk_widget_set_size_request (icon, 64, 64);
-	    iw = ih = 64;
-    }
-    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (icon_win),
-			  _("Doubleclick here to un-iconify the login "
-			    "window, so that you may log in."),
-			  NULL);
-    
-    gtk_fixed_put(GTK_FIXED (fixed), GTK_WIDGET (icon), 0, 0);
-    gtk_widget_show(GTK_WIDGET (icon));
-
-    g_signal_connect (G_OBJECT (icon_win), "button_press_event",
-		      G_CALLBACK (gdm_login_icon_pressed),NULL);
-    g_signal_connect (G_OBJECT (icon_win), "button_release_event",
-		      G_CALLBACK (gdm_login_icon_released),NULL);
-    g_signal_connect (G_OBJECT (icon_win), "motion_notify_event",
-		      G_CALLBACK (gdm_login_icon_motion),NULL);
-
-    gtk_widget_show (GTK_WIDGET (icon_win));
-
-    rw = gdm_wm_screen.width;
-    rh = gdm_wm_screen.height;
-
-    set_screen_pos (GTK_WIDGET (icon_win), rw-iw, rh-ih);
-}
-
 
 static void
 gdm_login_abort (const gchar *format, ...)
@@ -856,14 +715,6 @@ gdm_login_parse_config (void)
     GdmAllowRemoteRoot = ve_config_get_bool (config, GDM_KEY_ALLOWREMOTEROOT);
     GdmBrowser = ve_config_get_bool (config, GDM_KEY_BROWSER);
     GdmLogo = ve_config_get_string (config, GDM_KEY_LOGO);
-    GdmIcon = ve_config_get_string (config, GDM_KEY_ICON);
-    /* XXX: hack */
-    if (GdmIcon != NULL &&
-	strcmp (GdmIcon, EXPANDED_PIXMAPDIR "/gdm.xpm") == 0 &&
-	access (GdmIcon, F_OK) != 0) {
-	    g_free (GdmIcon);
-	    GdmIcon = g_strdup (EXPANDED_PIXMAPDIR "/gdm.png");
-    }
     GdmQuiver = ve_config_get_bool (config, GDM_KEY_QUIVER);
     GdmSystemMenuReal = GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
     GdmChooserButtonReal = GdmChooserButton = ve_config_get_bool (config, GDM_KEY_CHOOSER_BUTTON);
@@ -1276,7 +1127,8 @@ gdm_login_enter (GtkWidget *entry)
 
 	str = gtk_label_get_text (GTK_LABEL (label));
 	if (str != NULL &&
-	    strcmp (str, _("Username:")) == 0 &&
+	    (strcmp (str, _("Username:")) == 0 ||
+	     strcmp (str, _("_Username:")) == 0) &&
 	    /* evilness */
 	    evil (login_string)) {
 		/* obviously being 100% reliable is not an issue for
@@ -2163,7 +2015,11 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	gtk_label_set_text (GTK_LABEL (label), tmp);
+	if (strcmp (tmp, _("Username:")) == 0) {
+		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Username:"));
+	} else {
+		gtk_label_set_text (GTK_LABEL (label), tmp);
+	}
 	g_free (tmp);
 
 	gtk_widget_show (GTK_WIDGET (label));
@@ -2190,7 +2046,11 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	gtk_label_set_text (GTK_LABEL(label), tmp);
+	if (strcmp (tmp, _("Password:")) == 0) {
+		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Password:"));
+	} else {
+		gtk_label_set_text (GTK_LABEL (label), tmp);
+	}
 	g_free (tmp);
 
 	gtk_widget_show (GTK_WIDGET (label));
@@ -2645,7 +2505,8 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 		  str = gtk_label_get_text (GTK_LABEL (label));
 		  if (selecting_user &&
 		      str != NULL &&
-		      strcmp (str, _("Username:")) == 0) {
+		      (strcmp (str, _("Username:")) == 0 ||
+		       strcmp (str, _("_Username:")) == 0)) {
 			  /* This is pretty evil, but we really don't
 			     know when it is ok to set the entry */
 			  gtk_entry_set_text (GTK_ENTRY (entry), login);
@@ -2758,31 +2619,6 @@ gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
     return TRUE;
 }
 
-static gboolean
-minimize_expose (GtkWidget *icon, GdkEventExpose *event, gpointer data)
-{
-	if (icon->window != NULL) {
-		gtk_paint_flat_box (icon->style,
-				    icon->window,
-				    icon->state,
-				    GTK_SHADOW_NONE,
-				    &event->area,
-				    icon,
-				    "gdm-iconify",
-				    0, 0,
-				    icon->allocation.width,
-				    icon->allocation.height);
-		gdk_draw_rectangle (icon->window,
-				    icon->style->text_gc[icon->state],
-				    TRUE /* filled */,
-				    3				/* x */,
-				    icon->allocation.height - 6 /* y */,
-				    icon->allocation.width - 6	/* width */,
-				    3				/* height */);
-	}
-	return TRUE;
-}
-
 static GtkWidget *
 create_handle (void)
 {
@@ -2808,35 +2644,6 @@ create_handle (void)
 	gtk_box_pack_start (GTK_BOX (hbox), w,
 			    TRUE, TRUE, GNOME_PAD_SMALL);
 	
-	if (GdmIcon != NULL) {
-		if (access (GdmIcon, R_OK) != 0) {
-			syslog (LOG_WARNING, _("Can't open icon file: %s. Suspending iconify feature!"), GdmIcon);
-		} else {
-			GtkWidget *icon;
-			icon_button = gtk_button_new ();
-			gtk_container_set_border_width
-				(GTK_CONTAINER (icon_button), 2);
-			icon = gtk_drawing_area_new ();
-			g_signal_connect (G_OBJECT (icon), "expose_event",
-					  G_CALLBACK (minimize_expose),
-					  NULL);
-			gtk_widget_set_size_request (icon, 16, -1);
-			gtk_container_add (GTK_CONTAINER (icon_button), icon);
-			g_signal_connect
-				(G_OBJECT (icon_button), "clicked",
-				 G_CALLBACK (gdm_login_iconify_handler), 
-				 NULL);
-			GTK_WIDGET_UNSET_FLAGS (icon_button, GTK_CAN_FOCUS);
-			GTK_WIDGET_UNSET_FLAGS (icon_button, GTK_CAN_DEFAULT);
-			gtk_box_pack_start (GTK_BOX (hbox), icon_button,
-					    FALSE, FALSE, 0);
-			gtk_tooltips_set_tip (tooltips,
-					      GTK_WIDGET (icon_button),
-					      _("Iconify the login window"),
-					      NULL);
-		}
-	}
-
 	gtk_widget_show_all (title_box);
 
 	return title_box;
@@ -3353,7 +3160,7 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 6);
     
-    label = gtk_label_new (_("Username:"));
+    label = gtk_label_new_with_mnemonic (_("_Username:"));
     gtk_widget_ref (label);
     g_object_set_data_full (G_OBJECT (login), "label", label,
 			    (GDestroyNotify) gtk_widget_unref);
@@ -3472,6 +3279,8 @@ gdm_login_gui_init (void)
     g_signal_connect (G_OBJECT (login), "focus_out_event", 
 		      G_CALLBACK (gdm_login_focus_out),
 		      NULL);
+
+    gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
 
     /* normally disable the prompt first */
     if ( ! DOING_GDM_DEVELOPMENT) {

@@ -1613,7 +1613,7 @@
 	      <para>
 		Specifies the maximum icon width (in pixels) that the
 		face browser will display. Icons larger than this will
-		be scaled.
+		be scaled.  This also affects icons in the XDMCP chooser.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1625,7 +1625,7 @@
 	      <para>
 		Specifies the maximum icon height (in pixels) that the
 		face browser will display. Icons larger than this will
-		be scaled.
+		be scaled.  This also affects icons in the XDMCP chooser.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1827,21 +1827,6 @@
 	      <para>
 		The directory where themes for the Graphical Greeter are
 		installed.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-	    <term>Icon</term>
-	    <listitem>
-	      <synopsis>Icon=share/pixmaps/gdm.xpm</synopsis>
-	      <para>
-		Icon to use for <filename>gdmlogin</filename> when it's
-		in the iconified state. The image must be in an gdk-pixbuf
-		supported format and it must be readable for the GDM
-		user. If no file is specified the iconify feature is
-		disabled.
-		This only affects the Standard Greeter.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -2293,13 +2278,22 @@
 
       <sect3 id="localservers">
 
-	<title>Local X Server Configuration</title>
+	<title>Local Static X Server Configuration</title>
+
+	<para>
+	  The static X servers are servers that are always running, when the server
+	  ever dies, it is restarted.  You can have as many local static servers as
+	  you wish.  Each key in the <filename>[servers]</filename> section corresponds
+	  to the display number of the server to run.  For example normally there
+	  is only one key, which is the key <filename>0</filename>, which corresponds
+	  to the display <filename>:0</filename>.
+	</para>
 
 	<variablelist>
 	  <title>[servers]</title>
 	  
 	  <varlistentry>
-	    <term>0</term>
+	    <term>&lt;display number&gt;</term>
 	    <listitem>
 	      <synopsis>0=Standard</synopsis>
 	      <para>
