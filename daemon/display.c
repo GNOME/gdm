@@ -190,6 +190,10 @@ gdm_display_manage (GdmDisplay *d)
 	break;
     }
 
+    if (d->type == TYPE_LOCAL) {
+	    d->dispstat = DISPLAY_SUCCESS;
+    }
+
     /* reset sleep to 0 */
     d->sleep_before_run = 0;
 

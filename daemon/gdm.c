@@ -339,11 +339,31 @@ gdm_local_servers_start (GdmDisplay *d)
     }
 }
 
+static void
+final_cleanup (void)
+{
+	GSList *list;
+	sigset_t mask;
+
+	gdm_debug ("final_cleanup");
+
+	sigemptyset (&mask);
+	sigaddset (&mask, SIGCHLD);
+	sigprocmask (SIG_BLOCK, &mask, NULL); 
+
+	list = g_slist_copy (displays);
+	g_slist_foreach (list, (GFunc) gdm_display_unmanage, NULL);
+	g_slist_free (list);
+
+	closelog();
+	unlink (GdmPidFile);
+}
+
 static void 
 gdm_cleanup_children (void)
 {
     pid_t pid;
-    gint exitstatus = 0, status = 0;
+    gint exitstatus = 0, status;
     GdmDisplay *d = NULL;
     gchar **argv;
 
@@ -351,7 +371,9 @@ gdm_cleanup_children (void)
     pid = waitpid (-1, &exitstatus, WNOHANG);
 
     if (WIFEXITED (exitstatus))
-	status = WEXITSTATUS (exitstatus);
+	    status = WEXITSTATUS (exitstatus);
+    else
+	    status = DISPLAY_SUCCESS;
 	
     gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
 
@@ -380,9 +402,7 @@ gdm_cleanup_children (void)
     case DISPLAY_REBOOT:	/* Reboot machine */
 	gdm_info (_("gdm_child_action: Master rebooting..."));
 
-	g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
-	closelog();
-	unlink (GdmPidFile);
+	final_cleanup ();
 
 	argv = g_strsplit (GdmReboot, argdelim, MAX_ARGS);	
 	execv (argv[0], argv);
@@ -393,9 +413,7 @@ gdm_cleanup_children (void)
     case DISPLAY_HALT:		/* Halt machine */
 	gdm_info (_("gdm_child_action: Master halting..."));
 
-	g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
-	closelog();
-	unlink (GdmPidFile);
+	final_cleanup ();
 
 	argv = g_strsplit (GdmHalt, argdelim, MAX_ARGS);	
 	execv (argv[0], argv);
@@ -425,18 +443,9 @@ gdm_cleanup_children (void)
 static void
 term_cleanup (void)
 {
-  sigset_t mask;
-  
-  gdm_debug ("term_cleanup: Got TERM/INT. Going down!");
-  
-  sigemptyset (&mask);
-  sigaddset (&mask, SIGCHLD);
-  sigprocmask (SIG_BLOCK, &mask, NULL); 
-  
-  g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
-   
-  closelog();
-  unlink (GdmPidFile);
+	gdm_debug ("term_cleanup: Got TERM/INT. Going down!");
+
+	final_cleanup ();
 }
 
 
