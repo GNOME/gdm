@@ -1,3 +1,13 @@
+2001-05-30  Havoc Pennington  <hp@redhat.com>
+
+	* daemon/gdm.h: add config keys for show/disable the sessions that 
+	are added in addition to those in /etc/X11/gdm/Sessions, so that
+	admins can fully control the session list
+
+	* config/gdm.conf.in: add abovementioned config keys
+
+	* gui/gdmlogin.c (gdm_login_parse_config): honor these settings
+	
 Thu May 31 03:17:32 2001  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c: set euid/egid to 0 before verify check

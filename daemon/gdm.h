@@ -190,6 +190,9 @@
 
 #define GDM_KEY_SERVERS "servers"
 
+#define GDM_KEY_SHOW_GNOME_CHOOSER "greeter/ShowGnomeChooserSession=true"
+#define GDM_KEY_SHOW_GNOME_FAILSAFE "greeter/ShowGnomeFailsafeSession=true"
+#define GDM_KEY_SHOW_XTERM_FAILSAFE "greeter/ShowXtermFailsafeSession=true"
 
 #define GDM_SESSION_FAILSAFE_GNOME "GDM_Failsafe.GNOME"
 #define GDM_SESSION_FAILSAFE_XTERM "GDM_Failsafe.XTERM"
