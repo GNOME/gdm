@@ -811,6 +811,35 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>XKeepsCrashing</term>
+	    <listitem>
+	      <synopsis>XKeepsCrashing=etc/gdm/XKeepsCrashing</synopsis>
+	      <para>
+		A script to run in case X keeps crashing.  This is for running
+		An X configuration.  The first argument will be one of the
+		programs specified in XKeepsCrashingConfigurators, the first
+		one that exists.  If none of those exist, this script will not
+		be run.  The second argument is a temporary filename that can
+		be used for any purpose within the script.  The rest of the
+		arguments are translated messages.  Please see the standard
+		installed script for further details.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>XKeepsCrashingConfigurators</term>
+	    <listitem>
+	      <synopsis>XKeepsCrashingConfigurators=/usr/bin/X11/XF86Setup /usr/bin/X11/Xconfigurator</synopsis>
+	      <para>
+		A list of programs to try which will do X configuration for
+		the user.  These are run from the XKeepsCrashing script.
+		The first one on this list that exists is used.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	</variablelist>
 	
       </sect2>
