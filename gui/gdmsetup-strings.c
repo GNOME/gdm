@@ -1,7 +1,7 @@
 /*
  * Soubor s přeložitelnými řetězci generovaný programem Glade.
- * Přidejte tento soubor do souboru vašeho projektu POTFILES.in.
- * NEPŘEKLÁDEJTE JEJ jako součást vaší aplikace.
+ * Přidejte tento soubor do POTFILES.in svého projektu.
+ * NEPŘEKLÁDEJTE JEJ jako součást své aplikace.
  */
 
 gchar *s = N_("GDM Setup");
