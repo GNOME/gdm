@@ -273,7 +273,34 @@ gdm_greeter_users_init (void)
     time_t time_started;
 
     if (access (GdmDefaultFace, R_OK) == 0) {
-	    defface = gdk_pixbuf_new_from_file (GdmDefaultFace, NULL);
+		GdkPixbuf *img;
+		guint w, h;
+	
+        img = gdk_pixbuf_new_from_file (GdmDefaultFace, NULL);
+
+		w = gdk_pixbuf_get_width (img);
+		h = gdk_pixbuf_get_height (img);
+
+		if (w > h && w > GdmIconMaxWidth) {
+			h = h * ((gfloat) GdmIconMaxWidth/w);
+			w = GdmIconMaxWidth;
+		} else if (h > GdmIconMaxHeight) {
+			w = w * ((gfloat) GdmIconMaxHeight/h);
+			h = GdmIconMaxHeight;
+		}
+
+		maxwidth = MAX (maxwidth, w);
+		maxheight = MAX (maxheight, h);
+
+		if (w != gdk_pixbuf_get_width (img) ||
+		    h != gdk_pixbuf_get_height (img)) {
+			defface = gdk_pixbuf_scale_simple
+				(img, w, h, GDK_INTERP_BILINEAR);
+			g_object_unref (G_OBJECT (img));
+
+		} else {
+			defface = img;
+		}
     } else  {
 	    syslog (LOG_WARNING,
 		    _("Can't open DefaultImage: %s!"),

@@ -1,43 +1,51 @@
-Thu Feb 14 18:15:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+Tue Feb 15 14:42:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* gui/greeter/greeter_item_ulist.c (gdm_greeter_users_init):
+	  Make the default face obey the MaxIconWidth and MaxIconHeight
+	  configuration settings.  FIxes bug #151784.  Patch provided
+	  by Diego Gonzalez.
+
+Mon Feb 14 18:15:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/gdm.c:  Restart the slave process if XDMCP chooser
 	  is selected from flexi server.  Patch to fix bug #156420.
 	  Patch provided by Leena Gunda.
 
-Thu Feb 14 17:37:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 14 17:37:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* gui/gdmlanguages.c:  Fix for bug 165880.  Adds Armenian
 	  to the language selection menu.  Patch provided by
 	  petrosyan@gmail.com.
 
-Thu Feb 14 17:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 14 17:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* gui/greeter/greeter_geometry.c:  Fix for bug 136856.
 	  Fixed width of "user name entry" to shrink to fit its
 	  parent widget so the text doesn't run out of bounds.
 	  Patch provided by Chookij Vanatham.
 
-Thu Feb 14 17:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 14 17:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/display.c, daemon/gdm.h, daemon/server.c,
 	  daemon/slave.c:  Fix for bug #160068.  Removes some
 	  redundant/unused code.  Patch provided by Mark
 	  McLoughlin.  
 
-Thu Feb 14 17:00:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 14 17:00:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* config/locale.alias, gui/gdmlanguages.c:  Fix for
 	  bug #155778.  Add Kinyarwanda to language list for
 	  gdm2.  Patch provided by Steve Murphy.
 
-Thu Feb 14 16:52:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 14 16:52:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/server.c, gui/gdmXnestchooser.c, gui/gdmlogin.c, 
 	  gui/modules/dwellmouselistener.c,
 	  gui/modules/keymouselistener.c: Cleanup patch by
 	  Kjartan Marass, bug #151668.
 	  
-Thu Feb 14 16:42:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 14 16:42:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* config/gdm.conf.in, daemon/gdm.h, docs/C/gdm.xml,
 	  gui/gdmlogin.c, gui/greeter/greeter.c, 
@@ -47,7 +55,7 @@ Thu Feb 14 16:42:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 	  disallow visible feedback in password entry.  Patch
 	  provided by John Martinsson.
 
-Thu Feb 14 16:25:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 14 16:25:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
         * gui/gdmwm.c:
           (add_deco): Add PropertyChangeMask to notify mask.
@@ -63,7 +71,7 @@ Thu Feb 14 16:25:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 	  window manager for better a11y support.  Makes gdm2 work
 	  better with gok.  Patch provided by Bill Haneman.
 
-Thu Feb 14 16:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 14 16:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* acconfig.h, gui/modules/Makefile.am, 
 	  gui/modules/dwellmouselistener.c,
@@ -72,7 +80,7 @@ Thu Feb 14 16:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 	  support XInput devices with the gesture listeners.  Patch
 	  provided by Bill Haneman.
 	
-Thu Feb 14 15:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 14 15:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* configure.in, gui/modules/AccessKeyMouseEvents.in,
 	  gui/modules/Makefile.am, gui/modules/dwellmouselistener.c,
@@ -81,7 +89,7 @@ Thu Feb 14 15:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 	  adds better default gestures for gok and gnopernicus.
 	  Fixes bug #142833.  Patch provided by Bill Haneman.
 
-Thu Feb 07 21:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+Mon Feb 07 21:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/verify-pam.c: Support devperm for automatic login.
 
