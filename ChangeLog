@@ -1,3 +1,14 @@
+Tue Oct 26 15:24:21 2004  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch]: Add a global cookie in <ServAuthDir>/.cookie which
+	  can be used to authenticate if no display is available.
+
+	* daemon/gdm.[ch]: add a SOP command to launch a new flexiserver
+	  by "echo FLEXI_XSERVER >/var/lib/gdm/.gdmfifo"  No error detection
+	  is possible then ofcourse.  Patch from Tuukka Hastrup
+	  <Tuukka.Hastrup@iki.fi> with some fixup to make it actually work
+	  right.
+
 Tue Oct 26 14:50:34 2004  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c, daemon/server.c: Make autologin work on a second

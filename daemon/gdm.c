@@ -75,6 +75,15 @@ static void gdm_daemonify (void);
 static void gdm_safe_restart (void);
 static void gdm_try_logout_action (GdmDisplay *disp);
 static void gdm_restart_now (void);
+static void handle_flexi_server (GdmConnection *conn,
+				 int type, 
+				 const char *server,
+				 gboolean handled,
+				 gboolean chooser,
+				 const char *xnest_disp, 
+				 uid_t xnest_uid,
+				 const char *xnest_auth_file,
+				 const char *xnest_cookie);
 
 /* Global vars */
 GSList *displays = NULL;	/* List of displays managed */
@@ -103,6 +112,9 @@ GdmConnection *fifoconn = NULL; /* Fifo connection */
 GdmConnection *pipeconn = NULL; /* slavepipe (handled just like Fifo for compatibility) connection */
 GdmConnection *unixconn = NULL; /* UNIX Socket connection */
 int slave_fifo_pipe_fd = -1; /* the slavepipe connection */
+
+unsigned char *gdm_global_cookie = NULL;
+unsigned char *gdm_global_bcookie = NULL;
 
 char *gdm_charset = NULL;
 
@@ -1967,6 +1979,49 @@ initial_term_int (int signal)
 	_exit (EXIT_FAILURE);
 }
 
+static void
+gdm_make_global_cookie (void)
+{
+	FILE *fp;
+	char *file;
+	mode_t oldmode;
+
+	/* kind of a hack */
+	GdmDisplay faked = {0};
+	faked.authfile = NULL;
+	faked.bcookie = NULL;
+	faked.cookie = NULL;
+
+	gdm_cookie_generate (&faked);
+
+	gdm_global_cookie = faked.cookie;
+	gdm_global_bcookie = faked.bcookie;
+
+	file = g_build_filename (GdmServAuthDir, ".cookie", NULL);
+	VE_IGNORE_EINTR (unlink (file));
+
+	oldmode = umask (077);
+	fp = gdm_safe_fopen_w (file);
+	umask (oldmode);
+	if G_UNLIKELY (fp == NULL) {
+		gdm_error (_("Can't open %s for writing"), file);
+		g_free (file);
+		return;
+	}
+
+	VE_IGNORE_EINTR (fprintf (fp, "%s\n", gdm_global_cookie));
+
+	/* FIXME: What about out of disk space errors? */
+	errno = 0;
+	VE_IGNORE_EINTR (fclose (fp));
+	if G_UNLIKELY (errno != 0) {
+		gdm_error (_("Can't write to %s: %s"), file,
+			   strerror (errno));
+	}
+
+	g_free (file);
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -2217,6 +2272,9 @@ main (int argc, char *argv[])
     /* make sure things (currently /tmp/.ICE-unix and /tmp/.X11-unix)
      * are sane */
     gdm_ensure_sanity () ;
+
+    /* Make us a unique global cookie to authenticate */
+    gdm_make_global_cookie ();
 
     /* Start local X servers */
     gdm_start_first_unborn_local (0 /* delay */);
@@ -2851,6 +2909,11 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 			send_slave_ack (d, NULL);
 		}
+	} else if (strcmp(msg, GDM_SOP_FLEXI_XSERVER) == 0) {
+		handle_flexi_server (NULL, TYPE_FLEXI, GdmStandardXServer,
+				     TRUE /* handled */,
+				     FALSE /* chooser */,
+				     NULL, 0, NULL, NULL);
 	}
 }
 
@@ -3071,8 +3134,9 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	gdm_debug ("server: '%s'", server);
 
 	if (gdm_wait_for_go) {
-		gdm_connection_write (conn,
-				      "ERROR 1 No more flexi servers\n");
+		if (conn != NULL)
+			gdm_connection_write (conn,
+					      "ERROR 1 No more flexi servers\n");
 		return;
 	}
 
@@ -3083,8 +3147,9 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 
 		pw = getpwuid (xnest_uid);
 		if (pw == NULL) {
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
+			if (conn != NULL)
+				gdm_connection_write (conn,
+						      "ERROR 100 Not authenticated\n");
 			return;
 		}
 
@@ -3095,8 +3160,9 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 			NEVER_FAILS_setegid (GdmGroupId);
 
 		if (seteuid (xnest_uid) < 0) {
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
+			if (conn != NULL)
+				gdm_connection_write (conn,
+						      "ERROR 100 Not authenticated\n");
 			return;
 		}
 
@@ -3121,8 +3187,9 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		if ( ! authorized) {
 			/* Sorry dude, you're not doing something
 			 * right */
-			gdm_connection_write (conn,
-					      "ERROR 100 Not authenticated\n");
+			if (conn != NULL)
+				gdm_connection_write (conn,
+						      "ERROR 100 Not authenticated\n");
 			return;
 		}
 
@@ -3130,8 +3197,9 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	}
 
 	if (flexi_servers >= GdmFlexibleXServers) {
-		gdm_connection_write (conn,
-				      "ERROR 1 No more flexi servers\n");
+		if (conn != NULL)
+			gdm_connection_write (conn,
+					      "ERROR 1 No more flexi servers\n");
 		return;
 	}
 
@@ -3139,16 +3207,18 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	if (ve_string_empty (server) ||
 	    access (bin, X_OK) != 0) {
 		g_free (bin);
-		gdm_connection_write (conn,
-				      "ERROR 6 No server binary\n");
+		if (conn != NULL)
+			gdm_connection_write (conn,
+					      "ERROR 6 No server binary\n");
 		return;
 	}
 	g_free (bin);
 
 	display = gdm_server_alloc (-1, server);
 	if G_UNLIKELY (display == NULL) {
-		gdm_connection_write (conn,
-				      "ERROR 2 Startup errors\n");
+		if (conn != NULL)
+			gdm_connection_write (conn,
+					      "ERROR 2 Startup errors\n");
 		return;
 	}
 
@@ -3191,12 +3261,14 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	display->socket_conn = conn;
 	display->xnest_disp = g_strdup (xnest_disp);
 	display->xnest_auth_file = g_strdup (xnest_auth_file);
-	gdm_connection_set_close_notify (conn, display, close_conn);
+	if (conn != NULL)
+		gdm_connection_set_close_notify (conn, display, close_conn);
 	displays = g_slist_append (displays, display);
 	if ( ! gdm_display_manage (display)) {
 		gdm_display_unmanage (display);
-		gdm_connection_write (conn,
-				      "ERROR 2 Startup errors\n");
+		if (conn != NULL)
+			gdm_connection_write (conn,
+					      "ERROR 2 Startup errors\n");
 		return;
 	}
 	/* Now we wait for the server to start up (or not) */
@@ -3537,6 +3609,15 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 				gdm_connection_write (conn, "OK\n");
 				return;
 			}
+		}
+
+		if (gdm_global_cookie != NULL &&
+		    g_ascii_strcasecmp (gdm_global_cookie, cookie) == 0) {
+			g_free (cookie);
+			GDM_CONNECTION_SET_USER_FLAG
+				(conn, GDM_SUP_FLAG_AUTHENTICATED);
+			gdm_connection_write (conn, "OK\n");
+			return;
 		}
 
 		/* Hmmm, perhaps this is better defined behaviour */

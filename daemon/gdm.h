@@ -560,6 +560,9 @@ void		gdm_final_cleanup	(void);
 #define GDM_SOP_SUSPEND_MACHINE "SUSPEND_MACHINE"  /* no arguments */
 #define GDM_SOP_CHOSEN_THEME "CHOSEN_THEME"  /* <slave pid> <theme name> */
 
+/* Start a new standard X flexible server */
+#define GDM_SOP_FLEXI_XSERVER "FLEXI_XSERVER" /* no arguments */
+
 /* Notification protocol */
 /* keys */
 #define GDM_NOTIFY_ALLOWREMOTEROOT "AllowRemoteRoot" /* <true/false as int> */
@@ -625,6 +628,11 @@ void		gdm_final_cleanup	(void);
  *             only users logged in from gdm.  They must pass the xauth
  *             MIT-MAGIC-COOKIE-1 that they were passed before the
  *             connection is authenticated.
+ *             Note that since 2.6.0.6 you can also use a global
+ *             <ServAuthDir>/.cookie, which works for all authentication
+ *             except for SET_LOGOUT_ACTION and QUERY_LOGOUT_ACTION
+ *             and SET_SAFE_LOGOUT_ACTION which require a logged in
+ *             display
  * Supported since: 2.2.4.0
  * Arguments:  <xauth cookie>
  *   <xauth cookie> is in hex form with no 0x prefix
