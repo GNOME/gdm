@@ -1,12 +1,22 @@
 #!/bin/sh
 
-MSG3=`gettext -s "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  You will need to log in on a console and rerun the X configuration program.  Then restart GDM."`
-MSG4=`gettext -s "Would you like me to try to run the X configuration program?  Note that you will need the root password for this."`
-MSG5=`gettext -s "Please type in the root (privileged user) password."`
-MSG6=`gettext -s "I will now try to restart the X server again."`
-MSG7=`gettext -s "I will disable this X server for now.  Restart GDM when it is configured correctly."`
-MSG8=`gettext -s "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
-MSG9=`gettext -s "Would you like to view the detailed X server output as well?"`
+GTBIN=`which gettext`
+
+gettextfunc () {
+  if test "x$GTBIN" = "x" ; then
+    echo "$1"
+  else
+    $GTBIN -s "$1"
+  fi
+}
+
+MSG3=`gettextfunc "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  You will need to log in on a console and rerun the X configuration program.  Then restart GDM."`
+MSG4=`gettextfunc "Would you like me to try to run the X configuration program?  Note that you will need the root password for this."`
+MSG5=`gettextfunc "Please type in the root (privileged user) password."`
+MSG6=`gettextfunc "I will now try to restart the X server again."`
+MSG7=`gettextfunc "I will disable this X server for now.  Restart GDM when it is configured correctly."`
+MSG8=`gettextfunc "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
+MSG9=`gettextfunc "Would you like to view the detailed X server output as well?"`
 
 # there are some env vars defined:
 # XLOG = the log file for the X server
@@ -63,12 +73,12 @@ fi
 #
 if grep '^\(Cannot open mouse\|No core pointer\)' "$XLOG" 2> /dev/null ; then
 
-  MSG8=`gettext -s "I cannot start the X server (your graphical interface).  It seems that the pointer device (your mouse) is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
+  MSG8=`gettextfunc "I cannot start the X server (your graphical interface).  It seems that the pointer device (your mouse) is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
 
   if test -x /usr/sbin/mouseconfig ; then
     XCONFIGURATOR=/usr/sbin/mouseconfig
     # Note: we know this is a mouse problem and yay we have mouseconfig
-    MSG4=`gettext -s "Would you like me to try to run the mouse configuration program?  Note that you will need the root password for this."`
+    MSG4=`gettextfunc "Would you like me to try to run the mouse configuration program?  Note that you will need the root password for this."`
   fi
 
 fi

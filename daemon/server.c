@@ -76,11 +76,9 @@ static gboolean server_signal_notified = FALSE;
 static int server_signal_pipe[2];
 
 void
-gdm_server_whack_lockfile (GdmDisplay *disp, pid_t pid)
+gdm_server_whack_lockfile (GdmDisplay *disp)
 {
-	    FILE *fp;
 	    char buf[256];
-	    struct stat s;
 
 	    /* X seems to be sometimes broken with its lock files and
 	       doesn't seem to remove them always, and if you manage
@@ -96,31 +94,12 @@ gdm_server_whack_lockfile (GdmDisplay *disp, pid_t pid)
 
 	    /* if lock file exists and it is our process, whack it! */
 	    g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", disp->dispnum);
+	    unlink (buf);
 
-	    /* If doesn't exist, yay the X server is not a wanker */
-	    if (stat (buf, &s) != 0)
-		    return;
-	
-	    if ( ! S_ISREG (s.st_mode)) {
-		    /* Eeeek! not a regular file?  Perhaps someone
-		       is trying to play tricks on us */
-		    return;
-	    }
-
-	    fp = fopen (buf, "r");
-	    if (fp != NULL) {
-		    char buf2[100];
-		    if (fgets (buf2, sizeof (buf2), fp) != NULL) {
-			    gulong lockpid;
-			    fclose (fp);
-			    if (sscanf (buf2, "%lu", &lockpid) == 1 &&
-				pid == lockpid) {
-				    unlink (buf);
-			    }
-		    } else {
-			    fclose (fp);
-		    }
-	    }
+	    /* whack the unix socket as well */
+	    g_snprintf (buf, sizeof (buf),
+			"/tmp/.X11-unix/X%d", disp->dispnum);
+	    unlink (buf);
 }
 
 
@@ -287,7 +266,7 @@ gdm_server_stop (GdmDisplay *disp)
 		    ve_waitpid_no_signal (servpid, 0, 0);
 	    gdm_sigchld_block_pop ();
 
-	    gdm_server_whack_lockfile (disp, servpid);
+	    gdm_server_whack_lockfile (disp);
 
 	    gdm_debug ("gdm_server_stop: Server pid %d dead", (int)servpid);
     }
@@ -745,7 +724,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		    ve_waitpid_no_signal (pid, NULL, 0);
 	    gdm_sigchld_block_pop ();
 	    
-	    gdm_server_whack_lockfile (disp, pid);
+	    gdm_server_whack_lockfile (disp);
     }
 
     /* We will rebake cookies anyway, so wipe these */

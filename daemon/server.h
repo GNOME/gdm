@@ -25,7 +25,7 @@
 void		gdm_server_wipe_cookies	(GdmDisplay *disp);
 
 /* Wipe X server's butt */
-void		gdm_server_whack_lockfile (GdmDisplay *disp, pid_t pid);
+void		gdm_server_whack_lockfile (GdmDisplay *disp);
 
 gboolean	gdm_server_start	(GdmDisplay *d,
 					 gboolean treat_as_flexi,

@@ -36,6 +36,9 @@ Ahh news...
   so this prevents some possible damange someone could do if
   they do manage to get the gdm user privs.
 
+- If X server crashes or doesn't otherwise whack its lockfile,
+  help it along, should fix #114003 and redhat #90014
+
 - No translatable message contains unneccessary markup now
   (fixes #101794 and #101795)
 
@@ -49,6 +52,8 @@ Ahh news...
   that fonts come out all ok
 
 - Use ve-config (from vicious-extensions) everywhere in the daemon
+
+- Fix RH #84247 by checking for gettext binary before using it
 
 - Random other minor fixes
 

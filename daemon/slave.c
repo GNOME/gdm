@@ -3442,7 +3442,7 @@ gdm_slave_child_handler (int sig)
 	} else if (pid != 0 && pid == d->servpid) {
 		d->servstat = SERVER_DEAD;
 		d->servpid = 0;
-		gdm_server_whack_lockfile (d, pid);
+		gdm_server_whack_lockfile (d);
 		gdm_server_wipe_cookies (d);
 		gdm_slave_whack_temp_auth_file ();
 
