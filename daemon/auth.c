@@ -215,7 +215,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 
 	    if G_UNLIKELY (af_gdm == NULL) {
 		    gdm_error (_("%s: Cannot safely open %s"),
-			       "gdm_auth_user_remove",
+			       "gdm_auth_secure_display",
 			       d->authfile_gdm);
 
 		    g_free (d->authfile_gdm);
@@ -232,7 +232,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 
 	    if G_UNLIKELY (af == NULL) {
 		    gdm_error (_("%s: Cannot safely open %s"),
-			       "gdm_auth_user_remove",
+			       "gdm_auth_secure_display",
 			       d->authfile);
 
 		    g_free (d->authfile);

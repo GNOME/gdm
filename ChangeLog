@@ -1,3 +1,14 @@
+Mon Sep 01 14:01:02 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: move gdm_verify_cleanup after running of
+	  PostSession and touching the home dir.  Home dir may be
+	  unmounted in pam_close_session leading to failures when
+	  trying to touch the home dir in the PostSession script
+	  and in the code that closes the session.
+
+	* daemon/auth.c: fix error output so that bug reports wouldn't
+	  point me to the wrong code.
+
 Tue Aug 26 18:06:51 2003  George Lebl <jirka@5z.com>
 
 	* docs/C/gdm.xml: minor update

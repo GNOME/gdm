@@ -3708,8 +3708,6 @@ gdm_slave_session_stop (gboolean run_post_session,
 	    kill (- (d->sesspid), SIGTERM);
     gdm_sigchld_block_pop ();
 
-    gdm_verify_cleanup (d);
-
     finish_session_output (run_post_session /* do_read */);
     
     if (local_login == NULL)
@@ -3750,6 +3748,8 @@ gdm_slave_session_stop (gboolean run_post_session,
 
     /* things are going to be killed, so ignore errors */
     XSetErrorHandler (ignore_xerror_handler);
+
+    gdm_verify_cleanup (d);
 
     in_session_stop --;
 
