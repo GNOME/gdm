@@ -3401,7 +3401,6 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 		img = gdk_pixbuf_new_from_file (&buf[1], NULL);
 	} else {
 		img = NULL;
-		return user;
 	}
 
 	/* the daemon is now free to go on */

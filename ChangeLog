@@ -1,3 +1,19 @@
+Mon May 27 13:39:52 2002  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c, daemon/slave.c: remove some dead code, minor fixes
+
+	* gui/gdmchooser.c: remove gnome init, remove dead code
+
+	* gui/gdmlogin.c: remove hang on browser image getting
+
+	* gui/gdmphotosetup.c: remove the trusted dir crap.  Now we always
+	  copy to ~/.gnome/photo. this removes the need for needing to
+	  know gnome's pixmap path, and gets rid of some uglieness.  We
+	  still support a bit of the trusted dir stuff in the daemon for
+	  compatibility.
+
+	* gui/gdmsetup.c: don't create dirs only when running under gdm
+
 2002-05-27  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* daemon/verify-pam.c: Fix typo.

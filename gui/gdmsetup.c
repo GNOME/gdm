@@ -1931,7 +1931,7 @@ main (int argc, char *argv[])
 			    LIBGNOMEUI_MODULE /* module_info */,
 			    argc, argv,
 			    /* *GNOME_PARAM_POPT_TABLE, options, */
-			    GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
+			    GNOME_PARAM_CREATE_DIRECTORIES, ! RUNNING_UNDER_GDM,
 			    NULL);
 
 	glade_gnome_init();

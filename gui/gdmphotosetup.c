@@ -30,33 +30,6 @@
 
 #include "gdm.h"
 
-/* If path starts with a "trusted" directory, don't sanity check things */
-static gboolean
-is_in_trusted_pic_dir (const char *path)
-{
-#if 0
-	char *globalpix;
-#endif
-
-	/* our own pixmap dir is trusted */
-	if (strncmp (path, EXPANDED_PIXMAPDIR, sizeof (EXPANDED_PIXMAPDIR)) == 0)
-		return TRUE;
-
-	/* FIXME: the daemon is no longer looking here, we need to figure
-	 * out how to make it do that again */
-#if 0
-	/* gnome's pixmap dir is trusted */
-	globalpix = gnome_unconditional_pixmap_file ("");
-	if (strncmp (path, globalpix, strlen (globalpix)) == 0) {
-		g_free (globalpix);
-		return TRUE;
-	}
-	g_free (globalpix);
-#endif
-
-	return FALSE;
-}
-
 int
 main (int argc, char *argv[])
 {
@@ -137,19 +110,6 @@ main (int argc, char *argv[])
 						    _("No picture selected."));
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
-		} else if (is_in_trusted_pic_dir (pixmap)) {
-			/* Picture is in trusted dir, no need to copy nor
-			 * check it */
-			char *cfg_file = g_strconcat (g_get_home_dir (),
-						      "/.gnome/gdm",
-						      NULL);
-			gnome_config_set_string ("/gdm/face/picture",
-						 pixmap);
-			gnome_config_sync ();
-			/* ensure proper permissions */
-			chmod (cfg_file, 0600);
-			g_free (cfg_file);
-			break;
 		} else if (s.st_size > max_size) {
 			GtkWidget *d;
 			d = gtk_message_dialog_new (NULL /* parent */,

@@ -1028,12 +1028,10 @@ gdm_event (GSignalInvocationHint *ihint,
 int 
 main (int argc, char *argv[])
 {
-    char **fixedargv;
-    int fixedargc, i;
     char **hosts;
     poptContext ctx;
+    int nextopt;
     const char *gdm_version;
-    GnomeProgram *program;
 
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
@@ -1042,32 +1040,26 @@ main (int argc, char *argv[])
 
     openlog ("gdmchooser", LOG_PID, LOG_DAEMON);
 
-    fixedargc = argc + 1;
-    fixedargv = g_new0 (gchar *, fixedargc);
-
-    for (i=0; i < argc; i++)
-	fixedargv[i] = argv[i];
-    
-    fixedargv[fixedargc-1] = "--disable-sound";
-
     bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
 
-    program = gnome_program_init ("gdmchooser", VERSION, 
-				  /* FIXME: oh fuck this inits way too much
-				   * shit that we don't want */
-				  LIBGNOMEUI_MODULE /* module_info */,
-				  fixedargc, fixedargv,
-				  GNOME_PARAM_POPT_TABLE, xdm_options,
-				  GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
-				  NULL);
+    gtk_init (&argc, &argv);
 
-    g_object_get (G_OBJECT (program),
-		  GNOME_PARAM_POPT_CONTEXT, &ctx,
-		  NULL);
-    glade_gnome_init();
-    g_free (fixedargv);
+    ctx = poptGetContext ("gdm", argc, (const char **) argv,
+			  xdm_options, 0);
+    while ((nextopt = poptGetNextOpt (ctx)) > 0 || nextopt == POPT_ERROR_BADOPT)
+	/* do nothing */ ;
+
+    if (nextopt != -1) {
+	    g_print (_("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
+		     poptBadOption (ctx, 0),
+		     poptStrerror (nextopt),
+		     argv[0]);
+	    exit (1);
+    }
+
+    glade_init();
 
     gdm_chooser_parse_config();
 

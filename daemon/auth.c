@@ -467,7 +467,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 
     while (auths) {
 	if ( ! XauWriteAuth (af, auths->data)) {
-		gdm_error (_("%s: Could not write cookie"));
+		gdm_error (_("%s: Could not write cookie"),
+			   "gdm_auth_user_add");
 		ret = FALSE;
 		break;
 	}

@@ -1016,36 +1016,14 @@ gdm_slave_wait_for_login (void)
 }
 
 /* If path starts with a "trusted" directory, don't sanity check things */
+/* This is really somewhat "outdated" as we now really want things in
+ * the picture dir or in ~/.gnome/photo */
 static gboolean
 is_in_trusted_pic_dir (const char *path)
 {
-#if 0
-	GSList *locations = NULL, *li;
-#endif
-
 	/* our own pixmap dir is trusted */
 	if (strncmp (path, EXPANDED_PIXMAPDIR, sizeof (EXPANDED_PIXMAPDIR)) == 0)
 		return TRUE;
-
-	/* FIXME: somehow get gnomes locations and all that */
-#if 0
-	/* we have no gnome-program and we don't want one */
-	g_free (gnome_program_locate_file (NULL /* program */,
-					   GNOME_FILE_DOMAIN_PIXMAP,
-					   "" /* file_name */,
-					   FALSE /* only_if_exists */,
-					   &locations));
-	for (li = locations; li != NULL; li = li->next) {
-		/* gnome's pixmap dirs are trusted */
-		if (strncmp (path, li->data, strlen (li->data)) == 0) {
-			g_slist_foreach (locations, (GFunc)g_free, NULL);
-			g_slist_free (locations);
-			return TRUE;
-		}
-	}
-	g_slist_foreach (locations, (GFunc)g_free, NULL);
-	g_slist_free (locations);
-#endif
 
 	return FALSE;
 }
@@ -1074,7 +1052,7 @@ run_pictures (void)
 			g_free (response);
 			return;
 		}
-		
+
 		pwent = getpwnam (response);
 		if (pwent == NULL) {
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
