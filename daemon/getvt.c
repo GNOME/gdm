@@ -26,7 +26,11 @@ static int
 open_vt (int vtno)
 {
 	char *vtname = g_strdup_printf ("/dev/tty%d", vtno);
-	int fd = open (vtname, O_RDWR);
+	int fd = open (vtname, O_RDWR
+#ifdef O_NOCTTY
+		   |O_NOCTTY
+#endif
+		   , 0);
 	g_free (vtname);
 	return fd;
 }
@@ -40,7 +44,11 @@ get_free_vt (int *vtfd)
 
 	*vtfd = -1;
 
-	fd = open ("/dev/console", O_WRONLY, 0);
+	fd = open ("/dev/console", O_WRONLY
+#ifdef O_NOCTTY
+		   |O_NOCTTY
+#endif
+		   , 0);
 	if (fd < 0)
 		return -1;
 
@@ -101,23 +109,26 @@ gdm_get_empty_vt_argument (int *fd, int *vt)
 		return g_strdup_printf ("vt%d", *vt);
 }
 
+/* change to an existing vt */
 void
 gdm_change_vt (int vt)
 {
-	char *cmd;
+	int fd;
 	if (vt < 0)
 		return;
-	/* kind of hack, we could do it ourselves if we weren't lazy */
-	/* FIXME: we should really do the vt thing ourselves */
-	if (access ("/usr/bin/chvt", X_OK) == 0)
-		cmd = g_strdup_printf ("/usr/bin/chvt %d", vt);
-	else if (access ("/bin/chvt", X_OK) == 0)
-		cmd = g_strdup_printf ("/bin/chvt %d", vt);
-	else
-		cmd = NULL;
-	if (cmd != NULL)
-		system (cmd);
-	g_free (cmd);
+
+	fd = open ("/dev/console", O_WRONLY
+#ifdef O_NOCTTY
+		   |O_NOCTTY
+#endif
+		   , 0);
+	if (fd < 0)
+		return;
+
+	ioctl (fd, VT_ACTIVATE, vt);
+	ioctl (fd, VT_WAITACTIVE, vt);
+
+	IGNORE_EINTR (close (fd));
 }
 
 #else /* here this is just a stub, we don't know how to do this outside

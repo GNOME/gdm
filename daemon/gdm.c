@@ -967,14 +967,11 @@ gdm_final_cleanup (void)
 	list = g_slist_copy (displays);
 	for (li = list; li != NULL; li = li->next) {
 		GdmDisplay *d = li->data;
-		/* XDMCP and FLEXI_XNEST are safe to kill
-		 * immediately */
 		if (d->type == TYPE_XDMCP ||
 		    d->type == TYPE_FLEXI_XNEST)
 			gdm_display_unmanage (d);
 	}
 	g_slist_free (list);
-
 
 	/* Close stuff */
 
@@ -1200,21 +1197,28 @@ static void
 change_to_first_and_clear (gboolean reboot)
 {
 	gdm_change_vt (1);
+	IGNORE_EINTR (close (0));
 	IGNORE_EINTR (close (1));
 	IGNORE_EINTR (close (2));
 	open ("/dev/tty1", O_WRONLY);
 	open ("/dev/tty1", O_WRONLY);
-	/* yet again lazy */
-	if (access ("/usr/bin/clear", X_OK) == 0)
-		system ("/usr/bin/clear");
-	else if (access ("/bin/clear", X_OK) == 0)
-		system ("/bin/clear");
-	printf ("\n\n\n");
+	open ("/dev/tty1", O_WRONLY);
+
+	ve_setenv ("TERM", "linux", TRUE);
+
+	/* evil hack that will get the fonts right */
+	if (access ("/bin/bash", X_OK) == 0)
+		system ("/bin/bash -l -c /bin/true");
+
+	/* clear screen and set to red */
+	printf ("\033[H\033[J\n\n\033[1m---\n\033[1;31m ");
+
 	if (reboot)
 		printf (_("System is rebooting, please wait ..."));
 	else
 		printf (_("System is shutting down, please wait ..."));
-	printf ("\n\n\n");
+	/* set to black */
+	printf ("\033[0m\n\033[1m---\033[0m\n\n");
 }
 #endif /* __linux__ */
 
@@ -3016,12 +3020,11 @@ update_config (const char *key)
 	int r;
 
 	IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
-	if (r < 0) {
+	if G_UNLIKELY (r < 0) {
 		/* if the file didn't exist before either */
 		if (config_file_mtime == 0)
 			return TRUE;
 	} else {
-		/* if the file didn't exist before either */
 		if (config_file_mtime == statbuf.st_mtime)
 			return TRUE;
 		config_file_mtime = statbuf.st_mtime;

@@ -1,5 +1,29 @@
 Ahh news...
 
+2.4.4.3 stuff:
+
+- The graphical greeter now wraps text correctly (and
+  all text).  Plus you can insert \n in the welcome text
+  now too (it worked for gdmlogin before) Fixes #123017
+
+- The entry type in the graphical greeter listens to
+  font and color from the normal state (it only has
+  the normal state) (Anton Altaparmakov, me)
+
+- Tweak fontsizes in the default themes to be smaller.  For
+  some reason they very suddenly very huge.
+
+- Further memory savings in the graphical greeter (though
+  it may be offset by the new wrapping code which is quite
+  large :)
+
+- Another security audit, but no new security holes found,
+  on the other hand lots of code changed to being
+  super-anal (which is never bad in something running as
+  root)
+
+- Lots of random fixes again
+
 2.4.4.2 stuff:
 
 - Fix the session setup to be both back-compatible and

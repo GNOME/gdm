@@ -32,6 +32,12 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#define IGNORE_EINTR(expr) \
+	do {		\
+		errno = 0;	\
+		expr;		\
+	} while (errno == EINTR);
+
 #ifndef FALSE
 #define FALSE 0
 #define TRUE !FALSE
@@ -78,7 +84,7 @@ sighandler (int sig)
 
 	/* Kill myself with this signal */
 	signal (sig, SIG_DFL);
-	kill (getpid (), sig);
+	raise (sig);
 }
 
 int 
@@ -117,6 +123,10 @@ main (int argc, char *argv[])
 		cmd_start = 2;
 		command = argv[2];
 		argv[2] = malloc (strlen (command) + 2);
+		if (argv[2] == NULL) {
+			fprintf (stderr, "gdmopen: cannot allocate memory!\n");
+			return 66;
+		}
 		p = strrchr (command, '/');
 		if (p != NULL) {
 			/* make it "-basename" */
@@ -136,13 +146,13 @@ main (int argc, char *argv[])
 	errno = 0;
 	if ((ioctl(fd, VT_OPENQRY, &vtno) < 0) || (vtno == -1)) {
 		perror ("gdmopen: Cannot find a free VT");
-		close (fd);
+		IGNORE_EINTR (close (fd));
 		return 66;
 	}
 
 	if (ioctl(fd, VT_GETSTATE, &vt) < 0) {
 		perror ("gdmopen: can't get VTstate");
-		close(fd);
+		IGNORE_EINTR (close(fd));
 		return 66;
 	}
 
@@ -176,10 +186,10 @@ main (int argc, char *argv[])
 			fprintf(stderr, "open: Unable to set new session (%s)\n",
 				strerror(errno));
 		}
-		close(0);
-		close(1);
-		close(2);
-		close(fd);	 
+		IGNORE_EINTR (close (0));
+		IGNORE_EINTR (close (1));
+		IGNORE_EINTR (close (2));
+		IGNORE_EINTR (close (fd));
 
 		/* and grab new one */
 		fd = open (vtname, O_RDWR);
@@ -199,7 +209,7 @@ main (int argc, char *argv[])
 
 #ifdef __linux__
 		/* Turn on fonts */
-		write (0, "\033(K", 3);
+		IGNORE_EINTR (write (0, "\033(K", 3));
 #endif /* __linux__ */
 
 		execvp (command, &argv[cmd_start]);
@@ -214,7 +224,7 @@ main (int argc, char *argv[])
 
 	do_switchback = TRUE;
 
-	waitpid (child_pid, &status, 0);
+	IGNORE_EINTR (waitpid (child_pid, &status, 0));
 	child_pid = -1;
 
 	do_switchback = FALSE;
@@ -224,7 +234,7 @@ main (int argc, char *argv[])
 	/* wait to be really sure we have switched */
 	(void) ioctl(fd, VT_WAITACTIVE, vt.v_active);
 
-	close (fd);
+	IGNORE_EINTR (close (fd));
 
 	if (WIFEXITED (status))
 		return WEXITSTATUS (status);
