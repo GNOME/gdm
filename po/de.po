@@ -8,9 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GDM2 HEAD\n"
-"POT-Creation-Date: 2003-01-20 22:49+0100\n"
-"PO-Revision-Date: 2003-01-20 22:49+0100\n"
-"Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
+"POT-Creation-Date: 2003-02-15 04:58+0100\n"
+"PO-Revision-Date: 2003-02-15 15:49+0100\n"
+"Last-Translator: Benjamin Greiner <nadaschauher@gmx.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -188,7 +188,7 @@ msgstr "%s: %s ist beschreibbar durch Gruppe."
 #: daemon/filecheck.c:68
 #, c-format
 msgid "%s: %s is writable by other."
-msgstr "%s: %s ist beschreibbar durch Andere."
+msgstr "%s: %s ist für alle beschreibbar."
 
 #: daemon/filecheck.c:82
 #, c-format
@@ -384,7 +384,7 @@ msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
 "restart gdm."
 msgstr ""
-"Die »gdm«-Gruppe existiert nicht. Bitte korrigieren Sie die GDM-"
+"Die Gruppe »gdm« existiert nicht. Bitte korrigieren Sie die GDM-"
 "Konfiguration %s und starten Sie GDM neu."
 
 #: daemon/gdm.c:577
@@ -591,7 +591,7 @@ msgstr "gdm_child_action: Master geht in den Ruhezustand..."
 #: daemon/gdm.c:1152
 #, c-format
 msgid "gdm_child_action: Suspend failed: %s"
-msgstr "gdm_child_action: Suspend fehlgeschlagen: %s"
+msgstr "gdm_child_action: Ruhezustand fehlgeschlagen: %s"
 
 #: daemon/gdm.c:1250
 msgid "GDM restarting ..."
@@ -609,7 +609,7 @@ msgstr "Nicht in den Hintergrund abspalten"
 msgid "Preserve LD_* variables"
 msgstr "LD_*-Variablen beibehalten"
 
-#: daemon/gdm.c:1436 gui/gdmchooser.c:1103
+#: daemon/gdm.c:1436 gui/gdmchooser.c:1071
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -1110,7 +1110,7 @@ msgid ""
 msgstr ""
 "Dies ist die abgesicherte XTerm-Sitzung.\n"
 "Sie werden an einer Terminalkonsole\n"
-"angemeldet, so dass Sie Ihr System\n"
+"angemeldet, sodass Sie Ihr System\n"
 "reparieren können, falls Sie sich auf\n"
 "keine andere Weise anmelden konnten.\n"
 "Um den Terminalemulator zu verlassen,\n"
@@ -1428,7 +1428,7 @@ msgid ""
 "The system administrator has disabled access to the system temporarily."
 msgstr ""
 "\n"
-"Der Systemadministrator hat den Zugriff auf das System vorrübergehend "
+"Der Systemadministrator hat den Zugriff auf das System vorübergehend "
 "deaktiviert."
 
 #: daemon/verify-pam.c:415 daemon/verify-pam.c:575
@@ -1472,7 +1472,7 @@ msgid ""
 "The system administrator has disabled your access to the system temporary."
 msgstr ""
 "\n"
-"Der Systemadministrator den Zugriff durch Sie auf das System vorrübergehend "
+"Der Systemadministrator den Zugriff durch Sie auf das System vorübergehend "
 "unterbunden."
 
 #: daemon/verify-pam.c:698 daemon/verify-pam.c:700
@@ -1779,7 +1779,7 @@ msgid "Choose a host to connect to from the selection below."
 msgstr ""
 "Wählen Sie einen Rechner mit dem verbunden werden soll aus der Liste unten."
 
-#: gui/gdmchooser.c:903
+#: gui/gdmchooser.c:871
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1797,54 +1797,52 @@ msgstr ""
 "prüfen« klicken. Wenn Sie einen Rechner ausgewählt haben, klicken Sie "
 "»Verbinden«, um eine Sitzung auf dieser Maschine zu öffnen."
 
-#: gui/gdmchooser.c:931
+#: gui/gdmchooser.c:899
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Voreingestelltes Rechner-Symbol konnte nicht geöffnet werden: %s"
 
-#: gui/gdmchooser.c:987
+#: gui/gdmchooser.c:955
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Fehler beim Einrichten des HUP-Signalhandlers"
 
-#: gui/gdmchooser.c:990
+#: gui/gdmchooser.c:958
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Fehler beim Einrichten des INT-Signalhandlers"
 
-#: gui/gdmchooser.c:993
+#: gui/gdmchooser.c:961
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Fehler beim Einrichten des TERM-Signalhandlers"
 
-#: gui/gdmchooser.c:1001 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
+#: gui/gdmchooser.c:969 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
 msgid "Could not set signal mask!"
 msgstr "Signalmaske konnte nicht gesetzt werden!"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "Socket for xdm communication"
 msgstr "Socket für xdm-Kommunikation"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "SOCKET"
 msgstr "SOCKET"
 
-# CHECK
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "Client address to return in response to xdm"
-msgstr "Client-Adresse an die, bei Antwort für xdm zurückgeschickt werden soll"
+msgstr "Client-Adresse, die xdm als Antwort geschickt werden soll"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "ADDRESS"
 msgstr "ADRESSE"
 
-# CHECK
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "Connection type to return in response to xdm"
-msgstr "Verbindungstyp an den, bei Antwort für xdm zurückgeschickt werden soll"
+msgstr "Verbindungstyp, der xdm als Antwort werden soll"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "TYPE"
 msgstr "TYP"
 
-#: gui/gdmchooser.c:1133
+#: gui/gdmchooser.c:1101
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).\n"
@@ -2026,7 +2024,7 @@ msgstr "Neu anmelden"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:53
 msgid "A-M|Azerbaijani"
-msgstr "A-M|Azerbaijan"
+msgstr "A-M|Aserbaidschanisch"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:55
@@ -2101,7 +2099,7 @@ msgstr "A-M|Estnisch"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:83
 msgid "A-M|English (American)"
-msgstr "A-M|Englisch (Amerika)"
+msgstr "A-M|Englisch (USA)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:85
@@ -2181,7 +2179,7 @@ msgstr "A-M|Koreanisch"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:116
 msgid "A-M|Latvian"
-msgstr "A-M|Latvia"
+msgstr "A-M|Lettisch"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:118
@@ -2201,12 +2199,12 @@ msgstr "A-M|Malaiisch"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:124
 msgid "N-Z|Norwegian (bokmal)"
-msgstr "N-Z|Norwegisch (bokmal)"
+msgstr "N-Z|Norwegisch (Bokmål)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:126
 msgid "N-Z|Norwegian (nynorsk)"
-msgstr "N-Z|Norwegisch (nyorsk)"
+msgstr "N-Z|Norwegisch (Nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:128
@@ -2266,42 +2264,47 @@ msgstr "N-Z|Schwedisch (Finnland)"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:150
 msgid "N-Z|Tamil"
-msgstr "N-Z|Tamilisch"
+msgstr "N-Z|Tamil"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:152
+msgid "N-Z|Thai"
+msgstr "N-Z|Thailändisch"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:154
 msgid "N-Z|Turkish"
 msgstr "N-Z|Türkisch"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:154
+#: gui/gdmlanguages.c:156
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrainisch"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:156
+#: gui/gdmlanguages.c:158
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamesisch"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:158
+#: gui/gdmlanguages.c:160
 msgid "N-Z|Walloon"
 msgstr "N-Z|Wallonisch"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:160
+#: gui/gdmlanguages.c:162
 msgid "Other|POSIX/C English"
-msgstr "Andere|POSIX/C Englisch"
+msgstr "Sonstige|POSIX/C-Englisch"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:335
+#: gui/gdmlanguages.c:337
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:343
+#: gui/gdmlanguages.c:345
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2351,7 +2354,7 @@ msgstr "Benutzer %s wird in %d Sekunden angemeldet"
 msgid ""
 "Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr ""
-"Doppelklicken Sie hier, um das Anmeldefenster wiederherzustellen, so dass "
+"Doppelklicken Sie hier, um das Anmeldefenster wiederherzustellen, sodass "
 "Sie sich anmelden können"
 
 #: gui/gdmlogin.c:588 gui/gdmlogin.c:600
@@ -2384,7 +2387,7 @@ msgstr "Sind Sie sicher, dass Sie den Rechner herunterfahren möchten?"
 #: gui/gdmlogin.c:826 gui/greeter/greeter_system.c:73
 msgid "Are you sure you want to suspend the machine?"
 msgstr ""
-"Sind Sie sicher, dass Sie den Rechner in den Suspend-Modus fahren möchten?"
+"Sind Sie sicher, dass Sie den Rechner in den Ruhezustand versetzen möchten?"
 
 #: gui/gdmlogin.c:841
 #, c-format
@@ -2504,7 +2507,7 @@ msgstr ""
 "Dies ist eine abgesicherte Sitzung, die Sie bei einem Terminal anmeldet. Es "
 "werden keine Startskripte gelesen, und diese Sitzung sollte nur verwendet "
 "werden, wenn Sie sich anders nicht anmelden können. Um das Terminal zu "
-"verlassen, geben Sie «exit» ein."
+"verlassen, geben Sie »exit« ein."
 
 #: gui/gdmlogin.c:1573 gui/greeter/greeter_session.c:450
 msgid "No default session link found. Using Failsafe GNOME.\n"
@@ -2554,7 +2557,7 @@ msgstr "An diese Einstellungen erinnern"
 
 #: gui/gdmlogin.c:2335
 msgid "Please insert 25 cents to log in."
-msgstr "Bitte werfen Sie 25 Cent ein um sich anzumelden."
+msgstr "Bitte werfen Sie zur Anmeldung 25 Cent ein."
 
 #: gui/gdmlogin.c:2742
 msgid "GNOME Desktop Manager"
@@ -2625,11 +2628,11 @@ msgstr "_Herunterfahren..."
 
 #: gui/gdmlogin.c:3053
 msgid "Shut down your computer so that you may turn it off."
-msgstr "Den Computer herunterfahren, sodass Sie Ihn ausschalten können."
+msgstr "Den Computer herunterfahren, sodass Sie ihn ausschalten können."
 
 #: gui/gdmlogin.c:3060
 msgid "_Suspend..."
-msgstr "_Suspend-Modus..."
+msgstr "Ruhezu_stand..."
 
 #: gui/gdmlogin.c:3067
 msgid "Suspend your computer"
@@ -2803,7 +2806,7 @@ msgstr ""
 msgid ""
 "Change the picture that will show in the GDM (login manager) face browser"
 msgstr ""
-"Das Bild, das im GDM (Anmelde-Manager) Gesichter-Betrachter gezeigt wird, "
+"Das Bild, das im Gesichterbetrachter GDMs (des Anmeldemanagers) gezeigt wird, "
 "ändern"
 
 #: gui/gdmphotosetup.desktop.in.h:2
@@ -2825,7 +2828,7 @@ msgstr "_Lokal: "
 
 #: gui/gdmsetup-strings.c:9 gui/gdmsetup.glade.h:51
 msgid "_Remote: "
-msgstr "_Entfernt:"
+msgstr "_Entfernt: "
 
 #: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
 #: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:807 gui/gdmsetup.glade.h:39
@@ -2895,7 +2898,7 @@ msgstr "Logo"
 
 #: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:38
 msgid "Show choosable user images (_face browser)"
-msgstr "Wählbare Benutzerbilder (_Gesicherbetrachter) anzeigen"
+msgstr "Wählbare Benutzerbilder (_Gesichterbetrachter) anzeigen"
 
 #: gui/gdmsetup-strings.c:32 gui/gdmsetup.glade.h:29
 msgid "Miscellaneous"
@@ -3058,7 +3061,7 @@ msgid ""
 "An error occured while trying to contact the login screens.  Not all updates "
 "may have taken effect."
 msgstr ""
-"Bei der Kontaktaufnahme mit den Anmeldebilschirmen ist ein Fehler "
+"Bei der Kontaktaufnahme mit den Anmeldebildschirmen ist ein Fehler "
 "aufgetreten. Möglicherweise sind nicht alle Änderungen wirksam geworden."
 
 #: gui/gdmsetup.c:1324
@@ -3223,7 +3226,7 @@ msgstr "Willkommen auf %h"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
-msgstr "(c) 2002 Bond, James Bond"
+msgstr "© 2002 Bond, James Bond"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:2
 msgid "Bond, James Bond"
@@ -3239,11 +3242,11 @@ msgstr "Thema mit blauen Kreisen"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
-msgstr "(c) 2002 GNOME"
+msgstr "© 2002 GNOME"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:2
 msgid "GNOME Art variation of Circles"
-msgstr "GNOME Künstler-Abwandlung von Kreisen"
+msgstr "Abwandlung der »Kreise« von »Gnome Art«"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
 msgid "GNOME Artists"
