@@ -819,8 +819,33 @@
 		autologged in however and gdm will just refuse to do it even
 		if you set it up.
 	      </para>
-	    </listitem>
-	  </varlistentry>
+
+              <para>
+                The following control chars are recognized within the specified name:
+              </para>
+
+              <para>
+                &percnt;&percnt; &mdash; the `&percnt;' character
+              </para>
+
+              <para>
+                &percnt;d &mdash; display's name
+              </para>
+
+              <para>
+                &percnt;h &mdash; display's hostname
+              </para>
+
+              <para>
+                Alternatively, the name may end with a vertical bar |, the pipe symbol.
+                The name is then used as a program to execute which returns the desired
+                username on standard output. If an empty or otherwise invalid username
+                is returned, automatic login is not performed. This feature is typically
+                used when several remote displays are used as internet kiosks, with a
+                specific user to automatically login for each display.
+              </para>
+            </listitem>
+          </varlistentry>
 
 	  <varlistentry>
 	    <term>BaseXsession</term>
@@ -1198,6 +1223,9 @@
 		This is the user that should be logged in after a specified
 		number of seconds of inactivity.  This can never be "root"
 		and gdm will refuse to log in root this way.
+		The same features as for <filename>AutomaticLogin</filename>
+		are supported.  The same control chars and piping to a
+		program are supported.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -3380,6 +3408,123 @@
     </sect2>
   </sect1>
 
+  <sect1 id="exampleconf">
+    <title>Example Configurations</title>
+
+    <para>
+      This section has some example configurations that are useful for
+      various setups.
+    </para>
+
+    <sect2 id="terminallab">
+      <title>Terminal Lab With One Server</title>
+
+      <para>
+	Suppose you want to make a lab full of X terminals that all connect
+	to one main server.  So let's call one X terminal <filename>xterminal</filename>
+	and lets call the server <filename>appserver</filename>.  You install
+	GDM on both.
+      </para>
+
+      <para>
+	On <filename>appserver</filename> you enable XDMCP, so you have
+        <screen>
+   [xdmcp]
+   Enable=true
+        </screen>
+	If you want no local screens here, you can then
+	make the <filename>[servers]</filename> section empty.
+      </para>
+
+      <para>
+	On the <filename>xterminal</filename> you disable XDMCP (you don't
+	want anyone to connect to the xterminal really).  You will add a server type
+	perhaps called <filename>Terminal</filename> as follows:
+	<screen>
+   [server-Terminal]
+   name=Terminal server
+   command=/usr/X11R6/bin/X -terminate
+   flexible=false
+   handled=false
+        </screen>
+	This definition should in fact be included in the standard configuration
+	file.  Notice that we made the <filename>handled</filename> key false
+	since we don't want GDM to handle this server localy.  Also note that
+	we have not yet added the <filename>-query</filename> argument, you can add
+	that here, or in the <filename>[servers]</filename> section.  We'll define
+	our local servers as follows:
+	<screen>
+   [servers]
+   0=Terminal -query appserver
+        </screen>
+	This will run a direct XDMCP query to the server named
+	<filename>appserver</filename>.
+      </para>
+    </sect2>
+
+    <sect2 id="terminallabtwo">
+      <title>Terminal Lab With Two Or More Servers</title>
+
+      <para>
+	Suppose you want to make a lab full of X terminals that all connect
+	to some choice of servers.  For now let's make it <filename>appserverone</filename>
+	and <filename>appservertwo</filename>.  Again we'll call our example
+	X terminal machine <filename>xterminal</filename>.  The setup on
+	both servers is the same as with the case of one server in the previous
+	section.  You do not need to explicitly enable indirect queries on the
+	server since we'll run the choosers locally on the X terminals.
+      </para>
+
+      <para>
+	So on the <filename>xterminal</filename> you again disable XDMCP.
+	You will add a server type perhaps called <filename>Chooser</filename> as follows:
+	<screen>
+    [server-Chooser]
+    name=Chooser server
+    command=/usr/X11R6/bin/X
+    flexible=false
+    chooser=true
+        </screen>
+	And again this definition should in fact be included in the standard configuration
+	file.  Notice that we made the <filename>chooser</filename> key true here.
+	This will run the XDMCP chooser for this server, and when the user chooses
+	a host GDM will run a query for that host.  Then we'll define
+	our local servers as follows:
+	<screen>
+   [servers]
+   0=Chooser
+        </screen>
+      </para>
+
+      <para>
+	The XDMCP chooser on the X terminal will normally give a broadcast query to
+	see which servers exist on the network.  If the two servers are not reachable
+	by a broadcast query, you must add them by hand to the configuration file.
+	So in the <filename>[chooser]</filename> section you would have:
+	<screen>
+   Hosts=appserverone,appservertwo
+        </screen>
+	and any other servers you wish the users to be able to connect to.
+      </para>
+
+      <para>
+	Sometimes you may want to run the chooser on the server side however.  Then
+	what you want to do is to run a configuration similar to the previous
+	section about the one server configuration with XDMCP indirect queries
+	enabled on <filename>appserver</filename> and on the X terminals you'd have
+	<screen>
+   [servers]
+   0=Terminal -indirect appserver
+        </screen>
+	This way for example you only have to maintain one <filename>Hosts</filename>
+	entry.  However as a disadvantage then, the <filename>appserver</filename>
+	must then always be available.  So it's not good for situations where
+	you want to have serveral servers and not all of them have to be on
+	all the time.  You could also have one of the X terminals handle
+	indirect XDMCP queries and serve up the chooser to the other X terminals.
+      </para>
+    </sect2>
+  </sect1>
 
   <!-- ============= Application License ============================= -->
 
