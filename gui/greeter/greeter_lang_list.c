@@ -26,7 +26,7 @@ static Language languages [] = {
 	{ N_("Icelandic"), "is_IS" },
 	{ N_("Italian"), "it_IT" },
 	{ N_("Japanese"), "ja_JP", "日本語" },
-	{ N_("Korean"), "ko_KR" },
+	{ N_("Korean"), "ko_KR", "한국어" },
 	{ N_("Lithuanian"), "lt_LT" },
 	{ N_("Norwegian (bokmal)"), "no_NO" },
 	{ N_("Norwegian (nynorsk)"), "nn_NO" },
