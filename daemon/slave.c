@@ -202,8 +202,7 @@ static void     gdm_slave_exit (gint status, const gchar *format, ...) G_GNUC_PR
 static void     gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent,
-				       gboolean pass_stdout, 
-				       gboolean set_parent);
+				       gboolean pass_stdout);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
 static void	gdm_slave_handle_usr2_message (void);
 static void	gdm_slave_handle_notify (const char *msg);
@@ -928,8 +927,7 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 	/* Run the init script. gdmslave suspends until script
 	 * has terminated */
 	gdm_slave_exec_script (display, GdmDisplayInit, NULL, NULL,
-			       FALSE /* pass_stdout */,
-			       TRUE /* set_parent */);
+			       FALSE /* pass_stdout */);
 
 	gdm_debug ("setup_automatic_session: DisplayInit script finished");
 
@@ -2446,8 +2444,7 @@ gdm_slave_greeter (void)
     
     /* Run the init script. gdmslave suspends until script has terminated */
     gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL,
-			   FALSE /* pass_stdout */,
-			   TRUE /* set_parent */);
+			   FALSE /* pass_stdout */);
 
     /* Open a pipe for greeter communications */
     if G_UNLIKELY (pipe (pipe1) < 0)
@@ -2938,8 +2935,7 @@ gdm_slave_chooser (void)
 
 	/* Run the init script. gdmslave suspends until script has terminated */
 	gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL,
-			       FALSE /* pass_stdout */,
-			       TRUE /* set_parent */);
+			       FALSE /* pass_stdout */);
 
 	/* Fork. Parent is gdmslave, child is greeter process. */
 	gdm_sigchld_block_push ();
@@ -3465,8 +3461,7 @@ session_child_run (struct passwd *pwent,
 	/* Run the PreSession script */
 	if G_UNLIKELY (gdm_slave_exec_script (d, GdmPreSession,
 					      login, pwent,
-					      TRUE /* pass_stdout */,
-					      TRUE /* set_parent */) != EXIT_SUCCESS &&
+					      TRUE /* pass_stdout */) != EXIT_SUCCESS &&
 		       /* ignore errors in failsafe modes */
 		       ! failsafe) 
 		/* If script fails reset X server and restart greeter */
@@ -3876,8 +3871,7 @@ gdm_slave_session_start (void)
     /* Run the PostLogin script */
     if G_UNLIKELY (gdm_slave_exec_script (d, GdmPostLogin,
 					  login, pwent,
-					  TRUE /* pass_stdout */,
-					  TRUE /* set_parent */) != EXIT_SUCCESS &&
+					  TRUE /* pass_stdout */) != EXIT_SUCCESS &&
 		   /* ignore errors in failsafe modes */
 		   ! failsafe) {
 	    gdm_verify_cleanup (d);
@@ -4320,8 +4314,7 @@ gdm_slave_session_stop (gboolean run_post_session,
 	    /* Execute post session script */
 	    gdm_debug ("gdm_slave_session_stop: Running post session script");
 	    gdm_slave_exec_script (d, GdmPostSession, local_login, pwent,
-				   FALSE /* pass_stdout */,
-				   TRUE /* set_parent */);
+				   FALSE /* pass_stdout */);
     }
 
     VE_IGNORE_EINTR (unlink (x_servers_file));
@@ -5079,8 +5072,7 @@ set_xnest_parent_stuff (void)
 
 static gint
 gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
-		       struct passwd *pwent, gboolean pass_stdout,
-		       gboolean set_parent)
+		       struct passwd *pwent, gboolean pass_stdout)
 {
     pid_t pid;
     char *script;
@@ -5132,8 +5124,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	    return EXIT_SUCCESS;
     }
 
-    if (set_parent)
-	    create_temp_auth_file ();
+    create_temp_auth_file ();
 
     pid = gdm_fork_extra ();
 
@@ -5189,8 +5180,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	        ve_setenv ("SHELL", "/bin/sh", TRUE);
         }
 
-	if (set_parent)
-		set_xnest_parent_stuff ();
+	set_xnest_parent_stuff ();
 
 	/* some env for use with the Pre and Post scripts */
 	x_servers_file = gdm_make_filename (GdmServAuthDir,
@@ -5218,8 +5208,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	_exit (EXIT_SUCCESS);
 	    
     case -1:
-	if (set_parent)
-		gdm_slave_whack_temp_auth_file ();
+	gdm_slave_whack_temp_auth_file ();
 	g_free (script);
 	syslog (LOG_ERR, _("%s: Can't fork script process!"), "gdm_slave_exec_script");
 	return EXIT_SUCCESS;
@@ -5227,8 +5216,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     default:
 	gdm_wait_for_extra (&status);
 
-	if (set_parent)
-		gdm_slave_whack_temp_auth_file ();
+	gdm_slave_whack_temp_auth_file ();
 
 	g_free (script);
 

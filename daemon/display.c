@@ -59,9 +59,6 @@ gdm_display_check_loop (GdmDisplay *disp)
   
   now = time (NULL);
 
-  if (disp->disabled)
-    return FALSE;
-
   gdm_debug ("loop check: last_start %ld, last_loop %ld, now: %ld, retry_count: %d", (long)disp->last_start_time, (long) disp->last_loop_start_time, (long) now, disp->retry_count);
   
   if (disp->last_loop_start_time > now || disp->last_loop_start_time == 0)

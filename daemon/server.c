@@ -1364,7 +1364,6 @@ gdm_server_alloc (gint id, const gchar *command)
     d->last_loop_start_time = 0;
     d->last_start_time = 0;
     d->retry_count = 0;
-    d->disabled = FALSE;
     d->sleep_before_run = 0;
     d->login = NULL;
 

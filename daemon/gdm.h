@@ -382,8 +382,6 @@ struct _GdmDisplay {
 
     gboolean try_different_greeter;
 
-    gboolean disabled;
-
     gboolean logged_in; /* TRUE if someone is logged in */
     char *login;
 
