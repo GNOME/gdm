@@ -116,6 +116,7 @@ char * gdm_locale_to_utf8 (const char *text);
 char * gdm_locale_from_utf8 (const char *text);
 
 void gdm_saveenv (void);
+const char * gdm_saved_getenv (const char *var);
 /* leaks */
 void gdm_restoreenv (void);
 

@@ -313,6 +313,24 @@ gdm_saveenv (void)
 	}
 }
 
+const char *
+gdm_saved_getenv (const char *var)
+{
+	int len;
+	GList *li;
+
+	len = strlen (var);
+
+	for (li = stored_env; li != NULL; li = li->next) {
+		const char *e = li->data;
+		if (strncmp (var, e, len) == 0 &&
+		    e[len] == '=') {
+			return &(e[len+1]);
+		}
+	}
+	return NULL;
+}
+
 /* leaks */
 void
 gdm_restoreenv (void)

@@ -2850,7 +2850,7 @@ is_session_magic (const char *session_name)
 }
 
 static char *
-get_session_exec (const char *session_name)
+get_session_exec (const char *session_name, gboolean check_try_exec)
 {
 	char *file;
 	char *full = NULL;
@@ -2904,18 +2904,23 @@ get_session_exec (const char *session_name)
 	if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false"))
 		return NULL;
 
-	tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
-	if ( ! ve_string_empty (tryexec) &&
-	     ! ve_is_prog_in_path (tryexec, GdmDefaultPath)) {
+	if (check_try_exec) {
+		tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
+		if ( ! ve_string_empty (tryexec) &&
+		     ! ve_is_prog_in_path (tryexec, GdmDefaultPath) &&
+		     ! ve_is_prog_in_path (tryexec, gdm_saved_getenv ("PATH"))) {
+			g_free (tryexec);
+			return NULL;
+		}
 		g_free (tryexec);
-		return NULL;
 	}
-	g_free (tryexec);
 
 	exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
 	return g_strdup (exec);
 }
 
+/* Note that this does check TryExec! while normally we don't check
+ * it */
 static gboolean
 is_session_ok (const char *session_name)
 {
@@ -2930,7 +2935,7 @@ is_session_ok (const char *session_name)
 	if (ve_string_empty (GdmSessDir))
 		return is_session_magic (session_name);
 
-	exec = get_session_exec (session_name);
+	exec = get_session_exec (session_name, TRUE /* check_try_exec */);
 	if (exec == NULL)
 		ret = FALSE;
 	g_free (exec);
@@ -3288,7 +3293,8 @@ session_child_run (struct passwd *pwent,
 	exec = NULL;
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
 	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
-		exec = get_session_exec (session);
+		exec = get_session_exec (session,
+					 FALSE /* check_try_exec */);
 		if G_UNLIKELY (exec == NULL) {
 			gdm_error (_("%s: No Exec line in the session file: %s, starting failsafe GNOME"),
 				   "gdm_slave_session_start",
@@ -3694,7 +3700,7 @@ gdm_slave_session_start (void)
 	    failsafe = TRUE;
 
     if G_LIKELY ( ! failsafe) {
-	    char *exec = get_session_exec (session);
+	    char *exec = get_session_exec (session, FALSE /* check_try_exec */);
 	    if ( ! ve_string_empty (exec) &&
 		strcmp (exec, "failsafe") == 0)
 		    failsafe = TRUE;
@@ -3777,7 +3783,7 @@ gdm_slave_session_start (void)
     }
     
     /* this clears internal cache */
-    get_session_exec (NULL);
+    get_session_exec (NULL, FALSE);
 
     if G_LIKELY (logfilefd >= 0)  {
 	    d->xsession_errors_fd = logfilefd;
