@@ -216,6 +216,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					NULL);
     break;
   case GREETER_ITEM_TYPE_SVG:
+    gnome_i18n_push_c_numeric_locale ();
     for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
       {
 	if (item->files[i])
@@ -226,6 +227,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 	else
 	  item->orig_pixbufs[i] = NULL;
       }
+    gnome_i18n_pop_c_numeric_locale ();
 
     /* Fall through */
   case GREETER_ITEM_TYPE_PIXMAP:
