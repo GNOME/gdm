@@ -482,12 +482,9 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
-		int i;
-
 		closelog ();
 
-		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-			close (i);
+		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
@@ -966,6 +963,17 @@ gdm_fdgets (int fd)
 			bytes ++;
 			g_string_append_c (gs, c);
 		}
+	}
+}
+
+void
+gdm_close_all_descriptors (int from, int except)
+{
+	int i;
+	int max = sysconf (_SC_OPEN_MAX);
+	for (i = from; i < max; i++) {
+		if (i != except)
+			close(i);
 	}
 }
 

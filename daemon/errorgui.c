@@ -120,7 +120,6 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 	if (pid == 0) {
 		guint sid;
-		int i;
 		int argc = 1;
 		char **argv;
 		GtkWidget *dlg;
@@ -134,8 +133,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 		closelog ();
 
-		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-			close(i);
+		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
@@ -268,7 +266,6 @@ gdm_failsafe_question (GdmDisplay *d,
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
 		guint sid;
-		int i;
 		int argc = 1;
 		char **argv;
 		GtkWidget *dlg, *label, *entry;
@@ -281,8 +278,7 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		closelog ();
 
-		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-			close(i);
+		gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
@@ -371,7 +367,7 @@ gdm_failsafe_question (GdmDisplay *d,
 		loc = g_locale_from_utf8 (ve_sure_string (gtk_entry_get_text (GTK_ENTRY (entry))),
 					  -1, NULL, NULL, NULL);
 
-		gdm_fdprintf (STDOUT_FILENO, "%s", ve_sure_string (loc));
+		gdm_fdprintf (p[1], "%s", ve_sure_string (loc));
 
 		_exit (0);
 	} else if (pid > 0) {
@@ -408,7 +404,6 @@ gdm_failsafe_yesno (GdmDisplay *d,
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
 		guint sid;
-		int i;
 		int argc = 1;
 		char **argv;
 		GtkWidget *dlg;
@@ -421,10 +416,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 
 		closelog ();
 
-		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++) {
-			if (p[1] != i)
-				close(i);
-		}
+		gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */

@@ -9,6 +9,9 @@ Ahh news...
   whatever the system sets up elsewhere.  Also this fixes using the
   system default on *BSD
 
+- Remove the English en locale since 'en' is not a legal locale,
+  now you have to pick either american or british english.
+
 - Fix the unresponsive behaviour when first asking for username in the
   graphical greeter, bug #83187
 
@@ -18,7 +21,8 @@ Ahh news...
 
 - Update the Happy GNOME theme (Steve Fox)
 
-- Cleanup of the IO channels all over (Kesor, me)
+- Cleanup of the IO channels all over, this fixes some FreeBSD issues
+  but not all (Kesor, me)
 
 - Added more languages and more untranslated names, bug #84290 among others,
   (Hasbullah Bin Pit, me)
@@ -29,6 +33,8 @@ Ahh news...
 - Source /etc/profile in the gdm script
 
 - All installed .desktop's have Encoding=UTF-8 as per the standard
+
+- Fix the failsafe question dialog
 
 - Fix crash and login window reparenting in the gdmwm window manager
 

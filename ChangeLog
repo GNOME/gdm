@@ -1,3 +1,14 @@
+Tue Jul 16 10:14:08 2002  George Lebl <jirka@5z.com>
+
+	* daemon/misc.[ch], daemon/display.c, daemon/errorgui.c, daemon/gdm.c
+	  daemon/server.c, daemon/slave.c:  Make process invocation about
+	  600us faster by making a helper function for closing all
+	  descriptors that is somewhat smarter then the inline code was,
+	  and on this occasion alsofix the failsafe question dialog to
+	  actually work.
+
+	* daemon/server.c: fix debug output on stopping server
+
 Mon Jul 15 16:44:24 2002  George Lebl <jirka@5z.com>
 
 	* config/locale.alias: remove the "English" entry, the other two

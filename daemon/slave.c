@@ -664,7 +664,6 @@ focus_first_x_window (const char *class_res_name)
 	pid_t pid;
 	Display *disp;
 	XWindowAttributes attribs = { 0, };
-	int i;
 
 	pid = fork ();
 	if (pid < 0) {
@@ -678,8 +677,7 @@ focus_first_x_window (const char *class_res_name)
 
 	closelog ();
 
-	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-	    close(i);
+	gdm_close_all_descriptors (0 /* from */, -1 /* except */);
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
@@ -759,7 +757,6 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		return;
 	}
 	if (pid == 0) {
-		int i;
 		char **argv;
 		/* child */
 
@@ -784,8 +781,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		closelog ();
 
-		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-			close(i);
+		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
@@ -1276,7 +1272,6 @@ gdm_slave_greeter (void)
     gint pipe1[2], pipe2[2];  
     gchar **argv;
     struct passwd *pwent;
-    int i;
     pid_t pid;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
@@ -1318,8 +1313,7 @@ gdm_slave_greeter (void)
 
 	closelog ();
 
-	for (i = 2; i < sysconf (_SC_OPEN_MAX); i++)
-	    close(i);
+	gdm_close_all_descriptors (2 /* from */, -1 /* except */);
 
 	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
@@ -1632,7 +1626,6 @@ gdm_slave_chooser (void)
 	struct passwd *pwent;
 	char buf[1024];
 	size_t bytes;
-	int i;
 	pid_t pid;
 
 	gdm_debug ("gdm_slave_chooser: Running chooser on %s", d->name);
@@ -1669,8 +1662,7 @@ gdm_slave_chooser (void)
 		closelog ();
 
 		close (0);
-		for (i = 2; i < sysconf (_SC_OPEN_MAX); i++)
-			close(i);
+		gdm_close_all_descriptors (2 /* from */, -1 /* except */);
 
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
@@ -2060,7 +2052,6 @@ session_child_run (struct passwd *pwent,
 {
 	sigset_t mask; 
 	int logfd;
-	int i;
 	gboolean failsafe = FALSE;
 	char *sesspath, *sessexec;
 	gboolean need_config_sync = FALSE;
@@ -2199,8 +2190,7 @@ session_child_run (struct passwd *pwent,
 
 	closelog ();
 
-	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-	    close (i);
+	gdm_close_all_descriptors (0 /* from */, -1 /* except */);
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
@@ -3218,7 +3208,6 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     const char *scr;
     gchar **argv;
     gint status;
-    int i;
 
     if (!d || !dir)
 	return EXIT_SUCCESS;
@@ -3243,8 +3232,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     case 0:
         closelog ();
 
-        for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-	    close (i);
+	gdm_close_all_descriptors (0 /* from */, -1 /* except */);
 
         /* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
@@ -3382,7 +3370,6 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
       if (pipe (pipe1) < 0) {
         gdm_error (_("gdm_parse_enriched_login: Failed creating pipe"));
       } else {
-        int i;
 	pid = gdm_fork_extra ();
 
         switch (pid) {
@@ -3397,10 +3384,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 
 	    closelog ();
 
-	    for (i = 3; i < sysconf (_SC_OPEN_MAX); i++) {
-		    if (pipe1[1] != i)
-			    close (i);
-	    }
+	    gdm_close_all_descriptors (3 /* from */, pipe1[1] /* except */);
 
 	    openlog ("gdm", LOG_PID, LOG_DAEMON);
 

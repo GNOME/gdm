@@ -150,7 +150,6 @@ gboolean
 gdm_display_manage (GdmDisplay *d)
 {
     pid_t pid;
-    int i;
     int fds[2];
 
     if (!d) 
@@ -198,10 +197,7 @@ gdm_display_manage (GdmDisplay *d)
 	closelog ();
 
 	/* Close everything */
-	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++) {
-		if (i != fds[0])
-			close(i);
-	}
+	gdm_close_all_descriptors (0 /* from */, fds[0] /* except */);
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */

@@ -857,12 +857,10 @@ deal_with_x_crashes (GdmDisplay *d)
 	    if (pid == 0) {
 		    char *argv[2];
 		    char *xlog = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
-		    int ii;
 
 		    closelog ();
 
-		    for (ii = 0; ii < sysconf (_SC_OPEN_MAX); ii++)
-			    close (ii);
+		    gdm_close_all_descriptors (0 /* from */, -1 /* except */);
 
 		    /* No error checking here - if it's messed the best response
 		    * is to ignore & try to continue */

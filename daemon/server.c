@@ -142,7 +142,8 @@ gdm_server_stop (GdmDisplay *disp)
     if (disp->servpid != 0) {
 	    pid_t servpid;
 
-	    gdm_debug ("gdm_server_stop: Killing server pid %d", (int)servpid);
+	    gdm_debug ("gdm_server_stop: Killing server pid %d",
+		       (int)disp->servpid);
 
 	    /* avoid SIGCHLD race */
 	    gdm_sigchld_block_push ();
@@ -729,8 +730,7 @@ gdm_server_spawn (GdmDisplay *d)
 	closelog ();
 
 	/* close things */
-	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-		close(i);
+	gdm_close_all_descriptors (0 /* from */, -1 /* except */);
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
