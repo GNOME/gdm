@@ -38,6 +38,9 @@ struct _GdmWindow {
 	Window win;
 	Window deco;
 	Window shadow;
+	gboolean ignore_size_hints; /* for gdm windows */
+	gboolean center; /* do centering */
+	gboolean recenter; /* do re-centering */
 };
 
 static GList *windows = NULL;
@@ -303,7 +306,7 @@ find_window (Window w, gboolean deco_ok)
 }
 
 static void
-center_x_window (Window w, Window hintwin)
+center_x_window (GdmWindow *gw, Window w, Window hintwin)
 {
 	XSizeHints hints;
 	Status status;
@@ -325,8 +328,19 @@ center_x_window (Window w, Window hintwin)
 		return;
 	}
 
+	/* allow resizing when PSize is given, just don't allow centering when
+	 * PPosition is goven */
 	can_resize = ! (hints.flags & USSize);
-	can_reposition = ! (hints.flags & USPosition);
+	can_reposition = ! (hints.flags & USPosition ||
+			    hints.flags & PPosition);
+
+	if (can_reposition && ! gw->center)
+		can_reposition = FALSE;
+
+	if (gw->ignore_size_hints) {
+		can_resize = TRUE;
+		can_reposition = TRUE;
+	}
 
 	if ( ! can_resize &&
 	     ! can_reposition) {
@@ -359,8 +373,68 @@ center_x_window (Window w, Window hintwin)
 	
 	XMoveResizeWindow (wm_disp, w, x, y, width, height);
 
+	if (gw->center && ! gw->recenter) {
+		gw->center = FALSE;
+	}
+
 	trap_pop ();
 }
+
+#ifndef MWMUTIL_H_INCLUDED
+
+typedef struct {
+    unsigned long flags;
+    unsigned long functions;
+    unsigned long decorations;
+    long input_mode;
+    unsigned long status;
+} MotifWmHints, MwmHints;
+
+#define MWM_HINTS_DECORATIONS   (1L << 1)
+
+#define MWM_DECOR_BORDER        (1L << 1)
+
+#endif /* MWMUTIL_H_INCLUDED */
+
+static gboolean
+has_deco (Window win)
+{
+	static Atom hints_atom = None;
+	MotifWmHints *hints;
+	Atom type;
+	gint format;
+	gulong nitems;
+	gulong bytes_after;
+	gboolean border = TRUE;
+
+	trap_push ();
+
+	if (hints_atom == None)
+		hints_atom = XInternAtom (wm_disp, "_MOTIF_WM_HINTS", FALSE);
+
+	hints = NULL;
+
+	XGetWindowProperty (wm_disp, win,
+			    hints_atom, 0,
+			    sizeof (MotifWmHints) / sizeof (long),
+			    False, AnyPropertyType, &type, &format, &nitems,
+			    &bytes_after, (guchar **)&hints);
+
+	if (type != None &&
+	    hints != NULL &&
+	    hints->flags & MWM_HINTS_DECORATIONS &&
+	    ! (hints->decorations & MWM_DECOR_BORDER)) {
+		border = FALSE;
+	}
+
+	if (hints != NULL)
+		XFree (hints);
+
+	trap_pop ();
+
+	return border;
+}
+
 
 static void
 add_deco (GdmWindow *w)
@@ -372,6 +446,11 @@ add_deco (GdmWindow *w)
 	int black;
 
 	trap_push ();
+
+	if ( ! has_deco (w->win)) {
+		trap_pop ();
+		return;
+	}
 
 	XGetGeometry (wm_disp, w->win,
 		      &root, &x, &y, &width, &height, &border, &depth);
@@ -413,13 +492,30 @@ add_deco (GdmWindow *w)
 	trap_pop ();
 }
 
+static gboolean
+is_wm_class (XClassHint *hint, const char *string, int len)
+{
+	if (len > 0) {
+		return ((hint->res_name != NULL &&
+			 strncmp (hint->res_name, string, len) == 0) ||
+			(hint->res_class != NULL &&
+			 strncmp (hint->res_class, string, len) == 0));
+	} else {
+		return ((hint->res_name != NULL &&
+			 strcmp (hint->res_name, string) == 0) ||
+			(hint->res_class != NULL &&
+			 strcmp (hint->res_class, string) == 0));
+	}
+}
+
 static GdmWindow *
-add_window (Window w)
+add_window (Window w, gboolean center)
 {
 	GdmWindow *gw;
 
 	gw = find_window (w, FALSE);
 	if (gw == NULL) {
+		XClassHint hint = { NULL, NULL };
 		int x, y;
 		Window root;
 		unsigned int width, height, border, depth;
@@ -430,6 +526,11 @@ add_window (Window w)
 
 		trap_push ();
 
+		/* add "centering" */
+		gw->ignore_size_hints = FALSE;
+		gw->center = center;
+		gw->recenter = FALSE;
+
 		/* hack, set USpos/size on login window */
 		if (w == wm_login_window) {
 			long ret;
@@ -437,6 +538,24 @@ add_window (Window w)
 			XGetWMNormalHints (wm_disp, w, &hints, &ret);
 			hints.flags |= USPosition | USSize;
 			XSetWMNormalHints (wm_disp, w, &hints);
+			gw->center = FALSE;
+			gw->recenter = FALSE;
+		} else if (XGetClassHint (wm_disp, w, &hint)) {
+			if (is_wm_class (&hint, "gdm", 3)) {
+				gw->ignore_size_hints = TRUE;
+				gw->center = TRUE;
+				gw->recenter = TRUE;
+			} else if (is_wm_class (&hint, "gkrellm", 0)) {
+				/* hack, gkrell is stupid and doesn't set
+				 * right hints, such as USPosition and other
+				 * such stuff */
+				gw->center = FALSE;
+				gw->recenter = FALSE;
+			}
+			if (hint.res_name != NULL)
+				XFree (hint.res_name);
+			if (hint.res_class != NULL)
+				XFree (hint.res_class);
 		}
 
 		XGetGeometry (wm_disp, w,
@@ -445,7 +564,7 @@ add_window (Window w)
 		gw->x = x;
 		gw->y = x;
 
-		center_x_window (w, w);
+		center_x_window (gw, w, w);
 		add_deco (gw);
 
 		XAddToSaveSet (wm_disp, w);
@@ -471,8 +590,10 @@ remove_window (Window w)
 
 		gw->win = None;
 
-		XDestroyWindow (wm_disp, gw->deco);
-		gw->deco = None;
+		if (gw->deco != None) {
+			XDestroyWindow (wm_disp, gw->deco);
+			gw->deco = None;
+		}
 		if (gw->shadow != None) {
 			XDestroyWindow (wm_disp, gw->shadow);
 			gw->shadow = None;
@@ -524,7 +645,7 @@ add_all_current_windows (void)
 
 			if ( ! attribs.override_redirect &&
 			    attribs.map_state != IsUnmapped) {
-				add_window (children[i]);
+				add_window (children[i], FALSE /*center*/);
 			}
 		}
 
@@ -540,12 +661,15 @@ add_all_current_windows (void)
 static void
 reparent_to_root (GdmWindow *gw)
 {
-	trap_push ();
+	/* only if reparented */
+	if (gw->deco != None) {
+		trap_push ();
 
-	XReparentWindow (wm_disp, gw->win, wm_root, gw->x, gw->y);
-	XSync (wm_disp, False);
+		XReparentWindow (wm_disp, gw->win, wm_root, gw->x, gw->y);
+		XSync (wm_disp, False);
 
-	trap_pop ();
+		trap_pop ();
+	}
 }
 
 static void
@@ -587,7 +711,7 @@ event_process (XEvent *ev)
 		if (gw == NULL) {
 			if (ev->xmaprequest.parent == wm_root) {
 				XGrabServer (wm_disp);
-				add_window (w);
+				add_window (w, TRUE /*center*/);
 				XUngrabServer (wm_disp);
 			}
 		}
@@ -600,7 +724,8 @@ event_process (XEvent *ev)
 		wchanges.border_width = ev->xconfigurerequest.border_width;
 		wchanges.sibling = ev->xconfigurerequest.above;
 		wchanges.stack_mode = ev->xconfigurerequest.detail;
-		if (gw == NULL) {
+		if (gw == NULL ||
+		    gw->deco == None) {
 			wchanges.x = ev->xconfigurerequest.x;
 			wchanges.y = ev->xconfigurerequest.y;
 		} else {
@@ -613,23 +738,25 @@ event_process (XEvent *ev)
 				  w,
 				  ev->xconfigurerequest.value_mask,
 				  &wchanges);
-		if (gw == NULL) {
-			center_x_window (w, w);
-		} else {
+		if (gw != NULL) {
 			gw->x = ev->xconfigurerequest.x;
 			gw->y = ev->xconfigurerequest.y;
-			wchanges.x = ev->xconfigurerequest.x - 1;
-			wchanges.y = ev->xconfigurerequest.y - 1;
-			wchanges.width = ev->xconfigurerequest.width + 2
-				+ 2*ev->xconfigurerequest.border_width;;
-			wchanges.height = ev->xconfigurerequest.height + 2
-				+ 2*ev->xconfigurerequest.border_width;;
-			wchanges.border_width = 0;
-			XConfigureWindow (wm_disp,
-					  gw->deco,
-					  ev->xconfigurerequest.value_mask,
-					  &wchanges);
-			center_x_window (gw->deco, gw->win);
+			if (gw->deco != None) {
+				wchanges.x = ev->xconfigurerequest.x - 1;
+				wchanges.y = ev->xconfigurerequest.y - 1;
+				wchanges.width = ev->xconfigurerequest.width + 2
+					+ 2*ev->xconfigurerequest.border_width;;
+				wchanges.height = ev->xconfigurerequest.height + 2
+					+ 2*ev->xconfigurerequest.border_width;;
+				wchanges.border_width = 0;
+				XConfigureWindow (wm_disp,
+						  gw->deco,
+						  ev->xconfigurerequest.value_mask,
+						  &wchanges);
+				center_x_window (gw, gw->deco, gw->win);
+			} else {
+				center_x_window (gw, gw->win, gw->win);
+			}
 			shadow_follow (gw);
 		}
 		XUngrabServer (wm_disp);
@@ -646,9 +773,15 @@ event_process (XEvent *ev)
 			if (ev->xcirculaterequest.place == PlaceOnTop) {
 				if (gw->shadow != None)
 					XRaiseWindow (wm_disp, gw->shadow);
-				XRaiseWindow (wm_disp, gw->deco);
+				if (gw->deco != None)
+					XRaiseWindow (wm_disp, gw->deco);
+				else
+					XRaiseWindow (wm_disp, gw->win);
 			} else {
-				XLowerWindow (wm_disp, gw->deco);
+				if (gw->deco != None)
+					XLowerWindow (wm_disp, gw->deco);
+				else
+					XLowerWindow (wm_disp, gw->win);
 				if (gw->shadow != None)
 					XLowerWindow (wm_disp, gw->shadow);
 			}
@@ -656,9 +789,10 @@ event_process (XEvent *ev)
 		break;
 	case MapNotify:
 		w = ev->xmap.window;
-		if ( ! ev->xmap.override_redirect) {
+		if ( ! ev->xmap.override_redirect &&
+		    focus_new_windows) {
 			gw = find_window (w, FALSE);
-			if (gw != NULL && focus_new_windows)
+			if (gw != NULL)
 				gdm_wm_focus_window (w);
 		}
 		break;
@@ -667,7 +801,8 @@ event_process (XEvent *ev)
 		gw = find_window (w, FALSE);
 		if (gw != NULL) {
 			XGrabServer (wm_disp);
-			XUnmapWindow (wm_disp, gw->deco);
+			if (gw->deco != None)
+				XUnmapWindow (wm_disp, gw->deco);
 			if (gw->shadow != None)
 				XUnmapWindow (wm_disp, gw->shadow);
 			reparent_to_root (gw);
@@ -841,11 +976,17 @@ gdm_wm_get_window_pos (Window window, int *xp, int *yp)
 		return;
 	}
 
-	XGetGeometry (wm_disp, gw->deco,
-		      &root, &x, &y, &width, &height, &border, &depth);
-
-	*xp = x + 1;
-	*yp = y + 1;
+	if (gw->deco != None) {
+		XGetGeometry (wm_disp, gw->deco,
+			      &root, &x, &y, &width, &height, &border, &depth);
+		*xp = x + 1;
+		*yp = y + 1;
+	} else {
+		XGetGeometry (wm_disp, gw->win,
+			      &root, &x, &y, &width, &height, &border, &depth);
+		*xp = x;
+		*yp = y;
+	}
 
 	trap_pop ();
 }
@@ -866,7 +1007,10 @@ gdm_wm_move_window_now (Window window, int x, int y)
 		trap_pop ();
 	}
 
-	XMoveWindow (wm_disp, gw->deco, x - 1, y - 1);
+	if (gw->shadow != None)
+		XMoveWindow (wm_disp, gw->deco, x - 1, y - 1);
+	else
+		XMoveWindow (wm_disp, gw->win, x, y);
 	if (gw->shadow != None)
 		XMoveWindow (wm_disp, gw->deco, x + 4, y + 4);
 

@@ -75,7 +75,7 @@ PAM_PREFIX=`eval echo $PAM_PREFIX_UNEXPANDED`
 AC_SUBST(PAM_PREFIX)
 
     
-AC_PATH_PROG(CONSOLE_HELPER_TMP,consolehelper,no)
+AC_PATH_PROG(CONSOLE_HELPER,consolehelper,no)
 if test "x$CONSOLE_HELPER" = "xno" -a "x$enable_console_helper" = "xyes" ; then
 	AC_MSG_ERROR(Console helper requested but consolehelper binary not found)
 fi
