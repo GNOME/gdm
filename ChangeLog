@@ -1,3 +1,14 @@
+Mon Sep 22 12:25:44 2003  George Lebl <jirka@5z.com>
+
+	* daemon/errorgui.c: reenable the gtk modules stuff, it wasn't
+	  linkage issues but in fact not setting stuff like $HOME properly.
+
+	* daemon/misc.c: unset SIGABRT, SIGXFSZ and SIGXCPU in
+	  gdm_unset_signals else bad things happen (as I found out by
+	  the modules excersise)
+	  
+	* daemon/slave.c: kill unused var warning.
+
 Mon Sep 22 11:25:30 2003  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: catch exit code 1 from greeter as fail error

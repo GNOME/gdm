@@ -2221,7 +2221,6 @@ gdm_slave_greeter (void)
     struct passwd *pwent;
     pid_t pid;
     char *command;
-    char **argv;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     

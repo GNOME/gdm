@@ -30,6 +30,8 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <pwd.h>
+#include <sys/types.h>
 #include "gdm.h"
 #include "misc.h"
 #include "auth.h"
@@ -191,10 +193,11 @@ get_error_text_view (const char *details)
 }
 
 static void
-setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_ids)
+setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_gdm_ids, uid_t uid)
 {
 	int argc = 1;
 	char **argv;
+	struct passwd *pw;
 
 	closelog ();
 
@@ -206,10 +209,13 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_i
 	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
-	if (set_ids) {
+	if (set_gdm_ids) {
 		setgid (GdmGroupId);
 		initgroups (GdmUser, GdmGroupId);
 		setuid (GdmUserId);
+		pw = NULL;
+	} else {
+		pw = getpwuid (uid);
 	}
 
 	gdm_desetuid ();
@@ -231,26 +237,23 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_i
 	/* sanity env stuff */
 	ve_setenv ("SHELL", "/bin/sh", TRUE);
 	/* set HOME to /, we don't need no stinking HOME anyway */
-	if (set_ids)
-		ve_setenv ("HOME", "/", TRUE);
-	else
+	if (pw == NULL ||
+	    ve_string_empty (pw->pw_dir))
 		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
+	else
+		ve_setenv ("HOME", pw->pw_dir, TRUE);
 
 	argv = g_new0 (char *, 3);
 	argv[0] = (char *)name;
 	argc = 1;
 
-	/* FIXME: note that atk-bridge requires bonobo and we don't link
-	   to bonobo.  We really don't want to link to bonobo I don't think.
-	   We should perhaps link to bonobo dynamically here.  I dunno */
-#if 0
 	if ( ! inhibit_gtk_modules &&
 	    GdmAddGtkModules &&
 	     ! ve_string_empty (GdmGtkModulesList)) {
 		argv[1] = g_strdup_printf ("--gtk-module=%s", GdmGtkModulesList);
 		argc = 2;
 	}
-#endif
+
 	if (inhibit_gtk_modules) {
 		ve_unsetenv ("GTK_MODULES");
 	}
@@ -364,7 +367,8 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		}
 
 		setup_dialog (d, "gtk-error-box", -1,
-			      (uid == 0 || uid == GdmUserId) /* set_ids */);
+			      (uid == 0 || uid == GdmUserId) /* set_gdm_ids */,
+			      uid);
 
 		loc = gdm_locale_to_utf8 (error);
 
@@ -495,7 +499,7 @@ gdm_failsafe_question (GdmDisplay *d,
 		GtkWidget *dlg, *label, *entry;
 		char *loc;
 
-		setup_dialog (d, "gtk-failsafe-question", p[1], TRUE /* set_ids */);
+		setup_dialog (d, "gtk-failsafe-question", p[1], TRUE /* set_gdm_ids */, 0);
 
 		loc = gdm_locale_to_utf8 (question);
 
@@ -619,7 +623,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		GtkWidget *dlg;
 		char *loc;
 
-		setup_dialog (d, "gtk-failsafe-yesno", p[1], TRUE /* set_ids */);
+		setup_dialog (d, "gtk-failsafe-yesno", p[1], TRUE /* set_gdm_ids */, 0);
 
 		loc = gdm_locale_to_utf8 (question);
 
@@ -728,7 +732,7 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 		GtkWidget *dlg;
 		char *loc;
 
-		setup_dialog (d, "gtk-failsafe-ask-buttons", p[1], TRUE /* set_ids */);
+		setup_dialog (d, "gtk-failsafe-ask-buttons", p[1], TRUE /* set_gdm_ids */, 0);
 
 		loc = gdm_locale_to_utf8 (question);
 

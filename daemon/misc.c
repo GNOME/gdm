@@ -1221,6 +1221,13 @@ gdm_unset_signals (void)
 	gdm_signal_default (SIGPIPE);
 	gdm_signal_default (SIGALRM);
 	gdm_signal_default (SIGHUP);
+	gdm_signal_default (SIGABRT);
+#ifdef SIGXFSZ
+	gdm_signal_default (SIGXFSZ);
+#endif
+#ifdef SIGXCPU
+	gdm_signal_default (SIGXCPU);
+#endif
 }
 
 void
