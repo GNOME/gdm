@@ -119,6 +119,89 @@ gdm_server_stop (GdmDisplay *disp)
     unlink (disp->authfile);
 }
 
+static void
+busy_inform_user (GdmDisplay *disp)
+{
+    /* if we have "open" we can talk to the user */
+    if (access ("/usr/bin/open", X_OK) == 0) {
+	    char *dialog; /* do we have dialog?*/
+	    char *error = g_strdup_printf
+		    (_("There already appears to be an X server "
+		       "running on display %s.  Please quit this "
+		       "server and then press Enter.%s"),
+		     disp->name,
+#ifdef __linux__
+		     _("  You can change consoles by pressing Ctrl-Alt "
+		       "plus a function key, such as Ctrl-Alt-F7 to go "
+		       "to console 7.  X servers usually run on consoles "
+		       "7 and higher.")
+#else /* ! __linux__ */
+		     /* no info for non linux users */
+		     ""
+#endif /* __linux__ */
+		     );
+	    dialog = gnome_is_program_in_path ("dialog");
+	    if (dialog == NULL)
+		    dialog = gnome_is_program_in_path ("gdialog");
+	    if (dialog != NULL) {
+		    char *command = 
+			    g_strdup_printf
+			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
+			     "%s --msgbox \"%s\" 10 70 ; clear'",
+			     dialog,
+			     error);
+		    system (command);
+		    g_free (command);
+		    g_free (dialog);
+	    } else {
+		    char *command = 
+			    g_strdup_printf
+			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
+			     "echo \"%s\" 10 70 ; read ; clear'",
+			     error);
+		    system (command);
+		    g_free (command);
+	    }
+	    g_free (error);
+    } else {
+	    /* If we can't ask, sleep 30 seconds and try again */
+	    gdm_info (_("Sleeping 30 seconds before retrying display %s"),
+		      disp->name);
+	    sleep (30);
+    }
+}
+
+static gboolean
+display_busy (GdmDisplay *disp)
+{
+	char *logname = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+	FILE *fp;
+	char buf[256];
+
+	fp = fopen (logname, "r");
+	g_free (logname);
+
+	if (fp == NULL)
+		return FALSE;
+
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		/* Note: this is probably XFree86 specific, and perhaps even
+		 * version 3 specific (I don't have xfree v4 to test this),
+		 * of course additions are welcome to make this more robust */
+		if (strstr (buf, "Server is already active for display")
+		    != NULL) {
+			gdm_error (_("Display %d is busy, there is another "
+				     "X server already running"),
+				   disp->name);
+			fclose (fp);
+			return TRUE;
+		}
+	}
+
+	fclose (fp);
+	return FALSE;
+}
+
 /**
  * gdm_server_start:
  * @disp: Pointer to a GdmDisplay structure
@@ -237,6 +320,15 @@ gdm_server_start (GdmDisplay *disp)
 	    d->servpid = 0;
     }
 
+    /* if this was a busy fail, that is, there is already
+     * a server on that display, we'll display an error and after
+     * this we'll exit with DISPLAY_REMANAGE to try again if the
+     * user wants to, or abort this display */
+    if (display_busy (disp)) {
+	    busy_inform_user (disp);
+	    _exit (DISPLAY_REMANAGE);
+    }
+
     _exit (DISPLAY_XFAILED);
 
 spawn_done:
@@ -267,9 +359,12 @@ gdm_server_spawn (GdmDisplay *d)
     gchar *srvcmd = NULL;
     gchar **argv = NULL;
     int logfd;
+    int len, i;
 
-    if (!d)
-	return;
+    if (d == NULL ||
+	gdm_string_empty (d->command)) {
+	    return;
+    }
 
     d->servstat = SERVER_STARTED;
 
@@ -293,7 +388,7 @@ gdm_server_spawn (GdmDisplay *d)
 
         /* Log all output from spawned programs to a file */
 	logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),
-		      O_CREAT|O_TRUNC|O_APPEND|O_WRONLY, 0666);
+		      O_CREAT|O_TRUNC|O_WRONLY, 0666);
 
 	if (logfd != -1) {
 		dup2 (logfd, 1);
@@ -343,14 +438,31 @@ gdm_server_spawn (GdmDisplay *d)
 	sigaddset (&mask, SIGHUP);
 	sigaddset (&mask, SIGTERM);
 	sigprocmask (SIG_UNBLOCK, &mask, NULL);
-	
-	srvcmd = g_strconcat (d->command, " -auth ", GdmServAuthDir, \
-			      "/", d->name, ".Xauth ", 
-			      d->name, NULL);
-	
+
+	argv = g_strsplit (d->command, argdelim, MAX_ARGS);
+	for (len = 0; argv != NULL && argv[len] != NULL; len++)
+		;
+
+	if (len == 0) {
+		gdm_error (_("%s: Empty server command for display %s"),
+			   "gdm_server_spawn",
+			   d->name);
+		_exit (SERVER_ABORT);
+	}
+
+	argv = g_renew (char *, argv, len + 4);
+	for (i = len - 1; i >= 1; i--) {
+		argv[i+1] = argv[i];
+	}
+	/* server number is the FIRST argument, before any others */
+	argv[1] = d->name;
+	argv[len+1] = "-auth";
+	argv[len+2] = g_strconcat (GdmServAuthDir, "/", d->name,
+				   ".Xauth", NULL);
+	argv[len+3] = NULL;
+
+	srvcmd = g_strjoinv (" ", argv);
 	gdm_debug ("gdm_server_spawn: '%s'", srvcmd);
-	
-	argv = g_strsplit (srvcmd, argdelim, MAX_ARGS);
 	g_free (srvcmd);
 	
 	setpgid (0, 0);

@@ -601,6 +601,16 @@ deal_with_x_crashes (GdmDisplay *d)
     if ( ! just_abort &&
 	access ("/usr/bin/open", X_OK) == 0) {
 	    char *dialog; /* do we have dialog?*/
+
+	    /* Shit if we knew what the program was to tell the user,
+	     * the above script would have been defined and we'd run
+	     * it for them */
+	    char *error = _("I cannot start the X server (your graphical "
+			    "interface).  It is likely that it is not set "
+			    "up correctly.  You will need to log in on a "
+			    "console and rerun the X configuration "
+			    "program.  Then restart GDM.");
+
 	    dialog = gnome_is_program_in_path ("dialog");
 	    if (dialog == NULL)
 		    dialog = gnome_is_program_in_path ("gdialog");
@@ -610,29 +620,18 @@ deal_with_x_crashes (GdmDisplay *d)
 			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
 			     "%s --msgbox \"%s\" 10 70 ; clear'",
 			     dialog,
-			     _("I cannot start the X server (your graphical "
-			       "interface).  It is likely that it is not set "
-			       "up correctly.  You will need to log in on a "
-			       "console and rerun the X configuration "
-			       "program.  Then restart GDM."));
-		    /* Shit if we knew what the program was to tell the user,
-		     * the above script would have been defined and we'd run
-		     * it for them */
+			     error);
 		    system (command);
+		    g_free (command);
+		    g_free (dialog);
 	    } else {
 		    char *command = 
 			    g_strdup_printf
 			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
-			     "echo \"%s\" 10 70' ; clear",
-			     _("I cannot start the X server (your graphical "
-			       "interface).  It is likely that it is not set "
-			       "up correctly.  You will need to log in on a "
-			       "console and rerun the X configuration "
-			       "program.  Then restart GDM."));
-		    /* Shit if we knew what the program was to tell the user,
-		     * the above script would have been defined and we'd run
-		     * it for them */
+			     "echo \"%s\" 10 70 ; read ; clear'",
+			     error);
 		    system (command);
+		    g_free (command);
 	    }
     } /* else {
        * At this point .... screw the user, we don't know how to

@@ -1,3 +1,14 @@
+Fri Jun 29 02:32:01 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: fixes and cleanups to the error display code.
+
+	* daemon/server.c: remove O_APPEND from log file openning since it
+	  was being overriden by O_TRUNC anyway.  On crash see if the logfile
+	  looks like display being busy.  If it does, tell the user so.  This
+	  prevents this case from looking like crashes, and is more
+	  informative.  Perhaps we should try starting on the first free
+	  display.  That would be good to investigate in the future.
+
 Fri Jun 29 01:22:20 2001  George Lebl <jirka@5z.com>
 
 	* gdm.spec.in:  Apply cleanup patch from drscott@rochester.rr.com
