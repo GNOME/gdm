@@ -1,5 +1,11 @@
-SUBDIRS = config pixmaps vicious-extensions \
-	daemon gui utils po 
+SUBDIRS = \
+	po \
+	config \
+	pixmaps \
+	vicious-extensions \
+	daemon \
+	gui \
+	utils
 
 # add these when help gets added back
 # docs omf-install
