@@ -1,3 +1,11 @@
+Wed Jul 23 11:41:16 2003  George Lebl <jirka@5z.com>
+
+	* daemon/misc.c: raise the cache time of gethostbyaddr/name to 60 seconds
+	  and catch TERM/HUP/INT signals during this time and whack the host
+	  resolution when we catch these.  This way it is possible to SIGTERM
+	  the gdm daemon during a hanging resolution call.  Fixes issues from
+	  #109331
+
 Tue Jul 22 18:15:51 2003  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: use pause() instead of select with all

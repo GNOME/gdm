@@ -1233,10 +1233,69 @@ fillout_hostent (struct hostent *he_, struct in_addr *ia, const char *name)
 	return he;
 }
 
+static gboolean do_jumpback = FALSE;
+static Jmp_buf signal_jumpback;
+static struct sigaction oldterm, oldint, oldhup;
+
+static void
+jumpback_sighandler (int signal)
+{
+	if (signal == SIGINT)
+		oldint.sa_handler (signal);
+	else if (signal == SIGTERM)
+		oldint.sa_handler (signal);
+	else if (signal == SIGHUP)
+		oldint.sa_handler (signal);
+	/* no others should be set up */
+	
+	if (do_jumpback) {
+		do_jumpback = FALSE;
+		Longjmp (signal_jumpback, 1);
+	}
+}
+
+#define SETUP_INTERRUPTS_FOR_TERM_DECLS \
+    struct sigaction term;
+
+#define SETUP_INTERRUPTS_FOR_TERM_SETUP \
+    do_jumpback = FALSE;						\
+    									\
+    term.sa_handler = jumpback_sighandler;				\
+    term.sa_flags = SA_RESTART;						\
+    sigemptyset (&term.sa_mask);					\
+									\
+    if (sigaction (SIGTERM, &term, &oldterm) < 0) 			\
+	gdm_fail (_("%s: Error setting up TERM signal handler"),	\
+		  "SETUP_INTERRUPTS_FOR_TERM");				\
+									\
+    if (sigaction (SIGINT, &term, &oldint) < 0)				\
+	gdm_fail (_("%s: Error setting up INT signal handler"),		\
+		  "SETUP_INTERRUPTS_FOR_TERM");				\
+									\
+    if (sigaction (SIGHUP, &term, &oldhup) < 0) 			\
+	gdm_fail (_("%s: Error setting up HUP signal handler"),		\
+		  "SETUP_INTERRUPTS_FOR_TERM");
+
+#define SETUP_INTERRUPTS_FOR_TERM_TEARDOWN \
+    do_jumpback = FALSE;						\
+									\
+    if (sigaction (SIGTERM, &oldterm, NULL) < 0) 			\
+	gdm_fail (_("%s: Error setting up TERM signal handler"),	\
+		  "SETUP_INTERRUPTS_FOR_TERM");				\
+									\
+    if (sigaction (SIGINT, &oldint, NULL) < 0) 				\
+	gdm_fail (_("%s: Error setting up INT signal handler"),		\
+		  "SETUP_INTERRUPTS_FOR_TERM");				\
+									\
+    if (sigaction (SIGHUP, &oldhup, NULL) < 0) 				\
+	gdm_fail (_("%s: Error setting up HUP signal handler"),		\
+		  "SETUP_INTERRUPTS_FOR_TERM");
+
 GdmHostent *
 gdm_gethostbyname (const char *name)
 {
 	struct hostent *he_;
+	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
 	/* the cached address */
 	static GdmHostent *he = NULL;
@@ -1245,13 +1304,25 @@ gdm_gethostbyname (const char *name)
 
 	if (cached_hostname != NULL &&
 	    strcmp (cached_hostname, name) == 0) {
-		/* don't check more then every 5 seconds */
-		if (last_time + 5 > time (NULL))
+		/* don't check more then every 60 seconds */
+		if (last_time + 60 > time (NULL))
 			return gdm_hostent_copy (he);
 	}
 
-	/* Find client hostname */
-	he_ = gethostbyname (name);
+	SETUP_INTERRUPTS_FOR_TERM_SETUP
+
+	if (Setjmp (signal_jumpback) == 0) {
+		do_jumpback = TRUE;
+		/* Find client hostname */
+		he_ = gethostbyname (name);
+		do_jumpback = FALSE;
+	} else {
+		/* here we got interrupted */
+		he_ = NULL;
+	}
+
+	SETUP_INTERRUPTS_FOR_TERM_TEARDOWN
+
 	g_free (cached_hostname);
 	cached_hostname = g_strdup (name);
 
@@ -1266,6 +1337,7 @@ GdmHostent *
 gdm_gethostbyaddr (struct in_addr *ia)
 {
 	struct hostent *he_;
+	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
 	/* the cached address */
 	static GdmHostent *he = NULL;
@@ -1274,13 +1346,25 @@ gdm_gethostbyaddr (struct in_addr *ia)
 
 	if (last_time != 0 &&
 	    memcmp (&cached_addr, ia, sizeof (struct in_addr)) == 0) {
-		/* don't check more then every 5 seconds */
-		if (last_time + 5 > time (NULL))
+		/* don't check more then every 60 seconds */
+		if (last_time + 60 > time (NULL))
 			return gdm_hostent_copy (he);
 	}
 
-	/* Find client hostname */
-	he_ = gethostbyaddr ((gchar *) ia, sizeof (struct in_addr), AF_INET);
+	SETUP_INTERRUPTS_FOR_TERM_SETUP
+
+	if (Setjmp (signal_jumpback) == 0) {
+		do_jumpback = TRUE;
+		/* Find client hostname */
+		he_ = gethostbyaddr ((gchar *) ia, sizeof (struct in_addr), AF_INET);
+		do_jumpback = FALSE;
+	} else {
+		/* here we got interrupted */
+		he_ = NULL;
+	}
+
+	SETUP_INTERRUPTS_FOR_TERM_TEARDOWN
+
 	cached_addr = *ia;
 
 	gdm_hostent_free (he);
