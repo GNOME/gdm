@@ -159,7 +159,7 @@ enum {
 
 #define GDM_KEY_DOUBLELOGINWARNING "daemon/DoubleLoginWarning=true"
 
-#define GDM_KEY_DISPLAY_LAST_LOGIN "daemon/DisplayLastLogin=true"
+#define GDM_KEY_DISPLAY_LAST_LOGIN "daemon/DisplayLastLogin=false"
 
 /* This defaults to true for backward compatibility,
  * it will not actually do timed login since the TimedLogin defaults
