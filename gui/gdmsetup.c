@@ -453,12 +453,11 @@ setup_greeter_editable (const char *name,
 				"key", g_strdup (key),
 				(GDestroyNotify) g_free);
 
-	/* FIXME: hmm? */
-	/* gtk_editable_delete_text (GTK_EDITABLE (editable), 0, -1);
+	gtk_editable_delete_text (GTK_EDITABLE (editable), 0, -1);
 	pos = 0;
 	gtk_editable_insert_text (GTK_EDITABLE (editable),
 				  ve_sure_string (val), -1,
-				  &pos); */
+				  &pos);
 
 	g_signal_connect (G_OBJECT (editable), "changed",
 			  G_CALLBACK (greeter_editable_changed), NULL);
