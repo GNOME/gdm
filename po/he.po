@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.he\n"
-"POT-Creation-Date: 2003-01-14 03:53+0100\n"
-"PO-Revision-Date: 2003-01-14 14:21+0200\n"
+"POT-Creation-Date: 2003-02-16 04:57+0100\n"
+"PO-Revision-Date: 2003-02-16 15:49+0200\n"
 "Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -529,7 +529,7 @@ msgstr ""
 msgid "Preserve LD_* variables"
 msgstr ""
 
-#: daemon/gdm.c:1436 gui/gdmchooser.c:1103
+#: daemon/gdm.c:1436 gui/gdmchooser.c:1071
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -936,9 +936,7 @@ msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
 "session."
-msgstr ""
-"לא ניתן למצוא את התקנת GNOME, "
-"אנסה להפעיל את תצורת \"מסוף X לתצורה בטוחה\"."
+msgstr "לא ניתן למצוא את התקנת GNOME, אנסה להפעיל את תצורת \"מסוף X לתצורה בטוחה\"."
 
 #: daemon/slave.c:2425
 msgid ""
@@ -1108,7 +1106,7 @@ msgstr "שם משתמש:"
 
 #: daemon/verify-crypt.c:96 daemon/verify-shadow.c:105
 msgid "Password: "
-msgstr "סיסמה:"
+msgstr "סיסמה: "
 
 #: daemon/verify-crypt.c:114 daemon/verify-pam.c:361 daemon/verify-pam.c:532
 #: daemon/verify-shadow.c:123
@@ -1434,7 +1432,7 @@ msgstr "אפשרויות"
 
 #: gui/gdmXnestchooser.c:116 gui/gdmXnestchooser.c:126
 msgid "Run in background"
-msgstr "הרץ ברקע"
+msgstr "הפעל ברקע"
 
 #: gui/gdmXnestchooser.c:123
 msgid "Just run Xnest, no query (no chooser)"
@@ -1471,6 +1469,8 @@ msgid ""
 "GDM is not running.\n"
 "Please ask your system administrator to start it."
 msgstr ""
+"GDK לא מופעל.\n"
+"אנא בקש ממנהל המערכת להפעילו."
 
 #: gui/gdmXnestchooser.c:539
 msgid "Could not find a free display number"
@@ -1483,11 +1483,11 @@ msgstr ""
 #.
 #: gui/gdmchooser-strings.c:7 gui/gdmchooser.glade.h:3
 msgid "GDM Host Chooser"
-msgstr ""
+msgstr "בוחר מארח GDM"
 
 #: gui/gdmchooser-strings.c:8 gui/gdmchooser.glade.h:4
 msgid "How to use this application"
-msgstr ""
+msgstr "כיצד להשתמש ביישום זה"
 
 #: gui/gdmchooser-strings.c:9 gui/gdmchooser.glade.h:6
 msgid "Open a session to the selected host"
@@ -1496,7 +1496,7 @@ msgstr ""
 #. EOF
 #: gui/gdmchooser-strings.c:10 gui/gdmchooser.glade.h:1
 msgid "C_onnect"
-msgstr ""
+msgstr "ה_תחבר"
 
 #: gui/gdmchooser-strings.c:11 gui/gdmchooser.glade.h:7
 msgid "Probe the network"
@@ -1504,11 +1504,11 @@ msgstr ""
 
 #: gui/gdmchooser-strings.c:12 gui/gdmchooser.glade.h:2
 msgid "Exit the application"
-msgstr ""
+msgstr "צא מהיישום"
 
 #: gui/gdmchooser-strings.c:13 gui/gdmchooser.glade.h:8
 msgid "Status"
-msgstr ""
+msgstr "מצב"
 
 #: gui/gdmchooser-strings.c:14 gui/gdmchooser.glade.h:9
 msgid ""
@@ -1522,7 +1522,7 @@ msgstr ""
 
 #: gui/gdmchooser-strings.c:17 gui/gdmchooser.glade.h:5
 msgid "Information"
-msgstr ""
+msgstr "מידע"
 
 #: gui/gdmchooser.c:75
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
@@ -1536,7 +1536,7 @@ msgstr ""
 msgid "Choose a host to connect to from the selection below."
 msgstr ""
 
-#: gui/gdmchooser.c:903
+#: gui/gdmchooser.c:871
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1546,52 +1546,52 @@ msgid ""
 "have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
 
-#: gui/gdmchooser.c:931
+#: gui/gdmchooser.c:899
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr ""
 
-#: gui/gdmchooser.c:987
+#: gui/gdmchooser.c:955
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr ""
 
-#: gui/gdmchooser.c:990
+#: gui/gdmchooser.c:958
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr ""
 
-#: gui/gdmchooser.c:993
+#: gui/gdmchooser.c:961
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr ""
 
-#: gui/gdmchooser.c:1001 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
+#: gui/gdmchooser.c:969 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
 msgid "Could not set signal mask!"
 msgstr ""
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "Socket for xdm communication"
 msgstr ""
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "SOCKET"
 msgstr ""
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "Client address to return in response to xdm"
 msgstr ""
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "ADDRESS"
 msgstr "כתובת"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "Connection type to return in response to xdm"
 msgstr ""
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "TYPE"
 msgstr "סוג"
 
-#: gui/gdmchooser.c:1133
+#: gui/gdmchooser.c:1101
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).\n"
@@ -1610,7 +1610,8 @@ msgid ""
 msgstr ""
 "<b>GDM (The GNOME Display Manager) אינו מופעל.</b>\n"
 "\n"
-"יכול להיות כי אתה משתמש במנהל תצוגה אחר, כגון KDM (מנהל התצוגה של KDE או xdm).\n"
+"יכול להיות כי אתה משתמש במנהל תצוגה אחר, כגון KDM (מנהל התצוגה של KDE או "
+"xdm).\n"
 "אם בכל זאת אתה רוצה להשתמש באפשרות הזו, או שתפעיל את GDM בעצמך או שתבקש "
 "ממנהל המערכת שלך להפעיל את GDM."
 
@@ -1684,7 +1685,7 @@ msgstr "בחר שרת"
 
 #: gui/gdmflexiserver.c:139
 msgid "Choose the X server to start"
-msgstr ""
+msgstr "בחר את שרת ה X להפעלה"
 
 #: gui/gdmflexiserver.c:145
 msgid "Standard server"
@@ -1989,38 +1990,43 @@ msgstr "א-כ|טמילית"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:152
+msgid "N-Z|Thai"
+msgstr "ל-ת|תאי"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:154
 msgid "N-Z|Turkish"
 msgstr "א-כ|טורקית"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:154
+#: gui/gdmlanguages.c:156
 msgid "N-Z|Ukrainian"
 msgstr "א-כ|אוקראינית"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:156
+#: gui/gdmlanguages.c:158
 msgid "N-Z|Vietnamese"
 msgstr "א-כ|ויאטנאמית"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:158
+#: gui/gdmlanguages.c:160
 msgid "N-Z|Walloon"
 msgstr "א-כ|ולונית"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:160
+#: gui/gdmlanguages.c:162
 msgid "Other|POSIX/C English"
 msgstr "אחר|POSIX/C אנגלית"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:335
+#: gui/gdmlanguages.c:337
 msgid "A-M"
 msgstr "א-כ"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:343
+#: gui/gdmlanguages.c:345
 msgid "N-Z"
 msgstr "ל-ת"
 
@@ -2196,9 +2202,8 @@ msgid ""
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
-"זוהי תצורה בטוחה שתחבר אותך לתוך GNOME.  אף תסריטי הפעלה "
-"לא יקראו וזה לשימוש רק אם אין לך דרך אחרת להתחבר.  "
-"GNOME ישתמש בתצורת ההפעלה ברירת המחדל."
+"זוהי תצורה בטוחה שתחבר אותך לתוך GNOME.  אף תסריטי הפעלה לא יקראו וזה לשימוש "
+"רק אם אין לך דרך אחרת להתחבר.  GNOME ישתמש בתצורת ההפעלה ברירת המחדל."
 
 #: gui/gdmlogin.c:1552 gui/greeter/greeter_session.c:428
 msgid ""
@@ -2222,7 +2227,7 @@ msgstr "השפה %s נבחרה"
 
 #: gui/gdmlogin.c:1657
 msgid "Log in using the language that you have used last time you logged in"
-msgstr ""
+msgstr "התחבר באמצעות השפה שבחרת בפעם האחרונה שהתחברת"
 
 #: gui/gdmlogin.c:1672
 msgid "Log in using the default system language"
@@ -2510,7 +2515,7 @@ msgstr "מברך"
 
 #: gui/gdmsetup-strings.c:16 gui/gdmsetup.glade.h:48
 msgid "_Login a user automatically on first bootup"
-msgstr ""
+msgstr "_חבר משתמש באופן אוטומטי בהפעלה הראשונה"
 
 #: gui/gdmsetup-strings.c:17 gui/gdmsetup.glade.h:44
 msgid "_Automatic login username:"
@@ -2702,7 +2707,7 @@ msgstr "תצוגות למארח:"
 
 #: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:34
 msgid "Ping interval (minutes):"
-msgstr ""
+msgstr "מרווח Ping (דקות):"
 
 #: gui/gdmsetup-strings.c:71 gui/gdmsetup.glade.h:14
 msgid "Enable _XDMCP"
@@ -2748,6 +2753,8 @@ msgid ""
 "Not a theme archive\n"
 "Details: %s"
 msgstr ""
+"לא ארכיון ערת נושא\n"
+"פרטים: %s"
 
 #: gui/gdmsetup.c:1536
 #, c-format
@@ -2756,11 +2763,11 @@ msgstr ""
 
 #: gui/gdmsetup.c:1581
 msgid "Some error occured when installing the theme"
-msgstr ""
+msgstr "ארעו שגיאות בהתקנת ערכת הנושא"
 
 #: gui/gdmsetup.c:1626
 msgid "Select new theme archive to install"
-msgstr ""
+msgstr "בחר ארכיון ערכת נושא חדש להתקנה"
 
 #. This is the temporary help dialog
 #: gui/gdmsetup.c:1766
@@ -2894,12 +2901,12 @@ msgstr "אימות נכשל!\n"
 
 #: vicious-extensions/glade-helper.c:82
 msgid "(memory buffer)"
-msgstr ""
+msgstr "(חוצץ זכרון)"
 
 #: vicious-extensions/glade-helper.c:114 vicious-extensions/glade-helper.c:136
 #: vicious-extensions/glade-helper.c:156
 msgid "(memory buffer"
-msgstr ""
+msgstr "(חוצץ זכרון"
 
 #: vicious-extensions/glade-helper.c:188
 #, c-format
@@ -2949,5 +2956,5 @@ msgstr ""
 #: vicious-extensions/glade-helper.c:281
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
-msgstr ""
+msgstr "אין ממשק שניתן לטעינה, רע! (קובץ: %s)"
 
