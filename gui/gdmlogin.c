@@ -108,6 +108,14 @@ static pid_t backgroundpid = 0;
 
 static GHashTable *back_locales = NULL;
 
+static void
+setup_cursor (GdkCursorType type)
+{
+	GdkCursor *cursor = gdk_cursor_new (type);
+	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
+	gdk_cursor_destroy (cursor);
+}
+
 static const char *
 gdm_lookup_locale_name (const char *locale)
 {
@@ -734,8 +742,8 @@ dance (gpointer data)
 		return FALSE;
 	}
 
-	xm = cos (1.01 * t1);
-	ym = sin (0.90 * t2);
+	xm = cos (2.31 * t1);
+	ym = sin (1.03 * t2);
 
 	t1 += 0.03 + (rand () % 10) / 500.0;
 	t2 += 0.03 + (rand () % 10) / 500.0;
@@ -750,14 +758,32 @@ dance (gpointer data)
 	return TRUE;
 }
 
-static void
+static gboolean
 evil (const char *user)
 {
+	static gboolean old_lock;
 	if (dance_handler == 0 &&
 	    strcmp (user, "Start Dancing") == 0) {
+		setup_cursor (GDK_UMBRELLA);
 		dance_handler = gtk_timeout_add (50, dance, NULL);
+		old_lock = GdmLockPosition;
 		GdmLockPosition = TRUE;
+		gtk_entry_set_text (GTK_ENTRY (entry), "");
+		return TRUE;
+	} else if (dance_handler != 0 &&
+		   strcmp (user, "Stop Dancing") == 0) {
+		setup_cursor (GDK_LEFT_PTR);
+		gtk_timeout_remove (dance_handler);
+		dance_handler = 0;
+		GdmLockPosition = old_lock;
+		gtk_entry_set_text (GTK_ENTRY (entry), "");
+		return TRUE;
+	} else if (strcmp (user, "Gimme Random Cursor") == 0) {
+		setup_cursor (((rand () >> 3) % (GDK_LAST_CURSOR/2)) * 2);
+		gtk_entry_set_text (GTK_ENTRY (entry), "");
+		return TRUE;
 	}
+	return FALSE;
 }
 
 static gboolean
@@ -783,7 +809,13 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
 
 	    /* evilness */
-	    evil (curuser);
+	    if (evil (curuser)) {
+		    g_free (curuser);
+		    curuser = NULL;
+		    gtk_widget_set_sensitive (entry, TRUE);
+		    gtk_widget_grab_focus (entry);	
+		    return TRUE;
+	    }
 	}
 
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
@@ -2016,7 +2048,6 @@ gdm_screen_init (void)
 	}
 }
 
-
 int 
 main (int argc, char *argv[])
 {
@@ -2044,6 +2075,8 @@ main (int argc, char *argv[])
 
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
+
+    setup_cursor (GDK_LEFT_PTR);
 
     gdm_login_parse_config ();
 
