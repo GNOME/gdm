@@ -451,23 +451,27 @@ gdm_slave_run (GdmDisplay *display)
 
 	    check_notifies_now ();
     }
+
+    /* We can use d->handled from now on on this display,
+     * since the lookup was done in server start */
     
     gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
     gnome_setenv ("DISPLAY", d->name, TRUE);
 
-    /* Now the display name and hostname is final */
-    if ( ! ve_string_empty (GdmAutomaticLogin)) {
-	    g_free (ParsedAutomaticLogin);
-	    ParsedAutomaticLogin = gdm_parse_enriched_login (GdmAutomaticLogin,
-							     display);
-    }
+    if (d->handled) {
+	    /* Now the display name and hostname is final */
+	    if ( ! ve_string_empty (GdmAutomaticLogin)) {
+		    g_free (ParsedAutomaticLogin);
+		    ParsedAutomaticLogin = gdm_parse_enriched_login (GdmAutomaticLogin,
+								     display);
+	    }
 
-    if ( ! ve_string_empty (GdmTimedLogin)) {
-	    g_free (ParsedTimedLogin);
-	    ParsedTimedLogin = gdm_parse_enriched_login (GdmTimedLogin,
-							 display);
+	    if ( ! ve_string_empty (GdmTimedLogin)) {
+		    g_free (ParsedTimedLogin);
+		    ParsedTimedLogin = gdm_parse_enriched_login (GdmTimedLogin,
+								 display);
+	    }
     }
-
     
     /* X error handlers to avoid the default one (i.e. exit (1)) */
     do_xfailed_on_xio_error = TRUE;
@@ -486,7 +490,8 @@ gdm_slave_run (GdmDisplay *display)
     else
 	    maxtries = 10;
     
-    while (openretries < maxtries &&
+    while (d->handled &&
+	   openretries < maxtries &&
 	   d->dsp == NULL) {
 	d->dsp = XOpenDisplay (d->name);
 	
@@ -497,6 +502,11 @@ gdm_slave_run (GdmDisplay *display)
 	}
     }
 
+    /* Just a race avoiding sleep, probably not necessary though,
+     * but doesn't hurt anything */
+    if ( ! d->handled)
+	    sleep (1);
+
     if (SERVER_IS_LOCAL (d)) {
 	    gdm_slave_send (GDM_SOP_START_NEXT_LOCAL, FALSE);
     }
@@ -505,7 +515,7 @@ gdm_slave_run (GdmDisplay *display)
 
     /* something may have gone wrong, try xfailed, if local (non-flexi),
      * the toplevel loop of death will handle us */ 
-    if (d->dsp == NULL) {
+    if (d->handled && d->dsp == NULL) {
 	    gdm_server_stop (d);
 	    if (d->type == TYPE_LOCAL)
 		    _exit (DISPLAY_XFAILED);
@@ -514,8 +524,8 @@ gdm_slave_run (GdmDisplay *display)
     }
 
     /* Some sort of a bug foo to make some servers work or whatnot,
-     * stolem from xdm sourcecode, perhaps not necessary, but can't hurt */
-    {
+     * stolen from xdm sourcecode, perhaps not necessary, but can't hurt */
+    if (d->handled) {
 	    Display *dsp = XOpenDisplay (d->name);
 	    if (dsp != NULL)
 		    XCloseDisplay (dsp);
@@ -532,14 +542,23 @@ gdm_slave_run (GdmDisplay *display)
     }
 
     /* checkout xinerama */
-    gdm_screen_init (d);
+    if (d->handled)
+	    gdm_screen_init (d);
 
     /* check log stuff for the server, this is done here
      * because it's really a race */
     if (SERVER_IS_LOCAL (d))
 	    gdm_server_checklog (d);
 
-    if (d->use_chooser) {
+    if ( ! d->handled) {
+	    /* yay, we now wait for the server to die,
+	     * which will in fact just exit, so
+	     * this code is a little bit too anal */
+	    while (d->servpid != 0) {
+		    select (0, NULL, NULL, NULL, NULL);
+	    }
+	    return;
+    } else if (d->use_chooser) {
 	    /* this usually doesn't return */
 	    gdm_slave_chooser ();  /* Run the chooser */
 	    return;
@@ -2893,6 +2912,9 @@ gdm_slave_child_handler (int sig)
 		d->servstat = SERVER_DEAD;
 		d->servpid = 0;
 		gdm_server_wipe_cookies (d);
+
+		if ( ! d->handled)
+			_exit (DISPLAY_REMANAGE);
 	} else if (pid == extra_process) {
 		/* an extra process died, yay! */
 		extra_process = -1;

@@ -166,7 +166,9 @@ enum {
 /* runnable as flexi server */
 #define GDM_KEY_SERVER_FLEXIBLE "flexible=true"
 /* choosable from the login screen */
-#define GDM_KEY_SERVER_CHOOSABLE "choosable=true"
+#define GDM_KEY_SERVER_CHOOSABLE "choosable=false"
+/* Login is handled by gdm, otherwise it's a remote server */
+#define GDM_KEY_SERVER_HANDLED "handled=true"
 
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
@@ -285,6 +287,8 @@ struct _GdmDisplay {
     pid_t chooserpid;
     time_t acctime;
 
+    gboolean handled;
+
 #ifdef __linux__
     int vt;
 #endif
@@ -331,6 +335,7 @@ struct _GdmXServer {
 	char *command;
 	gboolean flexible;
 	gboolean choosable; /* not implemented yet */
+	gboolean handled;
 };
 
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;

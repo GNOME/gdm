@@ -1,3 +1,11 @@
+Tue Jul 09 10:27:51 2002  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in, daemon/gdm.[ch], daemon/server.c,
+	  daemon/slave.c, daemon/xdmcp.c:  Fix some errors with server
+	  starting, fix alarm/sleep collisions, add a handled flag to
+	  servers so that we can setup unhandled X servers (such as
+	  for X terminals)
+
 Tue Jul 09 09:14:55 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: do the display init before the user setup for

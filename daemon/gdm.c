@@ -390,6 +390,8 @@ gdm_config_parse (void)
 			    (GDM_KEY_SERVER_FLEXIBLE);
 		    svr->choosable = gnome_config_get_bool
 			    (GDM_KEY_SERVER_CHOOSABLE);
+		    svr->handled = gnome_config_get_bool
+			    (GDM_KEY_SERVER_HANDLED);
 
 		    if (ve_string_empty (svr->command)) {
 			    gdm_error (_("%s: Empty server command, "
@@ -419,6 +421,7 @@ gdm_config_parse (void)
 	    svr->command = g_strdup (GdmStandardXServer);
 	    svr->flexible = TRUE;
 	    svr->choosable = TRUE;
+	    svr->handled = TRUE;
 
 	    xservers = g_slist_append (xservers, svr);
     }
@@ -2100,6 +2103,7 @@ check_cookie (const char *file, const char *disp, const char *cookie)
 
 static void
 handle_flexi_server (GdmConnection *conn, int type, const char *server,
+		     gboolean handled,
 		     const char *xnest_disp, uid_t xnest_uid,
 		     const char *xnest_auth_file,
 		     const char *xnest_cookie)
@@ -2172,6 +2176,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 				      "ERROR 2 Startup errors\n");
 		return;
 	}
+	display->handled = handled;
 
 	if (type == TYPE_FLEXI_XNEST) {
 		GdmDisplay *parent;
@@ -2506,6 +2511,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		}
 		handle_flexi_server (conn, TYPE_FLEXI, GdmStandardXServer,
+				     TRUE /* handled */,
 				     NULL, 0, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
 		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
@@ -2547,7 +2553,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 		g_free (name);
 
-		handle_flexi_server (conn, TYPE_FLEXI, command,
+		handle_flexi_server (conn, TYPE_FLEXI, command, svr->handled,
 				     NULL, 0, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
 		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
@@ -2576,6 +2582,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 		
 		handle_flexi_server (conn, TYPE_FLEXI_XNEST, GdmXnest,
+				     TRUE /* handled */,
 				     dispname, uid, xauthfile, cookie);
 
 		g_free (dispname);

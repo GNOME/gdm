@@ -399,7 +399,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
      * sockets etc. If the old X server isn't completely dead, the new
      * one will fail and we'll hang here forever */
 
-    /* Only do alarm if esrver will be run as root */
+    /* Only do alarm if server will be run as root */
     if (d->server_uid == 0) {
 	    alarm (SERVER_WAIT_ALARM);
     }
@@ -409,10 +409,21 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     /* fork X server process */
     gdm_server_spawn (d);
 
+    /* we can now use d->handled since that's set up above */
+
     /* Wait for X server to send ready signal */
     if (d->servstat == SERVER_STARTED) {
-	    if (d->server_uid != 0) {
+	    if (d->server_uid != 0 && ! d->handled) {
+		    alarm (0);
+		    /* FIXME: If not handled, we just don't know, so
+		     * just wait a few seconds and hope things just work,
+		     * fortunately there is no such case yet and probably
+		     * never will, but just for code anality's sake */
+		    sleep (5);
+	    } else if (d->server_uid != 0) {
 		    int i;
+
+		    alarm (0);
 
 		    /* if we're running the server as a non-root, we can't
 		     * use USR1 of course, so try openning the display 
@@ -618,6 +629,9 @@ rotate_logs (const char *dname)
  * @disp: Pointer to a GdmDisplay structure
  *
  * forks an actual X server process
+ *
+ * Note that we can only use d->handled once we call this function
+ * since otherwise the server might not yet be looked up yet.
  */
 
 static void 
@@ -649,6 +663,47 @@ gdm_server_spawn (GdmDisplay *d)
 	    if (kill (pid, SIGTERM) == 0)
 		    waitpid (pid, NULL, 0);
     }
+
+
+    /* Figure out the server command */
+    bin = ve_first_word (d->command);
+    if (bin == NULL) {
+	    gdm_error (_("Invalid server command '%s'"), d->command);
+	    argv = ve_split (GdmStandardXServer);
+	    command = GdmStandardXServer;
+    } else if (bin[0] != '/') {
+	    GdmXServer *svr = gdm_find_x_server (bin);
+	    if (svr == NULL) {
+		    gdm_error (_("Server name '%s' not found, "
+				 "using standard server"), bin);
+		    argv = ve_split (GdmStandardXServer);
+		    command = GdmStandardXServer;
+	    } else {
+		    char **svr_command =
+			    ve_split (ve_sure_string (svr->command));
+		    argv = ve_split (d->command);
+		    if (argv[0] == NULL || argv[1] == NULL) {
+			    g_strfreev (argv);
+			    argv = svr_command;
+		    } else {
+			    char **old_argv = argv;
+			    argv = ve_vector_merge (svr_command,
+						    &old_argv[1]);
+			    g_strfreev (svr_command);
+			    g_strfreev (old_argv);
+		    }
+		    /* this is only for information only,
+		     * so doesn't include whole command line */
+		    command = svr->command;
+
+		    /* Setup the handled function */
+		    d->handled = svr->handled;
+	    }
+    } else {
+	    command = d->command;
+	    argv = ve_split (d->command);
+    }
+    g_free (bin);
 
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
@@ -741,42 +796,6 @@ gdm_server_spawn (GdmDisplay *d)
 			gnome_unsetenv ("XAUTHORITY");
 	}
 
-	bin = ve_first_word (d->command);
-	if (bin == NULL) {
-		gdm_error (_("Invalid server command '%s'"), d->command);
-		argv = ve_split (GdmStandardXServer);
-		command = GdmStandardXServer;
-	} else if (bin[0] != '/') {
-		GdmXServer *svr = gdm_find_x_server (bin);
-		if (svr == NULL) {
-			gdm_error (_("Server name '%s' not found, "
-				     "using standard server"), bin);
-			argv = ve_split (GdmStandardXServer);
-			command = GdmStandardXServer;
-		} else {
-			char **svr_command =
-				ve_split (ve_sure_string (svr->command));
-			argv = ve_split (d->command);
-			if (argv[0] == NULL || argv[1] == NULL) {
-				g_strfreev (argv);
-				argv = svr_command;
-			} else {
-				char **old_argv = argv;
-				argv = ve_vector_merge (svr_command,
-							&old_argv[1]);
-				g_strfreev (svr_command);
-				g_strfreev (old_argv);
-			}
-			/* this is only for information only,
-			 * so doesn't include whole command line */
-			command = svr->command;
-		}
-	} else {
-		command = d->command;
-		argv = ve_split (d->command);
-	}
-	g_free (bin);
-
 	for (len = 0; argv != NULL && argv[len] != NULL; len++)
 		;
 
@@ -857,6 +876,7 @@ gdm_server_spawn (GdmDisplay *d)
 	_exit (SERVER_ABORT);
 	
     case -1:
+	g_strfreev (argv);
 	gdm_error (_("gdm_server_spawn: Can't fork Xserver process!"));
 	d->servpid = 0;
 	d->servstat = SERVER_DEAD;
@@ -864,6 +884,7 @@ gdm_server_spawn (GdmDisplay *d)
 	break;
 	
     default:
+	g_strfreev (argv);
 	gdm_debug ("gdm_server_spawn: Forked server on pid %d", (int)pid);
 	break;
     }
@@ -1010,6 +1031,8 @@ gdm_server_alloc (gint id, const gchar *command)
     d->dsp = NULL;
     d->screenx = 0; /* xinerama offset */
     d->screeny = 0;
+
+    d->handled = TRUE;
 
 #ifdef __linux__
     d->vt = -1;

@@ -148,8 +148,25 @@ Enable=false
 #      starts as the last thing, and that will make it not neccessary to
 #      do hacks like this.
 #0=Standard vt7
+#
+#Note: If you want to run an X terminal you could add an X server such as this
+#0=Terminal -query serverhostname
+# or for a chooser (optionally serverhostname could be localhost)
+#0=Terminal -indirect serverhostname
 
 [server-Standard]
 name=Standard server
 command=/usr/X11R6/bin/X
 flexible=true
+
+# To use this server type you should add -query host or -indirect host
+# to the command line
+[server-Terminal]
+name=Terminal server
+# Add -terminate to make things behave more nicely
+command=/usr/X11R6/bin/X -terminate
+# Make this not appear in the flexible servers (we need extra params
+# anyway, and terminate would be bad for xdmcp)
+flexible=false
+# Not local, we do not handle the logins for this X server
+handled=false

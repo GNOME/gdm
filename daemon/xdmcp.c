@@ -1531,6 +1531,8 @@ gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint displa
     d->acctime = time (NULL);
     d->dispnum = displaynum;
 
+    d->handled = TRUE;
+
 #ifdef __linux__
     d->vt = -1;
 #endif
