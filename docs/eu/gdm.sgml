@@ -1,0 +1,504 @@
+<!DOCTYPE book PUBLIC "-//Davenport//DTD DocBook V3.0//EN" []>
+
+<book id="index"><bookinfo>
+    <title>Gnome-ren pantaila-kudeatzaileran erreferentzirako eskuliburua</title>
+    <authorgroup><author><firstname>Martin</firstname><othername>K.</othername><surname>Petersen</surname> <affiliation>
+          <address><email>mkp@mkp.net</email></address>
+        </affiliation></author> <author><firstname>George</firstname><surname>Lebl</surname> <affiliation>
+          <address><email>jirka@5z.com</email></address>
+        </affiliation></author> <author><firstname>Tim</firstname><surname>Jansen</surname> <affiliation>
+          <address><email>tim@tjansen.de</email></address>
+        </affiliation></author></authorgroup> <copyright><year>1998, 1999</year> <holder>Martin K. Petersen</holder></copyright> <copyright><year>2001</year> <holder>Tim Jansen</holder></copyright> <copyright><year>2001</year> <holder>George Lebl</holder></copyright>
+
+    <legalnotice><para>Programa hau software librea da; birbana edota alda dezakezu, Free Software Foundation-ek argitaratutako GNU Lizentzia Publiko Orokorraren 2. bertsioan, edo (nahiago baduzu) bertsio berriago batean, jasotako baldintza betez gero.</para>
+      
+      <para>Programa hau erabilgarria izango delakoan banatzen da, baina INOLAKO BERMERIK gabe; era berean, ez da bermatzen beraren EGOKITASUNA MERKATURATZEKO edo HELBURU PARTIKULARRETARAKO ERABILTZEKO.  Argibide gehiago nahi izanez gero, ikus <citetitle>GNU Lizentzia Publiko Orokorra</citetitle>.</para>
+
+      <para>Programa honekin batera GNU Lizentzia Publiko Orokorraren kopia bat ere jaso behar zenuke; ez bada horrela, idatzi helbide honetara: Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA</para>
+      
+      <para>Argibide gehiagotarako, ikus COPYING fitxategia GDMren iturburu-banaketan.</para></legalnotice></bookinfo>
+
+  <toc></toc>
+
+  <preface>
+    <title>Liburu honetan azaltzen diren termino eta hitzarmenak</title>
+
+    <para>GDM - Gnome-ren pantaila-kudeatzailea. Software-paketea bere osotasunean deskribatzen du.</para>
+
+    <para>gdm - Gnome-ren pantaila-kudeatzailearen daemon-a (<filename>gdm</filename>).</para>
+
+    <para>Ongietorria - Saio-hasieraren leiho grafikoa (<filename>gdmlogin</filename>).</para>
+
+    <para>Hautatzailea - Urruneko pantailetan ZEHARKAKO kontsultak bidaltzen agertzen den ostalari-hautatzailea (<filename>gdmchooser</filename>).</para>
+
+    <para>Konfiguratzailea - Konfigurazio-programa (<filename>gdmconfig</filename>).</para>
+
+    <para>Hasierako '/' gabeko bide-izenak instalazio-aurrizkiaren araberakoak dira. Hau da, <filename>share/pixmaps/</filename> izenak <filename>/usr/share/pixmaps</filename> izenari egiten dio erreferentzia, GDM <filename>--prefix=/usr</filename> izenarekin konfiguraturik badago.</para>
+
+  </preface>
+
+  <chapter id="intro">
+    <title>Informazio orokorra</title>
+
+    <sect1>
+      <title>
+	Sarrera
+      </title>
+
+      <para>GDM XDMren (X pantaila-kudeatzailearen) ordezkoa da.  Bere lehiakideek ez bezala (X3DM, KDM, WDM) GDM zerotik hasita idatzi zen eta ez dauka jatorrizko XDM / X Consortium koderik.</para></sect1>
+
+    <sect1 id="daemonov">
+      <title>GDMren Daemon-a</title>
+      
+      <para>GDM soiltasuna eta segurtasuna kontuan edukiz idatzi zen. Diseinuaren kontzeptu orokorra honakoa da:</para>
+      
+      <para>Abiaraztean <filename>gdm</filename> daemon-ak <filename>gdm.conf</filename> konfigurazio-fitxategia aztertzen du.  <filename>Gdm</filename> programak X zerbitzaria eta menpeko prozesua bikoizten ditu bertako pantaila bakoitzerako. <filename>Gdm</filename>-ren prozesu nagusiak XDMCP eskaera urruneko pantailetatik jaso eta bertako pantailen saioak kontrolatuko ditu.</para>
+      
+      <para><filename>Gdm</filename>-ren menpeko prozesuak pantaila ireki eta <filename>gdmlogin</filename>, saio-hasieraren programa grafikoa, hasiko du. <filename>Gdmlogin</filename> programa erabiltzaile konprometitu moduan jarduten da eta menpeko prozesuarekin asinkronikoki komunikatzen da kanalizazio baten bidez.</para>
+      
+      <para>GDM erabat fidatzen da PAMen, Pluggable Authentication Modules (Autentifikazio Modulu Konektagarrien), presentziaz, baina sistema zaharretan pasahitz enkriptatuak() eta ezkutuak (shadow passwords) onartzen ditu.</para>
+
+      <para>Urruneko pantailak GDMren ostalarian XDMCP atakarekin konekta daitezke. <filename>gdm</filename> programak TCP itzulbiratzailearen konfigurazio-fitxategiko gdm-ren zerbitzu-sekzioan zehaztutako ostalariei atzipena emango die.   GDMk ez du onartzen urruneko pantailen atzipen-kontrola TCP itzulbiratzailerik gabeko sistemetan. XDMCPren onarpena, ordea, guztiz desaktiba daiteke.</para>
+
+      <para>GDMk hainbat neurri ditu, eta horrek XDMCP zerbitzuari egindako zerbitzu-erasoen aurrean indartsuago egiten du. Hainbat protokolo-parametro, diosalen denbora-muga, etab. doi daitezke.  Lehenespenek, ordea, sistema gehienetarako funtzionatu behar lukete. Ez aldatu, ez badakizu zer egiten ari zaren.</para>
+
+      <para>Orokorrean, GDM ez da erabiltzaileen fitxategiak irakurtzearen/idaztearen aldekoa. Adibidez, ez ditu fitxategi arruntak ez diren fitxategiak ukitzen.  Estekak, socket-ak eta gailuak ez ditu kontuan hartzen.   RelaxPermissions parametroaren balioak ondokoa erabakitzen du: GDMk erabiltzaile-taldeak edo bestelakoek idatz ditzaketen fitxategiak onartu behar lituzkeen edo ez. Lehenespenez ez dira kontuan hartzen.</para>
+
+      <para>Erabiltzailearen fitxategietako eragiketa guztiak erabiltzailearen ID eraginkorrarekin egiten dira. Osasun-egiaztapenak erabiltzailearen <filename>.Xauthority</filename> fitxategian huts egiten badu,  laguntza-cookie-a sortuko du <filename>/tmp</filename> fitxategian.</para>
+
+      <para>Azkenik, sistema-administratzaileak GDMk onartu behar lukeen gehienezko fitxategi-tamaina zehatz dezake, eta aurpegi-arakatzailea gaituta badago, doi daitekeen ikono-tamaina handiena ere zehaztuko du.  Sistema handietan, performantzia-arrazoiengatik, oraindik ere aurpegi-arakatzailea desaktibatzea gomendatzen da. Etxeko direktorioan ikonoak bilatzeak, aurpegi-ikonoak eskalatzeak eta errendatzeak denbora dezente iraun dezake. YMMV.</para></sect1>
+
+    <sect1>
+      <title>
+	XDMCP
+      </title>
+
+      <para>GDMk X pantaila-kudeatzaile protokoloa (XDMCP) ere onartzen du urruneko pantailak kudeatzeko. </para>
+
+      <para>GDMk UDPren 177 atakaren eskaera jaso eta KONTSULTA eta BROADCAST_KONTSULTA eskaerei erantzungo die WILLING paketea sortzaileari bidaliz.</para>
+
+      <para>GDM ZEHARKAKO kontsultak onartzeko eta urruneko pantailari ostalari-hautatzailea aurkezteko konfigura daiteke. GDMk aukeratutako kudeatzaileari erabiltzailearen aukeraz gogorarazi eta hurrengo eskaerak birbidaliko dizkio.</para>
+
+      <para>GDMk MIT-MAGIC-COOKIE-1 autentifikazio-sistema bakarrik onartzen du.  Beste eskemetatik ez da gauza askorik lortu eta orain arte ez da haiek inplementatzeko ahaleginik egin.</para>
+
+      <para>XDMCP zerbitzuan zerbitzu-erasoak ez onartzea nahiko erraza denez, GDMk ezaugarri batzuk sartu ditu erasoen aurrean babesteko. Informazio gehiagorako XDMCPren erreferentzi-sekzioa irakurri.</para>
+
+      <para>Nahiz eta GDM erasotzaile potentzialei aurrea hartzen saiatu, UDPren 177 atakako suebakia blokeatzea gomendatzen dizugu, behar ez baduzu behintzat.  GDMk DoSen erasoetatik babesten du, baina X protokoloa ez da oraindik segurua eta ingurune kontrolatuetan erabili behar litzateke.</para>
+
+      <para>Zure pantaila cookien bidez babestuta egon arren, X gertaerak eta, beraz, pasahitzak sartzean egindako tekla-sakatzeak testu soilean joango dira kablean zehar.  Ezinbestekoa da hori kapturatzea.  Kontuan eduki cookie-ak muntatutako NFS direktorioan badaude, ezkutuan entzuteko joera izango dutela.</para>
+
+    </sect1>
+
+    <sect1>
+      <title>Ongietorria</title>
+
+      <para>Ongietorria erabiltzaileari aurkezten zaion erabiltzailearen interfaze grafikoa da. Ongietorriak elementu hauek ditu: menu bat goian, hautazko aurpegi-arakatzailea, hautazko logotipoa eta testu-sarreraren trepeta.</para>
+
+      <sect2>
+	<title>
+	  Testu-sarrera
+	</title>
+
+	<para>Testu-sarreraren eremua saio-hasierak, pasahitzak, pasaesaldiak, etab. sartzeko erabiltzen da. <filename>gdmlogin</filename>-a azpian duen daemon-ak kontrolatzen du eta oinarrian egoerarik gabekoa da. Daemon-ak ongietorria protokolo arrunt baten bidez kontrolatzen du, non ongietorriari eska dakiokeen oihartzuna aktibatuta edo desaktibatuta duen testu-kate bat. Modu berean, daemon-ak testu-sarreraren trepetaren goiko etiketa alda dezake, horrela autentifikazio-sistemak erabiltzaileak sartzea nahi duen balioarekin bat etortzeko.</para>
+
+      </sect2>
+
+      <sect2>
+	<title>
+	  Menua
+	</title>
+
+	<para>Ongietorriaren goian dagoen menu-barrak erabiltzaileari ekintza hauek egitea ahalbidetzen dio: eskatutako saioaren mota/mahaigainaren ingurunea eta lokal/hizkuntza egokia hautatzea eta, nahi izanez gero, ordenagailua itzaltzea/berrabiaraztea.   Ongietorriaren leihoa ikono bihur daiteke saio-hasierako pantailan beste aplikazioei lekua uzteko.</para>
+
+      </sect2>
+
+      <sect2>
+	<title>
+	  Aurpegi-arakatzailea
+	</title>
+
+	<para>Ongietorriak sistemako erabiltzaile guztientzat ikonoak dituen aurpegi-arakatzailea eskaintzen du.  Sistema-administratzaileak ikonoak modu orokorrean instala ditzake, baina erabiltzailearen etxeko direktorioan ere instala daitezke.</para>
+	
+	<para>Aurpegi-arakatzaileak zure inguruneari buruzko suposizio batzuk egiten ditu. Lehenik eta behin, ongietorriak erabiltzailearen IDa exekutatzen du eta, horregatik, erabiltzailearen direktorioko aurpegi-ikonoek gdm-ren erabiltzaileak irakurtzeko modukoak izan behar dute. Hau da, etxeko direktorio eta <filename>~/.gnome</filename> direktorio guztiek sistemako &quot;beste&quot; taldeentzat irakurgarriak eta exekutagarriak izan behar dute.</para>
+
+	<para>Era berean, aurpegi-direktorio orokorreko aurpegi-ikonoek gdm-ren erabiltzailearentzat irakurgarriak izan behar dute.</para>
+
+	<para>Kontuan hartu erabiltzailearen etxeko direktorioan aurpegi-ikonoak kargatzeak eta eskalatzeak denbora asko iraun dezakeela.  Bereziki sistema handietan edo NIS exekutatzen duten sistemetan. Arakatzaile hau erabiltzaile gutxi dituen sistementzat bakarrik dago pentsatuta.</para>
+
+	<para>Arakatzailean nahi ez diren erabiltzaile-izenak iragazteko, baztertzeko aukera inplementatu da. Ongietorriak konfigurazio-fitxategiko <filename>Baztertu</filename> aukeran azaltzen diren erabiltzaile-izenak automatikoki baztertuko ditu.</para>
+
+	<para>Arakatzailea aktibaturik dagoenean, ordenagailuan dauden baliozko erabiltzaile-izenak intruso potentzial bati erakusten zaizkio. Beraz, ez da oso ideia ona sistema zuzenean Internetekin konektaturik edukitzea.</para>
+
+      </sect2>
+
+      <sect2>
+	<title>
+	  Logotipoa
+	</title>
+
+	<para>Nahi izanez gero, ongietorriak logotipo bat bistara dezake saio-hasieraren leihoan.  Irudiak Imlib liburutegirako formatu irakurgarrian egon behar du (GIF, JPG, PNG, TIFF, XPM eta posible diren besteak), eta gdm-ren erabiltzailearentzat irakurgarria izan behar du. Lehenespenetarako ikus <filename>Logotipoa</filename> aukera erreferentzia-sekzioan .</para>
+
+      </sect2>
+
+    </sect1>
+
+  </chapter>
+
+  <chapter id="Configuration">
+    <title>Konfigurazio-direktorioa</title>
+
+    <para>GDMren konfigurazio-fitxategiak <filename>etc/gdm/</filename> direktorioan daude.</para>
+
+    <para>Konfigurazio-direktorioaren edukia honakoa da:</para>
+
+    <screen>Init/ PostSession/ PreSession/ Sessions/ gdm.conf</screen>
+
+    <para><filename>gdm.conf</filename> GDMren konfigurazio-fitxategi nagusia da. Aukerak aurrerago azalduko dira atal honetan.</para>
+
+    <para><filename>gdm.conf</filename> bi <filename>gdm</filename> programen konfigurazio-fitxategia da, <filename>gdmlogin</filename>, eta <filename>gdmchooser</filename> programena, parametro ugari berdinak baitira.</para>
+
+    <para>Gainerako konfigurazioa scriptak <filename>etc/gdm</filename> karpetako azpidirektorioetan jareginez egiten da. Planteamendu honek paketeen sistema-kudeatzaileei leiho-kudeatzaileak eta saio mota desberdinak instalatzea errazten die, sistema-administratzaileari edizio-fitxategiak eskatu gabe.</para>
+
+    <sect1>
+      <title>Script direktorioak</title>
+      
+      <para>Sekzio honetan <filename>Init</filename>, <filename>PreRoot</filename> eta <filename>PostRoot</filename> direktorioak azalduko ditugu, oso antzekoak baitira.</para>
+
+      <para>X zerbitzaria behar bezala hasieratu bada, GDMek <filename>Init/&lt;displayname&gt;</filename> izeneko script-a idazten saiatuko da. Hau da, <filename>Init/:0</filename> bertako lehen pantailarentzat.  Fitxategi hori aurkitzen ez bada, GDM <filename>Init/Default</filename> exekutatzen saiatuko da. Script-a root moduan exekutatuko da eta GDM bukatu arte blokeatuta geratuko da. <filename>Init/*</filename> script-a erabili GDM saio-hasierako leihoarekin batera exekutatu behar diren programetan, adibidez, x kontsolan.  Atzeko planoa, etab. ezartzeko komandoak ere fitxategi honetan daude.</para>
+
+      <para>Sistema-administratzailearen gain dago honakoa erabakitzea: Init script-arekin hasitako bezeroak erabiltzailearen saioarekin hasi aurretik hil behar diren. Hori KillInitClients aukerak kontrolatzen du <filename>gdm.conf</filename> fitxategian.</para>
+
+      <para>Erabiltzailea autentifikatutakoan, GDMk PreSession script-a exekutatuko du.  Init script-aren antzera exekutatuko da <filename>PreSession/&lt;displayname&gt;</filename> aukera. Fitxategirik lehendik ez badago, GDM <filename>PreSession/Default</filename> exekutatzen saiatuko da. Script-a root moduan exekutatuko da eta GDM bukatu arte blokeatuta geratuko da. Script hori bertako saio-kudeaketarako edo kontabilitate gaietarako erabili. $USER ingurune-aldagaiak autentifikatutako erabiltzailearen saio-hasiera dauka. Behar bezala hasiz gero script-a 0-ra itzuliko da.  Beste edozein baliok GDM uneko saio-hasieraren prozesua amaitzera bultzatuko du.</para>
+
+      <para>Saio-script-a orduan exekutatuko da.  Saio-script-ak <filename>etc/gdm/Session</filename> direktorioan daude. GDM zer saiok exekutatuko duen, erabiltzaileak ongietorriko Saioak menuan egindako aukeraren arabera egongo. Saiorik hautatzen ez bada eta erabiltzaileak azken saioa <filename>~/.gnome/gdm</filename> fitxategian gorde ez badu, sistemak aurkitutako lehen script-a aukeratu edo -- <filename>Sessions/Default</filename> lehendik badago -- hori exekutatuko du. Adibidez, <filename>Gnome</filename>-tik <filename>Lehenetsi</filename>-ra arte esteka sinboliko bat sor dezakezu, Gnome lehenetsitako mahaigaineko ingurune bihurtzeko.</para>
+
+      <para>Erabiltzaileak saioa amaitzen duenean, PostSession script-a exekutatuko da. Eragiketa Init eta PreSession-en antzekoa da. Hau da, GDM <filename>PostSession/&lt;displayname&gt;</filename> script-a exekutatzen saiatuko da, eta lehendik ez badago, <filename>PostSession/Default</filename> exekutatuko da. Script-a root-aren pribilegioekin exekutatuko da, menpeko daemon-a blokeatu egingo da eta $USER ingurune-aldagaiak saiotik orain irten den erabiltzailearen izena edukiko du.</para>
+
+      <para>Kontuan hartu PostSession script-a exekutatu egingo dela, nahiz eta pantailak S/I arazoagatik edo antzeko zerbaitengatik ez erantzun.  Beraz, ezin da ziurtatu X aplikazioek script-a exekutatzen den bitartean funtzionatuko dutenik.</para>
+
+      <para>Init, PreSession edo PostSession script-ak ez dira beharrezkoak eta utz daitezke. Funtzionamendu egokirako gutxienez saio-script bat behar da.</para>
+
+    </sect1>
+
+    <sect1>
+      <title>Konfigurazio-fitxategia - <filename>gdm.conf</filename></title>
+      
+      <para>Daemon-ak eta dagozkien utilitateek konfigurazio-fitxategi berdina dute: <filename>etc/gdm/gdm.conf</filename>.</para>
+
+      <para>Konfigurazio-fitxategia sekzioetan banaturik dago eta sekzio bakoitzak GDMren zati jakin baten jokabidea definitzen duten aldagaiak ditu.</para>
+
+      <para><filename>gdm.conf</filename> fitxategiak GNOMEren konfigurazio-fitxategiaren sintaxi estandarra jarraitzen du. Parentesi arteko gako-hitzek sekzioak definitzen dituzte, berdin ikurraren (=) aurreko kateak aldagaiak dira eta berdin ikurraren ondorengo datuek aldagaien balioa adierazten dute.</para>
+
+      <sect2>
+	<title>Daemon konfigurazioa</title>
+
+	<variablelist>
+	  <title>[daemon-a]</title>
+
+	  <varlistentry><term>BerrabiaraziBetiZerbitzaria</term> <listitem><synopsis>BerrabiaraziBetiZerbitzaria=faltsua</synopsis> <para>Egia bada, gdm ez da inoiz saiatuko lehendik dauden X zerbitzariak berriro hasieratuz berriro erabiltzen.  Lehendik dagoen zerbitzaria hil eta berriro hasiko da.  Normalean, berriro hasieratzea abiatzeko modu egokiagoa da, baina X zerbitzariaren memoria gero eta gehiago erabiltzen bada, aukera seguruagoa izan daiteke.</para></listitem></varlistentry>
+
+	  <varlistentry><term>SaioHasieraAutomatikoaGaitu</term> <listitem><synopsis>SaioHasieraAutomatikoaGaitu=faltsua</synopsis> <para>SaioHasieraAutomatikoaren erabiltzaileak saioa lehen abioaren ondoren hasi behar luke.  Ez da pasahitzik eskatzen.  Hori erabilgarria da erabiltzaile bakarreko lan-estazioetarako, non bertako segurtasun-kontsola arazo bat ez den.   Terminal publikoentzako ere erabilgarria izan daiteke, baina kasu horretarako ikus DenborazMugatutakoSaioHasiera.</para></listitem></varlistentry>
+
+	  <varlistentry><term>SaioHasieraAutomatikoa</term> <listitem><synopsis>SaioHasieraAutomatikoa=</synopsis> <para>Erabiltzaileak automatikoki hasi behar luke saioa lehen abioaren ondoren.  SaioHasieraAutomatikoaGaitu aukerak egia izan behar du eta horretarako erabiltzaileak baliozkoa izan behar du.  &quot;Root-a&quot; inoiz ezin da automatikoki hasi eta gdm-ek ez du hori egingo, nahiz eta zuk horretarako konfiguratu.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Hautatzailea</term> <listitem><synopsis>Hautatzailea=bin/gdmchooser --disable-sound --disable-crash-dialog</synopsis> <para>Hautatzailearen bide-izen osoa eta izen exekutagarriak, hautazko argumentuaz jarraiturik.</para></listitem></varlistentry>
+
+	  <varlistentry><term>Konfiguratzailea</term> <listitem><synopsis>Konfiguratzailea=/usr/bin/gdmconfig --disable-sound --disable-crash-dialog</synopsis> <para>Konfigurazio bitarraren bide-izena.  Ongietorriko KonfigErabilgarri aukera egia moduan jarrita badago, orduan bitar hori exekutatu norbaitek sistema-menuan Konfigurazioa aukeratzen duenean. Hala ere GDMk aurrena root-aren pasahitza eskatuko dizu. Hori ezingo da urruneko pantaila batetik egin.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>BideIzenLehenetsia</term> <listitem><synopsis>BideIzenLehenetsia=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis> <para>Erabiltzailearen saioa zer bide-izenekin ezarriko den zehazten du.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>BistaratuHasiDir</term> <listitem><synopsis>BistaratuHasiDir=etc/gdm/Init</synopsis> <para>Pantailako hasieratu script-a duen direktorioa. Informazio gehiagotarako ikus ``Script direktorioak'' sekzioa.</para></listitem></varlistentry>
+
+	  <varlistentry><term>FailsafeXZerbitzaria</term> <listitem><synopsis>FailsafeXZerbitzaria=</synopsis> <para>X zerbitzari arrunta hasi ezin dugun kasurako X komando-lerroa. Bereizmen txikiko zerbitzaria exekutatzeko script-motaren bat izan behar luke.  XKeepsCrashing script-a exekutatu aurretik egiten da.</para></listitem></varlistentry>
+
+	  <varlistentry><term>GnomeSaioLehenetsia</term> <listitem><synopsis>GnomeSaioLehenetsia=share/gnome/default.session</synopsis> <para>GDMk irakurri behar lukeen fitxategia, erabiltzaile bakoitzeko GNOMEren saio-fitxategirik ez badago, eta erabiltzaileak Gnome-ren Hautatzaile-saioa eskatu badu.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Ongietorria</term> <listitem><synopsis>Ongietorria=bin/gdmlogin --disable-sound --disable-crash-dialog</synopsis> <para>Ongietorriaren bide-izen osoa eta izen exekutagarriak, hautazko argumentuez jarraiturik.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Taldea</term> <listitem><synopsis>Taldea=gdm</synopsis> <para><filename>gdmlogin</filename>/<filename>gdmchooser</filename> exekutatzeko taldearen IDa.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>GeldituKomandoa</term> <listitem><synopsis>GeldituKomandoa=/sbin/shutdown -h now</synopsis> <para>Erabiltzaileak Sistema menuan Gelditu hautatzen duenean exekutatu behar den bide-izen osoa eta argumentuak.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>HilInitBezeroak</term> <listitem><synopsis>HilInitBezeroak=egia</synopsis> <para>GDMk init script-ekin hasieratu diren X bezeroak hil behar dituen edo ez erabakitzen du, erabiltzaileak saioa hasten duenean.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>SaioHasieraDir</term> <listitem><synopsis>SaioHasieraDir=var/gdm</synopsis> <para>Pantaila indibidualentzako egunkari-fitxategiak dituen direktorioa.  Lehenespenez ZerbAuthDir-en berdina da.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>PidFitx</term> <listitem><synopsis>PidFitx=var/run/gdm.pid</synopsis> <para> <filename>gdm</filename> prozesuaren IDa duen fitxategiaren izena.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>PostSaioScriptDir</term> <listitem><synopsis>PostSaioScriptDir=etc/gdm/PostSession</synopsis> <para>Erabiltzaileak saiotik irten ondoren exekutatutako script-ak dituen direktorioa.   Informazio gehiagotarako ikus ``Script direktorioak'' sekzioa.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>PreSaioScriptDir</term> <listitem><synopsis>PreSaioScriptDir=etc/gdm/PreSession</synopsis> <para>Erabiltzaileak saioa hasi aurretik exekutatutako script-ak dituen direktorioa. Informazio gehiagotarako ikus ``Script direktorioak'' atala.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>BerrabiaraziKomandoa</term> <listitem><synopsis>BerrabiaraziKomandoa=/sbin/shutdown -r now</synopsis> <para>Erabiltzaileak Sistema menuan Berrabiarazi hautatzen duenean exekutatu behar den programaren bide-izen osoa eta hautazko argumentuak.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>RootBideIzena</term> <listitem><synopsis>RootBideIzena=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis> <para>Root-aren saioan zer bide-izen ezarriko den eta GDMk exekutatutako {Init,PreSession,PostSession} script-ak zehazten ditu.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ZerbAuthDir</term> <listitem><synopsis>ZerbAuthDir=/var/gdm</synopsis> <para>Pantaila indibidualentzako X autentifikazio-fitxategiak dituen direktorioa.   <filename>gdm.gdm</filename>-ren barnean egon behar luke 750 baimenekin.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>SaioDir</term> <listitem><synopsis>SaioDir=etc/gdm/Sessions</synopsis> <para>Sisteman erabilgarri dauden saio-mota guztien script-ak dituen direktorioa.</para></listitem></varlistentry>
+
+	  <varlistentry><term>EsekiKomandoa</term> <listitem><synopsis>EsekiKomandoa=</synopsis> <para>Erabiltzaileak Sistema menuan Eseki hautatzen duenean exekutatu behar diren bide-izen osoa eta argumentuak.  Hutsik badago, menu-elementu hori ez da egongo.</para></listitem></varlistentry>
+
+	  <varlistentry><term>DenborazMugatutakoSaioHasieraGaitu</term> <listitem><synopsis>DenborazMugatutakoSaioHasieraGaitu=faltsua</synopsis> <para>DenborazMugatutakoSaioHasieraren erabiltzaileak saioa saio-hasierako pantaila segundo batzuetan (SaioHasieraAtzerapena aukerarekin ezarria) inaktibo egon ondoren hasi behar luke.  Hau erabilgarria da atzipen publikoko terminalentzat, edo baita etxeko erabilpenerako ere.   Erabiltzaileak teklatua erabili edo menuak arakatzen baditu, denbora-muga SaioHasieraAtzerapena aukeran edo 30 segundotan berrezarriko da, beti ere bietatik handiagoa dena.   Kontuan hartu pasa-hitzik ez dela eskatzen, beraz erabiltzaileak kontuz ibili behar luke.</para></listitem></varlistentry>
+
+	  <varlistentry><term>DenborazMugatutakoSaioHasiera</term> <listitem><synopsis>DenborazMugatutakoSaioHasiera=</synopsis> <para>Segundo kopuru jakin bat inaktibo egon ondoren saioa hasi  behar lukeen erabiltzailea da.  Erabiltzaile hori ez da  inoiz &quot;root-a&quot; izango eta gdm-ek ez du utziko root-a horrela hasten.</para></listitem></varlistentry>
+
+	  <varlistentry><term>SaioHasieraAtzerapena</term> <listitem><synopsis>SaioHasieraAtzerapena=30</synopsis> <para>DenborazMugatutakoSaioHasiera aukeraren erabiltzailea saioa hasi aurretik atzeratuko den denbora. 10 edo handiagoa izan behar du.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Erabiltzailea</term> <listitem><synopsis>Erabiltzailea=gdm</synopsis> <para> <filename>gdmlogin</filename> / <filename>gdmchooser</filename> exekutatzeko erabiltzaile-izena.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ErabiltzaileAuthDir</term> <listitem><synopsis>ErabiltzaileAuthDir=</synopsis> <para>Erabiltzailearen <filename>.Xauthority</filename> fitxategia gorde behar litzatekeen direktorioa.  Ezer zehazten ez denean, erabiltzailearen etxeko direktorioa erabiltzen da.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ErabiltzaileAuthFBDir</term> <listitem><synopsis>ErabiltzaileAuthFBDir=/tmp</synopsis> <para> GDMk erabiltzailearen <filename>.Xauthority</filename> fitxategia eguneratzean huts egiten badu, laguntza-cookie-a sortuko da direktorio honetan.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ErabiltzaileAuthFitx</term> <listitem><synopsis>ErabiltzaileAuthFitx=.Xauthority</synopsis> <para>Erabiltzailearen cookie-ak gordetzeko erabiltzen den fitxategiaren izena.</para></listitem></varlistentry>
+
+	  <varlistentry><term>XKeepsCrashing</term> <listitem><synopsis>XKeepsCrashing=etc/gdm/XKeepsCrashing</synopsis> <para>X kasuan exekutatu behar den script-ak bertan behera gelditzen jarraitzen du.   Hori X konfigurazioa exekutatzeko da.   Lehen argumentua XKeepsCrashingConfigurators script-ean zehaztutako programa bat izango da, lehendik dagoen bakarra.    Programarik lehendik ez badago, script-a ez da exekutatuko.   Bigarren argumentua script-ean edozein helburutarako erabil daitekeen aldi baterako fitxategi-izena da.   Gainerako argumentuak itzulitako mezuak dira.   Xehetasun gehiagotarako ikus instalatutako script estandarra.</para> <para>FailsafeXZerbitzaria instalatuta badago, aurrena hori erabiliko da, baina babes moduan soilik, nahiz eta zerbitzariak bertan behera gelditzen jarraitu.</para></listitem></varlistentry>
+
+	  <varlistentry><term>XKeepsCrashingConfigurators</term> <listitem><synopsis>XKeepsCrashingConfigurators=/usr/bin/X11/XF86Setup /usr/bin/X11/Xconfigurator</synopsis> <para>Erabiltzailearentzat X konfigurazioa egingo duen programa-zerrenda.  Programa horiek XKeepsCrashing script-ak exekutatzen ditu.  Zerrendan lehendik dagoen lehena erabiltzen da.</para></listitem></varlistentry></variablelist>
+	
+      </sect2>
+
+      <sect2>
+	<title>Segurtasun aukerak</title>
+	
+	<variablelist>
+	  <title>[segurtasuna]</title>
+	  
+	  <varlistentry><term>BaimenduRoot</term> <listitem><synopsis>BaimenduRoot=egia</synopsis> <para>Root-ari (erabiltzaile pribilegiatuari) GDMren bidez saioa hastea baimentzen dio.  Modu horretako saio-hasierak debekatu nahi badituzu, aukera horretan faltsua jarri.</para> <para>PAM onartzen duten sistemetan, parametro hori ez da oso erabilgarria, PAM funtzio berdinerako, eta baita gauza gehiagotarako ere, erabil baitaiteke.  Oraindik, ordea, erabiltzen da, beraz PAM sistemetan ere egiazkoa jarri beharko zenuke.</para></listitem></varlistentry>
+
+	  <varlistentry><term>BaimenduRootUrrunetik</term> <listitem><synopsis>BaimenduRootUrrunetik=egia</synopsis> <para>Root-ari (erabiltzaile pribilegiatuari) GDMren bidez saioa urrunetik hastea baimendu.  Modu horretako saio-hasierak debekatu nahi badituzu, aukera horretan faltsua jarri.   Urruneko saio-hasierak xdmcp-ren bidez egiten diren saio-hasierak dira.</para> <para>PAM onartzen duten sistemetan, parametro hori ez da oso erabilgarria, PAM funtzio berdinerako, eta baita gauza gehiagotarako ere, erabil baitaiteke.  Oraindik ordea erabiltzen da, beraz PAM sistemetan ere egiazkoa jarri beharko zenuke.</para></listitem></varlistentry>
+
+	  <varlistentry><term>BaimenduAutomatikokiUrrunetik</term> <listitem><synopsis>BaimenduAutomatikokiUrrunetik=faltsua</synopsis> <para>Denboraz mugatutako saio-hasiera aukera urrunetik egitea baimentzen du.   Hau da, XDMCPren bidez egindako urruneko konexioak baimenduko dira erabiltzaileak saioa &quot;TimedLogin&quot; moduan hasteko, saio-hasieraren leihoa denboraz kanpo utziz, lehen kontsolako erabiltzaile lokalaren moduan.</para> <para>Kontuan hartu horrela sistema bat nahiko segurua dela, eta beraz lehenespenez desaktibatuta egongo da. </para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ErlaxazioBaimenak</term> <listitem><synopsis>ErlaxazioBaimenak=0</synopsis> <para>Lehenespenez, fitxategi eta direktorioen jabea ez den erabiltzaileak bertan idatz badezake, GDMk ez ditu fitxategi eta direktorio horiek kontuan hartuko.</para> 
+	      
+	      <para>ErlaxazioBaimenen balioa aldatuz, ondorengo jokabidea ere alda dezakezu:</para>
+	      
+	      <para>0 - Paranoia aukera. Erabiltzailearen fitxategiak eta direktorioak bakarrik onartzen ditu.</para> <para>1 - Baimendu taldeak idatzi ditzakeen fitxategi eta direktorioak.</para> <para>2 - Baimendu munduan zehar idatz daitezkeen fitxategi eta direktorioak.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>BerriroSaiatuAtzerapena</term> <listitem><synopsis>BerriroSaiatuAtzerapena=3</synopsis> <para>GDMk sarrera-eremua berriro aktibatu aurretik itxaron behar lukeen segundo kopurua, saio-hasierak huts egiten badu.</para></listitem></varlistentry>
+
+	  <varlistentry><term>SaioFitxGehien</term> <listitem><synopsis>SaioFitxGehien=524288</synopsis> <para>GDMk kopuru hori baino handiagoko saio-fitxategiak ez ditu irakurriko (bytetan zehaztuta).  Hori ErabiltzaileFitxGehien baino handiagoa izan daiteke, ez baitira inoiz memorian irakurtzen, eta horrela, zailagoa da gdm-ri &quot;eraso&quot; egitea.</para>
+	      
+	      <para>Tamaina-kontrolaz gain, <filename>gdm</filename> eta <filename>gdmlogin</filename> programak ez dira hain erraz erabiltzailearen direktorioko fitxategietan sartzen. Ez die esteka sinbolikoei jarraituko eta, hala nahi badute, fitxategi eta direktorioetan haien jabea ez den norbaitek idatz badezake, ez ditu irakurriko. Informazio gehiagorako ikus ErlaxazioBaimenak aukera.</para>
+
+	      <para>GDM saio-fitxategietarako, ordea, ez da hain hautakorra.  ErlaxazioBaimenak 0-n ezartzen badituzu, saio-fitxategietarako 1 dela suposatuko du GDMk.  Tamalez horrela da, saio-fitxategiak orduan ezingo baitira inoiz irakurri.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ErabiltzaileFitxGehien</term> <listitem><synopsis>ErabiltzaileFitxGehien=65536</synopsis> <para>GDMk kopuru hori baino handiagoko fitxategiak ez ditu irakurri/idatziko (bytetan zehaztuta).</para>
+	      
+	      <para>Tamaina-kontrolaz gain, <filename>gdm</filename> eta <filename>gdmlogin</filename> programak ez dira hain erraz erabiltzailearen direktorioko fitxategietan sartzen. Ez die esteka sinbolikoei jarraituko eta, hala nahi badute, fitxategi eta direktorioetan haien jabea ez den norbaitek idatz badezake, ez ditu irakurriko. Informazio gehiagorako ikus ErlaxazioBaimenak aukera.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>AuthXehetu</term> <listitem><synopsis>AuthXehetu=egia</synopsis> <para>GDMk ongietorriko mezu-ereduan autentifikazio-erroreak erakutsi behar lituzkeen zehazten du.   Iraganean ez bezala, aukera hau egiazkotzat edukitzea ez da segurtasun-arrisku bat. Erabiltzaile-izena edo pasahitza okerra bada, ordea, ez du aukera hori zehaztuko, biak errore berdinak baitira.   Beste errore bat emango du, adibidez, root-aren saio-hasiera debekatuta badago eta saioa hasten badu, edo desgaitutako saio-hasiera duen erabiltzaile batek saioa hasten saiatzen bada (saioa hasi ondoren bakarrik).  Saio-hasierari buruzko informazio xehetua ez da ematen erabiltzailea egiaztatu arte.</para></listitem></varlistentry></variablelist>
+	
+      </sect2>
+
+      <sect2>
+	<title>XDCMP euskarria</title>
+
+	<variablelist>
+	  <title>[xdmcp]</title>
+	  
+	  <varlistentry><term>DisplaysPerHost</term> <listitem><synopsis>DisplaysPerHost=1</synopsis> <para>Erasotzaileek itxaron-ilara bete ez dezaten, GDMk urruneko ordenagailu bakoitzeko konexio bakarra baimenduko du.  Ordenagailuak pantaila bat baino gehiagoko pantaila-zerbitzuekin hornitu nahi badituzu, DisplaysPerHost-en balioa modu proportzionalean handitu beharko zenuke.</para></listitem></varlistentry>
+
+	  <varlistentry><term>Gaitu</term> <listitem><synopsis>Gaitu=faltsua</synopsis> <para>Aukera horretan egiazkoa jartzeak XDMCP euskarria gaitzen du, eta horrela urruneko pantailak/X teminalak GDMren bidez kudea daitezke.</para>
+	      
+	      <para><filename>gdm</filename>-k UDPren 177 atakaren mezua jasotzen du. Informazio gehiagotarako ikus Ataka aukera.</para>
+	      
+	      <para>GDM hori onartzeko konpilatuta badago, urruneko pantailetatik egindako atzipena TCP itzulbiratzailearen liburutegia erabiliz kontrola daiteke. Zerbitzu-izena <filename>gdm</filename> da</para>
+	      
+	      <para>Honakoa gehitu behar zenioke: </para>
+	      
+	      <screen>gdm:	.my.domain</screen>
+	      
+	      <para>zure <filename>/etc/hosts.allow</filename> aukerari. Xehetasunetarako ikus eskuliburuko <filename>hosts_access(5)</filename> orrialdea.</para>
+	      
+	      <para>Kontuan hartu XDMCP ez dela zehazki protokolo segurua eta ideia ona izango litzateke UDPren 177 ataka suebakian blokeatzea, behar ez baduzu behintzat.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ErrespetatuZehark</term> <listitem><synopsis>ErrespetatuZehark=egia</synopsis> <para>X terminaletarako XDMCP INDIRECT aukeratzea gaitzen du (hau da, <filename>gdmchooser</filename>-en urruneko exekuzioa), terminal horiek ez baitute beraien pantaila-arakatzaile propioa ematen.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ZainDaudenGehien</term> <listitem><synopsis>ZainDaudenGehien=4</synopsis> <para>Zerbitzu-erasoen ukapena eragozteko, GDMk zain dauden konexio-ilaren tamaina finko bat dauka. ZainDaudenGehien pantailak bakarrik has daitezke aldi berean.</para>
+	      
+	      <para>Kontuan hartu parametro horrek *ez* duela kudea daitezkeen urruneko pantailen kopurua mugatzen. Konexioa aldi berean hasten duten pantailen kopurua bakarrik mugatzen du.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ZainDaudenZeharkGehien</term> <listitem><synopsis>ZainDaudenZeharkGehien=4</synopsis> <para>GDMk ZainDaudenZeharkGehien pantailak aldi bereko ostalari-hautatzailearekin bakarrik eskainiko ditu.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>GehienSaio</term> <listitem><synopsis>GehienSaio=16</synopsis> <para>Aldi berean kudeatuko diren urruneko pantailen gehienezko kopurua  zehazten du, hau da, ostalariak erabil ditzakeen urruneko pantailen kopuru osoa.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ZainEgotekoGehien</term> <listitem><synopsis>ZainEgotekoGehien=30</synopsis> <para>GDM pantaila kudeatzeko prest dagoenean, ACCEPT paketea bidaltzen du saioko ID bakarrarekin. ID hori etorkizuneko XDMCP elkarrizketetan erabiliko da.</para>
+	      
+	      <para>Orduan, GDMk saioaren IDa itxaron-ilaran ezartzen du eta pantailak MANAGE eskaerari erantzun arte zain egongo da.</para>
+	      
+	      <para>MaxWait aukerako segundoen buruan erantzunik jasotzen ez bada, GDMk pantaila hilda dagoela esango du eta itxaron-ilaratik kenduko du, beste pantaila batzuentzako erretenak libratuz. </para></listitem></varlistentry>
+	  
+	  <varlistentry><term>ZainEgotekoZeharkGehien</term> <listitem><synopsis>ZainEgotekoZeharkGehien=30</synopsis> <para>ZainEgotekoZeharkGehien parametroak bi ekintza hauen arteko segundo-kopurua zehazten du: erabiltzaileak ostalaria aukeratzen duen denboraren eta erabiltzailea hurrengo zeharkako kontsultan ostalariari konektaturik dagoen denboraren artekoa.   Denbora-muga gainditzen denean, aukeratutako ostalariari buruzko informazioa kendu eta zeharkako erretenak libratuko ditu beste pantailentzat.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Ataka</term> <listitem><synopsis>Ataka=177</synopsis> <para><filename>gdm</filename>-k XDMCPren eskaeratarako jaso behar lukeen UDP atakaren zenbakia. Ez aldatu, ez badakizu zer egiten ari zaren.</para></listitem></varlistentry>
+
+	  <varlistentry><term>PingEgitekoTartea</term> <listitem><synopsis>PingEgitekoTartea=5</synopsis> <para>X zerbitzarian ping egiteko tartea minututan.  X zerbitzariak hurrena guk ping egin aurretik erantzuten ez badu, konexioa gelditu eta saioa amaituko da.  xdm-ren PingTartea eta PingDenboraMuga aukeren arteko konbinazioa da.</para></listitem></varlistentry></variablelist>
+	
+      </sect2>
+
+      <sect2>
+	<title>GUIren konfigurazio-aukera arruntak </title>
+
+	<variablelist>
+	  <title>[gui]</title>
+	  
+	  <varlistentry><term>Gtkrc</term> <listitem><synopsis>Gtkrc=</synopsis> <para> <filename>gdmlogin</filename> / <filename>gdmchooser</filename> aukeretan erabili behar den gaia duen <filename>gtkrc</filename>-rako bide-izena.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>IkonoGehienZabalera</term> <listitem><synopsis>IkonoGehienZabalera=128</synopsis> <para>Aurpegi-arakatzaileak bistaratuko dituen ikonoen gehienezko zabalera zehazten du (pixeletan).  Ikono hori baino handiagoak eskalatu egingo dira.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>IkonoGehienAltuera</term> <listitem><synopsis>IkonoGehienAltuera=128</synopsis> <para>Aurpegi-arakatzaileak bistaratuko dituen ikonoen gehienezko altuera zehazten du (pixeletan).  Ikono hori baino handiagoak eskalatu egingo dira.</para></listitem></varlistentry></variablelist>
+	
+      </sect2>
+	
+      <sect2>
+
+	<title>Ongietorriaren konfigurazioa</title>
+
+	<variablelist>
+	  <title>[ongietorria]</title>
+	  
+	  <varlistentry><term>Arakatzailea</term> <listitem><synopsis>Arakatzailea=egia</synopsis> <para>Egiazkoa ezarri aurpegi-arakatzailea gaitzeko. Aurpegi-arakatzaileari buruzko informazio gehiagotarako ikus ``Ongietorria'' atala.</para></listitem></varlistentry>
+
+	  <varlistentry><term>KonfigErabilgarri</term> <listitem><synopsis>KonfigErabilgarri=egia</synopsis> <para>Konfiguratzailea ongietorrian exekutatzea baimentzen du.  Kontuan hartu erabiltzaileak root-aren pasahitza idatzi beharko duela konfiguratzailea exekutatu aurretik.   Ikus Konfiguratzailea aukera daemon atalean.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>AurpegiLehents</term> <listitem><synopsis>AurpegiLehenets=share/pixmaps/nophoto.png</synopsis> <para>Ikono-fitxategia lehenesten du <filename>~/gnome/photo</filename> fitxategian argazki pertsonalik ez duten erabiltzaileentzat. Irudiak Imlib formatuduna eta fitxategiak gdm erabiltzailearentzat irakurgarri izan behar du.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>LokalLehenets</term> <listitem><synopsis>LokalLehenets=ingelesa</synopsis> <para>Hizkuntza hori erabiltzen da saiorako <filename>~user/.gnome/gdm</filename> fitxategian beste ezer zehazturik ez badago eta erabiltzaileak ongietorriko Lokala menuan hizkuntza aukeratu ez badu.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Baztertu</term> <listitem><synopsis>Baztertu=bin,daemon,adm,lp,sync,shutdown,halt,mail,...</synopsis> <para>Aurpegi-arakatzailetik kendu behar den komaz bereizitako erabiltzaile-izenen zerrenda. Kapoan utzitako erabiltzaileak oraindik saioa hasi ahal izango dute.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Letra-tipoa</term> <listitem><synopsis>Letra-tipoa=-adobe-helvetica-bold-r-normal-*-*-180-*-*-*-*-*-*</synopsis> <para>Ongietorriko ongietorri-mezuaren letra-tipoa.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>AurpegiOrokorDir</term> <listitem><synopsis>AurpegiOrokorDir=share/faces/</synopsis> <para>Aurpegi-fitxategien systemwide direktorioa. Sistema-adiministratzaileak erabiltzaileei ikonoak hemen ipin diezaizkieke beraien etxeko direktorioak ukitu gabe. Aurpegiei beraien erabiltzaileen saio-hasieraren arabera ezartzen zaie izena.</para>
+	      
+	      <para>Hau da, <filename>&lt;GlobalFaceDir&gt;/johndoe</filename> aukerak ``johndoe'' erabiltzailearen ikono-aurpegia edukiko luke. Ez litzateke irudi-formatuaren luzapena zehaztu behar.</para>
+	      
+	      <para>Irudi-aurpegiak Imlib formatuan gorde behar dira eta GDM erabiltzailearentzat irakurgarriak izan behar dute.</para>
+	      
+	      <para>Erabiltzailearen ikono-fitxategiak beti edukiko du lehentasuna sistema-administratzaileak emandakoaren gainetik.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Ikonoa</term> <listitem><synopsis>Ikonoa=share/pixmaps/gdm.xpm</synopsis> <para><filename>gdmlogin</filename>-en erabili behar den ikonoa ikonotu-egoeran dagoenean.  Irudiak Imlib formatuduna eta GDM erabiltzailearentzat irakurgarria izan behar du.  Fitxategirik ez badago zehaztuta, ikonotzeko eginbidea desgaitu egingo da.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>FitxategiLokala</term> <listitem><synopsis>FitxategiLokala=etc/gdm/locale.alias</synopsis> <para>Sistemako hizkuntza guztietarako sarrerak dituen GNU formatu lokaleko fitxategia.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Logotipoa</term> <listitem><synopsis>Logotipoa=share/pixmaps/gnome-logo-large.png</synopsis> <para>Logotipoaren laukian bistaratuko den irudi-fitxategia. Fitxategiak Imlib formatuduna eta GDM erabiltzailearentzat irakurgarria izan behar du. Fitxategirik ez badago zehaztuta, logotipo-eginbidea desgaitu egingo da.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Dar-dar egin</term> <listitem><synopsis>Dar-dar egin=egia</synopsis> <para> <filename>gdmlogin</filename>-ek pantaila astindu behar lukeen kontrolatzen du, erabiltzaile-izen/pasahitz okerra sartzen denean.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>SistemaMenua</term> <listitem><synopsis>SistemaMenua=faltsua</synopsis> <para>Itzali/Gelditu menua aktibatzen/desaktibatzen du.</para></listitem></varlistentry>
+
+	  <varlistentry><term>TituluBarra</term> <listitem><synopsis>TituluBarra=egia</synopsis> <para>Ongietorrian titulu-barra bistaratzen du.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>Ongi etorri</term> <listitem><synopsis>Ongi etorri=Ongi etorri %n-(e)ra</synopsis> <para>Ongietorrian logotipo-irudiaren ondoren zer testu bistaratu behar den kontrolatzen du. Honako kontrol-karaktereak onartzen dira:</para>
+	      
+	      <para>%%	 `%' karakterea</para>
+	      
+	      <para>%d karaktereak	ostalari-izena bistaratzen du</para>
+	      
+	      <para>%h	Guztiz kualifikatutako ostalari-izena</para>
+
+	      <para>%m	ordenagailua (prozesadore-mota)</para>
+
+	      <para>%n	Nodo-izena (hau da, domeinurik gabeko ostalari-izena)</para>
+	      
+	      <para>%r	edizioa (SE bertsioa)</para>
+	      
+	      <para>%s	sistema-izena (hau da, SE)</para>
+	      	      
+	    </listitem></varlistentry>
+
+	  <varlistentry><term>XineramaPantaila</term> <listitem><synopsis>XineramaPantaila=0</synopsis> <para>Xinerama luzapena saio-hasieraren leihoan aktiboa badago, pantaila fisiko honetan zentratuko da (0 erabili lehen pantailarentzat, 1 bigarrenarentzat...).</para></listitem></varlistentry>	
+
+	  <varlistentry><term>AtzekoPlanoKolorea</term> <listitem><synopsis>AtzekoPlanoKolorea=#007777</synopsis> <para>AtzekoPlanoMota 2 bada, kolore hori erabili ongietorriaren atzeko planoan.  Atzeko irudi garden moduan ere erabili atzeko planoan, KoloreaUrrunekoetanBakarrik ezarrita badago eta urruneko pantaila bada.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>AtzekoPlanoIrudia</term> <listitem><synopsis>AtzekoPlanoIrudia=somefile.png</synopsis> <para>AtzekoPlanoMota 1 bada, ongietorrian atzeko plano moduan bistaratu.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>AtzekoPlanoPrograma</term> <listitem><synopsis>AtzekoPlanoPrograma=/usr/bin/xeyes</synopsis> <para>Programa hori ezarrita badago, atzeko planoan exekutatuko da saio-hasieraren leihoa bistaratzen den bitartean.   Kontuan hartu programa horiek guztiak ez direla modu horretan exekutatuko, gdm-k normalean ez baitu etxeko direktoriorik.  Etxeko direktorioa gdm erabiltzailearentzat ezar dezakezu, hori behar duten aplikazioak exekutatu nahi badituzu.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>KoloreaUrrunekoetanBakarrik</term> <listitem><synopsis>KoloreaUrrunekoetanBakarrik=egia</synopsis> <para>Urruneko pantailetan atzeko planoaren kolorea bakarrik ezartzen du.  Hori sareko karga arintzeko da.  AtzekoPlanoPrograma ez da exekutatzen.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>EskalatuDoitzeko</term> <listitem><synopsis>EskalatuDoitzeko=egia</synopsis> <para>Atzeko planoko irudia eskalatzen du pantaila doitzeko.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>AtzekoPlanoMota</term> <listitem><synopsis>AtzekoPlanoMota=2</synopsis> <para>Ezarri behar den atzeko plano mota.  0 bat ere ez, 1 irudia eta 2 kolorea da.</para></listitem></varlistentry>	
+
+
+	  <varlistentry><term>KonfigKokalekua</term> <listitem><synopsis>KonfigKokalekua=egia</synopsis> <para>Egia bada, saio-hasieraren leihoaren kokalekua zehaztuko da XKokalekua/YKokalekua aukeraren bidez.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>XKokalekua</term> <listitem><synopsis>XKokalekua=200</synopsis> <para>Saio-hasieraren leihoaren kokaleku horizontala.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>YKokalekua</term> <listitem><synopsis>YKokalekua=100</synopsis> <para>Saio-hasieraren leihoaren kokaleku bertikala.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>ErakutsiGnomeHautatzaileSaioa</term> <listitem><synopsis>ErakutsiGnomeHautatzaileSaioa=egia</synopsis> <para>Ongietorriak Gnome-ren Hautatzailea saioa erakutsi behar duen zehazten du, 'Gnome' izeneko saioa agertzen denean.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>ErakutsiGnomeFailsafeSaioa</term> <listitem><synopsis>ErakutsiGnomeFailsafeSaioa=egia</synopsis> <para>Ongietorriak saio-zerrendan Gnome-ren Failsafe saioa erakutsi behar duen zehazten du.</para></listitem></varlistentry>	
+
+	  <varlistentry><term>ErakutsiXtermFailsafeSaioa</term> <listitem><synopsis>ErakutsiXtermFailsafeSaioa=egia</synopsis> <para>Ongietorriak saio-zerrendan Xterm Failsafe saioa erakutsi behar duen zehazten du.</para></listitem></varlistentry>	
+
+	</variablelist>
+
+      </sect2>
+
+      <sect2>
+
+	<title>XDCMP hautatzailearen aukerak</title>
+
+	<variablelist>
+	  <title>[hautatzailea]</title>
+
+	  <varlistentry><term>Broadcast</term> <listitem><synopsis>Broadcast=egia</synopsis> <para>Egia bada, hautatzaileak sare lokalari kontsulta bat transmititu eta erantzunak jasoko ditu.  Horrela, hautatzaileak beti erakutsiko ditu sareko kudeatzaile erabilgarri guztiak.  Sare honi lokalak ez diren ostalariak gehitu behar badizkiozu, edo Broadcast erabili nahi ez baduzu, Ostalariak teklan zerrenda ditzakezu.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>OstalariIrudiLehenets</term> <listitem><synopsis>OstalariIrudiLehents=share/pixmaps/nohost.png</synopsis> <para>Lehenetsitako ostalari-ikonoaren fitxategi-izena. Irudi hori bistaratuko da, ostalari jakin batentzat ikonorik zehazten ez bada.  Fitxategiak Imlib formatuduna eta GDM erabiltzaileak irakurtzeko modukoa izan behar du.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>OstalariIrudiDir</term> <listitem><synopsis>OstalariIrudiDir=share/hosts</synopsis> <para>Ostalarien ikono-fitxategien biltegia.  Sistema-administratzaileak urruneko ostalarien ikonoak hemen ipin ditzake eta <filename>gdmchooser</filename> fitxategian agertuko dira.</para>
+	      
+	      <para>Fitxategi-izenak ostalariaren izen guztiz kualifikatuarekin (FQDN) bat etorri behar du.  Ikonoak Imlib formatuan gorde behar dira eta gdm erabiltzailearentzat irakurgarriak izan behar dute.</para>
+	      
+	    </listitem></varlistentry>
+
+	  <varlistentry><term>Ostalariak</term> <listitem><synopsis>Ostalariak=1.ostalaria,2.ostalaria</synopsis> <para>Hautatzailean zerrendatu behar diren ostalariak.  Hautatzaileak erantzuten badute bakarrik zerrendatuko ditu.   Transmititzeaz gain, hori ere egiten da (Broadcast konfiguratuta badago), beraz, ez dituzu ostalariak sare lokalean zerrendatu behar.  Hori erabilgarria da zure sareko konfigurazioak transmisio-pakete baten bidez lor daitezkeen ostalari guztiak onartzen ez baditu.</para></listitem></varlistentry>
+	  
+	  <varlistentry><term>EskanDenbora</term> <listitem><synopsis>EskanDenbora=3</synopsis> <para>Hautatzaileak BROADCAST_KONTSULTA kontsultari erantzuteko zenbat segundo zain egon behar duen zehazten du.</para></listitem></varlistentry></variablelist>
+	
+      </sect2>
+
+      <sect2>
+
+	<title>X zerbitzariaren konfigurazio lokala </title>
+	
+	<variablelist>
+	  <title>[zerbitzariak]</title>
+	  
+	  <varlistentry><term>0</term> <listitem><synopsis>0=/usr/bin/X11/X</synopsis> <para>X zerbitzari lokalen kontrol-sekzioa. Lerro bakoitzak pantaila lokalen kopurua eta X zerbitzaria(k) hasieratzeko exekutatu behar den komandoa adierazten du.</para>
+	      
+	      <para>GDMk &quot;<filename>-auth &lt;ServAuthDir&gt;/:n.Xauth :n</filename>&quot; erantsiko du, pantaila-kopurua n denean.</para>
+
+	      <para>Sistema batzuetan gdm programak X zerbitzariak zer kontsola birtual exekutatzen duen jakin behar du.  Kasu honetan, (XFree86 exekutatzen bada) gehitu &quot;vt7&quot; komando-lerroari, adibidez, 7. kontsola birtuala exekutatzeko.</para></listitem></varlistentry>
+	  
+	</variablelist>
+
+      </sect2>
+	
+    </sect1>
+    
+  </chapter>
+  
+</book>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->               

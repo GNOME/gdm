@@ -1,0 +1,232 @@
+<!DOCTYPE article PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
+        <!-- if not using PNG graphic, replace reference above with
+             .....PUBLIC "-//OASIS//DTD DocBook V3.1//EN"[
+	     .....PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN"[
+         -->
+<!ENTITY version "2.0.97.1"> 
+]>
+
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 1.0.3
+  Template last modified: Nov 16, 2000
+-->
+
+<article id="index"><artheader>
+    <title>Gdmconfig-en eskuliburua</title>
+    <copyright><year>2001</year> <holder>Trevor Curtis</holder></copyright>
+
+
+  <copyright>
+   <year>2002</year>
+   <holder>Elhuyar (Basque translation)</holder>
+  </copyright>
+
+   <!-- Use this legal notice for online documents which depend on --> <!-- core GNOME packages.                                       --> <legalnotice id="legalnotice"><para>Baimena ematen da dokumentu hau kopiatu, banatu edota aldatzeko Free Software Foundation-ek argitaratutako <ulink type="help"      url="gnome-help:fdl"><citetitle>GNU Dokumentazio Librearen Lizentzia</citetitle></ulink>ren 1.1 bertsioan edo berriago batean ezarritako baldintzak betetzen badira; Atal Aldaezinik, Aurreko azaleko testurik eta Atzeko azaleko testurik gabe.  Lizentziaren kopia <ulink type="help" url="gnome-help:fdl">hemen</ulink> aurkituko duzu.</para> <para>Enpresek euren produktu eta zerbitzuak bereizteko erabiltzen dituzten izen asko marka erregistratu moduan hartu behar dira. Izen horiek GNOMEren edozein agiritan agertzen direnean, eta GNOMEren dokumentazio-proiektuko kideak marka erregistratuak direla konturatu badira, izen horiek osorik maiuskulaz edo hasierako letra maiuskulaz idatzi dituzte.</para></legalnotice>
+
+  <!-- Use this legal notice for documents which are placed on  --> <!-- the web, shipped in any way other than online documents  --> <!-- (eg. PS, PDF, or RTF), or which do not depend on the     --> <!-- core GNOME distribution.                                 --> <!--                                                          --> <!-- If you use this version, you must place the following    --> <!-- line in the document declaration at the top of your      --> <!-- document:                                                --> <!--   <!ENTITY FDL SYSTEM "fdl.sgml">                        --> <!-- and the following line at the bottom of your document    --> <!-- after the last </sect1>.                                 --> <!--   &FDL;                                                  --> <!--
+ 
+
+  <legalnotice id="legalnotice">
+   <para>
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the <link linkend="fdl"><citetitle>GNU
+    Free Documentation License</citetitle></link>, Version 1.1 or any later
+    version published by the Free Software Foundation with no Invariant
+    Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the
+    license can be found in <xref linkend="fdl">.
+   </para>
+   <para>
+    Many of the names used by companies to distinguish their products and
+    services are claimed as trademarks. Where those names appear in any
+    GNOME documentation, and those trademarks are made aware to the members
+    of the GNOME Documentation Project, the names have been printed in caps
+    or initial caps.
+   </para>
+  </legalnotice>
+  -->
+
+  <releaseinfo>Dokumentu hau eskuliburuaren 1.0 bertsioa da.</releaseinfo>
+
+</artheader>
+
+<sect1 id="intro">
+  <title>Sarrera</title>
+
+  <para><application>GDMren konfiguratzailea, (GNOMEren pantaila-kudeatzailearen konfiguratzailea)</application> GDMren (Gnome-ren pantaila-kudeatzailearen) konfigurazio-aplikazioa da. Normalean, sistema saio-hasierako modu grafikoan exekutatzen denean, GDM aplikazioa da saio-hasiera errazten duena.  <application>GDMren konfiguratzaileak</application> GDMren konfigurazio erraza ahalbidetzen du zehaztasun-maila desberdinetan. Pertsonalizazioek eragiketetan eta itxuran daukate eragina.</para>
+
+  <para><application>GDMren konfiguratzailea</application> exekutatzeko, hautatu <menuchoice><guisubmenu>Sistema</guisubmenu> <guimenuitem>GDMren konfiguratzailea</guimenuitem></menuchoice> <guimenu>Menu nagusia</guimenu>n, edo idatzi <command>gdmconfig</command> komando-lerroan.</para>
+
+  <note><title>Root-erako atzipen-eskaera</title>
+    <para><application>GDMren konfiguratzailea</application>k root-erako atzipena eskatzen du exekutatzeko.</para></note>
+
+  <para><application>GDMren konfiguratzailea</application> <filename>Gnome-Core</filename> paketearekin dator, eta pakete hori GNOMEren mahaigaineko ingurunearen zatia da. Dokumentu honek <application>GDMren konfiguratzailearen</application> &version; bertsioa deskribatzen du.</para></sect1>
+
+<sect1 id="usage">
+  <title>Gnome-ren pantaila-kudeatzailearen konfiguratzailearen erabilpena </title>
+  <para><application>GDMren konfiguratzailea</application> saio-hasieraren itxura eta jokabidea aldatzeko erabil daiteke, baita GDMren xehetasun-gradu desberdinetarako segurtasuna eta ingurunea aukerak aldatzeko ere.  Atal honek <application>GDMren konfiguratzailearen</application> oinarrizko erabilpena deskribatzen du.</para>
+
+  <sect2 id="mainwin">
+    <title>Oinarrizko erabilpena</title>
+    <para><application>GDMren konfigurazioak</application> <interface>Leiho nagusia</interface> irekiko du abiaraztean, hemen erakusten den bezala: <xref       linkend="mainwindow-fig">. Leiho honek GDMren konfigurazioarekin loturiko aukera guztiak jasotzen ditu.</para>
+
+    <figure id="mainwindow-fig">
+      <title>GDMren konfiguratzailearen leiho nagusia </title>
+      <screenshot><screeninfo>GDMren konfiguratzailearen Leiho nagusia</screeninfo> <graphic fileref="figures/GDM_full.png" format="png" srccredit="Trevor     Curtis"></graphic></screenshot></figure></sect2>
+
+  <sect2 id="menubar">
+    <title>Tresna-barra</title>
+    <para>Tresna-barra menuak</para>
+
+    <figure id="menu-fig">
+      <title>Saio-hasieraren itxuraren fitxa </title>
+      <screenshot><screeninfo>Saio-hasieraren itxura fitxa</screeninfo> <graphic fileref="figures/GDM_menubar" format="png" srccredit="Trevor     Curtis"></graphic></screenshot></figure>
+
+    <variablelist><title><guimenu>Konfigurazioa</guimenu></title>
+      <varlistentry><term><guimenuitem>Itzuli ezarpenak</guimenuitem></term> <listitem><para>Aukera honek uneko aldaketak hasierako ezarpenetan berrezartzen ditu</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Aplikatu</guimenuitem></term> <listitem><para>Aukera honek uneko aldaketak aplikatzen ditu.</para></listitem></varlistentry></variablelist>
+       
+    <para><variablelist><title><guimenu>Laguntza</guimenu></title>
+        <varlistentry><term><guimenuitem>GDMren konfiguratzailearen erabiltzaile-gida</guimenuitem></term> <listitem><para>Nola lor daiteke dokumentu hori <application>GDMren konfiguratzailetik</application>.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Honi buruz...</guimenuitem></term> <listitem><para>Lan hori guztia posible egin duten denei esker ona erakutsi nahi diegu.</para></listitem></varlistentry></variablelist></para></sect2>
+
+  <sect2 id="options">
+    <title>Aukerak</title>
+    <para>Goiko ezkerreko izkinan dagoen <guilabel>Aukerak</guilabel> koadroak bere eskuineko fitxetan eskaintzen den xehetasun- eta pertsonalizazio-maila kontrolatzen du.  Aukerak koadroaren azpian aukeratutako mailaren azalpen laburra eta maila horretan zer egin daitekeen adierazten da.  Maila horiek jarraian azaltzen dira.</para>
+   
+    <para><variablelist><varlistentry><term><guilabel>Oinarrizkoa</guilabel></term> <listitem><para>Fitxa hauek erakusten ditu <guilabel>Aukerak</guilabel> koadroaren eskuinean: <guilabel>Saio-hasieraren itxura</guilabel>, <guilabel>Saio-hasieraren jokabidea</guilabel>, eta <guilabel>Aurpegi-arakatzailea</guilabel>.</para></listitem></varlistentry> <varlistentry><term><guilabel>Aditua</guilabel></term> <listitem><para>Aukera honek fitxa hauek erakusten ditu <guilabel>Aukerak</guilabel> koadroaren eskuinean: <guilabel>Segurtasuna</guilabel>, <guilabel>XDMCP</guilabel>, eta <guilabel>X zerbitzariaren ezarpena</guilabel>.</para></listitem></varlistentry> <varlistentry><term><guilabel>Sistema</guilabel></term> <listitem><para>Aukera honek fitxa hauek erakusten ditu <guilabel>Aukerak</guilabel> koadroaren eskuinean: <guilabel>Bide-izenak</guilabel>, <guilabel>Ingurunea</guilabel>, eta <guilabel>Hautatzailea</guilabel>.</para></listitem></varlistentry></variablelist></para>
+	
+    <caution>
+      <title>Adituaren aukera eta segurtasuna</title>
+      <para>Aditua aukera gaituz, GDMren segurtasun-aldaketak egitea ahalbidetzen du. Konfigurazio desegokiak erasotzaileei aurre egiteko orduan ahultasunak sor ditzake.</para></caution> <warning>
+      <title>Sistema aukera eta sistemaren osasuna</title>
+      <para>Sistema aukera gaituz, sistemaren eragiketan eragin dezaketen aldaketa zehatzak egitea ahalbidetuko dizu. Aukera hori zer egiten ari diren ondo dakitenei bakarrik gomendatzen diegu.</para></warning></sect2></sect1>
+
+
+<sect1 id="basic">
+  <title>Oinarrizko aukerak</title>
+  <para>Jarraian ondorengo fitxen aukerak azaltzen dira: <guilabel>Saio-hasieraren itxura</guilabel>, <guilabel>Saio-hasieraren jokabidea</guilabel>, <guilabel>Aurpegi- arakatzailea</guilabel>, eta <guilabel> Saio-hasiera automatikoa</guilabel>.</para> <variablelist><title><guilabel>Saio-hasieraren itxura</guilabel></title>
+    <varlistentry><term></term> <listitem><figure id="loginappearance-fig">
+	  <title>Saio-hasieraren itxuraren fitxa </title>
+	  <screenshot><screeninfo>Saio-hasieraren itxura fitxa</screeninfo> <graphic fileref="figures/GDM_login_appear" format="png" srccredit="Trevor
+	    Curtis"></graphic></screenshot></figure></listitem></varlistentry>
+
+    <varlistentry><term><guibutton>Minimizatutako ikonoa:</guibutton></term> <listitem><para>Saio-hasieraren pantaila adierazten duen ikonoa aldatu minimizatuta dagoenean. </para></listitem></varlistentry> <varlistentry><term><guilabel>Logotipoa</guilabel></term> <listitem><para>Saio-hasieraren leihoan bistaratutako irudia aldatzen du</para></listitem></varlistentry> <varlistentry><term><guilabel>Gtk+ RC fitxategia</guilabel></term> <listitem><para><filename>.gtkrc</filename> fitxategiaren kokapena zehaztu</para></listitem></varlistentry></variablelist>
+
+  <variablelist><title><guilabel>Saio-hasieraren jokabidea</guilabel></title>
+    <varlistentry><term></term> <listitem><figure id="loginbehaviour-fig">
+          <title>Saio-hasieraren jokabidea fitxa</title>
+          <screenshot><screeninfo>Saio-hasieraren jokabide-fitxa</screeninfo> <graphic fileref="figures/GDM_login_behav"
+	      format="png" srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guibutton>Huts egitean dar-dar egiten du</guibutton></term> <listitem><para>Saio-hasierak huts egiten badu, saio-hasieraren leihoak dar-dar egingo du.</para></listitem></varlistentry> <varlistentry><term><guilabel>Baztertu erabiltzaile hauek</guilabel></term> <listitem><para>Erabiltzaile horiek ez ditu erakutsiko Erabiltzailea menuko saio-hasieraren koadroan.</para></listitem></varlistentry> <varlistentry><term><guibutton>Letra-tipo lehenetsia:</guibutton></term> <listitem><para>Bistaratuko den eta lehenetsitako letra-tipoa.</para></listitem></varlistentry> <varlistentry><term><guilabel>Ongietorri mezua</guilabel></term> <listitem><para>Saio-hasieraren pantailan bistaratuko den testu-mezua.</para> <note><title>Bistaratu ordenagailuaren izena</title> 
+          <para>GDMren pantailan ordenagailuaren izena edukitzeko, <guilabel>Ongietorri mezua</guilabel> eremuan %n idatz dezakezu, eta beti ordezkatuko da zure ordenagailuaren izenarekin.</para></note></listitem></varlistentry> <varlistentry><term><guilabel>Atzeko planoaren programa</guilabel></term> <listitem><para>Honek script edo aplikazio jakin bat atzeko planoan exekutatzea ahalbidetzen dizu, saio-hasieraren gonbita bistaratzen duen bitartean.</para></listitem></varlistentry> <varlistentry><term><guilabel>Lokal lehenetsia</guilabel></term> <listitem><para>GDMren lehenetsi moduan ezarri behar litzatekeen lokala</para></listitem></varlistentry> <varlistentry><term><guibutton>Blokeatu kokapena</guibutton></term> <listitem><para>Saio-hasieraren koadroa blokeatzen du, eta ondorioz, saio-hasieraren pantailan ezin daiteke lekuz aldatu.</para></listitem></varlistentry> <varlistentry><term><guibutton>Eskuz ezarritako kokapena</guibutton></term> <listitem><para>Saio-hasieraren koadroa saio-hasieraren pantailan eskuz lekuz aldatzea ahalbidetzen du.</para></listitem></varlistentry> <varlistentry><term><guilabel>X kokapena</guilabel></term> <listitem><para>Saio-hasieraren koadroa kokatzeko x-ren koordenatua</para></listitem></varlistentry> <varlistentry><term><guilabel>Y kokapena</guilabel></term> <listitem><para>Saio-hasieraren koadroa kokatzeko y-ren koordenatua</para></listitem></varlistentry> <varlistentry><term><guilabel>Xinerama pantaila</guilabel></term> <listitem><para>Aukera honek ondokoa zehazten ahalbidetzen dizu: pantaila anitzeko monitore batean zer monitoretan bistaratuko den GDMren saio-hasieraren pantaila.</para></listitem></varlistentry></variablelist>
+
+  <variablelist><title><guilabel>Aurpegi-arakatzailea</guilabel>
+	                    </title>
+    <varlistentry><term></term> <listitem><figure id="facebrowser-fig">
+          <title>Aurpegi-arakatzailearen fitxa</title>
+	  <screenshot><screeninfo>Aurpegi-arakatzailearen fitxa</screeninfo> <graphic fileref="figures/GDM_face_brow" format="png"
+		     srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term>Erabiltzaileak aukera ditzakeen irudiak erakusten ditu</term> <listitem><para>Aurpegi-arakatzailearen erabiltzailearen irudien pertsonalizazioa</para></listitem></varlistentry> <varlistentry><term><guilabel>Aurpegi-irudi lehenetsia</guilabel></term> <listitem><para>Aurpegi-arakatzailean erabiltzaile lehenetsien irudiak aldatzen ditu</para></listitem></varlistentry> <varlistentry><term><guilabel>Aurpegi orokorren direktorioa</guilabel></term> <listitem><para>Aurpegi-irudiak dauden direktorioa</para></listitem></varlistentry> <varlistentry><term><guilabel>Aurpegiaren gehienezko zabalera</guilabel></term> <listitem><para>Aurpegi-irudi batek eduki dezakeen gehienezko zabalera</para></listitem></varlistentry> <varlistentry><term><guilabel>Aurpegiaren gehienezko altuera</guilabel></term> <listitem><para>Aurpegi-irudi batek eduki dezakeen gehienezko altuera</para></listitem></varlistentry></variablelist>
+
+  <variablelist><title><guimenu>Atzeko planoa</guimenu></title>
+    <varlistentry><term></term><listitem><figure id="background-fig">
+        <title>Atzeko planoaren fitxa</title>
+        <screenshot><screeninfo>Atzeko planoaren fitxa</screeninfo> <graphic fileref="figures/GDM_background" format="png"
+	   srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem>Atzeko plano mota</guimenuitem></term> <listitem><para>Atzeko plano motaren hautapena. Aukerak honakoak dira: atzeko planoa koloreekin, irudiekin edo ezer ere ez.</para></listitem></varlistentry> <varlistentry><term><guilabel>Eskalatu atzeko planoa doitzeko eskalatu</guilabel></term> <listitem><para>Irudi bat emandako lekuan doitzeko eskalatzea ahalbidetzen dizu, goian hautatuta badago.</para></listitem></varlistentry> <varlistentry><term><guilabel>Kolorea urruneko pantailetan bakarrik</guilabel></term> <listitem><para>Aukera honek kolore bat urruneko pantailetan bakarrik bistaratzea  gaitzen du</para></listitem></varlistentry> <varlistentry><term><guilabel>Atzeko planoko programa</guilabel></term> <listitem><para>Programa bat atzeko planoan exekutatzen ahalbidetzen du</para></listitem></varlistentry></variablelist>
+
+  <variablelist><title><guimenu>Saio-hasiera automatikoa</guimenu></title>
+    <varlistentry><term></term> <listitem><figure id="autologin-fig">
+          <title>Saio-hasiera automatikoaren fitxa</title>
+          <screenshot><screeninfo>Saio-hasiera automatikoaren fitxa</screeninfo> <graphic fileref="figures/GDM_auto_login" format="png"
+	     srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem>Aukera honen bidez, erabiltzaileak saioa lehen abioan automatikoki hasiko du</guimenuitem></term> <listitem><para>Sistema lehenego aldiz hasieratzean, saioa zehaztutako erabiltzaile moduan hasten gaituko dizu.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Erabiltzaileak saioa zehaztutako segundo-kopuru baten ondoren automatikoki hasiko du. </guimenuitem></term> <listitem><para>GDMri saioa zehaztutako segundo       kopurua pasa ondoren hastea ahalbidetu, erabiltzaile-izena erabiliz. </para></listitem></varlistentry> <varlistentry><term><guimenuitem>Denboraz mugatutako saio-hasiera</guimenuitem></term> <listitem><para>Saioa automatikoki hasteko erabili behar duzun zehaztutako erabiltzailea.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Saioa hasi aurreko segundoak</guimenuitem></term> <listitem><para>GDMak saioa automatikoki hasi aurretik pasatuko diren segundoak.</para></listitem></varlistentry></variablelist></sect1>
+      
+<sect1 id="expert">
+  <title>Adituaren aukerak</title>
+  <para>Jarraian ondorengo fitxen aukerak azaltzen dira: <guilabel>Segurtasuna</guilabel>, <guilabel>XDMCP</guilabel>, <guilabel>X zerbitzariaren instalazioa</guilabel>, <guilabel>Saio-hasierako saioak</guilabel>, eta <guilabel>Askotarikoak</guilabel>.</para> <variablelist><title><guimenu>Segurtasuna</guimenu></title>
+    <varlistentry><term></term> <listitem><figure id="security-fig">
+	  <title>Segurtasuna fitxa</title>
+          <screenshot><screeninfo>Segurtasun-fitxa</screeninfo> <graphic fileref="figures/GDM_security" format="png"
+	     srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem> Aukera honek root-ari saioa GDMrekin hastea baimentzen dio</guimenuitem></term> <listitem><para>Erabiltzaile pribilegiatuei, esaterako root-ari, saioa GDMren bitartez hastea baimentzen die. <note>
+            <title>PAM onartzen duten sistemak</title>
+            <para>PAM onartzen duten sistemetan, aukera hori ez da kontuan hartzen, eta PAM liburutegien ardura izango da erabiltzailea pantaila lokalean egongo den edo ez zehaztea.</para></note></para></listitem></varlistentry> <varlistentry><term><guimenuitem>Hil 'init' bezeroak</guimenuitem></term> <listitem><para>GDMri honakoa egiten ahalbidetzen dio: erabiltzaile batek saioa hasten duenean, hasieratze-script-etatik abiarazten diren X bezeroak hiltzea.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Autentifikazio-erroreak xehetu egin behar dira</guimenuitem></term> <listitem><para>Aukera honek autentifikazio-erroreak erabiltzaileari GDMren pantailan bistaratzea gaitzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Baimenak:</guimenuitem></term> <listitem><para>Bertan idatz daitezkeen beste erabiltzaile batzuen direktorio eta fitxategien baimen-mailak zehazten ditu. <guimenuitem>Edozeinek idatz dezake</guimenuitem> aukerak GDMri edozeinek idatz ditzakeen fitxategi eta direktorioak bistaratzea baimentzen dio.  <guimenuitem>Taldeak idatz dezake</guimenuitem> aukerak GDMri taldeak idatz ditzakeen fitxategi eta direktorioak bistaratzea baimentzen dio.  Azkenik, <guimenuitem>Paranoia</guimenuitem> aukerak beste erabiltzailearen fitxategi eta direktorioak bakarrik onartuko ditu.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>GDM erabiltzaile hau balitz bezala exekutatuko da</guimenuitem></term> <listitem><para>GDMri zehaztutako erabiltzaile moduan exekutatzea baimenduko dio.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>GDM talde hau balitz bezala exekutatuko da</guimenuitem></term> <listitem><para>GDMri zehaztutako talde moduan exekutatzea baimenduko dio.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Erabiltzailearen 'auth' direktorioa</guimenuitem></term> <listitem><para>Erabiltzailearen .Xauthority fitxategia duen direktorioa zehaztea ahalbidetuko dizu</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Erabiltzailearen 'auth' FB direktorioa</guimenuitem></term> <listitem><para>Gdm-k erabiltzailearen .Xauthority fitxategia eguneratzean huts egiten badu, cookie-a sortuko da zehaztutako direktorioan.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Erabiltzailearen 'auth' fitxategia</guimenuitem></term> <listitem><para>Erabiltzailearen cookie-a zer fitxategitan gorde behar den zehazten du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Berriro saiatu atzerapena</guimenuitem></term> <listitem><para>GDMek, huts egindako saio baten ondoren, sarrera-eremua berriro aktibatu aurretik zain egon beharreko segundo-kopurua zehazten du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Erabiltzailearen fitxategiaren gehienezko luzera</guimenuitem></term> <listitem><para>Bertan irakur/idatz daitekeen fitxategi handienaren gehienezko tamaina zehaztea ahalbidetzen du. GDMek ez du emandako balioa baino handiagoa den fitxategia irakurri edo idatziko.  Balioa bytetan zehazturik dago.</para></listitem></varlistentry></variablelist>
+
+  <variablelist><title>XDMCP</title>
+    <varlistentry><term></term><listitem><figure id="xdmcp-fig">
+	<title>XDMCP fitxa</title>
+	<screenshot><screeninfo>XDMCP fitxa</screeninfo> <graphic fileref="figures/GDM_xdmcp" format="png"
+		    srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem>Gaitu XDMCP</guimenuitem></term> <listitem><para>Urruneko X terminalari uneko ostalaritik saioa eskatzea baimentzen dio. Aukera hori gaituz, konexio-ezarpenak ikusgai bihurtzen dira.(X pantaila-kudeatzailearen kontrol-protokoloa)</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Errespetatu zeharkako eskaerak</guimenuitem></term> <listitem><para>Beraien pantaila-arakatzailea ez duten X terminalak aukeratzea gaitzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Entzun UDP atakari</guimenuitem></term> <listitem><para>UDPren (erabiltzailearen datagrama-protokoloa) eskaerak zehaztutako atakan jasoko ditu.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Zain dauden gehienezko eskaerak</guimenuitem></term> <listitem><para>GDMren zain dauden konexioak itxaron-ilara kopuru finko batera murriztu. <warning><title>Zerbitzu-erasoen ukapena</title>
+	  <para>Aukera hori DOS (Zerbitzu-erasoen ukapena) eragozteko hartu da. Parametro honek ordu jakin batean konexioa hasieratzen duten pantailen kopurua mugatzen du, ez ordea kudea daitezkeen urruneko pantaila guztien kopurua.</para></warning></para></listitem></varlistentry> <varlistentry><term><guimenuitem>Zain dauden zeharkako gehienezko eskaerak</guimenuitem></term> <listitem><para>Ordu jakin batean ostalari-hautatzailea duen pantaila-kopurua zehazten ahalbidetzen dizu.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Urruneko gehienezko saioak</guimenuitem></term> <listitem><para>Aukera honen bidez ostalaria urruneko pantaila-kopuru zehatz batek bakarrik erabiltzeko zehatz dezakezu.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Zain egoteko gehienezko denbora</guimenuitem></term> <listitem><para>Eskatutako pantaila itxaron-ilaratik kendu aurretik, programa zehaztutako segundoak iragan arte zain egongo da.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Zain egoteko zeharkako gehienezko denbora</guimenuitem></term> <listitem><para>Programa zehaztutako segundoak iragan arte zain egongo da, pantaila batek hautatzailea eskatzen duen eta protokolo-negoziazioa egiten den bitartean, pantaila itxaron-ilaratik kendu aurretik.</para></listitem></varlistentry></variablelist>
+
+  <variablelist><title>X zerbitzariaren instalazioa</title>
+    <varlistentry><term></term> <listitem><figure id="xservsetup-fig">
+	  <title>X zerbitzariaren instalazioa fitxa</title>
+	  <screenshot><screeninfo>X zerbitzariaren instalazio-fitxa</screeninfo> <graphic fileref="figures/GDM_xserv_setup" format="png"
+	     srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem>Zerbitzariaren definizioak</guimenuitem></term> <listitem><para>Pantaila lokalen kopurua eta X zerbitzaria(k) abiarazteko exekutatu behar den komandoa. <guibutton>Gehitu</guibutton> zerbitzariak X zerbitzaria eta pasatu behar den edozein parametro sartzeko elkarrizketa-koadroa aterako ditu. <guibutton>Edizioa</guibutton> zerbitzariak nabarmendutako sarrera editatzeko elkarrizketa-koadroa ateratzen du.  <guibutton>Ezabatu zerbitzaria</guibutton> aukerak nabarmendutako sarrera ezabatzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Berrabiarazi beti X zerbitzaria</guimenuitem></term> <listitem><para>Aukera honek saio-amaiera bakoitzean X zerbitzaria berrabiaraz dadin gaitzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Gaitu arazketa-irteera</guimenuitem></term> <listitem><para>Arazketa-informazioa bistaratzea baimentzen du</para></listitem></varlistentry></variablelist>
+
+  <variablelist><title>Saio-hasierako saioak</title>
+    <varlistentry><term></term> <listitem><figure id="loginsession-fig">
+	  <title>Saio-hasierako saioen fitxa</title>
+	  <screenshot><screeninfo>Saio-hasierako saioen fitxa</screeninfo> <graphic fileref="figures/GDM_login_sessions" format="png"
+	     srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem>Saio-direktorioa</guimenuitem></term> <listitem><para>Saioaren hasieran exekutatu behar diren script-ak dituen direktorioa da</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Saio erabilgarriak</guimenuitem></term> <listitem><para>Erabilgarri dauden saioen zerrenda, non guk saio bat aukeratu behar dugun.  Hautatutako saioa <guimenuitem>Hautatutako saio-izena</guimenuitem>ren eremuan agertuko da. Eremu horretan, saio-script-a bistaratuko da.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Gnome-ren hautatzailea</guimenuitem></term> <listitem><para>Gnome izeneko saiorik badago, Gnome-ren hautatzailearen saioa bistaratu dadin gaituko du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Gnome-ren Failsafe</guimenuitem></term> <listitem><para>Gnome-ren Failsafe saioa bistaratu dadin gaitzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Xterm Failsafe</guimenuitem></term> <listitem><para>Xterm Failsafe saioa bistaratu dadin gaitzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Gaitu arazketa-irteera </guimenuitem></term> <listitem><para>Arazketa-informazioa bistaratzea ahalbidetzen du</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Gehitu saioa</guimenuitem></term> <listitem><para>Erabilgarri egongo den saio berri bat sortu eta gehitzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Kendu saioa</guimenuitem></term> <listitem><para>Aukera honek <guimenuitem>Saio erabilgarriak</guimenuitem> menuan hautatutako saioa ezabatzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Ezarri lehenetsi gisa</guimenuitem></term> <listitem><para>Aukera honek <guimenuitem>Saio erabilgarriak</guimenuitem> menuan hautatutako saioa lehenetsia izatea gaitzen du.</para> <note><title>Saio lehenetsia </title>
+          <para>Uneko saio lehenetsia <guimenuitem>Saio erabilgarriak</guimenuitem> menuan erakusten da urdin argiz nabarmenduta.</para></note></listitem></varlistentry></variablelist>
+
+  <variablelist><title>Askotarikoak</title>
+    <varlistentry><term></term> <listitem><figure id="misc-fig">
+	  <title>Askotarikoak fitxa</title>
+	  <screenshot><screeninfo>Askotariko-fitxa</screeninfo> <graphic fileref="figures/GDM_expert_misc" format="png"
+	     srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem>Gaitu arazketa-irteera</guimenuitem></term> <listitem><para>Syslog fitxategiaren saioan sartzeko arazketa-irteera gaitzen du.</para> <caution>
+          <title>Syslog-en arazketa-irteera</title>
+          <para>Aukera hori -nahiz eta segimendu-arazoetan laguntzeko metodo egokia izan- hautatzen denean, sistemaren egunkari-fitxategiak nahiko erraz betetzen dira. Hori, ordea, ez da erabilera arrunterako gomendatzen</para></caution></listitem></varlistentry></variablelist>
+
+</sect1>
+
+<sect1 id="system">
+  <title>Sistemaren aukerak</title>
+  <para>Sistemaren menuak</para>
+	  
+  <variablelist><title><guimenuitem>Bide-izenak</guimenuitem></title>
+    <varlistentry><term></term> <listitem><figure id="paths-fig">
+          <title>Bide-izenen fitxa</title>
+	  <screenshot><screeninfo>Bide-izenen fitxa</screeninfo> <graphic fileref="figures/GDM_paths" format="png"
+	    srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem>Hautatzailea komandoa</guimenuitem></term> <listitem><para>Hautatzailea aktibatuko duen komandoa hautatzea eta pertsonalizatzea ahalbidetzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Ongietorria komandoa</guimenuitem></term> <listitem><para>Ongietorria aktibatuko duen komandoa hautatzea eta pertsonalizatzea ahalbidetzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Gelditu komandoa</guimenuitem></term> <listitem><para>Zehaztutako komandoari ostalaria geldiaraz dezan baimentzen dio</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Berrabiarazi komandoa</guimenuitem></term> <listitem><para>Aukera honek zehaztutako ostalariari berrabiaraz dadin ahalbidetzen dio.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Bistaratu hasieratze-direktorioa</guimenuitem></term> <listitem><para>Aukera honek GDM hasieratzeko behar diren script-ak dituen direktorioa bistaratzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Saio-hasieraren direktorioa</guimenuitem></term> <listitem><para>Saio-hasierari buruzko informazioa zehaztutako direktorioan dagoen fitxategi batera eramaten du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Saio-direktorioa</guimenuitem></term> <listitem><para>Zehaztutako direktorioa saioa hasteko script-ak dituen direktorio gisa zehazten du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>PRE saio-script-en direktorioa</guimenuitem></term> <listitem><para>Saioa hasi aurretik exekutatu behar diren script-ak zehaztutako direktorioan bilatzen ditu.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>POST saio-script-en direktorioa</guimenuitem></term> <listitem><para>Saioa amaitu ondoren exekutatu behar diren script-ak zehaztutako direktorioan bilatzen ditu.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>PID fitxategia</guimenuitem></term> <listitem><para>PID fitxategia(k) zehaztutako direktorioan kokatzen ditu</para></listitem></varlistentry></variablelist>
+
+  <variablelist><title><guimenu>Ingurunea</guimenu></title>
+    <varlistentry><term></term> <listitem><figure id="enviro-fig">
+	  <title>Ingurunea fitxa</title>
+	  <screenshot><screeninfo>Ingurune-fitxa</screeninfo> <graphic fileref="figures/GDM_enviro" format="png"
+	    srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem>$BIDE-IZEN lehenetsia</guimenuitem</term> <listitem><para>BIDE-IZEN lehenetsiaren aldagaia ($BIDE-IZEN) ezartzen du</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Root-aren $BIDE-IZENA</guimenuitem></term> <listitem><para>Zehaztutako direktorioetarako root-aren BIDE-IZENA ezartzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Fitxategi lokala</guimenuitem></term> <listitem><para>Zehaztutako fitxategia fitxategi lokal nagusi moduan ezartzen du.</para></listitem></varlistentry></variablelist>
+	    
+  <variablelist><title><guimenu>Hautatzailea</guimenu></title>
+    <varlistentry><term></term> <listitem><figure id="chooser-fig">
+          <title>Hautatzailea fitxa</title>
+	  <screenshot><screeninfo>Hautatzaile-fitxa</screeninfo> <graphic fileref="figures/GDM_chooser" format="png"
+	    srccredit="Trevor Curtis"></graphic></screenshot></figure></listitem></varlistentry> <varlistentry><term><guimenuitem>Ostalari-irudien direktorioa</guimenuitem></term> <listitem><para>Zehaztutako direktorioa ostalaria adierazten duten irudiak dituen direktorio moduan ezartzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Ostalari-irudi lehenetsia</guimenuitem></term> <listitem><para>Hautatutako irudia ostalaria adierazteko irudi lehenetsi moduan ezartzen du.</para></listitem></varlistentry> <varlistentry><term><guimenuitem>Eskaneatu 'x' segundoz behin</guimenuitem></term> <listitem><para>Aukera honen bidez ostalari-irudiak zenbat segundoz behin eskaneatuko diren hauta dezakezu</para></listitem></varlistentry></variablelist></sect1>
+
+<sect1 id="bugs">
+  <title>Ezagutzen diren akats eta mugak</title>
+    <para>Aplikazio honetan ez da akatsik ezagutzen.</para></sect1>
+
+<sect1 id="authors">
+  <title>Egileak</title>
+  <para><application>GDM Configure</application> Lee Mallabone-k idatzi du (<email>lee@fonicmonkey.net</email>). <application>GDMren konfigurazioari</application> buruz informazio gehiago nahi izanez gero, joan <ulink
+   url="http://www.my-gnome-app.org" type="http">MY-GNOME-APP web orrira</ulink>.  Bidali zure iruzkin, iradokizun eta akatsen berri <ulink url="http://bugzilla.gnome.org" type="http">GNOMEren akatsen segimendurako datu-basera</ulink>.  (Akatsei buruzko berriak bidaltzeko argibideak <ulink    url="http://bugzilla.gnome.org/Reporting.html" type="http">linean</ulink> aurkituko dituzu.)  Okerren berri bidaltzeko <application>okerrak biltzeko tresna</application> (<command>bug-buddy</command>) ere erabil dezakezu. Okerrak biltzeko tresna hori <guimenu>Menu nagusiko</guimenu> <guisubmenu>Utilitateak</guisubmenu> azpimenuan duzu eskuragarri.</para>
+
+  <para>Eskuliburu hau Trevor Curtis-ek idatzi du (<email>trevor.curtis@home.com</email>). Eskuliburuari dagozkion iruzkinak eta iradokizunak <ulink type="http"    url="http://developer.gnome.org/projects/gdp">GNOMEren dokumentazio-proiektura</ulink> bidal ditzakezu: <email>docs@gnome.org</email>. Iruzkinak linean ere egin ditzakezu <ulink type="http"    url="http://developer.gnome.org/projects/gdp/doctable/">GNOMEren dokumentazio-egoeraren taula</ulink> erabiliz.</para>
+
+  <!-- For translations: uncomment this:
+
+  <para>
+   Latin translation was done by ME
+   (<email>MYNAME@MYADDRESS</email>). Please send all  comments  and
+   suggestions regarding this translation to SOMEWHERE.
+  </para>
+  -->
+
+</sect1>
+
+<sect1 id="license">
+  <title>Lizentzia</title>
+  <para>Programa hau software librea da; birbana edota alda dezakezu Free Software Foundation-ek argitaratutako <ulink type="help" url="gnome-help:gpl"><citetitle>GNU Lizentzia Publiko Orokorra</citetitle></ulink>ren 2. bertsioan, edo (nahiago baduzu) bertsio berriago batean, jasotako baldintzak betez gero.</para> <para>Programa hau erabilgarria izango delakoan banatzen da, baina INOLAKO BERMERIK gabe, era berean, ez da bermatzen EGOKITASUNA MERKATURATZEKO edo HELBURU PARTIKULARRETARAKO ERABILTZEKO.  Argibide gehiago nahi izanez gero, ikus <citetitle>GNU Lizentzia Publiko Orokorra</citetitle>.</para> <para><citetitle>GNU Lizentzia Publiko Orokorra</citetitle>ren kopia bat <citetitle>GNOME erabiltzailearen gida</citetitle>ren eranskinean daukazu.  <citetitle>GNU Lizentzia Publiko Orokorra</citetitle>ren kopia Free Software Foundation-en bidez ere lor dezakezu <ulink type="http"    url="http://www.fsf.org">haren Web gunea</ulink> bisitatuz edo hona idatziz:
+   <address>
+    Free Software Foundation, Inc. <street>59 Temple Place</street> - Suite 330 <city>Boston</city>, <state>MA</state> <postcode>02111-1307</postcode> <country>USA</country>
+   </address>
+  </para></sect1></article>
