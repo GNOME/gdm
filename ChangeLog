@@ -1,3 +1,12 @@
+Thu Oct 25 20:28:03 2001  George Lebl <jirka@5z.com>
+
+	* daemon/misc.[ch], daemon/display.c, daemon/errorgui.c,
+	  daemon/gdm.c, daemon/server.c, daemon/slave.c:  Super fork race
+	  killing patch, suspend both SIGCHLD and TERM/INT/HUP over 
+	  forks, suspend CHLD over short waitpids.  Fix races where
+	  the switch logic after forks may have gotten confused.  A tiny bit
+	  of unrelated cleanup as well.
+
 Thu Oct 25 01:49:57 2001  George Lebl <jirka@5z.com>
 
 	* config/XKeepsCrashing: fix minor issues

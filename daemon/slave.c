@@ -75,6 +75,7 @@ static gchar *ParsedTimedLogin = NULL;
 extern gboolean gdm_first_login;
 extern gboolean gdm_emergency_server;
 extern pid_t extra_process;
+extern int extra_status;
 
 /* Configuration option variables */
 extern gchar *GdmUser;
@@ -484,11 +485,7 @@ gdm_slave_run (GdmDisplay *display)
 static void
 gdm_slave_whack_greeter (void)
 {
-	sigset_t tmask, omask;
-
-	sigemptyset (&tmask);
-	sigaddset (&tmask, SIGCHLD);
-	sigprocmask (SIG_BLOCK, &tmask, &omask);  
+	gdm_sigchld_block_push ();
 
 	greet = FALSE;
 
@@ -505,7 +502,7 @@ gdm_slave_whack_greeter (void)
 
 	gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
-	sigprocmask (SIG_SETMASK, &omask, NULL);
+	gdm_sigchld_block_pop ();
 }
 
 /* A hack really, this will wait around until the first mapped window
@@ -591,13 +588,20 @@ focus_first_x_window (const char *class_res_name)
 static void
 run_config (GdmDisplay *display, struct passwd *pwent)
 {
-	gdm_safe_fork (&(display->sesspid));
-	if (display->sesspid < 0) {
+	pid_t pid;
+
+	gdm_sigchld_block_push ();
+	gdm_sigterm_block_push ();
+	pid = d->sesspid = fork ();
+	gdm_sigterm_block_pop ();
+	gdm_sigchld_block_pop ();
+
+	if (pid < 0) {
 		/* can't fork, damnit */
 		display->sesspid = 0;
 		return;
 	}
-	if (display->sesspid == 0) {
+	if (pid == 0) {
 		int i;
 		char **argv;
 		/* child */
@@ -657,8 +661,12 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		_exit (0);
 	} else {
-		waitpid (display->sesspid, 0, 0);
+		gdm_sigchld_block_push ();
+		/* wait for the config proggie to die */
+		if (d->sesspid > 0)
+			waitpid (d->sesspid, 0, 0);
 		display->sesspid = 0;
+		gdm_sigchld_block_pop ();
 	}
 }
 
@@ -1010,6 +1018,7 @@ gdm_slave_greeter (void)
     gchar **argv;
     struct passwd *pwent;
     int i;
+    pid_t pid;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     
@@ -1020,11 +1029,15 @@ gdm_slave_greeter (void)
     if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't init pipe to gdmgreeter"));
     
-    greet = TRUE;
-
     /* Fork. Parent is gdmslave, child is greeter process. */
-    gdm_safe_fork (&(d->greetpid));
-    switch (d->greetpid) {
+    gdm_sigchld_block_push ();
+    gdm_sigterm_block_push ();
+    greet = TRUE;
+    pid = d->greetpid = fork ();
+    gdm_sigterm_block_pop ();
+    gdm_sigchld_block_pop ();
+
+    switch (pid) {
 	
     case 0:
 	sigfillset (&mask);
@@ -1196,7 +1209,7 @@ gdm_slave_greeter (void)
 	close (pipe1[1]);
 	close (pipe2[0]);
 	
-	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", d->greetpid);
+	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", (int)pid);
 
 	gdm_slave_send_num (GDM_SOP_GREETPID, d->greetpid);
 
@@ -1334,6 +1347,7 @@ gdm_slave_chooser (void)
 	char buf[1024];
 	size_t bytes;
 	int i;
+	pid_t pid;
 
 	gdm_debug ("gdm_slave_chooser: Running chooser on %s", d->name);
 
@@ -1345,8 +1359,13 @@ gdm_slave_chooser (void)
 	gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL);
 
 	/* Fork. Parent is gdmslave, child is greeter process. */
-	gdm_safe_fork (&(d->chooserpid));
-	switch (d->chooserpid) {
+	gdm_sigchld_block_push ();
+	gdm_sigterm_block_push ();
+	pid = d->chooserpid = fork ();
+	gdm_sigterm_block_pop ();
+	gdm_sigchld_block_pop ();
+
+	switch (pid) {
 
 	case 0:
 		sigfillset (&mask);
@@ -1430,8 +1449,12 @@ gdm_slave_chooser (void)
 
 		fcntl(p[0], F_SETFD, fcntl(p[0], F_GETFD, 0) | FD_CLOEXEC);
 
+		gdm_sigchld_block_push ();
 		/* wait for the chooser to die */
-		waitpid (d->chooserpid, 0, 0);
+		if (d->chooserpid > 0)
+			waitpid (d->chooserpid, 0, 0);
+		d->chooserpid  = 0;
+		gdm_sigchld_block_pop ();
 
 		gdm_slave_send_num (GDM_SOP_CHOOSERPID, 0);
 
@@ -1723,19 +1746,256 @@ dequote (const char *in)
 }
 
 static void
+session_child_run (struct passwd *pwent,
+		   const char *session,
+		   const char *save_session,
+		   const char *language,
+		   const char *gnome_session,
+		   gboolean usrcfgok,
+		   gboolean savesess,
+		   gboolean savelang,
+		   gboolean sessoptok,
+		   gboolean savegnomesess)
+{
+	int i;
+	char *sesspath, *sessexec;
+	gboolean need_config_sync = FALSE;
+	const char *shell = NULL;
+
+	ve_clearenv ();
+
+	/* Prepare user session */
+	ve_setenv ("XAUTHORITY", d->userauth, TRUE);
+	ve_setenv ("DISPLAY", d->name, TRUE);
+	ve_setenv ("LOGNAME", login, TRUE);
+	ve_setenv ("USER", login, TRUE);
+	ve_setenv ("USERNAME", login, TRUE);
+	ve_setenv ("HOME", pwent->pw_dir, TRUE);
+	ve_setenv ("GDMSESSION", session, TRUE);
+	ve_setenv ("SHELL", pwent->pw_shell, TRUE);
+	ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
+
+	if (gnome_session != NULL)
+		ve_setenv ("GDM_GNOME_SESSION", gnome_session, TRUE);
+
+	/* Special PATH for root */
+	if (pwent->pw_uid == 0)
+		ve_setenv ("PATH", GdmRootPath, TRUE);
+	else
+		ve_setenv ("PATH", GdmDefaultPath, TRUE);
+
+	/* Eeeeek, this no lookie as a correct language code, let's
+	 * try unaliasing it */
+	if (strlen (language) < 3 ||
+	    language[2] != '_') {
+		language = unaliaslang (language);
+	}
+
+	/* Set locale */
+	ve_setenv ("LANG", language, TRUE);
+	ve_setenv ("GDM_LANG", language, TRUE);
+    
+	setpgid (0, 0);
+	
+	umask (022);
+	
+	if (setgid (pwent->pw_gid) < 0) 
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("gdm_slave_session_start: Could not setgid %d. Aborting."), pwent->pw_gid);
+
+	if (initgroups (login, pwent->pw_gid) < 0)
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("gdm_slave_session_start: initgroups() failed for %s. Aborting."), login);
+
+	/* setup the verify env vars, set credentials and such stuff 
+	 * and open the session */
+	if ( ! gdm_verify_open_session (d))
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("%s: Could not open session for %s. "
+				  "Aborting."),
+				"gdm_slave_session_start", login);
+
+	if (setuid (pwent->pw_uid) < 0) 
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("gdm_slave_session_start: Could not become %s. Aborting."), login);
+	
+	chdir (pwent->pw_dir);
+
+	/* anality, make sure nothing is in memory for gnome_config
+	 * to write */
+	gnome_config_drop_all ();
+	
+	if (usrcfgok && savesess) {
+		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir,
+					     "/.gnome/gdm=/session/last", NULL);
+		gnome_config_set_string (cfgstr, save_session);
+		need_config_sync = TRUE;
+		g_free (cfgstr);
+	}
+	
+	if (usrcfgok && savelang) {
+		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir,
+					     "/.gnome/gdm=/session/lang", NULL);
+		gnome_config_set_string (cfgstr, language);
+		need_config_sync = TRUE;
+		g_free (cfgstr);
+	}
+
+	if (sessoptok &&
+	    savegnomesess &&
+	    gnome_session != NULL) {
+		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/session-options=/Options/CurrentSession", NULL);
+		gnome_config_set_string (cfgstr, gnome_session);
+		need_config_sync = TRUE;
+		g_free (cfgstr);
+	}
+
+	if (need_config_sync) {
+		gnome_config_sync ();
+		gnome_config_drop_all ();
+	}
+
+	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+	    close (i);
+
+	/* No error checking here - if it's messed the best response
+         * is to ignore & try to continue */
+	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	
+	/* Restore sigmask inherited from init */
+	sigprocmask (SIG_SETMASK, &sysmask, NULL);
+
+	/* If "Gnome Chooser" is still set as a session,
+	 * just change that to "Gnome", since "Gnome Chooser" is a
+	 * fake */
+	if (strcmp (session, GDM_SESSION_GNOME_CHOOSER) == 0) {
+		session = "Gnome";
+	}
+	
+	sesspath = NULL;
+	sessexec = NULL;
+
+	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
+		sesspath = find_prog ("gnome-session",
+				      "--failsafe",
+				      &sessexec);
+		if (sesspath == NULL) {
+			/* yaikes */
+			gdm_error (_("gdm_slave_session_start: gnome-session not found for a failsafe gnome session, trying xterm"));
+			session = GDM_SESSION_FAILSAFE_XTERM;
+			gdm_error_box
+				(d, GNOME_MESSAGE_BOX_ERROR,
+				 _("Could not find the GNOME installation,\n"
+				   "will try running the \"Failsafe xterm\"\n"
+				   "session."));
+		} else {
+			gdm_error_box
+				(d, GNOME_MESSAGE_BOX_INFO,
+				 _("This is the Failsafe Gnome session.\n"
+				   "You will be logged into the 'Default'\n"
+				   "session of Gnome with no startup scripts\n"
+				   "run.  This is only to fix problems in\n"
+				   "your installation."));
+		}
+	}
+
+	/* an if and not an else, we could have done a fall-through
+	 * to here in the above code if we can't find gnome-session */
+	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
+		char *params = g_strdup_printf ("-geometry 80x24+%d+%d",
+						d->screenx, d->screeny);
+		sesspath = find_prog ("xterm",
+				      params,
+				      &sessexec);
+		g_free (params);
+		if (sesspath == NULL) {
+			gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR,
+				       _("Cannot find \"xterm\" to start "
+					 "a failsafe session."));
+			/* nyah nyah nyah nyah nyah */
+			_exit (0);
+		} else {
+			gdm_error_box
+				(d, GNOME_MESSAGE_BOX_INFO,
+				 _("This is the Failsafe xterm session.\n"
+				   "You will be logged into a terminal\n"
+				   "console so that you may fix your system\n"
+				   "if you cannot log in any other way.\n"
+				   "To exit the terminal emulator, type\n"
+				   "'exit' and an enter into the window."));
+			focus_first_x_window ("xterm");
+		}
+	} 
+
+	if (sesspath == NULL) {
+		if (GdmSessDir != NULL) {
+			sesspath = g_strconcat
+				("'", GdmSessDir, "/",
+				 dequote (session), "'", NULL);
+			sessexec = g_strconcat (GdmSessDir, "/",
+						session, NULL);
+		} else {
+			sesspath = g_strdup ("'/Eeeeek! Eeeeek!'");
+		}
+	}
+	
+	gdm_debug (_("Running %s for %s on %s"),
+		   sesspath, login, d->name);
+
+	if ( ! ve_string_empty (pwent->pw_shell)) {
+		shell = pwent->pw_shell;
+	} else {
+		shell = "/bin/sh";
+	}
+
+	/* just a stupid test, the below would fail, but this gives a better
+	 * message */
+	if (strcmp (shell, "/sbin/nologin") == 0 ||
+	    strcmp (shell, "/bin/false") == 0 ||
+	    strcmp (shell, "/bin/true") == 0) {
+		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
+		gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR,
+			       _("The system administrator has\n"
+				 "disabled your account."));
+	} else if (access (sessexec != NULL ? sessexec : sesspath, X_OK) != 0) {
+		gdm_error (_("gdm_slave_session_start: Could not find/run session `%s'"), sesspath);
+		/* if we can't read and exec the session, then make a nice
+		 * error dialog */
+		gdm_error_box
+			(d, GNOME_MESSAGE_BOX_ERROR,
+			 _("Cannot start the session, most likely the\n"
+			   "session does not exist.  Please select from\n"
+			   "the list of available sessions in the login\n"
+			   "dialog window."));
+	} else {
+		char *exec = g_strconcat ("exec ", sesspath, NULL);
+		execl (shell, "-", "-c", exec, NULL);
+
+		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
+		gdm_error_box
+			(d, GNOME_MESSAGE_BOX_ERROR,
+			 _("Cannot start your shell.  It could be that the\n"
+			   "system administrator has disabled your login.\n"
+			   "It could also indicate an error with your account.\n"));
+	}
+	
+	/* ends as if nothing bad happened */
+	_exit (0);
+}
+
+static void
 gdm_slave_session_start (void)
 {
-    char *cfgdir, *sesspath, *sessexec;
+    char *cfgdir;
     struct stat statbuf;
     struct passwd *pwent;
     char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
     char *gnome_session = NULL;
     gboolean savesess = FALSE, savelang = FALSE, savegnomesess = FALSE;
     gboolean usrcfgok = FALSE, sessoptok = FALSE, authok = FALSE;
-    gboolean need_config_sync = FALSE;
-    int i;
-    const char *shell = NULL;
-    pid_t sesspid;
+    pid_t pid;
 
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
 	       login);
@@ -1934,242 +2194,31 @@ gdm_slave_session_start (void)
     } 
 
     /* Start user process */
-    gdm_safe_fork (&(d->sesspid));
-    switch (d->sesspid) {
+    gdm_sigchld_block_push ();
+    gdm_sigterm_block_push ();
+    pid = d->sesspid = fork ();
+    gdm_sigterm_block_pop ();
+    gdm_sigchld_block_pop ();
+
+    switch (pid) {
 	
     case -1:
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_session_start: Error forking user session"));
 	
     case 0:
 
-	ve_clearenv ();
-
-	/* Prepare user session */
-	ve_setenv ("XAUTHORITY", d->userauth, TRUE);
-	ve_setenv ("DISPLAY", d->name, TRUE);
-	ve_setenv ("LOGNAME", login, TRUE);
-	ve_setenv ("USER", login, TRUE);
-	ve_setenv ("USERNAME", login, TRUE);
-	ve_setenv ("HOME", pwent->pw_dir, TRUE);
-	ve_setenv ("GDMSESSION", session, TRUE);
-	ve_setenv ("SHELL", pwent->pw_shell, TRUE);
-	ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
-
-	if (gnome_session != NULL)
-		ve_setenv ("GDM_GNOME_SESSION", gnome_session, TRUE);
-
-	/* Special PATH for root */
-	if (pwent->pw_uid == 0)
-		ve_setenv ("PATH", GdmRootPath, TRUE);
-	else
-		ve_setenv ("PATH", GdmDefaultPath, TRUE);
-
-	/* Eeeeek, this no lookie as a correct language code, let's
-	 * try unaliasing it */
-	if (strlen (language) < 3 ||
-	    language[2] != '_') {
-		char *newlang = unaliaslang (language);
-		g_free (language);
-		language = newlang;
-	}
-
-	/* Set locale */
-	ve_setenv ("LANG", language, TRUE);
-	ve_setenv ("GDM_LANG", language, TRUE);
-    
-	setpgid (0, 0);
-	
-	umask (022);
-	
-	if (setgid (pwent->pw_gid) < 0) 
-		gdm_child_exit (DISPLAY_REMANAGE,
-				_("gdm_slave_session_start: Could not setgid %d. Aborting."), pwent->pw_gid);
-
-	if (initgroups (login, pwent->pw_gid) < 0)
-		gdm_child_exit (DISPLAY_REMANAGE,
-				_("gdm_slave_session_start: initgroups() failed for %s. Aborting."), login);
-
-	/* setup the verify env vars, set credentials and such stuff 
-	 * and open the session */
-	if ( ! gdm_verify_open_session (d))
-		gdm_child_exit (DISPLAY_REMANAGE,
-				_("%s: Could not open session for %s. "
-				  "Aborting."),
-				"gdm_slave_session_start", login);
-
-	if (setuid (pwent->pw_uid) < 0) 
-		gdm_child_exit (DISPLAY_REMANAGE,
-				_("gdm_slave_session_start: Could not become %s. Aborting."), login);
-	
-	chdir (pwent->pw_dir);
-
-	/* anality, make sure nothing is in memory for gnome_config
-	 * to write */
-	gnome_config_drop_all ();
-	
-	if (usrcfgok && savesess) {
-		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir,
-					     "/.gnome/gdm=/session/last", NULL);
-		gnome_config_set_string (cfgstr, save_session);
-		need_config_sync = TRUE;
-		g_free (cfgstr);
-	}
-	
-	if (usrcfgok && savelang) {
-		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir,
-					     "/.gnome/gdm=/session/lang", NULL);
-		gnome_config_set_string (cfgstr, language);
-		need_config_sync = TRUE;
-		g_free (cfgstr);
-	}
-
-	if (sessoptok &&
-	    savegnomesess &&
-	    gnome_session != NULL) {
-		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/session-options=/Options/CurrentSession", NULL);
-		gnome_config_set_string (cfgstr, gnome_session);
-		need_config_sync = TRUE;
-		g_free (cfgstr);
-	}
-
-	if (need_config_sync) {
-		gnome_config_sync ();
-		gnome_config_drop_all ();
-	}
-
-	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-	    close (i);
-
-	/* No error checking here - if it's messed the best response
-         * is to ignore & try to continue */
-	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
-	
-	/* Restore sigmask inherited from init */
-	sigprocmask (SIG_SETMASK, &sysmask, NULL);
-
-	/* If "Gnome Chooser" is still set as a session,
-	 * just change that to "Gnome", since "Gnome Chooser" is a
-	 * fake */
-	if (strcmp (session, GDM_SESSION_GNOME_CHOOSER) == 0) {
-		g_free (session);
-		session = g_strdup ("Gnome");
-	}
-	
-	/* Restore sigmask inherited from init */
-	sigprocmask (SIG_SETMASK, &sysmask, NULL);
-	
-	sesspath = NULL;
-	sessexec = NULL;
-
-	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
-		sesspath = find_prog ("gnome-session",
-				      "--failsafe",
-				      &sessexec);
-		if (sesspath == NULL) {
-			/* yaikes */
-			gdm_error (_("gdm_slave_session_start: gnome-session not found for a failsafe gnome session, trying xterm"));
-			g_free (session);
-			session = g_strdup (GDM_SESSION_FAILSAFE_XTERM);
-			gdm_error_box
-				(d, GNOME_MESSAGE_BOX_ERROR,
-				 _("Could not find the GNOME installation,\n"
-				   "will try running the \"Failsafe xterm\"\n"
-				   "session."));
-		} else {
-			gdm_error_box
-				(d, GNOME_MESSAGE_BOX_INFO,
-				 _("This is the Failsafe Gnome session.\n"
-				   "You will be logged into the 'Default'\n"
-				   "session of Gnome with no startup scripts\n"
-				   "run.  This is only to fix problems in\n"
-				   "your installation."));
-		}
-	}
-
-	/* an if and not an else, we could have done a fall-through
-	 * to here in the above code if we can't find gnome-session */
-	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
-		char *params = g_strdup_printf ("-geometry 80x24+%d+%d",
-						d->screenx, d->screeny);
-		sesspath = find_prog ("xterm",
-				      params,
-				      &sessexec);
-		g_free (params);
-		if (sesspath == NULL) {
-			gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR,
-				       _("Cannot find \"xterm\" to start "
-					 "a failsafe session."));
-			/* nyah nyah nyah nyah nyah */
-			_exit (0);
-		} else {
-			gdm_error_box
-				(d, GNOME_MESSAGE_BOX_INFO,
-				 _("This is the Failsafe xterm session.\n"
-				   "You will be logged into a terminal\n"
-				   "console so that you may fix your system\n"
-				   "if you cannot log in any other way.\n"
-				   "To exit the terminal emulator, type\n"
-				   "'exit' and an enter into the window."));
-			focus_first_x_window ("xterm");
-		}
-	} 
-
-	if (sesspath == NULL) {
-		if (GdmSessDir != NULL) {
-			sesspath = g_strconcat
-				("'", GdmSessDir, "/",
-				 dequote (session), "'", NULL);
-			sessexec = g_strconcat (GdmSessDir, "/",
-						session, NULL);
-		} else {
-			sesspath = g_strdup ("'/Eeeeek! Eeeeek!'");
-		}
-	}
-	
-	gdm_debug (_("Running %s for %s on %s"),
-		   sesspath, login, d->name);
-
-	if ( ! ve_string_empty (pwent->pw_shell)) {
-		shell = pwent->pw_shell;
-	} else {
-		shell = "/bin/sh";
-	}
-
-	/* just a stupid test, the below would fail, but this gives a better
-	 * message */
-	if (strcmp (shell, "/sbin/nologin") == 0 ||
-	    strcmp (shell, "/bin/false") == 0 ||
-	    strcmp (shell, "/bin/true") == 0) {
-		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
-		gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR,
-			       _("The system administrator has\n"
-				 "disabled your account."));
-	} else if (access (sessexec != NULL ? sessexec : sesspath, X_OK) != 0) {
-		gdm_error (_("gdm_slave_session_start: Could not find/run session `%s'"), sesspath);
-		/* if we can't read and exec the session, then make a nice
-		 * error dialog */
-		gdm_error_box
-			(d, GNOME_MESSAGE_BOX_ERROR,
-			 _("Cannot start the session, most likely the\n"
-			   "session does not exist.  Please select from\n"
-			   "the list of available sessions in the login\n"
-			   "dialog window."));
-	} else {
-		char *exec = g_strconcat ("exec ", sesspath, NULL);
-		execl (shell, "-", "-c", exec, NULL);
-
-		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
-		gdm_error_box
-			(d, GNOME_MESSAGE_BOX_ERROR,
-			 _("Cannot start your shell.  It could be that the\n"
-			   "system administrator has disabled your login.\n"
-			   "It could also indicate an error with your account.\n"));
-	}
-	
-	/* ends as if nothing bad happened */
-	_exit (0);
+	/* Never returns */
+	session_child_run (pwent,
+			   session,
+			   save_session,
+			   language,
+			   gnome_session,
+			   usrcfgok,
+			   savesess,
+			   savelang,
+			   sessoptok,
+			   savegnomesess);
+	g_assert_not_reached ();
 	
     default:
 	break;
@@ -2180,18 +2229,24 @@ gdm_slave_session_start (void)
     g_free (language);
     g_free (gnome_session);
 
-    sesspid = d->sesspid;
-    gdm_slave_send_num (GDM_SOP_SESSPID, sesspid);
+    /* we block sigchld now that we're here */
+    gdm_sigchld_block_push ();
 
-    /* Wait for the user's session to exit, but by this time the
-     * session might have ended, so check for 0 */
-    if (d->sesspid > 0)
-	    waitpid (d->sesspid, NULL, 0);
-    d->sesspid = 0;
+    if (d->sesspid > 0) {
+	    gdm_slave_send_num (GDM_SOP_SESSPID, pid);
+
+	    d->sesspid = 0;
+
+	    gdm_sigchld_block_pop ();
+
+	    waitpid (pid, NULL, 0);
+    } else {
+	    gdm_sigchld_block_pop ();
+    }
 
     gdm_debug ("gdm_slave_session_start: Session ended OK");
 
-    gdm_slave_session_stop (sesspid);
+    gdm_slave_session_stop (pid);
     gdm_slave_session_cleanup ();
 }
 
@@ -2388,6 +2443,7 @@ gdm_slave_child_handler (int sig)
 	} else if (pid == extra_process) {
 		/* an extra process died, yay! */
 		extra_process = -1;
+	    	extra_status = status;
 	}
     }
 }
@@ -2587,8 +2643,8 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     else
 	return EXIT_SUCCESS;
 
-    gdm_safe_fork (&extra_process);
-    pid = extra_process;
+    pid = gdm_fork_extra ();
+
     switch (pid) {
 	    
     case 0:
@@ -2634,9 +2690,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	return EXIT_SUCCESS;
 	
     default:
-	waitpid (pid, &status, 0);	/* Wait for script to finish */
-
-	extra_process = -1;
+	gdm_wait_for_extra (&status);
 
 	if (WIFEXITED (status))
 	    return WEXITSTATUS (status);
@@ -2710,7 +2764,6 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
     gint pipe1[2], in_buffer_len;  
     gchar **argv;
     pid_t pid;
-    gint status;
 
     if (s == NULL)
 	return(NULL);
@@ -2756,8 +2809,8 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
       if (pipe (pipe1) < 0) {
         gdm_error (_("gdm_parse_enriched_login: Failed creating pipe"));
       } else {
-	gdm_safe_fork (&extra_process);
-	pid = extra_process;
+	pid = gdm_fork_extra ();
+
         switch (pid) {
 	    
         case 0:
@@ -2800,8 +2853,8 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
               g_string_truncate(str, str->len - 1);
 
             close(pipe1[0]);
-	    waitpid (pid, &status, 0);	/* Wait for script to finish */
-	    extra_process = -1;
+
+	    gdm_wait_for_extra (NULL);
         }
       }
     }

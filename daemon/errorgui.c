@@ -35,7 +35,6 @@
 extern char **stored_argv;
 extern int stored_argc;
 extern char *stored_path;
-extern pid_t extra_process;
 
 static gboolean
 gdm_event (GtkObject *object,
@@ -129,8 +128,8 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 {
 	pid_t pid;
 
-	gdm_safe_fork (&extra_process);
-	pid = extra_process;
+	pid = gdm_fork_extra ();
+
 	if (pid == 0) {
 		char *geom;
 		int i;
@@ -165,10 +164,7 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 		gdm_error (_("gdm_error_box: Failed to execute self"));
 		_exit (1);
 	} else if (pid > 0) {
-		gdm_debug ("gdm_error_box: Ran error box, waiting...");
-		waitpid (pid, 0, 0);
-		gdm_debug ("gdm_error_box: Wait done");
-		extra_process = -1;
+		gdm_wait_for_extra (NULL);
 	} else {
 		gdm_error (_("gdm_error_box: Cannot fork to display error/info box"));
 	}
@@ -268,8 +264,7 @@ gdm_failsafe_question (GdmDisplay *d,
 	if (pipe (p) < 0)
 		return NULL;
 
-	gdm_safe_fork (&extra_process);
-	pid = extra_process;
+	pid = gdm_fork_extra ();
 	if (pid == 0) {
 		char *geom;
 		int i;
@@ -311,9 +306,11 @@ gdm_failsafe_question (GdmDisplay *d,
 	} else if (pid > 0) {
 		char buf[BUFSIZ];
 		int bytes;
+
 		close (p[1]);
-		waitpid (pid, 0, 0);
-		extra_process = -1;
+
+		gdm_wait_for_extra (NULL);
+
 		bytes = read (p[0], buf, BUFSIZ-1);
 		if (bytes > 0) {
 			close (p[0]);

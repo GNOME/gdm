@@ -64,6 +64,7 @@ extern gboolean GdmXdmcp;
 extern sigset_t sysmask;
 extern gint high_display_num;
 extern pid_t extra_process;
+extern int extra_status;
 
 /* Global vars */
 static GdmDisplay *d = NULL;
@@ -144,8 +145,12 @@ gdm_server_stop (GdmDisplay *disp)
 
 	    gdm_debug ("gdm_server_stop: Killing server pid %d", (int)servpid);
 
-	    if (kill (servpid, SIGTERM) == 0)
+	    gdm_sigchld_block_push ();
+	    if (servpid > 0 &&
+		kill (servpid, SIGTERM) == 0)
 		    waitpid (servpid, 0, 0);
+	    gdm_sigchld_block_pop ();
+
 
 	    gdm_debug ("gdm_server_stop: Server pid %d dead", (int)servpid);
     }
@@ -461,9 +466,13 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     /* bad things are happening */
     if (d->servpid > 0) {
-	    if (kill (d->servpid, SIGTERM) == 0)
-		    waitpid (d->servpid, NULL, 0);
+	    pid_t pid = d->servpid;
 	    d->servpid = 0;
+	    gdm_sigchld_block_push ();
+	    if (pid > 0 &&
+		kill (pid, SIGTERM) == 0)
+		    waitpid (pid, NULL, 0);
+	    gdm_sigchld_block_pop ();
     }
 
     /* We will rebake cookies anyway, so wipe these */
@@ -563,6 +572,7 @@ gdm_server_spawn (GdmDisplay *d)
     int len, i;
     const char *command;
     char *bin;
+    pid_t pid;
 
     if (d == NULL ||
 	ve_string_empty (d->command)) {
@@ -571,18 +581,25 @@ gdm_server_spawn (GdmDisplay *d)
 
     d->servstat = SERVER_STARTED;
 
+    gdm_sigchld_block_push ();
+
     /* eek, some previous copy, just wipe it */
     if (d->servpid > 0) {
-	    if (kill (d->servpid, SIGTERM) == 0)
-		    waitpid (d->servpid, NULL, 0);
+	    pid_t pid = d->servpid;
+	    d->servpid = 0;
+	    if (kill (pid, SIGTERM) == 0)
+		    waitpid (pid, NULL, 0);
     }
     
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
 
-    gdm_safe_fork (&(d->servpid));
+    gdm_sigterm_block_push ();
+    pid = d->servpid = fork ();
+    gdm_sigterm_block_pop ();
+    gdm_sigchld_block_pop ();
     
-    switch (d->servpid) {
+    switch (pid) {
 	
     case 0:
         alarm (0);
@@ -785,7 +802,7 @@ gdm_server_spawn (GdmDisplay *d)
 	break;
 	
     default:
-	gdm_debug ("gdm_server_spawn: Forked server on pid %d", (int)d->servpid);
+	gdm_debug ("gdm_server_spawn: Forked server on pid %d", (int)pid);
 	break;
     }
 }
@@ -864,6 +881,7 @@ gdm_server_child_handler (int signal)
 		} else if (pid == extra_process) {
 			/* an extra process died, yay! */
 			extra_process = -1;
+			extra_status = status;
 		}
 	}
 }

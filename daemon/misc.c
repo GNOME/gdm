@@ -45,6 +45,7 @@ extern GSList *displays;
 extern char **environ;
 
 extern pid_t extra_process;
+extern int extra_status;
 
 
 /**
@@ -410,12 +411,7 @@ gdm_exec_wait (char * const *argv, gboolean no_display)
 	    access (argv[0], X_OK) != 0)
 		return -1;
 
-	/* Note a fun and unavoidable (also almost
-	 * impossible to happen race.  If the parent gets
-	 * whacked before it executes any code, it will
-	 * not whack the child.  Oh well. */
-	gdm_safe_fork (&extra_process);
-	pid = extra_process;
+	pid = gdm_fork_extra ();
 	if (pid == 0) {
 		int i;
 
@@ -441,9 +437,7 @@ gdm_exec_wait (char * const *argv, gboolean no_display)
 	if (pid < 0)
 		return -1;
 
-	waitpid (pid, &status, 0);
-
-	extra_process = -1;
+	gdm_wait_for_extra (&status);
 
 	if (WIFEXITED (status))
 		return WEXITSTATUS (status);
@@ -451,20 +445,91 @@ gdm_exec_wait (char * const *argv, gboolean no_display)
 		return -1;
 }
 
+static int sigchld_blocked = 0;
+static sigset_t sigchldblock_mask, sigchldblock_oldmask;
+
+static int sigterm_blocked = 0;
+static sigset_t sigtermblock_mask, sigtermblock_oldmask;
+
 void
-gdm_safe_fork (pid_t *pid)
+gdm_sigchld_block_push (void)
 {
-    sigset_t mask, oldmask;
+	sigchld_blocked ++;
 
-    /* Set signal mask */
-    sigemptyset (&mask);
-    sigaddset (&mask, SIGCHLD);
-    sigprocmask (SIG_BLOCK, &mask, &oldmask);
+	if (sigchld_blocked == 1) {
+		/* Set signal mask */
+		sigemptyset (&sigchldblock_mask);
+		sigaddset (&sigchldblock_mask, SIGCHLD);
+		sigprocmask (SIG_BLOCK, &sigchldblock_mask, &sigchldblock_oldmask);
+	}
+}
 
-    *pid = fork ();
+void
+gdm_sigchld_block_pop (void)
+{
+	sigchld_blocked --;
 
-    /* reset signal mask back */
-    sigprocmask (SIG_SETMASK, &oldmask, NULL);
+	if (sigchld_blocked == 0) {
+		/* reset signal mask back */
+		sigprocmask (SIG_SETMASK, &sigchldblock_oldmask, NULL);
+	}
+}
+
+void
+gdm_sigterm_block_push (void)
+{
+	sigterm_blocked ++;
+
+	if (sigterm_blocked == 1) {
+		/* Set signal mask */
+		sigemptyset (&sigtermblock_mask);
+		sigaddset (&sigtermblock_mask, SIGTERM);
+		sigaddset (&sigtermblock_mask, SIGINT);
+		sigaddset (&sigtermblock_mask, SIGHUP);
+		sigprocmask (SIG_BLOCK, &sigtermblock_mask, &sigtermblock_oldmask);
+	}
+}
+
+void
+gdm_sigterm_block_pop (void)
+{
+	sigterm_blocked --;
+
+	if (sigterm_blocked == 0) {
+		/* reset signal mask back */
+		sigprocmask (SIG_SETMASK, &sigtermblock_oldmask, NULL);
+	}
+}
+
+pid_t
+gdm_fork_extra (void)
+{
+	pid_t pid;
+	gdm_sigchld_block_push ();
+
+	gdm_sigterm_block_push ();
+	pid = extra_process = fork ();
+	gdm_sigterm_block_pop ();
+
+	gdm_sigchld_block_pop ();
+
+	return pid;
+}
+
+void
+gdm_wait_for_extra (int *status)
+{
+	gdm_sigchld_block_push ();
+
+	if (extra_process > 0) {
+		waitpid (extra_process, &extra_status, 0);
+	}
+	extra_process = -1;
+
+	if (status != NULL)
+		*status = extra_status;
+
+	gdm_sigchld_block_pop ();
 }
 
 /* done before each login.  This can do so sanity ensuring,

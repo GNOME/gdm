@@ -76,6 +76,7 @@ uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
 pid_t extra_process = -1;	/* An extra process.  Used for quickie 
 				   processes, so that they also get whacked */
+int extra_status = 0;		/* Last status from the last extra process */
 
 GdmConnection *fifoconn = NULL; /* Fifo connection */
 GdmConnection *unixconn = NULL; /* UNIX Socket connection */
@@ -626,7 +627,6 @@ final_cleanup (void)
 {
 	GSList *list;
 	sigset_t mask;
-	gchar *path;
 
 	gdm_debug ("final_cleanup");
 
@@ -648,22 +648,26 @@ final_cleanup (void)
 	/* Close stuff */
 
 	gdm_xdmcp_close ();
-	gdm_connection_close (fifoconn);
-	fifoconn = NULL;
-	gdm_connection_close (unixconn);
-	unixconn = NULL;
 
-	/* Unlink the connections */
+	if (fifoconn != NULL) {
+		char *path;
+		gdm_connection_close (fifoconn);
+		path = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+		unlink (path);
+		g_free (path);
+		fifoconn = NULL;
+	}
 
-	path = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
-	unlink (path);
-	g_free (path);
-
-	unlink (GDM_SUP_SOCKET);
-
+	if (unixconn != NULL) {
+		gdm_connection_close (unixconn);
+		unlink (GDM_SUP_SOCKET);
+		unixconn = NULL;
+	}
 
 	closelog();
-	unlink (GdmPidFile);
+
+	if (GdmPidFile != NULL)
+		unlink (GdmPidFile);
 }
 
 static gboolean
@@ -696,8 +700,7 @@ deal_with_x_crashes (GdmDisplay *d)
 	    gdm_info (_("deal_with_x_crashes: Running the "
 			"XKeepsCrashing script"));
 
-	    gdm_safe_fork (&extra_process);
-	    pid = extra_process;
+	    pid = gdm_fork_extra ();
 
 	    if (pid == 0) {
 		    char *argv[2];
@@ -736,9 +739,8 @@ deal_with_x_crashes (GdmDisplay *d)
 		    _exit (32);
 	    } else if (pid > 0) {
 		    int status;
-		    waitpid (pid, &status, 0);
 
-		    extra_process = -1;
+		    gdm_wait_for_extra (&status);
 
 		    if (WIFEXITED (status) &&
 			WEXITSTATUS (status) == 0) {
@@ -833,6 +835,7 @@ gdm_cleanup_children (void)
     if (pid == extra_process) {
 	    /* an extra process died, yay! */
 	    extra_process = -1;
+	    extra_status = exitstatus;
 	    return TRUE;
     }
 

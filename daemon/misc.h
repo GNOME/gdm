@@ -42,10 +42,14 @@ int	gdm_exec_wait (char * const *argv, gboolean no_display);
  * exists and has the correct permissions */
 void	gdm_ensure_sanity	(void);
 
-/* This is a race free fork, that is the pid will
- * be set before sigchld is sent.  This is achieved by
- * blocking sigchld for the moment */
-void	gdm_safe_fork (pid_t *pid);
+/* This is for race free forks */
+void	gdm_sigchld_block_push (void);
+void	gdm_sigchld_block_pop (void);
+void	gdm_sigterm_block_push (void);
+void	gdm_sigterm_block_pop (void);
+
+pid_t	gdm_fork_extra (void);
+void	gdm_wait_for_extra (int *status);
 
 #endif /* GDM_MISC_H */
 

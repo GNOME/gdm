@@ -132,7 +132,7 @@ gdm_display_check_loop (GdmDisplay *disp)
 gboolean 
 gdm_display_manage (GdmDisplay *d)
 {
-    sigset_t mask, omask;
+    pid_t pid;
     int i;
 
     if (!d) 
@@ -143,22 +143,23 @@ gdm_display_manage (GdmDisplay *d)
     if ( ! gdm_display_check_loop (d))
 	    return FALSE;
 
+    gdm_sigchld_block_push ();
+
     /* If we have an old slave process hanging around, kill it */
     if (d->slavepid) {
-	sigemptyset (&mask);
-	sigaddset (&mask, SIGCHLD);
-	sigprocmask (SIG_BLOCK, &mask, &omask); 
-
-	if (kill (d->slavepid, SIGINT) == 0)
-		waitpid (d->slavepid, 0, 0);
-	d->slavepid = 0;
-
-	sigprocmask (SIG_SETMASK, &omask, NULL);
+	    if (kill (d->slavepid, SIGINT) == 0)
+		    waitpid (d->slavepid, 0, 0);
+	    d->slavepid = 0;
     }
 
     /* Fork slave process */
-    gdm_safe_fork (&(d->slavepid));
-    switch (d->slavepid) {
+    gdm_sigterm_block_push ();
+    pid = d->slavepid = fork ();
+    gdm_sigterm_block_push ();
+
+    gdm_sigchld_block_pop ();
+
+    switch (pid) {
 
     case 0:
 	setpgid (0, 0);
@@ -213,7 +214,7 @@ gdm_display_manage (GdmDisplay *d)
 
     default:
 	gdm_debug ("gdm_display_manage: Forked slave: %d",
-		   (int)d->slavepid);
+		   (int)pid);
 	break;
     }
 
