@@ -51,7 +51,7 @@ extern gboolean GdmDebug;
 
 static gboolean
 add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
-		unsigned short family, char *addr, int addrlen)
+		unsigned short family, const char *addr, int addrlen)
 {
 	Xauth *xa;
 	gchar *dispnum;
@@ -113,10 +113,11 @@ gboolean
 gdm_auth_secure_display (GdmDisplay *d)
 {
     FILE *af, *af_gdm;
-    struct hostent *hentry;
-    struct in_addr *ia;
+    struct hostent *hentry = NULL;
+    struct in_addr *ia = NULL;
+    const char lo[] = {127,0,0,1};
     guint i;
-    char lo[4] = {127,0,0,1};
+    const GList *local_addys = NULL;
 
     if (!d)
 	return FALSE;
@@ -223,22 +224,24 @@ gdm_auth_secure_display (GdmDisplay *d)
 		    g_free (d->hostname);
 		    d->hostname = g_strdup (hostname);
 	    }
+	    local_addys = gdm_peek_local_address_list ();
+    } else  {
+	    /* Find FQDN or IP of display host */
+	    hentry = gethostbyname (d->hostname);
+
+	    if (hentry == NULL) {
+		    gdm_error ("gdm_auth_secure_display: Error getting hentry for %s", d->hostname);
+		    /* eeek, there will be nothing to add */
+		    return FALSE;
+	    } else {
+		    /* first addy, would be loopback in case of local */
+		    ia = (struct in_addr *) hentry->h_addr_list[0];
+	    }
     }
-
-    /* Find FQDN or IP of display host */
-    hentry = gethostbyname (d->hostname);
-
-    if (!hentry) {
-	gdm_error ("gdm_auth_secure_display: Error getting hentry for %s", d->hostname);
-	return FALSE;
-    }
-
-    /* first addy, would be loopback in case of local */
-    ia = (struct in_addr *) hentry->h_addr_list[0];
 
     /* Local access also in case the host is very local */
-    if (SERVER_IS_LOCAL (d) || memcmp (&ia->s_addr, lo, 4) == 0) {
-
+    if (SERVER_IS_LOCAL (d) ||
+	(ia != NULL && gdm_is_local_addr (ia))) {
 	    gdm_debug ("gdm_auth_secure_display: Setting up socket access");
 
 	    if ( ! add_auth_entry (d, af, af_gdm, FamilyLocal,
@@ -258,6 +261,17 @@ gdm_auth_secure_display (GdmDisplay *d)
 						   strlen (hostname)))
 				    return FALSE;
 		    }
+	    } else {
+		    /* local machine, perhaps we haven't added
+		     * localhost.localdomain to socket access */
+		    const char *localhost = "localhost.localdomain";
+		    if (strcmp (localhost, d->hostname) != 0) {
+			    if ( ! add_auth_entry (d, af, af_gdm, FamilyLocal,
+						   localhost,
+						   strlen (localhost))) {
+				    return FALSE;
+			    }
+		    }
 	    }
     }
 
@@ -265,7 +279,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     
     /* Network access: Write out an authentication entry for each of
      * this host's official addresses */
-    for (i = 0 ; i < hentry->h_length ; i++) {
+    for (i = 0 ; hentry != NULL && i < hentry->h_length ; i++) {
 	    ia = (struct in_addr *) hentry->h_addr_list[i];
 
 	    if (ia == NULL)
@@ -273,6 +287,26 @@ gdm_auth_secure_display (GdmDisplay *d)
 
 	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
 				   (char *)&ia->s_addr, 4))
+		    return FALSE;
+    }
+
+    /* Network access: Write out an authentication entry for each of
+     * this host's local addresses if any */
+    for (; local_addys != NULL; local_addys = local_addys->next) {
+	    ia = (struct in_addr *) local_addys->data;
+
+	    if (ia == NULL)
+		    break;
+
+	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
+				   (char *)&ia->s_addr, 4))
+		    return FALSE;
+    }
+
+    /* if local server add loopback */
+    if (SERVER_IS_LOCAL (d)) {
+	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
+				   lo, 4))
 		    return FALSE;
     }
 

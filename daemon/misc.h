@@ -51,6 +51,10 @@ void	gdm_sigterm_block_pop (void);
 pid_t	gdm_fork_extra (void);
 void	gdm_wait_for_extra (int *status);
 
+const GList * gdm_peek_local_address_list (void);
+gboolean gdm_is_local_addr (struct in_addr *ia);
+gboolean gdm_is_loopback_addr (struct in_addr *ia);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

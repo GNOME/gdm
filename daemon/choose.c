@@ -199,8 +199,8 @@ gdm_choose_indirect_lookup_by_chosen (struct in_addr *chosen,
 		    id->chosen_host->s_addr == chosen->s_addr) {
 			if (id->dsp_sa->sin_addr.s_addr == origin->s_addr) {
 				return id;
-			} else if (gdm_xdmcp_is_loopback_addr (&(id->dsp_sa->sin_addr)) &&
-				   gdm_xdmcp_is_local_addr (origin)) {
+			} else if (gdm_is_loopback_addr (&(id->dsp_sa->sin_addr)) &&
+				   gdm_is_local_addr (origin)) {
 				return id;
 			}
 		}

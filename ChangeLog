@@ -1,3 +1,13 @@
+Sun Oct 28 11:56:33 2001  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c, daemon/misc.[ch], daemon/xdmcp.[ch]: be more
+	  thorough in setting up address/cookie pairs for local servers,
+	  and make sure to always setup localhost.localdomain and
+	  loopback.  Don't use hostname based lookup on local servers,
+	  but use the same code we use for xdmcp peeking local addresses.
+	  This will make it possible to start an X server and login
+	  even if the hostname is out of whack.
+
 Sun Oct 28 10:46:21 2001  Christophe Merlet <redfox@eikonex.org>
 
 	* gui/gdmXnestchooser.c: corrected just a little typo.

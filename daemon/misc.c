@@ -27,6 +27,7 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 #include <errno.h>
 
 #include <vicious.h>
@@ -41,6 +42,7 @@ static const gchar RCSid[]="$Id$";
 extern gchar *GdmPidFile;
 extern gboolean GdmDebug;
 extern GSList *displays;
+extern int gdm_xdmcpfd;
 
 extern char **environ;
 
@@ -561,5 +563,155 @@ gdm_ensure_sanity (void)
 
 	umask (old_umask);
 }
+
+const GList *
+gdm_peek_local_address_list (void)
+{
+	static GList *the_list = NULL;
+	static time_t last_time = 0;
+	struct in_addr *addr;
+#ifdef SIOCGIFCONF
+	struct sockaddr_in *sin;
+	struct ifconf ifc;
+	struct ifreq *ifr;
+	char *buf;
+	int num;
+	int sockfd;
+#else /* SIOCGIFCONF */
+	char hostbuf[BUFSIZ];
+	struct hostent *he;
+	int i;
+#endif
+
+	/* don't check more then every 5 seconds */
+	if (last_time + 5 > time (NULL))
+		return the_list;
+
+	g_list_foreach (the_list, (GFunc)g_free, NULL);
+	g_list_free (the_list);
+	the_list = NULL;
+
+	last_time = time (NULL);
+
+#ifdef SIOCGIFCONF
+	if (gdm_xdmcpfd > 0)
+		sockfd = gdm_xdmcpfd;
+	else
+		/* Open a bogus socket */
+		sockfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
+
+#ifdef SIOCGIFNUM
+	if (ioctl (sockfd, SIOCGIFNUM, &num) < 0) {
+		num = 64;
+	}
+#else
+	num = 64;
+#endif
+
+	ifc.ifc_len = sizeof(struct ifreq) * num;
+	ifc.ifc_buf = buf = g_malloc (ifc.ifc_len);
+	if (ioctl (sockfd, SIOCGIFCONF, &ifc) < 0) {
+		gdm_error (_("%s: Cannot get local addresses!"),
+			   "gdm_peek_local_address_list");
+		g_free (buf);
+		if (sockfd != gdm_xdmcpfd)
+			close (sockfd);
+		return NULL;
+	}
+
+	ifr = ifc.ifc_req;
+	num = ifc.ifc_len / sizeof(struct ifreq);
+	for (; num-- > 0; ifr++) {
+		if (ioctl (sockfd, SIOCGIFFLAGS, ifr) < 0 ||
+		    ! (ifr->ifr_flags & IFF_UP))
+			continue;
+#ifdef IFF_UNNUMBERED
+		if (ifr->ifr_flags & IFF_UNNUMBERED)
+			continue;
+#endif
+		if (ioctl (sockfd, SIOCGIFADDR, ifr) < 0)
+			continue;
+
+		sin = (struct sockaddr_in *)&ifr->ifr_addr;
+
+		if (sin->sin_family != AF_INET ||
+		    sin->sin_addr.s_addr == INADDR_ANY ||
+		    sin->sin_addr.s_addr == INADDR_LOOPBACK)
+			continue;
+		addr = g_new0 (struct in_addr, 1);
+		memcpy (addr, &(sin->sin_addr.s_addr),
+			sizeof (struct in_addr));
+		the_list = g_list_append (the_list, addr);
+	}
+
+	if (sockfd != gdm_xdmcpfd)
+		close (sockfd);
+
+	g_free (buf);
+#else /* SIOCGIFCONF */
+	/* host based fallback, will likely only get 127.0.0.1 i think */
+
+	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
+		gdm_error (_("%s: Could not get server hostname: %s!"),
+			   "gdm_peek_local_address_list",
+			   g_strerror (errno));
+		return NULL;
+	}
+	he = gethostbyname (hostbuf);
+	if (he == NULL) {
+		gdm_error (_("%s: Could not get address from hostname!"),
+			   "gdm_peek_local_address_list");
+		return NULL;
+	}
+	for (i = 0; he->h_addr_list[i] != NULL; i++) {
+		struct in_addr *laddr = (struct in_addr *)he->h_addr_list[i];
+
+		addr = g_new0 (struct in_addr, 1);
+		memcpy (addr, laddr, sizeof (struct in_addr));
+		the_list = g_list_append (the_list, addr);
+	}
+#endif
+
+	return the_list;
+}
+
+gboolean
+gdm_is_local_addr (struct in_addr *ia)
+{
+	const char lo[] = {127,0,0,1};
+
+	if (ia->s_addr == INADDR_LOOPBACK ||
+	    memcmp (&ia->s_addr, lo, 4) == 0) {
+		return TRUE;
+	} else {
+		const GList *list = gdm_peek_local_address_list ();
+
+		while (list != NULL) {
+			struct in_addr *addr = list->data;
+
+			if (memcmp (&ia->s_addr, &addr->s_addr, 4) == 0) {
+				return TRUE;
+			}
+
+			list = list->next;
+		}
+
+		return FALSE;
+	}
+}
+
+gboolean
+gdm_is_loopback_addr (struct in_addr *ia)
+{
+	const char lo[] = {127,0,0,1};
+
+	if (ia->s_addr == INADDR_LOOPBACK ||
+	    memcmp (&ia->s_addr, lo, 4) == 0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
 
 /* EOF */

@@ -105,7 +105,7 @@ gint pending = 0;
 gint allow_severity = LOG_INFO;
 gint deny_severity = LOG_WARNING;
 
-static gint xdmcpfd = -1;
+static gint gdm_xdmcpfd = -1;
 static guint xdmcp_source = 0;
 static gint globsessid;
 static gchar *sysid;
@@ -208,105 +208,6 @@ static XdmAuthRec serv_authlist = {
     { (CARD16) 0, (CARD8 *) 0 }
 };
 
-static const GList *
-peek_local_address_list (void)
-{
-	static GList *the_list = NULL;
-	static time_t last_time = 0;
-	struct in_addr *addr;
-#ifdef SIOCGIFCONF
-	struct sockaddr_in *sin;
-	struct ifconf ifc;
-	struct ifreq *ifr;
-	char *buf;
-	int num;
-#else /* SIOCGIFCONF */
-	char hostbuf[BUFSIZ];
-	struct hostent *he;
-	int i;
-#endif
-
-	/* don't check more then every 5 seconds */
-	if (last_time + 5 > time (NULL))
-		return the_list;
-
-	g_list_foreach (the_list, (GFunc)g_free, NULL);
-	g_list_free (the_list);
-	the_list = NULL;
-
-	last_time = time (NULL);
-
-#ifdef SIOCGIFCONF
-#ifdef SIOCGIFNUM
-	if (ioctl (xdmcpfd, SIOCGIFNUM, &num) < 0) {
-		num = 64;
-	}
-#else
-	num = 64;
-#endif
-
-	ifc.ifc_len = sizeof(struct ifreq) * num;
-	ifc.ifc_buf = buf = g_malloc (ifc.ifc_len);
-	if (ioctl (xdmcpfd, SIOCGIFCONF, &ifc) < 0) {
-		gdm_error (_("%s: Cannot get local addresses!"),
-			   "peek_local_address_list");
-		g_free (buf);
-		return NULL;
-	}
-
-	ifr = ifc.ifc_req;
-	num = ifc.ifc_len / sizeof(struct ifreq);
-	for (; num-- > 0; ifr++) {
-		if (ioctl (xdmcpfd, SIOCGIFFLAGS, ifr) < 0 ||
-		    ! (ifr->ifr_flags & IFF_UP))
-			continue;
-#ifdef IFF_UNNUMBERED
-		if (ifr->ifr_flags & IFF_UNNUMBERED)
-			continue;
-#endif
-		if (ioctl (xdmcpfd, SIOCGIFADDR, ifr) < 0)
-			continue;
-
-		sin = (struct sockaddr_in *)&ifr->ifr_addr;
-
-		if (sin->sin_family != AF_INET ||
-		    sin->sin_addr.s_addr == INADDR_ANY ||
-		    sin->sin_addr.s_addr == INADDR_LOOPBACK)
-			continue;
-		addr = g_new0 (struct in_addr, 1);
-		memcpy (addr, &(sin->sin_addr.s_addr),
-			sizeof (struct in_addr));
-		the_list = g_list_append (the_list, addr);
-	}
-
-	g_free (buf);
-#else /* SIOCGIFCONF */
-	/* host based fallback, will likely only get 127.0.0.1 i think */
-
-	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
-		gdm_error (_("%s: Could not get server hostname: %s!"),
-			   "peek_local_address_list",
-			   strerror (errno));
-		return NULL;
-	}
-	he = gethostbyname (hostbuf);
-	if (he == NULL) {
-		gdm_error (_("%s: Could not get address from hostname!"),
-			   "peek_local_address_list");
-		return NULL;
-	}
-	for (i = 0; he->h_addr_list[i] != NULL; i++) {
-		struct in_addr *laddr = (struct in_addr *)he->h_addr_list[i];
-
-		addr = g_new0 (struct in_addr, 1);
-		memcpy (addr, laddr, sizeof (struct in_addr));
-		the_list = g_list_append (the_list, addr);
-	}
-#endif
-
-	return the_list;
-}
-
 static int
 gdm_xdmcp_displays_from_host (struct in_addr *addr)
 {
@@ -349,9 +250,9 @@ gdm_xdmcp_init (void)
     gdm_debug ("Start up on host %s, port %d", hostbuf, GdmPort);
     
     /* Open socket for communications */
-    xdmcpfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
+    gdm_xdmcpfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
     
-    if (xdmcpfd < 0) {
+    if (gdm_xdmcpfd < 0) {
 	gdm_error (_("gdm_xdmcp_init: Could not create socket!"));
 	GdmXdmcp = FALSE;
 	return FALSE;
@@ -361,7 +262,7 @@ gdm_xdmcp_init (void)
     serv_sa.sin_port = htons (GdmPort); /* UDP 177 */
     serv_sa.sin_addr.s_addr = htonl (INADDR_ANY);
     
-    if (bind (xdmcpfd, (struct sockaddr*) &serv_sa, sizeof (serv_sa)) == -1) {
+    if (bind (gdm_xdmcpfd, (struct sockaddr*) &serv_sa, sizeof (serv_sa)) == -1) {
 	gdm_error (_("gdm_xdmcp_init: Could not bind to XDMCP socket!"));
 	gdm_xdmcp_close ();
 	GdmXdmcp = FALSE;
@@ -377,7 +278,7 @@ gdm_xdmcp_run (void)
 {
 	GIOChannel *xdmcpchan;
 
-	xdmcpchan = g_io_channel_unix_new (xdmcpfd);
+	xdmcpchan = g_io_channel_unix_new (gdm_xdmcpfd);
 	xdmcp_source = g_io_add_watch_full
 		(xdmcpchan, G_PRIORITY_DEFAULT,
 		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
@@ -394,9 +295,9 @@ gdm_xdmcp_close (void)
 		xdmcp_source = 0;
 	}
 
-	if (xdmcpfd > 0) {
-		close (xdmcpfd);
-		xdmcpfd = -1;
+	if (gdm_xdmcpfd > 0) {
+		close (gdm_xdmcpfd);
+		gdm_xdmcpfd = -1;
 	}
 }
 
@@ -417,7 +318,7 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 	"MANAGED_FORWARD", "GOT_MANAGED_FORWARD"
     };
     
-    if (!XdmcpFill (xdmcpfd, &buf, (XdmcpNetaddr)&clnt_sa, &sa_len)) {
+    if (!XdmcpFill (gdm_xdmcpfd, &buf, (XdmcpNetaddr)&clnt_sa, &sa_len)) {
 	gdm_error (_("gdm_xdmcp_decode: Could not create XDMCP buffer!"));
 	return TRUE;
     }
@@ -532,21 +433,21 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 		if (id != NULL &&
 		    id->chosen_host != NULL) {
 			/* if user chose us, then just send willing */
-			if (gdm_xdmcp_is_local_addr (id->chosen_host)) {
+			if (gdm_is_local_addr (id->chosen_host)) {
 				/* get rid of indirect, so that we don't get
 				 * the chooser */
 				gdm_choose_indirect_dispose (id);
 				gdm_xdmcp_send_willing (clnt_sa);
-			} else if (gdm_xdmcp_is_loopback_addr (&(clnt_sa->sin_addr))) {
+			} else if (gdm_is_loopback_addr (&(clnt_sa->sin_addr))) {
 				/* woohoo! fun, I have no clue how to get
 				 * the correct ip, SO I just send forward
 				 * queries with all the different IPs */
-				const GList *list = peek_local_address_list ();
+				const GList *list = gdm_peek_local_address_list ();
 
 				while (list != NULL) {
 					struct in_addr *addr = list->data;
 					
-					if ( ! gdm_xdmcp_is_loopback_addr (addr)) {
+					if ( ! gdm_is_loopback_addr (addr)) {
 						/* forward query to
 						 * chosen host */
 						gdm_xdmcp_send_forward_query
@@ -633,7 +534,7 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	sock.sin_family = AF_INET;
 	sock.sin_port = htons (XDM_UDP_PORT);
 	sock.sin_addr.s_addr = id->chosen_host->s_addr;
-	XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr) &sock,
+	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr) &sock,
 		    (int)sizeof (struct sockaddr_in));
 
 	g_free (port.data);
@@ -867,7 +768,7 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 	    last_willing = time (NULL);
     }
 
-    if ( ! gdm_xdmcp_is_local_addr (&(clnt_sa->sin_addr)) &&
+    if ( ! gdm_is_local_addr (&(clnt_sa->sin_addr)) &&
 	 gdm_xdmcp_displays_from_host (&(clnt_sa->sin_addr)) >= GdmDispPerHost) {
 	    /* Don't translate, this goes over the wire to servers where we
 	     * don't know the charset or language, so it must be ascii */
@@ -886,7 +787,7 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
     XdmcpWriteARRAY8 (&buf, &serv_authlist.authentication); /* Hardcoded authentication */
     XdmcpWriteARRAY8 (&buf, &servhost);
     XdmcpWriteARRAY8 (&buf, &status);
-    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+    XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
 
     g_free (status.data);
@@ -914,7 +815,7 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     
     XdmcpWriteARRAY8 (&buf, &servhost);
     XdmcpWriteARRAY8 (&buf, &status);
-    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+    XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
 }
 
@@ -940,7 +841,7 @@ gdm_xdmcp_really_send_managed_forward (struct sockaddr_in *clnt_sa,
 	XdmcpWriteHeader (&buf, &header);
 
 	XdmcpWriteARRAY8 (&buf, &address);
-	XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		    (int)sizeof (struct sockaddr_in));
 }
 
@@ -948,11 +849,11 @@ static gboolean
 managed_forward_handler (gpointer data)
 {
 	ManagedForward *mf = data;
-	if (xdmcpfd > 0)
+	if (gdm_xdmcpfd > 0)
 		gdm_xdmcp_really_send_managed_forward (&(mf->manager),
 						       &(mf->origin));
 	mf->times ++;
-	if (xdmcpfd <= 0 || mf->times >= 2) {
+	if (gdm_xdmcpfd <= 0 || mf->times >= 2) {
 		managed_forwards = g_list_remove (managed_forwards, mf);
 		mf->handler = 0;
 		/* mf freed by glib */
@@ -1004,7 +905,7 @@ gdm_xdmcp_send_got_managed_forward (struct sockaddr_in *clnt_sa,
 	XdmcpWriteHeader (&buf, &header);
 
 	XdmcpWriteARRAY8 (&buf, &address);
-	XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+	XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		    (int)sizeof (struct sockaddr_in));
 }
 
@@ -1145,7 +1046,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     /* Check if ok to manage display */
     if (mitauth &&
 	sessions < GdmMaxSessions &&
-	(gdm_xdmcp_is_local_addr (&(clnt_sa->sin_addr)) ||
+	(gdm_is_local_addr (&(clnt_sa->sin_addr)) ||
 	 gdm_xdmcp_displays_from_host (&(clnt_sa->sin_addr)) < GdmDispPerHost)) {
 	    char *disp;
 	    char *hostname = get_host_from_addr (clnt_sa);
@@ -1227,7 +1128,7 @@ gdm_xdmcp_send_accept (const char *hostname,
     XdmcpWriteARRAY8 (&buf, &authname);
     XdmcpWriteARRAY8 (&buf, &authdata);
     
-    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+    XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
     
     gdm_debug ("gdm_xdmcp_send_accept: Sending ACCEPT to %s with SessionID=%ld", 
@@ -1267,7 +1168,7 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa, const char *reason)
     XdmcpWriteARRAY8 (&buf, &authentype);
     XdmcpWriteARRAY8 (&buf, &authendata);
     
-    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+    XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
 
     /* Send MANAGED_FORWARD to indicate that the connection 
@@ -1480,7 +1381,7 @@ gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid)
     
     XdmcpWriteHeader (&buf, &header);  
     XdmcpWriteCARD32 (&buf, sessid);
-    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+    XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
 
     /* this was from a forwarded query quite apparently so
@@ -1513,7 +1414,7 @@ gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid)
     XdmcpWriteHeader (&buf, &header);
     XdmcpWriteCARD32 (&buf, sessid);
     XdmcpWriteARRAY8 (&buf, &status);
-    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+    XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
 }
 
@@ -1564,7 +1465,7 @@ gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid)
     XdmcpWriteHeader (&buf, &header);
     XdmcpWriteCARD8 (&buf, 1);
     XdmcpWriteCARD32 (&buf, sessid);
-    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+    XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
 }
 
@@ -1758,43 +1659,5 @@ gdm_xdmcp_close (void)
 }
 
 #endif /* HAVE_LIBXDMCP */
-
-gboolean
-gdm_xdmcp_is_loopback_addr (struct in_addr *ia)
-{
-	const char lo[] = {127,0,0,1};
-
-	if (ia->s_addr == INADDR_LOOPBACK ||
-	    memcmp (&ia->s_addr, lo, 4) == 0) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
-
-gboolean
-gdm_xdmcp_is_local_addr (struct in_addr *ia)
-{
-	const char lo[] = {127,0,0,1};
-
-	if (ia->s_addr == INADDR_LOOPBACK ||
-	    memcmp (&ia->s_addr, lo, 4) == 0) {
-		return TRUE;
-	} else {
-		const GList *list = peek_local_address_list ();
-
-		while (list != NULL) {
-			struct in_addr *addr = list->data;
-
-			if (memcmp (&ia->s_addr, &addr->s_addr, 4) == 0) {
-				return TRUE;
-			}
-
-			list = list->next;
-		}
-
-		return FALSE;
-	}
-}
 
 /* EOF */

@@ -332,7 +332,6 @@ gdm_run_failsafe_yesno (const char *question,
 	GtkWidget *dialog;
 	GtkRequisition req;
 	guint sid;
-	GtkWidget *entry, *label;
 	char *argv[2] = { "gdm-failsafe-yesno", NULL };
 
 	/* Avoid creating ~gdm/.gnome stuff */

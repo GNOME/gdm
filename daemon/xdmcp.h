@@ -33,9 +33,6 @@ gboolean	gdm_xdmcp_init	(void);
 void		gdm_xdmcp_run	(void);
 void		gdm_xdmcp_close	(void);
 
-gboolean	gdm_xdmcp_is_loopback_addr (struct in_addr *ia);
-gboolean	gdm_xdmcp_is_local_addr (struct in_addr *ia);
-
 #ifdef HAVE_LIBXDMCP
 /* Fix broken X includes */
 int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);
