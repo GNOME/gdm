@@ -3613,7 +3613,7 @@ main (int argc, char *argv[])
 	    gtk_widget_show_now (dialog);
 
 	    gnome_dialog_set_default (GNOME_DIALOG (dialog), 0);
-	    gnome_dialog_grab_focus (GNOME_DIALOG (dialog), 0);
+	    ve_gnome_dialog_grab_focus (GNOME_DIALOG (dialog), 0);
 
 	    switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
 	    case 0:
