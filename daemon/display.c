@@ -201,18 +201,17 @@ gdm_display_manage (GdmDisplay *d)
 			close(i);
 	}
 
-	d->slave_notify_conn = gdm_connection_open_fd (fds[0]);
-	gdm_connection_set_handler (d->slave_notify_conn,
-				    gdm_slave_handle_notify,
-				    d /* data */,
-				    NULL /* destroy_notify */);
-
-
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
 	open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 	open("/dev/null", O_RDWR); /* open stdout - fd 1 */
 	open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+	d->slave_notify_conn = gdm_connection_open_fd (fds[0]);
+	gdm_connection_set_handler (d->slave_notify_conn,
+				    gdm_slave_handle_notify,
+				    d /* data */,
+				    NULL /* destroy_notify */);
 
 	if (d->type == TYPE_LOCAL) {
 	    gdm_slave_start (d);

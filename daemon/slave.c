@@ -3138,6 +3138,8 @@ gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 	GdmDisplay *display = data;
 	int val;
 
+	gdm_debug ("Handling slave notify: '%s'", msg);
+
 	if (sscanf (msg, GDM_NOTIFY_ALLOWROOT " %d", &val) == 1) {
 		GdmAllowRoot = val;
 	} else if (sscanf (msg, GDM_NOTIFY_ALLOWREMOTEROOT " %d", &val) == 1) {

@@ -109,6 +109,7 @@ greeter_ctrl_handler (GIOChannel *source,
     gchar buf[PIPE_SIZE];
     gsize len;
     GtkWidget *dlg;
+    char *tmp;
     char *session;
     GreeterItemInfo *conversation_info;
     GreeterItemInfo *entry_info;
@@ -148,27 +149,35 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	greeter_item_pam_prompt (buf, 32, TRUE, TRUE);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	greeter_item_pam_prompt (tmp, 32, TRUE, TRUE);
+	g_free (tmp);
 	break;
 
     case GDM_PROMPT:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	greeter_item_pam_prompt (buf, 128, TRUE, FALSE);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	greeter_item_pam_prompt (tmp, 128, TRUE, FALSE);
+	g_free (tmp);
 	break;
 
     case GDM_NOECHO:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	greeter_item_pam_prompt (buf, 128, FALSE, FALSE);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	greeter_item_pam_prompt (tmp, 128, FALSE, FALSE);
+	g_free (tmp);
 	break;
 
     case GDM_MSG:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-	greeter_item_pam_message (buf);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	greeter_item_pam_message (tmp);
+	g_free (tmp);
 	g_print ("%c\n", STX);
 
 	break;
@@ -177,7 +186,9 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	greeter_item_pam_error (buf);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	greeter_item_pam_error (tmp);
+	g_free (tmp);
 	
 	g_print ("%c\n", STX);
 	break;
@@ -189,12 +200,14 @@ greeter_ctrl_handler (GIOChannel *source,
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
 	dlg = gtk_message_dialog_new (NULL /* parent */,
 				      GTK_DIALOG_MODAL /* flags */,
 				      GTK_MESSAGE_ERROR,
 				      GTK_BUTTONS_OK,
 				      "%s",
-				      buf);
+				      tmp);
+	g_free (tmp);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
 
@@ -210,9 +223,13 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 	buf[len-1] = '\0';
 
-	session = greeter_session_lookup (buf);
-	g_print ("%c%s\n", STX, session);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	session = greeter_session_lookup (tmp);
+	g_free (tmp);
+	tmp = g_locale_from_utf8 (session, -1, NULL, NULL, NULL);
+	g_print ("%c%s\n", STX, tmp);
 	g_free (session);
+	g_free (tmp);
 	break;
 
     case GDM_LANG:
@@ -253,9 +270,13 @@ greeter_ctrl_handler (GIOChannel *source,
 	conversation_info = greeter_lookup_id ("pam-conversation");
 	
 	if (conversation_info)
-	  g_object_set (G_OBJECT (conversation_info->item),
-			"text",	buf,
-			NULL);
+	  {
+	    tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	    g_object_set (G_OBJECT (conversation_info->item),
+			  "text", tmp,
+			  NULL);
+	    g_free (tmp);
+	  }
 
 	g_print ("%c\n", STX);
 	break;
@@ -281,7 +302,9 @@ greeter_ctrl_handler (GIOChannel *source,
 		do {
 			g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 			buf[len-1] = '\0';
-			g_string_append (str, buf);
+			tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+			g_string_append (str, tmp);
+			g_free (tmp);
 		} while (len == PIPE_SIZE-1);
 
 
@@ -289,7 +312,9 @@ greeter_ctrl_handler (GIOChannel *source,
 
 		g_string_free (str, TRUE);
 
-		g_print ("%c%s\n", STX, sess);
+		tmp = g_locale_from_utf8 (sess, -1, NULL, NULL, NULL);
+		g_print ("%c%s\n", STX, tmp);
+		g_free (tmp);
 
 		g_free (sess);
 	}

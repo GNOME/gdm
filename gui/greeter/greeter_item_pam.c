@@ -23,6 +23,7 @@ static void
 user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
 {
   static gboolean first_return = TRUE;
+  char *tmp;
   GreeterItemInfo *error_info;
   GreeterItemInfo *message_info;
   
@@ -62,7 +63,10 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   
   entry_is_login = FALSE;
 
-  g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
+  tmp = g_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)),
+			    -1, NULL, NULL, NULL);
+  g_print ("%c%s\n", STX, tmp);
+  g_free (tmp);
 }
 
 gboolean
