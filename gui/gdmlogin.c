@@ -148,7 +148,9 @@ static GHashTable *back_locales = NULL;
 typedef struct _GdmWindow GdmWindow;
 struct _GdmWindow {
 	Window win;
+	Window deco;
 	GdkWindow *gdk_win;
+	GdkWindow *gdk_deco;
 };
 
 static GList *windows = NULL;
@@ -159,6 +161,7 @@ static gboolean no_focus_login = FALSE;
  * in some way or another */
 static gboolean session_dir_whacked_out = FALSE;
 
+static gulong XA_WM_NORMAL_HINTS = 0;
 static gulong XA_WM_PROTOCOLS = 0;
 static gulong XA_WM_TAKE_FOCUS = 0;
 static gulong XA_COMPOUND_TEXT = 0;
@@ -3230,6 +3233,17 @@ run_backgrounds (void)
 	}
 }
 
+/*
+ * WM type stuff
+ */
+static GdkFilterReturn
+window_filter (GdkXEvent *gdk_xevent,
+	       GdkEvent *event,
+	       gpointer data);
+static GdkFilterReturn
+root_filter (GdkXEvent *gdk_xevent,
+	     GdkEvent *event,
+	     gpointer data);
 
 /* stolen from gwmh */
 static GdkWindow*
@@ -3249,7 +3263,7 @@ window_ref_from_xid (Window xwin)
 
 
 static GList *
-find_window (Window w)
+find_window_list (Window w)
 {
 	GList *li;
 
@@ -3263,32 +3277,25 @@ find_window (Window w)
 	return NULL;
 }
 
-static GdkFilterReturn
-window_filter (GdkXEvent *gdk_xevent,
-	       GdkEvent *event,
-	       gpointer data)
+static GdmWindow *
+find_window (Window w)
 {
-	GdmWindow *gw = data;
-	XEvent *xevent = (XEvent *)gdk_xevent;
-
-	switch (xevent->type) {
-	case EnterNotify:
-		focus_window (gw->win);
-		break;
-	default:
-		break;
-	}
-
-	return GDK_FILTER_CONTINUE;
+	GList *li = find_window_list (w);
+	if (li == NULL)
+		return NULL;
+	else
+		return li->data;
 }
 
-static void
+static GdmWindow *
 add_window (Window w)
 {
 	XWindowAttributes attribs = { 0, };
+	GdmWindow *gw;
 
-	if (find_window (w) == NULL) {
-		GdmWindow *gw = g_new0 (GdmWindow, 1);
+	gw = find_window (w);
+	if (gw == NULL) {
+		gw = g_new0 (GdmWindow, 1);
 		gw->win = w;
 		gw->gdk_win = window_ref_from_xid (w);
 		gdk_window_add_filter (gw->gdk_win,
@@ -3302,17 +3309,19 @@ add_window (Window w)
 				      &attribs);
 		XSelectInput (GDK_DISPLAY (), w,
 			      attribs.your_event_mask |
+			      StructureNotifyMask |
 			      EnterWindowMask);
 
 		gdk_flush ();
 		gdk_error_trap_pop ();
 	}
+	return gw;
 }
 
 static void
 remove_window (Window w)
 {
-	GList *li = find_window (w);
+	GList *li = find_window_list (w);
 
 	if (li != NULL) {
 		GdmWindow *gw = li->data;
@@ -3394,9 +3403,111 @@ center_x_window (Window w)
 	}
 	
 	XMoveResizeWindow (GDK_DISPLAY (), w, x, y, width, height);
-	
+
 	gdk_flush ();
 	gdk_error_trap_pop ();
+}
+
+static void
+add_deco (GdmWindow *w)
+{
+	int x, y;
+	Window root;
+	XSizeHints hints;
+	long ret;
+	unsigned int width, height, border, depth;
+
+	gdk_error_trap_push ();
+
+	XGetGeometry (GDK_DISPLAY (), w->win,
+		      &root, &x, &y, &width, &height, &border, &depth);
+
+	w->deco = XCreateSimpleWindow (GDK_DISPLAY (),
+				       GDK_ROOT_WINDOW (),
+				       x - 1, y - 1,
+				       width + 2, height + 2,
+				       border, 0, 0);
+
+	XSelectInput (GDK_DISPLAY (),
+		      w->deco,
+		      SubstructureNotifyMask |
+		      SubstructureRedirectMask |
+		      ResizeRedirectMask);
+
+	w->gdk_deco = gdk_window_foreign_new (w->deco);
+	gdk_window_add_filter (w->gdk_deco, root_filter, NULL);
+
+
+	if (XGetWMNormalHints (GDK_DISPLAY (),
+			       w->win,
+			       &hints,
+			       &ret)) {
+		XSetWMSizeHints (GDK_DISPLAY (), w->deco,
+				 &hints,
+				 XA_WM_NORMAL_HINTS);
+	}
+
+	XMapWindow (GDK_DISPLAY (), w->deco);
+	XReparentWindow (GDK_DISPLAY (), w->win, w->deco, 1, 1);
+
+	gdk_flush ();
+	gdk_error_trap_pop ();
+}
+
+static void
+remove_deco (GdmWindow *w, gboolean reparent)
+{
+	int x, y;
+	Window root;
+	unsigned int width, height, border, depth;
+
+	gdk_error_trap_push ();
+
+	XGetGeometry (GDK_DISPLAY (), w->deco,
+		      &root, &x, &y, &width, &height, &border, &depth);
+
+	if (reparent)
+		XReparentWindow (GDK_DISPLAY (), w->win,
+				 GDK_ROOT_WINDOW (), x + 1, y + 1);
+
+	XDestroyWindow (GDK_DISPLAY (), w->deco);
+	w->deco = None;
+	gdk_window_unref (w->gdk_deco);
+	w->gdk_deco = NULL;
+
+	gdk_flush ();
+	gdk_error_trap_pop ();
+}
+
+static GdkFilterReturn
+window_filter (GdkXEvent *gdk_xevent,
+	       GdkEvent *event,
+	       gpointer data)
+{
+	GdmWindow *gw = data;
+	XEvent *xevent = (XEvent *)gdk_xevent;
+
+	switch (xevent->type) {
+	case EnterNotify:
+		focus_window (gw->win);
+		break;
+	case UnmapNotify:
+		remove_deco (gw, TRUE);
+
+		remove_window (gw->win);
+		revert_focus_to_login ();
+		break;
+	case DestroyNotify:
+		remove_deco (gw, FALSE);
+
+		remove_window (gw->win);
+		revert_focus_to_login ();
+		break;
+	default:
+		break;
+	}
+
+	return GDK_FILTER_CONTINUE;
 }
 
 static GdkFilterReturn
@@ -3405,45 +3516,97 @@ root_filter (GdkXEvent *gdk_xevent,
 	     gpointer data)
 {
 	Window w;
+	GdmWindow *gw;
 	XEvent *xevent = (XEvent *)gdk_xevent;
 	XWindowChanges wchanges;
 
 	switch (xevent->type) {
 	case MapRequest:
 		w = xevent->xmaprequest.window;
-		center_x_window (w);
+		if (login == NULL ||
+		    login->window == NULL ||
+		    GDK_WINDOW_XWINDOW (login->window) != w) {
+			gw = add_window (w);
+			center_x_window (w);
+			add_deco (gw);
+		}
 		XMapWindow (GDK_DISPLAY (), w);
 		break;
 	case ConfigureRequest:
 		w = xevent->xconfigurerequest.window;
-		wchanges.x = xevent->xconfigurerequest.x;
-		wchanges.y = xevent->xconfigurerequest.y;
-		wchanges.width = xevent->xconfigurerequest.width;
-		wchanges.height = xevent->xconfigurerequest.height;
+		gw = find_window (w);
 		wchanges.border_width = xevent->xconfigurerequest.border_width;
 		wchanges.sibling = xevent->xconfigurerequest.above;
 		wchanges.stack_mode = xevent->xconfigurerequest.detail;
+		if (gw == NULL) {
+			wchanges.x = xevent->xconfigurerequest.x;
+			wchanges.y = xevent->xconfigurerequest.y;
+		} else {
+			wchanges.x = 1;
+			wchanges.y = 1;
+		}
+		wchanges.width = xevent->xconfigurerequest.width;
+		wchanges.height = xevent->xconfigurerequest.height;
 		XConfigureWindow (GDK_DISPLAY (),
-				   w,
-				   xevent->xconfigurerequest.value_mask,
-				   &wchanges);
+				  w,
+				  xevent->xconfigurerequest.value_mask,
+				  &wchanges);
+		if (gw == NULL) {
+			center_x_window (w);
+		} else {
+			wchanges.x = xevent->xconfigurerequest.x - 1;
+			wchanges.y = xevent->xconfigurerequest.y - 1;
+			wchanges.width = xevent->xconfigurerequest.width + 2;
+			wchanges.height = xevent->xconfigurerequest.height + 2;
+			XConfigureWindow (GDK_DISPLAY (),
+					  gw->deco,
+					  xevent->xconfigurerequest.value_mask,
+					  &wchanges);
+			center_x_window (gw->deco);
+		}
+		break;
+	case ResizeRequest:
+		w = xevent->xresizerequest.window;
+		gw = find_window (w);
+		XResizeWindow (GDK_DISPLAY (), w,
+			       xevent->xresizerequest.width,
+			       xevent->xresizerequest.height);
+		if (gw == NULL) {
+			center_x_window (w);
+		} else {
+			XResizeWindow (GDK_DISPLAY (), gw->deco,
+				       xevent->xresizerequest.width + 2,
+				       xevent->xresizerequest.height + 2);
+
+			center_x_window (gw->deco);
+		}
 		break;
 	case CirculateRequest:
 		w = xevent->xcirculaterequest.window;
-		XCirculateSubwindows (GDK_DISPLAY (),
-				      w,
-				      xevent->xcirculaterequest.place);
+		gw = find_window (w);
+		if (gw == NULL)
+			XCirculateSubwindows (GDK_DISPLAY (),
+					      w,
+					      xevent->xcirculaterequest.place);
+		else
+			XCirculateSubwindows (GDK_DISPLAY (),
+					      gw->deco,
+					      xevent->xcirculaterequest.place);
 		break;
 	case MapNotify:
 		if ( ! xevent->xmap.override_redirect) {
 			w = xevent->xmap.window;
-			add_window (w);
 			if (focus_new_windows)
 				focus_window (w);
 		}
 		break;
 	case UnmapNotify:
 		w = xevent->xunmap.window;
+		gw = find_window (w);
+		if (gw == NULL)
+			break;
+		remove_deco (gw, TRUE);
+
 		remove_window (w);
 		revert_focus_to_login ();
 		break;
@@ -3480,8 +3643,16 @@ add_all_current_windows (void)
 					      &attribs);
 
 			if ( ! attribs.override_redirect &&
-			    attribs.map_state != IsUnmapped)
-				add_window (children[i]);
+			    attribs.map_state != IsUnmapped) {
+				GdmWindow *gw = add_window (children[i]);
+				if (login == NULL ||
+				    login->window == NULL ||
+				    GDK_WINDOW_XWINDOW (login->window) != 
+				      children[i]) {
+					center_x_window (children[i]);
+					add_deco (gw);
+				}
+			}
 		}
 
 		if (children != NULL)
@@ -3495,6 +3666,7 @@ add_all_current_windows (void)
 static void
 atoms_init (void)
 {
+	XA_WM_NORMAL_HINTS = gdk_atom_intern ("WM_NORMAL_HINTS", FALSE);
 	XA_WM_PROTOCOLS = gdk_atom_intern ("WM_PROTOCOLS", FALSE);
 	XA_WM_TAKE_FOCUS = gdk_atom_intern ("WM_TAKE_FOCUS", FALSE);
 	XA_COMPOUND_TEXT = gdk_atom_intern ("COMPOUND_TEXT", FALSE);
@@ -3627,9 +3799,11 @@ main (int argc, char *argv[])
 		  GDK_ROOT_WINDOW (),
 		  attribs.your_event_mask |
 		  SubstructureNotifyMask |
-		  SubstructureRedirectMask);
+		  SubstructureRedirectMask |
+		  ResizeRedirectMask);
 
     gdk_flush ();
+
     gdk_error_trap_pop ();
 
     gdk_window_add_filter (rootwin, root_filter, NULL);
