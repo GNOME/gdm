@@ -26,6 +26,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#ifdef _POSIX_PRIORITY_SCHEDULING
+#include <sched.h>
+#endif
 #ifdef HAVE_LOGINCAP
 #include <login_cap.h>
 #endif
@@ -235,7 +238,9 @@ slave_waitpid_notify_all (void)
 	for (li = slave_waitpids; li != NULL; li = li->next) {
 		GdmWaitPid *wp = li->data;
 		if (wp->fd_w >= 0) {
-			write (wp->fd_w, "N", 1);
+			while (write (wp->fd_w, "N", 1) < 0 &&
+			       errno == EINTR)
+				;
 		}
 	}
 
@@ -432,6 +437,12 @@ term_session_stop_and_quit (void)
 
 	gdm_debug ("term_session_stop_and_quit: Final cleanup");
 
+	/* Well now we're just going to kill
+	 * everything including the X server,
+	 * so no need doing XCloseDisplay which
+	 * may just get us an XIOError */
+	d->dsp = NULL;
+
 	gdm_slave_quick_exit (exit_code_to_use);
 }
 
@@ -447,7 +458,13 @@ term_quit (void)
 		gdm_error (slave_start_jmp_error_to_print);
 	slave_start_jmp_error_to_print = NULL;
 
-	gdm_debug ("term_session_stop_and_quit: Final cleanup");
+	gdm_debug ("term_quit: Final cleanup");
+
+	/* Well now we're just going to kill
+	 * everything including the X server,
+	 * so no need doing XCloseDisplay which
+	 * may just get us an XIOError */
+	d->dsp = NULL;
 
 	gdm_slave_quick_exit (exit_code_to_use);
 }
@@ -459,6 +476,10 @@ gdm_slave_start (GdmDisplay *display)
 	int death_count;
 	static sigset_t mask;
 	struct sigaction alrm, term, child, usr2;
+
+	/* Ignore SIGUSR1, and especially ignore it
+	   before the Setjmp */
+	signal (SIGUSR1, SIG_IGN);
 
 	if (display == NULL) {
 		/* saaay ... what? */
@@ -955,6 +976,9 @@ gdm_slave_run (GdmDisplay *display)
 	
 	if (d->dsp == NULL) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d on a retry", 1+openretries*2);
+#ifdef _POSIX_PRIORITY_SCHEDULING
+	    sched_yield ();
+#endif
 	    sleep (1+openretries*2);
 	    openretries++;
 	}
@@ -1014,9 +1038,12 @@ gdm_slave_run (GdmDisplay *display)
 	     * which will in fact just exit, so
 	     * this code is a little bit too anal */
 	    while (d->servpid > 0) {
+#ifdef _POSIX_PRIORITY_SCHEDULING
+		    sched_yield ();
+#endif
 		    pause ();
 	    }
-	    return;
+	    gdm_slave_quick_exit (DISPLAY_REMANAGE);
     } else if (d->use_chooser) {
 	    /* this usually doesn't return */
 	    gdm_slave_chooser ();  /* Run the chooser */
@@ -1341,6 +1368,10 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		
 		configurator = TRUE;
 
+#ifdef _POSIX_PRIORITY_SCHEDULING
+		sched_yield ();
+#endif
+
 		gdm_sigchld_block_push ();
 		wp = slave_waitpid_setpid (display->sesspid);
 		gdm_sigchld_block_pop ();
@@ -1608,6 +1639,7 @@ static void
 run_pictures (void)
 {
 	char *response;
+	int max_write;
 	char buf[1024];
 	size_t bytes;
 	struct passwd *pwent;
@@ -1799,6 +1831,7 @@ run_pictures (void)
 		g_free (tmp);
 
 		if (ret == NULL || strcmp (ret, "OK") != 0) {
+			fclose (fp);
 			g_free (ret);
 			seteuid (0);
 			setegid (GdmGroupId);
@@ -1808,10 +1841,49 @@ run_pictures (void)
 
 		gdm_fdprintf (greeter_fd_out, "%c", STX);
 
+#ifdef PIPE_BUF
+		max_write = MIN (PIPE_BUF, sizeof (buf));
+#else
+		/* apparently Hurd doesn't have PIPE_BUF */
+		max_write = fpathconf (greeter_fd_out, _PC_PIPE_BUF);
+		/* could return -1 if no limit */
+		if (max_write > 0)
+			max_write = MIN (max_write, sizeof (buf));
+		else
+			max_write = sizeof (buf);
+#endif
+
 		i = 0;
 		while ((bytes = fread (buf, sizeof (char),
-				       sizeof (buf), fp)) > 0) {
-			write (greeter_fd_out, buf, bytes);
+				       max_write, fp)) > 0) {
+			int written;
+
+			/* write until we succeed in writing something */
+			do {
+				errno = 0;
+				written = write (greeter_fd_out, buf, bytes);
+				if (written < 0 && errno == EPIPE) {
+					/* something very, very bad has happened */
+					gdm_slave_quick_exit (DISPLAY_REMANAGE);
+				}
+			} while (written < 0 && errno == EINTR);
+
+			/* write until we succeed in writing everything */
+			while (written < bytes) {
+				int n;
+				do {
+					errno = 0;
+					n = write (greeter_fd_out, &buf[written], bytes-written);
+					if (n < 0 && errno == EPIPE) {
+						/* something very, very bad has happened */
+						gdm_slave_quick_exit (DISPLAY_REMANAGE);
+					}
+					if (n > 0)
+						written += n;
+				} while (n < 0 && errno == EINTR);
+			}
+
+			/* we have written bytes btyes if it likes it or not */
 			i += bytes;
 		}
 
@@ -1820,8 +1892,14 @@ run_pictures (void)
 		/* eek, this "could" happen, so just send some garbage */
 		while (i < s.st_size) {
 			bytes = MIN (sizeof (buf), s.st_size - i);
-			write (STDOUT_FILENO, buf, bytes);
-			i += bytes;
+			errno = 0;
+			bytes = write (greeter_fd_out, buf, bytes);
+			if (bytes < 0 && errno == EPIPE) {
+				/* something very, very bad has happened */
+				gdm_slave_quick_exit (DISPLAY_REMANAGE);
+			}
+			if (bytes > 0)
+				i += bytes;
 		}
 			
 		gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "done");
@@ -1860,6 +1938,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	authfd = open (name, O_EXCL|O_TRUNC|O_WRONLY|O_CREAT, 0600);
 
 	if (authfd < 0) {
+		close (fromfd);
 		seteuid (old);
 		g_free (name);
 		return NULL;
@@ -1868,8 +1947,33 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	/* Make it owned by the user that Xnest is started as */
 	fchown (authfd, touid, -1);
 
-	while ((bytes = read (fromfd, buf, sizeof (buf))) > 0) {
-		write (authfd, buf, bytes);
+	for (;;) {
+		int written, n;
+		do {
+			errno = 0;
+			bytes = read (fromfd, buf, sizeof (buf));
+		} while (bytes < 0 && errno == EINTR);
+
+		/* EOF */
+		if (bytes == 0)
+			break;
+
+		written = 0;
+		do {
+			do {
+				errno = 0;
+				n = write (authfd, &buf[written], bytes-written);
+			} while (n < 0 && errno == EINTR);
+			if (n < 0) {
+				/*Error writing*/
+				close (fromfd);
+				close (authfd);
+				setuid (old);
+				g_free (name);
+				return NULL;
+			}
+			written += n;
+		} while (written < bytes);
 	}
 
 	close (fromfd);
@@ -2221,12 +2325,24 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	if (fd != slave_fifo_pipe_fd)
 		close (fd);
 
+#ifdef _POSIX_PRIORITY_SCHEDULING
+	if (wait_for_ack && ! gdm_got_ack) {
+		/* let the other process do its stuff */
+		sched_yield ();
+	}
+#endif
+
 	for (i = 0;
-	     parent_exists () &&
 	     wait_for_ack &&
 	     ! gdm_got_ack &&
+	     parent_exists () &&
 	     i < 10;
 	     i++) {
+#ifdef _POSIX_PRIORITY_SCHEDULING
+		/* let the other process do its stuff */
+		sched_yield ();
+#endif
+
 		if (in_usr2_signal > 0) {
 			fd_set rfds;
 			struct timeval tv;
@@ -2464,6 +2580,10 @@ gdm_slave_chooser (void)
 		fcntl(p[0], F_SETFD, fcntl(p[0], F_GETFD, 0) | FD_CLOEXEC);
 
 		/* wait for the chooser to die */
+
+#ifdef _POSIX_PRIORITY_SCHEDULING
+		sched_yield ();
+#endif
 
 		gdm_sigchld_block_push ();
 		wp = slave_waitpid_setpid (d->chooserpid);
@@ -2968,8 +3088,6 @@ gdm_slave_session_start (void)
     pid_t pid;
     GdmWaitPid *wp;
 
-    session_started = TRUE;
-
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
 	       login);
 
@@ -2990,7 +3108,6 @@ gdm_slave_session_start (void)
 			       TRUE /* set_parent */) != EXIT_SUCCESS &&
 	/* ignore errors in failsafe modes */
 	! failsafe) {
-	    session_started = FALSE;
 	    gdm_verify_cleanup (d);
 	    gdm_error (_("gdm_slave_session_start: Execution of PostLogin script returned > 0. Aborting."));
 	    /* script failed so just try again */
@@ -3114,6 +3231,10 @@ gdm_slave_session_start (void)
     if (GdmKillInitClients)
 	    gdm_server_whack_clients (d);
 
+    /* Now that we will set up the user authorization we will
+       need to run session_stop to whack it */
+    session_started = TRUE;
+
     /* Setup cookie -- We need this information during cleanup, thus
      * cookie handling is done before fork()ing */
 
@@ -3228,6 +3349,10 @@ gdm_slave_session_start (void)
     g_free (gnome_session);
 
     gdm_slave_send_num (GDM_SOP_SESSPID, pid);
+
+#ifdef _POSIX_PRIORITY_SCHEDULING
+    sched_yield ();
+#endif
 
     gdm_sigchld_block_push ();
     wp = slave_waitpid_setpid (d->sesspid);
@@ -3528,7 +3653,9 @@ gdm_slave_child_handler (int sig)
 		if (wp->pid == pid) {
 			wp->pid = -1;
 			if (wp->fd_w >= 0) {
-				write (wp->fd_w, "!", 1);
+				while (write (wp->fd_w, "!", 1) < 0 &&
+				       errno == EINTR)
+					;
 			}
 		}
 	}
@@ -3849,6 +3976,11 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 	    gdm_fdprintf (greeter_fd_out, "%c%c\n", STX, cmd);
     }
 
+#ifdef _POSIX_PRIORITY_SCHEDULING
+    /* let the other process (greeter) do its stuff */
+    sched_yield ();
+#endif
+
     do {
       /* Skip random junk that might have accumulated */
       do {
@@ -3885,11 +4017,8 @@ gdm_slave_quick_exit (gint status)
     setegid (0);
 
     if (d != NULL) {
-	    /* Well now we're just going to kill
-	     * everything including the X server,
-	     * so no need doing XCloseDisplay which
-	     * may just get us an XIOError */
-	    d->dsp = NULL;
+	    gdm_debug ("gdm_slave_quick_exit: Will kill everything from the display");
+
 	    /* just in case we do get the XIOError,
 	       don't run session_stop since we've
 	       requested a quick exit */
@@ -3924,6 +4053,8 @@ gdm_slave_quick_exit (gint status)
 	    if (d->servpid > 1)
 		    kill (d->servpid, SIGTERM);
 	    d->servpid = 0;
+
+	    gdm_debug ("gdm_slave_quick_exit: Killed everything from the display");
     }
 
     _exit (status);

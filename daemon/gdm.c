@@ -22,6 +22,9 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <unistd.h>
+#ifdef _POSIX_PRIORITY_SCHEDULING
+#include <sched.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -1866,17 +1869,26 @@ send_slave_ack (GdmDisplay *d, const char *resp)
 			char not[2];
 			not[0] = GDM_SLAVE_NOTIFY_ACK;
 			not[1] = '\n';
-			write (d->master_notify_fd, not, 2);
+			while (write (d->master_notify_fd, not, 2) < 0 &&
+			       errno == EINTR)
+				;
 		} else {
 			char *not = g_strdup_printf ("%c%s\n",
 						     GDM_SLAVE_NOTIFY_ACK,
 						     resp);
-			write (d->master_notify_fd, not, strlen (not));
+			while (write (d->master_notify_fd, not, strlen (not)) < 0 &&
+			       errno == EINTR)
+				;
 			g_free (not);
 		}
 	}
 	if (d->slavepid > 1) {
 		kill (d->slavepid, SIGUSR2);
+		/* now yield the CPU as the other process has more
+		   useful work to do then we do */
+#ifdef _POSIX_PRIORITY_SCHEDULING
+		sched_yield ();
+#endif
 	}
 }
 
@@ -1887,11 +1899,18 @@ send_slave_command (GdmDisplay *d, const char *command)
 		char *cmd = g_strdup_printf ("%c%s\n",
 					     GDM_SLAVE_NOTIFY_COMMAND,
 					     command);
-		write (d->master_notify_fd, cmd, strlen (cmd));
+		while (write (d->master_notify_fd, cmd, strlen (cmd)) < 0 &&
+		       errno == EINTR)
+			;
 		g_free (cmd);
 	}
 	if (d->slavepid > 1) {
 		kill (d->slavepid, SIGUSR2);
+		/* now yield the CPU as the other process has more
+		   useful work to do then we do */
+#ifdef _POSIX_PRIORITY_SCHEDULING
+		sched_yield ();
+#endif
 	}
 }
 

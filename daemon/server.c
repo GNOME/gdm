@@ -161,6 +161,9 @@ gdm_server_reinit (GdmDisplay *disp)
 
 	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
 
+	/* FIXME: the X server emits a SIGUSR1 so whack the below hack and add a server
+	   wait thingie like during start */
+
 	/* Long live Setjmp, DIE DIE DIE XSetIOErrorHandler */
 
 	if (disp->dsp == NULL) {
@@ -475,7 +478,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		  int min_flexi_disp, int flexi_retries)
 {
     struct sigaction usr1, chld, alrm;
-    struct sigaction old_usr1, old_chld, old_alrm;
+    struct sigaction old_chld, old_alrm;
     sigset_t mask, oldmask;
     int flexi_disp = 20;
     char *vtarg = NULL;
@@ -530,7 +533,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     usr1.sa_flags = SA_RESTART|SA_RESETHAND;
     sigemptyset (&usr1.sa_mask);
 
-    if (sigaction (SIGUSR1, &usr1, &old_usr1) < 0) {
+    if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
 	    gdm_error (_("%s: Error setting up USR1 signal handler: %s"),
 		       "gdm_server_start", strerror (errno));
 	    close (server_signal_pipe[0]);
@@ -546,7 +549,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     if (sigaction (SIGCHLD, &chld, &old_chld) < 0) {
 	    gdm_error (_("%s: Error setting up CHLD signal handler: %s"),
 		       "gdm_server_start", strerror (errno));
-	    sigaction (SIGUSR1, &old_usr1, NULL);
+	    signal (SIGUSR1, SIG_IGN);
 	    close (server_signal_pipe[0]);
 	    close (server_signal_pipe[1]);
 	    return FALSE;
@@ -560,7 +563,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     if (sigaction (SIGALRM, &alrm, &old_alrm) < 0) {
 	    gdm_error (_("%s: Error setting up ALRM signal handler: %s"),
 		       "gdm_server_start", strerror (errno));
-	    sigaction (SIGUSR1, &old_usr1, NULL);
+	    signal (SIGUSR1, SIG_IGN);
 	    sigaction (SIGCHLD, &old_chld, NULL);
 	    close (server_signal_pipe[0]);
 	    close (server_signal_pipe[1]);
@@ -644,15 +647,20 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 			    d->servstat = SERVER_TIMEOUT;
 		    }
 	    } else {
-		    fd_set rfds;
 
 		    gdm_debug ("gdm_server_start: Before mainloop waiting for server");
 
-		    FD_ZERO (&rfds);
-		    FD_SET (server_signal_pipe[0], &rfds);
-
 		    do {
-			    select (server_signal_pipe[0]+1, &rfds, NULL, NULL, NULL);
+			    fd_set rfds;
+
+			    FD_ZERO (&rfds);
+			    FD_SET (server_signal_pipe[0], &rfds);
+
+			    if (select (server_signal_pipe[0]+1, &rfds, NULL, NULL, NULL) > 0) {
+				    char buf[4];
+				    /* read the Yay! */
+				    read (server_signal_pipe[0], buf, 4);
+			    }
 			    /* In case we got a SIGCHLD */
 			    check_child_status ();
 		    } while ( ! server_signal_notified);
@@ -690,7 +698,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 	    sigprocmask (SIG_SETMASK, &oldmask, NULL);
 
 	    /* restore default handlers */
-	    sigaction (SIGUSR1, &old_usr1, NULL);
+	    signal (SIGUSR1, SIG_IGN);
 	    sigaction (SIGCHLD, &old_chld, NULL);
 	    sigaction (SIGALRM, &old_alrm, NULL);
 
@@ -741,7 +749,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     check_child_status ();
 
     /* restore default handlers */
-    sigaction (SIGUSR1, &old_usr1, NULL);
+    signal (SIGUSR1, SIG_IGN);
     sigaction (SIGCHLD, &old_chld, NULL);
     sigaction (SIGALRM, &old_alrm, NULL);
 

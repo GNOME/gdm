@@ -343,7 +343,7 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 	  pamlabel = greeter_lookup_id ("pam-message");
 	  if (pamlabel != NULL)
 	    g_object_set (G_OBJECT (pamlabel->item),
-			  "text", _("Doubleclick on the user to log in"),
+			  "text", _("Doubleclick on the user\nto log in"),
 			  NULL);
 	}
     }

@@ -60,6 +60,9 @@ static gboolean did_we_ask_for_password = FALSE;
 
 static char *selected_user = NULL;
 
+static gboolean opened_session = FALSE;
+static gboolean did_setcred = FALSE;
+
 void
 gdm_verify_select_user (const char *user)
 {
@@ -143,6 +146,10 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		    login = tmp_PAM_USER;
 	    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
     }
+
+    /* Workaround to avoid gdm messages being logged as PAM_pwdb */
+    closelog ();
+    openlog ("gdm", LOG_PID, LOG_DAEMON);
     
     for (replies = 0; replies < num_msg; replies++) {
 	gboolean islogin = FALSE;
@@ -372,7 +379,10 @@ create_pamh (GdmDisplay *d,
 		gdm_error ("create_pamh: Stale pamh around, cleaning up");
 		pam_end (pamh, PAM_SUCCESS);
 	}
+	/* init things */
 	pamh = NULL;
+	opened_session = FALSE;
+	did_setcred = FALSE;
 
 	/* Initialize a PAM session for the user */
 	if ((*pamerr = pam_start (service, login, conv, &pamh)) != PAM_SUCCESS) {
@@ -611,9 +621,11 @@ authenticate_again:
 	    goto pamerr;
     }
 
+    did_setcred = TRUE;
     /* Set credentials */
     pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
     if (pamerr != PAM_SUCCESS) {
+        did_setcred = FALSE;
 	if (gdm_slave_should_complain ())
 	    gdm_error (_("Couldn't set credentials for %s"), login);
 	goto pamerr;
@@ -621,9 +633,12 @@ authenticate_again:
 
     credentials_set = TRUE;
 
+    opened_session = TRUE;
     /* Register the session */
     pamerr = pam_open_session (pamh, 0);
     if (pamerr != PAM_SUCCESS) {
+            did_setcred = FALSE;
+            opened_session = FALSE;
 	    if (gdm_slave_should_complain ())
 		    gdm_error (_("Couldn't open session for %s"), login);
 	    goto pamerr;
@@ -684,11 +699,22 @@ authenticate_again:
 	    }
     }
 
+    did_setcred = FALSE;
+    opened_session = FALSE;
+
     if (pamh != NULL) {
+	    pam_handle_t *tmp_pamh;
+	    gdm_sigterm_block_push ();
+	    gdm_sigchld_block_push ();
+	    tmp_pamh = pamh;
+	    pamh = NULL;
+	    gdm_sigchld_block_pop ();
+	    gdm_sigterm_block_pop ();
+
 	    /* Throw away the credentials */
 	    if (credentials_set)
-		    pam_setcred (pamh, PAM_DELETE_CRED);
-	    pam_end (pamh, pamerr);
+		    pam_setcred (tmp_pamh, PAM_DELETE_CRED);
+	    pam_end (tmp_pamh, pamerr);
     }
     pamh = NULL;
     
@@ -837,17 +863,24 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    goto setup_pamerr;
     }
 
+    did_setcred = TRUE;
+
     /* Set credentials */
     pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
     if (pamerr != PAM_SUCCESS) {
+	    did_setcred = FALSE;
 	    if (gdm_slave_should_complain ())
 		    gdm_error (_("Couldn't set credentials for %s"), login);
 	    goto setup_pamerr;
     }
 
+    opened_session = TRUE;
+
     /* Register the session */
     pamerr = pam_open_session (pamh, 0);
     if (pamerr != PAM_SUCCESS) {
+	    did_setcred = FALSE;
+	    opened_session = FALSE;
 	    /* Throw away the credentials */
 	    pam_setcred (pamh, PAM_DELETE_CRED);
 
@@ -855,6 +888,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 		    gdm_error (_("Couldn't open session for %s"), login);
 	    goto setup_pamerr;
     }
+
 
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
     closelog ();
@@ -869,8 +903,20 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     
  setup_pamerr:
     
-    if (pamh != NULL)
-	    pam_end (pamh, pamerr);
+    did_setcred = FALSE;
+    opened_session = FALSE;
+    if (pamh != NULL) {
+	    pam_handle_t *tmp_pamh;
+
+	    gdm_sigterm_block_push ();
+	    gdm_sigchld_block_push ();
+	    tmp_pamh = pamh;
+	    pamh = NULL;
+	    gdm_sigchld_block_pop ();
+	    gdm_sigterm_block_pop ();
+
+	    pam_end (tmp_pamh, pamerr);
+    }
     pamh = NULL;
     
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
@@ -901,19 +947,33 @@ gdm_verify_cleanup (GdmDisplay *d)
 	if (pamh != NULL) {
 		gint pamerr;
 		pam_handle_t *tmp_pamh;
+		gboolean old_opened_session;
+		gboolean old_did_setcred;
 
 		gdm_debug ("Running gdm_verify_cleanup and pamh != NULL");
 
 		gdm_sigterm_block_push ();
+		gdm_sigchld_block_push ();
 		tmp_pamh = pamh;
 		pamh = NULL;
+		old_opened_session = opened_session;
+		opened_session = FALSE;
+		old_did_setcred = did_setcred;
+		did_setcred = FALSE;
+		gdm_sigchld_block_pop ();
 		gdm_sigterm_block_pop ();
 
 		/* Close the users session */
-		pamerr = pam_close_session (tmp_pamh, 0);
+		if (old_opened_session) {
+			gdm_debug ("Running pam_close_session");
+			pamerr = pam_close_session (tmp_pamh, 0);
+		}
 
 		/* Throw away the credentials */
-		pamerr = pam_setcred (tmp_pamh, PAM_DELETE_CRED);
+		if (old_did_setcred) {
+			gdm_debug ("Running pam_setcred with PAM_DELETE_CRED");
+			pamerr = pam_setcred (tmp_pamh, PAM_DELETE_CRED);
+		}
 
 		pam_end (tmp_pamh, pamerr);
 

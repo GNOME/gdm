@@ -1,3 +1,34 @@
+Fri Jul 25 03:32:48 2003  George Lebl <jirka@5z.com>
+
+	* daemon/display.c: whack unneeded block pushes, when killing child
+	  rekill if we get a SIGTERM, if the slave crashes during unmanage
+	  kill its children.
+
+	* daemon/gdm.c, daemon/slave.c: use sched_yield at the right places
+	  where we expect the other process to do work.
+
+	* daemon/gdm.c, daemon/slave.c, daemon/server.c, daemon/misc.c:
+	  handle interrupts on writes/reads and use PIPE_BUF to limit
+	  size of buffer to send in run_pictures and fix a fd leak
+
+	* daemon/server.c: fix select call usage
+
+	* daemon/slave.c, daemon/server.c: reset the SIGUSR1 to SIG_IGN
+	  rather then to default to avoid a crash when the server sends
+	  SIGUSR1 on reinit
+
+	* daemon/slave.c: avoid XIOErrors when possible by properly closing
+	  the display on normal quick exits.  Also set session_started much
+	  later in the session_start as we don't really need it until
+	  quite a bit later
+
+	* daemon/verify-pam.c: have flags for did_setcred and opened_session
+	  so that we only delete credentials and close session if we have
+	  set credentials and opened session respectively
+
+	* gui/greeter/greeter_item_ulist.c: split the doubleclick message
+	  onto two lines as it's quite long and looks messy as one line.
+
 Thu Jul 24 17:40:09 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmgreeter.c: fix build on systems without PIPE_BUF

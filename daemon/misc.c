@@ -217,7 +217,9 @@ gdm_fdprintf (int fd, const gchar *format, ...)
 	s = g_strdup_vprintf (format, args);
 	va_end (args);
 
-	write (fd, s, strlen (s));
+	while (write (fd, s, strlen (s)) < 0 &&
+	       errno == EINTR)
+		;
 
 	g_free (s);
 }
@@ -1058,7 +1060,10 @@ gdm_fdgetc (int fd)
 	char buf[1];
 	int bytes;
 
-	bytes = read (fd, buf, 1);
+	do {
+		errno = 0;
+		bytes = read (fd, buf, 1);
+	} while (bytes < 0 && errno == EINTR);
 	if (bytes != 1)
 		return EOF;
 	else

@@ -192,21 +192,32 @@ gdm_display_manage (GdmDisplay *d)
 	    gdm_debug ("gdm_display_manage: Old slave pid is %d", (int)d->slavepid);
 
     /* If we have an old slave process hanging around, kill it */
-    gdm_sigchld_block_push ();
+    /* This shouldn't be a normal code path however, so it doesn't matter
+     * that we are hanging */
     if (d->slavepid > 1 &&
-	kill (d->slavepid, SIGTERM) == 0)
-	    ve_waitpid_no_signal (d->slavepid, 0, 0);
+	kill (d->slavepid, SIGTERM) == 0) {
+	    int ret;
+wait_again:
+	    errno = 0;
+	    ret = waitpid (d->slavepid, NULL, 0);
+	    if (ret < 0 &&
+		errno == EINTR) {
+		    /* rekill the slave to tell it to
+		       hurry up and die if we're getting
+		       killed ourselves */
+		    if (ve_signal_was_notified (SIGTERM) ||
+			ve_signal_was_notified (SIGINT)) {
+			    kill (d->slavepid, SIGTERM);
+		    }
+		    goto wait_again;
+	    }
+    }
     d->slavepid = 0;
-    gdm_sigchld_block_pop ();
 
     d->managetime = time (NULL);
 
     /* Fork slave process */
-    gdm_sigchld_block_push ();
-    gdm_sigterm_block_push ();
     pid = d->slavepid = fork ();
-    gdm_sigterm_block_push ();
-    gdm_sigchld_block_pop ();
 
     switch (pid) {
 
@@ -315,9 +326,10 @@ gdm_display_unmanage (GdmDisplay *d)
     if (d->slavepid > 1 &&
 	kill (d->slavepid, SIGTERM) == 0) {
 	    int ret;
+	    int exitstatus;
 wait_again:
 	    errno = 0;
-	    ret = waitpid (d->slavepid, NULL, 0);
+	    ret = waitpid (d->slavepid, &exitstatus, 0);
 	    if (ret < 0 &&
 		errno == EINTR) {
 		    /* rekill the slave to tell it to
@@ -325,9 +337,27 @@ wait_again:
 		       killed ourselves */
 		    if (ve_signal_was_notified (SIGTERM) ||
 			ve_signal_was_notified (SIGINT)) {
+			    gdm_debug ("gdm_display_unmanage: GOT ANOTHER SIGTERM, killing slave again");
 			    kill (d->slavepid, SIGTERM);
 		    }
 		    goto wait_again;
+	    }
+
+	    if (WIFSIGNALED (exitstatus)) {
+		    gdm_debug ("gdm_display_unmanage: Slave crashed, killing its children");
+
+		    if (d->sesspid > 1)
+			    kill (-(d->sesspid), SIGTERM);
+		    d->sesspid = 0;
+		    if (d->greetpid > 1)
+			    kill (-(d->greetpid), SIGTERM);
+		    d->greetpid = 0;
+		    if (d->chooserpid > 1)
+			    kill (-(d->chooserpid), SIGTERM);
+		    d->chooserpid = 0;
+		    if (d->servpid > 1)
+			    kill (d->servpid, SIGTERM);
+		    d->servpid = 0;
 	    }
     }
     d->slavepid = 0;
@@ -336,6 +366,8 @@ wait_again:
 	d->dispstat = DISPLAY_DEAD;
     else /* TYPE_XDMCP,TYPE_FLEXI,TYPE_FLEXI_XNEST */
 	gdm_display_dispose (d);
+
+    gdm_debug ("gdm_display_unmanage: Display stopped");
 }
 
 
