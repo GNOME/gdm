@@ -17,7 +17,7 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
 #include <syslog.h>
 #include <pwd.h>
 

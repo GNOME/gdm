@@ -20,7 +20,9 @@
  * support other XAuth types and possibly DECnet... */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <netdb.h> 
 #include <netinet/in.h>

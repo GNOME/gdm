@@ -17,12 +17,13 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
 #include <syslog.h>
 #include <signal.h>
 #include <sys/wait.h>
 #include <X11/Xauth.h>
 #include <sys/types.h>
+#include <unistd.h>
 #include <fcntl.h>
 
 #include "gdm.h"

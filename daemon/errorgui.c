@@ -20,7 +20,8 @@
  * and the user's session scripts. */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <gdk/gdkx.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -37,17 +38,16 @@ extern int stored_argc;
 extern char *stored_path;
 
 static gboolean
-gdm_event (GtkObject *object,
-	   guint signal_id,
-	   guint n_params,
-	   GtkArg *params,
-	   gpointer data)
+gdm_event (GSignalInvocationHint *ihint,
+	   guint		n_param_values,
+	   const GValue	       *param_values,
+	   gpointer		data)
 {
 	/* HAAAAAAAAAAAAAAAAACK */
 	/* Since the user has not logged in yet and may have left/right
 	 * mouse buttons switched, we just translate every right mouse click
 	 * to a left mouse click */
-	GdkEvent *event = GTK_VALUE_POINTER(params[0]);
+	GdkEvent *event = g_value_get_pointer ((GValue *)param_values);
 	if ((event->type == GDK_BUTTON_PRESS ||
 	     event->type == GDK_2BUTTON_PRESS ||
 	     event->type == GDK_3BUTTON_PRESS ||
@@ -71,16 +71,20 @@ gdm_run_errorgui (const char *error,
 	guint sid;
 	char *argv[2] = { "gdm-error-box", NULL };
 
-	/* Avoid creating ~gdm/.gnome stuff */
-	gnome_do_not_create_directories = TRUE;
+	gnome_program_init ("gdm-error-box", VERSION,
+			    LIBGNOMEUI_MODULE,
+			    1, argv,
+			    /* Avoid creating ~gdm/.gnome stuff */
+			    "create-directories", FALSE,
+			    NULL);
 
-	gnome_init ("gdm-error-box", VERSION, 1, argv);
-
-	sid = gtk_signal_lookup ("event",
-				 GTK_TYPE_WIDGET);
-	gtk_signal_add_emission_hook (sid,
-				      gdm_event,
-				      NULL);
+	sid = g_signal_lookup ("event",
+			       GTK_TYPE_WIDGET);
+	g_signal_add_emission_hook (sid,
+				    0 /* detail */,
+				    gdm_event,
+				    NULL /* data */,
+				    NULL /* destroy_notify */);
 
 	dialog = gnome_message_box_new (error,
 					dialog_type,
@@ -184,16 +188,20 @@ gdm_run_failsafe_question (const char *question,
 	char *ret;
 	char *argv[2] = { "gdm-failsafe-question", NULL };
 
-	/* Avoid creating ~gdm/.gnome stuff */
-	gnome_do_not_create_directories = TRUE;
+	gnome_program_init ("gdm-failsafe-question", VERSION,
+			    LIBGNOMEUI_MODULE,
+			    1, argv,
+			    /* Avoid creating ~gdm/.gnome stuff */
+			    "create-directories", FALSE,
+			    NULL);
 
-	gnome_init ("gdm-failsafe-question", VERSION, 1, argv);
-
-	sid = gtk_signal_lookup ("event",
-				 GTK_TYPE_WIDGET);
-	gtk_signal_add_emission_hook (sid,
-				      gdm_event,
-				      NULL);
+	sid = g_signal_lookup ("event",
+			       GTK_TYPE_WIDGET);
+	g_signal_add_emission_hook (sid,
+				    0 /* detail */,
+				    gdm_event,
+				    NULL /* data */,
+				    NULL /* destroy_notify */);
 
 	dialog = gnome_dialog_new (question,
 				   GNOME_STOCK_BUTTON_OK,
@@ -334,16 +342,20 @@ gdm_run_failsafe_yesno (const char *question,
 	guint sid;
 	char *argv[2] = { "gdm-failsafe-yesno", NULL };
 
-	/* Avoid creating ~gdm/.gnome stuff */
-	gnome_do_not_create_directories = TRUE;
+	gnome_program_init ("gdm-failsafe-yesno", VERSION,
+			    LIBGNOMEUI_MODULE,
+			    1, argv,
+			    /* Avoid creating ~gdm/.gnome stuff */
+			    "create-directories", FALSE,
+			    NULL);
 
-	gnome_init ("gdm-failsafe-yesno", VERSION, 1, argv);
-
-	sid = gtk_signal_lookup ("event",
-				 GTK_TYPE_WIDGET);
-	gtk_signal_add_emission_hook (sid,
-				      gdm_event,
-				      NULL);
+	sid = g_signal_lookup ("event",
+			       GTK_TYPE_WIDGET);
+	g_signal_add_emission_hook (sid,
+				    0 /* detail */,
+				    gdm_event,
+				    NULL /* data */,
+				    NULL /* destroy_notify */);
 
 	dialog = gnome_message_box_new (question,
 					GNOME_MESSAGE_BOX_QUESTION,

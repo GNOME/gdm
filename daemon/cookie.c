@@ -32,7 +32,7 @@
 #include <fcntl.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
 
 #include "gdm.h"
 #include "md5.h"

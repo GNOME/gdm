@@ -19,8 +19,9 @@
 /* This file contains functions for controlling local X servers */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <pwd.h>

@@ -17,7 +17,8 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <sys/stat.h>
 #include <syslog.h>
 #include <security/pam_appl.h>

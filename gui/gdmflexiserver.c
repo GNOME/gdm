@@ -19,7 +19,8 @@
  */
 
 #include "config.h"
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <gdk/gdkx.h>
 #include <X11/Xauth.h>
 

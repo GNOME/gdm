@@ -17,8 +17,10 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
 #include <signal.h>
+#include <unistd.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
@@ -1115,7 +1117,7 @@ mainloop_sig_callback (gint8 sig, gpointer data)
 static void
 signal_notify (int sig)
 {
-	g_signal_notify (sig);
+	gdm_signal_notify (sig);
 }
 
 /*
@@ -1223,7 +1225,7 @@ main (int argc, char *argv[])
 
 
     /* XDM compliant error message */
-    if (getuid() != 0) {
+    if (getuid () != 0) {
 	    /* make sure the pid file doesn't get wiped */
 	    GdmPidFile = NULL;
 	    gdm_fail (_("Only root wants to run gdm\n"));
@@ -1232,8 +1234,13 @@ main (int argc, char *argv[])
 
     /* Initialize runtime environment */
     umask (022);
-    gnome_do_not_create_directories = TRUE;
-    gnomelib_init ("gdm", VERSION);
+
+    gnome_program_init ("gdm", VERSION,
+			NULL /* module_info */,
+			argc, argv,
+			"create-directories", FALSE,
+			NULL);
+
     main_loop = g_main_new (FALSE);
     openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -1274,11 +1281,11 @@ main (int argc, char *argv[])
 	gdm_daemonify();
 
     /* Signal handling */
-    g_signal_add (SIGCHLD, mainloop_sig_callback, NULL);
-    g_signal_add (SIGTERM, mainloop_sig_callback, NULL);
-    g_signal_add (SIGINT, mainloop_sig_callback, NULL);
-    g_signal_add (SIGHUP, mainloop_sig_callback, NULL);
-    g_signal_add (SIGUSR1, mainloop_sig_callback, NULL);
+    gdm_signal_add (SIGCHLD, mainloop_sig_callback, NULL);
+    gdm_signal_add (SIGTERM, mainloop_sig_callback, NULL);
+    gdm_signal_add (SIGINT, mainloop_sig_callback, NULL);
+    gdm_signal_add (SIGHUP, mainloop_sig_callback, NULL);
+    gdm_signal_add (SIGUSR1, mainloop_sig_callback, NULL);
     
     term.sa_handler = signal_notify;
     term.sa_flags = SA_RESTART;
@@ -1349,116 +1356,123 @@ main (int argc, char *argv[])
 /* signal main loop support */
 
 
-typedef struct _GSignalData GSignalData;
-struct _GSignalData
+typedef struct _GDMSignalData GDMSignalData;
+struct _GDMSignalData
 {
-  guint8      index;
-  guint8      shift;
-  GSignalFunc callback;
+	gint8       signal;
+	guint8      index;
+	guint8      shift;
 };
 
-static gboolean g_signal_prepare  (gpointer  source_data,
-				   GTimeVal *current_time,
-				   gint     *timeout,
-				   gpointer   user_data);
-static gboolean g_signal_check    (gpointer  source_data,
-				   GTimeVal *current_time,
-				   gpointer  user_data);
-static gboolean g_signal_dispatch (gpointer  source_data,
-				   GTimeVal *current_time,
-				   gpointer  user_data);
+static gboolean gdm_signal_prepare  (GSource  *source,
+				     gint     *timeout);
+static gboolean gdm_signal_check    (GSource  *source);
+static gboolean gdm_signal_dispatch (GSource  *source,
+				     GSourceFunc callback,
+				     gpointer  user_data);
+static void     gdm_signal_destroy  (GSource  *source);
 
 static GSourceFuncs signal_funcs = {
-  g_signal_prepare,
-  g_signal_check,
-  g_signal_dispatch,
-  g_free
+	gdm_signal_prepare,
+	gdm_signal_check,
+	gdm_signal_dispatch,
+	gdm_signal_destroy
 };
 static	guint32	signals_notified[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 static gboolean
-g_signal_prepare (gpointer  source_data,
-		  GTimeVal *current_time,
-		  gint     *timeout,
-		  gpointer  user_data)
+gdm_signal_prepare (GSource  *source,
+		    gint     *timeout)
 {
-  GSignalData *signal_data = source_data;
-  
-  return signals_notified[signal_data->index] & (1 << signal_data->shift);
+	GDMSignalData *signal_data = g_dataset_get_data (source, "SignalData");
+
+	return signals_notified[signal_data->index] & (1 << signal_data->shift);
 }
 
 static gboolean
-g_signal_check (gpointer  source_data,
-		GTimeVal *current_time,
-		gpointer  user_data)
+gdm_signal_check (GSource *source)
 {
-  GSignalData *signal_data = source_data;
-  
-  return signals_notified[signal_data->index] & (1 << signal_data->shift);
+	GDMSignalData *signal_data = g_dataset_get_data (source, "SignalData");
+
+	return signals_notified[signal_data->index] & (1 << signal_data->shift);
 }
 
 static gboolean
-g_signal_dispatch (gpointer  source_data,
-		   GTimeVal *current_time,
-		   gpointer  user_data)
+gdm_signal_dispatch (GSource     *source,
+		     GSourceFunc  callback,
+		     gpointer     user_data)
 {
-  GSignalData *signal_data = source_data;
-  
-  signals_notified[signal_data->index] &= ~(1 << signal_data->shift);
-  
-  return signal_data->callback (-128 + signal_data->index * 32 + signal_data->shift, user_data);
+	GDMSignalData *signal_data = g_dataset_get_data (source, "SignalData");
+
+	signals_notified[signal_data->index] &= ~(1 << signal_data->shift);
+
+	return ((GDMSignalFunc)callback) (signal_data->signal, user_data);
+}
+
+static void
+gdm_signal_destroy (GSource  *source)
+{
+	g_dataset_destroy (source);
 }
 
 guint
-g_signal_add (gint8	  signal,
-	      GSignalFunc function,
-	      gpointer    data)
+gdm_signal_add (gint8	      signal,
+		GDMSignalFunc function,
+		gpointer      data)
 {
-  return g_signal_add_full (G_PRIORITY_DEFAULT, signal, function, data, NULL);
+	return gdm_signal_add_full (G_PRIORITY_DEFAULT, signal, function, data, NULL);
 }
 
 guint
-g_signal_add_full (gint           priority,
-		   gint8          signal,
-		   GSignalFunc    function,
-		   gpointer       data,
-		   GDestroyNotify destroy)
+gdm_signal_add_full (gint           priority,
+		     gint8          signal,
+		     GDMSignalFunc  function,
+		     gpointer       data,
+		     GDestroyNotify destroy)
 {
-  GSignalData *signal_data;
-  guint s = 128 + signal;
-  
-  g_return_val_if_fail (function != NULL, 0);
-  
-  signal_data = g_new (GSignalData, 1);
-  signal_data->index = s / 32;
-  signal_data->shift = s % 32;
-  signal_data->callback = function;
-  
-  return g_source_add (priority, TRUE, &signal_funcs, signal_data, data, destroy);
+	GSource *source;
+	GDMSignalData *signal_data;
+	guint s = 128 + signal;
+
+	g_return_val_if_fail (function != NULL, 0);
+
+	signal_data = g_new (GDMSignalData, 1);
+	signal_data->signal = signal;
+	signal_data->index = s / 32;
+	signal_data->shift = s % 32;
+
+	source = g_source_new (&signal_funcs, sizeof (GSource));
+
+	g_dataset_set_data_full (source, "SignalData", signal_data, g_free);
+	g_source_set_priority (source, priority);
+	g_source_set_callback (source, (GSourceFunc)function, data, destroy);
+	g_source_set_can_recurse (source, TRUE);
+
+	return g_source_attach (source, NULL);
 }
 
 void
-g_signal_notify (gint8 signal)
+gdm_signal_notify (gint8 signal)
 {
-  guint index, shift;
-  guint s = 128 + signal;
-  
-  index = s / 32;
-  shift = s % 32;
-  
-  signals_notified[index] |= 1 << shift;
+	guint index, shift;
+	guint s = 128 + signal;
+
+	index = s / 32;
+	shift = s % 32;
+
+	signals_notified[index] |= 1 << shift;
 }
 
 void
 gdm_run (void)
 {
-  g_main_run (main_loop);
+	g_main_run (main_loop);
 }
 
 void
 gdm_quit (void)
 {
-  g_main_quit (main_loop);
+	g_main_quit (main_loop);
 }
 
 static void

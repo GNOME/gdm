@@ -19,7 +19,7 @@
 /* This file contains the XDMCP chooser glue */
 
 #include <config.h> 
-#include <gnome.h>
+#include <libgnome/libgnome.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>

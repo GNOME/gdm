@@ -17,8 +17,8 @@
  */
 
 #include <config.h>
-#include <gnome.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -225,17 +225,16 @@ gdm_timer_up_delay (GtkObject *object,
 }      
 
 static gboolean
-gdm_event (GtkObject *object,
-	   guint signal_id,
-	   guint n_params,
-	   GtkArg *params,
-	   gpointer data)
+gdm_event (GSignalInvocationHint *ihint,
+	   guint		n_param_values,
+	   const GValue	       *param_values,
+	   gpointer		data)
 {
 	/* HAAAAAAAAAAAAAAAAACK */
 	/* Since the user has not logged in yet and may have left/right
 	 * mouse buttons switched, we just translate every right mouse click
 	 * to a left mouse click */
-	GdkEvent *event = GTK_VALUE_POINTER(params[0]);
+	GdkEvent *event = g_value_get_pointer ((GValue *)param_values);
 	if ((event->type == GDK_BUTTON_PRESS ||
 	     event->type == GDK_2BUTTON_PRESS ||
 	     event->type == GDK_3BUTTON_PRESS ||
@@ -3783,25 +3782,31 @@ main (int argc, char *argv[])
     /* if in timed mode, delay timeout on keyboard or menu
      * activity */
     if ( ! ve_string_empty (GdmTimedLogin)) {
-	    guint sid = gtk_signal_lookup ("activate",
-					   GTK_TYPE_MENU_ITEM);
-	    gtk_signal_add_emission_hook (sid,
-					  gdm_timer_up_delay,
-					  NULL);
+	    guint sid = g_signal_lookup ("activate",
+					 GTK_TYPE_MENU_ITEM);
+	    g_signal_add_emission_hook (sid,
+					0 /* detail */,
+					gdm_timer_up_delay,
+					NULL /* data */,
+					NULL /* destroy_notify */);
 
-	    sid = gtk_signal_lookup ("key_press_event",
-				     GTK_TYPE_ENTRY);
-	    gtk_signal_add_emission_hook (sid,
-					  gdm_timer_up_delay,
-					  NULL);
+	    sid = g_signal_lookup ("key_press_event",
+				   GTK_TYPE_ENTRY);
+	    g_signal_add_emission_hook (sid,
+					0 /* detail */,
+					gdm_timer_up_delay,
+					NULL /* data */,
+					NULL /* destroy_notify */);
     }
 
     if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
-	    guint sid = gtk_signal_lookup ("event",
-					   GTK_TYPE_WIDGET);
-	    gtk_signal_add_emission_hook (sid,
-					  gdm_event,
-					  NULL);
+	    guint sid = g_signal_lookup ("event",
+					 GTK_TYPE_WIDGET);
+	    g_signal_add_emission_hook (sid,
+					0 /* detail */,
+					gdm_event,
+					NULL /* data */,
+					NULL /* destroy_notify */);
     }
 
     gtk_widget_show_now (login);

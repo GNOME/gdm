@@ -17,8 +17,9 @@
  */
 
 #include "config.h"
-#include <gnome.h>
+#include <libgnome/libgnome.h>
 #include <syslog.h>
+#include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>

@@ -21,7 +21,8 @@
  * selected hostname will be printed on stdout. */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <glade/glade.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1002,6 +1003,27 @@ set_background (void)
 	}
 }
 
+static gboolean
+gdm_event (GSignalInvocationHint *ihint,
+	   guint		n_param_values,
+	   const GValue	       *param_values,
+	   gpointer		data)
+{
+	/* HAAAAAAAAAAAAAAAAACK */
+	/* Since the user has not logged in yet and may have left/right
+	 * mouse buttons switched, we just translate every right mouse click
+	 * to a left mouse click */
+	GdkEvent *event = g_value_get_pointer ((GValue *)param_values);
+	if ((event->type == GDK_BUTTON_PRESS ||
+	     event->type == GDK_2BUTTON_PRESS ||
+	     event->type == GDK_3BUTTON_PRESS ||
+	     event->type == GDK_BUTTON_RELEASE)
+	    && event->button.button == 3)
+		event->button.button = 1;
+
+	return TRUE;
+}      
+
 int 
 main (int argc, char *argv[])
 {
@@ -1082,6 +1104,16 @@ main (int argc, char *argv[])
     }
     gdm_chooser_xdmcp_init (hosts);
     poptFreeContext (ctx);
+
+    if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+	    guint sid = g_signal_lookup ("event",
+					 GTK_TYPE_WIDGET);
+	    g_signal_add_emission_hook (sid,
+					0 /* detail */,
+					gdm_event,
+					NULL /* data */,
+					NULL /* destroy_notify */);
+    }
 
     gtk_widget_show_now (chooser);
 

@@ -12,12 +12,8 @@ INCLUDES = \
 	-I..						\
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\
-	-I$(includedir)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	$(LIBGLADE_CFLAGS)				\
-	$(PIXBUF_CFLAGS)				\
-	$(GNOME_CFLAGS)					\
-	$(GNOME_INCLUDEDIR)
+	$(GUI_CFLAGS)
 
 bin_PROGRAMS = \
 	@GDMCHOOSER@ 		\
@@ -62,59 +58,44 @@ gdmconfig_SOURCES = \
 	misc.h
 
 gdmchooser_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOME_LIBS)		\
-	$(GNOMEUI_LIBS)		\
+	$(GUI_LIBS)		\
 	$(XDMCP_LIBS)		\
 	-lX11			\
 	$(INTLLIBS)		\
-	$(LIBGLADE_LIBS)	\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\
 	-lviciousui
 
 gdmlogin_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOME_LIBS)		\
-	$(GNOMEUI_LIBS)		\
+	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
-	$(PIXBUF_LIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\
 	-lviciousui
 
 gdmconfig_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOME_LIBS)		\
-	$(GNOMEUI_LIBS)		\
+	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
-	$(LIBGLADE_LIBS)	\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\
 	-lviciousui
 
 gdmphotosetup_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOME_LIBS)		\
-	$(GNOMEUI_LIBS)		\
+	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\
 	-lviciousui
 
 gdmXnestchooser_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOME_LIBS)		\
-	$(GNOMEUI_LIBS)		\
+	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\
 	-lviciousui
 
 gdmflexiserver_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOME_LIBS)		\
-	$(GNOMEUI_LIBS)		\
+	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\

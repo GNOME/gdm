@@ -21,7 +21,8 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 
 #include <errno.h>
 #include <dirent.h>

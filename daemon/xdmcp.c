@@ -55,7 +55,7 @@
  */
 
 #include <config.h> 
-#include <gnome.h>
+#include <libgnome/libgnome.h>
 
 #ifdef HAVE_LIBXDMCP
 #include <stdio.h>

@@ -14,10 +14,7 @@ INCLUDES = \
 	-I$(top_srcdir)/vicious-extensions		\
 	-I$(includedir)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	@LIBGLADE_CFLAGS@				\
-	@PIXBUF_CFLAGS@					\
-	$(GNOME_CFLAGS)					\
-	$(GNOME_INCLUDEDIR)
+	$(UTILS_CFLAGS)
 
 sbin_PROGRAMS = \
 	@GDMASKPASS@	\
@@ -38,15 +35,12 @@ gdmmktemp_SOURCES = \
 	gdmmktemp.c
 
 gdmaskpass_LDADD = \
-	$(GNOME_LIBDIR)		\
 	$(INTLLIBS)		\
 	-lpam			\
 	-lpam_misc
 
 gdmopen_LDADD = \
-	$(GNOME_LIBDIR)		\
 	$(INTLLIBS)
 
 gdmmktemp_LDADD = \
-	$(GNOME_LIBDIR)		\
 	$(INTLLIBS)

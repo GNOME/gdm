@@ -17,7 +17,8 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <glade/glade.h>
 
 #include "misc.h"

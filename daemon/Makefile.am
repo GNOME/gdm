@@ -8,11 +8,10 @@ DEFS = @DEFS@ -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\"
 INCLUDES = \
 	-I.						\
 	-I..						\
-	-I$(includedir)					\
 	-I$(top_srcdir)/vicious-extensions		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DLOCALEDIR=\"$(datadir)/locale\"		\
-	$(GNOME_INCLUDEDIR)
+	$(DAEMON_CFLAGS)
 
 bin_PROGRAMS = gdm
 
@@ -49,10 +48,7 @@ gdm_SOURCES = \
 EXTRA_gdm_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
 
 gdm_LDADD = \
-	$(GNOME_LIBDIR)				\
-	$(GNOME_LIBS)				\
-	$(GNOMEUI_LIBS)				\
-	$(GTK_LIBS)				\
+	$(DAEMON_LIBS)				\
 	$(XDMCP_LIBS)				\
 	-lXau					\
 	-lX11					\

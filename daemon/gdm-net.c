@@ -17,7 +17,8 @@
  */
 
 #include "config.h"
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <unistd.h>
 #include <signal.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -95,7 +96,7 @@ gdm_connection_handler (GIOChannel *source,
 	GdmConnection *conn = data;
 	gchar buf[PIPE_SIZE];
 	char *p;
-	gint len;
+	gsize len;
 
 	if ( ! (cond & G_IO_IN)) 
 		return close_if_needed (conn, cond);

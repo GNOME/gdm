@@ -19,7 +19,8 @@
  */
 
 #include "config.h"
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <string.h>
 
 #include "gdmlanguages.h"

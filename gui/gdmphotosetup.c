@@ -19,7 +19,8 @@
  */
 
 #include "config.h"
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>

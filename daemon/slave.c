@@ -20,10 +20,12 @@
  * and the user's session scripts. */
 
 #include <config.h>
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <gdk/gdkx.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -2045,7 +2047,7 @@ gdm_slave_session_start (void)
     }
 
     if (pwent->pw_dir == NULL ||
-	! g_file_test (pwent->pw_dir, G_FILE_TEST_ISDIR)) {
+	! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
 	    char *msg = g_strdup_printf (
 		     _("Your home directory is listed as:\n'%s'\n"
 		       "but it does not appear to exist.\n"
