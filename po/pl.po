@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2002-03-28 20:18+0100\n"
-"PO-Revision-Date: 2002-03-28 20:20+0100\n"
+"POT-Creation-Date: 2002-04-25 18:54+0200\n"
+"PO-Revision-Date: 2002-04-25 19:01+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -117,6 +117,11 @@ msgstr ""
 
 #: daemon/display.c:1
 #, c-format
+msgid "%s: Cannot create pipe"
+msgstr "%s: Nie można stworzyć potoku"
+
+#: daemon/display.c:1
+#, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
 "gdm_display_manage: Utworzenie procesu potomnego gdm dla %s nie powiodło się"
@@ -177,41 +182,43 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
-msgid "gdm_config_parse: No configuration file: %s. Using defaults."
-msgstr ""
-"gdm_config_parse: Brak pliku konfiguracyjnego: %s. Przyjęto wartości "
-"domyślne."
+msgid "%s: No configuration file: %s. Using defaults."
+msgstr "%s: Brak pliku konfiguracyjnego: %s. Przyjęto wartości domyślne."
 
 #: daemon/gdm.c:1
-msgid ""
-"gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
-"it off"
+#, c-format
+msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
 msgstr ""
-"gdm_config_parse: Uaktywniono XDMCP przy braku jego obsługi. XDMCP zostało "
-"unieaktywnione."
+"%s: Uaktywniono XDMCP przy braku jego obsługi. XDMCP zostało unieaktywnione."
 
 #: daemon/gdm.c:1
-msgid ""
-"gdm_config_parse: Root cannot be autologged in, turing off automatic login"
+#, c-format
+msgid "%s: Root cannot be autologged in, turing off automatic login"
 msgstr ""
-"gdm_config_parse: Nie można zalogować automatycznie użytkownika root, "
-"automatyczne logowanie zostało unieaktywnione"
+"%s: Nie można zalogować automatycznie użytkownika root, automatyczne "
+"logowanie zostało unieaktywnione"
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
+#, c-format
+msgid "%s: Root cannot be autologged in, turing off timed login"
 msgstr ""
-"gdm_config_parse: Nie można zalogować automatycznie użytkownika root, "
-"logowanie z opóźnieniem czasowym zostało unieaktywnione"
+"%s: Nie można zalogować automatycznie użytkownika root, logowanie z "
+"opóźnieniem czasowym zostało unieaktywnione"
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
-msgstr ""
-"gdm_config_parse: Wartość TimedLoginDelay jest mniejsza od 5, więc przyjęto "
-"5."
+#, c-format
+msgid "%s: TimedLoginDelay less then 5, so I will just use 5."
+msgstr "%s: Wartość TimedLoginDelay jest mniejsza od 5, więc przyjęto 5."
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: No greeter specified."
-msgstr "gdm_config_parse: Nie określono greetera."
+#, c-format
+msgid "%s: No greeter specified."
+msgstr "%s: Nie określono greetera."
+
+#: daemon/gdm.c:1
+#, c-format
+msgid "%s: No remote greeter specified."
+msgstr "%s: Nie określono zdalnego greetera."
 
 #: daemon/gdm.c:1
 msgid "No daemon/ServAuthDir specified in the configuration file"
@@ -219,12 +226,14 @@ msgstr ""
 "W pliku konfiguracyjnym nie określono katalogu autoryzacji daemon/ServAuthDir"
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: No authdir specified."
-msgstr "gdm_config_parse: Nie określono katalogu autoryzacji."
+#, c-format
+msgid "%s: No authdir specified."
+msgstr "%s: Nie określono katalogu autoryzacji."
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: No sessions directory specified."
-msgstr "gdm_config_parse: Nie określono katalogu sesji."
+#, c-format
+msgid "%s: No sessions directory specified."
+msgstr "%s: Nie określono katalogu sesji."
 
 #: daemon/gdm.c:1
 #, c-format
@@ -237,10 +246,9 @@ msgid "%s: Display number %d in use!  I will use %d"
 msgstr "%s: Ekran o numerze %d jest już wykorzystany! Zostanie użyty %d"
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
-msgstr ""
-"gdm_config_parse: Niepoprawny wiersz serwera w pliku konfiguracyjnym. "
-"Rezygnacja!"
+#, c-format
+msgid "%s: Invalid server line in config file. Ignoring!"
+msgstr "%s: Niepoprawny wiersz serwera w pliku konfiguracyjnym. Rezygnacja!"
 
 #. start
 #. server uid
@@ -263,18 +271,16 @@ msgstr ""
 "Rezygnacja! Popraw konfigurację GDM-a w %s i uruchom go ponownie."
 
 #: daemon/gdm.c:1
-msgid ""
-"gdm_config_parse: XDMCP disabled and no local servers defined. Aborting!"
+#, c-format
+msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
 msgstr ""
-"gdm_config_parse: Deaktywowano XDMCP i nie zdefiniowano lokalnych serwerów. "
-"Rezygnacja!"
+"%s: Unieaktywniono XDMCP i nie zdefiniowano lokalnych serwerów. Rezygnacja!"
 
 #: daemon/gdm.c:1
 #, c-format
-msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
+msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
 msgstr ""
-"gdm_config_parse: Nie można odnaleźć użytkownika gdm (%s). Próba "
-"wykorzystania \"nobody\"!"
+"%s: Nie można odnaleźć użytkownika gdm (%s). Próba wykorzystania \"nobody\"!"
 
 #: daemon/gdm.c:1
 #, c-format
@@ -287,8 +293,8 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
-msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
-msgstr "gdm_config_parse: Nie można odnaleźć użytkownika gdm (%s). Rezygnacja!"
+msgid "%s: Can't find the gdm user (%s). Aborting!"
+msgstr "%s: Nie można odnaleźć użytkownika gdm (%s). Rezygnacja!"
 
 #: daemon/gdm.c:1
 #, c-format
@@ -301,16 +307,14 @@ msgstr ""
 "uruchom go ponownie."
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
-msgstr ""
-"gdm_config_parse: Użytkownik gdm nie powinien być nadzorcą. Rezygnacja!"
+#, c-format
+msgid "%s: The gdm user should not be root. Aborting!"
+msgstr "%s: Użytkownik gdm nie powinien być nadzorcą. Rezygnacja!"
 
 #: daemon/gdm.c:1
 #, c-format
-msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
-msgstr ""
-"gdm_config_parse: Nie można odnaleźć grupy gdm (%s). Próba wykorzystania "
-"\"nobody\"!"
+msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
+msgstr "%s: Nie można odnaleźć grupy gdm (%s). Próba wykorzystania \"nobody\"!"
 
 #: daemon/gdm.c:1
 #, c-format
@@ -322,8 +326,8 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
-msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
-msgstr "gdm_config_parse: Nie można odnaleźć grupy gdm (%s). Rezygnacja!"
+msgid "%s: Can't find the gdm group (%s). Aborting!"
+msgstr "%s: Nie można odnaleźć grupy gdm (%s). Rezygnacja!"
 
 #: daemon/gdm.c:1
 #, c-format
@@ -335,15 +339,22 @@ msgstr ""
 "nie jest to dozwolone. Popraw konfigurację GDM-a w %s i uruchom go ponownie."
 
 #: daemon/gdm.c:1
-msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
-msgstr ""
-"gdm_config_parse: Grupa gdm nie powininna być grupą nadzorcy. Rezygnacja!"
+#, c-format
+msgid "%s: The gdm group should not be root. Aborting!"
+msgstr "%s: Grupa gdm nie powininna być grupą nadzorcy. Rezygnacja!"
 
 #: daemon/gdm.c:1
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr ""
 "%s: Nie odnaleziono greetera, lub nie można go wykonać jako użytkownik gdm"
+
+#: daemon/gdm.c:1
+#, c-format
+msgid "%s: Remote greeter not found or can't be executed by the gdm user"
+msgstr ""
+"%s: Nie odnaleziono zdalnego greetera, lub nie można go wykonać jako "
+"użytkownik gdm"
 
 #: daemon/gdm.c:1
 #, c-format
@@ -363,8 +374,8 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
-msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
-msgstr "gdm_config_parse: Katalog autoryzacji %s nie istnieje. Rezygnacja."
+msgid "%s: Authdir %s does not exist. Aborting."
+msgstr "%s: Katalog autoryzacji %s nie istnieje. Rezygnacja."
 
 #: daemon/gdm.c:1
 #, c-format
@@ -377,9 +388,8 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
-msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
-msgstr ""
-"gdm_config_parse: Katalog autoryzacji %s nie jest katalogiem. Rezygnacja."
+msgid "%s: Authdir %s is not a directory. Aborting."
+msgstr "%s: Katalog autoryzacji %s nie jest katalogiem. Rezygnacja."
 
 #: daemon/gdm.c:1
 #, c-format
@@ -394,11 +404,10 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
-msgid ""
-"gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
+msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
-"gdm_config_parse: Katalogowi autoryzacji %s nie przypisano właściciela %s i "
-"grupy %s. Rezygnacja."
+"%s: Katalogowi autoryzacji %s nie przypisano właściciela %s i grupy %s. "
+"Rezygnacja."
 
 #: daemon/gdm.c:1
 #, c-format
@@ -413,12 +422,10 @@ msgstr ""
 
 #: daemon/gdm.c:1
 #, c-format
-msgid ""
-"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. "
-"Aborting."
+msgid "%s: Authdir %s has wrong permissions %o. Should be 0750. Aborting."
 msgstr ""
-"gdm_config_parse: Katalog autoryzacji %s ma niewłaściwe prawa %o. Powinno "
-"być 0750. Rezygnacja."
+"%s: Katalog autoryzacji %s ma niewłaściwe prawa %o. Powinno być 0750. "
+"Rezygnacja."
 
 #: daemon/gdm.c:1
 msgid "gdm_daemonify: fork() failed!"
@@ -848,8 +855,9 @@ msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: Brak loginu lub niepoprawny login"
 
 #: daemon/slave.c:1
-msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
-msgstr "gdm_slave_greeter: Nie można utworzyć potoku do gdmgreetera"
+#, c-format
+msgid "%s: Can't init pipe to gdmgreeter"
+msgstr "%s: Nie można utworzyć potoku do gdmgreetera"
 
 #: daemon/slave.c:1
 msgid ""
@@ -914,12 +922,13 @@ msgstr ""
 
 #: daemon/slave.c:1
 #, c-format
-msgid "gdm_slave_greeter: Error starting greeter on display %s"
-msgstr "gdm_slave_greeter: Błąd przy uruchamianiu greetera na ekranie %s"
+msgid "%s: Error starting greeter on display %s"
+msgstr "%s: Błąd przy uruchamianiu greetera na ekranie %s"
 
 #: daemon/slave.c:1
-msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
-msgstr "gdm_slave_greeter: Nie można utworzyć procesu dla gdmgreetera"
+#, c-format
+msgid "%s: Can't fork gdmgreeter process"
+msgstr "%s: Nie można utworzyć procesu dla gdmgreetera"
 
 #: daemon/slave.c:1 daemon/slave.c:1
 #, c-format
@@ -1506,32 +1515,27 @@ msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_chooser_parse_config: Brak pliku konfiguracyjnego: %s. Rezygnacja."
 
 #: gui/gdmchooser.c:1
+msgid ""
+"The main area of this application shows the hosts on the local network that "
+"have \"XDMCP\" enabled. This allows users to login remotely to other "
+"machines as if they were logged on using the console.\n"
+"\n"
+"You can rescan the network for new hosts by clicking \"Refresh\".  When you "
+"have selected a host click \"Connect\" to open a session to that machine."
+msgstr ""
+"Główny obszar aplikacji zawiera listę komputerów w lokalnej sieci,\n"
+"obsługujących protokół \"XDMCP\". Pozwala on na zdalne logowanie się\n"
+"użytkowników na innych komputerach, tak, jakby odbywało się to na\n"
+"lokalnej konsoli.\n"
+"\n"
+"Aby ponownie przeszukać sieć, należy kliknąć \"Odśwież\".\n"
+"Po wybraniu komputera z listy, kliknięcie \"Połącz\" rozpoczyna na\n"
+"nim sesję."
+
+#: gui/gdmchooser.c:1
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Nie można otworzyć ikony hosta: %s"
-
-#: gui/gdmchooser.c:1
-msgid ""
-"Cannot find the glade interface description\n"
-"file, cannot run gdmchooser.\n"
-"Please check your installation and the\n"
-"location of the gdmchooser.glade2 file."
-msgstr ""
-"Nie można odnaleźć pliku glade, opisującego\n"
-"interfejs użytkownika, uruchomienie programu\n"
-"gdmchooser nie jest możliwe.\n"
-"Sprawdź poprawność instalacji i położenie pliku\n"
-"gdmchooser.glade2."
-
-#: gui/gdmchooser.c:1
-msgid ""
-"The glade interface description file\n"
-"appears to be corrupted.\n"
-"Please check your installation."
-msgstr ""
-"Plik glade, opisujący interfejs\n"
-"użytkownika, wydaje się być uszkodzony.\n"
-"Zweryfikuj instalację GDM-a."
 
 #: gui/gdmchooser.c:1
 msgid "gdm_signals_init: Error setting up HUP signal handler"
@@ -1591,59 +1595,41 @@ msgstr ""
 #. * DO NOT compile it as part of your application.
 #.
 #: gui/gdmchooser-strings.c:1
-msgid "GDM Host Chooser"
+msgid "Gdm Host Chooser"
 msgstr "GDM - program wybierający"
-
-#: gui/gdmchooser-strings.c:1
-msgid "Open a session to the selected host"
-msgstr "Otwiera sesję na wybranym komputerze"
-
-#: gui/gdmchooser-strings.c:1
-msgid "Connect"
-msgstr "Połącz"
-
-#: gui/gdmchooser-strings.c:1
-msgid "Probe the network"
-msgstr "Przeszukaj sieć"
-
-#: gui/gdmchooser-strings.c:1
-msgid "Rescan"
-msgstr "Odśwież"
 
 #: gui/gdmchooser-strings.c:1
 msgid "How to use this application"
 msgstr "Wyświetla opis wykorzystania aplikacji"
 
 #: gui/gdmchooser-strings.c:1
-msgid "Help"
-msgstr "Pomoc"
+msgid "Open a session to the selected host"
+msgstr "Otwiera sesję na wybranym komputerze"
+
+#: gui/gdmchooser-strings.c:1
+msgid "C_onnect"
+msgstr "_Połącz"
+
+#: gui/gdmchooser-strings.c:1
+msgid "Probe the network"
+msgstr "Przeszukaj sieć"
 
 #: gui/gdmchooser-strings.c:1
 msgid "Exit the application"
 msgstr "Kończy pracę aplikacji"
 
-#: gui/gdmchooser-strings.c:1 gui/gdmlogin.c:1
-msgid "Quit"
-msgstr "Zakończ"
-
-#: gui/gdmchooser-strings.c:1 gui/gdmconfig-strings.c:1
-msgid " "
-msgstr " "
-
 #: gui/gdmchooser-strings.c:1
-msgid "Most recently queried hosts"
-msgstr "Ostatnio wykorzystywane komputery"
+msgid "Status"
+msgstr "Stan"
 
 #: gui/gdmchooser-strings.c:1
 msgid ""
-"The main area of this application shows the hosts on the local\n"
-"network that have \"XDMCP\" enabled. This allows users to login\n"
-"remotely to other machines as if they were logged on using the\n"
-"console.\n"
+"The main area of this application shows the hosts on the local network that "
+"have \"XDMCP\" enabled. This allows users to login remotely to other "
+"machines as if they were logged on using the console.\n"
 "\n"
-"You can rescan the network for new hosts by clicking 'rescan'.\n"
-"When you have selected a host click \"Connect\" to open a session\n"
-"to that machine."
+"You can rescan the network for new hosts by clicking \"Refresh\"'.When you "
+"have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
 "Główny obszar aplikacji zawiera listę komputerów w lokalnej sieci,\n"
 "obsługujących protokół \"XDMCP\". Pozwala on na zdalne logowanie się\n"
@@ -2039,6 +2025,10 @@ msgstr "Zastosuj"
 #: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
 msgid "Options"
 msgstr "Opcje"
+
+#: gui/gdmconfig-strings.c:1
+msgid " "
+msgstr " "
 
 #: gui/gdmconfig-strings.c:1
 msgid "basic_settings"
@@ -3213,22 +3203,13 @@ msgstr "Wypisywanie komunikatów wspomagających wyszukiwanie błędów"
 msgid "Authenticate before running --command"
 msgstr "Uwierzytelnienie przed wykonaniem polecenia --command"
 
-#: gui/gdmXnestchooser.c:1 gui/gdmflexiserver.c:1
-msgid ""
-"GDM is not running.\n"
-"Please ask your system administrator to start it."
-msgstr ""
-"GDM nie jest uruchomiony.\n"
-"Zwróć się do administratora systemu o uruchomienie go."
-
-#: gui/gdmflexiserver.c:1 gui/gdmflexiserver.c:1 gui/gdmflexiserver.c:1
 #: gui/gdmflexiserver.c:1
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr ""
 "Nie można nawiązać komunikacji z GDM-em, być może uruchomiona jest stara "
 "wersja."
 
-#: gui/gdmflexiserver.c:1 gui/gdmflexiserver.c:1
+#: gui/gdmflexiserver.c:1
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
@@ -3251,50 +3232,6 @@ msgstr "Nie można zablokować ekranu"
 #: gui/gdmflexiserver.c:1
 msgid "Can't disable xscreensaver display hacks"
 msgstr "Nie można unieaktywnić xscreensavera"
-
-#: gui/gdmflexiserver.c:1
-msgid "The allowed limit of flexible X servers reached."
-msgstr "Osiągnięto ograniczenie liczby uruchomionych zagnieżdżonych serwerów."
-
-#: gui/gdmflexiserver.c:1
-msgid "There were errors trying to start the X server."
-msgstr "Przy próbie uruchomienia serwera X wystąpiły błędy."
-
-#: gui/gdmflexiserver.c:1
-msgid "The X server failed.  Perhaps it is not configured well."
-msgstr "Serwer X zwrócił błąd.  Być może nie jest on poprawnie skonfigurowany."
-
-#: gui/gdmflexiserver.c:1
-msgid "Too many X sessions running."
-msgstr "Zbyt wiele uruchomionych sesji X."
-
-#: gui/gdmflexiserver.c:1
-msgid ""
-"The nested X server (Xnest) cannot connect to your current X server.  You "
-"may be missing an X authorization file."
-msgstr ""
-"Zagnieżdżony serwer X (Xnest) nie może nawiązać połączenia z bieżącym "
-"serwerem. Być może brakuje pliku autoryzacji X."
-
-#: gui/gdmflexiserver.c:1
-msgid ""
-"The nested X server (Xnest) is not available, or gdm is badly configured.\n"
-"Please install the Xnest package in order to use the nested login."
-msgstr ""
-"Nie jest dostępny zagnieżdżony serwer X (Xnest) lub GDM jest niewłaściwie "
-"skonfigurowany.\n"
-"Przed użyciem zagnieżdżonego logowania zainstaluj pakiet Xnest."
-
-#: gui/gdmflexiserver.c:1
-msgid ""
-"The X server is not available, it is likely that gdm is badly configured."
-msgstr ""
-"Serwer X nie jest dostępny, prawdopodobnie GDM został niewłaściwie "
-"skonfigurowany."
-
-#: gui/gdmflexiserver.c:1
-msgid "Unknown error occured."
-msgstr "Wystąpił nieznany błąd."
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without loging out"
@@ -3826,6 +3763,10 @@ msgid "Suspend your computer"
 msgstr "Usypia komputer"
 
 #: gui/gdmlogin.c:1
+msgid "Quit"
+msgstr "Zakończ"
+
+#: gui/gdmlogin.c:1
 msgid "Disconnect"
 msgstr "Rozłącz"
 
@@ -3883,7 +3824,7 @@ msgstr "main: Błąd przy ustalaniu obsługi przerwania TERM"
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Błąd przy ustalaniu obsługi przerwania CHLD"
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter.c:1
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -3896,7 +3837,7 @@ msgstr ""
 "zalogowaniu się należy poprawić konfigurację\n"
 "GDM-a."
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter.c:1
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -3907,7 +3848,7 @@ msgstr ""
 "wykonane domyślne polecenie.\n"
 "Popraw konfigurację GDM-a."
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter.c:1
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -3974,15 +3915,15 @@ msgstr ""
 "Błąd: %s"
 
 #: gui/gdmphotosetup.desktop.in.h:1
-msgid "Setup my GDM Face"
-msgstr "Ustawienie wyglądu twarzy w GDM-ie"
-
-#: gui/gdmphotosetup.desktop.in.h:1
 msgid ""
-"Setup the picture that will show in the GDM (login manager) face browser"
+"Change the picture that will show in the GDM (login manager) face browser"
 msgstr ""
 "Ustawienie obrazu, który bdzie wyświetlany przez GDM-a w przeglądarce "
 "obrazów twarzy"
+
+#: gui/gdmphotosetup.desktop.in.h:1
+msgid "Login Photo"
+msgstr "Fotografia użytkownika"
 
 #: gui/gdmXnestchooser.c:1
 msgid "Xnest command line"
@@ -4039,6 +3980,14 @@ msgstr ""
 "Pośrednie XDMCP nie jest aktywne.\n"
 "Zwróć się do administratora systemu o jego uaktywnienie za pomocą programu "
 "konfiguracyjnego GDM-a."
+
+#: gui/gdmXnestchooser.c:1
+msgid ""
+"GDM is not running.\n"
+"Please ask your system administrator to start it."
+msgstr ""
+"GDM nie jest uruchomiony.\n"
+"Zwróć się do administratora systemu o uruchomienie go."
 
 #: gui/gdmXnestchooser.c:1
 msgid "Could not find a free display number"
