@@ -475,7 +475,7 @@ gdm_chooser_abort (const gchar *format, ...)
     s = g_strdup_vprintf (format, args);
     va_end (args);
 
-    syslog (LOG_ERR, s);
+    syslog (LOG_ERR, "%s", s);
     closelog ();
 
     exit (EXIT_FAILURE);

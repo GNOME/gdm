@@ -2376,7 +2376,7 @@ gdm_slave_exit (gint status, const gchar *format, ...)
     s = g_strdup_vprintf (format, args);
     va_end (args);
     
-    syslog (LOG_ERR, s);
+    syslog (LOG_ERR, "%s", s);
     
     g_free (s);
 
@@ -2417,7 +2417,7 @@ gdm_child_exit (gint status, const gchar *format, ...)
     s = g_strdup_vprintf (format, args);
     va_end (args);
     
-    syslog (LOG_ERR, s);
+    syslog (LOG_ERR, "%s", s);
     
     g_free (s);
 
