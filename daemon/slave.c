@@ -709,7 +709,7 @@ gdm_slave_wait_for_login (void)
 			/* clear any error */
 			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, "");
 			gdm_slave_greeter_ctl_no_ret
-				(GDM_MSGERR,
+				(GDM_MSG,
 				 _("Enter the root password\n"
 				   "to run the configuration."));
 

@@ -327,6 +327,7 @@ gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
 	    icon_win = NULL;
 	    gtk_widget_show_now (login);
 	    gdk_window_raise (login->window);
+	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (login->window));
 	    gtk_widget_grab_focus (entry);	
 	    gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	    return TRUE;
@@ -1886,7 +1887,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     gchar buf[PIPE_SIZE];
     gint len;
     gint i, x, y;
+    GtkWidget *dlg;
     static gboolean replace_msg = TRUE;
+    static gboolean messages_to_give = FALSE;
 
     /* If this is not incoming i/o then return */
     if (cond != G_IO_IN) 
@@ -1941,6 +1944,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	/* replace rapther then append next message string */
 	replace_msg = TRUE;
 
+	/* the user has seen messages */
+	messages_to_give = FALSE;
+
 	/* this is a login prompt */
 	login_entry = TRUE;
 	break;
@@ -1965,6 +1971,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	/* replace rapther then append next message string */
 	replace_msg = TRUE;
+
+	/* the user has seen messages */
+	messages_to_give = FALSE;
 
 	/* this is not a login prompt */
 	login_entry = FALSE;
@@ -1991,13 +2000,19 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	/* replace rapther then append next message string */
 	replace_msg = TRUE;
 
+	/* the user has seen messages */
+	messages_to_give = FALSE;
+
 	/* this is not a login prompt */
 	login_entry = FALSE;
 	break;
 
-    case GDM_MSGERR:
+    case GDM_MSG:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
+
+	/* the user has not yet seen messages */
+	messages_to_give = TRUE;
 
 	/* HAAAAAAACK.  Sometimes pam sends many many messages, SO
 	 * we try to collect them until the next prompt or reset or
@@ -2005,7 +2020,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	if ( ! replace_msg) {
 		char *oldtext;
 		gtk_label_get (GTK_LABEL (msg), &oldtext);
-		if (oldtext != NULL && oldtext[0] != '\0') {
+		if ( ! ve_string_empty (oldtext)) {
 			char *newtext;
 			newtext = g_strdup_printf ("%s\n%s", oldtext, buf);
 			gtk_label_set (GTK_LABEL (msg), newtext);
@@ -2035,6 +2050,27 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		err_box_clear_handler = gtk_timeout_add (30000,
 							 err_box_clear,
 							 NULL);
+	g_print ("%c\n", STX);
+	break;
+
+    case GDM_ERRDLG:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	buf[len-1] = '\0';
+
+	/* we should be now fine for focusing new windows */
+	gdm_wm_focus_new_windows (TRUE);
+
+	dlg = gnome_message_box_new (buf,
+				   GNOME_MESSAGE_BOX_ERROR,
+				   GNOME_STOCK_BUTTON_OK,
+				   NULL);
+	gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
+	gdm_wm_center_window (GTK_WINDOW (dlg));
+
+	gdm_wm_no_login_focus_push ();
+	gnome_dialog_run (GNOME_DIALOG (dlg));
+	gdm_wm_no_login_focus_pop ();
+
 	g_print ("%c\n", STX);
 	break;
 
@@ -2124,24 +2160,49 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	}
 
 	if (require_quarter) {
-		GtkWidget *d;
-
 		/* we should be now fine for focusing new windows */
 		gdm_wm_focus_new_windows (TRUE);
 
 		/* translators:  This is a nice and evil eggie text, translate
 		 * to your favourite currency */
-		d = gnome_message_box_new (_("Please insert 25 cents "
-					     "to log in."),
-					   GNOME_MESSAGE_BOX_INFO,
-					   GNOME_STOCK_BUTTON_OK,
+		dlg = gnome_message_box_new (_("Please insert 25 cents "
+					       "to log in."),
+					     GNOME_MESSAGE_BOX_INFO,
+					     GNOME_STOCK_BUTTON_OK,
 					   NULL);
-		gtk_window_set_modal (GTK_WINDOW (d), TRUE);
-		gdm_wm_center_window (GTK_WINDOW (d));
+		gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
+		gdm_wm_center_window (GTK_WINDOW (dlg));
 
 		gdm_wm_no_login_focus_push ();
-		gnome_dialog_run (GNOME_DIALOG (d));
+		gnome_dialog_run (GNOME_DIALOG (dlg));
 		gdm_wm_no_login_focus_pop ();
+	}
+
+	/* Hide the login window now */
+	gtk_widget_hide (login);
+
+	if (messages_to_give) {
+		char *oldtext;
+		gtk_label_get (GTK_LABEL (msg), &oldtext);
+
+		if ( ! ve_string_empty (oldtext)) {
+			/* we should be now fine for focusing new windows */
+			gdm_wm_focus_new_windows (TRUE);
+
+			/* translators:  This is a nice and evil eggie text, translate
+			 * to your favourite currency */
+			dlg = gnome_message_box_new (oldtext,
+						     GNOME_MESSAGE_BOX_INFO,
+						     GNOME_STOCK_BUTTON_OK,
+						     NULL);
+			gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
+			gdm_wm_center_window (GTK_WINDOW (dlg));
+
+			gdm_wm_no_login_focus_push ();
+			gnome_dialog_run (GNOME_DIALOG (dlg));
+			gdm_wm_no_login_focus_pop ();
+		}
+		messages_to_give = FALSE;
 	}
 
 	kill_thingies ();

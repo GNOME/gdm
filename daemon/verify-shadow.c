@@ -157,7 +157,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 					  _("The system administrator "
 					    "is not allowed to login "
 					    "from this screen"));
-	    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
 	      _("Root login disallowed"));*/
 	    g_free (login);
 	    g_free (passwd);
@@ -175,7 +175,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 					  _("\nThe system administrator"
 					    " has disabled your "
 					    "account."));
-	    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
 	      _("Login disabled"));*/
 	    g_free (login);
 	    g_free (passwd);

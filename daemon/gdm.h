@@ -77,7 +77,7 @@
  * protocol changes */
 #define GDM_GREETER_PROTOCOL_VERSION "1"
 
-#define GDM_MSGERR     'D'
+#define GDM_MSG        'D'
 #define GDM_NOECHO     'U'
 #define GDM_PROMPT     'N'
 #define GDM_SESS       'G'
@@ -101,7 +101,8 @@
 #define GDM_NEEDPIC    '#' /* need a user picture?, sent after greeter
 			    *  is started */
 #define GDM_READPIC    '%' /* Send a user picture in a temp file */
-#define GDM_ERRBOX     'e' /* Puts string in a popup error box */
+#define GDM_ERRBOX     'e' /* Puts string in the error box */
+#define GDM_ERRDLG     'E' /* Puts string up in an error dialog */
 
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'

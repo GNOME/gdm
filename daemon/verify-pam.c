@@ -99,9 +99,14 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    break;
 	    
 	case PAM_ERROR_MSG:
+	    /* PAM sent a message that should displayed to the user */
+	    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, _((gchar *) msg[replies]->msg));
+	    reply[replies].resp_retcode = PAM_SUCCESS;
+	    reply[replies].resp = NULL;
+	    break;
 	case PAM_TEXT_INFO:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _((gchar *) msg[replies]->msg));
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _((gchar *) msg[replies]->msg));
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
@@ -314,7 +319,7 @@ gdm_verify_user (GdmDisplay *d,
 					  _("\nThe system administrator"
 					    " is not allowed to login "
 					    "from this screen"));
-	    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
 	      _("Root login disallowed"));*/
 	    error_msg_given = TRUE;
 	    goto pamerr;
@@ -331,7 +336,7 @@ gdm_verify_user (GdmDisplay *d,
 					  _("\nThe system administrator"
 					    " has disabled your "
 					    "account."));
-	    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
 	      _("Login disabled"));*/
 	    error_msg_given = TRUE;
 	    goto pamerr;
@@ -381,11 +386,11 @@ gdm_verify_user (GdmDisplay *d,
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
 		    g_free (auth_errmsg);
 	    } else {
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Authentication failed"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, _("Authentication failed"));
 	    }
 
 	    /*sleep (3);
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Please enter your username"));*/
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));*/
     }
 
     if (pamh != NULL)

@@ -1,3 +1,14 @@
+Sat Oct 27 13:22:48 2001  George Lebl <jirka@5z.com>
+
+	* daemon/verify-*.c, daemon/slave.c, daemon/gdm.h, gui/gdmlogin.c:
+	  Make pam errors and such pop up in a dialog box to make sure
+	  the user notices them.  If the login gets a QUIT and it had some
+	  informative messages to tell the user but there was no prompt
+	  in between (that is, the user hasn't read them), display it in
+	  a dialog.
+
+	* daemon/gdmlogin.c: fix focus after uniconify
+
 Fri Oct 26 01:01:53 2001  George Lebl <jirka@5z.com>
 
 	* config/Gnome.in: run ssh-agent if available, also remove some
