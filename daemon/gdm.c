@@ -455,7 +455,7 @@ main (int argc, char *argv[])
  
     /* XDM compliant error message */
     if (getuid())
-	gdm_fail (_("Only root wants to run x^hgdm\n"));
+	gdm_fail (_("Only root wants to run gdm\n"));
 
     /* Initialize runtime environment */
     umask (022);
