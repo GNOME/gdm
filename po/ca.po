@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.2.4.0\n"
-"POT-Creation-Date: 2001-08-22 19:36+0200\n"
+"POT-Creation-Date: 2001-09-01 04:19-0700\n"
 "PO-Revision-Date: 2001-08-22 14:35+0200\n"
 "Last-Translator: Softcatalà <tradgnome@softcatala.org>\n"
 "Language-Team: Catalan <info@softcatala.org>\n"
@@ -14,356 +14,25 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: daemon/gdm.c:178
-#, c-format
-msgid "gdm_config_parse: No configuration file: %s. Using defaults."
-msgstr ""
-"gdm_config_parse: el fitxer de configuració no hi és: %s. S'estan utilitzant "
-"els valors per defecte."
-
-#: daemon/gdm.c:260
-msgid ""
-"gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
-"it off"
-msgstr ""
-"gdm_config_parse: s'ha habilitat l'XDMCP mentre no se'n permeti l'ús, s'està "
-"desactivant"
-
-#: daemon/gdm.c:273
-msgid ""
-"gdm_config_parse: Root cannot be autologged in, turing off automatic login"
-msgstr ""
-"gdm_config_parse: L'arrel no es pot autodesar, l'entrada automàtica està "
-"apagada."
-
-#: daemon/gdm.c:286
-msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
-msgstr ""
-"gdm_config_parse: L'arrel no es pot autodesar, l'entrada de temps està "
-"apagada."
-
-#: daemon/gdm.c:292
-msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
-msgstr ""
-"gdm_config_parse: el TimedLoginDelay és menor que 5, per tant utilitzaré 5."
-
-#: daemon/gdm.c:302
-msgid "gdm_config_parse: No greeter specified."
-msgstr "gdm_config_parse: No s'ha especificat el rebedor."
-
-#: daemon/gdm.c:306
-msgid "gdm_config_parse: No authdir specified."
-msgstr "gdm_config_parse: No s'ha especificat el directori d'autenticació."
-
-#: daemon/gdm.c:312
-msgid "gdm_config_parse: No sessions directory specified."
-msgstr "gdm_config_parse: No s'ha especificat el directori de sessions."
-
-#: daemon/gdm.c:336
-#, c-format
-msgid "%s: Empty server command, using standard one."
-msgstr ""
-
-#: daemon/gdm.c:385
-msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
-msgstr ""
-"gdm_config_parse: Hi ha una línia del servidor no vàlida en el fitxer de "
-"configuració. S'està ignorant!"
-
-#. start
-#. server uid
-#: daemon/gdm.c:404
-#, c-format
-msgid ""
-"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
-"d to allow configuration!"
-msgstr ""
-"%s: L'XDMCP està inhabilitat i no s'han definit servidors locals. S'està "
-"afegint /usr/bin/X11/X a :%d per permetre la configuració!"
-
-#: daemon/gdm.c:418
-msgid ""
-"gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
-msgstr ""
-"gdm_config_parse: L'XDMCP està inhabilitat i no s'han definit servidors "
-"locals. S'està avortant!"
-
-#: daemon/gdm.c:427
-#, c-format
-msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
-msgstr ""
-"gdm_config_parse: no es pot trobar l'usuari del gdm (%s). S'està provant "
-"'ningú'!"
-
-#: daemon/gdm.c:434
-#, c-format
-msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
-msgstr ""
-"gdm_config_parse: No es pot trobar l'usuari del gdm (%s). S'està avortant!"
-
-#: daemon/gdm.c:439
-msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
-msgstr ""
-"gdm_config_parse: L'usuari del gdm no hauria de ser el superusuari. S'està "
-"avortant!"
-
-#: daemon/gdm.c:444
-#, c-format
-msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
-msgstr ""
-"gdm_config_parse: no es pot trobar el grup del gdm (%s). S'està provant "
-"'ningú'!"
-
-#: daemon/gdm.c:451
-#, c-format
-msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
-msgstr ""
-"gdm_config_parse: No es pot trobar el grup del gdm (%s). S'està avortant!"
-
-#: daemon/gdm.c:456
-msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
-msgstr ""
-"gdm_config_parse: El grup del gdm no hauria de ser el del superusuari. "
-"S'està avortant!"
-
-#: daemon/gdm.c:467
-#, c-format
-msgid "%s: Greeter not found or can't be executed by the gdm user"
-msgstr ""
-
-#: daemon/gdm.c:479
-#, c-format
-msgid "%s: Chooser not found or it can't be executed by the gdm user"
-msgstr ""
-
-#: daemon/gdm.c:487
-#, c-format
-msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
-msgstr "gdm_config_parse: Authdir %s no existeix. S'està avortant."
-
-#: daemon/gdm.c:490
-#, c-format
-msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
-msgstr "gdm_config_parse: Authdir %s no és un directori. S'està avortant."
-
-#: daemon/gdm.c:493
-#, c-format
-msgid ""
-"gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
-msgstr ""
-"gdm_config_parse: L'authdir %s no és propietat de l'usuari %s, grup %s. "
-"S'està avortant."
-
-#: daemon/gdm.c:497
-#, c-format
-msgid ""
-"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
-"Aborting."
-msgstr ""
-"gdm_config_parse: Authdir %s té permissos %o erronis. Hauria de ser 750. "
-"S'està avortant."
-
-#: daemon/gdm.c:550
-msgid "gdm_daemonify: fork() failed!"
-msgstr "gdm_daemonify: El fork() ha fallat!"
-
-#: daemon/gdm.c:553
-#, c-format
-msgid "gdm_daemonify: setsid() failed: %s!"
-msgstr "gdm_daemonify: El setsid() ha fallat: %s!"
-
-#: daemon/gdm.c:631
-#, c-format
-msgid "deal_with_x_crashes: Trying failsafe X server %s"
-msgstr "deal_with_x_crashes: S'està provant el servidor X infal·lible %s"
-
-#: daemon/gdm.c:663
-msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
-msgstr "deal_with_x_crashes: S'està executant la seqüència XKeepsCrashing"
-
-#. do we have dialog?
-#. Shit if we knew what the program was to tell the user,
-#. * the above script would have been defined and we'd run
-#. * it for them
-#: daemon/gdm.c:678 daemon/gdm.c:735
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  You will need to log in on a console and rerun "
-"the X configuration program.  Then restart GDM."
-msgstr ""
-"No puc iniciar el servidor X (la interfície gràfica). És probable que no "
-"estigui configurat correctament. Necessitareu registrar-vos en una consola i "
-"tornar a executar  el programa de configuració X. Després podreu tornar a "
-"iniciar el GDM. "
-
-#: daemon/gdm.c:683
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  Would you like me to try to run the X "
-"configuration program?  Note that you will need the root password for this."
-msgstr ""
-"No puc iniciar el servidor X (la interfície gràfica). És probable que no "
-"estigui configurat correctament. Voleu que torni a intentar d'executar el "
-"programa de configuració X? Observeu que necessitareu la contrasenya arrel "
-"per a això."
-
-#: daemon/gdm.c:688
-msgid "Please type in the root (privilaged user) password."
-msgstr "Si us plau, escriviu la contrasenya arrel (usuari privilegiat)."
-
-#: daemon/gdm.c:690
-msgid "I will now try to restart the X server again."
-msgstr "Ara provaré de reiniciar el servidor X de nou."
-
-#: daemon/gdm.c:692
-msgid ""
-"I will disable this X server for now.  Restart GDM when it is configured "
-"correctly."
-msgstr ""
-"Deshabilitaré el servidor X per ara. Reiniciï el GDM quan estigui configurat "
-"correctament."
-
-#. else {
-#. * At this point .... screw the user, we don't know how to
-#. * talk to him.  He's on some 'l33t system anyway, so syslog
-#. * reading will do him good
-#. * }
-#: daemon/gdm.c:769
-#, c-format
-msgid ""
-"Failed to start X server several times in a short time period; disabling "
-"display %s"
-msgstr ""
-"No s'ha pogut iniciar el servidor X després de diiversos intents en un "
-"període molt curt de temps; s'està inhabilitant la pantalla %s."
-
-#: daemon/gdm.c:870
-#, c-format
-msgid ""
-"gdm_child_action: Reboot or Halt request when there is no system menu from "
-"display %s"
-msgstr ""
-"gdm_child_action: Sol·licita l'arrencada de nou o l'aturada quan no hi hagi "
-"cap menú del sistema a la pantalla %s"
-
-#: daemon/gdm.c:878
-#, fuzzy, c-format
-msgid ""
-"gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
-msgstr ""
-"gdm_child_action: sol·licitud d'arrencada de nou o d'aturada des d'una "
-"pantalla remota %s"
-
-#. Bury this display for good
-#: daemon/gdm.c:912
-#, c-format
-msgid "gdm_child_action: Aborting display %s"
-msgstr "gdm_child_action: S'està avortant la pantalla %s"
-
-#. Reboot machine
-#: daemon/gdm.c:921
-msgid "gdm_child_action: Master rebooting..."
-msgstr "gdm_child_action: S'està tornant a arrencar de nou el màster..."
-
-#: daemon/gdm.c:928
-#, c-format
-msgid "gdm_child_action: Reboot failed: %s"
-msgstr "gdm_child_action: No s'ha pogut tornar a arrencar de nou: %s"
-
-#. Halt machine
-#: daemon/gdm.c:932
-msgid "gdm_child_action: Master halting..."
-msgstr "gdm_child_action: S'està aturant el màster..."
-
-#: daemon/gdm.c:939
-#, c-format
-msgid "gdm_child_action: Halt failed: %s"
-msgstr "gdm_child_action: Ha fallat l'aturada: %s"
-
-#. Suspend machine
-#: daemon/gdm.c:943
-#, fuzzy
-msgid "gdm_child_action: Master suspending..."
-msgstr "gdm_child_action: S'està tornant a arrencar de nou el màster..."
-
-#: daemon/gdm.c:950
-#, fuzzy, c-format
-msgid "gdm_child_action: Suspend failed: %s"
-msgstr "gdm_child_action: No s'ha pogut tornar a arrencar de nou: %s"
-
-#: daemon/gdm.c:1035
-msgid "Gdm restarting ..."
-msgstr ""
-
-#: daemon/gdm.c:1040
-msgid "Failed to restart self"
-msgstr "Ha fallat en reiniciar self"
-
-#: daemon/gdm.c:1171
-msgid "Only root wants to run gdm\n"
-msgstr "Només el superusuari vol executar el gdm\n"
-
-#: daemon/gdm.c:1196
-msgid "gdm already running. Aborting!"
-msgstr "El gdm ja s'està executant. S'està avortant!"
-
-#: daemon/gdm.c:1226
-#, c-format
-msgid "%s: Error setting up TERM signal handler"
-msgstr "%s: S'ha produït un error en configurar el gestor del senyal TERM"
-
-#: daemon/gdm.c:1230
-#, c-format
-msgid "%s: Error setting up INT signal handler"
-msgstr "%s: S'ha produït un error en configurar el gestor del senyal INT"
-
-#: daemon/gdm.c:1234
-#, c-format
-msgid "%s: Error setting up HUP signal handler"
-msgstr "%s: S'ha produït un error en configurar el gestor del senyal HUP "
-
-#: daemon/gdm.c:1238
-#, c-format
-msgid "%s: Error setting up USR1 signal handler"
-msgstr "%s: S'ha produït un error en configurar el gestor del senyal HUP "
-
-#: daemon/gdm.c:1247
-#, c-format
-msgid "%s: Error setting up CHLD signal handler"
-msgstr "%s: S'ha produït un error en configurar el gestor del senyal CHLD"
-
-#. Don't print the name to syslog as it might be
-#. * long and dangerous
-#: daemon/gdm.c:1809
-msgid "Unknown server type requested, using standard server."
-msgstr ""
-
-#: daemon/gdm.c:1813
-#, c-format
-msgid ""
-"Requested server %s not allowed to be used for flexible servers, using "
-"standard server."
-msgstr ""
-
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:266 daemon/auth.c:297
+#: daemon/auth.c:272 daemon/auth.c:303
 #, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
 msgstr "gdm_auth_user_add: no s'ha pogut obrir el fitxer de galetes %s"
 
-#: daemon/auth.c:283
+#: daemon/auth.c:289
 #, c-format
 msgid "gdm_auth_user_add: Could not lock cookie file %s"
 msgstr "gdm_auth_user_add: No s'ha pogut blocar el fitxer de galetes %s"
 
-#: daemon/auth.c:370
+#: daemon/auth.c:376
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr ""
 "gdm_auth_user_remove: S'està ignorant el fitxer de galetes %s que sembla "
 "sospitós."
 
-#: daemon/display.c:90
+#: daemon/display.c:94
 #, c-format
 msgid ""
 "Failed to start the display server several times in a short time period; "
@@ -372,11 +41,19 @@ msgstr ""
 "No s'ha pogut iniciar el servidor de pantalla després de diversos intents en "
 "un període molt curt de temps; s'està inhabilitant la pantalla %s"
 
-#: daemon/display.c:191
+#: daemon/display.c:209
 #, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
 "gdm_display_manage: El procés esclau del gdm ha fallat en bifurcar-se per %s"
+
+#: daemon/errorgui.c:164
+msgid "gdm_error_box: Failed to execute self"
+msgstr ""
+
+#: daemon/errorgui.c:170
+msgid "gdm_error_box: Cannot fork to display error/info box"
+msgstr ""
 
 #: daemon/filecheck.c:51
 #, c-format
@@ -399,8 +76,8 @@ msgid "%s: %s is writable by other."
 msgstr "%s: %s té permis d'escriptura per a altres."
 
 #: daemon/filecheck.c:84
-#, c-format
-msgid "%s: %s does not exist and must."
+#, fuzzy, c-format
+msgid "%s: %s does not exist but must exist."
 msgstr "%s: %s no existeix i ha d'existir."
 
 #: daemon/filecheck.c:92
@@ -420,136 +97,518 @@ msgstr ""
 "%s: %s és més gran que la mida màxima del fitxer especificada per "
 "l'administrador del sistema."
 
-#: daemon/server.c:137
+#: daemon/gdm.c:194
 #, c-format
+msgid "gdm_config_parse: No configuration file: %s. Using defaults."
+msgstr ""
+"gdm_config_parse: el fitxer de configuració no hi és: %s. S'estan utilitzant "
+"els valors per defecte."
+
+#: daemon/gdm.c:279
 msgid ""
-"There already appears to be an X server running on display %s.  Please quit "
-"this server and then press Enter.%s"
+"gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
+"it off"
+msgstr ""
+"gdm_config_parse: s'ha habilitat l'XDMCP mentre no se'n permeti l'ús, s'està "
+"desactivant"
+
+#: daemon/gdm.c:292
+msgid ""
+"gdm_config_parse: Root cannot be autologged in, turing off automatic login"
+msgstr ""
+"gdm_config_parse: L'arrel no es pot autodesar, l'entrada automàtica està "
+"apagada."
+
+#: daemon/gdm.c:305
+msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
+msgstr ""
+"gdm_config_parse: L'arrel no es pot autodesar, l'entrada de temps està "
+"apagada."
+
+#: daemon/gdm.c:311
+msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
+msgstr ""
+"gdm_config_parse: el TimedLoginDelay és menor que 5, per tant utilitzaré 5."
+
+#: daemon/gdm.c:321
+msgid "gdm_config_parse: No greeter specified."
+msgstr "gdm_config_parse: No s'ha especificat el rebedor."
+
+#: daemon/gdm.c:325
+msgid "gdm_config_parse: No authdir specified."
+msgstr "gdm_config_parse: No s'ha especificat el directori d'autenticació."
+
+#: daemon/gdm.c:331
+msgid "gdm_config_parse: No sessions directory specified."
+msgstr "gdm_config_parse: No s'ha especificat el directori de sessions."
+
+#: daemon/gdm.c:355
+#, c-format
+msgid "%s: Empty server command, using standard one."
 msgstr ""
 
-#: daemon/server.c:142
+#: daemon/gdm.c:400
+#, c-format
+msgid "%s: Display number %d in use!  I will use %d"
+msgstr ""
+
+#: daemon/gdm.c:415
+msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
+msgstr ""
+"gdm_config_parse: Hi ha una línia del servidor no vàlida en el fitxer de "
+"configuració. S'està ignorant!"
+
+#. start
+#. server uid
+#: daemon/gdm.c:434
+#, c-format
 msgid ""
-"  You can change consoles by pressing Ctrl-Alt plus a function key, such as "
+"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
+"d to allow configuration!"
+msgstr ""
+"%s: L'XDMCP està inhabilitat i no s'han definit servidors locals. S'està "
+"afegint /usr/bin/X11/X a :%d per permetre la configuració!"
+
+#: daemon/gdm.c:448
+msgid ""
+"gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
+msgstr ""
+"gdm_config_parse: L'XDMCP està inhabilitat i no s'han definit servidors "
+"locals. S'està avortant!"
+
+#: daemon/gdm.c:457
+#, c-format
+msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
+msgstr ""
+"gdm_config_parse: no es pot trobar l'usuari del gdm (%s). S'està provant "
+"'ningú'!"
+
+#: daemon/gdm.c:464
+#, c-format
+msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
+msgstr ""
+"gdm_config_parse: No es pot trobar l'usuari del gdm (%s). S'està avortant!"
+
+#: daemon/gdm.c:469
+msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
+msgstr ""
+"gdm_config_parse: L'usuari del gdm no hauria de ser el superusuari. S'està "
+"avortant!"
+
+#: daemon/gdm.c:474
+#, c-format
+msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
+msgstr ""
+"gdm_config_parse: no es pot trobar el grup del gdm (%s). S'està provant "
+"'ningú'!"
+
+#: daemon/gdm.c:481
+#, c-format
+msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
+msgstr ""
+"gdm_config_parse: No es pot trobar el grup del gdm (%s). S'està avortant!"
+
+#: daemon/gdm.c:486
+msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
+msgstr ""
+"gdm_config_parse: El grup del gdm no hauria de ser el del superusuari. "
+"S'està avortant!"
+
+#: daemon/gdm.c:497
+#, c-format
+msgid "%s: Greeter not found or can't be executed by the gdm user"
+msgstr ""
+
+#: daemon/gdm.c:509
+#, c-format
+msgid "%s: Chooser not found or it can't be executed by the gdm user"
+msgstr ""
+
+#: daemon/gdm.c:517
+#, c-format
+msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
+msgstr "gdm_config_parse: Authdir %s no existeix. S'està avortant."
+
+#: daemon/gdm.c:520
+#, c-format
+msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
+msgstr "gdm_config_parse: Authdir %s no és un directori. S'està avortant."
+
+#: daemon/gdm.c:523
+#, c-format
+msgid ""
+"gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
+msgstr ""
+"gdm_config_parse: L'authdir %s no és propietat de l'usuari %s, grup %s. "
+"S'està avortant."
+
+#: daemon/gdm.c:527
+#, c-format
+msgid ""
+"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
+"Aborting."
+msgstr ""
+"gdm_config_parse: Authdir %s té permissos %o erronis. Hauria de ser 750. "
+"S'està avortant."
+
+#: daemon/gdm.c:580
+msgid "gdm_daemonify: fork() failed!"
+msgstr "gdm_daemonify: El fork() ha fallat!"
+
+#: daemon/gdm.c:583
+#, c-format
+msgid "gdm_daemonify: setsid() failed: %s!"
+msgstr "gdm_daemonify: El setsid() ha fallat: %s!"
+
+#: daemon/gdm.c:679
+#, c-format
+msgid "deal_with_x_crashes: Trying failsafe X server %s"
+msgstr "deal_with_x_crashes: S'està provant el servidor X infal·lible %s"
+
+#: daemon/gdm.c:712
+msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
+msgstr "deal_with_x_crashes: S'està executant la seqüència XKeepsCrashing"
+
+#. Shit if we knew what the program was to tell the user,
+#. * the above script would have been defined and we'd run
+#. * it for them
+#: daemon/gdm.c:742 daemon/gdm.c:811
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  You will need to log in on a console and rerun "
+"the X configuration program.  Then restart GDM."
+msgstr ""
+"No puc iniciar el servidor X (la interfície gràfica). És probable que no "
+"estigui configurat correctament. Necessitareu registrar-vos en una consola i "
+"tornar a executar  el programa de configuració X. Després podreu tornar a "
+"iniciar el GDM. "
+
+#: daemon/gdm.c:747
+#, fuzzy
+msgid ""
+"Would you like me to try to run the X configuration program?  Note that you "
+"will need the root password for this."
+msgstr ""
+"No puc iniciar el servidor X (la interfície gràfica). És probable que no "
+"estigui configurat correctament. Voleu que torni a intentar d'executar el "
+"programa de configuració X? Observeu que necessitareu la contrasenya arrel "
+"per a això."
+
+#: daemon/gdm.c:750
+msgid "Please type in the root (privilaged user) password."
+msgstr "Si us plau, escriviu la contrasenya arrel (usuari privilegiat)."
+
+#: daemon/gdm.c:752
+msgid "I will now try to restart the X server again."
+msgstr "Ara provaré de reiniciar el servidor X de nou."
+
+#: daemon/gdm.c:754
+msgid ""
+"I will disable this X server for now.  Restart GDM when it is configured "
+"correctly."
+msgstr ""
+"Deshabilitaré el servidor X per ara. Reiniciï el GDM quan estigui configurat "
+"correctament."
+
+#: daemon/gdm.c:756
+#, fuzzy
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  Would you like to view the X server output to "
+"diagnose the problem?"
+msgstr ""
+"No puc iniciar el servidor X (la interfície gràfica). És probable que no "
+"estigui configurat correctament. Voleu que torni a intentar d'executar el "
+"programa de configuració X? Observeu que necessitareu la contrasenya arrel "
+"per a això."
+
+#. else {
+#. * At this point .... screw the user, we don't know how to
+#. * talk to him.  He's on some 'l33t system anyway, so syslog
+#. * reading will do him good
+#. * }
+#: daemon/gdm.c:823
+#, c-format
+msgid ""
+"Failed to start X server several times in a short time period; disabling "
+"display %s"
+msgstr ""
+"No s'ha pogut iniciar el servidor X després de diiversos intents en un "
+"període molt curt de temps; s'està inhabilitant la pantalla %s."
+
+#: daemon/gdm.c:922
+#, c-format
+msgid ""
+"gdm_child_action: Reboot or Halt request when there is no system menu from "
+"display %s"
+msgstr ""
+"gdm_child_action: Sol·licita l'arrencada de nou o l'aturada quan no hi hagi "
+"cap menú del sistema a la pantalla %s"
+
+#: daemon/gdm.c:930
+#, fuzzy, c-format
+msgid ""
+"gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
+msgstr ""
+"gdm_child_action: sol·licitud d'arrencada de nou o d'aturada des d'una "
+"pantalla remota %s"
+
+#. Bury this display for good
+#: daemon/gdm.c:964
+#, c-format
+msgid "gdm_child_action: Aborting display %s"
+msgstr "gdm_child_action: S'està avortant la pantalla %s"
+
+#. Reboot machine
+#: daemon/gdm.c:973
+msgid "gdm_child_action: Master rebooting..."
+msgstr "gdm_child_action: S'està tornant a arrencar de nou el màster..."
+
+#: daemon/gdm.c:980
+#, c-format
+msgid "gdm_child_action: Reboot failed: %s"
+msgstr "gdm_child_action: No s'ha pogut tornar a arrencar de nou: %s"
+
+#. Halt machine
+#: daemon/gdm.c:984
+msgid "gdm_child_action: Master halting..."
+msgstr "gdm_child_action: S'està aturant el màster..."
+
+#: daemon/gdm.c:991
+#, c-format
+msgid "gdm_child_action: Halt failed: %s"
+msgstr "gdm_child_action: Ha fallat l'aturada: %s"
+
+#. Suspend machine
+#: daemon/gdm.c:995
+#, fuzzy
+msgid "gdm_child_action: Master suspending..."
+msgstr "gdm_child_action: S'està tornant a arrencar de nou el màster..."
+
+#: daemon/gdm.c:1002
+#, fuzzy, c-format
+msgid "gdm_child_action: Suspend failed: %s"
+msgstr "gdm_child_action: No s'ha pogut tornar a arrencar de nou: %s"
+
+#: daemon/gdm.c:1087
+msgid "Gdm restarting ..."
+msgstr ""
+
+#: daemon/gdm.c:1092
+msgid "Failed to restart self"
+msgstr "Ha fallat en reiniciar self"
+
+#: daemon/gdm.c:1225
+msgid "Only root wants to run gdm\n"
+msgstr "Només el superusuari vol executar el gdm\n"
+
+#: daemon/gdm.c:1253
+msgid "gdm already running. Aborting!"
+msgstr "El gdm ja s'està executant. S'està avortant!"
+
+#: daemon/gdm.c:1284
+#, c-format
+msgid "%s: Error setting up TERM signal handler"
+msgstr "%s: S'ha produït un error en configurar el gestor del senyal TERM"
+
+#: daemon/gdm.c:1288
+#, c-format
+msgid "%s: Error setting up INT signal handler"
+msgstr "%s: S'ha produït un error en configurar el gestor del senyal INT"
+
+#: daemon/gdm.c:1292
+#, c-format
+msgid "%s: Error setting up HUP signal handler"
+msgstr "%s: S'ha produït un error en configurar el gestor del senyal HUP "
+
+#: daemon/gdm.c:1296
+#, c-format
+msgid "%s: Error setting up USR1 signal handler"
+msgstr "%s: S'ha produït un error en configurar el gestor del senyal HUP "
+
+#: daemon/gdm.c:1305
+#, c-format
+msgid "%s: Error setting up CHLD signal handler"
+msgstr "%s: S'ha produït un error en configurar el gestor del senyal CHLD"
+
+#: daemon/gdm.c:1923 daemon/gdm.c:1940
+msgid "Flexible server request denied: Not authenticated"
+msgstr ""
+
+#. Don't print the name to syslog as it might be
+#. * long and dangerous
+#: daemon/gdm.c:1958
+msgid "Unknown server type requested, using standard server."
+msgstr ""
+
+#: daemon/gdm.c:1962
+#, c-format
+msgid ""
+"Requested server %s not allowed to be used for flexible servers, using "
+"standard server."
+msgstr ""
+
+#: daemon/gdm-net.c:236
+#, fuzzy, c-format
+msgid "%s: Could not make socket"
+msgstr "gdm_xdmcp_init: No s'ha pogut crear el sòcol!"
+
+#: daemon/gdm-net.c:246
+#, fuzzy, c-format
+msgid "%s: Could not bind socket"
+msgstr "gdm_xdmcp_init: No s'ha pogut enllaçar amb el sòcol de l'XDMCP!"
+
+#: daemon/gdm-net.c:287
+#, fuzzy, c-format
+msgid "%s: Could not make FIFO"
+msgstr "gdm_xdmcp_init: No s'ha pogut fer FIFO per seleccionador"
+
+#: daemon/gdm-net.c:295
+#, fuzzy, c-format
+msgid "%s: Could not open FIFO"
+msgstr "gdm_xdmcp_init: No s'ha pogut obrir FIFO per seleccionador"
+
+#. Translators, don't translate the 'y' and 'n'
+#: daemon/misc.c:365
+msgid "y = Yes or n = No? >"
+msgstr ""
+
+#: daemon/server.c:136
+#, c-format
+msgid ""
+"There already appears to be an X server running on display %s.  Should I try "
+"another display number?  If you answer no, I will attempt to start the "
+"server on %s again.%s"
+msgstr ""
+
+#: daemon/server.c:143
+msgid ""
+"  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
-"higher."
+"higher.)"
 msgstr ""
 
-#. If we can't ask, sleep 30 seconds and try again
-#: daemon/server.c:176
-#, c-format
-msgid "Sleeping 30 seconds before retrying display %s"
-msgstr ""
-
-#: daemon/server.c:200
+#: daemon/server.c:182
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr ""
 
-#: daemon/server.c:230
+#: daemon/server.c:212
 #, c-format
 msgid "Display %s is busy, there is another X server already running"
 msgstr ""
 
-#: daemon/server.c:320
+#: daemon/server.c:305
 msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr ""
 "gdm_server_start: S'ha produït un error en configurar el gestor del senyal "
 "USR1"
 
-#: daemon/server.c:330
+#: daemon/server.c:315
 msgid "gdm_server_start: Error setting up CHLD signal handler"
 msgstr ""
 "gdm_server_start: S'ha produït un error en configurar el gestor del senyal "
 "CHLD"
 
-#: daemon/server.c:341
+#: daemon/server.c:326
 msgid "gdm_server_start: Error setting up ALRM signal handler"
 msgstr ""
 "gdm_server_start: S'ha produït un error en configurar el gestor del senyal "
 "ALRM"
 
-#: daemon/server.c:536
+#. Send X too busy
+#: daemon/server.c:426
+#, c-format
+msgid "%s: Cannot find a free display number"
+msgstr ""
+
+#: daemon/server.c:441
+#, c-format
+msgid "%s: Display %s busy.  Trying another display number."
+msgstr ""
+
+#: daemon/server.c:533
 #, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr ""
 "gdm_server_start: No s'ha pogut obrir el fitxer de registre per a la "
 "pantalla %s!"
 
-#: daemon/server.c:546
+#: daemon/server.c:543
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: S'ha produït un error en definir USR1 per a SIG_IGN"
 
-#: daemon/server.c:550
+#: daemon/server.c:547
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
 msgstr "gdm_server_spawn: s'ha produït un error en definir TTIN per a SIG_IGN"
 
-#: daemon/server.c:554
+#: daemon/server.c:551
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
 msgstr "gdm_server_spawn: s'ha produït un error en definir TTOU per a SIG_IGN"
 
-#: daemon/server.c:564
+#: daemon/server.c:561
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
 msgstr "gdm_server_spawn: S'ha produït un error en definir HUP per a SIG_DFL"
 
-#: daemon/server.c:568
+#: daemon/server.c:565
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr "gdm_server_spawn: S'ha produït un error en definir TERM per a SIG_DFL"
 
-#: daemon/server.c:591
+#: daemon/server.c:588
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr ""
 
-#: daemon/server.c:597
+#: daemon/server.c:594
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr ""
 
-#: daemon/server.c:629
+#: daemon/server.c:626
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr ""
 
-#: daemon/server.c:653
+#: daemon/server.c:650
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_server_spawn: No s'ha trobat el servidor X: %s"
 
-#: daemon/server.c:658
+#: daemon/server.c:655
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: No es pot bifurcar el procés del servidor X!"
 
-#: daemon/slave.c:171
+#: daemon/slave.c:172
 msgid "gdm_slave_init: Error setting up ALRM signal handler"
 msgstr ""
 "gdm_slave_init: s'ha produït un error en configurar el gestor del senyal ALRM"
 
-#: daemon/slave.c:183
+#: daemon/slave.c:184
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
 msgstr ""
 "gdm_slave_init: S'ha produït un error en configurar el gestor del senyal "
 "TERM/INT"
 
-#: daemon/slave.c:192
+#: daemon/slave.c:193
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr ""
 "gdm_slave_init: S'ha produït un error en configurar el gestor del senyal CHLD"
 
-#: daemon/slave.c:201
+#: daemon/slave.c:202
 #, c-format
 msgid "%s: Error setting up USR2 signal handler"
 msgstr "%s: S'ha produït un error en configurar el gestor del senyal USR2"
 
-#: daemon/slave.c:513
+#: daemon/slave.c:518
 msgid "focus_first_x_window: cannot fork"
 msgstr "focus_first_x_window: no es pot bifurcar"
 
-#: daemon/slave.c:523
+#: daemon/slave.c:537
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr "focus_first_x_window: no es pot obrir la pantalla %s"
 
-#: daemon/slave.c:620
+#: daemon/slave.c:634
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -563,7 +622,7 @@ msgstr ""
 "en el fitxer de configuració.Intentaré iniciar-lo des de la\n"
 "ubicació per defecte. "
 
-#: daemon/slave.c:634
+#: daemon/slave.c:648
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -574,7 +633,7 @@ msgstr ""
 "guració del camí s'adreci correctament\n"
 "al fitxer de configuració."
 
-#: daemon/slave.c:684
+#: daemon/slave.c:698
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -583,31 +642,31 @@ msgstr ""
 "superusuari per executar\n"
 "la configuració."
 
-#: daemon/slave.c:698 daemon/slave.c:764
+#: daemon/slave.c:712 daemon/slave.c:778
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: No hi ha cap entrada login/Bad"
 
-#: daemon/slave.c:998
+#: daemon/slave.c:1013
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr ""
 "gdm_slave_greeter: No es pot inicialitzar un conducte cap al gdmgreeter"
 
-#: daemon/slave.c:1026
+#: daemon/slave.c:1046
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr "gdm_slave_greeter: No s'ha pogut definir groupid a %d"
 
-#: daemon/slave.c:1029
+#: daemon/slave.c:1049
 #, c-format
 msgid "gdm_slave_greeter: initgroups() failed for %s"
 msgstr "gdm_slave_greeter: Ha fallat el initgroups() per a %s"
 
-#: daemon/slave.c:1032
+#: daemon/slave.c:1052
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr "gdm_slave_greeter: No s'ha pogut definir userid a %d"
 
-#: daemon/slave.c:1087
+#: daemon/slave.c:1107
 msgid ""
 "No servers were defined in the\n"
 "configuration file and xdmcp was\n"
@@ -627,7 +686,7 @@ msgstr ""
 "Observeu que les entrades automàtiques i temporals\n"
 "ara estan deshabilitades."
 
-#: daemon/slave.c:1101
+#: daemon/slave.c:1121
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -641,14 +700,21 @@ msgstr ""
 "Hauria de registrar-se i configurar\n"
 "correctament el servidor X."
 
-#: daemon/slave.c:1111
+#: daemon/slave.c:1130
+#, c-format
+msgid ""
+"The specified display number was busy, so this server was started on display "
+"%s."
+msgstr ""
+
+#: daemon/slave.c:1140
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr ""
 "gdm_slave_greeter: no s'ha pogut iniciar el rebedor, s'està provant el "
 "predeterminat: %s"
 
-#: daemon/slave.c:1123
+#: daemon/slave.c:1152
 #, fuzzy
 msgid ""
 "Cannot start the greeter program,\n"
@@ -663,44 +729,44 @@ msgstr ""
 "Proveu de registrar-vos per altres mitjans i\n"
 "d'editar el fitxer de configuració"
 
-#: daemon/slave.c:1129
+#: daemon/slave.c:1158
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr ""
 "gdm_slave_greeter: S'ha produït un error en iniciar el rebedor a la pantalla "
 "%s"
 
-#: daemon/slave.c:1132
+#: daemon/slave.c:1161
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: No es pot bifurcar el procés gdmgreeter"
 
-#: daemon/slave.c:1189 daemon/slave.c:1224 daemon/slave.c:1265
+#: daemon/slave.c:1218 daemon/slave.c:1262 daemon/slave.c:1303
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr ""
 
-#: daemon/slave.c:1294
+#: daemon/slave.c:1333
 #, fuzzy
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
 msgstr ""
 "gdm_slave_greeter: No es pot inicialitzar un conducte cap al gdmgreeter"
 
-#: daemon/slave.c:1319
+#: daemon/slave.c:1365
 #, fuzzy, c-format
 msgid "gdm_slave_chooser: Couldn't set groupid to %d"
 msgstr "gdm_slave_greeter: No s'ha pogut definir groupid a %d"
 
-#: daemon/slave.c:1322
+#: daemon/slave.c:1368
 #, fuzzy, c-format
 msgid "gdm_slave_chooser: initgroups() failed for %s"
 msgstr "gdm_slave_greeter: Ha fallat el initgroups() per a %s"
 
-#: daemon/slave.c:1325
+#: daemon/slave.c:1371
 #, fuzzy, c-format
 msgid "gdm_slave_chooser: Couldn't set userid to %d"
 msgstr "gdm_slave_greeter: No s'ha pogut definir userid a %d"
 
-#: daemon/slave.c:1357
+#: daemon/slave.c:1403
 #, fuzzy
 msgid ""
 "Cannot start the chooser program,\n"
@@ -713,29 +779,29 @@ msgstr ""
 "Proveu de registrar-vos per altres mitjans i\n"
 "d'editar el fitxer de configuració"
 
-#: daemon/slave.c:1361
+#: daemon/slave.c:1407
 #, fuzzy, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr ""
 "gdm_slave_greeter: S'ha produït un error en iniciar el rebedor a la pantalla "
 "%s"
 
-#: daemon/slave.c:1364
+#: daemon/slave.c:1410
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr "gdm_slave_chooser: No es pot bifurcar el procés gdmchooser"
 
-#: daemon/slave.c:1694
+#: daemon/slave.c:1742
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: L'usuari ha passat l'autenticació, però el getpwnam"
 "(%s) ha fallat!"
 
-#: daemon/slave.c:1816
+#: daemon/slave.c:1864
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr "gdm_slave_session_start: Autenticació acabada. 'Whacking greeter'"
 
-#: daemon/slave.c:1831
+#: daemon/slave.c:1879
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -743,35 +809,35 @@ msgstr ""
 "gdm_slave_session_start: L'execució del script de Presessió ha retornat "
 "major que 0. S'està avortant."
 
-#: daemon/slave.c:1857
+#: daemon/slave.c:1905
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr ""
 "gdm_slave_session_start: S'ha produït un error en bifurcar la sessió de "
 "l'usuari."
 
-#: daemon/slave.c:1902
+#: daemon/slave.c:1950
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: No s'ha pogut setgid %d. S'està avortant."
 
-#: daemon/slave.c:1906
+#: daemon/slave.c:1954
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr ""
 "gdm_slave_session_start: Ha fallat el initgroups() per a %s. S'està avortant."
 
-#: daemon/slave.c:1912
+#: daemon/slave.c:1960
 #, c-format
 msgid "%s: Could not open session for %s. Aborting."
 msgstr "%s: No s'ha pogut obrir la sessió per a %s. S'està avortant."
 
-#: daemon/slave.c:1918
+#: daemon/slave.c:1966
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: No ha pogut esdevenir %s. S'està avortant."
 
 #. yaikes
-#: daemon/slave.c:1996
+#: daemon/slave.c:2036
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -779,7 +845,7 @@ msgstr ""
 "gdm_slave_session_start: No es troba el gnome-session per a una sessió gnome "
 "infal·lible, s'està provant amb el xterm."
 
-#: daemon/slave.c:2001
+#: daemon/slave.c:2041
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -788,7 +854,7 @@ msgstr ""
 "No s'ha trobat la instal·lació de GNOME,\n"
 "es provarà d'executar la sessió \"xterm Infalible\"."
 
-#: daemon/slave.c:2007
+#: daemon/slave.c:2047
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -801,11 +867,11 @@ msgstr ""
 "de Gnome sense cap execució de la seqüència d'inicialització.\n"
 "Això es fa per arreglar problemes a la instal·lació."
 
-#: daemon/slave.c:2026
+#: daemon/slave.c:2066
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "No es pot trobar \"xterm\" per iniciar una sessió infal·lible."
 
-#: daemon/slave.c:2033
+#: daemon/slave.c:2073
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -821,16 +887,16 @@ msgstr ""
 "Per sortir de l'emulador del terminal, escriviu\n"
 "'sortir' i retorn a la finestra."
 
-#: daemon/slave.c:2055
+#: daemon/slave.c:2095
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "S'està executant %s per %s a %s"
 
-#: daemon/slave.c:2067
+#: daemon/slave.c:2109
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: L'usuari no està autoritzat a entrar-hi"
 
-#: daemon/slave.c:2069
+#: daemon/slave.c:2111
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -838,12 +904,12 @@ msgstr ""
 "L'administrador del systema ha\n"
 "inhabilitat el vostre compte."
 
-#: daemon/slave.c:2072
+#: daemon/slave.c:2114
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: no s'ha pogut trobar/executar la sessió `%s'"
 
-#: daemon/slave.c:2077
+#: daemon/slave.c:2119
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -855,12 +921,12 @@ msgstr ""
 "la llista de sessions disponibles a la finestra\n"
 "de diàleg de l'entrada."
 
-#: daemon/slave.c:2085
+#: daemon/slave.c:2127
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: No s'ha pogut iniciar la sessió `%s'"
 
-#: daemon/slave.c:2088
+#: daemon/slave.c:2130
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -871,58 +937,51 @@ msgstr ""
 "inhabilitat la vostra entrada. També pot indicar\n"
 "un error en el vostre compte.\n"
 
-#: daemon/slave.c:2243
+#: daemon/slave.c:2291
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ha fallat el ping a %s, s'està donant un bon cop a la pantalla!"
 
-#: daemon/slave.c:2346
+#: daemon/slave.c:2394
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 "gdm_slave_xioerror_handler: S'ha produït un error X fatal - S'està "
 "reinicialitzant %s"
 
-#: daemon/slave.c:2505
+#: daemon/slave.c:2564
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Ha fallat en iniciar-se: %s"
 
-#: daemon/slave.c:2509
+#: daemon/slave.c:2568
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: No es pot bifurcar el procés de la seqüència!"
 
-#: daemon/slave.c:2631
+#: daemon/slave.c:2692
 #, fuzzy
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "gdm_parse_enriched_string: La cadena és massa llarga!"
 
-#: daemon/slave.c:2650
+#: daemon/slave.c:2712
 #, fuzzy, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "gdm_slave_exec_script: Ha fallat en iniciar-se: %s"
 
-#: daemon/slave.c:2655
+#: daemon/slave.c:2717
 #, fuzzy
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_slave_exec_script: No es pot bifurcar el procés de la seqüència!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:69 daemon/verify-pam.c:172 daemon/verify-shadow.c:68
-#: gui/gdmlogin.c:3002
+#: gui/gdmlogin.c:3015
 msgid "Username:"
 msgstr ""
 
-#: daemon/verify-pam.c:189 daemon/verify-pam.c:335 daemon/verify-pam.c:407
-#: daemon/verify-pam.c:471
-msgid "Can't find /etc/pam.d/gdm!"
-msgstr "No es pot trobar /etc/pam.d/gdm!"
-
-#: daemon/verify-pam.c:198 daemon/verify-pam.c:342 daemon/verify-pam.c:416
-#: daemon/verify-pam.c:480
-#, c-format
-msgid "Can't set PAM_TTY=%s"
-msgstr "No es pot especificar PAM_TTY=%s"
+#: daemon/verify-crypt.c:91 daemon/verify-shadow.c:100
+msgid "Password: "
+msgstr "Contrasenya: "
 
 #: daemon/verify-crypt.c:108 daemon/verify-pam.c:207
 #: daemon/verify-shadow.c:117
@@ -930,11 +989,60 @@ msgstr "No es pot especificar PAM_TTY=%s"
 msgid "Couldn't authenticate user"
 msgstr "No s'ha pogut autenticar %s"
 
+#: daemon/verify-crypt.c:111 daemon/verify-crypt.c:131 daemon/verify-pam.c:288
+#: daemon/verify-shadow.c:120 daemon/verify-shadow.c:140
+msgid ""
+"\n"
+"Incorrect username or password.  Letters must be typed in the correct case.  "
+"Please be sure the Caps Lock key is not enabled"
+msgstr ""
+
+#: daemon/verify-crypt.c:118 daemon/verify-crypt.c:138
+#: daemon/verify-crypt.c:159 daemon/verify-crypt.c:182
+#: daemon/verify-shadow.c:127 daemon/verify-shadow.c:147
+#: daemon/verify-shadow.c:168 daemon/verify-shadow.c:191
+msgid "Login incorrect"
+msgstr "Entrada incorrecta"
+
 #: daemon/verify-crypt.c:149 daemon/verify-pam.c:220
 #: daemon/verify-shadow.c:158
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "L'entrada del superusuari s'ha rebutjat a la pantalla '%s'"
+
+#: daemon/verify-crypt.c:152 daemon/verify-shadow.c:161
+#, fuzzy
+msgid "The system administrator is not allowed to login from this screen"
+msgstr ""
+"L'administrador del systema ha\n"
+"inhabilitat el vostre compte."
+
+#: daemon/verify-crypt.c:172 daemon/verify-pam.c:240
+#: daemon/verify-shadow.c:181
+#, c-format
+msgid "User %s not allowed to log in"
+msgstr "L'usuari %s no està autoritzat a entrar-hi."
+
+#: daemon/verify-crypt.c:175 daemon/verify-pam.c:243
+#: daemon/verify-shadow.c:184
+#, fuzzy
+msgid ""
+"\n"
+"The system administrator has disabled your account."
+msgstr ""
+"L'administrador del systema ha\n"
+"inhabilitat el vostre compte."
+
+#: daemon/verify-pam.c:189 daemon/verify-pam.c:338 daemon/verify-pam.c:410
+#: daemon/verify-pam.c:474
+msgid "Can't find /etc/pam.d/gdm!"
+msgstr "No es pot trobar /etc/pam.d/gdm!"
+
+#: daemon/verify-pam.c:198 daemon/verify-pam.c:345 daemon/verify-pam.c:419
+#: daemon/verify-pam.c:483
+#, c-format
+msgid "Can't set PAM_TTY=%s"
+msgstr "No es pot especificar PAM_TTY=%s"
 
 #: daemon/verify-pam.c:224
 #, fuzzy
@@ -945,356 +1053,227 @@ msgstr ""
 "L'administrador del systema ha\n"
 "inhabilitat el vostre compte."
 
-#: daemon/verify-crypt.c:171 daemon/verify-pam.c:239
-#: daemon/verify-shadow.c:180
-#, c-format
-msgid "User %s not allowed to log in"
-msgstr "L'usuari %s no està autoritzat a entrar-hi."
-
-#: daemon/verify-crypt.c:174 daemon/verify-pam.c:242
-#: daemon/verify-shadow.c:183
-#, fuzzy
-msgid ""
-"\n"
-"The system administrator has disabled your account."
-msgstr ""
-"L'administrador del systema ha\n"
-"inhabilitat el vostre compte."
-
-#: daemon/verify-pam.c:260 daemon/verify-pam.c:355
+#: daemon/verify-pam.c:261 daemon/verify-pam.c:358
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "No s'ha pogut definir el gestor de compte per a %s"
 
-#: daemon/verify-crypt.c:111 daemon/verify-crypt.c:131 daemon/verify-pam.c:287
-#: daemon/verify-shadow.c:120 daemon/verify-shadow.c:140
-msgid ""
-"\n"
-"Incorrect username or password.  Letters must be typed in the correct case.  "
-"Please be sure the Caps Lock key is not enabled"
-msgstr ""
-
-#: daemon/verify-pam.c:293
+#: daemon/verify-pam.c:294
 msgid "Authentication failed"
 msgstr "Ha fallat l'autenticació."
 
-#: daemon/verify-pam.c:453
+#: daemon/verify-pam.c:456
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
 msgstr ""
 "gdm_verify_check: No es pot trobar el fitxer de configuració PAM per al gdm"
 
-#: daemon/verify-pam.c:487
+#: daemon/verify-pam.c:490
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "No s'han pogut definir les credencials per a %s"
 
-#: daemon/verify-pam.c:495
+#: daemon/verify-pam.c:498
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "No s'ha pogut obrir la sessió per a %s"
 
-#: daemon/verify-crypt.c:91 daemon/verify-shadow.c:100
-msgid "Password: "
-msgstr "Contrasenya: "
-
-#: daemon/verify-crypt.c:118 daemon/verify-crypt.c:138
-#: daemon/verify-crypt.c:159 daemon/verify-crypt.c:181
-#: daemon/verify-shadow.c:127 daemon/verify-shadow.c:147
-#: daemon/verify-shadow.c:168 daemon/verify-shadow.c:190
-msgid "Login incorrect"
-msgstr "Entrada incorrecta"
-
-#: daemon/verify-crypt.c:152 daemon/verify-shadow.c:161
-#, fuzzy
-msgid "The system administrator is not allowed to login from this screen"
-msgstr ""
-"L'administrador del systema ha\n"
-"inhabilitat el vostre compte."
-
-#: daemon/xdmcp.c:232
+#: daemon/xdmcp.c:236
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr ""
 
-#: daemon/xdmcp.c:267
+#: daemon/xdmcp.c:272
 #, fuzzy, c-format
 msgid "%s: Could not get server hostname: %s!"
 msgstr "gdm_xdmcp_init: No s'ha pogut obtenir el nom del servidor central: %s"
 
-#: daemon/xdmcp.c:274
+#: daemon/xdmcp.c:279
 #, fuzzy, c-format
 msgid "%s: Could not get address from hostname!"
 msgstr "gdm_xdmcp_init: No s'ha pogut obtenir el nom del servidor central: %s"
 
-#: daemon/xdmcp.c:340
+#: daemon/xdmcp.c:361
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr "gdm_xdmcp_init: No s'ha pogut obtenir el nom del servidor central: %s"
 
-#: daemon/xdmcp.c:357
+#: daemon/xdmcp.c:378
 msgid "gdm_xdmcp_init: Could not create socket!"
 msgstr "gdm_xdmcp_init: No s'ha pogut crear el sòcol!"
 
-#: daemon/xdmcp.c:367
+#: daemon/xdmcp.c:388
 msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
 msgstr "gdm_xdmcp_init: No s'ha pogut enllaçar amb el sòcol de l'XDMCP!"
 
-#: daemon/xdmcp.c:423
+#: daemon/xdmcp.c:444
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
 msgstr ""
 "gdm_xdmcp_decode: No s'ha pogut crear la memòria intermèdia de l'XDMCP!"
 
-#: daemon/xdmcp.c:428
+#: daemon/xdmcp.c:449
 msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode: No s'ha pogut llegir la capçalera de l'XDMCP!"
 
-#: daemon/xdmcp.c:434
+#: daemon/xdmcp.c:455
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: Versió incorrecta de l'XDMCP!"
 
-#: daemon/xdmcp.c:483
+#: daemon/xdmcp.c:504
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr ""
 "gdm_xdmcp_decode_packet: No es coneix el codi d'operació des de l'ordinador "
 "central %s"
 
-#: daemon/xdmcp.c:502
+#: daemon/xdmcp.c:523
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_query: No s'ha pogut extreure la llista d'autenticació del "
 "paquet"
 
-#: daemon/xdmcp.c:514
+#: daemon/xdmcp.c:535
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: Hi ha un error a la suma de comprovació"
 
-#: daemon/xdmcp.c:757
+#: daemon/xdmcp.c:778
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: No s'ha pogut llegir l'adreça de la pantalla"
 
-#: daemon/xdmcp.c:764
+#: daemon/xdmcp.c:785
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: No s'ha pogut llegir el número del port de "
 "la pantalla"
 
-#: daemon/xdmcp.c:772
+#: daemon/xdmcp.c:793
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: No s'ha pogut extreure la llista "
 "d'autenticació del paquet"
 
-#: daemon/xdmcp.c:788
+#: daemon/xdmcp.c:809
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Hi ha un error a la suma de comprovació"
 
-#: daemon/xdmcp.c:794
+#: daemon/xdmcp.c:815
 #, fuzzy
 msgid "gdm_xdmcp_handle_forward_query: Bad address"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: No s'ha pogut llegir l'adreça de la pantalla"
 
-#: daemon/xdmcp.c:861
+#: daemon/xdmcp.c:918
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Consulta de l'XDMCP denegada per l'ordinador central %s"
 
-#: daemon/xdmcp.c:863
-msgid "Display not authorized to connect"
-msgstr "La pantalla no està autoritzada a connectar-se"
-
-#: daemon/xdmcp.c:942
+#: daemon/xdmcp.c:998
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr ""
 "gdm_xdmcp_handle_request: S'ha aconseguit la SOL·LICITUD des de "
 "l'ordinadorcentral prohibit %s"
 
-#: daemon/xdmcp.c:949
+#: daemon/xdmcp.c:1005
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr ""
 "gdm_xdmcp_handle_request: No s'ha pogut llegir el número de la pantalla"
 
-#: daemon/xdmcp.c:955
+#: daemon/xdmcp.c:1011
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: No s'ha pogut llegir el tipus de connexió"
 
-#: daemon/xdmcp.c:961
+#: daemon/xdmcp.c:1017
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr "gdm_xdmcp_handle_request: No s'ha pogut llegir l'adreça del client"
 
-#: daemon/xdmcp.c:968
+#: daemon/xdmcp.c:1024
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr ""
 "gdm_xdmcp_handle_request: No s'han pogut llegir els noms d'autenticació"
 
-#: daemon/xdmcp.c:976
+#: daemon/xdmcp.c:1032
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr ""
 "gdm_xdmcp_handle_request: No s'han pogut llegir les dades d'autenticació"
 
-#: daemon/xdmcp.c:985
+#: daemon/xdmcp.c:1041
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr ""
 "gdm_xdmcp_handle_request: No s'ha pogut llegir la llista d'autorització"
 
-#: daemon/xdmcp.c:1000
+#: daemon/xdmcp.c:1056
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr ""
 "gdm_xdmcp_handle_request: No s'ha pogut llegir la identificació del fabricant"
 
-#: daemon/xdmcp.c:1023
+#: daemon/xdmcp.c:1079
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: La suma de comprovació ha fallat des de %s"
 
-#: daemon/xdmcp.c:1170
+#: daemon/xdmcp.c:1247
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr ""
 "gdm_xdmcp_handle_manage: S'ha aconseguit el control des de l'ordinador "
 "central prohibit %s"
 
-#: daemon/xdmcp.c:1177
+#: daemon/xdmcp.c:1254
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr ""
 "gdm_xdmcp_handle_manage: No s'ha pogut llegir la identificació de la sessió"
 
-#: daemon/xdmcp.c:1183
+#: daemon/xdmcp.c:1260
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: No s'ha pogut llegir el número de la pantalla"
 
-#: daemon/xdmcp.c:1192
+#: daemon/xdmcp.c:1269
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
 msgstr "gdm_xdmcp_handle_manage: No s'ha pogut llegir la classe de la pantalla"
 
-#: daemon/xdmcp.c:1243
+#: daemon/xdmcp.c:1320
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr ""
 "gdm_xdmcp_handle_manage: No s'ha pogut llegir el fitxer de registre per a la "
 "pantalla %s!"
 
-#: daemon/xdmcp.c:1279
+#: daemon/xdmcp.c:1357 daemon/xdmcp.c:1363
 #, fuzzy, c-format
-msgid "%s: Could not read hostname"
+msgid "%s: Could not read address"
 msgstr "No s'ha pogut especificar la màscara de la senyal!"
 
-#: daemon/xdmcp.c:1346
+#: daemon/xdmcp.c:1434
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr ""
 "gdm_xdmcp_handle_keepalive: S'ha aconseguit KEEPALIVE des de "
 "l'ordinadorcentral prohibit %s"
 
-#: daemon/xdmcp.c:1353
+#: daemon/xdmcp.c:1441
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr ""
 "gdm_xdmcp_handle_keepalive: No s'ha pogut llegir el número de la pantalla"
 
-#: daemon/xdmcp.c:1359
+#: daemon/xdmcp.c:1447
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr ""
 "gdm_xdmcp_handle_keepalive: No s'ha pogut llegir la identificació de la "
 "sessió"
 
-#: daemon/xdmcp.c:1557
+#: daemon/xdmcp.c:1646
 msgid "gdm_xdmcp_init: No XDMCP support"
 msgstr "gdm_xdmcp_init: no es permet l'ús de l'XDMCP"
 
-#: daemon/xdmcp.c:1564
+#: daemon/xdmcp.c:1653
 msgid "gdm_xdmcp_run: No XDMCP support"
 msgstr "gdm_xdmcp_init: no es permet l'ús de l'XDMCP"
 
-#: daemon/xdmcp.c:1570
+#: daemon/xdmcp.c:1659
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_decode: no es permet l'ús de l'XDMCP"
-
-#: daemon/errorgui.c:152
-msgid "gdm_error_box: Failed to execute self"
-msgstr ""
-
-#: daemon/errorgui.c:157
-msgid "gdm_error_box: Cannot fork to display error/info box"
-msgstr ""
-
-#: daemon/gdm-net.c:232
-#, fuzzy, c-format
-msgid "%s: Could not make socket"
-msgstr "gdm_xdmcp_init: No s'ha pogut crear el sòcol!"
-
-#: daemon/gdm-net.c:242
-#, fuzzy, c-format
-msgid "%s: Could not bind socket"
-msgstr "gdm_xdmcp_init: No s'ha pogut enllaçar amb el sòcol de l'XDMCP!"
-
-#: daemon/gdm-net.c:282
-#, fuzzy, c-format
-msgid "%s: Could not make FIFO"
-msgstr "gdm_xdmcp_init: No s'ha pogut fer FIFO per seleccionador"
-
-#: daemon/gdm-net.c:290
-#, fuzzy, c-format
-msgid "%s: Could not open FIFO"
-msgstr "gdm_xdmcp_init: No s'ha pogut obrir FIFO per seleccionador"
-
-#: gui/gdmphotosetup.c:76
-msgid ""
-"The face browser is not configured,\n"
-"please ask your system administrator to enable it\n"
-"in the GDM configurator program."
-msgstr ""
-"La cara de l'explorador no està configurada;\n"
-"si us plau, demaneu a l'administrador del sistema que us l'habiliti\n"
-"al programa configurador GDM."
-
-#: gui/gdmphotosetup.c:85
-msgid "Select a photo"
-msgstr "Seleccioneu una foto"
-
-#: gui/gdmphotosetup.c:90
-msgid "Select a photograph to show in the facebrowser:"
-msgstr "Seleccioneu una fotografia per mostrar-la a la cara de l'explorador:"
-
-#: gui/gdmphotosetup.c:95
-msgid "Browse"
-msgstr "Explorador"
-
-#: gui/gdmphotosetup.c:114
-msgid "No picture selected."
-msgstr "No s'ha seleccionat cap imatge."
-
-#: gui/gdmphotosetup.c:133
-#, c-format
-msgid ""
-"The picture is too large and the system administrator\n"
-"disallowed pictures larger then %d bytes to\n"
-"show in the face browser"
-msgstr ""
-"La imatge és massa gran i l'administrador del sistema\n"
-"no permet imatges més grans que %d bytes per\n"
-"mostrar-les a la cara de l'explorador"
-
-#: gui/gdmphotosetup.c:157
-#, c-format
-msgid ""
-"File %s cannot be open for reading\n"
-"Error: %s"
-msgstr ""
-"No es pot obrir el fitxer %s per llegir-lo\n"
-"Error: %s"
-
-#: gui/gdmphotosetup.c:172
-#, c-format
-msgid ""
-"File %s cannot be open for writing\n"
-"Error: %s"
-msgstr ""
-"No es pot obrir el fitxer %s per escriure\n"
-"Error: %s"
 
 #: gui/gdmchooser.c:64
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
@@ -1364,7 +1343,7 @@ msgstr ""
 "gdm_signals_init: S'ha produït un error en configurar el gestor del senyal "
 "TERM"
 
-#: gui/gdmchooser.c:762 gui/gdmlogin.c:3666
+#: gui/gdmchooser.c:762 gui/gdmlogin.c:3683
 msgid "Could not set signal mask!"
 msgstr "No s'ha pogut especificar la màscara de la senyal!"
 
@@ -1400,401 +1379,75 @@ msgid ""
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
 
-#: gui/gdmlogin.c:60
-msgid "AnotherLevel"
-msgstr "AnotherLevel"
-
-#. default is nicely translated
-#. Translators: default GNOME session
-#: gui/gdmlogin.c:61 gui/gdmlogin.c:1763 gui/gdmlogin.c:1785
-msgid "Default"
-msgstr "Per defecte"
-
-#: gui/gdmconfig-strings.c:202 gui/gdmlogin.c:62
-msgid "Failsafe"
-msgstr "Infalible"
-
-#: gui/gdmlogin.c:63
-msgid "Gnome"
-msgstr "Gnome"
-
-#: gui/gdmlogin.c:64
-msgid "KDE"
-msgstr "KDE"
-
-#: gui/gdmlogin.c:65
-msgid "XSession"
-msgstr "Sessió X"
-
-#: gui/gdmconfig-strings.c:215 gui/gdmlogin.c:66 gui/gdmlogin.c:1408
-msgid "Gnome Chooser"
-msgstr "Selector Gnome"
-
-#: gui/gdmlogin.c:67
-msgid "Last"
-msgstr "Últim"
-
-#: gui/gdmlogin.c:197
-#, c-format
-msgid "User %s will login in %d seconds"
-msgstr "L'usuari %s entrarà en %d segons"
-
-#: gui/gdmlogin.c:446
-msgid ""
-"Doubleclick here to un-iconify the login window, so that you may log in."
-msgstr ""
-"Feu doble clic aquí per desiconificar la finestra d'entrada, així podreu "
-"registrar-vos."
-
-#: gui/gdmlogin.c:525 gui/gdmlogin.c:531 gui/gdmlogin.c:538
-#, c-format
-msgid "Welcome to %s"
-msgstr "Benvingut a %s"
-
-#: gui/gdmlogin.c:536
-msgid "gdm_parse_enriched_string: String too long!"
-msgstr "gdm_parse_enriched_string: La cadena és massa llarga!"
-
-#: gui/gdmlogin.c:675
-msgid ""
-"Could not fork a new process!\n"
-"\n"
-"You likely won't be able to log in either."
-msgstr ""
-"No s'ha pogut bifurcar un nou procés!\n"
-"\n"
-"Probablement tampoc podreu entrar."
-
-#: gui/gdmlogin.c:722
-msgid "Are you sure you want to reboot the machine?"
-msgstr "Esteu segur que voleu tornar a arrencar la màquina?"
-
-#: gui/gdmlogin.c:734
-#, fuzzy
-msgid "Are you sure you want to shut down the machine?"
-msgstr "Esteu segur que voleu parar la màquina?"
-
-#: gui/gdmlogin.c:745
-#, fuzzy
-msgid "Are you sure you want to suspend the machine?"
-msgstr "Esteu segur que voleu tornar a arrencar la màquina?"
-
-#: gui/gdmlogin.c:759
-#, c-format
-msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
-msgstr ""
-"gdm_login_parse_config: el fitxer de configuració %s no hi és. S'estan "
-"utilitzant els valors per defecte."
-
-#: gui/gdmlogin.c:825
-msgid "TimedLoginDelay was less then 5.  I'll just use 5."
-msgstr "El TimedLoginDelay era menor que 5. Utilitzaré 5."
-
-#: gui/gdmlogin.c:885 gui/gdmlogin.c:1456
-msgid "Failsafe Gnome"
-msgstr "Gnome infal·lible"
-
-#: gui/gdmlogin.c:887 gui/gdmlogin.c:1481
-msgid "Failsafe xterm"
-msgstr "Xterm infal·lible"
-
-#: gui/gdmlogin.c:933
-#, c-format
-msgid ""
-"Your preferred session type %s is not installed on this machine.\n"
-"Do you wish to make %s the default for future sessions?"
-msgstr ""
-"El vostre tipus preferit de sessió %s no està instal·lat en aquesta "
-"màquina.\n"
-"Voleu fer que %s sigui el predeterminat a les properes sessions?"
-
-#: gui/gdmlogin.c:955 gui/gdmlogin.c:1043
-#, c-format
-msgid ""
-"You have chosen %s for this session, but your default setting is %s.\n"
-"Do you wish to make %s the default for future sessions?"
-msgstr ""
-"Heu triat %s per a aquesta sessió, però la vostra configuració "
-"predeterminada és %s.\n"
-"Voleu fer que %s sigui la predeterminada a les properes sessions?"
-
-#. if !GdmShowLastSession then our saved session is
-#. * irrelevant, we are in "switchdesk mode"
-#. * and the relevant thing is the saved session
-#. * in .Xclients
+#. EOF
 #.
-#: gui/gdmlogin.c:971
-#, c-format
-msgid ""
-"You have chosen %s for this session.\n"
-"If you wish to make %s the default for future sessions,\n"
-"run the 'switchdesk' utility\n"
-"(System->Desktop Switching Tool from the panel menu)."
-msgstr ""
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: gui/gdmchooser-strings.c:7
+msgid "GDM Host Chooser"
+msgstr "Selector d'odinador cntral GDM"
 
-#: gui/gdmlogin.c:1265
-#, c-format
-msgid "%s session selected"
-msgstr "%s sessió seleccionada"
+#: gui/gdmchooser-strings.c:8
+msgid "Open a session to the selected host"
+msgstr "Obre una sessió a l'ordinador central seleccionat"
 
-#: gui/gdmlogin.c:1298
-msgid "Log in using the session that you have used last time you logged in"
-msgstr ""
-"Per a registrar-vos utilitzeu la sessió que hagueu emprat l'últim cop que us "
-"heu registrat."
+#: gui/gdmchooser-strings.c:9
+msgid "Connect"
+msgstr "Connecta"
 
-#: gui/gdmlogin.c:1311
-msgid "gdm_login_session_init: Session script directory not found!"
-msgstr ""
-"gdm_session_init: No s'ha trobat el directori de seqüències de la sessió!"
+#: gui/gdmchooser-strings.c:10
+msgid "Probe the network"
+msgstr "Sondeja la xarxa"
 
-#: gui/gdmlogin.c:1396
-msgid ""
-"This session will log you directly into GNOME, into your current session."
-msgstr "Aquesta sessió us registrarà directament a GNOME, a la sessió actual. "
+#: gui/gdmchooser-strings.c:11
+msgid "Rescan"
+msgstr "Torna a escanejar"
 
-#: gui/gdmlogin.c:1411
-msgid ""
-"This session will log you into GNOME and it will let you choose which one of "
-"the GNOME sessions you want to use."
-msgstr ""
-"Aquesta sessió us registrarà a GNOME i us deixarà triar quina de les "
-"sessions GNOME voleu utilitzar."
+#: gui/gdmchooser-strings.c:12
+msgid "How to use this application"
+msgstr "Com utilitzar aquesta aplicació"
 
-#: gui/gdmlogin.c:1446
-msgid "Yaikes, nothing found in the session directory."
-msgstr "Yaikes no troba res en el directori de la sessió."
+#: gui/gdmchooser-strings.c:13
+msgid "Help"
+msgstr "Ajuda"
 
-#: gui/gdmlogin.c:1458
-msgid ""
-"This is a failsafe session that will log you into GNOME.  No startup scripts "
-"will be read and it is only to be used when you can't log in otherwise.  "
-"GNOME will use the 'Default' session."
-msgstr ""
-"Aquesta és una sessió infal·lible que us farà entrar al GNOME. No es llegirà "
-"cap seqüència d'inicialització i només es faran servir si no hi podeu "
-"entrar. GNOME utilitzarà la sessió 'Per defecte'."
+#: gui/gdmchooser-strings.c:14
+msgid "Exit the application"
+msgstr "Surt de l'aplicació"
 
-#: gui/gdmlogin.c:1483
-msgid ""
-"This is a failsafe session that will log you into a terminal.  No startup "
-"scripts will be read and it is only to be used when you can't log in "
-"otherwise.  To exit the terminal, type 'exit'."
-msgstr ""
-"Aquesta és una sessió infal·lible que us farà entrar al terminal. No es "
-"llegirà cap seqüència d'inicialització i només es faran servir si no hi "
-"podeu entrar. Per sortir del terminal escriviu 'sortir'."
-
-#: gui/gdmlogin.c:1504
-msgid "No default session link found. Using Failsafe GNOME.\n"
-msgstr ""
-"No s'ha trobat l'enllaç de la sessió per defecte. S'està utilitzant el GNOME "
-"Failsafe.\n"
-
-#: gui/gdmlogin.c:1544
-#, c-format
-msgid "%s language selected"
-msgstr "%s és el llenguatge seleccionat"
-
-#: gui/gdmlogin.c:1582
-msgid "Log in using the language that you have used last time you logged in"
-msgstr ""
-"Entreu utilitzant l'idioma que heu fet servir l'última vegada que hagueu "
-"entrat"
-
-#: gui/gdmlogin.c:1603
-msgid "Other"
-msgstr "Altres"
-
-#: gui/gdmlogin.c:1723 gui/gdmlogin.c:1732
-msgid "Select GNOME session"
-msgstr "Sessió GNOME seleccionada"
-
-#: gui/gdmlogin.c:1799
-msgid "Create new session"
-msgstr "Crea una sessió nova"
-
-#: gui/gdmconfig-strings.c:274 gui/gdmlogin.c:1808
-msgid "Name: "
-msgstr "Nom: "
-
-#. Translators: this is to remember the chosen gnome session
-#. * for next time
-#: gui/gdmlogin.c:1829
-msgid "Remember this setting"
-msgstr "Recorda aquest paràmetre"
-
-#. translators:  This is a nice and evil eggie text, translate
-#. * to your favourite currency
-#: gui/gdmlogin.c:2122
-msgid "Please insert 25 cents to log in."
-msgstr "Si us plau, inseriu 5 durets per entrar-hi."
-
-#: gui/gdmlogin.c:2449
-msgid "GNOME Desktop Manager"
-msgstr "Gestor d'escriptori GNOME"
-
-#: gui/gdmlogin.c:2457
-#, c-format
-msgid "Can't open icon file: %s. Suspending iconify feature!"
-msgstr ""
-"No es pot obrir el fitxer d'icones: %s. S'està anul·lant la característica "
-"d'iconificació!"
-
-#: gui/gdmlogin.c:2479
-msgid "Iconify the login window"
-msgstr "Converteix la finestra d'entrada en una icona"
-
-#: gui/gdmlogin.c:2538
-msgid "%a %b %d, %I:%M %p"
-msgstr "%a %b %d, %I:%M %p"
-
-#: gui/gdmlogin.c:2596
-msgid "Finger"
-msgstr ""
-
-#: gui/gdmlogin.c:2666
-msgid "GDM Login"
-msgstr "Entrada GDM"
-
-#: gui/gdmlogin.c:2712
-msgid "Session"
-msgstr "Sessió"
-
-#: gui/gdmlogin.c:2723
-msgid "Language"
-msgstr "Llenguatge"
-
-#: gui/gdmlogin.c:2737
-msgid "Configure..."
-msgstr "Configura..."
-
-#: gui/gdmlogin.c:2744
-msgid ""
-"Configure GDM (this login manager). This will require the root password."
-msgstr ""
-"Configura el GDM (aquest gestor d'entrades). Això requerirà la contrasenya "
-"arrel."
-
-#: gui/gdmlogin.c:2751
-msgid "Reboot..."
-msgstr "Torna a arrencar..."
-
-#: gui/gdmlogin.c:2758
-msgid "Reboot your computer"
-msgstr "Torna a arrencar l'ordinador"
-
-#: gui/gdmlogin.c:2764
-msgid "Shut down..."
-msgstr ""
-
-#: gui/gdmlogin.c:2771
-msgid "Shut down your computer so that you may turn it off."
-msgstr "Tanca l'ordinador per poder apagar-lo"
-
-#: gui/gdmlogin.c:2778
-msgid "Suspend..."
-msgstr ""
-
-#: gui/gdmlogin.c:2785
-#, fuzzy
-msgid "Suspend your computer"
-msgstr "Torna a arrencar l'ordinador"
-
-#: gui/gdmconfig.c:58 gui/gdmlogin.c:2791
-msgid "System"
-msgstr "Sistema"
-
-#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2803
+#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2810
 msgid "Quit"
 msgstr "Surt"
 
-#. I think I'll add the buttons next to this
-#: gui/gdmlogin.c:3038
-msgid "Please enter your login"
-msgstr "Si us plau, introduïu la informació d'entrada"
+#: gui/gdmchooser-strings.c:16 gui/gdmconfig-strings.c:16
+msgid " "
+msgstr " "
 
-#: gui/gdmlogin.c:3279
-#, c-format
-msgid "Can't open DefaultImage: %s. Suspending face browser!"
-msgstr ""
-"No es pot obrir DefaultImage: %s. S'està anul·lant l'explorador de cares!"
+#: gui/gdmchooser-strings.c:17
+msgid "Most recently queried hosts"
+msgstr "Els ordinadors centrals consultats més recentment"
 
-#: gui/gdmlogin.c:3537 gui/gdmlogin.c:3564
-#, c-format
+#: gui/gdmchooser-strings.c:18
 msgid ""
-"The greeter version (%s) does not match the daemon version.\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
-msgstr ""
-
-#: gui/gdmlogin.c:3571 gui/gdmlogin.c:3606
-#, fuzzy
-msgid "Reboot"
-msgstr "Torna a arrencar..."
-
-#: gui/gdmlogin.c:3598
-#, c-format
-msgid ""
-"The greeter version (%s) does not match the daemon version (%s).\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
-msgstr ""
-
-#: gui/gdmlogin.c:3605
-#, fuzzy
-msgid "Restart"
-msgstr "Torna a escanejar"
-
-#: gui/gdmlogin.c:3643
-msgid "main: Error setting up HUP signal handler"
-msgstr "main: S'ha produït un error en configurar el gestor del senyal HUP "
-
-#: gui/gdmlogin.c:3646
-msgid "main: Error setting up INT signal handler"
-msgstr "main: S'ha produït un error en configurar el gestor del senyal INT"
-
-#: gui/gdmlogin.c:3649
-msgid "main: Error setting up TERM signal handler"
-msgstr "main: S'ha produït un error en configurar el gestor del senyal TERM"
-
-#: gui/gdmlogin.c:3657
-msgid "main: Error setting up CHLD signal handler"
-msgstr "main: S'ha produït un error en configurar el gestor del senyal CHLD"
-
-#: gui/gdmlogin.c:3722
-msgid ""
-"Your session directory is missing or empty!\n"
+"The main area of this application shows the hosts on the local\n"
+"network that have \"XDMCP\" enabled. This allows users to login\n"
+"remotely to other machines as if they were logged on using the\n"
+"console.\n"
 "\n"
-"There are two available sessions you can use, but\n"
-"you should log in and correct the gdm configuration."
+"You can rescan the network for new hosts by clicking 'rescan'.\n"
+"When you have selected a host click \"Connect\" to open a session\n"
+"to that machine."
 msgstr ""
-"El vostre directori de la sessió ha desaparegut o és buit!\n"
-"\n"
-"Hi ha dues sessions disponibles que podeu usar, però\n"
-"haureu d'entrar i corregir la configuració del gdm."
+"L'àrea principal d'aquesta aplicació mostra els ordinadors centrals\n"
+"a la xarxa local que han habilitat l'\"XDMCP\". Això permet als usuaris\n"
+"entrar remotament a altres màquines com si haguessin entrat utilitzant\n"
+"consola."
 
-#: gui/gdmlogin.c:3738
-msgid ""
-"The configuration file contains an invalid command\n"
-"line for the login dialog, and thus I ran the\n"
-"default command.  Please fix your configuration."
-msgstr ""
-"El fitxer de configuració conté una línia d'ordre invàlida\n"
-"per al diàleg d'entrada, i per això he executat\n"
-"l'ordre per defecte. Si us plau, arregleu la configuració."
-
-#: gui/gdmlogin.c:3755
-msgid ""
-"The configuration was not found.  GDM is using\n"
-"defaults to run this session.  You should log in\n"
-"and create a configuration file with the GDM\n"
-"configuration program."
-msgstr ""
-"No s'ha trobat la configuració. El GDM està utilitzant\n"
-"valors per defecte per executar aquesta sessió. Hauríeu d'entrar\n"
-"i crear un fitxer de configuració amb el programa de configuració\n"
-"del GDM."
+#: gui/gdmchooser-strings.c:26
+msgid "Information"
+msgstr "Informació"
 
 #. 3 user levels are present in the CList
 #: gui/gdmconfig.c:56
@@ -1804,6 +1457,10 @@ msgstr "Bàsic"
 #: gui/gdmconfig.c:57
 msgid "Expert"
 msgstr "Expert"
+
+#: gui/gdmconfig.c:58 gui/gdmlogin.c:2796
+msgid "System"
+msgstr "Sistema"
 
 #: gui/gdmconfig.c:60
 msgid ""
@@ -1900,7 +1557,7 @@ msgstr ""
 msgid "GNOME Display Manager Configurator"
 msgstr "Configurador del gestor de pantalla GNOME"
 
-#: gui/gdmconfig.c:726
+#: gui/gdmconfig.c:727
 #, c-format
 msgid ""
 "The configuration file: %s\n"
@@ -1909,37 +1566,37 @@ msgstr ""
 "No existeix el fitxer de configuració: %s !\n"
 "S'està utilitzant els valors per defecte."
 
-#: gui/gdmconfig.c:737 gui/gdmconfig.c:1089 gui/gdmconfig.c:1901
-#: gui/gdmconfig.c:2123 gui/gdmflexiserver.c:269
+#: gui/gdmconfig.c:738 gui/gdmconfig.c:1091 gui/gdmconfig.c:1955
+#: gui/gdmconfig.c:2177 gui/gdmflexiserver.c:365
 #, fuzzy
 msgid "Standard server"
 msgstr "Afegeix el servidor"
 
-#: gui/gdmconfig.c:936
+#: gui/gdmconfig.c:939
 msgid "Error reading session script!"
 msgstr "S'ha produït un error en llegir la seqüència de la sessió!"
 
-#: gui/gdmconfig.c:939
+#: gui/gdmconfig.c:942
 msgid "Error reading this session script"
 msgstr "S'ha produït un error en llegir aquesta seqüència de la sessió"
 
-#: gui/gdmconfig.c:1048 gui/gdmconfig.c:1094 gui/gdmconfig.c:1885
-#: gui/gdmconfig.c:1963 gui/gdmconfig.c:1979
+#: gui/gdmconfig.c:1050 gui/gdmconfig.c:1096 gui/gdmconfig.c:1939
+#: gui/gdmconfig.c:2017 gui/gdmconfig.c:2033
 msgid "Yes"
 msgstr ""
 
-#: gui/gdmconfig.c:1050 gui/gdmconfig.c:1967 gui/gdmconfig.c:1981
+#: gui/gdmconfig.c:1052 gui/gdmconfig.c:2021 gui/gdmconfig.c:2035
 #, fuzzy
 msgid "No"
 msgstr "Núm."
 
-#: gui/gdmconfig.c:1151
+#: gui/gdmconfig.c:1127
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse_most: Hi ha una línia del servidor incorrecta al fitxer de "
 "configuració. S'està ignorant!"
 
-#: gui/gdmconfig.c:1275
+#: gui/gdmconfig.c:1309
 #, fuzzy
 msgid ""
 "The applied settings cannot take effect until gdm\n"
@@ -1955,15 +1612,15 @@ msgstr ""
 "Això tancarà totes les sessions actuals i\n"
 "perdreu totes les dades que no s'hagin desat!"
 
-#: gui/gdmconfig.c:1281
+#: gui/gdmconfig.c:1315
 msgid "Restart after logout"
 msgstr ""
 
-#: gui/gdmconfig.c:1282
+#: gui/gdmconfig.c:1316
 msgid "Restart now"
 msgstr ""
 
-#: gui/gdmconfig.c:1292
+#: gui/gdmconfig.c:1326
 #, fuzzy
 msgid ""
 "Are you sure you wish to restart GDM\n"
@@ -1972,7 +1629,7 @@ msgstr ""
 "Esteu segur que desitjeu reiniciar el GDM\n"
 "i perdre qualsevol dada que no hagueu desat?"
 
-#: gui/gdmconfig.c:1300
+#: gui/gdmconfig.c:1334
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -1984,7 +1641,7 @@ msgstr ""
 "no tindran efecte fins que no es reiniciï el gdm o \n"
 "l'ordinador s'arrenqui de nou."
 
-#: gui/gdmconfig.c:1322
+#: gui/gdmconfig.c:1356
 msgid ""
 "You have not defined any local servers.\n"
 "Usually this is not a good idea unless you\n"
@@ -2002,7 +1659,7 @@ msgstr ""
 "\n"
 "Esteu segur que voleu aplicar aquests paràmetres?"
 
-#: gui/gdmconfig.c:1487
+#: gui/gdmconfig.c:1541
 #, c-format
 msgid ""
 "\n"
@@ -2013,7 +1670,7 @@ msgstr ""
 "No s'ha pogut suprimir la sessió %s\n"
 "   Error: %s"
 
-#: gui/gdmconfig.c:1523
+#: gui/gdmconfig.c:1577
 #, c-format
 msgid ""
 "\n"
@@ -2024,7 +1681,7 @@ msgstr ""
 "No s'ha pogut eliminar la sessió %s\n"
 "   Error: %s"
 
-#: gui/gdmconfig.c:1566
+#: gui/gdmconfig.c:1620
 #, c-format
 msgid ""
 "\n"
@@ -2035,7 +1692,7 @@ msgstr ""
 "No s'ha pogut escriure la sessió %s\n"
 "   Error: %s"
 
-#: gui/gdmconfig.c:1577
+#: gui/gdmconfig.c:1631
 #, c-format
 msgid ""
 "\n"
@@ -2046,7 +1703,7 @@ msgstr ""
 "No s'ha pogut escriure el contingut a la sessió %s\n"
 "   Error: %s"
 
-#: gui/gdmconfig.c:1602
+#: gui/gdmconfig.c:1656
 #, c-format
 msgid ""
 "\n"
@@ -2057,7 +1714,7 @@ msgstr ""
 "No s'ha pogut desenllaçar la sessió antiga per defecte\n"
 "   Error: %s"
 
-#: gui/gdmconfig.c:1641
+#: gui/gdmconfig.c:1695
 msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
@@ -2065,7 +1722,7 @@ msgstr ""
 "\n"
 "No s'ha pogut trobar un nom adecuat per l'enllaç de la sessió per defecte"
 
-#: gui/gdmconfig.c:1650
+#: gui/gdmconfig.c:1704
 #, c-format
 msgid ""
 "\n"
@@ -2076,7 +1733,7 @@ msgstr ""
 "No s'ha pogut enllaçar una nova sessió per defecte\n"
 "   Error: %s"
 
-#: gui/gdmconfig.c:1670
+#: gui/gdmconfig.c:1724
 msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
@@ -2085,7 +1742,7 @@ msgstr ""
 "sessió.\n"
 "El configurador pot ser que no s'hagi desat completament.\n"
 
-#: gui/gdmconfig.c:1690
+#: gui/gdmconfig.c:1744
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -2093,7 +1750,7 @@ msgstr ""
 "Això destruirà qualsevol canvi fet en aquesta sessió.\n"
 "Esteu segur que voleu fer això?"
 
-#: gui/gdmconfig.c:1701
+#: gui/gdmconfig.c:1755
 msgid ""
 "This will destroy any changes made in the configuration.\n"
 "Are you sure you want to do this?"
@@ -2101,23 +1758,23 @@ msgstr ""
 "Això destruirà qualsevol canvi fet a la configuració.\n"
 "Esteu segur que voleu fer-ho?"
 
-#: gui/gdmconfig.c:1922 gui/gdmconfig.c:2253
+#: gui/gdmconfig.c:1976 gui/gdmconfig.c:2307
 msgid "A command line must start with a forward slash ('/')"
 msgstr ""
 
-#: gui/gdmconfig.c:1926
+#: gui/gdmconfig.c:1980
 msgid "A descriptive server name must be supplied"
 msgstr ""
 
-#: gui/gdmconfig.c:2590
+#: gui/gdmconfig.c:2647
 msgid "A session name must be unique and not empty"
 msgstr "Un nom de la sessió ha de ser únic i no ha de ser buit"
 
-#: gui/gdmconfig.c:2603
+#: gui/gdmconfig.c:2660
 msgid "Enter a name for the new session"
 msgstr "Entreu un nom per a la sessió nova"
 
-#: gui/gdmconfig.c:2718
+#: gui/gdmconfig.c:2775
 msgid ""
 "You have modified the sessions directory.\n"
 "Your session changes will still get written\n"
@@ -2129,198 +1786,14 @@ msgstr ""
 "estaran escrits al directori vell fins que torneu\n"
 "a carregar de nou el diàleg de configuració."
 
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:36
-msgid "A-M|Catalan"
-msgstr "A-M|Català"
+#: gui/gdmconfig.desktop.in.h:1
+msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
+msgstr "Una aplicació gràfica per configurar el gestor de pantalla GNOME (GDM)"
 
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:38
-msgid "A-M|Chinese (simplified)"
-msgstr ""
+#: gui/gdmconfig.desktop.in.h:2
+msgid "GDM Configurator"
+msgstr "Configurador del GDM"
 
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:40
-msgid "A-M|Chinese (traditional)"
-msgstr ""
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:42
-msgid "A-M|Croatian"
-msgstr "A-M|Croat"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:44
-msgid "A-M|Czech"
-msgstr "N-Z|Txec"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:46
-msgid "A-M|Danish"
-msgstr "A-M|Danès"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:48
-msgid "A-M|Dutch"
-msgstr "A-M|Holandès"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:50
-msgid "A-M|English"
-msgstr "A-M|Anglès"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:52
-msgid "A-M|American English"
-msgstr "A-M|Anglès americà"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:54
-msgid "A-M|British English"
-msgstr "A-M|Anglès britànic"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:56
-msgid "A-M|Finnish"
-msgstr "A-M|Finès"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:58
-msgid "A-M|French"
-msgstr "A-M|Francès"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:60
-#, fuzzy
-msgid "A-M|Galician"
-msgstr "A-M|Italià"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:62
-msgid "A-M|German"
-msgstr "A-M|Alemany"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:64
-msgid "A-M|Greek"
-msgstr "A-M|Grec"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:66
-msgid "A-M|Hebrew"
-msgstr "A-M|Hebreu"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:68
-msgid "A-M|Hungarian"
-msgstr "A-M|Hongarès"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:70
-msgid "A-M|Icelandic"
-msgstr "A-M|Islandès"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:72
-msgid "A-M|Italian"
-msgstr "A-M|Italià"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:74
-msgid "A-M|Japanese"
-msgstr "A-M|Japonès"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:76
-msgid "A-M|Korean"
-msgstr "A-M|Coreà"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:78
-msgid "A-M|Lithuanian"
-msgstr "A-M|Lituà"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:80
-#, fuzzy
-msgid "N-Z|Norwegian (bokmal)"
-msgstr "N-Z|Noruec"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:82
-#, fuzzy
-msgid "N-Z|Norwegian (nynorsk)"
-msgstr "N-Z|Noruec"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:84
-msgid "N-Z|Polish"
-msgstr "N-Z|Polonès"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:86
-msgid "N-Z|Portuguese"
-msgstr "N-Z|Portuguès"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:88
-#, fuzzy
-msgid "N-Z|Brazilian Portuguese"
-msgstr "N-Z|Portuguès"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:90
-msgid "N-Z|Romanian"
-msgstr "N-Z|Romanès"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:92
-msgid "N-Z|Russian"
-msgstr "N-Z|Rus"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:94
-msgid "N-Z|Slovak"
-msgstr "A-M|Eslovac"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:96
-msgid "N-Z|Slovenian"
-msgstr "A-M|Eslovè"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:98
-msgid "N-Z|Spanish"
-msgstr "A-M|Espanyol"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:100
-msgid "N-Z|Swedish"
-msgstr "N-Z|Suec"
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:102
-msgid "N-Z|Turkish"
-msgstr "N-Z|Turc"
-
-#. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:104
-msgid "Other|POSIX/C English"
-msgstr "Altres|POSIX/C Anglès"
-
-#. This should be the same as in the front of the language strings
-#. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:231
-msgid "A-M"
-msgstr "A-M"
-
-#. This should be the same as in the front of the language strings
-#. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:239
-msgid "N-Z"
-msgstr "N-Z"
-
-#. EOF
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
@@ -2361,10 +1834,6 @@ msgstr "Aplica"
 #: gui/gdmconfig-strings.c:15 gui/gdmconfig-strings.c:132
 msgid "Options"
 msgstr "Opcions"
-
-#: gui/gdmchooser-strings.c:16 gui/gdmconfig-strings.c:16
-msgid " "
-msgstr " "
 
 #: gui/gdmconfig-strings.c:17
 msgid "basic_settings"
@@ -2807,7 +2276,7 @@ msgstr "Programa en segon pla"
 msgid "Background program: "
 msgstr "Programa en segon pla: "
 
-#: gui/gdmconfig-strings.c:120 gui/gdmconfig-strings.c:265
+#: gui/gdmconfig-strings.c:120 gui/gdmconfig-strings.c:269
 msgid "Select a file containing Locale information"
 msgstr "Escolliu un fitxer que contingui la informació local"
 
@@ -3066,119 +2535,144 @@ msgstr ""
 "s'acabarà la visualització."
 
 #: gui/gdmconfig-strings.c:178
+msgid ""
+"The script to run when the server sends a WILLING response to a QUERY.  If "
+"this is empty or does not exist, the standard message with the system ID is "
+"sent.  Only the first line of output from this script is read."
+msgstr ""
+
+#: gui/gdmconfig-strings.c:179
+msgid "Willing script (optional):"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:180
+msgid ""
+"Maximum displays per single host.  You can use this to prevent attacks by "
+"hogging all the possible displays.  Does not apply to local connections."
+msgstr ""
+
+#: gui/gdmconfig-strings.c:181
+msgid "Displays per host:"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:182
 msgid "XDMCP"
 msgstr "XDMCP"
 
-#: gui/gdmconfig-strings.c:179
+#: gui/gdmconfig-strings.c:183
 #, fuzzy
 msgid "Servers"
 msgstr "Afegeix el servidor"
 
-#: gui/gdmconfig-strings.c:180
+#: gui/gdmconfig-strings.c:184
 #, fuzzy
 msgid "Name"
 msgstr "Nom: "
 
-#: gui/gdmconfig-strings.c:181
+#: gui/gdmconfig-strings.c:185
 msgid "Command"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:182
+#: gui/gdmconfig-strings.c:186
 msgid "Flexible"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:183 gui/gdmconfig-strings.c:193
+#: gui/gdmconfig-strings.c:187 gui/gdmconfig-strings.c:197
 #, fuzzy
 msgid "Add server"
 msgstr "Afegeix el servidor"
 
-#: gui/gdmconfig-strings.c:184 gui/gdmconfig-strings.c:194
+#: gui/gdmconfig-strings.c:188 gui/gdmconfig-strings.c:198
 #, fuzzy
 msgid "Edit server"
 msgstr "Edita el servidor"
 
-#: gui/gdmconfig-strings.c:185 gui/gdmconfig-strings.c:195
+#: gui/gdmconfig-strings.c:189 gui/gdmconfig-strings.c:199
 #, fuzzy
 msgid "Delete server"
 msgstr "Suprimeix el servidor"
 
-#: gui/gdmconfig-strings.c:186 gui/gdmconfig-strings.c:222
+#: gui/gdmconfig-strings.c:190 gui/gdmconfig-strings.c:226
 msgid "Set as default"
 msgstr "Configura per defecte"
 
-#: gui/gdmconfig-strings.c:187
+#: gui/gdmconfig-strings.c:191
 msgid "Static Servers (servers to always run)"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:188
+#: gui/gdmconfig-strings.c:192
 msgid "No."
 msgstr "Núm."
 
-#: gui/gdmconfig-strings.c:189
+#: gui/gdmconfig-strings.c:193
 #, fuzzy
 msgid "Server"
 msgstr "Afegeix el servidor"
 
-#: gui/gdmconfig-strings.c:190
+#: gui/gdmconfig-strings.c:194
 msgid "Extra arguments"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:191
+#: gui/gdmconfig-strings.c:195
 msgid ""
 "Instead of reinitializing running servers when a user logs out.  Always kill "
 "and then start the server again."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:192
+#: gui/gdmconfig-strings.c:196
 #, fuzzy
 msgid "Always restart X servers"
 msgstr "Camí al servidor X"
 
-#: gui/gdmconfig-strings.c:196 gui/gdmconfig-strings.c:243
-#: gui/gdmconfig-strings.c:257 gui/gdmconfig-strings.c:261
+#: gui/gdmconfig-strings.c:200 gui/gdmconfig-strings.c:247
+#: gui/gdmconfig-strings.c:261 gui/gdmconfig-strings.c:265
 msgid "Miscellaneous"
 msgstr "Miscel·lània"
 
-#: gui/gdmconfig-strings.c:197
+#: gui/gdmconfig-strings.c:201
 msgid "Xnest server: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:198
+#: gui/gdmconfig-strings.c:202
 #, fuzzy
 msgid "Maximum number of flexible servers: "
 msgstr "Longitud de fitxer d'usuari màxima: "
 
-#: gui/gdmconfig-strings.c:199
+#: gui/gdmconfig-strings.c:203
 msgid ""
 "The Xnest server.  This is a server that can run inside another server, used "
 "for the flexible nested login."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:200
+#: gui/gdmconfig-strings.c:204
 #, fuzzy
 msgid "Standard X server: "
 msgstr "Servidor X infal·lible:"
 
-#: gui/gdmconfig-strings.c:201
+#: gui/gdmconfig-strings.c:205
 msgid "This is the standard X server to run when we are not told otherwise."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:203
+#: gui/gdmconfig-strings.c:206 gui/gdmlogin.c:62
+msgid "Failsafe"
+msgstr "Infalible"
+
+#: gui/gdmconfig-strings.c:207
 msgid "Script to run when X is crashing: "
 msgstr "Seqüència a executar quan X caigui: "
 
-#: gui/gdmconfig-strings.c:204
+#: gui/gdmconfig-strings.c:208
 msgid "X configurator binaries to try: "
 msgstr "Binaris del configurador d'X per provar: "
 
-#: gui/gdmconfig-strings.c:205
+#: gui/gdmconfig-strings.c:209
 msgid ""
 "A list of X setup programs to try for the above script, separated by spaces"
 msgstr ""
 "Una llista de programes de configuració d'X per provar per la seqüència de "
 "dalt, separada per espais"
 
-#: gui/gdmconfig-strings.c:206
+#: gui/gdmconfig-strings.c:210
 msgid ""
 "A script to run when the X server keeps crashing and the failsafe X server "
 "is either empty or also didn't take.  This will run an X setup program "
@@ -3188,11 +2682,11 @@ msgstr ""
 "X infal·lible estigui o buit o sense haver-ho fet. Això executarà el "
 "programa de configuració d'X definit més avall."
 
-#: gui/gdmconfig-strings.c:207
+#: gui/gdmconfig-strings.c:211
 msgid "Failsafe X server:"
 msgstr "Servidor X infal·lible:"
 
-#: gui/gdmconfig-strings.c:208
+#: gui/gdmconfig-strings.c:212
 msgid ""
 "An X server binary to run if the standard one keeps crashing.  If this fails "
 "the script below will be run."
@@ -3200,64 +2694,68 @@ msgstr ""
 "Un binari del servidor X per executar si l'estàndard continua caigut. Si "
 "això falla, s'executarà la seqüència de més avall."
 
-#: gui/gdmconfig-strings.c:209
+#: gui/gdmconfig-strings.c:213
 msgid "X-server setup"
 msgstr "Configuració del servidor X"
 
-#: gui/gdmconfig-strings.c:210
+#: gui/gdmconfig-strings.c:214
 msgid "Session configuration"
 msgstr "Configuració de la sessió"
 
-#: gui/gdmconfig-strings.c:211
+#: gui/gdmconfig-strings.c:215
 msgid "Session directory: "
 msgstr "Directori de la sessió: "
 
-#: gui/gdmconfig-strings.c:212
+#: gui/gdmconfig-strings.c:216
 msgid "Select a directory to be used for system-wide session scripts"
 msgstr ""
 "Escolliu un directori per ser usat en seqüències de sessions de sistema "
 "ample."
 
-#: gui/gdmconfig-strings.c:213
+#: gui/gdmconfig-strings.c:217
 msgid "Available Sessions"
 msgstr "Sessions disponibles"
 
-#: gui/gdmconfig-strings.c:214
+#: gui/gdmconfig-strings.c:218
 msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:216
+#: gui/gdmconfig-strings.c:219 gui/gdmlogin.c:66 gui/gdmlogin.c:1412
+msgid "Gnome Chooser"
+msgstr "Selector Gnome"
+
+#: gui/gdmconfig-strings.c:220
 msgid "Show the Gnome failsafe session"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:217
+#: gui/gdmconfig-strings.c:221
 #, fuzzy
 msgid "Gnome Failsafe"
 msgstr "Infalible"
 
-#: gui/gdmconfig-strings.c:218
+#: gui/gdmconfig-strings.c:222
 #, fuzzy
 msgid "Show the Xterm failsafe session"
 msgstr "No es pot trobar \"xterm\" per iniciar una sessió infal·lible."
 
-#: gui/gdmconfig-strings.c:219
+#: gui/gdmconfig-strings.c:223
 #, fuzzy
 msgid "Xterm Failsafe"
 msgstr "Infalible"
 
-#: gui/gdmconfig-strings.c:220
+#: gui/gdmconfig-strings.c:224
 msgid "Add session"
 msgstr "Afegeix una sessió"
 
-#: gui/gdmconfig-strings.c:221
+#: gui/gdmconfig-strings.c:225
 msgid "Remove session"
 msgstr "Elimina una sessió"
 
-#: gui/gdmconfig-strings.c:223
+#: gui/gdmconfig-strings.c:227
 msgid "Selected session name: "
 msgstr "Nom de la sessió escollida: "
 
-#: gui/gdmconfig-strings.c:224
+#: gui/gdmconfig-strings.c:228
 msgid ""
 "The exact script details of a session\n"
 "will appear here when you select\n"
@@ -3267,61 +2765,61 @@ msgstr ""
 "sessió apareixeran aquí quan n'escolliu\n"
 "una de la llista de la dreta.\n"
 
-#: gui/gdmconfig-strings.c:228
+#: gui/gdmconfig-strings.c:232
 msgid "Login sessions"
 msgstr "Sessions d'entrada"
 
-#: gui/gdmconfig-strings.c:229
+#: gui/gdmconfig-strings.c:233
 msgid "Appearance"
 msgstr "Aparença"
 
-#: gui/gdmconfig-strings.c:230
+#: gui/gdmconfig-strings.c:234
 msgid "Directory for host images: "
 msgstr "Directori d'imatges de l'ordinador central: "
 
-#: gui/gdmconfig-strings.c:231
+#: gui/gdmconfig-strings.c:235
 msgid "Default host image:"
 msgstr "Imatge de l'ordinador central per defecte: "
 
-#: gui/gdmconfig-strings.c:232
+#: gui/gdmconfig-strings.c:236
 msgid "Refresh"
 msgstr "Refresca"
 
-#: gui/gdmconfig-strings.c:233
+#: gui/gdmconfig-strings.c:237
 msgid "Scan every 'x' seconds: "
 msgstr "Escaneja cada 'x' segons: "
 
-#: gui/gdmconfig-strings.c:234
+#: gui/gdmconfig-strings.c:238
 msgid "Hosts"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:235
+#: gui/gdmconfig-strings.c:239
 msgid "Send a query to the local network and list all servers that respond"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:236
+#: gui/gdmconfig-strings.c:240
 msgid "Broadcast query"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:237
+#: gui/gdmconfig-strings.c:241
 msgid "Hosts to list: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:238
+#: gui/gdmconfig-strings.c:242
 msgid ""
 "Comma separated list of hostnames to list in the chooser (in addition to the "
 "broadcast above)"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:239
+#: gui/gdmconfig-strings.c:243
 msgid "Chooser"
 msgstr "Seleccionador"
 
-#: gui/gdmconfig-strings.c:240
+#: gui/gdmconfig-strings.c:244
 msgid "Debugging"
 msgstr "Depura"
 
-#: gui/gdmconfig-strings.c:241
+#: gui/gdmconfig-strings.c:245
 msgid ""
 "Enable debugging output to be printed into the syslog.  Useful for tracking "
 "down problems.  But not so useful for normal usage as it can fill up your "
@@ -3331,100 +2829,100 @@ msgstr ""
 "fer el seguiment dels problemes. Però no ho és per la utilització normal ja "
 "que pot omplir els registres molt ràpid."
 
-#: gui/gdmconfig-strings.c:242
+#: gui/gdmconfig-strings.c:246
 msgid "Enable debugging output"
 msgstr "Habilita la depuració de sortida"
 
-#: gui/gdmconfig-strings.c:244
+#: gui/gdmconfig-strings.c:248
 msgid "system_setup"
 msgstr "_Configuració del sistema"
 
-#: gui/gdmconfig-strings.c:245
+#: gui/gdmconfig-strings.c:249
 msgid "Executables"
 msgstr "Executables"
 
-#: gui/gdmconfig-strings.c:246
+#: gui/gdmconfig-strings.c:250
 msgid "Chooser command: "
 msgstr "Ordre d'escollir: "
 
-#: gui/gdmconfig-strings.c:247
+#: gui/gdmconfig-strings.c:251
 msgid "Greeter command: "
 msgstr "Ordre rebedor: "
 
-#: gui/gdmconfig-strings.c:248
+#: gui/gdmconfig-strings.c:252
 msgid "Halt command: "
 msgstr "Ordre d'aturada: "
 
-#: gui/gdmconfig-strings.c:249
+#: gui/gdmconfig-strings.c:253
 msgid "Reboot command: "
 msgstr "Ordre de reiniciar de nou: "
 
-#: gui/gdmconfig-strings.c:250
+#: gui/gdmconfig-strings.c:254
 msgid "Configurator command: "
 msgstr "Ordre del configurador: "
 
-#: gui/gdmconfig-strings.c:251
+#: gui/gdmconfig-strings.c:255
 #, fuzzy
 msgid "Suspend command: "
 msgstr "Ordre d'escollir: "
 
-#: gui/gdmconfig-strings.c:252
+#: gui/gdmconfig-strings.c:256
 msgid "Directories"
 msgstr "Directoris"
 
-#: gui/gdmconfig-strings.c:253
+#: gui/gdmconfig-strings.c:257
 msgid "PRE session scripts directory: "
 msgstr "Directori de seqüències de la sessió PRE: "
 
-#: gui/gdmconfig-strings.c:254
+#: gui/gdmconfig-strings.c:258
 msgid "POST session scripts directory: "
 msgstr "Directori de seqüències després de la sessió: "
 
-#: gui/gdmconfig-strings.c:255
+#: gui/gdmconfig-strings.c:259
 msgid "Logging directory: "
 msgstr "Directori d'entrada: "
 
-#: gui/gdmconfig-strings.c:256
+#: gui/gdmconfig-strings.c:260
 msgid "Display initialization directory: "
 msgstr "Directori d'inicialització de la pantalla: "
 
-#: gui/gdmconfig-strings.c:258
+#: gui/gdmconfig-strings.c:262
 msgid "PID file: "
 msgstr "Fitxer PID: "
 
-#: gui/gdmconfig-strings.c:259
+#: gui/gdmconfig-strings.c:263
 msgid "Default GNOME session file: "
 msgstr "Fitxer de la sessió GNOME per defecte: "
 
-#: gui/gdmconfig-strings.c:260
+#: gui/gdmconfig-strings.c:264
 msgid "Paths"
 msgstr "Camins"
 
-#: gui/gdmconfig-strings.c:262
+#: gui/gdmconfig-strings.c:266
 msgid "Default $PATH: "
 msgstr "$PATH per defecte: "
 
-#: gui/gdmconfig-strings.c:263
+#: gui/gdmconfig-strings.c:267
 msgid "Root $PATH: "
 msgstr "$PATH superusuari: "
 
-#: gui/gdmconfig-strings.c:264
+#: gui/gdmconfig-strings.c:268
 msgid "Localization"
 msgstr "Localització"
 
-#: gui/gdmconfig-strings.c:266
+#: gui/gdmconfig-strings.c:270
 msgid "Locale file: "
 msgstr "Fitxer local: "
 
-#: gui/gdmconfig-strings.c:267
+#: gui/gdmconfig-strings.c:271
 msgid "Environment"
 msgstr "Entorn"
 
-#: gui/gdmconfig-strings.c:268
+#: gui/gdmconfig-strings.c:272
 msgid "(C) 2001 Lee Mallabone"
 msgstr "(C) 2001 Lee Mallabone"
 
-#: gui/gdmconfig-strings.c:269
+#: gui/gdmconfig-strings.c:273
 msgid ""
 "Configure the GNOME Display Manager.\n"
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
@@ -3433,111 +2931,67 @@ msgstr ""
 "Si us plau, trameteu qualsevol error de programació o requisits de "
 "característiques a http://bugzilla.gnome.org per al producte `gdm'."
 
-#: gui/gdmconfig-strings.c:271
+#: gui/gdmconfig-strings.c:275
 msgid "label273"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:272
+#: gui/gdmconfig-strings.c:276
 msgid "Extra arguments:"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:273
+#: gui/gdmconfig-strings.c:277
 #, fuzzy
 msgid "Custom command line:"
 msgstr "Ordre del configurador: "
 
-#: gui/gdmconfig-strings.c:275
+#: gui/gdmconfig-strings.c:278 gui/gdmlogin.c:1812
+msgid "Name: "
+msgstr "Nom: "
+
+#: gui/gdmconfig-strings.c:279
 msgid "Command line: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:276
+#: gui/gdmconfig-strings.c:280
 msgid "Allow as flexible server"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:277
+#: gui/gdmconfig-strings.c:281
 msgid "Make this the default server"
 msgstr ""
 
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: gui/gdmchooser-strings.c:7
-msgid "GDM Host Chooser"
-msgstr "Selector d'odinador cntral GDM"
-
-#: gui/gdmchooser-strings.c:8
-msgid "Open a session to the selected host"
-msgstr "Obre una sessió a l'ordinador central seleccionat"
-
-#: gui/gdmchooser-strings.c:9
-msgid "Connect"
-msgstr "Connecta"
-
-#: gui/gdmchooser-strings.c:10
-msgid "Probe the network"
-msgstr "Sondeja la xarxa"
-
-#: gui/gdmchooser-strings.c:11
-msgid "Rescan"
-msgstr "Torna a escanejar"
-
-#: gui/gdmchooser-strings.c:12
-msgid "How to use this application"
-msgstr "Com utilitzar aquesta aplicació"
-
-#: gui/gdmchooser-strings.c:13
-msgid "Help"
-msgstr "Ajuda"
-
-#: gui/gdmchooser-strings.c:14
-msgid "Exit the application"
-msgstr "Surt de l'aplicació"
-
-#: gui/gdmchooser-strings.c:17
-msgid "Most recently queried hosts"
-msgstr "Els ordinadors centrals consultats més recentment"
-
-#: gui/gdmchooser-strings.c:18
-msgid ""
-"The main area of this application shows the hosts on the local\n"
-"network that have \"XDMCP\" enabled. This allows users to login\n"
-"remotely to other machines as if they were logged on using the\n"
-"console.\n"
-"\n"
-"You can rescan the network for new hosts by clicking 'rescan'.\n"
-"When you have selected a host click \"Connect\" to open a session\n"
-"to that machine."
-msgstr ""
-"L'àrea principal d'aquesta aplicació mostra els ordinadors centrals\n"
-"a la xarxa local que han habilitat l'\"XDMCP\". Això permet als usuaris\n"
-"entrar remotament a altres màquines com si haguessin entrat utilitzant\n"
-"consola."
-
-#: gui/gdmchooser-strings.c:26
-msgid "Information"
-msgstr "Informació"
-
-#: gui/gdmXnestchooser.c:113
-msgid ""
-"Xnest doesn't exist.\n"
-"Please ask your system administrator\n"
-"to install it."
-msgstr ""
-
-#: gui/gdmXnestchooser.c:129
+#: gui/gdmflexiserver.c:353
 #, fuzzy
-msgid ""
-"Indirect XDMCP is not enabled,\n"
-"please ask your system administrator to enable it\n"
-"in the GDM configurator program."
-msgstr ""
-"La cara de l'explorador no està configurada;\n"
-"si us plau, demaneu a l'administrador del sistema que us l'habiliti\n"
-"al programa configurador GDM."
+msgid "Choose server"
+msgstr "Seleccionador"
 
-#: gui/gdmXnestchooser.c:152 gui/gdmflexiserver.c:367
+#: gui/gdmflexiserver.c:359
+#, fuzzy
+msgid "Choose the X server to start"
+msgstr "Escolliu el directori per cercar cares"
+
+#: gui/gdmflexiserver.c:415
+msgid "Send the specified protocol command to gdm"
+msgstr ""
+
+#: gui/gdmflexiserver.c:415
+msgid "COMMAND"
+msgstr ""
+
+#: gui/gdmflexiserver.c:416
+msgid "Xnest mode"
+msgstr ""
+
+#: gui/gdmflexiserver.c:417
+#, fuzzy
+msgid "Debugging output"
+msgstr "Habilita la depuració de sortida"
+
+#: gui/gdmflexiserver.c:418
+msgid "Authenticate before running --command"
+msgstr ""
+
+#: gui/gdmXnestchooser.c:153 gui/gdmflexiserver.c:466
 #, fuzzy
 msgid ""
 "GDM is not running.\n"
@@ -3547,93 +3001,54 @@ msgstr ""
 "si us plau, demaneu a l'administrador del sistema que us l'habiliti\n"
 "al programa configurador GDM."
 
-#: gui/gdmXnestchooser.c:163
-msgid "Could not find a free display number"
-msgstr ""
-
-#: gui/gdmflexiserver.c:257
-#, fuzzy
-msgid "Choose server"
-msgstr "Seleccionador"
-
-#: gui/gdmflexiserver.c:263
-#, fuzzy
-msgid "Choose the X server to start"
-msgstr "Escolliu el directori per cercar cares"
-
-#: gui/gdmflexiserver.c:319
-msgid "Send the specified protocol command to gdm"
-msgstr ""
-
-#: gui/gdmflexiserver.c:319
-msgid "COMMAND"
-msgstr ""
-
-#: gui/gdmflexiserver.c:320
-msgid "Xnest mode"
-msgstr ""
-
-#: gui/gdmflexiserver.c:376 gui/gdmflexiserver.c:389 gui/gdmflexiserver.c:422
-#: gui/gdmflexiserver.c:425
+#: gui/gdmflexiserver.c:475 gui/gdmflexiserver.c:491 gui/gdmflexiserver.c:536
+#: gui/gdmflexiserver.c:539
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr ""
 
-#: gui/gdmflexiserver.c:428
+#: gui/gdmflexiserver.c:510 gui/gdmflexiserver.c:565
+msgid ""
+"You do not seem to be logged in on the console.  Starting a new login only "
+"works correctly on the console."
+msgstr ""
+
+#: gui/gdmflexiserver.c:542
 msgid "The allowed limit of flexible X servers reached."
 msgstr ""
 
-#: gui/gdmflexiserver.c:430
+#: gui/gdmflexiserver.c:544
 #, fuzzy
 msgid "There were errors trying to start the X server."
 msgstr "Ara provaré de reiniciar el servidor X de nou."
 
-#: gui/gdmflexiserver.c:432
+#: gui/gdmflexiserver.c:546
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr ""
 
-#: gui/gdmflexiserver.c:435
+#: gui/gdmflexiserver.c:549
 msgid "Too many X sessions running."
 msgstr ""
 
-#: gui/gdmflexiserver.c:437
+#: gui/gdmflexiserver.c:551
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
 msgstr ""
 
-#: gui/gdmflexiserver.c:442
+#: gui/gdmflexiserver.c:556
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
 msgstr ""
 
-#: gui/gdmflexiserver.c:447
+#: gui/gdmflexiserver.c:561
 msgid ""
 "The X server is not available, it is likely that gdm is badly configured."
 msgstr ""
 
-#: gui/gdmflexiserver.c:451
+#: gui/gdmflexiserver.c:569
 msgid "Unknown error occured."
 msgstr ""
-
-#: gui/gdmconfig.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr "Una aplicació gràfica per configurar el gestor de pantalla GNOME (GDM)"
-
-#: gui/gdmconfig.desktop.in.h:2
-msgid "GDM Configurator"
-msgstr "Configurador del GDM"
-
-#: gui/gdmphotosetup.desktop.in.h:1
-msgid "Setup my GDM Face"
-msgstr "Configura la Cara del GDM"
-
-#: gui/gdmphotosetup.desktop.in.h:2
-msgid ""
-"Setup the picture that will show in the GDM (login manager) face browser"
-msgstr ""
-"Configura la foto que es mostrarà al navegador de cares del GDM (gestor "
-"d'entrada)"
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without loging out"
@@ -3651,6 +3066,676 @@ msgstr ""
 #: gui/gdmflexiserver-xnest.desktop.in.h:2
 msgid "New login in a nested window"
 msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:36
+msgid "A-M|Catalan"
+msgstr "A-M|Català"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:38
+msgid "A-M|Chinese (simplified)"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:40
+msgid "A-M|Chinese (traditional)"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:42
+msgid "A-M|Croatian"
+msgstr "A-M|Croat"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:44
+msgid "A-M|Czech"
+msgstr "N-Z|Txec"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:46
+msgid "A-M|Danish"
+msgstr "A-M|Danès"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:48
+msgid "A-M|Dutch"
+msgstr "A-M|Holandès"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:50
+msgid "A-M|English"
+msgstr "A-M|Anglès"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:52
+msgid "A-M|American English"
+msgstr "A-M|Anglès americà"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:54
+msgid "A-M|British English"
+msgstr "A-M|Anglès britànic"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:56
+msgid "A-M|Finnish"
+msgstr "A-M|Finès"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:58
+msgid "A-M|French"
+msgstr "A-M|Francès"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:60
+#, fuzzy
+msgid "A-M|Galician"
+msgstr "A-M|Italià"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:62
+msgid "A-M|German"
+msgstr "A-M|Alemany"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:64
+msgid "A-M|Greek"
+msgstr "A-M|Grec"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:66
+msgid "A-M|Hebrew"
+msgstr "A-M|Hebreu"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:68
+msgid "A-M|Hungarian"
+msgstr "A-M|Hongarès"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:70
+msgid "A-M|Icelandic"
+msgstr "A-M|Islandès"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:72
+msgid "A-M|Italian"
+msgstr "A-M|Italià"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:74
+msgid "A-M|Japanese"
+msgstr "A-M|Japonès"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:76
+msgid "A-M|Korean"
+msgstr "A-M|Coreà"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:78
+msgid "A-M|Lithuanian"
+msgstr "A-M|Lituà"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:80
+#, fuzzy
+msgid "N-Z|Norwegian (bokmal)"
+msgstr "N-Z|Noruec"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:82
+#, fuzzy
+msgid "N-Z|Norwegian (nynorsk)"
+msgstr "N-Z|Noruec"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:84
+msgid "N-Z|Polish"
+msgstr "N-Z|Polonès"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:86
+msgid "N-Z|Portuguese"
+msgstr "N-Z|Portuguès"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:88
+#, fuzzy
+msgid "N-Z|Brazilian Portuguese"
+msgstr "N-Z|Portuguès"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:90
+msgid "N-Z|Romanian"
+msgstr "N-Z|Romanès"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:92
+msgid "N-Z|Russian"
+msgstr "N-Z|Rus"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:94
+msgid "N-Z|Slovak"
+msgstr "A-M|Eslovac"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:96
+msgid "N-Z|Slovenian"
+msgstr "A-M|Eslovè"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:98
+msgid "N-Z|Spanish"
+msgstr "A-M|Espanyol"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:100
+msgid "N-Z|Swedish"
+msgstr "N-Z|Suec"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:102
+msgid "N-Z|Turkish"
+msgstr "N-Z|Turc"
+
+#. This is the POSIX/C locale for english, should really be in Other
+#: gui/gdmlanguages.c:104
+msgid "Other|POSIX/C English"
+msgstr "Altres|POSIX/C Anglès"
+
+#. This should be the same as in the front of the language strings
+#. * else the languages will appear in the "Other" submenu
+#: gui/gdmlanguages.c:231
+msgid "A-M"
+msgstr "A-M"
+
+#. This should be the same as in the front of the language strings
+#. * else the languages will appear in the "Other" submenu
+#: gui/gdmlanguages.c:239
+msgid "N-Z"
+msgstr "N-Z"
+
+#: gui/gdmlogin.c:60
+msgid "AnotherLevel"
+msgstr "AnotherLevel"
+
+#. default is nicely translated
+#. Translators: default GNOME session
+#: gui/gdmlogin.c:61 gui/gdmlogin.c:1767 gui/gdmlogin.c:1789
+msgid "Default"
+msgstr "Per defecte"
+
+#: gui/gdmlogin.c:63
+msgid "Gnome"
+msgstr "Gnome"
+
+#: gui/gdmlogin.c:64
+msgid "KDE"
+msgstr "KDE"
+
+#: gui/gdmlogin.c:65
+msgid "XSession"
+msgstr "Sessió X"
+
+#: gui/gdmlogin.c:67
+msgid "Last"
+msgstr "Últim"
+
+#: gui/gdmlogin.c:197
+#, c-format
+msgid "User %s will login in %d seconds"
+msgstr "L'usuari %s entrarà en %d segons"
+
+#: gui/gdmlogin.c:446
+msgid ""
+"Doubleclick here to un-iconify the login window, so that you may log in."
+msgstr ""
+"Feu doble clic aquí per desiconificar la finestra d'entrada, així podreu "
+"registrar-vos."
+
+#: gui/gdmlogin.c:526 gui/gdmlogin.c:532 gui/gdmlogin.c:539
+#, c-format
+msgid "Welcome to %s"
+msgstr "Benvingut a %s"
+
+#: gui/gdmlogin.c:537
+msgid "gdm_parse_enriched_string: String too long!"
+msgstr "gdm_parse_enriched_string: La cadena és massa llarga!"
+
+#: gui/gdmlogin.c:676
+msgid ""
+"Could not fork a new process!\n"
+"\n"
+"You likely won't be able to log in either."
+msgstr ""
+"No s'ha pogut bifurcar un nou procés!\n"
+"\n"
+"Probablement tampoc podreu entrar."
+
+#: gui/gdmlogin.c:723
+msgid "Are you sure you want to reboot the machine?"
+msgstr "Esteu segur que voleu tornar a arrencar la màquina?"
+
+#: gui/gdmlogin.c:735
+#, fuzzy
+msgid "Are you sure you want to shut down the machine?"
+msgstr "Esteu segur que voleu parar la màquina?"
+
+#: gui/gdmlogin.c:746
+#, fuzzy
+msgid "Are you sure you want to suspend the machine?"
+msgstr "Esteu segur que voleu tornar a arrencar la màquina?"
+
+#: gui/gdmlogin.c:760
+#, c-format
+msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
+msgstr ""
+"gdm_login_parse_config: el fitxer de configuració %s no hi és. S'estan "
+"utilitzant els valors per defecte."
+
+#: gui/gdmlogin.c:826
+msgid "TimedLoginDelay was less then 5.  I'll just use 5."
+msgstr "El TimedLoginDelay era menor que 5. Utilitzaré 5."
+
+#: gui/gdmlogin.c:886 gui/gdmlogin.c:1460
+msgid "Failsafe Gnome"
+msgstr "Gnome infal·lible"
+
+#: gui/gdmlogin.c:888 gui/gdmlogin.c:1485
+msgid "Failsafe xterm"
+msgstr "Xterm infal·lible"
+
+#: gui/gdmlogin.c:934
+#, c-format
+msgid ""
+"Your preferred session type %s is not installed on this machine.\n"
+"Do you wish to make %s the default for future sessions?"
+msgstr ""
+"El vostre tipus preferit de sessió %s no està instal·lat en aquesta "
+"màquina.\n"
+"Voleu fer que %s sigui el predeterminat a les properes sessions?"
+
+#: gui/gdmlogin.c:959 gui/gdmlogin.c:1047
+#, c-format
+msgid ""
+"You have chosen %s for this session, but your default setting is %s.\n"
+"Do you wish to make %s the default for future sessions?"
+msgstr ""
+"Heu triat %s per a aquesta sessió, però la vostra configuració "
+"predeterminada és %s.\n"
+"Voleu fer que %s sigui la predeterminada a les properes sessions?"
+
+#. if !GdmShowLastSession then our saved session is
+#. * irrelevant, we are in "switchdesk mode"
+#. * and the relevant thing is the saved session
+#. * in .Xclients
+#.
+#: gui/gdmlogin.c:975
+#, c-format
+msgid ""
+"You have chosen %s for this session.\n"
+"If you wish to make %s the default for future sessions,\n"
+"run the 'switchdesk' utility\n"
+"(System->Desktop Switching Tool from the panel menu)."
+msgstr ""
+
+#: gui/gdmlogin.c:1269
+#, c-format
+msgid "%s session selected"
+msgstr "%s sessió seleccionada"
+
+#: gui/gdmlogin.c:1302
+msgid "Log in using the session that you have used last time you logged in"
+msgstr ""
+"Per a registrar-vos utilitzeu la sessió que hagueu emprat l'últim cop que us "
+"heu registrat."
+
+#: gui/gdmlogin.c:1315
+msgid "gdm_login_session_init: Session script directory not found!"
+msgstr ""
+"gdm_session_init: No s'ha trobat el directori de seqüències de la sessió!"
+
+#: gui/gdmlogin.c:1400
+msgid ""
+"This session will log you directly into GNOME, into your current session."
+msgstr "Aquesta sessió us registrarà directament a GNOME, a la sessió actual. "
+
+#: gui/gdmlogin.c:1415
+msgid ""
+"This session will log you into GNOME and it will let you choose which one of "
+"the GNOME sessions you want to use."
+msgstr ""
+"Aquesta sessió us registrarà a GNOME i us deixarà triar quina de les "
+"sessions GNOME voleu utilitzar."
+
+#: gui/gdmlogin.c:1450
+msgid "Yaikes, nothing found in the session directory."
+msgstr "Yaikes no troba res en el directori de la sessió."
+
+#: gui/gdmlogin.c:1462
+msgid ""
+"This is a failsafe session that will log you into GNOME.  No startup scripts "
+"will be read and it is only to be used when you can't log in otherwise.  "
+"GNOME will use the 'Default' session."
+msgstr ""
+"Aquesta és una sessió infal·lible que us farà entrar al GNOME. No es llegirà "
+"cap seqüència d'inicialització i només es faran servir si no hi podeu "
+"entrar. GNOME utilitzarà la sessió 'Per defecte'."
+
+#: gui/gdmlogin.c:1487
+msgid ""
+"This is a failsafe session that will log you into a terminal.  No startup "
+"scripts will be read and it is only to be used when you can't log in "
+"otherwise.  To exit the terminal, type 'exit'."
+msgstr ""
+"Aquesta és una sessió infal·lible que us farà entrar al terminal. No es "
+"llegirà cap seqüència d'inicialització i només es faran servir si no hi "
+"podeu entrar. Per sortir del terminal escriviu 'sortir'."
+
+#: gui/gdmlogin.c:1508
+msgid "No default session link found. Using Failsafe GNOME.\n"
+msgstr ""
+"No s'ha trobat l'enllaç de la sessió per defecte. S'està utilitzant el GNOME "
+"Failsafe.\n"
+
+#: gui/gdmlogin.c:1548
+#, c-format
+msgid "%s language selected"
+msgstr "%s és el llenguatge seleccionat"
+
+#: gui/gdmlogin.c:1586
+msgid "Log in using the language that you have used last time you logged in"
+msgstr ""
+"Entreu utilitzant l'idioma que heu fet servir l'última vegada que hagueu "
+"entrat"
+
+#: gui/gdmlogin.c:1607
+msgid "Other"
+msgstr "Altres"
+
+#: gui/gdmlogin.c:1727 gui/gdmlogin.c:1736
+msgid "Select GNOME session"
+msgstr "Sessió GNOME seleccionada"
+
+#: gui/gdmlogin.c:1803
+msgid "Create new session"
+msgstr "Crea una sessió nova"
+
+#. Translators: this is to remember the chosen gnome session
+#. * for next time
+#: gui/gdmlogin.c:1833
+msgid "Remember this setting"
+msgstr "Recorda aquest paràmetre"
+
+#. translators:  This is a nice and evil eggie text, translate
+#. * to your favourite currency
+#: gui/gdmlogin.c:2127
+msgid "Please insert 25 cents to log in."
+msgstr "Si us plau, inseriu 5 durets per entrar-hi."
+
+#: gui/gdmlogin.c:2454
+msgid "GNOME Desktop Manager"
+msgstr "Gestor d'escriptori GNOME"
+
+#: gui/gdmlogin.c:2462
+#, c-format
+msgid "Can't open icon file: %s. Suspending iconify feature!"
+msgstr ""
+"No es pot obrir el fitxer d'icones: %s. S'està anul·lant la característica "
+"d'iconificació!"
+
+#: gui/gdmlogin.c:2484
+msgid "Iconify the login window"
+msgstr "Converteix la finestra d'entrada en una icona"
+
+#: gui/gdmlogin.c:2543
+msgid "%a %b %d, %I:%M %p"
+msgstr "%a %b %d, %I:%M %p"
+
+#: gui/gdmlogin.c:2601
+msgid "Finger"
+msgstr ""
+
+#: gui/gdmlogin.c:2671
+msgid "GDM Login"
+msgstr "Entrada GDM"
+
+#: gui/gdmlogin.c:2717
+msgid "Session"
+msgstr "Sessió"
+
+#: gui/gdmlogin.c:2728
+msgid "Language"
+msgstr "Llenguatge"
+
+#: gui/gdmlogin.c:2742
+msgid "Configure..."
+msgstr "Configura..."
+
+#: gui/gdmlogin.c:2749
+msgid ""
+"Configure GDM (this login manager). This will require the root password."
+msgstr ""
+"Configura el GDM (aquest gestor d'entrades). Això requerirà la contrasenya "
+"arrel."
+
+#: gui/gdmlogin.c:2756
+msgid "Reboot..."
+msgstr "Torna a arrencar..."
+
+#: gui/gdmlogin.c:2763
+msgid "Reboot your computer"
+msgstr "Torna a arrencar l'ordinador"
+
+#: gui/gdmlogin.c:2769
+msgid "Shut down..."
+msgstr ""
+
+#: gui/gdmlogin.c:2776
+msgid "Shut down your computer so that you may turn it off."
+msgstr "Tanca l'ordinador per poder apagar-lo"
+
+#: gui/gdmlogin.c:2783
+msgid "Suspend..."
+msgstr ""
+
+#: gui/gdmlogin.c:2790
+#, fuzzy
+msgid "Suspend your computer"
+msgstr "Torna a arrencar l'ordinador"
+
+#: gui/gdmlogin.c:2812
+#, fuzzy
+msgid "Disconnect"
+msgstr "Connecta"
+
+#. I think I'll add the buttons next to this
+#: gui/gdmlogin.c:3052
+#, fuzzy
+msgid "Please enter your username"
+msgstr "Si us plau, introduïu la informació d'entrada"
+
+#: gui/gdmlogin.c:3296
+#, c-format
+msgid "Can't open DefaultImage: %s. Suspending face browser!"
+msgstr ""
+"No es pot obrir DefaultImage: %s. S'està anul·lant l'explorador de cares!"
+
+#: gui/gdmlogin.c:3554 gui/gdmlogin.c:3581
+#, c-format
+msgid ""
+"The greeter version (%s) does not match the daemon version.\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
+msgstr ""
+
+#: gui/gdmlogin.c:3588 gui/gdmlogin.c:3623
+#, fuzzy
+msgid "Reboot"
+msgstr "Torna a arrencar..."
+
+#: gui/gdmlogin.c:3615
+#, c-format
+msgid ""
+"The greeter version (%s) does not match the daemon version (%s).\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
+msgstr ""
+
+#: gui/gdmlogin.c:3622
+#, fuzzy
+msgid "Restart"
+msgstr "Torna a escanejar"
+
+#: gui/gdmlogin.c:3660
+msgid "main: Error setting up HUP signal handler"
+msgstr "main: S'ha produït un error en configurar el gestor del senyal HUP "
+
+#: gui/gdmlogin.c:3663
+msgid "main: Error setting up INT signal handler"
+msgstr "main: S'ha produït un error en configurar el gestor del senyal INT"
+
+#: gui/gdmlogin.c:3666
+msgid "main: Error setting up TERM signal handler"
+msgstr "main: S'ha produït un error en configurar el gestor del senyal TERM"
+
+#: gui/gdmlogin.c:3674
+msgid "main: Error setting up CHLD signal handler"
+msgstr "main: S'ha produït un error en configurar el gestor del senyal CHLD"
+
+#: gui/gdmlogin.c:3739
+msgid ""
+"Your session directory is missing or empty!\n"
+"\n"
+"There are two available sessions you can use, but\n"
+"you should log in and correct the gdm configuration."
+msgstr ""
+"El vostre directori de la sessió ha desaparegut o és buit!\n"
+"\n"
+"Hi ha dues sessions disponibles que podeu usar, però\n"
+"haureu d'entrar i corregir la configuració del gdm."
+
+#: gui/gdmlogin.c:3755
+msgid ""
+"The configuration file contains an invalid command\n"
+"line for the login dialog, and thus I ran the\n"
+"default command.  Please fix your configuration."
+msgstr ""
+"El fitxer de configuració conté una línia d'ordre invàlida\n"
+"per al diàleg d'entrada, i per això he executat\n"
+"l'ordre per defecte. Si us plau, arregleu la configuració."
+
+#: gui/gdmlogin.c:3772
+msgid ""
+"The configuration was not found.  GDM is using\n"
+"defaults to run this session.  You should log in\n"
+"and create a configuration file with the GDM\n"
+"configuration program."
+msgstr ""
+"No s'ha trobat la configuració. El GDM està utilitzant\n"
+"valors per defecte per executar aquesta sessió. Hauríeu d'entrar\n"
+"i crear un fitxer de configuració amb el programa de configuració\n"
+"del GDM."
+
+#: gui/gdmphotosetup.c:76
+msgid ""
+"The face browser is not configured,\n"
+"please ask your system administrator to enable it\n"
+"in the GDM configurator program."
+msgstr ""
+"La cara de l'explorador no està configurada;\n"
+"si us plau, demaneu a l'administrador del sistema que us l'habiliti\n"
+"al programa configurador GDM."
+
+#: gui/gdmphotosetup.c:84
+msgid "Select a photo"
+msgstr "Seleccioneu una foto"
+
+#: gui/gdmphotosetup.c:89
+msgid "Select a photograph to show in the facebrowser:"
+msgstr "Seleccioneu una fotografia per mostrar-la a la cara de l'explorador:"
+
+#: gui/gdmphotosetup.c:94
+msgid "Browse"
+msgstr "Explorador"
+
+#: gui/gdmphotosetup.c:113
+msgid "No picture selected."
+msgstr "No s'ha seleccionat cap imatge."
+
+#: gui/gdmphotosetup.c:132
+#, c-format
+msgid ""
+"The picture is too large and the system administrator\n"
+"disallowed pictures larger then %d bytes to\n"
+"show in the face browser"
+msgstr ""
+"La imatge és massa gran i l'administrador del sistema\n"
+"no permet imatges més grans que %d bytes per\n"
+"mostrar-les a la cara de l'explorador"
+
+#: gui/gdmphotosetup.c:156
+#, c-format
+msgid ""
+"File %s cannot be open for reading\n"
+"Error: %s"
+msgstr ""
+"No es pot obrir el fitxer %s per llegir-lo\n"
+"Error: %s"
+
+#: gui/gdmphotosetup.c:171
+#, c-format
+msgid ""
+"File %s cannot be open for writing\n"
+"Error: %s"
+msgstr ""
+"No es pot obrir el fitxer %s per escriure\n"
+"Error: %s"
+
+#: gui/gdmphotosetup.desktop.in.h:1
+msgid "Setup my GDM Face"
+msgstr "Configura la Cara del GDM"
+
+#: gui/gdmphotosetup.desktop.in.h:2
+msgid ""
+"Setup the picture that will show in the GDM (login manager) face browser"
+msgstr ""
+"Configura la foto que es mostrarà al navegador de cares del GDM (gestor "
+"d'entrada)"
+
+#: gui/gdmXnestchooser.c:114
+msgid ""
+"Xnest doesn't exist.\n"
+"Please ask your system administrator\n"
+"to install it."
+msgstr ""
+
+#: gui/gdmXnestchooser.c:130
+#, fuzzy
+msgid ""
+"Indirect XDMCP is not enabled,\n"
+"please ask your system administrator to enable it\n"
+"in the GDM configurator program."
+msgstr ""
+"La cara de l'explorador no està configurada;\n"
+"si us plau, demaneu a l'administrador del sistema que us l'habiliti\n"
+"al programa configurador GDM."
+
+#: gui/gdmXnestchooser.c:164
+msgid "Could not find a free display number"
+msgstr ""
+
+#: utils/gdmaskpass.c:26
+msgid "gdmaskpass only runs as root\n"
+msgstr ""
+
+#: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
+#, fuzzy
+msgid "Authentication failure!\n"
+msgstr "Ha fallat l'autenticació."
 
 #: vicious-extensions/glade-helper.c:70
 msgid "(memory buffer)"
@@ -3714,6 +3799,9 @@ msgstr ""
 #: vicious-extensions/icon-entry-hack.c:268
 msgid "Choose an icon"
 msgstr "Escolliu una icona"
+
+#~ msgid "Display not authorized to connect"
+#~ msgstr "La pantalla no està autoritzada a connectar-se"
 
 #~ msgid "gdm_main: Error setting up TERM signal handler"
 #~ msgstr ""

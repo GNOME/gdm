@@ -41,6 +41,7 @@
 #include "gdm.h"
 #include "misc.h"
 #include "choose.h"
+#include "xdmcp.h"
 
 static const gchar RCSid[]="$Id$";
 
@@ -193,18 +194,22 @@ gdm_choose_indirect_lookup_by_chosen (struct in_addr *chosen,
 
 	for (li = indirect; li != NULL; li = li->next) {
 		GdmIndirectDisplay *id = li->data;
-		if (id == NULL)
-			continue;
-
-		if (id->chosen_host != NULL &&
-		    id->chosen_host->s_addr == chosen->s_addr &&
-		    id->dsp_sa->sin_addr.s_addr == origin->s_addr) {
-			return id;
+		if (id != NULL &&
+		    id->chosen_host != NULL &&
+		    id->chosen_host->s_addr == chosen->s_addr) {
+			if (id->dsp_sa->sin_addr.s_addr == origin->s_addr) {
+				return id;
+			} else if (gdm_xdmcp_is_loopback_addr (&(id->dsp_sa->sin_addr)) &&
+				   gdm_xdmcp_is_local_addr (origin)) {
+				return id;
+			}
 		}
 	}
     
 	gdm_debug ("gdm_choose_indirect_lookup_by_chosen: Chosen %s host not found",
 		   inet_ntoa (*chosen));
+	gdm_debug ("gdm_choose_indirect_lookup_by_chosen: Origin was: %s",
+		   inet_ntoa (*origin));
 
 	return NULL;
 }

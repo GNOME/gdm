@@ -309,44 +309,6 @@ gdm_xdmcp_displays_from_host (struct in_addr *addr)
 }
 
 
-static gboolean
-is_loopback_addr (struct in_addr *ia)
-{
-	const char lo[] = {127,0,0,1};
-
-	if (ia->s_addr == INADDR_LOOPBACK ||
-	    memcmp (&ia->s_addr, lo, 4) == 0) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
-
-static gboolean
-is_local_addr (struct in_addr *ia)
-{
-	const char lo[] = {127,0,0,1};
-
-	if (ia->s_addr == INADDR_LOOPBACK ||
-	    memcmp (&ia->s_addr, lo, 4) == 0) {
-		return TRUE;
-	} else {
-		const GList *list = peek_local_address_list ();
-
-		while (list != NULL) {
-			struct in_addr *addr = list->data;
-
-			if (memcmp (&ia->s_addr, &addr->s_addr, 4) == 0) {
-				return TRUE;
-			}
-
-			list = list->next;
-		}
-
-		return FALSE;
-	}
-}
-
 gboolean
 gdm_xdmcp_init (void)
 {
@@ -551,12 +513,12 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 		if (id != NULL &&
 		    id->chosen_host != NULL) {
 			/* if user chose us, then just send willing */
-			if (is_local_addr (id->chosen_host)) {
+			if (gdm_xdmcp_is_local_addr (id->chosen_host)) {
 				/* get rid of indirect, so that we don't get
 				 * the chooser */
 				gdm_choose_indirect_dispose (id);
 				gdm_xdmcp_send_willing (clnt_sa);
-			} else if (is_loopback_addr (&(clnt_sa->sin_addr))) {
+			} else if (gdm_xdmcp_is_loopback_addr (&(clnt_sa->sin_addr))) {
 				/* woohoo! fun, I have no clue how to get
 				 * the correct ip, SO I just send forward
 				 * queries with all the different IPs */
@@ -565,7 +527,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 				while (list != NULL) {
 					struct in_addr *addr = list->data;
 					
-					if ( ! is_loopback_addr (addr)) {
+					if ( ! gdm_xdmcp_is_loopback_addr (addr)) {
 						/* forward query to
 						 * chosen host */
 						gdm_xdmcp_send_forward_query
@@ -882,7 +844,7 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 	    last_willing = time (NULL);
     }
 
-    if ( ! is_local_addr (&(clnt_sa->sin_addr)) &&
+    if ( ! gdm_xdmcp_is_local_addr (&(clnt_sa->sin_addr)) &&
 	 gdm_xdmcp_displays_from_host (&(clnt_sa->sin_addr)) >= GdmDispPerHost) {
 	    /* Don't translate, this goes over the wire to servers where we
 	     * don't know the charset or language, so it must be ascii */
@@ -1094,7 +1056,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     /* Check if ok to manage display */
     if (mitauth &&
 	sessions < GdmMaxSessions &&
-	(is_local_addr (&(clnt_sa->sin_addr)) ||
+	(gdm_xdmcp_is_local_addr (&(clnt_sa->sin_addr)) ||
 	 gdm_xdmcp_displays_from_host (&(clnt_sa->sin_addr)) < GdmDispPerHost)) {
 	    char *disp;
 	    char *hostname = get_host_from_addr (clnt_sa);
@@ -1117,7 +1079,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     } else {
 	    /* Don't translate, this goes over the wire to servers where we
 	    * don't know the charset or language, so it must be ascii */
-	    if (mitauth)
+	    if ( ! mitauth)
 		    gdm_xdmcp_send_decline (clnt_sa, "Only MIT-MAGIC-COOKIE-1 supported");	
 	    else if (sessions < GdmMaxSessions)
 		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions reached");	
@@ -1661,5 +1623,42 @@ gdm_xdmcp_close (void)
 
 #endif /* HAVE_LIBXDMCP */
 
+gboolean
+gdm_xdmcp_is_loopback_addr (struct in_addr *ia)
+{
+	const char lo[] = {127,0,0,1};
+
+	if (ia->s_addr == INADDR_LOOPBACK ||
+	    memcmp (&ia->s_addr, lo, 4) == 0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+gboolean
+gdm_xdmcp_is_local_addr (struct in_addr *ia)
+{
+	const char lo[] = {127,0,0,1};
+
+	if (ia->s_addr == INADDR_LOOPBACK ||
+	    memcmp (&ia->s_addr, lo, 4) == 0) {
+		return TRUE;
+	} else {
+		const GList *list = peek_local_address_list ();
+
+		while (list != NULL) {
+			struct in_addr *addr = list->data;
+
+			if (memcmp (&ia->s_addr, &addr->s_addr, 4) == 0) {
+				return TRUE;
+			}
+
+			list = list->next;
+		}
+
+		return FALSE;
+	}
+}
 
 /* EOF */
