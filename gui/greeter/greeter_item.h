@@ -4,6 +4,7 @@
 #include <libgnomecanvas/libgnomecanvas.h>
 
 typedef struct _GreeterItemInfo GreeterItemInfo;
+typedef struct _GreeterItemListItem GreeterItemListItem;
 typedef enum _GreeterItemState GreeterItemState;
 typedef enum _GreeterItemType GreeterItemType;
 typedef enum _GreeterItemSizeType GreeterItemSizeType;
@@ -90,9 +91,13 @@ struct _GreeterItemInfo {
   PangoFontDescription *fonts[GREETER_ITEM_STATE_MAX];
   char *orig_text;
 
+  /* If this is a custom list, then these are the items
+     to pick from */
+  GList *list_items;
+
   /* Container data */
   GList *fixed_children;
-  
+
   GtkOrientation box_orientation;
   gboolean box_homogeneous;
   double box_x_padding;
@@ -116,6 +121,11 @@ struct _GreeterItemInfo {
   gboolean has_requisition;
   GtkRequisition requisition;
   GtkAllocation allocation;
+};
+
+struct _GreeterItemListItem {
+	char *id;
+	char *text;
 };
 
 gint greeter_item_event_handler (GnomeCanvasItem *item,

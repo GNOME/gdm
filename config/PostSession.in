@@ -1,8 +1,9 @@
 #!/bin/sh
 
-PATH=@X_PATH@:$PATH
+PATH=@X_PATH@:$PATH:/bin:/usr/bin
 
-if command -v sessreg > /dev/null 2>&1; then
-	sessreg -d -w /var/log/wtmp -u /var/run/utmp -x "$X_SERVERS" -h "$REMOTE_HOST" -l $DISPLAY $USER
+SESSREG=`which sessreg 2>/dev/null`
+if [ x$SESSREG != x ] ; then
+	$SESSREG -d -w /var/log/wtmp -u /var/run/utmp -x "$X_SERVERS" -h "$REMOTE_HOST" -l $DISPLAY $USER
 fi
 exit 0

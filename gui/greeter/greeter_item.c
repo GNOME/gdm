@@ -52,14 +52,35 @@ void
 greeter_item_info_free (GreeterItemInfo *info)
 {
   int i;
+  GList *list;
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
-    if (info->pixbufs[i])
-      g_object_unref (G_OBJECT (info->pixbufs[i]));
+    {
+      if (info->pixbufs[i])
+        g_object_unref (G_OBJECT (info->pixbufs[i]));
+      if (info->orig_pixbufs[i])
+        g_object_unref (G_OBJECT (info->orig_pixbufs[i]));
+      if (info->files[i])
+        g_free (info->files[i]);
+      if (info->fonts[i])
+        pango_font_description_free (info->fonts[i]);
+    }
+
+  list = info->fixed_children;
+  info->fixed_children = NULL;
+  g_list_foreach (list, (GFunc) greeter_item_info_free, NULL);
+  g_list_free (list);
+
+  list = info->box_children;
+  info->box_children = NULL;
+  g_list_foreach (list, (GFunc) greeter_item_info_free, NULL);
+  g_list_free (list);
 
   g_free (info->id);
   g_free (info->orig_text);
   g_free (info->show_type);
+
+  memset (info, 0, sizeof (GreeterItemInfo));
   g_free (info);
 }
 

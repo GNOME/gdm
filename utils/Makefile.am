@@ -13,7 +13,8 @@ INCLUDES = \
 
 libexec_PROGRAMS = \
 	@GDMASKPASS@	\
-	@GDMOPEN@
+	@GDMOPEN@	\
+	gdmtranslate
 
 # This is not useful anymore
 # bin_PROGRAMS = \
@@ -24,6 +25,9 @@ EXTRA_PROGRAMS = gdmaskpass gdmopen
 gdmaskpass_SOURCES = \
 	gdmaskpass.c
 
+gdmtranslate_SOURCES = \
+	gdmtranslate.c
+
 gdmopen_SOURCES = \
 	gdmopen.c
 
@@ -33,9 +37,12 @@ gdmopen_SOURCES = \
 gdmaskpass_LDADD = \
 	$(INTLLIBS)		\
 	-lpam			\
-	-lpam_misc
+	$(EXTRA_GDMASKPASS_LIBS)
 
 gdmopen_LDADD = \
+	$(INTLLIBS)
+
+gdmtranslate_LDADD = \
 	$(INTLLIBS)
 
 #gdmmktemp_LDADD = \

@@ -3121,8 +3121,8 @@ gdm_login_gui_init (void)
 				  NULL);
 		gtk_widget_show (GTK_WIDGET (item));
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-				      _("Shut down your computer so that "
-					"you may turn it off."),
+				      _("Shut down the system so that "
+					"you may safely turn off the computer."),
 				      NULL);
 		got_anything = TRUE;
 	}

@@ -7,22 +7,24 @@ PATH=@X_PATH@:$PATH
 
 sysmodmap=/etc/X11/Xmodmap
 
-if command -v xmodmap > /dev/null 2>&1; then
-  if [ -z "$GDM_PARENT_DISPLAY" ]; then
+XMODMAP=`which xmodmap 2>/dev/null`
+if [ x$XMODMAP != x ] ; then
+  if [ x$GDM_PARENT_DISPLAY = x ]; then
     if [ -f $sysmodmap ]; then
-      xmodmap $sysmodmap
+      $XMODMAP $sysmodmap
     fi
   else
-    ( DISPLAY=$GDM_PARENT_DISPLAY XAUTHORITY=$GDM_PARENT_XAUTHORITY xmodmap -pke ) | xmodmap -
+    ( DISPLAY=$GDM_PARENT_DISPLAY XAUTHORITY=$GDM_PARENT_XAUTHORITY $XMODMAP -pke ) | $XMODMAP -
   fi
 fi
 
-if command -v setxkbmap > /dev/null 2>&1; then
+SETXKBMAP=`which setxkbmap 2>/dev/null`
+if [ x$SETXKBMAP != x ] ; then
   # FIXME: is this all right?  Is this completely on crack?
   # What this does is move the xkb configuration from the GDM_PARENT_DISPLAY
   # FIXME: This should be done in code.  Or there must be an easier way ...
   if [ -n "$GDM_PARENT_DISPLAY" ]; then
-    XKBSETUP=`( DISPLAY=$GDM_PARENT_DISPLAY XAUTHORITY=$GDM_PARENT_XAUTHORITY setxkbmap -v )`
+    XKBSETUP=`( DISPLAY=$GDM_PARENT_DISPLAY XAUTHORITY=$GDM_PARENT_XAUTHORITY $SETXKBMAP -v )`
     if [ -n "$XKBSETUP" ]; then
       XKBKEYMAP=`echo "$XKBSETUP" | grep '^keymap' | awk '{ print $2 }'`
       XKBTYPES=`echo "$XKBSETUP" | grep '^types' | awk '{ print $2 }'`
@@ -30,13 +32,13 @@ if command -v setxkbmap > /dev/null 2>&1; then
       XKBSYMBOLS=`echo "$XKBSETUP" | grep '^symbols' | awk '{ print $2 }'`
       XKBGEOMETRY=`echo "$XKBSETUP" | grep '^geometry' | awk '{ print $2 }'`
       if [ -n "$XKBKEYMAP" ]; then
-        setxkbmap -keymap "$XKBKEYMAP"
+        $SETXKBMAP -keymap "$XKBKEYMAP"
       elif [ -n "$XKBTYPES" -a -n "$XKBCOMPAT" -a -n "$XKBSYMBOLS" -a -n "$XKBGEOMETRY" ]; then
-        setxkbmap -types "$XKBTYPES" -compat "$XKBCOMPAT" -symbols "$XKBSYMBOLS" -geometry "$XKBGEOMETRY"
+        $SETXKBMAP -types "$XKBTYPES" -compat "$XKBCOMPAT" -symbols "$XKBSYMBOLS" -geometry "$XKBGEOMETRY"
       elif [ -n "$XKBTYPES" -a -n "$XKBCOMPAT" -a -n "$XKBSYMBOLS" ]; then
-        setxkbmap -types "$XKBTYPES" -compat "$XKBCOMPAT" -symbols "$XKBSYMBOLS"
+        $SETXKBMAP -types "$XKBTYPES" -compat "$XKBCOMPAT" -symbols "$XKBSYMBOLS"
       elif [ -n "$XKBSYMBOLS" ]; then
-        setxkbmap -symbols "$XKBSYMBOLS"
+        $SETXKBMAP -symbols "$XKBSYMBOLS"
       fi
     fi
   fi

@@ -33,6 +33,7 @@ extern int GdmMinimalUID;
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gchar *GdmWelcome;
+extern gchar *GdmServAuthDir;
 
 extern gboolean GDM_IS_LOCAL;
 extern gboolean DOING_GDM_DEVELOPMENT;

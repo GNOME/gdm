@@ -22,6 +22,7 @@ extern GreeterItemInfo *welcome_string_info;
 static char *file_search_path = NULL;
 
 GHashTable *item_hash = NULL;
+GList *custom_items = NULL;
 
 static gboolean parse_items (xmlNodePtr       node,
 			     GList          **items_out,
@@ -1078,6 +1079,7 @@ parse_label (xmlNodePtr        node,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_BAD_SPEC,
 		   "A label must specify the text attribute");
+      return FALSE;
     }
   /* FIXME: evil hack to use internally translated strings */
   if (translation_score == 999 &&
@@ -1110,6 +1112,68 @@ parse_label (xmlNodePtr        node,
 }
 
 static gboolean
+parse_listitem (xmlNodePtr        node,
+		GreeterItemInfo  *info,
+		GError         **error)
+{
+  xmlNodePtr child;
+  char *translated_text = NULL;
+  gint translation_score = 1000;
+  xmlChar *prop;
+  GreeterItemListItem *li;
+  
+  prop = xmlGetProp (node, "id");
+  
+  if (prop)
+    {
+      li = g_new0 (GreeterItemListItem, 1);
+      li->id = g_strdup (prop);
+      xmlFree (prop);
+    }
+  else
+    {
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "Listitem id not specified");
+      return FALSE;
+    }
+
+  child = node->children;
+  while (child)
+    {
+      if (child->type == XML_ELEMENT_NODE &&
+	  strcmp (child->name, "text") == 0)
+	{
+	  if ( ! parse_translated_text (child, &translated_text, &translation_score, error))
+	    {
+              g_free (li->id);
+              g_free (li);
+	      return FALSE;
+	    }
+	}
+    
+      child = child->next;
+    }
+
+  if (translated_text == NULL)
+    {
+      g_free (li->id);
+      g_free (li);
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "A list item must specify the text attribute");
+      return FALSE;
+    }
+  li->text = translated_text;
+
+  info->list_items = g_list_append (info->list_items, li);
+
+  return TRUE;
+}
+
+static gboolean
 parse_list (xmlNodePtr        node,
 	     GreeterItemInfo  *info,
 	     GError         **error)
@@ -1129,6 +1193,11 @@ parse_list (xmlNodePtr        node,
 	  if (!parse_show (child, info, error))
 	    return FALSE;
 	}
+      else if (strcmp (child->name, "listitem") == 0)
+	{
+	  if ( ! parse_listitem (child, info, error))
+	    return FALSE;
+	}
       else if (strcmp (child->name, "fixed") == 0 ||
 	       strcmp (child->name, "box") == 0)
 	{
@@ -1141,6 +1210,17 @@ parse_list (xmlNodePtr        node,
     
       child = child->next;
     }
+
+  if (info->list_items != NULL) {
+    if (strcmp (info->id, "userlist") == 0) {
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "List of id userlist cannot have custom list items");
+      return FALSE;
+    }
+    custom_items = g_list_append (custom_items, info);
+  }
 
   return TRUE;
 }
@@ -1193,6 +1273,8 @@ parse_items (xmlNodePtr  node,
     xmlChar *type;
     GreeterItemInfo *info;
     GreeterItemType item_type;
+
+    *items_out = NULL;
     
     items = NULL;
     
@@ -1314,6 +1396,7 @@ greeter_parse (const char *file, const char *datadir,
   GList *items;
 
   /* FIXME: EVIL! GLOBAL! */
+  g_free (file_search_path);
   file_search_path = g_strdup (datadir);
   
   if (!g_file_test (file, G_FILE_TEST_EXISTS))
@@ -1339,6 +1422,7 @@ greeter_parse (const char *file, const char *datadir,
   node = xmlDocGetRootElement (doc);
   if (node == NULL)
     {
+      xmlFreeDoc (doc);
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_BAD_XML,
@@ -1348,6 +1432,7 @@ greeter_parse (const char *file, const char *datadir,
   
   if (strcmp (node->name, "greeter") != 0)
     {
+      xmlFreeDoc (doc);
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_WRONG_TYPE,
@@ -1356,20 +1441,33 @@ greeter_parse (const char *file, const char *datadir,
     }
 
 
-  item_hash = g_hash_table_new_full ((GHashFunc)greeter_info_id_hash,
-				     (GEqualFunc)greeter_info_id_equal,
-				     NULL,
-				     (GDestroyNotify)greeter_item_info_free);
+  item_hash = g_hash_table_new ((GHashFunc)greeter_info_id_hash,
+				(GEqualFunc)greeter_info_id_equal);
   
 
   root = greeter_item_info_new (NULL, GREETER_ITEM_TYPE_RECT);
   res = parse_items (node, &items, root, error);
   if (!res)
     {
+      welcome_string_info = NULL;
+
+      g_hash_table_destroy (item_hash);
+      item_hash = NULL;
+      g_list_free (custom_items);
+      custom_items = NULL;
+
+      g_list_foreach (items, (GFunc) greeter_item_info_free, NULL);
+      g_list_free (items);
+      items = NULL;
+
       greeter_item_info_free (root);
+
+      xmlFreeDoc (doc);
 
       return NULL;
     }
+
+  xmlFreeDoc (doc);
 
   root->fixed_children = items;
   
@@ -1386,4 +1484,10 @@ greeter_parse (const char *file, const char *datadir,
   root->group_item = gnome_canvas_root (canvas);
   
   return root;
+}
+
+const GList *
+greeter_custom_items (void)
+{
+  return custom_items;
 }

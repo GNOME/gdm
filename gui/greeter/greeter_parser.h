@@ -24,5 +24,6 @@ GreeterItemInfo *greeter_parse (const char  *file,
 				GError     **error);
 
 GreeterItemInfo *greeter_lookup_id (const char *id);
+const GList *greeter_custom_items (void);
 
 #endif /* __GREETER_PARSER_H__ */

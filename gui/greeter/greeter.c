@@ -23,6 +23,7 @@
 #include "greeter_item_clock.h"
 #include "greeter_item_pam.h"
 #include "greeter_item_ulist.h"
+#include "greeter_item_customlist.h"
 #include "greeter_item_capslock.h"
 #include "greeter_item_timed.h"
 #include "greeter_events.h"
@@ -71,6 +72,7 @@ int GdmMinimalUID;
 gboolean GdmAllowRoot;
 gboolean GdmAllowRemoteRoot;
 gchar *GdmWelcome;
+gchar *GdmServAuthDir;
 
 gboolean GdmUseCirclesInEntry = FALSE;
 
@@ -141,6 +143,7 @@ greeter_parse_config (void)
     GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
     GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
     GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
+    GdmServAuthDir = ve_config_get_string (config, GDM_KEY_SERVAUTH);
 
     GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
     /* A hack! */
@@ -620,6 +623,9 @@ greeter_setup_items (void)
 					 NULL);
   greeter_item_system_setup ();
   greeter_item_session_setup ();
+
+  /* Setup the custom widgets */
+  greeter_item_customlist_setup ();
 }
 
 enum {
@@ -1281,7 +1287,7 @@ main (int argc, char *argv[])
 				    GTK_MESSAGE_ERROR,
 				    GTK_BUTTONS_OK,
 				    s,
-				    /* avoid warning */ "%s", "");
+				    "%s", (error && error->message) ? error->message : "");
 	g_free (s);
     
         gtk_widget_show_all (dialog);
@@ -1293,6 +1299,9 @@ main (int argc, char *argv[])
 
         exit(1);
       }
+
+  if (error)
+    g_clear_error (&error);
 
   /* Try circles.xml */
   if (root == NULL)
@@ -1307,7 +1316,7 @@ main (int argc, char *argv[])
 			    NULL);
     }
 
-  if (greeter_lookup_id ("user-pw-entry") == NULL)
+  if (root != NULL && greeter_lookup_id ("user-pw-entry") == NULL)
     {
       GtkWidget *dialog;
 

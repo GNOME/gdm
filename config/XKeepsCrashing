@@ -1,12 +1,16 @@
 #!/bin/sh
 
-GTBIN=`which gettext`
+if [ -x "$LIBEXECDIR/gdmtranslate" ] ; then
+  GDMTRANSLATE="$LIBEXECDIR/gdmtranslate"
+else
+  GDMTRANSLATE=
+fi
 
 gettextfunc () {
-  if test "x$GTBIN" = "x" ; then
-    echo "$1"
+  if [ "x$GDMTRANSLATE" != "x" ] ; then
+    $GDMTRANSLATE "$1"
   else
-    $GTBIN -s "$1"
+    echo "$1"
   fi
 }
 

@@ -1,3 +1,61 @@
+Sat Jul 19 16:33:19 2003  George Lebl <jirka@5z.com>
+
+	* docs/C/gdm.xml, configure.in, docs/C/Makefile.am,
+	  docs/Makefile.am, xmldocs.make, omf.make: update the
+	  documentation a lot and install the docs.  Yay!  We
+	  have actual documentation now!!!
+
+	* daemon/misc.c: add sys/time.h and sys/resource.h includes
+	  (from looking at the FreeBSD patches)
+
+	* daemon/slave.c: pass LOGIN_SETENV as well to setusercontext
+	  (from looking at the FreeBSD patches)
+
+	* gui/gdmsetup.c: fix gccism, and look for the chown/chmod command
+	  (from looking at the FreeBSD patches)
+
+	* gui/gdmphotosetup.c: add signal.h include
+	  (from looking at the FreeBSD patches)
+
+	* configure.in, utils/Makefile.am:  When the security/pam_misc.h is
+	  available also test for where the misc_conv function is as it seems
+	  to be sometimes compiled into the main libpam (FreeBSD for example)
+	  (from looking at the FreeBSD patches)
+
+	* config/Default.in, config/Xsession.in, config/(Pre|Post)Session.in,
+	  config/XKeepsCrashing: don't use command -v and use which properly.
+	  And avoid stderr from which
+
+	* utils/gdmaskpass.c: use GETTEXT_PACKAGE here
+
+	* configure.in, utils/gdmtranslate.c, utils/Makefile.am,
+	  config/XKeepsCrashing, config/Xsession.in, config/Makefile.am:
+	  Add gdmtranslate libexec proggie since gettext command is not
+	  always installed apparently (non-developer machines) so we
+	  can't rely on it existing.  Also do translations from the
+	  Xsession script
+
+	* gui/gdmlogin.c, gui/greeter/greeter_system.c: Fix #117504 by
+	  changing the tooltip to be more informative
+
+	* gui/greeter/greeter_system.c: Fix warnings when not all
+	  system dialog possibilities are present
+
+	* Makefile.am, greeter.c, greeter.dtd, greeter_configuration.h,
+	  greeter_item.[ch], greeter_item_customlist.[ch],
+	  greeter_parser.[ch], greeter_system.c:  Add listitem (proposed
+	  as customitem to the release-team) tags that can be inside
+	  a list and thus create custom widgetry.  At this point all
+	  custom widgetry that can be done is a list to pick from but
+	  this should be possible to extend for some future releases.
+	  This custom info is then written to a per display file
+	  to use from login scripts or elsewhere.  While I was there
+	  I fixed leaks and crashes when the parser would find parse
+	  errors.
+
+	* docs/C/gdmconfig/*, docs/C/gdm.sgml, docs/C/gdm-manual.txt:
+	  remove everything here as it was old and unused and outdated.
+
 2003-07-19  Christian Neumair  <chris@gnome-de.org>
 
 	* gui/gdmchooser-strings.c, gui/gdmsetup-strings.c: Use english

@@ -30,7 +30,7 @@ EXTRA_DIST = \
 	gettextfoo.h \
 	extract-shell.sh
 
-gettextfoo.h: XKeepsCrashing
+gettextfoo.h: XKeepsCrashing Xsession.in
 	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
 
 @INTLTOOL_DESKTOP_RULE@

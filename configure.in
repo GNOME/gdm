@@ -277,11 +277,19 @@ if test x$enable_authentication_scheme != xcrypt -a \
 fi
 
 GDMASKPASS=
+EXTRA_GDMASKPASS_LIBS=
 if test x$have_pam = xyes ; then
 	AC_CHECK_HEADERS(security/pam_misc.h, [
 			 GDMASKPASS=gdmaskpass])
+	if test x$GDMASKPASS != x ; then
+		AC_CHECK_LIB(pam,misc_conv,,[AC_CHECK_LIB(pam_misc,misc_conv, [
+		     EXTRA_GDMASKPASS_LIBS="$EXTRA_GDMASKPASS_LIBS -lpam_misc"], [
+		     GDMASKPASS=], [
+		     -lpam])])
+	fi
 fi
 AC_SUBST(GDMASKPASS)
+AC_SUBST(EXTRA_GDMASKPASS_LIBS)
 
 if test x$enable_authentication_scheme = xpam -a x$have_pam = xno ; then
 	AC_MSG_ERROR(PAM support requested but not available)
@@ -557,6 +565,7 @@ config/Makefile
 po/Makefile.in
 vicious-extensions/Makefile
 docs/Makefile
+docs/C/Makefile
 config/gdm.conf
 config/Xsession
 config/Default

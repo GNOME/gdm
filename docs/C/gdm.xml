@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
-<!ENTITY version "1.4.0"> 
-<!ENTITY date "4/20/2001"> 
+    <!ENTITY legal SYSTEM "legal.xml">
+    <!ENTITY version "2.4.1.98"> 
+    <!ENTITY date "7/19/2003"> 
 ]>
 
-<book id="index">
-  <bookinfo>
+<article id="index" lang="en">
+  <articleinfo>
     <title>Gnome Display Manager Reference Manual</title>
     <authorgroup>
       <author>
@@ -21,6 +22,12 @@
           <address><email>jirka@5z.com</email></address>
         </affiliation>
       </author>
+      <author>
+        <firstname>Brian</firstname><surname>Cameron</surname>
+        <affiliation>
+          <address><email>Brian.Cameron@Sun.COM</email></address>
+        </affiliation>
+      </author>
     </authorgroup>
     <copyright>
       <year>1998, 1999</year> <holder>Martin K. Petersen</holder>
@@ -28,34 +35,21 @@
     <copyright>
       <year>2001</year> <holder>George Lebl</holder>
     </copyright>
+    <copyright>
+      <year>2003</year> <holder>Red Hat, Inc.</holder>
+    </copyright>
+    <copyright>
+      <year>2003</year> <holder>Sun Microsystems, Inc.</holder>
+    </copyright>
 
-  <!-- Use this legal notice for online documents which depend on -->
-  <!-- core GNOME packages.                                       -->
-  <legalnotice id="legalnotice">
-   <para>
-    Permission is granted to copy, distribute and/or modify this document
-    under the terms of the <ulink type="help" 
-    url="gnome-help:fdl"><citetitle>GNU Free Documentation
-    License</citetitle></ulink>, Version 1.1 or any later version 
-    published by the Free Software Foundation with no Invariant Sections, 
-    no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license
-    can be found <ulink type="help" url="gnome-help:fdl">here</ulink>.
-   </para>
-   <para>
-    Many of the names used by companies to distinguish their products and
-    services are claimed as trademarks. Where those names appear in any
-    GNOME documentation, and those trademarks are made aware to the members
-    of the GNOME Documentation Project, the names have been printed in caps
-    or initial caps.
-   </para>
-  </legalnotice>
+    &legal;
 
-  <releaseinfo>
+    <releaseinfo>
        This manual describes version &version; of the GNOME Display Manager. It was
        last updated on &date;.
-  </releaseinfo>  
+    </releaseinfo>  
  
-  </bookinfo>
+  </articleinfo>
 
   <toc></toc>
 
@@ -72,7 +66,16 @@
     </para>
 
     <para>
-      Greeter - The graphical login window (<filename>gdmlogin</filename>).
+      Greeter - The graphical login window (<filename>gdmlogin</filename> or
+      <filename>gdmgreeter</filename>).
+    </para>
+
+    <para>
+      Standard Greeter - The standard login window (<filename>gdmlogin</filename>).
+    </para>
+
+    <para>
+      Graphical Greeter - The themable login window (<filename>gdmgreeter</filename>).
     </para>
 
     <para>
@@ -81,7 +84,7 @@
     </para>
 
     <para>
-      Configurator - The configuration program (<filename>gdmconfig</filename>).
+      Configurator - The configuration program (<filename>gdmsetup</filename>).
     </para>
 
     <para>
@@ -93,10 +96,10 @@
 
   </preface>
 
-  <chapter id="intro">
+  <sect1 id="overview">
     <title>Overview</title>
 
-    <sect1>
+    <sect2 id="introduction">
       <title>
 	Introduction
       </title>
@@ -106,9 +109,9 @@
 	competitors (X3DM, KDM, WDM) GDM was written from scratch and
 	does not contain any original XDM / X Consortium code. 
       </para>
-    </sect1>
+    </sect2>
 
-    <sect1 id="daemonov">
+    <sect2 id="daemonov">
       <title>The GDM Daemon</title>
       
       <para> 
@@ -119,9 +122,11 @@
       <para> 
 	Upon startup the <filename>gdm</filename> daemon parses its config file
 	<filename>gdm.conf</filename>.  For each of the local displays <filename>gdm</filename>
-	forks an Xserver and a slave process. The main <filename>gdm</filename> process
-	will then listen to XDMCP requests from remote displays and
-	monitor the local display sessions.
+	forks an Xserver and a slave process.  The main <filename>gdm</filename> process
+	will then listen to XDMCP requests, if so configured, from remote displays and
+	monitor the local display sessions.  The main daemon process will also allow
+	starting of on new local Xservers on demand using the <filename>gdmflexiserver</filename>
+	command.
       </para>
       
       <para> 
@@ -129,7 +134,12 @@
 	<filename>gdmlogin</filename>, the graphical login
 	program. <filename>gdmlogin</filename> runs as a dedicated
 	user and communicates asynchronously with the slave process
-	through a pipe.
+	through a pipe.  Alternatively <filename>gdmgreeter</filename> command
+	can be used which is the same as <filename>gdmlogin</filename> but
+	allows greater themability.  <filename>gdmgreeter</filename>
+	is refered to as the Graphical Greeter, while 
+	<filename>gdmlogin</filename> is refered to as the Standard
+	Greeter.
       </para>
       
       <para> 
@@ -179,9 +189,55 @@
 	reasons. Looking up icons in homedirs, scaling and rendering
 	face icons can take quite a long time. YMMV.
       </para>
-    </sect1>
 
-    <sect1>
+      <para>
+	GDM also has a unix domain socket which can be used to control
+	certain aspects of behaviour, or to query information about running
+	servers or logged in users.  This is the <filename>/tmp/.gdm_socket</filename>
+	and the protocol is described in the sources in the
+	<filename>daemon/gdm.h</filename> header file.  The
+	<filename>gdmflexiserver</filename> command uses this for example to
+	launch on demand X servers for the user.
+      </para>
+
+    </sect2>
+
+    <sect2 id="displaytypes">
+      <title>Different Display Types</title>
+
+      <para>
+	GDM allows 3 different display types.  First local static X servers.  These
+	are always run, and when they die or are killed, they are restarted.  GDM
+	can run as many of these as needed.  GDM can also manage servers on which it
+	does not manage a login itself, thus allowing GDM to be used when building
+	X terminals.
+      </para>
+
+      <para>
+	Next GDM supports flexible or on demand servers.  These are run by
+	requesting one using the socket protocol.  There is a command,
+	<filename>gdmflexiserver</filename>, which can do this for the user. 
+	For standard X servers the user must be logged in from a console, on
+	one of the servers that GDM has run.  This command can however also
+	launch nested <filename>Xnest</filename> servers which can be started
+	even from non-console logins.  This is generally done by running
+	<filename>gdmflexiserver -n</filename>.  These servers
+	are not restarted when the user session ends.  
+	<filename>gdmflexiserver</filename> normally also locks the users
+	screen screen before running a new server with xscreensaver.
+      </para>
+
+      <para>
+	Last display type is the XDMCP remote displays that are described
+	in the next section.  Remote hosts can connect to GDM and present
+	the login screen if this is enabled.  Some things may be different
+	for these sessions, such as the Actions menu which allows you to
+	shut down, reboot, or configure GDM will not be shown.
+      </para>
+
+    </sect2>
+
+    <sect2 id="xdmcp">
       <title>
 	XDMCP
       </title>
@@ -201,7 +257,12 @@
 	GDM can also be configured to honor INDIRECT queries and
 	present a host chooser to the remote display. GDM will
 	remember the user's choice and forward subsequent requests to
-	the chosen manager.
+	the chosen manager.  GDM also supports an extension to the
+	protocol which will make it forget the redirection once
+	the user's connection succeeds.  This extension is only
+	supported if both daemons are GDM.  It is transparent and
+	will be ignored by XDM or other daemons that implement
+	XDMCP.
       </para>
 
       <para>
@@ -222,7 +283,9 @@
 	still adviced that you block UDP port 177 on your firewall
 	unless you really need it. GDM guards against DoS attacks, but
 	the X protocol is still inherently insecure and should only be
-	used in controlled environments.
+	used in controlled environments.  Also each remote connection
+	takes up lots of resources, so it is much easier to to DoS
+	an XDMCP server.
       </para>
 
       <para>
@@ -233,129 +296,180 @@
 	NFS mounted directory, are prone to eavesdropping too.
       </para>
 
-    </sect1>
+    </sect2>
 
-    <sect1>
-      <title>The Greeter</title>
+    <sect2 id="stdgreeter">
+      <title>The Standard Greeter</title>
 
       <para>
-	The greeter is the graphical user interface that is presented
-	to the user. The greeter contains a menu at the top, an
+	The Standard Greeter is the default graphical user interface that
+	is presented to the user. The greeter contains a menu at the top, an
 	optional face browser, an optional logo and a text entry
 	widget.
       </para>
 
-      <sect2>
-	<title>
-	  Text entry
-	</title>
+      <para>
+        The text entry field is used for entering logins, passwords,
+        passphrases etc. <filename>gdmlogin</filename> is controlled by the
+        underlying daemon and is basically stateless. The daemon
+        controls the greeter through a simple protocol where it can
+        ask the greeter for a text string with echo turned on or
+        off. Similarly, the daemon can change the label above the
+        text entry widget to correspond to the value the
+        authentication system wants the user to enter.
+      </para>
 
-	<para>
-	  The text entry field is used for entering logins, passwords,
-	  passphrases etc. <filename>gdmlogin</filename> is controlled by the
-	  underlying daemon and is basically stateless. The daemon
-	  controls the greeter through a simple protocol where it can
-	  ask the greeter for a text string with echo turned on or
-	  off. Similarly, the daemon can change the label above the
-	  text entry widget to correspond to the value the
-	  authentication system wants the user to enter.
-	</para>
+      <para>
+        The menu bar in the top of the greeter enables the user to
+        select the requested session type/desktop environment,
+        select an appropriate locale/language and optionally
+        shutdown/reboot the machine. The greeter window can also be
+        iconified to make room for other applications on the login
+        screen.
+      </para>
 
-      </sect2>
+      <para>
+        The greeter provides a face browser containing icons for all
+        the users on a system. The icons can be installed globally
+        by the sysadmin or in the users' home directories.  If installed
+        globally they should be in the <filename>share/faces/</filename>
+        directory (though this can be configured with the
+        <filename>GlobalFaceDir</filename>
+        configuration option) and the filename should be the name of
+        the user, optionally with a <filename>.png</filename> appended.
+      </para>
 
-      <sect2>
-	<title>
-	  The Menu
-	</title>
-
-	<para>
-	  The menu bar in the top of the greeter enables the user to
-	  select the requested session type/desktop environment,
-	  select an appropriate locale/language and optionally
-	  shutdown/reboot the machine. The greeter window can also be
-	  iconified to make room for other applications on the login
-	  screen.
-	</para>
-
-      </sect2>
-
-      <sect2>
-	<title>
-	  The face browser
-	</title>
-
-	<para>
-	  The greeter provides a face browser containing icons for all
-	  the users on a system. The icons can be installed globally
-	  by the sysadmin or in the users' home directories.
-	</para>
+      <para>
+        The users can place their icons in a file called <filename>~/.face</filename>,
+        and they can use the program <filename>gdmphotosetup</filename> to
+        graphically configure this.
+      </para>
 	
-	<para>
-	  Face icons placed in the global face directory
-	  must be readable to the gdm user.  However, the daemon, proxies
-	  user pictures to the greeter and thus those don't have be be
-	  readable by the gdm user, but root.
-	</para>
+      <para>
+        Face icons placed in the global face directory
+        must be readable to the gdm user.  However, the daemon, proxies
+        user pictures to the greeter and thus those don't have be be
+        readable by the gdm user, but root.
+      </para>
 
-	<para>
-	  Please note that loading and scaling face icons located in
-	  user home directories can be a very time consuming task.
-	  Especially on large systems or systems running NIS. The
-	  browser feature is only intended for systems with relatively
-	  few users.
-	</para>
+      <para>
+        Please note that loading and scaling face icons located in
+        user home directories can be a very time consuming task.
+        Especially on large systems or systems running NIS. The
+        browser feature is only intended for systems with relatively
+        few users.
+      </para>
 
-	<para>
-	  To filter out unwanted user names in the browser, an exclude
-	  option is implemented. The greeter will automatically ignore
-	  usernames listed in the <filename>Exclude</filename> statement in the
-	  config file.
-	</para>
+      <para>
+        To filter out unwanted user names in the browser, an exclude
+        option is implemented. The greeter will automatically ignore
+        usernames listed in the <filename>Exclude</filename> statement in the
+        config file.
+      </para>
 
-	<para>
-	  When the browser is turned on, valid usernames on the
-	  machine are inherently exposed to a potential intruder. If
-	  your system is connected directly to the Internet, this
-	  might be a bad idea.
-	</para>
+      <para>
+        When the browser is turned on, valid usernames on the
+        machine are inherently exposed to a potential intruder. If
+        your system is connected directly to the Internet, this
+        might be a bad idea.
+      </para>
 
-      </sect2>
+      <para>
+        The greeter can optionally display a logo in the login
+        window. The image must be in a format readable to the gdk-pixbuf
+        library (GIF, JPG, PNG, TIFF, XPM and possibly others), and
+        it must be readable to the gdm user. See the <filename>
+        Logo</filename> option in the reference section below for detauls.
+      </para>
 
-      <sect2>
-	<title>
-	  The Logo
-	</title>
+    </sect2>
 
-	<para>
-	  The greeter can optionally display a logo in the login
-	  window. The image must be in a format readable to the Imlib
-	  library (GIF, JPG, PNG, TIFF, XPM and possibly others), and
-	  it must be readable to the gdm user. See the <filename>
-	  Logo</filename> option in the reference section below for detauls.
-	</para>
+    <sect2 id="graphgreeter">
+      <title>The Graphical Greeter</title>
 
-      </sect2>
+      <para>
+	The Graphical Greeter is a greeter interface that takes up the whole
+	screen and is very themable.  Themes can be selected and new themes
+	can be installed by the Configuration program or by setting the
+	<filename>GraphicalTheme</filename> configuration key.
+      </para>
 
-    </sect1>
+      <para>
+	The look and feel of this greeter is really controlled by the theme and
+	so the user interface elements that are present may be different.  The
+	only thing that must always be present is the text entry field as described
+	above in the Standard Greeter.
+      </para>
 
-  </chapter>
+      <para>
+	You can always get a menu of available actions by pressing the F10 key.
+	This can be useful if the theme doesn't provide certain buttons when you
+	really wish to do some action.
+      </para>
 
-  <chapter id="Configuration">
-    <title>The Configuration Directory</title>
+    </sect2>
+
+    <sect2 id="logging">
+      <title>Logging</title>
+
+      <para>
+	GDM itself will use syslog to log errors or status.  It can also 
+	log debugging information, but this is not generally useful unless
+	something is very wrong, and this must be enabled in the configuration
+	file.
+      </para>
+
+      <para>
+	Output from the various X servers is stored in the GDM log directory,	
+	which is configurable, but is usually <filename>var/log/gdm/</filename>.
+	The output from the session can be found in a file called
+	<filename>&lt;display&gt;.log</filename>.  Four older files are
+	also stored with <filename>.1</filename> through 
+	<filename>.4</filename> appended.  These will be rotated as new
+	sessions on that display are started.  You can use these logs
+	to view what the X server said when it started up.
+      </para>
+
+      <para>
+	The output from the user session is redirected to <filename>~/.xsession-errors</filename>
+	before even the <filename>PreSession</filename> script is started.  So
+	it is not really necessary to redirect this again in the session setup
+	script.  As is usually done.  If the user session lasted less then
+	10 seconds, GDM assumes that the session crashed and allows the user to
+	view this file in a dialog before returning to the login screen.
+	Also if the session being started is one of the failsafe session, this
+	file is not created.  This way the user can view the session errors from
+	the last session and correct the problem this way.
+      </para>
+
+    </sect2>
+
+  </sect1>
+
+  <sect1 id="configuration">
+    <title>Configuration</title>
 
     <para> 
-      This chapter will cover the structure of the configuration
-      directory and the format of the configuration file.  However you 
-      can use the <filename>gdmconfig</filename> binary to configure
-      GDM from a graphical environment.  The terms from this chapter
-      could however still come in handy.  If you want to run the
-      configurator from the GNOME menu, it should be installed under
-      the <filename>System</filename> submenu.
+      This section will cover the configuration of GDM
+      and the format of the configuration file.  However you 
+      can use the <filename>gdmsetup</filename> binary to configure
+      GDM from a graphical environment.  The configuration program
+      does not however let you configure every aspect of GDM however,
+      so if the setup program does not cover your needs
+      you may find information in this section.
+    </para>
+
+    <para>
+      The configuration files, and especially the <filename>gdm.conf</filename>
+      file, contain lots of useful comments, so also read these when
+      changing your setup.
     </para>
 
     <para> 
       The configuration files for GDM are located in the
-      <filename>etc/gdm/</filename> directory.
+      <filename>etc/gdm/</filename> directory.  And some which
+      can be shared among other display managers are
+      located in the <filename>etc/dm/</filename> directory.
     </para>
 
     <para>
@@ -364,37 +478,66 @@
 
     <screen>
 	Init/
+	PostLogin/
 	PostSession/
 	PreSession/
-	Sessions/
 	gdm.conf
+	factory-gdm.conf
+	locale.alias
+	Xsession
+	XKeepsCrashing
     </screen>
 
     <para> 
       <filename>gdm.conf</filename> is the main GDM configuration file. The
-      options will be described later in this chapter.
+      options will be described later in this section.
+      <filename>factory-gdm.conf</filename> is the configuration file as shipped
+      with the daemon.  This can be useful if you wish to revert to the default
+      configuration.
+    </para>
+
+    <para> 
+      <filename>locale.alias</filename> is a file which looks much like the
+      system locale alias but in fact it is not the same.  These are the languages
+      that are available on your system.  All the languages are still tested to
+      see if they actually exist before presenting them to the user.
+    </para>
+
+    <para> 
+      <filename>Xsession</filename> is a script which sets up a user session
+      and then executes the users choice of session.
+    </para>
+
+    <para> 
+      <filename>XKeepsCrashing</filename> is a script which gets run when the
+      X server keeps crashing and we cannot recover.  The shipped default script
+      will work with most Linux distributions and can run the X configuration
+      program provided the person on the console knows the root password.
     </para>
 
     <para>
       <filename>gdm.conf</filename> is configuration file for both <filename>
-      gdm</filename>, <filename>gdmlogin</filename>, and <filename>gdmchooser</filename> since a
-      lot of parameters overlap.
+      gdm</filename>, <filename>gdmgreeter</filename>, <filename>gdmlogin</filename>,
+      and <filename>gdmchooser</filename> since a lot of parameters overlap.
     </para>
 
-    <para> 
+    <para>
       The remaining configuration is done by dropping scripts in the
-      subdirectories of the <filename>etc/gdm</filename> folder. This
+      subdirectories of the <filename>etc/gdm</filename> folder or
+      dropping <filename>.desktop</filename> style files in
+      <filename>etc/dm/Sessions</filename>. This
       approach makes it easy for package management systems to install
       window managers and different session types without requiring
       the sysadmin to edit files.
     </para>
 
-    <sect1>
+    <sect2 id="scriptdirs">
       <title>The Script Directories</title>
       
       <para>
 	In this section we will explain the <filename>Init</filename>,
-	<filename>PreRoot</filename> and <filename>PostRoot</filename> directories as
+	<filename>PostLogin</filename>,
+	<filename>PreSession</filename> and <filename>PostSession</filename> directories as
 	they are very similar.
       </para>
 
@@ -403,7 +546,13 @@
 	to run the script called
 	<filename>Init/&lt;displayname&gt;</filename>. I.e. <filename>Init/:0</filename>
 	for the first local display.  If this file is not found, GDM
-	will attempt to to run <filename>Init/Default</filename>. The
+	will attempt to to run
+	<filename>Init/&lt;hostname&gt;</filename>. I.e. <filename>Init/somehost</filename>.
+	If this still is not found, GDM will try
+	<filename>Init/XDMCP</filename> for all XDMCP logins or
+	<filename>Init/Flexi</filename> for all on demand flexible
+	servers.  If none of the above were found, GDM will run
+	<filename>Init/Default</filename>. The
 	script will be run as root and GDM blocks until it
 	terminates. Use the <filename>Init/*</filename> script for
 	programs that are supposed to run alongside with the GDM login
@@ -414,48 +563,75 @@
       <para> 
 	It is up to the sysadmin to decide whether clients started by
 	the Init script should be killed before starting the user
-	session. This is controlled with the KillInitClients option in
-	<filename>gdm.conf</filename>.
+	session. This is controlled with the <filename>KillInitClients</filename>
+	option in <filename>gdm.conf</filename>.
       </para>
 
       <para>
-	When the user has been successfully authenticated, GDM tries
-	to run the PreSession script. Similar to the Init-scripts,
-	<filename>PreSession/&lt;displayname&gt;</filename> will be
-	executed, if this file doesn't exist, GDM will attempt to run
-	<filename>PreSession/Default</filename>. The script will be
-	run as root and GDM blocks until it terminates. Use this
+	When the user has been successfully authenticated GDM tries the
+	scripts in the <filename>PostLogin</filename> directory in the
+	same manner as for the <filename>Init</filename> directory.
+	This is done before any session setup is done, and so this
+	would be the script where you might setup the home directory
+	if you need to (though you should use the
+	<filename>pam_mount</filename> module if you can for this).
+	You have the $USER and $DISPLAY environment variables set for this script,
+	and again it is run as root.
+      </para>
+
+      <para>
+	After the user session has been setup from the GDM side of
+	things, GDM will run the scripts in the <filename>PreSession</filename>
+	directory, again in the same manner as the <filename>Init</filename>
+	directory.  Use this
 	script for local session management or accounting stuff. The
 	$USER environment variable contains the login of the
-	authenticated user. The script should return 0 on success. Any
+	authenticated user and $DISPLAY is set to the current display.
+	The script should return 0 on success. Any
 	other value will cause GDM to terminate the current login
 	process.
+	Also $X_SERVERS environmental variable is set and this points
+	to a fake generated x servers file for use with the
+	sessreg accounting program.
       </para>
 
       <para>
-	Then the session script is run. Session scripts are located in
-	the <filename>etc/gdm/Session</filename> directory. Which one
-	GDM runs, depends on the session the user chose in the
-	Sessions-menu in the greeter. If no session is selected and
-	the user has no last session stored in his
-	<filename>~/.gnome/gdm</filename> file, the system will choose
-	or first script found or -- if
-	<filename>Sessions/Default</filename> exists -- this will be
-	run. For instance you can create a symlink from
-	<filename>Gnome</filename> to <filename>Default</filename> to
-	make Gnome the default desktop environment.
+	After this the base <filename>Xsession</filename> script is
+	run with the selected session executable as the first argument.
+	This is run as the user, and really this is the user session.
+	The available session executables are taken from the
+	<filename>Exec=</filename> line in the
+	<filename>.desktop</filename> files in the
+	<filename>etc/dm/Sessions</filename> directory.  The user
+	either picks from these sessions or GDM will look inside
+	the file <filename>~/.dmrc</filename> for the stored
+	preferrence.
+      </para>
+
+      <para>
+        This script should really load the users profile and generally
+	do all the voodoo that is needed to launch a session.  Since
+	many systems reset the language selections done by GDM, GDM
+	will also set the GDM_LANG variable to the selected language.
+	You can use this to reset the language environmental
+	variables after you run the users profile.  If the user
+	elected to use the system language, then GDM_LANG is not run. 
       </para>
 
       <para> 
-	When the user terminates his session, the PostSession script
-	will be run. Operation is similar to Init and PreSession. That
-	is, GDM will attempt to execute the script
-	<filename>PostSession/&lt;displayname&gt;</filename> and if
-	that doesn't exist <filename>PostSession/Default</filename>
-	will be run. Again the script will be run with root
+	When the user terminates his session, the <filename>PostSession</filename> script
+	will be run. Again operation is similar to <filename>Init</filename>,
+	<filename>PostLogin</filename> and
+	<filename>PreSession</filename>.
+	Again the script will be run with root
 	priviledges, the slave daemon will block and the $USER
 	environment variable will contain the name of the user who
-	just logged out.
+	just logged out and $DISPLAY will be set to the display
+	the user used, however note that the X server for this display
+	may already be dead and so you shouldn't try to access it.
+	Also $X_SERVERS environmental variable is set and this points
+	to a fake generated x servers file for use with the
+	sessreg accounting program.
       </para>
 
       <para>
@@ -465,15 +641,23 @@
 	script execution.
       </para>
 
+      <para>
+	Except for the <filename>Xsession</filename> script all of these
+	scripts will also have the environment of
+	<filename>RUNNING_UNDER_GDM=yes</filename> set, so that you could
+	perhaps use similar scripts for different display managers.
+      </para>
+
       <para> 
-	Neither of the Init, PreSession or PostSession scripts are
+	Neither of the <filename>Init</filename>, <filename>PostLogin</filename>,
+	<filename>PreSession</filename> or <filename>PostSession</filename> scripts are
 	necessary and can be left out. At least one session script is
 	required for proper operation.
       </para>
 
-    </sect1>
+    </sect2>
 
-    <sect1>
+    <sect2 id="configfile">
       <title>The Configuration File - <filename>gdm.conf</filename></title>
       
       <para>
@@ -484,17 +668,20 @@
       <para>
 	The configuration file is divided into sections each
 	containing variables that define the behaviour for a specific
-	part of the GDM suite.
+	part of the GDM suite.  The file is fairly well commented
+	as well.
       </para>
 
       <para>
-	<filename>gdm.conf</filename> follows the standard GNOME configuration
+	<filename>gdm.conf</filename> follows the standard <filename>.ini</filename>
+	style configuration
 	file syntax. Keywords in brackets define sections, strings
 	before an equal sign (=) are variables and the data after
-	equal sign represents their value.
+	equal sign represents their value.  Empty lines or lines
+	starting with the hash mark (#) are ignored.
       </para>
 
-      <sect2>
+      <sect3 id="daemonsection">
 	<title>Daemon Configuration</title>
 
 	<variablelist>
@@ -536,7 +723,7 @@
 		first bootup.  No password will be asked.  This is useful
 		for single user workstations where local console security
 		is not an issue.  Also could be useful for public terminals,
-		although there see TimedLogin.
+		although there see <filename>TimedLogin</filename>.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -554,11 +741,24 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>BaseXsession</term>
+	    <listitem>
+	      <synopsis>BaseXsession=etc/gdm/Xsession</synopsis>
+	      <para>
+		This is the base X session file.  When a user logs in, this script
+		will be run with the selected session as the first argument.  The
+		selected session will be the <filename>Exec=</filename> from
+		the <filename>.desktop</filename> file of the session.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>Chooser</term>
 	    <listitem>
-	      <synopsis>Chooser=bin/gdmchooser --disable-sound --disable-crash-dialog</synopsis>
+	      <synopsis>Chooser=bin/gdmchooser</synopsis>
 	      <para>
 		Full path and name of the chooser executable followed by optional arguments.
 	      </para>
@@ -568,11 +768,11 @@
 	  <varlistentry>
 	    <term>Configurator</term>
 	    <listitem>
-	      <synopsis>Configurator=bin/gdmconfig --disable-sound --disable-crash-dialog</synopsis>
+	      <synopsis>Configurator=bin/gdmsetup --disable-sound --disable-crash-dialog</synopsis>
 	      <para>
 		The pathname to the configurator binary.  If the greeter
-		ConfigAvailable option is set to true then run this binary
-		when somebody chooses Configuration from the system menu.
+		<filename>ConfigAvailable</filename> option is set to true then run this binary
+		when somebody chooses Configuration from the Actions menu.
 		Of course GDM will first ask for root password however.
 		And it will never allow this to happen from a remote display.
 	      </para>
@@ -588,6 +788,19 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>DefaultSession</term>
+	    <listitem>
+	      <synopsis>DefaultSession=gnome.desktop</synopsis>
+	      <para>
+		The session that is used by default if the user does not have
+		a saved preference and has picked 'Last' from the list of
+		sessions.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
 	  
 	  <varlistentry>
 	    <term>DisplayInitDir</term>
@@ -596,6 +809,19 @@
 	      <para>
 		Directory containing the display init scripts. See the
 		``Script Directories'' section for more info.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>DoubleLoginWarning</term>
+	    <listitem>
+	      <synopsis>DoubleLoginWarning=true</synopsis>
+	      <para>
+		If true, GDM will warn the user if they are already logged in on
+		another virtual terminal.  On systems where GDM supports checking
+		the X virtual terminals, GDM will let the user switch to the
+		previous login virtual terminal instead of logging in.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -614,6 +840,18 @@
 	  </varlistentry>
 
 	  <varlistentry>
+	    <term>FirstVT</term>
+	    <listitem>
+	      <synopsis>FirstVT=7</synopsis>
+	      <para>
+		On systems where GDM supports automatic VT (virtual terminal)
+		allocation, this is the first vt to try.  Usually standard text
+		logins are run on the lower vts.  See also <filename>VTAllocation</filename>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>FlexibleXServers</term>
 	    <listitem>
 	      <synopsis>FlexibleXServers=5</synopsis>
@@ -627,23 +865,13 @@
 	  </varlistentry>
 
 	  <varlistentry>
-	    <term>GnomeDefaultSession</term>
-	    <listitem>
-	      <synopsis>GnomeDefaultSession=share/gnome/default.session</synopsis>
-	      <para>
-		The filename which GDM should read if there is no per user
-		GNOME session file, and the user has requested the Gnome
-		Chooser session.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
 	    <term>Greeter</term>
 	    <listitem>
-	      <synopsis>Greeter=bin/gdmlogin --disable-sound --disable-crash-dialog</synopsis>
+	      <synopsis>Greeter=bin/gdmlogin</synopsis>
 	      <para>
 		Full path and name of the greeter executable followed by optional arguments.
+		This is the greeter used for all servers except for the XDMCP remote servers.
+		See also <filename>RemoteGreeter</filename>
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -678,7 +906,9 @@
 	      <synopsis>HaltCommand=/sbin/shutdown -h now</synopsis>
 	      <para>
 		Full path and arguments to command to be executed when
-		user selects Halt from the System menu.
+		user selects Shut Down from the Actions menu.  This can be a ';'
+		separated list of commands to try.
+		If missing, the shutdown command is not available.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -716,6 +946,18 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>PostLoginScriptDir</term>
+	    <listitem>
+	      <synopsis>PostLoginScriptDir=etc/gdm/PostLogin</synopsis>
+	      <para>
+		Directory containing the scripts run right after the
+		user logs in, but before any session setup is done.
+		See the ``Script Directories'' section for more info.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>PostSessionScriptDir</term>
@@ -747,7 +989,23 @@
 	      <synopsis>RebootCommand=/sbin/shutdown -r now</synopsis>
 	      <para>
 		Full path and optional arguments to the program to be
-		executed when user selects Reboot from the System menu.
+		executed when user selects Reboot from the Actions menu.
+		This can be a ';' separated list of commands to try.
+		If missing, the reboot command is not available.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>RemoteGreeter</term>
+	    <listitem>
+	      <synopsis>RemoteGreeter=bin/gdmlogin</synopsis>
+	      <para>
+		Full path and name of the greeter executable followed by optional arguments.  This
+		is used for all remote XDMCP sessions.  It is useful to have the less 
+		graphically demanding greeter here if you use the Graphical Greeter for your main
+		greeter.
+		See also the <filename>Greeter</filename> key.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -781,12 +1039,12 @@
 	  </varlistentry>
 	  
 	  <varlistentry>
-	    <term>SessionDir</term>
+	    <term>SessionDesktopDir</term>
 	    <listitem>
-	      <synopsis>SessionDir=etc/gdm/Sessions</synopsis>
+	      <synopsis>SessionDesktopDir=etc/dm/Sessions</synopsis>
 	      <para>
-		Directory containing the scripts for all session types
-		available on the system.
+		Directory containing the .desktop files which are the available
+		sessions on the system.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -811,7 +1069,7 @@
 	      <synopsis>SuspendCommand=</synopsis>
 	      <para>
 		Full path and arguments to command to be executed when
-		user selects Suspend from the System menu.  If empty
+		user selects Suspend from the Actions menu.  If empty
 		there is no such menu item.
 	      </para>
 	    </listitem>
@@ -904,6 +1162,20 @@
 	  </varlistentry>
 
 	  <varlistentry>
+	    <term>VTAllocation</term>
+	    <listitem>
+	      <synopsis>VTAllocation=true</synopsis>
+	      <para>
+		On systems where GDM supports automatic VT (virtual terminal)
+		allocation (currently Linux only), you can have GDM automatically append the vt argument
+		to the X server executable.  This way races that come up from each X
+		server managing it's own vt allocation can be avoided.
+		See also <filename>FirstVT</filename>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>XKeepsCrashing</term>
 	    <listitem>
 	      <synopsis>XKeepsCrashing=etc/gdm/XKeepsCrashing</synopsis>
@@ -937,9 +1209,9 @@
 	  </varlistentry>
 	</variablelist>
 	
-      </sect2>
+      </sect3>
 
-      <sect2>
+      <sect3 id="securitysection">
 	<title>Security Options</title>
 	
 	<variablelist>
@@ -993,6 +1265,20 @@
 	      <para>
 		Note that this can make a system quite insecure, and thus is
 		off by default.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>DisallowTCP</term>
+	    <listitem>
+	      <synopsis>DisallowTCP=true</synopsis>
+	      <para>
+		If true, then always append "-nolisten tcp" to the command line
+		of local X servers, thus disallowing TCP connection.  This is
+		useful if you do not care for allowing remote connections, since
+		the X protocol could really be potentially a security hazard to
+		leave open, even though no known security problems exist.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1074,11 +1360,9 @@
 	      </para>
 	      
 	      <para>
-        	In addition to the size check both
-        	<filename>gdm</filename> and
-        	<filename>gdmlogin</filename> are extremely picky
-        	about accessing files in user directories. Neither
-        	will follow symlinks and they can optionally refuse to
+        	In addition to the size check GDM is extremely picky
+        	about accessing files in user directories.  It will not
+        	follow symlinks and can optionally refuse to
         	read files and directories writable by other than the
         	owner. See the RelaxPermissions option for more info.
 	      </para>
@@ -1086,9 +1370,9 @@
 	  </varlistentry>
 	</variablelist>
 	
-      </sect2>
+      </sect3>
 
-      <sect2>
+      <sect3 id="xdmcpsection">
 	<title>XDCMP Support</title>
 
 	<variablelist>
@@ -1271,6 +1555,16 @@
 		a combination of the xdm PingInterval and PingTimeout,
 		but in seconds.
 	      </para>
+
+	      <para>
+		Note that GDM in the past used to have a <filename>PingInterval</filename>
+		configuration key which was also in minutes.  For most purposes
+		you'd want this setting to be lower then one minute however since
+		in most cases where XDMCP would be used (such as terminal labs),
+		a lag of more then 15 or so seconds would really mean that the
+		terminal was turned off or rebooted and you would want to end
+		the session.
+	      </para>
 	    </listitem>
 	  </varlistentry>
 
@@ -1294,9 +1588,9 @@
 	  </varlistentry>
 	</variablelist>
 	
-      </sect2>
+      </sect3>
 
-      <sect2>
+      <sect3 id="commonguioptions">
 	<title>Common GUI Configuration Options</title>
 
 	<variablelist>
@@ -1339,22 +1633,113 @@
 	  </varlistentry>
 	</variablelist>
 	
-      </sect2>
+      </sect3>
 	
-      <sect2>
+      <sect3 id="greetersection">
 
 	<title>Greeter Configuration</title>
 
 	<variablelist>
 	  <title>[greeter]</title>
-	  
+
+	  <varlistentry>
+	    <term>BackgroundColor</term>
+	    <listitem>
+	      <synopsis>BackgroundColor=#007777</synopsis>
+	      <para>
+		If the BackgroundType is 2, use this color in the background
+		of the greeter.  Also use it as the back of transparent images
+		set on the background and if the BackgroundRemoteOnlyColor
+		is set and this is a remote display.
+		This only affects the Standard Greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundImage</term>
+	    <listitem>
+	      <synopsis>BackgroundImage=somefile.png</synopsis>
+	      <para>
+		If the BackgroundType is 1, then display this file as the
+		bacground in the greeter.
+		This only affects the Standard Greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundProgram</term>
+	    <listitem>
+	      <synopsis>BackgroundProgram=/usr/bin/xeyes</synopsis>
+	      <para>
+		If set this program will be run in the background while
+                the login window is being displayed.  Note that not all
+		programs will run this way, since gdm does not usually have
+		a home directory.  You could set up home directory for the
+		gdm user if you wish to run applications which require it.
+		This only affects the Standard Greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundRemoteOnlyColor</term>
+	    <listitem>
+	      <synopsis>BackgroundRemoteOnlyColor=true</synopsis>
+	      <para>
+		On remote displays only set the color background.  This is
+		to make network load lighter.  The BackgroundProgram is also
+		not run.  This only affects the Standard Greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundScaleToFit</term>
+	    <listitem>
+	      <synopsis>BackgroundScaleToFit=true</synopsis>
+	      <para>
+		Scale background image to fit the screen.
+		This only affects the Standard Greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundType</term>
+	    <listitem>
+	      <synopsis>BackgroundType=2</synopsis>
+	      <para>
+		The type of background to set.  0 is none, 1 is image and 2
+		is color.
+		This only affects the Standard Greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
 	  <varlistentry>
 	    <term>Browser</term>
 	    <listitem>
 	      <synopsis>Browser=true</synopsis>
 	      <para>
-		Set to true to enable the face browser. See the ``Greeter''
-		section for more information on the face browser.
+		Set to true to enable the face browser. See the ``The Standard Greeter''
+		section for more information on the face browser.  This option only
+		works for the Standard Greeter.  For the Graphical Greeter,
+		the face browser is enabled by choosing a theme which includes a
+		face browser
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>ChooserButton</term>
+	    <listitem>
+	      <synopsis>ChooserButton=true</synopsis>
+	      <para>
+		If true, add a chooser button to the Actions menu that will
+		restart the current server with a chooser.  XDMCP does not need
+		to be enabled on the local machine for this to work.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1366,7 +1751,7 @@
 	      <para>
 		Allow the configurator to be run from the greeter.  Note that
 		the user will need to type in the root password before the
-		configurator is run however.  See the Configurator option
+		configurator is run however.  See the <filename>Configurator</filename> option
 		in the daemon section.
 	      </para>
 	    </listitem>
@@ -1379,21 +1764,8 @@
 	      <para>
 		Default icon file for users without a personal picture
 		in <filename>~/gnome/photo</filename>. The image must be
-		in an Imlib supported format and the file must be
+		in an gdk-pixbuf supported format and the file must be
 		readable for the gdm user.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-	    <term>DefaultLocale</term>
-	    <listitem>
-	      <synopsis>DefaultLocale=english</synopsis>
-	      <para>
-		This language is used for the session unless nothing is
-		specified in <filename>~user/.gnome/gdm</filename> and
-		the user didn't select a language in the Locale menu in
-		the greeter.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1405,17 +1777,7 @@
 	      <para>
 		Comma-separated list of usernames to exclude from the
 		face browser. The excluded users will still be able to
-		log in.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-	    <term>Font</term>
-	    <listitem>
-	      <synopsis>Font=-adobe-helvetica-bold-r-normal-*-*-180-*-*-*-*-*-*</synopsis>
-	      <para>
-		Font to use for the welcome message in the greeter.
+		log in.  See also <filename>MinimalUID</filename>.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1437,13 +1799,36 @@
 	      </para>
 	      
 	      <para>
-		The face images must be stored in Imlib supported formats and
+		The face images must be stored in gdk-pixbuf supported formats and
 		they must be readable for the GDM user.
 	      </para>
 	      
 	      <para>
 		A user's own icon file will always take precedence over the sysadmin
 		provided one.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>GraphicalTheme</term>
+	    <listitem>
+	      <synopsis>GraphicalTheme=circles</synopsis>
+	      <para>
+		The graphical theme that the Graphical Greeter should use.
+		it should refer to a directory in the theme directory
+		set by <filename>GraphicalThemeDir</filename>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>GraphicalThemeDir</term>
+	    <listitem>
+	      <synopsis>GraphicalThemeDir=share/gdm/themes/</synopsis>
+	      <para>
+		The directory where themes for the Graphical Greeter are
+		installed.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1454,10 +1839,11 @@
 	      <synopsis>Icon=share/pixmaps/gdm.xpm</synopsis>
 	      <para>
 		Icon to use for <filename>gdmlogin</filename> when it's
-		in the iconified state. The image must be in an Imlib
+		in the iconified state. The image must be in an gdk-pixbuf
 		supported format and it must be readable for the GDM
 		user. If no file is specified the iconify feature is
 		disabled.
+		This only affects the Standard Greeter.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1467,11 +1853,23 @@
 	    <listitem>
 	      <synopsis>LocaleFile=etc/gdm/locale.alias</synopsis>
 	      <para>
-		File in GNU locale format with entries for all supported
-		languages on the system.
+		File in format similar to the GNU locale format with entries
+		for all supported languages on the system.  The format is
+		described above or in a comment inside that file.
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>LockPosition</term>
+	    <listitem>
+	      <synopsis>LockPosition=true</synopsis>
+	      <para>
+		If true the position of the login window of the Standard Greeter
+		cannot be changed even if the title bar is turned on.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
 	  
 	  <varlistentry>
 	    <term>Logo</term>
@@ -1479,12 +1877,45 @@
 	      <synopsis>Logo=share/pixmaps/gnome-logo-large.png</synopsis>
 	      <para>
 		Image file to display in the logo box. The file must be
-		in an Imlib supported format and it must be readable by
+		in an gdk-pixbuf supported format and it must be readable by
 		the GDM user. If no file is specified the logo feature
 		is disabled.
+		This only affects the Standard Greeter.
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>MinimalUID</term>
+	    <listitem>
+	      <synopsis>MinimalUID=100</synopsis>
+	      <para>
+		The minimal UID that gdm should consider a user.  All
+		users with a lower UID will be excluded from the face browser.
+		See also <filename>Exclude</filename>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>PositionX</term>
+	    <listitem>
+	      <synopsis>PositionX=200</synopsis>
+	      <para>
+		The horizontal position of the login window of the Standard Greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>PositionY</term>
+	    <listitem>
+	      <synopsis>PositionY=100</synopsis>
+	      <para>
+		The vertical position of the login window of the Standard Greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
 	  
 	  <varlistentry>
 	    <term>Quiver</term>
@@ -1494,16 +1925,78 @@
 		Controls whether <filename>gdmlogin</filename> should
 		shake the display when an incorrect username/password is
 		entered.
+		This only affects the Standard Greeter.
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>RemoteWelcome</term>
+	    <listitem>
+	      <synopsis>RemoteWelcome=Welcome to &percnt;n</synopsis>
+	      <para>
+		Controls which text to display next to the logo image in the
+		greeter for remote XDMCP sessions.  The same expansion is
+		done here as in the <filename>Welcome</filename> string.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>RunBackgroundProgramAlways</term>
+	    <listitem>
+	      <synopsis>RunBackgroundProgramAlways=false</synopsis>
+	      <para>
+		If this is true then the background program is run always, otherwise
+		it is only run when the <filename>BackgroundType</filename> is 0 (None)
+		This only affects the Standard Greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>SetPosition</term>
+	    <listitem>
+	      <synopsis>SetPosition=true</synopsis>
+	      <para>
+		If true the position of the login window of the Standard Greeter
+		is determined by PositionX/PositionY.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>ShowGnomeFailsafeSession</term>
+	    <listitem>
+	      <synopsis>ShowGnomeFailsafeSession=true</synopsis>
+	      <para>
+		Should the greeter show the Gnome Failsafe session
+		in the sessions list.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>ShowXtermFailsafeSession</term>
+	    <listitem>
+	      <synopsis>ShowXtermFailsafeSession=true</synopsis>
+	      <para>
+		Should the greeter show the Xterm Failsafe session
+		in the sessions list.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
 	  
 	  <varlistentry>
 	    <term>SystemMenu</term>
 	    <listitem>
 	      <synopsis>SystemMenu=false</synopsis>
 	      <para>
-		Turns the Shutdown/Halt menu on/off.
+		Turns the Shutdown/Reboot/Configure menu on/off.  If this is off
+		none of the functions will be available even if a theme for
+		a graphical greeter mistakenly shows them.  Normally this is
+		called the Actions menu.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1514,6 +2007,7 @@
 	      <synopsis>TitleBar=true</synopsis>
 	      <para>
 		Display the title bar in the greeter.
+		This only affects the Standard Greeter.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1529,11 +2023,21 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>UseCirclesInEntry</term>
+	    <listitem>
+	      <synopsis>UseCirclesInEntry=false</synopsis>
+	      <para>
+		Use circles instead of asteriscs in the password entry.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>Welcome</term>
 	    <listitem>
-	      <synopsis>Welcome=Welcome to &percnt;n</synopsis>
+	      <synopsis>Welcome=Welcome</synopsis>
 	      <para>
 		Controls which text to display next to the logo image in the
 		greeter. The following control chars are supported:
@@ -1566,6 +2070,17 @@
 	      <para>
 		&percnt;s &mdash; sysname (i.e. OS)
 	      </para>
+
+	      <para>
+		This string is only used for local logins.  For remote XDMCP
+		logins we use <filename>RemoteWelcome</filename>.
+	      </para>
+
+	      <para>
+		In the Graphical Greeter the location of this text depends on
+		the theme.  Unless the theme uses the stock welcome string
+		this string will not be displayed at all.
+	      </para>
 	      	      
 	    </listitem>
 	  </varlistentry>
@@ -1582,152 +2097,28 @@
 	    </listitem>
 	  </varlistentry>	
 
-	  <varlistentry>
-	    <term>BackgroundColor</term>
-	    <listitem>
-	      <synopsis>BackgroundColor=#007777</synopsis>
-	      <para>
-		If the BackgroundType is 2, use this color in the background
-		of the greeter.  Also use it as the back of transparent images
-		set on the background and if the BackgroundRemoteOnlyColor
-		is set and this is a remote display.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>BackgroundImage</term>
-	    <listitem>
-	      <synopsis>BackgroundImage=somefile.png</synopsis>
-	      <para>
-		If the BackgroundType is 1, then display this file as the
-		bacground in the greeter.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>BackgroundProgram</term>
-	    <listitem>
-	      <synopsis>BackgroundProgram=/usr/bin/xeyes</synopsis>
-	      <para>
-		If set this program will be run in the background while
-                the login window is being displayed.  Note that not all
-		programs will run this way, since gdm does not usually have
-		a home directory.  You could set up home directory for the
-		gdm user if you wish to run applications which require it.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>BackgroundRemoteOnlyColor</term>
-	    <listitem>
-	      <synopsis>BackgroundRemoteOnlyColor=true</synopsis>
-	      <para>
-		On remote displays only set the color background.  This is
-		to make network load lighter.  The BackgroundProgram is also
-		not run.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>BackgroundScaleToFit</term>
-	    <listitem>
-	      <synopsis>BackgroundScaleToFit=true</synopsis>
-	      <para>
-		Scale background image to fit the screen.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>BackgroundType</term>
-	    <listitem>
-	      <synopsis>BackgroundType=2</synopsis>
-	      <para>
-		The type of background to set.  0 is none, 1 is image and 2
-		is color.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-
-	  <varlistentry>
-	    <term>SetPosition</term>
-	    <listitem>
-	      <synopsis>SetPosition=true</synopsis>
-	      <para>
-		If true the position of the login window is determined
-                by PositionX/PositionY.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>PositionX</term>
-	    <listitem>
-	      <synopsis>PositionX=200</synopsis>
-	      <para>
-		The horizontal position of the login window.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>PositionY</term>
-	    <listitem>
-	      <synopsis>PositionY=100</synopsis>
-	      <para>
-		The vertical position of the login window.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>ShowGnomeChooserSession</term>
-	    <listitem>
-	      <synopsis>ShowGnomeChooserSession=true</synopsis>
-	      <para>
-		Should the greeter show the Gnome Chooser session, when
-		a session named 'Gnome' session is also present
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>ShowGnomeFailsafeSession</term>
-	    <listitem>
-	      <synopsis>ShowGnomeFailsafeSession=true</synopsis>
-	      <para>
-		Should the greeter show the Gnome Failsafe session
-		in the sessions list.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
-	  <varlistentry>
-	    <term>ShowXtermFailsafeSession</term>
-	    <listitem>
-	      <synopsis>ShowXtermFailsafeSession=true</synopsis>
-	      <para>
-		Should the greeter show the Xterm Failsafe session
-		in the sessions list.
-	      </para>
-	    </listitem>
-	  </varlistentry>	
-
 	</variablelist>
 
-      </sect2>
+      </sect3>
 
-      <sect2>
+      <sect3 id="choosersection">
 
 	<title>XDCMP Chooser Options</title>
 
 	<variablelist>
 	  <title>[chooser]</title>
+
+	  <varlistentry>
+	    <term>AllowAdd</term>
+	    <listitem>
+	      <synopsis>AllowAdd=true</synopsis>
+	      <para>
+		If true, allow the user to add arbitrary hosts to the
+		chooser.  This way the user could connect to any host
+		that responds to XDMCP queries from the chooser.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 
 	  <varlistentry>
 	    <term>Broadcast</term>
@@ -1751,7 +2142,7 @@
 	      <para>
 		File name for the default host icon. This image will be
 		displayed if no icon is specified for a given host. The
-		file must be in an Imlib supported format and it must be
+		file must be in an gdk-pixbuf supported format and it must be
 		readable for the GDM user.
 	      </para>
 	    </listitem>
@@ -1769,7 +2160,7 @@
 	      
 	      <para>
 		The file name must match the fully qualified name (FQDN) for
-		the host.  The icons must be stored in Imlib supported formats
+		the host.  The icons must be stored in gdk-pixbuf supported formats
 		and they must be readable to the gdm user.
 	      </para>
 	      
@@ -1794,18 +2185,20 @@
 	  <varlistentry>
 	    <term>ScanTime</term>
 	    <listitem>
-	      <synopsis>ScanTime=3</synopsis>
+	      <synopsis>ScanTime=4</synopsis>
 	      <para>
 		Specifies how many seconds the chooser should wait for
-		replies to its BROADCAST_QUERY.
+		replies to its BROADCAST_QUERY.  Really this is only the time
+		in which we expect a reply.  We will still add hosts to the list
+		even if they reply after this time.
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	</variablelist>
 	
-      </sect2>
+      </sect3>
 
-      <sect2>
+      <sect3 id="serverdefs">
 
 	<title>X Server definitions</title>
 
@@ -1861,16 +2254,46 @@
 	      <synopsis>flexible=true</synopsis>
 	      <para>
 		Indicates if this server is available as a choice when a
-		user wishes to run a flexible server.
+		user wishes to run a flexible, on demand server.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>handled</term>
+	    <listitem>
+	      <synopsis>handled=true</synopsis>
+	      <para>
+		Indicates that GDM should run the login window on this server
+		and allow a user to log in.  If set to false, then GDM will just
+		run this server and wait for it to terminate.  This can be useful
+		to run an X terminal using GDM.  When this is done you should
+		normally also add <filename>-terminate</filename> to the command
+		line of the server to make the server terminate after each session.
+		otherwise the control of the slave will never come back to GDM
+		and for example soft restarts won't work, since GDM assumes there
+		is a login in progress for the entire time this server is
+		active.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>chooser</term>
+	    <listitem>
+	      <synopsis>chooser=false</synopsis>
+	      <para>
+		Indicates that GDM should instead of a login window run a chooser on
+		this window and allow the user to choose which server to log into.
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  
 	</variablelist>
 
-      </sect2>
+      </sect3>
 
-      <sect2>
+      <sect3 id="localservers">
 
 	<title>Local X Server Configuration</title>
 
@@ -1912,54 +2335,928 @@
 		On some systems it is necessary for gdm to know on which
 		virtual consoles to run the X server.  In this case,
 		(if running XFree86) add "vt7" to the command line for example
-		to run on virtual console 7.
+		to run on virtual console 7.  However on Linux this is normally
+		done automatically if <filename>VTAllocation</filename> key
+		is set.
+	      </para>
+
+	      <para>
+		Normally you do not need to add a <filename>-nolisten tcp</filename>
+		flag as this is added automatically for local servers when
+		the <filename>DisallowTCP</filename> option is set.
 	      </para>
 	    </listitem>
 	  </varlistentry>
 	  
 	</variablelist>
 
-      </sect2>
+      </sect3>
 	
-    </sect1>
+    </sect2>
 
-    <!-- ============= Application License ============================= -->
+    <sect2 id="userconfig">
+      <title>Per User Configuration</title>
 
-    <sect1 id="license">
-      <title>License</title>
       <para>
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the  <ulink type="help" url="gnome-help:gpl">
-	<citetitle>GNU General Public License</citetitle></ulink> as
-	published by the Free Software Foundation; 
-	either version 2 of the License, or (at your option) any later
-	version.
+	There are some per user configuration settings that control how GDM behaves.
+	Firstly there is the <filename>~/.dmrc</filename> file.  In theory this
+	file should be shared between GDM and KDM, so users only have to configure
+	things once.  This is a standard <filename>.ini</filename> style configuration
+	file.  It has one section called <filename>[Desktop]</filename> and can have
+	two keys, <filename>Session</filename>, which is the basename of the session
+	<filename>.desktop</filename> file that the user wishes to normally use
+	and a <filename>Language</filename> key that is the language that the user
+	wishes to use.  If either of these keys is missing, the system default is
+	used.  The file would normally look as follows:
       </para>
+
+      <screen>
+	[Desktop]
+	Session=gnome.desktop
+	Language=cs_CZ.UTF-8
+      </screen>
+
       <para>
-	This program is distributed in the hope that it will be useful, but
-	WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	<citetitle>GNU General Public License</citetitle> for more details.
+	The user can also configure a face image for the face browser.  This is
+	done by copying an image into a file called <filename>~/.face</filename>.
+	This should be a standard image that GTK+ can read, such as PNG.
       </para>
+
       <para>
-	A copy of the <citetitle>GNU General Public License</citetitle> is
-	included as an appendix to the <citetitle>GNOME Users
-	Guide</citetitle>.  You may also obtain a copy of the
-	<citetitle>GNU General Public License</citetitle> from the Free
-	Software Foundation by visiting <ulink type="http"
-	url="http://www.fsf.org">their Web site</ulink> or by writing to
-	<address>
-	Free Software Foundation, Inc.
-	<street>59 Temple Place</street> - Suite 330
-	<city>Boston</city>, <state>MA</state> <postcode>02111-1307</postcode>
-	<country>USA</country>
-	</address>
+	Face images can also be placed in the global face directory, which is
+	normally <filename>share/faces/</filename>
+        (though this can be configured with the <filename>GlobalFaceDir</filename>
+        configuration option) and the filename should be the name of
+        the user, optionally with a <filename>.png</filename> appended.
       </para>
-    </sect1>
+    </sect2>
     
-  </chapter>
+  </sect1>
+
+  <sect1 id="controlling">
+    <title>Controlling GDM</title>
+
+    <para>
+      You can control GDM behaviour during runtime in several different ways.  You can
+      either run certain commands, or you can talk to GDM using either a unix socket
+      protocol, or a FIFO protocol.
+    </para>
+
+    <sect2 id="commands">
+      <title>Commands</title>
+
+      <para>
+	To stop GDM, you can either send the TERM signal to the main daemon or run
+	the <filename>gdm-stop</filename> command which is in the <filename>sbin/</filename>
+	directory.  To restart GDM, you can either send the HUP signal to the main daemon or run
+	the <filename>gdm-restart</filename> command which is also in the <filename>sbin/</filename>
+	directory.
+	To restart GDM but only after all the users have logged out, you can either send
+	the USR1 signal to the main daemon or run
+	the <filename>gdm-safe-restart</filename> command which is in the <filename>sbin/</filename>
+	directory as well.
+      </para>
+
+      <para>
+	The <filename>gdmflexiserver</filename> command can be used to start new flexible (on demand)
+	servers.  Run <filename>gdmflexiserver --help</filename> to get a listing of possible
+	options.  This command will also lock the current screen with xscreensaver so that
+	the user can safely walk away from the machine and let someone else log in.  XFree86 will
+	automatically switch back to the same virtual terminal (if your operating system supports it),
+	after the new session has ended, so this should work quite transparently to the users.
+      </para>
+      
+    </sect2>
+
+    <sect2 id="socketprot">
+      <title>Socket Protocol</title>
+
+      <para>
+	GDM provides a unix domain socket for communication at <filename>/tmp/.gdm_socket</filename>.
+	Using this you can check if GDM is running, the version of the daemon, the current
+	servers that are running and who is logged in on them, and if GDM supports it on your
+	operating system, also the virtual terminals of all the console logins.  You can also request
+	new flexible servers to be run with this protocol, but this is best done with the
+	<filename>gdmflexiserver</filename> command.
+      </para>
+
+      <para>
+	Full and up to date documentation of the commands and their use is contained in the 
+	GDM source tree in the file <filename>daemon/gdm.h</filename>.  Look for the
+	defines starting with <filename>GDM_SUP_</filename>.
+      </para>
+
+    </sect2>
+
+    <sect2 id="fifoprot">
+      <title>The FIFO protocol</title>
+
+      <para>
+	GDM also provides a FIFO called <filename>.gdmfifo</filename> in the
+	<filename>ServAuthDir</filename> directory
+	(usually <filename>var/gdm/.gdmfifo</filename>).  You must be root to use this protocol,
+	and it is mostly used for internal GDM chatter.  It is a very simple protocol where
+	you just echo a command on a single line to this file.  It can be used to tell
+	GDM things such as restart, suspend the machine, or restart all X servers next
+	time it has a chance (which would be useful from an X configuration program).
+      </para>
+
+      <para>
+	Full and up to date documentation of the commands and their use is contained in the 
+	GDM source tree in the file <filename>daemon/gdm.h</filename>.  Look for the
+	defines starting with <filename>GDM_SOP_</filename>.  The commands which require the
+	pid of the slave as an argument are the ones that are really used for internal
+	communication of the slave with the master and should not be used.
+      </para>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="binaries">
+    <title>GDM and Related Commands</title>
+
+    <para>
+      The GDM package provides quite a few different commands.
+    </para>
+
+    <sect2 id="mainbinaries">
+      <title>Main GDM Commands</title>
+
+      <para>
+        First is the <filename>gdm</filename> command which is really just a script
+        which runs the <filename>gdm-binary</filename>.  If you really need to set
+        some environment before launching GDM, you can do it in this file.
+      </para>
+
+      <para>
+        Next are the two greeters, <filename>gdmlogin</filename> which is the
+        Standard Greeter, and <filename>gdmgreeter</filename> which is the
+        Graphical Greeter.  There is also the <filename>gdmchooser</filename>
+	which is the XDMCP chooser application.  These should all be run
+	only from GDM and not by itself, although <filename>gdmchooser</filename>
+	could theoretically be run as a standalone application which prints
+	the chosen host on the standard output.
+      </para>
+
+      <para>
+	There is also the setup program which is the <filename>gdmsetup</filename>
+	command.  Normally on systems that support the PAM userhelper, this
+	is setup such that when you run <filename>gdmsetup</filename> as
+	an ordinary user, it will first ask you for your root password.
+      </para>
+
+      <para>
+	There is also the user picture setup program, <filename>gdmphotosetup</filename>.
+	This is run by users to setup their face browser picture.
+      </para>
+
+      <para>
+	There are also the commands <filename>gdm-stop</filename>, <filename>gdm-restart</filename>
+	and <filename>gdm-safe-restart</filename> which stop, restart, or restart the
+	GDM daemon after all users have logged out, respectivelly.  These are
+	installed in the <filename>sbin/</filename> directory.
+      </para>
+
+      <para>
+	Finally there is the <filename>gdmflexiserver</filename> command which runs
+	flexible (on demand) X servers.
+      </para>
+
+    </sect2>
+
+    <sect2 id="extrabins">
+      <title>Extra GDM Commands</title>
+
+      <para>
+	There are some extra commands provided as well.  First is the <filename>gdmXnestchooser</filename>
+	command.  This command can run Xnest with all the right options and automatically getting
+	the correct display number and setting up access, and runs the server as an indirect query
+	to the local host by default.  This way you get an XDMCP chooser provided by your machine.
+	You can also supply as an argument the hostname whose chooser should be displayed, so
+	<filename>gdmXnestchooser somehost</filename> will run the XDMCP chooser from host
+	<filename>somehost</filename> inside an Xnest.  You can make this command do a direct query
+	instead by passing the <filename>-d</filename> option as well.
+      </para>
+
+      <para>
+	Also useful is the <filename>gdmXnest</filename> command which is just for more
+	easily running Xnest on your machine.  It will print out the display setting on standard
+	output that you can use to connect to this server.  This is useful mostly for developers
+	who perhaps wish to test their apps running on a completely separate server.
+      </para>
+
+      <para>
+	For Graphical Greeter theme developers, there is the <filename>gdmthemetester</filename>
+	command which can run the Graphical Greeter in a simulated debug environment for any
+	selected theme.  Run the command with no options to get help.
+      </para>
+
+    </sect2>
+  </sect1>
+
+  <!-- ============= Theme manual ============================= -->
+
+  <sect1 id="thememanual">
+    <title>Graphical Greeter Themes</title>
+
+    <para>
+      This section describes the creation of themes for the Graphical
+      Greeter.  For examples including screenshots, see the standard installed
+      themes and the themes from
+      <ulink type="http" url="http://art.gnome.org/theme_list.php?category=gdm_greeter">
+      the theme website</ulink>.
+    </para>
+
+    <sect2 id="themeover">
+      <title>Theme Overview</title>
+
+      <para>
+        GDM Themes can be created by creating an XML file that follows the
+        specification in gui/greeter/greeter.dtd.  Theme files are stored
+        in the directory <filename>share/gdm/themes/&lt;theme_name&gt;</filename>.
+        Usually this would be under /usr/share.  The theme directory should contain a
+        file called <filename>GdmGreeterTheme.desktop</filename> which has similar format to other
+        .desktop files and looks like:
+      </para>
+
+      <screen>
+     [GdmGreeterTheme]
+     Encoding=UTF-8
+     Greeter=circles.xml
+     Name=Circles
+     Description=Theme with blue circles
+     Author=Bond, James Bond
+     Copyright=(c) 2002 Bond, James Bond
+     Screenshot=screenshot.png
+      </screen>
+
+      <para>
+        The Name, Description, Author and Copyright fields can be translated just
+        like the other <filename>.desktop</filename>files.  All the files that are mentioned should
+        be in the theme directory itself.  The Screenshot field points to a file
+        which should be a 200x150 screenshot of the theme in action (it is ok
+        not to have one, but it makes it nicer for user).  The Greeter field points
+        to an XML file that contains the description of the theme.   The description
+        will be given later.
+      </para>
+
+      <para>
+        Once you have theme ready and installed you can test it with the installed
+        <filename>gdmthemetester</filename> script.  This script assumes that you also have installed
+        the Xnest X server.  It takes two arguments, first the environment that
+        should be used.  This is one of console, console-timed, flexi, remote-flexi,
+        xdmcp.  Where console is a standard console login, console-timed is a
+        console login with a timed login going on, flexi is for any local
+        flexible server, remote-flexi is for flexi server that is not local (such
+        as an Xnest flexiserver run from a remote display) and xdmcp is for remote
+        xdmcp connections.  The second argument is the theme name.  So for example
+        to test how things look in the xdmcp mode with the circles theme you would
+        run:
+      </para>
+
+      <screen>
+     gdmthemetester xdmcp circles
+      </screen>
+
+      <para>
+        Be sure to test all the environments with your theme, and make sure to test
+        how the caps lock warning looks by pressing capslock.  This is also a good
+        way to take screenshots, just take a screenshot of the Xnest window.  This
+        can be done in GNOME by focusing the Xnest window and pressing
+        Alt-PrintScreen.
+      </para>
+
+      <para>
+        Once you have all this done, then make a tarball that contains the directory
+        name (so that you could just untar it in the <filename>/usr/share/gdm/themes</filename> directory).
+        And this is the tarball you distribute and people can install from the
+        graphical setup program.  You can do this with the commands:
+      </para>
+
+      <screen>
+     cd /usr/share/gdm/themes
+     tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
+      </screen>
+
+    </sect2>
+
+    <sect2 id="descofthemeformat">
+      <title>Detailed Description of Theme XML format</title>
+
+      <sect3 id="boxnodes">
+        <title>Box Nodes</title>
+
+        <para>
+          Box nodes are container nodes for item nodes.  Box nodes are
+          specified as follows:
+        </para>
+
+      <screen>
+     &lt;box orientation="alignment" min-width="int" xpadding="int"
+      ypadding="int" spacing="int"&gt;
+      </screen>
+
+        <para>
+          The alignment value can be either "horizontal" or "vertical".
+        </para>
+      </sect3>
+
+      <sect3 id="itemnodes">
+        <title>Item Nodes</title>
+
+        <para>
+          A GDM Theme is created by specifying a hierarchy of item and box
+          nodes.  Item nodes can have the following value for "type":
+        </para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>entry</term>
+	    <listitem>
+	      <para>
+		Text entry field.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>list</term>
+	    <listitem>
+	      <para>
+		A list widget.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>label</term>
+	    <listitem>
+	      <para>
+		A text label.  Must have a "text" node to specify the text.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>pixmap</term>
+	    <listitem>
+	      <para>
+		An pixmap image in a format that gdk-pixbuf supports like
+		PNG, JPEG, Tiff, etc...)
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>rect</term>
+	    <listitem>
+	      <para>
+		Rectangle.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>svg</term>
+	    <listitem>
+	      <para>
+		Scaled Vector Graphic image.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+        <para>
+          For example: 
+        </para>
+
+        <screen>
+       &lt;item type="label"&gt;
+        </screen>
+
+        <para>
+          Items can specify ID values which gives them a specific look
+          and feel or formatting.  Furthermore you can customize the login
+          process by adding custom widgets with custom id's for some items
+          (currently only the list item)
+        </para>
+
+        <para>
+          Entry items can have id values as follows:
+        </para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>user-pw-entry</term>
+	    <listitem>
+	      <para>
+                Entry field for userid and password entry.  This is
+                the field used for responses for the PAM/GDM questions
+                (Username, Password, etc..).
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+
+        <para>
+          List items can have id values as follows:
+        </para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>userlist</term>
+	    <listitem>
+	      <para>
+                A user browser list, so that users can pick
+                their username by clicking on this instead
+                of typing.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+        <para>
+          Furthermore, you can have an arbitrary id (I'd recommend starting
+          the id with 'custom' not to conflict with future additions to this
+          spec) and ask extra information of the user.  See the section
+          'Custom Widgetry'
+        </para>
+
+        <para>
+          Label items can have id values as follows:
+        </para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>clock</term>
+	    <listitem>
+	      <para>
+                Label the displays the date and time.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>pam-prompt</term>
+	    <listitem>
+	      <para>
+	        Label the displays PAM prompt.  This is the prompt that
+		PAM uses to ask for username, password, etc...
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>pam-error</term>
+	    <listitem>
+	      <para>
+	        Label the displays PAM/GDM error messages.  Such as when
+		user can't log in.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>pam-message</term>
+	    <listitem>
+	      <para>
+	        Label the displays PAM message.  These are messages that
+		PAM/GDM gives about state of the account, help about the
+		prompts and other information.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>timed-label</term>
+	    <listitem>
+	      <para>
+	        Label that displays timed login information.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+                     
+        <para>
+          Rectangles can have id values as follows:
+        </para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>caps-lock-warning</term>
+	    <listitem>
+	      <para>
+	        Displays an icon that shows if the
+		CAPS LOCK key is depressed.  This rectangle
+		will be hidden/shown appropriately
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+        <para>
+          If an item is of type rect, the item can be a button.  Buttons
+          must also include a "button" value as follows:
+        </para>
+
+	<screen>
+       &lt;item type="rect" id="disconnect_button" button="true"&gt;.
+	</screen>
+
+        <para>
+          Possible values for button ids are as follows:
+        </para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>chooser_button</term>
+	    <listitem>
+	      <para>
+	        Runs the XDMCP chooser.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>config_button</term>
+	    <listitem>
+	      <para>
+	        Runs the GDM Setup program.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>disconnect_button</term>
+	    <listitem>
+	      <para>
+	        Disconnect from remote session.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>language_button</term>
+	    <listitem>
+	      <para>
+	        Displays the language selection dialog.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>halt_button</term>
+	    <listitem>
+	      <para>
+		Halt (shuts down) the system.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>reboot_button</term>
+	    <listitem>
+	      <para>
+		Reboot the system.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>session_button</term>
+	    <listitem>
+	      <para>
+	        List and select from available sessions.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>suspend_button</term>
+	    <listitem>
+	      <para>
+	        Suspend the system.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>system_button</term>
+	    <listitem>
+	      <para>
+		Perform halt/reboot/suspend/etc. options
+		(if allowed by gdm configuration).  Also
+		allows user to run configurator if user
+		enters root password (again if allowed
+	        by gdm configuration).  This is usually
+		now labeled Actions, and refered to as
+		the Actions menu.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	</variablelist>
+      </sect3>
+
+      <sect3 id="positionnodes">
+        <title>Position Node</title>
+
+        <para>
+          Each item can specify its position and size via the "pos" node.
+          For example:
+        </para>
+
+        <screen>
+       &lt;pos x="0" y="4" width="100%" height="100%"/&gt;
+        </screen>
+      </sect3>
+
+      <sect3 id="shownodes">
+        <title>Show Node</title>
+
+        <para>
+          Some items may only display in certain modes, like when doing a
+          remote display.  Multiple values can be specified and must be
+          separated with commas.  The following values are possible:
+	</para>
+
+	<para>
+          <filename>console</filename> - In console mode.
+	<para>
+	</para>
+          <filename>console-fixed</filename> - In console non-flexi mode.
+	<para>
+	</para>
+          <filename>console-flexi</filename> - In console &amp; flexi mode.
+	<para>
+	</para>
+          <filename>flexi</filename> - In flexi mode.
+	<para>
+	</para>
+          <filename>remote</filename> - In remote mode.
+	<para>
+	</para>
+          <filename>remote-flexi</filename> - In remote &amp; flexi mode.
+	</para>
+
+	<para>
+	  For example:
+	</para>
+
+	<screen>
+       &lt;show modes="flexi,remote"/&gt;
+	</screen>
+
+        <para>
+          You can also specify the "type" value to indicate that certain
+          items should only be displayed if the type is true.  Valid values
+          include the following:
+	</para>
+
+	<para>
+          <filename>chooser</filename>, if ChooserButton is set to "true" in <filename>gdm.conf</filename> file.
+	</para>
+	<para>
+          <filename>config</filename>, if ConfigAvailable is set to "true" in <filename>gdm.conf</filename> file.
+	</para>
+	<para>
+          <filename>halt</filename>, if HaltDaemon is specified in <filename>gdm.conf</filename> file.
+	</para>
+	<para>
+          <filename>reboot</filename>, if RebootCommand is specified in <filename>gdm.conf</filename> file.
+	</para>
+	<para>
+          <filename>suspend</filename>, if SuspendCommand is specified in <filename>gdm.conf</filename> file.
+	</para>
+	<para>
+          <filename>system</filename>, if SystemMenu is specified in <filename>gdm.conf</filename> file
+	</para>
+	<para>
+          <filename>timed</filename>, if TimedLoginEnabled is set to "true" in <filename>gdm.conf</filename> file.
+	</para>
+
+	<para>
+          For example:
+	</para>
+
+	<screen>
+       &lt;show modes="console" type="system"/&gt;
+	</screen>
+
+	<para>
+          Note that if SystemMenu is off then all of halt, reboot, suspend, chooser
+          and config will not show, so this is a global toggle for them all.
+          See some of the standard themes for how the show modes are used.
+	</para>
+      </sect3>
+
+      <sect3 id="noractprenodes">
+        <title>Normal/Active/Prelight Nodes</title>
+
+        <para>
+  	  Depending on the item type, it can specify its color, font, or
+	  image via the following tags:
+        </para>
+
+        <para>
+          <filename>normal</filename> - normal state.
+        <para>
+        </para>
+          <filename>active</filename> - when the item has active focus.
+        <para>
+        </para>
+          <filename>prelight</filename> - when the mouse is hovering over the item.
+        </para>
+
+        <para>
+	  When item is "rect" (alpha can be omitted and defaults to 0.0):
+        </para>
+
+	<screen>
+       &lt;normal color="#fffff" alpha="0.0"&gt;
+	</screen>
+
+        <para>
+	  When item is "label":
+        </para>
+
+	<screen>
+       &lt;normal color="#ffffff" font="Sans 14"/&gt;
+	</screen>
+
+        <para>
+	  When the item type is "pixmap" or "SVG", then the normal, active,
+	  and prelight tags specify the images to use as follows:
+        </para>
+
+	<screen>
+       &lt;normal file="picture.png" tint="#dddddd"/&gt;
+	</screen>
+
+        <para>
+	  Note that relative pathnames are assumed to be in the same 
+	  directory as the theme .xml file in share/gdm/themes/&lt;theme_name&gt;.
+        </para>
+      </sect3>
+
+      <sect3 id="textnodes">
+        <title>Text Node</title>
+
+        <para>
+	  Text tags are used by labels.   They can be used to display
+	  localized text as follows (if the "xml:lang" attribute is
+	  omitted, the C locale is assumed):
+        </para>
+
+	<screen>
+       &lt;text xml:lang="fr"&gt;Option&lt;/text&gt;
+	</screen>
+
+	<para>
+	  You can include pango markup in the text nodes for labels, however
+	  you must encode it.  So for example to have the label of
+	  "foo&lt;sup&gt;bar&lt;/sup&gt;", you must type:
+	</para>
+
+	<screen>
+       &lt;text"&gt;foo&amp;lt;sup&amp;gt;bar&amp;lt;/sup&amp;gt;&lt;/text&gt;
+	</screen>
+
+      </sect3>
+
+      <sect3 id="stocklabels">
+        <title>Stock</title>
+
+        <para>
+	  Certain common localized labels can be specified via the stock
+	  tags.  The "text" tag is ignored if the "stock" tag is used.   You
+	  should really use the stock labels rather then just putting all
+	  the translations into the themes.  This gives faster load times
+	  and likely better translations.  The following values are valid:
+        </para>
+
+	<para>
+          <filename>caps-lock-warning</filename>, _("You've got capslock on!") 
+        <para>
+        </para>
+          <filename>chooser</filename>, _("_XDMCP Chooser")
+        <para>
+        </para>
+          <filename>disconnect</filename>, _("D_isconnect")
+        <para>
+        </para>
+          <filename>language</filename>, _("_Language")
+        <para>
+        </para>
+          <filename>quit</filename>, _("_Quit")
+        <para>
+        </para>
+          <filename>session</filename>, _("_Session")
+        <para>
+        </para>
+          <filename>system</filename>, _("_Actions")  (Formerly "S_ystem")
+        <para>
+        </para>
+          <filename>timed-label</filename>, _("User %s will login in %d seconds")
+        <para>
+        </para>
+          <filename>username-label</filename>, _("Username:")
+        <para>
+        </para>
+          <filename>welcome-label</filename>, _("Welcome to %h")
+        </para>
+
+        <para>
+	  For example:
+        </para>
+
+	<screen>
+       &lt;stock type="welcome-label"/&gt;
+	</screen>
+
+      </sect3>
+
+      <sect3 id="customwidgetry">
+        <title>Custom Widgetry</title>
+
+        <para>
+	  Currently there is one item which can be customizable and this is
+	  the list item.  If you need to ask the user extra things, such as
+	  to pick from a list of places to log into, or set of custom login
+	  sessions you can setup the list item and add listitem children that
+	  describe the choices.  Each listitem must have an id and a text child.
+	  The choice will be recorded in the file
+	  <filename>&lt;ServAuthDir&gt;/&lt;display&gt;.GreeterInfo</filename>
+	  as <filename>&lt;list id&gt;=&lt;listitem id&gt;</filename>.
+        </para>
+
+        <para>
+	  For example suppose we are on display :0, ServAuthDir is /var/gdm
+	  and we have the following in the theme:
+        </para>
+
+	<screen>
+    &lt;item type="list" id="custom-config"&gt;
+      &lt;pos anchor="nw" x="1" y="1" height="200" width="100"/&gt;
+      &lt;listitem id="foo"&gt;
+        &lt;text&gt;Foo&lt;/text&gt;
+      &lt;/listitem&gt;
+      &lt;listitem id="bar"&gt;
+        &lt;text&gt;Bar&lt;/text&gt;
+      &lt;/listitem&gt;
+    &lt;/item&gt;
+	</screen>
+
+        <para>
+	  Then if the user chooses 'Foo' then <filename>/var/gdm/:0.GreeterInfo</filename> will
+	  contain:
+        </para>
+
+        <screen>
+       custom-config=foo
+        </screen>
+
+      </sect3>
+    </sect2>
+  </sect1>
+
+
+  <!-- ============= Application License ============================= -->
+
+  <sect1 id="license">
+    <title>License</title>
+    <para>
+      This program is free software; you can redistribute it and/or
+      modify it under the terms of the  <ulink type="help" url="gnome-help:gpl">
+      <citetitle>GNU General Public License</citetitle></ulink> as
+      published by the Free Software Foundation; 
+      either version 2 of the License, or (at your option) any later
+      version.
+    </para>
+    <para>
+      This program is distributed in the hope that it will be useful, but
+      WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      <citetitle>GNU General Public License</citetitle> for more details.
+    </para>
+    <para>
+      A copy of the <citetitle>GNU General Public License</citetitle> is
+      included as an appendix to the <citetitle>GNOME Users
+      Guide</citetitle>.  You may also obtain a copy of the
+      <citetitle>GNU General Public License</citetitle> from the Free
+      Software Foundation by visiting <ulink type="http"
+      url="http://www.fsf.org">their Web site</ulink> or by writing to
+      <address>
+      Free Software Foundation, Inc.
+      <street>59 Temple Place</street> - Suite 330
+      <city>Boston</city>, <state>MA</state> <postcode>02111-1307</postcode>
+      <country>USA</country>
+      </address>
+    </para>
+  </sect1>
   
-</book>
+</article>
 
 <!-- Keep this comment at the end of the file
 Local variables:

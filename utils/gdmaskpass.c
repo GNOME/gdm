@@ -32,8 +32,8 @@ main (int argc, char *argv[])
 	}
 
 	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	textdomain (GETTEXT_PACKAGE);
 
 	for (tries = 3; tries > 0; tries --) {
 		if ((retval = pam_start ("gdm", username, &conv, &pamh)) != PAM_SUCCESS) {

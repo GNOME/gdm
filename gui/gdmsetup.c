@@ -1318,6 +1318,55 @@ find_tar (void)
 }
 
 static char *
+find_chmod (void)
+{
+	char *chmod_prog;
+	char *try[] = {
+		"/bin/chmod",
+		"/sbin/chmod",
+		"/usr/bin/chmod",
+		"/usr/sbin/chmod",
+		NULL };
+	int i;
+
+	chmod_prog = g_find_program_in_path ("chmod");
+	if (chmod_prog != NULL)
+		return chmod_prog;
+
+	for (i = 0; try[i] != NULL; i++) {
+		if (access (try[i], X_OK) == 0)
+			return g_strdup (try[i]);
+	}
+	/* Hmmm, fallback */
+	return g_strdup ("/bin/chmod");
+}
+
+static char *
+find_chown (void)
+{
+	char *chown_prog;
+	char *try[] = {
+		"/bin/chown",
+		"/sbin/chown",
+		"/usr/bin/chown",
+		"/usr/sbin/chown",
+		NULL };
+	int i;
+
+	chown_prog = g_find_program_in_path ("chown");
+	if (chown_prog != NULL)
+		return chown_prog;
+
+	for (i = 0; try[i] != NULL; i++) {
+		if (access (try[i], X_OK) == 0)
+			return g_strdup (try[i]);
+	}
+	/* Hmmm, fallback */
+	return g_strdup ("/bin/chown");
+}
+
+
+static char *
 get_the_dir (FILE *fp, char **error)
 {
 	char buf[2048];
@@ -1551,13 +1600,14 @@ install_ok (GtkWidget *button, gpointer data)
 		char *fname = g_filename_to_utf8 (dir, -1, NULL, NULL, NULL);
 		char *s;
 		GtkWidget *button;
+		GtkWidget *dlg;
+
 		/* FIXME: if exists already perhaps we could also have an
 		 * option to change the dir name */
 		s = g_strdup_printf (_("Theme directory '%s' seems to be already "
 				       "installed, install again anyway?"),
 				     fname);
-		GtkWidget *dlg =
-			ve_hig_dialog_new
+		dlg = ve_hig_dialog_new
 			(GTK_WINDOW (fs),
 			 GTK_DIALOG_MODAL | 
 			 GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1599,22 +1649,26 @@ install_ok (GtkWidget *button, gpointer data)
 		if (system (untar_cmd) == 0) {
 			char *cmd;
 			char *quoted = g_shell_quote (dir);
+			char *chown = find_chown ();
+			char *chmod = find_chmod ();
 			success = TRUE;
 
 			/* HACK! */
-			cmd = g_strdup_printf ("/bin/chown -R root.root %s", quoted);
+			cmd = g_strdup_printf ("%s -R root.root %s", chown, quoted);
 			system (cmd);
 			g_free (cmd);
 
-			cmd = g_strdup_printf ("/bin/chmod -R a+r %s", quoted);
+			cmd = g_strdup_printf ("%s -R a+r %s", chmod, quoted);
 			system (cmd);
 			g_free (cmd);
 
-			cmd = g_strdup_printf ("/bin/chmod a+x %s", quoted);
+			cmd = g_strdup_printf ("%s a+x %s", chmod, quoted);
 			system (cmd);
 			g_free (cmd);
 
 			g_free (quoted);
+			g_free (chown);
+			g_free (chmod);
 		}
 		chdir (cwd);
 	}

@@ -3,7 +3,7 @@
 GDM Theme Manual
 By Brian Cameron <Brian.Cameron@Sun.COM>
 Updated by George Lebl <jirka@5z.com>
-Last Updated: July 15, 2003
+Last Updated: July 18, 2003
 ========================================
 
 GDM Themes can be created by creating an XML file that follows the
@@ -91,7 +91,9 @@ Item Nodes:
     <item type="label">
 
   Items can specify ID values which gives them a specific look
-  and feel or formatting:
+  and feel or formatting.  Furthermore you can customize the login
+  process by adding custom widgets with custom id's for some items
+  (currently only the list item)
 
   entry:
 
@@ -108,6 +110,11 @@ Item Nodes:
        userlist    - A user browser list, so that users can pick
                      their username by clicking on this instead
                      of typing.
+
+    Furthermore, you can have an arbitrary id (I'd recommend starting
+    the id with 'custom' not to conflict with future additions to this
+    spec) and ask extra information of the user.  See the section
+    'Custom Widgetry'
 
   label:
 
@@ -251,6 +258,35 @@ Stock:
   For example:
 
     <stock type="welcome-label"/>
+
+Custom Widgetry:
+
+  Currently there is one item which can be customizable and this is
+  the list item.  If you need to ask the user extra things, such as
+  to pick from a list of places to log into, or set of custom login
+  sessions you can setup the list item and add listitem children that
+  describe the choices.  Each listitem must have an id and a text child.
+  The choice will be recorded in the file
+  <ServAuthDir>/<display>.GreeterInfo as <list id>=<listitem id>
+
+  For example suppose we are on display :0, ServAuthDir is /var/gdm
+  and we have the following in the theme:
+
+    <item type="list" id="custom-config">
+      <pos anchor="nw" x="1" y="1" height="200" width="100"/>
+      <listitem id="foo">
+        <text>Foo</text>
+      </listitem>
+      <listitem id="bar">
+        <text>Bar</text>
+      </listitem>
+    </item>
+
+  Then if the user chooses 'Foo' then /var/gdm/:0.GreeterInfo will
+  contain:
+
+    custom-config=foo
+
 
 Examples of themes with photos can be found here:
 

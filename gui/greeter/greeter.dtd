@@ -4,7 +4,7 @@
 	font CDATA #IMPLIED
 	tint CDATA #IMPLIED">
 <!ELEMENT greeter (item+)>
-<!ELEMENT item (pos | normal? | active? | prelight? | children? | show? | text? | fixed? | box?|border?)*>
+<!ELEMENT item (pos | normal? | active? | prelight? | children? | show? | text? | fixed? | box? | listitem? | border?)*>
 <!ELEMENT children (item+)>
 <!ELEMENT pos EMPTY>
 <!ELEMENT show EMPTY>
@@ -15,12 +15,15 @@
 <!ELEMENT stock EMPTY>
 <!ELEMENT fixed (item+)>
 <!ELEMENT box (item+)>
+<!ELEMENT listitem (text+)>
 <!-- additional elements-->
 <!ELEMENT border EMPTY>
 
+<!-- internal id's are one of (user-pw-entry | caps-lock-warning | clock | pam-error | pam-message | pam-prompt | pam-warning | timed-label | language_button | disconnect_button | reboot_button | halt_button | session_button | suspend_button | system_button | config_button | chooser_button | userlist)
+     but there can be other id's -->
 <!ATTLIST item
 	type (rect | entry | pixmap | label | svg | rect | list) #REQUIRED
-	id (user-pw-entry | caps-lock-warning | clock | pam-error | pam-message | pam-prompt | pam-warning | timed-label | language_button | disconnect_button | reboot_button | halt_button | session_button | suspend_button | system_button | config_button | chooser_button | userlist) #IMPLIED
+	id CDATA #IMPLIED
 	button (true | false) #IMPLIED
 >
 <!ATTLIST pos
@@ -60,6 +63,9 @@
 >
 <!ATTLIST text
 	xml:lang CDATA #IMPLIED
+>
+<!ATTLIST listitem
+	id CDATA #REQUIRED
 >
 
 <!-- <border red="0" green="0" blue="10" alpha="255"/>-->

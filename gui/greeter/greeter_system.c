@@ -196,8 +196,8 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				  G_CALLBACK (query_greeter_halt_handler),
 				  NULL);
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
-				      _("Shut down your computer so that "
-					"you may turn it off."),
+				      _("Shut down the system so that "
+					"you may safely turn off the computer."),
 				      NULL);
 	}
 
@@ -393,15 +393,15 @@ greeter_system_handler (GreeterItemInfo *info,
       return;
     }
 
-  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (halt_radio)))
+  if (halt_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (halt_radio)))
     greeter_halt_handler();
-  else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (reboot_radio)))
+  else if (reboot_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (reboot_radio)))
     greeter_reboot_handler ();
-  else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (suspend_radio)))
+  else if (suspend_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (suspend_radio)))
     greeter_suspend_handler ();
-  else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (config_radio)))
+  else if (config_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (config_radio)))
     greeter_config_handler ();
-  else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (chooser_radio)))
+  else if (chooser_radio != NULL && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (chooser_radio)))
     greeter_chooser_handler ();
 
   gtk_widget_destroy (dialog);
