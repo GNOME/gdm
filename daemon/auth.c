@@ -80,6 +80,28 @@ gdm_auth_secure_display (GdmDisplay *d)
     if (!af)
 	return (FALSE);
 
+    /* If this is a local display the struct hasn't changed and we
+     * have to clean up old authentication cookies before baking new
+     * ones 
+     */
+    if (d->type == DISPLAY_LOCAL && d->auths) {
+	GSList *alist = d->auths;
+
+	while (alist && alist->data) {
+	    XauDisposeAuth ((Xauth *) alist->data);
+	    alist = alist->next;
+	}
+
+	g_slist_free (d->auths);
+	d->auths = NULL;
+
+	if (d->cookie)
+	    g_free (d->cookie);
+
+	if (d->bcookie)
+	    g_free (d->bcookie);
+    }
+
     gdm_cookie_generate (d);
 
     /* FQDN or IP of display host */
@@ -100,13 +122,13 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    return (FALSE);
 
 	xa->family = FamilyLocal;
-	xa->address = d->hostname;
+	xa->address = strdup (d->hostname);
 	xa->address_length = strlen (d->hostname);
 	xa->number = g_strdup_printf ("%d", d->dispnum);
 	xa->number_length = 1;
-	xa->name = "MIT-MAGIC-COOKIE-1";
+	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
 	xa->name_length = 18;
-	xa->data = d->bcookie;
+	xa->data = strdup (d->bcookie);
 	xa->data_length = strlen (d->bcookie);
 	XauWriteAuth (af, xa);
 	d->auths = g_slist_append (d->auths, xa);
@@ -138,9 +160,9 @@ gdm_auth_secure_display (GdmDisplay *d)
 	xa->address_length = 4;
 	xa->number = g_strdup_printf ("%d", d->dispnum);
 	xa->number_length = 1;
-	xa->name = "MIT-MAGIC-COOKIE-1";
+	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
 	xa->name_length = 18;
-	xa->data = d->bcookie;
+	xa->data = strdup (d->bcookie);
 	xa->data_length = strlen (d->bcookie);
 
 	XauWriteAuth (af, xa);

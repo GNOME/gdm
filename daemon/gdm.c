@@ -87,6 +87,9 @@ gint  GdmMaxPending;
 gint  GdmMaxManageWait;
 gint  GdmMaxSessions;
 gint  GdmPort;
+gint  GdmIndirect;
+gint  GdmMaxIndirect;
+gint  GdmMaxIndirectWait;
 gint  GdmDebug;
 gint  GdmVerboseAuth;
 gint  GdmAllowRoot;
@@ -125,7 +128,7 @@ gdm_display_dispose (GdmDisplay *d)
 	tmpauth = d->auths;
 
 	while (tmpauth && tmpauth->data) {
-	    /* XauDisposeAuth ((Xauth *) tmpauth->data); */
+	    XauDisposeAuth ((Xauth *) tmpauth->data);
 	    tmpauth = tmpauth->next;
 	}
 
@@ -195,6 +198,9 @@ gdm_config_parse (void)
     GdmMaxManageWait = gnome_config_get_int (GDM_KEY_MAXWAIT);
     GdmMaxSessions = gnome_config_get_int (GDM_KEY_MAXSESS);
     GdmPort = gnome_config_get_int (GDM_KEY_UDPPORT);
+    GdmIndirect = gnome_config_get_int (GDM_KEY_INDIRECT);
+    GdmMaxIndirect = gnome_config_get_int (GDM_KEY_MAXINDIR);
+    GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);    
 
     GdmDebug = gnome_config_get_int (GDM_KEY_DEBUG);
 

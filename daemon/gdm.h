@@ -19,6 +19,9 @@
 #ifndef __GDM_H__
 #define __GDM_H__
 
+#include <X11/Xmd.h>
+#include <X11/Xdmcp.h>
+
 #define DISPLAY_LOCAL 1		/* Local X server */
 #define DISPLAY_XDMCP 2		/* Remote display */
 
@@ -92,6 +95,9 @@
 #define GDM_KEY_MAXSESS "xdmcp/MaxSessions=16"
 #define GDM_KEY_MAXWAIT "xdmcp/MaxWait=30"
 #define GDM_KEY_UDPPORT "xdmcp/Port=177"
+#define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=1"
+#define GDM_KEY_MAXINDIR "xdmcp/MaxPendingIndirect=4"
+#define GDM_KEY_MAXINDWAIT "xdmcp/MaxWaitIndirect=30"
 
 #define GDM_KEY_GTKRC "gui/GtkRC="
 #define GDM_KEY_ICONWIDTH "gui/MaxIconWidth=128"
@@ -146,6 +152,14 @@ struct _GdmDisplay {
     pid_t servpid;
     pid_t sesspid;
     pid_t slavepid;
+    time_t acctime;
+};
+
+
+typedef struct _GdmIndirectHost GdmIndirectHost;
+
+struct _GdmIndirectHost {
+    ARRAY8Ptr addr;
     time_t acctime;
 };
 

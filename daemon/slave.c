@@ -260,7 +260,7 @@ gdm_slave_greeter (void)
     sigaddset (&mask, SIGCHLD);
     sigprocmask (SIG_BLOCK, &mask, &omask);  
     
-    greet=FALSE;
+    greet = FALSE;
 
     /* Kill greeter and wait for it to die */
     kill (d->greetpid, SIGINT);

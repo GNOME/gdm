@@ -587,7 +587,9 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 
     case GDK_Return:
 	gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
-	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
+
+	if (GdmBrowser)
+	    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 
 	/* Save login. I'm making the assumption that login is always
 	 * the first thing entered. This might not be true for all PAM
@@ -911,7 +913,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	}
 
 	gtk_widget_set_sensitive (GTK_WIDGET (entry), TRUE);
-	gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
+
+	if (GdmBrowser)
+	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
 
 	g_print ("\n");
 	break;

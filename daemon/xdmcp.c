@@ -91,7 +91,7 @@ gint deny_severity = LOG_WARNING;
 
 gint xdmcpfd;
 gint globsessid;
-gint pending=0;
+gint pending = 0;
 static gchar *sysid;
 static ARRAY8 servhost;
 static XdmcpBuffer buf;
@@ -105,6 +105,7 @@ extern gint GdmMaxPending;	/* only accept this number of pending sessions */
 extern gint GdmMaxManageWait;	/* Dispose sessions not responding with MANAGE after 10 secs */
 extern gint GdmMaxSessions;	/* Maximum number of remote sessions */
 extern gint GdmPort;		/* UDP port number */
+extern gint GdmIndirect;	/* Honor XDMCP_INDIRECT, i.e. choosing */
 
 /* 
  * We don't support XDM-AUTHENTICATION-1 and XDM-AUTHORIZATION-1.
