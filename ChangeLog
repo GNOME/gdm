@@ -1,3 +1,11 @@
+Fri May 28 12:53:42 2004  George Lebl <jirka@5z.com>
+
+	* config/XKeepsCrashing, config/PreSession.in,
+	  config/PostSession.in, config/Xsession.in, config/Default.in:
+	  Don't use which but our own private shell version since solaris
+	  which is broken when there is no TTY.  Fixes #133245, partly
+	  based on a patch by Brian Cameron
+
 Fri May 28 12:35:22 2004  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.c, config/Makefile.am: solaris chown doesn't like 

@@ -6,18 +6,34 @@ if test "x$UNSAFE_TO_TRANSLATE" = "xyes" ; then
   unset LC_MESSAGES
 fi
 
-if [ -x "$LIBEXECDIR/gdmtranslate" ] ; then
+if test -x "$LIBEXECDIR/gdmtranslate" ; then
   GDMTRANSLATE="$LIBEXECDIR/gdmtranslate"
 else
   GDMTRANSLATE=
 fi
 
 gettextfunc () {
-  if [ "x$GDMTRANSLATE" != "x" ] ; then
+  if test "x$GDMTRANSLATE" != "x" ; then
     "$GDMTRANSLATE" "$1"
   else
     echo "$1"
   fi
+}
+
+gdmwhich () {
+  COMMAND="$1"
+  OUTPUT=
+  IFS=:
+  for dir in $PATH
+  do
+    if test -x "$dir/$COMMAND" ; then
+      if test "x$OUTPUT" = "x" ; then
+        OUTPUT="$dir/$COMMAND"
+      fi
+    fi
+  done
+  unset IFS
+  echo "$OUTPUT"
 }
 
 MSG3=`gettextfunc "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  You will need to log in on a console and rerun the X configuration program.  Then restart GDM."`
@@ -64,9 +80,9 @@ done
 #
 # Now we check for dialog and gdmaskpass
 #
-DIALOG=`which dialog`
+DIALOG=`gdmwhich dialog`
 if test "x$DIALOG" = "x" ; then
-  DIALOG=`which whiptail`
+  DIALOG=`gdmwhich whiptail`
 fi
 if test -x "$LIBEXECDIR/gdmaskpass" ; then
   ASKPASS="$LIBEXECDIR/gdmaskpass"

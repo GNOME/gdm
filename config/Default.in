@@ -5,9 +5,26 @@
 
 PATH=@X_PATH@:$PATH
 
+gdmwhich () {
+  COMMAND="$1"
+  OUTPUT=
+  IFS=:
+  for dir in $PATH
+  do
+    if test -x "$dir/$COMMAND" ; then
+      if test "x$OUTPUT" = "x" ; then
+        OUTPUT="$dir/$COMMAND"
+      fi
+    fi
+  done
+  unset IFS
+  echo "$OUTPUT"
+}
+
+
 sysmodmap=/etc/X11/Xmodmap
 
-XMODMAP=`which xmodmap 2>/dev/null`
+XMODMAP=`gdmwhich xmodmap`
 if [ x$XMODMAP != x ] ; then
   if [ x$GDM_PARENT_DISPLAY = x ]; then
     if [ -f $sysmodmap ]; then
@@ -18,7 +35,7 @@ if [ x$XMODMAP != x ] ; then
   fi
 fi
 
-SETXKBMAP=`which setxkbmap 2>/dev/null`
+SETXKBMAP=`gdmwhich setxkbmap`
 if [ x$SETXKBMAP != x ] ; then
   # FIXME: is this all right?  Is this completely on crack?
   # What this does is move the xkb configuration from the GDM_PARENT_DISPLAY

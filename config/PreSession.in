@@ -8,7 +8,23 @@
 #
 PATH="@X_PATH@:$PATH:/bin:/usr/bin"
 
-XSETROOT=`which xsetroot 2>/dev/null`
+gdmwhich () {
+  COMMAND="$1"
+  OUTPUT=
+  IFS=:
+  for dir in $PATH
+  do
+    if test -x "$dir/$COMMAND" ; then
+      if test "x$OUTPUT" = "x" ; then
+        OUTPUT="$dir/$COMMAND"
+      fi
+    fi
+  done
+  unset IFS
+  echo "$OUTPUT"
+}
+
+XSETROOT=`gdmwhich xsetroot`
 if [ "x$XSETROOT" != "x" ] ; then
 	# Try to snarf the BackgroundColor from the config file
 	BACKCOLOR=`grep '^BackgroundColor' @EXPANDED_SYSCONFDIR@/gdm/gdm.conf | sed 's/^.*=\(.*\)$/\1/'`
@@ -19,7 +35,7 @@ if [ "x$XSETROOT" != "x" ] ; then
 fi
 
 
-SESSREG=`which sessreg 2>/dev/null`
+SESSREG=`gdmwhich sessreg`
 if [ "x$SESSREG" != "x" ] ; then
 	# some output for easy debugging
 	echo "$0: Registering your session with wtmp and utmp"
