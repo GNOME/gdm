@@ -129,10 +129,12 @@ greeter_language_get_language (const char *old_language)
 {
   gchar *retval = NULL;
 
+#if 0
   if (greeter_current_user == NULL)
     greeter_abort ("greeter_language_get_language: curuser==NULL. Mail <mkp@mkp.net> with " \
 		    "information on your PAM and user database setup");
-
+#endif
+  
   /* Don't save language unless told otherwise */
   savelang = FALSE;
 
@@ -214,15 +216,13 @@ selection_changed (GtkTreeSelection *selection,
 
   gtk_tree_selection_get_selected (selection, NULL, &iter);
   g_free (dialog_selected_language);
-  gtk_tree_model_get (GTK_TREE_MODEL (lang_model), &iter, ENCODING_COLUMN, &dialog_selected_language, -1);
+  gtk_tree_model_get (GTK_TREE_MODEL (lang_model), &iter, LOCALE_COLUMN, &dialog_selected_language, -1);
 }
 
 void
 greeter_action_language (GreeterItemInfo *info,
 			 gpointer         user_data)
 {
-  gchar *language;
-
   if (dialog == NULL)
     {
       GtkWidget *view;
@@ -240,7 +240,7 @@ greeter_action_language (GreeterItemInfo *info,
 					    GTK_STOCK_CANCEL,
 					    GTK_RESPONSE_CANCEL,
 					    NULL);
-      g_object_add_weak_pointer (G_OBJECT (dialog), &dialog);
+      g_object_add_weak_pointer (G_OBJECT (dialog), (gpointer *) &dialog);
       label = gtk_label_new ("<span size=\"x-large\" weight=\"bold\">Select a language for your session to use:</span>");
       gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
       gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
