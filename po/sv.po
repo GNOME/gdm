@@ -9,36 +9,40 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-10-28 21:05+0100\n"
-"PO-Revision-Date: 2001-10-28 21:09+0100\n"
+"POT-Creation-Date: 2001-12-06 03:12+0100\n"
+"PO-Revision-Date: 2001-12-06 03:13+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: daemon/auth.c:147
+#: daemon/auth.c:144
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: Kunde inte skapa ny kakfil i %s"
 
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:370 daemon/auth.c:401
+#: daemon/auth.c:367 daemon/auth.c:398
 #, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
 msgstr "gdm_auth_user_add: Kunde inte öppna kakfilen %s"
 
-#: daemon/auth.c:387
+#: daemon/auth.c:384
 #, c-format
 msgid "gdm_auth_user_add: Could not lock cookie file %s"
 msgstr "gdm_auth_user_add: Kunde inte låsa kakfilen %s"
 
-#: daemon/auth.c:476
+#: daemon/auth.c:473
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr "gdm_auth_user_remove: Ignorerar den konstiga kakfilen %s"
 
-#: daemon/display.c:94
+#. This means we have no clue what's happening,
+#. * it's not X server crashing as we would have
+#. * cought that elsewhere.  Things are just
+#. * not working out, so tell the user
+#: daemon/display.c:95
 #, c-format
 msgid ""
 "Failed to start the display server several times in a short time period; "
@@ -47,77 +51,77 @@ msgstr ""
 "Misslyckades med att starta displayservern ett flertal gånger under en kort "
 "tidsperiod, deaktiverar display %s"
 
-#: daemon/display.c:211
+#: daemon/display.c:222
 #, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
 "gdm_display_manage: Misslyckades med att grena gdm-slavprocessen för %s"
 
-#: daemon/errorgui.c:163
+#: daemon/errorgui.c:169
 msgid "gdm_error_box: Failed to execute self"
 msgstr "gdm_error_box: Misslyckades med att köra sig själv"
 
-#: daemon/errorgui.c:168
+#: daemon/errorgui.c:174
 msgid "gdm_error_box: Cannot fork to display error/info box"
 msgstr "gdm_error_box: Kan inte grena för att visa fel-/infofönster"
 
-#: daemon/errorgui.c:302 daemon/errorgui.c:435
+#: daemon/errorgui.c:311 daemon/errorgui.c:447
 msgid "gdm_failsafe_question: Failed to execute self"
 msgstr "gdm_failsafe_question: Misslyckades med att köra sig själv"
 
-#: daemon/errorgui.c:320 daemon/errorgui.c:455
+#: daemon/errorgui.c:329 daemon/errorgui.c:467
 msgid "gdm_failsafe_question: Cannot fork to display error/info box"
 msgstr "gdm_failsafe_question: Kan inte grena för att visa fel-/infofönster"
 
-#: daemon/filecheck.c:51
+#: daemon/filecheck.c:49
 #, c-format
 msgid "%s: Directory %s does not exist."
 msgstr "%s: Katalogen %s finns inte."
 
-#: daemon/filecheck.c:58 daemon/filecheck.c:99
+#: daemon/filecheck.c:56 daemon/filecheck.c:97
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr "%s: %s ägs inte av uid %d."
 
-#: daemon/filecheck.c:64 daemon/filecheck.c:106
+#: daemon/filecheck.c:62 daemon/filecheck.c:104
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr "%s: %s kan skrivas av gruppen."
 
-#: daemon/filecheck.c:70
+#: daemon/filecheck.c:68
 #, c-format
 msgid "%s: %s is writable by other."
 msgstr "%s: %s kan skrivas av annan."
 
-#: daemon/filecheck.c:84
+#: daemon/filecheck.c:82
 #, c-format
 msgid "%s: %s does not exist but must exist."
 msgstr "%s: %s finns inte men måste finnas."
 
-#: daemon/filecheck.c:92
+#: daemon/filecheck.c:90
 #, c-format
 msgid "%s: %s is not a regular file."
 msgstr "%s: %s är inte en vanlig fil."
 
-#: daemon/filecheck.c:113
+#: daemon/filecheck.c:111
 #, c-format
 msgid "%s: %s is writable by group/other."
 msgstr "%s: %s kan skrivas av grupp/annan."
 
-#: daemon/filecheck.c:120
+#: daemon/filecheck.c:118
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
 "%s: %s är större än den av systemadministratören angivna maximala "
 "filstorleken."
 
-#: daemon/gdm.c:197
+#: daemon/gdm.c:205
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Using defaults."
 msgstr ""
 "gdm_config_parse: Ingen konfigurationsfil: %s. Använder standardvärden."
 
-#: daemon/gdm.c:280
+#: daemon/gdm.c:288
 msgid ""
 "gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
 "it off"
@@ -125,159 +129,249 @@ msgstr ""
 "gdm_config_parse: XDMCP var påslaget men det finns inte XDMCP-stöd, stänger "
 "av det"
 
-#: daemon/gdm.c:293
+#: daemon/gdm.c:301
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
 "gdm_config_parse: root kan inte loggas in automatiskt, slår av automatisk "
 "inloggning"
 
-#: daemon/gdm.c:306
+#: daemon/gdm.c:314
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
 "gdm_config_parse: root kan inte loggas in automatiskt, slår av tidsbaserad "
 "inlogging"
 
-#: daemon/gdm.c:312
+#: daemon/gdm.c:320
 msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
 msgstr ""
 "gdm_config_parse: TimedLoginDelay är mindre än 5, så jag kommer helt enkelt "
 "att använda 5."
 
-#: daemon/gdm.c:322
+#: daemon/gdm.c:330
 msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse: Ingen hälsare angiven."
 
-#: daemon/gdm.c:326
+#: daemon/gdm.c:334
+msgid "No daemon/ServAuthDir specified in the configuration file"
+msgstr "Ingen demon/ServAuthDir angiven i konfigurationsfilen"
+
+#: daemon/gdm.c:335
 msgid "gdm_config_parse: No authdir specified."
 msgstr "gdm_config_parse: Ingen authdir angiven."
 
-#: daemon/gdm.c:332
+#: daemon/gdm.c:342
 msgid "gdm_config_parse: No sessions directory specified."
 msgstr "gdm_config_parse: Ingen sessionkatalog angiven."
 
-#: daemon/gdm.c:356
+#: daemon/gdm.c:366
 #, c-format
 msgid "%s: Empty server command, using standard one."
 msgstr "%s: Tomt serverkommando, använder standardkommando."
 
-#: daemon/gdm.c:401
+#: daemon/gdm.c:411
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
 msgstr "%s: Displaynumret %d används! Jag kommer att använda %d"
 
-#: daemon/gdm.c:416
+#: daemon/gdm.c:428
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr "gdm_config_parse: Ogiltig serverrad i konfigurationsfilen. Ignorerar!"
 
 #. start
 #. server uid
-#: daemon/gdm.c:435
+#: daemon/gdm.c:447
 #, c-format
 msgid ""
-"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on "
-":%d to allow configuration!"
+"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
+"d to allow configuration!"
 msgstr ""
-"%s: Xdmcp deaktiverat och inga lokala servrar är angivna. Lägger till "
-"/usr/bin/X11/X på :%d för att tillåta konfiguration!"
+"%s: Xdmcp deaktiverat och inga lokala servrar är angivna. Lägger till /usr/"
+"bin/X11/X på :%d för att tillåta konfiguration!"
 
-#: daemon/gdm.c:449
+#: daemon/gdm.c:461
+#, c-format
+msgid ""
+"Xdmcp is disabled and gdm cannot find any local server to start.  Aborting!  "
+"Please correct the configuration %sand restart gdm."
+msgstr ""
+"Xdmcp är deaktiverat och gdm kan inte hitta några lokala servrar att starta. "
+"Avbryter. Rätta till konfigurationen %s och starta om gdm."
+
+#: daemon/gdm.c:468
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr ""
 "gdm_config_parse: Xdmcp deaktiverat och inga lokala servrar är angivna. "
 "Avbryter!"
 
-#: daemon/gdm.c:458
+#: daemon/gdm.c:476
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
 msgstr ""
-"gdm_config_parse: Kan inte hitta gdm-användaren (%s). Försöker med "
-"\"nobody\"!"
+"gdm_config_parse: Kan inte hitta gdm-användaren (%s). Försöker med \"nobody"
+"\"!"
 
-#: daemon/gdm.c:465
+#: daemon/gdm.c:483
+#, c-format
+msgid ""
+"The gdm user does not exist.  Please correct gdm configuration %s and "
+"restart gdm."
+msgstr ""
+"Gdm-användaren finns inte. Rätta till gdm-konfigurationen %s och starta om "
+"gdm."
+
+#: daemon/gdm.c:488
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
 msgstr "gdm_config_parse: Kan inte hitta gdm-användaren (%s). Avbryter!"
 
-#: daemon/gdm.c:470
+#: daemon/gdm.c:494
+#, c-format
+msgid ""
+"The gdm user is set to be root, but this is not allowed since it can pose a "
+"security risk.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+"Gdm-användaren är angiven till root, men detta är inte tillåtet då det kan "
+"innebära en säkerhetsrisk. Rätta till gdm-konfigurationen %s och starta om "
+"gdm."
+
+#: daemon/gdm.c:500
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr "gdm_config_parse: Gdm-användaren ska inte vara root. Avbryter!"
 
-#: daemon/gdm.c:475
+#: daemon/gdm.c:506
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
 msgstr ""
 "gdm_config_parse: Kan inte hitta gdm-gruppen (%s). Försöker med \"nobody\"!"
 
-#: daemon/gdm.c:482
+#: daemon/gdm.c:513
+#, c-format
+msgid ""
+"The gdm group does not exist.  Please correct gdm configuration %s and "
+"restart gdm."
+msgstr ""
+"Gdm-gruppen finns inte. Rätta till gdm-konfigurationen %s och starta om gdm."
+
+#: daemon/gdm.c:518
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
 msgstr "gdm_config_parse: Kan inte hitta gdm-gruppen (%s). Avbryter!"
 
-#: daemon/gdm.c:487
+#: daemon/gdm.c:524
+#, c-format
+msgid ""
+"The gdm group is set to be root, but this is not allowed since it can pose a "
+"security risk.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+"Gdm-gruppen är angiven till root, men detta är inte tillåtet då det kan "
+"innebära en säkerhetsrisk. Rätta till gdm-konfigurationen %s och starta om "
+"gdm."
+
+#: daemon/gdm.c:530
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
 msgstr "gdm_config_parse: Gdm-gruppen ska inte vara root. Avbryter!"
 
-#: daemon/gdm.c:498
+#: daemon/gdm.c:541
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr "%s: Hälsaren kunde inte hittas, eller kan inte köras av gdm-användaren"
 
-#: daemon/gdm.c:510
+#: daemon/gdm.c:553
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr ""
 "%s: Väljaren kunde inte hittas, eller så kan den inte köras av gdm-användaren"
 
-#: daemon/gdm.c:518
+#: daemon/gdm.c:561
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
+"does not exist.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+"Serverautentiseringskatalogen (demon/ServAuthDir) är inställd till %s men "
+"denna finns inte. Rätta till gdm-konfigurationen %s och starta om gdm."
+
+#: daemon/gdm.c:568
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr "gdm_config_parse: Authdir %s existerar inte. Avbryter."
 
-#: daemon/gdm.c:521
+#: daemon/gdm.c:572
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
+"not a directory.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+"Serverautentiseringskatalogen (demon/ServAuthDir) är inställd till %s men "
+"denna är ingen katalog. Rätta till gdm-konfigurationen %s och starta om gdm."
+
+#: daemon/gdm.c:579
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
 msgstr "gdm_config_parse: Authdir %s är inte en katalog. Avbryter."
 
-#: daemon/gdm.c:524
+#: daemon/gdm.c:583
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
+"owned by user %s and group %s.  Please correct the ownership or gdm "
+"configuration %s and restart gdm."
+msgstr ""
+"Serverauktoriseringskatalogen (demon/ServAuthDir) är inställd till %s men "
+"ägs inte av användaren %s och gruppen %s. Rätta till ägarskapet eller gdm-"
+"konfigurationen %s och starta om gdm."
+
+#: daemon/gdm.c:592
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "gdm_config_parse: Authdir %s ägs inte av användaren %s, gruppen %s. Avbryter."
 
-#: daemon/gdm.c:528
+#: daemon/gdm.c:597
 #, c-format
 msgid ""
-"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
+"wrong permissions, it should have permissions of 0750.Please correct the "
+"permissions or the gdm configuration %s and restart gdm."
+msgstr ""
+"Serverauktoriseringskatalogen (demon/ServAuthDir) är inställd till %s men "
+"har fel rättigheter, den borde ha rättigheterna 0750. Rätta till "
+"rättigheterna eller gdm-konfigurationen %s och starta om gdm."
+
+#: daemon/gdm.c:606
+#, c-format
+msgid ""
+"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. "
 "Aborting."
 msgstr ""
-"gdm_config_parse: Authdir %s har felaktiga rättigheter (%o). Ska vara 750. "
+"gdm_config_parse: Authdir %s har felaktiga rättigheter (%o). Ska vara 0750. "
 "Avbryter."
 
-#: daemon/gdm.c:582
+#: daemon/gdm.c:661
 msgid "gdm_daemonify: fork() failed!"
 msgstr "gdm_daemonify: fork() misslyckades!"
 
-#: daemon/gdm.c:585
+#: daemon/gdm.c:664
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid() misslyckades: %s!"
 
-#: daemon/gdm.c:684
+#: daemon/gdm.c:772
 #, c-format
 msgid "deal_with_x_crashes: Trying failsafe X server %s"
 msgstr "deal_with_x_crashes: Provar med felsäkra X-servern %s"
 
-#: daemon/gdm.c:700
+#: daemon/gdm.c:788
 msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
 msgstr "deal_with_x_crashes: Kör skriptet XKeepsCrashing"
 
 #. Shit if we knew what the program was to tell the user,
 #. * the above script would have been defined and we'd run
 #. * it for them
-#: config/gettextfoo.h:1 daemon/gdm.c:772
+#: config/gettextfoo.h:1 daemon/gdm.c:860
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  You will need to log in on a console and rerun "
@@ -292,7 +386,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:784
+#: daemon/gdm.c:872
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -301,7 +395,7 @@ msgstr ""
 "Misslyckades med att starta X-server ett flertal gånger under en kort "
 "tidsperiod, deaktiverar display %s"
 
-#: daemon/gdm.c:890
+#: daemon/gdm.c:978
 #, c-format
 msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
@@ -310,102 +404,102 @@ msgstr ""
 "gdm_child_action: Begäran av omstart eller stopp trots att det inte finns "
 "någon systemmeny på display %s"
 
-#: daemon/gdm.c:898
+#: daemon/gdm.c:986
 #, c-format
 msgid ""
 "gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
 msgstr ""
-"gdm_child_action: Begäran av gdm-omstart, omstart eller stopp från en "
-"icke-lokal display %s"
+"gdm_child_action: Begäran av gdm-omstart, omstart eller stopp från en icke-"
+"lokal display %s"
 
 #. Bury this display for good
-#: daemon/gdm.c:932
+#: daemon/gdm.c:1020
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action: Avbryter display %s"
 
 #. Reboot machine
-#: daemon/gdm.c:941
+#: daemon/gdm.c:1032
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action: Master startar om..."
 
-#: daemon/gdm.c:948
+#: daemon/gdm.c:1039
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action: Omstart misslyckades: %s"
 
 #. Halt machine
-#: daemon/gdm.c:952
+#: daemon/gdm.c:1043
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action: Master stannar..."
 
-#: daemon/gdm.c:959
+#: daemon/gdm.c:1050
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: Kunde inte stanna: %s"
 
 #. Suspend machine
-#: daemon/gdm.c:963
+#: daemon/gdm.c:1054
 msgid "gdm_child_action: Master suspending..."
 msgstr "gdm_child_action: Master försätter sig i viloläge..."
 
-#: daemon/gdm.c:970
+#: daemon/gdm.c:1061
 #, c-format
 msgid "gdm_child_action: Suspend failed: %s"
 msgstr "gdm_child_action: Försättande i viloläge misslyckades: %s"
 
-#: daemon/gdm.c:1057
+#: daemon/gdm.c:1156
 msgid "Gdm restarting ..."
 msgstr "Gdm startar om..."
 
-#: daemon/gdm.c:1062
+#: daemon/gdm.c:1161
 msgid "Failed to restart self"
 msgstr "Misslyckades med att starta om mig själv"
 
-#: daemon/gdm.c:1229
+#: daemon/gdm.c:1328
 msgid "Only root wants to run gdm\n"
 msgstr "Endast root ska köra gdm\n"
 
-#: daemon/gdm.c:1257
+#: daemon/gdm.c:1356
 msgid "gdm already running. Aborting!"
 msgstr "gdm kör redan. Avbryter!"
 
-#: daemon/gdm.c:1288
+#: daemon/gdm.c:1387
 #, c-format
 msgid "%s: Error setting up TERM signal handler"
 msgstr "%s: Fel vid inställning av TERM-signalhanteraren"
 
-#: daemon/gdm.c:1292
+#: daemon/gdm.c:1391
 #, c-format
 msgid "%s: Error setting up INT signal handler"
 msgstr "%s: Fel vid inställning av INT-signalhanteraren"
 
-#: daemon/gdm.c:1296
+#: daemon/gdm.c:1395
 #, c-format
 msgid "%s: Error setting up HUP signal handler"
 msgstr "%s: Fel vid inställning av HUP-signalhanteraren"
 
-#: daemon/gdm.c:1300
+#: daemon/gdm.c:1399
 #, c-format
 msgid "%s: Error setting up USR1 signal handler"
 msgstr "%s: Fel vid inställning av USR1-signalhanteraren"
 
-#: daemon/gdm.c:1309
+#: daemon/gdm.c:1408
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Fel vid inställning av CHLD-signalhanteraren"
 
-#: daemon/gdm.c:2080 daemon/gdm.c:2097
+#: daemon/gdm.c:2181 daemon/gdm.c:2198
 msgid "Flexible server request denied: Not authenticated"
 msgstr "Flexibel serverbegäran nekas: Inte autentiserad"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:2115
+#: daemon/gdm.c:2216
 msgid "Unknown server type requested, using standard server."
 msgstr "Okänd servertyp begärd, använder standardserver."
 
-#: daemon/gdm.c:2119
+#: daemon/gdm.c:2220
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -414,47 +508,57 @@ msgstr ""
 "Begärda servern %s är inte tillåten för användning med flexibla servrar, "
 "använder standardserver."
 
-#: daemon/gdm-net.c:249
+#: daemon/gdm-net.c:247
 #, c-format
 msgid "%s: Could not make socket"
 msgstr "%s: Kunde inte skapa uttag (socket)"
 
-#: daemon/gdm-net.c:259
+#: daemon/gdm-net.c:257
 #, c-format
 msgid "%s: Could not bind socket"
 msgstr "%s: Kunde inte binda uttag (socket)"
 
-#: daemon/gdm-net.c:300
+#: daemon/gdm-net.c:298
 #, c-format
 msgid "%s: Could not make FIFO"
 msgstr "%s: Kunde inte skapa FIFO"
 
-#: daemon/gdm-net.c:308
+#: daemon/gdm-net.c:306
 #, c-format
 msgid "%s: Could not open FIFO"
 msgstr "%s: Kunde inte öppna FIFO"
 
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:377
+#: daemon/misc.c:379
 msgid "y = Yes or n = No? >"
 msgstr "y = Ja eller n = Nej? >"
 
-#: daemon/misc.c:614
+#: daemon/misc.c:623
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: Kan inte få tag i lokala adresser!"
 
-#: daemon/misc.c:655
+#: daemon/misc.c:664
 #, c-format
 msgid "%s: Could not get server hostname: %s!"
 msgstr "%s: Kunde inte hitta servernamnet: %s!"
 
-#: daemon/misc.c:662
+#: daemon/misc.c:671
 #, c-format
 msgid "%s: Could not get address from hostname!"
 msgstr "%s: Kunde inte få tag i adressen från värdnamnet!"
 
-#: daemon/server.c:167
+#: daemon/misc.c:729
+#, c-format
+msgid "Could not setgid %d. Aborting."
+msgstr "Kunde inte sätta grupp-id %d. Avbryter."
+
+#: daemon/misc.c:734
+#, c-format
+msgid "initgroups() failed for %s. Aborting."
+msgstr "initgroups() misslyckades för %s. Avbryter."
+
+#: daemon/server.c:165
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -465,7 +569,7 @@ msgstr ""
 "annat servernummer? Om du svarar nej kommer jag att försöka starta servern "
 "på %s igen.%s"
 
-#: daemon/server.c:174
+#: daemon/server.c:172
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -475,131 +579,131 @@ msgstr ""
 "exempelvis Ctrl+Alt+F7 för att gå till konsoll 7. X-servrar kör normalt på "
 "konsoll 7 och högre.)"
 
-#: daemon/server.c:213
+#: daemon/server.c:211
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Display \"%s\" kan inte öppnas av Xnest"
 
-#: daemon/server.c:243
+#: daemon/server.c:241
 #, c-format
 msgid "Display %s is busy, there is another X server already running"
 msgstr "Display %s är upptagen, en annan X-server kör redan"
 
-#: daemon/server.c:345
+#: daemon/server.c:343
 msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr "gdm_server_start: Fel vid inställning av USR1-signalhanteraren"
 
-#: daemon/server.c:355
+#: daemon/server.c:353
 msgid "gdm_server_start: Error setting up CHLD signal handler"
 msgstr "gdm_server_start: Fel vid inställning av CHLD-signalhanteraren"
 
-#: daemon/server.c:366
+#: daemon/server.c:364
 msgid "gdm_server_start: Error setting up ALRM signal handler"
 msgstr "gdm_server_start: Fel vid inställning av ALRM-signalhanteraren"
 
 #. Send X too busy
-#: daemon/server.c:506
+#: daemon/server.c:504
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s: Kan inte hitta ett ledigt displaynummer"
 
-#: daemon/server.c:521
+#: daemon/server.c:519
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s: Display %s är upptagen. Försöker med ett annat displaynummer."
 
-#: daemon/server.c:629
+#: daemon/server.c:654
 #, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr "gdm_server_spawn: Kunde inte öppna loggfilen för display %s!"
 
-#: daemon/server.c:639
+#: daemon/server.c:664
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Fel vid inställning av USR1 till SIG_IGN"
 
-#: daemon/server.c:643
+#: daemon/server.c:668
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
 msgstr "gdm_server_spawn: Fel vid inställning av TTIN till SIG_IGN"
 
-#: daemon/server.c:647
+#: daemon/server.c:672
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
 msgstr "gdm_server_spawn: Fel vid inställning av TTOU till SIG_IGN"
 
-#: daemon/server.c:657
+#: daemon/server.c:682
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
 msgstr "gdm_server_spawn: Fel vid inställning av HUP till SIG_DFL"
 
-#: daemon/server.c:661
+#: daemon/server.c:686
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr "gdm_server_spawn: Fel vid inställning av TERM till SIG_DFL"
 
-#: daemon/server.c:684
+#: daemon/server.c:709
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Ogiltigt serverkommando \"%s\""
 
-#: daemon/server.c:690
+#: daemon/server.c:715
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "Servernamnet \"%s\" kunde inte hittas, använder standardserver"
 
-#: daemon/server.c:722
+#: daemon/server.c:747
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tomt serverkommando för display %s"
 
-#: daemon/server.c:748
+#: daemon/server.c:773
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: Servern skulle startas med uid %d, men den användaren finns inte"
 
-#: daemon/server.c:763 daemon/slave.c:1098 daemon/slave.c:1424
+#: daemon/server.c:788 daemon/slave.c:1108 daemon/slave.c:1453
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Kunde inte sätta grupp-id till %d"
 
-#: daemon/server.c:769 daemon/slave.c:1103 daemon/slave.c:1429
+#: daemon/server.c:794 daemon/slave.c:1113 daemon/slave.c:1458
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgroups() misslyckades för %s"
 
-#: daemon/server.c:775 daemon/slave.c:1108 daemon/slave.c:1434
+#: daemon/server.c:800 daemon/slave.c:1118 daemon/slave.c:1463
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Kunde inte sätta användar-id till %d"
 
-#: daemon/server.c:782
+#: daemon/server.c:807
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: Kunde inte sätta grupp-id till 0"
 
-#: daemon/server.c:793
+#: daemon/server.c:818
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_server_spawn: X-server kunde inte hittas: %s"
 
-#: daemon/server.c:798
+#: daemon/server.c:823
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: Kan inte grena X-serverprocessen!"
 
-#: daemon/slave.c:173
+#: daemon/slave.c:171
 msgid "gdm_slave_init: Error setting up ALRM signal handler"
 msgstr "gdm_slave_init: Fel vid inställning av ALRM-signalhanteraren"
 
-#: daemon/slave.c:185
+#: daemon/slave.c:183
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
 msgstr "gdm_slave_init: Fel vid inställning av TERM/INT-signalhanteraren"
 
-#: daemon/slave.c:194
+#: daemon/slave.c:192
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr "gdm_slave_init: Fel vid inställning av CHLD-signalhanteraren"
 
-#: daemon/slave.c:203
+#: daemon/slave.c:201
 #, c-format
 msgid "%s: Error setting up USR2 signal handler"
 msgstr "%s: Fel vid inställning av USR2-signalhanteraren"
 
-#: daemon/slave.c:362
+#: daemon/slave.c:363
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -620,16 +724,16 @@ msgstr ""
 "vara avstängd. Starta om gdm när\n"
 "problemet är åtgärdat."
 
-#: daemon/slave.c:543
+#: daemon/slave.c:550
 msgid "focus_first_x_window: cannot fork"
 msgstr "focus_first_x_window: kan inte grena"
 
-#: daemon/slave.c:562
+#: daemon/slave.c:569
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr "focus_first_x_window: kan inte öppna display %s"
 
-#: daemon/slave.c:667
+#: daemon/slave.c:674
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -643,7 +747,7 @@ msgstr ""
 "Jag kommer att försöka starta det från\n"
 "standardplatsen."
 
-#: daemon/slave.c:681
+#: daemon/slave.c:688
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -653,7 +757,7 @@ msgstr ""
 "Försäkra dig om att dess sökväg är\n"
 "korrekt angiven i konfigurationsfilen."
 
-#: daemon/slave.c:736
+#: daemon/slave.c:743
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -661,15 +765,15 @@ msgstr ""
 "Ange rootlösenordet för\n"
 "att köra konfigurationen."
 
-#: daemon/slave.c:751 daemon/slave.c:816
+#: daemon/slave.c:758 daemon/slave.c:823
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: Ingen inloggning/Felaktig inloggning"
 
-#: daemon/slave.c:1062
+#: daemon/slave.c:1072
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr "gdm_slave_greeter: Kan inte initiera rör till gdmgreeter"
 
-#: daemon/slave.c:1169
+#: daemon/slave.c:1179
 msgid ""
 "No servers were defined in the\n"
 "configuration file and xdmcp was\n"
@@ -688,7 +792,7 @@ msgstr ""
 "Observera att automatiska och tids-\n"
 "begränsade inloggningar är avstängda nu."
 
-#: daemon/slave.c:1183
+#: daemon/slave.c:1193
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -702,22 +806,22 @@ msgstr ""
 "bör logga in och se till att\n"
 "X-servern konfigureras korrekt."
 
-#: daemon/slave.c:1192
+#: daemon/slave.c:1202
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr ""
-"Det angivna diplaynumret var upptaget, så denna server startades på display "
-"%s."
+"Det angivna diplaynumret var upptaget, så denna server startades på display %"
+"s."
 
-#: daemon/slave.c:1202
+#: daemon/slave.c:1212
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr ""
 "gdm_slave_greeter: Kan inte starta hälsare, försöker med standardvärde: %s"
 
-#: daemon/slave.c:1214
+#: daemon/slave.c:1224
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -732,25 +836,25 @@ msgstr ""
 "andra sätt och redigera konfigurations-\n"
 "filen"
 
-#: daemon/slave.c:1220
+#: daemon/slave.c:1230
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr "gdm_slave_greeter: Fel vid start av hälsare på display %s"
 
-#: daemon/slave.c:1223
+#: daemon/slave.c:1233
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Kan inte grena gdmgreeter-processen"
 
-#: daemon/slave.c:1272 daemon/slave.c:1316 daemon/slave.c:1357
+#: daemon/slave.c:1293 daemon/slave.c:1386
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Kan inte öppna fifo!"
 
-#: daemon/slave.c:1388
+#: daemon/slave.c:1417
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
 msgstr "gdm_slave_greeter: Kan inte initiera rör till gdmchooser"
 
-#: daemon/slave.c:1467
+#: daemon/slave.c:1496
 msgid ""
 "Cannot start the chooser program,\n"
 "you will not be able to log in.\n"
@@ -760,37 +864,27 @@ msgstr ""
 "Du kommer inte att kunna logga in.\n"
 "Kontakta systemadministratören.\n"
 
-#: daemon/slave.c:1471
+#: daemon/slave.c:1500
 #, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr "gdm_slave_chooser: Fel vid start av väljare på display %s"
 
-#: daemon/slave.c:1474
+#: daemon/slave.c:1503
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr "gdm_slave_chooser: Kan inte grena gdmchooser-processen"
 
-#: daemon/slave.c:1837
+#: daemon/slave.c:1867
 #, c-format
-msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
-msgstr "gdm_slave_session_start: Kunde inte sätta grupp-id %d. Avbryter."
+msgid "%s: Could not setup environment for %s. Aborting."
+msgstr "%s: Kunde inte konfigurera miljön för %s. Avbryter."
 
-#: daemon/slave.c:1841
-#, c-format
-msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
-msgstr "gdm_slave_session_start: initgroups() misslyckades för %s. Avbryter."
-
-#: daemon/slave.c:1847
-#, c-format
-msgid "%s: Could not open session for %s. Aborting."
-msgstr "%s: Kunde inte öppna session för %s. Avbryter."
-
-#: daemon/slave.c:1853
+#: daemon/slave.c:1873
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Kunde inte bli %s. Avbryter."
 
 #. yaikes
-#: daemon/slave.c:1919
+#: daemon/slave.c:1939
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -798,7 +892,7 @@ msgstr ""
 "gdm_slave_session_start: gnome-session hittades inte för en felsäker "
 "gnomesession, försöker med xterm"
 
-#: daemon/slave.c:1923
+#: daemon/slave.c:1943
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -808,7 +902,7 @@ msgstr ""
 "kommer att försöka köra sessionen\n"
 "\"Felsäker xterm\"."
 
-#: daemon/slave.c:1929
+#: daemon/slave.c:1949
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -823,11 +917,11 @@ msgstr ""
 "för att problem i din installation ska\n"
 "kunna åtgärdas."
 
-#: daemon/slave.c:1948
+#: daemon/slave.c:1968
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Kan inte hitta \"xterm\" för att starta en felsäker session."
 
-#: daemon/slave.c:1955
+#: daemon/slave.c:1975
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -845,16 +939,16 @@ msgstr ""
 "du \"exit\" och trycker enter i\n"
 "fönstret."
 
-#: daemon/slave.c:1977
+#: daemon/slave.c:1997
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "Kör %s för %s på %s"
 
-#: daemon/slave.c:1991
+#: daemon/slave.c:2011
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: Användaren får inte logga in"
 
-#: daemon/slave.c:1993
+#: daemon/slave.c:2013
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -862,12 +956,12 @@ msgstr ""
 "Systemadministratören har\n"
 "stängt av ditt konto."
 
-#: daemon/slave.c:1996
+#: daemon/slave.c:2016
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: Kunde inte hitta/köra sessionen \"%s\""
 
-#: daemon/slave.c:2001
+#: daemon/slave.c:2021
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -879,12 +973,12 @@ msgstr ""
 "från listan över tillgängliga sessioner i\n"
 "inloggningsfönstret."
 
-#: daemon/slave.c:2009
+#: daemon/slave.c:2029
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Kunde inte starta sessionen \"%s\""
 
-#: daemon/slave.c:2012
+#: daemon/slave.c:2032
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -895,14 +989,14 @@ msgstr ""
 "konto.\n"
 "Det kan också bero på ett fel med ditt konto.\n"
 
-#: daemon/slave.c:2044
+#: daemon/slave.c:2064
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: Användaren klarade autentiseringen men getpwnam(%s) "
 "misslyckades!"
 
-#: daemon/slave.c:2050
+#: daemon/slave.c:2070
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -924,16 +1018,16 @@ msgstr ""
 "kommer att fungera såvida du inte\n"
 "använder en felsäker session."
 
-#: daemon/slave.c:2058
+#: daemon/slave.c:2078
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Hemkatalog för %s: \"%s\" finns inte!"
 
-#: daemon/slave.c:2204
+#: daemon/slave.c:2225
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr "gdm_slave_session_start: Autentisering klar. Tar bort hälsaren"
 
-#: daemon/slave.c:2222
+#: daemon/slave.c:2243
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -941,64 +1035,64 @@ msgstr ""
 "gdm_slave_session_start: Körning av PreSession-skriptet returnerade > 0. "
 "Avbryter."
 
-#: daemon/slave.c:2259
+#: daemon/slave.c:2280
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Fel vid grening av användarsession"
 
-#: daemon/slave.c:2443
+#: daemon/slave.c:2464
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping till %s misslyckades, tar bort displayen!"
 
-#: daemon/slave.c:2555
+#: daemon/slave.c:2585
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Ödesdigert X-fel - Startar om %s"
 
-#: daemon/slave.c:2742
+#: daemon/slave.c:2776
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Misslyckades med att starta: %s"
 
-#: daemon/slave.c:2746
+#: daemon/slave.c:2782
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Kan inte grena skriptprocessen!"
 
-#: daemon/slave.c:2867
+#: daemon/slave.c:2906
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "gdm_parse_enriched_login: Misslyckades med att skapa rör"
 
-#: daemon/slave.c:2889
+#: daemon/slave.c:2928
 #, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "gdm_parse_enriched_login: Misslyckades med att köra: %s"
 
-#: daemon/slave.c:2894
+#: daemon/slave.c:2933
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login: Kan inte grena skriptprocessen!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:70 daemon/verify-pam.c:247 daemon/verify-shadow.c:68
-#: gui/gdmlogin.c:3129
+#: daemon/verify-crypt.c:68 daemon/verify-pam.c:245 daemon/verify-shadow.c:67
+#: gui/gdmlogin.c:3127
 msgid "Please enter your username"
 msgstr "Ange ditt användarnamn"
 
-#: daemon/verify-crypt.c:71 daemon/verify-pam.c:248 daemon/verify-shadow.c:69
-#: gui/gdmlogin.c:3092
+#: daemon/verify-crypt.c:69 daemon/verify-pam.c:246 daemon/verify-shadow.c:68
+#: gui/gdmlogin.c:3090
 msgid "Username:"
 msgstr "Användarnamn:"
 
-#: daemon/verify-crypt.c:93 daemon/verify-shadow.c:101
+#: daemon/verify-crypt.c:91 daemon/verify-shadow.c:100
 msgid "Password: "
 msgstr "Lösenord: "
 
-#: daemon/verify-crypt.c:111 daemon/verify-pam.c:312
-#: daemon/verify-shadow.c:119
+#: daemon/verify-crypt.c:109 daemon/verify-pam.c:310
+#: daemon/verify-shadow.c:118
 msgid "Couldn't authenticate user"
 msgstr "Kunde inte autentisera användaren"
 
-#: daemon/verify-crypt.c:117 daemon/verify-crypt.c:137 daemon/verify-pam.c:392
-#: daemon/verify-shadow.c:125 daemon/verify-shadow.c:145
+#: daemon/verify-crypt.c:115 daemon/verify-crypt.c:135 daemon/verify-pam.c:416
+#: daemon/verify-shadow.c:124 daemon/verify-shadow.c:144
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case.  "
@@ -1008,24 +1102,23 @@ msgstr ""
 "Ogiltigt användarnamn eller lösenord. Bokstäver måste skrivas med rätt "
 "skiftläge. Försäkra dig om att Caps Lock inte är på"
 
-#: daemon/verify-crypt.c:151 daemon/verify-pam.c:325
-#: daemon/verify-shadow.c:159
+#: daemon/verify-crypt.c:149 daemon/verify-pam.c:323
+#: daemon/verify-shadow.c:158
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Root får inte logga in på display \"%s\""
 
-#: daemon/verify-crypt.c:153 daemon/verify-shadow.c:161
+#: daemon/verify-crypt.c:151 daemon/verify-shadow.c:160
 msgid "The system administrator is not allowed to login from this screen"
 msgstr "Systemadministratören får inte logga in från denna skärm"
 
-#: daemon/verify-crypt.c:169 daemon/verify-pam.c:343
-#: daemon/verify-shadow.c:177
+#: daemon/verify-crypt.c:167 daemon/verify-shadow.c:176
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Användaren %s får inte logga in"
 
-#: daemon/verify-crypt.c:171 daemon/verify-pam.c:345
-#: daemon/verify-shadow.c:179
+#: daemon/verify-crypt.c:169 daemon/verify-pam.c:353 daemon/verify-pam.c:544
+#: daemon/verify-shadow.c:178
 msgid ""
 "\n"
 "The system administrator has disabled your account."
@@ -1033,26 +1126,50 @@ msgstr ""
 "\n"
 "Systemadministratören har stängt av ditt konto."
 
-#: daemon/verify-pam.c:267 daemon/verify-pam.c:489
+#: daemon/verify-crypt.c:184 daemon/verify-crypt.c:218 daemon/verify-pam.c:371
+#: daemon/verify-pam.c:561 daemon/verify-shadow.c:192
+#: daemon/verify-shadow.c:225
+#, c-format
+msgid "Cannot set user group for %s"
+msgstr "Kan inte ställa in användargruppen för %s"
+
+#: daemon/verify-crypt.c:186 daemon/verify-crypt.c:221 daemon/verify-pam.c:373
+#: daemon/verify-pam.c:563 daemon/verify-shadow.c:194
+#: daemon/verify-shadow.c:228
+msgid ""
+"\n"
+"Cannot set your user group, you will not be able to log in, please contact "
+"your system administrator."
+msgstr ""
+"\n"
+"Kan inte ställa in din användargrupp, du kommer inte att kunna logga in.\n"
+"Kontakta din systemadministratör."
+
+#: daemon/verify-crypt.c:213 daemon/verify-shadow.c:220
+#, c-format
+msgid "Cannot get passwd structure for %s"
+msgstr "Kan inte få tag i passwd-struktur för %s"
+
+#: daemon/verify-pam.c:265 daemon/verify-pam.c:464
 msgid "Can't find /etc/pam.d/gdm!"
 msgstr "Kan inte hitta /etc/pam.d/gdm!"
 
-#: daemon/verify-pam.c:276 daemon/verify-pam.c:496
+#: daemon/verify-pam.c:274 daemon/verify-pam.c:471
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Kan inte ställa in PAM_TTY=%s"
 
-#: daemon/verify-pam.c:285 daemon/verify-pam.c:503
+#: daemon/verify-pam.c:283 daemon/verify-pam.c:478
 #, c-format
 msgid "Can't set PAM_RUSER=%s"
 msgstr "Kan inte ställa in PAM_RUSER=%s"
 
-#: daemon/verify-pam.c:295 daemon/verify-pam.c:511
+#: daemon/verify-pam.c:293 daemon/verify-pam.c:486
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Kan inte ställa in PAM_RHOST=%s"
 
-#: daemon/verify-pam.c:328
+#: daemon/verify-pam.c:326
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1060,90 +1177,134 @@ msgstr ""
 "\n"
 "Systemadministratören får inte logga in från denna skärm"
 
-#: daemon/verify-pam.c:362 daemon/verify-pam.c:553
+#: daemon/verify-pam.c:342
+#, c-format
+msgid "Authentication token change failed for user %s"
+msgstr "Byte av autentiseringselement misslyckades för användaren %s"
+
+#: daemon/verify-pam.c:344
+msgid ""
+"\n"
+"The change of the authentication token failed. Please try again later or "
+"cantact the system administrator."
+msgstr ""
+"\n"
+"Ändringen av autentiseringselementet misslyckades. Försök igen senare eller "
+"kontakta systemadministratören."
+
+#: daemon/verify-pam.c:351 daemon/verify-pam.c:541
+#, c-format
+msgid "User %s no longer permitted to access the system"
+msgstr "Användaren %s är inte längre tillåten att komma åt systemet"
+
+#: daemon/verify-pam.c:357 daemon/verify-pam.c:547
+#, c-format
+msgid "User %s not permitted to gain access at this time"
+msgstr "Användaren %s är för tillfället inte tillåten att komma åt systemet"
+
+#: daemon/verify-pam.c:359
+msgid ""
+"\n"
+"The system administrator has disabled access to the system temporary."
+msgstr ""
+"\n"
+"Systemadministratören har tillfälligt stängt av åtkomst till systemet."
+
+#: daemon/verify-pam.c:364 daemon/verify-pam.c:554
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Kunde inte sätta kontohantering för %s"
 
-#: daemon/verify-pam.c:398
-msgid "Authentication failed"
-msgstr "Autentisering misslyckades"
-
-#: daemon/verify-pam.c:431
-msgid "Cannot setup pam handle with null login and/or display"
-msgstr "Kan inte konfigurera pam-handtag med tom inloggning och/eller display"
-
-#: daemon/verify-pam.c:647
-msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
-msgstr "gdm_verify_check: Kan inte hitta PAM-konfigurationsfilen för gdm"
-
-#: daemon/verify-pam.c:670
+#: daemon/verify-pam.c:383 daemon/verify-pam.c:573
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Kunde inte öppna session för %s"
 
-#: daemon/verify-pam.c:678
+#: daemon/verify-pam.c:391 daemon/verify-pam.c:581
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Kunde inte sätta referenser för %s"
 
-#: daemon/xdmcp.c:239
+#: daemon/verify-pam.c:422
+msgid "Authentication failed"
+msgstr "Autentisering misslyckades"
+
+#: daemon/verify-pam.c:450
+msgid "Cannot setup pam handle with null login and/or display"
+msgstr "Kan inte konfigurera pam-handtag med tom inloggning och/eller display"
+
+#: daemon/verify-pam.c:550
+msgid ""
+"\n"
+"The system administrator has your disabled access to the system temporary."
+msgstr ""
+"\n"
+"Systemadministratören har tillfälligt stängt av din åtkomst till systemet."
+
+#: daemon/verify-pam.c:666
+#, c-format
+msgid "Can't find PAM configuration file for gdm. I've tried %s, %s, %s and %s"
+msgstr ""
+"Kan inte hitta PAM-konfigurationsfilen för gdm. Jag har försökt med %s, %s, %"
+"s och %s"
+
+#: daemon/xdmcp.c:238
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr "gdm_xdmcp_init: Kunde inte hitta servernamnet: %s!"
 
-#: daemon/xdmcp.c:256
+#: daemon/xdmcp.c:255
 msgid "gdm_xdmcp_init: Could not create socket!"
 msgstr "gdm_xdmcp_init: Kunde inte skapa uttag (socket)!"
 
-#: daemon/xdmcp.c:266
+#: daemon/xdmcp.c:265
 msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
 msgstr "gdm_xdmcp_init: Kunde inte binda till XDMCP-uttag (XDMCP-socket)!"
 
-#: daemon/xdmcp.c:322
+#: daemon/xdmcp.c:321
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
 msgstr "gdm_xdmcp_decode: Kunde inte skapa XDMCP-buffert!"
 
-#: daemon/xdmcp.c:327
+#: daemon/xdmcp.c:326
 msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode: Kunde inte läsa XDMCP-huvud!"
 
-#: daemon/xdmcp.c:333
+#: daemon/xdmcp.c:332
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: Ogiltig XDMCP-version!"
 
-#: daemon/xdmcp.c:386
+#: daemon/xdmcp.c:385
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr "gdm_xdmcp_decode_packet: Okänd opcode från värden %s"
 
-#: daemon/xdmcp.c:405
+#: daemon/xdmcp.c:404
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
 msgstr "gdm_xdmcp_handle_query: Kunde inte läsa autentiseringslista från paket"
 
-#: daemon/xdmcp.c:417
+#: daemon/xdmcp.c:416
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: Fel i kontrollsumman"
 
-#: daemon/xdmcp.c:660
+#: daemon/xdmcp.c:659
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr "gdm_xdmcp_handle_forward_query: Kunde inte läsa displayadressen"
 
-#: daemon/xdmcp.c:667
+#: daemon/xdmcp.c:666
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr "gdm_xdmcp_handle_forward_query: Kunde inte läsa display-portnumret"
 
-#: daemon/xdmcp.c:675
+#: daemon/xdmcp.c:674
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Kunde inte läsa autentiseringslista från "
 "paket"
 
-#: daemon/xdmcp.c:691
+#: daemon/xdmcp.c:690
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: Fel i kontrollsumman"
 
-#: daemon/xdmcp.c:697
+#: daemon/xdmcp.c:696
 msgid "gdm_xdmcp_handle_forward_query: Bad address"
 msgstr "gdm_xdmcp_handle_forward_query: Felaktig adress"
 
@@ -1238,29 +1399,29 @@ msgstr "gdm_xdmcp_run: Inget XDMCP-stöd"
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_close: Inget XDMCP-stöd"
 
-#: gui/gdmchooser.c:64
+#: gui/gdmchooser.c:62
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
 msgstr "Vänta: söker igenom det lokala nätverket för XDMCP-värdar..."
 
-#: gui/gdmchooser.c:65
+#: gui/gdmchooser.c:63
 msgid "No serving hosts were found."
 msgstr "Inga betjänande värdar hittades."
 
-#: gui/gdmchooser.c:66
+#: gui/gdmchooser.c:64
 msgid "Choose a host to connect to from the selection below."
 msgstr "Välj en värd att koppla upp mot från alternativen nedan."
 
-#: gui/gdmchooser.c:491
+#: gui/gdmchooser.c:489
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_chooser_parse_config: Ingen konfigurationsfil: %s. Avbryter."
 
-#: gui/gdmchooser.c:674
+#: gui/gdmchooser.c:672
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Kan inte öppna standardvärdikon: %s"
 
-#: gui/gdmchooser.c:683
+#: gui/gdmchooser.c:681
 msgid ""
 "Cannot find the glade interface description\n"
 "file, cannot run gdmchooser.\n"
@@ -1273,7 +1434,7 @@ msgstr ""
 "installation och platsen för filen\n"
 "gdmchooser.glade."
 
-#: gui/gdmchooser.c:704
+#: gui/gdmchooser.c:702
 msgid ""
 "The glade interface description file\n"
 "appears to be corrupted.\n"
@@ -1283,47 +1444,47 @@ msgstr ""
 "verkar vara trasig.\n"
 "Kontrollera din installation."
 
-#: gui/gdmchooser.c:748
+#: gui/gdmchooser.c:746
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Fel vid inställning av HUP-signalhanteraren"
 
-#: gui/gdmchooser.c:751
+#: gui/gdmchooser.c:749
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Fel vid inställning av INT-signalhanteraren"
 
-#: gui/gdmchooser.c:754
+#: gui/gdmchooser.c:752
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Fel vid inställning av TERM-signalhanteraren"
 
-#: gui/gdmchooser.c:762 gui/gdmlogin.c:3769
+#: gui/gdmchooser.c:760 gui/gdmlogin.c:3767
 msgid "Could not set signal mask!"
 msgstr "Kunde inte sätta signalmask!"
 
-#: gui/gdmchooser.c:852
+#: gui/gdmchooser.c:850
 msgid "Socket for xdm communication"
 msgstr "Uttag (socket) för xdm-kommunikation"
 
-#: gui/gdmchooser.c:852
+#: gui/gdmchooser.c:850
 msgid "SOCKET"
 msgstr "UTTAG"
 
-#: gui/gdmchooser.c:852
+#: gui/gdmchooser.c:850
 msgid "Client address to return in response to xdm"
 msgstr "Klientadress att returnera som svar till xdm"
 
-#: gui/gdmchooser.c:852
+#: gui/gdmchooser.c:850
 msgid "ADDRESS"
 msgstr "ADRESS"
 
-#: gui/gdmchooser.c:853
+#: gui/gdmchooser.c:851
 msgid "Connection type to return in response to xdm"
 msgstr "Anslutningstyp att returnera som svar till xdm"
 
-#: gui/gdmchooser.c:853
+#: gui/gdmchooser.c:851
 msgid "TYPE"
 msgstr "TYP"
 
-#: gui/gdmchooser.c:1052
+#: gui/gdmchooser.c:1050
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).\n"
@@ -1372,7 +1533,7 @@ msgstr "Hjälp"
 msgid "Exit the application"
 msgstr "Avsluta programmet"
 
-#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2887
+#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2885
 msgid "Quit"
 msgstr "Avsluta"
 
@@ -1417,7 +1578,7 @@ msgstr "Grundläggande"
 msgid "Expert"
 msgstr "Expert"
 
-#: gui/gdmconfig.c:58 gui/gdmlogin.c:2873
+#: gui/gdmconfig.c:58 gui/gdmlogin.c:2871
 msgid "System"
 msgstr "System"
 
@@ -1433,8 +1594,8 @@ msgid ""
 msgstr ""
 "Denna panel visar de enklare alternativen vid konfiguration av GDM.\n"
 "\n"
-"Om du behöver mer detaljer kan du välja \"expert\" eller "
-"\"systeminställning\" från listan ovan.\n"
+"Om du behöver mer detaljer kan du välja \"expert\" eller \"systeminställning"
+"\" från listan ovan.\n"
 "\n"
 "Detta kommer att visa en del av de mer avancerade GDM-inställningarna som "
 "sällan behöver ändras."
@@ -2116,8 +2277,8 @@ msgstr "Ansiktsbläddrare"
 
 #: gui/gdmconfig-strings.c:93
 msgid ""
-"Show a browser of user face images. The users can put their picture in "
-"~/.gnome/photo"
+"Show a browser of user face images. The users can put their picture in ~/."
+"gnome/photo"
 msgstr ""
 "Visa en bläddrare med bilder på användaransikten. Användarna kan lägga sina "
 "bilder i ~/.gnome/photo"
@@ -2614,7 +2775,7 @@ msgid "This is the standard X server to run when we are not told otherwise."
 msgstr ""
 "Detta är den standard-X-server som körs då vi inte är tillsagda något annat."
 
-#: gui/gdmconfig-strings.c:207 gui/gdmlogin.c:62
+#: gui/gdmconfig-strings.c:207 gui/gdmlogin.c:60
 msgid "Failsafe"
 msgstr "Felsäker"
 
@@ -2628,9 +2789,9 @@ msgid ""
 "is either empty or also didn't take.  This will run an X setup program "
 "defined below."
 msgstr ""
-"Ett skript att köra då X-servern hela tiden kraschar och den felsäkra "
-"X-servern antingen är tom eller inte hade någon effekt. Detta kommer att "
-"köra det X-inställningsprogram som anges nedan."
+"Ett skript att köra då X-servern hela tiden kraschar och den felsäkra X-"
+"servern antingen är tom eller inte hade någon effekt. Detta kommer att köra "
+"det X-inställningsprogram som anges nedan."
 
 #: gui/gdmconfig-strings.c:210
 msgid "Failsafe X server:"
@@ -2668,7 +2829,7 @@ msgstr "Tillgängliga sessioner"
 msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
 msgstr "Visa Gnome-väljarsessionen om en session med namnet \"Gnome\" finns"
 
-#: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:66 gui/gdmlogin.c:1417
+#: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:64 gui/gdmlogin.c:1415
 msgid "Gnome Chooser"
 msgstr "Gnome-väljare"
 
@@ -2892,7 +3053,7 @@ msgstr "Extra argument:"
 msgid "Custom command line:"
 msgstr "Anpassad kommandorad:"
 
-#: gui/gdmconfig-strings.c:277 gui/gdmlogin.c:1817
+#: gui/gdmconfig-strings.c:277 gui/gdmlogin.c:1815
 msgid "Name: "
 msgstr "Namn: "
 
@@ -2959,8 +3120,8 @@ msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
-"Du verkar inte ha den autentisering som behövs för denna åtgärd. Din "
-".Xauthority-fil är kanske inte korrekt konfigurerad."
+"Du verkar inte ha den autentisering som behövs för denna åtgärd. Din ."
+"Xauthority-fil är kanske inte korrekt konfigurerad."
 
 #: gui/gdmflexiserver.c:606
 msgid ""
@@ -3230,53 +3391,53 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Ö"
 
-#: gui/gdmlogin.c:60
+#: gui/gdmlogin.c:58
 msgid "AnotherLevel"
 msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:61 gui/gdmlogin.c:1772 gui/gdmlogin.c:1794
+#: gui/gdmlogin.c:59 gui/gdmlogin.c:1770 gui/gdmlogin.c:1792
 msgid "Default"
 msgstr "Standard"
 
-#: gui/gdmlogin.c:63
+#: gui/gdmlogin.c:61
 msgid "Gnome"
 msgstr "Gnome"
 
-#: gui/gdmlogin.c:64
+#: gui/gdmlogin.c:62
 msgid "KDE"
 msgstr "KDE"
 
-#: gui/gdmlogin.c:65
+#: gui/gdmlogin.c:63
 msgid "XSession"
 msgstr "XSession"
 
-#: gui/gdmlogin.c:67
+#: gui/gdmlogin.c:65
 msgid "Last"
 msgstr "Senaste"
 
-#: gui/gdmlogin.c:198
+#: gui/gdmlogin.c:196
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Användaren %s kommer att logga in om %d sekunder"
 
-#: gui/gdmlogin.c:448
+#: gui/gdmlogin.c:446
 msgid ""
 "Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr ""
 "Dubbelklicka här för att förstora inloggningsfönstret så att du kan logga in."
 
-#: gui/gdmlogin.c:528 gui/gdmlogin.c:534 gui/gdmlogin.c:541
+#: gui/gdmlogin.c:526 gui/gdmlogin.c:532 gui/gdmlogin.c:539
 #, c-format
 msgid "Welcome to %s"
 msgstr "Välkommen till %s"
 
-#: gui/gdmlogin.c:539
+#: gui/gdmlogin.c:537
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Strängen är för lång!"
 
-#: gui/gdmlogin.c:678
+#: gui/gdmlogin.c:676
 msgid ""
 "Could not fork a new process!\n"
 "\n"
@@ -3286,38 +3447,38 @@ msgstr ""
 "\n"
 "Du kommer troligtvis inte att kunna logga in heller."
 
-#: gui/gdmlogin.c:725
+#: gui/gdmlogin.c:723
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Vill du verkligen starta om datorn?"
 
-#: gui/gdmlogin.c:737
+#: gui/gdmlogin.c:735
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Är du säker på att du vill stänga av datorn?"
 
-#: gui/gdmlogin.c:748
+#: gui/gdmlogin.c:746
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Vill du verkligen försätta datorn i viloläge?"
 
-#: gui/gdmlogin.c:762
+#: gui/gdmlogin.c:760
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
 "gdm_login_parse_config: Ingen konfigurationsfil: %s. Använder standardvärden."
 
-#: gui/gdmlogin.c:828
+#: gui/gdmlogin.c:826
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr ""
 "TimedLoginDelay var mindre än 5. Jag kommer helt enkelt bara att använda 5."
 
-#: gui/gdmlogin.c:890 gui/gdmlogin.c:1465
+#: gui/gdmlogin.c:888 gui/gdmlogin.c:1463
 msgid "Failsafe Gnome"
 msgstr "Felsäker Gnome"
 
-#: gui/gdmlogin.c:892 gui/gdmlogin.c:1490
+#: gui/gdmlogin.c:890 gui/gdmlogin.c:1488
 msgid "Failsafe xterm"
 msgstr "Felsäker xterm"
 
-#: gui/gdmlogin.c:938
+#: gui/gdmlogin.c:936
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -3326,7 +3487,7 @@ msgstr ""
 "Den sessionstyp som du föredrar, %s, finns inte installerad på datorn.\n"
 "Vill du ändra så att %s blir standard för framtida sessioner?"
 
-#: gui/gdmlogin.c:963 gui/gdmlogin.c:1051
+#: gui/gdmlogin.c:961 gui/gdmlogin.c:1049
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -3340,7 +3501,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:979
+#: gui/gdmlogin.c:977
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -3353,28 +3514,28 @@ msgstr ""
 "sessioner kör du verktyget \"switchdesk\"\n"
 "(System->Verktyg för skrivbordsbyte i panelmenyn)."
 
-#: gui/gdmlogin.c:1274
+#: gui/gdmlogin.c:1272
 #, c-format
 msgid "%s session selected"
 msgstr "Sessionen %s är vald"
 
-#: gui/gdmlogin.c:1307
+#: gui/gdmlogin.c:1305
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Logga in med den session som du använde senast du loggade in"
 
-#: gui/gdmlogin.c:1320
+#: gui/gdmlogin.c:1318
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr ""
 "gdm_login_session_init: Kunde inte hitta skriptkatalogen för sessioner!"
 
-#: gui/gdmlogin.c:1405
+#: gui/gdmlogin.c:1403
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr ""
 "Denna session kommer att logga in dig direkt i GNOME, in i din aktuella "
 "session."
 
-#: gui/gdmlogin.c:1420
+#: gui/gdmlogin.c:1418
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
@@ -3382,11 +3543,11 @@ msgstr ""
 "Denna session kommer att logga in dig i GNOME, och kommer att låta dig välja "
 "vilken av GNOME-sessionerna som du vill använda."
 
-#: gui/gdmlogin.c:1455
+#: gui/gdmlogin.c:1453
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Hoppsan, det finns inget i sessionskatalogen."
 
-#: gui/gdmlogin.c:1467
+#: gui/gdmlogin.c:1465
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -3396,7 +3557,7 @@ msgstr ""
 "uppstartsskript kommer att läsas och det bör endast användas om du inte kan "
 "logga in på något annat sätt. GNOME kommer att använda standardsessionen."
 
-#: gui/gdmlogin.c:1492
+#: gui/gdmlogin.c:1490
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3407,126 +3568,126 @@ msgstr ""
 "kan logga in på något annat sätt. För att avsluta terminalen skriver du "
 "\"exit\"."
 
-#: gui/gdmlogin.c:1513
+#: gui/gdmlogin.c:1511
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 "Ingen länk för standardsessionen kunde hittas. Använder Felsäker GNOME.\n"
 
-#: gui/gdmlogin.c:1553
+#: gui/gdmlogin.c:1551
 #, c-format
 msgid "%s language selected"
 msgstr "Språket %s har valts"
 
-#: gui/gdmlogin.c:1591
+#: gui/gdmlogin.c:1589
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "Logga in med det språk som du använde senast du loggade in"
 
-#: gui/gdmlogin.c:1612
+#: gui/gdmlogin.c:1610
 msgid "Other"
 msgstr "Annat"
 
-#: gui/gdmlogin.c:1732 gui/gdmlogin.c:1741
+#: gui/gdmlogin.c:1730 gui/gdmlogin.c:1739
 msgid "Select GNOME session"
 msgstr "Välj GNOME-session"
 
-#: gui/gdmlogin.c:1808
+#: gui/gdmlogin.c:1806
 msgid "Create new session"
 msgstr "Skapa ny session"
 
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
-#: gui/gdmlogin.c:1838
+#: gui/gdmlogin.c:1836
 msgid "Remember this setting"
 msgstr "Kom ihåg denna inställning"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:2168
+#: gui/gdmlogin.c:2166
 msgid "Please insert 25 cents to log in."
 msgstr "Lägg i en krona för att logga in."
 
-#: gui/gdmlogin.c:2522
+#: gui/gdmlogin.c:2520
 msgid "GNOME Desktop Manager"
 msgstr "GNOME-skrivbordshanteraren"
 
-#: gui/gdmlogin.c:2530
+#: gui/gdmlogin.c:2528
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Kan inte öppna ikonfilen: %s. Deaktiverar minimerafunktionen!"
 
-#: gui/gdmlogin.c:2552
+#: gui/gdmlogin.c:2550
 msgid "Iconify the login window"
 msgstr "Förminska inloggningsfönstret"
 
-#: gui/gdmlogin.c:2612
+#: gui/gdmlogin.c:2610
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H.%M"
 
-#: gui/gdmlogin.c:2619
+#: gui/gdmlogin.c:2617
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a %d %b, %H.%M"
 
-#: gui/gdmlogin.c:2678
+#: gui/gdmlogin.c:2676
 msgid "Finger"
 msgstr "Finger"
 
-#: gui/gdmlogin.c:2748
+#: gui/gdmlogin.c:2746
 msgid "GDM Login"
 msgstr "GDM-inloggning"
 
-#: gui/gdmlogin.c:2794
+#: gui/gdmlogin.c:2792
 msgid "Session"
 msgstr "Session"
 
-#: gui/gdmlogin.c:2805
+#: gui/gdmlogin.c:2803
 msgid "Language"
 msgstr "Språk"
 
-#: gui/gdmlogin.c:2819
+#: gui/gdmlogin.c:2817
 msgid "Configure..."
 msgstr "Konfigurera..."
 
-#: gui/gdmlogin.c:2826
+#: gui/gdmlogin.c:2824
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "Konfigurera GDM (denna inloggningshanterare). Detta kommer att kräva "
 "rootlösenordet."
 
-#: gui/gdmlogin.c:2833
+#: gui/gdmlogin.c:2831
 msgid "Reboot..."
 msgstr "Starta om..."
 
-#: gui/gdmlogin.c:2840
+#: gui/gdmlogin.c:2838
 msgid "Reboot your computer"
 msgstr "Starta om din dator"
 
-#: gui/gdmlogin.c:2846
+#: gui/gdmlogin.c:2844
 msgid "Shut down..."
 msgstr "Stäng av..."
 
-#: gui/gdmlogin.c:2853
+#: gui/gdmlogin.c:2851
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Stäng ner datorn så att du kan slå av strömmen."
 
-#: gui/gdmlogin.c:2860
+#: gui/gdmlogin.c:2858
 msgid "Suspend..."
 msgstr "Försätt i viloläge..."
 
-#: gui/gdmlogin.c:2867
+#: gui/gdmlogin.c:2865
 msgid "Suspend your computer"
 msgstr "Försätt din dator i viloläge"
 
-#: gui/gdmlogin.c:2889
+#: gui/gdmlogin.c:2887
 msgid "Disconnect"
 msgstr "Koppla från"
 
-#: gui/gdmlogin.c:3373
+#: gui/gdmlogin.c:3371
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Kan inte öppna DefaultImage: %s. Deaktiverar ansiktsbläddraren!"
 
-#: gui/gdmlogin.c:3636 gui/gdmlogin.c:3664
+#: gui/gdmlogin.c:3634 gui/gdmlogin.c:3662
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3537,11 +3698,11 @@ msgstr ""
 "Du har troligtvis nyss uppgraderat gdm.\n"
 "Starta om gdm-demonen eller datorn."
 
-#: gui/gdmlogin.c:3671 gui/gdmlogin.c:3709
+#: gui/gdmlogin.c:3669 gui/gdmlogin.c:3707
 msgid "Reboot"
 msgstr "Starta om"
 
-#: gui/gdmlogin.c:3701
+#: gui/gdmlogin.c:3699
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3552,27 +3713,27 @@ msgstr ""
 "Du har troligtvis nyss uppgraderat gdm.\n"
 "Starta om gdm-demonen eller datorn."
 
-#: gui/gdmlogin.c:3708
+#: gui/gdmlogin.c:3706
 msgid "Restart"
 msgstr "Starta om gdm"
 
-#: gui/gdmlogin.c:3746
+#: gui/gdmlogin.c:3744
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Fel vid inställning av HUP-signalhanteraren"
 
-#: gui/gdmlogin.c:3749
+#: gui/gdmlogin.c:3747
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Fel vid inställning av INT-signalhanteraren"
 
-#: gui/gdmlogin.c:3752
+#: gui/gdmlogin.c:3750
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Fel vid inställning av TERM-signalhanteraren"
 
-#: gui/gdmlogin.c:3760
+#: gui/gdmlogin.c:3758
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Fel vid inställning av CHLD-signalhanteraren"
 
-#: gui/gdmlogin.c:3825
+#: gui/gdmlogin.c:3823
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -3585,7 +3746,7 @@ msgstr ""
 "använda, men du bör logga in och korrigera gdm-\n"
 "konfigurationen."
 
-#: gui/gdmlogin.c:3841
+#: gui/gdmlogin.c:3839
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -3595,7 +3756,7 @@ msgstr ""
 "rad för inloggningsfönstret, och därför körde jag\n"
 "standardkommandot. Fixa din konfiguration."
 
-#: gui/gdmlogin.c:3858
+#: gui/gdmlogin.c:3856
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -3879,6 +4040,38 @@ msgstr ""
 "Vill du att jag ska prova att köra muskonfigurationsprogrammet? Observera "
 "att du kommer att behöva rootlösenordet för detta."
 
+#~ msgid ""
+#~ "Xdmcp is disabled and gdm cannot find any local server to start.  "
+#~ "Aborting!  Please correct the configuration %s and restart gdm."
+#~ msgstr ""
+#~ "Xdmcp är deaktiverat och gdm kan inte hitta några lokala servrar att "
+#~ "starta. Avbryter. Rätta till konfigurationen %s och starta om gdm."
+
+#~ msgid ""
+#~ "Server Authorization directory (daemon/ServAuthDir) is set to %s but has "
+#~ "the wrong permissions, it should have permissions of 0750. Please correct "
+#~ "the permissions or the gdm configuration %s and restart gdm."
+#~ msgstr ""
+#~ "Serverauktoriseringskatalogen (demon/ServAuthDir) är inställd till %s men "
+#~ "har fel rättigheter, den borde ha rättigheterna 0750. Rätta till "
+#~ "rättigheterna eller gdm-konfigurationen %s och starta om gdm."
+
+#~ msgid ""
+#~ "\n"
+#~ "The change of the authentication token failed. Please try again later or "
+#~ "contact the system administrator."
+#~ msgstr ""
+#~ "\n"
+#~ "Ändringen av autentiseringselementet misslyckades. Försök igen senare "
+#~ "eller kontakta systemadministratören."
+
+#~ msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
+#~ msgstr ""
+#~ "gdm_slave_session_start: initgroups() misslyckades för %s. Avbryter."
+
+#~ msgid "%sWelcome to %s%s"
+#~ msgstr "%sVälkommen till %s%s"
+
 #~ msgid "Do direct query insted of indirect (chooser)"
 #~ msgstr "Gör direkt undersökning istället för indirekt (väljare)"
 
@@ -3889,7 +4082,8 @@ msgstr ""
 #~ msgstr "X-kongurationsbinärer att prova: "
 
 #~ msgid ""
-#~ "A list of X setup programs to try for the above script, separated by spaces"
+#~ "A list of X setup programs to try for the above script, separated by "
+#~ "spaces"
 #~ msgstr ""
 #~ "En lista med X-inställningsprogram att prova för ovanstående skript, "
 #~ "åtskilda med blanksteg"
@@ -3898,11 +4092,11 @@ msgstr ""
 #~ msgstr "Felaktig inloggning"
 
 #~ msgid ""
-#~ "You do not seem to have authentication needed for this operation.  Perhaps "
-#~ "your .Xauthority file is not set up correctly."
+#~ "You do not seem to have authentication needed for this operation.  "
+#~ "Perhaps your .Xauthority file is not set up correctly."
 #~ msgstr ""
-#~ "Du verkar inte ha den autentisering som behövs för denna åtgärd. Din "
-#~ ".Xauthority-fil är kanske inte korrekt konfigurerad."
+#~ "Du verkar inte ha den autentisering som behövs för denna åtgärd. Din ."
+#~ "Xauthority-fil är kanske inte korrekt konfigurerad."
 
 #~ msgid "gdm_slave_chooser: Couldn't set groupid to %d"
 #~ msgstr "gdm_slave_chooser: Kunde inte sätta grupp-id till %d"
