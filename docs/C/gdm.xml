@@ -3052,6 +3052,32 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+
+	<varlistentry>
+	  <term>--version</term>
+	  <listitem>
+	    <para>
+	      Print the version of the GDM daemon.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>--wait-for-go</term>
+	  <listitem>
+	    <para>
+	      If started with this option, gdm will init, but only start the
+	      first local display and then wait for a GO message in the fifo
+	      protocol.  No greeter will be shown until the GO message is
+	      sent.  Also flexiserver requests will be denied and XDMCP will
+	      not be started until GO is given.  This is useful for
+	      initialization scripts which wish to start X early, but where
+	      you don't yet want the user to start logging in.  So the script
+	      would send the GO to the fifo once it is ready and GDM will
+	      then continue.  This functionality was added in version 2.4.90.0.
+	    </para>
+	  </listitem>
+	</varlistentry>
       </variablelist>
 
     </sect2>

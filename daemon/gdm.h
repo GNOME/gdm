@@ -513,6 +513,10 @@ void		gdm_final_cleanup	(void);
 #define GDM_SOP_START_NEXT_LOCAL "START_NEXT_LOCAL" /* no arguments */
 #define GDM_SOP_HUP_ALL_GREETERS "HUP_ALL_GREETERS" /* no arguments */
 
+/* stop waiting for this and go on with your life, useful with
+   the --wait-for-go command line option */
+#define GDM_SOP_GO "GO" /* no arguments */
+
 /* sometimes we can't do a syslog so we tell the main daemon */
 #define GDM_SOP_SYSLOG "SYSLOG" /* <pid> <type> <message> */
 
@@ -553,6 +557,7 @@ void		gdm_final_cleanup	(void);
 /* commands */
 #define GDM_NOTIFY_DIRTY_SERVERS "DIRTY_SERVERS"
 #define GDM_NOTIFY_SOFT_RESTART_SERVERS "SOFT_RESTART_SERVERS"
+#define GDM_NOTIFY_GO "GO"
 
 /* Ack for a slave message */
 /* Note that an extra response can follow an 'ack' */

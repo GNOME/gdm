@@ -128,6 +128,9 @@ extern int gdm_normal_runlevel;
 
 extern int slave_fifo_pipe_fd; /* the slavepipe (like fifo) connection, this is the write end */
 
+/* wait for a GO in the SOP protocol */
+extern gboolean gdm_wait_for_go;
+
 /* Configuration option variables */
 extern gchar *GdmUser;
 extern uid_t GdmUserId;
@@ -1238,6 +1241,19 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_sleep_no_signal (1+openretries*2);
 	    openretries++;
 	}
+    }
+
+    /* Really this will only be useful for the first local server,
+       since that's the only time this can really be on */
+    while G_UNLIKELY (gdm_wait_for_go) {
+	    struct timeval tv;
+	    /* Wait 1 second. */
+	    tv.tv_sec = 1;
+	    tv.tv_usec = 0;
+	    select (0, NULL, NULL, NULL, &tv);
+	    /* don't want to use sleep since we're using alarm
+	       for pinging */
+	    check_notifies_now ();
     }
 
     /* Set the busy cursor */
@@ -4516,6 +4532,8 @@ gdm_slave_handle_usr2_message (void)
 						remanage_asap = TRUE;
 					}
 				}
+			} else if (strcmp (&s[1], GDM_NOTIFY_GO) == 0) {
+				gdm_wait_for_go = FALSE;
 			}
 		}
 	}

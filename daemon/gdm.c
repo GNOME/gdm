@@ -85,6 +85,8 @@ pid_t extra_process = 0;	/* An extra process.  Used for quickie
 int extra_status = 0;		/* Last status from the last extra process */
 pid_t gdm_main_pid = 0;		/* PID of the main daemon */
 
+gboolean gdm_wait_for_go = FALSE; /* wait for a GO in the fifo */
+
 gboolean print_version = FALSE; /* print version number and quit */
 gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
 gboolean no_daemon = FALSE;	/* Do not daemonize */
@@ -1726,7 +1728,9 @@ struct poptOption options [] = {
 	{ "preserve-ld-vars", '\0', POPT_ARG_NONE,
 	  &preserve_ld_vars, 0, N_("Preserve LD_* variables"), NULL },
 	{ "version", '\0', POPT_ARG_NONE,
-	  &print_version, 0, NULL, NULL },
+	  &print_version, 0, N_("Print GDM version"), NULL },
+	{ "wait-for-go", '\0', POPT_ARG_NONE,
+	  &gdm_wait_for_go, 0, N_("Start the first X server but then halt until we get a GO in the fifo"), NULL },
         POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
 };
@@ -2038,7 +2042,7 @@ main (int argc, char *argv[])
     gdm_debug ("gdm_main: Here we go...");
 
     /* Init XDMCP if applicable */
-    if (GdmXdmcp)
+    if (GdmXdmcp && ! gdm_wait_for_go)
 	gdm_xdmcp_init();
 
     create_connections ();
@@ -2050,7 +2054,7 @@ main (int argc, char *argv[])
     gdm_start_first_unborn_local (0 /* delay */);
 
     /* Accept remote connections */
-    if (GdmXdmcp) {
+    if (GdmXdmcp && ! gdm_wait_for_go) {
 	gdm_debug ("Accepting XDMCP connections...");
 	gdm_xdmcp_run();
     }
@@ -2601,6 +2605,21 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			else if (d->chooserpid > 1)
 				kill (d->chooserpid, SIGHUP);
 		}
+	} else if (strcmp (msg, GDM_SOP_GO) == 0) {
+		GSList *li;
+		gboolean old_wait = gdm_wait_for_go;
+		gdm_wait_for_go = FALSE;
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *d = li->data;
+			send_slave_command (d, GDM_NOTIFY_GO);
+		}
+		/* Init XDMCP if applicable */
+		if (old_wait && GdmXdmcp) {
+			if (gdm_xdmcp_init()) {
+				gdm_debug ("Accepting XDMCP connections...");
+				gdm_xdmcp_run();
+			}
+		}
 	} else if (strncmp (msg, GDM_SOP_WRITE_X_SERVERS " ",
 		            strlen (GDM_SOP_WRITE_X_SERVERS " ")) == 0) {
 		GdmDisplay *d;
@@ -2844,6 +2863,12 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	uid_t server_uid = 0;
 
 	gdm_debug ("server: '%s'", server);
+
+	if (gdm_wait_for_go) {
+		gdm_connection_write (conn,
+				      "ERROR 1 No more flexi servers\n");
+		return;
+	}
 
 	if (type == TYPE_FLEXI_XNEST) {
 		gboolean authorized = TRUE;
@@ -3191,9 +3216,12 @@ update_config (const char *key)
 		GdmXdmcp = val;
 
 		if (GdmXdmcp) {
-			if (gdm_xdmcp_init ())
+			if (gdm_xdmcp_init ()) {
+				gdm_debug ("Accepting XDMCP connections...");
 				gdm_xdmcp_run ();
+			}
 		} else {
+			gdm_debug ("Turning off XDMCP connections...");
 			gdm_xdmcp_close ();
 		}
 
