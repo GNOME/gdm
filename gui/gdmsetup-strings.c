@@ -40,7 +40,10 @@ gchar *s = N_("Pick a color");
 gchar *s = N_("Background");
 gchar *s = N_("Standard greeter");
 gchar *s = N_("<b>Preview:</b>");
-gchar *s = N_("No preview available");
+gchar *s = N_("No screenshot available");
+gchar *s = N_("<b>Author:</b> Nobody\n"
+              "<b>Copyright:</b> (c) 2002 Nobody\n"
+              "<b>Description:</b> Nothing");
 gchar *s = N_("_Install new theme");
 gchar *s = N_("Theme");
 gchar *s = N_("Graphical greeter");

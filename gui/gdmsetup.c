@@ -22,6 +22,7 @@
 #include <glade/glade.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <dirent.h>
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
@@ -410,12 +411,128 @@ setup_greeter_toggle (const char *name,
 }
 
 static gboolean
-greeter_entry_timeout (GtkWidget *entry)
+greeter_editable_timeout (GtkWidget *editable)
+{
+	const char *key = g_object_get_data (G_OBJECT (editable), "key");
+	char *text;
+
+	text = gtk_editable_get_chars (GTK_EDITABLE (editable), 0, -1);
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	gnome_config_set_string (key, ve_sure_string (text));
+	gnome_config_pop_prefix ();
+
+	g_free (text);
+
+	gnome_config_sync ();
+
+	update_greeters ();
+
+	return FALSE;
+}
+
+static void
+greeter_editable_changed (GtkWidget *toggle)
+{
+	run_timeout (toggle, 500, greeter_editable_timeout);
+}
+
+static void
+setup_greeter_editable (const char *name,
+			const char *key)
+{
+	GtkWidget *editable = glade_helper_get (xml, name, GTK_TYPE_EDITABLE);
+	char *val;
+	int pos;
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	val = gnome_config_get_string (key);
+	gnome_config_pop_prefix ();
+
+	g_object_set_data_full (G_OBJECT (editable),
+				"key", g_strdup (key),
+				(GDestroyNotify) g_free);
+
+	/* FIXME: hmm? */
+	/* gtk_editable_delete_text (GTK_EDITABLE (editable), 0, -1);
+	pos = 0;
+	gtk_editable_insert_text (GTK_EDITABLE (editable),
+				  ve_sure_string (val), -1,
+				  &pos); */
+
+	g_signal_connect (G_OBJECT (editable), "changed",
+			  G_CALLBACK (greeter_editable_changed), NULL);
+	g_signal_connect (G_OBJECT (editable), "destroy",
+			  G_CALLBACK (timeout_remove), NULL);
+
+	g_free (val);
+}
+
+static void
+whack_translations (const char *fullkey)
+{
+	char *section, *key, *p, *k, *v;
+	void *iterator;
+	GSList *to_clean, *li;
+
+	section = g_strdup (fullkey);
+	p = strchr (section, '/');
+	if (p == NULL) {
+		g_free (section);
+		return;
+	}
+	*p = '\0';
+	key = p+1;
+	p = strchr (key, '=');
+	if (p != NULL)
+		*p = '\0';
+
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+
+	to_clean = NULL;
+	iterator = gnome_config_init_iterator (section);
+	while ((iterator = gnome_config_iterator_next (iterator, &k, &v))
+	       != NULL) {
+		p = strchr (k, '[');
+		if (p != NULL) {
+			*p = '\0';
+			if (strcmp (key, k) == 0) {
+				*p = '[';
+				to_clean = g_slist_prepend
+					(to_clean,
+					 g_strconcat (section, "/", k, NULL));
+			}
+		}
+		g_free (k);
+		g_free (v);
+	}
+
+	for (li = to_clean; li != NULL; li = li->next) {
+		char *key = li->data;
+		li->data = NULL;
+
+		gnome_config_clean_key (key);
+
+		g_free (key);
+	}
+
+	g_slist_free (to_clean);
+
+	gnome_config_pop_prefix ();
+
+	g_free (section);
+}
+
+static gboolean
+greeter_entry_untranslate_timeout (GtkWidget *entry)
 {
 	const char *key = g_object_get_data (G_OBJECT (entry), "key");
 	const char *text;
 
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
+
+	whack_translations (key);
 
 	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 	gnome_config_set_string (key, ve_sure_string (text));
@@ -429,20 +546,20 @@ greeter_entry_timeout (GtkWidget *entry)
 }
 
 static void
-greeter_entry_changed (GtkWidget *toggle)
+greeter_entry_untranslate_changed (GtkWidget *toggle)
 {
-	run_timeout (toggle, 500, greeter_entry_timeout);
+	run_timeout (toggle, 500, greeter_entry_untranslate_timeout);
 }
 
 static void
-setup_greeter_entry (const char *name,
-		     const char *key)
+setup_greeter_untranslate_entry (const char *name,
+				 const char *key)
 {
 	GtkWidget *entry = glade_helper_get (xml, name, GTK_TYPE_ENTRY);
 	char *val;
 
 	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_string (key);
+	val = gnome_config_get_translated_string (key);
 	gnome_config_pop_prefix ();
 
 	g_object_set_data_full (G_OBJECT (entry),
@@ -452,7 +569,8 @@ setup_greeter_entry (const char *name,
 	gtk_entry_set_text (GTK_ENTRY (entry), ve_sure_string (val));
 
 	g_signal_connect (G_OBJECT (entry), "changed",
-			  G_CALLBACK (greeter_entry_changed), NULL);
+			  G_CALLBACK (greeter_entry_untranslate_changed),
+			  NULL);
 	g_signal_connect (G_OBJECT (entry), "destroy",
 			  G_CALLBACK (timeout_remove), NULL);
 
@@ -615,6 +733,252 @@ setup_background_support (void)
 	background_toggled ();
 }
 
+enum {
+	THEME_COLUMN_FILE,
+	THEME_COLUMN_NAME,
+	THEME_COLUMN_DESCRIPTION,
+	THEME_COLUMN_AUTHOR,
+	THEME_COLUMN_COPYRIGHT,
+	THEME_COLUMN_SCREENSHOT,
+	THEME_NUM_COLUMNS
+};
+
+static char *
+get_theme_dir (void)
+{
+	char *theme_dir;
+
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	theme_dir = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME);
+	gnome_config_pop_prefix ();
+
+	if (theme_dir == NULL ||
+	    theme_dir[0] == '\0' ||
+	    access (theme_dir, R_OK) != 0) {
+		g_free (theme_dir);
+		theme_dir = g_strdup (EXPANDED_DATADIR "/gdm/themes/");
+	}
+
+	return theme_dir;
+}
+
+static void
+selection_changed (GtkTreeSelection *selection,
+		   GtkWidget        *dialog)
+{
+        GtkWidget *label = glade_helper_get (xml, "gg_desc_label",
+					     GTK_TYPE_LABEL);
+        GtkWidget *preview = glade_helper_get (xml, "gg_theme_preview",
+					       GTK_TYPE_IMAGE);
+        GtkWidget *no_preview = glade_helper_get (xml, "gg_theme_no_preview",
+						  GTK_TYPE_WIDGET);
+        char *author, *copyright, *desc, *screenshot;
+        char *str;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GValue value = {0, };
+
+	if ( ! gtk_tree_selection_get_selected (selection, &model, &iter))
+		return;
+
+	gtk_tree_model_get_value (model, &iter,
+				  THEME_COLUMN_AUTHOR,
+				  &value);
+	author = g_strdup (g_value_get_string (&value));
+	g_value_unset (&value);
+
+	gtk_tree_model_get_value (model, &iter,
+				  THEME_COLUMN_COPYRIGHT,
+				  &value);
+	copyright = g_strdup (g_value_get_string (&value));
+	g_value_unset (&value);
+
+	gtk_tree_model_get_value (model, &iter,
+				  THEME_COLUMN_DESCRIPTION,
+				  &value);
+	desc = g_strdup (g_value_get_string (&value));
+	g_value_unset (&value);
+
+	str = g_strdup_printf (_("<b>Author:</b> %s\n"
+				 "<b>Copyright:</b> %s\n"
+				 "<b>Description:</b> %s"),
+			       ve_sure_string (author),
+			       ve_sure_string (copyright),
+			       ve_sure_string (desc));
+	g_free (author);
+	g_free (copyright);
+	g_free (desc);
+
+	gtk_label_set_markup (GTK_LABEL (label), str);
+	g_free (str);
+
+	gtk_tree_model_get_value (model, &iter,
+				  THEME_COLUMN_SCREENSHOT,
+				  &value);
+	screenshot = g_strdup (g_value_get_string (&value));
+	g_value_unset (&value);
+
+	gtk_widget_hide (preview);
+	gtk_widget_show (no_preview);
+
+	if ( ! ve_string_empty (screenshot) &&
+	    access (screenshot, R_OK) == 0) {
+		GdkPixbuf *pb;
+		pb = gdk_pixbuf_new_from_file (screenshot, NULL);
+		if (pb != NULL) {
+			if (gdk_pixbuf_get_width (pb) > 200 ||
+			    gdk_pixbuf_get_height (pb) > 150) {
+				GdkPixbuf *pb2;
+				pb2 = gdk_pixbuf_scale_simple
+					(pb, 200, 150,
+					 GDK_INTERP_BILINEAR);
+				g_object_unref (G_OBJECT (pb));
+				pb = pb2;
+			}
+
+			gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pb);
+			g_object_unref (G_OBJECT (pb));
+
+			gtk_widget_show (preview);
+			gtk_widget_hide (no_preview);
+		}
+	}
+
+	g_free (screenshot);
+
+	/* FIXME: save this choice */
+}
+
+static void
+read_themes (GtkListStore *store, const char *theme_dir, DIR *dir)
+{
+	struct dirent *dent;
+
+	while ((dent = readdir (dir)) != NULL) {
+		char *n, *key, *file, *name, *desc, *author, *copyright, *ss;
+		char *full;
+		GtkTreeIter iter;
+		if (dent->d_name[0] == '.')
+			continue;
+		n = g_strconcat (theme_dir, "/", dent->d_name,
+				 "/GdmGreeterTheme.info", NULL);
+		if (access (n, R_OK) != 0) {
+			g_free (n);
+			continue;
+		}
+
+		key = g_strconcat ("=", n, "=/GdmGreeterTheme/", NULL);
+		gnome_config_push_prefix (key);
+		g_free (key);
+
+		file = gnome_config_get_translated_string ("Greeter");
+		if (ve_string_empty (file)) {
+			g_free (file);
+			file = g_strconcat (dent->d_name, ".xml");
+		}
+
+		full = g_strconcat (theme_dir, "/", dent->d_name,
+				    "/", file, NULL);
+		if (access (full, R_OK) != 0) {
+			g_free (file);
+			g_free (full);
+			g_free (n);
+			gnome_config_pop_prefix ();
+			continue;
+		}
+		g_free (full);
+
+		name = gnome_config_get_translated_string ("Name");
+		if (ve_string_empty (name)) {
+			g_free (name);
+			name = g_strdup (dent->d_name);
+		}
+		desc = gnome_config_get_translated_string ("Description");
+		author = gnome_config_get_translated_string ("Author");
+		copyright = gnome_config_get_translated_string ("Copyright");
+		ss = gnome_config_get_translated_string ("Screenshot");
+		gnome_config_pop_prefix ();
+
+		if (ss != NULL)
+			full = g_strconcat (theme_dir, "/", dent->d_name,
+					    "/", ss, NULL);
+		else
+			full = NULL;
+
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
+				    THEME_COLUMN_FILE, file,
+				    THEME_COLUMN_NAME, name,
+				    THEME_COLUMN_DESCRIPTION, desc,
+				    THEME_COLUMN_AUTHOR, author,
+				    THEME_COLUMN_COPYRIGHT, copyright,
+				    THEME_COLUMN_SCREENSHOT, full,
+				    -1);
+
+		g_free (file);
+		g_free (name);
+		g_free (desc);
+		g_free (author);
+		g_free (copyright);
+		g_free (ss);
+		g_free (full);
+		g_free (n);
+	}
+}
+
+static void
+setup_graphical_themes (void)
+{
+	DIR *dir;
+	GtkListStore *store;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *selection;
+	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
+						  GTK_TYPE_TREE_VIEW);
+
+	char *theme_dir = get_theme_dir ();
+
+	/* create list store */
+	store = gtk_list_store_new (THEME_NUM_COLUMNS,
+				    G_TYPE_STRING /* file */,
+				    G_TYPE_STRING /* name */,
+				    G_TYPE_STRING /* desc */,
+				    G_TYPE_STRING /* author */,
+				    G_TYPE_STRING /* copyright */,
+				    G_TYPE_STRING /* screenshot */);
+
+	dir = opendir (theme_dir);
+
+	if (dir != NULL) {
+		read_themes (store, theme_dir, dir);
+		closedir (dir);
+	}
+
+	g_free (theme_dir);
+
+	gtk_tree_view_set_model (GTK_TREE_VIEW (theme_list), 
+				 GTK_TREE_MODEL (store));
+
+	column = gtk_tree_view_column_new ();
+	renderer = gtk_cell_renderer_text_new ();
+        gtk_tree_view_column_pack_start (column, renderer, TRUE);
+
+        gtk_tree_view_column_set_attributes (column, renderer,
+                                             "text", THEME_COLUMN_NAME,
+                                             NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (theme_list), column);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (theme_list));
+
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+
+        g_signal_connect (selection, "changed",
+			  G_CALLBACK (selection_changed),
+			  NULL);
+
+}
+
 static void
 dialog_response (GtkWidget *dlg, int response, gpointer data)
 {
@@ -642,6 +1006,7 @@ setup_gui (void)
 
 	setup_xdmcp_support ();
 	setup_background_support ();
+	setup_graphical_themes ();
 
 	setup_user_combo ("autologin_combo",
 			  GDM_KEY_AUTOMATICLOGIN);
@@ -725,8 +1090,13 @@ setup_gui (void)
 	setup_greeter_toggle ("sg_remote_color_only",
 			      GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
 
-	setup_greeter_entry ("sg_welcome",
-			     GDM_KEY_WELCOME);
+	setup_greeter_editable ("sg_logo",
+				GDM_KEY_LOGO);
+	setup_greeter_editable ("sg_backimage",
+				GDM_KEY_BACKGROUNDIMAGE);
+
+	setup_greeter_untranslate_entry ("sg_welcome",
+					 GDM_KEY_WELCOME);
 }
 
 static gboolean

@@ -5,6 +5,7 @@ circles_DATA = \
 	background.svg \
 	flower.png  \
 	help.png \
-	options.png
+	options.png \
+	screenshot.png
 
 EXTRA_DIST = $(circles_DATA)

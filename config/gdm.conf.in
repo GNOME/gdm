@@ -87,7 +87,10 @@ LocaleFile=@EXPANDED_LOCALEDIR@/locale.alias
 Logo=@EXPANDED_PIXMAPDIR@/gnome-logo-large.png
 Quiver=true
 SystemMenu=true
-#FIXME: handle translations!
+# Note to distributors, if you wish to have a different Welcome string
+# and wish to have this translated you can have entries such as
+# Welcome[cs]=Vitejte na %n
+# Just make sure the string is in utf-8
 Welcome=Welcome to %n
 LockPosition=false
 SetPosition=false
@@ -105,6 +108,11 @@ ShowGnomeChooserSession=true
 ShowGnomeFailsafeSession=true
 ShowXtermFailsafeSession=true
 Use24Clock=false
+UseCirclesInEntry=false
+# These two keys are for the new greeter.  Circles is the standard
+# shipped theme
+GraphicalTheme=circles
+GraphicalThemeDir=@EXPANDED_DATADIR@/gdm/themes/
 
 [chooser]
 DefaultHostImg=@EXPANDED_PIXMAPDIR@/nohost.png

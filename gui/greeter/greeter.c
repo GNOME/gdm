@@ -29,7 +29,8 @@ gboolean DOING_GDM_DEVELOPMENT = FALSE;
 GtkWidget *window;
 GtkWidget *canvas;
 
-char *GreeterConfTheme = NULL;
+char *GdmGraphicalTheme = NULL;
+char *GdmGraphicalThemeDir = NULL;
 char *GdmDefaultLocale = NULL;
 int GdmXineramaScreen = 0;
 gboolean GdmShowGnomeChooserSession = FALSE;
@@ -44,7 +45,7 @@ gchar *GdmSuspend = NULL;
 gboolean GdmSystemMenu = TRUE;
 gboolean GdmConfigAvailable = TRUE;
 
-gboolean greeter_use_circles_in_entry = FALSE;
+gboolean GdmUseCirclesInEntry = FALSE;
 
 static gboolean used_defaults = FALSE;
 
@@ -61,10 +62,24 @@ greeter_parse_config (void)
 
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
-    GreeterConfTheme = gnome_config_get_string (GREETER_KEY_THEME);
+    GdmGraphicalTheme = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME);
+    if (GdmGraphicalTheme == NULL ||
+	GdmGraphicalTheme[0] == '\0')
+      {
+	g_free (GdmGraphicalTheme);
+	GdmGraphicalTheme = g_strdup ("circles");
+      }
+
+    GdmGraphicalThemeDir = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME_DIR);
+    if (GdmGraphicalThemeDir == NULL ||
+	! g_file_test (GdmGraphicalThemeDir, G_FILE_TEST_IS_DIR))
+      {
+        g_free (GdmGraphicalThemeDir);
+        GdmGraphicalThemeDir = g_strdup (GREETERTHEMEDIR);
+      }
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
-    greeter_use_circles_in_entry = gnome_config_get_bool (GREETER_KEY_ENTRY_CIRCLES);
+    GdmUseCirclesInEntry = gnome_config_get_bool (GDM_KEY_ENTRY_CIRCLES);
 
     GdmShowXtermFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE);
     GdmShowGnomeFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_FAILSAFE);
@@ -617,31 +632,64 @@ setup_cursor (GdkCursorType type)
 }
 
 static char *
-get_theme_file (const char *in)
+get_theme_file (const char *in, char **theme_dir)
 {
-  char *file;
+  char *file, *dir, *info, *s, *key;
+
+  if (in == NULL)
+    in = "circles";
+
+  *theme_dir = NULL;
 
   if (g_path_is_absolute (in))
     {
-      file = g_strdup (in);
+      dir = g_strdup (in);
     }
   else
     {
-      file = NULL;
+      dir = NULL;
       if (DOING_GDM_DEVELOPMENT)
         {
-          file = g_build_filename ("themes", in, NULL);
-	  if (access (file, F_OK) != 0)
+          dir = g_build_filename ("themes", in, NULL);
+	  if (access (dir, F_OK) != 0)
 	    {
-	      g_free (file);
-	      file = NULL;
+	      g_free (dir);
+	      dir = NULL;
 	    }
 	}
-      /* FIXME: look for the theme using the gnome_program thingie */
-      /* FIXME: Perhaps there should be a themedir config var */
-      if (file == NULL)
-        file = g_build_filename (GREETERTHEMEDIR, in, NULL);
+      if (dir == NULL)
+        dir = g_build_filename (GdmGraphicalThemeDir, in, NULL);
     }
+
+  *theme_dir = dir;
+
+  info = g_build_filename (dir, "GdmGreeterTheme.info", NULL);
+  if (access (info, F_OK) != 0)
+    {
+      /* just guess the name, we have no info about the theme at
+       * this point */
+      g_free (info);
+      file = g_strdup_printf ("%s/%s.xml", dir, in);
+      return file;
+    }
+
+  key = g_strconcat ("=", info, "=/", NULL);
+  g_free (info);
+  gnome_config_push_prefix (key);
+  g_free (key);
+
+  s = gnome_config_get_translated_string ("GdmGreeterTheme/Greeter");
+  if (s == NULL || s[0] == '\0')
+    {
+      g_free (s);
+      s = g_strdup_printf ("%s.xml", in);
+    }
+
+  file = g_build_filename (dir, s, NULL);
+  g_free (s);
+
+  gnome_config_pop_prefix ();
+
   return file;
 }
 
@@ -663,10 +711,9 @@ main (int argc, char *argv[])
 
   openlog ("gdmgreeter", LOG_PID, LOG_DAEMON);
 
-  setlocale (LC_ALL, "");
-
-  bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-  textdomain (PACKAGE);
+  bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+  textdomain (GETTEXT_PACKAGE);
 
   greeter_parse_config ();
 
@@ -748,8 +795,7 @@ main (int argc, char *argv[])
 			       gdm_wm_screen.height);
   gtk_container_add (GTK_CONTAINER (window), canvas);
 
-  theme_file = get_theme_file (GreeterConfTheme);
-  theme_dir = g_path_get_dirname (theme_file);
+  theme_file = get_theme_file (GdmGraphicalTheme, &theme_dir);
   
   error = NULL;
   root = greeter_parse (theme_file, theme_dir,
@@ -763,16 +809,13 @@ main (int argc, char *argv[])
     {
       g_free (theme_file);
       g_free (theme_dir);
-      theme_file = get_theme_file (GreeterConfTheme);
-      theme_dir = g_path_get_dirname (theme_file);
-  
+      theme_file = get_theme_file ("circles", &theme_dir);
       root = greeter_parse (theme_file, theme_dir,
 			    GNOME_CANVAS (canvas), 
 			    gdm_wm_screen.width,
 			    gdm_wm_screen.height,
 			    NULL);
     }
-
 
   if (root == NULL)
     {

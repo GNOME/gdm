@@ -203,8 +203,6 @@ enum {
 #define GDM_KEY_CONFIGURATOR "daemon/Configurator=" EXPANDED_GDMCONFIGDIR "/gdmconfig --disable-sound --disable-crash-dialog"
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
-/* translated string gets HATE defaults */
-#define GDM_KEY_WELCOME_TR "greeter/Welcome"
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %n"
 #define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
 #define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="
@@ -218,6 +216,9 @@ enum {
 #define GDM_KEY_POSITIONX "greeter/PositionX=0"
 #define GDM_KEY_POSITIONY "greeter/PositionY=0"
 #define GDM_KEY_USE_24_CLOCK "greeter/Use24Clock=false"
+#define GDM_KEY_ENTRY_CIRCLES "greeter/UseCirclesInEntry=false"
+#define GDM_KEY_GRAPHICAL_THEME "greeter/GraphicalTheme=circles"
+#define GDM_KEY_GRAPHICAL_THEME_DIR "greeter/GraphicalThemeDir=" EXPANDED_DATADIR "/gdm/themes/"
 
 #define GDM_KEY_SCAN "chooser/ScanTime=3"
 #define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"

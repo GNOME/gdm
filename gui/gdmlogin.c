@@ -126,6 +126,8 @@ static gboolean GdmShowGnomeFailsafeSession;
 static gboolean GdmShowXtermFailsafeSession;
 static gboolean GdmShowLastSession;
 
+static gboolean GdmUseCirclesInEntry;
+
 static GtkWidget *login;
 static GtkWidget *welcome;
 static GtkWidget *label;
@@ -822,10 +824,11 @@ gdm_login_parse_config (void)
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
-    GdmWelcome = gnome_config_get_translated_string (GDM_KEY_WELCOME_TR);
-    if (ve_string_empty (GdmWelcome)) {
+    GdmWelcome = gnome_config_get_translated_string (GDM_KEY_WELCOME);
+    /* A hack! */
+    if (strcmp (ve_sure_string (GdmWelcome), "Welcome to %n") == 0) {
 	    g_free (GdmWelcome);
-	    GdmWelcome = gnome_config_get_string (GDM_KEY_WELCOME);
+	    GdmWelcome = g_strdup (_("Welcome to %n"));
     }
     GdmBackgroundProg = gnome_config_get_string (GDM_KEY_BACKGROUNDPROG);
     GdmBackgroundImage = gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE);
@@ -841,6 +844,7 @@ gdm_login_parse_config (void)
     GdmIconMaxWidth = gnome_config_get_int (GDM_KEY_ICONWIDTH);
     GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
     GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
+    GdmUseCirclesInEntry = gnome_config_get_bool (GDM_KEY_ENTRY_CIRCLES);
     GdmLockPosition = gnome_config_get_bool (GDM_KEY_LOCK_POSITION);
     GdmSetPosition = gnome_config_get_bool (GDM_KEY_SET_POSITION);
     GdmPositionX = gnome_config_get_int (GDM_KEY_POSITIONX);
@@ -3162,6 +3166,8 @@ gdm_login_gui_init (void)
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     
     entry = gtk_entry_new ();
+    if (GdmUseCirclesInEntry)
+	    gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
     gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
     gtk_widget_set_size_request (entry, 250, -1);
     gtk_widget_ref (entry);
@@ -3725,10 +3731,11 @@ gdm_reread_config (int sig)
 		g_free (str);
 	}
 
-	str = gnome_config_get_translated_string (GDM_KEY_WELCOME_TR);
-	if (ve_string_empty (str)) {
+	str = gnome_config_get_translated_string (GDM_KEY_WELCOME);
+	/* A hack */
+	if (strcmp (ve_sure_string (str), "Welcome to %n") == 0) {
 		g_free (str);
-		str = gnome_config_get_string (GDM_KEY_WELCOME);
+		str = g_strdup (_("Welcome to %n"));
 	}
 	if (strcmp (ve_sure_string (str), ve_sure_string (GdmWelcome)) != 0) {
 		char *greeting;

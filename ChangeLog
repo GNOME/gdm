@@ -1,3 +1,29 @@
+Mon May 06 23:34:54 2002  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in: a note to distributors about the welcome
+	  string, and add new greeter config thingies
+
+	* gui/greeter/greeter-configuration.h, gui/greeter/greeter.c,
+	  gui/greeter/greeter-canvas-item.c, daemon/gdm.h: use the global
+	  gdm header file for defining config keys
+
+	* gui/greeter/greeter.c: start using the GdmGreeterTheme.info file
+	  for figuring out the theme and the GraphicalTheme key now just
+	  specifies the subdir in which to find under the GraphicalThemeDir
+	  directory.  Also fix the gettext stuff a bit.
+
+	* gui/greeter/themes/cirlces/screenshot.png, 
+	  gui/greeter/themes/cirlces/GdmGreeterTheme.info:
+	  gui/greeter/themes/cirlces/Makefile.am: add circles screenshot
+
+	* gui/gdmlogin.c: use the circles in entry config key.  Also reado
+	  how translation is done for the welcome string
+
+	* gui/gdmsetup.(c|glade): start implementing a cool theme browser and
+	  start connecting more widgets.  Make the welcome string editting
+	  work by just whacking ALL translations and using the current string
+	  when it is editted.
+
 Mon May 06 10:40:47 2002  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: Also make this init only gtk since initting gnome
