@@ -149,13 +149,6 @@ ignore_xerror_handler (Display *disp, XErrorEvent *evt)
 	return 0;
 }
 
-static int
-ignore_xioerror_handler (Display *disp)
-{
-	x_error_occured = TRUE;
-	return 0;
-}
-
 void 
 gdm_slave_start (GdmDisplay *display)
 {  
@@ -288,18 +281,15 @@ gdm_screen_init (GdmDisplay *display)
 {
 #ifdef HAVE_LIBXINERAMA
 	int (* old_xerror_handler) (Display *, XErrorEvent *);
-	int (* old_xioerror_handler) (Display *);
 	gboolean have_xinerama = FALSE;
 
 	x_error_occured = FALSE;
 	old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
-	old_xioerror_handler = XSetIOErrorHandler (ignore_xioerror_handler);
 
 	have_xinerama = XineramaIsActive (display->dsp);
 
 	XSync (display->dsp, False);
 	XSetErrorHandler (old_xerror_handler);
-	XSetIOErrorHandler (old_xioerror_handler);
 
 	if (x_error_occured)
 		have_xinerama = FALSE;
@@ -333,6 +323,7 @@ gdm_screen_init (GdmDisplay *display)
 	}
 }
 
+static gboolean do_xfailed_on_xio_error = FALSE;
 
 static void 
 gdm_slave_run (GdmDisplay *display)
@@ -374,6 +365,7 @@ gdm_slave_run (GdmDisplay *display)
     /* X error handlers to avoid the default one (i.e. exit (1)) */
     XSetErrorHandler (gdm_slave_xerror_handler);
     XSetIOErrorHandler (gdm_slave_xioerror_handler);
+    do_xfailed_on_xio_error = TRUE;
     
     /* We keep our own (windowless) connection (dsp) open to avoid the
      * X server resetting due to lack of active connections. */
@@ -416,6 +408,10 @@ gdm_slave_run (GdmDisplay *display)
 	    if (dsp != NULL)
 		    XCloseDisplay (dsp);
     }
+
+    /* OK from now on it's really the user whacking us most likely,
+     * we have already started up well */
+    do_xfailed_on_xio_error = FALSE;
 
     /* If XDMCP setup pinging */
     if (d->type != TYPE_LOCAL &&
@@ -2119,7 +2115,6 @@ gdm_slave_session_cleanup (void)
     
     /* things are going to be killed, so ignore errors */
     XSetErrorHandler (ignore_xerror_handler);
-    XSetIOErrorHandler (ignore_xioerror_handler);
 
     /* Cleanup */
     gdm_debug ("gdm_slave_session_cleanup: Severing connection");
@@ -2265,7 +2260,6 @@ gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
     return (0);
 }
 
-
 /* We respond to fatal errors by restarting the display */
 static gint
 gdm_slave_xioerror_handler (Display *disp)
@@ -2297,9 +2291,10 @@ gdm_slave_xioerror_handler (Display *disp)
 	gdm_server_stop (d);
 	gdm_verify_cleanup ();
 
-	sigprocmask (SIG_SETMASK, &omask, NULL);
-
-	_exit (DISPLAY_XFAILED);
+	if (do_xfailed_on_xio_error)
+		_exit (DISPLAY_XFAILED);
+	else
+		_exit (DISPLAY_REMANAGE);
 }
 
 char * 

@@ -71,8 +71,7 @@ static GdmDisplay *d = NULL;
 void
 gdm_server_reinit (GdmDisplay *disp)
 {
-	if (disp == NULL ||
-	    disp->servpid <= 0)
+	if (disp == NULL)
 		return;
 
 	/* Kill our connection if one existed */
@@ -80,6 +79,9 @@ gdm_server_reinit (GdmDisplay *disp)
 		XCloseDisplay (disp->dsp);
 		disp->dsp = NULL;
 	}
+
+	if (disp->servpid <= 0)
+		return;
 
 	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
 
@@ -600,25 +602,19 @@ ignore_xerror_handler (Display *disp, XErrorEvent *evt)
 	return 0;
 }
 
-static int
-ignore_xioerror_handler (Display *disp)
-{
-	return 0;
-}
-
 void
 gdm_server_whack_clients (GdmDisplay *disp)
 {
 	int i, screen_count;
 	int (* old_xerror_handler) (Display *, XErrorEvent *);
-	int (* old_xioerror_handler) (Display *);
 
 	if (disp == NULL ||
 	    disp->dsp == NULL)
 		return;
 
 	old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
-	old_xioerror_handler = XSetIOErrorHandler (ignore_xioerror_handler);
+
+	XGrabServer (disp->dsp);
 
 	screen_count = ScreenCount (disp->dsp);
 
@@ -641,9 +637,10 @@ gdm_server_whack_clients (GdmDisplay *disp)
 		}
 	}
 
+	XUngrabServer (disp->dsp);
+
 	XSync (disp->dsp, False);
 	XSetErrorHandler (old_xerror_handler);
-	XSetIOErrorHandler (old_xioerror_handler);
 }
 
 

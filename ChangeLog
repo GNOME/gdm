@@ -1,3 +1,18 @@
+Thu Jul 05 18:50:23 2001  George Lebl <jirka@5z.com>
+
+	* gdm.spec.in: remove the connection to RedHat's default init as that
+	  just does some background setting but we already set background
+	  ourselves in a nicer way and this just resulted in a slowdown and
+	  a flash
+
+	* daemon/server.c, daemon/slave.c: be more thorough in closing
+	  displays, never include an empty xioerror handler, and normally
+	  xio errors do a DISPLAY_REMANAGE and only on server startup do they
+	  do XFAILED.  Also before and after whacking clients grab/ungrab the
+	  server as xdm does.
+
+	* daemon/xdmcp.c: fix warnings
+
 Thu Jul 05 13:17:53 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: add kill_thingies to atexit to make sure that the

@@ -352,7 +352,7 @@ gdm_xdmcp_init (void)
     serv_sa.sin_port = htons (GdmPort); /* UDP 177 */
     serv_sa.sin_addr.s_addr = htonl (INADDR_ANY);
     
-    if (bind (xdmcpfd, (struct sockaddr_in *) &serv_sa, sizeof (serv_sa)) == -1) {
+    if (bind (xdmcpfd, (struct sockaddr*) &serv_sa, sizeof (serv_sa)) == -1) {
 	gdm_error (_("gdm_xdmcp_init: Could not bind to XDMCP socket!"));
 	gdm_xdmcp_close ();
 	GdmXdmcp = FALSE;
@@ -710,7 +710,8 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
     XdmcpWriteARRAY8 (&buf, &serv_authlist.authentication); /* Hardcoded authentication */
     XdmcpWriteARRAY8 (&buf, &servhost);
     XdmcpWriteARRAY8 (&buf, &status);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+		(int)sizeof (struct sockaddr_in));
 }
 
 static void
@@ -733,7 +734,8 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     
     XdmcpWriteARRAY8 (&buf, &servhost);
     XdmcpWriteARRAY8 (&buf, &status);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+		(int)sizeof (struct sockaddr_in));
 }
 
 static char *
@@ -943,7 +945,8 @@ gdm_xdmcp_send_accept (const char *hostname,
     XdmcpWriteARRAY8 (&buf, &authname);
     XdmcpWriteARRAY8 (&buf, &authdata);
     
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+		(int)sizeof (struct sockaddr_in));
     
     gdm_debug ("gdm_xdmcp_send_accept: Sending ACCEPT to %s with SessionID=%ld", 
 	       inet_ntoa (clnt_sa->sin_addr), (long)d->sessionid);
@@ -981,7 +984,8 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa)
     XdmcpWriteARRAY8 (&buf, &authentype);
     XdmcpWriteARRAY8 (&buf, &authendata);
     
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+		(int)sizeof (struct sockaddr_in));
 }
 
 
@@ -1104,7 +1108,8 @@ gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid)
     
     XdmcpWriteHeader (&buf, &header);  
     XdmcpWriteCARD32 (&buf, sessid);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+		(int)sizeof (struct sockaddr_in));
 }
 
 
@@ -1126,7 +1131,8 @@ gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid)
     XdmcpWriteHeader (&buf, &header);
     XdmcpWriteCARD32 (&buf, sessid);
     XdmcpWriteARRAY8 (&buf, &status);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+		(int)sizeof (struct sockaddr_in));
 }
 
 
@@ -1176,7 +1182,8 @@ gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid)
     XdmcpWriteHeader (&buf, &header);
     XdmcpWriteCARD8 (&buf, 1);
     XdmcpWriteCARD32 (&buf, sessid);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+		(int)sizeof (struct sockaddr_in));
 }
 
 

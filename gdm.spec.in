@@ -55,7 +55,8 @@ install -m 755 config/Gnome $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Gnome
 ln -sf Default $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/default
 
 # change default Init script to be Red Hat default
-ln -sf ../../xdm/Xsetup_0 $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Init/Default
+# Note that this just sets up background and we already do that ourselves
+#ln -sf ../../xdm/Xsetup_0 $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Init/Default
 
 # run GiveConsole/TakeConsole
 ln -sf ../../xdm/GiveConsole $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/PreSession/Default
