@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.2.5.4\n"
-"POT-Creation-Date: 2002-02-01 13:17+0100\n"
+"POT-Creation-Date: 2002-02-04 10:53+0100\n"
 "PO-Revision-Date: 2001-05-25 13:35+0200\n"
 "Last-Translator: Josu Waliño <josu@elhuyar.com>\n"
 "Language-Team: Euskara\n"
@@ -14,9 +14,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: daemon/auth.c:144
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not make new cookie file in %s"
-msgstr "gdm_auth_user_add: Ezin izan da %s cookie-fitxategia ireki"
+msgstr "%s: Ezin izan da %s(e)n cookie-fitxategi berria egin"
 
 #. Really no need to clean up here - this process is a goner anyway
 #: daemon/auth.c:367 daemon/auth.c:398
@@ -32,7 +32,7 @@ msgstr "gdm_auth_user_add: Ezin izan da %s cookie-fitxategia blokeatu"
 #: daemon/auth.c:473
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
-msgstr "gdm_auth_user_remove: %s cookie-fitxategi susmagarriari jaramonik ez"
+msgstr "gdm_auth_user_remove: Jaramonik ez %s cookie-fitxategi susmagarriari "
 
 #. This means we have no clue what's happening,
 #. * it's not X server crashing as we would have
@@ -44,40 +44,39 @@ msgid ""
 "Failed to start the display server several times in a short time period; "
 "disabling display %s"
 msgstr ""
-"Pantailaren zerbitzaria abiaraztean huts egin da hainbat aldiz "
-"denboralaburrean; %s pantaila desgaitzen "
+"Denbora laburrean hainbat aldiz huts egin du pantailaren zerbitzaria "
+"abiaraztean; %s pantaila desgaitzen "
 
 #: daemon/display.c:222
 #, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
-"gdm_display_manage: Huts egin da gdm-ren menpeko prozesua %s(r)entzat  "
-"bikoiztean "
+"gdm_display_manage: Huts egin du gdm-ren menpeko prozesua %s(r)entzat  "
+"bikoiztean"
 
 #: daemon/errorgui.c:169
 msgid "gdm_error_box: Failed to execute self"
-msgstr "gdm_error_box: Autoberrabiaraztean huts egin du "
+msgstr "gdm_error_box: Huts egin du autoexekutatzean"
 
 #: daemon/errorgui.c:174
 msgid "gdm_error_box: Cannot fork to display error/info box"
 msgstr ""
-"gdm_error_box: Ezin da bikoiztu errore-/informazio-koadroa bistaratzeko "
+"gdm_error_box: Ezin da errore-/informazio-koadroa bistaratzeko bikoiztu"
 
 #: daemon/errorgui.c:311 daemon/errorgui.c:447
-#, fuzzy
 msgid "gdm_failsafe_question: Failed to execute self"
-msgstr "gdm_error_box: Autoberrabiaraztean huts egin du "
+msgstr "gdm_failsafe_question: Huts egin du autoexekutatzean "
 
 #: daemon/errorgui.c:329 daemon/errorgui.c:467
-#, fuzzy
 msgid "gdm_failsafe_question: Cannot fork to display error/info box"
 msgstr ""
-"gdm_error_box: Ezin da bikoiztu errore-/informazio-koadroa bistaratzeko "
+"gdm_failsafe_question: Ezin da errore-/informazio-koadroa bistaratzeko "
+"bikoiztu"
 
 #: daemon/filecheck.c:49
 #, c-format
 msgid "%s: Directory %s does not exist."
-msgstr "%s: Ez dago %s direktorioa."
+msgstr "%s: Ez da existitzen %s direktorioa."
 
 #: daemon/filecheck.c:56 daemon/filecheck.c:97
 #, c-format
@@ -87,15 +86,15 @@ msgstr "%s: %s ez da %d uid-rena."
 #: daemon/filecheck.c:62 daemon/filecheck.c:104
 #, c-format
 msgid "%s: %s is writable by group."
-msgstr "%s: %s taldeak idatz dezake."
+msgstr "%s: %s(e)n taldeak idatz dezake."
 
 #: daemon/filecheck.c:68
 #, c-format
 msgid "%s: %s is writable by other."
-msgstr "%s: %s beste batzuek idatz dezakete."
+msgstr "%s: %s(e)n beste batzuek idatz dezakete."
 
 #: daemon/filecheck.c:82
-#, fuzzy, c-format
+#, c-format
 msgid "%s: %s does not exist but must exist."
 msgstr "%s: %s  ez dago lehendik eta egon behar du."
 
@@ -107,7 +106,7 @@ msgstr "%s: %s ez da fitxategi arrunta."
 #: daemon/filecheck.c:111
 #, c-format
 msgid "%s: %s is writable by group/other."
-msgstr "%s: %s taldeak/beste batzuek idatz dezakete."
+msgstr "%s: %s(e)n taldeak/beste batzuek idatz dezakete."
 
 #: daemon/filecheck.c:118
 #, c-format
@@ -128,21 +127,21 @@ msgid ""
 "gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
 "it off"
 msgstr ""
-"gdm_config_parse: XDMCP gaitu da, nahiz eta ez den XDMCP onartzen, "
-"desaktibatzen "
+"gdm_config_parse: XDMCP gaitu da, nahiz eta ez den XDMCP onartzen; "
+"desaktibatzen"
 
 #: daemon/gdm.c:301
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
-"gdm_config_parse: Root-a ezin da automatikoki hasi, saio-hasiera automatikoa "
-"desaktibatzen"
+"gdm_config_parse: Root-ak ezin du saioa automatikoki hasi; saio-hasiera "
+"automatikoa desaktibatzen"
 
 #: daemon/gdm.c:314
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
-"gdm_config_parse: Root-a ezin da automatikoki hasi, denboraz-mugatutako saio-"
-"hasiera desaktibatzen"
+"gdm_config_parse: Root-ak ezin du saioa automatikoki hasi; denboraz-"
+"mugatutako saio-hasiera desaktibatzen"
 
 #: daemon/gdm.c:320
 msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
@@ -155,27 +154,26 @@ msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse: Ez da ongietorririk zehaztu"
 
 #: daemon/gdm.c:334
-#, fuzzy
 msgid "No daemon/ServAuthDir specified in the configuration file"
-msgstr "Itzuli konfigurazio-fitxategiko ezarpenetara"
+msgstr "Ez da daemon-ik/ServAuthDir-ik zehaztu konfigurazio-fitxategian"
 
 #: daemon/gdm.c:335
 msgid "gdm_config_parse: No authdir specified."
-msgstr "gdm_config_parse: Ez da authdir zehaztu."
+msgstr "gdm_config_parse: Ez da authdir-ik zehaztu."
 
 #: daemon/gdm.c:342
 msgid "gdm_config_parse: No sessions directory specified."
 msgstr "gdm_config_parse: Ez da saio-direktoriorik zehaztu."
 
 #: daemon/gdm.c:366
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Empty server command, using standard one."
-msgstr "%s: Zerbitzari-komando hutsa %s pantailan"
+msgstr "%s: zerbitzari-komandoa hutsik; estandarra erabiltzen."
 
 #: daemon/gdm.c:411
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
-msgstr ""
+msgstr "%s: Pantailaren %d zenbakia erabilita dago!  %d erabiliko dut"
 
 #: daemon/gdm.c:428
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
@@ -186,27 +184,29 @@ msgstr ""
 #. start
 #. server uid
 #: daemon/gdm.c:447
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
 "d to allow configuration!"
 msgstr ""
-"gdm_config_parse: Xdmcp desgaitua eta zerbitzari lokalak definitu gabe. /usr/"
-"bin/X11/X gehitu :0 konfigurazioa baimentzeko!"
+"%s: Xdmcp desgaituta dago eta ez da zerbitzari lokalik definitu. "
+"konfigurazioa baimentzeko, %d(e)n/usr/bin/X11/X gehitzen!"
 
 #: daemon/gdm.c:461
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Xdmcp is disabled and gdm cannot find any local server to start.  Aborting!  "
-"Please correct the configuration %sand restart gdm."
+"Please correct the configuration %s and restart gdm."
 msgstr ""
+"Xdmcp desgaituta dago eta gdm-ek ezin du zerbitzari lokalik aurkitu "
+"abiarazteko.  Abortatzen!  Zuzendu %s konfigurazioa eta berrabiarazi gdm."
 
 #: daemon/gdm.c:468
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr ""
-"gdm_config_parse: Xdmcp desgaitua eta zerbitzari lokalak definitu gabe. "
-"Bertan behera uzten!"
+"gdm_config_parse: Xdmcp desgaitua dago eta zerbitzari lokalak definitu gabe. "
+"Abortatzen!"
 
 #: daemon/gdm.c:476
 #, c-format
@@ -221,13 +221,13 @@ msgid ""
 "The gdm user does not exist.  Please correct gdm configuration %s and "
 "restart gdm."
 msgstr ""
+"Ez dago gdm-erabiltzailerik.  Zuzendu gdm-ren %s konfigurazioa eta "
+"berrabiarazi gdm."
 
 #: daemon/gdm.c:488
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
-msgstr ""
-"gdm_config_parse: Ezin da gdm erabiltzailea (%s) aurkitu. Bertan behera "
-"uzten!"
+msgstr "gdm_config_parse: Ezin da gdm-erabiltzailea (%s) aurkitu. Abortatzen!"
 
 #: daemon/gdm.c:494
 #, c-format
@@ -235,18 +235,20 @@ msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"gdm-erabiltzailea root izateko konfiguratu da, baina hori ez dago baimenduta "
+"segurtasun-arriskua sor baitezake.  Zuzendu gdm-ren %s konfigurazioa eta "
+"berrabiarazi gdm."
 
 #: daemon/gdm.c:500
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr ""
-"gdm_config_parse: Gdm erabiltzaileak ez du root-a izan behar. Bertan behera "
-"uzten!"
+"gdm_config_parse: Gdm-erabiltzaileak ez du root-a izan behar. Abortatzen!"
 
 #: daemon/gdm.c:506
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
 msgstr ""
-"gdm_config_parse: Ezin da gdm taldea (%s) aurkitu. 'Inor ere ez' saiatzen!"
+"gdm_config_parse: Ezin da gdm-taldea (%s) aurkitu. 'Inor ere ez' saiatzen!"
 
 #: daemon/gdm.c:513
 #, c-format
@@ -254,12 +256,12 @@ msgid ""
 "The gdm group does not exist.  Please correct gdm configuration %s and "
 "restart gdm."
 msgstr ""
+"Ez dago gdm-talderik.  Zuzendu gdm-ren %s konfigurazioa eta berrabiarazi gdm."
 
 #: daemon/gdm.c:518
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
-msgstr ""
-"gdm_config_parse: Ezin da gdm taldea (%s) aurkitu. Bertan behera uzten!"
+msgstr "gdm_config_parse: Ezin da gdm-taldea (%s) aurkitu. Abortatzen!"
 
 #: daemon/gdm.c:524
 #, c-format
@@ -267,22 +269,24 @@ msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"gdm-taldea root izateko konfiguratu da, baina hori ez dago baimenduta "
+"segurtasun-arriskua sor baitezake.  Zuzendu gdm-ren %s konfigurazioa eta "
+"berrabiarazi gdm."
 
 #: daemon/gdm.c:530
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
-msgstr ""
-"gdm_config_parse: Gdm taldeak ez du root-a izan behar. Bertan behera uzten!"
+msgstr "gdm_config_parse: Gdm-taldeak ez du root izan behar. Abortatzen!"
 
 #: daemon/gdm.c:541
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
-msgstr "%s: Ez da ongietorria aurkitu edo ezin du gdm erabiltzaileak exekutatu"
+msgstr "%s: Ez da ongietorria aurkitu edo gdm-erabiltzaileak ezin du exekutatu"
 
 #: daemon/gdm.c:553
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr ""
-"%s: Ez da hautatzailea aurkitu edo ezin du gdm erabiltzaileak exekutatu "
+"%s: Ez da hautatzailea aurkitu edo gdm-erabiltzaileak ezin du exekutatu"
 
 #: daemon/gdm.c:561
 #, c-format
@@ -290,11 +294,14 @@ msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
 "does not exist.  Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"Zerbitzariaren autentifikazio-direktorioa (daemon/ServAuthDir) %s "
+"gisakonfiguratuta dago, baina ez dago horrelakorik.  Zuzendu gdm-ren %s "
+"konfigurazioa eta berrabiarazi gdm."
 
 #: daemon/gdm.c:568
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
-msgstr "gdm_config_parse: %s authdir ez dago. Bertan behera uzten."
+msgstr "gdm_config_parse: %s authdir ez dago. Abortatzen."
 
 #: daemon/gdm.c:572
 #, c-format
@@ -302,11 +309,14 @@ msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
 "not a directory.  Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"Zerbitzariaren autentifikazio-direktorioa (daemon/ServAuthDir) %s gisa "
+"konfiguratuta dago, baina hori ez da direktorioa.  Zuzendu gdm-ren %s "
+"konfigurazioa eta berrabiarazi gdm."
 
 #: daemon/gdm.c:579
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
-msgstr "gdm_config_parse: %s authdir ez da direktorioa. Bertan behera uzten."
+msgstr "gdm_config_parse: %s authdir ez da direktorioa. Abortatzen."
 
 #: daemon/gdm.c:583
 #, c-format
@@ -315,31 +325,39 @@ msgid ""
 "owned by user %s and group %s.  Please correct the ownership or gdm "
 "configuration %s and restart gdm."
 msgstr ""
+"Zerbitzariaren autentifikazio-direktorioa (daemon/ServAuthDir) %s "
+"gisakonfiguratuta dago, baina ez da ez %s erabiltzailearena, ez %s "
+"taldearena. Zuzendu jabetza edo gdm-ren %s konfigurazioa, eta berrabiarazi "
+"gdm."
 
 #: daemon/gdm.c:592
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
-"gdm_config_parse: %s authdir ez da %s erabiltzailearena, %s taldearena. "
-"Bertan behera uzten."
+"gdm_config_parse: %s authdir ez da ez %s erabiltzailearena, ez %s "
+"taldearena. Abortatzen. "
 
 #: daemon/gdm.c:597
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
 "wrong permissions, it should have permissions of 0750. Please correct the "
 "permissions or the gdm configuration %s and restart gdm."
 msgstr ""
+"Zerbitzariaren autentifikazio-direktorioa (daemon/ServAuthDir) %s "
+"gisakonfiguratuta dago, baina baimen okerrak ditu, 0750ren baimenak eduki "
+"beharlituzke.Zuzendu baimenak edo gdm-ren %s konfigurazioa, eta berrabiarazi "
+"gdm."
 
 #: daemon/gdm.c:606
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. "
 "Aborting."
 msgstr ""
-"gdm_config_parse: %s authdir-ek %o baimen okerrak ditu. 750 izan behar luke. "
-"Bertan behera uzten."
+"gdm_config_parse: %s authdir-ek %o baimen okerrak ditu. 0750 izan behar "
+"luke. Abortatzen. "
 
 #: daemon/gdm.c:661
 msgid "gdm_daemonify: fork() failed!"
@@ -368,7 +386,7 @@ msgid ""
 "it is not set up correctly.  You will need to log in on a console and rerun "
 "the X configuration program.  Then restart GDM."
 msgstr ""
-"Ezin dut X zerbitzaria hasi (interfaze grafikoa).  Baliteke behar bezala "
+"Ezin dut X zerbitzaria abiarazi (interfaze grafikoa).  Baliteke behar bezala "
 "instalatuta ez egotea .  Kontsolaren saioan sartu eta X konfigurazio-"
 "programa berriro exekutatu beharko duzu.  Orduan berrabiarazi GDM."
 
@@ -383,8 +401,8 @@ msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr ""
-"X zerbitzaria abiarazterakoan huts egin da hainbat aldiz denbora laburrean;  "
-"%s pantaila desgaitzen"
+"Huts egin du X zerbitzaria abiaraztean hainbat aldiz denbora laburrean;  %s "
+"pantaila desgaitzen"
 
 #: daemon/gdm.c:978
 #, c-format
@@ -392,7 +410,7 @@ msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
 "display %s"
 msgstr ""
-"gdm_child_action: Berrabiarazi edo gelditu eskaera%s pantailan sistema-"
+"gdm_child_action: Berrabiarazi edo gelditu eskaera %s pantailan sistema-"
 "menurik ez dagoenean"
 
 #: daemon/gdm.c:986
@@ -407,7 +425,7 @@ msgstr ""
 #: daemon/gdm.c:1020
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
-msgstr "gdm_child_action: %s pantaila bertan behera uzten"
+msgstr "gdm_child_action: %s pantaila abortatzen"
 
 #. Reboot machine
 #: daemon/gdm.c:1032
@@ -427,7 +445,7 @@ msgstr "gdm_child_action: Maisua gelditzen..."
 #: daemon/gdm.c:1050
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
-msgstr "gdm_child_action: Gelditzerakoan huts egin du: %s"
+msgstr "gdm_child_action: Gelditzean huts egin du: %s"
 
 #. Suspend machine
 #: daemon/gdm.c:1054
@@ -453,7 +471,7 @@ msgstr "Root-ak bakarrik nahi du gdm exekutatzea\n"
 
 #: daemon/gdm.c:1356
 msgid "gdm already running. Aborting!"
-msgstr "gdm dagoeneko exekutatzen. Bertan behera uzten!"
+msgstr "gdm dagoeneko exekutatzen. Abortatzen!"
 
 #: daemon/gdm.c:1387
 #, c-format
@@ -482,13 +500,13 @@ msgstr "%s: Errorea CHLD seinale-maneiatzailea konfiguratzean"
 
 #: daemon/gdm.c:2181 daemon/gdm.c:2198
 msgid "Flexible server request denied: Not authenticated"
-msgstr ""
+msgstr "Zerbitzari malguaren eskaera ez da onartu: Ez da autentifikatu "
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
 #: daemon/gdm.c:2216
 msgid "Unknown server type requested, using standard server."
-msgstr ""
+msgstr "Zerbitzari-mota ezezaguna eskatu da; zerbitzari estandarra erabiltzen."
 
 #: daemon/gdm.c:2220
 #, c-format
@@ -496,16 +514,18 @@ msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
 "standard server."
 msgstr ""
+"Eskatutako %s zerbitzariak ez du baimenik zerbitzari malguak erabiltzeko;"
+"zerbitzari estandarra erabiltzen."
 
 #: daemon/gdm-net.c:247
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not make socket"
-msgstr "%s: Ezin izan da FIFO egin"
+msgstr "%s: Ezin izan da socket-a egin"
 
 #: daemon/gdm-net.c:257
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not bind socket"
-msgstr "%s: Ezin izan da ostalari-izena irakurri"
+msgstr "%s: Ezin izan da socket-a lotu"
 
 #: daemon/gdm-net.c:298
 #, c-format
@@ -520,7 +540,7 @@ msgstr "%s: Ezin izan da FIFO ireki"
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:379
 msgid "y = Yes or n = No? >"
-msgstr ""
+msgstr "y = Bai edo n = Ez? >"
 
 #: daemon/misc.c:623
 #, c-format
@@ -538,51 +558,47 @@ msgid "%s: Could not get address from hostname!"
 msgstr "%s: Ezin izan da helbidea ostalari-izen honetan aurkitu!"
 
 #: daemon/misc.c:729
-#, fuzzy, c-format
+#, c-format
 msgid "Could not setgid %d. Aborting."
-msgstr ""
-"gdm_slave_session_start: Ezin izan da %d(r)en gid-a konfiguratu. Bertan "
-"behera uzten."
+msgstr "Ezin izan da %d gid-a konfiguratu. Abortatzen.}"
 
 #: daemon/misc.c:734
-#, fuzzy, c-format
+#, c-format
 msgid "initgroups() failed for %s. Aborting."
-msgstr ""
-"gdm_slave_session_start: %s(r)en initgroups()ek huts egin du. Bertan behera "
-"uzten."
+msgstr "%s(r)en initgroups()ek huts egin du. Abortatzen."
 
 #: daemon/server.c:165
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
 "another display number?  If you answer no, I will attempt to start the "
 "server on %s again.%s"
 msgstr ""
-"%s pantailan X zerbitzaria dagoeneko exekutatzen ari dela dirudi.  Irten "
-"zerbitzari honetatik eta sakatu Sartu.%s"
+"Badirudi %s pantailan X zerbitzaria exekutatzen ari dela. Beste pantaila "
+"batean saiatuko naiz?  Ez erantzuten baduzu, zerbitzaria berriro %s(e)n "
+"abiarazten saiatuko naiz.%s"
 
 #: daemon/server.c:172
-#, fuzzy
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
 "higher.)"
 msgstr ""
-"  Kontsolak alda ditzakezu Ktrl-Alt eta funtzio-tekla bat sakatuz, esaterako "
-"Ktrl-Alt-F7 7. kontsolara joateko.  X zerbitzariak, normalean, 7. "
-"kontsolaneta maila handiagokotan exekutatzen dira. "
+" (Kontsolak alda ditzakezu Ktrl-Alt eta funtzio-tekla bat sakatuz, "
+"esaterako, 7. kontsolara joateko Ktrl-Alt-F7 sakatuz.  X zerbitzariak "
+"normalean 7. kontsolan eta maila altuagoko kontsoletan exekutatzen dira.) "
 
 #: daemon/server.c:211
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
-msgstr ""
+msgstr "'%s' pantaila ezin da Xnest-en bidez ireki"
 
 #: daemon/server.c:241
 #, c-format
 msgid "Display %s is busy, there is another X server already running"
 msgstr ""
-"%s pantaila okupatuta dago, dagoeneko beste X zerbitzari bat exekutatzen ari "
-"da "
+"%s pantaila okupatuta dago, beste X zerbitzari bat ari da dagoeneko "
+"exekutatzen "
 
 #: daemon/server.c:343
 msgid "gdm_server_start: Error setting up USR1 signal handler"
@@ -600,12 +616,12 @@ msgstr "gdm_server_start: Errorea ALRM seinale-maneiatzailea konfiguratzean"
 #: daemon/server.c:504
 #, c-format
 msgid "%s: Cannot find a free display number"
-msgstr ""
+msgstr "%s: Ezin da libre dagoen pantaila-zenbaki bat aurkitu"
 
 #: daemon/server.c:519
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
-msgstr ""
+msgstr "%s: %s pantaila okupatuta.  Beste pantaila-zenbaki batekin saiatzen."
 
 #: daemon/server.c:654
 #, c-format
@@ -635,12 +651,12 @@ msgstr "gdm_server_spawn: Errorea TERM seinalea SIG_DFLen konfiguratzean"
 #: daemon/server.c:709
 #, c-format
 msgid "Invalid server command '%s'"
-msgstr ""
+msgstr "Baliogabeko '%s' zerbitzari-komandoa "
 
 #: daemon/server.c:715
 #, c-format
 msgid "Server name '%s' not found, using standard server"
-msgstr ""
+msgstr "Ez da '%s' zerbitzari-izena aurkitu; zerbitzari estandarra erabiltzen"
 
 #: daemon/server.c:747
 #, c-format
@@ -651,27 +667,27 @@ msgstr "%s: Zerbitzari-komando hutsa %s pantailan"
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
+"%s: Zerbitzaria %d UIDak abiarazi behar zuen, baina erabiltzaile hori ez dago"
 
 #: daemon/server.c:788 daemon/slave.c:1108 daemon/slave.c:1453
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Couldn't set groupid to %d"
-msgstr "gdm_slave_chooser: Ezin izan da %d(r)en taldearen IDa konfiguratu"
+msgstr "%s: Ezin izan da taldearen IDa %d(e)n konfiguratu"
 
 #: daemon/server.c:794 daemon/slave.c:1113 daemon/slave.c:1458
-#, fuzzy, c-format
+#, c-format
 msgid "%s: initgroups() failed for %s"
-msgstr "gdm_slave_chooser: %s(r)en initgroups()ek huts egin du "
+msgstr "%s: %s(r)en initgroups()ek huts egin du "
 
 #: daemon/server.c:800 daemon/slave.c:1118 daemon/slave.c:1463
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Couldn't set userid to %d"
-msgstr ""
-"gdm_slave_chooser: Ezin izan da %d(r)en erabiltzailearen IDa konfiguratu"
+msgstr "%s: Ezin izan da erabiltzailearen IDa %d(e)n konfiguratu"
 
 #: daemon/server.c:807
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Couldn't set groupid to 0"
-msgstr "gdm_slave_chooser: Ezin izan da %d(r)en taldearen IDa konfiguratu"
+msgstr "%s: Ezin izan da taldearen IDa 0n konfiguratu"
 
 #: daemon/server.c:818
 #, c-format
@@ -710,6 +726,14 @@ msgid ""
 "disabled.  Please restart gdm when\n"
 "the problem is corrected."
 msgstr ""
+"Ezin izan dut X zerbitzaria\n"
+"(zure ingurune grafikoa) abiarazi\n"
+"barneko erroreen ondorioz.\n"
+"Jarri harremanetan zure sistema-administratzailearekin\n"
+"edo egiaztatu syslog diagnostikatzeko.\n"
+"Bitartean bistaratze hau desgaitu\n"
+"egingo da. Gdm berrabiarazi\n"
+"arazoa  zuzendutakoan."
 
 #: daemon/slave.c:550
 msgid "focus_first_x_window: cannot fork"
@@ -729,8 +753,8 @@ msgid ""
 "default location."
 msgstr ""
 "Ezin izan da konfigurazio-programa\n"
-"exekutatu.  Egiaztatu bide-izena\n"
-"zuzen idatzita dagoela konfigurazio-fitxategian.\n"
+"exekutatu.  Egiaztatu konfigurazio-fitxategian \n"
+" bide-izena zuzen idatzita dagoela.\n"
 "Kokapen lehenetsitik hasten\n"
 "saiatuko naiz."
 
@@ -741,8 +765,8 @@ msgid ""
 "correctly in the configuration file."
 msgstr ""
 "Ezin izan da konfigurazio-programa\n"
-"exekutatu.  Egiaztatu bide-izena\n"
-"zuzen idatzita dagoela konfigurazio-fitxategian."
+"exekutatu.  Egiaztatu konfigurazio-fitxategian \n"
+" bide-izena zuzen idatzita dagoela."
 
 #: daemon/slave.c:743
 msgid ""
@@ -773,12 +797,12 @@ msgid ""
 msgstr ""
 "Konfigurazio-fitxategian ez zegoen zerbitzaririk\n"
 "definituta eta xdmcp desgaitu\n"
-"egin da.  Hori konfigurazio-errorea bakarrik\n"
-"izan daiteke.  Horregatik zerbitzari bakarra\n"
-"hasi dut zuretzat.  Saioa hasi eta\n"
+"egin da.  Hori konfigurazio-errorea \n"
+"izan daiteke bakarrik.  Horregatik, zerbitzari bakarra\n"
+"abiarazi dut zuretzat.  Saioa hasi eta\n"
 "konfigurazioa konpondu behar zenuke.\n"
-"Kontuan hartu orain saio-hasiera automatikoak eta denboraz mugatutakoak\n"
-"desgaituta daudela."
+"Kontuan hartu orain saio-hasiera automatikoak \n"
+"eta denboraz mugatutakoak desgaituta daudela."
 
 #: daemon/slave.c:1193
 msgid ""
@@ -789,7 +813,7 @@ msgid ""
 "configure the X server."
 msgstr ""
 "Ezin izan dut X zerbitzari arrunta\n"
-"hasi (ingurune-grafikoa)\n"
+"abiarazi (ingurune-grafikoa)\n"
 "eta, beraz, hau Failsafe X zerbitzaria da.\n"
 "Saioa hasi eta X zerbitzaria\n"
 "behar bezala konfiguratu behar zenuke."
@@ -800,6 +824,8 @@ msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr ""
+"Zehaztutako pantaila-zenbakia okupatuta zegoenez, zerbitzaria %s "
+"pantailanabiaraziko da."
 
 #: daemon/slave.c:1212
 #, c-format
@@ -816,7 +842,7 @@ msgid ""
 "editing the configuration file"
 msgstr ""
 "Ezin da ongietorri-programa hasi,\n"
-"saioa ezingo duzu hasi.\n"
+" ezingo duzu saioa hasi.\n"
 "Pantaila hau desgaitu egingo da.\n"
 "Saiatu beste bide batzuk erabiliz saioa hasten eta\n"
 "konfigurazio-fitxategia editatzen"
@@ -824,7 +850,7 @@ msgstr ""
 #: daemon/slave.c:1230
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
-msgstr "gdm_slave_greeter: Errorea ongietorria %s pantailan hastean"
+msgstr "gdm_slave_greeter: Errorea ongietorria %s pantailan abiaraztean"
 
 #: daemon/slave.c:1233
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
@@ -846,27 +872,27 @@ msgid ""
 "Please contact the system administrator.\n"
 msgstr ""
 "Ezin da hautatzaile-programa hasi,\n"
-"saioa ezingo duzu hasi.\n"
+"ezingo duzu saioa hasi.\n"
 "Galdetu sistema-administratzaileari.\n"
 
 #: daemon/slave.c:1500
 #, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
-msgstr "gdm_slave_chooser: Errorea hautatzailea %s pantailan hastean"
+msgstr "gdm_slave_chooser: Errorea hautatzailea %s pantailan abiaraztean"
 
 #: daemon/slave.c:1503
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr "gdm_slave_chooser: Ezin da gdmchooser prozesua bikoiztu"
 
 #: daemon/slave.c:1867
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
-msgstr "%s: Ezin izan da zerbitzariaren honako ostalari-izena lortu: %s!"
+msgstr "%s: Ezin izan da %s(r)en ingurunea konfiguratu. Abortatzen. "
 
 #: daemon/slave.c:1877
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
-msgstr "gdm_slave_session_start: Ezin izan da %s bihurtu. Bertan behera uzten."
+msgstr "gdm_slave_session_start: Ezin izan da %s bihurtu. Abortatzen."
 
 #. yaikes
 #: daemon/slave.c:1943
@@ -874,8 +900,8 @@ msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
 msgstr ""
-"gdm_slave_session_start: gnome-ren saioa ez da aurkitu Failsafe gnome "
-"saiorako, xterm exekutatzen saiatuko da"
+"gdm_slave_session_start: ez du Failsafe Gnome saiorako gnome saiorik "
+"aurkitu; xterm exekutatzen saiatuko da"
 
 #: daemon/slave.c:1947
 msgid ""
@@ -896,14 +922,14 @@ msgid ""
 "your installation."
 msgstr ""
 "Honako hau Failsafe Gnome-ren saioa da.\n"
-"Gnome-ren 'Lehenetsia' saioa\n"
-"abio-script-ak exekutatu gabe hasiko\n"
+"Gnome-ren saio 'Lehenetsia' \n"
+"abioko script-ak exekutatu gabe hasiko\n"
 "duzu.  Hori instalazioko arazoak konpontzeko\n"
 "bakarrik da."
 
 #: daemon/slave.c:1972
 msgid "Cannot find \"xterm\" to start a failsafe session."
-msgstr "Ezin da \"xterm\" aurkitu Failsafe saioa hasteko."
+msgstr "Ezin da Failsafe saioa hasteko \"xterm\" aurkitu."
 
 #: daemon/slave.c:1979
 msgid ""
@@ -916,10 +942,10 @@ msgid ""
 msgstr ""
 "Honako hau Failsafe xterm saioa da.\n"
 "Saioa beste modu batera hasi ezin baduzu, \n"
-"terminaleko kontsolaren saioa hasiko duzu, \n"
-"eta horrela, sistema konpondu ahal izango duzu.\n"
+"saioa terminaleko kontsolan hasiko duzu \n"
+"eta, horrela, sistema konpondu ahal izango duzu.\n"
 "Terminal-emulatzailetik irteteko, idatzi\n"
-"'irten' eta sartu leihoan."
+"'exit' eta sartu leihoan."
 
 #: daemon/slave.c:2001
 #, c-format
@@ -950,10 +976,10 @@ msgid ""
 "the list of available sessions in the login\n"
 "dialog window."
 msgstr ""
-"Ezin da saioa hasi, seguru asko \n"
-"saio hori ez dago.  Hautatu\n"
+"Ezin da saioa hasi; seguru asko \n"
+"saio hori ez da existituko.  Hautatu\n"
 "saio-hasierako elkarrizketa-leihoan erabilgarri\n"
-"dauden saioen zerrendan."
+"dauden saioen zerrendako bat."
 
 #: daemon/slave.c:2033
 #, c-format
@@ -966,9 +992,8 @@ msgid ""
 "system administrator has disabled your login.\n"
 "It could also indicate an error with your account.\n"
 msgstr ""
-"Ezin da shell komandoa hasi.  Beharbada sistema-administratzaileak zure saio-"
-"hasiera\n"
-"desgaitu du.\n"
+"Ezin da shell komandoa hasi. Beharbada\n"
+"sistema-administratzaileak zure saio-hasiera desgaitu du.\n"
 "Zure kontuko erroreren bat ere adieraz dezake.\n"
 
 #: daemon/slave.c:2068
@@ -990,11 +1015,19 @@ msgid ""
 "It is unlikely anything will work unless\n"
 "you use a failsafe session."
 msgstr ""
+"Zure etxeko direktorioa honela zerrendatuta dago:\n"
+"'%s'\n"
+"baina lehendik ez dagoela dirudi.\n"
+"Erro-direktorioa etxeko\n"
+"direktorio gisa duzula hasi nahi duzu saioa?\n"
+"\n"
+"Ezinezkoa da ezerk ere funtzionatzea,\n"
+"baldin eta failsafe saioa erabiltzen ari ez bazara."
 
 #: daemon/slave.c:2082
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
-msgstr "%s: Ez dago %s direktorioa."
+msgstr "%s: %s(r)en etxeko direktorioa: '%s' ez dago lehendik!"
 
 #: daemon/slave.c:2229
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
@@ -1006,7 +1039,7 @@ msgid ""
 "Aborting."
 msgstr ""
 "gdm_slave_session_start: PreSession script-aren exekuzioak hau eman du > 0. "
-"Bertan behera uzten."
+"Abortatzen. "
 
 #: daemon/slave.c:2284
 msgid "gdm_slave_session_start: Error forking user session"
@@ -1015,18 +1048,18 @@ msgstr "gdm_slave_session_start: Errorea erabiltzailearen saioa bikoiztean "
 #: daemon/slave.c:2468
 #, c-format
 msgid "Ping to %s failed, whacking display!"
-msgstr "%s(e)n ping egitean huts egin du, pantaila ixten!"
+msgstr "huts egin du %s(e)n ping egitean; pantaila ixten!"
 
 #: daemon/slave.c:2589
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
-"gdm_slave_xioerror_handler: X(r)en ezinbesteko errorea - %s berrabiarazten"
+"gdm_slave_xioerror_handler: Xren ezinbesteko errorea - %s berrabiarazten"
 
 #: daemon/slave.c:2780
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
-msgstr "gdm_slave_exec_script: Honakoa hasieratzean huts egin da: %s"
+msgstr "gdm_slave_exec_script: Huts egin du honakoa hasieratzean: %s"
 
 #: daemon/slave.c:2786
 msgid "gdm_slave_exec_script: Can't fork script process!"
@@ -1034,12 +1067,12 @@ msgstr "gdm_slave_exec_script: Ezin da script-aren prozesua bikoiztu!"
 
 #: daemon/slave.c:2910
 msgid "gdm_parse_enriched_login: Failed creating pipe"
-msgstr "gdm_parse_enriched_login: Kanalizazioa sortzean huts egin du"
+msgstr "gdm_parse_enriched_login: Huts egin du kanalizazioa sortzean "
 
 #: daemon/slave.c:2932
 #, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
-msgstr "gdm_parse_enriched_login: Honakoa exekutatzean huts egin du: %s"
+msgstr "gdm_parse_enriched_login: Huts egin du honakoa exekutatzean: %s"
 
 #: daemon/slave.c:2937
 msgid "gdm_parse_enriched_login: Can't fork script process!"
@@ -1048,14 +1081,13 @@ msgstr "gdm_parse_enriched_login: Ezin da script-aren prozesua bikoiztu!"
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:69 daemon/verify-pam.c:296 daemon/verify-shadow.c:68
 #: gui/gdmlogin.c:3146
-#, fuzzy
 msgid "Please enter your username"
-msgstr "Sartu zure pasahitza"
+msgstr "Sartu zure erabiltzaile-izena"
 
 #: daemon/verify-crypt.c:70 daemon/verify-pam.c:297 daemon/verify-shadow.c:69
 #: gui/gdmlogin.c:3109
 msgid "Username:"
-msgstr ""
+msgstr "Erabiltzaile-izena:"
 
 #: daemon/verify-crypt.c:92 daemon/verify-shadow.c:101
 msgid "Password: "
@@ -1073,19 +1105,20 @@ msgid ""
 "Incorrect username or password.  Letters must be typed in the correct case.  "
 "Please be sure the Caps Lock key is not enabled"
 msgstr ""
+"\n"
+"Erabiltzaile-izen edo pasahitz okerra.  Maiuskulak eta minuskulak dagokien "
+"moduan idatzi behar dira.  Ziurtatu Caps Lock tekla ez dagoela gaituta "
 
 #: daemon/verify-crypt.c:150 daemon/verify-pam.c:343
 #: daemon/verify-shadow.c:159
 #, c-format
 msgid "Root login disallowed on display '%s'"
-msgstr "Root moduan '%s' saioa pantailan hastea ez dago baimenduta "
+msgstr "Root-ak ez du gisa saioa '%s' pantailan hasteko baimenik "
 
 #: daemon/verify-crypt.c:152 daemon/verify-shadow.c:161
-#, fuzzy
 msgid "The system administrator is not allowed to login from this screen"
 msgstr ""
-"Sistema-administratzaileak\n"
-"zure kontua desgaitu du."
+"Sistema-administratzaileak ez du baimenik saioa pantaila honetan hasteko"
 
 #: daemon/verify-crypt.c:168 daemon/verify-shadow.c:177
 #, c-format
@@ -1094,47 +1127,46 @@ msgstr "%s erabiltzaileak ez du saioa hasteko baimenik "
 
 #: daemon/verify-crypt.c:170 daemon/verify-pam.c:373 daemon/verify-pam.c:529
 #: daemon/verify-shadow.c:179
-#, fuzzy
 msgid ""
 "\n"
 "The system administrator has disabled your account."
 msgstr ""
-"Sistema-administratzaileak\n"
-"zure kontua desgaitu du."
+"\n"
+"Sistema-administratzaileak zure kontua desgaitu du. "
 
 #: daemon/verify-crypt.c:185 daemon/verify-crypt.c:219 daemon/verify-pam.c:391
 #: daemon/verify-pam.c:546 daemon/verify-shadow.c:193
 #: daemon/verify-shadow.c:226
 #, c-format
 msgid "Cannot set user group for %s"
-msgstr ""
+msgstr "Ezin izan da %s(r)en erabiltzaile-taldea konfiguratu"
 
 #: daemon/verify-crypt.c:187 daemon/verify-crypt.c:222 daemon/verify-pam.c:393
 #: daemon/verify-pam.c:549 daemon/verify-shadow.c:195
 #: daemon/verify-shadow.c:229
-#, fuzzy
 msgid ""
 "\n"
 "Cannot set your user group, you will not be able to log in, please contact "
 "your system administrator."
 msgstr ""
-"Ezin da hautatzaile-programa hasi,\n"
-"saioa ezingo duzu hasi.\n"
-"Galdetu sistema-administratzaileari.\n"
+"\n"
+"Ezin izan da zure erabiltzaile-taldea konfiguratu eta ezingo duzu saioa "
+"hasi; jarri harremanetan zure sistema-administratzailearekin. "
 
 #: daemon/verify-crypt.c:214 daemon/verify-shadow.c:221
 #, c-format
 msgid "Cannot get passwd structure for %s"
-msgstr ""
+msgstr "Ezin izan da %s(r)entzat pasahitz-egiturarik lortu "
 
 #: daemon/verify-pam.c:216
 msgid "Cannot setup pam handle with null login and/or display"
 msgstr ""
+"Ezin izan da pam-maneiatzailea saio-hasiera eta/edo pantaila nuluaz hasi"
 
 #: daemon/verify-pam.c:230
-#, fuzzy, c-format
+#, c-format
 msgid "Can't find /etc/pam.d/%s!"
-msgstr "Ezin da /etc/pam.d/gdm aurkitu!"
+msgstr "Ezin da /etc/pam.d/%s aurkitu!"
 
 #: daemon/verify-pam.c:237
 #, c-format
@@ -1142,59 +1174,61 @@ msgid "Can't set PAM_TTY=%s"
 msgstr "Ezin da PAM_TTY=%s konfiguratu"
 
 #: daemon/verify-pam.c:244
-#, fuzzy, c-format
+#, c-format
 msgid "Can't set PAM_RUSER=%s"
-msgstr "Ezin da PAM_TTY=%s konfiguratu"
+msgstr "Ezin da PAM_RUSER=%s konfiguratu"
 
 #: daemon/verify-pam.c:252
-#, fuzzy, c-format
+#, c-format
 msgid "Can't set PAM_RHOST=%s"
-msgstr "Ezin da PAM_TTY=%s konfiguratu"
+msgstr "Ezin da PAM_RHOST=%s konfiguratu"
 
 #: daemon/verify-pam.c:346
-#, fuzzy
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
 msgstr ""
-"Sistema-administratzaileak\n"
-"zure kontua desgaitu du."
+"\n"
+"Sistema-administratzaileak ez du baimenik saioa pantaila honetan hasteko "
 
 #: daemon/verify-pam.c:362
-#, fuzzy, c-format
+#, c-format
 msgid "Authentication token change failed for user %s"
-msgstr "Autentifikazioak huts egin du."
+msgstr "%s erabiltzailearen autentifikazio-tokena aldatzean huts egin du"
 
 #: daemon/verify-pam.c:364
+#, fuzzy
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
 "contact the system administrator."
 msgstr ""
+"\n"
+"Autentifikazio-tokena aldatzean huts egin du. Geroago saiatu edo jarri "
+"harremanetan sistema-administratzailearekin."
 
 #: daemon/verify-pam.c:371 daemon/verify-pam.c:526
 #, c-format
 msgid "User %s no longer permitted to access the system"
-msgstr ""
+msgstr "%s erabiltzaileari ez zaio sisteman sartzen utziko"
 
 #: daemon/verify-pam.c:377 daemon/verify-pam.c:532
 #, c-format
 msgid "User %s not permitted to gain access at this time"
-msgstr ""
+msgstr "%s erabiltzaileari ez zaio mementu honetan sartzen utziko"
 
 #: daemon/verify-pam.c:379
-#, fuzzy
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporary."
 msgstr ""
-"Sistema-administratzaileak\n"
-"zure kontua desgaitu du."
+"\n"
+"Sistema-administratzaileak aldi baterako desgaitu du sistemarako sarrera. "
 
 #: daemon/verify-pam.c:384 daemon/verify-pam.c:539
-#, c-format
+#, fuzzy, c-format
 msgid "Couldn't set acct. mgmt for %s"
-msgstr "Ezin izan da %s(r)en acct. mgmt konfiguratu"
+msgstr "Ezin izan da %s(r)en kontuaren kudeaketa konfiguratu.mgmt %s (r)entzat"
 
 #: daemon/verify-pam.c:403 daemon/verify-pam.c:567
 #, c-format
@@ -1214,15 +1248,17 @@ msgstr "Autentifikazioak huts egin du."
 #, fuzzy
 msgid ""
 "\n"
-"The system administrator has your disabled access to the system temporary."
+"The system administrator has disabled your access to the system temporary."
 msgstr ""
-"Sistema-administratzaileak\n"
-"zure kontua desgaitu du."
+"\n"
+"Sistema-administratzaileak aldi baterako desgaitu du sistemarako sarrera. "
 
 #: daemon/verify-pam.c:652
-#, fuzzy, c-format
+#, c-format
 msgid "Can't find PAM configuration file for gdm. I've tried %s, %s, %s and %s"
-msgstr "gdm_verify_check: Ezin da gdm-ren PAM konfigurazio-fitxategia aurkitu "
+msgstr ""
+"Ezin da gdm-ren PAM konfigurazio-fitxategia aurkitu. Hauekin saiatu naiz: %"
+"s, %s, %s eta %s"
 
 #: daemon/xdmcp.c:238
 #, c-format
@@ -1257,8 +1293,7 @@ msgstr "gdm_xdmcp_decode_packet: %s ostalariaren eragiketa-kode ezezaguna"
 
 #: daemon/xdmcp.c:404
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
-msgstr ""
-"gdm_xdmcp_handle_query: Ezin izan da paketeko autentifikazio-zerrenda atera"
+msgstr "gdm_xdmcp_handle_query: Ezin izan da paketeko baimen-zerrenda atera"
 
 #: daemon/xdmcp.c:416
 msgid "gdm_xdmcp_handle_query: Error in checksum"
@@ -1278,8 +1313,7 @@ msgstr ""
 #: daemon/xdmcp.c:674
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
-"gdm_xdmcp_handle_forward_query: Ezin izan da paketeko autentifikazio-"
-"zerrenda atera"
+"gdm_xdmcp_handle_forward_query: Ezin izan da paketeko baimen-zerrenda atera"
 
 #: daemon/xdmcp.c:690
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
@@ -1298,11 +1332,11 @@ msgstr "%s ostalariak ez du XDMCPren kontsulta onartu  "
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr ""
-"gdm_xdmcp_handle_request: Baimenik ez duen %s ostalariaren ESKAERA jaso da "
+"gdm_xdmcp_handle_request: Baimenik ez duen %s ostalariaren ESKAERA jaso da"
 
 #: daemon/xdmcp.c:957
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
-msgstr "gdm_xdmcp_handle_request: Ezin izan da pantailako zenbakia irakurri"
+msgstr "gdm_xdmcp_handle_request: Ezin izan da pantaila-zenbakia irakurri"
 
 #: daemon/xdmcp.c:963
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
@@ -1347,7 +1381,7 @@ msgstr "gdm_xdmcp_handle_manage: Ezin izan da saioaren IDa irakurri"
 
 #: daemon/xdmcp.c:1211
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
-msgstr "gdm_xdmcp_handle_manage: Ezin izan da pantailako zenbakia irakurri"
+msgstr "gdm_xdmcp_handle_manage: Ezin izan da pantaila-zenbakia irakurri"
 
 #: daemon/xdmcp.c:1220
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
@@ -1355,20 +1389,20 @@ msgstr "gdm_xdmcp_handle_manage: Ezin izan da pantaila-mota irakurri"
 
 #: daemon/xdmcp.c:1295 daemon/xdmcp.c:1301 daemon/xdmcp.c:1351
 #: daemon/xdmcp.c:1357
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read address"
-msgstr "%s: Ezin izan da ostalari-izena irakurri"
+msgstr "%s: Ezin izan da helbidea irakurri"
 
 #: daemon/xdmcp.c:1433
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr ""
 "gdm_xdmcp_handle_keepalive: Baimenik ez duen %s ostalariaren KEEPALIVEa jaso "
-"da "
+"da"
 
 #: daemon/xdmcp.c:1440
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
-msgstr "gdm_xdmcp_handle_keepalive: Ezin izan da pantailako zenbakia irakurri"
+msgstr "gdm_xdmcp_handle_keepalive: Ezin izan da pantaila-zenbakia irakurri"
 
 #: daemon/xdmcp.c:1446
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
@@ -1388,7 +1422,7 @@ msgstr "gdm_xdmcp_close: Ez da XDMCP onartzen"
 
 #: gui/gdmchooser.c:62
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
-msgstr "Itxaron: sare lokalean XDMCP gaituta duten ostalariak eskaneatzen..."
+msgstr "Itxaron: XDMCP gaituta duten ostalariak sare lokalean eskaneatzen..."
 
 #: gui/gdmchooser.c:63
 msgid "No serving hosts were found."
@@ -1402,8 +1436,7 @@ msgstr "Ondorengo hautapenetik aukeratu zer ostalarirekin konektatu."
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr ""
-"gdm_chooser_parse_config: Konfigurazio-fitxategi hau ez dago: %s. Bertan "
-"behera uzten."
+"gdm_chooser_parse_config: Konfigurazio-fitxategi hau ez dago: %s. Abortatzen."
 
 #: gui/gdmchooser.c:672
 #, c-format
@@ -1418,7 +1451,7 @@ msgid ""
 "location of the gdmchooser.glade file."
 msgstr ""
 "Ezin da glade interfazearen deskribapen-fitxategia\n"
-"aurkitu, ezin da gdmchooser exekutatu.\n"
+"aurkitu; ezin da gdmchooser exekutatu.\n"
 "Egiaztatu instalazioa eta gdmchooser.glade fitxategiaren\n"
 "kokapena."
 
@@ -1458,7 +1491,7 @@ msgstr "SOCKETa"
 
 #: gui/gdmchooser.c:850
 msgid "Client address to return in response to xdm"
-msgstr "xdm-ek eskatuta bezeroaren helbidea bidali behar da"
+msgstr "xdm-k eskatuta bezeroaren helbidea itzuli behar da"
 
 #: gui/gdmchooser.c:850
 msgid "ADDRESS"
@@ -1479,9 +1512,9 @@ msgid ""
 "You have probably just upgraded gdm.\n"
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
-"Hautatzailearen bertsioa (%s) ez dator bat daemon-en bertsioarekin (%s).\n"
+"Hautatzailearen bertsioa (%s) ez dator bat daemon-aren bertsioarekin (%s).\n"
 "Seguru asko gdm oraintxe berritu duzu.\n"
-"Berriro hasi gdm-ren daemon-a edo berrabiarazi ordenagailua."
+"Hasi berriro gdm-ren daemon-a edo berrabiarazi ordenagailua."
 
 #. EOF
 #.
@@ -1511,7 +1544,7 @@ msgstr "Berreskaneatu"
 
 #: gui/gdmchooser-strings.c:12
 msgid "How to use this application"
-msgstr "Aplikazio honen erabilpena "
+msgstr "Aplikazio hau nola erabili "
 
 #: gui/gdmchooser-strings.c:13
 msgid "Help"
@@ -1527,7 +1560,7 @@ msgstr "Irten"
 
 #: gui/gdmchooser-strings.c:16 gui/gdmconfig-strings.c:16
 msgid " "
-msgstr " "
+msgstr ""
 
 #: gui/gdmchooser-strings.c:17
 msgid "Most recently queried hosts"
@@ -1544,12 +1577,12 @@ msgid ""
 "When you have selected a host click \"Connect\" to open a session\n"
 "to that machine."
 msgstr ""
-"Aplikazio honen area nagusiak ostalaria erakusten du\n"
-"\"XDMCP\" gaitu duen sare lokalean. Horrek erabiltzaileari\n"
-"urrunetik beste ordenagailuetan saioa hasten uzten dio, kontsolaren bidez\n"
-"konektaturik balego bezala.\n"
+"Aplikazio honen area nagusiak sare lokalean \"XDMCP\" gaituta duten\n"
+"ostalariak erakusten ditu. Horrek erabiltzaileari saioa \n"
+" urrunetik beste ordenagailu batean hasten ahalbidetzen dio, kontsolaren \n"
+" bidez konektaturik balego bezala.\n"
 "\n"
-"Ostalari berriarentzat sarea berreskanea dezakezu 'Berreskaneatu'n klik "
+"Sarea ostalari berrien bila berreskanea dezakezu 'Berreskaneatu'n klik "
 "eginez.\n"
 "Ostalaria hautatu duzunean, egin klik \"Konektatu\"-n ordenagailuan\n"
 "saioa hasteko."
@@ -1583,11 +1616,11 @@ msgid ""
 msgstr ""
 "Panel honek GDM konfiguratzeko oinarrizko aukerak bistaratzen ditu.\n"
 "\n"
-"Informazio zehatzagoa behar baduzu, hautatu 'aditua' edo "
-"'sistemarenkonfigurazioa' goiko zerrendan.\n"
+"Informazio zehatzagoa behar baduzu, hautatu 'aditua' edo 'sistemaren "
+"konfigurazioa' goiko zerrendan.\n"
 "\n"
-"Aukera horiek gutxitan aldatu behar diren GDMren aukera "
-"konplexuagoakbistaratuko dituzte."
+"Aukera horiek gutxitan aldatu behar izaten diren GDMren aukera "
+"konplexuagoetako batzuk bistaratuko dituzte."
 
 #: gui/gdmconfig.c:65
 msgid ""
@@ -1600,8 +1633,8 @@ msgid ""
 msgstr ""
 "Panel honek GDMren aukera aurreratuagoak bistaratzen ditu.\n"
 "\n"
-"Kontuz ibili segurtasun-aukerak manipulatzerakoan, bestela ahultasunak "
-"sordaitezke.\n"
+"Kontuz ibili segurtasun-aukerak manipulatzerakoan, erasotzaileen jomuga "
+"bihur zaitezke eta.\n"
 "\n"
 "Aukeratu \"Sistema\" GDMren oinarrizko aukerak aldatzeko."
 
@@ -1616,11 +1649,12 @@ msgid ""
 msgstr ""
 "Panel honek GDMren oinarrizko sistema-ezarpenak bistaratzen ditu.\n"
 "\n"
-"Ez aldatu bide-izen horiek, zer egiten ari zaren ziur ez bazaude, "
-"konfigurazio okerrak ordenagailuari berrabiaraztea galarazi baitiezaioke.\n"
+"Ez aldatu bide-izen horiek, zer egiten ari zaren ziur ez bazaude,"
+"konfigurazioaoker egoteak ordenagailuari behar bezala berrabiaraztea galaraz "
+"baitiezaioke.\n"
 "\n"
-"Aukeratu \"Oinarrizkoa\" ordenagailuaren saio-hasierari itxura aldatu "
-"besterik nahi ez badiozu."
+"Aukeratu \"Oinarrizkoa\" ordenagailuaren saio-hasieraren itxura aldatu "
+"besterik nahi ez baduzu."
 
 #: gui/gdmconfig.c:133
 #, c-format
@@ -1634,8 +1668,9 @@ msgstr ""
 "Egiaztatu instalazioa."
 
 #: gui/gdmconfig.c:378
+#, fuzzy
 msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr "Supererabiltzailea (root) izan behar duzu GDM konfiguratzeko.\n"
+msgstr "Supererabiltzailea (root) izan behar duzu GDMn konfiguratzeko.\n"
 
 #: gui/gdmconfig.c:417
 msgid ""
@@ -1674,9 +1709,8 @@ msgstr ""
 
 #: gui/gdmconfig.c:738 gui/gdmconfig.c:1090 gui/gdmconfig.c:1984
 #: gui/gdmconfig.c:2206 gui/gdmflexiserver.c:449
-#, fuzzy
 msgid "Standard server"
-msgstr "Gehitu zerbitzaria"
+msgstr "Zerbitzari estandarra"
 
 #: gui/gdmconfig.c:938
 msgid "Error reading session script!"
@@ -1689,12 +1723,11 @@ msgstr "Errorea saio-script hau irakurtzean"
 #: gui/gdmconfig.c:1049 gui/gdmconfig.c:1095 gui/gdmconfig.c:1534
 #: gui/gdmconfig.c:1968 gui/gdmconfig.c:2046 gui/gdmconfig.c:2062
 msgid "Yes"
-msgstr ""
+msgstr "Bai "
 
 #: gui/gdmconfig.c:1051 gui/gdmconfig.c:2050 gui/gdmconfig.c:2064
-#, fuzzy
 msgid "No"
-msgstr "Ez."
+msgstr "Ez"
 
 #: gui/gdmconfig.c:1126
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
@@ -1711,12 +1744,12 @@ msgid ""
 "restart GDM now (which will kill all current\n"
 "sessions)"
 msgstr ""
-"Aplikatutako ezarpenek ez dute eraginik izango, gdm berriro hasi edo\n"
+"Aplikatutako ezarpenek ez dute eraginik izango gdm berriro hasi edo\n"
 "ordenagailua berrabiarazi arte.\n"
 "GDM saio guztiak itxita daudenean \n"
 "(erabiltzaile guztiak saiotik irtendakoan) \n"
 " berrabiaraz dezakezu edo oraintxe(kasu honetan,\n"
-"uneko saio guztiak hilko ditu)"
+"uneko saio guztiak amaituko ditu)"
 
 #: gui/gdmconfig.c:1314
 msgid "Restart after logout"
@@ -1731,7 +1764,7 @@ msgid ""
 "Are you sure you wish to restart GDM\n"
 "now and lose any unsaved data?"
 msgstr ""
-"Ziur zaude GDM orain berriro hasi nahi duzula\n"
+"Ziur zaude GDM berriro hasi nahi duzula orain\n"
 "eta gorde gabeko informazioa galdu?"
 
 #: gui/gdmconfig.c:1333
@@ -1741,7 +1774,7 @@ msgid ""
 "take effect until gdm is restarted or the computer is\n"
 "rebooted"
 msgstr ""
-"Ongietorriaren ezarpenek hurrengoan bistaratzen direnean\n"
+"Ongietorriaren ezarpenek hurrengo bistaratzen direnean\n"
 "izango dute eragina.  Beste ezarpenek ez dute eraginik izango\n"
 "gdm berriro hasi edo ordenagailua berrabiarazi\n"
 "arte"
@@ -1757,10 +1790,10 @@ msgid ""
 "Are you sure you wish to apply these settings?"
 msgstr ""
 "Ez duzu zerbitzari lokalik definitu.\n"
-"Hori normalean ez da oso ideia ona, ziur bazaude kontsola lokalean\n"
-"erabiltzaileak interfaze grafikoarekin saioa hasteko gai ez izatea\n"
-"eta xdmcp zerbitzua bakarrik\n"
-"erabiltzea nahi duzula.\n"
+"Hori ez da ideia ona izaten, baldin eta erabiltzaileak \n"
+"saioa kontsola lokalean interfaze grafikoarekin ezin\n"
+"hasi izatea eta xdmcp zerbitzua bakarrik\n"
+"erabili ahal izatea nahi ez baduzu.\n"
 "\n"
 "Ziur zaude ezarpen hauek aplikatu nahi dituzula?"
 
@@ -1864,11 +1897,11 @@ msgstr ""
 
 #: gui/gdmconfig.c:2005 gui/gdmconfig.c:2336
 msgid "A command line must start with a forward slash ('/')"
-msgstr ""
+msgstr "Komando lerroa barra batez ('/') hasi behar da"
 
 #: gui/gdmconfig.c:2009
 msgid "A descriptive server name must be supplied"
-msgstr ""
+msgstr "Zerbitzari-izen deskriptiboa eman behar da "
 
 #: gui/gdmconfig.c:2676
 msgid "A session name must be unique and not empty"
@@ -1887,7 +1920,7 @@ msgid ""
 msgstr ""
 "Saio-direktorioa aldatu duzu.\n"
 "Saio-aldaketa horiek, ordea, lehengo direktorioan\n"
-"egongo dira idatzita, Konfigurazio\n"
+"egongo dira idatzita, Konfigurazioa\n"
 "elkarrizketa-koadroa berrabiarazten duzun arte."
 
 #: gui/gdmconfig.desktop.in.h:1
@@ -1917,11 +1950,11 @@ msgstr "Itzuli konfigurazio-fitxategiko ezarpenetara"
 
 #: gui/gdmconfig-strings.c:10
 msgid "Revert settings"
-msgstr "Itzuli ezarpenak"
+msgstr "Itzuli ezarpenetara"
 
 #: gui/gdmconfig-strings.c:11
 msgid "Revert to settings that were shipped with your system"
-msgstr "Itzuli sistemako ezarpenetara"
+msgstr "Itzuli sistemak berarekin ekarri zituen ezarpenetara"
 
 #: gui/gdmconfig-strings.c:12
 msgid "Revert to Factory Settings"
@@ -1961,7 +1994,7 @@ msgstr "Minimizatutako ikonoa: "
 
 #: gui/gdmconfig-strings.c:22
 msgid "Select a GTK+ theme file (gtkrc)"
-msgstr "Hautatu GTK+ gaiaren fitxategia (gtkrc)"
+msgstr "Hautatu GTK+ gai-fitxategia (gtkrc)"
 
 #: gui/gdmconfig-strings.c:23
 msgid ""
@@ -1969,7 +2002,7 @@ msgid ""
 "should use"
 msgstr ""
 "Honako hau saio-hasierako leihoak erabili behar lukeen gaia deskribatzen "
-"duenGTK+ RC fitxategia da"
+"duen GTK+ RC fitxategia da"
 
 #: gui/gdmconfig-strings.c:24
 msgid "Gtk+ RC file: "
@@ -1993,23 +2026,24 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:28
 msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
-msgstr "Erakutsi 'sistema' menua, (berrabiarazteko, itzaltzeko, etab.)"
+msgstr "Erakutsi 'sistema' menua (berrabiarazteko, itzaltzeko, etab.)"
 
 #: gui/gdmconfig-strings.c:29
 msgid "Allow users to run the configurator from the system menu"
-msgstr "Erabiltzaileei konfiguratzailea Sistema menuan exekutatzen utzi"
+msgstr "Erabiltzaileei konfiguratzailea sistema-menuan exekutatzen utzi"
 
 #: gui/gdmconfig-strings.c:30
+#, fuzzy
 msgid ""
 "If the user fails to authenticate himself the login window should Quiver to "
-"indicate failiure"
+"indicate failure"
 msgstr ""
 "Erabiltzaileak bere burua autentifikatzean huts egiten badu, saio-hasierako "
-"leihoak dar-dar egin behar luke hutsegitea adierazteko"
+"leihoak dar-dar egin beharko du hutsegitea adierazteko"
 
 #: gui/gdmconfig-strings.c:31
 msgid "Quiver on failure"
-msgstr "Huts egitean dar-dar egiten du"
+msgstr "Huts egitean dar-dar egin"
 
 #: gui/gdmconfig-strings.c:32
 msgid ""
@@ -2017,7 +2051,7 @@ msgid ""
 "able to move nor iconify the login window"
 msgstr ""
 "Erakutsi titulu-barra saio-hasierako leihoan.  Deskonektatuta badago, "
-"erabiltzaileakezingo du saio-hasierako leihoa lekuz aldatu edo ikonotu"
+"erabiltzaileak ezingo du saio-hasierako leihoa lekuz aldatu edo ikonotu"
 
 #: gui/gdmconfig-strings.c:33
 msgid "Show title bar on login window"
@@ -2111,7 +2145,6 @@ msgid "fr_FR"
 msgstr "fr_FR"
 
 #: gui/gdmconfig-strings.c:56
-#, fuzzy
 msgid "gl_ES"
 msgstr "es_ES"
 
@@ -2148,7 +2181,6 @@ msgid "lt_LT"
 msgstr "lt_LT"
 
 #: gui/gdmconfig-strings.c:66
-#, fuzzy
 msgid "nn_NO"
 msgstr "no_NO"
 
@@ -2165,9 +2197,8 @@ msgid "pt_PT"
 msgstr "pt_PT"
 
 #: gui/gdmconfig-strings.c:70
-#, fuzzy
 msgid "pt_BR"
-msgstr "tr_TR"
+msgstr "pt_BR"
 
 #: gui/gdmconfig-strings.c:71
 msgid "ro_RO"
@@ -2203,19 +2234,21 @@ msgid ""
 "is set to.  This should be in the standard format such as \"en_US\" for "
 "American English or \"cs_CZ\" for Czech"
 msgstr ""
-"GDM-k lokal hau erabiltzen du sisteman zer lokal ezarrita dagoen aurkitu "
+"GDMk lokal hau erabiltzen du sisteman zer lokal ezarrita dagoen aurkitu "
 "ezinduenean.   Horrek formatu estandarrean egon behar luke, esaterako \"en_US"
-"\" ingeles amerikarraren kasuan edo \"cs_CZ\" txekieraren kasuan"
+"\"Estatu Batuetako ingelesaren kasuan edo \"cs_CZ\" txekieraren kasuan"
 
 #: gui/gdmconfig-strings.c:80
 msgid ""
 "Always use the 24 hour format for the clock in the greeter, even if the norm "
 "for the current locale is 12 hour"
 msgstr ""
+"Ongietorriko erlojuan beti 24 orduko formatua erabili, nahiz eta uneko "
+"lokalaren araua 12 ordukoa izan "
 
 #: gui/gdmconfig-strings.c:81
 msgid "Always use 24 hour clock format"
-msgstr "Erabili beti 24 orduko erloju-formatua"
+msgstr "Beti 24 orduko erloju formatua erabili"
 
 #: gui/gdmconfig-strings.c:82
 msgid "Position"
@@ -2225,7 +2258,7 @@ msgstr "Kokalekua"
 msgid "Set the initial position of the login window to the values below"
 msgstr ""
 "Konfiguratu saio-hasierako leihoaren hasierako kokalekua jarraian azaltzen "
-"diren balioen arabera "
+"diren balioen arabera"
 
 #: gui/gdmconfig-strings.c:84
 msgid "Manually set position"
@@ -2249,15 +2282,16 @@ msgstr "Y kokalekua: "
 
 #: gui/gdmconfig-strings.c:89
 msgid "Xinerama screen: "
-msgstr "Xinerama pantaila: "
+msgstr "Xinerama-pantaila: "
 
 #: gui/gdmconfig-strings.c:90
+#, fuzzy
 msgid ""
-"If you have xinerama multi display setup which screen should the loginw "
-"indow appear on.  0 will usually do just fine."
+"If you have xinerama multi display setup which screen should the login "
+"window appear on.  0 will usually do just fine."
 msgstr ""
-"Pantaila anitzeko xinerama baduzu, konfiguratu saio-hasierako leihoan "
-"zerpantaila azalduko den.  0 ongi arituko da."
+"Pantaila anitzeko xinerama baduzu, konfiguratu saio-hasierako leihoan zer "
+"pantaila azalduko den.  0 ongi arituko da."
 
 #: gui/gdmconfig-strings.c:91
 msgid "Login behaviour"
@@ -2272,8 +2306,8 @@ msgid ""
 "Show a browser of user face images. The users can put their picture in ~/."
 "gnome/photo"
 msgstr ""
-"Erakutsi erabiltzailearen aurpegi-irudien arakatzailea. Erabiltzaileek "
-"beraien argazkia hemen ezar dezakete: ~/.gnome/photo"
+"Erakutsi erabiltzailearen aurpegi-irudien arakatzailea.Erabiltzaileek "
+"beraien irudiak hemen ipin ditzakete: ~/.gnome/photo"
 
 #: gui/gdmconfig-strings.c:94
 msgid "Show choosable user images (enable face browser)"
@@ -2311,8 +2345,8 @@ msgstr "Baztertu erabiltzaile hauek: "
 #: gui/gdmconfig-strings.c:102
 msgid "A comma separated list of users to exclude from the face browser."
 msgstr ""
-"Aurpegi-arakatzailetik kendu behar den komaz bereizitako erabiltzaileen "
-"zerrenda."
+"Aurpegi-arakatzailetik kendu beharreko erabiltzaileen zerrenda, izenak komaz "
+"bereizita."
 
 #: gui/gdmconfig-strings.c:104 gui/gdmconfig-strings.c:124
 msgid "Background"
@@ -2352,7 +2386,7 @@ msgid ""
 "image will be tiled on the background."
 msgstr ""
 "Eskalatu atzeko planoa pantaila osora doitzeko. Hori egiten ez baduzu, "
-"irudia mosaiko moduan azalduko da atzeko planoan."
+"irudia mosaiko-moduan azalduko da atzeko planoan."
 
 #: gui/gdmconfig-strings.c:113
 msgid "Scale background image to fit"
@@ -2378,7 +2412,7 @@ msgstr "Atzeko planoko irudia:"
 msgid "On remote login screens only set color to reduce network traffic"
 msgstr ""
 "Urruneko saio-hasierako pantailetan kolorea sareko trafikoa murrizteko "
-"bakarrik konfiguratu "
+"bakarrik konfiguratu"
 
 #: gui/gdmconfig-strings.c:119
 msgid "Only color on remote displays"
@@ -2447,8 +2481,8 @@ msgid ""
 "Allow logging in as root (administrator) user from a remote host using GDM.  "
 "This is only relevant if you enable the XDMCP protocol."
 msgstr ""
-"Saioa root (administratzaile) moduan urruneko ostalaritik, GDM erabiliz "
-"hastea baimendu.  Hori futsezkoa da XDMCP protokoloa gaitzen baduzu."
+"Saioa root (administratzaile) moduan urruneko ostalaritik GDM erabiliz "
+"hastea baimendu.  Hori funtsezkoa da XDMCP protokoloa gaitzen baduzu. "
 
 #: gui/gdmconfig-strings.c:138
 msgid "Allow root to login remotely with GDM"
@@ -2461,10 +2495,10 @@ msgid ""
 "remote hosts can gain access to this computer without the use of a password, "
 "so be careful."
 msgstr ""
-"Saioa GDMrekin urruneko denbora-muga erabiliz hastea baimendu.  Hori "
-"futsezkoa da XDMCP protokoloa gaitzen baduzu.  Kontuan hartu hori ez dela "
-"segurua urruneko ostalariek ordenagailu honetan sar baitaitezke pasahitzik "
-"erabiligabe, beraz, kontuz ibili."
+"Denboraz mugatutako saioa urruneko ostalaritik GDM erabiliz hastea "
+"baimendu.  Hori funtsezkoa da XDMCP protokoloa gaitzen baduzu.  Kontuan "
+"hartu hori ez dela segurua urruneko ostalariek ordenagailu honetan "
+"pasahitzik erabili gabe sar  baitaitezke, beraz, kontuz ibili."
 
 #: gui/gdmconfig-strings.c:140
 msgid "Allow remote timed logins"
@@ -2475,8 +2509,8 @@ msgid ""
 "Determines whether GDM should kill X clients started by the init scripts "
 "when the user logs in."
 msgstr ""
-"GDMek init script-ekin hasieratu diren X bezeroak hil behar dituen edo "
-"ezerabakitzen du, erabiltzaileak saioa hasten duenean."
+"Erabiltzaileak saioa hasten duenean, GDMek init script-ekin hasieratu diren "
+"X bezeroak hil behar dituen edo ez erabakitzen du."
 
 #: gui/gdmconfig-strings.c:142
 msgid "Kill 'init' clients"
@@ -2486,11 +2520,11 @@ msgstr "Hil 'init' bezeroak"
 msgid "Should GDM print authentication errors in the greeter"
 msgstr ""
 "GDMek ongietorrian autentifikazio-erroreak erakutsi behar dituen erabakitzen "
-"du "
+"du"
 
 #: gui/gdmconfig-strings.c:144
 msgid "Select how relaxed permissions are"
-msgstr "Hautatu erlaxazio-baimenak nola diren"
+msgstr "Hautatu erlaxazio-baimenak nolakoak diren"
 
 #: gui/gdmconfig-strings.c:145
 msgid "Permissions: "
@@ -2498,19 +2532,19 @@ msgstr "Baimenak: "
 
 #: gui/gdmconfig-strings.c:146
 msgid "Allow world writable files and directories"
-msgstr "Baimendu edozeinek bertan idatz ditzakeen fitxategiak eta direktorioak"
+msgstr "Baimendu edozeinek idatz ditzakeen fitxategiak eta direktorioak"
 
 #: gui/gdmconfig-strings.c:147
 msgid "World writable"
-msgstr "Edozeinek idatz dezake"
+msgstr "Edozeinek idatz ditzake"
 
 #: gui/gdmconfig-strings.c:148
 msgid "Allow group writable files and directories"
-msgstr "Baimendu taldeak idatz ditzakeen fitxategi eta direktorioak"
+msgstr "Baimendu taldeek idatz ditzaketen fitxategiak eta direktorioak"
 
 #: gui/gdmconfig-strings.c:149
 msgid "Group writable"
-msgstr "Taldeak idatz dezake"
+msgstr "Taldeek idatz ditzakete"
 
 #: gui/gdmconfig-strings.c:150
 msgid "Only accept user owned files and directories"
@@ -2552,8 +2586,8 @@ msgstr "Mugak"
 msgid ""
 "The number of seconds before a login is allowed after an unsuccesful try."
 msgstr ""
-"Baliogabeko saiakeraren ondoren saio-hasierarako baimentzen den segundo-"
-"kopurua."
+"Baliogabeko saiakera gertatu ondoren, saio-hasiera baimentzeko igaro behar "
+"den segundo-kopurua."
 
 #: gui/gdmconfig-strings.c:160
 msgid ""
@@ -2562,12 +2596,12 @@ msgid ""
 "having large files."
 msgstr ""
 "Gdm irakurtzen saiatuko den fitxategiaren gehienezko tamaina.  Hori memorian "
-"irakurtzen diren fitxategien kasurako da eta horregatik,ez duzu nahi gdm "
-"\"erasotuko\" duen fitxategi handirik edukitzea."
+"irakurtzen diren fitxategien kasurako da, izan ere ez duzu nahiko  "
+"erabiltzaileek gdm \"erasotzea\" fitxategi handiak dituelako."
 
 #: gui/gdmconfig-strings.c:161
 msgid "Retry delay: "
-msgstr "Berriro saiatu atzerapena: "
+msgstr "Berriro saiatzeko atzerapena: "
 
 #: gui/gdmconfig-strings.c:162
 msgid "Maximum user file length: "
@@ -2582,7 +2616,7 @@ msgid ""
 "The session file is read in a way where a higher limit is still ok.  That is "
 "it is never stored in memory."
 msgstr ""
-"Saio-fitxategia muga handiagoak onartzen diren moduan irakurtzen da.  Horrek "
+"Saio-fitxategia muga handiagoa onartzen duen moduan irakurtzen da.  Horrek "
 "esan nahi du inoiz ez dela memorian gordetzen."
 
 #: gui/gdmconfig-strings.c:165
@@ -2594,12 +2628,12 @@ msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
 msgstr ""
-"Bitarrean ez da XDMCP onartzen.  XDMCP onartzeko GDM XDMCPliburutegiekin "
-"berriro konpilatu behar duzu."
+"Bitarrean ez da XDMCP onartzen.  XDMCP onartzeko, GDM XDMCP liburutegiekin "
+"birkonpilatu behar duzu."
 
 #: gui/gdmconfig-strings.c:167
 msgid "Enable XDMCP, a protocol to allow others to log in remotely"
-msgstr "Gaitu XDMCP, saioa urrunetik hasten uzten duen komandoa"
+msgstr "Gaitu XDMCP, besteei saioa urrunetik hasten utziko dien protokoloa"
 
 #: gui/gdmconfig-strings.c:168
 msgid "Enable XDMCP"
@@ -2647,9 +2681,9 @@ msgid ""
 "respond in this many minutes (that is before the next time we ping it) the "
 "display will be terminated."
 msgstr ""
-"Zerbitzarian ping egiteko tartea minututan.  Zerbitzariak minutu "
-"horietanerantzuten ez badu (hau da, hurrengoan ping egin aurretik)"
-"bistaratzea bertan behera geldituko da."
+"Zerbitzarian ping egiteko tartea minututan.  Zerbitzariak minutu horietan "
+"erantzuten ez badu (hau da, berriro ping egin aurretik)bistaratzea bertan "
+"behera geldituko da."
 
 #: gui/gdmconfig-strings.c:179
 msgid ""
@@ -2657,55 +2691,56 @@ msgid ""
 "this is empty or does not exist, the standard message with the system ID is "
 "sent.  Only the first line of output from this script is read."
 msgstr ""
+"Zerbitzariak KONTSULTA bati GOGO ONEKO erantzuna bidaltzen dionean exekutatu "
+"behar den script-a.  Hutsik badago edo lehendik ez badago, ID sistemaren "
+"mezu estandarra bidaliko da.  Script honen lehen irteera-lerroa bakarrik "
+"irakurriko da."
 
 #: gui/gdmconfig-strings.c:180
 msgid "Willing script (optional):"
-msgstr ""
+msgstr "Gogo oneko script-a (hautazkoa):"
 
 #: gui/gdmconfig-strings.c:181
 msgid ""
 "Maximum displays per single host.  You can use this to prevent attacks by "
 "hogging all the possible displays.  Does not apply to local connections."
 msgstr ""
+"Ostalari bakoitzeko gehienezko pantailak.  Erasoak saihesteko erabil "
+"dezakezu pantaila guztiak zeureganatuz.  Ez zaie konexio lokalei aplikatzen."
 
 #: gui/gdmconfig-strings.c:182
 msgid "Displays per host:"
-msgstr ""
+msgstr "Ostalariko pantaila-kopurua:"
 
 #: gui/gdmconfig-strings.c:183
 msgid "XDMCP"
 msgstr "XDMCP"
 
 #: gui/gdmconfig-strings.c:184
-#, fuzzy
 msgid "Servers"
-msgstr "Gehitu zerbitzaria"
+msgstr "Zerbitzariak"
 
 #: gui/gdmconfig-strings.c:185
-#, fuzzy
 msgid "Name"
-msgstr "Izena: "
+msgstr "Izena"
 
 #: gui/gdmconfig-strings.c:186
 msgid "Command"
-msgstr ""
+msgstr "Komandoa"
 
 #: gui/gdmconfig-strings.c:187
 msgid "Flexible"
-msgstr ""
+msgstr "Malgua"
 
 #: gui/gdmconfig-strings.c:188 gui/gdmconfig-strings.c:198
-#, fuzzy
 msgid "Add server"
 msgstr "Gehitu zerbitzaria"
 
 #: gui/gdmconfig-strings.c:189 gui/gdmconfig-strings.c:199
-#, fuzzy
 msgid "Edit server"
 msgstr "Editatu zerbitzaria "
 
 #: gui/gdmconfig-strings.c:190 gui/gdmconfig-strings.c:200
-#, fuzzy
 msgid "Delete server"
 msgstr "Ezabatu zerbitzaria"
 
@@ -2715,20 +2750,19 @@ msgstr "Ezarri lehenetsi gisa"
 
 #: gui/gdmconfig-strings.c:192
 msgid "Static Servers (servers to always run)"
-msgstr ""
+msgstr "Zerbitzari estatikoak (beti exekutatu behar diren zerbitzariak)"
 
 #: gui/gdmconfig-strings.c:193
 msgid "No."
 msgstr "Ez."
 
 #: gui/gdmconfig-strings.c:194
-#, fuzzy
 msgid "Server"
-msgstr "Gehitu zerbitzaria"
+msgstr "Zerbitzaria"
 
 #: gui/gdmconfig-strings.c:195
 msgid "Extra arguments"
-msgstr ""
+msgstr "Argumentu gehigarriak"
 
 #: gui/gdmconfig-strings.c:196
 msgid ""
@@ -2736,7 +2770,8 @@ msgid ""
 "and then start the server again."
 msgstr ""
 "Erabiltzaile bat saiotik irteten denean, exekutatzen ari diren zerbitzariak "
-"berriro hasieratu beharrean.  Beti hil eta abiarazi berriro zerbitzaria."
+"berriro hasieratu beharrean.  Amaitu beti eta orduan berrabiarazi "
+"zerbitzaria . "
 
 #: gui/gdmconfig-strings.c:197
 msgid "Always restart X servers"
@@ -2749,27 +2784,29 @@ msgstr "Askotarikoak"
 
 #: gui/gdmconfig-strings.c:202
 msgid "Xnest server: "
-msgstr ""
+msgstr "Xnest zerbitzaria: "
 
 #: gui/gdmconfig-strings.c:203
-#, fuzzy
 msgid "Maximum number of flexible servers: "
-msgstr "Erabiltzailearen fitxategiaren gehienezko luzera: "
+msgstr "Zerbitzari malguen gehienezko kopurua: "
 
 #: gui/gdmconfig-strings.c:204
 msgid ""
 "The Xnest server.  This is a server that can run inside another server, used "
 "for the flexible nested login."
 msgstr ""
+"Xnest zerbitzaria.  Beste zerbitzari batean exekuta daitekeen zerbitzaria "
+"da; saio-hasiera habiaratu malguarentzat erabilia."
 
 #: gui/gdmconfig-strings.c:205
-#, fuzzy
 msgid "Standard X server: "
-msgstr "Failsafe X zerbitzaria:"
+msgstr "X zerbitzari estandarra: "
 
 #: gui/gdmconfig-strings.c:206
 msgid "This is the standard X server to run when we are not told otherwise."
 msgstr ""
+"Bestelakorik esaten ez bazaigu, exekutatu beharreko X zerbitzari estandarra "
+"da."
 
 #: gui/gdmconfig-strings.c:207 gui/gdmlogin.c:60
 msgid "Failsafe"
@@ -2787,7 +2824,7 @@ msgid ""
 msgstr ""
 "X zerbitzariak bertan behera gelditzen jarraitzen duenean eta Failsafe X "
 "zerbitzaria hutsik dagoenean edo hartu ez duenean exekutatu behar den script-"
-"a.  Jarraian definitzen den X konfigurazio-programaexekutatuko du."
+"a.  Jarraian definitzen den X konfigurazio-programaexekutatuko du. "
 
 #: gui/gdmconfig-strings.c:210
 msgid "Failsafe X server:"
@@ -2798,9 +2835,9 @@ msgid ""
 "An X server binary to run if the standard one keeps crashing.  If this fails "
 "the script below will be run."
 msgstr ""
-"Exekutatu behar den X zerbitzari bitarra, estandarrak bertan behera "
-"gelditzen jarraitzen badu.   Horrek huts egiten badu,ondoren azaltzen den "
-"script-a exekutatuko da."
+"Estandarrak bertan behera gelditzen jarraitzen badu exekutatu beharreko X "
+"zerbitzari bitarra.   Horrek huts egiten badu,ondoren azaltzen den script-a "
+"exekutatuko da."
 
 #: gui/gdmconfig-strings.c:212
 msgid "X-server setup"
@@ -2901,7 +2938,7 @@ msgstr "Ostalariak"
 msgid "Send a query to the local network and list all servers that respond"
 msgstr ""
 "Bidali eskaera bat sare lokalera eta zerrendatu erantzuten duten zerbitzari "
-"guztiak "
+"guztiak"
 
 #: gui/gdmconfig-strings.c:239
 msgid "Broadcast query"
@@ -2916,7 +2953,7 @@ msgid ""
 "Comma separated list of hostnames to list in the chooser (in addition to the "
 "broadcast above)"
 msgstr ""
-"Hautatzailean komaz bereizita zerrendatu behar diren ostalari-izenak (goiko "
+"Hautatzailean zerrendatu behar diren ostalari-izenak, komaz bereizita (goiko "
 "broadcast-ez gain)"
 
 #: gui/gdmconfig-strings.c:242
@@ -2934,7 +2971,7 @@ msgid ""
 "logs very quickly."
 msgstr ""
 "Gaitu arazketa-irteera syslog-en inprimatzeko.  Arazoen segimendurako "
-"erabilgarria.  Ez ordea erabilera arrunterako, zure saioak oso azkarbete "
+"erabilgarria,  ez ordea erabilera arrunterako, zure saioak oso azkar bete "
 "baititzake."
 
 #: gui/gdmconfig-strings.c:245
@@ -3037,20 +3074,19 @@ msgid ""
 msgstr ""
 "Konfiguratu GNOMEren pantaila-kudeatzailea.\n"
 "Akatsen edo etorkizuneko eskaeren berri http://bugzilla.gnome.org helbidean "
-"eman gdm produktuaren barnean."
+"eman, 'gdm' produktuaren barnean."
 
 #: gui/gdmconfig-strings.c:274
 msgid "label273"
-msgstr ""
+msgstr "label273"
 
 #: gui/gdmconfig-strings.c:275
 msgid "Extra arguments:"
-msgstr ""
+msgstr "Argumentu gehigarriak:"
 
 #: gui/gdmconfig-strings.c:276
-#, fuzzy
 msgid "Custom command line:"
-msgstr "Konfiguratzailea komandoa: "
+msgstr "Pertsonalizatu komando-lerroa:"
 
 #: gui/gdmconfig-strings.c:277 gui/gdmlogin.c:1834
 msgid "Name: "
@@ -3058,145 +3094,149 @@ msgstr "Izena: "
 
 #: gui/gdmconfig-strings.c:278
 msgid "Command line: "
-msgstr ""
+msgstr "Komando-lerroa: "
 
 #: gui/gdmconfig-strings.c:279
 msgid "Allow as flexible server"
-msgstr ""
+msgstr "Zerbitzari malgu gisa onartu"
 
 #: gui/gdmconfig-strings.c:280
 msgid "Make this the default server"
-msgstr ""
+msgstr "Zerbitzari lehenetsi gisa jarri"
 
 #: gui/gdmflexiserver.c:437
-#, fuzzy
 msgid "Choose server"
-msgstr "Hautatzailea"
+msgstr "Hautatu zerbitzaria"
 
 #: gui/gdmflexiserver.c:443
-#, fuzzy
 msgid "Choose the X server to start"
-msgstr "Aukeratu aurpegiak bilatzeko direktorioa"
+msgstr "Aukeratu X zerbitzaria abiarazteko"
 
 #: gui/gdmflexiserver.c:499
 msgid "Send the specified protocol command to gdm"
-msgstr ""
+msgstr "Bidali zehaztutako protokolo-komandoa gdm-ra "
 
 #: gui/gdmflexiserver.c:499
 msgid "COMMAND"
-msgstr ""
+msgstr "KOMANDOA"
 
 #: gui/gdmflexiserver.c:500
 msgid "Xnest mode"
-msgstr ""
+msgstr "Xnest modua"
 
 #: gui/gdmflexiserver.c:501
 msgid "Do not lock current screen"
-msgstr ""
+msgstr "Ez blokeatu uneko pantaila"
 
 #: gui/gdmflexiserver.c:502
-#, fuzzy
 msgid "Debugging output"
-msgstr "Gaitu arazketa-irteera"
+msgstr "Arazketa-irteera "
 
 #: gui/gdmflexiserver.c:503
 msgid "Authenticate before running --command"
-msgstr ""
+msgstr "Autentifikatu --command exekutatu aurretik"
 
 #: gui/gdmXnestchooser.c:261 gui/gdmflexiserver.c:551
-#, fuzzy
 msgid ""
 "GDM is not running.\n"
 "Please ask your system administrator to start it."
 msgstr ""
-"Aurpegi-arakatzailea ez dago konfiguratuta,\n"
-"eskatu sistema-administratzaileari \n"
-"GDMren konfigurazio-programan gaitzeko."
+"GDM ez dago martxan.\n"
+"Eskatu sistema-administratzaileari abiarazteko."
 
 #: gui/gdmflexiserver.c:560 gui/gdmflexiserver.c:576 gui/gdmflexiserver.c:644
 #: gui/gdmflexiserver.c:647
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr ""
+"Ezin da gdm-kin komunikatu, beharbada bertsio zaharra ari zara exekutatzen."
 
 #: gui/gdmflexiserver.c:587 gui/gdmflexiserver.c:673
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
+"Badirudi eragiketa honetarako behar den autentifikazioa ez duzula.  "
+"Beharbada .Xauthority fitxategia ez da ondo konfiguratuta egongo."
 
 #: gui/gdmflexiserver.c:606
 msgid ""
 "You do not seem to be logged in on the console.  Starting a new login only "
 "works correctly on the console."
 msgstr ""
+"Badirudi saioa ez duzula kontsolan hasi.  Saio-hasiera berri bat kontsolatik "
+"bakarrik has daiteke ondo."
 
 #: gui/gdmflexiserver.c:632
 msgid "Can't lock screen"
-msgstr ""
+msgstr "Ezin da pantaila blokeatu"
 
 #: gui/gdmflexiserver.c:635
 msgid "Can't disable xscreensaver display hacks"
-msgstr ""
+msgstr "Ezin dira X pantaila-babeslearen pantaila-hack-ak desgaitu"
 
 #: gui/gdmflexiserver.c:650
 msgid "The allowed limit of flexible X servers reached."
-msgstr ""
+msgstr "X zerbitzari malguen baimendutako mugara iritsi da."
 
 #: gui/gdmflexiserver.c:652
-#, fuzzy
 msgid "There were errors trying to start the X server."
-msgstr "X zerbitzaria berrabiarazten saiatuko naiz."
+msgstr "X zerbitzaria abiarazten saiatzean erroreak aurkitu dira."
 
 #: gui/gdmflexiserver.c:654
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr ""
+"X zerbitzariak huts egin du.  Beharbada ez da ondo konfiguratuta egongo."
 
 #: gui/gdmflexiserver.c:657
 msgid "Too many X sessions running."
-msgstr ""
+msgstr "X saio gehiegi ari dira exekutatzen."
 
 #: gui/gdmflexiserver.c:659
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
 msgstr ""
+"X zerbitzari habiaratua (Xnest) ezin da zure uneko X zerbitzariarekin "
+"konektatu.  Beharbada  X baimen-fitxategia falta zaizu."
 
 #: gui/gdmflexiserver.c:664
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
 msgstr ""
+"X zerbitzari habiaratua (Xnest) ez dago erabilgarri, edo gdm oker "
+"konfiguratuta dago.\n"
+"Instalatu Xnest paketea saio-hasiera habiaratua hasteko."
 
 #: gui/gdmflexiserver.c:669
 msgid ""
 "The X server is not available, it is likely that gdm is badly configured."
-msgstr ""
+msgstr "X zerbitzaria ez dago erabilgarri, gdm gaizki konfiguratuta egongo da."
 
 #: gui/gdmflexiserver.c:677
 msgid "Unknown error occured."
-msgstr ""
+msgstr "Errore ezezaguna gertatu da."
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without loging out"
-msgstr ""
+msgstr "Saioa beste erabiltzaile baten moduan hasi saioa amaitu gabe"
 
 #: gui/gdmflexiserver.desktop.in.h:2
-#, fuzzy
 msgid "New login"
-msgstr "Denboraz mugatutako saio-hasiera"
+msgstr "Erabiltzaile-izen berria"
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
-msgstr ""
+msgstr "Saioa beste erabiltzaile baten moduan hasi leiho habiaratu batean "
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:2
 msgid "New login in a nested window"
-msgstr ""
+msgstr "Erabiltzaile-izen berria leiho habiaratuan "
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:40
 #, fuzzy
-msgid "A-M|Azerbaidjani"
+msgid "A-M|Azerbaijani"
 msgstr "A-M|Kroaziera"
 
 #. Note translate the A-M to the A-M you used in the group label
@@ -3219,12 +3259,12 @@ msgstr "A-M|Katalana"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:48
 msgid "A-M|Chinese (simplified)"
-msgstr "N-Z|Txinera (sinplifikatua)"
+msgstr "A-M|Txinera (sinplifikatua)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:50
 msgid "A-M|Chinese (traditional)"
-msgstr "N-Z|Txinera (tradizionala)"
+msgstr "A-M|Txinera (tradizionala)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:52
@@ -3234,7 +3274,7 @@ msgstr "A-M|Kroaziera"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:54
 msgid "A-M|Czech"
-msgstr "N-Z|Txekiera"
+msgstr "A-M|Txekiera"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:56
@@ -3244,7 +3284,7 @@ msgstr "A-M|Daniera"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:58
 msgid "A-M|Dutch"
-msgstr "N-Z|Nederlandera"
+msgstr "A-M|Nederlandera"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:60
@@ -3279,9 +3319,8 @@ msgstr "A-M|Frantsesa"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:72
-#, fuzzy
 msgid "A-M|Galician"
-msgstr "A-M|Italiera"
+msgstr "A-M|Galiziera"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:74
@@ -3337,7 +3376,7 @@ msgstr "A-M|Lituaniera"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:94
 msgid "N-Z|Norwegian (bokmal)"
-msgstr "N-Z|Norvegiera (bokmål)"
+msgstr "N-Z|Norvegiera (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:96
@@ -3356,34 +3395,33 @@ msgstr "N-Z|Portugesa"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:102
-#, fuzzy
 msgid "N-Z|Brazilian Portuguese"
-msgstr "N-Z|Portugesa"
+msgstr "N-Z|Brasileko portugesa"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:104
 msgid "N-Z|Romanian"
-msgstr "A-M|Errumaniera"
+msgstr "N-Z|Errumaniera"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:106
 msgid "N-Z|Russian"
-msgstr "A-M|Errusiera"
+msgstr "N-Z|Errusiera"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:108
 msgid "N-Z|Slovak"
-msgstr "A-M|Eslovakiera"
+msgstr "N-Z|Eslovakiera"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:110
 msgid "N-Z|Slovenian"
-msgstr "A-M|Esloveniera"
+msgstr "N-Z|Esloveniera"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:112
 msgid "N-Z|Spanish"
-msgstr "A-M|Gaztelania"
+msgstr "N-Z|Gaztelania"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:114
@@ -3397,14 +3435,13 @@ msgstr "N-Z|Turkiera"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:118
-#, fuzzy
 msgid "N-Z|Ukrainian"
-msgstr "A-M|Errumaniera"
+msgstr "N-Z|Ukrainera"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:120
 msgid "N-Z|Walloon"
-msgstr "N-Z|Waloniera"
+msgstr ""
 
 #. This is the POSIX/C locale for english, should really be in Other
 #: gui/gdmlanguages.c:122
@@ -3476,9 +3513,9 @@ msgid ""
 "\n"
 "You likely won't be able to log in either."
 msgstr ""
-"Ezin izan da prozesu berri bat bikoiztu!\n"
+"Ezin izan da prozesu berria bikoiztu!\n"
 "\n"
-"Segur aski saioa ezingo duzu hasi."
+"Segur aski saioa ere ezingo duzu hasi."
 
 #: gui/gdmlogin.c:742
 msgid "Are you sure you want to reboot the machine?"
@@ -3501,8 +3538,7 @@ msgstr ""
 
 #: gui/gdmlogin.c:845
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
-msgstr ""
-"Saio-hasieraren atzerapena 5 baino txikiagoa zen.  Nik 5 erabiliko dut."
+msgstr "TimedLoginDelay 5 baino txikiagoa zen.  Nik 5 erabiliko dut."
 
 #: gui/gdmlogin.c:907 gui/gdmlogin.c:1482
 msgid "Failsafe Gnome"
@@ -3546,7 +3582,7 @@ msgstr ""
 "Saio honetarako %s aukeratu duzu.\n"
 "%s etorkizuneko saioetarako lehenetsi nahi baduzu,\n"
 "exekutatu 'switchdesk' utilitatea\n"
-"(Sistema->Mahaigaineko konmutadore-tresna Panela menuan)."
+"(Sistema->Mahaigaineko konmutadore-tresna, Panela menuan)."
 
 #: gui/gdmlogin.c:1291
 #, c-format
@@ -3572,12 +3608,12 @@ msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
 msgstr ""
-"Saio honen bidez GNOMEn hasiko duzu saioa eta erabili nahi duzun "
-"Gnomesaioetako bat aukeratzen utziko dizu."
+"Saio honen bidez GNOMEn hasiko duzu saioa eta erabili nahi duzun Gnome "
+"saioetako bat aukeratzen utziko dizu."
 
 #: gui/gdmlogin.c:1472
 msgid "Yaikes, nothing found in the session directory."
-msgstr "Yaikes, saio-direktorioan ez da ezer aurkitu."
+msgstr "Saio-direktorioan ez da ezer aurkitu."
 
 #: gui/gdmlogin.c:1484
 msgid ""
@@ -3587,7 +3623,7 @@ msgid ""
 msgstr ""
 "Honako hau GNOMEn sartuko zaituen failsafe saioa da.  Ez dira abio-script-ak "
 "irakurriko eta saioa beste modu batean hasi ezin duzunean bakarrik erabiliko "
-"dira.   GNOMEk 'Lehenetsia' saioa erabiliko du."
+"dira.  GNOMEk saio 'Lehenetsia' erabiliko du. "
 
 #: gui/gdmlogin.c:1509
 msgid ""
@@ -3600,6 +3636,7 @@ msgstr ""
 "erabiliko dira.   Terminaletik irteteko, idatzi 'irten'."
 
 #: gui/gdmlogin.c:1530
+#, fuzzy
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 "Ez da saio lehenetsirako estekarik aurkitu. Failsafe GNOME erabiltzen.\n"
@@ -3653,9 +3690,8 @@ msgid "Iconify the login window"
 msgstr "Ikonotu saio-hasierako leihoa"
 
 #: gui/gdmlogin.c:2629
-#, fuzzy
 msgid "%a %b %d, %H:%M"
-msgstr "%a %b %d, %I:%M %p"
+msgstr "%a %b %d, %H:%M"
 
 #: gui/gdmlogin.c:2636
 msgid "%a %b %d, %I:%M %p"
@@ -3686,7 +3722,7 @@ msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "Konfiguratu GDM (saioa hasteko kudeatzaile hau). Horretarako root-aren "
-"pasahitza behar duzu."
+"pasahitza behar duzu. "
 
 #: gui/gdmlogin.c:2850
 msgid "Reboot..."
@@ -3713,9 +3749,8 @@ msgid "Suspend your computer"
 msgstr "Eseki ordenagailua"
 
 #: gui/gdmlogin.c:2906
-#, fuzzy
 msgid "Disconnect"
-msgstr "Konektatu"
+msgstr "Deskonektatu"
 
 #: gui/gdmlogin.c:3390
 #, c-format
@@ -3799,7 +3834,7 @@ msgid ""
 msgstr ""
 "Ez da konfigurazioa aurkitu.  GDM lehenespenak\n"
 "erabiltzen ari da saio hau exekutatzeko.   Saioa hasi eta\n"
-"GDM konfigurazio-programa duen konfigurazio-fitxategia \n"
+"GDMren konfigurazio-programa duen konfigurazio-fitxategia \n"
 "sortu behar zenuke."
 
 #: gui/gdmphotosetup.c:76
@@ -3810,7 +3845,7 @@ msgid ""
 msgstr ""
 "Aurpegi-arakatzailea ez dago konfiguratuta,\n"
 "eskatu sistema-administratzaileari \n"
-"GDMren konfigurazio-programan gaitzeko."
+"GDMren konfigurazio-programan gai dezan."
 
 #: gui/gdmphotosetup.c:84
 msgid "Select a photo"
@@ -3869,42 +3904,40 @@ msgstr ""
 "irudia ezartzen du"
 
 #: gui/gdmXnestchooser.c:98
-#, fuzzy
 msgid "Xnest command line"
-msgstr "Berrabiarazi komandoa: "
+msgstr "Xnest komando-lerroa"
 
 #: gui/gdmXnestchooser.c:98
 msgid "STRING"
-msgstr ""
+msgstr "KATEA"
 
 #: gui/gdmXnestchooser.c:99
 msgid "Extra options for Xnest"
-msgstr ""
+msgstr "Xnest-en aukera gehigarriak"
 
 #: gui/gdmXnestchooser.c:99
 msgid "OPTIONS"
-msgstr ""
+msgstr "AUKERAK"
 
 #: gui/gdmXnestchooser.c:100
 msgid "Just run Xnest, no query (no chooser)"
-msgstr ""
+msgstr "Exekutatu Xnest, kontsultarik ez (hautatzailerik ez)"
 
 #: gui/gdmXnestchooser.c:101
 msgid "Do direct query instead of indirect (chooser)"
-msgstr ""
+msgstr "Kontsulta zuzena egin zeharkakoaren ordez (hautatzailea)"
 
 #: gui/gdmXnestchooser.c:102
 msgid "Run broadcast instead of indirect (chooser)"
-msgstr ""
+msgstr "Exekutatu broadcast zeharkakoaren ordez (hautatzailea)"
 
 #: gui/gdmXnestchooser.c:103
-#, fuzzy
 msgid "Run in background"
-msgstr "Atzeko planoa"
+msgstr "Atzeko planoan exekutatu"
 
 #: gui/gdmXnestchooser.c:104
 msgid "Don't check for running gdm"
-msgstr ""
+msgstr "Ez hautatu martxan dagoen gdm-a"
 
 #: gui/gdmXnestchooser.c:219
 msgid ""
@@ -3912,30 +3945,31 @@ msgid ""
 "Please ask your system administrator\n"
 "to install it."
 msgstr ""
+"Xnest ez dago lehendik.\n"
+"Eskatu sistema-administratzaileari\n"
+"instalatzeko."
 
 #: gui/gdmXnestchooser.c:238
-#, fuzzy
 msgid ""
 "Indirect XDMCP is not enabled,\n"
 "please ask your system administrator to enable it\n"
 "in the GDM configurator program."
 msgstr ""
-"Aurpegi-arakatzailea ez dago konfiguratuta,\n"
-"eskatu sistema-administratzaileari \n"
-"GDMren konfigurazio-programan gaitzeko."
+"Zeharkako XDMCP ez dago gaituta,\n"
+"eskatu sistema-administratzaileari GDM\n"
+"konfiguratzaile-programan gai dezan. "
 
 #: gui/gdmXnestchooser.c:272
 msgid "Could not find a free display number"
-msgstr ""
+msgstr "Ezin da libre dagoen pantaila-zenbaki bat aurkitu"
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
-msgstr ""
+msgstr "gdmaskpass root gisa bakarrik exekuta daiteke\n"
 
 #: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
-#, fuzzy
 msgid "Authentication failure!\n"
-msgstr "Autentifikazioak huts egin du."
+msgstr "Autentifikazioak huts egin du!\n"
 
 #: vicious-extensions/glade-helper.c:70
 msgid "(memory buffer)"
@@ -3947,7 +3981,7 @@ msgid "(memory buffer"
 msgstr "(memoria-bufferra"
 
 #: vicious-extensions/glade-helper.c:173
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An error occured while loading the user interface\n"
 "element %s%s from file %s.\n"
@@ -3959,7 +3993,7 @@ msgstr ""
 "%s fitxategitik kargatzean.\n"
 "Beharbada glade interfazearen azalpena oker zegoen.\n"
 "%s(e)k ezin du jarraitu eta orain irtengo da.\n"
-"%s(r)en instalazioa egiaztatu edo berriro instalatu."
+"%s(r)en instalazioa egiaztatu edo %s berriro instalatu behar zenuke. "
 
 #: vicious-extensions/glade-helper.c:191
 #, c-format
@@ -3972,7 +4006,7 @@ msgstr ""
 "fitxategia: %s trepeta: %s"
 
 #: vicious-extensions/glade-helper.c:217
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An error occured while loading the user interface\n"
 "element %s%s from file %s.\n"
@@ -3986,7 +4020,7 @@ msgstr ""
 "CList motako trepetak %d zutabe eduki behar ditu.\n"
 "Beharbada glade interfazearen azalpena oker zegoen.\n"
 "%s(e)k ezin du jarraitu eta orain irtengo da.\n"
-"%s(r)en instalazioa egiaztatu edo berriro instalatu."
+"%s(r)en instalazioa egiaztatu edo %s berriro instalatu behar zenuke."
 
 #: vicious-extensions/glade-helper.c:237
 #, c-format
@@ -3999,7 +4033,7 @@ msgstr ""
 "fitxategia: %s trepeta: %s espero zen clist zutabe-kopurua: %d"
 
 #: vicious-extensions/glade-helper.c:251
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An error occured while loading the user interface\n"
 "from file %s.\n"
@@ -4011,7 +4045,7 @@ msgstr ""
 "%s fitxategitik kargatzean.\n"
 "Beharbada glade interfazearen azalpena ez da aurkitu.\n"
 "%s(e)k ezin du jarraitu eta orain irtengo da.\n"
-"%s(r)en instalazioa egiaztatu edo berriro instalatu."
+"%s(r)en instalazioa egiaztatu edo %s berriro instalatu behar zenuke."
 
 #: vicious-extensions/glade-helper.c:264
 #, c-format
@@ -4023,18 +4057,17 @@ msgid "Choose an icon"
 msgstr "Aukeratu ikono bat"
 
 #: config/gettextfoo.h:2
-#, fuzzy
 msgid ""
 "Would you like me to try to run the X configuration program?  Note that you "
 "will need the root password for this."
 msgstr ""
-"Ezin dut X zerbitzaria hasi (interfaze grafikoa).  Baliteke behar bezala "
-"instalatuta ez egotea.  Nahi duzu X konfigurazio-programa exekutatzen "
-"saiatzea?  Kontuan hartu horretarako root-aren pasahitza behar duzula."
+"X konfigurazio-programa exekutatzen saiatzea nahi duzu?  Kontuan "
+"izanhorretarako root-aren pasahitza beharko duzula. "
 
 #: config/gettextfoo.h:3
-msgid "Please type in the root (privilaged user) password."
-msgstr "Idatzi root-aren (erabiltzaile-pribilegiatuaren) pasahitza."
+#, fuzzy
+msgid "Please type in the root (privileged user) password."
+msgstr "Idatzi root-aren (erabiltzaile pribilegiatuaren) pasahitza."
 
 #: config/gettextfoo.h:4
 msgid "I will now try to restart the X server again."
@@ -4049,36 +4082,39 @@ msgstr ""
 "konfiguratuta dagoenean."
 
 #: config/gettextfoo.h:6
-#, fuzzy
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  Would you like to view the X server output to "
 "diagnose the problem?"
 msgstr ""
 "Ezin dut X zerbitzaria hasi (interfaze grafikoa).  Baliteke behar bezala "
-"instalatuta ez egotea.  Nahi duzu X konfigurazio-programa exekutatzen "
-"saiatzea?  Kontuan hartu horretarako root-aren pasahitza behar duzula."
+"instalatuta ez egotea.  X zerbitzariaren irteera ikusi nahi duzu arazoaren "
+"diagnostikoa egiteko? "
 
 #: config/gettextfoo.h:7
-#, fuzzy
 msgid ""
 "I cannot start the X server (your graphical interface).  It seems that the "
 "pointer device (your mouse) is not set up correctly.  Would you like to view "
 "the X server output to diagnose the problem?"
 msgstr ""
-"Ezin dut X zerbitzaria hasi (interfaze grafikoa).  Baliteke behar bezala "
-"instalatuta ez egotea.  Nahi duzu X konfigurazio-programa exekutatzen "
-"saiatzea?  Kontuan hartu horretarako root-aren pasahitza behar duzula."
+"Ezin dut X zerbitzaria hasi (interfaze grafikoa).  Erakuslea (sagua) ondo "
+"konfiguratuta ez dagoela ematen du.   X zerbitzariaren irteera ikusi nahi "
+"duzu arazoaren diagnostikoa egiteko? "
 
 #: config/gettextfoo.h:8
-#, fuzzy
 msgid ""
 "Would you like me to try to run the mouse configuration program?  Note that "
 "you will need the root password for this."
 msgstr ""
-"Ezin dut X zerbitzaria hasi (interfaze grafikoa).  Baliteke behar bezala "
-"instalatuta ez egotea.  Nahi duzu X konfigurazio-programa exekutatzen "
-"saiatzea?  Kontuan hartu horretarako root-aren pasahitza behar duzula."
+"Saguaren konfigurazio-programa exekutatzen saiatzea nahi duzu?  Kontuan izan "
+"horretarako root-aren pasahitza beharko duzula. "
+
+#~ msgid ""
+#~ "\n"
+#~ "The system administrator has your disabled access to the system temporary."
+#~ msgstr ""
+#~ "\n"
+#~ "Sistema-administratzaileak aldi baterako desgaitu du sistemarako sarrera. "
 
 #~ msgid "Sleeping 30 seconds before retrying display %s"
 #~ msgstr "30 segundotan lotan %s pantaila berriro saiatu aurretik"
@@ -4087,11 +4123,11 @@ msgstr ""
 #~ msgstr "gdm_slave_greeter: Ezin izan da %d(r)en taldearen IDa konfiguratu"
 
 #~ msgid "gdm_slave_greeter: initgroups() failed for %s"
-#~ msgstr "gdm_slave_greeter: %s(r)en initgroups()-ek huts egin du "
+#~ msgstr "gdm_slave_greeter: %s(r)en initgroups()ek huts egin du"
 
 #~ msgid "gdm_slave_greeter: Couldn't set userid to %d"
 #~ msgstr ""
-#~ "gdm_slave_greeter: Ezin izan da %d(r)en erabiltzailearen IDa konfiguratu"
+#~ "gdm_slave_greeter: Ezin izan da %d(r)en erabiltzailearen IDa konfiguratu "
 
 #~ msgid "Login:"
 #~ msgstr "Erabiltzaile-izena:"
@@ -4100,10 +4136,10 @@ msgstr ""
 #~ msgstr "Saioa root moduan hastea ez dago baimenduta"
 
 #~ msgid "Login disabled"
-#~ msgstr "Saio-hasiera desgaituta dago"
+#~ msgstr "Erabiltzaile-izena desgaituta dago"
 
 #~ msgid "Login incorrect"
-#~ msgstr "Saio-hasiera okerra"
+#~ msgstr "Erabiltzaile-izena okerra da"
 
 #~ msgid "Display not authorized to connect"
 #~ msgstr "Pantaila ez dago konektatzeko baimenduta"
@@ -4127,7 +4163,7 @@ msgstr ""
 #~ msgstr "Zerbitzariaren definizioak"
 
 #~ msgid "Path to X server"
-#~ msgstr "X zerbitzariaren bide-izena "
+#~ msgstr "X zerbitzariaren bide-izena"
 
 #~ msgid "X configurator binaries to try: "
 #~ msgstr "Saiatu behar diren X konfiguratzaile bitarrak: "
@@ -4136,5 +4172,5 @@ msgstr ""
 #~ "A list of X setup programs to try for the above script, separated by "
 #~ "spaces"
 #~ msgstr ""
-#~ "Goiko script-arentzat saiatu behar diren X konfigurazio-programak, "
-#~ "tarteez bereizita"
+#~ "Goiko script-arentzat probatu behar diren X konfigurazio-programak, "
+#~ "tartez bereizita"
