@@ -1,5 +1,23 @@
 Ahh news...
 
+2.4.0.9 stuff:
+
+- Race fixing galore.  Tested many new codepaths, fixed many new races.
+  Well not new.  Really old ones but still.  We're now much better
+  on handling stuff being killed without us knowing, and stuff dieing
+  in different orders.  May fix redhat bug #72295
+
+- Automatic VT management.  This should fix #62997.  Basically on
+  linux (only currently) we can find a free vt that is higher then
+  a certain number (by default 7) and force the server to use that.
+  gdm can now be safely run as service with this on.
+
+- The locale.alias file now can have a list of locales to try for
+  each language.  We also don't list locales that don't work.  This
+  way by default we can use the .utf8 locales if they exist.
+
+- A bunch of minor fixes and cleanup.
+
 2.4.0.8 stuff:
 
 - New script to aid in testing graphical greeter themes, gdmthemetester.
