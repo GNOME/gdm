@@ -80,7 +80,9 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Chinese (simplified)"), "zh_CN", "中文 (简体)", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Chinese (traditional)"), "zh_TW", "中文 (繁體)", 0 },
+	{ N_("A-M|Chinese (Hong Kong)"), "zh_HK", "\344\270\255\346\226\207 (\351\246\231\346\270\257)", 0},
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Chinese (Taiwan)"), "zh_TW", "中文 (繁體)", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Croatian"), "hr_HR", "Hrvatski", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -360,6 +362,8 @@ gdm_lang_name (const char *language,
 		return g_strdup (language);
 
 	encoding = strchr (language, '.');
+	if (encoding == NULL)
+	  encoding = strchr (language, '@'); /* treat a modifier without a codeset as an encoding */
 	if (encoding != NULL)
 		encoding++;
 
@@ -483,6 +487,7 @@ gdm_lang_read_locale_file (const char *locale_file)
 	gboolean clean;
 	char *curlocale;
 	char *getsret;
+	char *p;
 
 	if (locale_file == NULL)
 		return NULL;
@@ -542,7 +547,15 @@ gdm_lang_read_locale_file (const char *locale_file)
 			language = g_new0 (Language, 1);
 			language->found = 1;
 			language->name = g_strdup (name);
-			language->code = g_strdup (lang);
+ 			/* only store the "lang_country" part of the locale code, so that we notice
+ 			 * if there is more than one encoding of this language. See bug 132629. */
+			p = strchr (lang, '.');
+ 			if (p == NULL)
+ 			  p = strchr (lang, '@');
+ 			if (p != NULL)
+ 			  language->code = g_strndup (lang, (p - lang));
+ 			else
+ 			  language->code = g_strdup (lang);
 			language->untranslated = NULL;
 			g_hash_table_insert (lang_names,
 					     language->code,

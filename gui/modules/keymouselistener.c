@@ -246,7 +246,7 @@ load_gestures(gchar *path)
 	fp = fopen (path, "r");
 	if (fp == NULL) {
 		/* TODO - I18n */
-		g_warning (_("Cannot open gestures file: %s\n)"), path);
+		g_warning (_("Cannot open gestures file: %s\n"), path);
 		return;
 	}
 
