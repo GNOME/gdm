@@ -1218,7 +1218,9 @@ gdm_login_gui_init (void)
     style = gtk_style_new();
     gdk_font_unref (style->font);
     style->font = gdk_font_load (GdmFont);
-    gtk_widget_push_style (style);
+
+    if (style->font)
+	gtk_widget_push_style (style);
 
     greeting = gdm_parse_enriched_string (GdmWelcome);    
     welcome = gtk_label_new (greeting);
