@@ -1,3 +1,11 @@
+Tue Jul 30 12:00:28 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: fix the linux-only proccess detection thing to work
+	  on non-linux systems correctly (logic was reversed).  Properly cast
+	  when printing to the pid file (being anal).  Close the pid file
+	  before failing.  Don't print out the SYSLOG 'handling message'
+	  debug thing as it just clutters debug info.
+
 Mon Jul 29 17:45:59 2002  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch]: use the ve_signal routines, remove gdm_signal

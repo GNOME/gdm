@@ -711,8 +711,8 @@ gdm_daemonify (void)
     pid = fork ();
     if (pid > 0) {
 
-	if ((pf = fopen (GdmPidFile, "w"))) {
-	    fprintf (pf, "%d\n", pid);
+	if ((pf = fopen (GdmPidFile, "w")) != NULL) {
+	    fprintf (pf, "%d\n", (int)pid);
 	    fclose (pf);
 	}
 
@@ -1352,13 +1352,13 @@ linux_only_is_running (pid_t pid)
 	if (realpath ("/proc/self/exe", resolved_self) == NULL) {
 		g_free (running);
 		/* probably not a linux system */
-		return FALSE;
+		return TRUE;
 	}
 
 	if (realpath (running, resolved_running) == NULL) {
 		g_free (running);
 		/* probably not a linux system */
-		return FALSE;
+		return TRUE;
 	}
 
 	g_free (running);
@@ -1455,6 +1455,7 @@ main (int argc, char *argv[])
 	    linux_only_is_running (pidv)) {
 		/* make sure the pid file doesn't get wiped */
 		GdmPidFile = NULL;
+		fclose (pf);
 		gdm_fail (_("gdm already running. Aborting!"));
 	}
 
@@ -1466,8 +1467,8 @@ main (int argc, char *argv[])
     if (no_daemon || getppid() == 1) {
 
 	/* Write pid to pidfile */
-	if ((pf = fopen (GdmPidFile, "w"))) {
-	    fprintf (pf, "%d\n", getpid());
+	if ((pf = fopen (GdmPidFile, "w")) != NULL) {
+	    fprintf (pf, "%d\n", (int)getpid());
 	    fclose (pf);
 	}
     }
@@ -1644,7 +1645,11 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			/* cut off most of the cookie for "security" */
 			gdm_debug ("Handling message: '%s...'", s);
 			g_free (s);
-		} else {
+		} else if (strncmp (msg, GDM_SOP_SYSLOG " ",
+				    strlen (GDM_SOP_SYSLOG " ")) != 0) {
+			/* Don't print out the syslog message as it will
+			 * be printed out anyway as that's the whole point
+			 * of the message. */
 			gdm_debug ("Handling message: '%s'", msg);
 		}
 	}
