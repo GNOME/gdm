@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2002-05-25 03:35+0200\n"
-"PO-Revision-Date: 2002-05-25 03:35+0200\n"
+"POT-Creation-Date: 2002-05-28 22:33+0200\n"
+"PO-Revision-Date: 2002-05-28 22:33+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -120,7 +120,7 @@ msgstr "gdm_auth_user_add: Kunde inte låsa kakfilen %s"
 msgid "%s: Could not write cookie"
 msgstr "%s: Kunde inte skriva kaka"
 
-#: daemon/auth.c:530
+#: daemon/auth.c:531
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr "gdm_auth_user_remove: Ignorerar konstig kakfil %s"
@@ -470,7 +470,7 @@ msgid "%s: fork() failed!"
 msgstr "%s: fork() misslyckades!"
 
 #. should never happen
-#: daemon/gdm.c:711 daemon/slave.c:2057
+#: daemon/gdm.c:711 daemon/slave.c:2035
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() misslyckades: %s!"
@@ -577,7 +577,7 @@ msgstr "Grena inte i bakgrunden"
 msgid "Preserve LD_* variables"
 msgstr "Bevara LD_*-variabler"
 
-#: daemon/gdm.c:1347
+#: daemon/gdm.c:1347 gui/gdmchooser.c:1055
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -766,17 +766,17 @@ msgstr "%s: Tomt serverkommando för display %s"
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: Servern skulle startas med uid %d, men den användaren finns inte"
 
-#: daemon/server.c:825 daemon/slave.c:1312 daemon/slave.c:1660
+#: daemon/server.c:825 daemon/slave.c:1290 daemon/slave.c:1638
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Kunde inte sätta grupp-id till %d"
 
-#: daemon/server.c:831 daemon/slave.c:1317 daemon/slave.c:1665
+#: daemon/server.c:831 daemon/slave.c:1295 daemon/slave.c:1643
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgroups() misslyckades för %s"
 
-#: daemon/server.c:837 daemon/slave.c:1322 daemon/slave.c:1670
+#: daemon/server.c:837 daemon/slave.c:1300 daemon/slave.c:1648
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Kunde inte sätta användar-id till %d"
@@ -871,12 +871,12 @@ msgstr ""
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: Ingen inloggning/Felaktig inloggning"
 
-#: daemon/slave.c:1271
+#: daemon/slave.c:1249
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Kan inte initiera rör till gdmgreeter"
 
-#: daemon/slave.c:1383
+#: daemon/slave.c:1361
 msgid ""
 "No servers were defined in the\n"
 "configuration file and XDMCP was\n"
@@ -895,7 +895,7 @@ msgstr ""
 "Observera att automatiska och tids-\n"
 "begränsade inloggningar är avstängda nu."
 
-#: daemon/slave.c:1397
+#: daemon/slave.c:1375
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -909,7 +909,7 @@ msgstr ""
 "bör logga in och se till att\n"
 "X-servern konfigureras korrekt."
 
-#: daemon/slave.c:1406
+#: daemon/slave.c:1384
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -918,13 +918,13 @@ msgstr ""
 "Det angivna diplaynumret var upptaget, så denna server startades på display %"
 "s."
 
-#: daemon/slave.c:1419
+#: daemon/slave.c:1397
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr ""
 "gdm_slave_greeter: Kan inte starta hälsare, försöker med standardvärde: %s"
 
-#: daemon/slave.c:1431
+#: daemon/slave.c:1409
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -939,26 +939,26 @@ msgstr ""
 "andra sätt och redigera konfigurations-\n"
 "filen"
 
-#: daemon/slave.c:1437
+#: daemon/slave.c:1415
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Fel vid start av hälsare på display %s"
 
-#: daemon/slave.c:1440
+#: daemon/slave.c:1418
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Kan inte grena gdmgreeter-processen"
 
-#: daemon/slave.c:1505 daemon/slave.c:1593
+#: daemon/slave.c:1483 daemon/slave.c:1571
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Kan inte öppna fifo!"
 
-#: daemon/slave.c:1620
+#: daemon/slave.c:1598
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
 msgstr "gdm_slave_greeter: Kan inte initiera rör till gdmchooser"
 
-#: daemon/slave.c:1703
+#: daemon/slave.c:1681
 msgid ""
 "Cannot start the chooser program,\n"
 "you will not be able to log in.\n"
@@ -968,32 +968,32 @@ msgstr ""
 "Du kommer inte att kunna logga in.\n"
 "Kontakta systemadministratören.\n"
 
-#: daemon/slave.c:1707
+#: daemon/slave.c:1685
 #, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr "gdm_slave_chooser: Fel vid start av väljare på display %s"
 
-#: daemon/slave.c:1710
+#: daemon/slave.c:1688
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr "gdm_slave_chooser: Kan inte grena gdmchooser-processen"
 
-#: daemon/slave.c:2094
+#: daemon/slave.c:2072
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Kunde inte konfigurera miljön för %s. Avbryter."
 
-#: daemon/slave.c:2108
+#: daemon/slave.c:2086
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: setusercontext() misslyckades för %s. Avbryter."
 
-#: daemon/slave.c:2124
+#: daemon/slave.c:2102
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Kunde inte bli %s. Avbryter."
 
 #. yaikes
-#: daemon/slave.c:2207
+#: daemon/slave.c:2185
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -1001,7 +1001,7 @@ msgstr ""
 "gdm_slave_session_start: gnome-session hittades inte för en felsäker "
 "gnomesession, försöker med xterm"
 
-#: daemon/slave.c:2211
+#: daemon/slave.c:2189
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -1011,7 +1011,7 @@ msgstr ""
 "kommer att försöka köra sessionen\n"
 "\"Felsäker xterm\"."
 
-#: daemon/slave.c:2217
+#: daemon/slave.c:2195
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -1026,11 +1026,11 @@ msgstr ""
 "för att problem i din installation ska\n"
 "kunna åtgärdas."
 
-#: daemon/slave.c:2237
+#: daemon/slave.c:2215
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Kan inte hitta \"xterm\" för att starta en felsäker session."
 
-#: daemon/slave.c:2244
+#: daemon/slave.c:2222
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -1048,21 +1048,21 @@ msgstr ""
 "du \"exit\" och trycker enter i\n"
 "fönstret."
 
-#: daemon/slave.c:2272
+#: daemon/slave.c:2250
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "Kör %s för %s på %s"
 
-#: daemon/slave.c:2291
+#: daemon/slave.c:2269
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: kunde inte öppna ~/.xsession-errors"
 
-#: daemon/slave.c:2301
+#: daemon/slave.c:2279
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: Användaren får inte logga in"
 
-#: daemon/slave.c:2303
+#: daemon/slave.c:2281
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -1070,12 +1070,12 @@ msgstr ""
 "Systemadministratören har\n"
 "stängt av ditt konto."
 
-#: daemon/slave.c:2306
+#: daemon/slave.c:2284
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: Kunde inte hitta/köra sessionen \"%s\""
 
-#: daemon/slave.c:2311
+#: daemon/slave.c:2289
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -1087,12 +1087,12 @@ msgstr ""
 "från listan över tillgängliga sessioner i\n"
 "inloggningsfönstret."
 
-#: daemon/slave.c:2319
+#: daemon/slave.c:2297
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Kunde inte starta sessionen \"%s\""
 
-#: daemon/slave.c:2322
+#: daemon/slave.c:2300
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -1103,14 +1103,14 @@ msgstr ""
 "konto.\n"
 "Det kan också bero på ett fel med ditt konto.\n"
 
-#: daemon/slave.c:2357
+#: daemon/slave.c:2335
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: Användaren klarade autentiseringen men getpwnam(%s) "
 "misslyckades!"
 
-#: daemon/slave.c:2363
+#: daemon/slave.c:2341
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1132,12 +1132,12 @@ msgstr ""
 "kommer att fungera såvida du inte\n"
 "använder en felsäker session."
 
-#: daemon/slave.c:2371
+#: daemon/slave.c:2349
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Hemkatalog för %s: \"%s\" finns inte!"
 
-#: daemon/slave.c:2537
+#: daemon/slave.c:2515
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -1145,7 +1145,7 @@ msgstr ""
 "gdm_slave_session_start: Körning av PreSession-skriptet returnerade > 0. "
 "Avbryter."
 
-#: daemon/slave.c:2560
+#: daemon/slave.c:2538
 msgid ""
 "GDM could not write to your authorization\n"
 "file.  This could mean that you are out of\n"
@@ -1161,11 +1161,11 @@ msgstr ""
 "det inte att logga in. Kontakta din system-\n"
 "administratör"
 
-#: daemon/slave.c:2595
+#: daemon/slave.c:2573
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Fel vid grening av användarsession"
 
-#: daemon/slave.c:2655
+#: daemon/slave.c:2633
 msgid ""
 "Your session only lasted less then\n"
 "10 seconds.  If you have not logged out\n"
@@ -1183,39 +1183,39 @@ msgstr ""
 "ett av de felsäkra sessionerna för att\n"
 "se om du kan åtgärda detta problem."
 
-#: daemon/slave.c:2663
+#: daemon/slave.c:2641
 msgid "View details (~/.xsession-errors file)"
 msgstr "Visa detaljer (~/.xsession-errors file)"
 
-#: daemon/slave.c:2816
+#: daemon/slave.c:2794
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping till %s misslyckades, tar bort displayen!"
 
-#: daemon/slave.c:2997
+#: daemon/slave.c:2975
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Ödesdigert X-fel - Startar om %s"
 
-#: daemon/slave.c:3255
+#: daemon/slave.c:3233
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Misslyckades med att starta: %s"
 
-#: daemon/slave.c:3261
+#: daemon/slave.c:3239
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Kan inte grena skriptprocessen!"
 
-#: daemon/slave.c:3353
+#: daemon/slave.c:3331
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "gdm_parse_enriched_login: Misslyckades med att skapa rör"
 
-#: daemon/slave.c:3385
+#: daemon/slave.c:3363
 #, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "gdm_parse_enriched_login: Misslyckades med att köra: %s"
 
-#: daemon/slave.c:3390
+#: daemon/slave.c:3368
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login: Kan inte grena skriptprocessen!"
 
@@ -1357,7 +1357,7 @@ msgstr "Användaren %s är för tillfället inte tillåten att komma åt systeme
 #: daemon/verify-pam.c:384
 msgid ""
 "\n"
-"The system administrator has disabled access to the system temporairly."
+"The system administrator has disabled access to the system temporarily."
 msgstr ""
 "\n"
 "Systemadministratören har tillfälligt stängt av åtkomst till systemet."
@@ -1727,7 +1727,7 @@ msgstr "gdm_signals_init: Fel vid inställning av INT-signalhanteraren"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Fel vid inställning av TERM-signalhanteraren"
 
-#: gui/gdmchooser.c:963 gui/gdmlogin.c:4020 gui/greeter/greeter.c:817
+#: gui/gdmchooser.c:963 gui/gdmlogin.c:4019 gui/greeter/greeter.c:817
 msgid "Could not set signal mask!"
 msgstr "Kunde inte sätta signalmask!"
 
@@ -1755,7 +1755,7 @@ msgstr "Anslutningstyp att returnera som svar till xdm"
 msgid "TYPE"
 msgstr "TYP"
 
-#: gui/gdmchooser.c:1090
+#: gui/gdmchooser.c:1082
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).\n"
@@ -2200,7 +2200,7 @@ msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
 "gdm_login_parse_config: Ingen konfigurationsfil: %s. Använder standardvärden."
 
-#: gui/gdmlogin.c:809 gui/gdmlogin.c:3799
+#: gui/gdmlogin.c:809 gui/gdmlogin.c:3798
 #, c-format
 msgid "Welcome to %n"
 msgstr "Välkommen till %n"
@@ -2435,12 +2435,12 @@ msgstr "_Avsluta"
 msgid "D_isconnect"
 msgstr "_Koppla från"
 
-#: gui/gdmlogin.c:3510
+#: gui/gdmlogin.c:3509
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Kan inte öppna DefaultImage: %s. Inaktiverar ansiktsbläddraren!"
 
-#: gui/gdmlogin.c:3878 gui/gdmlogin.c:3905 gui/greeter/greeter.c:464
+#: gui/gdmlogin.c:3877 gui/gdmlogin.c:3904 gui/greeter/greeter.c:464
 #: gui/greeter/greeter.c:491
 #, c-format
 msgid ""
@@ -2452,12 +2452,12 @@ msgstr ""
 "Du har troligtvis nyss uppgraderat gdm.\n"
 "Starta om gdm-demonen eller datorn."
 
-#: gui/gdmlogin.c:3911 gui/gdmlogin.c:3953 gui/greeter/greeter.c:497
+#: gui/gdmlogin.c:3910 gui/gdmlogin.c:3952 gui/greeter/greeter.c:497
 #: gui/greeter/greeter.c:540
 msgid "Reboot"
 msgstr "Starta om"
 
-#: gui/gdmlogin.c:3945 gui/greeter/greeter.c:532
+#: gui/gdmlogin.c:3944 gui/greeter/greeter.c:532
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -2468,27 +2468,27 @@ msgstr ""
 "Du har troligtvis nyss uppgraderat gdm.\n"
 "Starta om gdm-demonen eller datorn."
 
-#: gui/gdmlogin.c:3951 gui/greeter/greeter.c:538
+#: gui/gdmlogin.c:3950 gui/greeter/greeter.c:538
 msgid "Restart"
 msgstr "Starta om gdm"
 
-#: gui/gdmlogin.c:3992 gui/greeter/greeter.c:797
+#: gui/gdmlogin.c:3991 gui/greeter/greeter.c:797
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Fel vid inställning av HUP-signalhanteraren"
 
-#: gui/gdmlogin.c:4000 gui/greeter/greeter.c:805
+#: gui/gdmlogin.c:3999 gui/greeter/greeter.c:805
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Fel vid inställning av INT-signalhanteraren"
 
-#: gui/gdmlogin.c:4003 gui/greeter/greeter.c:808
+#: gui/gdmlogin.c:4002 gui/greeter/greeter.c:808
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Fel vid inställning av TERM-signalhanteraren"
 
-#: gui/gdmlogin.c:4011
+#: gui/gdmlogin.c:4010
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Fel vid inställning av CHLD-signalhanteraren"
 
-#: gui/gdmlogin.c:4085 gui/greeter/greeter.c:941
+#: gui/gdmlogin.c:4084 gui/greeter/greeter.c:941
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -2501,7 +2501,7 @@ msgstr ""
 "använda, men du bör logga in och korrigera gdm-\n"
 "konfigurationen."
 
-#: gui/gdmlogin.c:4106 gui/greeter/greeter.c:963
+#: gui/gdmlogin.c:4105 gui/greeter/greeter.c:963
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -2511,7 +2511,7 @@ msgstr ""
 "rad för inloggningsfönstret, och därför körde jag\n"
 "standardkommandot. Fixa din konfiguration."
 
-#: gui/gdmlogin.c:4128 gui/greeter/greeter.c:986
+#: gui/gdmlogin.c:4127 gui/greeter/greeter.c:986
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -2523,7 +2523,7 @@ msgstr ""
 "logga in och skapa en konfigurationsfil med GDM:s\n"
 "konfigurationsprogram."
 
-#: gui/gdmphotosetup.c:91
+#: gui/gdmphotosetup.c:64
 msgid ""
 "The face browser is not configured,\n"
 "please ask your system administrator to enable it\n"
@@ -2533,23 +2533,23 @@ msgstr ""
 "Be din systemadministratör att aktivera den\n"
 "i GDM-konfigurationsprogrammet."
 
-#: gui/gdmphotosetup.c:100
+#: gui/gdmphotosetup.c:73
 msgid "Select a photo"
 msgstr "Välj ett foto"
 
-#: gui/gdmphotosetup.c:109
+#: gui/gdmphotosetup.c:82
 msgid "Select a photograph to show in the facebrowser:"
 msgstr "Välj ett foto att visa i ansiktsbläddraren:"
 
-#: gui/gdmphotosetup.c:114
+#: gui/gdmphotosetup.c:87
 msgid "Browse"
 msgstr "Bläddra"
 
-#: gui/gdmphotosetup.c:137
+#: gui/gdmphotosetup.c:110
 msgid "No picture selected."
 msgstr "Ingen bild är vald."
 
-#: gui/gdmphotosetup.c:159
+#: gui/gdmphotosetup.c:119
 #, c-format
 msgid ""
 "The picture is too large and the system administrator\n"
@@ -2560,7 +2560,7 @@ msgstr ""
 "inte att bilder som är större än %d byte visas i\n"
 "ansiktsbläddraren"
 
-#: gui/gdmphotosetup.c:185
+#: gui/gdmphotosetup.c:145
 #, c-format
 msgid ""
 "File %s cannot be open for reading\n"
@@ -2569,7 +2569,7 @@ msgstr ""
 "Filen %s kan inte öppnas för läsning\n"
 "Fel: %s"
 
-#: gui/gdmphotosetup.c:203
+#: gui/gdmphotosetup.c:163
 #, c-format
 msgid ""
 "File %s cannot be open for writing\n"
@@ -3142,16 +3142,16 @@ msgstr "gdmaskpass kör endast som root\n"
 msgid "Authentication failure!\n"
 msgstr "Autentiseringsfel!\n"
 
-#: vicious-extensions/glade-helper.c:72
+#: vicious-extensions/glade-helper.c:75
 msgid "(memory buffer)"
 msgstr "(minnesbuffert)"
 
-#: vicious-extensions/glade-helper.c:104 vicious-extensions/glade-helper.c:126
-#: vicious-extensions/glade-helper.c:146
+#: vicious-extensions/glade-helper.c:107 vicious-extensions/glade-helper.c:129
+#: vicious-extensions/glade-helper.c:149
 msgid "(memory buffer"
 msgstr "(minnesbuffert"
 
-#: vicious-extensions/glade-helper.c:178
+#: vicious-extensions/glade-helper.c:181
 #, c-format
 msgid ""
 "An error occured while loading the user interface\n"
@@ -3167,7 +3167,7 @@ msgstr ""
 "Du bör kontrollera din installation av %s eller\n"
 "installera om %s."
 
-#: vicious-extensions/glade-helper.c:194
+#: vicious-extensions/glade-helper.c:197
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3176,7 +3176,7 @@ msgstr ""
 "Glade-filen är helt åt skogen! Försäkra dig om att rätt fil är installerad!\n"
 "fil: %s widget: %s"
 
-#: vicious-extensions/glade-helper.c:224
+#: vicious-extensions/glade-helper.c:227
 #, c-format
 msgid ""
 "An error occured while loading the user interface\n"
@@ -3194,7 +3194,7 @@ msgstr ""
 "Du bör kontrollera din installation av %s eller\n"
 "installera om %s."
 
-#: vicious-extensions/glade-helper.c:242
+#: vicious-extensions/glade-helper.c:245
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3203,7 +3203,7 @@ msgstr ""
 "Glade-filen är helt åt skogen! Försäkra dig om att rätt fil är installerad!\n"
 "fil: %s widget: %s förväntade clist-kolumner: %d"
 
-#: vicious-extensions/glade-helper.c:260
+#: vicious-extensions/glade-helper.c:263
 #, c-format
 msgid ""
 "An error occured while loading the user interface\n"
@@ -3220,7 +3220,7 @@ msgstr ""
 "Du bör kontrollera din installation av %s eller\n"
 "installera om %s."
 
-#: vicious-extensions/glade-helper.c:271
+#: vicious-extensions/glade-helper.c:274
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Inget gränssnitt kunde läsas in, ILLA! (fil: %s)"
