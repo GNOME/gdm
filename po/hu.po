@@ -6,110 +6,141 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 \n"
-"POT-Creation-Date: 2001-05-21 12:10+0200\n"
-"PO-Revision-Date: 2001-05-21 13:53+02:00\n"
+"POT-Creation-Date: 2001-08-21 13:55+0200\n"
+"PO-Revision-Date: 2001-08-21 14:17+0200\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: daemon/gdm.c:144
+#: daemon/gdm.c:178
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Using defaults."
 msgstr "gdm_config_parse: Nincs %s beállításfájl. Alapértelemzés alkalmazása."
 
-#: daemon/gdm.c:218
+#: daemon/gdm.c:260
+msgid ""
+"gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
+"it off"
+msgstr ""
+
+#: daemon/gdm.c:273
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
 "gdm_config_parse: A root (rendszergazda) felhasználót nem lehet "
 "automatikusan beléptetni, automatikus beléptetés kikapcsolva."
 
-#: daemon/gdm.c:231
+#: daemon/gdm.c:286
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
 "gdm_config_parse: A root (rendszergazda) felhasználót nem lehet "
 "automatikusan beléptetni, idõzített beléptetés kikapcsolva."
 
-#: daemon/gdm.c:237
-msgid "gdm_config_parse: TimedLoginDelay less then 10, so I will just use 10."
-msgstr "gdm_config_parse: TimedLoginDelay értéke kisebb 10-nél, 10-re állítom."
+#: daemon/gdm.c:292
+msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
+msgstr "gdm_config_parse: TimedLoginDelay értéke kisebb 5-nél, 5-re állítom."
 
-#: daemon/gdm.c:243
+#: daemon/gdm.c:302
 msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse: Az üdvözlõ nem lett megadva."
 
-#: daemon/gdm.c:247
+#: daemon/gdm.c:306
 msgid "gdm_config_parse: No authdir specified."
 msgstr "gdm_config_parse: Az authdir nincs megadva."
 
-#: daemon/gdm.c:253
+#: daemon/gdm.c:312
 msgid "gdm_config_parse: No sessions directory specified."
 msgstr "gdm_config_parse: A session könyvtár nincs megadva."
 
-#: daemon/gdm.c:265
+#: daemon/gdm.c:336
+#, c-format
+msgid "%s: Empty server command, using standard one."
+msgstr ""
+
+#: daemon/gdm.c:385
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse: Érvénytelen kiszolgáló sor a beállításokban. Figyelmen "
 "kívül hagytam!"
 
-#: daemon/gdm.c:273
+#. start
+#. server uid
+#: daemon/gdm.c:404
+#, fuzzy, c-format
 msgid ""
-"gdm_config_parse: Xdmcp disabled and no local servers defined. Adding "
-"/usr/bin/X11/X on :0 to allow configuration!"
-msgstr "gdm_config_parse: Az xdmcp ki van kapcsolva és nincs helyi kiszolgáló megadva. /usr/bin/X11/X hozzáadása (:0-n), hogy a beállításokat el lehessen végezni!"
+"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
+"d to allow configuration!"
+msgstr ""
+"gdm_config_parse: Az xdmcp ki van kapcsolva és nincs helyi kiszolgáló "
+"megadva. /usr/bin/X11/X hozzáadása (:0-n), hogy a beállításokat el lehessen "
+"végezni!"
 
-#: daemon/gdm.c:285
+#: daemon/gdm.c:418
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr ""
 "gdm_config_parse: Az xdmcp ki van kapcsolva és nincs helyi kiszolgáló "
 "megadva. Mûvelet megszakítása."
 
-#: daemon/gdm.c:294
+#: daemon/gdm.c:427
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
-msgstr "gdm_config_parse: Nem találom a gdm felhasználót (%s). Próba 'nobody' felhasználóval!"
+msgstr ""
+"gdm_config_parse: Nem találom a gdm felhasználót (%s). Próba 'nobody' "
+"felhasználóval!"
 
-#: daemon/gdm.c:301
+#: daemon/gdm.c:434
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
 msgstr ""
 "gdm_config_parse: Nem találom a gdm felhasználót (%s). Mûvelet megszakítása."
 
-#: daemon/gdm.c:306
+#: daemon/gdm.c:439
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr ""
 "gdm_config_parse: A gdm felhasználó ne legyen a root. Mûvelet megszakítása."
 
-#: daemon/gdm.c:311
+#: daemon/gdm.c:444
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
-msgstr "gdm_config_parse: Nem találom a gdm csoportját (%s). Próba 'nobody' csoporttal!"
+msgstr ""
+"gdm_config_parse: Nem találom a gdm csoportját (%s). Próba 'nobody' "
+"csoporttal!"
 
-#: daemon/gdm.c:318
+#: daemon/gdm.c:451
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
 msgstr ""
 "gdm_config_parse: Nem találom a gdm csoportját (%s). Mûvelet megszakítása."
 
-#: daemon/gdm.c:323
+#: daemon/gdm.c:456
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
 msgstr ""
 "gdm_config_parse: A gdm csoportja ne legyen root. Mûvelet megszakítása."
 
-#: daemon/gdm.c:359
+#: daemon/gdm.c:467
+#, c-format
+msgid "%s: Greeter not found or can't be executed by the gdm user"
+msgstr ""
+
+#: daemon/gdm.c:479
+#, c-format
+msgid "%s: Chooser not found or it can't be executed by the gdm user"
+msgstr ""
+
+#: daemon/gdm.c:487
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr "gdm_config_parse: A %s authdir nem létezik. Mûvelet megszakítása."
 
-#: daemon/gdm.c:362
+#: daemon/gdm.c:490
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
 msgstr "gdm_config_parse: A %s authdir nem könyvtár. Mûvelet megszakítása."
 
-#: daemon/gdm.c:365
+#: daemon/gdm.c:493
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
@@ -117,55 +148,60 @@ msgstr ""
 "gdm_config_parse: A %s authdir nem %s felhasználó és %s csoport tulajdonában "
 "van. Mûvelet megszakítása."
 
-#: daemon/gdm.c:369
-#, c-format
+#: daemon/gdm.c:497
+#, fuzzy, c-format
 msgid ""
-"gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
+"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
+"Aborting."
 msgstr ""
 "gdm_config_parse: A %s authdir jogosultságai rosszak. 750 kellene legyen. "
 "Mûvelet megszakítása."
 
-#: daemon/gdm.c:404
+#: daemon/gdm.c:550
 msgid "gdm_daemonify: fork() failed!"
 msgstr "gdm_daemonify: fork() sikertelen!"
 
-#: daemon/gdm.c:407
+#: daemon/gdm.c:553
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid() sikertelen: %s!"
 
-#: daemon/gdm.c:484
+#: daemon/gdm.c:631
 #, c-format
 msgid "deal_with_x_crashes: Trying failsafe X server %s"
 msgstr ""
 
-#: daemon/gdm.c:517
+#: daemon/gdm.c:663
 msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
 msgstr ""
 
-#: daemon/gdm.c:532 daemon/gdm.c:592 daemon/gdm.c:606
+#. do we have dialog?
+#. Shit if we knew what the program was to tell the user,
+#. * the above script would have been defined and we'd run
+#. * it for them
+#: daemon/gdm.c:678 daemon/gdm.c:735
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  You will need to log in on a console and rerun "
 "the X configuration program.  Then restart GDM."
 msgstr ""
 
-#: daemon/gdm.c:537
+#: daemon/gdm.c:683
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  Would you like me to try to run the X "
 "configuration program?  Note that you will need the root password for this."
 msgstr ""
 
-#: daemon/gdm.c:542
+#: daemon/gdm.c:688
 msgid "Please type in the root (privilaged user) password."
 msgstr ""
 
-#: daemon/gdm.c:544
+#: daemon/gdm.c:690
 msgid "I will now try to restart the X server again."
 msgstr ""
 
-#: daemon/gdm.c:546
+#: daemon/gdm.c:692
 msgid ""
 "I will disable this X server for now.  Restart GDM when it is configured "
 "correctly."
@@ -176,109 +212,147 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:622
+#: daemon/gdm.c:769
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
-msgstr ""
-"Nem sikerült elindítani az X-kiszolgálót több próbálkozás után sem. A %s "
-"képernyõ letiltva."
+msgstr "Nem sikerült elindítani az X-szervert több próbálkozás után sem. A %s képernyõ letiltva."
 
-#: daemon/gdm.c:663
+#: daemon/gdm.c:870
 #, c-format
 msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
 "display %s"
 msgstr ""
 
-#: daemon/gdm.c:670
-#, c-format
-msgid "gdm_child_action: Reboot or Halt request from a non-local display %s"
-msgstr "gdm_child_action: Újraindítási vagy leállási kérelem %s nem helyi képernyõrõl."
+#: daemon/gdm.c:878
+#, fuzzy, c-format
+msgid ""
+"gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
+msgstr ""
+"gdm_child_action: Újraindítási vagy leállási kérelem %s nem helyi "
+"képernyõrõl."
 
 #. Bury this display for good
-#: daemon/gdm.c:678
+#: daemon/gdm.c:912
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action: A %s képernyõ megszûnik."
 
 #. Reboot machine
-#: daemon/gdm.c:684
+#: daemon/gdm.c:921
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action: A kiszolgáló újraindul..."
 
-#: daemon/gdm.c:691
+#: daemon/gdm.c:928
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action: Az újraindítás sikertelen: %s"
 
 #. Halt machine
-#: daemon/gdm.c:695
+#: daemon/gdm.c:932
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action: A kiszolgáló leáll..."
 
-#: daemon/gdm.c:702
+#: daemon/gdm.c:939
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: A leállítás sikertelen: %s"
 
-#: daemon/gdm.c:784
+#. Suspend machine
+#: daemon/gdm.c:943
+#, fuzzy
+msgid "gdm_child_action: Master suspending..."
+msgstr "gdm_child_action: A kiszolgáló újraindul..."
+
+#: daemon/gdm.c:950
+#, fuzzy, c-format
+msgid "gdm_child_action: Suspend failed: %s"
+msgstr "gdm_child_action: Az újraindítás sikertelen: %s"
+
+#: daemon/gdm.c:1035
+msgid "Gdm restarting ..."
+msgstr ""
+
+#: daemon/gdm.c:1040
 msgid "Failed to restart self"
 msgstr ""
 
-#: daemon/gdm.c:834
+#: daemon/gdm.c:1171
 msgid "Only root wants to run gdm\n"
 msgstr "Csak a root futtathatja a gdm-et\n"
 
-#: daemon/gdm.c:857
+#: daemon/gdm.c:1196
 msgid "gdm already running. Aborting!"
 msgstr "gdm már fut. Mûvelet megszakítása!"
 
-#: daemon/gdm.c:883
-msgid "gdm_main: Error setting up TERM signal handler"
-msgstr "gdm_main: Hiba a TERM jelzés kezelésének beállításakor"
+#: daemon/gdm.c:1226
+#, fuzzy, c-format
+msgid "%s: Error setting up TERM signal handler"
+msgstr "main: Hiba a TERM jelzés kezelésének beállításakor"
 
-#: daemon/gdm.c:886
-msgid "gdm_main: Error setting up INT signal handler"
-msgstr "gdm_main: Hiba az INT jelzés kezelésének beállításakor"
+#: daemon/gdm.c:1230
+#, fuzzy, c-format
+msgid "%s: Error setting up INT signal handler"
+msgstr "main: Hiba az INT jelzés kezelésének beállításakor"
 
-#: daemon/gdm.c:889
-msgid "gdm_main: Error setting up HUP signal handler"
-msgstr "gdm_main: Hiba a HUP jelzés kezelésének beállításakor"
+#: daemon/gdm.c:1234
+#, fuzzy, c-format
+msgid "%s: Error setting up HUP signal handler"
+msgstr "main: Hiba a HUP jelzés kezelésének beállításakor"
 
-#: daemon/gdm.c:897
-msgid "gdm_main: Error setting up CHLD signal handler"
-msgstr "gdm_main: Hiba a CHLD jelzés kezelésének beállításakor"
+#: daemon/gdm.c:1238
+#, fuzzy, c-format
+msgid "%s: Error setting up USR1 signal handler"
+msgstr "main: Hiba a HUP jelzés kezelésének beállításakor"
+
+#: daemon/gdm.c:1247
+#, fuzzy, c-format
+msgid "%s: Error setting up CHLD signal handler"
+msgstr "main: Hiba a CHLD jelzés kezelõjének beállításakor"
+
+#. Don't print the name to syslog as it might be
+#. * long and dangerous
+#: daemon/gdm.c:1809
+msgid "Unknown server type requested, using standard server."
+msgstr ""
+
+#: daemon/gdm.c:1813
+#, c-format
+msgid ""
+"Requested server %s not allowed to be used for flexible servers, using "
+"standard server."
+msgstr ""
 
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:237 daemon/auth.c:264
+#: daemon/auth.c:266 daemon/auth.c:297
 #, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
 msgstr "gdm_auth_user_add: Nem tudtam megnyitni a %s cookie fájlt."
 
-#: daemon/auth.c:252
+#: daemon/auth.c:283
 #, c-format
 msgid "gdm_auth_user_add: Could not lock cookie file %s"
 msgstr "gdm_auth_user_add: Nem tudtam zárolni a %s cookie fájlt."
 
-#: daemon/auth.c:333
+#: daemon/auth.c:370
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr ""
 "gdm_auth_user_remove: Figyelmen kívül hagyjuk a gyanúsan kinézõ %s cookie "
 "fájlt."
 
-#: daemon/display.c:87
+#: daemon/display.c:90
 #, c-format
 msgid ""
 "Failed to start the display server several times in a short time period; "
 "disabling display %s"
-msgstr "Nem sikerült elindítani az X-kiszolgálót, rövid idõn belül több próbálkozás után sem: a %s képernyõ letiltva."
+msgstr "Nem sikerült elindítani az X-szervert, rövid idõn belül több próbálkozás után sem: a %s képernyõ letiltva."
 
-#: daemon/display.c:184
-#, c-format
-msgid "gdm_display_manage: Failed forking gdm slave process for %d"
+#: daemon/display.c:191
+#, fuzzy, c-format
+msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
 "gdm_display_manage: A %d képernyõ alárendelt folyamatát nem sikerült "
 "elindítani."
@@ -325,79 +399,126 @@ msgstr ""
 "%s: A(z) %s nagyobb, mint a rendszergazda által megadott maximális fájl "
 "mérete."
 
-#: daemon/server.c:163
+#: daemon/server.c:137
+#, c-format
+msgid ""
+"There already appears to be an X server running on display %s.  Please quit "
+"this server and then press Enter.%s"
+msgstr ""
+
+#: daemon/server.c:142
+msgid ""
+"  You can change consoles by pressing Ctrl-Alt plus a function key, such as "
+"Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
+"higher."
+msgstr ""
+
+#. If we can't ask, sleep 30 seconds and try again
+#: daemon/server.c:176
+#, c-format
+msgid "Sleeping 30 seconds before retrying display %s"
+msgstr ""
+
+#: daemon/server.c:200
+#, c-format
+msgid "Display '%s' cannot be opened by Xnest"
+msgstr ""
+
+#: daemon/server.c:230
+#, c-format
+msgid "Display %s is busy, there is another X server already running"
+msgstr ""
+
+#: daemon/server.c:320
 msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr "gdm_server_start: Hiba az USR1 jelzés kezelésének beállításakor"
 
-#: daemon/server.c:173
+#: daemon/server.c:330
 msgid "gdm_server_start: Error setting up CHLD signal handler"
 msgstr "gdm_server_start: Hiba a CHLD jelzés kezelésének beállításakor"
 
-#: daemon/server.c:184
+#: daemon/server.c:341
 msgid "gdm_server_start: Error setting up ALRM signal handler"
 msgstr "gdm_server_restart: Hiba az ALRM jelzés kezelésének beállításakor"
 
-#: daemon/server.c:307
+#: daemon/server.c:536
 #, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr ""
 "gdm_server_spawn: Nem tudom megnyitni a %s képernyõhöz tartozó naplófájlt!"
 
-#: daemon/server.c:317
+#: daemon/server.c:546
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Hiba USR1 beállítása közben (érték: SIG_IGN)"
 
-#: daemon/server.c:321
+#: daemon/server.c:550
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
 msgstr "gdm_server_spawn: Hiba TTIN beállítása közben (érték: SIG_IGN)"
 
-#: daemon/server.c:325
+#: daemon/server.c:554
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
 msgstr "gdm_server_spawn: Hiba TTOU beállítása közben (érték: SIG_IGN)"
 
-#: daemon/server.c:335
+#: daemon/server.c:564
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
 msgstr "gdm_server_spawn: Hiba HUP beállítása közben (érték: SIG_DFL)"
 
-#: daemon/server.c:339
+#: daemon/server.c:568
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr "gdm_server_spawn: Hiba TERM beállítása közben (érték: SIG_DFL)"
 
-#: daemon/server.c:364
+#: daemon/server.c:591
+#, c-format
+msgid "Invalid server command '%s'"
+msgstr ""
+
+#: daemon/server.c:597
+#, c-format
+msgid "Server name '%s' not found, using standard server"
+msgstr ""
+
+#: daemon/server.c:629
+#, c-format
+msgid "%s: Empty server command for display %s"
+msgstr ""
+
+#: daemon/server.c:653
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_server_spawn: A(z) %s Xserver nem található."
 
-#: daemon/server.c:369
+#: daemon/server.c:658
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: Nem tudom elindítani az Xserver folyamatot!"
 
-#: daemon/slave.c:137
+#: daemon/slave.c:171
+#, fuzzy
+msgid "gdm_slave_init: Error setting up ALRM signal handler"
+msgstr "gdm_slave_init: Hiba a CHLD jelzés kezelésének beállításakor"
+
+#: daemon/slave.c:183
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
 msgstr "gdm_slave_init: Hiba a TERM/INT jelzés kezelésének beállításakor"
 
-#: daemon/slave.c:146
+#: daemon/slave.c:192
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr "gdm_slave_init: Hiba a CHLD jelzés kezelésének beállításakor"
 
-#: daemon/slave.c:381
+#: daemon/slave.c:201
+#, fuzzy, c-format
+msgid "%s: Error setting up USR2 signal handler"
+msgstr "main: Hiba a HUP jelzés kezelésének beállításakor"
+
+#: daemon/slave.c:513
 msgid "focus_first_x_window: cannot fork"
 msgstr "focus_first_x_window: új folyamat indítása sikertelen"
 
-#: daemon/slave.c:391
+#: daemon/slave.c:523
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr "focus_first_x_window: %s képernyõ megnyitása sikertelen"
 
-#: daemon/slave.c:473
-msgid "Cannot start session"
-msgstr "Munkafolyamat indítása sikertelen"
-
-#: daemon/slave.c:482
-msgid "OK"
-msgstr "OK"
-
-#: daemon/slave.c:563
+#: daemon/slave.c:620
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -406,43 +527,43 @@ msgid ""
 "default location."
 msgstr ""
 
-#: daemon/slave.c:576
+#: daemon/slave.c:634
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
 "correctly in the configuration file."
 msgstr ""
 
-#: daemon/slave.c:618
+#: daemon/slave.c:684
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
 msgstr ""
 
-#: daemon/slave.c:632 daemon/slave.c:692
+#: daemon/slave.c:698 daemon/slave.c:764
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: No felhasználó/Rossz bejelentkezés"
 
-#: daemon/slave.c:836
+#: daemon/slave.c:998
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr "gdm_slave_greeter: Nem tudom inicializálni a pipe-ot a gdmgreeterhez"
 
-#: daemon/slave.c:864
+#: daemon/slave.c:1026
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr "gdm_slave_greeter: Nem tudom a csoportazonosítót %d-re állítani"
 
-#: daemon/slave.c:867
+#: daemon/slave.c:1029
 #, c-format
 msgid "gdm_slave_greeter: initgroups() failed for %s"
 msgstr "gdm_slave_greeter: initgroups() sikertelen a következõhöz: %s"
 
-#: daemon/slave.c:870
+#: daemon/slave.c:1032
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr "gdm_slave_greeter: Nem tudom a felhasználói azonosítót %d-re állítani"
 
-#: daemon/slave.c:913
+#: daemon/slave.c:1087
 msgid ""
 "No servers were defined in the\n"
 "configuration file and xdmcp was\n"
@@ -454,7 +575,7 @@ msgid ""
 "are disabled now."
 msgstr ""
 
-#: daemon/slave.c:925
+#: daemon/slave.c:1101
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -463,42 +584,85 @@ msgid ""
 "configure the X server."
 msgstr ""
 
-#: daemon/slave.c:935
+#: daemon/slave.c:1111
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
-msgstr "gdm_slave_greeter: Üdvözlõ indítása sikertelen. Alapértelemezett indítása: %s"
+msgstr ""
+"gdm_slave_greeter: Üdvözlõ indítása sikertelen. Alapértelemezett indítása: %s"
 
-#: daemon/slave.c:946
+#: daemon/slave.c:1123
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
 "This display will be disabled.\n"
 "Try logging in by other means and\n"
-"editting the configuration file"
+"editing the configuration file"
 msgstr ""
 
-#: daemon/slave.c:952
+#: daemon/slave.c:1129
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr "gdm_slave_greeter: Hiba az üdvözlõ %s képernyõn történõ indításakor"
 
-#: daemon/slave.c:955
+#: daemon/slave.c:1132
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Nem tudom indítani a gdmgreeter folyamatot"
 
-#: daemon/slave.c:1206
+#: daemon/slave.c:1189 daemon/slave.c:1224 daemon/slave.c:1265
+#, c-format
+msgid "%s: Can't open fifo!"
+msgstr ""
+
+#: daemon/slave.c:1294
+#, fuzzy
+msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
+msgstr "gdm_slave_greeter: Nem tudom inicializálni a pipe-ot a gdmgreeterhez"
+
+#: daemon/slave.c:1319
+#, fuzzy, c-format
+msgid "gdm_slave_chooser: Couldn't set groupid to %d"
+msgstr "gdm_slave_greeter: Nem tudom a csoportazonosítót %d-re állítani"
+
+#: daemon/slave.c:1322
+#, fuzzy, c-format
+msgid "gdm_slave_chooser: initgroups() failed for %s"
+msgstr "gdm_slave_greeter: initgroups() sikertelen a következõhöz: %s"
+
+#: daemon/slave.c:1325
+#, fuzzy, c-format
+msgid "gdm_slave_chooser: Couldn't set userid to %d"
+msgstr "gdm_slave_greeter: Nem tudom a felhasználói azonosítót %d-re állítani"
+
+#: daemon/slave.c:1357
+msgid ""
+"Cannot start the chooser program,\n"
+"you will not be able to log in.\n"
+"Please contact the system administrator.\n"
+msgstr ""
+
+#: daemon/slave.c:1361
+#, fuzzy, c-format
+msgid "gdm_slave_chooser: Error starting chooser on display %s"
+msgstr "gdm_slave_greeter: Hiba az üdvözlõ %s képernyõn történõ indításakor"
+
+#: daemon/slave.c:1364
+#, fuzzy
+msgid "gdm_slave_chooser: Can't fork gdmchooser process"
+msgstr "gdm_slave_greeter: Nem tudom indítani a gdmgreeter folyamatot"
+
+#: daemon/slave.c:1694
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: A felhasználó túljutott az azonosításon, de a "
 "getpwnam(%s) sikertelen!"
 
-#: daemon/slave.c:1310
+#: daemon/slave.c:1816
 #, fuzzy
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr "gdm_slave_session_start: Azonosítás sikeres. Whacking greeter"
 
-#: daemon/slave.c:1339
+#: daemon/slave.c:1831
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -506,44 +670,51 @@ msgstr ""
 "gdm_slave_session_start: A PreSession szkript futtatása 0-nál nagyobb "
 "értékkel tért vissza. Mûvelet megszakítása."
 
-#: daemon/slave.c:1372
+#: daemon/slave.c:1857
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Hiba a felhasználói munkafolyamat indításakor"
 
-#: daemon/slave.c:1416
+#: daemon/slave.c:1902
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr ""
 "gdm_slave_session_start: Nem tudom a gid-et %d-re állítani. Mûvelet "
 "megszakítása."
 
-#: daemon/slave.c:1420
+#: daemon/slave.c:1906
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr ""
 "gdm_slave_session_start: %s számára az initgroups() sikertelen. Mûvelet "
 "megszakítása."
 
-#: daemon/slave.c:1424
+#: daemon/slave.c:1912
+#, fuzzy, c-format
+msgid "%s: Could not open session for %s. Aborting."
+msgstr "Nem tudtam megnyitni a sessiont %s részére"
+
+#: daemon/slave.c:1918
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Nem tudok %s-é válni. Mûvelet megszakítása."
 
 #. yaikes
-#: daemon/slave.c:1483
+#: daemon/slave.c:1996
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
-msgstr "gdm_slave_session_start: gnome-session nem található (failsafe GNOME muknakfolyamathoz), próbálom az xtermet..."
+msgstr ""
+"gdm_slave_session_start: gnome-session nem található (failsafe GNOME "
+"muknakfolyamathoz), próbálom az xtermet..."
 
-#: daemon/slave.c:1487
+#: daemon/slave.c:2001
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
 "session."
 msgstr ""
 
-#: daemon/slave.c:1492
+#: daemon/slave.c:2007
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -552,11 +723,11 @@ msgid ""
 "your installation."
 msgstr ""
 
-#: daemon/slave.c:1511
+#: daemon/slave.c:2026
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "\"xterm\" nem található a failsafe munkafolyamathoz."
 
-#: daemon/slave.c:1517
+#: daemon/slave.c:2033
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -566,16 +737,16 @@ msgid ""
 "'exit' and an enter into the window."
 msgstr ""
 
-#: daemon/slave.c:1534
+#: daemon/slave.c:2055
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr ""
 
-#: daemon/slave.c:1547
+#: daemon/slave.c:2067
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: A felhasználó nem léphet be"
 
-#: daemon/slave.c:1548
+#: daemon/slave.c:2069
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -583,12 +754,14 @@ msgstr ""
 "A rendszergazde felfüggesztette a \n"
 "felhasználói azonosítódat."
 
-#: daemon/slave.c:1551
+#: daemon/slave.c:2072
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
-msgstr "gdm_slave_session_start: Nem tudom a `%s' sessiont elindítani (vagy nem találom)"
+msgstr ""
+"gdm_slave_session_start: Nem tudom a `%s' sessiont elindítani (vagy nem "
+"találom)"
 
-#: daemon/slave.c:1555
+#: daemon/slave.c:2077
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -596,285 +769,387 @@ msgid ""
 "dialog window."
 msgstr ""
 
-#: daemon/slave.c:1563
+#: daemon/slave.c:2085
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Nem tudom a `%s' sessiont elindítani"
 
-#: daemon/slave.c:1565
+#: daemon/slave.c:2088
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
 "It could also indicate an error with your account.\n"
 msgstr ""
 
-#: daemon/slave.c:1730
+#: daemon/slave.c:2243
+#, c-format
+msgid "Ping to %s failed, whacking display!"
+msgstr ""
+
+#: daemon/slave.c:2346
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Végzetes X hiba - %s újraindítása"
 
-#: daemon/slave.c:1841
+#: daemon/slave.c:2505
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_exec_script: A(z) %s indítása sikertelen."
 
-#: daemon/slave.c:1845
+#: daemon/slave.c:2509
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Nem tudom a szkript folyamatot indítani!"
 
-#. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:67 daemon/verify-pam.c:159 daemon/verify-shadow.c:66
-#: gui/gdmlogin.c:2654
-msgid "Login:"
-msgstr "Bejelentkezés:"
+#: daemon/slave.c:2631
+#, fuzzy
+msgid "gdm_parse_enriched_login: Failed creating pipe"
+msgstr "gdm_parse_enriched_string: A karaktersor túl hosszú!"
 
-#: daemon/verify-pam.c:176 daemon/verify-pam.c:296
+#: daemon/slave.c:2650
+#, fuzzy, c-format
+msgid "gdm_parse_enriched_login: Failed executing: %s"
+msgstr "gdm_exec_script: A(z) %s indítása sikertelen."
+
+#: daemon/slave.c:2655
+#, fuzzy
+msgid "gdm_parse_enriched_login: Can't fork script process!"
+msgstr "gdm_slave_exec_script: Nem tudom a szkript folyamatot indítani!"
+
+#. Ask gdmgreeter for the user's login. Just for good measure
+#: daemon/verify-crypt.c:69 daemon/verify-pam.c:172 daemon/verify-shadow.c:68
+#: gui/gdmlogin.c:3002
+msgid "Username:"
+msgstr ""
+
+#: daemon/verify-pam.c:189 daemon/verify-pam.c:335 daemon/verify-pam.c:407
+#: daemon/verify-pam.c:471
 msgid "Can't find /etc/pam.d/gdm!"
 msgstr "Nem találom a /etc/pam.d/gdm fájlt!"
 
-#: daemon/verify-pam.c:185 daemon/verify-pam.c:303
+#: daemon/verify-pam.c:198 daemon/verify-pam.c:342 daemon/verify-pam.c:416
+#: daemon/verify-pam.c:480
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Nem tudom beállítani a PAM_TTY=%s változót"
 
-#: daemon/verify-crypt.c:105 daemon/verify-pam.c:194
-#: daemon/verify-shadow.c:113
-#, c-format
-msgid "Couldn't authenticate %s"
+#: daemon/verify-crypt.c:108 daemon/verify-pam.c:207
+#: daemon/verify-shadow.c:117
+#, fuzzy
+msgid "Couldn't authenticate user"
 msgstr "Nem tudtam %s-t azonosítani"
 
-#: daemon/verify-crypt.c:124 daemon/verify-pam.c:207
-#: daemon/verify-shadow.c:130
+#: daemon/verify-crypt.c:149 daemon/verify-pam.c:220
+#: daemon/verify-shadow.c:158
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "A root belépés nem engedélyezett a '%s' képernyõn"
 
-#: daemon/verify-crypt.c:127 daemon/verify-pam.c:211
-#: daemon/verify-shadow.c:133
-msgid "Root login disallowed"
-msgstr "A root belépés nem engedélyezett"
+#: daemon/verify-pam.c:224
+#, fuzzy
+msgid ""
+"\n"
+"The system administrator is not allowed to login from this screen"
+msgstr ""
+"A rendszergazde felfüggesztette a \n"
+"felhasználói azonosítódat."
 
-#: daemon/verify-crypt.c:140 daemon/verify-pam.c:221
-#: daemon/verify-shadow.c:146
+#: daemon/verify-crypt.c:171 daemon/verify-pam.c:239
+#: daemon/verify-shadow.c:180
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr ""
 
-#: daemon/verify-crypt.c:143 daemon/verify-pam.c:224
-#: daemon/verify-shadow.c:149
-msgid "Login disabled"
-msgstr "A felhasználói azonosító felfüggesztve"
+#: daemon/verify-crypt.c:174 daemon/verify-pam.c:242
+#: daemon/verify-shadow.c:183
+#, fuzzy
+msgid ""
+"\n"
+"The system administrator has disabled your account."
+msgstr ""
+"A rendszergazde felfüggesztette a \n"
+"felhasználói azonosítódat."
 
-#: daemon/verify-pam.c:238 daemon/verify-pam.c:316
+#: daemon/verify-pam.c:260 daemon/verify-pam.c:355
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Nem tudtam beállítani az acct. menedzsmentet %s részére"
 
-#: daemon/verify-pam.c:245 daemon/verify-pam.c:324
+#: daemon/verify-crypt.c:111 daemon/verify-crypt.c:131 daemon/verify-pam.c:287
+#: daemon/verify-shadow.c:120 daemon/verify-shadow.c:140
+msgid ""
+"\n"
+"Incorrect username or password.  Letters must be typed in the correct case.  "
+"Please be sure the Caps Lock key is not enabled"
+msgstr ""
+
+#: daemon/verify-pam.c:293
+msgid "Authentication failed"
+msgstr "Sikertelen bejelentkezés"
+
+#: daemon/verify-pam.c:453
+msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
+msgstr "gdm_verify_check: Nem találom a gdm PAM beállítások fájlját"
+
+#: daemon/verify-pam.c:487
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Nem tudtam beállítani a hitelesítési információkat %s részére"
 
-#: daemon/verify-pam.c:252 daemon/verify-pam.c:331
+#: daemon/verify-pam.c:495
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Nem tudtam megnyitni a sessiont %s részére"
 
-#: daemon/verify-pam.c:264
-msgid "Authentication failed"
-msgstr "Sikertelen bejelentkezés"
-
-#: daemon/verify-pam.c:383
-msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
-msgstr "gdm_verify_check: Nem találom a gdm PAM beállítások fájlját"
-
-#: daemon/verify-crypt.c:88 daemon/verify-shadow.c:97
+#: daemon/verify-crypt.c:91 daemon/verify-shadow.c:100
 msgid "Password: "
 msgstr "Jelszó: "
 
-#: daemon/verify-crypt.c:106 daemon/verify-crypt.c:115
-#: daemon/verify-crypt.c:130 daemon/verify-crypt.c:146
-#: daemon/verify-shadow.c:114 daemon/verify-shadow.c:121
-#: daemon/verify-shadow.c:136 daemon/verify-shadow.c:152
+#: daemon/verify-crypt.c:118 daemon/verify-crypt.c:138
+#: daemon/verify-crypt.c:159 daemon/verify-crypt.c:181
+#: daemon/verify-shadow.c:127 daemon/verify-shadow.c:147
+#: daemon/verify-shadow.c:168 daemon/verify-shadow.c:190
 msgid "Login incorrect"
 msgstr "Bejelentkezés sikertelen"
 
-#: daemon/xdmcp.c:181
+#: daemon/verify-crypt.c:152 daemon/verify-shadow.c:161
+#, fuzzy
+msgid "The system administrator is not allowed to login from this screen"
+msgstr ""
+"A rendszergazde felfüggesztette a \n"
+"felhasználói azonosítódat."
+
+#: daemon/xdmcp.c:232
+#, c-format
+msgid "%s: Cannot get local addresses!"
+msgstr ""
+
+#: daemon/xdmcp.c:267
+#, fuzzy, c-format
+msgid "%s: Could not get server hostname: %s!"
+msgstr "gdm_xdmcp_init: Nem találom a %s nevû kiszolgálót!"
+
+#: daemon/xdmcp.c:274
+#, fuzzy, c-format
+msgid "%s: Could not get address from hostname!"
+msgstr "gdm_xdmcp_init: Nem találom a %s nevû kiszolgálót!"
+
+#: daemon/xdmcp.c:340
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr "gdm_xdmcp_init: Nem találom a %s nevû kiszolgálót!"
 
-#: daemon/xdmcp.c:198
+#: daemon/xdmcp.c:357
 msgid "gdm_xdmcp_init: Could not create socket!"
 msgstr "gdm_xdmcp_init: Nem tudom létrehozni a socketet!"
 
-#: daemon/xdmcp.c:208
+#: daemon/xdmcp.c:367
 msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
 msgstr "gdm_xdmcp_init: Nem tudok figyelni az XDMCP socketen!"
 
-#: daemon/xdmcp.c:221
-msgid "gdm_xdmcp_init: Can't alloc fifopath"
-msgstr "gdm_xdmcp_init: Nem tudom lefoglalni a fifopath-t"
-
-#: daemon/xdmcp.c:230
-msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
-msgstr "gdm_xdmcp_init: Nem tudtam létrehozni a FIFO-t a választó számára"
-
-#: daemon/xdmcp.c:239
-msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
-msgstr "gdm_xdmcp_init: Nem tudtam megnyitni a FIFO-t a választó számára"
-
-#: daemon/xdmcp.c:309
+#: daemon/xdmcp.c:423
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
 msgstr "gdm_xdmcp_decode: Nem tudtam létrehozni az XDMCP puffert!"
 
-#: daemon/xdmcp.c:314
+#: daemon/xdmcp.c:428
 msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode: Nem tudtam elolvasni az XDMCP fejlécet!"
 
-#: daemon/xdmcp.c:319
+#: daemon/xdmcp.c:434
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: Hibás XDMCP verzió!"
 
-#: daemon/xdmcp.c:359
+#: daemon/xdmcp.c:483
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr "gdm_xdmcp_decode_packet: Ismeretlen opcode a(z) %s géptõl"
 
-#: daemon/xdmcp.c:379
+#: daemon/xdmcp.c:502
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
 msgstr "gdm_xdmcp_handle_query: Nem tudom kiemelni a joglistát a csomagból"
 
-#: daemon/xdmcp.c:390
+#: daemon/xdmcp.c:514
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: Ellenõrzõ összeg hiba"
 
-#: daemon/xdmcp.c:462
+#: daemon/xdmcp.c:757
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr "gdm_xdmcp_handle_forward_query: Nem tudtam elolvasni a képernyõ címét"
 
-#: daemon/xdmcp.c:470
+#: daemon/xdmcp.c:764
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Nem tudtam elolvasni a képernyõ port számát"
 
-#: daemon/xdmcp.c:478
+#: daemon/xdmcp.c:772
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Nem tudtam kiemelni a joglistát a csomagból"
 
-#: daemon/xdmcp.c:493
+#: daemon/xdmcp.c:788
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: Hiba az ellenõrzõösszegben"
 
-#: daemon/xdmcp.c:559
+#: daemon/xdmcp.c:794
+#, fuzzy
+msgid "gdm_xdmcp_handle_forward_query: Bad address"
+msgstr "gdm_xdmcp_handle_forward_query: Nem tudtam elolvasni a képernyõ címét"
+
+#: daemon/xdmcp.c:861
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Megtagadott XDMCP kérés %s géptõl"
 
-#: daemon/xdmcp.c:561
+#: daemon/xdmcp.c:863
 msgid "Display not authorized to connect"
 msgstr "A képernyõ nem jogosult kapcsolódni"
 
-#: daemon/xdmcp.c:594
+#: daemon/xdmcp.c:942
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: Kérés érkezett a kitiltott %s gazdától"
 
-#: daemon/xdmcp.c:601
+#: daemon/xdmcp.c:949
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: Nem tudtam elolvasni a Képernyõ Számot"
 
-#: daemon/xdmcp.c:607
+#: daemon/xdmcp.c:955
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: Nem tudtam elolvasni a Kapcsolat Típust"
 
-#: daemon/xdmcp.c:613
+#: daemon/xdmcp.c:961
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr "gdm_xdmcp_handle_request: Nem tudtam elolvasni a Kliens Címet"
 
-#: daemon/xdmcp.c:619
+#: daemon/xdmcp.c:968
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr "gdm_xdmcp_handle_request: Nem tudtam elolvasni a Hitelesítési Neveket"
 
-#: daemon/xdmcp.c:625
+#: daemon/xdmcp.c:976
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr "gdm_xdmcp_handle_request: Nem tudtam elolvasni a Hitelesítési Adatot"
 
-#: daemon/xdmcp.c:631
+#: daemon/xdmcp.c:985
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr "gdm_xdmcp_handle_request: Nem tudtam elolvasni a Hitelesítési Listát"
 
-#: daemon/xdmcp.c:642
+#: daemon/xdmcp.c:1000
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr "gdm_xdmcp_handle_request: Nem tudtam elolvasni a Gyártó Azonosítót"
 
-#: daemon/xdmcp.c:660
+#: daemon/xdmcp.c:1023
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: Ellenõrzõ összeg hiba %s-tõl"
 
-#: daemon/xdmcp.c:780
+#: daemon/xdmcp.c:1170
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr "gdm_xdmcp_handle_manage: Vezérlés érkezett %s kitiltott gazdától"
 
-#: daemon/xdmcp.c:787
+#: daemon/xdmcp.c:1177
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage: Nem tudtam elolvasni a Session Azonosítót"
 
-#: daemon/xdmcp.c:793
+#: daemon/xdmcp.c:1183
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: Nem tudtam elolvasni a Képernyõ Számot"
 
-#: daemon/xdmcp.c:803
+#: daemon/xdmcp.c:1192
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
 msgstr "gdm_xdmcp_handle_manage: Nem tudtam elolvasni a Képernyõosztályt"
 
-#: daemon/xdmcp.c:825
+#: daemon/xdmcp.c:1243
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr ""
 "gdm_xdmcp_handle_manage: Nem tudtam megnyitni a %s képernyõ naplófájlját!"
 
-#: daemon/xdmcp.c:900
+#: daemon/xdmcp.c:1279
+#, fuzzy, c-format
+msgid "%s: Could not read hostname"
+msgstr "Nem tudtam beállítani a jel maszkot!"
+
+#: daemon/xdmcp.c:1346
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr ""
 "gdm_xdmcp_handle_keepalive: KEEPALIVE érkezett a(z) %s kitiltott gazdától"
 
-#: daemon/xdmcp.c:907
+#: daemon/xdmcp.c:1353
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_keepalive: Nem tudtam elolvasni a Képernyõ Számot"
 
-#: daemon/xdmcp.c:913
+#: daemon/xdmcp.c:1359
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Nem tudtam elolvasni a Session Azonosítót"
 
-#: gui/gdmphotosetup.c:52
+#: daemon/xdmcp.c:1557
+#, fuzzy
+msgid "gdm_xdmcp_init: No XDMCP support"
+msgstr "gdm_xdmcp_init: Nem tudok figyelni az XDMCP socketen!"
+
+#: daemon/xdmcp.c:1564
+#, fuzzy
+msgid "gdm_xdmcp_run: No XDMCP support"
+msgstr "gdm_xdmcp_init: Nem tudok figyelni az XDMCP socketen!"
+
+#: daemon/xdmcp.c:1570
+#, fuzzy
+msgid "gdm_xdmcp_close: No XDMCP support"
+msgstr "gdm_xdmcp_decode: Hibás XDMCP verzió!"
+
+#: daemon/errorgui.c:152
+msgid "gdm_error_box: Failed to execute self"
+msgstr ""
+
+#: daemon/errorgui.c:157
+msgid "gdm_error_box: Cannot fork to display error/info box"
+msgstr ""
+
+#: daemon/gdm-net.c:232
+#, fuzzy, c-format
+msgid "%s: Could not make socket"
+msgstr "gdm_xdmcp_init: Nem tudom létrehozni a socketet!"
+
+#: daemon/gdm-net.c:242
+#, fuzzy, c-format
+msgid "%s: Could not bind socket"
+msgstr "gdm_xdmcp_init: Nem tudok figyelni az XDMCP socketen!"
+
+#: daemon/gdm-net.c:282
+#, fuzzy, c-format
+msgid "%s: Could not make FIFO"
+msgstr "gdm_xdmcp_init: Nem tudtam létrehozni a FIFO-t a választó számára"
+
+#: daemon/gdm-net.c:290
+#, fuzzy, c-format
+msgid "%s: Could not open FIFO"
+msgstr "gdm_xdmcp_init: Nem tudtam megnyitni a FIFO-t a választó számára"
+
+#: gui/gdmphotosetup.c:76
 msgid ""
 "The face browser is not configured,\n"
 "please ask your system administrator to enable it\n"
 "in the GDM configurator program."
 msgstr ""
 
-#: gui/gdmphotosetup.c:61
+#: gui/gdmphotosetup.c:85
 msgid "Select a photo"
-msgstr ""
+msgstr "Válassz fényképet"
 
-#: gui/gdmphotosetup.c:66
+#: gui/gdmphotosetup.c:90
 msgid "Select a photograph to show in the facebrowser:"
 msgstr ""
 
-#: gui/gdmphotosetup.c:71
+#: gui/gdmphotosetup.c:95
 msgid "Browse"
 msgstr ""
 
-#: gui/gdmphotosetup.c:90
+#: gui/gdmphotosetup.c:114
 msgid "No picture selected."
 msgstr ""
 
-#: gui/gdmphotosetup.c:95
+#: gui/gdmphotosetup.c:133
 #, c-format
 msgid ""
 "The picture is too large and the system administrator\n"
@@ -882,44 +1157,44 @@ msgid ""
 "show in the face browser"
 msgstr ""
 
-#: gui/gdmphotosetup.c:116
-#, c-format
-msgid ""
-"File %s cannot be open for writing\n"
-"Error: %s"
-msgstr ""
-
-#: gui/gdmphotosetup.c:129
+#: gui/gdmphotosetup.c:157
 #, c-format
 msgid ""
 "File %s cannot be open for reading\n"
 "Error: %s"
 msgstr ""
 
-#: gui/gdmchooser.c:60
+#: gui/gdmphotosetup.c:172
+#, c-format
+msgid ""
+"File %s cannot be open for writing\n"
+"Error: %s"
+msgstr ""
+
+#: gui/gdmchooser.c:64
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
 msgstr ""
 
-#: gui/gdmchooser.c:61
+#: gui/gdmchooser.c:65
 msgid "No serving hosts were found."
 msgstr ""
 
-#: gui/gdmchooser.c:62
+#: gui/gdmchooser.c:66
 msgid "Choose a host to connect to from the selection below."
 msgstr ""
 
-#: gui/gdmchooser.c:386
+#: gui/gdmchooser.c:491
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr ""
 "gdm_chooser_parse_config: Nincs %s beállítás fájl. Mûvelet megszakítása."
 
-#: gui/gdmchooser.c:520
+#: gui/gdmchooser.c:674
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Nem tudom megnyitni a(z) %s alapértelmezett gazda ikont."
 
-#: gui/gdmchooser.c:534
+#: gui/gdmchooser.c:683
 msgid ""
 "Cannot find the glade interface description\n"
 "file, cannot run gdmchooser.\n"
@@ -927,87 +1202,115 @@ msgid ""
 "location of the gdmchooser.glade file."
 msgstr ""
 
-#: gui/gdmchooser.c:555
+#: gui/gdmchooser.c:704
 msgid ""
 "The glade interface description file\n"
 "appears to be corrupted.\n"
 "Please check your installation."
 msgstr ""
 
-#: gui/gdmchooser.c:604
+#: gui/gdmchooser.c:748
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Hiba a HUP jelzés kezelésének beállításakor"
 
-#: gui/gdmchooser.c:607
+#: gui/gdmchooser.c:751
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Hiba az INT jelzés kezelésének beállításakor"
 
-#: gui/gdmchooser.c:610
+#: gui/gdmchooser.c:754
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Hiba a TERM jelzés kezelésének beállításakor"
 
-#: gui/gdmchooser.c:618 gui/gdmlogin.c:3266
+#: gui/gdmchooser.c:762 gui/gdmlogin.c:3666
 msgid "Could not set signal mask!"
 msgstr "Nem tudtam beállítani a jel maszkot!"
 
-#: gui/gdmlogin.c:59
+#: gui/gdmchooser.c:852
+msgid "Socket for xdm communication"
+msgstr ""
+
+#: gui/gdmchooser.c:852
+msgid "SOCKET"
+msgstr ""
+
+#: gui/gdmchooser.c:852
+msgid "Client address to return in response to xdm"
+msgstr ""
+
+#: gui/gdmchooser.c:852
+msgid "ADDRESS"
+msgstr ""
+
+#: gui/gdmchooser.c:853
+msgid "Connection type to return in response to xdm"
+msgstr ""
+
+#: gui/gdmchooser.c:853
+msgid "TYPE"
+msgstr ""
+
+#: gui/gdmchooser.c:1052
+#, c-format
+msgid ""
+"The chooser version (%s) does not match the daemon version (%s).\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
+msgstr ""
+
+#: gui/gdmlogin.c:60
 msgid "AnotherLevel"
 msgstr ""
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:60 gui/gdmlogin.c:1611 gui/gdmlogin.c:1633
+#: gui/gdmlogin.c:61 gui/gdmlogin.c:1763 gui/gdmlogin.c:1785
 msgid "Default"
 msgstr "Alapértelmezett"
 
-#: gui/gdmconfig-strings.c:177 gui/gdmlogin.c:61
+#: gui/gdmconfig-strings.c:201 gui/gdmlogin.c:62
 msgid "Failsafe"
 msgstr "Failsafe"
 
-#: gui/gdmlogin.c:62
+#: gui/gdmlogin.c:63
 msgid "Gnome"
 msgstr "Gnome"
 
-#: gui/gdmlogin.c:63
+#: gui/gdmlogin.c:64
 msgid "KDE"
 msgstr "KDE"
 
-#: gui/gdmlogin.c:64
+#: gui/gdmlogin.c:65
 msgid "XSession"
 msgstr "XSession"
 
-#. Add the chooser session, this one doesn't have a script
-#. * really, it's a fake, it runs the Gnome script
-#. For translators:  This is the login that lets users choose the
-#. * specific gnome session they want to use
-#: gui/gdmlogin.c:65 gui/gdmlogin.c:1285
+#: gui/gdmconfig-strings.c:214 gui/gdmlogin.c:66 gui/gdmlogin.c:1408
 msgid "Gnome Chooser"
 msgstr "Gnome Kiválasztó"
 
-#: gui/gdmlogin.c:66
+#: gui/gdmlogin.c:67
 msgid "Last"
 msgstr "Utolsó"
 
-#: gui/gdmlogin.c:180
+#: gui/gdmlogin.c:197
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "%s felhasználó beléptetése %d másodperc múlva"
 
-#: gui/gdmlogin.c:430
+#: gui/gdmlogin.c:446
 msgid ""
 "Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr ""
 
-#: gui/gdmlogin.c:509 gui/gdmlogin.c:515 gui/gdmlogin.c:522
+#: gui/gdmlogin.c:525 gui/gdmlogin.c:531 gui/gdmlogin.c:538
 #, c-format
 msgid "Welcome to %s"
 msgstr "%s üdvözöl Téged!"
 
-#: gui/gdmlogin.c:520
+#: gui/gdmlogin.c:536
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: A karaktersor túl hosszú!"
 
-#: gui/gdmlogin.c:649
+#: gui/gdmlogin.c:675
 msgid ""
 "Could not fork a new process!\n"
 "\n"
@@ -1017,32 +1320,41 @@ msgstr ""
 "\n"
 "Ezt azt jelenti, hogy nem fogsz tudni bejelentkezni."
 
-#: gui/gdmlogin.c:696
+#: gui/gdmlogin.c:722
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Biztosan újra szeretné indítani a számítógépet?"
 
-#: gui/gdmlogin.c:710
-msgid "Are you sure you want to halt the machine?"
+#: gui/gdmlogin.c:734
+#, fuzzy
+msgid "Are you sure you want to shut down the machine?"
 msgstr "Biztosan le akarja állítani a számítógépet?"
 
-#: gui/gdmlogin.c:727
+#: gui/gdmlogin.c:745
+#, fuzzy
+msgid "Are you sure you want to suspend the machine?"
+msgstr "Biztosan újra szeretné indítani a számítógépet?"
+
+#: gui/gdmlogin.c:759
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
-msgstr "gdm_login_parse_config: Nincs %s beállításfájl. Alapértelemezett érték használata."
+msgstr ""
+"gdm_login_parse_config: Nincs %s beállításfájl. Alapértelemezett érték "
+"használata."
 
-#: gui/gdmlogin.c:775
-msgid "TimedLoginDelay was less then 10.  I'll just use 10."
+#: gui/gdmlogin.c:825
+#, fuzzy
+msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr "A TimedLoginDelay kevesebb 10-nél. 10-re állítom."
 
-#: gui/gdmlogin.c:841 gui/gdmlogin.c:1331
+#: gui/gdmlogin.c:885 gui/gdmlogin.c:1456
 msgid "Failsafe Gnome"
 msgstr "Failsafe Gnome"
 
-#: gui/gdmlogin.c:843 gui/gdmlogin.c:1354
+#: gui/gdmlogin.c:887 gui/gdmlogin.c:1481
 msgid "Failsafe xterm"
 msgstr "Failsafe xterm"
 
-#: gui/gdmlogin.c:889
+#: gui/gdmlogin.c:933
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -1051,176 +1363,253 @@ msgstr ""
 "A kedvec %s munkafolyamat-típusod nincs telepítve ezen a gépen.\n"
 "Szeretnéd, hogy %s legyen az alapértelmezett mostantól?"
 
-#: gui/gdmlogin.c:906 gui/gdmlogin.c:972
+#: gui/gdmlogin.c:955 gui/gdmlogin.c:1043
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
-"%s-t választottad erre a munkafolyamatra, de az alapértelmezett beállításod %s.\n"
+"%s-t választottad erre a munkafolyamatra, de az alapértelmezett beállításod %"
+"s.\n"
 "Szeretnéd, hogy %s legyen az alapértelmezett mostantól?"
 
-#: gui/gdmlogin.c:1151
+#. if !GdmShowLastSession then our saved session is
+#. * irrelevant, we are in "switchdesk mode"
+#. * and the relevant thing is the saved session
+#. * in .Xclients
+#.
+#: gui/gdmlogin.c:971
+#, c-format
+msgid ""
+"You have chosen %s for this session.\n"
+"If you wish to make %s the default for future sessions,\n"
+"run the 'switchdesk' utility\n"
+"(System->Desktop Switching Tool from the panel menu)."
+msgstr ""
+
+#: gui/gdmlogin.c:1265
 #, c-format
 msgid "%s session selected"
 msgstr "%s munkafolyamat kiválasztva"
 
-#: gui/gdmlogin.c:1181
+#: gui/gdmlogin.c:1298
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Bejelentkezés a legutóbb kiválasztott munkafolyamat használatával"
 
-#: gui/gdmlogin.c:1193
+#: gui/gdmlogin.c:1311
 msgid "gdm_login_session_init: Session script directory not found!"
-msgstr "gdm_login_session_init: A munkafolyamat szkript könyvtár nem található!"
+msgstr ""
+"gdm_login_session_init: A munkafolyamat szkript könyvtár nem található!"
 
-#: gui/gdmlogin.c:1277
+#: gui/gdmlogin.c:1396
 msgid ""
 "This session will log you directly into GNOME, into your current session."
-msgstr "Ez a munkafolyamat egyenesen a GNOME-be juttat, az aktuálisan kiválasztott GNOME munkafolyamat alkalmazásával."
+msgstr ""
+"Ez a munkafolyamat egyenesen a GNOME-be juttat, az aktuálisan kiválasztott "
+"GNOME munkafolyamat alkalmazásával."
 
-#: gui/gdmlogin.c:1288
+#: gui/gdmlogin.c:1411
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
-msgstr "Ez a munkafolyamat a GNOME-ba juttat, majd kiválaszthatod, hogy melyik GNOME munkafolyamatot szeretnéd használni."
+msgstr ""
+"Ez a munkafolyamat a GNOME-ba juttat, majd kiválaszthatod, hogy melyik GNOME "
+"munkafolyamatot szeretnéd használni."
 
-#: gui/gdmlogin.c:1322
+#: gui/gdmlogin.c:1446
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Auuuu! Semmi sincs a munkafolyamat (session) könyvtában."
 
-#: gui/gdmlogin.c:1333
+#: gui/gdmlogin.c:1458
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
 
-#: gui/gdmlogin.c:1356
+#: gui/gdmlogin.c:1483
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
 msgstr ""
 
-#: gui/gdmlogin.c:1376
+#: gui/gdmlogin.c:1504
 msgid "No default session link found. Using Failsafe GNOME.\n"
-msgstr "Nem található alapértelmezett munkafolyamat-hivatkozás. Failsafe GNOME használata.\n"
+msgstr ""
+"Nem található alapértelmezett munkafolyamat-hivatkozás. Failsafe GNOME "
+"használata.\n"
 
-#: gui/gdmlogin.c:1393
+#: gui/gdmlogin.c:1544
 #, c-format
 msgid "%s language selected"
 msgstr "%s nyelv kiválasztva"
 
-#: gui/gdmlogin.c:1431
+#: gui/gdmlogin.c:1582
 msgid "Log in using the language that you have used last time you logged in"
-msgstr "Bejelentkezés után használd azt a nyelvet, amit a legutóbbi bejelentkezésnél használtál."
+msgstr ""
+"Bejelentkezés után használd azt a nyelvet, amit a legutóbbi bejelentkezésnél "
+"használtál."
 
-#: gui/gdmlogin.c:1452
+#: gui/gdmlogin.c:1603
 msgid "Other"
 msgstr "Egyéb"
 
-#: gui/gdmlogin.c:1571 gui/gdmlogin.c:1580
+#: gui/gdmlogin.c:1723 gui/gdmlogin.c:1732
 msgid "Select GNOME session"
 msgstr "GNOME munkafolyamat kiválasztása"
 
-#: gui/gdmlogin.c:1647
+#: gui/gdmlogin.c:1799
 msgid "Create new session"
 msgstr "Új munkafolyamat létrehozása"
 
-#: gui/gdmlogin.c:1656
+#: gui/gdmconfig-strings.c:273 gui/gdmlogin.c:1808
 msgid "Name: "
 msgstr "Név:"
 
+#. Translators: this is to remember the chosen gnome session
+#. * for next time
+#: gui/gdmlogin.c:1829
+#, fuzzy
+msgid "Remember this setting"
+msgstr "Beállítások visszaállítása"
+
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:1932
+#: gui/gdmlogin.c:2122
 msgid "Please insert 25 cents to log in."
 msgstr "Kérlek dobj be 100 Ft-ot a bejelentkezéshez."
 
-#: gui/gdmlogin.c:2241
+#: gui/gdmlogin.c:2449
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Munkafelület-kezelõ"
 
-#: gui/gdmlogin.c:2253
+#: gui/gdmlogin.c:2457
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Nem találom a(z) %s ikon fájlt. Az ikonizáló funkció felfüggesztése!"
 
-#: gui/gdmlogin.c:2268
+#: gui/gdmlogin.c:2479
 msgid "Iconify the login window"
 msgstr "Bejelentkezõablak ikonizálása"
 
-#: gui/gdmlogin.c:2327
+#: gui/gdmlogin.c:2538
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a %b %d, %I:%M %p"
 
-#: gui/gdmlogin.c:2373
+#: gui/gdmlogin.c:2596
+msgid "Finger"
+msgstr ""
+
+#: gui/gdmlogin.c:2666
 msgid "GDM Login"
 msgstr "GDM bejelentkezés:"
 
-#: gui/gdmlogin.c:2414
+#: gui/gdmlogin.c:2712
 msgid "Session"
 msgstr "Munkafolyamat"
 
-#: gui/gdmlogin.c:2425
+#: gui/gdmlogin.c:2723
 msgid "Language"
 msgstr "Nyelv"
 
-#: gui/gdmlogin.c:2436
+#: gui/gdmlogin.c:2737
 msgid "Configure..."
 msgstr "Beállítás..."
 
-#: gui/gdmlogin.c:2443
+#: gui/gdmlogin.c:2744
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
-msgstr "A GDM (ez ennek a bejelentkezés-kezelõnek a neve) beállítása. Ehhez root (rendszergazda) jlszó kell."
+msgstr ""
+"A GDM (ez ennek a bejelentkezés-kezelõnek a neve) beállítása. Ehhez root "
+"(rendszergazda) jlszó kell."
 
-#: gui/gdmlogin.c:2448
+#: gui/gdmlogin.c:2751
 msgid "Reboot..."
 msgstr "Újraindít..."
 
-#: gui/gdmlogin.c:2455
+#: gui/gdmlogin.c:2758
 msgid "Reboot your computer"
 msgstr "Ujraindítja a számítógépet"
 
-#: gui/gdmlogin.c:2458
-msgid "Halt..."
-msgstr "Leállít..."
+#: gui/gdmlogin.c:2764
+msgid "Shut down..."
+msgstr ""
 
-#: gui/gdmlogin.c:2465
+#: gui/gdmlogin.c:2771
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Leállítja a számítógépet, utána kikapcsolhatod."
 
-#: gui/gdmconfig.c:54 gui/gdmlogin.c:2469
+#: gui/gdmlogin.c:2778
+msgid "Suspend..."
+msgstr ""
+
+#: gui/gdmlogin.c:2785
+#, fuzzy
+msgid "Suspend your computer"
+msgstr "Ujraindítja a számítógépet"
+
+#: gui/gdmconfig.c:58 gui/gdmlogin.c:2791
 msgid "System"
 msgstr "Rendszer"
 
-#: gui/gdmlogin.c:2690
+#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2803
+msgid "Quit"
+msgstr "Kilépés"
+
+#. I think I'll add the buttons next to this
+#: gui/gdmlogin.c:3038
 msgid "Please enter your login"
 msgstr "Add meg az azonosítódat"
 
-#: gui/gdmlogin.c:2903
+#: gui/gdmlogin.c:3279
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "A DefaultImage (%s) megnyitása sikertelen. Arcböngészõ felfüggesztése!"
 
-#: gui/gdmlogin.c:3243
+#: gui/gdmlogin.c:3537 gui/gdmlogin.c:3564
+#, c-format
+msgid ""
+"The greeter version (%s) does not match the daemon version.\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
+msgstr ""
+
+#: gui/gdmlogin.c:3571 gui/gdmlogin.c:3606
+#, fuzzy
+msgid "Reboot"
+msgstr "Újraindít..."
+
+#: gui/gdmlogin.c:3598
+#, c-format
+msgid ""
+"The greeter version (%s) does not match the daemon version (%s).\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
+msgstr ""
+
+#: gui/gdmlogin.c:3605
+#, fuzzy
+msgid "Restart"
+msgstr "Újraolvas"
+
+#: gui/gdmlogin.c:3643
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Hiba a HUP jelzés kezelésének beállításakor"
 
-#: gui/gdmlogin.c:3246
+#: gui/gdmlogin.c:3646
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Hiba az INT jelzés kezelésének beállításakor"
 
-#: gui/gdmlogin.c:3249
+#: gui/gdmlogin.c:3649
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Hiba a TERM jelzés kezelésének beállításakor"
 
-#: gui/gdmlogin.c:3257
+#: gui/gdmlogin.c:3657
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Hiba a CHLD jelzés kezelõjének beállításakor"
 
-#: gui/gdmlogin.c:3322
+#: gui/gdmlogin.c:3722
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -1228,14 +1617,14 @@ msgid ""
 "you should log in and correct the gdm configuration."
 msgstr ""
 
-#: gui/gdmlogin.c:3338
+#: gui/gdmlogin.c:3738
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
 "default command.  Please fix your configuration."
 msgstr ""
 
-#: gui/gdmlogin.c:3355
+#: gui/gdmlogin.c:3755
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -1244,15 +1633,15 @@ msgid ""
 msgstr ""
 
 #. 3 user levels are present in the CList
-#: gui/gdmconfig.c:52
+#: gui/gdmconfig.c:56
 msgid "Basic"
 msgstr "Alap"
 
-#: gui/gdmconfig.c:53
+#: gui/gdmconfig.c:57
 msgid "Expert"
 msgstr "Haladó"
 
-#: gui/gdmconfig.c:56
+#: gui/gdmconfig.c:60
 msgid ""
 "This panel displays the basic options for configuring GDM.\n"
 "\n"
@@ -1263,7 +1652,7 @@ msgid ""
 "to be changed."
 msgstr ""
 
-#: gui/gdmconfig.c:61
+#: gui/gdmconfig.c:65
 msgid ""
 "This panel displays the more advanced options of GDM.\n"
 "\n"
@@ -1273,7 +1662,7 @@ msgid ""
 "Choose \"System\" to change fundamental options in GDM."
 msgstr ""
 
-#: gui/gdmconfig.c:67
+#: gui/gdmconfig.c:71
 msgid ""
 "This panel displays GDM's fundamental system settings.\n"
 "\n"
@@ -1283,7 +1672,7 @@ msgid ""
 "Choose \"Basic\" if you just want to change your machine's login appearance."
 msgstr ""
 
-#: gui/gdmconfig.c:106
+#: gui/gdmconfig.c:133
 #, c-format
 msgid ""
 "The glade ui description file doesn't seem to contain the\n"
@@ -1291,11 +1680,11 @@ msgid ""
 "Please check your installation."
 msgstr ""
 
-#: gui/gdmconfig.c:359
+#: gui/gdmconfig.c:378
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "Csak rendszergazda (root) jogosultságokkal állíthatod át a GDM-et.\n"
 
-#: gui/gdmconfig.c:391
+#: gui/gdmconfig.c:417
 msgid ""
 "Cannot find the glade interface description\n"
 "file, cannot run gdmconfig.\n"
@@ -1303,18 +1692,18 @@ msgid ""
 "location of the gdmconfig.glade file."
 msgstr ""
 
-#: gui/gdmconfig.c:420
+#: gui/gdmconfig.c:446
 msgid ""
 "Cannot find the gdmconfigurator widget in\n"
 "the glade interface description file\n"
 "Please check your installation."
 msgstr ""
 
-#: gui/gdmconfig.c:472
+#: gui/gdmconfig.c:504
 msgid "GNOME Display Manager Configurator"
 msgstr ""
 
-#: gui/gdmconfig.c:545
+#: gui/gdmconfig.c:725
 #, c-format
 msgid ""
 "The configuration file: %s\n"
@@ -1323,27 +1712,42 @@ msgstr ""
 "A %s beállításokat tartalmazó fájl nem létezik!\n"
 "Alapértelemezett értékek alkalmazása."
 
-#: gui/gdmconfig.c:734
+#: gui/gdmconfig.c:736 gui/gdmconfig.c:1088 gui/gdmconfig.c:1997
+#: gui/gdmflexiserver.c:269
+msgid "Standard server"
+msgstr "Szabványos szerver"
+
+#: gui/gdmconfig.c:935
 msgid "Error reading session script!"
 msgstr "Hiba a munkafolyamat-szkript olvasása közben"
 
-#: gui/gdmconfig.c:736
+#: gui/gdmconfig.c:938
 msgid "Error reading this session script"
 msgstr "Hiba ennek a munkafolyamatnak az olvasása közben"
 
-#: gui/gdmconfig.c:825
+#: gui/gdmconfig.c:1047 gui/gdmconfig.c:1093
+msgid "Yes"
+msgstr "Igen"
+
+#: gui/gdmconfig.c:1049
+msgid "No"
+msgstr "Nem"
+
+#: gui/gdmconfig.c:1150
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse_most: Érvénytelen kiszolgáló sor a beállításokban. "
 "Figyelmen kívül hagytam!"
 
-#: gui/gdmconfig.c:926
+#: gui/gdmconfig.c:1274
+#, fuzzy
 msgid ""
 "The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
-"Do you wish to restart GDM now?\n"
-"This will kill all your current sessions\n"
-"and you will lose any unsaved data!"
+"You can restart GDM when all sessions are\n"
+"closed (when all users log out) or you can\n"
+"restart GDM now (which will kill all current\n"
+"sessions)"
 msgstr ""
 "A beállítások csak a GDM vagy a számítógéped \n"
 "újraindításával lépnek érvénybe. \n"
@@ -1351,15 +1755,24 @@ msgstr ""
 "Ez minden munkafolyamatot leállít, a nem mentett\n"
 "adatok elvesznek!"
 
-#: gui/gdmconfig.c:931
+#: gui/gdmconfig.c:1280
+msgid "Restart after logout"
+msgstr ""
+
+#: gui/gdmconfig.c:1281
+msgid "Restart now"
+msgstr ""
+
+#: gui/gdmconfig.c:1291
+#, fuzzy
 msgid ""
 "Are you sure you wish to restart GDM\n"
-"and lose any unsaved data?"
+"now and lose any unsaved data?"
 msgstr ""
 "Biztos, hogy újra akarod indítani a GDM-et?\n"
 "A nem mentett adatok elvesznek!"
 
-#: gui/gdmconfig.c:938
+#: gui/gdmconfig.c:1299
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -1370,7 +1783,7 @@ msgstr ""
 "életbelépnek. A többi beállítás csak a GDM vagy a számtógép\n"
 "újraindítása után érvényesül."
 
-#: gui/gdmconfig.c:959
+#: gui/gdmconfig.c:1321
 msgid ""
 "You have not defined any local servers.\n"
 "Usually this is not a good idea unless you\n"
@@ -1381,7 +1794,7 @@ msgid ""
 "Are you sure you wish to apply these settings?"
 msgstr ""
 
-#: gui/gdmconfig.c:1113
+#: gui/gdmconfig.c:1486
 #, c-format
 msgid ""
 "\n"
@@ -1392,7 +1805,7 @@ msgstr ""
 "%s munkafolyamat törlése sikertelen\n"
 "   Hiba: %s"
 
-#: gui/gdmconfig.c:1149
+#: gui/gdmconfig.c:1522
 #, c-format
 msgid ""
 "\n"
@@ -1403,7 +1816,7 @@ msgstr ""
 "%s munkafolyamat eltávolítása sikertelen\n"
 "   Hiba: %s"
 
-#: gui/gdmconfig.c:1193
+#: gui/gdmconfig.c:1565
 #, c-format
 msgid ""
 "\n"
@@ -1414,7 +1827,7 @@ msgstr ""
 "%s munkafolyamat írása sikertelen\n"
 "   Hiba: %s"
 
-#: gui/gdmconfig.c:1204
+#: gui/gdmconfig.c:1576
 #, c-format
 msgid ""
 "\n"
@@ -1425,7 +1838,7 @@ msgstr ""
 "Tartalom írása a %s munkafolyamatba sikertelen\n"
 "   Hiba: %s"
 
-#: gui/gdmconfig.c:1230
+#: gui/gdmconfig.c:1601
 #, c-format
 msgid ""
 "\n"
@@ -1436,13 +1849,13 @@ msgstr ""
 "Hivatkozás eltávolítása a régi alapértelmezett munkafolyamatról sikertelen\n"
 "   Hiba: %s"
 
-#: gui/gdmconfig.c:1269
+#: gui/gdmconfig.c:1640
 msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
 msgstr ""
 
-#: gui/gdmconfig.c:1278
+#: gui/gdmconfig.c:1649
 #, c-format
 msgid ""
 "\n"
@@ -1453,7 +1866,7 @@ msgstr ""
 "Kapocs létrehozása az új alapértelmezett munkafolyamatra sikertelen\n"
 "   Hiba: %s"
 
-#: gui/gdmconfig.c:1298
+#: gui/gdmconfig.c:1669
 msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
@@ -1461,7 +1874,7 @@ msgstr ""
 "Hiba lépett fel a munkafolyamat-fájlok változtatása közben.\n"
 "Lehet, hogy nincs minden változtatás elmentve.\n"
 
-#: gui/gdmconfig.c:1317
+#: gui/gdmconfig.c:1689
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -1469,7 +1882,7 @@ msgstr ""
 "Ez elvet minden változást, amit ebben a munkafolyamatban\n"
 "eszközöltél. Biztos, hogy ezt akarod tenni?"
 
-#: gui/gdmconfig.c:1328
+#: gui/gdmconfig.c:1700
 msgid ""
 "This will destroy any changes made in the configuration.\n"
 "Are you sure you want to do this?"
@@ -1477,32 +1890,19 @@ msgstr ""
 "Ez elvet minden változást, amit a beállítás során eszközöltél. \n"
 "Biztos, hogy ezt akarod tenni?"
 
-#: gui/gdmconfig.c:1354
-msgid ""
-"Documentation is being written but is not yet finished.\n"
-"Please be patient."
+#: gui/gdmconfig.c:2127
+msgid "A command line must start with a forward slash ('/')"
 msgstr ""
-"A dokumentáció írás alatt, még nincs kész.\n"
-"Kis türelmet kérünk."
 
-#. Request the command line for this new server
-#: gui/gdmconfig.c:1488 gui/gdmconfig.c:1507
-msgid ""
-"Enter the path to the X server,and\n"
-"any parameters that should be passed to it."
-msgstr ""
-"Add meg az X szerverhez vezetõ elérési útvonalat\n"
-"és a paramétereket, amiket át szeretnél adni neki."
-
-#: gui/gdmconfig.c:1724
+#: gui/gdmconfig.c:2464
 msgid "A session name must be unique and not empty"
 msgstr "A munkafolyamat neve egyedi kell legyen és nem lehet üres"
 
-#: gui/gdmconfig.c:1736
+#: gui/gdmconfig.c:2477
 msgid "Enter a name for the new session"
 msgstr "Add meg az új munkafolyamat nevét"
 
-#: gui/gdmconfig.c:1851
+#: gui/gdmconfig.c:2592
 msgid ""
 "You have modified the sessions directory.\n"
 "Your session changes will still get written\n"
@@ -1517,153 +1917,183 @@ msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:38
-msgid "A-M|Croatian"
+msgid "A-M|Chinese (simplified)"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:40
-msgid "A-M|Czech"
+msgid "A-M|Chinese (traditional)"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:42
-msgid "A-M|Danish"
+msgid "A-M|Croatian"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:44
-msgid "A-M|Dutch"
+msgid "A-M|Czech"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:46
-msgid "A-M|English"
+msgid "A-M|Danish"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:48
-msgid "A-M|American English"
+msgid "A-M|Dutch"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:50
-msgid "A-M|British English"
+msgid "A-M|English"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:52
-msgid "A-M|Finnish"
+msgid "A-M|American English"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:54
-msgid "A-M|French"
+msgid "A-M|British English"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:56
-msgid "A-M|German"
+msgid "A-M|Finnish"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:58
-msgid "A-M|Greek"
+msgid "A-M|French"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:60
-msgid "A-M|Hebrew"
+msgid "A-M|Galician"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:62
-msgid "A-M|Hungarian"
+msgid "A-M|German"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:64
-msgid "A-M|Icelandic"
+msgid "A-M|Greek"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:66
-msgid "A-M|Italian"
+msgid "A-M|Hebrew"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:68
-msgid "A-M|Japanese"
+msgid "A-M|Hungarian"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:70
-msgid "A-M|Korean"
+msgid "A-M|Icelandic"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:72
+msgid "A-M|Italian"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:74
+msgid "A-M|Japanese"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:76
+msgid "A-M|Korean"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:78
 msgid "A-M|Lithuanian"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:74
-msgid "N-Z|Norwegian"
-msgstr ""
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:76
-msgid "N-Z|Polish"
-msgstr ""
-
-#. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:78
-msgid "N-Z|Portuguese"
-msgstr ""
-
-#. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:80
-msgid "N-Z|Romanian"
+msgid "N-Z|Norwegian (bokmal)"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:82
-msgid "N-Z|Russian"
+msgid "N-Z|Norwegian (nynorsk)"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:84
-msgid "N-Z|Slovak"
+msgid "N-Z|Polish"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:86
-msgid "N-Z|Slovenian"
+msgid "N-Z|Portuguese"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:88
-msgid "N-Z|Spanish"
+msgid "N-Z|Brazilian Portuguese"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:90
-msgid "N-Z|Swedish"
+msgid "N-Z|Romanian"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:92
+msgid "N-Z|Russian"
+msgstr ""
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:94
+msgid "N-Z|Slovak"
+msgstr ""
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:96
+msgid "N-Z|Slovenian"
+msgstr ""
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:98
+msgid "N-Z|Spanish"
+msgstr ""
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:100
+msgid "N-Z|Swedish"
+msgstr ""
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:102
 msgid "N-Z|Turkish"
+msgstr ""
+
+#. This is the POSIX/C locale for english, should really be in Other
+#: gui/gdmlanguages.c:104
+msgid "Other|POSIX/C English"
 msgstr ""
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:219
+#: gui/gdmlanguages.c:231
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:227
+#: gui/gdmlanguages.c:239
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -1705,7 +2135,7 @@ msgstr "A jelenlegi változtatásaok alkalmazása"
 msgid "Apply"
 msgstr "Alkalmaz"
 
-#: gui/gdmconfig-strings.c:15 gui/gdmconfig-strings.c:129
+#: gui/gdmconfig-strings.c:15 gui/gdmconfig-strings.c:132
 msgid "Options"
 msgstr "Beállítások"
 
@@ -1836,7 +2266,7 @@ msgstr "Extrák"
 msgid "Default locale: "
 msgstr "Alapértelmezett területi beállítás: "
 
-#: gui/gdmconfig-strings.c:46 gui/gdmconfig-strings.c:76
+#: gui/gdmconfig-strings.c:46 gui/gdmconfig-strings.c:79
 msgid "ca_ES"
 msgstr ""
 
@@ -1852,7 +2282,7 @@ msgstr ""
 msgid "da_DK"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:50 gui/gdmconfig-strings.c:56
+#: gui/gdmconfig-strings.c:50 gui/gdmconfig-strings.c:57
 msgid "de_DE"
 msgstr ""
 
@@ -1876,207 +2306,219 @@ msgstr ""
 msgid "fr_FR"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:57
-msgid "el_GR"
+#: gui/gdmconfig-strings.c:56
+msgid "gl_ES"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:58
-msgid "iw_IL"
+msgid "el_GR"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:59
-msgid "hu_HU"
+msgid "iw_IL"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:60
-msgid "is_IS"
+msgid "hu_HU"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:61
-msgid "it_IT"
+msgid "is_IS"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:62
-msgid "ja_JP"
+msgid "it_IT"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:63
-msgid "ko_KR"
+msgid "ja_JP"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:64
-msgid "lt_LT"
+msgid "ko_KR"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:65
-msgid "no_NO"
+msgid "lt_LT"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:66
-msgid "pl_PL"
+msgid "nn_NO"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:67
-msgid "pt_PT"
+msgid "no_NO"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:68
-msgid "ro_RO"
+msgid "pl_PL"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:69
-msgid "ru_RU"
+msgid "pt_PT"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:70
-msgid "sk_SK"
+msgid "pt_BR"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:71
-msgid "sl_SI"
+msgid "ro_RO"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:72
-msgid "es_ES"
+msgid "ru_RU"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:73
-msgid "sv_SE"
+msgid "sk_SK"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:74
-msgid "tr_TR"
+msgid "sl_SI"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:75
+msgid "es_ES"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:76
+msgid "sv_SE"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:77
+msgid "tr_TR"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:78
 msgid ""
 "This is the locale that GDM uses when it cannot find what the system locale "
 "is set to.  This should be in the standard format such as \"en_US\" for "
 "American English or \"cs_CZ\" for Czech"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:77
+#: gui/gdmconfig-strings.c:80
 msgid "Position"
 msgstr "Helyzet"
 
-#: gui/gdmconfig-strings.c:78
+#: gui/gdmconfig-strings.c:81
 msgid "Set the initial position of the login window to the values below"
 msgstr "A bejelentkezõ ablak indulóhelyzetét állítsd az alábbi értékre"
 
-#: gui/gdmconfig-strings.c:79
+#: gui/gdmconfig-strings.c:82
 msgid "Manually set position"
 msgstr "Helyzet beállítása kézzel"
 
-#: gui/gdmconfig-strings.c:80
+#: gui/gdmconfig-strings.c:83
 msgid "Do note allow the user to drag the login window around"
 msgstr "Ne engedélyezd a bejelentkezõ ablak elmozdítását"
 
-#: gui/gdmconfig-strings.c:81
+#: gui/gdmconfig-strings.c:84
 msgid "Lock position"
 msgstr "Helyzet zárolása"
 
-#: gui/gdmconfig-strings.c:82
+#: gui/gdmconfig-strings.c:85
 msgid "X position: "
 msgstr "X helyzet: "
 
-#: gui/gdmconfig-strings.c:83
+#: gui/gdmconfig-strings.c:86
 msgid "Y position: "
 msgstr "Y helyzet: "
 
-#: gui/gdmconfig-strings.c:84
+#: gui/gdmconfig-strings.c:87
 msgid "Xinerama screen: "
 msgstr "Xinerama képernyõ: "
 
-#: gui/gdmconfig-strings.c:85
+#: gui/gdmconfig-strings.c:88
 msgid ""
 "If you have xinerama multi display setup which screen should the loginw "
 "indow appear on.  0 will usually do just fine."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:86
+#: gui/gdmconfig-strings.c:89
 msgid "Login behaviour"
 msgstr "Bejelentkezés tulajdonságai"
 
-#: gui/gdmconfig-strings.c:87 gui/gdmconfig-strings.c:98
+#: gui/gdmconfig-strings.c:90 gui/gdmconfig-strings.c:101
 msgid "Face browser"
 msgstr "Arcképek"
 
-#: gui/gdmconfig-strings.c:88
+#: gui/gdmconfig-strings.c:91
 msgid ""
-"Show a browser of user face images. The users can put their picture in "
-"~/.gnome/photo"
+"Show a browser of user face images. The users can put their picture in ~/."
+"gnome/photo"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:89
+#: gui/gdmconfig-strings.c:92
 msgid "Show choosable user images (enable face browser)"
 msgstr "Kiválasztható felhasználói képek mutatása (Arcképek engedélyezése)"
 
-#: gui/gdmconfig-strings.c:90
+#: gui/gdmconfig-strings.c:93
 msgid "Default face image: "
 msgstr "Alapértelmezett arckép: "
 
-#: gui/gdmconfig-strings.c:91
+#: gui/gdmconfig-strings.c:94
 msgid "Global faces directory: "
 msgstr "Rendszerszintû arcképkönvytár: "
 
-#: gui/gdmconfig-strings.c:92
+#: gui/gdmconfig-strings.c:95
 msgid "Maximum face width: "
 msgstr "Legnagyobb szélesség: "
 
-#: gui/gdmconfig-strings.c:93
+#: gui/gdmconfig-strings.c:96
 msgid "Select an image for users with no 'face'"
 msgstr ""
 "'Arckép nélküli' felhasználókhoz rendelt alapértelmezett arckép megadása"
 
-#: gui/gdmconfig-strings.c:94
+#: gui/gdmconfig-strings.c:97
 msgid "Choose the directory to search for faces"
 msgstr "Arcképeket tartalmazó könyvtár kiválasztása"
 
-#: gui/gdmconfig-strings.c:95
+#: gui/gdmconfig-strings.c:98
 msgid "Maximum face height: "
 msgstr "Legnagyobb magasság: "
 
-#: gui/gdmconfig-strings.c:96
+#: gui/gdmconfig-strings.c:99
 msgid "Exclude these users: "
 msgstr "Ezen felhasználók kizárása: "
 
-#: gui/gdmconfig-strings.c:97
+#: gui/gdmconfig-strings.c:100
 msgid "A comma separated list of users to exclude from the face browser."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:99 gui/gdmconfig-strings.c:119
+#: gui/gdmconfig-strings.c:102 gui/gdmconfig-strings.c:122
 msgid "Background"
 msgstr "Háttér"
 
-#: gui/gdmconfig-strings.c:100
+#: gui/gdmconfig-strings.c:103
 msgid "Background type: "
 msgstr "Háttér típusa: "
 
-#: gui/gdmconfig-strings.c:101
+#: gui/gdmconfig-strings.c:104
 msgid "The background should be the standard background"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:102
+#: gui/gdmconfig-strings.c:105
 msgid "None"
 msgstr "Nincs"
 
-#: gui/gdmconfig-strings.c:103
+#: gui/gdmconfig-strings.c:106
 msgid "The background should be an image"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:104
+#: gui/gdmconfig-strings.c:107
 msgid "Image"
 msgstr "Kép"
 
-#: gui/gdmconfig-strings.c:105
+#: gui/gdmconfig-strings.c:108
 msgid "The background should be a color"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:106
+#: gui/gdmconfig-strings.c:109
 msgid "Color"
 msgstr "Szín"
 
-#: gui/gdmconfig-strings.c:107
+#: gui/gdmconfig-strings.c:110
 msgid ""
 "Scale background image to fit the entire screen. If this is not set then the "
 "image will be tiled on the background."
@@ -2084,91 +2526,91 @@ msgstr ""
 "A háttérképet a képernyõre feszíti. Ha ez nincs megadva, a képbõl mozaik "
 "készül."
 
-#: gui/gdmconfig-strings.c:108
+#: gui/gdmconfig-strings.c:111
 msgid "Scale background image to fit"
 msgstr "Háttérkép átméretezése"
 
-#: gui/gdmconfig-strings.c:109
+#: gui/gdmconfig-strings.c:112
 msgid "Background color: "
 msgstr "Háttérszín: "
 
-#: gui/gdmconfig-strings.c:110
+#: gui/gdmconfig-strings.c:113
 msgid "The color to use on the background"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:111
+#: gui/gdmconfig-strings.c:114
 msgid "Pick a color"
 msgstr "Válassz színt"
 
-#: gui/gdmconfig-strings.c:112
+#: gui/gdmconfig-strings.c:115
 msgid "Background image:"
 msgstr "Háttérkép:"
 
-#: gui/gdmconfig-strings.c:113
+#: gui/gdmconfig-strings.c:116
 msgid "On remote login screens only set color to reduce network traffic"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:114
+#: gui/gdmconfig-strings.c:117
 msgid "Only color on remote displays"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:115
+#: gui/gdmconfig-strings.c:118
 msgid "Background program"
 msgstr "Háttérprogram"
 
-#: gui/gdmconfig-strings.c:116
+#: gui/gdmconfig-strings.c:119
 msgid "Background program: "
 msgstr "Háttérprogram: "
 
-#: gui/gdmconfig-strings.c:117 gui/gdmconfig-strings.c:222
+#: gui/gdmconfig-strings.c:120 gui/gdmconfig-strings.c:264
 msgid "Select a file containing Locale information"
 msgstr "Válaszd ki a területi beállításokat tartalmazó fájlt"
 
-#: gui/gdmconfig-strings.c:118
+#: gui/gdmconfig-strings.c:121
 msgid "The program to run in the background of the login."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:120 gui/gdmconfig-strings.c:127
+#: gui/gdmconfig-strings.c:123 gui/gdmconfig-strings.c:130
 msgid "Automatic login"
 msgstr "Automatikus bejelentkezés"
 
-#: gui/gdmconfig-strings.c:121
+#: gui/gdmconfig-strings.c:124
 msgid "Automatic login: "
 msgstr "Automatikus bejelentkezés: "
 
-#: gui/gdmconfig-strings.c:122
+#: gui/gdmconfig-strings.c:125
 msgid "Login a user automatically on first bootup"
 msgstr "Felhasználó automatikus beléptetése elsõ induláskor"
 
-#: gui/gdmconfig-strings.c:123
+#: gui/gdmconfig-strings.c:126
 msgid "Timed login"
 msgstr "Idõzített beléptetés"
 
-#: gui/gdmconfig-strings.c:124
+#: gui/gdmconfig-strings.c:127
 msgid "Timed login: "
 msgstr "Idõzített beléptetés: "
 
-#: gui/gdmconfig-strings.c:125
+#: gui/gdmconfig-strings.c:128
 msgid "Seconds before login: "
 msgstr "Másodpercek száma bejelentkezés elõtt: "
 
-#: gui/gdmconfig-strings.c:126
+#: gui/gdmconfig-strings.c:129
 msgid "Login a user automatically after a specified number of seconds"
 msgstr "Felhasználó beléptetése a megadott idõ után (másodpercben)."
 
-#: gui/gdmconfig-strings.c:128
+#: gui/gdmconfig-strings.c:131
 msgid "expert"
 msgstr "haladó"
 
-#: gui/gdmconfig-strings.c:130
+#: gui/gdmconfig-strings.c:133
 msgid "Allow logging in as root (administrator) user."
 msgstr "A root felhasználó (rendszergazda) bejelentkezésének engedélyezése."
 
-#: gui/gdmconfig-strings.c:131
+#: gui/gdmconfig-strings.c:134
 msgid "Allow root to login with GDM"
-msgstr "Root bejelentkezés engedéylezése GDM-en keresztül"
+msgstr "Root bejelentkezés engedélyezése GDM-en keresztül"
 
-#: gui/gdmconfig-strings.c:132
+#: gui/gdmconfig-strings.c:135
 msgid ""
 "Allow logging in as root (administrator) user from a remote host using GDM.  "
 "This is only relevant if you enable the XDMCP protocol."
@@ -2177,411 +2619,559 @@ msgstr ""
 "bejelentkezését, GDM-en keresztül. Ennek csak akkor van jelentõsége, ha "
 "bekapcsolod az XDMCP protokollt."
 
-#: gui/gdmconfig-strings.c:133
+#: gui/gdmconfig-strings.c:136
 msgid "Allow root to login remotely with GDM"
-msgstr "Root távoli bejelentkezésének engedéylezése GDM-en keresztül"
+msgstr "Root távoli bejelentkezésének engedélyezése GDM-en keresztül"
 
-#: gui/gdmconfig-strings.c:134
+#: gui/gdmconfig-strings.c:137
+msgid ""
+"Allow logging in using the timed from a remote host using GDM.  This is only "
+"relevant if you enable the XDMCP protocol.  Note that this is insecure since "
+"remote hosts can gain access to this computer without the use of a password, "
+"so be careful."
+msgstr ""
+
+#: gui/gdmconfig-strings.c:138
+#, fuzzy
+msgid "Allow remote timed logins"
+msgstr "Root bejelentkezés engedéylezése GDM-en keresztül"
+
+#: gui/gdmconfig-strings.c:139
 msgid ""
 "Determines whether GDM should kill X clients started by the init scripts "
 "when the user logs in."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:135
+#: gui/gdmconfig-strings.c:140
 msgid "Kill 'init' clients"
 msgstr "'init' kliensek kilövése"
 
-#: gui/gdmconfig-strings.c:136
+#: gui/gdmconfig-strings.c:141
 msgid "Should GDM print authentication errors in the greeter"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:137
+#: gui/gdmconfig-strings.c:142
 msgid "Authentication errors should be verbose"
 msgstr "Az azonosítással kapcsolatos hibák bõbeszédûek"
 
-#: gui/gdmconfig-strings.c:138
+#: gui/gdmconfig-strings.c:143
 msgid "Select how relaxed permissions are"
 msgstr "Válaszd ki a jogosultságok beállításainak szigorúságát"
 
-#: gui/gdmconfig-strings.c:139
+#: gui/gdmconfig-strings.c:144
 msgid "Permissions: "
 msgstr "Jogosultságok: "
 
-#: gui/gdmconfig-strings.c:140
+#: gui/gdmconfig-strings.c:145
 msgid "Allow world writable files and directories"
 msgstr "Mindenki által írható fájlok és könyvtárak engedélyezése"
 
-#: gui/gdmconfig-strings.c:141
+#: gui/gdmconfig-strings.c:146
 msgid "World writable"
 msgstr "Mindenki által írható"
 
-#: gui/gdmconfig-strings.c:142
+#: gui/gdmconfig-strings.c:147
 msgid "Allow group writable files and directories"
 msgstr "Csoport által írható fájlok és könyvtárak engedélyezése"
 
-#: gui/gdmconfig-strings.c:143
+#: gui/gdmconfig-strings.c:148
 msgid "Group writable"
 msgstr "Csoport által írható"
 
-#: gui/gdmconfig-strings.c:144
+#: gui/gdmconfig-strings.c:149
 msgid "Only accept user owned files and directories"
 msgstr "Csak a felhasználó tulajdonában lévõ fájlokat fogadja el"
 
-#: gui/gdmconfig-strings.c:145
+#: gui/gdmconfig-strings.c:150
 msgid "Paranoia"
 msgstr "Paranoia"
 
-#: gui/gdmconfig-strings.c:146
+#: gui/gdmconfig-strings.c:151
 msgid "Authorization Details"
 msgstr "Azonosítás részletei"
 
-#: gui/gdmconfig-strings.c:147
+#: gui/gdmconfig-strings.c:152
 msgid "GDM runs as this user: "
 msgstr "A GDM a következõ felhasználó nevében fut: "
 
-#: gui/gdmconfig-strings.c:148
+#: gui/gdmconfig-strings.c:153
 msgid "User 'auth' directory: "
 msgstr "A felhasználó 'auth' könyvtára: "
 
-#: gui/gdmconfig-strings.c:149
+#: gui/gdmconfig-strings.c:154
 msgid "User 'auth' FB directory: "
 msgstr "A felhasználó 'auth' FB könyvtára: "
 
-#: gui/gdmconfig-strings.c:150
+#: gui/gdmconfig-strings.c:155
 msgid "User 'auth' file: "
 msgstr "A felhasználó 'auth' fájlja: "
 
-#: gui/gdmconfig-strings.c:151
+#: gui/gdmconfig-strings.c:156
 msgid "GDM runs as this group: "
 msgstr "A GDM ennek a csoportnak a nevében fut: "
 
-#: gui/gdmconfig-strings.c:152
+#: gui/gdmconfig-strings.c:157
 msgid "Limits"
 msgstr "Korlátozásaok"
 
-#: gui/gdmconfig-strings.c:153
+#: gui/gdmconfig-strings.c:158
 msgid ""
 "The number of seconds before a login is allowed after an unsuccesful try."
 msgstr ""
 "Sikertelen belépés esetén ennyit vár, mielõtt újra engedné a bejelntkezést."
 
-#: gui/gdmconfig-strings.c:154
+#: gui/gdmconfig-strings.c:159
 msgid ""
 "The maximum size of a file that gdm will attempt to read.  This is for files "
 "that are read into memory and so you don't want users \"attacking\" gdm by "
 "having large files."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:155
+#: gui/gdmconfig-strings.c:160
 msgid "Retry delay: "
 msgstr "Újrapróbálkozás késleltetése:"
 
-#: gui/gdmconfig-strings.c:156
+#: gui/gdmconfig-strings.c:161
 msgid "Maximum user file length: "
 msgstr "A felhasználói fájl maximális mérete: "
 
-#: gui/gdmconfig-strings.c:157
+#: gui/gdmconfig-strings.c:162
 msgid "Maximum session file length: "
 msgstr "A munkafolyamat-fájl maximális mérete: "
 
-#: gui/gdmconfig-strings.c:158
+#: gui/gdmconfig-strings.c:163
 msgid ""
 "The session file is read in a way where a higher limit is still ok.  That is "
 "it is never stored in memory."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:159
+#: gui/gdmconfig-strings.c:164
 msgid "Security"
-msgstr "Biztosnág"
+msgstr "Biztonság"
 
-#: gui/gdmconfig-strings.c:160
+#: gui/gdmconfig-strings.c:165
+msgid ""
+"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
+"GDM with the XDMCP libraries."
+msgstr ""
+
+#: gui/gdmconfig-strings.c:166
 msgid "Enable XDMCP, a protocol to allow others to log in remotely"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:161
+#: gui/gdmconfig-strings.c:167
 msgid "Enable XDMCP"
 msgstr "XDMCP engedélyezése"
 
-#: gui/gdmconfig-strings.c:162
+#: gui/gdmconfig-strings.c:168
 msgid "Connection Settings"
 msgstr "Kapcsolat beállításai"
 
-#: gui/gdmconfig-strings.c:163
+#: gui/gdmconfig-strings.c:169
 msgid "Honour indirect requests"
 msgstr "Közvetett kéréseket is figyelembe veszi"
 
-#: gui/gdmconfig-strings.c:164
+#: gui/gdmconfig-strings.c:170
 msgid "Maximum indirect wait time: "
 msgstr "Maximális várakozási idõ, közvetett esetben: "
 
-#: gui/gdmconfig-strings.c:165
+#: gui/gdmconfig-strings.c:171
 msgid "Maximum wait time: "
 msgstr "Maximális várakozási idõ: "
 
-#: gui/gdmconfig-strings.c:166
+#: gui/gdmconfig-strings.c:172
 msgid "Maximum remote sessions: "
 msgstr "Maximális távoli kapcsolatok száma: "
 
-#: gui/gdmconfig-strings.c:167
+#: gui/gdmconfig-strings.c:173
 msgid "Max pending indirect requests: "
 msgstr "Maximális függõ közvetett kérések száma: "
 
-#: gui/gdmconfig-strings.c:168
+#: gui/gdmconfig-strings.c:174
 msgid "Maximum pending requests: "
 msgstr "Maximális függõ kérések száma: "
 
-#: gui/gdmconfig-strings.c:169
+#: gui/gdmconfig-strings.c:175
 msgid "Listen on UDP port: "
 msgstr "Ezen az UDP porton fülel: "
 
-#: gui/gdmconfig-strings.c:170
+#: gui/gdmconfig-strings.c:176
+msgid "Ping interval (minutes):"
+msgstr "Ping idõköz (percben):"
+
+#: gui/gdmconfig-strings.c:177
+msgid ""
+"Interval in minutes in which to ping the server.  If the server doesn't "
+"respond in this many minutes (that is before the next time we ping it) the "
+"display will be terminated."
+msgstr ""
+
+#: gui/gdmconfig-strings.c:178
 msgid "XDMCP"
 msgstr "XDMCP"
 
-#: gui/gdmconfig-strings.c:171
-msgid "Server Definitions"
-msgstr "Kiszolgáló meghatározása"
+#: gui/gdmconfig-strings.c:179
+msgid "Servers"
+msgstr "Kiszolgálók"
 
-#: gui/gdmconfig-strings.c:172
+#: gui/gdmconfig-strings.c:180
+msgid "Name"
+msgstr "Név"
+
+#: gui/gdmconfig-strings.c:181
+msgid "Command"
+msgstr "Parancs"
+
+#: gui/gdmconfig-strings.c:182
+msgid "Flexible"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:183 gui/gdmconfig-strings.c:192
+msgid "Add server"
+msgstr "Kiszolgáló hozzáadása"
+
+#: gui/gdmconfig-strings.c:184 gui/gdmconfig-strings.c:193
+msgid "Edit server"
+msgstr "Kiszolgáló szerkesztése"
+
+#: gui/gdmconfig-strings.c:185 gui/gdmconfig-strings.c:194
+msgid "Delete server"
+msgstr "Kiszolgáló törlése"
+
+#: gui/gdmconfig-strings.c:186 gui/gdmconfig-strings.c:221
+msgid "Set as default"
+msgstr "Alapértelmezetté tesz"
+
+#: gui/gdmconfig-strings.c:187
+msgid "Static Servers (servers to always run)"
+msgstr "Állandó kiszolgálók (mindig futó kiszolgálók)"
+
+#: gui/gdmconfig-strings.c:188
 msgid "No."
 msgstr "Sorszám"
 
-#: gui/gdmconfig-strings.c:173
-msgid "Path to X server"
-msgstr "Az X szerver elérési útvonala"
+#: gui/gdmconfig-strings.c:189
+msgid "Server"
+msgstr "Kiszolgáló"
 
-#: gui/gdmconfig-strings.c:174
-msgid "Add Server"
-msgstr "X szerver hozzáadása"
+#: gui/gdmconfig-strings.c:190
+msgid ""
+"Instead of reinitializing running servers when a user logs out.  Always kill "
+"and then start the server again."
+msgstr ""
 
-#: gui/gdmconfig-strings.c:175
-msgid "Edit Server"
-msgstr "X szerver szerkesztése"
+#: gui/gdmconfig-strings.c:191
+msgid "Always restart X servers"
+msgstr "Mindig indítsa újra az X-szervert"
 
-#: gui/gdmconfig-strings.c:176
-msgid "Delete Server"
-msgstr "X szerver törlése"
+#: gui/gdmconfig-strings.c:195 gui/gdmconfig-strings.c:242
+#: gui/gdmconfig-strings.c:256 gui/gdmconfig-strings.c:260
+msgid "Miscellaneous"
+msgstr "Egyéb"
 
-#: gui/gdmconfig-strings.c:178
+#: gui/gdmconfig-strings.c:196
+msgid "Xnest server: "
+msgstr "Xnest kiszolgáló: "
+
+#: gui/gdmconfig-strings.c:197
+#, fuzzy
+msgid "Maximum number of flexible servers: "
+msgstr "A felhasználói fájl maximális mérete: "
+
+#: gui/gdmconfig-strings.c:198
+msgid ""
+"The Xnest server.  This is a server that can run inside another server, used "
+"for the flexible nested login."
+msgstr ""
+
+#: gui/gdmconfig-strings.c:199
+msgid "Standard X server: "
+msgstr "Szabványos X-szerver:"
+
+#: gui/gdmconfig-strings.c:200
+msgid "This is the standard X server to run when we are not told otherwise."
+msgstr ""
+
+#: gui/gdmconfig-strings.c:202
 msgid "Script to run when X is crashing: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:179
+#: gui/gdmconfig-strings.c:203
 msgid "X configurator binaries to try: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:180
+#: gui/gdmconfig-strings.c:204
 msgid ""
 "A list of X setup programs to try for the above script, separated by spaces"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:181
+#: gui/gdmconfig-strings.c:205
 msgid ""
 "A script to run when the X server keeps crashing and the failsafe X server "
 "is either empty or also didn't take.  This will run an X setup program "
 "defined below."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:182
+#: gui/gdmconfig-strings.c:206
 msgid "Failsafe X server:"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:183
+#: gui/gdmconfig-strings.c:207
 msgid ""
 "An X server binary to run if the standard one keeps crashing.  If this fails "
 "the script below will be run."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:184
+#: gui/gdmconfig-strings.c:208
 msgid "X-server setup"
 msgstr "X-szerver beállítása"
 
-#: gui/gdmconfig-strings.c:185
+#: gui/gdmconfig-strings.c:209
 msgid "Session configuration"
 msgstr "A munkafolyamat beállítása"
 
-#: gui/gdmconfig-strings.c:186
+#: gui/gdmconfig-strings.c:210
 msgid "Session directory: "
 msgstr "Munkafolyamat könyvtára: "
 
-#: gui/gdmconfig-strings.c:187
+#: gui/gdmconfig-strings.c:211
 msgid "Select a directory to be used for system-wide session scripts"
 msgstr ""
-"Itt adhatod meg, hogy melyik könyvtárba kerüljenek a rendszer "
-"munkafolyamat-parancsfájljai."
+"Itt adhatod meg, hogy melyik könyvtárba kerüljenek a rendszer munkafolyamat-"
+"parancsfájljai."
 
-#: gui/gdmconfig-strings.c:188
+#: gui/gdmconfig-strings.c:212
 msgid "Available Sessions"
 msgstr "Elérhetõ munkafolyamatok"
 
-#: gui/gdmconfig-strings.c:189
+#: gui/gdmconfig-strings.c:213
+msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:215
+msgid "Show the Gnome failsafe session"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:216
+msgid "Gnome Failsafe"
+msgstr "Gnome Failsafe"
+
+#: gui/gdmconfig-strings.c:217
+#, fuzzy
+msgid "Show the Xterm failsafe session"
+msgstr "\"xterm\" nem található a failsafe munkafolyamathoz."
+
+#: gui/gdmconfig-strings.c:218
+msgid "Xterm Failsafe"
+msgstr "Xterm Failsafe"
+
+#: gui/gdmconfig-strings.c:219
 msgid "Add session"
 msgstr "Munkafolyamat hozzáadása"
 
-#: gui/gdmconfig-strings.c:190
+#: gui/gdmconfig-strings.c:220
 msgid "Remove session"
 msgstr "Munkafolyamat eltávolítása"
 
-#: gui/gdmconfig-strings.c:191
-msgid "Set as default"
-msgstr "Alapértelmezetté tesz"
-
-#: gui/gdmconfig-strings.c:192
+#: gui/gdmconfig-strings.c:222
 msgid "Selected session name: "
 msgstr "Kijelölt munkafolyamat neve: "
 
-#: gui/gdmconfig-strings.c:193
+#: gui/gdmconfig-strings.c:223
 msgid ""
 "The exact script details of a session\n"
 "will appear here when you select\n"
 "one from the list on the left.\n"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:197
+#: gui/gdmconfig-strings.c:227
 msgid "Login sessions"
 msgstr "Bejelentkezési munkafolyamatok"
 
-#: gui/gdmconfig-strings.c:198
+#: gui/gdmconfig-strings.c:228
+msgid "Appearance"
+msgstr "Megjelenés"
+
+#: gui/gdmconfig-strings.c:229
+msgid "Directory for host images: "
+msgstr "Gépképeket tartalmazó könyvtár: "
+
+#: gui/gdmconfig-strings.c:230
+msgid "Default host image:"
+msgstr "Alapértelmezett gépkép: "
+
+#: gui/gdmconfig-strings.c:231
+msgid "Refresh"
+msgstr "Frissítés"
+
+#: gui/gdmconfig-strings.c:232
+msgid "Scan every 'x' seconds: "
+msgstr "Újraolvasás 'x' másodpercenként: "
+
+#: gui/gdmconfig-strings.c:233
+msgid "Hosts"
+msgstr "Gépek"
+
+#: gui/gdmconfig-strings.c:234
+msgid "Send a query to the local network and list all servers that respond"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:235
+msgid "Broadcast query"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:236
+msgid "Hosts to list: "
+msgstr "Listázandó gépek: "
+
+#: gui/gdmconfig-strings.c:237
+msgid ""
+"Comma separated list of hostnames to list in the chooser (in addition to the "
+"broadcast above)"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:238
+msgid "Chooser"
+msgstr "Kiválasztó"
+
+#: gui/gdmconfig-strings.c:239
 msgid "Debugging"
 msgstr "Hibakeresés"
 
-#: gui/gdmconfig-strings.c:199
+#: gui/gdmconfig-strings.c:240
 msgid ""
 "Enable debugging output to be printed into the syslog.  Useful for tracking "
 "down problems.  But not so useful for normal usage as it can fill up your "
 "logs very quickly."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:200
+#: gui/gdmconfig-strings.c:241
 msgid "Enable debugging output"
 msgstr "Hibakeresõ-kimenet bekapcsolása"
 
-#: gui/gdmconfig-strings.c:201 gui/gdmconfig-strings.c:214
-#: gui/gdmconfig-strings.c:218
-msgid "Miscellaneous"
-msgstr "Egyéb"
-
-#: gui/gdmconfig-strings.c:202
+#: gui/gdmconfig-strings.c:243
 msgid "system_setup"
 msgstr "system_setup"
 
-#: gui/gdmconfig-strings.c:203
+#: gui/gdmconfig-strings.c:244
 msgid "Executables"
 msgstr "Futtatható programok"
 
-#: gui/gdmconfig-strings.c:204
+#: gui/gdmconfig-strings.c:245
 msgid "Chooser command: "
 msgstr "Kiválasztóprogram:"
 
-#: gui/gdmconfig-strings.c:205
+#: gui/gdmconfig-strings.c:246
 msgid "Greeter command: "
 msgstr "Üdvözlõprogram:"
 
-#: gui/gdmconfig-strings.c:206
+#: gui/gdmconfig-strings.c:247
 msgid "Halt command: "
 msgstr "Rendszerleállító-program: "
 
-#: gui/gdmconfig-strings.c:207
+#: gui/gdmconfig-strings.c:248
 msgid "Reboot command: "
 msgstr "Rendszerújraindító-program:"
 
-#: gui/gdmconfig-strings.c:208
+#: gui/gdmconfig-strings.c:249
 msgid "Configurator command: "
 msgstr "Rendszerbeállító-program: "
 
-#: gui/gdmconfig-strings.c:209
+#: gui/gdmconfig-strings.c:250
+#, fuzzy
+msgid "Suspend command: "
+msgstr "Kiválasztóprogram:"
+
+#: gui/gdmconfig-strings.c:251
 msgid "Directories"
 msgstr "Könyvtárak"
 
-#: gui/gdmconfig-strings.c:210
+#: gui/gdmconfig-strings.c:252
 msgid "PRE session scripts directory: "
 msgstr "A munkafolyamat ELÕTT futtatandó programok könyvtára: "
 
-#: gui/gdmconfig-strings.c:211
+#: gui/gdmconfig-strings.c:253
 msgid "POST session scripts directory: "
 msgstr "A munkafolyamat UTÁN futtatandó programok könyvtára: "
 
-#: gui/gdmconfig-strings.c:212
+#: gui/gdmconfig-strings.c:254
 msgid "Logging directory: "
 msgstr "Naplófájlok könyvtárai: "
 
-#: gui/gdmconfig-strings.c:213
+#: gui/gdmconfig-strings.c:255
 msgid "Display initialization directory: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:215
+#: gui/gdmconfig-strings.c:257
 msgid "PID file: "
 msgstr "PID fájl: "
 
-#: gui/gdmconfig-strings.c:216
+#: gui/gdmconfig-strings.c:258
 msgid "Default GNOME session file: "
 msgstr "Alapértelmezett GNOME session fájl: "
 
-#: gui/gdmconfig-strings.c:217
+#: gui/gdmconfig-strings.c:259
 msgid "Paths"
 msgstr "Útvonalak"
 
-#: gui/gdmconfig-strings.c:219
+#: gui/gdmconfig-strings.c:261
 msgid "Default $PATH: "
 msgstr "Alapértelmezett $PATH: "
 
-#: gui/gdmconfig-strings.c:220
+#: gui/gdmconfig-strings.c:262
 msgid "Root $PATH: "
 msgstr "Root $PATH: "
 
-#: gui/gdmconfig-strings.c:221
+#: gui/gdmconfig-strings.c:263
 msgid "Localization"
 msgstr "Nyelv"
 
-#: gui/gdmconfig-strings.c:223
+#: gui/gdmconfig-strings.c:265
 msgid "Locale file: "
 msgstr "Locale fájl: "
 
-#: gui/gdmconfig-strings.c:224
+#: gui/gdmconfig-strings.c:266
 msgid "Environment"
 msgstr "Környezet"
 
-#: gui/gdmconfig-strings.c:225
-msgid "Appearance"
-msgstr "Megjelenés"
-
-#: gui/gdmconfig-strings.c:226
-msgid "Directory for host images: "
-msgstr "Gépgépeket tartalmazó könyvtár: "
-
-#: gui/gdmconfig-strings.c:227
-msgid "Default host image:"
-msgstr "Alapértelmezett gépkép: "
-
-#: gui/gdmconfig-strings.c:228
-msgid "Refresh"
-msgstr "Frissítés"
-
-#: gui/gdmconfig-strings.c:229
-msgid "Scan every 'x' seconds: "
-msgstr "Újraolvasás 'x' másodpercenként: "
-
-#: gui/gdmconfig-strings.c:230
-msgid "Chooser"
-msgstr "Kiválasztó"
-
-#: gui/gdmconfig-strings.c:231
+#: gui/gdmconfig-strings.c:267
 msgid "(C) 2001 Lee Mallabone"
 msgstr "(C) 2001 Lee Mallabone"
 
-#: gui/gdmconfig-strings.c:232
+#: gui/gdmconfig-strings.c:268
 msgid ""
 "Configure the GNOME Display Manager.\n"
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
 "under the `gdm' product."
 msgstr ""
 "A GNOME Display Manager beállításai.\n"
-"Minden hibajelentést és a programmal kapcsolatos kérést a "
-"http://bugzilla.gnome.gnome.org lapon adhatsz fel, a 'gdm' termék alatt."
+"Minden hibajelentést és a programmal kapcsolatos kérést a http://bugzilla."
+"gnome.gnome.org lapon adhatsz fel, a 'gdm' termék alatt."
 
-#: gui/icon-entry-hack.c:268
-msgid "Choose an icon"
-msgstr "Válassz ikont"
+#: gui/gdmconfig-strings.c:270
+msgid "label273"
+msgstr "label273"
+
+#: gui/gdmconfig-strings.c:271
+msgid "Extra arguments:"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:272
+#, fuzzy
+msgid "Custom command line:"
+msgstr "Rendszerbeállító-program: "
+
+#: gui/gdmconfig-strings.c:274
+msgid "Command line: "
+msgstr "Parancssor: "
+
+#: gui/gdmconfig-strings.c:275
+msgid "Allow as flexible server"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:276
+msgid "Make this the default server"
+msgstr ""
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -2620,10 +3210,6 @@ msgstr "Súgó"
 msgid "Exit the application"
 msgstr "Kilépés az alkalamazásból"
 
-#: gui/gdmchooser-strings.c:15
-msgid "Quit"
-msgstr "Kilépés"
-
 #: gui/gdmchooser-strings.c:17
 msgid "Most recently queried hosts"
 msgstr "A legutóbb lekérdezett gépek"
@@ -2643,3 +3229,203 @@ msgstr ""
 #: gui/gdmchooser-strings.c:26
 msgid "Information"
 msgstr "Információ"
+
+#: gui/gdmXnestchooser.c:113
+msgid ""
+"Xnest doesn't exist.\n"
+"Please ask your system administrator\n"
+"to install it."
+msgstr ""
+
+#: gui/gdmXnestchooser.c:129
+msgid ""
+"Indirect XDMCP is not enabled,\n"
+"please ask your system administrator to enable it\n"
+"in the GDM configurator program."
+msgstr ""
+
+#: gui/gdmXnestchooser.c:152 gui/gdmflexiserver.c:367
+msgid ""
+"GDM is not running.\n"
+"Please ask your system administrator to start it."
+msgstr ""
+
+#: gui/gdmXnestchooser.c:163
+msgid "Could not find a free display number"
+msgstr ""
+
+#: gui/gdmflexiserver.c:257
+msgid "Choose server"
+msgstr "Válassz szervert"
+
+#: gui/gdmflexiserver.c:263
+#, fuzzy
+msgid "Choose the X server to start"
+msgstr "Arcképeket tartalmazó könyvtár kiválasztása"
+
+#: gui/gdmflexiserver.c:319
+msgid "Send the specified protocol command to gdm"
+msgstr ""
+
+#: gui/gdmflexiserver.c:319
+msgid "COMMAND"
+msgstr "COMMAND"
+
+#: gui/gdmflexiserver.c:320
+msgid "Xnest mode"
+msgstr "Xnest mód"
+
+#: gui/gdmflexiserver.c:376 gui/gdmflexiserver.c:389 gui/gdmflexiserver.c:422
+#: gui/gdmflexiserver.c:425
+msgid "Cannot communicate with gdm, perhaps you have an old version running."
+msgstr ""
+
+#: gui/gdmflexiserver.c:428
+msgid "The allowed limit of flexible X servers reached."
+msgstr ""
+
+#: gui/gdmflexiserver.c:430
+msgid "There were errors trying to start the X server."
+msgstr ""
+
+#: gui/gdmflexiserver.c:432
+msgid "The X server failed.  Perhaps it is not configured well."
+msgstr ""
+
+#: gui/gdmflexiserver.c:435
+msgid "Too many X sessions running."
+msgstr ""
+
+#: gui/gdmflexiserver.c:437
+msgid ""
+"The nested X server (Xnest) cannot connect to your current X server.  You "
+"may be missing an X authorization file."
+msgstr ""
+
+#: gui/gdmflexiserver.c:442
+msgid ""
+"The nested X server (Xnest) is not available, or gdm is badly configured.\n"
+"Please install the Xnest package in order to use the nested login."
+msgstr ""
+
+#: gui/gdmflexiserver.c:447
+msgid ""
+"The X server is not available, it is likely that gdm is badly configured."
+msgstr ""
+
+#: gui/gdmflexiserver.c:451
+msgid "Unknown error occured."
+msgstr ""
+
+#: vicious-extensions/glade-helper.c:70
+msgid "(memory buffer)"
+msgstr ""
+
+#: vicious-extensions/glade-helper.c:102 vicious-extensions/glade-helper.c:124
+#: vicious-extensions/glade-helper.c:144
+msgid "(memory buffer"
+msgstr ""
+
+#: vicious-extensions/glade-helper.c:173
+#, c-format
+msgid ""
+"An error occured while loading the user interface\n"
+"element %s%s from file %s.\n"
+"Possibly the glade interface description was corrupted.\n"
+"%s cannot continue and will exit now.\n"
+"You should check your installation of %s or reinstall %s."
+msgstr ""
+
+#: vicious-extensions/glade-helper.c:191
+#, c-format
+msgid ""
+"Glade file is on crack! Make sure the correct file is installed!\n"
+"file: %s widget: %s"
+msgstr ""
+
+#: vicious-extensions/glade-helper.c:217
+#, c-format
+msgid ""
+"An error occured while loading the user interface\n"
+"element %s%s from file %s.\n"
+"CList type widget should have %d columns.\n"
+"Possibly the glade interface description was corrupted.\n"
+"%s cannot continue and will exit now.\n"
+"You should check your installation of %s or reinstall %s."
+msgstr ""
+
+#: vicious-extensions/glade-helper.c:237
+#, c-format
+msgid ""
+"Glade file is on crack! Make sure the correct file is installed!\n"
+"file: %s widget: %s expected clist columns: %d"
+msgstr ""
+
+#: vicious-extensions/glade-helper.c:251
+#, c-format
+msgid ""
+"An error occured while loading the user interface\n"
+"from file %s.\n"
+"Possibly the glade interface description was not found.\n"
+"%s cannot continue and will exit now.\n"
+"You should check your installation of %s or reinstall %s."
+msgstr ""
+
+#: vicious-extensions/glade-helper.c:264
+#, c-format
+msgid "No interface could be loaded, BAD! (file: %s)"
+msgstr ""
+
+#: vicious-extensions/icon-entry-hack.c:268
+msgid "Choose an icon"
+msgstr "Válassz ikont"
+
+#~ msgid "gdm_main: Error setting up TERM signal handler"
+#~ msgstr "gdm_main: Hiba a TERM jelzés kezelésének beállításakor"
+
+#~ msgid "gdm_main: Error setting up INT signal handler"
+#~ msgstr "gdm_main: Hiba az INT jelzés kezelésének beállításakor"
+
+#~ msgid "gdm_main: Error setting up HUP signal handler"
+#~ msgstr "gdm_main: Hiba a HUP jelzés kezelésének beállításakor"
+
+#~ msgid "gdm_main: Error setting up CHLD signal handler"
+#~ msgstr "gdm_main: Hiba a CHLD jelzés kezelésének beállításakor"
+
+#~ msgid "Cannot start session"
+#~ msgstr "Munkafolyamat indítása sikertelen"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid "Login:"
+#~ msgstr "Bejelentkezés:"
+
+#~ msgid "Root login disallowed"
+#~ msgstr "A root belépés nem engedélyezett"
+
+#~ msgid "Login disabled"
+#~ msgstr "A felhasználói azonosító felfüggesztve"
+
+#~ msgid "gdm_xdmcp_init: Can't alloc fifopath"
+#~ msgstr "gdm_xdmcp_init: Nem tudom lefoglalni a fifopath-t"
+
+#~ msgid "Halt..."
+#~ msgstr "Leállít..."
+
+#~ msgid ""
+#~ "Documentation is being written but is not yet finished.\n"
+#~ "Please be patient."
+#~ msgstr ""
+#~ "A dokumentáció írás alatt, még nincs kész.\n"
+#~ "Kis türelmet kérünk."
+
+#~ msgid ""
+#~ "Enter the path to the X server,and\n"
+#~ "any parameters that should be passed to it."
+#~ msgstr ""
+#~ "Add meg az X szerverhez vezetõ elérési útvonalat\n"
+#~ "és a paramétereket, amiket át szeretnél adni neki."
+
+#~ msgid "Server Definitions"
+#~ msgstr "Kiszolgáló meghatározása"
