@@ -1240,6 +1240,13 @@ static struct sigaction oldterm, oldint, oldhup;
 static void
 jumpback_sighandler (int signal)
 {
+	/* this avoids a race see Note below.
+	   We want to jump back only on the first
+	   signal invocation, even if the signal
+	   handler didn't return. */
+	gboolean old_do_jumpback = do_jumpback;
+	do_jumpback = FALSE;
+
 	if (signal == SIGINT)
 		oldint.sa_handler (signal);
 	else if (signal == SIGTERM)
@@ -1247,13 +1254,24 @@ jumpback_sighandler (int signal)
 	else if (signal == SIGHUP)
 		oldint.sa_handler (signal);
 	/* no others should be set up */
+
+	/* Note that we may not get here since
+	   the SIGTERM handler in slave.c
+	   might have in fact done the big Longjmp
+	   to the slave's death */
 	
-	if (do_jumpback) {
-		do_jumpback = FALSE;
+	if (old_do_jumpback) {
 		Longjmp (signal_jumpback, 1);
 	}
 }
 
+/*
+ * This sets up interruptes to be proxied and the
+ * gethostbyname/addr to be whacked using longjmp,
+ * in case INT/TERM/HUP was gotten in which case
+ * we no longer care for the result of the
+ * resolution.
+ */
 #define SETUP_INTERRUPTS_FOR_TERM_DECLS \
     struct sigaction term;
 

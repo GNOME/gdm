@@ -43,6 +43,7 @@ extern gboolean GdmXdmcp;
 extern gint xdmcp_sessions;
 extern gint flexi_servers;
 extern gint xdmcp_pending;
+extern gboolean gdm_in_final_cleanup;
 extern GSList *displays;
 extern GdmConnection *fifoconn;
 extern GdmConnection *pipeconn;
@@ -249,28 +250,12 @@ gdm_display_manage (GdmDisplay *d)
 
 	d->slave_notify_fd = fds[0];
 
-	if (d->type == TYPE_LOCAL) {
-	    gdm_slave_start (d);
-	    /* if we ever return, bad things are happening */
-	    gdm_server_stop (d);
-	    _exit (DISPLAY_ABORT);
-	} else if (SERVER_IS_FLEXI (d)) {
-	    gdm_slave_start (d);
-	    gdm_server_stop (d);
-	    /* we expect to return after the session finishes */
-	    _exit (DISPLAY_REMANAGE);
-	} else if (d->type == TYPE_XDMCP &&
-		   d->dispstat == XDMCP_MANAGED) {
-	    gdm_slave_start (d);
-	    gdm_server_stop (d);
-	    /* we expect to return after the session finishes */
-	    _exit (DISPLAY_REMANAGE);
-	}
+	gdm_slave_start (d);
+	/* should never retern */
 
-	/* yaikes, how did we ever get here, though I suppose
-	 * it could be possible if XMDCP thing wasn't really set up */
+	/* yaikes, how did we ever get here? */
 	gdm_server_stop (d);
-	_exit (DISPLAY_ABORT);
+	_exit (DISPLAY_REMANAGE);
 
 	break;
 
@@ -327,12 +312,25 @@ gdm_display_unmanage (GdmDisplay *d)
 	       d->name, (int)d->slavepid);
 
     /* Kill slave */
-    gdm_sigchld_block_push ();
     if (d->slavepid > 1 &&
-	kill (d->slavepid, SIGTERM) == 0)
-	    ve_waitpid_no_signal (d->slavepid, 0, 0);
+	kill (d->slavepid, SIGTERM) == 0) {
+	    int ret;
+wait_again:
+	    errno = 0;
+	    ret = waitpid (d->slavepid, NULL, 0);
+	    if (ret < 0 &&
+		errno == EINTR) {
+		    /* rekill the slave to tell it to
+		       hurry up and die if we're getting
+		       killed ourselves */
+		    if (ve_signal_was_notified (SIGTERM) ||
+			ve_signal_was_notified (SIGINT)) {
+			    kill (d->slavepid, SIGTERM);
+		    }
+		    goto wait_again;
+	    }
+    }
     d->slavepid = 0;
-    gdm_sigchld_block_pop ();
     
     if (d->type == TYPE_LOCAL)
 	d->dispstat = DISPLAY_DEAD;

@@ -12,6 +12,9 @@ thing and just ignore the ping if a signal comes, not sure how this will play wi
 the X stuff and if this would completely whack us out.  The other option is to have
 a separate "pinger process" but that seems to heavyweight.
 
+All the GUIs running as the gdm user should have some resource limits set to
+make it hard to do DoS attacks by somehow exploiting a leak or some such.
+
 Small TODO things:
   - If we can't setup pam display user visible errors and not just syslog stuff
 

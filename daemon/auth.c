@@ -178,7 +178,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    /* Note, Xnest can't use the ServAuthDir unless running as
 	     * root, which is rare anyway, unless the user is a wanker */
 
-	    d->authfile = g_strconcat (GdmUserAuthFB, "/.gdmXXXXXX", NULL);
+	    d->authfile = g_build_filename (GdmUserAuthFB, ".gdmXXXXXX", NULL);
 
 	    umask (077);
 	    authfd = g_mkstemp (d->authfile);
@@ -438,7 +438,7 @@ try_user_add_again:
     if (authdir == NULL)
 	    d->userauth = NULL;
     else
-	    d->userauth = g_strconcat (authdir, "/", GdmUserAuthFile, NULL);
+	    d->userauth = g_build_filename (authdir, GdmUserAuthFile, NULL);
 
     /* Find out if the Xauthority file passes the paranoia check */
     if (automatic_tmp_dir ||
@@ -450,7 +450,7 @@ try_user_add_again:
 	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp) */
 	d->authfb = TRUE;
 	g_free (d->userauth);
-	d->userauth = g_strconcat (GdmUserAuthFB, "/.gdmXXXXXX", NULL);
+	d->userauth = g_build_filename (GdmUserAuthFB, ".gdmXXXXXX", NULL);
 	authfd = g_mkstemp (d->userauth);
 
 	if (authfd == -1) {

@@ -5,6 +5,7 @@ localedir = $(sysconfdir)/gdm
 sessdir = $(sysconfdir)/dm/Sessions
 initdir = $(sysconfdir)/gdm/Init
 authdir = $(localstatedir)/gdm
+logdir = $(localstatedir)/gdm
 gnomercdir = $(sysconfdir)/gdm
 postdir = $(sysconfdir)/gdm/PostSession
 predir = $(sysconfdir)/gdm/PreSession
@@ -121,10 +122,16 @@ install-data-hook: gdm.conf Xsession gnome.desktop Default.desktop CDE.desktop D
 		chmod 755 $(DESTDIR)$(gnomercdir); \
 	fi
 
+	if test '!' -d $(DESTDIR)$(logdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(logdir); \
+		chown root.root $(DESTDIR)$(logdir); \
+		chmod 755 $(DESTDIR)$(logdir); \
+	fi
+
 	if test '!' -d $(DESTDIR)$(authdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(authdir); \
-		chown gdm.gdm $(DESTDIR)$(authdir); \
-		chmod 750 $(DESTDIR)$(authdir); \
+		chown root.gdm $(DESTDIR)$(authdir); \
+		chmod 1770 $(DESTDIR)$(authdir); \
 	fi
 
 	system=`uname`; \

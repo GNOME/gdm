@@ -298,7 +298,18 @@ greeter_populate_user_list (GtkTreeModel *tm)
     {
       GdmGreeterUser *usr = li->data;
       GtkTreeIter iter = {0};
-      char *label = g_strdup_printf ("%s\n%s", usr->login, usr->gecos);
+      char *label;
+      char *login, *gecos;
+
+      login = g_markup_escape_text (usr->login, -1);
+      gecos = g_markup_escape_text (usr->gecos, -1);
+
+      label = g_strdup_printf ("<b>%s</b>\n%s",
+			       login,
+			       gecos);
+
+      g_free (login);
+      g_free (gecos);
       gtk_list_store_append (GTK_LIST_STORE (tm), &iter);
       gtk_list_store_set (GTK_LIST_STORE (tm), &iter,
 			  GREETER_ULIST_ICON_COLUMN, usr->picture,
@@ -402,7 +413,7 @@ greeter_generate_userlist (GtkWidget *tv)
       column = gtk_tree_view_column_new_with_attributes
 		             (_("Username"),
 			      gtk_cell_renderer_text_new (),
-			      "text", GREETER_ULIST_LABEL_COLUMN,
+			      "markup", GREETER_ULIST_LABEL_COLUMN,
 			      NULL);
       gtk_tree_view_append_column (GTK_TREE_VIEW (tv), column);
       

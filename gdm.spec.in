@@ -134,7 +134,8 @@ exit 0
 # %{_datadir}/pixmaps/*
 # %{_datadir}/gnome/help/gdm/*
 # %{_datadir}/gnome/help/gdmsetup/*
-%attr(750, gdm, gdm) %dir %{localstatedir}/gdm
+%attr(1770, root, gdm) %dir %{localstatedir}/gdm
+%attr(755, root, root) %dir %{localstatedir}/log/gdm
 
 
 %changelog

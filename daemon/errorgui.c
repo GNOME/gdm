@@ -211,6 +211,10 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept)
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
+	ve_setenv ("LOGNAME", GdmUser, TRUE);
+	ve_setenv ("USER", GdmUser, TRUE);
+	ve_setenv ("USERNAME", GdmUser, TRUE);
+
 	ve_setenv ("DISPLAY", d->name, TRUE);
 	ve_unsetenv ("XAUTHORITY");
 

@@ -173,7 +173,11 @@ gdm_server_reinit (GdmDisplay *disp)
 		gdm_sigchld_block_pop ();
 		/* a hack we have no way of knowing when the server died */
 		sleep (1);
+		return;
 	}
+
+	/* Do note the interaction of this Setjmp and the signal
+	   handlers and the Setjmp in slave.c */
 
 	if (Setjmp (reinitjmp) == 0)  {
 		/* come here and we'll whack the server and wait to get
@@ -192,6 +196,7 @@ gdm_server_reinit (GdmDisplay *disp)
 				XCloseDisplay (disp->dsp);
 				disp->dsp = NULL;
 			}
+			sleep (1);
 			Longjmp (reinitjmp, 1);
 		}
 		gdm_sigchld_block_pop ();
@@ -218,6 +223,8 @@ gdm_server_reinit (GdmDisplay *disp)
 void
 gdm_server_stop (GdmDisplay *disp)
 {
+    static gboolean waiting_for_server = FALSE;
+
     if (disp == NULL)
 	return;
 
@@ -242,13 +249,23 @@ gdm_server_stop (GdmDisplay *disp)
 
 	    /* avoid SIGCHLD race */
 	    gdm_sigchld_block_push ();
-
 	    servpid = disp->servpid;
+
+	    if (waiting_for_server) {
+		    gdm_error ("gdm_server_stop: Some problem killing server, whacking with SIGKILL");
+		    if (disp->servpid > 1)
+			    kill (disp->servpid, SIGKILL);
+
+	    } else {
+		    if (disp->servpid > 1 &&
+			kill (disp->servpid, SIGTERM) == 0) {
+			    waiting_for_server = TRUE;
+			    ve_waitpid_no_signal (disp->servpid, 0, 0);
+			    waiting_for_server = FALSE;
+		    }
+	    }
 	    disp->servpid = 0;
 
-	    if (servpid > 1 &&
-		kill (servpid, SIGTERM) == 0)
-		    ve_waitpid_no_signal (servpid, 0, 0);
 	    gdm_sigchld_block_pop ();
 
 	    gdm_server_whack_lockfile (disp);

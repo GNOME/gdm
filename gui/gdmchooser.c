@@ -83,6 +83,7 @@ static gint connection_type = 0;
 
 static void gdm_chooser_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 static void gdm_chooser_warn (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+static void set_background (void);
 
 /* Exported for glade */
 void gdm_chooser_cancel (void);
@@ -111,6 +112,10 @@ static guint scan_time_handler = 0;
 #define PING_TRIES 3
 static int ping_tries = PING_TRIES;
 static guint ping_try_handler = 0;
+
+/* set in the main function */
+static char **stored_argv = NULL;
+static int stored_argc = 0;
 
 /* Fixetyfix */
 int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);
@@ -142,6 +147,7 @@ static gchar *GdmHostIconDir;
 static gchar *GdmHostDefaultIcon;
 static gchar *GdmGtkRC;
 static gchar *GdmHosts;
+static gchar *GdmHostsOrig;
 static gboolean GdmBroadcast;
 static gboolean GdmAllowAdd;
 static gchar *GdmBackgroundColor;
@@ -1055,6 +1061,7 @@ gdm_chooser_parse_config (void)
 
     /* note that command line arguments will prevail over these */
     GdmHosts = ve_config_get_string (cfg, GDM_KEY_HOSTS);
+    GdmHostsOrig = g_strdup (GdmHosts);
     GdmBroadcast = ve_config_get_bool (cfg, GDM_KEY_BROADCAST);
     /* if broadcasting, then append BROADCAST to hosts */
     if (GdmBroadcast) {
@@ -1250,24 +1257,111 @@ gdm_chooser_gui_init (void)
     }
 }
 
+static gboolean
+string_same (VeConfig *config, const char *cur, const char *key)
+{
+	char *val = ve_config_get_string (config, key);
+	if (strcmp (ve_sure_string (cur), ve_sure_string (val)) == 0) {
+		g_free (val);
+		return TRUE;
+	} else {
+		g_free (val);
+		return FALSE;
+	}
+}
+
+static gboolean
+bool_same (VeConfig *config, gboolean cur, const char *key)
+{
+	gboolean val = ve_config_get_bool (config, key);
+	if (ve_bool_equal (cur, val)) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+static gboolean
+int_same (VeConfig *config, int cur, const char *key)
+{
+	int val = ve_config_get_int (config, key);
+	if (cur == val) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+
+static gboolean
+gdm_reread_config (int sig, gpointer data)
+{
+	VeConfig *config;
+	/* reparse config stuff here.  At least ones we care about */
+
+	config = ve_config_get (GDM_CONFIG_FILE);
+
+	/* FIXME: The following is evil, we should update on the fly rather
+	 * then just restarting */
+	/* Also we may not need to check ALL those keys but just a few */
+	if ( ! string_same (config, GdmHostsOrig, GDM_KEY_HOSTS) ||
+	     ! string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
+	     ! string_same (config, GdmHostDefaultIcon, GDM_KEY_HOST) ||
+	     ! string_same (config, GdmHostIconDir, GDM_KEY_HOSTDIR) ||
+	     ! int_same (config,
+			 GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
+	     ! int_same (config, GdmIconMaxWidth, GDM_KEY_ICONWIDTH) ||
+	     ! int_same (config, GdmIconMaxHeight, GDM_KEY_ICONHEIGHT) ||
+	     ! int_same (config, GdmScanTime, GDM_KEY_SCAN) ||
+	     ! bool_same (config, GdmDebug, GDM_KEY_DEBUG)) {
+		if (RUNNING_UNDER_GDM) {
+			/* Set busy cursor */
+			setup_cursor (GDK_WATCH);
+
+			gdm_wm_save_wm_order ();
+		}
+
+		/* we don't need to tell the slave that we're restarting
+		   it doesn't care about our state.  Unlike with the greeter */
+		execvp (stored_argv[0], stored_argv);
+		_exit (DISPLAY_REMANAGE);
+	}
+
+	/* we only use the color and do it for all types except NONE */
+	if ( ! string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
+	     ! int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE)) {
+		set_background ();
+	}
+
+	return TRUE;
+}
+
 
 static void
 gdm_chooser_signals_init (void)
 {
     struct sigaction hup;
+    struct sigaction term;
     sigset_t mask;
 
-    hup.sa_handler = (void *) gdm_chooser_cancel;
+    ve_signal_add (SIGHUP, gdm_reread_config, NULL);
+
+    hup.sa_handler = ve_signal_notify;
     hup.sa_flags = 0;
-    sigemptyset (&hup.sa_mask);
+    sigemptyset(&hup.sa_mask);
+    sigaddset (&hup.sa_mask, SIGCHLD);
+
+    term.sa_handler = (void *) gdm_chooser_cancel;
+    term.sa_flags = 0;
+    sigemptyset (&term.sa_mask);
 
     if (sigaction (SIGHUP, &hup, NULL) < 0) 
         gdm_chooser_abort (_("gdm_signals_init: Error setting up HUP signal handler"));
 
-    if (sigaction (SIGINT, &hup, NULL) < 0) 
+    if (sigaction (SIGINT, &term, NULL) < 0) 
         gdm_chooser_abort (_("gdm_signals_init: Error setting up INT signal handler"));
 
-    if (sigaction (SIGTERM, &hup, NULL) < 0) 
+    if (sigaction (SIGTERM, &term, NULL) < 0) 
         gdm_chooser_abort (_("gdm_signals_init: Error setting up TERM signal handler"));
 
     sigfillset (&mask);
@@ -1358,6 +1452,13 @@ main (int argc, char *argv[])
     poptContext ctx;
     int nextopt;
     const char *gdm_version;
+    int i;
+
+    stored_argv = g_new0 (char *, argc + 1);
+    for (i = 0; i < argc; i++)
+	    stored_argv[i] = g_strdup (argv[i]);
+    stored_argv[i] = NULL;
+    stored_argc = argc;
 
     if (g_getenv ("RUNNING_UNDER_GDM") != NULL)
 	    RUNNING_UNDER_GDM = TRUE;
@@ -1472,13 +1573,15 @@ main (int argc, char *argv[])
 	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
     }
 
-    if (RUNNING_UNDER_GDM)
-	    setup_cursor (GDK_LEFT_PTR);
-
     if (GdmAllowAdd)
 	    gtk_widget_grab_focus (add_entry);
 
     gdm_chooser_add_entry_changed ();
+
+    if (RUNNING_UNDER_GDM) {
+	    gdm_wm_restore_wm_order ();
+	    setup_cursor (GDK_LEFT_PTR);
+    }
 
     gtk_main();
 

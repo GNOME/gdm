@@ -1,3 +1,67 @@
+Thu Jul 24 14:58:23 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c, daemon/slave.c, daemon/auth.c: change some
+	  g_strconcat's to g_build_filename's to address #118040.
+	  still more need to be converted
+
+	* gdm.spec.in, daemon/gdm.h, config/gdm.conf.in, config/Makefile.am,
+	  configure.in: By default use logdir of /var/log/gdm just
+	  like redhat does it
+
+	* daemon/gdm.c: check logdir to exist and if not set it to
+	  ServAuthDir
+
+	* gdm.spec.in, daemon/gdm.c, config/Makefile.am:  Make the
+	  ServAuthDir permissions to be 1770 with owenership root.gdm.
+	  That makes it impossible for the gdm user to run DoS attacks
+	  against the gdm daemon (though without any process limits set
+	  it can still somewhat do that)
+
+	* daemon/slave.c, daemon/display.c, daemon/gdm.c, daemon/misc.c,
+	  daemon/server.c: Hunt more races and hangs.  Make sure we really
+	  don't do anything bad in signal handlers by making a setjmp
+	  at the beginning of the slave_start function and returning
+	  there from signal handlers to do final cleanup kind of stuff.
+	  Also when we are receiving TERM signals while waiting on stuff
+	  to die, be very un-nice to things and SIGKILL them.  Also stop
+	  using sleep if we might be using alarm at the same time.
+
+	* daemon/display.c: whack non-useful signal block push on unmanage,
+	  and if we get a TERM signal while waiting on the slave, then send
+	  a TERM signal to the slave again.
+
+	* daemon/errorgui.c: set USER, USERNAME and LOGNAME to "gdm" so that
+	  they don't end up root by some mistake
+
+	* daemon/slave.c: Use home of root rather then /root for the home
+	  directory of gdmsetup.  Also if we can't change to the home
+	  directory chdir to / instead of leaving it at servauthdir.
+	  Be anal about COOKIEs in the logfile.  Also when things go
+	  just a bit wrong and not completely whacko, don't ABORT but
+	  just REMANAGE, the toplevel loop of death will handle things
+	  for us correctly.  And setsid a very close to the start of
+	  the session to avoid a race ABORTing a display by mistake.
+
+	* daemon/slave.c: make the PostLogin behave just like PostSession
+	  with respect to the return value
+
+	* daemon/verify-pam.c: avoid races on termination with the
+	  verify_cleanup and handle some cases where crashes may (but
+	  should not) occur.
+
+	* daemon/gdm.c: whack unneeded signal blockers (the main daemon
+	  is all async with a nice mainloop)
+
+	* gui/gdmchooser.c: handle HUP gracefully, when one of the
+	  config options we care about changes just restart self
+	  instead of 
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c: make
+	  the username bold
+
+	* docs/C/gdm.xml: update the PostLogin behaviour and the permissions
+	  on the ServAuthDir
+
 Wed Jul 23 15:13:33 2003  George Lebl <jirka@5z.com>
 
 	* Release 2.4.2.98

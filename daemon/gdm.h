@@ -134,7 +134,7 @@ enum {
 #define GDM_KEY_HALT "daemon/HaltCommand=/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
 #define GDM_KEY_INITDIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"
 #define GDM_KEY_KILLIC "daemon/KillInitClients=true"
-#define GDM_KEY_LOGDIR "daemon/LogDir=" EXPANDED_AUTHDIR
+#define GDM_KEY_LOGDIR "daemon/LogDir=" EXPANDED_LOGDIR
 #define GDM_KEY_PATH "daemon/DefaultPath=/bin:/usr/bin:" X_CONF_PATH ":" EXPANDED_BINDIR
 #define GDM_KEY_PIDFILE "daemon/PidFile=/var/run/gdm.pid"
 #define GDM_KEY_POSTSESS "daemon/PostSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PostSession/"

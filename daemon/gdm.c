@@ -101,6 +101,7 @@ gboolean gdm_emergency_server = FALSE;
 gboolean gdm_first_login = TRUE;
 
 int gdm_in_signal = 0;
+gboolean gdm_in_final_cleanup = FALSE;
 
 /* Configuration options */
 gchar *GdmUser = NULL;
@@ -211,6 +212,51 @@ compare_displays (gconstpointer a, gconstpointer b)
 	else
 		return 0;
 }	
+
+static void
+check_servauthdir (struct stat *statbuf)
+{
+    /* Enter paranoia mode */
+    if (stat (GdmServAuthDir, statbuf) == -1)  {
+	    char *s = g_strdup_printf
+		    (_("Server Authorization directory "
+		       "(daemon/ServAuthDir) is set to %s "
+		       "but this does not exist. Please "
+		       "correct gdm configuration %s and "
+		       "restart gdm."), GdmServAuthDir,
+		     GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
+	    gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
+    }
+
+    if (! S_ISDIR (statbuf->st_mode)) {
+	    char *s = g_strdup_printf
+		    (_("Server Authorization directory "
+		       "(daemon/ServAuthDir) is set to %s "
+		       "but this is not a directory. Please "
+		       "correct gdm configuration %s and "
+		       "restart gdm."), GdmServAuthDir,
+		     GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
+	    GdmPidFile = NULL;
+	    gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", GdmServAuthDir);
+    }
+}
+
+static void
+check_logdir (void)
+{
+	struct stat statbuf;
+   
+	if (stat (GdmLogDir, &statbuf) == -1 ||
+	    ! S_ISDIR (statbuf.st_mode))  {
+		gdm_error (_("%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."), "gdm_config_parse",
+			   GdmLogDir, GdmServAuthDir);
+		g_free (GdmLogDir);
+		GdmLogDir = g_strdup (GdmServAuthDir);
+	}
+}
 
 /**
  * gdm_config_parse:
@@ -400,8 +446,10 @@ gdm_config_parse (void)
 	    gdm_fail (_("%s: No authdir specified."), "gdm_config_parse");
     }
 
-    if (ve_string_empty (GdmLogDir))
-	GdmLogDir = GdmServAuthDir;
+    if (ve_string_empty (GdmLogDir)) {
+	g_free (GdmLogDir);
+	GdmLogDir = g_strdup (GdmServAuthDir);
+    }
 
     if (ve_string_empty (GdmSessDir))
 	gdm_error (_("%s: No sessions directory specified."), "gdm_config_parse");
@@ -640,35 +688,23 @@ gdm_config_parse (void)
     
     g_free (bin);
 
-
     /* Enter paranoia mode */
-    if (stat (GdmServAuthDir, &statbuf) == -1)  {
-	    char *s = g_strdup_printf
-		    (_("Server Authorization directory "
-		       "(daemon/ServAuthDir) is set to %s "
-		       "but this does not exist. Please "
-		       "correct gdm configuration %s and "
-		       "restart gdm."), GdmServAuthDir,
-		     GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
-    }
+    check_servauthdir (&statbuf);
 
-    if (! S_ISDIR (statbuf.st_mode)) {
-	    char *s = g_strdup_printf
-		    (_("Server Authorization directory "
-		       "(daemon/ServAuthDir) is set to %s "
-		       "but this is not a directory. Please "
-		       "correct gdm configuration %s and "
-		       "restart gdm."), GdmServAuthDir,
-		     GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
-	    GdmPidFile = NULL;
-	    gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", GdmServAuthDir);
-    }
+    seteuid (0);
+    setegid (0);
 
-    if (statbuf.st_uid != GdmUserId || statbuf.st_gid != GdmGroupId)  {
+    /* Now set things up for us as  */
+    chown (GdmServAuthDir, 0, GdmGroupId);
+    chmod (GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
+
+    setegid (GdmGroupId);
+    seteuid (GdmUserId);
+
+    /* again paranoid */
+    check_servauthdir (&statbuf);
+
+    if (statbuf.st_uid != 0 || statbuf.st_gid != GdmGroupId)  {
 	    char *s = g_strdup_printf
 		    (_("Server Authorization directory "
 		       "(daemon/ServAuthDir) is set to %s "
@@ -681,27 +717,29 @@ gdm_config_parse (void)
 	    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."), "gdm_config_parse", 
-		      GdmServAuthDir, GdmUser, GdmGroup);
+		      GdmServAuthDir, gdm_root_user (), GdmGroup);
     }
 
-    if (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRGRP|S_IXGRP))  {
+    if (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRWXG|S_ISVTX))  {
 	    char *s = g_strdup_printf
 		    (_("Server Authorization directory "
 		       "(daemon/ServAuthDir) is set to %s "
 		       "but has the wrong permissions, it "
-		       "should have permissions of 0750. "
+		       "should have permissions of %o. "
 		       "Please correct the permissions or "
 		       "the gdm configuration %s and "
 		       "restart gdm."),
-		     GdmServAuthDir, GDM_CONFIG_FILE);
+		     GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX), GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
-	    gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be 0750. Aborting."), "gdm_config_parse", 
-		      GdmServAuthDir, statbuf.st_mode);
+	    gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."), "gdm_config_parse", 
+		      GdmServAuthDir, statbuf.st_mode, (S_IRWXU|S_IRWXG|S_ISVTX));
     }
 
     seteuid (0);
     setegid (0);
+
+    check_logdir ();
 
     /* Check that user authentication is properly configured */
     gdm_verify_check ();
@@ -814,7 +852,7 @@ gdm_final_cleanup (void)
 
 	gdm_debug ("gdm_final_cleanup");
 
-	gdm_sigchld_block_push ();
+	gdm_in_final_cleanup = TRUE;
 
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
@@ -822,8 +860,6 @@ gdm_final_cleanup (void)
 		kill (-(extra_process), SIGTERM);
 		extra_process = 0;
 	}
-
-	gdm_sigchld_block_pop ();
 
 	list = g_slist_copy (displays);
 	for (li = list; li != NULL; li = li->next) {
@@ -1839,11 +1875,9 @@ send_slave_ack (GdmDisplay *d, const char *resp)
 			g_free (not);
 		}
 	}
-	gdm_sigchld_block_push ();
 	if (d->slavepid > 1) {
 		kill (d->slavepid, SIGUSR2);
 	}
-	gdm_sigchld_block_pop ();
 }
 
 static void
@@ -1856,11 +1890,9 @@ send_slave_command (GdmDisplay *d, const char *command)
 		write (d->master_notify_fd, cmd, strlen (cmd));
 		g_free (cmd);
 	}
-	gdm_sigchld_block_push ();
 	if (d->slavepid > 1) {
 		kill (d->slavepid, SIGUSR2);
 	}
-	gdm_sigchld_block_pop ();
 }
 
 
@@ -2265,10 +2297,10 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		GSList *li;
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *d = li->data;
-			gdm_sigchld_block_push ();
 			if (d->greetpid > 1)
 				kill (d->greetpid, SIGHUP);
-			gdm_sigchld_block_pop ();
+			else if (d->chooserpid > 1)
+				kill (d->chooserpid, SIGHUP);
 		}
 	} else if (strncmp (msg, GDM_SOP_WRITE_X_SERVERS " ",
 		            strlen (GDM_SOP_WRITE_X_SERVERS " ")) == 0) {
@@ -2659,10 +2691,8 @@ notify_displays_int (const char *key, int val)
 			gdm_fdprintf (disp->master_notify_fd,
 				      "%c%s %d\n",
 				      GDM_SLAVE_NOTIFY_KEY, key, val);
-			gdm_sigchld_block_push ();
 			if (disp->slavepid > 1)
 				kill (disp->slavepid, SIGUSR2);
-			gdm_sigchld_block_pop ();
 		}
 	}
 }
@@ -2677,10 +2707,8 @@ notify_displays_string (const char *key, const char *val)
 			gdm_fdprintf (disp->master_notify_fd,
 				      "%c%s %s\n",
 				      GDM_SLAVE_NOTIFY_KEY, key, val);
-			gdm_sigchld_block_push ();
 			if (disp->slavepid > 1)
 				kill (disp->slavepid, SIGUSR2);
-			gdm_sigchld_block_pop ();
 		}
 	}
 }

@@ -84,8 +84,8 @@ static gboolean gdm_wait_for_ack = TRUE; /* wait for ack on all messages to
 				      * the daemon */
 static int in_session_stop = 0;
 static int in_usr2_signal = 0;
-static gboolean need_to_abort_after_session_stop = FALSE;
-static gboolean just_abort_on_TERM = FALSE;
+static gboolean need_to_quit_after_session_stop = FALSE;
+static int exit_code_to_use = DISPLAY_REMANAGE;
 static gboolean session_started = FALSE;
 static gboolean greeter_disabled = FALSE;
 static gboolean greeter_no_focus = FALSE;
@@ -196,6 +196,31 @@ static gboolean gdm_got_ack = FALSE;
 static char * gdm_ack_response = NULL;
 static GList *unhandled_notifies = NULL;
 
+
+/* for signals that want to exit */
+static Jmp_buf slave_start_jmp;
+static gboolean return_to_slave_start_jmp = FALSE;
+static gboolean already_in_slave_start_jmp = FALSE;
+static char *slave_start_jmp_error_to_print = NULL;
+enum {
+	JMP_FIRST_RUN = 0,
+	JMP_SESSION_STOP_AND_QUIT = 1,
+	JMP_JUST_QUIT_QUICKLY = 2
+};
+#define SIGNAL_EXIT_WITH_JMP(d,how) \
+   {											\
+	if ((d)->slavepid == getpid () && return_to_slave_start_jmp) {			\
+		already_in_slave_start_jmp = TRUE;					\
+		Longjmp (slave_start_jmp, how);						\
+	} else {									\
+		/* evil! how this this happen */					\
+		if (slave_start_jmp_error_to_print != NULL)				\
+			gdm_error (slave_start_jmp_error_to_print);			\
+		gdm_error ("Bad (very very VERY bad!) things happening in signal");	\
+		_exit (DISPLAY_REMANAGE);						\
+	}										\
+   }
+
 /* notify all waitpids, make waitpids check notifies */
 static void
 slave_waitpid_notify_all (void)
@@ -258,7 +283,13 @@ slave_waitpid (GdmWaitPid *wp)
 
 		/* This is a real stupid fallback for a real stupid case */
 		while (wp->pid > 1) {
-			sleep (5);
+			struct timeval tv;
+			/* Wait 5 seconds. */
+			tv.tv_sec = 5;
+			tv.tv_usec = 0;
+			select (0, NULL, NULL, NULL, &tv);
+			/* don't want to use sleep since we're using alarm
+			   for pinging */
 			check_notifies_now ();
 		}
 		check_notifies_now ();
@@ -381,6 +412,45 @@ whack_greeter_fds (void)
 	greeter_fd_in = -1;
 }
 
+static void
+term_session_stop_and_quit (void)
+{
+	gdm_in_signal = 0;
+	already_in_slave_start_jmp = TRUE;
+	gdm_wait_for_ack = FALSE;
+	need_to_quit_after_session_stop = TRUE;
+
+	if (slave_start_jmp_error_to_print != NULL)
+		gdm_error (slave_start_jmp_error_to_print);
+	slave_start_jmp_error_to_print = NULL;
+
+	/* only if we're not hanging in session stop and getting a
+	   TERM signal again */
+	if (in_session_stop == 0 && session_started)
+		gdm_slave_session_stop (d->logged_in && login != NULL,
+					TRUE /* no_shutdown_check */);
+
+	gdm_debug ("term_session_stop_and_quit: Final cleanup");
+
+	gdm_slave_quick_exit (exit_code_to_use);
+}
+
+static void
+term_quit (void)
+{
+	gdm_in_signal = 0;
+	already_in_slave_start_jmp = TRUE;
+	gdm_wait_for_ack = FALSE;
+	need_to_quit_after_session_stop = TRUE;
+
+	if (slave_start_jmp_error_to_print != NULL)
+		gdm_error (slave_start_jmp_error_to_print);
+	slave_start_jmp_error_to_print = NULL;
+
+	gdm_debug ("term_session_stop_and_quit: Final cleanup");
+
+	gdm_slave_quick_exit (exit_code_to_use);
+}
 
 void 
 gdm_slave_start (GdmDisplay *display)
@@ -390,10 +460,27 @@ gdm_slave_start (GdmDisplay *display)
 	static sigset_t mask;
 	struct sigaction alrm, term, child, usr2;
 
-	if (!display)
-		return;
+	if (display == NULL) {
+		/* saaay ... what? */
+		_exit (DISPLAY_REMANAGE);
+	}
 
 	gdm_debug ("gdm_slave_start: Starting slave process for %s", display->name);
+
+	switch (Setjmp (slave_start_jmp)) {
+	case JMP_FIRST_RUN:
+		return_to_slave_start_jmp = TRUE;
+		break;
+	case JMP_SESSION_STOP_AND_QUIT:
+		term_session_stop_and_quit ();
+		/* huh? should never get here */
+		_exit (DISPLAY_REMANAGE);
+	default:
+	case JMP_JUST_QUIT_QUICKLY:
+		term_quit ();
+		/* huh? should never get here */
+		_exit (DISPLAY_REMANAGE);
+	}
 
 	if (display->type == TYPE_XDMCP &&
 	    GdmPingInterval > 0) {
@@ -466,8 +553,10 @@ gdm_slave_start (GdmDisplay *display)
 		gdm_slave_run (display);
 
 		/* remote and flexi only run once */
-		if (display->type != TYPE_LOCAL)
-			break;
+		if (display->type != TYPE_LOCAL) {
+			gdm_server_stop (display);
+			gdm_slave_quick_exit (DISPLAY_REMANAGE);
+		}
 
 		the_time = time (NULL);
 
@@ -478,9 +567,7 @@ gdm_slave_start (GdmDisplay *display)
 			first_time = the_time;
 			death_count = 0;
 		} else if (death_count > 6) {
-			/* exitting the loop will cause an
-			 * abort actually */
-			break;
+			gdm_slave_quick_exit (DISPLAY_ABORT);
 		}
 
 		gdm_debug ("gdm_slave_start: Reinitializing things");
@@ -494,13 +581,17 @@ gdm_slave_start (GdmDisplay *display)
 		} else {
 			/* OK about to start again so rebake our cookies and reinit
 			 * the server */
-			if ( ! gdm_auth_secure_display (d))
-				break;
+			if ( ! gdm_auth_secure_display (d)) {
+				gdm_slave_quick_exit (DISPLAY_REMANAGE);
+			}
 			gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
 
 			gdm_server_reinit (d);
 		}
 	}
+	/* very very very evil, should never break, we can't return from
+	   here sanely */
+	_exit (DISPLAY_ABORT);
 }
 
 static gboolean
@@ -1008,6 +1099,10 @@ gdm_slave_run (GdmDisplay *display)
 	     * so no need to reinit the server nor rebake cookies
 	     * nor such nonsense */
     } while (greet);
+
+    /* If XDMCP stop pinging */
+    if (d->type == TYPE_XDMCP)
+	    alarm (0);
 }
 
 /* A hack really, this will wait around until the first mapped window
@@ -1210,7 +1305,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		if (chdir ("/root") != 0)
+		if (chdir (pwent->pw_dir) != 0)
 			chdir ("/");
 
 		/* exec the configurator */
@@ -1607,7 +1702,7 @@ run_pictures (void)
 		g_free (cfgdir);
 
 		if (picfile == NULL) {
-			picfile = g_strconcat (pwent->pw_dir, "/.face", NULL);
+			picfile = g_build_filename (pwent->pw_dir, ".face", NULL);
 			if (access (picfile, R_OK) != 0) {
 				g_free (picfile);
 				picfile = NULL;
@@ -1802,7 +1897,7 @@ gdm_slave_greeter (void)
 
     /* Open a pipe for greeter communications */
     if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
-	gdm_slave_exit (DISPLAY_ABORT, _("%s: Can't init pipe to gdmgreeter"),
+	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmgreeter"),
 			"gdm_slave_greeter");
 
     /* hackish ain't it */
@@ -2018,7 +2113,7 @@ gdm_slave_greeter (void)
 	
     case -1:
 	d->greetpid = 0;
-	gdm_slave_exit (DISPLAY_ABORT, _("%s: Can't fork gdmgreeter process"), "gdm_slave_greeter");
+	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't fork gdmgreeter process"), "gdm_slave_greeter");
 	
     default:
 	close (pipe1[0]);
@@ -2067,8 +2162,19 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	if ( ! gdm_wait_for_ack)
 		wait_for_ack = FALSE;
 
-	if (gdm_in_signal == 0)
-		gdm_debug ("Sending %s", str);
+	/* Evil!, all this for debugging? */
+	if (GdmDebug && gdm_in_signal == 0) {
+		if (strncmp (str, GDM_SOP_COOKIE " ",
+			     strlen (GDM_SOP_COOKIE " ")) == 0) {
+			char *s = g_strndup
+				(str, strlen (GDM_SOP_COOKIE " XXXX XX"));
+			/* cut off most of the cookie for "security" */
+			gdm_debug ("Sending %s...", s);
+			g_free (s);
+		} else {
+			gdm_debug ("Sending %s", str);
+		}
+	}
 
 	if (wait_for_ack) {
 		gdm_got_ack = FALSE;
@@ -2084,8 +2190,12 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	}
 
 	if (fd < 0) {
+		/* FIXME: This is not likely to ever be used, remove
+		   at some point.  Other then slaves shouldn't be using
+		   these functions.  And if the pipe creation failed
+		   in main daemon just abort the main daemon.  */
 		/* Use the fifo as a fallback only now that we have a pipe */
-		fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+		fifopath = g_build_filename (GdmServAuthDir, ".gdmfifo", NULL);
 		old = geteuid ();
 		if (old != 0)
 			seteuid (0);
@@ -2132,14 +2242,30 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 				gdm_slave_handle_usr2_message ();
 			}
 		} else {
-			sleep (1);
+			struct timeval tv;
+			/* Wait 1 second. */
+			tv.tv_sec = 1;
+			tv.tv_usec = 0;
+			select (0, NULL, NULL, NULL, &tv);
+			/* don't want to use sleep since we're using alarm
+			   for pinging */
 		}
 	}
 
 	if (wait_for_ack  &&
 	    ! gdm_got_ack &&
-	    gdm_in_signal == 0)
-		gdm_error ("Timeout occured for sending message %s", str);
+	    gdm_in_signal == 0) {
+		if (strncmp (str, GDM_SOP_COOKIE " ",
+			     strlen (GDM_SOP_COOKIE " ")) == 0) {
+			char *s = g_strndup
+				(str, strlen (GDM_SOP_COOKIE " XXXX XX"));
+			/* cut off most of the cookie for "security" */
+			gdm_debug ("Timeout occured for sending message %s...", s);
+			g_free (s);
+		} else {
+			gdm_debug ("Timeout occured for sending message %s", str);
+		}
+	}
 }
 
 void
@@ -2233,7 +2359,7 @@ gdm_slave_chooser (void)
 
 	/* Open a pipe for chooser communications */
 	if (pipe (p) < 0)
-		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Can't init pipe to gdmchooser"));
+		gdm_slave_exit (DISPLAY_REMANAGE, _("gdm_slave_chooser: Can't init pipe to gdmchooser"));
 
 	/* Run the init script. gdmslave suspends until script has terminated */
 	gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL,
@@ -2327,7 +2453,7 @@ gdm_slave_chooser (void)
 		gdm_child_exit (DISPLAY_REMANAGE, _("gdm_slave_chooser: Error starting chooser on display %s"), d->name);
 
 	case -1:
-		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Can't fork gdmchooser process"));
+		gdm_slave_exit (DISPLAY_REMANAGE, _("gdm_slave_chooser: Can't fork gdmchooser process"));
 
 	default:
 		gdm_debug ("gdm_slave_chooser: Chooser on pid %d", d->chooserpid);
@@ -2389,7 +2515,7 @@ is_session_ok (const char *session_name)
 	if (ve_string_empty (GdmSessDir))
 		return FALSE;
 
-	file = g_strconcat (GdmSessDir, "/", session_name, NULL);
+	file = g_build_filename (GdmSessDir, session_name, NULL);
 	if (access (file, F_OK) == 0) {
 		g_free (file);
 		return TRUE;
@@ -2431,7 +2557,7 @@ get_session_exec (const char *desktop)
 	VeConfig *cfg;
 	char *exec;
 
-	file = g_strconcat (GdmSessDir, "/", desktop, NULL);
+	file = g_build_filename (GdmSessDir, desktop, NULL);
 	cfg = ve_config_get (file);
 	g_free (file);
 	exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
@@ -2491,6 +2617,10 @@ session_child_run (struct passwd *pwent,
 	char *argv[4];
 
 	gdm_unset_signals ();
+	if (setsid() < 0)
+		/* should never happen */
+		gdm_error (_("%s: setsid() failed: %s!"),
+			   "session_child_run", strerror(errno));
 
 	ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 
@@ -2501,9 +2631,9 @@ session_child_run (struct passwd *pwent,
 	 * unless in failsafe mode which needs to work when there is
 	 * no diskspace as well */
 	if ( ! failsafe && home_dir_ok) {
-		char *filename = g_strconcat (home_dir,
-					      "/.xsession-errors",
-					      NULL);
+		char *filename = g_build_filename (home_dir,
+						   ".xsession-errors",
+						   NULL);
 		uid_t old = geteuid ();
 		uid_t oldg = getegid ();
 
@@ -2558,11 +2688,6 @@ session_child_run (struct passwd *pwent,
 
 	gdm_clearenv ();
 
-	if (setsid() < 0)
-		/* should never happen */
-		gdm_error (_("%s: setsid() failed: %s!"),
-			   "session_child_run", strerror(errno));
-
 	/* Prepare user session */
 	ve_setenv ("XAUTHORITY", d->userauth, TRUE);
 	ve_setenv ("DISPLAY", d->name, TRUE);
@@ -2613,6 +2738,10 @@ session_child_run (struct passwd *pwent,
 	 * not to leave the egid around */
 	setegid (pwent->pw_gid);
 
+	if (chdir (home_dir) != 0) {
+		chdir ("/");
+	}
+
 #ifdef HAVE_LOGINCAP
 	if (setusercontext (NULL, pwent, pwent->pw_uid,
 			    LOGIN_SETLOGIN | LOGIN_SETPATH |
@@ -2637,10 +2766,8 @@ session_child_run (struct passwd *pwent,
 		ve_setenv ("GDM_LANG", language, TRUE);
 	}
 	
-	chdir (home_dir);
-
 	if (usrcfgok && savesess && home_dir_ok) {
-		gchar *cfgstr = g_strconcat (home_dir, "/.dmrc", NULL);
+		gchar *cfgstr = g_build_filename (home_dir, ".dmrc", NULL);
 		if (dmrc == NULL)
 			dmrc = ve_config_new (cfgstr);
 		ve_config_set_string (dmrc, "Desktop/Session",
@@ -2649,7 +2776,7 @@ session_child_run (struct passwd *pwent,
 	}
 	
 	if (usrcfgok && savelang && home_dir_ok) {
-		gchar *cfgstr = g_strconcat (home_dir, "/.dmrc", NULL);
+		gchar *cfgstr = g_build_filename (home_dir, ".dmrc", NULL);
 		if (dmrc == NULL)
 			dmrc = ve_config_new (cfgstr);
 		if (ve_string_empty (language))
@@ -2857,11 +2984,19 @@ gdm_slave_session_start (void)
     }
 
     /* Run the PostLogin script */
-    gdm_slave_exec_script (d, GdmPostLogin,
-			   login, pwent,
-			   TRUE /* pass_stdout */,
-			   TRUE /* set_parent */);
-    /* FIXME: ignore errors? */
+    if (gdm_slave_exec_script (d, GdmPostLogin,
+			       login, pwent,
+			       TRUE /* pass_stdout */,
+			       TRUE /* set_parent */) != EXIT_SUCCESS &&
+	/* ignore errors in failsafe modes */
+	! failsafe) {
+	    session_started = FALSE;
+	    gdm_verify_cleanup (d);
+	    gdm_error (_("gdm_slave_session_start: Execution of PostLogin script returned > 0. Aborting."));
+	    /* script failed so just try again */
+	    return;
+		
+    }
 
     if (pwent->pw_dir == NULL ||
 	! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
@@ -2909,7 +3044,7 @@ gdm_slave_session_start (void)
     }
 
     if (usrcfgok) {
-	gchar *cfgfile = g_strconcat (home_dir, "/.dmrc", NULL);
+	gchar *cfgfile = g_build_filename (home_dir, ".dmrc", NULL);
 	VeConfig *cfg = ve_config_new (cfgfile);
 	g_free (cfgfile);
 
@@ -3113,7 +3248,7 @@ gdm_slave_session_start (void)
 
     if  ((/* sanity */ end_time >= session_start_time) &&
 	 (end_time - 10 <= session_start_time)) {
-	    char *errfile = g_strconcat (home_dir, "/.xsession-errors", NULL);
+	    char *errfile = g_build_filename (home_dir, ".xsession-errors", NULL);
 	    gdm_debug ("Session less than 10 seconds!");
 
 	    /* FIXME: perhaps do some checking to display a better error,
@@ -3218,10 +3353,10 @@ gdm_slave_session_stop (gboolean run_post_session,
 
     in_session_stop --;
 
-    if (need_to_abort_after_session_stop) {
+    if (need_to_quit_after_session_stop) {
 	    gdm_debug ("gdm_slave_session_stop: Final cleanup");
 
-	    gdm_slave_quick_exit (DISPLAY_ABORT);
+	    gdm_slave_quick_exit (exit_code_to_use);
     }
 
 #ifdef __linux__
@@ -3235,7 +3370,7 @@ gdm_slave_session_stop (gboolean run_post_session,
        up again and then whacked.  Waiting is safer then DISPLAY_ABORT,
        since if we really do get this wrong, then at the worst case the
        user will wait for a few moments. */
-    if ( ! need_to_abort_after_session_stop &&
+    if ( ! need_to_quit_after_session_stop &&
 	 ! no_shutdown_check &&
 	access ("/sbin/runlevel", X_OK) == 0) {
 	    char ign;
@@ -3247,15 +3382,19 @@ gdm_slave_session_stop (gboolean run_post_session,
 		    /* this is a stupid loop, but we may be getting signals,
 		       so we don't want to just do sleep (30) */
 		    time_t c = time (NULL);
-		    just_abort_on_TERM = TRUE;
 		    gdm_info (_("GDM detected a shutdown or reboot "
 				"in progress."));
 		    fclose (fp);
 		    while (c + 30 > time (NULL)) {
-			    sleep (5);
+			    struct timeval tv;
+			    /* Wait 30 seconds. */
+			    tv.tv_sec = 30;
+			    tv.tv_usec = 0;
+			    select (0, NULL, NULL, NULL, &tv);
+			    /* don't want to use sleep since we're using alarm
+			       for pinging */
 		    }
 		    /* hmm, didn't get TERM, weird */
-		    just_abort_on_TERM = FALSE;
 	    } else {
 		    fclose (fp);
 	    }
@@ -3268,28 +3407,50 @@ gdm_slave_term_handler (int sig)
 {
 	gdm_in_signal++;
 	gdm_wait_for_ack = FALSE;
+	static gboolean got_term_before = FALSE;
 
 	gdm_debug ("gdm_slave_term_handler: %s got TERM/INT signal", d->name);
 
-	if ( ! just_abort_on_TERM) {
-		/* this should stop some races */
-		if (in_session_stop > 0 && ! need_to_abort_after_session_stop) {
-			gdm_in_signal--;
-			gdm_wait_for_ack = TRUE;
-			need_to_abort_after_session_stop = TRUE;
-			return;
-		}
+	exit_code_to_use = DISPLAY_ABORT;
+	need_to_quit_after_session_stop = TRUE;
 
-		/* only if we're not hanging in session stop and getting a
-		   TERM signal again */
-		if (in_session_stop == 0 && session_started)
-			gdm_slave_session_stop (d->logged_in && login != NULL,
-						TRUE /* no_shutdown_check */);
+	if (already_in_slave_start_jmp ||
+	    (got_term_before && in_session_stop > 0)) {
+		gdm_sigchld_block_push ();
+		/* be very very very nasty to the extra process if the user is really
+		   trying to get rid of us */
+		if (extra_process > 1)
+			kill (-(extra_process), SIGKILL);
+		/* also be very nasty to the X server at this stage */
+		if (d->servpid > 1)
+			kill (d->servpid, SIGKILL);
+		gdm_sigchld_block_pop ();
+		gdm_in_signal--;
+		got_term_before = TRUE;
+		/* we're already quitting, just a matter of killing all the processes */
+		return;
+	}
+	got_term_before = TRUE;
+
+	/* just in case this was set to something else, like during
+	 * server reinit */
+	XSetIOErrorHandler (gdm_slave_xioerror_handler);
+
+	if (in_session_stop > 0) {
+		/* the need_to_quit_after_session_stop is now set so things will
+		   work out right */
+		gdm_in_signal--;
+		return;
 	}
 
-	gdm_debug ("gdm_slave_term_handler: Final cleanup");
+	if (session_started) {
+		SIGNAL_EXIT_WITH_JMP (d, JMP_SESSION_STOP_AND_QUIT);
+	} else {
+		SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
+	}
 
-	gdm_slave_quick_exit (DISPLAY_ABORT);
+	/* never reached */
+	gdm_in_signal--;
 }
 
 /* called on alarms to ping */
@@ -3297,6 +3458,9 @@ static void
 gdm_slave_alrm_handler (int sig)
 {
 	static gboolean in_ping = FALSE;
+
+	if (already_in_slave_start_jmp)
+		return;
 
 	gdm_in_signal++;
 
@@ -3310,13 +3474,17 @@ gdm_slave_alrm_handler (int sig)
 	}
 
 	if (in_ping) {
-		/* darn, the last ping didn't succeed, wipe this display */
-		gdm_slave_session_stop (d->logged_in && login != NULL,
-					FALSE /* no_shutdown_check */);
+		slave_start_jmp_error_to_print = 
+			g_strdup_printf (_("Ping to %s failed, whacking display!"),
+					 d->name);
+		need_to_quit_after_session_stop = TRUE;
+		exit_code_to_use = DISPLAY_REMANAGE;
 
-		gdm_slave_exit (DISPLAY_REMANAGE, 
-				_("Ping to %s failed, whacking display!"),
-				d->name);
+		if (session_started) {
+			SIGNAL_EXIT_WITH_JMP (d, JMP_SESSION_STOP_AND_QUIT);
+		} else {
+			SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
+		}
 	}
 
 	in_ping = TRUE;
@@ -3338,6 +3506,9 @@ gdm_slave_child_handler (int sig)
     gint status;
     pid_t pid;
     uid_t old;
+
+    if (already_in_slave_start_jmp)
+	    return;
 
     gdm_in_signal++;
 
@@ -3372,7 +3543,9 @@ gdm_slave_child_handler (int sig)
 	if (pid == d->greetpid && greet) {
 		if (WIFEXITED (status) &&
 		    WEXITSTATUS (status) == DISPLAY_RESTARTGREETER) {
-			gdm_slave_desensitize_config ();
+			/* FIXME: shouldn't do this from
+			   a signal handler */
+			/*gdm_slave_desensitize_config ();*/
 
 			greet = FALSE;
 			d->greetpid = 0;
@@ -3401,16 +3574,19 @@ gdm_slave_child_handler (int sig)
 		     WEXITSTATUS (status) == DISPLAY_SUSPEND ||
 		     WEXITSTATUS (status) == DISPLAY_RUN_CHOOSER ||
 		     WEXITSTATUS (status) == DISPLAY_RESTARTGDM)) {
-			gdm_slave_quick_exit (WEXITSTATUS (status));
+			exit_code_to_use = WEXITSTATUS (status);
+			SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
 		} else {
 			if (WIFSIGNALED (status) &&
 			    (WTERMSIG (status) == SIGSEGV ||
 			     WTERMSIG (status) == SIGABRT ||
 			     WTERMSIG (status) == SIGPIPE ||
 			     WTERMSIG (status) == SIGBUS)) {
-				gdm_slave_quick_exit (DISPLAY_GREETERFAILED);
+				exit_code_to_use = DISPLAY_GREETERFAILED;
+				SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
 			} else {
-				gdm_slave_quick_exit (DISPLAY_REMANAGE);
+				exit_code_to_use = DISPLAY_REMANAGE;
+				SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
 			}
 		}
 	} else if (pid != 0 && pid == d->sesspid) {
@@ -3426,8 +3602,10 @@ gdm_slave_child_handler (int sig)
 
 		/* if not handled there is no need for further formalities,
 		 * we just have to die */
-		if ( ! d->handled)
-			gdm_slave_quick_exit (DISPLAY_REMANAGE);
+		if ( ! d->handled) {
+			exit_code_to_use = DISPLAY_REMANAGE;
+			SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
+		}
 
 		gdm_slave_send_num (GDM_SOP_XPID, 0);
 
@@ -3506,7 +3684,13 @@ gdm_slave_handle_usr2_message (void)
 				if (d->type != TYPE_FLEXI_XNEST &&
 				    d->type != TYPE_FLEXI) {
 					if ( ! d->logged_in) {
-						gdm_slave_quick_exit (DISPLAY_REMANAGE);
+						if (gdm_in_signal > 0) {
+							exit_code_to_use = DISPLAY_REMANAGE;
+							SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
+						} else {
+							/* FIXME: are we ever not in signal here? */
+							gdm_slave_quick_exit (DISPLAY_REMANAGE);
+						}
 					} else {
 						remanage_asap = TRUE;
 					}
@@ -3544,28 +3728,40 @@ gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
 static gint
 gdm_slave_xioerror_handler (Display *disp)
 {
+	if (already_in_slave_start_jmp) {
+		/* eki eki eki, this is not good,
+		   should only happen if we get some io error after
+		   we have gotten a SIGTERM */
+		SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
+	}
+
 	gdm_in_signal++;
 
 	/* Display is all gone */
 	d->dsp = NULL;
 
-	gdm_debug ("gdm_slave_xioerror_handler: I/O error for display %s", d->name);
-
-	gdm_slave_session_stop (d->logged_in && login != NULL,
-				FALSE /* no_shutdown_check */);
-
-	gdm_error (_("%s: Fatal X error - Restarting %s"), 
-		   "gdm_slave_xioerror_handler", d->name);
-
 	if ((d->type == TYPE_LOCAL ||
 	     d->type == TYPE_FLEXI) &&
 	    (do_xfailed_on_xio_error ||
 	     d->starttime + 5 >= time (NULL))) {
-		gdm_slave_quick_exit (DISPLAY_XFAILED);
+		exit_code_to_use = DISPLAY_XFAILED;
 	} else {
-		gdm_slave_quick_exit (DISPLAY_REMANAGE);
+		exit_code_to_use = DISPLAY_REMANAGE;
 	}
 
+	slave_start_jmp_error_to_print =
+		g_strdup_printf (_("%s: Fatal X error - Restarting %s"), 
+				 "gdm_slave_xioerror_handler", d->name);
+
+	need_to_quit_after_session_stop = TRUE;
+
+	if (session_started) {
+		SIGNAL_EXIT_WITH_JMP (d, JMP_SESSION_STOP_AND_QUIT);
+	} else {
+		SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
+	}
+
+	/* never reached */
 	gdm_in_signal--;
 
 	return 0;
@@ -3694,6 +3890,10 @@ gdm_slave_quick_exit (gint status)
 	     * so no need doing XCloseDisplay which
 	     * may just get us an XIOError */
 	    d->dsp = NULL;
+	    /* just in case we do get the XIOError,
+	       don't run session_stop since we've
+	       requested a quick exit */
+	    session_started = FALSE;
 
 	    /* No need to send the PIDS to the daemon
 	     * since we'll just exit cleanly */
@@ -3714,12 +3914,12 @@ gdm_slave_quick_exit (gint status)
 		    kill (-(d->sesspid), SIGTERM);
 	    d->sesspid = 0;
 
-	    gdm_server_stop (d);
-	    gdm_verify_cleanup (d);
-
 	    if (extra_process > 1)
 		    kill (-(extra_process), SIGTERM);
 	    extra_process = 0;
+
+	    gdm_verify_cleanup (d);
+	    gdm_server_stop (d);
 
 	    if (d->servpid > 1)
 		    kill (d->servpid, SIGTERM);
@@ -3822,14 +4022,14 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     if (!d || ve_string_empty (dir))
 	return EXIT_SUCCESS;
 
-    script = g_strconcat (dir, "/", d->name, NULL);
+    script = g_build_filename (dir, d->name, NULL);
     if (access (script, R_OK|X_OK) != 0) {
 	    g_free (script);
 	    script = NULL;
     }
     if (script == NULL &&
 	! ve_string_empty (d->hostname)) {
-	    script = g_strconcat (dir, "/", d->hostname, NULL);
+	    script = g_build_filename (dir, d->hostname, NULL);
 	    if (access (script, R_OK|X_OK) != 0) {
 		    g_free (script);
 		    script = NULL;
@@ -3837,7 +4037,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     }
     if (script == NULL &&
 	d->type == TYPE_XDMCP) {
-	    script = g_strconcat (dir, "/XDMCP", NULL);
+	    script = g_build_filename (dir, "XDMCP", NULL);
 	    if (access (script, R_OK|X_OK) != 0) {
 		    g_free (script);
 		    script = NULL;
@@ -3845,14 +4045,14 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     }
     if (script == NULL &&
 	SERVER_IS_FLEXI (d)) {
-	    script = g_strconcat (dir, "/Flexi", NULL);
+	    script = g_build_filename (dir, "Flexi", NULL);
 	    if (access (script, R_OK|X_OK) != 0) {
 		    g_free (script);
 		    script = NULL;
 	    }
     }
     if (script == NULL) {
-	    script = g_strconcat (dir, "/Default", NULL);
+	    script = g_build_filename (dir, "Default", NULL);
 	    if (access (script, R_OK|X_OK) != 0) {
 		    g_free (script);
 		    script = NULL;
@@ -3906,7 +4106,10 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		} else {
 			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 			ve_setenv ("PWD", pwent->pw_dir, TRUE);
-			chdir (pwent->pw_dir);
+			if (chdir (pwent->pw_dir) != 0) {
+				chdir ("/");
+				ve_setenv ("PWD", "/", TRUE);
+			}
 		}
 	        ve_setenv ("SHELL", pwent->pw_shell, TRUE);
         } else {

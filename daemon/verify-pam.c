@@ -122,10 +122,13 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
     char *s;
     struct pam_response *reply = NULL;
     const char *login;
+
+    if (pamh == NULL)
+	return PAM_CONV_ERR;
     
     reply = malloc (sizeof (struct pam_response) * num_msg);
     
-    if (!reply) 
+    if (reply == NULL)
 	return PAM_CONV_ERR;
 
     memset (reply, 0, sizeof (struct pam_response) * num_msg);
@@ -261,9 +264,12 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 	char *s, *text;
 	struct pam_response *reply = NULL;
 
+	if (pamh == NULL)
+		return PAM_CONV_ERR;
+    
 	reply = malloc (sizeof (struct pam_response) * num_msg);
 
-	if (!reply) 
+	if (reply == NULL)
 		return PAM_CONV_ERR;
 
 	memset (reply, 0, sizeof (struct pam_response) * num_msg);
@@ -894,16 +900,22 @@ gdm_verify_cleanup (GdmDisplay *d)
 
 	if (pamh != NULL) {
 		gint pamerr;
+		pam_handle_t *tmp_pamh;
+
+		gdm_debug ("Running gdm_verify_cleanup and pamh != NULL");
+
+		gdm_sigterm_block_push ();
+		tmp_pamh = pamh;
+		pamh = NULL;
+		gdm_sigterm_block_pop ();
 
 		/* Close the users session */
-		pamerr = pam_close_session (pamh, 0);
+		pamerr = pam_close_session (tmp_pamh, 0);
 
 		/* Throw away the credentials */
-		pamerr = pam_setcred (pamh, PAM_DELETE_CRED);
+		pamerr = pam_setcred (tmp_pamh, PAM_DELETE_CRED);
 
-		if (pamh != NULL)
-			pam_end (pamh, pamerr);
-		pamh = NULL;
+		pam_end (tmp_pamh, pamerr);
 
 		/* Workaround to avoid gdm messages being logged as PAM_pwdb */
 		closelog ();

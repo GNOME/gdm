@@ -574,7 +574,9 @@
 	if you need to (though you should use the
 	<filename>pam_mount</filename> module if you can for this).
 	You have the $USER and $DISPLAY environment variables set for this script,
-	and again it is run as root.
+	and again it is run as root.  The script should return 0 on success
+	as otherwise the user won't be logged in.  This is not true for
+	failsafe session showever.
       </para>
 
       <para>
@@ -585,9 +587,9 @@
 	script for local session management or accounting stuff. The
 	$USER environment variable contains the login of the
 	authenticated user and $DISPLAY is set to the current display.
-	The script should return 0 on success. Any
+	The script should return 0 on success.  Any
 	other value will cause GDM to terminate the current login
-	process.
+	process.  This is not true for failsafe sessions however.
 	Also $X_SERVERS environmental variable is set and this points
 	to a fake generated x servers file for use with the
 	sessreg accounting program.
@@ -1014,7 +1016,7 @@
 	      <synopsis>RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis>
 	      <para>
 		Specifies the path which will be set in the root's
-		session and the {Init,PreSession,PostSession} scripts
+		session and the {Init,PostLogin,PreSession,PostSession} scripts
 		executed by GDM.
 	      </para>
 	    </listitem>
@@ -1027,11 +1029,20 @@
 	      <para>
 		Directory containing the X authentication files for the
 		individual displays.  Should be owned by
-		<filename>gdm.gdm</filename> with permissions 750.
+		<filename>root.gdm</filename> with permissions 1770.
+		That is should be owned by root, with gdm group having
+		full write permissions and the directory should be
+		sticky and others should have no permission to the directory.
+		This way the gdm user can't remove files owned
+		by root in that directory, while still being able to
+		write its own files there.  GDM will attempt to change
+		permissions for you when it's first run if the permissions
+		are not the above.
 		This directory is also used for other private files that
-		the daemon needs to store.  Other user should not
+		the daemon needs to store.  Other users should not
 		have any way to get into this directory and read/change
-		it's contents.
+		it's contents.  Anybody who can read this directory can
+		connect to any display on this machine.
 	      </para>
 	    </listitem>
 	  </varlistentry>
