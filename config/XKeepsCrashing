@@ -1,5 +1,11 @@
 #!/bin/sh
 
+if test "x$UNSAFE_TO_TRANSLATE" = "xyes" ; then
+  LANG=C
+  unset LC_ALL
+  unset LC_MESSAGES
+fi
+
 if [ -x "$LIBEXECDIR/gdmtranslate" ] ; then
   GDMTRANSLATE="$LIBEXECDIR/gdmtranslate"
 else

@@ -318,6 +318,12 @@ gdm_config_parse (void)
     /* Parse configuration options */
     cfg = ve_config_new (GDM_CONFIG_FILE);
 
+    /* get and cache the OKness of a language */
+    GdmConsoleCannotHandle = ve_config_get_string (cfg, GDM_KEY_CONSOLE_CANNOT_HANDLE);
+    if (GdmConsoleCannotHandle == NULL)
+	    GdmConsoleCannotHandle = g_strdup ("");
+    gdm_ok_console_language ();
+
     GdmChooser = ve_config_get_string (cfg, GDM_KEY_CHOOSER);
     GdmDefaultPath = ve_config_get_string (cfg, GDM_KEY_PATH);
     GdmDisplayInit = ve_config_get_string (cfg, GDM_KEY_INITDIR);
@@ -422,7 +428,6 @@ gdm_config_parse (void)
 
     GdmSoundProgram = ve_config_get_string (cfg, GDM_KEY_SOUND_PROGRAM);
     GdmSoundOnLoginFile = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_FILE);
-    GdmConsoleCannotHandle = ve_config_get_string (cfg, GDM_KEY_SOUND_PROGRAM);
 
     GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
 
@@ -1104,6 +1109,7 @@ deal_with_x_crashes (GdmDisplay *d)
 			    ve_unsetenv ("LC_ALL");
 			    ve_unsetenv ("LC_MESSAGES");
 			    ve_setenv ("LANG", "C", TRUE);
+			    ve_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
 		    }
 
 		    VE_IGNORE_EINTR (execv (argv[0], argv));

@@ -512,6 +512,7 @@ gdm_text_message_dialog (const char *msg)
 			ve_unsetenv ("LC_ALL");
 			ve_unsetenv ("LC_MESSAGES");
 			ve_setenv ("LANG", "C", TRUE);
+			ve_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
 		}
 		
 		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
@@ -593,6 +594,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 			ve_unsetenv ("LC_ALL");
 			ve_unsetenv ("LC_MESSAGES");
 			ve_setenv ("LANG", "C", TRUE);
+			ve_setenv ("UNSAFE_TO_TRANSLATE", "yes", TRUE);
 		}
 
 		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
@@ -2334,6 +2336,10 @@ gdm_ok_console_language (void)
 	if (cached)
 		return is_ok;
 
+	/* so far we should be paranoid, we're not set yet */
+	if (GdmConsoleCannotHandle == NULL)
+		return FALSE;
+
 	cached = TRUE;
 
 	loc = setlocale (LC_MESSAGES, NULL);
@@ -2342,19 +2348,20 @@ gdm_ok_console_language (void)
 		return TRUE;
 	}
 
+	is_ok = TRUE;
+
 	v = g_strsplit (GdmConsoleCannotHandle, ",", -1);
 	for (i = 0; v != NULL && v[i] != NULL; i++) {
 		if ( ! ve_string_empty (v[i]) &&
 		    strncmp (v[i], loc, strlen (v[i])) == 0) {
 			is_ok = FALSE;
-			return FALSE;
+			break;
 		}
 	}
 	if (v != NULL)
 		g_strfreev (v);
 
-	is_ok = TRUE;
-	return TRUE;
+	return is_ok;
 }
 
 const char *

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define gboolean char
 #define FALSE 0
@@ -29,6 +30,12 @@ main (int argc, char *argv[])
 		is_utf8 = FALSE;
 	} else {
 		fprintf (stderr, "usage: gdmtranslate [--utf8] <string to translate>\n");
+		return 0;
+	}
+
+	if (getenv ("UNSAFE_TO_TRANSLATE") != NULL &&
+	    strcmp (getenv ("UNSAFE_TO_TRANSLATE"), "yes") == 0) {
+		printf ("%s\n", string);
 		return 0;
 	}
 

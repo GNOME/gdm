@@ -164,6 +164,17 @@ main (int argc, char *argv[])
 	if (child_pid == 0) {
 		char VT_NUMBER[256];
 
+		if (getenv ("UNSAFE_TO_TRANSLATE") != NULL &&
+		    strcmp (getenv ("UNSAFE_TO_TRANSLATE"), "yes") == 0) {
+			putenv ("LANG=C");
+
+			/* portable way to truly unset with putenv? */
+			putenv ("LC_ALL=");
+			putenv ("LC_MESSAGES=");
+			putenv ("LC_ALL");
+			putenv ("LC_MESSAGES");
+		}
+
 #ifdef __linux__
 		putenv ("TERM=linux");
 #endif

@@ -1,3 +1,22 @@
+Fri May 28 11:08:51 2004  George Lebl <jirka@5z.com>
+
+	* configure.in: eek, evil we had GETTEXT_PACKAGE set to
+	  gdm-2.4, but we want gdm-2.6 nowdays
+
+	* daemon/gdm.c, daemon/misc.c: fix the ConsoleCannotHandle key
+	  and cache it as soon as we can and also set
+	  UNSAFE_TO_TRANSLATE=yes when forking something and console
+	  can't handle the language
+
+	* daemon/server.c: fix a minor fd leak and print a C locale
+	  (don't want to translate this) error to the X log when the
+	  X server cannot be exec'ed.
+
+	* utils/gdmopen.c, utils/gdmtranslate.c, config/XKeepsCrashing:
+	  Listen to UNSAFE_TO_TRANSLATE, since running shells in login
+	  mode may modify the locale so we must force it to "C" where
+	  we can if it is really unsafe (language in ConsoleCannotHandle)
+
 Thu May 27 13:42:39 2004  George Lebl <jirka@5z.com>
 
 	* gui/modules/dwellmouselistener.c, gui/modules/keymouselistener.c:

@@ -1093,12 +1093,12 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	if (logfd != -1) {
 		VE_IGNORE_EINTR (dup2 (logfd, 1));
 		VE_IGNORE_EINTR (dup2 (logfd, 2));
+		close (logfd);
         } else {
 		gdm_error (_("%s: Could not open logfile for display %s!"),
 			   "gdm_server_spawn", d->name);
 	}
 
-	
 	/* The X server expects USR1/TTIN/TTOU to be SIG_IGN */
 	ign_signal.sa_handler = SIG_IGN;
 	ign_signal.sa_flags = SA_RESTART;
@@ -1213,7 +1213,13 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	}
 
 	VE_IGNORE_EINTR (execv (argv[0], argv));
-	
+
+	gdm_fdprintf (2, "GDM: Xserver not found: %s\n"
+		      "Error: Command could not be executed!\n"
+		      "Please install the X server or edit %s to point "
+		      "to the right place.",
+		      command, GDM_CONFIG_FILE);
+
 	gdm_error (_("%s: Xserver not found: %s"), 
 		   "gdm_server_spawn", command);
 	
