@@ -2316,6 +2316,7 @@ update_clock (gpointer data)
 	struct tm *the_tm;
 	time_t the_time;
 	char str[256];
+	gint time_til_next_min;
 
 	if (clock_label == NULL)
 		return FALSE;
@@ -2323,7 +2324,7 @@ update_clock (gpointer data)
 	time (&the_time);
 	the_tm = localtime (&the_time);
 
-	if (strftime (str, sizeof (str), _("%a %b %d, %X"), the_tm) == 0) {
+	if (strftime (str, sizeof (str), _("%a %b %d, %I:%M %p"), the_tm) == 0) {
 		/* according to docs, if the string does not fit, the
 		 * contents of str are undefined, thus just use
 		 * ??? */
@@ -2333,7 +2334,14 @@ update_clock (gpointer data)
 
 	gtk_label_set (GTK_LABEL (clock_label), str);
 
-	return TRUE;
+
+	/* account for leap seconds */
+	time_til_next_min = 60 - the_tm->tm_sec;
+	time_til_next_min = (time_til_next_min>=0?time_til_next_min:0);
+
+	gtk_timeout_add (time_til_next_min*1000, update_clock, NULL);
+	
+	return FALSE;
 }
 
 static void
@@ -2489,8 +2497,7 @@ gdm_login_gui_init (void)
 			GTK_SIGNAL_FUNC (gtk_widget_destroyed),
 			&clock_label);
 
-    gtk_timeout_add (1000, update_clock, NULL);
-
+    update_clock (NULL); 
 
     if (GdmBrowser)
 	rows = 2;
@@ -2944,7 +2951,7 @@ gdm_screen_init (void)
 		have_xinerama = FALSE;
 
 	if (have_xinerama) {
-		int screen_num;
+		int screen_num, i;
 		XineramaScreenInfo *xscreens =
 			XineramaQueryScreens (GDK_DISPLAY (),
 					      &screen_num);
