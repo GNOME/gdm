@@ -107,6 +107,10 @@ AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 GNOME_COMPILE_WARNINGS
 CFLAGS="$CFLAGS $WARN_CFLAGS"
 
+PKG_CHECK_MODULES(VICIOUS, gtk+-2.0 >= $GTK_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED libgnome-2.0 >= $LIBGNOME_REQUIRED)
+AC_SUBST(VICIOUS_CFLAGS)
+AC_SUBST(VICIOUS_LIBS)
+
 PKG_CHECK_MODULES(DAEMON, gtk+-2.0 >= $GTK_REQUIRED)
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
@@ -167,6 +171,10 @@ AC_CHECK_FUNC(sched_yield,[
 AC_CHECK_FUNC(inet_aton,,[
 	      AC_CHECK_LIB(resolv,inet_aton, [
 			   EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lresolv"])])
+
+VICIOUS_GNOME_LIBS="libviciousui.a libviciousui-gnome.a \
+       libviciousui-minimal.a libvicious-gnome.a"
+AC_SUBST(VICIOUS_GNOME_LIBS)
 
 dnl *****************************
 dnl     IPv6 specific checks
