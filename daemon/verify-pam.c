@@ -484,18 +484,18 @@ gdm_verify_open_session (void)
 		goto open_pamerr;
 	}
 
-	/* Set credentials */
-	if ((pamerr = pam_setcred (pamh, PAM_SILENT)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
-			gdm_error (_("Couldn't set credentials for %s"),
-				   current_login);
-		goto open_pamerr;
-	}
-
 	/* Register the session */
 	if ((pamerr = pam_open_session (pamh, PAM_SILENT)) != PAM_SUCCESS) {
 		if (gdm_slave_should_complain ())
 			gdm_error (_("Couldn't open session for %s"),
+				   current_login);
+		goto open_pamerr;
+	}
+
+	/* Set credentials */
+	if ((pamerr = pam_setcred (pamh, PAM_SILENT)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Couldn't set credentials for %s"),
 				   current_login);
 		goto open_pamerr;
 	}

@@ -1,3 +1,10 @@
+Sat Sep 08 02:35:51 2001  George Lebl <jirka@5z.com>
+
+	* daemon/verify-pam.c: OK, PAM documentation is officially on crack.
+	  Some places (the kernel.org web manual) say order should be
+	  set_cred -> open_session, but it seems that the order is
+	  open_session -> set_cred.  Should fix #51605
+
 Sat Sep 08 02:06:44 2001  George Lebl <jirka@5z.com>
 
 	* daemon/xdmcp.c: use pclose on popen'ed FILE *
