@@ -168,9 +168,23 @@ whack_old_slave (GdmDisplay *d)
 {
     time_t t = time (NULL);
     gboolean waitsleep = TRUE;
+
+    /* This should never happen I don't think, but just in case */
+    if (d->socket_conn != NULL) {
+	    GdmConnection *conn = d->socket_conn;
+	    d->socket_conn = NULL;
+	    gdm_connection_set_close_notify (conn, NULL, NULL);
+    }
+
+    if (d->master_notify_fd >= 0) {
+	    VE_IGNORE_EINTR (close (d->master_notify_fd));
+	    d->master_notify_fd = -1;
+    }
+
     /* if we have DISPLAY_DEAD set, then this has already been killed */
     if (d->dispstat == DISPLAY_DEAD)
 	    waitsleep = FALSE;
+
     /* Kill slave */
     if (d->slavepid > 1 &&
 	(d->dispstat == DISPLAY_DEAD || kill (d->slavepid, SIGTERM) == 0)) {

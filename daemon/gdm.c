@@ -2139,6 +2139,7 @@ main (int argc, char *argv[])
     sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
     gdm_signal_ignore (SIGUSR2);
+    gdm_signal_ignore (SIGPIPE);
 
     /* ignore power failures, up to user processes to
      * handle things correctly */

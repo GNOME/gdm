@@ -1,3 +1,13 @@
+Tue Mar 30 15:47:33 2004  George Lebl <jirka@5z.com>
+
+	Fixes from: Jerry Wall <Jerry.Wall@Sun.COM>
+
+	* daemon/display.c: in whack_old_slave, make sure to close
+	  any stale pipes/sockets just in case
+
+	* daemon/gdm.c: ignore SIGPIPE, it is possible that the slave
+	  dies in a bad moment and we get a SIGPIPE
+
 2004-03-31  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "af" to ALL_LINGUAS.
