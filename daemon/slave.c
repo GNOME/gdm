@@ -387,12 +387,12 @@ gdm_slave_whack_greeter (void)
 	sigaddset (&tmask, SIGCHLD);
 	sigprocmask (SIG_BLOCK, &tmask, &omask);  
 
+	greet = FALSE;
+
 	/* do what you do when you quit, this will hang until the
 	 * greeter decides to print an STX\n, meaning it can do some
 	 * last minute cleanup */
 	gdm_slave_greeter_ctl_no_ret (GDM_QUIT, "");
-
-	greet = FALSE;
 
 	/* Kill greeter and wait for it to die */
 	if (d->greetpid > 0 &&
@@ -643,6 +643,8 @@ gdm_slave_wait_for_login (void)
 		login = gdm_verify_user (NULL /* username*/,
 					 d->name,
 					 d->type == TYPE_LOCAL);
+		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
+			   gdm_sure_string (login));
 		/* Complex, make sure to always handle the do_configurator
 		 * and do_timed_login after any call to gdm_verify_user */
 
@@ -743,7 +745,12 @@ gdm_slave_wait_for_login (void)
 		/* timed login is automatic, thus no need for greeter,
 		 * we'll take default values */
 		gdm_slave_whack_greeter();
+
+		gdm_debug ("gdm_slave_wait_for_login: Timed Login");
 	}
+
+	gdm_debug ("gdm_slave_wait_for_login: got_login for '%s'",
+		   gdm_sure_string (login));
 }
 
 /* This is VERY evil! */
@@ -1285,6 +1292,9 @@ gdm_slave_session_start (void)
     const char *shell = NULL;
     pid_t sesspid;
 
+    gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
+	       login);
+
     pwent = getpwnam (login);
 
     if (!pwent) 
@@ -1410,12 +1420,12 @@ gdm_slave_session_start (void)
 
 	    gdm_debug (_("gdm_slave_session_start: Authentication completed. Whacking greeter"));
 
+	    greet = FALSE;
+
 	    /* do what you do when you quit, this will hang until the
 	     * greeter decides to print an STX\n, meaning it can do some
 	     * last minute cleanup */
 	    gdm_slave_greeter_ctl_no_ret (GDM_QUIT, "");
-
-	    greet = FALSE;
 
 	    /* Kill greeter and wait for it to die */
 	    if (kill (d->greetpid, SIGINT) == 0)
@@ -2033,7 +2043,7 @@ gdm_slave_exec_script (GdmDisplay *d, gchar *dir)
 	argv = g_strsplit (scr, argdelim, MAX_ARGS);
 	execv (argv[0], argv);
 	syslog (LOG_ERR, _("gdm_slave_exec_script: Failed starting: %s"), scr);
-	return EXIT_SUCCESS;
+	_exit (EXIT_SUCCESS);
 	    
     case -1:
 	syslog (LOG_ERR, _("gdm_slave_exec_script: Can't fork script process!"));
