@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.4.0.2\n"
-"POT-Creation-Date: 2002-12-21 16:57+0100\n"
-"PO-Revision-Date: 2002-12-21 20:17+0100\n"
+"POT-Creation-Date: 2002-12-22 22:15+0100\n"
+"PO-Revision-Date: 2002-12-22 22:28+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <gnome@softcatala.net>\n"
 "MIME-Version: 1.0\n"
@@ -66,10 +66,7 @@ msgid ""
 "I cannot start the X server (your graphical interface).  It seems that the "
 "pointer device (your mouse) is not set up correctly.  Would you like to view "
 "the X server output to diagnose the problem?"
-msgstr ""
-"No es pot iniciar el servidor d'X (la vostra interfície gràfica). Sembla que "
-"el vostre dispositiu (el ratolí) no està configurat correctament. Voleu "
-"veure la sortida del servidor d'X per diagnosticar el problema?"
+msgstr "No es pot iniciar el servidor d'X (la vostra interfície gràfica). Sembla que el vostre dispositiu (el ratolí) no està configurat correctament. Voleu veure la sortida del servidor d'X per diagnosticar el problema?"
 
 #: config/gettextfoo.h:10
 msgid ""
@@ -1043,7 +1040,7 @@ msgid "Language %s does not exist, using %s"
 msgstr "La llengua %s no existeix, s'usarà %s"
 
 #: daemon/slave.c:2309 gui/gdmlogin.c:1114 gui/gdmlogin.c:1123
-#: gui/gdmlogin.c:1656 gui/greeter/greeter_action_language.c:52
+#: gui/gdmlogin.c:1661 gui/greeter/greeter_action_language.c:52
 #: gui/greeter/greeter_action_language.c:138
 #: gui/greeter/greeter_action_language.c:146
 msgid "System default"
@@ -1280,14 +1277,14 @@ msgstr ""
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:71 daemon/verify-pam.c:319 daemon/verify-shadow.c:70
-#: gui/gdmlogin.c:3316
+#: gui/gdmlogin.c:3339
 msgid "Please enter your username"
 msgstr ""
 "Si us plau, introduïu el\n"
 "vostre nom d'usuari"
 
 #: daemon/verify-crypt.c:72 daemon/verify-pam.c:320 daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3276 gui/greeter/themes/circles/circles.xml.in.h:5
+#: gui/gdmlogin.c:3297 gui/greeter/themes/circles/circles.xml.in.h:5
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
 msgid "Username:"
 msgstr "Nom d'usuari:"
@@ -1459,7 +1456,7 @@ msgstr ""
 msgid "Authentication failed"
 msgstr "Ha fallat l'autenticació"
 
-#: daemon/verify-pam.c:520 gui/gdmsetup-strings.c:19 gui/gdmsetup.glade.h:11
+#: daemon/verify-pam.c:520 gui/gdmsetup-strings.c:19 gui/gdmsetup.glade.h:10
 msgid "Automatic login"
 msgstr "Entrada automàtica"
 
@@ -1707,7 +1704,7 @@ msgstr ""
 "si us plau, demaneu a l'administrador del sistema que l'habiliti\n"
 "al programa configurador del GDM."
 
-#: gui/gdmXnestchooser.c:522 gui/gdmcomm.c:390
+#: gui/gdmXnestchooser.c:522
 msgid ""
 "GDM is not running.\n"
 "Please ask your system administrator to start it."
@@ -1829,7 +1826,7 @@ msgstr ""
 "gdm_signals_init: S'ha produït un error en configurar el gestor del senyal "
 "TERM"
 
-#: gui/gdmchooser.c:1001 gui/gdmlogin.c:4204 gui/greeter/greeter.c:1039
+#: gui/gdmchooser.c:1001 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
 msgid "Could not set signal mask!"
 msgstr "No s'ha pogut especificar la màscara de la senyal!"
 
@@ -1868,29 +1865,48 @@ msgstr ""
 "Probablement acabeu d'actualitzar el gdm.\n"
 "Si us plau, reinicieu el dimoni del gdm o arrenqueu de nou l'ordinador."
 
-#: gui/gdmcomm.c:407 gui/gdmcomm.c:424 gui/gdmcomm.c:427
-#: gui/gdmflexiserver.c:252
+#: gui/gdmcomm.c:395 gui/gdmphotosetup.c:68
+msgid ""
+"<b>GDM (The GNOME Display Manager) is not running.</b>\n"
+"\n"
+"You might in fact be using a different display manager, such as KDM (KDE "
+"Display Manager or xdm).\n"
+"If you still wish to use this feature, either start GDM your self or ask "
+"your system administrator to start GDM."
+msgstr ""
+"<b>GDM (el gestor de pantalla del GNOME) no s'està executant.</b>\n"
+"\n"
+"Potser esteu usant un gestor de pantalla diferent, com KDM (gestor de pantalla de KDE) o xdm).\n"
+"Si encara voleu usar aquesta funcionalitat, teniu que iniciar GDM vosaltres mateixos o pregunteu al vostre administrador del sistema que inicie GDM."
+
+#: gui/gdmcomm.c:417
+msgid ""
+"Cannot communicate with GDM (The GNOME Display Manager), perhaps you have an "
+"old version running."
+msgstr "No es pot comunicar amb el GDM (el gestor de pantalla del GNOME), potser esteu executant una versió antiga."
+
+#: gui/gdmcomm.c:435 gui/gdmcomm.c:438 gui/gdmflexiserver.c:252
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr ""
 "No es pot comunicar amb el Gdm, potser esteu executant una versió antiga."
 
-#: gui/gdmcomm.c:430
+#: gui/gdmcomm.c:441
 msgid "The allowed limit of flexible X servers reached."
 msgstr "S'ha arribat al limit permès de servidors flexibles d'X."
 
-#: gui/gdmcomm.c:432
+#: gui/gdmcomm.c:443
 msgid "There were errors trying to start the X server."
 msgstr "Hi ha hagut errors en intentar iniciar el servidor d'X."
 
-#: gui/gdmcomm.c:434
+#: gui/gdmcomm.c:445
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "El servidor d'X ha fallat.  Potser no està ben configurat."
 
-#: gui/gdmcomm.c:437
+#: gui/gdmcomm.c:448
 msgid "Too many X sessions running."
 msgstr "S'estan executant massa sessions d'X."
 
-#: gui/gdmcomm.c:439
+#: gui/gdmcomm.c:450
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
@@ -1898,7 +1914,7 @@ msgstr ""
 "El servidor imbricat d'X (Xnest) no pot connectar amb el vostre servidor d'X "
 "actual.  Potser us falta un arxiu d'autorització d'X."
 
-#: gui/gdmcomm.c:444
+#: gui/gdmcomm.c:455
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
@@ -1907,17 +1923,17 @@ msgstr ""
 "configurat.\n"
 "Si us plau, instal·leu el paquet Xnest per utilitzar l'entrada imbricada."
 
-#: gui/gdmcomm.c:449
+#: gui/gdmcomm.c:460
 msgid ""
 "The X server is not available, it is likely that gdm is badly configured."
 msgstr ""
 "El servidor d'X no està disponible, probablement el gdm està mal configurat."
 
-#: gui/gdmcomm.c:453
+#: gui/gdmcomm.c:464
 msgid "Trying to update an unsupported configuration key."
 msgstr "S'esta tractant de actualitzar una clau de configuració no suportada."
 
-#: gui/gdmcomm.c:455
+#: gui/gdmcomm.c:466
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
@@ -1925,7 +1941,7 @@ msgstr ""
 "Sembla que no teniu l'autenticació necessària per aquesta operació.  Potser "
 "el vostre arxiu .Xauthority no està configurat correctament."
 
-#: gui/gdmcomm.c:459
+#: gui/gdmcomm.c:470
 msgid "Unknown error occured."
 msgstr "Ha ocorregut un error desconegut."
 
@@ -2293,7 +2309,7 @@ msgstr "Un altre nivell"
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:70 gui/gdmlogin.c:1879 gui/gdmlogin.c:1901
+#: gui/gdmlogin.c:70 gui/gdmlogin.c:1884 gui/gdmlogin.c:1906
 msgid "Default"
 msgstr "Per defecte"
 
@@ -2313,11 +2329,11 @@ msgstr "KDE"
 msgid "XSession"
 msgstr "Sessió d'X"
 
-#: gui/gdmlogin.c:75 gui/gdmlogin.c:1472 gui/greeter/greeter_session.c:345
+#: gui/gdmlogin.c:75 gui/gdmlogin.c:1477 gui/greeter/greeter_session.c:353
 msgid "Gnome Chooser"
 msgstr "Seleccionador del Gnome"
 
-#: gui/gdmlogin.c:76 gui/gdmlogin.c:1641
+#: gui/gdmlogin.c:76 gui/gdmlogin.c:1646
 #: gui/greeter/greeter_action_language.c:45
 msgid "Last"
 msgstr "Últim"
@@ -2373,7 +2389,7 @@ msgstr ""
 "gdm_login_parse_config: el fitxer de configuració %s no hi és. S'estan "
 "utilitzant els valors per defecte."
 
-#: gui/gdmlogin.c:873 gui/gdmlogin.c:3986
+#: gui/gdmlogin.c:873 gui/gdmlogin.c:4009
 #, c-format
 msgid "Welcome to %n"
 msgstr "Benvingut a %n"
@@ -2382,13 +2398,13 @@ msgstr "Benvingut a %n"
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr "El TimedLoginDelay era menor que 5. Utilitzaré 5."
 
-#: gui/gdmlogin.c:978 gui/gdmlogin.c:1520 gui/greeter/greeter_session.c:65
-#: gui/greeter/greeter_session.c:392
+#: gui/gdmlogin.c:978 gui/gdmlogin.c:1525 gui/greeter/greeter_session.c:65
+#: gui/greeter/greeter_session.c:400
 msgid "Failsafe Gnome"
 msgstr "Gnome a prova de fallades"
 
-#: gui/gdmlogin.c:980 gui/gdmlogin.c:1545 gui/greeter/greeter_session.c:67
-#: gui/greeter/greeter_session.c:418
+#: gui/gdmlogin.c:980 gui/gdmlogin.c:1550 gui/greeter/greeter_session.c:67
+#: gui/greeter/greeter_session.c:426
 msgid "Failsafe xterm"
 msgstr "Xterm a prova de fallades"
 
@@ -2450,13 +2466,13 @@ msgstr ""
 "gdm_login_session_init: No s'ha trobat el directori de seqüències de la "
 "sessió!"
 
-#: gui/gdmlogin.c:1460 gui/greeter/greeter_session.c:331
+#: gui/gdmlogin.c:1465 gui/greeter/greeter_session.c:339
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr ""
 "Aquesta sessió us registrarà directament al GNOME, a la sessió actual. "
 
-#: gui/gdmlogin.c:1475 gui/greeter/greeter_session.c:348
+#: gui/gdmlogin.c:1480 gui/greeter/greeter_session.c:356
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
@@ -2464,11 +2480,11 @@ msgstr ""
 "Aquesta sessió us registrarà al GNOME i us deixarà triar quina de les "
 "sessions del GNOME voleu utilitzar."
 
-#: gui/gdmlogin.c:1510 gui/greeter/greeter_session.c:381
+#: gui/gdmlogin.c:1515 gui/greeter/greeter_session.c:389
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Redimonis! no s'ha trobat res al directori de la sessió."
 
-#: gui/gdmlogin.c:1522 gui/greeter/greeter_session.c:394
+#: gui/gdmlogin.c:1527 gui/greeter/greeter_session.c:402
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -2478,7 +2494,7 @@ msgstr ""
 "llegirà cap seqüència d'inicialització i només s'ha de fer servir quan no hi "
 "podeu entrar de cap altra manera. GNOME utilitzarà la sessió 'Per defecte'."
 
-#: gui/gdmlogin.c:1547 gui/greeter/greeter_session.c:420
+#: gui/gdmlogin.c:1552 gui/greeter/greeter_session.c:428
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -2488,7 +2504,7 @@ msgstr ""
 "es llegirà cap seqüència d'inicialització i només s'ha de fer servir si no "
 "hi podeu entrar de cap altra manera. Per sortir del terminal escriviu 'exit'."
 
-#: gui/gdmlogin.c:1568 gui/greeter/greeter_session.c:442
+#: gui/gdmlogin.c:1573 gui/greeter/greeter_session.c:450
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 "No s'ha trobat l'enllaç de la sessió per defecte. S'està utilitzant el GNOME "
@@ -2498,150 +2514,150 @@ msgstr ""
 #. no_group
 #. untranslated
 #. makrup
-#: gui/gdmlogin.c:1612
+#: gui/gdmlogin.c:1617
 #, c-format
 msgid "%s language selected"
 msgstr "%s és el llenguatge seleccionat"
 
-#: gui/gdmlogin.c:1652
+#: gui/gdmlogin.c:1657
 msgid "Log in using the language that you have used last time you logged in"
 msgstr ""
 "Entra utilitzant l'idioma que heu fet servir l'última vegada que hagueu "
 "entrat"
 
-#: gui/gdmlogin.c:1667
+#: gui/gdmlogin.c:1672
 msgid "Log in using the default system language"
 msgstr "Entra utilitzant el llenguatge per defecte del sistema"
 
-#: gui/gdmlogin.c:1687
+#: gui/gdmlogin.c:1692
 msgid "Other"
 msgstr "Altres"
 
-#: gui/gdmlogin.c:1841 gui/gdmlogin.c:1848
+#: gui/gdmlogin.c:1846 gui/gdmlogin.c:1853
 msgid "Select GNOME session"
 msgstr "Seleccioneu la sessió GNOME"
 
-#: gui/gdmlogin.c:1915
+#: gui/gdmlogin.c:1920
 msgid "Create new session"
 msgstr "Crea una sessió nova"
 
-#: gui/gdmlogin.c:1924
+#: gui/gdmlogin.c:1929
 msgid "Name: "
 msgstr "Nom: "
 
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
-#: gui/gdmlogin.c:1946
+#: gui/gdmlogin.c:1951
 msgid "Remember this setting"
 msgstr "Recorda aquesta configuració"
 
-#: gui/gdmlogin.c:2330
+#: gui/gdmlogin.c:2335
 msgid "Please insert 25 cents to log in."
 msgstr "Si us plau, inseriu 5 durets per entrar-hi."
 
-#: gui/gdmlogin.c:2737
+#: gui/gdmlogin.c:2742
 msgid "GNOME Desktop Manager"
 msgstr "Gestor d'escriptori GNOME"
 
-#: gui/gdmlogin.c:2745
+#: gui/gdmlogin.c:2750
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr ""
 "No es pot obrir el fitxer d'icones: %s. S'està anul·lant la característica "
 "d'iconificació!"
 
-#: gui/gdmlogin.c:2767
+#: gui/gdmlogin.c:2772
 msgid "Iconify the login window"
 msgstr "Converteix la finestra d'entrada en una icona"
 
-#: gui/gdmlogin.c:2792 gui/greeter/greeter_item.c:96
+#: gui/gdmlogin.c:2797 gui/greeter/greeter_item.c:96
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d de %b, %H:%M"
 
-#: gui/gdmlogin.c:2794 gui/greeter/greeter_item.c:100
+#: gui/gdmlogin.c:2799 gui/greeter/greeter_item.c:100
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a %d de %b, %H:%M"
 
-#: gui/gdmlogin.c:2860
+#: gui/gdmlogin.c:2865
 msgid "Finger"
 msgstr "Finger"
 
-#: gui/gdmlogin.c:2936
+#: gui/gdmlogin.c:2957
 msgid "GDM Login"
 msgstr "Entrada GDM"
 
-#: gui/gdmlogin.c:2979 gui/greeter/greeter_canvas_item.c:129
+#: gui/gdmlogin.c:3000 gui/greeter/greeter_canvas_item.c:129
 #: gui/greeter/themes/circles/circles.xml.in.h:11
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
 msgid "_Session"
 msgstr "_Sessió"
 
-#: gui/gdmlogin.c:2986 gui/greeter/greeter_canvas_item.c:122
+#: gui/gdmlogin.c:3007 gui/greeter/greeter_canvas_item.c:122
 #: gui/greeter/themes/circles/circles.xml.in.h:9
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
 msgid "_Language"
 msgstr "_Llengua"
 
-#: gui/gdmlogin.c:2998
+#: gui/gdmlogin.c:3019
 msgid "_Configure..."
 msgstr "_Configura..."
 
-#: gui/gdmlogin.c:3005
+#: gui/gdmlogin.c:3026
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "Configura el GDM (aquest gestor d'entrades). Això requerirà la contrasenya "
 "de root."
 
-#: gui/gdmlogin.c:3012
+#: gui/gdmlogin.c:3033
 msgid "_Reboot..."
 msgstr "Torna a a_rrencar..."
 
-#: gui/gdmlogin.c:3019
+#: gui/gdmlogin.c:3040
 msgid "Reboot your computer"
 msgstr "Torna a arrencar l'ordinador"
 
-#: gui/gdmlogin.c:3025
+#: gui/gdmlogin.c:3046
 msgid "Shut _down..."
 msgstr "A_tura..."
 
-#: gui/gdmlogin.c:3032
+#: gui/gdmlogin.c:3053
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Atura l'ordinador per a poder apagar-lo."
 
-#: gui/gdmlogin.c:3039
+#: gui/gdmlogin.c:3060
 msgid "_Suspend..."
 msgstr "S_uspen..."
 
-#: gui/gdmlogin.c:3046
+#: gui/gdmlogin.c:3067
 msgid "Suspend your computer"
 msgstr "Suspen l'ordinador"
 
-#: gui/gdmlogin.c:3052 gui/greeter/greeter_canvas_item.c:138
+#: gui/gdmlogin.c:3073 gui/greeter/greeter_canvas_item.c:138
 #: gui/greeter/themes/circles/circles.xml.in.h:2
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
 msgid "S_ystem"
 msgstr "S_istema"
 
-#: gui/gdmlogin.c:3064 gui/greeter/greeter_canvas_item.c:151
+#: gui/gdmlogin.c:3085 gui/greeter/greeter_canvas_item.c:151
 #: gui/greeter/themes/circles/circles.xml.in.h:10
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
 msgid "_Quit"
 msgstr "_Surt"
 
-#: gui/gdmlogin.c:3066 gui/greeter/greeter_canvas_item.c:153
+#: gui/gdmlogin.c:3087 gui/greeter/greeter_canvas_item.c:153
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "D_isconnect"
 msgstr "_Desconnecta"
 
-#: gui/gdmlogin.c:3621
+#: gui/gdmlogin.c:3644
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 "No es pot obrir DefaultImage: %s. S'està anul·lant el navegador de cares!"
 
-#: gui/gdmlogin.c:4061 gui/gdmlogin.c:4090 gui/greeter/greeter.c:556
+#: gui/gdmlogin.c:4084 gui/gdmlogin.c:4113 gui/greeter/greeter.c:556
 #: gui/greeter/greeter.c:585
 #, c-format
 msgid ""
@@ -2653,12 +2669,12 @@ msgstr ""
 "Probablement acabeu d'actualitzar el gdm.\n"
 "Si us plau, reinicieu el dimoni del gdm o arrenqueu de nou l'ordinador."
 
-#: gui/gdmlogin.c:4096 gui/gdmlogin.c:4140 gui/greeter/greeter.c:591
+#: gui/gdmlogin.c:4119 gui/gdmlogin.c:4163 gui/greeter/greeter.c:591
 #: gui/greeter/greeter.c:636
 msgid "Reboot"
 msgstr "Torna a arrencar..."
 
-#: gui/gdmlogin.c:4132 gui/greeter/greeter.c:628
+#: gui/gdmlogin.c:4155 gui/greeter/greeter.c:628
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -2669,23 +2685,23 @@ msgstr ""
 "Probablement acabeu d'actualitzar el gdm.\n"
 "Si us plau, reinicieu el dimoni del gdm o arrenqueu de nou l'ordinador."
 
-#: gui/gdmlogin.c:4138 gui/greeter/greeter.c:634
+#: gui/gdmlogin.c:4161 gui/greeter/greeter.c:634
 msgid "Restart"
 msgstr "Reinicia"
 
-#: gui/gdmlogin.c:4183 gui/greeter/greeter.c:1019
+#: gui/gdmlogin.c:4206 gui/greeter/greeter.c:1055
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: S'ha produït un error en configurar el gestor del senyal HUP "
 
-#: gui/gdmlogin.c:4191 gui/greeter/greeter.c:1027
+#: gui/gdmlogin.c:4214 gui/greeter/greeter.c:1063
 msgid "main: Error setting up INT signal handler"
 msgstr "main: S'ha produït un error en configurar el gestor del senyal INT"
 
-#: gui/gdmlogin.c:4194 gui/greeter/greeter.c:1030
+#: gui/gdmlogin.c:4217 gui/greeter/greeter.c:1066
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: S'ha produït un error en configurar el gestor del senyal TERM"
 
-#: gui/gdmlogin.c:4285 gui/greeter/greeter.c:1201
+#: gui/gdmlogin.c:4308 gui/greeter/greeter.c:1279
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -2697,7 +2713,7 @@ msgstr ""
 "Hi ha dues sessions disponibles que podeu usar, però\n"
 "haureu d'entrar i corregir la configuració del gdm."
 
-#: gui/gdmlogin.c:4308 gui/greeter/greeter.c:1225
+#: gui/gdmlogin.c:4331 gui/greeter/greeter.c:1303
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -2707,7 +2723,7 @@ msgstr ""
 "per al diàleg d'entrada, i per això he executat\n"
 "l'ordre per defecte. Si us plau, arregleu la configuració."
 
-#: gui/gdmlogin.c:4332 gui/greeter/greeter.c:1250
+#: gui/gdmlogin.c:4355 gui/greeter/greeter.c:1328
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -2719,7 +2735,7 @@ msgstr ""
 "i crear un fitxer de configuració amb el programa de configuració\n"
 "del GDM."
 
-#: gui/gdmphotosetup.c:73
+#: gui/gdmphotosetup.c:129
 msgid ""
 "The face browser is not configured,\n"
 "please ask your system administrator to enable it\n"
@@ -2729,23 +2745,23 @@ msgstr ""
 "si us plau, demaneu a l'administrador del sistema que us l'habiliti\n"
 "al programa configurador GDM."
 
-#: gui/gdmphotosetup.c:82
+#: gui/gdmphotosetup.c:138
 msgid "Select a photo"
 msgstr "Seleccioneu una foto"
 
-#: gui/gdmphotosetup.c:91
+#: gui/gdmphotosetup.c:147
 msgid "Select a photograph to show in the facebrowser:"
 msgstr "Seleccioneu una fotografia per mostrar-la al navegador de cares:"
 
-#: gui/gdmphotosetup.c:96
+#: gui/gdmphotosetup.c:152
 msgid "Browse"
 msgstr "Navega"
 
-#: gui/gdmphotosetup.c:129
+#: gui/gdmphotosetup.c:185
 msgid "No picture selected."
 msgstr "No s'ha seleccionat cap imatge."
 
-#: gui/gdmphotosetup.c:138
+#: gui/gdmphotosetup.c:194
 #, c-format
 msgid ""
 "The picture is too large and the system administrator\n"
@@ -2756,7 +2772,7 @@ msgstr ""
 "no permet imatges més grans de %d bytes per\n"
 "mostrar-les al navegador de cares"
 
-#: gui/gdmphotosetup.c:164
+#: gui/gdmphotosetup.c:220
 #, c-format
 msgid ""
 "File %s cannot be open for reading\n"
@@ -2765,7 +2781,7 @@ msgstr ""
 "No es pot obrir el fitxer %s per llegir-lo\n"
 "Error: %s"
 
-#: gui/gdmphotosetup.c:182
+#: gui/gdmphotosetup.c:238
 #, c-format
 msgid ""
 "File %s cannot be open for writing\n"
@@ -2790,41 +2806,41 @@ msgstr "Foto d'entrada"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: gui/gdmsetup-strings.c:7 gui/gdmsetup.glade.h:16
+#: gui/gdmsetup-strings.c:7 gui/gdmsetup.glade.h:15
 msgid "GDM Setup"
 msgstr "Configuració del GDM"
 
-#: gui/gdmsetup-strings.c:8 gui/gdmsetup.glade.h:21
+#: gui/gdmsetup-strings.c:8 gui/gdmsetup.glade.h:20
 msgid "L_ocal: "
 msgstr "L_ocal: "
 
-#: gui/gdmsetup-strings.c:9 gui/gdmsetup.glade.h:52
+#: gui/gdmsetup-strings.c:9 gui/gdmsetup.glade.h:51
 msgid "_Remote: "
 msgstr "_Remot: "
 
 #: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
-#: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:807 gui/gdmsetup.glade.h:40
+#: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:807 gui/gdmsetup.glade.h:39
 msgid "Standard greeter"
 msgstr "Rebedor estàndard"
 
 #: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
-#: gui/gdmsetup-strings.c:53 gui/gdmsetup.c:809 gui/gdmsetup.glade.h:18
+#: gui/gdmsetup-strings.c:52 gui/gdmsetup.c:809 gui/gdmsetup.glade.h:17
 msgid "Graphical greeter"
 msgstr "Rebedor gràfic"
 
-#: gui/gdmsetup-strings.c:14 gui/gdmsetup.glade.h:10
+#: gui/gdmsetup-strings.c:14 gui/gdmsetup.glade.h:9
 msgid "Always use 24 hour cloc_k format"
 msgstr "Utilitza sempre el format de rellot_ge de 24 hores"
 
-#: gui/gdmsetup-strings.c:15 gui/gdmsetup.glade.h:19
+#: gui/gdmsetup-strings.c:15 gui/gdmsetup.glade.h:18
 msgid "Greeter"
 msgstr "Rebedor"
 
-#: gui/gdmsetup-strings.c:16 gui/gdmsetup.glade.h:49
+#: gui/gdmsetup-strings.c:16 gui/gdmsetup.glade.h:48
 msgid "_Login a user automatically on first bootup"
 msgstr "_Entra amb un usuari automàticament en la primera arrencada"
 
-#: gui/gdmsetup-strings.c:17 gui/gdmsetup.glade.h:45
+#: gui/gdmsetup-strings.c:17 gui/gdmsetup.glade.h:44
 msgid "_Automatic login username:"
 msgstr "Nom d'usuari per a l'entrada _automàtica:"
 
@@ -2834,100 +2850,96 @@ msgstr "Nom d'usuari per a l'entrada _automàtica:"
 msgid "*"
 msgstr "*"
 
-#: gui/gdmsetup-strings.c:20 gui/gdmsetup.glade.h:23
+#: gui/gdmsetup-strings.c:20 gui/gdmsetup.glade.h:22
 msgid "Login a user automa_tically after a specified number of seconds"
 msgstr ""
 "Entra amb un usuari automà_ticament després d'un nombre donat de segons"
 
-#: gui/gdmsetup-strings.c:21 gui/gdmsetup.glade.h:42
+#: gui/gdmsetup-strings.c:21 gui/gdmsetup.glade.h:41
 msgid "Timed login us_ername:"
 msgstr "Nom d'usuari per a l'entrada temporitzada:"
 
-#: gui/gdmsetup-strings.c:22 gui/gdmsetup.glade.h:54
+#: gui/gdmsetup-strings.c:22 gui/gdmsetup.glade.h:53
 msgid "_Seconds before login:"
 msgstr "_Segons abans d'entrar:"
 
-#: gui/gdmsetup-strings.c:24 gui/gdmsetup.glade.h:41
+#: gui/gdmsetup-strings.c:24 gui/gdmsetup.glade.h:40
 msgid "Timed login"
 msgstr "Entrada temporitzada"
 
-#: gui/gdmsetup-strings.c:25 gui/gdmsetup.glade.h:17
+#: gui/gdmsetup-strings.c:25 gui/gdmsetup.glade.h:16
 msgid "General"
 msgstr "General"
 
-#: gui/gdmsetup-strings.c:27 gui/gdmsetup.glade.h:55
+#: gui/gdmsetup-strings.c:27 gui/gdmsetup.glade.h:54
 msgid "_Welcome string: "
 msgstr "Missatge de ben_vinguda: "
 
-#: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:43
+#: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:42
 msgid "Welcome string: "
 msgstr "Missatge de benvinguda: "
 
-#: gui/gdmsetup-strings.c:30 gui/gdmsetup.glade.h:24
+#: gui/gdmsetup-strings.c:30 gui/gdmsetup.glade.h:23
 msgid "Logo"
 msgstr "Logotip"
 
-#: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:39
+#: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:38
 msgid "Show choosable user images (_face browser)"
 msgstr "Mostra les imatges d'usuari seleccionables (navegador de _cares)"
 
-#: gui/gdmsetup-strings.c:32 gui/gdmsetup.glade.h:30
+#: gui/gdmsetup-strings.c:32 gui/gdmsetup.glade.h:29
 msgid "Miscellaneous"
 msgstr "Miscel·lània"
 
-#: gui/gdmsetup-strings.c:33 gui/gdmsetup.glade.h:50
+#: gui/gdmsetup-strings.c:33 gui/gdmsetup.glade.h:49
 msgid "_No background"
 msgstr "Sense fo_ns"
 
-#: gui/gdmsetup-strings.c:34 gui/gdmsetup.glade.h:47
+#: gui/gdmsetup-strings.c:34 gui/gdmsetup.glade.h:46
 msgid "_Image"
 msgstr "_Imatge"
 
-#: gui/gdmsetup-strings.c:35 gui/gdmsetup.glade.h:13
+#: gui/gdmsetup-strings.c:35 gui/gdmsetup.glade.h:12
 msgid "Co_lor"
 msgstr "Co_lor"
 
-#: gui/gdmsetup-strings.c:36 gui/gdmsetup.glade.h:53
+#: gui/gdmsetup-strings.c:36 gui/gdmsetup.glade.h:52
 msgid "_Scale background image to fit"
 msgstr "E_scala la imatge de fons fins que s'hi ajusti"
 
-#: gui/gdmsetup-strings.c:38 gui/gdmsetup.glade.h:51
+#: gui/gdmsetup-strings.c:38 gui/gdmsetup.glade.h:50
 msgid "_Only color on remote displays"
 msgstr "N_omés color en pantalles remotes"
 
-#: gui/gdmsetup-strings.c:39 gui/gdmsetup.glade.h:46
+#: gui/gdmsetup-strings.c:39 gui/gdmsetup.glade.h:45
 msgid "_Background color: "
 msgstr "Color de _fons:"
 
-#: gui/gdmsetup-strings.c:40 gui/gdmsetup.glade.h:34
+#: gui/gdmsetup-strings.c:40 gui/gdmsetup.glade.h:33
 msgid "Pick a color"
 msgstr "Trieu un color"
 
-#: gui/gdmsetup-strings.c:41 gui/gdmsetup.glade.h:12
+#: gui/gdmsetup-strings.c:41 gui/gdmsetup.glade.h:11
 msgid "Background"
 msgstr "Fons"
 
-#: gui/gdmsetup-strings.c:43 gui/gdmsetup.glade.h:5
+#: gui/gdmsetup-strings.c:43 gui/gdmsetup.glade.h:4
 msgid "<b>Preview:</b>"
 msgstr "<b>Previsualització:</b>"
 
-#: gui/gdmsetup-strings.c:44 gui/gdmsetup.glade.h:32
+#: gui/gdmsetup-strings.c:44 gui/gdmsetup.glade.h:31
 msgid "No screenshot available"
 msgstr "No hi ha captures de pantalla disponibles"
 
-#: gui/gdmsetup-strings.c:45 gui/gdmsetup.glade.h:4
+#: gui/gdmsetup-strings.c:45 gui/gdmsetup.glade.h:3
 msgid "<b>Description:</b>"
 msgstr "<b>Descripció:</b>"
 
-#: gui/gdmsetup-strings.c:46 gui/gdmsetup.glade.h:3
-msgid "<b>Copyright:</b>"
-msgstr "<b>Copyright:</b>"
-
-#: gui/gdmsetup-strings.c:47 gui/gdmsetup.glade.h:2
+#: gui/gdmsetup-strings.c:46 gui/gdmsetup.glade.h:2
 msgid "<b>Author:</b>"
 msgstr "<b>Autor:</b>"
 
-#: gui/gdmsetup-strings.c:48 gui/gdmsetup.glade.h:58
+#: gui/gdmsetup-strings.c:47 gui/gdmsetup.glade.h:57
 msgid ""
 "description\n"
 "widget"
@@ -2935,51 +2947,51 @@ msgstr ""
 "descripció\n"
 "widget"
 
-#: gui/gdmsetup-strings.c:50 gui/gdmsetup.glade.h:56
+#: gui/gdmsetup-strings.c:49 gui/gdmsetup.glade.h:55
 msgid "author"
 msgstr "autor"
 
-#: gui/gdmsetup-strings.c:51 gui/gdmsetup.glade.h:57
+#: gui/gdmsetup-strings.c:50 gui/gdmsetup.glade.h:56
 msgid "copyright"
 msgstr "copyright"
 
-#: gui/gdmsetup-strings.c:52 gui/gdmsetup.glade.h:48
+#: gui/gdmsetup-strings.c:51 gui/gdmsetup.glade.h:47
 msgid "_Install new theme"
 msgstr "_Instal·la un tema nou"
 
-#: gui/gdmsetup-strings.c:54 gui/gdmsetup.glade.h:6
+#: gui/gdmsetup-strings.c:53 gui/gdmsetup.glade.h:5
 msgid "Allow _root to login with GDM"
 msgstr "Permet al supe_rusuari entrar amb el GDM"
 
-#: gui/gdmsetup-strings.c:55 gui/gdmsetup.glade.h:9
+#: gui/gdmsetup-strings.c:54 gui/gdmsetup.glade.h:8
 msgid "Allow root to login r_emotely with GDM"
 msgstr "Permet al superusuari entrar r_emotament amb el GDM"
 
-#: gui/gdmsetup-strings.c:56 gui/gdmsetup.glade.h:8
+#: gui/gdmsetup-strings.c:55 gui/gdmsetup.glade.h:7
 msgid "Allow remote _timed logins"
 msgstr "Permet entrades remotes _temporitzades"
 
-#: gui/gdmsetup-strings.c:57 gui/gdmsetup.glade.h:38
+#: gui/gdmsetup-strings.c:56 gui/gdmsetup.glade.h:37
 msgid "Show _system menu"
 msgstr "Mostra el menú de _sistema"
 
-#: gui/gdmsetup-strings.c:58 gui/gdmsetup.glade.h:7
+#: gui/gdmsetup-strings.c:57 gui/gdmsetup.glade.h:6
 msgid "Allow c_onfiguration from the login screen"
 msgstr "Permet executar el c_onfigurador des del menú del sistema"
 
-#: gui/gdmsetup-strings.c:59 gui/gdmsetup.glade.h:36
+#: gui/gdmsetup-strings.c:58 gui/gdmsetup.glade.h:35
 msgid "Retry _delay (seconds) :"
 msgstr "Retar_d en reintentar (segons):"
 
-#: gui/gdmsetup-strings.c:60 gui/gdmsetup.glade.h:33
+#: gui/gdmsetup-strings.c:59 gui/gdmsetup.glade.h:32
 msgid "Options"
 msgstr "Opcions"
 
-#: gui/gdmsetup-strings.c:61 gui/gdmsetup.glade.h:37
+#: gui/gdmsetup-strings.c:60 gui/gdmsetup.glade.h:36
 msgid "Security"
 msgstr "Seguretat"
 
-#: gui/gdmsetup-strings.c:62 gui/gdmsetup.glade.h:31
+#: gui/gdmsetup-strings.c:61 gui/gdmsetup.glade.h:30
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -2987,47 +2999,47 @@ msgstr ""
 "No està habilitat l'ús d'XDMCP en el binari. Per habilitar l'ús d'XDMCP heu "
 "de tornar a recompilar el GDM amb les biblioteques de l'XDMCP."
 
-#: gui/gdmsetup-strings.c:63 gui/gdmsetup.glade.h:20
+#: gui/gdmsetup-strings.c:62 gui/gdmsetup.glade.h:19
 msgid "Honour _indirect requests"
 msgstr "Accepta peticions _indirectes"
 
-#: gui/gdmsetup-strings.c:64 gui/gdmsetup.glade.h:22
+#: gui/gdmsetup-strings.c:63 gui/gdmsetup.glade.h:21
 msgid "Listen on UDP port: "
 msgstr "Escolta el port UDP: "
 
-#: gui/gdmsetup-strings.c:65 gui/gdmsetup.glade.h:27
+#: gui/gdmsetup-strings.c:64 gui/gdmsetup.glade.h:26
 msgid "Maximum pending requests:"
 msgstr "Màxim de peticions pendents:"
 
-#: gui/gdmsetup-strings.c:66 gui/gdmsetup.glade.h:25
+#: gui/gdmsetup-strings.c:65 gui/gdmsetup.glade.h:24
 msgid "Max pending indirect requests:"
 msgstr "Màxim de peticions indirectes pendents:"
 
-#: gui/gdmsetup-strings.c:67 gui/gdmsetup.glade.h:28
+#: gui/gdmsetup-strings.c:66 gui/gdmsetup.glade.h:27
 msgid "Maximum remote sessions:"
 msgstr "Màxim de sessions remotes:"
 
-#: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:29
+#: gui/gdmsetup-strings.c:67 gui/gdmsetup.glade.h:28
 msgid "Maximum wait time:"
 msgstr "Temps màxim d'espera:"
 
-#: gui/gdmsetup-strings.c:69 gui/gdmsetup.glade.h:26
+#: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:25
 msgid "Maximum indirect wait time:"
 msgstr "Temps màxim d'espera per una petició indirecta:"
 
-#: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:14
+#: gui/gdmsetup-strings.c:69 gui/gdmsetup.glade.h:13
 msgid "Displays per host:"
 msgstr "Pantalles per hoste:"
 
-#: gui/gdmsetup-strings.c:71 gui/gdmsetup.glade.h:35
+#: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:34
 msgid "Ping interval (minutes):"
 msgstr "Interval de ping (minuts):"
 
-#: gui/gdmsetup-strings.c:72 gui/gdmsetup.glade.h:15
+#: gui/gdmsetup-strings.c:71 gui/gdmsetup.glade.h:14
 msgid "Enable _XDMCP"
 msgstr "Habilita l'_XDMCP"
 
-#: gui/gdmsetup-strings.c:73 gui/gdmsetup.glade.h:44
+#: gui/gdmsetup-strings.c:72 gui/gdmsetup.glade.h:43
 msgid "XDMCP"
 msgstr "XDMCP"
 
@@ -3127,7 +3139,18 @@ msgstr ""
 "greeter_parse_config: No s'ha trobat el fitxer de configuració %s. S'estan "
 "utilitzant paràmetres per defecte."
 
-#: gui/greeter/greeter.c:1136
+#: gui/greeter/greeter.c:1141
+#, c-format
+msgid "There was an error loading the theme %s"
+msgstr "S'ha produït un error en carregar el tema %s"
+
+#: gui/greeter/greeter.c:1179
+msgid ""
+"The theme for the graphical greeter is corrupt.  It does not contain "
+"definition for the username/password entry element."
+msgstr "El tema per al rebedor gràfic està corrupte. No conté una definició per a l'element del camp nom d'usuari/contrasenya."
+
+#: gui/greeter/greeter.c:1212
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
@@ -3135,7 +3158,7 @@ msgstr ""
 "Ha hagut un error al carregar el tema, i el tema per defecte tampoc ha pogut "
 "ser carregat, s'intentarà iniciar el rebedor estàndard"
 
-#: gui/greeter/greeter.c:1156
+#: gui/greeter/greeter.c:1232
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -3299,6 +3322,9 @@ msgstr ""
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "No s'ha pogut carregar cap interfície, MALAMENT! (arxiu: %s)"
+
+#~ msgid "<b>Copyright:</b>"
+#~ msgstr "<b>Copyright:</b>"
 
 #~ msgid "main: Error setting up CHLD signal handler"
 #~ msgstr "main: S'ha produït un error en configurar el gestor del senyal CHLD"
