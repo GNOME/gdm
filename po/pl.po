@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2002-04-25 18:54+0200\n"
-"PO-Revision-Date: 2002-04-25 19:01+0200\n"
+"POT-Creation-Date: 2002-05-05 20:11+0200\n"
+"PO-Revision-Date: 2002-05-05 21:45+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1514,7 +1514,7 @@ msgstr "Wybierz z poniższej listy komputer, z którym chcesz się połączyć."
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_chooser_parse_config: Brak pliku konfiguracyjnego: %s. Rezygnacja."
 
-#: gui/gdmchooser.c:1
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.c:1
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1623,26 +1623,79 @@ msgid "Status"
 msgstr "Stan"
 
 #: gui/gdmchooser-strings.c:1
-msgid ""
-"The main area of this application shows the hosts on the local network that "
-"have \"XDMCP\" enabled. This allows users to login remotely to other "
-"machines as if they were logged on using the console.\n"
-"\n"
-"You can rescan the network for new hosts by clicking \"Refresh\"'.When you "
-"have selected a host click \"Connect\" to open a session to that machine."
-msgstr ""
-"Główny obszar aplikacji zawiera listę komputerów w lokalnej sieci,\n"
-"obsługujących protokół \"XDMCP\". Pozwala on na zdalne logowanie się\n"
-"użytkowników na innych komputerach, tak, jakby odbywało się to na\n"
-"lokalnej konsoli.\n"
-"\n"
-"Aby ponownie przeszukać sieć, należy kliknąć \"Odśwież\".\n"
-"Po wybraniu komputera z listy, kliknięcie \"Połącz\" rozpoczyna na\n"
-"nim sesję."
-
-#: gui/gdmchooser-strings.c:1
 msgid "Information"
 msgstr "Informacja"
+
+#: gui/gdmXnestchooser.c:1 gui/gdmcomm.c:1
+msgid ""
+"GDM is not running.\n"
+"Please ask your system administrator to start it."
+msgstr ""
+"GDM nie jest uruchomiony.\n"
+"Zwróć się do administratora systemu o uruchomienie go."
+
+#: gui/gdmcomm.c:1 gui/gdmcomm.c:1 gui/gdmcomm.c:1
+#: gui/gdmflexiserver.c:1
+msgid "Cannot communicate with gdm, perhaps you have an old version running."
+msgstr ""
+"Nie można nawiązać komunikacji z GDM-em, być może uruchomiona jest stara "
+"wersja."
+
+#: gui/gdmcomm.c:1
+msgid "The allowed limit of flexible X servers reached."
+msgstr "Osiągnięto ograniczenie liczby uruchomionych zagnieżdżonych serwerów."
+
+#: gui/gdmcomm.c:1
+msgid "There were errors trying to start the X server."
+msgstr "Przy próbie uruchomienia serwera X wystąpiły błędy."
+
+#: gui/gdmcomm.c:1
+msgid "The X server failed.  Perhaps it is not configured well."
+msgstr "Serwer X zwrócił błąd.  Być może nie jest on poprawnie skonfigurowany."
+
+#: gui/gdmcomm.c:1
+msgid "Too many X sessions running."
+msgstr "Zbyt wiele uruchomionych sesji X."
+
+#: gui/gdmcomm.c:1
+msgid ""
+"The nested X server (Xnest) cannot connect to your current X server.  You "
+"may be missing an X authorization file."
+msgstr ""
+"Zagnieżdżony serwer X (Xnest) nie może nawiązać połączenia z bieżącym "
+"serwerem. Być może brakuje pliku autoryzacji X."
+
+#: gui/gdmcomm.c:1
+msgid ""
+"The nested X server (Xnest) is not available, or gdm is badly configured.\n"
+"Please install the Xnest package in order to use the nested login."
+msgstr ""
+"Nie jest dostępny zagnieżdżony serwer X (Xnest) lub GDM jest niewłaściwie "
+"skonfigurowany.\n"
+"Przed użyciem zagnieżdżonego logowania zainstaluj pakiet Xnest."
+
+#: gui/gdmcomm.c:1
+msgid ""
+"The X server is not available, it is likely that gdm is badly configured."
+msgstr ""
+"Serwer X nie jest dostępny, prawdopodobnie GDM został niewłaściwie "
+"skonfigurowany."
+
+#: gui/gdmcomm.c:1
+msgid "Trying to update an unsupported configuration key."
+msgstr "Próba aktualizacji nieobsługiwanego klucza konfiguracji."
+
+#: gui/gdmcomm.c:1 gui/gdmflexiserver.c:1
+msgid ""
+"You do not seem to have authentication needed be for this operation.  "
+"Perhaps your .Xauthority file is not set up correctly."
+msgstr ""
+"Brak możliwości uwierzytelnienia, która jest wymagana przy tej operacji. "
+"Prawdopodobnie twój  plik .Xauthority nie jest poprawnie ustawiony."
+
+#: gui/gdmcomm.c:1
+msgid "Unknown error occured."
+msgstr "Wystąpił nieznany błąd."
 
 #. 3 user levels are present in the CList
 #: gui/gdmconfig.c:1
@@ -1661,19 +1714,16 @@ msgstr "Systemowe"
 msgid ""
 "This panel displays the basic options for configuring GDM.\n"
 "\n"
-"If you need finer detail, select 'expert' or 'system setup' from the list "
-"above.\n"
-"\n"
-"This will display some of the more complex options of GDM that rarely need "
-"to be changed."
+"If you need finer detail, select 'Expert' or 'System' from the list "
+"above,which will display some of the more complex options of GDM that rarely "
+"need to be changed."
 msgstr ""
 "Panel ten zawiera podstawowe elementy konfiguracji GDM-a.\n"
 "\n"
 "Aby otrzymać dostęp do bardziej szczegółowych opcji, wybierz z powyższej "
-"listy pozycję \"Zaawansowane\" lub \"Systemowe\".\n"
-"\n"
-"Dodatkowe pozycje umożliwiają zmianę pewnych bardziej złożonych opcji, "
-"których zmiana zwykle nie jest konieczna."
+"listy pozycję \"Zaawansowane\" lub \"Systemowe\". Dodatkowe pozycje "
+"umożliwiają dokonywanie zmian w pewnych bardziej złożonych opcjach, co "
+"zwykle nie jest konieczne."
 
 #: gui/gdmconfig.c:1
 msgid ""
@@ -1721,7 +1771,7 @@ msgstr ""
 "widgetu o nazwie \"%s\". Kontynuacja działania nie jest możliwa.\n"
 "Zweryfikuj instalację GDM-a."
 
-#: gui/gdmconfig.c:1
+#: gui/gdmconfig.c:1 gui/gdmsetup.c:1
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "Tylko użytkownik root może skonfigurować GDM.\n"
 
@@ -1977,11 +2027,12 @@ msgstr ""
 "poprzednim katalogu, dopóki nie zostanie\n"
 "przeładowane okno konfiguracyjne."
 
-#: gui/gdmconfig.desktop.in.h:1
+#. EOF
+#: gui/gdmconfig.desktop.in.h:1 gui/gdmsetup.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr "Aplikacja pozwalająca na konfigurację Menedżera Ekranu GNOME (GDM)"
 
-#: gui/gdmconfig.desktop.in.h:1
+#: gui/gdmconfig.desktop.in.h:1 gui/gdmsetup.desktop.in.h:1
 msgid "GDM Configurator"
 msgstr "Konfigurator GDM"
 
@@ -2023,6 +2074,7 @@ msgid "Apply"
 msgstr "Zastosuj"
 
 #: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
+#: gui/gdmsetup-strings.c:1
 msgid "Options"
 msgstr "Opcje"
 
@@ -2293,6 +2345,14 @@ msgid "tr_TR"
 msgstr "tr_TR"
 
 #: gui/gdmconfig-strings.c:1
+msgid "zh_CN"
+msgstr "zh_CN"
+
+#: gui/gdmconfig-strings.c:1
+msgid "zh_TW"
+msgstr "zh_TW"
+
+#: gui/gdmconfig-strings.c:1
 msgid ""
 "This is the locale that GDM uses when it cannot find what the system locale "
 "is set to.  This should be in the standard format such as \"en_US\" for "
@@ -2411,6 +2471,7 @@ msgstr ""
 "wyświetlani na liście twarzy."
 
 #: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
+#: gui/gdmsetup-strings.c:1
 msgid "Background"
 msgstr "Tło"
 
@@ -2454,7 +2515,7 @@ msgstr ""
 msgid "Scale background image to fit"
 msgstr "Skalowanie obrazu w tle do wymiarów ekranu"
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Background color: "
 msgstr "Kolor tła: "
 
@@ -2462,7 +2523,7 @@ msgstr "Kolor tła: "
 msgid "The color to use on the background"
 msgstr "Kolor wypełniający tło"
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Pick a color"
 msgstr "Wybór koloru"
 
@@ -2497,6 +2558,7 @@ msgid "The program to run in the background of the login."
 msgstr "Program uruchamiany w tle okna logowania."
 
 #: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
+#: gui/gdmsetup-strings.c:1
 msgid "Automatic login"
 msgstr "Automatyczne logowanie"
 
@@ -2504,11 +2566,11 @@ msgstr "Automatyczne logowanie"
 msgid "Automatic login: "
 msgstr "Użytkownik logowany automatycznie: "
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Login a user automatically on first bootup"
 msgstr "Automatyczne logowanie wybranego użytkownika po uruchomieniu systemu"
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Timed login"
 msgstr "Logowanie z opóźnieniem czasowym"
 
@@ -2520,7 +2582,7 @@ msgstr "Użytkownik logowany z opóźnieniem: "
 msgid "Seconds before login: "
 msgstr "Liczba sekund przed zalogowaniem: "
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Login a user automatically after a specified number of seconds"
 msgstr ""
 "Automatyczne logowanie wybranego użytkownika po określonej liczbie sekund"
@@ -2683,11 +2745,11 @@ msgstr ""
 "Odczyt pliku sesji przebiega w sposób, przy którym jego rozmiar nie ma "
 "większego znaczenia. Nie jest on nigdy zapisywany w pamięci."
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Security"
 msgstr "Bezpieczeństwo"
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -2699,15 +2761,15 @@ msgstr ""
 msgid "Enable XDMCP, a protocol to allow others to log in remotely"
 msgstr "Uaktywnia XDMCP - protokół pozwalający na zdalne logowanie się"
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Enable XDMCP"
 msgstr "Uaktywnienie XDMCP"
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Connection Settings"
 msgstr "Ustawienia połączenia"
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Honour indirect requests"
 msgstr "Przyjmowanie pośrednich połączeń"
 
@@ -2731,11 +2793,11 @@ msgstr "Maksymalna liczba oczekujących pośrednich połączeń: "
 msgid "Maximum pending requests: "
 msgstr "Maksymalna liczba oczekujących połączeń: "
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Listen on UDP port: "
 msgstr "Nasłuchiwanie na porcie UDP: "
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Ping interval (minutes):"
 msgstr "Odstęp pomiędzy pakietami ping (minuty):"
 
@@ -2773,11 +2835,11 @@ msgstr ""
 "przed atakami poprzez zajęcie wszystkich ekranów.  Nie odnosi się do "
 "lokalnych połączeń."
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "Displays per host:"
 msgstr "Ekranów na komputer:"
 
-#: gui/gdmconfig-strings.c:1
+#: gui/gdmconfig-strings.c:1 gui/gdmsetup-strings.c:1
 msgid "XDMCP"
 msgstr "XDMCP"
 
@@ -2843,6 +2905,7 @@ msgstr "Każdorazowe ponowne uruchamianie serwera X"
 
 #: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
 #: gui/gdmconfig-strings.c:1 gui/gdmconfig-strings.c:1
+#: gui/gdmsetup-strings.c:1
 msgid "Miscellaneous"
 msgstr "Różne"
 
@@ -3202,20 +3265,6 @@ msgstr "Wypisywanie komunikatów wspomagających wyszukiwanie błędów"
 #: gui/gdmflexiserver.c:1
 msgid "Authenticate before running --command"
 msgstr "Uwierzytelnienie przed wykonaniem polecenia --command"
-
-#: gui/gdmflexiserver.c:1
-msgid "Cannot communicate with gdm, perhaps you have an old version running."
-msgstr ""
-"Nie można nawiązać komunikacji z GDM-em, być może uruchomiona jest stara "
-"wersja."
-
-#: gui/gdmflexiserver.c:1
-msgid ""
-"You do not seem to have authentication needed be for this operation.  "
-"Perhaps your .Xauthority file is not set up correctly."
-msgstr ""
-"Brak możliwości uwierzytelnienia, która jest wymagana przy tej operacji. "
-"Prawdopodobnie twój  plik .Xauthority nie jest poprawnie ustawiony."
 
 #: gui/gdmflexiserver.c:1
 msgid ""
@@ -3707,7 +3756,7 @@ msgstr "Przekształcenie okna logowania w ikonę"
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H:%M"
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter_item.c:1
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a %d %b, %I:%M %p"
 
@@ -3925,6 +3974,157 @@ msgstr ""
 msgid "Login Photo"
 msgstr "Fotografia użytkownika"
 
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1
+msgid "Standard greeter"
+msgstr "Standardowy greeter"
+
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1
+msgid "Graphical greeter"
+msgstr "Graficzny greeter"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: gui/gdmsetup-strings.c:1
+msgid "GDM Setup"
+msgstr "Ustawienia GDM-a"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Local: "
+msgstr "Lokalnie: "
+
+#: gui/gdmsetup-strings.c:1
+msgid "Remote: "
+msgstr "Zdalnie: "
+
+#: gui/gdmsetup-strings.c:1
+msgid "Greeter"
+msgstr "Greeter"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Automatic login username:"
+msgstr "Użytkownik logowany automatycznie:"
+
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1
+msgid "*"
+msgstr "*"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Timed login username:"
+msgstr "Użytkownik logowany z opóźnieniem:"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Seconds before login:"
+msgstr "Liczba sekund przed zalogowaniem:"
+
+#: gui/gdmsetup-strings.c:1
+msgid "General"
+msgstr "Ogólne"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Welcome string: "
+msgstr "Komunikat powitalny: "
+
+#: gui/gdmsetup-strings.c:1
+msgid "Logo"
+msgstr "Logo"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Always use _24 hour clock format"
+msgstr "Używanie zawsze _24-godzinnego formatu czasu"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Show choosable user images (face browser)"
+msgstr "Wyświetlanie przeglądarki użytkowników (z obrazami twarzy)"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_No background"
+msgstr "_Bez tła"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Image"
+msgstr "_Obraz"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Color"
+msgstr "_Kolor"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Scale background image to fit"
+msgstr "_Skalowanie obrazu w tle do wymiarów ekranu"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Only color on remote displays"
+msgstr "Wyświetlanie na zdalnych ekranach _tylko jednolitego koloru"
+
+#: gui/gdmsetup-strings.c:1
+msgid "<b>Preview:</b>"
+msgstr "<b>Podgląd:</b>"
+
+#: gui/gdmsetup-strings.c:1
+msgid "No preview available"
+msgstr "Brak dostępnego podglądu"
+
+#: gui/gdmsetup-strings.c:1
+msgid "_Install new theme"
+msgstr "Za_instaluj nowy motyw"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Theme"
+msgstr "Motyw"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Allow _root to login with GDM"
+msgstr "Możliwość logowania się za pomocą GDM-a przez użytkownika _root."
+
+#: gui/gdmsetup-strings.c:1
+msgid "Allow root to login r_emotely with GDM"
+msgstr ""
+"Możliwość _zdalnego logowania się za pomocą GDM-a przez użytkownika root."
+
+#: gui/gdmsetup-strings.c:1
+msgid "Allow remote _timed logins"
+msgstr "Możliwość zdalnego logowania z _opóźnieniem czasowym"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Show _system menu"
+msgstr "Wyświetlanie menu \"_System\""
+
+#: gui/gdmsetup-strings.c:1
+msgid "Allow _configuration from the login screen"
+msgstr ""
+"Możliwość uruchomienia przez użytkownika programu _konfiguracyjnego z menu"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Retry delay (seconds) :"
+msgstr "Opóźnienie przed ponowieniem:"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Maximum pending requests:"
+msgstr "Maksymalna liczba oczekujących połączeń:"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Max pending indirect requests:"
+msgstr "Maksymalna liczba oczekujących pośrednich połączeń:"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Maximum remote sessions:"
+msgstr "Maksymalna liczba zdalnych sesji:"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Maximum wait time:"
+msgstr "Maksymalny czas oczekiwania:"
+
+#: gui/gdmsetup-strings.c:1
+msgid "Maximum indirect wait time:"
+msgstr "Maksymalny czas oczekiwania przy połączeniach pośrednich:"
+
 #: gui/gdmXnestchooser.c:1
 msgid "Xnest command line"
 msgstr "Wiersz poleceń Xnest"
@@ -3982,14 +4182,6 @@ msgstr ""
 "konfiguracyjnego GDM-a."
 
 #: gui/gdmXnestchooser.c:1
-msgid ""
-"GDM is not running.\n"
-"Please ask your system administrator to start it."
-msgstr ""
-"GDM nie jest uruchomiony.\n"
-"Zwróć się do administratora systemu o uruchomienie go."
-
-#: gui/gdmXnestchooser.c:1
 msgid "Could not find a free display number"
 msgstr "Nie można odnaleźć wolnego numeru ekranu"
 
@@ -3999,6 +4191,23 @@ msgid "greeter_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
 "greeter_parse_config: Brak pliku konfiguracyjnego: %s. Przyjęto wartości "
 "domyślne."
+
+#: gui/greeter/greeter.c:1
+msgid ""
+"There was an error loading the theme, and the default theme also could not "
+"have been loaded, I will attempt to start the standard greeter"
+msgstr ""
+"Przy odczytywaniu motywu wystąpił błąd, nie można również odczytać motywu "
+"domyślnego. Nastąpi próba uruchomienia domyślnego greetera."
+
+#: gui/greeter/greeter.c:1
+msgid ""
+"I could not start the standard greeter.  This display will abort and you may "
+"have to login another way and fix the installation of gdm"
+msgstr ""
+"Nie można uruchomić standardowego greetera. Działanie GDM-a na tym ekranie "
+"zostanie przerwane. Aby naprawić konfigurację, konieczne jest zalogowanie "
+"się do systemu w inny sposób."
 
 #: gui/greeter/greeter_lang_list.c:1
 msgid "Catalan"
