@@ -71,7 +71,7 @@ static GtkWidget *win;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
 static GdkWindow *rootwin;
-static GdkWindow *rootwin_overlay;
+static GdkWindow *rootwin_overlay = NULL;
 
 static GnomeIconList *browser;
 static GdkImlibImage *defface;
@@ -122,81 +122,113 @@ gdm_login_done (int sig)
     _exit (DISPLAY_SUCCESS);
 }
 
+static void
+set_screen_pos (GtkWidget *widget, int x, int y)
+{
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	if (x < 0)
+		x = 0;
+	if (y < 0)
+		y = 0;
+	if (x > gdk_screen_width () - widget->allocation.width)
+		x = gdk_screen_width () - widget->allocation.width;
+	if (y > gdk_screen_height () - widget->allocation.height)
+		y = gdk_screen_height () - widget->allocation.height;
+
+	gtk_widget_set_uposition (widget, x, y);
+}
 
 typedef struct _CursorOffset {
 	int x;
 	int y;
 } CursorOffset;
 
+static gboolean
+gdm_login_icon_released (GtkWidget *widget)
+{
+	gtk_grab_remove (widget);
+	gdk_pointer_ungrab (GDK_CURRENT_TIME);
 
-static void
+	gtk_object_remove_data (GTK_OBJECT (widget), "offset");
+
+	/* no longer send events from this window to widget */
+	gdk_window_set_user_data (rootwin_overlay, NULL);
+
+	return TRUE;
+}
+
+static gboolean
 gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
 {
     CursorOffset *p;
+    GdkCursor *fleur_cursor;
 
-    if (!widget || !event)
-	return;
-    
     if (event->type == GDK_2BUTTON_PRESS) {
-	gtk_widget_destroy (GTK_WIDGET (win));
-	gdk_window_show (login->window);
-	return;
+	    gdm_login_icon_released (widget);
+	    gtk_widget_destroy (GTK_WIDGET (win));
+	    gtk_widget_show (login);
+	    gtk_widget_grab_focus (entry);	
+	    return TRUE;
     }
     
     if (event->type != GDK_BUTTON_PRESS)
-	return;
+	return FALSE;
     
-    p = gtk_object_get_user_data (GTK_OBJECT (widget));
+
+    p = g_new0 (CursorOffset, 1);
+    gtk_object_set_data_full (GTK_OBJECT (widget), "offset", p,
+			      (GtkDestroyNotify)g_free);
     p->x = (gint) event->x;
     p->y = (gint) event->y;
-    
+
     gtk_grab_add (widget);
-    gdk_pointer_grab (widget->window, TRUE,
+    fleur_cursor = gdk_cursor_new (GDK_FLEUR);
+    gdk_pointer_grab (rootwin_overlay, TRUE,
 		      GDK_BUTTON_RELEASE_MASK |
 		      GDK_BUTTON_MOTION_MASK |
 		      GDK_POINTER_MOTION_HINT_MASK,
-		      NULL, NULL, 0);
+		      NULL,
+		      fleur_cursor,
+		      GDK_CURRENT_TIME);
+    gdk_cursor_destroy (fleur_cursor);
+    /* send events from this window to widget */
+    gdk_window_set_user_data (rootwin_overlay, widget);
+    gdk_flush ();
+
+    return TRUE;
 }
-
-
-static void
-gdm_login_icon_released (GtkWidget *widget)
-{
-    if(!widget)
-	return;
-
-    gtk_grab_remove (widget);
-    gdk_pointer_ungrab (0);
-}
-
-
-static void
-gdm_login_icon_motion (GtkWidget *widget, GdkEventMotion *event)
-{
-    gint xp, yp;
-    CursorOffset *p;
-    GdkModifierType mask;
-    
-    if(!widget || !event)
-	return;
-
-    p = gtk_object_get_user_data (GTK_OBJECT (widget));
-    gdk_window_get_pointer (rootwin, &xp, &yp, &mask);
-    gtk_widget_set_uposition (GTK_WIDGET (widget), xp-p->x, yp-p->y);
-}
-
 
 static gboolean
+gdm_login_icon_motion (GtkWidget *widget, GdkEventMotion *event)
+{
+	gint xp, yp;
+	CursorOffset *p;
+	GdkModifierType mask;
+
+	p = gtk_object_get_data (GTK_OBJECT (widget), "offset");
+
+	if (p == NULL)
+		return FALSE;
+
+	gdk_window_get_pointer (rootwin, &xp, &yp, &mask);
+	set_screen_pos (GTK_WIDGET (widget), xp-p->x, yp-p->y);
+
+	return TRUE;
+}
+
+
+static void
 gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
 {
     GtkWidget *fixed;
     GtkWidget *icon;
     GdkGC *gc;
     GtkStyle *style;
-    CursorOffset *icon_pos;
     gint rw, rh, iw, ih;
 
-    gdk_window_hide (login->window);
+    gtk_widget_hide (login);
     style = gtk_widget_get_default_style();
     gc = style->black_gc; 
     win = gtk_window_new (GTK_WINDOW_POPUP);
@@ -226,17 +258,12 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
     gtk_signal_connect (GTK_OBJECT (win), "motion_notify_event",
 			GTK_SIGNAL_FUNC (gdm_login_icon_motion),NULL);
 
-    icon_pos = g_new (CursorOffset, 1);
-    gtk_object_set_user_data (GTK_OBJECT (win), icon_pos);
-
     gtk_widget_show (GTK_WIDGET (win));
 
     rw = gdk_screen_width();
     rh = gdk_screen_height();
 
-    gtk_widget_set_uposition (GTK_WIDGET (win), rw-iw, rh-ih);
-
-    return(TRUE);
+    set_screen_pos (GTK_WIDGET (win), rw-iw, rh-ih);
 }
 
 
@@ -603,7 +630,7 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
     switch (event->keyval) {
 
     case GDK_Return:
-	gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
+	gtk_widget_set_sensitive (entry, FALSE);
 
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
@@ -623,8 +650,6 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
     case GDK_Down:
     case GDK_Tab:
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (entry), "key_press_event");
-	break;
-
 	break;
 
     default:
@@ -663,7 +688,9 @@ gdm_login_session_init (GtkWidget *menu)
     item = gtk_radio_menu_item_new_with_label (NULL, lastsess);
     sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
     gtk_menu_append (GTK_MENU (menu), item);
-    gtk_signal_connect (GTK_OBJECT (item), "activate", gdm_login_session_handler, NULL);
+    gtk_signal_connect (GTK_OBJECT (item), "activate",
+			GTK_SIGNAL_FUNC (gdm_login_session_handler),
+			NULL);
     gtk_widget_show (GTK_WIDGET (item));
 
     item = gtk_menu_item_new();
@@ -711,7 +738,8 @@ gdm_login_session_init (GtkWidget *menu)
 		sessions = g_slist_append (sessions, dent->d_name);
 		gtk_menu_append (GTK_MENU (menu), item);
 		gtk_signal_connect (GTK_OBJECT (item), "activate",
-				    GTK_SIGNAL_FUNC (gdm_login_session_handler), NULL);
+				    GTK_SIGNAL_FUNC (gdm_login_session_handler),
+				    NULL);
 		gtk_widget_show (GTK_WIDGET (item));
 	    }
 	    else 
@@ -882,9 +910,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
 	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
-	gtk_widget_set_sensitive (GTK_WIDGET (entry), TRUE);
-	gtk_widget_grab_focus (GTK_WIDGET (entry));	
-	gtk_widget_show (GTK_WIDGET (entry));
+	gtk_widget_set_sensitive (entry, TRUE);
+	gtk_widget_grab_focus (entry);	
+	gtk_widget_show (entry);
 	break;
 
     case GDM_NOECHO:
@@ -903,9 +931,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
 	gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
-	gtk_widget_set_sensitive (GTK_WIDGET (entry), TRUE);
-	gtk_widget_grab_focus (GTK_WIDGET (entry));	
-	gtk_widget_show (GTK_WIDGET (entry));
+	gtk_widget_set_sensitive (entry, TRUE);
+	gtk_widget_grab_focus (entry);	
+	gtk_widget_show (entry);
 	break;
 
     case GDM_MSGERR:
@@ -969,7 +997,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	    curuser = NULL;
 	}
 
-	gtk_widget_set_sensitive (GTK_WIDGET (entry), TRUE);
+	gtk_widget_set_sensitive (entry, TRUE);
 
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
@@ -1036,7 +1064,7 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 	if (curuser == NULL)
 	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
 
-	gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
+	gtk_widget_set_sensitive (entry, FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
 	break;
@@ -1126,12 +1154,164 @@ gdm_init_root_window_overlay (void)
 	gdk_window_add_filter (rootwin_overlay, root_keys_filter, NULL);
 }
 
+static gboolean
+handle_expose (GtkWidget *handle, GdkEventExpose *event, gpointer data)
+{
+	if (handle->window != NULL)
+		gtk_paint_handle (handle->style,
+				  handle->window,
+				  handle->state,
+				  GTK_SHADOW_NONE,
+				  &event->area,
+				  handle,
+				  "gdm-handle",
+				  0, 0,
+				  handle->allocation.width,
+				  handle->allocation.height,
+				  GTK_ORIENTATION_HORIZONTAL);
+	return TRUE;
+}
+
+static gboolean
+gdm_login_handle_pressed (GtkWidget *widget, GdkEventButton *event)
+{
+    gint xp, yp;
+    GdkModifierType mask;
+    CursorOffset *p;
+    GdkCursor *fleur_cursor;
+
+    if (login == NULL ||
+	login->window == NULL ||
+	event->type != GDK_BUTTON_PRESS)
+	    return FALSE;
+
+    p = g_new0 (CursorOffset, 1);
+    gtk_object_set_data_full (GTK_OBJECT (widget), "offset", p,
+			      (GtkDestroyNotify)g_free);
+    
+    gdk_window_get_pointer (login->window, &xp, &yp, &mask);
+    p->x = xp;
+    p->y = yp;
+
+    gtk_grab_add (widget);
+    fleur_cursor = gdk_cursor_new (GDK_FLEUR);
+    gdk_pointer_grab (rootwin_overlay, TRUE,
+		      GDK_BUTTON_RELEASE_MASK |
+		      GDK_BUTTON_MOTION_MASK |
+		      GDK_POINTER_MOTION_HINT_MASK,
+		      NULL,
+		      fleur_cursor,
+		      GDK_CURRENT_TIME);
+    gdk_cursor_destroy (fleur_cursor);
+    /* send events from this window to widget */
+    gdk_window_set_user_data (rootwin_overlay, widget);
+    gdk_flush ();
+    
+    return TRUE;
+}
+
+static gboolean
+gdm_login_handle_released (GtkWidget *widget, GdkEventButton *event)
+{
+	gtk_grab_remove (widget);
+	gdk_pointer_ungrab (GDK_CURRENT_TIME);
+
+	gtk_object_remove_data (GTK_OBJECT (widget), "offset");
+
+	/* no longer send events from this window to widget */
+	gdk_window_set_user_data (rootwin_overlay, NULL);
+
+	return TRUE;
+}
+
+
+static gboolean
+gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
+{
+    gint xp, yp;
+    CursorOffset *p;
+    GdkModifierType mask;
+
+    p = gtk_object_get_data (GTK_OBJECT (widget), "offset");
+
+    if (p == NULL)
+	    return FALSE;
+
+    gdk_window_get_pointer (rootwin, &xp, &yp, &mask);
+    set_screen_pos (GTK_WIDGET (login), xp-p->x, yp-p->y);
+
+    return TRUE;
+}
+
+
+static GtkWidget *
+create_handle (void)
+{
+	GtkWidget *ebox, *hbox, *frame, *w;
+
+	ebox = gtk_event_box_new ();
+	gtk_signal_connect (GTK_OBJECT (ebox), "button_press_event",
+			    GTK_SIGNAL_FUNC (gdm_login_handle_pressed),
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (ebox), "button_release_event",
+			    GTK_SIGNAL_FUNC (gdm_login_handle_released),
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (ebox), "motion_notify_event",
+			    GTK_SIGNAL_FUNC (gdm_login_handle_motion),
+			    NULL);
+
+	frame = gtk_frame_new (NULL);
+	gtk_container_add (GTK_CONTAINER (ebox), frame);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (frame), hbox);
+
+	w = gtk_drawing_area_new ();
+	gtk_signal_connect (GTK_OBJECT (w), "expose_event",
+			    GTK_SIGNAL_FUNC (handle_expose),
+			    NULL);
+	gtk_box_pack_start (GTK_BOX (hbox), w, TRUE, TRUE, 0);
+
+	w = gtk_label_new (_("GNOME Desktop Manager"));
+	gtk_misc_set_padding (GTK_MISC (w), GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_box_pack_start (GTK_BOX (hbox), w, FALSE, FALSE, GNOME_PAD_SMALL);
+	
+	w = gtk_drawing_area_new ();
+	gtk_signal_connect (GTK_OBJECT (w), "expose_event",
+			    GTK_SIGNAL_FUNC (handle_expose),
+			    NULL);
+	gtk_box_pack_start (GTK_BOX (hbox), w, TRUE, TRUE, 0);
+
+	if (GdmIcon != NULL) {
+		if (access (GdmIcon, R_OK)) {
+			syslog (LOG_WARNING, _("Can't open icon file: %s. Suspending iconify feature!"), GdmIcon);
+		} else {
+			w = gtk_button_new ();
+			gtk_container_add (GTK_CONTAINER (w),
+					   gtk_arrow_new (GTK_ARROW_DOWN,
+							  GTK_SHADOW_OUT));
+			gtk_signal_connect
+				(GTK_OBJECT (w), "clicked",
+				 GTK_SIGNAL_FUNC (gdm_login_iconify_handler), 
+				 NULL);
+			GTK_WIDGET_UNSET_FLAGS (w, GTK_CAN_FOCUS);
+			GTK_WIDGET_UNSET_FLAGS (w, GTK_CAN_DEFAULT);
+			gtk_box_pack_start (GTK_BOX (hbox), w, FALSE, FALSE, 0);
+		}
+	}
+
+	gtk_widget_show_all (ebox);
+
+	return ebox;
+}
+
 static void
 gdm_login_gui_init (void)
 {
     GtkWidget *frame1, *frame2;
     GtkWidget *mbox, *menu, *menubar, *item, *welcome;
-    GtkWidget *table, *stack, *hline1, *hline2;
+    GtkWidget *table, *stack, *hline1, *hline2, *handle;
     GtkWidget *bbox = NULL;
     GtkWidget *logoframe = NULL;
     GtkStyle *style;
@@ -1177,6 +1357,9 @@ gdm_login_gui_init (void)
     gtk_widget_show (mbox);
     gtk_container_add (GTK_CONTAINER (frame2), mbox);
 
+    handle = create_handle ();
+    gtk_box_pack_start (GTK_BOX (mbox), handle, FALSE, FALSE, 0);
+
     menubar = gtk_menu_bar_new();
     gtk_widget_ref (GTK_WIDGET (menubar));
     gtk_box_pack_start (GTK_BOX (mbox), menubar, FALSE, FALSE, 0);
@@ -1215,20 +1398,6 @@ gdm_login_gui_init (void)
 	gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
 	gtk_widget_show (GTK_WIDGET (item));
-    }
-
-    if (GdmIcon) {
-	if (access (GdmIcon, R_OK)) {
-	    syslog (LOG_WARNING, _("Can't open icon file: %s. Suspending iconify feature!"), GdmIcon);
-	}
-	else {
-	    item = gtk_menu_item_new_with_label (_("Iconify"));
-	    gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
-	    gtk_signal_connect (GTK_OBJECT (item), "activate",
-			       GTK_SIGNAL_FUNC (gdm_login_iconify_handler), 
-				NULL);
-	    gtk_widget_show (GTK_WIDGET (item));
-	}
     }
 
     if (GdmBrowser)
@@ -1431,7 +1600,7 @@ gdm_login_gui_init (void)
 			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			  (GtkAttachOptions) (GTK_FILL), 0, 0);
     
-    gtk_widget_grab_focus (GTK_WIDGET (entry));	
+    gtk_widget_grab_focus (entry);	
     gtk_window_set_focus (GTK_WINDOW (login), entry);	
     gtk_window_set_policy (GTK_WINDOW (login), 1, 1, 1);
     gtk_window_position (GTK_WINDOW (login), GTK_WIN_POS_CENTER);
