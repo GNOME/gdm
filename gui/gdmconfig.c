@@ -757,18 +757,16 @@ gdm_config_parse_most (gboolean factory)
 		  this_session->script_contents = g_strdup (_("Error reading this session script"));
 		  this_session->changable = FALSE;
 	       } else {
-		  gchar buffer[BUFSIZ];
-		  int charPos = 0, character;
-		  for (character = fgetc(script_file);
-		       character != EOF;
-		       character = fgetc(script_file)) {
-		     buffer[charPos] = (gchar) character;
-		     charPos++;
-		  }
-		  buffer[charPos] = '\0';
-		  this_session->script_contents = g_strdup(buffer);
-		  /* printf ("got script contents:\n%s.\n", this_session->script_contents); */
-		  this_session->changable = TRUE;
+		       GString *str = g_string_new (NULL);
+		       gchar buffer[BUFSIZ];
+		       while (fgets (buffer, sizeof (buffer),
+				     script_file) != NULL) {
+			       g_string_append (str, buffer);
+		       }
+		       this_session->script_contents = str->str;
+		       g_string_free (str, FALSE);
+		       /* printf ("got script contents:\n%s.\n", this_session->script_contents); */
+		       this_session->changable = TRUE;
 	       }
 	       fclose (script_file);
 	       this_session->changed = FALSE;

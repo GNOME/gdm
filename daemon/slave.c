@@ -1075,7 +1075,7 @@ gdm_slave_greeter (void)
 			 "you will not be able to log in.\n"
 			 "This display will be disabled.\n"
 			 "Try logging in by other means and\n"
-			 "editting the configuration file"));
+			 "editing the configuration file"));
 	
 	gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Error starting greeter on display %s"), d->name);
 	
