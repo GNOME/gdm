@@ -43,8 +43,8 @@ get_parent_display (void)
   return dsp;
 }
 
-static gboolean
-is_caps_lock_on (void)
+gboolean
+greeter_is_capslock_on (void)
 {
   unsigned int states;
   Display *dsp;
@@ -96,7 +96,7 @@ cl_key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
 {
   gboolean new_state;
 
-  new_state = is_caps_lock_on ();
+  new_state = greeter_is_capslock_on ();
   if (new_state != caps_lock_state)
     capslock_update (new_state);
   
@@ -107,7 +107,7 @@ cl_key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
 gboolean
 greeter_item_capslock_setup (GtkWidget *window)
 {
-  capslock_update (is_caps_lock_on ());
+  capslock_update (greeter_is_capslock_on ());
   
   g_signal_connect (G_OBJECT (window), "key_press_event",
 		    G_CALLBACK (cl_key_press_event), NULL);

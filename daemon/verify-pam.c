@@ -48,7 +48,11 @@ static pam_handle_t *pamh = NULL;
 
 static GdmDisplay *cur_gdm_disp = NULL;
 
+/* this is a hack */
 static char *tmp_PAM_USER = NULL;
+
+/* this is another hack */
+static gboolean did_we_ask_for_password = FALSE;
 
 static char *selected_user = NULL;
 
@@ -189,6 +193,8 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    break;
 	    
 	case PAM_PROMPT_ECHO_OFF:
+	    if (strcmp (m, _("Password:")) == 0)
+		    did_we_ask_for_password = TRUE;
 	    /* PAM requested textual input with echo off */
 	    s = gdm_slave_greeter_ctl (GDM_NOECHO, m);
 	    if (gdm_slave_greeter_check_interruption ()) {
@@ -423,7 +429,6 @@ gdm_verify_user (GdmDisplay *d,
     gboolean error_msg_given = FALSE;
     gboolean credentials_set = FALSE;
     gboolean started_timer = FALSE;
-    char *auth_errmsg;
 
     /* start the timer for timed logins */
     if ( ! ve_string_empty (GdmTimedLogin) &&
@@ -456,6 +461,8 @@ authenticate_again:
     /* hack */
     g_free (tmp_PAM_USER);
     tmp_PAM_USER = NULL;
+
+    did_we_ask_for_password = FALSE;
 
     gdm_verify_select_user (NULL);
     /* Start authentication session */
@@ -597,15 +604,39 @@ authenticate_again:
 	    /* I'm not sure yet if I should display this message for any other issues - heeten */
 	    if (pamerr == PAM_AUTH_ERR ||
 		pamerr == PAM_USER_UNKNOWN) {
-		    /* FIXME: Hmm, how are we sure that the login is username
-		     * and password.  That is the most common case but not
-		     * necessarily true, this message needs to be changed
-		     * to allow for such cases */
-		    auth_errmsg = 
-			    _("\nIncorrect username or password. "
-			      "Letters must be typed in the correct case. "  
-			      "Please make sure the Caps Lock key is not enabled.");
-		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
+		    gboolean is_capslock = FALSE;
+		    const char *basemsg;
+		    char *msg;
+		    char *ret;
+			    
+		    ret = gdm_slave_greeter_ctl (GDM_QUERY_CAPSLOCK, "");
+		    if ( ! ve_string_empty (ret))
+			    is_capslock = TRUE;
+		    g_free (ret);
+
+		    /* Only give this message if we actually asked for
+		       password, otherwise it would be silly to say that
+		       the password may have been wrong */
+		    if (did_we_ask_for_password) {
+			    basemsg = _("\nIncorrect username or password.  "
+					"Letters must be typed in the correct "
+					"case.");
+		    } else {
+			    basemsg = _("\nAuthentication failed.  "
+					"Letters must be typed in the correct "
+					"case.");
+		    }
+		    if (is_capslock) {
+			    msg = g_strconcat (basemsg, "  ",
+					       _("Please make sure the "
+						 "Caps Lock key is not "
+						 "enabled."),
+					       NULL);
+		    } else {
+			    msg = g_strdup (basemsg);
+		    }
+		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, msg);
+		    g_free (msg);
 	    } else {
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, _("Authentication failed"));
 	    }
@@ -666,6 +697,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     }
 
     /* Start authentication session */
+    did_we_ask_for_password = FALSE;
     if ((pamerr = pam_authenticate (pamh, 0)) != PAM_SUCCESS) {
 	    if (gdm_slave_should_complain ()) {
 		    gdm_error (_("Couldn't authenticate user"));

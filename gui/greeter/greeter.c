@@ -533,6 +533,17 @@ greeter_ctrl_handler (GIOChannel *source,
 	gdk_flush ();
 
 	_exit (EXIT_SUCCESS);
+
+    case GDM_QUERY_CAPSLOCK:
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
+
+	if (greeter_is_capslock_on ())
+	    printf ("%cY\n", STX);
+	else
+	    printf ("%c\n", STX);
+	fflush (stdout);
+
+	break;
 	
     default:
 	break;

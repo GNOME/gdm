@@ -107,6 +107,7 @@ enum {
 #define GDM_NOFOCUS    'f' /* Don't focus the login window (optional) */
 #define GDM_FOCUS      'F' /* Allow focus on the login window again (optional) */
 #define GDM_SAVEDIE    '!' /* Save wm order and die (and set busy cursor) */
+#define GDM_QUERY_CAPSLOCK 'Q' /* Is capslock on? */
 
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'

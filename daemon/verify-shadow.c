@@ -43,6 +43,35 @@ extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gint GdmRetryDelay;
 
+static void
+print_cant_auth_errbox (void)
+{
+	gboolean is_capslock = FALSE;
+	const char *basemsg;
+	char *msg;
+	char *ret;
+
+	ret = gdm_slave_greeter_ctl (GDM_QUERY_CAPSLOCK, "");
+	if ( ! ve_string_empty (ret))
+		is_capslock = TRUE;
+	g_free (ret);
+
+	basemsg = _("\nIncorrect username or password.  "
+		    "Letters must be typed in the correct "
+		    "case.");
+	if (is_capslock) {
+		msg = g_strconcat (basemsg, "  ",
+				   _("Please make sure the "
+				     "Caps Lock key is not "
+				     "enabled."),
+				   NULL);
+	} else {
+		msg = g_strdup (basemsg);
+	}
+	gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, msg);
+	g_free (msg);
+}
+
 /**
  * gdm_verify_user:
  * @username: Name of user or NULL if we should ask
@@ -58,7 +87,7 @@ extern gint GdmRetryDelay;
 gchar *
 gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboolean local) 
 {
-    gchar *login, *passwd, *ppasswd, *auth_errmsg;
+    gchar *login, *passwd, *ppasswd;
     struct passwd *pwent;
     struct spwd *sp;
 
@@ -129,17 +158,10 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 
     if (pwent == NULL) {
 	    sleep (GdmRetryDelay);
-	    gdm_error (_("Couldn't authenticate user"));
-	    /* FIXME: Hmm, how are we sure that the login is username
-	     * and password.  That is the most common case but not
-	     * necessarily true, this message needs to be changed
-	     * to allow for such cases */
-	    auth_errmsg = g_strdup_printf
-		    (_("\nIncorrect username or password. "
-		       "Letters must be typed in the correct case. "  
-		       "Please make sure the Caps Lock key is not enabled."));
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
-	    g_free (auth_errmsg);
+	    gdm_error (_("Couldn't authenticate user \"%s\""), login);
+
+	    print_cant_auth_errbox ();
+
 	    g_free (login);
 	    g_free (passwd);
 	    g_free (ppasswd);
@@ -150,16 +172,10 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
     if (ppasswd == NULL || (ppasswd[0] != '\0' &&
 			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
 	    sleep (GdmRetryDelay);
-	    /* FIXME: Hmm, how are we sure that the login is username
-	     * and password.  That is the most common case but not
-	     * necessarily true, this message needs to be changed
-	     * to allow for such cases */
-	    auth_errmsg = g_strdup_printf
-		    (_("\nIncorrect username or password. "
-		       "Letters must be typed in the correct case. "  
-		       "Please make sure the Caps Lock key is not enabled."));
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
-	    g_free (auth_errmsg);
+	    gdm_error (_("Couldn't authenticate user \"%s\""), login);
+
+	    print_cant_auth_errbox ();
+
 	    g_free (login);
 	    g_free (passwd);
 	    g_free (ppasswd);

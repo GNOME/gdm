@@ -40,6 +40,7 @@
 #include <gdk/gdkx.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#include <X11/XKBlib.h>
 #include <pwd.h>
 #include <sys/utsname.h>
 
@@ -2051,6 +2052,55 @@ browser_set_user (const char *user)
   selecting_user = old_selecting_user;
 }
 
+static Display *
+get_parent_display (void)
+{
+  static gboolean tested = FALSE;
+  static Display *dsp = NULL;
+
+  if (tested)
+    return dsp;
+
+  tested = TRUE;
+
+  if (g_getenv ("GDM_PARENT_DISPLAY") != NULL)
+    {
+      char *old_xauth = g_strdup (g_getenv ("XAUTHORITY"));
+      if (g_getenv ("GDM_PARENT_XAUTHORITY") != NULL)
+        {
+	  gnome_setenv ("XAUTHORITY",
+			g_getenv ("GDM_PARENT_XAUTHORITY"), TRUE);
+	}
+      dsp = XOpenDisplay (g_getenv ("GDM_PARENT_DISPLAY"));
+      if (old_xauth != NULL)
+        gnome_setenv ("XAUTHORITY", old_xauth, TRUE);
+      else
+        gnome_unsetenv ("XAUTHORITY");
+      g_free (old_xauth);
+    }
+
+  return dsp;
+}
+
+static gboolean
+greeter_is_capslock_on (void)
+{
+  unsigned int states;
+  Display *dsp;
+
+  /* HACK! incredible hack, if this is set we get
+   * indicator state from the parent display, since we must be inside an
+   * Xnest */
+  dsp = get_parent_display ();
+  if (dsp == NULL)
+    dsp = GDK_DISPLAY ();
+
+  if (XkbGetIndicatorState (dsp, XkbUseCoreKbd, &states) != Success)
+      return FALSE;
+
+  return (states & ShiftMask) != 0;
+}
+
 static gboolean
 gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 {
@@ -2524,6 +2574,17 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gdk_flush ();
 
 	_exit (EXIT_SUCCESS);
+
+    case GDM_QUERY_CAPSLOCK:
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
+
+	if (greeter_is_capslock_on ())
+	    printf ("%cY\n", STX);
+	else
+	    printf ("%c\n", STX);
+	fflush (stdout);
+
+	break;
 	
     default:
 	break;

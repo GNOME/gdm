@@ -1,3 +1,17 @@
+Fri Jun 06 11:21:44 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, gui/gdmlogin.c, gui/greeter/greeter.c,
+	  gui/greeter/greeter_item_capslock.[ch]: add a query for the capslock
+	  state in the greeter
+
+	* daemon/verify-*.c: fix #71496 by checking the capslock state
+	  before telling the user that he should make sure it's off.  Also
+	  only say "invalid username or password" if we actually did ask for
+	  a password, else the message would be silly indeed (note that
+	  the check if we did ask for password is a silly hack, but the
+	  verify-pam.c code is a large set of silly hacks and as such it's
+	  ok to add yet another one)
+
 Fri Jun 06 09:43:39 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.(c|glade): attempt at hig-ifying the xdmcp page
