@@ -7,13 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-29 03:51+0100\n"
+"POT-Creation-Date: 2005-02-04 20:48+0100\n"
 "PO-Revision-Date: 2005-01-29 16:43+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -687,9 +688,11 @@ msgstr "gdm 已经运行。中止！"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s：设置 CHLD 信号处理器出错"
 
-#: daemon/gdm.c:3633 daemon/gdm.c:3652
-msgid "FLEXI_XSERVER request denied: Not authenticated"
-msgstr "FLEXI_XSERVER 请求被禁止：未通过认证"
+#: daemon/gdm.c:3633 daemon/gdm.c:3652 daemon/gdm.c:3796 daemon/gdm.c:3854
+#: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
+#, c-format
+msgid "%s request denied: Not authenticated"
+msgstr "%s 请求被禁止：未通过认证"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -703,18 +706,6 @@ msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
 "standard server."
 msgstr "请求的服务器 %s 不能被用于便捷服务器，使用标准服务器。"
-
-#: daemon/gdm.c:3796
-msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "QUERY_LOGOUT_ACTION 请求被禁止：未通过认证"
-
-#: daemon/gdm.c:3854 daemon/gdm.c:3909
-msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "SET_LOGOUT_ACTION 请求被禁止：未通过认证"
-
-#: daemon/gdm.c:3954 daemon/gdm.c:3981
-msgid "QUERY_VT request denied: Not authenticated"
-msgstr "QUERY_VT 请求被禁止：未通过认证"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:652
@@ -1140,32 +1131,32 @@ msgstr "%s：不允许用户登录"
 msgid "The system administrator has disabled your account."
 msgstr "系统管理员已经禁用您的帐号。"
 
-#: daemon/slave.c:3790
+#: daemon/slave.c:3792
 msgid "Error! Unable to set executable context."
 msgstr "出错！无法设置可执行环境。"
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3798 daemon/slave.c:3803
+#: daemon/slave.c:3800 daemon/slave.c:3805
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s：无法执行 %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3814
+#: daemon/slave.c:3816
 msgid "Cannot start the session due to some internal error."
 msgstr "由于某些内部错误，无法启动会话。"
 
-#: daemon/slave.c:3868
+#: daemon/slave.c:3870
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s：用户通过了认证但 getpwnam(%s) 失败！"
 
-#: daemon/slave.c:3882
+#: daemon/slave.c:3884
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s：执行会话前脚本的返回值大于 0。中止。"
 
-#: daemon/slave.c:3891
+#: daemon/slave.c:3893
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1181,12 +1172,12 @@ msgstr ""
 "\n"
 "除非您以安全模式会话登录，看起来并不是所有程序都能工作。"
 
-#: daemon/slave.c:3899
+#: daemon/slave.c:3901
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s：%s 的主目录不存在：“%s”不存在！"
 
-#: daemon/slave.c:4076
+#: daemon/slave.c:4078
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1196,12 +1187,12 @@ msgstr ""
 "GDM 无法写入您的认证文件。这可能意味着您的硬盘没有空间，或者您的主目录无法以"
 "写方式打开。在这两种情况下都不可能登录。请与您的系统管理员联系"
 
-#: daemon/slave.c:4152
+#: daemon/slave.c:4154
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s：创建用户会话出错"
 
-#: daemon/slave.c:4233
+#: daemon/slave.c:4235
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1212,46 +1203,46 @@ msgstr ""
 "者您的磁盘空间已耗尽。可以试试以某个安全模式会话登录，以便查看是否可以解决此"
 "问题。"
 
-#: daemon/slave.c:4241
+#: daemon/slave.c:4243
 msgid "View details (~/.xsession-errors file)"
 msgstr "查看细节 (~/.xsession-errors 文件)"
 
-#: daemon/slave.c:4385
+#: daemon/slave.c:4387
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM 检测到正在执行关机或重新启动。"
 
-#: daemon/slave.c:4479
+#: daemon/slave.c:4481
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping %s 失败，启动显示！"
 
-#: daemon/slave.c:4765
+#: daemon/slave.c:4767
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s：致命的 X 错误 - 正在重新启动 %s"
 
-#: daemon/slave.c:4859
+#: daemon/slave.c:4861
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
 msgstr "在非本地显示中请求声音，或者是无法运行播放软件，或者是声音不存在"
 
-#: daemon/slave.c:5214
+#: daemon/slave.c:5216
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s：启动失败：%s"
 
-#: daemon/slave.c:5222 daemon/slave.c:5361
+#: daemon/slave.c:5224 daemon/slave.c:5363
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s：无法创建脚本进程！"
 
-#: daemon/slave.c:5316
+#: daemon/slave.c:5318
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s：创建管道失败"
 
-#: daemon/slave.c:5355
+#: daemon/slave.c:5357
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s：执行失败：%s"
@@ -1279,7 +1270,7 @@ msgstr "请输入您的用户名"
 #: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
-#: gui/greeter/greeter_parser.c:1061
+#: gui/greeter/greeter_parser.c:1065
 msgid "Username:"
 msgstr "用户名："
 
@@ -2628,7 +2619,7 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:222 gui/greeter/greeter_parser.c:1047
+#: gui/gdmlogin.c:222
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "用户 %s 将在 %d 秒后登录"
@@ -3523,8 +3514,8 @@ msgstr "只有超级用户 (root) 才能配置 GDM。"
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr "配置 GNOME 显示控制器 (GDM) 的图形应用程序"
+msgid "Configure the login screen (Gnome Display Manager)"
+msgstr "配置登录屏幕(Gnome 显示管理器)"
 
 #: gui/greeter/greeter.c:638 gui/greeter/greeter.c:670
 #, c-format
@@ -3631,6 +3622,12 @@ msgstr "配置(_C)"
 msgid "You've got capslock on!"
 msgstr "您的 capslock 打开了！"
 
+#: gui/greeter/greeter_parser.c:1047
+#, c-format
+msgid "User %s will login in %d second"
+msgid_plural "User %s will login in %d seconds"
+msgstr[0] "用户 %s 将在 %d 秒后登录"
+
 #: gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
 msgstr "选择会话"
@@ -3735,7 +3732,7 @@ msgstr "(内存缓冲区"
 
 #. markup
 #: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:301
 msgid "Cannot load user interface"
 msgstr "无法装入用户界面"
 
@@ -3762,16 +3759,21 @@ msgstr ""
 #: vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %"
-"s.  CList type widget should have %d columns.  Possibly the glade interface "
-"description was corrupted.  %s cannot continue and will exit now.  You "
-"should check your installation of %s or reinstall %s."
-msgstr ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d column. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgid_plural ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d columns. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgstr[0] ""
 "从文件 %3$s 中装入用户界面元素 %1$s%2$s 时出现错误。CList 类型构件应该含有 %4"
 "$d 列。Glade 界面描述可能已经毁坏。%5$s 无法继续并将立即退出。您应该检查您安"
 "装的 %6$s 或重新安装 %7$s。"
 
-#: vicious-extensions/glade-helper.c:266
+#: vicious-extensions/glade-helper.c:277
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3780,7 +3782,7 @@ msgstr ""
 "Glade 文件已毁坏！请确认安装了正确的文件！\n"
 "文件：%s 构件：%s 需要 clist 列：%d"
 
-#: vicious-extensions/glade-helper.c:291
+#: vicious-extensions/glade-helper.c:302
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -3790,7 +3792,7 @@ msgstr ""
 "从文件 %s 中装入用户界面时出现错误。可能找不到 glade 界面描述。%s 无法继续并"
 "将立即退出。您应该检查您安装的 %s 或重新安装 %s。"
 
-#: vicious-extensions/glade-helper.c:303
+#: vicious-extensions/glade-helper.c:314
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "没有可以装入的界面，糟糕！(文件：%s)"
@@ -3798,3 +3800,4 @@ msgstr "没有可以装入的界面，糟糕！(文件：%s)"
 #: vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr "一个语系的别名级别太多，可能有无穷循环"
+
