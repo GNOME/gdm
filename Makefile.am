@@ -32,8 +32,5 @@ endif
 
 DISTCLEANFILES = \
 	intltool-extract	\
-	intltool-extract.in	\
 	intltool-merge		\
-	intltool-merge.in	\
-	intltool-update		\
-	intltool-update.in
+	intltool-update
