@@ -79,14 +79,14 @@ if test -n "$LIBWRAP_PATH"; then
                 AC_DEFINE(HAVE_TCPWRAPPERS)
 	fi
 fi
-LIBS="$LIBS $LIBWRAP_PATH"
+LIBS="$LIBS -lwrap"
 
 dnl find out if we need -lnsl or whatever
 LIB_NSL=
 if test -n "$LIBWRAP_PATH"; then
         AC_MSG_CHECKING(whether -lwrap requires -lnsl)
         ORIG_LIBS="$LIBS"
-        LIBS="$LIBWRAP_PATH $LIBS"
+        LIBS="-lwrap $LIBS"
         AC_TRY_LINK([
 #include <tcpd.h>
 int allow_severity, deny_severity;
