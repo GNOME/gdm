@@ -286,6 +286,7 @@ gdm_xdmcp_run (void)
 	GIOChannel *xdmcpchan;
 
 	xdmcpchan = g_io_channel_unix_new (gdm_xdmcpfd);
+    g_io_channel_set_encoding (xdmcpchan, NULL, NULL);
 	g_io_channel_set_buffered (xdmcpchan, FALSE);
 
 	xdmcp_source = g_io_add_watch_full
