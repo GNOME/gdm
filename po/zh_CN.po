@@ -5,13 +5,66 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2002-02-04 12:17+0800\n"
-"PO-Revision-Date: 2002-02-17 23:23+0800\n"
+"POT-Creation-Date: 2002-03-17 15:05+0800\n"
+"PO-Revision-Date: 2002-03-17 15:25+0800\n"
 "Last-Translator: Wang Li <charlesw1234@163.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: config/gettextfoo.h:1
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  You will need to log in on a console and rerun "
+"the X configuration program.  Then restart GDM."
+msgstr ""
+"我无法启动 X 服务器 (您的图形界面)。好像是由于没有正确地设置它。您需要从控制"
+"台登录并重新运行 X 配置程序。而后重新启动 GDM。"
+
+#: config/gettextfoo.h:2
+msgid ""
+"Would you like me to try to run the X configuration program?  Note that you "
+"will need the root password for this."
+msgstr "您是否希望我尝试运行 X 配置程序？请注意为此您需要根用户口令。"
+
+#: config/gettextfoo.h:3
+msgid "Please type in the root (privileged user) password."
+msgstr "请输入根用户 (特权用户) 口令。"
+
+#: config/gettextfoo.h:4
+msgid "I will now try to restart the X server again."
+msgstr "我将再次试图重新启动 X 服务器。"
+
+#: config/gettextfoo.h:5
+msgid ""
+"I will disable this X server for now.  Restart GDM when it is configured "
+"correctly."
+msgstr "我将立刻禁用 X 服务器。当它被正确地配置了的时候重新启动 GDM。"
+
+#: config/gettextfoo.h:6
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  Would you like to view the X server output to "
+"diagnose the problem?"
+msgstr ""
+"我无法启动 X 服务器 (您的图形界面)。好像是因为没有正确地设置它。您是否希望查"
+"看 X 服务器的输出以检查问题？"
+
+#: config/gettextfoo.h:7
+msgid ""
+"I cannot start the X server (your graphical interface).  It seems that the "
+"pointer device (your mouse) is not set up correctly.  Would you like to view "
+"the X server output to diagnose the problem?"
+msgstr ""
+"我无法启动 X 服务器 (您的图形界面)。好像是因为没有正确地设置指针设备 (您的鼠"
+"标)。您是否希望查看 X 服务器的输出以便检查问题？"
+
+#: config/gettextfoo.h:8
+msgid ""
+"Would you like me to try to run the mouse configuration program?  Note that "
+"you will need the root password for this."
+msgstr "您是否希望我运行鼠标配置程序？请注意为此您需要根用户口令。"
 
 #: daemon/auth.c:146
 #, c-format
@@ -107,7 +160,7 @@ msgstr "gdm_config_parse：无配置文件：%s。使用默认值。"
 msgid ""
 "gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
 "it off"
-msgstr "gdm_config_parse：在不支持 XDMCP 的情况下启用了 XDMCP，关闭它"
+msgstr "gdm_config_parse：在不支持 XDMCP 的情况下启用了 XDMCP，关闭 XDMCP"
 
 #: daemon/gdm.c:306
 msgid ""
@@ -157,21 +210,25 @@ msgstr "gdm_config_parse：配置文件中出现非法服务器行。忽略！"
 #: daemon/gdm.c:453
 #, c-format
 msgid ""
-"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
+"%s: XDMCP disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
 "d to allow configuration!"
-msgstr "%s：Xdmcp 已禁用并且未定义本地服务器。为显示 :%d 添加 /usr/bin/X11/X 以便进行配置！"
+msgstr ""
+"%s：XDMCP 已被禁用，而且未定义本地服务器。添加 /usr/bin/X11/X 为 :%d "
+"以便进行配置！"
 
 #: daemon/gdm.c:468
 #, c-format
 msgid ""
-"Xdmcp is disabled and gdm cannot find any local server to start.  Aborting!  "
+"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
 "Please correct the configuration %s and restart gdm."
-msgstr "Xdmcp 已禁用并且 gdm 无法找到任何本地服务器以便开始。中止！请更正配置 %s 并重新启动 gdm。"
+msgstr ""
+"XDMCP 已被禁用，而且 gdm 无法找到要启动的任何本地服务器。中止！请更正配置 %s "
+"并重新启动 gdm。"
 
 #: daemon/gdm.c:475
 msgid ""
-"gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
-msgstr "gdm_config_parse：Xdmcp 已禁用并且没有定义本地服务器。中止！"
+"gdm_config_parse: XDMCP disabled and no local servers defined. Aborting!"
+msgstr "gdm_config_parse：已禁用 XDMCP，而且未定义本地服务器。中止！"
 
 #: daemon/gdm.c:483
 #, c-format
@@ -195,7 +252,9 @@ msgstr "gdm_config_parse：无法找到 gdm 用户 (%s)。中止！"
 msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct gdm configuration %s and restart gdm."
-msgstr "gdm 用户被设置为根用户，但由于这会导致安全问题而是不允许的。请更正 gdm 配置 %s 并重新启动 gdm。"
+msgstr ""
+"gdm 用户被设置为根用户，但由于这会导致安全问题而是不允许的。请更正 gdm 配置 %"
+"s 并重新启动 gdm。"
 
 #: daemon/gdm.c:509
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
@@ -223,7 +282,9 @@ msgstr "gdm_config_parse：无法找到 gdm 组 (%s)。中止！"
 msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct gdm configuration %s and restart gdm."
-msgstr "gdm 组被设置为根，但由于这将导致安全问题而是不允许的。请更正 gdm 配置 %s 并重新启动 gdm。"
+msgstr ""
+"gdm 组被设置为根，但由于这将导致安全问题而是不允许的。请更正 gdm 配置 %s 并重"
+"新启动 gdm。"
 
 #: daemon/gdm.c:541
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
@@ -244,7 +305,9 @@ msgstr "%s：gdm 用户无法找到或无法执行选择程序"
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
 "does not exist. Please correct gdm configuration %s and restart gdm."
-msgstr "服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但它并不存在。请更正 gdm 配置 %s 并重新启动 gdm。"
+msgstr ""
+"服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但它并不存在。请更正 gdm 配"
+"置 %s 并重新启动 gdm。"
 
 #: daemon/gdm.c:580
 #, c-format
@@ -256,7 +319,9 @@ msgstr "gdm_config_parse：Authdir %s 不存在。中止。"
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
 "not a directory. Please correct gdm configuration %s and restart gdm."
-msgstr "服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但它不是一个目录。请更正 gdm 配置 %s 并重新启动 gdm。"
+msgstr ""
+"服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但它不是一个目录。请更正 gdm "
+"配置 %s 并重新启动 gdm。"
 
 #: daemon/gdm.c:592
 #, c-format
@@ -269,7 +334,9 @@ msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
 "owned by user %s and group %s. Please correct the ownership or gdm "
 "configuration %s and restart gdm."
-msgstr "服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但它并不属于用户 %s 和组 %s。请更正所有权或更正 gdm 配置 %s 并重新启动 gdm。"
+msgstr ""
+"服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但它并不属于用户 %s 和组 %s。"
+"请更正所有权或更正 gdm 配置 %s 并重新启动 gdm。"
 
 #: daemon/gdm.c:606
 #, c-format
@@ -283,7 +350,9 @@ msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
 "wrong permissions, it should have permissions of 0750. Please correct the "
 "permissions or the gdm configuration %s and restart gdm."
-msgstr "服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但权限不正确，它的权限应为 0750。请更正权限或更正 gdm 配置 %s 并重新启动 gdm。"
+msgstr ""
+"服务器认证目录 (daemon/ServAuthDir) 被设置为 %s 但权限不正确，它的权限应为 "
+"0750。请更正权限或更正 gdm 配置 %s 并重新启动 gdm。"
 
 #: daemon/gdm.c:621
 #, c-format
@@ -315,7 +384,9 @@ msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
 "the X configuration program.  Then restart GDM."
-msgstr "我无法启动 X 服务器 (您的图形界面)。这大概是由于没有正确地设置它。您需要从控制台登录并重新运行 X 的配置程序。而后重新启动 GDM。"
+msgstr ""
+"我无法启动 X 服务器 (您的图形界面)。这大概是由于没有正确地设置它。您需要从控"
+"制台登录并重新运行 X 的配置程序。而后重新启动 GDM。"
 
 #. else {
 #. * At this point .... screw the user, we don't know how to
@@ -500,14 +571,18 @@ msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
 "another display number?  If you answer no, I will attempt to start the "
 "server on %s again.%s"
-msgstr "好像已经有一个 X 服务器运行在显示 %s 上。我是否该尝试其它显示编号？如果您回答否，我就再次尝试在 %s 上启动服务器。%s"
+msgstr ""
+"好像已经有一个 X 服务器运行在显示 %s 上。我是否该尝试其它显示编号？如果您回答"
+"否，我就再次尝试在 %s 上启动服务器。%s"
 
 #: daemon/server.c:175
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
 "higher.)"
-msgstr "  (您可以通过按 Ctrl-Alt 和一个功能键来切换到控制台，例如 Ctrl-Alt-F7 将切换到控制台 7。X 服务器通常运行在 7 号或更高号码的控制台上。)"
+msgstr ""
+"  (您可以通过按 Ctrl-Alt 和一个功能键来切换到控制台，例如 Ctrl-Alt-F7 将切换"
+"到控制台 7。X 服务器通常运行在 7 号或更高号码的控制台上。)"
 
 #: daemon/server.c:214
 #, c-format
@@ -706,7 +781,7 @@ msgstr "gdm_slave_greeter：无法初始化到 gdmgreeter 的管道"
 #: daemon/slave.c:1197
 msgid ""
 "No servers were defined in the\n"
-"configuration file and xdmcp was\n"
+"configuration file and XDMCP was\n"
 "disabled.  This can only be a\n"
 "configuration error.  So I have started\n"
 "a single server for you.  You should\n"
@@ -715,7 +790,7 @@ msgid ""
 "are disabled now."
 msgstr ""
 "在配置文件中没有定义\n"
-"服务器并且禁用了 xdmcp。\n"
+"服务器并且禁用了 XDMCP。\n"
 "这只能是配置错误。所以\n"
 "我已经为您启动了一个\n"
 "服务器。您应当登录并\n"
@@ -815,7 +890,9 @@ msgstr "gdm_slave_session_start：无法成为 %s。中止。"
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
-msgstr "gdm_slave_session_start：无法为 gnome-session 找到 failsafe gnome session，尝试 xterm"
+msgstr ""
+"gdm_slave_session_start：无法为 gnome-session 找到 failsafe gnome session，尝"
+"试 xterm"
 
 #: daemon/slave.c:1965
 msgid ""
@@ -942,9 +1019,8 @@ msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s：%s 的家目录不存在：“%s”不存在！"
 
 #: daemon/slave.c:2247
-#, fuzzy
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
-msgstr "gdm_slave_session_start：验证完成。"
+msgstr "gdm_slave_session_start：验证完成。执行欢迎程序"
 
 #: daemon/slave.c:2265
 msgid ""
@@ -957,9 +1033,9 @@ msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start：创建用户会话出错"
 
 #: daemon/slave.c:2486
-#, fuzzy, c-format
+#, c-format
 msgid "Ping to %s failed, whacking display!"
-msgstr "Ping %s 失败，"
+msgstr "Ping %s 失败，启动显示！"
 
 #: daemon/slave.c:2607
 #, c-format
@@ -1003,7 +1079,7 @@ msgstr "用户名："
 msgid "Password: "
 msgstr "口令："
 
-#: daemon/verify-crypt.c:112 daemon/verify-pam.c:332 daemon/verify-pam.c:498
+#: daemon/verify-crypt.c:112 daemon/verify-pam.c:332 daemon/verify-pam.c:499
 #: daemon/verify-shadow.c:121
 msgid "Couldn't authenticate user"
 msgstr "无法认证用户"
@@ -1013,7 +1089,9 @@ msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case.  "
 "Please be sure the Caps Lock key is not enabled"
-msgstr "\n用户名或口令不正确。字母必须以正确的大小写输入。请确认 Caps Lock 将没有开启"
+msgstr ""
+"\n"
+"用户名或口令不正确。字母必须以正确的大小写输入。请确认 Caps Lock 将没有开启"
 
 #: daemon/verify-crypt.c:152 daemon/verify-pam.c:345
 #: daemon/verify-shadow.c:161
@@ -1030,28 +1108,32 @@ msgstr "不允许从该屏幕登录系统管理员"
 msgid "User %s not allowed to log in"
 msgstr "不允许用户 %s 登录"
 
-#: daemon/verify-crypt.c:172 daemon/verify-pam.c:375 daemon/verify-pam.c:531
+#: daemon/verify-crypt.c:172 daemon/verify-pam.c:375 daemon/verify-pam.c:532
 #: daemon/verify-shadow.c:181
 msgid ""
 "\n"
 "The system administrator has disabled your account."
-msgstr "\n系统管理员已经禁用您的帐号。"
+msgstr ""
+"\n"
+"系统管理员已经禁用您的帐号。"
 
 #: daemon/verify-crypt.c:187 daemon/verify-crypt.c:221 daemon/verify-pam.c:393
-#: daemon/verify-pam.c:548 daemon/verify-shadow.c:195
+#: daemon/verify-pam.c:549 daemon/verify-shadow.c:195
 #: daemon/verify-shadow.c:228
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "无法为 %s 设置用户组"
 
 #: daemon/verify-crypt.c:189 daemon/verify-crypt.c:224 daemon/verify-pam.c:395
-#: daemon/verify-pam.c:551 daemon/verify-shadow.c:197
+#: daemon/verify-pam.c:552 daemon/verify-shadow.c:197
 #: daemon/verify-shadow.c:231
 msgid ""
 "\n"
 "Cannot set your user group, you will not be able to log in, please contact "
 "your system administrator."
-msgstr "\n无法设置您的用户组，您将无法登录，请联系您的系统管理员。"
+msgstr ""
+"\n"
+"无法设置您的用户组，您将无法登录，请联系您的系统管理员。"
 
 #: daemon/verify-crypt.c:216 daemon/verify-shadow.c:223
 #, c-format
@@ -1086,7 +1168,9 @@ msgstr "无法设置 PAM_RHOST=%s"
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
-msgstr "\n不允许从该屏幕登录系统管理员"
+msgstr ""
+"\n"
+"不允许从该屏幕登录系统管理员"
 
 #: daemon/verify-pam.c:364
 #, c-format
@@ -1098,14 +1182,16 @@ msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
 "contact the system administrator."
-msgstr "\n修改认证标记失败。请今后再试或与系统管理员联系。"
+msgstr ""
+"\n"
+"修改认证标记失败。请今后再试或与系统管理员联系。"
 
-#: daemon/verify-pam.c:373 daemon/verify-pam.c:528
+#: daemon/verify-pam.c:373 daemon/verify-pam.c:529
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "用户 %s 不再被允许访问系统"
 
-#: daemon/verify-pam.c:379 daemon/verify-pam.c:534
+#: daemon/verify-pam.c:379 daemon/verify-pam.c:535
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "此时不允许用户 %s 获得访问权"
@@ -1114,50 +1200,50 @@ msgstr "此时不允许用户 %s 获得访问权"
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporary."
-msgstr "\n系统管理员已经暂时地收回了您对系统的访问权。"
+msgstr ""
+"\n"
+"系统管理员已经暂时地收回了您对系统的访问权。"
 
-#: daemon/verify-pam.c:386 daemon/verify-pam.c:541
+#: daemon/verify-pam.c:386 daemon/verify-pam.c:542
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "无法设置 %s 的帐号管理"
 
-#: daemon/verify-pam.c:405 daemon/verify-pam.c:569
+#: daemon/verify-pam.c:405 daemon/verify-pam.c:570
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "无法为 %s 设置证书"
 
-#: daemon/verify-pam.c:415 daemon/verify-pam.c:561
+#: daemon/verify-pam.c:415 daemon/verify-pam.c:562
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "无法为 %s 打开会话"
 
-#: daemon/verify-pam.c:440
+#: daemon/verify-pam.c:441 daemon/verify-shadow.c:127
+#: daemon/verify-shadow.c:147
 msgid ""
 "\n"
 "Incorrect username or password. Letters must be typed in the correct case. "
 "Please make sure the Caps Lock key is not enabled."
-msgstr "\n用户名或口令不正确。字母的大小写必须正确。请确认没有开启 Caps Lock 键。"
+msgstr ""
+"\n"
+"用户名或口令不正确。字母的大小写必须正确。请确认没有开启 Caps Lock 键。"
 
-#: daemon/verify-pam.c:446 daemon/verify-pam.c:501
+#: daemon/verify-pam.c:447 daemon/verify-pam.c:502
 msgid "Authentication failed"
 msgstr "认证失败"
 
-#: daemon/verify-pam.c:537
+#: daemon/verify-pam.c:538
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
-msgstr "\n系统管理员已暂时地禁止您对系统的访问。"
+msgstr ""
+"\n"
+"系统管理员已暂时地禁止您对系统的访问。"
 
-#: daemon/verify-pam.c:655 daemon/verify-pam.c:657
+#: daemon/verify-pam.c:656 daemon/verify-pam.c:658
 msgid "Can't find PAM configuration for gdm."
 msgstr "无法为 gdm 找到 PAM 配置。"
-
-#: daemon/verify-shadow.c:127 daemon/verify-shadow.c:147
-msgid ""
-"\n"
-"Incorrect username or password. Letters must be typed in the correct case. "
-"Please make sure the Caps Lock key is not enabled"
-msgstr "\n用户名或口令不正确。字母必须以正确的大小写输入。请确认 Caps Lock 键没有开启"
 
 #: daemon/xdmcp.c:239
 #, c-format
@@ -1364,7 +1450,7 @@ msgstr "gdm_signals_init：设置 INT 信号处理器出错"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init：设置 TERM 信号处理器出错"
 
-#: gui/gdmchooser.c:1000 gui/gdmlogin.c:3832 gui/greeter/greeter.c:623
+#: gui/gdmchooser.c:1000 gui/gdmlogin.c:3832 gui/greeter/greeter.c:645
 msgid "Could not set signal mask!"
 msgstr "无法设置信号屏蔽！"
 
@@ -1532,7 +1618,8 @@ msgid ""
 msgstr ""
 "该面板显示 GDM 的基础系统选项。\n"
 "\n"
-"您只应该在您真的知道您在做什么的前提下修改这些路径，这是由于错误的设置将阻止您正确地启动您的机器。\n"
+"您只应该在您真的知道您在做什么的前提下修改这些路径，这是由于错误的设置将阻止"
+"您正确地启动您的机器。\n"
 "\n"
 "如果您只希望修改您机器的登录外观，选择“基本”。"
 
@@ -1547,11 +1634,11 @@ msgstr ""
 "“%s”。不幸的是我无法继续。\n"
 "请检查您的安装。"
 
-#: gui/gdmconfig.c:387
+#: gui/gdmconfig.c:393
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "只有超级用户 (根用户) 才能配置 GDM。\n"
 
-#: gui/gdmconfig.c:432
+#: gui/gdmconfig.c:438
 msgid ""
 "Cannot find the glade interface description\n"
 "file, cannot run gdmconfig.\n"
@@ -1563,7 +1650,7 @@ msgstr ""
 "请检查您的安装和\n"
 " gdmconfig.glade2 文件的位置。"
 
-#: gui/gdmconfig.c:465
+#: gui/gdmconfig.c:471
 msgid ""
 "Cannot find the gdmconfigurator widget in\n"
 "the glade interface description file\n"
@@ -1573,11 +1660,11 @@ msgstr ""
 "中找到 gdmconfigurator 构件。\n"
 "请检查您的安装。"
 
-#: gui/gdmconfig.c:516
+#: gui/gdmconfig.c:522
 msgid "GNOME Display Manager Configurator"
 msgstr "GNOME 显示管理器配置程序"
 
-#: gui/gdmconfig.c:747
+#: gui/gdmconfig.c:754
 #, c-format
 msgid ""
 "The configuration file: %s\n"
@@ -1586,33 +1673,33 @@ msgstr ""
 "配置文件：%s\n"
 "不存在！使用默认值。"
 
-#: gui/gdmconfig.c:754 gui/gdmconfig.c:1105 gui/gdmconfig.c:1994
-#: gui/gdmconfig.c:2218 gui/gdmflexiserver.c:450
+#: gui/gdmconfig.c:761 gui/gdmconfig.c:1112 gui/gdmconfig.c:2005
+#: gui/gdmconfig.c:2229 gui/gdmflexiserver.c:450
 msgid "Standard server"
 msgstr "标准服务器"
 
-#: gui/gdmconfig.c:953
+#: gui/gdmconfig.c:960
 msgid "Error reading session script!"
 msgstr "读取会话脚本错误！"
 
-#: gui/gdmconfig.c:956
+#: gui/gdmconfig.c:963
 msgid "Error reading this session script"
 msgstr "读取该会话脚本错误"
 
-#: gui/gdmconfig.c:1064 gui/gdmconfig.c:1110 gui/gdmconfig.c:1541
-#: gui/gdmconfig.c:1978 gui/gdmconfig.c:2058 gui/gdmconfig.c:2074
+#: gui/gdmconfig.c:1071 gui/gdmconfig.c:1117 gui/gdmconfig.c:1551
+#: gui/gdmconfig.c:1989 gui/gdmconfig.c:2069 gui/gdmconfig.c:2085
 msgid "Yes"
 msgstr "是"
 
-#: gui/gdmconfig.c:1066 gui/gdmconfig.c:2062 gui/gdmconfig.c:2076
+#: gui/gdmconfig.c:1073 gui/gdmconfig.c:2073 gui/gdmconfig.c:2087
 msgid "No"
 msgstr "否"
 
-#: gui/gdmconfig.c:1141
+#: gui/gdmconfig.c:1148
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr "gdm_config_parse_most：配置文件中含有非法服务器行。忽略！"
 
-#: gui/gdmconfig.c:1316
+#: gui/gdmconfig.c:1323
 msgid ""
 "The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
@@ -1628,15 +1715,15 @@ msgstr ""
 "您立即重新启动 GDM (这将杀死所有\n"
 "当前会话)"
 
-#: gui/gdmconfig.c:1322
+#: gui/gdmconfig.c:1329
 msgid "Restart after logout"
 msgstr "注消后重新开始"
 
-#: gui/gdmconfig.c:1323
+#: gui/gdmconfig.c:1330
 msgid "Restart now"
 msgstr "立即重新开始"
 
-#: gui/gdmconfig.c:1333
+#: gui/gdmconfig.c:1340
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "now and lose any unsaved data?"
@@ -1644,7 +1731,7 @@ msgstr ""
 "您确信您现在要重新启动 GDM\n"
 " 并丢失所有未保存的数据？"
 
-#: gui/gdmconfig.c:1341
+#: gui/gdmconfig.c:1348
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -1656,25 +1743,25 @@ msgstr ""
 " 重新启动或计算机重新启动\n"
 "后生效。"
 
-#: gui/gdmconfig.c:1364
+#: gui/gdmconfig.c:1372
 msgid ""
 "You have not defined any local servers.\n"
 "Usually this is not a good idea unless you\n"
 "are sure you do not want users to be able to\n"
 "log in with the graphical interface on the\n"
-"local console and only use the xdmcp service.\n"
+"local console and only use the XDMCP service.\n"
 "\n"
 "Are you sure you wish to apply these settings?"
 msgstr ""
 "您尚未定义任何本地服务器。\n"
 "除非您确信您不希望用户从\n"
 "本地控制台通过图形界面登录\n"
-"而只使用 xdmcp 服务，否则\n"
+"而只使用 XDMCP 服务，否则\n"
 "这就不是个好主意。\n"
 "\n"
 "您确信您要应用这些设置吗？"
 
-#: gui/gdmconfig.c:1577
+#: gui/gdmconfig.c:1587
 #, c-format
 msgid ""
 "\n"
@@ -1685,7 +1772,7 @@ msgstr ""
 "无法删除会话 %s\n"
 "   错误：%s"
 
-#: gui/gdmconfig.c:1613
+#: gui/gdmconfig.c:1623
 #, c-format
 msgid ""
 "\n"
@@ -1696,7 +1783,7 @@ msgstr ""
 "无法删除会话 %s\n"
 "   错误：%s"
 
-#: gui/gdmconfig.c:1656
+#: gui/gdmconfig.c:1666
 #, c-format
 msgid ""
 "\n"
@@ -1707,7 +1794,7 @@ msgstr ""
 "无法写入会话 %s\n"
 "   错误：%s"
 
-#: gui/gdmconfig.c:1667
+#: gui/gdmconfig.c:1677
 #, c-format
 msgid ""
 "\n"
@@ -1718,7 +1805,7 @@ msgstr ""
 "无法将内容写入会话 %s\n"
 "   错误：%s"
 
-#: gui/gdmconfig.c:1692
+#: gui/gdmconfig.c:1702
 #, c-format
 msgid ""
 "\n"
@@ -1729,7 +1816,7 @@ msgstr ""
 "无法断开原默认会话\n"
 "   错误：%s"
 
-#: gui/gdmconfig.c:1731
+#: gui/gdmconfig.c:1741
 msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
@@ -1737,7 +1824,7 @@ msgstr ""
 "\n"
 "无法为默认会话连接找到适当的名称"
 
-#: gui/gdmconfig.c:1740
+#: gui/gdmconfig.c:1750
 #, c-format
 msgid ""
 "\n"
@@ -1748,7 +1835,7 @@ msgstr ""
 "无法连接新默认会话\n"
 "   错误：%s"
 
-#: gui/gdmconfig.c:1760
+#: gui/gdmconfig.c:1770
 msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
@@ -1756,7 +1843,7 @@ msgstr ""
 "在将改变写入会话文件时出现错误。\n"
 "可能没有完整地保存配置。\n"
 
-#: gui/gdmconfig.c:1780
+#: gui/gdmconfig.c:1790
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -1764,7 +1851,7 @@ msgstr ""
 "这将丢失该会话所做的一切修改。\n"
 "您确信您要这样做？"
 
-#: gui/gdmconfig.c:1791
+#: gui/gdmconfig.c:1801
 msgid ""
 "This will destroy any changes made in the configuration.\n"
 "Are you sure you want to do this?"
@@ -1772,23 +1859,23 @@ msgstr ""
 "这将丢失该配置所作的一切修改。\n"
 "您确信您要这样做？"
 
-#: gui/gdmconfig.c:2016 gui/gdmconfig.c:2348
+#: gui/gdmconfig.c:2027 gui/gdmconfig.c:2359
 msgid "A command line must start with a forward slash ('/')"
 msgstr "命令行必须以除号开始 (“/”)"
 
-#: gui/gdmconfig.c:2020
+#: gui/gdmconfig.c:2031
 msgid "A descriptive server name must be supplied"
 msgstr "必须给出描述性的服务器名"
 
-#: gui/gdmconfig.c:2694
+#: gui/gdmconfig.c:2705
 msgid "A session name must be unique and not empty"
 msgstr "会话名必须唯一并且不能为空"
 
-#: gui/gdmconfig.c:2707
+#: gui/gdmconfig.c:2718
 msgid "Enter a name for the new session"
 msgstr "为新会话输入名称"
 
-#: gui/gdmconfig.c:2822
+#: gui/gdmconfig.c:2833
 msgid ""
 "You have modified the sessions directory.\n"
 "Your session changes will still get written\n"
@@ -1919,7 +2006,8 @@ msgstr "失败时抖动"
 msgid ""
 "Show the title bar on the login window.  If this is off the user won't be "
 "able to move nor iconify the login window"
-msgstr "为登录窗口显示标题条。如果关闭该选项用户即不能移动，也不能图标化登录窗口"
+msgstr ""
+"为登录窗口显示标题条。如果关闭该选项用户即不能移动，也不能图标化登录窗口"
 
 #: gui/gdmconfig-strings.c:33
 msgid "Show title bar on login window"
@@ -1966,7 +2054,7 @@ msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 
 #: gui/gdmconfig-strings.c:44
 msgid "Extras"
-msgstr ""
+msgstr "其它"
 
 #: gui/gdmconfig-strings.c:45
 msgid "Default locale: "
@@ -2101,13 +2189,16 @@ msgid ""
 "This is the locale that GDM uses when it cannot find what the system locale "
 "is set to.  This should be in the standard format such as \"en_US\" for "
 "American English or \"cs_CZ\" for Czech"
-msgstr "这是在 GDM 无法确认系统的区域设置时使用的区域设置。这应该是标准格式，譬如美国英语应使用“en_US”，捷克语应使用“cz_CZ”"
+msgstr ""
+"这是在 GDM 无法确认系统的区域设置时使用的区域设置。这应该是标准格式，譬如美国"
+"英语应使用“en_US”，捷克语应使用“cz_CZ”"
 
 #: gui/gdmconfig-strings.c:80
 msgid ""
 "Always use the 24 hour format for the clock in the greeter, even if the norm "
 "for the current locale is 12 hour"
-msgstr "总是在欢迎程序中使用 24 小时时钟格式，而不管当前区域设置是否为 12 小时格式"
+msgstr ""
+"总是在欢迎程序中使用 24 小时时钟格式，而不管当前区域设置是否为 12 小时格式"
 
 #: gui/gdmconfig-strings.c:81
 msgid "Always use 24 hour clock format"
@@ -2149,7 +2240,9 @@ msgstr "Xinerama 屏幕："
 msgid ""
 "If you have xinerama multi display setup which screen should the login "
 "window appear on.  0 will usually do just fine."
-msgstr "如果您拥有 xinerama 多头显示支持，就请设置那个屏幕应该显示登录窗口。0 号屏幕应该可以很好地工作。"
+msgstr ""
+"如果您拥有 xinerama 多头显示支持，就请设置那个屏幕应该显示登录窗口。0 号屏幕"
+"应该可以很好地工作。"
 
 #: gui/gdmconfig-strings.c:91
 msgid "Login behaviour"
@@ -2327,7 +2420,9 @@ msgstr "允许根用户通过 GDM 登录"
 msgid ""
 "Allow logging in as root (administrator) user from a remote host using GDM.  "
 "This is only relevant if you enable the XDMCP protocol."
-msgstr "允许使用 GDM 从远程主机登录根 (管理员) 用户。只有在您开启了 XDMCP 协议时该选项才有意义。"
+msgstr ""
+"允许使用 GDM 从远程主机登录根 (管理员) 用户。只有在您开启了 XDMCP 协议时该选"
+"项才有意义。"
 
 #: gui/gdmconfig-strings.c:138
 msgid "Allow root to login remotely with GDM"
@@ -2339,7 +2434,10 @@ msgid ""
 "relevant if you enable the XDMCP protocol.  Note that this is insecure since "
 "remote hosts can gain access to this computer without the use of a password, "
 "so be careful."
-msgstr "允许使用 GDM 从远程主机进行延迟登录。只有在您开启了 XDMCP 协议时该选项才有意义。请注意由于远程主机可以不使用口令而获得对该电脑的访问权，因而是不安全的，所以请小心。"
+msgstr ""
+"允许使用 GDM 从远程主机进行延迟登录。只有在您开启了 XDMCP 协议时该选项才有意"
+"义。请注意由于远程主机可以不使用口令而获得对该电脑的访问权，因而是不安全的，"
+"所以请小心。"
 
 #: gui/gdmconfig-strings.c:140
 msgid "Allow remote timed logins"
@@ -2405,7 +2503,7 @@ msgstr "用户“认证”目录："
 
 #: gui/gdmconfig-strings.c:155
 msgid "User 'auth' FB directory: "
-msgstr ""
+msgstr "用户“认证”FB 目录："
 
 #: gui/gdmconfig-strings.c:156
 msgid "User 'auth' file: "
@@ -2429,7 +2527,9 @@ msgid ""
 "The maximum size of a file that gdm will attempt to read.  This is for files "
 "that are read into memory and so you don't want users \"attacking\" gdm by "
 "having large files."
-msgstr "gdm 试图读取的文件的最大尺寸。这是关于需要读入内存的文件的，所以您就不会遭到巨型文件对 gdm 的“攻击”了。"
+msgstr ""
+"gdm 试图读取的文件的最大尺寸。这是关于需要读入内存的文件的，所以您就不会遭到"
+"巨型文件对 gdm 的“攻击”了。"
 
 #: gui/gdmconfig-strings.c:161
 msgid "Retry delay: "
@@ -2457,7 +2557,9 @@ msgstr "安全"
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
-msgstr "可执行文件不支持 XDMCP。为启用 XDMCP 支持您必须在带有 XDMCP 库的情况下重新编译 GDM。"
+msgstr ""
+"可执行文件不支持 XDMCP。为启用 XDMCP 支持您必须在带有 XDMCP 库的情况下重新编"
+"译 GDM。"
 
 #: gui/gdmconfig-strings.c:167
 msgid "Enable XDMCP, a protocol to allow others to log in remotely"
@@ -2508,14 +2610,18 @@ msgid ""
 "Interval in minutes in which to ping the server.  If the server doesn't "
 "respond in this many minutes (that is before the next time we ping it) the "
 "display will be terminated."
-msgstr "两次 ping 服务器间隔的分钟数。如果服务器在这段时间内没有应答 (就是我们下次 ping 服务器之前)，显示就将被终止。"
+msgstr ""
+"两次 ping 服务器间隔的分钟数。如果服务器在这段时间内没有应答 (就是我们下次 "
+"ping 服务器之前)，显示就将被终止。"
 
 #: gui/gdmconfig-strings.c:179
 msgid ""
 "The script to run when the server sends a WILLING response to a QUERY.  If "
 "this is empty or does not exist, the standard message with the system ID is "
 "sent.  Only the first line of output from this script is read."
-msgstr "当服务器对一个查询发送 WILLING 响应时运行的脚本。如果这为空或者不存在，将发送带有系统 ID 的标准消息。只读入该脚本所输出的第一行。"
+msgstr ""
+"当服务器对一个查询发送 WILLING 响应时运行的脚本。如果这为空或者不存在，将发送"
+"带有系统 ID 的标准消息。只读入该脚本所输出的第一行。"
 
 #: gui/gdmconfig-strings.c:180
 msgid "Willing script (optional):"
@@ -2525,7 +2631,9 @@ msgstr "Willing 脚本 (可选)："
 msgid ""
 "Maximum displays per single host.  You can use this to prevent attacks by "
 "hogging all the possible displays.  Does not apply to local connections."
-msgstr "单个主机可接受的最大显示数。您可以用此选项防止夺取所有可能显示的攻击。不要应用于本地连接。"
+msgstr ""
+"单个主机可接受的最大显示数。您可以用此选项防止夺取所有可能显示的攻击。不要应"
+"用于本地连接。"
 
 #: gui/gdmconfig-strings.c:182
 msgid "Displays per host:"
@@ -2587,7 +2695,9 @@ msgstr "额外参数"
 msgid ""
 "Instead of reinitializing running servers when a user logs out.  Always kill "
 "and then start the server again."
-msgstr "当用户注消时不是重新初始化运行中的服务器，而总是杀死服务器而后再重新启动服务器。"
+msgstr ""
+"当用户注消时不是重新初始化运行中的服务器，而总是杀死服务器而后再重新启动服务"
+"器。"
 
 #: gui/gdmconfig-strings.c:197
 msgid "Always restart X servers"
@@ -2610,7 +2720,8 @@ msgstr "便捷服务器的最大数量："
 msgid ""
 "The Xnest server.  This is a server that can run inside another server, used "
 "for the flexible nested login."
-msgstr "Xnest 服务器。这是一个可以运行在其它服务器内的服务器，用于嵌套的便捷登录。"
+msgstr ""
+"Xnest 服务器。这是一个可以运行在其它服务器内的服务器，用于嵌套的便捷登录。"
 
 #: gui/gdmconfig-strings.c:205
 msgid "Standard X server: "
@@ -2633,7 +2744,9 @@ msgid ""
 "A script to run when the X server keeps crashing and the failsafe X server "
 "is either empty or also didn't take.  This will run an X setup program "
 "defined below."
-msgstr "当 X 服务器总是崩溃并且 failsafe X 服务器为空或无法得到时运行的脚本。这将运行下面定义的 X 设置程序。"
+msgstr ""
+"当 X 服务器总是崩溃并且 failsafe X 服务器为空或无法得到时运行的脚本。这将运行"
+"下面定义的 X 设置程序。"
 
 #: gui/gdmconfig-strings.c:210
 msgid "Failsafe X server:"
@@ -2643,7 +2756,9 @@ msgstr "Failsafe X 服务器："
 msgid ""
 "An X server binary to run if the standard one keeps crashing.  If this fails "
 "the script below will be run."
-msgstr "如果标准 X 服务器总是崩溃时运行的 X 服务器可执行文件。如果该服务器失败，就将运行下面的脚本。"
+msgstr ""
+"如果标准 X 服务器总是崩溃时运行的 X 服务器可执行文件。如果该服务器失败，就将"
+"运行下面的脚本。"
 
 #: gui/gdmconfig-strings.c:212
 msgid "X-server setup"
@@ -2670,6 +2785,7 @@ msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
 msgstr "如果名为 “Gnome” 的会话存在，则显示 Gnome 选择程序会话"
 
 #: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:71 gui/gdmlogin.c:1452
+#: gui/greeter/greeter_session.c:343
 msgid "Gnome Chooser"
 msgstr "Gnome 选择程序"
 
@@ -2770,7 +2886,9 @@ msgid ""
 "Enable debugging output to be printed into the syslog.  Useful for tracking "
 "down problems.  But not so useful for normal usage as it can fill up your "
 "logs very quickly."
-msgstr "启用调试输出，将调试输出打印到 syslog 中。用于查找问题。但由于它会很快充满您的日志，因而对普通用途没用。"
+msgstr ""
+"启用调试输出，将调试输出打印到 syslog 中。用于查找问题。但由于它会很快充满您"
+"的日志，因而对普通用途没用。"
 
 #: gui/gdmconfig-strings.c:245
 msgid "Enable debugging output"
@@ -2933,7 +3051,7 @@ msgstr "调试输出"
 msgid "Authenticate before running --command"
 msgstr "在运行 --command 前进行认证"
 
-#: gui/gdmXnestchooser.c:263 gui/gdmflexiserver.c:553
+#: gui/gdmflexiserver.c:553 gui/gdmXnestchooser.c:263
 msgid ""
 "GDM is not running.\n"
 "Please ask your system administrator to start it."
@@ -2950,7 +3068,8 @@ msgstr "无法于 gdm 通讯，可能您正在运行老版本的 gdm。"
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
-msgstr "您可能不具有该操作所必须的认证权限。可能您的 .Xauthority 文件的设置不正确。"
+msgstr ""
+"您可能不具有该操作所必须的认证权限。可能您的 .Xauthority 文件的设置不正确。"
 
 #: gui/gdmflexiserver.c:608
 msgid ""
@@ -2986,7 +3105,8 @@ msgstr "运行了过多的 X 会话。"
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
-msgstr "嵌入 X 服务器 (Xnest) 无法连接到您当前的 X 服务器。您可能缺少 X 认证文件。"
+msgstr ""
+"嵌入 X 服务器 (Xnest) 无法连接到您当前的 X 服务器。您可能缺少 X 认证文件。"
 
 #: gui/gdmflexiserver.c:666
 msgid ""
@@ -3023,193 +3143,223 @@ msgstr "嵌套窗口中的新登录"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:41
+msgid "A-M|Azerbaijani"
+msgstr "A-M|阿塞拜疆语"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:43
+msgid "A-M|Basque"
+msgstr "A-M|巴斯克语"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:45
+msgid "A-M|Bulgarian"
+msgstr "A-M|保加利亚语"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:47
 msgid "A-M|Catalan"
 msgstr "A-M|加泰罗尼亚语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:43
+#: gui/gdmlanguages.c:49
 msgid "A-M|Chinese (simplified)"
 msgstr "A-M|中文 (简体)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:45
+#: gui/gdmlanguages.c:51
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|中文 (繁体)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:47
+#: gui/gdmlanguages.c:53
 msgid "A-M|Croatian"
 msgstr "A-M|克罗地亚语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:49
+#: gui/gdmlanguages.c:55
 msgid "A-M|Czech"
 msgstr "A-M|捷克语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:51
+#: gui/gdmlanguages.c:57
 msgid "A-M|Danish"
 msgstr "A-M|丹麦语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:53
+#: gui/gdmlanguages.c:59
 msgid "A-M|Dutch"
 msgstr "A-M|荷兰语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:55
+#: gui/gdmlanguages.c:61
 msgid "A-M|English"
 msgstr "A-M|英语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:57
+#: gui/gdmlanguages.c:63
+msgid "A-M|Estonian"
+msgstr "A-M|爱沙尼亚语"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:65
 msgid "A-M|American English"
 msgstr "A-M|美国英语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:59
+#: gui/gdmlanguages.c:67
 msgid "A-M|British English"
 msgstr "A-M|英国英语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:61
+#: gui/gdmlanguages.c:69
 msgid "A-M|Finnish"
 msgstr "A-M|芬兰语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:63
+#: gui/gdmlanguages.c:71
 msgid "A-M|French"
 msgstr "A-M|法语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:65
+#: gui/gdmlanguages.c:73
 msgid "A-M|Galician"
 msgstr "A-M|加利西亚语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:67
+#: gui/gdmlanguages.c:75
 msgid "A-M|German"
 msgstr "A-M|德语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:69
+#: gui/gdmlanguages.c:77
 msgid "A-M|Greek"
 msgstr "A-M|希腊语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:71
+#: gui/gdmlanguages.c:79
 msgid "A-M|Hebrew"
 msgstr "A-M|希伯来语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:73
+#: gui/gdmlanguages.c:81
 msgid "A-M|Hungarian"
 msgstr "A-M|匈牙利语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:75
+#: gui/gdmlanguages.c:83
 msgid "A-M|Icelandic"
 msgstr "A-M|冰岛语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:77
+#: gui/gdmlanguages.c:85
 msgid "A-M|Italian"
 msgstr "A-M|意大利语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:79
+#: gui/gdmlanguages.c:87
 msgid "A-M|Japanese"
 msgstr "A-M|日语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:81
+#: gui/gdmlanguages.c:89
 msgid "A-M|Korean"
 msgstr "A-M|韩语"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:83
+#: gui/gdmlanguages.c:91
+msgid "A-M|Latvian"
+msgstr "A-M|拉脱维亚语"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:93
 msgid "A-M|Lithuanian"
 msgstr "A-M|立陶宛语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:95
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|挪威语 (博克马尔语)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:97
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|挪威语 (尼诺斯克语)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:99
 msgid "N-Z|Polish"
 msgstr "N-Z|波兰语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:101
 msgid "N-Z|Portuguese"
 msgstr "N-Z|葡萄牙语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:103
 msgid "N-Z|Brazilian Portuguese"
 msgstr "N-Z|巴西葡萄牙语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:105
 msgid "N-Z|Romanian"
 msgstr "N-Z|罗马尼亚语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:107
 msgid "N-Z|Russian"
 msgstr "N-Z|俄语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:109
 msgid "N-Z|Slovak"
 msgstr "N-Z|斯洛伐克语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:111
 msgid "N-Z|Slovenian"
 msgstr "N-Z|斯洛文尼亚语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:103
+#: gui/gdmlanguages.c:113
 msgid "N-Z|Spanish"
 msgstr "N-Z|西班牙语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:115
 msgid "N-Z|Swedish"
 msgstr "N-Z|瑞典语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:117
 msgid "N-Z|Turkish"
 msgstr "N-Z|土耳其语"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:119
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|乌克兰语"
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:121
+msgid "N-Z|Walloon"
+msgstr "N-Z|瓦龙语"
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:123
 msgid "Other|POSIX/C English"
 msgstr "其它|POSIX/C 英语"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:238
+#: gui/gdmlanguages.c:250
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:246
+#: gui/gdmlanguages.c:258
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -3268,15 +3418,15 @@ msgstr ""
 "\n"
 "您恐怕还是无法登录。"
 
-#: gui/gdmlogin.c:761
+#: gui/gdmlogin.c:761 gui/greeter/greeter_system.c:17
 msgid "Are you sure you want to reboot the machine?"
 msgstr "您确信您要重新启动计算机？"
 
-#: gui/gdmlogin.c:773
+#: gui/gdmlogin.c:773 gui/greeter/greeter_system.c:28
 msgid "Are you sure you want to shut down the machine?"
 msgstr "您确信您要关闭计算机？"
 
-#: gui/gdmlogin.c:784
+#: gui/gdmlogin.c:784 gui/greeter/greeter_system.c:38
 msgid "Are you sure you want to suspend the machine?"
 msgstr "您确信您要挂起计算机？"
 
@@ -3289,15 +3439,17 @@ msgstr "gdm_login_parse_config：缺少配置文件：%s。使用默认值。"
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr "TimedLoginDelay 少于 5。我就使用 5。"
 
-#: gui/gdmlogin.c:925 gui/gdmlogin.c:1500
+#: gui/gdmlogin.c:925 gui/gdmlogin.c:1500 gui/greeter/greeter_session.c:64
+#: gui/greeter/greeter_session.c:390
 msgid "Failsafe Gnome"
 msgstr "Failsafe Gnome"
 
-#: gui/gdmlogin.c:927 gui/gdmlogin.c:1525
+#: gui/gdmlogin.c:927 gui/gdmlogin.c:1525 gui/greeter/greeter_session.c:66
+#: gui/greeter/greeter_session.c:416
 msgid "Failsafe xterm"
 msgstr "Failsafe xterm"
 
-#: gui/gdmlogin.c:973
+#: gui/gdmlogin.c:973 gui/greeter/greeter_session.c:110
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -3307,6 +3459,7 @@ msgstr ""
 "是否希望使 %s 成为以后会话的默认设置？"
 
 #: gui/gdmlogin.c:998 gui/gdmlogin.c:1086
+#: gui/greeter/greeter_action_language.c:191 gui/greeter/greeter_session.c:138
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -3320,7 +3473,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:1014
+#: gui/gdmlogin.c:1014 gui/greeter/greeter_session.c:156
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -3338,44 +3491,49 @@ msgstr ""
 msgid "%s session selected"
 msgstr "%s 会话选定"
 
-#: gui/gdmlogin.c:1342
+#: gui/gdmlogin.c:1342 gui/greeter/greeter_session.c:229
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "使用您上次登录的会话登录"
 
-#: gui/gdmlogin.c:1355
+#: gui/gdmlogin.c:1355 gui/greeter/greeter_session.c:242
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init：无法找到会话脚本目录！"
 
-#: gui/gdmlogin.c:1440
+#: gui/gdmlogin.c:1440 gui/greeter/greeter_session.c:329
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr "该会话将把您直接登录到 GNOME，登录到您的当前会话中。"
 
-#: gui/gdmlogin.c:1455
+#: gui/gdmlogin.c:1455 gui/greeter/greeter_session.c:346
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
-msgstr "该会话将把您登录到 GNOME 中，并且允许您选择一个您希望使用的 GNOME 会话。"
+msgstr ""
+"该会话将把您登录到 GNOME 中，并且允许您选择一个您希望使用的 GNOME 会话。"
 
-#: gui/gdmlogin.c:1490
+#: gui/gdmlogin.c:1490 gui/greeter/greeter_session.c:379
 msgid "Yaikes, nothing found in the session directory."
 msgstr "啊呀，在会话目录中什么也找不到。"
 
-#: gui/gdmlogin.c:1502
+#: gui/gdmlogin.c:1502 gui/greeter/greeter_session.c:392
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
-msgstr "这是个将您登录到 GNOME 的 failsafe 会话。不会读入启动脚本，而且只有在您无法以其它方式登录时才使用。GNOME将使用“默认”会话。"
+msgstr ""
+"这是个将您登录到 GNOME 的 failsafe 会话。不会读入启动脚本，而且只有在您无法以"
+"其它方式登录时才使用。GNOME将使用“默认”会话。"
 
-#: gui/gdmlogin.c:1527
+#: gui/gdmlogin.c:1527 gui/greeter/greeter_session.c:418
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
-msgstr "这是个将您登录到终端的 failsafe 会话。不会读入启动脚本，并且只有在您无法以其它方式登录时才使用。为了退出终端，输入“exit”。"
+msgstr ""
+"这是个将您登录到终端的 failsafe 会话。不会读入启动脚本，并且只有在您无法以其"
+"它方式登录时才使用。为了退出终端，输入“exit”。"
 
-#: gui/gdmlogin.c:1548
+#: gui/gdmlogin.c:1548 gui/greeter/greeter_session.c:440
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "未找到默认会话连接。使用 Failsafe GNOME。\n"
 
@@ -3433,7 +3591,7 @@ msgstr "%b %d %a, %I:%M %p"
 
 #: gui/gdmlogin.c:2704
 msgid "Finger"
-msgstr ""
+msgstr "Finger"
 
 #: gui/gdmlogin.c:2778
 msgid "GDM Login"
@@ -3489,8 +3647,8 @@ msgstr "断开连接"
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "无法打开默认图像：%s。暂时中止人像浏览器！"
 
-#: gui/gdmlogin.c:3700 gui/gdmlogin.c:3727 gui/greeter/greeter.c:465
-#: gui/greeter/greeter.c:491
+#: gui/gdmlogin.c:3700 gui/gdmlogin.c:3727 gui/greeter/greeter.c:377
+#: gui/greeter/greeter.c:403
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3501,12 +3659,12 @@ msgstr ""
 "您可能刚刚升级 gdm。\n"
 "请重新启动 gdm daemon 或重新启动计算机。"
 
-#: gui/gdmlogin.c:3733 gui/gdmlogin.c:3773 gui/greeter/greeter.c:497
-#: gui/greeter/greeter.c:537
+#: gui/gdmlogin.c:3733 gui/gdmlogin.c:3773 gui/greeter/greeter.c:409
+#: gui/greeter/greeter.c:449
 msgid "Reboot"
 msgstr "重启"
 
-#: gui/gdmlogin.c:3765 gui/greeter/greeter.c:529
+#: gui/gdmlogin.c:3765 gui/greeter/greeter.c:441
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3517,19 +3675,19 @@ msgstr ""
 "您可能刚刚升级 gdm。\n"
 "请重新启动 gdm daemon 或重新启动计算机。"
 
-#: gui/gdmlogin.c:3771 gui/greeter/greeter.c:535
+#: gui/gdmlogin.c:3771 gui/greeter/greeter.c:447
 msgid "Restart"
 msgstr "重新开始"
 
-#: gui/gdmlogin.c:3809 gui/greeter/greeter.c:608
+#: gui/gdmlogin.c:3809 gui/greeter/greeter.c:630
 msgid "main: Error setting up HUP signal handler"
 msgstr "main：设置 HUP 信号处理器出错"
 
-#: gui/gdmlogin.c:3812 gui/greeter/greeter.c:611
+#: gui/gdmlogin.c:3812 gui/greeter/greeter.c:633
 msgid "main: Error setting up INT signal handler"
 msgstr "main：设置 INT 信号处理器出错"
 
-#: gui/gdmlogin.c:3815 gui/greeter/greeter.c:614
+#: gui/gdmlogin.c:3815 gui/greeter/greeter.c:636
 msgid "main: Error setting up TERM signal handler"
 msgstr "main：设置 TERM 信号处理器出错"
 
@@ -3695,146 +3853,162 @@ msgstr ""
 msgid "Could not find a free display number"
 msgstr "无法找到空闲的显示编号"
 
-#: gui/greeter/greeter.c:35
+#: gui/greeter/greeter.c:46
 #, c-format
 msgid "greeter_parse_config: No configuration file: %s. Using defaults."
 msgstr "greeter_parse_config：缺少配置文件：%s。使用默认配置。"
 
-#: gui/greeter/greeter_lang_list.c:5
+#: gui/greeter/greeter_lang_list.c:11
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: gui/greeter/greeter_lang_list.c:6
+#: gui/greeter/greeter_lang_list.c:12
 msgid "Chinese (simplified)"
 msgstr "中文 (简体)"
 
-#: gui/greeter/greeter_lang_list.c:7
+#: gui/greeter/greeter_lang_list.c:13
 msgid "Chinese (traditional)"
 msgstr "中文 (繁体)"
 
-#: gui/greeter/greeter_lang_list.c:8
+#: gui/greeter/greeter_lang_list.c:14
 msgid "Croatian"
 msgstr "克罗地亚语"
 
-#: gui/greeter/greeter_lang_list.c:9
+#: gui/greeter/greeter_lang_list.c:15
 msgid "Czech"
 msgstr "捷克语"
 
-#: gui/greeter/greeter_lang_list.c:10
+#: gui/greeter/greeter_lang_list.c:16
 msgid "Danish"
 msgstr "丹麦语"
 
-#: gui/greeter/greeter_lang_list.c:11
+#: gui/greeter/greeter_lang_list.c:17
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: gui/greeter/greeter_lang_list.c:12
+#: gui/greeter/greeter_lang_list.c:18
 msgid "English"
 msgstr "英语"
 
-#: gui/greeter/greeter_lang_list.c:13
+#: gui/greeter/greeter_lang_list.c:19
 msgid "American English"
 msgstr "美国英语"
 
-#: gui/greeter/greeter_lang_list.c:14
+#: gui/greeter/greeter_lang_list.c:20
 msgid "British English"
 msgstr "英国英语"
 
-#: gui/greeter/greeter_lang_list.c:15
+#: gui/greeter/greeter_lang_list.c:21
+msgid "Estonian"
+msgstr "爱沙尼亚语"
+
+#: gui/greeter/greeter_lang_list.c:22
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: gui/greeter/greeter_lang_list.c:16
+#: gui/greeter/greeter_lang_list.c:23
 msgid "French"
 msgstr "法语"
 
-#: gui/greeter/greeter_lang_list.c:17
+#: gui/greeter/greeter_lang_list.c:24
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: gui/greeter/greeter_lang_list.c:18
+#: gui/greeter/greeter_lang_list.c:25
 msgid "German"
 msgstr "德语"
 
-#: gui/greeter/greeter_lang_list.c:19
+#: gui/greeter/greeter_lang_list.c:26
 msgid "Greek"
 msgstr "希腊语"
 
-#: gui/greeter/greeter_lang_list.c:20
+#: gui/greeter/greeter_lang_list.c:27
 msgid "Hebrew"
 msgstr "希伯来语"
 
-#: gui/greeter/greeter_lang_list.c:21
+#: gui/greeter/greeter_lang_list.c:28
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: gui/greeter/greeter_lang_list.c:22
+#: gui/greeter/greeter_lang_list.c:29
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: gui/greeter/greeter_lang_list.c:23
+#: gui/greeter/greeter_lang_list.c:30
 msgid "Italian"
 msgstr "意大利语"
 
-#: gui/greeter/greeter_lang_list.c:24
+#: gui/greeter/greeter_lang_list.c:31
 msgid "Japanese"
 msgstr "日语"
 
-#: gui/greeter/greeter_lang_list.c:25
+#: gui/greeter/greeter_lang_list.c:32
 msgid "Korean"
 msgstr "韩语"
 
-#: gui/greeter/greeter_lang_list.c:26
+#: gui/greeter/greeter_lang_list.c:33
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: gui/greeter/greeter_lang_list.c:27
+#: gui/greeter/greeter_lang_list.c:34
 msgid "Norwegian (bokmal)"
 msgstr "挪威语 (博克马尔语)"
 
-#: gui/greeter/greeter_lang_list.c:28
+#: gui/greeter/greeter_lang_list.c:35
 msgid "Norwegian (nynorsk)"
 msgstr "挪威语 (尼诺斯克语)"
 
-#: gui/greeter/greeter_lang_list.c:29
+#: gui/greeter/greeter_lang_list.c:36
 msgid "Polish"
 msgstr "波兰语"
 
-#: gui/greeter/greeter_lang_list.c:30
+#: gui/greeter/greeter_lang_list.c:37
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: gui/greeter/greeter_lang_list.c:31
+#: gui/greeter/greeter_lang_list.c:38
 msgid "Brazilian Portuguese"
 msgstr "巴西葡萄牙语"
 
-#: gui/greeter/greeter_lang_list.c:32
+#: gui/greeter/greeter_lang_list.c:39
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: gui/greeter/greeter_lang_list.c:33
+#: gui/greeter/greeter_lang_list.c:40
 msgid "Russian"
 msgstr "俄语"
 
-#: gui/greeter/greeter_lang_list.c:34
+#: gui/greeter/greeter_lang_list.c:41
 msgid "Slovak"
 msgstr "斯洛伐克语"
 
-#: gui/greeter/greeter_lang_list.c:35
+#: gui/greeter/greeter_lang_list.c:42
 msgid "Slovenian"
 msgstr "斯洛文尼亚语"
 
-#: gui/greeter/greeter_lang_list.c:36
+#: gui/greeter/greeter_lang_list.c:43
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: gui/greeter/greeter_lang_list.c:37
+#: gui/greeter/greeter_lang_list.c:44
 msgid "Swedish"
 msgstr "瑞典语"
 
-#: gui/greeter/greeter_lang_list.c:38
+#: gui/greeter/greeter_lang_list.c:45
 msgid "Turkish"
 msgstr "土耳其语"
+
+#: gui/greeter/greeter_system.c:59
+msgid "Shut down the computer"
+msgstr "关闭计算机"
+
+#: gui/greeter/greeter_system.c:67
+msgid "Suspend the computer"
+msgstr "挂起计算机"
+
+#: gui/greeter/greeter_system.c:75
+msgid "Reboot the computer"
+msgstr "重启计算机"
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
@@ -3851,7 +4025,7 @@ msgstr "(内存缓冲区)"
 #: vicious-extensions/glade-helper.c:104 vicious-extensions/glade-helper.c:126
 #: vicious-extensions/glade-helper.c:146
 msgid "(memory buffer"
-msgstr "(内存缓冲区"
+msgstr "(内存缓冲区)"
 
 #: vicious-extensions/glade-helper.c:178
 #, c-format
@@ -3923,52 +4097,14 @@ msgstr ""
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "没有可以装入的界面，糟糕！(文件：%s)"
 
-#: config/gettextfoo.h:1
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  You will need to log in on a console and rerun "
-"the X configuration program.  Then restart GDM."
-msgstr "我无法启动 X 服务器 (您的图形界面)。好像是由于没有正确地设置它。您需要从控制台登录并重新运行 X 配置程序。而后重新启动 GDM。"
-
-#: config/gettextfoo.h:2
-msgid ""
-"Would you like me to try to run the X configuration program?  Note that you "
-"will need the root password for this."
-msgstr "您是否希望我尝试运行 X 配置程序？请注意为此您需要根用户口令。"
-
-#: config/gettextfoo.h:3
-msgid "Please type in the root (privileged user) password."
-msgstr "请输入根用户 (特权用户) 口令。"
-
-#: config/gettextfoo.h:4
-msgid "I will now try to restart the X server again."
-msgstr "我将再次试图重新启动 X 服务器。"
-
-#: config/gettextfoo.h:5
-msgid ""
-"I will disable this X server for now.  Restart GDM when it is configured "
-"correctly."
-msgstr "我将立刻禁用 X 服务器。当它被正确地配置了的时候重新启动 GDM。"
-
-#: config/gettextfoo.h:6
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  Would you like to view the X server output to "
-"diagnose the problem?"
-msgstr "我无法启动 X 服务器 (您的图形界面)。好像是因为没有正确地设置它。您是否希望查看 X 服务器的输出以检查问题？"
-
-#: config/gettextfoo.h:7
-msgid ""
-"I cannot start the X server (your graphical interface).  It seems that the "
-"pointer device (your mouse) is not set up correctly.  Would you like to view "
-"the X server output to diagnose the problem?"
-msgstr "我无法启动 X 服务器 (您的图形界面)。好像是因为没有正确地设置指针设备 (您的鼠标)。您是否希望查看 X 服务器的输出以便检查问题？"
-
-#: config/gettextfoo.h:8
-msgid ""
-"Would you like me to try to run the mouse configuration program?  Note that "
-"you will need the root password for this."
-msgstr "您是否希望我运行鼠标配置程序？请注意为此您需要根用户口令。"
+#~ msgid ""
+#~ "\n"
+#~ "Incorrect username or password. Letters must be typed in the correct "
+#~ "case. Please make sure the Caps Lock key is not enabled"
+#~ msgstr ""
+#~ "\n"
+#~ "用户名或口令不正确。字母必须以正确的大小写输入。请确认 Caps Lock 键没有开"
+#~ "启"
 
 #~ msgid "gdm_server_start: Error setting up USR1 signal handler"
 #~ msgstr "gdm_server_start: 设置 USR1 信号句柄出错"
