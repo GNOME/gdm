@@ -1,3 +1,16 @@
+Thu Dec 06 22:09:11 2001  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: Fix TimedLogin I broke on last commit
+
+	* daemon/verify-pam.c:  For autologin, still call authenticate,
+	  but use the service gdm-autologin.  Also a bit of cleanup.
+
+	* config/gdm-autologin, config/Makefile.am:  A promiscuous
+	  service.  This will let anyone in, gdm uses this for autologin
+	  or timed login when we want to let a user in without a password,
+	  this way we can follow all the proper pam doodaah with
+	  pam_authenticate and all that so we can safely call setcred
+
 Tue Dec 04 20:46:57 2001  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c, daemon/misc.[ch], daemon/display.c:  On events where

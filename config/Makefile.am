@@ -17,6 +17,7 @@ EXTRA_DIST = \
 	gnomerc.in \
 	Xsession \
 	gdm \
+	gdm-autologin \
 	locale.alias \
 	Default \
 	PostSession \
@@ -119,7 +120,10 @@ install-data-hook: gdm.conf gnomerc Gnome
 	   if test $$system = Linux && test '!' -f $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm; then \
 		$(INSTALL_DATA) gdm $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm; \
 	   fi; \
+	   if test $$system = Linux && test '!' -f $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin; then \
+		$(INSTALL_DATA) gdm-autologin $(DESTDIR)$(PAM_PREFIX)/pam.d/gdm-autologin; \
+	   fi; \
 	   if test $$system = SunOS; then \
-		echo "Please add PAM authentication for gdm in $(PAM_PREFIX)/pam.conf!"; \
+		echo "Please add PAM authentication for gdm and gdm-autologin in $(PAM_PREFIX)/pam.conf!"; \
 	   fi; \
 	fi

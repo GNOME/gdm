@@ -471,7 +471,7 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_slave_send_string (GDM_SOP_LOGIN, ParsedAutomaticLogin);
 
 	    if (setup_automatic_session (d, ParsedAutomaticLogin)) {
-		    gdm_slave_session_start();
+		    gdm_slave_session_start ();
 	    }
 
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
@@ -491,7 +491,7 @@ gdm_slave_run (GdmDisplay *display)
 		    if (do_timed_login) {
 			    /* timed out into a timed login */
 			    do_timed_login = FALSE;
-			    if ( ! setup_automatic_session (d, ParsedTimedLogin)) {
+			    if (setup_automatic_session (d, ParsedTimedLogin)) {
 				    gdm_slave_send_string (GDM_SOP_LOGIN,
 							   ParsedTimedLogin);
 				    gdm_slave_session_start ();

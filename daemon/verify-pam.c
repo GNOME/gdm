@@ -202,6 +202,62 @@ static struct pam_conv standalone_pamc = {
     NULL
 };
 
+/* Creates a pam handle for the auto login */
+static gboolean
+create_pamh (GdmDisplay *d,
+	     const char *service,
+	     const char *login,
+	     struct pam_conv *conv,
+	     const char *display,
+	     int *pamerr)
+{
+	if (login == NULL ||
+	    display == NULL) {
+		gdm_error (_("Cannot setup pam handle with null login "
+			     "and/or display"));
+		return FALSE;
+	}
+
+	if (pamh != NULL) {
+		gdm_error ("create_pamh: Stale pamh around, cleaning up");
+		pam_end (pamh, PAM_SUCCESS);
+	}
+	pamh = NULL;
+
+	/* Initialize a PAM session for the user */
+	if ((*pamerr = pam_start (service, login, conv, &pamh)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Can't find /etc/pam.d/%s!"), service);
+		return FALSE;
+	}
+
+	/* Inform PAM of the user's tty */
+	if ((*pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Can't set PAM_TTY=%s"), display);
+		return FALSE;
+	}
+
+	/* gdm is requesting the login */
+	if ((*pamerr = pam_set_item (pamh, PAM_RUSER, GdmUser)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Can't set PAM_RUSER=%s"), GdmUser);
+		return FALSE;
+	}
+
+	/* From the host of the display */
+	if ((*pamerr = pam_set_item (pamh, PAM_RHOST,
+				     d->console ? "localhost" : d->hostname)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Can't set PAM_RHOST=%s"),
+				   d->console ? "localhost" : d->hostname);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+
 /**
  * gdm_verify_user:
  * @username: Name of user or NULL if we should ask
@@ -227,15 +283,9 @@ gdm_verify_user (GdmDisplay *d,
     gboolean started_timer = FALSE;
     gchar *auth_errmsg;
 
-    if (pamh != NULL) {
-	    gdm_error ("gdm_verify_user: Stale pamh around, cleaning up");
-	    pam_end (pamh, PAM_SUCCESS);
-    }
-    pamh = NULL;
-
     /* start the timer for timed logins */
-    if (local ||
-	(!ve_string_empty(GdmTimedLogin) && GdmAllowRemoteAutoLogin)) {
+    if ( ! ve_string_empty (GdmTimedLogin) &&
+	(local || GdmAllowRemoteAutoLogin)) {
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 	    started_timer = TRUE;
     }
@@ -256,45 +306,14 @@ gdm_verify_user (GdmDisplay *d,
     }
 
     cur_gdm_disp = d;
-	    
+
     /* Initialize a PAM session for the user */
-    if ((pamerr = pam_start ("gdm", login, &pamc, &pamh)) != PAM_SUCCESS) {
+    if ( ! create_pamh (d, "gdm", login, &pamc, display, &pamerr)) {
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Can't find /etc/pam.d/gdm!"));
 	    goto pamerr;
     }
-    
-    /* Inform PAM of the user's tty */
-    if ((pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
-	    if (started_timer)
-		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Can't set PAM_TTY=%s"), display);
-	    goto pamerr;
-    }
-
-    /* gdm is requesting the login */
-    if ((pamerr = pam_set_item (pamh, PAM_RUSER, GdmUser)) != PAM_SUCCESS) {
-	    if (started_timer)
-		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Can't set PAM_RUSER=%s"), GdmUser);
-	    goto pamerr;
-    }
-
-    /* From the host of the display */
-    if ((pamerr = pam_set_item (pamh, PAM_RHOST,
-				d->console ? "localhost" : d->hostname)) != PAM_SUCCESS) {
-	    if (started_timer)
-		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Can't set PAM_RHOST=%s"),
-			       d->console ? "localhost" : d->hostname);
-	    goto pamerr;
-    }
-
+	    
 #ifdef PAM_FAIL_DELAY
     pam_fail_delay (pamh, GdmRetryDelay * 1000);
 #endif /* PAM_FAIL_DELAY */
@@ -438,59 +457,6 @@ gdm_verify_user (GdmDisplay *d,
     return NULL;
 }
 
-/* Ensures a pamh existance */
-static gboolean
-ensure_pamh (GdmDisplay *d,
-	     const char *login,
-	     const char *display,
-	     int *pamerr)
-{
-	if (login == NULL ||
-	    display == NULL) {
-		gdm_error (_("Cannot setup pam handle with null login "
-			     "and/or display"));
-		return FALSE;
-	}
-
-	if (pamh != NULL) {
-		gdm_error ("gdm_verify_user: Stale pamh around, cleaning up");
-		pam_end (pamh, PAM_SUCCESS);
-	}
-	pamh = NULL;
-
-	/* Initialize a PAM session for the user */
-	if ((*pamerr = pam_start ("gdm", login, &standalone_pamc, &pamh)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
-			gdm_error (_("Can't find /etc/pam.d/gdm!"));
-		return FALSE;
-	}
-
-	/* Inform PAM of the user's tty */
-	if ((*pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
-			gdm_error (_("Can't set PAM_TTY=%s"), display);
-		return FALSE;
-	}
-
-	/* gdm is requesting the login */
-	if ((*pamerr = pam_set_item (pamh, PAM_RUSER, GdmUser)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
-			gdm_error (_("Can't set PAM_RUSER=%s"), GdmUser);
-		return FALSE;
-	}
-
-	/* From the host of the display */
-	if ((*pamerr = pam_set_item (pamh, PAM_RHOST,
-				     d->console ? "localhost" : d->hostname)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
-			gdm_error (_("Can't set PAM_RHOST=%s"),
-				   d->console ? "localhost" : d->hostname);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
 /**
  * gdm_verify_setup_user:
  * @login: The name of the user
@@ -512,7 +478,19 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
     cur_gdm_disp = d;
 
     /* Initialize a PAM session for the user */
-    if ( ! ensure_pamh (d, login, display, &pamerr)) {
+    if ( ! create_pamh (d, "gdm-autologin", login, &standalone_pamc,
+			display, &pamerr)) {
+	    goto setup_pamerr;
+    }
+
+    /* Start authentication session */
+    if ((pamerr = pam_authenticate (pamh, 0)) != PAM_SUCCESS) {
+	    if (gdm_slave_should_complain ()) {
+		    gdm_error (_("Couldn't authenticate user"));
+		    gdm_error_box (cur_gdm_disp,
+				   GNOME_MESSAGE_BOX_ERROR,
+				   _("Authentication failed"));
+	    }
 	    goto setup_pamerr;
     }
 
@@ -541,13 +519,13 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
 	gdm_error (_("User %s no longer permitted to access the system"), login);
 	gdm_error_box (cur_gdm_disp,
 		       GNOME_MESSAGE_BOX_ERROR,
-		_("\nThe system administrator has disabled your account."));
+		       _("\nThe system administrator has disabled your account."));
 	goto setup_pamerr;
     case PAM_PERM_DENIED :
 	gdm_error (_("User %s not permitted to gain access at this time"), login);
 	gdm_error_box (cur_gdm_disp,
 		       GNOME_MESSAGE_BOX_ERROR,
-		_("\nThe system administrator has your disabled access to the system temporary."));
+		       _("\nThe system administrator has your disabled access to the system temporary."));
 	goto setup_pamerr;
     default :
 	if (gdm_slave_should_complain ())
@@ -559,10 +537,11 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
     if (/* paranoia */ pwent == NULL ||
        	! gdm_setup_gids (login, pwent->pw_gid)) {
 	    gdm_error (_("Cannot set user group for %s"), login);
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nCannot set your user group, "
-					    "you will not be able to log in, "
-					    "please contact your system administrator."));
+	    gdm_error_box (cur_gdm_disp,
+			   GNOME_MESSAGE_BOX_ERROR,
+			   _("\nCannot set your user group, "
+			     "you will not be able to log in, "
+			     "please contact your system administrator."));
 	    goto setup_pamerr;
     }
 
