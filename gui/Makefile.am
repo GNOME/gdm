@@ -129,11 +129,11 @@ System_DATA = $(System_in_files:.desktop.in=.desktop)
 Gladedir = $(datadir)/gdm
 Glade_DATA = gdmconfig.glade2 gdmchooser.glade2
 
-Glade_src = gdmconfig.glade gdmchooser.glade
+Glade_src = gdmchooser.glade #gdmconfig.glade 
 
-gdmconfig.glade2: gdmconfig.glade $(LIBGLADE_CONVERT)
-	$(LIBGLADE_CONVERT) $(srcdir)/gdmconfig.glade > gdmconfig.glade.tmp \
-	&& mv gdmconfig.glade.tmp gdmconfig.glade2
+#gdmconfig.glade2: gdmconfig.glade $(LIBGLADE_CONVERT)
+#	$(LIBGLADE_CONVERT) $(srcdir)/gdmconfig.glade > gdmconfig.glade.tmp \
+#	&& mv gdmconfig.glade.tmp gdmconfig.glade2
 
 gdmchooser.glade2: gdmchooser.glade $(LIBGLADE_CONVERT)
 	$(LIBGLADE_CONVERT) $(srcdir)/gdmchooser.glade > gdmchooser.glade.tmp \

@@ -56,6 +56,13 @@ struct _GdmConfigSession {
                               (char *)value); \
            g_free(value); \
         }
+#define gdm_file_entry_set(entry_name, value) \
+        if (value != NULL) { \
+		gnome_file_entry_set_filename \
+			(GNOME_FILE_ENTRY (get_widget(entry_name)), \
+			 (char *)value); \
+		g_free(value); \
+        }
 #define gdm_radio_set(radio_name, value, maximum) \
         if (value >= 0 && value <= maximum) { \
 	   gchar *widget_name = g_strdup_printf ("%s_%d", radio_name, value); \
@@ -89,6 +96,12 @@ struct _GdmConfigSession {
 
 #define gdm_entry_write(entry_name, key) \
         gnome_config_set_string(key, gtk_entry_get_text(GTK_ENTRY(get_widget(entry_name))));
+#define gdm_file_entry_write(entry_name, key) { \
+	char * path = gnome_file_entry_get_full_path \
+		(GNOME_FILE_ENTRY (get_widget (entry_name)), FALSE); \
+	gnome_config_set_string (key, path); \
+	g_free (path); \
+}
 
 #define gdm_spin_write(spin_button_name, key) \
         gnome_config_set_int(key, gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(get_widget(spin_button_name))));

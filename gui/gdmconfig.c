@@ -195,23 +195,25 @@ gdm_event (GSignalInvocationHint *ihint,
 }      
 
 static void
-check_binary (GtkEntry *entry)
+check_binary (GtkEditable *editable)
 {
-	char *bin = ve_first_word (gtk_entry_get_text (entry));
+	char *text = gtk_editable_get_chars (editable, 0, -1);
+	char *bin = ve_first_word (text);
 
 	if ( ! ve_string_empty (bin) &&
 	    access (bin, X_OK) == 0)
-		ve_entry_set_red (GTK_WIDGET (entry), FALSE);
+		ve_entry_set_red (GTK_WIDGET (editable), FALSE);
 	else
-		ve_entry_set_red (GTK_WIDGET (entry), TRUE);
+		ve_entry_set_red (GTK_WIDGET (editable), TRUE);
 
 	g_free (bin);
+	g_free (text);
 }
 
 static void
-check_dir (GtkEntry *entry)
+check_dir (GtkEditable *editable)
 {
-	const char *text = gtk_entry_get_text (entry);
+	char *text = gtk_editable_get_chars (editable, 0, -1);
 
 	/* first try access as it's a LOT faster then stat */
 	if ( ! ve_string_empty (text) &&
@@ -220,12 +222,14 @@ check_dir (GtkEntry *entry)
 		/* check for this being a directory */
 		if (stat (text, &sbuf) < 0 ||
 		    ! S_ISDIR (sbuf.st_mode))
-			ve_entry_set_red (GTK_WIDGET (entry), TRUE);
+			ve_entry_set_red (GTK_WIDGET (editable), TRUE);
 		else
-			ve_entry_set_red (GTK_WIDGET (entry), FALSE);
+			ve_entry_set_red (GTK_WIDGET (editable), FALSE);
 	} else {
-		ve_entry_set_red (GTK_WIDGET (entry), TRUE);
+		ve_entry_set_red (GTK_WIDGET (editable), TRUE);
 	}
+
+	g_free (text);
 }
 
 static void
@@ -258,16 +262,18 @@ check_dirname (GtkEntry *entry)
 }
 
 static void
-check_file (GtkEntry *entry)
+check_file (GtkEditable *editable)
 {
-	const char *text = gtk_entry_get_text (entry);
+	char *text = gtk_editable_get_chars (editable, 0, -1);
 
 	if ( ! ve_string_empty (text) &&
 	    access (text, R_OK) == 0) {
-		ve_entry_set_red (GTK_WIDGET (entry), FALSE);
+		ve_entry_set_red (GTK_WIDGET (editable), FALSE);
 	} else {
-		ve_entry_set_red (GTK_WIDGET (entry), TRUE);
+		ve_entry_set_red (GTK_WIDGET (editable), TRUE);
 	}
+
+	g_free (text);
 }
 
 static void
@@ -275,13 +281,13 @@ connect_binary_checks (void)
 {
 	int i;
 	char *binaries [] = {
-		"chooser_binary",
-		"config_binary",
-		"greeter_binary",
-		"halt_command",
-		"reboot_command",
-		"suspend_command",
-		"background_program",
+		"chooser_binary_fentry",
+		"config_binary_fentry",
+		"greeter_binary_fentry",
+		"halt_command_fentry",
+		"reboot_command_fentry",
+		"suspend_command_fentry",
+		"background_program_file_entry",
 		"failsafe_x_server",
 		"x_keeps_crashing",
 		NULL
@@ -297,15 +303,15 @@ connect_dir_checks (void)
 {
 	int i;
 	char *dirs [] = {
-		"init_dir",
-		"log_dir",
-		"session_dir",
-		"pre_session_dir",
-		"post_session_dir",
-		"user_auth_dir",
-		"user_auth_fb_dir",
-		"global_faces_dir",
-		"host_images_dir",
+		"init_dir_fentry",
+		"log_dir_fentry",
+		"session_dir_fentry",
+		"pre_session_dir_fentry",
+		"post_session_dir_fentry",
+		"user_auth_dir_fentry",
+		"user_auth_fb_dir_fentry",
+		"global_faces_fentry",
+		"host_images_dir_fentry",
 		NULL
 	};
 	for (i = 0; dirs[i] != NULL; i++)
@@ -334,12 +340,12 @@ connect_file_checks (void)
 	int i;
 	char *files [] = {
 		"gnome_default_session",
-		"gtkrc_file",
-		"logo_file",
-		"background_image",
-		"default_face_file",
-		"locale_file",
-		"default_host_image_file",
+		"gtkrc_fentry",
+		"logo_pentry",
+		"background_image_pixmap_entry",
+		"default_face_pentry",
+		"locale_fentry",
+		"default_host_image_pentry",
 		NULL
 	};
 	for (i = 0; files[i] != NULL; i++)
@@ -515,6 +521,7 @@ main (int argc, char *argv[])
 	gtk_window_set_title(GTK_WINDOW(GDMconfigurator),
 			     _("GNOME Display Manager Configurator"));
 	gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply_button")), FALSE);
+	gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply1")), FALSE);
 
 	gtk_widget_show (GDMconfigurator);
 
@@ -774,21 +781,21 @@ gdm_config_parse_most (gboolean factory)
     gdm_entry_set("automatic_login", gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN));
     gdm_entry_set("timed_login", gnome_config_get_string (GDM_KEY_TIMED_LOGIN));
     gdm_spin_set("timed_delay", gnome_config_get_int(GDM_KEY_TIMED_LOGIN_DELAY));
-    gdm_entry_set("chooser_binary", gnome_config_get_string (GDM_KEY_CHOOSER));
-    gdm_entry_set("config_binary", gnome_config_get_string (GDM_KEY_CONFIGURATOR));
-    gdm_entry_set("greeter_binary", gnome_config_get_string (GDM_KEY_GREETER));
-    gdm_entry_set("halt_command", gnome_config_get_string (GDM_KEY_HALT));
-    gdm_entry_set("reboot_command", gnome_config_get_string (GDM_KEY_REBOOT));
-    gdm_entry_set("suspend_command", gnome_config_get_string (GDM_KEY_SUSPEND));
+    gdm_file_entry_set("chooser_binary_fentry", gnome_config_get_string (GDM_KEY_CHOOSER));
+    gdm_file_entry_set("config_binary_fentry", gnome_config_get_string (GDM_KEY_CONFIGURATOR));
+    gdm_file_entry_set("greeter_binary_fentry", gnome_config_get_string (GDM_KEY_GREETER));
+    gdm_file_entry_set("halt_command_fentry", gnome_config_get_string (GDM_KEY_HALT));
+    gdm_file_entry_set("reboot_command_fentry", gnome_config_get_string (GDM_KEY_REBOOT));
+    gdm_file_entry_set("suspend_command_fentry", gnome_config_get_string (GDM_KEY_SUSPEND));
     
-    gdm_entry_set("init_dir", gnome_config_get_string (GDM_KEY_INITDIR));
-    gdm_entry_set("log_dir", gnome_config_get_string (GDM_KEY_LOGDIR));
-    gdm_entry_set("session_dir", gnome_config_get_string (GDM_KEY_SESSDIR));
-    gdm_entry_set("pre_session_dir", gnome_config_get_string (GDM_KEY_PRESESS));
-    gdm_entry_set("post_session_dir", gnome_config_get_string (GDM_KEY_POSTSESS));
+    gdm_file_entry_set("init_dir_fentry", gnome_config_get_string (GDM_KEY_INITDIR));
+    gdm_file_entry_set("log_dir_fentry", gnome_config_get_string (GDM_KEY_LOGDIR));
+    gdm_file_entry_set("session_dir_fentry", gnome_config_get_string (GDM_KEY_SESSDIR));
+    gdm_file_entry_set("pre_session_dir_fentry", gnome_config_get_string (GDM_KEY_PRESESS));
+    gdm_file_entry_set("post_session_dir_fentry", gnome_config_get_string (GDM_KEY_POSTSESS));
     standard_x_server = gnome_config_get_string (GDM_KEY_STANDARD_XSERVER);
-    gdm_entry_set("standard_x_server", standard_x_server);
-    gdm_entry_set("xnest_server", gnome_config_get_string (GDM_KEY_XNEST));
+    gdm_file_entry_set("standard_x_server", standard_x_server);
+    gdm_file_entry_set("xnest_server", gnome_config_get_string (GDM_KEY_XNEST));
     gdm_spin_set("flexible_servers", gnome_config_get_int(GDM_KEY_FLEXIBLE_XSERVERS));
     gdm_entry_set("failsafe_x_server", gnome_config_get_string (GDM_KEY_FAILSAFE_XSERVER));
     gdm_entry_set("x_keeps_crashing", gnome_config_get_string (GDM_KEY_XKEEPSCRASHING));
@@ -809,9 +816,9 @@ gdm_config_parse_most (gboolean factory)
 
     gdm_entry_set("gdm_runs_as_user", gnome_config_get_string (GDM_KEY_USER));
     gdm_entry_set("gdm_runs_as_group", gnome_config_get_string (GDM_KEY_GROUP));
-    gdm_entry_set("user_auth_dir", gnome_config_get_string (GDM_KEY_UAUTHDIR));
-    gdm_entry_set("user_auth_fb_dir", gnome_config_get_string (GDM_KEY_UAUTHFB));
-    gdm_entry_set("user_auth_file", gnome_config_get_string (GDM_KEY_UAUTHFILE));
+    gdm_file_entry_set("user_auth_dir_fentry", gnome_config_get_string (GDM_KEY_UAUTHDIR));
+    gdm_file_entry_set("user_auth_fb_dir_fentry", gnome_config_get_string (GDM_KEY_UAUTHFB));
+    gdm_file_entry_set("user_auth_file_fentry", gnome_config_get_string (GDM_KEY_UAUTHFILE));
 
     gdm_spin_set("retry_delay", gnome_config_get_int(GDM_KEY_RETRYDELAY));
     gdm_spin_set("max_user_length", gnome_config_get_int(GDM_KEY_MAXFILE));
@@ -829,7 +836,7 @@ gdm_config_parse_most (gboolean factory)
     gdm_spin_set("max_indirect_wait_time", gnome_config_get_int(GDM_KEY_MAXINDWAIT));
     gdm_spin_set("ping_interval", gnome_config_get_int(GDM_KEY_PINGINTERVAL));
     gdm_spin_set("displays_per_host", gnome_config_get_int(GDM_KEY_DISPERHOST));
-    gdm_entry_set("xdmcp_willing_entry", gnome_config_get_string (GDM_KEY_WILLING));
+    gdm_file_entry_set("xdmcp_willing", gnome_config_get_string (GDM_KEY_WILLING));
     
     /* Fill the widgets in Sessions tab */
     gdm_toggle_set ("gnome_chooser_session", gnome_config_get_bool (GDM_KEY_SHOW_GNOME_CHOOSER));
@@ -837,8 +844,8 @@ gdm_config_parse_most (gboolean factory)
     gdm_toggle_set ("xterm_failsafe_session", gnome_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE));
     
     /* Fill the widgets in User Interface tab */
-    gdm_entry_set("gtkrc_file", gnome_config_get_string (GDM_KEY_GTKRC));
-    gdm_entry_set("logo_file", gnome_config_get_string (GDM_KEY_LOGO));
+    gdm_file_entry_set("gtkrc_fentry", gnome_config_get_string (GDM_KEY_GTKRC));
+    gdm_file_entry_set("logo_pentry", gnome_config_get_string (GDM_KEY_LOGO));
     gdm_icon_set("gdm_icon", gnome_config_get_string (GDM_KEY_ICON));
     
     gdm_toggle_set("show_system", gnome_config_get_bool (GDM_KEY_SYSMENU));
@@ -857,26 +864,26 @@ gdm_config_parse_most (gboolean factory)
     
 
     /* Fill the widgets in Background tab */
-    gdm_entry_set ("background_program", gnome_config_get_string (GDM_KEY_BACKGROUNDPROG));
-    gdm_entry_set ("background_image", gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE));
+    gdm_file_entry_set ("background_program_file_entry", gnome_config_get_string (GDM_KEY_BACKGROUNDPROG));
+    gdm_file_entry_set ("background_image_pixmap_entry", gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE));
     gdm_color_set ("background_color", gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR));
     gdm_toggle_set ("background_scale", gnome_config_get_bool (GDM_KEY_BACKGROUNDSCALETOFIT));
     gdm_toggle_set ("remote_only_color", gnome_config_get_bool (GDM_KEY_BACKGROUNDREMOTEONLYCOLOR));
 
     /* Fill the widgets in Greeter tab */
     /* enable_face_browser is in parse_remaining() */
-    gdm_entry_set("default_face_file", gnome_config_get_string (GDM_KEY_FACE));
-    gdm_entry_set("global_faces_dir", gnome_config_get_string (GDM_KEY_FACEDIR));
+    gdm_file_entry_set("default_face_pentry", gnome_config_get_string (GDM_KEY_FACE));
+    gdm_file_entry_set("global_faces_fentry", gnome_config_get_string (GDM_KEY_FACEDIR));
     gdm_spin_set("max_face_width", gnome_config_get_int (GDM_KEY_ICONWIDTH));
     gdm_spin_set("max_face_height", gnome_config_get_int (GDM_KEY_ICONHEIGHT));
   
-    gdm_entry_set("locale_file", gnome_config_get_string(GDM_KEY_LOCFILE));
+    gdm_file_entry_set("locale_fentry", gnome_config_get_string(GDM_KEY_LOCFILE));
     gdm_entry_set("default_locale", gnome_config_get_string(GDM_KEY_LOCALE));
 
 
     /* Fill the widgets in Chooser tab */
-    gdm_entry_set("host_images_dir", gnome_config_get_string (GDM_KEY_HOSTDIR));
-    gdm_entry_set("default_host_image_file", gnome_config_get_string (GDM_KEY_HOST));
+    gdm_file_entry_set("host_images_dir_fentry", gnome_config_get_string (GDM_KEY_HOSTDIR));
+    gdm_file_entry_set("default_host_image_pentry", gnome_config_get_string (GDM_KEY_HOST));
     gdm_spin_set("refresh_interval", gnome_config_get_int(GDM_KEY_SCAN));
     gdm_entry_set("chooser_hosts", gnome_config_get_string (GDM_KEY_HOSTS));
     gdm_toggle_set("chooser_broadcast", gnome_config_get_bool (GDM_KEY_BROADCAST));
@@ -1348,6 +1355,7 @@ run_warn_reset_dialog (void)
 	}
 	/* Don't apply identical settings again. */
 	gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply_button")), FALSE);
+	gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply1")), FALSE);
 }
 
 
@@ -1378,19 +1386,21 @@ write_config (void)
     gdm_toggle_write("enable_timed_login", GDM_KEY_TIMED_LOGIN_ENABLE);
     gdm_entry_write("timed_login", GDM_KEY_TIMED_LOGIN);
     gdm_spin_write("timed_delay", GDM_KEY_TIMED_LOGIN_DELAY);
-    gdm_entry_write("chooser_binary", GDM_KEY_CHOOSER);
-    gdm_entry_write("greeter_binary", GDM_KEY_GREETER);
-    gdm_entry_write("config_binary", GDM_KEY_CONFIGURATOR);
-    gdm_entry_write("halt_command", GDM_KEY_HALT);
-    gdm_entry_write("reboot_command", GDM_KEY_REBOOT);
-    gdm_entry_write("suspend_command", GDM_KEY_SUSPEND);
+    gdm_file_entry_write("chooser_binary_fentry", GDM_KEY_CHOOSER);
+    gdm_file_entry_write("greeter_binary_fentry", GDM_KEY_GREETER);
+    gdm_file_entry_write("config_binary_fentry", GDM_KEY_CONFIGURATOR);
+    gdm_file_entry_write("halt_command_fentry", GDM_KEY_HALT);
+    gdm_file_entry_write("reboot_command_fentry", GDM_KEY_REBOOT);
+    gdm_file_entry_write("suspend_command_fentry", GDM_KEY_SUSPEND);
     
     /* misc */
-    gdm_entry_write("init_dir", GDM_KEY_INITDIR);
-    gdm_entry_write("log_dir", GDM_KEY_LOGDIR);
-    gdm_entry_write("session_dir", GDM_KEY_SESSDIR);
-    gdm_entry_write("pre_session_dir", GDM_KEY_PRESESS);
-    gdm_entry_write("post_session_dir", GDM_KEY_POSTSESS);
+    gdm_file_entry_write("init_dir_fentry", GDM_KEY_INITDIR);
+    gdm_file_entry_write("log_dir_fentry", GDM_KEY_LOGDIR);
+    gdm_file_entry_write("session_dir_fentry", GDM_KEY_SESSDIR);
+    gdm_file_entry_write("pre_session_dir_fentry", GDM_KEY_PRESESS);
+    gdm_file_entry_write("post_session_dir_fentry", GDM_KEY_POSTSESS);
+    gdm_entry_write("xnest_server", GDM_KEY_XNEST);
+    gdm_entry_write("standard_x_server", GDM_KEY_STANDARD_XSERVER);
     gdm_entry_write("failsafe_x_server", GDM_KEY_FAILSAFE_XSERVER);
     gdm_entry_write("x_keeps_crashing", GDM_KEY_XKEEPSCRASHING);
     gdm_toggle_write("always_restart_server", GDM_KEY_ALWAYSRESTARTSERVER);
@@ -1409,9 +1419,9 @@ write_config (void)
 
     gdm_entry_write("gdm_runs_as_user", GDM_KEY_USER);
     gdm_entry_write("gdm_runs_as_group", GDM_KEY_GROUP);
-    gdm_entry_write("user_auth_dir", GDM_KEY_UAUTHDIR);
-    gdm_entry_write("user_auth_fb_dir", GDM_KEY_UAUTHFB);
-    gdm_entry_write("user_auth_file", GDM_KEY_UAUTHFILE);
+    gdm_file_entry_write("user_auth_dir_fentry", GDM_KEY_UAUTHDIR);
+    gdm_file_entry_write("user_auth_fb_dir_fentry", GDM_KEY_UAUTHFB);
+    gdm_file_entry_write("user_auth_file_fentry", GDM_KEY_UAUTHFILE);
 
     gdm_spin_write("retry_delay", GDM_KEY_RETRYDELAY);
     gdm_spin_write("max_user_length", GDM_KEY_MAXFILE);
@@ -1429,7 +1439,7 @@ write_config (void)
     gdm_spin_write("max_indirect_wait_time", GDM_KEY_MAXINDWAIT);
     gdm_spin_write("ping_interval", GDM_KEY_PINGINTERVAL);
     gdm_spin_write("displays_per_host", GDM_KEY_DISPERHOST);
-    gdm_entry_write("xdmcp_willing_entry", GDM_KEY_WILLING);
+    gdm_file_entry_write("xdmcp_willing", GDM_KEY_WILLING);
     
     /* write out the widget contents of the Sessions tab */
     gdm_toggle_write ("gnome_chooser_session", GDM_KEY_SHOW_GNOME_CHOOSER);
@@ -1437,8 +1447,8 @@ write_config (void)
     gdm_toggle_write ("xterm_failsafe_session", GDM_KEY_SHOW_XTERM_FAILSAFE);
     
     /* Write out the widget contents of the User Interface tab */
-    gdm_entry_write("gtkrc_file", GDM_KEY_GTKRC);
-    gdm_entry_write("logo_file", GDM_KEY_LOGO);
+    gdm_file_entry_write("gtkrc_fentry", GDM_KEY_GTKRC);
+    gdm_file_entry_write("logo_pentry", GDM_KEY_LOGO);
     gdm_icon_write("gdm_icon", GDM_KEY_ICON);
     
     gdm_toggle_write("show_system", GDM_KEY_SYSMENU);
@@ -1457,26 +1467,26 @@ write_config (void)
     
     /* Write out the widget contents of the Background tab */
     gdm_radio_write ("background_type", GDM_KEY_BACKGROUNDTYPE, 2);
-    gdm_entry_write("background_image", GDM_KEY_BACKGROUNDIMAGE);
+    gdm_file_entry_write("background_image_pixmap_entry", GDM_KEY_BACKGROUNDIMAGE);
     gdm_color_write("background_color", GDM_KEY_BACKGROUNDCOLOR);
-    gdm_entry_write("background_program", GDM_KEY_BACKGROUNDPROG);
+    gdm_file_entry_write("background_program_file_entry", GDM_KEY_BACKGROUNDPROG);
     gdm_toggle_write("background_scale", GDM_KEY_BACKGROUNDSCALETOFIT);
     gdm_toggle_write("remote_only_color", GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
 
     /* Write out the widget contents of the Greeter tab */
     gdm_toggle_write("enable_face_browser", GDM_KEY_BROWSER);
-    gdm_entry_write("default_face_file", GDM_KEY_FACE);
-    gdm_entry_write("global_faces_dir", GDM_KEY_FACEDIR);
+    gdm_file_entry_write("default_face_pentry", GDM_KEY_FACE);
+    gdm_file_entry_write("global_faces_fentry", GDM_KEY_FACEDIR);
     gdm_spin_write("max_face_width", GDM_KEY_ICONWIDTH);
     gdm_spin_write("max_face_height", GDM_KEY_ICONHEIGHT);
   
-    gdm_entry_write("locale_file", GDM_KEY_LOCFILE);
+    gdm_file_entry_write("locale_fentry", GDM_KEY_LOCFILE);
     gdm_entry_write("default_locale", GDM_KEY_LOCALE);
 
 
     /* Write out the widget contents of the Chooser tab */
-    gdm_entry_write("host_images_dir", GDM_KEY_HOSTDIR);
-    gdm_entry_write("default_host_image_file", GDM_KEY_HOST);
+    gdm_file_entry_write("host_images_dir_fentry", GDM_KEY_HOSTDIR);
+    gdm_file_entry_write("default_host_image_pentry", GDM_KEY_HOST);
     gdm_spin_write("refresh_interval", GDM_KEY_SCAN);
     gdm_entry_write("chooser_hosts", GDM_KEY_HOSTS);
     gdm_toggle_write("chooser_broadcast", GDM_KEY_BROADCAST);
@@ -1848,6 +1858,7 @@ can_apply_now                          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
 	gtk_widget_set_sensitive(get_widget("apply_button"), TRUE);
+	gtk_widget_set_sensitive(get_widget("apply1"), TRUE);
 }
 
 
