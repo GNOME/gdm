@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 \n"
 "POT-Creation-Date: 2001-09-01 04:19-0700\n"
-"PO-Revision-Date: 2001-05-08 23:37+0200\n"
+"PO-Revision-Date: 2001-11-09 23:37+0200\n"
 "Last-Translator: Jarkko Ranta <jjranta@cc.joensuu.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -41,18 +41,18 @@ msgstr ""
 "Poistetaan näyttö %s käytöstä."
 
 #: daemon/display.c:209
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
-msgstr ""
-"gdm_display_manage: gdm:n lapsiprosessin haaroittaminen %d:lle epäonnistui"
+msgstr "gdm_display_manage: gdm:n lapsiprosessin haaroittaminen %s:lle epäonnistui"
 
 #: daemon/errorgui.c:164
 msgid "gdm_error_box: Failed to execute self"
-msgstr ""
+msgstr "gdm_error_box: Itsensä suorittaminen epäonnistui"
 
 #: daemon/errorgui.c:170
 msgid "gdm_error_box: Cannot fork to display error/info box"
-msgstr ""
+msgstr "gdm_error_box: Haaroitus virhe-/tietoikkunan näyttämiseksi "
+"epäonnistui"
 
 #: daemon/filecheck.c:51
 #, c-format
@@ -95,9 +95,9 @@ msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr "%s: %s on suurempi kuin ylläpitäjän määrittelemä maksimitiedostokoko."
 
 #: daemon/gdm.c:194
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_config_parse: No configuration file: %s. Using defaults."
-msgstr "gdm_config_parse: Ei asetustiedostoa: %s. Keskeytetään."
+msgstr "gdm_config_parse: Ei asetustiedostoa: %s. Käytetään oletuksia."
 
 #: daemon/gdm.c:279
 msgid ""
@@ -119,10 +119,9 @@ msgstr ""
 "ajastettu automaattinen kirjautuminen."
 
 #: daemon/gdm.c:311
-#, fuzzy
 msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
 msgstr ""
-"gdm_config_parse: TimedLoginDelay on vähemmän kuin 10, joten käytän arvoa 10."
+"gdm_config_parse: TimedLoginDelay on vähemmän kuin 5, joten käytetään arvoa 5."
 
 #: daemon/gdm.c:321
 msgid "gdm_config_parse: No greeter specified."
@@ -139,12 +138,12 @@ msgstr "gdm_config_parse: Istuntohakemistoa ei ole määritelty."
 #: daemon/gdm.c:355
 #, c-format
 msgid "%s: Empty server command, using standard one."
-msgstr ""
+msgstr "%s: Tyhjä palvelinkomento, käytetään oletusta."
 
 #: daemon/gdm.c:400
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
-msgstr ""
+msgstr "%s: Näyttö numero %d käytössä, käytetään numeroa %d"
 
 #: daemon/gdm.c:415
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
@@ -154,13 +153,14 @@ msgstr ""
 #. start
 #. server uid
 #: daemon/gdm.c:434
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
 "d to allow configuration!"
 msgstr ""
-"gdm_config_parse: Xdmcp estetty eikä paikallisia palvelimia määritelty. "
-"Keskeytetään."
+"%s: Xdmcp poissa käytöstä eikä paikallisia palvelimia määritelty. "
+"Lisätään /usr/bin/X11/X osoitteeseen %d jotta asetusten määrittely "
+"olisi mahdollista."
 
 #: daemon/gdm.c:448
 msgid ""
@@ -170,9 +170,10 @@ msgstr ""
 "Keskeytetään."
 
 #: daemon/gdm.c:457
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
-msgstr "gdm_config_parse: Gdm-käyttäjää (%s) ei löydy. Keskeytetään."
+msgstr "gdm_config_parse: Gdm-käyttäjää (%s) ei löydy."
+" Yritetään käyttäjää 'nobody'."
 
 #: daemon/gdm.c:464
 #, c-format
@@ -185,9 +186,10 @@ msgstr ""
 "gdm_config_parse: Gdm-käyttäjän ei tulisi olla pääkäyttäjä. Keskeytetään."
 
 #: daemon/gdm.c:474
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
-msgstr "gdm_config_parse: Gdm-ryhmää (%s) ei löydy. Keskeytetään."
+msgstr "gdm_config_parse: Gdm-ryhmää (%s) ei löydy."
+" Yritetään ryhmällä 'nobody'."
 
 #: daemon/gdm.c:481
 #, c-format
@@ -227,13 +229,13 @@ msgstr ""
 "omistuksessa. Keskeytetään."
 
 #: daemon/gdm.c:527
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
 "Aborting."
 msgstr ""
-"gdm_config_parse: Valtuushakemistolla %s on väärät oikeustasot, pitäisi olla "
-"750. Keskeytetään."
+"gdm_config_parse: Valtuushakemistolla %s on väärä oikeustaso (%o)."
+" Sen pitäisi olla 750. Keskeytetään."
 
 #: daemon/gdm.c:580
 msgid "gdm_daemonify: fork() failed!"
@@ -314,11 +316,12 @@ msgstr ""
 "s ei ole järjestelmävalikkoa."
 
 #: daemon/gdm.c:930
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
 msgstr ""
-"gdm_child_action: Uudelleenkäynnistys- tai sammutuspyyntö etänäytöltä %s"
+"gdm_child_action: Koneen sammutus-, uudelleenkäynnistys- tai gdm:n "
+"uudelleenkäynnistyspyyntö etänäytöltä %s"
 
 #. Bury this display for good
 #: daemon/gdm.c:964
@@ -339,31 +342,30 @@ msgstr "gdm_child_action: Uudelleenkäynnistys epäonnistui: %s"
 #. Halt machine
 #: daemon/gdm.c:984
 msgid "gdm_child_action: Master halting..."
-msgstr "gdm_child_action: Isäntä lopettaa..."
+msgstr "gdm_child_action: Sammutetaan..."
 
 #: daemon/gdm.c:991
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
-msgstr "gdm_child_action: Lopetus epäonnistui: %s"
+msgstr "gdm_child_action: Sammutus epäonnistui: %s"
 
 #. Suspend machine
 #: daemon/gdm.c:995
-#, fuzzy
 msgid "gdm_child_action: Master suspending..."
-msgstr "gdm_child_action: Isäntä käynnistetään uudelleen..."
+msgstr "gdm_child_action: Siirrytään virransäästötilaan..."
 
 #: daemon/gdm.c:1002
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_child_action: Suspend failed: %s"
-msgstr "gdm_child_action: Uudelleenkäynnistys epäonnistui: %s"
+msgstr "gdm_child_action: Virransäästö ei onnistunut: %s"
 
 #: daemon/gdm.c:1087
 msgid "Gdm restarting ..."
-msgstr ""
+msgstr "Gdm käynnistyy uudestaan ..."
 
 #: daemon/gdm.c:1092
 msgid "Failed to restart self"
-msgstr "Epäonnistunut itsensä uudelleenkäynnistys"
+msgstr "Itsensä uudelleenkäynnistys epäonnistui"
 
 #: daemon/gdm.c:1225
 msgid "Only root wants to run gdm\n"
@@ -374,29 +376,29 @@ msgid "gdm already running. Aborting!"
 msgstr "Gdm on jo käynnissä. Keskeytetään."
 
 #: daemon/gdm.c:1284
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up TERM signal handler"
-msgstr "main: Virhe asetettaessa TERM-signaalin käsittelijää"
+msgstr "%s: Virhe asetettaessa TERM-signaalin käsittelijää"
 
 #: daemon/gdm.c:1288
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up INT signal handler"
-msgstr "main: Virhe asetettaessa INT-signaalin käsittelijää"
+msgstr "%s: Virhe asetettaessa INT-signaalin käsittelijää"
 
 #: daemon/gdm.c:1292
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up HUP signal handler"
-msgstr "main: Virhe asetettaessa HUP-signaalin käsittelijää"
+msgstr "%s: Virhe asetettaessa HUP-signaalin käsittelijää"
 
 #: daemon/gdm.c:1296
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up USR1 signal handler"
-msgstr "main: Virhe asetettaessa HUP-signaalin käsittelijää"
+msgstr "%s: Virhe asetettaessa USR1-signaalin käsittelijää"
 
 #: daemon/gdm.c:1305
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up CHLD signal handler"
-msgstr "main: Virhe asetettaessa CHLD-signaalin käsittelijää"
+msgstr "%s: Virhe asetettaessa CHLD-signaalin käsittelijää"
 
 #: daemon/gdm.c:1923 daemon/gdm.c:1940
 msgid "Flexible server request denied: Not authenticated"
@@ -416,29 +418,29 @@ msgid ""
 msgstr ""
 
 #: daemon/gdm-net.c:236
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not make socket"
-msgstr "gdm_xdmcp_init: Pistokkeen luonti epäonnistui."
+msgstr "%s: Pistokkeen luonti epäonnistui"
 
 #: daemon/gdm-net.c:246
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not bind socket"
-msgstr "gdm_xdmcp_init: XDMCP-pistokkeen sitominen ei onnistunut."
+msgstr "%s: Pistokkeen sitominen epäonnistui"
 
 #: daemon/gdm-net.c:287
 #, c-format
 msgid "%s: Could not make FIFO"
-msgstr ""
+msgstr "%s: FIFO:n luonti epäonnistui"
 
 #: daemon/gdm-net.c:295
 #, c-format
 msgid "%s: Could not open FIFO"
-msgstr ""
+msgstr "%s: FIFO:n avaaminen epäonnistui"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:365
 msgid "y = Yes or n = No? >"
-msgstr ""
+msgstr "y = Kyllä, n = Ei? >"
 
 #: daemon/server.c:136
 #, c-format
@@ -498,14 +500,12 @@ msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Virhe asetettsessa USR1-signaalia SIG_IGN:ksi"
 
 #: daemon/server.c:547
-#, fuzzy
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
-msgstr "gdm_server_spawn: Virhe asetettsessa USR1-signaalia SIG_IGN:ksi"
+msgstr "gdm_server_spawn: Virhe asetettsessa TTIN-signaalia SIG_IGN:ksi"
 
 #: daemon/server.c:551
-#, fuzzy
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
-msgstr "gdm_server_spawn: Virhe asetettsessa USR1-signaalia SIG_IGN:ksi"
+msgstr "gdm_server_spawn: Virhe asetettsessa TTOU-signaalia SIG_IGN:ksi"
 
 #: daemon/server.c:561
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
@@ -518,12 +518,12 @@ msgstr "gdm_server_spawn: Virhe asetettsessa TERM-signaalia SIG_DFL:ksi"
 #: daemon/server.c:588
 #, c-format
 msgid "Invalid server command '%s'"
-msgstr ""
+msgstr "Epäkelpo palvelinkomento '%s'"
 
 #: daemon/server.c:594
 #, c-format
 msgid "Server name '%s' not found, using standard server"
-msgstr ""
+msgstr "Palvelimen nimeä '%s' ei löytynyt, käytetään vakiopalvelinta"
 
 #: daemon/server.c:626
 #, c-format
@@ -1343,7 +1343,7 @@ msgstr "Lisäasetukset"
 
 #: gui/gdmconfig.c:58 gui/gdmlogin.c:2796
 msgid "System"
-msgstr "Järjestelmäasetukset"
+msgstr "Järjestelmä"
 
 #: gui/gdmconfig.c:60
 msgid ""
@@ -1358,7 +1358,7 @@ msgstr ""
 "GDM:n perusasetukset.\n"
 "\n"
 "Jos tarvitset tarkempia asetuksia, valitse 'Lisäasetukset' tai "
-"'Järjestelmäasetukset' yllä olevasta listasta.\n"
+"'Järjestelmä' yllä olevasta listasta.\n"
 "\n"
 "Näin saat muutettua joitakin harvemmin tarvittavia, monimutkaisempia GDM:n "
 "asetuksia."
@@ -1377,7 +1377,7 @@ msgstr ""
 "Ole varovainen muuttaessasi turvallisuusasetuksia. Muutoin voit vahingossa "
 "tehdä järjestelmästäsi alttiin hyökkäyksille.\n"
 "\n"
-"Valitse \"Järjestelmäasetukset\" muuttaaksesi GDM:n perustavanlaatuisia "
+"Valitse \"Järjestelmä\" muuttaaksesi GDM:n perustavanlaatuisia "
 "asetuksia."
 
 #: gui/gdmconfig.c:71
@@ -2671,7 +2671,7 @@ msgstr "Aseta debuggaus päälle"
 
 #: gui/gdmconfig-strings.c:248
 msgid "system_setup"
-msgstr "järjestelmä_asetukset"
+msgstr "järje_stelmä"
 
 #: gui/gdmconfig-strings.c:249
 msgid "Executables"
@@ -2698,9 +2698,8 @@ msgid "Configurator command: "
 msgstr "Asetusohjelman komento: "
 
 #: gui/gdmconfig-strings.c:255
-#, fuzzy
 msgid "Suspend command: "
-msgstr "Valitsinkomento: "
+msgstr "Virransäästökomento: "
 
 #: gui/gdmconfig-strings.c:256
 msgid "Directories"
@@ -3357,11 +3356,11 @@ msgstr ""
 
 #: gui/gdmlogin.c:2783
 msgid "Suspend..."
-msgstr ""
+msgstr "Virransäästötila..."
 
 #: gui/gdmlogin.c:2790
 msgid "Suspend your computer"
-msgstr ""
+msgstr "Aseta koneesi virransäästötilaan"
 
 #: gui/gdmlogin.c:2812
 msgid "Disconnect"
@@ -3589,65 +3588,3 @@ msgstr ""
 #: vicious-extensions/icon-entry-hack.c:268
 msgid "Choose an icon"
 msgstr "Valitse kuvake"
-
-#~ msgid "gdm_main: Error setting up TERM signal handler"
-#~ msgstr "gdm_main: Virhe asetettaessa TERM-signaalin käsittelijää"
-
-#~ msgid "gdm_main: Error setting up INT signal handler"
-#~ msgstr "gdm_main: Virhe asetettaessa INT-signaalin käsittelijää"
-
-#~ msgid "gdm_main: Error setting up HUP signal handler"
-#~ msgstr "gdm_main: Virhe asetettaessa HUP-signaalin käsittelijää"
-
-#~ msgid "gdm_main: Error setting up CHLD signal handler"
-#~ msgstr "gdm_main: Virhe asetettaessa CHLD-signaalin käsittelijää"
-
-#~ msgid "Cannot start session"
-#~ msgstr "Istuntoa ei voida aloittaa"
-
-#~ msgid "OK"
-#~ msgstr "OK"
-
-#~ msgid "Login:"
-#~ msgstr "Tunnus:"
-
-#~ msgid "Root login disallowed"
-#~ msgstr "Pääkäyttäjän istunto estetty"
-
-#~ msgid "Login disabled"
-#~ msgstr "Kirjautuminen poistettu käytöstä"
-
-#~ msgid "gdm_xdmcp_init: Can't alloc fifopath"
-#~ msgstr "gdm_xdmcp_init: fifopath:n varaaminen epäonnistui"
-
-#~ msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
-#~ msgstr "gdm_xdmcp_init: FIFO:n luonti valitsimelle epäonnistui"
-
-#~ msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
-#~ msgstr "gdm_xdmcp_init: FIFO:n avaaminen valitsimelle epäonnistui"
-
-#~ msgid "Display not authorized to connect"
-#~ msgstr "Näyttöä ei ole sallittu yhdistää"
-
-#~ msgid "Halt..."
-#~ msgstr "Sammuta..."
-
-#~ msgid ""
-#~ "Documentation is being written but is not yet finished.\n"
-#~ "Please be patient."
-#~ msgstr ""
-#~ "Dokumentaatiota kirjoitetaan parhaillaan, mutta se ei ole vielä valmis.\n"
-#~ "Kärsivällisyyttä."
-
-#~ msgid ""
-#~ "Enter the path to the X server,and\n"
-#~ "any parameters that should be passed to it."
-#~ msgstr ""
-#~ "Anna polku X-palvelimeen, sekä kaikki\n"
-#~ "mahdolliset sille annettavat parametrit."
-
-#~ msgid "Server Definitions"
-#~ msgstr "Palvelinten määritykset"
-
-#~ msgid "Path to X server"
-#~ msgstr "Polku X-palvelimeen"
