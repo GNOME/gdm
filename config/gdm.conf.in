@@ -92,7 +92,7 @@ StandardXServer=/usr/X11R6/bin/X
 # The maximum number of flexible X servers to run.
 FlexibleXServers=5
 # the X nest command
-Xnest=/usr/X11R6/bin/Xnest -name Xnest
+Xnest=/usr/X11R6/bin/Xnest -audit 0 -name Xnest
 # Automatic VT allocation.  Right now only works on Linux.  This way
 # we force X to use specific vts.  turn VTAllocation to false if this
 # is causing problems.
@@ -291,7 +291,7 @@ Enable=false
 # Definition of the standard X server.
 [server-Standard]
 name=Standard server
-command=/usr/X11R6/bin/X
+command=/usr/X11R6/bin/X -audit 0
 flexible=true
 
 # To use this server type you should add -query host or -indirect host
@@ -299,7 +299,7 @@ flexible=true
 [server-Terminal]
 name=Terminal server
 # Add -terminate to make things behave more nicely
-command=/usr/X11R6/bin/X -terminate
+command=/usr/X11R6/bin/X -audit 0 -terminate
 # Make this not appear in the flexible servers (we need extra params
 # anyway, and terminate would be bad for xdmcp)
 flexible=false
