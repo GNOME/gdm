@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.98\n"
-"POT-Creation-Date: 2002-07-12 14:36-0700\n"
+"POT-Creation-Date: 2002-07-16 11:59-0700\n"
 "PO-Revision-Date: 2001-02-02 23:19-0800\n"
 "Last-Translator: George Lebl <jirka@5z.com>\n"
 "Language-Team: czech <cs@li.org>\n"
@@ -94,9 +94,9 @@ msgid "gdm_auth_user_add: Could not lock cookie file %s"
 msgstr "gdm_auth_user_add: Nelze uzamknout soubor bonbónù %s"
 
 #: daemon/auth.c:489
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not write cookie"
-msgstr "Nelze nastavit masku signálù!"
+msgstr "%s: Nelze zapsat bonbón"
 
 #: daemon/auth.c:562
 #, c-format
@@ -114,26 +114,26 @@ msgid ""
 "disabling display %s"
 msgstr ""
 
-#: daemon/display.c:162
+#: daemon/display.c:161
 #, c-format
 msgid "%s: Cannot create pipe"
-msgstr ""
+msgstr "%s: Nelze vytvoøit rouru"
 
-#: daemon/display.c:242
+#: daemon/display.c:238
 #, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
 
 #: daemon/errorgui.c:87
-#, fuzzy, c-format
+#, c-format
 msgid "%s could not be opened"
-msgstr "Nelze nastavit masku signálù!"
+msgstr "Ne¹lo otevøít %s"
 
-#: daemon/errorgui.c:240
+#: daemon/errorgui.c:238
 msgid "gdm_error_box: Cannot fork to display error/info box"
 msgstr ""
 
-#: daemon/errorgui.c:394 daemon/errorgui.c:521
+#: daemon/errorgui.c:389 daemon/errorgui.c:511
 msgid "gdm_failsafe_question: Cannot fork to display error/info box"
 msgstr ""
 
@@ -145,17 +145,17 @@ msgstr "%s: Adresáø %s neexistuje."
 #: daemon/filecheck.c:56 daemon/filecheck.c:97
 #, c-format
 msgid "%s: %s is not owned by uid %d."
-msgstr ""
+msgstr "%s: %s není vlastnìn uid %d."
 
 #: daemon/filecheck.c:62 daemon/filecheck.c:104
 #, c-format
 msgid "%s: %s is writable by group."
-msgstr ""
+msgstr "%s: %s je pøepisovatelný skupinou."
 
 #: daemon/filecheck.c:68
 #, c-format
 msgid "%s: %s is writable by other."
-msgstr ""
+msgstr "%s: %s je pøepisovatelný ostatními."
 
 #: daemon/filecheck.c:82
 #, c-format
@@ -307,6 +307,7 @@ msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
 "gdm."
 msgstr ""
+"U¾ivatel gdm neezistuje.  Prosím opravte nastavení gdm %s a restartujte jej."
 
 #: daemon/gdm.c:531
 #, c-format
@@ -428,7 +429,7 @@ msgid "%s: fork() failed!"
 msgstr "%s: fork() selhal!"
 
 #. should never happen
-#: daemon/gdm.c:726 daemon/slave.c:2083
+#: daemon/gdm.c:726 daemon/slave.c:2073
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() selhal: %s!"
@@ -442,7 +443,7 @@ msgstr ""
 msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
 msgstr ""
 
-#: daemon/gdm.c:927
+#: daemon/gdm.c:925
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
@@ -454,130 +455,129 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:939
+#: daemon/gdm.c:937
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr ""
 
-#: daemon/gdm.c:1045
+#: daemon/gdm.c:1043
 #, c-format
 msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
 "display %s"
 msgstr ""
 
-#: daemon/gdm.c:1053
+#: daemon/gdm.c:1051
 #, c-format
 msgid ""
 "gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
 msgstr ""
 
 #. Bury this display for good
-#: daemon/gdm.c:1087
+#: daemon/gdm.c:1085
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr ""
 
 #. Reboot machine
-#: daemon/gdm.c:1099
+#: daemon/gdm.c:1097
 msgid "gdm_child_action: Master rebooting..."
 msgstr ""
 
-#: daemon/gdm.c:1106
+#: daemon/gdm.c:1104
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr ""
 
 #. Halt machine
-#: daemon/gdm.c:1110
+#: daemon/gdm.c:1108
 msgid "gdm_child_action: Master halting..."
 msgstr ""
 
-#: daemon/gdm.c:1117
+#: daemon/gdm.c:1115
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr ""
 
 #. Suspend machine
-#: daemon/gdm.c:1121
+#: daemon/gdm.c:1119
 msgid "gdm_child_action: Master suspending..."
 msgstr ""
 
-#: daemon/gdm.c:1128
+#: daemon/gdm.c:1126
 #, c-format
 msgid "gdm_child_action: Suspend failed: %s"
 msgstr "gdm_child_action: Suspend selhal: %s!"
 
-#: daemon/gdm.c:1223
+#: daemon/gdm.c:1221
 msgid "GDM restarting ..."
 msgstr "GDM restartuje ..."
 
-#: daemon/gdm.c:1228
+#: daemon/gdm.c:1226
 msgid "Failed to restart self"
 msgstr "Nemohu se restartovat"
 
-#: daemon/gdm.c:1331
-#, fuzzy
+#: daemon/gdm.c:1329
 msgid "Do not fork into the background"
-msgstr "Barva kterou pou¾ít na pozadí"
+msgstr "Neforkovat se do pozadí"
 
-#: daemon/gdm.c:1333
+#: daemon/gdm.c:1331
 msgid "Preserve LD_* variables"
 msgstr "Zachovat promìné LD_*"
 
-#: daemon/gdm.c:1416 gui/gdmchooser.c:1099
+#: daemon/gdm.c:1414 gui/gdmchooser.c:1099
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 
-#: daemon/gdm.c:1428
+#: daemon/gdm.c:1426
 msgid "Only root wants to run gdm\n"
 msgstr "Jen root chce spustit gdm\n"
 
-#: daemon/gdm.c:1452
+#: daemon/gdm.c:1450
 msgid "gdm already running. Aborting!"
 msgstr "gdm ji¾ bì¾í. Konèím!"
 
-#: daemon/gdm.c:1483
+#: daemon/gdm.c:1481
 #, c-format
 msgid "%s: Error setting up TERM signal handler"
 msgstr ""
 
-#: daemon/gdm.c:1487
+#: daemon/gdm.c:1485
 #, c-format
 msgid "%s: Error setting up INT signal handler"
 msgstr ""
 
-#: daemon/gdm.c:1491
+#: daemon/gdm.c:1489
 #, c-format
 msgid "%s: Error setting up HUP signal handler"
 msgstr ""
 
-#: daemon/gdm.c:1495
+#: daemon/gdm.c:1493
 #, c-format
 msgid "%s: Error setting up USR1 signal handler"
 msgstr ""
 
-#: daemon/gdm.c:1504
+#: daemon/gdm.c:1502
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr ""
 
-#: daemon/gdm.c:2573 daemon/gdm.c:2591
+#: daemon/gdm.c:2571 daemon/gdm.c:2589
 msgid "Flexible server request denied: Not authenticated"
 msgstr ""
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:2609
+#: daemon/gdm.c:2607
 msgid "Unknown server type requested, using standard server."
 msgstr ""
 
-#: daemon/gdm.c:2613
+#: daemon/gdm.c:2611
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -589,12 +589,12 @@ msgstr ""
 msgid "y = Yes or n = No? >"
 msgstr "y = Ano, n = Ne? >"
 
-#: daemon/misc.c:716
+#: daemon/misc.c:713
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr ""
 
-#: daemon/misc.c:830
+#: daemon/misc.c:827
 #, fuzzy, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr ""
@@ -602,138 +602,140 @@ msgstr ""
 "Nelze odstranit sezení %s\n"
 "   Chyba: %s"
 
-#: daemon/misc.c:835
+#: daemon/misc.c:832
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr "initgroups() selhal pro %s. Konèím."
 
-#: daemon/server.c:169
+#: daemon/server.c:172
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
 "another display number?  If you answer no, I will attempt to start the "
 "server on %s again.%s"
 msgstr ""
+"Vypadá to ¾e na displeji %s ji¾ jeden X server bì¾í.  Mám zkusit jíný "
+"displej?  Jestli¾e ne zkusím displej %s znovu.%s"
 
-#: daemon/server.c:176
+#: daemon/server.c:179
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
 "higher.)"
 msgstr ""
 
-#: daemon/server.c:215
+#: daemon/server.c:218
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
-msgstr ""
+msgstr "Displej '%s' nemù¾e být otevøen Xnestem"
 
-#: daemon/server.c:245
+#: daemon/server.c:248
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
-msgstr ""
+msgstr "Displej %s je ji¾ pou¾íván jiným X serverem."
 
-#: daemon/server.c:342
+#: daemon/server.c:345
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr ""
 
-#: daemon/server.c:354
+#: daemon/server.c:357
 #, c-format
 msgid "%s: Error setting up USR1 signal handler: %s"
 msgstr ""
 
-#: daemon/server.c:367 daemon/slave.c:237
+#: daemon/server.c:370 daemon/slave.c:237
 #, c-format
 msgid "%s: Error setting up CHLD signal handler: %s"
 msgstr ""
 
-#: daemon/server.c:381 daemon/slave.c:213
+#: daemon/server.c:384 daemon/slave.c:213
 #, c-format
 msgid "%s: Error setting up ALRM signal handler: %s"
 msgstr ""
 
 #. Send X too busy
-#: daemon/server.c:552
+#: daemon/server.c:557
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr ""
 
-#: daemon/server.c:567
+#: daemon/server.c:572
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr ""
 
-#: daemon/server.c:671
+#: daemon/server.c:676
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Neplatný pøíkaz serveru '%s'"
 
-#: daemon/server.c:677
+#: daemon/server.c:682
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "Server jménem '%s' nebyl nalezen, pou¾iji standartní server"
 
-#: daemon/server.c:750
+#: daemon/server.c:754
 #, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr ""
 
-#: daemon/server.c:760
+#: daemon/server.c:764
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr ""
 
-#: daemon/server.c:764
+#: daemon/server.c:768
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
 msgstr ""
 
-#: daemon/server.c:768
+#: daemon/server.c:772
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
 msgstr ""
 
-#: daemon/server.c:778
+#: daemon/server.c:782
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
 msgstr ""
 
-#: daemon/server.c:782
+#: daemon/server.c:786
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr ""
 
-#: daemon/server.c:803
+#: daemon/server.c:807
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr ""
 
-#: daemon/server.c:829
+#: daemon/server.c:833
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
 
-#: daemon/server.c:844 daemon/slave.c:1331 daemon/slave.c:1683
+#: daemon/server.c:848 daemon/slave.c:1324 daemon/slave.c:1674
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr ""
 
-#: daemon/server.c:850 daemon/slave.c:1336 daemon/slave.c:1688
+#: daemon/server.c:854 daemon/slave.c:1329 daemon/slave.c:1679
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr ""
 
-#: daemon/server.c:856 daemon/slave.c:1341 daemon/slave.c:1693
+#: daemon/server.c:860 daemon/slave.c:1334 daemon/slave.c:1684
 #, fuzzy, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "Nelze nastavit masku signálù!"
 
-#: daemon/server.c:863
+#: daemon/server.c:867
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr ""
 
-#: daemon/server.c:874
+#: daemon/server.c:878
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr ""
 
-#: daemon/server.c:880
+#: daemon/server.c:884
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr ""
 
@@ -759,16 +761,16 @@ msgid ""
 "the problem is corrected."
 msgstr ""
 
-#: daemon/slave.c:671
+#: daemon/slave.c:670
 msgid "focus_first_x_window: cannot fork"
 msgstr ""
 
-#: daemon/slave.c:694
+#: daemon/slave.c:692
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr ""
 
-#: daemon/slave.c:807
+#: daemon/slave.c:803
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -781,7 +783,7 @@ msgstr ""
 "v konfiguraèním souboru.  Pokusím se\n"
 "ji spustit z implicitní polohy."
 
-#: daemon/slave.c:821
+#: daemon/slave.c:817
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -791,7 +793,7 @@ msgstr ""
 "Zkontrolujte ¾e je správnì nastavena\n"
 "v konfiguraèním souboru."
 
-#: daemon/slave.c:928
+#: daemon/slave.c:924
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -799,16 +801,16 @@ msgstr ""
 "Pro start nastavení vlo¾te\n"
 "heslo u¾ivatele root."
 
-#: daemon/slave.c:951 daemon/slave.c:1037
+#: daemon/slave.c:947 daemon/slave.c:1033
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr ""
 
-#: daemon/slave.c:1290
+#: daemon/slave.c:1284
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr ""
 
-#: daemon/slave.c:1405
+#: daemon/slave.c:1398
 msgid ""
 "No servers were defined in the\n"
 "configuration file and XDMCP was\n"
@@ -820,7 +822,7 @@ msgid ""
 "are disabled now."
 msgstr ""
 
-#: daemon/slave.c:1419
+#: daemon/slave.c:1412
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -829,19 +831,19 @@ msgid ""
 "configure the X server."
 msgstr ""
 
-#: daemon/slave.c:1428
+#: daemon/slave.c:1421
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr ""
 
-#: daemon/slave.c:1441
+#: daemon/slave.c:1434
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr ""
 
-#: daemon/slave.c:1453
+#: daemon/slave.c:1446
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -850,42 +852,42 @@ msgid ""
 "editing the configuration file"
 msgstr ""
 
-#: daemon/slave.c:1459
+#: daemon/slave.c:1452
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr ""
 
-#: daemon/slave.c:1462
+#: daemon/slave.c:1455
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr ""
 
-#: daemon/slave.c:1528 daemon/slave.c:1616
+#: daemon/slave.c:1521 daemon/slave.c:1609
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr ""
 
-#: daemon/slave.c:1643
+#: daemon/slave.c:1635
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
 msgstr ""
 
-#: daemon/slave.c:1729
+#: daemon/slave.c:1720
 msgid ""
 "Cannot start the chooser program,\n"
 "you will not be able to log in.\n"
 "Please contact the system administrator.\n"
 msgstr ""
 
-#: daemon/slave.c:1733
+#: daemon/slave.c:1724
 #, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr ""
 
-#: daemon/slave.c:1736
+#: daemon/slave.c:1727
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr ""
 
-#: daemon/slave.c:2120
+#: daemon/slave.c:2110
 #, fuzzy, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr ""
@@ -893,7 +895,7 @@ msgstr ""
 "Nelze odstranit sezení %s\n"
 "   Chyba: %s"
 
-#: daemon/slave.c:2134
+#: daemon/slave.c:2124
 #, fuzzy, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr ""
@@ -901,19 +903,19 @@ msgstr ""
 "Nelze odstranit sezení %s\n"
 "   Chyba: %s"
 
-#: daemon/slave.c:2153
+#: daemon/slave.c:2143
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr ""
 
 #. yaikes
-#: daemon/slave.c:2240
+#: daemon/slave.c:2229
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
 msgstr ""
 
-#: daemon/slave.c:2244
+#: daemon/slave.c:2233
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -922,7 +924,7 @@ msgstr ""
 "Nemohu najít instalaci GNOME,\n"
 "zkusím sezení \"Záchranný xterm\"."
 
-#: daemon/slave.c:2250
+#: daemon/slave.c:2239
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -936,11 +938,11 @@ msgstr ""
 "nebudou pou¾ity.  Toto je jen ke\n"
 "spravení problémù s va¹í instalací."
 
-#: daemon/slave.c:2270
+#: daemon/slave.c:2259
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Nemohu najít \"xterm\" ke spu¹tìní záchranného sezení."
 
-#: daemon/slave.c:2277
+#: daemon/slave.c:2266
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -957,12 +959,12 @@ msgstr ""
 "napi¹te 'exit' a enter do okna\n"
 "terminálu."
 
-#: daemon/slave.c:2305
+#: daemon/slave.c:2294
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "Spou¹tím %s pro %s na %s"
 
-#: daemon/slave.c:2324
+#: daemon/slave.c:2313
 #, fuzzy, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr ""
@@ -970,11 +972,11 @@ msgstr ""
 "Nelze odstranit sezení %s\n"
 "   Chyba: %s"
 
-#: daemon/slave.c:2334
+#: daemon/slave.c:2323
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr ""
 
-#: daemon/slave.c:2336
+#: daemon/slave.c:2325
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -982,12 +984,12 @@ msgstr ""
 "Administrátor systému\n"
 "vypnul vá¹ ùèet."
 
-#: daemon/slave.c:2339
+#: daemon/slave.c:2328
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr ""
 
-#: daemon/slave.c:2344
+#: daemon/slave.c:2333
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -995,24 +997,24 @@ msgid ""
 "dialog window."
 msgstr ""
 
-#: daemon/slave.c:2352
+#: daemon/slave.c:2341
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Nelze spustit sezení `%s'"
 
-#: daemon/slave.c:2355
+#: daemon/slave.c:2344
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
 "It could also indicate an error with your account.\n"
 msgstr ""
 
-#: daemon/slave.c:2390
+#: daemon/slave.c:2379
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 
-#: daemon/slave.c:2396
+#: daemon/slave.c:2385
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1025,18 +1027,18 @@ msgid ""
 "you use a failsafe session."
 msgstr ""
 
-#: daemon/slave.c:2404
+#: daemon/slave.c:2393
 #, fuzzy, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Adresáø %s neexistuje."
 
-#: daemon/slave.c:2569
+#: daemon/slave.c:2558
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
 msgstr ""
 
-#: daemon/slave.c:2592
+#: daemon/slave.c:2581
 msgid ""
 "GDM could not write to your authorization\n"
 "file.  This could mean that you are out of\n"
@@ -1046,11 +1048,11 @@ msgid ""
 "your system administrator"
 msgstr ""
 
-#: daemon/slave.c:2627
+#: daemon/slave.c:2616
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr ""
 
-#: daemon/slave.c:2687
+#: daemon/slave.c:2676
 msgid ""
 "Your session only lasted less then\n"
 "10 seconds.  If you have not logged out\n"
@@ -1061,39 +1063,39 @@ msgid ""
 "can fix this problem."
 msgstr ""
 
-#: daemon/slave.c:2695
+#: daemon/slave.c:2684
 msgid "View details (~/.xsession-errors file)"
 msgstr "Prohlídnout detaily (soubor ~/.xsession-errors)"
 
-#: daemon/slave.c:2848
+#: daemon/slave.c:2837
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping na %s selhal, ru¹ím display!"
 
-#: daemon/slave.c:3032
+#: daemon/slave.c:3021
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 
-#: daemon/slave.c:3291
+#: daemon/slave.c:3273
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr ""
 
-#: daemon/slave.c:3297
+#: daemon/slave.c:3279
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr ""
 
-#: daemon/slave.c:3389
+#: daemon/slave.c:3371
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr ""
 
-#: daemon/slave.c:3421
+#: daemon/slave.c:3399
 #, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr ""
 
-#: daemon/slave.c:3426
+#: daemon/slave.c:3404
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr ""
 
@@ -1481,7 +1483,6 @@ msgstr ""
 "nastavil v konfiguraci GDM."
 
 #: gui/gdmXnestchooser.c:288 gui/gdmcomm.c:380
-#, fuzzy
 msgid ""
 "GDM is not running.\n"
 "Please ask your system administrator to start it."
@@ -1491,7 +1492,7 @@ msgstr ""
 
 #: gui/gdmXnestchooser.c:299
 msgid "Could not find a free display number"
-msgstr ""
+msgstr "Nena¹el jsem volné èíslo displeje"
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -1632,11 +1633,11 @@ msgstr "Byly chyby pøi spou¹tìní X serveru."
 
 #: gui/gdmcomm.c:416
 msgid "The X server failed.  Perhaps it is not configured well."
-msgstr ""
+msgstr "X server selhal.  Mo¾ná ¾e je ¹patnì nastaven."
 
 #: gui/gdmcomm.c:419
 msgid "Too many X sessions running."
-msgstr ""
+msgstr "Bì¾í ji¾ pøíli¹ mnoho sezení X windows."
 
 #: gui/gdmcomm.c:421
 msgid ""
@@ -1671,7 +1672,7 @@ msgstr "Stala se neznámá chyba."
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
-msgstr ""
+msgstr "Pøihlásit se jako nový u¾ivatel v oknì"
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:2
 msgid "New login in a nested window"
@@ -1691,7 +1692,7 @@ msgstr "Standartní server"
 
 #: gui/gdmflexiserver.c:191
 msgid "Send the specified protocol command to gdm"
-msgstr ""
+msgstr "Poslat specifický pøíkaz protokolu gdm"
 
 #: gui/gdmflexiserver.c:191
 msgid "COMMAND"
@@ -1742,239 +1743,274 @@ msgid "New login"
 msgstr "Nové pøihlá¹ení"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:46
+#: gui/gdmlanguages.c:51
 msgid "A-M|Azerbaijani"
 msgstr "A-M|Azerbaijansky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:48
+#: gui/gdmlanguages.c:53
+msgid "A-M|Arabic (Egypt)"
+msgstr "A-M|Arabsky (Egypt)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:55
+msgid "A-M|Arabic (Lebanon)"
+msgstr "A-M|Arabsky (Lebanon)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:57
 msgid "A-M|Basque"
 msgstr "A-M|Baskytsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:50
+#: gui/gdmlanguages.c:59
 msgid "A-M|Bulgarian"
 msgstr "A-M|Bulharsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:52
+#: gui/gdmlanguages.c:61
 msgid "A-M|Catalan"
 msgstr "A-M|Katalánsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:54
+#: gui/gdmlanguages.c:63
 msgid "A-M|Chinese (simplified)"
 msgstr "A-M|Èínsky (zjednodu¹ené)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:56
+#: gui/gdmlanguages.c:65
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|Èínsky (tradièní)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:58
+#: gui/gdmlanguages.c:67
 msgid "A-M|Croatian"
 msgstr "A-M|Chorvatsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:60
+#: gui/gdmlanguages.c:69
 msgid "A-M|Czech"
 msgstr "A-M|Èesky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:62
+#: gui/gdmlanguages.c:71
 msgid "A-M|Danish"
 msgstr "A-M|Dánsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:64
+#: gui/gdmlanguages.c:73
 msgid "A-M|Dutch"
 msgstr "A-M|Holandsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:66
+#: gui/gdmlanguages.c:75
 msgid "A-M|English"
 msgstr "A-M|Anglicky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:68
+#: gui/gdmlanguages.c:77
 msgid "A-M|Estonian"
 msgstr "A-M|Estonsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:70
-msgid "A-M|American English"
-msgstr "A-M|Americká angliètina"
+#: gui/gdmlanguages.c:79
+msgid "A-M|English (American)"
+msgstr "A-M|Anglicky (Amerika)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:72
-msgid "A-M|British English"
-msgstr "A-M|Britská angliètina"
+#: gui/gdmlanguages.c:81
+msgid "A-M|English (Australian)"
+msgstr "A-M|Anglicky (Austrálie)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:74
+#: gui/gdmlanguages.c:83
+msgid "A-M|English (British)"
+msgstr "A-M|Anglicky (Británie)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:85
+msgid "A-M|English (Ireland)"
+msgstr "A-M|Anglicky (Irsko)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:87
 msgid "A-M|Finnish"
 msgstr "A-M|Finsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:76
+#: gui/gdmlanguages.c:89
 msgid "A-M|French"
 msgstr "A-M|Francouzky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:78
+#: gui/gdmlanguages.c:91
 msgid "A-M|Galician"
 msgstr "A-M|Galicijsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:80
+#: gui/gdmlanguages.c:93
 msgid "A-M|German"
 msgstr "N-Z|Nìmecky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:82
+#: gui/gdmlanguages.c:95
 msgid "A-M|Greek"
 msgstr "N-Z|Øecky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:84 gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:97 gui/gdmlanguages.c:98
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebrejsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:100
 msgid "A-M|Hungarian"
 msgstr "A-M|Maïarsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:102
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:104
+msgid "A-M|Irish"
+msgstr "A-M|Irsky"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:106
 msgid "A-M|Italian"
 msgstr "A-M|Italsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:108
 msgid "A-M|Japanese"
 msgstr "A-M|Japonsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:110
 msgid "A-M|Korean"
 msgstr "A-M|Korejsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:112
 msgid "A-M|Latvian"
 msgstr "A-M|Loty¹sky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:114
 msgid "A-M|Lithuanian"
 msgstr "A-M|Litevsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:116
 msgid "A-M|Macedonian"
 msgstr "A-M|Makedónsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
+#: gui/gdmlanguages.c:118
 msgid "A-M|Malay"
 msgstr "A-M|Malaisky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:120
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norsky (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:122
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norsky (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:124
 msgid "N-Z|Polish"
 msgstr "N-Z|Polsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:126
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugalsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:113
-msgid "N-Z|Brazilian Portuguese"
-msgstr "N-Z|Portugalsky (brazilská)"
+#: gui/gdmlanguages.c:128
+msgid "N-Z|Portuguese (Brazilian)"
+msgstr "N-Z|Portugalsky (Brazílie)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:115
+#: gui/gdmlanguages.c:130
 msgid "N-Z|Romanian"
 msgstr "N-Z|Rumunsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:117
+#: gui/gdmlanguages.c:132
 msgid "N-Z|Russian"
 msgstr "N-Z|Rusky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:119
+#: gui/gdmlanguages.c:134
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovensky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:136
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovinsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:138
 msgid "N-Z|Spanish"
 msgstr "N-Z|©panìlsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:140
+msgid "N-Z|Spanish (Mexico)"
+msgstr "N-Z|©panìlsky (Mexico)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:142
 msgid "N-Z|Swedish"
 msgstr "N-Z|©védsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:127
+#: gui/gdmlanguages.c:144
+msgid "N-Z|Tamil"
+msgstr "N-Z|Tamilsky"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:146
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turecky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:148
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrainsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:150
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:133
+#: gui/gdmlanguages.c:152
 msgid "N-Z|Walloon"
 msgstr ""
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:154
 msgid "Other|POSIX/C English"
 msgstr "Jiné|POSIX/C Anglicky"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:292
+#: gui/gdmlanguages.c:311
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:300
+#: gui/gdmlanguages.c:319
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2920,6 +2956,15 @@ msgstr ""
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr ""
+
+#~ msgid "A-M|American English"
+#~ msgstr "A-M|Americká angliètina"
+
+#~ msgid "A-M|British English"
+#~ msgstr "A-M|Britská angliètina"
+
+#~ msgid "N-Z|Brazilian Portuguese"
+#~ msgstr "N-Z|Portugalsky (brazilská)"
 
 #~ msgid "Catalan"
 #~ msgstr "Katalánsky"
