@@ -246,7 +246,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 
     gdm_debug ("gdm_auth_user_add: Using %s for cookies", d->userauth);
 
-    /* If not fallbackfile, nuke any existing cookies for this display */
+    /* If not fallback file, nuke any existing cookies for this display */
     if (! d->authfb)
 	gdm_auth_purge (d, af);
 
@@ -336,8 +336,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
 
     gdm_debug ("gdm_auth_purge: %s", d->name);
 
-    if (fseek (af, 0L, SEEK_SET))
-	gdm_debug ("Error seeking...");
+    fseek (af, 0L, SEEK_SET);
 
     /* Read the user's entire Xauth file into memory to avoid
      * temporary file issues. Remove any instance of this display in
@@ -353,6 +352,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
 	    if (! memcmp (da->address, xa->address, xa->address_length) &&
 		! memcmp (da->number, xa->number, xa->number_length))
 		match = TRUE;
+
 	    alist = alist->next;
 	}
 

@@ -1,36 +1,39 @@
 [daemon]
 Chooser=@bindir@/gdmchooser --disable-sound
+DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin
+DisplayInitDir=@sysconfdir@/gdm/Init
 Greeter=@bindir@/gdmlogin --disable-sound
 Group=gdm
-HaltCommand=shutdown -h now
-DisplayInitDir=@sysconfdir@/gdm/Init
+HaltCommand=/sbin/shutdown -h now
 KillInitClients=1
 LogDir=@authdir@
-DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin
 PidFile=/var/run/gdm.pid
 PostSessionScriptDir=@sysconfdir@/gdm/PostSession/
 PreSessionScriptDir=@sysconfdir@/gdm/PreSession/
-RebootCommand=shutdown -r now
+RebootCommand=/sbin/shutdown -r now
 RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin
 ServAuthDir=@authdir@
 SessionDir=@sysconfdir@/gdm/Sessions/
+User=gdm
 UserAuthDir=
 UserAuthFBDir=/tmp
 UserAuthFile=.Xauthority
-User=gdm
 
 [security]
 AllowRoot=0
-UserMaxFile=65536
 RelaxPermissions=0
 RetryDelay=3
+UserMaxFile=65536
 VerboseAuth=1
 
 [xdmcp]
 Enable=0
+HonorIndirect=1
 MaxPending=4
+MaxPendingIndirect=4
 MaxSessions=16
 MaxWait=30
+MaxWaitIndirect=30
 Port=177
 
 [gui]
@@ -40,12 +43,12 @@ MaxIconHeight=128
 
 [greeter]
 Browser=0
-Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody
 DefaultFace=@pixmapdir@/nobody.png
-GlobalFaceDir=@datadir@/faces/
-Font=-adobe-helvetica-bold-r-normal-*-*-180-*-*-*-*-*-*
-Icon=@pixmapdir@/gdm.xpm
 DefaultLocale=english
+Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody
+Font=-adobe-helvetica-bold-r-normal-*-*-180-*-*-*-*-*-*
+GlobalFaceDir=@datadir@/faces/
+Icon=@pixmapdir@/gdm.xpm
 LocaleFile=@localedir@/locale.alias
 Logo=@pixmapdir@/gnome-logo-large.png
 Quiver=1
@@ -53,9 +56,9 @@ SystemMenu=0
 Welcome=Welcome to %h
 
 [chooser]
-ScanTime=3
 DefaultHostImg=@pixmapdir@/nohost.png
 HostImageDir=@datadir@/hosts/
+ScanTime=3
 
 [debug]
 Enable=0
