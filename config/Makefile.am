@@ -15,7 +15,7 @@ noinst_DATA = gdm.conf
 EXTRA_DIST = \
 	gdm.conf.in \
 	gnome.desktop.in \
-	Xclients.desktop.in \
+	Default.desktop.in \
 	Xsession.in \
 	gdm \
 	gdm-autologin \
@@ -33,7 +33,7 @@ gettextfoo.h: XKeepsCrashing
 
 @INTLTOOL_DESKTOP_RULE@
 
-install-data-hook: gdm.conf Xsession gnome.desktop Xclients.desktop Default PostSession PreSession
+install-data-hook: gdm.conf Xsession gnome.desktop Default.desktop Default PostSession PreSession
 	if test '!' -d $(DESTDIR)$(confdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
@@ -60,10 +60,10 @@ install-data-hook: gdm.conf Xsession gnome.desktop Xclients.desktop Default Post
 		chmod 755 $(DESTDIR)$(sessdir); \
 	fi
 
-	-if test -f $(DESTDIR)$(sessdir)/Xclients.desktop; then \
-		cp -f $(DESTDIR)$(sessdir)/Xclients.desktop $(DESTDIR)$(sessdir)/Xclients.orig; \
+	-if test -f $(DESTDIR)$(sessdir)/Default.desktop; then \
+		cp -f $(DESTDIR)$(sessdir)/Default.desktop $(DESTDIR)$(sessdir)/Default.orig; \
 	fi
-	$(INSTALL_SCRIPT) Xclients.desktop $(DESTDIR)$(sessdir)/Xclients.desktop
+	$(INSTALL_SCRIPT) Default.desktop $(DESTDIR)$(sessdir)/Default.desktop
 
 	-if test -f $(DESTDIR)$(sessdir)/gnome.desktop; then \
 		cp -f $(DESTDIR)$(sessdir)/gnome.desktop $(DESTDIR)$(sessdir)/gnome.orig; \

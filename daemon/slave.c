@@ -2198,7 +2198,8 @@ static char *
 find_a_session (void)
 {
 	char *try[] = {
-		"Xclients.desktop",
+		"Default.desktop",
+		"default.desktop",
 		"Gnome.desktop",
 		"gnome.desktop",
 		"GNOME.desktop",
@@ -2542,6 +2543,7 @@ session_child_run (struct passwd *pwent,
 			   internal one */
 			if (strcmp (exec, "failsafe") == 0)
 				session = GDM_SESSION_FAILSAFE_XTERM;
+		}
 	} else {
 		exec = NULL;
 	}
