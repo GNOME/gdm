@@ -306,6 +306,7 @@ struct _GdmDisplay {
     pid_t greetpid;
     pid_t servpid;
     pid_t sesspid;
+    int last_sess_status; /* status returned by last session */
     pid_t slavepid;
     pid_t chooserpid;
     time_t acctime;

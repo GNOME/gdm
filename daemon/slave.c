@@ -465,6 +465,21 @@ term_quit (void)
 	gdm_slave_quick_exit (exit_code_to_use);
 }
 
+static gboolean
+parent_exists (void)
+{
+	pid_t ppid = getppid ();
+	static gboolean parent_dead = FALSE; /* once dead, always dead */
+
+	if (parent_dead ||
+	    ppid <= 1 ||
+	    kill (ppid, 0) < 0) {
+		parent_dead = TRUE;
+		return FALSE;
+	}
+	return TRUE;
+}
+
 void 
 gdm_slave_start (GdmDisplay *display)
 {  
@@ -2230,17 +2245,6 @@ gdm_slave_greeter (void)
     }
 }
 
-static gboolean
-parent_exists (void)
-{
-	pid_t ppid = getppid ();
-
-	if (ppid <= 1 ||
-	    kill (ppid, 0) < 0)
-		return FALSE;
-	return TRUE;
-}
-
 /* This should not call anything that could cause a syslog in case we
  * are in a signal */
 void
@@ -2984,7 +2988,8 @@ session_child_run (struct passwd *pwent,
 				       _("Cannot find \"xterm\" to start "
 					 "a failsafe session."));
 			/* nyah nyah nyah nyah nyah */
-			_exit (0);
+			/* 66 means no "session crashed" examine .xsession-errors dialog */
+			_exit (66);
 		} else {
 			argv[1] = "-geometry";
 			argv[2] = g_strdup_printf ("80x24-%d-%d",
@@ -3026,7 +3031,9 @@ session_child_run (struct passwd *pwent,
 			       _("The system administrator has "
 				 "disabled your account."));
 		/* ends as if nothing bad happened */
-		_exit (0);
+		/* 66 means no "session crashed" examine .xsession-errors
+		   dialog */
+		_exit (66);
 	}
 
 	IGNORE_EINTR (execv (argv[0], argv));
@@ -3354,7 +3361,9 @@ gdm_slave_session_start (void)
     gdm_debug ("Session: start_time: %ld end_time: %ld",
 	       (long)session_start_time, (long)end_time);
 
-    if  ((/* sanity */ end_time >= session_start_time) &&
+    /* 66 is a very magical number signifying failure in GDM */
+    if  ((d->last_sess_status != 66) &&
+	 (/* sanity */ end_time >= session_start_time) &&
 	 (end_time - 10 <= session_start_time) &&
 	 /* only if the X server still exist! */
 	 d->servpid > 1) {
@@ -3704,6 +3713,10 @@ gdm_slave_child_handler (int sig)
 		}
 	} else if (pid != 0 && pid == d->sesspid) {
 		d->sesspid = 0;
+		if (WIFEXITED (status))
+			d->last_sess_status = WEXITSTATUS (status);
+		else
+			d->last_sess_status = -1;
 	} else if (pid != 0 && pid == d->chooserpid) {
 		d->chooserpid = 0;
 	} else if (pid != 0 && pid == d->servpid) {

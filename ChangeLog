@@ -1,3 +1,13 @@
+Thu Aug 14 11:36:45 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/slave.c: Save status of the last session
+	  process, and use code 66 to mean do not display the "session
+	  crashed" error box.  Use the 66 error code from the session
+	  code when we know the session has not had problems starting,
+	  and where we told the user what was wrong.  Also move
+	  parent_exists to avoid compiler warning and assume "once dead,
+	  always dead".
+
 Thu Aug 14 09:55:31 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c: Limit number of
