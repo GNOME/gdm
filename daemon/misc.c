@@ -49,6 +49,7 @@ extern gchar *GdmPidFile;
 extern gboolean GdmDebug;
 extern GSList *displays;
 extern int gdm_xdmcpfd;
+extern gboolean GdmXdmcp;
 
 extern char **environ;
 
@@ -724,6 +725,12 @@ gdm_fork_extra (void)
 		 * kill -(extra_process) to kill extra process and all it's
 		 * possible children */
 		setsid ();
+
+		/* Harmless in children, but in case we'd run
+		   extra processes from main daemon would fix
+		   problems ... */
+		if (GdmXdmcp)
+			gdm_xdmcp_close ();
 	}
 
 	return pid;

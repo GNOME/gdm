@@ -6,6 +6,7 @@ Big TODO: Rewrite the slave to be based around a mainloop.  So that
 we don't have to do things directly from signal handlers.
 
 TODO things:
+  - If we can't setup pam display user visible errors and not just syslog stuff
   - handle kills of server not working correctly to be more robust
     we must leave killing to the main daemon since that can more likely kill
     the server.
@@ -21,7 +22,7 @@ Old stuff probably irrelevant:
   Finish gdmface.
   Keyboard layout menu.
 
-utmp/wtmp handling.
+native utmp/wtmp handling without sessreg
 
 xsri like logo functionality
 
@@ -34,3 +35,4 @@ etc...
 
 Add spacer files.  Files which we can use in case there is disk shortage to
 write a new xauthority stuff so that someone can actually log on and clean up.
+Is this crack?  Maybe.

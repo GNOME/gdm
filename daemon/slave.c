@@ -3388,10 +3388,15 @@ gdm_slave_child_handler (int sig)
 {
     gint status;
     pid_t pid;
+    uid_t old;
 
     gdm_in_signal++;
 
     gdm_debug ("gdm_slave_child_handler");
+
+    old = geteuid ();
+    if (old != 0)
+	    seteuid (0);
     
     while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
 	gdm_debug ("gdm_slave_child_handler: %d died", pid);
@@ -3421,7 +3426,7 @@ gdm_slave_child_handler (int sig)
 				do_restart_greeter = TRUE;
 			}
 			gdm_in_signal--;
-			return;
+			continue;
 		}
 
 		whack_greeter_fds ();
@@ -3486,6 +3491,9 @@ gdm_slave_child_handler (int sig)
 	    	extra_status = status;
 	}
     }
+    if (old != 0)
+	    seteuid (old);
+
     gdm_in_signal--;
 }
 

@@ -69,7 +69,8 @@ static void gdm_restart_now (void);
 GSList *displays = NULL;	/* List of displays managed */
 GSList *xservers = NULL;	/* List of x server definitions */
 gint high_display_num = 0;	/* Highest local non-flexi display */
-gint sessions = 0;		/* Number of remote sessions */
+gint xdmcp_sessions = 0;	/* Number of remote sessions */
+gint xdmcp_pending = 0;		/* Number of pending remote sessions */
 gint flexi_servers = 0;		/* Number of flexi servers */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
@@ -859,7 +860,8 @@ gdm_final_cleanup (void)
 
 	/* Close stuff */
 
-	gdm_xdmcp_close ();
+	if (GdmXdmcp)
+		gdm_xdmcp_close ();
 
 	if (fifoconn != NULL) {
 		char *path;
@@ -1012,6 +1014,8 @@ suspend_machine (void)
 	if (GdmSuspendReal != NULL &&
 	    fork () == 0) {
 		char **argv;
+		if (GdmXdmcp)
+			gdm_xdmcp_close ();
 		/* In the child setup empty mask and set all signals to
 		 * default values */
 		gdm_unset_signals ();
@@ -1356,8 +1360,6 @@ start_autopsy:
 
     if (gdm_restart_mode)
 	    gdm_safe_restart ();
-
-    g_main_loop_quit (main_loop);
 
     return TRUE;
 }

@@ -97,7 +97,6 @@
 #include "choose.h"
 #include "xdmcp.h"
 
-gint pending = 0;
 int gdm_xdmcpfd = -1;
 
 #ifdef HAVE_LIBXDMCP
@@ -114,7 +113,8 @@ static XdmcpBuffer buf;
 static gboolean initted = FALSE;
 
 extern GSList *displays;
-extern gint sessions;
+extern gint xdmcp_pending;
+extern gint xdmcp_sessions;
 extern gchar *GdmLogDir;
 extern gchar *GdmServAuthDir;
 
@@ -1057,13 +1057,13 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	return;
     }
     
-    gdm_debug ("gdm_xdmcp_handle_request: pending=%d, MaxPending=%d, sessions=%d, MaxSessions=%d",
-	       pending, GdmMaxPending, sessions, GdmMaxSessions);
+    gdm_debug ("gdm_xdmcp_handle_request: xdmcp_pending=%d, MaxPending=%d, xdmcp_sessions=%d, MaxSessions=%d",
+	       xdmcp_pending, GdmMaxPending, xdmcp_sessions, GdmMaxSessions);
 
 
     /* Check if ok to manage display */
     if (mitauth &&
-	sessions < GdmMaxSessions &&
+	xdmcp_sessions < GdmMaxSessions &&
 	(gdm_is_local_addr (&(clnt_sa->sin_addr)) ||
 	 gdm_xdmcp_displays_from_host (&(clnt_sa->sin_addr)) < GdmDispPerHost)) {
 	    char *disp;
@@ -1074,7 +1074,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	    gdm_xdmcp_display_dispose_check (disp);
 	    g_free (disp);
 
-	    if (pending >= GdmMaxPending) {
+	    if (xdmcp_pending >= GdmMaxPending) {
 		    gdm_debug ("gdm_xdmcp_handle_request: maximum pending");
 		    /* Don't translate, this goes over the wire to servers where we
 		    * don't know the charset or language, so it must be ascii */
@@ -1087,12 +1087,16 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     } else {
 	    /* Don't translate, this goes over the wire to servers where we
 	    * don't know the charset or language, so it must be ascii */
-	    if ( ! mitauth)
+	    if ( ! mitauth) {
 		    gdm_xdmcp_send_decline (clnt_sa, "Only MIT-MAGIC-COOKIE-1 supported");	
-	    else if (sessions >= GdmMaxSessions)
+	    } else if (xdmcp_sessions >= GdmMaxSessions) {
+		    gdm_info ("Maximum number of open XDMCP sessions reached");
 		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions reached");	
-	    else 
+	    } else {
+		    gdm_info ("Maximum number of open XDMCP sessions from host %s reached",
+			      inet_ntoa (clnt_sa->sin_addr));
 		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions from your host reached");	
+	    }
     }
 
     XdmcpDisposeARRAY8 (&clnt_authname);
@@ -1281,8 +1285,8 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	}
 	
 	d->dispstat = XDMCP_MANAGED;
-	sessions++;
-	pending--;
+	xdmcp_sessions++;
+	xdmcp_pending--;
 
 	/* Start greeter/session */
 	if (!gdm_display_manage (d)) {
@@ -1595,10 +1599,10 @@ gdm_xdmcp_display_alloc (struct in_addr *addr,
     
     displays = g_slist_append (displays, d);
     
-    pending++;
+    xdmcp_pending++;
     
-    gdm_debug ("gdm_xdmcp_display_alloc: display=%s, session id=%ld, pending=%d ",
-	       d->name, (long)d->sessionid, pending);
+    gdm_debug ("gdm_xdmcp_display_alloc: display=%s, session id=%ld, xdmcp_pending=%d ",
+	       d->name, (long)d->sessionid, xdmcp_pending);
     
     return (d);
 }

@@ -1,3 +1,20 @@
+Wed Jul 16 15:09:43 2003  George Lebl <jirka@5z.com>
+
+	* NEWS, README, README.install: updates
+
+	* daemon/display.c, daemon/gdm.c, daemon/xdmcp.c: Fix current session
+	  counting.  Could possibly raise the maximal session count.  Also
+	  rename the sessions and pending vars to xdmcp_sessions and
+	  xdmcp_pending.  During shutdown don't close xdmcp stuff if it's not
+	  enabled.  Close xdmcp if enabled on all possible forks from the
+	  main daemon.  Don't quit the main loop from the child handling
+	  callback as it's not needed
+
+	* daemon/xdmcp.c: complain to the log file if limits are reached
+
+	* daemon/slave.c: in the slave child handler, make sure the euid
+	  is set to 0 so that we can really kill things we want to kill
+
 Tue Jul 15 15:54:14 2003  George Lebl <jirka@5z.com>
 
 	* docs/GdmGreeterThemeManual.txt, gui/greeter/Makefile.am,

@@ -4,7 +4,7 @@ If you didn't compile Gnome yourself, make sure you have the appropriate
 -devel packages installed.
 
 ============
-If you want to install OVER RedHat or Ximian/HelixCode packages use,
+If you want to install OVER RedHat or Ximian packages use,
 following configure options:
 --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
 --enable-console-helper --with-pam-prefix=/etc
@@ -12,14 +12,16 @@ However, there is now a spec file so you can build an rpm by just doing
 
 rpm -ta gdm-<version>.tar.gz
 
-This should work on RedHat 6.x and maybe even 7.0, and if you're very
-lucky then on your favourite other distribution, but no promises.  Gdm is not
-a trivial package so it's more likely it won't work in other places out
-of the box.
+This should work on RedHat 6.x, 7.x, 8.x, 9 and perhaps later, and if you're
+very lucky then on your favourite other distribution, but no promises.  GDM is
+not a trivial package so it's more likely it won't work in other places out of
+the box.
 
 If building from CVS, there is a script gdm-build.sh in the root of the
 tree that you can use to build gdm and then install it with "make install".
 The setup is a a redhat like one.
+
+Definately make sure the --with-pam-prefix points to the prefix where
 
 -George
 ============
@@ -31,21 +33,32 @@ configure. gdm isn't - and never will be - Plug and Play
 
 For security reasons a dedicated user and group id are required for
 proper operation! gdm assumes that both the user and the group are
-called `gdm'. Create these before running make install.
+called `gdm'. Create these before running make install.  You can
+change the name in gdm.conf, but it is advised that these are dedicated
+to the gdm daemon.  This user will have access to some gdm files and
+can cause gdm DoS attacks, so it is not be OK to just use the
+user `nobody'.  Also it should not be a user with other privilages
+as it is assumed that someone who may break the gtk frontend apps
+can gain `gdm' access.
 
 You should run ``make install'' as root to get the permissions right
-on the authentication directory.
+on the authentication directory.  ``make install'' assumes the user
+is named `gdm'
 
 Configuration is done by editing the gdm.conf file (located in
 <prefix>/etc/gdm/gdm.conf). If no config file exists, make install
 will create one for you.
 
-Put your (jpg, gif, png, xpm) picture in ~/.gnome/photo to make it
+Put (copy) your (jpg, gif, png, xpm) picture to ~/.face to make it
 appear in the face browser.
 
 When reporting bugs you should first turn on debugging in
 gdm.conf. Your syslog daemon might not log debug information per
 default so you should make sure daemon.debug events are logged to a
-file. Include the resulting log in your bug report.
+file. Include the resulting log in your bug report.  It is known
+that debugging can sometimes cause unrelated problems due to the
+interaction with the syslog daemon, so it is not advisable that
+you run with the debug option all the time.  (Not to mention
+it generates a LOT of spew)
 
 

@@ -40,9 +40,9 @@
 
 /* External vars */
 extern gboolean GdmXdmcp;
-extern gint sessions;
+extern gint xdmcp_sessions;
 extern gint flexi_servers;
-extern gint pending;
+extern gint xdmcp_pending;
 extern GSList *displays;
 extern GdmConnection *fifoconn;
 extern GdmConnection *unixconn;
@@ -372,11 +372,12 @@ gdm_display_dispose (GdmDisplay *d)
 	    flexi_servers --;
 
     if (d->type == TYPE_XDMCP) {
-	sessions--;
-	d->type = -1;
+	if (d->dispstat == XDMCP_MANAGED)
+		xdmcp_sessions--;
+	else if (d->dispstat == XDMCP_PENDING)
+		xdmcp_pending--;
 
-	if (d->dispstat == XDMCP_PENDING)
-		pending--;
+	d->type = -1;
     }
 
     if (d->name) {
