@@ -1,3 +1,15 @@
+Wed May 26 18:23:14 2004  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c, daemon/display.c, daemon/gdm.[ch], daemon/misc.[ch],
+	  daemon/server.c, daemon/slave.c, daemon/verify-pam.c, docs/C/gdm.xml,
+	  config/gdm.conf.in:  Add a daemon/ConsoleCannotHandle key which
+	  lists languages which should not be used on the console because
+	  they won't work.  Uses "C" locale strings instead then.  Should
+	  "fix" #135387, but I suppose there's no clean way to do this,
+	  just let the distributors ship proper config files and have them
+	  test it (yeah right).  I've tested the current set on RH9 and I
+	  listed all of the ones that didn't work.
+
 Wed May 26 17:34:51 2004  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: Ensure proper .ICEauthority permissions, this

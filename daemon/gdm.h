@@ -178,6 +178,8 @@ enum {
 #define GDM_KEY_FIRSTVT "daemon/FirstVT=7"
 #define GDM_KEY_VTALLOCATION "daemon/VTAllocation=true"
 
+#define GDM_KEY_CONSOLE_CANNOT_HANDLE "daemon/ConsoleCannotHandle=am,ar,az,bn,el,fa,gu,hi,ja,ko,ml,mr,pa,ta,zh"
+
 /* Per server definitions */
 #define GDM_KEY_SERVER_NAME "name=Standard server"
 #define GDM_KEY_SERVER_COMMAND "command=" X_SERVER

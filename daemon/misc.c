@@ -57,6 +57,7 @@ extern gboolean GdmDebug;
 extern GSList *displays;
 extern int gdm_xdmcpfd;
 extern gboolean GdmXdmcp;
+extern gchar *GdmConsoleCannotHandle;
 
 extern char **environ;
 
@@ -505,6 +506,13 @@ gdm_text_message_dialog (const char *msg)
 		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {
 		char *argv[6];
+
+		if ( ! gdm_ok_console_language ()) {
+			ve_unsetenv ("LANG");
+			ve_unsetenv ("LC_ALL");
+			ve_unsetenv ("LC_MESSAGES");
+			ve_setenv ("LANG", "C", TRUE);
+		}
 		
 		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
 		argv[1] = "-l";
@@ -579,6 +587,13 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	if (dialog != NULL) {
 		char *argv[6];
 		int retint;
+
+		if ( ! gdm_ok_console_language ()) {
+			ve_unsetenv ("LANG");
+			ve_unsetenv ("LC_ALL");
+			ve_unsetenv ("LC_MESSAGES");
+			ve_setenv ("LANG", "C", TRUE);
+		}
 
 		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
 		argv[1] = "-l";
@@ -2306,5 +2321,50 @@ gdm_get_last_info (const char *username)
 
 	return info;
 }
+
+gboolean
+gdm_ok_console_language (void)
+{
+	int i;
+	char **v;
+	static gboolean cached = FALSE;
+	static gboolean is_ok;
+	const char *loc;
+
+	if (cached)
+		return is_ok;
+
+	cached = TRUE;
+
+	loc = setlocale (LC_MESSAGES, NULL);
+	if (loc == NULL) {
+		is_ok = TRUE;
+		return TRUE;
+	}
+
+	v = g_strsplit (GdmConsoleCannotHandle, ",", -1);
+	for (i = 0; v != NULL && v[i] != NULL; i++) {
+		if ( ! ve_string_empty (v[i]) &&
+		    strncmp (v[i], loc, strlen (v[i])) == 0) {
+			is_ok = FALSE;
+			return FALSE;
+		}
+	}
+	if (v != NULL)
+		g_strfreev (v);
+
+	is_ok = TRUE;
+	return TRUE;
+}
+
+const char *
+gdm_console_translate (const char *str)
+{
+	if (gdm_ok_console_language ())
+		return _(str);
+	else
+		return str;
+}
+
 
 /* EOF */

@@ -338,17 +338,17 @@ busy_ask_user (GdmDisplay *disp)
     /* if we have "open" we can talk to the user */
     if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) == 0) {
 	    char *error = g_strdup_printf
-		    (_("There already appears to be an X server "
-		       "running on display %s.  Should I try another "
-		       "display number?  If you answer no, I will "
-		       "attempt to start the server on %s again.%s"),
+		    (C_(N_("There already appears to be an X server "
+			   "running on display %s.  Should I try another "
+			   "display number?  If you answer no, I will "
+			   "attempt to start the server on %s again.%s")),
 		     disp->name,
 		     disp->name,
 #ifdef __linux__
-		     _("  (You can change consoles by pressing Ctrl-Alt "
-		       "plus a function key, such as Ctrl-Alt-F7 to go "
-		       "to console 7.  X servers usually run on consoles "
-		       "7 and higher.)")
+		     C_(N_("  (You can change consoles by pressing Ctrl-Alt "
+			   "plus a function key, such as Ctrl-Alt-F7 to go "
+			   "to console 7.  X servers usually run on consoles "
+			   "7 and higher.)"))
 #else /* ! __linux__ */
 		     /* no info for non linux users */
 		     ""

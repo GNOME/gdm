@@ -194,6 +194,7 @@ gboolean GdmVTAllocation = TRUE;
 gboolean GdmDisallowTCP = TRUE;
 gchar *GdmSoundProgram = NULL;
 gchar *GdmSoundOnLoginFile = NULL;
+gchar *GdmConsoleCannotHandle = NULL;
 
 
 /* set in the main function */
@@ -243,11 +244,11 @@ check_servauthdir (struct stat *statbuf)
     VE_IGNORE_EINTR (r = stat (GdmServAuthDir, statbuf));
     if G_UNLIKELY (r < 0) {
 	    char *s = g_strdup_printf
-		    (_("Server Authorization directory "
-		       "(daemon/ServAuthDir) is set to %s "
-		       "but this does not exist. Please "
-		       "correct gdm configuration %s and "
-		       "restart gdm."), GdmServAuthDir,
+		    (C_(N_("Server Authorization directory "
+			   "(daemon/ServAuthDir) is set to %s "
+			   "but this does not exist. Please "
+			   "correct gdm configuration %s and "
+			   "restart gdm.")), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
 	    if ( ! no_console)
 		    gdm_text_message_dialog (s);
@@ -257,11 +258,11 @@ check_servauthdir (struct stat *statbuf)
 
     if G_UNLIKELY (! S_ISDIR (statbuf->st_mode)) {
 	    char *s = g_strdup_printf
-		    (_("Server Authorization directory "
-		       "(daemon/ServAuthDir) is set to %s "
-		       "but this is not a directory. Please "
-		       "correct gdm configuration %s and "
-		       "restart gdm."), GdmServAuthDir,
+		    (C_(N_("Server Authorization directory "
+			   "(daemon/ServAuthDir) is set to %s "
+			   "but this is not a directory. Please "
+			   "correct gdm configuration %s and "
+			   "restart gdm.")), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
 	    if ( ! no_console)
 		    gdm_text_message_dialog (s);
@@ -421,6 +422,7 @@ gdm_config_parse (void)
 
     GdmSoundProgram = ve_config_get_string (cfg, GDM_KEY_SOUND_PROGRAM);
     GdmSoundOnLoginFile = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_FILE);
+    GdmConsoleCannotHandle = ve_config_get_string (cfg, GDM_KEY_SOUND_PROGRAM);
 
     GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
 
@@ -608,11 +610,11 @@ gdm_config_parse (void)
 		    GdmTimedLogin = NULL;
 	    } else {
 		    char *s = g_strdup_printf
-			    (_("XDMCP is disabled and gdm "
-			       "cannot find any local server "
-			       "to start.  Aborting!  Please "
-			       "correct the configuration %s "
-			       "and restart gdm."),
+			    (C_(N_("XDMCP is disabled and gdm "
+				   "cannot find any local server "
+				   "to start.  Aborting!  Please "
+				   "correct the configuration %s "
+				   "and restart gdm.")),
 			     GDM_CONFIG_FILE);
 		    gdm_text_message_dialog (s);
 		    GdmPidFile = NULL;
@@ -630,9 +632,9 @@ gdm_config_parse (void)
 
     if G_UNLIKELY (pwent == NULL) {
 	    char *s = g_strdup_printf
-		    (_("The gdm user does not exist. "
-		       "Please correct gdm configuration %s "
-		       "and restart gdm."),
+		    (C_(N_("The gdm user does not exist. "
+			   "Please correct gdm configuration %s "
+			   "and restart gdm.")),
 		     GDM_CONFIG_FILE);
 	    if ( ! no_console)
 		    gdm_text_message_dialog (s);
@@ -644,11 +646,11 @@ gdm_config_parse (void)
 
     if G_UNLIKELY (GdmUserId == 0) {
 	    char *s = g_strdup_printf
-		    (_("The gdm user is set to be root, but "
-		       "this is not allowed since it can "
-		       "pose a security risk.  Please "
-		       "correct gdm configuration %s and "
-		       "restart gdm."), GDM_CONFIG_FILE);
+		    (C_(N_("The gdm user is set to be root, but "
+			   "this is not allowed since it can "
+			   "pose a security risk.  Please "
+			   "correct gdm configuration %s and "
+			   "restart gdm.")), GDM_CONFIG_FILE);
 	    if ( ! no_console)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -659,9 +661,9 @@ gdm_config_parse (void)
 
     if G_UNLIKELY (grent == NULL) {
 	    char *s = g_strdup_printf
-		    (_("The gdm group does not exist. "
+		    (C_(N_("The gdm group does not exist. "
 		       "Please correct gdm configuration %s "
-		       "and restart gdm."),
+		       "and restart gdm.")),
 		     GDM_CONFIG_FILE);
 	    if ( ! no_console)
 		    gdm_text_message_dialog (s);
@@ -673,11 +675,11 @@ gdm_config_parse (void)
 
     if G_UNLIKELY (GdmGroupId == 0) {
 	    char *s = g_strdup_printf
-		    (_("The gdm group is set to be root, but "
-		       "this is not allowed since it can "
-		       "pose a security risk. Please "
-		       "correct gdm configuration %s and "
-		       "restart gdm."), GDM_CONFIG_FILE);
+		    (C_(N_("The gdm group is set to be root, but "
+			   "this is not allowed since it can "
+			   "pose a security risk. Please "
+			   "correct gdm configuration %s and "
+			   "restart gdm.")), GDM_CONFIG_FILE);
 	    if ( ! no_console)
 		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
@@ -723,7 +725,7 @@ gdm_config_parse (void)
     if G_UNLIKELY (ve_string_empty (GdmServAuthDir)) {
 	    if ( ! no_console)
 		    gdm_text_message_dialog
-			    (_("No daemon/ServAuthDir specified in the configuration file"));
+			    (C_(N_("No daemon/ServAuthDir specified in the configuration file")));
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: No daemon/ServAuthDir specified."), "gdm_config_parse");
     }
@@ -749,12 +751,12 @@ gdm_config_parse (void)
 
     if G_UNLIKELY (statbuf.st_uid != 0 || statbuf.st_gid != GdmGroupId)  {
 	    char *s = g_strdup_printf
-		    (_("Server Authorization directory "
-		       "(daemon/ServAuthDir) is set to %s "
-		       "but is not owned by user %s and group "
-		       "%s. Please correct the ownership or "
-		       "gdm configuration %s and restart "
-		       "gdm."),
+		    (C_(N_("Server Authorization directory "
+			   "(daemon/ServAuthDir) is set to %s "
+			   "but is not owned by user %s and group "
+			   "%s. Please correct the ownership or "
+			   "gdm configuration %s and restart "
+			   "gdm.")),
 		     GdmServAuthDir, GdmUser, GdmGroup,
 		     GDM_CONFIG_FILE);
 	    if ( ! no_console)
@@ -766,13 +768,13 @@ gdm_config_parse (void)
 
     if G_UNLIKELY (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRWXG|S_ISVTX))  {
 	    char *s = g_strdup_printf
-		    (_("Server Authorization directory "
-		       "(daemon/ServAuthDir) is set to %s "
-		       "but has the wrong permissions, it "
-		       "should have permissions of %o. "
-		       "Please correct the permissions or "
-		       "the gdm configuration %s and "
-		       "restart gdm."),
+		    (C_(N_("Server Authorization directory "
+			   "(daemon/ServAuthDir) is set to %s "
+			   "but has the wrong permissions, it "
+			   "should have permissions of %o. "
+			   "Please correct the permissions or "
+			   "the gdm configuration %s and "
+			   "restart gdm.")),
 		     GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX), GDM_CONFIG_FILE);
 	    if ( ! no_console)
 		    gdm_text_message_dialog (s);
@@ -1097,6 +1099,13 @@ deal_with_x_crashes (GdmDisplay *d)
 		    ve_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
 		    ve_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
+		    if ( ! gdm_ok_console_language ()) {
+			    ve_unsetenv ("LANG");
+			    ve_unsetenv ("LC_ALL");
+			    ve_unsetenv ("LC_MESSAGES");
+			    ve_setenv ("LANG", "C", TRUE);
+		    }
+
 		    VE_IGNORE_EINTR (execv (argv[0], argv));
 	
 		    /* yaikes! */
@@ -1156,11 +1165,11 @@ deal_with_x_crashes (GdmDisplay *d)
 	     * the above script would have been defined and we'd run
 	     * it for them */
 	    const char *error =
-		    _("I cannot start the X server (your graphical "
-		      "interface).  It is likely that it is not set "
-		      "up correctly. You will need to log in on a "
-		      "console and rerun the X configuration "
-		      "program.  Then restart GDM.");
+		    C_(N_("I cannot start the X server (your graphical "
+			  "interface).  It is likely that it is not set "
+			  "up correctly. You will need to log in on a "
+			  "console and rerun the X configuration "
+			  "program.  Then restart GDM."));
 	    gdm_text_message_dialog (error);
     } /* else {
        * At this point .... screw the user, we don't know how to

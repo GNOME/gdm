@@ -111,12 +111,12 @@ gdm_display_check_loop (GdmDisplay *disp)
 	   * that should give people ample time to stop gdm if needed,
 	   * or just wait for the stupid malicious user to get bored
 	   * and go away */
-	  char *s = g_strdup_printf (_("The display server has been shut down "
-				       "about 6 times in the last 90 seconds, "
-				       "it is likely that something bad is "
-				       "going on.  I will wait for 2 minutes "
-				       "before trying again on display %s."),
-				       disp->name);
+	  char *s = g_strdup_printf (C_(N_("The display server has been shut down "
+					   "about 6 times in the last 90 seconds, "
+					   "it is likely that something bad is "
+					   "going on.  I will wait for 2 minutes "
+					   "before trying again on display %s.")),
+					disp->name);
 	  /* only display a dialog box if this is a local display */
 	  if (disp->type == TYPE_LOCAL ||
 	      disp->type == TYPE_FLEXI) {

@@ -1080,7 +1080,7 @@ gdm_verify_check (void)
 
 		if ( ! no_console)
 			gdm_text_message_dialog
-				(_("Can't find PAM configuration for gdm."));
+				(C_(N_("Can't find PAM configuration for gdm.")));
 		gdm_fail ("gdm_verify_check: %s",
 			  _("Can't find PAM configuration for gdm."));
 	}

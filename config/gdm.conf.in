@@ -153,6 +153,12 @@ Xnest=@X_SERVER_PATH@/Xnest -audit 0 -name Xnest
 # like that as it will be run when no one is logged in yet.
 #SoundProgram=/usr/bin/play
 
+# These are the languages that the console cannot handle because of font
+# issues.  Here we mean the text console, not X.  This is only used
+# when there are errors to report and we cannot start X.
+# This is the default:
+#ConsoleCannotHandle=am,ar,az,bn,el,fa,gu,hi,ja,ko,ml,mr,pa,ta,zh
+
 [security]
 # If any distributions ship with this one off, they should be shot
 # this is only local, so it's only for say kiosk use, when you

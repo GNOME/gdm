@@ -174,6 +174,11 @@ void gdm_twiddle_pointer (GdmDisplay *disp);
 
 char * gdm_get_last_info (const char *username);
 
+gboolean gdm_ok_console_language (void);
+const char * gdm_console_translate (const char *str);
+/* Use with C_(N_("foo")) to make gettext work it out right */
+#define C_(x) (gdm_console_translate(x))
+
 #endif /* GDM_MISC_H */
 
 /* EOF */
