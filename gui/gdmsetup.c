@@ -54,6 +54,8 @@ static int GdmMinimalUID = 100;
 
 static GladeXML *xml;
 
+static GList *timeout_widgets = NULL;
+
 static void
 setup_cursor (GdkCursorType type)
 {
@@ -130,6 +132,24 @@ check_update_error:
 	}
 }
 
+static gboolean
+the_timeout (gpointer data)
+{
+	GtkWidget *widget = data;
+	gboolean (*func) (GtkWidget *);
+
+	func = g_object_get_data (G_OBJECT (widget), "timeout_func");
+
+	if ( ! (*func) (widget)) {
+		g_object_set_data (G_OBJECT (widget), "change_timeout", NULL);
+		g_object_set_data (G_OBJECT (widget), "timeout_func", NULL);
+		timeout_widgets = g_list_remove (timeout_widgets, widget);
+		return FALSE;
+	} else {
+		return TRUE;
+	}
+}
+
 static void
 run_timeout (GtkWidget *widget, guint tm, gboolean (*func) (GtkWidget *))
 {
@@ -137,9 +157,11 @@ run_timeout (GtkWidget *widget, guint tm, gboolean (*func) (GtkWidget *))
 							"change_timeout"));
 	if (id != 0) {
 		g_source_remove (id);
+	} else {
+		timeout_widgets = g_list_prepend (timeout_widgets, widget);
 	}
 
-	id = g_timeout_add (tm, (GSourceFunc)func, widget);
+	id = g_timeout_add (tm, the_timeout, widget);
 	g_object_set_data (G_OBJECT (widget), "timeout_func", func);
 
 	g_object_set_data (G_OBJECT (widget), "change_timeout",
@@ -313,12 +335,30 @@ timeout_remove (GtkWidget *widget)
 							"change_timeout"));
 	if (id != 0) {
 		g_source_remove (id);
+		g_object_set_data (G_OBJECT (widget), "change_timeout", NULL);
 	}
-	g_object_set_data (G_OBJECT (widget), "change_timeout", NULL);
 
 	func = g_object_get_data (G_OBJECT (widget), "timeout_func");
+	if (func != NULL) {
+		(*func) (widget);
+		g_object_set_data (G_OBJECT (widget), "timeout_func", NULL);
+	}
+}
 
-	(*func) (widget);
+static void
+timeout_remove_all (void)
+{
+	GList *li, *list;
+
+	list = timeout_widgets;
+	timeout_widgets = NULL;
+
+	for (li = list; li != NULL; li = li->next) {
+		g_print ("Removing %p!\n", li->data);
+		timeout_remove (li->data);
+		li->data = NULL;
+	}
+	g_list_free (list);
 }
 
 static void
@@ -343,8 +383,6 @@ setup_notify_toggle (const char *name,
 
 	g_signal_connect (G_OBJECT (toggle), "toggled",
 			  G_CALLBACK (toggle_toggled), NULL);
-	g_signal_connect (G_OBJECT (toggle), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
 }
 
 static void
@@ -391,8 +429,6 @@ setup_user_combo (const char *name, const char *key)
 
 	g_signal_connect (G_OBJECT (entry), "changed",
 			  G_CALLBACK (entry_changed), NULL);
-	g_signal_connect (G_OBJECT (entry), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
 
 	g_list_foreach (users, (GFunc)g_free, NULL);
 	g_list_free (users);
@@ -421,8 +457,6 @@ setup_intspin (const char *name,
 
 	g_signal_connect (G_OBJECT (spin), "value_changed",
 			  G_CALLBACK (intspin_changed), NULL);
-	g_signal_connect (G_OBJECT (spin), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
 }
 
 static gboolean
@@ -470,8 +504,6 @@ setup_greeter_toggle (const char *name,
 
 	g_signal_connect (G_OBJECT (toggle), "toggled",
 			  G_CALLBACK (greeter_toggle_toggled), NULL);
-	g_signal_connect (G_OBJECT (toggle), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
 }
 
 static gboolean
@@ -533,8 +565,6 @@ setup_greeter_color (const char *name,
 
 	g_signal_connect (G_OBJECT (picker), "color_set",
 			  G_CALLBACK (greeter_color_changed), NULL);
-	g_signal_connect (G_OBJECT (picker), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
 
 	g_free (val);
 }
@@ -592,8 +622,6 @@ setup_greeter_editable (const char *name,
 
 	g_signal_connect (G_OBJECT (editable), "changed",
 			  G_CALLBACK (greeter_editable_changed), NULL);
-	g_signal_connect (G_OBJECT (editable), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
 
 	g_free (val);
 }
@@ -604,6 +632,8 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 	const char *key = g_object_get_data (G_OBJECT (entry), "key");
 	const char *text;
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+
+	g_print ("Timeout %p!\n", entry);
 
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 
@@ -621,6 +651,7 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 static void
 greeter_entry_untranslate_changed (GtkWidget *entry)
 {
+	g_print ("Changed %p!\n", entry);
 	run_timeout (entry, 500, greeter_entry_untranslate_timeout);
 }
 
@@ -643,8 +674,6 @@ setup_greeter_untranslate_entry (const char *name,
 	g_signal_connect (G_OBJECT (entry), "changed",
 			  G_CALLBACK (greeter_entry_untranslate_changed),
 			  NULL);
-	g_signal_connect (G_OBJECT (entry), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
 
 	g_free (val);
 }
@@ -714,10 +743,6 @@ setup_greeter_backselect (void)
 			  G_CALLBACK (greeter_backselect_toggled), NULL);
 	g_signal_connect (G_OBJECT (color_bg), "toggled",
 			  G_CALLBACK (greeter_backselect_toggled), NULL);
-
-	/* We set the timeout on the no_bg radiobutton */
-	g_signal_connect (G_OBJECT (no_bg), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
 }
 
 
@@ -784,8 +809,6 @@ setup_greeter_option (const char *name,
 
 	g_signal_connect (G_OBJECT (option_menu), "changed",
 			  G_CALLBACK (option_changed), NULL);
-	g_signal_connect (G_OBJECT (option_menu), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
 }
 
 static void
@@ -1686,18 +1709,23 @@ setup_graphical_themes (void)
 		gtk_tree_selection_select_iter (selection, select_iter);
 		g_free (select_iter);
 	}
+}
 
-	/* The change timeout is on the list */
-	g_signal_connect (G_OBJECT (theme_list), "destroy",
-			  G_CALLBACK (timeout_remove), NULL);
+static gboolean
+delete_event (GtkWidget *w)
+{
+	timeout_remove_all ();
+	gtk_main_quit ();
+	return FALSE;
 }
 
 static void
 dialog_response (GtkWidget *dlg, int response, gpointer data)
 {
 	if (response == GTK_RESPONSE_CLOSE) {
+		timeout_remove_all ();
 		gtk_main_quit ();
-	} else {
+	} else if (response == GTK_RESPONSE_HELP) {
 		/* FIXME: when help gets written connect it here */
 		GtkWidget *setup_dialog = glade_helper_get
 			(xml, "setup_dialog", GTK_TYPE_WINDOW);
@@ -1742,8 +1770,8 @@ setup_gui (void)
 				 GTK_TYPE_DIALOG,
 				 TRUE /* dump_on_destroy */);
 	dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_DIALOG);
-	g_signal_connect (G_OBJECT (dialog), "destroy",
-			  G_CALLBACK (gtk_main_quit), NULL);
+	g_signal_connect (G_OBJECT (dialog), "delete_event",
+			  G_CALLBACK (delete_event), NULL);
 	g_signal_connect (G_OBJECT (dialog), "response",
 			  G_CALLBACK (dialog_response), NULL);
 

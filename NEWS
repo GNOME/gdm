@@ -17,6 +17,15 @@ Ahh news...
   ServAuthDir is /var/gdm).  This is a possible solution to issues
   such as in redhat bug 70072
 
+- Only set GDM_LANG if a language different from the system default was
+  selected 
+
+- In Gnome and Xsession sessions, ensure that the language is set properly
+  fixes #89970
+
+- Fix crasher bug on closing the gdmsetup window, and fix applying changes
+  that happened before the writing timeout
+
 - Clear the initial message even on further tries to log in, fixes redhat bug
   70991
 
