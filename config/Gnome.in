@@ -10,6 +10,13 @@ do
 	fi
 done
 
+resources=$HOME/.Xresources
+
+if [ -f "$resources" ]; then
+	xrdb -load "$resources"
+fi
+
+
 if [ -x "$HOME/.gnomerc" ]; then
 	exec "$HOME/.gnomerc"
 else

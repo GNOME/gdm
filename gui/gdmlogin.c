@@ -1237,6 +1237,7 @@ gdm_login_session_init (GtkWidget *menu)
     struct dirent *dent;
     struct stat statbuf;
     gint linklen;
+    gboolean got_default_link = FALSE;
 
     cursess = LAST_SESSION;
     item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_SESSION));
@@ -1296,7 +1297,10 @@ gdm_login_session_init (GtkWidget *menu)
 	    
 	    linklen = readlink (s, t, _POSIX_PATH_MAX);
 	    t[linklen] = 0;
+	    g_free (defsess);
 	    defsess = g_strdup (t);
+
+	    got_default_link = TRUE;
 	}
 
 	/* If session script is readable/executable add it to the list */
@@ -1319,6 +1323,12 @@ gdm_login_session_init (GtkWidget *menu)
 				    GTK_SIGNAL_FUNC (gdm_login_session_handler),
 				    NULL);
 		gtk_widget_show (GTK_WIDGET (item));
+
+		if ( ! got_default_link &&
+		    strcasecmp_no_locale (dent->d_name, "Default") == 0) {
+			g_free (defsess);
+			defsess = g_strdup (dent->d_name);
+		}	
 
 		if (strcasecmp_no_locale (dent->d_name, "Gnome") == 0) {
 			if (defsess == NULL)
