@@ -386,6 +386,9 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					"width", (double)rect.width,
 					NULL);
 
+    /* cursor blinking is evil on remote displays, don't do it forever */
+    gdm_setup_blinking_entry (entry);
+
     break;
 
   case GREETER_ITEM_TYPE_LIST:

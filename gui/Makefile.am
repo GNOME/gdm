@@ -81,6 +81,7 @@ gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
 	$(EXTRA_CHOOSER_LIBS)	\
 	libgdmwm.a		\
+	libgdmcommon.a		\
 	$(GUIGLADE_LIBS)	\
 	$(X_LIBS)		\
 	$(XDMCP_LIBS)		\

@@ -3033,6 +3033,10 @@ gdm_login_gui_init (void)
     g_signal_connect (G_OBJECT(entry), "activate", 
 		      G_CALLBACK (gdm_login_enter),
 		      NULL);
+
+    /* cursor blinking is evil on remote displays, don't do it forever */
+    gdm_setup_blinking ();
+    gdm_setup_blinking_entry (entry);
     
     hline2 = gtk_hseparator_new ();
     gtk_widget_ref (hline2);

@@ -45,4 +45,7 @@ void	gdm_common_login_sound		(void);
 /* The greeter defines this, we just call it from here */
 void	gdm_kill_thingies		(void);
 
+void	gdm_setup_blinking		(void);
+void	gdm_setup_blinking_entry	(GtkWidget *entry);
+
 #endif /* GDM_COMMON_H */

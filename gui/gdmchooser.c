@@ -166,6 +166,19 @@ static gboolean GdmMulticast;
 static gchar *GdmMulticastAddr;
 #endif
 
+/* HACK: for gdmcommon, else it complains */
+/* */  gchar *GdmInfoMsgFile;
+/* */  gchar *GdmInfoMsgFont;
+/* */  gchar *GdmSoundProgram;
+/* */  gboolean GdmSoundOnLogin;
+/* */  gchar *GdmSoundOnLoginFile;
+/* */  void
+/* */  gdm_kill_thingies (void)
+/* */  {
+/* */	  ; /* nothing */
+/* */  }
+
+
 enum {
 	GDM_BACKGROUND_NONE = 0,
 	GDM_BACKGROUND_IMAGE = 1,
@@ -1807,6 +1820,11 @@ gdm_chooser_gui_init (void)
 				 width, height);
     gtk_window_resize (GTK_WINDOW (chooser), 
 		       width, height);
+
+
+    /* cursor blinking is evil on remote displays, don't do it forever */
+    gdm_setup_blinking ();
+    gdm_setup_blinking_entry (add_entry);
 
     if (RUNNING_UNDER_GDM) {
 	    gtk_widget_show_now (chooser);

@@ -1,3 +1,14 @@
+Tue Jun 01 11:24:46 2004  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_canvas.c,
+	  gui/greeter/greeter.c, gui/gdmchooser.c, gui/gdmcommon.[ch]:
+	  on non-local displays, and on displays other then the primary
+	  :0 display, disable cursor blinking after 20 seconds of
+	  inactivity as it eats bandwidth and cpu for nothing.
+	  Should fix #135764
+
+	* gui/gdmwm.c: minor cosmetic cleanup
+
 Fri May 28 12:53:42 2004  George Lebl <jirka@5z.com>
 
 	* config/XKeepsCrashing, config/PreSession.in,

@@ -1293,6 +1293,8 @@ main (int argc, char *argv[])
   
   greeter_setup_items ();
 
+  gdm_setup_blinking ();
+
   gtk_widget_show_all (window);
   gtk_window_move (GTK_WINDOW (window), gdm_wm_screen.x, gdm_wm_screen.y);
   gtk_widget_show_now (window);

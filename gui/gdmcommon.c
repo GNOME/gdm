@@ -244,3 +244,107 @@ gdm_common_login_sound (void)
 		fflush (stdout);
 	}
 }
+
+typedef struct {
+	GtkWidget *entry;
+	gboolean   blink;
+} EntryBlink;
+
+static GSList *entries = NULL;
+static guint noblink_timeout = 0;
+
+#define NOBLINK_TIMEOUT (20*1000)
+
+static void
+setup_blink (gboolean blink)
+{
+	GSList *li;
+	for (li = entries; li != NULL; li = li->next) {
+		EntryBlink *eb = li->data;
+		if (eb->blink) {
+			GtkSettings *settings
+				= gtk_widget_get_settings (eb->entry);
+			g_object_set (settings,
+				      "gtk-cursor-blink", blink, NULL);
+			gtk_widget_queue_resize (eb->entry);
+		}
+	}
+}
+
+static gboolean
+no_blink (gpointer data)
+{
+	noblink_timeout = 0;
+	setup_blink (FALSE);
+	return FALSE;
+}
+
+static gboolean
+delay_noblink (GSignalInvocationHint *ihint,
+	       guint	           n_param_values,
+	       const GValue	  *param_values,
+	       gpointer		   data)
+{
+	setup_blink (TRUE);
+	if (noblink_timeout > 0)
+		g_source_remove (noblink_timeout);
+	noblink_timeout
+		= g_timeout_add (NOBLINK_TIMEOUT, no_blink, NULL);
+	return TRUE;
+}      
+
+
+void
+gdm_setup_blinking (void)
+{
+	guint sid;
+
+	if ( ! ve_string_empty (g_getenv ("GDM_IS_LOCAL")) &&
+	    strncmp (ve_sure_string (g_getenv ("DISPLAY")), ":0", 2) == 0)
+		return;
+
+	sid = g_signal_lookup ("activate",
+			       GTK_TYPE_MENU_ITEM);
+	g_signal_add_emission_hook (sid,
+				    0 /* detail */,
+				    delay_noblink,
+				    NULL /* data */,
+				    NULL /* destroy_notify */);
+
+	sid = g_signal_lookup ("key_press_event",
+			       GTK_TYPE_WIDGET);
+	g_signal_add_emission_hook (sid,
+				    0 /* detail */,
+				    delay_noblink,
+				    NULL /* data */,
+				    NULL /* destroy_notify */);
+
+	sid = g_signal_lookup ("button_press_event",
+			       GTK_TYPE_WIDGET);
+	g_signal_add_emission_hook (sid,
+				    0 /* detail */,
+				    delay_noblink,
+				    NULL /* data */,
+				    NULL /* destroy_notify */);
+
+	noblink_timeout = g_timeout_add (NOBLINK_TIMEOUT, no_blink, NULL);
+}
+
+void
+gdm_setup_blinking_entry (GtkWidget *entry)
+{
+	EntryBlink *eb;
+	GtkSettings *settings;
+
+	if ( ! ve_string_empty (g_getenv ("GDM_IS_LOCAL")) &&
+	    strncmp (ve_sure_string (g_getenv ("DISPLAY")), ":0", 2) == 0)
+		return;
+
+	eb = g_new0 (EntryBlink, 1);
+
+	eb->entry = entry;
+	settings = gtk_widget_get_settings (eb->entry);
+	g_object_get (settings, "gtk-cursor-blink", &(eb->blink), NULL);
+
+	entries = g_slist_prepend (entries, eb);
+}

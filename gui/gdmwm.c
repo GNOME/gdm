@@ -1090,14 +1090,14 @@ event_prepare (GSource *source,
 	       gint     *timeout)
 {
 	*timeout = -1;
-	return XPending (wm_disp);
+	return XPending (wm_disp) > 0;
 }
 
 static gboolean  
 event_check (GSource *source)
 {
 	if (event_poll_fd.revents & G_IO_IN) {
-		return XPending (wm_disp);
+		return XPending (wm_disp) > 0;
 	} else {
 		return FALSE;
 	}
@@ -1106,7 +1106,7 @@ event_check (GSource *source)
 static void
 process_events (void)
 {
-	while (XPending (wm_disp)) {
+	while (XPending (wm_disp) > 0) {
 		XEvent ev;
 		XNextEvent (wm_disp, &ev);
 		event_process (&ev);
