@@ -278,7 +278,7 @@ static void
 gdm_login_done (int sig)
 {
     kill_thingies ();
-    _exit (DISPLAY_SUCCESS);
+    _exit (EXIT_SUCCESS);
 }
 
 static void
@@ -2212,7 +2212,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_print ("%c\n", STX);
 
 	/* screw gtk_main_quit, we want to make sure we definately die */
-	_exit (DISPLAY_SUCCESS);
+	_exit (EXIT_SUCCESS);
 	break;
 
     case GDM_GNOMESESS:

@@ -193,7 +193,8 @@ gdm_display_manage (GdmDisplay *d)
 	    gdm_server_stop (d);
 	    /* we expect to return after the session finishes */
 	    _exit (DISPLAY_REMANAGE);
-	} else if (d->type == TYPE_XDMCP && d->dispstat == XDMCP_MANAGED) {
+	} else if (d->type == TYPE_XDMCP &&
+		   d->dispstat == XDMCP_MANAGED) {
 	    gdm_slave_start (d);
 	    gdm_server_stop (d);
 	    /* we expect to return after the session finishes */
@@ -219,7 +220,7 @@ gdm_display_manage (GdmDisplay *d)
     }
 
     if (SERVER_IS_LOCAL (d)) {
-	    d->dispstat = DISPLAY_SUCCESS;
+	    d->dispstat = DISPLAY_ALIVE;
     }
 
     /* reset sleep to 0 */

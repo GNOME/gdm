@@ -912,7 +912,7 @@ gdm_server_alloc (gint id, const gchar *command)
     d->userauth = NULL;
     d->command = g_strdup (command);
     d->cookie = NULL;
-    d->dispstat = DISPLAY_DEAD;
+    d->dispstat = DISPLAY_UNBORN;
     d->greetpid = 0;
     d->name = g_strdup_printf (":%d", id);  
     d->hostname = g_strdup (hostname);
