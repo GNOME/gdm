@@ -1,3 +1,16 @@
+Sat Aug 25 10:06:39 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c, daemon/misc.c:  Fix wiping of pid file on
+	  "gdm already exists" message
+
+	* daemon/gdm.c, daemon/gdm-net.c:  Don't unlink files on close.
+	  Instead only unlink things on final_cleanup.  This fixes the
+	  disappearing socket trick.
+
+	* gui/gdmflexiserver.c:  When not local refuse to run.  This is still
+	  not perfect.  But I don't suppose we'll get much better.
+	  Unfortunately a new string.  The translators will beat me up.
+
 Fri Aug 24 19:32:42 2001  George Lebl <jirka@5z.com>
 
 	* docs/sgmldocs.make: update to newest from gnome-core

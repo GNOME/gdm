@@ -72,7 +72,8 @@ gdm_fail (const gchar *format, ...)
 
     g_free (s);
 
-    unlink (GdmPidFile);
+    if (GdmPidFile != NULL)
+	    unlink (GdmPidFile);
     closelog ();
 
     /* Slow down respawning if we're started from init */

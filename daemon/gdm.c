@@ -597,6 +597,7 @@ final_cleanup (void)
 {
 	GSList *list;
 	sigset_t mask;
+	gchar *path;
 
 	gdm_debug ("final_cleanup");
 
@@ -615,11 +616,22 @@ final_cleanup (void)
 	g_slist_foreach (list, (GFunc) gdm_display_unmanage, NULL);
 	g_slist_free (list);
 
+	/* Close stuff */
+
 	gdm_xdmcp_close ();
 	gdm_connection_close (fifoconn);
 	fifoconn = NULL;
 	gdm_connection_close (unixconn);
 	unixconn = NULL;
+
+	/* Unlink the connections */
+
+	path = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+	unlink (path);
+	g_free (path);
+
+	unlink (GDM_SUP_SOCKET);
+
 
 	closelog();
 	unlink (GdmPidFile);
@@ -1182,8 +1194,11 @@ main (int argc, char *argv[])
     }
 
     /* XDM compliant error message */
-    if (getuid() != 0)
-	gdm_fail (_("Only root wants to run gdm\n"));
+    if (getuid() != 0) {
+	    /* make sure the pid file doesn't get wiped */
+	    GdmPidFile = NULL;
+	    gdm_fail (_("Only root wants to run gdm\n"));
+    }
 
 
     /* Initialize runtime environment */
@@ -1207,8 +1222,11 @@ main (int argc, char *argv[])
 
         if (pf != NULL &&
 	    fscanf (pf, "%d", &pidv) == 1 &&
-	    kill (pidv, 0) != -1)
+	    kill (pidv, 0) != -1) {
+		/* make sure the pid file doesn't get wiped */
+		GdmPidFile = NULL;
 		gdm_fail (_("gdm already running. Aborting!"));
+	}
 
 	if (pf != NULL)
 		fclose (pf);

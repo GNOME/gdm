@@ -102,7 +102,7 @@ call_gdm (const char *command, const char *min_version, int tries)
 	strcpy (addr.sun_path, GDM_SUP_SOCKET);
 	addr.sun_family = AF_UNIX;
 
-	if (connect (fd, &addr, sizeof (addr)) < 0) {
+	if (connect (fd, (struct sockaddr *)&addr, sizeof (addr)) < 0) {
 		close (fd);
 		return call_gdm (command, min_version, tries - 1);
 	}
@@ -400,6 +400,26 @@ main (int argc, char *argv[])
 					   get_xauthfile ());
 		version = "2.2.3.2";
 	} else {
+		char *disp = ve_sure_string (g_getenv ("DISPLAY"));
+		char hostname[1024];
+
+		if (gethostname (hostname, sizeof (hostname)) < 0)
+			strcpy (hostname, "localhost");
+
+		if (disp[0] != ':' &&
+		    strncmp ("localhost:", disp,
+			     strlen ("localhost:")) != 0 &&
+		    strncmp ("localhost.localdomain:", disp,
+			     strlen ("localhost.localdomain:")) != 0 &&
+		    strncmp (hostname, disp, strlen (hostname)) != 0) {
+			dialog = gnome_warning_dialog
+				(_("You do not seem to be logged in on the "
+				   "console.  Starting a new login only "
+				   "works correctly on the console."));
+			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+			return 1;
+		}
+
 		read_servers ();
 		server = choose_server ();
 		if (server == NULL)

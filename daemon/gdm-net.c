@@ -384,7 +384,6 @@ gdm_connection_close (GdmConnection *conn)
 		conn->fd = -1;
 	}
 
-	unlink (conn->filename);
 	g_free (conn->filename);
 	conn->filename = NULL;
 
