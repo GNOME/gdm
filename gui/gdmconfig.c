@@ -113,7 +113,7 @@ void gdm_radio_write (gchar *radio_base_name,
    int i = 0;
    while (i <= max_value) {
       gchar *widget_name = g_strdup_printf ("%s_%d", radio_base_name, i);
-      if (GTK_TOGGLE_BUTTON (get_widget(widget_name))->active == TRUE) {
+      if (GTK_TOGGLE_BUTTON (get_widget(widget_name))->active) {
 	 gnome_config_set_int(key, i);
 	 g_free (widget_name);
 	 return;
@@ -760,94 +760,15 @@ write_new_config_file                  (GtkButton *button,
 
     for (i=0; i<number_of_servers; i++)
       {
-		  char *current_server;
-		  gtk_clist_get_text(GTK_CLIST(get_widget("server_clist")),
-							 i, 1, &current_server);
-		  gnome_config_set_string(g_strdup_printf("%d", i), current_server);
+	char *current_server;
+	gtk_clist_get_text(GTK_CLIST(get_widget("server_clist")),
+			   i, 1, &current_server);
+	gnome_config_set_string(g_strdup_printf("%d", i), current_server);
       }
 
    /* It would be nice to be able to do some paranoid sanity checking on
     * more of this stuff.
     */
-   for (i=0; i<GTK_CLIST(get_widget ("sessions_clist"))->rows; i++)
-     {
-	GdmConfigSession *session;
-	session = gtk_clist_get_row_data (GTK_CLIST(get_widget ("sessions_clist")),
-					  i);
-	g_assert (session != NULL);
-
-	/* Rename any files that need to be. */
-	if (session->renamed == TRUE) {
-		char *from, *to;
-		from = g_strconcat (sessions_directory, "/",
-				    session->old_name, NULL);
-		to = g_strconcat (sessions_directory, "/",
-				  session->name, NULL);
-		printf ("renaming %s to %s.\n", session->old_name,
-			session->name);
-		errno = 0;
-		if (rename (from, to) < 0) {
-			if (errors == NULL)
-				errors = g_string_new (NULL);
-			g_string_sprintfa (errors,
-					   _("Could not rename session %s to %s\n"
-					     "   Error: %s"),
-					   session->old_name, session->name,
-					   g_strerror (errno));
-		} else {
-			/* all went well */
-			session->renamed = FALSE;
-			g_free (session->old_name);
-			session->old_name = NULL;
-		}
-		g_free (from);
-		g_free (to);
-	}
-
-	/* Set new contents of a changed session file */
-	if (session->changed == TRUE) {
-	   char *filename;
-	   FILE *fp;
-	   
-	   /* if renaming failed */
-	   if (session->old_name != NULL)
-		   filename = g_strconcat (sessions_directory, "/",
-					   session->old_name, NULL);
-	   else
-		   filename = g_strconcat (sessions_directory, "/",
-					   session->name, NULL);
-	   printf ("writing changes to: %s.\n", filename);
-	   errno = 0;
-	   fp = fopen(filename,
-		      "w");
-	   if (fp == NULL) {
-		   if (errors == NULL)
-			   errors = g_string_new (NULL);
-		   g_string_sprintfa (errors,
-				      _("Could not write session %s\n"
-					"   Error: %s"),
-				      session->name,
-				      g_strerror (errno));
-		   continue;
-	   }
-	   errno = 0;
-	   if (fputs (session->script_contents, fp) == EOF) {
-		   if (errors == NULL)
-			   errors = g_string_new (NULL);
-		   g_string_sprintfa (errors,
-				      _("Could not write contents to session %s\n"
-					"   Error: %s"),
-				      session->name,
-				      g_strerror (errno));
-		   fclose (fp);
-		   continue;
-	   }
-	   fclose (fp);
-	   /* all went well */
-	   session->changed = FALSE;
-	}
-	
-     }
 
    /* Remove any deleted session files */
    for (tmp = deleted_sessions_list; tmp != NULL; tmp = tmp->next)
@@ -865,12 +786,15 @@ write_new_config_file                  (GtkButton *button,
 					 file_basename, ".deleted",
 					 NULL);
 	printf ("deleting: %s.\n", full_file);
+	/* remove old backup file */
+	unlink (full_deleted_file);
 	errno = 0;
+	/* instead of just deleting, move to .deleted */
 	if (rename (full_file, full_deleted_file) < 0) {
 		   if (errors == NULL)
 			   errors = g_string_new (NULL);
 		   g_string_sprintfa (errors,
-				      _("Could not delete session %s\n"
+				      _("\nCould not delete session %s\n"
 					"   Error: %s"),
 				      file_basename,
 				      g_strerror (errno));
@@ -886,14 +810,108 @@ write_new_config_file                  (GtkButton *button,
 	g_free (full_deleted_file);
      }
 
-   if (old_current_default_session != current_default_session) {
-	if (default_session_link_name != NULL) {
+
+   /* first remove old renamed files */
+   for (i=0; i<GTK_CLIST(get_widget ("sessions_clist"))->rows; i++)
+     {
+	GdmConfigSession *session;
+	session = gtk_clist_get_row_data (GTK_CLIST(get_widget ("sessions_clist")),
+					  i);
+	g_assert (session != NULL);
+
+	/* first delete old renamed files and mark them changed */
+	if (session->renamed) {
+		char *old;
+		old = g_strconcat (sessions_directory, "/",
+				   session->old_name, NULL);
+		printf ("removing %s\n", session->old_name);
 		errno = 0;
-		if (unlink (default_session_link_name) < 0) {
+		if (unlink (old) < 0) {
 			if (errors == NULL)
 				errors = g_string_new (NULL);
 			g_string_sprintfa (errors,
-					   _("Could not unlink old default session\n"
+					   _("\nCould not remove session %s\n"
+					     "   Error: %s"),
+					   session->old_name,
+					   g_strerror (errno));
+		} else {
+			/* all went well */
+			session->renamed = FALSE;
+			g_free (session->old_name);
+			session->old_name = NULL;
+			/* mark as changed since we want to write out
+			 * this file to the new name */
+			session->changed = TRUE;
+		}
+		g_free (old);
+	}
+     }
+
+   /* Now write out files that were changed (or renamed above) */
+   for (i=0; i<GTK_CLIST(get_widget ("sessions_clist"))->rows; i++)
+     {
+	GdmConfigSession *session;
+	session = gtk_clist_get_row_data (GTK_CLIST(get_widget ("sessions_clist")),
+					  i);
+	g_assert (session != NULL);
+
+	/* Set new contents of a changed session file */
+	if (session->changed) {
+	   char *filename;
+	   FILE *fp;
+	   
+	   /* if renaming failed */
+	   if (session->old_name != NULL)
+		   filename = g_strconcat (sessions_directory, "/",
+					   session->old_name, NULL);
+	   else
+		   filename = g_strconcat (sessions_directory, "/",
+					   session->name, NULL);
+	   printf ("writing changes to: %s.\n", filename);
+	   errno = 0;
+	   fp = fopen(filename, "w");
+	   if (fp == NULL) {
+		   if (errors == NULL)
+			   errors = g_string_new (NULL);
+		   g_string_sprintfa (errors,
+				      _("\nCould not write session %s\n"
+					"   Error: %s"),
+				      session->name,
+				      g_strerror (errno));
+		   continue;
+	   }
+	   errno = 0;
+	   if (fputs (session->script_contents, fp) == EOF) {
+		   if (errors == NULL)
+			   errors = g_string_new (NULL);
+		   g_string_sprintfa (errors,
+				      _("\nCould not write contents to session %s\n"
+					"   Error: %s"),
+				      session->name,
+				      g_strerror (errno));
+		   fclose (fp);
+		   chmod (filename, 0755);
+		   continue;
+	   }
+	   fclose (fp);
+	   chmod (filename, 0755);
+	   /* all went well */
+	   session->changed = FALSE;
+	}
+	
+     }
+
+   if (old_current_default_session != current_default_session) {
+	if (default_session_link_name != NULL) {
+		char *link_name = g_strconcat (sessions_directory, "/",
+					       default_session_link_name,
+					       NULL);
+		errno = 0;
+		if (unlink (link_name) < 0) {
+			if (errors == NULL)
+				errors = g_string_new (NULL);
+			g_string_sprintfa (errors,
+					   _("\nCould not unlink old default session\n"
 					     "   Error: %s"),
 					   g_strerror (errno));
 		} else {
@@ -902,6 +920,7 @@ write_new_config_file                  (GtkButton *button,
 			default_session_link_name = NULL;
 			old_current_default_session = NULL;
 		}
+		g_free (link_name);
 	}
 
 	/* if no session linked now */
@@ -931,7 +950,7 @@ write_new_config_file                  (GtkButton *button,
 			if (errors == NULL)
 				errors = g_string_new (NULL);
 			g_string_sprintfa (errors,
-					   _("Could not find a suitable name "
+					   _("\nCould not find a suitable name "
 					     "for the default session link"));
 		} else {
 			errno = 0;
@@ -940,7 +959,7 @@ write_new_config_file                  (GtkButton *button,
 				if (errors == NULL)
 					errors = g_string_new (NULL);
 				g_string_sprintfa (errors,
-						   _("Could not link new default session\n"
+						   _("\nCould not link new default session\n"
 						     "   Error: %s"),
 						   g_strerror (errno));
 			} else {
@@ -963,7 +982,7 @@ write_new_config_file                  (GtkButton *button,
 			      _("There were errors writing changes to the "
 				"session files.\n"
 				"The configuration may not be completely "
-				"saved."));
+				"saved.\n"));
 	    dlg = gnome_error_dialog_parented (errors->str,
 					       GTK_WINDOW(GDMconfigurator));
 	    gnome_dialog_run_and_close (GNOME_DIALOG (dlg));
@@ -973,27 +992,28 @@ write_new_config_file                  (GtkButton *button,
     run_warn_reset_dialog ();
 }
 
-void revert_settings_to_file_state (GtkMenuItem *menu_item,
-									gpointer user_data)
+void
+revert_settings_to_file_state (GtkMenuItem *menu_item,
+			       gpointer user_data)
 {
 	if (run_query(_("This will destroy any changes made in this session.\n"
-					"Are you sure you want to do this?")) == TRUE) {
+			"Are you sure you want to do this?"))) {
 		gdm_config_parse_most();
 		gdm_config_parse_remaining();
 	}
 }
 
 void
-write_and_close                        (GtkButton *button,
-										gpointer user_data)
+write_and_close (GtkButton *button,
+		 gpointer user_data)
 {
 	write_new_config_file(button, user_data);
 	exit_configurator(NULL, NULL);
 }
 
 void
-open_help_page                         (GtkButton *button,
-                                        gpointer         user_data)
+open_help_page (GtkButton *button,
+		gpointer user_data)
 {
 	gnome_warning_dialog(_("Documentation is being written but is not yet finished.\nPlease be patient."));
 	/* FIXME: ! */
@@ -1210,6 +1230,28 @@ move_server_down                       (GtkButton       *button,
 		       selected_server_row, 0, g_strdup_printf("%d", selected_server_row));
 }
 
+static void
+entry_set_red (GtkWidget *w, gboolean state)
+{
+	if (state) {
+		GtkStyle *ns;
+		GdkColor red = { 0, 65535, 0, 0 };
+
+		ns = gtk_style_copy (w->style);
+		gtk_style_ref (ns);
+
+		ns->fg[GTK_STATE_NORMAL] = red;
+		ns->text[GTK_STATE_NORMAL] = red;
+
+		gtk_widget_set_style (w, ns);
+		gtk_style_unref (ns);
+
+		gtk_widget_queue_draw (w);
+	} else {
+		gtk_widget_set_rc_style (w);
+	}
+}
+
 void
 sessions_clist_row_selected                  (GtkCList *clist,
 					      gint row,
@@ -1247,9 +1289,11 @@ sessions_clist_row_selected                  (GtkCList *clist,
    /* set up editablity according to readability/writability */
    gtk_editable_set_editable (GTK_EDITABLE (get_widget ("session_text")),
 			      sess_details->changable);
-   /* eery name is editable */
+   /* set up editablity according to readability/writability */
    gtk_editable_set_editable (GTK_EDITABLE (get_widget ("session_name_entry")),
-			      TRUE);
+			      sess_details->changable);
+   /* not red by default */
+   entry_set_red (get_widget ("session_name_entry"), FALSE);
 
    gtk_signal_handler_unblock_by_func (GTK_OBJECT(get_widget("session_text")),
 				       session_text_edited, NULL);
@@ -1284,28 +1328,57 @@ set_new_default_session (GtkButton *button,
    gtk_clist_thaw (GTK_CLIST (get_widget("sessions_clist")));
 }
 
+static gboolean
+is_legal_session_name (const char *text, GdmConfigSession *this_session)
+{
+	int i;
+
+	if (gdm_string_empty (text))
+		return FALSE;
+
+	for (i = 0; i < GTK_CLIST(get_widget ("sessions_clist"))->rows; i++) {
+		GdmConfigSession *session;
+		session = gtk_clist_get_row_data
+			(GTK_CLIST(get_widget ("sessions_clist")), i);
+		g_assert (session != NULL);
+
+		if (session == this_session)
+			continue;
+
+		if (strcmp (session->name, text) == 0)
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
 void
 add_session_real (gchar *new_session_name, gpointer data)
 {
    GdmConfigSession *a_session;
-   /* FIXME: uniqueness check as well */
-   if ( ! gdm_string_empty (new_session_name))
-     {
-	char *label[1];
-	int rowNum;
-	
-	printf ("Will add session with %s.\n", new_session_name);
-	a_session = g_malloc0 (sizeof (GdmConfigSession));
-	a_session->name = g_strdup (new_session_name);
+   if (is_legal_session_name (new_session_name, NULL)) {
+	   char *label[1];
+	   int rowNum;
 
-	label[0] = a_session->name;
-	       
-	rowNum = gtk_clist_append (GTK_CLIST (get_widget("sessions_clist")),
-				   label);
-	gtk_clist_set_row_data (GTK_CLIST (get_widget ("sessions_clist")),
-				rowNum,
-				a_session);
-     }
+	   printf ("Will add session with %s.\n", new_session_name);
+	   a_session = g_malloc0 (sizeof (GdmConfigSession));
+	   a_session->name = g_strdup (new_session_name);
+
+	   label[0] = a_session->name;
+
+	   rowNum = gtk_clist_append (GTK_CLIST (get_widget("sessions_clist")),
+				      label);
+	   gtk_clist_set_row_data (GTK_CLIST (get_widget ("sessions_clist")),
+				   rowNum,
+				   a_session);
+   } else {
+	   GtkWidget *error_dialog =
+		   gnome_error_dialog (_("A session name must be unique and "
+					 "not empty"));
+	   gnome_dialog_set_parent (GNOME_DIALOG (error_dialog), 
+				   (GtkWindow *) GDMconfigurator);
+	   gnome_dialog_run_and_close (GNOME_DIALOG (error_dialog));
+   }
 }
 
 void
@@ -1382,14 +1455,14 @@ modify_session_name (GtkEntry *entry, gpointer data)
 
    text = gtk_entry_get_text (entry);
 
-   /* FIXME: uniqueness check as well */
-   
-   /* Note: if we got to empty, just ignore this change, the user will type
+   /* Note: if we got to empty or matching one of the other sessions,
+    * just ignore this change, the user will type
     * something in, if not, use the last change, perhaps there should be
     * a warning/error on Apply ... Showing a dialog here would be evil and
     * bad UI.  The user probably wiped the entry to typoe in something
     * different*/
-   if ( ! gdm_string_empty (text)) {
+   if (is_legal_session_name (text, selected_session)) {
+	entry_set_red (GTK_WIDGET (entry), FALSE);
 	/* We need to track the first name of this session to rename
 	 * the actual session file.
 	 */
@@ -1402,6 +1475,8 @@ modify_session_name (GtkEntry *entry, gpointer data)
 	gtk_clist_set_text (GTK_CLIST (get_widget ("sessions_clist")),
 			    selected_session_row, 0,
 			    selected_session->name);
+   } else {
+	entry_set_red (GTK_WIDGET (entry), TRUE);
    }
 }
 
@@ -1424,3 +1499,4 @@ session_directory_modified (GtkEntry *entry, gpointer data)
 		shown_warning = TRUE;
 	}
 }
+
