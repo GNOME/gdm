@@ -461,7 +461,7 @@ gdm_config_parse (void)
 		    char *s = g_strdup_printf (_("Xdmcp is disabled and gdm "
 						 "cannot find any local server "
 						 "to start.  Aborting!  Please "
-						 "correct the configuration %s"
+						 "correct the configuration %s "
 						 "and restart gdm."),
 					       GDM_CONFIG_FILE);
 		    gdm_text_message_dialog (s);
