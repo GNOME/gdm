@@ -46,9 +46,9 @@ struct rngs {
    int        length;
    off_t      seek;
 } rngs[] = {
-   { "/dev/random",              32,	0 },
+   { "/dev/random",              16,	0 },
 #ifdef __OpenBSD__
-   { "/dev/srandom",            32,	0 },
+   { "/dev/srandom",             16,	0 },
 #endif
    { "/dev/urandom",            128,	0 },
    { "/proc/stat",    MAXBUFFERSIZE,	0 },

@@ -1,3 +1,9 @@
+Sat Aug 16 08:47:45 2003  George Lebl <jirka@5z.com>
+
+	* daemon/cookie.c: hell we only need 16 bytes of random data from
+	  /dev/random, (or /dev/srandom) we don't want to waste kernel
+	  entropy.  16 bytes of randomness is all we need.
+
 Fri Aug 15 18:32:54 2003  George Lebl <jirka@5z.com>
 
 	* daemon/auth.c: handle NULL addresses, purge by number and name,
