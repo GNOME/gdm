@@ -19,6 +19,7 @@
 #include "config.h"
 #include <gnome.h>
 #include <syslog.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>

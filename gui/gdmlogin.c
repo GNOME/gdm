@@ -2072,7 +2072,10 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_RESET:
-	if (GdmQuiver) {
+	if (GdmQuiver &&
+	    login->window != NULL &&
+	    icon_win == NULL &&
+	    GTK_WIDGET_VISIBLE (login)) {
 		Window lw = GDK_WINDOW_XWINDOW (login->window);
 
 		gdm_wm_get_window_pos (lw, &x, &y);
@@ -2461,7 +2464,7 @@ create_handle (void)
 			    TRUE, TRUE, GNOME_PAD_SMALL);
 	
 	if (GdmIcon != NULL) {
-		if (access (GdmIcon, R_OK)) {
+		if (access (GdmIcon, R_OK) != 0) {
 			syslog (LOG_WARNING, _("Can't open icon file: %s. Suspending iconify feature!"), GdmIcon);
 		} else {
 			GtkWidget *icon;
@@ -3510,6 +3513,7 @@ main (int argc, char *argv[])
     sigset_t mask;
     GIOChannel *ctrlch;
     char *gdm_version;
+    char *gdm_protocol_version;
 
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
@@ -3550,10 +3554,14 @@ main (int argc, char *argv[])
     gdm_wm_screen_init (GdmXineramaScreen);
 
     gdm_version = g_getenv ("GDM_VERSION");
+    gdm_protocol_version = g_getenv ("GDM_GREETER_PROTOCOL_VERSION");
 
     if ( ! DOING_GDM_DEVELOPMENT &&
-	(gdm_version == NULL ||
-	 strcmp (gdm_version, VERSION) != 0) &&
+	 ((gdm_protocol_version != NULL &&
+	   strcmp (gdm_protocol_version, GDM_GREETER_PROTOCOL_VERSION) != 0) ||
+	  (gdm_protocol_version == NULL &&
+	   (gdm_version == NULL ||
+	    strcmp (gdm_version, VERSION) != 0))) &&
 	ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    char *msg;
 	    GtkWidget *dialog;
@@ -3581,6 +3589,7 @@ main (int argc, char *argv[])
     }
 
     if ( ! DOING_GDM_DEVELOPMENT &&
+	gdm_protocol_version == NULL &&
 	gdm_version == NULL) {
 	    char *msg;
 	    GtkWidget *dialog;
@@ -3615,7 +3624,10 @@ main (int argc, char *argv[])
     }
 
     if ( ! DOING_GDM_DEVELOPMENT &&
-	strcmp (gdm_version, VERSION) != 0) {
+	 ((gdm_protocol_version != NULL &&
+	   strcmp (gdm_protocol_version, GDM_GREETER_PROTOCOL_VERSION) != 0) ||
+	  (gdm_protocol_version == NULL &&
+	   strcmp (gdm_version, VERSION) != 0))) {
 	    char *msg;
 	    GtkWidget *dialog;
 
