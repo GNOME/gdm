@@ -1,3 +1,5 @@
+SUBDIRS = C
+
 TEXT_FILES = \
         gdm-manual.txt
 

@@ -1,0 +1,263 @@
+<!DOCTYPE book PUBLIC "-//Davenport//DTD DocBook V3.0//EN" []>
+
+<book id="gdm">
+  <bookinfo>
+    <title>Gnome Display Manager Reference Manual</title>
+    <authorgroup>
+      <author>
+        <firstname>Martin Kasper</firstname> <surname>Petersen</surname>
+        <affiliation>
+          <address>
+            <email>mkp@mkp.net</email>
+          </address>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <copyright>
+      <year>1998, 1999</year> <holder>Martin K. Petersen</holder>
+    </copyright>
+
+    <legalnotice>
+      <para>
+	This documentation is free software; you can redistribute it
+	and/or modify it under the terms of the GNU General Public
+	License as published by the Free Software Foundation; either
+	version 2 of the License, or (at your option) any later
+	version.
+      </para>
+      
+      <para>
+        This program is distributed in the hope that it will be
+        useful, but WITHOUT ANY WARRANTY; without even the implied
+        warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+        PURPOSE.  See the GNU General Public License for more details.
+      </para>
+
+      <para>
+        You should have received a copy of the GNU General Public
+        License along with this program; if not, write to the Free
+        Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+        MA 02111-1307 USA
+      </para>
+      
+      <para>
+        For more details see the file COPYING in the source
+        distribution of GDM.
+      </para>
+    </legalnotice>
+  </bookinfo>
+
+  <toc></toc>
+
+  <chapter id="intro">
+    <title>Introduction</title>
+
+    <para> 
+      GDM is a replacement for XDM, the X Display Manager. Unlike its
+      competitors (X3DM, KDM, WDM) GDM was written from scratch and
+      does not contain any original XDM / X Consortium code. 
+    </para>
+
+    <sect1 id="overview">
+      <title>Theory of Operation</title>
+      
+      <para> 
+	GDM was written with simplicity and security in mind. The
+	overall design concept is this: 
+      </para>
+      
+      <para> 
+	Upon startup the <filename /gdm/ daemon parses its config file
+	<filename /gdm.conf/.  For each of the local displays GDM
+	forks an Xserver and a slave process. The main GDM process
+	will then listen to XDMCP requests from remote displays and
+	monitor the local display sessions.
+      </para>
+      
+      <para> 
+	The GDM slave process opens the display and starts <filename
+	/gdmlogin/, the graphical login program. <filename /gdmlogin/
+	runs as a dedicated user and communicates asynchronously with
+	the slave process through a pipe.
+      </para>
+      
+      <para> 
+	GDM relies heavily on the presence of PAM, Pluggable
+	Authentication Modules, but supports regular <code /crypt()/
+	and shadow passwords.
+      </para>
+
+    </sect1>
+  </chapter>
+
+  <chapter id="Configuration">
+    <title>The Configuration Directory</title>
+
+    <para> 
+      The configuration files for gdm are located in the /etc/gdm/
+      directory.
+    </para>
+
+    <para>
+      This is a listing of the config directory contents:
+    </para>
+
+    <literallayout>
+	Init/
+	PostSession/
+	PreSession/
+	Sessions/
+	gdm.conf
+    </literallayout>
+
+    <para> 
+      gdm.conf is the main gdm configuration file. The options will be
+      described later in this chapter.
+    </para>
+
+    <para> 
+      The remaining configuration is done by dropping scripts in the
+      subdirectories of the /etc/gdm folder. This approach makes it
+      easy for package management systems to install window managers
+      and different session types without requiring the sysadmin/user
+      to edit files.
+    </para>
+
+    <sect1>
+      <title>The Script Directories</title>
+      
+      <para>
+	In this section we will explain the Init, PreRoot and PostRoot
+	directories as they are very similar.
+      </para>
+
+      <para>
+	When the X server has been successfully started, gdm will try
+	to run the script called Init/&lt;displayname&gt;. I.e. Init/:0 for
+	the first local display.  If this file is not found, gdm will
+	attempt to to run Init/Default. The script will be run as root
+	and gdm blocks until it terminates. Use the Init/* script for
+	programs that are supposed to run alongside with the gdm login
+	window. xconsole for instance.  Commands to set the background
+	etc. goes in this file too.
+      </para>
+
+      <para> 
+	It is up to the sysadmin to decide whether clients started by
+	the Init script should be killed before starting the user
+	session. This is controlled with the KillInitClient option in
+	gdm.conf.
+      </para>
+
+      <para>
+	When the user has been successfully authenticated, gdm tries
+	to run the PreSession script. Similar to the Init-scripts,
+	PreSession/&lt;displayname&gt; will be executed first, if that is
+	not found gdm will attempt to run PreSession/Default. The
+	script will be run as root and gdm blocks until it
+	terminates. Use this script for local session management or
+	accounting stuff. The USER environment variable contains the
+	login of the authenticated user. The script should return 0 on
+	success. Any other value will cause gdm to terminate the
+	current login process.
+      </para>
+
+      <para>
+	Then the session script is run. Session scripts are located in
+	the etc/gdm/Session directory. Which one gdm runs depends on
+	the session the user chose in the Sessions-menu in the gdm
+	greeter. If no session is selected and the user has no last
+	session stored in his ~/.gnome/gdm file, the system will
+	choose or first script found or -- if Sessions/Default exists
+	-- this will be run. For instance you can create a symlink
+	from Gnome to Default to make Gnome the default desktop
+	environment.
+      </para>
+
+      <para> 
+	When the user terminates his session the PostSession script
+	will be run. Operation is similar to Init and PreSession. That
+	is, gdm will attempt to execute the script
+	PostSession/&lt;displayname&gt; and if that doesn't exist:
+	PostSession/Default. Again the script will be run with root
+	priviledges, gdm will block and the USER environment variable
+	will contain the name of the user who just logged out.
+      </para>
+
+      <para> 
+	Neither of the Init, PreSession or PostSession scripts are
+	necessary and can be left out. At least one session script is
+	required for proper operation.
+      </para>
+
+    </sect1>
+
+    <sect1>
+      <title>The Configuration File - <filename /gdm.conf/</title>
+
+      <para>
+	The daemon and the accompanying utilities share a common
+	configuration file: <filename>/etc/gdm/gdm.conf</filename>.
+      </para>
+
+      <para>
+	The configuration file is divided into sections each
+	containing variables that define the behaviour for a specific
+	part of the GDM suite.
+      </para>
+
+      <para>
+	<filename /gdm.conf/ follows the standard GNOME configuration
+	file syntax. Keywords in brackets define sections, strings
+	before an equal sign (=) are variables and the data after
+	equal sign represents their value.
+      </para>
+
+      <para>
+	In general, 0 represents disable and 1 represents enable for
+	boolean configuration options.
+      </para>
+
+      <sect2>
+	<title>[daemon]</title>
+
+	<para>
+	  This section contains configuration options for the GDM
+	  master daemon <filename /gdm/.
+	</para>
+
+	<sect3>
+	  <title>Chooser</title>
+
+	  <para>Default:</para>
+	  <screen>Chooser=/usr/bin/gdmchooser --disable-sound</screen>
+
+	  <para>
+	    Full pathname to the <filename /gdmchooser/ executable.
+	  </para>
+
+	</sect3>
+
+      </sect2>
+
+    </sect1>
+
+  </chapter>
+
+</book>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->               

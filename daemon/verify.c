@@ -23,13 +23,16 @@
 #include <syslog.h>
 #include <pwd.h>
 #include <glib.h>
-#include <crypt.h>
 #include <config.h>
 #include <gnome.h>
 
 #ifdef HAVE_PAM
  #include <security/pam_appl.h>
 #endif /* HAVE_PAM */
+
+#ifdef HAVE_CRYPT
+  #include <crypt.h>
+#endif /* HAVE_CRYPT */
 
 #ifdef HAVE_SHADOW
  #include <shadow.h>

@@ -32,11 +32,15 @@ AC_CHECK_HEADERS(security/pam_appl.h, [
 
 if test $have_pam = no; then
 
-# Check if -lcrypt is necessary
-AC_CHECK_LIB(crypt, crypt, [
-        LIBS="$LIBS -lcrypt"])
+  # Check if -lcrypt is necessary
+  AC_CHECK_LIB(crypt, crypt, [
+  	      LIBS="$LIBS -lcrypt"])
 
-# Check for shadow passwords (hack)
+  # Check if crypt lives in a separate header file
+  AC_CHECK_HEADERS(crypt.h, [
+		AC_DEFINE(HAVE_CRYPT)])
+
+  # Check for shadow passwords (hack)
   AC_MSG_CHECKING("for /etc/shadow")
 
   if test -e /etc/shadow; then
@@ -47,7 +51,6 @@ AC_CHECK_LIB(crypt, crypt, [
   fi
 
 fi
-
 
 # TCP Wrappers for XDMCP access control
 AC_MSG_CHECKING("whether to use TCP wrappers")

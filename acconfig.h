@@ -9,4 +9,4 @@
 #undef HAVE_PAM
 #undef HAVE_TCPWRAPPERS
 #undef HAVE_SHADOW
-
+#undef HAVE_CRYPT
