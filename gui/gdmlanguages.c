@@ -100,6 +100,8 @@ static Language languages [] = {
 	{ N_("N-Z|Swedish"), "sv_SE", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Turkish"), "tr_TR", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Ukrainian"), "uk_UA", 0 },
 	/* This is the POSIX/C locale for english, should really be in Other */
 	{ N_("Other|POSIX/C English"), "C", 0 },
 	{ NULL, NULL }

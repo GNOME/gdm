@@ -1,9 +1,9 @@
 ## Process this file with automake to produce makefile.in
-CFLAGS += -g -Wall \
+CFLAGS = @CFLAGS@ -g -Wall \
 	-Wpointer-arith \
 	-Wmissing-prototypes -Wmissing-declarations 
 
-DEFS += -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\"
+DEFS = @DEFS@ -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\"
 
 INCLUDES = \
 	-I.						\
