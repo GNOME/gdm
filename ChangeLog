@@ -1,3 +1,11 @@
+Fri Aug 23 15:27:55 2002  George Lebl <jirka@5z.com>
+
+	* daemon/server.c: do a cool hack to figure out when the server
+	  restarts.  Fork a process, open the display, HUP the server and
+	  have the process wait for an xioerror and die.
+
+	* daemon/display.c: add some debugging
+
 Fri Aug 23 14:12:10 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c:  Cleanup the exit stuff

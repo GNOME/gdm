@@ -166,6 +166,9 @@ gdm_display_manage (GdmDisplay *d)
     if ( ! gdm_display_check_loop (d))
 	    return FALSE;
 
+    if (d->slavepid != 0)
+	    gdm_debug ("gdm_display_manage: Old slave pid is %d", (int)d->slavepid);
+
     /* If we have an old slave process hanging around, kill it */
     gdm_sigchld_block_push ();
     if (d->slavepid > 1 &&

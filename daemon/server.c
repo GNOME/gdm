@@ -88,6 +88,19 @@ gdm_server_wipe_cookies (GdmDisplay *disp)
 	disp->authfile_gdm = NULL;
 }
 
+/* ignore handlers */
+static int
+ignore_xerror_handler (Display *disp, XErrorEvent *evt)
+{
+	return 0;
+}
+
+static int
+exit_xioerror_handler (Display *disp)
+{
+	_exit (1);
+}
+
 /**
  * gdm_server_reinit:
  * @disp: Pointer to a GdmDisplay structure
@@ -99,6 +112,8 @@ gdm_server_wipe_cookies (GdmDisplay *disp)
 void
 gdm_server_reinit (GdmDisplay *disp)
 {
+	pid_t pid;
+
 	if (disp == NULL)
 		return;
 
@@ -113,18 +128,65 @@ gdm_server_reinit (GdmDisplay *disp)
 
 	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
 
-	gdm_sigchld_block_push ();
-	if (disp->servpid > 0)
-		kill (disp->servpid, SIGHUP);
-	gdm_sigchld_block_pop ();
+	/* This hack below is beautiful BTW */
 
-	/* HACK! the Xserver can't really tell us when it got the hup signal,
-	 * so we are really stuck just going to sleep for a bit hoping that
-	 * the kernel will tell the X server and that will run, else we will
-	 * get whacked ourselves after we open the connection and we'll think
-	 * it's an X screwup, which is really OK to happen and will just
-	 * restart the Xserver, it's just more nasty.  Oh how fun */
-	sleep (1);
+	gdm_sigchld_block_push ();
+
+	pid = gdm_fork_extra ();
+	if (pid < 1) {
+		/* So much work just because we can't fork */
+		if (disp->servpid > 0)
+			kill (disp->servpid, SIGHUP);
+
+		gdm_sigchld_block_push ();
+
+		/* HACK! the Xserver can't really tell us when it got the hup signal,
+		 * so we are really stuck just going to sleep for a bit hoping that
+		 * the kernel will tell the X server and that will run, else we will
+		 * get whacked ourselves after we open the connection and we'll think
+		 * it's an X screwup, which is really OK to happen and will just
+		 * restart the Xserver, it's just more nasty.  Oh how fun */
+		sleep (1);
+	} else if (pid == 0) {
+		Display *dsp;
+
+		closelog ();
+
+		/* close things */
+		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
+
+		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+
+		XSetErrorHandler (ignore_xerror_handler);
+		XSetIOErrorHandler (exit_xioerror_handler);
+	       
+		gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+		dsp = XOpenDisplay (d->name);
+
+		/* Now whack the server with a SIGHUP */
+		if (disp->servpid > 0)
+			kill (disp->servpid, SIGHUP);
+
+		if (dsp == NULL) {
+			/* HACK, see note above */
+			sleep (1);
+			_exit (0);
+		} else {
+			/* Wait for an xioerror */
+			for (;;) {
+				XEvent event;
+				XNextEvent (dsp, &event);
+			}
+		}
+		/* anality */
+		_exit (0);
+	} else if (pid > 0) {
+		gdm_sigchld_block_pop ();
+
+		gdm_wait_for_extra (NULL);
+	}
 }
 
 /**
@@ -1125,13 +1187,6 @@ gdm_server_alloc (gint id, const gchar *command)
     d->master_notify_fd = -1;
     
     return d;
-}
-
-/* ignore handlers */
-static int
-ignore_xerror_handler (Display *disp, XErrorEvent *evt)
-{
-	return 0;
 }
 
 void
