@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 \n"
-"POT-Creation-Date: 2003-01-03 18:36+0100\n"
-"PO-Revision-Date: 2003-01-03 19:40+0100\n"
+"POT-Creation-Date: 2003-03-23 15:15+0100\n"
+"PO-Revision-Date: 2003-03-23 15:18+0100\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -585,7 +585,7 @@ msgstr "Ne forkolj a háttérbe"
 msgid "Preserve LD_* variables"
 msgstr "LD_* környezeti változók megtartása"
 
-#: daemon/gdm.c:1436 gui/gdmchooser.c:1103
+#: daemon/gdm.c:1436 gui/gdmchooser.c:1071
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -1240,7 +1240,8 @@ msgid "Please enter your username"
 msgstr "Add meg az azonosítódat"
 
 #: daemon/verify-crypt.c:72 daemon/verify-pam.c:320 daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3297 gui/greeter/themes/circles/circles.xml.in.h:5
+#: gui/gdmlogin.c:3297 gui/greeter/greeter_parser.c:961
+#: gui/greeter/themes/circles/circles.xml.in.h:5
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
 msgid "Username:"
 msgstr "Felhasználó:"
@@ -1563,15 +1564,15 @@ msgstr "gdm_xdmcp_handle_keepalive: Nem tudtam olvasni a képernyő számot"
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Nem tudtam olvasni a munkamenet azonosítót"
 
-#: daemon/xdmcp.c:1662
+#: daemon/xdmcp.c:1661
 msgid "gdm_xdmcp_init: No XDMCP support"
 msgstr "gdm_xdmcp_init: Nincs XDMCP támogatás"
 
-#: daemon/xdmcp.c:1669
+#: daemon/xdmcp.c:1668
 msgid "gdm_xdmcp_run: No XDMCP support"
 msgstr "gdm_xdmcp_run: Nincs XDMCP támogatás"
 
-#: daemon/xdmcp.c:1675
+#: daemon/xdmcp.c:1674
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_close: Nincs XDMCP támogatás"
 
@@ -1711,7 +1712,7 @@ msgstr "Nem találtam kiszolgálót"
 msgid "Choose a host to connect to from the selection below."
 msgstr "Válassz egy szervert a kapcsolódáshoz az alábbiak közül."
 
-#: gui/gdmchooser.c:903
+#: gui/gdmchooser.c:871
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1728,52 +1729,52 @@ msgstr ""
 "kiválasztottad a szervert kattints a \"Kapcsolódás\"-ra a munkamenet "
 "megnyitásához az adott gépre."
 
-#: gui/gdmchooser.c:931
+#: gui/gdmchooser.c:899
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Nem tudom megnyitni a(z) %s alapértelmezett szerver ikont."
 
-#: gui/gdmchooser.c:987
+#: gui/gdmchooser.c:955
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Hiba a HUP jelzés kezelésének beállításakor"
 
-#: gui/gdmchooser.c:990
+#: gui/gdmchooser.c:958
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Hiba az INT jelzés kezelésének beállításakor"
 
-#: gui/gdmchooser.c:993
+#: gui/gdmchooser.c:961
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Hiba a TERM jelzés kezelésének beállításakor"
 
-#: gui/gdmchooser.c:1001 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
+#: gui/gdmchooser.c:969 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
 msgid "Could not set signal mask!"
 msgstr "Nem tudtam beállítani a jelmaszkot!"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "Socket for xdm communication"
 msgstr "Socket az xdm kommunikációhoz"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "SOCKET"
 msgstr "SOCKET"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "Client address to return in response to xdm"
 msgstr "XDM válaszként visszaadandó kliens cím"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "ADDRESS"
 msgstr "CÍM"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "Connection type to return in response to xdm"
 msgstr "XDM válaszként visszaadandó kapcsolattípus"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "TYPE"
 msgstr "TÍPUS"
 
-#: gui/gdmchooser.c:1133
+#: gui/gdmchooser.c:1101
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).\n"
@@ -1795,14 +1796,18 @@ msgid ""
 msgstr ""
 "<b>A GDM (GNOME Display Manager) nem fut.</b>\n"
 "\n"
-"Lehet, hogy egyszerűen egy másik képernyőkezelőt futtatsz, például a KDM-et (KDE Display Manager) vagy az xdm-et.\n"
-"Ha mégis használni kívánod ezt a funkciót, akkor indítsd el magad a GDM-et, vagy kérd meg a rendszergazdát, hogy indítsa el ő."
+"Lehet, hogy egyszerűen egy másik képernyőkezelőt futtatsz, például a KDM-et "
+"(KDE Display Manager) vagy az xdm-et.\n"
+"Ha mégis használni kívánod ezt a funkciót, akkor indítsd el magad a GDM-et, "
+"vagy kérd meg a rendszergazdát, hogy indítsa el ő."
 
 #: gui/gdmcomm.c:417
 msgid ""
 "Cannot communicate with GDM (The GNOME Display Manager), perhaps you have an "
 "old version running."
-msgstr "Nem sikerült kommunikálni a GDM-mel (GNOME Display Manager), talán régebbi verzió fut."
+msgstr ""
+"Nem sikerült kommunikálni a GDM-mel (GNOME Display Manager), talán régebbi "
+"verzió fut."
 
 #: gui/gdmcomm.c:435 gui/gdmcomm.c:438 gui/gdmflexiserver.c:252
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
@@ -1937,8 +1942,8 @@ msgstr "Új belépés"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:53
-msgid "A-M|Azerbaijani"
-msgstr "A-M|Azerbajdzsán"
+msgid "A-M|Albanian"
+msgstr "A-M|Albán"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:55
@@ -1957,263 +1962,353 @@ msgstr "A-M|Arab (Libanon)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:61
+msgid "A-M|Azerbaijani"
+msgstr "A-M|Azerbajdzsán"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:63
 msgid "A-M|Basque"
 msgstr "A-M|Baszk"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:63
+#: gui/gdmlanguages.c:65
+msgid "A-M|Belarusian"
+msgstr "A-M|Belarusz"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:67
+msgid "A-M|Bengali"
+msgstr "A-M|Bengali"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:69
+msgid "A-M|Bengali (India)"
+msgstr "A-M|Bengali (India)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:71
 msgid "A-M|Bulgarian"
 msgstr "A-M|Bolgár"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:65
+#: gui/gdmlanguages.c:73
+msgid "A-M|Bosnian"
+msgstr "A-M|Bosnyák"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:75
 msgid "A-M|Catalan"
 msgstr "A-M|Katalán"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:67
+#: gui/gdmlanguages.c:77
 msgid "A-M|Chinese (simplified)"
 msgstr "A-M|Kínai (egyszerűsített)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:69
+#: gui/gdmlanguages.c:79
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|Kínai (hagyományos)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:71
+#: gui/gdmlanguages.c:81
 msgid "A-M|Croatian"
 msgstr "A-M|Horvát"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:73
+#: gui/gdmlanguages.c:83
 msgid "A-M|Czech"
 msgstr "A-M|Cseh"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:75
+#: gui/gdmlanguages.c:85
 msgid "A-M|Danish"
 msgstr "A-M|Dán"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:77
+#: gui/gdmlanguages.c:87
 msgid "A-M|Dutch"
 msgstr "A-M|Holland"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:79
+#: gui/gdmlanguages.c:89
 msgid "A-M|English"
 msgstr "A-M|Angol"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:81
-msgid "A-M|Estonian"
-msgstr "A-M|Észt"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:83
+#: gui/gdmlanguages.c:91
 msgid "A-M|English (American)"
 msgstr "A-M|Angol (amerikai)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:93
 msgid "A-M|English (Australian)"
 msgstr "A-M|Angol (ausztrál)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:95
 msgid "A-M|English (British)"
 msgstr "A-M|Angol (brit)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:97
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Angol (ír)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:99
+msgid "A-M|Estonian"
+msgstr "A-M|Észt"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:101
 msgid "A-M|Finnish"
 msgstr "A-M|Finn"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:103
 msgid "A-M|French"
 msgstr "A-M|Francia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:105
 msgid "A-M|Galician"
 msgstr "A-M|Galíciai"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:107
 msgid "A-M|German"
 msgstr "N-Z|Német"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:109
 msgid "A-M|Greek"
 msgstr "A-M|Görög"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101 gui/gdmlanguages.c:102
+#: gui/gdmlanguages.c:111
+msgid "A-M|Gujarati"
+msgstr "A-M|Gudzsarati"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:113 gui/gdmlanguages.c:115
 msgid "A-M|Hebrew"
 msgstr "A-M|Héber"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:104
+#: gui/gdmlanguages.c:117
+msgid "A-M|Hindi"
+msgstr "A-M|Hindi"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:119
 msgid "A-M|Hungarian"
 msgstr "A-M|Magyar"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:106
+#: gui/gdmlanguages.c:121
 msgid "A-M|Icelandic"
 msgstr "A-M|Izlandi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:108
+#: gui/gdmlanguages.c:123
+msgid "A-M|Indonesian"
+msgstr "A-M|Indonéz"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:125
+msgid "A-M|Interlingua"
+msgstr "A-M|Interlingua"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:127
 msgid "A-M|Irish"
 msgstr "A-M|Ír"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:110
+#: gui/gdmlanguages.c:129
 msgid "A-M|Italian"
 msgstr "N-Z|Olasz"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:112
+#: gui/gdmlanguages.c:131
 msgid "A-M|Japanese"
 msgstr "A-M|Japán"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:114
+#: gui/gdmlanguages.c:133
+msgid "A-M|Kannada"
+msgstr "A-M|Kannada"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:135
 msgid "A-M|Korean"
 msgstr "A-M|Koreai"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:116
+#: gui/gdmlanguages.c:137
 msgid "A-M|Latvian"
 msgstr "A-M|Lett"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:118
+#: gui/gdmlanguages.c:139
 msgid "A-M|Lithuanian"
 msgstr "A-M|Litván"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:120
+#: gui/gdmlanguages.c:141
 msgid "A-M|Macedonian"
 msgstr "A-M|Macedón"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:122
+#: gui/gdmlanguages.c:143
 msgid "A-M|Malay"
 msgstr "A-M|Maláj"
 
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:145
+msgid "A-M|Mongolian"
+msgstr "A-M|Mongol"
+
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:124
+#: gui/gdmlanguages.c:147
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norvég (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:126
+#: gui/gdmlanguages.c:149
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norvég (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:128
+#: gui/gdmlanguages.c:151
+msgid "N-Z|Panjabi"
+msgstr "N-Z|Pandzsabi"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:153
+msgid "N-Z|Persian"
+msgstr "N-Z|Perzsa"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:155
 msgid "N-Z|Polish"
 msgstr "N-Z|Lengyel"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:130
+#: gui/gdmlanguages.c:157
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugál"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:132
+#: gui/gdmlanguages.c:159
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portugál (brazil)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:134
+#: gui/gdmlanguages.c:161
 msgid "N-Z|Romanian"
 msgstr "N-Z|Románia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:136
+#: gui/gdmlanguages.c:163
 msgid "N-Z|Russian"
 msgstr "N-Z|Orosz"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:138
+#: gui/gdmlanguages.c:165
+msgid "N-Z|Serbian"
+msgstr "N-Z|Szerb"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:167
 msgid "N-Z|Slovak"
 msgstr "N-Z|Szlovák"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:140
+#: gui/gdmlanguages.c:169
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Szlovén"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:142
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Spanish"
 msgstr "N-Z|Spanyol"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:144
+#: gui/gdmlanguages.c:173
 msgid "N-Z|Spanish (Mexico)"
 msgstr "N-Z|Spanyol (Mexikó)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:146
+#: gui/gdmlanguages.c:175
 msgid "N-Z|Swedish"
 msgstr "N-Z|Svéd"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:148
+#: gui/gdmlanguages.c:177
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Svéd (Finnország)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:150
+#: gui/gdmlanguages.c:179
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamil"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:152
+#: gui/gdmlanguages.c:181
+msgid "N-Z|Telugu"
+msgstr "N-Z|Telugu"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:183
+msgid "N-Z|Thai"
+msgstr "N-Z|Thai"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Turkish"
 msgstr "N-Z|Török"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:154
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrán"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:156
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnami"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:158
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Walloon"
 msgstr "N-Z|Vallon"
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:193
+msgid "N-Z|Welsh"
+msgstr "N-Z|Velszi"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:195
+msgid "N-Z|Yiddish"
+msgstr "N-Z|Yiddish"
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:160
+#: gui/gdmlanguages.c:197
 msgid "Other|POSIX/C English"
 msgstr "Other|POSIX/C Angol"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:335
+#: gui/gdmlanguages.c:372
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:343
+#: gui/gdmlanguages.c:380
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2252,7 +2347,8 @@ msgstr "Gnome Kiválasztó"
 msgid "Last"
 msgstr "Utolsó"
 
-#: gui/gdmlogin.c:218 gui/greeter/themes/circles/circles.xml.in.h:4
+#: gui/gdmlogin.c:218 gui/greeter/greeter_parser.c:948
+#: gui/greeter/themes/circles/circles.xml.in.h:4
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
 #, no-c-format
 msgid "User %s will login in %d seconds"
@@ -2284,15 +2380,15 @@ msgstr ""
 "\n"
 "Ezt azt jelenti, hogy nem fogsz tudni bejelentkezni."
 
-#: gui/gdmlogin.c:803
+#: gui/gdmlogin.c:803 gui/greeter/greeter_system.c:52
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Biztosan újra szeretnéd indítani a számítógépet?"
 
-#: gui/gdmlogin.c:815
+#: gui/gdmlogin.c:815 gui/greeter/greeter_system.c:63
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Biztosan le akarod állítani a számítógépet?"
 
-#: gui/gdmlogin.c:826
+#: gui/gdmlogin.c:826 gui/greeter/greeter_system.c:73
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Biztosan energiatakarékos módba helyezed a számítógépet?"
 
@@ -2497,12 +2593,14 @@ msgid "GDM Login"
 msgstr "GDM bejelentkezés:"
 
 #: gui/gdmlogin.c:3000 gui/greeter/greeter_canvas_item.c:129
+#: gui/greeter/greeter_parser.c:923
 #: gui/greeter/themes/circles/circles.xml.in.h:11
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
 msgid "_Session"
 msgstr "_Munkamenet"
 
 #: gui/gdmlogin.c:3007 gui/greeter/greeter_canvas_item.c:122
+#: gui/greeter/greeter_parser.c:918
 #: gui/greeter/themes/circles/circles.xml.in.h:9
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
 msgid "_Language"
@@ -2544,18 +2642,21 @@ msgid "Suspend your computer"
 msgstr "Energiatakarékos módba állítja a számítógéped"
 
 #: gui/gdmlogin.c:3073 gui/greeter/greeter_canvas_item.c:138
+#: gui/greeter/greeter_parser.c:928
 #: gui/greeter/themes/circles/circles.xml.in.h:2
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
 msgid "S_ystem"
 msgstr "_Rendszer"
 
 #: gui/gdmlogin.c:3085 gui/greeter/greeter_canvas_item.c:151
+#: gui/greeter/greeter_parser.c:938
 #: gui/greeter/themes/circles/circles.xml.in.h:10
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
 msgid "_Quit"
 msgstr "_Kilépés"
 
 #: gui/gdmlogin.c:3087 gui/greeter/greeter_canvas_item.c:153
+#: gui/greeter/greeter_parser.c:933
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "D_isconnect"
@@ -3050,7 +3151,9 @@ msgstr "Hiba történt a következő téma betöltése közben: %s"
 msgid ""
 "The theme for the graphical greeter is corrupt.  It does not contain "
 "definition for the username/password entry element."
-msgstr "A grafikus üdvözlő témája sérült. Nem tartalmaz definíciót a felhasználói név/jelszó beviteli elemhez."
+msgstr ""
+"A grafikus üdvözlő témája sérült. Nem tartalmaz definíciót a felhasználói "
+"név/jelszó beviteli elemhez."
 
 #: gui/greeter/greeter.c:1212
 msgid ""
@@ -3076,21 +3179,34 @@ msgstr "Válassz nyelvet"
 msgid "Select a language for your session to use:"
 msgstr "Válassz nyelvet a munkamenethez:"
 
-#: gui/greeter/greeter_system.c:119
+#: gui/greeter/greeter_system.c:150
 msgid "Shut down the computer"
 msgstr "Lekapcsolja a számítógépet"
 
-#: gui/greeter/greeter_system.c:131
+#: gui/greeter/greeter_system.c:162
 msgid "Suspend the computer"
 msgstr "Energiatakarékos módba helyezi a számítógépet"
 
-#: gui/greeter/greeter_system.c:143
+#: gui/greeter/greeter_system.c:174
 msgid "Reboot the computer"
 msgstr "Újraindítja a számítógépet"
 
-#: gui/greeter/greeter_system.c:156
+#: gui/greeter/greeter_system.c:187
 msgid "Configure"
 msgstr "Beállítás..."
+
+#: gui/greeter/greeter_parser.c:943
+#: gui/greeter/themes/circles/circles.xml.in.h:8
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
+msgid "You've got capslock on!"
+msgstr "A capslock aktív!"
+
+#: gui/greeter/greeter_parser.c:955
+#: gui/greeter/themes/circles/circles.xml.in.h:7
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
+#, no-c-format
+msgid "Welcome to %h"
+msgstr "%h üdvözli Önt!"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
@@ -3107,17 +3223,6 @@ msgstr "Körök"
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:4
 msgid "Theme with blue circles"
 msgstr "Téma kék körökkel"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:7
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
-#, no-c-format
-msgid "Welcome to %h"
-msgstr "%h üdvözli Önt!"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:8
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
-msgid "You've got capslock on!"
-msgstr "A capslock aktív!"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
