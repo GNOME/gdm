@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-21 17:57+0200\n"
+"POT-Creation-Date: 2004-12-28 02:17+0100\n"
 "PO-Revision-Date: 2004-08-21 18:01+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -181,7 +181,7 @@ msgstr "%s: No s'ha pogut escriure la galeta"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: S'està descartant el fitxer de galetes %s que sembla sospitós."
 
-#: daemon/auth.c:898 daemon/gdm.c:2291
+#: daemon/auth.c:898 daemon/gdm.c:2018 daemon/gdm.c:2374
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "No s'ha pogut escriure en %s: %s"
@@ -303,7 +303,7 @@ msgstr "%s: No s'ha pogut crear FIFO"
 msgid "%s: Could not open FIFO"
 msgstr "%s: No s'ha pogut obrir FIFO"
 
-#: daemon/gdm.c:248
+#: daemon/gdm.c:264
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -313,12 +313,12 @@ msgstr ""
 "com a %s però aquest no existeix. Si us plau, corregiu la configuració del "
 "gdm %s i reinicieu el gdm."
 
-#: daemon/gdm.c:257
+#: daemon/gdm.c:273
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: El directori d'autenticació %s no existeix. S'està avortant."
 
-#: daemon/gdm.c:262
+#: daemon/gdm.c:278
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -328,13 +328,13 @@ msgstr ""
 "com a %s però aquest no és un directori. Si us plau, corregiu la "
 "configuració del gdm %s i reinicieu el gdm."
 
-#: daemon/gdm.c:271
+#: daemon/gdm.c:287
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr ""
 "%s: El directori d'autenticació %s no és un directori. S'està avortant."
 
-#: daemon/gdm.c:284
+#: daemon/gdm.c:300
 #, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
@@ -342,81 +342,81 @@ msgstr ""
 "%s: El directori de registres %s no existeix o no és un directori. "
 "S'utilitza ServAuthDir %s."
 
-#: daemon/gdm.c:313 gui/gdmlogin.c:650 gui/greeter/greeter.c:105
+#: daemon/gdm.c:329 gui/gdmlogin.c:650 gui/greeter/greeter.c:105
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
 msgstr ""
 "%s: No existeix el fitxer de configuració file: %s. S'utilitzen valors per "
 "defecte."
 
-#: daemon/gdm.c:364
+#: daemon/gdm.c:380
 #, c-format
 msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
 msgstr "%s: BaseXsession és buit, s'utilitza %s/gdm/Xsession"
 
-#: daemon/gdm.c:408
+#: daemon/gdm.c:424
 #, c-format
 msgid "%s: Standard X server not found, trying alternatives"
 msgstr "%s: No s'ha trobat un servidor d'X estàndard, provant alternatives"
 
-#: daemon/gdm.c:440
+#: daemon/gdm.c:456
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
 msgstr ""
 "%s: S'ha habilitat l'XDMCP encara que l'XDMCP no està suportat, s'està "
 "desactivant"
 
-#: daemon/gdm.c:453
+#: daemon/gdm.c:469
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off automatic login"
 msgstr ""
 "%s: El superusuari no pot autoentrar, s'està desactivant l'entrada automàtica"
 
-#: daemon/gdm.c:466
+#: daemon/gdm.c:482
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off timed login"
 msgstr ""
 "%s: El superusuari no pot autoentrar, s'està desactivant l'entrada "
 "temporitzada"
 
-#: daemon/gdm.c:472
+#: daemon/gdm.c:488
 #, c-format
 msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
 msgstr "%s: TimedLoginDelay és menys de 5, per tant s'utilitza 5."
 
-#: daemon/gdm.c:482
+#: daemon/gdm.c:498
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: No s'ha especificat el rebedor."
 
-#: daemon/gdm.c:485
+#: daemon/gdm.c:501
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: No s'ha especificat el rebedor remot."
 
-#: daemon/gdm.c:489
+#: daemon/gdm.c:505
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: No s'ha especificat el directori de sessions."
 
-#: daemon/gdm.c:514
+#: daemon/gdm.c:530
 #, c-format
 msgid "%s: Empty server command, using standard one."
 msgstr "%s: Ordre de servidor buida, s'utilitza una estandard."
 
-#: daemon/gdm.c:557
+#: daemon/gdm.c:573
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
 msgstr "%s: La pantalla número %d està en ús!  Utilitzaré %d"
 
-#: daemon/gdm.c:576
+#: daemon/gdm.c:592
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr ""
 "%s: hi ha una línia del servidor no vàlida en el fitxer de configuració. "
 "S'està ignorant!"
 
-#: daemon/gdm.c:587 daemon/gdm.c:628
+#: daemon/gdm.c:603 daemon/gdm.c:644
 #, c-format
 msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
 msgstr ""
@@ -425,7 +425,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: daemon/gdm.c:605
+#: daemon/gdm.c:621
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
@@ -434,7 +434,7 @@ msgstr ""
 "%s: L'XDMCP està inhabilitat i no s'han definit servidors locals. S'està "
 "afegint %s a :%d per a permetre la configuració!"
 
-#: daemon/gdm.c:620
+#: daemon/gdm.c:636
 #, c-format
 msgid ""
 "XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
@@ -444,7 +444,7 @@ msgstr ""
 "se. S'està avortant!  Si us plau, corregiu la configuració %s i reinicieu el "
 "gdm."
 
-#: daemon/gdm.c:642
+#: daemon/gdm.c:658
 #, c-format
 msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
@@ -453,12 +453,12 @@ msgstr ""
 "L'usuari del gdm no existeix. Si us plau, corregiu la configuració %s i "
 "reinicieu el gdm."
 
-#: daemon/gdm.c:649
+#: daemon/gdm.c:665
 #, c-format
 msgid "%s: Can't find the gdm user (%s). Aborting!"
 msgstr "%s: No es pot trobar l'usuari del gdm (%s). S'està avortant!"
 
-#: daemon/gdm.c:656
+#: daemon/gdm.c:672
 #, c-format
 msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
@@ -468,12 +468,12 @@ msgstr ""
 "pot ser un risc de seguretat. Si us plau, corregiu la configuració del gdm %"
 "s i reinicieu el gdm."
 
-#: daemon/gdm.c:664
+#: daemon/gdm.c:680
 #, c-format
 msgid "%s: The gdm user should not be root. Aborting!"
 msgstr "%s: L'usuari del gdm no hauria de ser el superusuari. S'està avortant!"
 
-#: daemon/gdm.c:671
+#: daemon/gdm.c:687
 #, c-format
 msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
@@ -482,12 +482,12 @@ msgstr ""
 "El grup del gdm no existeix. Si us plau, corregiu la configuració %s del gdm "
 "i reinicieu-lo."
 
-#: daemon/gdm.c:678
+#: daemon/gdm.c:694
 #, c-format
 msgid "%s: Can't find the gdm group (%s). Aborting!"
 msgstr "%s: No es pot trobar el grup del gdm (%s). S'està avortant!"
 
-#: daemon/gdm.c:685
+#: daemon/gdm.c:701
 #, c-format
 msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
@@ -497,40 +497,40 @@ msgstr ""
 "que pot ser un risc de seguretat. Si us plau, corregiu la configuració del "
 "gdm %s i reinicieu el gdm."
 
-#: daemon/gdm.c:693
+#: daemon/gdm.c:709
 #, c-format
 msgid "%s: The gdm group should not be root. Aborting!"
 msgstr ""
 "%s: El grup del gdm no hauria de ser el del superusuari. S'està avortant!"
 
-#: daemon/gdm.c:708
+#: daemon/gdm.c:724
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr "%s: No es troba el rebedor o no pot executar-se per l'usuari del gdm"
 
-#: daemon/gdm.c:715
+#: daemon/gdm.c:731
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the gdm user"
 msgstr "%s: No es troba el rebedor o no pot executar-se per l'usuari del gdm"
 
-#: daemon/gdm.c:726
+#: daemon/gdm.c:742
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr ""
 "%s: No es troba el seleccionador o no pot executar-se per l'usuari del gdm"
 
-#: daemon/gdm.c:735
+#: daemon/gdm.c:751
 msgid "No daemon/ServAuthDir specified in the configuration file"
 msgstr ""
 "No s'ha especificat el directori d'autenticació del servidor o del dimoní al "
 "fitxer de configuració"
 
-#: daemon/gdm.c:737
+#: daemon/gdm.c:753
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: No s'ha especificat daemon/ServAuthDir."
 
-#: daemon/gdm.c:761
+#: daemon/gdm.c:777
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -541,14 +541,14 @@ msgstr ""
 "com a %s però aquest no és propietat de l'usuari %s i del grup %s. Si us "
 "plau, corregiu la propietat o la configuració del gdm %s i reinicieu el gdm."
 
-#: daemon/gdm.c:772
+#: daemon/gdm.c:788
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: El directori d'autenticació %s no és propietat de l'usuari %s i del grup "
 "%s. S'està avortant."
 
-#: daemon/gdm.c:778
+#: daemon/gdm.c:794
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -560,7 +560,7 @@ msgstr ""
 "o. Si us plau, corregiu els permisos o la configuració del gdm %s i "
 "reinicieu el gdm."
 
-#: daemon/gdm.c:789
+#: daemon/gdm.c:805
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
@@ -568,42 +568,42 @@ msgstr ""
 "de tenir permisos %o. S'està avortant."
 
 #. FIXME: how to handle this?
-#: daemon/gdm.c:845 daemon/gdm.c:853 daemon/gdm.c:2073 daemon/gdm.c:2081
+#: daemon/gdm.c:861 daemon/gdm.c:869 daemon/gdm.c:2149 daemon/gdm.c:2157
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
 msgstr ""
 "No es pot escriure el fitxer de PID %s, és possible que no quede espai al "
 "disc. Error: %s\n"
 
-#: daemon/gdm.c:847 daemon/gdm.c:855 daemon/gdm.c:2075 daemon/gdm.c:2083
+#: daemon/gdm.c:863 daemon/gdm.c:871 daemon/gdm.c:2151 daemon/gdm.c:2159
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
 msgstr ""
 "No es pot escriure el fitxer de PID %s, és possible que no quede espai al "
 "disc. Error: %s"
 
-#: daemon/gdm.c:865
+#: daemon/gdm.c:881
 #, c-format
 msgid "%s: fork() failed!"
 msgstr "%s: el fork() ha fallat!"
 
 #. should never happen
-#: daemon/gdm.c:868 daemon/slave.c:3437
+#: daemon/gdm.c:884 daemon/slave.c:3437
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: el setsid() ha fallat: %s!"
 
-#: daemon/gdm.c:1038
+#: daemon/gdm.c:1071
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: S'està provant el servidor d'X %s a prova de fallades"
 
-#: daemon/gdm.c:1056
+#: daemon/gdm.c:1089
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: S'està executant la seqüència XKeepsCrashing"
 
-#: daemon/gdm.c:1176
+#: daemon/gdm.c:1209
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
@@ -619,7 +619,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:1188
+#: daemon/gdm.c:1221
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -628,46 +628,46 @@ msgstr ""
 "No s'ha pogut iniciar el servidor d'X diverses vegades en un període curt de "
 "temps; s'està inhabilitant la pantalla %s."
 
-#: daemon/gdm.c:1196 daemon/gdm.c:2794
+#: daemon/gdm.c:1229 daemon/gdm.c:2877
 msgid "Master suspending..."
 msgstr "S'està suspenent el mestre..."
 
-#: daemon/gdm.c:1250
+#: daemon/gdm.c:1283
 #, c-format
 msgid "System is rebooting, please wait ..."
 msgstr "El sistema s'està reiniciant, espereu..."
 
-#: daemon/gdm.c:1252
+#: daemon/gdm.c:1285
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "El sistema s'està aturant, espereu..."
 
-#: daemon/gdm.c:1263
+#: daemon/gdm.c:1296
 msgid "Master halting..."
 msgstr "S'està aturant el mestre..."
 
-#: daemon/gdm.c:1276
+#: daemon/gdm.c:1309
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s: L'aturada ha fallat: %s"
 
-#: daemon/gdm.c:1285
+#: daemon/gdm.c:1318
 msgid "Master rebooting..."
 msgstr "S'està rearrencant el mestre..."
 
-#: daemon/gdm.c:1298
+#: daemon/gdm.c:1331
 #, c-format
 msgid "%s: Reboot failed: %s"
 msgstr "%s: El reinici ha fallat: %s"
 
-#: daemon/gdm.c:1396
+#: daemon/gdm.c:1429
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
 "Sol·licitud d'arrencada de nou o d'aturada quan no hi ha cap menú del "
 "sistema a la pantalla %s"
 
-#: daemon/gdm.c:1405
+#: daemon/gdm.c:1438
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-local display %s"
 msgstr ""
@@ -675,49 +675,54 @@ msgstr ""
 "remota %s"
 
 #. Bury this display for good
-#: daemon/gdm.c:1471
+#: daemon/gdm.c:1504
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: S'està avortant la pantalla %s"
 
-#: daemon/gdm.c:1622
+#: daemon/gdm.c:1655
 msgid "GDM restarting ..."
 msgstr "S'està reiniciant el GDM..."
 
-#: daemon/gdm.c:1626
+#: daemon/gdm.c:1659
 msgid "Failed to restart self"
 msgstr "Ha fallat en reiniciar-se"
 
 #. FIXME: note that this could mean out of memory
-#: daemon/gdm.c:1700
+#: daemon/gdm.c:1733
 msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
 msgstr ""
 "demoni principal: S'ha rebut SIGABRT, alguna cosa ha anat molt malament. "
 "S'està sortint!"
 
-#: daemon/gdm.c:1859
+#: daemon/gdm.c:1892
 msgid "Do not fork into the background"
 msgstr "No bifurcar-se a un segon pla"
 
-#: daemon/gdm.c:1861
+#: daemon/gdm.c:1894
 msgid "No console (local) servers to be run"
 msgstr "No hi ha servidors de consola (locals) a executar"
 
-#: daemon/gdm.c:1863
+#: daemon/gdm.c:1896
 msgid "Preserve LD_* variables"
 msgstr "Preservar les variables LD_*"
 
-#: daemon/gdm.c:1865
+#: daemon/gdm.c:1898
 msgid "Print GDM version"
 msgstr "Mostra la versió del GDM"
 
-#: daemon/gdm.c:1867
+#: daemon/gdm.c:1900
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr ""
 "Inicia el primer servidor d'X però després atura't fins que es reba un GO al "
 "fifo"
 
-#: daemon/gdm.c:1988 gui/gdmchooser.c:2057
+#: daemon/gdm.c:2007 daemon/gdm.c:2343
+#, c-format
+msgid "Can't open %s for writing"
+msgstr "No s'ha pogut obrir %s per escriptura"
+
+#: daemon/gdm.c:2064 gui/gdmchooser.c:2057
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -727,13 +732,13 @@ msgstr ""
 "Executeu '%s --help' per a veure un llistat complet de les opcions de la "
 "línia d'ordres.\n"
 
-#: daemon/gdm.c:2011
+#: daemon/gdm.c:2087
 msgid "Only root wants to run gdm\n"
 msgstr "Només el superusuari necessita executar el gdm\n"
 
-#: daemon/gdm.c:2027 daemon/gdm.c:2031 daemon/gdm.c:2106 daemon/gdm.c:2110
-#: daemon/gdm.c:2114 daemon/gdm.c:2118 daemon/gdm.c:2128 daemon/gdm.c:2134
-#: daemon/gdm.c:2145 daemon/misc.c:1648 daemon/misc.c:1652 daemon/misc.c:1656
+#: daemon/gdm.c:2103 daemon/gdm.c:2107 daemon/gdm.c:2182 daemon/gdm.c:2186
+#: daemon/gdm.c:2190 daemon/gdm.c:2194 daemon/gdm.c:2204 daemon/gdm.c:2210
+#: daemon/gdm.c:2221 daemon/misc.c:1648 daemon/misc.c:1652 daemon/misc.c:1656
 #: daemon/misc.c:1663 daemon/misc.c:1667 daemon/misc.c:1671
 #: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:811
 #: daemon/slave.c:825 daemon/slave.c:835 daemon/slave.c:845 daemon/slave.c:857
@@ -745,32 +750,27 @@ msgstr "Només el superusuari necessita executar el gdm\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: S'ha produït un error en configurar el gestor del senyal %s: %s"
 
-#: daemon/gdm.c:2055
+#: daemon/gdm.c:2131
 msgid "gdm already running. Aborting!"
 msgstr "El gdm ja s'està executant. S'està avortant!"
 
-#: daemon/gdm.c:2154
+#: daemon/gdm.c:2230
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: S'ha produït un error en configurar el gestor del senyal CHLD"
 
-#: daemon/gdm.c:2260
-#, c-format
-msgid "Can't open %s for writing"
-msgstr "No s'ha pogut obrir %s per escriptura"
-
-#: daemon/gdm.c:3527 daemon/gdm.c:3546
+#: daemon/gdm.c:3633 daemon/gdm.c:3652
 msgid "FLEXI_XSERVER request denied: Not authenticated"
 msgstr "S'ha denegat la sol·licitud de FLEXI_XSERVER: No s'ha autenticat"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:3564
+#: daemon/gdm.c:3670
 msgid "Unknown server type requested, using standard server."
 msgstr ""
 "S'ha sol·licitat un tipus de servidor desconegut, s'utilitza un d'estandard."
 
-#: daemon/gdm.c:3568
+#: daemon/gdm.c:3674
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -779,15 +779,15 @@ msgstr ""
 "El servidor sol·licitat %s no es pot utilitzar per a servidors flexibles, "
 "s'utilitza un d'estandard."
 
-#: daemon/gdm.c:3690
+#: daemon/gdm.c:3796
 msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
 msgstr "S'ha denegat la sol·licitud de QUERY_LOGOUT_ACTION: No s'ha autenticat"
 
-#: daemon/gdm.c:3748 daemon/gdm.c:3803
+#: daemon/gdm.c:3854 daemon/gdm.c:3909
 msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
 msgstr "S'ha denegat la sol·licitud de SET_LOGOUT_ACTION: No s'ha autenticat"
 
-#: daemon/gdm.c:3848 daemon/gdm.c:3875
+#: daemon/gdm.c:3954 daemon/gdm.c:3981
 msgid "QUERY_VT request denied: Not authenticated"
 msgstr "S'ha denegat la sol·licitud de QUERY_VT: No s'ha autenticat"
 
@@ -879,63 +879,63 @@ msgstr ""
 "%s: La pantalla %s està ocupada. S'està intentant un número de pantalla "
 "distint."
 
-#: daemon/server.c:916
+#: daemon/server.c:930
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "L'ordre '%s' del servidor no és valida"
 
-#: daemon/server.c:921
+#: daemon/server.c:935
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "No s'ha trobat el nom de servidor '%s', s'utilitza un d'estandard"
 
-#: daemon/server.c:1098
+#: daemon/server.c:1112
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: No s'ha pogut obrir el fitxer de registre per a la pantalla %s!"
 
-#: daemon/server.c:1110 daemon/server.c:1116 daemon/server.c:1121
+#: daemon/server.c:1124 daemon/server.c:1130 daemon/server.c:1135
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Hi ha hagut un error en establir %s a %s"
 
-#: daemon/server.c:1158
+#: daemon/server.c:1172
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: L'ordre del servidor per la pantalla %s està buida"
 
-#: daemon/server.c:1172
+#: daemon/server.c:1186
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
 "%s: El uid %d havia d'engegar el servidor però aquest usuari no existeix"
 
-#: daemon/server.c:1187 daemon/slave.c:2500 daemon/slave.c:2978
+#: daemon/server.c:1201 daemon/slave.c:2500 daemon/slave.c:2978
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: No s'ha pogut definir el groupid de %d"
 
-#: daemon/server.c:1193 daemon/slave.c:2505 daemon/slave.c:2983
+#: daemon/server.c:1207 daemon/slave.c:2505 daemon/slave.c:2983
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: Ha fallat el initgroups() per a %s"
 
-#: daemon/server.c:1199 daemon/slave.c:2510 daemon/slave.c:2988
+#: daemon/server.c:1213 daemon/slave.c:2510 daemon/slave.c:2988
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: No s'ha pogut definir el userid de %d"
 
-#: daemon/server.c:1206
+#: daemon/server.c:1220
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: No s'ha pogut assignar el groupid a 0"
 
-#: daemon/server.c:1223
+#: daemon/server.c:1237
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: No s'ha trobat el servidor d'X: %s"
 
-#: daemon/server.c:1231
+#: daemon/server.c:1245
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: No es pot bifurcar el procés Xserver!"
@@ -1150,38 +1150,38 @@ msgstr ""
 "%s: L'execució de la seqüència de Presessió ha retornat major que 0. S'està "
 "avortant."
 
-#: daemon/slave.c:3503
+#: daemon/slave.c:3516
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "La llengua %s no existeix, s'usarà %s"
 
-#: daemon/slave.c:3504
+#: daemon/slave.c:3517
 msgid "System default"
 msgstr "Valor per defecte del sistema"
 
-#: daemon/slave.c:3520
+#: daemon/slave.c:3533
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: No s'ha pogut configurar l'entorn per %s. S'està avortant."
 
-#: daemon/slave.c:3567
+#: daemon/slave.c:3580
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: setusercontext() ha fallat per a %s. S'està avortant."
 
-#: daemon/slave.c:3573
+#: daemon/slave.c:3586
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: No s'ha pogut adoptar l'id d'usuari %s. S'està avortant."
 
-#: daemon/slave.c:3636
+#: daemon/slave.c:3649
 #, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
 msgstr ""
 "%s: No hi ha una línia Exec al fitxer de sessió: %s, s'està iniciant el "
 "GNOME a prova de fallades."
 
-#: daemon/slave.c:3642
+#: daemon/slave.c:3655
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
@@ -1189,7 +1189,7 @@ msgstr ""
 "La sessió que heu seleccionat no sembla ser vàlida. S'executarà la sessió "
 "GNOME a prova de fallades."
 
-#: daemon/slave.c:3656
+#: daemon/slave.c:3669
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
@@ -1197,7 +1197,7 @@ msgstr ""
 "%s: No es pot trobar o executar el script base d'Xsession, es provarà la "
 "sessió GNOME a prova de fallades"
 
-#: daemon/slave.c:3662
+#: daemon/slave.c:3675
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
@@ -1206,14 +1206,14 @@ msgstr ""
 "GNOME a prova de fallades"
 
 #. yaikes
-#: daemon/slave.c:3677
+#: daemon/slave.c:3690
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s: No es troba el gnome-session per a una sessió GNOME a prova de fallades, "
 "s'està provant amb l'xterm."
 
-#: daemon/slave.c:3682
+#: daemon/slave.c:3695
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
@@ -1221,7 +1221,7 @@ msgstr ""
 "No s'ha trobat la instal·lació de GNOME, es provarà d'executar la sessió "
 "\"xterm a prova de fallades\"."
 
-#: daemon/slave.c:3690
+#: daemon/slave.c:3703
 msgid ""
 "This is the Failsafe Gnome session.  You will be logged into the 'Default' "
 "session of Gnome with no startup scripts run.  This is only to fix problems "
@@ -1231,11 +1231,11 @@ msgstr ""
 "«Per defecte» de Gnome sense cap execució de la seqüència d'inicialització. "
 "Això es fa per arreglar problemes a la instal·lació."
 
-#: daemon/slave.c:3705
+#: daemon/slave.c:3718
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "No es pot trobar \"xterm\" per iniciar una sessió a prova de fallades."
 
-#: daemon/slave.c:3718
+#: daemon/slave.c:3731
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1246,43 +1246,43 @@ msgstr ""
 "podeu entrar de cap altra manera. Per sortir de l'emulador del terminal, "
 "escriviu «exit» i retorn a la finestra."
 
-#: daemon/slave.c:3745
+#: daemon/slave.c:3758
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: L'usuari no està autoritzat a entrar-hi."
 
-#: daemon/slave.c:3748
+#: daemon/slave.c:3761
 msgid "The system administrator has disabled your account."
 msgstr "L'administrador del sistema ha inhabilitat el vostre compte."
 
-#: daemon/slave.c:3777
+#: daemon/slave.c:3790
 msgid "Error! Unable to set executable context."
 msgstr "Error! No s'ha pogut establir el context executable."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3785 daemon/slave.c:3790
+#: daemon/slave.c:3798 daemon/slave.c:3803
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: No s'ha pogut executar %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3801
+#: daemon/slave.c:3814
 msgid "Cannot start the session due to some internal error."
 msgstr "No es pot iniciar la sessió degut a un error intern."
 
-#: daemon/slave.c:3855
+#: daemon/slave.c:3868
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: L'usuari ha passat l'autenticació, però el getpwnam(%s) ha fallat!"
 
-#: daemon/slave.c:3869
+#: daemon/slave.c:3882
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr ""
 "%s: L'execució de la seqüència PostLogin ha retornat major que 0. S'està "
 "avortant."
 
-#: daemon/slave.c:3878
+#: daemon/slave.c:3891
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1300,12 +1300,12 @@ msgstr ""
 "Probablement res no funcionarà si no utilitzeu una sessió a prova de "
 "fallades."
 
-#: daemon/slave.c:3886
+#: daemon/slave.c:3899
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: El directori de l'usuari %s: '%s' no existeix!"
 
-#: daemon/slave.c:4063
+#: daemon/slave.c:4076
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1317,12 +1317,12 @@ msgstr ""
 "d'usuari no s'ha pogut obrir per a escriptura. En qualsevol cas, no és "
 "possible entrar. Si us plau, contacteu el vostre administrador del sistema"
 
-#: daemon/slave.c:4139
+#: daemon/slave.c:4152
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: S'ha produït un error en bifurcar la sessió de l'usuari"
 
-#: daemon/slave.c:4220
+#: daemon/slave.c:4233
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1335,25 +1335,25 @@ msgstr ""
 "amb una de les sessions a prova d'errors per a veure si podeu corregir "
 "aquest problema."
 
-#: daemon/slave.c:4228
+#: daemon/slave.c:4241
 msgid "View details (~/.xsession-errors file)"
 msgstr "Veure detalls (fitxers ~/.xsession-errors)"
 
-#: daemon/slave.c:4372
+#: daemon/slave.c:4385
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM ha detectat una aturada o reinici en progrés."
 
-#: daemon/slave.c:4466
+#: daemon/slave.c:4479
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ha fallat el ping a %s, s'està eliminant la pantalla!"
 
-#: daemon/slave.c:4752
+#: daemon/slave.c:4765
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: S'ha produït un error d'X fatal - S'està reiniciant %s"
 
-#: daemon/slave.c:4846
+#: daemon/slave.c:4859
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1361,27 +1361,27 @@ msgstr ""
 "S'ha demanat un so d'entrada en una visualització no local, o el programa de "
 "reproducció no es pot executar, o no existeix el so"
 
-#: daemon/slave.c:5201
+#: daemon/slave.c:5214
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: No s'ha pogut iniciar: %s"
 
-#: daemon/slave.c:5209 daemon/slave.c:5348
+#: daemon/slave.c:5222 daemon/slave.c:5361
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: No es pot bifurcar el procés de script"
 
-#: daemon/slave.c:5303
+#: daemon/slave.c:5316
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: No s'ha pogut crear el conducte"
 
-#: daemon/slave.c:5342
+#: daemon/slave.c:5355
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: No s'ha pogut executar: %s"
 
-#: daemon/verify-crypt.c:75 daemon/verify-pam.c:1033 daemon/verify-shadow.c:76
+#: daemon/verify-crypt.c:75 daemon/verify-pam.c:1032 daemon/verify-shadow.c:76
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
@@ -1390,12 +1390,12 @@ msgstr ""
 "El nom d'usuari o la contrasenya són incorrectes. Es distingeix entre "
 "majúscules i minúscules."
 
-#: daemon/verify-crypt.c:80 daemon/verify-pam.c:1043 daemon/verify-shadow.c:81
+#: daemon/verify-crypt.c:80 daemon/verify-pam.c:1042 daemon/verify-shadow.c:81
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Assegureu-vos que la tecla Bloc Maj no està habilitada."
 
 #. I think I'll add the buttons next to this
-#: daemon/verify-crypt.c:127 daemon/verify-pam.c:439
+#: daemon/verify-crypt.c:127 daemon/verify-pam.c:441
 #: daemon/verify-shadow.c:126 gui/gdmlogin.c:3069
 msgid "Please enter your username"
 msgstr ""
@@ -1403,16 +1403,16 @@ msgstr ""
 "vostre nom d'usuari"
 
 #. login: is whacked always translate to Username:
-#: daemon/verify-crypt.c:128 daemon/verify-pam.c:339 daemon/verify-pam.c:340
-#: daemon/verify-pam.c:341 daemon/verify-pam.c:426 daemon/verify-pam.c:785
+#: daemon/verify-crypt.c:128 daemon/verify-pam.c:341 daemon/verify-pam.c:342
+#: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
 #: gui/greeter/greeter_parser.c:1061
 msgid "Username:"
 msgstr "Nom d'usuari:"
 
-#: daemon/verify-crypt.c:166 daemon/verify-pam.c:342 daemon/verify-pam.c:343
-#: daemon/verify-pam.c:487 daemon/verify-shadow.c:184 gui/gdmlogin.c:1905
+#: daemon/verify-crypt.c:166 daemon/verify-pam.c:344 daemon/verify-pam.c:345
+#: daemon/verify-pam.c:489 daemon/verify-shadow.c:184 gui/gdmlogin.c:1905
 msgid "Password:"
 msgstr "Contrasenya:"
 
@@ -1422,7 +1422,7 @@ msgstr "Contrasenya:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "No s'ha pogut autenticar l'usuari «%s»"
 
-#: daemon/verify-crypt.c:211 daemon/verify-pam.c:881
+#: daemon/verify-crypt.c:211 daemon/verify-pam.c:883
 #: daemon/verify-shadow.c:229
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1439,8 +1439,8 @@ msgstr ""
 msgid "User %s not allowed to log in"
 msgstr "L'usuari %s no està autoritzat a entrar-hi."
 
-#: daemon/verify-crypt.c:231 daemon/verify-crypt.c:255 daemon/verify-pam.c:927
-#: daemon/verify-pam.c:1214 daemon/verify-shadow.c:249
+#: daemon/verify-crypt.c:231 daemon/verify-crypt.c:255 daemon/verify-pam.c:929
+#: daemon/verify-pam.c:1213 daemon/verify-shadow.c:249
 #: daemon/verify-shadow.c:273
 msgid ""
 "\n"
@@ -1449,15 +1449,15 @@ msgstr ""
 "\n"
 "L'administrador del sistema ha inhabilitat el vostre compte."
 
-#: daemon/verify-crypt.c:278 daemon/verify-crypt.c:416 daemon/verify-pam.c:945
-#: daemon/verify-pam.c:1231 daemon/verify-shadow.c:296
+#: daemon/verify-crypt.c:278 daemon/verify-crypt.c:416 daemon/verify-pam.c:947
+#: daemon/verify-pam.c:1230 daemon/verify-shadow.c:296
 #: daemon/verify-shadow.c:434
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "No es pot definir un grup d'usuari per %s"
 
-#: daemon/verify-crypt.c:280 daemon/verify-crypt.c:419 daemon/verify-pam.c:947
-#: daemon/verify-pam.c:1234 daemon/verify-shadow.c:298
+#: daemon/verify-crypt.c:280 daemon/verify-crypt.c:419 daemon/verify-pam.c:949
+#: daemon/verify-pam.c:1233 daemon/verify-shadow.c:298
 #: daemon/verify-shadow.c:437
 msgid ""
 "\n"
@@ -1527,83 +1527,83 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "No s'ha pogut aconseguir la estructura de la contrasenya per %s"
 
-#: daemon/verify-pam.c:344
+#: daemon/verify-pam.c:346
 msgid "You are required to change your password immediately (password aged)"
 msgstr ""
 "Teniu que canviar la vostra contrasenya immediatament (la contrasenya ha "
 "caducat)"
 
-#: daemon/verify-pam.c:345
+#: daemon/verify-pam.c:347
 msgid "You are required to change your password immediately (root enforced)"
 msgstr ""
 "Teniu que canviar la vostra contrasenya immediatament (a petició del "
 "superusuari)"
 
-#: daemon/verify-pam.c:346
+#: daemon/verify-pam.c:348
 msgid "Your account has expired; please contact your system administrator"
 msgstr ""
 "El vostre compte ha caducat. Si us plau, contecteu amb l'administrador del "
 "sistema"
 
-#: daemon/verify-pam.c:347
+#: daemon/verify-pam.c:349
 msgid "No password supplied"
 msgstr "No s'ha donat cap contrasenya"
 
-#: daemon/verify-pam.c:348
+#: daemon/verify-pam.c:350
 msgid "Password unchanged"
 msgstr "Contrasenya no canviada"
 
-#: daemon/verify-pam.c:349
+#: daemon/verify-pam.c:351
 msgid "Can not get username"
 msgstr "No es pot obtindre el nom d'usuari"
 
-#: daemon/verify-pam.c:350
+#: daemon/verify-pam.c:352
 msgid "Retype new UNIX password:"
 msgstr "Torneu a escriure una nova contrasenya de UNIX:"
 
-#: daemon/verify-pam.c:351
+#: daemon/verify-pam.c:353
 msgid "Enter new UNIX password:"
 msgstr "Introduïu una nova contrasenya de UNIX:"
 
-#: daemon/verify-pam.c:352
+#: daemon/verify-pam.c:354
 msgid "(current) UNIX password:"
 msgstr "(actual) contrasenya de UNIX:"
 
-#: daemon/verify-pam.c:353
+#: daemon/verify-pam.c:355
 msgid "Error while changing NIS password."
 msgstr "S'ha produït un error en canviar la contrasenya NIS."
 
-#: daemon/verify-pam.c:354
+#: daemon/verify-pam.c:356
 msgid "You must choose a longer password"
 msgstr "Heu de triar una contrasenya més llarga"
 
-#: daemon/verify-pam.c:355
+#: daemon/verify-pam.c:357
 msgid "Password has been already used. Choose another."
 msgstr "Aquesta contrasenya ja ha sigut utilitzada. Trieu una altra."
 
-#: daemon/verify-pam.c:356
+#: daemon/verify-pam.c:358
 msgid "You must wait longer to change your password"
 msgstr "Heu d'esperar més per a poder canviar la vostra contrasenya"
 
-#: daemon/verify-pam.c:357
+#: daemon/verify-pam.c:359
 msgid "Sorry, passwords do not match"
 msgstr "Les contrasenyes no coincideixen"
 
-#: daemon/verify-pam.c:651
+#: daemon/verify-pam.c:653
 msgid "Cannot setup pam handle with null display"
 msgstr "No es pot configurar la nansa de pam amb una visualització nula"
 
-#: daemon/verify-pam.c:668
+#: daemon/verify-pam.c:670
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "No s'ha pogut establir el servei %s: %s\n"
 
-#: daemon/verify-pam.c:681
+#: daemon/verify-pam.c:683
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "No es pot especificar PAM_TTY=%s"
 
-#: daemon/verify-pam.c:691
+#: daemon/verify-pam.c:693
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "No s'ha pogut definir PAM_RHOST=%s"
@@ -1613,12 +1613,12 @@ msgstr "No s'ha pogut definir PAM_RHOST=%s"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: daemon/verify-pam.c:838 daemon/verify-pam.c:856 daemon/verify-pam.c:1153
-#: daemon/verify-pam.c:1165
+#: daemon/verify-pam.c:840 daemon/verify-pam.c:858 daemon/verify-pam.c:1152
+#: daemon/verify-pam.c:1164
 msgid "Couldn't authenticate user"
 msgstr "No s'ha pogut autenticar l'usuari"
 
-#: daemon/verify-pam.c:884
+#: daemon/verify-pam.c:886
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1626,12 +1626,12 @@ msgstr ""
 "\n"
 "A l'administrador del sistema no li és permès entrar des d'aquesta pantalla"
 
-#: daemon/verify-pam.c:908 daemon/verify-pam.c:1195
+#: daemon/verify-pam.c:910 daemon/verify-pam.c:1194
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Ha fallat el canvi amb el dispositiu d'autenticació per l'usuari %s"
 
-#: daemon/verify-pam.c:910 daemon/verify-pam.c:1198
+#: daemon/verify-pam.c:912 daemon/verify-pam.c:1197
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1641,17 +1641,17 @@ msgstr ""
 "Ha fallat el canvi amb el dispositiu d'autenticació. Si us plau, proveu de "
 "nou més tard o contacteu amb l'administrador del sistema."
 
-#: daemon/verify-pam.c:925 daemon/verify-pam.c:1211
+#: daemon/verify-pam.c:927 daemon/verify-pam.c:1210
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Ja no es permet l'accés al sistema a l'usuari %s"
 
-#: daemon/verify-pam.c:931 daemon/verify-pam.c:1217
+#: daemon/verify-pam.c:933 daemon/verify-pam.c:1216
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "No es permet l'accés al sistema a l'usuari %s en aquest moment"
 
-#: daemon/verify-pam.c:933
+#: daemon/verify-pam.c:935
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1659,22 +1659,22 @@ msgstr ""
 "\n"
 "L'administrador del sistema ha deshabilitat temporalment l'accés al sistema."
 
-#: daemon/verify-pam.c:938 daemon/verify-pam.c:1224
+#: daemon/verify-pam.c:940 daemon/verify-pam.c:1223
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "No s'ha pogut definir el gestor de compte per a %s"
 
-#: daemon/verify-pam.c:966 daemon/verify-pam.c:1254
+#: daemon/verify-pam.c:968 daemon/verify-pam.c:1253
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "No s'han pogut definir les credencials per a %s"
 
-#: daemon/verify-pam.c:980 daemon/verify-pam.c:1269
+#: daemon/verify-pam.c:982 daemon/verify-pam.c:1268
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "No s'ha pogut obrir la sessió per a %s"
 
-#: daemon/verify-pam.c:1037
+#: daemon/verify-pam.c:1036
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1683,15 +1683,15 @@ msgstr ""
 "Ha fallat l'autenticació. Les lletres s'han d'escriure amb diferència de "
 "majúscules i minúscules."
 
-#: daemon/verify-pam.c:1053 daemon/verify-pam.c:1156 daemon/verify-pam.c:1168
+#: daemon/verify-pam.c:1052 daemon/verify-pam.c:1155 daemon/verify-pam.c:1167
 msgid "Authentication failed"
 msgstr "Ha fallat l'autenticació"
 
-#: daemon/verify-pam.c:1122
+#: daemon/verify-pam.c:1121
 msgid "Automatic login"
 msgstr "Entrada automàtica"
 
-#: daemon/verify-pam.c:1220
+#: daemon/verify-pam.c:1219
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
@@ -1700,7 +1700,7 @@ msgstr ""
 "L'administrador del sistema ha deshabilitat temporalment el vostre accés al "
 "sistema."
 
-#: daemon/verify-pam.c:1425 daemon/verify-pam.c:1427
+#: daemon/verify-pam.c:1428 daemon/verify-pam.c:1430
 msgid "Can't find PAM configuration for gdm."
 msgstr "No s'ha trobat la configuració del PAM pel gdm."
 
@@ -2339,433 +2339,453 @@ msgstr "Nova entrada"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:53
+msgid "A-M|Afrikaans"
+msgstr "A-M|Afrikaans"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:55
 msgid "A-M|Albanian"
 msgstr "A-M|Albanès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:55
+#: gui/gdmlanguages.c:57
 msgid "A-M|Amharic"
 msgstr "A-M|Amharrès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:57
+#: gui/gdmlanguages.c:59
 msgid "A-M|Arabic (Egypt)"
 msgstr "A-M|Àrab (Egipte)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:59
+#: gui/gdmlanguages.c:61
 msgid "A-M|Arabic (Lebanon)"
 msgstr "A-M|Àrab (Líban)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:61
+#: gui/gdmlanguages.c:63
 msgid "A-M|Armenian"
 msgstr "A-M|Armeni"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:63
+#: gui/gdmlanguages.c:65
 msgid "A-M|Azerbaijani"
 msgstr "A-M|Azerbaitjanès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:65
+#: gui/gdmlanguages.c:67
 msgid "A-M|Basque"
 msgstr "A-M|Basc"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:67
+#: gui/gdmlanguages.c:69
 msgid "A-M|Belarusian"
 msgstr "A-M|Bielorús"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:69
+#: gui/gdmlanguages.c:71
 msgid "A-M|Bengali"
 msgstr "A-M|Bengalí"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:71
+#: gui/gdmlanguages.c:73
 msgid "A-M|Bengali (India)"
 msgstr "A-M|Bengalí (India)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:73
+#: gui/gdmlanguages.c:75
 msgid "A-M|Bulgarian"
 msgstr "A-M|Búlgar"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:75
+#: gui/gdmlanguages.c:77
 msgid "A-M|Bosnian"
 msgstr "A-M|Bosni"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:77
+#: gui/gdmlanguages.c:79
 msgid "A-M|Catalan"
 msgstr "A-M|Català"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:79
+#: gui/gdmlanguages.c:81
 msgid "A-M|Chinese (simplified)"
 msgstr "N-Z|Xinés (simplificat)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:81
+#: gui/gdmlanguages.c:83
 msgid "A-M|Chinese (traditional)"
 msgstr "N-Z|Xinés (tradicional)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:83
+#: gui/gdmlanguages.c:85
 msgid "A-M|Croatian"
 msgstr "A-M|Croat"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:87
 msgid "A-M|Czech"
 msgstr "N-Z|Txec"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:89
 msgid "A-M|Danish"
 msgstr "A-M|Danès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:91
 msgid "A-M|Dutch"
 msgstr "A-M|Holandès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:93
 msgid "A-M|English"
 msgstr "A-M|Anglès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:95
 msgid "A-M|English (USA)"
 msgstr "A-M|Anglès (EUA)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:97
 msgid "A-M|English (Australia)"
 msgstr "A-M|Anglès (Austràlia)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:99
 msgid "A-M|English (UK)"
 msgstr "A-M|Anglès (RU)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:101
 msgid "A-M|English (Canada)"
 msgstr "A-M|Anglès (Canadà)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:103
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Anglès (Irlanda)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
+#: gui/gdmlanguages.c:105
 msgid "A-M|English (Denmark)"
 msgstr "A-M|Anglès (Dinamarca)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:107
+msgid "A-M|English (South Africa)"
+msgstr "A-M|Anglès (Sudàfrica)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:109
 msgid "A-M|Estonian"
 msgstr "A-M|Estonià"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:111
 msgid "A-M|Finnish"
 msgstr "A-M|Finès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:113
 msgid "A-M|French"
 msgstr "A-M|Francès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:115
 msgid "A-M|French (Belgium)"
 msgstr "A-M|Francès (Bèlgica)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:113
+#: gui/gdmlanguages.c:117
 msgid "A-M|French (Switzerland)"
 msgstr "A-M|Francès (Suïssa)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:115
+#: gui/gdmlanguages.c:119
 msgid "A-M|Galician"
 msgstr "A-M|Gallec"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:117
+#: gui/gdmlanguages.c:121
 msgid "A-M|German"
 msgstr "A-M|Alemany"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:119
+#: gui/gdmlanguages.c:123
 msgid "A-M|German (Austria)"
 msgstr "A-M|Alemany (Àustria)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:125
 msgid "A-M|German (Switzerland)"
 msgstr "A-M|Alemany (Suïssa)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:127
 msgid "A-M|Greek"
 msgstr "A-M|Grec"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:129
 msgid "A-M|Gujarati"
 msgstr "A-M|Gujarati"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:127 gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:131 gui/gdmlanguages.c:133
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebreu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:135
 msgid "A-M|Hindi"
 msgstr "A-M|Hindi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:133
+#: gui/gdmlanguages.c:137
 msgid "A-M|Hungarian"
 msgstr "A-M|Hongarès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:139
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:137
+#: gui/gdmlanguages.c:141
 msgid "A-M|Indonesian"
 msgstr "A-M|Indonesi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:139
+#: gui/gdmlanguages.c:143
 msgid "A-M|Interlingua"
 msgstr "A-M|Interlingua"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:141
+#: gui/gdmlanguages.c:145
 msgid "A-M|Irish"
 msgstr "A-M|Irlandès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:143
+#: gui/gdmlanguages.c:147
 msgid "A-M|Italian"
 msgstr "A-M|Italià"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:145
+#: gui/gdmlanguages.c:149
 msgid "A-M|Japanese"
 msgstr "A-M|Japonès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:147
+#: gui/gdmlanguages.c:151
 msgid "A-M|Kannada"
 msgstr "A-M|Kanarès"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:149
+#: gui/gdmlanguages.c:153
 msgid "A-M|Korean"
 msgstr "A-M|Coreà"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:151
+#: gui/gdmlanguages.c:155
 msgid "A-M|Latvian"
 msgstr "A-M|Letó"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:153
+#: gui/gdmlanguages.c:157
 msgid "A-M|Lithuanian"
 msgstr "A-M|Lituà"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:155
+#: gui/gdmlanguages.c:159
 msgid "A-M|Macedonian"
 msgstr "A-M|Macedoni"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:157
+#: gui/gdmlanguages.c:161
 msgid "A-M|Malay"
 msgstr "A-M|Malai"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:159
+#: gui/gdmlanguages.c:163
 msgid "A-M|Malayalam"
 msgstr "A-M|Malaialam"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:161
+#: gui/gdmlanguages.c:165
 msgid "A-M|Marathi"
 msgstr "A-M|Marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:163
+#: gui/gdmlanguages.c:167
 msgid "A-M|Mongolian"
 msgstr "A-M|Mongol"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:165
+#: gui/gdmlanguages.c:169
+msgid "N-Z|Northern Sotho"
+msgstr "N-Z|Sotho del nord"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Noruec (bokmål)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:167
+#: gui/gdmlanguages.c:173
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Noruec (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:169
+#: gui/gdmlanguages.c:175
 msgid "N-Z|Oriya"
 msgstr "N-Z|Oriya"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:171
+#: gui/gdmlanguages.c:177
 msgid "N-Z|Panjabi"
 msgstr "N-Z|Punjabi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:173
+#: gui/gdmlanguages.c:179
 msgid "N-Z|Persian"
 msgstr "N-Z|Persa"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:175
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Polish"
 msgstr "N-Z|Polonès"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:177
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portuguès"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:179
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portuguès (Brasiler)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:181
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Romanian"
 msgstr "N-Z|Romanès"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:183
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Russian"
 msgstr "N-Z|Rus"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:185 gui/gdmlanguages.c:187
+#: gui/gdmlanguages.c:191 gui/gdmlanguages.c:193
 msgid "N-Z|Serbian"
 msgstr "N-Z|Serbi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:189
+#: gui/gdmlanguages.c:195
 msgid "N-Z|Serbian (Latin)"
 msgstr "N-Z|Serbi (Llatí)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:191
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Serbian (Jekavian)"
 msgstr "N-Z|Serbi (Jekavian)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:193
+#: gui/gdmlanguages.c:199
 msgid "N-Z|Slovak"
 msgstr "A-M|Eslovac"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:195
+#: gui/gdmlanguages.c:201
 msgid "N-Z|Slovenian"
 msgstr "A-M|Eslovè"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:197
+#: gui/gdmlanguages.c:203
 msgid "N-Z|Spanish"
 msgstr "A-M|Espanyol"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:199
+#: gui/gdmlanguages.c:205
 msgid "N-Z|Spanish (Mexico)"
 msgstr "A-M|Espanyol (Mèxic)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:201
+#: gui/gdmlanguages.c:207
 msgid "N-Z|Swedish"
 msgstr "N-Z|Suec"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:203
+#: gui/gdmlanguages.c:209
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Suec (Finlandès)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:205
+#: gui/gdmlanguages.c:211
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tàmil"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:207
+#: gui/gdmlanguages.c:213
 msgid "N-Z|Telugu"
 msgstr "N-Z|Telugu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:209
+#: gui/gdmlanguages.c:215
 msgid "N-Z|Thai"
 msgstr "N-Z|Tailandès"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:211
+#: gui/gdmlanguages.c:217
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turc"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:213
+#: gui/gdmlanguages.c:219
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ucraïnès"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:215
+#: gui/gdmlanguages.c:221
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamita"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:217
+#: gui/gdmlanguages.c:223
 msgid "N-Z|Walloon"
 msgstr "N-Z|Való"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:219
+#: gui/gdmlanguages.c:225
 msgid "N-Z|Welsh"
 msgstr "A-M|Gal·lès"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:221
+#: gui/gdmlanguages.c:227
 msgid "N-Z|Yiddish"
 msgstr "N-Z|Jiddisch"
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:229
+msgid "N-Z|Zulu"
+msgstr "N-Z|Zulú"
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:223
+#: gui/gdmlanguages.c:231
 msgid "Other|POSIX/C English"
 msgstr "Altres|POSIX/C Anglès"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:419
+#: gui/gdmlanguages.c:427
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:427
+#: gui/gdmlanguages.c:435
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -3328,7 +3348,7 @@ msgid ""
 "XDMCP.  You can insert %n in here and it will be replaced by the name of "
 "your computer."
 msgstr ""
-"Cadena a mostrar al rebedor per a gent que entre remotament amb XDMCP. Podeu "
+"Cadena a mostrar al rebedor per a aquells qui entren remotament amb XDMCP. Podeu "
 "inserir %n ací i es reemplaçarà pel nom de l'ordinador."
 
 #: gui/gdmsetup-strings.c:22 gui/gdmsetup.glade.h:10
@@ -3767,11 +3787,11 @@ msgstr ""
 msgid "Last"
 msgstr "Últim"
 
-#: gui/greeter/greeter_action_language.c:196
+#: gui/greeter/greeter_action_language.c:198
 msgid "Select a language"
 msgstr "Selecciona una llengua"
 
-#: gui/greeter/greeter_action_language.c:215
+#: gui/greeter/greeter_action_language.c:217
 msgid "Select a language for your session to use:"
 msgstr "Seleccioneu una llengua per a la vostra sessió:"
 
@@ -4005,9 +4025,6 @@ msgstr "Hi ha massa nivells d'àlies per al locale, pot indicar un bucle"
 #~ msgid "Set logout action request denied: Not authenticated"
 #~ msgstr ""
 #~ "S'ha denegat la sol·licitud d'establiment de sortida: No s'ha autenticat"
-
-#~ msgid "A-M|English (American)"
-#~ msgstr "A-M|Anglès (Americà)"
 
 #~ msgid "A-M|English (British)"
 #~ msgstr "A-M|Anglès (Britànic)"
