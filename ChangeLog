@@ -1,3 +1,14 @@
+Thu Jul 10 14:33:59 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmsetup.desktop.in: This is a system SETUP tool, not a system
+	  tool so change System keyword to SystemSetup, also add
+	  X-Red-Hat-Base, so that it shows up in the non-others menu (This
+	  should have been done the other way around IMO, no keyword means
+	  it goes in the main menu) </rant>  Fixes bug #116977
+
+	* daemon/gdm.h, config/gdm.conf.in: sync the defaults for Exclude
+	  and add pcap user to excludes
+
 Tue Jul 08 01:42:43 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.glade: the DisallowTCP checkbox label is now more
