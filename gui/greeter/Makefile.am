@@ -16,6 +16,7 @@ bin_PROGRAMS = \
 
 gdmgreeter_SOURCES =  \
 	greeter.c \
+	greeter.h \
 	greeter_action_language.c \
 	greeter_action_language.h \
 	greeter_canvas_item.c \
