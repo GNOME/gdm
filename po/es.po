@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.0\n"
-"POT-Creation-Date: 2001-03-01 18:24+0100\n"
+"POT-Creation-Date: 2001-03-07 22:44+0100\n"
 "PO-Revision-Date: 1998-11-21 01:59:37+0100\n"
 "Last-Translator: Lucas 'Basurero' Vieites <basurero@jazzfree.com>\n"
 "Language-Team: \n"
@@ -125,7 +125,7 @@ msgstr "gdm_child_action: Falla al detener: %s"
 
 #: daemon/gdm.c:474
 msgid "Failed to restart self"
-msgstr ""
+msgstr "Fallo al rearrancarse"
 
 #: daemon/gdm.c:524
 msgid "Only root wants to run gdm\n"
@@ -186,37 +186,37 @@ msgstr "gdm_display_manager: falla al crear el proceso esclavo para %d"
 msgid "%s: Directory %s does not exist."
 msgstr "%s: El directorio %s no existe."
 
-#: daemon/filecheck.c:57 daemon/filecheck.c:98
+#: daemon/filecheck.c:58 daemon/filecheck.c:99
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr "%s: %s no no es propiedad del uid %d."
 
-#: daemon/filecheck.c:63 daemon/filecheck.c:105
+#: daemon/filecheck.c:64 daemon/filecheck.c:106
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr "%s: %s puede ser escrito por el grupo."
 
-#: daemon/filecheck.c:69
+#: daemon/filecheck.c:70
 #, c-format
 msgid "%s: %s is writable by other."
 msgstr "%s: %s puede ser escrito por otros."
 
-#: daemon/filecheck.c:83
-#, c-format
-msgid "%s: does not exist and must."
+#: daemon/filecheck.c:84
+#, fuzzy, c-format
+msgid "%s: %s does not exist and must."
 msgstr "%s: no existe y debe existir."
 
-#: daemon/filecheck.c:91
+#: daemon/filecheck.c:92
 #, c-format
 msgid "%s: %s is not a regular file."
 msgstr "%s: %s no es un archivo normal."
 
-#: daemon/filecheck.c:112
+#: daemon/filecheck.c:113
 #, c-format
 msgid "%s: %s is writable by group/other."
 msgstr "%s: %s puede ser escrito por el grupo y otros."
 
-#: daemon/filecheck.c:119
+#: daemon/filecheck.c:120
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
@@ -300,7 +300,12 @@ msgstr ""
 "gdm_slave_session_start: ¡El usuario pasó la autentificación pero "
 "getpwnam(%s) falló!"
 
-#: daemon/slave.c:485
+#: daemon/slave.c:438
+#, fuzzy
+msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
+msgstr "gdm_slave_session_start: No pude cambiarme en %s. Abortando."
+
+#: daemon/slave.c:484
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -308,49 +313,49 @@ msgstr ""
 "gdm_slave_session_start: La ejecución del script de Pre-sesión devolvió > 0. "
 "Abortando."
 
-#: daemon/slave.c:511
+#: daemon/slave.c:510
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr ""
 "gdm_slave_session_start: Error al hacer un fork para la sesión del usuario"
 
-#: daemon/slave.c:520
+#: daemon/slave.c:519
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: No pude hacer un setgid %d. Abortando"
 
-#: daemon/slave.c:524
+#: daemon/slave.c:523
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr "gdm_slave_session_start: Falló initgroups() para %s. Abortando."
 
-#: daemon/slave.c:528
+#: daemon/slave.c:527
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: No pude cambiarme en %s. Abortando."
 
-#: daemon/slave.c:566
+#: daemon/slave.c:565
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: No pude lanzar la sesión `%s'"
 
-#: daemon/slave.c:759
+#: daemon/slave.c:760
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Error fatal de X - Reiniciando %s"
 
-#: daemon/slave.c:858
+#: daemon/slave.c:859
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_exec_exec_script: Falló el arranque: %s"
 
-#: daemon/slave.c:862
+#: daemon/slave.c:863
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr ""
 "gdm_exec_exec_script: ¡Imposible de hacer un fork para el proceso script!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1751
+#: gui/gdmlogin.c:1784
 msgid "Login:"
 msgstr "Login:"
 
@@ -565,70 +570,69 @@ msgstr "gdm_xdmcp_handle_keepalive: No pude leer el número de Display"
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: No pude leer el ID de Sesión"
 
-#: gui/gdmchooser.c:369
+#: gui/gdmchooser.c:58
+msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
+msgstr ""
+
+#: gui/gdmchooser.c:59
+msgid "No serving hosts were found."
+msgstr ""
+
+#: gui/gdmchooser.c:60
+msgid "Choose a host to connect to from the selection below."
+msgstr ""
+
+#: gui/gdmchooser.c:384
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr ""
 "gdm_chooser_parse_config: Ningún archivo de configuración: %s. Abortando."
 
-#: gui/gdmchooser.c:483
+#: gui/gdmchooser.c:519
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "No puedo abrir el icono del anfitrión por omisión: %s"
 
-#. Buttons
-#: gui/gdmchooser.c:550
-msgid "Connect"
-msgstr "Conectar"
-
-#: gui/gdmchooser.c:557
-msgid "Rescan"
-msgstr "Explorar de nuevo"
-
-#: gui/gdmchooser.c:563
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: gui/gdmchooser.c:614
+#: gui/gdmchooser.c:581
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Error al configurar el controlador de la señal HUP"
 
-#: gui/gdmchooser.c:617
+#: gui/gdmchooser.c:584
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Error al configurar el controlador de la señal INT"
 
-#: gui/gdmchooser.c:620
+#: gui/gdmchooser.c:587
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Error al configurar el controlador de la señal TERM"
 
-#: gui/gdmchooser.c:628 gui/gdmlogin.c:2122
+#: gui/gdmchooser.c:595 gui/gdmlogin.c:2150
 msgid "Could not set signal mask!"
 msgstr "¡No pude definir la máscara de señales!"
 
-#: gui/gdmlogin.c:389 gui/gdmlogin.c:395 gui/gdmlogin.c:402
+#: gui/gdmlogin.c:391 gui/gdmlogin.c:397 gui/gdmlogin.c:404
 #, c-format
 msgid "Welcome to %s"
 msgstr "Bienvenido a %s"
 
-#: gui/gdmlogin.c:400
+#: gui/gdmlogin.c:402
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: ¡Cadena demasiado larga!"
 
-#: gui/gdmlogin.c:496
+#: gui/gdmlogin.c:499
 msgid "Are you sure you want to reboot the machine?"
 msgstr "¿Está seguro de que quiere reiniciar el sistema?"
 
-#: gui/gdmlogin.c:510
+#: gui/gdmlogin.c:513
 msgid "Are you sure you want to halt the machine?"
 msgstr "¿Está seguro de que quiere apagar el sistema?"
 
-#: gui/gdmlogin.c:528
+#: gui/gdmlogin.c:531
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr ""
 "gdm_login_parse_config: Ningún archivo de configuración: %s. Abortando."
 
-#: gui/gdmlogin.c:638
+#: gui/gdmlogin.c:641
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -637,7 +641,7 @@ msgstr ""
 "Su preferencia de tipo de sesión %s no está disponible en esta máquina.\n"
 "¿Desea hacer de %s su sesión por omisión a partir de ahora?"
 
-#: gui/gdmlogin.c:654 gui/gdmlogin.c:709
+#: gui/gdmlogin.c:657 gui/gdmlogin.c:712
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -646,101 +650,108 @@ msgstr ""
 "Ha escogido %s para esta sesión, pero su sesión por omisión es %s.\n"
 "¿Desea hacer de %s su sesión por omisión a partir de ahora?"
 
-#: gui/gdmlogin.c:844
+#: gui/gdmlogin.c:858
 #, c-format
 msgid "%s session selected"
 msgstr "Sesión %s seleccionada"
 
-#: gui/gdmlogin.c:860 gui/gdmlogin.c:969
+#: gui/gdmlogin.c:874 gui/gdmlogin.c:983
 msgid "Last"
 msgstr "Última"
 
-#: gui/gdmlogin.c:877
+#: gui/gdmlogin.c:891
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr ""
 "gdm_login_session_init: ¡No se encuentra el directorio de los scripts de "
 "sesión!"
 
-#: gui/gdmlogin.c:932
+#: gui/gdmlogin.c:946
 msgid "No session scripts found. Aborting!"
 msgstr "¡No se encuentran scripts de sesión. Abortando!"
 
-#: gui/gdmlogin.c:936
+#: gui/gdmlogin.c:950
 #, c-format
 msgid "No default session link found. Using %s.\n"
-msgstr "No se encuentra un lazo de sesión por omisión. Usando %s.\n"
+msgstr "No se encuentra un enlace de sesión por omisión. Usando %s.\n"
 
-#: gui/gdmlogin.c:950
+#: gui/gdmlogin.c:964
 #, c-format
 msgid "%s language selected"
 msgstr "Idioma %s seleccionado"
 
-#: gui/gdmlogin.c:987
+#: gui/gdmlogin.c:1001
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:993
+#: gui/gdmlogin.c:1007
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:999
+#: gui/gdmlogin.c:1013
 msgid "Other"
 msgstr "Otro"
 
-#: gui/gdmlogin.c:1485
+#. translators:  This is a nice and evil eggie text, translate
+#. * to your favourite currency
+#: gui/gdmlogin.c:1233
+#, fuzzy
+msgid "Please insert 25 cents to log in."
+msgstr "Entre su nombre de usuario"
+
+#: gui/gdmlogin.c:1517
 msgid "GNOME Desktop Manager"
 msgstr "Controlador de Escritorio GNOME"
 
-#: gui/gdmlogin.c:1497
+#: gui/gdmlogin.c:1529
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr ""
 "¡Imposible de abrir el archivo de icono: %s. Suspendiendo la posibilidad de "
 "iconificar!"
 
-#: gui/gdmlogin.c:1604
+#: gui/gdmlogin.c:1636
 msgid "Session"
 msgstr "Sesión"
 
-#: gui/gdmlogin.c:1611
+#: gui/gdmlogin.c:1643
 msgid "Language"
 msgstr "Idioma"
 
-#: gui/gdmlogin.c:1618
+#: gui/gdmlogin.c:1650
 msgid "Reboot..."
 msgstr "Reiniciar..."
 
-#: gui/gdmlogin.c:1625
+#: gui/gdmlogin.c:1657
 msgid "Halt..."
 msgstr "Detener..."
 
-#: gui/gdmconfig.c:41 gui/gdmlogin.c:1632
+#: gui/gdmconfig.c:41 gui/gdmlogin.c:1664
 msgid "System"
 msgstr "Sistema"
 
-#: gui/gdmlogin.c:1786
+#: gui/gdmlogin.c:1820
 msgid "Please enter your login"
 msgstr "Entre su nombre de usuario"
 
-#: gui/gdmlogin.c:1973
+#: gui/gdmlogin.c:2006
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 "Imposible de abrir DefaultImage: %s. ¡Suspendiendo el visualizador de fotos!"
 
-#: gui/gdmlogin.c:2099
+#: gui/gdmlogin.c:2127
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Error al configurar el controlador de la señal HUP"
 
-#: gui/gdmlogin.c:2102
+#: gui/gdmlogin.c:2130
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Error al configurar el controlador de la señal INT"
 
-#: gui/gdmlogin.c:2105
+#: gui/gdmlogin.c:2133
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Error al configurar el controlador de la señal TERM"
 
-#: gui/gdmlogin.c:2113
+#: gui/gdmlogin.c:2141
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Error al configurar el controlador de la señal CHLD"
 
@@ -806,25 +817,25 @@ msgstr ""
 "Elija \"Básico\" si solamente quiere cambiar el apecto del inicio de su "
 "máquina."
 
-#: gui/gdmconfig.c:103
+#: gui/gdmconfig.c:126
 msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr "Vd. tiene que ser el superusuario (root) para configurar GDM.\n"
+msgstr "Tiene que ser el superusuario (root) para configurar GDM.\n"
 
-#: gui/gdmconfig.c:176
+#: gui/gdmconfig.c:199
 msgid "GNOME Display Manager Configurator"
 msgstr "Configurador del Controlador de Display GNOME"
 
-#: gui/gdmconfig.c:230
+#: gui/gdmconfig.c:253
 msgid "The configuration file: "
 msgstr "El archivo de configuración: "
 
-#: gui/gdmconfig.c:339
+#: gui/gdmconfig.c:361
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse_most: Línea de servidor inválida en el archivo de "
-"configuración. Ignorándola."
+"configuración. ¡Ignorándola!"
 
-#: gui/gdmconfig.c:406
+#: gui/gdmconfig.c:428
 msgid ""
 "The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
@@ -838,7 +849,7 @@ msgstr ""
 "¡Esto matará todas sus sesiones actuales\n"
 "y perderá todos los datos no guardados!"
 
-#: gui/gdmconfig.c:411
+#: gui/gdmconfig.c:433
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
@@ -846,7 +857,7 @@ msgstr ""
 "¿Está seguro de que quiere reiniciar GDM\n"
 "y perder todos los datos no guardados?"
 
-#: gui/gdmconfig.c:418
+#: gui/gdmconfig.c:440
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -858,7 +869,7 @@ msgstr ""
 "efecto hasta que gdm sea rearrancado o el ordenador\n"
 "reiniciado"
 
-#: gui/gdmconfig.c:545
+#: gui/gdmconfig.c:566
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -867,7 +878,7 @@ msgstr ""
 "¿Está seguro de querer hacer esto?"
 
 #. Request the command line for this new server
-#: gui/gdmconfig.c:639 gui/gdmconfig.c:658
+#: gui/gdmconfig.c:660 gui/gdmconfig.c:679
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
@@ -881,453 +892,501 @@ msgstr ""
 #. * DO NOT compile it as part of your application.
 #.
 #: gui/gdmconfig-strings.c:7
-msgid "GDM"
-msgstr "GDM"
-
-#: gui/gdmconfig-strings.c:8 gui/gdmconfig-strings.c:77
-msgid "Security"
-msgstr "Seguridad"
-
-#: gui/gdmconfig-strings.c:9 gui/gdmconfig-strings.c:87
-msgid "XDMCP"
-msgstr "XDMCP"
-
-#: gui/gdmconfig-strings.c:10
-msgid "User Interface"
-msgstr "Interfaz del usuario"
-
-#: gui/gdmconfig-strings.c:11
-msgid "Greeter"
-msgstr "Saludador"
-
-#: gui/gdmconfig-strings.c:12 gui/gdmconfig-strings.c:124
-msgid "Chooser"
-msgstr "Selector"
-
-#: gui/gdmconfig-strings.c:13
-msgid "Servers"
-msgstr "Servidores"
-
-#: gui/gdmconfig-strings.c:14
 msgid "GDM Configuration Utility"
 msgstr "Utilidad de configuración de GDM"
 
-#: gui/gdmconfig-strings.c:15
+#: gui/gdmconfig-strings.c:8
 msgid "_Configuration"
 msgstr "_Configuración"
 
-#: gui/gdmconfig-strings.c:16
+#: gui/gdmconfig-strings.c:9
 msgid "Revert settings"
 msgstr "Revertir configuración"
 
-#: gui/gdmconfig-strings.c:17
+#: gui/gdmconfig-strings.c:10
 msgid "Apply"
 msgstr "Aplicar"
 
-#: gui/gdmconfig-strings.c:18 gui/gdmconfig-strings.c:63
+#: gui/gdmconfig-strings.c:11 gui/gdmconfig-strings.c:56
 msgid "Options"
 msgstr "Opciones"
 
-#: gui/gdmconfig-strings.c:19
+#: gui/gdmconfig-strings.c:12
 msgid " "
 msgstr " "
 
-#: gui/gdmconfig-strings.c:20
+#: gui/gdmconfig-strings.c:13
 msgid "basic_settings"
 msgstr "configuracion_basica"
 
-#: gui/gdmconfig-strings.c:21
+#: gui/gdmconfig-strings.c:14
 msgid "General Appearance"
 msgstr "Apariencia general"
 
-#: gui/gdmconfig-strings.c:22
+#: gui/gdmconfig-strings.c:15
 msgid "Logo: "
 msgstr "Imágen: "
 
-#: gui/gdmconfig-strings.c:23
-#, fuzzy
+#: gui/gdmconfig-strings.c:16
 msgid "Select a logo to be displayed during login"
 msgstr "Seleccione un logo para mostrar durante el login"
 
-#: gui/gdmconfig-strings.c:24
+#: gui/gdmconfig-strings.c:17
 msgid "Minimised Icon: "
 msgstr "Icono minizado: "
 
-#: gui/gdmconfig-strings.c:25
+#: gui/gdmconfig-strings.c:18
 msgid "Select a GTK+ theme file (gtkrc)"
 msgstr "Elija un archivo de tema GTK+ (gtkrc)"
 
-#: gui/gdmconfig-strings.c:26
+#: gui/gdmconfig-strings.c:19
 msgid "Gtk+ RC file: "
 msgstr "Archivo gtkrc: "
 
-#: gui/gdmconfig-strings.c:27
+#: gui/gdmconfig-strings.c:20
 msgid "Login appearance"
 msgstr "Apariencia del login"
 
-#: gui/gdmconfig-strings.c:28
+#: gui/gdmconfig-strings.c:21
 msgid "Greeter Look and Feel"
 msgstr "Apariencia y Tacto del Saludador"
 
-#: gui/gdmconfig-strings.c:29
+#: gui/gdmconfig-strings.c:22
 msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
 msgstr "Mostrar el menú 'sistema' (para reiniciar, apagar, etc.)"
 
-#: gui/gdmconfig-strings.c:30
+#: gui/gdmconfig-strings.c:23
 msgid "Quiver on failure"
 msgstr "Temblar al fallar"
 
-#: gui/gdmconfig-strings.c:31
-#, fuzzy, c-format
+#: gui/gdmconfig-strings.c:24
+#, c-format
 msgid ""
 "Welcome to %n\n"
 "%n\n"
 "This is %n\n"
-msgstr "Bienvenido a %s"
+msgstr ""
+"Bienvenido a %n%n\n"
+"Esto es %n\n"
 
-#: gui/gdmconfig-strings.c:35
+#: gui/gdmconfig-strings.c:28
 #, c-format
 msgid "This is %n"
 msgstr "Este es %n"
 
-#: gui/gdmconfig-strings.c:36
+#: gui/gdmconfig-strings.c:29
 msgid "Default font: "
 msgstr "Tipo de letra por omisión: "
 
-#: gui/gdmconfig-strings.c:37
+#: gui/gdmconfig-strings.c:30
 msgid "Welcome message: "
 msgstr "Mensaje de bienvenida: "
 
-#: gui/gdmconfig-strings.c:38
+#: gui/gdmconfig-strings.c:31
 msgid "Pick a Font"
 msgstr "Escoja una fuente"
 
-#: gui/gdmconfig-strings.c:39
+#: gui/gdmconfig-strings.c:32
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnñÑoOPpQqRrSsTtUuVvWwXxYyZz"
 
-#: gui/gdmconfig-strings.c:40
+#: gui/gdmconfig-strings.c:33
 msgid "Extras"
-msgstr ""
+msgstr "Extras"
 
-#: gui/gdmconfig-strings.c:41
+#: gui/gdmconfig-strings.c:34
 msgid "Background Program: "
 msgstr "Programa de Segundo Plano: "
 
-#: gui/gdmconfig-strings.c:42 gui/gdmconfig-strings.c:116
+#: gui/gdmconfig-strings.c:35 gui/gdmconfig-strings.c:118
 msgid "Select a file containing Locale information"
 msgstr "Seleccione un archivo que contenga información sobre la locale"
 
-#: gui/gdmconfig-strings.c:43
+#: gui/gdmconfig-strings.c:36
 msgid "Default locale: "
 msgstr "Locale por omisión: "
 
-#: gui/gdmconfig-strings.c:44
+#: gui/gdmconfig-strings.c:37
 msgid "Exclude these users: "
 msgstr "Excluir estos usuarios: "
 
-#: gui/gdmconfig-strings.c:45
+#: gui/gdmconfig-strings.c:38
 msgid "Automatic Login: "
 msgstr "Login automático: "
 
-#: gui/gdmconfig-strings.c:46
+#: gui/gdmconfig-strings.c:39
 msgid "Position"
 msgstr "Posición"
 
-#: gui/gdmconfig-strings.c:47
+#: gui/gdmconfig-strings.c:40
 msgid "Manually set position"
 msgstr "Indicar posición manualmente"
 
-#: gui/gdmconfig-strings.c:48
+#: gui/gdmconfig-strings.c:41
 msgid "Lock position"
 msgstr "Bloquear posición"
 
-#: gui/gdmconfig-strings.c:49
+#: gui/gdmconfig-strings.c:42
 msgid "X position: "
 msgstr "posición X"
 
-#: gui/gdmconfig-strings.c:50
+#: gui/gdmconfig-strings.c:43
 msgid "Y position: "
 msgstr "posición Y"
 
-#: gui/gdmconfig-strings.c:51
+#: gui/gdmconfig-strings.c:44
 msgid "Xinerama screen: "
-msgstr "pantalla Xinerama"
+msgstr "pantalla Xinerama: "
 
-#: gui/gdmconfig-strings.c:52
+#: gui/gdmconfig-strings.c:45
 msgid "Login behaviour"
 msgstr "Comportamiento del login"
 
-#: gui/gdmconfig-strings.c:53 gui/gdmconfig-strings.c:61
+#: gui/gdmconfig-strings.c:46 gui/gdmconfig-strings.c:54
 msgid "Face browser"
 msgstr "Visualizador de caras"
 
-#: gui/gdmconfig-strings.c:54
+#: gui/gdmconfig-strings.c:47
 msgid "Show choosable user images (enable face browser)"
 msgstr "Mostrar imágenes seleccionables (activar visualizador de caras)"
 
-#: gui/gdmconfig-strings.c:55
+#: gui/gdmconfig-strings.c:48
 msgid "Default face image: "
 msgstr "Imagen de cara por omisión:"
 
-#: gui/gdmconfig-strings.c:56
+#: gui/gdmconfig-strings.c:49
 msgid "Global faces directory: "
 msgstr "Directorio de caras global: "
 
-#: gui/gdmconfig-strings.c:57
+#: gui/gdmconfig-strings.c:50
 msgid "Maximum face width: "
 msgstr "Ancho máximo de cara: "
 
-#: gui/gdmconfig-strings.c:58
+#: gui/gdmconfig-strings.c:51
 msgid "Select an image for users with no 'face'"
 msgstr "Seleccionar una imagen para usuarios sin 'cara'"
 
-#: gui/gdmconfig-strings.c:59
+#: gui/gdmconfig-strings.c:52
 msgid "Choose the directory to search for faces"
 msgstr "Seleccionar el directorio en el que se buscan caras"
 
-#: gui/gdmconfig-strings.c:60
+#: gui/gdmconfig-strings.c:53
 msgid "Maximum face height: "
 msgstr "Altura máxima de cara: "
 
-#: gui/gdmconfig-strings.c:62
+#: gui/gdmconfig-strings.c:55
 msgid "expert"
 msgstr "experto"
 
-#: gui/gdmconfig-strings.c:64
+#: gui/gdmconfig-strings.c:57
 msgid "Allow root to login with GDM"
 msgstr "Permitir a root hacer login con GDM"
 
-#: gui/gdmconfig-strings.c:65
+#: gui/gdmconfig-strings.c:58
+msgid ""
+"Determines whether GDM should kill X clients started by the init scripts "
+"when the user logs in."
+msgstr ""
+
+#: gui/gdmconfig-strings.c:59
 msgid "Kill 'init' clients"
 msgstr "Matar cliente 'init'"
 
-#: gui/gdmconfig-strings.c:66
-msgid "Relax permissions"
-msgstr "Relajar permisos"
+#: gui/gdmconfig-strings.c:60
+msgid "Should GDM print authentication errors in the greeter"
+msgstr ""
 
-#: gui/gdmconfig-strings.c:67
+#: gui/gdmconfig-strings.c:61
 msgid "Authentication errors should be verbose"
 msgstr "Errores de autentificación deben ser mostrados con detalle"
 
+#: gui/gdmconfig-strings.c:62
+#, fuzzy
+msgid "Select how relaxed permissions are"
+msgstr "Relajar permisos"
+
+#: gui/gdmconfig-strings.c:63
+#, fuzzy
+msgid "Permissions: "
+msgstr "Relajar permisos"
+
+#: gui/gdmconfig-strings.c:64
+msgid "Allow world writable files and directories"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:65
+msgid "World writable"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:66
+msgid "Allow group writable files and directories"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:67
+msgid "Group writable"
+msgstr ""
+
 #: gui/gdmconfig-strings.c:68
+msgid "Only accept user owned files and directories"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:69
+msgid "Paranoia"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:70
 msgid "Authorization Details"
 msgstr "Detalles de Autorización"
 
-#: gui/gdmconfig-strings.c:69
+#: gui/gdmconfig-strings.c:71
 msgid "GDM runs as this user: "
 msgstr "GDM se ejecuta como este usuario: "
 
-#: gui/gdmconfig-strings.c:70
+#: gui/gdmconfig-strings.c:72
 msgid "User 'auth' directory: "
 msgstr "Directorio de autentificación de usuario: "
 
-#: gui/gdmconfig-strings.c:71
+#: gui/gdmconfig-strings.c:73
 msgid "User 'auth' FB directory: "
 msgstr "Usar directorio de autentificación FB: "
 
-#: gui/gdmconfig-strings.c:72
+#: gui/gdmconfig-strings.c:74
 msgid "User 'auth' file: "
 msgstr "Fichero de autentificación de usuario: "
 
-#: gui/gdmconfig-strings.c:73
+#: gui/gdmconfig-strings.c:75
 msgid "GDM runs as this group: "
 msgstr "GDM se ejecuta como este grupo: "
 
-#: gui/gdmconfig-strings.c:74
+#: gui/gdmconfig-strings.c:76
 msgid "Limits"
 msgstr "Límites"
 
-#: gui/gdmconfig-strings.c:75
+#: gui/gdmconfig-strings.c:77
 msgid "Retry delay: "
 msgstr "Retardo de reintento: "
 
-#: gui/gdmconfig-strings.c:76
+#: gui/gdmconfig-strings.c:78
 msgid "Maximum user file length: "
 msgstr "Longitud máxima del fichro de usuarios: "
 
-#: gui/gdmconfig-strings.c:78
+#: gui/gdmconfig-strings.c:79
+msgid "Security"
+msgstr "Seguridad"
+
+#: gui/gdmconfig-strings.c:80
 msgid "Enable XDMCP"
 msgstr "Activar XDMCP"
 
-#: gui/gdmconfig-strings.c:79
+#: gui/gdmconfig-strings.c:81
 msgid "Connection Settings"
 msgstr "Opciones de Conexión"
 
-#: gui/gdmconfig-strings.c:80
+#: gui/gdmconfig-strings.c:82
 msgid "Honour indirect requests"
 msgstr "Honrar peticiones indirectas"
 
-#: gui/gdmconfig-strings.c:81
+#: gui/gdmconfig-strings.c:83
 msgid "Maximum indirect wait time: "
 msgstr "Tiempo máximo de espera indirecta: "
 
-#: gui/gdmconfig-strings.c:82
+#: gui/gdmconfig-strings.c:84
 msgid "Maximum wait time: "
 msgstr "Tiempo máximo de espera: "
 
-#: gui/gdmconfig-strings.c:83
+#: gui/gdmconfig-strings.c:85
 msgid "Maximum remote sessions: "
 msgstr "Sesiones remotas máximas: "
 
-#: gui/gdmconfig-strings.c:84
+#: gui/gdmconfig-strings.c:86
 msgid "Max pending indirect requests: "
 msgstr "Peticiones indirectas pendientes máximas: "
 
-#: gui/gdmconfig-strings.c:85
+#: gui/gdmconfig-strings.c:87
 msgid "Maximum pending requests: "
 msgstr "Peticiones pendientes máximas: "
 
-#: gui/gdmconfig-strings.c:86
+#: gui/gdmconfig-strings.c:88
 msgid "Listen on UDP port: "
 msgstr "Escuchar en el puerto UDP: "
 
-#: gui/gdmconfig-strings.c:88
+#: gui/gdmconfig-strings.c:89
+msgid "XDMCP"
+msgstr "XDMCP"
+
+#: gui/gdmconfig-strings.c:90
 msgid "Server Definitions"
 msgstr "Definiciones del Servidor"
 
-#: gui/gdmconfig-strings.c:89
+#: gui/gdmconfig-strings.c:91
 msgid "No."
 msgstr "No."
 
-#: gui/gdmconfig-strings.c:90
+#: gui/gdmconfig-strings.c:92
 msgid "Path to X server"
 msgstr "Camino al servidor X"
 
-#: gui/gdmconfig-strings.c:91
+#: gui/gdmconfig-strings.c:93
 msgid "Add Server"
 msgstr "Añadir servidor"
 
-#: gui/gdmconfig-strings.c:92
+#: gui/gdmconfig-strings.c:94
 msgid "Edit Server"
 msgstr "Editar servidor"
 
-#: gui/gdmconfig-strings.c:93
+#: gui/gdmconfig-strings.c:95
 msgid "Delete Server"
 msgstr "Borrar servidor"
 
-#: gui/gdmconfig-strings.c:94
+#: gui/gdmconfig-strings.c:96
 msgid "Debugging"
 msgstr "Depuración"
 
-#: gui/gdmconfig-strings.c:95
+#: gui/gdmconfig-strings.c:97
 msgid "Enable debugging output"
 msgstr "Activar mensajes de depuración"
 
-#: gui/gdmconfig-strings.c:96
+#: gui/gdmconfig-strings.c:98
 msgid "X-server setup"
 msgstr "Configuración del servidor X"
 
-#: gui/gdmconfig-strings.c:97
+#: gui/gdmconfig-strings.c:99
 msgid "system_setup"
 msgstr "system_setup"
 
-#: gui/gdmconfig-strings.c:98
+#: gui/gdmconfig-strings.c:100
 msgid "Executables"
 msgstr "Ejecutables"
 
-#: gui/gdmconfig-strings.c:99
+#: gui/gdmconfig-strings.c:101
 msgid "Chooser command: "
 msgstr "Comando del Selector"
 
-#: gui/gdmconfig-strings.c:100
+#: gui/gdmconfig-strings.c:102
 msgid "Greeter command: "
 msgstr "Comando del Saludador"
 
-#: gui/gdmconfig-strings.c:101
+#: gui/gdmconfig-strings.c:103
 msgid "Halt command: "
 msgstr "Comando para apagar el equipo: "
 
-#: gui/gdmconfig-strings.c:102
+#: gui/gdmconfig-strings.c:104
 msgid "Reboot command: "
 msgstr "Comando para reiniciar el equipo: "
 
-#: gui/gdmconfig-strings.c:103
+#: gui/gdmconfig-strings.c:105
 msgid "Directories"
 msgstr "Directorios"
 
-#: gui/gdmconfig-strings.c:104
+#: gui/gdmconfig-strings.c:106
 msgid "Session directory: "
 msgstr "Directorio de sesiones: "
 
-#: gui/gdmconfig-strings.c:105
+#: gui/gdmconfig-strings.c:107
 msgid "PRE session scripts directory: "
 msgstr "Directorio de los scripts de PRE sesión: "
 
-#: gui/gdmconfig-strings.c:106
+#: gui/gdmconfig-strings.c:108
 msgid "POST session scripts directory: "
 msgstr "Directorio de los scripts de POST sesión: "
 
-#: gui/gdmconfig-strings.c:107
+#: gui/gdmconfig-strings.c:109
 msgid "Logging directory: "
 msgstr "Directorio de bitácora: "
 
-#: gui/gdmconfig-strings.c:108
+#: gui/gdmconfig-strings.c:110
 msgid "Display initialization directory: "
 msgstr "Directorio de inicialización de display: "
 
-#: gui/gdmconfig-strings.c:109 gui/gdmconfig-strings.c:112
+#: gui/gdmconfig-strings.c:111 gui/gdmconfig-strings.c:114
 msgid "Miscelleaneous"
-msgstr "Misceláneas"
+msgstr "Misceláneo"
 
-#: gui/gdmconfig-strings.c:110
+#: gui/gdmconfig-strings.c:112
 msgid "PID file: "
 msgstr "Archivo PID: "
 
-#: gui/gdmconfig-strings.c:111
+#: gui/gdmconfig-strings.c:113
 msgid "Paths"
 msgstr "Caminos"
 
-#: gui/gdmconfig-strings.c:113
+#: gui/gdmconfig-strings.c:115
 msgid "Default $PATH: "
 msgstr "$PATH por omisión: "
 
-#: gui/gdmconfig-strings.c:114
+#: gui/gdmconfig-strings.c:116
 msgid "Root $PATH: "
 msgstr "$PATH de root: "
 
-#: gui/gdmconfig-strings.c:115
+#: gui/gdmconfig-strings.c:117
 msgid "Localization"
 msgstr "Localización"
 
-#: gui/gdmconfig-strings.c:117
+#: gui/gdmconfig-strings.c:119
 msgid "Locale file: "
 msgstr "Fichero de locale: "
 
-#: gui/gdmconfig-strings.c:118
+#: gui/gdmconfig-strings.c:120
 msgid "Environment"
 msgstr "Entorno"
 
-#: gui/gdmconfig-strings.c:119
+#: gui/gdmconfig-strings.c:121
 msgid "Appearance"
 msgstr "Apariencia"
 
-#: gui/gdmconfig-strings.c:120
+#: gui/gdmconfig-strings.c:122
 msgid "Directory for host images: "
 msgstr "Directorio para imagenes de anfitrión: "
 
-#: gui/gdmconfig-strings.c:121
+#: gui/gdmconfig-strings.c:123
 msgid "Default host image:"
-msgstr "Imagen por omosión de anfitrión"
+msgstr "Imagen de anfitrión por omisión"
 
-#: gui/gdmconfig-strings.c:122
+#: gui/gdmconfig-strings.c:124
 msgid "Refresh"
 msgstr "Refrescar"
 
-#: gui/gdmconfig-strings.c:123
+#: gui/gdmconfig-strings.c:125
 msgid "Scan every 'x' seconds: "
 msgstr "Leer cada 'x' segundos: "
 
-#: gui/gdmconfig-strings.c:125
+#: gui/gdmconfig-strings.c:126
+msgid "Chooser"
+msgstr "Selector"
+
+#: gui/gdmconfig-strings.c:127
 msgid "(C) 2001 Lee Mallabone"
 msgstr "© 2001 Lee Mallabone"
 
-#: gui/gdmconfig-strings.c:126
+#: gui/gdmconfig-strings.c:128
 msgid ""
 "Configure the GNOME Display Manager.\n"
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
 "under the `gdm' product."
 msgstr ""
+"Configurar el Controlador de Display de GNOMEPor favor informe de cualquier "
+"error o petición futura en http://bugzilla.gnome.org bajo el producto 'gdm'."
+
+#~ msgid "Connect"
+#~ msgstr "Conectar"
+
+#~ msgid "Rescan"
+#~ msgstr "Explorar de nuevo"
+
+#~ msgid "Cancel"
+#~ msgstr "Cancelar"
+
+#~ msgid "GDM"
+#~ msgstr "GDM"
+
+#~ msgid "User Interface"
+#~ msgstr "Interfaz del usuario"
+
+#~ msgid "Greeter"
+#~ msgstr "Saludador"
+
+#~ msgid "Servers"
+#~ msgstr "Servidores"
 
 #~ msgid "Welcome to %n"
 #~ msgstr "Bienvenido a %n"
