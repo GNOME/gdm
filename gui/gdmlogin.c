@@ -125,8 +125,8 @@ static GSList *languages = NULL;
 static GList *users = NULL;
 
 static gchar *defsess = NULL;
-static gchar *cursess = NULL;
-static gchar *curlang = NULL;
+static const gchar *cursess = NULL;
+static const gchar *curlang = NULL;
 static gchar *curuser = NULL;
 static gchar *session = NULL;
 static gchar *language = NULL;
@@ -1020,7 +1020,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    /* If "Last" is chosen run Default,
 	     * else run user's current selection */
 	    g_free (session);
-	    if (strcmp (cursess, LAST_SESSION) == 0)
+	    if (cursess == NULL || strcmp (cursess, LAST_SESSION) == 0)
 		    session = g_strdup (defsess);
 	    else
 		    session = g_strdup (cursess);
@@ -1030,7 +1030,8 @@ gdm_login_session_lookup (const gchar* savedsess)
     }
 
     /* If "Last" session is selected */
-    if (strcmp (cursess, LAST_SESSION) == 0) { 
+    if (cursess == NULL ||
+	strcmp (cursess, LAST_SESSION) == 0) { 
 	g_free (session);
 	session = g_strdup (savedsess);
 
@@ -1082,13 +1083,13 @@ gdm_login_language_lookup (const gchar* savedlang)
     gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
 
     /* Previously saved language not found in ~user/.gnome/gdm */
-    if (savedlang == NULL ||
-	savedlang[0] == '\0') {
+    if (gdm_string_empty (savedlang)) {
 	/* If "Last" is chosen use Default, which is the current language,
 	 * or the GdmDefaultLocale if that's not set or is "C"
 	 * else use current selection */
 	g_free (language);
-	if (strcmp (curlang, LAST_LANGUAGE) == 0) {
+	if (curlang == NULL ||
+	    strcmp (curlang, LAST_LANGUAGE) == 0) {
 		char *lang = g_getenv ("LANG");
 		if (lang == NULL ||
 		    lang[0] == '\0' ||
@@ -1101,12 +1102,17 @@ gdm_login_language_lookup (const gchar* savedlang)
 		language = g_strdup (curlang);
 	}
 
+	if (gdm_string_empty (language)) {
+		g_free (language);
+		language = g_strdup ("C");
+	}
+
 	savelang = TRUE;
 	return;
     }
 
     /* If a different language is selected */
-    if (strcmp (curlang, LAST_LANGUAGE) != 0) {
+    if (curlang != NULL && strcmp (curlang, LAST_LANGUAGE) != 0) {
         g_free (language);
 	language = g_strdup (curlang);
 
@@ -1399,6 +1405,8 @@ gdm_login_session_init (GtkWidget *menu)
 				    NULL);
 		gtk_widget_show (GTK_WIDGET (item));
 
+		/* if there is a session called Default, use that as default
+		 * if no link has been made */
 		if ( ! got_default_link &&
 		    strcasecmp_no_locale (dent->d_name, "Default") == 0) {
 			g_free (defsess);
@@ -1406,6 +1414,8 @@ gdm_login_session_init (GtkWidget *menu)
 		}	
 
 		if (strcasecmp_no_locale (dent->d_name, "Gnome") == 0) {
+			/* Just in case there is no Default session and
+			 * no default link, make Gnome the default */
 			if (defsess == NULL)
 				defsess = g_strdup (dent->d_name);
 			
@@ -1508,8 +1518,8 @@ gdm_login_session_init (GtkWidget *menu)
     gtk_widget_show (GTK_WIDGET (item));
 
     if (defsess == NULL) {
-	    defsess = gtk_object_get_data (GTK_OBJECT (sessgrp->data), SESSION_NAME);
-	    syslog (LOG_WARNING, _("No default session link found. Using %s.\n"), defsess);
+	    defsess = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
+	    syslog (LOG_WARNING, _("No default session link found. Using Failsafe GNOME.\n"));
     }
 
 }
@@ -3518,8 +3528,7 @@ main (int argc, char *argv[])
     gdm_login_parse_config ();
 
     /* no language set, use the GdmDefaultLocale */
-    if (GdmDefaultLocale != NULL &&
-	GdmDefaultLocale[0] != '\0' &&
+    if ( ! gdm_string_empty (GdmDefaultLocale) &&
 	g_getenv ("LANG") == NULL &&
 	g_getenv ("LC_ALL") == NULL) {
 	    setlocale (LC_ALL, GdmDefaultLocale);

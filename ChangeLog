@@ -1,3 +1,12 @@
+Sat May 12 15:23:50 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c: properly check for NULLs on cursess and curlang.
+	  Never, NEVER make the default session the last session, shit, the
+	  entire point of that would not work, there is no Last session when
+	  you use the default (that's the whole idea:).  Be more anal on the
+	  language stuff as well, avoiding possible cases of crashing and
+	  warnings.
+
 Thu May 10 00:29:06 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c, daemon/gdm.h, gui/gdmconfig.(c|glade): Add setting
