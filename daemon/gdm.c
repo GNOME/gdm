@@ -223,12 +223,12 @@ compare_displays (gconstpointer a, gconstpointer b)
 static void 
 gdm_config_parse (void)
 {
-    gchar *k, *v;
-    void *iter;
     struct passwd *pwent;
     struct group *grent;
     struct stat statbuf;
     gchar *bin;
+    VeConfig *cfg;
+    GList *list, *li;
     
     displays = NULL;
     high_display_num = 0;
@@ -241,43 +241,43 @@ gdm_config_parse (void)
     }
 
     /* Parse configuration options */
-    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+    cfg = ve_config_new (GDM_CONFIG_FILE);
 
-    GdmChooser = gnome_config_get_string (GDM_KEY_CHOOSER);
-    GdmDefaultPath = gnome_config_get_string (GDM_KEY_PATH);
-    GdmDisplayInit = gnome_config_get_string (GDM_KEY_INITDIR);
-    GdmAutomaticLoginEnable = gnome_config_get_bool (GDM_KEY_AUTOMATICLOGIN_ENABLE);
-    GdmAutomaticLogin = gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN);
-    GdmAlwaysRestartServer = gnome_config_get_bool (GDM_KEY_ALWAYSRESTARTSERVER);
-    GdmGreeter = gnome_config_get_string (GDM_KEY_GREETER);
-    GdmRemoteGreeter = gnome_config_get_string (GDM_KEY_REMOTEGREETER);
-    GdmAddGtkModules = gnome_config_get_bool (GDM_KEY_ADD_GTK_MODULES);
-    GdmDoubleLoginWarning = gnome_config_get_bool (GDM_KEY_DOUBLELOGINWARNING);
-    GdmGtkModulesList = gnome_config_get_string (GDM_KEY_GTK_MODULES_LIST);	
-    GdmGroup = gnome_config_get_string (GDM_KEY_GROUP);
-    GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
-    GdmKillInitClients = gnome_config_get_bool (GDM_KEY_KILLIC);
-    GdmLogDir= gnome_config_get_string (GDM_KEY_LOGDIR);
-    GdmPidFile = gnome_config_get_string (GDM_KEY_PIDFILE);
-    GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
-    GdmPostLogin = gnome_config_get_string (GDM_KEY_POSTLOGIN);
-    GdmPreSession = gnome_config_get_string (GDM_KEY_PRESESS);
-    GdmPostSession = gnome_config_get_string (GDM_KEY_POSTSESS);
-    GdmFailsafeXServer = gnome_config_get_string (GDM_KEY_FAILSAFE_XSERVER);
-    GdmXKeepsCrashing = gnome_config_get_string (GDM_KEY_XKEEPSCRASHING);
-    GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
-    GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
-    GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
-    GdmChooserButton = gnome_config_get_bool (GDM_KEY_CHOOSER_BUTTON);
-    GdmBrowser = gnome_config_get_bool (GDM_KEY_BROWSER);
-    GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
-    GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
-    GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
-    GdmRetryDelay = gnome_config_get_int (GDM_KEY_RETRYDELAY);
-    GdmRootPath = gnome_config_get_string (GDM_KEY_ROOTPATH);
-    GdmServAuthDir = gnome_config_get_string (GDM_KEY_SERVAUTH);
-    GdmSessDir = gnome_config_get_string (GDM_KEY_SESSDIR);
-    GdmXsession = gnome_config_get_string (GDM_KEY_BASEXSESSION);
+    GdmChooser = ve_config_get_string (cfg, GDM_KEY_CHOOSER);
+    GdmDefaultPath = ve_config_get_string (cfg, GDM_KEY_PATH);
+    GdmDisplayInit = ve_config_get_string (cfg, GDM_KEY_INITDIR);
+    GdmAutomaticLoginEnable = ve_config_get_bool (cfg, GDM_KEY_AUTOMATICLOGIN_ENABLE);
+    GdmAutomaticLogin = ve_config_get_string (cfg, GDM_KEY_AUTOMATICLOGIN);
+    GdmAlwaysRestartServer = ve_config_get_bool (cfg, GDM_KEY_ALWAYSRESTARTSERVER);
+    GdmGreeter = ve_config_get_string (cfg, GDM_KEY_GREETER);
+    GdmRemoteGreeter = ve_config_get_string (cfg, GDM_KEY_REMOTEGREETER);
+    GdmAddGtkModules = ve_config_get_bool (cfg, GDM_KEY_ADD_GTK_MODULES);
+    GdmDoubleLoginWarning = ve_config_get_bool (cfg, GDM_KEY_DOUBLELOGINWARNING);
+    GdmGtkModulesList = ve_config_get_string (cfg, GDM_KEY_GTK_MODULES_LIST);	
+    GdmGroup = ve_config_get_string (cfg, GDM_KEY_GROUP);
+    GdmHalt = ve_config_get_string (cfg, GDM_KEY_HALT);
+    GdmKillInitClients = ve_config_get_bool (cfg, GDM_KEY_KILLIC);
+    GdmLogDir= ve_config_get_string (cfg, GDM_KEY_LOGDIR);
+    GdmPidFile = ve_config_get_string (cfg, GDM_KEY_PIDFILE);
+    GdmSessionDir = ve_config_get_string (cfg, GDM_KEY_SESSDIR);
+    GdmPostLogin = ve_config_get_string (cfg, GDM_KEY_POSTLOGIN);
+    GdmPreSession = ve_config_get_string (cfg, GDM_KEY_PRESESS);
+    GdmPostSession = ve_config_get_string (cfg, GDM_KEY_POSTSESS);
+    GdmFailsafeXServer = ve_config_get_string (cfg, GDM_KEY_FAILSAFE_XSERVER);
+    GdmXKeepsCrashing = ve_config_get_string (cfg, GDM_KEY_XKEEPSCRASHING);
+    GdmConfigurator = ve_config_get_string (cfg, GDM_KEY_CONFIGURATOR);
+    GdmConfigAvailable = ve_config_get_bool (cfg, GDM_KEY_CONFIG_AVAILABLE);
+    GdmSystemMenu = ve_config_get_bool (cfg, GDM_KEY_SYSMENU);
+    GdmChooserButton = ve_config_get_bool (cfg, GDM_KEY_CHOOSER_BUTTON);
+    GdmBrowser = ve_config_get_bool (cfg, GDM_KEY_BROWSER);
+    GdmGlobalFaceDir = ve_config_get_string (cfg, GDM_KEY_FACEDIR);
+    GdmXineramaScreen = ve_config_get_int (cfg, GDM_KEY_XINERAMASCREEN);
+    GdmReboot = ve_config_get_string (cfg, GDM_KEY_REBOOT);
+    GdmRetryDelay = ve_config_get_int (cfg, GDM_KEY_RETRYDELAY);
+    GdmRootPath = ve_config_get_string (cfg, GDM_KEY_ROOTPATH);
+    GdmServAuthDir = ve_config_get_string (cfg, GDM_KEY_SERVAUTH);
+    GdmSessDir = ve_config_get_string (cfg, GDM_KEY_SESSDIR);
+    GdmXsession = ve_config_get_string (cfg, GDM_KEY_BASEXSESSION);
     if (ve_string_empty (GdmXsession)) {
 	    gdm_info (_("%s: BaseXsession empty, using %s/gdm/Xsession"),
 			"gdm_config_parse",
@@ -286,41 +286,41 @@ gdm_config_parse (void)
 	    GdmXsession = g_strconcat (EXPANDED_SYSCONFDIR, "/gdm/Xsession",
 				       NULL);
     }
-    GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
-    GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
+    GdmSuspend = ve_config_get_string (cfg, GDM_KEY_SUSPEND);
+    GdmLocaleFile = ve_config_get_string (cfg, GDM_KEY_LOCFILE);
 #if 0
 /* FIXME: Maybe just whack this */
-    GdmGnomeDefaultSession = gnome_config_get_string (GDM_KEY_GNOMEDEFAULTSESSION);
+    GdmGnomeDefaultSession = ve_config_get_string (cfg, GDM_KEY_GNOMEDEFAULTSESSION);
 #endif
-    GdmUser = gnome_config_get_string (GDM_KEY_USER);
-    GdmUserAuthDir = gnome_config_get_string (GDM_KEY_UAUTHDIR);
-    GdmUserAuthFile = gnome_config_get_string (GDM_KEY_UAUTHFILE);
-    GdmUserAuthFB = gnome_config_get_string (GDM_KEY_UAUTHFB);
+    GdmUser = ve_config_get_string (cfg, GDM_KEY_USER);
+    GdmUserAuthDir = ve_config_get_string (cfg, GDM_KEY_UAUTHDIR);
+    GdmUserAuthFile = ve_config_get_string (cfg, GDM_KEY_UAUTHFILE);
+    GdmUserAuthFB = ve_config_get_string (cfg, GDM_KEY_UAUTHFB);
 
-    GdmTimedLoginEnable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
-    GdmTimedLogin = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
-    GdmTimedLoginDelay = gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+    GdmTimedLoginEnable = ve_config_get_bool (cfg, GDM_KEY_TIMED_LOGIN_ENABLE);
+    GdmTimedLogin = ve_config_get_string (cfg, GDM_KEY_TIMED_LOGIN);
+    GdmTimedLoginDelay = ve_config_get_int (cfg, GDM_KEY_TIMED_LOGIN_DELAY);
 
-    GdmAllowRoot = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
-    GdmAllowRemoteRoot = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEROOT);
-    GdmAllowRemoteAutoLogin = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEAUTOLOGIN);
-    GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
-    GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
-    GdmSessionMaxFile = gnome_config_get_int (GDM_KEY_SESSIONMAXFILE);
+    GdmAllowRoot = ve_config_get_bool (cfg, GDM_KEY_ALLOWROOT);
+    GdmAllowRemoteRoot = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEROOT);
+    GdmAllowRemoteAutoLogin = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEAUTOLOGIN);
+    GdmRelaxPerms = ve_config_get_int (cfg, GDM_KEY_RELAXPERM);
+    GdmUserMaxFile = ve_config_get_int (cfg, GDM_KEY_MAXFILE);
+    GdmSessionMaxFile = ve_config_get_int (cfg, GDM_KEY_SESSIONMAXFILE);
 
-    GdmXdmcp = gnome_config_get_bool (GDM_KEY_XDMCP);
-    GdmDispPerHost = gnome_config_get_int (GDM_KEY_DISPERHOST);
-    GdmMaxPending = gnome_config_get_int (GDM_KEY_MAXPEND);
-    GdmMaxManageWait = gnome_config_get_int (GDM_KEY_MAXWAIT);
-    GdmMaxSessions = gnome_config_get_int (GDM_KEY_MAXSESS);
-    GdmPort = gnome_config_get_int (GDM_KEY_UDPPORT);
-    GdmIndirect = gnome_config_get_bool (GDM_KEY_INDIRECT);
-    GdmMaxIndirect = gnome_config_get_int (GDM_KEY_MAXINDIR);
-    GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);    
-    GdmPingInterval = gnome_config_get_int (GDM_KEY_PINGINTERVAL);    
-    GdmWilling = gnome_config_get_string (GDM_KEY_WILLING);    
+    GdmXdmcp = ve_config_get_bool (cfg, GDM_KEY_XDMCP);
+    GdmDispPerHost = ve_config_get_int (cfg, GDM_KEY_DISPERHOST);
+    GdmMaxPending = ve_config_get_int (cfg, GDM_KEY_MAXPEND);
+    GdmMaxManageWait = ve_config_get_int (cfg, GDM_KEY_MAXWAIT);
+    GdmMaxSessions = ve_config_get_int (cfg, GDM_KEY_MAXSESS);
+    GdmPort = ve_config_get_int (cfg, GDM_KEY_UDPPORT);
+    GdmIndirect = ve_config_get_bool (cfg, GDM_KEY_INDIRECT);
+    GdmMaxIndirect = ve_config_get_int (cfg, GDM_KEY_MAXINDIR);
+    GdmMaxIndirectWait = ve_config_get_int (cfg, GDM_KEY_MAXINDWAIT);    
+    GdmPingInterval = ve_config_get_int (cfg, GDM_KEY_PINGINTERVAL);    
+    GdmWilling = ve_config_get_string (cfg, GDM_KEY_WILLING);    
 
-    GdmStandardXServer = gnome_config_get_string (GDM_KEY_STANDARD_XSERVER);    
+    GdmStandardXServer = ve_config_get_string (cfg, GDM_KEY_STANDARD_XSERVER);    
     if (ve_string_empty (GdmStandardXServer) ||
 	access (GdmStandardXServer, X_OK) != 0) {
 	    gdm_info (_("%s: Standard X server not found, trying alternatives"),
@@ -336,18 +336,16 @@ gdm_config_parse (void)
 		    GdmStandardXServer = g_strdup ("/usr/bin/X11/X");
 	    }
     }
-    GdmFlexibleXServers = gnome_config_get_int (GDM_KEY_FLEXIBLE_XSERVERS);    
-    GdmXnest = gnome_config_get_string (GDM_KEY_XNEST);    
+    GdmFlexibleXServers = ve_config_get_int (cfg, GDM_KEY_FLEXIBLE_XSERVERS);    
+    GdmXnest = ve_config_get_string (cfg, GDM_KEY_XNEST);    
     if (ve_string_empty (GdmXnest))
 	    GdmXnest = NULL;
 
-    GdmFirstVT = gnome_config_get_int (GDM_KEY_FIRSTVT);    
-    GdmVTAllocation = gnome_config_get_bool (GDM_KEY_VTALLOCATION);    
-    GdmDisallowTCP = gnome_config_get_bool (GDM_KEY_DISALLOWTCP);    
+    GdmFirstVT = ve_config_get_int (cfg, GDM_KEY_FIRSTVT);    
+    GdmVTAllocation = ve_config_get_bool (cfg, GDM_KEY_VTALLOCATION);    
+    GdmDisallowTCP = ve_config_get_bool (cfg, GDM_KEY_DISALLOWTCP);    
 
-    GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
-
-    gnome_config_pop_prefix();
+    GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
 
     /* sanitize some values */
 
@@ -415,29 +413,26 @@ gdm_config_parse (void)
 	gdm_error (_("%s: No sessions directory specified."), "gdm_config_parse");
 
     /* Find server definitions */
-    iter = gnome_config_init_iterator_sections ("=" GDM_CONFIG_FILE "=/");
-    iter = gnome_config_iterator_next (iter, &k, NULL);
-    
-    while (iter) {
-	    if (strncmp (k, "server-", strlen ("server-")) == 0) {
-		    char *section;
+    list = ve_config_get_sections (cfg);
+    for (li = list; li != NULL; li = li->next) {
+	    const char *sec = li->data;
+	    if (strncmp (sec, "server-", strlen ("server-")) == 0) {
 		    GdmXServer *svr = g_new0 (GdmXServer, 1);
+		    char buf[256];
 
-		    section = g_strdup_printf ("=" GDM_CONFIG_FILE "=/%s/", k);
-		    gnome_config_push_prefix (section);
-
-		    svr->id = g_strdup (k + strlen ("server-"));
-		    svr->name = gnome_config_get_string (GDM_KEY_SERVER_NAME);
-		    svr->command = gnome_config_get_string
-			    (GDM_KEY_SERVER_COMMAND);
-		    svr->flexible = gnome_config_get_bool
-			    (GDM_KEY_SERVER_FLEXIBLE);
-		    svr->choosable = gnome_config_get_bool
-			    (GDM_KEY_SERVER_CHOOSABLE);
-		    svr->handled = gnome_config_get_bool
-			    (GDM_KEY_SERVER_HANDLED);
-		    svr->chooser = gnome_config_get_bool
-			    (GDM_KEY_SERVER_CHOOSER);
+		    svr->id = g_strdup (sec + strlen ("server-"));
+		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_NAME, sec);
+		    svr->name = ve_config_get_string (cfg, buf);
+		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_COMMAND, sec);
+		    svr->command = ve_config_get_string (cfg, buf);
+		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_FLEXIBLE, sec);
+		    svr->flexible = ve_config_get_bool (cfg, buf);
+		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSABLE, sec);
+		    svr->choosable = ve_config_get_bool (cfg, buf);
+		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_HANDLED, sec);
+		    svr->handled = ve_config_get_bool (cfg, buf);
+		    g_snprintf (buf, sizeof (buf), "%s/" GDM_KEY_SERVER_CHOOSER, sec);
+		    svr->chooser = ve_config_get_bool (cfg, buf);
 
 		    if (ve_string_empty (svr->command)) {
 			    gdm_error (_("%s: Empty server command, "
@@ -447,16 +442,10 @@ gdm_config_parse (void)
 			    svr->command = g_strdup (GdmStandardXServer);
 		    }
 
-		    g_free (section);
-		    gnome_config_pop_prefix ();
-
 		    xservers = g_slist_append (xservers, svr);
 	    }
-
-	    g_free (k);
-
-	    iter = gnome_config_iterator_next (iter, &k, NULL);
     }
+    ve_config_free_list_of_strings (list);
 
     if (xservers == NULL ||
 	gdm_find_x_server (GDM_STANDARD) == NULL) {
@@ -473,30 +462,33 @@ gdm_config_parse (void)
     }
 
     /* Find local X server definitions */
-    iter = gnome_config_init_iterator ("=" GDM_CONFIG_FILE "=/" GDM_KEY_SERVERS);
-    iter = gnome_config_iterator_next (iter, &k, &v);
-    
-    while (iter) {
-	    if (isdigit (*k)) {
-		    int disp_num = atoi (k);
+    list = ve_config_get_keys (cfg, GDM_KEY_SERVERS);
+    for (li = list; li != NULL; li = li->next) {
+	    const char *key = li->data;
+	    if (isdigit (*key)) {
+		    char *full;
+		    char *val;
+		    int disp_num = atoi (key);
 		    GdmDisplay *disp;
 
 		    while (display_exists (disp_num)) {
 			    disp_num++;
 		    }
 
-		    if (disp_num != atoi (k)) {
+		    if (disp_num != atoi (key)) {
 			    gdm_error (_("%s: Display number %d in use!  I will use %d"),
-				       "gdm_config_parse", atoi (k), disp_num);
+				       "gdm_config_parse", atoi (key), disp_num);
 		    }
 
-		    disp = gdm_server_alloc (disp_num, v);
-		    if (disp == NULL) {
-			    g_free (k);
-			    g_free (v);
-			    iter = gnome_config_iterator_next (iter, &k, &v);
+		    full = g_strdup_printf ("%s/%s", GDM_KEY_SERVERS, key);
+		    val = ve_config_get_string (cfg, full);
+		    g_free (full);
+
+		    disp = gdm_server_alloc (disp_num, val);
+		    g_free (val);
+
+		    if (disp == NULL)
 			    continue;
-		    }
 		    displays = g_slist_insert_sorted (displays,
 						      disp,
 						      compare_displays);
@@ -505,11 +497,8 @@ gdm_config_parse (void)
 	    } else {
 		    gdm_info (_("%s: Invalid server line in config file. Ignoring!"), "gdm_config_parse");
 	    }
-	    g_free (k);
-	    g_free (v);
-
-	    iter = gnome_config_iterator_next (iter, &k, &v);
     }
+    ve_config_free_list_of_strings (list);
 
     if (displays == NULL && ! GdmXdmcp) {
 	    char *server = NULL;
@@ -722,6 +711,8 @@ gdm_config_parse (void)
 
     /* Check that user authentication is properly configured */
     gdm_verify_check ();
+
+    ve_config_destroy (cfg);
 }
 
 /* If id == NULL, then get the first X server */
@@ -946,19 +937,19 @@ deal_with_x_crashes (GdmDisplay *d)
 
 		    /* unset DISPLAY and XAUTHORITY if they exist
 		     * so that gdialog (if used) doesn't get confused */
-		    gnome_unsetenv ("DISPLAY");
-		    gnome_unsetenv ("XAUTHORITY");
+		    ve_unsetenv ("DISPLAY");
+		    ve_unsetenv ("XAUTHORITY");
 
 		    /* some promised variables */
-		    gnome_setenv ("XLOG", xlog, TRUE);
-		    gnome_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
-		    gnome_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
-		    gnome_setenv ("LIBEXECDIR", EXPANDED_LIBEXECDIR, TRUE);
-		    gnome_setenv ("SYSCONFDIR", EXPANDED_SYSCONFDIR, TRUE);
+		    ve_setenv ("XLOG", xlog, TRUE);
+		    ve_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
+		    ve_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
+		    ve_setenv ("LIBEXECDIR", EXPANDED_LIBEXECDIR, TRUE);
+		    ve_setenv ("SYSCONFDIR", EXPANDED_SYSCONFDIR, TRUE);
 
 		    /* To enable gettext stuff in the script */
-		    gnome_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
-		    gnome_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
+		    ve_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
+		    ve_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
 		    execv (argv[0], argv);
 	
@@ -1376,7 +1367,7 @@ gdm_restart_now (void)
 	gdm_info (_("GDM restarting ..."));
 	gdm_final_cleanup ();
 	if (stored_path != NULL)
-		gnome_setenv ("PATH", stored_path, TRUE);
+		ve_setenv ("PATH", stored_path, TRUE);
 	execvp (stored_argv[0], stored_argv);
 	gdm_error (_("Failed to restart self"));
 	_exit (1);
@@ -2653,6 +2644,8 @@ static gboolean
 update_config (const char *key)
 {
 	struct stat statbuf;
+	VeConfig *cfg;
+
 	if (stat (GDM_CONFIG_FILE, &statbuf) == -1) {
 		/* if the file didn't exist before either */
 		if (config_file_mtime == 0)
@@ -2664,10 +2657,10 @@ update_config (const char *key)
 		config_file_mtime = statbuf.st_mtime;
 	}
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	cfg = ve_config_new (GDM_CONFIG_FILE);
 
 	if (is_key (key, GDM_KEY_ALLOWROOT)) {
-		gboolean val = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
+		gboolean val = ve_config_get_bool (cfg, GDM_KEY_ALLOWROOT);
 		if (ve_bool_equal (val, GdmAllowRoot))
 			goto update_config_ok;
 		GdmAllowRoot = val;
@@ -2676,7 +2669,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_ALLOWREMOTEROOT)) {
-		gboolean val = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEROOT);
+		gboolean val = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEROOT);
 		if (ve_bool_equal (val, GdmAllowRemoteRoot))
 			goto update_config_ok;
 		GdmAllowRemoteRoot = val;
@@ -2685,7 +2678,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_ALLOWREMOTEAUTOLOGIN)) {
-		gboolean val = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEAUTOLOGIN);
+		gboolean val = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEAUTOLOGIN);
 		if (ve_bool_equal (val, GdmAllowRemoteAutoLogin))
 			goto update_config_ok;
 		GdmAllowRemoteAutoLogin = val;
@@ -2694,7 +2687,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_SYSMENU)) {
-		gboolean val = gnome_config_get_bool (GDM_KEY_SYSMENU);
+		gboolean val = ve_config_get_bool (cfg, GDM_KEY_SYSMENU);
 		if (ve_bool_equal (val, GdmSystemMenu))
 			goto update_config_ok;
 		GdmSystemMenu = val;
@@ -2703,7 +2696,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_CONFIG_AVAILABLE)) {
-		gboolean val = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
+		gboolean val = ve_config_get_bool (cfg, GDM_KEY_CONFIG_AVAILABLE);
 		if (ve_bool_equal (val, GdmConfigAvailable))
 			goto update_config_ok;
 		GdmConfigAvailable = val;
@@ -2712,7 +2705,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_CHOOSER_BUTTON)) {
-		gboolean val = gnome_config_get_bool (GDM_KEY_CHOOSER_BUTTON);
+		gboolean val = ve_config_get_bool (cfg, GDM_KEY_CHOOSER_BUTTON);
 		if (ve_bool_equal (val, GdmChooserButton))
 			goto update_config_ok;
 		GdmChooserButton = val;
@@ -2721,7 +2714,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_RETRYDELAY)) {
-		int val = gnome_config_get_int (GDM_KEY_RETRYDELAY);
+		int val = ve_config_get_int (cfg, GDM_KEY_RETRYDELAY);
 		if (val == GdmRetryDelay)
 			goto update_config_ok;
 		GdmRetryDelay = val;
@@ -2730,7 +2723,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_DISALLOWTCP)) {
-		gboolean val = gnome_config_get_bool (GDM_KEY_DISALLOWTCP);
+		gboolean val = ve_config_get_bool (cfg, GDM_KEY_DISALLOWTCP);
 		if (ve_bool_equal (val, GdmDisallowTCP))
 			goto update_config_ok;
 		GdmDisallowTCP = val;
@@ -2739,7 +2732,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_GREETER)) {
-		char *val = gnome_config_get_string (GDM_KEY_GREETER);
+		char *val = ve_config_get_string (cfg, GDM_KEY_GREETER);
 		if (strcmp (ve_sure_string (val), ve_sure_string (GdmGreeter)) == 0) {
 			g_free (val);
 			goto update_config_ok;
@@ -2751,7 +2744,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_REMOTEGREETER)) {
-		char *val = gnome_config_get_string (GDM_KEY_REMOTEGREETER);
+		char *val = ve_config_get_string (cfg, GDM_KEY_REMOTEGREETER);
 		if (strcmp (ve_sure_string (val), ve_sure_string (GdmRemoteGreeter)) == 0) {
 			g_free (val);
 			goto update_config_ok;
@@ -2764,14 +2757,14 @@ update_config (const char *key)
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_TIMED_LOGIN) ||
 		   is_key (key, GDM_KEY_TIMED_LOGIN_ENABLE)) {
-		gboolean enable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
+		gboolean enable = ve_config_get_bool (cfg, GDM_KEY_TIMED_LOGIN_ENABLE);
 		char *val;
 
 		/* if not enabled, we just don't care */
 		if ( ! enable && ! GdmTimedLoginEnable)
 			goto update_config_ok;
 
-		val = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
+		val = ve_config_get_string (cfg, GDM_KEY_TIMED_LOGIN);
 		if (strcmp (ve_sure_string (val),
 			    ve_sure_string (GdmTimedLogin)) == 0 &&
 		    ve_bool_equal (enable, GdmTimedLoginEnable)) {
@@ -2793,7 +2786,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_TIMED_LOGIN_DELAY)) {
-		int val = gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+		int val = ve_config_get_int (cfg, GDM_KEY_TIMED_LOGIN_DELAY);
 		if (val == GdmTimedLoginDelay)
 			goto update_config_ok;
 		GdmTimedLoginDelay = val;
@@ -2802,7 +2795,7 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, GDM_KEY_XDMCP)) {
-		gboolean val = gnome_config_get_bool (GDM_KEY_XDMCP);
+		gboolean val = ve_config_get_bool (cfg, GDM_KEY_XDMCP);
 		if (ve_bool_equal (val, GdmXdmcp))
 			goto update_config_ok;
 		GdmXdmcp = val;
@@ -2816,16 +2809,16 @@ update_config (const char *key)
 
 		goto update_config_ok;
 	} else if (is_key (key, "xdmcp/PARAMETERS")) {
-		GdmDispPerHost = gnome_config_get_int (GDM_KEY_DISPERHOST);
-		GdmMaxPending = gnome_config_get_int (GDM_KEY_MAXPEND);
-		GdmMaxManageWait = gnome_config_get_int (GDM_KEY_MAXWAIT);
-		GdmMaxSessions = gnome_config_get_int (GDM_KEY_MAXSESS);
-		GdmIndirect = gnome_config_get_bool (GDM_KEY_INDIRECT);
-		GdmMaxIndirect = gnome_config_get_int (GDM_KEY_MAXINDIR);
-		GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);
-		GdmPingInterval = gnome_config_get_int (GDM_KEY_PINGINTERVAL);
+		GdmDispPerHost = ve_config_get_int (cfg, GDM_KEY_DISPERHOST);
+		GdmMaxPending = ve_config_get_int (cfg, GDM_KEY_MAXPEND);
+		GdmMaxManageWait = ve_config_get_int (cfg, GDM_KEY_MAXWAIT);
+		GdmMaxSessions = ve_config_get_int (cfg, GDM_KEY_MAXSESS);
+		GdmIndirect = ve_config_get_bool (cfg, GDM_KEY_INDIRECT);
+		GdmMaxIndirect = ve_config_get_int (cfg, GDM_KEY_MAXINDIR);
+		GdmMaxIndirectWait = ve_config_get_int (cfg, GDM_KEY_MAXINDWAIT);
+		GdmPingInterval = ve_config_get_int (cfg, GDM_KEY_PINGINTERVAL);
 	} else if (is_key (key, GDM_KEY_UDPPORT)) {
-		int val = gnome_config_get_int (GDM_KEY_UDPPORT);
+		int val = ve_config_get_int (cfg, GDM_KEY_UDPPORT);
 		if (GdmPort == val)
 			goto update_config_ok;
 		GdmPort = val;
@@ -2837,12 +2830,12 @@ update_config (const char *key)
 		}
 	}
 
-	gnome_config_pop_prefix ();
+	ve_config_destroy (cfg);
 	return FALSE;
 
 update_config_ok:
 
-	gnome_config_pop_prefix ();
+	ve_config_destroy (cfg);
 	return TRUE;
 }
 

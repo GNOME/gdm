@@ -1,6 +1,8 @@
 ## Process this file with automake to produce makefile.in
 DEFS = @DEFS@ -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\"
 
+# Note that we have cflags for just about everything even if
+# we don't link to everything
 INCLUDES = \
 	-I.						\
 	-I..						\
@@ -12,6 +14,7 @@ INCLUDES = \
 	-I$(top_srcdir)/vicious-extensions		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DLOCALEDIR=\"$(datadir)/locale\"		\
+	$(GUI_CFLAGS)					\
 	$(DAEMON_CFLAGS)				\
 	-DPAM_PREFIX=\"$(PAM_PREFIX)\"			\
 	$(GNOME_INCLUDEDIR)
@@ -65,6 +68,7 @@ gdm_binary_LDADD = \
 	-lXau					\
 	-lX11					\
 	-lXext					\
+	-lpopt					\
 	$(XINERAMA_LIBS)			\
 	$(INTLLIBS)				\
 	-L$(top_builddir)/vicious-extensions	\

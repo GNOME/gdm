@@ -238,12 +238,12 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		gdm_restoreenv ();
 
 		if (display != NULL)
-			gnome_setenv ("DISPLAY", display, TRUE);
+			ve_setenv ("DISPLAY", display, TRUE);
 		if (xauthority != NULL)
-			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
+			ve_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/sh", TRUE);
-		gnome_setenv ("HOME", "/tmp", TRUE);
+		ve_setenv ("SHELL", "/bin/sh", TRUE);
+		ve_setenv ("HOME", "/tmp", TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -383,12 +383,12 @@ gdm_failsafe_question (GdmDisplay *d,
 		gdm_restoreenv ();
 
 		if (display != NULL)
-			gnome_setenv ("DISPLAY", display, TRUE);
+			ve_setenv ("DISPLAY", display, TRUE);
 		if (xauthority != NULL)
-			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
+			ve_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/sh", TRUE);
-		gnome_setenv ("HOME", "/tmp", TRUE);
+		ve_setenv ("SHELL", "/bin/sh", TRUE);
+		ve_setenv ("HOME", "/tmp", TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -528,12 +528,12 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		gdm_restoreenv ();
 
 		if (display != NULL)
-			gnome_setenv ("DISPLAY", display, TRUE);
+			ve_setenv ("DISPLAY", display, TRUE);
 		if (xauthority != NULL)
-			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
+			ve_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/sh", TRUE);
-		gnome_setenv ("HOME", "/tmp", TRUE);
+		ve_setenv ("SHELL", "/bin/sh", TRUE);
+		ve_setenv ("HOME", "/tmp", TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -658,12 +658,12 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 		gdm_restoreenv ();
 
 		if (display != NULL)
-			gnome_setenv ("DISPLAY", display, TRUE);
+			ve_setenv ("DISPLAY", display, TRUE);
 		if (xauthority != NULL)
-			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
+			ve_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
-		gnome_setenv ("SHELL", "/bin/sh", TRUE);
-		gnome_setenv ("HOME", "/tmp", TRUE);
+		ve_setenv ("SHELL", "/bin/sh", TRUE);
+		ve_setenv ("HOME", "/tmp", TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 

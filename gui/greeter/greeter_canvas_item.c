@@ -176,6 +176,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   GtkAllocation rect;
   char *text;
   GtkTooltips *tooltips;
+  char *num_locale;
 
   if (item->item != NULL)
     return;
@@ -219,7 +220,8 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 					NULL);
     break;
   case GREETER_ITEM_TYPE_SVG:
-    gnome_i18n_push_c_numeric_locale ();
+    num_locale = g_strdup (setlocale (LC_NUMERIC, NULL));
+    setlocale (LC_NUMERIC, "C");
     for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
       {
 	if (item->files[i])
@@ -230,7 +232,9 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 	else
 	  item->orig_pixbufs[i] = NULL;
       }
-    gnome_i18n_pop_c_numeric_locale ();
+    setlocale (LC_NUMERIC, num_locale);
+    g_free (num_locale);
+    num_locale = NULL;
 
     /* Fall through */
   case GREETER_ITEM_TYPE_PIXMAP:

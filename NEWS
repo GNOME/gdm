@@ -10,6 +10,11 @@ Ahh news...
 - Fix DNS lookup stuff in XDMCP for places without DNS.  Also cache
   last result of DNS lookup to cut down traffic during session setup.
 
+- daemon, gdmgreeter and gdmlogin don't link against libgnome and
+  friends (gdmgreeter still uses canvas).  This reduces number of
+  libs linked by daemon from 46 to 26, for gdmgreeter this goes
+  from 56 to 32 and for gdmlogin this goes from 52 to 22
+
 - If a greeter crashes within 10 seconds of display start, try
   running a different greeter (and telling the user that)
 
@@ -27,6 +32,11 @@ Ahh news...
 
 - No translatable message contains unneccessary markup now
   (fixes #101794 and #101795)
+
+- gdmsetup .desktop file is now in the SystemSetup category
+  and so goes into System Setup in the menu (#116977)
+
+- Use ve-config (from vicious-extensions) everywhere in the daemon
 
 - Random other minor fixes
 

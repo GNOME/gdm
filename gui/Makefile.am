@@ -84,14 +84,14 @@ gdmchooser_LDADD = \
 gdmlogin_LDADD = \
 	libgdmwm.a		\
 	libgdmlang.a		\
-	$(GUI_LIBS)		\
+	$(GUING_LIBS)		\
 	$(X_LIBS)		\
 	-lX11			\
 	$(XINERAMA_LIBS)	\
 	$(X_EXTRA_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui
+	-lviciousui-minimal
 
 gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
@@ -100,13 +100,13 @@ gdmsetup_LDADD = \
 	-lX11			\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui
+	-lviciousui-gnome
 
 gdmphotosetup_LDADD = \
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui
+	-lviciousui-gnome
 
 gdmXnestchooser_LDADD = \
 	$(GUI_LIBS)		\
@@ -114,14 +114,14 @@ gdmXnestchooser_LDADD = \
 	-lX11			\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui
+	-lviciousui-gnome
 
 gdmflexiserver_LDADD = \
 	$(GUI_LIBS)		\
 	-lXau			\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui
+	-lviciousui-gnome
 
 Settingsdir = $(datadir)/gnome/capplets
 Settings_in_files = gdmphotosetup.desktop.in

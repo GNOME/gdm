@@ -855,7 +855,7 @@ parse_state_text (xmlNodePtr node,
 static gint
 is_current_locale (const char *lang)
 {
-  const GList *l = gnome_i18n_get_language_list ("LC_MESSAGES");
+  const GList *l = ve_i18n_get_language_list ("LC_MESSAGES");
   int score = 0;
   
   while (l != NULL)

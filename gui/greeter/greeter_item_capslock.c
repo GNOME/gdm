@@ -7,6 +7,7 @@
 #include <gdk/gdkx.h>
 #include <X11/XKBlib.h>
 
+#include "vicious.h"
 #include "greeter_parser.h"
 #include "greeter_item_capslock.h"
 
@@ -29,14 +30,14 @@ get_parent_display (void)
       char *old_xauth = g_strdup (g_getenv ("XAUTHORITY"));
       if (g_getenv ("GDM_PARENT_XAUTHORITY") != NULL)
         {
-	  gnome_setenv ("XAUTHORITY",
-			g_getenv ("GDM_PARENT_XAUTHORITY"), TRUE);
+	  ve_setenv ("XAUTHORITY",
+		     g_getenv ("GDM_PARENT_XAUTHORITY"), TRUE);
 	}
       dsp = XOpenDisplay (g_getenv ("GDM_PARENT_DISPLAY"));
       if (old_xauth != NULL)
-        gnome_setenv ("XAUTHORITY", old_xauth, TRUE);
+        ve_setenv ("XAUTHORITY", old_xauth, TRUE);
       else
-        gnome_unsetenv ("XAUTHORITY");
+        ve_unsetenv ("XAUTHORITY");
       g_free (old_xauth);
     }
 

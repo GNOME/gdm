@@ -1,3 +1,24 @@
+Thu Jul 10 17:12:40 2003  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c, daemon/errorgui.c, daemon/gdm.c, daemon/misc.c,
+	  daemon/server.c, daemon/slave.c: use the ve_ versions of the
+	  environment funcs and use ve_config instead of gnome_config,
+	  and thus killing the libgnome dependency.  The ve-config
+	  functions are faster, I trust them more, saner in API and
+	  definately don't leak any memory to children.
+
+	* gui/gdmchooser.c, gui/gdmlogin.c,
+	  gui/greeter/gui/greeter/greeter_canvas_item.c
+	  gui/greeter/greeter_item_capslock.c,
+	  gui/greeter/greeter_parser.c:  Use the ve_ versions of
+	  the environment funcs and ve_config instead of gnome_config,
+	  also the use the ve version of the language list function
+	  and hand implement the LC_NUMERIC locale push.
+
+	* configure.in, daemon/Makefile.am, gui/Makefile.am,
+	  gui/greeter/Makefile.am:  Link against the right ve libs
+	  and don't link to libgnome(ui) / glade where not needed
+
 Thu Jul 10 14:33:59 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.desktop.in: This is a system SETUP tool, not a system

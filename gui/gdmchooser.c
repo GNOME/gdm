@@ -998,31 +998,27 @@ gdm_chooser_warn (const gchar *format, ...)
 static void 
 gdm_chooser_parse_config (void)
 {
-    /* stupid, or is it?
-    struct stat unused;
-    if (stat (GDM_CONFIG_FILE, &unused) == -1)
-	gdm_chooser_abort (_("gdm_chooser_parse_config: No configuration file: %s. Aborting."), GDM_CONFIG_FILE);
-	*/
+    VeConfig *cfg;
 
-    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+    cfg = ve_config_get (GDM_CONFIG_FILE);
 
-    GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
-    GdmGtkRC = gnome_config_get_string (GDM_KEY_GTKRC);
-    GdmScanTime = gnome_config_get_int (GDM_KEY_SCAN);
-    GdmHostDefaultIcon = gnome_config_get_string (GDM_KEY_HOST);
-    GdmHostIconDir = gnome_config_get_string (GDM_KEY_HOSTDIR);
-    GdmIconMaxWidth = gnome_config_get_int (GDM_KEY_ICONWIDTH);
-    GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
-    GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
+    GdmXineramaScreen = ve_config_get_int (cfg, GDM_KEY_XINERAMASCREEN);
+    GdmGtkRC = ve_config_get_string (cfg, GDM_KEY_GTKRC);
+    GdmScanTime = ve_config_get_int (cfg, GDM_KEY_SCAN);
+    GdmHostDefaultIcon = ve_config_get_string (cfg, GDM_KEY_HOST);
+    GdmHostIconDir = ve_config_get_string (cfg, GDM_KEY_HOSTDIR);
+    GdmIconMaxWidth = ve_config_get_int (cfg, GDM_KEY_ICONWIDTH);
+    GdmIconMaxHeight = ve_config_get_int (cfg, GDM_KEY_ICONHEIGHT);
+    GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
 
-    GdmBackgroundColor = gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR);
-    GdmBackgroundType = gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE);
+    GdmBackgroundColor = ve_config_get_string (cfg, GDM_KEY_BACKGROUNDCOLOR);
+    GdmBackgroundType = ve_config_get_int (cfg, GDM_KEY_BACKGROUNDTYPE);
 
-    GdmAllowAdd = gnome_config_get_bool (GDM_KEY_ALLOWADD);
+    GdmAllowAdd = ve_config_get_bool (cfg, GDM_KEY_ALLOWADD);
 
     /* note that command line arguments will prevail over these */
-    GdmHosts = gnome_config_get_string (GDM_KEY_HOSTS);
-    GdmBroadcast = gnome_config_get_bool (GDM_KEY_BROADCAST);
+    GdmHosts = ve_config_get_string (cfg, GDM_KEY_HOSTS);
+    GdmBroadcast = ve_config_get_bool (cfg, GDM_KEY_BROADCAST);
     /* if broadcasting, then append BROADCAST to hosts */
     if (GdmBroadcast) {
 	    if (ve_string_empty (GdmHosts)) {
@@ -1038,8 +1034,6 @@ gdm_chooser_parse_config (void)
     if (GdmScanTime < 1) GdmScanTime = 1;
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
     if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
-
-    gnome_config_pop_prefix();
 }
 
 static GdmChooserHost *

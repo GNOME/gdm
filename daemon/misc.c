@@ -237,7 +237,7 @@ gdm_clearenv_no_lang (void)
 			envs = g_list_prepend (envs, g_strdup (env));
 	}
 
-	gnome_clearenv ();
+	ve_clearenv ();
 
 	for (li = envs; li != NULL; li = li->next) {
 		putenv (li->data);
@@ -262,7 +262,7 @@ gdm_clearenv (void)
 			envs = g_list_prepend (envs, g_strdup (env));
 	}
 
-	gnome_clearenv ();
+	ve_clearenv ();
 
 	for (li = envs; li != NULL; li = li->next) {
 		putenv (li->data);
@@ -294,7 +294,7 @@ gdm_restoreenv (void)
 {
 	GList *li;
 
-	gnome_clearenv ();
+	ve_clearenv ();
 
 	for (li = stored_env; li != NULL; li = li->next) {
 		putenv (g_strdup (li->data));
@@ -583,8 +583,8 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		if (no_display) {
-			gnome_unsetenv ("DISPLAY");
-			gnome_unsetenv ("XAUTHORITY");
+			ve_unsetenv ("DISPLAY");
+			ve_unsetenv ("XAUTHORITY");
 		}
 		
 		execv (argv[0], argv);

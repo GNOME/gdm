@@ -168,7 +168,7 @@ gdm_server_reinit (GdmDisplay *disp)
 		XSetErrorHandler (ignore_xerror_handler);
 		XSetIOErrorHandler (exit_xioerror_handler);
 	       
-		gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+		ve_setenv ("XAUTHORITY", d->authfile, TRUE);
 		dsp = XOpenDisplay (d->name);
 
 		/* Now whack the server with a SIGHUP */
@@ -452,7 +452,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     if ( ! gdm_auth_secure_display (d)) 
 	    return FALSE;
     gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
-    gnome_setenv ("DISPLAY", d->name, TRUE);
+    ve_setenv ("DISPLAY", d->name, TRUE);
 
     if (pipe (server_signal_pipe) != 0) {
 	    gdm_error (_("%s: Error opening a pipe: %s"),
@@ -555,7 +555,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		    /* In case we got a SIGCHLD */
 		    check_child_status ();
 
-		    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+		    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
 		    for (i = 0;
 			 d->dsp == NULL &&
 			 d->servstat == SERVER_STARTED &&
@@ -570,7 +570,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 			    /* In case we got a SIGCHLD */
 			    check_child_status ();
 		    }
-		    gnome_unsetenv ("XAUTHORITY");
+		    ve_unsetenv ("XAUTHORITY");
 		    if (d->dsp == NULL &&
 			/* Note: we could have still gotten a SIGCHLD */
 			d->servstat == SERVER_STARTED) {
@@ -1013,11 +1013,11 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
 	if (d->type == TYPE_FLEXI_XNEST) {
 		char *font_path = NULL;
-		gnome_setenv ("DISPLAY", d->xnest_disp, TRUE);
+		ve_setenv ("DISPLAY", d->xnest_disp, TRUE);
 		if (d->xnest_auth_file != NULL)
-			gnome_setenv ("XAUTHORITY", d->xnest_auth_file, TRUE);
+			ve_setenv ("XAUTHORITY", d->xnest_auth_file, TRUE);
 		else
-			gnome_unsetenv ("XAUTHORITY");
+			ve_unsetenv ("XAUTHORITY");
 
 		/* Add -fp with the current font path, but only if not
 		 * already among the arguments */
@@ -1057,11 +1057,11 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		}
 		if (pwent->pw_dir != NULL &&
 		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
-			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
+			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
-			gnome_setenv ("HOME", "/tmp", TRUE); /* Hack */
-		gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
-		gnome_unsetenv ("MAIL");
+			ve_setenv ("HOME", "/tmp", TRUE); /* Hack */
+		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
+		ve_unsetenv ("MAIL");
 
 		if (setgid (pwent->pw_gid) < 0)  {
 			gdm_error (_("%s: Couldn't set groupid to %d"), 

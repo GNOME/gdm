@@ -14,6 +14,7 @@ INCLUDES = \
 	-DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\" 	\
+	$(GUI_CFLAGS)					\
 	$(GREETER_CFLAGS)
 
 bin_PROGRAMS = \
@@ -58,8 +59,7 @@ gdmgreeter_LDADD = \
 	-lgdmwm			\
 	-lgdmlang		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lvicious		\
-	-lviciousui		\
+	-lviciousui-minimal	\
 	$(X_LIBS)		\
 	-lX11			\
 	$(XINERAMA_LIBS)	\

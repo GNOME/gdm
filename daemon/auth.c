@@ -363,7 +363,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     fclose (af);
     if (af_gdm != NULL)
 	    fclose (af_gdm);
-    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
 
     if (GdmDebug)
 	    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
