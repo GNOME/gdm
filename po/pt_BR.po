@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.0\n"
-"POT-Creation-Date: 2000-07-12 12:40-0300\n"
+"POT-Creation-Date: 2000-10-19 16:32-0200\n"
 "PO-Revision-Date: 1999-09-29 18:28-03:00\n"
 "Last-Translator: Carlos Augusto Horylka <horylka@conectiva.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
@@ -17,21 +17,16 @@ msgid "gdm_config_parse: No configuration file: %s. Aborting."
 msgstr "gdm_config_parse: Nenhum arquivo de configuração: %s. Abortando."
 
 #: daemon/gdm.c:162
-
 msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse: Nenhuma saudação especificada."
 
 #: daemon/gdm.c:165
-
 msgid "gdm_config_parse: No authdir specified."
-msgstr ""
-"gdm_config_parse: Nenhum diretório de autenticação especifcado."
+msgstr "gdm_config_parse: Nenhum diretório de autenticação especifcado."
 
 #: daemon/gdm.c:171
-
 msgid "gdm_config_parse: No sessions directory specified."
-msgstr ""
-"gdm_config_parse: Nenhum diretório de sessão especificado."
+msgstr "gdm_config_parse: Nenhum diretório de sessão especificado."
 
 #: daemon/gdm.c:183
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
@@ -130,16 +125,12 @@ msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: Falha na suspensão: %s"
 
 #: daemon/gdm.c:458
-
 msgid "Only root wants to run gdm\n"
 msgstr "Apenas o root quer rodar o gdm\n"
 
 #: daemon/gdm.c:479
-
 msgid "gdm already running. Aborting!"
 msgstr "O gdm já está rodando. Abortando!"
-
-
 
 #: daemon/gdm.c:500
 msgid "gdm_main: Error setting up TERM signal handler"
@@ -168,6 +159,13 @@ msgstr "gdm_auth_user_add: Não é possível travar (lock) de `cookie' %s"
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr "gdm_auth_user_remove: Ignorando o cookie parecendo muito suspeito %s"
+
+#: daemon/display.c:89
+#, c-format
+msgid "gdm_display_manage: Failed forking gdm slave process for %d"
+msgstr ""
+"gdm_display_manage: Falha na inicialização (fork) de um processo gdm escravo "
+"para %d"
 
 #: daemon/filecheck.c:51
 #, c-format
@@ -216,12 +214,10 @@ msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr "gdm_server_start: Erro ajustando o tratador do sinal USR1"
 
 #: daemon/server.c:103
-
 msgid "gdm_server_start: Error setting up CHLD signal handler"
 msgstr "gdm_server_start: Erro ajustando o tratador do sinal CHLD"
 
 #: daemon/server.c:113
-
 msgid "gdm_server_start: Error setting up ALRM signal handler"
 msgstr "gdm_server_start: Erro ajustando o tratador do sinal ALRM"
 
@@ -232,7 +228,6 @@ msgstr ""
 "gdm_server_spawn: Não foi possível abrir arquivo de registro para mostrar %s!"
 
 #: daemon/server.c:221
-
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Erro ajustando USR1 para SIG_IGN"
 
@@ -242,9 +237,9 @@ msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_servers_spawn: Xserver não encontrado: %s"
 
 #: daemon/server.c:242
-
 msgid "gdm_server_spawn: Can't fork Xserver process!"
-msgstr "gdm_server_spawn: Não foi possível criar um fork para o processo Xserver!"
+msgstr ""
+"gdm_server_spawn: Não foi possível criar um fork para o processo Xserver!"
 
 #: daemon/slave.c:119
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
@@ -285,7 +280,6 @@ msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 
 #: daemon/slave.c:355
-
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -294,10 +288,8 @@ msgstr ""
 "Abortando."
 
 #: daemon/slave.c:379
-
 msgid "gdm_slave_session_start: Error forking user session"
-msgstr ""
-"gdm_slave_session_start: Erro criando um fork na sessão do usuário"
+msgstr "gdm_slave_session_start: Erro criando um fork na sessão do usuário"
 
 #: daemon/slave.c:388
 #, c-format
@@ -335,9 +327,9 @@ msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Falha inicializando: %s"
 
 #: daemon/slave.c:751
-
 msgid "gdm_slave_exec_script: Can't fork script process!"
-msgstr "gdm_slave_exec_script: Não foi possível criar fork com o processo de script!"
+msgstr ""
+"gdm_slave_exec_script: Não foi possível criar fork com o processo de script!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:123 daemon/verify-shadow.c:60
@@ -739,22 +731,17 @@ msgstr "main: Erro ajustando o tratador do sinal INT"
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Erro ajustando o tratador do sinal TERM"
 
-msgid "gdm_display_manage: Failed forking gdm slave process for %d"
-msgstr ""
-"gdm_display_manage: Falha na inicialização (fork) de um processo gdm escravo "
-"para %d"
+#~ msgid ""
+#~ "According to %s, gdm was already running (%d),\n"
+#~ "but seems to have been murdered mysteriously.\n"
+#~ msgstr ""
+#~ "De acordo com %s, o gdm já estava rodando (%d),\n"
+#~ "mas parece que morreu misteriosamente.\n"
 
-msgid ""
-"According to %s, gdm was already running (%d),\n"
-"but seems to have been murdered mysteriously.\n"
-msgstr ""
-"De acordo com %s, o gdm já estava rodando (%d),\n"
-"mas parece que morreu misteriosamente.\n"
+#~ msgid "gdm_server_stop: Could not unlink auth file: %s!"
+#~ msgstr ""
+#~ "gdm_auth_secure_display: Não foi possível desvincular o arquivo de "
+#~ "autorização: %s!"
 
-msgid "gdm_server_stop: Could not unlink auth file: %s!"
-msgstr ""
-"gdm_auth_secure_display: Não foi possível desvincular o arquivo de "
-"autorização: %s!"
-
-msgid "gdm_slave_session_init: User '%s' not found. Aborting."
-msgstr "gdm_slave_session_init: Usuário '%s' não encontrado. Abortando."
+#~ msgid "gdm_slave_session_init: User '%s' not found. Aborting."
+#~ msgstr "gdm_slave_session_init: Usuário '%s' não encontrado. Abortando."
