@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.4.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-06-07 23:30+0200\n"
+"POT-Creation-Date: 2003-06-09 22:39+0200\n"
 "PO-Revision-Date: 2003-06-07 23:30+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
@@ -199,7 +199,7 @@ msgstr ""
 #: daemon/filecheck.c:85
 #, c-format
 msgid "%s: %s does not exist but must exist."
-msgstr "%s : %s n'existe pas mait devrait exister."
+msgstr "%s : %s n'existe pas mais devrait exister."
 
 #: daemon/filecheck.c:93
 #, c-format
@@ -217,7 +217,7 @@ msgstr ""
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
-"%s : %s est plus grand que la taille maximum de fichiers définie par "
+"%s : %s est plus grand que la taille maximale de fichiers définie par "
 "l'administrateur système. Ignore."
 
 #: daemon/gdm-net.c:248
@@ -325,8 +325,8 @@ msgid ""
 "%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
 "configuration!"
 msgstr ""
-"%s : XDMCP désactivé et aucun serveurs locals définis. Ajout de %s sur :%d "
-"pour autoriser la configuration !"
+"%s : XDMCP désactivé et aucun serveur local n'est défini. Ajout de %s sur :%"
+"d pour autoriser la configuration !"
 
 #: daemon/gdm.c:525
 #, c-format
@@ -340,7 +340,8 @@ msgstr ""
 #: daemon/gdm.c:533
 #, c-format
 msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
-msgstr "%s : XDMCP désactivé et pas de serveurs locaux définis. Abandon !"
+msgstr ""
+"%s : XDMCP est désactivé et aucun serveur local n'est défini. Abandon !"
 
 #: daemon/gdm.c:541
 #, c-format
@@ -1101,7 +1102,7 @@ msgid ""
 msgstr ""
 "C'est une session « Gnome de secours ».\n"
 "Vous serez connecté dans la session « Default »\n"
-"de Gnome sans aucun scripts de démarrage\n"
+"de Gnome sans aucun script de démarrage\n"
 "au lancement.  C'est seulement pour régler\n"
 "Les problèmes de votre installation."
 
@@ -1261,7 +1262,7 @@ msgstr "GDM a détecté un arrêt ou un redémarrage en cours."
 #: daemon/slave.c:3154
 #, c-format
 msgid "Ping to %s failed, whacking display!"
-msgstr "ping vers %s a échoué, whacking du visuel !"
+msgstr "Le ping vers %s a échoué, destruction du visuel !"
 
 #. no_shutdown_check
 #: daemon/slave.c:3356
@@ -1293,28 +1294,28 @@ msgstr "%s : l'exécution a échoué : %s"
 msgid "%s: Can't fork script process!"
 msgstr "%s : ne peut cloner le processus script !"
 
-#: daemon/verify-crypt.c:58 daemon/verify-pam.c:621 daemon/verify-shadow.c:59
+#: daemon/verify-crypt.c:58 daemon/verify-pam.c:644 daemon/verify-shadow.c:59
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
 msgstr ""
 "\n"
-"Identifiant ou mot de passe incorrect. Les lettres doivent être saisie en "
+"Identifiant ou mot de passe incorrect. Les lettres doivent être saisies en "
 "respectant la casse."
 
-#: daemon/verify-crypt.c:63 daemon/verify-pam.c:631 daemon/verify-shadow.c:64
+#: daemon/verify-crypt.c:63 daemon/verify-pam.c:654 daemon/verify-shadow.c:64
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Veuillez vous assurer que Verr. Maj est désactivé."
 
 #. Ask for the user's login
-#: daemon/verify-crypt.c:100 daemon/verify-pam.c:155 daemon/verify-shadow.c:99
+#: daemon/verify-crypt.c:100 daemon/verify-pam.c:159 daemon/verify-shadow.c:99
 #: gui/gdmlogin.c:3388
 msgid "Please enter your username"
 msgstr "Veuillez saisir votre identifiant"
 
 #. login: is whacked always translate to Username:
-#: daemon/verify-crypt.c:101 daemon/verify-pam.c:81 daemon/verify-pam.c:82
-#: daemon/verify-pam.c:149 daemon/verify-pam.c:454 daemon/verify-shadow.c:100
+#: daemon/verify-crypt.c:101 daemon/verify-pam.c:85 daemon/verify-pam.c:86
+#: daemon/verify-pam.c:153 daemon/verify-pam.c:459 daemon/verify-shadow.c:100
 #: gui/gdmlogin.c:1282 gui/gdmlogin.c:2641 gui/gdmlogin.c:3346
 #: gui/greeter/greeter.c:258 gui/greeter/greeter_parser.c:984
 #: gui/greeter/themes/circles/circles.xml.in.h:4
@@ -1323,7 +1324,7 @@ msgstr "Veuillez saisir votre identifiant"
 msgid "Username:"
 msgstr "Identifiant :"
 
-#: daemon/verify-crypt.c:125 daemon/verify-pam.c:83 daemon/verify-pam.c:196
+#: daemon/verify-crypt.c:125 daemon/verify-pam.c:87 daemon/verify-pam.c:200
 #: daemon/verify-shadow.c:143
 msgid "Password:"
 msgstr "Mot de passe :"
@@ -1334,7 +1335,7 @@ msgstr "Mot de passe :"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "Ne peut identifier l'utilisateur « %s »"
 
-#: daemon/verify-crypt.c:170 daemon/verify-pam.c:516
+#: daemon/verify-crypt.c:170 daemon/verify-pam.c:539
 #: daemon/verify-shadow.c:188
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1350,7 +1351,7 @@ msgstr ""
 msgid "User %s not allowed to log in"
 msgstr "L'utilisateur %s n'est pas autorisé à se connecter"
 
-#: daemon/verify-crypt.c:190 daemon/verify-pam.c:546 daemon/verify-pam.c:753
+#: daemon/verify-crypt.c:190 daemon/verify-pam.c:569 daemon/verify-pam.c:795
 #: daemon/verify-shadow.c:208
 msgid ""
 "\n"
@@ -1359,15 +1360,15 @@ msgstr ""
 "\n"
 "L'administrateur système a désactivé votre compte."
 
-#: daemon/verify-crypt.c:205 daemon/verify-crypt.c:242 daemon/verify-pam.c:564
-#: daemon/verify-pam.c:770 daemon/verify-shadow.c:222
+#: daemon/verify-crypt.c:205 daemon/verify-crypt.c:242 daemon/verify-pam.c:587
+#: daemon/verify-pam.c:812 daemon/verify-shadow.c:222
 #: daemon/verify-shadow.c:258
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Ne peut définir le groupe d'utilisateur pour %s"
 
-#: daemon/verify-crypt.c:207 daemon/verify-crypt.c:245 daemon/verify-pam.c:566
-#: daemon/verify-pam.c:773 daemon/verify-shadow.c:224
+#: daemon/verify-crypt.c:207 daemon/verify-crypt.c:245 daemon/verify-pam.c:589
+#: daemon/verify-pam.c:815 daemon/verify-shadow.c:224
 #: daemon/verify-shadow.c:261
 msgid ""
 "\n"
@@ -1383,87 +1384,87 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "Ne peut obtenir la structure passwd pour %s"
 
-#: daemon/verify-pam.c:84
+#: daemon/verify-pam.c:88
 msgid "You are required to change your password immediately (password aged)"
 msgstr ""
 "Vous devez changer de mot de passe immédiatement (votre mot de passe est "
 "trop vieux)"
 
-#: daemon/verify-pam.c:85
+#: daemon/verify-pam.c:89
 msgid "You are required to change your password immediately (root enforced)"
 msgstr ""
 "Vous devez changer de mot de passe immédiatement (l'administrateur le "
 "demande)"
 
-#: daemon/verify-pam.c:86
+#: daemon/verify-pam.c:90
 msgid "Your account has expired; please contact your system administrator"
 msgstr ""
 "Votre compte a expiré ; veuillez contacter votre administrateur système"
 
-#: daemon/verify-pam.c:87
+#: daemon/verify-pam.c:91
 msgid "No password supplied"
 msgstr "Aucun mot de passe fournit"
 
-#: daemon/verify-pam.c:88
+#: daemon/verify-pam.c:92
 msgid "Password unchanged"
 msgstr "Mot de passe inchangé"
 
-#: daemon/verify-pam.c:89
+#: daemon/verify-pam.c:93
 msgid "Can not get username"
 msgstr "Ne peut obtenir votre identifiant"
 
-#: daemon/verify-pam.c:90
+#: daemon/verify-pam.c:94
 msgid "Retype new UNIX password:"
 msgstr "Resaisissez le nouveau mot de passe UNIX :"
 
-#: daemon/verify-pam.c:91
+#: daemon/verify-pam.c:95
 msgid "Enter new UNIX password:"
 msgstr "Saisissez un nouveau mot de passe UNIX :"
 
-#: daemon/verify-pam.c:92
+#: daemon/verify-pam.c:96
 msgid "(current) UNIX password:"
 msgstr "Mot de passe UNIX actuel :"
 
-#: daemon/verify-pam.c:93
+#: daemon/verify-pam.c:97
 msgid "Error while changing NIS password."
 msgstr "Erreur lors du changement du mot de passe NIS."
 
-#: daemon/verify-pam.c:94
+#: daemon/verify-pam.c:98
 msgid "You must choose a longer password"
 msgstr "Vous devez choisir un mot de passe plus long"
 
-#: daemon/verify-pam.c:95
+#: daemon/verify-pam.c:99
 msgid "Password has been already used. Choose another."
 msgstr "Le mot de passe a déjà été utilisé. Choisissez en un autre."
 
-#: daemon/verify-pam.c:96
+#: daemon/verify-pam.c:100
 msgid "You must wait longer to change your password"
 msgstr "Vous devez attendre plus longtemps pour changer votre mot de passe"
 
-#: daemon/verify-pam.c:97
+#: daemon/verify-pam.c:101
 msgid "Sorry, passwords do not match"
 msgstr "Désolé, les mots de passe ne correspondent pas"
 
-#: daemon/verify-pam.c:357
+#: daemon/verify-pam.c:361
 msgid "Cannot setup pam handle with null display"
 msgstr "Ne peut configurer le gestionnaire pam avec un visuel nul"
 
-#: daemon/verify-pam.c:370
+#: daemon/verify-pam.c:374
 #, c-format
 msgid "Can't find /etc/pam.d/%s!"
 msgstr "Ne peut trouver /etc/pam.d/%s !"
 
-#: daemon/verify-pam.c:377
+#: daemon/verify-pam.c:381
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Ne peut affecter PAM_TTY=%s"
 
-#: daemon/verify-pam.c:387
+#: daemon/verify-pam.c:391
 #, c-format
 msgid "Can't set PAM_RUSER=%s"
 msgstr "Ne peut affecter PAM_RUSER=%s"
 
-#: daemon/verify-pam.c:398
+#: daemon/verify-pam.c:402
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Ne peut affecter PAM_RHOST=%s"
@@ -1471,12 +1472,12 @@ msgstr "Ne peut affecter PAM_RHOST=%s"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: daemon/verify-pam.c:484 daemon/verify-pam.c:503 daemon/verify-pam.c:703
-#: daemon/verify-pam.c:716
+#: daemon/verify-pam.c:507 daemon/verify-pam.c:526 daemon/verify-pam.c:745
+#: daemon/verify-pam.c:758
 msgid "Couldn't authenticate user"
 msgstr "Ne peut identifier l'utilisateur"
 
-#: daemon/verify-pam.c:519
+#: daemon/verify-pam.c:542
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1484,13 +1485,13 @@ msgstr ""
 "\n"
 "L'administrateur système n'est pas autorisé à se connecter depuis cet écran"
 
-#: daemon/verify-pam.c:535
+#: daemon/verify-pam.c:558
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr ""
 "Le changement du jeton d'authentification à échoué pour l'utilisateur %s"
 
-#: daemon/verify-pam.c:537
+#: daemon/verify-pam.c:560
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1500,17 +1501,17 @@ msgstr ""
 "Le changement du jeton d'authentification a échoué. Veuillez essayer plus "
 "tard ou contactez votre administrateur système."
 
-#: daemon/verify-pam.c:544 daemon/verify-pam.c:750
+#: daemon/verify-pam.c:567 daemon/verify-pam.c:792
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "L'utilisateur %s n'est plus autorisé a accéder au système"
 
-#: daemon/verify-pam.c:550 daemon/verify-pam.c:756
+#: daemon/verify-pam.c:573 daemon/verify-pam.c:798
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "L'utilisateur %s n'est pas autorisé à se connecter à cette heure"
 
-#: daemon/verify-pam.c:552
+#: daemon/verify-pam.c:575
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1518,22 +1519,22 @@ msgstr ""
 "\n"
 "L'administrateur système a désactivé l'accès au système temporairement."
 
-#: daemon/verify-pam.c:557 daemon/verify-pam.c:763
+#: daemon/verify-pam.c:580 daemon/verify-pam.c:805
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Ne peut définir le gestionnaire de compte pour %s"
 
-#: daemon/verify-pam.c:576 daemon/verify-pam.c:783
+#: daemon/verify-pam.c:599 daemon/verify-pam.c:825
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Ne peut définir les autorisations pam (credentials) pour %s"
 
-#: daemon/verify-pam.c:586 daemon/verify-pam.c:794
+#: daemon/verify-pam.c:609 daemon/verify-pam.c:836
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Ne peut ouvrir la session pour %s"
 
-#: daemon/verify-pam.c:625
+#: daemon/verify-pam.c:648
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1542,15 +1543,15 @@ msgstr ""
 "L'authentification a échoué. Les lettres doivent être saisies en respectant "
 "la casse."
 
-#: daemon/verify-pam.c:641 daemon/verify-pam.c:706 daemon/verify-pam.c:719
+#: daemon/verify-pam.c:664 daemon/verify-pam.c:748 daemon/verify-pam.c:761
 msgid "Authentication failed"
 msgstr "L'identification a échoué"
 
-#: daemon/verify-pam.c:690
+#: daemon/verify-pam.c:714
 msgid "Automatic login"
 msgstr "Connexion automatique"
 
-#: daemon/verify-pam.c:759
+#: daemon/verify-pam.c:801
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
@@ -1558,7 +1559,7 @@ msgstr ""
 "\n"
 "L'administrateur système a désactivé votre accès au système temporairement."
 
-#: daemon/verify-pam.c:886 daemon/verify-pam.c:888
+#: daemon/verify-pam.c:928 daemon/verify-pam.c:930
 msgid "Can't find PAM configuration for gdm."
 msgstr "Ne peut trouver le fichier de configuration PAM pour gdm."
 
@@ -1863,7 +1864,7 @@ msgstr ""
 
 #: gui/gdmchooser.c:71
 msgid "No serving hosts were found."
-msgstr "Aucun hôtes serveurs trouvés."
+msgstr "Aucun hôte serveur n'a été trouvé."
 
 #: gui/gdmchooser.c:72
 msgid "Choose a host to connect to from the selection below."
@@ -2128,7 +2129,7 @@ msgstr "Impossible de verrouiller l'écran"
 
 #: gui/gdmflexiserver.c:333
 msgid "Can't disable xscreensaver display hacks"
-msgstr "Ne peut désactiver le hacks d'affichage xscreensaver"
+msgstr "Ne peut désactiver les bidouilles d'affichage xscreensaver"
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without logging out"
@@ -2208,7 +2209,7 @@ msgstr "A-M|Chinois (simplifié)"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:79
 msgid "A-M|Chinese (traditional)"
-msgstr "A-M|Chinois (traditionel)"
+msgstr "A-M|Chinois (traditionnel)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:81
@@ -2717,9 +2718,9 @@ msgid ""
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
-"C'est une session de secours qui vous connectera dans GNOME. Aucun scripts "
-"de démarrage ne sera lu et ne devrait être utilisé que lorsque vous ne "
-"pouvez pas vous connecter autrement.  GNOME utilisera la session « Default »."
+"C'est une session de secours qui vous connectera dans GNOME. Aucun script de "
+"démarrage ne sera lu et ne devrait être utilisé que lorsque vous ne pouvez "
+"pas vous connecter autrement.  GNOME utilisera la session « Default »."
 
 #: gui/gdmlogin.c:1565 gui/greeter/greeter_session.c:464
 msgid ""
@@ -2727,7 +2728,7 @@ msgid ""
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
 msgstr ""
-"C'est une session de secours qui vous connectera dans un terminal.  Aucun "
+"C'est une session de secours qui vous connectera dans un terminal. Aucun "
 "script de démarrage ne sera lu et ne devrait être utilisé que lorsque vous "
 "ne pouvez pas vous connecter autrement.  Pour quitter le terminal, saisissez "
 "« exit »."
@@ -3196,7 +3197,7 @@ msgstr "<b>Arrière-plan</b>"
 
 #: gui/gdmsetup-strings.c:43 gui/gdmsetup.glade.h:60
 msgid "_No background"
-msgstr "_Aucun arrière-plan"
+msgstr "_Pas d'arrière-plan"
 
 #: gui/gdmsetup-strings.c:44 gui/gdmsetup.glade.h:57
 msgid "_Image"
@@ -3338,23 +3339,23 @@ msgstr "Écouter sur le port _UDP : "
 
 #: gui/gdmsetup-strings.c:81 gui/gdmsetup.glade.h:32
 msgid "Maximum _pending requests:"
-msgstr "Requêtes maximum en _attente :"
+msgstr "Nombre maximal de requêtes en _attente :"
 
 #: gui/gdmsetup-strings.c:82 gui/gdmsetup.glade.h:31
 msgid "Max p_ending indirect requests:"
-msgstr "Requêtes indirectes maximum en a_ttente :"
+msgstr "Nombre maximal de requêtes indirectes en a_ttente :"
 
 #: gui/gdmsetup-strings.c:83 gui/gdmsetup.glade.h:33
 msgid "Maximum _remote sessions:"
-msgstr "Sessions _distantes maximum :"
+msgstr "Nombre maximal de sessions _distantes :"
 
 #: gui/gdmsetup-strings.c:84 gui/gdmsetup.glade.h:34
 msgid "Maximum _wait time:"
-msgstr "Délai d'_attente maximum :"
+msgstr "Délai d'_attente maximal :"
 
 #: gui/gdmsetup-strings.c:85 gui/gdmsetup.glade.h:35
 msgid "Maximum indirect w_ait time:"
-msgstr "Délai d'a_ttente indirecte maximum :"
+msgstr "Délai d'a_ttente indirecte maximal :"
 
 #: gui/gdmsetup-strings.c:86 gui/gdmsetup.glade.h:23
 msgid "Displays per _host:"
@@ -3632,7 +3633,7 @@ msgstr "Variation artistique de Cercles avec un navigateur de figures"
 msgid "Happy GNOME with Browser"
 msgstr "Joyeux GNOME avec un navigateur"
 
-#: gui/modules/dwellmouselistener.c:573 gui/modules/keymouselistener.c:626
+#: gui/modules/dwellmouselistener.c:573 gui/modules/keymouselistener.c:634
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -3721,7 +3722,7 @@ msgid ""
 msgstr ""
 "Une erreur est survenue durant le chargement de l'interface\n"
 "utilisateur depuis le fichier %s.\n"
-"Il est possible que la description d'interface glade n'est\n"
+"Il est possible que la description d'interface glade n'ait\n"
 "pas été trouvée. %s ne peut continuer et va maintenant\n"
 "quitter.\n"
 "Vous devriez vérifier votre installation de %s ou\n"
@@ -3920,7 +3921,7 @@ msgstr "Aucune interface ne peut être chargée, MAUVAIS ! (fichier : %s)"
 #~ msgstr "Chinois (simplifié)"
 
 #~ msgid "Chinese (traditional)"
-#~ msgstr "Chinois (traditionel)"
+#~ msgstr "Chinois (traditionnel)"
 
 #~ msgid "Croatian"
 #~ msgstr "Croate"
@@ -4584,13 +4585,13 @@ msgstr "Aucune interface ne peut être chargée, MAUVAIS ! (fichier : %s)"
 #~ msgstr "Répertoire de figures global : "
 
 #~ msgid "Maximum face width: "
-#~ msgstr "Largeur maximum des figures : "
+#~ msgstr "Largeur maximale des figures : "
 
 #~ msgid "Choose the directory to search for faces"
 #~ msgstr "Choisissez le répertoire de recherche de figures"
 
 #~ msgid "Maximum face height: "
-#~ msgstr "Hauteur maximum des figures : "
+#~ msgstr "Hauteur maximale des figures : "
 
 #~ msgid "Exclude these users: "
 #~ msgstr "Exclure ces utilisateurs : "
@@ -4890,7 +4891,7 @@ msgstr "Aucune interface ne peut être chargée, MAUVAIS ! (fichier : %s)"
 #~ msgstr ""
 #~ "Script à lancer quand le serveur X plante constamment et que le serveur X "
 #~ "de secours est soit inexistant, soit plante aussi. Le programme de "
-#~ "configuration de X défini ci après sera lancé."
+#~ "configuration de X défini ci-après sera lancé."
 
 #~ msgid "Failsafe X server:"
 #~ msgstr "Serveur X de secours :"
@@ -4900,7 +4901,7 @@ msgstr "Aucune interface ne peut être chargée, MAUVAIS ! (fichier : %s)"
 #~ "fails the script below will be run."
 #~ msgstr ""
 #~ "Serveur X à lancer si le serveur standard plante constamment. Si ce "
-#~ "serveur échoue aussi, le script ci après sera lancé."
+#~ "serveur échoue aussi, le script ci-après sera lancé."
 
 #~ msgid "X-server setup"
 #~ msgstr "Configuration du serveur X"
