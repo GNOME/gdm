@@ -1,3 +1,85 @@
+Fri Dec 09 2003 Archana Shah <archana.shah@wipro.com>
+
+	* configure.in : Put check for getaddrinfo, inet_ntop and struture
+	  sockaddr_storage.
+
+	* acconfig.h : Undefine ENABLE_IPV6
+
+	* daemon/slave.c:
+	  (send_chosen_host): Used getaddrinfo to resolve the hostname.
+
+	* daemon/choose.c:
+	  (gdm_choose_indirect_alloc) (gdm_choose_indirect_lookup):
+	  Changed prototype to have sockaddr_storage in place of sockaddr_in if
+	  IPv6 is enabled and changed the function accordingly.
+	  (gdm_choose indirect_lookup_by_chosen6): Function is added as a
+	  replacement of its IPv4 equivalent if IPv6 is enabled.
+	  (gdm_choose_direct_dispose)(gdm_choose_data): Changed for IPv6.
+
+	* daemon/auth.c:
+	  (gdm_auth_secure_display): If IPv6 is enabled then we are dealing with
+	  IPv6 addresses. Used getaddrinfo for address resolution.
+
+	* daemon/gdm.h: A field of type struct in6_addr is added to structure
+	  _GdmDisplay. In structure _GdmIndirectDisplay a field of type in6_addr
+	  is added and an existing field dsp_sa is changed to be of type
+	  sockaddr_storage if IPv6 is enabled on the system.
+	  _GdmForwardQuery structure will have members of type sockaddr_storage
+	  instead of sockaddr_in if IPv6 is enabled.
+	  Two new macros are defined for multicasting.
+
+	* daemon/misc.c:
+	  (have_ipv6): Function added to check run-time IPv6 support.
+	  (gdm_get_free_display): We will deal with IPv6 address if
+	  IPv6 is enabled.
+	  (gdm_peek_local_address_list): Using getaddrinfo to generate the
+	  address list.
+	  (gdm_is_local_addr6)(gdm_is_loopback_addr6): These will be used with
+	  IPv6 addresses.
+	  For IPv4 addresses, continue to use their IPv4 counter parts.
+
+	* daemon/xdmcp.c:
+	  (gdm_xdmcp_handle_forward_query), (gdm_xdmcp_handle_request),
+	  (gdm_xdmcp_handle_query), (gdm_xdmcp_handle_manage),
+	  (gdm_xdmcp_handle_managed_forward), (gdm_xdmcp_handle_got_managed),
+	  (gdm_xdmcp_handle_keepalive), (gdm_xdmcp_send_willing),
+	  (gdm_xdmcp_send_unwilling), (gdm_xdmcp_send_accept),
+	  (gdm_xdmcp_send_decline), (gdm_xdmcp_send_refuse ),
+	  (gdm_xdmcp_send_failed), (gdm_xdmcp_send_alive),
+	  gdm_xdmcp_send_managed_forward), (gdm_xdmcp_host_allow),
+	  (gdm_forward_query_alloc), (gdm_forward_query_lookup):
+	  All these functions will recieve sockaddr_storage type argument if
+	  IPv6 is enabled on the system.
+	  (gdm_xdmcp_whack_queued_managed_forwards6),
+	  (gdm_xdmcp_send_got_managed_forward6),
+	  (gdm_xdmcp_display_alloc6), (gdm_xdmcp_displays_from_host6),
+	  (gdm_xdmcp_displays_from_host6):
+	  All these functions are added to deal with IPv6 addresses.
+	  Their IPv4 equivalents will remain as it is.
+	  structure ManagedForward is changed to have sockaddr_storage field
+	  in place of sockaddr_in if IPv6 is enabled.
+	  (have_ipv6): Function added to check run-time IPv6 support.
+	  (gdm_xdmcp_init), (gdm_xdmcp_decode_packet):
+	  These functions are modified to deal with IPv6 addresses as well.
+
+	* gui/gdmchooser.c:
+	  Structure _GdmChooserHost will have an added field of type in6_addr
+	  if IPv6 is enabled on the system.
+	  A global variable of type in6_addr is added.
+	  (gdm_chooser_host_alloc), (gdm_host_known), (is_loopback_addr),
+	  (gdm_addr_known), (gdm_chooser_decode_packet),
+	  (gdm_chooser_find_bcaddr), (do_ping),
+	  (gdm_chooser_xdmcp_discover), (gdm_chooser_add_hosts),
+	  (gdm_chbooser_xdmcp_init), (gdm_chooser_choose_host), (add_check),
+	  (gdm_chooser_add_host), (gdm_chooser_parse_config):
+	  Changed so that they all can deal IPv6 addresses.
+	  (gdm_chooser_find_mcaddr): Function added to set the multicast
+	  address.
+
+	* gui/gdmXnestchooser.c:
+	  (have_ipv6): Added function to check for run time IPV6 support.
+	  (gte_free_display): Changed for IPv6.
+
 Thu Nov 06 09:51:45 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c: whack some stale code, mark some messages for translation
