@@ -7,20 +7,26 @@ Fri Mar 04 12:50:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* gui/greeter/greeter.c: Set default font size to Sans 12.
 	  Can make the default configurable if people want.
+	  (Patch by Erwann Chenede)
 	* gui/greeter/greeter_greeter_canvas_item: Set name of
-	  password entry for more friendly a11y.
+	  password entry for more friendly a11y.  (Patch by
+	  Erwann Chenede)
 	* gui/gdmsetup.c: Mark "Remove Theme" for translation.
+	  (Patch by Balamurali Viswanathan).
 	* gui/gdmlanguages.c: Add zh_HK and remove <span> tags
 	  in language display since they were causing formatting
-	  problems for some users.
+	  problems for some users.  (Patch by Glynn Foster)
 	* daemon/gdm.in: Ensure LC_MESSAGES is set so the user's
-	  default language can be displayed.
+	  default language can be displayed.  (Patch by
+	  Hidetoshi Tajima).
 	* daemon/misc.c, daemon/xdmcp.c: Fix XDMCP for IPv6.
 	  Now properly handle IPv4 requests when received 
 	  when the code is built with --enable-ipv6=true and
-	  fix IPv6 identification on Solaris.  I believe IPv6
+	  fix IPv6 identification on Solaris.
+	  (Patch by Leena Gunda and Brian Cameron).
 	* configure.in: Fix --enable-ipv6 help line when
-	  you run "configure --help".
+	  you run "configure --help".  (Patch by Brian
+	  Cameron)
 
 Fri Feb 25 14:44:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
