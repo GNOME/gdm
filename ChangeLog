@@ -1,3 +1,25 @@
+Tue May 15 17:36:49 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c: Apply patch from Remi@Cohen-Scali.com (Rémi
+	  Cohen-Scali) to fix #54723.  The sessions were not strduped when
+	  put into the global list.  Bad bad gdm :)
+
+	* daemon/gdm.c, daemon/slave.c:  when xdmcp is disabled and no
+	  servers exist and we can find /usr/bin/X11/X, this would mean that
+	  the user is an idiot and deleted all servers.  So add one for him
+	  and give him a warning before letting him log in and fix things.
+	  also graphically complaina bout not being able to start the
+	  greeter.
+
+	* daemon/gdm.c, gui/gdmlogin.c: Don't abort on recoverable errors
+	  that wouldn't be security problems.  Also allow things to be run
+	  without a config file, using the defaults
+
+	* daemon/gdm.h, gui/gdmlogin.c: fix the default for the welcome
+	  string, overcoming gnome-config idiocy
+
+	* gui/gdmconfig.c:  Warn user if he removed all servers.
+
 Tue May 15 15:28:57 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c, daemon/slave.c: Don't abort when a binary isn't

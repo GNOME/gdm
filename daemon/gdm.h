@@ -161,6 +161,8 @@
 #define GDM_KEY_CONFIGURATOR "daemon/Configurator=" EXPANDED_GDMCONFIGDIR "/gdmconfig --disable-sound --disable-crash-dialog"
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
+/* translated string gets HATE defaults */
+#define GDM_KEY_WELCOME_TR "greeter/Welcome"
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %n"
 #define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
 #define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="

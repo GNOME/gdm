@@ -63,6 +63,7 @@ static gboolean do_configurator = FALSE; /* if this is true, login as root
 					  * and start the configurator */
 
 extern gboolean gdm_first_login;
+extern gboolean gdm_emergency_server;
 
 /* Configuration option variables */
 extern gchar *GdmUser;
@@ -909,6 +910,18 @@ gdm_slave_greeter (void)
 		gdm_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
+	if(gdm_emergency_server) {
+		run_error_dialog (_("No servers were defined in the\n"
+				    "configuration file and xdmcp was\n"
+				    "disabled.  This can only be a\n"
+				    "configuration error.  So I have started\n"
+				    "a single server for you.  You should\n"
+				    "log in and fix the configuration.\n"
+				    "Note that automatic and timed logins\n"
+				    "are disabled now."));
+		gdm_unsetenv ("GDM_TIMED_LOGIN_OK");
+	}
+
 	argv = g_strsplit (GdmGreeter, argdelim, MAX_ARGS);
 	execv (argv[0], argv);
 
@@ -922,6 +935,12 @@ gdm_slave_greeter (void)
 			   "/gdmlogin --disable-sound --disable-crash-dialog",
 			   argdelim, MAX_ARGS);
 	execv (argv[0], argv);
+
+	run_error_dialog (_("Cannot start the greeter program,\n"
+			    "you will not be able to log in.\n"
+			    "This display will be disabled.\n"
+			    "Try logging in by other means and\n"
+			    "editting the configuration file"));
 	
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Error starting greeter on display %s"), d->name);
 	

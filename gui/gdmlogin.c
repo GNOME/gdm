@@ -125,6 +125,7 @@ static int screens = 0;
 static GtkTooltips *tooltips;
 
 static gboolean login_is_local = FALSE;
+static gboolean used_defaults = FALSE;
 
 GdkRectangle screen; /* this is an extern since it's used in gdmwm as well */
 
@@ -722,8 +723,10 @@ gdm_login_parse_config (void)
 {
     struct stat unused;
 	
-    if (stat (GDM_CONFIG_FILE, &unused) == -1)
-	gdm_login_abort (_("gdm_login_parse_config: No configuration file: %s. Aborting."), GDM_CONFIG_FILE);
+    if (stat (GDM_CONFIG_FILE, &unused) == -1) {
+	syslog (LOG_ERR, _("gdm_login_parse_config: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
+	used_defaults = TRUE;
+    }
 
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
@@ -740,7 +743,9 @@ gdm_login_parse_config (void)
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
-    GdmWelcome = gnome_config_get_translated_string (GDM_KEY_WELCOME);
+    GdmWelcome = gnome_config_get_translated_string (GDM_KEY_WELCOME_TR);
+    if (gdm_string_empty (GdmWelcome))
+	    GdmWelcome = gnome_config_get_string (GDM_KEY_WELCOME);
     GdmBackgroundProg = gnome_config_get_string (GDM_KEY_BACKGROUNDPROG);
     GdmBackgroundImage = gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE);
     GdmBackgroundColor = gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR);
@@ -1244,7 +1249,7 @@ gdm_login_session_init (GtkWidget *menu)
 					  (GtkDestroyNotify) g_free);
 
 		sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-		sessions = g_slist_append (sessions, dent->d_name);
+		sessions = g_slist_append (sessions, g_strdup (dent->d_name));
 		gtk_menu_append (GTK_MENU (menu), item);
 		gtk_signal_connect (GTK_OBJECT (item), "activate",
 				    GTK_SIGNAL_FUNC (gdm_login_session_handler),
@@ -1290,7 +1295,8 @@ gdm_login_session_init (GtkWidget *menu)
 					     GDM_SESSION_GNOME_CHOOSER);
 
 			sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-			sessions = g_slist_append (sessions, GDM_SESSION_GNOME_CHOOSER);
+			sessions = g_slist_append (sessions,
+						   g_strdup (GDM_SESSION_GNOME_CHOOSER));
 			gtk_menu_append (GTK_MENU (menu), item);
 			gtk_signal_connect (GTK_OBJECT (item), "activate",
 					    GTK_SIGNAL_FUNC (gdm_login_session_handler),
@@ -1334,7 +1340,8 @@ gdm_login_session_init (GtkWidget *menu)
 			 "SessionName", GDM_SESSION_FAILSAFE_GNOME);
 
     sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-    sessions = g_slist_append (sessions, GDM_SESSION_FAILSAFE_GNOME);
+    sessions = g_slist_append (sessions,
+			       g_strdup (GDM_SESSION_FAILSAFE_GNOME));
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_signal_connect (GTK_OBJECT (item), "activate",
 			GTK_SIGNAL_FUNC (gdm_login_session_handler),
@@ -1356,7 +1363,8 @@ gdm_login_session_init (GtkWidget *menu)
 			 "SessionName", GDM_SESSION_FAILSAFE_XTERM);
 
     sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-    sessions = g_slist_append (sessions, GDM_SESSION_FAILSAFE_XTERM);
+    sessions = g_slist_append (sessions,
+			       g_strdup (GDM_SESSION_FAILSAFE_XTERM));
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_signal_connect (GTK_OBJECT (item), "activate",
 			GTK_SIGNAL_FUNC (gdm_login_session_handler),
@@ -2942,8 +2950,19 @@ gdm_screen_init (void)
 					      &screen_num);
 
 
-		if (screen_num <= 0) 
-			gdm_login_abort ("Xinerama active, but <= 0 screens?");
+		if (screen_num <= 0) {
+			/* should NEVER EVER happen */
+			syslog (LOG_ERR, "Xinerama active, but <= 0 screens?");
+			screen.x = 0;
+			screen.y = 0;
+			screen.width = gdk_screen_width ();
+			screen.height = gdk_screen_height ();
+
+			allscreens = g_new0 (GdkRectangle, 1);
+			allscreens[0] = screen;
+			screens = 1;
+			return;
+		}
 
 		if (screen_num <= GdmXineramaScreen)
 			GdmXineramaScreen = 0;
@@ -3318,6 +3337,25 @@ main (int argc, char *argv[])
 
 	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
     }
+
+    /* There was no config file */
+    if (used_defaults) {
+	    GtkWidget *dialog;
+
+	    gdm_wm_focus_new_windows (TRUE);
+
+	    dialog = gnome_error_dialog
+		    (_("The configuration was not found.  GDM is using\n"
+		       "defaults to run this session.  You should log in\n"
+		       "and create a configuration file with the GDM\n"
+		       "configuration program."));
+	    gtk_widget_show_all (dialog);
+	    gdm_center_window (GTK_WINDOW (dialog));
+	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+    }
+
 
     gtk_main ();
 

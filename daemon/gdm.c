@@ -52,6 +52,14 @@ gchar *argdelim = " ";		/* argv argument delimiter */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
 
+/* True if the server that was run was in actuallity not specified in the
+ * config file.  That is if xdmcp was disabled and no local servers were
+ * defined.  If the user kills all his local servers by mistake and keeps
+ * xdmcp on.  Well then he's screwed.  The configurator should be smarter
+ * about that.  But by default xdmcp is disabled so we're likely to catch
+ * some fuckups like this. */
+gboolean gdm_emergency_server = FALSE;
+
 gboolean gdm_first_login = TRUE;
 
 /* Configuration options */
@@ -130,7 +138,7 @@ gdm_config_parse (void)
     displays = NULL;
 
     if (stat (GDM_CONFIG_FILE, &statbuf) == -1)
-	gdm_fail (_("gdm_config_parse: No configuration file: %s. Aborting."), GDM_CONFIG_FILE);
+	gdm_error (_("gdm_config_parse: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
 
     /* Parse configuration options */
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
@@ -226,16 +234,17 @@ gdm_config_parse (void)
     }
 
     /* Prerequisites */ 
-    if (GdmGreeter == NULL)
-	gdm_fail (_("gdm_config_parse: No greeter specified."));
+    if (gdm_string_empty (GdmGreeter)) {
+	    gdm_error (_("gdm_config_parse: No greeter specified."));
+    }
 
-    if (GdmServAuthDir == NULL)
+    if (gdm_string_empty (GdmServAuthDir))
 	gdm_fail (_("gdm_config_parse: No authdir specified."));
 
-    if (GdmLogDir == NULL) 
+    if (gdm_string_empty (GdmLogDir))
 	GdmLogDir = GdmServAuthDir;
 
-    if (GdmSessDir == NULL) 
+    if (gdm_string_empty (GdmSessDir))
 	gdm_error (_("gdm_config_parse: No sessions directory specified."));
 
 
@@ -253,24 +262,54 @@ gdm_config_parse (void)
 	iter = gnome_config_iterator_next (iter, &k, &v);
     }
 
-    if (! displays && ! GdmXdmcp) 
-	gdm_fail (_("gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"));
+    if (! displays && ! GdmXdmcp) {
+	    /* yay, we can add a backup emergency server */
+	    if (access ("/usr/bin/X11/X", X_OK) == 0) {
+		    gdm_error (_("gdm_config_parse: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :0 to allow configuration!"));
+
+		    gdm_emergency_server = TRUE;
+		    displays = g_slist_append
+			    (displays, gdm_server_alloc (0, "/usr/bin/X11/X"));
+		    /* ALWAYS run the greeter and don't log anyone in,
+		     * this is just an emergency session */
+		    g_free (GdmAutomaticLogin);
+		    GdmAutomaticLogin = NULL;
+		    g_free (GdmTimedLogin);
+		    GdmTimedLogin = NULL;
+	    } else {
+		    gdm_fail (_("gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"));
+	    }
+    }
 
 
     /* Lookup user and groupid for the gdm user */
     pwent = getpwnam (GdmUser);
 
-    if (! pwent)
-	gdm_fail (_("gdm_config_parse: Can't find the gdm user (%s). Aborting!"), GdmUser);
+    if (pwent == NULL) {
+	    gdm_error (_("gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"), GdmUser);
+	    g_free (GdmUser);
+	    GdmUser = g_strdup ("nobody");
+	    pwent = getpwnam (GdmUser);
+    }
+
+    if (pwent == NULL)
+	    gdm_fail (_("gdm_config_parse: Can't find the gdm user (%s). Aborting!"), GdmUser);
     else 
-	GdmUserId = pwent->pw_uid;
+	    GdmUserId = pwent->pw_uid;
 
     if (GdmUserId == 0)
 	gdm_fail (_("gdm_config_parse: The gdm user should not be root. Aborting!"));
 
     grent = getgrnam (GdmGroup);
 
-    if (!grent)
+    if (grent == NULL) {
+	    gdm_error (_("gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"), GdmUser);
+	    g_free (GdmGroup);
+	    GdmGroup = g_strdup ("nobody");
+	    pwent = getpwnam (GdmUser);
+    }
+
+    if (grent == NULL)
 	gdm_fail (_("gdm_config_parse: Can't find the gdm group (%s). Aborting!"), GdmGroup);
     else 
 	GdmGroupId = grent->gr_gid;   

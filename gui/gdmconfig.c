@@ -309,7 +309,6 @@ connect_file_checks (void)
 		"gnome_default_session",
 		"gtkrc_file",
 		"logo_file",
-		"gdm_icon",
 		"background_image",
 		"default_face_file",
 		"locale_file",
@@ -512,11 +511,15 @@ gdm_config_parse_most (void)
     gchar *default_session_name = NULL;
     gint linklen;
 
+    gtk_clist_clear (GTK_CLIST (get_widget ("server_clist")));
+    number_of_servers = 0;
+
     /* If the GDM config file does not exist, we have sensible defaults,
      * but make sure the user is warned.
      */
     if (!g_file_exists(GDM_CONFIG_FILE))
       {
+	      char *a_server[2];
 	      char *error = g_strdup_printf (_("The configuration file: %s\n"
 					       "does not exist! Using "
 					       "default values."),
@@ -526,6 +529,12 @@ gdm_config_parse_most (void)
 	      gnome_dialog_set_parent(GNOME_DIALOG(error_dialog), 
 				      (GtkWindow *) GDMconfigurator);
 	      gnome_dialog_run_and_close(GNOME_DIALOG(error_dialog));
+
+	      a_server[0] = "0";
+	      a_server[1] = "/usr/bin/X11/X";
+	      gtk_clist_append (GTK_CLIST (get_widget ("server_clist")),
+				a_server);
+	      number_of_servers = 1;
       }
     
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
@@ -780,7 +789,7 @@ gdm_config_parse_most (void)
 	  {
 	      a_server[0] = key;
 	      a_server[1] = value;
-	      gtk_clist_prepend(GTK_CLIST(get_widget("server_clist")), a_server);
+	      gtk_clist_append(GTK_CLIST(get_widget("server_clist")), a_server);
 	      number_of_servers++;
 	  }
 	else
@@ -901,13 +910,22 @@ run_warn_reset_dialog (void)
 
 
 
-void
-write_new_config_file                  (GtkButton *button,
-                                        gpointer         user_data)
+static gboolean
+write_config (void)
 {
     int i = -1;
     GList *tmp = NULL;
     GString *errors = NULL;
+
+    if (number_of_servers == 0 &&
+	! run_query (_("You have not defined any local servers.\n"
+		       "Usually this is not a good idea unless you\n"
+		       "are sure you do not want users to be able to\n"
+		       "log in with the graphical interface on the\n"
+		       "local console and only use the xdmcp service.\n\n"
+		       "Are you sure you wish to apply these settings?"))) {
+	    return FALSE;
+    }
    
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
     
@@ -1247,6 +1265,8 @@ write_new_config_file                  (GtkButton *button,
     }
 
     run_warn_reset_dialog ();
+
+    return TRUE;
 }
 
 void
@@ -1261,11 +1281,18 @@ revert_settings_to_file_state (GtkMenuItem *menu_item,
 }
 
 void
+write_new_config_file                  (GtkButton *button,
+                                        gpointer         user_data)
+{
+	write_config ();
+}
+
+void
 write_and_close (GtkButton *button,
 		 gpointer user_data)
 {
-	write_new_config_file(button, user_data);
-	exit_configurator(NULL, NULL);
+	if (write_config ())
+		exit_configurator(NULL, NULL);
 }
 
 void
