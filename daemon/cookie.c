@@ -23,6 +23,8 @@
  * 
  * This code was derived (i.e. stolen) from mcookie.c written by Rik Faith
  *  
+ * Note that this code goes to much greater lengths to be as random as possible.
+ * Thus being more secure on systems without /dev/random and friends.
  */
 
 #include <config.h>
@@ -39,10 +41,10 @@
 #include "md5.h"
 #include "cookie.h"
 
-#define MAXBUFFERSIZE 512
+#define MAXBUFFERSIZE 1024
 
 struct rngs {
-   const char *path;
+   const char *path; /* null is the authfile name */
    int        length;
    off_t      seek;
 } rngs[] = {
@@ -52,14 +54,22 @@ struct rngs {
 #endif
    { "/dev/urandom",            128,	0 },
    { "/proc/stat",    MAXBUFFERSIZE,	0 },
+   { "/proc/interrupts", MAXBUFFERSIZE,	0 },
    { "/proc/loadavg", MAXBUFFERSIZE,	0 },
+   { "/proc/meminfo", MAXBUFFERSIZE,	0 },
 #if defined(__i386__) || defined(__386__) || defined(_M_IX86)
    /* On i386, we should not read the first 16megs */
    { "/dev/mem",      MAXBUFFERSIZE,	0x100000 },
 #else
    { "/dev/mem",      MAXBUFFERSIZE,	0 },
 #endif
+   /* this will load the old authfile for the display */
+   { NULL /* null means the authfile */, MAXBUFFERSIZE,	0 },
+   { "/proc/net/dev", MAXBUFFERSIZE,	0 },
    { "/dev/audio",    MAXBUFFERSIZE,	0 },
+   { "/etc/shadow",   MAXBUFFERSIZE,	0 },
+   { "/var/log/messages",   MAXBUFFERSIZE,	0 },
+   { "/var/spool/mail/root", MAXBUFFERSIZE,	0 },
 };
 
 #define RNGS (sizeof(rngs)/sizeof(struct rngs))
@@ -87,6 +97,28 @@ gdm_random_tick (void)
 		randnums[i] += rand ();
 }
 
+/* check a few values and if we get the same
+   value, it's not really random.  Likely
+   we got perhaps a string of zeros or some
+   such. */
+static gboolean
+data_seems_random (const char buf[], int size)
+{
+	int i, lastval = 0;
+	if (size < 16)
+		return FALSE;
+	for (i = 0; i < 10; i++) {
+		int idx = (rand()>>4)%size;
+		if (i > 0 &&
+		    lastval != buf[idx])
+			return TRUE;
+		lastval = buf[idx];
+	}
+	return FALSE;
+}
+
+static unsigned char old_cookie[16];
+
 void 
 gdm_cookie_generate (GdmDisplay *d)
 {
@@ -108,13 +140,21 @@ gdm_cookie_generate (GdmDisplay *d)
 
     gdm_md5_update (&ctx, (unsigned char *) randnums, sizeof (int) * RANDNUMS);
 
+    /* use the last cookie */
+    gdm_md5_update (&ctx, old_cookie, 16);
+
     pid = getppid();
     gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
     pid = getpid();
     gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
         
     for (i = 0; i < RNGS; i++) {
-	fd = open (rngs[i].path, O_RDONLY|O_NONBLOCK
+	const char *file = rngs[i].path;
+	if (file == NULL)
+	    file = d->authfile;
+	if (file == NULL)
+	    continue;
+	fd = open (file, O_RDONLY|O_NONBLOCK
 #ifdef O_NOCTTY
 			|O_NOCTTY
 #endif
@@ -149,11 +189,12 @@ gdm_cookie_generate (GdmDisplay *d)
 
 	    IGNORE_EINTR (close (fd));
 
-	    if (r >= rngs[i].length) 
+	    if (r >= rngs[i].length &&
+		data_seems_random (buf, r)) 
 		break;
 	}
     }
-    
+
     gdm_md5_final (digest, &ctx);
 
     for (i = 0; i < 16; i++) {
@@ -167,6 +208,7 @@ gdm_cookie_generate (GdmDisplay *d)
     g_free (d->bcookie);
     d->bcookie = g_new (char, 16);
     memcpy (d->bcookie, digest, 16);
+    memcpy (old_cookie, digest, 16);
 }
 
 

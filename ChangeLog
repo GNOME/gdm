@@ -1,3 +1,11 @@
+Mon Aug 18 13:56:14 2003  George Lebl <jirka@5z.com>
+
+	* daemon/cookie.c: add more fallbacks in case of /dev/random and
+	  friends not being around, also use the last cookie generated in the
+	  checksum and spot check the data we get from the files for
+	  randomness (for example /dev/audio might just give us zeros), also
+	  read 1024 bytes from the files.
+
 Mon Aug 18 11:02:38 2003  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c, daemon/gdm.h, daemon/server.c, daemon/xdmcp.c:
