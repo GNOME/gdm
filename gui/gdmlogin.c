@@ -586,7 +586,7 @@ gdm_run_command (const char *command)
 
 	pid = fork ();
 
-	if (pid == -1) {
+	if G_UNLIKELY (pid == -1) {
 		GtkWidget *dialog;
 		/* We can't fork, that means we're pretty much up shit creek
 		 * without a paddle. */
@@ -688,7 +688,7 @@ gdm_login_parse_config (void)
     struct stat unused;
     VeConfig *config;
 	
-    if (stat (GDM_CONFIG_FILE, &unused) == -1) {
+    if G_UNLIKELY (stat (GDM_CONFIG_FILE, &unused) == -1) {
 	syslog (LOG_ERR, _("%s: No configuration file: %s. Using defaults."), 
 		"gdm_login_parse_config", GDM_CONFIG_FILE);
 	used_defaults = TRUE;
@@ -828,13 +828,8 @@ session_name (const char *name)
 	const char *nm;
 
 	/* eek */
-	if (name == NULL)
+	if G_UNLIKELY (name == NULL)
 		return "(null)";
-
-	if (strcmp (name, GDM_SESSION_FAILSAFE_GNOME) == 0)
-		return _("Failsafe Gnome");
-	else if (strcmp (name, GDM_SESSION_FAILSAFE_XTERM) == 0)
-		return _("Failsafe xterm");
 
 	nm = g_hash_table_lookup (sessnames, name);
 	if (nm != NULL)
@@ -1215,25 +1210,27 @@ gdm_login_session_init (GtkWidget *menu)
     }
     
     /* Check that session dir is readable */
-    if (GdmSessionDir == NULL ||
-	access (GdmSessionDir, R_OK|X_OK)) {
+    if G_UNLIKELY (GdmSessionDir == NULL ||
+		   access (GdmSessionDir, R_OK|X_OK)) {
 	syslog (LOG_ERR, _("%s: Session directory %s not found!"), "gdm_login_session_init", ve_sure_string (GdmSessionDir));
 	GdmShowXtermFailsafeSession = TRUE;
 	session_dir_whacked_out = TRUE;
     }
 
     /* Read directory entries in session dir */
-    if (GdmSessionDir == NULL)
+    if G_UNLIKELY (GdmSessionDir == NULL)
 	    sessdir = NULL;
     else
 	    sessdir = opendir (GdmSessionDir);
 
-    if (sessdir != NULL)
+    if G_LIKELY (sessdir != NULL)
 	    dent = readdir (sessdir);
     else
 	    dent = NULL;
 
     sessnames = g_hash_table_new (g_str_hash, g_str_equal);
+    g_hash_table_insert (sessnames, GDM_SESSION_FAILSAFE_GNOME, _("Failsafe Gnome"));
+    g_hash_table_insert (sessnames, GDM_SESSION_FAILSAFE_XTERM, _("Failsafe xterm"));
 
     while (dent != NULL) {
 	    VeConfig *cfg;
@@ -1260,7 +1257,7 @@ gdm_login_session_init (GtkWidget *menu)
 
 	    ve_config_destroy (cfg);
 
-	    if (ve_string_empty (exec) || ve_string_empty (name)) {
+	    if G_UNLIKELY (ve_string_empty (exec) || ve_string_empty (name)) {
 		    g_free (exec);
 		    g_free (name);
 		    g_free (comment);
@@ -1325,10 +1322,10 @@ gdm_login_session_init (GtkWidget *menu)
 	    dent = readdir (sessdir);
     }
 
-    if (sessdir != NULL)
+    if G_LIKELY (sessdir != NULL)
 	    closedir (sessdir);
 
-    if (sessions == NULL) {
+    if G_UNLIKELY (sessions == NULL) {
 	    syslog (LOG_WARNING, _("Yaikes, nothing found in the session directory."));
 	    session_dir_whacked_out = TRUE;
 	    GdmShowXtermFailsafeSession = TRUE;
@@ -1386,7 +1383,7 @@ gdm_login_session_init (GtkWidget *menu)
             gtk_widget_show (GTK_WIDGET (item));
     }
                     
-    if (defsess == NULL) {
+    if G_UNLIKELY (defsess == NULL) {
 	    defsess = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
 	    syslog (LOG_WARNING, _("No default session link found. Using Failsafe GNOME.\n"));
     }
@@ -2163,6 +2160,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 	
     default:
+	gdm_login_abort ("Unexpected greeter command received: '%c'", buf[0]);
 	break;
     }
 
@@ -3801,7 +3799,7 @@ main (int argc, char *argv[])
     sigemptyset(&hup.sa_mask);
     sigaddset (&hup.sa_mask, SIGCHLD);
 
-    if (sigaction (SIGHUP, &hup, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGHUP, &hup, NULL) < 0) 
         gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
 
     term.sa_handler = gdm_login_done;
@@ -3809,25 +3807,30 @@ main (int argc, char *argv[])
     sigemptyset(&term.sa_mask);
     sigaddset (&term.sa_mask, SIGCHLD);
 
-    if (sigaction (SIGINT, &term, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) 
         gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
 
-    if (sigaction (SIGTERM, &term, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) 
         gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
 
-    sigfillset (&mask);
-    sigdelset (&mask, SIGTERM);
-    sigdelset (&mask, SIGHUP);
-    sigdelset (&mask, SIGINT);
+    sigemptyset (&mask);
+    sigaddset (&mask, SIGTERM);
+    sigaddset (&mask, SIGHUP);
+    sigaddset (&mask, SIGINT);
+    
+    if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) 
+	gdm_login_abort (_("Could not set signal mask!"));
+
     /* ignore SIGCHLD */
+    sigemptyset (&mask);
     sigaddset (&mask, SIGCHLD);
     
-    if (sigprocmask (SIG_SETMASK, &mask, NULL) == -1) 
+    if G_UNLIKELY (sigprocmask (SIG_BLOCK, &mask, NULL) == -1) 
 	gdm_login_abort (_("Could not set signal mask!"));
 
     run_backgrounds ();
 
-    if ( ! DOING_GDM_DEVELOPMENT) {
+    if G_LIKELY ( ! DOING_GDM_DEVELOPMENT) {
 	    ctrlch = g_io_channel_unix_new (STDIN_FILENO);
 	    g_io_channel_set_encoding (ctrlch, NULL, NULL);
 	    g_io_channel_set_buffered (ctrlch, FALSE);
@@ -3866,7 +3869,7 @@ main (int argc, char *argv[])
 					NULL /* destroy_notify */);
     }
 
-    if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+    if G_LIKELY (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
 	    guint sid = g_signal_lookup ("event",
 					 GTK_TYPE_WIDGET);
 	    g_signal_add_emission_hook (sid,
@@ -3886,7 +3889,7 @@ main (int argc, char *argv[])
     }
 
     /* can it ever happen that it'd be NULL here ??? */
-    if (login->window != NULL) {
+    if G_UNLIKELY (login->window != NULL) {
 	    gdm_wm_init (GDK_WINDOW_XWINDOW (login->window));
 
 	    /* Run the focus, note that this will work no matter what
@@ -3895,7 +3898,7 @@ main (int argc, char *argv[])
 	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (login->window));
     }
 
-    if (session_dir_whacked_out) {
+    if G_UNLIKELY (session_dir_whacked_out) {
 	    GtkWidget *dialog;
 
 	    gdm_wm_focus_new_windows (TRUE);
@@ -3920,7 +3923,7 @@ main (int argc, char *argv[])
 	    gdm_wm_no_login_focus_pop ();
     }
 
-    if (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL) {
+    if G_UNLIKELY (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL) {
 	    GtkWidget *dialog;
 
 	    gdm_wm_focus_new_windows (TRUE);
@@ -3946,7 +3949,7 @@ main (int argc, char *argv[])
     }
 
     /* There was no config file */
-    if (used_defaults) {
+    if G_UNLIKELY (used_defaults) {
 	    GtkWidget *dialog;
 
 	    gdm_wm_focus_new_windows (TRUE);

@@ -539,6 +539,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 	
     default:
+	gdm_login_abort ("Unexpected greeter command received: '%c'", buf[0]);
 	break;
     }
 
@@ -1164,23 +1165,28 @@ main (int argc, char *argv[])
   sigemptyset(&term.sa_mask);
   sigaddset (&term.sa_mask, SIGCHLD);
   
-  if (sigaction (SIGINT, &term, NULL) < 0) 
+  if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) 
     gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
   
-  if (sigaction (SIGTERM, &term, NULL) < 0) 
+  if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) 
     gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
   
-  sigfillset (&mask);
-  sigdelset (&mask, SIGTERM);
-  sigdelset (&mask, SIGHUP);
-  sigdelset (&mask, SIGINT);
-  sigdelset (&mask, SIGCHLD);
-  
-  if (sigprocmask (SIG_SETMASK, &mask, NULL) == -1) 
-    gdm_login_abort (_("Could not set signal mask!"));
+  sigemptyset (&mask);
+  sigaddset (&mask, SIGTERM);
+  sigaddset (&mask, SIGHUP);
+  sigaddset (&mask, SIGINT);
 
+  if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) 
+	  gdm_login_abort (_("Could not set signal mask!"));
+
+  /* ignore SIGCHLD */
+  sigemptyset (&mask);
+  sigaddset (&mask, SIGCHLD);
+
+  if G_UNLIKELY (sigprocmask (SIG_BLOCK, &mask, NULL) == -1) 
+	  gdm_login_abort (_("Could not set signal mask!"));
   
-  if (! DOING_GDM_DEVELOPMENT) {
+  if G_LIKELY (! DOING_GDM_DEVELOPMENT) {
     ctrlch = g_io_channel_unix_new (STDIN_FILENO);
     g_io_channel_set_encoding (ctrlch, NULL, NULL);
     g_io_channel_set_buffered (ctrlch, FALSE);
@@ -1193,7 +1199,7 @@ main (int argc, char *argv[])
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-  if (DOING_GDM_DEVELOPMENT)
+  if G_UNLIKELY (DOING_GDM_DEVELOPMENT)
     g_signal_connect (G_OBJECT (window), "key_press_event",
 		      G_CALLBACK (key_press_event), NULL);
   
@@ -1230,7 +1236,7 @@ main (int argc, char *argv[])
 			gdm_wm_screen.height,
 			&error);
 
-    if (root == NULL &&
+    if G_UNLIKELY (root == NULL &&
 	g_getenv ("GDM_THEME") != NULL &&
 	DOING_GDM_DEVELOPMENT)
       {
@@ -1261,11 +1267,11 @@ main (int argc, char *argv[])
         exit(1);
       }
 
-  if (error)
+  if G_UNLIKELY (error)
     g_clear_error (&error);
 
   /* Try circles.xml */
-  if (root == NULL)
+  if G_UNLIKELY (root == NULL)
     {
       g_free (theme_file);
       g_free (theme_dir);
@@ -1277,7 +1283,7 @@ main (int argc, char *argv[])
 			    NULL);
     }
 
-  if (root != NULL && greeter_lookup_id ("user-pw-entry") == NULL)
+  if G_UNLIKELY (root != NULL && greeter_lookup_id ("user-pw-entry") == NULL)
     {
       GtkWidget *dialog;
 
@@ -1306,13 +1312,13 @@ main (int argc, char *argv[])
     }
 
   /* FIXME: beter information should be printed */
-  if (DOING_GDM_DEVELOPMENT && root == NULL)
+  if G_UNLIKELY (DOING_GDM_DEVELOPMENT && root == NULL)
     {
       g_warning ("No theme could be loaded");
       exit(1);
     }
 
-  if (root == NULL)
+  if G_UNLIKELY (root == NULL)
     {
       GtkWidget *dialog;
 
@@ -1372,7 +1378,7 @@ main (int argc, char *argv[])
   setup_background_color ();
 
   /* can it ever happen that it'd be NULL here ??? */
-  if (window->window != NULL)
+  if G_UNLIKELY (window->window != NULL)
     {
       gdm_wm_init (GDK_WINDOW_XWINDOW (window->window));
 
@@ -1382,7 +1388,7 @@ main (int argc, char *argv[])
       gdm_wm_focus_window (GDK_WINDOW_XWINDOW (window->window));
     }
 
-  if (session_dir_whacked_out)
+  if G_UNLIKELY (session_dir_whacked_out)
     {
       GtkWidget *dialog;
 
@@ -1408,7 +1414,7 @@ main (int argc, char *argv[])
       gdm_wm_no_login_focus_pop ();
     }
 
-  if (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL)
+  if G_UNLIKELY (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL)
     {
       GtkWidget *dialog;
 
@@ -1436,7 +1442,7 @@ main (int argc, char *argv[])
   }
 
   /* There was no config file */
-  if (used_defaults)
+  if G_UNLIKELY (used_defaults)
     {
       GtkWidget *dialog;
 

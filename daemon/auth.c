@@ -164,6 +164,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     const char lo[] = {127,0,0,1};
     guint i;
     const GList *local_addys = NULL;
+    gboolean added_lo = FALSE;
 
     if G_UNLIKELY (!d)
 	return FALSE;
@@ -334,6 +335,9 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
 				   (char *)&(d->addr), 4))
 		    return FALSE;
+
+	    if (gdm_is_loopback_addr (&(d->addr)))
+		    added_lo = TRUE;
     }
     
     /* Network access: Write out an authentication entry for each of
@@ -347,6 +351,9 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
 				   (char *)&ia->s_addr, 4))
 		    return FALSE;
+
+	    if (gdm_is_loopback_addr (ia))
+		    added_lo = TRUE;
     }
 
     /* Network access: Write out an authentication entry for each of
@@ -360,10 +367,13 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
 				   (char *)&ia->s_addr, 4))
 		    return FALSE;
+
+	    if (gdm_is_loopback_addr (ia))
+		    added_lo = TRUE;
     }
 
     /* if local server add loopback */
-    if (SERVER_IS_LOCAL (d)) {
+    if (SERVER_IS_LOCAL (d) && ! added_lo) {
 	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
 				   lo, 4))
 		    return FALSE;

@@ -63,13 +63,8 @@ session_name (const char *name)
 	const char *nm;
 
 	/* eek */
-	if (name == NULL)
+	if G_UNLIKELY (name == NULL)
 		return "(null)";
-
-	if (strcmp (name, GDM_SESSION_FAILSAFE_GNOME) == 0)
-		return _("Failsafe Gnome");
-	else if (strcmp (name, GDM_SESSION_FAILSAFE_XTERM) == 0)
-		return _("Failsafe xterm");
 
 	nm = g_hash_table_lookup (sessnames, name);
 	if (nm != NULL)
@@ -252,6 +247,8 @@ greeter_session_init (void)
   /* we will pack this later depending on size */
 
   sessnames = g_hash_table_new (g_str_hash, g_str_equal);
+  g_hash_table_insert (sessnames, GDM_SESSION_FAILSAFE_GNOME, _("Failsafe Gnome"));
+  g_hash_table_insert (sessnames, GDM_SESSION_FAILSAFE_XTERM, _("Failsafe xterm"));
 
   if (GdmShowLastSession)
     {
@@ -271,8 +268,8 @@ greeter_session_init (void)
     }
     
     /* Check that session dir is readable */
-    if (GdmSessionDir == NULL ||
-	access (GdmSessionDir, R_OK|X_OK))
+    if G_UNLIKELY (GdmSessionDir == NULL ||
+		   access (GdmSessionDir, R_OK|X_OK))
       {
 	syslog (LOG_ERR, _("%s: Session directory %s not found!"), "gdm_login_session_init", ve_sure_string (GdmSessionDir));
 	session_dir_whacked_out = TRUE;
@@ -280,12 +277,12 @@ greeter_session_init (void)
       }
 
     /* Read directory entries in session dir */
-    if (GdmSessionDir == NULL)
+    if G_UNLIKELY (GdmSessionDir == NULL)
 	    sessdir = NULL;
     else
 	    sessdir = opendir (GdmSessionDir);
 
-    if (sessdir != NULL)
+    if G_LIKELY (sessdir != NULL)
 	    dent = readdir (sessdir);
     else
 	    dent = NULL;
@@ -312,7 +309,7 @@ greeter_session_init (void)
 
 	    ve_config_destroy (cfg);
 
-	    if (ve_string_empty (exec) || ve_string_empty (name)) {
+	    if G_UNLIKELY (ve_string_empty (exec) || ve_string_empty (name)) {
 		    g_free (exec);
 		    g_free (name);
 		    g_free (comment);
@@ -377,7 +374,7 @@ greeter_session_init (void)
     if (sessdir != NULL)
 	    closedir (sessdir);
 
-    if (sessions == NULL)
+    if G_UNLIKELY (sessions == NULL)
       {
 	syslog (LOG_WARNING, _("Yaikes, nothing found in the session directory."));
 	session_dir_whacked_out = TRUE;
@@ -434,7 +431,7 @@ greeter_session_init (void)
 	gtk_widget_show (radio);
       }
                     
-    if (default_session == NULL)
+    if G_UNLIKELY (default_session == NULL)
       {
 	default_session = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
 	syslog (LOG_WARNING, _("No default session link found. Using Failsafe GNOME.\n"));
