@@ -78,7 +78,9 @@ static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
 					       greeter and try again */
 static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
 						SIGCHLD hits */
-static gboolean check_notifies_immediately = 0; /* check notifies as they come */
+static int check_notifies_immediately = 0; /* check notifies as they come */
+static gboolean gdm_wait_for_ack = TRUE; /* wait for ack on all messages to
+				      * the daemon */
 static gboolean greeter_disabled = FALSE;
 static gboolean greeter_no_focus = FALSE;
 
@@ -1659,6 +1661,9 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	int i;
 	uid_t old;
 
+	if ( ! gdm_wait_for_ack)
+		wait_for_ack = FALSE;
+
 	if (gdm_in_signal == 0)
 		gdm_debug ("Sending %s", str);
 
@@ -2951,6 +2956,7 @@ static void
 gdm_slave_term_handler (int sig)
 {
 	gdm_in_signal++;
+	gdm_wait_for_ack = FALSE;
 
 	gdm_debug ("gdm_slave_term_handler: %s got TERM/INT signal", d->name);
 

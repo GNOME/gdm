@@ -1,3 +1,10 @@
+Tue Aug 27 18:14:20 2002  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: when we get the term signal do cleanup but no
+	  longer wait for message ackgnoledgement from the daemon since the
+	  daemon may no longer be entering mainloop and may not even be
+	  processing messages.
+
 Sat Aug 24 18:40:25 2002  George Lebl <jirka@5z.com>
 
 	* Release 2.4.0.9
