@@ -665,24 +665,17 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 static void
 gdm_login_message (const gchar *msg)
 {
-	static GtkWidget *req = NULL;
-
-	if (req != NULL)
-		gtk_widget_destroy (req);
+	GtkWidget *req = NULL;
 
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	req = gtk_message_dialog_new (NULL /* parent */,
-				      GTK_DIALOG_MODAL /* flags */,
-				      GTK_MESSAGE_INFO,
-				      GTK_BUTTONS_CLOSE,
-				      "%s",
-				      msg);
-	gtk_dialog_set_has_separator (GTK_DIALOG (req), FALSE);
-	g_signal_connect (G_OBJECT (req), "destroy",
-			  G_CALLBACK (gtk_widget_destroyed),
-			  &req);
+	req = ve_hig_dialog_new (NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_INFO,
+				 GTK_BUTTONS_OK,
+				 msg,
+				 /* avoid warning */ "%s", "");
 
 	gdm_wm_center_window (GTK_WINDOW (req));
 
@@ -693,29 +686,34 @@ gdm_login_message (const gchar *msg)
 }
 
 static gboolean
-gdm_login_query (const gchar *msg)
+gdm_login_query (const gchar *msg, const char *posbutton, const char *negbutton)
 {
 	int ret;
-	static GtkWidget *req = NULL;
-
-	if (req != NULL)
-		gtk_widget_destroy (req);
+	GtkWidget *req;
+	GtkWidget *button;
 
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	req = gtk_message_dialog_new (NULL /* parent */,
-				      GTK_DIALOG_MODAL /* flags */,
-				      GTK_MESSAGE_QUESTION,
-				      GTK_BUTTONS_YES_NO,
-				      "%s",
-				      msg);
-	gtk_label_set_use_markup
-		(GTK_LABEL (GTK_MESSAGE_DIALOG (req)->label), TRUE);
+	req = ve_hig_dialog_new (NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_QUESTION,
+				 GTK_BUTTONS_NONE,
+				 msg,
+				 /* avoid warning */ "%s", "");
 
-	g_signal_connect (G_OBJECT (req), "destroy",
-			  G_CALLBACK (gtk_widget_destroyed),
-			  &req);
+	button = gtk_button_new_from_stock (negbutton);
+	gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_NO);
+	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+	gtk_widget_show (button);
+
+	button = gtk_button_new_from_stock (posbutton);
+	gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_YES);
+	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+	gtk_widget_show (button);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (req),
+					 GTK_RESPONSE_YES);
 
 	gdm_wm_center_window (GTK_WINDOW (req));
 
@@ -742,13 +740,14 @@ gdm_run_command (const char *command)
 		GtkWidget *dialog;
 		/* We can't fork, that means we're pretty much up shit creek
 		 * without a paddle. */
-		dialog = gtk_message_dialog_new (NULL /* parent */,
-						 GTK_DIALOG_MODAL /* flags */,
-						 GTK_MESSAGE_ERROR,
-						 GTK_BUTTONS_OK,
-						 _("Could not fork a new process!\n\n"
-						   "You likely won't be able to log "
-						   "in either."));
+		dialog = ve_hig_dialog_new (NULL /* parent */,
+					    GTK_DIALOG_MODAL /* flags */,
+					    GTK_MESSAGE_ERROR,
+					    GTK_BUTTONS_OK,
+					    _("Could not fork a new process!"),
+					    "%s",
+					    _("You likely won't be able to log "
+					      "in either."));
 		gtk_widget_show_all (dialog);
 		gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -791,7 +790,8 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 static void
 gdm_login_reboot_handler (void)
 {
-	if (gdm_login_query (_("Are you sure you want to reboot the machine?"))) {
+	if (gdm_login_query (_("Are you sure you want to reboot the machine?"),
+			     _("_Reboot"), GTK_STOCK_CANCEL)) {
 		closelog();
 
 		kill_thingies ();
@@ -803,7 +803,8 @@ gdm_login_reboot_handler (void)
 static void
 gdm_login_halt_handler (void)
 {
-	if (gdm_login_query (_("Are you sure you want to shut down the machine?"))) {
+	if (gdm_login_query (_("Are you sure you want to shut down the machine?"),
+			     _("Shut _Down"), GTK_STOCK_CANCEL)) {
 		closelog();
 
 		kill_thingies ();
@@ -823,7 +824,8 @@ gdm_login_use_chooser_handler (void)
 static void
 gdm_login_suspend_handler (void)
 {
-	if (gdm_login_query (_("Are you sure you want to suspend the machine?"))) {
+	if (gdm_login_query (_("Are you sure you want to suspend the machine?"),
+			     _("_Suspend"), GTK_STOCK_CANCEL)) {
 		/* suspend interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
 		fflush (stdout);
@@ -1046,7 +1048,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 				     "future sessions?"),
                                    session_name (savedsess),
                                    session_name (defsess));	    
-	    savesess = gdm_login_query (msg);                                   
+	    savesess = gdm_login_query (msg, _("Make _Default"), _("Just _Log In"));
 	    g_free (msg);
 	}
     }
@@ -1074,7 +1076,7 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                session_name (session),
                                                session_name (savedsess),
                                                session_name (session));
-                        savesess = gdm_login_query (msg);
+			savesess = gdm_login_query (msg, _("Make _Default"), _("Just For _This Session"));
                 } else if (strcmp (session, "Xclients.desktop") != 0 &&
                            strcmp (session, LAST_SESSION) != 0) {
                         /* if !GdmShowLastSession then our saved session is
@@ -1149,7 +1151,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	    g_free (curname);
 	    g_free (savedname);
 
-	    savelang = gdm_login_query (msg);
+	    savelang = gdm_login_query (msg, _("Make _Default"), _("Just For _This Session"));
 	    g_free (msg);
 	}
     } else {
@@ -2269,14 +2271,13 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gdm_wm_focus_new_windows (TRUE);
 
 	tmp = ve_locale_to_utf8 (buf);
-	dlg = gtk_message_dialog_new (NULL /* parent */,
-				      GTK_DIALOG_MODAL /* flags */,
-				      GTK_MESSAGE_ERROR,
-				      GTK_BUTTONS_OK,
-				      "%s",
-				      tmp);
+	dlg = ve_hig_dialog_new (NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_ERROR,
+				 GTK_BUTTONS_OK,
+				 tmp,
+				 /* avoid warning */ "%s", "");
 	g_free (tmp);
-	gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
 
@@ -2393,12 +2394,13 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 		/* translators:  This is a nice and evil eggie text, translate
 		 * to your favourite currency */
-		dlg = gtk_message_dialog_new (NULL /* parent */,
-					      GTK_DIALOG_MODAL /* flags */,
-					      GTK_MESSAGE_INFO,
-					      GTK_BUTTONS_OK,
-					      _("Please insert 25 cents "
-						"to log in."));
+		dlg = ve_hig_dialog_new (NULL /* parent */,
+					 GTK_DIALOG_MODAL /* flags */,
+					 GTK_MESSAGE_INFO,
+					 GTK_BUTTONS_OK,
+					 _("Please insert 25 cents "
+					   "to log in."),
+					 /* avoid warning */ "%s", "");
 		gdm_wm_center_window (GTK_WINDOW (dlg));
 
 		gdm_wm_no_login_focus_push ();
@@ -2418,12 +2420,12 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 			/* we should be now fine for focusing new windows */
 			gdm_wm_focus_new_windows (TRUE);
 
-			dlg = gtk_message_dialog_new (NULL /* parent */,
-						      GTK_DIALOG_MODAL /* flags */,
-						      GTK_MESSAGE_INFO,
-						      GTK_BUTTONS_OK,
-						      "%s",
-						      oldtext);
+			dlg = ve_hig_dialog_new (NULL /* parent */,
+						 GTK_DIALOG_MODAL /* flags */,
+						 GTK_MESSAGE_INFO,
+						 GTK_BUTTONS_OK,
+						 oldtext,
+						 /* avoid warning */ "%s", "");
 			gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
 			gdm_wm_center_window (GTK_WINDOW (dlg));
 
@@ -4130,15 +4132,16 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gtk_message_dialog_new (NULL /* parent */,
-					     GTK_DIALOG_MODAL /* flags */,
-					     GTK_MESSAGE_ERROR,
-					     GTK_BUTTONS_OK,
-					     _("The greeter version (%s) does not match the daemon "
-					       "version.\n"
-					       "You have probably just upgraded gdm.\n"
-					       "Please restart the gdm daemon or reboot the computer."),
-					     VERSION);
+	    dialog = ve_hig_dialog_new (NULL /* parent */,
+					GTK_DIALOG_MODAL /* flags */,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_OK,
+					_("Cannot start the greeter"),
+					_("The greeter version (%s) does not match the daemon "
+					  "version.  "
+					  "You have probably just upgraded gdm.  "
+					  "Please restart the gdm daemon or reboot the computer."),
+					VERSION);
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -4159,15 +4162,16 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gtk_message_dialog_new (NULL /* parent */,
-					     GTK_DIALOG_MODAL /* flags */,
-					     GTK_MESSAGE_WARNING,
-					     GTK_BUTTONS_NONE,
-					     _("The greeter version (%s) does not match the daemon "
-					       "version.\n"
-					       "You have probably just upgraded gdm.\n"
-					       "Please restart the gdm daemon or reboot the computer."),
-					     VERSION);
+	    dialog = ve_hig_dialog_new (NULL /* parent */,
+					GTK_DIALOG_MODAL /* flags */,
+					GTK_MESSAGE_WARNING,
+					GTK_BUTTONS_NONE,
+					_("Cannot start the greeter"),
+					_("The greeter version (%s) does not match the daemon "
+					  "version.  "
+					  "You have probably just upgraded gdm.  "
+					  "Please restart the gdm daemon or reboot the computer."),
+					VERSION);
 	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				    _("Reboot"),
 				    RESPONSE_REBOOT,
@@ -4201,15 +4205,16 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gtk_message_dialog_new (NULL /* parent */,
-					     GTK_DIALOG_MODAL /* flags */,
-					     GTK_MESSAGE_WARNING,
-					     GTK_BUTTONS_NONE,
-					     _("The greeter version (%s) does not match the daemon "
-					       "version (%s).\n"
-					       "You have probably just upgraded gdm.\n"
-					       "Please restart the gdm daemon or reboot the computer."),
-					     VERSION, gdm_version);
+	    dialog = ve_hig_dialog_new (NULL /* parent */,
+					GTK_DIALOG_MODAL /* flags */,
+					GTK_MESSAGE_WARNING,
+					GTK_BUTTONS_NONE,
+					_("Cannot start the greeter"),
+					_("The greeter version (%s) does not match the daemon "
+					  "version (%s).  "
+					  "You have probably just upgraded gdm.  "
+					  "Please restart the gdm daemon or reboot the computer."),
+					VERSION, gdm_version);
 	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				    _("Restart"),
 				    RESPONSE_RESTART,
@@ -4354,13 +4359,15 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gtk_message_dialog_new (NULL /* parent */,
-					     GTK_DIALOG_MODAL /* flags */,
-					     GTK_MESSAGE_ERROR,
-					     GTK_BUTTONS_OK,
-					     _("Your session directory is missing or empty!\n\n"
-					       "There are two available sessions you can use, but\n"
-					       "you should log in and correct the gdm configuration."));
+	    dialog = ve_hig_dialog_new (NULL /* parent */,
+					GTK_DIALOG_MODAL /* flags */,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_OK,
+					_("Session directory is missing"),
+					"%s",
+					_("Your session directory is missing or empty!  "
+					  "There are two available sessions you can use, but "
+					  "you should log in and correct the gdm configuration."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -4377,13 +4384,15 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gtk_message_dialog_new (NULL /* parent */,
-					     GTK_DIALOG_MODAL /* flags */,
-					     GTK_MESSAGE_ERROR,
-					     GTK_BUTTONS_OK,
-					     _("The configuration file contains an invalid command\n"
-					       "line for the login dialog, and thus I ran the\n"
-					       "default command.  Please fix your configuration."));
+	    dialog = ve_hig_dialog_new (NULL /* parent */,
+					GTK_DIALOG_MODAL /* flags */,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_OK,
+					_("Configuration is not correct"),
+					"%s",
+					_("The configuration file contains an invalid command "
+					  "line for the login dialog, and thus I ran the "
+					  "default command.  Please fix your configuration."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -4401,14 +4410,16 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gtk_message_dialog_new (NULL /* parent */,
-					     GTK_DIALOG_MODAL /* flags */,
-					     GTK_MESSAGE_ERROR,
-					     GTK_BUTTONS_OK,
-					     _("The configuration was not found.  GDM is using\n"
-					       "defaults to run this session.  You should log in\n"
-					       "and create a configuration file with the GDM\n"
-					       "configuration program."));
+	    dialog = ve_hig_dialog_new (NULL /* parent */,
+					GTK_DIALOG_MODAL /* flags */,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_OK,
+					_("No configuration was found"),
+					"%s",
+					_("The configuration was not found.  GDM is using "
+					  "defaults to run this session.  You should log in "
+					  "and create a configuration file with the GDM "
+					  "configuration program."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 

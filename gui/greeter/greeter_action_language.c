@@ -151,7 +151,7 @@ greeter_language_get_language (const char *old_language)
 	  g_free (current_name);
 	  g_free (saved_name);
 
-	  savelang = greeter_query (msg);
+	  savelang = greeter_query (msg, _("Make _Default"), _("Just For _This Session"));
 	  g_free (msg);
 	}
     }

@@ -57,26 +57,21 @@ gdm_check (void)
 	if (pid <= 1 ||
 	    (kill (pid, 0) < 0 &&
 	     errno != EPERM)) {
-		char *s;
-		dialog = gtk_message_dialog_new
+		dialog = ve_hig_dialog_new
 			(NULL /* parent */,
 			 GTK_DIALOG_MODAL /* flags */,
 			 GTK_MESSAGE_WARNING,
 			 GTK_BUTTONS_OK,
-			 "foo");
-		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-		s = g_strdup_printf ("<b>%s</b>\n\n%s\n%s",
-				     _("GDM (The GNOME Display Manager) "
-				       "is not running."),
-				     _("You might in fact be using a different "
-				       "display manager, such as KDM "
-				       "(KDE Display Manager or xdm)."),
-				     _("If you still wish to use this feature, "
-				       "either start GDM yourself or ask your "
-				       "system administrator to start GDM."));
-		gtk_label_set_markup
-			 (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label),
-			  s);
+			 _("GDM (The GNOME Display Manager) "
+			   "is not running."),
+			 "%s\n%s",
+			 _("You might in fact be using a different "
+			   "display manager, such as KDM "
+			   "(KDE Display Manager or xdm)."),
+			 _("If you still wish to use this feature, "
+			   "either start GDM yourself or ask your "
+			   "system administrator to start GDM."));
+
 		gtk_widget_show_all (dialog);
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
@@ -136,16 +131,19 @@ main (int argc, char *argv[])
 	     strstr (greeter, "gdmlogin") != NULL &&
 	     strstr (remotegreeter, "gdmlogin") != NULL) {
 		GtkWidget *d;
-		d = gtk_message_dialog_new (NULL /* parent */,
-					    GTK_DIALOG_MODAL /* flags */,
-					    GTK_MESSAGE_WARNING,
-					    GTK_BUTTONS_OK,
-					    _("The face browser is not "
-					      "configured,\nplease ask your "
-					      "system administrator to enable "
-					      "it\nin the GDM configurator "
-					      "program."));
-		gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
+		d = ve_hig_dialog_new (NULL /* parent */,
+				       GTK_DIALOG_MODAL /* flags */,
+				       GTK_MESSAGE_WARNING,
+				       GTK_BUTTONS_OK,
+				       _("The face browser is not "
+					 "configured"),
+				       "%s",
+				       _("The face browser is not configured in the "
+					 "GDM configuration.  Please ask your "
+					 "system administrator to enable "
+					 "it in the GDM configurator "
+					 "program."));
+
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);
 	}
@@ -194,27 +192,26 @@ main (int argc, char *argv[])
 		if (ve_string_empty (pixmap) ||
 		    stat (pixmap, &s) < 0) {
 			GtkWidget *d;
-			d = gtk_message_dialog_new (NULL /* parent */,
-						    GTK_DIALOG_MODAL /* flags */,
-						    GTK_MESSAGE_WARNING,
-						    GTK_BUTTONS_OK,
-						    _("No picture selected."));
-			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
+			d = ve_hig_dialog_new (NULL /* parent */,
+					       GTK_DIALOG_MODAL /* flags */,
+					       GTK_MESSAGE_WARNING,
+					       GTK_BUTTONS_OK,
+					       _("No picture selected."),
+					       /* avoid warning */ "%s", "");
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
 		} else if (s.st_size > max_size) {
 			GtkWidget *d;
-			d = gtk_message_dialog_new (NULL /* parent */,
-						    GTK_DIALOG_MODAL /* flags */,
-						    GTK_MESSAGE_WARNING,
-						    GTK_BUTTONS_OK,
-						    _("The picture is too large and "
-						      "the system administrator\n"
-						      "disallowed pictures larger "
-						      "than %d bytes to\n"
-						      "show in the face browser"),
-						    max_size);
-			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
+			d = ve_hig_dialog_new (NULL /* parent */,
+					       GTK_DIALOG_MODAL /* flags */,
+					       GTK_MESSAGE_WARNING,
+					       GTK_BUTTONS_OK,
+					       _("Picture is too large"),
+					       _("The system administrator "
+						 "disallowed pictures larger "
+						 "than %d bytes to "
+						 "show in the face browser"),
+					       max_size);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
 		} else {
@@ -231,15 +228,15 @@ main (int argc, char *argv[])
 			fdsrc = open (pixmap, O_RDONLY);
 			if (fdsrc < 0) {
 				GtkWidget *d;
-				d = gtk_message_dialog_new (NULL /* parent */,
-							    GTK_DIALOG_MODAL /* flags */,
-							    GTK_MESSAGE_ERROR,
-							    GTK_BUTTONS_OK,
-							    _("File %s cannot be open for "
-							      "reading\nError: %s"),
-							    pixmap,
-							    g_strerror (errno));
-				gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
+				d = ve_hig_dialog_new (NULL /* parent */,
+						       GTK_DIALOG_MODAL /* flags */,
+						       GTK_MESSAGE_ERROR,
+						       GTK_BUTTONS_OK,
+						       _("Cannot open file"),
+						       _("File %s cannot be open for "
+							 "reading\nError: %s"),
+						       pixmap,
+						       g_strerror (errno));
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
 				g_free (cfg_file);
@@ -250,15 +247,15 @@ main (int argc, char *argv[])
 			fddest = open (photofile, O_WRONLY | O_CREAT);
 			if (fddest < 0) {
 				GtkWidget *d;
-				d = gtk_message_dialog_new (NULL /* parent */,
-							    GTK_DIALOG_MODAL /* flags */,
-							    GTK_MESSAGE_ERROR,
-							    GTK_BUTTONS_OK,
-							    _("File %s cannot be open for "
-							      "writing\nError: %s"),
-							    photofile,
-							    g_strerror (errno));
-				gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
+				d = ve_hig_dialog_new (NULL /* parent */,
+						       GTK_DIALOG_MODAL /* flags */,
+						       GTK_MESSAGE_ERROR,
+						       GTK_BUTTONS_OK,
+						       _("Cannot open file"),
+						       _("File %s cannot be open for "
+							 "writing\nError: %s"),
+						       photofile,
+						       g_strerror (errno));
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
 				g_free (cfg_file);

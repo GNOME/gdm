@@ -479,15 +479,15 @@ main (int argc, char *argv[])
 
 	if (execvec == NULL) {
 		GtkWidget *d;
-		d = gtk_message_dialog_new (NULL /* parent */,
-					    GTK_DIALOG_MODAL /* flags */,
-					    GTK_MESSAGE_WARNING,
-					    GTK_BUTTONS_OK,
-					    _("Xnest doesn't exist.\n"
-					    "Please ask your system "
-					    "administrator\n"
-					    "to install it."));
-		gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
+		d = ve_hig_dialog_new (NULL /* parent */,
+				       GTK_DIALOG_MODAL /* flags */,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       _("Xnest doesn't exist."),
+				       "%s",
+				       _("Please ask your system "
+					 "administrator "
+					 "to install it."));
 		gtk_widget_show_all (d);
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);
@@ -505,17 +505,17 @@ main (int argc, char *argv[])
 		      ! honor_indirect) &&
 		    ! do_direct) {
 			GtkWidget *d;
-			d = gtk_message_dialog_new
+			d = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_WARNING,
+				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
-				 _("Indirect XDMCP is not enabled,\n"
-				   "please ask your "
+				 _("Indirect XDMCP is not enabled"),
+				 "%s",
+				 _("Please ask your "
 				   "system administrator to enable "
-				   "it\nin the GDM configurator "
+				   "it in the GDM configurator "
 				   "program."));
-			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -525,17 +525,17 @@ main (int argc, char *argv[])
 		if ( ! xdmcp_enabled &&
 		    do_direct) {
 			GtkWidget *d;
-			d = gtk_message_dialog_new
+			d = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_WARNING,
+				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
-				 _("XDMCP is not enabled,\n"
-				   "please ask your "
+				 _("XDMCP is not enabled"),
+				 "%s",
+				 _("Please ask your "
 				   "system administrator to enable "
-				   "it\nin the GDM configurator "
+				   "it in the GDM configurator "
 				   "program."));
-			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -555,15 +555,15 @@ main (int argc, char *argv[])
 		    (kill (pid, 0) < 0 &&
 		     errno != EPERM)) {
 			GtkWidget *d;
-			d = gtk_message_dialog_new
+			d = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_WARNING,
+				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
-				 _("GDM is not running.\n"
-				   "Please ask your "
+				 _("GDM is not running"),
+				 "%s",
+				 _("Please ask your "
 				   "system administrator to start it."));
-			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -574,13 +574,13 @@ main (int argc, char *argv[])
 	display = get_free_display ();
 	if (display < 0) {
 		GtkWidget *d;
-		d = gtk_message_dialog_new (NULL /* parent */,
-					    GTK_DIALOG_MODAL /* flags */,
-					    GTK_MESSAGE_WARNING,
-					    GTK_BUTTONS_OK,
-					    _("Could not find a free "
-					      "display number"));
-		gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
+		d = ve_hig_dialog_new (NULL /* parent */,
+				       GTK_DIALOG_MODAL /* flags */,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       _("Could not find a free "
+					 "display number"),
+				       /* avoid warning */ "%s", "");
 		gtk_widget_show_all (d);
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);

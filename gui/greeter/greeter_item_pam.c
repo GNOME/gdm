@@ -10,6 +10,7 @@
 #include "gdm.h"
 #include "gdmwm.h"
 #include "vicious.h"
+#include "viciousui.h"
 #include <string.h>
 
 static gboolean messages_to_give = FALSE;
@@ -306,12 +307,12 @@ greeter_item_pam_leftover_messages (void)
 	  /* we should be now fine for focusing new windows */
 	  gdm_wm_focus_new_windows (TRUE);
 
-	  dlg = gtk_message_dialog_new (NULL /* parent */,
-					GTK_DIALOG_MODAL /* flags */,
-					GTK_MESSAGE_INFO,
-					GTK_BUTTONS_OK,
-					"%s",
-					oldtext);
+	  dlg = ve_hig_dialog_new (NULL /* parent */,
+				   GTK_DIALOG_MODAL /* flags */,
+				   GTK_MESSAGE_INFO,
+				   GTK_BUTTONS_OK,
+				   oldtext,
+				   /* avoid warning */ "%s", "");
 	  gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 	  gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
 	  gdm_wm_center_window (GTK_WINDOW (dlg));

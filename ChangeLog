@@ -1,3 +1,17 @@
+Mon Jul 07 18:04:21 2003  George Lebl <jirka@5z.com>
+
+	* configure.in, gui/greeter/Makefile.am: compile gdmgreeter with
+	  viciousui (adds also libgnomeui, though we don't use it) (ugh!)
+
+	* gui/gdmXnestchooser.c, gui/gdmchooser.c, gui/gdmcomm.c,
+	  gui/gdmflexiserver.c, gui/gdmlogin.c, gui/gdmphotosetup.c,
+	  gui/gdmsetup.c, gui/greeter/Makefile.am, gui/greeter/greeter.[ch],
+	  gui/greeter/greeter_action_language.c,
+	  gui/greeter/greeter_item_pam.c, gui/greeter/greeter_session.c,
+	  gui/greeter/greeter_system.c: HIGify as many message dialogs
+	  as possible.  Buttons now make more sense, ordering is HIGgy,
+	  and all such good stuff.
+
 Mon Jul 07 15:42:44 2003  George Lebl <jirka@5z.com>
 
 	* daemon/misc.c, gui/gdmXnestchooser.c: the display check code was

@@ -137,7 +137,7 @@ check_update_error:
 		GtkWidget *setup_dialog = glade_helper_get
 			(xml, "setup_dialog", GTK_TYPE_WINDOW);
 		GtkWidget *dlg =
-			gtk_message_dialog_new (GTK_WINDOW (setup_dialog),
+			ve_hig_dialog_new (GTK_WINDOW (setup_dialog),
 						GTK_DIALOG_MODAL | 
 						GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_MESSAGE_ERROR,
@@ -146,7 +146,8 @@ check_update_error:
 						  "trying to contact the "
 						  "login screens.  Not all "
 						  "updates may have taken "
-						  "effect."));
+						  "effect."),
+						/* avoid warning */ "%s", "");
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
@@ -1503,13 +1504,13 @@ install_ok (GtkWidget *button, gpointer data)
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
 	if (filename == NULL) {
 		GtkWidget *dlg =
-			gtk_message_dialog_new (GTK_WINDOW (fs),
-						GTK_DIALOG_MODAL | 
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_OK,
-						_("No file selected"));
-		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
+			ve_hig_dialog_new (GTK_WINDOW (fs),
+					   GTK_DIALOG_MODAL | 
+					   GTK_DIALOG_DESTROY_WITH_PARENT,
+					   GTK_MESSAGE_ERROR,
+					   GTK_BUTTONS_OK,
+					   _("No file selected"),
+					   /* avoid warning */ "%s", "");
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		g_free (cwd);
@@ -1530,15 +1531,14 @@ install_ok (GtkWidget *button, gpointer data)
 
 	if (dir == NULL) {
 		GtkWidget *dlg =
-			gtk_message_dialog_new (GTK_WINDOW (fs),
-						GTK_DIALOG_MODAL | 
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_OK,
-						_("Not a theme archive\n"
-						  "Details: %s"),
-						error);
-		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
+			ve_hig_dialog_new (GTK_WINDOW (fs),
+					   GTK_DIALOG_MODAL | 
+					   GTK_DIALOG_DESTROY_WITH_PARENT,
+					   GTK_MESSAGE_ERROR,
+					   GTK_BUTTONS_OK,
+					   _("Not a theme archive"),
+					   _("Details: %s"),
+					   error);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		g_free (filename);
@@ -1549,19 +1549,38 @@ install_ok (GtkWidget *button, gpointer data)
 
 	if (dir_exists (theme_dir, dir)) {
 		char *fname = g_filename_to_utf8 (dir, -1, NULL, NULL, NULL);
+		char *s;
+		GtkWidget *button;
 		/* FIXME: if exists already perhaps we could also have an
 		 * option to change the dir name */
+		s = g_strdup_printf (_("Theme directory '%s' seems to be already "
+				       "installed, install again anyway?"),
+				     fname);
 		GtkWidget *dlg =
-			gtk_message_dialog_new
+			ve_hig_dialog_new
 			(GTK_WINDOW (fs),
 			 GTK_DIALOG_MODAL | 
 			 GTK_DIALOG_DESTROY_WITH_PARENT,
 			 GTK_MESSAGE_QUESTION,
-			 GTK_BUTTONS_YES_NO,
-			 _("Theme directory '%s' seems to be already "
-			   "installed, install again anyway?"),
-			 fname);
+			 GTK_BUTTONS_NONE,
+			 s,
+			 /* avoid warning */ "%s", "");
 		g_free (fname);
+		g_free (s);
+
+		button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+		gtk_dialog_add_action_widget (GTK_DIALOG (dlg), button, GTK_RESPONSE_NO);
+		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+		gtk_widget_show (button);
+
+		button = gtk_button_new_from_stock ("_Install Anyway");
+		gtk_dialog_add_action_widget (GTK_DIALOG (dlg), button, GTK_RESPONSE_YES);
+		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+		gtk_widget_show (button);
+
+		gtk_dialog_set_default_response (GTK_DIALOG (dlg),
+						 GTK_RESPONSE_YES);
+
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		if (gtk_dialog_run (GTK_DIALOG (dlg)) != GTK_RESPONSE_YES) {
 			gtk_widget_destroy (dlg);
@@ -1602,14 +1621,14 @@ install_ok (GtkWidget *button, gpointer data)
 
 	if ( ! success) {
 		GtkWidget *dlg =
-			gtk_message_dialog_new (GTK_WINDOW (fs),
-						GTK_DIALOG_MODAL | 
-						GTK_DIALOG_DESTROY_WITH_PARENT,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_OK,
-						_("Some error occured when "
-						  "installing the theme"));
-		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
+			ve_hig_dialog_new (GTK_WINDOW (fs),
+					   GTK_DIALOG_MODAL | 
+					   GTK_DIALOG_DESTROY_WITH_PARENT,
+					   GTK_MESSAGE_ERROR,
+					   GTK_BUTTONS_OK,
+					   _("Some error occured when "
+					     "installing the theme"),
+					   /* avoid warning */ "%s", "");
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 	}
@@ -1681,6 +1700,7 @@ delete_theme (GtkWidget *button, gpointer data)
 	GtkTreeIter iter;
 	GValue value = {0, };
 	GtkWidget *dlg;
+	char *s;
 
 	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
 	theme_list = glade_helper_get (xml, "gg_theme_list",
@@ -1720,15 +1740,31 @@ delete_theme (GtkWidget *button, gpointer data)
 	dir = g_strdup (g_value_get_string (&value));
 	g_value_unset (&value);
 
-	dlg = gtk_message_dialog_new
+	s = g_strdup_printf (_("Do you really wish to remove theme '%s' from the system?"),
+			     name);
+	dlg = ve_hig_dialog_new
 		(GTK_WINDOW (setup_dialog),
 		 GTK_DIALOG_MODAL | 
 		 GTK_DIALOG_DESTROY_WITH_PARENT,
 		 GTK_MESSAGE_QUESTION,
-		 GTK_BUTTONS_YES_NO,
-		 _("Do you really wish to remove theme '%s' from the system?"),
-		 name);
-	gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
+		 GTK_BUTTONS_NONE,
+		 s,
+		 /* avoid warning */ "%s", "");
+	g_free (s);
+
+	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+	gtk_dialog_add_action_widget (GTK_DIALOG (dlg), button, GTK_RESPONSE_NO);
+	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+	gtk_widget_show (button);
+
+	button = gtk_button_new_from_stock ("_Remove Theme");
+	gtk_dialog_add_action_widget (GTK_DIALOG (dlg), button, GTK_RESPONSE_YES);
+	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+	gtk_widget_show (button);
+	
+	gtk_dialog_set_default_response (GTK_DIALOG (dlg),
+					 GTK_RESPONSE_YES);
+
 	if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES) {
 		char *theme_dir = get_theme_dir ();
 		char *cwd = g_get_current_dir ();
@@ -1895,6 +1931,7 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 			return;
 		}
 	
+		/* HIG compliance? */
 		dlg = gtk_message_dialog_new
 			(GTK_WINDOW (setup_dialog),
 			 GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -2264,12 +2301,12 @@ main (int argc, char *argv[])
 	if ( ! DOING_GDM_DEVELOPMENT &&
 	     geteuid() != 0) {
 		GtkWidget *fatal_error = 
-			gtk_message_dialog_new (NULL /* parent */,
-						GTK_DIALOG_MODAL /* flags */,
-						GTK_MESSAGE_ERROR,
-						GTK_BUTTONS_OK,
-						_("You must be the superuser (root) to configure GDM.\n"));
-		gtk_dialog_set_has_separator (GTK_DIALOG (fatal_error), FALSE);
+			ve_hig_dialog_new (NULL /* parent */,
+					   GTK_DIALOG_MODAL /* flags */,
+					   GTK_MESSAGE_ERROR,
+					   GTK_BUTTONS_OK,
+					   _("You must be the superuser (root) to configure GDM."),
+					   /* avoid warning */ "%s", "");
 		if (RUNNING_UNDER_GDM)
 			setup_cursor (GDK_LEFT_PTR);
 		gtk_dialog_run (GTK_DIALOG (fatal_error));

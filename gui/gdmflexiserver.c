@@ -245,15 +245,16 @@ main (int argc, char *argv[])
 			g_print ("%s\n", ret);
 			return 0;
 		} else {
-			dialog = gtk_message_dialog_new
+			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_WARNING,
+				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
-				 _("Cannot communicate with gdm, perhaps "
-				   "you have an old version running."));
-			gtk_dialog_set_has_separator (GTK_DIALOG (dialog),
-						      FALSE);
+				 _("Cannot communicate with GDM "
+				   "(The GNOME Display Manager)"),
+				 "%s",
+				 _("Perhaps you have an old version "
+				   "of GDM running."));
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -264,17 +265,18 @@ main (int argc, char *argv[])
 	if (use_xnest) {
 		char *cookie = gdmcomm_get_a_cookie (FALSE /* binary */);
 		if (cookie == NULL) {
-			dialog = gtk_message_dialog_new
+			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_WARNING,
+				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
 				 _("You do not seem to have the "
 				   "authentication needed for this "
-				   "operation.  Perhaps your .Xauthority "
+				   "operation"),
+				 "%s",
+				 _("Perhaps your .Xauthority "
 				   "file is not set up correctly."));
-			gtk_dialog_set_has_separator (GTK_DIALOG (dialog),
-						      FALSE);
+
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -292,13 +294,15 @@ main (int argc, char *argv[])
 		auth_cookie = gdmcomm_get_auth_cookie ();
 
 		if (auth_cookie == NULL) {
-			dialog = gtk_message_dialog_new
+			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_WARNING,
+				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
 				 _("You do not seem to be logged in on the "
-				   "console.  Starting a new login only "
+				   "console"),
+				 "%s",
+				 _("Starting a new login only "
 				   "works correctly on the console."));
 			gtk_dialog_set_has_separator (GTK_DIALOG (dialog),
 						      FALSE);
@@ -339,13 +343,14 @@ main (int argc, char *argv[])
 
 	message = gdmcomm_get_error_message (ret, use_xnest);
 
-	dialog = gtk_message_dialog_new
+	dialog = ve_hig_dialog_new
 		(NULL /* parent */,
 		 GTK_DIALOG_MODAL /* flags */,
-		 GTK_MESSAGE_WARNING,
+		 GTK_MESSAGE_ERROR,
 		 GTK_BUTTONS_OK,
+		 _("Cannot start new display"),
 		 "%s", message);
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);

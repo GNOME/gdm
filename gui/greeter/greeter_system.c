@@ -52,7 +52,8 @@ working_command_exists (const char *commands)
 static void
 query_greeter_reboot_handler (void)
 {
-	if (greeter_query (_("Are you sure you want to reboot the machine?"))) {
+	if (greeter_query (_("Are you sure you want to reboot the machine?"),
+			   _("_Reboot"), GTK_STOCK_CANCEL)) {
 		closelog();
 		
 		_exit (DISPLAY_REBOOT);
@@ -63,7 +64,8 @@ query_greeter_reboot_handler (void)
 static void
 query_greeter_halt_handler (void)
 {
-	if (greeter_query (_("Are you sure you want to shut down the machine?"))) {
+	if (greeter_query (_("Are you sure you want to shut down the machine?"),
+			   _("Shut _Down"), GTK_STOCK_CANCEL)) {
 		closelog();
 
 		_exit (DISPLAY_HALT);
@@ -73,7 +75,8 @@ query_greeter_halt_handler (void)
 static void
 query_greeter_suspend_handler (void)
 {
-	if (greeter_query (_("Are you sure you want to suspend the machine?"))) {
+	if (greeter_query (_("Are you sure you want to suspend the machine?"),
+			   _("_Suspend"), GTK_STOCK_CANCEL)) {
 		/* suspend interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
 		fflush (stdout);

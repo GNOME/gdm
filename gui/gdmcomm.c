@@ -384,27 +384,21 @@ gdmcomm_check (gboolean gui_bitching)
 	    (kill (pid, 0) < 0 &&
 	     errno != EPERM)) {
 		if (gui_bitching) {
-			char *s;
-			dialog = gtk_message_dialog_new
+			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
-				 "foo");
-			gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-			s = g_strdup_printf ("<b>%s</b>\n\n%s\n%s",
-				  _("GDM (The GNOME Display Manager) "
-				    "is not running."),
-				  _("You might in fact be using a different "
-				    "display manager, such as KDM "
-				    "(KDE Display Manager or xdm)."),
-				  _("If you still wish to use this feature, "
-				    "either start GDM yourself or ask your "
-				    "system administrator to start GDM."));
-			gtk_label_set_markup
-				 (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label),
-				  s);
-			g_free (s);
+				 _("GDM (The GNOME Display Manager) "
+				   "is not running."),
+				 "%s\n%s",
+				 _("You might in fact be using a different "
+				   "display manager, such as KDM "
+				   "(KDE Display Manager or xdm)."),
+				 _("If you still wish to use this feature, "
+				   "either start GDM yourself or ask your "
+				   "system administrator to start GDM."));
+
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -414,15 +408,16 @@ gdmcomm_check (gboolean gui_bitching)
 
 	if (access (GDM_SUP_SOCKET, R_OK|W_OK)) {
 		if (gui_bitching) {
-			dialog = gtk_message_dialog_new
+			dialog = ve_hig_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
 				 _("Cannot communicate with GDM "
-				   "(The GNOME Display Manager), perhaps "
-				   "you have an old version running."));
-			gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+				   "(The GNOME Display Manager)"),
+				 "%s",
+				 _("Perhaps you have an old version "
+				   "of GDM running."));
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);

@@ -435,16 +435,16 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 		    g_source_remove (add_check_handler);
 	    add_check_handler = 0;
 
-	    dialog = gtk_message_dialog_new
+	    dialog = ve_hig_dialog_new
 		    (GTK_WINDOW (chooser) /* parent */,
 		     GTK_DIALOG_MODAL /* flags */,
 		     GTK_MESSAGE_ERROR,
-		     GTK_BUTTONS_CLOSE,
+		     GTK_BUTTONS_OK,
+		     _("Cannot connect to remote server"),
 		     _("The host \"%s\" is not willing "
 		       "to support a login session right now.  "
 		       "Please try again later."),
 		     added_host);
-	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 	    if (RUNNING_UNDER_GDM)
 		    gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -802,11 +802,12 @@ add_check (gpointer data)
 	if (added_addr != NULL) {
 		GtkWidget *dialog;
 
-		dialog = gtk_message_dialog_new
+		dialog = ve_hig_dialog_new
 			(GTK_WINDOW (chooser) /* parent */,
 			 GTK_DIALOG_MODAL /* flags */,
 			 GTK_MESSAGE_ERROR,
-			 GTK_BUTTONS_CLOSE,
+			 GTK_BUTTONS_OK,
+			 _("Did not receive response from server"),
 			 _("Did not receive any response from host \"%s\" "
 			   "in %d seconds.  Perhaps the host is not "
 			   "turned on, or is not willing to support a "
@@ -814,7 +815,6 @@ add_check (gpointer data)
 			   "later."),
 			 added_host,
 			 ADD_TIMEOUT / 1000);
-		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 		if (RUNNING_UNDER_GDM)
 			gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -855,15 +855,15 @@ gdm_chooser_add_host (void)
 	} else {
 		GtkWidget *dialog;
 
-		dialog = gtk_message_dialog_new
+		dialog = ve_hig_dialog_new
 			(GTK_WINDOW (chooser) /* parent */,
 			 GTK_DIALOG_MODAL /* flags */,
 			 GTK_MESSAGE_ERROR,
-			 GTK_BUTTONS_CLOSE,
+			 GTK_BUTTONS_OK,
+			 _("Cannot find host"),
 			 _("I cannot find the host \"%s\", "
 			   "perhaps you have mistyped it."),
 			 name);
-		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 		if (RUNNING_UNDER_GDM)
 			gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1086,6 +1086,7 @@ display_chooser_information (void)
 {
 	GtkWidget *dialog;
 
+	/* How to get HIG compliance? */
 	dialog = gtk_message_dialog_new
 		(GTK_WINDOW (chooser) /* parent */,
 		 GTK_DIALOG_MODAL /* flags */,
@@ -1350,16 +1351,16 @@ main (int argc, char *argv[])
 
 	    gdm_wm_focus_new_windows (TRUE);
 
-	    dialog = gtk_message_dialog_new (NULL /* parent */,
-					     GTK_DIALOG_MODAL /* flags */,
-					     GTK_MESSAGE_ERROR,
-					     GTK_BUTTONS_OK,
-					     _("The chooser version (%s) does not match the daemon "
-					       "version (%s).\n"
-					       "You have probably just upgraded gdm.\n"
-					       "Please restart the gdm daemon or reboot the computer."),
-					     VERSION, gdm_version);
-	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	    dialog = ve_hig_dialog_new (NULL /* parent */,
+					GTK_DIALOG_MODAL /* flags */,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_OK,
+					_("Cannot run chooser"),
+					_("The chooser version (%s) does not match the daemon "
+					  "version (%s).  "
+					  "You have probably just upgraded gdm.  "
+					  "Please restart the gdm daemon or reboot the computer."),
+					VERSION, gdm_version);
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
