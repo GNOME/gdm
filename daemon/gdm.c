@@ -3737,6 +3737,57 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		} else {
 			gdm_connection_write (conn, "ERROR 7 Unknown logout action, or not available\n");
 		}
+	} else if (strcmp (msg, GDM_SUP_QUERY_VT) == 0) {
+		/* Only allow locally authenticated connections */
+		if ( ! (gdm_connection_get_user_flags (conn) &
+			GDM_SUP_FLAG_AUTHENTICATED)) {
+			gdm_info (_("Query vt request denied: "
+				    "Not authenticated"));
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
+
+#ifdef __linux__
+		gdm_connection_printf (conn, "OK %d\n", gdm_get_cur_vt ());
+#else
+		gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
+#endif
+	} else if (strncmp (msg, GDM_SUP_SET_VT " ",
+			    strlen (GDM_SUP_SET_VT " ")) == 0) {
+		int vt;
+		GSList *li;
+
+		if (sscanf (msg, GDM_SUP_SET_VT " %d", &vt) != 1 ||
+		    vt < 0) {
+			gdm_connection_write (conn,
+					      "ERROR 9 Invalid virtual terminal number\n");
+			return;
+		}
+
+		/* Only allow locally authenticated connections */
+		if ( ! (gdm_connection_get_user_flags (conn) &
+			GDM_SUP_FLAG_AUTHENTICATED)) {
+			gdm_info (_("Query vt request denied: "
+				    "Not authenticated"));
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
+
+#ifdef __linux__
+		gdm_change_vt (vt);
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *disp = li->data;
+			if (disp->vt == vt) {
+				send_slave_command (disp, GDM_NOTIFY_TWIDDLE_POINTER);
+				break;
+			}
+		}
+		gdm_connection_write (conn, "OK\n");
+#else
+		gdm_connection_write (conn, "ERROR 8 Virtual terminals not supported\n");
+#endif
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
 		gdm_connection_write (conn, "GDM " VERSION "\n");
 	} else if (strcmp (msg, GDM_SUP_CLOSE) == 0) {

@@ -1,3 +1,23 @@
+Mon Jan 05 23:30:38 2004  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/slave.c, daemon/misc.[ch],
+	  daemon/getvt.[ch]:  Add QUERY_VT and SET_VT commands that handle
+	  the VT's on linux.  This is because not all console logins will
+	  actually own /dev/console.  When we change to a VT that we own,
+	  also twiddle the cursor to turn off any screensaver or tickle
+	  the xscreensaver lock dialog etc...
+
+	* gui/gdmcomm.c: handle displays with the screen thingie set
+	  correctly (that is whack the screen part, GDM is not interested
+	  in it).
+
+	* gui/gdmflexiserver.c: Fix #127038 by presenting a list of already
+	  logged in users / open displays (on the console).  This code may
+	  be useful to steal for other such switchers.
+
+	* daemon/cookie.c: don't read root's mail to get entropy, that may
+	  be evil actually.
+
 Fri Jan 02 16:31:34 2004  George Lebl <jirka@5z.com>
 
 	* config/PreSession.in: fix bad color string

@@ -562,10 +562,11 @@ void		gdm_final_cleanup	(void);
 #define GDM_NOTIFY_ADD_GTK_MODULES "AddGtkModules" /* <true/false as int> */
 #define GDM_NOTIFY_GTK_MODULES_LIST "GtkModulesList" /* <modules list> */
 
-/* commands */
+/* commands, seel GDM_SLAVE_NOTIFY_COMMAND */
 #define GDM_NOTIFY_DIRTY_SERVERS "DIRTY_SERVERS"
 #define GDM_NOTIFY_SOFT_RESTART_SERVERS "SOFT_RESTART_SERVERS"
 #define GDM_NOTIFY_GO "GO"
+#define GDM_NOTIFY_TWIDDLE_POINTER "TWIDDLE_POINTER"
 
 /* Ack for a slave message */
 /* Note that an extra response can follow an 'ack' */
@@ -763,7 +764,7 @@ void		gdm_final_cleanup	(void);
  *      200 = Too many messages
  *      999 = Unknown error
  */
-#define GDM_SUP_QUERY_LOGOUT_ACTION "QUERY_LOGOUT_ACTION" /* no arguments */
+#define GDM_SUP_QUERY_LOGOUT_ACTION "QUERY_LOGOUT_ACTION" /* None */
 /* QUERY_LOGOUT_ACTION: Query which logout actions are possible
  * Only supported on connections that passed AUTH_LOCAL.
  * Supported since: 2.5.90.0
@@ -830,7 +831,43 @@ void		gdm_final_cleanup	(void);
 #define GDM_SUP_LOGOUT_ACTION_SUSPEND	"SUSPEND"
 /*
  */
-#define GDM_SUP_CLOSE        "CLOSE" /* no arguments */
+#define GDM_SUP_QUERY_VT "QUERY_VT" /* None */
+/* QUERY_VT:  Ask the daemon about which VT we are currently on.
+ * This is useful for logins which don't own /dev/console but are
+ * still console logins.  Only supported on Linux currently, other places
+ * will just get ERROR 8.  This is also the way to query if VT
+ * support is available in the daemon in the first place.
+ * Only supported on connections that passed AUTH_LOCAL.
+ * Supported since: 2.5.90.0
+ * Arguments:  None
+ * Answers:
+ *   OK <vt number>
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      8 = Virtual terminals not supported
+ *      100 = Not authenticanted
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_SET_VT "SET_VT" /* <vt> */
+/* SET_VT:  Change to the specified virtual terminal.
+ * This is useful for logins which don't own /dev/console but are
+ * still console logins.  Only supported on Linux currently, other places
+ * will just get ERROR 8.
+ * Only supported on connections that passed AUTH_LOCAL.
+ * Supported since: 2.5.90.0
+ * Arguments:  None
+ * Answers:
+ *   OK
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      8 = Virtual terminals not supported
+ *      9 = Invalid virtual terminal number
+ *      100 = Not authenticanted
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_CLOSE        "CLOSE" /* None */
 /* CLOSE Answers: None
  * Supported since: 2.2.4.0
  */

@@ -4526,6 +4526,8 @@ gdm_slave_handle_usr2_message (void)
 				}
 			} else if (strcmp (&s[1], GDM_NOTIFY_GO) == 0) {
 				gdm_wait_for_go = FALSE;
+			} else if (strcmp (&s[1], GDM_NOTIFY_TWIDDLE_POINTER) == 0) {
+				gdm_twiddle_pointer (d);
 			}
 		}
 	}

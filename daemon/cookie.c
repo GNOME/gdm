@@ -70,7 +70,9 @@ struct rngs {
    { "/dev/audio",    MAXBUFFERSIZE,	0 },
    { "/etc/shadow",   MAXBUFFERSIZE,	0 },
    { "/var/log/messages",   MAXBUFFERSIZE,	0 },
+   /*
    { "/var/spool/mail/root", MAXBUFFERSIZE,	0 },
+   */
 };
 
 #define RNGS (sizeof(rngs)/sizeof(struct rngs))

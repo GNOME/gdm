@@ -29,7 +29,13 @@
  * vt.  This should be closed after the server has started.
  * This is to avoid race with other stuff openning this vt.
  * It can be set to -1 if nothing could be opened. */
-char * gdm_get_empty_vt_argument (int *fd, int *vt);
-void gdm_change_vt (int vt);
+char *	gdm_get_empty_vt_argument	(int *fd,
+					 int *vt);
+
+/* Change to the specified virtual terminal */
+void	gdm_change_vt			(int vt);
+
+/* Get the current virtual terminal number or -1 if we can't */
+int	gdm_get_cur_vt			(void);
 
 #endif /* GETVT_H */

@@ -42,6 +42,7 @@
 #ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
 #endif
+#include <X11/Xlib.h>
 
 #include <vicious.h>
 
@@ -2185,6 +2186,35 @@ gdm_strip_extension (const char *name, const char *extension)
 	} else {
 		return g_strdup (name);
 	}
+}
+
+void
+gdm_twiddle_pointer (GdmDisplay *disp)
+{
+	if (disp == NULL ||
+	    disp->dsp == NULL)
+		return;
+
+	XWarpPointer (disp->dsp,
+		      None /* src_w */,
+		      None /* dest_w */,
+		      0 /* src_x */,
+		      0 /* src_y */,
+		      0 /* src_width */,
+		      0 /* src_height */,
+		      1 /* dest_x */,
+		      1 /* dest_y */);
+	XSync (disp->dsp, False);
+	XWarpPointer (disp->dsp,
+		      None /* src_w */,
+		      None /* dest_w */,
+		      0 /* src_x */,
+		      0 /* src_y */,
+		      0 /* src_width */,
+		      0 /* src_height */,
+		      -1 /* dest_x */,
+		      -1 /* dest_y */);
+	XSync (disp->dsp, False);
 }
 
 /* EOF */

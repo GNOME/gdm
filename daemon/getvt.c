@@ -142,6 +142,33 @@ gdm_change_vt (int vt)
 	VE_IGNORE_EINTR (close (fd));
 }
 
+int
+gdm_get_cur_vt (void)
+{
+	struct vt_stat s;
+	int fd;
+
+	do {
+		errno = 0;
+		fd = open ("/dev/console", O_WRONLY
+#ifdef O_NOCTTY
+			   |O_NOCTTY
+#endif
+			   , 0);
+	} while G_UNLIKELY (errno == EINTR);
+	if (fd < 0)
+		return -1;
+
+	ioctl (fd, VT_GETSTATE, &s);
+
+	VE_IGNORE_EINTR (close (fd));
+
+	/* debug */
+	printf ("current_Active %d\n", (int)s.v_active);
+
+	return s.v_active;
+}
+
 #else /* here this is just a stub, we don't know how to do this outside
 	 of linux really */
 
@@ -157,6 +184,12 @@ void
 gdm_change_vt (int vt)
 {
 	return;
+}
+
+int
+gdm_get_cur_vt (void)
+{
+	return -1;
 }
 
 #endif

@@ -170,6 +170,8 @@ char * gdm_make_filename (const char *dir, const char *name, const char *extensi
 char * gdm_ensure_extension (const char *name, const char *extension);
 char * gdm_strip_extension (const char *name, const char *extension);
 
+void gdm_twiddle_pointer (GdmDisplay *disp);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

@@ -189,6 +189,8 @@ gdmcomm_get_display (void)
 	static char *display = NULL;
 
 	if (display == NULL) {
+		char *p;
+
 		display = gdk_get_display ();
 		if (display == NULL) {
 			display = g_strdup (g_getenv ("DISPLAY"));
@@ -196,6 +198,11 @@ gdmcomm_get_display (void)
 				display = g_strdup (":0");
 			}
 		}
+
+		/* whack screen part, GDM doesn't like those */
+		p = strchr (display, '.');
+		if (p != NULL)
+			*p = '\0';
 	}
 
 	return display;
@@ -474,6 +481,10 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 	} else if (strncmp (ret, "ERROR 7 ", strlen ("ERROR 7 ")) == 0) {
 		return _("Trying to set an unknown logout action, or trying "
 			 "to set a logout action which is not available.");
+	} else if (strncmp (ret, "ERROR 8 ", strlen ("ERROR 8 ")) == 0) {
+		return _("Virtual terminals not supported.");
+	} else if (strncmp (ret, "ERROR 9 ", strlen ("ERROR 9 ")) == 0) {
+		return _("Trying to change to an invalid virtual terminal number.");
 	} else if (strncmp (ret, "ERROR 50 ", strlen ("ERROR 50 ")) == 0) {
 		return _("Trying to update an unsupported configuration key.");
 	} else if (strncmp (ret, "ERROR 100 ", strlen ("ERROR 100 ")) == 0) {
