@@ -196,6 +196,8 @@ gdm_display_manage (GdmDisplay *d)
     d->slavepid = 0;
     gdm_sigchld_block_pop ();
 
+    d->managetime = time (NULL);
+
     /* Fork slave process */
     gdm_sigchld_block_push ();
     gdm_sigterm_block_push ();

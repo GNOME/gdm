@@ -1,3 +1,14 @@
+Tue Jul 08 01:38:34 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/slave.c, daemon/display.c:  If a greeter
+	  crashes within 10 seconds of the display being managed, we assume
+	  it's unusable, pop up a dialog box and run a different greeter,
+	  and next time try the old one over again.  This is mostly in
+	  place to catch gdmgreeter crashing (such as currently on my
+	  system with a libart bug).  The user can then run the setup and
+	  select a different greeter or try to reinstall or upgrade
+	  or whatever.  Better then a flickering display.
+
 Tue Jul 08 01:07:08 2003  George Lebl <jirka@5z.com>
 
 	* daemon/auth.c: minor leak fixes in case auth file writes fail

@@ -62,6 +62,7 @@
 				   restart display */
 #define DISPLAY_RUN_CHOOSER 30	/* Run chooser */
 #define DISPLAY_XFAILED 64	/* X failed */
+#define DISPLAY_GREETERFAILED 65 /* greeter failed (crashed) */
 #define DISPLAY_RESTARTGREETER 127 /* Restart greeter */
 #define DISPLAY_RESTARTGDM 128	/* Restart GDM */
 
@@ -319,6 +320,7 @@ struct _GdmDisplay {
     guint16 dispnum;
     guint8 servstat;
     time_t starttime;
+    time_t managetime;
     guint8 type;
     pid_t greetpid;
     pid_t servpid;
@@ -343,6 +345,8 @@ struct _GdmDisplay {
 
     time_t last_x_failed;
     int x_faileds;
+
+    gboolean try_different_greeter;
 
     gboolean disabled;
 

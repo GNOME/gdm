@@ -1811,7 +1811,37 @@ gdm_slave_greeter (void)
 		argv = ve_split (GdmGreeter);
 	else
 		argv = ve_split (GdmRemoteGreeter);
-	if (GdmAddGtkModules && !(ve_string_empty(GdmGtkModulesList))) {
+
+	if (d->try_different_greeter) {
+		/* FIXME: we should also really be able to do standalone failsafe
+		   login, but that requires some work and is perhaps an overkill. */
+		/* This should handle mostly the case where gdmgreeter is crashing
+		   and we'd want to start gdmlogin for the user so that at least
+		   something works instead of a flickering screen */
+		gdm_error_box (d,
+			       GTK_MESSAGE_ERROR,
+			       _("The greeter program appears to be crashing.\n"
+				 "I will attempt to use a different one."));
+		if (strstr (argv[0], "gdmlogin") != NULL) {
+			/* in case it is gdmlogin that's crashing
+			   try the graphical greeter for luck */
+			argv = g_new0 (char *, 2);
+			argv[0] = EXPANDED_BINDIR "/gdmgreeter";
+			argv[1] = NULL;
+		} else {
+			/* in all other cases, try the gdmlogin (standard greeter)
+			   proggie */
+			argv = g_new0 (char *, 2);
+			argv[0] = EXPANDED_BINDIR "/gdmlogin";
+			argv[1] = NULL;
+		}
+	}
+
+	if (GdmAddGtkModules &&
+	    !(ve_string_empty(GdmGtkModulesList)) &&
+	    /* don't add modules if we're trying to prevent crashes,
+	       perhaps it's the modules causing the problem in the first place */
+	    ! d->try_different_greeter) {
 		gchar *modules =  g_strdup_printf("--gtk-module=%s", GdmGtkModulesList);
 		execl (argv[0], argv[0], modules, NULL);
 		/* Something went wrong */
@@ -3387,7 +3417,15 @@ gdm_slave_child_handler (int sig)
 		     WEXITSTATUS (status) == DISPLAY_RESTARTGDM)) {
 			gdm_slave_quick_exit (WEXITSTATUS (status));
 		} else {
-			gdm_slave_quick_exit (DISPLAY_REMANAGE);
+			if (WIFSIGNALED (status) &&
+			    (WTERMSIG (status) == SIGSEGV ||
+			     WTERMSIG (status) == SIGABRT ||
+			     WTERMSIG (status) == SIGPIPE ||
+			     WTERMSIG (status) == SIGBUS)) {
+				gdm_slave_quick_exit (DISPLAY_GREETERFAILED);
+			} else {
+				gdm_slave_quick_exit (DISPLAY_REMANAGE);
+			}
 		}
 	} else if (pid != 0 && pid == d->sesspid) {
 		d->sesspid = 0;

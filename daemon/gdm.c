@@ -1171,6 +1171,18 @@ gdm_cleanup_children (void)
 	    status = DISPLAY_REMANAGE;
     }
 
+    if (status == DISPLAY_GREETERFAILED) {
+	    if (d->managetime + 10 >= time (NULL)) {
+		    d->try_different_greeter = TRUE;
+	    } else {
+		    d->try_different_greeter = FALSE;
+	    }
+	    /* now just remanage */
+	    status = DISPLAY_REMANAGE;
+    } else {
+	    d->try_different_greeter = FALSE;
+    }
+
     /* checkout if we can actually do stuff */
     switch (status) {
     case DISPLAY_REBOOT:
