@@ -39,7 +39,7 @@ is_in_trusted_pic_dir (const char *path)
 	if (strncmp (path, EXPANDED_PIXMAPDIR, sizeof (EXPANDED_PIXMAPDIR)) == 0)
 		return TRUE;
 
-	/* gnome'skpixmap dir is trusted */
+	/* gnome's pixmap dir is trusted */
 	globalpix = gnome_unconditional_pixmap_file ("");
 	if (strncmp (path, globalpix, strlen (globalpix)) == 0) {
 		g_free (globalpix);
@@ -160,9 +160,11 @@ main (int argc, char *argv[])
 					 g_strerror (errno));
 				d = gnome_warning_dialog (msg);
 				gnome_dialog_run_and_close (GNOME_DIALOG (d));
+				g_free (cfg_file);
 				g_free (photofile);
 				continue;
 			}
+			unlink (photofile);
 			fddest = open (photofile, O_WRONLY | O_CREAT);
 			if (fddest < 0) {
 				GtkWidget *d;
@@ -173,6 +175,7 @@ main (int argc, char *argv[])
 					 g_strerror (errno));
 				d = gnome_warning_dialog (msg);
 				gnome_dialog_run_and_close (GNOME_DIALOG (d));
+				g_free (cfg_file);
 				g_free (photofile);
 				close (fdsrc);
 				continue;
