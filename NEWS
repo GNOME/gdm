@@ -1,5 +1,20 @@
 Ahh news...
 
+2.4.1.7 stuff:
+
+- SECURITY: Fixed CAN-2003-0793, a local DoS, the socket connection
+  is now non-blocking and limitted to the number of commands
+
+- SECURITY: Fixed CAN-2003-0794, a local DoS, the line length is limitted
+  to 4096 bytes (note, this was not a buffer overrun).
+
+  (Thanks to Jarno Gassenbauer for pointing out the above two problems)
+
+- Avoid possible DoS by using "-audit 0" for the X server command line
+
+- Fix an underlining bug in the graphical greeter when the underlined letter
+  is the last letter. (discussed in rh #106189)
+
 2.4.1.6 SECURITY ADDENDUM:
   Was not part of the original release notes to give distributors a chance
   to update.

@@ -1357,11 +1357,13 @@ create_connections (void)
 
 	unixconn = gdm_connection_open_unix (GDM_SUP_SOCKET, 0666);
 
-	if (unixconn != NULL)
+	if (unixconn != NULL) {
 		gdm_connection_set_handler (unixconn,
 					    gdm_handle_user_message,
 					    NULL /* data */,
 					    NULL /* destroy_notify */);
+ 		gdm_connection_set_nonblock (unixconn, TRUE);
+	}
 }
 
 struct poptOption options [] = {
@@ -2610,6 +2612,12 @@ static void
 gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	gdm_debug ("Handling user message: '%s'", msg);
+
+	if (gdm_connection_get_message_count (conn) > 20) {
+		gdm_connection_write (conn, "ERROR 200 Too many messages\n");
+		gdm_connection_close (conn);
+		return;
+	}
 
 	if (strncmp (msg, GDM_SUP_AUTH_LOCAL " ",
 		     strlen (GDM_SUP_AUTH_LOCAL " ")) == 0) {

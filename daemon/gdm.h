@@ -477,6 +477,9 @@ void		gdm_final_cleanup	(void);
  * is the gdm version and not a "protocol" revision, so you can't check
  * against a single version but check if the version is higher then some
  * value.
+ *
+ * You can only send a few commands at a time, so if you keep getting error
+ * 200 try opening a new socket for every command you send.
  */
 /* The user protocol, using /tmp/.gdm_socket */
 
@@ -486,6 +489,9 @@ void		gdm_final_cleanup	(void);
  * Arguments:  None
  * Answers:
  *   GDM <gdm version>
+ *   ERROR <err number> <english error description>
+ *      200 = Too many messages
+ *      999 = Unknown error
  */
 #define GDM_SUP_AUTH_LOCAL "AUTH_LOCAL" /* <xauth cookie> */
 /* AUTH_LOCAL: Setup this connection as authenticated for FLEXI_SERVER
@@ -502,6 +508,7 @@ void		gdm_final_cleanup	(void);
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      100 = Not authenticated
+ *      200 = Too many messages
  *      999 = Unknown error
  */
 #define GDM_SUP_FLEXI_XSERVER "FLEXI_XSERVER" /* <xserver type> */
@@ -520,6 +527,7 @@ void		gdm_final_cleanup	(void);
  *      4 = X too busy
  *      6 = No server binary
  *      100 = Not authenticated
+ *      200 = Too many messages
  *      999 = Unknown error
  */
 #define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <uid> <xauth cookie> <xauth file> */
@@ -548,6 +556,7 @@ void		gdm_final_cleanup	(void);
  *      5 = Xnest can't connect
  *      6 = No server binary
  *      100 = Not authenticated
+ *      200 = Too many messages
  *      999 = Unknown error
  */
 #define GDM_SUP_CONSOLE_SERVERS  "CONSOLE_SERVERS" /* None */
@@ -565,6 +574,11 @@ void		gdm_final_cleanup	(void);
  *   for example).  If the display is an xnest display and is a console one
  *   (that is, it is an xnest inside another console display) it is listed
  *   and instead of vt, it lists the parent display in standard form.
+ *
+ *   ERROR <err number> <english error description>
+ *      1 = Not implemented
+ *      200 = Too many messages
+ *      999 = Unknown error
  */
 #define GDM_SUP_UPDATE_CONFIG "UPDATE_CONFIG" /* <key> */
 /* AUTH_LOCAL: Tell the daemon to update config of some key.  Any user
@@ -602,6 +616,7 @@ void		gdm_final_cleanup	(void);
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      50 = Unsupported key
+ *      200 = Too many messages
  *      999 = Unknown error
  */
 #define GDM_SUP_GREETERPIDS  "GREETERPIDS" /* None */
@@ -611,6 +626,10 @@ void		gdm_final_cleanup	(void);
  * Arguments:  None
  * Answers:
  *   OK <pid>;<pid>;...
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      200 = Too many messages
+ *      999 = Unknown error
  */
 #define GDM_SUP_CLOSE        "CLOSE" /* no arguments */
 /* CLOSE Answers: None
