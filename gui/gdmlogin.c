@@ -2657,6 +2657,17 @@ gdm_login_gui_init (void)
 	}
     }
 
+    /* Add a quit item when in xdmcp mode */
+    if (gdm_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+	    item = gtk_menu_item_new_with_label (_("Quit"));
+	    gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
+	    gtk_widget_add_accelerator (item, "activate_item", accel,
+					GDK_q, GDK_MOD1_MASK, 0);
+	    gtk_widget_show (GTK_WIDGET (item));
+	    gtk_signal_connect (GTK_OBJECT (item), "activate",
+				GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+    }
+
     /* The clock */
     ebox = gtk_event_box_new ();
     gtk_widget_show (ebox);
