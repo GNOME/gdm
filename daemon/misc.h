@@ -79,6 +79,8 @@ gboolean gdm_is_a_no_password_user (const char *user);
 
 int gdm_open_dev_null (mode_t mode);
 
+void gdm_unset_signals (void);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

@@ -191,39 +191,53 @@ error_clear (gpointer data)
 }
 
 static char *
-break_at (const char *orig, int len)
+break_at (const char *orig, int columns)
 {
-  char *text, *p, *newline;
+  PangoLogAttr *attrs;
+  int n_chars;
+  GString *str;
   int i;
+  int in_current_row;
+  const char *p;
+  
+  str = g_string_new (NULL);
+  n_chars = g_utf8_strlen (orig, -1);
 
-  text = g_strdup (orig);
-  
-  p = text;
-  
-  while (strlen (p) > len)
+  attrs = g_new0 (PangoLogAttr, n_chars + 1);
+  pango_get_log_attrs (orig, -1,
+                       0, gtk_get_default_language (),
+                       attrs, n_chars + 1);  
+
+  in_current_row = 0;
+  i = 0;
+  p = orig;
+  while (i < n_chars)
     {
-      newline = strchr (p, '\n');
-      if (newline &&
-	  ((newline - p) < len))
-	{
-	  p = newline + 1;
-	  continue;
-	}
+      gunichar ch;
 
-      for (i = MIN (len, strlen (p)-1); i > 0; i--)
-	{
-	  if (p[i] == ' ')
-	    {
-	      p[i] = '\n';
-	      p = p + i + 1;
-	      goto out;
-	    }
-	}
-      /* No place to break. give up */
-      p = p + 80;
-    out:
+      ch = g_utf8_get_char (p);
+      
+      /* Broken algorithm for simplicity; we just break
+       * at the first place we can within 10 of the end
+       */
+      
+      if (in_current_row > (columns - 10) &&
+          attrs[i].is_line_break)
+        {
+          in_current_row = 0;
+          g_string_append_unichar (str, '\n');
+        }
+
+      ++in_current_row;
+      g_string_append_unichar (str, ch);
+      
+      p = g_utf8_next_char (p);
+      ++i;
     }
-  return text;
+  
+  g_free (attrs);
+
+  return g_string_free (str, FALSE);
 }
 
 void

@@ -110,7 +110,7 @@ gdm_fail (const gchar *format, ...)
 	    if (extra_process > 1 && extra_process != getpid ()) {
 		    /* we sigterm extra processes, and we
 		     * don't wait */
-		    kill (extra_process, SIGTERM);
+		    kill (-(extra_process), SIGTERM);
 		    extra_process = 0;
 	    }
 	    gdm_sigchld_block_pop ();
@@ -633,6 +633,17 @@ gdm_fork_extra (void)
 
 	gdm_sigchld_block_pop ();
 
+	if (pid == 0) {
+		/* In the child setup empty mask and set all signals to
+		 * default values */
+		gdm_unset_signals ();
+
+		/* Also make a new process group so that we may use
+		 * kill -(extra_process) to kill extra process and all it's
+		 * possible children */
+		setsid ();
+	}
+
 	return pid;
 }
 
@@ -1029,6 +1040,23 @@ gdm_open_dev_null (mode_t mode)
 	}
 
 	return ret;
+}
+
+void
+gdm_unset_signals (void)
+{
+	sigset_t mask; 
+
+	sigemptyset (&mask);
+	sigprocmask (SIG_SETMASK, &mask, NULL);
+
+	signal (SIGUSR1, SIG_DFL);
+	signal (SIGUSR2, SIG_DFL);
+	signal (SIGCHLD, SIG_DFL);
+	signal (SIGTERM, SIG_DFL);
+	signal (SIGPIPE, SIG_DFL);
+	signal (SIGALRM, SIG_DFL);
+	signal (SIGHUP, SIG_DFL);
 }
 
 

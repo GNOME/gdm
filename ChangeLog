@@ -1,3 +1,19 @@
+Wed Sep 04 11:29:03 2002  George Lebl <jirka@5z.com>
+
+	* gui/greeter/greeter_item_pam.c: Apply patch from Havoc from bug
+	  #91921 to fix word wrap for japanese and such
+
+	* daemon/misc.[ch]: add a utility to unset signals, also unset
+	  signals and do setsid in the extra process.
+
+	* daemon/slave.c, daemon/misc.c, daemon/display.c, daemon/gdm.c:
+	  Use the above function to unset signals in children.  Also unlink
+	  .xsession-errors before openning it just to be anal (and to work
+	  even if the user used some older gdms that made the file have
+	  root permissions and such nonsense).  Also when killing the extra
+	  process kill the whole process group in case the extra process
+ 	  makes children.
+
 Fri Aug 30 12:22:19 2002  George Lebl <jirka@5z.com>
 
 	* Release 2.4.0.11

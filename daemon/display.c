@@ -194,6 +194,10 @@ gdm_display_manage (GdmDisplay *d)
 	 * slave much better itself */
 	setsid ();
 
+	/* In the child setup empty mask and set all signals to
+	 * default values, we'll make them more fun later */
+	gdm_unset_signals ();
+
 	d->slavepid = getpid ();
 
 	/* Close XDMCP fd in slave process */

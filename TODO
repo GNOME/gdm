@@ -5,9 +5,7 @@ DOCUMENTATION!
 Big TODO: Rewrite the slave to be based around a mainloop.  So that
 we don't have to do things directly from signal handlers.
 
-TODO things (some must wait until 2.1):
-  - check for /dev/null and make make sure we do all the open stuff correctly
-
+TODO things:
   - handle kills of server not working correctly to be more robust
     we must leave killing to the main daemon since that can more likely kill
     the server.
@@ -15,8 +13,6 @@ TODO things (some must wait until 2.1):
     and all that set correctly
   - in slave child handler check that the server dead stuff can actually wipe
     cookies (it needs to have the uid of the user) (probably so)
-
-  - unset signal handlers when going into children
 
 Languages should be read from available locales.  Look at source  for
 locale_config.  Currently the way we do things is utter shit.

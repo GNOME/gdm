@@ -801,7 +801,7 @@ gdm_final_cleanup (void)
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
 		 * don't wait */
-		kill (extra_process, SIGTERM);
+		kill (-(extra_process), SIGTERM);
 		extra_process = 0;
 	}
 

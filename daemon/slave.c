@@ -66,7 +66,6 @@
 /* Some per slave globals */
 static GdmDisplay *d;
 static gchar *login = NULL;
-static sigset_t mask;
 static gboolean greet = FALSE;
 static gboolean configurator = FALSE;
 static gboolean remanage_asap = FALSE;
@@ -248,6 +247,7 @@ gdm_slave_start (GdmDisplay *display)
 {  
 	time_t first_time;
 	int death_count;
+	static sigset_t mask;
 	struct sigaction alrm, term, child, usr2;
 
 	if (!display)
@@ -742,6 +742,8 @@ focus_first_x_window (const char *class_res_name)
 		return;
 	}
 
+	gdm_unset_signals ();
+
 	closelog ();
 
 	gdm_close_all_descriptors (0 /* from */, -1 /* except */);
@@ -850,6 +852,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		/* child */
 
 		setsid ();
+
+		gdm_unset_signals ();
 
 		setuid (0);
 		setgid (0);
@@ -1457,11 +1461,7 @@ gdm_slave_greeter (void)
     case 0:
 	setsid ();
 
-	sigfillset (&mask);
-	sigdelset (&mask, SIGINT);
-	sigdelset (&mask, SIGTERM);
-	sigdelset (&mask, SIGHUP);
-	sigprocmask (SIG_SETMASK, &mask, NULL);
+	gdm_unset_signals ();
 
 	/* Plumbing */
 	close (pipe1[1]);
@@ -1826,11 +1826,7 @@ gdm_slave_chooser (void)
 	case 0:
 		setsid ();
 
-		sigfillset (&mask);
-		sigdelset (&mask, SIGINT);
-		sigdelset (&mask, SIGTERM);
-		sigdelset (&mask, SIGHUP);
-		sigprocmask (SIG_SETMASK, &mask, NULL);
+		gdm_unset_signals ();
 
 		/* Plumbing */
 		close (p[0]);
@@ -2184,13 +2180,14 @@ session_child_run (struct passwd *pwent,
 		   gboolean sessoptok,
 		   gboolean savegnomesess)
 {
-	sigset_t mask; 
 	int logfd;
 	gboolean failsafe = FALSE;
 	char *sesspath, *sessexec;
 	gboolean need_config_sync = FALSE;
 	const char *shell = NULL;
 	Display *disp;
+
+	gdm_unset_signals ();
 
 	gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
 
@@ -2226,14 +2223,24 @@ session_child_run (struct passwd *pwent,
 	 * unless in failsafe mode which needs to work when there is
 	 * no diskspace as well */
 	if ( ! failsafe && home_dir_ok) {
+		char *filename = g_strconcat (home_dir,
+					      "/.xsession-errors",
+					      NULL);
 		uid_t old = geteuid ();
 		uid_t oldg = getegid ();
+
+		/* unlink the filename to be anal (as root to get rid of
+		 * possible old versions with root ownership) */
+		unlink (filename);
+
 		setegid (pwent->pw_gid);
 		seteuid (pwent->pw_uid);
-		logfd = open (g_strconcat (home_dir, "/.xsession-errors", NULL),
-			      O_CREAT|O_TRUNC|O_WRONLY, 0644);
+		logfd = open (filename, O_CREAT|O_TRUNC|O_WRONLY, 0644);
 		seteuid (old);
 		setegid (oldg);
+
+		g_free (filename);
+
 		if (logfd != -1) {
 			dup2 (logfd, 1);
 			dup2 (logfd, 2);
@@ -2298,13 +2305,9 @@ session_child_run (struct passwd *pwent,
 	 * just use the system default */
 	if ( ! ve_string_empty (language) &&
 	     ! ve_locale_exists (language)) {
-		/* FIXME: give this error message! */
-		/* Must wait till string freeze is over */
-		/* XXX STRING XXX
 		char *msg = g_strdup_printf (_("Language %s does not exist, using %s"),
 					     language, _("System default"));
 		gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
-		*/
 		language = NULL;
 	}
 
@@ -2393,16 +2396,6 @@ session_child_run (struct passwd *pwent,
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
-	sigemptyset (&mask);
-	sigprocmask (SIG_SETMASK, &mask, NULL);
-
-	signal (SIGCHLD, SIG_DFL);
-	signal (SIGTERM, SIG_DFL);
-	signal (SIGPIPE, SIG_DFL);
-	signal (SIGALRM, SIG_DFL);
-	signal (SIGHUP, SIG_DFL);
-
-
 	/* If "Gnome Chooser" is still set as a session,
 	 * just change that to "Gnome", since "Gnome Chooser" is a
 	 * fake */
@@ -3348,7 +3341,7 @@ gdm_slave_quick_exit (gint status)
 	    d->servpid = 0;
 
 	    if (extra_process > 1)
-		    kill (extra_process, SIGTERM);
+		    kill (-(extra_process), SIGTERM);
 	    extra_process = 0;
     }
 
