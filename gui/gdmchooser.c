@@ -153,6 +153,14 @@ static GtkWidget *browser;
 static GdmChooserHost *curhost;
 
 static void
+setup_cursor (GdkCursorType type)
+{
+	GdkCursor *cursor = gdk_cursor_new (type);
+	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
+	gdk_cursor_destroy (cursor);
+}
+
+static void
 gdm_chooser_host_dispose (GdmChooserHost *host)
 {
     if (!host)
@@ -1093,6 +1101,9 @@ main (int argc, char *argv[])
 	    exit (1);
     }
 
+    /* Should be a watch already, but just in case */
+    setup_cursor (GDK_WATCH);
+
     glade_init();
 
     gdm_chooser_parse_config();
@@ -1122,6 +1133,8 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
+	    setup_cursor (GDK_LEFT_PTR);
+
 	    gtk_dialog_run (GTK_DIALOG (dialog));
 
 	    return EXIT_SUCCESS;
@@ -1145,7 +1158,7 @@ main (int argc, char *argv[])
     gdm_chooser_xdmcp_init (hosts);
     poptFreeContext (ctx);
 
-    if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+    if (RUNNING_UNDER_GDM) {
 	    guint sid = g_signal_lookup ("event",
 					 GTK_TYPE_WIDGET);
 	    g_signal_add_emission_hook (sid,
@@ -1169,6 +1182,8 @@ main (int argc, char *argv[])
 	     * if it fails */
 	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
     }
+
+    setup_cursor (GDK_LEFT_PTR);
 
     gtk_main();
 

@@ -1,3 +1,11 @@
+Wed Jul 10 13:36:03 2002  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c, gui/gdmlogin.c, gui/greeter/greeter.c,
+	  gui/gdmchooser.c:  When we first open the X connection, set
+	  the cursor to a busy cursor (watch) and also don't set the
+	  pointer cursor in the greeters until we are actually ready.
+	  Also do cursor voodoo in the chooser.
+
 Tue Jul 09 15:29:00 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: some more sanity from Oswald, but this doesn't

@@ -501,6 +501,14 @@ greeter_setup_items (void)
   greeter_item_session_setup ();
 }
 
+static void
+setup_cursor (GdkCursorType type)
+{
+	GdkCursor *cursor = gdk_cursor_new (type);
+	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
+	gdk_cursor_destroy (cursor);
+}
+
 enum {
 	RESPONSE_RESTART,
 	RESPONSE_REBOOT,
@@ -541,6 +549,8 @@ verify_gdm_version (void)
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
+
+      setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
     
@@ -575,6 +585,8 @@ verify_gdm_version (void)
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
       
+      setup_cursor (GDK_LEFT_PTR);
+
       switch (gtk_dialog_run (GTK_DIALOG (dialog)))
 	{
 	case RESPONSE_REBOOT:
@@ -621,6 +633,8 @@ verify_gdm_version (void)
     
       gtk_dialog_set_default_response (GTK_DIALOG (dialog), RESPONSE_RESTART);
       
+      setup_cursor (GDK_LEFT_PTR);
+
       switch (gtk_dialog_run (GTK_DIALOG (dialog)))
 	{
 	case RESPONSE_RESTART:
@@ -742,14 +756,6 @@ greeter_done (int sig)
 }
 
 
-static void
-setup_cursor (GdkCursorType type)
-{
-	GdkCursor *cursor = gdk_cursor_new (type);
-	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
-	gdk_cursor_destroy (cursor);
-}
-
 static char *
 get_theme_file (const char *in, char **theme_dir)
 {
@@ -851,7 +857,8 @@ main (int argc, char *argv[])
 
   gtk_init (&argc, &argv);
 
-  setup_cursor (GDK_LEFT_PTR);
+  /* Should be a watch already, but anyway */
+  setup_cursor (GDK_WATCH);
   
   gdm_wm_screen_init (GdmXineramaScreen);
   
@@ -959,6 +966,8 @@ main (int argc, char *argv[])
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
+
+      setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -977,6 +986,8 @@ main (int argc, char *argv[])
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
+
+      setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1018,6 +1029,8 @@ main (int argc, char *argv[])
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
+      setup_cursor (GDK_LEFT_PTR);
+
       gdm_wm_no_login_focus_push ();
       gtk_dialog_run (GTK_DIALOG (dialog));
       gtk_widget_destroy (dialog);
@@ -1039,6 +1052,8 @@ main (int argc, char *argv[])
 					 "default command.  Please fix your configuration."));
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
+
+      setup_cursor (GDK_LEFT_PTR);
 
       gdm_wm_no_login_focus_push ();
       gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1064,6 +1079,8 @@ main (int argc, char *argv[])
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
+      setup_cursor (GDK_LEFT_PTR);
+
       gdm_wm_no_login_focus_push ();
       gtk_dialog_run (GTK_DIALOG (dialog));
       gtk_widget_destroy (dialog);
@@ -1071,6 +1088,8 @@ main (int argc, char *argv[])
     }
 
   gdm_wm_restore_wm_order ();
+
+  setup_cursor (GDK_LEFT_PTR);
 
   gtk_main ();
 

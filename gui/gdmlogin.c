@@ -3876,6 +3876,9 @@ main (int argc, char *argv[])
 
     gtk_init (&argc, &argv);
 
+    /* Should be a watch already, but just in case */
+    setup_cursor (GDK_WATCH);
+
     gdm_login_parse_config ();
 
     /* no language set, use the GdmDefaultLocale */
@@ -3886,8 +3889,6 @@ main (int argc, char *argv[])
     } else {
 	    setlocale (LC_ALL, "");
     }
-
-    setup_cursor (GDK_LEFT_PTR);
 
     tooltips = gtk_tooltips_new ();
 
@@ -3922,6 +3923,8 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
+	    setup_cursor (GDK_LEFT_PTR);
+
 	    gtk_dialog_run (GTK_DIALOG (dialog));
 
 	    return EXIT_SUCCESS;
@@ -3954,6 +3957,8 @@ main (int argc, char *argv[])
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
+
+	    setup_cursor (GDK_LEFT_PTR);
 
 	    switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
 	    case RESPONSE_REBOOT:
@@ -3999,6 +4004,8 @@ main (int argc, char *argv[])
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
 	    gtk_dialog_set_default_response (GTK_DIALOG (dialog), RESPONSE_RESTART);
+
+	    setup_cursor (GDK_LEFT_PTR);
 
 	    switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
 	    case RESPONSE_RESTART:
@@ -4141,6 +4148,8 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
+	    setup_cursor (GDK_LEFT_PTR);
+
 	    gdm_wm_no_login_focus_push ();
 	    gtk_dialog_run (GTK_DIALOG (dialog));
 	    gtk_widget_destroy (dialog);
@@ -4161,6 +4170,8 @@ main (int argc, char *argv[])
 					       "default command.  Please fix your configuration."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
+
+	    setup_cursor (GDK_LEFT_PTR);
 
 	    gdm_wm_no_login_focus_push ();
 	    gtk_dialog_run (GTK_DIALOG (dialog));
@@ -4185,6 +4196,8 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
+	    setup_cursor (GDK_LEFT_PTR);
+
 	    gdm_wm_no_login_focus_push ();
 	    gtk_dialog_run (GTK_DIALOG (dialog));
 	    gtk_widget_destroy (dialog);
@@ -4194,6 +4207,9 @@ main (int argc, char *argv[])
     gdm_wm_restore_wm_order ();
 
     g_atexit (kill_thingies);
+
+    /* Only setup the cursor now since it will be a WATCH from before */
+    setup_cursor (GDK_LEFT_PTR);
 
     gtk_main ();
 

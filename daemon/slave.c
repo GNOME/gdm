@@ -502,6 +502,16 @@ gdm_slave_run (GdmDisplay *display)
 	}
     }
 
+    /* Set the busy cursor */
+    if (d->dsp != NULL) {
+	    Cursor xcursor = XCreateFontCursor (d->dsp, GDK_WATCH);
+	    XDefineCursor (d->dsp,
+			   DefaultRootWindow (d->dsp),
+			   xcursor);
+	    XFreeCursor (d->dsp, xcursor);
+	    XSync (d->dsp, False);
+    }
+
     /* Just a race avoiding sleep, probably not necessary though,
      * but doesn't hurt anything */
     if ( ! d->handled)
