@@ -19,6 +19,7 @@
  */
 
 #include "config.h"
+#include <locale.h>
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
 #include <string.h>
@@ -31,6 +32,9 @@ struct _Language {
 	char *code;
 	char *untranslated;
 	int found;
+
+	/* extra fields */
+	char *collate_key;
 };
 
 /* Note: these should NOT include the encodings, this is just a translation
@@ -38,7 +42,7 @@ struct _Language {
  * languages, just their names and where they are placed in the menu.
  * The available languages come from the supplied locale.alias */
 static Language languages [] = {
-	/*Note translate the A-M to the A-M you used in the group label */
+/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Azerbaijani"), "az_AZ", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Basque"), "eu_ES", NULL, 0 },
@@ -296,24 +300,32 @@ lang_collate (gconstpointer a, gconstpointer b)
 	gboolean clean;
 	Language *l1 = find_lang ((const char *)a, &clean);
 	Language *l2 = find_lang ((const char *)b, &clean);
-	const char *name1, *name2;
 
 	/* paranoia */
 	if (l1 == NULL || l2 == NULL)
 		return 0;
 
-	name1 = strchr (_(l1->name), '|');
-	if (name1 != NULL)
-		name1 ++;
-	else
-		name1 = _(l1->name);
-	name2 = strchr (_(l2->name), '|');
-	if (name2 != NULL)
-		name2 ++;
-	else
-		name2 = _(l2->name);
+	if (l1->collate_key == NULL) {
+		const char *name;
+		name = strchr (_(l1->name), '|');
+		if (name != NULL)
+			name ++;
+		else
+			name = _(l1->name);
+		l1->collate_key = g_utf8_collate_key (name, -1);
+	}
 
-	return strcoll (name1, name2);
+	if (l2->collate_key == NULL) {
+		const char *name;
+		name = strchr (_(l2->name), '|');
+		if (name != NULL)
+			name ++;
+		else
+			name = _(l2->name);
+		l2->collate_key = g_utf8_collate_key (name, -1);
+	}
+
+	return strcmp (l1->collate_key, l2->collate_key);
 }
 
 GList *
@@ -324,6 +336,9 @@ gdm_lang_read_locale_file (const char *locale_file)
 	GList *langs = NULL;
 	GHashTable *dupcheck;
 	gboolean got_C = FALSE;
+	Language *language;
+	gboolean clean;
+	char *curlocale;
 
 	if (locale_file == NULL)
 		return NULL;
@@ -340,8 +355,6 @@ gdm_lang_read_locale_file (const char *locale_file)
 	while (fgets (curline, sizeof (curline), langlist)) {
 		char *name;
 		char *lang;
-		gboolean clean;
-		Language *language;
 
 		if (curline[0] <= ' ' ||
 		    curline[0] == '#')
@@ -386,6 +399,13 @@ gdm_lang_read_locale_file (const char *locale_file)
 
 	if ( ! got_C)
 		langs = g_list_prepend (langs, g_strdup ("C"));
+
+	curlocale = setlocale (LC_MESSAGES, NULL);
+	if (curlocale != NULL &&
+	    strcmp (curlocale, "C") != 0 &&
+	    find_lang (curlocale, &clean) == NULL) {
+		langs = g_list_prepend (langs, g_strdup (curlocale));
+	}
 
 	langs = g_list_sort (langs, lang_collate);
 

@@ -1,3 +1,15 @@
+Sun Jun 02 12:51:20 2002  George Lebl <jirka@5z.com>
+
+	* config/locale.alias: rewrite.  Use the languages that we know for
+	  starters, don't put any duplicates.  Don't put any encodings.
+	  put a note on the top of file about how broken this is.  However
+	  this should be less broken then it was so far.
+
+	* gui/gdmlanguages.c: fix collating languages, when the current
+	  locale is not among the languages, add it (it will be put into
+	  others section as just the language code).  This way users can
+	  always select the current system locale.
+
 2002-06-02  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* config/locale.alias: Make Norwegian use ISO-8859-15.
