@@ -617,8 +617,9 @@
   <title>The Expert Options</title>
   <para>
     Below are the options for the <guilabel>Security
-    </guilabel>, <guilabel>XDMCP</guilabel>
-    and <guilabel>X-server setup</guilabel> tabs.
+    </guilabel>, <guilabel>XDMCP</guilabel>, 
+    <guilabel>X-server setup</guilabel>, <guilabel>Login sessions</guilabel>, 
+     and <guilabel>Miscellaneous</guilabel> tabs.
   </para>
   <variablelist><title><guimenu>Security</guimenu></title>
     <varlistentry><term></term>
@@ -901,6 +902,14 @@
       </listitem>
     </varlistentry>
     <varlistentry>
+      <term><guimenuitem>Always restart X servers</guimenuitem></term>
+      <listitem>
+        <para>
+          Enable the X server to restart after every logout.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
       <term><guimenuitem>Enable debugging
       output</guimenuitem></term>
       <listitem>
@@ -910,6 +919,143 @@
       </listitem>
     </varlistentry>
   </variablelist>
+
+  <variablelist><title>Login sessions</title>
+    <varlistentry><term></term>
+      <listitem>
+        <figure id="loginsession-fig">
+	  <title>The Login sessions tab</title>
+	  <screenshot>
+	    <screeninfo>The Login sessions tab</screeninfo>
+	    <graphic fileref="figures/GDM_login_sessions" format="png"
+	     srccredit="Trevor Curtis">
+            </graphic>
+	  </screenshot>
+        </figure> 
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Session
+       directory</guimenuitem></term>
+      <listitem>
+        <para>
+          The directory that contains script(s) to be run at the begining 
+          of a session
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Available Sessions</guimenuitem></term>
+      <listitem>
+        <para>
+          List the available sessions in which to choose from. The selected 
+          session will appear in the <guimenuitem>Selected session name
+          </guimenuitem> field. Under this field, the session script is 
+          displayed.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Gnome Chooser</guimenuitem></term>
+      <listitem>
+        <para>
+          If a session named Gnome is present, enable the Gnome Chooser 
+          session to be displayed.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Gnome Failsafe</guimenuitem></term>
+      <listitem>
+        <para>
+          Enable the Gnome Failsafe session to be displayed.          
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Xterm Failsafe</guimenuitem></term>
+      <listitem>
+        <para>
+          Enable the Xterm Failsafe session to be displayed.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Enable debugging
+      output</guimenuitem></term>
+      <listitem>
+	<para>
+	  Allow debugging information to be displayed
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Add session</guimenuitem></term>
+      <listitem>
+	<para>
+	  Create and add a new session to be made available.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Remove session</guimenuitem></term>
+      <listitem>
+	<para>
+	  Delete the session selected in the <guimenuitem>Available 
+          Sessions</guimenuitem> menu.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Set as default</guimenuitem></term>
+      <listitem>
+	<para>
+	  Enable the selected session in the <guimenuitem>Available 
+          Sessions</guimenuitem> menu to be the default.
+	</para>
+        <note><title>Default session</title>
+          <para>The current default session is indicated by a light blue 
+            highlight under the <guimenuitem>Available Sessions</guimenuitem> 
+            menu.
+          </para> 
+        </note>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist><title>Miscellaneous</title>
+    <varlistentry><term></term>
+      <listitem>
+        <figure id="misc-fig">
+	  <title>The Miscellaneous tab</title>
+	  <screenshot>
+	    <screeninfo>The Miscellaneous tab</screeninfo>
+	    <graphic fileref="figures/GDM_expert_misc" format="png"
+	     srccredit="Trevor Curtis">
+            </graphic>
+	  </screenshot>
+        </figure> 
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Enable debugging output</guimenuitem></term>
+      <listitem>
+        <para>
+          Enable the debugging output to be logged into the 
+          syslog file.
+        </para>  
+        <caution>
+          <title>Debug output to syslog</title>
+          <para>
+          Though a convieniant method to help track problems, this option, when
+          selected, can fill up a system's log files rather quickly. This is 
+          not recommended for normal use
+          </para>
+        </caution>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
 </sect1>
 
 <sect1 id="system">
