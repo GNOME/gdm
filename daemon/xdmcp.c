@@ -740,7 +740,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     GdmDisplay *d;
     gint logfd;
     
-    gdm_debug ("gdm_xdmcp_manage: Got MANAGE from %s", inet_ntoa (clnt_sa->sin_addr));
+    gdm_debug ("gdm_xdmcp_handle_manage: Got MANAGE from %s", inet_ntoa (clnt_sa->sin_addr));
     
     /* Check with tcp_wrappers if client is allowed to access */
     if (! gdm_xdmcp_host_allow (clnt_sa)) {
@@ -761,18 +761,18 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	return;
     }
     
-    gdm_debug ("gdm_xdmcp_manage: Got Display=%d, SessionID=%d from %s", 
+    gdm_debug ("gdm_xdmcp_handle_manage: Got Display=%d, SessionID=%d from %s", 
 	       clnt_dspnum, clnt_sessid, inet_ntoa (clnt_sa->sin_addr));
     
     /* Display Class */
     if (! XdmcpReadARRAY8 (&buf, &clnt_dspclass)) {
-	gdm_error (_("gdm_xdmcp_manage: Could not read Display Class"));
+	gdm_error (_("gdm_xdmcp_handle_manage: Could not read Display Class"));
 	return;
     }
     
     d = gdm_xdmcp_display_lookup (clnt_sessid);
     
-    if (d && d->dispstat==XDMCP_PENDING) {
+    if (d && d->dispstat == XDMCP_PENDING) {
 	gchar *logfile;
 
 	gdm_debug ("gdm_xdmcp_handle_manage: Looked up %s", d->name);
@@ -800,7 +800,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	    return;
 	}
     }
-    else if (d && d->dispstat==XDMCP_MANAGED) {
+    else if (d && d->dispstat == XDMCP_MANAGED) {
 	gdm_debug ("gdm_xdmcp_handle_manage: Session id %d already managed", clnt_sessid);	
     }
     else {
@@ -1005,47 +1005,55 @@ gdm_xdmcp_display_lookup (CARD32 sessid)
 static void
 gdm_xdmcp_display_dispose_check (gchar *name)
 {
-    GSList *dlist = displays;
-    GdmDisplay *d;
+	GSList *dlist;
 
-    if (!name)
-	return;
-    
-    gdm_debug ("gdm_xdmcp_display_dispose_check (%s)", name);
-    
-    while (dlist) {
-	d = (GdmDisplay *) dlist->data;
-	
-	if (d && !strcmp (d->name, name))
-	    gdm_display_dispose (d);
-	
-	dlist = dlist->next;
-    }
+	if (name == NULL)
+		return;
+
+	gdm_debug ("gdm_xdmcp_display_dispose_check (%s)", name);
+
+	dlist = displays;
+	while (dlist != NULL) {
+		GdmDisplay *d = dlist->data;
+
+		if (d != NULL &&
+		    strcmp (d->name, name) == 0) {
+			gdm_display_dispose (d);
+
+			/* restart as the list is now fucked */
+			dlist = displays;
+		} else {
+			/* just go on */
+			dlist = dlist->next;
+		}
+	}
 }
 
 
 static void 
 gdm_xdmcp_displays_check (void)
 {
-    GSList *dlist = displays;
-    GdmDisplay *d;
-    
-    while (dlist) {
-	d = (GdmDisplay *) dlist->data;
-	
-	if (d &&
-	    d->type == TYPE_XDMCP &&
-	    d->dispstat == XDMCP_PENDING &&
-	    time (NULL) > d->acctime + GdmMaxManageWait)
-	{
-	    gdm_debug ("gdm_xdmcp_displays_check: Disposing session id %d",
-		       d->sessionid);
-	    gdm_display_dispose (d);
-	    pending--;
+	GSList *dlist;
+
+	dlist = displays;
+	while (dlist != NULL) {
+		GdmDisplay *d = dlist->data;
+
+		if (d != NULL &&
+		    d->type == TYPE_XDMCP &&
+		    d->dispstat == XDMCP_PENDING &&
+		    time (NULL) > d->acctime + GdmMaxManageWait) {
+			gdm_debug ("gdm_xdmcp_displays_check: Disposing session id %d",
+				   d->sessionid);
+			gdm_display_dispose (d);
+
+			/* restart as the list is now fucked */
+			dlist = displays;
+		} else {
+			/* just go on */
+			dlist = dlist->next;
+		}
 	}
-	
-	dlist = dlist->next;
-    }
 }
 
 

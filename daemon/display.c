@@ -34,6 +34,7 @@ static const gchar RCSid[]="$Id$";
 /* External vars */
 extern gint GdmXdmcp;
 extern gint sessions;
+extern gint pending;
 extern GSList *displays;
 
 
@@ -60,8 +61,9 @@ gdm_display_manage (GdmDisplay *d)
 	sigaddset (&mask, SIGCHLD);
 	sigprocmask (SIG_BLOCK, &mask, &omask); 
 
-	kill (d->slavepid, SIGINT);
-	waitpid (d->slavepid, 0, 0);
+	if (kill (d->slavepid, SIGINT) == 0)
+		waitpid (d->slavepid, 0, 0);
+	d->slavepid = 0;
 
 	sigprocmask (SIG_SETMASK, &omask, NULL);
     }
@@ -116,12 +118,13 @@ gdm_display_unmanage (GdmDisplay *d)
     if (!d)
 	return;
 
-    gdm_debug ("gdm_display_unmanage: Stopping %s", d->name);
+    gdm_debug ("gdm_display_unmanage: Stopping %s (slave pid: %d)",
+	       d->name, (int)d->slavepid);
 
     /* Kill slave */
-    if (d->slavepid) {
-	kill (d->slavepid, SIGTERM);
-	waitpid (d->slavepid, 0, 0);
+    if (d->slavepid != 0) {
+	if (kill (d->slavepid, SIGTERM) == 0)
+		waitpid (d->slavepid, 0, 0);
 	d->slavepid = 0;
     }
     
@@ -149,6 +152,9 @@ gdm_display_dispose (GdmDisplay *d)
 	displays = g_slist_remove (displays, d);
 	sessions--;
 	d->type = -1;
+
+	if (d->dispstat == XDMCP_PENDING)
+		pending--;
     }
 
     if (d->name) {

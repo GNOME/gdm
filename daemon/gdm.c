@@ -43,7 +43,6 @@ static const gchar RCSid[]="$Id$";
 static void gdm_config_parse (void);
 static void gdm_local_servers_start (GdmDisplay *d);
 static void gdm_daemonify (void);
-static void gdm_local_servers_start (GdmDisplay *d);
 
 /* Global vars */
 GSList *displays;		/* List of displays managed */
@@ -329,6 +328,9 @@ gdm_local_servers_start (GdmDisplay *d)
     if (d && d->type == TYPE_LOCAL) {
 	gdm_debug ("gdm_local_servers_start: Starting %s", d->name);
 	gdm_display_manage (d);
+
+	/* only the first local display gets autologged in */
+	gdm_first_login = FALSE;
     }
 }
 
@@ -575,8 +577,6 @@ main (int argc, char *argv[])
 
     /* Start local X servers */
     g_slist_foreach (displays, (GFunc) gdm_local_servers_start, NULL);
-
-    gdm_first_login = FALSE;
 
     /* Accept remote connections */
     if (GdmXdmcp) {

@@ -417,8 +417,8 @@ gdm_slave_session_start (void)
 	    greet = FALSE;
 
 	    /* Kill greeter and wait for it to die */
-	    kill (d->greetpid, SIGINT);
-	    waitpid (d->greetpid, 0, 0); 
+	    if (kill (d->greetpid, SIGINT) == 0)
+		    waitpid (d->greetpid, 0, 0); 
 	    d->greetpid = 0;
 
 	    sigprocmask (SIG_SETMASK, &omask, NULL);
@@ -571,15 +571,21 @@ static void
 gdm_slave_session_stop (pid_t sesspid)
 {
     struct passwd *pwent;
+    char *local_login;
 
-    gdm_debug ("gdm_slave_session_stop: %s on %s", login, d->name);
-    
+    local_login = login;
+    login = NULL;
+
+    gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
+
     if (sesspid > 0)
 	    kill (- (sesspid), SIGTERM);
     
     gdm_verify_cleanup();
     
-    pwent = getpwnam (login);	/* PAM overwrites our pwent */
+    pwent = getpwnam (local_login);	/* PAM overwrites our pwent */
+
+    g_free (local_login);
 
     if (!pwent)
 	return;
@@ -647,10 +653,10 @@ gdm_slave_term_handler (int sig)
 {
     gdm_debug ("gdm_slave_term_handler: %s got TERM signal", d->name);
 
-    if (d->greetpid) {
+    if (d->greetpid != 0) {
 	gdm_debug ("gdm_slave_term_handler: Whacking greeter");
-	kill (d->greetpid, SIGINT);
-	waitpid (d->greetpid, 0, 0); 
+	if (kill (d->greetpid, SIGINT) == 0)
+		waitpid (d->greetpid, 0, 0); 
 	d->greetpid = 0;
     } 
     else if (login)

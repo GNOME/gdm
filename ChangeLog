@@ -1,3 +1,12 @@
+Mon Jan 22 21:02:19 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c, daemon/slave.c, daemon/display.c, daemon/xdmcp.c: fix
+	  some xdmcp bugs, crashes, etc... random cleanup, autologin on the
+	  first display started only, when killing things make sure kill
+	  succeeded before waitpid, otherwise probably the process was
+	  already dead and we'd just wait forever.  But don't expect XDMCP
+	  to actually work now, it doesn't.
+
 Mon Jan 22 02:59:22 2001  George Lebl <jirka@5z.com>
 
 	* daemon/misc.c, daemon/server.[ch], daemon/slave.c,
