@@ -57,6 +57,9 @@ static int screeny = 0;
 static int screenwidth = 0;
 static int screenheight = 0;
 
+static gboolean inhibit_gtk_modules = FALSE;
+static gboolean inhibit_gtk_themes = FALSE;
+
 static void
 setup_cursor (GdkCursorType type)
 {
@@ -237,19 +240,48 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_i
 	argv[0] = (char *)name;
 	argc = 1;
 
-	if (GdmAddGtkModules &&
-	    ! ve_string_empty (GdmGtkModulesList)) {
-		argv[1] = g_strdup_printf("--gtk-module=%s", GdmGtkModulesList);
+	/* FIXME: note that atk-bridge requires bonobo and we don't link
+	   to bonobo.  We really don't want to link to bonobo I don't think.
+	   We should perhaps link to bonobo dynamically here.  I dunno */
+#if 0
+	if ( ! inhibit_gtk_modules &&
+	    GdmAddGtkModules &&
+	     ! ve_string_empty (GdmGtkModulesList)) {
+		argv[1] = g_strdup_printf ("--gtk-module=%s", GdmGtkModulesList);
 		argc = 2;
+	}
+#endif
+	if (inhibit_gtk_modules) {
+		ve_unsetenv ("GTK_MODULES");
 	}
 
 	gtk_init (&argc, &argv);
 
-	if( ! ve_string_empty (GdmGtkRC) &&
+	if( ! inhibit_gtk_themes &&
+	    ! ve_string_empty (GdmGtkRC) &&
 	   access (GdmGtkRC, R_OK) == 0)
 		gtk_rc_parse (GdmGtkRC);
 
 	get_screen_size (d);
+}
+
+static gboolean
+dialog_failed (int status)
+{
+	if (WIFSIGNALED (status) &&
+	    (WTERMSIG (status) == SIGTERM ||
+	     WTERMSIG (status) == SIGINT ||
+	     WTERMSIG (status) == SIGQUIT ||
+	     WTERMSIG (status) == SIGHUP)) {
+		return FALSE;
+	} else if (WIFEXITED (status) &&
+		   WEXITSTATUS (status) == 0) {
+		return FALSE;
+	} else {
+		gdm_error ("failsafe dialog failed (inhibitions: %d %d)",
+			   inhibit_gtk_modules, inhibit_gtk_themes);
+		return TRUE;
+	}
 }
 
 void
@@ -406,7 +438,24 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 		_exit (0);
 	} else if (pid > 0) {
-		gdm_wait_for_extra (NULL);
+		int status;
+		gdm_wait_for_extra (&status);
+
+		if (dialog_failed (status)) {
+			if ( ! inhibit_gtk_themes) {
+				/* on failure try again, this time without any themes
+				   which may be causing a crash */
+				inhibit_gtk_themes = TRUE;
+				gdm_error_box_full (d, type, error, details_label, details_file, uid, gid);
+				inhibit_gtk_themes = FALSE;
+			} else if ( ! inhibit_gtk_modules) {
+				/* on failure try again, this time without any modules
+				   which may be causing a crash */
+				inhibit_gtk_modules = TRUE;
+				gdm_error_box_full (d, type, error, details_label, details_file, uid, gid);
+				inhibit_gtk_modules = FALSE;
+			}
+		}
 	} else {
 		gdm_error (_("%s: Cannot fork to display error/info box"),
 			   "gdm_error_box");
@@ -437,7 +486,7 @@ gdm_failsafe_question (GdmDisplay *d,
 	pid_t pid;
 	int p[2];
 
-	if (pipe (p) < 0)
+	if G_UNLIKELY (pipe (p) < 0)
 		return NULL;
 
 	pid = gdm_fork_extra ();
@@ -513,12 +562,32 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		_exit (0);
 	} else if (pid > 0) {
+		int status;
 		char buf[BUFSIZ];
 		int bytes;
 
 		IGNORE_EINTR (close (p[1]));
 
-		gdm_wait_for_extra (NULL);
+		gdm_wait_for_extra (&status);
+
+		if (dialog_failed (status)) {
+			char *ret = NULL;
+			IGNORE_EINTR (close (p[0]));
+			if ( ! inhibit_gtk_themes) {
+				/* on failure try again, this time without any themes
+				   which may be causing a crash */
+				inhibit_gtk_themes = TRUE;
+				ret = gdm_failsafe_question (d, question, echo);
+				inhibit_gtk_themes = FALSE;
+			} else if ( ! inhibit_gtk_modules) {
+				/* on failure try again, this time without any modules
+				   which may be causing a crash */
+				inhibit_gtk_modules = TRUE;
+				ret = gdm_failsafe_question (d, question, echo);
+				inhibit_gtk_modules = FALSE;
+			}
+			return ret;
+		}
 
 		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
@@ -541,7 +610,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 	pid_t pid;
 	int p[2];
 
-	if (pipe (p) < 0)
+	if G_UNLIKELY (pipe (p) < 0)
 		return FALSE;
 
 	pid = gdm_fork_extra ();
@@ -598,12 +667,32 @@ gdm_failsafe_yesno (GdmDisplay *d,
 
 		_exit (0);
 	} else if (pid > 0) {
+		int status;
 		char buf[BUFSIZ];
 		int bytes;
 
 		IGNORE_EINTR (close (p[1]));
 
-		gdm_wait_for_extra (NULL);
+		gdm_wait_for_extra (&status);
+
+		if (dialog_failed (status)) {
+			gboolean ret = FALSE;
+			IGNORE_EINTR (close (p[0]));
+			if ( ! inhibit_gtk_themes) {
+				/* on failure try again, this time without any themes
+				   which may be causing a crash */
+				inhibit_gtk_themes = TRUE;
+				ret = gdm_failsafe_yesno (d, question);
+				inhibit_gtk_themes = FALSE;
+			} else if ( ! inhibit_gtk_modules) {
+				/* on failure try again, this time without any modules
+				   which may be causing a crash */
+				inhibit_gtk_modules = TRUE;
+				ret = gdm_failsafe_yesno (d, question);
+				inhibit_gtk_modules = FALSE;
+			}
+			return ret;
+		}
 
 		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
@@ -629,7 +718,7 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 	pid_t pid;
 	int p[2];
 
-	if (pipe (p) < 0)
+	if G_UNLIKELY (pipe (p) < 0)
 		return -1;
 
 	pid = gdm_fork_extra ();
@@ -693,12 +782,32 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 
 		_exit (0);
 	} else if (pid > 0) {
+		int status;
 		char buf[BUFSIZ];
 		int bytes;
 
 		IGNORE_EINTR (close (p[1]));
 
-		gdm_wait_for_extra (NULL);
+		gdm_wait_for_extra (&status);
+
+		if (dialog_failed (status)) {
+			int ret = -1;
+			IGNORE_EINTR (close (p[0]));
+			if ( ! inhibit_gtk_themes) {
+				/* on failure try again, this time without any themes
+				   which may be causing a crash */
+				inhibit_gtk_themes = TRUE;
+				ret = gdm_failsafe_ask_buttons (d, question, but);
+				inhibit_gtk_themes = FALSE;
+			} else if ( ! inhibit_gtk_modules) {
+				/* on failure try again, this time without any modules
+				   which may be causing a crash */
+				inhibit_gtk_modules = TRUE;
+				ret = gdm_failsafe_ask_buttons (d, question, but);
+				inhibit_gtk_modules = FALSE;
+			}
+			return ret;
+		}
 
 		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {

@@ -4173,7 +4173,10 @@ gdm_slave_child_handler (int sig)
 				exit_code_to_use = DISPLAY_GREETERFAILED;
 				SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
 			} else {
-				exit_code_to_use = DISPLAY_REMANAGE;
+				/* weird error return, interpret as failure */
+				if (WIFEXITED (status) &&
+				    WEXITSTATUS (status) == 1)
+					exit_code_to_use = DISPLAY_GREETERFAILED;
 				SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
 			}
 		}

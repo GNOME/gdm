@@ -1,3 +1,12 @@
+Mon Sep 22 11:25:30 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: catch exit code 1 from greeter as fail error
+
+	* daemon/errorgui.c: disable the gtk modules loading, this is broken
+	  due to bonobo non-linkage here, will need to reevaluate linkage
+	  all over wrt a11y.  Also catch when the dialog dies and try again
+	  first with no themes then with absolutely no modules as well.
+
 Mon Sep 22 10:20:56 2003  George Lebl <jirka@5z.com>
 
 	* daemon/errorgui.c: add the gtk modules to error dialogs, so
