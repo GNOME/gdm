@@ -4,7 +4,7 @@
  * NEPŘEKLÁDEJTE JEJ jako součást své aplikace.
  */
 
-gchar *s = N_("GDM Setup");
+gchar *s = N_("Login Screen Setup");
 gchar *s = N_("<b>Greeter</b>");
 gchar *s = N_("    ");
 gchar *s = N_("L_ocal: ");

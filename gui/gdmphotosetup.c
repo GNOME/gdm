@@ -147,7 +147,7 @@ main (int argc, char *argv[])
 		gtk_widget_destroy (d);
 	}
 
-	dialog = gtk_dialog_new_with_buttons (_("Select a photo"),
+	dialog = gtk_dialog_new_with_buttons (_("Login Photo"),
 					      NULL /* parent */,
 					      0 /* flags */,
 					      GTK_STOCK_CANCEL,
