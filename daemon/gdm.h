@@ -327,6 +327,9 @@ struct _GdmDisplay {
     /* Notification connection */
     int master_notify_fd;  /* write part of the connection */
     int slave_notify_fd; /* read part of the connection */
+
+    /* order in the Xservers file for sessreg, -1 if unset yet */
+    int x_servers_order;
 };
 
 typedef struct _GdmXServer GdmXServer;
@@ -430,6 +433,9 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 #define GDM_SOP_HUP_ALL_GREETERS "HUP_ALL_GREETERS" /* no arguments */
 /* sometimes we can't do a syslog so we tell the main daemon */
 #define GDM_SOP_SYSLOG "SYSLOG" /* <pid> <type> <message> */
+/* write out a sessreg (xdm) compatible Xservers file
+ * in the ServAuthDir as <name>.Xservers */
+#define GDM_SOP_WRITE_X_SERVERS "WRITE_X_SERVERS" /* <slave pid> */
 
 /* Notification protocol */
 #define GDM_NOTIFY_ALLOWREMOTEROOT "AllowRemoteRoot" /* <true/false as int> */

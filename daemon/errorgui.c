@@ -40,6 +40,11 @@ extern char **stored_argv;
 extern int stored_argc;
 extern char *stored_path;
 
+static int screenx = 0;
+static int screeny = 0;
+static int screenwidth = 0;
+static int screenheight = 0;
+
 static gboolean
 gdm_event (GSignalInvocationHint *ihint,
 	   guint		n_param_values,
@@ -65,7 +70,39 @@ gdm_event (GSignalInvocationHint *ihint,
 		event->button.button = 1;
 
 	return TRUE;
-}      
+}
+
+static void
+get_screen_size (GdmDisplay *d)
+{
+	if (d != NULL) {
+		screenx = d->screenx;
+		screeny = d->screeny;
+		screenwidth = d->screenwidth;
+		screenheight = d->screenheight;
+	}
+
+	if (screenwidth <= 0)
+		screenwidth = gdk_screen_width ();
+	if (screenheight <= 0)
+		screenheight = gdk_screen_height ();
+}
+
+static void
+center_window (GtkWidget *window)
+{
+	GtkRequisition req;
+
+	gtk_widget_size_request (window, &req);
+
+	gtk_window_move (GTK_WINDOW (window),
+			 screenx +
+			 (screenwidth / 2) -
+			 (req.width / 2),
+			 screeny +
+			 (screenheight / 2) -
+			 (req.height / 2));
+}
 
 static void
 show_errors (GtkWidget *button, gpointer data)
@@ -74,6 +111,7 @@ show_errors (GtkWidget *button, gpointer data)
 	FILE *fp;
 	GtkWidget *sw;
 	GtkWidget *label;
+	GtkWidget *dlg = gtk_widget_get_toplevel (button);
 	GtkWidget *parent = button->parent;
 	GString *gs = g_string_new (NULL);
 
@@ -90,7 +128,10 @@ show_errors (GtkWidget *button, gpointer data)
 	gtk_widget_destroy (button);
 
 	sw = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (sw, 200, 150);
+	if (gdk_screen_width () >= 800)
+		gtk_widget_set_size_request (sw, 500, 150);
+	else
+		gtk_widget_set_size_request (sw, 200, 150);
 	gtk_widget_show (sw);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
@@ -108,6 +149,8 @@ show_errors (GtkWidget *button, gpointer data)
 			    sw, TRUE, TRUE, 0);
 
 	g_string_free (gs, TRUE);
+
+	center_window (dlg);
 }
 
 void
@@ -124,11 +167,6 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		char **argv;
 		GtkWidget *dlg;
 		GtkWidget *button;
-		GtkRequisition req;
-		int screenx = 0;
-		int screeny = 0;
-		int screenwidth = 0;
-		int screenheight = 0;
 		char *loc;
 
 		closelog ();
@@ -150,17 +188,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 
 		gtk_init (&argc, &argv);
 
-		if (d != NULL) {
-			screenx = d->screenx;
-			screeny = d->screeny;
-			screenwidth = d->screenwidth;
-			screenheight = d->screenheight;
-		}
-
-		if (screenwidth <= 0)
-			screenwidth = gdk_screen_width ();
-		if (screenheight <= 0)
-			screenheight = gdk_screen_height ();
+		get_screen_size (d);
 
 		loc = g_locale_to_utf8 (error, -1, NULL, NULL, NULL);
 
@@ -200,15 +228,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 					    NULL /* data */,
 					    NULL /* destroy_notify */);
 
-		gtk_widget_size_request (dlg, &req);
-
-		gtk_window_move (GTK_WINDOW (dlg),
-				 screenx +
-				 (screenwidth / 2) -
-				 (req.width / 2),
-				 screeny +
-				 (screenheight / 2) -
-				 (req.height / 2));
+		center_window (dlg);
 
 		gtk_widget_grab_focus (button);
 
@@ -269,11 +289,6 @@ gdm_failsafe_question (GdmDisplay *d,
 		int argc = 1;
 		char **argv;
 		GtkWidget *dlg, *label, *entry;
-		GtkRequisition req;
-		int screenx = 0;
-		int screeny = 0;
-		int screenwidth = 0;
-		int screenheight = 0;
 		char *loc;
 
 		closelog ();
@@ -295,17 +310,7 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		gtk_init (&argc, &argv);
 
-		if (d != NULL) {
-			screenx = d->screenx;
-			screeny = d->screeny;
-			screenwidth = d->screenwidth;
-			screenheight = d->screenheight;
-		}
-
-		if (screenwidth <= 0)
-			screenwidth = gdk_screen_width ();
-		if (screenheight <= 0)
-			screenheight = gdk_screen_height ();
+		get_screen_size (d);
 
 		loc = g_locale_to_utf8 (question, -1, NULL, NULL, NULL);
 
@@ -338,15 +343,7 @@ gdm_failsafe_question (GdmDisplay *d,
 					    NULL /* data */,
 					    NULL /* destroy_notify */);
 
-		gtk_widget_size_request (dlg, &req);
-
-		gtk_window_move (GTK_WINDOW (dlg),
-				 screenx +
-				 (screenwidth / 2) -
-				 (req.width / 2),
-				 screeny +
-				 (screenheight / 2) -
-				 (req.height / 2));
+		center_window (dlg);
 
 		gtk_widget_show_now (dlg);
 
@@ -407,11 +404,6 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		int argc = 1;
 		char **argv;
 		GtkWidget *dlg;
-		GtkRequisition req;
-		int screenx = 0;
-		int screeny = 0;
-		int screenwidth = 0;
-		int screenheight = 0;
 		char *loc;
 
 		closelog ();
@@ -433,17 +425,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 
 		gtk_init (&argc, &argv);
 
-		if (d != NULL) {
-			screenx = d->screenx;
-			screeny = d->screeny;
-			screenwidth = d->screenwidth;
-			screenheight = d->screenheight;
-		}
-
-		if (screenwidth <= 0)
-			screenwidth = gdk_screen_width ();
-		if (screenheight <= 0)
-			screenheight = gdk_screen_height ();
+		get_screen_size (d);
 
 		loc = g_locale_to_utf8 (question, -1, NULL, NULL, NULL);
 
@@ -462,15 +444,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 					    NULL /* data */,
 					    NULL /* destroy_notify */);
 
-		gtk_widget_size_request (dlg, &req);
-
-		gtk_window_move (GTK_WINDOW (dlg),
-				 screenx +
-				 (screenwidth / 2) -
-				 (req.width / 2),
-				 screeny +
-				 (screenheight / 2) -
-				 (req.height / 2));
+		center_window (dlg);
 
 		gtk_widget_show_now (dlg);
 

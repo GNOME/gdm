@@ -1635,6 +1635,77 @@ gdm_signal_notify (gint8 signal)
 	signals_notified[index] |= 1 << shift;
 }
 
+static gboolean
+order_exists (int order)
+{
+	GSList *li;
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *d = li->data;
+		if (d->x_servers_order == order)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+static int
+get_new_order (GdmDisplay *d)
+{
+	int order;
+	GSList *li;
+	/* first try the position in the 'displays' list as
+	 * our order */
+	for (order = 0, li = displays; li != NULL; order++, li = li->next) {
+		if (li->data == d)
+			break;
+	}
+	/* next make sure it's unique */
+	while (order_exists (order))
+		order++;
+	return order;
+}
+
+static void
+write_x_servers (GdmDisplay *d)
+{
+	FILE *fp;
+	char *file = g_strconcat (GdmServAuthDir, "/", d->name, ".Xservers", NULL);
+	int i;
+	int bogusname;
+
+	if (d->x_servers_order < 0)
+		d->x_servers_order = get_new_order (d);
+
+	fp = fopen (file, "w");
+	if (fp == NULL) {
+		gdm_error ("Can't open %s for writing", file);
+		g_free (file);
+		return;
+	}
+
+	for (bogusname = 0, i = 0; i < d->x_servers_order; bogusname++, i++) {
+		char buf[32];
+		g_snprintf (buf, sizeof (buf), ":%d", bogusname);
+		if (strcmp (buf, d->name) == 0)
+			g_snprintf (buf, sizeof (buf), ":%d", ++bogusname);
+		fprintf (fp, "%s local /usr/X11R6/bin/Xbogus\n", buf);
+	}
+
+	if (d->type == TYPE_XDMCP) {
+		fprintf (fp, "%s foreign\n", d->name);
+	} else {
+		char **argv;
+		char *command;
+		argv = gdm_server_resolve_command_line
+			(d, FALSE /* resolve_handled */);
+		command = g_strjoinv (" ", argv);
+		g_strfreev (argv);
+		fprintf (fp, "%s local %s\n", d->name, command);
+		g_free (command);
+	}
+
+	fclose (fp);
+}
+
 static void
 send_slave_ack (GdmDisplay *d)
 {
@@ -1966,6 +2037,24 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			GdmDisplay *d = li->data;
 			if (d->greetpid > 0)
 				kill (d->greetpid, SIGHUP);
+		}
+	} else if (strncmp (msg, GDM_SOP_WRITE_X_SERVERS " ",
+		            strlen (GDM_SOP_WRITE_X_SERVERS " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+
+		if (sscanf (msg, GDM_SOP_WRITE_X_SERVERS " %ld",
+			    &slave_pid) != 1)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			write_x_servers (d);
+
+			/* send ack */
+			send_slave_ack (d);
 		}
 	}
 }

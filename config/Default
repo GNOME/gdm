@@ -1,7 +1,15 @@
 #!/bin/sh
+# Stolen from the debian kdm setup, aren't I sneaky
+#  -George
 
-#Color is now handled by gdmgreeter itself
-#/usr/bin/X11/xsetroot -solid "#007777"
+PATH=/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin:$PATH
 
+sysmodmap=/etc/X11/Xmodmap
 
+if command -v xmodmap > /dev/null 2>&1; then
+  if [ -f $sysmodmap ]; then
+    xmodmap $sysmodmap
+  fi
+fi
 
+exit 0

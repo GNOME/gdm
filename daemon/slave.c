@@ -147,7 +147,8 @@ static void     gdm_slave_usr2_handler (int sig);
 static void     gdm_slave_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 static void     gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
-				       const char *login, struct passwd *pwent);
+				       const char *login, struct passwd *pwent,
+				       gboolean pass_stdout);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
 static void	gdm_slave_handle_notify (const char *msg);
 
@@ -319,7 +320,8 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 
 	/* Run the init script. gdmslave suspends until script
 	 * has terminated */
-	gdm_slave_exec_script (display, GdmDisplayInit, NULL, NULL);
+	gdm_slave_exec_script (display, GdmDisplayInit, NULL, NULL,
+			       FALSE /* pass_stdout */);
 
 	gdm_debug ("setup_automatic_session: DisplayInit script finished");
 
@@ -1290,7 +1292,8 @@ gdm_slave_greeter (void)
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     
     /* Run the init script. gdmslave suspends until script has terminated */
-    gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL);
+    gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL,
+			   FALSE /* pass_stdout */);
 
     /* Open a pipe for greeter communications */
     if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
@@ -1648,7 +1651,8 @@ gdm_slave_chooser (void)
 		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Can't init pipe to gdmchooser"));
 
 	/* Run the init script. gdmslave suspends until script has terminated */
-	gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL);
+	gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL,
+			       FALSE /* pass_stdout */);
 
 	/* Fork. Parent is gdmslave, child is greeter process. */
 	gdm_sigchld_block_push ();
@@ -2071,6 +2075,8 @@ session_child_run (struct passwd *pwent,
 	const char *shell = NULL;
 	Display *disp;
 
+	gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+
 	disp = XOpenDisplay (d->name);
 	if (disp != NULL) {
 		XSetInputFocus (disp, PointerRoot,
@@ -2078,6 +2084,53 @@ session_child_run (struct passwd *pwent,
 		XCloseDisplay (disp);
 	}
 
+	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
+	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
+	    /* hack */
+	    g_ascii_strcasecmp (session, "Failsafe") == 0) {
+		failsafe = TRUE;
+	}
+
+	/* Here we setup our 0,1,2 descriptors, we do it here
+	 * nowdays rather then later on so that we get errors even
+	 * from the PreSession script */
+        /* Log all output from session programs to a file,
+	 * unless in failsafe mode which needs to work when there is
+	 * no diskspace as well */
+	if ( ! failsafe && home_dir_ok) {
+		logfd = open (g_strconcat (home_dir, "/.xsession-errors", NULL),
+			      O_CREAT|O_TRUNC|O_WRONLY, 0644);
+		if (logfd != -1) {
+			dup2 (logfd, 1);
+			dup2 (logfd, 2);
+			close (logfd);
+		} else {
+			close (1);
+			close (2);
+			open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+			open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+			gdm_error (_("%s: Could not open ~/.xsession-errors"),
+				   "run_session_child");
+		}
+	} else {
+		close (1);
+		close (2);
+		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	}
+
+	close (0);
+	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+
+	/* Run the PreSession script */
+	if (gdm_slave_exec_script (d, GdmPreSession,
+				   login, pwent,
+				   TRUE /* pass_stdout */) != EXIT_SUCCESS &&
+	    /* ignore errors in failsafe modes */
+	    ! failsafe) 
+		/* If script fails reset X server and restart greeter */
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."));
 
 	gdm_clearenv ();
 
@@ -2203,13 +2256,7 @@ session_child_run (struct passwd *pwent,
 
 	closelog ();
 
-	gdm_close_all_descriptors (0 /* from */, -1 /* except */);
-
-	/* No error checking here - if it's messed the best response
-         * is to ignore & try to continue */
-	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	gdm_close_all_descriptors (3 /* from */, -1 /* except */);
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
@@ -2313,21 +2360,6 @@ session_child_run (struct passwd *pwent,
 		shell = "/bin/sh";
 	}
 
-        /* Log all output from session programs to a file,
-	 * unless in failsafe mode which needs to work when there is
-	 * no diskspace as well */
-	if ( ! failsafe && home_dir_ok) {
-		logfd = open (g_strconcat (home_dir, "/.xsession-errors", NULL),
-			      O_CREAT|O_TRUNC|O_WRONLY, 0644);
-		if (logfd != -1) {
-			dup2 (logfd, 1);
-			dup2 (logfd, 2);
-		} else {
-			gdm_error (_("%s: Could not open ~/.xsession-errors"),
-				   "run_session_child");
-		}
-	}
-
 	/* just a stupid test, the below would fail, but this gives a better
 	 * message */
 	if (strcmp (shell, "/sbin/nologin") == 0 ||
@@ -2349,7 +2381,33 @@ session_child_run (struct passwd *pwent,
 			   "dialog window."));
 	} else {
 		char *exec = g_strconcat ("exec ", sesspath, NULL);
+		char *shellbase = g_path_get_basename (shell);
+		/* FIXME: this is a hack currently this is all screwed up
+		 * so I won't run the users shell unless it's one of the
+		 * "listed" ones, I'll just run bash or sh,
+		 * that's a bit evil but in the end it works out better in
+		 * fact.  In the future we will do our own login setup
+		 * stuff */
+		if (strcmp (shellbase, "sh") != 0 &&
+		    strcmp (shellbase, "bash") == 0 &&
+		    strcmp (shellbase, "tcsh") == 0 &&
+		    strcmp (shellbase, "ksh") == 0 &&
+		    strcmp (shellbase, "pdksh") == 0 &&
+		    strcmp (shellbase, "zsh") == 0 &&
+		    strcmp (shellbase, "csh") == 0 &&
+		    strcmp (shellbase, "ash") == 0 &&
+		    strcmp (shellbase, "bsh") == 0 &&
+		    strcmp (shellbase, "bash2") == 0) {
+			if (access ("/bin/bash", R_OK|X_OK) == 0)
+				shell = "/bin/bash";
+			else if (access ("/bin/bash2", R_OK|X_OK) == 0)
+				shell = "/bin/bash2";
+			else
+				shell = "/bin/sh";
+		}
 		execl (shell, "-", "-c", exec, NULL);
+		/* nutcase fallback */
+		execl ("/bin/sh", "-", "-c", exec, NULL);
 
 		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
 		gdm_error_box
@@ -2561,15 +2619,6 @@ gdm_slave_session_start (void)
     if (GdmKillInitClients)
 	    gdm_server_whack_clients (d);
 
-    /* setup some env for PreSession script */
-    gnome_setenv ("DISPLAY", d->name, TRUE);
-
-    /* If script fails reset X server and restart greeter */
-    if (gdm_slave_exec_script (d, GdmPreSession,
-			       login, pwent) != EXIT_SUCCESS) 
-	gdm_slave_exit (DISPLAY_REMANAGE,
-			_("gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."));
-
     /* Setup cookie -- We need this information during cleanup, thus
      * cookie handling is done before fork()ing */
 
@@ -2609,8 +2658,11 @@ gdm_slave_session_start (void)
 
     if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
 	strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-	strcmp (session, "Failsafe") == 0 /* hack */)
+	g_ascii_strcasecmp (session, "Failsafe") == 0 /* hack */)
 	    failsafe = TRUE;
+
+    /* Write out the Xservers file */
+    gdm_slave_send_num (GDM_SOP_WRITE_X_SERVERS, 0 /* bogus */);
 
     /* don't completely rely on this, the user
      * could reset time or do other crazy things */
@@ -2629,7 +2681,6 @@ gdm_slave_session_start (void)
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_session_start: Error forking user session"));
 	
     case 0:
-
 	/* Never returns */
 	session_child_run (pwent,
 			   home_dir,
@@ -2661,11 +2712,11 @@ gdm_slave_session_start (void)
     if (d->sesspid > 0) {
 	    gdm_slave_send_num (GDM_SOP_SESSPID, pid);
 
-	    d->sesspid = 0;
-
 	    gdm_sigchld_block_pop ();
 
 	    ve_waitpid_no_signal (pid, NULL, 0);
+
+	    d->sesspid = 0;
     } else {
 	    gdm_sigchld_block_pop ();
     }
@@ -2711,6 +2762,7 @@ static void
 gdm_slave_session_stop (pid_t sesspid)
 {
     struct passwd *pwent;
+    char *x_servers_file;
     char *local_login;
 
     local_login = login;
@@ -2723,16 +2775,44 @@ gdm_slave_session_stop (pid_t sesspid)
 
     gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
 
-    if (sesspid > 0)
-	    kill (- (sesspid), SIGTERM);
+    /* Note we use the info in the structure here since if we get passed
+     * a 0 that means the process is already dead.
+     * FIXME: Maybe we should waitpid here, note make sure this will
+     * not create a hang! */
+    gdm_sigchld_block_push ();
+    if (d->sesspid > 0)
+	    kill (- (d->sesspid), SIGTERM);
+    gdm_sigchld_block_pop ();
 
     gdm_verify_cleanup (d);
     
     pwent = getpwnam (local_login);	/* PAM overwrites our pwent */
 
-    /* Execute post session script */
-    gdm_debug ("gdm_slave_session_cleanup: Running post session script");
-    gdm_slave_exec_script (d, GdmPostSession, local_login, pwent);
+    x_servers_file = g_strconcat (GdmServAuthDir,
+				  "/", d->name, ".Xservers", NULL);
+
+    /* if there was a session that ran, run the PostSession script */
+    if (sesspid != 0) {
+	    /* setup some env for PostSession script */
+	    gnome_setenv ("DISPLAY", d->name, TRUE);
+	    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+
+	    gnome_setenv ("X_SERVERS", x_servers_file, TRUE);
+	    if (d->type == TYPE_XDMCP)
+		    gnome_setenv ("REMOTE_HOST", d->hostname, TRUE);
+
+	    /* Execute post session script */
+	    gdm_debug ("gdm_slave_session_cleanup: Running post session script");
+	    gdm_slave_exec_script (d, GdmPostSession, local_login, pwent,
+				   FALSE /* pass_stdout */);
+
+	    gnome_unsetenv ("X_SERVERS");
+	    if (d->type == TYPE_XDMCP)
+		    gnome_unsetenv ("REMOTE_HOST");
+    }
+
+    unlink (x_servers_file);
+    g_free (x_servers_file);
 
     if (pwent == NULL) {
 	    return;
@@ -3214,13 +3294,14 @@ gdm_child_exit (gint status, const gchar *format, ...)
 
 static gint
 gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
-		       struct passwd *pwent)
+		       struct passwd *pwent, gboolean pass_stdout)
 {
     pid_t pid;
     gchar *script, *defscript;
     const char *scr;
     gchar **argv;
     gint status;
+    char *x_servers_file;
 
     if (!d || !dir)
 	return EXIT_SUCCESS;
@@ -3228,9 +3309,9 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     script = g_strconcat (dir, "/", d->name, NULL);
     defscript = g_strconcat (dir, "/Default", NULL);
 
-    if (! access (script, R_OK|X_OK)) {
+    if (access (script, R_OK|X_OK) == 0) {
 	    scr = script;
-    } else if (! access (defscript, R_OK|X_OK))  {
+    } else if (access (defscript, R_OK|X_OK) == 0)  {
 	    scr = defscript;
     } else {
 	    g_free (script);
@@ -3245,13 +3326,19 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     case 0:
         closelog ();
 
-	gdm_close_all_descriptors (0 /* from */, -1 /* except */);
+	close (0);
+	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 
-        /* No error checking here - if it's messed the best response
-         * is to ignore & try to continue */
-        open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-        open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-        open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	if ( ! pass_stdout) {
+		close (1);
+		close (2);
+		/* No error checking here - if it's messed the best response
+		 * is to ignore & try to continue */
+		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
+		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	}
+
+	gdm_close_all_descriptors (3 /* from */, -1 /* except */);
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -3274,6 +3361,14 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	        gnome_setenv ("HOME", "/", TRUE);
 	        gnome_setenv ("SHELL", "/bin/sh", TRUE);
         }
+
+	/* some env for use with the Pre and Post scripts */
+	x_servers_file = g_strconcat (GdmServAuthDir,
+				      "/", d->name, ".Xservers", NULL);
+	gnome_setenv ("X_SERVERS", x_servers_file, TRUE);
+	g_free (x_servers_file);
+	if (d->type == TYPE_XDMCP)
+		gnome_setenv ("REMOTE_HOST", d->hostname, TRUE);
 
 	/* Runs as root, uses server authfile */
 	gnome_setenv ("XAUTHORITY", d->authfile, TRUE);

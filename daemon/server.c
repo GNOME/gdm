@@ -629,6 +629,70 @@ rotate_logs (const char *dname)
 	g_free (fname);
 }
 
+char **
+gdm_server_resolve_command_line (GdmDisplay *disp,
+				 gboolean resolve_handled)
+{
+	char *bin;
+	char **argv;
+	int len;
+	int i;
+
+	bin = ve_first_word (disp->command);
+	if (bin == NULL) {
+		gdm_error (_("Invalid server command '%s'"), disp->command);
+		argv = ve_split (GdmStandardXServer);
+	} else if (bin[0] != '/') {
+		GdmXServer *svr = gdm_find_x_server (bin);
+		if (svr == NULL) {
+			gdm_error (_("Server name '%s' not found, "
+				     "using standard server"), bin);
+			argv = ve_split (GdmStandardXServer);
+		} else {
+			char **svr_command =
+				ve_split (ve_sure_string (svr->command));
+			argv = ve_split (disp->command);
+			if (argv[0] == NULL || argv[1] == NULL) {
+				g_strfreev (argv);
+				argv = svr_command;
+			} else {
+				char **old_argv = argv;
+				argv = ve_vector_merge (svr_command,
+							&old_argv[1]);
+				g_strfreev (svr_command);
+				g_strfreev (old_argv);
+			} 
+
+			if (resolve_handled)
+				/* Setup the handled function */
+				disp->handled = svr->handled;
+		}
+	} else {
+		argv = ve_split (disp->command);
+	}
+
+	for (len = 0; argv != NULL && argv[len] != NULL; len++)
+		;
+
+	argv = g_renew (char *, argv, len + 4);
+	for (i = len - 1; i >= 1; i--) {
+		argv[i+1] = argv[i];
+	}
+	/* server number is the FIRST argument, before any others */
+	argv[1] = g_strdup (disp->name);
+	if (disp->authfile != NULL) {
+		argv[len+1] = g_strdup ("-auth");
+		argv[len+2] = g_strdup (disp->authfile);
+		argv[len+3] = NULL;
+	} else {
+		argv[len+1] = NULL;
+	}
+
+	g_free (bin);
+
+	return argv;
+}
+
 /**
  * gdm_server_spawn:
  * @disp: Pointer to a GdmDisplay structure
@@ -644,12 +708,9 @@ gdm_server_spawn (GdmDisplay *d)
 {
     struct sigaction ign_signal, dfl_signal;
     sigset_t mask;
-    gchar *srvcmd = NULL;
     gchar **argv = NULL;
     int logfd;
-    int len, i;
-    const char *command;
-    char *bin;
+    char *command;
     pid_t pid;
 
     if (d == NULL ||
@@ -669,46 +730,11 @@ gdm_server_spawn (GdmDisplay *d)
 		    ve_waitpid_no_signal (pid, NULL, 0);
     }
 
-
     /* Figure out the server command */
-    bin = ve_first_word (d->command);
-    if (bin == NULL) {
-	    gdm_error (_("Invalid server command '%s'"), d->command);
-	    argv = ve_split (GdmStandardXServer);
-	    command = GdmStandardXServer;
-    } else if (bin[0] != '/') {
-	    GdmXServer *svr = gdm_find_x_server (bin);
-	    if (svr == NULL) {
-		    gdm_error (_("Server name '%s' not found, "
-				 "using standard server"), bin);
-		    argv = ve_split (GdmStandardXServer);
-		    command = GdmStandardXServer;
-	    } else {
-		    char **svr_command =
-			    ve_split (ve_sure_string (svr->command));
-		    argv = ve_split (d->command);
-		    if (argv[0] == NULL || argv[1] == NULL) {
-			    g_strfreev (argv);
-			    argv = svr_command;
-		    } else {
-			    char **old_argv = argv;
-			    argv = ve_vector_merge (svr_command,
-						    &old_argv[1]);
-			    g_strfreev (svr_command);
-			    g_strfreev (old_argv);
-		    }
-		    /* this is only for information only,
-		     * so doesn't include whole command line */
-		    command = svr->command;
+    argv = gdm_server_resolve_command_line (d,
+					    TRUE /* resolve handled */);
 
-		    /* Setup the handled function */
-		    d->handled = svr->handled;
-	    }
-    } else {
-	    command = d->command;
-	    argv = ve_split (d->command);
-    }
-    g_free (bin);
+    command = g_strjoinv (" ", argv);
 
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
@@ -800,29 +826,14 @@ gdm_server_spawn (GdmDisplay *d)
 			gnome_unsetenv ("XAUTHORITY");
 	}
 
-	for (len = 0; argv != NULL && argv[len] != NULL; len++)
-		;
-
-	if (len == 0) {
+	if (argv[0] == NULL) {
 		gdm_error (_("%s: Empty server command for display %s"),
 			   "gdm_server_spawn",
 			   d->name);
 		_exit (SERVER_ABORT);
 	}
 
-	argv = g_renew (char *, argv, len + 4);
-	for (i = len - 1; i >= 1; i--) {
-		argv[i+1] = argv[i];
-	}
-	/* server number is the FIRST argument, before any others */
-	argv[1] = d->name;
-	argv[len+1] = "-auth";
-	argv[len+2] = d->authfile;
-	argv[len+3] = NULL;
-
-	srvcmd = g_strjoinv (" ", argv);
-	gdm_debug ("gdm_server_spawn: '%s'", srvcmd);
-	g_free (srvcmd);
+	gdm_debug ("gdm_server_spawn: '%s'", command);
 	
 	setpgid (0, 0);
 
@@ -881,6 +892,7 @@ gdm_server_spawn (GdmDisplay *d)
 	
     case -1:
 	g_strfreev (argv);
+	g_free (command);
 	gdm_error (_("gdm_server_spawn: Can't fork Xserver process!"));
 	d->servpid = 0;
 	d->servstat = SERVER_DEAD;
@@ -889,6 +901,7 @@ gdm_server_spawn (GdmDisplay *d)
 	
     default:
 	g_strfreev (argv);
+	g_free (command);
 	gdm_debug ("gdm_server_spawn: Forked server on pid %d", (int)pid);
 	break;
     }
@@ -1042,6 +1055,8 @@ gdm_server_alloc (gint id, const gchar *command)
 #ifdef __linux__
     d->vt = -1;
 #endif
+
+    d->x_servers_order = -1;
 
     d->last_start_time = 0;
     d->retry_count = 0;

@@ -1,3 +1,34 @@
+Mon Jul 22 16:45:43 2002  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: add a hack to fix #64662.  When
+	  the shell is something that we don't really know (we know
+	  a few shells) just start the session with bash or sh (whichever
+	  we find).  
+
+	* daemon/slave.c, daemon/server.c, daemon/gdm.[ch],
+	  config/PreSession, config/PostSession: Write out an fake Xservers
+	  file each time before the PreSession script so that we may use the
+	  sessreg command nicely.  Also look for sessreg in the path and
+	  a few extra dirs.  And use the utmp file as well.
+
+	* config/Default: setup the system Xmodmap here, copied from kdm
+	  a bit.  This should fix #86098, at least it does for me.
+
+	* config/PreSession, daemon/slave.c: Run the PreSession script from
+	  the session pid and in the PreSession script exec sessreg.  This
+	  fixes the utmp bugs as sessreg will now register the correct pid
+	  in utmp.  Also move the .xsession-errors before the PreSession
+	  script and let through the stdout/stderr descriptors so that
+	  we can get errors such as sessreg failing.  Also don't error out
+	  when PreSession fails if this is a failsafe session.
+
+	* daemon/slave.c: the pid of the session is not cleared until the
+	  session is over.  It's not a race as I previously thought and in
+	  fact it could leave processes behind maybe.
+
+	* daemon/errorgui.c: make the errors display wider, recenter the
+	  window and do a bit of cleanup
+
 2002-07-22  jacob berkman  <jacob@ximian.com>
 
 	* gui/Makefile.am (install-data-local): make the link to /foo not

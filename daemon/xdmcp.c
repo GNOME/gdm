@@ -1539,6 +1539,8 @@ gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint displa
     d->vt = -1;
 #endif
 
+    d->x_servers_order = -1;
+
     d->logged_in = FALSE;
     d->login = NULL;
 
