@@ -2662,7 +2662,7 @@ gdm_slave_greeter (void)
 
 	gdm_error_box (d,
 		       GTK_MESSAGE_ERROR,
-		       _("Cannot start the greeter program, "
+		       _("Cannot start the greeter program; "
 			 "you will not be able to log in.  "
 			 "This display will be disabled.  "
 			 "Try logging in by other means and "
