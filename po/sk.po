@@ -5,14 +5,74 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.2.4.2\n"
-"POT-Creation-Date: 2002-02-04 12:05+0100\n"
-"PO-Revision-Date: 2002-02-04 12:05+0100\n"
+"POT-Creation-Date: 2002-02-19 12:35+0100\n"
+"PO-Revision-Date: 2002-02-19 12:36+0100\n"
 "Last-Translator: Stanislav Višňovský <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
+
+#: config/gettextfoo.h:1
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  You will need to log in on a console and rerun "
+"the X configuration program.  Then restart GDM."
+msgstr ""
+"Nie je možné spustiť X server (grafické rozhranie). Asi nie je správne "
+"nastavený. Budete sa musieť prihlásiť na konzolu a znovu spustiť program pre "
+"nastavenie X serveru. Potom reštartujte GDM."
+
+#: config/gettextfoo.h:2
+msgid ""
+"Would you like me to try to run the X configuration program?  Note that you "
+"will need the root password for this."
+msgstr ""
+"Chcete, aby som sa pokúsil spustiť program pre jeho nastavenie? Uvedomte si, "
+"že na to budete potrebovať heslo pre roota."
+
+#: config/gettextfoo.h:3
+msgid "Please type in the root (privileged user) password."
+msgstr "Prosím, zadajte heslo roota (administrátora)."
+
+#: config/gettextfoo.h:4
+msgid "I will now try to restart the X server again."
+msgstr "Teraz sa pokúsim znovu reštartovať X server."
+
+#: config/gettextfoo.h:5
+msgid ""
+"I will disable this X server for now.  Restart GDM when it is configured "
+"correctly."
+msgstr "Teraz zakážem X server. Keď bude správne nastavený, reštartujte GDM."
+
+#: config/gettextfoo.h:6
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  Would you like to view the X server output to "
+"diagnose the problem?"
+msgstr ""
+"Nie je možné spustiť X server (grafické rozhranie). Asi nie je správne "
+"nastavený. Chcete zobraziť výstup X serveru, aby ste mohli identifikovať "
+"problém?"
+
+#: config/gettextfoo.h:7
+msgid ""
+"I cannot start the X server (your graphical interface).  It seems that the "
+"pointer device (your mouse) is not set up correctly.  Would you like to view "
+"the X server output to diagnose the problem?"
+msgstr ""
+"Nie je možné spustiť X server (grafické rozhranie). Asi nie je správne "
+"nastavený. Chcete zobraziť výstup X serveru, aby ste mohli identifikovať "
+"problém?"
+
+#: config/gettextfoo.h:8
+msgid ""
+"Would you like me to try to run the mouse configuration program?  Note that "
+"you will need the root password for this."
+msgstr ""
+"Chcete, aby som sa pokúsil spustiť program pre nastavenie myši? Uvedomte si, "
+"že na to budete potrebovať heslo pre roota."
 
 #: daemon/auth.c:146
 #, c-format
@@ -165,25 +225,26 @@ msgstr ""
 #. start
 #. server uid
 #: daemon/gdm.c:453
-#, c-format
+#, fuzzy, c-format
 msgid ""
-"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
+"%s: XDMCP disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
 "d to allow configuration!"
 msgstr ""
 "%s: Xdmcp zakázané a nedefinovaný žiadny lokálny server. Pridajte /usr/bin/"
 "X11/X na :%d pre možnosť nastavenia!"
 
 #: daemon/gdm.c:468
-#, c-format
+#, fuzzy, c-format
 msgid ""
-"Xdmcp is disabled and gdm cannot find any local server to start.  Aborting!  "
+"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
 "Please correct the configuration %s and restart gdm."
 msgstr ""
 "Xdmcp je zakázané a gdm nenašiel žiadny lokálny server, ktorý by bolo možné "
 "spustiť. Končím. Prosím, opravte nastavenie %s a reštartujte gdm."
 
 #: daemon/gdm.c:475
-msgid "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
+#, fuzzy
+msgid "gdm_config_parse: XDMCP disabled and no local servers defined. Aborting!"
 msgstr ""
 "gdm_config_parse: Xdmcp zakázané a nedefinované žiadny lokálny server. "
 "Končím!"
@@ -752,9 +813,10 @@ msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr "gdm_slave_greeter: Nemôžem inicializovať rúru do privítania gdmgreeter"
 
 #: daemon/slave.c:1197
+#, fuzzy
 msgid ""
 "No servers were defined in the\n"
-"configuration file and xdmcp was\n"
+"configuration file and XDMCP was\n"
 "disabled.  This can only be a\n"
 "configuration error.  So I have started\n"
 "a single server for you.  You should\n"
@@ -1197,7 +1259,8 @@ msgstr "Nemôžem nastaviť poverenia pre %s"
 msgid "Couldn't open session for %s"
 msgstr "Nemôžem otvoriť sedenie pre %s"
 
-#: daemon/verify-pam.c:440
+#: daemon/verify-pam.c:440 daemon/verify-shadow.c:127
+#: daemon/verify-shadow.c:147
 msgid ""
 "\n"
 "Incorrect username or password. Letters must be typed in the correct case. "
@@ -1222,16 +1285,6 @@ msgstr ""
 #: daemon/verify-pam.c:655 daemon/verify-pam.c:657
 msgid "Can't find PAM configuration for gdm."
 msgstr "Nepodarilo sa nájsť konfiguračný súbor PAM pre gdm."
-
-#: daemon/verify-shadow.c:127 daemon/verify-shadow.c:147
-msgid ""
-"\n"
-"Incorrect username or password. Letters must be typed in the correct case. "
-"Please make sure the Caps Lock key is not enabled"
-msgstr ""
-"\n"
-"Neplatné meno alebo heslo. Veľkosť písmen sa rozlišuje. Skontrolujte, že "
-"nemáte zapnutý Caps Lock."
 
 #: daemon/xdmcp.c:239
 #, c-format
@@ -1440,7 +1493,7 @@ msgstr "gdm_signals_init: Chyba pri nastavovaní ovládača signálu INT"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Chyba pri nastavovaní ovládača signálu TERM"
 
-#: gui/gdmchooser.c:1000 gui/gdmlogin.c:3832 gui/greeter/greeter.c:623
+#: gui/gdmchooser.c:1000 gui/gdmlogin.c:3832 gui/greeter/greeter.c:645
 msgid "Could not set signal mask!"
 msgstr "Nemôžem nastaviť masku signálov!"
 
@@ -1738,12 +1791,13 @@ msgstr ""
 "až po reštarte gdm alebo celého počítača."
 
 #: gui/gdmconfig.c:1364
+#, fuzzy
 msgid ""
 "You have not defined any local servers.\n"
 "Usually this is not a good idea unless you\n"
 "are sure you do not want users to be able to\n"
 "log in with the graphical interface on the\n"
-"local console and only use the xdmcp service.\n"
+"local console and only use the XDMCP service.\n"
 "\n"
 "Are you sure you wish to apply these settings?"
 msgstr ""
@@ -2798,6 +2852,7 @@ msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
 msgstr "Zobraziť sedenie GNOME vo výbere, ak existuje sedenie, ktoré sa volá 'Gnome'"
 
 #: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:71 gui/gdmlogin.c:1452
+#: gui/greeter/greeter_session.c:343
 msgid "Gnome Chooser"
 msgstr "GNOME Výber sedenia"
 
@@ -3406,15 +3461,15 @@ msgstr ""
 "\n"
 "Asi sa vám nepodarí prihlásiť."
 
-#: gui/gdmlogin.c:761
+#: gui/gdmlogin.c:761 gui/greeter/greeter_system.c:17
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Naozaj chcete reštartovať počítač?"
 
-#: gui/gdmlogin.c:773
+#: gui/gdmlogin.c:773 gui/greeter/greeter_system.c:28
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Naozaj chcete vypnúť počítač?"
 
-#: gui/gdmlogin.c:784
+#: gui/gdmlogin.c:784 gui/greeter/greeter_system.c:38
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Naozaj chcete suspendovať počítač?"
 
@@ -3429,15 +3484,17 @@ msgstr ""
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr "TimedLoginDelay bol menej ako 5.  Použijem 5."
 
-#: gui/gdmlogin.c:925 gui/gdmlogin.c:1500
+#: gui/gdmlogin.c:925 gui/gdmlogin.c:1500 gui/greeter/greeter_session.c:64
+#: gui/greeter/greeter_session.c:390
 msgid "Failsafe Gnome"
 msgstr "Záchranné GNOME"
 
-#: gui/gdmlogin.c:927 gui/gdmlogin.c:1525
+#: gui/gdmlogin.c:927 gui/gdmlogin.c:1525 gui/greeter/greeter_session.c:66
+#: gui/greeter/greeter_session.c:416
 msgid "Failsafe xterm"
 msgstr "Záchranný xterm"
 
-#: gui/gdmlogin.c:973
+#: gui/gdmlogin.c:973 gui/greeter/greeter_session.c:110
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -3447,6 +3504,7 @@ msgstr ""
 "Chcete nastaviť %s ako štandardný typ pre budúce sedenia?"
 
 #: gui/gdmlogin.c:998 gui/gdmlogin.c:1086
+#: gui/greeter/greeter_action_language.c:191 gui/greeter/greeter_session.c:138
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -3460,7 +3518,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:1014
+#: gui/gdmlogin.c:1014 gui/greeter/greeter_session.c:156
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -3478,19 +3536,19 @@ msgstr ""
 msgid "%s session selected"
 msgstr "Vybrané sedenie %s"
 
-#: gui/gdmlogin.c:1342
+#: gui/gdmlogin.c:1342 gui/greeter/greeter_session.c:229
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Prihlásiť sa pomocou sedenia, ktoré ste naposledy použili"
 
-#: gui/gdmlogin.c:1355
+#: gui/gdmlogin.c:1355 gui/greeter/greeter_session.c:242
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Priečinok so skriptami sedenia nenájdený!"
 
-#: gui/gdmlogin.c:1440
+#: gui/gdmlogin.c:1440 gui/greeter/greeter_session.c:329
 msgid "This session will log you directly into GNOME, into your current session."
 msgstr "Toto sedenie vás prihlási priamo do GNOME, vášho aktuálneho sedenia."
 
-#: gui/gdmlogin.c:1455
+#: gui/gdmlogin.c:1455 gui/greeter/greeter_session.c:346
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
@@ -3498,11 +3556,11 @@ msgstr ""
 "Toto sedenie vás prihlási do GNOME a nechá vás vybrať, ktoré sedenie GNOME "
 "chcete použiť."
 
-#: gui/gdmlogin.c:1490
+#: gui/gdmlogin.c:1490 gui/greeter/greeter_session.c:379
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Fíha, v priečinku sedení nič nie je."
 
-#: gui/gdmlogin.c:1502
+#: gui/gdmlogin.c:1502 gui/greeter/greeter_session.c:392
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -3512,7 +3570,7 @@ msgstr ""
 "žiadne prihlasovacie skripty a mali by ste ho používať iba v prípade, že sa "
 "inak nemôžete prihlásiť. Bude použité 'Štandardné' sedenie GNOME."
 
-#: gui/gdmlogin.c:1527
+#: gui/gdmlogin.c:1527 gui/greeter/greeter_session.c:418
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3522,7 +3580,7 @@ msgstr ""
 "žiadne skripty a toto sedenie by malo byť použité iba v prípade, že žiadne "
 "iné nefunguje. Pre ukončenie terminálu použite príkaz 'exit'."
 
-#: gui/gdmlogin.c:1548
+#: gui/gdmlogin.c:1548 gui/greeter/greeter_session.c:440
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "Nenájdený odkaz na štandardné sedenie. Použijem záchranné sedenie GNOME.\n"
 
@@ -3635,8 +3693,8 @@ msgstr "Odpojiť"
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Nemôžem otvoriť DefaultImage: %s. Vypínam prehliadač vzhľadu!"
 
-#: gui/gdmlogin.c:3700 gui/gdmlogin.c:3727 gui/greeter/greeter.c:465
-#: gui/greeter/greeter.c:491
+#: gui/gdmlogin.c:3700 gui/gdmlogin.c:3727 gui/greeter/greeter.c:377
+#: gui/greeter/greeter.c:403
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3647,12 +3705,12 @@ msgstr ""
 "Asi ste aktualizovali iba gdm.\n"
 "Prosím, reštartujte démona gdm alebo celý počítač."
 
-#: gui/gdmlogin.c:3733 gui/gdmlogin.c:3773 gui/greeter/greeter.c:497
-#: gui/greeter/greeter.c:537
+#: gui/gdmlogin.c:3733 gui/gdmlogin.c:3773 gui/greeter/greeter.c:409
+#: gui/greeter/greeter.c:449
 msgid "Reboot"
-msgstr "Reštartovať"
+msgstr "Reštartovať počítač"
 
-#: gui/gdmlogin.c:3765 gui/greeter/greeter.c:529
+#: gui/gdmlogin.c:3765 gui/greeter/greeter.c:441
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3663,19 +3721,19 @@ msgstr ""
 "Asi ste aktualizovali iba gdm.\n"
 "Prosím, reštartujte démona gdm alebo celý počítač."
 
-#: gui/gdmlogin.c:3771 gui/greeter/greeter.c:535
+#: gui/gdmlogin.c:3771 gui/greeter/greeter.c:447
 msgid "Restart"
-msgstr "Reštart"
+msgstr "Reštartovať gdm"
 
-#: gui/gdmlogin.c:3809 gui/greeter/greeter.c:608
+#: gui/gdmlogin.c:3809 gui/greeter/greeter.c:630
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Chyba pri nastavovaní ovládača signálu HUP"
 
-#: gui/gdmlogin.c:3812 gui/greeter/greeter.c:611
+#: gui/gdmlogin.c:3812 gui/greeter/greeter.c:633
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Chyba pri nastavovaní ovládača signálu INT"
 
-#: gui/gdmlogin.c:3815 gui/greeter/greeter.c:614
+#: gui/gdmlogin.c:3815 gui/greeter/greeter.c:636
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Chyba pri nastavovaní ovládača signálu TERM"
 
@@ -3838,148 +3896,168 @@ msgstr ""
 msgid "Could not find a free display number"
 msgstr "Nie je možné nájsť voľné číslo displeja"
 
-#: gui/greeter/greeter.c:35
+#: gui/greeter/greeter.c:46
 #, c-format
 msgid "greeter_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
 "greeter_parse_config: Nie je konfiguračný súbor: %s. Použijem štandardné "
 "nastavenie."
 
-#: gui/greeter/greeter_lang_list.c:5
+#: gui/greeter/greeter_lang_list.c:11
 msgid "Catalan"
 msgstr "Katalánsky"
 
-#: gui/greeter/greeter_lang_list.c:6
+#: gui/greeter/greeter_lang_list.c:12
 msgid "Chinese (simplified)"
 msgstr "Čínsky (zjednodušené)"
 
-#: gui/greeter/greeter_lang_list.c:7
+#: gui/greeter/greeter_lang_list.c:13
 msgid "Chinese (traditional)"
 msgstr "Čínsky (tradičné)"
 
-#: gui/greeter/greeter_lang_list.c:8
+#: gui/greeter/greeter_lang_list.c:14
 msgid "Croatian"
 msgstr "Chorvátsky"
 
-#: gui/greeter/greeter_lang_list.c:9
+#: gui/greeter/greeter_lang_list.c:15
 msgid "Czech"
 msgstr "Český"
 
-#: gui/greeter/greeter_lang_list.c:10
+#: gui/greeter/greeter_lang_list.c:16
 msgid "Danish"
 msgstr "Dánsky"
 
-#: gui/greeter/greeter_lang_list.c:11
+#: gui/greeter/greeter_lang_list.c:17
 msgid "Dutch"
 msgstr "Holandský"
 
-#: gui/greeter/greeter_lang_list.c:12
+#: gui/greeter/greeter_lang_list.c:18
 msgid "English"
 msgstr "Anglický"
 
-#: gui/greeter/greeter_lang_list.c:13
+#: gui/greeter/greeter_lang_list.c:19
 msgid "American English"
 msgstr "Americká angličtina"
 
-#: gui/greeter/greeter_lang_list.c:14
+#: gui/greeter/greeter_lang_list.c:20
 msgid "British English"
 msgstr "Britská angličtina"
 
-#: gui/greeter/greeter_lang_list.c:15
+#: gui/greeter/greeter_lang_list.c:21
+#, fuzzy
+msgid "Estonian"
+msgstr "Rumunský"
+
+#: gui/greeter/greeter_lang_list.c:22
 msgid "Finnish"
 msgstr "Fínsky"
 
-#: gui/greeter/greeter_lang_list.c:16
+#: gui/greeter/greeter_lang_list.c:23
 msgid "French"
 msgstr "Francúzsky"
 
-#: gui/greeter/greeter_lang_list.c:17
+#: gui/greeter/greeter_lang_list.c:24
 msgid "Galician"
 msgstr "Galský"
 
-#: gui/greeter/greeter_lang_list.c:18
+#: gui/greeter/greeter_lang_list.c:25
 msgid "German"
 msgstr "Nemecký"
 
-#: gui/greeter/greeter_lang_list.c:19
+#: gui/greeter/greeter_lang_list.c:26
 msgid "Greek"
 msgstr "Grécky"
 
-#: gui/greeter/greeter_lang_list.c:20
+#: gui/greeter/greeter_lang_list.c:27
 msgid "Hebrew"
 msgstr "Hebrejský"
 
-#: gui/greeter/greeter_lang_list.c:21
+#: gui/greeter/greeter_lang_list.c:28
 msgid "Hungarian"
 msgstr "Maďarský"
 
-#: gui/greeter/greeter_lang_list.c:22
+#: gui/greeter/greeter_lang_list.c:29
 msgid "Icelandic"
 msgstr "Islandský"
 
-#: gui/greeter/greeter_lang_list.c:23
+#: gui/greeter/greeter_lang_list.c:30
 msgid "Italian"
 msgstr "Taliansky"
 
-#: gui/greeter/greeter_lang_list.c:24
+#: gui/greeter/greeter_lang_list.c:31
 msgid "Japanese"
 msgstr "Japonský"
 
-#: gui/greeter/greeter_lang_list.c:25
+#: gui/greeter/greeter_lang_list.c:32
 msgid "Korean"
 msgstr "Kórejský"
 
-#: gui/greeter/greeter_lang_list.c:26
+#: gui/greeter/greeter_lang_list.c:33
 msgid "Lithuanian"
 msgstr "Litovský"
 
-#: gui/greeter/greeter_lang_list.c:27
+#: gui/greeter/greeter_lang_list.c:34
 msgid "Norwegian (bokmal)"
 msgstr "Nórsky (bokmal)"
 
-#: gui/greeter/greeter_lang_list.c:28
+#: gui/greeter/greeter_lang_list.c:35
 msgid "Norwegian (nynorsk)"
 msgstr "Nórsky (nynorsk)"
 
-#: gui/greeter/greeter_lang_list.c:29
+#: gui/greeter/greeter_lang_list.c:36
 msgid "Polish"
 msgstr "Poľský"
 
-#: gui/greeter/greeter_lang_list.c:30
+#: gui/greeter/greeter_lang_list.c:37
 msgid "Portuguese"
 msgstr "Portugalský"
 
-#: gui/greeter/greeter_lang_list.c:31
+#: gui/greeter/greeter_lang_list.c:38
 msgid "Brazilian Portuguese"
 msgstr "Brazílsko-portugalský"
 
-#: gui/greeter/greeter_lang_list.c:32
+#: gui/greeter/greeter_lang_list.c:39
 msgid "Romanian"
 msgstr "Rumunský"
 
-#: gui/greeter/greeter_lang_list.c:33
+#: gui/greeter/greeter_lang_list.c:40
 msgid "Russian"
 msgstr "Ruský"
 
-#: gui/greeter/greeter_lang_list.c:34
+#: gui/greeter/greeter_lang_list.c:41
 msgid "Slovak"
 msgstr "Slovenský"
 
-#: gui/greeter/greeter_lang_list.c:35
+#: gui/greeter/greeter_lang_list.c:42
 msgid "Slovenian"
 msgstr "Slovinský"
 
-#: gui/greeter/greeter_lang_list.c:36
+#: gui/greeter/greeter_lang_list.c:43
 msgid "Spanish"
 msgstr "Španielsky"
 
-#: gui/greeter/greeter_lang_list.c:37
+#: gui/greeter/greeter_lang_list.c:44
 msgid "Swedish"
 msgstr "Švédsky"
 
-#: gui/greeter/greeter_lang_list.c:38
+#: gui/greeter/greeter_lang_list.c:45
 msgid "Turkish"
 msgstr "Turecký"
+
+#: gui/greeter/greeter_system.c:59
+#, fuzzy
+msgid "Shut down the computer"
+msgstr "Suspendovať váš počítač"
+
+#: gui/greeter/greeter_system.c:67
+#, fuzzy
+msgid "Suspend the computer"
+msgstr "Suspendovať váš počítač"
+
+#: gui/greeter/greeter_system.c:75
+#, fuzzy
+msgid "Reboot the computer"
+msgstr "Reštartovať váš počítač"
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
@@ -4068,63 +4146,12 @@ msgstr ""
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Grafické rozhranie nie je možné načítať, TO JE ZLE! (súbor: %s)"
 
-#: config/gettextfoo.h:1
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  You will need to log in on a console and rerun "
-"the X configuration program.  Then restart GDM."
-msgstr ""
-"Nie je možné spustiť X server (grafické rozhranie). Asi nie je správne "
-"nastavený. Budete sa musieť prihlásiť na konzolu a znovu spustiť program pre "
-"nastavenie X serveru. Potom reštartujte GDM."
-
-#: config/gettextfoo.h:2
-msgid ""
-"Would you like me to try to run the X configuration program?  Note that you "
-"will need the root password for this."
-msgstr ""
-"Chcete, aby som sa pokúsil spustiť program pre jeho nastavenie? Uvedomte si, "
-"že na to budete potrebovať heslo pre roota."
-
-#: config/gettextfoo.h:3
-msgid "Please type in the root (privileged user) password."
-msgstr "Prosím, zadajte heslo roota (administrátora)."
-
-#: config/gettextfoo.h:4
-msgid "I will now try to restart the X server again."
-msgstr "Teraz sa pokúsim znovu reštartovať X server."
-
-#: config/gettextfoo.h:5
-msgid ""
-"I will disable this X server for now.  Restart GDM when it is configured "
-"correctly."
-msgstr "Teraz zakážem X server. Keď bude správne nastavený, reštartujte GDM."
-
-#: config/gettextfoo.h:6
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  Would you like to view the X server output to "
-"diagnose the problem?"
-msgstr ""
-"Nie je možné spustiť X server (grafické rozhranie). Asi nie je správne "
-"nastavený. Chcete zobraziť výstup X serveru, aby ste mohli identifikovať "
-"problém?"
-
-#: config/gettextfoo.h:7
-msgid ""
-"I cannot start the X server (your graphical interface).  It seems that the "
-"pointer device (your mouse) is not set up correctly.  Would you like to view "
-"the X server output to diagnose the problem?"
-msgstr ""
-"Nie je možné spustiť X server (grafické rozhranie). Asi nie je správne "
-"nastavený. Chcete zobraziť výstup X serveru, aby ste mohli identifikovať "
-"problém?"
-
-#: config/gettextfoo.h:8
-msgid ""
-"Would you like me to try to run the mouse configuration program?  Note that "
-"you will need the root password for this."
-msgstr ""
-"Chcete, aby som sa pokúsil spustiť program pre nastavenie myši? Uvedomte si, "
-"že na to budete potrebovať heslo pre roota."
+#~ msgid ""
+#~ "\n"
+#~ "Incorrect username or password. Letters must be typed in the correct "
+#~ "case. Please make sure the Caps Lock key is not enabled"
+#~ msgstr ""
+#~ "\n"
+#~ "Neplatné meno alebo heslo. Veľkosť písmen sa rozlišuje. Skontrolujte, že "
+#~ "nemáte zapnutý Caps Lock."
 
