@@ -49,7 +49,7 @@ greeter_langauge_initialize_model (void)
 
   gtk_list_store_append (lang_model, &iter);
   gtk_list_store_set (lang_model, &iter,
-		      TRANSLATED_NAME_COLUMN, _("System default"),
+		      TRANSLATED_NAME_COLUMN, _("System Default"),
 		      UNTRANSLATED_NAME_COLUMN, NULL,
 		      LOCALE_COLUMN, DEFAULT_LANGUAGE,
 		      -1);
@@ -129,7 +129,7 @@ greeter_language_get_language (const char *old_language)
 	  char *current_name, *saved_name;
 
 	  if (strcmp (current_language, DEFAULT_LANGUAGE) == 0)
-	    current_name = g_strdup (_("System default"));
+	    current_name = g_strdup (_("System Default"));
 	  else
 	    current_name = gdm_lang_name (current_language,
 					  FALSE /* never_encoding */,
@@ -137,7 +137,7 @@ greeter_language_get_language (const char *old_language)
 					  TRUE /* untranslated */,
 					  TRUE /* markup */);
 	  if (strcmp (old_language, "") == 0)
-	    saved_name = g_strdup (_("System default"));
+	    saved_name = g_strdup (_("System Default"));
 	  else
 	    saved_name = gdm_lang_name (old_language,
 					FALSE /* never_encoding */,

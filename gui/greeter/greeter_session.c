@@ -217,6 +217,7 @@ greeter_session_init (void)
   static GtkTooltips *tooltips = NULL;
   GtkRequisition req;
   char *s;
+  int num = 1;
 
   g_free (current_session);
   current_session = NULL;
@@ -273,7 +274,7 @@ greeter_session_init (void)
     {
       current_session = g_strdup (LAST_SESSION);
 
-      radio = gtk_radio_button_new_with_mnemonic (session_group, _(LAST_SESSION));
+      radio = gtk_radio_button_new_with_mnemonic (session_group, _("_Last"));
       g_object_set_data (G_OBJECT (radio),
 			 SESSION_NAME,
 			 LAST_SESSION);
@@ -311,6 +312,7 @@ greeter_session_init (void)
 	    char *exec;
 	    char *name;
 	    char *comment;
+	    char *label;
 	    /* ignore everything bug the .desktop files */
 	    if (strstr (dent->d_name, ".desktop") == NULL) {
 		    dent = readdir (sessdir);
@@ -335,7 +337,14 @@ greeter_session_init (void)
 		    continue;
 	    }
 
-	    radio = gtk_radio_button_new_with_mnemonic (session_group, name);
+	    if (num < 10)
+		    label = g_strdup_printf ("_%d. %s", num, name);
+	    else
+		    label = g_strdup (name);
+	    num ++;
+
+	    radio = gtk_radio_button_new_with_mnemonic (session_group, label);
+	    g_free (label);
 	    g_object_set_data_full (G_OBJECT (radio),
 				    SESSION_NAME,
 				    g_strdup (dent->d_name),
@@ -399,7 +408,7 @@ greeter_session_init (void)
 	/* For translators:  This is the failsafe login when the user
 	 * can't login otherwise */
 	radio = gtk_radio_button_new_with_mnemonic (session_group,
-						    _("Failsafe Gnome"));
+						    _("Failsafe _Gnome"));
 	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (radio),
 			      _("This is a failsafe session that will log you "
 				"into GNOME.  No startup scripts will be read "
@@ -423,7 +432,7 @@ greeter_session_init (void)
 	/* For translators:  This is the failsafe login when the user
 	 * can't login otherwise */
 	radio = gtk_radio_button_new_with_mnemonic (session_group,
-						    _("Failsafe xterm"));
+						    _("Failsafe _Terminal"));
 	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (radio),
 			      _("This is a failsafe session that will log you "
 				"into a terminal.  No startup scripts will be read "

@@ -1,3 +1,19 @@
+Sun Jul 20 12:36:06 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter_action_language.c,
+	  gui/greeter/greeter_system.c, gui/greeter/greeter_session.c:
+	  Fix some keynav issues from #117776.  Add mnemonics where possible,
+	  change some strings to be more HIGgy and such.
+
+	* gui/greeter/greeter_parser.c, gui/greeter/gdmthemetester:
+	  Scale fonts when screen with is less then 800 by PANGO_SCALE_SMALL
+	  and if they are less then 640 by PANGO_SCALE_X_SMALL.  This should
+	  make small displays be usable, though this is kind of a hack.
+	  There should be some scaling info in the theme rather then this.
+	  Also add ability to test different display sizes to theme tester,
+
+	* docs/C/gdm.xml: update
+
 Sun Jul 20 11:01:01 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.c: mention the GDM manual in the help dialog box.

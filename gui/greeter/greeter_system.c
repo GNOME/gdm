@@ -65,7 +65,7 @@ static void
 query_greeter_halt_handler (void)
 {
 	if (greeter_query (_("Are you sure you want to shut down the machine?"),
-			   _("Shut _Down"), GTK_STOCK_CANCEL)) {
+			   _("Shut_down"), GTK_STOCK_CANCEL)) {
 		closelog();
 
 		_exit (DISPLAY_HALT);
@@ -139,7 +139,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		tooltips = gtk_tooltips_new ();
 
 	if (GdmChooserButton) {
-		w = gtk_menu_item_new_with_mnemonic (_("Run _XDMCP Chooser"));
+		w = gtk_menu_item_new_with_mnemonic (_("_XDMCP Chooser..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -154,7 +154,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 
 	if (GdmConfigAvailable &&
 	    bin_exists (GdmConfigurator)) {
-		w = gtk_menu_item_new_with_mnemonic (_("_Configure the login manager..."));
+		w = gtk_menu_item_new_with_mnemonic (_("_Configure Login Manager..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -177,7 +177,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (add_reboot) {
-		w = gtk_menu_item_new_with_mnemonic (_("_Reboot the computer..."));
+		w = gtk_menu_item_new_with_mnemonic (_("_Reboot"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -189,7 +189,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (add_halt) {
-		w = gtk_menu_item_new_with_mnemonic (_("Shut _down the computer..."));
+		w = gtk_menu_item_new_with_mnemonic (_("Shut_down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",
@@ -202,7 +202,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 
 	if (add_suspend) {
-		w = gtk_menu_item_new_with_mnemonic (_("Sus_pend the computer..."));
+		w = gtk_menu_item_new_with_mnemonic (_("Sus_pend"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
 		g_signal_connect (G_OBJECT (w), "activate",

@@ -26,6 +26,9 @@ USAGE="
 Usage: $0 <environment> <theme>
 <environment> is one of: console, console-timed, flexi, remote-flexi, xdmcp
 <theme> is either the path of the theme or the name of an installed theme
+
+If you set the environment variable XNESTSIZE to <width>x<height> (e.g. 800x600)
+you can test the greeter at that resolution
 "
 if [ "$#" != 2 ]; then
 	echo "$USAGE"
@@ -64,6 +67,11 @@ xdmcp)
 	;;
 esac
 
+if [ "x$XNESTSIZE" = x ] ; then
+  eval `gdmXnest -b`
+else
+  eval `gdmXnest -b -o "-geometry $XNESTSIZE"`
+fi
 eval `gdmXnest -b`
 export DISPLAY
 

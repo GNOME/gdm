@@ -1127,7 +1127,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	    char *curname, *savedname;
 
 	    if (strcmp (curlang, DEFAULT_LANGUAGE) == 0) {
-		    curname = g_strdup (_("System default"));
+		    curname = g_strdup (_("System Default"));
 	    } else {
 		    curname = gdm_lang_name (curlang,
 					     FALSE /* never_encoding */,
@@ -1136,7 +1136,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 					     TRUE /* markup */);
 	    }
 	    if (strcmp (savedlang, "") == 0) {
-		    savedname = g_strdup (_("System default"));
+		    savedname = g_strdup (_("System Default"));
 	    } else {
 		    savedname = gdm_lang_name (savedlang,
 					       FALSE /* never_encoding */,
@@ -1351,12 +1351,13 @@ gdm_login_session_init (GtkWidget *menu)
     DIR *sessdir;
     struct dirent *dent;
     gboolean searching_for_default = TRUE;
+    int num = 1;
 
     cursess = NULL;
     
     if (GdmShowLastSession) {
             cursess = LAST_SESSION;
-            item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_SESSION));
+            item = gtk_radio_menu_item_new_with_mnemonic (NULL, _("_Last"));
             g_object_set_data (G_OBJECT (item),
 			       SESSION_NAME,
 			       LAST_SESSION);
@@ -1404,6 +1405,7 @@ gdm_login_session_init (GtkWidget *menu)
 	    char *name;
 	    char *comment;
 	    char *s;
+	    char *label;
 
 	    /* ignore everything bug the .desktop files */
 	    if (strstr (dent->d_name, ".desktop") == NULL) {
@@ -1430,7 +1432,14 @@ gdm_login_session_init (GtkWidget *menu)
 		    continue;
 	    }
 
-	    item = gtk_radio_menu_item_new_with_label (sessgrp, name);
+	    if (num < 10)
+		    label = g_strdup_printf ("_%d. %s", num, name);
+	    else
+		    label = g_strdup (name);
+	    num ++;
+
+	    item = gtk_radio_menu_item_new_with_mnemonic (sessgrp, label);
+	    g_free (label);
 	    g_object_set_data_full (G_OBJECT (item),
 				    SESSION_NAME,
 				    g_strdup (dent->d_name),
@@ -1526,8 +1535,8 @@ gdm_login_session_init (GtkWidget *menu)
     if (GdmShowGnomeFailsafeSession) {
             /* For translators:  This is the failsafe login when the user
              * can't login otherwise */
-            item = gtk_radio_menu_item_new_with_label (sessgrp,
-                                                       _("Failsafe Gnome"));
+            item = gtk_radio_menu_item_new_with_mnemonic (sessgrp,
+							  _("Failsafe _Gnome"));
             gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
                                   _("This is a failsafe session that will log you "
                                     "into GNOME.  No startup scripts will be read "
@@ -1551,8 +1560,8 @@ gdm_login_session_init (GtkWidget *menu)
     if (GdmShowXtermFailsafeSession) {
             /* For translators:  This is the failsafe login when the user
              * can't login otherwise */
-            item = gtk_radio_menu_item_new_with_label (sessgrp,
-                                                       _("Failsafe xterm"));
+	    item = gtk_radio_menu_item_new_with_mnemonic (sessgrp,
+							  _("Failsafe _Terminal"));
             gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
                                   _("This is a failsafe session that will log you "
                                     "into a terminal.  No startup scripts will be read "
@@ -1648,7 +1657,7 @@ gdm_login_language_menu_new (void)
 
     curlang = LAST_LANGUAGE;
 
-    item = gtk_radio_menu_item_new_with_label (NULL, _("Last"));
+    item = gtk_radio_menu_item_new_with_mnemonic (NULL, _("_Last"));
     languages = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     g_signal_connect (G_OBJECT (item), "activate", 
@@ -1663,7 +1672,7 @@ gdm_login_language_menu_new (void)
 			    "last time you logged in"),
 			  NULL);
 
-    item = gtk_radio_menu_item_new_with_label (languages, _("System default"));
+    item = gtk_radio_menu_item_new_with_mnemonic (languages, _("_System Default"));
     languages = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     g_signal_connect (G_OBJECT (item), "activate", 
@@ -1694,7 +1703,7 @@ gdm_login_language_menu_new (void)
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     gtk_widget_show(GTK_WIDGET (item));
 
-    other_menu = item = gtk_menu_item_new_with_label (_("Other"));
+    other_menu = item = gtk_menu_item_new_with_mnemonic (_("_Other"));
     omenu = gtk_menu_new();
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), omenu);
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -3071,7 +3080,7 @@ gdm_login_gui_init (void)
 	menu = gtk_menu_new();
 
 	if (GdmChooserButtonReal) {
-		item = gtk_menu_item_new_with_mnemonic (_("Run _XDMCP Chooser"));
+		item = gtk_menu_item_new_with_mnemonic (_("_XDMCP Chooser..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_login_use_chooser_handler),
@@ -3087,7 +3096,7 @@ gdm_login_gui_init (void)
 
 	if (GdmConfigAvailableReal &&
 	    bin_exists (GdmConfigurator)) {
-		item = gtk_menu_item_new_with_mnemonic (_("_Configure the login manager..."));
+		item = gtk_menu_item_new_with_mnemonic (_("_Configure Login Manager..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_run_gdmconfig),
@@ -3101,7 +3110,7 @@ gdm_login_gui_init (void)
 	}
 
 	if (working_command_exists (GdmReboot)) {
-		item = gtk_menu_item_new_with_mnemonic (_("_Reboot..."));
+		item = gtk_menu_item_new_with_mnemonic (_("_Reboot"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_login_reboot_handler), 
@@ -3114,7 +3123,7 @@ gdm_login_gui_init (void)
 	}
 	
 	if (working_command_exists (GdmHalt)) {
-		item = gtk_menu_item_new_with_mnemonic (_("Shut _down..."));
+		item = gtk_menu_item_new_with_mnemonic (_("Shut_down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_login_halt_handler), 
@@ -3128,7 +3137,7 @@ gdm_login_gui_init (void)
 	}
 
 	if (working_command_exists (GdmSuspend)) {
-		item = gtk_menu_item_new_with_mnemonic (_("_Suspend..."));
+		item = gtk_menu_item_new_with_mnemonic (_("_Suspend"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_login_suspend_handler), 
