@@ -345,7 +345,9 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   case GREETER_ITEM_TYPE_ENTRY:
     entry = gtk_entry_new ();
     gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
-    if (GdmUseCirclesInEntry)
+    if (GdmUseInvisibleInEntry)
+      gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);
+    else if (GdmUseCirclesInEntry)
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
     gtk_widget_modify_font (entry, item->data.text.fonts[GREETER_ITEM_STATE_NORMAL]);
 

@@ -252,6 +252,7 @@ enum {
 #define GDM_KEY_POSITIONY "greeter/PositionY=0"
 #define GDM_KEY_USE_24_CLOCK "greeter/Use24Clock=false"
 #define GDM_KEY_ENTRY_CIRCLES "greeter/UseCirclesInEntry=false"
+#define GDM_KEY_ENTRY_INVISIBLE "greeter/UseInvisibleInEntry=false"
 #define GDM_KEY_GRAPHICAL_THEME "greeter/GraphicalTheme=circles"
 #define GDM_KEY_GRAPHICAL_THEME_DIR "greeter/GraphicalThemeDir=" EXPANDED_DATADIR "/gdm/themes/"
 

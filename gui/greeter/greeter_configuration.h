@@ -2,6 +2,7 @@
 #define GREETER_CONFIGURATION_H
 
 extern gboolean GdmUseCirclesInEntry;
+extern gboolean GdmUseInvisibleInEntry;
 extern gboolean GdmShowGnomeFailsafeSession;
 extern gboolean GdmShowXtermFailsafeSession;
 extern gboolean GdmShowLastSession;

@@ -83,6 +83,7 @@ gchar *GdmSoundOnLoginFile;
 gchar *GdmSoundProgram;
 
 gboolean GdmUseCirclesInEntry = FALSE;
+gboolean GdmUseInvisibleInEntry = FALSE;
 
 static gboolean used_defaults = FALSE;
 gint greeter_current_delay = 0;
@@ -132,6 +133,7 @@ greeter_parse_config (void)
       }
     GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMASCREEN);
     GdmUseCirclesInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_CIRCLES);
+    GdmUseInvisibleInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_INVISIBLE);
 
     GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
     GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
@@ -787,6 +789,9 @@ greeter_reread_config (int sig, gpointer data)
 	     ! gdm_common_bool_same (config,
 			  GdmUseCirclesInEntry,
 			  GDM_KEY_ENTRY_CIRCLES) ||
+	     ! gdm_common_bool_same (config,
+			  GdmUseInvisibleInEntry,
+			  GDM_KEY_ENTRY_INVISIBLE) ||
 	     ! gdm_common_bool_same (config,
 			  GdmShowXtermFailsafeSession,
 			  GDM_KEY_SHOW_XTERM_FAILSAFE) ||

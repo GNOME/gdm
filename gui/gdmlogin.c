@@ -138,6 +138,7 @@ static gboolean GdmShowXtermFailsafeSession;
 static gboolean GdmShowLastSession;
 
 static gboolean GdmUseCirclesInEntry;
+static gboolean GdmUseInvisibleInEntry;
 static gint GdmFlexiReapDelayMinutes;
 
 /* FIXME: Should move everything to externs and move reading to gdmcommon.c */
@@ -704,6 +705,7 @@ gdm_login_parse_config (void)
     GdmIconMaxHeight = ve_config_get_int (config, GDM_KEY_ICONHEIGHT);
     GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMASCREEN);
     GdmUseCirclesInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_CIRCLES);
+    GdmUseInvisibleInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_INVISIBLE);
     GdmLockPosition = ve_config_get_bool (config, GDM_KEY_LOCK_POSITION);
     GdmSetPosition = ve_config_get_bool (config, GDM_KEY_SET_POSITION);
     GdmPositionX = ve_config_get_int (config, GDM_KEY_POSITIONX);
@@ -3036,7 +3038,9 @@ gdm_login_gui_init (void)
     entry = gtk_entry_new ();
     g_signal_connect (G_OBJECT (entry), "key_press_event",
 		      G_CALLBACK (key_press_event), NULL);
-    if (GdmUseCirclesInEntry)
+    if (GdmUseInvisibleInEntry)
+	    gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);
+    else if (GdmUseCirclesInEntry)
 	    gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
     gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
     gtk_widget_set_size_request (entry, 250, -1);
