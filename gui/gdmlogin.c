@@ -687,7 +687,7 @@ gdm_login_message (const gchar *msg)
 				      GTK_BUTTONS_CLOSE,
 				      "%s",
 				      msg);
-	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	gtk_dialog_set_has_separator (GTK_DIALOG (req), FALSE);
 	g_signal_connect (G_OBJECT (req), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed),
 			  &req);
