@@ -199,6 +199,9 @@ greeter_system_handler (GreeterItemInfo *info,
   gtk_dialog_add_button (GTK_DIALOG (dialog),
 			 GTK_STOCK_OK,
 			 GTK_RESPONSE_OK);
+
+  gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+				   GTK_RESPONSE_OK);
   
   gtk_widget_show_all (dialog);
   gdm_wm_center_window (GTK_WINDOW (dialog));

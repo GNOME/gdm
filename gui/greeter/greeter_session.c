@@ -203,6 +203,8 @@ greeter_session_init (void)
   gint linklen;
   gboolean got_default_link = FALSE;
   GtkTooltips *tooltips;
+  GtkWidget *vbox;
+  GtkRequisition req;
 
   g_free (current_session);
   current_session = NULL;
@@ -217,7 +219,11 @@ greeter_session_init (void)
   gtk_dialog_add_button (GTK_DIALOG (dialog),
 			 GTK_STOCK_OK,
 			 GTK_RESPONSE_OK);
-  
+  gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+				   GTK_RESPONSE_OK);
+
+  vbox = gtk_vbox_new (FALSE, 0);
+
   if (GdmShowLastSession)
     {
       current_session = g_strdup (LAST_SESSION);
@@ -231,9 +237,7 @@ greeter_session_init (void)
 			    _("Log in using the session that you have used "
 			      "last time you logged in"),
 			    NULL);
-      gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			  radio,
-			  FALSE, FALSE, 4);
+      gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 4);
       gtk_widget_show (radio);
     }
     
@@ -311,9 +315,7 @@ greeter_session_init (void)
 					g_strdup (dent->d_name),
 					(GDestroyNotify) g_free);
 		session_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radio));
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-				    radio,
-				    FALSE, FALSE, 4);
+		gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 4);
 		gtk_widget_show (radio);
 		
 		sessions = g_slist_append (sessions, g_strdup (dent->d_name));
@@ -412,9 +414,7 @@ greeter_session_init (void)
 	sessions = g_slist_append (sessions,
 				   g_strdup (GDM_SESSION_FAILSAFE_GNOME));
 	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    radio,
-			    FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 4);
 	gtk_widget_show (radio);
       }
 
@@ -438,9 +438,7 @@ greeter_session_init (void)
 	sessions = g_slist_append (sessions,
 				   g_strdup (GDM_SESSION_FAILSAFE_XTERM));
 	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-			    radio,
-			    FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 4);
 	gtk_widget_show (radio);
       }
                     
@@ -453,7 +451,30 @@ greeter_session_init (void)
     if (current_session == NULL)
             current_session = g_strdup (default_session);
 
+    gtk_widget_show (vbox);
+    gtk_widget_size_request (vbox, &req);
 
+    /* if too large */
+    if (req.height > 0.7 * gdm_wm_screen.height) {
+	    GtkWidget *sw = gtk_scrolled_window_new (NULL, NULL);
+	    gtk_widget_set_size_request (sw,
+					 req.width, 
+					 0.7 * gdm_wm_screen.height);
+	    gtk_scrolled_window_set_policy
+		    (GTK_SCROLLED_WINDOW (sw),
+		     GTK_POLICY_NEVER,
+		     GTK_POLICY_AUTOMATIC);
+	    gtk_scrolled_window_add_with_viewport
+		    (GTK_SCROLLED_WINDOW (sw), vbox);
+	    gtk_widget_show (sw);
+	    gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+				sw,
+				FALSE, FALSE, 4);
+    } else {
+	    gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+				vbox,
+				FALSE, FALSE, 4);
+    }
 }
 
 static void

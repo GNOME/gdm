@@ -202,6 +202,9 @@ greeter_action_language (GreeterItemInfo *info,
 					    GTK_STOCK_OK,
 					    GTK_RESPONSE_OK,
 					    NULL);
+
+      gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+				       GTK_RESPONSE_OK);
       g_object_add_weak_pointer (G_OBJECT (dialog), (gpointer *) &dialog);
       s = g_strdup_printf ("<span size=\"x-large\" weight=\"bold\">%s</span>",
 			   _("Select a language for your session to use:"));
