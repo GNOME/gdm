@@ -387,24 +387,34 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     FILE *af;
     GSList *auths = NULL;
     gboolean ret = TRUE;
+    gboolean automatic_tmp_dir = FALSE;
+    gboolean locked;
 
     if (!d)
 	return FALSE;
 
     gdm_debug ("gdm_auth_user_add: Adding cookie for %d", user);
 
+try_user_add_again:
+
+    locked = FALSE;
+
     /* Determine whether UserAuthDir is specified. Otherwise ~user is used */
-    if (*GdmUserAuthDir)
+    if ( ! ve_string_empty (GdmUserAuthDir))
 	authdir = GdmUserAuthDir;
     else
 	authdir = homedir;
 
     umask (077);
 
-    d->userauth = g_strconcat (authdir, "/", GdmUserAuthFile, NULL);
+    if (authdir == NULL)
+	    d->userauth = NULL;
+    else
+	    d->userauth = g_strconcat (authdir, "/", GdmUserAuthFile, NULL);
 
     /* Find out if the Xauthority file passes the paranoia check */
-    if (authdir == NULL ||
+    if (automatic_tmp_dir ||
+	authdir == NULL ||
 	! gdm_file_check ("gdm_auth_user_add", user, authdir, GdmUserAuthFile, 
 			  TRUE, GdmUserMaxFile, GdmRelaxPerms) ||
 	! try_open_append (d->userauth)) {
@@ -438,8 +448,11 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 
 	    umask (022);
 
-	    return FALSE;
+	    automatic_tmp_dir = TRUE;
+	    goto try_user_add_again;
 	}
+
+	locked = TRUE;
 
 	af = fopen (d->userauth, "a+");
     }
@@ -447,11 +460,17 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     if (!af) {
 	/* Really no need to clean up here - this process is a goner anyway */
 	gdm_error (_("gdm_auth_user_add: Could not open cookie file %s"), d->userauth);
-	XauUnlockAuth (d->userauth);
+	if (locked)
+		XauUnlockAuth (d->userauth);
 	g_free (d->userauth);
 	d->userauth = NULL;
 
 	umask (022);
+
+	if ( ! d->authfb) {
+		automatic_tmp_dir = TRUE;
+		goto try_user_add_again;
+	}
 
 	return FALSE; 
     }
@@ -469,6 +488,17 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 	if ( ! XauWriteAuth (af, auths->data)) {
 		gdm_error (_("%s: Could not write cookie"),
 			   "gdm_auth_user_add");
+
+		if ( ! d->authfb) {
+			fclose (af);
+			if (locked)
+				XauUnlockAuth (d->userauth);
+			g_free (d->userauth);
+			d->userauth = NULL;
+			automatic_tmp_dir = TRUE;
+			goto try_user_add_again;
+		}
+
 		ret = FALSE;
 		break;
 	}
@@ -477,7 +507,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     }
 
     fclose (af);
-    XauUnlockAuth (d->userauth);
+    if (locked)
+	    XauUnlockAuth (d->userauth);
 
     gdm_debug ("gdm_auth_user_add: Done");
 
@@ -537,13 +568,19 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     g_free (authfile);
 
     /* Lock user's cookie jar and open it for writing */
-    if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS)
+    if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS) {
+	g_free (d->userauth);
+	d->userauth = NULL;
 	return;
+    }
 
     af = fopen (d->userauth, "a+");
 
     if (!af) {
 	XauUnlockAuth (d->userauth);
+
+	g_free (d->userauth);
+	d->userauth = NULL;
 
 	return;
     }
@@ -572,7 +609,7 @@ static void
 gdm_auth_purge (GdmDisplay *d, FILE *af)
 {
     Xauth *xa;
-    GSList *keep = NULL;
+    GSList *keep = NULL, *li;
 
     if (!d || !af)
 	return;
@@ -585,7 +622,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
      * temporary file issues. Then remove any instance of this display
      * in the cookie jar... */
 
-    while ( (xa = XauReadAuth (af)) ) {
+    while ( (xa = XauReadAuth (af)) != NULL ) {
 	gboolean match = FALSE;
 	GSList *alist = d->auths;
 
@@ -608,17 +645,14 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
     /* Rewind the file */
     af = freopen (d->userauth, "w", af);
 
-    if (!af) {
-	XauUnlockAuth (d->userauth);
-
-	return;
-    }
-
     /* Write out remaining entries */
-    while (keep) {
-	XauWriteAuth (af, keep->data);
-	XauDisposeAuth (keep->data);
-	keep = keep->next;
+    for (li = keep; li != NULL; li = li->next) {
+	    /* FIXME: is this correct, if we can't open
+	     * this is quite crap isn't it ... */
+	    if (af != NULL)
+		    XauWriteAuth (af, li->data);
+	    XauDisposeAuth (li->data);
+	    li->data = NULL;
     }
 
     g_slist_free (keep);

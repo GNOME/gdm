@@ -317,14 +317,16 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 	greet = FALSE;
 	gdm_debug ("setup_automatic_session: Automatic login: %s", login);
 
-	if ( ! gdm_verify_setup_user (display, login, display->name))
-		return FALSE;
-
 	/* Run the init script. gdmslave suspends until script
 	 * has terminated */
 	gdm_slave_exec_script (display, GdmDisplayInit, NULL, NULL);
 
 	gdm_debug ("setup_automatic_session: DisplayInit script finished");
+
+	if ( ! gdm_verify_setup_user (display, login, display->name))
+		return FALSE;
+
+	gdm_debug ("setup_automatic_session: Automatic login successful");
 
 	return TRUE;
 }

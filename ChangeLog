@@ -1,3 +1,10 @@
+Tue Jul 09 09:08:25 2002  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c: handle fails on user auth writing by going to the
+	  fallback file to handle things in a saner way.  Fixed
+	  locking/unlocking to be done properly and fixed leaks in the purge
+	  function.
+
 Tue Jul 09 08:44:04 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: Fix a bug with finding the parent process
