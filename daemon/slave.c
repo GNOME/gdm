@@ -535,6 +535,7 @@ run_error_dialog (const char *error)
 		gtk_window_set_title (GTK_WINDOW (dialog), "GDM");
 
 		label = gtk_label_new (error);
+		gtk_widget_show (label);
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 		gtk_box_pack_start
 			(GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
@@ -544,6 +545,7 @@ run_error_dialog (const char *error)
 			(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
 
 		button = gtk_button_new_with_label (_("OK"));
+		gtk_widget_show (button);
 		gtk_signal_connect (GTK_OBJECT (button), "event",
 				    GTK_SIGNAL_FUNC (accept_both_clicks),
 				    NULL);
@@ -556,11 +558,7 @@ run_error_dialog (const char *error)
 		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
 		gtk_widget_grab_default (button);
 
-		gtk_widget_show_all (dialog);
-
-		gtk_widget_grab_focus (button);
-
-		gtk_widget_get_child_requisition (dialog, &req);
+		gtk_widget_size_request (dialog, &req);
 
 		if (d->screenwidth <= 0)
 			d->screenwidth = gdk_screen_width ();
@@ -574,6 +572,8 @@ run_error_dialog (const char *error)
 					  d->screeny +
 					    (d->screenheight / 2) -
 					    (req.height / 2));
+
+		gtk_widget_grab_focus (button);
 
 		gtk_widget_show_now (dialog);
 
