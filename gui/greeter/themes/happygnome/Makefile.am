@@ -5,7 +5,9 @@ happygnome_DATA = \
 	background.svg \
 	gnome-logo.png  \
 	options.png \
-	screenshot.png
+	screenshot.png \
+	session.png \
+	system.png
 
 happygnome_in_files = \
 	GdmGreeterTheme.desktop.in \
