@@ -1045,7 +1045,7 @@ evil (const char *user)
 	    /* do not translate */
 	    strcmp (user, "Start Dancing") == 0) {
 		setup_cursor (GDK_UMBRELLA);
-		dance_handler = gtk_timeout_add (50, dance, NULL);
+		dance_handler = g_timeout_add (50, dance, NULL);
 		old_lock = GdmLockPosition;
 		GdmLockPosition = TRUE;
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
@@ -1054,7 +1054,7 @@ evil (const char *user)
 		   /* do not translate */
 		   strcmp (user, "Stop Dancing") == 0) {
 		setup_cursor (GDK_LEFT_PTR);
-		gtk_timeout_remove (dance_handler);
+		g_source_remove (dance_handler);
 		dance_handler = 0;
 		GdmLockPosition = old_lock;
 		gdm_wm_center_window (GTK_WINDOW (login));
@@ -1126,7 +1126,7 @@ gdm_login_enter (GtkWidget *entry)
 
 	/* clear the err_box */
 	if (err_box_clear_handler > 0)
-		gtk_timeout_remove (err_box_clear_handler);
+		g_source_remove (err_box_clear_handler);
 	err_box_clear_handler = 0;
 	gtk_label_set_text (GTK_LABEL (err_box), "");
 
@@ -1861,13 +1861,13 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_label_set_text (GTK_LABEL (err_box), tmp);
 	g_free (tmp);
 	if (err_box_clear_handler > 0)
-		gtk_timeout_remove (err_box_clear_handler);
+		g_source_remove (err_box_clear_handler);
 	if (ve_string_empty (buf))
 		err_box_clear_handler = 0;
 	else
-		err_box_clear_handler = gtk_timeout_add (30000,
-							 err_box_clear,
-							 NULL);
+		err_box_clear_handler = g_timeout_add (30000,
+						       err_box_clear,
+						       NULL);
 	printf ("%c\n", STX);
 	fflush (stdout);
 
@@ -1995,7 +1995,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	if (timed_handler_id != 0) {
-		gtk_timeout_remove (timed_handler_id);
+		g_source_remove (timed_handler_id);
 		timed_handler_id = 0;
 	}
 
@@ -2070,8 +2070,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	    ! ve_string_empty (GdmTimedLogin) &&
 	    GdmTimedLoginDelay > 0) {
 		curdelay = GdmTimedLoginDelay;
-		timed_handler_id = gtk_timeout_add (1000,
-						    gdm_timer, NULL);
+		timed_handler_id = g_timeout_add (1000,
+						  gdm_timer, NULL);
 	}
 	printf ("%c\n", STX);
 	fflush (stdout);
@@ -2085,7 +2085,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	 */
 
 	if (timed_handler_id != 0) {
-		gtk_timeout_remove (timed_handler_id);
+		g_source_remove (timed_handler_id);
 		timed_handler_id = 0;
 	}
 	printf ("%c\n", STX);
@@ -2392,7 +2392,7 @@ update_clock (gpointer data)
 	time_til_next_min = 60 - the_tm->tm_sec;
 	time_til_next_min = (time_til_next_min>=0?time_til_next_min:0);
 
-	gtk_timeout_add (time_til_next_min*1000, update_clock, NULL);
+	g_timeout_add (time_til_next_min*1000, update_clock, NULL);
 	
 	return FALSE;
 }

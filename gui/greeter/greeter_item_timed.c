@@ -112,8 +112,8 @@ greeter_item_timed_start (void)
       GdmTimedLoginDelay > 0)
     {
       greeter_current_delay = GdmTimedLoginDelay;
-      timed_handler_id = gtk_timeout_add (1000,
-					  gdm_timer, NULL);
+      timed_handler_id = g_timeout_add (1000,
+					gdm_timer, NULL);
     }
 }
 
@@ -122,7 +122,7 @@ greeter_item_timed_stop (void)
 {
   if (timed_handler_id != 0)
     {
-      gtk_timeout_remove (timed_handler_id);
+      g_source_remove (timed_handler_id);
       timed_handler_id = 0;
     }
 }

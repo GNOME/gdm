@@ -50,9 +50,6 @@ gettextfunc () {
 }
 
 zenity=`which zenity 2>/dev/null`
-if [ -z "$zenity" ] ; then
-    echo "$0: zenity not found!"
-fi
 
 command="$1"
 
@@ -63,6 +60,8 @@ fi
 if [ x"$command" = xfailsafe ] ; then
   if [ -n "$zenity" ] ; then
     $zenity --info --text `gettextfunc "This is the failsafe xterm session.  Windows now have focus only if you have your cursor above them.  To get out of this mode type 'exit' in the window in the upper left corner"`
+  else
+    echo "$0: Starting the failsafe xterm session."
   fi
   exec xterm -geometry 80x24+0+0
 fi

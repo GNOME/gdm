@@ -1,3 +1,15 @@
+Mon Jul 28 09:19:38 2003  George Lebl <jirka@5z.com>
+
+	* configure.in: Fix #118404, we don't need TCP Wrappers if compiling
+	  without XDMCP
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_timed.c: Apply patch from
+	  Steve Chaplin to fix use of some deprecated functions #118361
+
+	* config/Xsession.in: remove the 'no zenity' message and add an echo
+	  when starting the failsafe session, even though in that case it's
+	  unlikely there is a .xsession-errors unless something went wrong
+
 Sat Jul 26 21:04:21 2003  Christophe Merlet  <redfox@redfoxcenter.org>
 
 	* gui/gdmphotosetup.desktop.in: Fixed a little typo.

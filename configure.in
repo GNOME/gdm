@@ -178,85 +178,6 @@ AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname, [
 		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lnsl"
 		     EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lnsl"])])
 
-# TCP Wrappers for XDMCP access control
-if test x$with_tcp_wrappers = xno ; then
-	echo "TCP wrappers disabled"
-else
-  AC_MSG_CHECKING([whether to use TCP wrappers])
-  LIBWRAP_PATH=""
-  for I in $LDFLAGS $LIBS -L/usr/lib; do
-	case "$I" in
-	-L*)
-	THEFILE="`echo $I | sed -e 's,^-L,,'`"
-	echo "From $I, checking in dir $THEFILE for libwrap.a" 1>&5
-	if test -f $THEFILE/libwrap.a; then
-		LIBWRAP_PATH=$THEFILE/libwrap.a
-		echo "Found $LIBWRAP_PATH" 1>&5
-		break
-	fi
-	esac
-  done
-
-  if test -n "$LIBWRAP_PATH"; then
-        AC_MSG_RESULT(yes)
-  else
-        AC_MSG_RESULT(no)
-  fi
-
-  if test -n "$LIBWRAP_PATH"; then
-	nm $LIBWRAP_PATH | grep 'T setenv' && LIBWRAP_PATH=""
-	if test -z "$LIBWRAP_PATH"; then
-		echo "*********************************************************"
-	        echo " You have a broken TCP wrappers library (setenv included)"
-		echo " Please get the latest TCP wrappers package from your OS"
-		echo " vendor, or recompile TCP wrappers to not include a"
-		echo " setenv() implementation."
-		echo
-		echo "Not using TCP wrappers after all."
-		echo "*********************************************************"
-	else
-                AC_DEFINE(HAVE_TCPWRAPPERS)
-	fi
-  fi
-  if test -n "$LIBWRAP_PATH"; then
-	AC_CHECK_LIB(wrap, hosts_ctl, [
-		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lwrap"], [
-		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIBWRAP_PATH"])
-  fi
-
-  dnl find out if we need -lnsl or whatever
-  LIB_NSL=
-  if test -n "$LIBWRAP_PATH"; then
-        AC_MSG_CHECKING(whether -lwrap also requires -lnsl)
-        ORIG_LIBS="$LIBS"
-        LIBS="$EXTRA_DAEMON_LIBS $LIBS"
-        AC_TRY_LINK([
-#include <tcpd.h>
-int allow_severity, deny_severity;
-], [return hosts_access;], ,[
-dnl try with -lnsl
-OLD_LIBS="$LIBS"
-LIBS="$LIBS -lnsl"
-AC_TRY_LINK([
-#include <tcpd.h>
-int allow_severity, deny_severity;
-], [return hosts_access;], LIB_NSL="-lnsl",
-LIBWRAP_PATH="")
-LIBS="$OLD_LIBS"
-])
-        LIBS="$ORIG_LIBS"
-	if test -n "$LIB_NSL"; then
-        	AC_MSG_RESULT(yes)
-        	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIB_NSL"
-	else
-        	AC_MSG_RESULT(no)
-	fi
-  fi
-fi
-
-AC_MSG_CHECKING([for corrupt government])
-AC_MSG_RESULT(yes)
-
 dnl ## gdmopen building
 dnl There are perhaps others where this works
 GDMOPEN=
@@ -366,12 +287,99 @@ if test x$XDMCP_SUPPORT = xyes ; then
 	GDMCHOOSER=gdmchooser
 	GDMXNESTCHOOSER=gdmXnestchooser
 else
+        # No need for TCP Wrappers in case XDMCP is disabled
+        if test x$with_tcp_wrappers != xno ; then
+	        echo "TCP wrappers not needed if XDMCP is not enabled"
+        fi
+	with_tcp_wrappers=no
 	AM_CONDITIONAL(XDMCP_SUPPORT, false)
 	GDMCHOOSER=
 	GDMXNESTCHOOSER=
 fi
 AC_SUBST(GDMCHOOSER)
 AC_SUBST(GDMXNESTCHOOSER)
+
+#
+# TCP Wrappers for XDMCP access control
+#
+if test x$with_tcp_wrappers = xno ; then
+	echo "TCP wrappers disabled"
+else
+  AC_MSG_CHECKING([whether to use TCP wrappers])
+  LIBWRAP_PATH=""
+  for I in $LDFLAGS $LIBS -L/usr/lib; do
+	case "$I" in
+	-L*)
+	THEFILE="`echo $I | sed -e 's,^-L,,'`"
+	echo "From $I, checking in dir $THEFILE for libwrap.a" 1>&5
+	if test -f $THEFILE/libwrap.a; then
+		LIBWRAP_PATH=$THEFILE/libwrap.a
+		echo "Found $LIBWRAP_PATH" 1>&5
+		break
+	fi
+	esac
+  done
+
+  if test -n "$LIBWRAP_PATH"; then
+        AC_MSG_RESULT(yes)
+  else
+        AC_MSG_RESULT(no)
+  fi
+
+  if test -n "$LIBWRAP_PATH"; then
+	nm $LIBWRAP_PATH | grep 'T setenv' && LIBWRAP_PATH=""
+	if test -z "$LIBWRAP_PATH"; then
+		echo "*********************************************************"
+	        echo " You have a broken TCP wrappers library (setenv included)"
+		echo " Please get the latest TCP wrappers package from your OS"
+		echo " vendor, or recompile TCP wrappers to not include a"
+		echo " setenv() implementation."
+		echo
+		echo "Not using TCP wrappers after all."
+		echo "*********************************************************"
+	else
+                AC_DEFINE(HAVE_TCPWRAPPERS)
+	fi
+  fi
+  if test -n "$LIBWRAP_PATH"; then
+	AC_CHECK_LIB(wrap, hosts_ctl, [
+		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lwrap"], [
+		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIBWRAP_PATH"])
+  fi
+
+  dnl find out if we need -lnsl or whatever
+  LIB_NSL=
+  if test -n "$LIBWRAP_PATH"; then
+        AC_MSG_CHECKING(whether -lwrap also requires -lnsl)
+        ORIG_LIBS="$LIBS"
+        LIBS="$EXTRA_DAEMON_LIBS $LIBS"
+        AC_TRY_LINK([
+#include <tcpd.h>
+int allow_severity, deny_severity;
+], [return hosts_access;], ,[
+dnl try with -lnsl
+OLD_LIBS="$LIBS"
+LIBS="$LIBS -lnsl"
+AC_TRY_LINK([
+#include <tcpd.h>
+int allow_severity, deny_severity;
+], [return hosts_access;], LIB_NSL="-lnsl",
+LIBWRAP_PATH="")
+LIBS="$OLD_LIBS"
+])
+        LIBS="$ORIG_LIBS"
+	if test -n "$LIB_NSL"; then
+        	AC_MSG_RESULT(yes)
+        	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIB_NSL"
+	else
+        	AC_MSG_RESULT(no)
+	fi
+  fi
+fi
+
+AC_MSG_CHECKING([for corrupt government])
+AC_MSG_RESULT(yes)
+
 
 #
 # X11 Xinerama extension
@@ -644,7 +652,7 @@ dnl <= Authentication scheme =>
 echo "Authentication scheme             : $VRFY"
 
 dnl <= Utils built =>
-echo "Utilities built                   : "`echo $GDMOPEN $GDMASKPASS`
+echo "Extra utilities built             : "`echo $GDMOPEN $GDMASKPASS`
 
 echo ""
 dnl <= End of configuration summary =>
