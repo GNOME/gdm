@@ -1,4 +1,4 @@
-# Albanian translation of GDM, the Gnome Display Manager
+# Përkthimi i mesazheve të gdm2 në shqip
 # This file is distributed under the same license as the gdm2 package.
 # Copyright (C) 2003, 2004 Free Software Foundation. Inc.
 # Laurent Dhima <laurenti@alblinux.net>, 2003, 2004.
@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-19 11:24+0200\n"
-"PO-Revision-Date: 2004-08-12 16:35+0200\n"
+"POT-Creation-Date: 2004-12-17 03:39+0100\n"
+"PO-Revision-Date: 2004-12-17 12:01+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -181,7 +181,7 @@ msgstr "%s: I pamundur krijimi i cookie"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: File cookie %s duket i pasigurt, nuk përfillet"
 
-#: daemon/auth.c:898 daemon/gdm.c:2291
+#: daemon/auth.c:898 daemon/gdm.c:2018 daemon/gdm.c:2374
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "I pamundur shkrimi tek %s: %s"
@@ -215,8 +215,7 @@ msgstr "%s: I pamundur krijimi i pipe"
 #: daemon/display.c:336
 #, c-format
 msgid "%s: Failed forking gdm slave process for %s"
-msgstr ""
-"%s: Dështoi përpjekja për të zbatuar një fork të proçesit slave të gdm për %s"
+msgstr "%s: Dështoi përpjekja për të zbatuar një fork të proçesit slave të gdm për %s"
 
 #: daemon/errorgui.c:356
 #, c-format
@@ -306,7 +305,7 @@ msgstr "%s: I pamundur krijimi i FIFO"
 msgid "%s: Could not open FIFO"
 msgstr "%s: E pamundur hapja e FIFO"
 
-#: daemon/gdm.c:248
+#: daemon/gdm.c:264
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -315,12 +314,12 @@ msgstr ""
 "Directory e autorizimit të server (daemon/ServAuthDir) është vendosur në %s "
 "që nuk ekziston. Korrigjo konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:257
+#: daemon/gdm.c:273
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Authdir %s nuk ekziston. Duke dalë!"
 
-#: daemon/gdm.c:262
+#: daemon/gdm.c:278
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -329,48 +328,46 @@ msgstr ""
 "Directory e autorizimit të server (daemon/ServAuthDir) është vendosur në %s "
 "që nuk është një directory. Korrigjo konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:271
+#: daemon/gdm.c:287
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Authdir %s nuk është një directory. Duke dalë!"
 
-#: daemon/gdm.c:284
+#: daemon/gdm.c:300
 #, c-format
-msgid ""
-"%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
+msgid "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
 "%s: Logdir %s nuk ekziston ose nuk është një directory.  Po përdor "
 "ServAuthDir %s."
 
-#: daemon/gdm.c:313 gui/gdmlogin.c:650 gui/greeter/greeter.c:105
+#: daemon/gdm.c:329 gui/gdmlogin.c:650 gui/greeter/greeter.c:105
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
 msgstr "%s: Mungon file i konfigurimit \"%s\". Do të përdoren vlerat standart."
 
-#: daemon/gdm.c:364
+#: daemon/gdm.c:380
 #, c-format
 msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
 msgstr "%s: BaseXsession është bosh, po përdor %s/gdm/Xsession"
 
-#: daemon/gdm.c:408
+#: daemon/gdm.c:424
 #, c-format
 msgid "%s: Standard X server not found, trying alternatives"
 msgstr "%s: Serveri X standart mungon, do të provohen alternativat"
 
-#: daemon/gdm.c:440
+#: daemon/gdm.c:456
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
 msgstr ""
 "%s: XDMCP është i aktivuar ndërkohë që suporti për të mungon, po e "
 "ç'aktivojmë"
 
-#: daemon/gdm.c:453
+#: daemon/gdm.c:469
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off automatic login"
-msgstr ""
-"%s: Përdoruesi root nuk mund të kryej auto-login, u ç'aktivua login automatik"
+msgstr "%s: Përdoruesi root nuk mund të kryej auto-login, u ç'aktivua login automatik"
 
-#: daemon/gdm.c:466
+#: daemon/gdm.c:482
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off timed login"
 msgstr ""
@@ -379,46 +376,46 @@ msgstr ""
 
 # login i kronometruar do të përdoret derisa
 # të gjejmë një fjalë më të përshtatshme
-#: daemon/gdm.c:472
+#: daemon/gdm.c:488
 #, c-format
 msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
 msgstr ""
 "%s: Intervali i login të kronometruar është më i shkurtër se 5 sekonda, "
 "sidoqoftë do të kryhet në 5 sekonda."
 
-#: daemon/gdm.c:482
+#: daemon/gdm.c:498
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Asnjë greeter i specifikuar."
 
-#: daemon/gdm.c:485
+#: daemon/gdm.c:501
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Nuk është specifikuar asnjë greeter remot."
 
 # session=seanca, nuk gjej fjalë më të saktë,
 # që të dyja janë fjalë të huaja
-#: daemon/gdm.c:489
+#: daemon/gdm.c:505
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Nuk është specifikuar asnjë directory per seancat."
 
-#: daemon/gdm.c:514
+#: daemon/gdm.c:530
 #, c-format
 msgid "%s: Empty server command, using standard one."
 msgstr "%s: Komandë jo e specifikuar, do të përdoret komanda standart."
 
-#: daemon/gdm.c:557
+#: daemon/gdm.c:573
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
 msgstr "%s: Display numër %d është e zënë!  Do të përdoret %d"
 
-#: daemon/gdm.c:576
+#: daemon/gdm.c:592
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Rresht server i pavlefshëm tek file i konfigurimit. Injorohet!"
 
-#: daemon/gdm.c:587 daemon/gdm.c:628
+#: daemon/gdm.c:603 daemon/gdm.c:644
 #, c-format
 msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
 msgstr ""
@@ -427,7 +424,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: daemon/gdm.c:605
+#: daemon/gdm.c:621
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
@@ -436,7 +433,7 @@ msgstr ""
 "%s: XDMCP është disaktivuar dhe nuk është përcaktuar asnjë server lokal. Do "
 "të shtohet %s tek: %d për të mundësuar konfigurimin!"
 
-#: daemon/gdm.c:620
+#: daemon/gdm.c:636
 #, c-format
 msgid ""
 "XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
@@ -445,7 +442,7 @@ msgstr ""
 "XDMCP është disaktivuar dhe gdm nuk arrin të gjejë asnjë server lokal për të "
 "filluar.  Duke dalë!  Korrigjo konfigurimin %s dhe rinis gdm."
 
-#: daemon/gdm.c:642
+#: daemon/gdm.c:658
 #, c-format
 msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
@@ -454,12 +451,12 @@ msgstr ""
 "Përdoruesi i gdm nuk ekziston.  Korrigjo konfigurimin e gdm %s dhe rifillo "
 "gdm."
 
-#: daemon/gdm.c:649
+#: daemon/gdm.c:665
 #, c-format
 msgid "%s: Can't find the gdm user (%s). Aborting!"
 msgstr "%s: Nuk arrij të gjej përdoruesin e gdm (%s). Duke u mbyllur!"
 
-#: daemon/gdm.c:656
+#: daemon/gdm.c:672
 #, c-format
 msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
@@ -468,25 +465,24 @@ msgstr ""
 "Është zgjedhur root si përdorues i gdm, por kjo ndalohet pasi sjell rreziqe "
 "sigurie. Korrigjo konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:664
+#: daemon/gdm.c:680
 #, c-format
 msgid "%s: The gdm user should not be root. Aborting!"
 msgstr "%s: Përdoruesi i gdm nuk duhet të jetë root. Duke dalë!"
 
-#: daemon/gdm.c:671
+#: daemon/gdm.c:687
 #, c-format
 msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
 "restart gdm."
-msgstr ""
-"Grupi i gdm nuk ekziston. Korrigjo konfigurimin e gdm %s dhe rinis gdm."
+msgstr "Grupi i gdm nuk ekziston. Korrigjo konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:678
+#: daemon/gdm.c:694
 #, c-format
 msgid "%s: Can't find the gdm group (%s). Aborting!"
 msgstr "%s: Nuk arrij të gjej grupin e gdm (%s). Duke dalë!"
 
-#: daemon/gdm.c:685
+#: daemon/gdm.c:701
 #, c-format
 msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
@@ -495,41 +491,38 @@ msgstr ""
 "Është zgjedhur root si grup i gdm, por kjo ndalohet pasi sjell rreziqe "
 "sigurie. Korrigjo konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:693
+#: daemon/gdm.c:709
 #, c-format
 msgid "%s: The gdm group should not be root. Aborting!"
 msgstr "%s: Grupi i gdm nuk mund të jetë root. Duke dalë!"
 
-#: daemon/gdm.c:708
+#: daemon/gdm.c:724
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
-msgstr ""
-"%s: Greeter nuk u gjet ose është i paekzekutueshëm nga përdoruesi i gdm"
+msgstr "%s: Greeter nuk u gjet ose është i paekzekutueshëm nga përdoruesi i gdm"
 
 # remot = në distancë,
 # kur do të përdoret?
-#: daemon/gdm.c:715
+#: daemon/gdm.c:731
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the gdm user"
-msgstr ""
-"%s: Greeter remot nuk u gjet ose është i paekzekutueshëm nga përdoruesi i gdm"
+msgstr "%s: Greeter remot nuk u gjet ose është i paekzekutueshëm nga përdoruesi i gdm"
 
-#: daemon/gdm.c:726
+#: daemon/gdm.c:742
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
-msgstr ""
-"%s: Chooser nuk u gjet ose është i paekzekutueshëm nga përdoruesi i gdm"
+msgstr "%s: Chooser nuk u gjet ose është i paekzekutueshëm nga përdoruesi i gdm"
 
-#: daemon/gdm.c:735
+#: daemon/gdm.c:751
 msgid "No daemon/ServAuthDir specified in the configuration file"
 msgstr "Asnjë daemon/ServAuthDir është specifikuar tek file i konfigurimit"
 
-#: daemon/gdm.c:737
+#: daemon/gdm.c:753
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Nuk është specifikuar asnjë demon apo ServAuthDir."
 
-#: daemon/gdm.c:761
+#: daemon/gdm.c:777
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -540,12 +533,12 @@ msgstr ""
 "që nuk i takon as përdoruesit %s dhe as grupit %s. Korrigjo të drejtat ose "
 "konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:772
+#: daemon/gdm.c:788
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s: Authdir %s nuk i takon përdoruesit %s, grupit %s. Duke dalë."
 
-#: daemon/gdm.c:778
+#: daemon/gdm.c:794
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -556,49 +549,48 @@ msgstr ""
 "që ka të drejta të gabuara, duhet të jenë %o. Korrigjo të drejtat ose "
 "konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:789
+#: daemon/gdm.c:805
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
-msgstr ""
-"%s: Authdir %s ka të drejta të gabuara %o. Duhet të jenë %o. Duke dalë."
+msgstr "%s: Authdir %s ka të drejta të gabuara %o. Duhet të jenë %o. Duke dalë."
 
 #. FIXME: how to handle this?
-#: daemon/gdm.c:845 daemon/gdm.c:853 daemon/gdm.c:2073 daemon/gdm.c:2081
+#: daemon/gdm.c:861 daemon/gdm.c:869 daemon/gdm.c:2149 daemon/gdm.c:2157
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
 msgstr ""
 "I pamundur shkrimi i file PID %s, ndoshta nuk ka më hapësirë në disk.  "
 "Gabim: %s\n"
 
-#: daemon/gdm.c:847 daemon/gdm.c:855 daemon/gdm.c:2075 daemon/gdm.c:2083
+#: daemon/gdm.c:863 daemon/gdm.c:871 daemon/gdm.c:2151 daemon/gdm.c:2159
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
 msgstr ""
 "I pamundur shkrimi i file PID %s, ndoshta nuk ka më hapësirë në disk.  "
 "Gabim: %s"
 
-#: daemon/gdm.c:865
+#: daemon/gdm.c:881
 #, c-format
 msgid "%s: fork() failed!"
 msgstr "%s: fork() dështoi!"
 
 #. should never happen
-#: daemon/gdm.c:868 daemon/slave.c:3437
+#: daemon/gdm.c:884 daemon/slave.c:3437
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() dështoi %s!"
 
-#: daemon/gdm.c:1038
+#: daemon/gdm.c:1071
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: Përpjekje për të nisur server-in X të emergjencës %s"
 
-#: daemon/gdm.c:1056
+#: daemon/gdm.c:1089
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: duke ekzekutuar script-in XKeepsCrashing"
 
-#: daemon/gdm.c:1176
+#: daemon/gdm.c:1209
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
@@ -613,7 +605,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:1188
+#: daemon/gdm.c:1221
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -622,90 +614,93 @@ msgstr ""
 "Tepër gabime të njëpasnjëshme gjatë nisjes së server-it X, display %s "
 "ç'aktivohet"
 
-#: daemon/gdm.c:1196 daemon/gdm.c:2794
+#: daemon/gdm.c:1229 daemon/gdm.c:2877
 msgid "Master suspending..."
 msgstr "Ndërprerje e përgjithshme..."
 
-#: daemon/gdm.c:1250
+#: daemon/gdm.c:1283
 #, c-format
 msgid "System is rebooting, please wait ..."
 msgstr "Ju lutem durim, sistemi është në fazën e rinisjes ..."
 
-#: daemon/gdm.c:1252
+#: daemon/gdm.c:1285
 #, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "Ju lutem prisni, sistemi është duke u fikur ..."
 
-#: daemon/gdm.c:1263
+#: daemon/gdm.c:1296
 msgid "Master halting..."
 msgstr "Ndalim i përgjithshëm..."
 
-#: daemon/gdm.c:1276
+#: daemon/gdm.c:1309
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s: Ndalimi dështoi %s"
 
-#: daemon/gdm.c:1285
+#: daemon/gdm.c:1318
 msgid "Master rebooting..."
 msgstr "Rinisje gjenerale..."
 
-#: daemon/gdm.c:1298
+#: daemon/gdm.c:1331
 #, c-format
 msgid "%s: Reboot failed: %s"
 msgstr "%s: Rinisja dështoi: %s"
 
-#: daemon/gdm.c:1396
+#: daemon/gdm.c:1429
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
-msgstr ""
-"Kërkesë Rinisje apo Ndalimi në mungesë të menusë së sistemit nga display %s"
+msgstr "Kërkesë Rinisje apo Ndalimi në mungesë të menusë së sistemit nga display %s"
 
-#: daemon/gdm.c:1405
+#: daemon/gdm.c:1438
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-local display %s"
 msgstr "Kërkesa për Restart, Reboot apo Halt nga display jo lokale %s"
 
 #. Bury this display for good
-#: daemon/gdm.c:1471
+#: daemon/gdm.c:1504
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: Duke mbyllur display %s"
 
-#: daemon/gdm.c:1622
+#: daemon/gdm.c:1655
 msgid "GDM restarting ..."
 msgstr "GDM në rinisje e sipër ..."
 
-#: daemon/gdm.c:1626
+#: daemon/gdm.c:1659
 msgid "Failed to restart self"
 msgstr "Përpjekja për rinisje dështoi"
 
 #. FIXME: note that this could mean out of memory
-#: daemon/gdm.c:1700
+#: daemon/gdm.c:1733
 msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
-msgstr ""
-"main daemon: Mora SIGABRT, ndonjë gjë ka shkuar me të vërtetë shumë keq. Ika!"
+msgstr "main daemon: Mora SIGABRT, ndonjë gjë ka shkuar me të vërtetë shumë keq. Ika!"
 
-#: daemon/gdm.c:1859
+#: daemon/gdm.c:1892
 msgid "Do not fork into the background"
 msgstr "Mos kryej një fork në background"
 
-#: daemon/gdm.c:1861
+#: daemon/gdm.c:1894
 msgid "No console (local) servers to be run"
 msgstr "Nuk ka server (lokalë) konsolë që të ekzekutohen"
 
-#: daemon/gdm.c:1863
+#: daemon/gdm.c:1896
 msgid "Preserve LD_* variables"
 msgstr "Konservo të ndryshueshmet LD_*"
 
-#: daemon/gdm.c:1865
+#: daemon/gdm.c:1898
 msgid "Print GDM version"
 msgstr "Printo versionin e GDM"
 
-#: daemon/gdm.c:1867
+#: daemon/gdm.c:1900
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "Nis fillimisht server-in X pastaj prit që të kemi një VAZHDO në fifo"
 
-#: daemon/gdm.c:1988 gui/gdmchooser.c:2057
+#: daemon/gdm.c:2007 daemon/gdm.c:2343
+#, c-format
+msgid "Can't open %s for writing"
+msgstr "Nuk arrij të hap %s në shkrim"
+
+#: daemon/gdm.c:2064 gui/gdmchooser.c:2057
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -714,13 +709,13 @@ msgstr ""
 "Gabim në opcionin %s: %s.\n"
 "Zbato '%s --help' për të shikuar listën e plotë të opcioneve të komandës.\n"
 
-#: daemon/gdm.c:2011
+#: daemon/gdm.c:2087
 msgid "Only root wants to run gdm\n"
 msgstr "Vetëm root mund të nisë gdm\n"
 
-#: daemon/gdm.c:2027 daemon/gdm.c:2031 daemon/gdm.c:2106 daemon/gdm.c:2110
-#: daemon/gdm.c:2114 daemon/gdm.c:2118 daemon/gdm.c:2128 daemon/gdm.c:2134
-#: daemon/gdm.c:2145 daemon/misc.c:1648 daemon/misc.c:1652 daemon/misc.c:1656
+#: daemon/gdm.c:2103 daemon/gdm.c:2107 daemon/gdm.c:2182 daemon/gdm.c:2186
+#: daemon/gdm.c:2190 daemon/gdm.c:2194 daemon/gdm.c:2204 daemon/gdm.c:2210
+#: daemon/gdm.c:2221 daemon/misc.c:1648 daemon/misc.c:1652 daemon/misc.c:1656
 #: daemon/misc.c:1663 daemon/misc.c:1667 daemon/misc.c:1671
 #: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:811
 #: daemon/slave.c:825 daemon/slave.c:835 daemon/slave.c:845 daemon/slave.c:857
@@ -732,31 +727,26 @@ msgstr "Vetëm root mund të nisë gdm\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Gabim gjatë hapjes së kontrolluesit të sinjalit %s: %s"
 
-#: daemon/gdm.c:2055
+#: daemon/gdm.c:2131
 msgid "gdm already running. Aborting!"
 msgstr "gdm është aktualisht në përdorim. Duke dalë!"
 
-#: daemon/gdm.c:2154
+#: daemon/gdm.c:2230
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Gabim gjatë aktivimit të kontrolluesit të sinjalit CHLD"
 
-#: daemon/gdm.c:2260
-#, c-format
-msgid "Can't open %s for writing"
-msgstr "Nuk arrij të hap %s në shkrim"
-
-#: daemon/gdm.c:3527 daemon/gdm.c:3546
+#: daemon/gdm.c:3633 daemon/gdm.c:3652
 msgid "FLEXI_XSERVER request denied: Not authenticated"
 msgstr "Kërkesa për FLEXI_XSERVER nuk u pranua: I pa identifikuar"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:3564
+#: daemon/gdm.c:3670
 msgid "Unknown server type requested, using standard server."
 msgstr "Lloj i panjohur kërkese, do të përdoret server-i standart."
 
-#: daemon/gdm.c:3568
+#: daemon/gdm.c:3674
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -765,15 +755,15 @@ msgstr ""
 "Serveri i kërkuar %s nuk mund të përdoret për flexible servers, po përdor "
 "server-in standart."
 
-#: daemon/gdm.c:3690
+#: daemon/gdm.c:3796
 msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
 msgstr "Kërkesa QUERY_LOGOUT_ACTION nuk u pranua: I pa identifikuar"
 
-#: daemon/gdm.c:3748 daemon/gdm.c:3803
+#: daemon/gdm.c:3854 daemon/gdm.c:3909
 msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
 msgstr "Kërkesa SET_LOGOUT_ACTION nuk u pranua: I pa identifikuar"
 
-#: daemon/gdm.c:3848 daemon/gdm.c:3875
+#: daemon/gdm.c:3954 daemon/gdm.c:3981
 msgid "QUERY_VT request denied: Not authenticated"
 msgstr "Kërkesa QUERY_VT nuk u pranua: I pa identifikuar"
 
@@ -862,63 +852,62 @@ msgstr "%s: Nuk arrij të gjej një numër të lirë display"
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s: Display %s është i zënë.  Po provoj një numër tjetër display."
 
-#: daemon/server.c:916
+#: daemon/server.c:930
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Komandë server '%s' e pavlefshme"
 
-#: daemon/server.c:921
+#: daemon/server.c:935
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "Serveri '%s' nuk u gjet, po përdor server-in standart"
 
-#: daemon/server.c:1098
+#: daemon/server.c:1112
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: E pamundur hapja e file të log për display %s!"
 
-#: daemon/server.c:1110 daemon/server.c:1116 daemon/server.c:1121
+#: daemon/server.c:1124 daemon/server.c:1130 daemon/server.c:1135
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Gabim gjatë rregullimit %s në %s"
 
-#: daemon/server.c:1158
+#: daemon/server.c:1172
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Mungon komanda server për display %s"
 
-#: daemon/server.c:1172
+#: daemon/server.c:1186
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
-msgstr ""
-"%s: Serveri duhet të rilëshohet nga uid %d por ky përdorues nuk ekziston "
+msgstr "%s: Serveri duhet të rilëshohet nga uid %d por ky përdorues nuk ekziston "
 
-#: daemon/server.c:1187 daemon/slave.c:2500 daemon/slave.c:2978
+#: daemon/server.c:1201 daemon/slave.c:2500 daemon/slave.c:2978
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: E pamundur vendosja e groupid në %d"
 
-#: daemon/server.c:1193 daemon/slave.c:2505 daemon/slave.c:2983
+#: daemon/server.c:1207 daemon/slave.c:2505 daemon/slave.c:2983
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: gabim gjatë zbatimit të initgroups() për %s"
 
-#: daemon/server.c:1199 daemon/slave.c:2510 daemon/slave.c:2988
+#: daemon/server.c:1213 daemon/slave.c:2510 daemon/slave.c:2988
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Nuk arrij të vendos userid nv %d"
 
-#: daemon/server.c:1206
+#: daemon/server.c:1220
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: Nuk arrij të vendos groupid në 0"
 
-#: daemon/server.c:1223
+#: daemon/server.c:1237
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: Serveri X nuk u gjet: %s"
 
-#: daemon/server.c:1231
+#: daemon/server.c:1245
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: E pamundur kryerja e një fork mbi proçesin Xserver!"
@@ -1061,8 +1050,7 @@ msgstr ""
 #: daemon/slave.c:2646
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
-msgstr ""
-"%s: E pamundur nisja e greeter me modulët gtk: %s. Po provoj nisjen pa modulë"
+msgstr "%s: E pamundur nisja e greeter me modulët gtk: %s. Po provoj nisjen pa modulë"
 
 #: daemon/slave.c:2653
 #, c-format
@@ -1130,39 +1118,38 @@ msgstr ""
 "%s: Ekzekutimi i script-it \"PreSession\" ktheu si rezultat një vlerë > 0, "
 "po mbaroj."
 
-#: daemon/slave.c:3503
+#: daemon/slave.c:3516
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "Gjuha %s nuk ekziston, do të përdoret %s"
 
-#. GRUT modified this item
-#: daemon/slave.c:3504
+#: daemon/slave.c:3517
 msgid "System default"
 msgstr "Prezgjedhja e sistemit"
 
-#: daemon/slave.c:3520
+#: daemon/slave.c:3533
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: i pamundur përcaktimi i ambientit për %s, po mbaroj."
 
-#: daemon/slave.c:3567
+#: daemon/slave.c:3580
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: gabim gjatë zbatimit të setusercontext() për %s, po mbaroj."
 
-#: daemon/slave.c:3573
+#: daemon/slave.c:3586
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Nuk arrij të marr identitetin e %s. Anullohet."
 
-#: daemon/slave.c:3636
+#: daemon/slave.c:3649
 #, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
 msgstr ""
 "%s: Asnjë rresht Exec tek file i seancës: %s. Do të përdoret seanca e "
 "emergjencës së GNOME"
 
-#: daemon/slave.c:3642
+#: daemon/slave.c:3655
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
@@ -1170,15 +1157,14 @@ msgstr ""
 "Seanca që keni zgjedhur nuk është e vlefshme.  Do të filloj për ju seancën e "
 "emergjencës së GNOME."
 
-#: daemon/slave.c:3656
+#: daemon/slave.c:3669
 #, c-format
-msgid ""
-"%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
+msgid "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
 msgstr ""
 "%s: Nuk arrij të gjej apo të ekzekutoj script-in bazë të Xsession, do të "
 "provoj seancën e emergjencës së GNOME"
 
-#: daemon/slave.c:3662
+#: daemon/slave.c:3675
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
@@ -1187,14 +1173,14 @@ msgstr ""
 "seancën e emergjencës së GNOME."
 
 #. yaikes
-#: daemon/slave.c:3677
+#: daemon/slave.c:3690
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s: gnome-session nuk u gjet për seancën e emergjencës së GNOME, do të kryej "
 "një provë me xterm"
 
-#: daemon/slave.c:3682
+#: daemon/slave.c:3695
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
@@ -1202,7 +1188,7 @@ msgstr ""
 "E pamundur gjetja e instalimit të GNOME, do të kryhet një përpjekje me "
 "seancën \"xterm i emergjencës\"."
 
-#: daemon/slave.c:3690
+#: daemon/slave.c:3703
 msgid ""
 "This is the Failsafe Gnome session.  You will be logged into the 'Default' "
 "session of Gnome with no startup scripts run.  This is only to fix problems "
@@ -1212,11 +1198,11 @@ msgstr ""
 "'Prezgjedhur' të Gnome duke mos ekzekutuar script-et e nisjes.  Shërben "
 "vetëm për të zgjidhur problemet e instalimit."
 
-#: daemon/slave.c:3705
+#: daemon/slave.c:3718
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Nuk arrij të gjej \"xterm\" për të filluar një seancë emergjence."
 
-#: daemon/slave.c:3718
+#: daemon/slave.c:3731
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1227,43 +1213,43 @@ msgstr ""
 "mos gjeni menyrë tjetër për të kryer log in.  Për të mbyllur terminalin, "
 "shkruaj 'exit' dhe shtyp enter tek dritarja e terminalit."
 
-#: daemon/slave.c:3745
+#: daemon/slave.c:3758
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Përdoruesi nuk lejohet të kryej log in"
 
-#: daemon/slave.c:3748
+#: daemon/slave.c:3761
 msgid "The system administrator has disabled your account."
 msgstr "Administratori i sistemit ka ç'aktivuar llogarinë tuaj."
 
-#: daemon/slave.c:3777
+#: daemon/slave.c:3790
 msgid "Error! Unable to set executable context."
 msgstr "Gabim! Nuk arrij të vendos kontekstin e ekzekutueshëm."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3785 daemon/slave.c:3790
+#: daemon/slave.c:3798 daemon/slave.c:3803
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: I pamundur ekzekutimi i %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3801
+#: daemon/slave.c:3814
 msgid "Cannot start the session due to some internal error."
 msgstr "Nuk arrij të nis seancën për shkak të ndonjë gabimi të brendshëm."
 
-#: daemon/slave.c:3855
+#: daemon/slave.c:3868
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Përdoruesi u identifikua por getpwnam(%s) dështoi!"
 
-#: daemon/slave.c:3869
+#: daemon/slave.c:3882
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr ""
 "%s: Ekzekutimi i script-it \"PostLogin\" ktheu si rezultat një vlerë > 0. "
 "Procesi po ndërpritet."
 
-#: daemon/slave.c:3878
+#: daemon/slave.c:3891
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1279,12 +1265,12 @@ msgstr ""
 "\n"
 "Që desktop të funksionojë si duhet përdorni një seancë emergjence."
 
-#: daemon/slave.c:3886
+#: daemon/slave.c:3899
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Directory home për %s: '%s' nuk ekziston!"
 
-#: daemon/slave.c:4063
+#: daemon/slave.c:4076
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1296,12 +1282,12 @@ msgstr ""
 "nuk mund të kryhet login.  Vihu në kontakt me administratorin tuaj të "
 "sistemit"
 
-#: daemon/slave.c:4139
+#: daemon/slave.c:4152
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: gabim gjatë kryerjes së fork të seancës së përdoruesit"
 
-#: daemon/slave.c:4220
+#: daemon/slave.c:4233
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1313,25 +1299,25 @@ msgstr ""
 "më hapësirë në disk.  Mundohuni të përdorni seancën e emergjencës për të "
 "kryer një përpjekjepër të korrigjuar problemin."
 
-#: daemon/slave.c:4228
+#: daemon/slave.c:4241
 msgid "View details (~/.xsession-errors file)"
 msgstr "Shiko hollësitë (tek file  ~/.xsession-errors)"
 
-#: daemon/slave.c:4372
+#: daemon/slave.c:4385
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM zbuloi një proçes ndalje apo rinisje në progres."
 
-#: daemon/slave.c:4466
+#: daemon/slave.c:4479
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "I pamundur kryerja e ping tek %s, display do të shkëputet!"
 
-#: daemon/slave.c:4752
+#: daemon/slave.c:4765
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Gabim fatal i X - Po filloj përsëri %s"
 
-#: daemon/slave.c:4846
+#: daemon/slave.c:4859
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1339,27 +1325,27 @@ msgstr ""
 "Tingulli i hyrjes është kërkuar në një display jo lokale ose programi audio "
 "nuk mund të zbatohet ose tingulli nuk ekziston"
 
-#: daemon/slave.c:5201
+#: daemon/slave.c:5214
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Gabim gjatë nisjes: %s"
 
-#: daemon/slave.c:5209 daemon/slave.c:5348
+#: daemon/slave.c:5222 daemon/slave.c:5361
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: E pamundur kryerja e një fork mbi proçesin e script!"
 
-#: daemon/slave.c:5303
+#: daemon/slave.c:5316
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Krijimi i pipe dështoi"
 
-#: daemon/slave.c:5342
+#: daemon/slave.c:5355
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Gabim gjatë ekzekutimit: %s"
 
-#: daemon/verify-crypt.c:75 daemon/verify-pam.c:1033 daemon/verify-shadow.c:76
+#: daemon/verify-crypt.c:75 daemon/verify-pam.c:1032 daemon/verify-shadow.c:76
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
@@ -1368,28 +1354,27 @@ msgstr ""
 "Emër përdoruesi apo fjalëkalim i gabuar.  Kujdes gërmat e mëdha dhe të "
 "voglat."
 
-#: daemon/verify-crypt.c:80 daemon/verify-pam.c:1043 daemon/verify-shadow.c:81
+#: daemon/verify-crypt.c:80 daemon/verify-pam.c:1042 daemon/verify-shadow.c:81
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Sigurohu që pulsanti Caps Lock nuk është aktiv."
 
 #. I think I'll add the buttons next to this
-#: daemon/verify-crypt.c:127 daemon/verify-pam.c:439
+#: daemon/verify-crypt.c:127 daemon/verify-pam.c:441
 #: daemon/verify-shadow.c:126 gui/gdmlogin.c:3069
 msgid "Please enter your username"
 msgstr "Shkruani emrin e përdoruesit"
 
-#. GRUT modified this item
 #. login: is whacked always translate to Username:
-#: daemon/verify-crypt.c:128 daemon/verify-pam.c:339 daemon/verify-pam.c:340
-#: daemon/verify-pam.c:341 daemon/verify-pam.c:426 daemon/verify-pam.c:785
+#: daemon/verify-crypt.c:128 daemon/verify-pam.c:341 daemon/verify-pam.c:342
+#: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
 #: gui/greeter/greeter_parser.c:1061
 msgid "Username:"
 msgstr "Përdoruesi:"
 
-#: daemon/verify-crypt.c:166 daemon/verify-pam.c:342 daemon/verify-pam.c:343
-#: daemon/verify-pam.c:487 daemon/verify-shadow.c:184 gui/gdmlogin.c:1905
+#: daemon/verify-crypt.c:166 daemon/verify-pam.c:344 daemon/verify-pam.c:345
+#: daemon/verify-pam.c:489 daemon/verify-shadow.c:184 gui/gdmlogin.c:1905
 msgid "Password:"
 msgstr "Fjalëkalimi:"
 
@@ -1399,7 +1384,7 @@ msgstr "Fjalëkalimi:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "I pamundur identifikimi i përdoruesit \"%s\""
 
-#: daemon/verify-crypt.c:211 daemon/verify-pam.c:881
+#: daemon/verify-crypt.c:211 daemon/verify-pam.c:883
 #: daemon/verify-shadow.c:229
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1415,8 +1400,8 @@ msgstr "Administratori i sistemit nuk lejohet të futet nga kjo dritare"
 msgid "User %s not allowed to log in"
 msgstr "Përdoruesit %s nuk i lejohet kryerja e log in"
 
-#: daemon/verify-crypt.c:231 daemon/verify-crypt.c:255 daemon/verify-pam.c:927
-#: daemon/verify-pam.c:1214 daemon/verify-shadow.c:249
+#: daemon/verify-crypt.c:231 daemon/verify-crypt.c:255 daemon/verify-pam.c:929
+#: daemon/verify-pam.c:1213 daemon/verify-shadow.c:249
 #: daemon/verify-shadow.c:273
 msgid ""
 "\n"
@@ -1425,15 +1410,15 @@ msgstr ""
 "\n"
 "Administratori i sistemit ka ç'aktivuar llogarinë tuaj."
 
-#: daemon/verify-crypt.c:278 daemon/verify-crypt.c:416 daemon/verify-pam.c:945
-#: daemon/verify-pam.c:1231 daemon/verify-shadow.c:296
+#: daemon/verify-crypt.c:278 daemon/verify-crypt.c:416 daemon/verify-pam.c:947
+#: daemon/verify-pam.c:1230 daemon/verify-shadow.c:296
 #: daemon/verify-shadow.c:434
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "I pamundur përcaktimi i grupit të përdoruesit për %s"
 
-#: daemon/verify-crypt.c:280 daemon/verify-crypt.c:419 daemon/verify-pam.c:947
-#: daemon/verify-pam.c:1234 daemon/verify-shadow.c:298
+#: daemon/verify-crypt.c:280 daemon/verify-crypt.c:419 daemon/verify-pam.c:949
+#: daemon/verify-pam.c:1233 daemon/verify-shadow.c:298
 #: daemon/verify-shadow.c:437
 msgid ""
 "\n"
@@ -1505,81 +1490,79 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "E pamundur marrja e strukturës së passwd për %s"
 
-#: daemon/verify-pam.c:344
+#: daemon/verify-pam.c:346
 msgid "You are required to change your password immediately (password aged)"
 msgstr ""
 "Duhet të ndryshoni menjëherë fjalëkalimin tuaj (fjalëkalimi është duke "
 "skaduar)"
 
-#: daemon/verify-pam.c:345
+#: daemon/verify-pam.c:347
 msgid "You are required to change your password immediately (root enforced)"
 msgstr "Duhet të ndryshoni menjëherë fjalëkalimin tuaj (root është çarë)"
 
-#: daemon/verify-pam.c:346
+#: daemon/verify-pam.c:348
 msgid "Your account has expired; please contact your system administrator"
-msgstr ""
-"Llogaria juaj ka skaduar, vihuni në kontakt me administratorin e sistemit"
+msgstr "Llogaria juaj ka skaduar, vihuni në kontakt me administratorin e sistemit"
 
-#: daemon/verify-pam.c:347
+#: daemon/verify-pam.c:349
 msgid "No password supplied"
 msgstr "Asnjë fjalëkalim i shkruar"
 
-#: daemon/verify-pam.c:348
+#: daemon/verify-pam.c:350
 msgid "Password unchanged"
 msgstr "Fjalëkalimi nuk është ndryshuar"
 
-#: daemon/verify-pam.c:349
+#: daemon/verify-pam.c:351
 msgid "Can not get username"
 msgstr "Nuk arrij të marr emrin e përdoruesit"
 
-#: daemon/verify-pam.c:350
+#: daemon/verify-pam.c:352
 msgid "Retype new UNIX password:"
 msgstr "Rishkruaj fjalëkalimin e ri UNIX:"
 
-#: daemon/verify-pam.c:351
+#: daemon/verify-pam.c:353
 msgid "Enter new UNIX password:"
 msgstr "Shkruaj fjalëkalimin e ri UNIX:"
 
-#: daemon/verify-pam.c:352
+#: daemon/verify-pam.c:354
 msgid "(current) UNIX password:"
 msgstr "Fjalëkalimi UNIX (aktual):"
 
-#: daemon/verify-pam.c:353
+#: daemon/verify-pam.c:355
 msgid "Error while changing NIS password."
 msgstr "Gabim gjatë ndryshimit të fjalëkalimit NIS."
 
-#: daemon/verify-pam.c:354
+#: daemon/verify-pam.c:356
 msgid "You must choose a longer password"
 msgstr "Duhet të zgjidhni një fjalëkalim më të gjatë"
 
-#: daemon/verify-pam.c:355
+#: daemon/verify-pam.c:357
 msgid "Password has been already used. Choose another."
 msgstr "Ky fjalëkalim është përdorur njëherë. Zgjidh një tjetër."
 
-#: daemon/verify-pam.c:356
+#: daemon/verify-pam.c:358
 msgid "You must wait longer to change your password"
 msgstr "Do t'ju duhet të prisni gjatë për të ndryshuar fjalëkalimin tuaj"
 
-#. GRUT modified this item
-#: daemon/verify-pam.c:357
+#: daemon/verify-pam.c:359
 msgid "Sorry, passwords do not match"
 msgstr "Më vjen keq, fjalëkalimet nuk përputhen"
 
-#: daemon/verify-pam.c:651
+#: daemon/verify-pam.c:653
 msgid "Cannot setup pam handle with null display"
 msgstr "E pamundur vendosja e trajtuesit pam me display null"
 
-#: daemon/verify-pam.c:668
+#: daemon/verify-pam.c:670
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "Nuk arrij të stabilizoj shërbimin %s: %s\n"
 
-#: daemon/verify-pam.c:681
+#: daemon/verify-pam.c:683
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Nuk arrij të vendos PAM_TTY=%s"
 
-#: daemon/verify-pam.c:691
+#: daemon/verify-pam.c:693
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Nuk arrij të vendos PAM_RHOST=%s"
@@ -1589,12 +1572,12 @@ msgstr "Nuk arrij të vendos PAM_RHOST=%s"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: daemon/verify-pam.c:838 daemon/verify-pam.c:856 daemon/verify-pam.c:1153
-#: daemon/verify-pam.c:1165
+#: daemon/verify-pam.c:840 daemon/verify-pam.c:858 daemon/verify-pam.c:1152
+#: daemon/verify-pam.c:1164
 msgid "Couldn't authenticate user"
 msgstr "I pamundur identifikimi i përdoruesit"
 
-#: daemon/verify-pam.c:884
+#: daemon/verify-pam.c:886
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1602,12 +1585,12 @@ msgstr ""
 "\n"
 "Administratori i sistemit nuk lejohet të futet nga kjo dritare"
 
-#: daemon/verify-pam.c:908 daemon/verify-pam.c:1195
+#: daemon/verify-pam.c:910 daemon/verify-pam.c:1194
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Gabim gjatë ndryshimit të token të autentifikimit për përdoruesin %s"
 
-#: daemon/verify-pam.c:910 daemon/verify-pam.c:1198
+#: daemon/verify-pam.c:912 daemon/verify-pam.c:1197
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1617,17 +1600,17 @@ msgstr ""
 "Ndryshimi i token të autentifikimit dështoi. Provo dhe njëherë më vonë ose "
 "vihu në kontakt me administratorin e sistemit."
 
-#: daemon/verify-pam.c:925 daemon/verify-pam.c:1211
+#: daemon/verify-pam.c:927 daemon/verify-pam.c:1210
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Përdoruesi %s nuk ka më të drejtë të futet në sistem"
 
-#: daemon/verify-pam.c:931 daemon/verify-pam.c:1217
+#: daemon/verify-pam.c:933 daemon/verify-pam.c:1216
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Përdoruesi %s nuk lejohet të fitojë hyrjen për këtë moment"
 
-#: daemon/verify-pam.c:933
+#: daemon/verify-pam.c:935
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1635,22 +1618,22 @@ msgstr ""
 "\n"
 "Administratori i sistemit ka ndaluar përkohësisht hyrjen në sistem."
 
-#: daemon/verify-pam.c:938 daemon/verify-pam.c:1224
+#: daemon/verify-pam.c:940 daemon/verify-pam.c:1223
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "E pamundur vendosja e trajtuesit të llogarisë për %s"
 
-#: daemon/verify-pam.c:966 daemon/verify-pam.c:1254
+#: daemon/verify-pam.c:968 daemon/verify-pam.c:1253
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "E pamundur vendosja e kredive për %s"
 
-#: daemon/verify-pam.c:980 daemon/verify-pam.c:1269
+#: daemon/verify-pam.c:982 daemon/verify-pam.c:1268
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Nuk arrij të hap seancën për %s"
 
-#: daemon/verify-pam.c:1037
+#: daemon/verify-pam.c:1036
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1658,15 +1641,15 @@ msgstr ""
 "\n"
 "Autentifikimi dështoi.  Kujdes dallimin midis gërmave të mëdha e të vogla."
 
-#: daemon/verify-pam.c:1053 daemon/verify-pam.c:1156 daemon/verify-pam.c:1168
+#: daemon/verify-pam.c:1052 daemon/verify-pam.c:1155 daemon/verify-pam.c:1167
 msgid "Authentication failed"
 msgstr "Identifikimi dështoi"
 
-#: daemon/verify-pam.c:1122
+#: daemon/verify-pam.c:1121
 msgid "Automatic login"
 msgstr "Login automatik"
 
-#: daemon/verify-pam.c:1220
+#: daemon/verify-pam.c:1219
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
@@ -1674,7 +1657,7 @@ msgstr ""
 "\n"
 "Administratori i sistemit ka bllokuar përkohësisht hyrjen tuaj në sistem."
 
-#: daemon/verify-pam.c:1425 daemon/verify-pam.c:1427
+#: daemon/verify-pam.c:1428 daemon/verify-pam.c:1430
 msgid "Can't find PAM configuration for gdm."
 msgstr "Nuk arrij të gjej konfigurimin PAm për gdm."
 
@@ -2137,10 +2120,8 @@ msgstr ""
 "Instalo pakon Xnest që të përdorësh dritaren e login."
 
 #: gui/gdmcomm.c:478
-msgid ""
-"The X server is not available, it is likely that gdm is badly configured."
-msgstr ""
-"Server-i X jo në dispozicion, ka mundësi që gdm të jetë konfiguruar keq."
+msgid "The X server is not available, it is likely that gdm is badly configured."
+msgstr "Server-i X jo në dispozicion, ka mundësi që gdm të jetë konfiguruar keq."
 
 #: gui/gdmcomm.c:482
 msgid ""
@@ -2156,8 +2137,7 @@ msgstr "Terminalët virtualë nuk suportohen."
 
 #: gui/gdmcomm.c:487
 msgid "Trying to change to an invalid virtual terminal number."
-msgstr ""
-"Përpjekje për të ndryshuar në një terminal virtual me numër të pasaktë."
+msgstr "Përpjekje për të ndryshuar në një terminal virtual me numër të pasaktë."
 
 #: gui/gdmcomm.c:489
 msgid "Trying to update an unsupported configuration key."
@@ -2288,8 +2268,7 @@ msgstr "Nuk keni të drejtat e duhura për këtë operacion"
 
 #: gui/gdmflexiserver.c:729
 msgid "Perhaps your .Xauthority file is not set up correctly."
-msgstr ""
-"Ka mundësi që file juaj \".Xauthority\" nuk është konfiguruar si duhet."
+msgstr "Ka mundësi që file juaj \".Xauthority\" nuk është konfiguruar si duhet."
 
 #. markup
 #: gui/gdmflexiserver.c:753
@@ -2315,433 +2294,453 @@ msgstr "Login i Ri"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:53
+msgid "A-M|Afrikaans"
+msgstr "A-M|Afrikane"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:55
 msgid "A-M|Albanian"
 msgstr "A-M|Shqip"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:55
+#: gui/gdmlanguages.c:57
 msgid "A-M|Amharic"
 msgstr "A-M|Amharic"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:57
+#: gui/gdmlanguages.c:59
 msgid "A-M|Arabic (Egypt)"
 msgstr "A-M|Arabisht (Egjypt)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:59
+#: gui/gdmlanguages.c:61
 msgid "A-M|Arabic (Lebanon)"
 msgstr "A-M|Arabisht (Libaneze)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:61
+#: gui/gdmlanguages.c:63
 msgid "A-M|Armenian"
 msgstr "A-M|Armenisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:63
+#: gui/gdmlanguages.c:65
 msgid "A-M|Azerbaijani"
 msgstr "A-M|Azerbaixhani"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:65
+#: gui/gdmlanguages.c:67
 msgid "A-M|Basque"
 msgstr "A-M|Baske"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:67
+#: gui/gdmlanguages.c:69
 msgid "A-M|Belarusian"
 msgstr "A-M|Bjellorusisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:69
+#: gui/gdmlanguages.c:71
 msgid "A-M|Bengali"
 msgstr "A-M|Bengali"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:71
+#: gui/gdmlanguages.c:73
 msgid "A-M|Bengali (India)"
 msgstr "A-M|Bengali (India)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:73
+#: gui/gdmlanguages.c:75
 msgid "A-M|Bulgarian"
 msgstr "A-M|Bullgarisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:75
+#: gui/gdmlanguages.c:77
 msgid "A-M|Bosnian"
 msgstr "A-M|Bosnia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:77
+#: gui/gdmlanguages.c:79
 msgid "A-M|Catalan"
 msgstr "A-M|Katalane"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:79
+#: gui/gdmlanguages.c:81
 msgid "A-M|Chinese (simplified)"
 msgstr "A-M|Kineze (e thjeshtë)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:81
+#: gui/gdmlanguages.c:83
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|Kineze (tradicionale)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:83
+#: gui/gdmlanguages.c:85
 msgid "A-M|Croatian"
 msgstr "A-M|Kroate"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:87
 msgid "A-M|Czech"
 msgstr "A-M|Çekisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:89
 msgid "A-M|Danish"
 msgstr "A-M|Daneze"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:91
 msgid "A-M|Dutch"
 msgstr "A-M|Dutch"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:93
 msgid "A-M|English"
 msgstr "A-M|Anglisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:95
 msgid "A-M|English (USA)"
 msgstr "A-M|Anglisht (USA)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:97
 msgid "A-M|English (Australia)"
 msgstr "A-M|Anglisht (Australia)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:99
 msgid "A-M|English (UK)"
 msgstr "A-M|Anglisht (UK)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:101
 msgid "A-M|English (Canada)"
 msgstr "A-M|Anglisht (Kanada)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:103
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Anglisht (Irlanda)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
+#: gui/gdmlanguages.c:105
 msgid "A-M|English (Denmark)"
 msgstr "A-M|Anglisht (Danimarkë)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:107
+msgid "A-M|English (South Africa)"
+msgstr "A-M|Anglisht (Afrika Jugore)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:109
 msgid "A-M|Estonian"
 msgstr "A-M|Estonisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:111
 msgid "A-M|Finnish"
 msgstr "A-M|Finlandeze"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:113
 msgid "A-M|French"
 msgstr "A-M|Frengjisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:115
 msgid "A-M|French (Belgium)"
 msgstr "A-M|Frengjisht (Belgjikë)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:113
+#: gui/gdmlanguages.c:117
 msgid "A-M|French (Switzerland)"
 msgstr "A-M|Frengjisht (Zvicër)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:115
+#: gui/gdmlanguages.c:119
 msgid "A-M|Galician"
 msgstr "A-M|Galician"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:117
+#: gui/gdmlanguages.c:121
 msgid "A-M|German"
 msgstr "A-M|Gjermanisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:119
+#: gui/gdmlanguages.c:123
 msgid "A-M|German (Austria)"
 msgstr "A-M|Gjermanisht (Austria)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:125
 msgid "A-M|German (Switzerland)"
 msgstr "A-M|Gjermanisht (Zvicër)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:127
 msgid "A-M|Greek"
 msgstr "A-M|Greqisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:129
 msgid "A-M|Gujarati"
 msgstr "A-M|Gujarati"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:127 gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:131 gui/gdmlanguages.c:133
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebrew"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:135
 msgid "A-M|Hindi"
 msgstr "A-M|Hindi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:133
+#: gui/gdmlanguages.c:137
 msgid "A-M|Hungarian"
 msgstr "A-M|Hungarisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:139
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:137
+#: gui/gdmlanguages.c:141
 msgid "A-M|Indonesian"
 msgstr "A-M|Indoneziane"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:139
+#: gui/gdmlanguages.c:143
 msgid "A-M|Interlingua"
 msgstr "A-M|Interlingua"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:141
+#: gui/gdmlanguages.c:145
 msgid "A-M|Irish"
 msgstr "A-M|Irlandeze"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:143
+#: gui/gdmlanguages.c:147
 msgid "A-M|Italian"
 msgstr "A-M|Italisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:145
+#: gui/gdmlanguages.c:149
 msgid "A-M|Japanese"
 msgstr "A-M|Japonisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:147
+#: gui/gdmlanguages.c:151
 msgid "A-M|Kannada"
 msgstr "A-M|Kanadeze"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:149
+#: gui/gdmlanguages.c:153
 msgid "A-M|Korean"
 msgstr "A-M|Koreane"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:151
+#: gui/gdmlanguages.c:155
 msgid "A-M|Latvian"
 msgstr "A-M|Latuaneze"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:153
+#: gui/gdmlanguages.c:157
 msgid "A-M|Lithuanian"
 msgstr "A-M|Lithuaneze"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:155
+#: gui/gdmlanguages.c:159
 msgid "A-M|Macedonian"
 msgstr "A-M|Maqedonisht"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:157
+#: gui/gdmlanguages.c:161
 msgid "A-M|Malay"
 msgstr "A-M|Maleze"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:159
+#: gui/gdmlanguages.c:163
 msgid "A-M|Malayalam"
 msgstr "A-M|Malayalam"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:161
+#: gui/gdmlanguages.c:165
 msgid "A-M|Marathi"
 msgstr "A-M|Marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:163
+#: gui/gdmlanguages.c:167
 msgid "A-M|Mongolian"
 msgstr "A-M|Mongolisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:165
+#: gui/gdmlanguages.c:169
+msgid "N-Z|Northern Sotho"
+msgstr "N-Z|Sotho Verilindore"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norvegjisht (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:167
+#: gui/gdmlanguages.c:173
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norvegjisht (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:169
+#: gui/gdmlanguages.c:175
 msgid "N-Z|Oriya"
 msgstr "N-Z|Oriya"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:171
+#: gui/gdmlanguages.c:177
 msgid "N-Z|Panjabi"
 msgstr "N-Z|Panjabi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:173
+#: gui/gdmlanguages.c:179
 msgid "N-Z|Persian"
 msgstr "N-Z|Persisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:175
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Polish"
 msgstr "N-Z|Polonisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:177
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugeze"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:179
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portugeze (Braziliane)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:181
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Romanian"
 msgstr "N-Z|Rumanisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:183
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Russian"
 msgstr "N-Z|Rusisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:185 gui/gdmlanguages.c:187
+#: gui/gdmlanguages.c:191 gui/gdmlanguages.c:193
 msgid "N-Z|Serbian"
 msgstr "N-Z|Sërbisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:189
+#: gui/gdmlanguages.c:195
 msgid "N-Z|Serbian (Latin)"
 msgstr "N-Z|Sërbisht (Latine)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:191
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Serbian (Jekavian)"
 msgstr "N-Z|Sërbisht (Iekaviane)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:193
+#: gui/gdmlanguages.c:199
 msgid "N-Z|Slovak"
 msgstr "N-Z|Sllovakisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:195
+#: gui/gdmlanguages.c:201
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovenisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:197
+#: gui/gdmlanguages.c:203
 msgid "N-Z|Spanish"
 msgstr "N-Z|Spanjisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:199
+#: gui/gdmlanguages.c:205
 msgid "N-Z|Spanish (Mexico)"
 msgstr "N-Z|Spanjisht (Meksikë)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:201
+#: gui/gdmlanguages.c:207
 msgid "N-Z|Swedish"
 msgstr "N-Z|Suedisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:203
+#: gui/gdmlanguages.c:209
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Suedisht (Finlandë)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:205
+#: gui/gdmlanguages.c:211
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamil"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:207
+#: gui/gdmlanguages.c:213
 msgid "N-Z|Telugu"
 msgstr "N-Z|Telugu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:209
+#: gui/gdmlanguages.c:215
 msgid "N-Z|Thai"
 msgstr "N-Z|Thai"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:211
+#: gui/gdmlanguages.c:217
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turqisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:213
+#: gui/gdmlanguages.c:219
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrainian"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:215
+#: gui/gdmlanguages.c:221
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamisht"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:217
+#: gui/gdmlanguages.c:223
 msgid "N-Z|Walloon"
 msgstr "N-Z|Walloon"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:219
+#: gui/gdmlanguages.c:225
 msgid "N-Z|Welsh"
 msgstr "N-Z|Welsh"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:221
+#: gui/gdmlanguages.c:227
 msgid "N-Z|Yiddish"
 msgstr "N-Z|Yiddish"
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:229
+msgid "N-Z|Zulu"
+msgstr "N-Z|Zulu"
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:223
+#: gui/gdmlanguages.c:231
 msgid "Other|POSIX/C English"
 msgstr "Tjetër|POSIX/C Anglisht"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:419
+#: gui/gdmlanguages.c:427
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:427
+#: gui/gdmlanguages.c:435
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2997,7 +2996,6 @@ msgstr "%a %d %b, %H:%M"
 msgid "%a %b %d, %l:%M %p"
 msgstr "%a %d %b, %I:%M %p"
 
-#. GRUT modified this item
 #: gui/gdmlogin.c:2583
 msgid "Finger"
 msgstr "Treguesi"
@@ -3033,8 +3031,7 @@ msgstr "_Konfiguro manazhuesin e login..."
 
 #: gui/gdmlogin.c:2774 gui/greeter/greeter_system.c:156
 #: gui/greeter/greeter_system.c:351
-msgid ""
-"Configure GDM (this login manager). This will require the root password."
+msgid "Configure GDM (this login manager). This will require the root password."
 msgstr "Konfiguro GDM (manazhuesin e login). Nevoitet password e root."
 
 #: gui/gdmlogin.c:2788 gui/greeter/greeter_system.c:175
@@ -3233,8 +3230,7 @@ msgstr ""
 "Gabim: %s"
 
 #: gui/gdmphotosetup.desktop.in.h:1
-msgid ""
-"Change the picture that will show in the GDM (login manager) face browser"
+msgid "Change the picture that will show in the GDM (login manager) face browser"
 msgstr ""
 "Ndrysho foton që do të shfaqet në shfletuesin e faqeve të GDM (manazhuesi i "
 "login)"
@@ -3474,8 +3470,7 @@ msgstr "Le_jo zbatimin e XDMCP chooser dritarja e login"
 msgid ""
 "Always disallow TCP connections to _X server (disables all remote "
 "connections)"
-msgstr ""
-"Gjithmonë ndal lidhjet TCP me server-in _X (bllokon të gjitha lidhjet remote)"
+msgstr "Gjithmonë ndal lidhjet TCP me server-in _X (bllokon të gjitha lidhjet remote)"
 
 #: gui/gdmsetup-strings.c:76 gui/gdmsetup.glade.h:44
 msgid "Retry _delay (seconds) :"
@@ -3576,8 +3571,7 @@ msgstr ""
 
 #. markup
 #: gui/gdmsetup.c:487
-msgid ""
-"Autologin or timed login to the superuser (root) account is not allowed."
+msgid "Autologin or timed login to the superuser (root) account is not allowed."
 msgstr ""
 "Hyrja automatike ose hyrja e kronometruar e account-it supër-përdorues "
 "(root) nuk lejohet."
@@ -3621,8 +3615,7 @@ msgstr "Hollësi: %s"
 #. * option to change the dir name
 #: gui/gdmsetup.c:1973
 #, c-format
-msgid ""
-"Theme directory '%s' seems to be already installed, install again anyway?"
+msgid "Theme directory '%s' seems to be already installed, install again anyway?"
 msgstr "Directory e temës '%s' ekziston, t'a instaloj edhe njëherë?"
 
 #. markup
@@ -3738,11 +3731,11 @@ msgstr ""
 msgid "Last"
 msgstr "E fundit"
 
-#: gui/greeter/greeter_action_language.c:196
+#: gui/greeter/greeter_action_language.c:198
 msgid "Select a language"
 msgstr "Zgjidh një gjuhë"
 
-#: gui/greeter/greeter_action_language.c:215
+#: gui/greeter/greeter_action_language.c:217
 msgid "Select a language for your session to use:"
 msgstr "Zgjidh gjuhën për seancën:"
 
