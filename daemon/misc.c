@@ -492,7 +492,13 @@ gdm_text_message_dialog (const char *msg)
 	if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
 
-	msg_quoted = g_shell_quote (msg);
+	if (msg[0] == '-') {
+		char *tmp = g_strconcat (" ", msg, NULL);
+		msg_quoted = g_shell_quote (tmp);
+		g_free (tmp);
+	} else {
+		msg_quoted = g_shell_quote (msg);
+	}
 	
 	dialog = g_find_program_in_path ("dialog");
 	if (dialog == NULL)
@@ -559,7 +565,13 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	if (ret != NULL)
 		*ret = FALSE;
 
-	msg_quoted = g_shell_quote (msg);
+	if (msg[0] == '-') {
+		char *tmp = g_strconcat (" ", msg, NULL);
+		msg_quoted = g_shell_quote (tmp);
+		g_free (tmp);
+	} else {
+		msg_quoted = g_shell_quote (msg);
+	}
 	
 	dialog = g_find_program_in_path ("dialog");
 	if (dialog == NULL)

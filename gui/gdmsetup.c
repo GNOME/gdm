@@ -85,7 +85,6 @@ unsetup_window_cursor (void)
 		gdk_window_set_cursor (setup_dialog->window, NULL);
 }
 
-
 static void
 update_greeters (void)
 {
@@ -1755,7 +1754,8 @@ get_archive_dir (const char *filename, char **untar_cmd, char **error)
 		return NULL;
 	}
 
-	quoted = g_shell_quote (filename);
+	/* Note that this adds './' In front to avoid troubles */
+	quoted = ve_shell_quote_filename (filename);
 	tar = find_tar ();
 	unzip = find_unzip (filename);
 
@@ -1956,7 +1956,7 @@ install_response (GtkWidget *chooser, gint response, gpointer data)
 	if (chdir (theme_dir) == 0) {
 		if (system (untar_cmd) == 0) {
 			char *cmd;
-			char *quoted = g_shell_quote (dir);
+			char *quoted = ve_shell_quote_filename (dir);
 			char *chown = find_chown ();
 			char *chmod = find_chmod ();
 			success = TRUE;
@@ -2138,7 +2138,7 @@ delete_theme (GtkWidget *button, gpointer data)
 			/* HACK! */
 			DIR *dp;
 			GtkTreeIter *select_iter = NULL;
-			char *quoted = g_shell_quote (dir);
+			char *quoted = ve_shell_quote_filename (dir);
 			char *cmd = g_strdup_printf ("/bin/rm -fR %s", quoted);
 			system (cmd);
 			g_free (cmd);
