@@ -1,8 +1,18 @@
 #include "config.h"
-#include <libgnome/libgnome.h>
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
+
+#define gboolean char
+#define FALSE 0
+#define TRUE 1
+
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#define _(String) gettext(String)
+#else /* !ENABLE_NLS */
+#define _(String) (String)
+#endif
 
 int
 main (int argc, char *argv[])

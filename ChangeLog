@@ -1,3 +1,14 @@
+Wed May 26 17:34:51 2004  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: Ensure proper .ICEauthority permissions, this
+	  may fail on NFS, but who cares, there if it breaks it's beyond
+	  our fixage anyway.  Should alievate problems from #137345, though
+	  that bug is really in libice usage and gnome-session.  libice is
+	  incredibly evil.
+
+	* utils/gdmtranslate.c: fix with the forte compiler, patch fromn
+	  Brian Cameron, fixes #137600
+
 Wed May 26 17:01:16 2004  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.c, daemon/misc.c: use shell quoting more properly
