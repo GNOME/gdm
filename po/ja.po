@@ -3,13 +3,14 @@
 # Yukihiro Nakai <nacai@iname.com>, 1999.
 # ITANI Eiichiro <emu@ceres.dti.ne.jp>, 1999.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2000.
+# Yukihior Nakai <nakai@gnome.gr.jp>, 2000.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0beta5\n"
 "POT-Creation-Date: 2000-05-10 14:48+0900\n"
-"PO-Revision-Date: 2000-05-10 15:00+09:00\n"
-"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
+"PO-Revision-Date: 2000-10-10 15:00+09:00\n"
+"Last-Translator: Yukihiro Nakai <nakai@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-jp\n"
@@ -124,8 +125,8 @@ msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: 停止は失敗しました: %s"
 
 #: daemon/gdm.c:458
-msgid "Only root wants to run x^hgdm\n"
-msgstr "rootだけがx^Hgdmを実行できます\n"
+msgid "Only root wants to run gdm\n"
+msgstr "rootだけがgdmを起動できます\n"
 
 #: daemon/gdm.c:479
 msgid "gdm already running. Aborting!"
@@ -158,6 +159,11 @@ msgstr "gdm_auth_user_add: クッキーファイル %s をロックできません。"
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr "gdm_auth_user_remove: 怪しげなクッキーファイル %s を無視します。"
+
+#: daemon/display.c:89
+#, c-format
+msgid "gdm_display_manage: Failed forking gdm slave process for %d"
+msgstr "gdm_display_manage: gdmスレーブプロセス %d のフォークに失敗しました"
 
 #: daemon/filecheck.c:51
 #, c-format
@@ -699,19 +705,3 @@ msgstr "main: INTシグナルハンドラを設定できません"
 #: gui/gdmlogin.c:1534
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: TERMシグナルハンドラを設定できません"
-
-#~ msgid "gdm_display_manage: Failed forking gdm slave process for %d"
-#~ msgstr "gdm_display_manage: gdm(%d)のスレーブプロセスをforkできませんでした"
-
-#~ msgid ""
-#~ "According to %s, gdm was already running (%d),\n"
-#~ "but seems to have been murdered mysteriously.\n"
-#~ msgstr ""
-#~ "%sによれば、gdmはすでに実行中(%d)なのですが、\n"
-#~ "よくわからない殺され方をしたようです。\n"
-
-#~ msgid "gdm_server_stop: Could not unlink auth file: %s!"
-#~ msgstr "gdm_server_stop: 認証ファイルを削除できません!: %s"
-
-#~ msgid "gdm_slave_session_init: User '%s' not found. Aborting."
-#~ msgstr "gdm_slave_session_init: ユーザ「%s」は見つかりません。中止します。"
