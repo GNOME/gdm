@@ -1,3 +1,22 @@
+Mon Oct 06 15:02:19 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/auth.c, daemon/slave.c:
+	  touch auth files in /tmp every 12 hours so that
+	  they don't get whacked by tmpwatch.  Also add an
+	  option to short circuit the NFS test option to
+	  allow cookies on NFS (NeverPlaceCookiesOnNFS)
+
+	* gui/greeter/greeter.c: Display dialog about not
+	  being able to load the theme even when not running
+	  in debug mode.  So that missing/bad themes don't
+	  just look like greeter crashes (see rh #106189 for
+	  people getting confused by bad spec file)
+
+	* config/gdm.conf.in: add the NeverPlaceCookiesOnNFS
+	  key
+
+	* docs/C/gdm.xml: add info about NeverPlaceCookiesOnNFS
+
 Fri Oct 03 14:03:31 2003  George Lebl <jirka@5z.com>
 
 	* daemon/errorgui.c: include <signal.h> to fix build

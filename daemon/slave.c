@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <utime.h>
 #if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
 #include <sched.h>
 #endif
@@ -370,6 +371,76 @@ run_session_output (gboolean read_until_eof)
 	NEVER_FAILS_setegid (oldg);
 }
 
+#define TIME_UNSET_P(tv) ((tv)->tv_sec == 0 && (tv)->tv_usec == 0)
+
+/* Try to touch an authfb auth file every 12 hours.  That way if it's
+ * in /tmp it doesn't get whacked by tmpwatch */
+#define TRY_TO_TOUCH_TIME (60*60*12)
+
+static struct timeval *
+min_time_to_wait (struct timeval *tv)
+{
+	if (d->authfb) {
+		time_t ct = time (NULL);
+		time_t sec_to_wait;
+
+		if (d->last_auth_touch + TRY_TO_TOUCH_TIME + 5 <= ct)
+			sec_to_wait = 5;
+		else
+			sec_to_wait = (d->last_auth_touch + TRY_TO_TOUCH_TIME) - ct;
+
+		if (TIME_UNSET_P (tv) ||
+		    sec_to_wait < tv->tv_sec)
+			tv->tv_sec = sec_to_wait;
+	}
+	if (TIME_UNSET_P (tv))
+		return NULL;
+	else
+		return tv;
+}
+
+static void
+try_to_touch_fb_userauth (void)
+{
+	if (d->authfb && d->userauth != NULL && logged_in_uid >= 0) {
+		time_t ct = time (NULL);
+
+		if (d->last_auth_touch + TRY_TO_TOUCH_TIME <= ct) {
+			uid_t old;
+			gid_t oldg;
+
+			old = geteuid ();
+			oldg = getegid ();
+
+			/* make sure we are the user when we do this,
+			   for purposes of file limits and all that kind of
+			   stuff */
+			if G_LIKELY (logged_in_gid >= 0) {
+				if G_UNLIKELY (setegid (logged_in_gid) != 0) {
+					gdm_error ("Can't set GID to user GID");
+					return;
+				}
+			}
+
+			if G_LIKELY (logged_in_uid >= 0) {
+				if G_UNLIKELY (seteuid (logged_in_uid) != 0) {
+					gdm_error ("Can't set UID to user UID");
+					NEVER_FAILS_seteuid (old);
+					return;
+				}
+			}
+
+			/* This will "touch" the file */
+			utime (d->userauth, NULL);
+
+			NEVER_FAILS_seteuid (old);
+			NEVER_FAILS_setegid (oldg);
+
+			d->last_auth_touch = ct;
+		}
+	}
+}
+
 /* must call slave_waitpid_setpid before calling this */
 static void
 slave_waitpid (GdmWaitPid *wp)
@@ -388,9 +459,12 @@ slave_waitpid (GdmWaitPid *wp)
 			/* Wait 5 seconds. */
 			tv.tv_sec = 5;
 			tv.tv_usec = 0;
-			select (0, NULL, NULL, NULL, &tv);
+			select (0, NULL, NULL, NULL, min_time_to_wait (&tv));
 			/* don't want to use sleep since we're using alarm
 			   for pinging */
+
+			/* try to touch an fb auth file */
+			try_to_touch_fb_userauth ();
 
 			if (d->session_output_fd >= 0)
 				run_session_output (FALSE /* read_until_eof */);
@@ -404,6 +478,7 @@ slave_waitpid (GdmWaitPid *wp)
 			char buf[1];
 			fd_set rfds;
 			int ret;
+			struct timeval tv;
 
 			FD_ZERO (&rfds);
 			FD_SET (slave_waitpid_r, &rfds);
@@ -411,7 +486,15 @@ slave_waitpid (GdmWaitPid *wp)
 			    d->session_output_fd >= 0)
 				FD_SET (d->session_output_fd, &rfds);
 
-			ret = select (MAX (slave_waitpid_r, d->session_output_fd)+1, &rfds, NULL, NULL, NULL);
+			/* unset time */
+			tv.tv_sec = 0;
+			tv.tv_usec = 0;
+
+			ret = select (MAX (slave_waitpid_r, d->session_output_fd)+1, &rfds, NULL, NULL, min_time_to_wait (&tv));
+
+			/* try to touch an fb auth file */
+			try_to_touch_fb_userauth ();
+
 			if (ret > 0) {
 			       	if (FD_ISSET (slave_waitpid_r, &rfds)) {
 					IGNORE_EINTR (read (slave_waitpid_r, buf, 1));

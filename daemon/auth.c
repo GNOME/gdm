@@ -48,6 +48,7 @@ extern gchar *GdmUserAuthFB;
 extern gint  GdmUserMaxFile;
 extern gint  GdmRelaxPerms;
 extern gboolean GdmDebug;
+extern gboolean GdmNeverPlaceCookiesOnNFS;
 
 static void
 display_add_error (GdmDisplay *d)
@@ -433,7 +434,6 @@ get_local_auth_error:
     return NULL;
 }
 
-
 static gboolean
 try_open_append (const char *file)
 {
@@ -560,7 +560,7 @@ try_user_add_again:
 	/* try opening as root, if we can't open as root,
 	   then this is a NFS mounted directory with root squashing,
 	   and we don't want to write cookies over NFS */
-	! try_open_read_as_root (d->userauth)) {
+	(GdmNeverPlaceCookiesOnNFS && ! try_open_read_as_root (d->userauth))) {
 
         /* if the userauth file didn't exist and we were looking at it,
 	   it likely exists now but empty, so just whack it
@@ -602,6 +602,8 @@ try_user_add_again:
 	    g_free (authdir);
 	    return FALSE;
 	}
+
+	d->last_auth_touch = time (NULL);
 
 	af = fdopen (authfd, "w");
     }

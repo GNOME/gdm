@@ -192,6 +192,8 @@ enum {
 #define GDM_KEY_RETRYDELAY "security/RetryDelay=3"
 #define GDM_KEY_DISALLOWTCP "security/DisallowTCP=true"
 
+#define GDM_KEY_NEVERPLACECOOKIESONNFS "security/NeverPlaceCookiesOnNFS=true"
+
 #define GDM_KEY_XDMCP "xdmcp/Enable=false"
 #define GDM_KEY_MAXPEND "xdmcp/MaxPending=4"
 #define GDM_KEY_MAXSESS "xdmcp/MaxSessions=16"
@@ -286,6 +288,7 @@ struct _GdmDisplay {
     GSList *local_auths; 
     gchar *userauth;
     gboolean authfb;
+    time_t last_auth_touch;
     gchar *command;
     gboolean failsafe_xserver;
     gboolean use_chooser; /* run chooser instead of greeter */

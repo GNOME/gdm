@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.4.4.3"> 
-    <!ENTITY date "9/23/2003"> 
+    <!ENTITY version "2.4.4.4"> 
+    <!ENTITY date "10/6/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -209,6 +209,8 @@
 	it will conclude that it is on an NFS mount and it will
 	automatically use <filename>UserAuthFBDir</filename>,
 	which is usually <filename>/tmp</filename>.
+	This can be changed by setting <filename>NeverPlaceCookiesOnNFS</filename>
+	in the <filename>[security]</filename> section to false.
       </para>
 
       <para>
@@ -1543,6 +1545,14 @@
 		directory should really be sticky and all that, just like
 		the <filename>/tmp</filename> directory.
 	      </para>
+
+              <para>
+		Normally if this is the users home directory GDM will still
+                refuse to put cookies there if it thinks it is NFS (by testing
+		root-squashing).
+	        This can be changed by setting <filename>NeverPlaceCookiesOnNFS</filename>
+	        in the <filename>[security]</filename> section to false.
+              </para>
 	    </listitem>
 	  </varlistentry>
 	  
@@ -1688,6 +1698,22 @@
 		the X protocol could really be potentially a security hazard to
 		leave open, even though no known security problems exist.
 	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>NeverPlaceCookiesOnNFS</term>
+	    <listitem>
+	      <synopsis>NeverPlaceCookiesOnNFS=true</synopsis>
+              <para>
+		Normally if this is true (which is by default), GDM will not place
+		cookies into the users home directory if this directory is on NFS.
+		Well, GDM will consider any filesystem with root-squashing an NFS
+		filesystem.  Sometimes however the remote file system can have
+		root squashing and be safe (perhaps by using encryption).  In this
+		case set this to 'false'.  Note that this option appeared in
+		version 2.4.4.4 and is ignored in previous versions.
+              </para>
 	    </listitem>
 	  </varlistentry>
 	  

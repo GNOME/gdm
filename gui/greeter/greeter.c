@@ -1243,9 +1243,7 @@ main (int argc, char *argv[])
 			gdm_wm_screen.height,
 			&error);
 
-    if G_UNLIKELY (root == NULL &&
-	g_getenv ("GDM_THEME") != NULL &&
-	DOING_GDM_DEVELOPMENT)
+    if G_UNLIKELY (root == NULL)
       {
         GtkWidget *dialog;
 	char *s;
@@ -1254,7 +1252,7 @@ main (int argc, char *argv[])
         gdm_wm_init (0);
         gdm_wm_focus_new_windows (TRUE);
     
-	tmp = ve_filename_to_utf8 (g_getenv ("GDM_THEME"));
+	tmp = ve_filename_to_utf8 (ve_sure_string (GdmGraphicalTheme));
 	s = g_strdup_printf (_("There was an error loading the "
 			       "theme %s"), tmp);
 	g_free (tmp);
@@ -1274,7 +1272,10 @@ main (int argc, char *argv[])
     
         gtk_dialog_run (GTK_DIALOG (dialog));
 
-        exit(1);
+	if (DOING_GDM_DEVELOPMENT)
+	  {
+	    exit (1);
+	  }
       }
 
   if G_UNLIKELY (error)
@@ -1326,7 +1327,7 @@ main (int argc, char *argv[])
   if G_UNLIKELY (DOING_GDM_DEVELOPMENT && root == NULL)
     {
       g_warning ("No theme could be loaded");
-      exit(1);
+      exit (1);
     }
 
   if G_UNLIKELY (root == NULL)

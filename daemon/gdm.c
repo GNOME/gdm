@@ -151,6 +151,7 @@ gchar *GdmSuspend = NULL;
 gchar *GdmSuspendReal = NULL;
 gchar *GdmServAuthDir = NULL;
 gchar *GdmUserAuthDir = NULL;
+gboolean GdmNeverPlaceCookiesOnNFS = TRUE;
 gchar *GdmUserAuthFile = NULL;
 gchar *GdmUserAuthFB = NULL;
 gchar *GdmPidFile = NULL;
@@ -350,6 +351,7 @@ gdm_config_parse (void)
     GdmSuspend = ve_config_get_string (cfg, GDM_KEY_SUSPEND);
     GdmUser = ve_config_get_string (cfg, GDM_KEY_USER);
     GdmUserAuthDir = ve_config_get_string (cfg, GDM_KEY_UAUTHDIR);
+    GdmNeverPlaceCookiesOnNFS = ve_config_get_bool (cfg, GDM_KEY_NEVERPLACECOOKIESONNFS);
     GdmUserAuthFile = ve_config_get_string (cfg, GDM_KEY_UAUTHFILE);
     GdmUserAuthFB = ve_config_get_string (cfg, GDM_KEY_UAUTHFB);
 

@@ -110,7 +110,9 @@ BaseXsession=@EXPANDED_SYSCONFDIR@/gdm/Xsession
 # Better leave this blank and HOME will be used.  You can use syntax ~/ below
 # to indicate home directory of the user.  You can also set this to something
 # like /tmp if you don't want the authorizations to be in home directories.
-# This is useful if you have NFS mounted home directories.
+# This is useful if you have NFS mounted home directories.  Note that if this
+# is the home directory the UserAuthFBDir will still be used in case the home
+# directory is NFS, see security/NeverPlaceCookiesOnNFS to override this behaviour.
 UserAuthDir=
 # Fallback if home directory not writable
 UserAuthFBDir=/tmp
@@ -157,6 +159,13 @@ UserMaxFile=65536
 # not add a "-nolisten tcp", as then the query just wouldn't work, so
 # this setting only affects truly local sessions.
 #DisallowTCP=true
+# By default never place cookies if we "detect" NFS.  We detect NFS
+# by detecting "root-squashing".  It seems bad practice to place
+# cookies on things that go over the network by default and thus we
+# don't do it by default.  Sometimes you can however use safe remote
+# filesystems where this is OK and you may want to have the cookie in your
+# home directory.
+#NeverPlaceCookiesOnNFS=true
 
 # XDMCP is the protocol that allows remote login.  If you want to log into
 # gdm remotely (I'd never turn this on on open network, use ssh for such
