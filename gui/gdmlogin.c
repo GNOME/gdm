@@ -2797,8 +2797,9 @@ gdm_login_gui_init (void)
 	}
     }
 
-    /* Add a quit item when in xdmcp mode */
-    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+    /* Add a quit item when in xdmcp mode or flexi mode */
+    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL")) ||
+	! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER"))) {
 	    item = gtk_menu_item_new_with_label (_("Quit"));
 	    gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
 	    gtk_widget_add_accelerator (item, "activate_item", accel,

@@ -1,3 +1,23 @@
+Fri Aug 17 04:42:34 2001  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c, daemon/display.c, daemon/gdm-net.[ch],
+	  daemon/gdm.[ch], daemon/server.[ch], daemon/slave.[ch]:
+ 	  Finish implementation of flexible servers and lots of related
+	  cleanup and restructuring that was related.
+
+	* daemon/server.c: close all fd's when running the X server.
+
+	* gui/gdmflexiserver.c: implement the updated protocol and implement
+	  all the error codes
+
+	* gui/Makefile.am, gui/gdmflexiserver(|-xnest).desktop.in,
+	  po/POTFILEs.in:  Add launchers for new flexi server and new
+	  xnest flexiserver
+
+	* gui/gdmlogin.c, daemon/slave.c: On flexi servers add the "Quit"
+	  menu thingie, since it's just as useful as in xdmcp case here.
+	  It should probably be a close button, not a Quit button.  I dunno.
+
 Thu Aug 16 01:29:05 2001  George Lebl <jirka@5z.com>
 
 	* configure.in, gui/gdmXnestchooser.c, gui/Makefile.am:  Add a proggie

@@ -60,6 +60,9 @@ struct _GdmConnection {
 	gpointer data;
 	GDestroyNotify destroy_notify;
 
+	gpointer close_data;
+	GDestroyNotify close_notify;
+
 	GdmConnection *parent;
 
 	GList *subconnections;
@@ -152,7 +155,7 @@ gdm_connection_write (GdmConnection *conn, const char *str)
 	if ( ! conn->writable)
 		return FALSE;
 
-	if (write (conn->fd, str, strlen (str)) < 0)
+	if (send (conn->fd, str, strlen (str), MSG_NOSIGNAL) < 0)
 		return FALSE;
 	else
 		return TRUE;
@@ -340,6 +343,12 @@ gdm_connection_close (GdmConnection *conn)
 		return;
 	}
 
+	if (conn->close_notify != NULL) {
+		conn->close_notify (conn->close_data);
+		conn->close_notify = NULL;
+	}
+	conn->close_data = NULL;
+
 	if (conn->buffer != NULL) {
 		g_string_free (conn->buffer, TRUE);
 		conn->buffer = NULL;
@@ -380,6 +389,20 @@ gdm_connection_close (GdmConnection *conn)
 	conn->filename = NULL;
 
 	g_free (conn);
+}
+
+void
+gdm_connection_set_close_notify (GdmConnection *conn,
+				 gpointer close_data,
+				 gpointer close_notify)
+{
+	g_return_if_fail (conn != NULL);
+
+	if (conn->close_notify != NULL)
+		conn->close_notify (conn->close_data);
+
+	conn->close_data = close_data;
+	conn->close_notify = close_notify;
 }
 
 /* EOF */

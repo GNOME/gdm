@@ -29,6 +29,8 @@ char    *gdm_slave_greeter_ctl (char cmd, const char *str);
 gboolean gdm_slave_greeter_check_interruption (const char *msg);
 gboolean gdm_slave_should_complain (void);
 
+void	 gdm_slave_send_num	(const char *opcode, long num);
+
 #endif /* GDM_SLAVE_H */
 
 /* EOF */

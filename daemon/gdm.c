@@ -63,7 +63,9 @@ static void gdm_restart_now (void);
 
 /* Global vars */
 GSList *displays;		/* List of displays managed */
+gint high_display_num = 0;	/* Highest local non-flexi display */
 gint sessions = 0;		/* Number of remote sessions */
+gint flexi_servers = 0;		/* Number of flexi servers */
 sigset_t sysmask;		/* Inherited system signal mask */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
@@ -142,6 +144,7 @@ gboolean GdmTimedLoginEnable = FALSE;
 gint GdmTimedLoginDelay = 0;
 gchar *GdmStandardXServer = NULL;
 gint  GdmFlexibleXServers = 5;
+gchar *GdmXnest = NULL;
 
 /* set in the main function */
 char **stored_argv = NULL;
@@ -168,6 +171,7 @@ gdm_config_parse (void)
     gchar *bin;
     
     displays = NULL;
+    high_display_num = 0;
 
     if (stat (GDM_CONFIG_FILE, &statbuf) == -1)
 	gdm_error (_("gdm_config_parse: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
@@ -236,8 +240,13 @@ gdm_config_parse (void)
     GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);    
     GdmPingInterval = gnome_config_get_int (GDM_KEY_PINGINTERVAL);    
 
-    GdmStandardXServer = gnome_config_get_string (GDM_STANDARD_XSERVER);    
-    GdmFlexibleXServers = gnome_config_get_int (GDM_FLEXIBLE_XSERVERS);    
+    GdmStandardXServer = gnome_config_get_string (GDM_KEY_STANDARD_XSERVER);    
+    if (ve_string_empty (GdmStandardXServer))
+	    GdmStandardXServer = g_strdup ("/usr/bin/X11/X");
+    GdmFlexibleXServers = gnome_config_get_int (GDM_KEY_FLEXIBLE_XSERVERS);    
+    GdmXnest = gnome_config_get_string (GDM_KEY_XNEST);    
+    if (ve_string_empty (GdmXnest))
+	    GdmXnest = NULL;
 
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
 
@@ -307,23 +316,37 @@ gdm_config_parse (void)
     iter = gnome_config_iterator_next (iter, &k, &v);
     
     while (iter) {
+	    if (isdigit (*k)) {
+		    int disp_num = atoi (k);
+		    displays = g_slist_append (displays,
+					       gdm_server_alloc (disp_num, v));
+		    if (disp_num > high_display_num)
+			    high_display_num = disp_num;
+	    } else {
+		    gdm_info (_("gdm_config_parse: Invalid server line in config file. Ignoring!"));
+	    }
 
-	if (isdigit (*k))
-	    displays = g_slist_append (displays, gdm_server_alloc (atoi (k), v));
-	else
-	    gdm_info (_("gdm_config_parse: Invalid server line in config file. Ignoring!"));
-
-	iter = gnome_config_iterator_next (iter, &k, &v);
+	    iter = gnome_config_iterator_next (iter, &k, &v);
     }
 
-    if (! displays && ! GdmXdmcp) {
+    if (displays == NULL && ! GdmXdmcp) {
+	    char *server = NULL;
+	    if (access (GdmStandardXServer, X_OK) == 0) {
+		    server = GdmStandardXServer;
+	    } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
+		    server = "/usr/bin/X11/X";
+	    }
 	    /* yay, we can add a backup emergency server */
-	    if (access ("/usr/bin/X11/X", X_OK) == 0) {
-		    gdm_error (_("gdm_config_parse: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :0 to allow configuration!"));
+	    if (server != NULL) {
+		    int num = gdm_get_free_display (0 /* start */,
+						    0 /* server uid */);
+		    gdm_error (_("%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%d to allow configuration!"),
+			       "gdm_config_parse",
+			       num);
 
 		    gdm_emergency_server = TRUE;
 		    displays = g_slist_append
-			    (displays, gdm_server_alloc (0, "/usr/bin/X11/X"));
+			    (displays, gdm_server_alloc (num, server));
 		    /* ALWAYS run the greeter and don't log anyone in,
 		     * this is just an emergency session */
 		    g_free (GdmAutomaticLogin);
@@ -852,6 +875,14 @@ gdm_cleanup_children (void)
 	break;
 
     case DISPLAY_XFAILED:       /* X sucks */
+	/* inform about error if needed */
+	if (d->socket_conn != NULL) {
+		GdmConnection *conn = d->socket_conn;
+		d->socket_conn = NULL;
+		gdm_connection_set_close_notify (conn, NULL, NULL);
+		gdm_connection_write (conn, "ERROR 3 X failed\n");
+	}
+
 	if (gdm_restart_mode)
 		gdm_safe_restart ();
 
@@ -889,6 +920,14 @@ gdm_cleanup_children (void)
     default:
 	gdm_debug ("gdm_child_action: Slave process returned %d", status);
 
+	/* inform about error if needed */
+	if (d->socket_conn != NULL) {
+		GdmConnection *conn = d->socket_conn;
+		d->socket_conn = NULL;
+		gdm_connection_set_close_notify (conn, NULL, NULL);
+		gdm_connection_write (conn, "ERROR 2 Startup errors\n");
+	}
+
 	if (gdm_restart_mode)
 		gdm_safe_restart ();
 	
@@ -897,7 +936,7 @@ gdm_cleanup_children (void)
 		if ( ! gdm_display_manage (d))
 			gdm_display_unmanage (d);
 	/* Remote displays will send a request to be managed */
-	} else /* TYPE_XDMCP, TYPE_FLEXI_LOCAL, TYPE_FLEXI_XNEST */ {
+	} else /* TYPE_XDMCP, TYPE_FLEXI, TYPE_FLEXI_XNEST */ {
 		gdm_display_unmanage (d);
 	}
 	
@@ -1386,10 +1425,190 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			/* send ack */
 			kill (slave_pid, SIGUSR2);
 		}
+	} else if (strncmp (msg, GDM_SOP_DISP_NUM " ",
+		            strlen (GDM_SOP_DISP_NUM " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		int disp_num;
+
+		if (sscanf (msg, GDM_SOP_DISP_NUM " %ld %d",
+			    &slave_pid, &disp_num) != 2)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			g_free (d->name);
+			d->name = g_strdup_printf (":%d", disp_num);
+			d->dispnum = disp_num;
+			gdm_debug ("Got DISP_NUM == %d", disp_num);
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
+	} else if (strncmp (msg, GDM_SOP_FLEXI_ERR " ",
+		            strlen (GDM_SOP_FLEXI_ERR " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		int err;
+
+		if (sscanf (msg, GDM_SOP_FLEXI_ERR " %ld %d",
+			    &slave_pid, &err) != 2)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			char *error = NULL;
+			GdmConnection *conn = d->socket_conn;
+			d->socket_conn = NULL;
+
+			if (conn != NULL)
+				gdm_connection_set_close_notify (conn,
+								 NULL, NULL);
+
+			if (err == 3)
+				error = "ERROR 3 X failed\n";
+			else if (err == 4)
+				error = "ERROR 4 X too busy\n";
+			else if (err == 5)
+				error = "ERROR 5 Xnest can't connect\n";
+			else
+				error = "ERROR 999 Unknown error\n";
+			if (conn != NULL)
+				gdm_connection_write (conn, error);
+			
+			gdm_debug ("Got FLEXI_ERR == %d", err);
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
+	} else if (strncmp (msg, GDM_SOP_FLEXI_OK " ",
+		            strlen (GDM_SOP_FLEXI_OK " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+
+		if (sscanf (msg, GDM_SOP_FLEXI_OK " %ld",
+			    &slave_pid) != 1)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			GdmConnection *conn = d->socket_conn;
+			d->socket_conn = NULL;
+
+			if (conn != NULL) {
+				char *msg = g_strdup_printf
+					("OK %s\n", d->name);
+				gdm_connection_set_close_notify (conn,
+								 NULL, NULL);
+				if ( ! gdm_connection_write (conn, msg))
+					gdm_display_unmanage (d);
+			}
+			
+			gdm_debug ("Got FLEXI_OK");
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
 	} else if (strcmp (msg, GDM_SOP_SOFT_RESTART) == 0) {
 		gdm_restart_mode = TRUE;
 		gdm_safe_restart ();
 	}
+}
+
+/* extract second word and the rest of the string */
+static void
+extract_dispname_xauthfile (const char *msg, char **dispname, char **xauthfile)
+{
+	const char *p;
+	char *pp;
+
+	*dispname = NULL;
+	*xauthfile = NULL;
+
+	p = strchr (msg, ' ');
+	if (p == NULL)
+		return;
+
+	while (*p == ' ')
+		p++;
+
+	*dispname = g_strdup (p);
+
+	p = strchr (p, ' ');
+	if (p == NULL) {
+		return;
+	}
+
+	while (*p == ' ')
+		p++;
+
+	*xauthfile = g_strstrip (g_strdup (p));
+
+	pp = strchr (*dispname, ' ');
+	if (pp != NULL)
+		*pp = '\0';
+}
+
+static void
+close_conn (gpointer data)
+{
+	GdmDisplay *disp = data;
+
+	/* We still weren't finished, so we want to whack this display */
+	if (disp->socket_conn != NULL) {
+		disp->socket_conn = NULL;
+		gdm_display_unmanage (disp);
+	}
+}
+
+static void
+handle_flexi_server (GdmConnection *conn, int type, const char *server,
+		     const char *xnest_disp, const char *xnest_auth_file)
+{
+	GdmDisplay *display;
+	char *bin;
+
+	if (flexi_servers >= GdmFlexibleXServers) {
+		gdm_connection_write (conn,
+				      "ERROR 1 No more flexi servers\n");
+		return;
+	}
+
+	bin = ve_first_word (ve_sure_string (server));
+	if (server == NULL ||
+	    access (bin, X_OK) != 0) {
+		g_free (bin);
+		gdm_connection_write (conn,
+				      "ERROR 6 No server binary\n");
+		return;
+	}
+	g_free (bin);
+
+	display = gdm_server_alloc (-1, server);
+	if (display == NULL) {
+		gdm_connection_write (conn,
+				      "ERROR 2 Startup errors\n");
+		return;
+	}
+
+	flexi_servers ++;
+
+	display->type = type;
+	display->socket_conn = conn;
+	display->xnest_disp = g_strdup (xnest_disp);
+	display->xnest_auth_file = g_strdup (xnest_auth_file);
+	gdm_connection_set_close_notify (conn, display, close_conn);
+	displays = g_slist_append (displays, display);
+	if ( ! gdm_display_manage (display)) {
+		gdm_display_unmanage (display);
+		gdm_connection_write (conn,
+				      "ERROR 2 Startup errors\n");
+		return;
+	}
+	/* Now we wait for the server to start up (or not) */
 }
 
 static void
@@ -1398,12 +1617,26 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 	gdm_debug ("Handeling user message: '%s'", msg);
 
 	if (strcmp (msg, GDM_SUP_FLEXI_XSERVER) == 0) {
-		/* FIXME: */
-		gdm_connection_write (conn, "ERROR 0 Not implemented\n");
+		handle_flexi_server (conn, TYPE_FLEXI, GdmStandardXServer,
+				     NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
 		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
-		/* FIXME: */
-		gdm_connection_write (conn, "ERROR 0 Not implemented\n");
+		char *dispname = NULL, *xauthfile = NULL;
+
+		extract_dispname_xauthfile (msg, &dispname, &xauthfile);
+		if (dispname == NULL) {
+			/* Something bogus is going on, so just whack the
+			 * connection */
+			g_free (xauthfile);
+			gdm_connection_close (conn);
+			return;
+		}
+		
+		handle_flexi_server (conn, TYPE_FLEXI_XNEST, GdmXnest,
+				     dispname, xauthfile);
+
+		g_free (dispname);
+		g_free (xauthfile);
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
 		gdm_connection_write (conn, "GDM " VERSION "\n");
 	} else if (strcmp (msg, GDM_SUP_CLOSE) == 0) {

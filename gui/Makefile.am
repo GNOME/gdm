@@ -125,7 +125,10 @@ Settings_in_files = gdmphotosetup.desktop.in
 Settings_DATA = $(Settings_in_files:.desktop.in=.desktop)
 
 Systemdir = $(datadir)/gnome/apps/System
-System_in_files = gdmconfig.desktop.in
+System_in_files = \
+	gdmconfig.desktop.in		\
+	gdmflexiserver.desktop.in	\
+	gdmflexiserver-xnest.desktop.in
 System_DATA = $(System_in_files:.desktop.in=.desktop)
 
 @XML_I18N_MERGE_DESKTOP_RULE@

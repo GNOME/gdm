@@ -24,6 +24,7 @@
 #include <X11/Xauth.h>
 
 #include "gdm.h"
+#include "gdm-net.h"
 #include "server.h"
 #include "display.h"
 #include "slave.h"
@@ -36,6 +37,7 @@ static const gchar RCSid[]="$Id$";
 /* External vars */
 extern gboolean GdmXdmcp;
 extern gint sessions;
+extern gint flexi_servers;
 extern gint pending;
 extern GSList *displays;
 
@@ -166,8 +168,7 @@ gdm_display_manage (GdmDisplay *d)
 	    /* if we ever return, bad things are happening */
 	    gdm_server_stop (d);
 	    _exit (DISPLAY_ABORT);
-	} else if (d->type == TYPE_FLEXI_LOCAL ||
-		   d->type == TYPE_FLEXI_XNEST) {
+	} else if (SERVER_IS_FLEXI (d)) {
 	    gdm_slave_start (d);
 	    gdm_server_stop (d);
 	    /* we expect to return after the session finishes */
@@ -232,7 +233,7 @@ gdm_display_unmanage (GdmDisplay *d)
     
     if (d->type == TYPE_LOCAL)
 	d->dispstat = DISPLAY_DEAD;
-    else /* TYPE_XDMCP,TYPE_FLEXI_LOCAL,TYPE_FLEXI_XNEST */
+    else /* TYPE_XDMCP,TYPE_FLEXI,TYPE_FLEXI_XNEST */
 	gdm_display_dispose (d);
 }
 
@@ -250,8 +251,18 @@ gdm_display_dispose (GdmDisplay *d)
     if (d == NULL)
 	return;
 
+    if (d->socket_conn != NULL) {
+	    GdmConnection *conn = d->socket_conn;
+	    d->socket_conn = NULL;
+	    gdm_connection_set_close_notify (conn, NULL, NULL);
+    }
+
+    displays = g_slist_remove (displays, d);
+
+    if (SERVER_IS_FLEXI (d))
+	    flexi_servers --;
+
     if (d->type == TYPE_XDMCP) {
-	displays = g_slist_remove (displays, d);
 	sessions--;
 	d->type = -1;
 
@@ -298,6 +309,12 @@ gdm_display_dispose (GdmDisplay *d)
     if (d->indirect_id > 0)
 	    gdm_choose_indirect_dispose_empty_id (d->indirect_id);
     d->indirect_id = 0;
+
+    g_free (d->xnest_disp);
+    d->xnest_disp = NULL;
+
+    g_free (d->xnest_auth_file);
+    d->xnest_auth_file = NULL;
 
     g_free (d);
 }

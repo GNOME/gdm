@@ -39,6 +39,7 @@
 #include "xdmcp.h"
 #include "display.h"
 #include "auth.h"
+#include "slave.h"
 
 static const gchar RCSid[]="$Id$";
 
@@ -58,6 +59,7 @@ extern gchar *GdmLogDir;
 extern gchar *GdmStandardXServer;
 extern gboolean GdmXdmcp;
 extern sigset_t sysmask;
+extern gint high_display_num;
 
 /* Global vars */
 static GdmDisplay *d = NULL;
@@ -178,6 +180,35 @@ busy_inform_user (GdmDisplay *disp)
 }
 
 static gboolean
+display_xnest_no_connect (GdmDisplay *disp)
+{
+	char *logname = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+	FILE *fp;
+	char buf[256];
+
+	fp = fopen (logname, "r");
+	g_free (logname);
+
+	if (fp == NULL)
+		return FALSE;
+
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		/* Note: this is probably XFree86 specific, and perhaps even
+		 * version 3 specific (I don't have xfree v4 to test this),
+		 * of course additions are welcome to make this more robust */
+		if (strstr (buf, "Unable to open display \"") == buf) {
+			gdm_error (_("Display '%s' cannot be opened by Xnest"),
+				   ve_sure_string (disp->xnest_disp));
+			fclose (fp);
+			return TRUE;
+		}
+	}
+
+	fclose (fp);
+	return FALSE;
+}
+
+static gboolean
 display_busy (GdmDisplay *disp)
 {
 	char *logname = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
@@ -195,7 +226,7 @@ display_busy (GdmDisplay *disp)
 		 * version 3 specific (I don't have xfree v4 to test this),
 		 * of course additions are welcome to make this more robust */
 		if (strstr (buf, "Server is already active for display")
-		    != NULL) {
+		    == buf) {
 			gdm_error (_("Display %s is busy, there is another "
 				     "X server already running"),
 				   disp->name);
@@ -216,20 +247,33 @@ display_busy (GdmDisplay *disp)
  */
 
 gboolean
-gdm_server_start (GdmDisplay *disp)
+gdm_server_start (GdmDisplay *disp, int min_flexi_disp, int flexi_retries)
 {
     struct sigaction usr1, chld, alrm;
     struct sigaction old_usr1, old_chld, old_alrm;
     sigset_t mask, oldmask;
-    gboolean retvalue;
+    int flexi_disp = 20;
     
-    if (!disp)
-	return FALSE;
-    
+    if (disp == NULL)
+	    return FALSE;
+
     d = disp;
 
     /* if an X server exists, wipe it */
     gdm_server_stop (d);
+
+    if (SERVER_IS_FLEXI (d)) {
+	    flexi_disp = gdm_get_free_display
+		    (MAX (high_display_num + 1, min_flexi_disp) /* start */,
+		     0 /* server uid */);
+
+	    g_free (d->name);
+	    d->name = g_strdup_printf (":%d", flexi_disp);
+	    d->dispnum = flexi_disp;
+
+	    gdm_slave_send_num (GDM_SOP_DISP_NUM, flexi_disp);
+    }
+
 
     gdm_debug ("gdm_server_start: %s", d->name);
 
@@ -290,8 +334,6 @@ gdm_server_start (GdmDisplay *disp)
     /* fork X server process */
     gdm_server_spawn (d);
 
-    retvalue = FALSE;
-
     /* Wait for X server to send ready signal */
     if (d->servstat == SERVER_STARTED)
 	    gdm_run ();
@@ -312,9 +354,17 @@ gdm_server_start (GdmDisplay *disp)
     case SERVER_RUNNING:
 	    gdm_debug ("gdm_server_start: Completed %s!", d->name);
 
-	    retvalue = TRUE;
-	    goto spawn_done;
+	    sigprocmask (SIG_SETMASK, &oldmask, NULL);
 
+	    /* restore default handlers */
+	    sigaction (SIGUSR1, &old_usr1, NULL);
+	    sigaction (SIGCHLD, &old_chld, NULL);
+	    sigaction (SIGALRM, &old_alrm, NULL);
+
+	    if (SERVER_IS_FLEXI (d))
+		    gdm_slave_send_num (GDM_SOP_FLEXI_OK, 0 /* bogus */);
+
+	    return TRUE;
     default:
 	    break;
     }
@@ -326,19 +376,6 @@ gdm_server_start (GdmDisplay *disp)
 	    d->servpid = 0;
     }
 
-    /* if this was a busy fail, that is, there is already
-     * a server on that display, we'll display an error and after
-     * this we'll exit with DISPLAY_REMANAGE to try again if the
-     * user wants to, or abort this display */
-    if (display_busy (disp)) {
-	    busy_inform_user (disp);
-	    _exit (DISPLAY_REMANAGE);
-    }
-
-    _exit (DISPLAY_XFAILED);
-
-spawn_done:
-
     sigprocmask (SIG_SETMASK, &oldmask, NULL);
 
     /* restore default handlers */
@@ -346,7 +383,44 @@ spawn_done:
     sigaction (SIGCHLD, &old_chld, NULL);
     sigaction (SIGALRM, &old_alrm, NULL);
 
-    return retvalue;
+    if (disp->type == TYPE_FLEXI_XNEST &&
+	display_xnest_no_connect (disp)) {
+	    gdm_slave_send_num (GDM_SOP_FLEXI_ERR,
+				5 /* Xnest can't connect */);
+	    _exit (DISPLAY_REMANAGE);
+    }
+
+    /* if this was a busy fail, that is, there is already
+     * a server on that display, we'll display an error and after
+     * this we'll exit with DISPLAY_REMANAGE to try again if the
+     * user wants to, or abort this display */
+    if (display_busy (disp)) {
+	    if (SERVER_IS_FLEXI (disp)) {
+		    /* for flexi displays, try again a few times with different
+		     * display numbers */
+		    if (flexi_retries <= 0) {
+			    /* Send X too busy */
+			    gdm_slave_send_num (GDM_SOP_FLEXI_ERR,
+						4 /* X too busy */);
+			    /* eki eki */
+			    _exit (DISPLAY_REMANAGE);
+		    }
+		    return gdm_server_start (d, flexi_disp + 1,
+					     flexi_retries - 1);
+	    } else {
+		    /* FIXME: find first free display here above
+		     * high_display_num optionally, and if the user
+		     * has no dialog/gdialog, then just do that
+		     * immediately.  Must give an error as well on
+		     * the X server once greeter is up. */
+		    busy_inform_user (disp);
+		    _exit (DISPLAY_REMANAGE);
+	    }
+    }
+
+    _exit (DISPLAY_XFAILED);
+
+    return FALSE;
 }
 
 
@@ -380,7 +454,7 @@ gdm_server_spawn (GdmDisplay *d)
 	    if (kill (d->servpid, SIGTERM) == 0)
 		    waitpid (d->servpid, NULL, 0);
     }
-
+    
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
     
@@ -392,6 +466,10 @@ gdm_server_spawn (GdmDisplay *d)
 	/* Close the XDMCP fd inherited by the daemon process */
 	if (GdmXdmcp)
 	    gdm_xdmcp_close();
+
+	/* close things */
+	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+		close(i);
 
         /* Log all output from spawned programs to a file */
 	logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),
@@ -445,6 +523,14 @@ gdm_server_spawn (GdmDisplay *d)
 	sigaddset (&mask, SIGHUP);
 	sigaddset (&mask, SIGTERM);
 	sigprocmask (SIG_UNBLOCK, &mask, NULL);
+
+	if (d->type == TYPE_FLEXI_XNEST) {
+		ve_setenv ("DISPLAY", d->xnest_disp, TRUE);
+		if (d->xnest_auth_file != NULL)
+			ve_setenv ("XAUTHORITY", d->xnest_auth_file, TRUE);
+		else
+			ve_unsetenv ("XAUTHORITY");
+	}
 
 	if (strcmp (d->command, GDM_STANDARD) == 0)
 		command = GdmStandardXServer;

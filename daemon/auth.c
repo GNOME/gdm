@@ -128,7 +128,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     /* If this is a local display the struct hasn't changed and we
      * have to eat up old authentication cookies before baking new
      * ones... */
-    if (SERVER_IS_OURS (d) && d->auths) {
+    if (SERVER_IS_LOCAL (d) && d->auths) {
 	GSList *alist = d->auths;
 
 	while (alist && alist->data) {

@@ -134,7 +134,6 @@ static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
 static void	gdm_send_logged_in (gboolean logged_in);
-static void	gdm_send_pid (const char *opcode, pid_t pid);
 
 
 /* Yay thread unsafety */
@@ -247,7 +246,7 @@ gdm_slave_start (GdmDisplay *display)
 			/* Whack the server if we want to restart it next time
 			 * we run gdm_slave_run */
 			gdm_server_stop (display);
-			gdm_send_pid (GDM_SOP_XPID, 0);
+			gdm_slave_send_num (GDM_SOP_XPID, 0);
 		} else {
 			/* OK about to start again so redo our cookies and reinit
 			 * the server */
@@ -354,10 +353,12 @@ gdm_slave_run (GdmDisplay *display)
 
     /* if this is local display start a server if one doesn't
      * exist */
-    if (SERVER_IS_OURS (d) &&
+    if (SERVER_IS_LOCAL (d) &&
 	d->servpid <= 0) {
-	    gdm_server_start (d);
-	    gdm_send_pid (GDM_SOP_XPID, d->servpid);
+	    gdm_server_start (d,
+			      20 /* min_flexi_disp */,
+			      5 /* flexi_retries */);
+	    gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
     }
     
     ve_setenv ("XAUTHORITY", d->authfile, TRUE);
@@ -482,7 +483,7 @@ gdm_slave_whack_greeter (void)
 		waitpid (d->greetpid, 0, 0); 
 	d->greetpid = 0;
 
-	gdm_send_pid (GDM_SOP_GREETPID, 0);
+	gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
 	sigprocmask (SIG_SETMASK, &omask, NULL);
 }
@@ -1059,6 +1060,15 @@ gdm_slave_greeter (void)
 		ve_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
+	if (d->type == TYPE_FLEXI) {
+		/* FIXME: When we get multiple server types, put it here */
+		ve_setenv ("GDM_FLEXI_SERVER", GDM_STANDARD, TRUE);
+	} else if (d->type == TYPE_FLEXI_XNEST) {
+		ve_setenv ("GDM_FLEXI_SERVER", "Xnest", TRUE);
+	} else {
+		ve_unsetenv ("GDM_FLEXI_SERVER");
+	}
+
 	if(gdm_emergency_server) {
 		gdm_error_box (d,
 			       GNOME_MESSAGE_BOX_ERROR,
@@ -1138,15 +1148,15 @@ gdm_slave_greeter (void)
 	
 	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", d->greetpid);
 
-	gdm_send_pid (GDM_SOP_GREETPID, d->greetpid);
+	gdm_slave_send_num (GDM_SOP_GREETPID, d->greetpid);
 
 	run_pictures (); /* Append pictures to greeter if browsing is on */
 	break;
     }
 }
 
-static void
-gdm_send_pid (const char *opcode, pid_t pid)
+void
+gdm_slave_send_num (const char *opcode, long num)
 {
 	char *msg;
 	int fd;
@@ -1154,7 +1164,7 @@ gdm_send_pid (const char *opcode, pid_t pid)
 
 	gdm_debug ("Sending %s == %ld for slave %ld",
 		   opcode,
-		   (long)pid,
+		   (long)num,
 		   (long)getpid ());
 
 	gdm_got_usr2 = FALSE;
@@ -1164,12 +1174,12 @@ gdm_send_pid (const char *opcode, pid_t pid)
 	fd = open (fifopath, O_WRONLY);
 	/* eek */
 	if (fd < 0) {
-		gdm_error (_("%s: Can't open fifo!"), "gdm_send_pid");
+		gdm_error (_("%s: Can't open fifo!"), "gdm_send_num");
 		return;
 	}
 
 	msg = g_strdup_printf ("\n%s %ld %ld\n", opcode,
-			       (long)getpid (), (long)pid);
+			       (long)getpid (), (long)num);
 
 	write (fd, msg, strlen (msg));
 
@@ -1352,7 +1362,7 @@ gdm_slave_chooser (void)
 		}
 
 		gdm_debug ("gdm_slave_chooser: Chooser on pid %d", d->chooserpid);
-		gdm_send_pid (GDM_SOP_CHOOSERPID, d->chooserpid);
+		gdm_slave_send_num (GDM_SOP_CHOOSERPID, d->chooserpid);
 
 		close (p[1]);
 
@@ -1361,7 +1371,7 @@ gdm_slave_chooser (void)
 		/* wait for the chooser to die */
 		waitpid (d->chooserpid, 0, 0);
 
-		gdm_send_pid (GDM_SOP_CHOOSERPID, 0);
+		gdm_slave_send_num (GDM_SOP_CHOOSERPID, 0);
 
 		bytes = read (p[0], buf, sizeof(buf)-1);
 		if (bytes > 0) {
@@ -2077,7 +2087,7 @@ gdm_slave_session_start (void)
     g_free (gnome_session);
 
     sesspid = d->sesspid;
-    gdm_send_pid (GDM_SOP_SESSPID, sesspid);
+    gdm_slave_send_num (GDM_SOP_SESSPID, sesspid);
 
     /* Wait for the user's session to exit, but by this time the
      * session might have ended, so check for 0 */
@@ -2104,7 +2114,7 @@ gdm_slave_session_stop (pid_t sesspid)
     seteuid (0);
     setegid (0);
 
-    gdm_send_pid (GDM_SOP_SESSPID, 0);
+    gdm_slave_send_num (GDM_SOP_SESSPID, 0);
 
     gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
 

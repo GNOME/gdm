@@ -21,7 +21,10 @@
 
 #include <glib.h>
 
+#ifndef TYPEDEF_GDM_CONNECTION
+#define TYPEDEF_GDM_CONNECTION
 typedef struct _GdmConnection GdmConnection;
+#endif  /* TYPEDEF_GDM_CONNECTION */
 
 /* Something that will get stuff line by line */
 typedef void (* GdmConnectionHandler) (GdmConnection *conn,
@@ -36,6 +39,10 @@ GdmConnection *	gdm_connection_open_unix (const char *sockname,
 					  mode_t mode);
 GdmConnection *	gdm_connection_open_fifo (const char *fifo,
 					  mode_t mode);
+
+void		gdm_connection_set_close_notify (GdmConnection *conn,
+						 gpointer close_data,
+						 gpointer close_notify);
 
 void		gdm_connection_set_handler (GdmConnection *conn,
 					    GdmConnectionHandler handler,

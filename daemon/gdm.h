@@ -24,21 +24,20 @@
 #include <X11/Xmd.h>
 #include <X11/Xauth.h>
 
-
 #define STX 0x2			/* Start of txt */
 #define BEL 0x7			/* Bell, used to interrupt login for
 				 * say timed login or something similar */
 
 #define TYPE_LOCAL 1		/* Local X server */
 #define TYPE_XDMCP 2		/* Remote display */
-#define TYPE_FLEXI_LOCAL 3	/* Local Flexi X server */
+#define TYPE_FLEXI 3		/* Local Flexi X server */
 #define TYPE_FLEXI_XNEST 4	/* Local Flexi Xnest server */
 
 #define SERVER_IS_LOCAL(d) (d->type == TYPE_LOCAL || \
-			    d->type == TYPE_FLEXI_LOCAL || \
+			    d->type == TYPE_FLEXI || \
 			    d->type == TYPE_FLEXI_XNEST)
-#define SERVER_IS_OURS(d) (d->type == TYPE_LOCAL || \
-			   d->type == TYPE_FLEXI_LOCAL)
+#define SERVER_IS_FLEXI(d) (d->type == TYPE_FLEXI || \
+			    d->type == TYPE_FLEXI_XNEST)
 
 #define SERVER_SUCCESS 0	/* X server default */
 #define SERVER_FAILURE 1	/* X server default */
@@ -146,8 +145,9 @@
 #define GDM_KEY_TIMED_LOGIN "daemon/TimedLogin="
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=30"
 
-#define GDM_STANDARD_XSERVER "daemon/StandardXServer=/usr/bin/X11/X"
-#define GDM_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
+#define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=/usr/bin/X11/X"
+#define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
+#define GDM_KEY_XNEST "daemon/Xnest=/usr/bin/X11/Xnest -name Xnest"
 
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
@@ -223,6 +223,11 @@
 
 #define GDM_STANDARD "Standard"
 
+#ifndef TYPEDEF_GDM_CONNECTION
+#define TYPEDEF_GDM_CONNECTION
+typedef struct _GdmConnection GdmConnection;
+#endif  /* TYPEDEF_GDM_CONNECTION */
+
 typedef struct _GdmDisplay GdmDisplay;
 
 struct _GdmDisplay {
@@ -269,6 +274,11 @@ struct _GdmDisplay {
     int screeny;
     int screenwidth; /* Note 0 means use the gdk size */
     int screenheight;
+
+    /* Flexi stuff */
+    char *xnest_disp;
+    char *xnest_auth_file;
+    GdmConnection *socket_conn;
 };
 
 typedef struct _GdmXServer GdmXServer;
@@ -342,6 +352,12 @@ void gdm_quit (void);
 #define GDM_SOP_GREETPID     "GREETPID" /* <slave pid> <greetpid> */
 #define GDM_SOP_CHOOSERPID   "CHOOSERPID" /* <slave pid> <chooserpid> */
 #define GDM_SOP_LOGGED_IN    "LOGGED_IN" /* <slave pid> <logged_in as int> */
+#define GDM_SOP_DISP_NUM     "DISP_NUM" /* <slave pid> <display as int> */
+#define GDM_SOP_FLEXI_ERR    "FLEXI_ERR" /* <slave pid> <error num> */
+	/* 3 = X failed */
+	/* 4 = X too busy */
+	/* 5 = Xnest can't connect */
+#define GDM_SOP_FLEXI_OK     "FLEXI_OK" /* <slave pid> */
 #define GDM_SOP_SOFT_RESTART "SOFT_RESTART" /* no arguments */
 
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
@@ -360,14 +376,27 @@ void gdm_quit (void);
  *   OK <display>
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
+ *      1 = No more flexi servers
+ *      2 = Startup errors
+ *      3 = X failed
+ *      4 = X too busy
+ *      6 = No server binary
+ *      999 = Unknown error
  */
-#define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> [<ascii xauth data>] */
+#define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <xauth file> */
 /* FLEXI_XNEXT: Start a new flexible Xnest server
- * Arguments:  <display> [<ascii xauth data from "xauth nextract - $DISPLAY">]
+ * Arguments:  <display> <xauth file>
  * Answers:
  *   OK <display>
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
+ *      1 = No more flexi servers
+ *      2 = Startup errors
+ *      3 = X failed
+ *      4 = X too busy
+ *      5 = Xnest can't connect
+ *      6 = No server binary
+ *      999 = Unknown error
  */
 #define GDM_SUP_CLOSE        "CLOSE" /* no arguments */
 /* CLOSE Answers: None

@@ -153,31 +153,22 @@ get_display (void)
 }
 
 static char *
-get_xauth_string (void)
+get_xauthfile (void)
 {
-	char *command;
-	FILE *fp;
-	char buf[1024];
-	char *p;
+	static char *xauthfile = NULL;
 
-	command = g_strdup_printf ("xauth nextract - %s", get_display ());
-	fp = popen (command, "r");
-	g_free (command);
-
-	if (fp == NULL) {
-		return NULL;
+	if (xauthfile == NULL) {
+		xauthfile = g_strdup (g_getenv ("XAUTHORITY"));
+		if (ve_string_empty (xauthfile)) {
+			g_strdup (xauthfile);
+			xauthfile = g_concat_dir_and_file (g_get_home_dir (),
+							   ".Xauthority");
+			/* FIXME: perhaps if it doesn't exist, run
+			 * xauth generate on this */
+		}
 	}
-	if (fgets (buf, sizeof (buf), fp) == NULL) {
-		fclose (fp);
-		return NULL;
-	}
-	fclose (fp);
 
-	p = strchr (buf, '\n');
-	if (p != NULL)
-		*p = '\0';
-
-	return g_strdup (buf);
+	return xauthfile;
 }
 
 static gboolean use_xnest = FALSE;
@@ -192,12 +183,14 @@ struct poptOption options [] = {
 int
 main (int argc, char *argv[])
 {
+	GtkWidget *dialog;
 	FILE *fp = NULL;
 	long pid;
 	char *pidfile;
 	char *command;
 	char *version;
 	char *ret;
+	char *message;
 
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
@@ -221,37 +214,27 @@ main (int argc, char *argv[])
 	if (pid <= 1 ||
 	    (kill (pid, 0) < 0 &&
 	     errno != EPERM)) {
-		GtkWidget *d;
-		d = gnome_warning_dialog
+		dialog = gnome_warning_dialog
 			(_("GDM is not running.\n"
 			   "Please ask your "
 			   "system administrator to start it."));
-		gnome_dialog_run_and_close (GNOME_DIALOG (d));
+		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 		return 0;
 	}
 
 	if (access (GDM_SUP_SOCKET, R_OK|W_OK)) {
-		GtkWidget *d;
-		d = gnome_warning_dialog
+		dialog = gnome_warning_dialog
 			(_("Cannot communicate with gdm, perhaps "
 			   "you have an old version running."));
-		gnome_dialog_run_and_close (GNOME_DIALOG (d));
+		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 		return 0;
 	}
 
 	if (use_xnest) {
-		char *xauth_string = get_xauth_string ();
-
-		if (xauth_string != NULL) {
-			command = g_strdup_printf (GDM_SUP_FLEXI_XNEST
-						   " %s %s",
-						   get_display (),
-						   xauth_string);
-		} else {
-			command = g_strdup_printf (GDM_SUP_FLEXI_XNEST
-						   " %s",
-						   get_display ());
-		}
+		command = g_strdup_printf (GDM_SUP_FLEXI_XNEST
+					   " %s %s",
+					   get_display (),
+					   get_xauthfile ());
 		version = "2.2.3.2";
 	} else {
 		command = g_strdup (GDM_SUP_FLEXI_XSERVER);
@@ -259,27 +242,49 @@ main (int argc, char *argv[])
 	}
 
 	ret = call_gdm (command, version, 5);
-	if (ret == NULL) {
-		GtkWidget *d;
-		d = gnome_warning_dialog
-			(_("Cannot communicate with gdm, perhaps "
-			   "you have an old version running."));
-		gnome_dialog_run_and_close (GNOME_DIALOG (d));
+	if (ret != NULL &&
+	    strncmp (ret, "OK ", 3) == 0) {
+		/* all fine and dandy */
 		return 0;
-	} else if (strncmp (ret, "ERROR 0 ", strlen ("ERROR 0 ")) == 0) {
-		GtkWidget *d;
-		g_warning ("Command not implemented");
-		d = gnome_warning_dialog
-			(_("Cannot communicate with gdm, perhaps "
-			   "you have an old version running."));
-		gnome_dialog_run_and_close (GNOME_DIALOG (d));
-	} else if (strncmp (ret, "OK ", 3) != 0) {
-		GtkWidget *d;
-		d = gnome_warning_dialog (_("Unknown error occured."));
-		gnome_dialog_run_and_close (GNOME_DIALOG (d));
 	}
 
-	return 0;
+	/* These need a bit more refinement */
+	if (ret == NULL) {
+		message = _("Cannot communicate with gdm, perhaps "
+			    "you have an old version running.");
+	} else if (strncmp (ret, "ERROR 0 ", strlen ("ERROR 0 ")) == 0) {
+		message = _("Cannot communicate with gdm, perhaps "
+			    "you have an old version running.");
+	} else if (strncmp (ret, "ERROR 1 ", strlen ("ERROR 1 ")) == 0) {
+		message = _("The allowed limit of flexible X servers reached.");
+	} else if (strncmp (ret, "ERROR 2 ", strlen ("ERROR 2 ")) == 0) {
+		message = _("There were errors trying to start the X server.");
+	} else if (strncmp (ret, "ERROR 3 ", strlen ("ERROR 3 ")) == 0) {
+		message = _("The X server failed.  Perhaps it is not "
+			    "configured well.");
+	} else if (strncmp (ret, "ERROR 4 ", strlen ("ERROR 4 ")) == 0) {
+		message = _("Too many X sessions running.");
+	} else if (strncmp (ret, "ERROR 5 ", strlen ("ERROR 5 ")) == 0) {
+		message = _("The nested X server (Xnest) cannot connect to "
+			    "your current X server.  You may be missing an "
+			    "X authorization file.");
+	} else if (strncmp (ret, "ERROR 6 ", strlen ("ERROR 6 ")) == 0) {
+		if (use_xnest)
+			message = _("The nested X server (Xnest) is not "
+				    "available, or gdm is badly configured.\n"
+				    "Please install the Xnest package in "
+				    "order to use the nested login.");
+		else
+			message = _("The X server is not available, "
+				    "it is likely that gdm is badly "
+				    "configured.");
+	} else {
+		message = _("Unknown error occured.");
+	}
+
+	dialog = gnome_warning_dialog (message);
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	return 1;
 }
 
 /* Used for torture testing the socket */

@@ -21,7 +21,9 @@
 
 #include "gdm.h"
 
-gboolean	gdm_server_start	(GdmDisplay *d);
+gboolean	gdm_server_start	(GdmDisplay *d,
+					 int min_flexi_disp,
+					 int flexi_retries);
 void		gdm_server_stop		(GdmDisplay *d);
 void		gdm_server_reinit	(GdmDisplay *d);
 GdmDisplay *	gdm_server_alloc	(gint id,
