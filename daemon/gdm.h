@@ -145,7 +145,7 @@ enum {
 #define GDM_KEY_REBOOT "daemon/RebootCommand=/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
 #define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:" X_CONF_PATH ":" EXPANDED_BINDIR
 #define GDM_KEY_SERVAUTH "daemon/ServAuthDir=" EXPANDED_AUTHDIR
-#define GDM_KEY_SESSDIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" EXPANDED_SYSCONFDIR "/dm/Sessions/:/usr/share/xsessions/:/usr/share/X11/sessions/"
+#define GDM_KEY_SESSDIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" EXPANDED_SYSCONFDIR "/dm/Sessions/:" EXPANDED_DATADIR "/xsessions/"
 #define GDM_KEY_BASEXSESSION "daemon/BaseXsession=" EXPANDED_SYSCONFDIR "/gdm/Xsession"
 #define GDM_KEY_DEFAULTSESSION "daemon/DefaultSession=gnome.desktop"
 #define GDM_KEY_SUSPEND "daemon/SuspendCommand="

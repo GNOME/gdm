@@ -1,8 +1,9 @@
-pixmapdir = $(datadIR)/pixmaps
+pixmapdir = $(datadir)/pixmaps
 confdir = $(sysconfdir)/gdm
 crossconfdir = $(sysconfdir)/dm
 localedir = $(sysconfdir)/gdm
-sessdir = $(sysconfdir)/dm/Sessions
+bisessdir = $(sysconfdir)/dm/Sessions
+instsessdir = $(datadir)/xsessions
 initdir = $(sysconfdir)/gdm/Init
 authdir = $(localstatedir)/gdm
 logdir = $(localstatedir)/log/gdm
@@ -62,29 +63,40 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop D
 	fi
 	$(INSTALL_DATA) $(srcdir)/locale.alias $(DESTDIR)$(localedir)/locale.alias
 
-	if test '!' -d $(DESTDIR)$(sessdir); then \
-		$(mkinstalldirs) $(DESTDIR)$(sessdir); \
-		chmod 755 $(DESTDIR)$(sessdir); \
+	if test '!' -d $(DESTDIR)$(bisessdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(bisessdir); \
+		chmod 755 $(DESTDIR)$(bisessdir); \
 	fi
 
-	-if test -f $(DESTDIR)$(sessdir)/Default.desktop; then \
-		cp -f $(DESTDIR)$(sessdir)/Default.desktop $(DESTDIR)$(sessdir)/Default.orig; \
+	if test '!' -d $(DESTDIR)$(instsessdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(instsessdir); \
+		chmod 755 $(DESTDIR)$(instsessdir); \
 	fi
-	-if test -f $(DESTDIR)$(sessdir)/default.desktop; then \
-		cp -f $(DESTDIR)$(sessdir)/default.desktop $(DESTDIR)$(sessdir)/default.orig; \
-	fi
-	$(INSTALL_SCRIPT) default.desktop $(DESTDIR)$(sessdir)/default.desktop
 
-	-if test -f $(DESTDIR)$(sessdir)/gnome.desktop; then \
-		cp -f $(DESTDIR)$(sessdir)/gnome.desktop $(DESTDIR)$(sessdir)/gnome.orig; \
+	-if test -f $(DESTDIR)$(bisessdir)/Default.desktop; then \
+		cp -f $(DESTDIR)$(bisessdir)/Default.desktop $(DESTDIR)$(bisessdir)/Default.orig; \
 	fi
-	$(INSTALL_SCRIPT) gnome.desktop $(DESTDIR)$(sessdir)/gnome.desktop
+	-if test -f $(DESTDIR)$(bisessdir)/default.desktop; then \
+		cp -f $(DESTDIR)$(bisessdir)/default.desktop $(DESTDIR)$(bisessdir)/default.orig; \
+	fi
+	$(INSTALL_SCRIPT) default.desktop $(DESTDIR)$(bisessdir)/default.desktop
+
+	-if test -f $(DESTDIR)$(bisessdir)/gnome.desktop; then \
+		cp -f $(DESTDIR)$(bisessdir)/gnome.desktop $(DESTDIR)$(bisessdir)/gnome.orig; \
+	fi
+	-if test -f $(DESTDIR)$(instsessdir)/gnome.desktop; then \
+		cp -f $(DESTDIR)$(instsessdir)/gnome.desktop $(DESTDIR)$(instsessdir)/gnome.orig; \
+	fi
+	$(INSTALL_SCRIPT) gnome.desktop $(DESTDIR)$(instsessdir)/gnome.desktop
 
 	-if test -f /usr/dt/bin/Xsession; then \
-	   if test -f $(DESTDIR)$(sessdir)/CDE.desktop; then \
-		cp -f $(DESTDIR)$(sessdir)/CDE.desktop $(DESTDIR)$(sessdir)/CDE.orig; \
+	   if test -f $(DESTDIR)$(bisessdir)/CDE.desktop; then \
+		cp -f $(DESTDIR)$(bisessdir)/CDE.desktop $(DESTDIR)$(bisessdir)/CDE.orig; \
 	   fi; \
-	   $(INSTALL_SCRIPT) CDE.desktop $(DESTDIR)$(sessdir)/CDE.desktop; \
+	   if test -f $(DESTDIR)$(instsessdir)/CDE.desktop; then \
+		cp -f $(DESTDIR)$(instsessdir)/CDE.desktop $(DESTDIR)$(instsessdir)/CDE.orig; \
+	   fi; \
+	   $(INSTALL_SCRIPT) CDE.desktop $(DESTDIR)$(instsessdir)/CDE.desktop; \
 	fi
 
 	if test '!' -d $(DESTDIR)$(initdir); then \

@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.4.4.2"> 
-    <!ENTITY date "9/19/2003"> 
+    <!ENTITY date "9/22/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -98,7 +98,9 @@
       GDM is installed with <filename>--sysconfigdir=/etc/X11</filename>,
       meaning any path to which we refer to as
       <filename>&lt;etc&gt;/gdm/PreSession</filename> usually means
-      <filename>/etc/X11/gdm/PreSession</filename>.
+      <filename>/etc/X11/gdm/PreSession</filename>.  Note that for interoperability
+      it is recommended that you use a prefix of <filename>/usr</filename>
+      and a sysconfdir of <filename>/etc/X11</filename>.
     </para>
 
   </sect1>
@@ -788,7 +790,9 @@
       read by KDM for common configuration.  The <filename>&lt;etc&gt;/dm/Sessions/</filename>
       directory will likely move in the future to reflect that it is
       GDM specific and used only for the default configuration.
-      Also the default setup will also read <filename>/usr/share/xsessions/</filename>
+      Also the default setup will also read <filename>&lt;share&gt;/xsessions/</filename>
+      (which should be <filename>/usr/share/xsessions/</filename> if you really
+      wish to cooperate with KDM)
       where desktop packages can install their session files.  The directories
       under the <filename>/etc</filename> should be reserved for configuration.
       This approach makes it easy for package management systems to install

@@ -1,3 +1,15 @@
+Mon Sep 22 15:01:41 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, config/gdm.conf.in: use $datadir/xsessions instead of
+	  hardcoding /usr/share/xsessions
+
+	* config/Makefile.am: install gnome.desktop and CDE.desktop into the
+	  datadir location as they're not config and this way we share them
+	  with KDM, yay.  They should be installed by respective owner
+	  packages at some point though ...
+
+	* docs/C/gdm.xml: update a bit.
+
 Mon Sep 22 13:55:50 2003  George Lebl <jirka@5z.com>
 
 	* gui/modules/dwellmouselistener.c: fix error handling / leaks
