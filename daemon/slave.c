@@ -1933,7 +1933,7 @@ gdm_slave_term_handler (int sig)
 		if (kill (d->greetpid, sig) == 0)
 			waitpid (d->greetpid, 0, 0); 
 		d->greetpid = 0;
-	} else if (login) {
+	} else if (login != NULL) {
 		gdm_slave_session_stop (d->sesspid);
 		gdm_slave_session_cleanup ();
 	}
@@ -1962,7 +1962,13 @@ gdm_slave_alrm_handler (int sig)
 	}
 
 	if (in_ping) {
-		/* darn, the last ping didn't succeed, abort this display */
+		/* darn, the last ping didn't succeed, wipe this display */
+
+		if (login != NULL) {
+			gdm_slave_session_stop (d->sesspid);
+			gdm_slave_session_cleanup ();
+		}
+
 		gdm_slave_exit (DISPLAY_REMANAGE, 
 				_("Ping to %s failed, whacking display!"),
 				d->name);
