@@ -69,7 +69,7 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		if test -f $(DESTDIR)$(sessdir)/Default; then \
 			cp -f $(DESTDIR)$(sessdir)/Default $(DESTDIR)$(sessdir)/Default.orig; \
 		fi; \
-		$(LN_S) -f $(sessdir)/Xsession $(DESTDIR)$(sessdir)/Default; \
+		$(LN_S) -f Xsession $(DESTDIR)$(sessdir)/Default; \
 	fi
 
 	if test '!' -d $(DESTDIR)$(initdir); then \

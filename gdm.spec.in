@@ -50,11 +50,11 @@ make sysconfdir=$RPM_BUILD_ROOT%{sysconfdir}/X11 \
 
 
 # install RH specific session files
-rm -f $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/*
+# rm -f $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/*
 
-install -m 755 config/Default.redhat $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Default
-install -m 755 config/Gnome $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Gnome
-ln -sf Default $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/default
+# install -m 755 config/Default.redhat $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Default
+# install -m 755 config/Gnome $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Gnome
+# ln -sf Default $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/default
 
 # change default Init script to be Red Hat default
 # Note that this just sets up background and we already do that ourselves
@@ -65,7 +65,7 @@ ln -sf Default $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/default
 # mv $RPM_BUILD_ROOT%{sysconfdir}/X11/pam.d $RPM_BUILD_ROOT%{sysconfdir}
 # move security stuff to right place
 # mv $RPM_BUILD_ROOT%{sysconfdir}/X11/security $RPM_BUILD_ROOT%{sysconfdir}
-%find_lang %{name}
+%find_lang %{name}-2.4
 
 %clean
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
@@ -100,7 +100,7 @@ fi
 # ignore error in the above
 exit 0
 
-%files -f %name.lang
+%files -f %name-2.4.lang
 %defattr(-, root, root)
 
 %doc AUTHORS COPYING ChangeLog NEWS README
@@ -111,9 +111,10 @@ exit 0
 %config %{sysconfdir}/security/console.apps/*
 %{_datadir}/pixmaps/*
 %{_datadir}/gdm
-%{_datadir}/gnome/apps/*/*
-%{_datadir}/gnome/help/*
-%{_datadir}/omf/gdm
+%{_datadir}/applications/*
+%{_datadir}/gnome/capplets/*
+# DOCUMENTATION!
+# %{_datadir}/omf/gdm
 # %config %{sysconfdir}/security/console.apps/gdmsetup
 # %config %{sysconfdir}/X11/gdm/gnomerc
 # %config %{sysconfdir}/X11/gdm/gdm.conf
@@ -134,6 +135,9 @@ exit 0
 
 
 %changelog
+* Mon May  5 2003 George Lebl <jirka@5z.com>
+- Updated the lang stuff, and the file lists
+
 * Tue Nov  6 2001 Gregory Leblanc <gleblanc@linuxweasel.com>
 - removed some unnecessary %defines
 - fixed find_lang stuff
