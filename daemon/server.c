@@ -308,7 +308,7 @@ gdm_server_stop (GdmDisplay *disp)
 		    if (disp->servpid > 1 &&
 			kill (disp->servpid, SIGTERM) == 0) {
 			    waiting_for_server = TRUE;
-			    ve_waitpid_no_signal (disp->servpid, 0, 0);
+			    ve_waitpid_no_signal (disp->servpid, NULL, 0);
 			    waiting_for_server = FALSE;
 		    }
 	    }

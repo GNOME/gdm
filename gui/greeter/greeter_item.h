@@ -73,11 +73,11 @@ struct _GreeterItemInfo {
   GreeterItemPosType y_type:2;
   GreeterItemSizeType width_type:2;
   GreeterItemSizeType height_type:2;
-  gboolean x_negative:1; /* needed for -0 */
-  gboolean y_negative:1; /* needed for -0 */
+  guint x_negative:1; /* needed for -0 */
+  guint y_negative:1; /* needed for -0 */
 
   /* For packed items */
-  gboolean expand:1;
+  guint expand:1;
 
   /* The item type */
   GreeterItemType item_type:4;
@@ -87,17 +87,17 @@ struct _GreeterItemInfo {
   /* Runtime state: */
   GreeterItemState state:2;
   GreeterItemState base_state:2;
-  gboolean mouse_down:1;
-  gboolean mouse_over:1;
+  guint mouse_down:1;
+  guint mouse_over:1;
 
   /* box flags */
-  gboolean box_homogeneous:1;
+  guint box_homogeneous:1;
 
   /* is a button (see my_button comment) */
-  gboolean button:1;
+  guint button:1;
 
   /* geometry handling: */
-  gboolean has_requisition:1;
+  guint has_requisition:1;
   GtkRequisition requisition;
   GtkAllocation allocation;
 

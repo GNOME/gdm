@@ -96,7 +96,7 @@ static XID *ext_input_devices = NULL;
 static gint ext_device_count = 0;
 static gboolean latch_core_pointer = TRUE;
  
-static void create_event_watcher ();
+static void create_event_watcher (void);
 static void load_bindings(gchar *path);
 static gchar * screen_exec_display_string (GdkScreen *screen, const char *old);
 static gchar ** get_exec_environment (GdkScreen *screen);

@@ -196,7 +196,7 @@ greeter_action_language (GreeterItemInfo *info,
       char *s;
 
       dialog = gtk_dialog_new_with_buttons (_("Select a language"),
-#if TODO
+#ifdef TODO
 					    GTK_WINDOW (parent_window),
 #endif
 					    NULL,

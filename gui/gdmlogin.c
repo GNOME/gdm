@@ -3002,7 +3002,7 @@ gdm_login_gui_init (void)
 
     /* Put in error box here */
 
-    err_box = gtk_label_new (0);
+    err_box = gtk_label_new (NULL);
     gtk_widget_set_name (err_box, "Error box");
     g_signal_connect (G_OBJECT (err_box), "destroy",
 		      G_CALLBACK (gtk_widget_destroyed),

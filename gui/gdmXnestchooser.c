@@ -383,7 +383,7 @@ get_auth_entry (int disp, char *cookie)
 	xa->address = malloc (strlen (hostname) + 1);
 	if (xa->address == NULL) {
 		free (xa);
-		return FALSE;
+		return NULL;
 	}
 
 	strcpy (xa->address, hostname);
@@ -402,7 +402,7 @@ get_auth_entry (int disp, char *cookie)
 		free (xa->name);
 		free (xa->address);
 		free (xa);
-		return FALSE;
+		return NULL;
 	}
 	memcpy (xa->data, cookie, 16);
 	xa->data_length = 16;
@@ -675,7 +675,7 @@ main (int argc, char *argv[])
 		_exit (1);
 	}
 
-	ve_waitpid_no_signal (xnest_pid, 0, 0);
+	ve_waitpid_no_signal (xnest_pid, NULL, 0);
 	xnest_pid = 0;
 
 	socket = g_strdup_printf ("/tmp/.X11-unix/X%d", display);

@@ -106,7 +106,7 @@ static GSList *gesture_list = NULL;
 extern char **environ;
 
 static gchar * screen_exec_display_string (GdkScreen *screen, const char *old);
-static void create_event_watcher ();
+static void create_event_watcher (void);
 static void load_gestures(gchar *path);
 static gchar ** get_exec_environment (XEvent *xevent);
 static Gesture * parse_line(gchar *buf);
@@ -212,7 +212,7 @@ init_xinput (GdkDisplay *display, GdkWindow *root)
 #endif
 }
 
-static void create_event_watcher ()
+static void create_event_watcher (void)
 {
 	GdkDisplay *display;
 
