@@ -3487,6 +3487,19 @@ session_child_run (struct passwd *pwent,
 	ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 	ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
+	if (d->type == TYPE_LOCAL) {
+		ve_setenv ("GDM_XSERVER_LOCATION", "local", TRUE);
+	} else if (d->type == TYPE_XDMCP) {
+		ve_setenv ("GDM_XSERVER_LOCATION", "xdmcp", TRUE);
+	} else if (d->type == TYPE_FLEXI) {
+		ve_setenv ("GDM_XSERVER_LOCATION", "flexi", TRUE);
+	} else if (d->type == TYPE_FLEXI_XNEST) {
+		ve_setenv ("GDM_XSERVER_LOCATION", "flexi-xnest", TRUE);
+	} else {
+		/* huh? */
+		ve_setenv ("GDM_XSERVER_LOCATION", "unknown", TRUE);
+	}
+
 	if (gnome_session != NULL)
 		ve_setenv ("GDM_GNOME_SESSION", gnome_session, TRUE);
 
