@@ -12,8 +12,12 @@
 
 #include <vicious.h>
 
+#include "greeter_configuration.h"
 #include "greeter_parser.h"
 #include "greeter_events.h"
+
+/* FIXME: hack */
+extern GreeterItemInfo *welcome_string_info;
 
 static char *file_search_path = NULL;
 
@@ -910,6 +914,7 @@ parse_translated_text (xmlNodePtr node,
  * with translation score */
 static gboolean
 parse_stock (xmlNodePtr node,
+	     GreeterItemInfo *info,
 	     char     **translated_text,
 	     gint      *translation_score,
 	     GError   **error)
@@ -964,12 +969,13 @@ parse_stock (xmlNodePtr node,
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("User %s will login in %d seconds"));
 	}
-      /* FIXME: this should be the welcome string but wait until
-       * we can break strings again */
       else if (g_ascii_strcasecmp (prop, "welcome-label") == 0)
         {
+	  /* FIXME: hack */
+	  welcome_string_info = info;
+
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (_("Welcome to %h"));
+	  *translated_text = g_strdup (GdmWelcome);
 	}
       /* FIXME: is this actually needed? */
       else if (g_ascii_strcasecmp (prop, "username-label") == 0)
@@ -1043,7 +1049,7 @@ parse_label (xmlNodePtr        node,
       else if (child->type == XML_ELEMENT_NODE &&
 	       strcmp (child->name, "stock") == 0)
 	{
-	  if (!parse_stock (child, &translated_text, &translation_score, error))
+	  if (!parse_stock (child, info, &translated_text, &translation_score, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "show") == 0)

@@ -1912,9 +1912,17 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 }
 
 static void
+add_to_size_group (GtkSizeGroup *sg, const char *wid)
+{
+	GtkWidget *w = glade_helper_get (xml, wid, GTK_TYPE_WIDGET);
+	gtk_size_group_add_widget (sg, w);
+}
+
+static void
 setup_gui (void)
 {
 	GtkWidget *dialog;
+	GtkSizeGroup *sg;
 
 	xml = glade_helper_load ("gdmsetup.glade",
 				 "setup_dialog",
@@ -1930,6 +1938,34 @@ setup_gui (void)
 	setup_background_support ();
 	setup_greeter_backselect ();
 	setup_graphical_themes ();
+
+       	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	add_to_size_group (sg, "local_greeter");
+	add_to_size_group (sg, "remote_greeter");
+	add_to_size_group (sg, "welcome");
+	add_to_size_group (sg, "remote_welcome");
+	add_to_size_group (sg, "autologin_combo");
+	add_to_size_group (sg, "timedlogin_combo");
+	add_to_size_group (sg, "timedlogin_seconds");
+
+       	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	add_to_size_group (sg, "local_greeter_label");
+	add_to_size_group (sg, "remote_greeter_label");
+	add_to_size_group (sg, "welcome_label");
+	add_to_size_group (sg, "remote_welcome_label");
+	add_to_size_group (sg, "autologin_label");
+	add_to_size_group (sg, "timed_login_label");
+	add_to_size_group (sg, "timedlogin_seconds_label");
+
+       	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	add_to_size_group (sg, "greeter_table");
+	add_to_size_group (sg, "autologin_table");
+	add_to_size_group (sg, "timed_login_table");
+
+       	sg = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	add_to_size_group (sg, "sg_use_24_clock");
+	add_to_size_group (sg, "autologin");
+	add_to_size_group (sg, "timedlogin");
 
 	setup_user_combo ("autologin_combo",
 			  GDM_KEY_AUTOMATICLOGIN);
@@ -2026,8 +2062,10 @@ setup_gui (void)
 	setup_greeter_color ("sg_backcolor",
 			     GDM_KEY_BACKGROUNDCOLOR);
 
-	setup_greeter_untranslate_entry ("sg_welcome",
+	setup_greeter_untranslate_entry ("welcome",
 					 GDM_KEY_WELCOME);
+	setup_greeter_untranslate_entry ("remote_welcome",
+					 GDM_KEY_REMOTEWELCOME);
 }
 
 static gboolean

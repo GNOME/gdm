@@ -30,6 +30,7 @@
 #include "greeter_system.h"
 
 gboolean DOING_GDM_DEVELOPMENT = FALSE;
+static char *greeter_Welcome_key = GDM_KEY_WELCOME;
 
 GtkWidget *window;
 GtkWidget *canvas;
@@ -64,11 +65,15 @@ gchar *GdmExclude;
 int GdmMinimalUID;
 gboolean GdmAllowRoot;
 gboolean GdmAllowRemoteRoot;
+gchar *GdmWelcome;
 
 gboolean GdmUseCirclesInEntry = FALSE;
 
 static gboolean used_defaults = FALSE;
 gint greeter_current_delay = 0;
+
+/* FIXME: hack */
+GreeterItemInfo *welcome_string_info = NULL;
 
 extern gboolean session_dir_whacked_out;
 
@@ -81,9 +86,16 @@ greeter_parse_config (void)
 
     if (!g_file_test (GDM_CONFIG_FILE, G_FILE_TEST_EXISTS))
       {
-	syslog (LOG_ERR, _("greeter_parse_config: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
+	syslog (LOG_ERR, _("%s: No configuration file: %s. Using defaults."), 
+		"greeter_parse_config", GDM_CONFIG_FILE);
 	used_defaults = TRUE;
       }
+
+    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+	    greeter_Welcome_key = GDM_KEY_REMOTEWELCOME;
+    } else {
+	    greeter_Welcome_key = GDM_KEY_WELCOME;
+    }
 
     config = ve_config_get (GDM_CONFIG_FILE);
 
@@ -119,6 +131,16 @@ greeter_parse_config (void)
     GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
     GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
     GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
+
+    GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
+    /* A hack! */
+    if (strcmp (ve_sure_string (GdmWelcome), "Welcome") == 0) {
+	    g_free (GdmWelcome);
+	    GdmWelcome = g_strdup (_("Welcome"));
+    } else if (strcmp (ve_sure_string (GdmWelcome), "Welcome to %n") == 0) {
+	    g_free (GdmWelcome);
+	    GdmWelcome = g_strdup (_("Welcome to %n"));
+    }
 
     GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
     GdmExclude = ve_config_get_string (config, GDM_KEY_EXCLUDE);
@@ -831,6 +853,7 @@ greeter_reread_config (int sig, gpointer data)
 {
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 	char *theme, *theme_dir;
+	char *str;
 
 	theme = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME);
 	if (ve_string_empty (theme)) {
@@ -917,6 +940,27 @@ greeter_reread_config (int sig, gpointer data)
 		GdmUse24Clock = ve_config_get_bool (config,
 						    GDM_KEY_USE_24_CLOCK);
 		greeter_item_clock_update ();
+	}
+
+	str = ve_config_get_translated_string (config, greeter_Welcome_key);
+	/* A hack */
+	if (strcmp (ve_sure_string (str), "Welcome") == 0) {
+		g_free (str);
+		str = g_strdup (_("Welcome"));
+	} else if (strcmp (ve_sure_string (str), "Welcome to %n") == 0) {
+		g_free (str);
+		str = g_strdup (_("Welcome to %n"));
+	}
+	if (strcmp (ve_sure_string (str), ve_sure_string (GdmWelcome)) != 0) {
+		g_free (GdmWelcome);
+		GdmWelcome = str;
+		if (welcome_string_info != NULL) {
+			g_free (welcome_string_info->orig_text);
+			welcome_string_info->orig_text = g_strdup (str);
+			greeter_item_update_text (welcome_string_info);
+		}
+	} else {
+		g_free (str);
 	}
 
 	g_free (theme);

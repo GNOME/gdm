@@ -53,6 +53,7 @@
 /* set the DOING_GDM_DEVELOPMENT env variable if you aren't running
  * within the protocol */
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
+static char *greeter_Welcome_key = GDM_KEY_WELCOME;
 
 typedef struct _GdmLoginUser GdmLoginUser;
 struct _GdmLoginUser {
@@ -590,14 +591,6 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 
     display = g_strdup (g_getenv ("DISPLAY"));
 
-    if (display == NULL) {
-	    char *buffer;
-	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
-				      pre, hostname, post);
-	    g_free (hostname);
-	    return buffer;
-    }
-    
     uname (&name);
 
     if (strlen (s) > 2048) {
@@ -605,7 +598,7 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 	    syslog (LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
 	    g_free (display);
 	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
-				      pre, hostname, post);
+				      pre, name.nodename, post);
 	    g_free (hostname);
 	    return buffer;
     }
@@ -639,7 +632,7 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 			break;
 
 		case 'd': 
-			g_string_append (str, display);
+			g_string_append (str, ve_sure_string (display));
 			break;
 
 		case 's':
@@ -850,8 +843,15 @@ gdm_login_parse_config (void)
     VeConfig *config;
 	
     if (stat (GDM_CONFIG_FILE, &unused) == -1) {
-	syslog (LOG_ERR, _("gdm_login_parse_config: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
+	syslog (LOG_ERR, _("%s: No configuration file: %s. Using defaults."), 
+		"gdm_login_parse_config", GDM_CONFIG_FILE);
 	used_defaults = TRUE;
+    }
+
+    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+	    greeter_Welcome_key = GDM_KEY_REMOTEWELCOME;
+    } else {
+	    greeter_Welcome_key = GDM_KEY_WELCOME;
     }
 
     config = ve_config_get (GDM_CONFIG_FILE);
@@ -879,9 +879,12 @@ gdm_login_parse_config (void)
     GdmTitleBar = ve_config_get_bool (config, GDM_KEY_TITLE_BAR);
     GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
     GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
-    GdmWelcome = ve_config_get_translated_string (config, GDM_KEY_WELCOME);
+    GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
     /* A hack! */
-    if (strcmp (ve_sure_string (GdmWelcome), "Welcome to %n") == 0) {
+    if (strcmp (ve_sure_string (GdmWelcome), "Welcome") == 0) {
+	    g_free (GdmWelcome);
+	    GdmWelcome = g_strdup (_("Welcome"));
+    } else if (strcmp (ve_sure_string (GdmWelcome), "Welcome to %n") == 0) {
 	    g_free (GdmWelcome);
 	    GdmWelcome = g_strdup (_("Welcome to %n"));
     }
@@ -3986,9 +3989,12 @@ gdm_reread_config (int sig, gpointer data)
 		g_free (str);
 	}
 
-	str = ve_config_get_translated_string (config, GDM_KEY_WELCOME);
+	str = ve_config_get_translated_string (config, greeter_Welcome_key);
 	/* A hack */
-	if (strcmp (ve_sure_string (str), "Welcome to %n") == 0) {
+	if (strcmp (ve_sure_string (str), "Welcome") == 0) {
+		g_free (str);
+		str = g_strdup (_("Welcome"));
+	} else if (strcmp (ve_sure_string (str), "Welcome to %n") == 0) {
 		g_free (str);
 		str = g_strdup (_("Welcome to %n"));
 	}

@@ -28,6 +28,7 @@ extern gchar *GdmExclude;
 extern int GdmMinimalUID;
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
+extern gchar *GdmWelcome;
 
 extern gboolean GDM_IS_LOCAL;
 extern gboolean DOING_GDM_DEVELOPMENT;

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/utsname.h>
 
 #include "greeter_item.h"
 #include "greeter_configuration.h"
@@ -110,6 +111,7 @@ greeter_item_expand_text (const char *text)
   int r;
   int underline = -1;
   char buf[256];
+  struct utsname name;
 
   str = g_string_sized_new (strlen (text));
 
@@ -124,6 +126,10 @@ greeter_item_expand_text (const char *text)
 	    {
 	    case '%':
 	      g_string_append (str, "%");
+	      break;
+	    case 'n':
+	      uname (&name);
+	      g_string_append (str, name.nodename);
 	      break;
 	    case 'h':
 	      buf[sizeof(buf) - 1] = '\0';

@@ -1,3 +1,17 @@
+Thu Jun 05 13:26:09 2003  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in, daemon/gdm.h, gui/gdmlogin.c,
+	  gui/gdmsetup.(c|glade), gui/greeter/greeter_item.c,
+	  gui/greeter/greeter_pareser.c, gui/greeter/greeter.c
+	  gui/greeter/greeter_configuration.h:  Use the Welcome label in
+	  the greeter (as long as the stock welcome string was used),
+	  Add RemoteWelcome for XDMCP sessions.  Change default of Welcome
+	  to just plain "Welcome".  Move the welcome string setup to the
+	  main property page in the setup since it now affects both greeters.
+
+	* gui/gdmsetup.(c|glade): the first page of the properties needed
+	  some size group love
+
 Thu Jun 05 11:37:19 2003  George Lebl <jirka@5z.com>
 
 	* daemon/xdmcp.c, daemon/auth.c, daemon/display.c, daemon/errorgui.c,
