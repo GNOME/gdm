@@ -1,5 +1,70 @@
 Ahh news...
 
+2.5.90.0 stuff:
+
+- Add accessibility setting to gdmsetup and allow setting an arbitrary
+  sound for the "ready for login" sound.  (#125487)
+
+- gdmflexiserver now lists running sessions if there are some and allow
+  the users to easily switch. (#127038)
+
+- Display last login when the user enters their name (can be turned
+  off) (#128940)
+
+- Inactive flexiservers are reaped by default after 5 minutes.
+
+- Accessibility modules set the busy cursor for 2 secs to show that
+  an action was started (#125153)
+
+- Doubleclicking on a language in graphical greeter selects it
+  (Kirk Mitchener, #123199)
+
+- Optional info message on login (sort of like motd) (Anton Altaparmakov,
+  #125219)
+
+- New SUP (socket protocol) commands to request shutdown/reboot after
+  session ends or after all users log out.  Also new SUP commands for
+  querying and setting the VT on Linux.
+
+- A --wait-for-go option that will start one X server and then wait until
+  GO is sent through the fifo before going further.
+
+- IPv6 support (Archana Shah)
+
+- Built in sessions are out of /etc/X11/dm/Sessions and moved to
+  <datadir>/gdm/BuiltInSessions
+
+- Fix chooser commonication vs. accessibility stuff (#125064)
+
+- Fix RetryDelay and make it default to 1 and not 3 (Leena Gunda, me, #128507)
+
+- On AIX without PAM, password expiration is done (Vincent Berger, me, #123766)
+
+- On crypt/shadow the double login warning was too early, now done after
+  authentication as in the PAM setup.
+
+- Clients are now forcibly whacked at session stop, should "fix" #126071
+
+- Use GtkFileChooser in gdmsetup (Jan Arne Petersen, #128668)
+
+- Paranoia: Check owenership of the socket before using it
+
+- Fix xdmcp session counting (#126465)
+
+- Warn the user when they want to set root as autologin (RH #97716)
+
+- StandardXServer can now have arguments
+
+- Default color is now #76848F and the PreSession script tries
+  to use the default gdm color to fix #128220 
+
+- Fix assert failure when starting Xnest (#127780)
+
+- Lots of cleanup and fixes and adding to the general paranoia in the
+  code.  (me, Ray Strode, Brian Cameron)
+
+- Translation updates (FIXME)
+
 2.4.4.5 stuff:
 
 - Brown paper security bag: ~/.Xauthority could be left readable
