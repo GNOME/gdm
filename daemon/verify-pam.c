@@ -58,6 +58,8 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
     
     if (!reply) 
 	return PAM_CONV_ERR;
+
+    memset (reply, 0, sizeof (struct pam_response) * num_msg);
     
     for (replies = 0; replies < num_msg; replies++) {
 	
