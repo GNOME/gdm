@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2002-06-07 09:24+0200\n"
-"PO-Revision-Date: 2002-06-07 09:27+0200\n"
+"POT-Creation-Date: 2002-07-15 12:32+0200\n"
+"PO-Revision-Date: 2002-07-15 12:34+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -742,6 +742,16 @@ msgstr "%s: Ekran %s jest zajęty. Spróbuj użyć innego numeru ekranu."
 
 #: daemon/server.c:1
 #, c-format
+msgid "Invalid server command '%s'"
+msgstr "Niepoprawne polecenie serwera \"%s\""
+
+#: daemon/server.c:1
+#, c-format
+msgid "Server name '%s' not found, using standard server"
+msgstr "Nie odnaleziono serwera o nazwie \"%s\", wykorzystano standardowy"
+
+#: daemon/server.c:1
+#, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr "gdm_server_spawn: Nie można otworzyć pliku dziennika dla ekranu %s!"
 
@@ -764,16 +774,6 @@ msgstr "gdm_server_spawn: Błąd przy ustawianiu HUP na SIG_DFL"
 #: daemon/server.c:1
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr "gdm_server_spawn: Błąd przy ustawianiu TERM na SIG_DFL"
-
-#: daemon/server.c:1
-#, c-format
-msgid "Invalid server command '%s'"
-msgstr "Niepoprawne polecenie serwera \"%s\""
-
-#: daemon/server.c:1
-#, c-format
-msgid "Server name '%s' not found, using standard server"
-msgstr "Nie odnaleziono serwera o nazwie \"%s\", wykorzystano standardowy"
 
 #: daemon/server.c:1
 #, c-format
@@ -1649,35 +1649,36 @@ msgstr "Nie można odnaleźć wolnego numeru ekranu"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: gui/gdmchooser-strings.c:1
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.glade.h:1
 msgid "GDM Host Chooser"
 msgstr "GDM - program wybierający"
 
-#: gui/gdmchooser-strings.c:1
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.glade.h:1
 msgid "How to use this application"
 msgstr "Wyświetla opis wykorzystania aplikacji"
 
-#: gui/gdmchooser-strings.c:1
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.glade.h:1
 msgid "Open a session to the selected host"
 msgstr "Otwiera sesję na wybranym komputerze"
 
-#: gui/gdmchooser-strings.c:1
+#. EOF
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.glade.h:1
 msgid "C_onnect"
 msgstr "_Połącz"
 
-#: gui/gdmchooser-strings.c:1
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.glade.h:1
 msgid "Probe the network"
 msgstr "Przeszukaj sieć"
 
-#: gui/gdmchooser-strings.c:1
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.glade.h:1
 msgid "Exit the application"
 msgstr "Kończy pracę aplikacji"
 
-#: gui/gdmchooser-strings.c:1
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.glade.h:1
 msgid "Status"
 msgstr "Stan"
 
-#: gui/gdmchooser-strings.c:1
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.glade.h:1
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1694,7 +1695,7 @@ msgstr ""
 "Aby ponownie przeszukać sieć, należy kliknąć \"Odśwież\". Po wybraniu "
 "komputera z listy, kliknięcie \"Połącz\" rozpoczyna na nim sesję."
 
-#: gui/gdmchooser-strings.c:1
+#: gui/gdmchooser-strings.c:1 gui/gdmchooser.glade.h:1
 msgid "Information"
 msgstr "Informacja"
 
@@ -1711,11 +1712,6 @@ msgstr "Nie odnaleziono serwerów."
 #: gui/gdmchooser.c:1
 msgid "Choose a host to connect to from the selection below."
 msgstr "Wybierz z poniższej listy komputer, z którym chcesz się połączyć."
-
-#: gui/gdmchooser.c:1
-#, c-format
-msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
-msgstr "gdm_chooser_parse_config: Brak pliku konfiguracyjnego: %s. Rezygnacja."
 
 #: gui/gdmchooser.c:1
 msgid ""
@@ -1842,7 +1838,7 @@ msgstr ""
 msgid "Trying to update an unsupported configuration key."
 msgstr "Próba aktualizacji nieobsługiwanego klucza konfiguracji."
 
-#: gui/gdmcomm.c:1 gui/gdmflexiserver.c:1
+#: gui/gdmcomm.c:1
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
@@ -1897,6 +1893,14 @@ msgstr "Wypisywanie komunikatów wspomagających wyszukiwanie błędów"
 #: gui/gdmflexiserver.c:1
 msgid "Authenticate before running --command"
 msgstr "Uwierzytelnienie przed wykonaniem polecenia --command"
+
+#: gui/gdmflexiserver.c:1
+msgid ""
+"You do not seem to have the authentication needed for this operation.  "
+"Perhaps your .Xauthority file is not set up correctly."
+msgstr ""
+"Brak możliwości uwierzytelnienia, która jest wymagana przy tej operacji. "
+"Prawdopodobnie twój  plik .Xauthority nie jest poprawnie ustawiony."
 
 #: gui/gdmflexiserver.c:1
 msgid ""
@@ -2057,6 +2061,16 @@ msgstr "A-M|Łotewski"
 msgid "A-M|Lithuanian"
 msgstr "A-M|Litewski"
 
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:1
+msgid "A-M|Macedonian"
+msgstr "A-M|Macedoński"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:1
+msgid "A-M|Malay"
+msgstr "A-M|Malajski"
+
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:1
 msgid "N-Z|Norwegian (bokmal)"
@@ -2124,6 +2138,11 @@ msgstr "N-Z|Ukraiński"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:1
+msgid "N-Z|Vietnamese"
+msgstr "N-Z|Wietnamski"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:1
 msgid "N-Z|Walloon"
 msgstr "N-Z|Waloński"
 
@@ -2174,7 +2193,8 @@ msgstr "XSession"
 msgid "Gnome Chooser"
 msgstr "GNOME - program wybierający"
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/gdmlogin.c:1
+#: gui/greeter/greeter_action_language.c:1
 msgid "Last"
 msgstr "Poprzedni"
 
@@ -2288,6 +2308,13 @@ msgstr ""
 "uruchom narzędzie \"switchdesk\"\n"
 "(w menu panelu: System->Narzędzie do przełączania środowisk)."
 
+#: gui/gdmlogin.c:1 gui/gdmlogin.c:1 gui/gdmlogin.c:1
+#: gui/greeter/greeter_action_language.c:1
+#: gui/greeter/greeter_action_language.c:1
+#: gui/greeter/greeter_action_language.c:1
+msgid "System default"
+msgstr "Systemowe ustawienie domyślne"
+
 #: gui/gdmlogin.c:1
 #, c-format
 msgid "%s session selected"
@@ -2363,6 +2390,10 @@ msgid "Log in using the language that you have used last time you logged in"
 msgstr "Loguje z wykorzystaniem języka użytego przy poprzednim logowaniu"
 
 #: gui/gdmlogin.c:1
+msgid "Log in using the default system language"
+msgstr "Loguje z użyciem domyślnego języka w systemie"
+
+#: gui/gdmlogin.c:1
 msgid "Other"
 msgstr "Inne"
 
@@ -2402,7 +2433,7 @@ msgstr ""
 msgid "Iconify the login window"
 msgstr "Przekształcenie okna logowania w ikonę"
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter_item.c:1
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H:%M"
 
@@ -2633,186 +2664,186 @@ msgstr "Fotografia użytkownika"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "GDM Setup"
 msgstr "Ustawienia GDM-a"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "L_ocal: "
 msgstr "_Lokalnie: "
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Remote: "
 msgstr "_Zdalnie: "
 
 #: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
-#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1 gui/gdmsetup.glade.h:1
 msgid "Standard greeter"
 msgstr "Standardowy greeter"
 
 #: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
-#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.c:1 gui/gdmsetup.glade.h:1
 msgid "Graphical greeter"
 msgstr "Graficzny greeter"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Greeter"
 msgstr "Greeter"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Login a user automatically on first bootup"
 msgstr "Automatyczne _logowanie wybranego użytkownika po uruchomieniu systemu"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Automatic login username:"
 msgstr "_Użytkownik logowany automatycznie:"
 
 #: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
 #: gui/gdmsetup-strings.c:1 gui/gdmsetup-strings.c:1
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "*"
 msgstr "*"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Automatic login"
 msgstr "Automatyczne logowanie"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Login a user automa_tically after a specified number of seconds"
 msgstr ""
 "Aut_omatyczne logowanie wybranego użytkownika po określonej liczbie sekund"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Timed login us_ername:"
 msgstr "Uży_tkownik logowany z opóźnieniem:"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Seconds before login:"
 msgstr "Liczba _sekund przed zalogowaniem:"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Timed login"
 msgstr "Logowanie z opóźnieniem czasowym"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "General"
 msgstr "Ogólne"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Welcome string: "
 msgstr "_Komunikat powitalny: "
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Welcome string: "
 msgstr "Komunikat powitalny: "
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Logo"
 msgstr "Logo"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Always use 24 hour cloc_k format"
 msgstr "Używanie zawsze _24-godzinnego formatu czasu"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Show choosable user images (_face browser)"
 msgstr "Wyświetlanie przeglądarki użytkowników (z _obrazami twarzy)"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Miscellaneous"
 msgstr "Różne"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_No background"
 msgstr "_Bez tła"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Image"
 msgstr "_Obraz"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Co_lor"
 msgstr "_Kolor"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Scale background image to fit"
 msgstr "_Skalowanie obrazu w tle do wymiarów ekranu"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Only color on remote displays"
 msgstr "Wyświetlanie na zdalnych ekranach _tylko jednolitego koloru"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Background color: "
 msgstr "Kolor _tła: "
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Pick a color"
 msgstr "Wybór koloru"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Background"
 msgstr "Tło"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "<b>Preview:</b>"
 msgstr "<b>Podgląd:</b>"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "No screenshot available"
 msgstr "Brak dostępnego podglądu"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "<b>Description:</b>"
 msgstr "<b>Opis:</b>"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "<b>Copyright:</b>"
 msgstr "<b>Prawa autorskie:</b>"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "<b>Author:</b>"
 msgstr "<b>Autor:</b>"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "_Install new theme"
 msgstr "Za_instaluj nowy motyw"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Allow _root to login with GDM"
 msgstr "Możliwość logowania się za pomocą GDM-a przez użytkownika _root."
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Allow root to login r_emotely with GDM"
 msgstr ""
 "Możliwość _zdalnego logowania się za pomocą GDM-a przez użytkownika root."
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Allow remote _timed logins"
 msgstr "Możliwość zdalnego logowania z _opóźnieniem czasowym"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Show _system menu"
 msgstr "Wyświetlanie menu \"_System\""
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Allow c_onfiguration from the login screen"
 msgstr ""
 "Możliwość uruchomienia przez użytkownika programu _konfiguracyjnego z menu"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Retry _delay (seconds) :"
 msgstr "_Opóźnienie przed ponowieniem:"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Options"
 msgstr "Opcje"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Security"
 msgstr "Bezpieczeństwo"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -2820,47 +2851,47 @@ msgstr ""
 "Używana wersja GDM-a została skompilowana bez wbudowanej obsługi XDMCP. Aby "
 "uaktywnić XDMCP, konieczne jest przekompilowanie GDM-a."
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Honour _indirect requests"
 msgstr "Przyjmowanie poś_rednich połączeń"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Listen on UDP port: "
 msgstr "Nasłuchiwanie na porcie UDP: "
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Maximum pending requests:"
 msgstr "Maksymalna liczba oczekujących połączeń:"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Max pending indirect requests:"
 msgstr "Maksymalna liczba oczekujących pośrednich połączeń:"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Maximum remote sessions:"
 msgstr "Maksymalna liczba zdalnych sesji:"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Maximum wait time:"
 msgstr "Maksymalny czas oczekiwania:"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Maximum indirect wait time:"
 msgstr "Maksymalny czas oczekiwania przy połączeniach pośrednich:"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Displays per host:"
 msgstr "Ekranów na komputer:"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Ping interval (minutes):"
 msgstr "Odstęp pomiędzy pakietami ping (minuty):"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "Enable _XDMCP"
 msgstr "Uaktywnienie _XDMCP"
 
-#: gui/gdmsetup-strings.c:1
+#: gui/gdmsetup-strings.c:1 gui/gdmsetup.glade.h:1
 msgid "XDMCP"
 msgstr "XDMCP"
 
@@ -2982,146 +3013,6 @@ msgstr "Wybór języka"
 #: gui/greeter/greeter_action_language.c:1
 msgid "Select a language for your session to use:"
 msgstr "Wybierz język używany w sesji:"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Catalan"
-msgstr "Kataloński"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Chinese (simplified)"
-msgstr "Chiński (uproszczony)"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Chinese (traditional)"
-msgstr "Chiński (tradycyjny)"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Croatian"
-msgstr "Chorwacki"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Czech"
-msgstr "Czeski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Danish"
-msgstr "Duński"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Dutch"
-msgstr "Holenderski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "English"
-msgstr "Angielski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "American English"
-msgstr "Angielski (amerykański)"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "British English"
-msgstr "Angielski (brytyjski)"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Estonian"
-msgstr "Estoński"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Finnish"
-msgstr "Fiński"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "French"
-msgstr "Francuski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Galician"
-msgstr "Galcyjski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "German"
-msgstr "Niemiecki"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Greek"
-msgstr "Grecki"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Hebrew"
-msgstr "Hebrajski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Hungarian"
-msgstr "Węgierski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Icelandic"
-msgstr "Islandzki"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Italian"
-msgstr "Włoski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Japanese"
-msgstr "Japoński"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Korean"
-msgstr "Koreański"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Lithuanian"
-msgstr "Litewski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Norwegian (bokmal)"
-msgstr "Norweski (bokmal)"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Norwegian (nynorsk)"
-msgstr "Norweski (nynorsk)"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Polish"
-msgstr "Polski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Portuguese"
-msgstr "Portugalski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Brazilian Portuguese"
-msgstr "Brazylijski Portugalski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Romanian"
-msgstr "Romański"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Russian"
-msgstr "Rosyjski"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Slovak"
-msgstr "Słowacki"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Slovenian"
-msgstr "Słoweński"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Spanish"
-msgstr "Hiszpański"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Swedish"
-msgstr "Szwedzki"
-
-#: gui/greeter/greeter_lang_list.c:1
-msgid "Turkish"
-msgstr "Turecki"
 
 #: gui/greeter/greeter_system.c:1
 msgid "Shut down the computer"
