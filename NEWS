@@ -1,5 +1,29 @@
 Ahh news...
 
+2.4.1.1 stuff:
+
+- Workaround librsvg (new librsvg should be fixed though) for non-C locales
+
+- Make language dialog in the gdmgreeter at least 400 wide (fixes #103254)
+
+- Don't translate stuff coming from pam (fixes #102691)
+
+- Make AlwaysRestartServer default to true as it's the safer setting
+
+- Use UTF-8 rather then utf8 as apparently X gets weird if it's not "UTF-8"
+  (Mike Fabian)
+
+- Query the user in the case the graphical theme includes halt/reboot/suspend
+  buttons. (No themes do so far afaik)
+
+- Add pam_env to the pam config
+
+- Some minor cleanup
+
+- Translation updates (Christian Neumair, Daniel Yacob, Kostas Papadimas,
+  Stanislav Visnovsky, Andras Timar, Yanko Kaneti, Alexander Shopov,
+  Pablo Gonzalo del Campo, Lucas 'Basurero' Vieites)
+
 2.4.1.0 stuff:
 
 - Use background color in the graphical greeter for looking nicer on
