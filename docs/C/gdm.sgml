@@ -605,6 +605,19 @@
 	  </varlistentry>
 
 	  <varlistentry>
+	    <term>FlexibleXServers</term>
+	    <listitem>
+	      <synopsis>FlexibleXServers=5</synopsis>
+	      <para>
+		The maximum number of allowed flexible servers.  These are
+		servers that can be run using the /tmp/.gdm_socket socket
+		connection.  This is used for both full servers and for
+		Xnest servers.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>GnomeDefaultSession</term>
 	    <listitem>
 	      <synopsis>GnomeDefaultSession=share/gnome/default.session</synopsis>
@@ -754,6 +767,20 @@
 	  </varlistentry>
 
 	  <varlistentry>
+	    <term>StandardXServer</term>
+	    <listitem>
+	      <synopsis>StandardXServer=/usr/bin/X11/X</synopsis>
+	      <para>
+		Full path and arguments to the standard X server command.
+		This is used when gdm cannot find any other definition,
+		and it's used as the default and failsafe fallback in a
+		number of places.  This should be able to run some sort
+		of X server.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>SuspendCommand</term>
 	    <listitem>
 	      <synopsis>SuspendCommand=</synopsis>
@@ -881,6 +908,19 @@
 		A list of programs to try which will do X configuration for
 		the user.  These are run from the XKeepsCrashing script.
 		The first one on this list that exists is used.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Xnest</term>
+	    <listitem>
+	      <synopsis>Xnest=/usr/bin/X11/Xnest</synopsis>
+	      <para>
+		The full path and arguments to the Xnest command.  This is used
+		for the flexible Xnest servers.  This way the user can start new
+		login screens in a nested window.  Of course you must have the Xnest
+		server from your X server packages installed for this to work.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1230,6 +1270,23 @@
 		X server doesn't return before the next time we ping it,
 		the connection is stopped and the session ended.  This is
 		a combination of the xdm PingInterval and PingTimeout.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Willing</term>
+	    <listitem>
+	      <synopsis>Willing=etc/gdm/Xwilling</synopsis>
+	      <para>
+		When the server sends a WILLING packet back after a QUERY
+		it sends a string that gives the current status of this
+		server.  The default message is the system ID, but it is
+		possible to create a script that displays customized
+		message.  If this script doesn't exist or this key is
+		empty the default message is sent.  If this script succeeds
+		and produces some output, the first line of it's output
+		is sent (and only the first line).
 	      </para>
 	    </listitem>
 	  </varlistentry>

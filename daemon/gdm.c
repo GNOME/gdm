@@ -135,6 +135,7 @@ gboolean  GdmIndirect = FALSE;
 gint  GdmMaxIndirect = 0;
 gint  GdmMaxIndirectWait = 0;
 gint  GdmPingInterval = 0;
+gchar *GdmWilling = NULL;
 gboolean  GdmDebug = FALSE;
 gboolean  GdmVerboseAuth = FALSE;
 gboolean  GdmAllowRoot = FALSE;
@@ -242,6 +243,7 @@ gdm_config_parse (void)
     GdmMaxIndirect = gnome_config_get_int (GDM_KEY_MAXINDIR);
     GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);    
     GdmPingInterval = gnome_config_get_int (GDM_KEY_PINGINTERVAL);    
+    GdmWilling = gnome_config_get_string (GDM_KEY_WILLING);    
 
     GdmStandardXServer = gnome_config_get_string (GDM_KEY_STANDARD_XSERVER);    
     if (ve_string_empty (GdmStandardXServer))
@@ -464,7 +466,7 @@ gdm_config_parse (void)
     /* Check that the greeter can be executed */
     bin = ve_first_word (GdmGreeter);
 
-    if ( ! ve_string_empty (bin) &&
+    if (ve_string_empty (bin) ||
 	access (bin, X_OK) != 0) {
 	    gdm_error (_("%s: Greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
     }
@@ -476,8 +478,8 @@ gdm_config_parse (void)
     bin = ve_first_word (GdmChooser);
 
     if (GdmIndirect &&
-	! ve_string_empty (bin) &&
-	access (bin, X_OK) != 0) {
+	(ve_string_empty (bin) ||
+	 access (bin, X_OK) != 0)) {
 	    gdm_error (_("%s: Chooser not found or it can't be executed by the gdm user"), "gdm_config_parse");
     }
     
@@ -1790,8 +1792,8 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		return;
 	}
 
-	bin = ve_first_word (ve_sure_string (server));
-	if (server == NULL ||
+	bin = ve_first_word (server);
+	if (ve_string_empty (server) ||
 	    access (bin, X_OK) != 0) {
 		g_free (bin);
 		gdm_connection_write (conn,

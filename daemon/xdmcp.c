@@ -126,6 +126,7 @@ extern gint GdmMaxIndirectWait;	/* Max wait between INDIRECT_QUERY and MANAGE */
 extern gint GdmDispPerHost;	/* Max number of displays per remote host */
 extern gchar *GdmTimedLogin;
 extern gboolean GdmAllowRemoteAutoLogin;
+extern gchar *GdmWilling;	/* The willing script */
 
 extern gboolean GdmXdmcp;	/* xdmcp enabled */
 
@@ -831,8 +832,29 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
 {
     ARRAY8 status;
     XdmcpHeader header;
+    char statusBuf[256];
+    char *bin;
+    FILE *fd;
     
     gdm_debug ("gdm_xdmcp_send_willing: Sending WILLING to %s", inet_ntoa (clnt_sa->sin_addr));
+
+    bin = ve_first_word (GdmWilling);
+    if ( ! ve_string_empty (bin) &&
+	access (bin, X_OK) == 0 &&
+	(fd = popen (GdmWilling, "r")) != NULL) {
+	    if (fgets (statusBuf, sizeof (statusBuf), fd) != NULL &&
+		! ve_string_empty (g_strstrip (statusBuf))) {
+		    status.data = statusBuf;
+		    status.length = strlen (statusBuf);
+	    } else {
+		    status.data = sysid;
+		    status.length = strlen (sysid);
+	    }
+	    fclose (fd);
+    } else {
+	    status.data = sysid;
+	    status.length = strlen (sysid);
+    }
     
     status.data = sysid;
     status.length = strlen (sysid);
