@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -82,10 +83,89 @@ get_free_display (void)
 }
 
 static const char *host = "localhost";
+static char *xnest_binary = NULL;
+static char *xnest_options = NULL;
+static gboolean no_chooser = FALSE;
+static gboolean background = FALSE;
+
+static char display_num[BUFSIZ] = "";
+static char indirect_host[BUFSIZ] = "";
 
 static const struct poptOption options[] = {
+	{ "xnest", 'x', POPT_ARG_STRING, &xnest_binary, 0, N_("Xnest command line"), N_("STRING") },
+	{ "xnest-extra-options", 'o', POPT_ARG_STRING, &xnest_options, 0, N_("Extra options for Xnest"), N_("OPTIONS") },
+	{ "no-chooser", 'n', POPT_ARG_NONE, &no_chooser, 0, N_("Just run Xnest, no chooser"), NULL },
+	{ "background", 'b', POPT_ARG_NONE, &background, 0, N_("Run in background"), NULL },
 	{ NULL } 
 };
+
+static char **
+make_us_an_exec_vector (const char *xnest)
+{
+	char **vector;
+	int i, ii;
+	int argc;
+	char **xnest_vec;
+	char **options_vec = NULL;
+
+	if( ! ve_string_empty (xnest_binary))
+		xnest = xnest_binary;
+
+	if (ve_string_empty (xnest))
+		xnest = "Xnest";
+
+	if (xnest[0] == '/' &&
+	    /* leak */
+	    access (ve_sure_string (ve_first_word (xnest)), X_OK) != 0) {
+		xnest = "Xnest";
+	}
+
+	/* leak */
+	if (gnome_is_program_in_path (xnest) == NULL) {
+		xnest = "Xnest";
+		/* leak */
+		if (gnome_is_program_in_path (xnest) == NULL) {
+			return NULL;
+		}
+	}
+
+	xnest_vec = ve_split (xnest);
+	if (xnest_options != NULL)
+		options_vec = ve_split (xnest_options);
+	else
+		options_vec = NULL;
+
+	argc = ve_vector_len (xnest_vec) +
+		1 +
+		ve_vector_len (options_vec) +
+		3;
+
+	vector = g_new0 (char *, argc);
+
+	ii = 0;
+
+	/* lots of leaks follow */
+
+	vector[ii++] = xnest_vec[0];
+	vector[ii++] = display_num;
+
+	for (i = 1; xnest_vec[i] != NULL; i++) {
+		vector[ii++] = xnest_vec[i];
+	}
+
+	if (options_vec != NULL) {
+		for (i = 0; options_vec[i] != NULL; i++) {
+			vector[ii++] = options_vec[i];
+		}
+	}
+
+	if ( ! no_chooser) {
+		vector[ii++] = "-indirect";
+		vector[ii++] = indirect_host;
+	}
+
+	return vector;
+}
 
 int
 main (int argc, char *argv[])
@@ -93,10 +173,13 @@ main (int argc, char *argv[])
 	gboolean xdmcp_enabled;
 	gboolean honor_indirect;
 	int display;
-	char *command, *socket;
+	char *socket;
 	char *pidfile;
 	poptContext ctx;
 	const char **args;
+	char *xnest;
+	char **execvec;
+	pid_t pid;
 
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
@@ -112,10 +195,13 @@ main (int argc, char *argv[])
 	xdmcp_enabled = gnome_config_get_bool (GDM_KEY_XDMCP);
 	honor_indirect = gnome_config_get_bool (GDM_KEY_INDIRECT);
 	pidfile = gnome_config_get_string (GDM_KEY_PIDFILE);
+	xnest = gnome_config_get_string (GDM_KEY_XNEST);
 	gnome_config_pop_prefix ();
 
-	/* Leak, yeah yeah yeah, piss off */
-	if (gnome_is_program_in_path ("Xnest") == NULL) {
+	/* complex and wonderous way to get the exec vector */
+	execvec = make_us_an_exec_vector (xnest);
+
+	if (execvec == NULL) {
 		GtkWidget *d;
 		d = gnome_warning_dialog (_("Xnest doesn't exist.\n"
 					    "Please ask your system "
@@ -173,10 +259,29 @@ main (int argc, char *argv[])
 		return 0;
 	}
 
-	command = g_strdup_printf ("Xnest :%d -indirect %s",
-				   display, host);
+	g_print ("DISPLAY=:%d\n", display);
 
-	system (command);
+	g_snprintf (display_num, sizeof (display_num), ":%d", display);
+	g_snprintf (indirect_host, sizeof (indirect_host), "%s", host);
+
+	pid = fork ();
+	if (pid == 0) {
+		execvp (execvec[0], execvec);
+		g_warning ("Can't exec");
+		_exit (1);
+	} else if (pid < 0) {
+		/* eeeek */
+		g_warning ("Can't fork");
+		_exit (1);
+	}
+
+	if (background) {
+		if (fork () > 0) {
+			exit (0);
+		}
+	}
+
+	waitpid (pid, 0, 0);
 
 	socket = g_strdup_printf ("/tmp/.X11-unix/X%d", display);
 
