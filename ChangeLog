@@ -1,5 +1,15 @@
 2005-04-06  Brian Cameron  <brian.cameron@sun.com>
 
+	* gui/gdmlogin.c: Set size requests for text labels in 
+	  gdmlogin so that they are initialized with a big enough
+	  size to avoid container resizing.  Fixes bug #117779.
+	  Also no longer place the "msg" label in the button box,
+	  instead placing it above.  This label can get too big to
+	  really fit in the button box without resizing or 
+	  otherwise making the GUI look weird.
+ 
+2005-04-06  Brian Cameron  <brian.cameron@sun.com>
+
 	* daemon/auth.c, daemon/choose.c, daemon/cookie.c,
 	  daemon/display.c, daemon/errorgui.c, daemon/filecheck.c,
 	  daemon/gdm-net.c, daemon/gdm.c, daemon/md5.h, 
@@ -39,7 +49,8 @@
 	  session.  Also added mnemonics to the Languages
 	  menu in gdmlogin.c.  Fixed minor bug where gdmlogin
 	  and gdmgreeter were checking Include and Exclude 
-	  list as booleans rather than strings.
+	  list as booleans rather than strings.  Fixes bugs
+	  #117776 and #168118.
 	* gui/gdmsetup-strings.c, gui/gdmsetup.c,
 	  gui/gdmsetup.glade: Now allow user to turn on/off
 	  debug on the Security tab.  Minor cleanup.

@@ -3031,6 +3031,7 @@ gdm_login_gui_init (void)
 
     err_box = gtk_label_new (NULL);
     gtk_widget_set_name (err_box, "Error box");
+    gtk_widget_set_size_request (err_box, -1, 50);
     g_signal_connect (G_OBJECT (err_box), "destroy",
 		      G_CALLBACK (gtk_widget_destroyed),
 		      &err_box);
@@ -3096,23 +3097,30 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
 
-    auto_timed_msg = gtk_label_new (_("GNOME Display Manager"));
+    auto_timed_msg = gtk_label_new ("");
     gtk_widget_set_name(auto_timed_msg, "Message");
     gtk_label_set_line_wrap (GTK_LABEL (auto_timed_msg), TRUE);
     gtk_label_set_justify (GTK_LABEL (auto_timed_msg), GTK_JUSTIFY_LEFT);
     gtk_table_attach (GTK_TABLE (stack), auto_timed_msg, 0, 1, 6, 7,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
+    gtk_widget_set_size_request (auto_timed_msg, -1, 20);
     
     gtk_widget_ref (auto_timed_msg);
     gtk_widget_show (auto_timed_msg);
 
-    /* I think I'll add the buttons next to this */
     msg = gtk_label_new (_("Please enter your username"));
     gtk_widget_set_name(msg, "Message");
     gtk_label_set_line_wrap (GTK_LABEL (msg), TRUE);
     gtk_label_set_justify (GTK_LABEL (msg), GTK_JUSTIFY_LEFT);
-    
+    gtk_table_attach (GTK_TABLE (stack), msg, 0, 1, 7, 8,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (GTK_FILL), 0, 10);
+    gtk_widget_set_size_request (msg, -1, 30);
+
+    gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (msg),
+			FALSE /* expand */, TRUE /* fill */, 0);
+
     gtk_widget_ref (msg);
     g_object_set_data_full (G_OBJECT (login), "msg", msg,
 			    (GDestroyNotify) gtk_widget_unref);
@@ -3138,8 +3146,6 @@ gdm_login_gui_init (void)
     gtk_widget_show (cancel_button);
 
     button_box = gtk_hbox_new (0, 5);
-    gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (msg),
-			FALSE /* expand */, TRUE /* fill */, 0);
     gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (auto_timed_msg),
 			FALSE /* expand */, TRUE /* fill */, 0);
     /*gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (help_button),
@@ -3150,7 +3156,7 @@ gdm_login_gui_init (void)
 		      FALSE, FALSE, 0);
     gtk_widget_show (button_box);
     
-    gtk_table_attach (GTK_TABLE (stack), button_box, 0, 1, 7, 8,
+    gtk_table_attach (GTK_TABLE (stack), button_box, 0, 1, 8, 9,
 		      (GtkAttachOptions) (GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 10, 10);
 
