@@ -1,5 +1,29 @@
 Ahh news...
 
+2.6.0.1 stuff:
+
+- Also ensure that /tmp/.X11-unix exists as well as /tmp/.ICE-unix, and
+  do this in a way to avoid self races
+
+- Main daemon now ignores SIGPIPE which it can get which would cause
+  a crash (Jerry Wall)
+
+- Fix a file descriptor leak when closing slaves (Jerry Wall)
+
+- Fixed IPv6 authorization setting in .Xauthority (Vijaykumar Patwari)
+
+- Some typos fixed
+
+- Translation updates (Guntupalli Karunakar, Christian Rose, Gareth Owen,
+  Andras Timar, Gujarati Team, Christophe Merlet, Inaki Larranaga,
+  Changwoo Ryu, Samuel Jon Gunnarsson, Helgi, Pormar Porbjornsson,
+  Zuza Software Foundation, Ole Laursen, Jaswinder Singh Phulewala,
+  Asmund Skjaeveland, Robert Sedak, Takeshi Aihana, Mugurel Tudor,
+  Misu Moldovan, Abel Cheung, Kevin Kee, Baris Cicek, Telsa Gwynne,
+  Sayamindu Dasgupta, Indranil Dasgupta, Francisco Javier F. Serrador,
+  Arafat Medini, Indictrans team, Leonid Kanter, Dafydd Harries,
+  Alession Frusciante, Francesco Marletta)
+
 2.6.0.0 stuff:
 
 - DisplayLastLogin defaults to false since '/usr/bin/last' is stupidly

@@ -38,6 +38,14 @@
 #include "filecheck.h"
 #include "auth.h"
 
+/* Ensure we know about FamilyInternetV6 even if what we're compiling
+   against doesn't */
+#ifdef ENABLE_IPV6
+#ifndef FamilyInternetV6
+#define FamilyInternetV6	6
+#endif /* ! FamilyInternetV6 */
+#endif /* ENABLE_IPV6 */
+
 /* Local prototypes */
 static FILE *gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty);
 
