@@ -77,8 +77,8 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Greek"), "el_GR", "ελληνικά", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Hebrew"), "he_IL", "תירבע", 0 },
-	{ N_("A-M|Hebrew"), "iw_IL", "תירבע", 0 },
+	{ N_("A-M|Hebrew"), "he_IL", "עברית", 0 },
+	{ N_("A-M|Hebrew"), "iw_IL", "עברית", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Hungarian"), "hu_HU", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
