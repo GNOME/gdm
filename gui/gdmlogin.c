@@ -903,6 +903,7 @@ gdm_login_session_init (GtkWidget *menu)
     struct dirent *dent;
     struct stat statbuf;
     gint linklen;
+    gboolean have_gnome = FALSE;
 
     lastsess=_("Last");
 
@@ -958,6 +959,11 @@ gdm_login_session_init (GtkWidget *menu)
 		(statbuf.st_mode & (S_IROTH|S_IXOTH)) == (S_IROTH|S_IXOTH)) 
 	    {
 		item = gtk_radio_menu_item_new_with_label (sessgrp, dent->d_name);
+		if ( ! have_gnome &&
+		     g_strcasecmp (dent->d_name, "Gnome") == 0) {
+			have_gnome = TRUE;
+		}
+			
 		sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
 		sessions = g_slist_append (sessions, dent->d_name);
 		gtk_menu_append (GTK_MENU (menu), item);
@@ -979,9 +985,13 @@ gdm_login_session_init (GtkWidget *menu)
     if (!g_slist_length (sessgrp)) 
 	gdm_login_abort (_("No session scripts found. Aborting!"));
 
-    if (!defsess) {
-	gtk_label_get (GTK_LABEL (GTK_BIN (g_slist_nth_data (sessgrp, 0))->child), &defsess);
-	syslog (LOG_WARNING, _("No default session link found. Using %s.\n"), defsess);
+    if (defsess == NULL) {
+	    if (have_gnome) {
+		    defsess = "Gnome";
+	    } else {
+		    gtk_label_get (GTK_LABEL (GTK_BIN (g_slist_nth_data (sessgrp, 0))->child), &defsess);
+		    syslog (LOG_WARNING, _("No default session link found. Using %s.\n"), defsess);
+	    }
     }
 }
 
