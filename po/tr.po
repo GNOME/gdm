@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.2.0\n"
-"POT-Creation-Date: 2001-03-18 11:00+0100\n"
+"POT-Creation-Date: 2001-04-11 00:45+0200\n"
 "PO-Revision-Date: 2001-03-18 11:01+0100\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -32,7 +32,8 @@ msgstr "gdm_config_parse: Oturum dizini belirtilmedi."
 
 #: daemon/gdm.c:196
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
-msgstr "gdm_config_parse: Ayar dosyasýnda geçersiz sunucu satýrý. Gözardý ediliyor!"
+msgstr ""
+"gdm_config_parse: Ayar dosyasýnda geçersiz sunucu satýrý. Gözardý ediliyor!"
 
 #: daemon/gdm.c:202
 msgid ""
@@ -170,8 +171,7 @@ msgstr "gdm_auth_user_remove: Tehlikeli gözüken %s çerezini gözardý ediyorum"
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
-msgstr ""
-"Kýsa bir zaman süresi içinde X sunucu açýlamadý. %s kapatýlýyor."
+msgstr "Kýsa bir zaman süresi içinde X sunucu açýlamadý. %s kapatýlýyor."
 
 #: daemon/display.c:184
 #, c-format
@@ -199,6 +199,7 @@ msgid "%s: %s is writable by other."
 msgstr "%s: %s diðerleri tarafýndan yazýlabilir."
 
 #: daemon/filecheck.c:84
+#, c-format
 msgid "%s: %s does not exist and must."
 msgstr "%s: %s olmasý gerekiyor, ama yok."
 
@@ -280,7 +281,8 @@ msgstr "gdm_slave_greeter: Kullanýcý numarasý %d'ye deðiþtirilemedi"
 #: daemon/slave.c:316
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
-msgstr "gdm_slave_greeter: %s ekranýnda karþýlayýcý baþlatýlýrken bir hata oluþtu"
+msgstr ""
+"gdm_slave_greeter: %s ekranýnda karþýlayýcý baþlatýlýrken bir hata oluþtu"
 
 #: daemon/slave.c:319
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
@@ -303,8 +305,8 @@ msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
 msgstr ""
-"gdm_slave_session_start: Oturum öncesi programý 0'dan büyük bir deðeri "
-"geri çevirdi. Çýkýyorum."
+"gdm_slave_session_start: Oturum öncesi programý 0'dan büyük bir deðeri geri "
+"çevirdi. Çýkýyorum."
 
 #: daemon/slave.c:510
 msgid "gdm_slave_session_start: Error forking user session"
@@ -332,6 +334,7 @@ msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: `%s' oturumu baþlatýlamadý"
 
 #: daemon/slave.c:760
+#, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_ioerror_handler: Ölümcül X hatasý - %s yeniden baþlatýlýyor"
 
@@ -346,7 +349,7 @@ msgstr "gdm_slave_exec_script: Betik süreci çalýþtýrýlamadý!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1803
+#: gui/gdmlogin.c:1845
 msgid "Login:"
 msgstr "Kullanýcý:"
 
@@ -545,7 +548,8 @@ msgstr "gdm_xdmcp_handle_manage: %s ekraný için kayýt dosyasýný açamadým!"
 #: daemon/xdmcp.c:900
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
-msgstr "gdm_xdmcp_handle_keepalive: Yasaklanmýþ %s makinesinden KEEPALIVE aldým"
+msgstr ""
+"gdm_xdmcp_handle_keepalive: Yasaklanmýþ %s makinesinden KEEPALIVE aldým"
 
 #: daemon/xdmcp.c:907
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
@@ -589,33 +593,33 @@ msgstr "gdm_signals_init : INT sinyal yüneticisinu kurarken bir hata oluþtu"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init : TERM sinyal yüneticisinu kurarken bir hata oluþtu"
 
-#: gui/gdmchooser.c:595 gui/gdmlogin.c:2168
+#: gui/gdmchooser.c:595 gui/gdmlogin.c:2312
 msgid "Could not set signal mask!"
 msgstr "Sinyal maskesini alamadým !"
 
-#: gui/gdmlogin.c:390 gui/gdmlogin.c:396 gui/gdmlogin.c:403
+#: gui/gdmlogin.c:402 gui/gdmlogin.c:408 gui/gdmlogin.c:415
 #, c-format
 msgid "Welcome to %s"
 msgstr "%s'ye hoþgeldin"
 
-#: gui/gdmlogin.c:401
+#: gui/gdmlogin.c:413
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Satýr beter uzun !"
 
-#: gui/gdmlogin.c:498
+#: gui/gdmlogin.c:523
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Bilgisayarý yeniden baþlatmak istediðinden eminmisin ?"
 
-#: gui/gdmlogin.c:512
+#: gui/gdmlogin.c:537
 msgid "Are you sure you want to halt the machine?"
 msgstr "Bilgisayarý durdurmak istediðinden eminmisin ?"
 
-#: gui/gdmlogin.c:530
+#: gui/gdmlogin.c:555
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config: %s ayar dosyasý yok . Çýkýyorum !"
 
-#: gui/gdmlogin.c:640
+#: gui/gdmlogin.c:668
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -624,7 +628,7 @@ msgstr ""
 "Öntanýmlý %s oturum türü bu bilgisayarda yüklü deðil. Gelecek oturumlar için "
 "%s öntanýmlý olarak tanýmlý olsun mu?"
 
-#: gui/gdmlogin.c:656 gui/gdmlogin.c:711
+#: gui/gdmlogin.c:684 gui/gdmlogin.c:739
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -633,129 +637,129 @@ msgstr ""
 "Bu oturum için %s seçildi, ancak öntanýmlý deðer %s.\n"
 "Gelecek oturumlar için %s öntanýmlý deðer olsun mu?"
 
-#: gui/gdmlogin.c:865
+#: gui/gdmlogin.c:893
 #, c-format
 msgid "%s session selected"
 msgstr "%s oturumu seçildi"
 
-#: gui/gdmlogin.c:881 gui/gdmlogin.c:990
+#: gui/gdmlogin.c:909 gui/gdmlogin.c:1018
 msgid "Last"
 msgstr "Sonuncu"
 
-#: gui/gdmlogin.c:898
+#: gui/gdmlogin.c:926
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Oturum denetlemlerinin dizini bulunamadý !"
 
-#: gui/gdmlogin.c:953
+#: gui/gdmlogin.c:981
 msgid "No session scripts found. Aborting!"
 msgstr "Oturum betikleri bulunamadý! Çýkýyorum !"
 
-#: gui/gdmlogin.c:957
+#: gui/gdmlogin.c:985
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Öntanýmlý bir oturumu baðý bulunamadý! %s kullanýlacak.\n"
 
-#: gui/gdmlogin.c:971
+#: gui/gdmlogin.c:999
 #, c-format
 msgid "%s language selected"
 msgstr "%s dili seçildi"
 
-#: gui/gdmlogin.c:1008
+#: gui/gdmlogin.c:1036
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:1014
+#: gui/gdmlogin.c:1042
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:1020
+#: gui/gdmlogin.c:1048
 msgid "Other"
 msgstr "Baþka"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:1252
+#: gui/gdmlogin.c:1280
 msgid "Please insert 25 cents to log in."
 msgstr "Lütfen 2.5 milyon giriþ ücreti ödeyin."
 
-#: gui/gdmlogin.c:1536
+#: gui/gdmlogin.c:1568
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Masaüstü Yöneticisi"
 
-#: gui/gdmlogin.c:1548
+#: gui/gdmlogin.c:1580
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "%s simgesi açýlamadý. Simgeleþtirme özelliðini iptal ediyorum."
 
-#: gui/gdmlogin.c:1655
+#: gui/gdmlogin.c:1697
 msgid "Session"
 msgstr "Oturum"
 
-#: gui/gdmlogin.c:1662
+#: gui/gdmlogin.c:1704
 msgid "Language"
 msgstr "Dil"
 
-#: gui/gdmlogin.c:1669
+#: gui/gdmlogin.c:1711
 msgid "Reboot..."
 msgstr "Yeniden baþla ..."
 
-#: gui/gdmlogin.c:1676
+#: gui/gdmlogin.c:1718
 msgid "Halt..."
 msgstr "Kapat ..."
 
-#: gui/gdmconfig.c:41 gui/gdmlogin.c:1683
+#: gui/gdmconfig.c:42 gui/gdmlogin.c:1725
 msgid "System"
 msgstr "Sistem"
 
-#: gui/gdmlogin.c:1839
+#: gui/gdmlogin.c:1881
 msgid "Please enter your login"
 msgstr "Giriþini ver"
 
-#: gui/gdmlogin.c:2024
+#: gui/gdmlogin.c:2069
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Öntanýmlý %s resmini açamadým. Yüz tarayýcýsýný iptal ediyorum."
 
-#: gui/gdmlogin.c:2145
+#: gui/gdmlogin.c:2289
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: HUP sinyal yöneticisini kurarken bir hata oluþtu"
 
-#: gui/gdmlogin.c:2148
+#: gui/gdmlogin.c:2292
 msgid "main: Error setting up INT signal handler"
 msgstr "main: INT sinyal yöneticisini kurarken bir hata oluþtu"
 
-#: gui/gdmlogin.c:2151
+#: gui/gdmlogin.c:2295
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: TERM sinyal yöneticisini kurarken bir hata oluþtu"
 
-#: gui/gdmlogin.c:2159
+#: gui/gdmlogin.c:2303
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: CHLD sinyal yöneticisini kurulamadý"
 
 #. 3 user levels are present in the CList
-#: gui/gdmconfig.c:39
+#: gui/gdmconfig.c:40
 msgid "Basic"
 msgstr "Temel"
 
-#: gui/gdmconfig.c:40
+#: gui/gdmconfig.c:41
 msgid "Expert"
 msgstr "Uzman"
 
-#: gui/gdmconfig.c:43
+#: gui/gdmconfig.c:44
 msgid ""
 "This panel displays the basic options for configuring GDM.\n"
 "\n"
 "If you need finer detail, select 'expert' or 'system setup' from the list "
 "above.\n"
 "\n"
-"This will display some of the more complex options of GDM that rarely need to "
-"be changed."
+"This will display some of the more complex options of GDM that rarely need "
+"to be changed."
 msgstr ""
 "Bu panel GDM ayarlarý için temel seçenekleri gösterir.\n"
 "\n"
 "Daha küçük ayarlar için yukarýdaki listeden 'uzman'ý seçin."
 
-#: gui/gdmconfig.c:48
+#: gui/gdmconfig.c:49
 msgid ""
 "This panel displays the more advanced options of GDM.\n"
 "\n"
@@ -766,11 +770,10 @@ msgid ""
 msgstr ""
 "Bu panel GDM'nin daha geliþmiþ özelliklerini görüntüler.\n"
 "\n"
-"Ön deðerleri deðiþtirirken özellikle sistem güvenliði ile ilgili "
-"durumlarda dikkatli olmanýzý öneririz."
+"Ön deðerleri deðiþtirirken özellikle sistem güvenliði ile ilgili durumlarda "
+"dikkatli olmanýzý öneririz."
 
-
-#: gui/gdmconfig.c:54
+#: gui/gdmconfig.c:55
 msgid ""
 "This panel displays GDM's fundamental system settings.\n"
 "\n"
@@ -786,32 +789,25 @@ msgstr ""
 "\n"
 "Sadece açýlýþ görünümü deðiþtirmek için \"Temel\" seçmeniz yeterlidir."
 
-#: gui/gdmconfig.c:126
+#: gui/gdmconfig.c:127
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "GDM'yi yapýlandýrmak için root haklarýna sahip olmalýsýnýz.\n"
 
-#: gui/gdmconfig.c:203
+#: gui/gdmconfig.c:215
 msgid "GNOME Display Manager Configurator"
 msgstr "GNOME Görünüm Yöneticisi Yapýlandýrma Programý"
 
-#: gui/gdmconfig.c:250
+#: gui/gdmconfig.c:262
 msgid "The configuration file: "
 msgstr "Yapýlandýrma dosyasý: "
 
-#: gui/gdmconfig.c:250
-msgid ""
-"\n"
-"does not exist! Using default values."
-msgstr ""
-"\n"
-"bulunamadý. Öntanýmlý deðerler kullanýlacak."
-
-#: gui/gdmconfig.c:358
+#: gui/gdmconfig.c:374
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr "gdm_config_parse_most: Ayar dosyasýnda geçersiz sunucu satýrý gözardý "
+msgstr ""
+"gdm_config_parse_most: Ayar dosyasýnda geçersiz sunucu satýrý gözardý "
 "ediliyor."
 
-#: gui/gdmconfig.c:425
+#: gui/gdmconfig.c:445
 msgid ""
 "The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
@@ -825,7 +821,7 @@ msgstr ""
 "istiyor musunuz? Bu iþlem güncel tüm iþlemleri\n"
 "kapatacak ve kaydedilmemiþ bilgileri silenecektir."
 
-#: gui/gdmconfig.c:430
+#: gui/gdmconfig.c:450
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
@@ -833,7 +829,7 @@ msgstr ""
 "GDM'yi yeniden baþlatmak ve tüm kaydedilmemiþ\n"
 "bilgileri silmek istediðinize emin misiniz?"
 
-#: gui/gdmconfig.c:437
+#: gui/gdmconfig.c:457
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -844,7 +840,7 @@ msgstr ""
 "Diðer ayarlar makine yeniden açýlmadan, ya da gdm\n"
 "yeniden baþlamadan etkinleþmezler."
 
-#: gui/gdmconfig.c:563
+#: gui/gdmconfig.c:586
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -853,7 +849,7 @@ msgstr ""
 "silecektir. Emin misiniz?"
 
 #. Request the command line for this new server
-#: gui/gdmconfig.c:657 gui/gdmconfig.c:676
+#: gui/gdmconfig.c:706 gui/gdmconfig.c:725
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
@@ -882,7 +878,7 @@ msgstr "Ayarlarý geri al"
 msgid "Apply"
 msgstr "Uygula"
 
-#: gui/gdmconfig-strings.c:11 gui/gdmconfig-strings.c:55
+#: gui/gdmconfig-strings.c:11 gui/gdmconfig-strings.c:65
 msgid "Options"
 msgstr "Seçenekler"
 
@@ -935,6 +931,7 @@ msgid "Quiver on failure"
 msgstr "Hata durumunda çýk"
 
 #: gui/gdmconfig-strings.c:24
+#, c-format
 msgid "Welcome to %n"
 msgstr "%n'ye hoþgeldiniz"
 
@@ -969,375 +966,426 @@ msgid "Extras"
 msgstr "Diðer"
 
 #: gui/gdmconfig-strings.c:33
-msgid "Background Program: "
-msgstr "Arkaplan Programý: "
-
-#: gui/gdmconfig-strings.c:34 gui/gdmconfig-strings.c:117
-msgid "Select a file containing Locale information"
-msgstr "Dil bilgisini içeren dosyayý seçin"
-
-#: gui/gdmconfig-strings.c:35
 msgid "Default locale: "
 msgstr "Öntanýmlý dil: "
 
-#: gui/gdmconfig-strings.c:36
+#: gui/gdmconfig-strings.c:34
 msgid "Exclude these users: "
 msgstr "Bu kullanýcýlarý hariç tut: "
 
-#: gui/gdmconfig-strings.c:37
+#: gui/gdmconfig-strings.c:35
 msgid "Automatic Login: "
 msgstr "Otomatik Giriþ: "
 
-#: gui/gdmconfig-strings.c:38
+#: gui/gdmconfig-strings.c:36
 msgid "Position"
 msgstr "Konum"
 
-#: gui/gdmconfig-strings.c:39
+#: gui/gdmconfig-strings.c:37
 msgid "Manually set position"
 msgstr "Konumu elle ayarla"
 
-#: gui/gdmconfig-strings.c:40
+#: gui/gdmconfig-strings.c:38
 msgid "Lock position"
 msgstr "Kilitleme konumu"
 
-#: gui/gdmconfig-strings.c:41
+#: gui/gdmconfig-strings.c:39
 msgid "X position: "
 msgstr "X konumu: "
 
-#: gui/gdmconfig-strings.c:42
+#: gui/gdmconfig-strings.c:40
 msgid "Y position: "
 msgstr "Y konumu: "
 
-#: gui/gdmconfig-strings.c:43
+#: gui/gdmconfig-strings.c:41
 msgid "Xinerama screen: "
 msgstr "Xinerama ekraný: "
 
-#: gui/gdmconfig-strings.c:44
+#: gui/gdmconfig-strings.c:42
 msgid "Login behaviour"
 msgstr "Giriþ yöntemi"
 
-#: gui/gdmconfig-strings.c:45 gui/gdmconfig-strings.c:53
+#: gui/gdmconfig-strings.c:43 gui/gdmconfig-strings.c:51
 msgid "Face browser"
 msgstr "Yüz resimleri gözatýcý"
 
-#: gui/gdmconfig-strings.c:46
+#: gui/gdmconfig-strings.c:44
 msgid "Show choosable user images (enable face browser)"
 msgstr "Seçilebilir kullanýcý resimlerini göster"
 
-#: gui/gdmconfig-strings.c:47
+#: gui/gdmconfig-strings.c:45
 msgid "Default face image: "
 msgstr "Öntanýmlý yüz görüntüsü: "
 
-#: gui/gdmconfig-strings.c:48
+#: gui/gdmconfig-strings.c:46
 msgid "Global faces directory: "
 msgstr "Genel yüzler dizini: "
 
-#: gui/gdmconfig-strings.c:49
+#: gui/gdmconfig-strings.c:47
 msgid "Maximum face width: "
 msgstr "Azami yüz geniþliði: "
 
-#: gui/gdmconfig-strings.c:50
+#: gui/gdmconfig-strings.c:48
 msgid "Select an image for users with no 'face'"
 msgstr "Yüzü olmayan kullanýcýlar için bir resim seçin"
 
-#: gui/gdmconfig-strings.c:51
+#: gui/gdmconfig-strings.c:49
 msgid "Choose the directory to search for faces"
 msgstr "Yüz resimlerinin taranacaðý dizini girin"
 
-#: gui/gdmconfig-strings.c:52
+#: gui/gdmconfig-strings.c:50
 msgid "Maximum face height: "
 msgstr "Azami yüz yüksekliði: "
 
+#: gui/gdmconfig-strings.c:52 gui/gdmconfig-strings.c:63
+#, fuzzy
+msgid "Background"
+msgstr "Arkaplan Programý: "
+
+#: gui/gdmconfig-strings.c:53
+#, fuzzy
+msgid "Background type: "
+msgstr "Arkaplan Programý: "
+
 #: gui/gdmconfig-strings.c:54
+msgid "None"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:55
+msgid "Image"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:56
+#, fuzzy
+msgid "Color"
+msgstr "Seçici"
+
+#: gui/gdmconfig-strings.c:57
+#, fuzzy
+msgid "Background color: "
+msgstr "Arkaplan Programý: "
+
+#: gui/gdmconfig-strings.c:58
+#, fuzzy
+msgid "Pick a color"
+msgstr "Bir Yazýtipi Seçin"
+
+#: gui/gdmconfig-strings.c:59
+#, fuzzy
+msgid "Background image:"
+msgstr "Arkaplan Programý: "
+
+#: gui/gdmconfig-strings.c:60
+#, fuzzy
+msgid "Background program"
+msgstr "Arkaplan Programý: "
+
+#: gui/gdmconfig-strings.c:61
+#, fuzzy
+msgid "Background program: "
+msgstr "Arkaplan Programý: "
+
+#: gui/gdmconfig-strings.c:62 gui/gdmconfig-strings.c:127
+msgid "Select a file containing Locale information"
+msgstr "Dil bilgisini içeren dosyayý seçin"
+
+#: gui/gdmconfig-strings.c:64
 msgid "expert"
 msgstr "uzman"
 
-#: gui/gdmconfig-strings.c:56
+#: gui/gdmconfig-strings.c:66
 msgid "Allow root to login with GDM"
 msgstr "Root kullanýcýsýnýn giriþine izin ver"
 
-#: gui/gdmconfig-strings.c:57
+#: gui/gdmconfig-strings.c:67
 msgid ""
-"Determines whether GDM should kill X clients started by the init scripts when "
-"the user logs in."
+"Determines whether GDM should kill X clients started by the init scripts "
+"when the user logs in."
 msgstr ""
 "Kullanýcý girdiði zaman GDM'nin init betikleri tarafýndan çalýþtýrýlan X "
 "istemcilerini öldürüp öldürmeyeceklerini belirtir."
 
-#: gui/gdmconfig-strings.c:58
+#: gui/gdmconfig-strings.c:68
 msgid "Kill 'init' clients"
 msgstr "'init' istemcilerini öldür"
 
-#: gui/gdmconfig-strings.c:59
+#: gui/gdmconfig-strings.c:69
 msgid "Should GDM print authentication errors in the greeter"
 msgstr "GDM kimlik sýnama hatlarýný karþýlayýcýda göstersin"
 
-#: gui/gdmconfig-strings.c:60
+#: gui/gdmconfig-strings.c:70
 msgid "Authentication errors should be verbose"
 msgstr "Kimlik sýnama hatalarý detaylý gösterilmeli"
 
-#: gui/gdmconfig-strings.c:61
+#: gui/gdmconfig-strings.c:71
 msgid "Select how relaxed permissions are"
 msgstr "Ýzinlerin seviyesini seçin"
 
-#: gui/gdmconfig-strings.c:62
+#: gui/gdmconfig-strings.c:72
 msgid "Permissions: "
 msgstr "Ýzinler: "
 
-#: gui/gdmconfig-strings.c:63
+#: gui/gdmconfig-strings.c:73
 msgid "Allow world writable files and directories"
 msgstr "Herkesin yazabildiði dosya ve dizinlere izin ver"
 
-#: gui/gdmconfig-strings.c:64
+#: gui/gdmconfig-strings.c:74
 msgid "World writable"
 msgstr "Herkes yazabilir"
 
-#: gui/gdmconfig-strings.c:65
+#: gui/gdmconfig-strings.c:75
 msgid "Allow group writable files and directories"
 msgstr "Grupça yazýlan dosyalar ve dizinlere izin ver"
 
-#: gui/gdmconfig-strings.c:66
+#: gui/gdmconfig-strings.c:76
 msgid "Group writable"
 msgstr "Grup yazýlabilir"
 
-#: gui/gdmconfig-strings.c:67
+#: gui/gdmconfig-strings.c:77
 msgid "Only accept user owned files and directories"
 msgstr "Sadece kullanýcýnýn sahip olduðu dosya ve dizinlere izin ver"
 
-#: gui/gdmconfig-strings.c:68
+#: gui/gdmconfig-strings.c:78
 msgid "Paranoia"
 msgstr "Paranoyak"
 
-#: gui/gdmconfig-strings.c:69
+#: gui/gdmconfig-strings.c:79
 msgid "Authorization Details"
 msgstr "Kimlik Sýnama Detaylarý"
 
-#: gui/gdmconfig-strings.c:70
+#: gui/gdmconfig-strings.c:80
 msgid "GDM runs as this user: "
 msgstr "GDM bu kullanýcý altýnda çalýþacak: "
 
-#: gui/gdmconfig-strings.c:71
+#: gui/gdmconfig-strings.c:81
 msgid "User 'auth' directory: "
 msgstr "Kullanýcý kimlik dizini: "
 
-#: gui/gdmconfig-strings.c:72
+#: gui/gdmconfig-strings.c:82
 msgid "User 'auth' FB directory: "
 msgstr "Kullanýcý kimlik FB dizini: "
 
-#: gui/gdmconfig-strings.c:73
+#: gui/gdmconfig-strings.c:83
 msgid "User 'auth' file: "
 msgstr "Kullanýcý kimlik dosyasý: "
 
-#: gui/gdmconfig-strings.c:74
+#: gui/gdmconfig-strings.c:84
 msgid "GDM runs as this group: "
 msgstr "GDM bu grup altýnda çalýþacak: "
 
-#: gui/gdmconfig-strings.c:75
+#: gui/gdmconfig-strings.c:85
 msgid "Limits"
 msgstr "Sýnýrlar"
 
-#: gui/gdmconfig-strings.c:76
+#: gui/gdmconfig-strings.c:86
 msgid "Retry delay: "
 msgstr "Yeniden deneme gecikmesi: "
 
-#: gui/gdmconfig-strings.c:77
+#: gui/gdmconfig-strings.c:87
 msgid "Maximum user file length: "
 msgstr "Azami kullanýcý dosyasý uzunluðu: "
 
-#: gui/gdmconfig-strings.c:78
+#: gui/gdmconfig-strings.c:88
 msgid "Security"
 msgstr "Güvenlik"
 
-#: gui/gdmconfig-strings.c:79
+#: gui/gdmconfig-strings.c:89
 msgid "Enable XDMCP"
 msgstr "XDMCP'yi etkinleþtir"
 
-#: gui/gdmconfig-strings.c:80
+#: gui/gdmconfig-strings.c:90
 msgid "Connection Settings"
 msgstr "Baðlantý Ayarlarý"
 
-#: gui/gdmconfig-strings.c:81
+#: gui/gdmconfig-strings.c:91
 msgid "Honour indirect requests"
 msgstr "Dolaylý isteklere izin ver"
 
-#: gui/gdmconfig-strings.c:82
+#: gui/gdmconfig-strings.c:92
 msgid "Maximum indirect wait time: "
 msgstr "Azami dolaylý bekleme süresi: "
 
-#: gui/gdmconfig-strings.c:83
+#: gui/gdmconfig-strings.c:93
 msgid "Maximum wait time: "
 msgstr "Azami bekleme süresi: "
 
-#: gui/gdmconfig-strings.c:84
+#: gui/gdmconfig-strings.c:94
 msgid "Maximum remote sessions: "
 msgstr "Azami uzak oturum sayýsý: "
 
-#: gui/gdmconfig-strings.c:85
+#: gui/gdmconfig-strings.c:95
 msgid "Max pending indirect requests: "
 msgstr "Bekleyen azami dolaylý istek: "
 
-#: gui/gdmconfig-strings.c:86
+#: gui/gdmconfig-strings.c:96
 msgid "Maximum pending requests: "
 msgstr "Bekleyen azami istek: "
 
-#: gui/gdmconfig-strings.c:87
+#: gui/gdmconfig-strings.c:97
 msgid "Listen on UDP port: "
 msgstr "UDP portunu dinle: "
 
-#: gui/gdmconfig-strings.c:88
+#: gui/gdmconfig-strings.c:98
 msgid "XDMCP"
 msgstr "XDMCP"
 
-#: gui/gdmconfig-strings.c:89
+#: gui/gdmconfig-strings.c:99
 msgid "Server Definitions"
 msgstr "Sunucu Tanýmlarý"
 
-#: gui/gdmconfig-strings.c:90
+#: gui/gdmconfig-strings.c:100
 msgid "No."
 msgstr "No."
 
-#: gui/gdmconfig-strings.c:91
+#: gui/gdmconfig-strings.c:101
 msgid "Path to X server"
 msgstr "X sunucusuna yol"
 
-#: gui/gdmconfig-strings.c:92
+#: gui/gdmconfig-strings.c:102
 msgid "Add Server"
 msgstr "Sunucu Ekle"
 
-#: gui/gdmconfig-strings.c:93
+#: gui/gdmconfig-strings.c:103
 msgid "Edit Server"
 msgstr "Sunucuyu Düzenle"
 
-#: gui/gdmconfig-strings.c:94
+#: gui/gdmconfig-strings.c:104
 msgid "Delete Server"
 msgstr "Sunucuyu Sil"
 
-#: gui/gdmconfig-strings.c:95
+#: gui/gdmconfig-strings.c:105
 msgid "Debugging"
 msgstr "Hata ayýklama"
 
-#: gui/gdmconfig-strings.c:96
+#: gui/gdmconfig-strings.c:106
 msgid "Enable debugging output"
 msgstr "Hata ayýklamayý etkinleþtir"
 
-#: gui/gdmconfig-strings.c:97
+#: gui/gdmconfig-strings.c:107
 msgid "X-server setup"
 msgstr "X-sunucu ayarý"
 
-#: gui/gdmconfig-strings.c:98
+#: gui/gdmconfig-strings.c:108
 msgid "system_setup"
 msgstr "sistem ayarý"
 
-#: gui/gdmconfig-strings.c:99
+#: gui/gdmconfig-strings.c:109
 msgid "Executables"
 msgstr "Çalýþtýrýlabilirler"
 
-#: gui/gdmconfig-strings.c:100
+#: gui/gdmconfig-strings.c:110
 msgid "Chooser command: "
 msgstr "Seçici komutu: "
 
-#: gui/gdmconfig-strings.c:101
+#: gui/gdmconfig-strings.c:111
 msgid "Greeter command: "
 msgstr "Karþýlayýcý komutu: "
 
-#: gui/gdmconfig-strings.c:102
+#: gui/gdmconfig-strings.c:112
 msgid "Halt command: "
 msgstr "Dondurma (halt) komutu: "
 
-#: gui/gdmconfig-strings.c:103
+#: gui/gdmconfig-strings.c:113
 msgid "Reboot command: "
 msgstr "Yeniden açýlýþ komutu: "
 
-#: gui/gdmconfig-strings.c:104
+#: gui/gdmconfig-strings.c:114
 msgid "Directories"
 msgstr "Dizinler"
 
-#: gui/gdmconfig-strings.c:105
+#: gui/gdmconfig-strings.c:115
 msgid "Session directory: "
 msgstr "Oturum dizini: "
 
-#: gui/gdmconfig-strings.c:106
+#: gui/gdmconfig-strings.c:116
 msgid "PRE session scripts directory: "
 msgstr "Oturum öncesi betik dizini: "
 
-#: gui/gdmconfig-strings.c:107
+#: gui/gdmconfig-strings.c:117
 msgid "POST session scripts directory: "
 msgstr "Oturum sonrasý betik dizini: "
 
-#: gui/gdmconfig-strings.c:108
+#: gui/gdmconfig-strings.c:118
 msgid "Logging directory: "
 msgstr "Kayýt dizini: "
 
-#: gui/gdmconfig-strings.c:109
+#: gui/gdmconfig-strings.c:119
 msgid "Display initialization directory: "
 msgstr "Görüntü ilklendirme dizini: "
 
-#: gui/gdmconfig-strings.c:110 gui/gdmconfig-strings.c:113
+#: gui/gdmconfig-strings.c:120 gui/gdmconfig-strings.c:123
 msgid "Miscelleaneous"
 msgstr "Çeþitli"
 
-#: gui/gdmconfig-strings.c:111
+#: gui/gdmconfig-strings.c:121
 msgid "PID file: "
 msgstr "PID dosyasý: "
 
-#: gui/gdmconfig-strings.c:112
+#: gui/gdmconfig-strings.c:122
 msgid "Paths"
 msgstr "Yollar"
 
-#: gui/gdmconfig-strings.c:114
+#: gui/gdmconfig-strings.c:124
 msgid "Default $PATH: "
 msgstr "Öntanýmlý $PATH: "
 
-#: gui/gdmconfig-strings.c:115
+#: gui/gdmconfig-strings.c:125
 msgid "Root $PATH: "
 msgstr "Kök $PATH: "
 
-#: gui/gdmconfig-strings.c:116
+#: gui/gdmconfig-strings.c:126
 msgid "Localization"
 msgstr "Yerelleþtirme"
 
-#: gui/gdmconfig-strings.c:118
+#: gui/gdmconfig-strings.c:128
 msgid "Locale file: "
 msgstr "Yerelleþtirme dosyasý: "
 
-#: gui/gdmconfig-strings.c:119
+#: gui/gdmconfig-strings.c:129
 msgid "Environment"
 msgstr "Çevresel"
 
-#: gui/gdmconfig-strings.c:120
+#: gui/gdmconfig-strings.c:130
 msgid "Appearance"
 msgstr "Görünüm"
 
-#: gui/gdmconfig-strings.c:121
+#: gui/gdmconfig-strings.c:131
 msgid "Directory for host images: "
 msgstr "Makine resimlerinin dizini: "
 
-#: gui/gdmconfig-strings.c:122
+#: gui/gdmconfig-strings.c:132
 msgid "Default host image:"
 msgstr "Öntanýmlý makine resmi:"
 
-#: gui/gdmconfig-strings.c:123
+#: gui/gdmconfig-strings.c:133
 msgid "Refresh"
 msgstr "Tazele"
 
-#: gui/gdmconfig-strings.c:124
+#: gui/gdmconfig-strings.c:134
 msgid "Scan every 'x' seconds: "
 msgstr "Her 'a' saniyede tara: "
 
-#: gui/gdmconfig-strings.c:125
+#: gui/gdmconfig-strings.c:135
 msgid "Chooser"
 msgstr "Seçici"
 
-#: gui/gdmconfig-strings.c:126
+#: gui/gdmconfig-strings.c:136
 msgid "(C) 2001 Lee Mallabone"
 msgstr "(C) 2001 Lee Mallabone"
 
-#: gui/gdmconfig-strings.c:127
+#: gui/gdmconfig-strings.c:137
 msgid ""
 "Configure the GNOME Display Manager.\n"
-"Please submit any bugs or feature requests at http://bugzilla.gnome.org under "
-"the `gdm' product."
+"Please submit any bugs or feature requests at http://bugzilla.gnome.org "
+"under the `gdm' product."
 msgstr ""
 "GNOME Görüntü Yöneticisini Yapýlandýr.\n"
 "Lütfen hatalarý ve görmek istediðiniz özellikleri http://bugzilla.gnome.org "
 "adresinde, 'gdm' ürünü altýnda belirtiniz."
+
+#~ msgid ""
+#~ "\n"
+#~ "does not exist! Using default values."
+#~ msgstr ""
+#~ "\n"
+#~ "bulunamadý. Öntanýmlý deðerler kullanýlacak."
