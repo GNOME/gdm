@@ -646,7 +646,7 @@ xdmcp_toggled (GtkWidget *toggle, gpointer data)
 {
 	GtkWidget *frame = data;
 
-	gtk_widget_set_sensitive (frame, GTK_TOGGLE_BUTTON (toggle)->active);
+	gtk_widget_set_sensitive (GTK_BIN (frame)->child, GTK_TOGGLE_BUTTON (toggle)->active);
 }
 
 static void
@@ -663,7 +663,7 @@ setup_xdmcp_support (void)
 	gtk_widget_hide (glade_helper_get (xml, "no_xdmcp_label", GTK_TYPE_LABEL));
 #endif /* HAVE_LIBXDMCP */
 
-	gtk_widget_set_sensitive (xdmcp_frame, 
+	gtk_widget_set_sensitive (GTK_BIN (xdmcp_frame)->child, 
 				  GTK_TOGGLE_BUTTON (xdmcp_toggle)->active);
 
 	g_signal_connect (G_OBJECT (xdmcp_toggle), "toggled",
