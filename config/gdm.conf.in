@@ -74,9 +74,13 @@ XKeepsCrashing=@EXPANDED_SYSCONFDIR@/gdm/XKeepsCrashing
 RebootCommand=/sbin/shutdown -r now;/usr/sbin/shutdown -r now
 HaltCommand=/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now
 SuspendCommand=
+# Probably should not touch the below this is the standard setup
 ServAuthDir=@EXPANDED_AUTHDIR@
 SessionDir=@EXPANDED_SYSCONFDIR@/gdm/Sessions/
+# Better leave this blank and HOME will be used.  You can use syntax ~/ below
+# to indicate home directory of the user
 UserAuthDir=
+# Fallback if home directory not writable
 UserAuthFBDir=/tmp
 UserAuthFile=.Xauthority
 # The X server to use if we can't figure out what else to run.
@@ -100,70 +104,126 @@ AllowRoot=true
 AllowRemoteRoot=true
 # This will allow remote timed login
 AllowRemoteAutoLogin=false
+# 0 is the most anal, 1 allows group write permissions, 2 allows all write permissions
 RelaxPermissions=0
 RetryDelay=3
+# Maximum size of a file we wish to read.  This makes it hard for a user to DoS us
+# by using a large file.
 UserMaxFile=65536
+# Maximum size of the session file.  This is larger because it matters less as we
+# never keep it all in memory.  Just has an upper limit so that we don't go into too
+# long of a loop
 SessionMaxFile=524388
 
+# XDMCP is the protocol that allows remote login.  If you want to log into
+# gdm remotely (I'd never turn this on on open network, use ssh for such
+# remote usage that).  You can then run X with -query <thishost> to log in,
+# or -indirect <thishost> to run a chooser.  Look for the 'Terminal' server
+# type at the bottom of this config file.
 [xdmcp]
 # Distributions: Ship with this off.  It is never a safe thing to leave
 # out on the net.  Alternatively you can set up /etc/hosts.allow and
 # /etc/hosts.deny to only allow say local access.
 Enable=false
+# Honour indirect queries, we run a chooser for these, and then redirect
+# the user to the chosen host.  Otherwise we just log the user in locally.
 HonorIndirect=true
+# Maximum pending requests
 MaxPending=4
 MaxPendingIndirect=4
+# Maximum open XDMCP sessions at any point in time
 MaxSessions=16
+# Maximum wait times
 MaxWait=15
 MaxWaitIndirect=15
+# How many times can a person log in from a single host.  Usually better to
+# keep at 1 to fend off DoS attacks by running many logins from a single
+# host
 DisplaysPerHost=1
+# The port.  177 is the standard port so better keep it that way
 Port=177
 # Willing script, none is shipped and by default we'll send
-# hostname system id
+# hostname system id.  But if you supply something here, the
+# output of this script will be sent as status of this host so that
+# the chooser can display it.  You could for example send load,
+# or mail details for some user, or some such.
 Willing=@EXPANDED_SYSCONFDIR@/gdm/Xwilling
 
 [gui]
+# The 'theme'.  By default we're using the default gtk theme
+# Of course assuming that gtk got installed in the same prefix,
+# if not change this.
 GtkRC=@EXPANDED_DATADIR@/themes/Default/gtk/gtkrc
+# Maximum size of an icon, larger icons are scaled down
 MaxIconWidth=128
 MaxIconHeight=128
 
 [greeter]
+# Greeter has a nice title bar that the user can move
 TitleBar=true
+# Configuration is available from the system menu of the greeter
 ConfigAvailable=true
+# Face browser is enabled.  This only works currently for the
+# standard greeter as it is not yet enabled in the graphical greeter.
 Browser=false
+# The default picture in the browser
 DefaultFace=@EXPANDED_PIXMAPDIR@/nobody.png
-DefaultLocale=en_US
 # These are things excluded from the face browser, not from logging in
 Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm,rpm
 # As an alternative to the above this is the minimum uid to show
 MinimalUID=100
+# If user or user.png exists in this dir it will be used as his picture
 GlobalFaceDir=@EXPANDED_DATADIR@/faces/
+# Icon we use
 Icon=@EXPANDED_PIXMAPDIR@/gdm.png
+# File which contains the locale we show to the user.  Likely you want to use
+# the one shipped with gdm and edit it.  It is not a standard locale.alias file,
+# although gdm will be able to read a standard locale.alias file as well.
 LocaleFile=@EXPANDED_LOCALEDIR@/locale.alias
+# Logo shown in the standard greeter
 Logo=@EXPANDED_PIXMAPDIR@/gdm-foot-logo.png
+# The standard greeter should shake if a user entered the wrong username or
+# password.  Kind of cool looking
 Quiver=true
+# The system menu is shown in the greeter
 SystemMenu=true
 # Note to distributors, if you wish to have a different Welcome string
 # and wish to have this translated you can have entries such as
 # Welcome[cs]=Vitejte na %n
 # Just make sure the string is in utf-8
 Welcome=Welcome to %n
+# Don't allow user to move the standard greeter window.  Only makes sense
+# if TitleBar is on
 LockPosition=false
+# Set a position rather then just centering the window.  If you enter
+# negative values for the position it is taken as an offset from the
+# right or bottom edge.
 SetPosition=false
 PositionX=0
 PositionY=0
+# Xinerama screen we use to display the greeter on.  Not for true
+# multihead, currently only works for Xinerama.
 XineramaScreen=0
-#Type can be 0=None, 1=Image, 2=Color
+# Background settings for the standard greeter:
+# Type can be 0=None, 1=Image, 2=Color
 BackgroundType=2
 BackgroundImage=
 BackgroundScaleToFit=true
 BackgroundColor=#363047
+# XDMCP session should only get a color, this is the sanest setting since
+# you don't want to take up too much bandwidth
 BackgroundRemoteOnlyColor=true
+# Program to run to draw the background in the standard greeter.  Perhaps
+# something like an xscreensaver hack or some such.
 BackgroundProgram=
 # if this is true then the background program is run always, otherwise
 # it is only run when the BackgroundType is 0 (None)
 RunBackgroundProgramAlways=false
+# Show the chooser (you can choose a specific saved gnome session) session
 ShowGnomeChooserSession=true
+# Show the Failsafe sessions.  These are much MUCH nicer (focus for xterm for
+# example) and more failsafe then those supplied by scripts so distros should
+# use this rather then just running an xterm from a script.
 ShowGnomeFailsafeSession=true
 ShowXtermFailsafeSession=true
 # Always use 24 hour clock no matter what the locale.
@@ -175,16 +235,27 @@ UseCirclesInEntry=false
 GraphicalTheme=circles
 GraphicalThemeDir=@EXPANDED_DATADIR@/gdm/themes/
 
+# The chooser is what's displayed when a user wants an indirect XDMCP
+# session
 [chooser]
+# Default image for hosts
 DefaultHostImg=@EXPANDED_PIXMAPDIR@/nohost.png
+# Directory with host images, they are named by the hosts: host or host.png
 HostImageDir=@EXPANDED_DATADIR@/hosts/
+# Time we scan for hosts (well only the time we tell the user we are
+# scanning actually)
 ScanTime=3
+# A comma separated lists of hosts to automatically add (if they answer to
+# a query of course).  You can use this to reach hosts that broadcast cannot
+# reach.
 Hosts=
+# Broadcast a query to get all hosts on the current network that answer
 Broadcast=true
 
 [debug]
 # This will enable debugging into the syslog, usually not neccessary
-# and it creates a LOT of spew of random stuff to the syslog
+# and it creates a LOT of spew of random stuff to the syslog.  However it
+# can be useful in determining when something is going very wrong.
 Enable=false
 
 [servers]

@@ -115,7 +115,6 @@ static gchar *GdmGtkRC;
 static gchar *GdmIcon;
 static gchar *GdmSessionDir;
 static gchar *GdmLocaleFile;
-static gchar *GdmDefaultLocale;
 static gchar *GdmExclude;
 static int GdmMinimalUID;
 static gchar *GdmGlobalFaceDir;
@@ -866,7 +865,6 @@ gdm_login_parse_config (void)
     GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
     GdmTitleBar = ve_config_get_bool (config, GDM_KEY_TITLE_BAR);
     GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
-    GdmDefaultLocale = ve_config_get_string (config, GDM_KEY_LOCALE);
     GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
     GdmWelcome = ve_config_get_translated_string (config, GDM_KEY_WELCOME);
     /* A hack! */
@@ -4034,14 +4032,7 @@ main (int argc, char *argv[])
 
     gdm_login_parse_config ();
 
-    /* no language set, use the GdmDefaultLocale */
-    if ( ! ve_string_empty (GdmDefaultLocale) &&
-	g_getenv ("LANG") == NULL &&
-	g_getenv ("LC_ALL") == NULL) {
-	    setlocale (LC_ALL, GdmDefaultLocale);
-    } else {
-	    setlocale (LC_ALL, "");
-    }
+    setlocale (LC_ALL, "");
 
     tooltips = gtk_tooltips_new ();
 

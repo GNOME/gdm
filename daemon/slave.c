@@ -2141,50 +2141,6 @@ find_prog (const char *name, const char *args, char **retpath)
 	return NULL;
 }
 
-/* this is for the unforunate case when something went seriously wrong, the
- * sysadmin's a wanker or the user has an old language setting */
-static char *
-unaliaslang (const char *origlang)
-{
-	FILE *langlist;
-	char curline[256];
-
-	if (ve_string_empty (GdmLocaleFile))
-		return g_strdup (origlang);
-
-	langlist = fopen (GdmLocaleFile, "r");
-
-	if (langlist == NULL)
-		return g_strdup (origlang);
-
-	while (fgets (curline, sizeof (curline), langlist)) {
-		char *name;
-		char *lang;
-
-		if (curline[0] <= ' ' ||
-		    curline[0] == '#')
-			continue;
-
-		name = strtok (curline, " \t\r\n");
-		if (name == NULL)
-			continue;
-
-		lang = strtok (NULL, " \t\r\n");
-		if (lang == NULL)
-			continue;
-
-		if (g_ascii_strcasecmp (name, origlang) == 0) {
-			fclose (langlist);
-			return g_strdup (lang);
-		}
-	}
-
-	fclose (langlist);
-
-	return g_strdup (origlang);
-
-}
-
 static char *
 dequote (const char *in)
 {
@@ -2213,7 +2169,6 @@ session_child_run (struct passwd *pwent,
 		   const char *session,
 		   const char *save_session,
 		   const char *language,
-		   gboolean def_language,
 		   const char *gnome_session,
 		   gboolean usrcfgok,
 		   gboolean savesess,
@@ -2331,11 +2286,18 @@ session_child_run (struct passwd *pwent,
 	else
 		gnome_setenv ("PATH", GdmDefaultPath, TRUE);
 
-	/* Eeeeek, this no lookie as a correct language code, let's
-	 * try unaliasing it */
-	if (strlen (language) < 3 ||
-	    language[2] != '_') {
-		language = unaliaslang (language);
+	/* Eeeeek, this no lookie as a correct language code,
+	 * just use the system default */
+	if ( ! ve_string_empty (language) &&
+	     ! ve_locale_exists (language)) {
+		/* FIXME: give this error message! */
+		/* Must wait till string freeze is over */
+		/* XXX STRING XXX
+		char *msg = g_strdup_printf (_("Language %s does not exist, using %s"),
+					     language, _("System default"));
+		gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
+		*/
+		language = NULL;
 	}
 
 	setpgid (0, 0);
@@ -2362,26 +2324,19 @@ session_child_run (struct passwd *pwent,
 				_("%s: setusercontext() failed for %s. "
 				  "Aborting."), "gdm_slave_session_start",
 				login);
-
-	/* A different language was selected, or taken from the saved
-	 * prefs of the user */
-	if ( ! def_language) {
-		gnome_setenv ("LANG", language, TRUE);
-		gnome_setenv ("GDM_LANG", language, TRUE);
-	}
 #else
 	if (setuid (pwent->pw_uid) < 0) 
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("gdm_slave_session_start: Could not become %s. Aborting."), login);
-
-	/* Set locale */
-	gnome_setenv ("LANG", language, TRUE);
-	/* Only force GDM_LANG to something if there is other then
-	 * default selected.  Else let the session do whatever it
-	 * does since we're using sys default */
-	if ( ! def_language)
-		gnome_setenv ("GDM_LANG", language, TRUE);
 #endif
+
+	/* Only force GDM_LANG to something if there is other then
+	 * system default selected.  Else let the session do whatever it
+	 * does since we're using sys default */
+	if ( ! ve_string_empty (language)) {
+		gnome_setenv ("LANG", language, TRUE);
+		gnome_setenv ("GDM_LANG", language, TRUE);
+	}
 	
 	chdir (home_dir);
 
@@ -2401,7 +2356,7 @@ session_child_run (struct passwd *pwent,
 		gchar *cfgstr = g_strconcat ("=", home_dir,
 					     "/.gnome2/gdm=/session/lang", NULL);
 		/* we chose the system default language so wipe the lang key */
-		if (def_language)
+		if (ve_string_empty (language))
 			gnome_config_clean_key (cfgstr);
 		else
 			gnome_config_set_string (cfgstr, language);
@@ -2601,7 +2556,6 @@ gdm_slave_session_start (void)
     char *gnome_session = NULL;
     gboolean savesess = FALSE, savelang = FALSE, savegnomesess = FALSE;
     gboolean usrcfgok = FALSE, sessoptok = FALSE, authok = FALSE;
-    gboolean def_language = FALSE;
     const char *home_dir = NULL;
     gboolean home_dir_ok = FALSE;
     time_t session_start_time, end_time; 
@@ -2728,21 +2682,8 @@ gdm_slave_session_start (void)
     }
 
     if (ve_string_empty (language)) {
-	    const char *lang = g_getenv ("LANG");
-
 	    g_free (language);
-
-	    if ( ! ve_string_empty (lang))
-		    language = g_strdup (lang);
-	    else
-		    language = g_strdup (GdmDefaultLocale);
-
-	    if (ve_string_empty (language)) {
-		    g_free (language);
-		    language = g_strdup ("C");
-	    }
-
-	    def_language = TRUE;
+	    language = NULL;
     }
 
     /* save this session as the users session */
@@ -2856,7 +2797,6 @@ gdm_slave_session_start (void)
 			   session,
 			   save_session,
 			   language,
-			   def_language,
 			   gnome_session,
 			   usrcfgok,
 			   savesess,

@@ -206,7 +206,6 @@ enum {
 #define GDM_KEY_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "nobody.png"
 #define GDM_KEY_FACEDIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/faces/"
 #define GDM_KEY_ICON "greeter/Icon=" EXPANDED_PIXMAPDIR "/gdm.png"
-#define GDM_KEY_LOCALE "greeter/DefaultLocale=english"
 #define GDM_KEY_LOCFILE "greeter/LocaleFile=" EXPANDED_LOCALEDIR "/locale.alias"
 #define GDM_KEY_LOGO "greeter/Logo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
 #define GDM_KEY_QUIVER "greeter/Quiver=true"

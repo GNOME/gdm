@@ -16,7 +16,26 @@ Ahh news...
   each language.  We also don't list locales that don't work.  This
   way by default we can use the .utf8 locales if they exist.
 
+- DefaultLocale no longer exists, the system setup is used.  This
+  was really broken.
+
+- We no longer setup locale to a language which doesn't exist.
+  We also don't unalias languages as this was broken.  Just pick
+  an existing language (I doubt anyone has a setting which requires
+  unaliasing anyway)
+
+- More comments in the default config file as a bad excuse for
+  documentation
+
+- The chooser can also read <host>.png from the host image
+  directory and not just <host>
+
+- UserAuthDir can now use the ~/ prefix so that this setting can
+  now be useful.  But better left empty anyway.
+
 - A bunch of minor fixes and cleanup.
+
+- Translation updates (Christian Neumair)
 
 2.4.0.8 stuff:
 

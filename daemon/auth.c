@@ -384,7 +384,7 @@ try_open_append (const char *file)
 gboolean
 gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 {
-    const char *authdir;
+    char *authdir;
     gint authfd;
     FILE *af;
     GSList *auths = NULL;
@@ -397,15 +397,21 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 
     gdm_debug ("gdm_auth_user_add: Adding cookie for %d", user);
 
+    /* Determine whether UserAuthDir is specified. Otherwise ~user is used */
+    if ( ! ve_string_empty (GdmUserAuthDir) &&
+	strcmp (GdmUserAuthDir, "~") != 0) {
+	    if (strncmp (GdmUserAuthDir, "~/", 2) == 0) {
+		    authdir = g_strconcat (homedir, &GdmUserAuthDir[1], NULL);
+	    } else {
+		    authdir = g_strdup (GdmUserAuthDir);
+	    }
+    } else {
+	    authdir = g_strdup (homedir);
+    }
+
 try_user_add_again:
 
     locked = FALSE;
-
-    /* Determine whether UserAuthDir is specified. Otherwise ~user is used */
-    if ( ! ve_string_empty (GdmUserAuthDir))
-	authdir = GdmUserAuthDir;
-    else
-	authdir = homedir;
 
     umask (077);
 
@@ -434,6 +440,7 @@ try_user_add_again:
 
 	    umask (022);
 
+	    g_free (authdir);
 	    return FALSE;
 	}
 
@@ -473,6 +480,8 @@ try_user_add_again:
 		automatic_tmp_dir = TRUE;
 		goto try_user_add_again;
 	}
+
+	g_free (authdir);
 
 	return FALSE; 
     }
@@ -516,6 +525,7 @@ try_user_add_again:
 
     umask (022);
 
+    g_free (authdir);
     return ret;
 }
 

@@ -35,7 +35,6 @@ GtkWidget *canvas;
 
 char *GdmGraphicalTheme = NULL;
 char *GdmGraphicalThemeDir = NULL;
-char *GdmDefaultLocale = NULL;
 int GdmXineramaScreen = 0;
 gboolean GdmShowGnomeChooserSession = FALSE;
 gboolean GdmShowGnomeFailsafeSession = FALSE;
@@ -91,7 +90,6 @@ greeter_parse_config (void)
         g_free (GdmGraphicalThemeDir);
         GdmGraphicalThemeDir = g_strdup (GREETERTHEMEDIR);
       }
-    GdmDefaultLocale = ve_config_get_string (config, GDM_KEY_LOCALE);
     GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMASCREEN);
     GdmUseCirclesInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_CIRCLES);
 
@@ -820,9 +818,6 @@ greeter_reread_config (int sig, gpointer data)
 	if (strcmp (theme, GdmGraphicalTheme) != 0 ||
 	    strcmp (theme_dir, GdmGraphicalThemeDir) != 0 ||
 	     ! string_same (config,
-			    GdmDefaultLocale,
-			    GDM_KEY_LOCALE) ||
-	     ! string_same (config,
 			    GdmGtkRC,
 			    GDM_KEY_GTKRC) ||
 	     ! int_same (config,
@@ -994,14 +989,7 @@ main (int argc, char *argv[])
 
   greeter_parse_config ();
 
-  /* no language set, use the GdmDefaultLocale */
-  if (GdmDefaultLocale != NULL &&
-      strlen (GdmDefaultLocale) != 0 &&
-      g_getenv ("LANG") == NULL &&
-      g_getenv ("LC_ALL") == NULL)
-    setlocale (LC_ALL, GdmDefaultLocale);
-  else
-    setlocale (LC_ALL, "");
+  setlocale (LC_ALL, "");
 
   gtk_init (&argc, &argv);
 

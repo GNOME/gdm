@@ -224,6 +224,10 @@ gdm_chooser_host_alloc (const char *hostname,
 	    return host;
 
     hostimg = g_strconcat (GdmHostIconDir, "/", hostname, NULL);
+    if (access (hostimg, R_OK) != 0) {
+	    g_free (hostimg);
+	    hostimg = g_strconcat (GdmHostIconDir, "/", hostname, ".png", NULL);
+    }
 
     if (access (hostimg, R_OK) == 0 &&
 	(img = gdk_pixbuf_new_from_file (hostimg, NULL)) != NULL) {

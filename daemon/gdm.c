@@ -133,7 +133,6 @@ gchar *GdmUserAuthFB = NULL;
 gchar *GdmPidFile = NULL;
 gchar *GdmDefaultPath = NULL;
 gchar *GdmRootPath = NULL;
-gchar *GdmDefaultLocale = NULL;
 gboolean  GdmKillInitClients = FALSE;
 gint  GdmUserMaxFile = 0;
 gint  GdmSessionMaxFile = 0;
@@ -258,7 +257,6 @@ gdm_config_parse (void)
     GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
     GdmRetryDelay = gnome_config_get_int (GDM_KEY_RETRYDELAY);
     GdmRootPath = gnome_config_get_string (GDM_KEY_ROOTPATH);
-    GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmServAuthDir = gnome_config_get_string (GDM_KEY_SERVAUTH);
     GdmSessDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);

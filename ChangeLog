@@ -1,3 +1,26 @@
+Fri Aug 23 11:04:38 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/slave.c, gui/gdmlogin.c,
+	  gui/greeter/greeter.c: Whack DefaultLocale as that
+	  setting was on crack to begin with.  If the system default
+	  is being used just don't set anything.  If you want gdm
+	  to use some language other then the system default, change
+	  the gdm startup script, but that doesn't seem to make much
+	  sense.  Check for language existance and if it doesn't exist
+	  use the system default.  Now bsd and non-bsd language setup
+	  is not different (And is still bsd-setusercontext-nice).
+	  Whack the unaliasing of languages.  That was complete nonsense,
+
+	* daemon/auth.c: when UserAuthDir is ~ make it the home dir,
+	  when it starts with ~/, prepend the home dir.  This actually
+	  makes this setting usable
+
+	* config/gdm.conf.in: lot more documentation comments.  I really
+	  REALLY should write docs for gdm at some point.
+
+	* gui/gdmchooser.c: also accept <host>.png as host images.  That's
+	  really a lot more sane and nicer.
+
 Fri Aug 23 01:56:21 2002  George Lebl <jirka@5z.com>
 
 	* configure.in, NEWS: prepare for 2.4.0.9
