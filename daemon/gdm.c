@@ -332,8 +332,10 @@ gdm_config_parse (void)
 	    gdm_error (_("gdm_config_parse: No greeter specified."));
     }
 
-    if (ve_string_empty (GdmServAuthDir))
-	gdm_fail (_("gdm_config_parse: No authdir specified."));
+    if (ve_string_empty (GdmServAuthDir)) {
+	    gdm_text_message_dialog (_("No daemon/ServAuthDir specified in the configuration file"));
+	    gdm_fail (_("gdm_config_parse: No authdir specified."));
+    }
 
     if (ve_string_empty (GdmLogDir))
 	GdmLogDir = GdmServAuthDir;
@@ -458,6 +460,13 @@ gdm_config_parse (void)
 		    g_free (GdmTimedLogin);
 		    GdmTimedLogin = NULL;
 	    } else {
+		    char *s = g_strdup_printf (_("Xdmcp is disabled and gdm "
+						 "cannot find any local server "
+						 "to start.  Aborting!  Please "
+						 "correct the configuration %s"
+						 "and restart gdm."),
+					       GDM_CONFIG_FILE);
+		    gdm_text_message_dialog (s);
 		    gdm_fail (_("gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"));
 	    }
     }
@@ -472,13 +481,26 @@ gdm_config_parse (void)
 	    pwent = getpwnam (GdmUser);
     }
 
-    if (pwent == NULL)
+    if (pwent == NULL) {
+	    char *s = g_strdup_printf (_("The gdm user does not exist.  "
+					 "Please correct gdm configuration %s "
+					 "and restart gdm."),
+				       GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
 	    gdm_fail (_("gdm_config_parse: Can't find the gdm user (%s). Aborting!"), GdmUser);
-    else 
+    } else {
 	    GdmUserId = pwent->pw_uid;
+    }
 
-    if (GdmUserId == 0)
-	gdm_fail (_("gdm_config_parse: The gdm user should not be root. Aborting!"));
+    if (GdmUserId == 0) {
+	    char *s = g_strdup_printf (_("The gdm user is set to be root, but "
+					 "this is not allowed since it can "
+					 "pose a security risk.  Please "
+					 "correct gdm configuration %s and "
+					 "restart gdm."), GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
+	    gdm_fail (_("gdm_config_parse: The gdm user should not be root. Aborting!"));
+    }
 
     grent = getgrnam (GdmGroup);
 
@@ -489,17 +511,29 @@ gdm_config_parse (void)
 	    pwent = getpwnam (GdmUser);
     }
 
-    if (grent == NULL)
-	gdm_fail (_("gdm_config_parse: Can't find the gdm group (%s). Aborting!"), GdmGroup);
-    else 
-	GdmGroupId = grent->gr_gid;   
+    if (grent == NULL) {
+	    char *s = g_strdup_printf (_("The gdm group does not exist.  "
+					 "Please correct gdm configuration %s "
+					 "and restart gdm."),
+				       GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
+	    gdm_fail (_("gdm_config_parse: Can't find the gdm group (%s). Aborting!"), GdmGroup);
+    } else  {
+	    GdmGroupId = grent->gr_gid;   
+    }
 
-    if (GdmGroupId == 0)
-	gdm_fail (_("gdm_config_parse: The gdm group should not be root. Aborting!"));
+    if (GdmGroupId == 0) {
+	    char *s = g_strdup_printf (_("The gdm group is set to be root, but "
+					 "this is not allowed since it can "
+					 "pose a security risk.  Please "
+					 "correct gdm configuration %s and "
+					 "restart gdm."), GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
+	    gdm_fail (_("gdm_config_parse: The gdm group should not be root. Aborting!"));
+    }
 
     setegid (GdmGroupId);	/* gid remains `gdm' */
     seteuid (GdmUserId);
-
 
     /* Check that the greeter can be executed */
     bin = ve_first_word (GdmGreeter);
@@ -525,19 +559,55 @@ gdm_config_parse (void)
 
 
     /* Enter paranoia mode */
-    if (stat (GdmServAuthDir, &statbuf) == -1) 
-	gdm_fail (_("gdm_config_parse: Authdir %s does not exist. Aborting."), GdmServAuthDir);
+    if (stat (GdmServAuthDir, &statbuf) == -1)  {
+	    char *s = g_strdup_printf (_("Server Authorization directory "
+					 "(daemon/ServAuthDir) is set to %s "
+					 "but this does not exist.  Please "
+					 "correct gdm configuration %s and "
+					 "restart gdm."), GdmServAuthDir,
+				       GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
+	    gdm_fail (_("gdm_config_parse: Authdir %s does not exist. Aborting."), GdmServAuthDir);
+    }
 
-    if (! S_ISDIR (statbuf.st_mode))
-	gdm_fail (_("gdm_config_parse: Authdir %s is not a directory. Aborting."), GdmServAuthDir);
+    if (! S_ISDIR (statbuf.st_mode)) {
+	    char *s = g_strdup_printf (_("Server Authorization directory "
+					 "(daemon/ServAuthDir) is set to %s "
+					 "but this is not a directory.  Please "
+					 "correct gdm configuration %s and "
+					 "restart gdm."), GdmServAuthDir,
+				       GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
+	    gdm_fail (_("gdm_config_parse: Authdir %s is not a directory. Aborting."), GdmServAuthDir);
+    }
 
-    if (statbuf.st_uid != GdmUserId || statbuf.st_gid != GdmGroupId) 
-	gdm_fail (_("gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."), 
-		  GdmServAuthDir, GdmUser, GdmGroup);
+    if (statbuf.st_uid != GdmUserId || statbuf.st_gid != GdmGroupId)  {
+	    char *s = g_strdup_printf (_("Server Authorization directory "
+					 "(daemon/ServAuthDir) is set to %s "
+					 "but is not owned by user %s and group "
+					 "%s.  Please correct the ownership or "
+					 "gdm configuration %s and restart "
+					 "gdm."),
+				       GdmServAuthDir, GdmUser, GdmGroup,
+				       GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
+	    gdm_fail (_("gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."), 
+		      GdmServAuthDir, GdmUser, GdmGroup);
+    }
 
-    if (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRGRP|S_IXGRP)) 
-	gdm_fail (_("gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. Aborting."), 
-		  GdmServAuthDir, statbuf.st_mode);
+    if (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRGRP|S_IXGRP))  {
+	    char *s = g_strdup_printf (_("Server Authorization directory "
+					 "(daemon/ServAuthDir) is set to %s "
+					 "but has the wrong permissions, it "
+					 "should have permissions of 0750."
+					 "Please correct the permissions or "
+					 "the gdm configuration %s and "
+					 "restart gdm."),
+				       GdmServAuthDir, GDM_CONFIG_FILE);
+	    gdm_text_message_dialog (s);
+	    gdm_fail (_("gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. Aborting."), 
+		      GdmServAuthDir, statbuf.st_mode);
+    }
 
     seteuid (0);
     setegid (0);
@@ -1088,7 +1158,7 @@ gdm_restart_now (void)
 	gdm_info (_("Gdm restarting ..."));
 	final_cleanup ();
 	if (stored_path != NULL)
-		putenv (stored_path);
+		ve_setenv ("PATH", stored_path, TRUE);
 	execvp (stored_argv[0], stored_argv);
 	gdm_error (_("Failed to restart self"));
 	_exit (1);

@@ -260,7 +260,7 @@ gdm_slave_start (GdmDisplay *display)
 	}
 }
 
-static void
+static gboolean
 setup_automatic_session (GdmDisplay *display, const char *name)
 {
 	g_free (login);
@@ -269,13 +269,16 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 	greet = FALSE;
 	gdm_debug ("setup_automatic_session: Automatic login: %s", login);
 
-	gdm_verify_setup_user (display, login, display->name);
+	if ( ! gdm_verify_setup_user (display, login, display->name))
+		return FALSE;
 
 	/* Run the init script. gdmslave suspends until script
 	 * has terminated */
 	gdm_slave_exec_script (display, GdmDisplayInit, NULL, NULL);
 
 	gdm_debug ("setup_automatic_session: DisplayInit script finished");
+
+	return TRUE;
 }
 
 static void 
@@ -468,9 +471,9 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 	    gdm_slave_send_string (GDM_SOP_LOGIN, ParsedAutomaticLogin);
 
-	    setup_automatic_session (d, ParsedAutomaticLogin);
-
-	    gdm_slave_session_start();
+	    if (setup_automatic_session (d, ParsedAutomaticLogin)) {
+		    gdm_slave_session_start ();
+	    }
 
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
 	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
@@ -489,13 +492,15 @@ gdm_slave_run (GdmDisplay *display)
 		    if (do_timed_login) {
 			    /* timed out into a timed login */
 			    do_timed_login = FALSE;
-			    setup_automatic_session (d, ParsedTimedLogin);
-			    gdm_slave_send_string (GDM_SOP_LOGIN,
-						   ParsedTimedLogin);
+			    if (setup_automatic_session (d, ParsedTimedLogin)) {
+				    gdm_slave_send_string (GDM_SOP_LOGIN,
+							   ParsedTimedLogin);
+				    gdm_slave_session_start ();
+			    }
 		    } else {
 			    gdm_slave_send_string (GDM_SOP_LOGIN, login);
+			    gdm_slave_session_start ();
 		    }
-		    gdm_slave_session_start ();
 
 		    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
 		    gdm_slave_send_string (GDM_SOP_LOGIN, "");
@@ -1256,12 +1261,24 @@ gdm_slave_greeter (void)
     }
 }
 
+static gboolean
+parent_exists (void)
+{
+	pid_t ppid = getppid ();
+
+	if (ppid <= 0 ||
+	    kill (ppid, 0) < 0)
+		return FALSE;
+	return TRUE;
+}
+
 void
 gdm_slave_send (const char *str, gboolean wait_for_usr2)
 {
 	char *msg;
 	int fd;
 	char *fifopath;
+	int i;
 
 	gdm_debug ("Sending %s", str);
 
@@ -1286,9 +1303,14 @@ gdm_slave_send (const char *str, gboolean wait_for_usr2)
 
 	close (fd);
 
-	if (wait_for_usr2 &&
-	    ! gdm_got_usr2)
-		sleep (10);
+	for (i = 0;
+	     parent_exists () &&
+	     wait_for_usr2 &&
+	     ! gdm_got_usr2 &&
+	     i < 10;
+	     i++) {
+		sleep (1);
+	}
 }
 
 void
@@ -1840,19 +1862,10 @@ session_child_run (struct passwd *pwent,
 	
 	umask (022);
 	
-	if (setgid (pwent->pw_gid) < 0) 
+	/* setup the verify env vars */
+	if ( ! gdm_verify_setup_env (d))
 		gdm_child_exit (DISPLAY_REMANAGE,
-				_("gdm_slave_session_start: Could not setgid %d. Aborting."), pwent->pw_gid);
-
-	if (initgroups (login, pwent->pw_gid) < 0)
-		gdm_child_exit (DISPLAY_REMANAGE,
-				_("gdm_slave_session_start: initgroups() failed for %s. Aborting."), login);
-
-	/* setup the verify env vars, set credentials and such stuff 
-	 * and open the session */
-	if ( ! gdm_verify_open_session (d))
-		gdm_child_exit (DISPLAY_REMANAGE,
-				_("%s: Could not open session for %s. "
+				_("%s: Could not setup environment for %s. "
 				  "Aborting."),
 				"gdm_slave_session_start", login);
 
@@ -2071,6 +2084,7 @@ gdm_slave_session_start (void)
 	    /* Does the user want to piss off or try to do stupid crap? */
 	    if ( ! gdm_failsafe_yesno (d, msg)) {
 		    g_free (msg);
+		    gdm_verify_cleanup (d);
 		    return;
 	    }
 

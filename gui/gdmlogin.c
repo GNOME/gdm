@@ -558,13 +558,23 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
     str = g_string_new (pre);
 
     while (s[0] != '\0') {
-
-	if (s[0] == '%' && s[1] != 0) {
+	/* Backslash commands */
+	if (s[0] == '\\' && s[1] != '\0') {
+		char cmd = s[1];
+		s++;
+		switch (cmd) {
+		case 'n':
+			g_string_append_c (str, '\n');
+			break;
+		default:
+			g_string_append_c (str, cmd);
+		}
+	/* Percent commands */
+	} else if (s[0] == '%' && s[1] != 0) {
 		char cmd = s[1];
 		s++;
 
 		switch (cmd) {
-
 		case 'h': 
 			g_string_append (str, hostname);
 			break;

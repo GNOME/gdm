@@ -88,15 +88,27 @@ gdm_display_check_loop (GdmDisplay *disp)
   /* If we've tried too many times we bail out. i.e. this means we
    * tried too many times in the 90-second period.
    */
-  if (disp->retry_count > 4)
-    {
-      gdm_error (_("Failed to start the display server several times in a short time period; disabling display %s"), disp->name);
-      disp->disabled = TRUE;
+  if (disp->retry_count > 4) {
+	  /* This means we have no clue what's happening,
+	   * it's not X server crashing as we would have
+	   * cought that elsewhere.  Things are just
+	   * not working out, so tell the user */
+	  char *s = g_strdup_printf (_("Failed to start the display server "
+				       "several times in a short time period; "
+				       "disabling display %s"), disp->name);
+	  /* only display a dialog box if this is a local display */
+	  if (disp->type == TYPE_LOCAL ||
+	      disp->type == TYPE_FLEXI)
+		  gdm_text_message_dialog (s);
+	  gdm_error ("%s", s);
+	  g_free (s);
 
-      gdm_debug ("Failed to start X server after several retries; aborting.");
-      
-      return FALSE;
-    }
+	  disp->disabled = TRUE;
+
+	  gdm_debug ("Failed to start X server after several retries; aborting.");
+
+	  return FALSE;
+  }
   
   /* At least 8 seconds between start attempts,
    * so you can try to kill gdm from the console

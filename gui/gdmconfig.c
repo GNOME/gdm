@@ -1345,6 +1345,7 @@ write_config (void)
     int i = -1;
     GList *tmp = NULL;
     GString *errors = NULL;
+    GtkCList *clist;
 
     if (number_of_servers == 0 &&
 	! run_query (_("You have not defined any local servers.\n"
@@ -1476,18 +1477,18 @@ write_config (void)
     
     /* Write out the widget contents of the Servers tab */
 
+    clist = GTK_CLIST (get_widget ("server_clist"));
     for (i = 0; i < number_of_servers; i++) {
 	    char *key;
 	    char *val;
 	    char *extra_args = NULL;
 	    char *current_server =
-		    gtk_clist_get_row_data (GTK_CLIST (get_widget ("server_clist")), i);
+		    gtk_clist_get_row_data (clist, i);
 
 	    if (ve_string_empty (current_server))
 		    continue;
 
-	    gtk_clist_get_text (GTK_CLIST (get_widget ("server_clist")),
-				i, 2, &extra_args);
+	    gtk_clist_get_text (clist, i, 2, &extra_args);
 
 	    if (ve_string_empty (extra_args))
 		    val = g_strdup (current_server);
@@ -1500,6 +1501,36 @@ write_config (void)
 	    gnome_config_set_string (key, val);
 	    g_free (key);
 	    g_free (val);
+    }
+
+    clist = GTK_CLIST (get_widget ("server_def_clist"));
+    /* XXXXXXXXXXXXXXXXXX */
+    for (i = 0; i < clist->rows; i++) {
+	    char *section;
+	    char *name = NULL;
+	    char *cmd = NULL;
+	    char *flexible = NULL;
+	    char *id = gtk_clist_get_row_data (clist, i);
+
+	    if (ve_string_empty (id))
+		    continue;
+
+	    gtk_clist_get_text (clist, i, 0, &name);
+	    gtk_clist_get_text (clist, i, 1, &cmd);
+	    gtk_clist_get_text (clist, i, 2, &flexible);
+
+	    section = g_strdup_printf ("=" GDM_CONFIG_FILE "=/server-%s/", id);
+	    gnome_config_push_prefix (section);
+	    g_free (section);
+
+	    gnome_config_set_string (GDM_KEY_SERVER_NAME, ve_sure_string (name));
+	    gnome_config_set_string (GDM_KEY_SERVER_COMMAND, ve_sure_string (cmd));
+	    if (strcmp (ve_sure_string (flexible), _("Yes")) == 0)
+		    gnome_config_set_bool (GDM_KEY_SERVER_FLEXIBLE, TRUE);
+	    else
+		    gnome_config_set_bool (GDM_KEY_SERVER_FLEXIBLE, FALSE);
+
+	    gnome_config_pop_prefix ();
     }
 
    /* It would be nice to be able to do some paranoid sanity checking on

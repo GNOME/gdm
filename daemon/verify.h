@@ -30,10 +30,10 @@ gchar *gdm_verify_user    (GdmDisplay *d,
 void   gdm_verify_cleanup (GdmDisplay *d);
 void   gdm_verify_check   (void);
 /* used in pam */
-gboolean gdm_verify_open_session (GdmDisplay *d);
-void   gdm_verify_setup_user (GdmDisplay *d,
-			      const gchar *login,
-			      const gchar *display) ;
+gboolean gdm_verify_setup_env (GdmDisplay *d);
+gboolean gdm_verify_setup_user (GdmDisplay *d,
+				const gchar *login,
+				const gchar *display);
 
 #endif /* GDM_VERIFY_H */
 

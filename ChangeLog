@@ -1,3 +1,63 @@
+Thu Dec 20 16:49:52 2001  George Lebl <jirka@5z.com>
+
+	* Merge from stable up to 2.2.5.2 release tag
+
+	Thu Dec 20 16:27:40 2001  George Lebl <jirka@5z.com>
+
+	* daemon/verify-pam.c: apparently the actually correct
+	  order (Which actually makes sense) is setcred/open_session.
+	  This is apparently the 'offical' word from the linux-pam
+	  people.  Though not everybody agrees.  Well screw this,
+	  this makes sense, so this is the way it will be damnit :)
+
+	* gui/gdmconfig.c: fix saving of server definitions
+
+	* gui/gdmlogin.c: add ability to have newlines in the 
+	  welcome string by just adding \n into the strings
+
+	Thu Dec 06 22:09:11 2001  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: Fix TimedLogin I broke on last commit
+
+	* daemon/verify-pam.c:  For autologin, still call authenticate,
+	  but use the service gdm-autologin.  Also a bit of cleanup.
+
+	* config/gdm-autologin, config/Makefile.am:  A promiscuous
+	  service.  This will let anyone in, gdm uses this for autologin
+	  or timed login when we want to let a user in without a password,
+	  this way we can follow all the proper pam doodaah with
+	  pam_authenticate and all that so we can safely call setcred
+
+	Tue Dec 04 20:46:57 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c, daemon/misc.[ch], daemon/display.c:  On events where
+	  we fail due to bad configuration, run the text message dialog.
+	  Also if we hit the loop of death outside of XFAILED on a local
+	  display, run a text message telling the user so instead of just
+	  putting this into the syslog.  We need more interaction here I
+	  think.  But this is better then nothing.
+
+	Tue Dec 04 18:44:10 2001  George Lebl <jirka@5z.com>
+
+	* daemon/Makefile.am, daemon/verify-pam.c, daemon/verify-crypt.c, 
+	  daemon/verify-shadow.c, daemon/verify.h, daemon/misc.[ch],
+	  daemon/slave.c:  revamp the PAM support based on a patch
+	  from Karsten Petersen <karsten.petersen@informatik.tu-chemnitz.de>.
+	  Move the open session and setcred back to verify, implement
+	  account checking more properly, especially for auto logins.  We
+	  assume the pamh existing when needed.  And don't do the weird
+	  ensure hack.  Also setgid and initgroups in the verify/setup
+	  function.  rename the open_session function to setup_env, since
+	  that's what it does.  Also implement more checking of errors
+	  during login process.
+
+	* daemon/gdm.c, daemon/errorgui.c: make sure that we're not 'setuid'
+	  looking in the failsafes.  Also correctly setup "PATH" from stored
+	  path.
+
+	* daemon/slave.c: fix race where USR2 was expected from a
+	  non-existant parent.  This can happen when you do 'killall gdm'
+
 Mon Dec 10 08:23:00 2001 Trevor Curtis <tcurtis@somaradio.ca>
 	* docs/C/gdm.xml: updated the doc to use the FDL, and cleaned up a
 	few things

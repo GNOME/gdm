@@ -30,6 +30,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <errno.h>
+#include <grp.h>
+#include <sys/types.h>
 
 #include <vicious.h>
 
@@ -281,7 +283,8 @@ gdm_text_message_dialog (const char *msg)
 		argv[6] = NULL;
 
 		/* make sure gdialog wouldn't get confused */
-		if (gdm_exec_wait (argv, TRUE /* no display */) < 0) {
+		if (gdm_exec_wait (argv, TRUE /* no display */,
+				   TRUE /* de_setuid */) < 0) {
 			g_free (dialog);
 			return FALSE;
 		}
@@ -299,7 +302,8 @@ gdm_text_message_dialog (const char *msg)
 			 msg);
 		argv[4] = NULL;
 
-		if (gdm_exec_wait (argv, TRUE /* no display */) < 0) {
+		if (gdm_exec_wait (argv, TRUE /* no display */,
+				   TRUE /* de_setuid */) < 0) {
 			g_free (argv[3]);
 			return FALSE;
 		}
@@ -338,7 +342,8 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 
 		/* will unset DISPLAY and XAUTHORITY if they exist
 		 * so that gdialog (if used) doesn't get confused */
-		retint = gdm_exec_wait (argv, TRUE /* no display */);
+		retint = gdm_exec_wait (argv, TRUE /* no display */,
+					TRUE /* de_setuid */);
 		if (retint < 0) {
 			g_free (dialog);
 			return FALSE;
@@ -376,7 +381,8 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 			 tempname);
 		argv[4] = NULL;
 
-		if (gdm_exec_wait (argv, TRUE /* no display */) < 0) {
+		if (gdm_exec_wait (argv, TRUE /* no display */,
+				   TRUE /* de_setuid */) < 0) {
 			g_free (argv[3]);
 			return FALSE;
 		}
@@ -401,7 +407,8 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 }
 
 int
-gdm_exec_wait (char * const *argv, gboolean no_display)
+gdm_exec_wait (char * const *argv, gboolean no_display,
+	       gboolean de_setuid)
 {
 	int status;
 	pid_t pid;
@@ -423,6 +430,11 @@ gdm_exec_wait (char * const *argv, gboolean no_display)
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		if (de_setuid) {
+			seteuid (getuid ());
+			setegid (getgid ());
+		}
 
 		if (no_display) {
 			gnome_unsetenv ("DISPLAY");
@@ -710,6 +722,23 @@ gdm_is_loopback_addr (struct in_addr *ia)
 		return FALSE;
 	}
 }
+
+gboolean
+gdm_setup_gids (const char *login, gid_t gid)
+{
+	if (setgid (gid) < 0)  {
+		gdm_error (_("Could not setgid %d. Aborting."), (int)gid);
+		return FALSE;
+	}
+
+	if (initgroups (login, gid) < 0) {
+		gdm_error (_("initgroups() failed for %s. Aborting."), login);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 
 
 /* EOF */
