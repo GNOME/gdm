@@ -607,7 +607,7 @@ gdm_config_parse (void)
     /* Lookup user and groupid for the gdm user */
     pwent = getpwnam (GdmUser);
 
-    if G_UNLIKELY (pwent == NULL) {
+    if G_UNLIKELY (pwent == NULL && 0 /* FIXME: this is evil! */) {
 	    gdm_error (_("%s: Can't find the gdm user (%s). Trying 'nobody'!"), "gdm_config_parse", GdmUser);
 	    g_free (GdmUser);
 	    GdmUser = g_strdup ("nobody");
@@ -643,7 +643,7 @@ gdm_config_parse (void)
 
     grent = getgrnam (GdmGroup);
 
-    if G_UNLIKELY (grent == NULL) {
+    if G_UNLIKELY (grent == NULL && 0 /* FIXME: this is evil! */) {
 	    gdm_error (_("%s: Can't find the gdm group (%s). Trying 'nobody'!"), "gdm_config_parse", GdmUser);
 	    g_free (GdmGroup);
 	    GdmGroup = g_strdup ("nobody");

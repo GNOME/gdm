@@ -154,7 +154,7 @@ gdm_connection_write (GdmConnection *conn, const char *str)
 	g_return_val_if_fail (conn != NULL, FALSE);
 	g_return_val_if_fail (str != NULL, FALSE);
 
-	if ( ! conn->writable)
+	if G_UNLIKELY ( ! conn->writable)
 		return FALSE;
 
 #ifdef MSG_NOSIGNAL
@@ -165,7 +165,7 @@ gdm_connection_write (GdmConnection *conn, const char *str)
 	signal (SIGPIPE, old_handler);
 #endif
 
-	if (ret < 0)
+	if G_UNLIKELY (ret < 0)
 		return FALSE;
 	else
 		return TRUE;
@@ -189,7 +189,7 @@ gdm_socket_handler (GIOChannel *source,
 	IGNORE_EINTR (fd = accept (conn->fd,
 				   (struct sockaddr *)&addr,
 				   &addr_size));
-	if (fd < 0) {
+	if G_UNLIKELY (fd < 0) {
 		gdm_debug ("gdm_socket_handler: Rejecting connection");
 		return TRUE;
 	}
@@ -240,23 +240,47 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 	GdmConnection *conn;
 	struct sockaddr_un addr;
 	int fd;
-
-	IGNORE_EINTR (unlink (sockname));
+	int try_again_attempts = 1000;
 
 	fd = socket (AF_UNIX, SOCK_STREAM, 0);
-	if (fd < 0) {
+	if G_UNLIKELY (fd < 0) {
 		gdm_error (_("%s: Could not make socket"),
 			   "gdm_connection_open_unix");
 		return NULL;
 	}
 
+try_again:
+	/* this is all for creating sockets in /tmp/ safely */
+	IGNORE_EINTR (unlink (sockname));
+	if G_UNLIKELY (errno == EISDIR ||
+		       errno == EPERM) {
+		/* likely a directory, someone's playing tricks on us */
+		char *newname = NULL;
+		do {
+			g_free (newname);
+			newname = g_strdup_printf ("%s-renamed-%u",
+						   sockname,
+						   (guint)g_random_int ());
+		} while (access (newname, F_OK) == 0);
+		IGNORE_EINTR (rename (sockname, newname));
+		if G_UNLIKELY (errno != 0)
+			try_again_attempts = 0;
+		g_free (newname);
+	} else if G_UNLIKELY (errno != 0) {
+		try_again_attempts = 0;
+	}
+
 	memset(&addr, 0, sizeof(addr));
 	strcpy (addr.sun_path, sockname);
 	addr.sun_family = AF_UNIX;
-	if (bind (fd,
-		  (struct sockaddr *) &addr, sizeof (addr)) < 0) {
+	if G_UNLIKELY (bind (fd,
+			     (struct sockaddr *) &addr, sizeof (addr)) < 0) {
 		gdm_error (_("%s: Could not bind socket"),
 			   "gdm_connection_open_unix");
+		try_again_attempts --;
+		/* someone is being evil on us */
+		if (errno == EADDRINUSE && try_again_attempts >= 0)
+			goto try_again;
 		IGNORE_EINTR (close (fd));
 		return NULL;
 	}
@@ -330,7 +354,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 
 	IGNORE_EINTR (unlink (fifo));
 
-	if (mkfifo (fifo, 0660) < 0) {
+	if G_UNLIKELY (mkfifo (fifo, 0660) < 0) {
 		gdm_error (_("%s: Could not make FIFO"),
 			   "gdm_connection_open_fifo");
 		return NULL;
@@ -338,7 +362,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 
 	fd = open (fifo, O_RDWR); /* Open with write to avoid EOF */
 
-	if (fd < 0) {
+	if G_UNLIKELY (fd < 0) {
 		gdm_error (_("%s: Could not open FIFO"),
 			   "gdm_connection_open_fifo");
 		return NULL;

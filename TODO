@@ -10,7 +10,9 @@ run from within the mainloop.  The one thing that will always cause trouble here
 is the XDMCP server pinging, I think in this case it would be sane to do the setjmp
 thing and just ignore the ping if a signal comes, not sure how this will play with
 the X stuff and if this would completely whack us out.  The other option is to have
-a separate "pinger process" but that seems to heavyweight.
+a separate "pinger process" but that seems to heavyweight.  Another option here
+is to give up on complete mainloopishness and during pinging set up an alarm or
+some other polling thing that checks all the mainloops stuff.
 
 All the GUIs running as the gdm user should have some resource limits set to
 make it hard to do DoS attacks by somehow exploiting a leak or some such.

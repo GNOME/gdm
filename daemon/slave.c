@@ -106,11 +106,11 @@ static int greeter_fd_out = -1;
 static int greeter_fd_in = -1;
 
 typedef struct {
-	int fd_r;
-	int fd_w;
 	pid_t pid;
 } GdmWaitPid;
 
+static int slave_waitpid_r = -1;
+static int slave_waitpid_w = -1;
 static GSList *slave_waitpids = NULL;
 
 extern gboolean gdm_first_login;
@@ -228,21 +228,16 @@ enum {
 
 /* notify all waitpids, make waitpids check notifies */
 static void
-slave_waitpid_notify_all (void)
+slave_waitpid_notify (void)
 {
-	GSList *li;
-
+	/* we're in no slave waitpids */
 	if (slave_waitpids == NULL)
 		return;
 
 	gdm_sigchld_block_push ();
 
-	for (li = slave_waitpids; li != NULL; li = li->next) {
-		GdmWaitPid *wp = li->data;
-		if (wp->fd_w >= 0) {
-			IGNORE_EINTR (write (wp->fd_w, "N", 1));
-		}
-	}
+	if (slave_waitpid_w >= 0)
+		IGNORE_EINTR (write (slave_waitpid_w, "N", 1));
 
 	gdm_sigchld_block_pop ();
 }
@@ -260,14 +255,13 @@ slave_waitpid_setpid (pid_t pid)
 	wp = g_new0 (GdmWaitPid, 1);
 	wp->pid = pid;
 
-	if G_UNLIKELY (pipe (p) < 0) {
-		gdm_error ("slave_waitpid_setpid: cannot create pipe, trying to wing it");
-
-		wp->fd_r = -1;
-		wp->fd_w = -1;
-	} else {
-		wp->fd_r = p[0];
-		wp->fd_w = p[1];
+	if (slave_waitpid_r < 0) {
+		if G_UNLIKELY (pipe (p) < 0) {
+			gdm_error ("slave_waitpid_setpid: cannot create pipe, trying to wing it");
+		} else {
+			slave_waitpid_r = p[0];
+			slave_waitpid_w = p[1];
+		}
 	}
 
 	slave_waitpids = g_slist_prepend (slave_waitpids, wp);
@@ -370,7 +364,7 @@ slave_waitpid (GdmWaitPid *wp)
 
 	gdm_debug ("slave_waitpid: waiting on %d", (int)wp->pid);
 
-	if G_UNLIKELY (wp->fd_r < 0) {
+	if G_UNLIKELY (slave_waitpid_r < 0) {
 		gdm_error ("slave_waitpid: no pipe, trying to wing it");
 
 		/* This is a real stupid fallback for a real stupid case */
@@ -397,15 +391,15 @@ slave_waitpid (GdmWaitPid *wp)
 			int ret;
 
 			FD_ZERO (&rfds);
-			FD_SET (wp->fd_r, &rfds);
+			FD_SET (slave_waitpid_r, &rfds);
 			if (read_session_output &&
 			    d->session_output_fd >= 0)
 				FD_SET (d->session_output_fd, &rfds);
 
-			ret = select (MAX (wp->fd_r, d->session_output_fd)+1, &rfds, NULL, NULL, NULL);
+			ret = select (MAX (slave_waitpid_r, d->session_output_fd)+1, &rfds, NULL, NULL, NULL);
 			if (ret > 0) {
-			       	if (FD_ISSET (wp->fd_r, &rfds)) {
-					IGNORE_EINTR (read (wp->fd_r, buf, 1));
+			       	if (FD_ISSET (slave_waitpid_r, &rfds)) {
+					IGNORE_EINTR (read (slave_waitpid_r, buf, 1));
 				}
 				if (d->session_output_fd >= 0 &&
 				    FD_ISSET (d->session_output_fd, &rfds)) {
@@ -421,10 +415,6 @@ slave_waitpid (GdmWaitPid *wp)
 
 	gdm_sigchld_block_push ();
 
-	IGNORE_EINTR (close (wp->fd_r));
-	IGNORE_EINTR (close (wp->fd_w));
-	wp->fd_r = -1;
-	wp->fd_w = -1;
 	wp->pid = -1;
 
 	slave_waitpids = g_slist_remove (slave_waitpids, wp);
@@ -3510,6 +3500,9 @@ gdm_slave_session_start (void)
     tmp = gdm_strip_extension (session, ".desktop");
     g_free (session);
     session = tmp;
+
+    gdm_debug ("Initial setting: session: '%s' language: '%s'\n",
+	       session, language);
     
     if (ve_string_empty (session)) {
 	    g_free (session);
@@ -4011,8 +4004,8 @@ gdm_slave_child_handler (int sig)
 		GdmWaitPid *wp = li->data;
 		if (wp->pid == pid) {
 			wp->pid = -1;
-			if (wp->fd_w >= 0) {
-				IGNORE_EINTR (write (wp->fd_w, "!", 1));
+			if (slave_waitpid_w >= 0) {
+				IGNORE_EINTR (write (slave_waitpid_w, "!", 1));
 			}
 		}
 	}
@@ -4038,7 +4031,7 @@ gdm_slave_child_handler (int sig)
 
 			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
-				slave_waitpid_notify_all ();
+				slave_waitpid_notify ();
 			} else {
 				interrupted = TRUE;
 			}
@@ -4146,7 +4139,7 @@ gdm_slave_handle_usr2_message (void)
 			else
 				gdm_ack_response = NULL;
 		} else if (s[0] == GDM_SLAVE_NOTIFY_KEY) {
-			slave_waitpid_notify_all ();
+			slave_waitpid_notify ();
 			unhandled_notifies =
 				g_list_append (unhandled_notifies,
 					       g_strdup (&s[1]));

@@ -1,3 +1,22 @@
+Fri Sep 12 14:49:30 2003  George Lebl <jirka@5z.com>
+
+	* configure.in: raise version
+
+	* daemon/gdm-net.c: some cleanup and be utterly anal when creating /tmp/.gdm_socket
+	  (note: we were anal before, but now we're really REALLY anal)
+
+	* daemon/gdm.c: disable substituting 'nobody' for 'gdm', what was I
+	  smoking when I wrote that?
+
+	* daemon/misc.c: some cleanup and make sure gdm_fdprintf writes all
+	  the characters it really needs to write.  Also the ensure extension
+	  doesn't append extensions to empty strings.
+
+	* daemon/slave.c: use only one pipe for all the waitpids, since we
+	  really don't need more then one and this make code simpler.
+
+	* docs/C/gdm.xml: update
+
 Thu Sep 11 16:11:57 2003  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in: add comment about ShowLastSession

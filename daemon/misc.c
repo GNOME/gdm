@@ -216,12 +216,28 @@ gdm_fdprintf (int fd, const gchar *format, ...)
 {
 	va_list args;
 	gchar *s;
+	int written, len;
 
 	va_start (args, format);
 	s = g_strdup_vprintf (format, args);
 	va_end (args);
 
-	IGNORE_EINTR (write (fd, s, strlen (s)));
+	len = strlen (s);
+
+	if (len == 0) {
+		g_free (s);
+		return;
+	}
+
+	written = 0;
+	while (written < len) {
+		int w;
+		IGNORE_EINTR (w = write (fd, &s[written], len - written));
+		if (w < 0)
+			/* evil! */
+			break;
+		written += w;
+	}
 
 	g_free (s);
 }
@@ -775,9 +791,9 @@ gdm_wait_for_extra (int *status)
 	gdm_sigchld_block_pop ();
 }
 
-/* done before each login.  This can do so sanity ensuring,
- * one of the things it does now is make sure /tmp/.ICE-unix
- * exists and has the correct permissions */
+/* done before each login and on startup.  This can do some
+ * sanity ensuring, one of the things it does now is make
+ * sure /tmp/.ICE-unix exists and has the correct permissions */
 void
 gdm_ensure_sanity (void)
 {
@@ -796,20 +812,20 @@ gdm_ensure_sanity (void)
 	 * if we can't perform this task :) */
 	old_umask = umask (0);
 
-        if (mkdir ("/tmp/.ICE-unix", 01777) != 0) {
+        if G_UNLIKELY (mkdir ("/tmp/.ICE-unix", 01777) != 0) {
 		/* if we can't create it, perhaps it
 		   already exists, in which case ensure the
 		   correct permissions */
 		struct stat s;
 		int r;
 		IGNORE_EINTR (r = lstat ("/tmp/.ICE-unix", &s));
-		if (r == 0 && S_ISDIR (s.st_mode)) {
+		if G_LIKELY (r == 0 && S_ISDIR (s.st_mode)) {
 			/* Make sure it is root and sticky */
 			IGNORE_EINTR (chown ("/tmp/.ICE-unix", 0, 0));
 			IGNORE_EINTR (chmod ("/tmp/.ICE-unix", 01777));
 		} else {
 			/* There is a file/link/whatever called .ICE-unix? whack and try mkdir */
-			unlink ("/tmp/.ICE-unix");
+			IGNORE_EINTR (unlink ("/tmp/.ICE-unix"));
 			mkdir ("/tmp/.ICE-unix", 01777);
 		}
 	}
@@ -910,7 +926,7 @@ gdm_peek_local_address_list (void)
 	/* host based fallback, will likely only get 127.0.0.1 i think */
 
 	hostbuf[BUFSIZ-1] = '\0';
-	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
+	if G_UNLIKELY (gethostname (hostbuf, BUFSIZ-1) != 0) {
 		gdm_debug ("%s: Could not get server hostname: %s!",
 			   "gdm_peek_local_address_list",
 			   strerror (errno));
@@ -919,7 +935,7 @@ gdm_peek_local_address_list (void)
 		return g_list_append (NULL, addr);
 	}
 	he = gethostbyname (hostbuf);
-	if (he == NULL) {
+	if G_UNLIKELY (he == NULL) {
 		gdm_debug ("%s: Could not get address from hostname!",
 			   "gdm_peek_local_address_list");
 		addr = g_new0 (struct in_addr, 1);
@@ -1136,20 +1152,20 @@ gdm_close_all_descriptors (int from, int except, int except2)
 	dir = opendir ("/proc/self/fd/"); /* This is the Linux dir */
 	if (dir == NULL)
 		dir = opendir ("/dev/fd/"); /* This is the FreeBSD dir */
-	if (dir != NULL) {
+	if G_LIKELY (dir != NULL) {
 		GSList *li;
 		while ((ent = readdir (dir)) != NULL) {
+			int fd;
 			if (ent->d_name[0] == '.')
 				continue;
-			openfds = g_slist_prepend (openfds,
-						   GINT_TO_POINTER (atoi (ent->d_name)));
+			fd = atoi (ent->d_name);
+			if (fd >= from && fd != except && fd != except2)
+				openfds = g_slist_prepend (openfds, GINT_TO_POINTER (fd));
 		}
 		closedir (dir);
 		for (li = openfds; li != NULL; li = li->next) {
 			int fd = GPOINTER_TO_INT (li->data); 
-			if (fd >= from && fd != except && fd != except2) {
-				IGNORE_EINTR (close(fd));
-			}
+			IGNORE_EINTR (close(fd));
 		}
 		g_slist_free (openfds);
 	} else {
@@ -1158,7 +1174,7 @@ gdm_close_all_descriptors (int from, int except, int except2)
 		/* don't go higher then this.  This is
 		 * a safety measure to not hang on crazy
 		 * systems */
-		if (max > 4096) {
+		if G_UNLIKELY (max > 4096) {
 			/* FIXME: warn about this perhaps */
 			/* try an open, in case we're really
 			   leaking fds somewhere badly, this
@@ -1167,7 +1183,7 @@ gdm_close_all_descriptors (int from, int except, int except2)
 			max = MAX (i+1, 4096);
 		}
 		for (i = from; i < max; i++) {
-			if (i != except && i != except2)
+			if G_LIKELY (i != except && i != except2)
 				IGNORE_EINTR (close(i));
 		}
 	}
@@ -1822,7 +1838,12 @@ gdm_make_filename (const char *dir, const char *name, const char *extension)
 char *
 gdm_ensure_extension (const char *name, const char *extension)
 {
-	const char *p = strrchr (name, '.');
+	const char *p;
+
+	if (ve_string_empty (name))
+		return g_strdup (name);
+
+	p = strrchr (name, '.');
 	if (p != NULL &&
 	    strcmp (p, extension) == 0) {
 		return g_strdup (name);
@@ -1837,7 +1858,6 @@ gdm_strip_extension (const char *name, const char *extension)
 	const char *p = strrchr (name, '.');
 	if (p != NULL &&
 	    strcmp (p, extension) == 0) {
-		return g_strdup (name);
 		char *r = g_strdup (name);
 		char *rp = strrchr (r, '.');
 		*rp = '\0';
