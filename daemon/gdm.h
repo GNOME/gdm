@@ -794,7 +794,8 @@ void		gdm_final_cleanup	(void);
  * everybody logs out.  If only one person logs out, then this is obviously
  * the same as the SET_LOGOUT_ACTION.  Note that SET_LOGOUT_ACTION has
  * precendence over SET_SAFE_LOGOUT_ACTION if it is set to something other
- * then NONE.
+ * then NONE.  If no one is logged in, then the action takes effect
+ * immedeately.
  * Only supported on connections that passed AUTH_LOCAL.
  * Supported since: 2.5.90.0
  * Arguments:  <action>
