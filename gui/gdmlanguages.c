@@ -100,7 +100,7 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|English (Ireland)"), "en_IE", "Irish English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|English (Danmark)"), "en_IE", "Danish English", 0 },
+	{ N_("A-M|English (Denmark)"), "en_IE", "Danish English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Estonian"), "et_EE", "Eesti", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
