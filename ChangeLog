@@ -1,3 +1,10 @@
+Mon Jul 28 10:36:52 2003  George Lebl <jirka@5z.com>
+
+	* confiugure.in, acconfig.h, daemon/slave.c, daemon/gdm.c:  check
+	  for sched_yield in the standard lib and then in -lrt, and don't
+	  use it if we can't find it.  Also remove its usage from places
+	  where we're going to yield the processor very soon anyway.
+
 Mon Jul 28 09:19:38 2003  George Lebl <jirka@5z.com>
 
 	* configure.in: Fix #118404, we don't need TCP Wrappers if compiling

@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#ifdef _POSIX_PRIORITY_SCHEDULING
+#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
 #include <sched.h>
 #endif
 #ifdef HAVE_LOGINCAP
@@ -986,9 +986,6 @@ gdm_slave_run (GdmDisplay *display)
 	
 	if (d->dsp == NULL) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d on a retry", 1+openretries*2);
-#ifdef _POSIX_PRIORITY_SCHEDULING
-	    sched_yield ();
-#endif
 	    sleep (1+openretries*2);
 	    openretries++;
 	}
@@ -1048,9 +1045,6 @@ gdm_slave_run (GdmDisplay *display)
 	     * which will in fact just exit, so
 	     * this code is a little bit too anal */
 	    while (d->servpid > 0) {
-#ifdef _POSIX_PRIORITY_SCHEDULING
-		    sched_yield ();
-#endif
 		    pause ();
 	    }
 	    gdm_slave_quick_exit (DISPLAY_REMANAGE);
@@ -1377,10 +1371,6 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		GdmWaitPid *wp;
 		
 		configurator = TRUE;
-
-#ifdef _POSIX_PRIORITY_SCHEDULING
-		sched_yield ();
-#endif
 
 		gdm_sigchld_block_push ();
 		wp = slave_waitpid_setpid (display->sesspid);
@@ -2335,7 +2325,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	if (fd != slave_fifo_pipe_fd)
 		close (fd);
 
-#ifdef _POSIX_PRIORITY_SCHEDULING
+#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
 	if (wait_for_ack && ! gdm_got_ack) {
 		/* let the other process do its stuff */
 		sched_yield ();
@@ -2348,11 +2338,6 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	     parent_exists () &&
 	     i < 10;
 	     i++) {
-#ifdef _POSIX_PRIORITY_SCHEDULING
-		/* let the other process do its stuff */
-		sched_yield ();
-#endif
-
 		if (in_usr2_signal > 0) {
 			fd_set rfds;
 			struct timeval tv;
@@ -2590,10 +2575,6 @@ gdm_slave_chooser (void)
 		fcntl(p[0], F_SETFD, fcntl(p[0], F_GETFD, 0) | FD_CLOEXEC);
 
 		/* wait for the chooser to die */
-
-#ifdef _POSIX_PRIORITY_SCHEDULING
-		sched_yield ();
-#endif
 
 		gdm_sigchld_block_push ();
 		wp = slave_waitpid_setpid (d->chooserpid);
@@ -3360,10 +3341,6 @@ gdm_slave_session_start (void)
 
     gdm_slave_send_num (GDM_SOP_SESSPID, pid);
 
-#ifdef _POSIX_PRIORITY_SCHEDULING
-    sched_yield ();
-#endif
-
     gdm_sigchld_block_push ();
     wp = slave_waitpid_setpid (d->sesspid);
     gdm_sigchld_block_pop ();
@@ -3990,7 +3967,7 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 	    gdm_fdprintf (greeter_fd_out, "%c%c\n", STX, cmd);
     }
 
-#ifdef _POSIX_PRIORITY_SCHEDULING
+#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
     /* let the other process (greeter) do its stuff */
     sched_yield ();
 #endif

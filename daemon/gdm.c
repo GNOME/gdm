@@ -22,7 +22,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <unistd.h>
-#ifdef _POSIX_PRIORITY_SCHEDULING
+#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
 #include <sched.h>
 #endif
 #include <sys/types.h>
@@ -1978,7 +1978,7 @@ send_slave_ack (GdmDisplay *d, const char *resp)
 		kill (d->slavepid, SIGUSR2);
 		/* now yield the CPU as the other process has more
 		   useful work to do then we do */
-#ifdef _POSIX_PRIORITY_SCHEDULING
+#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
 		sched_yield ();
 #endif
 	}
@@ -2000,7 +2000,7 @@ send_slave_command (GdmDisplay *d, const char *command)
 		kill (d->slavepid, SIGUSR2);
 		/* now yield the CPU as the other process has more
 		   useful work to do then we do */
-#ifdef _POSIX_PRIORITY_SCHEDULING
+#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
 		sched_yield ();
 #endif
 	}
