@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 0.5\n"
-"POT-Creation-Date: 1999-09-01 23:49+0200\n"
+"POT-Creation-Date: 1999-09-07 22:49+0200\n"
 "PO-Revision-Date: 1999-08-07 11:00+0200\n"
 "Last-Translator: Anders Carlsson <anders.carlsson@tordata.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -130,9 +130,8 @@ msgstr "gdm_daemonify: setsid() misslyckades: %s!"
 
 #. XDM compliant error message
 #: daemon/gdm.c:590
-#, fuzzy
 msgid "Only root wants to run x^hgdm\n"
-msgstr "Endast root ska köra gdm\n"
+msgstr "Endast root ska köra x^gdm\n"
 
 #: daemon/gdm.c:611
 msgid ""
@@ -165,24 +164,24 @@ msgstr "gdm_main: Fel vid installering av CHLD signal-hanterare"
 
 #. Really no need to clean up here - this process is a goner anyway
 #: daemon/auth.c:215 daemon/auth.c:240
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
-msgstr "gdm_auth_secure_display: Kunde inte avlänka %s fil: %s"
+msgstr "gdm_auth_secure_display: Kunde inte öppna cookie-fil %s"
 
 #: daemon/auth.c:229
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_auth_user_add: Could not lock cookie file %s"
-msgstr "gdm_auth_secure_display: Kunde inte avlänka %s fil: %s"
+msgstr "gdm_auth_secure_display: Kunde låsa cookie-fil %s"
 
 #: daemon/auth.c:300
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
-msgstr "gdm_auth_user_remove: Fel vid start av xauth-process: %s"
+msgstr "gdm_auth_user_remove: Cookie filen %s ser skum ut. Ignorerar den"
 
 #: daemon/filecheck.c:58
 #, c-format
 msgid "%s: Directory %s does not exist."
-msgstr ""
+msgstr "%s: Katalogen %s finns inte."
 
 #: daemon/filecheck.c:64 daemon/filecheck.c:102
 #, c-format
@@ -389,7 +388,7 @@ msgstr "Ogiltigt lösenord"
 
 #: daemon/verify.c:280
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
-msgstr ""
+msgstr "gdm_verify_check: Kan ej hitta PAM-konfigurationsfil för gdm"
 
 #: daemon/xdmcp.c:179
 #, c-format
@@ -405,19 +404,16 @@ msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
 msgstr "gdm_xdmcp_init: Kan inte binda till XDMCP-socket!"
 
 #: daemon/xdmcp.c:209
-#, fuzzy
 msgid "gdm_xdmcp_init: Can't alloc fifopath"
-msgstr "gdm_xdmcp_init: Kan inte skapa socket!"
+msgstr "gdm_xdmcp_init: Kan inte allokera fifo-katalog!"
 
 #: daemon/xdmcp.c:214
-#, fuzzy
 msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
-msgstr "gdm_xdmcp_init: Kan inte skapa socket!"
+msgstr "gdm_xdmcp_init: Kan inte skapa FIFO för väljare!"
 
 #: daemon/xdmcp.c:219
-#, fuzzy
 msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
-msgstr "gdm_xdmcp_init: Kan inte skapa socket!"
+msgstr "gdm_xdmcp_init: Kan inte öppna FIFO för väljare"
 
 #: daemon/xdmcp.c:273
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
@@ -568,23 +564,20 @@ msgid "Cancel"
 msgstr "Avbryt"
 
 #: gui/gdmchooser.c:582
-#, fuzzy
 msgid "gdm_signals_init: Error setting up HUP signal handler"
-msgstr "gdm_slave_init: Fel vid installering av CHLD signal-hanterare"
+msgstr "gdm_signals_init: Fel vid installering av HUP signal-hanterare"
 
 #: gui/gdmchooser.c:585
-#, fuzzy
 msgid "gdm_signals_init: Error setting up INT signal handler"
-msgstr "gdm_main: Fel vid installering av TERM signal-hanterare"
+msgstr "gdm_signals_init: Fel vid installering av INT signal-hanterare"
 
 #: gui/gdmchooser.c:588
-#, fuzzy
 msgid "gdm_signals_init: Error setting up TERM signal handler"
-msgstr "gdm_main: Fel vid installering av TERM signal-hanterare"
+msgstr "gdm_signals_init: Fel vid installering av TERM signal-hanterare"
 
 #: gui/gdmchooser.c:596 gui/gdmlogin.c:1541
 msgid "Could not set signal mask!"
-msgstr ""
+msgstr "Kan inte sätta signalmask!"
 
 #: gui/gdmlogin.c:276
 msgid "gdm_parse_enriched_string: String too long!"
@@ -700,12 +693,12 @@ msgstr "Minimera"
 
 #: gui/gdmlogin.c:1273
 msgid "Please enter your login"
-msgstr ""
+msgstr "Ange ditt loginnamn"
 
 #: gui/gdmlogin.c:1458
-#, fuzzy, c-format
+#, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
-msgstr "Kan inte öppna NofaceImageFile: %s. Avaktiverar bild-bläddrare"
+msgstr "Kan inte öppna DefaultImage: %s. Avaktiverar bild-bläddrare"
 
 #: gui/gdmlogin.c:1527
 msgid "main: Error setting up HUP signal handler"
