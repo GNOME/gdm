@@ -741,17 +741,17 @@ deal_with_x_crashes (GdmDisplay *d)
 
 		    /* unset DISPLAY and XAUTHORITY if they exist
 		     * so that gdialog (if used) doesn't get confused */
-		    ve_unsetenv ("DISPLAY");
-		    ve_unsetenv ("XAUTHORITY");
+		    gnome_unsetenv ("DISPLAY");
+		    gnome_unsetenv ("XAUTHORITY");
 
 		    /* some promised variables */
-		    ve_setenv ("XLOG", xlog, TRUE);
-		    ve_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
-		    ve_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
+		    gnome_setenv ("XLOG", xlog, TRUE);
+		    gnome_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
+		    gnome_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
 
 		    /* To enable gettext stuff in the script */
-		    ve_setenv ("TEXTDOMAIN", PACKAGE, TRUE);
-		    ve_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
+		    gnome_setenv ("TEXTDOMAIN", PACKAGE, TRUE);
+		    gnome_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
 		    execv (argv[0], argv);
 	
@@ -1385,45 +1385,32 @@ main (int argc, char *argv[])
 /* signal main loop support */
 
 
-typedef struct _GDMSignalData GDMSignalData;
-struct _GDMSignalData
-{
+typedef struct _SignalSource SignalSource;
+struct _SignalSource {
+	GSource     source;
+
 	gint8       signal;
 	guint8      index;
 	guint8      shift;
 };
 
-static gboolean gdm_signal_prepare  (GSource  *source,
-				     gint     *timeout);
-static gboolean gdm_signal_check    (GSource  *source);
-static gboolean gdm_signal_dispatch (GSource  *source,
-				     GSourceFunc callback,
-				     gpointer  user_data);
-static void     gdm_signal_destroy  (GSource  *source);
-
-static GSourceFuncs signal_funcs = {
-	gdm_signal_prepare,
-	gdm_signal_check,
-	gdm_signal_dispatch,
-	gdm_signal_destroy
-};
 static	guint32	signals_notified[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 static gboolean
 gdm_signal_prepare (GSource  *source,
 		    gint     *timeout)
 {
-	GDMSignalData *signal_data = g_dataset_get_data (source, "SignalData");
+	SignalSource *ss = (SignalSource *)source;
 
-	return signals_notified[signal_data->index] & (1 << signal_data->shift);
+	return signals_notified[ss->index] & (1 << ss->shift);
 }
 
 static gboolean
 gdm_signal_check (GSource *source)
 {
-	GDMSignalData *signal_data = g_dataset_get_data (source, "SignalData");
+	SignalSource *ss = (SignalSource *)source;
 
-	return signals_notified[signal_data->index] & (1 << signal_data->shift);
+	return signals_notified[ss->index] & (1 << ss->shift);
 }
 
 static gboolean
@@ -1431,18 +1418,18 @@ gdm_signal_dispatch (GSource     *source,
 		     GSourceFunc  callback,
 		     gpointer     user_data)
 {
-	GDMSignalData *signal_data = g_dataset_get_data (source, "SignalData");
+	SignalSource *ss = (SignalSource *)source;
 
-	signals_notified[signal_data->index] &= ~(1 << signal_data->shift);
+	signals_notified[ss->index] &= ~(1 << ss->shift);
 
-	return ((GDMSignalFunc)callback) (signal_data->signal, user_data);
+	return ((GDMSignalFunc)callback) (ss->signal, user_data);
 }
 
-static void
-gdm_signal_destroy (GSource  *source)
-{
-	g_dataset_destroy (source);
-}
+static GSourceFuncs signal_funcs = {
+	gdm_signal_prepare,
+	gdm_signal_check,
+	gdm_signal_dispatch
+};
 
 guint
 gdm_signal_add (gint8	      signal,
@@ -1460,19 +1447,18 @@ gdm_signal_add_full (gint           priority,
 		     GDestroyNotify destroy)
 {
 	GSource *source;
-	GDMSignalData *signal_data;
+	SignalSource *ss;
 	guint s = 128 + signal;
 
 	g_return_val_if_fail (function != NULL, 0);
 
-	signal_data = g_new (GDMSignalData, 1);
-	signal_data->signal = signal;
-	signal_data->index = s / 32;
-	signal_data->shift = s % 32;
+	source = g_source_new (&signal_funcs, sizeof (SignalSource));
+	ss = (SignalSource *)source;
 
-	source = g_source_new (&signal_funcs, sizeof (GSource));
+	ss->signal = signal;
+	ss->index = s / 32;
+	ss->shift = s % 32;
 
-	g_dataset_set_data_full (source, "SignalData", signal_data, g_free);
 	g_source_set_priority (source, priority);
 	g_source_set_callback (source, (GSourceFunc)function, data, destroy);
 	g_source_set_can_recurse (source, TRUE);

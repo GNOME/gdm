@@ -51,10 +51,10 @@ static Display *wm_disp = NULL;
 static Window wm_root = None;
 static Window wm_login_window = None;
 
-static gulong XA_WM_PROTOCOLS = 0;
-static gulong XA_WM_STATE = 0;
-static gulong XA_WM_TAKE_FOCUS = 0;
-static gulong XA_COMPOUND_TEXT = 0;
+static Atom XA_WM_PROTOCOLS = 0;
+static Atom XA_WM_STATE = 0;
+static Atom XA_WM_TAKE_FOCUS = 0;
+static Atom XA_COMPOUND_TEXT = 0;
 
 static int trap_depth = 0;
 
@@ -279,8 +279,9 @@ get_typed_property_data (Display *xdisplay,
 	  if (format_returned == 8 && type_returned == XA_COMPOUND_TEXT)
 	    {
 	      gchar **tlist = NULL;
-	      gint count = gdk_text_property_to_text_list (type_returned, 8, prop_data,
-							   nitems_return, &tlist);
+	      gint count = gdk_text_property_to_text_list
+		      (gdk_x11_xatom_to_atom (type_returned), 8, prop_data,
+		       nitems_return, &tlist);
 
 	      if (count && tlist && tlist[0])
 		{
@@ -959,19 +960,15 @@ event_process (XEvent *ev)
 static GPollFD event_poll_fd;
 
 static gboolean  
-event_prepare (gpointer  source_data, 
-	       GTimeVal *current_time,
-	       gint     *timeout,
-	       gpointer  user_data)
+event_prepare (GSource *source,
+	       gint     *timeout)
 {
 	*timeout = -1;
 	return XPending (wm_disp);
 }
 
 static gboolean  
-event_check (gpointer  source_data,
-	     GTimeVal *current_time,
-	     gpointer  user_data)
+event_check (GSource *source)
 {
 	if (event_poll_fd.revents & G_IO_IN) {
 		return XPending (wm_disp);
@@ -991,9 +988,9 @@ process_events (void)
 }
 
 static gboolean  
-event_dispatch (gpointer  source_data,
-		GTimeVal *current_time,
-		gpointer  user_data)
+event_dispatch (GSource     *source,
+		GSourceFunc  callback,
+		gpointer     user_data)
 {
 	process_events ();
 
@@ -1003,13 +1000,12 @@ event_dispatch (gpointer  source_data,
 static GSourceFuncs event_funcs = {
 	event_prepare,
 	event_check,
-	event_dispatch,
-	(GDestroyNotify)g_free
+	event_dispatch
 };
 
 /* HAAAAAAAAAAAAAACK */
 void
-gnome_dock_item_grab_pointer (GnomeDockItem *item)
+bonobo_dock_item_grab_pointer (BonoboDockItem *item)
 {
   GdkCursor *fleur;
 
@@ -1033,10 +1029,11 @@ void
 gdm_wm_init (Window login_window)
 {
 	XWindowAttributes attribs = { 0, };
+	GSource *source;
 
 	wm_login_window = login_window;
 
-	wm_disp = XOpenDisplay (gdk_display_name);
+	wm_disp = XOpenDisplay (gdk_get_display ());
 	if (wm_disp == NULL) {
 		/* EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEK! */
 		wm_disp = GDK_DISPLAY ();
@@ -1049,20 +1046,22 @@ gdm_wm_init (Window login_window)
 	XA_WM_STATE = XInternAtom (wm_disp, "WM_STATE", False);
 	XA_WM_TAKE_FOCUS = XInternAtom (wm_disp, "WM_TAKE_FOCUS", False);
 
-	XA_COMPOUND_TEXT = gdk_atom_intern ("COMPOUND_TEXT", FALSE);
+	XA_COMPOUND_TEXT = XInternAtom (wm_disp, "COMPOUND_TEXT", False);
 
 
 	wm_root = DefaultRootWindow (wm_disp);
 
 	add_all_current_windows ();
 
-	g_source_add (GDK_PRIORITY_EVENTS, FALSE, &event_funcs, NULL, NULL, NULL);
+	source = g_source_new (&event_funcs, sizeof (GSource));
 
 	event_poll_fd.fd = ConnectionNumber (wm_disp);
 	event_poll_fd.events = G_IO_IN;
 
-	g_main_add_poll (&event_poll_fd, GDK_PRIORITY_EVENTS);
-
+	g_source_add_poll (source, &event_poll_fd);
+	g_source_set_priority (source, GDK_PRIORITY_EVENTS);
+	g_source_set_can_recurse (source, FALSE);
+	g_source_attach (source, NULL);
 
 	/* set event mask for events on root window */
 	XGetWindowAttributes (wm_disp, wm_root, &attribs);

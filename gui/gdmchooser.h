@@ -19,24 +19,6 @@
 #ifndef __GDM_CHOOSER_H__
 #define __GDM_CHOOSER_H__
 
-#include <gnome.h>
-
-/* If you (for some odd reason) have more than 16 interfaces in your
- * machine, redefine this */
-
-#define MAXIF 16
-
-
-typedef struct _GdmChooserHost GdmChooserHost;
-
-struct _GdmChooserHost {
-    gchar *name;
-    gchar *desc;
-    struct in_addr ia;
-    GdkImlibImage *picture;
-    gboolean willing;
-};
-
 gboolean gdm_chooser_cancel (void);
 gboolean gdm_chooser_manage (GtkButton *button, gpointer data);
 gboolean 

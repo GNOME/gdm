@@ -128,10 +128,10 @@ make_us_an_exec_vector (const char *xnest)
 	}
 
 	/* leak */
-	if (gnome_is_program_in_path (xnest) == NULL) {
+	if (g_find_program_in_path (xnest) == NULL) {
 		xnest = "Xnest";
 		/* leak */
-		if (gnome_is_program_in_path (xnest) == NULL) {
+		if (g_find_program_in_path (xnest) == NULL) {
 			return NULL;
 		}
 	}

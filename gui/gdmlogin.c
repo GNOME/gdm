@@ -1014,7 +1014,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 		char *lang = g_getenv ("LANG");
 		if (lang == NULL ||
 		    lang[0] == '\0' ||
-		    ve_strcasecmp_no_locale (lang, "C") == 0) {
+		    g_ascii_strcasecmp (lang, "C") == 0) {
 			language = g_strdup (GdmDefaultLocale);
 		} else {
 			language = g_strdup (lang);
@@ -1349,7 +1349,7 @@ gdm_login_session_init (GtkWidget *menu)
 
 	/* If default session link exists, find out what it points to */
 	if (S_ISLNK (statbuf.st_mode) &&
-	    ve_strcasecmp_no_locale (dent->d_name, "default") == 0) {
+	    g_ascii_strcasecmp (dent->d_name, "default") == 0) {
 	    gchar t[_POSIX_PATH_MAX];
 	    
 	    linklen = readlink (s, t, _POSIX_PATH_MAX);
@@ -1384,12 +1384,12 @@ gdm_login_session_init (GtkWidget *menu)
 		/* if there is a session called Default, use that as default
 		 * if no link has been made */
 		if ( ! got_default_link &&
-		    ve_strcasecmp_no_locale (dent->d_name, "Default") == 0) {
+		    g_ascii_strcasecmp (dent->d_name, "Default") == 0) {
 			g_free (defsess);
 			defsess = g_strdup (dent->d_name);
 		}
 
-		if (ve_strcasecmp_no_locale (dent->d_name, "Gnome") == 0) {
+		if (g_ascii_strcasecmp (dent->d_name, "Gnome") == 0) {
 			/* Just in case there is no Default session and
 			 * no default link, make Gnome the default */
 			if (defsess == NULL)
@@ -3328,8 +3328,8 @@ gdm_login_check_exclude (struct passwd *pwent)
 
 		for (i=0 ; excludes[i] != NULL ; i++)  {
 			g_strstrip (excludes[i]);
-			if (ve_strcasecmp_no_locale (excludes[i],
-						     pwent->pw_name) == 0) {
+			if (g_ascii_strcasecmp (excludes[i],
+						pwent->pw_name) == 0) {
 				g_strfreev (excludes);
 				return TRUE;
 			}
@@ -3714,7 +3714,7 @@ main (int argc, char *argv[])
 	    gtk_widget_show_now (dialog);
 
 	    gnome_dialog_set_default (GNOME_DIALOG (dialog), 0);
-	    ve_gnome_dialog_grab_focus (GNOME_DIALOG (dialog), 0);
+	    gnome_dialog_grab_focus (GNOME_DIALOG (dialog), 0);
 
 	    switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
 	    case 0:

@@ -59,6 +59,7 @@
 
 #ifdef HAVE_LIBXDMCP
 #include <stdio.h>
+#include <unistd.h>
 #include <time.h>
 #include <stdlib.h>
 #include <syslog.h>

@@ -180,7 +180,7 @@ gdm_clearenv_no_lang (void)
 			envs = g_list_prepend (envs, g_strdup (env));
 	}
 
-	ve_clearenv ();
+	gnome_clearenv ();
 
 	for (li = envs; li != NULL; li = li->next) {
 		putenv (li->data);
@@ -264,11 +264,11 @@ gdm_text_message_dialog (const char *msg)
 	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
 
-	dialog = gnome_is_program_in_path ("dialog");
+	dialog = g_find_program_in_path ("dialog");
 	if (dialog == NULL)
-		dialog = gnome_is_program_in_path ("gdialog");
+		dialog = g_find_program_in_path ("gdialog");
 	if (dialog == NULL)
-		dialog = gnome_is_program_in_path ("whiptail");
+		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {
 		char *argv[7];
 
@@ -319,11 +319,11 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	if (ret != NULL)
 		*ret = FALSE;
 
-	dialog = gnome_is_program_in_path ("dialog");
+	dialog = g_find_program_in_path ("dialog");
 	if (dialog == NULL)
-		dialog = gnome_is_program_in_path ("gdialog");
+		dialog = g_find_program_in_path ("gdialog");
 	if (dialog == NULL)
-		dialog = gnome_is_program_in_path ("whiptail");
+		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {
 		char *argv[7];
 		int retint;
@@ -357,7 +357,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		char buf[256];
 		char *argv[5];
 
-		tempfd = mkstemp (tempname);
+		tempfd = g_mkstemp (tempname);
 		if (tempfd < 0)
 			return FALSE;
 
@@ -425,8 +425,8 @@ gdm_exec_wait (char * const *argv, gboolean no_display)
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		if (no_display) {
-			ve_unsetenv ("DISPLAY");
-			ve_unsetenv ("XAUTHORITY");
+			gnome_unsetenv ("DISPLAY");
+			gnome_unsetenv ("XAUTHORITY");
 		}
 		
 		execv (argv[0], argv);

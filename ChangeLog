@@ -1,3 +1,25 @@
+Fri Nov 16 02:15:06 2001  George Lebl <jirka@5z.com>
+
+	* daemon/xdmcp.c: include unistd.h
+
+	* Makefile.am, gui/Makefile.am: update for intltool
+
+	* configure.in: vicious-extensions doesn't define the envvar
+	  functions
+
+	* daemon/auth.c, daemon/gdm.c, daemon/misc.c, daemon/server.c, 
+	  daemon/slave.c, gui/gdmXnestchooser.c, gui/gdmconfig.c,
+	  gui/gdmlogin.c:  Use change to use the glib functions where
+	  old ve_* or gnome_* functions were used and also change to
+	  use the gnome_(setenv|unsetenv|clearenv) functions.
+
+	* gui/gdmwm.c: port to gnome2
+
+	* gui/gdmchooser.[ch]: port to gnome2 a bit, remove imlib dep, sanitize
+	  the interface broadcast stuff
+
+	* daemon/gdm.c: clean up the signal stuff source thing
+
 Thu Nov 15 23:25:41 2001  George Lebl <jirka@5z.com>
 
 	* configure.in: some build fixes

@@ -901,7 +901,7 @@ gdm_config_parse_most (gboolean factory)
 
         /* If default session link exists, find out what it points to */
 	if (S_ISLNK (statbuf.st_mode) &&
-	    ve_strcasecmp_no_locale (dent->d_name, "default") == 0) 
+	    g_ascii_strcasecmp (dent->d_name, "default") == 0) 
 	 {
 	    gchar t[_POSIX_PATH_MAX];
 	    

@@ -371,8 +371,8 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
     }
     
-    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
-    ve_setenv ("DISPLAY", d->name, TRUE);
+    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+    gnome_setenv ("DISPLAY", d->name, TRUE);
 
     /* Now the display name and hostname is final */
     if ( ! ve_string_empty (GdmAutomaticLogin)) {
@@ -639,15 +639,15 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		gdm_clearenv_no_lang ();
 
 		/* root here */
-		ve_setenv ("XAUTHORITY", display->authfile, TRUE);
-		ve_setenv ("DISPLAY", display->name, TRUE);
-		ve_setenv ("LOGNAME", "root", TRUE);
-		ve_setenv ("USER", "root", TRUE);
-		ve_setenv ("USERNAME", "root", TRUE);
-		ve_setenv ("HOME", pwent->pw_dir, TRUE);
-		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
-		ve_setenv ("PATH", GdmRootPath, TRUE);
-		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
+		gnome_setenv ("XAUTHORITY", display->authfile, TRUE);
+		gnome_setenv ("DISPLAY", display->name, TRUE);
+		gnome_setenv ("LOGNAME", "root", TRUE);
+		gnome_setenv ("USER", "root", TRUE);
+		gnome_setenv ("USERNAME", "root", TRUE);
+		gnome_setenv ("HOME", pwent->pw_dir, TRUE);
+		gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
+		gnome_setenv ("PATH", GdmRootPath, TRUE);
+		gnome_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
@@ -1015,7 +1015,7 @@ run_pictures (void)
 		}
 
 		strcpy (tempname, "/tmp/gdm-user-picture-XXXXXX");
-		tempfd = mkstemp (tempname);
+		tempfd = g_mkstemp (tempname);
 
 		if (tempfd < 0) {
 			fclose (fp);
@@ -1112,58 +1112,58 @@ gdm_slave_greeter (void)
 			    "gdm_slave_greeter", GdmUserId);
 	
 	gdm_clearenv_no_lang ();
-	ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
-	ve_setenv ("DISPLAY", d->name, TRUE);
+	gnome_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
+	gnome_setenv ("DISPLAY", d->name, TRUE);
 
-	ve_setenv ("LOGNAME", GdmUser, TRUE);
-	ve_setenv ("USER", GdmUser, TRUE);
-	ve_setenv ("USERNAME", GdmUser, TRUE);
-	ve_setenv ("GDM_GREETER_PROTOCOL_VERSION",
-		   GDM_GREETER_PROTOCOL_VERSION, TRUE);
-	ve_setenv ("GDM_VERSION", VERSION, TRUE);
+	gnome_setenv ("LOGNAME", GdmUser, TRUE);
+	gnome_setenv ("USER", GdmUser, TRUE);
+	gnome_setenv ("USERNAME", GdmUser, TRUE);
+	gnome_setenv ("GDM_GREETER_PROTOCOL_VERSION",
+		      GDM_GREETER_PROTOCOL_VERSION, TRUE);
+	gnome_setenv ("GDM_VERSION", VERSION, TRUE);
 
 	pwent = getpwnam (GdmUser);
 	if (pwent != NULL) {
 		/* Note that usually this doesn't exist */
 		if (pwent->pw_dir != NULL &&
 		    g_file_exists (pwent->pw_dir))
-			ve_setenv ("HOME", pwent->pw_dir, TRUE);
+			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
-			ve_setenv ("HOME", "/", TRUE); /* Hack */
-		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
+			gnome_setenv ("HOME", "/", TRUE); /* Hack */
+		gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
 	} else {
-		ve_setenv ("HOME", "/", TRUE); /* Hack */
-		ve_setenv ("SHELL", "/bin/sh", TRUE);
+		gnome_setenv ("HOME", "/", TRUE); /* Hack */
+		gnome_setenv ("SHELL", "/bin/sh", TRUE);
 	}
-	ve_setenv ("PATH", GdmDefaultPath, TRUE);
-	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
+	gnome_setenv ("PATH", GdmDefaultPath, TRUE);
+	gnome_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
 	/* Note that this is just informative, the slave will not listen to
 	 * the greeter even if it does something it shouldn't on a non-local
 	 * display so it's not a security risk */
 	if (d->console) {
-		ve_setenv ("GDM_IS_LOCAL", "yes", TRUE);
+		gnome_setenv ("GDM_IS_LOCAL", "yes", TRUE);
 	} else {
-		ve_unsetenv ("GDM_IS_LOCAL");
+		gnome_unsetenv ("GDM_IS_LOCAL");
 	}
 
 	/* this is again informal only, if the greeter does time out it will
 	 * not actually login a user if it's not enabled for this display */
 	if (d->timed_login_ok) {
 		if(ParsedTimedLogin == NULL)
-			ve_setenv ("GDM_TIMED_LOGIN_OK", " ", TRUE);
+			gnome_setenv ("GDM_TIMED_LOGIN_OK", " ", TRUE);
 		else
-			ve_setenv ("GDM_TIMED_LOGIN_OK", ParsedTimedLogin, TRUE);
+			gnome_setenv ("GDM_TIMED_LOGIN_OK", ParsedTimedLogin, TRUE);
 	} else {
-		ve_unsetenv ("GDM_TIMED_LOGIN_OK");
+		gnome_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
 	if (d->type == TYPE_FLEXI) {
-		ve_setenv ("GDM_FLEXI_SERVER", "yes", TRUE);
+		gnome_setenv ("GDM_FLEXI_SERVER", "yes", TRUE);
 	} else if (d->type == TYPE_FLEXI_XNEST) {
-		ve_setenv ("GDM_FLEXI_SERVER", "Xnest", TRUE);
+		gnome_setenv ("GDM_FLEXI_SERVER", "Xnest", TRUE);
 	} else {
-		ve_unsetenv ("GDM_FLEXI_SERVER");
+		gnome_unsetenv ("GDM_FLEXI_SERVER");
 	}
 
 	if(gdm_emergency_server) {
@@ -1177,7 +1177,7 @@ gdm_slave_greeter (void)
 				 "log in and fix the configuration.\n"
 				 "Note that automatic and timed logins\n"
 				 "are disabled now."));
-		ve_unsetenv ("GDM_TIMED_LOGIN_OK");
+		gnome_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
 	if (d->failsafe_xserver) {
@@ -1206,7 +1206,7 @@ gdm_slave_greeter (void)
 		   EXPANDED_BINDIR
 		   "/gdmlogin --disable-sound --disable-crash-dialog");
 
-	ve_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
+	gnome_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
 
 	argv = ve_split (EXPANDED_BINDIR
 			 "/gdmlogin --disable-sound --disable-crash-dialog");
@@ -1437,29 +1437,29 @@ gdm_slave_chooser (void)
 					"gdm_slave_chooser", GdmUserId);
 
 		gdm_clearenv_no_lang ();
-		ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
-		ve_setenv ("DISPLAY", d->name, TRUE);
+		gnome_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
+		gnome_setenv ("DISPLAY", d->name, TRUE);
 
-		ve_setenv ("LOGNAME", GdmUser, TRUE);
-		ve_setenv ("USER", GdmUser, TRUE);
-		ve_setenv ("USERNAME", GdmUser, TRUE);
+		gnome_setenv ("LOGNAME", GdmUser, TRUE);
+		gnome_setenv ("USER", GdmUser, TRUE);
+		gnome_setenv ("USERNAME", GdmUser, TRUE);
 
-		ve_setenv ("GDM_VERSION", VERSION, TRUE);
+		gnome_setenv ("GDM_VERSION", VERSION, TRUE);
 
 		pwent = getpwnam (GdmUser);
 		if (pwent != NULL) {
 			/* Note that usually this doesn't exist */
 			if (g_file_exists (pwent->pw_dir))
-				ve_setenv ("HOME", pwent->pw_dir, TRUE);
+				gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 			else
-				ve_setenv ("HOME", "/", TRUE); /* Hack */
-			ve_setenv ("SHELL", pwent->pw_shell, TRUE);
+				gnome_setenv ("HOME", "/", TRUE); /* Hack */
+			gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
 		} else {
-			ve_setenv ("HOME", "/", TRUE); /* Hack */
-			ve_setenv ("SHELL", "/bin/sh", TRUE);
+			gnome_setenv ("HOME", "/", TRUE); /* Hack */
+			gnome_setenv ("SHELL", "/bin/sh", TRUE);
 		}
-		ve_setenv ("PATH", GdmDefaultPath, TRUE);
-		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
+		gnome_setenv ("PATH", GdmDefaultPath, TRUE);
+		gnome_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
 		argv = ve_split (GdmChooser);
 		execv (argv[0], argv);
@@ -1693,7 +1693,7 @@ find_prog (const char *name, const char *args, char **retpath)
 		NULL
 	};
 
-	path = gnome_is_program_in_path (name);
+	path = g_find_program_in_path (name);
 	if (path != NULL &&
 	    access (path, X_OK) == 0) {
 		ret = g_strdup_printf ("%s %s", path, args);
@@ -1746,7 +1746,7 @@ unaliaslang (const char *origlang)
 		if (lang == NULL)
 			continue;
 
-		if (ve_strcasecmp_no_locale (name, origlang) == 0) {
+		if (g_ascii_strcasecmp (name, origlang) == 0) {
 			fclose (langlist);
 			return g_strdup (lang);
 		}
@@ -1797,27 +1797,27 @@ session_child_run (struct passwd *pwent,
 	gboolean need_config_sync = FALSE;
 	const char *shell = NULL;
 
-	ve_clearenv ();
+	gnome_clearenv ();
 
 	/* Prepare user session */
-	ve_setenv ("XAUTHORITY", d->userauth, TRUE);
-	ve_setenv ("DISPLAY", d->name, TRUE);
-	ve_setenv ("LOGNAME", login, TRUE);
-	ve_setenv ("USER", login, TRUE);
-	ve_setenv ("USERNAME", login, TRUE);
-	ve_setenv ("HOME", home_dir, TRUE);
-	ve_setenv ("GDMSESSION", session, TRUE);
-	ve_setenv ("SHELL", pwent->pw_shell, TRUE);
-	ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
+	gnome_setenv ("XAUTHORITY", d->userauth, TRUE);
+	gnome_setenv ("DISPLAY", d->name, TRUE);
+	gnome_setenv ("LOGNAME", login, TRUE);
+	gnome_setenv ("USER", login, TRUE);
+	gnome_setenv ("USERNAME", login, TRUE);
+	gnome_setenv ("HOME", home_dir, TRUE);
+	gnome_setenv ("GDMSESSION", session, TRUE);
+	gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
+	gnome_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
 	if (gnome_session != NULL)
-		ve_setenv ("GDM_GNOME_SESSION", gnome_session, TRUE);
+		gnome_setenv ("GDM_GNOME_SESSION", gnome_session, TRUE);
 
 	/* Special PATH for root */
 	if (pwent->pw_uid == 0)
-		ve_setenv ("PATH", GdmRootPath, TRUE);
+		gnome_setenv ("PATH", GdmRootPath, TRUE);
 	else
-		ve_setenv ("PATH", GdmDefaultPath, TRUE);
+		gnome_setenv ("PATH", GdmDefaultPath, TRUE);
 
 	/* Eeeeek, this no lookie as a correct language code, let's
 	 * try unaliasing it */
@@ -1827,8 +1827,8 @@ session_child_run (struct passwd *pwent,
 	}
 
 	/* Set locale */
-	ve_setenv ("LANG", language, TRUE);
-	ve_setenv ("GDM_LANG", language, TRUE);
+	gnome_setenv ("LANG", language, TRUE);
+	gnome_setenv ("GDM_LANG", language, TRUE);
     
 	setpgid (0, 0);
 	
@@ -2215,7 +2215,7 @@ gdm_slave_session_start (void)
 	    gdm_server_whack_clients (d);
 
     /* setup some env for PreSession script */
-    ve_setenv ("DISPLAY", d->name, TRUE);
+    gnome_setenv ("DISPLAY", d->name, TRUE);
 
     /* If script fails reset X server and restart greeter */
     if (gdm_slave_exec_script (d, GdmPreSession,
@@ -2723,31 +2723,31 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
         if (login != NULL) {
-	        ve_setenv ("LOGNAME", login, TRUE);
-	        ve_setenv ("USER", login, TRUE);
-	        ve_setenv ("USERNAME", login, TRUE);
+	        gnome_setenv ("LOGNAME", login, TRUE);
+	        gnome_setenv ("USER", login, TRUE);
+	        gnome_setenv ("USERNAME", login, TRUE);
         } else {
-	        ve_setenv ("LOGNAME", GdmUser, TRUE);
-	        ve_setenv ("USER", GdmUser, TRUE);
-	        ve_setenv ("USERNAME", GdmUser, TRUE);
+	        gnome_setenv ("LOGNAME", GdmUser, TRUE);
+	        gnome_setenv ("USER", GdmUser, TRUE);
+	        gnome_setenv ("USERNAME", GdmUser, TRUE);
         }
         if (pwent != NULL) {
 		if (ve_string_empty (pwent->pw_dir))
-			ve_setenv ("HOME", "/", TRUE);
+			gnome_setenv ("HOME", "/", TRUE);
 		else
-			ve_setenv ("HOME", pwent->pw_dir, TRUE);
-	        ve_setenv ("SHELL", pwent->pw_shell, TRUE);
+			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
+	        gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
         } else {
-	        ve_setenv ("HOME", "/", TRUE);
-	        ve_setenv ("SHELL", "/bin/sh", TRUE);
+	        gnome_setenv ("HOME", "/", TRUE);
+	        gnome_setenv ("SHELL", "/bin/sh", TRUE);
         }
 
 	/* Runs as root, uses server authfile */
-	ve_setenv ("XAUTHORITY", d->authfile, TRUE);
-        ve_setenv ("DISPLAY", d->name, TRUE);
-	ve_setenv ("PATH", GdmRootPath, TRUE);
-	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
-	ve_unsetenv ("MAIL");
+	gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+        gnome_setenv ("DISPLAY", d->name, TRUE);
+	gnome_setenv ("PATH", GdmRootPath, TRUE);
+	gnome_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
+	gnome_unsetenv ("MAIL");
 	argv = ve_split (scr);
 	execv (argv[0], argv);
 	syslog (LOG_ERR, _("gdm_slave_exec_script: Failed starting: %s"), scr);
@@ -2890,10 +2890,10 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	      dup2 (pipe1[1], STDOUT_FILENO);
 
 	    /* runs as root */
-	    ve_setenv ("XAUTHORITY", display->authfile, TRUE);
-	    ve_setenv ("DISPLAY", display->name, TRUE);
-	    ve_setenv ("PATH", GdmRootPath, TRUE);
-	    ve_unsetenv ("MAIL");
+	    gnome_setenv ("XAUTHORITY", display->authfile, TRUE);
+	    gnome_setenv ("DISPLAY", display->name, TRUE);
+	    gnome_setenv ("PATH", GdmRootPath, TRUE);
+	    gnome_unsetenv ("MAIL");
 
 	    argv = ve_split (str->str);
 	    execv (argv[0], argv);

@@ -60,6 +60,16 @@ static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
+typedef struct _GdmChooserHost GdmChooserHost;
+struct _GdmChooserHost {
+    gchar *name;
+    gchar *desc;
+    struct in_addr ia;
+    GdkPixbuf *picture;
+    gboolean willing;
+};
+
+
 static const gchar *scanning_message = N_("Please wait: scanning local network for XDMCP-enabled hosts...");
 static const gchar *empty_network = N_("No serving hosts were found.");
 static const gchar *active_network = N_("Choose a host to connect to from the selection below.");
@@ -133,7 +143,7 @@ static GtkWidget *status_label;
 
 static GIOChannel *channel;
 static GList *hosts = NULL;
-static GdkImlibImage *defhostimg;
+static GdkPixbuf *defhostimg;
 static GnomeIconList *browser;
 static GdmChooserHost *curhost;
 
@@ -263,51 +273,60 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 static void
 gdm_chooser_find_bcaddr (void)
 {
-    gint i = 0;
-    struct ifconf ifcfg;
-    struct ifreq ifr[MAXIF];
-    struct in_addr *ia;
+	int i = 0, num;
+	struct ifconf ifc;
+	char *buf;
+	struct ifreq *ifr;
+	struct in_addr *ia;
 
-    ifcfg.ifc_buf = (gchar *) &ifr;
-    ifcfg.ifc_len = sizeof (ifr);
-
-    memset (ifr, 0, sizeof (ifr));
-
-    if (ioctl (sockfd, SIOCGIFCONF, &ifcfg) < 0) 
-	gdm_chooser_abort ("Could not get SIOCIFCONF");
-
-    for (i=0 ; i < MAXIF ; i++) 
-	if (strlen (ifr[i].ifr_name)) {
-	    struct ifreq *ifreq;
-	    struct sockaddr_in *ba;
-
-	    ifreq = g_new0 (struct ifreq, 1);
-
-	    strncpy (ifreq->ifr_name, ifr[i].ifr_name, sizeof (ifr[i].ifr_name));
-
-	    if (ioctl (sockfd, SIOCGIFFLAGS, ifreq) < 0) 
-		gdm_chooser_abort ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
-
-	    if ((ifreq->ifr_flags & IFF_UP) == 0)
-		goto done;
-
-	    if ((ifreq->ifr_flags & IFF_BROADCAST) == 0)
-		goto done;
-
-	    if (ioctl (sockfd, SIOCGIFBRDADDR, ifreq) < 0)
-		goto done;
-
-	    ba = (struct sockaddr_in *) &ifreq->ifr_broadaddr;
-
-	    ia = g_new0 (struct in_addr, 1);
-
-	    ia->s_addr = ba->sin_addr.s_addr;
-
-	    bcaddr = g_slist_append (bcaddr, ia);
-
-	done:
-	    g_free (ifreq);
+#ifdef SIOCGIFNUM
+	if (ioctl (sockfd, SIOCGIFNUM, &num) < 0) {
+		num = 64;
 	}
+#else
+	num = 64;
+#endif
+
+	ifc.ifc_len = sizeof (struct ifreq) * num;
+	ifc.ifc_buf = buf = g_malloc (ifc.ifc_len);
+	if (ioctl (sockfd, SIOCGIFCONF, &ifc) < 0) {
+		g_free (buf);
+		gdm_chooser_abort ("Cannot get local addresses!");
+		return;
+	}
+
+	ifr = ifc.ifc_req;
+	for (i = 0 ; i < num ; i++) {
+		if ( ! ve_string_empty (ifr[i].ifr_name)) {
+			struct ifreq ifreq;
+			struct sockaddr_in *ba = NULL;
+
+			memset (&ifreq, 0, sizeof (ifreq));
+
+			strncpy (ifreq.ifr_name, ifr[i].ifr_name,
+				 sizeof (ifreq.ifr_name));
+			/* paranoia */
+			ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
+
+			if (ioctl (sockfd, SIOCGIFFLAGS, &ifreq) < 0) 
+				gdm_chooser_abort ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
+
+			if ((ifreq.ifr_flags & IFF_UP) == 0 ||
+			    (ifreq.ifr_flags & IFF_BROADCAST) == 0 ||
+			    ioctl (sockfd, SIOCGIFBRDADDR, &ifreq) < 0)
+				continue;
+
+			ba = (struct sockaddr_in *) &ifreq.ifr_broadaddr;
+
+			ia = g_new0 (struct in_addr, 1);
+
+			ia->s_addr = ba->sin_addr.s_addr;
+
+			bcaddr = g_slist_append (bcaddr, ia);
+		}
+	}
+
+	g_free (buf);
 }
 
 static gboolean
@@ -611,8 +630,10 @@ gdm_chooser_browser_update (void)
 		     * since the icon list is a broken piece of horsedung */
 		    char *temp = g_strconcat (host->name, " \n",
 					      host->desc, NULL);
-		    gnome_icon_list_append_imlib (GNOME_ICON_LIST (browser),
-						  host->picture, temp);
+		    gnome_icon_list_append_pixbuf (GNOME_ICON_LIST (browser),
+						   host->picture,
+						   NULL /* icon_filename */,
+						   temp);
 		    g_free (temp);
 		    any = TRUE;
 	    }
@@ -635,15 +656,16 @@ gdm_chooser_browser_update (void)
 void
 display_chooser_information (void)
 {
-   glade_xml_new (glade_filename, "gdmchooser_help_dialog");
+   glade_xml_new (glade_filename, "gdmchooser_help_dialog", PACKAGE);
 }
 
 static void 
 gdm_chooser_gui_init (void)
 {
+#if 0
     GtkStyle  *style;
     GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
- 
+#endif
    
         /* Look for the glade file in $(datadir)/gdmconfig or, failing that,
      * look in the current directory.
@@ -672,11 +694,11 @@ gdm_chooser_gui_init (void)
     if (access (GdmHostDefaultIcon, R_OK) != 0)
 	gdm_chooser_abort (_("Can't open default host icon: %s"), GdmHostDefaultIcon);
     else
-	defhostimg = gdk_imlib_load_image (GdmHostDefaultIcon);
+	defhostimg = gdk_pixbuf_new_from_file (GdmHostDefaultIcon, NULL);
 
     /* Main window */
     g_assert (glade_filename != NULL);
-    chooser_app = glade_xml_new (glade_filename, "gdmchooser_main");
+    chooser_app = glade_xml_new (glade_filename, "gdmchooser_main", PACKAGE);
     if (chooser_app == NULL) {
 	    GtkWidget *fatal_error = 
 		    gnome_error_dialog(_("Cannot find the glade interface description\n"
@@ -707,6 +729,7 @@ gdm_chooser_gui_init (void)
 	    exit(EXIT_FAILURE);
 	}
    
+#if 0
     /* Find background style for browser */
     style = gtk_style_copy (chooser->style);
    
@@ -715,6 +738,7 @@ gdm_chooser_gui_init (void)
      */
     style->bg[GTK_STATE_NORMAL] = bbg;
     gtk_widget_push_style (style);
+#endif
 
     browser = (GnomeIconList *) glade_xml_get_widget (chooser_app, 
 						     "chooser_iconlist");
@@ -722,7 +746,9 @@ gdm_chooser_gui_init (void)
     gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.");
     gnome_icon_list_set_icon_width (GNOME_ICON_LIST (browser), GdmIconMaxWidth + 20);
     gnome_icon_list_set_icon_border (GNOME_ICON_LIST (browser), 2);
+#if 0
     gtk_widget_pop_style();
+#endif
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
 
     gtk_widget_set_usize (GTK_WIDGET (chooser), 
@@ -768,11 +794,11 @@ gdm_chooser_host_alloc (const char *hostname,
 			gboolean willing)
 {
     GdmChooserHost *host;
-    GdkImlibImage *imlibimg;
+    GdkPixbuf *img;
     gchar *hostimg;
     GList *hostl;
 
-    host = g_malloc (sizeof (GdmChooserHost));
+    host = g_new0 (GdmChooserHost, 1);
     host->name = g_strdup (hostname);
     host->desc = g_strdup (description);
     memcpy (&host->ia, ia, sizeof (struct in_addr));
@@ -798,11 +824,11 @@ gdm_chooser_host_alloc (const char *hostname,
     hostimg = g_strconcat (GdmHostIconDir, "/", hostname, NULL);
 
     if (access (hostimg, R_OK) == 0 &&
-	(imlibimg = gdk_imlib_load_image (hostimg))) {
+	(img = gdk_pixbuf_new_from_file (hostimg, NULL)) != NULL) {
 	gint w, h;
 
-	w = imlibimg->rgb_width;
-	h = imlibimg->rgb_height;
+	w = gdk_pixbuf_get_width (img);
+	h = gdk_pixbuf_get_height (img);
 	
 	if (w>h && w>GdmIconMaxWidth) {
 	    h = h * ((gfloat) GdmIconMaxWidth/w);
@@ -812,11 +838,17 @@ gdm_chooser_host_alloc (const char *hostname,
 	    h = GdmIconMaxHeight;
 	}
 
-	host->picture = gdk_imlib_clone_scaled_image (imlibimg, w, h);
+
+	if (w != gdk_pixbuf_get_width (img) ||
+	    h != gdk_pixbuf_get_height (img))
+		host->picture = gdk_pixbuf_scale_simple (img, w, h,
+							 GDK_INTERP_BILINEAR);
+	else
+		host->picture = gdk_pixbuf_ref (img);
 	
-	gdk_imlib_destroy_image (imlibimg);
-    } else {
-	host->picture = defhostimg;
+	gdk_pixbuf_unref (img);
+    } else if (defhostimg != NULL) {
+	    host->picture = gdk_pixbuf_ref (defhostimg);
     }
 
     g_free (hostimg);
@@ -831,8 +863,8 @@ gdm_chooser_host_dispose (GdmChooserHost *host)
     if (!host)
 	return;
 
-    if (host->picture != defhostimg)
-	gdk_imlib_destroy_image (host->picture);
+    if (host->picture != NULL)
+	    gdk_pixbuf_unref (host->picture);
     host->picture = NULL;
 
     g_free (host->name);
@@ -847,11 +879,17 @@ static gchar *client_address = NULL;
 static gint connection_type = 0;
 
 struct poptOption xdm_options [] = {
-  { "xdmaddress", '\0', POPT_ARG_STRING|POPT_ARGFLAG_ONEDASH, &xdm_address, 0,
-    N_("Socket for xdm communication"), N_("SOCKET") }, { "clientaddress", '\0', POPT_ARG_STRING|POPT_ARGFLAG_ONEDASH, &client_address, 0, N_("Client address to return in response to xdm"), N_("ADDRESS") },
-  { "connectionType", '\0', POPT_ARG_INT|POPT_ARGFLAG_ONEDASH, &connection_type, 0, N_("Connection type to return in response to xdm"), N_("TYPE") },
-  POPT_AUTOHELP
-  { NULL, 0, 0, NULL, 0}
+	{ "xdmaddress", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
+	  &xdm_address, 0,
+	  N_("Socket for xdm communication"), N_("SOCKET") },
+        { "clientaddress", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
+	  &client_address, 0,
+	  N_("Client address to return in response to xdm"), N_("ADDRESS") },
+        { "connectionType", '\0', POPT_ARG_INT|POPT_ARGFLAG_ONEDASH,
+	  &connection_type, 0,
+	  N_("Connection type to return in response to xdm"), N_("TYPE") },
+        POPT_AUTOHELP
+	{ NULL, 0, 0, NULL, 0}
 };
 
 #ifndef ishexdigit
@@ -1030,14 +1068,12 @@ main (int argc, char *argv[])
     char **hosts;
     poptContext ctx;
     const char *gdm_version;
+    GnomeProgram *program;
 
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
     if (g_getenv ("RUNNING_UNDER_GDM") != NULL)
 	    RUNNING_UNDER_GDM = TRUE;
-
-    /* Avoid creating ~gdm/.gnome stuff */
-    gnome_do_not_create_directories = TRUE;
 
     openlog ("gdmchooser", LOG_PID, LOG_DAEMON);
 
@@ -1048,7 +1084,17 @@ main (int argc, char *argv[])
 	fixedargv[i] = argv[i];
     
     fixedargv[fixedargc-1] = "--disable-sound";
-    gnome_init_with_popt_table ("gdmchooser", VERSION, fixedargc, fixedargv, xdm_options, 0, &ctx);
+
+    program = gnome_program_init ("gdmchooser", VERSION, 
+				  NULL /* module_info */,
+				  fixedargc, fixedargv,
+				  GNOME_PARAM_POPT_TABLE, xdm_options,
+				  GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
+				  NULL);
+
+    g_object_get (G_OBJECT (program),
+		  GNOME_PARAM_POPT_CONTEXT, &ctx,
+		  NULL);
     glade_gnome_init();
     g_free (fixedargv);
 

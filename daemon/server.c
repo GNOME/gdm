@@ -333,7 +333,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     if ( ! gdm_auth_secure_display (d))
 	    return FALSE;
     gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
-    ve_setenv ("DISPLAY", d->name, TRUE);
+    gnome_setenv ("DISPLAY", d->name, TRUE);
 
     /* Catch USR1 from X server */
     usr1.sa_handler = gdm_server_usr1_handler;
@@ -399,7 +399,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		     * use USR1 of course, so try openning the display 
 		     * as a test, but the */
 
-		    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+		    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
 		    for (i = 0;
 			 d->dsp == NULL &&
 			 d->servstat == SERVER_STARTED &&
@@ -411,7 +411,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 			    else
 				    d->servstat = SERVER_RUNNING;
 		    }
-		    ve_unsetenv ("XAUTHORITY");
+		    gnome_unsetenv ("XAUTHORITY");
 		    if (d->dsp == NULL &&
 			/* Note: we could have still gotten a SIGCHLD */
 			d->servstat == SERVER_STARTED) {
@@ -671,11 +671,11 @@ gdm_server_spawn (GdmDisplay *d)
 	sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
 	if (d->type == TYPE_FLEXI_XNEST) {
-		ve_setenv ("DISPLAY", d->xnest_disp, TRUE);
+		gnome_setenv ("DISPLAY", d->xnest_disp, TRUE);
 		if (d->xnest_auth_file != NULL)
-			ve_setenv ("XAUTHORITY", d->xnest_auth_file, TRUE);
+			gnome_setenv ("XAUTHORITY", d->xnest_auth_file, TRUE);
 		else
-			ve_unsetenv ("XAUTHORITY");
+			gnome_unsetenv ("XAUTHORITY");
 	}
 
 	bin = ve_first_word (d->command);
@@ -752,11 +752,11 @@ gdm_server_spawn (GdmDisplay *d)
 		}
 		if (pwent->pw_dir != NULL &&
 		    g_file_exists (pwent->pw_dir))
-			ve_setenv ("HOME", pwent->pw_dir, TRUE);
+			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
-			ve_setenv ("HOME", "/", TRUE); /* Hack */
-		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
-		ve_unsetenv ("MAIL");
+			gnome_setenv ("HOME", "/", TRUE); /* Hack */
+		gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
+		gnome_unsetenv ("MAIL");
 
 		if (setgid (pwent->pw_gid) < 0)  {
 			gdm_error (_("%s: Couldn't set groupid to %d"), 

@@ -8,9 +8,9 @@ EXTRA_DIST = \
 	gdm.spec.in		\
 	gdmconfig-pam		\
 	gdmconfig-security.in	\
-	xml-i18n-extract.in	\
-	xml-i18n-merge.in	\
-	xml-i18n-update.in	\
+	intltool-extract.in	\
+	intltool-merge.in	\
+	intltool-update.in	\
 	gdm-restart.in		\
 	gdm-safe-restart.in
 
@@ -26,9 +26,9 @@ if CONSOLE_HELPER
 endif
 
 DISTCLEANFILES = \
-	xml-i18n-extract	\
-	xml-i18n-extract.in	\
-	xml-i18n-merge		\
-	xml-i18n-merge.in	\
-	xml-i18n-update		\
-	xml-i18n-update.in
+	intltool-extract	\
+	intltool-extract.in	\
+	intltool-merge		\
+	intltool-merge.in	\
+	intltool-update		\
+	intltool-update.in

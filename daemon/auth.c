@@ -139,7 +139,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    d->authfile = g_strconcat (GdmUserAuthFB, "/.gdmXXXXXX", NULL);
 
 	    umask (077);
-	    authfd = mkstemp (d->authfile);
+	    authfd = g_mkstemp (d->authfile);
 	    umask (022);
 
 	    if (authfd == -1) {
@@ -312,7 +312,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     fclose (af);
     if (af_gdm != NULL)
 	    fclose (af_gdm);
-    ve_setenv ("XAUTHORITY", d->authfile, TRUE);
+    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
 
     if (GdmDebug)
 	    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
@@ -363,7 +363,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp) */
 	d->authfb = TRUE;
 	d->userauth = g_strconcat (GdmUserAuthFB, "/.gdmXXXXXX", NULL);
-	authfd = mkstemp (d->userauth);
+	authfd = g_mkstemp (d->userauth);
 
 	if (authfd == -1) {
 	    gdm_error (_("gdm_auth_user_add: Could not open cookie file %s"), d->userauth);
