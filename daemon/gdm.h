@@ -41,13 +41,14 @@
 #define SERVER_RUNNING 252	/* Server running and ready for connections */
 #define SERVER_ABORT 253	/* Server failed badly. Suspending display. */
 
+/* DO NOTE USE 1, that's used as error if x connection fails usually */
 #define DISPLAY_SUCCESS 0	/* All systems are go */
-#define DISPLAY_XFAILED 1	/* X failed */
 #define DISPLAY_REMANAGE 2	/* Restart display */
 #define DISPLAY_ABORT 4		/* Houston, we have a problem */
 #define DISPLAY_REBOOT 8	/* Rebewt */
 #define DISPLAY_HALT 16		/* Halt */
 #define DISPLAY_DEAD 32		/* Display not configured/started yet */
+#define DISPLAY_XFAILED 64	/* X failed */
 
 #define XDMCP_DEAD 0
 #define XDMCP_PENDING 1
