@@ -55,6 +55,8 @@ extern gchar *GdmUser;
 extern gboolean GdmAllowRemoteAutoLogin;
 extern gint GdmRetryDelay;
 extern gboolean GdmDisplayLastLogin;
+extern uid_t GdmUserId;
+extern gid_t GdmGroupId;
 
 extern gboolean no_console;
 
