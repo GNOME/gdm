@@ -869,6 +869,36 @@
       </para>
     </listitem>
   </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Displays per host
+      </guimenuitem></term>
+      <listitem>
+        <para>
+          Specifies the number of displays that can run on any one host to be
+          set.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Ping interval
+      </guimenuitem></term>
+      <listitem>
+        <para>
+          Specifies the interval, in minutes, that the gdm waits between 
+          issuing pings to make sure the display is still alive.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>
+      </guimenuitem></term>
+      <listitem>
+        <para>
+          Allows the specification of a script to run to set the willing 
+          headers sent by the manager.
+        </para>
+      </listitem>
+    </varlistentry>
   </variablelist>
 
   <variablelist><title>X-server setup</title>
@@ -886,18 +916,25 @@
       </listitem>
     </varlistentry>
     <varlistentry>
-      <term><guimenuitem>Server
-       Definitions</guimenuitem></term>
+      <term><guimenuitem>Servers
+       </guimenuitem></term>
       <listitem>
         <para>
-          The local display number(s), and the command that
-          needs to be run to start the X server(s). <guibutton>Add</guibutton>
-          server brings up a dialog to enter X server and
-	  any parameters that may need to be passed. <guibutton>Edit</guibutton>
-          server brings up a dialog box to edit the
-	  highlighted entry. <guibutton>Delete
-          server</guibutton> deletes the hightlighted
-          entry.
+           Displays a list of server definitions. From the buttons on the
+           right, one can create aliases for a specific server setup. Enabling
+           a server as <guimenuoption>Flexible</guimenuoptions>, indicates that
+           the server can be started on demand.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Static Servers
+       </guimenuitem></term>
+      <listitem>
+        <para>
+          Allows the selection of servers which run always run. By picking
+          one of the server definitions via the buttons on the right, one can
+          setup the desired static server(s).
         </para>
       </listitem>
     </varlistentry>
@@ -910,11 +947,58 @@
       </listitem>
     </varlistentry>
     <varlistentry>
-      <term><guimenuitem>Enable debugging
-      output</guimenuitem></term>
+      <term><guimenuitem>Standard X server
+      </guimenuitem></term>
       <listitem>
 	<para>
-	  Allow debugging information to be displayed
+	  Indicates the X server to be used and its respective path.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Xnest server
+      </guimenuitem></term>
+      <listitem>
+	<para>
+	  Indicates the Xnest server to be used and its respective path.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Maximum number of flexible servers
+      </guimenuitem></term>
+      <listitem>
+	<para>
+	  Indicates the maximum number of flexible servers, that may be 
+          running at any one given time.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Failsafe X server
+      </guimenuitem></term>
+      <listitem>
+	<para>
+	  Indicates the Failsafe X server to be used and its respective path.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>Script to run when X is crashing
+      </guimenuitem></term>
+      <listitem>
+	<para>
+	  Indicates a script to run in the event on's X session keeps crashing.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guimenuitem>X configurator binaries to try
+      </guimenuitem></term>
+      <listitem>
+	<para>
+	  Indicates which binaries to use when an X session, or X itself, 
+          crashes.
 	</para>
       </listitem>
     </varlistentry>
