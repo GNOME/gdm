@@ -1698,6 +1698,11 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	     i++) {
 		sleep (1);
 	}
+
+	if (wait_for_ack  &&
+	    ! gdm_got_ack &&
+	    gdm_in_signal == 0)
+		gdm_error ("Timeout occured for sending message %s", str);
 }
 
 void

@@ -1,3 +1,10 @@
+Fri Aug 30 12:20:40 2002  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c, daemon/server.c: Fix test on fork to avoid
+	  duplicate slave processes.  This makes things actually work
+	  on subsequent logins.  Also note a timeout of a message in
+	  the syslog if we can.
+
 Fri Aug 30 10:11:15 2002  George Lebl <jirka@5z.com>
 
 	* configure.in: we no longer need libglade-convert so don't check for

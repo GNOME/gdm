@@ -133,7 +133,7 @@ gdm_server_reinit (GdmDisplay *disp)
 	gdm_sigchld_block_push ();
 
 	pid = gdm_fork_extra ();
-	if (pid < 1) {
+	if (pid < 0) {
 		/* So much work just because we can't fork */
 		if (disp->servpid > 1)
 			kill (disp->servpid, SIGHUP);
@@ -151,6 +151,11 @@ gdm_server_reinit (GdmDisplay *disp)
 		Display *dsp;
 
 		closelog ();
+
+		signal (SIGCHLD, SIG_IGN);
+		signal (SIGTERM, SIG_DFL);
+		signal (SIGINT, SIG_DFL);
+		signal (SIGHUP, SIG_DFL);
 
 		/* close things */
 		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
