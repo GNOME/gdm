@@ -334,6 +334,7 @@ gdm_config_parse_most (void)
     gdm_entry_set ("background_program", gnome_config_get_string (GDM_KEY_BACKGROUNDPROG));
     gdm_entry_set ("background_image", gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE));
     gdm_color_set ("background_color", gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR));
+    gdm_toggle_set ("background_scale", gnome_config_get_bool (GDM_KEY_BACKGROUNDSCALETOFIT));
 
     /* Fill the widgets in Greeter tab */
     /* enable_face_browser is in parse_remaining() */
@@ -540,6 +541,7 @@ write_new_config_file                  (GtkButton *button,
     gdm_entry_write("background_image", GDM_KEY_BACKGROUNDIMAGE);
     gdm_color_write("background_color", GDM_KEY_BACKGROUNDCOLOR);
     gdm_entry_write("background_program", GDM_KEY_BACKGROUNDPROG);
+    gdm_toggle_write("background_scale", GDM_KEY_BACKGROUNDSCALETOFIT);
 
     /* Write out the widget contents of the Greeter tab */
     gdm_toggle_write("enable_face_browser", GDM_KEY_BROWSER);
@@ -645,6 +647,8 @@ change_background_sensitivity_image    (GtkButton       *button,
 	gtk_widget_set_sensitive (get_widget ("background_image_pixmap_entry"), 
 				  GTK_TOGGLE_BUTTON (button)->active);
 	gtk_widget_set_sensitive (get_widget ("background_image_label"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+	gtk_widget_set_sensitive (get_widget ("background_scale"), 
 				  GTK_TOGGLE_BUTTON (button)->active);
 }
 

@@ -59,6 +59,7 @@ static gchar *GdmWelcome;
 static gchar *GdmBackgroundProg;
 static gchar *GdmBackgroundImage;
 static gchar *GdmBackgroundColor;
+static gboolean GdmBackgroundScaleToFit;
 static int GdmBackgroundType;
 enum {
 	GDM_BACKGROUND_NONE = 0,
@@ -572,6 +573,7 @@ gdm_login_parse_config (void)
     GdmBackgroundImage = gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE);
     GdmBackgroundColor = gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR);
     GdmBackgroundType = gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE);
+    GdmBackgroundScaleToFit = gnome_config_get_bool (GDM_KEY_BACKGROUNDSCALETOFIT);
     GdmGtkRC = gnome_config_get_string (GDM_KEY_GTKRC);
     GdmExclude = gnome_config_get_string (GDM_KEY_EXCLUDE);
     GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
@@ -591,9 +593,6 @@ gdm_login_parse_config (void)
     if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
     if (GdmUserMaxFile < 0) GdmUserMaxFile = 32768;
     if (GdmXineramaScreen < 0) GdmXineramaScreen = 0;
-
-    if (stat (GdmLocaleFile, &unused) == -1)
-	gdm_login_abort ("gdm_login_parse_config: Could not open locale file %s. Aborting!", GdmLocaleFile);
 
     /* Disable System menu on non-local displays */
     display = g_getenv ("DISPLAY");
@@ -1008,17 +1007,22 @@ gdm_login_language_handler (GtkWidget *widget)
 }
 
 
-static void
-gdm_login_language_init (GtkWidget *menu)
+static GtkWidget *
+gdm_login_language_menu_new (void)
 {
+    GtkWidget *menu;
     GtkWidget *item, *ammenu, *nzmenu, *omenu;
     FILE *langlist;
     char curline[256];
     gboolean has_other_locale = FALSE;
     GtkWidget *other_menu;
 
-    if (!menu)
-	return;
+    langlist = fopen (GdmLocaleFile, "r");
+
+    if (langlist == NULL)
+	    return NULL;
+
+    menu = gtk_menu_new ();
 
     lastlang = _("Last");
     curlang = lastlang;
@@ -1056,11 +1060,6 @@ gdm_login_language_init (GtkWidget *menu)
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
-    langlist = fopen (GdmLocaleFile, "r");
-
-    if (!langlist)
-	return;
-        
     while (fgets (curline, sizeof (curline), langlist)) {
 	    char *name;
 	    char *lang;
@@ -1109,6 +1108,8 @@ gdm_login_language_init (GtkWidget *menu)
 	    gtk_widget_destroy (other_menu);
     
     fclose (langlist);
+
+    return menu;
 }
 
 static gboolean
@@ -1704,12 +1705,13 @@ gdm_login_gui_init (void)
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (sessmenu), menu);
     gtk_widget_show (GTK_WIDGET (sessmenu));
 
-    menu = gtk_menu_new();
-    gdm_login_language_init (menu);
-    langmenu = gtk_menu_item_new_with_label (_("Language"));
-    gtk_menu_bar_append (GTK_MENU_BAR (menubar), langmenu);
-    gtk_menu_item_set_submenu (GTK_MENU_ITEM (langmenu), menu);
-    gtk_widget_show (GTK_WIDGET (langmenu));
+    menu = gdm_login_language_menu_new ();
+    if (menu != NULL) {
+	langmenu = gtk_menu_item_new_with_label (_("Language"));
+	gtk_menu_bar_append (GTK_MENU_BAR (menubar), langmenu);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (langmenu), menu);
+	gtk_widget_show (GTK_WIDGET (langmenu));
+    }
 
     if (GdmSystemMenu) {
 	menu = gtk_menu_new();
@@ -2184,19 +2186,22 @@ run_backgrounds (void)
 	    GdmBackgroundImage[0] != '\0') {
 		GdkPixbuf *pb = gdk_pixbuf_new_from_file (GdmBackgroundImage);
 		if (pb != NULL) {
-			GdkPixbuf *spb =
-				gdk_pixbuf_scale_simple (pb,
-							 gdk_screen_width (),
-							 gdk_screen_height (),
-							 GDK_INTERP_BILINEAR);
-			gdk_pixbuf_unref (pb);
-
-			/* paranoia */
-			if (spb != NULL) {
-				set_root (spb);
-				gdk_pixbuf_unref (spb);
+			if (GdmBackgroundScaleToFit) {
+				GdkPixbuf *spb =
+					gdk_pixbuf_scale_simple
+					(pb,
+					 gdk_screen_width (),
+					 gdk_screen_height (),
+					 GDK_INTERP_BILINEAR);
+				gdk_pixbuf_unref (pb);
+				pb = spb;
 			}
 
+			/* paranoia */
+			if (pb != NULL) {
+				set_root (pb);
+				gdk_pixbuf_unref (pb);
+			}
 		}
 	/* Load background color */
 	} else if (GdmBackgroundType == GDM_BACKGROUND_COLOR) {
