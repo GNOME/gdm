@@ -35,6 +35,17 @@ struct _GdmChooserHost {
     GdkImlibImage *picture;
 };
 
+gboolean gdm_chooser_cancel (void);
+gboolean gdm_chooser_manage (GtkButton *button, gpointer data);
+gboolean 
+gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event);
+gboolean
+gdm_chooser_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event);
+gboolean 
+gdm_chooser_xdmcp_discover (void);
+void
+display_chooser_information (void);
+
 #endif /* __GDM_CHOOSER_H__ */
 
 /* EOF */

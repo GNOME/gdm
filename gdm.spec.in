@@ -93,7 +93,8 @@ ${prefix}/sbin/gdmconfig
 %config /etc/X11/gdm/Init/*
 %config /etc/X11/gdm/PreSession/*
 %config /etc/X11/gdm/PostSession/*
-%{prefix}/share/gdmconfig/gdmconfig.glade
+%{prefix}/share/gdm/gdmconfig.glade
+%{prefix}/share/gdm/gdmchooser.glade
 %{prefix}/share/gnome/apps/System/gdmconfig.desktop
 %{prefix}/share/locale/*/*/*
 %{prefix}/share/pixmaps/*
@@ -101,6 +102,9 @@ ${prefix}/sbin/gdmconfig
 %attr(750, gdm, gdm) %dir /var/gdm
 
 %changelog
+* Mon Mar 05 2001 Lee Mallabone <lee0@callnetuk.com>
+- Change glade file paths and add gdmchooser glade file.
+
 * Wed Feb 28 2001 Lee Mallabone <lee0@callnetuk.com>
 - Add necessary paths/flags to use console-helper for gdmconfig.
 

@@ -106,14 +106,14 @@ main (int argc, char *argv[])
       }
 #endif /* DOING_DEVELOPMENT */
 
-    /* Look for the glade file in $(datadir)/gdmconfig or, failing that,
+    /* Look for the glade file in $(datadir)/gdm or, failing that,
      * look in the current directory.
 	 * Except when doing development, we want the app to use the glade file
 	 * in the same directory, so we can actually make changes easily.
      */
 	
 #ifndef DOING_DEVELOPMENT
-    glade_filename = gnome_datadir_file("gdmconfig/gdmconfig.glade");
+    glade_filename = gnome_datadir_file("gdm/gdmconfig.glade");
     if (!glade_filename)
       {	  
 	  glade_filename = g_strdup("gdmconfig.glade");

@@ -20,8 +20,15 @@
  * presents a list of them and allows the user to choose one. The
  * selected hostname will be printed on stdout. */
 
+/* This should always be commented before commiting/releasing. When it's
+ * defined the current directory is searched for the glade file, prior to
+ * the system directory.
+ */
+/*#define DOING_DEVELOPMENT 1*/
+
 #include <config.h>
 #include <gnome.h>
+#include <glade/glade.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
@@ -47,6 +54,11 @@
 #include "gdm.h"
 
 static const gchar RCSid[]="$Id$";
+
+static const gchar *scanning_message = N_("Please wait: scanning local network for XDMCP-enabled hosts...");
+static const gchar *empty_network = N_("No serving hosts were found.");
+static const gchar *active_network = N_("Choose a host to connect to from the selection below.");
+static gchar *glade_filename = NULL;
 
 static GdmChooserHost *gdm_chooser_host_alloc (gchar *hostname, gchar *description);
 static void gdm_chooser_decode_packet (void);
@@ -86,10 +98,9 @@ static gchar *GdmHostIconDir;
 static gchar *GdmHostDefaultIcon;
 static gchar *GdmGtkRC;
 
-static GtkWidget *chooser;
-static GtkWidget *manage;
-static GtkWidget *rescan;
-static GtkWidget *cancel;
+static GladeXML *chooser_app;
+static GtkWidget *chooser, *manage, *rescan, *cancel;
+static GtkWidget *status_label;
 
 static gint maxwidth = 0;
 static GIOChannel *channel;
@@ -235,7 +246,7 @@ gdm_chooser_find_bcaddr (void)
 }
 
 
-static gboolean 
+gboolean 
 gdm_chooser_xdmcp_discover (void)
 {
     struct sockaddr_in sock;
@@ -244,7 +255,11 @@ gdm_chooser_xdmcp_discover (void)
     struct in_addr *ia;
     GList *hl = hosts;
 
-    gtk_widget_set_sensitive (GTK_WIDGET (chooser), FALSE);
+    gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
+    gnome_icon_list_clear (GNOME_ICON_LIST (browser));
+    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
+    gtk_label_set (GTK_LABEL (status_label),
+		   scanning_message);
 
     while (hl) {
 	gdm_chooser_host_dispose ((GdmChooserHost *) hl->data);
@@ -320,7 +335,7 @@ gdm_chooser_xdmcp_init (char **hosts)
 }
 
 
-static gboolean
+gboolean
 gdm_chooser_cancel (void)
 {
     closelog();
@@ -330,16 +345,16 @@ gdm_chooser_cancel (void)
 }
 
 
-static gboolean
-gdm_chooser_manage (void)
+gboolean
+gdm_chooser_manage (GtkButton *button, gpointer data)
 {
-	if (curhost)
-		gdm_chooser_choose_host (curhost->name);
-
-	closelog();
-	gtk_main_quit();
-
-	return TRUE;
+    if (curhost)
+      gdm_chooser_choose_host (curhost->name);
+   
+    closelog();
+    gtk_main_quit();
+   
+    return TRUE;
 }
 
 
@@ -386,7 +401,7 @@ gdm_chooser_parse_config (void)
 }
 
 
-static gboolean 
+gboolean 
 gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 {
     if (!widget || !event)
@@ -408,7 +423,7 @@ gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 }
 
 
-static gboolean
+gboolean
 gdm_chooser_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
 {
     if (!event) 
@@ -453,27 +468,48 @@ gdm_chooser_browser_update (void)
 
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
 
-    gtk_widget_set_sensitive (GTK_WIDGET (chooser), TRUE);
+    if (hosts) {
+      gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
+		     active_network);
+    } else {
+      gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
+		     empty_network);
+    }
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
-    gtk_widget_show_all (GTK_WIDGET (chooser));
+    gtk_widget_set_sensitive (GTK_WIDGET (rescan), TRUE);
+    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
 }
 
+void
+display_chooser_information (void)
+{
+   glade_xml_new (glade_filename, "gdmchooser_help_dialog");
+}
 
 static void 
 gdm_chooser_gui_init (void)
 {
     GdkWindow *rootwin;
-    GtkWidget *frame;
-    GtkWidget *vbox;
-    GtkWidget *bbox;
-    GtkWidget *buttonpane;
-    GtkWidget *scrollbar;
-    GtkWidget *bframe;
-    GtkAdjustment *adj;
     GtkStyle  *style;
     GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
     struct    stat statbuf;
  
+   
+        /* Look for the glade file in $(datadir)/gdmconfig or, failing that,
+     * look in the current directory.
+	 * Except when doing development, we want the app to use the glade file
+	 * in the same directory, so we can actually make changes easily.
+     */
+	
+#ifndef DOING_DEVELOPMENT
+    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade");
+    if (!glade_filename)
+      {	  
+	  glade_filename = g_strdup("gdmchooser.glade");
+      }
+#else
+	glade_filename = g_strdup("gdmchooser.glade");
+#endif /* DOING_DEVELOPMENT */
     /* Enable theme */
     if (GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
@@ -490,22 +526,22 @@ gdm_chooser_gui_init (void)
     rootwin = gdk_window_foreign_new (GDK_ROOT_WINDOW ());
 
     /* Main window */
-    chooser = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-    gtk_container_border_width (GTK_CONTAINER (chooser), 0);
-
-    /* 3D frame for main window */
-    frame = gtk_frame_new (NULL);
-    gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
-    gtk_container_border_width (GTK_CONTAINER (frame), 0);
-    gtk_container_add (GTK_CONTAINER (chooser), frame);
-
-    /* Vertical box containing browser box and button pane */
-    vbox = gtk_vbox_new (FALSE, 10);
-    gtk_container_border_width (GTK_CONTAINER (vbox), 10);
-    gtk_container_add (GTK_CONTAINER (frame), vbox);
-
+    g_assert (glade_filename != NULL);
+    chooser_app = glade_xml_new (glade_filename, "gdmchooser_main");
+    glade_xml_signal_autoconnect (chooser_app);
+   
+    chooser = glade_xml_get_widget (chooser_app, "gdmchooser_main");
+    manage = glade_xml_get_widget (chooser_app, "connect_button");
+    rescan = glade_xml_get_widget (chooser_app, "rescan_button");
+    cancel = glade_xml_get_widget (chooser_app, "quit_button");
+    status_label = glade_xml_get_widget (chooser_app, "status_label");
+   
     /* Find background style for browser */
     style = gtk_style_copy (chooser->style);
+   
+    /* FIXME: Forcing the background to be white seems a bit off seeing as
+     * the user might like having a dark theme.
+     */
     style->bg[GTK_STATE_NORMAL] = bbg;
     gtk_widget_push_style (style);
 
@@ -513,90 +549,21 @@ gdm_chooser_gui_init (void)
     if (maxwidth < GdmIconMaxWidth/2)
 	maxwidth = (gint) GdmIconMaxWidth/2;
 
-    browser = GNOME_ICON_LIST (gnome_icon_list_new (maxwidth+20, NULL, FALSE));
+    browser = (GnomeIconList *) glade_xml_get_widget (chooser_app, 
+						     "chooser_iconlist");
     gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
     gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.");
-    gnome_icon_list_set_row_spacing (GNOME_ICON_LIST (browser), 2);
-    gnome_icon_list_set_col_spacing (GNOME_ICON_LIST (browser), 2);
+    gnome_icon_list_set_icon_width (GNOME_ICON_LIST (browser), maxwidth+20);
     gnome_icon_list_set_icon_border (GNOME_ICON_LIST (browser), 2);
-    gnome_icon_list_set_text_spacing (GNOME_ICON_LIST (browser), 2);
-    gnome_icon_list_set_selection_mode (GNOME_ICON_LIST (browser), GTK_SELECTION_SINGLE);
-    gtk_signal_connect (GTK_OBJECT (browser), "select_icon",
-			GTK_SIGNAL_FUNC (gdm_chooser_browser_select), NULL);
-    gtk_signal_connect (GTK_OBJECT (browser), "unselect_icon",
-			GTK_SIGNAL_FUNC (gdm_chooser_browser_unselect), NULL);
     gtk_widget_pop_style();
-
-    /* Browser 3D frame */
-    bframe = gtk_frame_new (NULL);
-    gtk_frame_set_shadow_type (GTK_FRAME (bframe), GTK_SHADOW_IN);
-    gtk_container_add (GTK_CONTAINER(bframe), GTK_WIDGET (browser));
-
-    /* Browser scroll bar */
-    adj = GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
-    scrollbar = gtk_vscrollbar_new (adj);
-    gnome_icon_list_set_vadjustment (browser, adj);
-
-    /* Box containing all browser functionality */
-    bbox = gtk_hbox_new (0, 0);
-    gtk_box_pack_start (GTK_BOX (bbox), GTK_WIDGET (bframe), 1, 1, 0);
-    gtk_box_pack_start (GTK_BOX (bbox), scrollbar, 0, 0, 0);
-    gtk_widget_show_all (GTK_WIDGET (bbox));
-
-    /* Put browser box in main window */
-    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (bbox), TRUE, TRUE, 0);
-
-    /* Buttons */
-    manage = gtk_button_new_with_label (_("Connect"));
-    gtk_signal_connect (GTK_OBJECT (manage), "clicked",
-			GTK_SIGNAL_FUNC (gdm_chooser_manage), NULL);
-    GTK_WIDGET_SET_FLAGS (GTK_WIDGET (manage), GTK_CAN_DEFAULT);
-    gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
-    gtk_widget_show (GTK_WIDGET (manage));
-
-    rescan = gtk_button_new_with_label (_("Rescan"));
-    gtk_signal_connect(GTK_OBJECT (rescan), "clicked",
-		       GTK_SIGNAL_FUNC (gdm_chooser_xdmcp_discover), NULL);
-    GTK_WIDGET_SET_FLAGS (GTK_WIDGET (rescan), GTK_CAN_DEFAULT);
-    gtk_widget_show (GTK_WIDGET (rescan));
-
-    cancel = gtk_button_new_with_label (_("Cancel"));
-    gtk_signal_connect(GTK_OBJECT (cancel), "clicked",
-		       GTK_SIGNAL_FUNC (gdm_chooser_cancel), NULL);
-    GTK_WIDGET_SET_FLAGS(GTK_WIDGET (cancel), GTK_CAN_DEFAULT);
-    gtk_widget_show (GTK_WIDGET (cancel));
-
-    /* Button pane */
-    buttonpane = gtk_hbox_new(TRUE, 0);
-    gtk_container_set_border_width ( GTK_CONTAINER (buttonpane), 0);
-    gtk_box_pack_start (GTK_BOX (buttonpane), 
-			GTK_WIDGET (manage), TRUE, TRUE, 0);
-    gtk_box_pack_start (GTK_BOX (buttonpane), 
-			GTK_WIDGET (rescan), TRUE, TRUE, 0);
-    gtk_box_pack_start (GTK_BOX (buttonpane), 
-			GTK_WIDGET (cancel), TRUE, TRUE, 0);
-    gtk_window_set_default (GTK_WINDOW (chooser), GTK_WIDGET (manage));
-    gtk_widget_show_all (GTK_WIDGET (buttonpane));
-
-    /* Put button pane in main window */
-    gtk_box_pack_end (GTK_BOX (vbox), 
-		      GTK_WIDGET (buttonpane), FALSE, FALSE, 0);
-
-    gtk_widget_show (GTK_WIDGET (vbox));
-    gtk_widget_show (GTK_WIDGET (frame));
-
-    gtk_window_set_policy (GTK_WINDOW (chooser), 1, 1, 1);
-    gtk_window_set_focus (GTK_WINDOW (chooser), GTK_WIDGET (manage));	
-
-    /* Geometry fun */
-    gtk_widget_show_all (GTK_WIDGET (browser));
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
+
     gtk_widget_set_usize (GTK_WIDGET (chooser), 
 			  (gint) gdk_screen_width() * 0.4, 
 			  (gint) gdk_screen_height() * 0.6);
 
+    /* FIXME: This should probably obey some user-specified geometry? */
     gtk_window_position (GTK_WINDOW (chooser), GTK_WIN_POS_CENTER);
-    gtk_widget_show_all (GTK_WIDGET (chooser));
 }
 
 
@@ -839,6 +806,7 @@ main (int argc, char *argv[])
     
     fixedargv[fixedargc-1] = "--disable-sound";
     gnome_init_with_popt_table ("gdmchooser", VERSION, fixedargc, fixedargv, xdm_options, 0, &ctx);
+    glade_gnome_init();
     g_free (fixedargv);
 
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);

@@ -1,3 +1,21 @@
+Mon Mar 05 22:42:54 2001  Lee Mallabone <lee0@callnetuk.com>
+
+        * gui/Makefile.am: Change shared directory for glade files
+	  to allow centralised storage of all gdm .glade files.
+	  Link gdmchooser against libglade.
+	
+	* gui/gdmconfig.c: Use new location for glade files.
+	
+	* gui/gdmchooser.c: Gladeify gdmchooser and give it a slightly
+	  less sucky GUI.
+	
+	* gui/gdmchooser.glade, gui/gdmchooser-strings.c: Added GUI and
+	  translatable strings for updated gdmchooser.
+	  
+	* gui/*.glade: Ensure WM_Class is set to be 'gdm' everywhere.
+	
+	* gdm.spec.in: Adjust paths for new glade file and location.
+
 Sun Mar 04 16:28:52 2001  George Lebl <jirka@5z.com>
 
 	* daemon/filecheck.[ch]: fix an error message and make const correct
