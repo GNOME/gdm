@@ -135,7 +135,7 @@ gdm_server_reinit (GdmDisplay *disp)
 	pid = gdm_fork_extra ();
 	if (pid < 1) {
 		/* So much work just because we can't fork */
-		if (disp->servpid > 0)
+		if (disp->servpid > 1)
 			kill (disp->servpid, SIGHUP);
 
 		gdm_sigchld_block_push ();
@@ -166,7 +166,7 @@ gdm_server_reinit (GdmDisplay *disp)
 		dsp = XOpenDisplay (d->name);
 
 		/* Now whack the server with a SIGHUP */
-		if (disp->servpid > 0)
+		if (disp->servpid > 1)
 			kill (disp->servpid, SIGHUP);
 
 		if (dsp == NULL) {
@@ -227,7 +227,7 @@ gdm_server_stop (GdmDisplay *disp)
 	    servpid = disp->servpid;
 	    disp->servpid = 0;
 
-	    if (servpid > 0 &&
+	    if (servpid > 1 &&
 		kill (servpid, SIGTERM) == 0)
 		    ve_waitpid_no_signal (servpid, 0, 0);
 	    gdm_sigchld_block_pop ();
@@ -652,7 +652,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 	    gdm_sigchld_block_push ();
 	    pid = d->servpid;
 	    d->servpid = 0;
-	    if (pid > 0 &&
+	    if (pid > 1 &&
 		kill (pid, SIGTERM) == 0)
 		    ve_waitpid_no_signal (pid, NULL, 0);
 	    gdm_sigchld_block_pop ();
@@ -878,7 +878,8 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
     if (d->servpid > 0) {
 	    pid_t pid = d->servpid;
 	    d->servpid = 0;
-	    if (kill (pid, SIGTERM) == 0)
+	    if (pid > 1 &&
+		kill (pid, SIGTERM) == 0)
 		    ve_waitpid_no_signal (pid, NULL, 0);
     }
 
