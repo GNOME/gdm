@@ -236,18 +236,65 @@ gdm_config_parse_remaining (void)
     gnome_config_pop_prefix();
 }
 
+static gboolean
+run_query (const gchar *msg)
+{
+    GtkWidget *req;
+
+    req = gnome_message_box_new (msg,
+				 GNOME_MESSAGE_BOX_QUESTION,
+				 GNOME_STOCK_BUTTON_YES,
+				 GNOME_STOCK_BUTTON_NO,
+				 NULL);
+	    
+    gtk_window_set_modal (GTK_WINDOW (req), TRUE);
+    gnome_dialog_set_parent (GNOME_DIALOG (req),
+			     GTK_WINDOW (GDMconfigurator));
+    return (!gnome_dialog_run (GNOME_DIALOG(req)));
+}
+
 static void
-run_warn_dialog (void)
+run_warn_reset_dialog (void)
 {
 	GtkWidget *w;
+	char *pidfile;
+	long pid = 0;
+	FILE *fp = NULL;
 
-	w = gnome_ok_dialog_parented
-		(_("The greeter settings will take effect the next time\n"
-		   "it is displayed.  The rest of the settings will not\n"
-		   "take effect until gdm is restarted or the computer is\n"
-		   "rebooted"),
-		 GTK_WINDOW (GDMconfigurator));
-	gnome_dialog_run_and_close (GNOME_DIALOG (w));
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	pidfile = gnome_config_get_string (GDM_KEY_PIDFILE);
+	gnome_config_pop_prefix ();
+
+	if (pidfile != NULL)
+		fp = fopen (pidfile, "r");
+	if (fp != NULL) {
+		fscanf (fp, "%ld", &pid);
+		fclose (fp);
+	}
+
+	g_free (pidfile);
+
+	if (pid > 1 &&
+	    kill (pid, 0) == 0) {
+		if (run_query (_("The settings cannot take effect until gdm\n"
+				 "is restarted or your computer is rebooted.\n"
+				 "Do you wish to restart GDM now?\n"
+				 "This will kill all your current sessions\n"
+				 "and you will lose any unsaved data!")) &&
+		    run_query (_("Are you sure you wish to restart GDM\n"
+				 "and lose any unsaved data?"))) {
+			kill (pid, SIGHUP);
+			/* now what happens :) */
+		}
+	} else {
+		w = gnome_ok_dialog_parented
+			(_("The greeter settings will take effect the next time\n"
+			   "it is displayed.  The rest of the settings will not\n"
+			   "take effect until gdm is restarted or the computer is\n"
+			   "rebooted"),
+			 GTK_WINDOW (GDMconfigurator));
+		gnome_dialog_run_and_close (GNOME_DIALOG (w));
+	}
 }
 
 
@@ -366,7 +413,7 @@ write_new_config_file                  (GnomePropertyBox *gnomepropertybox,
     gnome_config_pop_prefix();
     gnome_config_sync();
 
-    run_warn_dialog ();
+    run_warn_reset_dialog ();
 }
 
 
@@ -375,7 +422,7 @@ open_help_page                         (GnomePropertyBox *gnomepropertybox,
                                         gint             arg1,
                                         gpointer         user_data)
 {
-
+	/* FIXME: ! */
 }
 
 

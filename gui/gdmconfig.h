@@ -27,6 +27,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <signal.h>
 
 #include "../daemon/gdm.h"
 

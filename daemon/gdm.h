@@ -76,7 +76,7 @@
 #define GDM_KEY_GROUP "daemon/Group=gdm"
 #define GDM_KEY_HALT "daemon/HaltCommand=shutdown -h now"
 #define GDM_KEY_INITDIR "daemon/DisplayInitDir="
-#define GDM_KEY_KILLIC "daemon/KillInitClients=1"
+#define GDM_KEY_KILLIC "daemon/KillInitClients=true"
 #define GDM_KEY_LOGDIR "daemon/LogDir="
 #define GDM_KEY_PATH "daemon/DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin"
 #define GDM_KEY_PIDFILE "daemon/PidFile=/var/run/gdm.pid"
@@ -91,19 +91,19 @@
 #define GDM_KEY_UAUTHFILE "daemon/UserAuthFile=.Xauthority"
 #define GDM_KEY_USER "daemon/User=gdm"
 
-#define GDM_KEY_ALLOWROOT "security/AllowRoot=1"
+#define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_MAXFILE "security/UserMaxFile=65536"
 #define GDM_KEY_RELAXPERM "security/RelaxPermissions=0"
 #define GDM_KEY_RETRYDELAY "security/RetryDelay=3"
-#define GDM_KEY_VERBAUTH "security/VerboseAuth=1"
+#define GDM_KEY_VERBAUTH "security/VerboseAuth=true"
 
-#define GDM_KEY_XDMCP "xdmcp/Enable=1"
+#define GDM_KEY_XDMCP "xdmcp/Enable=true"
 #define GDM_KEY_MAXPEND "xdmcp/MaxPending=4"
 #define GDM_KEY_MAXSESS "xdmcp/MaxSessions=16"
 #define GDM_KEY_MAXWAIT "xdmcp/MaxWait=30"
 #define GDM_KEY_DISPERHOST "xdmcp/DisplaysPerHost=1"
 #define GDM_KEY_UDPPORT "xdmcp/Port=177"
-#define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=1"
+#define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=true"
 #define GDM_KEY_MAXINDIR "xdmcp/MaxPendingIndirect=4"
 #define GDM_KEY_MAXINDWAIT "xdmcp/MaxWaitIndirect=30"
 
@@ -111,7 +111,7 @@
 #define GDM_KEY_ICONWIDTH "gui/MaxIconWidth=128"
 #define GDM_KEY_ICONHEIGHT "gui/MaxIconHeight=128"
 
-#define GDM_KEY_BROWSER "greeter/Browser=0"
+#define GDM_KEY_BROWSER "greeter/Browser=false"
 #define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody"
 #define GDM_KEY_FACE "greeter/DefaultFace=nobody.png"
 #define GDM_KEY_FACEDIR "greeter/GlobalFaceDir="
@@ -120,8 +120,8 @@
 #define GDM_KEY_LOCALE "greeter/DefaultLocale=english"
 #define GDM_KEY_LOCFILE "greeter/LocaleFile="
 #define GDM_KEY_LOGO "greeter/Logo="
-#define GDM_KEY_QUIVER "greeter/Quiver=1"
-#define GDM_KEY_SYSMENU "greeter/SystemMenu=0"
+#define GDM_KEY_QUIVER "greeter/Quiver=true"
+#define GDM_KEY_SYSMENU "greeter/SystemMenu=true"
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %h"
 #define GDM_KEY_XINERAMASCREEN "greeter/XineramaScreen=0"
 #define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="
@@ -134,7 +134,7 @@
 #define GDM_KEY_HOST "chooser/DefaultHostImg=nohost.png"
 #define GDM_KEY_HOSTDIR "chooser/HostImageDir="
 
-#define GDM_KEY_DEBUG "debug/Enable=0"
+#define GDM_KEY_DEBUG "debug/Enable=false"
 
 #define GDM_KEY_SERVERS "servers"
 
