@@ -1975,32 +1975,40 @@ static void
 gdm_screen_init (void) 
 {
 #ifdef HAVE_LIBXINERAMA
-    if (XineramaIsActive (GDK_DISPLAY ())) {
-	int screen_num;
-	XineramaScreenInfo *screens = XineramaQueryScreens (GDK_DISPLAY (),
-							    &screen_num);
+	gboolean have_xinerama = FALSE;
+
+	gdk_flush ();
+	gdk_error_trap_push ();
+	have_xinerama = XineramaIsActive (GDK_DISPLAY ());
+	gdk_flush ();
+	if (gdk_error_trap_pop () != 0)
+		have_xinerama = FALSE;
+
+	if (have_xinerama) {
+		int screen_num;
+		XineramaScreenInfo *screens = XineramaQueryScreens (GDK_DISPLAY (),
+								    &screen_num);
 
 
-	if (screen_num <= 0) 
-	    gdm_login_abort ("Xinerama active, but <= 0 screens?");
+		if (screen_num <= 0) 
+			gdm_login_abort ("Xinerama active, but <= 0 screens?");
 
-	if (screen_num < GdmXineramaScreen)
-	    GdmXineramaScreen = 0;
+		if (screen_num < GdmXineramaScreen)
+			GdmXineramaScreen = 0;
 
-	screen.x = screens[GdmXineramaScreen].x_org;
-	screen.y = screens[GdmXineramaScreen].y_org;
-	screen.width = screens[GdmXineramaScreen].width;
-	screen.height = screens[GdmXineramaScreen].height;
-	XFree (screens);
-    }
-    else 
+		screen.x = screens[GdmXineramaScreen].x_org;
+		screen.y = screens[GdmXineramaScreen].y_org;
+		screen.width = screens[GdmXineramaScreen].width;
+		screen.height = screens[GdmXineramaScreen].height;
+		XFree (screens);
+	} else
 #endif
-    {
-	screen.x = 0;
-	screen.y = 0;
-	screen.width = gdk_screen_width ();
-	screen.height = gdk_screen_height ();
-    }
+	{
+		screen.x = 0;
+		screen.y = 0;
+		screen.width = gdk_screen_width ();
+		screen.height = gdk_screen_height ();
+	}
 }
 
 
