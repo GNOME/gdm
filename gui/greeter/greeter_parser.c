@@ -286,11 +286,18 @@ parse_show (xmlNodePtr       node,
       xmlFree (prop);
     }
 
+  /* Note: subtype is deprecated, use type only */
   prop = xmlGetProp (node, "subtype");
   if (prop != NULL)
     {
-      g_free (info->show_subtype);
-      info->show_subtype = g_strdup (prop);
+      /* code for legacy uses of subtype only, are there any such
+       * themes out there?  The Bluecurve was the one this was made
+       * for and bluecurve is NOT using it. */
+      if (info->show_type == NULL ||
+	  strcmp (info->show_type, "system") == 0) {
+	      g_free (info->show_type);
+	      info->show_type = g_strdup (prop);
+      }
       xmlFree (prop);
     }
   
@@ -941,6 +948,11 @@ parse_stock (xmlNodePtr node,
         {
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("_XDMCP Chooser"));
+	}
+      else if (g_ascii_strcasecmp (prop, "config") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("_Configure"));
 	}
       else if (g_ascii_strcasecmp (prop, "caps-lock-warning") == 0)
         {

@@ -59,7 +59,6 @@ greeter_item_info_free (GreeterItemInfo *info)
   g_free (info->id);
   g_free (info->orig_text);
   g_free (info->show_type);
-  g_free (info->show_subtype);
   g_free (info);
 }
 
@@ -231,17 +230,17 @@ greeter_item_is_visible (GreeterItemInfo *info)
       strcmp (info->show_type, "system") == 0)
 	  return FALSE;
 
-  if (GdmHalt == NULL &&
-      info->show_subtype != NULL &&
-      strcmp (info->show_subtype, "halt") == 0)
+  if (( ! GdmSystemMenu || GdmHalt == NULL) &&
+      info->show_type != NULL &&
+      strcmp (info->show_type, "halt") == 0)
 	  return FALSE;
-  if (GdmReboot == NULL &&
-      info->show_subtype != NULL &&
-      strcmp (info->show_subtype, "reboot") == 0)
+  if (( ! GdmSystemMenu || GdmReboot == NULL) &&
+      info->show_type != NULL &&
+      strcmp (info->show_type, "reboot") == 0)
 	  return FALSE;
-  if (GdmSuspend == NULL &&
-      info->show_subtype != NULL &&
-      strcmp (info->show_subtype, "suspend") == 0)
+  if (( ! GdmSystemMenu || GdmSuspend == NULL) &&
+      info->show_type != NULL &&
+      strcmp (info->show_type, "suspend") == 0)
 	  return FALSE;
 
   if (ve_string_empty (GdmTimedLogin) &&

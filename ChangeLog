@@ -1,3 +1,16 @@
+Tue Jun 03 11:11:20 2003  George Lebl <jirka@5z.com>
+
+        * gui/greeter/greeter_item.[ch], gui/greeter/greeter_parser.c:
+          whack subtype, though read it from "legacy" xml files into "type"
+          (as long as type was "system"), also add a "config" stock label
+          if someone really wanted to do a config button.  If the type
+          is now config, halt, reboot, suspend or chooser, automatically
+          check if SystemMenu is enabled, which avoids the whole subtype
+          nonsense.
+ 
+        * gui/greeter/greeter.dtd:  Update for the above and also add the
+          stock labels for config and chooser
+
 Tue Jun 03 10:41:03 2003  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter.dtd: update the DTD for the chooser stuff.
