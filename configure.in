@@ -156,6 +156,8 @@ dnl ## internationalization support
 ALL_LINGUAS="ar az bg ca cs da de el es et eu fi fr ga gl hu it ja ko lt lv ms nl nn no pl pt_BR pt ro ru sk sl sv ta tr uk vi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
+EXTRA_DAEMON_LIBS=""
+
 # TCP Wrappers for XDMCP access control
 if test x$with_tcp_wrappers = xno ; then
 	echo "TCP wrappers disabled"
@@ -198,8 +200,8 @@ else
   fi
   if test -n "$LIBWRAP_PATH"; then
 	AC_CHECK_LIB(wrap, hosts_ctl, [
-		     LIBS="$LIBS -lwrap"], [
-		     LIBS="$LIBS $LIBWRAP_PATH"])
+		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lwrap"], [
+		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIBWRAP_PATH"])
   fi
 
   dnl find out if we need -lnsl or whatever
@@ -225,7 +227,7 @@ LIBS="$OLD_LIBS"
         LIBS="$ORIG_LIBS"
 	if test -n "$LIB_NSL"; then
         	AC_MSG_RESULT(yes)
-        	LIBS="$LIBS $LIB_NSL"
+        	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS $LIB_NSL"
 	else
         	AC_MSG_RESULT(no)
 	fi
@@ -249,7 +251,7 @@ if test x$enable_authentication_scheme != xcrypt -a \
 	x$enable_authentication_scheme != xshadow ; then
 	AC_CHECK_HEADERS(security/pam_appl.h, [
 		have_pam=yes
-        	LIBS="$LIBS -lpam"
+        	EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lpam"
         	VRFY="verify-pam"
         	AC_DEFINE(HAVE_PAM)])
 fi
@@ -270,7 +272,7 @@ if test x$have_pam = xno; then
   # Check if -lcrypt is necessary, and if so
   # add it to the front of the link chain
   AC_CHECK_LIB(crypt, crypt, [
-  	      LIBS="-lcrypt $LIBS"])
+  	      EXTRA_DAEMON_LIBS="-lcrypt $EXTRA_DAEMON_LIBS"])
 
   # Check if crypt lives in a separate header file
   AC_CHECK_HEADERS(crypt.h, [
@@ -300,7 +302,7 @@ AC_SUBST(VRFY)
 # Can we use BSD's setusercontext
 #
 AC_CHECK_HEADER(login_cap.h, [
-		LIBS="$LIBS -lutil"
+		EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lutil"
 		AC_DEFINE(HAVE_LOGINCAP)])
 
 #
@@ -308,6 +310,7 @@ AC_CHECK_HEADER(login_cap.h, [
 #
 AC_CHECK_HEADERS(sys/sockio.h, [
 		 AC_DEFINE(HAVE_SYS_SOCKIO_H)])
+
 
 #
 # Xdmcp checking
@@ -359,6 +362,11 @@ if test x$with_xinerama != xno ; then
 	fi
 fi
 AC_SUBST(XINERAMA_LIBS)
+
+#
+# Subst the extra libs
+#
+AC_SUBST(EXTRA_DAEMON_LIBS)
 
 #
 # Configuration file foo, we need to get expanded versions of a bunch of things

@@ -55,6 +55,11 @@ gdm_binary_SOURCES = \
 
 EXTRA_gdm_binary_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
 
+# Note that these libs are in LDFLAGS because they should come before
+# everything else on the link line as they may override stuff
+gdm_binary_LDFLAGS = \
+	$(EXTRA_DAEMON_LIBS)
+
 gdm_binary_LDADD = \
 	$(DAEMON_LIBS)				\
 	$(X_LIBS)				\

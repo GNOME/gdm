@@ -1,3 +1,10 @@
+Tue Jul 09 11:09:53 2002  George Lebl <jirka@5z.com>
+
+	* configure.in, daemon/Makefile.am: Fix #85785 by adding all the
+	  extra libs (which includes -lcrypt) to the LDFLAGS of the
+	  gdm_binary.  This also as a side effect doesn't link all those
+	  libs to things that don't need them.
+
 Tue Jul 09 10:47:31 2002  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c: before running gdm_fail in the config parsing
