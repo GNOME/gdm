@@ -1,9 +1,13 @@
-# Commentaar:
+# gdm nl.po
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Hein-Jan Leliveld <h.j.leliveld@student.tn.tudelft.nl>, 1999.
+# Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>, 2001.
+# Ronald Hummelink <ronald@hummelink.xs4all.nl>, 2002.
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.2\n"
-"POT-Creation-Date: 2002-12-27 05:56+0100\n"
+"POT-Creation-Date: 2003-02-14 04:55+0100\n"
 "PO-Revision-Date: 2002-12-27 09:47+0100\n"
 "Last-Translator: V. van Adrighem <V.vanAdrighem@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -584,7 +588,7 @@ msgstr "Niet opstarten in de achtergrond"
 msgid "Preserve LD_* variables"
 msgstr "Behoud LD_* variabelen"
 
-#: daemon/gdm.c:1436 gui/gdmchooser.c:1103
+#: daemon/gdm.c:1436 gui/gdmchooser.c:1071
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -1242,7 +1246,8 @@ msgid "Please enter your username"
 msgstr "Voer uw gebruikersnaam in"
 
 #: daemon/verify-crypt.c:72 daemon/verify-pam.c:320 daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3297 gui/greeter/themes/circles/circles.xml.in.h:5
+#: gui/gdmlogin.c:3297 gui/greeter/greeter_parser.c:961
+#: gui/greeter/themes/circles/circles.xml.in.h:5
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
 msgid "Username:"
 msgstr "Gebruikersnaam:"
@@ -1563,15 +1568,15 @@ msgstr "gdm_xdmcp_handle_keepalive: Kan het schermnummer niet lezen"
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Kan het sessie ID niet lezen"
 
-#: daemon/xdmcp.c:1662
+#: daemon/xdmcp.c:1661
 msgid "gdm_xdmcp_init: No XDMCP support"
 msgstr "gdm_xdmcp_init: Geen ondersteuning voor XDMCP"
 
-#: daemon/xdmcp.c:1669
+#: daemon/xdmcp.c:1668
 msgid "gdm_xdmcp_run: No XDMCP support"
 msgstr "gdm_xdmcp_run: Geen ondersteuning voor XDMCP"
 
-#: daemon/xdmcp.c:1675
+#: daemon/xdmcp.c:1674
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_close: Geen ondersteuning voor XDMCP"
 
@@ -1711,7 +1716,7 @@ msgstr "Geen servers gevonden."
 msgid "Choose a host to connect to from the selection below."
 msgstr "Kies een computer om contact mee leggen uit de lijst hieronder."
 
-#: gui/gdmchooser.c:903
+#: gui/gdmchooser.c:871
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1728,52 +1733,52 @@ msgstr ""
 "een computer hebt geselecteerd kunt u een verbinding opzetten door op "
 "'Verbinden' te klikken."
 
-#: gui/gdmchooser.c:931
+#: gui/gdmchooser.c:899
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Kan het standaard host-pictogram %s niet openen"
 
-#: gui/gdmchooser.c:987
+#: gui/gdmchooser.c:955
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Fout bij het instellen van het HUP signaal"
 
-#: gui/gdmchooser.c:990
+#: gui/gdmchooser.c:958
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Fout bij het instellen van het INT signaal"
 
-#: gui/gdmchooser.c:993
+#: gui/gdmchooser.c:961
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Fout bij het instellen van het TERM signaal"
 
-#: gui/gdmchooser.c:1001 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
+#: gui/gdmchooser.c:969 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
 msgid "Could not set signal mask!"
 msgstr "Kan het signaalmasker niet instellen!"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "Socket for xdm communication"
 msgstr "Socket voor XDM-communicatie"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "SOCKET"
 msgstr "SOCKET"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "Client address to return in response to xdm"
 msgstr "Cliëntadres om als antwoord aan xdm te geven"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "ADDRESS"
 msgstr "ADDRESS"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "Connection type to return in response to xdm"
 msgstr "Verbindingstype om als antwoord aan xdm te geven."
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "TYPE"
 msgstr "TYPE"
 
-#: gui/gdmchooser.c:1133
+#: gui/gdmchooser.c:1101
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).\n"
@@ -2189,38 +2194,43 @@ msgstr "N-Z|Tamil"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:152
+msgid "N-Z|Thai"
+msgstr "N-Z|Thais"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:154
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turks"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:154
+#: gui/gdmlanguages.c:156
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Oekraïns"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:156
+#: gui/gdmlanguages.c:158
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamees"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:158
+#: gui/gdmlanguages.c:160
 msgid "N-Z|Walloon"
 msgstr "N-Z|Walloon"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:160
+#: gui/gdmlanguages.c:162
 msgid "Other|POSIX/C English"
 msgstr "Overig|POSIX/C Engels"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:335
+#: gui/gdmlanguages.c:337
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:343
+#: gui/gdmlanguages.c:345
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2259,7 +2269,8 @@ msgstr "Gnome Kiezer"
 msgid "Last"
 msgstr "Laatste"
 
-#: gui/gdmlogin.c:218 gui/greeter/themes/circles/circles.xml.in.h:4
+#: gui/gdmlogin.c:218 gui/greeter/greeter_parser.c:948
+#: gui/greeter/themes/circles/circles.xml.in.h:4
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
 #, no-c-format
 msgid "User %s will login in %d seconds"
@@ -2290,15 +2301,15 @@ msgstr ""
 "\n"
 "U zult zich waarschijnlijk niet kunnen aanmelden."
 
-#: gui/gdmlogin.c:803
+#: gui/gdmlogin.c:803 gui/greeter/greeter_system.c:52
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Weet u zeker dat u deze machine wilt herstarten?"
 
-#: gui/gdmlogin.c:815
+#: gui/gdmlogin.c:815 gui/greeter/greeter_system.c:63
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Weet u zeker dat u deze machine uit wilt schakelen?"
 
-#: gui/gdmlogin.c:826
+#: gui/gdmlogin.c:826 gui/greeter/greeter_system.c:73
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Weet u zeker dat u deze machine in de slaapstand wilt zetten?"
 
@@ -2497,12 +2508,14 @@ msgid "GDM Login"
 msgstr "GDM Aanmelden"
 
 #: gui/gdmlogin.c:3000 gui/greeter/greeter_canvas_item.c:129
+#: gui/greeter/greeter_parser.c:923
 #: gui/greeter/themes/circles/circles.xml.in.h:11
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
 msgid "_Session"
 msgstr "_Sessie"
 
 #: gui/gdmlogin.c:3007 gui/greeter/greeter_canvas_item.c:122
+#: gui/greeter/greeter_parser.c:918
 #: gui/greeter/themes/circles/circles.xml.in.h:9
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
 msgid "_Language"
@@ -2542,18 +2555,21 @@ msgid "Suspend your computer"
 msgstr "Computer in slaapstand zetten."
 
 #: gui/gdmlogin.c:3073 gui/greeter/greeter_canvas_item.c:138
+#: gui/greeter/greeter_parser.c:928
 #: gui/greeter/themes/circles/circles.xml.in.h:2
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
 msgid "S_ystem"
 msgstr "S_ysteem"
 
 #: gui/gdmlogin.c:3085 gui/greeter/greeter_canvas_item.c:151
+#: gui/greeter/greeter_parser.c:938
 #: gui/greeter/themes/circles/circles.xml.in.h:10
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
 msgid "_Quit"
 msgstr "_Afsluiten"
 
 #: gui/gdmlogin.c:3087 gui/greeter/greeter_canvas_item.c:153
+#: gui/greeter/greeter_parser.c:933
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "D_isconnect"
@@ -3083,21 +3099,34 @@ msgstr "Kies een taal"
 msgid "Select a language for your session to use:"
 msgstr "Kies een taal om te gebruiken in uw sessie:"
 
-#: gui/greeter/greeter_system.c:119
+#: gui/greeter/greeter_system.c:150
 msgid "Shut down the computer"
 msgstr "Computer uitzetten."
 
-#: gui/greeter/greeter_system.c:131
+#: gui/greeter/greeter_system.c:162
 msgid "Suspend the computer"
 msgstr "Computer in slaapstand zetten."
 
-#: gui/greeter/greeter_system.c:143
+#: gui/greeter/greeter_system.c:174
 msgid "Reboot the computer"
 msgstr "Computer herstarten."
 
-#: gui/greeter/greeter_system.c:156
+#: gui/greeter/greeter_system.c:187
 msgid "Configure"
 msgstr "Instellingen"
+
+#: gui/greeter/greeter_parser.c:943
+#: gui/greeter/themes/circles/circles.xml.in.h:8
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
+msgid "You've got capslock on!"
+msgstr "Caps-lock staat aan!"
+
+#: gui/greeter/greeter_parser.c:955
+#: gui/greeter/themes/circles/circles.xml.in.h:7
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
+#, no-c-format
+msgid "Welcome to %h"
+msgstr "Welkom bij %h"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
@@ -3114,17 +3143,6 @@ msgstr "Cirkels"
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:4
 msgid "Theme with blue circles"
 msgstr "Thema met blauwe cirkels"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:7
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
-#, no-c-format
-msgid "Welcome to %h"
-msgstr "Welkom bij %h"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:8
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
-msgid "You've got capslock on!"
-msgstr "Caps-lock staat aan!"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
