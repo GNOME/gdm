@@ -29,6 +29,7 @@ typedef struct _Language Language;
 struct _Language {
 	char *name;
 	char *code;
+	char *untranslated;
 	int found;
 };
 
@@ -38,89 +39,90 @@ struct _Language {
  * The available languages come from the supplied locale.alias */
 static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Azerbaijani"), "az_AZ", 0 },
+	{ N_("A-M|Azerbaijani"), "az_AZ", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Basque"), "eu_ES", 0 },
+	{ N_("A-M|Basque"), "eu_ES", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Bulgarian"), "bg_BG", 0 },
+	{ N_("A-M|Bulgarian"), "bg_BG", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Catalan"), "ca_ES", 0 },
+	{ N_("A-M|Catalan"), "ca_ES", "Català", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Chinese (simplified)"), "zh_CN", 0 },
+	{ N_("A-M|Chinese (simplified)"), "zh_CN", "中文 (简体)", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Chinese (traditional)"), "zh_TW", 0 },
+	{ N_("A-M|Chinese (traditional)"), "zh_TW", "繁體中文", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Croatian"), "hr_HR", 0 },
+	{ N_("A-M|Croatian"), "hr_HR", "Hrvatski", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Czech"), "cs_CZ", 0 },
+	{ N_("A-M|Czech"), "cs_CZ", "čeština", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Danish"), "da_DK", 0 },
+	{ N_("A-M|Danish"), "da_DK", "dansk", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Dutch"), "nl_NL", 0 },
+	{ N_("A-M|Dutch"), "nl_NL", "Nederlands", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|English"), "en", 0 },
+	{ N_("A-M|English"), "en", "English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Estonian"), "et_EE", 0 },
+	{ N_("A-M|Estonian"), "et_EE", "Eesti", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|American English"), "en_US", 0 },
+	{ N_("A-M|American English"), "en_US", "American English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|British English"), "en_GB", 0 },
+	{ N_("A-M|British English"), "en_GB", "British English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Finnish"), "fi_FI", 0 },
+	{ N_("A-M|Finnish"), "fi_FI", "Suomi", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|French"), "fr_FR", 0 },
+	{ N_("A-M|French"), "fr_FR", "Français", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Galician"), "gl_ES", 0 },
+	{ N_("A-M|Galician"), "gl_ES", "Galego", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|German"), "de_DE", 0 },
+	{ N_("A-M|German"), "de_DE", "Deutsch", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Greek"), "el_GR", 0 },
+	{ N_("A-M|Greek"), "el_GR", "ελληνικά", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Hebrew"), "he_IL", 0 },
+	{ N_("A-M|Hebrew"), "he_IL", "תירבע" /* FIXME: is he_IL correct for Hebrew at all? */, 0 },
+	{ N_("A-M|Hebrew"), "iw_IL", "תירבע", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Hungarian"), "hu_HU", 0 },
+	{ N_("A-M|Hungarian"), "hu_HU", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Icelandic"), "is_IS", 0 },
+	{ N_("A-M|Icelandic"), "is_IS", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Italian"), "it_IT", 0 },
+	{ N_("A-M|Italian"), "it_IT", "Italiano", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Japanese"), "ja_JP", 0 },
+	{ N_("A-M|Japanese"), "ja_JP", "日本語", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Korean"), "ko_KR", 0 },
+	{ N_("A-M|Korean"), "ko_KR", "한국어", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Latvian"), "lv_LV", 0 },
+	{ N_("A-M|Latvian"), "lv_LV", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Lithuanian"), "lt_LT", 0 },
+	{ N_("A-M|Lithuanian"), "lt_LT", "Lietuvių", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Norwegian (bokmal)"), "no_NO", 0 },
+	{ N_("N-Z|Norwegian (bokmal)"), "no_NO", NULL, 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Norwegian (nynorsk)"), "nn_NO", 0 },
+	{ N_("N-Z|Norwegian (nynorsk)"), "nn_NO", NULL, 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Polish"), "pl_PL", 0 },
+	{ N_("N-Z|Polish"), "pl_PL", "Polski", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Portuguese"), "pt_PT", 0 },
+	{ N_("N-Z|Portuguese"), "pt_PT", "Português", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Brazilian Portuguese"), "pt_BR", 0 },
+	{ N_("N-Z|Brazilian Portuguese"), "pt_BR", "Português do Brasil", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Romanian"), "ro_RO", 0 },
+	{ N_("N-Z|Romanian"), "ro_RO", "Română", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Russian"), "ru_RU", 0 },
+	{ N_("N-Z|Russian"), "ru_RU", "русский", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Slovak"), "sk_SK", 0 },
+	{ N_("N-Z|Slovak"), "sk_SK", "Slovenský", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Slovenian"), "sl_SI", 0 },
+	{ N_("N-Z|Slovenian"), "sl_SI", "Slovenščina", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Spanish"), "es_ES", 0 },
+	{ N_("N-Z|Spanish"), "es_ES", "Español", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Swedish"), "sv_SE", 0 },
+	{ N_("N-Z|Swedish"), "sv_SE", "Svenska", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Turkish"), "tr_TR", 0 },
+	{ N_("N-Z|Turkish"), "tr_TR", "Türkçe", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Ukrainian"), "uk_UA", 0 },
+	{ N_("N-Z|Ukrainian"), "uk_UA", NULL, 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Walloon"), "wa_BE", 0 },
+	{ N_("N-Z|Walloon"), "wa_BE", NULL, 0 },
 	/* This is the POSIX/C locale for english, should really be in Other */
-	{ N_("Other|POSIX/C English"), "C", 0 },
+	{ N_("Other|POSIX/C English"), "C", NULL, 0 },
 	{ NULL, NULL }
 };
 
@@ -193,18 +195,15 @@ find_lang (const char *language, gboolean *clean)
 }
 
 char *
-gdm_lang_name (const char *locale, const char *language,
-	       gboolean never_encoding, gboolean no_group)
+gdm_lang_name (const char *language,
+	       gboolean never_encoding,
+	       gboolean no_group,
+	       gboolean untranslated)
 {
 	Language *lang;
 	char *name;
 	gboolean clean;
 	const char *encoding;
-
-	/* FIXME: we need to get the languages for right locales here,
-	 * for now we just translate the current locale */
-	if (locale != NULL)
-		return NULL;
 
 	gdm_lang_init ();
 
@@ -225,6 +224,13 @@ gdm_lang_name (const char *locale, const char *language,
 	else
 		name = g_strdup (_(lang->name));
 
+	if (lang->untranslated != NULL && untranslated) {
+		char *full = g_strdup_printf ("%s (%s)",
+					      name, lang->untranslated);
+		g_free (name);
+		name = full;
+	}
+
 	if (no_group) {
 		char *p = strchr (name, '|');
 		if (p != NULL) {
@@ -235,11 +241,20 @@ gdm_lang_name (const char *locale, const char *language,
 	return name;
 }
 
-GdkFont *
-gdm_lang_font (const char *locale)
+/* NULL if not found */
+char *
+gdm_lang_untranslated_name (const char *language)
 {
-	/* FIXME! */
-	return NULL;
+	Language *lang;
+	gboolean clean;
+
+	gdm_lang_init ();
+
+	lang = find_lang (language, &clean);
+	if (lang == NULL)
+		return NULL;
+
+	return g_strdup (lang->untranslated);
 }
 
 const char *
@@ -335,6 +350,7 @@ gdm_lang_read_locale_file (const char *locale_file)
 			language->found = 1;
 			language->name = g_strdup (name);
 			language->code = g_strdup (lang);
+			language->untranslated = NULL;
 			g_hash_table_insert (lang_names,
 					     language->code,
 					     language);

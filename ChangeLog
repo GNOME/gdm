@@ -1,3 +1,18 @@
+Sat Jun 01 14:42:29 2002  George Lebl <jirka@5z.com>
+
+	* gui/Makefile.am: build the gdmlanguages.c as a library
+
+	* gui/gdmlanguages.[ch], gui/gdmlogin.c:  Add untranslated names
+	  so that we can do what we do in the graphical greeter, and
+	  we have only one place where languages are handeled.
+
+	* gui/greeter/greeter_action_language.c,
+	  gui/greeter/greeter_configuration.h, gui/greeter/Makefile.am:
+	  use the libgdmlang.a lib and scrap the custom language list.
+	  now languages are the same as they are in the standard greeter.
+	  Unfortunately there were yet still some strings that weren't
+	  marked for translation.
+
 Sat Jun 01 09:12:59 2002  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in, daemon/gdm.h: Default the -kb argument to Xnest

@@ -1072,8 +1072,14 @@ gdm_login_language_lookup (const gchar* savedlang)
 	    gchar *msg;
 	    char *curname, *savedname;
 
-	    curname = gdm_lang_name (NULL, curlang, FALSE, TRUE);
-	    savedname = gdm_lang_name (NULL, savedlang, FALSE, TRUE);
+	    curname = gdm_lang_name (curlang,
+				     FALSE /* never_encoding */,
+				     TRUE /* no_group */,
+				     TRUE /* untranslated */);
+	    savedname = gdm_lang_name (savedlang,
+				       FALSE /* never_encoding */,
+				       TRUE /* no_group */,
+				       TRUE /* untranslated */);
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
 				     "%s.\nDo you wish to make %s the default for future sessions?"),
@@ -1581,7 +1587,10 @@ gdm_login_language_handler (GtkWidget *widget)
 	return;
 
     curlang = g_object_get_data (G_OBJECT (widget), "Language");
-    name = gdm_lang_name (NULL, curlang, FALSE, TRUE);
+    name = gdm_lang_name (curlang,
+			  FALSE /* never_encoding */,
+			  TRUE /* no_group */,
+			  TRUE /* untranslated */);
     s = g_strdup_printf (_("%s language selected"), name);
     g_free (name);
     gtk_label_set_text (GTK_LABEL (msg), s);
@@ -1653,16 +1662,23 @@ gdm_login_language_menu_new (void)
     for (li = langlist; li != NULL; li = li->next) {
 	    char *lang = li->data;
 	    char *name;
+	    char *untranslated;
 	    char *group;
 	    char *p;
+	    GtkWidget *box, *l;
 
 	    li->data = NULL;
 
-	    group = name = gdm_lang_name (NULL, lang, FALSE, FALSE);
+	    group = name = gdm_lang_name (lang,
+					  FALSE /* never_encoding */,
+					  FALSE /* no_group */,
+					  FALSE /* untranslated */);
 	    if (name == NULL) {
 		    g_free (lang);
 		    continue;
 	    }
+
+	    untranslated = gdm_lang_untranslated_name (lang);
 
 	    p = strchr (name, '|');
 	    if (p != NULL) {
@@ -1670,7 +1686,21 @@ gdm_login_language_menu_new (void)
 		    name = p+1;
 	    }
 
-	    item = gtk_radio_menu_item_new_with_label (languages, name);
+	    box = gtk_hbox_new (FALSE, 5);
+	    gtk_widget_show (box);
+
+	    l = gtk_label_new (name);
+	    gtk_widget_show (l);
+	    gtk_box_pack_start (GTK_BOX (box), l, FALSE, FALSE, 0);
+
+	    if (untranslated != NULL) {
+		    l = gtk_label_new (untranslated);
+		    gtk_widget_show (l);
+		    gtk_box_pack_end (GTK_BOX (box), l, FALSE, FALSE, 0);
+	    }
+
+	    item = gtk_radio_menu_item_new (languages);
+	    gtk_container_add (GTK_CONTAINER (item), box);
 	    languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
 	    g_object_set_data_full (G_OBJECT (item),
 				    "Language",
@@ -1693,6 +1723,7 @@ gdm_login_language_menu_new (void)
 
 	    g_free (lang);
 	    g_free (group);
+	    g_free (untranslated);
     }
     if ( ! has_other_locale) 
 	    gtk_widget_destroy (other_menu);

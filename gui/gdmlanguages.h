@@ -27,13 +27,13 @@
 const char *	gdm_lang_group1		(void);
 const char *	gdm_lang_group2		(void);
 
-/* locale is the locale we want the language name in or NULL
- * if any language */
-char *		gdm_lang_name		(const char *locale,
-					 const char *language,
+char *		gdm_lang_name		(const char *language,
 					 gboolean never_encoding,
-					 gboolean no_group);
-GdkFont *	gdm_lang_font		(const char *locale);
+					 gboolean no_group,
+					 gboolean untranslated);
+
+/* NULL if not found */
+char *		gdm_lang_untranslated_name (const char *language);
 
 GList *		gdm_lang_read_locale_file (const char *file);
 

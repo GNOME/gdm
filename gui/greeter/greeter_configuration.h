@@ -12,3 +12,4 @@ extern gchar *GdmSuspend;
 extern gchar *GdmConfigurator;
 extern gchar *GdmSessionDir;
 extern gchar *GdmDefaultLocale;
+extern gchar *GdmLocaleFile;

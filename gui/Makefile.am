@@ -18,7 +18,7 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(GUI_CFLAGS)
 
-noinst_LIBRARIES = libgdmwm.a
+noinst_LIBRARIES = libgdmwm.a libgdmlang.a
 
 bin_PROGRAMS = \
 	@GDMCHOOSER@ 		\
@@ -44,6 +44,10 @@ libgdmwm_a_SOURCES = \
 	gdmwm.c			\
 	gdmwm.h
 
+libgdmlang_a_SOURCES = \
+	gdmlanguages.c		\
+	gdmlanguages.h
+
 gdmchooser_SOURCES = \
 	gdmchooser.c		\
 	misc.c			\
@@ -51,8 +55,6 @@ gdmchooser_SOURCES = \
 
 gdmlogin_SOURCES = \
 	gdmlogin.c		\
-	gdmlanguages.c		\
-	gdmlanguages.h		\
 	misc.c			\
 	misc.h
 
@@ -77,6 +79,7 @@ gdmchooser_LDADD = \
 
 gdmlogin_LDADD = \
 	libgdmwm.a		\
+	libgdmlang.a		\
 	$(GUI_LIBS)		\
 	$(X_LIBS)		\
 	-lX11			\

@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "gdmwm.h"
+#include "gdmlanguages.h"
 #include "greeter.h"
 #include "greeter_configuration.h"
 #include "greeter_item_pam.h"
@@ -12,17 +13,11 @@
 #define LAST_LANGUAGE "Last"
 
 enum {
-  NAME_COLUMN,
   LOCALE_COLUMN,
   TRANSLATED_NAME_COLUMN,
-  ENCODING_COLUMN,
-  FOUND_COLUMN,
+  UNTRANSLATED_NAME_COLUMN,
   NUM_COLUMNS
 };
-
-typedef struct _Language Language;
-#include "greeter_lang_list.c"
-
 
 static GtkListStore *lang_model = NULL;
 static GtkWidget *dialog = NULL;
@@ -30,82 +25,46 @@ static gboolean savelang = FALSE;
 static gchar *current_language = NULL;
 static gchar *dialog_selected_language = NULL;
 
-static gboolean
-greeter_language_find_lang (const char  *language,
-			    GtkTreeIter *iter)
-{
-  return FALSE;
-}     
-
-static gchar *
-greeter_language_get_name (const char *locale,
-			   const char *language,
-			   gboolean    never_encoding)
-{
-  char *name = NULL;
-  GtkTreeIter iter;
-  const char *encoding;
-
-  /* FIXME: we need to get the languages for right locales here,
-   * for now we just translate the current locale */
-  if (locale != NULL)
-    return NULL;
-
-  if (! greeter_language_find_lang (language, &iter))
-    return g_strdup (language);
-
-  encoding = strchr (language, '.');
-  if (encoding != NULL)
-    encoding++;
-
-  /* if more then one language in the language file with this
-   * locale, then hell, include the encoding to differentiate them */
-#if TODO
-  if (lang->found > 1 &&
-      encoding != NULL &&
-      ! never_encoding)
-    name = g_strdup_printf ("%s (%s)", _(lang->name), encoding);
-  else
-    name = g_strdup (_(lang->name));
-#endif
-  
-  return name;
-}
-
-
 static void
 greeter_langauge_initialize_model (void)
 {
-  gint i;
+  GList *list, *li;
+
+  list = gdm_lang_read_locale_file (GdmLocaleFile);
 
   lang_model = gtk_list_store_new (NUM_COLUMNS,
 				   G_TYPE_STRING,
 				   G_TYPE_STRING,
-				   G_TYPE_STRING,
-				   G_TYPE_STRING,
-				   G_TYPE_INT);
+				   G_TYPE_STRING);
 
-  for (i = 0; languages[i].name != NULL; i++)
+  for (li = list; li != NULL; li = li->next)
     {
+      char *lang = li->data;
+      char *name;
+      char *untranslated;
       GtkTreeIter iter;
-      gchar *full_name;
-      gchar *free_me = NULL;
+
+      li->data = NULL;
+
+      name = gdm_lang_name (lang,
+			    FALSE /* never_encoding */,
+			    TRUE /* no_group */,
+			    FALSE /* untranslated */);
+
+      untranslated = gdm_lang_untranslated_name (lang);
+
       gtk_list_store_append (lang_model, &iter);
-      if (languages[i].untranslated_name != NULL)
-	{
-	  full_name = g_strdup_printf ("%s (%s)", _(languages[i].name), languages[i].untranslated_name);
-	  free_me = full_name;
-	}
-      else
-	full_name = _(languages[i].name);
       gtk_list_store_set (lang_model, &iter,
-			  NAME_COLUMN, languages[i].name,
-			  LOCALE_COLUMN, languages[i].locale,
-			  TRANSLATED_NAME_COLUMN, full_name,
-			  FOUND_COLUMN, 0,
+			  TRANSLATED_NAME_COLUMN, name,
+			  UNTRANSLATED_NAME_COLUMN, untranslated,
+			  LOCALE_COLUMN, lang,
 			  -1);
-      g_free (free_me);
+
+      g_free (name);
+      g_free (untranslated);
+      g_free (lang);
     }
+  g_list_free (list);
 }
 
 void
@@ -188,8 +147,14 @@ greeter_language_get_language (const char *old_language)
 	  gchar *msg;
 	  char *current_name, *saved_name;
 
-	  current_name = greeter_language_get_name (NULL, current_language, FALSE);
-	  saved_name = greeter_language_get_name (NULL, old_language, FALSE);
+	  current_name = gdm_lang_name (current_language,
+					FALSE /* never_encoding */,
+					TRUE /* no_group */,
+					TRUE /* untranslated */);
+	  saved_name = gdm_lang_name (old_language,
+				      FALSE /* never_encoding */,
+				      TRUE /* no_group */,
+				      TRUE /* untranslated */);
 
 	  msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
 				   "%s.\nDo you wish to make %s the default for future sessions?"),
@@ -231,8 +196,9 @@ greeter_action_language (GreeterItemInfo *info,
       GtkWidget *view;
       GtkWidget *swindow;
       GtkWidget *label;
+      char *s;
 
-      dialog = gtk_dialog_new_with_buttons ("Select a language",
+      dialog = gtk_dialog_new_with_buttons (_("Select a language"),
 #if TODO
 					    GTK_WINDOW (parent_window),
 #endif
@@ -244,7 +210,10 @@ greeter_action_language (GreeterItemInfo *info,
 					    GTK_RESPONSE_OK,
 					    NULL);
       g_object_add_weak_pointer (G_OBJECT (dialog), (gpointer *) &dialog);
-      label = gtk_label_new ("<span size=\"x-large\" weight=\"bold\">Select a language for your session to use:</span>");
+      s = g_strdup_printf ("<span size=\"x-large\" weight=\"bold\">%s</span>",
+			   _("Select a language for your session to use:"));
+      label = gtk_label_new (s);
+      g_free (s);
       gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
       gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			  label, FALSE, FALSE, 0);
@@ -255,6 +224,12 @@ greeter_action_language (GreeterItemInfo *info,
 					       NULL,
 					       gtk_cell_renderer_text_new (),
 					       "text", TRANSLATED_NAME_COLUMN,
+					       NULL);
+      gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
+					       GTK_DIALOG_MODAL,
+					       NULL,
+					       gtk_cell_renderer_text_new (),
+					       "text", UNTRANSLATED_NAME_COLUMN,
 					       NULL);
       swindow = gtk_scrolled_window_new (NULL, NULL);
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (swindow),

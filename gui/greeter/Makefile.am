@@ -43,6 +43,7 @@ gdmgreeter_SOURCES =  \
 gdmgreeter_LDADD = \
 	-L$(top_builddir)/gui	\
 	-lgdmwm			\
+	-lgdmlang		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\
 	$(X_LIBS)		\
