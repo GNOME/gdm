@@ -747,18 +747,6 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 {
 	pid_t pid;
 
-	gdm_sigchld_block_push ();
-	gdm_sigterm_block_push ();
-	pid = d->sesspid = fork ();
-	gdm_sigterm_block_pop ();
-	gdm_sigchld_block_pop ();
-
-	if (pid < 0) {
-		/* can't fork, damnit */
-		display->sesspid = 0;
-		return;
-	}
-
 	/* Set the busy cursor */
 	if (d->dsp != NULL) {
 		Cursor xcursor = XCreateFontCursor (d->dsp, GDK_WATCH);
@@ -767,6 +755,26 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			       xcursor);
 		XFreeCursor (d->dsp, xcursor);
 		XSync (d->dsp, False);
+	}
+
+	gdm_sigchld_block_push ();
+	gdm_sigterm_block_push ();
+	pid = d->sesspid = fork ();
+	gdm_sigterm_block_pop ();
+	gdm_sigchld_block_pop ();
+
+	if (pid < 0) {
+		/* return left pointer */
+		Cursor xcursor = XCreateFontCursor (d->dsp, GDK_LEFT_PTR);
+		XDefineCursor (d->dsp,
+			       DefaultRootWindow (d->dsp),
+			       xcursor);
+		XFreeCursor (d->dsp, xcursor);
+		XSync (d->dsp, False);
+
+		/* can't fork, damnit */
+		display->sesspid = 0;
+		return;
 	}
 
 	if (pid == 0) {
@@ -803,6 +811,9 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+		if (chdir ("/root") != 0)
+			chdir ("/");
 
 		/* exec the configurator */
 		argv = ve_split (GdmConfigurator);

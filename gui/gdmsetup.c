@@ -1266,23 +1266,54 @@ selected_toggled (GtkCellRendererToggle *cell,
 	run_timeout (theme_list, 500, greeter_theme_timeout);
 }
 
+static gboolean
+is_ext (const char *filename, const char *ext)
+{
+	const char *dot;
+
+	dot = strrchr (filename, '.');
+	if (dot == NULL)
+		return FALSE;
+
+	if (strcmp (dot, ext) == 0)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+/* sense the right unzip program */
 static char *
-find_gunzip (void)
+find_unzip (const char *filename)
 {
 	char *prog;
-	char *try[] = {
+	char *tryg[] = {
 		"/bin/gunzip",
 		"/usr/bin/gunzip",
 		NULL };
+	char *tryb[] = {
+		"/bin/bunzip2",
+		"/usr/bin/bunzip2",
+		NULL };
 	int i;
+
+	if (is_ext (filename, ".bz2")) {
+		prog = g_find_program_in_path ("bunzip2");
+		if (prog != NULL)
+			return prog;
+
+		for (i = 0; tryb[i] != NULL; i++) {
+			if (access (tryb[i], X_OK) == 0)
+				return g_strdup (tryb[i]);
+		}
+	}
 
 	prog = g_find_program_in_path ("gunzip");
 	if (prog != NULL)
 		return prog;
 
-	for (i = 0; try[i] != NULL; i++) {
-		if (access (try[i], X_OK) == 0)
-			return g_strdup (try[i]);
+	for (i = 0; tryg[i] != NULL; i++) {
+		if (access (tryg[i], X_OK) == 0)
+			return g_strdup (tryg[i]);
 	}
 	/* Hmmm, fallback */
 	return g_strdup ("/bin/gunzip");
@@ -1388,9 +1419,9 @@ get_the_dir (FILE *fp, char **error)
 static char *
 get_archive_dir (const char *filename, char **untar_cmd, char **error)
 {
-	char *quoted = g_shell_quote (filename);
-	char *tar = find_tar ();
-	char *gunzip = find_gunzip ();
+	char *quoted;
+	char *tar;
+	char *unzip;
 	char *cmd;
 	char *dir;
 	FILE *fp;
@@ -1406,9 +1437,9 @@ get_archive_dir (const char *filename, char **untar_cmd, char **error)
 
 	quoted = g_shell_quote (filename);
 	tar = find_tar ();
-	gunzip = find_gunzip ();
+	unzip = find_unzip (filename);
 
-	cmd = g_strdup_printf ("%s -c %s | %s -tf -", gunzip, quoted, tar);
+	cmd = g_strdup_printf ("%s -c %s | %s -tf -", unzip, quoted, tar);
 	fp = popen (cmd, "r");
 	g_free (cmd);
 	if (fp != NULL) {
@@ -1417,9 +1448,9 @@ get_archive_dir (const char *filename, char **untar_cmd, char **error)
 		ret = pclose (fp);
 		if (ret == 0 && dir != NULL) {
 			*untar_cmd = g_strdup_printf ("%s -c %s | %s -xf -",
-						      gunzip, quoted, tar);
+						      unzip, quoted, tar);
 			g_free (tar);
-			g_free (gunzip);
+			g_free (unzip);
 			g_free (quoted);
 			return dir;
 		}
@@ -1443,7 +1474,7 @@ get_archive_dir (const char *filename, char **untar_cmd, char **error)
 				*untar_cmd = g_strdup_printf ("%s -xf %s",
 							      tar, quoted);
 				g_free (tar);
-				g_free (gunzip);
+				g_free (unzip);
 				g_free (quoted);
 				return dir;
 			}
@@ -1458,7 +1489,7 @@ get_archive_dir (const char *filename, char **untar_cmd, char **error)
 		*error = _("File not a tar.gz or tar archive");
 
 	g_free (tar);
-	g_free (gunzip);
+	g_free (unzip);
 	g_free (quoted);
 
 	return NULL;
