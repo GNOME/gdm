@@ -88,7 +88,7 @@ void gdm_desetuid (void);
 
 gboolean gdm_test_opt (const char *cmd, const char *help, const char *option);
 
-void gdm_close_all_descriptors (int from, int except);
+void gdm_close_all_descriptors (int from, int except, int except2);
 
 int gdm_open_dev_null (mode_t mode);
 

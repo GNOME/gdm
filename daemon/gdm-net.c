@@ -295,7 +295,7 @@ gdm_connection_open_fd (int fd)
 	GIOChannel *unixchan;
 	GdmConnection *conn;
 
-	g_return_val_if_fail (fd < 0, NULL);
+	g_return_val_if_fail (fd >= 0, NULL);
 
 	conn = g_new0 (GdmConnection, 1);
 	conn->close_level = 0;
@@ -315,10 +315,8 @@ gdm_connection_open_fd (int fd)
 	conn->source = g_io_add_watch_full
 		(unixchan, G_PRIORITY_DEFAULT,
 		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
-		 gdm_socket_handler, conn, NULL);
+		 gdm_connection_handler, conn, NULL);
 	g_io_channel_unref (unixchan);
-
-	listen (fd, 5);
 
 	return conn;
 }

@@ -86,6 +86,7 @@ static int in_session_stop = 0;
 static int in_usr2_signal = 0;
 static gboolean need_to_abort_after_session_stop = FALSE;
 static gboolean just_abort_on_TERM = FALSE;
+static gboolean session_started = FALSE;
 static gboolean greeter_disabled = FALSE;
 static gboolean greeter_no_focus = FALSE;
 
@@ -110,6 +111,8 @@ extern pid_t extra_process;
 extern int extra_status;
 extern int gdm_in_signal;
 extern int gdm_normal_runlevel;
+
+extern int slave_fifo_pipe_fd; /* the slavepipe (like fifo) connection, this is the write end */
 
 /* Configuration option variables */
 extern gchar *GdmUser;
@@ -1054,7 +1057,7 @@ focus_first_x_window (const char *class_res_name)
 
 	closelog ();
 
-	gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
+	gdm_close_all_descriptors (0 /* from */, p[1] /* except */, -1 /* except2 */);
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
@@ -1197,7 +1200,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		closelog ();
 
-		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
+		gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
@@ -1831,7 +1834,7 @@ gdm_slave_greeter (void)
 
 	closelog ();
 
-	gdm_close_all_descriptors (2 /* from */, -1 /* except */);
+	gdm_close_all_descriptors (2 /* from */, -1 /* except */, -1 /* except2 */);
 
 	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
@@ -2073,18 +2076,28 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 		gdm_ack_response = NULL;
 	}
 
-	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
-	old = geteuid ();
-	if (old != 0)
-		seteuid (0);
+	/* ensure this is sent from the actual slave with the pipe always, this is anal I know */
+	if (d->slavepid == getpid ()) {
+		fd = slave_fifo_pipe_fd;
+	} else {
+		fd = -1;
+	}
+
+	if (fd < 0) {
+		/* Use the fifo as a fallback only now that we have a pipe */
+		fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+		old = geteuid ();
+		if (old != 0)
+			seteuid (0);
 #ifdef O_NOFOLLOW
-	fd = open (fifopath, O_WRONLY|O_NOFOLLOW);
+		fd = open (fifopath, O_WRONLY|O_NOFOLLOW);
 #else
-	fd = open (fifopath, O_WRONLY);
+		fd = open (fifopath, O_WRONLY);
 #endif
-	if (old != 0)
-		seteuid (old);
-	g_free (fifopath);
+		if (old != 0)
+			seteuid (old);
+		g_free (fifopath);
+	}
 
 	/* eek */
 	if (fd < 0) {
@@ -2095,7 +2108,8 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 
 	gdm_fdprintf (fd, "\n%s\n", str);
 
-	close (fd);
+	if (fd != slave_fifo_pipe_fd)
+		close (fd);
 
 	for (i = 0;
 	     parent_exists () &&
@@ -2176,11 +2190,9 @@ gdm_slave_send_string (const char *opcode, const char *str)
 static void
 send_chosen_host (GdmDisplay *disp, const char *hostname)
 {
-	int fd;
-	char *fifopath;
 	GdmHostent *host;
-	uid_t old;
 	struct in_addr ia;
+	char *str;
 
 	host = gdm_gethostbyname (hostname);
 
@@ -2196,32 +2208,13 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 	gdm_debug ("Sending chosen host address (%s) %s",
 		   hostname, inet_ntoa (ia));
 
-	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+	str = g_strdup_printf ("%s %d %s", GDM_SOP_CHOSEN,
+			       disp->indirect_id,
+			       inet_ntoa (ia));
 
-	old = geteuid ();
-	if (old != 0)
-		seteuid (0);
-#ifdef O_NOFOLLOW
-	fd = open (fifopath, O_WRONLY|O_NOFOLLOW);
-#else
-	fd = open (fifopath, O_WRONLY);
-#endif
-	if (old != 0)
-		seteuid (old);
+	gdm_slave_send (str, FALSE);
 
-	g_free (fifopath);
-
-	/* eek */
-	if (fd < 0) {
-		gdm_error (_("%s: Can't open fifo!"), "send_chosen_host");
-		return;
-	}
-
-	gdm_fdprintf (fd, "\n%s %d %s\n", GDM_SOP_CHOSEN,
-		      disp->indirect_id,
-		      inet_ntoa (ia));
-
-	close (fd);
+	g_free (str);
 }
 
 
@@ -2272,7 +2265,7 @@ gdm_slave_chooser (void)
 		closelog ();
 
 		close (0);
-		gdm_close_all_descriptors (2 /* from */, -1 /* except */);
+		gdm_close_all_descriptors (2 /* from */, -1 /* except */, -1 /* except2 */);
 
 		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
@@ -2677,7 +2670,7 @@ session_child_run (struct passwd *pwent,
 
 	closelog ();
 
-	gdm_close_all_descriptors (3 /* from */, -1 /* except */);
+	gdm_close_all_descriptors (3 /* from */, -1 /* except */, -1 /* except2 */);
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
@@ -2848,6 +2841,8 @@ gdm_slave_session_start (void)
     pid_t pid;
     GdmWaitPid *wp;
 
+    session_started = TRUE;
+
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
 	       login);
 
@@ -2888,6 +2883,7 @@ gdm_slave_session_start (void)
 	    if ( ! gdm_failsafe_yesno (d, msg)) {
 		    g_free (msg);
 		    gdm_verify_cleanup (d);
+		    session_started = FALSE;
 		    return;
 	    }
 
@@ -3156,6 +3152,8 @@ gdm_slave_session_stop (gboolean run_post_session,
 
     in_session_stop ++;
 
+    session_started = FALSE;
+
     local_login = login;
     login = NULL;
 
@@ -3284,7 +3282,7 @@ gdm_slave_term_handler (int sig)
 
 		/* only if we're not hanging in session stop and getting a
 		   TERM signal again */
-		if (in_session_stop == 0)
+		if (in_session_stop == 0 && session_started)
 			gdm_slave_session_stop (d->logged_in && login != NULL,
 						TRUE /* no_shutdown_check */);
 	}
@@ -3546,6 +3544,8 @@ gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
 static gint
 gdm_slave_xioerror_handler (Display *disp)
 {
+	gdm_in_signal++;
+
 	/* Display is all gone */
 	d->dsp = NULL;
 
@@ -3565,6 +3565,8 @@ gdm_slave_xioerror_handler (Display *disp)
 	} else {
 		gdm_slave_quick_exit (DISPLAY_REMANAGE);
 	}
+
+	gdm_in_signal--;
 
 	return 0;
 }
@@ -3883,7 +3885,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 	}
 
-	gdm_close_all_descriptors (3 /* from */, -1 /* except */);
+	gdm_close_all_descriptors (3 /* from */, -1 /* except */, -1 /* except2 */);
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -4055,7 +4057,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 
 	    closelog ();
 
-	    gdm_close_all_descriptors (3 /* from */, pipe1[1] /* except */);
+	    gdm_close_all_descriptors (3 /* from */, pipe1[1] /* except */, -1 /* except2 */);
 
 	    openlog ("gdm", LOG_PID, LOG_DAEMON);
 

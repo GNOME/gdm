@@ -1,3 +1,28 @@
+Wed Jul 23 14:29:53 2003  George Lebl <jirka@5z.com>
+
+	* gui/greeter/greeter.c: whack some debug messages
+
+	* daemon/display.c, daemon/gdm.[ch], daemon/slave.c: open a pipe
+	  for the internal message connection rather then using the fifo.
+	  Use the fifo only as backup.  This way we 1) reduce damage gdm
+	  user can cause 2) make things faster, no need to open
+	  and close the fifo on disk 20 times for each login.
+
+	* daemon/gdm.c: add close notifies for the main connections and
+	  NULL the connection pointer when that happens
+
+	* daemon/display.c, daemon/slave.c, daemon/server.c,
+	  daemon/misc.[ch], daemon/errorgui.c: The close_all_descriptors
+	  now takes 2 exception arguments, since we need to keep 2 fd's
+	  open for slaves now.
+
+	* daemon/gdm-net.c: fix gdm_connection_open_fd (some copy/paste
+	  typos were present)
+
+	* daemon/slave.c: don't run session_stop unless we already ran
+	  session_start, and cleanup send_chosen_host to use gdm_slave_send,
+	  also wrap the xioerror in gdm_in_signal as it could be
+
 Wed Jul 23 11:41:16 2003  George Lebl <jirka@5z.com>
 
 	* daemon/misc.c: raise the cache time of gethostbyaddr/name to 60 seconds

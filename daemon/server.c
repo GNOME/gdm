@@ -1019,7 +1019,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	closelog ();
 
 	/* close things */
-	gdm_close_all_descriptors (0 /* from */, -1 /* except */);
+	gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */

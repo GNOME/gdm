@@ -427,7 +427,9 @@ void		gdm_final_cleanup	(void);
  * or gdmconfig or whatnot */
 
 /* The ones that pass a <slave pid> must be from a valid slave, and
- * the slave will be sent a SIGUSR2 */
+ * the slave will be sent a SIGUSR2.  Nowdays there is a pipe that is
+ * used from inside slaves, so those messages may stop being processed
+ * by the fifo at some point perhaps.  */
 /* The fifo protocol, used only by gdm internally */
 #define GDM_SOP_CHOSEN       "CHOSEN" /* <indirect id> <ip addr> */
 #define GDM_SOP_CHOSEN_LOCAL "CHOSEN_LOCAL" /* <slave pid> <hostname> */

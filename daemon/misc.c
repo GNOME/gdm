@@ -582,7 +582,7 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 	if (pid == 0) {
 		closelog ();
 
-		gdm_close_all_descriptors (0 /* from */, -1 /* except */);
+		gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
@@ -1091,12 +1091,12 @@ gdm_fdgets (int fd)
 }
 
 void
-gdm_close_all_descriptors (int from, int except)
+gdm_close_all_descriptors (int from, int except, int except2)
 {
 	int i;
 	int max = sysconf (_SC_OPEN_MAX);
 	for (i = from; i < max; i++) {
-		if (i != except)
+		if (i != except && i != except2)
 			close(i);
 	}
 }

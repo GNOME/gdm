@@ -82,7 +82,9 @@ gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
 gboolean no_daemon = FALSE;	/* Do not daemonize */
 
 GdmConnection *fifoconn = NULL; /* Fifo connection */
+GdmConnection *pipeconn = NULL; /* slavepipe (handled just like Fifo for compatibility) connection */
 GdmConnection *unixconn = NULL; /* UNIX Socket connection */
+int slave_fifo_pipe_fd = -1; /* the slavepipe connection */
 
 char *gdm_charset = NULL;
 
@@ -864,6 +866,16 @@ gdm_final_cleanup (void)
 		fifoconn = NULL;
 	}
 
+	if (pipeconn != NULL) {
+		gdm_connection_close (pipeconn);
+		pipeconn = NULL;
+	}
+
+	if (slave_fifo_pipe_fd >= 0) {
+		close (slave_fifo_pipe_fd);
+		slave_fifo_pipe_fd = -1;
+	}
+
 	if (unixconn != NULL) {
 		gdm_connection_close (unixconn);
 		unlink (GDM_SUP_SOCKET);
@@ -917,7 +929,7 @@ deal_with_x_crashes (GdmDisplay *d)
 
 		    closelog ();
 
-		    gdm_close_all_descriptors (0 /* from */, -1 /* except */);
+		    gdm_close_all_descriptors (0 /* from */, -1 /* except */, -1 /* except2 */);
 
 		    /* No error checking here - if it's messed the best response
 		    * is to ignore & try to continue */
@@ -1432,27 +1444,66 @@ store_argv (int argc, char *argv[])
 }
 
 static void
+close_notify (gpointer data)
+{
+	GdmConnection **conn = data;
+	* conn = NULL;
+}
+
+static void
 create_connections (void)
 {
+	int p[2];
 	gchar *path;
 
 	path = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 	fifoconn = gdm_connection_open_fifo (path, 0660);
 	g_free (path);
 
-	if (fifoconn != NULL)
+	if (fifoconn != NULL) {
 		gdm_connection_set_handler (fifoconn,
 					    gdm_handle_message,
 					    NULL /* data */,
 					    NULL /* destroy_notify */);
+		gdm_connection_set_close_notify (fifoconn,
+						 &fifoconn,
+						 close_notify);
+	}
+
+	if (pipe (p) < 0) {
+		slave_fifo_pipe_fd = -1;
+		pipeconn = NULL;
+	} else {
+		slave_fifo_pipe_fd = p[1];
+		pipeconn = gdm_connection_open_fd (p[0]);
+	}
+
+	if (pipeconn != NULL) {
+		gdm_connection_set_handler (pipeconn,
+					    gdm_handle_message,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
+		gdm_connection_set_close_notify (pipeconn,
+						 &pipeconn,
+						 close_notify);
+	} else {
+		close (p[0]);
+		close (p[1]);
+		slave_fifo_pipe_fd = -1;
+	}
+
 
 	unixconn = gdm_connection_open_unix (GDM_SUP_SOCKET, 0666);
 
-	if (unixconn != NULL)
+	if (unixconn != NULL) {
 		gdm_connection_set_handler (unixconn,
 					    gdm_handle_user_message,
 					    NULL /* data */,
 					    NULL /* destroy_notify */);
+		gdm_connection_set_close_notify (unixconn,
+						 &unixconn,
+						 close_notify);
+	}
 }
 
 struct poptOption options [] = {

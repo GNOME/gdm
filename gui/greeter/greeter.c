@@ -824,8 +824,6 @@ string_same (VeConfig *config, const char *cur, const char *key)
 		g_free (val);
 		return TRUE;
 	} else {
-		syslog (LOG_ERR, "string not same: cur '%s' val '%s' key '%s'",
-			cur, val, key);
 		g_free (val);
 		return FALSE;
 	}
@@ -838,8 +836,6 @@ bool_same (VeConfig *config, gboolean cur, const char *key)
 	if (ve_bool_equal (cur, val)) {
 		return TRUE;
 	} else {
-		syslog (LOG_ERR, "bool not same: cur '%d' val '%d' key '%s'",
-			cur, val, key);
 		return FALSE;
 	}
 }
@@ -851,8 +847,6 @@ int_same (VeConfig *config, int cur, const char *key)
 	if (cur == val) {
 		return TRUE;
 	} else {
-		syslog (LOG_ERR, "int not same: cur '%d' val '%d' key '%s'",
-			cur, val, key);
 		return FALSE;
 	}
 }
@@ -930,9 +924,6 @@ greeter_reread_config (int sig, gpointer data)
 	     ! int_same (config,
 			 GdmTimedLoginDelay,
 			 GDM_KEY_TIMED_LOGIN_DELAY)) {
-		syslog (LOG_ERR, "something not same: "
-			"theme '%s' theme_dir '%s'",
-			theme, theme_dir);
 		/* Set busy cursor */
 		greeter_setup_cursor (GDK_WATCH);
 
