@@ -1916,9 +1916,21 @@ run_pictures (void)
 				/* Note that these days we just set ~/.face */
 				if G_UNLIKELY (picfile != NULL &&
 					       (picfile[0] != '/' ||
+						/* this catches readability by user */
 						access (picfile, R_OK) != 0)) {
 					g_free (picfile);
 					picfile = NULL;
+				}
+
+				if (picfile != NULL) {
+					char buf[PATH_MAX];
+					if (realpath (picfile, buf) == NULL) {
+						g_free (picfile);
+						picfile = NULL;
+					} else {
+						g_free (picfile);
+						picfile = g_strdup (buf);
+					}
 				}
 
 				if G_UNLIKELY (picfile != NULL) {
