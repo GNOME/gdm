@@ -1,6 +1,6 @@
 /* 
  *    GDMconfig, a graphical configurator for the GNOME display manager
- *    Copyright (C) 1999, Lee Mallabone <lee0@callnetuk.com>
+ *    Copyright (C) 1999,2000,2001 Lee Mallabone <lee0@callnetuk.com>
  * 
  *    Inspired in places by the original gdmconfig.c, by Martin K. Petersen.
  * 
@@ -21,6 +21,9 @@
  */
 
 #include "gdmconfig.h"
+
+/* This should always be undefined before building ANY kind of production release. */
+#undef DOING_DEVELOPMENT
 
 GladeXML *GUI = NULL;
 
@@ -45,23 +48,33 @@ main (int argc, char *argv[])
     /* Make sure the user is root. If not, they shouldn't be messing with 
      * GDM's configuration.
      */
-    if (geteuid() != 0)
+
+#ifndef DOING_DEVELOPMENT
+ if (geteuid() != 0)
       {
 	  GtkWidget *fatal_error = 
 	  gnome_error_dialog(_("You must be the superuser (root) to configure GDM.\n"));
 	  gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
 	  exit(EXIT_FAILURE);
       }
+#endif /* DOING_DEVELOPMENT */
 
     /* Look for the glade file in $(datadir)/gdmconfig or, failing that,
      * look in the current directory.
+	 * Except when doing development, we want the app to use the glade file
+	 * in the same directory, so we can actually make changes easily.
      */
+	
+#ifndef DOING_DEVELOPMENT
     glade_filename = gnome_datadir_file("gdmconfig/gdmconfig.glade");
     if (!glade_filename)
       {	  
 	  glade_filename = g_strdup("gdmconfig.glade");
       }
-
+#else
+	glade_filename = g_strdup("gdmconfig.glade");
+#endif /* DOING_DEVELOPMENT */
+	
     /* Build the user interface */
     GUI = glade_xml_new(glade_filename, NULL);
     g_free(glade_filename);
