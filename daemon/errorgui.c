@@ -32,6 +32,8 @@
 #include <sys/stat.h>
 #include <pwd.h>
 #include <sys/types.h>
+#include <signal.h>
+
 #include "gdm.h"
 #include "misc.h"
 #include "auth.h"
