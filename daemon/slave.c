@@ -2563,11 +2563,9 @@ session_child_run (struct passwd *pwent,
 			   we really DON'T care about leaks, we are going to
 			   exec in just a bit */
 			sessexec = g_strdup_printf
-				("%s %s %s/%s",
+				("%s %s",
 				 g_shell_quote (GdmXsession),
-				 g_shell_quote (exec),
-				 g_shell_quote (GdmSessDir),
-				 g_shell_quote (session));
+				 g_shell_quote (exec));
 		}
 	}
 
