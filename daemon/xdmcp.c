@@ -103,7 +103,9 @@ gint allow_severity = LOG_INFO;
 gint deny_severity = LOG_WARNING;
 
 static gint xdmcpfd = -1;
+static guint xdmcp_source = 0;
 static gint choosefd = -1;
+static guint choose_source = 0;
 static gint globsessid;
 static gchar *sysid;
 static ARRAY8 servhost;
@@ -397,38 +399,47 @@ gdm_xdmcp_init (void)
 void
 gdm_xdmcp_run (void)
 {
-    GIOChannel *xdmcpchan;
-    
-    xdmcpchan = g_io_channel_unix_new (xdmcpfd);
-    g_io_add_watch_full (xdmcpchan, G_PRIORITY_DEFAULT,
+	GIOChannel *xdmcpchan;
+
+	xdmcpchan = g_io_channel_unix_new (xdmcpfd);
+	xdmcp_source = g_io_add_watch_full
+		(xdmcpchan, G_PRIORITY_DEFAULT,
+		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
+		 gdm_xdmcp_decode_packet, NULL, NULL);
+	g_io_channel_unref (xdmcpchan);
+
+	if (GdmIndirect) {
+		GIOChannel *choosechan;
+
+		choosechan = g_io_channel_unix_new (choosefd);
+		choose_source = g_io_add_watch_full
+			(choosechan, G_PRIORITY_DEFAULT,
 			 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
-			 gdm_xdmcp_decode_packet,
-			 GINT_TO_POINTER (xdmcpfd), NULL);
-    g_io_channel_unref (xdmcpchan);
-
-    if (GdmIndirect) {
-	GIOChannel *choosechan;
-
-	choosechan = g_io_channel_unix_new (choosefd);
-	g_io_add_watch_full (choosechan, G_PRIORITY_DEFAULT,
-			     G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
-			     gdm_choose_socket_handler,
-			     GINT_TO_POINTER (choosefd), NULL);
-	g_io_channel_unref (choosechan);
-    }
+			 gdm_choose_socket_handler, NULL, NULL);
+		g_io_channel_unref (choosechan);
+	}
 }
 
 
 void
 gdm_xdmcp_close (void)
 {
+	if (xdmcp_source > 0) {
+		g_source_remove (xdmcp_source);
+		xdmcp_source = 0;
+	}
+
 	if (xdmcpfd > 0) {
 		close (xdmcpfd);
 		xdmcpfd = -1;
 	}
 
-	if (GdmIndirect &&
-	    choosefd > 0) {
+	if (choose_source > 0) {
+		g_source_remove (choose_source);
+		choose_source = 0;
+	}
+
+	if (choosefd > 0) {
 		close (choosefd);
 		choosefd = -1;
 	}
