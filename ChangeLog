@@ -1,3 +1,15 @@
+Fri Nov 30 17:38:47 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, gui/Makefile.am, daemon/Makefile.am: fix xinerama
+	  compilation
+
+	* gui/gdmconfig.c: define GTK_ENABLE_BROKEN to be able to use GtkText
+	  for now
+
+	* gui/gdmlogin.c: fix some s/int/gsize/, accelerators bind to
+	  "activate" signal, and use GNOME_PARAM_ENABLE_SOUND instead
+	  of the argv hack
+
 Thu Nov 22 00:47:23 2001  George Lebl <jirka@5z.com>
 
 	* Merge from stable up to 2.2.5.2 release tag

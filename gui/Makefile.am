@@ -59,6 +59,7 @@ gdmchooser_LDADD = \
 	$(GUI_LIBS)		\
 	$(XDMCP_LIBS)		\
 	-lX11			\
+	$(XINERAMA_LIBS)	\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\
@@ -66,6 +67,7 @@ gdmchooser_LDADD = \
 
 gdmlogin_LDADD = \
 	$(GUI_LIBS)		\
+	$(XINERAMA_LIBS)	\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\

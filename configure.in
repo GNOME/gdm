@@ -320,11 +320,12 @@ AC_SUBST(GDMXNESTCHOOSER)
 #
 # X11 Xinerama extension
 #
+XINERAMA_LIBS=
 if test x$with_xinerama != xno ; then
 	AC_CHECK_HEADER(X11/extensions/Xinerama.h, [
 		AC_CHECK_LIB(Xinerama, XineramaQueryScreens, [
 		     	AC_DEFINE(HAVE_LIBXINERAMA)
-		     	LIBS="$LIBS -lXinerama"
+		     	XINERAMA_LIBS="-lXinerama"
 		     	XINERAMA_SUPPORT=yes],,$JUSTGTK_LIBS)
 	])
 
@@ -332,6 +333,7 @@ if test x$with_xinerama != xno ; then
 		AC_MSG_ERROR(Xinerama support requested but Xinerama libraries not found)
 	fi
 fi
+AC_SUBST(XINERAMA_LIBS)
 
 #
 # Configuration file foo, we need to get expanded versions of a bunch of things

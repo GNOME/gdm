@@ -20,6 +20,9 @@
  * 
  */
 
+/* FIXME: gtk text shit */
+#define GTK_ENABLE_BROKEN
+
 #include <config.h>
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
@@ -2524,9 +2527,7 @@ sessions_clist_row_selected                  (GtkCList *clist,
 					      GdkEventButton *event,
 					      gpointer user_data)
 {
-#ifdef FIXME
    gint pos = 0;
-#endif
    GdmConfigSession *sess_details = (GdmConfigSession *)
      gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
 			     row);
@@ -2542,8 +2543,6 @@ sessions_clist_row_selected                  (GtkCList *clist,
    selected_session_row = row;
    
    /* FIXME: gtk text shit */
-   g_warning ("FIXME: Eeeek, no gtk_text!!!!");
-#ifdef FIXME
    gtk_text_freeze (GTK_TEXT (get_widget("session_text")));
    if (sess_details->script_contents != NULL) {
       gtk_editable_delete_text (GTK_EDITABLE (get_widget ("session_text")),
@@ -2556,7 +2555,6 @@ sessions_clist_row_selected                  (GtkCList *clist,
 				0, -1);
    }
    gtk_text_thaw (GTK_TEXT (get_widget("session_text")));
-#endif
    
    gtk_entry_set_text (GTK_ENTRY (get_widget("session_name_entry")),
 		       sess_details->name);
@@ -2713,12 +2711,9 @@ session_text_edited (GtkEditable *text, gpointer data)
    /* The editable_get_chars g_strdups it's result already, note that this
     * is different from entry_get_text which doesn't.  Chaulk that up to
     * too much crack use. */
-   /* FIXME: gtk text shit */
-#ifdef FIXME
    selected_session->script_contents =
 	   gtk_editable_get_chars (text, 0,
 				   gtk_text_get_length(GTK_TEXT(text)));
-#endif
    selected_session->changed = TRUE;
 }
 

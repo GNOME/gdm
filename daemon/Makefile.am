@@ -52,6 +52,7 @@ gdm_LDADD = \
 	$(XDMCP_LIBS)				\
 	-lXau					\
 	-lX11					\
+	$(XINERAMA_LIBS)			\
 	$(INTLLIBS)				\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious

@@ -1895,7 +1895,7 @@ static gboolean
 gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 {
     gchar buf[PIPE_SIZE];
-    gint len;
+    gsize len;
     gint i, x, y;
     GtkWidget *dlg;
     static gboolean replace_msg = TRUE;
@@ -2785,9 +2785,9 @@ gdm_login_gui_init (void)
     sessmenu = gtk_menu_item_new_with_label (_("Session"));
     gtk_menu_bar_append (GTK_MENU_BAR(menubar), sessmenu);
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (sessmenu), menu);
-    gtk_widget_add_accelerator (sessmenu, "activate_item", accel,
+    gtk_widget_add_accelerator (sessmenu, "activate", accel,
 				GDK_Escape, 0, 0);
-    gtk_widget_add_accelerator (sessmenu, "activate_item", accel,
+    gtk_widget_add_accelerator (sessmenu, "activate", accel,
 				GDK_s, GDK_MOD1_MASK, 0);
     gtk_widget_show (GTK_WIDGET (sessmenu));
 
@@ -2796,7 +2796,7 @@ gdm_login_gui_init (void)
 	langmenu = gtk_menu_item_new_with_label (_("Language"));
 	gtk_menu_bar_append (GTK_MENU_BAR (menubar), langmenu);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (langmenu), menu);
-	gtk_widget_add_accelerator (langmenu, "activate_item", accel,
+	gtk_widget_add_accelerator (langmenu, "activate", accel,
 				    GDK_l, GDK_MOD1_MASK, 0);
 	gtk_widget_show (GTK_WIDGET (langmenu));
     }
@@ -2864,7 +2864,7 @@ gdm_login_gui_init (void)
 		item = gtk_menu_item_new_with_label (_("System"));
 		gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
-		gtk_widget_add_accelerator (item, "activate_item", accel,
+		gtk_widget_add_accelerator (item, "activate", accel,
 					    GDK_y, GDK_MOD1_MASK, 0);
 		gtk_widget_show (GTK_WIDGET (item));
 	}
@@ -2883,7 +2883,7 @@ gdm_login_gui_init (void)
     }
     if (item != NULL) {
 	    gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
-	    gtk_widget_add_accelerator (item, "activate_item", accel,
+	    gtk_widget_add_accelerator (item, "activate", accel,
 					GDK_q, GDK_MOD1_MASK, 0);
 	    gtk_widget_show (GTK_WIDGET (item));
 	    gtk_signal_connect (GTK_OBJECT (item), "activate",
@@ -3582,8 +3582,6 @@ run_backgrounds (void)
 int 
 main (int argc, char *argv[])
 {
-    gchar **fixedargv;
-    gint fixedargc, i;
     struct sigaction hup;
     struct sigaction chld;
     sigset_t mask;
@@ -3596,21 +3594,14 @@ main (int argc, char *argv[])
 
     openlog ("gdmlogin", LOG_PID, LOG_DAEMON);
 
-    fixedargc = argc + 1;
-    fixedargv = g_new0 (gchar *, fixedargc);
-
-    for (i=0; i < argc; i++)
-	fixedargv[i] = argv[i];
-    
-    fixedargv[fixedargc-1] = "--disable-sound";
     gnome_program_init ("gdmlogin", VERSION, 
 			/* FIXME: oh fuck this inits way too much
 			 * shit that we don't want */
 			LIBGNOMEUI_MODULE /* module_info */,
-			fixedargc, fixedargv,
+			argc, argv,
 			GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
+			GNOME_PARAM_ENABLE_SOUND, FALSE,
 			NULL);
-    g_free (fixedargv);
 
     gdm_login_parse_config ();
 
