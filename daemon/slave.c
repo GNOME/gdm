@@ -2009,7 +2009,7 @@ run_pictures (void)
 		}
 
 		IGNORE_EINTR (r = stat (picfile, &s));
-		if (r < 0) {
+		if G_UNLIKELY (r < 0 || s.st_size > GdmUserMaxFile) {
 			seteuid (0);
 			setegid (GdmGroupId);
 
@@ -2055,9 +2055,13 @@ run_pictures (void)
 #endif
 
 		i = 0;
-		while ((bytes = fread (buf, sizeof (char),
+		while (i < s.st_size &&
+		       (bytes = fread (buf, sizeof (char),
 				       max_write, fp)) > 0) {
 			int written;
+
+			if G_UNLIKELY (i + bytes > s.st_size)
+				bytes = s.st_size - i;
 
 			/* write until we succeed in writing something */
 			IGNORE_EINTR (written = write (greeter_fd_out, buf, bytes));
@@ -2083,7 +2087,7 @@ run_pictures (void)
 				}
 			}
 
-			/* we have written bytes btyes if it likes it or not */
+			/* we have written bytes bytes if it likes it or not */
 			i += bytes;
 		}
 
@@ -3572,13 +3576,23 @@ gdm_slave_session_start (void)
     }
 
     if G_LIKELY (usrcfgok) {
-	gchar *cfgfile = g_build_filename (home_dir, ".dmrc", NULL);
+	char *p;
+	char *cfgfile = g_build_filename (home_dir, ".dmrc", NULL);
 	VeConfig *cfg = ve_config_new (cfgfile);
 	g_free (cfgfile);
 
 	usrsess = ve_config_get_string (cfg, "Desktop/Session");
 	if (usrsess == NULL)
 		usrsess = g_strdup ("");
+
+	/* this is just being truly anal about what users give us, and in case
+	 * it looks like they may have included a path whack it. */
+	p = strrchr (usrsess, '/');
+	if (p != NULL) {
+		char *tmp = g_strdup (p+1);
+		g_free (usrsess);
+		usrsess = tmp;
+	}
 
 	/* ugly workaround for migration */
 	if ((strcmp (usrsess, "Default.desktop") == 0 ||
