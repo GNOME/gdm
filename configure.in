@@ -37,7 +37,8 @@ AC_SUBST(LDFLAGS)
 
 dnl ## internationalization support
 ALL_LINGUAS="az ca cs da de el es et fi fr ga gl hu it ja ko lt nl nn no pl pt_BR ro ru sk sl sv tr uk zh_CN.GB2312 zh_TW.Big5"
-AM_GNOME_GETTEXT
+dnl AM_GNOME_GETTEXT
+AM_GNU_GETTEXT
 
 AC_CHECK_FUNCS([setenv unsetenv])
 
@@ -221,6 +222,18 @@ SESSDIR_TMP="$sysconfdir/gdm/Sessions"
 EXPANDED_SESSDIR=`eval echo $SESSDIR_TMP`
 AC_SUBST(EXPANDED_SESSDIR)
 
+## Stuff for debian/changelog.in
+if test -e "debian/changelog"; then
+  DEBIAN_DATESTAMP=`head -1 debian/changelog| sed -e 's/.*cvs.//' -e 's/).*//'`
+  DEBIAN_DATE=`grep '^ --' debian/changelog | head -1 | sed -e 's/.*  //'`
+else
+  DEBIAN_DATESTAMP=`date +%Y%m%d%H%M%s`
+  DEBIAN_DATE=`date -R`
+fi
+
+AC_SUBST(DEBIAN_DATESTAMP)
+AC_SUBST(DEBIAN_DATE)
+
 prefix=$old_prefix
 exec_prefix=$old_exec_prefix
 
@@ -239,6 +252,7 @@ config/Failsafe
 config/gdm.conf
 config/Gnome
 config/gnomerc
+debian/changelog
 gdm.spec
 ],[sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile])
 

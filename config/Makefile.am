@@ -23,6 +23,7 @@ EXTRA_DIST = \
 	PostSession \
 	PreSession \
 	Default.redhat \
+	Default.debian \
 	Failsafe.redhat
 
 install-data-hook: gdm.conf gnomerc Gnome Failsafe
@@ -50,6 +51,9 @@ install-data-hook: gdm.conf gnomerc Gnome Failsafe
 	fi
 	if test '!' -f $(sessdir)/Failsafe; then \
 		$(INSTALL_SCRIPT) Failsafe $(sessdir)/Failsafe; \
+	fi
+	if test -e /etc/debian_version; then \
+		$(INSTALL_SCRIPT) $(srcdir)/Default.debian $(sessdir)/Default; \
 	fi
 
 	if test '!' -d $(initdir); then \
