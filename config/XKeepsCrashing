@@ -25,10 +25,11 @@ MSG8=`gettext -s "I cannot start the X server (your graphical interface).  It is
 #
 XCONFIGURATOR=
 for n in \
-  /usr/sbin/XFdrake		\
-  /usr/bin/X11/XF86Setup	\
-  /usr/bin/X11/Xconfigurator	\
-  /usr/bin/X11/xf86cfg		\
+  /usr/bin/redhat-config-xfree86 \
+  /usr/sbin/XFdrake		 \
+  /usr/bin/X11/XF86Setup	 \
+  /usr/bin/X11/Xconfigurator	 \
+  /usr/bin/X11/xf86cfg		 \
    ; do
   # standard shell test has no or and loops have no breaks, eek
   if test "x$XCONFIGURATOR" = "x" ; then
