@@ -1,3 +1,12 @@
+Thu Aug 14 09:55:31 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c: Limit number of
+	  users to display at 500, but also limit the time it takes to get
+	  them by 5 seconds.  Whatever we can read in 5 seconds we get.
+
+	* gui/gdmsetup.c: similarly as above but cap the number of users at
+	  100 since more then that is kind of useless in the combo box.
+
 Wed Aug 13 11:17:15 2003  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: when the parent process doesn't exist,

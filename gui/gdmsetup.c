@@ -416,6 +416,7 @@ setup_user_combo (const char *name, const char *key)
 	struct passwd *pwent;
 	char *str;
 	int cnt;
+	time_t time_started;
 
 	str = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
@@ -424,6 +425,8 @@ setup_user_combo (const char *name, const char *key)
 
 	if ( ! ve_string_empty (str))
 		users = g_list_append (users, g_strdup (str));
+
+	time_started = time (NULL);
 
 	setpwent ();
 
@@ -437,7 +440,8 @@ setup_user_combo (const char *name, const char *key)
 			users = g_list_append (users,
 					       g_strdup (pwent->pw_name));
 			/* FIXME: fix properly, see bug #111830 */
-			if (cnt >= 50) {
+			if (cnt >= 100 ||
+			    time_started + 5 <= time (NULL)) {
 				users = g_list_append (users,
 						       g_strdup (_("Too many users to list here...")));
 				break;

@@ -254,6 +254,7 @@ gdm_greeter_users_init (void)
 {
     GdmGreeterUser *user;
     struct passwd *pwent;
+    time_t time_started;
 
     if (access (GdmDefaultFace, R_OK) == 0) {
 	    defface = gdk_pixbuf_new_from_file (GdmDefaultFace, NULL);
@@ -263,14 +264,17 @@ gdm_greeter_users_init (void)
 		    GdmDefaultFace);
     }
 
+    time_started = time (NULL);
+
     setpwent ();
 
     pwent = getpwent();
 	
     while (pwent != NULL) {
 
-        /* FIXME: fix properly, see bug #111830 */
-        if (number_of_users > 100) {
+	/* FIXME: fix properly, see bug #111830 */
+	if (number_of_users > 500 ||
+	    time_started + 5 <= time (NULL)) {
 	    user = gdm_greeter_user_alloc ("",
 					   9999 /*fake uid*/,
 					   "/",
