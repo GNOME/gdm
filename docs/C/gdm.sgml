@@ -720,8 +720,9 @@
 	      </para>
 	      <para>
 		On systems that support PAM, this parameter is
-		ignored. It's up to the PAM libraries to determine
-		whether the user is on a local display or not.
+		not as useful as you can use PAM to do the same thing,
+		and in fact do even more.  However it is still followed,
+		so you should probably leave it true for PAM systems.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -790,12 +791,14 @@
 	      <synopsis>VerboseAuth=true</synopsis>
 	      <para>
 		Specifies whether GDM should print authentication errors
-		in the message field in the greeter. 
-	      </para>
-	      
-	      <para>
-		Depending on your system setup, usernames might be 
-		exposed when this option is on.
+		in the message field in the greeter.  Unlike in the past
+		having this option be true is no longer a security risk.
+		It will not specify if username or password was wrong, as
+		both result in the same error.  However it will give a
+		different error when for example root login is disallowed
+		and root logs in, or if a user with a disabled login tries
+		to log in (only after the user succeeds).  No verbose
+		information about the login is given until a user is verified.
 	      </para>
 	    </listitem>
 	  </varlistentry>
