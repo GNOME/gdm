@@ -916,6 +916,7 @@ gdm_login_session_init (GtkWidget *menu)
     gtk_widget_show (GTK_WIDGET (item));
 
     item = gtk_menu_item_new();
+    gtk_widget_set_sensitive (item, FALSE);
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
@@ -1033,6 +1034,7 @@ gdm_login_language_menu_new (void)
 			 lastlang);
 
     item = gtk_menu_item_new();
+    gtk_widget_set_sensitive (item, FALSE);
     gtk_menu_append (GTK_MENU (menu), item);
     gtk_widget_show (GTK_WIDGET (item));
 
