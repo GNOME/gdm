@@ -1,5 +1,65 @@
 Ahh news...
 
+2.3.90.4 stuff:
+
+- IMPORTANT: Change the behaviour of session scripts.  Now gdm will
+  automatically start writing output to ~/.xsession-errors for EVERY
+  session file and not just in the Xsession file.  Well every file
+  except the failsafe ones (including sessions named 'Failsafe')
+
+- More error checking.  Check if we messed up writing the auth stuff
+  and give an error, also check if the session lasted less then 10
+  seconds in which case give a warning rather then silently fail.
+
+- Don't init gnome in the daemon, this should fix a whole bunch
+  of random issues and crashes.  Also don't init gnome in the
+  chooser.
+
+- Use setresuid to fix setuid problem with the failsafe gtk stuff.
+
+- Browser now gets the pictures through a pipe rather then through
+  temporary files.  This is much nicer.
+
+- Fix hostname and interface querying.  Should work better on "broken"
+  setups now.
+
+- Fix focus issues on the failsafe stuff
+
+- Fix autologin stuff (should fix #68160)
+
+- Use BSDs setusercontext if found.  This is not fully tested as
+  I don't have a BSD box.
+
+- Add greeter/MinimalUID which is the minimal UID to show in the
+  browser and in the dropdown lists in gdmsetup
+
+- Don't exclude people from the browser that have '*' in the password
+  field as that could be legitimate
+
+- Fix xnest flexi server on nfs mounted home dirs with root squashing.
+  This required a protocol change to the socket protocol, but I don't
+  think anything outside of gdmflexiserver is using it (and it will
+  fail gracefully anyway), fixes #82122
+
+- Some random UI issues fixed (#80038, and others)
+
+- The graphical greeter is now translatable (and thus translated into
+  more languages)
+
+- I bet no one reads these long NEWS sections anyway.
+
+- Photosetup now always copies to .gnome/photo, even if the picture
+  is in the pixmaps directory
+
+- Few crashes fixed
+
+- Build fixes, among others #79374 (Christophe Merlet, Carlos Perello
+  Marin, me)
+
+- Translation updates (Vincent van Adrighem, Duarte Loreto, Kjartan Maraas,
+  Stanislav Visnovsky, Christian Rose, Zbigniew Chyla, GNOME PL Team,
+  Ole Laursen, Young-Ho Cha, Changwoo Ryu, Abel Cheung, Simos Xenitellis, me)
+
 2.3.90.3 stuff:
 
 - The instant apply, no crack, setup proggie (gdmsetup) now works,
