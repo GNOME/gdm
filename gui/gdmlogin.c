@@ -408,11 +408,11 @@ gdm_parse_enriched_string (const gchar *s)
 
     str = g_string_new (NULL);
 
-    while (*s != '\0') {
+    while (s[0] != '\0') {
 
-	if (*s == '%' && s[1] != 0) {
+	if (s[0] == '%' && s[1] != 0) {
 		cmd = s[1];
-		s+=2;
+		s++;
 
 		switch (cmd) {
 
