@@ -42,13 +42,14 @@
 #define SERVER_ABORT 253	/* Server failed badly. Suspending display. */
 
 /* DO NOTE USE 1, that's used as error if x connection fails usually */
-/* Note that there is no reasons why these are a power of two, and note
+/* Note that there is no reasons why these were a power of two, and note
  * that they have to fit in 256 */
 #define DISPLAY_SUCCESS 0	/* All systems are go */
 #define DISPLAY_REMANAGE 2	/* Restart display */
 #define DISPLAY_ABORT 4		/* Houston, we have a problem */
 #define DISPLAY_REBOOT 8	/* Rebewt */
 #define DISPLAY_HALT 16		/* Halt */
+#define DISPLAY_SUSPEND 17	/* Suspend */
 #define DISPLAY_DEAD 32		/* Display not configured/started yet */
 #define DISPLAY_XFAILED 64	/* X failed */
 #define DISPLAY_RESTARTGDM 128	/* Restart GDM */
@@ -120,6 +121,7 @@
 #define GDM_KEY_GNOMEDEFAULTSESSION "daemon/GnomeDefaultSession=" EXPANDED_DATADIR "/gnome/default.session"
 #define GDM_KEY_SERVAUTH "daemon/ServAuthDir=" EXPANDED_AUTHDIR
 #define GDM_KEY_SESSDIR "daemon/SessionDir=" EXPANDED_SYSCONFDIR "/gdm/Sessions/"
+#define GDM_KEY_SUSPEND "daemon/SuspendCommand="
 
 #define GDM_KEY_UAUTHDIR "daemon/UserAuthDir="
 #define GDM_KEY_UAUTHFB "daemon/UserAuthFBDir=/tmp"
@@ -135,6 +137,7 @@
 
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
+#define GDM_KEY_ALLOWREMOTEAUTOLOGIN "security/AllowRemoteAutoLogin=false"
 #define GDM_KEY_MAXFILE "security/UserMaxFile=65536"
 #define GDM_KEY_SESSIONMAXFILE "security/SessionMaxFile=524288"
 #define GDM_KEY_RELAXPERM "security/RelaxPermissions=0"
@@ -256,16 +259,6 @@ struct _GdmIndirectDisplay {
 	struct sockaddr_in* dsp_sa;
 	time_t acctime;
 	struct in_addr *chosen_host;
-};
-
-
-typedef struct _GdmChooserDisplay GdmChooserDisplay;
-
-struct _GdmChooserDisplay {
-    struct sockaddr_in* dsp_sa;
-    guint16 dispnum;
-    gchar *manager;
-    time_t acctime;
 };
 
 typedef gboolean (*GSignalFunc) (gint8		signal,

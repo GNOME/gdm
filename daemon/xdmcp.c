@@ -120,6 +120,8 @@ extern gint GdmPort;		/* UDP port number */
 extern gboolean GdmIndirect;	/* Honor XDMCP_INDIRECT, i.e. choosing */
 extern gint GdmMaxIndirectWait;	/* Max wait between INDIRECT_QUERY and MANAGE */
 extern gint GdmDispPerHost;	/* Max number of displays per remote host */
+extern gchar *GdmTimedLogin;
+extern gboolean GdmAllowRemoteAutoLogin;
 
 extern gboolean GdmXdmcp;	/* xdmcp enabled */
 
@@ -1084,6 +1086,12 @@ gdm_xdmcp_display_alloc (struct sockaddr_in *clnt_sa, gint displaynum)
     d->dispnum = displaynum;
 
     d->sleep_before_run = 0;
+    if (GdmAllowRemoteAutoLogin &&
+	! gdm_string_empty (GdmTimedLogin)) {
+	    d->timed_login_ok = TRUE;
+    } else {
+	    d->timed_login_ok = FALSE;
+    }
     
     /* Find client hostname */
     client_he = gethostbyaddr ((gchar *) &clnt_sa->sin_addr,

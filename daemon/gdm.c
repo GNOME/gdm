@@ -89,6 +89,7 @@ gchar *GdmXKeepsCrashing = NULL;
 gchar *GdmXKeepsCrashingConfigurators = NULL;
 gchar *GdmHalt = NULL;
 gchar *GdmReboot = NULL;
+gchar *GdmSuspend = NULL;
 gchar *GdmServAuthDir = NULL;
 gchar *GdmUserAuthDir = NULL;
 gchar *GdmUserAuthFile = NULL;
@@ -114,6 +115,7 @@ gboolean  GdmDebug = FALSE;
 gboolean  GdmVerboseAuth = FALSE;
 gboolean  GdmAllowRoot = FALSE;
 gboolean  GdmAllowRemoteRoot = FALSE;
+gboolean  GdmAllowRemoteAutoLogin = FALSE;
 gint  GdmRelaxPerms = 0;
 gint  GdmRetryDelay = 0;
 gchar *GdmTimedLogin = NULL;
@@ -179,6 +181,7 @@ gdm_config_parse (void)
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmServAuthDir = gnome_config_get_string (GDM_KEY_SERVAUTH);
     GdmSessDir = gnome_config_get_string (GDM_KEY_SESSDIR);
+    GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     GdmGnomeDefaultSession = gnome_config_get_string (GDM_KEY_GNOMEDEFAULTSESSION);
     GdmUser = gnome_config_get_string (GDM_KEY_USER);
@@ -192,6 +195,7 @@ gdm_config_parse (void)
 
     GdmAllowRoot = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
     GdmAllowRemoteRoot = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEROOT);
+    GdmAllowRemoteAutoLogin = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEAUTOLOGIN);
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
     GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
     GdmSessionMaxFile = gnome_config_get_int (GDM_KEY_SESSIONMAXFILE);
@@ -641,6 +645,26 @@ deal_with_x_crashes (GdmDisplay *d)
     return FALSE;
 }
 
+static gboolean
+bin_executable (const char *command)
+{
+	char **argv;
+
+	if (gdm_string_empty (command))
+		return FALSE;
+
+	argv = g_strsplit (command, argdelim, MAX_ARGS);	
+	if (argv != NULL &&
+	    argv[0] != NULL &&
+	    access (argv[0], X_OK) == 0) {
+		g_strfreev (argv);
+		return TRUE;
+	} else {
+		g_strfreev (argv);
+		return FALSE;
+	}
+}
+
 static void 
 gdm_cleanup_children (void)
 {
@@ -687,6 +711,24 @@ gdm_cleanup_children (void)
 	    status = DISPLAY_REMANAGE;
     }
 
+    /* checkout if we can actually do stuff */
+    switch (status) {
+    case DISPLAY_REBOOT:
+	    if ( ! bin_executable (GdmReboot))
+		    status = DISPLAY_REMANAGE;
+	    break;
+    case DISPLAY_HALT:
+	    if ( ! bin_executable (GdmHalt))
+		    status = DISPLAY_REMANAGE;
+	    break;
+    case DISPLAY_SUSPEND:
+	    if ( ! bin_executable (GdmSuspend))
+		    status = DISPLAY_REMANAGE;
+	    break;
+    default:
+	    break;
+    }
+
     /* Autopsy */
     switch (status) {
 	
@@ -717,6 +759,18 @@ gdm_cleanup_children (void)
 
 	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
 	break;
+
+    case DISPLAY_SUSPEND:	/* Suspend machine */
+	gdm_info (_("gdm_child_action: Master suspending..."));
+
+	final_cleanup ();
+
+	argv = g_strsplit (GdmReboot, argdelim, MAX_ARGS);	
+	execv (argv[0], argv);
+
+	gdm_error (_("gdm_child_action: Suspend failed: %s"), strerror (errno));
+	break;
+	
 
     case DISPLAY_RESTARTGDM:
 	final_cleanup ();

@@ -21,6 +21,7 @@ RebootCommand=/sbin/shutdown -r now
 RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:@EXPANDED_BINDIR@
 ServAuthDir=@EXPANDED_AUTHDIR@
 SessionDir=@EXPANDED_SYSCONFDIR@/gdm/Sessions/
+SuspendCommand=
 User=gdm
 UserAuthDir=
 UserAuthFBDir=/tmp
@@ -32,6 +33,7 @@ TimedLoginDelay=30
 [security]
 AllowRoot=true
 AllowRemoteRoot=true
+AllowRemoteAutoLogin=false
 RelaxPermissions=0
 RetryDelay=3
 UserMaxFile=65536

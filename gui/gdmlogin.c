@@ -75,7 +75,11 @@ static gint  GdmIconMaxHeight;
 static gint  GdmIconMaxWidth;
 static gboolean GdmQuiver;
 static gboolean GdmSystemMenu;
+static gchar *GdmHalt;
+static gchar *GdmReboot;
+static gchar *GdmSuspend;
 static gboolean GdmConfigAvailable;
+static gchar *GdmConfigurator;
 static gint GdmXineramaScreen;
 static gchar *GdmLogo;
 static gchar *GdmWelcome;
@@ -668,33 +672,39 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 	g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
 }
 
-static gboolean
+static void
 gdm_login_reboot_handler (void)
 {
-    if (gdm_login_query (_("Are you sure you want to reboot the machine?"))) {
-	closelog();
+	if (gdm_login_query (_("Are you sure you want to reboot the machine?"))) {
+		closelog();
 
-        kill_thingies ();
-	_exit (DISPLAY_REBOOT);
-    }
-
-    return (TRUE);
+		kill_thingies ();
+		_exit (DISPLAY_REBOOT);
+	}
 }
 
 
-static gboolean
+static void
 gdm_login_halt_handler (void)
 {
-    if (gdm_login_query (_("Are you sure you want to halt the machine?"))) {
-	closelog();
+	if (gdm_login_query (_("Are you sure you want to halt the machine?"))) {
+		closelog();
 
-        kill_thingies ();
-	_exit (DISPLAY_HALT);
-    }
-
-    return (TRUE);
+		kill_thingies ();
+		_exit (DISPLAY_HALT);
+	}
 }
 
+static void
+gdm_login_suspend_handler (void)
+{
+	if (gdm_login_query (_("Are you sure you want to suspend the machine?"))) {
+		closelog();
+
+		kill_thingies ();
+		_exit (DISPLAY_SUSPEND);
+	}
+}
 
 static void 
 gdm_login_parse_config (void)
@@ -716,6 +726,9 @@ gdm_login_parse_config (void)
     GdmIcon = gnome_config_get_string (GDM_KEY_ICON);
     GdmQuiver = gnome_config_get_bool (GDM_KEY_QUIVER);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
+    GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
+    GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
+    GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
     GdmTitleBar = gnome_config_get_bool (GDM_KEY_TITLE_BAR);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
@@ -748,8 +761,14 @@ gdm_login_parse_config (void)
     GdmShowGnomeChooserSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_CHOOSER);
     
     GdmTimedLoginEnable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
+
     if (GdmTimedLoginEnable) {
-	    GdmTimedLogin = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
+	    GdmTimedLogin = g_getenv("GDM_TIMED_LOGIN_OK");
+            if (gdm_string_empty (GdmTimedLogin)) {
+	      g_free (GdmTimedLogin);
+	      GdmTimedLogin = NULL;
+	    }
+
 	    GdmTimedLoginDelay =
 		    gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
 	    if (GdmTimedLoginDelay < 5) {
@@ -783,12 +802,6 @@ gdm_login_parse_config (void)
 	    login_is_local = FALSE;
     } else {
 	    login_is_local = TRUE;
-    }
-
-    /* Disable timed login stuff if it's not ok for this display */
-    if (gdm_string_empty (g_getenv ("GDM_TIMED_LOGIN_OK"))) {
-	    g_free (GdmTimedLogin);
-	    GdmTimedLogin = NULL;
     }
 }
 
@@ -2393,6 +2406,27 @@ clock_state_changed (GtkWidget *clock)
 	clock->state = login->state;
 }
 
+/* doesn't check for executability, just for existance */
+static gboolean
+bin_exists (const char *command)
+{
+	char **argv;
+
+	if (gdm_string_empty (command))
+		return FALSE;
+
+	argv = g_strsplit (command, " ", MAX_ARGS);	
+	if (argv != NULL &&
+	    argv[0] != NULL &&
+	    access (argv[0], F_OK) == 0) {
+		g_strfreev (argv);
+		return TRUE;
+	} else {
+		g_strfreev (argv);
+		return FALSE;
+	}
+}
+
 static void
 gdm_login_gui_init (void)
 {
@@ -2474,47 +2508,72 @@ gdm_login_gui_init (void)
     }
 
     if (GdmSystemMenu) {
+        gboolean got_anything = FALSE;
+
 	menu = gtk_menu_new();
-        if (GdmConfigAvailable) {
-	   item = gtk_menu_item_new_with_label (_("Configure..."));
-	   gtk_menu_append (GTK_MENU (menu), item);
-	   gtk_signal_connect (GTK_OBJECT (item), "activate",
-			       GTK_SIGNAL_FUNC (gdm_run_gdmconfig),
-			       NULL);
-	   gtk_widget_show (item);
-	   gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-				 _("Configure GDM (this login manager). "
-				   "This will require the root password."),
-				 NULL);
+	if (GdmConfigAvailable &&
+	    bin_exists (GdmConfigurator)) {
+		item = gtk_menu_item_new_with_label (_("Configure..."));
+		gtk_menu_append (GTK_MENU (menu), item);
+		gtk_signal_connect (GTK_OBJECT (item), "activate",
+				    GTK_SIGNAL_FUNC (gdm_run_gdmconfig),
+				    NULL);
+		gtk_widget_show (item);
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+				      _("Configure GDM (this login manager). "
+					"This will require the root password."),
+				      NULL);
+		got_anything = TRUE;
 	}
 
-	item = gtk_menu_item_new_with_label (_("Reboot..."));
-	gtk_menu_append (GTK_MENU (menu), item);
-	gtk_signal_connect (GTK_OBJECT (item), "activate",
-			    GTK_SIGNAL_FUNC (gdm_login_reboot_handler), 
-			    NULL);
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-			      _("Reboot your computer"),
-			      NULL);
+	if (bin_exists (GdmReboot)) {
+		item = gtk_menu_item_new_with_label (_("Reboot..."));
+		gtk_menu_append (GTK_MENU (menu), item);
+		gtk_signal_connect (GTK_OBJECT (item), "activate",
+				    GTK_SIGNAL_FUNC (gdm_login_reboot_handler), 
+				    NULL);
+		gtk_widget_show (GTK_WIDGET (item));
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+				      _("Reboot your computer"),
+				      NULL);
+		got_anything = TRUE;
+	}
 	
-	item = gtk_menu_item_new_with_label (_("Halt..."));
-	gtk_menu_append (GTK_MENU (menu), item);
-	gtk_signal_connect (GTK_OBJECT (item), "activate",
-			   GTK_SIGNAL_FUNC (gdm_login_halt_handler), 
-			    NULL);
-	gtk_widget_show (GTK_WIDGET (item));
-	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-			      _("Shut down your computer so that "
-				"you may turn it off."),
-			      NULL);
+	if (bin_exists (GdmHalt)) {
+		item = gtk_menu_item_new_with_label (_("Halt..."));
+		gtk_menu_append (GTK_MENU (menu), item);
+		gtk_signal_connect (GTK_OBJECT (item), "activate",
+				    GTK_SIGNAL_FUNC (gdm_login_halt_handler), 
+				    NULL);
+		gtk_widget_show (GTK_WIDGET (item));
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+				      _("Shut down your computer so that "
+					"you may turn it off."),
+				      NULL);
+		got_anything = TRUE;
+	}
+
+	if (bin_exists (GdmSuspend)) {
+		item = gtk_menu_item_new_with_label (_("Suspend..."));
+		gtk_menu_append (GTK_MENU (menu), item);
+		gtk_signal_connect (GTK_OBJECT (item), "activate",
+				    GTK_SIGNAL_FUNC (gdm_login_suspend_handler), 
+				    NULL);
+		gtk_widget_show (GTK_WIDGET (item));
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+				      _("Suspend your computer"),
+				      NULL);
+		got_anything = TRUE;
+	}
 	
-	item = gtk_menu_item_new_with_label (_("System"));
-	gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
-        gtk_widget_add_accelerator (item, "activate_item", accel,
-				    GDK_y, GDK_MOD1_MASK, 0);
-	gtk_widget_show (GTK_WIDGET (item));
+	if (got_anything) {
+		item = gtk_menu_item_new_with_label (_("System"));
+		gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
+		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
+		gtk_widget_add_accelerator (item, "activate_item", accel,
+					    GDK_y, GDK_MOD1_MASK, 0);
+		gtk_widget_show (GTK_WIDGET (item));
+	}
     }
 
     /* The clock */

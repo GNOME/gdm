@@ -35,6 +35,8 @@ static const gchar RCSid[]="$Id$";
 extern gboolean GdmVerboseAuth;
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
+extern gchar *GdmTimedLogin;
+extern gboolean GdmAllowRemoteAutoLogin;
 
 /* Local PAM handle */
 static pam_handle_t *pamh = NULL;
@@ -150,17 +152,21 @@ gdm_verify_user (const char *username,
     struct passwd *pwent;
     gboolean error_msg_given = FALSE;
     gboolean opened_session = FALSE;
+    gboolean started_timer = FALSE;
 
     /* start the timer for timed logins */
-    if (local)
+    if (local ||
+	(!gdm_string_empty(GdmTimedLogin) && GdmAllowRemoteAutoLogin)) {
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
+	    started_timer = TRUE;
+    }
 
     if (username == NULL) {
 	    /* Ask gdmgreeter for the user's login. Just for good measure */
 	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Login:"));
 	    if (login == NULL ||
 		gdm_slave_greeter_check_interruption (login)) {
-		    if (local)
+		    if (started_timer)
 			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 		    g_free (login);
 		    return NULL;
@@ -171,7 +177,7 @@ gdm_verify_user (const char *username,
 	    
     /* Initialize a PAM session for the user */
     if ((pamerr = pam_start ("gdm", login, &pamc, &pamh)) != PAM_SUCCESS) {
-	    if (local)
+	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 	    if (gdm_slave_should_complain ())
 		    gdm_error (_("Can't find /etc/pam.d/gdm!"));
@@ -180,7 +186,7 @@ gdm_verify_user (const char *username,
     
     /* Inform PAM of the user's tty */
     if ((pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
-	    if (local)
+	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 	    if (gdm_slave_should_complain ())
 		    gdm_error (_("Can't set PAM_TTY=%s"), display);
@@ -189,7 +195,7 @@ gdm_verify_user (const char *username,
 
     /* Start authentication session */
     if ((pamerr = pam_authenticate (pamh, 0)) != PAM_SUCCESS) {
-	    if (local)
+	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 	    if (gdm_slave_should_complain ())
 		    gdm_error (_("Couldn't authenticate %s"), login);
@@ -197,7 +203,7 @@ gdm_verify_user (const char *username,
     }
 
     /* stop the timer for timed logins */
-    if (local)
+    if (started_timer)
 	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
     
     pwent = getpwnam (login);

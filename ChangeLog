@@ -1,3 +1,20 @@
+Sun Jun 24 13:45:59 2001  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in, daemon/gdm.[ch], daemon/slave.c,
+	  gui/gdmconfig.(c|glade), gui/gdmlogin.c:  Add suspend command
+	  support although it is off by default (empty command)  Also do
+	  checks for commands and don't show their respective menu items
+	  if the commands are not present or empty
+
+	* config/gdm.conf.in, daemon/gdm.[ch], daemon/slave.c,
+	  daemon/verify-pam.c, daemon/xdmcp.c, gui/gdmconfig.(c|glade),
+	  gui/gdmlogin.c:  Apply and massage a patch from Michel Dagenais
+	  <michel.dagenais@polymtl.ca> to add optional support
+	  for remote auto (timed) login, and also to use enriched strings
+	  for the timed and automatic login names.  This is to make the
+	  life of sysadmins easier if they're managing a large set of
+	  x terminals.
+
 Sat Jun 23 03:17:03 2001  George Lebl <jirka@5z.com>
 
 	* gdm.spec.in, Makefile.am: some pam related fixage

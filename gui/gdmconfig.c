@@ -257,6 +257,7 @@ connect_binary_checks (void)
 		"greeter_binary",
 		"halt_command",
 		"reboot_command",
+		"suspend_command",
 		"background_program",
 		"failsafe_x_server",
 		"x_keeps_crashing",
@@ -586,6 +587,7 @@ gdm_config_parse_most (gboolean factory)
     gdm_entry_set("greeter_binary", gnome_config_get_string (GDM_KEY_GREETER));
     gdm_entry_set("halt_command", gnome_config_get_string (GDM_KEY_HALT));
     gdm_entry_set("reboot_command", gnome_config_get_string (GDM_KEY_REBOOT));
+    gdm_entry_set("suspend_command", gnome_config_get_string (GDM_KEY_SUSPEND));
     
     gdm_entry_set("init_dir", gnome_config_get_string (GDM_KEY_INITDIR));
     gdm_entry_set("log_dir", gnome_config_get_string (GDM_KEY_LOGDIR));
@@ -605,6 +607,7 @@ gdm_config_parse_most (gboolean factory)
     /* Fill the widgets in Security tab */
     gdm_toggle_set("allow_root", gnome_config_get_bool(GDM_KEY_ALLOWROOT));
     gdm_toggle_set("allow_remote_root", gnome_config_get_bool(GDM_KEY_ALLOWREMOTEROOT));
+    gdm_toggle_set("allow_remote_auto_login", gnome_config_get_bool(GDM_KEY_ALLOWREMOTEAUTOLOGIN));
     gdm_toggle_set("kill_init_clients", gnome_config_get_bool(GDM_KEY_KILLIC));
     gdm_radio_set ("relax_perms", gnome_config_get_int(GDM_KEY_RELAXPERM), 2);
     gdm_toggle_set("verbose_auth", gnome_config_get_bool(GDM_KEY_VERBAUTH));
@@ -995,6 +998,7 @@ write_config (void)
     gdm_entry_write("config_binary", GDM_KEY_CONFIGURATOR);
     gdm_entry_write("halt_command", GDM_KEY_HALT);
     gdm_entry_write("reboot_command", GDM_KEY_REBOOT);
+    gdm_entry_write("suspend_command", GDM_KEY_SUSPEND);
     
     gdm_entry_write("init_dir", GDM_KEY_INITDIR);
     gdm_entry_write("log_dir", GDM_KEY_LOGDIR);
@@ -1013,6 +1017,7 @@ write_config (void)
     /* Write out the widget contents of the Security tab */
     gdm_toggle_write("allow_root", GDM_KEY_ALLOWROOT);
     gdm_toggle_write("allow_remote_root", GDM_KEY_ALLOWREMOTEROOT);
+    gdm_toggle_write("allow_remote_auto_login", GDM_KEY_ALLOWREMOTEAUTOLOGIN);
     gdm_toggle_write("kill_init_clients", GDM_KEY_KILLIC);
     gdm_radio_write ("relax_perms", GDM_KEY_RELAXPERM, 2);
     gdm_toggle_write("verbose_auth", GDM_KEY_VERBAUTH);

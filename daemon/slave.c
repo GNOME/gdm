@@ -67,6 +67,8 @@ static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
 static gboolean do_configurator = FALSE; /* if this is true, login as root
 					  * and start the configurator */
+static gchar *ParsedAutomaticLogin = NULL;
+static gchar *ParsedTimedLogin = NULL;
 
 extern gboolean gdm_first_login;
 extern gboolean gdm_emergency_server;
@@ -79,6 +81,7 @@ extern gchar *GdmGnomeDefaultSession;
 extern gchar *GdmSessDir;
 extern gchar *GdmLocaleFile;
 extern gchar *GdmAutomaticLogin;
+extern gboolean GdmAllowRemoteAutoLogin;
 extern gchar *GdmConfigurator;
 extern gboolean GdmConfigAvailable;
 extern gboolean GdmSystemMenu;
@@ -126,6 +129,7 @@ static void     gdm_slave_exit (gint status, const gchar *format, ...);
 static void     gdm_child_exit (gint status, const gchar *format, ...);
 static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent);
+static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
 
 
 /* Yay thread unsafety */
@@ -313,6 +317,16 @@ gdm_slave_run (GdmDisplay *display)
     
     d = display;
 
+    if ( ! gdm_string_empty (GdmAutomaticLogin)) {
+	    ParsedAutomaticLogin = gdm_parse_enriched_login (GdmAutomaticLogin,
+							     display);
+    }
+
+    if ( ! gdm_string_empty (GdmTimedLogin)) {
+	    ParsedTimedLogin = gdm_parse_enriched_login (GdmTimedLogin,
+							 display);
+    }
+
     if (d->sleep_before_run > 0) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
 	    sleep (d->sleep_before_run);
@@ -385,13 +399,13 @@ gdm_slave_run (GdmDisplay *display)
 
     if (d->use_chooser) {
 	    gdm_slave_chooser ();  /* Run the chooser */
-    } else if (d->type == TYPE_LOCAL &&
+    } else if ((d->type == TYPE_LOCAL || GdmAllowRemoteAutoLogin) &&
 	       gdm_first_login &&
-	       ! gdm_string_empty (GdmAutomaticLogin) &&
-	       strcmp (GdmAutomaticLogin, "root") != 0) {
+	       ! gdm_string_empty (ParsedAutomaticLogin) &&
+	       strcmp (ParsedAutomaticLogin, "root") != 0) {
 	    gdm_first_login = FALSE;
 
-	    setup_automatic_session (d, GdmAutomaticLogin);
+	    setup_automatic_session (d, ParsedAutomaticLogin);
 
 	    gdm_slave_session_start();
 
@@ -404,7 +418,7 @@ gdm_slave_run (GdmDisplay *display)
 	    if (do_timed_login) {
 		    /* timed out into a timed login */
 		    do_timed_login = FALSE;
-		    setup_automatic_session (d, GdmTimedLogin);
+		    setup_automatic_session (d, ParsedTimedLogin);
 	    }
 	    gdm_slave_session_start ();
     }
@@ -550,7 +564,9 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		/* exec the configurator */
 		argv = g_strsplit (GdmConfigurator, " ", MAX_ARGS);
-		if (access (argv[0], X_OK) == 0)
+		if (argv != NULL &&
+		    argv[0] != NULL &&
+		    access (argv[0], X_OK) == 0)
 			execv (argv[0], argv);
 
 		gdm_error_box (d,
@@ -914,7 +930,7 @@ gdm_slave_greeter (void)
 	/* this is again informal only, if the greeter does time out it will
 	 * not actually login a user if it's not enabled for this display */
 	if (d->timed_login_ok) {
-		gdm_setenv ("GDM_TIMED_LOGIN_OK", "yes");
+		gdm_setenv ("GDM_TIMED_LOGIN_OK", ParsedTimedLogin);
 	} else {
 		gdm_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
@@ -2236,9 +2252,10 @@ gdm_slave_greeter_check_interruption (const char *msg)
 			 * it is allowed for this display (it's only allowed
 			 * for the first local display) and if it's set up
 			 * correctly */
-			if (d->type == TYPE_LOCAL &&
-			    d->timed_login_ok &&
-			    ! gdm_string_empty (GdmTimedLogin) &&
+			if ((d->type == TYPE_LOCAL || GdmAllowRemoteAutoLogin) 
+                            && d->timed_login_ok &&
+			    ! gdm_string_empty (ParsedTimedLogin) &&
+                            strcmp (ParsedTimedLogin, "root") != 0 &&
 			    GdmTimedLoginDelay > 0) {
 				do_timed_login = TRUE;
 				return TRUE;
@@ -2272,6 +2289,112 @@ gdm_slave_should_complain (void)
 	    do_configurator)
 		return FALSE;
 	return TRUE;
+}
+
+/* The user name for automatic/timed login may be parameterized by 
+   host/display. */
+
+static gchar *
+gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
+{
+    gchar cmd, *buffer, in_buffer[20];
+    GString *str;
+    gint pipe1[2], in_buffer_len;  
+    gchar **argv;
+    pid_t pid;
+    gint status;
+
+    if (s == NULL)
+	return(NULL);
+
+    str = g_string_new (NULL);
+
+    while (s[0] != '\0') {
+
+	if (s[0] == '%' && s[1] != 0) {
+		cmd = s[1];
+		s++;
+
+		switch (cmd) {
+
+		case 'h': 
+			g_string_append (str, display->hostname);
+			break;
+
+		case 'd': 
+			g_string_append (str, display->name);
+			break;
+
+		case '%':
+			g_string_append_c (str, '%');
+			break;
+
+		default:
+			break;
+		};
+	} else {
+		g_string_append_c (str, *s);
+	}
+	s++;
+    }
+
+    /* Sometimes it is not convenient to use the display or hostname as
+       user name. A script may be used to generate the automatic/timed
+       login name based on the display/host by ending the name with the
+       pipe symbol '|'. */
+
+    if(str->len > 0 && str->str[str->len - 1] == '|') {
+      g_string_truncate(str, str->len - 1);
+      if (pipe(pipe1) < 0)
+        syslog (LOG_ERR, _("gdm_parse_enriched_login: Failed creating pipe"));
+
+      switch (pid = fork()) {
+	    
+      case 0:
+	  /* The child will write the username to stdout based on the DISPLAY
+	     environment variable. */
+
+          close(pipe1[0]);
+          if(pipe1[1] != STDOUT_FILENO) 
+	    dup2 (pipe1[1], STDOUT_FILENO);
+
+	  gdm_setenv ("XAUTHORITY", display->authfile);
+	  gdm_setenv ("DISPLAY", display->name);
+	  gdm_setenv ("PATH", GdmRootPath);
+	  gdm_unsetenv ("MAIL");
+
+	  argv = g_strsplit (str->str, argdelim, MAX_ARGS);
+	  execv (argv[0], argv);
+	  syslog (LOG_ERR, _("gdm_parse_enriched_login: Failed executing: %s"),
+		  str->str);
+	  _exit (EXIT_SUCCESS);
+	    
+      case -1:
+	  syslog (LOG_ERR, _("gdm_parse_enriched_login: Can't fork script process!"));
+	  break;
+	
+      default:
+	  /* The parent reads username from the pipe a chunk at a time */
+          close(pipe1[1]);
+          g_string_truncate(str,0);
+          while((in_buffer_len = read(pipe1[0],in_buffer,
+				      sizeof(in_buffer)/sizeof(char)- 1)) > 0) {
+	    in_buffer[in_buffer_len] = '\000';
+            g_string_append(str,in_buffer);
+          }
+
+          if(str->len > 0 && str->str[str->len - 1] == '\n')
+            g_string_truncate(str, str->len - 1);
+
+          close(pipe1[0]);
+	  waitpid (pid, &status, 0);	/* Wait for script to finish */
+      }
+    }
+
+    buffer = str->str;
+    g_string_free (str, FALSE);
+
+    return buffer;
 }
 
 /* EOF */
