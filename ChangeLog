@@ -1,3 +1,15 @@
+Thu Jan 02 10:53:35 2003  George Lebl <jirka@5z.com>
+
+	* gui/greeter/greeter_parser.c: add <stock type="foo"> type
+	  tags for stock labels.  This will be useful when we are changing
+	  those labels 
+
+	* gui/greeter/themes/*/*.xml.in: add the new stock type tags and
+	  keep old text tags for compatibility.  This way the theme can
+	  still be loaded by an older gdmgreeter.
+
+	* configure.in: prepare for 2.4.1.0
+
 Sat Dec 21 14:30:01 2002  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter.c: Fixing #94554, by drawing the BackgroundColor

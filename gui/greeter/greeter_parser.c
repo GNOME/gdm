@@ -154,7 +154,7 @@ parse_pos (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad position specifier%s\n", prop);
+		       "Bad position specifier %s\n", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -176,7 +176,7 @@ parse_pos (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "Bad position specifier%s\n", prop);
+		       "Bad position specifier %s\n", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -202,7 +202,7 @@ parse_pos (xmlNodePtr       node,
 	      g_set_error (error,
 			   GREETER_PARSER_ERROR,
 			   GREETER_PARSER_ERROR_BAD_SPEC,
-			   "Bad size specifier%s\n", prop);
+			   "Bad size specifier %s\n", prop);
 	      xmlFree (prop);
 	      return FALSE;
 	    }
@@ -229,7 +229,7 @@ parse_pos (xmlNodePtr       node,
 	      g_set_error (error,
 			   GREETER_PARSER_ERROR,
 			   GREETER_PARSER_ERROR_BAD_SPEC,
-			   "Bad size specifier%s\n", prop);
+			   "Bad size specifier %s\n", prop);
 	      xmlFree (prop);
 	      return FALSE;
 	    }
@@ -258,7 +258,7 @@ parse_pos (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "bad expand spec %s\n", prop);
+		       "Bad expand spec %s\n", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -390,7 +390,7 @@ parse_box (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "bad orientation %s\n", prop);
+		       "Bad orientation %s\n", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -414,7 +414,7 @@ parse_box (xmlNodePtr       node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "bad homogenous spec %s\n", prop);
+		       "Bad homogenous spec %s\n", prop);
 	  xmlFree (prop);
 	  return FALSE;
 	}
@@ -899,6 +899,93 @@ parse_translated_text (xmlNodePtr node,
   return TRUE;
 }
 
+/* We pass the same arguments as to translated text, since we'll override it
+ * with translation score */
+static gboolean
+parse_stock (xmlNodePtr node,
+	     char     **translated_text,
+	     gint      *translation_score,
+	     GError   **error)
+{
+  xmlChar *prop;
+  
+  prop = xmlGetProp (node, "type");
+  if (prop)
+    {
+      if (g_ascii_strcasecmp (prop, "language") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("_Language"));
+	}
+      else if (g_ascii_strcasecmp (prop, "session") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("_Session"));
+	}
+      else if (g_ascii_strcasecmp (prop, "system") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("S_ystem"));
+	}
+      else if (g_ascii_strcasecmp (prop, "disconnect") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("D_isconnect"));
+	}
+      else if (g_ascii_strcasecmp (prop, "quit") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("_Quit"));
+	}
+      else if (g_ascii_strcasecmp (prop, "caps-lock-warning") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("You've got capslock on!"));
+	}
+      else if (g_ascii_strcasecmp (prop, "timed-label") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("User %s will login in %d seconds"));
+	}
+      /* FIXME: this should be the welcome string but wait until
+       * we can break strings again */
+      else if (g_ascii_strcasecmp (prop, "welcome-label") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("Welcome to %h"));
+	}
+      /* FIXME: is this actually needed? */
+      else if (g_ascii_strcasecmp (prop, "username-label") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("Username:"));
+	}
+      else
+        {
+          g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad stock label type\n");
+	  xmlFree (prop);
+	  return FALSE;
+	}
+
+      /* This is the very very very best "translation" */
+      *translation_score = -1;
+
+      xmlFree (prop);
+
+      return TRUE;
+    }
+  else
+    {
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "Stock type not specified\n");
+      return FALSE;
+    }
+}
 
 static gboolean
 parse_label (xmlNodePtr        node,
@@ -936,6 +1023,12 @@ parse_label (xmlNodePtr        node,
 	  if (!parse_translated_text (child, &translated_text, &translation_score, error))
 	    return FALSE;
 	}
+      else if (child->type == XML_ELEMENT_NODE &&
+	       strcmp (child->name, "stock") == 0)
+	{
+	  if (!parse_stock (child, &translated_text, &translation_score, error))
+	    return FALSE;
+	}
       else if (strcmp (child->name, "show") == 0)
 	{
 	  if (!parse_show (child, info, error))
@@ -947,7 +1040,7 @@ parse_label (xmlNodePtr        node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "label items cannot have children");
+		       "Label items cannot have children");
 	  return FALSE;
 	}
 	  
@@ -1017,7 +1110,7 @@ parse_entry (xmlNodePtr        node,
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
 		       GREETER_PARSER_ERROR_BAD_SPEC,
-		       "entry items cannot have children");
+		       "Entry items cannot have children");
 	  return FALSE;
 	}
     
@@ -1052,7 +1145,7 @@ parse_items (xmlNodePtr  node,
 		g_set_error (error,
 			     GREETER_PARSER_ERROR,
 			     GREETER_PARSER_ERROR_BAD_SPEC,
-			     "found tag %s when looking for item", child->name);
+			     "Found tag %s when looking for item", child->name);
 		return FALSE;
 	      }
 	    
@@ -1062,7 +1155,7 @@ parse_items (xmlNodePtr  node,
 		g_set_error (error,
 			     GREETER_PARSER_ERROR,
 			     GREETER_PARSER_ERROR_BAD_SPEC,
-			     "items must specify their type");
+			     "Items must specify their type");
 		return FALSE;
 	      }
 
@@ -1081,7 +1174,7 @@ parse_items (xmlNodePtr  node,
 		g_set_error (error,
 			     GREETER_PARSER_ERROR,
 			     GREETER_PARSER_ERROR_BAD_SPEC,
-			     "unknown item type %s", type);
+			     "Unknown item type %s", type);
 		xmlFree (type);
 		return FALSE;
 	      }
@@ -1113,7 +1206,7 @@ parse_items (xmlNodePtr  node,
 		g_set_error (error,
 			     GREETER_PARSER_ERROR,
 			     GREETER_PARSER_ERROR_BAD_SPEC,
-			     "bad item type");
+			     "Bad item type");
 		res = FALSE;
 	      }
 	    
