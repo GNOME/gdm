@@ -371,7 +371,8 @@ create_pamh (GdmDisplay *d,
 	/* Initialize a PAM session for the user */
 	if ((*pamerr = pam_start (service, login, conv, &pamh)) != PAM_SUCCESS) {
 		if (gdm_slave_should_complain ())
-			gdm_error (_("Can't find /etc/pam.d/%s!"), service);
+			gdm_error (_("Unable to establish service %s: %s\n"),
+				   service, pam_strerror (NULL, *pamerr));
 		return FALSE;
 	}
 
@@ -530,6 +531,18 @@ authenticate_again:
     /* kind of anal, the greeter likely already knows, but it could have
        been changed */
     gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
+
+    if ( ! gdm_slave_check_user_wants_to_log_in (login)) {
+	    /* cleanup stuff */
+	    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, "");
+	    g_free (login);
+	    login = NULL;
+	    gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
+
+	    gdm_verify_cleanup (d);
+	    /* kind of a hack */
+	    return gdm_verify_user (d, username, display, local);
+    }
 
     pwent = getpwnam (login);
     if ( ( ! GdmAllowRoot ||

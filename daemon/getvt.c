@@ -101,6 +101,25 @@ gdm_get_empty_vt_argument (int *fd, int *vt)
 		return g_strdup_printf ("vt%d", *vt);
 }
 
+void
+gdm_change_vt (int vt)
+{
+	char *cmd;
+	if (vt < 0)
+		return;
+	/* kind of hack, we could do it ourselves if we weren't lazy */
+	/* FIXME: we should really do the vt thing ourselves */
+	if (access ("/usr/bin/chvt", X_OK) == 0)
+		cmd = g_strdup_printf ("/usr/bin/chvt %d", vt);
+	else if (access ("/bin/chvt", X_OK) == 0)
+		cmd = g_strdup_printf ("/bin/chvt %d", vt);
+	else
+		cmd = NULL;
+	if (cmd != NULL)
+		system (cmd);
+	g_free (cmd);
+}
+
 #else /* here this is just a stub, we don't know how to do this outside
 	 of linux really */
 
@@ -110,6 +129,12 @@ gdm_get_empty_vt_argument (int *fd, int *vt)
 	*fd = -1;
 	*vt = -1;
 	return NULL;
+}
+
+void
+gdm_change_vt (int vt)
+{
+	return;
 }
 
 #endif

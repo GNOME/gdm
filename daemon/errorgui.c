@@ -25,6 +25,7 @@
 #include <gdk/gdkx.h>
 #include <unistd.h>
 #include <syslog.h>
+#include <grp.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
@@ -39,6 +40,11 @@
 extern char **stored_argv;
 extern int stored_argc;
 extern char *stored_path;
+
+/* Configuration option variables */
+extern gchar *GdmUser;
+extern uid_t GdmUserId;
+extern gid_t GdmGroupId;
 
 static int screenx = 0;
 static int screeny = 0;
@@ -189,6 +195,15 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
+		/* because details_file may not be readable, we must run as root */
+		/* FIXME: we should read in the details file here so that we don't
+		   have to touch the disk again */
+		if (details_file == NULL) {
+			setgid (GdmGroupId);
+			initgroups (GdmUser, GdmGroupId);
+			setuid (GdmUserId);
+		}
+
 		gdm_desetuid ();
 
 		display = g_strdup (g_getenv ("DISPLAY"));
@@ -329,6 +344,10 @@ gdm_failsafe_question (GdmDisplay *d,
 		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+
+		setgid (GdmGroupId);
+		initgroups (GdmUser, GdmGroupId);
+		setuid (GdmUserId);
 
 		gdm_desetuid ();
 
@@ -471,6 +490,10 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
+		setgid (GdmGroupId);
+		initgroups (GdmUser, GdmGroupId);
+		setuid (GdmUserId);
+
 		gdm_desetuid ();
 
 		display = g_strdup (g_getenv ("DISPLAY"));
@@ -531,9 +554,9 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		setup_cursor (GDK_LEFT_PTR);
 
 		if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES)
-			gdm_fdprintf (STDOUT_FILENO, "yes\n");
+			gdm_fdprintf (p[1], "yes\n");
 		else
-			gdm_fdprintf (STDOUT_FILENO, "no\n");
+			gdm_fdprintf (p[1], "no\n");
 
 		XSetInputFocus (GDK_DISPLAY (),
 				PointerRoot,
@@ -560,9 +583,147 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		close (p[0]);
 	} else {
 		gdm_error (_("%s: Cannot fork to display error/info box"),
-			   "gdm_failsafe_question");
+			   "gdm_failsafe_yesno");
 	}
 	return FALSE;
+}
+
+int
+gdm_failsafe_ask_buttons (GdmDisplay *d,
+			  const char *question,
+			  char **but)
+{
+	pid_t pid;
+	int p[2];
+
+	if (pipe (p) < 0)
+		return -1;
+
+	pid = gdm_fork_extra ();
+	if (pid == 0) {
+		int i;
+		guint sid;
+		int argc = 1;
+		char **argv;
+		GtkWidget *dlg;
+		char *loc;
+		char *display;
+		char *xauthority;
+
+		closelog ();
+
+		gdm_close_all_descriptors (0 /* from */, p[1] /* except */);
+
+		/* No error checking here - if it's messed the best response
+		 * is to ignore & try to continue */
+		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+
+		setgid (GdmGroupId);
+		initgroups (GdmUser, GdmGroupId);
+		setuid (GdmUserId);
+
+		gdm_desetuid ();
+
+		display = g_strdup (g_getenv ("DISPLAY"));
+		xauthority = g_strdup (g_getenv ("XAUTHORITY"));
+
+		/* restore initial environment */
+		gdm_restoreenv ();
+
+		if (display != NULL)
+			gnome_setenv ("DISPLAY", display, TRUE);
+		if (xauthority != NULL)
+			gnome_setenv ("XAUTHORITY", xauthority, TRUE);
+		/* sanity env stuff */
+		gnome_setenv ("SHELL", "/bin/bash", TRUE);
+		gnome_setenv ("HOME", "/", TRUE);
+
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+		argv = g_new0 (char *, 2);
+		argv[0] = "gtk-failsafe-ask-buttons";
+
+		gtk_init (&argc, &argv);
+
+		get_screen_size (d);
+
+		loc = gdm_locale_to_utf8 (question);
+
+		dlg = gtk_message_dialog_new (NULL /* parent */,
+					      0 /* flags */,
+					      GTK_MESSAGE_QUESTION,
+					      GTK_BUTTONS_NONE,
+					      "%s",
+					      loc);
+		g_free (loc);
+		for (i = 0; but[i] != NULL; i++) {
+			loc = gdm_locale_to_utf8 (but[i]);
+			gtk_dialog_add_button (GTK_DIALOG (dlg),
+					       loc, i);
+			g_free (loc);
+
+		}
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
+
+		sid = g_signal_lookup ("event",
+				       GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_event,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
+
+		center_window (dlg);
+
+		gtk_widget_show_now (dlg);
+
+		if (dlg->window != NULL) {
+			gdk_error_trap_push ();
+			XSetInputFocus (GDK_DISPLAY (),
+					GDK_WINDOW_XWINDOW (dlg->window),
+					RevertToPointerRoot,
+					CurrentTime);
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
+
+		setup_cursor (GDK_LEFT_PTR);
+
+		i = gtk_dialog_run (GTK_DIALOG (dlg));
+		gdm_fdprintf (p[1], "%d\n", i);
+
+		XSetInputFocus (GDK_DISPLAY (),
+				PointerRoot,
+				RevertToPointerRoot,
+				CurrentTime);
+
+		_exit (0);
+	} else if (pid > 0) {
+		char buf[BUFSIZ];
+		int bytes;
+
+		close (p[1]);
+
+		gdm_wait_for_extra (NULL);
+
+		bytes = read (p[0], buf, BUFSIZ-1);
+		if (bytes > 0) {
+			int i;
+			close (p[0]);
+			buf[bytes] = '\0';
+			if (sscanf (buf, "%d", &i) == 1)
+				return i;
+			else
+				return -1;
+		} 
+		close (p[0]);
+	} else {
+		gdm_error (_("%s: Cannot fork to display error/info box"),
+			   "gdm_failsafe_ask_buttons");
+	}
+	return -1;
 }
 
 /* EOF */

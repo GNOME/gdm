@@ -59,7 +59,7 @@ gdm_display_check_loop (GdmDisplay *disp)
   if (disp->disabled)
     return FALSE;
 
-  gdm_info ("loop check: last_start %ld, last_loop %ld, now: %ld, retry_count: %d", (long)disp->last_start_time, (long) disp->last_loop_start_time, (long) now, disp->retry_count);
+  gdm_debug ("loop check: last_start %ld, last_loop %ld, now: %ld, retry_count: %d", (long)disp->last_start_time, (long) disp->last_loop_start_time, (long) now, disp->retry_count);
   
   if (disp->last_loop_start_time > now || disp->last_loop_start_time == 0)
     {
@@ -70,7 +70,7 @@ gdm_display_check_loop (GdmDisplay *disp)
       disp->last_start_time = now;
       disp->retry_count = 1;
 
-      gdm_info ("Resetting counts for loop of death detection");
+      gdm_debug ("Resetting counts for loop of death detection");
       
       return TRUE;
     }
@@ -89,7 +89,7 @@ gdm_display_check_loop (GdmDisplay *disp)
       disp->last_start_time = now;
       disp->retry_count = 1;
 
-      gdm_info ("Resetting counts for loop of death detection, 90 seconds elapsed since loop started or session lasted more then 30 seconds.");
+      gdm_debug ("Resetting counts for loop of death detection, 90 seconds elapsed since loop started or session lasted more then 30 seconds.");
       
       return TRUE;
     }
@@ -141,7 +141,7 @@ gdm_display_check_loop (GdmDisplay *disp)
    */
   if (disp->retry_count > 2 && since_last < 8)
     {
-      gdm_info ("Will sleep %ld seconds before next X server restart attempt",
+      gdm_debug ("Will sleep %ld seconds before next X server restart attempt",
                  (long)(8 - since_last));
       now = time (NULL) + 8 - since_last;
       disp->sleep_before_run = 8 - since_last;

@@ -474,7 +474,7 @@ if test -x /usr/X11R6/bin/X; then
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   X_CONF_PATH="/usr/bin/X11:usr/X11R6/bin:/usr/local/bin"
+   X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin"
 elif test -x /usr/openwin/bin/Xsun; then
    X_PATH="/usr/openwin/bin"
    X_SERVER_PATH="/usr/openwin/bin"
@@ -486,7 +486,7 @@ else
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
-   X_CONF_PATH="/usr/bin/X11:usr/X11R6/bin:/usr/local/bin"
+   X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin"
 fi
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)

@@ -163,6 +163,8 @@ enum {
 #define GDM_KEY_UAUTHFILE "daemon/UserAuthFile=.Xauthority"
 #define GDM_KEY_USER "daemon/User=gdm"
 
+#define GDM_KEY_DOUBLELOGINWARNING "daemon/DoubleLoginWarning=true"
+
 /* This defaults to true for backward compatibility,
  * it will not actually do timed login since the TimedLogin defaults
  * to nothing */
@@ -444,6 +446,9 @@ void		gdm_final_cleanup	(void);
 #define GDM_SOP_LOGGED_IN    "LOGGED_IN" /* <slave pid> <logged_in as int> */
 #define GDM_SOP_LOGIN        "LOGIN" /* <slave pid> <username> */
 #define GDM_SOP_COOKIE       "COOKIE" /* <slave pid> <cookie> */
+#define GDM_SOP_QUERYLOGIN   "QUERYLOGIN" /* <slave pid> <username> */
+/* if user already logged in somewhere, the ack response will be
+   <display>,<vt>,<display>,<vt>,... */
 #define GDM_SOP_DISP_NUM     "DISP_NUM" /* <slave pid> <display as int> */
 /* For linux only currently */
 #define GDM_SOP_VT_NUM       "VT_NUM" /* <slave pid> <vt as int> */
@@ -494,6 +499,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_NOTIFY_SOFT_RESTART_SERVERS "SOFT_RESTART_SERVERS"
 
 /* Ack for a slave message */
+/* Note that an extra response can follow an 'ack' */
 #define GDM_SLAVE_NOTIFY_ACK 'A'
 /* Update this key */
 #define GDM_SLAVE_NOTIFY_KEY '!'
@@ -598,6 +604,20 @@ void		gdm_final_cleanup	(void);
  *   for example).  If the display is an xnest display and is a console one
  *   (that is, it is an xnest inside another console display) it is listed
  *   and instead of vt, it lists the parent display in standard form.
+ */
+#define GDM_SUP_ALL_SERVERS  "ALL_SERVERS" /* None */
+/* ALL_SERVERS: List all servers, including console, remote, xnest.  This
+ * Can for example be useful to figure out if the server you are on is managed
+ * by the gdm daemon, by seeing if it is in the list.  It is also somewhat
+ * like the 'w' command but for graphical sessions.
+ * Supported since: 2.4.2.96
+ * Arguments:  None
+ * Answers:
+ *   OK <server>;<server>;...
+ *
+ *   <server> is <display>,<logged in user>
+ *
+ *   <logged in user> can be empty in case no one logged in yet
  */
 #define GDM_SUP_UPDATE_CONFIG "UPDATE_CONFIG" /* <key> */
 /* UPDATE_CONFIG: Tell the daemon to update config of some key.  Any user

@@ -1,3 +1,29 @@
+Wed Jun 25 15:38:29 2003  George Lebl <jirka@5z.com>
+
+	* configure.in, config/gdm.conf.in: Fix some typos pointed out by Ali
+	  Akcaagac <aliakc@web.de>
+
+	* daemon/errorgui.[ch]: fix a bug with yes/no dialog return and add
+	  several button dialog type.  run the dialogs with gdm privilages
+	  and not root.  All except the full error with details file.
+
+	* daemon/display.c: turn some info's back into debugs 
+
+	* daemon/getvt.[ch], daemon/gdm.c: push the vt changing stuff into
+	  getvt, though it's still a hack
+
+	* daemon/slave.c, daemon/gdm.[ch], config/gdm.conf.in,
+	  daemon/verify-*.c: add a double login warning question.  This asks
+	  if the user still wants to log in.  If on console and there is
+	  another login on a console the user can return to a previous login.
+	  Can be turned off by daemon/DoubleLoginWarning=false.  For this
+	  we needed notify ack response and a QUERYLOGIN SOP protocol entry.
+
+	* daemon/slave.c: set DESKTOP_SESSION as well as GDMSESSION
+
+	* daemon/verify-pam.c: don't refer to the /etc/pam.d/ dir since
+	  that's linux-pam specific
+
 2003-06-16  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* gui/greeter/greeter_session.c: (greeter_session_init):

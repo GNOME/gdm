@@ -63,6 +63,7 @@
 #include "auth.h"
 #include "server.h"
 #include "choose.h"
+#include "getvt.h"
 #include "errorgui.h"
 
 /* Some per slave globals */
@@ -118,6 +119,7 @@ extern gchar *GdmAutomaticLogin;
 extern gboolean GdmAllowRemoteAutoLogin;
 extern gboolean GdmAlwaysRestartServer;
 extern gboolean GdmAddGtkModules;
+extern gboolean GdmDoubleLoginWarning;
 extern gchar *GdmConfigurator;
 extern gboolean GdmConfigAvailable;
 extern gboolean GdmChooserButton;
@@ -181,6 +183,7 @@ static void	set_xnest_parent_stuff (void);
 /* Yay thread unsafety */
 static gboolean x_error_occured = FALSE;
 static gboolean gdm_got_ack = FALSE;
+static char * gdm_ack_response = NULL;
 static GList *unhandled_notifies = NULL;
 
 static void
@@ -544,6 +547,104 @@ gdm_slave_whack_greeter (void)
 	gdm_sigchld_block_pop ();
 }
 
+gboolean
+gdm_slave_check_user_wants_to_log_in (const char *user)
+{
+	gboolean loggedin = FALSE;
+	int vt = -1;
+	int i;
+	char **vec;
+	char *msg;
+	int r;
+	char *but[4];
+
+	if ( ! GdmDoubleLoginWarning ||
+	    /* always ignore root here, this is mostly a special case
+	     * since a root login may not be a real login, such as the
+	     config stuff, and people shouldn't log in as root anyway */
+	    strcmp (user, "root") == 0)
+		return TRUE;
+
+	gdm_slave_send_string (GDM_SOP_QUERYLOGIN, user);
+	if (gdm_ack_response == NULL)
+	       return TRUE;	
+	vec = g_strsplit (gdm_ack_response, ",", -1);
+	if (vec == NULL)
+		return TRUE;
+
+	for (i = 0; vec[i] != NULL && vec[i+1] != NULL; i += 2) {
+		int ii;
+		loggedin = TRUE;
+		if (d->console && vt < 0 && sscanf (vec[i+1], "%d", &ii) == 1)
+			vt = ii;
+	}
+
+	g_strfreev (vec);
+
+	if ( ! loggedin)
+		return TRUE;
+
+	but[0] = _("Log in anyway");
+	if (vt >= 0) {
+		msg = _("You are already logged in.  "
+			"You can log in anyway, return to your "
+			"previous login session, or abort this "
+			"login");
+		but[1] = _("Return to previous login");
+		but[2] = _("Abort login");
+		but[3] = NULL;
+	} else {
+		msg = _("You are already logged in.  "
+			"You can log in anyway or abort this "
+			"login");
+		but[1] = _("Abort login");
+		but[2] = NULL;
+	}
+
+	if (greet)
+		gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
+
+	r = gdm_failsafe_ask_buttons (d, msg, but);
+
+	if (greet)
+		gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
+
+	if (r <= 0)
+		return TRUE;
+
+	if (vt >= 0) {
+		if (r == 2) /* Abort */
+			return FALSE;
+
+		/* Must be that r == 1, that is
+		   return to previous login */
+
+		if (d->type == TYPE_FLEXI) {
+			gdm_slave_whack_greeter ();
+			gdm_server_stop (d);
+
+			/* wait for a few seconds to avoid any vt changing race
+			 */
+			sleep (1);
+
+			gdm_change_vt (vt);
+
+			/* we are no longer needed so just die.
+			   REMANAGE == ABORT here really */
+			gdm_slave_quick_exit (DISPLAY_REMANAGE);
+		}
+
+		gdm_change_vt (vt);
+
+		/* abort this login attempt */
+		return FALSE;
+	} else {
+		if (r == 1) /* Abort */
+			return FALSE;
+		else
+			return TRUE;
+	}
+}
 
 static gboolean do_xfailed_on_xio_error = FALSE;
 
@@ -1797,8 +1898,11 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	if (gdm_in_signal == 0)
 		gdm_debug ("Sending %s", str);
 
-	if (wait_for_ack)
+	if (wait_for_ack) {
 		gdm_got_ack = FALSE;
+		g_free (gdm_ack_response);
+		gdm_ack_response = NULL;
+	}
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 	old = geteuid ();
@@ -2274,6 +2378,7 @@ find_prog (const char *name)
 		"/usr/X11R6/bin/",
 		"/opt/X11R6/bin/",
 		"/usr/bin/",
+		"/usr/openwin/bin/",
 		"/usr/local/bin/",
 		"/opt/gnome/bin/",
 		EXPANDED_BINDIR "/",
@@ -2393,7 +2498,10 @@ session_child_run (struct passwd *pwent,
 	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 
 	/* Set this for the PreSession script */
+	/* compatibility */
 	gnome_setenv ("GDMSESSION", session, TRUE);
+
+	gnome_setenv ("DESKTOP_SESSION", session, TRUE);
 
 	/* Run the PreSession script */
 	if (gdm_slave_exec_script (d, GdmPreSession,
@@ -2421,6 +2529,7 @@ session_child_run (struct passwd *pwent,
 	gnome_setenv ("USERNAME", login, TRUE);
 	gnome_setenv ("HOME", home_dir, TRUE);
 	gnome_setenv ("GDMSESSION", session, TRUE);
+	gnome_setenv ("DESKTOP_SESSION", session, TRUE);
 	gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
 	gnome_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
@@ -3344,6 +3453,11 @@ gdm_slave_usr2_handler (int sig)
 		char *s = vec[i];
 		if (s[0] == GDM_SLAVE_NOTIFY_ACK) {
 			gdm_got_ack = TRUE;
+			g_free (gdm_ack_response);
+			if (s[1] != '\0')
+				gdm_ack_response = g_strdup (&s[1]);
+			else
+				gdm_ack_response = NULL;
 		} else if (s[0] == GDM_SLAVE_NOTIFY_KEY) {
 			if (check_notifies_immediately > 0) {
 				gdm_slave_handle_notify (&s[1]);

@@ -50,6 +50,7 @@
 #include "verify.h"
 #include "display.h"
 #include "choose.h"
+#include "getvt.h"
 #include "gdm-net.h"
 
 /* Local functions */
@@ -117,6 +118,7 @@ gboolean GdmSystemMenu = FALSE;
 gboolean GdmChooserButton = FALSE;
 gboolean GdmBrowser = FALSE;
 gboolean GdmAddGtkModules = FALSE;
+gboolean GdmDoubleLoginWarning = TRUE;
 gchar *GdmGlobalFaceDir = NULL;
 gint GdmXineramaScreen = 0;
 gchar *GdmGreeter = NULL;
@@ -250,6 +252,7 @@ gdm_config_parse (void)
     GdmGreeter = gnome_config_get_string (GDM_KEY_GREETER);
     GdmRemoteGreeter = gnome_config_get_string (GDM_KEY_REMOTEGREETER);
     GdmAddGtkModules = gnome_config_get_bool (GDM_KEY_ADD_GTK_MODULES);
+    GdmDoubleLoginWarning = gnome_config_get_bool (GDM_KEY_DOUBLELOGINWARNING);
     GdmGtkModulesList = gnome_config_get_string (GDM_KEY_GTK_MODULES_LIST);	
     GdmGroup = gnome_config_get_string (GDM_KEY_GROUP);
     GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
@@ -1037,13 +1040,7 @@ suspend_machine (void)
 static void
 change_to_first_and_clear (gboolean reboot)
 {
-	/* kind of hack, we could do it ourselves if we weren't lazy */
-	if (access ("/usr/bin/chvt", X_OK) == 0)
-		system ("/usr/bin/chvt 1");
-	else if (access ("/bin/chvt", X_OK) == 0)
-		system ("/bin/chvt 1");
-	else
-		return;
+	gdm_change_vt (1);
 	close (1);
 	close (2);
 	open ("/dev/tty1", O_WRONLY);
@@ -1778,13 +1775,21 @@ write_x_servers (GdmDisplay *d)
 }
 
 static void
-send_slave_ack (GdmDisplay *d)
+send_slave_ack (GdmDisplay *d, const char *resp)
 {
 	if (d->master_notify_fd >= 0) {
-		char not[2];
-		not[0] = GDM_SLAVE_NOTIFY_ACK;
-		not[1] = '\n';
-		write (d->master_notify_fd, not, 2);
+		if (resp == NULL) {
+			char not[2];
+			not[0] = GDM_SLAVE_NOTIFY_ACK;
+			not[1] = '\n';
+			write (d->master_notify_fd, not, 2);
+		} else {
+			char *not = g_strdup_printf ("%c%s\n",
+						     GDM_SLAVE_NOTIFY_ACK,
+						     resp);
+			write (d->master_notify_fd, not, strlen (not));
+			g_free (not);
+		}
 	}
 	gdm_sigchld_block_push ();
 	if (d->slavepid > 1) {
@@ -1859,7 +1864,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->chosen_hostname = g_strdup (p);
 			gdm_debug ("Got CHOSEN_LOCAL == %s", p);
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_XPID " ",
 		            strlen (GDM_SOP_XPID " ")) == 0) {
@@ -1877,7 +1882,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->servpid = pid;
 			gdm_debug ("Got XPID == %ld", (long)pid);
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_SESSPID " ",
 		            strlen (GDM_SOP_SESSPID " ")) == 0) {
@@ -1895,7 +1900,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->sesspid = pid;
 			gdm_debug ("Got SESSPID == %ld", (long)pid);
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_GREETPID " ",
 		            strlen (GDM_SOP_GREETPID " ")) == 0) {
@@ -1913,7 +1918,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->greetpid = pid;
 			gdm_debug ("Got GREETPID == %ld", (long)pid);
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_CHOOSERPID " ",
 		            strlen (GDM_SOP_CHOOSERPID " ")) == 0) {
@@ -1931,7 +1936,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->chooserpid = pid;
 			gdm_debug ("Got CHOOSERPID == %ld", (long)pid);
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_LOGGED_IN " ",
 		            strlen (GDM_SOP_LOGGED_IN " ")) == 0) {
@@ -1957,7 +1962,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 				gdm_safe_restart ();
 
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_DISP_NUM " ",
 		            strlen (GDM_SOP_DISP_NUM " ")) == 0) {
@@ -1978,7 +1983,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->dispnum = disp_num;
 			gdm_debug ("Got DISP_NUM == %d", disp_num);
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_VT_NUM " ",
 		            strlen (GDM_SOP_VT_NUM " ")) == 0) {
@@ -1997,7 +2002,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->vt = vt_num;
 			gdm_debug ("Got VT_NUM == %d", vt_num);
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_LOGIN " ",
 		            strlen (GDM_SOP_LOGIN " ")) == 0) {
@@ -2024,7 +2029,53 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->login = g_strdup (p);
 			gdm_debug ("Got LOGIN == %s", p);
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
+		}
+	} else if (strncmp (msg, GDM_SOP_QUERYLOGIN " ",
+		            strlen (GDM_SOP_QUERYLOGIN " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		char *p;
+
+		if (sscanf (msg, GDM_SOP_QUERYLOGIN " %ld",
+			    &slave_pid) != 1)
+			return;
+		p = strchr (msg, ' ');
+		if (p != NULL)
+			p = strchr (p+1, ' ');
+		if (p == NULL)
+			return;
+
+		p++;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			GString *resp = NULL;
+			GSList *li;
+			gdm_debug ("Got QUERYLOGIN %s", p);
+			for (li = displays; li != NULL; li = li->next) {
+				GdmDisplay *di = li->data;
+				if (di->login != NULL &&
+				    strcmp (di->login, p) == 0) {
+					if (resp == NULL) {
+						resp = g_string_new (di->name);
+						g_string_append_printf (resp, ",%d", di->vt);
+					} else {
+						g_string_append_printf (resp, ",%s,%d",
+									di->name, di->vt);
+					}
+				}
+			}
+
+			/* send ack */
+			if (resp != NULL) {
+				send_slave_ack (d, resp->str);
+				g_string_free (resp, TRUE);
+			} else {
+				send_slave_ack (d, NULL);
+			}
 		}
 	} else if (strncmp (msg, GDM_SOP_COOKIE " ",
 		            strlen (GDM_SOP_COOKIE " ")) == 0) {
@@ -2051,7 +2102,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			d->cookie = g_strdup (p);
 			gdm_debug ("Got COOKIE == <secret>");
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_FLEXI_ERR " ",
 		            strlen (GDM_SOP_FLEXI_ERR " ")) == 0) {
@@ -2088,7 +2139,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			
 			gdm_debug ("Got FLEXI_ERR == %d", err);
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strncmp (msg, GDM_SOP_FLEXI_OK " ",
 		            strlen (GDM_SOP_FLEXI_OK " ")) == 0) {
@@ -2118,7 +2169,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			
 			gdm_debug ("Got FLEXI_OK");
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strcmp (msg, GDM_SOP_SOFT_RESTART) == 0) {
 		gdm_restart_mode = TRUE;
@@ -2187,7 +2238,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			write_x_servers (d);
 
 			/* send ack */
-			send_slave_ack (d);
+			send_slave_ack (d, NULL);
 		}
 	} else if (strcmp (msg, GDM_SOP_SUSPEND_MACHINE) == 0) {
 		gdm_info (_("Master suspending..."));
@@ -2937,6 +2988,20 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 				gdm_connection_printf (conn, "%d",
 						       disp->vt);
 			}
+		}
+		gdm_connection_write (conn, "\n");
+	} else if (strcmp (msg, GDM_SUP_ALL_SERVERS) == 0) {
+		GSList *li;
+		const char *sep = " ";
+		gdm_connection_write (conn, "OK");
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *disp = li->data;
+			gdm_connection_printf (conn,
+					       "%s%s,%s",
+					       sep,
+					       ve_sure_string (disp->name),
+					       ve_sure_string (disp->login));
+			sep = ";";
 		}
 		gdm_connection_write (conn, "\n");
 	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {

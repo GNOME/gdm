@@ -36,6 +36,9 @@ gboolean gdm_slave_final_cleanup (void);
 
 void     gdm_slave_whack_temp_auth_file (void);
 
+gboolean gdm_slave_check_user_wants_to_log_in (const char *user);
+
+
 #endif /* GDM_SLAVE_H */
 
 /* EOF */

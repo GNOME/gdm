@@ -238,7 +238,6 @@ gdm_server_stop (GdmDisplay *disp)
 		    ve_waitpid_no_signal (servpid, 0, 0);
 	    gdm_sigchld_block_pop ();
 
-
 	    gdm_debug ("gdm_server_stop: Server pid %d dead", (int)servpid);
     }
 

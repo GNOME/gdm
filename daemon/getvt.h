@@ -30,5 +30,6 @@
  * This is to avoid race with other stuff openning this vt.
  * It can be set to -1 if nothing could be opened. */
 char * gdm_get_empty_vt_argument (int *fd, int *vt);
+void gdm_change_vt (int vt);
 
 #endif /* GETVT_H */

@@ -38,6 +38,9 @@ char *		gdm_failsafe_question	(GdmDisplay *d,
 
 gboolean	gdm_failsafe_yesno	(GdmDisplay *d,
 					 const char *question);
+int		gdm_failsafe_ask_buttons (GdmDisplay *d,
+					  const char *question,
+					  char **but);
 
 #endif /* GDM_ERRORGUI_H */
 

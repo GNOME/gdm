@@ -107,6 +107,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 
     if (username == NULL) {
+authenticate_again:
 	    /* Ask for the user's login */
 	    gdm_verify_select_user (NULL);
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
@@ -127,6 +128,12 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 		    }
 	    }
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
+
+	    if ( ! gdm_slave_check_user_wants_to_log_in (login)) {
+		    g_free (login);
+		    login = NULL;
+		    goto authenticate_again;
+	    }
     } else {
 	    login = g_strdup (username);
     }
