@@ -1,5 +1,68 @@
 Ahh news...
 
+2.4.0.8 stuff:
+
+- New script to aid in testing graphical greeter themes, gdmthemetester.
+  It will run Xnest with gdmgreeter in debug mode with the specified theme
+  and under the specified environment.  Run it to get help.
+
+- No longer 'asks twice' in graphical login to halt, reboot or suspend
+  Fixes #90971
+
+- When restarting the greeter from the setup dialog the setup dialog will go
+  insensitive and force a busy cursor on itself.
+
+- New icon!  And new logo.  The new icon is now girlfriend approved (she said
+  it's not as bad as my first attempt to draw one, so I suppose that means
+  it's ok).  Not that I did ALL the drawing, I borrowed the gnome-term icon
+  and worked on that :)
+
+- The focus stuff in both greeters is done in a nicer way.  Also the graphical
+  greeter has a "menubar" (invisible).  You can activate it with F10 like any
+  other menubar.  This all should make both greeters even more accessibility
+  friendly.
+
+- The Init/PreSession/PostSession directories can now also include Flexi,
+  and XDMCP scripts which will be run in case the server is flexi or XDMCP.
+  Also you can specify a <hostname> script to run for specific hosts.
+
+- You can now setup the daemon to log in certain local (not logging in
+  through xdmcp) users without a password, Just set the
+  daemon/LocalNoPasswordUsers to a list of comma separated names.
+  Fixes #51908
+
+- The daemon is fixed so that if pam asks questions during autologin, they
+  will actually get asked.
+
+- gdmphotosetup no longer hangs on "Browse".  Fixes #90613
+  
+- Busy cursor will never get stuck on autologin
+
+- Wait 2 seconds beween killing local servers on daemon restart or stop.  This
+  prevents a hung keyboard on my box.
+
+- Xnest keyboard stuff solved in a better way.  Remove the -kb fromt he command
+  line so that Xnest understands XKB, and then in the Init script migrate
+  keyboard configuration.  Also read capslock state from the parent server
+  in the greeter.
+
+- Close the 0,1,2 descriptors in the gdmXnestchooser so that things like
+  "`gdmXnest -b`" shell things to get the display number work.
+
+- gdmXnestchooser acts more nicely on being killed
+
+- Config file is updated and includes more "documentation" comments
+
+- If you haven't changed the config then if you are using the tarball install,
+  the config will be overwritten with the one from the tarball.
+
+- An incredible "sleep(1)" hack to fix race on server reinit
+
+- A whole bunch of random small fixes, and changes.
+
+- Translation updates (He Qiangqiang, Wang Li, Marius Andreiana,
+  Yukihiro Nakai)
+
 2.4.0.7 stuff:
 
 - The graphical greeter has mnemonics so that you can use the keyboard to
