@@ -288,6 +288,48 @@ gdm_slave_whack_greeter (void)
 	sigprocmask (SIG_SETMASK, &omask, NULL);
 }
 
+/* A hack really, this pretends to be a standalone gtk program */
+/* this should only be called once forked and all thingies are closed */
+static void
+run_error_dialog (const char *error)
+{
+	char *argv_s[] = { "error", NULL };
+	char **argv = argv_s;
+	int argc = 1;
+	GtkWidget *dialog;
+	GtkWidget *label;
+	GtkWidget *button;
+
+	gtk_init (&argc, &argv);
+
+	dialog = gtk_dialog_new ();
+
+	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+			    GTK_SIGNAL_FUNC(gtk_main_quit),
+			    NULL);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Cannot start session"));
+
+	label = gtk_label_new (error);
+
+	gtk_container_set_border_width
+		(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
+			    TRUE, TRUE, 0);
+
+	button = gtk_button_new_with_label (_("OK"));
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
+			    button, TRUE, TRUE, 0);
+
+	gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
+				   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
+				   GTK_OBJECT (dialog));
+
+	gtk_widget_show_all (dialog);
+
+	gtk_main ();
+}
+
 static void
 run_config (GdmDisplay *display, struct passwd *pwent)
 {
@@ -297,13 +339,17 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		display->sesspid = 0;
 		return;
 	}
-
 	if (display->sesspid == 0) {
 		int i;
 		char **argv;
 		/* child */
 
+		setuid (0);
+		setgid (0);
+
 		/* setup environment */
+		gdm_clearenv_no_lang ();
+
 		gdm_setenv ("XAUTHORITY", display->authfile);
 		gdm_setenv ("DISPLAY", display->name);
 		gdm_setenv ("LOGNAME", "root");
@@ -311,6 +357,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		gdm_setenv ("USERNAME", "root");
 		gdm_setenv ("HOME", pwent->pw_dir);
 		gdm_setenv ("SHELL", pwent->pw_shell);
+		gdm_setenv ("PATH", GdmRootPath);
 
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
@@ -323,9 +370,13 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		/* exec the configurator */
 		argv = g_strsplit (GdmConfigurator, " ", MAX_ARGS);	
-		execv (argv[0], argv);
+		if (access (argv[0], X_OK) == 0)
+			execv (argv[0], argv);
 
-		/* ignore errors */
+		run_error_dialog (_("Could not execute the configuration\n"
+				    "program.  Make sure it's path is set\n"
+				    "correctly in the configuration file."));
+
 		_exit (0);
 	} else {
 		waitpid (display->sesspid, 0, 0);
@@ -728,48 +779,6 @@ find_a_session (void)
 			session = g_strdup (try[i]);
 	}
 	return session;
-}
-
-/* A hack really, this pretends to be a standalone gtk program */
-/* this should only be called once forked and all thingies are closed */
-static void
-run_error_dialog (const char *error)
-{
-	char *argv_s[] = { "error", NULL };
-	char **argv = argv_s;
-	int argc = 1;
-	GtkWidget *dialog;
-	GtkWidget *label;
-	GtkWidget *button;
-
-	gtk_init (&argc, &argv);
-
-	dialog = gtk_dialog_new ();
-
-	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-			    GTK_SIGNAL_FUNC(gtk_main_quit),
-			    NULL);
-
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Cannot start session"));
-
-	label = gtk_label_new (error);
-
-	gtk_container_set_border_width
-		(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
-			    TRUE, TRUE, 0);
-
-	button = gtk_button_new_with_label (_("OK"));
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
-			    button, TRUE, TRUE, 0);
-
-	gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
-				   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
-				   GTK_OBJECT (dialog));
-
-	gtk_widget_show_all (dialog);
-
-	gtk_main ();
 }
 
 static void
