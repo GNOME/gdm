@@ -50,6 +50,7 @@ static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
 static gboolean gdm_running = FALSE;
+static int GdmMinimalUID = 100;
 
 static GladeXML *xml;
 
@@ -362,8 +363,7 @@ setup_user_combo (const char *name, const char *key)
 	pwent = getpwent();
 	
 	while (pwent != NULL) {
-		/* FIXME: 100 is a pretty arbitrary constant */
-		if (pwent->pw_uid >= 100 &&
+		if (pwent->pw_uid >= GdmMinimalUID &&
 		    strcmp (ve_sure_string (str), pwent->pw_name) != 0) {
 			users = g_list_append (users,
 					       g_strdup (pwent->pw_name));
@@ -1964,6 +1964,12 @@ main (int argc, char *argv[])
 		gtk_dialog_run (GTK_DIALOG (fatal_error));
 		exit (EXIT_FAILURE);
 	}
+
+	/* XXX: the setup proggie using a greeter config var for it's
+	 * ui?  Say it ain't so.  Our config sections are SUCH A MESS */
+	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	GdmMinimalUID = gnome_config_get_int (GDM_KEY_MINIMALUID);
+	gnome_config_pop_prefix ();
 
 	setup_gui ();
 

@@ -1,3 +1,17 @@
+Fri May 17 16:10:15 2002  George Lebl <jirka@5z.com>
+
+	* daemon/misc.c, daemon/slave.c, configure.in, acconfig.h: Use BSD's
+	  setusercontext if found.  If language is unset and there is no
+	  saved preference then if we're using setusercontext don't reset
+	  LANG so that the users login.conf preference takes over
+
+	* daemon/gdm.h, gui/gdmlogin.c, gui/gdmsetup.c: Add a new key
+	  greeter/MinimalUID which sets the minimal uid which is needed
+	  to show up in the browser or the dropdown list in gdmsetup
+
+	* daemon/gdmlogin.c: whack the "*" checking in the password field,
+	  since we may get it normally
+
 Wed May 15 22:55:58 2002  Christophe Merlet  <christophe@merlet.net>
 
 	* Makefile.am, config/Makefile.am: Added $DESTDIR variable.

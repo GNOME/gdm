@@ -814,6 +814,8 @@ gdm_is_loopback_addr (struct in_addr *ia)
 gboolean
 gdm_setup_gids (const char *login, gid_t gid)
 {
+	/* FIXME: perhaps for *BSD there should be setusercontext
+	 * stuff here */
 	if (setgid (gid) < 0)  {
 		gdm_error (_("Could not setgid %d. Aborting."), (int)gid);
 		return FALSE;

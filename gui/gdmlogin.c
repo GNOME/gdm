@@ -109,6 +109,7 @@ static gchar *GdmSessionDir;
 static gchar *GdmLocaleFile;
 static gchar *GdmDefaultLocale;
 static gchar *GdmExclude;
+static int GdmMinimalUID;
 static gchar *GdmGlobalFaceDir;
 static gchar *GdmDefaultFace;
 static gboolean GdmTimedLoginEnable;
@@ -815,6 +816,7 @@ gdm_login_parse_config (void)
     GdmBackgroundRemoteOnlyColor = gnome_config_get_bool (GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
     GdmGtkRC = gnome_config_get_string (GDM_KEY_GTKRC);
     GdmExclude = gnome_config_get_string (GDM_KEY_EXCLUDE);
+    GdmMinimalUID = gnome_config_get_int (GDM_KEY_MINIMALUID);
     GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
     GdmDefaultFace = gnome_config_get_string (GDM_KEY_FACE);
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
@@ -3419,13 +3421,16 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 static gboolean
 gdm_login_check_exclude (struct passwd *pwent)
 {
-	const char * const lockout_passes[] = { "*", "!!", NULL };
+	const char * const lockout_passes[] = { "!!", NULL };
 	gint i;
 
 	if ( ! GdmAllowRoot && pwent->pw_uid == 0)
 		return TRUE;
 
 	if ( ! GdmAllowRemoteRoot && ! login_is_local && pwent->pw_uid == 0)
+		return TRUE;
+
+	if (pwent->pw_uid < GdmMinimalUID)
 		return TRUE;
 
 	for (i=0 ; lockout_passes[i] != NULL ; i++)  {

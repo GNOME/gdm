@@ -705,10 +705,11 @@ gdm_daemonify (void)
     }
 
     if (pid < 0) 
-	gdm_fail (_("gdm_daemonify: fork() failed!"));
+	gdm_fail (_("%s: fork() failed!"), "gdm_daemonify");
 
     if (setsid() < 0)
-	gdm_fail (_("gdm_daemonify: setsid() failed: %s!"), strerror(errno));
+	gdm_fail (_("%s: setsid() failed: %s!"), "gdm_daemonify",
+		  strerror(errno));
 
     chdir (GdmServAuthDir);
     umask (022);

@@ -194,6 +194,7 @@ enum {
 
 #define GDM_KEY_BROWSER "greeter/Browser=false"
 #define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm"
+#define GDM_KEY_MINIMALUID "greeter/MinimalUID=100"
 #define GDM_KEY_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "nobody.png"
 #define GDM_KEY_FACEDIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/faces/"
 #define GDM_KEY_ICON "greeter/Icon=" EXPANDED_PIXMAPDIR "/gdm.xpm"

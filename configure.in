@@ -293,6 +293,12 @@ fi
 
 AC_SUBST(VRFY)
 
+#
+# Can we use BSD's setusercontext
+#
+AC_CHECK_HEADER(login_cap.h, [
+		LIBS="$LIBS -lutil"
+		AC_DEFINE(HAVE_LOGINCAP)])
 
 #
 # Xdmcp checking
