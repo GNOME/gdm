@@ -164,16 +164,18 @@ gdm_display_check_loop (GdmDisplay *disp)
 }
 
 static void
-whack_old_slave (GdmDisplay *d)
+whack_old_slave (GdmDisplay *d, gboolean kill_connection)
 {
     time_t t = time (NULL);
     gboolean waitsleep = TRUE;
 
-    /* This should never happen I don't think, but just in case */
-    if (d->socket_conn != NULL) {
-	    GdmConnection *conn = d->socket_conn;
-	    d->socket_conn = NULL;
-	    gdm_connection_set_close_notify (conn, NULL, NULL);
+    if (kill_connection) {
+	    /* This should never happen I don't think, but just in case */
+	    if (d->socket_conn != NULL) {
+		    GdmConnection *conn = d->socket_conn;
+		    d->socket_conn = NULL;
+		    gdm_connection_set_close_notify (conn, NULL, NULL);
+	    }
     }
 
     if (d->master_notify_fd >= 0) {
@@ -267,7 +269,7 @@ gdm_display_manage (GdmDisplay *d)
     /* If we have an old slave process hanging around, kill it */
     /* This shouldn't be a normal code path however, so it doesn't matter
      * that we are hanging */
-    whack_old_slave (d);
+    whack_old_slave (d, FALSE /* kill_connection */);
 
     /* Ensure that /tmp/.ICE-unix and /tmp/.X11-unix exist and have the
      * correct permissions */
@@ -387,7 +389,7 @@ gdm_display_unmanage (GdmDisplay *d)
 
     /* Kill slave, this may in fact hang for a bit at least until the
      * slave dies, which should be ASAP though */
-    whack_old_slave (d);
+    whack_old_slave (d, TRUE /* kill_connection */);
     
     d->dispstat = DISPLAY_DEAD;
     if (d->type != TYPE_LOCAL)

@@ -1,3 +1,10 @@
+Tue May 04 09:47:21 2004  George Lebl <jirka@5z.com>
+
+	* daemon/display.c: Don't whack the socket_conn on display_manage
+	  since that completely whacks out flexiserver error reporting and
+	  breaks flexiserver.  Whoops!  (I should review innocent looking
+	  patches better)
+
 2004-04-09  John C Barstow  <jbowtie@amathaine.com>
 
         * configure.in: Added "mi" (Maori) to ALL_LINGUAS.
