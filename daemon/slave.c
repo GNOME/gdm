@@ -384,6 +384,15 @@ gdm_screen_init (GdmDisplay *display)
 		display->screenwidth = xscreens[GdmXineramaScreen].width;
 		display->screenheight = xscreens[GdmXineramaScreen].height;
 
+		display->lrh_offsetx =
+			DisplayWidth (display->dsp,
+				      DefaultScreen (display->dsp))
+			- (display->screenx + display->screenwidth);
+		display->lrh_offsety =
+			DisplayHeight (display->dsp,
+				       DefaultScreen (display->dsp))
+			- (display->screeny + display->screenheight);
+
 		XFree (xscreens);
 	} else
 #endif
@@ -392,6 +401,9 @@ gdm_screen_init (GdmDisplay *display)
 		display->screeny = 0;
 		display->screenwidth = 0; /* we'll use the gdk size */
 		display->screenheight = 0;
+
+		display->lrh_offsetx = 0;
+		display->lrh_offsety = 0;
 	}
 }
 
@@ -2331,8 +2343,9 @@ session_child_run (struct passwd *pwent,
 	/* an if and not an else, we could have done a fall-through
 	 * to here in the above code if we can't find gnome-session */
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
-		char *params = g_strdup_printf ("-geometry 80x24+%d+%d",
-						d->screenx, d->screeny);
+		char *params = g_strdup_printf ("-geometry 80x24-%d-%d",
+						d->lrh_offsetx,
+						d->lrh_offsety);
 		sesspath = find_prog ("xterm",
 				      params,
 				      &sessexec);
