@@ -14,5 +14,6 @@ extern gchar *GdmSessionDir;
 extern gchar *GdmDefaultLocale;
 extern gchar *GdmLocaleFile;
 extern gboolean GdmTimedLoginEnable;
+extern gboolean GdmUse24Clock;
 extern gchar *GdmTimedLogin;
 extern gint GdmTimedLoginDelay;

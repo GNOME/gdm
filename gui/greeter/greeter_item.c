@@ -92,7 +92,14 @@ get_clock (void)
   time (&the_time);
   the_tm = localtime (&the_time);
 
-  return ve_strftime (the_tm, _("%a %b %d, %I:%M %p"));
+  if (GdmUse24Clock) 
+    {
+      return ve_strftime (the_tm, _("%a %b %d, %H:%M"));
+    } 
+  else 
+    {
+      return ve_strftime (the_tm, _("%a %b %d, %I:%M %p"));
+    }
 }
 
 

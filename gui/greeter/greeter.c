@@ -50,6 +50,7 @@ gchar *GdmConfigurator = NULL;
 gboolean GdmSystemMenu = TRUE;
 gboolean GdmConfigAvailable = TRUE;
 gboolean GdmTimedLoginEnable;
+gboolean GdmUse24Clock;
 gchar *GdmTimedLogin;
 gint GdmTimedLoginDelay;
 
@@ -133,7 +134,9 @@ greeter_parse_config (void)
 	GdmTimedLoginDelay = 5;
       }
     greeter_current_delay = GdmTimedLoginDelay;
-    
+
+    GdmUse24Clock = gnome_config_get_bool (GDM_KEY_USE_24_CLOCK);
+
     gnome_config_pop_prefix();
 
     if (GdmXineramaScreen < 0)
