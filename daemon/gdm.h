@@ -357,6 +357,13 @@ struct _GdmDisplay {
 
     /* order in the Xservers file for sessreg, -1 if unset yet */
     int x_servers_order;
+
+    /* The xsession-errors connection */
+    int xsession_errors_fd; /* write to the file */
+    int session_output_fd; /* read from the session */
+    int xsession_errors_bytes;
+#define MAX_XSESSION_ERRORS_BYTES (80*2500)  /* maximum number of bytes in
+						the ~/.xsession-errors file */
 };
 
 typedef struct _GdmXServer GdmXServer;
@@ -676,7 +683,7 @@ enum {
 	do {		\
 		errno = 0;	\
 		expr;		\
-	} while (errno == EINTR);
+	} while G_UNLIKELY (errno == EINTR);
 		
 
 #endif /* GDM_H */

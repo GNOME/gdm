@@ -53,7 +53,12 @@ struct rngs {
    { "/dev/urandom",            128,	0 },
    { "/proc/stat",    MAXBUFFERSIZE,	0 },
    { "/proc/loadavg", MAXBUFFERSIZE,	0 },
+#if defined(__i386__) || defined(__386__) || defined(_M_IX86)
+   /* On i386, we should not read the first 16megs */
    { "/dev/mem",      MAXBUFFERSIZE,	0x100000 },
+#else
+   { "/dev/mem",      MAXBUFFERSIZE,	0 },
+#endif
    { "/dev/audio",    MAXBUFFERSIZE,	0 },
 };
 

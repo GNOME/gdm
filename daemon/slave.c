@@ -94,6 +94,9 @@ static gboolean session_started = FALSE;
 static gboolean greeter_disabled = FALSE;
 static gboolean greeter_no_focus = FALSE;
 
+static uid_t logged_in_uid = -1;
+static gid_t logged_in_gid = -1;
+
 static gboolean interrupted = FALSE;
 static gchar *ParsedAutomaticLogin = NULL;
 static gchar *ParsedTimedLogin = NULL;
@@ -271,6 +274,65 @@ slave_waitpid_setpid (pid_t pid)
 	return wp;
 }
 
+static void
+run_session_output (void)
+{
+	char buf[256];
+	int r, written;
+	uid_t old;
+	gid_t oldg;
+	
+	old = geteuid ();
+	oldg = getegid ();
+
+	/* make sure we are the user when we do this,
+	   for purposes of file limits and all that kind of
+	   stuff */
+	if G_LIKELY (logged_in_gid >= 0)
+		setegid (logged_in_gid);
+	if G_LIKELY (logged_in_uid >= 0)
+		seteuid (logged_in_uid);
+
+	/* the fd is non-blocking */
+	for (;;) {
+		IGNORE_EINTR (r = read (d->session_output_fd, buf, sizeof(buf)));
+		if (r <= 0)
+			goto end_run_session_output;
+
+		if G_UNLIKELY (d->xsession_errors_bytes >= MAX_XSESSION_ERRORS_BYTES)
+			continue;
+
+		/* write until we succeed in writing something */
+		IGNORE_EINTR (written = write (d->xsession_errors_fd, buf, r));
+		if G_UNLIKELY (written < 0) {
+			/* evil! */
+			goto end_run_session_output;
+		}
+
+		/* write until we succeed in writing everything */
+		while G_UNLIKELY (written < r) {
+			int n;
+			IGNORE_EINTR (n = write (d->xsession_errors_fd, &buf[written], r-written));
+			if G_UNLIKELY (n < 0) {
+				/* evil! */
+				goto end_run_session_output;
+			}
+			written += n;
+		}
+
+		d->xsession_errors_bytes += r;
+
+		if G_UNLIKELY (d->xsession_errors_bytes >= MAX_XSESSION_ERRORS_BYTES) {
+			write (d->xsession_errors_fd,
+			       "\n...Too much output, ignoring rest...\n",
+			       strlen ("\n...Too much output, ignoring rest...\n"));
+		}
+	}
+end_run_session_output:
+	seteuid (old);
+	setegid (oldg);
+}
+
 /* must call slave_waitpid_setpid before calling this */
 static void
 slave_waitpid (GdmWaitPid *wp)
@@ -292,10 +354,13 @@ slave_waitpid (GdmWaitPid *wp)
 			select (0, NULL, NULL, NULL, &tv);
 			/* don't want to use sleep since we're using alarm
 			   for pinging */
+			run_session_output ();
 			check_notifies_now ();
 		}
 		check_notifies_now ();
 	} else {
+		gboolean read_session_output = TRUE;
+
 		do {
 			char buf[1];
 			fd_set rfds;
@@ -303,10 +368,21 @@ slave_waitpid (GdmWaitPid *wp)
 
 			FD_ZERO (&rfds);
 			FD_SET (wp->fd_r, &rfds);
+			if (read_session_output &&
+			    d->session_output_fd >= 0)
+				FD_SET (d->session_output_fd, &rfds);
 
-			ret = select (wp->fd_r+1, &rfds, NULL, NULL, NULL);
-			if (ret == 1)
-				IGNORE_EINTR (read (wp->fd_r, buf, 1));
+			ret = select (MAX (wp->fd_r, d->session_output_fd)+1, &rfds, NULL, NULL, NULL);
+			if (ret > 0) {
+			       	if (FD_ISSET (wp->fd_r, &rfds)) {
+					IGNORE_EINTR (read (wp->fd_r, buf, 1));
+				} else if (d->session_output_fd >= 0 &&
+					   FD_ISSET (d->session_output_fd, &rfds)) {
+					run_session_output ();
+				}
+			} else if (errno == EBADF) {
+				read_session_output = FALSE;
+			}
 			check_notifies_now ();
 		} while (wp->pid > 1);
 		check_notifies_now ();
@@ -1088,6 +1164,8 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
 	    d->logged_in = FALSE;
 	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
+	    logged_in_uid = -1;
+	    logged_in_gid = -1;
 
 	    gdm_debug ("gdm_slave_run: Automatic login done");
 	    
@@ -1133,6 +1211,8 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
 	    d->logged_in = FALSE;
 	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
+	    logged_in_uid = -1;
+	    logged_in_gid = -1;
 
 	    if (remanage_asap) {
 		    gdm_slave_quick_exit (DISPLAY_REMANAGE);
@@ -1577,6 +1657,8 @@ gdm_slave_wait_for_login (void)
 			}
 
 			d->logged_in = TRUE;
+			logged_in_uid = 0;
+			logged_in_gid = 0;
 			gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 			/* Note: nobody really logged in */
 			gdm_slave_send_string (GDM_SOP_LOGIN, "");
@@ -1603,6 +1685,8 @@ gdm_slave_wait_for_login (void)
 
 			gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
 			d->logged_in = FALSE;
+			logged_in_uid = -1;
+			logged_in_gid = -1;
 
 			if (remanage_asap) {
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
@@ -1885,21 +1969,26 @@ run_pictures (void)
 
 			/* write until we succeed in writing something */
 			IGNORE_EINTR (written = write (greeter_fd_out, buf, bytes));
-			if G_UNLIKELY (written < 0 && errno == EPIPE) {
+			if G_UNLIKELY (written < 0 &&
+				       (errno == EPIPE || errno == EBADF)) {
 				/* something very, very bad has happened */
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}
+
+			if G_UNLIKELY (written < 0)
+				written = 0;
 
 			/* write until we succeed in writing everything */
 			while (written < bytes) {
 				int n;
 				IGNORE_EINTR (n = write (greeter_fd_out, &buf[written], bytes-written));
-				if (n < 0 && errno == EPIPE) {
+				if G_UNLIKELY (n < 0 &&
+					       (errno == EPIPE || errno == EBADF)) {
 					/* something very, very bad has happened */
 					gdm_slave_quick_exit (DISPLAY_REMANAGE);
-				}
-				if (n > 0)
+				} else if G_LIKELY (n > 0) {
 					written += n;
+				}
 			}
 
 			/* we have written bytes btyes if it likes it or not */
@@ -2712,36 +2801,13 @@ find_prog (const char *name)
 	return NULL;
 }
 
-static void
-session_child_run (struct passwd *pwent,
-		   gboolean failsafe,
-		   const char *home_dir,
-		   gboolean home_dir_ok,
-		   const char *session,
-		   const char *save_session,
-		   const char *language,
-		   const char *gnome_session,
-		   gboolean usrcfgok,
-		   gboolean savesess,
-		   gboolean savelang)
+static int
+open_xsession_errors (struct passwd *pwent,
+		      gboolean failsafe,
+		      const char *home_dir,
+		      gboolean home_dir_ok)
 {
-	int logfd;
-	char *exec;
-	const char *shell = NULL;
-	VeConfig *dmrc = NULL;
-	char *argv[4];
-
-	gdm_unset_signals ();
-	if G_UNLIKELY (setsid() < 0)
-		/* should never happen */
-		gdm_error (_("%s: setsid() failed: %s!"),
-			   "session_child_run", strerror(errno));
-
-	ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
-
-	/* Here we setup our 0,1,2 descriptors, we do it here
-	 * nowdays rather then later on so that we get errors even
-	 * from the PreSession script */
+	int logfd = -1;
         /* Log all output from session programs to a file,
 	 * unless in failsafe mode which needs to work when there is
 	 * no diskspace as well */
@@ -2762,18 +2828,49 @@ session_child_run (struct passwd *pwent,
 
 		g_free (filename);
 
-		if G_LIKELY (logfd != -1) {
-			IGNORE_EINTR (dup2 (logfd, 1));
-			IGNORE_EINTR (dup2 (logfd, 2));
-			IGNORE_EINTR (close (logfd));
-		} else {
-			IGNORE_EINTR (close (1));
-			IGNORE_EINTR (close (2));
-			gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
-			gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
+		if G_UNLIKELY (logfd < 0) {
 			gdm_error (_("%s: Could not open ~/.xsession-errors"),
 				   "run_session_child");
 		}
+	}
+
+	return logfd;
+}
+
+static void
+session_child_run (struct passwd *pwent,
+		   int logfd,
+		   gboolean failsafe,
+		   const char *home_dir,
+		   gboolean home_dir_ok,
+		   const char *session,
+		   const char *save_session,
+		   const char *language,
+		   const char *gnome_session,
+		   gboolean usrcfgok,
+		   gboolean savesess,
+		   gboolean savelang)
+{
+	char *exec;
+	const char *shell = NULL;
+	VeConfig *dmrc = NULL;
+	char *argv[4];
+
+	gdm_unset_signals ();
+	if G_UNLIKELY (setsid() < 0)
+		/* should never happen */
+		gdm_error (_("%s: setsid() failed: %s!"),
+			   "session_child_run", strerror(errno));
+
+	ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
+
+	/* Here we setup our 0,1,2 descriptors, we do it here
+	 * nowdays rather then later on so that we get errors even
+	 * from the PreSession script */
+	if G_LIKELY (logfd >= 0) {
+		IGNORE_EINTR (dup2 (logfd, 1));
+		IGNORE_EINTR (dup2 (logfd, 2));
+		IGNORE_EINTR (close (logfd));
 	} else {
 		IGNORE_EINTR (close (1));
 		IGNORE_EINTR (close (2));
@@ -3076,6 +3173,19 @@ session_child_run (struct passwd *pwent,
 }
 
 static void
+finish_session_output (gboolean do_read)
+{
+	if G_LIKELY (d->session_output_fd >= 0)  {
+		if (do_read)
+			run_session_output ();
+		IGNORE_EINTR (close (d->xsession_errors_fd));
+		IGNORE_EINTR (close (d->session_output_fd));
+		d->xsession_errors_fd = -1;
+		d->session_output_fd = -1;
+	}
+}
+
+static void
 gdm_slave_session_start (void)
 {
     struct passwd *pwent;
@@ -3091,6 +3201,8 @@ gdm_slave_session_start (void)
     GdmWaitPid *wp;
     uid_t uid;
     gid_t gid;
+    int logpipe[2];
+    int logfilefd;
 
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
 	       login);
@@ -3105,8 +3217,8 @@ gdm_slave_session_start (void)
 			    _("%s: User passed auth but getpwnam(%s) failed!"), "gdm_slave_session_start", login);
     }
 
-    uid = pwent->pw_uid;
-    gid = pwent->pw_gid;
+    logged_in_uid = uid = pwent->pw_uid;
+    logged_in_gid = gid = pwent->pw_gid;
 
     /* Run the PostLogin script */
     if G_UNLIKELY (gdm_slave_exec_script (d, GdmPostLogin,
@@ -3306,6 +3418,22 @@ gdm_slave_session_start (void)
 	    XSync (d->dsp, False);
     }
 
+    /* Init the ~/.xsession-errors stuff */
+    d->xsession_errors_bytes = 0;
+    d->xsession_errors_fd = -1;
+    d->session_output_fd = -1;
+
+    logfilefd = open_xsession_errors (pwent,
+				      failsafe,
+				      home_dir,
+				      home_dir_ok);
+    if G_UNLIKELY (logfilefd < 0 ||
+		   pipe (logpipe) != 0) {
+	    if (logfilefd >= 0)
+		    IGNORE_EINTR (close (logfilefd));
+	    logfilefd = -1;
+    }
+
     /* don't completely rely on this, the user
      * could reset time or do other crazy things */
     session_start_time = time (NULL);
@@ -3325,8 +3453,12 @@ gdm_slave_session_start (void)
 	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Error forking user session"), "gdm_slave_session_start");
 	
     case 0:
+	if G_LIKELY (logfilefd >= 0) {
+		IGNORE_EINTR (close (logpipe[0]));
+	}
 	/* Never returns */
 	session_child_run (pwent,
+			   logpipe[1],
 			   failsafe,
 			   home_dir,
 			   home_dir_ok,
@@ -3341,6 +3473,14 @@ gdm_slave_session_start (void)
 	
     default:
 	break;
+    }
+
+    if G_LIKELY (logfilefd >= 0)  {
+	    d->xsession_errors_fd = logfilefd;
+	    d->session_output_fd = logpipe[0];
+	    /* make the output read fd non-blocking */
+	    fcntl (d->session_output_fd, F_SETFL, O_NONBLOCK);
+	    IGNORE_EINTR (close (logpipe[1]));
     }
 
     /* We must be root for this, and we are, but just to make sure */
@@ -3364,6 +3504,9 @@ gdm_slave_session_start (void)
     slave_waitpid (wp);
 
     d->sesspid = 0;
+
+    /* finish reading the session output if any of it is still there */
+    finish_session_output (TRUE);
 
     /* Now still as root make the system authfile readable by others,
        and therefore by the gdm user */
@@ -3432,8 +3575,9 @@ gdm_slave_session_stop (gboolean run_post_session,
 
     /* Now still as root make the system authfile not readable by others,
        and therefore not by the gdm user */
-    if (GDM_AUTHFILE (d) != NULL)
+    if (GDM_AUTHFILE (d) != NULL) {
 	    IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
+    }
 
     gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
 
@@ -3447,6 +3591,8 @@ gdm_slave_session_stop (gboolean run_post_session,
     gdm_sigchld_block_pop ();
 
     gdm_verify_cleanup (d);
+
+    finish_session_output (run_post_session /* do_read */);
     
     if (local_login == NULL)
 	    pwent = NULL;
@@ -3480,6 +3626,9 @@ gdm_slave_session_stop (gboolean run_post_session,
 	    seteuid (0);
 	    setegid (0);
     }
+
+    logged_in_uid = -1;
+    logged_in_gid = -1;
 
     /* things are going to be killed, so ignore errors */
     XSetErrorHandler (ignore_xerror_handler);
@@ -4111,8 +4260,9 @@ gdm_slave_whack_temp_auth_file (void)
 	old = geteuid ();
 	if (old != 0)
 		seteuid (0);
-	if (d->xnest_temp_auth_file != NULL)
+	if (d->xnest_temp_auth_file != NULL) {
 		IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
+	}
 	g_free (d->xnest_temp_auth_file);
 	d->xnest_temp_auth_file = NULL;
 	if (old != 0)
@@ -4124,8 +4274,9 @@ create_temp_auth_file (void)
 {
 	if (d->type == TYPE_FLEXI_XNEST &&
 	    d->xnest_auth_file != NULL) {
-		if (d->xnest_temp_auth_file != NULL)
+		if (d->xnest_temp_auth_file != NULL) {
 			IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
+		}
 		g_free (d->xnest_temp_auth_file);
 		d->xnest_temp_auth_file =
 			copy_auth_file (d->server_uid,
@@ -4396,8 +4547,9 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	       environment variable. */
 
             IGNORE_EINTR (close (pipe1[0]));
-            if G_LIKELY (pipe1[1] != STDOUT_FILENO) 
+            if G_LIKELY (pipe1[1] != STDOUT_FILENO)  {
 	      IGNORE_EINTR (dup2 (pipe1[1], STDOUT_FILENO));
+	    }
 
 	    closelog ();
 

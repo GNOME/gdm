@@ -1,5 +1,73 @@
 Ahh news...
 
+2.4.2.101 stuff:
+
+- Memory profiling of the graphical greeter by not keeping
+  around info (pixmaps) which we won't need.  On the circles
+  theme this saves about 6megs on the circles theme.
+  Also cache pixmaps in the graphical greeter which reduces
+  the disk rattling we need to do to start up.  Plus a bit
+  of just performance profiling should reduce CPU usage of
+  the graphical greeter quite a bit too.
+
+- Update the manual, especially the theme section
+
+- The UserAuthDir now works in a much saner way.  If the
+  directory is not tilde expanded, then we treat it just
+  like /tmp and use random filenames.
+
+- Prevent a minor DoS attack (apps being coerced to fill
+  up the home dir) by intercepting the output from the
+  session and only writing to the ~/.xsession-errors
+  file a maximum of 80*2500 bytes.
+
+- The user lists in the face browsers and the gdmsetup are
+  now capped at a higher number, but we also cap the time
+  that is spent gathering the info at 5 seconds.
+
+- Deal with main daemon crashes semi decently in the slave.
+
+- Try /dev/fd if /proc/self/fd isn't there for checking
+  which FDs are open, should make this work on more platforms
+  (in particular FreeBSD)
+
+- Run fbconsole on startup if found, this is a solaris
+  thing to prevent console output to corrupt your display
+  (Brian Cameron)
+
+- Use the 66 code from session to indicate failure that
+  need not display the .xsession-errors file
+
+- Actually read the "active" state for text items
+
+- Break all pam messages (not just the error) at 50
+  columns.  This is kind of a hack, we need to support
+  proper linebreaking in the theme.
+
+- Respect negative coordinates with "-0" in the
+  theme
+
+- Improvements in the cookie generation.  Doesn't use
+  up all the system entropy but just uses the 16 bytes it
+  actually needs (since we just need a 16 byte cookie).
+  Plus improve randomness on systems without /dev/random
+  and friends.
+
+- Correctly handle out of diskspace on auth handling and
+  on the PID file thing.
+
+- Fix the runlevel reading
+
+- Fix possible crash on auth purge
+
+- Fix possible chooser crash
+
+- Fix lots of minor bugs
+
+- Some soptimization to save a nanosecond or two
+
+- Translation updates (FIXME)
+
 2.4.2.100 stuff:
 
 - Fix #118878 by actually ensuring /tmp/.ICE-unix

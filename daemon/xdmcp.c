@@ -1692,6 +1692,10 @@ gdm_xdmcp_display_alloc (struct in_addr *addr,
 
     d->slave_notify_fd = -1;
     d->master_notify_fd = -1;
+
+    d->xsession_errors_bytes = 0;
+    d->xsession_errors_fd = -1;
+    d->session_output_fd = -1;
     
     /* Secure display with cookie */
     if G_UNLIKELY (! gdm_auth_secure_display (d))

@@ -1,3 +1,23 @@
+Mon Aug 18 11:02:38 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c, daemon/gdm.h, daemon/server.c, daemon/xdmcp.c:
+	  To prevent a possible DoS attack where an app might spit out
+	  too many warnings on stdout/stderr and thus fill up the users
+	  home dir (or when an app is buggy), the output of the session
+	  no longer goes directly into .xsession-errors but in fact
+	  through an internal pipe.  This way we can just cap the file
+	  at some size (currently 80*2500 bytes, which should be long
+	  enough for actual use in debugging but it's short enough to
+	  prevent a DoS attack)
+
+	* docs/C/gdm.xml: note about the above
+
+	* daemon/cookie.c: skip the first 16megs of /dev/mem only on
+	  i386
+
+	* daemon/xdmcp.c, daemon/gdm.[ch], daemon/server.c, daemon/slave.c,
+	  daemon/cookie.c: some cleanup with the IGNORE_EINTR macro
+
 Sat Aug 16 08:47:45 2003  George Lebl <jirka@5z.com>
 
 	* daemon/cookie.c: hell we only need 16 bytes of random data from

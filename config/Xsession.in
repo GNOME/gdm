@@ -12,9 +12,11 @@
 #
 # The output is ALREADY redirected to .xsession-errors in GDM.  This way
 # .xsession-errors actually gets more output such as if the PreSession script
-# is failing.  We wish to be robust don't we?  In case you wish to use an
-# existing script for other DM's, you can just not redirect when GDMSESSION
-# is set.  GDMSESSION will always be set from gdm.
+# is failing.  This also prevents DoS attacks if some app in the users session
+# can be prodded to dump lots of stuff on the stdout/stderr.  We wish to be
+# robust don't we?  In case you wish to use an existing script for other DM's,
+# you can just not redirect when GDMSESSION is set.  GDMSESSION will always
+# be set from gdm.
 #
 # Also note that this is not run as a login shell, this is just executed.
 # This is why we source the profile files below.

@@ -109,12 +109,14 @@ gdm_server_whack_lockfile (GdmDisplay *disp)
 void
 gdm_server_wipe_cookies (GdmDisplay *disp)
 {
-	if ( ! ve_string_empty (disp->authfile))
+	if ( ! ve_string_empty (disp->authfile)) {
 		IGNORE_EINTR (unlink (disp->authfile));
+	}
 	g_free (disp->authfile);
 	disp->authfile = NULL;
-	if ( ! ve_string_empty (disp->authfile_gdm))
+	if ( ! ve_string_empty (disp->authfile_gdm)) {
 		IGNORE_EINTR (unlink (disp->authfile_gdm));
+	}
 	g_free (disp->authfile_gdm);
 	disp->authfile_gdm = NULL;
 }
@@ -688,8 +690,9 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     /* If we were holding a vt open for the server, close it now as it has
      * already taken the bait. */
-    if (vtfd > 0)
+    if (vtfd > 0) {
 	    IGNORE_EINTR (close (vtfd));
+    }
 
     switch (d->servstat) {
 
@@ -1308,6 +1311,10 @@ gdm_server_alloc (gint id, const gchar *command)
 
     d->slave_notify_fd = -1;
     d->master_notify_fd = -1;
+
+    d->xsession_errors_bytes = 0;
+    d->xsession_errors_fd = -1;
+    d->session_output_fd = -1;
     
     return d;
 }

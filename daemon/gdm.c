@@ -1011,8 +1011,9 @@ gdm_final_cleanup (void)
 
 	closelog();
 
-	if (GdmPidFile != NULL)
+	if (GdmPidFile != NULL) {
 		IGNORE_EINTR (unlink (GdmPidFile));
+	}
 }
 
 static gboolean

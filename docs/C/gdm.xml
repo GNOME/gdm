@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.4.1.101"> 
-    <!ENTITY date "8/15/2003"> 
+    <!ENTITY date "8/18/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -548,6 +548,18 @@
 	Also if the session being started is one of the failsafe session, this
 	file is not created.  This way the user can view the session errors from
 	the last session and correct the problem this way.
+      </para>
+
+      <para>
+	The <filename>~/.xsession-errors</filename> file is capped at about
+	200 kilobytes by GDM to prevent a possible denial of service attack
+	on the apps.  An app could perhaps on reading some wrong data print out
+	warnings or errors on the stderr or stdout.  This could perhaps
+	fill up the users home directory who would then have to log out and
+	log back in to clear this.  Note that some distributors seem to
+	override the ~/.xsession-errors redirection and do it themselves
+	in their own Xsession script which means that GDM will not be able to
+	trap the output and cap this file.
       </para>
 
     </sect2>
