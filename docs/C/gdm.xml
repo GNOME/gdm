@@ -2253,12 +2253,26 @@
 	  <varlistentry>
 	    <term>SystemMenu</term>
 	    <listitem>
-	      <synopsis>SystemMenu=false</synopsis>
+	      <synopsis>SystemMenu=true</synopsis>
 	      <para>
-		Turns the Shutdown/Reboot/Configure menu on/off.  If this is off
-		none of the functions will be available even if a theme for
-		a graphical greeter mistakenly shows them.  Normally this is
-		called the Actions menu.
+		Turns the Actions menu (which used to be called System menu) on
+		or off.  If this is off then one of the
+		actions will be available anywhere.  These actions include
+		Shutdown, Reboot, Configure, XDMCP chooser and such.  All of
+		those can however be turned off individually.  Shutdown, Reboot
+		and Suspend can be turned off by just setting the corresponding
+		keys to empty.  Note that the
+		actions menu is only shown on local logins as it would not be
+		safe or even desirable on remote logins, so you don't have to
+		worry about remote users having any sort of console privilages.
+	      </para>
+
+	      <para>
+		Note that if this is off none of the actions will be available
+		even if a theme for a graphical greeter mistakenly shows them.
+		Also note that sometimes a graphical theme may not show all
+		the available actions as buttons and you may have to press
+		F10 to see the menu.
 	      </para>
 	    </listitem>
 	  </varlistentry>

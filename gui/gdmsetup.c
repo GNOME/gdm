@@ -408,6 +408,28 @@ setup_notify_toggle (const char *name,
 }
 
 static void
+toggle_toggled_sensitivity_positive (GtkWidget *toggle, GtkWidget *depend)
+{
+	gtk_widget_set_sensitive (depend, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (toggle)));
+}
+
+static void
+setup_sensitivity_positive_toggle (const char *name,
+				   const char *depend_name)
+{
+	GtkWidget *toggle = glade_helper_get (xml, name,
+					      GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *depend = glade_helper_get (xml, depend_name,
+					      GTK_TYPE_WIDGET);
+
+	toggle_toggled_sensitivity_positive (toggle, depend);
+
+	g_signal_connect (G_OBJECT (toggle), "toggled",
+			  G_CALLBACK (toggle_toggled_sensitivity_positive), 
+			  depend);
+}
+
+static void
 setup_user_combo (const char *name, const char *key)
 {
 	GtkWidget *combo = glade_helper_get (xml, name, GTK_TYPE_COMBO);
@@ -2146,6 +2168,10 @@ setup_gui (void)
 	setup_notify_toggle ("disallow_tcp",
 			     GDM_KEY_DISALLOWTCP,
 			     GDM_KEY_DISALLOWTCP /* notify_key */);
+
+	/* setup sensitivities */
+	setup_sensitivity_positive_toggle ("sysmenu", "config_available");
+	setup_sensitivity_positive_toggle ("sysmenu", "chooser_button");
 
 	setup_notify_toggle ("enable_xdmcp",
 			     GDM_KEY_XDMCP,
