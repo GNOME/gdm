@@ -10,7 +10,12 @@ PATH="@X_PATH@:$PATH:/bin:/usr/bin"
 
 XSETROOT=`which xsetroot 2>/dev/null`
 if [ "x$XSETROOT" != "x" ] ; then
-	"$XSETROOT" -cursor_name left_ptr -solid "#363047"
+	# Try to snarf the BackgroundColor from the config file
+	BACKCOLOR=`grep '^BackgroundColor' @EXPANDED_SYSCONFDIR@/gdm/gdm.conf | sed 's/^.*=\(.*\)$/\1/'`
+	if [ "x$BACKCOLOR" = "x" ]; then
+		BACKCOLOR="#76848"
+	fi
+	"$XSETROOT" -cursor_name left_ptr -solid "$BACKCOLOR"
 fi
 
 
