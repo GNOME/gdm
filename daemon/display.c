@@ -181,7 +181,7 @@ gdm_display_manage (GdmDisplay *d)
 	break;
 
     case -1:
-	gdm_error (_("gdm_display_manage: Failed forking gdm slave process for %d"), d->name);
+	gdm_error (_("gdm_display_manage: Failed forking gdm slave process for %s"), d->name);
 
 	return FALSE;
 
