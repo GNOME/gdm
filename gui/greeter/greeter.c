@@ -568,6 +568,15 @@ greeter_done (int sig)
     _exit (EXIT_SUCCESS);
 }
 
+
+static void
+setup_cursor (GdkCursorType type)
+{
+	GdkCursor *cursor = gdk_cursor_new (type);
+	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
+	gdk_cursor_destroy (cursor);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -604,6 +613,8 @@ main (int argc, char *argv[])
   
   gtk_init (&argc, &argv);
 
+  setup_cursor (GDK_LEFT_PTR);
+  
   gdm_wm_screen_init (0);
   
   r = verify_gdm_version ();
