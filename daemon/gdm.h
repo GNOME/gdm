@@ -214,7 +214,7 @@ struct _GdmDisplay {
     gchar *command;
     gboolean failsafe_xserver;
     gboolean use_chooser;
-    int indirect_id;
+    guint indirect_id;
     gchar *cookie;
     gchar *bcookie;
     gchar *name;

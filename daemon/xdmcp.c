@@ -88,6 +88,7 @@
 #endif /* HAVE_LIBXDMCP */
 
 #include "misc.h"
+#include "choose.h"
 #include "xdmcp.h"
 
 static const gchar RCSid[]="$Id$";
@@ -168,42 +169,21 @@ static XdmAuthRec serv_authlist = {
     { (CARD16) 0, (CARD8 *) 0 }
 };
 
-
-/* these ought to be in some header file */
-extern gboolean gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd);
-extern GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
-extern GdmIndirectDisplay *gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
-extern void gdm_choose_indirect_dispose (GdmIndirectDisplay *id);
-
 static gboolean
 is_local_addr (struct in_addr *ia)
 {
-	char hostbuf[1024];
 	const char lo[] = {127,0,0,1};
-	struct hostent *he;
-	int i;
-
-	if (gethostname (hostbuf, sizeof (hostbuf) - 1) != 0)
-		return FALSE;
-
-	he = gethostbyaddr (lo, sizeof (struct in_addr), AF_INET);
-	if (he == NULL) /*eek?*/
-		return FALSE;
-
-	if (strcmp (he->h_name, hostbuf) == 0)
+	if (memcmp (&ia->s_addr, lo, 4) == 0) {
 		return TRUE;
-
-	for (i = 0; he->h_aliases[i] != NULL; i++) {
-		if (strcmp (he->h_aliases[i], hostbuf) == 0)
-			return TRUE;
+	} else {
+		return FALSE;
 	}
-	return FALSE;
 }
 
 gboolean
 gdm_xdmcp_init (void)
 {
-    struct sockaddr_in serv_sa;
+    struct sockaddr_in serv_sa = {0};
     gchar hostbuf[256];
     struct utsname name;
     
@@ -434,12 +414,15 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 		    id->chosen_host != NULL) {
 			/* if user chose us, then just send willing */
 			if (is_local_addr (id->chosen_host)) {
+				/* get rid of indirect, so that we don't get
+				 * the chooser */
+				gdm_choose_indirect_dispose (id);
 				gdm_xdmcp_send_willing (clnt_sa);
 			} else {
+				/* or send forward query to chosen host */
 				gdm_xdmcp_send_forward_query (id, clnt_sa,
 							      &clnt_authlist);
 			}
-			gdm_choose_indirect_dispose (id);
 		} else if (id == NULL) {
 			id = gdm_choose_indirect_alloc (clnt_sa);
 			if (id != NULL) {
@@ -466,7 +449,7 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 			      struct sockaddr_in *clnt_sa,
 			      ARRAYofARRAY8Ptr authlist)
 {
-	struct sockaddr_in sock;
+	struct sockaddr_in sock = {0};
 	XdmcpHeader header;
 	int i, authlen;
 	ARRAY8 address;
@@ -475,8 +458,11 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	g_assert (id != NULL);
 	g_assert (id->chosen_host != NULL);
 
-	gdm_debug ("gdm_xdmcp_send_forward_query: Sending forward query to %s", 
-		   inet_ntoa (*id->chosen_host));
+	gdm_debug ("gdm_xdmcp_send_forward_query: Sending forward query to %s,
+		   about %s:%d", 
+		   inet_ntoa (*id->chosen_host),
+		   inet_ntoa (clnt_sa->sin_addr),
+		   (int) ntohs (clnt_sa->sin_port));
 
 	authlen = 1;
 	for (i = 0 ; i < authlist->length ; i++) {
@@ -486,7 +472,13 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	/* we depend on this being 2 elsewhere as well */
 	port.length = 2;
 	port.data = g_new (char, 2);
-	*((guint16 *)port.data) = (guint16) htons (clnt_sa->sin_port);
+	memcpy (port.data, &(clnt_sa->sin_port), 2);
+
+	/* FIXME:
+	 * This is broken!, this could be loopback which is just plain wrong,
+	 * since the other host can't access us from the loopback, this would
+	 * need to be changed to an actual address, however note that xdm
+	 * fucks this up as well and noone yet complained there */
 	address.length = sizeof (struct in_addr);
 	address.data = (void *)g_new (struct in_addr, 1);
 	memcpy (address.data, &(clnt_sa->sin_addr), sizeof (struct in_addr));

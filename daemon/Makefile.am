@@ -30,6 +30,7 @@ gdm_SOURCES = \
 	xdmcp.c \
 	xdmcp.h \
 	choose.c \
+	choose.h \
 	filecheck.c \
 	filecheck.h \
 	md5.c \

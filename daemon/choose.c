@@ -40,6 +40,7 @@
 #include <fcntl.h>
 
 #include "gdm.h"
+#include "choose.h"
 
 static const gchar RCSid[]="$Id$";
 
@@ -52,13 +53,8 @@ extern gint GdmMaxIndirectWait;	/* Maximum age before a pending session is remov
 
 extern void gdm_debug (gchar *, ...);
 
-static int indirect_id = 0;
+static guint indirect_id = 1;
 
-
-GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
-GdmIndirectDisplay *gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
-void gdm_choose_indirect_dispose (GdmIndirectDisplay *id);
-gboolean gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd);
 
 
 gboolean
@@ -95,6 +91,7 @@ gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	for (li = indirect; li != NULL; li = li->next) {
 		GdmIndirectDisplay *idisp = li->data;
 		if (idisp->id == id) {
+			idisp->acctime = time (NULL);
 			g_free (idisp->chosen_host);
 			idisp->chosen_host = g_new (struct in_addr, 1);
 			memcpy (idisp->chosen_host, &addr,
@@ -120,9 +117,13 @@ gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa)
 
     id = g_new0 (GdmIndirectDisplay, 1);
     id->id = indirect_id++;
+    /* deal with a rollover, that will NEVER EVER happen,
+     * but I'm a paranoid bastard */
+    if (id->id == 0)
+	    id->id = indirect_id++;
     id->dsp_sa = g_new0 (struct sockaddr_in, 1);
     memcpy (id->dsp_sa, clnt_sa, sizeof (struct sockaddr_in));
-    id->acctime = time (NULL);
+    id->acctime = 0;
     id->chosen_host = NULL;
     
     indirect = g_slist_prepend (indirect, id);
@@ -132,6 +133,26 @@ gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa)
 	       inet_ntoa (id->dsp_sa->sin_addr), ipending);
 
     return (id);
+}
+
+/* dispose of indirect display of id, if no host is set */
+void
+gdm_choose_indirect_dispose_empty_id (guint id)
+{
+	GSList *li;
+
+	for (li = indirect; li != NULL; li = li->next) {
+		GdmIndirectDisplay *idisp = li->data;
+
+		if (idisp == NULL)
+			continue;
+
+		if (idisp->id == id) {
+			if (idisp->chosen_host == NULL)
+				gdm_choose_indirect_dispose (idisp);
+			return;
+		}
+	}
 }
 
 
@@ -148,14 +169,17 @@ gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 	if (id == NULL)
 		continue;
 
-	if (time (NULL) > id->acctime + GdmMaxIndirectWait)	{
+	if (id->acctime > 0 &&
+	    time (NULL) > id->acctime + GdmMaxIndirectWait)	{
 	    gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",
 		       inet_ntoa (clnt_sa->sin_addr));
 	    gdm_choose_indirect_dispose (id);
 	}
 	
-	if (id->dsp_sa->sin_addr.s_addr == clnt_sa->sin_addr.s_addr)
+	if (id->dsp_sa->sin_addr.s_addr == clnt_sa->sin_addr.s_addr) {
+		g_slist_free (ilist);
 		return id;
+	}
     }
     g_slist_free (ilist);
     

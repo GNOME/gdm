@@ -29,6 +29,7 @@
 #include "slave.h"
 #include "misc.h"
 #include "xdmcp.h"
+#include "choose.h"
 
 static const gchar RCSid[]="$Id$";
 
@@ -240,7 +241,7 @@ gdm_display_unmanage (GdmDisplay *d)
 void
 gdm_display_dispose (GdmDisplay *d)
 {
-    if (!d)
+    if (d == NULL)
 	return;
 
     if (d->type == TYPE_XDMCP) {
@@ -287,6 +288,10 @@ gdm_display_dispose (GdmDisplay *d)
 
     g_free (d->bcookie);
     d->bcookie = NULL;
+
+    if (d->indirect_id > 0)
+	    gdm_choose_indirect_dispose_empty_id (d->indirect_id);
+    d->indirect_id = 0;
 
     g_free (d);
 }
