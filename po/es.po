@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.0\n"
-"POT-Creation-Date: 2001-03-07 22:44+0100\n"
+"POT-Creation-Date: 2001-03-09 17:10+0100\n"
 "PO-Revision-Date: 1998-11-21 01:59:37+0100\n"
 "Last-Translator: Lucas 'Basurero' Vieites <basurero@jazzfree.com>\n"
 "Language-Team: \n"
@@ -202,7 +202,7 @@ msgid "%s: %s is writable by other."
 msgstr "%s: %s puede ser escrito por otros."
 
 #: daemon/filecheck.c:84
-#, fuzzy, c-format
+#, c-format
 msgid "%s: %s does not exist and must."
 msgstr "%s: no existe y debe existir."
 
@@ -272,7 +272,7 @@ msgstr "gdm_slave_init: Error al configurar el controlador de la señal CHLD"
 
 #: daemon/slave.c:275
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
-msgstr "gdm_slave_greeter: Imposible iniciar un tubo hacia gdmgreeter"
+msgstr "gdm_slave_greeter: Imposible iniciar un pipe hacia gdmgreeter"
 
 #: daemon/slave.c:303
 #, c-format
@@ -301,9 +301,9 @@ msgstr ""
 "getpwnam(%s) falló!"
 
 #: daemon/slave.c:438
-#, fuzzy
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
-msgstr "gdm_slave_session_start: No pude cambiarme en %s. Abortando."
+msgstr ""
+"gdm_slave_session_start: Autentificació completada. Cerrando Saludador."
 
 #: daemon/slave.c:484
 msgid ""
@@ -572,15 +572,15 @@ msgstr "gdm_xdmcp_handle_keepalive: No pude leer el ID de Sesión"
 
 #: gui/gdmchooser.c:58
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
-msgstr ""
+msgstr "Espere por favor: buscando hostales XDMCP en la red local..."
 
 #: gui/gdmchooser.c:59
 msgid "No serving hosts were found."
-msgstr ""
+msgstr "No se encontraron hostales sirviendo."
 
 #: gui/gdmchooser.c:60
 msgid "Choose a host to connect to from the selection below."
-msgstr ""
+msgstr "Seleccione un hostal al que conectar de la lista inferior."
 
 #: gui/gdmchooser.c:384
 #, c-format
@@ -638,7 +638,7 @@ msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
-"Su preferencia de tipo de sesión %s no está disponible en esta máquina.\n"
+"Su tipo de sesión preferida, %s no está disponible en esta máquina.\n"
 "¿Desea hacer de %s su sesión por omisión a partir de ahora?"
 
 #: gui/gdmlogin.c:657 gui/gdmlogin.c:712
@@ -694,9 +694,8 @@ msgstr "Otro"
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
 #: gui/gdmlogin.c:1233
-#, fuzzy
 msgid "Please insert 25 cents to log in."
-msgstr "Entre su nombre de usuario"
+msgstr "Por favor inserte 25 pesetas para entrar."
 
 #: gui/gdmlogin.c:1517
 msgid "GNOME Desktop Manager"
@@ -925,7 +924,7 @@ msgstr "Apariencia general"
 
 #: gui/gdmconfig-strings.c:15
 msgid "Logo: "
-msgstr "Imágen: "
+msgstr "Imagen: "
 
 #: gui/gdmconfig-strings.c:16
 msgid "Select a logo to be displayed during login"
@@ -941,7 +940,7 @@ msgstr "Elija un archivo de tema GTK+ (gtkrc)"
 
 #: gui/gdmconfig-strings.c:19
 msgid "Gtk+ RC file: "
-msgstr "Archivo gtkrc: "
+msgstr "Archivo Gtk+ RC: "
 
 #: gui/gdmconfig-strings.c:20
 msgid "Login appearance"
@@ -972,7 +971,7 @@ msgstr ""
 #: gui/gdmconfig-strings.c:28
 #, c-format
 msgid "This is %n"
-msgstr "Este es %n"
+msgstr "Esto es %n"
 
 #: gui/gdmconfig-strings.c:29
 msgid "Default font: "
@@ -1087,6 +1086,8 @@ msgid ""
 "Determines whether GDM should kill X clients started by the init scripts "
 "when the user logs in."
 msgstr ""
+"Determina si GDM debe matar los clientes X lanzados por scripts init cuando "
+"el usuario entra."
 
 #: gui/gdmconfig-strings.c:59
 msgid "Kill 'init' clients"
@@ -1094,45 +1095,43 @@ msgstr "Matar cliente 'init'"
 
 #: gui/gdmconfig-strings.c:60
 msgid "Should GDM print authentication errors in the greeter"
-msgstr ""
+msgstr "Debe GDM mostrar errores de autentificación en el saludador"
 
 #: gui/gdmconfig-strings.c:61
 msgid "Authentication errors should be verbose"
 msgstr "Errores de autentificación deben ser mostrados con detalle"
 
 #: gui/gdmconfig-strings.c:62
-#, fuzzy
 msgid "Select how relaxed permissions are"
-msgstr "Relajar permisos"
+msgstr "Seleccionar cómo son los permisos relajados"
 
 #: gui/gdmconfig-strings.c:63
-#, fuzzy
 msgid "Permissions: "
-msgstr "Relajar permisos"
+msgstr "Permisos"
 
 #: gui/gdmconfig-strings.c:64
 msgid "Allow world writable files and directories"
-msgstr ""
+msgstr "Permitir ficheros y directorios escribibles por todo el mundo"
 
 #: gui/gdmconfig-strings.c:65
 msgid "World writable"
-msgstr ""
+msgstr "Escribible por todo el mundo"
 
 #: gui/gdmconfig-strings.c:66
 msgid "Allow group writable files and directories"
-msgstr ""
+msgstr "Permitir ficheros y directorios escribibles por el grupo"
 
 #: gui/gdmconfig-strings.c:67
 msgid "Group writable"
-msgstr ""
+msgstr "Escribible por el grupo"
 
 #: gui/gdmconfig-strings.c:68
 msgid "Only accept user owned files and directories"
-msgstr ""
+msgstr "Permitir solamente ficheros y directorios del usuario"
 
 #: gui/gdmconfig-strings.c:69
 msgid "Paranoia"
-msgstr ""
+msgstr "Paranoia"
 
 #: gui/gdmconfig-strings.c:70
 msgid "Authorization Details"
@@ -1364,8 +1363,9 @@ msgid ""
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
 "under the `gdm' product."
 msgstr ""
-"Configurar el Controlador de Display de GNOMEPor favor informe de cualquier "
-"error o petición futura en http://bugzilla.gnome.org bajo el producto 'gdm'."
+"Configurar el Controlador de Display de GNOME.\n"
+"Por favor informe de cualquier error o petición futura en "
+"http://bugzilla.gnome.org bajo el producto 'gdm'."
 
 #~ msgid "Connect"
 #~ msgstr "Conectar"
