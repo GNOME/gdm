@@ -11,11 +11,27 @@
 #endif
 
 GreeterItemInfo *
-greeter_item_info_new (void)
+greeter_item_info_new (GreeterItemType type)
 {
   GreeterItemInfo *info;
+  int i;
 
   info = g_new0 (GreeterItemInfo, 1);
+  info->item_type = type;
+
+  info->anchor = GTK_ANCHOR_NW;
+  info->x_type = GREETER_ITEM_POS_UNSET;
+  info->y_type = GREETER_ITEM_POS_UNSET;
+  info->width_type = GREETER_ITEM_SIZE_UNSET;
+  info->height_type = GREETER_ITEM_SIZE_UNSET;
+
+  for (i=0; i< GREETER_ITEM_STATE_MAX; i++)
+    {
+      info->alphas[i] = 1.0;
+    }
+
+  info->box_orientation = GTK_ORIENTATION_VERTICAL;
+  
   info->state = GREETER_ITEM_STATE_NORMAL;
 
   return info;

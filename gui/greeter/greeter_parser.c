@@ -13,10 +13,21 @@ static char *gdm_language = "se";
 
 GHashTable *item_hash = NULL;
 
-static gboolean parse_items (xmlNodePtr node,
-			     GnomeCanvas *canvas,
-			     GdkRectangle *parent_rect,
-			     GnomeCanvasGroup *parent_group);
+static gboolean parse_items (xmlNodePtr  node,
+			     GList     **items_out,
+			     GError    **error);
+
+
+GQuark
+greeter_parser_error_quark (void)
+{
+  static GQuark quark;
+  if (!quark)
+    quark = g_quark_from_static_string ("greeter_parser_error");
+
+  return quark;
+}
+
 
 GreeterItemInfo *
 greeter_lookup_id (const char *id)
@@ -30,7 +41,7 @@ greeter_lookup_id (const char *id)
   return info;
 }
 
-static gboolean
+static void
 parse_id (xmlNodePtr node,
 	  GreeterItemInfo *info)
 {
@@ -44,8 +55,6 @@ parse_id (xmlNodePtr node,
       g_hash_table_insert (item_hash, info, info);
       xmlFree (prop);
     }
-  
-  return TRUE;
 }
 
 /* Doesn't set the parts of rect that are not specified.
@@ -53,159 +62,275 @@ parse_id (xmlNodePtr node,
  * in rect first
  */
 static gboolean
-parse_pos (xmlNodePtr     node,
-	   GdkRectangle  *parent_rect,
-	   GdkRectangle  *rect,
-	   GtkAnchorType *anchor)
+parse_pos (xmlNodePtr       node,
+	   GreeterItemInfo *info,
+	   GError         **error)
 {
   xmlChar *prop;
-  double val;
+  char *p;
   
-  *anchor = GTK_ANCHOR_NW;
- 
   prop = xmlGetProp (node, "anchor");
   if (prop)
     {
       if (strcmp (prop, "center") == 0)
-	*anchor = GTK_ANCHOR_CENTER;
+	info->anchor = GTK_ANCHOR_CENTER;
       else if (strcmp (prop, "c") == 0)
-	*anchor = GTK_ANCHOR_CENTER;
+	info->anchor = GTK_ANCHOR_CENTER;
       else if (strcmp (prop, "nw") == 0)
-	*anchor = GTK_ANCHOR_NW;
+	info->anchor = GTK_ANCHOR_NW;
       else if (strcmp (prop, "n") == 0)
-	*anchor = GTK_ANCHOR_N;
+	info->anchor = GTK_ANCHOR_N;
       else if (strcmp (prop, "ne") == 0)
-	*anchor = GTK_ANCHOR_NE;
+	info->anchor = GTK_ANCHOR_NE;
       else if (strcmp (prop, "w") == 0)
-	*anchor = GTK_ANCHOR_W;
+	info->anchor = GTK_ANCHOR_W;
       else if (strcmp (prop, "e") == 0)
-	*anchor = GTK_ANCHOR_E;
+	info->anchor = GTK_ANCHOR_E;
       else if (strcmp (prop, "sw") == 0)
-	*anchor = GTK_ANCHOR_SW;
+	info->anchor = GTK_ANCHOR_SW;
       else if (strcmp (prop, "s") == 0)
-	*anchor = GTK_ANCHOR_S;
+	info->anchor = GTK_ANCHOR_S;
       else if (strcmp (prop, "se") == 0)
-	*anchor = GTK_ANCHOR_SE;
+	info->anchor = GTK_ANCHOR_SE;
       else
 	{
-	  g_warning ("Unknown anchor type %s\n", prop);
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Unknown anchor type %s\n", prop);
 	  return FALSE;
 	}
+      xmlFree (prop);
     }
+  
    
   prop = xmlGetProp (node, "x");
   if (prop)
     {
-      val = atof (prop);
-
+      info->x = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad position specifier%s\n", prop);
+	  return FALSE;
+	}
+      
       if (strchr (prop, '%') != NULL)
-	rect->x = val * parent_rect->width / 100.0;
-      else if (strchr (prop, '-') != NULL)
-	rect->x = parent_rect->width + val;
-      else
-	rect->x = val;
+	info->x_type = GREETER_ITEM_POS_RELATIVE;
+      else 
+	info->x_type = GREETER_ITEM_POS_ABSOLUTE;
+      xmlFree (prop);
     }
   
   prop = xmlGetProp (node, "y");
   if (prop)
     {
-      val = atof (prop);
-
+      info->y = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad position specifier%s\n", prop);
+	  return FALSE;
+	}
+      
       if (strchr (prop, '%') != NULL)
-	rect->y = val * parent_rect->height / 100.0;
-      else if (strchr (prop, '-') != NULL)
-	rect->y = parent_rect->height + val;
-      else
-	rect->y = val;
+	info->y_type = GREETER_ITEM_POS_RELATIVE;
+      else 
+	info->y_type = GREETER_ITEM_POS_ABSOLUTE;
+      xmlFree (prop);
     }
 
   prop = xmlGetProp (node, "width");
   if (prop)
     {
-      val = atof (prop);
-
-      if (strchr (prop, '%') != NULL)
-	rect->width = val * parent_rect->width / 100.0;
-      else if (strchr (prop, '-') != NULL)
-	rect->width = parent_rect->width - rect->x + val;
+      if (strcmp (prop, "box") == 0)
+	info->width_type = GREETER_ITEM_SIZE_BOX;
       else
-	rect->width = val;
+	{
+	  info->width = g_ascii_strtod (prop, &p);
+      
+	  if ((char *)prop == p)
+	    {
+	      *error = g_error_new (GREETER_PARSER_ERROR,
+				    GREETER_PARSER_ERROR_BAD_SPEC,
+				    "Bad size specifier%s\n", prop);
+	      return FALSE;
+	    }
+      
+	  if (strchr (prop, '%') != NULL)
+	    info->width_type = GREETER_ITEM_SIZE_RELATIVE;
+	  else 
+	    info->width_type = GREETER_ITEM_SIZE_ABSOLUTE;
+	}
+      xmlFree (prop);
     }
   
   prop = xmlGetProp (node, "height");
   if (prop)
     {
-      val = atof (prop);
-
-      if (strchr (prop, '%') != NULL)
-	rect->height = val * parent_rect->height / 100.0;
-      else if (strchr (prop, '-') != NULL)
-	rect->height = parent_rect->height - rect->y + val;
+      if (strcmp (prop, "box") == 0)
+	info->height_type = GREETER_ITEM_SIZE_BOX;
       else
-	rect->height = val;
+	{
+	  info->height = g_ascii_strtod (prop, &p);
+      
+	  if ((char *)prop == p)
+	    {
+	      *error = g_error_new (GREETER_PARSER_ERROR,
+				    GREETER_PARSER_ERROR_BAD_SPEC,
+				    "Bad size specifier%s\n", prop);
+	      return FALSE;
+	    }
+      
+	  if (strchr (prop, '%') != NULL)
+	    info->height_type = GREETER_ITEM_SIZE_RELATIVE;
+	  else 
+	    info->height_type = GREETER_ITEM_SIZE_ABSOLUTE;
+	}
+      xmlFree (prop);
     }
-
-  rect->x += parent_rect->x;
-  rect->y += parent_rect->y;
   
   return TRUE;
 }
 
-void
-fixup_from_anchor (GdkRectangle *rect, GtkAnchorType anchor)
+static gboolean
+parse_fixed (xmlNodePtr       node,
+	     GreeterItemInfo *info,
+	     GError         **error)
 {
-  switch (anchor)
+  return parse_items (node,
+		      &info->fixed_children,
+		      error);
+}
+
+static gboolean
+parse_box (xmlNodePtr       node,
+	   GreeterItemInfo *info,
+	   GError         **error)
+{
+  xmlChar *prop;
+  char *p;
+  
+  prop = xmlGetProp (node, "orientation");
+  if (prop)
     {
-    case GTK_ANCHOR_NW:
-      break;
-    case GTK_ANCHOR_N:
-      rect->x -= rect->width/2;
-      break;
-    case GTK_ANCHOR_NE:
-      rect->x -= rect->width;
-      break;
+      if (strcmp (prop, "horizontal") == 0)
+	{
+	  info->box_orientation = GTK_ORIENTATION_HORIZONTAL;
+	}
+      else if (strcmp (prop, "vertical") == 0)
+	{
+	  info->box_orientation = GTK_ORIENTATION_VERTICAL;
+	}
+      else
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"bad orientation %s\n", prop);
+	  return FALSE;
+	}
       
-    case GTK_ANCHOR_W:
-      rect->y -= rect->height/2;
-      break;
-    case GTK_ANCHOR_CENTER:
-      rect->x -= rect->width/2;
-      rect->y -= rect->height/2;
-      break;
-    case GTK_ANCHOR_E:
-      rect->x -= rect->width;
-      rect->y -= rect->height/2;
-      break;
-      
-    case GTK_ANCHOR_SW:
-      rect->y -= rect->height;
-      break;
-    case GTK_ANCHOR_S:
-      rect->x -= rect->width/2;
-      rect->y -= rect->height;
-      break;
-    case GTK_ANCHOR_SE:
-      rect->x -= rect->width;
-      rect->y -= rect->height;
-      break;
+      xmlFree (prop);
     }
+
+  prop = xmlGetProp (node, "homogenous");
+  if (prop)
+    {
+      if (strcmp (prop, "true") == 0)
+	{
+	  info->box_homogenous = TRUE;
+	}
+      else if (strcmp (prop, "false") == 0)
+	{
+	  info->box_homogenous = FALSE;
+	}
+      else
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"bad homogenous spec %s\n", prop);
+	  return FALSE;
+	}
+      
+      xmlFree (prop);
+    }
+
+
+  prop = xmlGetProp (node, "xpadding");
+  if (prop)
+    {
+      info->box_x_padding = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad padding specification %s\n", prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
+  
+  prop = xmlGetProp (node, "ypadding");
+  if (prop)
+    {
+      info->box_y_padding = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad padding specification %s\n", prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
+
+  prop = xmlGetProp (node, "spacing");
+  if (prop)
+    {
+      info->box_spacing = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad spacing specification %s\n", prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
+
+  return parse_items (node,
+		      &info->box_children,
+		      error);
+
 }
 
 
-guint32
-parse_color (const char *str)
+gboolean
+parse_color (const char *str,
+	     guint32 *col_out,
+	     GError **error)
 {
   guint32 col;
   int i;
   if (str[0] != '#')
     {
-      g_warning ("colors must start with #\n");
-      return 0;
+      *error = g_error_new (GREETER_PARSER_ERROR,
+			    GREETER_PARSER_ERROR_BAD_SPEC,
+			    "colors must start with #, %s is an invalid color\n", str);
+      return FALSE;
     }
   if (strlen (str) != 7)
     {
-      g_warning ("Colors must be on the format #xxxxxx\n");
-      return 0;
+      *error = g_error_new (GREETER_PARSER_ERROR,
+			    GREETER_PARSER_ERROR_BAD_SPEC,
+			    "Colors must be on the format #xxxxxx, %s is an invalid color\n", str);
+      return FALSE;
     }
 
   col = 0;
@@ -213,428 +338,222 @@ parse_color (const char *str)
   for (i = 0; i < 6; i++)
     col = (col << 4)  | g_ascii_xdigit_value (str[i+1]);
 
-  return col;
+  *col_out = col;
+
+  return TRUE;
 }
 
 static gboolean
 parse_state_file (xmlNodePtr node,
-		  char **filename,
-		  gboolean *has_tint,
-		  guint32  *tint_color,
-		  gdouble  *alpha)
+		  GreeterItemInfo  *info,
+		  GreeterItemState state,
+		  GError         **error)
 {
   xmlChar *prop;
+  char *p;
   
-  *filename = NULL;
   prop = xmlGetProp (node, "file");
   if (prop)
-    *filename = prop;
+    {
+      info->files[state] = g_strdup (prop);
+      xmlFree (prop);
+    }
   
-  *has_tint = FALSE;
   prop = xmlGetProp (node, "tint");
   if (prop)
     {
-      *tint_color = parse_color (prop);
-      *has_tint = TRUE;
+      if (!parse_color (prop, &info->tints[state], error))
+	return FALSE;
+      info->have_tint[state] = TRUE;
+      xmlFree (prop);
     }
 
-  *alpha = 1.0;
   prop = xmlGetProp (node, "alpha");
   if (prop)
-    *alpha = atof (prop);
+    {
+      info->alphas[state] = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad alpha specifier format %s\n", prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
   
   return TRUE;
 }
 
 static gboolean
 parse_state_color (xmlNodePtr node,
-		   guint32  *rgb_color,
-		   gdouble  *alpha)
+		   GreeterItemInfo  *info,
+		   GreeterItemState state,
+		   GError         **error)
 {
   xmlChar *prop;
+  char *p;
   
-  *rgb_color = 0;
   prop = xmlGetProp (node, "color");
   if (prop)
-    *rgb_color = parse_color (prop);
+    {
+      if (!parse_color (prop, &info->colors[state], error))
+	return FALSE;
+      info->have_color[state] = TRUE;
+      xmlFree (prop);
+    }
 
-  *alpha = 1.0;
   prop = xmlGetProp (node, "alpha");
   if (prop)
-    *alpha = atof (prop);
+    {
+      info->alphas[state] = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad alpha specifier format %s\n", prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
   
   return TRUE;
 }
 
-
-static void
-apply_tint (GdkPixbuf *pixbuf, guint32 tint_color)
-{
-  guchar *pixels;
-  guint r, g, b;
-  gboolean has_alpha;
-  guint w, h, stride;
-  guint pixel_stride;
-  guchar *line;
-  int i;
-  
-  pixels = gdk_pixbuf_get_pixels (pixbuf);
-  has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
-  
-  r = (tint_color & 0xff0000) >> 16;
-  g = (tint_color & 0x00ff00) >> 8;
-  b = (tint_color & 0x0000ff);
-
-  w = gdk_pixbuf_get_width (pixbuf);
-  h = gdk_pixbuf_get_height (pixbuf);
-  stride = gdk_pixbuf_get_rowstride (pixbuf);
-
-  pixel_stride = (has_alpha) ? 4 : 3;
-
-  while (h-->0)
-    {
-      line = pixels;
-
-      for (i = 0; i < w; i++)
-	{
-	  line[0] = line[0] * r / 0xff;
-	  line[1] = line[1] * g / 0xff;
-	  line[2] = line[2] * b / 0xff;
-	  line += pixel_stride;
-	}
-
-      pixels += stride;
-    }
-}
-
-static GdkPixbuf *
-load_scaled_pixbuf (char *filename, gboolean is_svg,
-		    gboolean has_tint, guint32 tint_color,
-		    double alpha, gint width, gint height)
-{
-  GdkPixbuf *orig, *scaled;
-  gint p_width, p_height;
-
-  if (is_svg)
-    {
-      /* FIXME: Handle width < 0 or height < 0 */
-      orig = rsvg_pixbuf_from_file_at_size (filename,
-					    width, height,
-					    NULL);
-      if (orig == NULL)
-	return NULL;
-    }
-  else
-    {
-      orig = gdk_pixbuf_new_from_file (filename, NULL);
-
-      if (orig == NULL)
-	return NULL;
-    }
-
-  p_width = gdk_pixbuf_get_width (orig);
-  p_height = gdk_pixbuf_get_height (orig);
-  
-  if (width < 0)
-    width = p_width;
-  if (height < 0)
-    height = p_height;
-  
-  if (p_width != width ||
-      p_height != height ||
-      alpha < 1.0)
-    {
-      int alpha_i;
-      
-      if (alpha >= 1.0)
-	alpha_i = 0xff;
-      else if (alpha <= 0.0)
-	alpha_i = 0;
-      else
-	alpha_i = (guint) floor (0xff*alpha);
-      if (alpha != 0xff)
-	{
-	  scaled = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
-	  gdk_pixbuf_fill (scaled, 0);
-	  gdk_pixbuf_composite (orig, scaled, 0, 0, width, height,
-				0, 0, (double)width/p_width, (double)height/p_height,
-				GDK_INTERP_BILINEAR, alpha_i);
-	}
-      else
-	scaled = gdk_pixbuf_scale_simple (orig, width, height, GDK_INTERP_BILINEAR);
-      
-      gdk_pixbuf_unref (orig);
-    }
-  else
-    scaled = orig;
-  
-  if (has_tint)
-    apply_tint (scaled, tint_color);
-
-  return scaled;
-}
-
 static gboolean
 parse_pixmap (xmlNodePtr        node,
-	      GnomeCanvas      *canvas,
-	      GdkRectangle     *parent_rect,
-	      GnomeCanvasGroup *parent_group,
 	      gboolean          svg,
-	      GreeterItemInfo **ret_info)
+	      GreeterItemInfo  *info,
+	      GError          **error)
 {
   xmlNodePtr child;
-  xmlNodePtr child_items = NULL;
-  gboolean res;
-  char *filename[GREETER_ITEM_STATE_MAX] = {NULL};
-  double alpha[GREETER_ITEM_STATE_MAX];
-  gboolean has_tint[GREETER_ITEM_STATE_MAX];
-  guint32 tint[GREETER_ITEM_STATE_MAX];
-  GdkRectangle pos;
-  GtkAnchorType anchor;
-  GreeterItemInfo *info;
-  GnomeCanvasGroup *group;
   int i;
 		
   child = node->children;
 
-  info = greeter_item_info_new ();
-  
-  pos.x = 0;
-  pos.y = 0;
-  pos.width = -1;
-  pos.height = -1;
-  anchor = GTK_ANCHOR_NW;
-  
   while (child)
     {
       if (strcmp (child->name, "normal") == 0)
 	{
-	  res = parse_state_file (child,
-				  &filename[GREETER_ITEM_STATE_NORMAL],
-				  &has_tint[GREETER_ITEM_STATE_NORMAL],
-				  &tint[GREETER_ITEM_STATE_NORMAL],
-				  &alpha[GREETER_ITEM_STATE_NORMAL]);
-	  
-	  if (!res)
+	  if (!parse_state_file (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
-	  
-	  if (!filename[GREETER_ITEM_STATE_NORMAL])
-	    {
-	      g_warning ("Did not specify filename for state\n");
-	      return FALSE;
-	    }
 	}
       else if (strcmp (child->name, "prelight") == 0)
 	{
-	  res = parse_state_file (child,
-				  &filename[GREETER_ITEM_STATE_PRELIGHT],
-				  &has_tint[GREETER_ITEM_STATE_PRELIGHT],
-				  &tint[GREETER_ITEM_STATE_PRELIGHT],
-				  &alpha[GREETER_ITEM_STATE_PRELIGHT]);
-	  
-	  if (!res)
+	  if (!parse_state_file (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "active") == 0)
 	{
-	  res = parse_state_file (child,
-				  &filename[GREETER_ITEM_STATE_ACTIVE],
-				  &has_tint[GREETER_ITEM_STATE_ACTIVE],
-				  &tint[GREETER_ITEM_STATE_ACTIVE],
-				  &alpha[GREETER_ITEM_STATE_ACTIVE]);
-	  
-	  if (!res)
+	  if (!parse_state_file (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "pos") == 0)
 	{
-	  res = parse_pos (child, parent_rect, &pos, &anchor);
-	  if (!res)
+	  if (!parse_pos (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "children") == 0)
+      else if (strcmp (child->name, "fixed") == 0)
 	{
-	  child_items = child;
-	  if (!res)
+	  if (!parse_fixed (child, info, error))
+	    return FALSE;
+	}
+      else if (strcmp (child->name, "box") == 0)
+	{
+	  if (!parse_box (child, info, error))
 	    return FALSE;
 	}
       
       child = child->next;
     }
 
-  for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
+  if (!info->files[GREETER_ITEM_STATE_NORMAL])
     {
-      if (filename[i])
-	info->pixbufs[i] = load_scaled_pixbuf (filename[i], svg,
-					       has_tint[i], tint[i],
-					       alpha[i],
-					       pos.width, pos.height);
-      else
-	info->pixbufs[i] = NULL;
-	
+      *error = g_error_new (GREETER_PARSER_ERROR,
+			    GREETER_PARSER_ERROR_BAD_SPEC,
+			    "No filename specified for normal state\n");
+      return FALSE;
+    }
+  
+  if (!svg)
+    {
+      for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
+	{
+	  if (info->files[i] != NULL)
+	    {
+	      info->pixbufs[i] = gdk_pixbuf_new_from_file (info->files[i], error);
+	      
+	      if (info->pixbufs[i] == NULL)
+		return FALSE;
+	    }
+	  else
+	    info->pixbufs[i] = NULL;
+	}
     }
 
-  if (info->pixbufs[GREETER_ITEM_STATE_NORMAL] == NULL)
-    return FALSE;
-  
-  if (pos.width < 0)
-    pos.width = gdk_pixbuf_get_width (info->pixbufs[GREETER_ITEM_STATE_NORMAL]);
-  
-  if (pos.height < 0)
-    pos.height = gdk_pixbuf_get_height (info->pixbufs[GREETER_ITEM_STATE_NORMAL]);
-  
-  fixup_from_anchor (&pos, anchor);
-
-  if (child_items)
-    {
-      info->group_item = gnome_canvas_item_new (parent_group,
-						GNOME_TYPE_CANVAS_GROUP,
-						"x", (gdouble) 0.0,
-						"y", (gdouble) 0.0,
-						NULL);
-      group = info->group_item;
-
-    }
-  else
-    group = parent_group;
-  
-  info->item = gnome_canvas_item_new (group,
-				      GNOME_TYPE_CANVAS_PIXBUF,
-				      "x", (gdouble) pos.x,
-				      "y", (gdouble) pos.y,
-				      "anchor", GTK_ANCHOR_NW,
-				      "pixbuf", info->pixbufs[GREETER_ITEM_STATE_NORMAL],
-				      NULL);
-
-  *ret_info = info;
-  
-  gtk_signal_connect (GTK_OBJECT (info->item), "event",
-		      (GtkSignalFunc) greeter_item_event_handler,
-		      info);
-
-  if (child_items)
-    return parse_items (child_items, canvas, &pos, group);
-  
   return TRUE;
 }
 
 static gboolean
 parse_rect (xmlNodePtr node,
-	    GnomeCanvas *canvas,
-	    GdkRectangle *parent_rect,
-	    GnomeCanvasGroup *parent_group,
-	    GreeterItemInfo **ret_info)
+	    GreeterItemInfo  *info,
+	    GError          **error)
 {
   xmlNodePtr child;
-  xmlNodePtr child_items = NULL;
-  gboolean res = TRUE;
-  double alpha[GREETER_ITEM_STATE_MAX];
-  GdkRectangle pos;
-  GtkAnchorType anchor;
-  GreeterItemInfo *info;
-  GnomeCanvasGroup *group;
   int i;
   
   child = node->children;
   
-  pos.x = 0;
-  pos.y = 0;
-  pos.width = -1;
-  pos.height = -1;
-  anchor = GTK_ANCHOR_NW;
-
-  info = greeter_item_info_new ();
-
   while (child)
     {
       if (strcmp (child->name, "normal") == 0)
 	{
-	  res = parse_state_color (child,
-				   &info->colors[GREETER_ITEM_STATE_NORMAL],
-				   &alpha[GREETER_ITEM_STATE_NORMAL]);
-	  info->have_color[GREETER_ITEM_STATE_NORMAL] = TRUE;
+	  if (!parse_state_color (child, info, GREETER_ITEM_STATE_NORMAL, error))
+	    return FALSE;
 	}
       else if (strcmp (child->name, "prelight") == 0)
 	{
-	  res = parse_state_color (child,
-				   &info->colors[GREETER_ITEM_STATE_PRELIGHT],
-				   &alpha[GREETER_ITEM_STATE_PRELIGHT]);
-	  info->have_color[GREETER_ITEM_STATE_PRELIGHT] = TRUE;
+	  if (!parse_state_color (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
+	    return FALSE;
 	}
       else if (strcmp (child->name, "active") == 0)
 	{
-	  res = parse_state_color (child,
-				   &info->colors[GREETER_ITEM_STATE_ACTIVE],
-				   &alpha[GREETER_ITEM_STATE_ACTIVE]);
-	  info->have_color[GREETER_ITEM_STATE_ACTIVE] = TRUE;
+	  if (!parse_state_color (child, info, GREETER_ITEM_STATE_ACTIVE, error))
+	    return FALSE;
 	}
       else if (strcmp (child->name, "pos") == 0)
 	{
-	  res = parse_pos (child, parent_rect, &pos, &anchor);
+	  if (!parse_pos (child, info, error))
+	    return FALSE;
 	}
-      else if (strcmp (child->name, "children") == 0)
+      else if (strcmp (child->name, "fixed") == 0)
 	{
-	  child_items = child;
+	  if (!parse_fixed (child, info, error))
+	    return FALSE;
 	}
-	  
-      if (!res)
-	return FALSE;
+      else if (strcmp (child->name, "box") == 0)
+	{
+	  if (!parse_box (child, info, error))
+	    return FALSE;
+	}
       
       child = child->next;
     }
-
-  if (pos.width < 0 || pos.height < 0)
-    {
-      g_warning ("Must specify width and height of rect\n");
-      return FALSE;
-    }
-
-  fixup_from_anchor (&pos, anchor);
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
     {
       if (!info->have_color[i])
 	continue;
       
-      if (alpha[i] >= 1.0)
+      if (info->alphas[i] >= 1.0)
 	info->colors[i] = (info->colors[i] << 8) | 0xff;
-      else if (alpha[i] > 0)
-	info->colors[i] = (info->colors[i] << 8) | (guint) floor (0xff*alpha[i]);
+      else if (info->alphas[i] > 0)
+	info->colors[i] = (info->colors[i] << 8) | (guint) floor (0xff*info->alphas[i]);
       else
 	info->colors[i] = 0;
     }
-
-  if (child_items)
-    {
-      info->group_item = gnome_canvas_item_new (parent_group,
-						GNOME_TYPE_CANVAS_GROUP,
-						"x", (gdouble) 0.0,
-						"y", (gdouble) 0.0,
-						NULL);
-      group = info->group_item;
-
-    }
-  else
-    group = parent_group;
-
-  
-  info->item = gnome_canvas_item_new (group,
-				      GNOME_TYPE_CANVAS_RECT,
-				      "x1", (gdouble) pos.x,
-				      "y1", (gdouble) pos.y,
-				      "x2", (gdouble) pos.x + pos.width,
-				      "y2", (gdouble) pos.y + pos.height,
-				      "fill_color_rgba", info->colors[GREETER_ITEM_STATE_NORMAL],
-				      NULL);
-
-  *ret_info = info;
-  
-  gtk_signal_connect (GTK_OBJECT (info->item), "event",
-		      (GtkSignalFunc) greeter_item_event_handler,
-		      info);
-
-  if (child_items)
-    return parse_items (child_items, canvas, &pos, group);
   
   return TRUE;
 }
@@ -642,34 +561,59 @@ parse_rect (xmlNodePtr node,
 
 static gboolean
 parse_state_text (xmlNodePtr node,
-		  char     **font,
-		  guint32   *rgb_color,
-		  gdouble   *alpha)
+		  GreeterItemInfo  *info,
+		  GreeterItemState state,
+		  GError         **error)
 {
   xmlChar *prop;
+  char *p;
 
-  *font = NULL;
   prop = xmlGetProp (node, "font");
   if (prop)
-    *font = prop;
-
-  *rgb_color = 0;
+    {
+      info->fonts[state] = pango_font_description_from_string (prop);
+      if (info->fonts[state] == NULL)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad font specification %s\n", prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
+  
   prop = xmlGetProp (node, "color");
   if (prop)
-    *rgb_color = parse_color (prop);
+    {
+      if (!parse_color (prop, &info->colors[state], error))
+	return FALSE;
+      info->have_color[state] = TRUE;
+      xmlFree (prop);
+   }
 
-  *alpha = 1.0;
   prop = xmlGetProp (node, "alpha");
   if (prop)
-    *alpha = atof (prop);
+    {
+      info->alphas[state] = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad alpha specifier format %s\n", prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
   
   return TRUE;
 }
 
 static gboolean
 parse_translated_text (xmlNodePtr node,
-		       char **default_text,
-		       char **translated_text)
+		       char     **default_text,
+		       char     **translated_text,
+		       GError   **error)
 {
   xmlChar *prop;
   gboolean translated = FALSE;
@@ -691,7 +635,9 @@ parse_translated_text (xmlNodePtr node,
   if (prop == NULL)
     {
       xmlFree (prop);
-      g_warning ("text node missing value\n");
+      *error = g_error_new (GREETER_PARSER_ERROR,
+			    GREETER_PARSER_ERROR_BAD_SPEC,
+			    "No string defined for text node\n");
       return FALSE;
     }
   
@@ -707,89 +653,76 @@ parse_translated_text (xmlNodePtr node,
 
 static gboolean
 parse_label (xmlNodePtr        node,
-	     GnomeCanvas      *canvas,
-	     GdkRectangle     *parent_rect,
-	     GnomeCanvasGroup *parent_group,
-	     GreeterItemInfo **ret_info)
+	     GreeterItemInfo  *info,
+	     GError         **error)
 {
   xmlNodePtr child;
-  xmlNodePtr child_items = NULL;
-  gboolean res = TRUE;
-  char *text;
-  char *default_text = NULL;
-  char *translated_text = NULL;
-  char *normal_font;
-  guint32 normal_color;
-  double normal_alpha;
-  char *pre_font;
-  guint32 pre_color;
-  double pre_alpha;
-  GdkRectangle pos;
-  GtkAnchorType anchor;
-  GreeterItemInfo *info;
+  int i;
+  char *default_text;
+  char *translated_text;
+  
+  default_text = NULL;
+  translated_text = NULL;
   
   child = node->children;
-
-  info = greeter_item_info_new ();
-
-  pos.x = 0;
-  pos.y = 0;
-  pos.width = -1;
-  pos.height = -1;
-  anchor = GTK_ANCHOR_NW;
-
-  normal_alpha = 1.0;
-  pre_alpha = 1.0;
-  
   while (child)
     {
       if (strcmp (child->name, "normal") == 0)
 	{
-	  res = parse_state_text (child, &normal_font,
-				  &normal_color, &normal_alpha);
+	  if (!parse_state_text (child, info, GREETER_ITEM_STATE_NORMAL, error))
+	    return FALSE;
 	}
       else if (strcmp (child->name, "prelight") == 0)
 	{
-	  res = parse_state_text (child, &pre_font,
-				  &pre_color, &pre_alpha);
-	  
+	  if (!parse_state_text (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
+	    return FALSE;
 	}
       else if (strcmp (child->name, "pos") == 0)
 	{
-	  res = parse_pos (child, parent_rect, &pos, &anchor);
+	  if (!parse_pos (child, info, error))
+	    return FALSE;
 	}
       else if (child->type == XML_ELEMENT_NODE &&
 	       strcmp (child->name, "text") == 0)
 	{
-	  res = parse_translated_text (child, &default_text, &translated_text);
+	  if (!parse_translated_text (child, &default_text, &translated_text, error))
+	    return FALSE;
 	}
-      else if (strcmp (child->name, "children") == 0)
+      else if (strcmp (child->name, "fixed") == 0 ||
+	       strcmp (child->name, "boxed") == 0)
 	{
-	  g_warning ("label item cannot have children\n");
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"label items cannot have children");
 	  return FALSE;
 	}
 	  
-      if (!res)
-	return FALSE;
-      
       child = child->next;
     }
 
   if (default_text == NULL &&
       translated_text == NULL)
     {
-      g_warning ("A label must specify the text attribute\n");
-      return FALSE;
+      *error = g_error_new (GREETER_PARSER_ERROR,
+			    GREETER_PARSER_ERROR_BAD_SPEC,
+			    "A label must specify the text attribute");
+    }
+
+  for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
+    {
+      if (!info->have_color[i])
+	continue;
+      
+      if (info->alphas[i] >= 1.0)
+	info->colors[i] = (info->colors[i] << 8) | 0xff;
+      else if (info->alphas[i] > 0)
+	info->colors[i] = (info->colors[i] << 8) | (guint) floor (0xff*info->alphas[i]);
+      else
+	info->colors[i] = 0;
     }
   
-
-  if (normal_alpha >= 1.0)
-    normal_color = (normal_color << 8) | 0xff;
-  else if (normal_alpha > 0)
-    normal_color = (normal_color << 8) | (guint) floor (0xff*normal_alpha);
-
-  if (!normal_font)
-    normal_font = "Sans";
+  if (info->fonts[GREETER_ITEM_STATE_NORMAL] == NULL)
+    info->fonts[GREETER_ITEM_STATE_NORMAL] = pango_font_description_from_string ("Sans");
 
   if (translated_text)
     {
@@ -799,144 +732,132 @@ parse_label (xmlNodePtr        node,
   else
     info->orig_text = default_text;
   
-  text = greeter_item_expand_text (info->orig_text);
-  
-  info->item = gnome_canvas_item_new (parent_group,
-				      GNOME_TYPE_CANVAS_TEXT,
-				      "text", text,
-				      "x", (gdouble) pos.x,
-				      "y", (gdouble) pos.y,
-				      "anchor", anchor,
-				      "font", normal_font,
-				      "fill_color_rgba", normal_color,
-				      NULL);
-
-  g_free (text);
-  
-  *ret_info = info;
-  
-  /* FIXME: Implement text prelighting */
-
   return TRUE;
 }
 
 static gboolean
 parse_entry (xmlNodePtr        node,
-	     GnomeCanvas      *canvas,
-	     GdkRectangle     *parent_rect,
-	     GnomeCanvasGroup *parent_group,
-	     GreeterItemInfo **ret_info)
+	     GreeterItemInfo  *info,
+	     GError         **error)
 {
   xmlNodePtr child;
-  gboolean res = TRUE;
-  GdkRectangle pos;
-  GtkAnchorType anchor;
-  GtkWidget *entry;
-  GreeterItemInfo *info;
 
   child = node->children;
-  
-  info = greeter_item_info_new ();
-  
-  pos.x = 0;
-  pos.y = 0;
-  pos.width = -1;
-  pos.height = -1;
-  anchor = GTK_ANCHOR_NW;
-
   while (child)
     {
       if (strcmp (child->name, "pos") == 0)
 	{
-	  res = parse_pos (child, parent_rect, &pos, &anchor);
+	  if (!parse_pos (child, info, error))
+	    return FALSE;
 	}
-      else if (strcmp (child->name, "children") == 0)
+      else if (strcmp (child->name, "fixed") == 0 ||
+	       strcmp (child->name, "boxed") == 0)
 	{
-	  g_warning ("label item cannot have children\n");
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"entry items cannot have children");
 	  return FALSE;
 	}
-	  
-      if (!res)
-	return FALSE;
-      
+    
       child = child->next;
     }
-
-  entry = gtk_entry_new ();
-  gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
-
-  info->item = gnome_canvas_item_new (parent_group,
-				      GNOME_TYPE_CANVAS_WIDGET,
-				      "widget", entry,
-				      "x", (gdouble) pos.x,
-				      "y", (gdouble) pos.y,
-				      "height", (gdouble) pos.height,
-				      "width", (gdouble) pos.width,
-				      "anchor", anchor,
-				      NULL);
-
-  *ret_info = info;
 
   return TRUE;
 }
 
 static gboolean
-parse_items (xmlNodePtr node,
-	     GnomeCanvas *canvas,
-	     GdkRectangle *parent_rect,
-	     GnomeCanvasGroup *parent_group)
+parse_items (xmlNodePtr  node,
+	     GList     **items_out,
+	     GError    **error)
 {
     xmlNodePtr child;
+    GList *items;
     gboolean res;
     xmlChar *type;
     GreeterItemInfo *info;
+    GreeterItemType item_type;
+    
+    items = NULL;
     
     child = node->children;
-    
     while (child)
       {
 	if (child->type == XML_ELEMENT_NODE)
 	  {
 	    if (strcmp (child->name, "item") != 0)
 	      {
-		g_warning ("Parse error: found tag %s when looking for item\n", child->name);
+		*error = g_error_new (GREETER_PARSER_ERROR,
+				      GREETER_PARSER_ERROR_BAD_SPEC,
+				      "found tag %s when looking for item", child->name);
 		return FALSE;
 	      }
 	    
 	    type = xmlGetProp (child, "type");
-
 	    if (!type)
 	      {
-		g_warning ("Parse error: items must specify their type");
+		*error = g_error_new (GREETER_PARSER_ERROR,
+				      GREETER_PARSER_ERROR_BAD_SPEC,
+				      "items must specify their type");
+		return FALSE;
+	      }
+
+	    if (strcmp (type, "svg") == 0)
+	      item_type = GREETER_ITEM_TYPE_SVG;
+	    else if (strcmp (type, "pixmap") == 0)
+	      item_type = GREETER_ITEM_TYPE_PIXMAP;
+	    else if (strcmp (type, "rect") == 0)
+	      item_type = GREETER_ITEM_TYPE_RECT;
+	    else if (strcmp (type, "label") == 0)
+	      item_type = GREETER_ITEM_TYPE_LABEL;
+	    else if (strcmp (type, "entry") == 0)
+	      item_type = GREETER_ITEM_TYPE_ENTRY;
+	    else
+	      {
+		*error = g_error_new (GREETER_PARSER_ERROR,
+				      GREETER_PARSER_ERROR_BAD_SPEC,
+				      "unknown item type %s", type);
 		return FALSE;
 	      }
 	    
-	    res = TRUE;
-	    if (strcmp (type, "svg") == 0)
-	      res = parse_pixmap (child, canvas, parent_rect, parent_group, TRUE, &info);
-	    else if (strcmp (type, "pixmap") == 0)
-	      res = parse_pixmap (child, canvas, parent_rect, parent_group, FALSE, &info);
-	    else if (strcmp (type, "rect") == 0)
-	      res = parse_rect (child, canvas, parent_rect, parent_group, &info);
-	    else if (strcmp (type, "label") == 0)
-	      res = parse_label (child, canvas, parent_rect, parent_group, &info);
-	    else if (strcmp (type, "entry") == 0)
-	      res = parse_entry (child, canvas, parent_rect, parent_group, &info);
+	    info = greeter_item_info_new (item_type);
+	    
+	    parse_id (child, info);
+
+	    switch (item_type)
+	      {
+	      case GREETER_ITEM_TYPE_SVG:
+		res = parse_pixmap (child, TRUE, info, error);
+		break;
+	      case GREETER_ITEM_TYPE_PIXMAP:
+		res = parse_pixmap (child, FALSE, info, error);
+		break;
+	      case GREETER_ITEM_TYPE_RECT:
+		res = parse_rect (child, info, error);
+		break;
+	      case GREETER_ITEM_TYPE_LABEL:
+		res = parse_label (child, info, error);
+		break;
+	      case GREETER_ITEM_TYPE_ENTRY:
+		res = parse_entry (child, info, error);
+		break;
+	      default:
+		*error = g_error_new (GREETER_PARSER_ERROR,
+				      GREETER_PARSER_ERROR_BAD_SPEC,
+				      "bad item type");
+		res = FALSE;
+	      }
 	    
 	    if (!res)
 	      return FALSE;
 
-	    parse_id (child, info);
+	    items = g_list_append (items, info);
+	    
 	  }
 	child = child->next;
       }
-    return TRUE;
-}
 
-static gboolean
-hook_up_items (GnomeCanvas *canvas)
-{
-  return TRUE;
+    *items_out = g_list_reverse (items);
+    return TRUE;
 }
 
 static gboolean
@@ -954,36 +875,67 @@ greeter_info_id_hash (GreeterItemInfo *key)
 
 gboolean
 greeter_parse (char *file, GnomeCanvas *canvas,
-	       int width, int height)
+	       int width, int height, GError **error)
 {
   GdkRectangle parent_rect;
   xmlDocPtr doc;
   xmlNodePtr node;
   gboolean retval;
+  GList *items;
+
+  if (!g_file_test (file, G_FILE_TEST_EXISTS))
+    {
+      if (error)
+	*error = g_error_new (GREETER_PARSER_ERROR,
+			      GREETER_PARSER_ERROR_NO_FILE,
+			      "Can't open file %s", file);
+      return FALSE;
+    }
+  
 
   doc = xmlParseFile (file);
   if (doc == NULL)
-    return FALSE;
+    {
+      if (error)
+	*error = g_error_new (GREETER_PARSER_ERROR,
+			      GREETER_PARSER_ERROR_BAD_XML,
+			      "XML Parse error reading %s", file);
+      return FALSE;
+    }
   
   node = xmlDocGetRootElement (doc);
   if (node == NULL)
-    return FALSE;
+    {
+      if (error)
+	*error = g_error_new (GREETER_PARSER_ERROR,
+			      GREETER_PARSER_ERROR_BAD_XML,
+			      "Can't find the xml root node in file %s", file);
+      return FALSE;
+    }
   
+  if (strcmp (node->name, "greeter") != 0)
+    {
+      if (error)
+	*error = g_error_new (GREETER_PARSER_ERROR,
+			      GREETER_PARSER_ERROR_WRONG_TYPE,
+			      "The file %s has the wrong xml type", file);
+      return FALSE;
+    }
+
+
   item_hash = g_hash_table_new_full ((GHashFunc)greeter_info_id_hash,
 				     (GEqualFunc)greeter_info_id_equal,
 				     NULL,
 				     (GDestroyNotify)greeter_item_info_free);
-  
-  g_assert (strcmp (node->name, "greeter") == 0);
   
   parent_rect.x = 0;
   parent_rect.y = 0;
   parent_rect.width = width;
   parent_rect.height = height;
 
-  retval =  parse_items (node, canvas, &parent_rect, gnome_canvas_root (canvas));
-  if (retval)
-    retval = hook_up_items (canvas);
+  retval =  parse_items (node, &items, error);
 
+  /* TODO: step 2 done here */
+  
   return retval;
 }

@@ -5,10 +5,22 @@
 #include "greeter_item.h"
 
 
+typedef enum 
+{
+  GREETER_PARSER_ERROR_NO_FILE,
+  GREETER_PARSER_ERROR_BAD_XML,
+  GREETER_PARSER_ERROR_WRONG_TYPE,
+  GREETER_PARSER_ERROR_BAD_SPEC,
+} GreeterParseError;
+
+#define GREETER_PARSER_ERROR greeter_parser_error_quark()
+GQuark greeter_parser_error_quark (void);
+
 gboolean greeter_parse (char        *file,
 			GnomeCanvas *canvas,
 			int          width,
-			int          height);
+			int          height,
+			GError     **error);
 
 GreeterItemInfo *greeter_lookup_id (const char *id);
 

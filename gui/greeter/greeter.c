@@ -556,6 +556,7 @@ main (int argc, char *argv[])
   GIOChannel *ctrlch;
   gint w, h;
   gboolean res;
+  GError *error;
   int r;
 
   if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
@@ -629,12 +630,11 @@ main (int argc, char *argv[])
   gtk_window_set_default_size (GTK_WINDOW (window), w, h);
   gtk_container_add (GTK_CONTAINER (window), canvas);
 
-  
-  
-  res = greeter_parse (argv[1], GNOME_CANVAS (canvas), w, h);
+  error = NULL;
+  res = greeter_parse (argv[1], GNOME_CANVAS (canvas), w, h, &error);
 
   if (!res)
-    g_warning ("Failed to parse file!");
+    g_warning ("Failed to parse file: %s!", error->message);
 
   greeter_setup_items ();
   gtk_widget_show_all (window);
