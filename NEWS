@@ -1,5 +1,44 @@
 Ahh news...
 
+2.4.0.2 stuff:
+
+- Add busy cursor when we start X so that the user knows that GDM
+  is busy before the greeter/chooser appears.
+
+- Added a 'System default' language choice.  This choice will use
+  whatever the system sets up elsewhere.  Also this fixes using the
+  system default on *BSD
+
+- Fix the unresponsive behaviour when first asking for username in the
+  graphical greeter, bug #83187
+
+- Added 'Last' language choice to the graphical greeter.
+
+- The graphical greeter follows the 24 hour clock settting (Terje Rosten)
+
+- Update the Happy GNOME theme (Steve Fox)
+
+- Cleanup of the IO channels all over (Kesor, me)
+
+- Added more languages and more untranslated names, bug #84290 among others,
+  (Hasbullah Bin Pit, me)
+
+- Ensure existance of file descriptors 0, 1 and 2 on startup, should fix
+  some problems on very esoteric setups.
+
+- Source /etc/profile in the gdm script
+
+- All installed .desktop's have Encoding=UTF-8 as per the standard
+
+- Fix crash and login window reparenting in the gdmwm window manager
+
+- Corrected some yodaspeak, bug #83077
+
+- Some more sanity fixes
+
+- Translation updates (Christian Rose, Jordi Mallach, Ole Laursen,
+  Peteris Krisjanis, Kjartan Maraas, Zbigniew Chyla, GNOME PL Team, me)
+
 2.4.0.1 stuff:
 
 - Fix killing other processes including the session when greeter settings
