@@ -1,3 +1,13 @@
+Thu May 06 15:33:01 2004  George Lebl <jirka@5z.com>
+
+	* daemon/verify-pam.c, daemon/slave.[ch]: Fix #119853 thanks to
+	  investigation by Frederic Crozat.  PAM sometimes doesn't
+	  go away after we tell it to and keeps asking questions even though
+	  we want it to shut up and die.  So just keep telling it until
+	  we succeed in pissing it off enough to go away.  Also
+	  change the name of the _should_complain function to _action_pending
+	  since that's more appropriate
+
 Thu May 06 15:18:07 2004  George Lebl <jirka@5z.com>
 
 	* daemon/verify-pam.c: attempt to fix #126984 and possibly others

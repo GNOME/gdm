@@ -141,6 +141,12 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
     if (reply == NULL)
 	return PAM_CONV_ERR;
 
+    /* Should never happen unless PAM is on crack and keeps asking questions
+       after we told it to piss off.  So tell it to piss off again and
+       maybe it will listen */
+    if ( ! gdm_slave_action_pending ())
+        return PAM_CONV_ERR;
+
     memset (reply, 0, sizeof (struct pam_response) * num_msg);
 
     /* Here we set the login if it wasn't already set,
@@ -408,7 +414,7 @@ create_pamh (GdmDisplay *d,
 	/* Initialize a PAM session for the user */
 	if ((*pamerr = pam_start (service, login, conv, &pamh)) != PAM_SUCCESS) {
 		pamh = NULL; /* be anal */
-		if (gdm_slave_should_complain ())
+		if (gdm_slave_action_pending ())
 			gdm_error (_("Unable to establish service %s: %s\n"),
 				   service, pam_strerror (NULL, *pamerr));
 		return FALSE;
@@ -416,7 +422,7 @@ create_pamh (GdmDisplay *d,
 
 	/* Inform PAM of the user's tty */
 	if ((*pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
+		if (gdm_slave_action_pending ())
 			gdm_error (_("Can't set PAM_TTY=%s"), display);
 		return FALSE;
 	}
@@ -426,7 +432,7 @@ create_pamh (GdmDisplay *d,
 		/* From the host of the display */
 		if ((*pamerr = pam_set_item (pamh, PAM_RHOST,
 					     d->hostname)) != PAM_SUCCESS) {
-			if (gdm_slave_should_complain ())
+			if (gdm_slave_action_pending ())
 				gdm_error (_("Can't set PAM_RHOST=%s"),
 					   d->hostname);
 			return FALSE;
@@ -563,7 +569,7 @@ authenticate_again:
 	    }
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-	    if (gdm_slave_should_complain ()) {
+	    if (gdm_slave_action_pending ()) {
 		    /* FIXME: see note above about PAM_FAIL_DELAY */
 /* #ifndef PAM_FAIL_DELAY */
 		    gdm_sleep_no_signal (GdmRetryDelay);
@@ -588,7 +594,7 @@ authenticate_again:
 	    /* is not really an auth problem, but it will
 	       pretty much look as such, it shouldn't really
 	       happen */
-	    if (gdm_slave_should_complain ())
+	    if (gdm_slave_action_pending ())
 		    gdm_error (_("Couldn't authenticate user"));
 	    goto pamerr;
     }
@@ -654,7 +660,7 @@ authenticate_again:
 	error_msg_given = TRUE;
 	goto pamerr;
     default :
-	if (gdm_slave_should_complain ())
+	if (gdm_slave_action_pending ())
 	    gdm_error (_("Couldn't set acct. mgmt for %s"), login);
 	goto pamerr;
     }
@@ -675,7 +681,7 @@ authenticate_again:
     pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
     if (pamerr != PAM_SUCCESS) {
         did_setcred = FALSE;
-	if (gdm_slave_should_complain ())
+	if (gdm_slave_action_pending ())
 	    gdm_error (_("Couldn't set credentials for %s"), login);
 	goto pamerr;
     }
@@ -689,7 +695,7 @@ authenticate_again:
             opened_session = FALSE;
 	    /* we handle this above */
             did_setcred = FALSE;
-	    if (gdm_slave_should_complain ())
+	    if (gdm_slave_action_pending ())
 		    gdm_error (_("Couldn't open session for %s"), login);
 	    goto pamerr;
     }
@@ -710,7 +716,7 @@ authenticate_again:
     /* The verbose authentication is turned on, output the error
      * message from the PAM subsystem */
     if ( ! error_msg_given &&
-	gdm_slave_should_complain ()) {
+	gdm_slave_action_pending ()) {
 	    /* I'm not sure yet if I should display this message for any other issues - heeten */
 	    if (pamerr == PAM_AUTH_ERR ||
 		pamerr == PAM_USER_UNKNOWN) {
@@ -842,7 +848,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     /* Start authentication session */
     did_we_ask_for_password = FALSE;
     if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
-	    if (gdm_slave_should_complain ()) {
+	    if (gdm_slave_action_pending ()) {
 		    gdm_error (_("Couldn't authenticate user"));
 		    gdm_error_box (cur_gdm_disp,
 				   GTK_MESSAGE_ERROR,
@@ -902,7 +908,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 		       _("\nThe system administrator has disabled your access to the system temporary."));
 	goto setup_pamerr;
     default :
-	if (gdm_slave_should_complain ())
+	if (gdm_slave_action_pending ())
 	    gdm_error (_("Couldn't set acct. mgmt for %s"), login);
 	goto setup_pamerr;
     }
@@ -925,7 +931,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
     if (pamerr != PAM_SUCCESS) {
 	    did_setcred = FALSE;
-	    if (gdm_slave_should_complain ())
+	    if (gdm_slave_action_pending ())
 		    gdm_error (_("Couldn't set credentials for %s"), login);
 	    goto setup_pamerr;
     }
@@ -940,7 +946,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    /* Throw away the credentials */
 	    pam_setcred (pamh, PAM_DELETE_CRED);
 
-	    if (gdm_slave_should_complain ())
+	    if (gdm_slave_action_pending ())
 		    gdm_error (_("Couldn't open session for %s"), login);
 	    goto setup_pamerr;
     }

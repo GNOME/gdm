@@ -5208,7 +5208,7 @@ gdm_slave_greeter_check_interruption (void)
 }
 
 gboolean
-gdm_slave_should_complain (void)
+gdm_slave_action_pending (void)
 {
 	if (do_timed_login ||
 	    do_configurator ||
