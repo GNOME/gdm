@@ -60,14 +60,14 @@ evil (GtkEntry *entry, const char *user)
 static void
 set_text (GreeterItemInfo *info, const char *text)
 {
-	greeter_item_recreate_label (info, text, FALSE /* markup */);
-	/*
-      g_object_set (G_OBJECT (info->item),
-		    "text", text,
-		    "font_desc", info->data.text.fonts[info->state],
-		    "justification", GTK_JUSTIFY_CENTER,
-		    NULL);
-		    */
+	greeter_canvas_item_break_set_string (info,
+					      text,
+					      FALSE /* markup */,
+					      info->data.text.real_max_width,
+					      NULL /* width */,
+					      NULL /* height */,
+					      NULL /* canvas */,
+					      info->item);
 }
 
 static void

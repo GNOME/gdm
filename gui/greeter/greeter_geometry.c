@@ -484,7 +484,6 @@ greeter_item_size_request (GreeterItemInfo *item,
 
   if (item->item_type == GREETER_ITEM_TYPE_LABEL)
     {
-      GnomeCanvasItem *canvas_item;
       int width, height;
       char *text;
       int max_width = G_MAXINT;
@@ -494,14 +493,7 @@ greeter_item_size_request (GreeterItemInfo *item,
        * Move Along
        */
       text = greeter_item_expand_text (item->data.text.orig_text);
-      
-      canvas_item = gnome_canvas_item_new (gnome_canvas_root (canvas),
-					   GNOME_TYPE_CANVAS_TEXT,
-					   "markup", text,
-					   "x", 0.0,
-					   "y", 0.0,
-					   "font_desc", item->data.text.fonts[GREETER_ITEM_STATE_NORMAL],
-					   NULL);
+
 
       if (set_width > 0)
 	      max_width = set_width;
@@ -512,20 +504,18 @@ greeter_item_size_request (GreeterItemInfo *item,
       if (item->data.text.max_screen_percent_width/100.0 * gdm_wm_screen.width < max_width)
 	      max_width = item->data.text.max_screen_percent_width/100.0 * gdm_wm_screen.width;
 
-      if (max_width < G_MAXINT) {
-	      pango_layout_set_wrap (GNOME_CANVAS_TEXT (canvas_item)->layout, PANGO_WRAP_WORD_CHAR);
-	      pango_layout_set_width (GNOME_CANVAS_TEXT (canvas_item)->layout, (max_width * PANGO_SCALE) - PANGO_SCALE/2);
-	      /* HACK: this forces the thing to relayout */
-	      gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), "justification", GTK_JUSTIFY_CENTER, NULL);
-	      update_real_max_width (item, max_width);
-      }
-
-      pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (canvas_item)->layout, &width, &height);
+      greeter_canvas_item_break_set_string (item,
+					    text,
+					    TRUE /* markup */,
+					    max_width,
+					    &width,
+					    &height,
+					    canvas,
+					    NULL /* real_item */);
 
       req->width = width;
       req->height = height;
 
-      gtk_object_destroy (GTK_OBJECT (canvas_item));
       g_free (text);
     }
 

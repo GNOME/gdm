@@ -174,76 +174,10 @@ get_gdk_color_from_rgb (GdkColor *c, guint32 rgb)
 }
 
 void
-greeter_item_recreate_label (GreeterItemInfo *item, const char *text, gboolean markup)
-{
-    GtkJustification just;
-    GnomeCanvasGroup *group;
-    double x1, y1, x2, y2;
-    GtkAllocation rect;
-    int width, height;
-
-    if ( ! greeter_item_is_visible (item))
-      return;
-
-    rect = item->allocation;
-
-    x1 = (gdouble) rect.x;
-    y1 = (gdouble) rect.y;
-    x2 = (gdouble) rect.x + rect.width;
-    y2 = (gdouble) rect.y + rect.height;
-
-    group = item->group_item;
-    if (group == NULL)
-      group = item->parent->group_item;
-
-    if (item->item != NULL)
-      gtk_object_destroy (GTK_OBJECT (item->item));
-
-    /* Justification is taken from the anchor */
-    if (item->anchor == GTK_ANCHOR_NORTH_WEST ||
-	item->anchor == GTK_ANCHOR_SOUTH_WEST ||
-	item->anchor == GTK_ANCHOR_WEST) {
-	    just = GTK_JUSTIFY_LEFT;
-    } else if (item->anchor == GTK_ANCHOR_NORTH_EAST ||
-	     item->anchor == GTK_ANCHOR_SOUTH_EAST ||
-	     item->anchor == GTK_ANCHOR_EAST) {
-	    just = GTK_JUSTIFY_RIGHT;
-    } else {
-	    just = GTK_JUSTIFY_CENTER;
-    }
-
-    item->item = gnome_canvas_item_new (group,
-					GNOME_TYPE_CANVAS_TEXT,
-					markup ? "markup" : "text", text,
-					"x", x1,
-					"y", y1,
-					"anchor", item->anchor,
-					"font_desc", item->data.text.fonts[GREETER_ITEM_STATE_NORMAL],
-					"fill_color_rgba", item->data.text.colors[GREETER_ITEM_STATE_NORMAL],
-					"justification", just,
-					NULL);
-
-
-    pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (item->item)->layout, &width, &height);
-
-    if (item->data.text.real_max_width > 0 &&
-	width > item->data.text.real_max_width) {
-	    pango_layout_set_wrap (GNOME_CANVAS_TEXT (item->item)->layout, PANGO_WRAP_WORD_CHAR);
-	    pango_layout_set_width (GNOME_CANVAS_TEXT (item->item)->layout,
-				    (item->data.text.real_max_width * PANGO_SCALE) - PANGO_SCALE/2);
-    }
-
-    /* Hack, we may have done something to the layout this will force
-       a redraw using the new layout thingie */
-    gnome_canvas_item_set (item->item,
-			   "justification", just,
-			   NULL);
-}
-
-void
 greeter_item_create_canvas_item (GreeterItemInfo *item)
 {
   GnomeCanvasGroup *group;
+  GtkJustification just;
   GtkWidget *entry;
   GtkWidget *list;
   GtkWidget *swin;
@@ -346,7 +280,38 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     break;
   case GREETER_ITEM_TYPE_LABEL:
     text = greeter_item_expand_text (item->data.text.orig_text);
-    greeter_item_recreate_label (item, text, TRUE /* markup */);
+
+    /* Justification is taken from the anchor */
+    if (item->anchor == GTK_ANCHOR_NORTH_WEST ||
+	item->anchor == GTK_ANCHOR_SOUTH_WEST ||
+	item->anchor == GTK_ANCHOR_WEST)
+	    just = GTK_JUSTIFY_LEFT;
+    else if (item->anchor == GTK_ANCHOR_NORTH_EAST ||
+	     item->anchor == GTK_ANCHOR_SOUTH_EAST ||
+	     item->anchor == GTK_ANCHOR_EAST)
+	    just = GTK_JUSTIFY_RIGHT;
+    else
+	    just = GTK_JUSTIFY_CENTER;
+
+    item->item = gnome_canvas_item_new (group,
+					GNOME_TYPE_CANVAS_TEXT,
+					"text", "",
+					"x", x1,
+					"y", y1,
+					"anchor", item->anchor,
+					"font_desc", item->data.text.fonts[GREETER_ITEM_STATE_NORMAL],
+					"fill_color_rgba", item->data.text.colors[GREETER_ITEM_STATE_NORMAL],
+					"justification", just,
+					NULL);
+
+    greeter_canvas_item_break_set_string (item,
+					  text,
+					  TRUE /* markup */,
+					  item->data.text.real_max_width,
+					  NULL /* width */,
+					  NULL /* height */,
+					  NULL /* canvas */,
+					  item->item);
     g_free (text);
 
     /* if there is an accelerator we do an INCREDIBLE hack */
@@ -454,5 +419,157 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     g_signal_connect (G_OBJECT (item->item), "event",
 		      G_CALLBACK (greeter_item_event_handler),
 		      item);
+}
+
+static gboolean
+append_word (GString *str, GString *line, GString *word, int max_width, const char *textattr, GnomeCanvasItem *canvas_item)
+{
+	int width, height;
+	char *try = g_strconcat (line->str, word->str, NULL);
+	gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), textattr, try, NULL);
+	g_free (try);
+
+	pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (canvas_item)->layout, &width, &height);
+
+
+	if (width > max_width) {
+		if ( ! ve_string_empty (line->str)) {
+			if (str->len > 0 &&
+			    str->str[str->len-1] == ' ') {
+				g_string_truncate (str, str->len-1);
+			}
+			g_string_append_unichar (str, '\n');
+		}
+		g_string_assign (line, word->str);
+		g_string_append (str, word->str);
+		g_string_assign (word, "");
+
+		return TRUE;
+	} else {
+		g_string_append (line, word->str);
+		g_string_append (str, word->str);
+		g_string_assign (word, "");
+
+		return FALSE;
+	}
+}
+
+void
+greeter_canvas_item_break_set_string (GreeterItemInfo *info,
+				      const char *orig,
+				      gboolean markup,
+				      int max_width,
+				      int *width,
+				      int *height,
+				      GnomeCanvas *canvas,
+				      GnomeCanvasItem *real_item)
+{
+	PangoLogAttr *attrs;
+	int n_chars;
+	GString *str;
+	GString *word;
+	GString *line;
+	int i;
+	int n_attrs;
+	int ia;
+	const char *p;
+	int in_current_row;
+	GnomeCanvasItem *canvas_item;
+	const char *textattr = markup ? "markup" : "text";
+
+	str = g_string_new (NULL);
+	word = g_string_new (NULL);
+	line = g_string_new (NULL);
+
+	/* A gross hack */
+	if (real_item != NULL)
+		canvas_item = real_item;
+	else
+		canvas_item = gnome_canvas_item_new (gnome_canvas_root (canvas),
+						     GNOME_TYPE_CANVAS_TEXT,
+						     textattr, "",
+						     "x", 0.0,
+						     "y", 0.0,
+						     "font_desc", info->data.text.fonts[GREETER_ITEM_STATE_NORMAL],
+						     NULL);
+
+	if (max_width == 0) {
+		gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), textattr, orig, NULL);
+		pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (canvas_item)->layout, width, height);
+
+		if (real_item != canvas_item)
+			gtk_object_destroy (GTK_OBJECT (canvas_item));
+		return;
+	}
+
+	n_chars = g_utf8_strlen (orig, -1);
+
+	gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), textattr, orig, NULL);
+	pango_layout_get_log_attrs (GNOME_CANVAS_TEXT (canvas_item)->layout, &attrs, &n_attrs);
+
+	i = 0;
+	ia = 0;
+	in_current_row = 0;
+	p = orig;
+	while (i < n_chars) {
+		gunichar ch;
+
+		ch = g_utf8_get_char (p);
+
+		if (markup && ch == '<') {
+			while (i < n_chars) {
+				g_string_append_unichar (word, ch);
+				p = g_utf8_next_char (p);
+				i ++;
+
+				if (ch == '>') {
+					ch = g_utf8_get_char (p);
+					break;
+				} else {
+					ch = g_utf8_get_char (p);
+				}
+			}
+			if (i >= n_chars)
+				break;
+		}	
+
+		if (attrs[ia].is_line_break && in_current_row > 0) {
+			if (append_word (str, line, word, max_width, textattr, canvas_item))
+				in_current_row = 0;
+		}
+
+		in_current_row ++;
+		g_string_append_unichar (word, ch);
+
+		p = g_utf8_next_char (p);
+		i ++;
+		ia ++;
+
+		/* eeek! */
+		if (ia >= n_attrs) {
+			while (i < n_chars) {
+				ch = g_utf8_get_char (p);
+				g_string_append_unichar (word, ch);
+				p = g_utf8_next_char (p);
+				i ++;
+			}
+			break;
+		}
+	}
+
+	if ( ! ve_string_empty (word->str))
+		append_word (str, line, word, max_width, textattr, canvas_item);
+
+	gnome_canvas_item_set (GNOME_CANVAS_ITEM (canvas_item), textattr, str->str, NULL);
+	pango_layout_get_pixel_size (GNOME_CANVAS_TEXT (canvas_item)->layout, width, height);
+
+	if (real_item != canvas_item)
+		gtk_object_destroy (GTK_OBJECT (canvas_item));
+	g_free (attrs);
+
+	g_string_free (line, TRUE);
+	g_string_free (word, TRUE);
+
+	g_string_free (str, TRUE);
 }
 

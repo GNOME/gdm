@@ -1,3 +1,13 @@
+Wed Sep 24 16:34:02 2003  George Lebl <jirka@5z.com>
+
+	* gui/greeter/greeter_item_pam.c, gui/greeter/greeter_geometry.c,
+	  gui/greeter/greeter_canvas_item.[ch]: rework the text wrapping
+	  stuff.  Now we use pango to figure out where breaks should be
+	  and then do a pretty stupid algorithm to break the string at
+	  the requested length.  This works better it seems and isn't
+	  perhaps on as much crack as messing with the canvas text items
+	  pango layout.  It's still on crack however.
+
 Wed Sep 24 13:21:43 2003  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: don't exec chooser/greeter in shell that's kind of
