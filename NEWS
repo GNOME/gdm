@@ -1,12 +1,14 @@
 Ahh news...
 
-2.4.2.x stuff:
+2.4.2.95 stuff:
 
 - Completely new session setup, born out of discussions with Oswald
   Buddenhagen, the KDM maintainer, which will bring about common session
   setup for both GDM and KDM.  We now basically have a common
   /etc/X11/dm/Sessions directory where there are .desktop files are stored
   which describe sessions and these will be shared among KDM and GDM.
+  Among other things this also makes the face browser default to using
+  ~/.face and the per user saved info is in ~/.dmrc
 
 - The greeter.dtd is updated and there is theme creation documentation
   (Brian Cameron, Aidan Butler, me)
@@ -49,6 +51,9 @@ Ahh news...
 - PAM now asks for username itself.  This made LocalNoPasswordUsers impossible,
   and so that was removed.  This way hopefully we should work with some more
   pam setups, such as smartcard ones.  Fixes issues from #106537
+
+- The GNOME session chooser stuff is removed since it wasn't working all
+  right anyway and was kind of icky.
 
 - The F10 menu in the graphical greeter is nicer.
 
@@ -117,7 +122,11 @@ Ahh news...
 - Solaris fixes (Brian Cameron, Niall Power)
 
 - Translation updates, language additions and such (Danilo Aegan,
-  Guntupalli Karunakar, Abel Cheung, me)
+  Guntupalli Karunakar, Abel Cheung, me, Christian Rose, Christophe Merlet,
+  Jordi Mallach, Christian Neumair, Miroslav Trmac, Pablo Gonzalo del Campo,
+  Hasbullah Bin Pit, Vincent van Adrighem, Evandro Fernandes Giovanini,
+  David Barzilay, Lucas 'Basurero' Vieites, Duarte Loreto, Kostas Papadimas,
+  KAMAGASAKO Masatoshi, Dmitry G. Mastrukov)
 
 2.4.1.4 stuff:
 

@@ -38,7 +38,7 @@ install-data-hook: gdm.conf Xsession gnome.desktop Default.desktop Default PostS
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
 	fi
-	-if cmp -s $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf 2>&1 /dev/null ; then \
+	-if cmp -s $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
 		cp -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/gdm.conf.orig; \
 		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/gdm.conf; \
 	fi
@@ -48,7 +48,7 @@ install-data-hook: gdm.conf Xsession gnome.desktop Default.desktop Default PostS
 	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf
 
 	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(DESTDIR)$(confdir)/XKeepsCrashing
-	$(INSTALL_SCRIPT) $(srcdir)/Xsession $(DESTDIR)$(confdir)/Xsession
+	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(confdir)/Xsession
 
 	-if test -f $(DESTDIR)$(localedir)/locale.alias; then \
 		cp -f $(DESTDIR)$(localedir)/locale.alias $(DESTDIR)$(localedir)/locale.alias.orig; \
@@ -77,7 +77,7 @@ install-data-hook: gdm.conf Xsession gnome.desktop Default.desktop Default PostS
 	-if test -f $(DESTDIR)$(initdir)/Default; then \
 		cp -f $(DESTDIR)$(initdir)/Default $(DESTDIR)$(initdir)/Default.orig; \
 	fi
-	$(INSTALL_SCRIPT) $(srcdir)/Default $(DESTDIR)$(initdir)/Default
+	$(INSTALL_SCRIPT) Default $(DESTDIR)$(initdir)/Default
 
 	if test '!' -d $(DESTDIR)$(postlogindir); then \
 		$(mkinstalldirs) $(DESTDIR)$(postlogindir); \
@@ -92,7 +92,7 @@ install-data-hook: gdm.conf Xsession gnome.desktop Default.desktop Default PostS
 	-if test -f $(DESTDIR)$(predir)/Default; then \
 		cp -f $(DESTDIR)$(predir)/Default $(DESTDIR)$(predir)/Default.orig; \
 	fi
-	$(INSTALL_SCRIPT) $(srcdir)/PreSession $(DESTDIR)$(predir)/Default
+	$(INSTALL_SCRIPT) PreSession $(DESTDIR)$(predir)/Default
 
 	if test '!' -d $(DESTDIR)$(postdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(postdir); \
@@ -101,7 +101,7 @@ install-data-hook: gdm.conf Xsession gnome.desktop Default.desktop Default PostS
 	-if test -f $(DESTDIR)$(postdir)/Default; then \
 		cp -f $(DESTDIR)$(postdir)/Default $(DESTDIR)$(postdir)/Default.orig; \
 	fi
-	$(INSTALL_SCRIPT) $(srcdir)/PostSession $(DESTDIR)$(postdir)/Default
+	$(INSTALL_SCRIPT) PostSession $(DESTDIR)$(postdir)/Default
 
 	if test '!' -d $(DESTDIR)$(gnomercdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(gnomercdir); \
