@@ -22,7 +22,29 @@ Ahh news...
 - Fix non-xdmcp compile, fixes #85681, and properly test for
   xdmcp, fixes #86607 (Mike Castle, me)
 
-- Translation updates (Yanko Kaneti, FIXME)
+- Fix #85785 by linking with -lcrypt as the first thing
+
+- Fix wiping the pid file by mistake on config file errors
+
+- On linux do better checking for stale /var/run/gdm.pid files,
+  by checking /proc (Jim Bray, me)
+
+- Many random fixes all around
+
+- If we can't write the user authentication in the home directory
+  use the fallback file (say due to out of disk space errors)
+
+- Add a 'handled' flag for servers (see default gdm.conf for some
+  notes on how to use it) that makes it possible to run unhandled
+  X servers (such as X terminals).
+
+- Fix finding the parent process (Oswald Buddenhagen)
+
+- Translation updates (Yanko Kaneti, Jesus Bravo Alvarez,
+  Ole Laursen, Manuel A. Fernandez Montecelo, Christophe Merlet,
+  Vincent van Adrighem, Hasbullah Bin Pit, Pablo Saratxaga,
+  Tõivo Leedjärv, Changwoo Ryu, Duarte Loreto, Andrew V. Samoilov,
+  Dmitry G. Mastrukov, Peteris Krisjanis, Borislav Aleksandrov)
 
 2.4.0.0 stuff:
 
