@@ -1,3 +1,15 @@
+Thu Apr 19 13:18:59 2001  George Lebl <jirka@5z.com>
+
+	* daemon/verify-crypt.c, daemon/verify-shadow.c,
+	  daemon/verify-pam.c:  Fix GdmAllowRoot (it only worked in verbose
+	  mode), made the verbose mode selection useful without being
+	  insecure, and in nonverbose mode you still get "Login incorrect"
+	  message as those are safe.  In pam mode we now check for 
+	  root as well.  We also now check for shell to be /bin/false as
+	  a sign the user was disallowed from logging in.
+
+Thu Apr 19 13:14:36 2001  George Lebl <jirka@5z.com>
+
 Thu Apr 19 03:48:11 2001  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: don't search for shells, that's wrong, if the

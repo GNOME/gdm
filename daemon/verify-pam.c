@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <syslog.h>
 #include <security/pam_appl.h>
+#include <pwd.h>
 
 #include "gdm.h"
 #include "misc.h"
@@ -132,6 +133,8 @@ gdm_verify_user (const gchar *display)
     gint pamerr;
     gchar *login;
     gchar **pamenv;
+    struct passwd *pwent;
+    gboolean error_msg_given = FALSE;
 
     /* Ask gdmgreeter for the user's login. Just for good measure */
     login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Login:"));
@@ -156,6 +159,33 @@ gdm_verify_user (const gchar *display)
 	gdm_error (_("Couldn't authenticate %s"), login);
 	goto pamerr;
     }
+    
+    pwent = getpwnam (login);
+    if ( ! GdmAllowRoot &&
+	pwent != NULL &&
+	pwent->pw_uid == 0) {
+	    gdm_error (_("Root login disallowed on display '%s'"),
+		       display);
+	    if (GdmVerboseAuth) {
+		    gdm_slave_greeter_ctl (GDM_MSGERR,
+					   _("Root login disallowed"));
+		    error_msg_given = TRUE;
+	    }
+	    goto pamerr;
+    }
+
+    /* check for the standard method of disallowing users */
+    if (pwent != NULL &&
+	pwent->pw_shell != NULL &&
+	strcmp (pwent->pw_shell, "/bin/false") == 0) {
+	    gdm_error (_("User %s not allowed to log in"), login);
+	    if (GdmVerboseAuth) {
+		    gdm_slave_greeter_ctl (GDM_MSGERR,
+					   _("Login disabled"));
+		    error_msg_given = TRUE;
+	    }
+	    goto pamerr;
+    }	
 
     /* If the user's password has expired, ask for a new one */
     pamerr = pam_acct_mgmt (pamh, 0);
@@ -194,8 +224,8 @@ gdm_verify_user (const gchar *display)
     
     /* The verbose authentication is turned on, output the error
      * message from the PAM subsystem */
-    if (GdmVerboseAuth)
-	gdm_slave_greeter_ctl (GDM_MSGERR, _("Authentication failed"));
+    if ( ! error_msg_given)
+	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Authentication failed"));
     
     pam_end (pamh, pamerr);
     pamh = NULL;

@@ -63,30 +63,43 @@ gdm_verify_user (const gchar *display)
     /* Request the user's password */
     passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
 
-    /* If verbose authentication is enabled, output messages from the
-     * authentication system */
-    if (GdmVerboseAuth) {
-
-	if (!pwent) {
+    if (!pwent) {
 	    gdm_error (_("Couldn't authenticate %s"), login);
 	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Login incorrect"));
 	    return NULL;
-	}
-    
-	if (GdmAllowRoot == 0 && pwent->pw_uid == 0) {
-	    gdm_error (_("Root login disallowed on display '%s'"), display);
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Root login disallowed"));
-	    return NULL;
-	}	
     }
+
+    if ( ! GdmAllowRoot &&
+	pwent->pw_uid == 0) {
+	    gdm_error (_("Root login disallowed on display '%s'"), display);
+	    if (GdmVerboseAuth) {
+		    gdm_slave_greeter_ctl (GDM_MSGERR,
+					   _("Root login disallowed"));
+	    } else {
+		    gdm_slave_greeter_ctl (GDM_MSGERR,
+					   _("Login incorrect"));
+	    }
+	    return NULL;
+    }
+
+    /* check for the standard method of disallowing users */
+    if (pwent->pw_shell != NULL &&
+	strcmp (pwent->pw_shell, "/bin/false") == 0) {
+	    gdm_error (_("User %s not allowed to log in"), login);
+	    if (GdmVerboseAuth) {
+		    gdm_slave_greeter_ctl (GDM_MSGERR,
+					   _("Login disabled"));
+	    } else {
+		    gdm_slave_greeter_ctl (GDM_MSGERR,
+					   _("Login incorrect"));
+	    }
+	    return NULL;
+    }	
 
     /* Check whether password is valid */
     if (!passwd || !ppasswd || strcmp (crypt (passwd, ppasswd), ppasswd)) {
-
-	if (GdmVerboseAuth)
 	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Login incorrect"));
-	
-	return NULL;
+	    return NULL;
     }
     
     return login;
