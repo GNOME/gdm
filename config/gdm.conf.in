@@ -11,6 +11,10 @@
 # You can also use the gdm-restart and gdm-safe-restart scripts which just
 # do the above for you.
 #
+# For full reference documentation see the gnome help browser under
+# GNOME|System category.  You can also find the docs in HTML form
+# on http://www.jirka.org/gdm.html
+#
 # Have fun! - George
 
 [daemon]
@@ -127,10 +131,6 @@ RetryDelay=3
 # Maximum size of a file we wish to read.  This makes it hard for a user to DoS
 # us by using a large file.
 UserMaxFile=65536
-# Maximum size of the session file.  This is larger because it matters less as
-# we never keep it all in memory.  Just has an upper limit so that we don't go
-# into too long of a loop
-SessionMaxFile=524388
 # If true this will basically append -nolisten tcp to every X command line,
 # a good default to have (why is this a "negative" setting? because if
 # it is false, you could still not allow it by setting command line of
@@ -149,8 +149,10 @@ DisallowTCP=true
 # type at the bottom of this config file.
 [xdmcp]
 # Distributions: Ship with this off.  It is never a safe thing to leave
-# out on the net.  Alternatively you can set up /etc/hosts.allow and
-# /etc/hosts.deny to only allow say local access.
+# out on the net.  Setting up /etc/hosts.allow and /etc/hosts.deny to only
+# allow local access is another alternative but not the safest.
+# Firewalling port 177 is the safest if you wish to have xdmcp on.
+# Read the manual for more notes on the security of XDMCP.
 Enable=false
 # Honour indirect queries, we run a chooser for these, and then redirect
 # the user to the chosen host.  Otherwise we just log the user in locally.

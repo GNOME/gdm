@@ -152,7 +152,6 @@ extern gchar *GdmDefaultLocale;
 extern gchar *GdmTimedLogin;
 extern gint GdmTimedLoginDelay;
 extern gint GdmUserMaxFile;
-extern gint GdmSessionMaxFile;
 extern gint GdmRelaxPerms;
 extern gboolean GdmKillInitClients;
 extern gint GdmPingInterval;

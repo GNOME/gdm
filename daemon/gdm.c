@@ -156,7 +156,6 @@ gchar *GdmDefaultPath = NULL;
 gchar *GdmRootPath = NULL;
 gboolean  GdmKillInitClients = FALSE;
 gint  GdmUserMaxFile = 0;
-gint  GdmSessionMaxFile = 0;
 gboolean  GdmXdmcp = FALSE;
 gint  GdmDispPerHost = 0;
 gint  GdmMaxPending = 0;
@@ -365,7 +364,6 @@ gdm_config_parse (void)
     GdmAllowRemoteAutoLogin = ve_config_get_bool (cfg, GDM_KEY_ALLOWREMOTEAUTOLOGIN);
     GdmRelaxPerms = ve_config_get_int (cfg, GDM_KEY_RELAXPERM);
     GdmUserMaxFile = ve_config_get_int (cfg, GDM_KEY_MAXFILE);
-    GdmSessionMaxFile = ve_config_get_int (cfg, GDM_KEY_SESSIONMAXFILE);
 
     GdmXdmcp = ve_config_get_bool (cfg, GDM_KEY_XDMCP);
     GdmDispPerHost = ve_config_get_int (cfg, GDM_KEY_DISPERHOST);

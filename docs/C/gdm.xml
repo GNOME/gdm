@@ -284,8 +284,6 @@
 	network you use this on.  If snooping is possible
 	and undesirable, then you had better use ssh for tunneling
 	an X connection anyway rather then using GDM's XDMCP.
-	It is a planned feature to support ssh instead of XDMCP
-	inside GDM.
       </para>
 
       <para>
@@ -321,6 +319,16 @@
 	these. You should also be aware that cookies, if placed on an
 	NFS mounted directory, are prone to eavesdropping too.
       </para>
+
+      <para>
+	XDMCP is primarily useful for running thin clients such
+	as in terminal labs.  Those thin
+	clients will only ever need to access the server, and so it seems
+	like the best policy securitywise to have those thin clients on
+	a separate network that cannot be accessed by the outside world,
+	and can only connect to the server.  The only point from which you
+	need to access outside is the server.
+      </para>
     </sect2>
 
     <sect2 id="xdmcpaccess">
@@ -341,10 +349,14 @@
 	deny computers from <filename>.evil.domain</filename> from logging in, then
 	add
         <screen>
-    gdm: .evil.domain
-        </screen>
-	to <filename>/etc/hosts.deny</filename>.  See the
-	<filename>hosts_access(5)</filename> man page for details.
+    gdm: .evil.domain</screen>
+	to <filename>/etc/hosts.deny</filename>.  You may also need
+	to add
+        <screen>
+    gdm: .your.domain</screen>
+	to your <filename>/etc/hosts.allow</filename> if you normally
+	disallow all services from all hosts.  See the
+	<ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink> man page for details.
       </para>
 
       <para>
@@ -611,8 +623,7 @@
 	factory-gdm.conf
 	locale.alias
 	Xsession
-	XKeepsCrashing
-    </screen>
+	XKeepsCrashing</screen>
 
     <para> 
       <filename>gdm.conf</filename> is the main GDM configuration file. The
@@ -1501,36 +1512,6 @@
 	  </varlistentry>
 
 	  <varlistentry>
-	    <term>SessionMaxFile</term>
-	    <listitem>
-	      <synopsis>SessionMaxFile=524288</synopsis>
-	      <para>
-	      	GDM will refuse to read session files bigger than this
-	      	number (specified in bytes).  This can be bigger then
-		UserMaxFile, since these are never read into memory, and
-		so it is harder to "attack" gdm in this way.
-	      </para>
-	      
-	      <para>
-        	In addition to the size check both
-        	<filename>gdm</filename> and
-        	<filename>gdmlogin</filename> are extremely picky
-        	about accessing files in user directories. Neither
-        	will follow symlinks and they can optionally refuse to
-        	read files and directories writable by other than the
-        	owner. See the RelaxPermissions option for more info.
-	      </para>
-
-	      <para>
-		However for the session files, GDM is not as picky.  If you
-		set RelaxPermissions to 0, GDM will assume it to be 1 for
-		the case of session files.  This is unfortunately because
-		the session files would then never be able to be read in.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
 	    <term>UserMaxFile</term>
 	    <listitem>
 	      <synopsis>UserMaxFile=65536</synopsis>
@@ -1601,11 +1582,10 @@
 	      <para>
 		You should add 
 	        <screen>
-  gdm:	.my.domain
-	        </screen>
+  gdm:	.my.domain</screen>
 		to your <filename>/etc/hosts.allow</filename>, depending on your
 		TCP Wrappers configuration.  See the
-		<filename>hosts_access(5)</filename> man page for details.
+		<ulink type="help" url="man:hosts.allow">hosts.allow(5)</ulink> man page for details.
 	      </para>
 	      
 	      <para>
@@ -2543,8 +2523,7 @@
       <screen>
 	[Desktop]
 	Session=gnome.desktop
-	Language=cs_CZ.UTF-8
-      </screen>
+	Language=cs_CZ.UTF-8</screen>
 
       <para>
 	The user can also configure a face image for the face browser.  This is
@@ -2810,8 +2789,7 @@
      Description=Theme with blue circles
      Author=Bond, James Bond
      Copyright=(c) 2002 Bond, James Bond
-     Screenshot=screenshot.png
-      </screen>
+     Screenshot=screenshot.png</screen>
 
       <para>
         The Name, Description, Author and Copyright fields can be translated just
@@ -2835,13 +2813,8 @@
         xdmcp connections.  The second argument is the theme name.  So for example
         to test how things look in the xdmcp mode with the circles theme you would
         run:
-      </para>
-
       <screen>
-     gdmthemetester xdmcp circles
-      </screen>
-
-      <para>
+     gdmthemetester xdmcp circles</screen>
         Be sure to test all the environments with your theme, and make sure to test
         how the caps lock warning looks by pressing caps lock.  This is also a good
         way to take screenshots, just take a screenshot of the Xnest window.  This
@@ -2854,12 +2827,10 @@
         name (so that you could just untar it in the <filename>/usr/share/gdm/themes</filename> directory).
         And this is the tarball you distribute and people can install from the
         graphical setup program.  You can do this with the commands:
-      </para>
-
       <screen>
      cd /usr/share/gdm/themes
-     tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/
-      </screen>
+     tar czvf &lt;theme_name&gt;.tar.gz &lt;theme_name&gt;/</screen>
+      </para>
 
     </sect2>
 
@@ -2872,14 +2843,9 @@
         <para>
           Box nodes are container nodes for item nodes.  Box nodes are
           specified as follows:
-        </para>
-
       <screen>
      &lt;box orientation="alignment" min-width="int" xpadding="int"
-      ypadding="int" spacing="int"&gt;
-      </screen>
-
-        <para>
+      ypadding="int" spacing="int"&gt;</screen>
           The alignment value can be either "horizontal" or "vertical".
         </para>
       </sect3>
@@ -2951,13 +2917,8 @@
 
         <para>
           For example: 
-        </para>
-
         <screen>
-       &lt;item type="label"&gt;
-        </screen>
-
-        <para>
+       &lt;item type="label"&gt;</screen>
           Items can specify ID values which gives them a specific look
           and feel or formatting.  Furthermore you can customize the login
           process by adding custom widgets with custom id's for some items
@@ -3081,11 +3042,9 @@
         <para>
           If an item is of type rect, the item can be a button.  Buttons
           must also include a "button" value as follows:
-        </para>
-
 	<screen>
-       &lt;item type="rect" id="disconnect_button" button="true"&gt;.
-	</screen>
+       &lt;item type="rect" id="disconnect_button" button="true"&gt;.</screen>
+        </para>
 
         <para>
           Possible values for button ids are as follows:
@@ -3188,11 +3147,9 @@
         <para>
           Each item can specify its position and size via the "pos" node.
           For example:
-        </para>
-
         <screen>
-       &lt;pos x="0" y="4" width="100%" height="100%"/&gt;
-        </screen>
+       &lt;pos x="0" y="4" width="100%" height="100%"/&gt;</screen>
+        </para>
       </sect3>
 
       <sect3 id="shownodes">
@@ -3225,11 +3182,9 @@
 
 	<para>
 	  For example:
-	</para>
-
 	<screen>
-       &lt;show modes="flexi,remote"/&gt;
-	</screen>
+       &lt;show modes="flexi,remote"/&gt;</screen>
+	</para>
 
         <para>
           You can also specify the "type" value to indicate that certain
@@ -3261,11 +3216,9 @@
 
 	<para>
           For example:
-	</para>
-
 	<screen>
-       &lt;show modes="console" type="system"/&gt;
-	</screen>
+       &lt;show modes="console" type="system"/&gt;</screen>
+	</para>
 
 	<para>
           Note that if SystemMenu is off then all of halt, reboot, suspend, chooser
@@ -3294,28 +3247,22 @@
 
         <para>
 	  When item is "rect" (alpha can be omitted and defaults to 0.0):
-        </para>
-
 	<screen>
-       &lt;normal color="#ffffff" alpha="0.0"&gt;
-	</screen>
+       &lt;normal color="#ffffff" alpha="0.0"&gt;</screen>
+        </para>
 
         <para>
 	  When item is "label":
-        </para>
-
 	<screen>
-       &lt;normal color="#ffffff" font="Sans 14"/&gt;
-	</screen>
+       &lt;normal color="#ffffff" font="Sans 14"/&gt;</screen>
+        </para>
 
         <para>
 	  When the item type is "pixmap" or "SVG", then the normal, active,
 	  and prelight tags specify the images to use as follows:
-        </para>
-
 	<screen>
-       &lt;normal file="picture.png" tint="#dddddd"/&gt;
-	</screen>
+       &lt;normal file="picture.png" tint="#dddddd"/&gt;</screen>
+        </para>
 
         <para>
 	  Note that relative pathnames are assumed to be in the same 
@@ -3330,21 +3277,17 @@
 	  Text tags are used by labels.   They can be used to display
 	  localized text as follows (if the "xml:lang" attribute is
 	  omitted, the C locale is assumed):
-        </para>
-
 	<screen>
-       &lt;text xml:lang="fr"&gt;Option&lt;/text&gt;
-	</screen>
+       &lt;text xml:lang="fr"&gt;Option&lt;/text&gt;</screen>
+        </para>
 
 	<para>
 	  You can include pango markup in the text nodes for labels, however
 	  you must encode it.  So for example to have the label of
 	  "foo&lt;sup&gt;bar&lt;/sup&gt;", you must type:
-	</para>
-
 	<screen>
-       &lt;text"&gt;foo&amp;lt;sup&amp;gt;bar&amp;lt;/sup&amp;gt;&lt;/text&gt;
-	</screen>
+       &lt;text"&gt;foo&amp;lt;sup&amp;gt;bar&amp;lt;/sup&amp;gt;&lt;/text&gt;</screen>
+	</para>
 
       </sect3>
 
@@ -3401,11 +3344,9 @@
 
         <para>
 	  For example:
-        </para>
-
 	<screen>
-       &lt;stock type="welcome-label"/&gt;
-	</screen>
+       &lt;stock type="welcome-label"/&gt;</screen>
+        </para>
 
       </sect3>
 
@@ -3437,17 +3378,14 @@
       &lt;listitem id="bar"&gt;
         &lt;text&gt;Bar&lt;/text&gt;
       &lt;/listitem&gt;
-    &lt;/item&gt;
-	</screen>
+    &lt;/item&gt;</screen>
 
         <para>
 	  Then if the user chooses 'Foo' then <filename>/var/gdm/:0.GreeterInfo</filename> will
 	  contain:
-        </para>
-
         <screen>
-       custom-config=foo
-        </screen>
+       custom-config=foo</screen>
+        </para>
 
       </sect3>
     </sect2>
@@ -3475,8 +3413,7 @@
 	On <filename>appserver</filename> you enable XDMCP, so you have
         <screen>
    [xdmcp]
-   Enable=true
-        </screen>
+   Enable=true</screen>
 	If you want no local screens here, you can then
 	make the <filename>[servers]</filename> section empty.
       </para>
@@ -3490,8 +3427,7 @@
    name=Terminal server
    command=/usr/X11R6/bin/X -terminate
    flexible=false
-   handled=false
-        </screen>
+   handled=false</screen>
 	This definition should in fact be included in the standard configuration
 	file.  Notice that we made the <filename>handled</filename> key false
 	since we don't want GDM to handle this server localy.  Also note that
@@ -3500,8 +3436,7 @@
 	our local servers as follows:
 	<screen>
    [servers]
-   0=Terminal -query appserver
-        </screen>
+   0=Terminal -query appserver</screen>
 	This will run a direct XDMCP query to the server named
 	<filename>appserver</filename>.
       </para>
@@ -3528,8 +3463,7 @@
     name=Chooser server
     command=/usr/X11R6/bin/X
     flexible=false
-    chooser=true
-        </screen>
+    chooser=true</screen>
 	And again this definition should in fact be included in the standard configuration
 	file.  Notice that we made the <filename>chooser</filename> key true here.
 	This will run the XDMCP chooser for this server, and when the user chooses
@@ -3537,8 +3471,7 @@
 	our local servers as follows:
 	<screen>
    [servers]
-   0=Chooser
-        </screen>
+   0=Chooser</screen>
       </para>
 
       <para>
@@ -3547,8 +3480,7 @@
 	by a broadcast query, you must add them by hand to the configuration file.
 	So in the <filename>[chooser]</filename> section you would have:
 	<screen>
-   Hosts=appserverone,appservertwo
-        </screen>
+   Hosts=appserverone,appservertwo</screen>
 	and any other servers you wish the users to be able to connect to.
       </para>
 
@@ -3559,8 +3491,7 @@
 	enabled on <filename>appserver</filename> and on the X terminals you'd have
 	<screen>
    [servers]
-   0=Terminal -indirect appserver
-        </screen>
+   0=Terminal -indirect appserver</screen>
 	This way for example you only have to maintain one <filename>Hosts</filename>
 	entry.  However as a disadvantage then, the <filename>appserver</filename>
 	must then always be available.  So it's not good for situations where

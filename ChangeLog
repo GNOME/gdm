@@ -1,3 +1,13 @@
+Thu Aug 07 17:59:25 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/slave.c, config/gdm.conf.in: Remove
+	  the SessionMaxFile key since it wasn't used anyway (we've killed
+	  the GNOME session chooser).  Also fixup the comment on XDMCP
+	  enabling.
+
+	* docs/C/gdm.xml: add more comments on security of XDMCP, fixup
+	  the screen sections a bit, whack SessionMaxFile entry
+
 Wed Aug 06 17:40:27 2003  George Lebl <jirka@5z.com>
 
 	* gdmsetup-pam: don't use the paths but let pam find modules itself
