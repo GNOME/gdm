@@ -511,16 +511,18 @@ gestures_filter (GdkXEvent *gdk_xevent,
 		}
 
 		/*
-		 * Find the associated gesture for this keycode &state
+		 * Find the associated gesture for this keycode & state
 		 * TODO: write a custom g_slist_find function.
 		 *
-		 * Note that here we don't check the state, otherwise key gestures based on
-		 * modifier keys such as Control_R won't work.
+		 * Note that here we check the state against the last_event,
+		 * otherwise key gestures based on modifier keys such as
+		 * Control_R won't work.
 		 */
 		for (li = gesture_list; li != NULL; li = li->next) {
 			Gesture *gesture = (Gesture *) li->data;
 			if (gesture->type == GESTURE_TYPE_KEY &&
-			    xevent->xkey.keycode == gesture->input.key.keycode) {
+			    xevent->xkey.keycode == gesture->input.key.keycode &&
+			    last_event->xkey.state == gesture->input.key.state) {
 				/* 
 				 * OK Found the gesture.
 				 * Now check if it has a duration value > 0.
