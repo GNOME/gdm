@@ -221,7 +221,7 @@ gdm_socket_handler (GIOChannel *source,
 	}
 
 	unixchan = g_io_channel_unix_new (newconn->fd);
-    g_io_channel_set_encoding(unixchan, NULL, NULL);
+	g_io_channel_set_encoding (unixchan, NULL, NULL);
 	g_io_channel_set_buffered (unixchan, FALSE);
 
 	newconn->source = g_io_add_watch_full
@@ -275,7 +275,7 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 	conn->n_subconnections = 0;
 
 	unixchan = g_io_channel_unix_new (conn->fd);
-    g_io_channel_set_encoding(unixchan, NULL, NULL);
+	g_io_channel_set_encoding (unixchan, NULL, NULL);
 	g_io_channel_set_buffered (unixchan, FALSE);
 
 	conn->source = g_io_add_watch_full
@@ -309,7 +309,7 @@ gdm_connection_open_fd (int fd)
 	conn->n_subconnections = 0;
 
 	unixchan = g_io_channel_unix_new (conn->fd);
-    g_io_channel_set_encoding (unixchan, NULL, NULL);
+	g_io_channel_set_encoding (unixchan, NULL, NULL);
 	g_io_channel_set_buffered (unixchan, FALSE);
 
 	conn->source = g_io_add_watch_full
@@ -360,7 +360,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	conn->n_subconnections = 0;
 
 	fifochan = g_io_channel_unix_new (conn->fd);
-    g_io_channel_set_encoding (fifochan, NULL, NULL);
+	g_io_channel_set_encoding (fifochan, NULL, NULL);
 	g_io_channel_set_buffered (fifochan, FALSE);
 
 	conn->source = g_io_add_watch_full

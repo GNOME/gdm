@@ -3335,6 +3335,12 @@ gdm_login_gui_init (void)
 		      G_CALLBACK (gdm_login_focus_out),
 		      NULL);
 
+    /* normally disable the prompt first */
+    if ( ! DOING_GDM_DEVELOPMENT) {
+	    gtk_widget_set_sensitive (entry, FALSE);
+	    gtk_widget_set_sensitive (ok_button, FALSE);
+    }
+
     gtk_widget_show_all (GTK_WIDGET (login));
 }
 
@@ -4068,6 +4074,8 @@ main (int argc, char *argv[])
 
     if ( ! DOING_GDM_DEVELOPMENT) {
 	    ctrlch = g_io_channel_unix_new (STDIN_FILENO);
+	    g_io_channel_set_encoding (ctrlch, NULL, NULL);
+	    g_io_channel_set_buffered (ctrlch, FALSE);
 	    g_io_channel_init (ctrlch);
 	    g_io_add_watch (ctrlch, 
 			    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,

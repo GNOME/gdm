@@ -900,6 +900,8 @@ main (int argc, char *argv[])
   
   if (! DOING_GDM_DEVELOPMENT) {
     ctrlch = g_io_channel_unix_new (STDIN_FILENO);
+    g_io_channel_set_encoding (ctrlch, NULL, NULL);
+    g_io_channel_set_buffered (ctrlch, FALSE);
     g_io_channel_init (ctrlch);
     g_io_add_watch (ctrlch, 
 		    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,

@@ -1,3 +1,16 @@
+Thu Jul 11 10:39:18 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm-net.c, daemon/xdmcp.c: some indenting foo
+
+	* gui/gdmlogin.c, gui/gdmchooser.c, gui/greeter/greeter.c:  Set
+	  the IO channels to be unbuffered just like in the daemon and
+	  set their encoding to NULL.  We want to be as raw as possible
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_pam.c: initially leave
+	  the prompt entry insensitive.  Also initially set the entry to
+	  "..." in the greeter since otherwise it will be a little
+	  unresponsive to the first keystroke.  Fixes #83187
+
 Thu Jul 11 09:41:55 2002  George Lebl <jirka@5z.com>
 
 	* daemon/gdm-net.c, daemon/xdmcp.c: Apply patch from

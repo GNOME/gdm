@@ -83,6 +83,15 @@ greeter_item_pam_setup (void)
       entry = GNOME_CANVAS_WIDGET (entry_info->item)->widget;
       gtk_widget_grab_focus (entry);
 
+      /* hack.  For some reason if we leave it blank,
+       * we'll get a little bit of activity on first keystroke,
+       * this way we get rid of it, it will be cleared for the
+       * first prompt anyway. */
+      gtk_entry_set_text (GTK_ENTRY (entry), "...");
+
+      /* initially insensitive */
+      gtk_widget_set_sensitive (entry, FALSE);
+
       g_signal_connect (entry, "activate",
 			GTK_SIGNAL_FUNC (user_pw_activate), entry_info);
     }
