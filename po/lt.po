@@ -4,11 +4,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm 2.0.95\n"
-"POT-Creation-Date: 2001-01-26 00:01-0800\n"
-"PO-Revision-Date: 2001-01-14 02:36+0200\n"
+"Project-Id-Version: gdm 2.0.96\n"
+"POT-Creation-Date: 2001-01-31 03:59+0200\n"
+"PO-Revision-Date: 2001-01-31 04:00+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
-"Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
+"Language-Team: Lietuviø <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-13\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,7 +16,7 @@ msgstr ""
 #: daemon/gdm.c:115
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Aborting."
-msgstr "cgdm_config_parse: Nëra konfigûracijos bylos: %s. Nutraukiu."
+msgstr "gdm_config_parse: Nëra konfigûracijos bylos: %s. Nutraukiu."
 
 #: daemon/gdm.c:171
 msgid "gdm_config_parse: No greeter specified."
@@ -126,23 +126,23 @@ msgid ""
 "for display %s, killing it"
 msgstr ""
 
-#: daemon/gdm.c:507
+#: daemon/gdm.c:511
 msgid "Only root wants to run gdm\n"
 msgstr "Tik root'as nori paleisti gdm\n"
 
-#: daemon/gdm.c:528
+#: daemon/gdm.c:534
 msgid "gdm already running. Aborting!"
 msgstr "gdm jau sukasi. Nutraukiu!"
 
-#: daemon/gdm.c:553
+#: daemon/gdm.c:559
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr ""
 
-#: daemon/gdm.c:556
+#: daemon/gdm.c:562
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr ""
 
-#: daemon/gdm.c:564
+#: daemon/gdm.c:570
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr ""
 
@@ -291,7 +291,7 @@ msgstr ""
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 
-#: daemon/slave.c:459
+#: daemon/slave.c:467
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -299,47 +299,47 @@ msgstr ""
 "gdm_slave_session_start: Vykdant PreSession skriptà, gautasrezultatas > 0. "
 "Nutraukiu."
 
-#: daemon/slave.c:485
+#: daemon/slave.c:493
 msgid "gdm_slave_session_start: Error forking user session"
-msgstr ""
-
-#: daemon/slave.c:494
-#, c-format
-msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
-msgstr ""
-
-#: daemon/slave.c:498
-#, c-format
-msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr ""
 
 #: daemon/slave.c:502
 #, c-format
+msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
+msgstr ""
+
+#: daemon/slave.c:506
+#, c-format
+msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
+msgstr ""
+
+#: daemon/slave.c:510
+#, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Negalëjau tapti %s. Nutraukiu."
 
-#: daemon/slave.c:540
+#: daemon/slave.c:548
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Negalëjau paleisti sesijos ¥%s´"
 
-#: daemon/slave.c:740
+#: daemon/slave.c:748
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Lemtinga X klaida -- Perkraunu %s"
 
-#: daemon/slave.c:835
+#: daemon/slave.c:843
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Nepavyko paleisti: %s"
 
-#: daemon/slave.c:839
+#: daemon/slave.c:847
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr ""
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1606
+#: gui/gdmlogin.c:1626
 msgid "Login:"
 msgstr "Vartotojo vardas:"
 
@@ -383,12 +383,13 @@ msgstr ""
 
 #. Request the user's password
 #: daemon/verify-crypt.c:64 daemon/verify-shadow.c:74
-msgid "Password:"
-msgstr "Slaptaþodis:"
+msgid "Password: "
+msgstr "Slaptaþodis: "
 
-#: daemon/verify-crypt.c:72 daemon/verify-shadow.c:82
-msgid "User unknown"
-msgstr "Vartotojas neþinomas"
+#: daemon/verify-crypt.c:72 daemon/verify-crypt.c:87 daemon/verify-shadow.c:82
+#: daemon/verify-shadow.c:97
+msgid "Login incorrect"
+msgstr "Pasisveikinimas neteisingas"
 
 #: daemon/verify-crypt.c:77 daemon/verify-shadow.c:87
 #, c-format
@@ -398,10 +399,6 @@ msgstr "Root'ui uþdrausta prisijungti ekrane ¥%s´"
 #: daemon/verify-crypt.c:78 daemon/verify-shadow.c:88
 msgid "Root login disallowed"
 msgstr "Root'ui prisijungti uþdrausta"
-
-#: daemon/verify-crypt.c:87 daemon/verify-shadow.c:97
-msgid "Incorrect password"
-msgstr "Neteisingas slaptaþodis"
 
 #: daemon/xdmcp.c:179
 #, c-format
@@ -531,9 +528,8 @@ msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr ""
 
 #: daemon/xdmcp.c:776
-#, fuzzy
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
-msgstr "gdm_xdmcp_handle_forward_query: Negalëjau perskaityti ekrano adreso"
+msgstr "gdm_xdmcp_handle_manage: Negalëjau perskaityti Display Class"
 
 #: daemon/xdmcp.c:798
 #, c-format
@@ -588,7 +584,7 @@ msgstr ""
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr ""
 
-#: gui/gdmchooser.c:594 gui/gdmlogin.c:1938
+#: gui/gdmchooser.c:594 gui/gdmlogin.c:1958
 msgid "Could not set signal mask!"
 msgstr ""
 
@@ -623,7 +619,7 @@ msgstr ""
 "Tavo norimas sesijos tipas %s nëra ádiegtas ðiame kompiuteryje.\n"
 "Ar nori padaryti %s áprasta ateities sesijoms?"
 
-#: gui/gdmlogin.c:573 gui/gdmlogin.c:617
+#: gui/gdmlogin.c:573 gui/gdmlogin.c:620
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -632,98 +628,521 @@ msgstr ""
 "Tu pasirinkai %s ðiai sesijai, bet tavo áprasta parinktis buvo %s.\n"
 "Ar nori padaryti %s áprasta ateities sesijoms?"
 
-#: gui/gdmlogin.c:728
+#: gui/gdmlogin.c:732
 #, c-format
 msgid "%s session selected"
 msgstr "Pasirinkta %s sesija"
 
-#: gui/gdmlogin.c:744 gui/gdmlogin.c:851
+#: gui/gdmlogin.c:748 gui/gdmlogin.c:857
 msgid "Last"
 msgstr "Praeita"
 
-#: gui/gdmlogin.c:761
+#: gui/gdmlogin.c:765
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Nerastas sesijos skriptø katalogas!"
 
-#: gui/gdmlogin.c:816
+#: gui/gdmlogin.c:820
 msgid "No session scripts found. Aborting!"
 msgstr "Nerastas nei vienas sesijos skriptas. Nutraukiu!"
 
-#: gui/gdmlogin.c:820
+#: gui/gdmlogin.c:824
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Nerasta nuoroda á áprastà sesijà. Naudoju %s.\n"
 
-#: gui/gdmlogin.c:834
+#: gui/gdmlogin.c:838
 #, c-format
 msgid "%s language selected"
 msgstr "Pasirinkta %s kalba"
 
-#: gui/gdmlogin.c:866
+#: gui/gdmlogin.c:872
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:872
+#: gui/gdmlogin.c:878
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:878
+#: gui/gdmlogin.c:884
 msgid "Other"
 msgstr "Kita"
 
-#: gui/gdmlogin.c:1342
+#: gui/gdmlogin.c:1362
 msgid "GNOME Desktop Manager"
-msgstr ""
+msgstr "GNOME Desktop Manager"
 
-#: gui/gdmlogin.c:1354
+#: gui/gdmlogin.c:1374
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Negaliu atidaryti ikonos bylos: %s. Nebus ámanoma sumaþinti!"
 
-#: gui/gdmlogin.c:1459
+#: gui/gdmlogin.c:1479
 msgid "Session"
 msgstr "Sesija"
 
-#: gui/gdmlogin.c:1466
+#: gui/gdmlogin.c:1486
 msgid "Language"
 msgstr "Kalba"
 
-#: gui/gdmlogin.c:1473
+#: gui/gdmlogin.c:1493
 msgid "Reboot..."
 msgstr "Perkrauti..."
 
-#: gui/gdmlogin.c:1480
+#: gui/gdmlogin.c:1500
 msgid "Halt..."
 msgstr "Iðjungti..."
 
-#: gui/gdmlogin.c:1487
+#: gui/gdmlogin.c:1507
 msgid "System"
 msgstr "Sistema"
 
-#: gui/gdmlogin.c:1641
+#: gui/gdmlogin.c:1661
 msgid "Please enter your login"
 msgstr "Praðom ávesti savo vardà"
 
-#: gui/gdmlogin.c:1828
+#: gui/gdmlogin.c:1848
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Negaliu atidaryti DefaultImage: %s. Nebus veidø narðyklës!"
 
-#: gui/gdmlogin.c:1915
+#: gui/gdmlogin.c:1935
 msgid "main: Error setting up HUP signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:1918
+#: gui/gdmlogin.c:1938
 msgid "main: Error setting up INT signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:1921
+#: gui/gdmlogin.c:1941
 msgid "main: Error setting up TERM signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:1929
+#: gui/gdmlogin.c:1949
 msgid "main: Error setting up CHLD signal handler"
 msgstr ""
 
-#~ msgid "Iconify"
-#~ msgstr "Sumaþinti"
+#: gui/gdmconfig.c:51
+msgid "You must be the superuser (root) to configure GDM.\n"
+msgstr "Tu turi bûti root, kad galëtum konfigûruoti GDM.\n"
+
+#: gui/gdmconfig.c:84
+msgid "GNOME Display Manager Configurator"
+msgstr "GNOME Display Manager konfigûracija"
+
+#: gui/gdmconfig.c:103
+msgid "The configuration file: "
+msgstr "Konfigûracijos byla: "
+
+#: gui/gdmconfig.c:103
+msgid ""
+"\n"
+"does not exist! Using default values."
+msgstr ""
+"\n"
+"neegzistuoja! Naudoju áprastas reikðmes."
+
+#: gui/gdmconfig.c:211
+msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
+msgstr "gdm_config_parse_most: Bloga serverio eilutë config byloje. Ignoruoju!"
+
+#: gui/gdmconfig.c:244
+msgid ""
+"The greeter settings will take effect the next time\n"
+"it is displayed.  The rest of the settings will not\n"
+"take effect until gdm is restarted or the computer is\n"
+"rebooted"
+msgstr ""
+
+#: gui/gdmconfig.c:469
+msgid ""
+"Enter the path to the X server,and\n"
+"any parameters that should be passed to it."
+msgstr ""
+"Ávesk kelià iki X serverio, ir visus\n"
+"parametrus, kurie jam turëtø bûti perduoti."
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: gui/gdmconfig-strings.c:7
+msgid "Executables"
+msgstr "Paleidþiami"
+
+#: gui/gdmconfig-strings.c:8
+msgid "Chooser binary: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:9
+msgid "Greeter binary: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:10
+msgid "Halt command: "
+msgstr "Iðjungimo komanda: "
+
+#: gui/gdmconfig-strings.c:11
+msgid "Reboot command: "
+msgstr "Perkrovimo komanda: "
+
+#: gui/gdmconfig-strings.c:12
+msgid "Directories"
+msgstr "Katalogai"
+
+#: gui/gdmconfig-strings.c:13
+msgid "Session directory: "
+msgstr "Sesijos katalogas: "
+
+#: gui/gdmconfig-strings.c:14
+msgid "PRE session scripts directory: "
+msgstr "PRIEÐ sesijà leidþiamø skriptø katalogas: "
+
+#: gui/gdmconfig-strings.c:15
+msgid "POST session scripts directory: "
+msgstr "PRIEÐ sesijà leidþiamø skriptø katalogas:"
+
+#: gui/gdmconfig-strings.c:16
+msgid "Logging directory: "
+msgstr "Log'ø katalogas: "
+
+#: gui/gdmconfig-strings.c:17
+msgid "Display initialization directory: "
+msgstr "Ekrano inicializavimo katalogas: "
+
+#: gui/gdmconfig-strings.c:18
+msgid "Miscelleaneous"
+msgstr "Ávairûs"
+
+#: gui/gdmconfig-strings.c:19
+msgid "PID file: "
+msgstr "PID byla: "
+
+#: gui/gdmconfig-strings.c:20
+msgid "Default $PATH: "
+msgstr "Áprastas $PATH: "
+
+#: gui/gdmconfig-strings.c:21
+msgid "Root $PATH: "
+msgstr "Root $PATH: "
+
+#: gui/gdmconfig-strings.c:22
+msgid "Automatic Login: "
+msgstr "Automatinis pasisveikinimas: "
+
+#: gui/gdmconfig-strings.c:23
+msgid "GDM"
+msgstr "GDM"
+
+#: gui/gdmconfig-strings.c:24
+msgid "Options"
+msgstr "Parinktys"
+
+#: gui/gdmconfig-strings.c:25
+msgid "Allow root to login with GDM"
+msgstr "Leisti root pasisveikinti per GDM"
+
+#: gui/gdmconfig-strings.c:26
+msgid "Kill 'init' clients"
+msgstr "Nuþudyti \"init\" klientus"
+
+#: gui/gdmconfig-strings.c:27
+msgid "Relax permissions"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:28
+msgid "Authentication errors should be verbose"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:29
+msgid "Authorization Details"
+msgstr "Autorizacijos smulkmenos"
+
+#: gui/gdmconfig-strings.c:30
+msgid "GDM runs as this user: "
+msgstr "GDM leidþiamas ðio vartotojo: "
+
+#: gui/gdmconfig-strings.c:31
+msgid "User 'auth' directory: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:32
+msgid "User 'auth' FB directory: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:33
+msgid "User 'auth' file: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:34
+msgid "GDM runs as this group: "
+msgstr "GDM leidþiamas ðio grupës: "
+
+#: gui/gdmconfig-strings.c:35
+msgid "Limits"
+msgstr "Ribos"
+
+#: gui/gdmconfig-strings.c:36
+msgid "Retry delay: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:37
+msgid "Maximum user file length: "
+msgstr "Maksimalus vartotojo bylos ilgis: "
+
+#: gui/gdmconfig-strings.c:38
+msgid "Security"
+msgstr "Saugumas"
+
+#: gui/gdmconfig-strings.c:39
+msgid "Enable XDMCP"
+msgstr "Leisti XDMCP"
+
+#: gui/gdmconfig-strings.c:40
+msgid "Connection Settings"
+msgstr "Jungties nuostatos"
+
+#: gui/gdmconfig-strings.c:41
+msgid "Honour indirect requests"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:42
+msgid "Maximum indirect wait time: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:43
+msgid "Maximum wait time: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:44
+msgid "Maximum remote sessions: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:45
+msgid "Max pending indirect requests: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:46
+msgid "Maximum pending requests: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:47
+msgid "Listen on UDP port: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:48
+msgid "XDMCP"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:49
+msgid "General Appearance"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:50
+msgid "Gtk+ RC file: "
+msgstr "Gtk+ RC byla: "
+
+#: gui/gdmconfig-strings.c:51
+msgid "Logo: "
+msgstr "Logo: "
+
+#: gui/gdmconfig-strings.c:52
+msgid "Select a GTK+ theme file (gtkrc)"
+msgstr "Pasirink GTK+ temos bylà (gtkrc)"
+
+#: gui/gdmconfig-strings.c:53
+msgid "Minimised Icon: "
+msgstr "Sumaþinto lango ikona: "
+
+#: gui/gdmconfig-strings.c:54
+msgid "Select a log to be displayed during login"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:55
+msgid "Greeter Look and Feel"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:56
+msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
+msgstr "Rodyti \"Sistemos\" meniu (perkrauti, iðjungti ir pan.)"
+
+#: gui/gdmconfig-strings.c:57
+msgid "Quiver on failure"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:58
+#, c-format
+msgid ""
+"Welcome to %n\n"
+"%n\n"
+"This is %n\n"
+msgstr ""
+"Sveiki atvykæ á %n\n"
+"%n\n"
+"Èia yra %n\n"
+
+#: gui/gdmconfig-strings.c:62
+#, c-format
+msgid "This is %n"
+msgstr "Tai yra %n"
+
+#: gui/gdmconfig-strings.c:63
+msgid "Default font: "
+msgstr "Áprastas ðriftas: "
+
+#: gui/gdmconfig-strings.c:64
+msgid "Exclude these users: "
+msgstr "Neátraukti ðiø vartotojø: "
+
+#: gui/gdmconfig-strings.c:65
+msgid "Welcome message: "
+msgstr "Pasveikinimo þinutë: "
+
+#: gui/gdmconfig-strings.c:66
+msgid "Pick a Font"
+msgstr "Pasirink ðriftà"
+
+#: gui/gdmconfig-strings.c:67
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqÀàÈèÆæËëÁáÐðØøÛûÞþ"
+
+#: gui/gdmconfig-strings.c:68
+msgid "Background Program: "
+msgstr "Fone veikianti programa: "
+
+#: gui/gdmconfig-strings.c:69 gui/gdmconfig-strings.c:85
+msgid "Select a file containing Locale information"
+msgstr "Pasirink bylà, kurioje yra Lokalës informacija"
+
+#: gui/gdmconfig-strings.c:70
+msgid "Position"
+msgstr "Vieta"
+
+#: gui/gdmconfig-strings.c:71
+msgid "Set position"
+msgstr "Nurodyti vietà"
+
+#: gui/gdmconfig-strings.c:72
+msgid "Lock position"
+msgstr "Uþrakinti vietà"
+
+#: gui/gdmconfig-strings.c:73
+msgid "X position: "
+msgstr "X vieta: "
+
+#: gui/gdmconfig-strings.c:74
+msgid "Y position: "
+msgstr "Y vieta: "
+
+#: gui/gdmconfig-strings.c:75
+msgid "User Interface"
+msgstr "Vartotojo sàsaja"
+
+#: gui/gdmconfig-strings.c:76
+msgid "Face browser"
+msgstr "Veidø narðyklë"
+
+#: gui/gdmconfig-strings.c:77
+msgid "Show choosable user images (enable face browser)"
+msgstr "Rodyti pasirenkamus vartotojø paveikslëlius"
+
+#: gui/gdmconfig-strings.c:78
+msgid "Default face image to use: "
+msgstr "Áprastas veido paveikslëlis: "
+
+#: gui/gdmconfig-strings.c:79
+msgid "Global faces directory: "
+msgstr "Globalus veidø katalogas: "
+
+#: gui/gdmconfig-strings.c:80
+msgid "Maximum face width: "
+msgstr "Didþiausias veido plotis: "
+
+#: gui/gdmconfig-strings.c:81
+msgid "Select an image for users with no 'face'"
+msgstr "Pasirink paveikslëlá vartotojams be \"veido\""
+
+#: gui/gdmconfig-strings.c:82
+msgid "Choose the directory to search for faces"
+msgstr "Pasirink katalogà, kuriame ieðkoti veidø"
+
+#: gui/gdmconfig-strings.c:83
+msgid "Maximum face height: "
+msgstr "Didþiausias veido aukðtis: "
+
+#: gui/gdmconfig-strings.c:84
+msgid "Localization"
+msgstr "Lokalizacija"
+
+#: gui/gdmconfig-strings.c:86
+msgid "Locale file: "
+msgstr "Lokalës byla: "
+
+#: gui/gdmconfig-strings.c:87
+msgid "Default locale: "
+msgstr "Áprasta lokalë: "
+
+#: gui/gdmconfig-strings.c:88
+msgid "Greeter"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:89
+msgid "Appearance"
+msgstr "Iðvaizda"
+
+#: gui/gdmconfig-strings.c:90
+msgid "Directory for host images: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:91
+msgid "Default host image:"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:92
+msgid "Refresh"
+msgstr "Atnaujinti"
+
+#: gui/gdmconfig-strings.c:93
+msgid "Scan every 'x' seconds: "
+msgstr ""
+
+#: gui/gdmconfig-strings.c:94
+msgid "Chooser"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:95
+msgid "Server Definitions"
+msgstr "Serveriø apibrëþimai"
+
+#: gui/gdmconfig-strings.c:96
+msgid "No."
+msgstr "Ne."
+
+#: gui/gdmconfig-strings.c:97
+msgid "Path to X server"
+msgstr "Kelias iki X serverio"
+
+#: gui/gdmconfig-strings.c:98
+msgid "Add Server"
+msgstr "Pridëti serverá"
+
+#: gui/gdmconfig-strings.c:99
+msgid "Edit Server"
+msgstr "Taisyti serverá"
+
+#: gui/gdmconfig-strings.c:100
+msgid "Delete Server"
+msgstr "Paðalinti serverá"
+
+#: gui/gdmconfig-strings.c:101
+msgid "Debugging"
+msgstr "Derinimas"
+
+#: gui/gdmconfig-strings.c:102
+msgid "Enable debugging output"
+msgstr "Ájungti derinimo iðvestá"
+
+#: gui/gdmconfig-strings.c:103
+msgid "Servers"
+msgstr "Serveriai"
+
