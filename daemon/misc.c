@@ -1617,4 +1617,21 @@ gdm_root_user (void)
 	return root_user;
 }
 
+void
+gdm_sleep_no_signal (int secs)
+{
+	time_t endtime = time (NULL)+secs;
+
+	while (secs > 0) {
+		struct timeval tv;
+		/* Wait 30 seconds. */
+		tv.tv_sec = secs;
+		tv.tv_usec = 0;
+		select (0, NULL, NULL, NULL, &tv);
+		/* don't want to use sleep since we're using alarm
+		   for pinging */
+		secs = endtime - time (NULL);
+	}
+}
+
 /* EOF */

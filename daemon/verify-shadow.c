@@ -185,7 +185,7 @@ authenticate_again:
 	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
     if (pwent == NULL) {
-	    sleep (GdmRetryDelay);
+	    gdm_sleep_no_signal (GdmRetryDelay);
 	    gdm_error (_("Couldn't authenticate user \"%s\""), login);
 
 	    print_cant_auth_errbox ();
@@ -199,7 +199,7 @@ authenticate_again:
     /* Check whether password is valid */
     if (ppasswd == NULL || (ppasswd[0] != '\0' &&
 			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
-	    sleep (GdmRetryDelay);
+	    gdm_sleep_no_signal (GdmRetryDelay);
 	    gdm_error (_("Couldn't authenticate user \"%s\""), login);
 
 	    print_cant_auth_errbox ();

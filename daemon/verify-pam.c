@@ -532,7 +532,7 @@ authenticate_again:
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 	    if (gdm_slave_should_complain ()) {
 #ifndef PAM_FAIL_DELAY
-		    sleep (GdmRetryDelay);
+		    gdm_sleep_no_signal (GdmRetryDelay);
 #endif /* PAM_FAIL_DELAY */
 		    gdm_error (_("Couldn't authenticate user"));
 	    }

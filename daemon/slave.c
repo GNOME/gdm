@@ -865,7 +865,7 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 
 			/* wait for a few seconds to avoid any vt changing race
 			 */
-			sleep (1);
+			gdm_sleep_no_signal (1);
 
 			gdm_change_vt (vt);
 
@@ -898,7 +898,7 @@ gdm_slave_run (GdmDisplay *display)
 
     if (d->sleep_before_run > 0) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
-	    sleep (d->sleep_before_run);
+	    gdm_sleep_no_signal (d->sleep_before_run);
 	    d->sleep_before_run = 0;
 
 	    check_notifies_now ();
@@ -984,7 +984,7 @@ gdm_slave_run (GdmDisplay *display)
 	
 	if (d->dsp == NULL) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d on a retry", 1+openretries*2);
-	    sleep (1+openretries*2);
+	    gdm_sleep_no_signal (1+openretries*2);
 	    openretries++;
 	}
     }
@@ -1002,7 +1002,7 @@ gdm_slave_run (GdmDisplay *display)
     /* Just a race avoiding sleep, probably not necessary though,
      * but doesn't hurt anything */
     if ( ! d->handled)
-	    sleep (1);
+	    gdm_sleep_no_signal (1);
 
     if (SERVER_IS_LOCAL (d)) {
 	    gdm_slave_send (GDM_SOP_START_NEXT_LOCAL, FALSE);
@@ -3484,7 +3484,7 @@ gdm_slave_session_stop (gboolean run_post_session,
 		    gdm_info (_("GDM detected a shutdown or reboot "
 				"in progress."));
 		    fclose (fp);
-		    while (c + 30 > time (NULL)) {
+		    while (c + 30 >= time (NULL)) {
 			    struct timeval tv;
 			    /* Wait 30 seconds. */
 			    tv.tv_sec = 30;

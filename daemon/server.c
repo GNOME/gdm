@@ -504,7 +504,7 @@ do_server_wait (GdmDisplay *d)
 		     * just wait a few seconds and hope things just work,
 		     * fortunately there is no such case yet and probably
 		     * never will, but just for code anality's sake */
-		    sleep (5);
+		    gdm_sleep_no_signal (5);
 	    } else if (d->server_uid != 0) {
 		    int i;
 
@@ -528,7 +528,7 @@ do_server_wait (GdmDisplay *d)
 			 i++) {
 			    d->dsp = XOpenDisplay (d->name);
 			    if (d->dsp == NULL)
-				    sleep (1);
+				    gdm_sleep_no_signal (1);
 			    else
 				    d->servstat = SERVER_RUNNING;
 		    }

@@ -166,13 +166,21 @@ static void
 whack_old_slave (GdmDisplay *d)
 {
     time_t t = time (NULL);
+    gboolean waitsleep = TRUE;
+    /* if we have DISPLAY_DEAD set, then this has already been killed */
+    if (d->dispstat == DISPLAY_DEAD)
+	    waitsleep = FALSE;
     /* Kill slave */
     if (d->slavepid > 1 &&
-	kill (d->slavepid, SIGTERM) == 0) {
+	(d->dispstat == DISPLAY_DEAD || kill (d->slavepid, SIGTERM) == 0)) {
 	    int exitstatus;
 	    int ret;
 wait_again:
-	    sleep (10);
+		
+	    if (waitsleep)
+		    /* wait for some signal, yes this is a race */
+		    sleep (10);
+	    waitsleep = TRUE;
 	    errno = 0;
 	    ret = waitpid (d->slavepid, &exitstatus, WNOHANG);
 	    if (ret <= 0) {
@@ -184,8 +192,8 @@ wait_again:
 			ve_signal_was_notified (SIGHUP) ||
 			t + 10 <= time (NULL)) {
 			    gdm_debug ("whack_old_slave: GOT ANOTHER SIGTERM (or it was 10 secs already), killing slave again");
-			    kill (d->slavepid, SIGTERM);
 			    t = time (NULL);
+			    kill (d->slavepid, SIGTERM);
 			    goto wait_again;
 		    } else if (ret < 0 && errno == EINTR) {
 			    goto wait_again;
@@ -358,9 +366,8 @@ gdm_display_unmanage (GdmDisplay *d)
      * slave dies, which should be ASAP though */
     whack_old_slave (d);
     
-    if (d->type == TYPE_LOCAL)
-	d->dispstat = DISPLAY_DEAD;
-    else /* TYPE_XDMCP,TYPE_FLEXI,TYPE_FLEXI_XNEST */
+    d->dispstat = DISPLAY_DEAD;
+    if (d->type != TYPE_LOCAL)
 	gdm_display_dispose (d);
 
     gdm_debug ("gdm_display_unmanage: Display stopped");

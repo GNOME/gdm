@@ -126,6 +126,7 @@ const char *gdm_root_user (void);
 void gdm_signal_ignore (int signal);
 void gdm_signal_default (int signal);
 
+void gdm_sleep_no_signal (int secs);
 
 #endif /* GDM_MISC_H */
 
