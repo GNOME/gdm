@@ -266,7 +266,7 @@ spawn_done:
 static void 
 gdm_server_spawn (GdmDisplay *d)
 {
-    struct sigaction usr1, dfl_signal;
+    struct sigaction ign_signal, dfl_signal;
     sigset_t mask;
     gchar *srvcmd = NULL;
     gchar **argv = NULL;
@@ -307,18 +307,26 @@ gdm_server_spawn (GdmDisplay *d)
 	}
 
 	
-	/* The X server expects USR1 to be SIG_IGN */
-	usr1.sa_handler = SIG_IGN;
-	usr1.sa_flags = SA_RESTART;
-	sigemptyset (&usr1.sa_mask);
+	/* The X server expects USR1/TTIN/TTOU to be SIG_IGN */
+	ign_signal.sa_handler = SIG_IGN;
+	ign_signal.sa_flags = SA_RESTART;
+	sigemptyset (&ign_signal.sa_mask);
 
-	if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
+	if (sigaction (SIGUSR1, &ign_signal, NULL) < 0) {
 	    gdm_error (_("gdm_server_spawn: Error setting USR1 to SIG_IGN"));
+	    _exit (SERVER_ABORT);
+	}
+	if (sigaction (SIGTTIN, &ign_signal, NULL) < 0) {
+	    gdm_error (_("gdm_server_spawn: Error setting TTIN to SIG_IGN"));
+	    _exit (SERVER_ABORT);
+	}
+	if (sigaction (SIGTTOU, &ign_signal, NULL) < 0) {
+	    gdm_error (_("gdm_server_spawn: Error setting TTOU to SIG_IGN"));
 	    _exit (SERVER_ABORT);
 	}
 
 	/* And HUP and TERM should be at default */
-	dfl_signal.sa_handler = SIG_IGN;
+	dfl_signal.sa_handler = SIG_DFL;
 	dfl_signal.sa_flags = SA_RESTART;
 	sigemptyset (&dfl_signal.sa_mask);
 

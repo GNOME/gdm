@@ -3312,7 +3312,6 @@ add_window (Window w)
 				      &attribs);
 		XSelectInput (GDK_DISPLAY (), w,
 			      attribs.your_event_mask |
-			      StructureNotifyMask |
 			      EnterWindowMask);
 
 		gdk_flush ();
@@ -3428,8 +3427,9 @@ add_deco (GdmWindow *w)
 	w->deco = XCreateSimpleWindow (GDK_DISPLAY (),
 				       GDK_ROOT_WINDOW (),
 				       x - 1, y - 1,
-				       width + 2, height + 2,
-				       border, 0, 0);
+				       width + 2 + 2 * border,
+				       height + 2 + 2 * border,
+				       0, 0, 0);
 
 	XSelectInput (GDK_DISPLAY (),
 		      w->deco,
@@ -3438,7 +3438,7 @@ add_deco (GdmWindow *w)
 		      ResizeRedirectMask);
 
 	w->gdk_deco = gdk_window_foreign_new (w->deco);
-	gdk_window_add_filter (w->gdk_deco, root_filter, NULL);
+	gdk_window_add_filter (w->gdk_deco, root_filter, w);
 
 
 	if (XGetWMNormalHints (GDK_DISPLAY (),
@@ -3494,18 +3494,6 @@ window_filter (GdkXEvent *gdk_xevent,
 	case EnterNotify:
 		focus_window (gw->win);
 		break;
-	case UnmapNotify:
-		remove_deco (gw, TRUE);
-
-		remove_window (gw->win);
-		revert_focus_to_login ();
-		break;
-	case DestroyNotify:
-		remove_deco (gw, FALSE);
-
-		remove_window (gw->win);
-		revert_focus_to_login ();
-		break;
 	default:
 		break;
 	}
@@ -3523,12 +3511,15 @@ root_filter (GdkXEvent *gdk_xevent,
 	XEvent *xevent = (XEvent *)gdk_xevent;
 	XWindowChanges wchanges;
 
+	gw = data;
+
 	switch (xevent->type) {
 	case MapRequest:
 		w = xevent->xmaprequest.window;
-		if (login == NULL ||
-		    login->window == NULL ||
-		    GDK_WINDOW_XWINDOW (login->window) != w) {
+		if (gw == NULL && /* only on the root window */
+		    (login == NULL ||
+		     login->window == NULL ||
+		     GDK_WINDOW_XWINDOW (login->window) != w)) {
 			gw = add_window (w);
 			center_x_window (w);
 			add_deco (gw);
@@ -3537,7 +3528,6 @@ root_filter (GdkXEvent *gdk_xevent,
 		break;
 	case ConfigureRequest:
 		w = xevent->xconfigurerequest.window;
-		gw = find_window (w);
 		wchanges.border_width = xevent->xconfigurerequest.border_width;
 		wchanges.sibling = xevent->xconfigurerequest.above;
 		wchanges.stack_mode = xevent->xconfigurerequest.detail;
@@ -3559,8 +3549,11 @@ root_filter (GdkXEvent *gdk_xevent,
 		} else {
 			wchanges.x = xevent->xconfigurerequest.x - 1;
 			wchanges.y = xevent->xconfigurerequest.y - 1;
-			wchanges.width = xevent->xconfigurerequest.width + 2;
-			wchanges.height = xevent->xconfigurerequest.height + 2;
+			wchanges.width = xevent->xconfigurerequest.width + 2
+				+ 2*xevent->xconfigurerequest.border_width;;
+			wchanges.height = xevent->xconfigurerequest.height + 2
+				+ 2*xevent->xconfigurerequest.border_width;;
+			wchanges.border_width = 0;
 			XConfigureWindow (GDK_DISPLAY (),
 					  gw->deco,
 					  xevent->xconfigurerequest.value_mask,
@@ -3568,25 +3561,8 @@ root_filter (GdkXEvent *gdk_xevent,
 			center_x_window (gw->deco);
 		}
 		break;
-	case ResizeRequest:
-		w = xevent->xresizerequest.window;
-		gw = find_window (w);
-		XResizeWindow (GDK_DISPLAY (), w,
-			       xevent->xresizerequest.width,
-			       xevent->xresizerequest.height);
-		if (gw == NULL) {
-			center_x_window (w);
-		} else {
-			XResizeWindow (GDK_DISPLAY (), gw->deco,
-				       xevent->xresizerequest.width + 2,
-				       xevent->xresizerequest.height + 2);
-
-			center_x_window (gw->deco);
-		}
-		break;
 	case CirculateRequest:
 		w = xevent->xcirculaterequest.window;
-		gw = find_window (w);
 		if (gw == NULL)
 			XCirculateSubwindows (GDK_DISPLAY (),
 					      w,
@@ -3609,6 +3585,16 @@ root_filter (GdkXEvent *gdk_xevent,
 		if (gw == NULL)
 			break;
 		remove_deco (gw, TRUE);
+
+		remove_window (w);
+		revert_focus_to_login ();
+		break;
+	case DestroyNotify:
+		w = xevent->xdestroywindow.window;
+		gw = find_window (w);
+		if (gw == NULL)
+			break;
+		remove_deco (gw, FALSE);
 
 		remove_window (w);
 		revert_focus_to_login ();
@@ -3802,8 +3788,7 @@ main (int argc, char *argv[])
 		  GDK_ROOT_WINDOW (),
 		  attribs.your_event_mask |
 		  SubstructureNotifyMask |
-		  SubstructureRedirectMask |
-		  ResizeRedirectMask);
+		  SubstructureRedirectMask);
 
     gdk_flush ();
 

@@ -1,3 +1,14 @@
+Sun May 13 13:09:50 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c:  Simplify filters and only use the Substructure
+	  mask thing.  Handle border correctly (to make xclock look cool)
+
+	* daemon/server.c:  Eeek, HUP and TERM should have been DFL and not
+	  IGN though the X server didn't seem to mind.  Also set TTIN and
+	  TTOU to IGN since that's what happens when I startx apparently,
+	  I think this may be responsible for the X server dieing on me
+	  on unsuspend
+
 Sun May 13 04:40:10 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: Add a tooltip to the iconify arrow
