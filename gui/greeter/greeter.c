@@ -430,6 +430,7 @@ greeter_setup_items (void)
   greeter_item_register_action_callback ("language_button",
 					 greeter_action_language,
 					 window);
+  greeter_item_system_setup ();
 
 }
 

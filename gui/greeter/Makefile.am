@@ -36,7 +36,9 @@ gdmgreeter_SOURCES =  \
 	greeter_item_pam.c \
 	greeter_item_pam.h \
 	greeter_parser.c \
-	greeter_parser.h
+	greeter_parser.h \
+	greeter_system.c \
+	greeter_system.h 
 
 gdmgreeter_LDADD = \
 	../libgdmwm.a 		\
