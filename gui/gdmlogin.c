@@ -2797,10 +2797,18 @@ gdm_login_gui_init (void)
 	}
     }
 
-    /* Add a quit item when in xdmcp mode or flexi mode */
-    if (ve_string_empty (g_getenv ("GDM_IS_LOCAL")) ||
-	! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER"))) {
+    /* Add a quit/disconnect item when in xdmcp mode or flexi mode */
+    /* Do note that the order is important, we always want "Quit" for
+     * flexi, even if not local (non-local xnest).  and Disconnect
+     * only for xdmcp */
+    if ( ! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER"))) {
 	    item = gtk_menu_item_new_with_label (_("Quit"));
+    } else if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+	    item = gtk_menu_item_new_with_label (_("Disconnect"));
+    } else {
+	    item = NULL;
+    }
+    if (item != NULL) {
 	    gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
 	    gtk_widget_add_accelerator (item, "activate_item", accel,
 					GDK_q, GDK_MOD1_MASK, 0);
@@ -3036,7 +3044,7 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
 
     /* I think I'll add the buttons next to this */
-    msg = gtk_label_new (_("Please enter your login"));
+    msg = gtk_label_new (_("Please enter your username"));
     gtk_widget_set_name(msg, "Message");
     gtk_label_set_line_wrap (GTK_LABEL (msg), TRUE);
     gtk_label_set_justify (GTK_LABEL (msg), GTK_JUSTIFY_LEFT);
