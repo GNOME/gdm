@@ -168,7 +168,13 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Russian"), "ru_RU", "русский", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Serbian"), "sr_YU", "", 0 },
+	{ N_("N-Z|Serbian"), "sr_YU", "српски", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Serbian"), "sr_CS", "српски", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Serbian (Latin)"), "sr_CS@Latn", "srpski (latinica)", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Serbian (Jekavian)"), "sr_CS@ije", "српски (ијекавски)", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Slovak"), "sk_SK", "Slovenský", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
