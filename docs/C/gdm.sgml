@@ -461,7 +461,7 @@
 	      <synopsis>UserAuthFBDir=/tmp</synopsis>
 	      <para>
 		If GDM fails to update the user's
-		<filename>.Xauthority</filename> file for some a
+		<filename>.Xauthority</filename> file a
 		fallback cookie is created in this directory.
 	      </para>
 	    </listitem>
@@ -472,9 +472,7 @@
 	    <listitem>
 	      <synopsis>UserAuthFile=.Xauthority</synopsis>
 	      <para>
-		Name of the file used for storing user cookies in.  The
-		user's $XAUTHORITY environment variable will be set to
-		point at this file.
+		Name of the file used for storing user cookies in.  
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -928,7 +926,7 @@
 	  <varlistentry>
 	    <term>Welcome</term>
 	    <listitem>
-	      <synopsis>Welcome=Welcome to %h</synopsis>
+	      <synopsis>Welcome=Welcome to %s</synopsis>
 	      <para>
 		Controls which text to display next to the logo image in the
 		greeter. The following control chars are supported:
@@ -943,7 +941,11 @@
 	      </para>
 	      
 	      <para>
-		%h	hostname
+		%h	Fully qualified hostname
+	      </para>
+
+	      <para>
+		%n	Nodename (i.e. hostname without .domain)
 	      </para>
 	      
 	      <para>

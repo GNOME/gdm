@@ -82,7 +82,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	return (FALSE);
 
     /* If this is a local display the struct hasn't changed and we
-     * have to clean up old authentication cookies before baking new
+     * have to eat up old authentication cookies before baking new
      * ones...
      */
     if (d->type == DISPLAY_LOCAL && d->auths) {

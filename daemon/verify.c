@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <syslog.h>
 #include <pwd.h>
 #include <glib.h>
@@ -43,6 +44,7 @@
 static const gchar RCSid[]="$Id$";
 
 extern void gdm_abort (const char*, ...);
+extern void gdm_fail (const gchar *, ...);
 extern void gdm_debug (const char*, ...);
 extern void gdm_error (const char*, ...);
 extern gchar *gdm_slave_greeter_ctl (gchar cmd, gchar *str);
@@ -52,6 +54,7 @@ extern gboolean GdmAllowRoot;
 
 gchar *gdm_verify_user (gchar *display);
 void gdm_verify_cleanup (void);
+void gdm_verify_check (void);
 
 
 #ifdef HAVE_PAM
@@ -151,6 +154,7 @@ gdm_verify_user (gchar *display)
     
     if ((pamerr = pam_start ("gdm", login, &pamc, &pamh)) != PAM_SUCCESS) {
 	gdm_error (_("Can't find /etc/pam.d/gdm!"));
+	goto pamerr;
     }
     
     if ((pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
@@ -263,6 +267,21 @@ gdm_verify_user (gchar *display)
 }
 
 #endif /* HAVE_PAM */
+
+
+void
+gdm_verify_check (void)
+{
+
+#ifdef HAVE_PAM
+    struct stat statbuf;
+
+    if (stat ("/etc/pam.d/gdm", &statbuf) && stat ("/etc/pam.conf", &statbuf))
+	gdm_fail (_("gdm_verify_check: Can't find PAM configuration file for gdm"));
+
+#endif /* HAVE_PAM */
+
+}
 
 
 void 

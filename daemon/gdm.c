@@ -50,6 +50,7 @@ extern void gdm_debug (const gchar *format, ...);
 extern int  gdm_xdmcp_init (void);
 extern void gdm_xdmcp_run (void);
 extern void gdm_xdmcp_close (void);
+extern void gdm_verify_check (void);
 
 gint gdm_display_manage (GdmDisplay *d);
 void gdm_display_dispose (GdmDisplay *d);
@@ -301,6 +302,9 @@ gdm_config_parse (void)
     if (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRGRP|S_IXGRP)) 
 	gdm_fail (_("gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."), 
 		  GdmServAuthDir, statbuf.st_mode);
+
+    /* Check that PAM configuration file is in place */
+    gdm_verify_check ();
 
     seteuid (0);
 }

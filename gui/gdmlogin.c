@@ -296,6 +296,11 @@ gdm_parse_enriched_string (gchar *s)
 		buffer += strlen (hostname);
 		break;
 		
+	    case 'n':
+	        memcpy (buffer, name.nodename, strlen (name.nodename));
+		buffer += strlen (name.nodename);
+		break;
+
 	    case 'd': 
 		memcpy (buffer, display, strlen (display));
 		buffer += strlen (display);
@@ -1025,6 +1030,7 @@ gdm_login_gui_init (void)
     GtkStyle *style;
     gchar *greeting;
     gint cols, rows;
+    struct stat statbuf;
 
     if(GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
@@ -1121,7 +1127,7 @@ gdm_login_gui_init (void)
     else
 	rows = 1;
 
-    if (GdmLogo)
+    if (GdmLogo && ! stat (GdmLogo, &statbuf))
 	cols = 2;
     else 
 	cols = 1;
@@ -1476,7 +1482,8 @@ gdm_login_users_init (void)
 					pwent->pw_uid,
 					pwent->pw_dir);
 
-	    if (user)
+	    if ((user) &&
+		(! g_list_find_custom (users, user, (GCompareFunc) gdm_login_sort_func)))
 		users = g_list_insert_sorted(users, user,
 					     (GCompareFunc) gdm_login_sort_func);
 	}

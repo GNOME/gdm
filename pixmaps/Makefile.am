@@ -1,6 +1,6 @@
 pixmapdir = $(datadir)/pixmaps
 
-BITMAPS = gdm.xpm nophoto.png nohost.png
+BITMAPS = gdm.xpm nobody.png nohost.png
 
 pixmap_DATA = $(BITMAPS)
 

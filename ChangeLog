@@ -1,3 +1,23 @@
+1999-09-01    <mkp@mkp.net>
+
+	* gui/gdmlogin.c (gdm_login_gui_init): Only add column for logo if
+ 	it is readable.
+
+	* daemon/verify.c (gdm_verify_check): Check that PAM configuration
+ 	file exists before starting up.
+
+1999-08-31    <mkp@mkp.net>
+
+	* daemon/slave.c (gdm_slave_session_start): unset MAIL in the
+ 	user's environment. I have to POSIXify my environment handling at
+ 	some point.
+
+	* gui/gdmlogin.c (gdm_parse_enriched_string): %n is
+ 	uname.nodename. "Welcome to %n" is new default greeting.
+	
+	(gdm_login_users_init): Ignore duplicate usernames on broken NIS
+ 	systems (Nils Philippsen <nils@wombat.dialup.fht-esslingen.de>).
+
 1999-08-31  Kjartan Maraas  <kmaraas@online.no>
 
 	* configure.in: Added "da" to ALL_LINGUAS.

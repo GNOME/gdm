@@ -27,13 +27,10 @@ gnomerc: gnomerc.in Makefile
 	    < $(srcdir)/gnomerc.in > gnomerc.tmp \
 	    && mv -f gnomerc.tmp gnomerc
 
-locale_SCRIPTS = locale.alias
-gnomerc_SCRIPTS = gnomerc
-sess_SCRIPTS = Gnome Xsession
-init_SCRIPTS = Default
+noinst_SCRIPTS = Gnome gnomerc
+noinst_DATA = gdm.conf
 
 EXTRA_DIST = \
-	gdm.conf \
 	gdm.conf.in \
 	Gnome.in \
 	gnomerc.in \
@@ -50,13 +47,25 @@ install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -f $(confdir)/gdm.conf; then \
 		$(INSTALL_DATA) gdm.conf $(confdir)/gdm.conf; \
 	fi
+	if test '!' -f $(localedir)/locale.alias; then \
+		$(INSTALL_DATA) $(srcdir)/locale.alias $(localedir)/locale.alias; \
+	fi
 	if test '!' -d $(sessdir); then \
 		$(mkinstalldirs) $(sessdir); \
 		chmod 755 $(sessdir); \
 	fi
+	if test '!' -f $(sessdir)/Xsession; then \
+		$(INSTALL_SCRIPT) $(srcdir)/Xsession $(sessdir)/Xsession; \
+	fi
+	if test '!' -f $(sessdir)/Gnome; then \
+		$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome; \
+	fi
 	if test '!' -d $(initdir); then \
 		$(mkinstalldirs) $(initdir); \
 		chmod 755 $(initdir); \
+	fi
+	if test '!' -f $(initdir)/Default; then \
+		$(INSTALL_SCRIPT) $(srcdir)/Default $(initdir)/Default; \
 	fi
 	if test '!' -d $(authdir); then \
 		$(mkinstalldirs) $(authdir); \

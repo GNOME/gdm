@@ -67,6 +67,7 @@
 #include <X11/Xmd.h>
 #include <X11/Xdmcp.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -90,6 +91,7 @@ gint allow_severity = LOG_INFO;
 gint deny_severity = LOG_WARNING;
 
 gint xdmcpfd;
+gint choosefd;
 gint globsessid;
 gint pending = 0;
 static gchar *sysid;
@@ -99,6 +101,7 @@ static XdmcpBuffer buf;
 extern GSList *displays;
 extern gint sessions;
 extern gchar *GdmLogDir;
+extern gchar *GdmServAuthDir;
 
 /* Tunables */
 extern gint GdmMaxPending;	/* only accept this number of pending sessions */
@@ -137,6 +140,7 @@ extern void gdm_error (const gchar *format, ...);
 extern gboolean gdm_auth_secure_display (GdmDisplay *d);
 extern gint gdm_display_manage (GdmDisplay *d);
 extern void gdm_display_dispose (GdmDisplay *d);
+extern gboolean gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd);
 
 int gdm_xdmcp_init (void);
 void gdm_xdmcp_run (void);
@@ -174,6 +178,9 @@ gdm_xdmcp_init (void)
     if (gethostname (hostbuf, 255))
 	gdm_abort (_("gdm_xdmcp_init: Could not get server hostname: %s!"), strerror (errno));
     
+    uname (&name);
+    sysid = g_strconcat (name.sysname, " ", name.release, NULL);
+
     servhost.data = g_strdup (hostbuf);
     servhost.length = strlen (servhost.data);
     
@@ -192,8 +199,29 @@ gdm_xdmcp_init (void)
     if (bind (xdmcpfd, (struct sockaddr_in *) &serv_sa, sizeof (serv_sa)) == -1)
 	gdm_abort (_("gdm_xdmcp_init: Could not bind to XDMCP socket!"));
 
-    uname (&name);
-    sysid = g_strconcat (name.sysname, " ", name.release, NULL);
+    /* Setup FIFO if choosing is enabled */
+    if (GdmIndirect) {
+	gchar *fifopath;
+
+	fifopath = g_strconcat (GdmServAuthDir, "/.gdmchooser", NULL);
+
+	if (!fifopath)
+	    gdm_abort (_("gdm_xdmcp_init: Can't alloc fifopath"));
+
+	unlink (fifopath);
+
+	if (mkfifo (fifopath, 0660) < 0)
+	    gdm_abort (_("gdm_xdmcp_init: Could not make FIFO for chooser"));
+
+	choosefd = open (fifopath, O_RDWR); /* Open with write to avoid EOF */
+
+	if (!choosefd)
+	    gdm_abort (_("gdm_xdmcp_init: Could not open FIFO for chooser"));
+
+	chmod (fifopath, 0660);
+
+	g_free (fifopath);
+    }
 
     return (TRUE);
 }
@@ -202,14 +230,25 @@ gdm_xdmcp_init (void)
 void
 gdm_xdmcp_run (void)
 {
-    GIOChannel *channel;
+    GIOChannel *xdmcpchan;
     
-    channel = g_io_channel_unix_new (xdmcpfd);
-    g_io_add_watch_full (channel, G_PRIORITY_DEFAULT,
+    xdmcpchan = g_io_channel_unix_new (xdmcpfd);
+    g_io_add_watch_full (xdmcpchan, G_PRIORITY_DEFAULT,
 			 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
 			 (GIOFunc) gdm_xdmcp_decode_packet,
 			 GINT_TO_POINTER (xdmcpfd), NULL);
-    g_io_channel_unref (channel);
+    g_io_channel_unref (xdmcpchan);
+
+    if (GdmIndirect) {
+	GIOChannel *choosechan;
+
+	choosechan = g_io_channel_unix_new (choosefd);
+	g_io_add_watch_full (choosechan, G_PRIORITY_DEFAULT,
+			     G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
+			     (GIOFunc) gdm_choose_socket_handler,
+			     GINT_TO_POINTER (choosefd), NULL);
+	g_io_channel_unref (choosechan);
+    }
 }
 
 
@@ -217,6 +256,9 @@ void
 gdm_xdmcp_close (void)
 {
     close (xdmcpfd);
+
+    if (GdmIndirect && choosefd)
+	close (choosefd);
 }
 
 

@@ -153,12 +153,15 @@ struct _GdmDisplay {
 };
 
 
-typedef struct _GdmIndirectHost GdmIndirectHost;
+typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
 
-struct _GdmIndirectHost {
+struct _GdmIndirectDisplay {
     struct in_addr *addr;
+    gint dispnum;
+    gchar *manager;
     time_t acctime;
 };
+
 
 #endif /* __GDM_H__ */
 

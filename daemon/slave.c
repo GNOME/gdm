@@ -304,6 +304,7 @@ gdm_slave_session_start (gchar *login, gchar *session, gboolean savesess, gchar 
     setenv ("HOME", pwent->pw_dir, TRUE);
     setenv ("GDMSESSION", session, TRUE);
     setenv ("SHELL", pwent->pw_shell, TRUE);
+    unsetenv ("MAIL");		/* New project: setenv() and unsetenv() for lame systems */
 
     /* Special PATH for root */
     if(pwent->pw_uid == 0)

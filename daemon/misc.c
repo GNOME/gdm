@@ -163,6 +163,10 @@ gdm_fail (const gchar *format, ...)
     unlink (GdmPidFile);
     closelog();
 
+    /* Slow down respawning if we're started from init */
+    if (getppid() == 1)
+	sleep (30);
+
     exit (EXIT_FAILURE);
 }
 

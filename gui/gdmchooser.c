@@ -149,6 +149,10 @@ gdm_chooser_decode_packet (void)
 
 	hostname = (he && he->h_name) ? he->h_name : inet_ntoa (clnt_sa.sin_addr);
 
+	/* We can't pipe hostnames larger than this */
+	if (strlen (hostname)+1 > PIPE_BUF)
+	    goto done;
+
 	hosts = g_list_insert_sorted (hosts, 
 				      gdm_chooser_host_alloc (hostname, (gchar *) status),
 				      (GCompareFunc) gdm_chooser_sort_func);
