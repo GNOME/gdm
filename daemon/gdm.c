@@ -258,7 +258,7 @@ gdm_config_parse (void)
 		  GdmServAuthDir, statbuf.st_mode);
 
 
-    /* Check that PAM configuration file is in place */
+    /* Check that user authentication is properly configured */
     gdm_verify_check ();
 
     seteuid (0);
@@ -335,87 +335,78 @@ gdm_child_handler (gint sig)
 {
     pid_t pid;
     gint exitstatus = 0, status = 0;
-    GSList *list = displays;
-    GdmDisplay *d;
+    GdmDisplay *d = NULL;
     gchar **argv;
 
-    /* Get status from all dead children */
-    while ((pid = waitpid (-1, &exitstatus, WNOHANG)) > 0) {
+    /* Pid and exit status of slave that died */
+    pid = waitpid (-1, &exitstatus, WNOHANG);
 
-	if (WIFEXITED (exitstatus))
-	    status = WEXITSTATUS (exitstatus);
+    if (WIFEXITED (exitstatus))
+	status = WEXITSTATUS (exitstatus);
 	
-	gdm_debug ("gdm_child_handler: child %d returned %d", pid, status);
+    gdm_debug ("gdm_child_handler: child %d returned %d", pid, status);
 
-	if (pid < 1)
-	    break;
+    if (pid < 1)
+	return;
 
-	while (list && list->data) {
+    /* Find out who this slave belongs to */
+    d = gdm_display_lookup (pid);
 
-	    d = list->data;
-	    gdm_debug ("gdm_child_handler: %s", d->name);
+    if (!d)
+	return;
 
-	    /* Slave died */
-	    if (pid == d->slavepid) {
-		d->slavepid = 0;
+    /* Declare the display dead */
+    d->slavepid = 0;
+    d->dispstat = DISPLAY_DEAD;
+	    
+    /* Autopsy */
+    switch (status) {
 	
-		switch (status) {
+    case DISPLAY_ABORT:		/* Bury this display for good */
+	gdm_info (_("gdm_child_action: Aborting display %s"), d->name);
 
-		case DISPLAY_REMANAGE:
+	gdm_display_unmanage (d);
+	break;
+	
+    case DISPLAY_REBOOT:	/* Reboot machine */
+	gdm_info (_("gdm_child_action: Master rebooting..."));
 
-		    if (d->type == TYPE_LOCAL) {
-			d->dispstat = DISPLAY_DEAD;
-			gdm_slave_start (d);
-		    }
-		    
-		    if (d->type == TYPE_XDMCP)
-			gdm_display_unmanage (d);
-		    
-		    break;
-		    		    
-		case DISPLAY_ABORT:
-		    gdm_info (_("gdm_child_action: Aborting display %s"), d->name);
-		    gdm_display_unmanage (d);
-		    break;
-		    
-		case DISPLAY_REBOOT:
-		    gdm_info (_("gdm_child_action: Master rebooting..."));
-		    g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
-		    closelog();
-		    unlink (GdmPidFile);
-		    argv = g_strsplit (GdmReboot, argdelim, MAX_ARGS);
-		    execv (argv[0], argv);
-		    gdm_error (_("gdm_child_action: Reboot failed: %s"), strerror (errno));
-		    break;
-		    
-		case DISPLAY_HALT:
-		    gdm_info (_("gdm_child_action: Master halting..."));
-		    g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
-		    closelog();
-		    unlink (GdmPidFile);
-		    argv = g_strsplit (GdmHalt, argdelim, MAX_ARGS);
-		    execv (argv[0], argv);
-		    gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
-		    break;
-		    
-		case DISPLAY_RESERVER:
-		default:
-		    gdm_debug ("gdm_child_action: Slave process returned %d", status);
+	g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
+	closelog();
+	unlink (GdmPidFile);
 
-		    if (d->type == TYPE_LOCAL && d->dispstat != DISPLAY_ABORT) {
-			d->dispstat = DISPLAY_DEAD;
-			gdm_slave_start (d);
-		    }
-		    
-		    if (d->type == TYPE_XDMCP)
-			gdm_display_unmanage (d);
-		    
-		    break;
-		}
-	    }
+	argv = g_strsplit (GdmReboot, argdelim, MAX_ARGS);	
+	execv (argv[0], argv);
 
-	    list = list->next;
-	}
+	gdm_error (_("gdm_child_action: Reboot failed: %s"), strerror (errno));
+	break;
+	
+    case DISPLAY_HALT:		/* Halt machine */
+	gdm_info (_("gdm_child_action: Master halting..."));
+
+	g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
+	closelog();
+	unlink (GdmPidFile);
+
+	argv = g_strsplit (GdmHalt, argdelim, MAX_ARGS);	
+	execv (argv[0], argv);
+
+	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
+	break;
+	
+    case DISPLAY_REMANAGE:	/* Remanage display */
+    default:
+	gdm_debug ("gdm_child_action: Slave process returned %d", status);
+	
+	/* This is a local server so we start a new slave */
+	if (d->type == TYPE_LOCAL)
+	    gdm_slave_start (d);
+	
+	/* Remote displays will send a request to be managed */
+	if (d->type == TYPE_XDMCP)
+	    gdm_display_unmanage (d);
+	
+	break;
     }
 }
 

@@ -45,7 +45,6 @@
 #define DISPLAY_REBOOT 8	/* Rebewt */
 #define DISPLAY_HALT 16		/* Halt */
 #define DISPLAY_DEAD 32		/* Display not configured/started yet */
-#define DISPLAY_RESERVER 64	/* XIO Error */
 
 #define XDMCP_DEAD 0
 #define XDMCP_PENDING 1

@@ -612,7 +612,7 @@ gdm_slave_xioerror_handler (Display *disp)
     
     gdm_error (_("gdm_slave_windows_kill_ioerror_handler: Fatal X error - Restarting %s"), d->name);
     
-    exit (DISPLAY_RESERVER);
+    exit (DISPLAY_REMANAGE);
 }
 
 

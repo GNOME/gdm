@@ -184,4 +184,33 @@ gdm_display_dispose (GdmDisplay *d)
 }
 
 
+/**
+ * gdm_display_lookup:
+ * @pid: pid of slave process to look up
+ *
+ * Return the display managed by pid
+ */
+
+GdmDisplay *
+gdm_display_lookup (pid_t pid)
+{
+    GSList *list = displays;
+    GdmDisplay *d = NULL;
+
+    /* Find slave in display list */
+    while (list && list->data) {
+	d = list->data;
+
+	if (pid == d->slavepid) {
+	    return d;
+
+	    list = list->next;
+	}
+    }
+     
+    /* Slave not found */
+    return NULL;
+}
+
+
 /* EOF */

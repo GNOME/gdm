@@ -21,9 +21,10 @@
 
 #include "gdm.h"
 
-gint gdm_display_manage   (GdmDisplay *d);
-void gdm_display_dispose  (GdmDisplay *d);
-void gdm_display_unmanage (GdmDisplay *d);
+gint        gdm_display_manage   (GdmDisplay *d);
+void        gdm_display_dispose  (GdmDisplay *d);
+void        gdm_display_unmanage (GdmDisplay *d);
+GdmDisplay *gdm_display_lookup   (pid_t pid);
 
 #endif /* GDM_DISPLAY_H */
 
