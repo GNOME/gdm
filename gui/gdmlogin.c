@@ -1557,7 +1557,6 @@ gdm_login_language_menu_new (void)
     g1 = gdm_lang_group1 ();
     g2 = gdm_lang_group2 ();
 
-/* HERE */
     for (li = langlist; li != NULL; li = li->next) {
 	    char *lang = li->data;
 	    char *name;
