@@ -1,22 +1,36 @@
-Author:
-	Martin K. Petersen <mkp@mkp.net>
+Note: this file is doomed to always be out of sync with reality
+      Last updated about Aug 20 2003
+  -George
 
-2.2 stuff:
-	George Lebl <jirka@5z.com>
-	Lee Mallabone <lee0@callnetuk.com>
+Main authors:
+	George Lebl <jirka@5z.com> (Everything)
+	Martin K. Petersen <mkp@mkp.net> (Original GDM codebase)
+	Alex Larsson <alexl@redhat.com> (The graphical greeter)
 
 Contributions from:
 	Abel Cheung <maddog@linux.org.hk>
+	Aidan Butler <Aidan.Butler@Sun.COM>
 	Alan Cox <alan@redhat.com>
+	Alex Duggan <aldug@gnome.org>
+	Ali Akcaagac <ali.akcaagac@stud.fh-wilhelmshaven.de>
+	Benedikt Roth <Benedikt.Roth@gmx.net>
+	Brian Cameron <Brian.Cameron@Sun.COM>
 	Carsten Schaar <nhadcasc@fs-maphy.uni-hannover.de>
 	ChiDeok Hwang <hwang@mizi.co.kr>
 	Christopher Blizzard <blizzard@redhat.com>
 	Christian Rose <menthos@menthos.com>
+	Crossfire <xfire@xware.cx>
+	cschelcher@free.fr
 	Cyril Diakhate <diakhate@easynet.fr>
 	Dean Scott <drscott12@hotmail.com>
+	Diego Gonzalez <diego@pemas.net>
 	Elliot Lee <sopwith@redhat.com>
 	Federico Mena Quintero <federico@nuclecu.unam.mx>
+	Fernando Herrera <fherrera@onirica.com>
 	Fernando Pablo Lopez-Lezcano <nando@ccrma.stanford.edu>
+	Frederic Crozat <fcrozat@mandrakesoft.com>
+	Frodo Looijaard <frodol@dds.nl >
+	Gaute Lindkvist <lindkvis@stud.ntnu.no>
 	Gediminas Paulauskas <menesis@delfi.lt>
 	Gregory McLean <gregm@comstar.net>
 	Gregory Leblanc <gleblanc@cu-portland.edu>
@@ -24,74 +38,148 @@ Contributions from:
 	Heeten Choxi <azari.geo@yahoo.com>
 	Ian McKellar <ian@eazel.com>
 	Jacob Berkman <jberk+@cmu.edu>
-	Jeff Garzik  <jgarzik@pobox.com>
+	Jeff Garzik <jgarzik@pobox.com>
 	Jim Bray <jb@cs.wcu.edu>
 	Jochen Friedrich <jochen@scram.de>
-	Jonathan Blandford  <jrb@redhat.com>
+	Jonathan Blandford <jrb@redhat.com>
+	Karsten Petersen <karsten.petersen@informatik.tu-chemnitz.de>
 	Karsten Weiss <karsten@addx.au.s.shuttle.de>
 	Kevin Vajk <kvajk@ricochet.net>
+	Kesor <kesor@mail.ru>
 	Kjartan Maraas <kmaraas@gnome.org>
-	Matthias Clasen <Matthias.Clasen@poet.de>
+	Lee Mallabone <lee0@callnetuk.com>
+	Luis Villa <louie@ximian.com>
 	Mathieu Lacage <mathieu@eazel.com>
 	Matt Forrest <mforrest@scs.ryerson.ca>
+	Matt Wilson <msw@redhat.com>
+	Matthias Clasen <Matthias.Clasen@poet.de>
+	Michael Blandford <mlblandf@sedona.intel.com>
 	Michael K. Johnson <johnsonm@redhat.com>
 	Michel Dagenais <michel.dagenais@polymtl.ca>
+	Mihael Vrbanec <Mihael.Vrbanec@stud.uni-karlsruhe.de>
 	Miguel de Icaza <miguel@kernel.org>
+	Mike Fabian <mfabian@suse.de>
+	Mike Castle <dalgoda@ix.netcom.com>
 	Nalin Dahyabhai <nalin@redhat.com>
 	nalin@thermo.stat.ncsu.edu
+	Niall Power <Niall.Power@Sun.COM>
 	Nils Philippsen <nils@wombat.dialup.fht-esslingen.de>
+	Oswald Buddenhagen <ossi@kde.org>
 	Owen Taylor <otaylor@redhat.com>
+	Patrizio Bruno <desertconsulting@firenze.net>
 	Rémi Cohen-Scali <Remi@Cohen-Scali.com>
+	Rosanna Yuen <zana@webwynk.net>
+	Ross Golder <ross@golder.org>
 	Ryan Murray <rmurray+gnome@cyberhqz.com>
-	Stanislav Brabec  <utx@penguin.cz>
+	Seth Nickell <snickell@stanford.edu>
+	Stanislav Brabec <utx@penguin.cz>
+	Steve Chaplin <stevech1097@yahoo.com.au>
+	Steve Fox <drfickle@uberh4x0r.org>
+	Terje Rosten <terjeros@phys.ntnu.no>
 	Tim Jansen <tim@tjansen.de>
 	Vlad Harchev <hvv@hippo.ru>
 
 Documentation:
+	Brian Cameron <Brian.Cameron@Sun.COM>
+	George Lebl <jirka@5z.com>
+	Martin K. Petersen <mkp@mkp.net>
 	Trevor Curtis <tcurtis@somaradio.ca>
 	Tim Jansen <tim@tjansen.de>
 
 Translators:
+	Abel Cheung <maddog@linux.org.hk>
+	Akira TAGOH <tagoh@gnome.gr.jp>
 	Alastair McKinstry <mckinstry@computer.org>
-	Anders Carlsson <anders.carlsson@tordata.se>
+	Alessio Frusciante <algol@firenze.linux.it>
+	Anders Carlsson <andersca@gnu.org>
+	Andras Timar <timar@gnome.hu>
 	Andraz Tori <andraz.tori1@guest.arnes.si>
 	Andreas Hyden <a.hyden@cyberpoint.se>
-	Benedikt Roth  <Benedikt.Roth@gmx.net>
+	Andrew V. Samoilov <kai@cmail.ru>
+	Artis Trops <hornet@navigator.lv>
+	Artur Flinta <aflinta@cvs.gnome.org>
+	Benedikt Roth <Benedikt.Roth@gmx.net>
+	Benjamin Greiner <nadaschauher@gmx.de>
 	Birger Langkjer <birger.langkjer@image.dk>
 	Carlos Perelló Marín <carlos@hispalinux.es>
-	Changwoo Ryu  <cwryu@adam.kaist.ac.kr>
-	Christian Meyer <chrisime@gnome.org>
-	Christian Rose <menthos@menthos.com>
-	Christophe Merlet  <redfox@eikonex.org>
-	Christopher R. Gabriel  <cgabriel@softwarelibero.org>
+	Dafydd Harries <daf@parnassus.ath.cx>
 	Dan Damian <dand@dnttm.ro>
+	Daniel Yacob <locales@geez.org>
+	Danilo Segan <dsegan@gmx.net>
+	Dmitry G. Mastrukov <dmitry@taurussoft.org>
+	Duarte Loreto <happyguy_pt@hotmail.com>
+	Emese Kovacs <emese@gnome.hu>
+	Evandro Fernandes Giovanini <evandrofg@ig.com.br>
 	Fatih Demir <kabalak@gtranslator.org>
 	Fellmann Joaquim <joaquim@hrnet.fr>
 	Gediminas Paulauskas <menesis@delfi.lt>
+	George Lebl <jirka@5z.com>
+	Germ??n Poo Caama??±o <gpoo@ubiobio.cl>
+	Gil "Dolfin" Osher <dolfin@rpg.org.il>
+	Guntupalli Karunakar <karunakar@freedomink.org>
 	Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+	Gustavo Noronha Silva <kov@debian.org>
+	Hasbullah Bin Pit <sebol@ikhlas.com>
+	He Qiangqiang <carton@linux.net.cn>
+	Changwoo Ryu <cwryu@debian.org>
+	Christian Meyer <chrisime@gnome.org>
+	Christian Neumair <chris@gnome-de.org>
+	Christian Rose <menthos@menthos.com>
+	Christophe Merlet <redfox@redfoxcenter.org>
+	Christopher R. Gabriel <cgabriel@cgabriel.org>
+	Ian McKellar <ian@eazel.com>
 	Jarkko Ranta <jjranta@cc.joensuu.fi>
+	Jesus Bravo Alvarez <jba@pobox.com>
+	Jordi Mallach <jordi@sindominio.net>
+	KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>
+	Kang Jeong-Hee <Keizi@mail.co.kr>
+	Karl Eichwalder <ke@suse.de>
 	Karsten Weiss <karsten@addx.au.s.shuttle.de>
 	Khairulanuar Abd Majid <khai@jaring.my>
-	Kjartan Maraas <kmaraas@online.no>
+	Kjartan Maraas <kmaraas@gnome.org>
+	Kostas Papadimas <pkst@gmx.net>
+	Laurent Dhima <laurenti@alblinux.net>
 	Lauris Kaplinski <lauris@ariman.ee>
-	Marius Andreiana <mandreiana@yahoo.com>
+	Mantas Kriauciunas <mantelis@centras.lt>
+	Manuel Borchers <webmaster@matronix.de>
+	Marius Andreiana <marius galuna.ro>
 	Martin Norbäck <d95mback@dtek.chalmers.se>
-	Matthias Warkus <mawa@iname.com>
+	Matthias Warkus <mawarkus@gnome.org>
+	Metin Amiroff <metin@karegen.com>
 	Mikko Rauhala <mjr@iki.fi>
+	Miloslav Trmac <mitr@volny.cz>
+	Mohammad DAMT <mdamt@bisnisweb.com>
 	Ole Laursen <olau@hardworking.dk>
-	Pablo Saratxaga <srtxg@chanae.alphanet.ch>
+	Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+	Pablo Saratxaga <pablo@mandrakesoft.com>
+	Paul Duffy <dubhthach@frink.nuigalway.ie>
+	Pauli Virtanen <pauli.virtanen@hut.fi>
+	Peteris Krisjanis <peteris.krisjanis@os.lv>
 	Richard Hult <rhult@frenzy.hemmet.chalmers.se>
 	Rodrigo Stulzer Lopes <rodrigo@conectiva.com.br>
+	Roozbeh Pournader <roozbeh@sharif.edu>
+	Ross Golder <ross@golder.org>
+	Roy-Magne Mo <rmo@sunnmore.net>
 	Ruben Lopez <ryu@mundivia.es>
+	Sanlig Badral <badral@chinggis.com>
 	Sergey Panov <sipan@mit.edu>
+	Shooby Ban <bansz@szif.hu>
 	Simos Xenitellis <simos@hellug.gr>
 	Spiros Papadimitriou <spapadim+@cs.cmu.edu>
+	Stanislav Brabec <utx@penguin.cz>
 	Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
 	Szabolcs Ban <shooby@gnome.hu>
+	Takeshi AIHANA <aihana@gnome.gr.jp>
+	Taneem Ahmed <taneem@eyetap.org>
+	Tõivo Leedjärv <toivo@linux.ee>
 	Tristan Tarrant <ttarrant@etnoteam.it>
 	Valek Filippov <frob@df.ru>
 	Ville Hautamäki <villeh@cs.joensuu.fi>
-	Vincent Renardias <vincent@debian.org>
+	Vincent Renardias <vincent@ldsol.com>
+	Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>
+	Wang Jian <lark@linux.net.cn>
+	Yanko Kaneti <yaneti@declera.com>
 	Yukihiro Nakai <nakai@gnome.gr.jp>
 	Yuri Syrota <rasta@renome.rovno.ua>
-	Zbigniew Chyla  <chyla@alice.ci.pwr.wroc.pl>
+	Zbigniew Chyla <cyba@gnome.pl>
+	... And some/many that were likely missed ...
