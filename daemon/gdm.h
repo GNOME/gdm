@@ -128,6 +128,8 @@ enum {
 #define GDM_KEY_ALWAYSRESTARTSERVER "daemon/AlwaysRestartServer=true"
 #define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin"
 #define GDM_KEY_REMOTEGREETER "daemon/RemoteGreeter=" EXPANDED_BINDIR "/gdmlogin"
+#define GDM_KEY_ADD_GTK_MODULES "daemon/AddGtkModules=false"
+#define GDM_KEY_GTK_MODULES_LIST "daemon/GtkModulesList=" "gail:atk-bridge"
 #define GDM_KEY_GROUP "daemon/Group=gdm"
 #define GDM_KEY_HALT "daemon/HaltCommand=/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
 #define GDM_KEY_INITDIR "daemon/DisplayInitDir=" EXPANDED_SYSCONFDIR "/gdm/Init"

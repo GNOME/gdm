@@ -52,6 +52,12 @@ Greeter=@EXPANDED_BINDIR@/gdmlogin
 # Greeter for xdmcp logins, usually you want a less graphically intensive
 # greeter here so it's better to leave this with gdmlogin
 RemoteGreeter=@EXPANDED_BINDIR@/gdmlogin
+# Launch the greeter with an additional list of colon seperated gtk 
+# modules. This is useful for enabling additional feature support 
+# e.g. gnome accessibility framework. Only "trusted" modules should
+# be allowed to minimise security holes
+AddGtkModules=false
+GtkModulesList=gail:atk-bridge
 # User and group that gdm should run as.  Probably should be gdm and gdm and
 # you should create these user and group.  Anyone found running this as
 # someone too privilaged will get a kick in the ass.  This should have

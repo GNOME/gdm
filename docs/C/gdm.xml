@@ -501,6 +501,19 @@
 	  <title>[daemon]</title>
 
 	  <varlistentry>
+	    <term>AddGtkModules</term>
+		<listitem>
+	      <synopsis>AddGtkModules=false</synopsis>
+	      <para>
+	    If true, then enables gdmgreeter/gdmlogin to be launched with
+	    additional Gtk+ modules. This is useful when extra feaures are
+	    required such as accessibile login. Note that only "trusted"
+	    modules should be used to minimise security issues.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>AlwaysRestartServer</term>
 	    <listitem>
 	      <synopsis>AlwaysRestartServer=false</synopsis>
@@ -647,6 +660,18 @@
 	    </listitem>
 	  </varlistentry>
 	  
+	  <varlistentry>
+	    <term>GtkModulesList</term>
+	    <listitem>
+	      <synopsis>GtkModuleList=module-1:module-2:...</synopsis>
+	      <para>
+	    A colon seperated list of Gtk+ modules that gdmgreeter/gdmlogin
+	    will be invoked with if AddGtkModules is true. The format is the 
+	    same as the standard Gtk+ module interface.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
 	  <varlistentry>
 	    <term>HaltCommand</term>
 	    <listitem>

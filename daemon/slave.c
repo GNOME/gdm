@@ -108,12 +108,14 @@ extern gchar *GdmLocaleFile;
 extern gchar *GdmAutomaticLogin;
 extern gboolean GdmAllowRemoteAutoLogin;
 extern gboolean GdmAlwaysRestartServer;
+extern gboolean GdmAddGtkModules;
 extern gchar *GdmConfigurator;
 extern gboolean GdmConfigAvailable;
 extern gboolean GdmSystemMenu;
 extern gint GdmXineramaScreen;
 extern gchar *GdmGreeter;
 extern gchar *GdmRemoteGreeter;
+extern gchar *GdmGtkModulesList;
 extern gchar *GdmChooser;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmPreSession;
@@ -1638,6 +1640,14 @@ gdm_slave_greeter (void)
 		argv = ve_split (GdmGreeter);
 	else
 		argv = ve_split (GdmRemoteGreeter);
+	if (GdmAddGtkModules && !(ve_string_empty(GdmGtkModulesList))) {
+		gchar *modules =  g_strdup_printf("--gtk-module=%s", GdmGtkModulesList);
+		execl (argv[0], argv[0], modules, NULL);
+		/* Something went wrong */
+		gdm_error (_("gdm_slave_greeter: Cannot start greeter with gtk modules: %s. Trying without modules"),
+		   GdmGtkModulesList);
+		g_free(modules);
+	}
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_slave_greeter: Cannot start greeter trying default: %s"),
