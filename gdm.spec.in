@@ -58,10 +58,6 @@ ln -sf Default $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/default
 # Note that this just sets up background and we already do that ourselves
 #ln -sf ../../xdm/Xsetup_0 $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Init/Default
 
-# run GiveConsole/TakeConsole
-ln -sf ../../xdm/GiveConsole $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/PreSession/Default
-ln -sf ../../xdm/TakeConsole $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/PostSession/Default
-
 # done right nowdays
 # move pam.d stuff to right place
 # mv $RPM_BUILD_ROOT%{sysconfdir}/X11/pam.d $RPM_BUILD_ROOT%{sysconfdir}
