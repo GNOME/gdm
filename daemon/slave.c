@@ -3608,9 +3608,12 @@ session_child_run (struct passwd *pwent,
 	}
 
 	if (dmrc != NULL) {
+		mode_t oldmode;
+		oldmode = umask (077);
 		ve_config_save (dmrc, FALSE);
 		ve_config_destroy (dmrc);
 		dmrc = NULL;
+		umask (oldmode);
 	}
 
 	closelog ();
