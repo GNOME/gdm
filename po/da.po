@@ -21,13 +21,75 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.2.4.2\n"
-"POT-Creation-Date: 2002-02-02 15:21+0100\n"
-"PO-Revision-Date: 2002-02-02 15:31+0100\n"
+"POT-Creation-Date: 2002-02-23 14:54+0100\n"
+"PO-Revision-Date: 2002-02-23 14:54+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Dansk/Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: config/gettextfoo.h:1
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  You will need to log in on a console and rerun "
+"the X configuration program.  Then restart GDM."
+msgstr ""
+"X-serveren (den grafisk grænseflade) kan ikke startes op. Sandsynligvis er "
+"den ikke indstillet korrekt. Du bliver nødt til at logge ind ved en konsol "
+"og køre opsætningsprogrammet til X igen. Genstart derefter GDM."
+
+#: config/gettextfoo.h:2
+msgid ""
+"Would you like me to try to run the X configuration program?  Note that you "
+"will need the root password for this."
+msgstr ""
+"Vil du have at jeg skal prøve at køre konfigurationsprogrammet for X? Bemærk "
+"at du skal have administratoradgangskoden for at kunne gøre dette."
+
+#: config/gettextfoo.h:3
+msgid "Please type in the root (privileged user) password."
+msgstr "Indtast venligst administratorkodeordet."
+
+#: config/gettextfoo.h:4
+msgid "I will now try to restart the X server again."
+msgstr "X-serveren forsøges nu genstartet."
+
+#: config/gettextfoo.h:5
+msgid ""
+"I will disable this X server for now.  Restart GDM when it is configured "
+"correctly."
+msgstr ""
+"Denne X-server bliver indtil videre deaktiveret. Genstart GDM når den er sat "
+"korrekt op."
+
+#: config/gettextfoo.h:6
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  Would you like to view the X server output to "
+"diagnose the problem?"
+msgstr ""
+"Kan ikke starte X-serveren (den grafiske grænseflade). Sandsynligvis er den "
+"ikke sat rigtigt op. Vil du se udskriften fra X-serveren for at "
+"diagnosticere problemet?"
+
+#: config/gettextfoo.h:7
+msgid ""
+"I cannot start the X server (your graphical interface).  It seems that the "
+"pointer device (your mouse) is not set up correctly.  Would you like to view "
+"the X server output to diagnose the problem?"
+msgstr ""
+"Kan ikke starte X-serveren (den grafiske grænseflade). Sandsynligvis er "
+"pegeredskabet (din mus) ikke sat rigtigt op. Vil du se udskriften fra X-"
+"serveren for at diagnosticere problemet?"
+
+#: config/gettextfoo.h:8
+msgid ""
+"Would you like me to try to run the mouse configuration program?  Note that "
+"you will need the root password for this."
+msgstr ""
+"Vil du have at jeg skal prøve at køre konfigurationsprogrammet til musen? "
+"Bemærk at du skal have administratoradgangskoden for at kunne gøre dette."
 
 # src/gdmauth.c:96
 #: daemon/auth.c:146
@@ -205,16 +267,16 @@ msgstr "gdm_config_parse: Ugyldig serverlinje i konfigurationsfil. Ignorerer!"
 #: daemon/gdm.c:453
 #, c-format
 msgid ""
-"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
+"%s: XDMCP disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
 "d to allow configuration!"
 msgstr ""
-"%s: Xdmcp er deaktiveret og ingen lokale servere defineret. Tilføjer /usr/"
+"%s: XDMCP er deaktiveret og ingen lokale servere defineret. Tilføjer /usr/"
 "bin/X11/X på :%d for at tillade konfiguration!"
 
 #: daemon/gdm.c:468
 #, c-format
 msgid ""
-"Xdmcp is disabled and gdm cannot find any local server to start.  Aborting!  "
+"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
 "Please correct the configuration %s and restart gdm."
 msgstr ""
 "XDMCP er deaktiveret og GDM kan ikke finde nogen lokal server at starte. "
@@ -223,9 +285,9 @@ msgstr ""
 # src/gdm.c:221
 #: daemon/gdm.c:475
 msgid ""
-"gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
+"gdm_config_parse: XDMCP disabled and no local servers defined. Aborting!"
 msgstr ""
-"gdm_config_parse: Xdmcp slået fra og ingen lokale servere angivet. Afbryder!"
+"gdm_config_parse: XDMCP slået fra og ingen lokale servere angivet. Afbryder!"
 
 # src/gdm.c:226
 #: daemon/gdm.c:483
@@ -636,7 +698,10 @@ msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
 "higher.)"
-msgstr "(Du kan skifte konsol ved at trykke <ctrl>-<alt> plus en funktionstast, så som <ctrl>-<alt>-F7 for at gå til konsol 7. X-servere kører normalt på konsol 7 og højere.)"
+msgstr ""
+"(Du kan skifte konsol ved at trykke <ctrl>-<alt> plus en funktionstast, så "
+"som <ctrl>-<alt>-F7 for at gå til konsol 7. X-servere kører normalt på "
+"konsol 7 og højere.)"
 
 #: daemon/server.c:214
 #, c-format
@@ -848,7 +913,7 @@ msgstr "gdm_slave_greeter: Kan ikke åbne videreledning til gdm-velkomstbyder"
 #: daemon/slave.c:1197
 msgid ""
 "No servers were defined in the\n"
-"configuration file and xdmcp was\n"
+"configuration file and XDMCP was\n"
 "disabled.  This can only be a\n"
 "configuration error.  So I have started\n"
 "a single server for you.  You should\n"
@@ -857,7 +922,7 @@ msgid ""
 "are disabled now."
 msgstr ""
 "Ingen servere er defineret i\n"
-"konfigurationsfilen, og xdmcp er\n"
+"konfigurationsfilen, og XDMCP er\n"
 "deaktiveret. Dette kan kun være en\n"
 "opsætningsfejl, så der er blevet startet\n"
 "en enkelt server til dig. Du bør logge\n"
@@ -1333,12 +1398,16 @@ msgstr "Kunne ikke sætte akkreditiver for %s"
 msgid "Couldn't open session for %s"
 msgstr "Kunne ikke åbne session for %s"
 
-#: daemon/verify-pam.c:440
+#: daemon/verify-pam.c:440 daemon/verify-shadow.c:127
+#: daemon/verify-shadow.c:147
 msgid ""
 "\n"
 "Incorrect username or password. Letters must be typed in the correct case. "
 "Please make sure the Caps Lock key is not enabled."
-msgstr "\nUgyldigt brugernavn eller adgangskode. Bemærk at der skelnes mellem store og små bogstaver. Tjek at Caps Lock-tasten ikke er aktiveret."
+msgstr ""
+"\n"
+"Ugyldigt brugernavn eller adgangskode. Bemærk at der skelnes mellem store og "
+"små bogstaver. Tjek at Caps Lock-tasten ikke er aktiveret."
 
 # dækker vist nogenlunde, test før der rettes til noget andet
 #: daemon/verify-pam.c:446 daemon/verify-pam.c:501
@@ -1348,21 +1417,14 @@ msgstr "Logind ikke godkendt"
 #: daemon/verify-pam.c:537
 msgid ""
 "\n"
-"The system administrator has your disabled access to the system temporary."
+"The system administrator has disabled your access to the system temporary."
 msgstr ""
 "\n"
-"Systemadministratoren har deaktiveret adgang til systemet midlertidigt."
+"Systemadministratoren har deaktiveret din adgang til systemet midlertidigt."
 
 #: daemon/verify-pam.c:655 daemon/verify-pam.c:657
 msgid "Can't find PAM configuration for gdm."
 msgstr "Kan ikke finde PAM-konfigurationsfil for GDM"
-
-#: daemon/verify-shadow.c:127 daemon/verify-shadow.c:147
-msgid ""
-"\n"
-"Incorrect username or password. Letters must be typed in the correct case. "
-"Please make sure the Caps Lock key is not enabled"
-msgstr "\nUgyldigt brugernavn eller adgangskode. Bemærk at der skelnes mellem store og små bogstaver. Tjek at Caps Lock-tasten ikke er aktiveret"
 
 # src/gdmxdmcp.c:170
 #: daemon/xdmcp.c:239
@@ -1608,7 +1670,7 @@ msgstr "gdm_signals_init: Fejl under opsætning af INT-signalhåndtering"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Fejl under opsætning af TERM-signalhåndtering"
 
-#: gui/gdmchooser.c:1000 gui/gdmlogin.c:3832 gui/greeter/greeter.c:623
+#: gui/gdmchooser.c:1000 gui/gdmlogin.c:3832 gui/greeter/greeter.c:645
 msgid "Could not set signal mask!"
 msgstr "Kunne ikke sætte signalmaske!"
 
@@ -1916,7 +1978,7 @@ msgid ""
 "Usually this is not a good idea unless you\n"
 "are sure you do not want users to be able to\n"
 "log in with the graphical interface on the\n"
-"local console and only use the xdmcp service.\n"
+"local console and only use the XDMCP service.\n"
 "\n"
 "Are you sure you wish to apply these settings?"
 msgstr ""
@@ -2183,10 +2245,10 @@ msgstr "Tillad brugere at få adgang til indstillingerne fra systemmenuen"
 #: gui/gdmconfig-strings.c:30
 msgid ""
 "If the user fails to authenticate himself the login window should Quiver to "
-"indicate failiure"
+"indicate failure"
 msgstr ""
-"Hvis brugeren ikke bliver godkendt, kan logindvinduet simulere et jordskælv "
-"for at indikere fiasko"
+"Hvis brugeren ikke bliver godkendt, simulerer logindvinduet et jordskælv for "
+"at indikere fiasko"
 
 #: gui/gdmconfig-strings.c:31
 msgid "Quiver on failure"
@@ -2433,8 +2495,8 @@ msgstr "Xinerama-skærm: "
 
 #: gui/gdmconfig-strings.c:90
 msgid ""
-"If you have xinerama multi display setup which screen should the loginw "
-"indow appear on.  0 will usually do just fine."
+"If you have xinerama multi display setup which screen should the login "
+"window appear on.  0 will usually do just fine."
 msgstr ""
 "Angiver hvilken skærm logindvinduet skal vises på ved en Xinerama-"
 "multiskærmsterminal. 0 er sædvanligvis fint."
@@ -3003,6 +3065,7 @@ msgstr ""
 "Vis Gnome-vælger-sessionen hvis en session med navnet 'Gnome' er til stede"
 
 #: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:71 gui/gdmlogin.c:1452
+#: gui/greeter/greeter_session.c:343
 msgid "Gnome Chooser"
 msgstr "Med Gnome-sessionsvalg"
 
@@ -3620,17 +3683,17 @@ msgstr ""
 "Du kan sandsynligvis heller ikke logge på."
 
 # src/gdmgreeter.c:451
-#: gui/gdmlogin.c:761
+#: gui/gdmlogin.c:761 gui/greeter/greeter_system.c:17
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Er du sikker på at du vil genstarte maskinen?"
 
 # src/gdmgreeter.c:451
-#: gui/gdmlogin.c:773
+#: gui/gdmlogin.c:773 gui/greeter/greeter_system.c:28
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Er du sikker på at du vil lukke maskinen ned?"
 
 # src/gdmgreeter.c:451
-#: gui/gdmlogin.c:784
+#: gui/gdmlogin.c:784 gui/greeter/greeter_system.c:38
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Er du sikker på at du vil lade maskinen gå i dvale?"
 
@@ -3646,16 +3709,18 @@ msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr ""
 "Pausen før tidsindstillet logind var mindre end 5, så 5 benyttes i stedet."
 
-#: gui/gdmlogin.c:925 gui/gdmlogin.c:1500
+#: gui/gdmlogin.c:925 gui/gdmlogin.c:1500 gui/greeter/greeter_session.c:64
+#: gui/greeter/greeter_session.c:390
 msgid "Failsafe Gnome"
 msgstr "Fejlsikret Gnome"
 
-#: gui/gdmlogin.c:927 gui/gdmlogin.c:1525
+#: gui/gdmlogin.c:927 gui/gdmlogin.c:1525 gui/greeter/greeter_session.c:66
+#: gui/greeter/greeter_session.c:416
 msgid "Failsafe xterm"
 msgstr "Fejlsikret xterm"
 
 # src/gdmgreeter.c:357
-#: gui/gdmlogin.c:973
+#: gui/gdmlogin.c:973 gui/greeter/greeter_session.c:110
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -3666,6 +3731,7 @@ msgstr ""
 
 # src/gdmgreeter.c:349
 #: gui/gdmlogin.c:998 gui/gdmlogin.c:1086
+#: gui/greeter/greeter_action_language.c:191 gui/greeter/greeter_session.c:138
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -3679,7 +3745,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:1014
+#: gui/gdmlogin.c:1014 gui/greeter/greeter_session.c:156
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -3697,21 +3763,21 @@ msgstr ""
 msgid "%s session selected"
 msgstr "%s-session valgt"
 
-#: gui/gdmlogin.c:1342
+#: gui/gdmlogin.c:1342 gui/greeter/greeter_session.c:229
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Log ind med den session du brugte sidste gang du loggede på"
 
 # src/gdmgreeter.c:737
-#: gui/gdmlogin.c:1355
+#: gui/gdmlogin.c:1355 gui/greeter/greeter_session.c:242
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "egdm_login_session_init: Sessionens programmappe ikke fundet!"
 
-#: gui/gdmlogin.c:1440
+#: gui/gdmlogin.c:1440 gui/greeter/greeter_session.c:329
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr "Denne session logger dig direkte på Gnome i din nuværende session."
 
-#: gui/gdmlogin.c:1455
+#: gui/gdmlogin.c:1455 gui/greeter/greeter_session.c:346
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
@@ -3719,11 +3785,11 @@ msgstr ""
 "Den session logger dig på Gnome og lader dig vælge hvilken en af Gnome-"
 "sessionerne du ønsker at benytte."
 
-#: gui/gdmlogin.c:1490
+#: gui/gdmlogin.c:1490 gui/greeter/greeter_session.c:379
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Hjælp, intet fundet i sessionsmappen."
 
-#: gui/gdmlogin.c:1502
+#: gui/gdmlogin.c:1502 gui/greeter/greeter_session.c:392
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -3733,7 +3799,7 @@ msgstr ""
 "opstartsprogrammer bliver kørt, og session er kun beregnet til når du ellers "
 "ikke kan logge på. Gnome vil bruge standardsessionen."
 
-#: gui/gdmlogin.c:1527
+#: gui/gdmlogin.c:1527 gui/greeter/greeter_session.c:418
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3744,7 +3810,7 @@ msgstr ""
 "ikke kan logge på. For at afslutte terminalen, skriv 'exit'."
 
 # src/gdmgreeter.c:794
-#: gui/gdmlogin.c:1548
+#: gui/gdmlogin.c:1548 gui/greeter/greeter_session.c:440
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 "Ingen automatisk valgt sessionshenvisning fundet. Bruger fejlsikret Gnome.\n"
@@ -3868,8 +3934,8 @@ msgstr "Frakobl"
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Kan ikke åbne standardbillede: %s. Bruger ikke ansigtsvælger!"
 
-#: gui/gdmlogin.c:3700 gui/gdmlogin.c:3727 gui/greeter/greeter.c:465
-#: gui/greeter/greeter.c:491
+#: gui/gdmlogin.c:3700 gui/gdmlogin.c:3727 gui/greeter/greeter.c:377
+#: gui/greeter/greeter.c:403
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3881,12 +3947,12 @@ msgstr ""
 "enten GDM-dæmonen eller maskinen."
 
 # src/gdmgreeter.c:980
-#: gui/gdmlogin.c:3733 gui/gdmlogin.c:3773 gui/greeter/greeter.c:497
-#: gui/greeter/greeter.c:537
+#: gui/gdmlogin.c:3733 gui/gdmlogin.c:3773 gui/greeter/greeter.c:409
+#: gui/greeter/greeter.c:449
 msgid "Reboot"
 msgstr "Genstart maskinen"
 
-#: gui/gdmlogin.c:3765 gui/greeter/greeter.c:529
+#: gui/gdmlogin.c:3765 gui/greeter/greeter.c:441
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3897,22 +3963,22 @@ msgstr ""
 "Du har sandsynligvis lige opgraderet GDM. Genstart venligst\n"
 "enten GDM-dæmonen eller maskinen."
 
-#: gui/gdmlogin.c:3771 gui/greeter/greeter.c:535
+#: gui/gdmlogin.c:3771 gui/greeter/greeter.c:447
 msgid "Restart"
 msgstr "Genstart"
 
 # src/gdmgreeter.c:1597
-#: gui/gdmlogin.c:3809 gui/greeter/greeter.c:608
+#: gui/gdmlogin.c:3809 gui/greeter/greeter.c:630
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Fejl under opsætning af HUP-signalhåndtering"
 
 # src/gdmgreeter.c:1600
-#: gui/gdmlogin.c:3812 gui/greeter/greeter.c:611
+#: gui/gdmlogin.c:3812 gui/greeter/greeter.c:633
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Fejl under opsætning af INT-signalhåndtering"
 
 # src/gdmgreeter.c:1603
-#: gui/gdmlogin.c:3815 gui/greeter/greeter.c:614
+#: gui/gdmlogin.c:3815 gui/greeter/greeter.c:636
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Fejl under opsætning af TERM-signalhåndtering"
 
@@ -4082,146 +4148,163 @@ msgid "Could not find a free display number"
 msgstr "Kunne ikke finde et ledigt skærmnummer"
 
 # src/gdmgreeter.c:224
-#: gui/greeter/greeter.c:35
+#: gui/greeter/greeter.c:46
 #, c-format
 msgid "greeter_parse_config: No configuration file: %s. Using defaults."
-msgstr "greeter_parse_config: Ingen konfigurationsfil: %s. Bruger standardværdier."
+msgstr ""
+"greeter_parse_config: Ingen konfigurationsfil: %s. Bruger standardværdier."
 
-#: gui/greeter/greeter_lang_list.c:5
+#: gui/greeter/greeter_lang_list.c:11
 msgid "Catalan"
 msgstr "Katalansk"
 
-#: gui/greeter/greeter_lang_list.c:6
+#: gui/greeter/greeter_lang_list.c:12
 msgid "Chinese (simplified)"
 msgstr "Kinesisk (forenklet)"
 
-#: gui/greeter/greeter_lang_list.c:7
+#: gui/greeter/greeter_lang_list.c:13
 msgid "Chinese (traditional)"
 msgstr "Kinesisk (traditionel)"
 
-#: gui/greeter/greeter_lang_list.c:8
+#: gui/greeter/greeter_lang_list.c:14
 msgid "Croatian"
 msgstr "Kroatisk"
 
-#: gui/greeter/greeter_lang_list.c:9
+#: gui/greeter/greeter_lang_list.c:15
 msgid "Czech"
 msgstr "Tjekkisk"
 
-#: gui/greeter/greeter_lang_list.c:10
+#: gui/greeter/greeter_lang_list.c:16
 msgid "Danish"
 msgstr "Dansk"
 
-#: gui/greeter/greeter_lang_list.c:11
+#: gui/greeter/greeter_lang_list.c:17
 msgid "Dutch"
 msgstr "Hollandsk"
 
-#: gui/greeter/greeter_lang_list.c:12
+#: gui/greeter/greeter_lang_list.c:18
 msgid "English"
 msgstr "Engelsk"
 
-#: gui/greeter/greeter_lang_list.c:13
+#: gui/greeter/greeter_lang_list.c:19
 msgid "American English"
 msgstr "Amerikansk engelsk"
 
-#: gui/greeter/greeter_lang_list.c:14
+#: gui/greeter/greeter_lang_list.c:20
 msgid "British English"
 msgstr "Britisk engelsk"
 
-#: gui/greeter/greeter_lang_list.c:15
+#: gui/greeter/greeter_lang_list.c:21
+msgid "Estonian"
+msgstr "Estisk"
+
+#: gui/greeter/greeter_lang_list.c:22
 msgid "Finnish"
 msgstr "Finsk"
 
-#: gui/greeter/greeter_lang_list.c:16
+#: gui/greeter/greeter_lang_list.c:23
 msgid "French"
 msgstr "Fransk"
 
-#: gui/greeter/greeter_lang_list.c:17
+#: gui/greeter/greeter_lang_list.c:24
 msgid "Galician"
 msgstr "Galisisk"
 
-#: gui/greeter/greeter_lang_list.c:18
+#: gui/greeter/greeter_lang_list.c:25
 msgid "German"
 msgstr "Tysk"
 
-#: gui/greeter/greeter_lang_list.c:19
+#: gui/greeter/greeter_lang_list.c:26
 msgid "Greek"
 msgstr "Græsk"
 
-#: gui/greeter/greeter_lang_list.c:20
+#: gui/greeter/greeter_lang_list.c:27
 msgid "Hebrew"
 msgstr "Hebraisk"
 
-#: gui/greeter/greeter_lang_list.c:21
+#: gui/greeter/greeter_lang_list.c:28
 msgid "Hungarian"
 msgstr "Ungarsk"
 
-#: gui/greeter/greeter_lang_list.c:22
+#: gui/greeter/greeter_lang_list.c:29
 msgid "Icelandic"
 msgstr "Islandsk"
 
-#: gui/greeter/greeter_lang_list.c:23
+#: gui/greeter/greeter_lang_list.c:30
 msgid "Italian"
 msgstr "Italiensk"
 
-#: gui/greeter/greeter_lang_list.c:24
+#: gui/greeter/greeter_lang_list.c:31
 msgid "Japanese"
 msgstr "Japansk"
 
-#: gui/greeter/greeter_lang_list.c:25
+#: gui/greeter/greeter_lang_list.c:32
 msgid "Korean"
 msgstr "Koreansk"
 
-#: gui/greeter/greeter_lang_list.c:26
+#: gui/greeter/greeter_lang_list.c:33
 msgid "Lithuanian"
 msgstr "Litauisk"
 
-#: gui/greeter/greeter_lang_list.c:27
+#: gui/greeter/greeter_lang_list.c:34
 msgid "Norwegian (bokmal)"
 msgstr "Norsk (bokmål)"
 
-#: gui/greeter/greeter_lang_list.c:28
+#: gui/greeter/greeter_lang_list.c:35
 msgid "Norwegian (nynorsk)"
 msgstr "Norsk (nynorsk)"
 
-#: gui/greeter/greeter_lang_list.c:29
+#: gui/greeter/greeter_lang_list.c:36
 msgid "Polish"
 msgstr "Polsk"
 
-#: gui/greeter/greeter_lang_list.c:30
+#: gui/greeter/greeter_lang_list.c:37
 msgid "Portuguese"
 msgstr "Portugisisk"
 
-#: gui/greeter/greeter_lang_list.c:31
+#: gui/greeter/greeter_lang_list.c:38
 msgid "Brazilian Portuguese"
 msgstr "Brasiliansk portugisisk"
 
-#: gui/greeter/greeter_lang_list.c:32
+#: gui/greeter/greeter_lang_list.c:39
 msgid "Romanian"
 msgstr "Romansk"
 
-#: gui/greeter/greeter_lang_list.c:33
+#: gui/greeter/greeter_lang_list.c:40
 msgid "Russian"
 msgstr "Russisk"
 
-#: gui/greeter/greeter_lang_list.c:34
+#: gui/greeter/greeter_lang_list.c:41
 msgid "Slovak"
 msgstr "Slovakisk"
 
-#: gui/greeter/greeter_lang_list.c:35
+#: gui/greeter/greeter_lang_list.c:42
 msgid "Slovenian"
 msgstr "Slovensk"
 
-#: gui/greeter/greeter_lang_list.c:36
+#: gui/greeter/greeter_lang_list.c:43
 msgid "Spanish"
 msgstr "Spansk"
 
-#: gui/greeter/greeter_lang_list.c:37
+#: gui/greeter/greeter_lang_list.c:44
 msgid "Swedish"
 msgstr "Svensk"
 
-#: gui/greeter/greeter_lang_list.c:38
+#: gui/greeter/greeter_lang_list.c:45
 msgid "Turkish"
 msgstr "Tyrkisk"
+
+#: gui/greeter/greeter_system.c:59
+msgid "Shut down the computer"
+msgstr "Luk maskinen ned"
+
+#: gui/greeter/greeter_system.c:67
+msgid "Suspend the computer"
+msgstr "Lad maskinen gå i dvale"
+
+#: gui/greeter/greeter_system.c:75
+msgid "Reboot the computer"
+msgstr "Genstart maskinen"
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
@@ -4312,67 +4395,21 @@ msgstr ""
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Ingen grænseflade kunne indlæses! (fil: %s)"
 
-#: config/gettextfoo.h:1
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  You will need to log in on a console and rerun "
-"the X configuration program.  Then restart GDM."
-msgstr ""
-"X-serveren (den grafisk grænseflade) kan ikke startes op. Sandsynligvis er "
-"den ikke indstillet korrekt. Du bliver nødt til at logge ind ved en konsol "
-"og køre opsætningsprogrammet til X igen. Genstart derefter GDM."
+#~ msgid ""
+#~ "\n"
+#~ "The system administrator has your disabled access to the system temporary."
+#~ msgstr ""
+#~ "\n"
+#~ "Systemadministratoren har deaktiveret adgang til systemet midlertidigt."
 
-#: config/gettextfoo.h:2
-msgid ""
-"Would you like me to try to run the X configuration program?  Note that you "
-"will need the root password for this."
-msgstr ""
-"Vil du have at jeg skal prøve at køre konfigurationsprogrammet for X? Bemærk "
-"at du skal have administratoradgangskoden for at kunne gøre dette."
-
-#: config/gettextfoo.h:3
-msgid "Please type in the root (privilaged user) password."
-msgstr "Indtast venligst administratorkodeordet (root)."
-
-#: config/gettextfoo.h:4
-msgid "I will now try to restart the X server again."
-msgstr "X-serveren forsøges nu startet igen."
-
-#: config/gettextfoo.h:5
-msgid ""
-"I will disable this X server for now.  Restart GDM when it is configured "
-"correctly."
-msgstr ""
-"Denne X-server bliver indtil videre deaktiveret. Genstart GDM når den er sat "
-"korrekt op."
-
-#: config/gettextfoo.h:6
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  Would you like to view the X server output to "
-"diagnose the problem?"
-msgstr ""
-"Kan ikke starte X-serveren (den grafiske grænseflade). Sandsynligvis er den "
-"ikke sat rigtigt op. Vil du se udskriften fra X-serveren for at "
-"diagnosticere problemet?"
-
-#: config/gettextfoo.h:7
-msgid ""
-"I cannot start the X server (your graphical interface).  It seems that the "
-"pointer device (your mouse) is not set up correctly.  Would you like to view "
-"the X server output to diagnose the problem?"
-msgstr ""
-"Kan ikke starte X-serveren (den grafiske grænseflade). Sandsynligvis er "
-"pegeredskabet (din mus) ikke sat rigtigt op. Vil du se udskriften fra X-"
-"serveren for at diagnosticere problemet?"
-
-#: config/gettextfoo.h:8
-msgid ""
-"Would you like me to try to run the mouse configuration program?  Note that "
-"you will need the root password for this."
-msgstr ""
-"Vil du have at jeg skal prøve at køre konfigurationsprogrammet til musen? "
-"Bemærk at du skal have administratoradgangskoden for at kunne gøre dette."
+#~ msgid ""
+#~ "\n"
+#~ "Incorrect username or password. Letters must be typed in the correct "
+#~ "case. Please make sure the Caps Lock key is not enabled"
+#~ msgstr ""
+#~ "\n"
+#~ "Ugyldigt brugernavn eller adgangskode. Bemærk at der skelnes mellem store "
+#~ "og små bogstaver. Tjek at Caps Lock-tasten ikke er aktiveret"
 
 #~ msgid "gdm_error_box: Failed to execute self"
 #~ msgstr "gdm_error_box: Det mislykkedes at køre programmet selv"
@@ -4412,9 +4449,6 @@ msgstr ""
 
 #~ msgid "A-M|Bulgarian"
 #~ msgstr "A-M|Bulgarsk"
-
-#~ msgid "A-M|Estonian"
-#~ msgstr "A-M|Estisk"
 
 #~ msgid "A-M|Latvian"
 #~ msgstr "A-M|Lettisk"
