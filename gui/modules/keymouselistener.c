@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <syslog.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -81,7 +82,7 @@ static int lineno = 0;
 static GSList *gesture_list = NULL;
 extern char **environ;
 
-static gchar * screen_exec_display_string (GdkScreen *screen);
+static gchar * screen_exec_display_string (GdkScreen *screen, const char *old);
 static void create_event_watcher ();
 static void load_gestures(gchar *path);
 static gchar ** get_exec_environment (XEvent *xevent);
@@ -92,7 +93,7 @@ gestures_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data);
 static gint is_mouseX (const gchar *string);
 			
 static gchar *
-screen_exec_display_string (GdkScreen *screen)
+screen_exec_display_string (GdkScreen *screen, const char *old)
 {
 #ifdef HAVE_GTK_MULTIHEAD
 	GString    *str;
@@ -119,7 +120,10 @@ screen_exec_display_string (GdkScreen *screen)
 
 	return retval;
 #else
-	return g_strdup ("DISPLAY=:0.0");
+	if (old)
+		return g_strdup (old);
+	else
+		return g_strdup ("DISPLAY=:0.0");
 #endif
 }
 
@@ -162,6 +166,7 @@ load_gestures(gchar *path)
 		/*
 		 * Is the key already associated with an existing gesture?
 		 */
+			/* TODO - This leaks the tmp_gesture lots */
 			if (!strcmp(tmp_gesture->gesture_str, "<Add>")) {
 				/*
 				 * Add another action to the last gesture
@@ -221,11 +226,11 @@ get_exec_environment (XEvent *xevent)
 	if (display_index == -1)
 		display_index = i++;
 
-	retval = g_new (char *, i + 1);
+	retval = g_new0 (char *, i + 1);
 
 	for (i = 0; environ [i]; i++)
  		if (i == display_index)
-  			retval [i] = screen_exec_display_string (screen);
+  			retval [i] = screen_exec_display_string (screen, environ[i]);
 	else
 		retval [i] = g_strdup (environ [i]);
 
@@ -237,7 +242,6 @@ get_exec_environment (XEvent *xevent)
 static Gesture *
 parse_line(gchar *buf)
 {
-	gchar *c;
 	gchar *keystring;
 	gchar *keyservice;
 	gint button = 0;
@@ -254,22 +258,17 @@ parse_line(gchar *buf)
 		return NULL;
 	
 	tmp_gesture = g_new0 (Gesture, 1);
-	keystring = c = buf;
 
 	/*
 	 * Find the key name
 	 */
-	while(!(isspace(*c))) {
-		if(iseol(*c)) {
+	keystring = strtok (buf, " \t\n\r\f");
+	if (keystring == NULL) {
 		/* TODO - Error messages */
-			return NULL;
-		}
-		c++;
+		return NULL;
 	}
 
-	*c++ = '\0';
-	tmp_gesture->gesture_str = (gchar *)g_malloc(strlen(keystring) + 1);
-	strncpy(tmp_gesture->gesture_str, keystring, strlen(keystring)+1);
+	tmp_gesture->gesture_str = g_strdup (keystring);
 
 	if(strcmp(tmp_gesture->gesture_str, "<Add>")) {
 		guint n, duration, timeout;
@@ -289,28 +288,17 @@ parse_line(gchar *buf)
 		/* [TODO] Need to clean up here. */
 		 
 		/*
-	 	 * Skip over white space
-	 	 */
-		do {
-			if (iseol(*c)) {
-				/* Add an error message */
-				return NULL;
-			}
-		} while (isspace(*c) && (c++));
-
-		/*
 		 * Find the repetition number
 		 */
-		tmp_string = c;
-		while(!(isspace(*c))) {
-			if(!isdigit(*c)) {
-				/* Add an error message */
-				return NULL;
-			}
-			c++;
+		tmp_string = strtok (NULL, " \t\n\r\f");
+		if (tmp_string == NULL) {
+			/* TODO - Error messages */
+			return NULL;
 		}
 
-		*c++ = '\0';
+		/* TODO - the above doesn't check for the string to
+		   be all digits */
+
 		if ((n=atoi(tmp_string)) <= 0) {
 				/* Add an error message */
 			return NULL;
@@ -318,28 +306,16 @@ parse_line(gchar *buf)
 		tmp_gesture->n_times = n;
 
 		/*
-	 	 * Skip over white space
-	 	 */
-	 	 do {
-			if (iseol(*c)) {
-				/* Add an error message */
-				return NULL;
-			}
-		} while (isspace(*c) && (c++));
-
-		/*
 		 * Find the key press duration (in ms)
 		 */
-		tmp_string = c;
-		while(!(isspace(*c))) {
-			if(!isdigit(*c)) {
-				/* Add an error message */
-				return NULL;
-			}
-			c++;
+		tmp_string = strtok (NULL, " \t\n\r\f");
+		if (tmp_string == NULL) {
+			/* TODO - Error messages */
+			return NULL;
 		}
+		/* TODO - the above doesn't check for the string to
+		   be all digits */
 
-		*c++ = '\0';
 		if ((duration=atoi(tmp_string)) < 0) {
 				/* Add an error message */
 			return NULL;
@@ -347,31 +323,16 @@ parse_line(gchar *buf)
 		tmp_gesture->duration = duration;
 
 		/*
-	 	 * Skip over white space
-	 	 */
-	 	 do {
-			if (iseol(*c)) {
-				/* Add an error message */
-				return NULL;
-			}
-		} while (isspace(*c) && (c++));
-
-		/*
 		 * Find the timeout duration (in ms). Timeout value is the 
 		 * time within which consecutive keypress actions must be performed
 		 * by the user before the sequence is discarded.
 		 */
-
-		tmp_string = c;
-		while(!(isspace(*c))) {
-			if(!isdigit(*c)) {
-				/* Add an error message */
-				return NULL;
-			}
-			c++;
+		tmp_string = strtok (NULL, " \t\n\r\f");
+		if (tmp_string == NULL) {
+			/* TODO - Error messages */
+			return NULL;
 		}
 
-		*c++ = '\0';
 		if ((timeout=atoi(tmp_string)) <= 0) {
 				/* Add an error message */;
 			return NULL;
@@ -382,16 +343,14 @@ parse_line(gchar *buf)
 	/*
 	 * Find servcice. Permit blank space so arguments can be supplied.
 	 */
-	do {
-		if (iseol(*c)) {
-				/* Add an error message */
-			return NULL;
-		}
-	} while (isspace(*c) && (c++));
-
-	keyservice = c;
-	for (; !iseol(*c); c++);
-	*c = '\0';
+	keyservice = strtok (NULL, "\n\r\f");
+	if (keyservice == NULL) {
+		/* TODO - Error messages */
+		return NULL;
+	}
+	/* skip over initial whitespace */
+	while (*keyservice && isspace (*keyservice))
+		keyservice++;
 	tmp_gesture->actions = g_slist_append(tmp_gesture->actions, g_strdup(keyservice));
 	return tmp_gesture;
 }

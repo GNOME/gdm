@@ -327,6 +327,9 @@ parse_line(gchar *buf)
       free_binding (tmp_binding);
       return NULL;
     }
+  /* skip over initial whitespace */
+  while (*keyservice && isspace (*keyservice))
+    keyservice++;
 
   tmp_binding->actions = g_slist_append (tmp_binding->actions, g_strdup (keyservice));
 
