@@ -18,10 +18,11 @@
 
 #include <config.h>
 #include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
+#include <gtk/gtkmessagedialog.h>
 #include <grp.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <syslog.h>
 #include <security/pam_appl.h>
 #include <pwd.h>
@@ -171,7 +172,7 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 		case PAM_ERROR_MSG:
 			/* PAM sent a message that should displayed to the user */
 			gdm_error_box (cur_gdm_disp,
-				       GNOME_MESSAGE_BOX_ERROR,
+				       GTK_MESSAGE_ERROR,
 				       _((gchar *) msg[replies]->msg));
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
@@ -180,7 +181,7 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 		case PAM_TEXT_INFO:
 			/* PAM sent a message that should displayed to the user */
 			gdm_error_box (cur_gdm_disp,
-				       GNOME_MESSAGE_BOX_INFO,
+				       GTK_MESSAGE_INFO,
 				       _((gchar *) msg[replies]->msg));
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
@@ -496,7 +497,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
 	    if (gdm_slave_should_complain ()) {
 		    gdm_error (_("Couldn't authenticate user"));
 		    gdm_error_box (cur_gdm_disp,
-				   GNOME_MESSAGE_BOX_ERROR,
+				   GTK_MESSAGE_ERROR,
 				   _("Authentication failed"));
 	    }
 	    goto setup_pamerr;
@@ -516,7 +517,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
 	if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
 	    gdm_error (_("Authentication token change failed for user %s"), login);
 	    gdm_error_box (cur_gdm_disp,
-			   GNOME_MESSAGE_BOX_ERROR,
+			   GTK_MESSAGE_ERROR,
 		    _("\nThe change of the authentication token failed. "
 		      "Please try again later or cantact the system administrator."));
 	    goto setup_pamerr;
@@ -526,13 +527,13 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
     case PAM_ACCT_EXPIRED :
 	gdm_error (_("User %s no longer permitted to access the system"), login);
 	gdm_error_box (cur_gdm_disp,
-		       GNOME_MESSAGE_BOX_ERROR,
+		       GTK_MESSAGE_ERROR,
 		       _("\nThe system administrator has disabled your account."));
 	goto setup_pamerr;
     case PAM_PERM_DENIED :
 	gdm_error (_("User %s not permitted to gain access at this time"), login);
 	gdm_error_box (cur_gdm_disp,
-		       GNOME_MESSAGE_BOX_ERROR,
+		       GTK_MESSAGE_ERROR,
 		       _("\nThe system administrator has your disabled access to the system temporary."));
 	goto setup_pamerr;
     default :
@@ -546,7 +547,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
        	! gdm_setup_gids (login, pwent->pw_gid)) {
 	    gdm_error (_("Cannot set user group for %s"), login);
 	    gdm_error_box (cur_gdm_disp,
-			   GNOME_MESSAGE_BOX_ERROR,
+			   GTK_MESSAGE_ERROR,
 			   _("\nCannot set your user group, "
 			     "you will not be able to log in, "
 			     "please contact your system administrator."));

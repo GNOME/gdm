@@ -21,7 +21,7 @@
 
 #include <config.h>
 #include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
+#include <gtk/gtkmessagedialog.h>
 #include <gdk/gdkx.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -169,7 +169,9 @@ gdm_slave_start (GdmDisplay *display)
 		sigaddset (&alrm.sa_mask, SIGALRM);
 
 		if (sigaction (SIGALRM, &alrm, NULL) < 0)
-			gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_init: Error setting up ALRM signal handler"));
+			gdm_slave_exit (DISPLAY_ABORT,
+					_("%s: Error setting up ALRM signal handler: %s"),
+					"gdm_slave_start", g_strerror (errno));
 	}
 
 	/* Handle a INT/TERM signals from gdm master */
@@ -181,7 +183,9 @@ gdm_slave_start (GdmDisplay *display)
 
 	if ((sigaction (SIGTERM, &term, NULL) < 0) ||
 	    (sigaction (SIGINT, &term, NULL) < 0))
-		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_init: Error setting up TERM/INT signal handler"));
+		gdm_slave_exit (DISPLAY_ABORT,
+				_("%s: Error setting up TERM/INT signal handler: %s"),
+				"gdm_slave_start", g_strerror (errno));
 
 	/* Child handler. Keeps an eye on greeter/session */
 	child.sa_handler = gdm_slave_child_handler;
@@ -190,7 +194,8 @@ gdm_slave_start (GdmDisplay *display)
 	sigaddset (&child.sa_mask, SIGCHLD);
 
 	if (sigaction (SIGCHLD, &child, NULL) < 0) 
-		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_init: Error setting up CHLD signal handler"));
+		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up CHLD signal handler: %s"),
+				"gdm_slave_start", g_strerror (errno));
 
 	/* Handle a USR2 which is ack from master that it received a message */
 	usr2.sa_handler = gdm_slave_usr2_handler;
@@ -199,7 +204,8 @@ gdm_slave_start (GdmDisplay *display)
 	sigaddset (&usr2.sa_mask, SIGUSR2);
 
 	if (sigaction (SIGUSR2, &usr2, NULL) < 0)
-		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up USR2 signal handler"), "gdm_slave_init");
+		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up USR2 signal handler: %s"),
+				"gdm_slave_start", g_strerror (errno));
 
 	/* The signals we wish to listen to */
 	sigfillset (&mask);
@@ -671,7 +677,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			execv (argv[0], argv);
 
 		gdm_error_box (d,
-			       GNOME_MESSAGE_BOX_ERROR,
+			       GTK_MESSAGE_ERROR,
 			       _("Could not execute the configuration\n"
 				 "program.  Make sure it's path is set\n"
 				 "correctly in the configuration file.\n"
@@ -685,7 +691,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			execv (argv[0], argv);
 
 		gdm_error_box (d,
-			       GNOME_MESSAGE_BOX_ERROR,
+			       GTK_MESSAGE_ERROR,
 			       _("Could not execute the configuration\n"
 				 "program.  Make sure it's path is set\n"
 				 "correctly in the configuration file."));
@@ -846,19 +852,27 @@ gdm_slave_wait_for_login (void)
 static gboolean
 is_in_trusted_pic_dir (const char *path)
 {
-	char *globalpix;
+	GSList *locations = NULL, *li;
 
 	/* our own pixmap dir is trusted */
 	if (strncmp (path, EXPANDED_PIXMAPDIR, sizeof (EXPANDED_PIXMAPDIR)) == 0)
 		return TRUE;
 
-	/* gnome'skpixmap dir is trusted */
-	globalpix = gnome_unconditional_pixmap_file ("");
-	if (strncmp (path, globalpix, strlen (globalpix)) == 0) {
-		g_free (globalpix);
-		return TRUE;
+	g_free (gnome_program_locate_file (NULL /* program */,
+					   GNOME_FILE_DOMAIN_PIXMAP,
+					   "" /* file_name */,
+					   FALSE /* only_if_exists */,
+					   &locations));
+	for (li = locations; li != NULL; li = li->next) {
+		/* gnome's pixmap dirs are trusted */
+		if (strncmp (path, li->data, strlen (li->data)) == 0) {
+			g_slist_foreach (locations, (GFunc)g_free, NULL);
+			g_slist_free (locations);
+			return TRUE;
+		}
 	}
-	g_free (globalpix);
+	g_slist_foreach (locations, (GFunc)g_free, NULL);
+	g_slist_free (locations);
 
 	return FALSE;
 }
@@ -926,6 +940,7 @@ run_pictures (void)
 
 			if (picfile != NULL) {
 				char *dir;
+				char *base;
 
 				/* if in trusted dir, just use it */
 				if (is_in_trusted_pic_dir (picfile)) {
@@ -941,19 +956,21 @@ run_pictures (void)
 				}
 
 				/* if not in trusted dir, check it out */
-				dir = g_dirname (picfile);
+				dir = g_path_get_dirname (picfile);
+				base = g_path_get_basename (picfile);
 
 				/* Note that strict permissions checking is done
 				 * on this file.  Even if it may not even be owned by the
 				 * user.  This setting should ONLY point to pics in trusted
 				 * dirs. */
 				if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-						       dir, g_basename (picfile), TRUE, GdmUserMaxFile,
+						       dir, base, TRUE, GdmUserMaxFile,
 						       GdmRelaxPerms)) {
 					g_free (picfile);
 					picfile = NULL;
 				}
 
+				g_free (base);
 				g_free (dir);
 			}
 		}
@@ -1134,7 +1151,7 @@ gdm_slave_greeter (void)
 	if (pwent != NULL) {
 		/* Note that usually this doesn't exist */
 		if (pwent->pw_dir != NULL &&
-		    g_file_exists (pwent->pw_dir))
+		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
 			gnome_setenv ("HOME", "/", TRUE); /* Hack */
@@ -1176,7 +1193,7 @@ gdm_slave_greeter (void)
 
 	if(gdm_emergency_server) {
 		gdm_error_box (d,
-			       GNOME_MESSAGE_BOX_ERROR,
+			       GTK_MESSAGE_ERROR,
 			       _("No servers were defined in the\n"
 				 "configuration file and xdmcp was\n"
 				 "disabled.  This can only be a\n"
@@ -1190,7 +1207,7 @@ gdm_slave_greeter (void)
 
 	if (d->failsafe_xserver) {
 		gdm_error_box (d,
-			       GNOME_MESSAGE_BOX_ERROR,
+			       GTK_MESSAGE_ERROR,
 			       _("I could not start the regular X\n"
 				 "server (your graphical environment)\n"
 				 "and so this is a failsafe X server.\n"
@@ -1203,7 +1220,7 @@ gdm_slave_greeter (void)
 			(_("The specified display number was busy, so "
 			   "this server was started on display %s."),
 			 d->name);
-		gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR, msg);
+		gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
 		g_free (msg);
 	}
 
@@ -1221,7 +1238,7 @@ gdm_slave_greeter (void)
 	execv (argv[0], argv);
 
 	gdm_error_box (d,
-		       GNOME_MESSAGE_BOX_ERROR,
+		       GTK_MESSAGE_ERROR,
 		       _("Cannot start the greeter program,\n"
 			 "you will not be able to log in.\n"
 			 "This display will be disabled.\n"
@@ -1477,7 +1494,7 @@ gdm_slave_chooser (void)
 		pwent = getpwnam (GdmUser);
 		if (pwent != NULL) {
 			/* Note that usually this doesn't exist */
-			if (g_file_exists (pwent->pw_dir))
+			if (g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 				gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 			else
 				gnome_setenv ("HOME", "/", TRUE); /* Hack */
@@ -1493,7 +1510,7 @@ gdm_slave_chooser (void)
 		execv (argv[0], argv);
 
 		gdm_error_box (d,
-			       GNOME_MESSAGE_BOX_ERROR,
+			       GTK_MESSAGE_ERROR,
 			       _("Cannot start the chooser program,\n"
 				 "you will not be able to log in.\n"
 				 "Please contact the system administrator.\n"));
@@ -1940,13 +1957,13 @@ session_child_run (struct passwd *pwent,
 			gdm_error (_("gdm_slave_session_start: gnome-session not found for a failsafe gnome session, trying xterm"));
 			session = GDM_SESSION_FAILSAFE_XTERM;
 			gdm_error_box
-				(d, GNOME_MESSAGE_BOX_ERROR,
+				(d, GTK_MESSAGE_ERROR,
 				 _("Could not find the GNOME installation,\n"
 				   "will try running the \"Failsafe xterm\"\n"
 				   "session."));
 		} else {
 			gdm_error_box
-				(d, GNOME_MESSAGE_BOX_INFO,
+				(d, GTK_MESSAGE_INFO,
 				 _("This is the Failsafe Gnome session.\n"
 				   "You will be logged into the 'Default'\n"
 				   "session of Gnome with no startup scripts\n"
@@ -1965,14 +1982,14 @@ session_child_run (struct passwd *pwent,
 				      &sessexec);
 		g_free (params);
 		if (sesspath == NULL) {
-			gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR,
+			gdm_error_box (d, GTK_MESSAGE_ERROR,
 				       _("Cannot find \"xterm\" to start "
 					 "a failsafe session."));
 			/* nyah nyah nyah nyah nyah */
 			_exit (0);
 		} else {
 			gdm_error_box
-				(d, GNOME_MESSAGE_BOX_INFO,
+				(d, GTK_MESSAGE_INFO,
 				 _("This is the Failsafe xterm session.\n"
 				   "You will be logged into a terminal\n"
 				   "console so that you may fix your system\n"
@@ -2010,7 +2027,7 @@ session_child_run (struct passwd *pwent,
 	    strcmp (shell, "/bin/false") == 0 ||
 	    strcmp (shell, "/bin/true") == 0) {
 		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
-		gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR,
+		gdm_error_box (d, GTK_MESSAGE_ERROR,
 			       _("The system administrator has\n"
 				 "disabled your account."));
 	} else if (access (sessexec != NULL ? sessexec : sesspath, X_OK) != 0) {
@@ -2018,7 +2035,7 @@ session_child_run (struct passwd *pwent,
 		/* if we can't read and exec the session, then make a nice
 		 * error dialog */
 		gdm_error_box
-			(d, GNOME_MESSAGE_BOX_ERROR,
+			(d, GTK_MESSAGE_ERROR,
 			 _("Cannot start the session, most likely the\n"
 			   "session does not exist.  Please select from\n"
 			   "the list of available sessions in the login\n"
@@ -2029,7 +2046,7 @@ session_child_run (struct passwd *pwent,
 
 		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
 		gdm_error_box
-			(d, GNOME_MESSAGE_BOX_ERROR,
+			(d, GTK_MESSAGE_ERROR,
 			 _("Cannot start your shell.  It could be that the\n"
 			   "system administrator has disabled your login.\n"
 			   "It could also indicate an error with your account.\n"));

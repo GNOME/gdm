@@ -1,3 +1,26 @@
+Thu Dec 27 16:43:21 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: don't link libgnomeui and libglade to the
+	  daemon any more
+
+	* daemon/errorgui.[ch], daemon/gdm.c, daemon/slave.c,
+	  daemon/verify-*.c: Whack the exec hack for failsafe dialogs,
+	  we now yet again do this all just by fork and gtk_init.  This
+	  seems to work and is truly failsafe
+
+	* daemon/gdm-net.c: fix hanging caused by some new crack in
+	  giochannel, we just do a libc 'read' and that works
+
+	* daemon/server.c, daemon/gdm.[ch]: again some new crack in glib's
+	  mainloop was causing g_main_loop_quit to not work right if called
+	  from a signal handler (sometimes).  So I just switched to using
+	  a simple select call and a dummy pipe.
+
+	* daemon/Makefile.am, daemon/auth.c, daemon/errorgui.c,
+	  daemon/gdm-net.c, daemon/gdm.c, daemon/server.c, daemon/slave.c,
+	  daemon/verify-crypt.c, daemon/verify-pam.c, daemon/verify-shadow.c,
+	  daemon/xdmcp.c: Compile without any deprecated stuff from glib up
+
 Thu Dec 27 14:04:27 2001  George Lebl <jirka@5z.com>
 
 	* gui/Makefile.am: remove gdmchooser.h

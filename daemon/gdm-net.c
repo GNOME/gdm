@@ -92,21 +92,18 @@ gdm_connection_handler (GIOChannel *source,
 		        gpointer data)
 {
 	GdmConnection *conn = data;
-	gchar buf[PIPE_SIZE];
+	char buf[PIPE_SIZE];
 	char *p;
-	gsize len;
+	size_t len;
 
 	if ( ! (cond & G_IO_IN)) 
 		return close_if_needed (conn, cond);
 
-	if (g_io_channel_read (source, buf, sizeof (buf) - 1, &len)
-	    != G_IO_ERROR_NONE)
+	len = read (conn->fd, buf, sizeof (buf) -1);
+	if (len <= 0) {
 		return close_if_needed (conn, cond);
+	}
 
-	if (len <= 0)
-		return close_if_needed (conn, cond);
-
-	/* null terminate as the string is NOT */
 	buf[len] = '\0';
 
 	if (conn->buffer == NULL)
@@ -224,6 +221,8 @@ gdm_socket_handler (GIOChannel *source,
 	}
 
 	unixchan = g_io_channel_unix_new (newconn->fd);
+	g_io_channel_set_buffered (unixchan, FALSE);
+
 	newconn->source = g_io_add_watch_full
 		(unixchan, G_PRIORITY_DEFAULT,
 		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
@@ -275,6 +274,8 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 	conn->n_subconnections = 0;
 
 	unixchan = g_io_channel_unix_new (conn->fd);
+	g_io_channel_set_buffered (unixchan, FALSE);
+
 	conn->source = g_io_add_watch_full
 		(unixchan, G_PRIORITY_DEFAULT,
 		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,
@@ -323,6 +324,8 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	conn->n_subconnections = 0;
 
 	fifochan = g_io_channel_unix_new (conn->fd);
+	g_io_channel_set_buffered (fifochan, FALSE);
+
 	conn->source = g_io_add_watch_full
 		(fifochan, G_PRIORITY_DEFAULT,
 		 G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL,

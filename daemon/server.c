@@ -67,6 +67,8 @@ extern int extra_status;
 
 /* Global vars */
 static GdmDisplay *d = NULL;
+static gboolean server_signal_notified = FALSE;
+static int server_signal_pipe[2];
 
 /* Wipe cookie files */
 void
@@ -330,10 +332,17 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     gdm_debug ("gdm_server_start: %s", d->name);
 
     /* Create new cookie */
-    if ( ! gdm_auth_secure_display (d))
+    if ( ! gdm_auth_secure_display (d)) 
 	    return FALSE;
     gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
     gnome_setenv ("DISPLAY", d->name, TRUE);
+
+    if (pipe (server_signal_pipe) != 0) {
+	    gdm_error (_("%s: Error openning a pipe: %s"),
+		       "gdm_server_start", g_strerror (errno));
+	    return FALSE; 
+    }
+    server_signal_notified = FALSE;
 
     /* Catch USR1 from X server */
     usr1.sa_handler = gdm_server_usr1_handler;
@@ -341,7 +350,10 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     sigemptyset (&usr1.sa_mask);
 
     if (sigaction (SIGUSR1, &usr1, &old_usr1) < 0) {
-	    gdm_error (_("gdm_server_start: Error setting up USR1 signal handler"));
+	    gdm_error (_("%s: Error setting up USR1 signal handler: %s"),
+		       "gdm_server_start", g_strerror (errno));
+	    close (server_signal_pipe[0]);
+	    close (server_signal_pipe[1]);
 	    return FALSE;
     }
 
@@ -351,8 +363,11 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     sigemptyset (&chld.sa_mask);
 
     if (sigaction (SIGCHLD, &chld, &old_chld) < 0) {
-	    gdm_error (_("gdm_server_start: Error setting up CHLD signal handler"));
+	    gdm_error (_("%s: Error setting up CHLD signal handler: %s"),
+		       "gdm_server_start", g_strerror (errno));
 	    sigaction (SIGUSR1, &old_usr1, NULL);
+	    close (server_signal_pipe[0]);
+	    close (server_signal_pipe[1]);
 	    return FALSE;
     }
 
@@ -362,9 +377,12 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     sigemptyset (&alrm.sa_mask);
 
     if (sigaction (SIGALRM, &alrm, &old_alrm) < 0) {
-	    gdm_error (_("gdm_server_start: Error setting up ALRM signal handler"));
+	    gdm_error (_("%s: Error setting up ALRM signal handler: %s"),
+		       "gdm_server_start", g_strerror (errno));
 	    sigaction (SIGUSR1, &old_usr1, NULL);
 	    sigaction (SIGCHLD, &old_chld, NULL);
+	    close (server_signal_pipe[0]);
+	    close (server_signal_pipe[1]);
 	    return FALSE;
     }
 
@@ -418,8 +436,17 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 			    d->servstat = SERVER_TIMEOUT;
 		    }
 	    } else {
+		    fd_set rfds;
+
 		    gdm_debug ("gdm_server_start: Before mainloop waiting for server");
-		    gdm_run ();
+
+		    FD_ZERO (&rfds);
+		    FD_SET (server_signal_pipe[0], &rfds);
+
+		    do {
+			    select (server_signal_pipe[0]+1, &rfds, NULL, NULL, NULL);
+		    } while ( ! server_signal_notified);
+
 		    gdm_debug ("gdm_server_start: After mainloop waiting for server");
 	    }
     }
@@ -448,6 +475,9 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 	    sigaction (SIGUSR1, &old_usr1, NULL);
 	    sigaction (SIGCHLD, &old_chld, NULL);
 	    sigaction (SIGALRM, &old_alrm, NULL);
+
+	    close (server_signal_pipe[0]);
+	    close (server_signal_pipe[1]);
 
 	    if (SERVER_IS_FLEXI (d))
 		    gdm_slave_send_num (GDM_SOP_FLEXI_OK, 0 /* bogus */);
@@ -485,6 +515,9 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     sigaction (SIGUSR1, &old_usr1, NULL);
     sigaction (SIGCHLD, &old_chld, NULL);
     sigaction (SIGALRM, &old_alrm, NULL);
+
+    close (server_signal_pipe[0]);
+    close (server_signal_pipe[1]);
 
     if (disp->type == TYPE_FLEXI_XNEST &&
 	display_xnest_no_connect (disp)) {
@@ -780,7 +813,7 @@ gdm_server_spawn (GdmDisplay *d)
 			_exit (SERVER_ABORT);
 		}
 		if (pwent->pw_dir != NULL &&
-		    g_file_exists (pwent->pw_dir))
+		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
 			gnome_setenv ("HOME", "/", TRUE); /* Hack */
@@ -835,7 +868,6 @@ gdm_server_spawn (GdmDisplay *d)
     }
 }
 
-
 /**
  * gdm_server_usr1_handler:
  * @sig: Signal value
@@ -851,7 +883,9 @@ gdm_server_usr1_handler (gint sig)
 
     gdm_debug ("gdm_server_usr1_handler: Got SIGUSR1, server running");
 
-    gdm_quit ();
+    server_signal_notified = TRUE;
+    /* this will quit the select */
+    write (server_signal_pipe[1], "Yay!", 4);
 }
 
 
@@ -869,7 +903,9 @@ gdm_server_alarm_handler (gint signal)
 
     gdm_debug ("gdm_server_alarm_handler: Got SIGALRM, server abort");
 
-    gdm_quit ();
+    server_signal_notified = TRUE;
+    /* this will quit the select */
+    write (server_signal_pipe[1], "Yay!", 4);
 }
 
 
@@ -905,7 +941,9 @@ gdm_server_child_handler (int signal)
 			d->servstat = SERVER_ABORT;	/* Server died unexpectedly */
 			d->servpid = 0;
 
-			gdm_quit ();
+			server_signal_notified = TRUE;
+			/* this will quit the select */
+			write (server_signal_pipe[1], "Yay!", 4);
 		} else if (pid == extra_process) {
 			/* an extra process died, yay! */
 			extra_process = -1;

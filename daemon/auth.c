@@ -445,7 +445,7 @@ void
 gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 {
     FILE *af;
-    const gchar *authfile;
+    gchar *authfile;
     gchar *authdir;
 
     if (!d || !d->userauth)
@@ -462,22 +462,24 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 	return;
     }
 
-    authfile = g_basename (d->userauth);
-    authdir = g_dirname (d->userauth);
+    authfile = g_path_get_basename (d->userauth);
+    authdir = g_path_get_dirname (d->userauth);
 
     /* Now, the cookie file could be owned by a malicious user who
      * decided to concatenate something like his entire MP3 collection
      * to it. So we better play it safe... */
 
-    if (! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
-			  TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
+    if ( ! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
+			   TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
 	    g_free (authdir);
+	    g_free (authfile);
 	    gdm_error (_("gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"), d->userauth);
 
 	    return; 
     }
 
     g_free (authdir);
+    g_free (authfile);
 
     /* Lock user's cookie jar and open it for writing */
     if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS)

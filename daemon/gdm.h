@@ -387,9 +387,6 @@ void    gdm_signal_notify       (gint8          signal);
 GdmXServer *	gdm_find_x_server	(const char *id);
 
 
-void gdm_run (void);
-void gdm_quit (void);
-
 /* primitive protocol for controlling the daemon from slave
  * or gdmconfig or whatnot */
 

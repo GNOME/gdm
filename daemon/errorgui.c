@@ -21,7 +21,7 @@
 
 #include <config.h>
 #include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
+#include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -61,83 +61,23 @@ gdm_event (GSignalInvocationHint *ihint,
 }      
 
 void
-gdm_run_errorgui (const char *error,
-		  const char *dialog_type,
-		  int screenx,
-		  int screeny,
-		  int screenwidth,
-		  int screenheight)
-{
-	GtkWidget *dialog;
-	GtkRequisition req;
-	guint sid;
-	char *argv[2] = { "gdm-error-box", NULL };
-
-	gnome_program_init ("gdm-error-box", VERSION,
-			    LIBGNOMEUI_MODULE,
-			    1, argv,
-			    /* Avoid creating ~gdm/.gnome stuff */
-			    "create-directories", FALSE,
-			    NULL);
-
-	sid = g_signal_lookup ("event",
-			       GTK_TYPE_WIDGET);
-	g_signal_add_emission_hook (sid,
-				    0 /* detail */,
-				    gdm_event,
-				    NULL /* data */,
-				    NULL /* destroy_notify */);
-
-	dialog = gnome_message_box_new (error,
-					dialog_type,
-					GNOME_STOCK_BUTTON_OK,
-					NULL);
-	gtk_widget_show (dialog);
-
-	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-			    GTK_SIGNAL_FUNC(gtk_main_quit),
-			    NULL);
-
-	gtk_widget_size_request (dialog, &req);
-
-	if (screenwidth <= 0)
-		screenwidth = gdk_screen_width ();
-	if (screenheight <= 0)
-		screenheight = gdk_screen_height ();
-
-	gtk_widget_set_uposition (dialog,
-				  screenx +
-				  (screenwidth / 2) -
-				  (req.width / 2),
-				  screeny +
-				  (screenheight / 2) -
-				  (req.height / 2));
-
-	gtk_widget_show_now (dialog);
-
-	if (dialog->window != NULL) {
-		gdk_error_trap_push ();
-		XSetInputFocus (GDK_DISPLAY (),
-				GDK_WINDOW_XWINDOW (dialog->window),
-				RevertToPointerRoot,
-				CurrentTime);
-		gdk_flush ();
-		gdk_error_trap_pop ();
-	}
-
-	gtk_main ();
-}
-
-void
-gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
+gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 {
 	pid_t pid;
 
 	pid = gdm_fork_extra ();
 
 	if (pid == 0) {
-		char *geom;
+		guint sid;
 		int i;
+		int argc = 1;
+		char **argv;
+		GtkWidget *dlg;
+		GtkRequisition req;
+		int screenx = 0;
+		int screeny = 0;
+		int screenwidth = 0;
+		int screenheight = 0;
 
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
@@ -151,27 +91,63 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 		seteuid (getuid ());
 		setegid (getgid ());
 
-		if (d != NULL)
-			geom = g_strdup_printf ("%d:%d:%d:%d",
-						d->screenx,
-						d->screeny,
-						d->screenwidth,
-						d->screenheight);
-		else
-			geom = "0:0:0:0";
+		argv = g_new0 (char *, 2);
+		argv[0] = "gtk-error-box";
 
-		if (stored_path != NULL)
-			gnome_setenv ("PATH", stored_path, TRUE);
+		gtk_init (&argc, &argv);
 
-		execlp (stored_argv[0],
-			stored_argv[0],
-			"--run-error-dialog",
-			error,
-			dialog_type,
-			geom,
-			NULL);
-		gdm_error (_("gdm_error_box: Failed to execute self"));
-		_exit (1);
+		if (d != NULL) {
+			screenx = d->screenx;
+			screeny = d->screeny;
+			screenwidth = d->screenwidth;
+			screenheight = d->screenheight;
+		}
+
+		if (screenwidth <= 0)
+			screenwidth = gdk_screen_width ();
+		if (screenheight <= 0)
+			screenheight = gdk_screen_height ();
+
+		dlg = gtk_message_dialog_new (NULL /* parent */,
+					      0 /* flags */,
+					      type,
+					      GTK_BUTTONS_OK,
+					      "%s",
+					      error);
+
+		sid = g_signal_lookup ("event",
+				       GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_event,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
+
+		gtk_widget_size_request (dlg, &req);
+
+		gtk_window_move (GTK_WINDOW (dlg),
+				 screenx +
+				 (screenwidth / 2) -
+				 (req.width / 2),
+				 screeny +
+				 (screenheight / 2) -
+				 (req.height / 2));
+
+		gtk_widget_show_now (dlg);
+
+		if (dlg->window != NULL) {
+			gdk_error_trap_push ();
+			XSetInputFocus (GDK_DISPLAY (),
+					GDK_WINDOW_XWINDOW (dlg->window),
+					RevertToPointerRoot,
+					CurrentTime);
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
+
+		gtk_dialog_run (GTK_DIALOG (dlg));
+
+		_exit (0);
 	} else if (pid > 0) {
 		gdm_wait_for_extra (NULL);
 	} else {
@@ -179,90 +155,11 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 	}
 }
 
-char *
-gdm_run_failsafe_question (const char *question,
-			   gboolean echo,
-			   int screenx,
-			   int screeny,
-			   int screenwidth,
-			   int screenheight)
+static void
+press_ok (GtkWidget *entry, gpointer data)
 {
-	GtkWidget *dialog;
-	GtkRequisition req;
-	guint sid;
-	GtkWidget *entry, *label;
-	char *ret;
-	char *argv[2] = { "gdm-failsafe-question", NULL };
-
-	gnome_program_init ("gdm-failsafe-question", VERSION,
-			    LIBGNOMEUI_MODULE,
-			    1, argv,
-			    /* Avoid creating ~gdm/.gnome stuff */
-			    "create-directories", FALSE,
-			    NULL);
-
-	sid = g_signal_lookup ("event",
-			       GTK_TYPE_WIDGET);
-	g_signal_add_emission_hook (sid,
-				    0 /* detail */,
-				    gdm_event,
-				    NULL /* data */,
-				    NULL /* destroy_notify */);
-
-	dialog = gnome_dialog_new (question,
-				   GNOME_STOCK_BUTTON_OK,
-				   NULL);
-	gnome_dialog_close_hides (GNOME_DIALOG (dialog), 
-				  TRUE /* just_hide */);
-
-	label = gtk_label_new (question);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
-			    label, FALSE, FALSE, 0);
-	entry = gtk_entry_new ();
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
-			    entry, FALSE, FALSE, 0);
-	if ( ! echo)
-		gtk_entry_set_visibility (GTK_ENTRY (entry),
-					  FALSE /* visible */);
-	gnome_dialog_editable_enters (GNOME_DIALOG (dialog),
-				      GTK_EDITABLE (entry));
-
-	gtk_widget_show_all (dialog);
-
-	gtk_widget_size_request (dialog, &req);
-
-	if (screenwidth <= 0)
-		screenwidth = gdk_screen_width ();
-	if (screenheight <= 0)
-		screenheight = gdk_screen_height ();
-
-	gtk_widget_set_uposition (dialog,
-				  screenx +
-				  (screenwidth / 2) -
-				  (req.width / 2),
-				  screeny +
-				  (screenheight / 2) -
-				  (req.height / 2));
-
-	gtk_widget_grab_focus (entry);
-
-	gtk_widget_show_now (dialog);
-
-	if (dialog->window != NULL) {
-		gdk_error_trap_push ();
-		XSetInputFocus (GDK_DISPLAY (),
-				GDK_WINDOW_XWINDOW (dialog->window),
-				RevertToPointerRoot,
-				CurrentTime);
-		gdk_flush ();
-		gdk_error_trap_pop ();
-	}
-
-	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-
-	ret = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
-	gtk_widget_destroy (dialog);
-	return ret;
+	GtkWidget *dlg = data;
+	gtk_dialog_response (GTK_DIALOG (dlg), GTK_RESPONSE_OK);
 }
 
 char *
@@ -278,46 +175,104 @@ gdm_failsafe_question (GdmDisplay *d,
 
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
-		char *geom;
+		guint sid;
 		int i;
+		int argc = 1;
+		char **argv;
+		GtkWidget *dlg, *label, *entry;
+		GtkRequisition req;
+		int screenx = 0;
+		int screeny = 0;
+		int screenwidth = 0;
+		int screenheight = 0;
 
-		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++) {
-			if (p[1] != i)
-				close(i);
-		}
+		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+			close(i);
 
 		/* No error checking here - if it's messed the best response
-		* is to ignore & try to continue */
+		 * is to ignore & try to continue */
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
-		/* The pipe on stdout */
-		dup2 (p[1], 1);
-
 		seteuid (getuid ());
 		setegid (getgid ());
 
-		if (d != NULL)
-			geom = g_strdup_printf ("%d:%d:%d:%d",
-						d->screenx,
-						d->screeny,
-						d->screenwidth,
-						d->screenheight);
-		else
-			geom = "0:0:0:0";
+		argv = g_new0 (char *, 2);
+		argv[0] = "gtk-failsafe-question";
 
-		if (stored_path != NULL)
-			gnome_setenv ("PATH", stored_path, TRUE);
-		execlp (stored_argv[0],
-			stored_argv[0],
-			"--run-failsafe-question",
-			question,
-			echo ? "TRUE" : "FALSE",
-			geom,
-			NULL);
-		gdm_error (_("gdm_failsafe_question: Failed to execute self"));
-		_exit (1);
+		gtk_init (&argc, &argv);
+
+		if (d != NULL) {
+			screenx = d->screenx;
+			screeny = d->screeny;
+			screenwidth = d->screenwidth;
+			screenheight = d->screenheight;
+		}
+
+		if (screenwidth <= 0)
+			screenwidth = gdk_screen_width ();
+		if (screenheight <= 0)
+			screenheight = gdk_screen_height ();
+
+		dlg = gtk_dialog_new_with_buttons (question,
+						   NULL /* parent */,
+						   0 /* flags */,
+						   GTK_STOCK_OK,
+						   GTK_RESPONSE_OK,
+						   NULL);
+		g_signal_connect (G_OBJECT (dlg), "delete_event",
+				  G_CALLBACK (gtk_true), NULL);
+
+		label = gtk_label_new (question);
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
+				    label, FALSE, FALSE, 0);
+		entry = gtk_entry_new ();
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
+				    entry, FALSE, FALSE, 0);
+		if ( ! echo)
+			gtk_entry_set_visibility (GTK_ENTRY (entry),
+						  FALSE /* visible */);
+		g_signal_connect (G_OBJECT (entry), "activate",
+				  G_CALLBACK (press_ok), dlg);
+
+		sid = g_signal_lookup ("event",
+				       GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_event,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
+
+		gtk_widget_size_request (dlg, &req);
+
+		gtk_window_move (GTK_WINDOW (dlg),
+				 screenx +
+				 (screenwidth / 2) -
+				 (req.width / 2),
+				 screeny +
+				 (screenheight / 2) -
+				 (req.height / 2));
+
+		gtk_widget_show_now (dlg);
+
+		if (dlg->window != NULL) {
+			gdk_error_trap_push ();
+			XSetInputFocus (GDK_DISPLAY (),
+					GDK_WINDOW_XWINDOW (dlg->window),
+					RevertToPointerRoot,
+					CurrentTime);
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
+
+		gtk_widget_grab_focus (entry);
+
+		gtk_dialog_run (GTK_DIALOG (dlg));
+
+		g_print (ve_sure_string (gtk_entry_get_text (GTK_ENTRY (entry))));
+
+		_exit (0);
 	} else if (pid > 0) {
 		char buf[BUFSIZ];
 		int bytes;
@@ -340,74 +295,6 @@ gdm_failsafe_question (GdmDisplay *d,
 }
 
 gboolean
-gdm_run_failsafe_yesno (const char *question,
-			int screenx,
-			int screeny,
-			int screenwidth,
-			int screenheight)
-{
-	GtkWidget *dialog;
-	GtkRequisition req;
-	guint sid;
-	char *argv[2] = { "gdm-failsafe-yesno", NULL };
-
-	gnome_program_init ("gdm-failsafe-yesno", VERSION,
-			    LIBGNOMEUI_MODULE,
-			    1, argv,
-			    /* Avoid creating ~gdm/.gnome stuff */
-			    "create-directories", FALSE,
-			    NULL);
-
-	sid = g_signal_lookup ("event",
-			       GTK_TYPE_WIDGET);
-	g_signal_add_emission_hook (sid,
-				    0 /* detail */,
-				    gdm_event,
-				    NULL /* data */,
-				    NULL /* destroy_notify */);
-
-	dialog = gnome_message_box_new (question,
-					GNOME_MESSAGE_BOX_QUESTION,
-					GNOME_STOCK_BUTTON_YES,
-					GNOME_STOCK_BUTTON_NO,
-					NULL);
-
-	gtk_widget_show_all (dialog);
-
-	gtk_widget_size_request (dialog, &req);
-
-	if (screenwidth <= 0)
-		screenwidth = gdk_screen_width ();
-	if (screenheight <= 0)
-		screenheight = gdk_screen_height ();
-
-	gtk_widget_set_uposition (dialog,
-				  screenx +
-				  (screenwidth / 2) -
-				  (req.width / 2),
-				  screeny +
-				  (screenheight / 2) -
-				  (req.height / 2));
-
-	gtk_widget_show_now (dialog);
-
-	if (dialog->window != NULL) {
-		gdk_error_trap_push ();
-		XSetInputFocus (GDK_DISPLAY (),
-				GDK_WINDOW_XWINDOW (dialog->window),
-				RevertToPointerRoot,
-				CurrentTime);
-		gdk_flush ();
-		gdk_error_trap_pop ();
-	}
-
-	if (gnome_dialog_run_and_close (GNOME_DIALOG (dialog)) == 0)
-		return TRUE;
-	else
-		return FALSE;
-}
-
-gboolean
 gdm_failsafe_yesno (GdmDisplay *d,
 		    const char *question)
 {
@@ -419,8 +306,16 @@ gdm_failsafe_yesno (GdmDisplay *d,
 
 	pid = gdm_fork_extra ();
 	if (pid == 0) {
-		char *geom;
+		guint sid;
 		int i;
+		int argc = 1;
+		char **argv;
+		GtkWidget *dlg;
+		GtkRequisition req;
+		int screenx = 0;
+		int screeny = 0;
+		int screenwidth = 0;
+		int screenheight = 0;
 
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++) {
 			if (p[1] != i)
@@ -428,36 +323,74 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		}
 
 		/* No error checking here - if it's messed the best response
-		* is to ignore & try to continue */
+		 * is to ignore & try to continue */
 		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
-		/* The pipe on stdout */
-		dup2 (p[1], 1);
-
 		seteuid (getuid ());
 		setegid (getgid ());
 
-		if (d != NULL)
-			geom = g_strdup_printf ("%d:%d:%d:%d",
-						d->screenx,
-						d->screeny,
-						d->screenwidth,
-						d->screenheight);
-		else
-			geom = "0:0:0:0";
+		argv = g_new0 (char *, 2);
+		argv[0] = "gtk-failsafe-yesno";
 
-		if (stored_path != NULL)
-			gnome_setenv ("PATH", stored_path, TRUE);
-		execlp (stored_argv[0],
-			stored_argv[0],
-			"--run-failsafe-yesno",
-			question,
-			geom,
-			NULL);
-		gdm_error (_("gdm_failsafe_question: Failed to execute self"));
-		_exit (1);
+		gtk_init (&argc, &argv);
+
+		if (d != NULL) {
+			screenx = d->screenx;
+			screeny = d->screeny;
+			screenwidth = d->screenwidth;
+			screenheight = d->screenheight;
+		}
+
+		if (screenwidth <= 0)
+			screenwidth = gdk_screen_width ();
+		if (screenheight <= 0)
+			screenheight = gdk_screen_height ();
+
+		dlg = gtk_message_dialog_new (NULL /* parent */,
+					      0 /* flags */,
+					      GTK_MESSAGE_QUESTION,
+					      GTK_BUTTONS_YES_NO,
+					      "%s",
+					      question);
+
+		sid = g_signal_lookup ("event",
+				       GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_event,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
+
+		gtk_widget_size_request (dlg, &req);
+
+		gtk_window_move (GTK_WINDOW (dlg),
+				 screenx +
+				 (screenwidth / 2) -
+				 (req.width / 2),
+				 screeny +
+				 (screenheight / 2) -
+				 (req.height / 2));
+
+		gtk_widget_show_now (dlg);
+
+		if (dlg->window != NULL) {
+			gdk_error_trap_push ();
+			XSetInputFocus (GDK_DISPLAY (),
+					GDK_WINDOW_XWINDOW (dlg->window),
+					RevertToPointerRoot,
+					CurrentTime);
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
+
+		if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES)
+			g_print ("yes\n");
+		else
+			g_print ("no\n");
+
+		_exit (0);
 	} else if (pid > 0) {
 		char buf[BUFSIZ];
 		int bytes;

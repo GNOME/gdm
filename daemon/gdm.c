@@ -48,7 +48,6 @@
 #include "verify.h"
 #include "display.h"
 #include "choose.h"
-#include "errorgui.h"
 #include "gdm-net.h"
 
 /* Local functions */
@@ -159,6 +158,8 @@ int stored_argc = 0;
 char *stored_path = NULL;
 
 static gboolean gdm_restart_mode = FALSE;
+
+static GMainLoop *main_loop = NULL;
 
 static gboolean
 display_exists (int num)
@@ -1149,7 +1150,7 @@ gdm_cleanup_children (void)
     if (gdm_restart_mode)
 	    gdm_safe_restart ();
 
-    gdm_quit ();
+    g_main_loop_quit (main_loop);
 
     return TRUE;
 }
@@ -1225,8 +1226,6 @@ signal_notify (int sig)
  * main: The main daemon control
  */
 
-static GMainLoop *main_loop;    
-
 static void
 store_argv (int argc, char *argv[])
 {
@@ -1287,60 +1286,12 @@ main (int argc, char *argv[])
     bindtextdomain(PACKAGE, GNOMELOCALEDIR);
     textdomain(PACKAGE);
 
-    /* This is an utter hack.  BUT we don't want to have the message in
-     * another program as it is supposed to be a last ditch effort to talk
-     * to the user, so what happens is that we respawn ourselves with
-     * an argument --run-error-dialog error dialog_type <x>:<y>:<width>:<height>
-     * the coordinates are the coordinates of this screen (when using
-     * xinerama) they can all be 0 */
-    if (argc == 5 &&
-	strcmp (argv[1], "--run-error-dialog") == 0) {
-	    int x = 0, y = 0, width = 0, height = 0;
-	    sscanf (argv[4], "%d:%d:%d:%d", &x, &y, &width, &height);
-	    gdm_run_errorgui (argv[2], argv[3], x, y, width, height);
-	    _exit (0);
-    }
-    /* This is another utter hack.  Same as above but for questions */
-    if (argc == 5 &&
-	strcmp (argv[1], "--run-failsafe-question") == 0) {
-	    int x = 0, y = 0, width = 0, height = 0;
-	    gboolean echo;
-	    char *ret;
-	    sscanf (argv[4], "%d:%d:%d:%d", &x, &y, &width, &height);
-	    if (strcmp (argv[3], "FALSE") == 0)
-		    echo = FALSE;
-	    else
-		    echo = TRUE;
-	    ret = gdm_run_failsafe_question (argv[2], echo, x, y, width, height);
-	    if (ret != NULL) {
-		    g_print (ret);
-		    fflush (stdout);
-	    }
-	    _exit (0);
-    }
-    /* This is another utter hack.  Same as above but for yes/no questions */
-    if (argc == 4 &&
-	strcmp (argv[1], "--run-failsafe-yesno") == 0) {
-	    int x = 0, y = 0, width = 0, height = 0;
-	    gboolean ret;
-	    sscanf (argv[3], "%d:%d:%d:%d", &x, &y, &width, &height);
-	    ret = gdm_run_failsafe_yesno (argv[2], x, y, width, height);
-	    if (ret)
-		    g_print ("yes\n");
-	    else
-		    g_print ("no\n");
-	    fflush (stdout);
-	    _exit (0);
-    }
-
-
     /* XDM compliant error message */
     if (getuid () != 0) {
 	    /* make sure the pid file doesn't get wiped */
 	    GdmPidFile = NULL;
 	    gdm_fail (_("Only root wants to run gdm\n"));
     }
-
 
     /* Initialize runtime environment */
     umask (022);
@@ -1352,7 +1303,7 @@ main (int argc, char *argv[])
 			GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
 			NULL);
 
-    main_loop = g_main_new (FALSE);
+    main_loop = g_main_loop_new (NULL, FALSE);
     openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 
@@ -1457,7 +1408,7 @@ main (int argc, char *argv[])
      */
     while (1)
       {
-        gdm_run ();
+	g_main_loop_run (main_loop);
 	gdm_debug ("main: Exited main loop");
       }
 
@@ -1558,18 +1509,6 @@ gdm_signal_notify (gint8 signal)
 	shift = s % 32;
 
 	signals_notified[index] |= 1 << shift;
-}
-
-void
-gdm_run (void)
-{
-	g_main_run (main_loop);
-}
-
-void
-gdm_quit (void)
-{
-	g_main_quit (main_loop);
 }
 
 static void

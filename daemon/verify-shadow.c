@@ -18,11 +18,13 @@
 
 #include <config.h>
 #include <libgnome/libgnome.h>
+#include <gtk/gtkmessagedialog.h>
 #include <syslog.h>
 #include <pwd.h>
 #include <shadow.h>
 #include <grp.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #ifdef HAVE_CRYPT
 #  include <crypt.h>
@@ -225,7 +227,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
 	if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
 		gdm_error (_("Cannot set user group for %s"), login);
 		gdm_error_box (d,
-			       GNOME_MESSAGE_BOX_ERROR,
+			       GTK_MESSAGE_ERROR,
 			       _("\nCannot set your user group, "
 				 "you will not be able to log in, "
 				 "please contact your system administrator."));
