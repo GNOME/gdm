@@ -65,6 +65,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     gchar *addr;
     Xauth *xa;
     guint i;
+    gchar *hostname;
 
     if (!d)
 	return FALSE;
@@ -104,6 +105,14 @@ gdm_auth_secure_display (GdmDisplay *d)
 
     /* Create new random cookie */
     gdm_cookie_generate (d);
+
+    hostname = g_new0 (gchar, 1024);
+
+    if (gethostname (hostname, 1023) == 0) {
+        g_free( d->hostname );
+        d->hostname = g_strdup( hostname );
+    }
+    g_free( hostname );
 
     /* Find FQDN or IP of display host */
     hentry = gethostbyname (d->hostname);

@@ -1,3 +1,36 @@
+Thu Apr 19 02:11:22 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: Return to gid 0 after verify check, patch from
+	  rmurray+gnome@cyberhqz.com (Ryan Murray)
+
+	* daemon/auth.c: refetch the hostname each time the cookie is
+	  generated to deal with changing hostnames again from Ryan
+
+	* gui/gdmlogin.c: remove the display mutilating code for enriched
+	  string, again from Ryan
+
+	* daemon/server.c: Move logfile open after fork as it's only
+	  really used by the X server process (And that's the purpose of it)
+	  Again, from, you guessed it, Ryan
+
+	* daemon/slave.c: set gid after uid to 0 so that it doesn't fail
+	  (from Ryan again)
+
+	* gui/gdmlogin.c: do a gtk_main_quit in the QUIT handler, hopefuly
+	  won't cause races, and this is actually by me
+
+	* gui/gdmlogin.c: another one from ryan, set the password max entry
+	  length to 128 to allow for MD5 password things
+
+	* gui/gdmlogin.c: another one, this one to allow keyboard navigation
+	  of the menus
+
+	* daemon/slave.c: call initgroups to set up the groups correctly,
+	  from ryan
+
+	* daemon/slave.c: fixed problem of NULL lang/session returns, pointed
+	  out by ryan
+
 Wed Apr 18 22:32:53 2001  George Lebl <jirka@5z.com>
 
 	* Makefile.am, configure.in, debian/Makefile.am: fix make distcheck

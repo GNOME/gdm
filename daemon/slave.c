@@ -57,6 +57,7 @@ static pid_t last_killed_pid = 0;
 extern gboolean gdm_first_login;
 
 /* Configuration option variables */
+extern gchar *GdmUser;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
 extern gchar *GdmSessDir;
@@ -301,6 +302,9 @@ gdm_slave_greeter (void)
 	
 	if (setgid (GdmGroupId) < 0) 
 	    gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set groupid to %d"), GdmGroupId);
+
+	if (initgroups (GdmUser, GdmGroupId) < 0)
+            gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: initgroups() failed for %s"), GdmUser);
 	
 	if (setuid (GdmUserId) < 0) 
 	    gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set userid to %d"), GdmUserId);
@@ -386,10 +390,14 @@ gdm_slave_session_start (void)
 
 	cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/last", NULL);
 	usrsess = gnome_config_get_string (cfgstr);
+	if (usrsess == NULL)
+		usrsess = g_strdup ("");
 	g_free (cfgstr);
 
 	cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/lang", NULL);
 	usrlang = gnome_config_get_string (cfgstr);
+	if (usrlang == NULL)
+		usrlang = g_strdup ("");
 	g_free (cfgstr);
     } 
     else {
@@ -397,8 +405,8 @@ gdm_slave_session_start (void)
 	usrlang = g_strdup ("");
     }
 
-    setegid (GdmGroupId);
     seteuid (0);
+    setegid (GdmGroupId);
 
     if (greet) {
 	    session = gdm_slave_greeter_ctl (GDM_SESS, usrsess);
@@ -491,8 +499,8 @@ gdm_slave_session_start (void)
 
     authok = gdm_auth_user_add (d, pwent->pw_uid, pwent->pw_dir);
 
-    setegid (GdmGroupId);
     seteuid (0);
+    setegid (GdmGroupId);
     
     if ( ! authok) {
 	gdm_debug ("gdm_slave_session_start: Auth not OK");
@@ -624,8 +632,8 @@ gdm_slave_session_stop (pid_t sesspid)
 
     gdm_auth_user_remove (d, pwent->pw_uid);
     
-    setegid (GdmGroupId);
     seteuid (0);
+    setegid (GdmGroupId);
 }
 
 static void

@@ -361,7 +361,7 @@ gdm_parse_enriched_string (const gchar *s)
 {
     gchar cmd, *buffer;
     gchar hostbuf[256];
-    gchar *hostname, *temp1, *temp2, *display;
+    gchar *hostname, *display;
     struct utsname name;
     GString *str;
 
@@ -372,18 +372,6 @@ gdm_parse_enriched_string (const gchar *s)
 
     if (display == NULL)
 	return(NULL);
-
-    temp1 = strchr (display, '.');
-    temp2 = strchr (display, ':');
-
-    if (temp1 != NULL) {
-	    *temp1 = '\0';
-    } else if (temp2 != NULL) {
-	    *temp2 = '\0';
-    } else {
-	    g_free (display);
-	    return (NULL);
-    }
 
     gethostname (hostbuf, 255);
     hostname = g_strdup (hostbuf);
@@ -1150,6 +1138,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_label_set (GTK_LABEL (label), buf);
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
+	gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
 	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_grab_focus (entry);	
@@ -1166,6 +1155,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_label_set (GTK_LABEL(label), buf);
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
+	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
 	gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_grab_focus (entry);	
@@ -1297,6 +1287,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	kill_background ();
 
 	g_print ("%c\n", STX);
+
+	gtk_main_quit ();
 	break;
 	
     default:
@@ -1648,6 +1640,7 @@ gdm_login_gui_init (void)
     GtkWidget *table, *stack, *hline1, *hline2, *handle;
     GtkWidget *bbox = NULL;
     GtkWidget *logoframe = NULL;
+    GtkAccelGroup *accel;
     gchar *greeting;
     gint cols, rows;
     struct stat statbuf;
@@ -1665,6 +1658,9 @@ gdm_login_gui_init (void)
     gtk_object_set_data_full (GTK_OBJECT (login), "login", login,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_window_set_title (GTK_WINDOW (login), "GDM Login");
+
+    accel = gtk_accel_group_new ();
+    gtk_window_add_accel_group (GTK_WINDOW (login), accel);
 
     frame1 = gtk_frame_new (NULL);
     gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_OUT);
@@ -1703,6 +1699,10 @@ gdm_login_gui_init (void)
     sessmenu = gtk_menu_item_new_with_label (_("Session"));
     gtk_menu_bar_append (GTK_MENU_BAR(menubar), sessmenu);
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (sessmenu), menu);
+    gtk_widget_add_accelerator (sessmenu, "activate_item", accel,
+				GDK_Escape, 0, 0);
+    gtk_widget_add_accelerator (sessmenu, "activate_item", accel,
+				GDK_s, GDK_MOD1_MASK, 0);
     gtk_widget_show (GTK_WIDGET (sessmenu));
 
     menu = gdm_login_language_menu_new ();
@@ -1710,6 +1710,8 @@ gdm_login_gui_init (void)
 	langmenu = gtk_menu_item_new_with_label (_("Language"));
 	gtk_menu_bar_append (GTK_MENU_BAR (menubar), langmenu);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (langmenu), menu);
+	gtk_widget_add_accelerator (langmenu, "activate_item", accel,
+				    GDK_l, GDK_MOD1_MASK, 0);
 	gtk_widget_show (GTK_WIDGET (langmenu));
     }
 
@@ -1732,6 +1734,8 @@ gdm_login_gui_init (void)
 	item = gtk_menu_item_new_with_label (_("System"));
 	gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
+        gtk_widget_add_accelerator (item, "activate_item", accel,
+				    GDK_y, GDK_MOD1_MASK, 0);
 	gtk_widget_show (GTK_WIDGET (item));
     }
 

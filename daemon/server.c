@@ -277,17 +277,6 @@ gdm_server_spawn (GdmDisplay *d)
 
     d->servstat = SERVER_STARTED;
 
-    /* Log all output from spawned programs to a file */
-    logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),
-		  O_CREAT|O_TRUNC|O_APPEND|O_WRONLY, 0666);
-    
-    if (logfd != -1) {
-	dup2 (logfd, 1);
-	dup2 (logfd, 2);
-    }
-    else
-	gdm_error (_("gdm_server_spawn: Could not open logfile for display %s!"), d->name);
-
     /* eek, some previous copy, just wipe it */
     if (d->servpid > 0) {
 	    if (kill (d->servpid, SIGTERM) == 0)
@@ -305,6 +294,18 @@ gdm_server_spawn (GdmDisplay *d)
 	/* Close the XDMCP fd inherited by the daemon process */
 	if (GdmXdmcp)
 	    gdm_xdmcp_close();
+
+        /* Log all output from spawned programs to a file */
+	logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),
+		      O_CREAT|O_TRUNC|O_APPEND|O_WRONLY, 0666);
+
+	if (logfd != -1) {
+		dup2 (logfd, 1);
+		dup2 (logfd, 2);
+        } else {
+		gdm_error (_("gdm_server_spawn: Could not open logfile for display %s!"), d->name);
+	}
+
 	
 	/* The X server expects USR1 to be SIG_IGN */
 	usr1.sa_handler = SIG_IGN;

@@ -275,6 +275,7 @@ gdm_config_parse (void)
     gdm_verify_check ();
 
     seteuid (0);
+    setegid (0);
 }
 
 
