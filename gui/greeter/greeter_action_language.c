@@ -158,9 +158,11 @@ selection_changed (GtkTreeSelection *selection,
 {
   GtkTreeIter iter;
 
-  gtk_tree_selection_get_selected (selection, NULL, &iter);
-  g_free (dialog_selected_language);
-  gtk_tree_model_get (GTK_TREE_MODEL (lang_model), &iter, LOCALE_COLUMN, &dialog_selected_language, -1);
+  if (gtk_tree_selection_get_selected (selection, NULL, &iter))
+    {
+      g_free (dialog_selected_language);
+      gtk_tree_model_get (GTK_TREE_MODEL (lang_model), &iter, LOCALE_COLUMN, &dialog_selected_language, -1);
+    }
 }
 
 static void
