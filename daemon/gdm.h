@@ -259,12 +259,40 @@ struct _GdmDisplay {
 
 
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
-
 struct _GdmIndirectDisplay {
 	int id;
 	struct sockaddr_in* dsp_sa;
 	time_t acctime;
 	struct in_addr *chosen_host;
+};
+
+/* NOTE: Timeout and max are hardcoded */
+typedef struct _GdmForwardQuery GdmForwardQuery;
+struct _GdmForwardQuery {
+	time_t acctime;
+	struct sockaddr_in* dsp_sa;
+	struct sockaddr_in* from_sa;
+};
+#define GDM_MAX_FORWARD_QUERIES 10
+#define GDM_FORWARD_QUERY_TIMEOUT 30
+
+/* some extra xdmcp opcodes that xdm will happily ignore since they'll be
+ * the wrong xdmcp version anyway */
+#define GDM_XDMCP_PROTOCOL_VERSION 1000
+enum {
+	GDM_XDMCP_FIRST_OPCODE = 1000, /*just a marker, not an opcode */
+
+	GDM_XDMCP_MANAGED_FORWARD = 1000,
+		/* manager -> manager
+		 * A single packet with MANAGED_FORWARD is sent to the
+		 * manager that sent the forward query from the manager to
+		 * which forward query was sent.  Note that there is no
+		 * ack that this was received, thus it could have been
+		 * dropped on the floor, however, it is not completely
+		 * necessary for it to get through.
+		 *
+		 * Argument is ARRAY8 with the hostname of the manager */
+	GDM_XDMCP_LAST_OPCODE /*just a marker, not an opcode */
 };
 
 typedef gboolean (*GSignalFunc) (gint8		signal,

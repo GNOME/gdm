@@ -143,6 +143,7 @@ static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
+static void gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa);
 static void gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type);
@@ -151,11 +152,19 @@ static void gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa);
 static void gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid);
+static void gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa);
 static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *cnlt_sa);
 static GdmDisplay *gdm_xdmcp_display_alloc (const char *hostname, gint);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
 static void gdm_xdmcp_display_dispose_check (const gchar *name);
 static void gdm_xdmcp_displays_check (void);
+
+static GdmForwardQuery * gdm_forward_query_alloc (struct sockaddr_in *mgr_sa,
+						  struct sockaddr_in *dsp_sa);
+static GdmForwardQuery * gdm_forward_query_lookup (struct sockaddr_in *clnt_sa);
+static void gdm_forward_query_dispose (GdmForwardQuery *q);
+
+static GSList *forward_queries = NULL;
 
 
 /* 
@@ -406,6 +415,9 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 	"WILLING", "UNWILLING", "REQUEST", "ACCEPT", "DECLINE", "MANAGE", "REFUSE",
 	"FAILED", "KEEPALIVE", "ALIVE"
     };
+    static const char * const gdm_opcode_names[] = {
+	"MANAGED_FORWARD"
+    };
     
     if (!XdmcpFill (xdmcpfd, &buf, &clnt_sa, &sa_len)) {
 	gdm_error (_("gdm_xdmcp_decode: Could not create XDMCP buffer!"));
@@ -417,7 +429,8 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 	return TRUE;
     }
     
-    if (header.version != XDM_PROTOCOL_VERSION) {
+    if (header.version != XDM_PROTOCOL_VERSION &&
+	header.version != GDM_XDMCP_PROTOCOL_VERSION) {
 	gdm_error (_("gdm_xdmcp_decode: Incorrect XDMCP version!"));
 	return TRUE;
     }
@@ -425,6 +438,11 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
     if (header.opcode <= ALIVE)
 	    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", 
 		       opcode_names[header.opcode], inet_ntoa (clnt_sa.sin_addr));
+    if (header.opcode >= GDM_XDMCP_FIRST_OPCODE &&
+        header.opcode < GDM_XDMCP_LAST_OPCODE)
+	    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", 
+		       gdm_opcode_names[header.opcode - GDM_XDMCP_FIRST_OPCODE],
+		       inet_ntoa (clnt_sa.sin_addr));
 
     switch (header.opcode) {
 	
@@ -455,6 +473,10 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 	
     case KEEPALIVE:
 	gdm_xdmcp_handle_keepalive (&clnt_sa, header.length);
+	break;
+
+    case GDM_XDMCP_MANAGED_FORWARD:
+	gdm_xdmcp_handle_managed_forward (&clnt_sa, header.length);
 	break;
 	
     default:
@@ -616,6 +638,110 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	g_free (address.data);
 }
 
+static gboolean
+remove_oldest_forward (void)
+{
+	GSList *li;
+	GdmForwardQuery *oldest = NULL;
+
+	for (li = forward_queries; li != NULL; li = li->next) {
+		GdmForwardQuery *query = li->data;
+
+		if (oldest == NULL ||
+		    query->acctime < oldest->acctime) {
+			oldest = query;
+		}
+	}
+
+	if (oldest != NULL) {
+		gdm_forward_query_dispose (oldest);
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+static GdmForwardQuery *
+gdm_forward_query_alloc (struct sockaddr_in *mgr_sa,
+			 struct sockaddr_in *dsp_sa)
+{
+	GdmForwardQuery *q;
+	int count;
+
+	count = g_slist_length (forward_queries);
+
+	while (count > GDM_MAX_FORWARD_QUERIES &&
+	       remove_oldest_forward ())
+		count --;
+
+	q = g_new0 (GdmForwardQuery, 1);
+	q->dsp_sa = g_new0 (struct sockaddr_in, 1);
+	memcpy (q->dsp_sa, dsp_sa, sizeof (struct sockaddr_in));
+	q->from_sa = g_new0 (struct sockaddr_in, 1);
+	memcpy (q->from_sa, mgr_sa, sizeof (struct sockaddr_in));
+
+	forward_queries = g_slist_prepend (forward_queries, q);
+
+	return q;
+}
+
+static GdmForwardQuery *
+gdm_forward_query_lookup (struct sockaddr_in *clnt_sa)
+{
+	GSList *li, *qlist;
+	GdmForwardQuery *q;
+	time_t curtime = time (NULL);
+
+	qlist = g_slist_copy (forward_queries);
+
+	for (li = qlist; li != NULL; li = li->next) {
+		q = (GdmForwardQuery *) li->data;
+		if (q == NULL)
+			continue;
+
+		if (q->dsp_sa->sin_addr.s_addr == clnt_sa->sin_addr.s_addr) {
+			g_slist_free (qlist);
+			return q;
+		}
+
+		if (q->acctime > 0 &&
+		    curtime > q->acctime + GDM_FORWARD_QUERY_TIMEOUT)	{
+			gdm_debug ("gdm_forward_query_lookup: Disposing stale forward query from %s",
+				   inet_ntoa (clnt_sa->sin_addr));
+			gdm_forward_query_dispose (q);
+		}
+
+	}
+	g_slist_free (qlist);
+
+	gdm_debug ("gdm_forward_query_lookup: Host %s not found", 
+		   inet_ntoa (clnt_sa->sin_addr));
+
+	return NULL;
+}
+
+
+static void
+gdm_forward_query_dispose (GdmForwardQuery *q)
+{
+	if (q == NULL)
+		return;
+
+	forward_queries = g_slist_remove (forward_queries, q);
+
+	q->acctime = 0;
+
+	gdm_debug ("gdm_forward_query_dispose: Disposing %s", 
+		   inet_ntoa (q->dsp_sa->sin_addr));
+
+	g_free (q->dsp_sa);
+	q->dsp_sa = NULL;
+	g_free (q->from_sa);
+	q->from_sa = NULL;
+
+	g_free (q);
+}
+
 
 static void 
 gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
@@ -681,8 +807,16 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 	       inet_ntoa (disp_sa.sin_addr), ntohs (disp_sa.sin_port));
     
     /* Check with tcp_wrappers if display is allowed to access */
-    if (gdm_xdmcp_host_allow (&disp_sa)) 
+    if (gdm_xdmcp_host_allow (&disp_sa)) {
+	    GdmForwardQuery *q;
+
+	    q = gdm_forward_query_lookup (&disp_sa);
+	    if (q != NULL)
+		    gdm_forward_query_dispose (q);
+	    gdm_forward_query_alloc (clnt_sa, &disp_sa);
+
 	    gdm_xdmcp_send_willing (&disp_sa);
+    }
 
   out:
     /* Cleanup */
@@ -738,6 +872,33 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     XdmcpWriteARRAY8 (&buf, &status);
     XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
+}
+
+static void
+gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa)
+{
+	ARRAY8 hostname;
+	XdmcpHeader header;
+
+	gdm_debug ("gdm_xdmcp_send_managed_forward: Sending MANAGED_FORWARD to %s", inet_ntoa (clnt_sa->sin_addr));
+
+	hostname.data = g_new0 (char, 1024);
+	if (gethostname (hostname.data, 1023) != 0) {
+		g_free (hostname.data);
+		/* eek ! */
+		return;
+	}
+
+	hostname.length = strlen (hostname.data);
+
+	header.opcode = (CARD16) GDM_XDMCP_MANAGED_FORWARD;
+	header.length = 4 + hostname.length;
+	header.version = GDM_XDMCP_PROTOCOL_VERSION;
+	XdmcpWriteHeader (&buf, &header);
+
+	XdmcpWriteARRAY8 (&buf, &hostname);
+	XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+		    (int)sizeof (struct sockaddr_in));
 }
 
 static char *
@@ -999,6 +1160,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     ARRAY8 clnt_dspclass;
     GdmDisplay *d;
     GdmIndirectDisplay *id;
+    GdmForwardQuery *fq;
     gint logfd;
     
     gdm_debug ("gdm_xdmcp_handle_manage: Got MANAGE from %s", inet_ntoa (clnt_sa->sin_addr));
@@ -1032,32 +1194,40 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     }
     
     d = gdm_xdmcp_display_lookup (clnt_sessid);
-    if (GdmIndirect) {
-	    id = gdm_choose_indirect_lookup (clnt_sa);
-
-	    /* This was an indirect thingie and nothing was yet chosen,
-	     * use a chooser */
-	    if (d != NULL &&
-		d->dispstat == XDMCP_PENDING &&
-		id != NULL &&
-		id->chosen_host == NULL) {
-		    d->use_chooser = TRUE;
-		    d->indirect_id = id->id;
-	    } else {
-		    d->indirect_id = 0;
-		    d->use_chooser = FALSE;
-		    if (id != NULL)
-			    gdm_choose_indirect_dispose (id);
-	    }
-    } else {
-	    d->indirect_id = 0;
-	    d->use_chooser = FALSE;
-    }
-
-    if (d && d->dispstat == XDMCP_PENDING) {
+    if (d != NULL &&
+        d->dispstat == XDMCP_PENDING) {
 	gchar *logfile;
 
 	gdm_debug ("gdm_xdmcp_handle_manage: Looked up %s", d->name);
+
+	if (GdmIndirect) {
+		id = gdm_choose_indirect_lookup (clnt_sa);
+
+		/* This was an indirect thingie and nothing was yet chosen,
+		 * use a chooser */
+		if (d->dispstat == XDMCP_PENDING &&
+		    id != NULL &&
+		    id->chosen_host == NULL) {
+			d->use_chooser = TRUE;
+			d->indirect_id = id->id;
+		} else {
+			d->indirect_id = 0;
+			d->use_chooser = FALSE;
+			if (id != NULL)
+				gdm_choose_indirect_dispose (id);
+		}
+	} else {
+		d->indirect_id = 0;
+		d->use_chooser = FALSE;
+	}
+
+	/* this was from a forwarded query quite apparently so
+	 * send MANAGED_FORWARD */
+	fq = gdm_forward_query_lookup (clnt_sa);
+	if (fq != NULL) {
+		gdm_xdmcp_send_managed_forward (fq->from_sa);
+		gdm_forward_query_dispose (fq);
+	}
 
 	/* Log all output from spawned programs to a file */
 	logfile = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
@@ -1083,7 +1253,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	    return;
 	}
     }
-    else if (d && d->dispstat == XDMCP_MANAGED) {
+    else if (d != NULL && d->dispstat == XDMCP_MANAGED) {
 	gdm_debug ("gdm_xdmcp_handle_manage: Session id %ld already managed",
 		   (long)clnt_sessid);	
     }
@@ -1095,6 +1265,30 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 
     XdmcpDisposeARRAY8(&clnt_dspclass);
 }
+
+static void 
+gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len)
+{
+	ARRAY8 clnt_hostname;
+	GdmIndirectDisplay *id;
+
+	gdm_debug ("gdm_xdmcp_handle_managed_forward: Got MANAGED_FORWARD from %s", inet_ntoa (clnt_sa->sin_addr));
+
+	/* Hostname */
+	if ( ! XdmcpReadARRAY8 (&buf, &clnt_hostname)) {
+		gdm_error (_("%s: Could not read hostname"),
+			   "gdm_xdmcp_handle_managed_forward");
+		return;
+	}
+
+	id = gdm_choose_indirect_lookup (clnt_sa);
+	if (id != NULL) {
+		gdm_choose_indirect_dispose (id);
+	}
+
+	XdmcpDisposeARRAY8(&clnt_hostname);
+}
+
 
 
 static void
