@@ -1,3 +1,10 @@
+Mon Oct 15 23:28:45 2001  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in: the xdmcp indirect and manage waits were
+	  too long, changed to 15 seconds.  If you can't finish the
+	  xdmcp conversation in 15 seconds, you don't really have a
+	  connection you want to use X on.
+
 Fri Oct 12 12:52:08 2001  George Lebl <jirka@5z.com>
 
 	* configure.in, daemon/Makefile.am, gui/Makefile.am,
