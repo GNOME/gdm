@@ -1525,7 +1525,7 @@ gdm_slave_session_start (void)
 
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
 		sesspath = find_prog ("gnome-session",
-				      "--choose-session=Default",
+				      "--failsafe",
 				      &sessexec);
 		if (sesspath == NULL) {
 			/* yaikes */
