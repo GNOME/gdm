@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <syslog.h>
+#include <unistd.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>

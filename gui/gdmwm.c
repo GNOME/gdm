@@ -1025,6 +1025,11 @@ static GSourceFuncs event_funcs = {
 	event_dispatch
 };
 
+#if 0
+/* ALEX: WTF is this? It's not used by anything, and I don't want
+ * the greeter to depend on libgnomeui and libbonoboui.
+ */
+
 /* HAAAAAAAAAAAAAACK */
 void
 bonobo_dock_item_grab_pointer (BonoboDockItem *item)
@@ -1046,6 +1051,7 @@ bonobo_dock_item_grab_pointer (BonoboDockItem *item)
 
   gdk_cursor_destroy (fleur);
 }
+#endif
 
 void
 gdm_wm_init (Window login_window)

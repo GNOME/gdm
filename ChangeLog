@@ -1,3 +1,18 @@
+2002-02-07  Alex Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Remove libgnomeui from greeter libs.
+	
+	* gui/gdmwm.c:
+	Comment out unused bonobo_dock_item_grab_pointer()
+	that forces greeter to pull in libgnomeui.
+
+	* gui/gdmwm.h:
+	Don't include libgnomeui.h
+	
+	* gui/greeter/greeter.c:
+	Include unistd.h
+	
 2002-02-06  Alex Larsson  <alexl@redhat.com>
 
 	* gui/greeter/Makefile.am:
