@@ -108,6 +108,7 @@ gint  GdmPort = 0;
 gboolean  GdmIndirect = FALSE;
 gint  GdmMaxIndirect = 0;
 gint  GdmMaxIndirectWait = 0;
+gint  GdmPingInterval = 0;
 gboolean  GdmDebug = FALSE;
 gboolean  GdmVerboseAuth = FALSE;
 gboolean  GdmAllowRoot = FALSE;
@@ -203,6 +204,7 @@ gdm_config_parse (void)
     GdmIndirect = gnome_config_get_bool (GDM_KEY_INDIRECT);
     GdmMaxIndirect = gnome_config_get_int (GDM_KEY_MAXINDIR);
     GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);    
+    GdmPingInterval = gnome_config_get_int (GDM_KEY_PINGINTERVAL);    
 
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
 

@@ -92,6 +92,7 @@ extern gint GdmUserMaxFile;
 extern gint GdmSessionMaxFile;
 extern gint GdmRelaxPerms;
 extern gboolean GdmKillInitClients;
+extern gint GdmPingInterval;
 extern gint GdmRetryDelay;
 extern gboolean GdmAllowRoot;
 extern sigset_t sysmask;
@@ -109,6 +110,7 @@ static void     gdm_slave_greeter (void);
 static void     gdm_slave_session_start (void);
 static void     gdm_slave_session_stop (pid_t sesspid);
 static void     gdm_slave_session_cleanup (void);
+static void     gdm_slave_alrm_handler (int sig);
 static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);
 static void     gdm_slave_exit (gint status, const gchar *format, ...);
@@ -120,12 +122,24 @@ gdm_slave_start (GdmDisplay *display)
 {  
 	time_t first_time;
 	int death_count;
-	struct sigaction term, child;
+	struct sigaction alrm, term, child;
 
 	if (!display)
 		return;
 
 	gdm_debug ("gdm_slave_start: Starting slave process for %s", display->name);
+	if (d->type != TYPE_LOCAL &&
+	    GdmPingInterval > 0) {
+		/* Handle a ALRM signals from our ping alarms */
+		alrm.sa_handler = gdm_slave_alrm_handler;
+		alrm.sa_flags = SA_RESTART | SA_NODEFER;
+		sigemptyset (&alrm.sa_mask);
+		sigaddset (&alrm.sa_mask, SIGALRM);
+
+		if (sigaction (SIGALRM, &alrm, NULL) < 0)
+			gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_init: Error setting up ALRM signal handler"));
+	}
+
 	/* Handle a INT/TERM signals from gdm master */
 	term.sa_handler = gdm_slave_term_handler;
 	term.sa_flags = SA_RESTART;
@@ -151,6 +165,10 @@ gdm_slave_start (GdmDisplay *display)
 	sigdelset (&mask, SIGINT);
 	sigdelset (&mask, SIGTERM);
 	sigdelset (&mask, SIGCHLD);
+	if (d->type != TYPE_LOCAL &&
+	    GdmPingInterval > 0) {
+		sigdelset (&mask, SIGALRM);
+	}
 	sigprocmask (SIG_SETMASK, &mask, NULL);
 
 	first_time = time (NULL);
@@ -311,6 +329,12 @@ gdm_slave_run (GdmDisplay *display)
 
     if (d->dsp != NULL) {
 
+	/* If XDMCP setup pinging */
+	if (d->type != TYPE_LOCAL &&
+	    GdmPingInterval > 0) {
+		alarm (GdmPingInterval * 60);
+	}
+
 	/* checkout xinerama */
         gdm_screen_init (d);
 
@@ -419,7 +443,7 @@ focus_first_x_window (const char *class_res_name)
 					event.xmap.window,
 					RevertToPointerRoot,
 					CurrentTime);
-			XSync (disp, True);
+			XSync (disp, False);
 			XCloseDisplay (disp);
 
 			_exit (0);
@@ -1752,6 +1776,36 @@ gdm_slave_term_handler (int sig)
     _exit (DISPLAY_ABORT);
 }
 
+/* called on alarms to ping */
+static void
+gdm_slave_alrm_handler (int sig)
+{
+	static gboolean in_ping = FALSE;
+
+	gdm_debug ("gdm_slave_alrm_handler: %s got ARLM signal, "
+		   "to ping display", d->name);
+
+	if (d->dsp == NULL) {
+		/* huh? */
+		return;
+	}
+
+	if (in_ping) {
+		/* darn, the last ping didn't succeed, abort this display */
+		gdm_slave_exit (DISPLAY_REMANAGE, 
+				_("Ping to %s failed, whacking display!"),
+				d->name);
+	}
+
+	in_ping = TRUE;
+
+	/* schedule next alarm */
+	alarm (GdmPingInterval * 60);
+
+	XSync (d->dsp, True);
+
+	in_ping = FALSE;
+}
 
 /* Called on every SIGCHLD */
 static void 
