@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0.0\n"
-"POT-Creation-Date: 2001-01-24 21:50+0100\n"
-"PO-Revision-Date: 2001-01-24 21:51+01:00\n"
+"POT-Creation-Date: 2001-01-25 23:21+0100\n"
+"PO-Revision-Date: 2001-01-25 23:22+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -346,7 +346,7 @@ msgstr "gdm_slave_exec_script: Kan ikke kjøre fork på skriptprosessen!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1354
+#: gui/gdmlogin.c:1523
 msgid "Login:"
 msgstr "Innlogging:"
 
@@ -595,37 +595,37 @@ msgstr "gdm_signals_init: Feil under oppsett av INT signalhåndtereren"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Feil under oppsett av TERM signalhåndtereren"
 
-#: gui/gdmchooser.c:594 gui/gdmlogin.c:1681
+#: gui/gdmchooser.c:594 gui/gdmlogin.c:1850
 msgid "Could not set signal mask!"
 msgstr "Kunne ikke sette signalmaske!"
 
-#: gui/gdmlogin.c:304
+#: gui/gdmlogin.c:331
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Strengen er for lang!"
 
-#: gui/gdmlogin.c:306
+#: gui/gdmlogin.c:333
 #, c-format
 msgid "Welcome to %s"
 msgstr "Velkommen til %s"
 
-#: gui/gdmlogin.c:310
+#: gui/gdmlogin.c:337
 msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
 msgstr "gdm_parse_enriched_string: Klarte ikke å malloc midlertidig buffer! "
 
-#: gui/gdmlogin.c:394
+#: gui/gdmlogin.c:421
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Er du sikker på at du vil starte maskinen på nytt?"
 
-#: gui/gdmlogin.c:408
+#: gui/gdmlogin.c:435
 msgid "Are you sure you want to halt the machine?"
 msgstr "Er du sikker på at du vil stoppe maskinen?"
 
-#: gui/gdmlogin.c:426
+#: gui/gdmlogin.c:453
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config: Ingen konfigurasjonsfil: %s. Avbryter."
 
-#: gui/gdmlogin.c:525
+#: gui/gdmlogin.c:552
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -634,7 +634,7 @@ msgstr ""
 "Din foretrukne sesjonstype %s er ikke installert på denne maskinen.\n"
 "Ønsker du å gjøre %s forvalgt for fremtidige sesjoner?"
 
-#: gui/gdmlogin.c:540 gui/gdmlogin.c:582
+#: gui/gdmlogin.c:567 gui/gdmlogin.c:609
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -643,95 +643,98 @@ msgstr ""
 "Du har valgt %s for denne sesjonen, men forvalgt innstilling er %s.\n"
 "Ønsker du å gjøre %s til forvalg for fremtidige sesjoner?"
 
-#: gui/gdmlogin.c:644
+#: gui/gdmlogin.c:669
 #, c-format
 msgid "%s session selected"
 msgstr "%s sesjon valgt"
 
-#: gui/gdmlogin.c:660 gui/gdmlogin.c:763
+#: gui/gdmlogin.c:685 gui/gdmlogin.c:791
 msgid "Last"
 msgstr "Forrige"
 
-#: gui/gdmlogin.c:675
+#: gui/gdmlogin.c:702
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Sesjonens skriptkatalog ikke funnet!"
 
-#: gui/gdmlogin.c:728
+#: gui/gdmlogin.c:756
 msgid "No session scripts found. Aborting!"
 msgstr "Ingen sesjonsskript funnet. Avbryter!"
 
-#: gui/gdmlogin.c:732
+#: gui/gdmlogin.c:760
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Ingen forvalgt sesjonlenke funnet. Bruker %s.\n"
 
-#: gui/gdmlogin.c:746
+#: gui/gdmlogin.c:774
 #, c-format
 msgid "%s language selected"
 msgstr "språk %s valgt"
 
-#: gui/gdmlogin.c:778
+#: gui/gdmlogin.c:806
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:784
+#: gui/gdmlogin.c:812
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:790
+#: gui/gdmlogin.c:818
 msgid "Other"
 msgstr "Annet"
 
-#: gui/gdmlogin.c:1186
-msgid "Session"
-msgstr "Sesjon"
+#: gui/gdmlogin.c:1276
+msgid "GNOME Desktop Manager"
+msgstr "GNOME skrivebordshåndterer"
 
-#: gui/gdmlogin.c:1193
-msgid "Language"
-msgstr "Språk"
-
-#: gui/gdmlogin.c:1200
-msgid "Reboot..."
-msgstr "Omstart..."
-
-#: gui/gdmlogin.c:1207
-msgid "Halt..."
-msgstr "Stopp..."
-
-#: gui/gdmlogin.c:1214
-msgid "System"
-msgstr "System"
-
-#: gui/gdmlogin.c:1222
+#: gui/gdmlogin.c:1288
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Kan ikke åpne ikonfilen: %s. Suspenderer ikonofiseringsfunksjonen!"
 
-#: gui/gdmlogin.c:1225
-msgid "Iconify"
-msgstr "Ikonifiser"
+#: gui/gdmlogin.c:1369
+msgid "Session"
+msgstr "Sesjon"
 
-#: gui/gdmlogin.c:1389
+#: gui/gdmlogin.c:1376
+msgid "Language"
+msgstr "Språk"
+
+#: gui/gdmlogin.c:1383
+msgid "Reboot..."
+msgstr "Omstart..."
+
+#: gui/gdmlogin.c:1390
+msgid "Halt..."
+msgstr "Stopp..."
+
+#: gui/gdmlogin.c:1397
+msgid "System"
+msgstr "System"
+
+#: gui/gdmlogin.c:1558
 msgid "Please enter your login"
 msgstr "Vennligst skriv inn brukernavn og passord"
 
-#: gui/gdmlogin.c:1571
+#: gui/gdmlogin.c:1740
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Kan ikke åpne DefaultImage: %s. Suspenderer ansiktsvisning!"
 
-#: gui/gdmlogin.c:1658
+#: gui/gdmlogin.c:1827
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Feil under oppsett av HUP signalhåndtereren"
 
-#: gui/gdmlogin.c:1661
+#: gui/gdmlogin.c:1830
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Feil under oppsett av INT signalhåndtereren"
 
-#: gui/gdmlogin.c:1664
+#: gui/gdmlogin.c:1833
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Feil under oppsett av TERM signalhåndtereren"
 
-#: gui/gdmlogin.c:1672
+#: gui/gdmlogin.c:1841
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Feil under oppsett av CHLD signalhåndtereren"
+
+#~ msgid "Iconify"
+#~ msgstr "Ikonifiser"
