@@ -695,6 +695,7 @@ gdm_slave_greeter (void)
 {
     gint pipe1[2], pipe2[2];  
     gchar **argv;
+    struct passwd *pwent;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     
@@ -742,7 +743,23 @@ gdm_slave_greeter (void)
 	gdm_clearenv_no_lang ();
 	gdm_setenv ("XAUTHORITY", d->authfile);
 	gdm_setenv ("DISPLAY", d->name);
-	gdm_setenv ("HOME", "/"); /* Hack */
+
+	gdm_setenv ("LOGNAME", GdmUser);
+	gdm_setenv ("USER", GdmUser);
+	gdm_setenv ("USERNAME", GdmUser);
+	
+	pwent = getpwnam (GdmUser);
+	if (pwent != NULL) {
+		/* Note that usually this doesn't exist */
+		if (g_file_exists (pwent->pw_dir))
+			gdm_setenv ("HOME", pwent->pw_dir);
+		else
+			gdm_setenv ("HOME", "/"); /* Hack */
+		gdm_setenv ("SHELL", pwent->pw_shell);
+	} else {
+		gdm_setenv ("HOME", "/"); /* Hack */
+		gdm_setenv ("SHELL", "/bin/sh");
+	}
 	gdm_setenv ("PATH", GdmDefaultPath);
 	gdm_setenv ("RUNNING_UNDER_GDM", "true");
 

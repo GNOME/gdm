@@ -1,3 +1,11 @@
+Mon May 14 22:42:51 2001  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c:  setup the environment better for the greeter
+	  and setup the actual HOME if it exists etc... This makes it nicer
+	  for BackgroundProgram's.  so if say the user wants to run a
+	  gnome program (which require a writable home dir) he can just
+	  create /home/gdm (or whatever it's in /etc/passwd)
+
 Mon May 14 22:20:09 2001  George Lebl <jirka@5z.com>
 
 	* docs/C/Makefile.am: install the index.html file correctly on make
