@@ -1,6 +1,7 @@
 %define ver           @VERSION@
 %define rel           1
 %define localstatedir /var/lib
+%define sysconfdir    /etc
 
 Summary:     The GNOME Display Manager.
 Name:        gdm
@@ -13,6 +14,7 @@ BuildRoot:   /var/tmp/gdm-%{version}-root
 Prereq:      /usr/sbin/useradd
 Requires:    pam >= 0.68
 Requires:    gnome-libs >= 1.0.17
+%define sysconfdir	/etc
 
 %description
 Gdm (the GNOME Display Manager) is a highly configurable
@@ -25,7 +27,7 @@ several different X sessions on your local machine at the same time.
 
 %build
 CFLAGS="-g $RPM_OPT_FLAGS" ./configure --localstatedir=%{localstatedir} \
-    --prefix=%{_prefix} --sysconfdir=%{_sysconfdir}/X11 \
+    --prefix=%{_prefix} --sysconfdir=%{sysconfdir}/X11 \
     --bindir=%{_bindir} --datadir=%{_datadir} --sbindir=%{_sbindir} \
     --enable-console-helper
 
@@ -36,7 +38,7 @@ rm -rf $RPM_BUILD_ROOT
 
 /usr/sbin/useradd -r gdm > /dev/null 2>&1 || /bin/true
 
-make sysconfdir=$RPM_BUILD_ROOT%{_sysconfdir}/X11 \
+make sysconfdir=$RPM_BUILD_ROOT%{sysconfdir}/X11 \
     prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
     datadir=$RPM_BUILD_ROOT%{_datadir} \
     localstatedir=$RPM_BUILD_ROOT%{localstatedir} \
@@ -44,22 +46,24 @@ make sysconfdir=$RPM_BUILD_ROOT%{_sysconfdir}/X11 \
 
 
 # install RH specific session files
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/*
+rm -f $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/*
 
-install -m 755 config/Default.redhat $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/Default
-install -m 755 config/Gnome $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/Gnome
-install -m 755 config/Failsafe.redhat $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/Failsafe
-ln -sf Default $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/default
+install -m 755 config/Default.redhat $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Default
+install -m 755 config/Gnome $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Gnome
+install -m 755 config/Failsafe.redhat $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Failsafe
+ln -sf Default $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/default
 
 # change default Init script to be Red Hat default
-ln -sf ../../xdm/Xsetup_0 $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Init/Default
+ln -sf ../../xdm/Xsetup_0 $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Init/Default
 
 # run GiveConsole/TakeConsole
-ln -sf ../../xdm/GiveConsole $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/PreSession/Default
-ln -sf ../../xdm/TakeConsole $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/PostSession/Default
+ln -sf ../../xdm/GiveConsole $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/PreSession/Default
+ln -sf ../../xdm/TakeConsole $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/PostSession/Default
 
 # move pam.d stuff to right place
-mv $RPM_BUILD_ROOT%{_sysconfdir}/X11/pam.d $RPM_BUILD_ROOT%{_sysconfdir}
+mv $RPM_BUILD_ROOT%{sysconfdir}/X11/pam.d $RPM_BUILD_ROOT%{sysconfdir}
+# move security stuff to right place
+mv $RPM_BUILD_ROOT%{sysconfdir}/X11/security $RPM_BUILD_ROOT%{sysconfdir}
 
 
 %clean
@@ -77,16 +81,16 @@ exit 0
 %doc AUTHORS COPYING ChangeLog NEWS README
 %{_bindir}/*
 %{_sbindir}/*
-%config %{_sysconfdir}/pam.d/gdm
-%config %{_sysconfdir}/pam.d/gdmconfig
-%config %{_sysconfdir}/security/console.apps/gdmconfig
-%config %{_sysconfdir}/X11/gdm/gnomerc
-%config %{_sysconfdir}/X11/gdm/gdm.conf
-%config %{_sysconfdir}/X11/gdm/locale.alias
-%config %{_sysconfdir}/X11/gdm/Sessions/*
-%config %{_sysconfdir}/X11/gdm/Init/*
-%config %{_sysconfdir}/X11/gdm/PreSession/*
-%config %{_sysconfdir}/X11/gdm/PostSession/*
+%config %{sysconfdir}/pam.d/gdm
+%config %{sysconfdir}/pam.d/gdmconfig
+%config %{sysconfdir}/security/console.apps/gdmconfig
+%config %{sysconfdir}/X11/gdm/gnomerc
+%config %{sysconfdir}/X11/gdm/gdm.conf
+%config %{sysconfdir}/X11/gdm/locale.alias
+%config %{sysconfdir}/X11/gdm/Sessions/*
+%config %{sysconfdir}/X11/gdm/Init/*
+%config %{sysconfdir}/X11/gdm/PreSession/*
+%config %{sysconfdir}/X11/gdm/PostSession/*
 %{_datadir}/gdm/gdmconfig.glade
 %{_datadir}/gdm/gdmchooser.glade
 %{_datadir}/gnome/apps/System/gdmconfig.desktop
@@ -96,6 +100,10 @@ exit 0
 
 
 %changelog
+* Wed Mar 07 2001 George Lebl <jirka@5z.com>
+- Fixups, move the security dir as well and build with console helper and
+  hardwire the sysconfdir to /etc as that seems broke on my 6.2 box otherwise
+
 * Wed Mar 07 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
 - finalize patches that have been pending.  Merge changes forward, and
   commit to CVS.
