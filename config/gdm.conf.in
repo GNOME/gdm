@@ -141,9 +141,10 @@ MaxSessions=16
 MaxWait=15
 MaxWaitIndirect=15
 # How many times can a person log in from a single host.  Usually better to
-# keep at 1 to fend off DoS attacks by running many logins from a single
-# host
-DisplaysPerHost=1
+# keep low to fend off DoS attacks by running many logins from a single
+# host.  This is now set at 2 since if the server crashes then gdm doesn't
+# know for some time and wouldn't allow another session.
+DisplaysPerHost=2
 # The port.  177 is the standard port so better keep it that way
 Port=177
 # Willing script, none is shipped and by default we'll send

@@ -188,7 +188,7 @@ enum {
 #define GDM_KEY_MAXPEND "xdmcp/MaxPending=4"
 #define GDM_KEY_MAXSESS "xdmcp/MaxSessions=16"
 #define GDM_KEY_MAXWAIT "xdmcp/MaxWait=30"
-#define GDM_KEY_DISPERHOST "xdmcp/DisplaysPerHost=1"
+#define GDM_KEY_DISPERHOST "xdmcp/DisplaysPerHost=2"
 #define GDM_KEY_UDPPORT "xdmcp/Port=177"
 #define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=true"
 #define GDM_KEY_MAXINDIR "xdmcp/MaxPendingIndirect=4"
