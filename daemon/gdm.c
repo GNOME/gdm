@@ -680,9 +680,10 @@ gdm_cleanup_children (void)
     }
 
     if (d->type != TYPE_LOCAL &&
-	(status == DISPLAY_REBOOT ||
+	(status == DISPLAY_RESTARTGDM ||
+	 status == DISPLAY_REBOOT ||
 	 status == DISPLAY_HALT)) {
-	    gdm_info (_("gdm_child_action: Reboot or Halt request from a non-local display %s"), d->name);
+	    gdm_info (_("gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"), d->name);
 	    status = DISPLAY_REMANAGE;
     }
 
@@ -715,6 +716,15 @@ gdm_cleanup_children (void)
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
+	break;
+
+    case DISPLAY_RESTARTGDM:
+	final_cleanup ();
+	if (stored_path != NULL)
+		putenv (stored_path);
+	execvp (stored_argv[0], stored_argv);
+	gdm_error (_("Failed to restart self"));
+	_exit (1);
 	break;
 
     case DISPLAY_XFAILED:       /* X sucks */

@@ -863,6 +863,7 @@ gdm_slave_greeter (void)
 	gdm_setenv ("USER", GdmUser);
 	gdm_setenv ("USERNAME", GdmUser);
 
+	gdm_setenv ("GDM_VERSION", VERSION);
 
 	pwent = getpwnam (GdmUser);
 	if (pwent != NULL) {

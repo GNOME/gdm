@@ -42,6 +42,8 @@
 #define SERVER_ABORT 253	/* Server failed badly. Suspending display. */
 
 /* DO NOTE USE 1, that's used as error if x connection fails usually */
+/* Note that there is no reasons why these are a power of two, and note
+ * that they have to fit in 256 */
 #define DISPLAY_SUCCESS 0	/* All systems are go */
 #define DISPLAY_REMANAGE 2	/* Restart display */
 #define DISPLAY_ABORT 4		/* Houston, we have a problem */
@@ -49,6 +51,7 @@
 #define DISPLAY_HALT 16		/* Halt */
 #define DISPLAY_DEAD 32		/* Display not configured/started yet */
 #define DISPLAY_XFAILED 64	/* X failed */
+#define DISPLAY_RESTARTGDM 128	/* Restart GDM */
 
 #define XDMCP_DEAD 0
 #define XDMCP_PENDING 1

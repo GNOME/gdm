@@ -3259,6 +3259,7 @@ main (int argc, char *argv[])
     struct sigaction chld;
     sigset_t mask;
     GIOChannel *ctrlch;
+    char *gdm_version;
 
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
@@ -3297,6 +3298,107 @@ main (int argc, char *argv[])
     tooltips = gtk_tooltips_new ();
 
     gdm_screen_init ();
+
+    gdm_version = g_getenv ("GDM_VERSION");
+
+    if ((gdm_version == NULL ||
+	 strcmp (gdm_version, VERSION) != 0) &&
+	gdm_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+	    char *msg;
+	    GtkWidget *dialog;
+
+	    gdm_wm_init (0);
+
+	    gdm_wm_focus_new_windows (TRUE);
+
+	    msg = g_strdup_printf
+		    (_("The greeter version (%s) does not match the daemon "
+		       "version.\n"
+		       "You have probably just upgraded gdm.\n"
+		       "Please restart the gdm daemon or reboot the computer."),
+		     VERSION);
+	    dialog = gnome_error_dialog (msg);
+	    g_free (msg);
+
+	    gtk_widget_show_all (dialog);
+	    gdm_center_window (GTK_WINDOW (dialog));
+	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	    return EXIT_SUCCESS;
+    }
+
+    if (gdm_version == NULL) {
+	    char *msg;
+	    GtkWidget *dialog;
+
+	    gdm_wm_init (0);
+
+	    gdm_wm_focus_new_windows (TRUE);
+
+	    msg = g_strdup_printf
+		    (_("The greeter version (%s) does not match the daemon "
+		       "version.\n"
+		       "You have probably just upgraded gdm.\n"
+		       "Please restart the gdm daemon or reboot the computer."),
+		     VERSION);
+	    dialog = gnome_message_box_new (msg,
+					    GNOME_MESSAGE_BOX_WARNING,
+					    _("Reboot"),
+					    GNOME_STOCK_BUTTON_CLOSE,
+					    NULL);
+	    g_free (msg);
+
+	    gtk_widget_show_all (dialog);
+	    gdm_center_window (GTK_WINDOW (dialog));
+	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	    switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
+	    case 0:
+		    return DISPLAY_REBOOT;
+	    default:
+		    return DISPLAY_ABORT;
+	    }
+    }
+
+    if (strcmp (gdm_version, VERSION) != 0) {
+	    char *msg;
+	    GtkWidget *dialog;
+
+	    gdm_wm_init (0);
+
+	    gdm_wm_focus_new_windows (TRUE);
+
+	    msg = g_strdup_printf
+		    (_("The greeter version (%s) does not match the daemon "
+		       "version (%s).\n"
+		       "You have probably just upgraded gdm.\n"
+		       "Please restart the gdm daemon or reboot the computer."),
+		     VERSION, gdm_version);
+	    dialog = gnome_message_box_new (msg,
+					    GNOME_MESSAGE_BOX_WARNING,
+					    _("Restart"),
+					    _("Reboot"),
+					    GNOME_STOCK_BUTTON_CLOSE,
+					    NULL);
+	    g_free (msg);
+
+	    gtk_widget_show_all (dialog);
+	    gdm_center_window (GTK_WINDOW (dialog));
+	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	    gtk_widget_show_now (dialog);
+
+	    gnome_dialog_set_default (GNOME_DIALOG (dialog), 0);
+	    gnome_dialog_grab_focus (GNOME_DIALOG (dialog), 0);
+
+	    switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
+	    case 0:
+		    return DISPLAY_RESTARTGDM;
+	    case 1:
+		    return DISPLAY_REBOOT;
+	    default:
+		    return DISPLAY_ABORT;
+	    }
+    }
 
     if (GdmBrowser)
 	gdm_login_users_init ();
