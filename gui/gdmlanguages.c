@@ -120,6 +120,8 @@ static Language languages [] = {
         { N_("A-M|Macedonian"), "mk_MK", NULL, 0 },
         /*Note translate the A-M to the A-M you used in the group label */
         { N_("A-M|Malay"), "ms_MY", "Bahasa Melayu", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+        { N_("A-M|Mongolian"), "mn_MN", "Монгол", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Norwegian (bokmal)"), "no_NO", "Norsk (bokmål)", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
