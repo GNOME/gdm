@@ -818,7 +818,12 @@ evil (const char *user)
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		return TRUE;
 				 /* do not translate */
-	} else if (strcmp (user, "Require Quater") == 0) {
+	} else if (strcmp (user, "Require Quater") == 0 ||
+		   strcmp (user, "Require Quarter") == 0) {
+		/* btw, note that I misspelled quarter before and
+		 * thus this checks for Quater as well as Quarter to
+		 * keep compatibility which is obviously important for
+		 * something like this */
 		require_quater = TRUE;
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		return TRUE;
