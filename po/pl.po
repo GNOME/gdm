@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2002-05-13 18:08+0200\n"
-"PO-Revision-Date: 2002-05-13 18:12+0200\n"
+"POT-Creation-Date: 2002-05-18 10:50+0200\n"
+"PO-Revision-Date: 2002-05-18 10:52+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -187,6 +187,12 @@ msgstr "%s: Brak pliku konfiguracyjnego: %s. Przyjęto wartości domyślne."
 
 #: daemon/gdm.c:1
 #, c-format
+msgid "%s: Standard X server not found, trying alternatives"
+msgstr ""
+"%s: Nie odnaleziono standardowego serwera X, próba użycia alternatywnych."
+
+#: daemon/gdm.c:1
+#, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
 msgstr ""
 "%s: Uaktywniono XDMCP przy braku jego obsługi. XDMCP zostało unieaktywnione."
@@ -255,11 +261,11 @@ msgstr "%s: Niepoprawny wiersz serwera w pliku konfiguracyjnym. Rezygnacja!"
 #: daemon/gdm.c:1
 #, c-format
 msgid ""
-"%s: XDMCP disabled and no local servers defined. Adding /usr/bin/X11/X on "
-":%d to allow configuration!"
+"%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
+"configuration!"
 msgstr ""
 "%s: Deaktywowano XDMCP i nie zdefiniowano lokalnych serwerów. Aby pozwolić "
-"na konfigurację, został dodany /usr/bin/X11/X na ekranie :%d!"
+"na konfigurację, został dodany %s na ekranie :%d!"
 
 #: daemon/gdm.c:1
 #, c-format
@@ -428,13 +434,15 @@ msgstr ""
 "Rezygnacja."
 
 #: daemon/gdm.c:1
-msgid "gdm_daemonify: fork() failed!"
-msgstr "gdm_daemonify: funkcja fork() nie powiodła się!"
-
-#: daemon/gdm.c:1
 #, c-format
-msgid "gdm_daemonify: setsid() failed: %s!"
-msgstr "gdm_daemonify: Funkcja setsid() nie powiodła się: %s!"
+msgid "%s: fork() failed!"
+msgstr "%s: funkcja fork() nie powiodła się!"
+
+#. should never happen
+#: daemon/gdm.c:1 daemon/slave.c:1
+#, c-format
+msgid "%s: setsid() failed: %s!"
+msgstr "%s: Funkcja setsid() nie powiodła się: %s!"
 
 #: daemon/gdm.c:1
 #, c-format
@@ -523,7 +531,7 @@ msgid "gdm_child_action: Suspend failed: %s"
 msgstr "gdm_child_action: Uśpienie systemu nie powiodło się się: %s"
 
 #: daemon/gdm.c:1
-msgid "Gdm restarting ..."
+msgid "GDM restarting ..."
 msgstr "Ponowne uruchamianie GDM-a..."
 
 #: daemon/gdm.c:1
@@ -965,6 +973,11 @@ msgstr "%s: Nie można ustawić środowiska dla %s. Rezygnacja."
 
 #: daemon/slave.c:1
 #, c-format
+msgid "%s: setusercontext() failed for %s. Aborting."
+msgstr "%s: Funkcja initgroups() dla %s nie powiodła się. Rezygnacja."
+
+#: daemon/slave.c:1
+#, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr ""
 "gdm_slave_session_start: Nie można zmienić użytkownika na %s. Rezygnacja."
@@ -1105,11 +1118,6 @@ msgstr ""
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Katalog domowy użytkownika %s: \"%s\" nie istnieje!"
-
-#: daemon/slave.c:1
-msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
-msgstr ""
-"gdm_slave_session_start: Zakończono uwierzytelnianie. Uruchamianie greetera"
 
 #: daemon/slave.c:1
 msgid ""
@@ -1514,7 +1522,7 @@ msgstr "Wybierz z poniższej listy komputer, z którym chcesz się połączyć."
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_chooser_parse_config: Brak pliku konfiguracyjnego: %s. Rezygnacja."
 
-#: gui/gdmchooser-strings.c:1 gui/gdmchooser.c:1
+#: gui/gdmchooser.c:1
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1595,7 +1603,7 @@ msgstr ""
 #. * DO NOT compile it as part of your application.
 #.
 #: gui/gdmchooser-strings.c:1
-msgid "Gdm Host Chooser"
+msgid "GDM Host Chooser"
 msgstr "GDM - program wybierający"
 
 #: gui/gdmchooser-strings.c:1
@@ -1621,6 +1629,23 @@ msgstr "Kończy pracę aplikacji"
 #: gui/gdmchooser-strings.c:1
 msgid "Status"
 msgstr "Stan"
+
+#: gui/gdmchooser-strings.c:1
+msgid ""
+"The main area of this application shows the hosts on the local network that "
+"have \"XDMCP\" enabled. This allows users to login remotely to other "
+"machines as if they were logged on using the console.\n"
+"\n"
+"You can rescan the network for new hosts by clicking \"Refresh\". When you "
+"have selected a host click \"Connect\" to open a session to that machine."
+msgstr ""
+"Główny obszar aplikacji zawiera listę komputerów w lokalnej sieci, "
+"obsługujących protokół \"XDMCP\". Pozwala on na zdalne logowanie się "
+"użytkowników na innych komputerach, tak, jakby odbywało się to na lokalnej "
+"konsoli.\n"
+"\n"
+"Aby ponownie przeszukać sieć, należy kliknąć \"Odśwież\". Po wybraniu "
+"komputera z listy, kliknięcie \"Połącz\" rozpoczyna na nim sesję."
 
 #: gui/gdmchooser-strings.c:1
 msgid "Information"
@@ -2355,14 +2380,14 @@ msgid ""
 msgstr ""
 "Kliknij tutaj, aby rozwinąć okno logowania z ikony i móc się zalogować."
 
-#: gui/gdmlogin.c:1 gui/gdmlogin.c:1 gui/gdmlogin.c:1
-#, c-format
-msgid "%sWelcome to %s%s"
-msgstr "%s%s%s wita"
-
 #: gui/gdmlogin.c:1
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Zbyt długi napis!"
+
+#: gui/gdmlogin.c:1
+#, c-format
+msgid "%sWelcome to %s%s"
+msgstr "%s%s%s wita"
 
 #: gui/gdmlogin.c:1
 msgid ""
