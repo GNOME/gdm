@@ -154,6 +154,10 @@ main (int argc, char *argv[])
 	if (child_pid == 0) {
 		char VT_NUMBER[256];
 
+#ifdef __linux__
+		putenv ("TERM=linux");
+#endif
+
 		snprintf (VT_NUMBER, sizeof (VT_NUMBER), "VT_NUMBER=%d", vtno);
 		putenv (VT_NUMBER);
 

@@ -101,6 +101,11 @@ void gdm_saveenv (void);
 /* leaks */
 void gdm_restoreenv (void);
 
+/* like fopen with "w" but unlinks and uses O_EXCL */
+FILE * gdm_safe_fopen_w (const char *file);
+/* like fopen with "a+" and uses O_EXCL and O_NOFOLLOW */
+FILE * gdm_safe_fopen_ap (const char *file);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

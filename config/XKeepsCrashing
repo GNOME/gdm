@@ -6,6 +6,7 @@ MSG5=`gettext -s "Please type in the root (privileged user) password."`
 MSG6=`gettext -s "I will now try to restart the X server again."`
 MSG7=`gettext -s "I will disable this X server for now.  Restart GDM when it is configured correctly."`
 MSG8=`gettext -s "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
+MSG9=`gettext -s "Would you like to view the detailed X server output as well?"`
 
 # there are some env vars defined:
 # XLOG = the log file for the X server
@@ -56,12 +57,11 @@ else
   ASKPASS=
 fi
 
-
 #
 #  If this is a mouse problem try mouseconfig and modify some
 #  messages
 #
-if grep '^Cannot open mouse ' "$XLOG" ; then
+if grep '^\(Cannot open mouse\|No core pointer\)' "$XLOG" 2> /dev/null ; then
 
   MSG8=`gettext -s "I cannot start the X server (your graphical interface).  It seems that the pointer device (your mouse) is not set up correctly.  Would you like to view the X server output to diagnose the problem?"`
 
@@ -120,6 +120,13 @@ fi
 
 if "$DIALOG" --yesno "$MSG8" 10 50 ; then 
   "$DIALOG" --textbox "$XLOG" 22 76
+  # Support XFree86 v4 logfile thingie
+  if grep '^(..) Log file: "' "$XLOG" 2> /dev/null ; then
+    XLOG_DETAIL=`grep '^(..) Log file: "' "$XLOG" | sed 's/^[^"]*"\([^"]*\)".*$/\1/'`
+    if "$DIALOG" --yesno "$MSG9" 10 50 ; then 
+      "$DIALOG" --textbox "$XLOG_DETAIL" 22 76
+    fi
+  fi
 fi
 
 if test "x$XCONFIGURATOR" = "x" ; then

@@ -128,6 +128,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 {
 	GtkWidget *w, *sep;
 	static GtkTooltips *tooltips = NULL;
+	gboolean add_reboot, add_halt, add_suspend;
 
 	/* should never be allowed by the UI */
 	if ( ! GdmSystemMenu ||
@@ -165,11 +166,17 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				      NULL);
 	}
 
-	sep = gtk_separator_menu_item_new ();
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), sep);
+	add_reboot = working_command_exists (GdmReboot);
+	add_halt = working_command_exists (GdmHalt);
+	add_suspend = working_command_exists (GdmSuspend);
 
+	if (add_reboot || add_halt || add_suspend) {
+		sep = gtk_separator_menu_item_new ();
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), sep);
+		gtk_widget_show (sep);
+	}
 
-	if (working_command_exists (GdmReboot)) {
+	if (add_reboot) {
 		w = gtk_menu_item_new_with_mnemonic (_("_Reboot the computer..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
@@ -179,11 +186,9 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
 				      _("Reboot your computer"),
 				      NULL);
-
-		gtk_widget_show (sep);
 	}
 
-	if (working_command_exists (GdmHalt)) {
+	if (add_halt) {
 		w = gtk_menu_item_new_with_mnemonic (_("Shut _down the computer..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
@@ -194,11 +199,9 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				      _("Shut down your computer so that "
 					"you may turn it off."),
 				      NULL);
-
-		gtk_widget_show (sep);
 	}
 
-	if (working_command_exists (GdmSuspend)) {
+	if (add_suspend) {
 		w = gtk_menu_item_new_with_mnemonic (_("Sus_pend the computer..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
@@ -208,8 +211,6 @@ greeter_system_append_system_menu (GtkWidget *menu)
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
 				      _("Suspend your computer"),
 				      NULL);
-
-		gtk_widget_show (sep);
 	}
 }
 

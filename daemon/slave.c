@@ -1625,7 +1625,8 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 	name = g_strconcat (GdmServAuthDir, "/", d->name, ".XnestAuth", NULL);
 
-	authfd = open (name, O_TRUNC|O_WRONLY|O_CREAT, 0600);
+	unlink (name);
+	authfd = open (name, O_EXCL|O_TRUNC|O_WRONLY|O_CREAT, 0600);
 
 	if (authfd < 0) {
 		seteuid (old);
@@ -1740,10 +1741,10 @@ gdm_slave_greeter (void)
 		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
-			ve_setenv ("HOME", "/tmp", TRUE); /* Hack */
+			ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE); /* Hack */
 		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 	} else {
-		ve_setenv ("HOME", "/tmp", TRUE); /* Hack */
+		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE); /* Hack */
 		ve_setenv ("SHELL", "/bin/sh", TRUE);
 	}
 	ve_setenv ("PATH", GdmDefaultPath, TRUE);
@@ -1941,7 +1942,11 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	old = geteuid ();
 	if (old != 0)
 		seteuid (0);
+#ifdef O_NOFOLLOW
+	fd = open (fifopath, O_WRONLY|O_NOFOLLOW);
+#else
 	fd = open (fifopath, O_WRONLY);
+#endif
 	if (old != 0)
 		seteuid (old);
 	g_free (fifopath);
@@ -2045,7 +2050,11 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 	old = geteuid ();
 	if (old != 0)
 		seteuid (0);
+#ifdef O_NOFOLLOW
+	fd = open (fifopath, O_WRONLY|O_NOFOLLOW);
+#else
 	fd = open (fifopath, O_WRONLY);
+#endif
 	if (old != 0)
 		seteuid (old);
 
@@ -2150,10 +2159,10 @@ gdm_slave_chooser (void)
 			if (g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 				ve_setenv ("HOME", pwent->pw_dir, TRUE);
 			else
-				ve_setenv ("HOME", "/tmp", TRUE); /* Hack */
+				ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE); /* Hack */
 			ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 		} else {
-			ve_setenv ("HOME", "/tmp", TRUE); /* Hack */
+			ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE); /* Hack */
 			ve_setenv ("SHELL", "/bin/sh", TRUE);
 		}
 		ve_setenv ("PATH", GdmDefaultPath, TRUE);
@@ -2507,7 +2516,7 @@ session_child_run (struct passwd *pwent,
 		seteuid (pwent->pw_uid);
 		/* unlink to be anal */
 		unlink (filename);
-		logfd = open (filename, O_CREAT|O_TRUNC|O_WRONLY, 0644);
+		logfd = open (filename, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644);
 		seteuid (old);
 		setegid (oldg);
 
@@ -2879,7 +2888,7 @@ gdm_slave_session_start (void)
 	    char *msg = g_strdup_printf (
 		     _("Your home directory is listed as:\n'%s'\n"
 		       "but it does not appear to exist.\n"
-		       "Do you want to log in with the /tmp\n"
+		       "Do you want to log in with the / (root)\n"
 		       "directory as your home directory?\n\n"
 		       "It is unlikely anything will work unless\n"
 		       "you use a failsafe session."),
@@ -2900,7 +2909,7 @@ gdm_slave_session_start (void)
 	    g_free (msg);
 
 	    home_dir_ok = FALSE;
-	    home_dir = "/tmp";
+	    home_dir = "/";
     } else {
 	    home_dir_ok = TRUE;
 	    home_dir = pwent->pw_dir;
@@ -3906,9 +3915,9 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         }
         if (pwent != NULL) {
 		if (ve_string_empty (pwent->pw_dir)) {
-			ve_setenv ("HOME", "/tmp", TRUE);
-			ve_setenv ("PWD", "/tmp", TRUE);
-			chdir ("/tmp");
+			ve_setenv ("HOME", "/", TRUE);
+			ve_setenv ("PWD", "/", TRUE);
+			chdir ("/");
 		} else {
 			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 			ve_setenv ("PWD", pwent->pw_dir, TRUE);
@@ -3916,9 +3925,9 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		}
 	        ve_setenv ("SHELL", pwent->pw_shell, TRUE);
         } else {
-	        ve_setenv ("HOME", "/tmp", TRUE);
-		ve_setenv ("PWD", "/tmp", TRUE);
-		chdir ("/tmp");
+	        ve_setenv ("HOME", "/", TRUE);
+		ve_setenv ("PWD", "/", TRUE);
+		chdir ("/");
 	        ve_setenv ("SHELL", "/bin/sh", TRUE);
         }
 

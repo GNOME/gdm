@@ -44,6 +44,7 @@ extern char *stored_path;
 
 /* Configuration option variables */
 extern gchar *GdmUser;
+extern gchar *GdmServAuthDir;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
 
@@ -106,36 +107,68 @@ get_screen_size (GdmDisplay *d)
 static void
 center_window (GtkWidget *window)
 {
-	GtkRequisition req;
+	int w, h;
 
-	gtk_widget_size_request (window, &req);
+	/* sanity, should never happen */
+	if (window == NULL)
+		return;
+
+	gtk_window_get_size (GTK_WINDOW (window), &w, &h);
 
 	gtk_window_move (GTK_WINDOW (window),
 			 screenx +
 			 (screenwidth / 2) -
-			 (req.width / 2),
+			 (w / 2),
 			 screeny +
 			 (screenheight / 2) -
-			 (req.height / 2));
+			 (h / 2));
 }
 
 static void
 show_errors (GtkWidget *button, gpointer data)
 {
-	const char *details = data;
-	GtkWidget *sw;
-	GtkWidget *label;
-	GtkWidget *dlg = gtk_widget_get_toplevel (button);
-	GtkWidget *parent = button->parent;
+	GtkRequisition req;
+	GtkWidget *textsw = data;
+	GtkWidget *dlg = g_object_get_data (G_OBJECT (button), "dlg");
 
-	gtk_widget_destroy (button);
+	if (GTK_TOGGLE_BUTTON (button)->active) {
+		gtk_widget_show (textsw);
+	} else {
+		gtk_widget_hide (textsw);
+	}
+
+	/* keep window at the size request size */
+	gtk_widget_size_request (dlg, &req);
+	gtk_window_resize (GTK_WINDOW (dlg), req.width, req.height);
+}
+
+static GtkWidget *
+get_error_text_view (const char *details)
+{
+	GtkWidget *sw;
+	GtkWidget *tv;
+	GtkTextBuffer *buf;
+	GtkTextIter iter;
+
+	tv = gtk_text_view_new ();
+	buf = gtk_text_view_get_buffer (GTK_TEXT_VIEW (tv));
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (tv), FALSE);
+	gtk_text_buffer_create_tag (buf, "foo",
+				    "editable", FALSE,
+				    "family", "monospace",
+				    NULL);
+	gtk_text_buffer_get_iter_at_offset (buf, &iter, 0);
+
+	gtk_text_buffer_insert_with_tags_by_name
+		(buf, &iter,
+		 ve_sure_string (details), -1,
+		 "foo", NULL);
 
 	sw = gtk_scrolled_window_new (NULL, NULL);
 	if (gdk_screen_width () >= 800)
 		gtk_widget_set_size_request (sw, 500, 150);
 	else
 		gtk_widget_set_size_request (sw, 200, 150);
-	gtk_widget_show (sw);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
 					GTK_POLICY_AUTOMATIC,
@@ -144,22 +177,11 @@ show_errors (GtkWidget *button, gpointer data)
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
 					     GTK_SHADOW_IN);
 
-	label = gtk_label_new (ve_sure_string (details));
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (sw), label);
-	gtk_widget_show (label);
+	gtk_container_add (GTK_CONTAINER (sw), tv);
+	gtk_widget_show (tv);
 
-	gtk_box_pack_start (GTK_BOX (parent),
-			    sw, TRUE, TRUE, 0);
-
-	center_window (dlg);
+	return sw;
 }
-
-gboolean g_file_get_contents (const gchar  *filename,
-                              gchar       **contents,
-                              gsize        *length,    
-                              GError      **error);
-
-
 
 void
 gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
@@ -184,33 +206,49 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		if (details_file) {
 			FILE *fp;
 			struct stat s;
+			gboolean valid_utf8 = TRUE;
 			GString *gs = g_string_new (NULL);
 
 			fp = NULL;
 			if (stat (details_file, &s) == 0) {
 				if (S_ISREG (s.st_mode))
 					fp = fopen (details_file, "r");
-				else
-					g_string_printf (gs, _("%s not a regular file!\n"), details_file);
+				else {
+					loc = gdm_locale_to_utf8 (_("%s not a regular file!\n"));
+					g_string_printf (gs, loc, details_file);
+					g_free (loc);
+				}
 			}
 			if (fp != NULL) {
 				char buf[256];
 				int lines = 0;
 				while (fgets (buf, sizeof (buf), fp)) {
+					if ( ! g_utf8_validate (buf, -1, NULL))
+						valid_utf8 = FALSE;
 					g_string_append (gs, buf);
 					/* cap the lines at 500, that's already
 					   a possibility of 128k of crap */
 					if (lines ++ > 500) {
-						g_string_append (gs, _("\n... File too long to display ...\n"));
+						loc = gdm_locale_to_utf8 (_("\n... File too long to display ...\n"));
+						g_string_append (gs, loc);
+						g_free (loc);
 						break;
 					}
 				}
 				fclose (fp);
 			} else {
-				g_string_append_printf (gs, _("%s could not be opened"), details_file);
+				loc = gdm_locale_to_utf8 (_("%s could not be opened"));
+				g_string_append_printf (gs, loc, details_file);
+				g_free (loc);
 			}
 
 			details = g_string_free (gs, FALSE);
+
+			if ( ! valid_utf8) {
+				char *tmp = gdm_locale_to_utf8 (details);
+				g_free (details);
+				details = tmp;
+			}
 		} else {
 			details = NULL;
 		}
@@ -243,7 +281,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 			ve_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
 		ve_setenv ("SHELL", "/bin/sh", TRUE);
-		ve_setenv ("HOME", "/tmp", TRUE);
+		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -266,19 +304,26 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 		if (details_label != NULL) {
+			GtkWidget *text = get_error_text_view (details);
+
 			loc = gdm_locale_to_utf8 (details_label);
-			button = gtk_button_new_with_label (loc);
+			button = gtk_check_button_new_with_label (loc);
 			g_free (loc);
 
 			gtk_widget_show (button);
-			g_signal_connect (button, "clicked",
+			g_object_set_data (G_OBJECT (button), "dlg", dlg);
+			g_signal_connect (button, "toggled",
 					  G_CALLBACK (show_errors),
-					  /* leak? who cares we exit right
-					   * away */
-					  details);
+					  text);
 
 			gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
-					    button, FALSE, FALSE, 3);
+					    button, FALSE, FALSE, 6);
+			gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
+					    text, FALSE, FALSE, 6);
+
+			g_signal_connect_after (dlg, "size_allocate",
+						G_CALLBACK (center_window),
+						NULL);
 		}
 
 		button = gtk_dialog_add_button (GTK_DIALOG (dlg),
@@ -388,7 +433,7 @@ gdm_failsafe_question (GdmDisplay *d,
 			ve_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
 		ve_setenv ("SHELL", "/bin/sh", TRUE);
-		ve_setenv ("HOME", "/tmp", TRUE);
+		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -533,7 +578,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 			ve_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
 		ve_setenv ("SHELL", "/bin/sh", TRUE);
-		ve_setenv ("HOME", "/tmp", TRUE);
+		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -663,7 +708,7 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 			ve_setenv ("XAUTHORITY", xauthority, TRUE);
 		/* sanity env stuff */
 		ve_setenv ("SHELL", "/bin/sh", TRUE);
-		ve_setenv ("HOME", "/tmp", TRUE);
+		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 

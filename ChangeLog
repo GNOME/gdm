@@ -1,3 +1,44 @@
+Fri Jul 11 14:31:20 2003  George Lebl <jirka@5z.com>
+
+	* daemon/errorgui.c, daemon/server.c, daemon/slave.c:
+	  using /tmp as failsafe for HOME seems on second thought patently
+	  bad for security.  Use ServAuthDir for gdm processes and / again
+	  for user and server.
+
+	* daemon/errorgui.c: Use GtkTextView for the details file display.
+	  this be much nicer to CPU/network traffic if the details file is
+	  big (GtkLabel is BAD for displaying 500 lines of text quite
+	  apparently).  Also fixup encoding conversion issues, and use
+	  checkbox instead of a button.
+
+	* gui/greeter/greeter.[ch], gui/greeter/greeter_item_pam.c:
+	  update the use of login protocol to sync with gdmlogin
+
+	* daemon/misc.[ch], daemon/auth.c, daemon/gdm.c, daemon/slave.c:
+	  be extra careful even in users home dir and in ServAuthDir when
+	  opening files.  Not a huge deal but prevents some possible
+	  damage if someone gains the gdm user access somehow.
+
+	* daemon/misc.c: fix minor memleak on conversion errors
+
+	* gui/modules/dwellmouselistener.c, gui/modules/keymouselistener.c:
+	  fix compiler warnings.
+
+	* daemon/server.c: support XFree86 version 4 logfile format
+
+	* config/XKeepsCrashing: For XFree86 v4 it's possible that X puts its
+	  log not on the command line but into a file, so ask if that
+	  should be viewed as well.
+
+	* daemon/gdm.c: whack the stored_path stuff and just restore
+	  to the initial env before re execing, also restore env when
+	  we launch XKeepsCrashing
+
+	* utils/gdmopen.c: on linux set TERM=linux otherwise the fonts
+	  just may not work right
+
+	* NEWS: update
+
 Thu Jul 10 17:12:40 2003  George Lebl <jirka@5z.com>
 
 	* daemon/auth.c, daemon/errorgui.c, daemon/gdm.c, daemon/misc.c,

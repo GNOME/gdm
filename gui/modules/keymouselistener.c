@@ -125,7 +125,6 @@ screen_exec_display_string (GdkScreen *screen)
 
 static void create_event_watcher ()
 {
-	GSList *li;
 	GdkDisplay *display;
 
 	display = gdk_display_get_default();
@@ -440,7 +439,6 @@ gestures_filter (GdkXEvent *gdk_xevent,
 {
 	XEvent *xevent = (XEvent *)gdk_xevent;
 	GSList *li, *act_li;
-	KeySym sym;
 	Gesture *curr_gesture = NULL;
 	
 	static XEvent *last_event = NULL;

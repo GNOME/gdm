@@ -242,7 +242,7 @@ parse_line(gchar *buf)
     {
       BindingType bt;
       BindingDirection bd;
-      guint n, timeout;
+      guint timeout;
       gchar *tmp_string;
       int i, j;
 
@@ -447,7 +447,7 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 {
   GObject *object;
   GdkEventCrossing *event;
-  int i, j;
+  int i;
 
   object = g_value_get_object (param_values + 0);
   event  = g_value_get_boxed (param_values + 1);
@@ -531,7 +531,7 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
                       guint32 diff_time = crossings[cur_pos].time - crossings[prev_pos].time;
     
                       if (curr_binding->timeout != 0 &&
-                          curr_binding->timeout < crossings[cur_pos].time - crossings[prev_pos].time)
+                          curr_binding->timeout < diff_time)
                         break; 
                     }
                 }
@@ -594,9 +594,7 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 
 static void create_event_watcher ()
 {
-  GSList *li;
   GdkDisplay *display;
-  guint signal_id;
   gint i;
 
   display = gdk_display_get_default ();

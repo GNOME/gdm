@@ -1121,7 +1121,6 @@ gdm_locale_to_utf8 (const char *text)
 {
 	GIConv cd;
 	char *out;
-	GError *error = NULL;
 
 	if (gdm_charset == NULL) {
 		return g_strdup (text);
@@ -1132,7 +1131,7 @@ gdm_locale_to_utf8 (const char *text)
 		return ascify (text);
 	}
 
-	out = g_convert_with_iconv (text, -1, cd, NULL, NULL, &error);
+	out = g_convert_with_iconv (text, -1, cd, NULL, NULL, NULL /* error */);
 	g_iconv_close (cd);
 	if (out == NULL) {
 		return ascify (text);
@@ -1155,7 +1154,7 @@ gdm_locale_from_utf8 (const char *text)
 		return ascify (text);
 	}
 
-	out = g_convert_with_iconv (text, -1, cd, NULL, NULL, NULL);
+	out = g_convert_with_iconv (text, -1, cd, NULL, NULL, NULL /* error */);
 	g_iconv_close (cd);
 	if (out == NULL)
 		return ascify (text);
@@ -1300,6 +1299,39 @@ gdm_hostent_free (GdmHostent *he)
 	he->addr_count = 0;
 
 	g_free (he);
+}
+
+/* like fopen with "w" */
+FILE *
+gdm_safe_fopen_w (const char *file)
+{
+	int fd;
+	unlink (file);
+	fd = open (file, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644);
+	if (fd < 0)
+		return NULL;
+	return fdopen (fd, "w");
+}
+
+/* like fopen with "a+" */
+FILE *
+gdm_safe_fopen_ap (const char *file)
+{
+	int fd;
+
+	if (access (file, F_OK) == 0) {
+#ifdef O_NOFOLLOW
+		fd = open (file, O_APPEND|O_RDWR|O_NOFOLLOW);
+#else
+		fd = open (file, O_APPEND|O_RDWR);
+#endif
+	} else {
+		/* doesn't exist, open with O_EXCL */
+		fd = open (file, O_EXCL|O_CREAT|O_RDWR, 0644);
+	}
+	if (fd < 0)
+		return NULL;
+	return fdopen (fd, "a+");
 }
 
 /* EOF */

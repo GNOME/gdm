@@ -206,11 +206,13 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    /* Make another authfile since the greeter can't read the server/user
 	     * readable file */
 	    d->authfile_gdm = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
-	    unlink (d->authfile_gdm);
-
-	    af_gdm = fopen (d->authfile_gdm, "w");
+	    af_gdm = gdm_safe_fopen_w (d->authfile_gdm);
 
 	    if (af_gdm == NULL) {
+		    gdm_error (_("%s: Cannot safely open %s"),
+			       "gdm_auth_user_remove",
+			       d->authfile_gdm);
+
 		    g_free (d->authfile_gdm);
 		    d->authfile_gdm = NULL;
 		    g_free (d->authfile);
@@ -221,11 +223,13 @@ gdm_auth_secure_display (GdmDisplay *d)
     } else {
 	    /* gdm and xserver authfile can be the same, server will run as root */
 	    d->authfile = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
-	    unlink (d->authfile);
-
-	    af = fopen (d->authfile, "w");
+	    af = gdm_safe_fopen_w (d->authfile);
 
 	    if (af == NULL) {
+		    gdm_error (_("%s: Cannot safely open %s"),
+			       "gdm_auth_user_remove",
+			       d->authfile);
+
 		    g_free (d->authfile);
 		    d->authfile = NULL;
 		    return FALSE;
@@ -483,7 +487,7 @@ try_user_add_again:
 
 	locked = TRUE;
 
-	af = fopen (d->userauth, "a+");
+	af = gdm_safe_fopen_ap (d->userauth);
     }
 
     if (!af) {
@@ -610,10 +614,14 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 	return;
     }
 
-    af = fopen (d->userauth, "a+");
+    af = gdm_safe_fopen_ap (d->userauth);
 
     if (!af) {
 	XauUnlockAuth (d->userauth);
+
+	gdm_error (_("%s: Cannot safely open %s"),
+		   "gdm_auth_user_remove",
+		   d->userauth);
 
 	g_free (d->userauth);
 	d->userauth = NULL;

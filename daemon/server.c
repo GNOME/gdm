@@ -280,6 +280,7 @@ busy_ask_user (GdmDisplay *disp)
     }
 }
 
+/* Checks only output, no XFree86 v4 logfile */
 static gboolean
 display_xnest_no_connect (GdmDisplay *disp)
 {
@@ -323,9 +324,7 @@ display_busy (GdmDisplay *disp)
 		return FALSE;
 
 	while (fgets (buf, sizeof (buf), fp) != NULL) {
-		/* Note: this is probably XFree86 specific, and perhaps even
-		 * version 3 specific (I don't have xfree v4 to test this),
-		 * of course additions are welcome to make this more robust */
+		/* Note: this is probably XFree86 specific */
 		if (strstr (buf, "Server is already active for display")
 		    == buf) {
 			gdm_error (_("Display %s is busy. There is another "
@@ -340,12 +339,36 @@ display_busy (GdmDisplay *disp)
 	return FALSE;
 }
 
+/* if we find 'Log file: "foo"' switch fp to foo and
+   return TRUE */
+/* Note: assumes buf is of size 256 and is writable */ 
+static gboolean
+open_another_logfile (char buf[256], FILE **fp)
+{
+	if (strncmp (&buf[5], "Log file: \"", strlen ("Log file: \"")) == 0) {
+		FILE *ffp;
+		char *fname = &buf[5+strlen ("Log file: \"")];
+		char *p = strchr (fname, '"');
+		if (p == NULL)
+			return FALSE;
+		*p = '\0';
+		ffp = fopen (fname, "r");
+		if (ffp == NULL)
+			return FALSE;
+		fclose (*fp);
+		*fp = ffp;
+		return TRUE;
+	}
+	return FALSE;
+}
+
 static int
 display_vt (GdmDisplay *disp)
 {
 	char *logname = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
 	FILE *fp;
 	char buf[256];
+	gboolean switched = FALSE;
 
 	fp = fopen (logname, "r");
 	g_free (logname);
@@ -355,10 +378,19 @@ display_vt (GdmDisplay *disp)
 
 	while (fgets (buf, sizeof (buf), fp) != NULL) {
 		int vt;
-		/* Note: this is probably XFree86 specific, and perhaps even
-		 * version 3 specific (I don't have xfree v4 to test this),
-		 * of course additions are welcome to make this more robust */
-		if (sscanf (buf, "(using VT number %d)", &vt) == 1) {
+		char *p;
+
+		if ( ! switched &&
+		     /* this is XFree v4 specific */
+		    open_another_logfile (buf, &fp)) {
+			switched = TRUE;
+			continue;
+		} 
+		/* Note: this is probably XFree86 specific (works with
+		 * both v3 and v4 though */
+		p = strstr (buf, "using VT number ");
+		if (p != NULL &&
+		    sscanf (p, "using VT number %d", &vt) == 1) {
 			fclose (fp);
 			return vt;
 		}
@@ -1059,7 +1091,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 		else
-			ve_setenv ("HOME", "/tmp", TRUE); /* Hack */
+			ve_setenv ("HOME", "/", TRUE); /* Hack */
 		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 		ve_unsetenv ("MAIL");
 

@@ -24,17 +24,29 @@ Ahh news...
 - The .desktop files include correct Terminal and StartupNotify
   entries (Jordi Mallach)
 
-- Fallback for home is now /tmp instead of / and for shell
-  we use /bin/sh consistently (rather then /bin/bash)
+- Fallback for home is now ServAuthDir for gdm processes
+  instead of / and for shell we use /bin/sh consistently
+  (rather then /bin/bash)
 
 - The full error dialog is now run as the gdm user for security
-  (no more gtk code run as root)
+  (no more gtk code run as root)  Also uses GtkTextView,
+  looks nicer and converts encoding correctly.
+
+- Be very careful when opening files just about everywhere,
+  so this prevents some possible damange someone could do if
+  they do manage to get the gdm user privs.
 
 - No translatable message contains unneccessary markup now
   (fixes #101794 and #101795)
 
 - gdmsetup .desktop file is now in the SystemSetup category
   and so goes into System Setup in the menu (#116977)
+
+- The bits that parse X output now understand v4 XFree86 output
+  correctly
+
+- gdmopen now sets up TERM to "linux" on linux to make sure
+  that fonts come out all ok
 
 - Use ve-config (from vicious-extensions) everywhere in the daemon
 

@@ -180,7 +180,6 @@ gboolean GdmDisallowTCP = TRUE;
 /* set in the main function */
 char **stored_argv = NULL;
 int stored_argc = 0;
-char *stored_path = NULL;
 
 static time_t config_file_mtime = 0;
 
@@ -750,7 +749,7 @@ gdm_daemonify (void)
     pid = fork ();
     if (pid > 0) {
 
-	if ((pf = fopen (GdmPidFile, "w")) != NULL) {
+	if ((pf = gdm_safe_fopen_w (GdmPidFile)) != NULL) {
 	    fprintf (pf, "%d\n", (int)pid);
 	    fclose (pf);
 	}
@@ -934,6 +933,8 @@ deal_with_x_crashes (GdmDisplay *d)
 
 		    argv[0] = GdmXKeepsCrashing;
 		    argv[1] = NULL;
+
+		    gdm_restoreenv ();
 
 		    /* unset DISPLAY and XAUTHORITY if they exist
 		     * so that gdialog (if used) doesn't get confused */
@@ -1366,8 +1367,7 @@ gdm_restart_now (void)
 {
 	gdm_info (_("GDM restarting ..."));
 	gdm_final_cleanup ();
-	if (stored_path != NULL)
-		ve_setenv ("PATH", stored_path, TRUE);
+	gdm_restoreenv ();
 	execvp (stored_argv[0], stored_argv);
 	gdm_error (_("Failed to restart self"));
 	_exit (1);
@@ -1430,8 +1430,6 @@ static void
 store_argv (int argc, char *argv[])
 {
 	int i;
-
-	stored_path = g_strdup (g_getenv ("PATH"));
 
 	stored_argv = g_new0 (char *, argc + 1);
 	for (i = 0; i < argc; i++)
@@ -1621,7 +1619,7 @@ main (int argc, char *argv[])
     if (no_daemon || getppid() == 1) {
 
 	/* Write pid to pidfile */
-	if ((pf = fopen (GdmPidFile, "w")) != NULL) {
+	if ((pf = gdm_safe_fopen_w (GdmPidFile)) != NULL) {
 	    fprintf (pf, "%d\n", (int)getpid());
 	    fclose (pf);
 	}
@@ -1745,7 +1743,7 @@ write_x_servers (GdmDisplay *d)
 	if (d->x_servers_order < 0)
 		d->x_servers_order = get_new_order (d);
 
-	fp = fopen (file, "w");
+	fp = gdm_safe_fopen_w (file);
 	if (fp == NULL) {
 		gdm_error ("Can't open %s for writing", file);
 		g_free (file);

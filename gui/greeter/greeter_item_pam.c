@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 #include <libgnome/libgnome.h>
 #include <gdk/gdkkeysyms.h>
+#include "greeter.h"
 #include "greeter_item_pam.h"
 #include "greeter_item_ulist.h"
 #include "greeter_parser.h"
@@ -19,6 +20,10 @@ static guint err_box_clear_handler = 0;
 
 gchar *greeter_current_user = NULL;
 
+gboolean require_quarter = FALSE;
+
+extern gboolean greeter_probably_login_prompt;
+
 void
 greeter_item_pam_set_user (const char *user)
 {
@@ -27,11 +32,45 @@ greeter_item_pam_set_user (const char *user)
   greeter_item_ulist_set_user (user);
 }
 
+static gboolean
+evil (GtkEntry *entry, const char *user)
+{
+	/* do not translate */
+	if (strcmp (user, "Gimme Random Cursor") == 0) {
+		greeter_setup_cursor (((rand () >> 3) % (GDK_LAST_CURSOR/2)) * 2);
+		gtk_entry_set_text (GTK_ENTRY (entry), "");
+		return TRUE;
+		/* do not translate */
+	} else if (strcmp (user, "Require Quater") == 0 ||
+		   strcmp (user, "Require Quarter") == 0) {
+		/* btw, note that I misspelled quarter before and
+		 * thus this checks for Quater as well as Quarter to
+		 * keep compatibility which is obviously important for
+		 * something like this */
+		require_quarter = TRUE;
+		gtk_entry_set_text (GTK_ENTRY (entry), "");
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static void
 user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
 {
+  const char *str;
   char *tmp;
   GreeterItemInfo *error_info;
+
+  str = gtk_entry_get_text (GTK_ENTRY (entry));
+  if (greeter_probably_login_prompt &&
+      /* evilness */
+      evil (entry, str)) {
+	  /* obviously being 100% reliable is not an issue for
+	     this test */
+	  gtk_entry_set_text (GTK_ENTRY (entry), "");
+	  return;
+  }
   
   gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 
@@ -47,7 +86,7 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
 		  "text", "",
 		  NULL);
   
-  tmp = ve_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)));
+  tmp = ve_locale_from_utf8 (str);
   printf ("%c%s\n", STX, tmp);
   fflush (stdout);
   g_free (tmp);
