@@ -65,6 +65,22 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   g_free (tmp);
 }
 
+static gboolean
+key_press_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
+{
+  if ((event->keyval == GDK_Tab ||
+       event->keyval == GDK_KP_Tab) &&
+      (event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_SHIFT_MASK)) == 0)
+    {
+      g_signal_emit_by_name (entry,
+		             "insert_at_cursor",
+		             "\t");
+      return TRUE;
+  }
+
+  return FALSE;
+}
+
 gboolean
 greeter_item_pam_setup (void)
 {
@@ -91,7 +107,9 @@ greeter_item_pam_setup (void)
 	}
 
       g_signal_connect (entry, "activate",
-			GTK_SIGNAL_FUNC (user_pw_activate), entry_info);
+			G_CALLBACK (user_pw_activate), entry_info);
+      g_signal_connect (G_OBJECT (entry), "key_press_event",
+		        G_CALLBACK (key_press_event), NULL);
     }
   return TRUE;
 }

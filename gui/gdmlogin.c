@@ -2916,6 +2916,22 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 	return FALSE;
 }
 
+static gboolean
+key_press_event (GtkWidget *entry, GdkEventKey *event, gpointer data)
+{
+	if ((event->keyval == GDK_Tab ||
+	     event->keyval == GDK_KP_Tab) &&
+	    (event->state & (GDK_CONTROL_MASK|GDK_MOD1_MASK|GDK_SHIFT_MASK)) == 0) {
+		g_signal_emit_by_name (entry,
+				       "insert_at_cursor",
+				       "\t");
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
 static void
 gdm_login_gui_init (void)
 {
@@ -3292,6 +3308,8 @@ gdm_login_gui_init (void)
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     
     entry = gtk_entry_new ();
+    g_signal_connect (G_OBJECT (entry), "key_press_event",
+		      G_CALLBACK (key_press_event), NULL);
     if (GdmUseCirclesInEntry)
 	    gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
     gtk_entry_set_max_length (GTK_ENTRY (entry), 32);

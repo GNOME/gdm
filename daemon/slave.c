@@ -2516,15 +2516,15 @@ session_child_run (struct passwd *pwent,
 		 * fact.  In the future we will do our own login setup
 		 * stuff */
 		if (strcmp (shellbase, "sh") != 0 &&
-		    strcmp (shellbase, "bash") == 0 &&
-		    strcmp (shellbase, "tcsh") == 0 &&
-		    strcmp (shellbase, "ksh") == 0 &&
-		    strcmp (shellbase, "pdksh") == 0 &&
-		    strcmp (shellbase, "zsh") == 0 &&
-		    strcmp (shellbase, "csh") == 0 &&
-		    strcmp (shellbase, "ash") == 0 &&
-		    strcmp (shellbase, "bsh") == 0 &&
-		    strcmp (shellbase, "bash2") == 0) {
+		    strcmp (shellbase, "bash") != 0 &&
+		    strcmp (shellbase, "tcsh") != 0 &&
+		    strcmp (shellbase, "ksh") != 0 &&
+		    strcmp (shellbase, "pdksh") != 0 &&
+		    strcmp (shellbase, "zsh") != 0 &&
+		    strcmp (shellbase, "csh") != 0 &&
+		    strcmp (shellbase, "ash") != 0 &&
+		    strcmp (shellbase, "bsh") != 0 &&
+		    strcmp (shellbase, "bash2") != 0) {
 			if (access ("/bin/bash", R_OK|X_OK) == 0)
 				shell = "/bin/bash";
 			else if (access ("/bin/bash2", R_OK|X_OK) == 0)
