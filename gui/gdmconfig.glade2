@@ -58,10 +58,10 @@
 			  <signal name="activate" handler="revert_settings_to_file_state"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image3">
+			    <widget class="GtkImage" id="image7">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-revert-to-saved</property>
-			      <property name="icon_size">GTK_ICON_SIZE_MENU</property>
+			      <property name="icon_size">1</property>
 			      <property name="xalign">0.5</property>
 			      <property name="yalign">0.5</property>
 			      <property name="xpad">0</property>
@@ -79,10 +79,10 @@
 			  <signal name="activate" handler="revert_to_factory_settings"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image4">
+			    <widget class="GtkImage" id="image8">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-revert-to-saved</property>
-			      <property name="icon_size">GTK_ICON_SIZE_MENU</property>
+			      <property name="icon_size">1</property>
 			      <property name="xalign">0.5</property>
 			      <property name="yalign">0.5</property>
 			      <property name="xpad">0</property>
@@ -95,21 +95,8 @@
 		      <child>
 			<widget class="GtkImageMenuItem" id="apply1">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Apply</property>
-			  <property name="use_underline">True</property>
+			  <property name="stock">gtk-apply</property>
 			  <signal name="activate" handler="write_new_config_file"/>
-
-			  <child internal-child="image">
-			    <widget class="GtkImage" id="image5">
-			      <property name="visible">True</property>
-			      <property name="stock">gtk-save</property>
-			      <property name="icon_size">GTK_ICON_SIZE_MENU</property>
-			      <property name="xalign">0.5</property>
-			      <property name="yalign">0.5</property>
-			      <property name="xpad">0</property>
-			      <property name="ypad">0</property>
-			    </widget>
-			  </child>
 			</widget>
 		      </child>
 
@@ -273,7 +260,7 @@
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>
-		  <property name="wrap">False</property>
+		  <property name="wrap">True</property>
 		  <property name="selectable">False</property>
 		  <property name="xalign">0.5</property>
 		  <property name="yalign">0.5</property>
