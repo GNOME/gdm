@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.99\n"
-"POT-Creation-Date: 2001-09-01 04:19-0700\n"
+"POT-Creation-Date: 2002-05-27 19:43+0100\n"
 "PO-Revision-Date: 2001-03-08 00:00:39+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -19,26 +19,108 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-7\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: config/gettextfoo.h:1
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  You will need to log in on a console and rerun "
+"the X configuration program.  Then restart GDM."
+msgstr ""
+
+#: config/gettextfoo.h:2
+msgid ""
+"Would you like me to try to run the X configuration program?  Note that you "
+"will need the root password for this."
+msgstr ""
+
+#: config/gettextfoo.h:3
+msgid "Please type in the root (privileged user) password."
+msgstr ""
+
+#: config/gettextfoo.h:4
+msgid "I will now try to restart the X server again."
+msgstr ""
+
+#: config/gettextfoo.h:5
+msgid ""
+"I will disable this X server for now.  Restart GDM when it is configured "
+"correctly."
+msgstr ""
+
+#: config/gettextfoo.h:6
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  Would you like to view the X server output to "
+"diagnose the problem?"
+msgstr ""
+
+#: config/gettextfoo.h:7
+msgid ""
+"I cannot start the X server (your graphical interface).  It seems that the "
+"pointer device (your mouse) is not set up correctly.  Would you like to view "
+"the X server output to diagnose the problem?"
+msgstr ""
+
+#: config/gettextfoo.h:8
+msgid ""
+"Would you like me to try to run the mouse configuration program?  Note that "
+"you will need the root password for this."
+msgstr ""
+
+#
+#: daemon/auth.c:55
+#, fuzzy, c-format
+msgid "%s: Could not write new authorization entry: %s"
+msgstr ""
+"gdm_xdmcp_init: Αποτυχία λήψης του ονόματος συστήματος του εξυπηρετητή: %s!"
+
+#: daemon/auth.c:58
+#, c-format
+msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
+msgstr ""
+
+#: daemon/auth.c:63
+#, c-format
+msgid ""
+"GDM could not write a new authorization entry to disk.  Possibly out of "
+"diskspace.%s%s"
+msgstr ""
+
+#
+#: daemon/auth.c:179
+#, fuzzy, c-format
+msgid "%s: Could not make new cookie file in %s"
+msgstr "gdm_auth_user_add: Αποτυχία ανοίγματος του αρχείου cookie %s"
+
 #
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:272 daemon/auth.c:303
+#: daemon/auth.c:419 daemon/auth.c:449
 #, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
 msgstr "gdm_auth_user_add: Αποτυχία ανοίγματος του αρχείου cookie %s"
 
 #
-#: daemon/auth.c:289
+#: daemon/auth.c:435
 #, c-format
 msgid "gdm_auth_user_add: Could not lock cookie file %s"
 msgstr "gdm_auth_user_add: Αποτυχία κλειδώματος του αρχείου cookie %s"
 
 #
-#: daemon/auth.c:376
+#: daemon/auth.c:470
+#, fuzzy, c-format
+msgid "%s: Could not write cookie"
+msgstr "gdm_xdmcp_init: Αποτυχία δημιουργίας υποδοχής!"
+
+#
+#: daemon/auth.c:530
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr "gdm_auth_user_remove: Αγνόηση ύποπτου αρχείου cookie %s"
 
-#: daemon/display.c:94
+#. This means we have no clue what's happening,
+#. * it's not X server crashing as we would have
+#. * cought that elsewhere.  Things are just
+#. * not working out, so tell the user
+#: daemon/display.c:96 daemon/display.c:103
 #, fuzzy, c-format
 msgid ""
 "Failed to start the display server several times in a short time period; "
@@ -47,65 +129,76 @@ msgstr ""
 "Αδύνατη η εκκίνηση του εξυπηρετητή Χ αρκετές φορές μέσα σε σύντομο χρονικό "
 "διάστημα· απενεργοποίηση οθόνης %s"
 
+#: daemon/display.c:162
+#, c-format
+msgid "%s: Cannot create pipe"
+msgstr ""
+
 #
-#: daemon/display.c:209
+#: daemon/display.c:242
 #, fuzzy, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
 "gdm_display_manage: Αποτυχία στη διχάλωση θυγατρικής διεργασίας gdm για %d"
 
-#: daemon/errorgui.c:164
-msgid "gdm_error_box: Failed to execute self"
-msgstr ""
+#
+#: daemon/errorgui.c:87
+#, fuzzy, c-format
+msgid "%s could not be opened"
+msgstr "gdm_xdmcp_init: Αποτυχία επίδεσης στην υποδοχή XDMCP!"
 
-#: daemon/errorgui.c:170
+#: daemon/errorgui.c:240
 msgid "gdm_error_box: Cannot fork to display error/info box"
 msgstr ""
 
+#: daemon/errorgui.c:393 daemon/errorgui.c:519
+msgid "gdm_failsafe_question: Cannot fork to display error/info box"
+msgstr ""
+
 #
-#: daemon/filecheck.c:51
+#: daemon/filecheck.c:49
 #, c-format
 msgid "%s: Directory %s does not exist."
 msgstr "%s: Ο κατάλογος %s δεν υπάρχει."
 
 #
-#: daemon/filecheck.c:58 daemon/filecheck.c:99
+#: daemon/filecheck.c:56 daemon/filecheck.c:97
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr "%s: Το %s δεν ανήκει στη ταυτότητα χρήστη %d."
 
 #
-#: daemon/filecheck.c:64 daemon/filecheck.c:106
+#: daemon/filecheck.c:62 daemon/filecheck.c:104
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr "%s: Το %s είναι εγγράψιμο από ομάδα."
 
 #
-#: daemon/filecheck.c:70
+#: daemon/filecheck.c:68
 #, c-format
 msgid "%s: %s is writable by other."
 msgstr "%s: Το %s είναι εγγράψιμο από τους άλλους."
 
 #
-#: daemon/filecheck.c:84
+#: daemon/filecheck.c:82
 #, fuzzy, c-format
 msgid "%s: %s does not exist but must exist."
 msgstr "%s: το %s δεν υπάρχει και πρέπει να υπάρχει."
 
 #
-#: daemon/filecheck.c:92
+#: daemon/filecheck.c:90
 #, c-format
 msgid "%s: %s is not a regular file."
 msgstr "%s: Το %s: δεν είναι κανονικό αρχείο."
 
 #
-#: daemon/filecheck.c:113
+#: daemon/filecheck.c:111
 #, c-format
 msgid "%s: %s is writable by group/other."
 msgstr "%s: Το %s: είναι εγγράψιμο από ομάδα/άλλους."
 
 #
-#: daemon/filecheck.c:120
+#: daemon/filecheck.c:118
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
@@ -113,58 +206,101 @@ msgstr ""
 "μέγεθος αρχείου."
 
 #
-#: daemon/gdm.c:194
+#: daemon/gdm-net.c:247
 #, fuzzy, c-format
-msgid "gdm_config_parse: No configuration file: %s. Using defaults."
-msgstr "gdm_config_parse: Δε βρέθηκε το αρχείο ρυθμίσεων: %s. Διακοπή."
+msgid "%s: Could not make socket"
+msgstr "gdm_xdmcp_init: Αποτυχία δημιουργίας υποδοχής!"
 
-#: daemon/gdm.c:279
-msgid ""
-"gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
-"it off"
+#
+#: daemon/gdm-net.c:257
+#, fuzzy, c-format
+msgid "%s: Could not bind socket"
+msgstr "gdm_xdmcp_init: Αποτυχία επίδεσης στην υποδοχή XDMCP!"
+
+#: daemon/gdm-net.c:333
+#, c-format
+msgid "%s: Could not make FIFO"
 msgstr ""
 
-#: daemon/gdm.c:292
-msgid ""
-"gdm_config_parse: Root cannot be autologged in, turing off automatic login"
-msgstr ""
-
-#: daemon/gdm.c:305
-msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
-msgstr ""
-
-#: daemon/gdm.c:311
-msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
+#: daemon/gdm-net.c:341
+#, c-format
+msgid "%s: Could not open FIFO"
 msgstr ""
 
 #
-#: daemon/gdm.c:321
-msgid "gdm_config_parse: No greeter specified."
+#: daemon/gdm.c:214
+#, fuzzy, c-format
+msgid "%s: No configuration file: %s. Using defaults."
+msgstr "gdm_config_parse: Δε βρέθηκε το αρχείο ρυθμίσεων: %s. Διακοπή."
+
+#: daemon/gdm.c:287
+#, c-format
+msgid "%s: Standard X server not found, trying alternatives"
+msgstr ""
+
+#: daemon/gdm.c:313
+#, c-format
+msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
+msgstr ""
+
+#: daemon/gdm.c:326
+#, c-format
+msgid "%s: Root cannot be autologged in, turing off automatic login"
+msgstr ""
+
+#: daemon/gdm.c:339
+#, c-format
+msgid "%s: Root cannot be autologged in, turing off timed login"
+msgstr ""
+
+#: daemon/gdm.c:345
+#, c-format
+msgid "%s: TimedLoginDelay less then 5, so I will just use 5."
+msgstr ""
+
+#
+#: daemon/gdm.c:355
+#, fuzzy, c-format
+msgid "%s: No greeter specified."
 msgstr "gdm_config_parse: Δεν καθορίστηκε χαιρετισμός."
 
 #
-#: daemon/gdm.c:325
-msgid "gdm_config_parse: No authdir specified."
+#: daemon/gdm.c:358
+#, fuzzy, c-format
+msgid "%s: No remote greeter specified."
+msgstr "gdm_config_parse: Δεν καθορίστηκε χαιρετισμός."
+
+#: daemon/gdm.c:363
+#, fuzzy
+msgid "No daemon/ServAuthDir specified in the configuration file"
+msgstr "Το αρχείο ρυθμίσεων: "
+
+#
+#: daemon/gdm.c:364
+#, fuzzy, c-format
+msgid "%s: No authdir specified."
 msgstr "gdm_config_parse: Δεν καθορίστηκε κατάλογος authdir."
 
 #
-#: daemon/gdm.c:331
-msgid "gdm_config_parse: No sessions directory specified."
+#: daemon/gdm.c:371
+#, fuzzy, c-format
+msgid "%s: No sessions directory specified."
 msgstr "gdm_config_parse: Δεν καθορίστηκε κατάλογος συνεδριών."
 
-#: daemon/gdm.c:355
+#: daemon/gdm.c:395
 #, c-format
 msgid "%s: Empty server command, using standard one."
 msgstr ""
 
-#: daemon/gdm.c:400
+#: daemon/gdm.c:440
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
 msgstr ""
 
 #
-#: daemon/gdm.c:415
-msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
+#: daemon/gdm.c:457
+#, fuzzy, c-format
+msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse: Μη έγκυρη γραμμή εξυπηρετητή στο αρχείο ρυθμίσεων. "
 "Αγνοείται!"
@@ -172,154 +308,195 @@ msgstr ""
 #
 #. start
 #. server uid
-#: daemon/gdm.c:434
+#: daemon/gdm.c:480
 #, fuzzy, c-format
 msgid ""
-"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
-"d to allow configuration!"
+"%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
+"configuration!"
 msgstr ""
 "gdm_config_parse: Το Xdmcp έχει απενεργοποιηθεί και δεν έχουν οριστεί "
 "τοπικοί εξυπηρετητές. Διακοπή!"
 
-#
-#: daemon/gdm.c:448
-msgid ""
-"gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
-msgstr ""
-"gdm_config_parse: Το Xdmcp έχει απενεργοποιηθεί και δεν έχουν οριστεί "
-"τοπικοί εξυπηρετητές. Διακοπή!"
-
-#
-#: daemon/gdm.c:457
-#, fuzzy, c-format
-msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
-msgstr "gdm_config_parse: Δε βρέθηκε ο χρήστης gdm (%s). Διακοπή!"
-
-#
-#: daemon/gdm.c:464
+#: daemon/gdm.c:495
 #, c-format
-msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
-msgstr "gdm_config_parse: Δε βρέθηκε ο χρήστης gdm (%s). Διακοπή!"
+msgid ""
+"XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
+"Please correct the configuration %s and restart gdm."
+msgstr ""
 
 #
-#: daemon/gdm.c:469
-msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
+#: daemon/gdm.c:502
+#, fuzzy, c-format
+msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
+msgstr ""
+"gdm_config_parse: Το Xdmcp έχει απενεργοποιηθεί και δεν έχουν οριστεί "
+"τοπικοί εξυπηρετητές. Διακοπή!"
+
+#
+#: daemon/gdm.c:510
+#, fuzzy, c-format
+msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
+msgstr "gdm_config_parse: Δε βρέθηκε ο χρήστης gdm (%s). Διακοπή!"
+
+#: daemon/gdm.c:518
+#, c-format
+msgid ""
+"The gdm user does not exist. Please correct gdm configuration %s and restart "
+"gdm."
+msgstr ""
+
+#
+#: daemon/gdm.c:523
+#, fuzzy, c-format
+msgid "%s: Can't find the gdm user (%s). Aborting!"
+msgstr "gdm_config_parse: Δε βρέθηκε ο χρήστης gdm (%s). Διακοπή!"
+
+#: daemon/gdm.c:530
+#, c-format
+msgid ""
+"The gdm user is set to be root, but this is not allowed since it can pose a "
+"security risk.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#
+#: daemon/gdm.c:536
+#, fuzzy, c-format
+msgid "%s: The gdm user should not be root. Aborting!"
 msgstr ""
 "gdm_config_parse: Ο χρήστης gdm δε πρέπει να είναι διαχειριστής. Διακοπή!"
 
 #
-#: daemon/gdm.c:474
+#: daemon/gdm.c:542
 #, fuzzy, c-format
-msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
+msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
 msgstr "gdm_config_parse: Δε βρέθηκε η ομάδα gdm (%s). Διακοπή!"
 
-#
-#: daemon/gdm.c:481
+#: daemon/gdm.c:550
 #, c-format
-msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
-msgstr "gdm_config_parse: Δε βρέθηκε η ομάδα gdm (%s). Διακοπή!"
+msgid ""
+"The gdm group does not exist. Please correct gdm configuration %s and "
+"restart gdm."
+msgstr ""
 
 #
-#: daemon/gdm.c:486
-msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
+#: daemon/gdm.c:555
+#, fuzzy, c-format
+msgid "%s: Can't find the gdm group (%s). Aborting!"
+msgstr "gdm_config_parse: Δε βρέθηκε η ομάδα gdm (%s). Διακοπή!"
+
+#: daemon/gdm.c:562
+#, c-format
+msgid ""
+"The gdm group is set to be root, but this is not allowed since it can pose a "
+"security risk. Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#
+#: daemon/gdm.c:568
+#, fuzzy, c-format
+msgid "%s: The gdm group should not be root. Aborting!"
 msgstr "gdm_config_parse: Η ομάδα gdm δε πρέπει να είναι διαχειριστή. Διακοπή!"
 
-#: daemon/gdm.c:497
+#: daemon/gdm.c:578
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr ""
 
-#: daemon/gdm.c:509
+#: daemon/gdm.c:585
+#, c-format
+msgid "%s: Remote greeter not found or can't be executed by the gdm user"
+msgstr ""
+
+#: daemon/gdm.c:596
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr ""
 
-#
-#: daemon/gdm.c:517
-#, c-format
-msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
-msgstr "gdm_config_parse: Ο κατάλογος Authdir %s δεν υπάρχει. Διακοπή."
-
-#
-#: daemon/gdm.c:520
-#, c-format
-msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
-msgstr "gdm_config_parse: Το %s (για Authdir) δεν είναι κατάλογος. Διακοπή."
-
-#
-#: daemon/gdm.c:523
+#: daemon/gdm.c:605
 #, c-format
 msgid ""
-"gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
+"does not exist. Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#
+#: daemon/gdm.c:612
+#, fuzzy, c-format
+msgid "%s: Authdir %s does not exist. Aborting."
+msgstr "gdm_config_parse: Ο κατάλογος Authdir %s δεν υπάρχει. Διακοπή."
+
+#: daemon/gdm.c:617
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
+"not a directory. Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#
+#: daemon/gdm.c:624
+#, fuzzy, c-format
+msgid "%s: Authdir %s is not a directory. Aborting."
+msgstr "gdm_config_parse: Το %s (για Authdir) δεν είναι κατάλογος. Διακοπή."
+
+#: daemon/gdm.c:629
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
+"owned by user %s and group %s. Please correct the ownership or gdm "
+"configuration %s and restart gdm."
+msgstr ""
+
+#
+#: daemon/gdm.c:638
+#, fuzzy, c-format
+msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "gdm_config_parse: Ο κατάλογος Authdir %s δεν ανήκει στο χρήση %s, ομάδα %s. "
 "Διακοπή."
 
-#
-#: daemon/gdm.c:527
-#, fuzzy, c-format
+#: daemon/gdm.c:644
+#, c-format
 msgid ""
-"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
-"Aborting."
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
+"wrong permissions, it should have permissions of 0750. Please correct the "
+"permissions or the gdm configuration %s and restart gdm."
+msgstr ""
+
+#
+#: daemon/gdm.c:653
+#, fuzzy, c-format
+msgid "%s: Authdir %s has wrong permissions %o. Should be 0750. Aborting."
 msgstr ""
 "gdm_config_parse: Ο κατάλογος Authdir %s έχει λάθος δικαιώματα. Έπρεπε 750. "
 "Διακοπή."
 
 #
-#: daemon/gdm.c:580
-msgid "gdm_daemonify: fork() failed!"
+#: daemon/gdm.c:708
+#, fuzzy, c-format
+msgid "%s: fork() failed!"
 msgstr "gdm_daemonify: Το fork() απέτυχε!"
 
 #
-#: daemon/gdm.c:583
-#, c-format
-msgid "gdm_daemonify: setsid() failed: %s!"
+#. should never happen
+#: daemon/gdm.c:711 daemon/slave.c:2057
+#, fuzzy, c-format
+msgid "%s: setsid() failed: %s!"
 msgstr "gdm_daemonify:Το setsid() απέτυχε: %s!"
 
-#: daemon/gdm.c:679
+#: daemon/gdm.c:820
 #, c-format
 msgid "deal_with_x_crashes: Trying failsafe X server %s"
 msgstr ""
 
-#: daemon/gdm.c:712
+#: daemon/gdm.c:836
 msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
 msgstr ""
 
-#. Shit if we knew what the program was to tell the user,
-#. * the above script would have been defined and we'd run
-#. * it for them
-#: daemon/gdm.c:742 daemon/gdm.c:811
+#: daemon/gdm.c:911
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  You will need to log in on a console and rerun "
+"it is not set up correctly. You will need to log in on a console and rerun "
 "the X configuration program.  Then restart GDM."
-msgstr ""
-
-#: daemon/gdm.c:747
-msgid ""
-"Would you like me to try to run the X configuration program?  Note that you "
-"will need the root password for this."
-msgstr ""
-
-#: daemon/gdm.c:750
-msgid "Please type in the root (privilaged user) password."
-msgstr ""
-
-#: daemon/gdm.c:752
-msgid "I will now try to restart the X server again."
-msgstr ""
-
-#: daemon/gdm.c:754
-msgid ""
-"I will disable this X server for now.  Restart GDM when it is configured "
-"correctly."
-msgstr ""
-
-#: daemon/gdm.c:756
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  Would you like to view the X server output to "
-"diagnose the problem?"
 msgstr ""
 
 #. else {
@@ -327,7 +504,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:823
+#: daemon/gdm.c:923
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -336,7 +513,7 @@ msgstr ""
 "Αδύνατη η εκκίνηση του εξυπηρετητή Χ αρκετές φορές μέσα σε σύντομο χρονικό "
 "διάστημα· απενεργοποίηση οθόνης %s"
 
-#: daemon/gdm.c:922
+#: daemon/gdm.c:1029
 #, c-format
 msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
@@ -344,7 +521,7 @@ msgid ""
 msgstr ""
 
 #
-#: daemon/gdm.c:930
+#: daemon/gdm.c:1037
 #, fuzzy, c-format
 msgid ""
 "gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
@@ -352,141 +529,151 @@ msgstr "gdm_child_action: Διακοπή οθόνης %s"
 
 #
 #. Bury this display for good
-#: daemon/gdm.c:964
+#: daemon/gdm.c:1071
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action: Διακοπή οθόνης %s"
 
 #
 #. Reboot machine
-#: daemon/gdm.c:973
+#: daemon/gdm.c:1083
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action: Ο κύριος εξυπηρετητής επανεκκινήται..."
 
 #
-#: daemon/gdm.c:980
+#: daemon/gdm.c:1090
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action: Επανεκκίνηση απέτυχε: %s"
 
 #
 #. Halt machine
-#: daemon/gdm.c:984
+#: daemon/gdm.c:1094
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action: Ο εξυπηρετητής παύει να λειτουργεί..."
 
 #
-#: daemon/gdm.c:991
+#: daemon/gdm.c:1101
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: Πάυση λειτουργίας απέτυχε: %s"
 
 #
 #. Suspend machine
-#: daemon/gdm.c:995
+#: daemon/gdm.c:1105
 #, fuzzy
 msgid "gdm_child_action: Master suspending..."
 msgstr "gdm_child_action: Ο κύριος εξυπηρετητής επανεκκινήται..."
 
 #
-#: daemon/gdm.c:1002
+#: daemon/gdm.c:1112
 #, fuzzy, c-format
 msgid "gdm_child_action: Suspend failed: %s"
 msgstr "gdm_child_action: Επανεκκίνηση απέτυχε: %s"
 
-#: daemon/gdm.c:1087
-msgid "Gdm restarting ..."
+#: daemon/gdm.c:1207
+msgid "GDM restarting ..."
 msgstr ""
 
-#: daemon/gdm.c:1092
+#: daemon/gdm.c:1212
 msgid "Failed to restart self"
 msgstr "Αποτυχία επανεκκίνησης του ίδιου"
 
+#: daemon/gdm.c:1315
+msgid "Do not fork into the background"
+msgstr ""
+
+#: daemon/gdm.c:1317
+msgid "Preserve LD_* variables"
+msgstr ""
+
+#: daemon/gdm.c:1347
+#, c-format
+msgid ""
+"Error on option %s: %s.\n"
+"Run '%s --help' to see a full list of available command line options.\n"
+msgstr ""
+
 #
-#: daemon/gdm.c:1225
+#: daemon/gdm.c:1358
 msgid "Only root wants to run gdm\n"
 msgstr "Μόνο ο διαχειριστής θέλει να τρέξει το gdm\n"
 
 #
-#: daemon/gdm.c:1253
+#: daemon/gdm.c:1381
 msgid "gdm already running. Aborting!"
 msgstr "Το gdm εκτελείτε ήδη. Διακοπή!"
 
 #
-#: daemon/gdm.c:1284
+#: daemon/gdm.c:1412
 #, fuzzy, c-format
 msgid "%s: Error setting up TERM signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος TERM"
 
 #
-#: daemon/gdm.c:1288
+#: daemon/gdm.c:1416
 #, fuzzy, c-format
 msgid "%s: Error setting up INT signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος INT"
 
 #
-#: daemon/gdm.c:1292
+#: daemon/gdm.c:1420
 #, fuzzy, c-format
 msgid "%s: Error setting up HUP signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος HUP"
 
 #
-#: daemon/gdm.c:1296
+#: daemon/gdm.c:1424
 #, fuzzy, c-format
 msgid "%s: Error setting up USR1 signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος HUP"
 
 #
-#: daemon/gdm.c:1305
+#: daemon/gdm.c:1433
 #, fuzzy, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
 
-#: daemon/gdm.c:1923 daemon/gdm.c:1940
+#: daemon/gdm.c:2500 daemon/gdm.c:2517
 msgid "Flexible server request denied: Not authenticated"
 msgstr ""
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:1958
+#: daemon/gdm.c:2535
 msgid "Unknown server type requested, using standard server."
 msgstr ""
 
-#: daemon/gdm.c:1962
+#: daemon/gdm.c:2539
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
 "standard server."
 msgstr ""
 
-#
-#: daemon/gdm-net.c:236
-#, fuzzy, c-format
-msgid "%s: Could not make socket"
-msgstr "gdm_xdmcp_init: Αποτυχία δημιουργίας υποδοχής!"
-
-#
-#: daemon/gdm-net.c:246
-#, fuzzy, c-format
-msgid "%s: Could not bind socket"
-msgstr "gdm_xdmcp_init: Αποτυχία επίδεσης στην υποδοχή XDMCP!"
-
-#: daemon/gdm-net.c:287
-#, c-format
-msgid "%s: Could not make FIFO"
-msgstr ""
-
-#: daemon/gdm-net.c:295
-#, c-format
-msgid "%s: Could not open FIFO"
-msgstr ""
-
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:365
+#: daemon/misc.c:439
 msgid "y = Yes or n = No? >"
 msgstr ""
 
-#: daemon/server.c:136
+#: daemon/misc.c:713
+#, c-format
+msgid "%s: Cannot get local addresses!"
+msgstr ""
+
+#
+#: daemon/misc.c:827
+#, fuzzy, c-format
+msgid "Could not setgid %d. Aborting."
+msgstr "gdm_slave_session_start: Αποτυχία του setgid(%d). Διακοπή."
+
+#
+#: daemon/misc.c:832
+#, fuzzy, c-format
+msgid "initgroups() failed for %s. Aborting."
+msgstr "gdm_slave_session_start: Το initgroups() απέτυχε για το %s. Διακοπή."
+
+#: daemon/server.c:169
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -494,141 +681,180 @@ msgid ""
 "server on %s again.%s"
 msgstr ""
 
-#: daemon/server.c:143
+#: daemon/server.c:176
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
 "higher.)"
 msgstr ""
 
-#: daemon/server.c:182
+#: daemon/server.c:215
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr ""
 
-#: daemon/server.c:212
+#: daemon/server.c:245
 #, c-format
-msgid "Display %s is busy, there is another X server already running"
+msgid "Display %s is busy. There is another X server running already."
+msgstr ""
+
+#: daemon/server.c:342
+#, c-format
+msgid "%s: Error opening a pipe: %s"
 msgstr ""
 
 #
-#: daemon/server.c:305
-msgid "gdm_server_start: Error setting up USR1 signal handler"
-msgstr "gdm_server_start: Σφάλμα στη ρύθμιση του χειριστή του σήματος USR1"
+#: daemon/server.c:354
+#, fuzzy, c-format
+msgid "%s: Error setting up USR1 signal handler: %s"
+msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος HUP"
 
 #
-#: daemon/server.c:315
-msgid "gdm_server_start: Error setting up CHLD signal handler"
-msgstr "gdm_server_start: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
+#: daemon/server.c:367 daemon/slave.c:237
+#, fuzzy, c-format
+msgid "%s: Error setting up CHLD signal handler: %s"
+msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
 
 #
-#: daemon/server.c:326
-msgid "gdm_server_start: Error setting up ALRM signal handler"
-msgstr "gdm_server_restart: Σφάλμα στη ρύθμιση του χειριστή του σήματος ALRM"
+#: daemon/server.c:381 daemon/slave.c:213
+#, fuzzy, c-format
+msgid "%s: Error setting up ALRM signal handler: %s"
+msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος TERM"
 
 #. Send X too busy
-#: daemon/server.c:426
+#: daemon/server.c:541
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr ""
 
-#: daemon/server.c:441
+#: daemon/server.c:556
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr ""
 
 #
-#: daemon/server.c:533
+#: daemon/server.c:695
 #, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr ""
 "gdm_server_spawn: Αποτυχία ανοίγματος αρχείου καταγραφών για εμφάνιση %s!"
 
 #
-#: daemon/server.c:543
+#: daemon/server.c:705
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Σφάλμα στη ρύθμιση του USR1 σε SIG_IGN"
 
 #
-#: daemon/server.c:547
+#: daemon/server.c:709
 #, fuzzy
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
 msgstr "gdm_server_spawn: Σφάλμα στη ρύθμιση του USR1 σε SIG_IGN"
 
 #
-#: daemon/server.c:551
+#: daemon/server.c:713
 #, fuzzy
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
 msgstr "gdm_server_spawn: Σφάλμα στη ρύθμιση του USR1 σε SIG_IGN"
 
 #
-#: daemon/server.c:561
+#: daemon/server.c:723
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
 msgstr "gdm_server_spawn: Σφάλμα στη ρύθμιση του HUP σε SIG_DFL"
 
 #
-#: daemon/server.c:565
+#: daemon/server.c:727
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr "gdm_server_spawn: Σφάλμα στη ρύθμιση του TERM σε SIG_DFL"
 
-#: daemon/server.c:588
+#: daemon/server.c:746
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr ""
 
-#: daemon/server.c:594
+#: daemon/server.c:752
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr ""
 
-#: daemon/server.c:626
+#: daemon/server.c:784
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr ""
 
+#: daemon/server.c:810
+#, c-format
+msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
+msgstr ""
+
 #
-#: daemon/server.c:650
+#: daemon/server.c:825 daemon/slave.c:1312 daemon/slave.c:1660
+#, fuzzy, c-format
+msgid "%s: Couldn't set groupid to %d"
+msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
+
+#
+#: daemon/server.c:831 daemon/slave.c:1317 daemon/slave.c:1665
+#, fuzzy, c-format
+msgid "%s: initgroups() failed for %s"
+msgstr "gdm_slave_session_start: Το initgroups() απέτυχε για το %s. Διακοπή."
+
+#
+#: daemon/server.c:837 daemon/slave.c:1322 daemon/slave.c:1670
+#, fuzzy, c-format
+msgid "%s: Couldn't set userid to %d"
+msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας χρήστη σε %d"
+
+#
+#: daemon/server.c:844
+#, fuzzy, c-format
+msgid "%s: Couldn't set groupid to 0"
+msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
+
+#
+#: daemon/server.c:855
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_server_spawn: Ο εξυπηρετητής Χ δε βρέθηκε: %s"
 
 #
-#: daemon/server.c:655
+#: daemon/server.c:860
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: Αποτυχία δικράνωσης διεργασίας εξυπηρετητή Χ!"
 
 #
-#: daemon/slave.c:172
-#, fuzzy
-msgid "gdm_slave_init: Error setting up ALRM signal handler"
-msgstr "gdm_slave_init: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
-
-#
-#: daemon/slave.c:184
-msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
-msgstr "gdm_slave_init: Σφάλμα στη ρύθμιση του χειριστή του σήματος TERM/INT"
-
-#
-#: daemon/slave.c:193
-msgid "gdm_slave_init: Error setting up CHLD signal handler"
-msgstr "gdm_slave_init: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
-
-#
-#: daemon/slave.c:202
+#: daemon/slave.c:227
 #, fuzzy, c-format
-msgid "%s: Error setting up USR2 signal handler"
+msgid "%s: Error setting up TERM/INT signal handler: %s"
+msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος TERM"
+
+#
+#: daemon/slave.c:247
+#, fuzzy, c-format
+msgid "%s: Error setting up USR2 signal handler: %s"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος HUP"
 
-#: daemon/slave.c:518
+#: daemon/slave.c:438
+msgid ""
+"I could not start the X\n"
+"server (your graphical environment)\n"
+"due to some internal error.\n"
+"Please contact your system administrator\n"
+"or check your syslog to diagnose.\n"
+"In the meantime this display will be\n"
+"disabled.  Please restart gdm when\n"
+"the problem is corrected."
+msgstr ""
+
+#: daemon/slave.c:633
 msgid "focus_first_x_window: cannot fork"
 msgstr ""
 
-#: daemon/slave.c:537
+#: daemon/slave.c:656
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr ""
 
-#: daemon/slave.c:634
+#: daemon/slave.c:767
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -637,50 +863,33 @@ msgid ""
 "default location."
 msgstr ""
 
-#: daemon/slave.c:648
+#: daemon/slave.c:781
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
 "correctly in the configuration file."
 msgstr ""
 
-#: daemon/slave.c:698
+#: daemon/slave.c:888
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
 msgstr ""
 
-#: daemon/slave.c:712 daemon/slave.c:778
+#: daemon/slave.c:911 daemon/slave.c:997
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr ""
 
 #
-#: daemon/slave.c:1013
-msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
+#: daemon/slave.c:1271
+#, fuzzy, c-format
+msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "gdm_slave_greeter: Αποτυχία αρχικοποίησης σωλήνωσης στο gdmgreeter"
 
-#
-#: daemon/slave.c:1046
-#, c-format
-msgid "gdm_slave_greeter: Couldn't set groupid to %d"
-msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
-
-#
-#: daemon/slave.c:1049
-#, fuzzy, c-format
-msgid "gdm_slave_greeter: initgroups() failed for %s"
-msgstr "gdm_slave_session_start: Το initgroups() απέτυχε για το %s. Διακοπή."
-
-#
-#: daemon/slave.c:1052
-#, c-format
-msgid "gdm_slave_greeter: Couldn't set userid to %d"
-msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας χρήστη σε %d"
-
-#: daemon/slave.c:1107
+#: daemon/slave.c:1383
 msgid ""
 "No servers were defined in the\n"
-"configuration file and xdmcp was\n"
+"configuration file and XDMCP was\n"
 "disabled.  This can only be a\n"
 "configuration error.  So I have started\n"
 "a single server for you.  You should\n"
@@ -689,7 +898,7 @@ msgid ""
 "are disabled now."
 msgstr ""
 
-#: daemon/slave.c:1121
+#: daemon/slave.c:1397
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -698,7 +907,7 @@ msgid ""
 "configure the X server."
 msgstr ""
 
-#: daemon/slave.c:1130
+#: daemon/slave.c:1406
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -706,12 +915,12 @@ msgid ""
 msgstr ""
 
 #
-#: daemon/slave.c:1140
+#: daemon/slave.c:1419
 #, fuzzy, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr "gdm_slave_greeter: Σφάλμα εκκίνησης του χαιρετιστή στην οθόνη %s"
 
-#: daemon/slave.c:1152
+#: daemon/slave.c:1431
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -721,46 +930,29 @@ msgid ""
 msgstr ""
 
 #
-#: daemon/slave.c:1158
-#, c-format
-msgid "gdm_slave_greeter: Error starting greeter on display %s"
+#: daemon/slave.c:1437
+#, fuzzy, c-format
+msgid "%s: Error starting greeter on display %s"
 msgstr "gdm_slave_greeter: Σφάλμα εκκίνησης του χαιρετιστή στην οθόνη %s"
 
 #
-#: daemon/slave.c:1161
-msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
+#: daemon/slave.c:1440
+#, fuzzy, c-format
+msgid "%s: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Αποτυχία δικράνωσης της διεργασίας gdmgreeter"
 
-#: daemon/slave.c:1218 daemon/slave.c:1262 daemon/slave.c:1303
+#: daemon/slave.c:1505 daemon/slave.c:1593
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr ""
 
 #
-#: daemon/slave.c:1333
+#: daemon/slave.c:1620
 #, fuzzy
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
 msgstr "gdm_slave_greeter: Αποτυχία αρχικοποίησης σωλήνωσης στο gdmgreeter"
 
-#
-#: daemon/slave.c:1365
-#, fuzzy, c-format
-msgid "gdm_slave_chooser: Couldn't set groupid to %d"
-msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
-
-#
-#: daemon/slave.c:1368
-#, fuzzy, c-format
-msgid "gdm_slave_chooser: initgroups() failed for %s"
-msgstr "gdm_slave_session_start: Το initgroups() απέτυχε για το %s. Διακοπή."
-
-#
-#: daemon/slave.c:1371
-#, fuzzy, c-format
-msgid "gdm_slave_chooser: Couldn't set userid to %d"
-msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας χρήστη σε %d"
-
-#: daemon/slave.c:1403
+#: daemon/slave.c:1703
 msgid ""
 "Cannot start the chooser program,\n"
 "you will not be able to log in.\n"
@@ -768,82 +960,50 @@ msgid ""
 msgstr ""
 
 #
-#: daemon/slave.c:1407
+#: daemon/slave.c:1707
 #, fuzzy, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr "gdm_slave_greeter: Σφάλμα εκκίνησης του χαιρετιστή στην οθόνη %s"
 
 #
-#: daemon/slave.c:1410
+#: daemon/slave.c:1710
 #, fuzzy
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr "gdm_slave_greeter: Αποτυχία δικράνωσης της διεργασίας gdmgreeter"
 
 #
-#: daemon/slave.c:1742
-#, c-format
-msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
-msgstr ""
-"gdm_slave_session_start: Ο χρήστης πέρασε τον έλεγχο αυθεντικότητας αλλά η "
-"getpwnam(%s) απέτυχε!"
-
-#
-#: daemon/slave.c:1864
-msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
-msgstr "gdm_slave_session_start: Ολοκλήρωση αυθεντικοποίησης. Προς χαιρετιστή"
-
-#
-#: daemon/slave.c:1879
-msgid ""
-"gdm_slave_session_start: Execution of PreSession script returned > 0. "
-"Aborting."
-msgstr ""
-"gdm_slave_session_start: Η εκτέλεση του σκρίπτ PreSession επέστρεψε > 0."
-
-#
-#: daemon/slave.c:1905
-msgid "gdm_slave_session_start: Error forking user session"
-msgstr "gdm_slave_session_start: Σφάλμα δικράνωσης συνεδρίας χρήστη"
-
-#
-#: daemon/slave.c:1950
-#, c-format
-msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
-msgstr "gdm_slave_session_start: Αποτυχία του setgid(%d). Διακοπή."
-
-#
-#: daemon/slave.c:1954
-#, c-format
-msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
-msgstr "gdm_slave_session_start: Το initgroups() απέτυχε για το %s. Διακοπή."
-
-#
-#: daemon/slave.c:1960
+#: daemon/slave.c:2094
 #, fuzzy, c-format
-msgid "%s: Could not open session for %s. Aborting."
+msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
 
 #
-#: daemon/slave.c:1966
+#: daemon/slave.c:2108
+#, fuzzy, c-format
+msgid "%s: setusercontext() failed for %s. Aborting."
+msgstr "gdm_slave_session_start: Το initgroups() απέτυχε για το %s. Διακοπή."
+
+#
+#: daemon/slave.c:2124
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Αποτυχία αλλαγής ταυτότητας σε %s. Διακοπή."
 
 #. yaikes
-#: daemon/slave.c:2036
+#: daemon/slave.c:2207
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
 msgstr ""
 
-#: daemon/slave.c:2041
+#: daemon/slave.c:2211
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
 "session."
 msgstr ""
 
-#: daemon/slave.c:2047
+#: daemon/slave.c:2217
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -852,11 +1012,11 @@ msgid ""
 "your installation."
 msgstr ""
 
-#: daemon/slave.c:2066
+#: daemon/slave.c:2237
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr ""
 
-#: daemon/slave.c:2073
+#: daemon/slave.c:2244
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -866,30 +1026,36 @@ msgid ""
 "'exit' and an enter into the window."
 msgstr ""
 
-#: daemon/slave.c:2095
+#: daemon/slave.c:2272
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr ""
 
 #
-#: daemon/slave.c:2109
+#: daemon/slave.c:2291
+#, fuzzy, c-format
+msgid "%s: Could not open ~/.xsession-errors"
+msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
+
+#
+#: daemon/slave.c:2301
 #, fuzzy
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: Αποτυχία του setgid(%d). Διακοπή."
 
-#: daemon/slave.c:2111
+#: daemon/slave.c:2303
 msgid ""
 "The system administrator has\n"
 "disabled your account."
 msgstr ""
 
 #
-#: daemon/slave.c:2114
+#: daemon/slave.c:2306
 #, fuzzy, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: Αποτυχία έναρξης συνεδρίας `%s'"
 
-#: daemon/slave.c:2119
+#: daemon/slave.c:2311
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -898,484 +1064,568 @@ msgid ""
 msgstr ""
 
 #
-#: daemon/slave.c:2127
+#: daemon/slave.c:2319
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Αποτυχία έναρξης συνεδρίας `%s'"
 
-#: daemon/slave.c:2130
+#: daemon/slave.c:2322
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
 "It could also indicate an error with your account.\n"
 msgstr ""
 
-#: daemon/slave.c:2291
+#
+#: daemon/slave.c:2357
+#, c-format
+msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
+msgstr ""
+"gdm_slave_session_start: Ο χρήστης πέρασε τον έλεγχο αυθεντικότητας αλλά η "
+"getpwnam(%s) απέτυχε!"
+
+#: daemon/slave.c:2363
+#, c-format
+msgid ""
+"Your home directory is listed as:\n"
+"'%s'\n"
+"but it does not appear to exist.\n"
+"Do you want to log in with the root\n"
+"directory as your home directory?\n"
+"\n"
+"It is unlikely anything will work unless\n"
+"you use a failsafe session."
+msgstr ""
+
+#
+#: daemon/slave.c:2371
+#, fuzzy, c-format
+msgid "%s: Home directory for %s: '%s' does not exist!"
+msgstr "%s: Ο κατάλογος %s δεν υπάρχει."
+
+#
+#: daemon/slave.c:2537
+msgid ""
+"gdm_slave_session_start: Execution of PreSession script returned > 0. "
+"Aborting."
+msgstr ""
+"gdm_slave_session_start: Η εκτέλεση του σκρίπτ PreSession επέστρεψε > 0."
+
+#: daemon/slave.c:2560
+msgid ""
+"GDM could not write to your authorization\n"
+"file.  This could mean that you are out of\n"
+"disk space or that your home directory could\n"
+"not be opened for writing.  In any case, it\n"
+"is not possible to log in.  Please contact\n"
+"your system administrator"
+msgstr ""
+
+#
+#: daemon/slave.c:2595
+msgid "gdm_slave_session_start: Error forking user session"
+msgstr "gdm_slave_session_start: Σφάλμα δικράνωσης συνεδρίας χρήστη"
+
+#: daemon/slave.c:2655
+msgid ""
+"Your session only lasted less then\n"
+"10 seconds.  If you have not logged out\n"
+"yourself, this could mean that there is\n"
+"some installation problem or that you may\n"
+"be out of diskspace.  Try logging in with\n"
+"one of the failsafe sessions to see if you\n"
+"can fix this problem."
+msgstr ""
+
+#: daemon/slave.c:2663
+msgid "View details (~/.xsession-errors file)"
+msgstr ""
+
+#: daemon/slave.c:2816
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr ""
 
 #
-#: daemon/slave.c:2394
+#: daemon/slave.c:2997
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Μοιραίο σφάλμα Χ - Επανεκκίνηση %s"
 
 #
-#: daemon/slave.c:2564
+#: daemon/slave.c:3255
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Αποτυχία εκκίνησης: %s"
 
 #
-#: daemon/slave.c:2568
+#: daemon/slave.c:3261
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr ""
 "gdm_slave_exec_script: Δεν είναι δυνατή η δικράνωση διεργασίας προγράμματος "
 "εντολών!"
 
 #
-#: daemon/slave.c:2692
+#: daemon/slave.c:3353
 #, fuzzy
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "gdm_parse_enriched_string: Αλφαριθμητικό πολύ μεγάλο!"
 
 #
-#: daemon/slave.c:2712
+#: daemon/slave.c:3385
 #, fuzzy, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "gdm_slave_exec_script: Αποτυχία εκκίνησης: %s"
 
 #
-#: daemon/slave.c:2717
+#: daemon/slave.c:3390
 #, fuzzy
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr ""
 "gdm_slave_exec_script: Δεν είναι δυνατή η δικράνωση διεργασίας προγράμματος "
 "εντολών!"
 
+#
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:69 daemon/verify-pam.c:172 daemon/verify-shadow.c:68
-#: gui/gdmlogin.c:3015
+#: daemon/verify-crypt.c:71 daemon/verify-pam.c:301 daemon/verify-shadow.c:70
+#: gui/gdmlogin.c:3213
+#, fuzzy
+msgid "Please enter your username"
+msgstr "Παρακαλώ εισάγετε το όνομα χρήστη"
+
+#: daemon/verify-crypt.c:72 daemon/verify-pam.c:302 daemon/verify-shadow.c:71
+#: gui/gdmlogin.c:3173 gui/greeter/themes/circles/circles.xml.in.h:6
 #, fuzzy
 msgid "Username:"
 msgstr "Διασύνδεση Χρήστη"
 
 #
-#: daemon/verify-crypt.c:91 daemon/verify-shadow.c:100
+#: daemon/verify-crypt.c:94 daemon/verify-shadow.c:103
 msgid "Password: "
 msgstr "Κωδικός πρόσβασης: "
 
 #
-#: daemon/verify-crypt.c:108 daemon/verify-pam.c:207
-#: daemon/verify-shadow.c:117
+#: daemon/verify-crypt.c:112 daemon/verify-pam.c:335 daemon/verify-pam.c:501
+#: daemon/verify-shadow.c:121
 #, fuzzy
 msgid "Couldn't authenticate user"
 msgstr "Αποτυχία ελέγχου αυθεντικότητας του %s"
 
-#: daemon/verify-crypt.c:111 daemon/verify-crypt.c:131 daemon/verify-pam.c:288
-#: daemon/verify-shadow.c:120 daemon/verify-shadow.c:140
+#: daemon/verify-crypt.c:118 daemon/verify-crypt.c:138
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case.  "
 "Please be sure the Caps Lock key is not enabled"
 msgstr ""
 
-#: daemon/verify-crypt.c:118 daemon/verify-crypt.c:138
-#: daemon/verify-crypt.c:159 daemon/verify-crypt.c:182
-#: daemon/verify-shadow.c:127 daemon/verify-shadow.c:147
-#: daemon/verify-shadow.c:168 daemon/verify-shadow.c:191
-msgid "Login incorrect"
-msgstr "Σφάλμα αυθεντικοποίησης"
-
 #
-#: daemon/verify-crypt.c:149 daemon/verify-pam.c:220
-#: daemon/verify-shadow.c:158
+#: daemon/verify-crypt.c:152 daemon/verify-pam.c:348
+#: daemon/verify-shadow.c:161
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Η σύνδεση ως διαχειριστής δεν επιτρέπεται στην απεικόνιση '%s'"
 
-#: daemon/verify-crypt.c:152 daemon/verify-shadow.c:161
+#: daemon/verify-crypt.c:154 daemon/verify-shadow.c:163
 msgid "The system administrator is not allowed to login from this screen"
 msgstr ""
 
-#: daemon/verify-crypt.c:172 daemon/verify-pam.c:240
-#: daemon/verify-shadow.c:181
+#: daemon/verify-crypt.c:170 daemon/verify-shadow.c:179
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr ""
 
-#: daemon/verify-crypt.c:175 daemon/verify-pam.c:243
-#: daemon/verify-shadow.c:184
+#: daemon/verify-crypt.c:172 daemon/verify-pam.c:378 daemon/verify-pam.c:534
+#: daemon/verify-shadow.c:181
 msgid ""
 "\n"
 "The system administrator has disabled your account."
 msgstr ""
 
+#: daemon/verify-crypt.c:187 daemon/verify-crypt.c:221 daemon/verify-pam.c:396
+#: daemon/verify-pam.c:551 daemon/verify-shadow.c:195
+#: daemon/verify-shadow.c:228
+#, c-format
+msgid "Cannot set user group for %s"
+msgstr ""
+
+#: daemon/verify-crypt.c:189 daemon/verify-crypt.c:224 daemon/verify-pam.c:398
+#: daemon/verify-pam.c:554 daemon/verify-shadow.c:197
+#: daemon/verify-shadow.c:231
+msgid ""
+"\n"
+"Cannot set your user group, you will not be able to log in, please contact "
+"your system administrator."
+msgstr ""
+
+#: daemon/verify-crypt.c:216 daemon/verify-shadow.c:223
+#, c-format
+msgid "Cannot get passwd structure for %s"
+msgstr ""
+
+#: daemon/verify-pam.c:221
+msgid "Cannot setup pam handle with null login and/or display"
+msgstr ""
+
 #
-#: daemon/verify-pam.c:189 daemon/verify-pam.c:338 daemon/verify-pam.c:410
-#: daemon/verify-pam.c:474
-msgid "Can't find /etc/pam.d/gdm!"
+#: daemon/verify-pam.c:235
+#, fuzzy, c-format
+msgid "Can't find /etc/pam.d/%s!"
 msgstr "Δε μπόρεσε να βρεθεί το /etc/pam.d/gdm!"
 
 #
-#: daemon/verify-pam.c:198 daemon/verify-pam.c:345 daemon/verify-pam.c:419
-#: daemon/verify-pam.c:483
+#: daemon/verify-pam.c:242
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Αποτυχία ορίσματος του PAM_TTY=%s"
 
-#: daemon/verify-pam.c:224
+#
+#: daemon/verify-pam.c:249
+#, fuzzy, c-format
+msgid "Can't set PAM_RUSER=%s"
+msgstr "Αποτυχία ορίσματος του PAM_TTY=%s"
+
+#
+#: daemon/verify-pam.c:257
+#, fuzzy, c-format
+msgid "Can't set PAM_RHOST=%s"
+msgstr "Αποτυχία ορίσματος του PAM_TTY=%s"
+
+#: daemon/verify-pam.c:351
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
 msgstr ""
 
+#: daemon/verify-pam.c:367
+#, fuzzy, c-format
+msgid "Authentication token change failed for user %s"
+msgstr "Αποτυχία αυθεντικοποίησης"
+
+#: daemon/verify-pam.c:369
+msgid ""
+"\n"
+"The change of the authentication token failed. Please try again later or "
+"contact the system administrator."
+msgstr ""
+
+#: daemon/verify-pam.c:376 daemon/verify-pam.c:531
+#, c-format
+msgid "User %s no longer permitted to access the system"
+msgstr ""
+
+#: daemon/verify-pam.c:382 daemon/verify-pam.c:537
+#, c-format
+msgid "User %s not permitted to gain access at this time"
+msgstr ""
+
+#: daemon/verify-pam.c:384
+msgid ""
+"\n"
+"The system administrator has disabled access to the system temporarily."
+msgstr ""
+
 #
-#: daemon/verify-pam.c:261 daemon/verify-pam.c:358
+#: daemon/verify-pam.c:389 daemon/verify-pam.c:544
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Αποτυχία ρύθμισης της διαχείρισης λογαριασμού για %s"
 
-#: daemon/verify-pam.c:294
-msgid "Authentication failed"
-msgstr "Αποτυχία αυθεντικοποίησης"
-
 #
-#: daemon/verify-pam.c:456
-msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
-msgstr "gdm_verify_check: Δε βρέθηκε αρχείο ρυθμίσεων PAM για το gdm"
-
-#
-#: daemon/verify-pam.c:490
+#: daemon/verify-pam.c:408 daemon/verify-pam.c:572
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Αποτυχία ρύθμισης των διαπιστευτηρίων για %s"
 
 #
-#: daemon/verify-pam.c:498
+#: daemon/verify-pam.c:418 daemon/verify-pam.c:564
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
 
-#: daemon/xdmcp.c:236
-#, c-format
-msgid "%s: Cannot get local addresses!"
+#: daemon/verify-pam.c:444 daemon/verify-shadow.c:127
+#: daemon/verify-shadow.c:147
+msgid ""
+"\n"
+"Incorrect username or password. Letters must be typed in the correct case. "
+"Please make sure the Caps Lock key is not enabled."
+msgstr ""
+
+#: daemon/verify-pam.c:449 daemon/verify-pam.c:504
+msgid "Authentication failed"
+msgstr "Αποτυχία αυθεντικοποίησης"
+
+#: daemon/verify-pam.c:540
+msgid ""
+"\n"
+"The system administrator has disabled your access to the system temporary."
 msgstr ""
 
 #
-#: daemon/xdmcp.c:272
-#, fuzzy, c-format
-msgid "%s: Could not get server hostname: %s!"
-msgstr ""
-"gdm_xdmcp_init: Αποτυχία λήψης του ονόματος συστήματος του εξυπηρετητή: %s!"
+#: daemon/verify-pam.c:658 daemon/verify-pam.c:660
+#, fuzzy
+msgid "Can't find PAM configuration for gdm."
+msgstr "gdm_verify_check: Δε βρέθηκε αρχείο ρυθμίσεων PAM για το gdm"
 
 #
-#: daemon/xdmcp.c:279
-#, fuzzy, c-format
-msgid "%s: Could not get address from hostname!"
-msgstr ""
-"gdm_xdmcp_init: Αποτυχία λήψης του ονόματος συστήματος του εξυπηρετητή: %s!"
-
-#
-#: daemon/xdmcp.c:361
+#: daemon/xdmcp.c:244
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr ""
 "gdm_xdmcp_init: Αποτυχία λήψης του ονόματος συστήματος του εξυπηρετητή: %s!"
 
 #
-#: daemon/xdmcp.c:378
+#: daemon/xdmcp.c:264
 msgid "gdm_xdmcp_init: Could not create socket!"
 msgstr "gdm_xdmcp_init: Αποτυχία δημιουργίας υποδοχής!"
 
 #
-#: daemon/xdmcp.c:388
+#: daemon/xdmcp.c:274
 msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
 msgstr "gdm_xdmcp_init: Αποτυχία επίδεσης στην υποδοχή XDMCP!"
 
 #
-#: daemon/xdmcp.c:444
+#: daemon/xdmcp.c:332
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
 msgstr "gdm_xdmcp_decode: Αποτυχίά δημιουργίας ενταμιευτή XDMCP"
 
 #
-#: daemon/xdmcp.c:449
+#: daemon/xdmcp.c:337
 msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode: Αποτυχία ανάγνωσης κεφαλίδας XDMCP!"
 
 #
-#: daemon/xdmcp.c:455
+#: daemon/xdmcp.c:343
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: Εσφαλμένη έκδοση XDMCP!"
 
 #
-#: daemon/xdmcp.c:504
+#: daemon/xdmcp.c:396
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr ""
 "gdm_xdmcp_decode_packet: Άγνωστος κώδικας λειτουργίας από το σύστημα %s"
 
 #
-#: daemon/xdmcp.c:523
+#: daemon/xdmcp.c:415
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_query: Αποτυχία εξαγωγής λίστας ελέγχου αυθεντικότητας από "
 "το πακέτο"
 
 #
-#: daemon/xdmcp.c:535
+#: daemon/xdmcp.c:427
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: Σφάλμα στο άθροισμα ελέγχου"
 
 #
-#: daemon/xdmcp.c:778
+#: daemon/xdmcp.c:670
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Αποτυχία ανάγνωσης της διεύθυνσης απεικόνισης"
 
 #
-#: daemon/xdmcp.c:785
+#: daemon/xdmcp.c:677
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Αποτυχία ανάγνωσης αριθμού θύρας απεικόνισης"
 
 #
-#: daemon/xdmcp.c:793
+#: daemon/xdmcp.c:685
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Αποτυχία εξαγωγής λίστας ελέγχου "
 "αυθεντικότητας από το πακέτο"
 
 #
-#: daemon/xdmcp.c:809
+#: daemon/xdmcp.c:701
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: Σφάλμα στο άθροισμα ελέγχου"
 
 #
-#: daemon/xdmcp.c:815
+#: daemon/xdmcp.c:707
 #, fuzzy
 msgid "gdm_xdmcp_handle_forward_query: Bad address"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Αποτυχία ανάγνωσης της διεύθυνσης απεικόνισης"
 
 #
-#: daemon/xdmcp.c:918
+#: daemon/xdmcp.c:815
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Άρνηση ερωτήματος XDMCP από το σύστημα %s"
 
 #
-#: daemon/xdmcp.c:998
+#: daemon/xdmcp.c:961
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: Λήψη REQUEST από απαγορευμένο σύστημα %s"
 
 #
-#: daemon/xdmcp.c:1005
+#: daemon/xdmcp.c:968
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Αριθμού Απεικόνισης"
 
 #
-#: daemon/xdmcp.c:1011
+#: daemon/xdmcp.c:974
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Είδους Σύνδεσης"
 
 #
-#: daemon/xdmcp.c:1017
+#: daemon/xdmcp.c:980
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr ""
 "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Διεύθυνσης Εξυπηρετούμενου"
 
 #
-#: daemon/xdmcp.c:1024
+#: daemon/xdmcp.c:987
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Ονομάτων Εξουσιοδότησης"
 
 #
-#: daemon/xdmcp.c:1032
+#: daemon/xdmcp.c:995
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Δεδομένων Εξουσιοδότησης"
 
 #
-#: daemon/xdmcp.c:1041
+#: daemon/xdmcp.c:1004
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Λίστας Εξουσιοδότησης"
 
 #
-#: daemon/xdmcp.c:1056
+#: daemon/xdmcp.c:1019
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr "gdm_xdmcp_handle_request: Αποτυχία ανάγνωσης Ταυτότητας Κατασκευαστή"
 
 #
-#: daemon/xdmcp.c:1079
+#: daemon/xdmcp.c:1042
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: Εσφαλμένο άθροισμα ελέγχου από %s"
 
 #
-#: daemon/xdmcp.c:1247
+#: daemon/xdmcp.c:1209
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr ""
 "gdm_xdmcp_handle_manage: Λήψη μηνύματος Manage από απαγορευμένο σύστημα %s"
 
 #
-#: daemon/xdmcp.c:1254
+#: daemon/xdmcp.c:1216
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage: Αποτυχία ανάγνωσης Ταυτότητας Συνεδρίας"
 
 #
-#: daemon/xdmcp.c:1260
+#: daemon/xdmcp.c:1222
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: Αποτυχίά ανάγνωσης Αριθμού Απεικόνισης"
 
 #
-#: daemon/xdmcp.c:1269
+#: daemon/xdmcp.c:1231
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
 msgstr "gdm_xdmcp_handle_manage: Αποτυχία ανάγνωσης Κλάσης Απεικόνισης"
 
-#
-#: daemon/xdmcp.c:1320
-#, c-format
-msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
-msgstr ""
-"gdm_xdmcp_handle_manage: Αποτυχία ανοίγματος αρχείου καταγραφών για "
-"απεικόνιση %s!"
-
-#: daemon/xdmcp.c:1357 daemon/xdmcp.c:1363
+#: daemon/xdmcp.c:1306 daemon/xdmcp.c:1312 daemon/xdmcp.c:1362
+#: daemon/xdmcp.c:1368
 #, c-format
 msgid "%s: Could not read address"
 msgstr ""
 
 #
-#: daemon/xdmcp.c:1434
+#: daemon/xdmcp.c:1444
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr "gdm_xdmcp_handle_keepalive: Λήψη KEEPALIVE από απαγορευμένο σύστημα %s"
 
 #
-#: daemon/xdmcp.c:1441
+#: daemon/xdmcp.c:1451
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_keepalive: Αποτυχία ανάγνωσης Αριθμού Απεικόνισης"
 
 #
-#: daemon/xdmcp.c:1447
+#: daemon/xdmcp.c:1457
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Αποτυχία ανάγνωσης Ταυτότητας Συνεδρίας"
 
 #
-#: daemon/xdmcp.c:1646
+#: daemon/xdmcp.c:1659
 #, fuzzy
 msgid "gdm_xdmcp_init: No XDMCP support"
 msgstr "gdm_xdmcp_init: Αποτυχία επίδεσης στην υποδοχή XDMCP!"
 
 #
-#: daemon/xdmcp.c:1653
+#: daemon/xdmcp.c:1666
 #, fuzzy
 msgid "gdm_xdmcp_run: No XDMCP support"
 msgstr "gdm_xdmcp_init: Αποτυχία επίδεσης στην υποδοχή XDMCP!"
 
 #
-#: daemon/xdmcp.c:1659
+#: daemon/xdmcp.c:1672
 #, fuzzy
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_decode: Εσφαλμένη έκδοση XDMCP!"
 
-#: gui/gdmchooser.c:64
-msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
+#: gui/gdmXnestchooser.c:99
+#, fuzzy
+msgid "Xnest command line"
+msgstr "Εντολή επιλογέα: "
+
+#: gui/gdmXnestchooser.c:99
+msgid "STRING"
 msgstr ""
-"Παρακαλώ περιμένετε: γίνεται σάρωση του τοπικού δυκτίου για συστήματα που "
-"υποστηρίζουν XDMCP..."
 
-#: gui/gdmchooser.c:65
-msgid "No serving hosts were found."
-msgstr "Δε βρέθηκαν διαθέσιμα συστήματα."
+#: gui/gdmXnestchooser.c:100
+msgid "Extra options for Xnest"
+msgstr ""
 
-#: gui/gdmchooser.c:66
-msgid "Choose a host to connect to from the selection below."
-msgstr "Επιλέξτε ένα σύστημα από τα παρακάτω για να συνδεθείτε."
+#: gui/gdmXnestchooser.c:100
+msgid "OPTIONS"
+msgstr ""
 
-#
-#: gui/gdmchooser.c:491
-#, c-format
-msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
-msgstr "gdm_chooser_parse_config: Κανένα αρχείο ρυθμίσεων: %s. Διακοπή."
+#: gui/gdmXnestchooser.c:101
+msgid "Just run Xnest, no query (no chooser)"
+msgstr ""
 
-#
-#: gui/gdmchooser.c:674
-#, c-format
-msgid "Can't open default host icon: %s"
-msgstr "Αποτυχία ανοίγματος εξ'ορισμού εικονιδίου συστήματος: %s"
+#: gui/gdmXnestchooser.c:102
+msgid "Do direct query instead of indirect (chooser)"
+msgstr ""
 
-#: gui/gdmchooser.c:683
+#: gui/gdmXnestchooser.c:103
+msgid "Run broadcast instead of indirect (chooser)"
+msgstr ""
+
+#: gui/gdmXnestchooser.c:104
+#, fuzzy
+msgid "Run in background"
+msgstr "Πρόγραμμα Φόντου: "
+
+#: gui/gdmXnestchooser.c:105
+msgid "Don't check for running gdm"
+msgstr ""
+
+#: gui/gdmXnestchooser.c:221
 msgid ""
-"Cannot find the glade interface description\n"
-"file, cannot run gdmchooser.\n"
-"Please check your installation and the\n"
-"location of the gdmchooser.glade file."
+"Xnest doesn't exist.\n"
+"Please ask your system administrator\n"
+"to install it."
 msgstr ""
 
-#: gui/gdmchooser.c:704
+#: gui/gdmXnestchooser.c:240
 msgid ""
-"The glade interface description file\n"
-"appears to be corrupted.\n"
-"Please check your installation."
+"Indirect XDMCP is not enabled,\n"
+"please ask your system administrator to enable it\n"
+"in the GDM configurator program."
 msgstr ""
 
-#
-#: gui/gdmchooser.c:748
-msgid "gdm_signals_init: Error setting up HUP signal handler"
-msgstr "gdm_signals_init: Σφάλμα στη ρύθμιση του χειριστή σήματος HUP"
-
-#
-#: gui/gdmchooser.c:751
-msgid "gdm_signals_init: Error setting up INT signal handler"
-msgstr "gdm_signals_init: Σφάλμα στη ρύθμιση του χειριστή σήματος INT"
-
-#
-#: gui/gdmchooser.c:754
-msgid "gdm_signals_init: Error setting up TERM signal handler"
-msgstr "gdm_signals_init: Σφάλμα στη ρύθμιση του χειριστή σήματος TERM"
-
-#
-#: gui/gdmchooser.c:762 gui/gdmlogin.c:3683
-msgid "Could not set signal mask!"
-msgstr "Αποτυχία ρύθμισης μάσκας σινιάλων!"
-
-#: gui/gdmchooser.c:852
-msgid "Socket for xdm communication"
-msgstr ""
-
-#: gui/gdmchooser.c:852
-msgid "SOCKET"
-msgstr ""
-
-#: gui/gdmchooser.c:852
-msgid "Client address to return in response to xdm"
-msgstr ""
-
-#: gui/gdmchooser.c:852
-msgid "ADDRESS"
-msgstr ""
-
-#: gui/gdmchooser.c:853
-msgid "Connection type to return in response to xdm"
-msgstr ""
-
-#: gui/gdmchooser.c:853
-msgid "TYPE"
-msgstr ""
-
-#: gui/gdmchooser.c:1052
-#, c-format
+#: gui/gdmXnestchooser.c:263 gui/gdmcomm.c:380
 msgid ""
-"The chooser version (%s) does not match the daemon version (%s).\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"GDM is not running.\n"
+"Please ask your system administrator to start it."
 msgstr ""
 
-#. EOF
+#: gui/gdmXnestchooser.c:274
+msgid "Could not find a free display number"
+msgstr ""
+
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
@@ -1386,1595 +1636,249 @@ msgstr ""
 msgid "GDM Host Chooser"
 msgstr "Επιλογέας"
 
-#
 #: gui/gdmchooser-strings.c:8
+msgid "How to use this application"
+msgstr ""
+
+#
+#: gui/gdmchooser-strings.c:9
 #, fuzzy
 msgid "Open a session to the selected host"
 msgstr "Επιλογή της συνεδρίας %s"
 
 #
-#: gui/gdmchooser-strings.c:9
-msgid "Connect"
+#: gui/gdmchooser-strings.c:10
+#, fuzzy
+msgid "C_onnect"
 msgstr "Σύνδεση"
 
-#: gui/gdmchooser-strings.c:10
+#: gui/gdmchooser-strings.c:11
 msgid "Probe the network"
 msgstr ""
 
-#
-#: gui/gdmchooser-strings.c:11
-msgid "Rescan"
-msgstr "Σάρωση ξανά"
-
 #: gui/gdmchooser-strings.c:12
-msgid "How to use this application"
-msgstr ""
-
-#: gui/gdmchooser-strings.c:13
-msgid "Help"
-msgstr ""
-
-#: gui/gdmchooser-strings.c:14
 msgid "Exit the application"
 msgstr ""
 
-#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2810
-msgid "Quit"
+#: gui/gdmchooser-strings.c:13
+msgid "Status"
 msgstr ""
 
-#: gui/gdmchooser-strings.c:16 gui/gdmconfig-strings.c:16
-msgid " "
-msgstr " "
+#: gui/gdmchooser-strings.c:14
+msgid ""
+"The main area of this application shows the hosts on the local network that "
+"have \"XDMCP\" enabled. This allows users to login remotely to other "
+"machines as if they were logged on using the console.\n"
+"\n"
+"You can rescan the network for new hosts by clicking \"Refresh\". When you "
+"have selected a host click \"Connect\" to open a session to that machine."
+msgstr ""
 
 #: gui/gdmchooser-strings.c:17
-msgid "Most recently queried hosts"
-msgstr ""
-
-#: gui/gdmchooser-strings.c:18
-msgid ""
-"The main area of this application shows the hosts on the local\n"
-"network that have \"XDMCP\" enabled. This allows users to login\n"
-"remotely to other machines as if they were logged on using the\n"
-"console.\n"
-"\n"
-"You can rescan the network for new hosts by clicking 'rescan'.\n"
-"When you have selected a host click \"Connect\" to open a session\n"
-"to that machine."
-msgstr ""
-
-#: gui/gdmchooser-strings.c:26
 #, fuzzy
 msgid "Information"
 msgstr "_Ρυθμίσεις"
 
-#. 3 user levels are present in the CList
-#: gui/gdmconfig.c:56
-msgid "Basic"
-msgstr "Βασικό"
+#: gui/gdmchooser.c:72
+msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
+msgstr ""
+"Παρακαλώ περιμένετε: γίνεται σάρωση του τοπικού δυκτίου για συστήματα που "
+"υποστηρίζουν XDMCP..."
 
-#: gui/gdmconfig.c:57
-msgid "Expert"
-msgstr "Ειδήμονας"
+#: gui/gdmchooser.c:73
+msgid "No serving hosts were found."
+msgstr "Δε βρέθηκαν διαθέσιμα συστήματα."
+
+#: gui/gdmchooser.c:74
+msgid "Choose a host to connect to from the selection below."
+msgstr "Επιλέξτε ένα σύστημα από τα παρακάτω για να συνδεθείτε."
 
 #
-#: gui/gdmconfig.c:58 gui/gdmlogin.c:2796
-msgid "System"
-msgstr "Σύστημα"
+#: gui/gdmchooser.c:753
+#, c-format
+msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
+msgstr "gdm_chooser_parse_config: Κανένα αρχείο ρυθμίσεων: %s. Διακοπή."
 
-#: gui/gdmconfig.c:60
+#: gui/gdmchooser.c:868
 msgid ""
-"This panel displays the basic options for configuring GDM.\n"
+"The main area of this application shows the hosts on the local network that "
+"have \"XDMCP\" enabled. This allows users to login remotely to other "
+"machines as if they were logged on using the console.\n"
 "\n"
-"If you need finer detail, select 'expert' or 'system setup' from the list "
-"above.\n"
-"\n"
-"This will display some of the more complex options of GDM that rarely need "
-"to be changed."
+"You can rescan the network for new hosts by clicking \"Refresh\".  When you "
+"have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
-"Αυτή η επιφάνεια εμφανίζει της βασικές επιλογές για τη ρύθμιση του GDM.\n"
-"\n"
-"Αν απαιτείτε περισσότερες λεπτομέρειες, επιλέξτε 'ειδήμονας' ή 'ρύθμιση "
-"συστήματος' από την παραπάνω λίστα.\n"
-"\n"
-"Έτσι θα εμφανιστούν μερικές από τις περισσότερο περίπλοκες επιλογές του GDM "
-"που σπάνια χρειάζετε να αλλαχτούν."
 
-#: gui/gdmconfig.c:65
-#, fuzzy
-msgid ""
-"This panel displays the more advanced options of GDM.\n"
-"\n"
-"Be sure to take care when manipulating the security options, or you could be "
-"vulnerable to attackers.\n"
-"\n"
-"Choose \"System\" to change fundamental options in GDM."
+#
+#: gui/gdmchooser.c:900
+#, c-format
+msgid "Can't open default host icon: %s"
+msgstr "Αποτυχία ανοίγματος εξ'ορισμού εικονιδίου συστήματος: %s"
+
+#
+#: gui/gdmchooser.c:949
+msgid "gdm_signals_init: Error setting up HUP signal handler"
+msgstr "gdm_signals_init: Σφάλμα στη ρύθμιση του χειριστή σήματος HUP"
+
+#
+#: gui/gdmchooser.c:952
+msgid "gdm_signals_init: Error setting up INT signal handler"
+msgstr "gdm_signals_init: Σφάλμα στη ρύθμιση του χειριστή σήματος INT"
+
+#
+#: gui/gdmchooser.c:955
+msgid "gdm_signals_init: Error setting up TERM signal handler"
+msgstr "gdm_signals_init: Σφάλμα στη ρύθμιση του χειριστή σήματος TERM"
+
+#
+#: gui/gdmchooser.c:963 gui/gdmlogin.c:4020 gui/greeter/greeter.c:817
+msgid "Could not set signal mask!"
+msgstr "Αποτυχία ρύθμισης μάσκας σινιάλων!"
+
+#: gui/gdmchooser.c:969
+msgid "Socket for xdm communication"
 msgstr ""
-"Αυτή η επιφάνεια εμφανίζει τις περισσότερο προχωρημένες επιλογές του GDM.\n"
-"\n"
-"Φροντίστε να προσέχετε κατά τον χειρισμό των επιλογών ασφάλειας, διαφορετικά "
-"μπορείτε να τεθείτε ευάλωτος στους εισβολείς.\n"
-"\n"
-"Επιλέξτε \"Ρύθμιση συστήματος\" για να αλλάξετε τις θεμελιώδεις επιλογές του "
-"GDM."
 
-#: gui/gdmconfig.c:71
-msgid ""
-"This panel displays GDM's fundamental system settings.\n"
-"\n"
-"You should only change these paths if you really know what you are doing, as "
-"an incorrect setup could stop your machine from booting properly.\n"
-"\n"
-"Choose \"Basic\" if you just want to change your machine's login appearance."
+#: gui/gdmchooser.c:969
+msgid "SOCKET"
 msgstr ""
-"Αυτό το ταμπλώ εμφανίζει τις θεμελιώδεις ρυθμίσεις συστήματος του GDM.\n"
-"\n"
-"Καλό είναι να αλλάξετε τα μονοπάτια μόνο όταν είστε απολύτως σίγουρος/η για "
-"το τι κάνετε, διαφορετικά εσφαλμένες τιμές θα κάνουν το σύστημά σας να "
-"εκκινείται σωστά.\n"
-"\n"
-"Επιλέξτε \"Βασικό\" αν θέλετε να αλλάξετε μόνο την εμφάνιση της σύνδεσης "
-"χρήστη."
 
-#: gui/gdmconfig.c:133
+#: gui/gdmchooser.c:972
+msgid "Client address to return in response to xdm"
+msgstr ""
+
+#: gui/gdmchooser.c:972
+msgid "ADDRESS"
+msgstr ""
+
+#: gui/gdmchooser.c:975
+msgid "Connection type to return in response to xdm"
+msgstr ""
+
+#: gui/gdmchooser.c:975
+msgid "TYPE"
+msgstr ""
+
+#: gui/gdmchooser.c:1090
 #, c-format
 msgid ""
-"The glade ui description file doesn't seem to contain the\n"
-"widget \"%s\".  Unfortunately I cannot continue.\n"
-"Please check your installation."
+"The chooser version (%s) does not match the daemon version (%s).\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
 msgstr ""
 
-#: gui/gdmconfig.c:378
-msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr "Πρέπει να είστε διαχειριστής (root) για να ρυθμίσετε το GDM.\n"
-
-#: gui/gdmconfig.c:417
-msgid ""
-"Cannot find the glade interface description\n"
-"file, cannot run gdmconfig.\n"
-"Please check your installation and the\n"
-"location of the gdmconfig.glade file."
-msgstr ""
-
-#: gui/gdmconfig.c:446
-msgid ""
-"Cannot find the gdmconfigurator widget in\n"
-"the glade interface description file\n"
-"Please check your installation."
-msgstr ""
-
-#: gui/gdmconfig.c:504
-msgid "GNOME Display Manager Configurator"
-msgstr "Ρύθμιση Διαχείρησης Οθόνης GNOME"
-
-#: gui/gdmconfig.c:727
-#, c-format
-msgid ""
-"The configuration file: %s\n"
-"does not exist! Using default values."
-msgstr ""
-
-#: gui/gdmconfig.c:738 gui/gdmconfig.c:1091 gui/gdmconfig.c:1955
-#: gui/gdmconfig.c:2177 gui/gdmflexiserver.c:365
-#, fuzzy
-msgid "Standard server"
-msgstr "Προσθήκη Εξυπηρετητή"
-
-#: gui/gdmconfig.c:939
-msgid "Error reading session script!"
-msgstr ""
-
-#: gui/gdmconfig.c:942
-msgid "Error reading this session script"
-msgstr ""
-
-#: gui/gdmconfig.c:1050 gui/gdmconfig.c:1096 gui/gdmconfig.c:1939
-#: gui/gdmconfig.c:2017 gui/gdmconfig.c:2033
-msgid "Yes"
-msgstr ""
-
-#: gui/gdmconfig.c:1052 gui/gdmconfig.c:2021 gui/gdmconfig.c:2035
-#, fuzzy
-msgid "No"
-msgstr "Όχι."
-
-#
-#: gui/gdmconfig.c:1127
-msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr ""
-"gdm_config_parse_most: Μη έγκυρη γραμμή εξυπηρετητή στο αρχείο ρυθμίσεων. "
-"Αγνοείται!"
-
-#: gui/gdmconfig.c:1309
-#, fuzzy
-msgid ""
-"The applied settings cannot take effect until gdm\n"
-"is restarted or your computer is rebooted.\n"
-"You can restart GDM when all sessions are\n"
-"closed (when all users log out) or you can\n"
-"restart GDM now (which will kill all current\n"
-"sessions)"
-msgstr ""
-"Οι ρυθμίσεις που έχουν τεθεί δεν μπορούν να ενεργοποιηθούν\n"
-"παρά μόνο όταν το gdm ή ο υπολογιστή σας επανακκινηθούν.\n"
-"Επιθυμείτε να επανεκκινήσετε το GDM τώρα;\n"
-"Αυτό θα σκοτώσει όλες τις τρέχουσες συνεδρίες \n"
-"και θα χάσετε όλα τα μη αποθηκευμένα δεδομένα!"
-
-#: gui/gdmconfig.c:1315
-msgid "Restart after logout"
-msgstr ""
-
-#: gui/gdmconfig.c:1316
-msgid "Restart now"
-msgstr ""
-
-#: gui/gdmconfig.c:1326
-#, fuzzy
-msgid ""
-"Are you sure you wish to restart GDM\n"
-"now and lose any unsaved data?"
-msgstr ""
-"Είστε σίγουρος ότι θέλετε να επανεκκινήσετε το GDM\n"
-"και να χάσετε οτιδήποτε μη αποθηκευμένες πληροφορίες;"
-
-#: gui/gdmconfig.c:1334
-msgid ""
-"The greeter settings will take effect the next time\n"
-"it is displayed.  The rest of the settings will not\n"
-"take effect until gdm is restarted or the computer is\n"
-"rebooted"
-msgstr ""
-"Οι ρυθμίσεις του χαιρετιστή θα ενεργοποιηθούν την\n"
-"επόμενη φορά που θα εμφανιστεί. Οι υπόλοιπες ρυθμίσεις \n"
-"δε θα ενεργοποιηθούν μέχρι το gdm επανακινηθεί ή ο\n"
-"υπολογιστής ξαναξεκινήσει."
-
-#: gui/gdmconfig.c:1356
-msgid ""
-"You have not defined any local servers.\n"
-"Usually this is not a good idea unless you\n"
-"are sure you do not want users to be able to\n"
-"log in with the graphical interface on the\n"
-"local console and only use the xdmcp service.\n"
-"\n"
-"Are you sure you wish to apply these settings?"
-msgstr ""
-
-#
-#: gui/gdmconfig.c:1541
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not delete session %s\n"
-"   Error: %s"
-msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
-
-#
-#: gui/gdmconfig.c:1577
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not remove session %s\n"
-"   Error: %s"
-msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
-
-#
-#: gui/gdmconfig.c:1620
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not write session %s\n"
-"   Error: %s"
-msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
-
-#
-#: gui/gdmconfig.c:1631
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not write contents to session %s\n"
-"   Error: %s"
-msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
-
-#
-#: gui/gdmconfig.c:1656
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not unlink old default session\n"
-"   Error: %s"
-msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
-
-#: gui/gdmconfig.c:1695
-msgid ""
-"\n"
-"Could not find a suitable name for the default session link"
-msgstr ""
-
-#
-#: gui/gdmconfig.c:1704
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Could not link new default session\n"
-"   Error: %s"
-msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
-
-#: gui/gdmconfig.c:1724
-msgid ""
-"There were errors writing changes to the session files.\n"
-"The configuration may not be completely saved.\n"
-msgstr ""
-
-#: gui/gdmconfig.c:1744
-msgid ""
-"This will destroy any changes made in this session.\n"
-"Are you sure you want to do this?"
-msgstr ""
-"Αυτό θα χάσει όλες τις αλλαγές που κάνατε σε αυτήν τη συνεδρία.\n"
-"Είστε σίγουρος ότι θέλετε να το κάνετε;"
-
-#: gui/gdmconfig.c:1755
-#, fuzzy
-msgid ""
-"This will destroy any changes made in the configuration.\n"
-"Are you sure you want to do this?"
-msgstr ""
-"Αυτό θα χάσει όλες τις αλλαγές που κάνατε σε αυτήν τη συνεδρία.\n"
-"Είστε σίγουρος ότι θέλετε να το κάνετε;"
-
-#: gui/gdmconfig.c:1976 gui/gdmconfig.c:2307
-msgid "A command line must start with a forward slash ('/')"
-msgstr ""
-
-#: gui/gdmconfig.c:1980
-msgid "A descriptive server name must be supplied"
-msgstr ""
-
-#: gui/gdmconfig.c:2647
-msgid "A session name must be unique and not empty"
-msgstr ""
-
-#: gui/gdmconfig.c:2660
-msgid "Enter a name for the new session"
-msgstr ""
-
-#: gui/gdmconfig.c:2775
-msgid ""
-"You have modified the sessions directory.\n"
-"Your session changes will still get written\n"
-"to the old directory however, until you reload\n"
-"the configuration dialog again."
-msgstr ""
-
-#: gui/gdmconfig.desktop.in.h:1
-#, fuzzy
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr "Ρύθμιση του Διαχειριστή Οθόνης GNOME"
-
-#: gui/gdmconfig.desktop.in.h:2
-#, fuzzy
-msgid "GDM Configurator"
-msgstr "_Ρυθμίσεις"
-
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: gui/gdmconfig-strings.c:7
-msgid "GDM Configuration Utility"
-msgstr "Εργαλείο Ρύθμισης GDM"
-
-#: gui/gdmconfig-strings.c:8
-msgid "_Configuration"
-msgstr "_Ρυθμίσεις"
-
-#: gui/gdmconfig-strings.c:9
-#, fuzzy
-msgid "Revert to settings in the configuration file"
-msgstr "Το αρχείο ρυθμίσεων: "
-
-#: gui/gdmconfig-strings.c:10
-msgid "Revert settings"
-msgstr "Επαναφορά ρυθμίσεων"
-
-#: gui/gdmconfig-strings.c:11
-msgid "Revert to settings that were shipped with your system"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:12
-#, fuzzy
-msgid "Revert to Factory Settings"
-msgstr "Επαναφορά ρυθμίσεων"
-
-#: gui/gdmconfig-strings.c:13
-msgid "Apply the current changes"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:14
-msgid "Apply"
-msgstr "Εφαρμογή"
-
-#: gui/gdmconfig-strings.c:15 gui/gdmconfig-strings.c:132
-msgid "Options"
-msgstr "Επιλογές"
-
-#: gui/gdmconfig-strings.c:17
-msgid "basic_settings"
-msgstr "βασικές_ρυθμίσεις"
-
-#: gui/gdmconfig-strings.c:18
-msgid "General Appearance"
-msgstr "Γενική Εμφάνιση"
-
-#
-#: gui/gdmconfig-strings.c:19
-msgid "Logo: "
-msgstr "Λογότυπο: "
-
-#: gui/gdmconfig-strings.c:20
-msgid "Select a logo to be displayed during login"
-msgstr "Επιλέξτε ένα λογότυπο προς παρουσίαση κατά την αυθεντικοποίηση"
-
-#: gui/gdmconfig-strings.c:21
-msgid "Minimised Icon: "
-msgstr "Ελαχιστοποιημένο Εικονίδιο: "
-
-#: gui/gdmconfig-strings.c:22
-msgid "Select a GTK+ theme file (gtkrc)"
-msgstr "Επιλέξτε ένα αρχείο θέματος GTK+ (gtkrc)"
-
-#: gui/gdmconfig-strings.c:23
-msgid ""
-"This is the GTK+ RC file that describes the theme that the login window "
-"should use"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:24
-msgid "Gtk+ RC file: "
-msgstr "Αρχείο ρυθμίσεων Gtk+: "
-
-#: gui/gdmconfig-strings.c:25
-msgid "Login appearance"
-msgstr "Εμφάνιση εισαγωγής στο σύστημα"
-
-#: gui/gdmconfig-strings.c:26
-msgid "Greeter Look and Feel"
-msgstr "Εμφάνιση του Χαιρετιστή"
-
-#: gui/gdmconfig-strings.c:27
-msgid ""
-"Show the \"System\" menu.  This has the shutdown, reboot and configuration "
-"items"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:28
-msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
-msgstr "Εμφάνιση του μενού συστήματος, (επανεκκίνηση, κλείσιμο, κλπ.)"
-
-#: gui/gdmconfig-strings.c:29
-msgid "Allow users to run the configurator from the system menu"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:30
-msgid ""
-"If the user fails to authenticate himself the login window should Quiver to "
-"indicate failiure"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:31
-msgid "Quiver on failure"
-msgstr "Τρεμόπαιξε κατά την αποτυχία"
-
-#: gui/gdmconfig-strings.c:32
-msgid ""
-"Show the title bar on the login window.  If this is off the user won't be "
-"able to move nor iconify the login window"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:33
-msgid "Show title bar on login window"
-msgstr ""
-
-#
-#: gui/gdmconfig-strings.c:34
-#, c-format
-msgid "Welcome to %n"
-msgstr "Καλώς ήλθατε στο %n"
-
-#: gui/gdmconfig-strings.c:35
-#, c-format
-msgid "%n"
-msgstr "%n"
-
-#: gui/gdmconfig-strings.c:36 gui/gdmconfig-strings.c:38
-#, c-format
-msgid "This is %n"
-msgstr "Αυτό είναι το %n"
-
-#: gui/gdmconfig-strings.c:37
-msgid "The welcome message displayed on the login window"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:39
-msgid "Default font: "
-msgstr "Εξ' ορισμού γραμματοσειρά: "
-
-#
-#: gui/gdmconfig-strings.c:40
-msgid "Welcome message: "
-msgstr "Μήνυμα καλωσορίσματος: "
-
-#: gui/gdmconfig-strings.c:41
-msgid "The font to use on the welcome message"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:42
-msgid "Pick a Font"
-msgstr "Επιλογή Γραμματοσειράς"
-
-#: gui/gdmconfig-strings.c:43
-msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr "ΑαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσςΤτΥυΦφΧχΨψΩω"
-
-#: gui/gdmconfig-strings.c:44
-msgid "Extras"
-msgstr "Επιπλέον"
-
-#: gui/gdmconfig-strings.c:45
-msgid "Default locale: "
-msgstr "Εξ' ορισμού τοπική ρύθμιση: "
-
-#: gui/gdmconfig-strings.c:46 gui/gdmconfig-strings.c:79
-msgid "ca_ES"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:47
-msgid "cs_CZ"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:48
-msgid "hr_HR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:49
-msgid "da_DK"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:50 gui/gdmconfig-strings.c:57
-msgid "de_DE"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:51
-msgid "nl_NL"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:52
-msgid "en_US"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:53
-msgid "en_UK"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:54
-msgid "fi_FI"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:55
-msgid "fr_FR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:56
-msgid "gl_ES"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:58
-msgid "el_GR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:59
-msgid "iw_IL"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:60
-msgid "hu_HU"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:61
-msgid "is_IS"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:62
-msgid "it_IT"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:63
-msgid "ja_JP"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:64
-msgid "ko_KR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:65
-msgid "lt_LT"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:66
-msgid "nn_NO"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:67
-msgid "no_NO"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:68
-msgid "pl_PL"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:69
-msgid "pt_PT"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:70
-msgid "pt_BR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:71
-msgid "ro_RO"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:72
-msgid "ru_RU"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:73
-msgid "sk_SK"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:74
-msgid "sl_SI"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:75
-msgid "es_ES"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:76
-msgid "sv_SE"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:77
-msgid "tr_TR"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:78
-msgid ""
-"This is the locale that GDM uses when it cannot find what the system locale "
-"is set to.  This should be in the standard format such as \"en_US\" for "
-"American English or \"cs_CZ\" for Czech"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:80
-msgid "Position"
-msgstr "Θέση"
-
-#: gui/gdmconfig-strings.c:81
-msgid "Set the initial position of the login window to the values below"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:82
-msgid "Manually set position"
-msgstr "Χειρωνακτική τοποθέτηση"
-
-#: gui/gdmconfig-strings.c:83
-msgid "Do note allow the user to drag the login window around"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:84
-msgid "Lock position"
-msgstr "Κλείδωμα θέσης"
-
-#: gui/gdmconfig-strings.c:85
-msgid "X position: "
-msgstr "Θέση Χ: "
-
-#: gui/gdmconfig-strings.c:86
-msgid "Y position: "
-msgstr "Θέση Υ: "
-
-#: gui/gdmconfig-strings.c:87
-msgid "Xinerama screen: "
-msgstr "Οθόνη Xinerama: "
-
-#: gui/gdmconfig-strings.c:88
-msgid ""
-"If you have xinerama multi display setup which screen should the loginw "
-"indow appear on.  0 will usually do just fine."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:89
-msgid "Login behaviour"
-msgstr "Συμπεριφορά αυθεντικοποίησης"
-
-#: gui/gdmconfig-strings.c:90 gui/gdmconfig-strings.c:101
-msgid "Face browser"
-msgstr "Φυλλομετρητής προσώπων"
-
-#: gui/gdmconfig-strings.c:91
-msgid ""
-"Show a browser of user face images. The users can put their picture in ~/."
-"gnome/photo"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:92
-msgid "Show choosable user images (enable face browser)"
-msgstr ""
-"Εμφάνιση επιλεγόμενων εικόνων χρηστών (ενεργοποίηση φυλλομετρητή προσώπων)"
-
-#: gui/gdmconfig-strings.c:93
-msgid "Default face image: "
-msgstr "Εξ' ορισμού εικόνα προσώπου: "
-
-#: gui/gdmconfig-strings.c:94
-msgid "Global faces directory: "
-msgstr "Καθολικός κατάλογος προσώπων: "
-
-#: gui/gdmconfig-strings.c:95
-msgid "Maximum face width: "
-msgstr "Μέγιστο πλάτος προσώπου: "
-
-#: gui/gdmconfig-strings.c:96
-msgid "Select an image for users with no 'face'"
-msgstr "Επιλογή εικόνας για χρήστες χωρίς 'πρόσωπο'"
-
-#: gui/gdmconfig-strings.c:97
-msgid "Choose the directory to search for faces"
-msgstr "Επιλέξτε τον κατάλογο αναζήτησης των προσώπων"
-
-#: gui/gdmconfig-strings.c:98
-msgid "Maximum face height: "
-msgstr "Μέγιστο ύψος προσώπου: "
-
-#: gui/gdmconfig-strings.c:99
-msgid "Exclude these users: "
-msgstr "Εξαίρεση αυτών των χρηστών: "
-
-#: gui/gdmconfig-strings.c:100
-msgid "A comma separated list of users to exclude from the face browser."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:102 gui/gdmconfig-strings.c:122
-#, fuzzy
-msgid "Background"
-msgstr "Πρόγραμμα Φόντου: "
-
-#: gui/gdmconfig-strings.c:103
-#, fuzzy
-msgid "Background type: "
-msgstr "Πρόγραμμα Φόντου: "
-
-#: gui/gdmconfig-strings.c:104
-msgid "The background should be the standard background"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:105
-msgid "None"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:106
-msgid "The background should be an image"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:107
-msgid "Image"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:108
-msgid "The background should be a color"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:109
-#, fuzzy
-msgid "Color"
-msgstr "Επιλογέας"
-
-#: gui/gdmconfig-strings.c:110
-msgid ""
-"Scale background image to fit the entire screen. If this is not set then the "
-"image will be tiled on the background."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:111
-#, fuzzy
-msgid "Scale background image to fit"
-msgstr "Πρόγραμμα Φόντου: "
-
-#: gui/gdmconfig-strings.c:112
-#, fuzzy
-msgid "Background color: "
-msgstr "Πρόγραμμα Φόντου: "
-
-#: gui/gdmconfig-strings.c:113
-msgid "The color to use on the background"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:114
-#, fuzzy
-msgid "Pick a color"
-msgstr "Επιλογή Γραμματοσειράς"
-
-#: gui/gdmconfig-strings.c:115
-#, fuzzy
-msgid "Background image:"
-msgstr "Πρόγραμμα Φόντου: "
-
-#: gui/gdmconfig-strings.c:116
-msgid "On remote login screens only set color to reduce network traffic"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:117
-msgid "Only color on remote displays"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:118
-#, fuzzy
-msgid "Background program"
-msgstr "Πρόγραμμα Φόντου: "
-
-#: gui/gdmconfig-strings.c:119
-#, fuzzy
-msgid "Background program: "
-msgstr "Πρόγραμμα Φόντου: "
-
-#: gui/gdmconfig-strings.c:120 gui/gdmconfig-strings.c:269
-msgid "Select a file containing Locale information"
-msgstr "Επιλέξτε αρχείο που περιέχει πληροφορίες Τοπικών Ρυθμίσεων"
-
-#: gui/gdmconfig-strings.c:121
-msgid "The program to run in the background of the login."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:123 gui/gdmconfig-strings.c:130
-#, fuzzy
-msgid "Automatic login"
-msgstr "Αυτόματη αυθεντικοποίηση: "
-
-#: gui/gdmconfig-strings.c:124
-#, fuzzy
-msgid "Automatic login: "
-msgstr "Αυτόματη αυθεντικοποίηση: "
-
-#: gui/gdmconfig-strings.c:125
-msgid "Login a user automatically on first bootup"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:126
-msgid "Timed login"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:127
-#, fuzzy
-msgid "Timed login: "
-msgstr "Ελαχιστοποιημένο Εικονίδιο: "
-
-#: gui/gdmconfig-strings.c:128
-msgid "Seconds before login: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:129
-msgid "Login a user automatically after a specified number of seconds"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:131
-msgid "expert"
-msgstr "ειδήμονας"
-
-#: gui/gdmconfig-strings.c:133
-msgid "Allow logging in as root (administrator) user."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:134
-msgid "Allow root to login with GDM"
-msgstr "Να επιτρέπεται στο διαχειριστή να συνδέετε με το GDM"
-
-#: gui/gdmconfig-strings.c:135
-msgid ""
-"Allow logging in as root (administrator) user from a remote host using GDM.  "
-"This is only relevant if you enable the XDMCP protocol."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:136
-#, fuzzy
-msgid "Allow root to login remotely with GDM"
-msgstr "Να επιτρέπεται στο διαχειριστή να συνδέετε με το GDM"
-
-#: gui/gdmconfig-strings.c:137
-msgid ""
-"Allow logging in using the timed from a remote host using GDM.  This is only "
-"relevant if you enable the XDMCP protocol.  Note that this is insecure since "
-"remote hosts can gain access to this computer without the use of a password, "
-"so be careful."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:138
-#, fuzzy
-msgid "Allow remote timed logins"
-msgstr "Να επιτρέπεται στο διαχειριστή να συνδέετε με το GDM"
-
-#: gui/gdmconfig-strings.c:139
-msgid ""
-"Determines whether GDM should kill X clients started by the init scripts "
-"when the user logs in."
-msgstr ""
-"Καθορίζει πότε το GDM θα πρέπει να τερματίζει τους πελάτες X που εκκινούνται "
-"από τα προγράμματα εντολών εκκίνησης κατά την είσοδο του χρήστη στο σύστημα."
-
-#: gui/gdmconfig-strings.c:140
-msgid "Kill 'init' clients"
-msgstr "Σκότωμα πελατών της 'init'"
-
-#: gui/gdmconfig-strings.c:141
-msgid "Should GDM print authentication errors in the greeter"
-msgstr "Να τυπώνει το GDM σφάλματα ελέγχου αυθεντικότητας στο χαιρετιστή"
-
-#: gui/gdmconfig-strings.c:142
-msgid "Authentication errors should be verbose"
-msgstr "Τα σφάλματα αυθεντικοποίησης να είναι περιφραστικά"
-
-#: gui/gdmconfig-strings.c:143
-msgid "Select how relaxed permissions are"
-msgstr "Επιλογή πόσο χαλαρά να είναι τα δικαιώματα"
-
-#: gui/gdmconfig-strings.c:144
-msgid "Permissions: "
-msgstr "Δικαιώματα: "
-
-#: gui/gdmconfig-strings.c:145
-msgid "Allow world writable files and directories"
-msgstr "Να επιτρέπονται αρχεία και κατάλογοι εγγράψιμοι από όλους"
-
-#: gui/gdmconfig-strings.c:146
-msgid "World writable"
-msgstr "Εγγράψιμο από όλους"
-
-#: gui/gdmconfig-strings.c:147
-msgid "Allow group writable files and directories"
-msgstr "Να επιτρέπονται αρχεία και κατάλογοι εγγράψιμοι από την ομάδα"
-
-#: gui/gdmconfig-strings.c:148
-msgid "Group writable"
-msgstr "Εγγράψιμο από ομάδα"
-
-#: gui/gdmconfig-strings.c:149
-msgid "Only accept user owned files and directories"
-msgstr "Μόνο αποδοχή αρχείων και καταλόγων ιδιοκτησίας χρήστη"
-
-#: gui/gdmconfig-strings.c:150
-msgid "Paranoia"
-msgstr "Παρανοϊκό"
-
-#: gui/gdmconfig-strings.c:151
-msgid "Authorization Details"
-msgstr "Λεπτομέρειες Εξουσιοδότησης"
-
-#: gui/gdmconfig-strings.c:152
-msgid "GDM runs as this user: "
-msgstr "Το GDM εκτελείτε ως το χρήστη: "
-
-#: gui/gdmconfig-strings.c:153
-msgid "User 'auth' directory: "
-msgstr "Κατάλογος χρήστη 'αυθεντικοποίησης': "
-
-#: gui/gdmconfig-strings.c:154
-msgid "User 'auth' FB directory: "
-msgstr "Εγγυημένος κατάλογος χρήστη 'αυθεντικοποίησης': "
-
-#: gui/gdmconfig-strings.c:155
-msgid "User 'auth' file: "
-msgstr "Αρχείο χρήστη 'αυθεντικοποίησης': "
-
-#: gui/gdmconfig-strings.c:156
-msgid "GDM runs as this group: "
-msgstr "To GDM εκτελείτε ως αυτήν την ομάδα: "
-
-#: gui/gdmconfig-strings.c:157
-msgid "Limits"
-msgstr "Περιορισμοί"
-
-#: gui/gdmconfig-strings.c:158
-msgid ""
-"The number of seconds before a login is allowed after an unsuccesful try."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:159
-msgid ""
-"The maximum size of a file that gdm will attempt to read.  This is for files "
-"that are read into memory and so you don't want users \"attacking\" gdm by "
-"having large files."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:160
-msgid "Retry delay: "
-msgstr "Καθυστέρηση επαναπροσπάθειας: "
-
-#: gui/gdmconfig-strings.c:161
-msgid "Maximum user file length: "
-msgstr "Μέγιστο μήκος αρχείου χρήστη: "
-
-#: gui/gdmconfig-strings.c:162
-#, fuzzy
-msgid "Maximum session file length: "
-msgstr "Μέγιστο μήκος αρχείου χρήστη: "
-
-#: gui/gdmconfig-strings.c:163
-msgid ""
-"The session file is read in a way where a higher limit is still ok.  That is "
-"it is never stored in memory."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:164
-msgid "Security"
-msgstr "Ασφάλεια"
-
-#: gui/gdmconfig-strings.c:165
-msgid ""
-"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
-"GDM with the XDMCP libraries."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:166
-msgid "Enable XDMCP, a protocol to allow others to log in remotely"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:167
-msgid "Enable XDMCP"
-msgstr "Ενεργοποίηση XDMCP"
-
-#: gui/gdmconfig-strings.c:168
-msgid "Connection Settings"
-msgstr "Ρυθμίσεις Σύνδεσης"
-
-#: gui/gdmconfig-strings.c:169
-msgid "Honour indirect requests"
-msgstr "Να τιμούντε οι πλάγιες αιτήσεις"
-
-#: gui/gdmconfig-strings.c:170
-msgid "Maximum indirect wait time: "
-msgstr "Μέγιστος έμμεσος χρόνος αναμονής: "
-
-#: gui/gdmconfig-strings.c:171
-msgid "Maximum wait time: "
-msgstr "Μέγιστος χρόνος αναμονής: "
-
-#: gui/gdmconfig-strings.c:172
-msgid "Maximum remote sessions: "
-msgstr "Μέγιστος αριθμός απομακρυσμένων συνεδριών: "
-
-#: gui/gdmconfig-strings.c:173
-msgid "Max pending indirect requests: "
-msgstr "Μέγ. αριθμ. εκκρεμών έμμεσων αιτήσεων: "
-
-#: gui/gdmconfig-strings.c:174
-msgid "Maximum pending requests: "
-msgstr "Μέγ. αριθμ. εκκρεμών αιτήσεων: "
-
-#: gui/gdmconfig-strings.c:175
-msgid "Listen on UDP port: "
-msgstr "Αποδοχή συνδέσεων στη θύρα UDP: "
-
-#: gui/gdmconfig-strings.c:176
-msgid "Ping interval (minutes):"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:177
-msgid ""
-"Interval in minutes in which to ping the server.  If the server doesn't "
-"respond in this many minutes (that is before the next time we ping it) the "
-"display will be terminated."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:178
-msgid ""
-"The script to run when the server sends a WILLING response to a QUERY.  If "
-"this is empty or does not exist, the standard message with the system ID is "
-"sent.  Only the first line of output from this script is read."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:179
-msgid "Willing script (optional):"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:180
-msgid ""
-"Maximum displays per single host.  You can use this to prevent attacks by "
-"hogging all the possible displays.  Does not apply to local connections."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:181
-msgid "Displays per host:"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:182
-msgid "XDMCP"
-msgstr "XDMCP"
-
-#: gui/gdmconfig-strings.c:183
-msgid "Servers"
-msgstr "Εξυπηρετητές"
-
-#: gui/gdmconfig-strings.c:184
-msgid "Name"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:185
-msgid "Command"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:186
-msgid "Flexible"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:187 gui/gdmconfig-strings.c:197
-#, fuzzy
-msgid "Add server"
-msgstr "Προσθήκη Εξυπηρετητή"
-
-#: gui/gdmconfig-strings.c:188 gui/gdmconfig-strings.c:198
-#, fuzzy
-msgid "Edit server"
-msgstr "Επεξεργασίας Εξυπηρετητή"
-
-#: gui/gdmconfig-strings.c:189 gui/gdmconfig-strings.c:199
-#, fuzzy
-msgid "Delete server"
-msgstr "Διαγραφή Εξυπηρετητή"
-
-#: gui/gdmconfig-strings.c:190 gui/gdmconfig-strings.c:226
-msgid "Set as default"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:191
-msgid "Static Servers (servers to always run)"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:192
-msgid "No."
-msgstr "Όχι."
-
-#: gui/gdmconfig-strings.c:193
-#, fuzzy
-msgid "Server"
-msgstr "Εξυπηρετητές"
-
-#: gui/gdmconfig-strings.c:194
-msgid "Extra arguments"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:195
-msgid ""
-"Instead of reinitializing running servers when a user logs out.  Always kill "
-"and then start the server again."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:196
-msgid "Always restart X servers"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:200 gui/gdmconfig-strings.c:247
-#: gui/gdmconfig-strings.c:261 gui/gdmconfig-strings.c:265
-#, fuzzy
-msgid "Miscellaneous"
-msgstr "Διάφορα"
-
-#: gui/gdmconfig-strings.c:201
-msgid "Xnest server: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:202
-#, fuzzy
-msgid "Maximum number of flexible servers: "
-msgstr "Μέγιστο μήκος αρχείου χρήστη: "
-
-#: gui/gdmconfig-strings.c:203
-msgid ""
-"The Xnest server.  This is a server that can run inside another server, used "
-"for the flexible nested login."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:204
-msgid "Standard X server: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:205
-msgid "This is the standard X server to run when we are not told otherwise."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:206 gui/gdmlogin.c:62
-msgid "Failsafe"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:207
-msgid "Script to run when X is crashing: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:208
-#, fuzzy
-msgid "X configurator binaries to try: "
-msgstr "Το αρχείο ρυθμίσεων: "
-
-#: gui/gdmconfig-strings.c:209
-msgid ""
-"A list of X setup programs to try for the above script, separated by spaces"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:210
-msgid ""
-"A script to run when the X server keeps crashing and the failsafe X server "
-"is either empty or also didn't take.  This will run an X setup program "
-"defined below."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:211
-msgid "Failsafe X server:"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:212
-msgid ""
-"An X server binary to run if the standard one keeps crashing.  If this fails "
-"the script below will be run."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:213
-msgid "X-server setup"
-msgstr "Ρύθμιση εξυπηρετητή X"
-
-#: gui/gdmconfig-strings.c:214
-#, fuzzy
-msgid "Session configuration"
-msgstr "_Ρυθμίσεις"
-
-#: gui/gdmconfig-strings.c:215
-msgid "Session directory: "
-msgstr "Κατάλογος συνεδρίας: "
-
-#: gui/gdmconfig-strings.c:216
-msgid "Select a directory to be used for system-wide session scripts"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:217
-msgid "Available Sessions"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:218
-msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:219 gui/gdmlogin.c:66 gui/gdmlogin.c:1412
-#, fuzzy
-msgid "Gnome Chooser"
-msgstr "Επιλογέας"
-
-#: gui/gdmconfig-strings.c:220
-msgid "Show the Gnome failsafe session"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:221
-msgid "Gnome Failsafe"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:222
-msgid "Show the Xterm failsafe session"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:223
-msgid "Xterm Failsafe"
-msgstr ""
-
-#
-#: gui/gdmconfig-strings.c:224
-#, fuzzy
-msgid "Add session"
-msgstr "Συνεδρία"
-
-#: gui/gdmconfig-strings.c:225
-#, fuzzy
-msgid "Remove session"
-msgstr "Επαναφορά ρυθμίσεων"
-
-#: gui/gdmconfig-strings.c:227
-#, fuzzy
-msgid "Selected session name: "
-msgstr "Επιλογή πόσο χαλαρά να είναι τα δικαιώματα"
-
-#: gui/gdmconfig-strings.c:228
-msgid ""
-"The exact script details of a session\n"
-"will appear here when you select\n"
-"one from the list on the left.\n"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:232
-#, fuzzy
-msgid "Login sessions"
-msgstr "Συμπεριφορά αυθεντικοποίησης"
-
-#: gui/gdmconfig-strings.c:233
-msgid "Appearance"
-msgstr "Εμφάνιση"
-
-#: gui/gdmconfig-strings.c:234
-msgid "Directory for host images: "
-msgstr "Κατάλογος με εικόνες συστήματος: "
-
-#: gui/gdmconfig-strings.c:235
-msgid "Default host image:"
-msgstr "Εξ' ορισμού εικόνα συστήματος:"
-
-#: gui/gdmconfig-strings.c:236
-msgid "Refresh"
-msgstr "Ανανέωση"
-
-#: gui/gdmconfig-strings.c:237
-msgid "Scan every 'x' seconds: "
-msgstr "Σάρωση κάθε 'χ' δευτερόλεπτα: "
-
-#: gui/gdmconfig-strings.c:238
-msgid "Hosts"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:239
-msgid "Send a query to the local network and list all servers that respond"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:240
-msgid "Broadcast query"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:241
-msgid "Hosts to list: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:242
-msgid ""
-"Comma separated list of hostnames to list in the chooser (in addition to the "
-"broadcast above)"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:243
-msgid "Chooser"
-msgstr "Επιλογέας"
-
-#: gui/gdmconfig-strings.c:244
-msgid "Debugging"
-msgstr "Εκσφαλμάτωση"
-
-#: gui/gdmconfig-strings.c:245
-msgid ""
-"Enable debugging output to be printed into the syslog.  Useful for tracking "
-"down problems.  But not so useful for normal usage as it can fill up your "
-"logs very quickly."
-msgstr ""
-
-#: gui/gdmconfig-strings.c:246
-msgid "Enable debugging output"
-msgstr "Ενεργοποίηση εξόδου εκσφαλμάτωσης"
-
-#: gui/gdmconfig-strings.c:248
-msgid "system_setup"
-msgstr "ρύθμιση_συστήματος"
-
-#: gui/gdmconfig-strings.c:249
-msgid "Executables"
-msgstr "Εκτελέσιμα"
-
-#: gui/gdmconfig-strings.c:250
-msgid "Chooser command: "
-msgstr "Εντολή επιλογέα: "
-
-#: gui/gdmconfig-strings.c:251
-msgid "Greeter command: "
-msgstr "Εντολή χαιρετιστή: "
-
-#: gui/gdmconfig-strings.c:252
-msgid "Halt command: "
-msgstr "Εντολή τερματισμού: "
-
-#: gui/gdmconfig-strings.c:253
-msgid "Reboot command: "
-msgstr "Εντολή επανεκκίνησης: "
-
-#: gui/gdmconfig-strings.c:254
-#, fuzzy
-msgid "Configurator command: "
-msgstr "Εντολή επιλογέα: "
-
-#: gui/gdmconfig-strings.c:255
-#, fuzzy
-msgid "Suspend command: "
-msgstr "Εντολή επιλογέα: "
-
-#: gui/gdmconfig-strings.c:256
-msgid "Directories"
-msgstr "Κατάλογοι"
-
-#
-#: gui/gdmconfig-strings.c:257
-msgid "PRE session scripts directory: "
-msgstr "Κατάλογος προγραμμάτων εντολών ΠΡΙΝ την έναρξη της συνεδρίας: "
-
-#: gui/gdmconfig-strings.c:258
-msgid "POST session scripts directory: "
-msgstr "Κατάλογος προγραμμάτων εντολών ΜΕΤΑ τη συνεδρία: "
-
-#: gui/gdmconfig-strings.c:259
-msgid "Logging directory: "
-msgstr "Κατάλογος καταγραφών: "
-
-#: gui/gdmconfig-strings.c:260
-msgid "Display initialization directory: "
-msgstr "Κατάλογος αρχικοποίησης οθόνης: "
-
-#: gui/gdmconfig-strings.c:262
-msgid "PID file: "
-msgstr "Αρχείο Ταυτότητας Διεργασίας: "
-
-#: gui/gdmconfig-strings.c:263
-msgid "Default GNOME session file: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:264
-msgid "Paths"
-msgstr "Διαδρομές"
-
-#: gui/gdmconfig-strings.c:266
-msgid "Default $PATH: "
-msgstr "Εξ' ορισμού $PATH: "
-
-#: gui/gdmconfig-strings.c:267
-msgid "Root $PATH: "
-msgstr "$PATH διαχειριστή: "
-
-#: gui/gdmconfig-strings.c:268
-msgid "Localization"
-msgstr "Τοπικές ρυθμίσεις"
-
-#: gui/gdmconfig-strings.c:270
-msgid "Locale file: "
-msgstr "Αρχείο τοπικών ρυθμίσεων: "
-
-#: gui/gdmconfig-strings.c:271
-msgid "Environment"
-msgstr "Περιβάλλον"
-
-#: gui/gdmconfig-strings.c:272
-msgid "(C) 2001 Lee Mallabone"
-msgstr "(C) 2001 Λι Μαλαμπόουν"
-
-#: gui/gdmconfig-strings.c:273
-msgid ""
-"Configure the GNOME Display Manager.\n"
-"Please submit any bugs or feature requests at http://bugzilla.gnome.org "
-"under the `gdm' product."
-msgstr ""
-"Ρυθμίστε το Διαχειριστή Εμφάνισης του GNOME.\n"
-"Παρακαλώ στείλτε αναφορές σφαλμάτων ή αιτήσεις για βελτίωση στο http://"
-"bugzilla.gnome.org κάτω από τον τίτλο του προϊόντος `gdm'."
-
-#: gui/gdmconfig-strings.c:275
-msgid "label273"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:276
-msgid "Extra arguments:"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:277
-#, fuzzy
-msgid "Custom command line:"
-msgstr "Εντολή επιλογέα: "
-
-#: gui/gdmconfig-strings.c:278 gui/gdmlogin.c:1812
-msgid "Name: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:279
-msgid "Command line: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:280
-msgid "Allow as flexible server"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:281
-msgid "Make this the default server"
-msgstr ""
-
-#: gui/gdmflexiserver.c:353
-#, fuzzy
-msgid "Choose server"
-msgstr "Επιλογέας"
-
-#: gui/gdmflexiserver.c:359
-#, fuzzy
-msgid "Choose the X server to start"
-msgstr "Επιλέξτε τον κατάλογο αναζήτησης των προσώπων"
-
-#: gui/gdmflexiserver.c:415
-msgid "Send the specified protocol command to gdm"
-msgstr ""
-
-#: gui/gdmflexiserver.c:415
-msgid "COMMAND"
-msgstr ""
-
-#: gui/gdmflexiserver.c:416
-msgid "Xnest mode"
-msgstr ""
-
-#: gui/gdmflexiserver.c:417
-#, fuzzy
-msgid "Debugging output"
-msgstr "Ενεργοποίηση εξόδου εκσφαλμάτωσης"
-
-#: gui/gdmflexiserver.c:418
-msgid "Authenticate before running --command"
-msgstr ""
-
-#: gui/gdmXnestchooser.c:153 gui/gdmflexiserver.c:466
-msgid ""
-"GDM is not running.\n"
-"Please ask your system administrator to start it."
-msgstr ""
-
-#: gui/gdmflexiserver.c:475 gui/gdmflexiserver.c:491 gui/gdmflexiserver.c:536
-#: gui/gdmflexiserver.c:539
+#: gui/gdmcomm.c:391 gui/gdmcomm.c:406 gui/gdmcomm.c:409
+#: gui/gdmflexiserver.c:239
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr ""
 
-#: gui/gdmflexiserver.c:510 gui/gdmflexiserver.c:565
-msgid ""
-"You do not seem to be logged in on the console.  Starting a new login only "
-"works correctly on the console."
-msgstr ""
-
-#: gui/gdmflexiserver.c:542
+#: gui/gdmcomm.c:412
 msgid "The allowed limit of flexible X servers reached."
 msgstr ""
 
-#: gui/gdmflexiserver.c:544
+#: gui/gdmcomm.c:414
 msgid "There were errors trying to start the X server."
 msgstr ""
 
-#: gui/gdmflexiserver.c:546
+#: gui/gdmcomm.c:416
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr ""
 
-#: gui/gdmflexiserver.c:549
+#: gui/gdmcomm.c:419
 msgid "Too many X sessions running."
 msgstr ""
 
-#: gui/gdmflexiserver.c:551
+#: gui/gdmcomm.c:421
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
 msgstr ""
 
-#: gui/gdmflexiserver.c:556
+#: gui/gdmcomm.c:426
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
 msgstr ""
 
-#: gui/gdmflexiserver.c:561
+#: gui/gdmcomm.c:431
 msgid ""
 "The X server is not available, it is likely that gdm is badly configured."
 msgstr ""
 
-#: gui/gdmflexiserver.c:569
+#: gui/gdmcomm.c:435
+msgid "Trying to update an unsupported configuration key."
+msgstr ""
+
+#: gui/gdmcomm.c:437 gui/gdmflexiserver.c:250
+msgid ""
+"You do not seem to have authentication needed be for this operation.  "
+"Perhaps your .Xauthority file is not set up correctly."
+msgstr ""
+
+#: gui/gdmcomm.c:441
 msgid "Unknown error occured."
+msgstr ""
+
+#: gui/gdmflexiserver-xnest.desktop.in.h:1
+msgid "Log in as another user inside a nested window"
+msgstr ""
+
+#: gui/gdmflexiserver-xnest.desktop.in.h:2
+msgid "New login in a nested window"
+msgstr ""
+
+#: gui/gdmflexiserver.c:129
+#, fuzzy
+msgid "Choose server"
+msgstr "Επιλογέας"
+
+#: gui/gdmflexiserver.c:135
+#, fuzzy
+msgid "Choose the X server to start"
+msgstr "Επιλέξτε τον κατάλογο αναζήτησης των προσώπων"
+
+#: gui/gdmflexiserver.c:141
+#, fuzzy
+msgid "Standard server"
+msgstr "Προσθήκη Εξυπηρετητή"
+
+#: gui/gdmflexiserver.c:191
+msgid "Send the specified protocol command to gdm"
+msgstr ""
+
+#: gui/gdmflexiserver.c:191
+msgid "COMMAND"
+msgstr ""
+
+#: gui/gdmflexiserver.c:192
+msgid "Xnest mode"
+msgstr ""
+
+#: gui/gdmflexiserver.c:193
+msgid "Do not lock current screen"
+msgstr ""
+
+#: gui/gdmflexiserver.c:194
+#, fuzzy
+msgid "Debugging output"
+msgstr "Ενεργοποίηση εξόδου εκσφαλμάτωσης"
+
+#: gui/gdmflexiserver.c:195
+msgid "Authenticate before running --command"
+msgstr ""
+
+#: gui/gdmflexiserver.c:270
+msgid ""
+"You do not seem to be logged in on the console.  Starting a new login only "
+"works correctly on the console."
+msgstr ""
+
+#: gui/gdmflexiserver.c:296
+msgid "Can't lock screen"
+msgstr ""
+
+#: gui/gdmflexiserver.c:299
+msgid "Can't disable xscreensaver display hacks"
 msgstr ""
 
 #: gui/gdmflexiserver.desktop.in.h:1
@@ -2986,255 +1890,291 @@ msgstr ""
 msgid "New login"
 msgstr "Ελαχιστοποιημένο Εικονίδιο: "
 
-#: gui/gdmflexiserver-xnest.desktop.in.h:1
-msgid "Log in as another user inside a nested window"
-msgstr ""
-
-#: gui/gdmflexiserver-xnest.desktop.in.h:2
-msgid "New login in a nested window"
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:41
+msgid "A-M|Azerbaijani"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:36
+#: gui/gdmlanguages.c:43
+msgid "A-M|Basque"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:45
+msgid "A-M|Bulgarian"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:47
 msgid "A-M|Catalan"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:38
+#: gui/gdmlanguages.c:49
 msgid "A-M|Chinese (simplified)"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:40
+#: gui/gdmlanguages.c:51
 msgid "A-M|Chinese (traditional)"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:42
+#: gui/gdmlanguages.c:53
 msgid "A-M|Croatian"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:44
+#: gui/gdmlanguages.c:55
 msgid "A-M|Czech"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:46
+#: gui/gdmlanguages.c:57
 msgid "A-M|Danish"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:48
+#: gui/gdmlanguages.c:59
 msgid "A-M|Dutch"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:50
+#: gui/gdmlanguages.c:61
 msgid "A-M|English"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:52
+#: gui/gdmlanguages.c:63
+msgid "A-M|Estonian"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:65
 msgid "A-M|American English"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:54
+#: gui/gdmlanguages.c:67
 msgid "A-M|British English"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:56
+#: gui/gdmlanguages.c:69
 msgid "A-M|Finnish"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:58
+#: gui/gdmlanguages.c:71
 msgid "A-M|French"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:60
+#: gui/gdmlanguages.c:73
 msgid "A-M|Galician"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:62
+#: gui/gdmlanguages.c:75
 msgid "A-M|German"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:64
+#: gui/gdmlanguages.c:77
 msgid "A-M|Greek"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:66
+#: gui/gdmlanguages.c:79
 msgid "A-M|Hebrew"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:68
+#: gui/gdmlanguages.c:81
 msgid "A-M|Hungarian"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:70
+#: gui/gdmlanguages.c:83
 msgid "A-M|Icelandic"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:72
+#: gui/gdmlanguages.c:85
 msgid "A-M|Italian"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:74
+#: gui/gdmlanguages.c:87
 msgid "A-M|Japanese"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:76
+#: gui/gdmlanguages.c:89
 msgid "A-M|Korean"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:78
+#: gui/gdmlanguages.c:91
+msgid "A-M|Latvian"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:93
 msgid "A-M|Lithuanian"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:80
+#: gui/gdmlanguages.c:95
 msgid "N-Z|Norwegian (bokmal)"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:82
+#: gui/gdmlanguages.c:97
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:84
+#: gui/gdmlanguages.c:99
 msgid "N-Z|Polish"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:86
+#: gui/gdmlanguages.c:101
 msgid "N-Z|Portuguese"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:88
+#: gui/gdmlanguages.c:103
 msgid "N-Z|Brazilian Portuguese"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:90
+#: gui/gdmlanguages.c:105
 msgid "N-Z|Romanian"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:92
+#: gui/gdmlanguages.c:107
 msgid "N-Z|Russian"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:94
+#: gui/gdmlanguages.c:109
 msgid "N-Z|Slovak"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:96
+#: gui/gdmlanguages.c:111
 msgid "N-Z|Slovenian"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:98
+#: gui/gdmlanguages.c:113
 msgid "N-Z|Spanish"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:100
+#: gui/gdmlanguages.c:115
 msgid "N-Z|Swedish"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:102
+#: gui/gdmlanguages.c:117
 msgid "N-Z|Turkish"
 msgstr ""
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:119
+msgid "N-Z|Ukrainian"
+msgstr ""
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:121
+msgid "N-Z|Walloon"
+msgstr ""
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:104
+#: gui/gdmlanguages.c:123
 msgid "Other|POSIX/C English"
 msgstr ""
 
 #
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:231
+#: gui/gdmlanguages.c:250
 msgid "A-M"
 msgstr "A-M"
 
 #
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:239
+#: gui/gdmlanguages.c:258
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:60
+#: gui/gdmlogin.c:65
 msgid "AnotherLevel"
 msgstr ""
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:61 gui/gdmlogin.c:1767 gui/gdmlogin.c:1789
+#: gui/gdmlogin.c:66 gui/gdmlogin.c:1804 gui/gdmlogin.c:1826
 #, fuzzy
 msgid "Default"
 msgstr "Εξ' ορισμού γραμματοσειρά: "
 
-#: gui/gdmlogin.c:63
+#: gui/gdmlogin.c:67
+msgid "Failsafe"
+msgstr ""
+
+#: gui/gdmlogin.c:68
 msgid "Gnome"
 msgstr ""
 
-#: gui/gdmlogin.c:64
+#: gui/gdmlogin.c:69
 msgid "KDE"
 msgstr ""
 
 #
-#: gui/gdmlogin.c:65
+#: gui/gdmlogin.c:70
 #, fuzzy
 msgid "XSession"
 msgstr "Συνεδρία"
 
+#: gui/gdmlogin.c:71 gui/gdmlogin.c:1446 gui/greeter/greeter_session.c:344
+#, fuzzy
+msgid "Gnome Chooser"
+msgstr "Επιλογέας"
+
 #
-#: gui/gdmlogin.c:67
+#: gui/gdmlogin.c:72
 msgid "Last"
 msgstr "Τελευταίο"
 
-#: gui/gdmlogin.c:197
+#: gui/gdmlogin.c:206
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr ""
 
-#: gui/gdmlogin.c:446
+#: gui/gdmlogin.c:470
 msgid ""
 "Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr ""
 
 #
-#: gui/gdmlogin.c:526 gui/gdmlogin.c:532 gui/gdmlogin.c:539
-#, c-format
-msgid "Welcome to %s"
-msgstr "Καλώς ήλθατε στο %s"
-
-#
-#: gui/gdmlogin.c:537
+#: gui/gdmlogin.c:544
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Αλφαριθμητικό πολύ μεγάλο!"
 
-#: gui/gdmlogin.c:676
+#
+#: gui/gdmlogin.c:546
+#, fuzzy, c-format
+msgid "%sWelcome to %s%s"
+msgstr "Καλώς ήλθατε στο %s"
+
+#: gui/gdmlogin.c:699
 msgid ""
 "Could not fork a new process!\n"
 "\n"
@@ -3242,42 +2182,50 @@ msgid ""
 msgstr ""
 
 #
-#: gui/gdmlogin.c:723
+#: gui/gdmlogin.c:746 gui/greeter/greeter_system.c:40
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Θέλετε σίγουρα να επανεκκινήσετε τον υπολογιστή;"
 
 #
-#: gui/gdmlogin.c:735
+#: gui/gdmlogin.c:758 gui/greeter/greeter_system.c:51
 #, fuzzy
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Θέλετε σίγουρα να κλείσετε τον υπολογιστή;"
 
 #
-#: gui/gdmlogin.c:746
+#: gui/gdmlogin.c:769 gui/greeter/greeter_system.c:61
 #, fuzzy
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Θέλετε σίγουρα να επανεκκινήσετε τον υπολογιστή;"
 
 #
-#: gui/gdmlogin.c:760
+#: gui/gdmlogin.c:783
 #, fuzzy, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr "gdm_login_parse_config: Κανένα αρχείο ρυθμίσεων: %s. Διακοπή."
 
-#: gui/gdmlogin.c:826
+#
+#: gui/gdmlogin.c:809 gui/gdmlogin.c:3799
+#, c-format
+msgid "Welcome to %n"
+msgstr "Καλώς ήλθατε στο %n"
+
+#: gui/gdmlogin.c:853
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr ""
 
-#: gui/gdmlogin.c:886 gui/gdmlogin.c:1460
+#: gui/gdmlogin.c:915 gui/gdmlogin.c:1494 gui/greeter/greeter_session.c:64
+#: gui/greeter/greeter_session.c:391
 msgid "Failsafe Gnome"
 msgstr ""
 
-#: gui/gdmlogin.c:888 gui/gdmlogin.c:1485
+#: gui/gdmlogin.c:917 gui/gdmlogin.c:1519 gui/greeter/greeter_session.c:66
+#: gui/greeter/greeter_session.c:417
 msgid "Failsafe xterm"
 msgstr ""
 
 #
-#: gui/gdmlogin.c:934
+#: gui/gdmlogin.c:963 gui/greeter/greeter_session.c:110
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -3288,7 +2236,8 @@ msgstr ""
 "Θέλετε να κάνετε το %s την εξ'ορισμού επιλογή για μελλοντικές συνεδρίες;"
 
 #
-#: gui/gdmlogin.c:959 gui/gdmlogin.c:1047
+#: gui/gdmlogin.c:988 gui/gdmlogin.c:1076
+#: gui/greeter/greeter_action_language.c:192 gui/greeter/greeter_session.c:138
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -3302,7 +2251,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:975
+#: gui/gdmlogin.c:1004 gui/greeter/greeter_session.c:156
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -3312,43 +2261,43 @@ msgid ""
 msgstr ""
 
 #
-#: gui/gdmlogin.c:1269
+#: gui/gdmlogin.c:1303
 #, c-format
 msgid "%s session selected"
 msgstr "Επιλογή της συνεδρίας %s"
 
-#: gui/gdmlogin.c:1302
+#: gui/gdmlogin.c:1336 gui/greeter/greeter_session.c:230
 msgid "Log in using the session that you have used last time you logged in"
 msgstr ""
 
 #
-#: gui/gdmlogin.c:1315
+#: gui/gdmlogin.c:1349 gui/greeter/greeter_session.c:243
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Κατάλογος σκριπτ συνεδρίας δε βρέθηκε!"
 
-#: gui/gdmlogin.c:1400
+#: gui/gdmlogin.c:1434 gui/greeter/greeter_session.c:330
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr ""
 
-#: gui/gdmlogin.c:1415
+#: gui/gdmlogin.c:1449 gui/greeter/greeter_session.c:347
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
 msgstr ""
 
-#: gui/gdmlogin.c:1450
+#: gui/gdmlogin.c:1484 gui/greeter/greeter_session.c:380
 msgid "Yaikes, nothing found in the session directory."
 msgstr ""
 
-#: gui/gdmlogin.c:1462
+#: gui/gdmlogin.c:1496 gui/greeter/greeter_session.c:393
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
 
-#: gui/gdmlogin.c:1487
+#: gui/gdmlogin.c:1521 gui/greeter/greeter_session.c:419
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3356,143 +2305,149 @@ msgid ""
 msgstr ""
 
 #
-#: gui/gdmlogin.c:1508
+#: gui/gdmlogin.c:1542 gui/greeter/greeter_session.c:441
 #, fuzzy
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "Δε βρέθηκε εξ'ορισμού σύνδεση συνεδρίας. Χρήση του %s.\n"
 
 #
-#: gui/gdmlogin.c:1548
+#: gui/gdmlogin.c:1582
 #, c-format
 msgid "%s language selected"
 msgstr "Επιλογή της γλώσσας %s"
 
-#: gui/gdmlogin.c:1586
+#: gui/gdmlogin.c:1620
 msgid "Log in using the language that you have used last time you logged in"
 msgstr ""
 
 #
-#: gui/gdmlogin.c:1607
+#: gui/gdmlogin.c:1641
 msgid "Other"
 msgstr "Άλλο"
 
-#: gui/gdmlogin.c:1727 gui/gdmlogin.c:1736
+#: gui/gdmlogin.c:1766 gui/gdmlogin.c:1773
 msgid "Select GNOME session"
 msgstr ""
 
-#: gui/gdmlogin.c:1803
+#: gui/gdmlogin.c:1840
 msgid "Create new session"
+msgstr ""
+
+#: gui/gdmlogin.c:1849
+msgid "Name: "
 msgstr ""
 
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
-#: gui/gdmlogin.c:1833
+#: gui/gdmlogin.c:1871
 #, fuzzy
 msgid "Remember this setting"
 msgstr "Επαναφορά ρυθμίσεων"
 
 #
-#. translators:  This is a nice and evil eggie text, translate
-#. * to your favourite currency
-#: gui/gdmlogin.c:2127
+#: gui/gdmlogin.c:2234
 msgid "Please insert 25 cents to log in."
 msgstr "Παρακαλώ εισάγετε 200 δραχμές για να συνεχίσετε."
 
-#: gui/gdmlogin.c:2454
+#: gui/gdmlogin.c:2618
 msgid "GNOME Desktop Manager"
 msgstr "Διαχειριστής Επιφάνειας Εργασίας GNOME"
 
 #
-#: gui/gdmlogin.c:2462
+#: gui/gdmlogin.c:2626
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr ""
 "Αποτυχία ανοίγματος αρχείου εικονιδίου: %s. Αναστολή χαρακτηριστικού "
 "ελαχιστοποίησης!"
 
-#: gui/gdmlogin.c:2484
+#: gui/gdmlogin.c:2648
 msgid "Iconify the login window"
 msgstr ""
 
-#: gui/gdmlogin.c:2543
+#: gui/gdmlogin.c:2684
+msgid "%a %b %d, %H:%M"
+msgstr ""
+
+#: gui/gdmlogin.c:2691 gui/greeter/greeter_item.c:93
 msgid "%a %b %d, %I:%M %p"
 msgstr ""
 
-#: gui/gdmlogin.c:2601
+#: gui/gdmlogin.c:2753
 msgid "Finger"
 msgstr ""
 
 #
-#: gui/gdmlogin.c:2671
-#, fuzzy
+#: gui/gdmlogin.c:2827
 msgid "GDM Login"
-msgstr "Όνομα χρήστη:"
+msgstr "Σύνδεση μέσω GDM"
 
 #
-#: gui/gdmlogin.c:2717
-msgid "Session"
-msgstr "Συνεδρία"
+#: gui/gdmlogin.c:2870
+msgid "_Session"
+msgstr "Συνε_δρία"
 
 #
-#: gui/gdmlogin.c:2728
-msgid "Language"
-msgstr "Γλώσσα"
+#: gui/gdmlogin.c:2877
+msgid "_Language"
+msgstr "Γ_λώσσα"
 
-#: gui/gdmlogin.c:2742
-#, fuzzy
-msgid "Configure..."
-msgstr "_Ρυθμίσεις"
+#: gui/gdmlogin.c:2889
+msgid "_Configure..."
+msgstr "_Ρύθμιση..."
 
-#: gui/gdmlogin.c:2749
+#: gui/gdmlogin.c:2896
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 
 #
-#: gui/gdmlogin.c:2756
-msgid "Reboot..."
-msgstr "Επανεκκίνηση..."
+#: gui/gdmlogin.c:2903
+msgid "_Reboot..."
+msgstr "Επανεκ_κίνηση..."
 
-#: gui/gdmlogin.c:2763
+#: gui/gdmlogin.c:2910
 msgid "Reboot your computer"
-msgstr ""
+msgstr "Επανεκκίνηση του υπολογιστή σας"
 
-#: gui/gdmlogin.c:2769
-msgid "Shut down..."
-msgstr ""
+#: gui/gdmlogin.c:2916
+msgid "Shut _down..."
+msgstr "Κλείσιμο υπολογι_στή..."
 
-#: gui/gdmlogin.c:2776
+#: gui/gdmlogin.c:2923
 msgid "Shut down your computer so that you may turn it off."
-msgstr ""
+msgstr "Κλείσιμο υπολογιστή με διακοπή λειτουργίας."
 
-#: gui/gdmlogin.c:2783
-msgid "Suspend..."
-msgstr ""
+#: gui/gdmlogin.c:2930
+msgid "_Suspend..."
+msgstr "Αναστο_λή..."
 
-#: gui/gdmlogin.c:2790
+#: gui/gdmlogin.c:2937
 msgid "Suspend your computer"
-msgstr ""
+msgstr "Αναστολή λειτουργίας του υπολογιστή σας"
 
 #
-#: gui/gdmlogin.c:2812
-#, fuzzy
-msgid "Disconnect"
-msgstr "Σύνδεση"
+#: gui/gdmlogin.c:2943
+msgid "S_ystem"
+msgstr "_Σύστημα"
+
+#: gui/gdmlogin.c:2955
+msgid "_Quit"
+msgstr "_Τερματισμός"
 
 #
-#. I think I'll add the buttons next to this
-#: gui/gdmlogin.c:3052
-#, fuzzy
-msgid "Please enter your username"
-msgstr "Παρακαλώ εισάγετε το όνομα χρήστη"
+#: gui/gdmlogin.c:2957
+msgid "D_isconnect"
+msgstr "_Αποσύνδεση"
 
 #
-#: gui/gdmlogin.c:3296
+#: gui/gdmlogin.c:3510
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Αποτυχία ανοίγματος του DefaultImage: %s. Αναστολή του face browser!"
 
-#: gui/gdmlogin.c:3554 gui/gdmlogin.c:3581
+#: gui/gdmlogin.c:3878 gui/gdmlogin.c:3905 gui/greeter/greeter.c:464
+#: gui/greeter/greeter.c:491
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3501,12 +2456,12 @@ msgid ""
 msgstr ""
 
 #
-#: gui/gdmlogin.c:3588 gui/gdmlogin.c:3623
-#, fuzzy
+#: gui/gdmlogin.c:3911 gui/gdmlogin.c:3953 gui/greeter/greeter.c:497
+#: gui/greeter/greeter.c:540
 msgid "Reboot"
-msgstr "Επανεκκίνηση..."
+msgstr "Επανεκκίνηση"
 
-#: gui/gdmlogin.c:3615
+#: gui/gdmlogin.c:3945 gui/greeter/greeter.c:532
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3515,32 +2470,31 @@ msgid ""
 msgstr ""
 
 #
-#: gui/gdmlogin.c:3622
-#, fuzzy
+#: gui/gdmlogin.c:3951 gui/greeter/greeter.c:538
 msgid "Restart"
-msgstr "Σάρωση ξανά"
+msgstr "Εκκίνηση ξανά"
 
 #
-#: gui/gdmlogin.c:3660
+#: gui/gdmlogin.c:3992 gui/greeter/greeter.c:797
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος HUP"
 
 #
-#: gui/gdmlogin.c:3663
+#: gui/gdmlogin.c:4000 gui/greeter/greeter.c:805
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος INT"
 
 #
-#: gui/gdmlogin.c:3666
+#: gui/gdmlogin.c:4003 gui/greeter/greeter.c:808
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος TERM"
 
 #
-#: gui/gdmlogin.c:3674
+#: gui/gdmlogin.c:4011
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
 
-#: gui/gdmlogin.c:3739
+#: gui/gdmlogin.c:4085 gui/greeter/greeter.c:941
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -3548,14 +2502,14 @@ msgid ""
 "you should log in and correct the gdm configuration."
 msgstr ""
 
-#: gui/gdmlogin.c:3755
+#: gui/gdmlogin.c:4106 gui/greeter/greeter.c:963
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
 "default command.  Please fix your configuration."
 msgstr ""
 
-#: gui/gdmlogin.c:3772
+#: gui/gdmlogin.c:4128 gui/greeter/greeter.c:986
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -3563,30 +2517,30 @@ msgid ""
 "configuration program."
 msgstr ""
 
-#: gui/gdmphotosetup.c:76
+#: gui/gdmphotosetup.c:91
 msgid ""
 "The face browser is not configured,\n"
 "please ask your system administrator to enable it\n"
 "in the GDM configurator program."
 msgstr ""
 
-#: gui/gdmphotosetup.c:84
+#: gui/gdmphotosetup.c:100
 msgid "Select a photo"
-msgstr ""
+msgstr "Επιλογή φωτογραφίας"
 
-#: gui/gdmphotosetup.c:89
+#: gui/gdmphotosetup.c:109
 msgid "Select a photograph to show in the facebrowser:"
 msgstr ""
 
-#: gui/gdmphotosetup.c:94
+#: gui/gdmphotosetup.c:114
 msgid "Browse"
-msgstr ""
+msgstr "Περιήγηση"
 
-#: gui/gdmphotosetup.c:113
+#: gui/gdmphotosetup.c:137
 msgid "No picture selected."
-msgstr ""
+msgstr "Δεν επιλέχθηκε εικόνα."
 
-#: gui/gdmphotosetup.c:132
+#: gui/gdmphotosetup.c:159
 #, c-format
 msgid ""
 "The picture is too large and the system administrator\n"
@@ -3594,14 +2548,14 @@ msgid ""
 "show in the face browser"
 msgstr ""
 
-#: gui/gdmphotosetup.c:156
+#: gui/gdmphotosetup.c:185
 #, c-format
 msgid ""
 "File %s cannot be open for reading\n"
 "Error: %s"
 msgstr ""
 
-#: gui/gdmphotosetup.c:171
+#: gui/gdmphotosetup.c:203
 #, c-format
 msgid ""
 "File %s cannot be open for writing\n"
@@ -3609,30 +2563,586 @@ msgid ""
 msgstr ""
 
 #: gui/gdmphotosetup.desktop.in.h:1
-msgid "Setup my GDM Face"
+msgid ""
+"Change the picture that will show in the GDM (login manager) face browser"
 msgstr ""
 
 #: gui/gdmphotosetup.desktop.in.h:2
-msgid ""
-"Setup the picture that will show in the GDM (login manager) face browser"
+#, fuzzy
+msgid "Login Photo"
+msgstr "Σφάλμα αυθεντικοποίησης"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: gui/gdmsetup-strings.c:7
+msgid "GDM Setup"
 msgstr ""
 
-#: gui/gdmXnestchooser.c:114
-msgid ""
-"Xnest doesn't exist.\n"
-"Please ask your system administrator\n"
-"to install it."
+#: gui/gdmsetup-strings.c:8
+#, fuzzy
+msgid "L_ocal: "
+msgstr "Αρχείο τοπικών ρυθμίσεων: "
+
+#: gui/gdmsetup-strings.c:9
+msgid "_Remote: "
 msgstr ""
 
-#: gui/gdmXnestchooser.c:130
-msgid ""
-"Indirect XDMCP is not enabled,\n"
-"please ask your system administrator to enable it\n"
-"in the GDM configurator program."
+#: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
+#: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:848
+#, fuzzy
+msgid "Standard greeter"
+msgstr "Προσθήκη Εξυπηρετητή"
+
+#: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
+#: gui/gdmsetup-strings.c:49 gui/gdmsetup.c:850
+msgid "Graphical greeter"
 msgstr ""
 
-#: gui/gdmXnestchooser.c:164
-msgid "Could not find a free display number"
+#: gui/gdmsetup-strings.c:14
+msgid "Greeter"
+msgstr "Χαιρετιστής"
+
+#: gui/gdmsetup-strings.c:15
+msgid "_Login a user automatically on first bootup"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:16
+#, fuzzy
+msgid "_Automatic login username:"
+msgstr "Αυτόματη αυθεντικοποίηση: "
+
+#: gui/gdmsetup-strings.c:17 gui/gdmsetup-strings.c:22
+#: gui/gdmsetup-strings.c:25 gui/gdmsetup-strings.c:28
+#: gui/gdmsetup-strings.c:37
+msgid "*"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:18
+#, fuzzy
+msgid "Automatic login"
+msgstr "Αυτόματη αυθεντικοποίηση: "
+
+#: gui/gdmsetup-strings.c:19
+msgid "Login a user automa_tically after a specified number of seconds"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:20
+#, fuzzy
+msgid "Timed login us_ername:"
+msgstr "Ελαχιστοποιημένο Εικονίδιο: "
+
+#: gui/gdmsetup-strings.c:21
+msgid "_Seconds before login:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:23
+msgid "Timed login"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:24
+msgid "General"
+msgstr ""
+
+#
+#: gui/gdmsetup-strings.c:26
+#, fuzzy
+msgid "_Welcome string: "
+msgstr "Μήνυμα καλωσορίσματος: "
+
+#
+#: gui/gdmsetup-strings.c:27
+#, fuzzy
+msgid "Welcome string: "
+msgstr "Μήνυμα καλωσορίσματος: "
+
+#
+#: gui/gdmsetup-strings.c:29
+#, fuzzy
+msgid "Logo"
+msgstr "Λογότυπο: "
+
+#: gui/gdmsetup-strings.c:30
+msgid "Always use 24 hour cloc_k format"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:31
+#, fuzzy
+msgid "Show choosable user images (_face browser)"
+msgstr ""
+"Εμφάνιση επιλεγόμενων εικόνων χρηστών (ενεργοποίηση φυλλομετρητή προσώπων)"
+
+#: gui/gdmsetup-strings.c:32
+#, fuzzy
+msgid "Miscellaneous"
+msgstr "Διάφορα"
+
+#: gui/gdmsetup-strings.c:33
+#, fuzzy
+msgid "_No background"
+msgstr "Πρόγραμμα Φόντου: "
+
+#: gui/gdmsetup-strings.c:34
+msgid "_Image"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:35
+#, fuzzy
+msgid "Co_lor"
+msgstr "Επιλογέας"
+
+#: gui/gdmsetup-strings.c:36
+#, fuzzy
+msgid "_Scale background image to fit"
+msgstr "Πρόγραμμα Φόντου: "
+
+#: gui/gdmsetup-strings.c:38
+msgid "_Only color on remote displays"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:39
+#, fuzzy
+msgid "_Background color: "
+msgstr "Πρόγραμμα Φόντου: "
+
+#: gui/gdmsetup-strings.c:40
+#, fuzzy
+msgid "Pick a color"
+msgstr "Επιλογή Γραμματοσειράς"
+
+#: gui/gdmsetup-strings.c:41
+#, fuzzy
+msgid "Background"
+msgstr "Πρόγραμμα Φόντου: "
+
+#: gui/gdmsetup-strings.c:43
+msgid "<b>Preview:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:44
+msgid "No screenshot available"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:45
+msgid "<b>Description:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:46
+msgid "<b>Copyright:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:47
+msgid "<b>Author:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:48
+msgid "_Install new theme"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:50
+#, fuzzy
+msgid "Allow _root to login with GDM"
+msgstr "Να επιτρέπεται στο διαχειριστή να συνδέετε με το GDM"
+
+#: gui/gdmsetup-strings.c:51
+#, fuzzy
+msgid "Allow root to login r_emotely with GDM"
+msgstr "Να επιτρέπεται στο διαχειριστή να συνδέετε με το GDM"
+
+#: gui/gdmsetup-strings.c:52
+#, fuzzy
+msgid "Allow remote _timed logins"
+msgstr "Να επιτρέπεται στο διαχειριστή να συνδέετε με το GDM"
+
+#: gui/gdmsetup-strings.c:53
+msgid "Show _system menu"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:54
+msgid "Allow c_onfiguration from the login screen"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:55
+#, fuzzy
+msgid "Retry _delay (seconds) :"
+msgstr "Καθυστέρηση επαναπροσπάθειας: "
+
+#: gui/gdmsetup-strings.c:56
+msgid "Options"
+msgstr "Επιλογές"
+
+#: gui/gdmsetup-strings.c:57
+msgid "Security"
+msgstr "Ασφάλεια"
+
+#: gui/gdmsetup-strings.c:58
+msgid ""
+"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
+"GDM with the XDMCP libraries."
+msgstr ""
+
+#: gui/gdmsetup-strings.c:59
+#, fuzzy
+msgid "Honour _indirect requests"
+msgstr "Να τιμούντε οι πλάγιες αιτήσεις"
+
+#: gui/gdmsetup-strings.c:60
+msgid "Listen on UDP port: "
+msgstr "Αποδοχή συνδέσεων στη θύρα UDP: "
+
+#: gui/gdmsetup-strings.c:61
+#, fuzzy
+msgid "Maximum pending requests:"
+msgstr "Μέγ. αριθμ. εκκρεμών αιτήσεων: "
+
+#: gui/gdmsetup-strings.c:62
+#, fuzzy
+msgid "Max pending indirect requests:"
+msgstr "Μέγ. αριθμ. εκκρεμών έμμεσων αιτήσεων: "
+
+#: gui/gdmsetup-strings.c:63
+#, fuzzy
+msgid "Maximum remote sessions:"
+msgstr "Μέγιστος αριθμός απομακρυσμένων συνεδριών: "
+
+#: gui/gdmsetup-strings.c:64
+#, fuzzy
+msgid "Maximum wait time:"
+msgstr "Μέγιστος χρόνος αναμονής: "
+
+#: gui/gdmsetup-strings.c:65
+#, fuzzy
+msgid "Maximum indirect wait time:"
+msgstr "Μέγιστος έμμεσος χρόνος αναμονής: "
+
+#: gui/gdmsetup-strings.c:66
+msgid "Displays per host:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:67
+msgid "Ping interval (minutes):"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:68
+#, fuzzy
+msgid "Enable _XDMCP"
+msgstr "Ενεργοποίηση XDMCP"
+
+#: gui/gdmsetup-strings.c:69
+msgid "XDMCP"
+msgstr "XDMCP"
+
+#: gui/gdmsetup.c:106
+msgid ""
+"An error occured while trying to contact the login screens.  Not all updates "
+"may have taken effect."
+msgstr ""
+
+#: gui/gdmsetup.c:1328
+msgid "Archive is not of a subdirectory"
+msgstr ""
+
+#: gui/gdmsetup.c:1336
+msgid "Archive is not of a single subdirectory"
+msgstr ""
+
+#: gui/gdmsetup.c:1360 gui/gdmsetup.c:1439
+msgid "File not a tar.gz or tar archive"
+msgstr ""
+
+#: gui/gdmsetup.c:1362
+msgid "Archive does not include a GdmGreeterTheme.info file"
+msgstr ""
+
+#
+#: gui/gdmsetup.c:1384
+#, fuzzy
+msgid "File does not exist"
+msgstr "%s: Ο κατάλογος %s δεν υπάρχει."
+
+#
+#: gui/gdmsetup.c:1492
+#, fuzzy
+msgid "No file selected"
+msgstr "Επιλογή της γλώσσας %s"
+
+#: gui/gdmsetup.c:1518
+#, c-format
+msgid ""
+"Not a theme archive\n"
+"Details: %s"
+msgstr ""
+
+#: gui/gdmsetup.c:1540
+#, c-format
+msgid ""
+"Theme directory '%s' seems to be already installed, install again anyway?"
+msgstr ""
+
+#: gui/gdmsetup.c:1585
+msgid "Some error occured when installing the theme"
+msgstr ""
+
+#: gui/gdmsetup.c:1630
+msgid "Select new theme archive to install"
+msgstr ""
+
+#. This is the temporary help dialog
+#: gui/gdmsetup.c:1766
+#, c-format
+msgid ""
+"This configuration window changes settings for the GDM daemon, which is the "
+"graphical login screen for GNOME.  Changes that you make will take effect "
+"immediately.\n"
+"\n"
+"Note that not all configuration options are listed here.  You may want to "
+"edit %s if you cannot find what you are looking for."
+msgstr ""
+
+#: gui/gdmsetup.c:1977
+msgid "You must be the superuser (root) to configure GDM.\n"
+msgstr "Πρέπει να είστε διαχειριστής (root) για να ρυθμίσετε το GDM.\n"
+
+#. EOF
+#: gui/gdmsetup.desktop.in.h:1
+#, fuzzy
+msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
+msgstr "Ρύθμιση του Διαχειριστή Οθόνης GNOME"
+
+#: gui/gdmsetup.desktop.in.h:2
+#, fuzzy
+msgid "GDM Configurator"
+msgstr "_Ρυθμίσεις"
+
+#
+#: gui/greeter/greeter.c:62
+#, fuzzy, c-format
+msgid "greeter_parse_config: No configuration file: %s. Using defaults."
+msgstr "gdm_login_parse_config: Κανένα αρχείο ρυθμίσεων: %s. Διακοπή."
+
+#: gui/greeter/greeter.c:880
+msgid ""
+"There was an error loading the theme, and the default theme also could not "
+"have been loaded, I will attempt to start the standard greeter"
+msgstr ""
+
+#: gui/greeter/greeter.c:898
+msgid ""
+"I could not start the standard greeter.  This display will abort and you may "
+"have to login another way and fix the installation of gdm"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:11
+msgid "Catalan"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:12
+msgid "Chinese (simplified)"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:13
+msgid "Chinese (traditional)"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:14
+msgid "Croatian"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:15
+msgid "Czech"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:16
+msgid "Danish"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:17
+msgid "Dutch"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:18
+msgid "English"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:19
+msgid "American English"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:20
+msgid "British English"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:21
+msgid "Estonian"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:22
+msgid "Finnish"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:23
+msgid "French"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:24
+msgid "Galician"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:25
+msgid "German"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:26
+#, fuzzy
+msgid "Greek"
+msgstr "Χαιρετιστής"
+
+#: gui/greeter/greeter_lang_list.c:27
+msgid "Hebrew"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:28
+msgid "Hungarian"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:29
+msgid "Icelandic"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:30
+msgid "Italian"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:31
+msgid "Japanese"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:32
+msgid "Korean"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:33
+msgid "Lithuanian"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:34
+msgid "Norwegian (bokmal)"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:35
+msgid "Norwegian (nynorsk)"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:36
+msgid "Polish"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:37
+msgid "Portuguese"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:38
+msgid "Brazilian Portuguese"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:39
+msgid "Romanian"
+msgstr ""
+
+#
+#: gui/greeter/greeter_lang_list.c:40
+#, fuzzy
+msgid "Russian"
+msgstr "Σάρωση ξανά"
+
+#: gui/greeter/greeter_lang_list.c:41
+msgid "Slovak"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:42
+msgid "Slovenian"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:43
+msgid "Spanish"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:44
+msgid "Swedish"
+msgstr ""
+
+#: gui/greeter/greeter_lang_list.c:45
+msgid "Turkish"
+msgstr ""
+
+#: gui/greeter/greeter_system.c:106
+msgid "Shut down the computer"
+msgstr ""
+
+#: gui/greeter/greeter_system.c:118
+msgid "Suspend the computer"
+msgstr ""
+
+#: gui/greeter/greeter_system.c:130
+msgid "Reboot the computer"
+msgstr ""
+
+#: gui/greeter/greeter_system.c:143
+#, fuzzy
+msgid "Configure"
+msgstr "_Ρυθμίσεις"
+
+#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
+msgid "(c) 2002 Bond, James Bond"
+msgstr ""
+
+#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:2
+msgid "Bond, James Bond"
+msgstr ""
+
+#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:3
+msgid "Circles"
+msgstr ""
+
+#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:4
+msgid "Theme with blue circles"
+msgstr ""
+
+#
+#: gui/greeter/themes/circles/circles.xml.in.h:1
+#, fuzzy
+msgid "Disconnect"
+msgstr "Σύνδεση"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:2
+#, fuzzy
+msgid "Option"
+msgstr "Επιλογές"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:3
+msgid "Quit"
+msgstr ""
+
+#
+#: gui/greeter/themes/circles/circles.xml.in.h:4
+msgid "Session"
+msgstr "Συνεδρία"
+
+#
+#: gui/greeter/themes/circles/circles.xml.in.h:5
+msgid "System"
+msgstr "Σύστημα"
+
+#
+#: gui/greeter/themes/circles/circles.xml.in.h:8
+#, fuzzy, no-c-format
+msgid "Welcome to %h"
+msgstr "Καλώς ήλθατε στο %n"
+
+#: gui/greeter/themes/circles/circles.xml.in.h:9
+msgid "You've got capslock on!"
 msgstr ""
 
 #: utils/gdmaskpass.c:26
@@ -3644,16 +3154,16 @@ msgstr ""
 msgid "Authentication failure!\n"
 msgstr "Αποτυχία αυθεντικοποίησης"
 
-#: vicious-extensions/glade-helper.c:70
+#: vicious-extensions/glade-helper.c:72
 msgid "(memory buffer)"
 msgstr ""
 
-#: vicious-extensions/glade-helper.c:102 vicious-extensions/glade-helper.c:124
-#: vicious-extensions/glade-helper.c:144
+#: vicious-extensions/glade-helper.c:104 vicious-extensions/glade-helper.c:126
+#: vicious-extensions/glade-helper.c:146
 msgid "(memory buffer"
 msgstr ""
 
-#: vicious-extensions/glade-helper.c:173
+#: vicious-extensions/glade-helper.c:178
 #, c-format
 msgid ""
 "An error occured while loading the user interface\n"
@@ -3663,14 +3173,14 @@ msgid ""
 "You should check your installation of %s or reinstall %s."
 msgstr ""
 
-#: vicious-extensions/glade-helper.c:191
+#: vicious-extensions/glade-helper.c:194
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
 "file: %s widget: %s"
 msgstr ""
 
-#: vicious-extensions/glade-helper.c:217
+#: vicious-extensions/glade-helper.c:224
 #, c-format
 msgid ""
 "An error occured while loading the user interface\n"
@@ -3681,14 +3191,14 @@ msgid ""
 "You should check your installation of %s or reinstall %s."
 msgstr ""
 
-#: vicious-extensions/glade-helper.c:237
+#: vicious-extensions/glade-helper.c:242
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
 "file: %s widget: %s expected clist columns: %d"
 msgstr ""
 
-#: vicious-extensions/glade-helper.c:251
+#: vicious-extensions/glade-helper.c:260
 #, c-format
 msgid ""
 "An error occured while loading the user interface\n"
@@ -3698,15 +3208,604 @@ msgid ""
 "You should check your installation of %s or reinstall %s."
 msgstr ""
 
-#: vicious-extensions/glade-helper.c:264
+#: vicious-extensions/glade-helper.c:271
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr ""
 
-#: vicious-extensions/icon-entry-hack.c:268
+#
+#~ msgid "gdm_server_start: Error setting up USR1 signal handler"
+#~ msgstr "gdm_server_start: Σφάλμα στη ρύθμιση του χειριστή του σήματος USR1"
+
+#
+#~ msgid "gdm_server_start: Error setting up CHLD signal handler"
+#~ msgstr "gdm_server_start: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
+
+#
+#~ msgid "gdm_server_start: Error setting up ALRM signal handler"
+#~ msgstr ""
+#~ "gdm_server_restart: Σφάλμα στη ρύθμιση του χειριστή του σήματος ALRM"
+
+#
 #, fuzzy
-msgid "Choose an icon"
-msgstr "Εντολή επιλογέα: "
+#~ msgid "gdm_slave_init: Error setting up ALRM signal handler"
+#~ msgstr "gdm_slave_init: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
+
+#
+#~ msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
+#~ msgstr ""
+#~ "gdm_slave_init: Σφάλμα στη ρύθμιση του χειριστή του σήματος TERM/INT"
+
+#
+#~ msgid "gdm_slave_init: Error setting up CHLD signal handler"
+#~ msgstr "gdm_slave_init: Σφάλμα στη ρύθμιση του χειριστή του σήματος CHLD"
+
+#
+#~ msgid "gdm_slave_greeter: Couldn't set groupid to %d"
+#~ msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας ομάδας σε %d"
+
+#
+#, fuzzy
+#~ msgid "gdm_slave_greeter: initgroups() failed for %s"
+#~ msgstr ""
+#~ "gdm_slave_session_start: Το initgroups() απέτυχε για το %s. Διακοπή."
+
+#
+#~ msgid "gdm_slave_greeter: Couldn't set userid to %d"
+#~ msgstr "gdm_slave_greeter: Αποτυχία ρύθμισης της ταυτότητας χρήστη σε %d"
+
+#
+#~ msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
+#~ msgstr ""
+#~ "gdm_slave_session_start: Ολοκλήρωση αυθεντικοποίησης. Προς χαιρετιστή"
+
+#
+#, fuzzy
+#~ msgid "%s: Could not get address from hostname!"
+#~ msgstr ""
+#~ "gdm_xdmcp_init: Αποτυχία λήψης του ονόματος συστήματος του εξυπηρετητή: %"
+#~ "s!"
+
+#
+#~ msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
+#~ msgstr ""
+#~ "gdm_xdmcp_handle_manage: Αποτυχία ανοίγματος αρχείου καταγραφών για "
+#~ "απεικόνιση %s!"
+
+#~ msgid " "
+#~ msgstr " "
+
+#~ msgid "Basic"
+#~ msgstr "Βασικό"
+
+#~ msgid "Expert"
+#~ msgstr "Ειδήμονας"
+
+#~ msgid ""
+#~ "This panel displays the basic options for configuring GDM.\n"
+#~ "\n"
+#~ "If you need finer detail, select 'expert' or 'system setup' from the list "
+#~ "above.\n"
+#~ "\n"
+#~ "This will display some of the more complex options of GDM that rarely "
+#~ "need to be changed."
+#~ msgstr ""
+#~ "Αυτή η επιφάνεια εμφανίζει της βασικές επιλογές για τη ρύθμιση του GDM.\n"
+#~ "\n"
+#~ "Αν απαιτείτε περισσότερες λεπτομέρειες, επιλέξτε 'ειδήμονας' ή 'ρύθμιση "
+#~ "συστήματος' από την παραπάνω λίστα.\n"
+#~ "\n"
+#~ "Έτσι θα εμφανιστούν μερικές από τις περισσότερο περίπλοκες επιλογές του "
+#~ "GDM που σπάνια χρειάζετε να αλλαχτούν."
+
+#, fuzzy
+#~ msgid ""
+#~ "This panel displays the more advanced options of GDM.\n"
+#~ "\n"
+#~ "Be sure to take care when manipulating the security options, or you could "
+#~ "be vulnerable to attackers.\n"
+#~ "\n"
+#~ "Choose \"System\" to change fundamental options in GDM."
+#~ msgstr ""
+#~ "Αυτή η επιφάνεια εμφανίζει τις περισσότερο προχωρημένες επιλογές του "
+#~ "GDM.\n"
+#~ "\n"
+#~ "Φροντίστε να προσέχετε κατά τον χειρισμό των επιλογών ασφάλειας, "
+#~ "διαφορετικά μπορείτε να τεθείτε ευάλωτος στους εισβολείς.\n"
+#~ "\n"
+#~ "Επιλέξτε \"Ρύθμιση συστήματος\" για να αλλάξετε τις θεμελιώδεις επιλογές "
+#~ "του GDM."
+
+#~ msgid ""
+#~ "This panel displays GDM's fundamental system settings.\n"
+#~ "\n"
+#~ "You should only change these paths if you really know what you are doing, "
+#~ "as an incorrect setup could stop your machine from booting properly.\n"
+#~ "\n"
+#~ "Choose \"Basic\" if you just want to change your machine's login "
+#~ "appearance."
+#~ msgstr ""
+#~ "Αυτό το ταμπλώ εμφανίζει τις θεμελιώδεις ρυθμίσεις συστήματος του GDM.\n"
+#~ "\n"
+#~ "Καλό είναι να αλλάξετε τα μονοπάτια μόνο όταν είστε απολύτως σίγουρος/η "
+#~ "για το τι κάνετε, διαφορετικά εσφαλμένες τιμές θα κάνουν το σύστημά σας "
+#~ "να εκκινείται σωστά.\n"
+#~ "\n"
+#~ "Επιλέξτε \"Βασικό\" αν θέλετε να αλλάξετε μόνο την εμφάνιση της σύνδεσης "
+#~ "χρήστη."
+
+#~ msgid "GNOME Display Manager Configurator"
+#~ msgstr "Ρύθμιση Διαχείρησης Οθόνης GNOME"
+
+#, fuzzy
+#~ msgid "No"
+#~ msgstr "Όχι."
+
+#
+#~ msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
+#~ msgstr ""
+#~ "gdm_config_parse_most: Μη έγκυρη γραμμή εξυπηρετητή στο αρχείο ρυθμίσεων. "
+#~ "Αγνοείται!"
+
+#, fuzzy
+#~ msgid ""
+#~ "The applied settings cannot take effect until gdm\n"
+#~ "is restarted or your computer is rebooted.\n"
+#~ "You can restart GDM when all sessions are\n"
+#~ "closed (when all users log out) or you can\n"
+#~ "restart GDM now (which will kill all current\n"
+#~ "sessions)"
+#~ msgstr ""
+#~ "Οι ρυθμίσεις που έχουν τεθεί δεν μπορούν να ενεργοποιηθούν\n"
+#~ "παρά μόνο όταν το gdm ή ο υπολογιστή σας επανακκινηθούν.\n"
+#~ "Επιθυμείτε να επανεκκινήσετε το GDM τώρα;\n"
+#~ "Αυτό θα σκοτώσει όλες τις τρέχουσες συνεδρίες \n"
+#~ "και θα χάσετε όλα τα μη αποθηκευμένα δεδομένα!"
+
+#, fuzzy
+#~ msgid ""
+#~ "Are you sure you wish to restart GDM\n"
+#~ "now and lose any unsaved data?"
+#~ msgstr ""
+#~ "Είστε σίγουρος ότι θέλετε να επανεκκινήσετε το GDM\n"
+#~ "και να χάσετε οτιδήποτε μη αποθηκευμένες πληροφορίες;"
+
+#~ msgid ""
+#~ "The greeter settings will take effect the next time\n"
+#~ "it is displayed.  The rest of the settings will not\n"
+#~ "take effect until gdm is restarted or the computer is\n"
+#~ "rebooted"
+#~ msgstr ""
+#~ "Οι ρυθμίσεις του χαιρετιστή θα ενεργοποιηθούν την\n"
+#~ "επόμενη φορά που θα εμφανιστεί. Οι υπόλοιπες ρυθμίσεις \n"
+#~ "δε θα ενεργοποιηθούν μέχρι το gdm επανακινηθεί ή ο\n"
+#~ "υπολογιστής ξαναξεκινήσει."
+
+#
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not delete session %s\n"
+#~ "   Error: %s"
+#~ msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
+
+#
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not remove session %s\n"
+#~ "   Error: %s"
+#~ msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
+
+#
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not write session %s\n"
+#~ "   Error: %s"
+#~ msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
+
+#
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not write contents to session %s\n"
+#~ "   Error: %s"
+#~ msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
+
+#
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not unlink old default session\n"
+#~ "   Error: %s"
+#~ msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
+
+#
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Could not link new default session\n"
+#~ "   Error: %s"
+#~ msgstr "Αποτυχία αρχικοποίησης συνεδρίας για %s"
+
+#~ msgid ""
+#~ "This will destroy any changes made in this session.\n"
+#~ "Are you sure you want to do this?"
+#~ msgstr ""
+#~ "Αυτό θα χάσει όλες τις αλλαγές που κάνατε σε αυτήν τη συνεδρία.\n"
+#~ "Είστε σίγουρος ότι θέλετε να το κάνετε;"
+
+#, fuzzy
+#~ msgid ""
+#~ "This will destroy any changes made in the configuration.\n"
+#~ "Are you sure you want to do this?"
+#~ msgstr ""
+#~ "Αυτό θα χάσει όλες τις αλλαγές που κάνατε σε αυτήν τη συνεδρία.\n"
+#~ "Είστε σίγουρος ότι θέλετε να το κάνετε;"
+
+#~ msgid "GDM Configuration Utility"
+#~ msgstr "Εργαλείο Ρύθμισης GDM"
+
+#~ msgid "_Configuration"
+#~ msgstr "_Ρυθμίσεις"
+
+#~ msgid "Revert settings"
+#~ msgstr "Επαναφορά ρυθμίσεων"
+
+#, fuzzy
+#~ msgid "Revert to Factory Settings"
+#~ msgstr "Επαναφορά ρυθμίσεων"
+
+#~ msgid "Apply"
+#~ msgstr "Εφαρμογή"
+
+#~ msgid "basic_settings"
+#~ msgstr "βασικές_ρυθμίσεις"
+
+#~ msgid "General Appearance"
+#~ msgstr "Γενική Εμφάνιση"
+
+#~ msgid "Select a logo to be displayed during login"
+#~ msgstr "Επιλέξτε ένα λογότυπο προς παρουσίαση κατά την αυθεντικοποίηση"
+
+#~ msgid "Minimised Icon: "
+#~ msgstr "Ελαχιστοποιημένο Εικονίδιο: "
+
+#~ msgid "Select a GTK+ theme file (gtkrc)"
+#~ msgstr "Επιλέξτε ένα αρχείο θέματος GTK+ (gtkrc)"
+
+#~ msgid "Gtk+ RC file: "
+#~ msgstr "Αρχείο ρυθμίσεων Gtk+: "
+
+#~ msgid "Login appearance"
+#~ msgstr "Εμφάνιση εισαγωγής στο σύστημα"
+
+#~ msgid "Greeter Look and Feel"
+#~ msgstr "Εμφάνιση του Χαιρετιστή"
+
+#~ msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
+#~ msgstr "Εμφάνιση του μενού συστήματος, (επανεκκίνηση, κλείσιμο, κλπ.)"
+
+#~ msgid "Quiver on failure"
+#~ msgstr "Τρεμόπαιξε κατά την αποτυχία"
+
+#~ msgid "%n"
+#~ msgstr "%n"
+
+#~ msgid "This is %n"
+#~ msgstr "Αυτό είναι το %n"
+
+#~ msgid "Default font: "
+#~ msgstr "Εξ' ορισμού γραμματοσειρά: "
+
+#~ msgid "Pick a Font"
+#~ msgstr "Επιλογή Γραμματοσειράς"
+
+#~ msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+#~ msgstr "ΑαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσςΤτΥυΦφΧχΨψΩω"
+
+#~ msgid "Extras"
+#~ msgstr "Επιπλέον"
+
+#~ msgid "Default locale: "
+#~ msgstr "Εξ' ορισμού τοπική ρύθμιση: "
+
+#~ msgid "Position"
+#~ msgstr "Θέση"
+
+#~ msgid "Manually set position"
+#~ msgstr "Χειρωνακτική τοποθέτηση"
+
+#~ msgid "Lock position"
+#~ msgstr "Κλείδωμα θέσης"
+
+#~ msgid "X position: "
+#~ msgstr "Θέση Χ: "
+
+#~ msgid "Y position: "
+#~ msgstr "Θέση Υ: "
+
+#~ msgid "Xinerama screen: "
+#~ msgstr "Οθόνη Xinerama: "
+
+#~ msgid "Login behaviour"
+#~ msgstr "Συμπεριφορά αυθεντικοποίησης"
+
+#~ msgid "Face browser"
+#~ msgstr "Φυλλομετρητής προσώπων"
+
+#~ msgid "Default face image: "
+#~ msgstr "Εξ' ορισμού εικόνα προσώπου: "
+
+#~ msgid "Global faces directory: "
+#~ msgstr "Καθολικός κατάλογος προσώπων: "
+
+#~ msgid "Maximum face width: "
+#~ msgstr "Μέγιστο πλάτος προσώπου: "
+
+#~ msgid "Select an image for users with no 'face'"
+#~ msgstr "Επιλογή εικόνας για χρήστες χωρίς 'πρόσωπο'"
+
+#~ msgid "Choose the directory to search for faces"
+#~ msgstr "Επιλέξτε τον κατάλογο αναζήτησης των προσώπων"
+
+#~ msgid "Maximum face height: "
+#~ msgstr "Μέγιστο ύψος προσώπου: "
+
+#~ msgid "Exclude these users: "
+#~ msgstr "Εξαίρεση αυτών των χρηστών: "
+
+#, fuzzy
+#~ msgid "Background type: "
+#~ msgstr "Πρόγραμμα Φόντου: "
+
+#, fuzzy
+#~ msgid "Background image:"
+#~ msgstr "Πρόγραμμα Φόντου: "
+
+#, fuzzy
+#~ msgid "Background program"
+#~ msgstr "Πρόγραμμα Φόντου: "
+
+#, fuzzy
+#~ msgid "Background program: "
+#~ msgstr "Πρόγραμμα Φόντου: "
+
+#~ msgid "Select a file containing Locale information"
+#~ msgstr "Επιλέξτε αρχείο που περιέχει πληροφορίες Τοπικών Ρυθμίσεων"
+
+#~ msgid "expert"
+#~ msgstr "ειδήμονας"
+
+#~ msgid ""
+#~ "Determines whether GDM should kill X clients started by the init scripts "
+#~ "when the user logs in."
+#~ msgstr ""
+#~ "Καθορίζει πότε το GDM θα πρέπει να τερματίζει τους πελάτες X που "
+#~ "εκκινούνται από τα προγράμματα εντολών εκκίνησης κατά την είσοδο του "
+#~ "χρήστη στο σύστημα."
+
+#~ msgid "Kill 'init' clients"
+#~ msgstr "Σκότωμα πελατών της 'init'"
+
+#~ msgid "Should GDM print authentication errors in the greeter"
+#~ msgstr "Να τυπώνει το GDM σφάλματα ελέγχου αυθεντικότητας στο χαιρετιστή"
+
+#~ msgid "Authentication errors should be verbose"
+#~ msgstr "Τα σφάλματα αυθεντικοποίησης να είναι περιφραστικά"
+
+#~ msgid "Select how relaxed permissions are"
+#~ msgstr "Επιλογή πόσο χαλαρά να είναι τα δικαιώματα"
+
+#~ msgid "Permissions: "
+#~ msgstr "Δικαιώματα: "
+
+#~ msgid "Allow world writable files and directories"
+#~ msgstr "Να επιτρέπονται αρχεία και κατάλογοι εγγράψιμοι από όλους"
+
+#~ msgid "World writable"
+#~ msgstr "Εγγράψιμο από όλους"
+
+#~ msgid "Allow group writable files and directories"
+#~ msgstr "Να επιτρέπονται αρχεία και κατάλογοι εγγράψιμοι από την ομάδα"
+
+#~ msgid "Group writable"
+#~ msgstr "Εγγράψιμο από ομάδα"
+
+#~ msgid "Only accept user owned files and directories"
+#~ msgstr "Μόνο αποδοχή αρχείων και καταλόγων ιδιοκτησίας χρήστη"
+
+#~ msgid "Paranoia"
+#~ msgstr "Παρανοϊκό"
+
+#~ msgid "Authorization Details"
+#~ msgstr "Λεπτομέρειες Εξουσιοδότησης"
+
+#~ msgid "GDM runs as this user: "
+#~ msgstr "Το GDM εκτελείτε ως το χρήστη: "
+
+#~ msgid "User 'auth' directory: "
+#~ msgstr "Κατάλογος χρήστη 'αυθεντικοποίησης': "
+
+#~ msgid "User 'auth' FB directory: "
+#~ msgstr "Εγγυημένος κατάλογος χρήστη 'αυθεντικοποίησης': "
+
+#~ msgid "User 'auth' file: "
+#~ msgstr "Αρχείο χρήστη 'αυθεντικοποίησης': "
+
+#~ msgid "GDM runs as this group: "
+#~ msgstr "To GDM εκτελείτε ως αυτήν την ομάδα: "
+
+#~ msgid "Limits"
+#~ msgstr "Περιορισμοί"
+
+#~ msgid "Maximum user file length: "
+#~ msgstr "Μέγιστο μήκος αρχείου χρήστη: "
+
+#, fuzzy
+#~ msgid "Maximum session file length: "
+#~ msgstr "Μέγιστο μήκος αρχείου χρήστη: "
+
+#~ msgid "Connection Settings"
+#~ msgstr "Ρυθμίσεις Σύνδεσης"
+
+#~ msgid "Servers"
+#~ msgstr "Εξυπηρετητές"
+
+#, fuzzy
+#~ msgid "Add server"
+#~ msgstr "Προσθήκη Εξυπηρετητή"
+
+#, fuzzy
+#~ msgid "Edit server"
+#~ msgstr "Επεξεργασίας Εξυπηρετητή"
+
+#, fuzzy
+#~ msgid "Delete server"
+#~ msgstr "Διαγραφή Εξυπηρετητή"
+
+#~ msgid "No."
+#~ msgstr "Όχι."
+
+#, fuzzy
+#~ msgid "Server"
+#~ msgstr "Εξυπηρετητές"
+
+#, fuzzy
+#~ msgid "Maximum number of flexible servers: "
+#~ msgstr "Μέγιστο μήκος αρχείου χρήστη: "
+
+#, fuzzy
+#~ msgid "X configurator binaries to try: "
+#~ msgstr "Το αρχείο ρυθμίσεων: "
+
+#~ msgid "X-server setup"
+#~ msgstr "Ρύθμιση εξυπηρετητή X"
+
+#, fuzzy
+#~ msgid "Session configuration"
+#~ msgstr "_Ρυθμίσεις"
+
+#~ msgid "Session directory: "
+#~ msgstr "Κατάλογος συνεδρίας: "
+
+#
+#, fuzzy
+#~ msgid "Add session"
+#~ msgstr "Συνεδρία"
+
+#, fuzzy
+#~ msgid "Remove session"
+#~ msgstr "Επαναφορά ρυθμίσεων"
+
+#, fuzzy
+#~ msgid "Selected session name: "
+#~ msgstr "Επιλογή πόσο χαλαρά να είναι τα δικαιώματα"
+
+#, fuzzy
+#~ msgid "Login sessions"
+#~ msgstr "Συμπεριφορά αυθεντικοποίησης"
+
+#~ msgid "Appearance"
+#~ msgstr "Εμφάνιση"
+
+#~ msgid "Directory for host images: "
+#~ msgstr "Κατάλογος με εικόνες συστήματος: "
+
+#~ msgid "Default host image:"
+#~ msgstr "Εξ' ορισμού εικόνα συστήματος:"
+
+#~ msgid "Refresh"
+#~ msgstr "Ανανέωση"
+
+#~ msgid "Scan every 'x' seconds: "
+#~ msgstr "Σάρωση κάθε 'χ' δευτερόλεπτα: "
+
+#~ msgid "Chooser"
+#~ msgstr "Επιλογέας"
+
+#~ msgid "Debugging"
+#~ msgstr "Εκσφαλμάτωση"
+
+#~ msgid "Enable debugging output"
+#~ msgstr "Ενεργοποίηση εξόδου εκσφαλμάτωσης"
+
+#~ msgid "system_setup"
+#~ msgstr "ρύθμιση_συστήματος"
+
+#~ msgid "Executables"
+#~ msgstr "Εκτελέσιμα"
+
+#~ msgid "Chooser command: "
+#~ msgstr "Εντολή επιλογέα: "
+
+#~ msgid "Greeter command: "
+#~ msgstr "Εντολή χαιρετιστή: "
+
+#~ msgid "Halt command: "
+#~ msgstr "Εντολή τερματισμού: "
+
+#~ msgid "Reboot command: "
+#~ msgstr "Εντολή επανεκκίνησης: "
+
+#, fuzzy
+#~ msgid "Configurator command: "
+#~ msgstr "Εντολή επιλογέα: "
+
+#, fuzzy
+#~ msgid "Suspend command: "
+#~ msgstr "Εντολή επιλογέα: "
+
+#~ msgid "Directories"
+#~ msgstr "Κατάλογοι"
+
+#
+#~ msgid "PRE session scripts directory: "
+#~ msgstr "Κατάλογος προγραμμάτων εντολών ΠΡΙΝ την έναρξη της συνεδρίας: "
+
+#~ msgid "POST session scripts directory: "
+#~ msgstr "Κατάλογος προγραμμάτων εντολών ΜΕΤΑ τη συνεδρία: "
+
+#~ msgid "Logging directory: "
+#~ msgstr "Κατάλογος καταγραφών: "
+
+#~ msgid "Display initialization directory: "
+#~ msgstr "Κατάλογος αρχικοποίησης οθόνης: "
+
+#~ msgid "PID file: "
+#~ msgstr "Αρχείο Ταυτότητας Διεργασίας: "
+
+#~ msgid "Paths"
+#~ msgstr "Διαδρομές"
+
+#~ msgid "Default $PATH: "
+#~ msgstr "Εξ' ορισμού $PATH: "
+
+#~ msgid "Root $PATH: "
+#~ msgstr "$PATH διαχειριστή: "
+
+#~ msgid "Localization"
+#~ msgstr "Τοπικές ρυθμίσεις"
+
+#~ msgid "Environment"
+#~ msgstr "Περιβάλλον"
+
+#~ msgid "(C) 2001 Lee Mallabone"
+#~ msgstr "(C) 2001 Λι Μαλαμπόουν"
+
+#~ msgid ""
+#~ "Configure the GNOME Display Manager.\n"
+#~ "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
+#~ "under the `gdm' product."
+#~ msgstr ""
+#~ "Ρυθμίστε το Διαχειριστή Εμφάνισης του GNOME.\n"
+#~ "Παρακαλώ στείλτε αναφορές σφαλμάτων ή αιτήσεις για βελτίωση στο http://"
+#~ "bugzilla.gnome.org κάτω από τον τίτλο του προϊόντος `gdm'."
+
+#, fuzzy
+#~ msgid "Choose an icon"
+#~ msgstr "Εντολή επιλογέα: "
 
 #
 #~ msgid "gdm_main: Error setting up TERM signal handler"
@@ -3790,9 +3889,6 @@ msgstr "Εντολή επιλογέα: "
 
 #~ msgid "GDM"
 #~ msgstr "GDM"
-
-#~ msgid "Greeter"
-#~ msgstr "Χαιρετιστής"
 
 #~ msgid "Chooser binary: "
 #~ msgstr "Εκτελέσιμο Επιλογέα: "
