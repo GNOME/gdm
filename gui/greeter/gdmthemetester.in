@@ -1,4 +1,21 @@
 #!/bin/sh
+
+gdmwhich () {
+  COMMAND="$1"
+  OUTPUT=
+  IFS=:
+  for dir in $PATH
+  do
+    if test -x "$dir/$COMMAND" ; then
+      if test "x$OUTPUT" = "x" ; then
+        OUTPUT="$dir/$COMMAND"
+      fi
+    fi
+  done
+  IFS=$OLD_IFS
+  echo "$OUTPUT"
+}
+
 echo
 echo "GDM Graphical Greeter Theme Tester."
 echo
@@ -7,18 +24,25 @@ echo " console, console-timed, flexi, remote-flexi, xdmcp"
 echo "Also be sure to test using caps lock"
 echo
 
-if ! which Xnest > /dev/null 2>&1 ; then
+XNEST=`gdmwhich Xnest`
+GDMXNEST=`gdmwhich gdmXnest`
+GDMGREETER="@EXPANDED_LIBEXECDIR@/gdmgreeter"
+
+if [ x$XNEST = x ]; then
 	echo "ERROR: Xnest not found"
+        echo ""
 	exit 1
 fi
 
-if ! which gdmXnest > /dev/null 2>&1 ; then
+if [ x$GDMXNEST = x ]; then
 	echo "ERROR: gdmXnest not found"
+        echo ""
 	exit 1
 fi
 
-if ! which gdmgreeter > /dev/null 2>&1 ; then
+if [ x$GDMGREETER = x ]; then
 	echo "ERROR: gdmgreeter not found"
+        echo ""
 	exit 1
 fi
 
@@ -68,11 +92,10 @@ xdmcp)
 esac
 
 if [ "x$XNESTSIZE" = x ] ; then
-  eval `gdmXnest -b -o "-terminate"`
+  eval `gdmXnest -b`
 else
-  eval `gdmXnest -b -o "-geometry $XNESTSIZE -terminate"`
+  eval `gdmXnest -b -o "-geometry $XNESTSIZE"`
 fi
-eval `gdmXnest -b`
 export DISPLAY
 
 if [ "x$GDM_PARENT_DISPLAY" = "x$DISPLAY" ]; then
@@ -83,4 +106,4 @@ fi
 # This may not be necessary
 sleep 1
 
-gdmgreeter
+@EXPANDED_LIBEXECDIR@/gdmgreeter

@@ -1,3 +1,29 @@
+Thu Mar 17 2:06:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* configure.in, gui/greeter/gdmthemetester.in (added),
+	  gui/greeter/gdmthemetester (removed):  Fixed so
+	  it recognizes gdmgreeter is installed to LIBEXEC and
+	  now uses gdmwhich instead of which (same logic that the
+	  Init, PreSession, etc. scripts) so it works better on
+	  Solaris.
+	* daemon/gdm.h, daemon/slave.c, gui/gdmlogin.c, 
+	  gui/greeter/greeter.c, gui/greeter/greeter_item_ulist.c,
+	  docs/C/gdm.xml, gui/greeter/greeter_parser.c,
+	  gui/greeter/themes/circles/circles.xml,
+	  gui/greeter/themes/circles/happygnome.xml,
+	  gui/greeter/themes/circles/happygnome-list.xml:  Made
+	  face browser much less braindead.  The facebrowser is
+	  no longer insensitive when entering the password so
+	  you can change the selected user without having to
+	  enter an invalid password.  Also added a cancel 
+	  button which allows user to reselect a different
+	  username without having to enter an invalid password.
+	  Removed the stupid double-click requirement to select
+	  a user with the face browser.  Now just clicking on
+	  a user takes you to password entry.  Clicking the
+	  cancel button unselects all users in the face browser
+	  and takes the user back to the Username prompt.
+
 Mon Mar 14 12:10:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/gdm.h, gui/Makefile.am, gui/gdmlogin.c,

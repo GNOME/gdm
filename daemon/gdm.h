@@ -115,6 +115,7 @@ enum {
 #define GDM_INTERRUPT_SELECT_USER 'U'
 #define GDM_INTERRUPT_LOGIN_SOUND 'L'
 #define GDM_INTERRUPT_THEME       'H'
+#define GDM_INTERRUPT_CANCEL      'X'
 
 /* The dreaded miscellaneous category */
 #define FIELD_SIZE 256

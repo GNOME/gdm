@@ -93,6 +93,9 @@ static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
 static gboolean do_configurator = FALSE; /* if this is true, login as root
 					  * and start the configurator */
+static gboolean do_cancel = FALSE; /* if this is true, go back to 
+                                      username entry & unselect face
+                                      browser (if present) */
 static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
 					       greeter and try again */
 static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
@@ -1756,6 +1759,7 @@ gdm_slave_wait_for_login (void)
 		/* init to a sane value */
 		do_timed_login = FALSE;
 		do_configurator = FALSE;
+		do_cancel = FALSE;
 
 		if G_UNLIKELY (do_restart_greeter) {
 			do_restart_greeter = FALSE;
@@ -1801,14 +1805,9 @@ gdm_slave_wait_for_login (void)
 			login = NULL;
 			/* clear any error */
 			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, "");
-			/* FIXME: what if the root has different 
-			   authentication?  This message ought to be changed
-			   to be more general, like "you must authenticate as root"
-			   or some such */
 			gdm_slave_greeter_ctl_no_ret
 				(GDM_MSG,
-				 _("Enter the root password\n"
-				   "to run the configuration."));
+				 _("You must authenticate as root to run configuration."));
 
 			/* we always allow root for this */
 			oldAllowRoot = GdmAllowRoot;
@@ -4857,6 +4856,9 @@ check_for_interruption (const char *msg)
 		case GDM_INTERRUPT_SELECT_USER:
 			gdm_verify_select_user (&msg[2]);
 			break;
+		case GDM_INTERRUPT_CANCEL:
+			do_cancel = TRUE;
+			break;
 		case GDM_INTERRUPT_THEME:
 			g_free (d->theme_name);
 			d->theme_name = NULL;
@@ -5244,7 +5246,8 @@ gdm_slave_action_pending (void)
 {
 	if (do_timed_login ||
 	    do_configurator ||
-	    do_restart_greeter)
+	    do_restart_greeter ||
+	    do_cancel)
 		return FALSE;
 	return TRUE;
 }

@@ -1064,6 +1064,11 @@ parse_stock (xmlNodePtr node,
 	  g_free (*translated_text);
 	  *translated_text = g_strdup (_("Username:"));
 	}
+      else if (g_ascii_strcasecmp (prop, "cancel") == 0)
+        {
+	  g_free (*translated_text);
+	  *translated_text = g_strdup (_("_Cancel"));
+	}
       else
         {
           g_set_error (error,

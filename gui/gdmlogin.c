@@ -150,6 +150,7 @@ static GtkWidget *title_box = NULL;
 static GtkWidget *clock_label = NULL;
 static GtkWidget *entry;
 static GtkWidget *ok_button;
+static GtkWidget *cancel_button;
 static GtkWidget *msg;
 static GtkWidget *err_box;
 static guint err_box_clear_handler = 0;
@@ -189,7 +190,9 @@ static pid_t backgroundpid = 0;
 
 static guint timed_handler_id = 0;
 
+#if FIXME
 static char *selected_browser_user = NULL;
+#endif FIXME
 static gboolean selecting_user = TRUE;
 
 /* This is true if session dir doesn't exist or is whacked out
@@ -1061,6 +1064,7 @@ gdm_login_enter (GtkWidget *entry)
 
 	gtk_widget_set_sensitive (entry, FALSE);
 	gtk_widget_set_sensitive (ok_button, FALSE);
+	gtk_widget_set_sensitive (cancel_button, FALSE);
 
 	login_string = gtk_entry_get_text (GTK_ENTRY (entry));
 
@@ -1088,6 +1092,7 @@ gdm_login_enter (GtkWidget *entry)
 		   this test */
 		gtk_widget_set_sensitive (entry, TRUE);
 		gtk_widget_set_sensitive (ok_button, TRUE);
+		gtk_widget_set_sensitive (cancel_button, FALSE);
 		gtk_widget_grab_focus (entry);	
 		gtk_window_set_focus (GTK_WINDOW (login), entry);	
 		return;
@@ -1109,6 +1114,21 @@ static void
 gdm_login_ok_button_press (GtkButton *button, GtkWidget *entry)
 {
 	gdm_login_enter (entry);
+}
+
+static void
+gdm_login_cancel_button_press (GtkButton *button, GtkWidget *entry)
+{
+	GtkTreeSelection *selection;
+
+	if (browser != NULL) {
+		selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
+		gtk_tree_selection_unselect_all (selection);
+	}
+
+	printf ("%c%c%c\n", STX, BEL,
+		GDM_INTERRUPT_CANCEL);
+	fflush (stdout);
 }
 
 static gboolean
@@ -1850,13 +1870,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 	g_free (curuser);
 	curuser = g_strdup (buf);
-	if (GdmBrowser) {
+	if (GdmBrowser)
 		browser_set_user (curuser);
-		if (ve_string_empty (curuser))
-			gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
-		else
-			gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
-	}
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
@@ -1880,6 +1895,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_set_sensitive (ok_button, TRUE);
+	gtk_widget_set_sensitive (cancel_button, FALSE);
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
@@ -1911,6 +1927,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_set_sensitive (ok_button, TRUE);
+	gtk_widget_set_sensitive (cancel_button, TRUE);
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
@@ -2089,6 +2106,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_set_sensitive (ok_button, TRUE);
+	gtk_widget_set_sensitive (cancel_button, FALSE);
 
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
@@ -2349,54 +2367,34 @@ user_selected (GtkTreeSelection *selection, gpointer data)
   GtkTreeModel *tm = NULL;
   GtkTreeIter iter = {0};
 
-  if ( ! ve_string_empty (curuser))
-	  /* eek, this shouldn't get here, but just in case */
-	  return;
-
+#ifdef FIXME
   g_free (selected_browser_user);
   selected_browser_user = NULL;
+#endif
 
   if (gtk_tree_selection_get_selected (selection, &tm, &iter)) {
-	  char *login;
-	  gtk_tree_model_get (tm, &iter, GREETER_ULIST_LOGIN_COLUMN,
+	char *login;
+	gtk_tree_model_get (tm, &iter, GREETER_ULIST_LOGIN_COLUMN,
 			      &login, -1);
-	  if (login != NULL) {
-		  const char *str;
-		  str = gtk_label_get_text (GTK_LABEL (label));
-		  if (selecting_user &&
-		      str != NULL &&
-		      (strcmp (str, _("Username:")) == 0 ||
-		       strcmp (str, _("_Username:")) == 0)) {
-			  /* This is pretty evil, but we really don't
-			     know when it is ok to set the entry */
-			  gtk_entry_set_text (GTK_ENTRY (entry), login);
-		  }
-		  selected_browser_user = g_strdup (login);
-		  if (selecting_user) {
-			  gtk_label_set_text (GTK_LABEL (msg),
-					      _("Doubleclick on the user "
-						"to log in"));
-			  g_timeout_add (get_double_click_time (),
-					 resize_in_time, NULL); 
-		  }
-	  }
-  }
-}
+	if (login != NULL) {
+		const char *str = gtk_label_get_text (GTK_LABEL (label));
 
-static void
-row_activated (GtkTreeView *tree_view,
-	       GtkTreePath *path,
-	       GtkTreeViewColumn *column)
-{
-	if (selected_browser_user != NULL) {
-		gtk_widget_set_sensitive (entry, FALSE);
-		gtk_widget_set_sensitive (ok_button, FALSE);
-		gtk_widget_set_sensitive (GTK_WIDGET (browser),
-					  FALSE);
-		printf ("%c%c%c%s\n", STX, BEL, GDM_INTERRUPT_SELECT_USER,
-			selected_browser_user);
-		fflush (stdout);
-	}
+		if (selecting_user &&
+		    str != NULL &&
+		    (strcmp (str, _("Username:")) == 0 ||
+		     strcmp (str, _("_Username:")) == 0)) {
+			gtk_entry_set_text (GTK_ENTRY (entry), login);
+		}
+#ifdef FIXME
+		selected_browser_user = g_strdup (login);
+#endif
+		if (selecting_user) {
+			printf ("%c%c%c%s\n", STX, BEL,
+				GDM_INTERRUPT_SELECT_USER, login);
+			fflush (stdout);
+  		}
+  	}
+  }
 }
 
 static gboolean
@@ -2893,9 +2891,6 @@ gdm_login_gui_init (void)
 	    g_signal_connect (selection, "changed",
 			      G_CALLBACK (user_selected),
 			      NULL);
-	    g_signal_connect (browser, "row_activated",
-			      G_CALLBACK (row_activated),
-			      NULL);
 
 	    browser_model = (GtkTreeModel *)gtk_list_store_new (3,
 								GDK_TYPE_PIXBUF,
@@ -3086,11 +3081,20 @@ gdm_login_gui_init (void)
 		      entry);
     gtk_widget_show (ok_button);
 
+    cancel_button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+    GTK_WIDGET_UNSET_FLAGS (cancel_button, GTK_CAN_FOCUS);
+    g_signal_connect (G_OBJECT (cancel_button), "clicked",
+		      G_CALLBACK (gdm_login_cancel_button_press),
+		      entry);
+    gtk_widget_show (cancel_button);
+
     button_box = gtk_hbox_new (0, 5);
     gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (msg),
 			FALSE /* expand */, TRUE /* fill */, 0);
     /*gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (help_button),
 			FALSE, FALSE, 0);*/
+    gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (cancel_button),
+		      FALSE, FALSE, 0);
     gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (ok_button),
 		      FALSE, FALSE, 0);
     gtk_widget_show (button_box);
@@ -3148,6 +3152,7 @@ gdm_login_gui_init (void)
     if ( ! DOING_GDM_DEVELOPMENT) {
 	    gtk_widget_set_sensitive (entry, FALSE);
 	    gtk_widget_set_sensitive (ok_button, FALSE);
+	    gtk_widget_set_sensitive (cancel_button, FALSE);
     }
 
     gtk_widget_show_all (GTK_WIDGET (login));

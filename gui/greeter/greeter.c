@@ -271,10 +271,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 	
 	greeter_item_pam_set_user (buf);
-	if (ve_string_empty (buf))
-	  greeter_item_ulist_enable ();
-	else
-	  greeter_item_ulist_disable ();
+	greeter_item_ulist_enable ();
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
@@ -311,7 +308,6 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_free (tmp);
 	printf ("%c\n", STX);
 	fflush (stdout);
-
 	break;
 
     case GDM_ERRBOX:
@@ -583,6 +579,16 @@ key_press_event (GtkWidget *widget, GdkEventKey *key, gpointer data)
   return FALSE;
 }
 
+static
+void
+greeter_action_cancel (GreeterItemInfo *info,
+                       gpointer         user_data)
+{
+   greeter_item_ulist_disable ();
+   printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CANCEL);
+   fflush (stdout);
+}
+
 static void
 greeter_setup_items (void)
 {
@@ -594,6 +600,9 @@ greeter_setup_items (void)
 
   greeter_item_capslock_setup (window);
   greeter_item_timed_setup ();
+  greeter_item_register_action_callback ("cancel_button",
+					 greeter_action_cancel,
+					 window);
   greeter_item_register_action_callback ("language_button",
 					 greeter_action_language,
 					 window);

@@ -122,10 +122,6 @@ user_selected (GtkTreeSelection *selection, gpointer data)
   GtkTreeModel *tm = NULL;
   GtkTreeIter iter = {0};
 
-  if (pam_entry == NULL ||
-      ! selecting_user)
-    return;
-
   if (gtk_tree_selection_get_selected (selection, &tm, &iter))
     {
       char *login;
@@ -134,41 +130,18 @@ user_selected (GtkTreeSelection *selection, gpointer data)
       if (login != NULL)
         {
           GreeterItemInfo *pamlabel;
-	  if (greeter_probably_login_prompt)
-		  gtk_entry_set_text (GTK_ENTRY (pam_entry), login);
-	  pamlabel = greeter_lookup_id ("pam-message");
-	  if (pamlabel != NULL)
-	    g_object_set (G_OBJECT (pamlabel->item),
-			  "text", _("Doubleclick on the user\nto log in"),
-			  NULL);
-	}
-    }
-}
 
-static void
-row_activated (GtkTreeView *tree_view,
-	       GtkTreePath *path,
-	       GtkTreeViewColumn *column)
-{
-  GtkTreeModel *tm = NULL;
-  GtkTreeIter iter = {0};
-  GtkTreeSelection *selection;
-
-  if ( ! selecting_user)
-    return;
-
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
-
-  if (gtk_tree_selection_get_selected (selection, &tm, &iter))
-    {
-      char *login;
-      gtk_tree_model_get (tm, &iter, GREETER_ULIST_LOGIN_COLUMN,
-			  &login, -1);
-      if (login != NULL)
-        {
-	  printf ("%c%c%c%s\n", STX, BEL, GDM_INTERRUPT_SELECT_USER,
-		  login);
-	  fflush (stdout);
+          if (selecting_user && greeter_probably_login_prompt)
+            {
+               gtk_entry_set_text (GTK_ENTRY (pam_entry), login);
+            }
+          pamlabel = greeter_lookup_id ("pam-message");
+          if (selecting_user && pamlabel != NULL)
+            {
+               printf ("%c%c%c%s\n", STX, BEL,
+                 GDM_INTERRUPT_SELECT_USER, login);
+               fflush (stdout);
+            }
 	}
     }
 }
@@ -189,9 +162,6 @@ greeter_generate_userlist (GtkWidget *tv)
     {
       g_signal_connect (selection, "changed",
 			G_CALLBACK (user_selected),
-			NULL);
-      g_signal_connect (tv, "row_activated",
-			G_CALLBACK (row_activated),
 			NULL);
 
       tm = (GtkTreeModel *)gtk_list_store_new (3,
