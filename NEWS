@@ -1,5 +1,38 @@
 Ahh news...
 
+2.2.4.2 stuff:
+
+- Keep a global pam handle around again, and add a pam conversation
+  dialog when no greeter is up.  Set RHOST and RUSER and fix some
+  other pam related things.  Hopefully we're more pam correct now.
+
+- Have an option that forces 24hour clock even in locales which
+  like 12hour clock (Terje Rosten, Ali Akcaagac, me)
+
+- Change how FLEXI_XNEST works, be more paranoid in who we allow to
+  run an an xnest, and we always run as the user who requested it.
+  It requires that the user has a .Xauthority file with an
+  MIT-MAGIC-COOKIE-1 for the current display.
+
+- Fix many obscure fork races
+
+- Now exports a procol version environmental variable to the greeter
+  so that it's easier to use external greeters.
+
+- Ugly fix to the toolbar deadlock problem, very VERY evil, but
+  it's really a bug in gnome-dock
+
+- When we run a flexi console server, lock the screen with xscreensaver.
+  Also throttle xscreensaver so that it doesn't take extra CPU power.
+
+- Yet another extension to XDMCP, which makes the MANAGED_FORWARD
+  stuff more reliable on bad networks.  It is however 100% compatible
+  with 2.2.4.1 in operation.
+
+- Minor fixes all over the place
+
+- Documentation updates (Trevor Curtis)
+
 2.2.4.1 stuff:
 
 - X server editting now actually works, and gdmconfig produces

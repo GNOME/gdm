@@ -150,13 +150,26 @@ gdm_connection_is_writable (GdmConnection *conn)
 gboolean
 gdm_connection_write (GdmConnection *conn, const char *str)
 {
+	int ret;
+#ifndef MSG_NOSIGNAL
+	void (*old_handler)(int);
+#endif
+
 	g_return_val_if_fail (conn != NULL, FALSE);
 	g_return_val_if_fail (str != NULL, FALSE);
 
 	if ( ! conn->writable)
 		return FALSE;
 
-	if (send (conn->fd, str, strlen (str), MSG_NOSIGNAL) < 0)
+#ifdef MSG_NOSIGNAL
+	ret = send (conn->fd, str, strlen (str), MSG_NOSIGNAL);
+#else
+	old_handler = signal (SIGPIPE, SIG_IGN);
+	ret = send (conn->fd, str, strlen (str), 0);
+	signal (SIGPIPE, old_handler);
+#endif
+
+	if (ret < 0)
 		return FALSE;
 	else
 		return TRUE;

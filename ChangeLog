@@ -1,3 +1,9 @@
+Wed Sep 26 23:54:11 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm-net.c, gui/gdmflexiserver.c: deal with the case where
+	  MSG_NOSIGNAL is not defined by temporairly ignoring the SIGPIPE
+	  signal.  Fixes #60586
+
 Wed Sep 26 21:01:38 2001  George Lebl <jirka@5z.com>
 
 	* daemon/verify.h, daemon/verify-*.c, daemon/slave.c,

@@ -55,12 +55,25 @@ do_command (int fd, const char *command, gboolean get_response)
 	GString *str;
 	char buf[1];
 	char *cstr;
+	int ret;
+#ifndef MSG_NOSIGNAL
+	void (*old_handler)(int);
+#endif
 
 	if (debug)
 		g_print ("Sending command: '%s'\n", command);
 
 	cstr = g_strdup_printf ("%s\n", command);
-	if (send (fd, cstr, strlen (cstr), MSG_NOSIGNAL) < 0)
+
+#ifdef MSG_NOSIGNAL
+	ret = send (fd, cstr, strlen (cstr), MSG_NOSIGNAL);
+#else
+	old_handler = signal (SIGPIPE, SIG_IGN);
+	ret = send (fd, cstr, strlen (cstr), 0);
+	signal (SIGPIPE, old_handler);
+#endif
+
+	if (ret < 0)
 		return NULL;
 
 	if ( ! get_response)
