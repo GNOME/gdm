@@ -1320,6 +1320,11 @@ gdm_wm_restore_wm_order (void)
 
 	gdk_flush ();
 	XSync (wm_disp, False);
+
+	process_events ();
+
+	gdk_flush ();
+	XSync (wm_disp, False);
 	trap_push ();
 
 	XGrabServer (wm_disp);

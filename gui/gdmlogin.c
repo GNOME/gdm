@@ -2442,6 +2442,19 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
+
+    case GDM_SAVEDIE:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	/* Set busy cursor */
+	setup_cursor (GDK_WATCH);
+
+	gdm_wm_save_wm_order ();
+
+	kill_thingies ();
+	gdk_flush ();
+
+	_exit (EXIT_SUCCESS);
 	
     default:
 	break;
@@ -3817,6 +3830,9 @@ gdm_reread_config (int sig)
 	     ! bool_same (GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
 		/* restart interruption */
 		gnome_config_pop_prefix ();
+
+		/* Set busy cursor */
+		setup_cursor (GDK_WATCH);
 
 		gdm_wm_save_wm_order ();
 

@@ -1,3 +1,18 @@
+Sat Jul 20 10:19:25 2002  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c, gui/gdmsetup.c: setup busy cursor when starting
+	  config
+
+	* daemon/gdm.h, daemon/slave.c, gui/gdmlogin.c,
+	  gui/greeter/greeter.c: add GDM_SAVEDIE request so that restarts
+	  of the greeter from the daemon also work and use this for the
+	  restart from the slave on greeter change.  #88533
+
+	* gui/gdmwm.c: do process_events before a restore_wm_order
+	  so that we restore wm order after all our things have been
+	  finished so that the wm order is really restored especially on
+	  the graphical greeter
+
 2002-07-18  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* gui/greeter/themes/happygnome/Makefile.am:

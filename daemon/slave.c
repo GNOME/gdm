@@ -756,6 +756,17 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		display->sesspid = 0;
 		return;
 	}
+
+	/* Set the busy cursor */
+	if (d->dsp != NULL) {
+		Cursor xcursor = XCreateFontCursor (d->dsp, GDK_WATCH);
+		XDefineCursor (d->dsp,
+			       DefaultRootWindow (d->dsp),
+			       xcursor);
+		XFreeCursor (d->dsp, xcursor);
+		XSync (d->dsp, False);
+	}
+
 	if (pid == 0) {
 		char **argv;
 		/* child */
@@ -843,12 +854,14 @@ restart_the_greeter (void)
 	if (greet) {
 		gdm_sigchld_block_push ();
 
+		gdm_slave_greeter_ctl_no_ret (GDM_SAVEDIE, "");
+
 		greet = FALSE;
 
-		if (d->greetpid > 0) {
-			if (kill (d->greetpid, SIGTERM) == 0)
-				waitpid (d->greetpid, 0, 0); 
-		}
+		/* Wait for the greeter to really die, the check is just
+		 * being very anal, the pid is always set to something */
+		if (d->greetpid > 0)
+			waitpid (d->greetpid, 0, 0); 
 		d->greetpid = 0;
 
 		gdm_slave_send_num (GDM_SOP_GREETPID, 0);

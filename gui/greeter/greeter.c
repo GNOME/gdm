@@ -143,6 +143,14 @@ greeter_parse_config (void)
       GdmXineramaScreen = 0;
 }
 
+static void
+setup_cursor (GdkCursorType type)
+{
+	GdkCursor *cursor = gdk_cursor_new (type);
+	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
+	gdk_cursor_destroy (cursor);
+}
+
 static gboolean
 greeter_ctrl_handler (GIOChannel *source,
 		      GIOCondition cond,
@@ -465,6 +473,18 @@ greeter_ctrl_handler (GIOChannel *source,
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
+
+    case GDM_SAVEDIE:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	/* Set busy cursor */
+	setup_cursor (GDK_WATCH);
+
+	gdm_wm_save_wm_order ();
+
+	gdk_flush ();
+
+	_exit (EXIT_SUCCESS);
 	
     default:
 	break;
@@ -502,14 +522,6 @@ greeter_setup_items (void)
 					 NULL);
   greeter_item_system_setup ();
   greeter_item_session_setup ();
-}
-
-static void
-setup_cursor (GdkCursorType type)
-{
-	GdkCursor *cursor = gdk_cursor_new (type);
-	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
-	gdk_cursor_destroy (cursor);
 }
 
 enum {
@@ -746,6 +758,8 @@ greeter_abort (const gchar *format, ...)
 static void
 greeter_reread_config (int sig)
 {
+  /* Set busy cursor */
+  setup_cursor (GDK_WATCH);
   /* FIXME: actually reparse config stuff here, instead of
    * just requesting a restart */
   gdm_wm_save_wm_order ();

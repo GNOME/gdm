@@ -55,6 +55,14 @@ static int GdmMinimalUID = 100;
 static GladeXML *xml;
 
 static void
+setup_cursor (GdkCursorType type)
+{
+	GdkCursor *cursor = gdk_cursor_new (type);
+	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
+	gdk_cursor_destroy (cursor);
+}
+
+static void
 update_greeters (void)
 {
 	char *p, *ret;
@@ -1959,6 +1967,9 @@ main (int argc, char *argv[])
 		char *gtkrc;
 		guint sid;
 
+		/* Set busy cursor */
+		setup_cursor (GDK_WATCH);
+
 		/* If we are running under gdm parse the GDM gtkRC */
 		gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 		gtkrc = gnome_config_get_string (GDM_KEY_GTKRC);
@@ -1995,6 +2006,8 @@ main (int argc, char *argv[])
 						GTK_MESSAGE_ERROR,
 						GTK_BUTTONS_OK,
 						_("You must be the superuser (root) to configure GDM.\n"));
+		if (RUNNING_UNDER_GDM)
+			setup_cursor (GDK_LEFT_PTR);
 		gtk_dialog_run (GTK_DIALOG (fatal_error));
 		exit (EXIT_FAILURE);
 	}
@@ -2006,6 +2019,9 @@ main (int argc, char *argv[])
 	gnome_config_pop_prefix ();
 
 	setup_gui ();
+
+	if (RUNNING_UNDER_GDM)
+		setup_cursor (GDK_LEFT_PTR);
 
 	gtk_main ();
 

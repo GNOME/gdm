@@ -77,7 +77,7 @@ enum {
 
 /* This will change if there are incompatible
  * protocol changes */
-#define GDM_GREETER_PROTOCOL_VERSION "1"
+#define GDM_GREETER_PROTOCOL_VERSION "2"
 
 #define GDM_MSG        'D'
 #define GDM_NOECHO     'U'
@@ -107,6 +107,7 @@ enum {
 #define GDM_ERRDLG     'E' /* Puts string up in an error dialog */
 #define GDM_NOFOCUS    'f' /* Don't focus the login window (optional) */
 #define GDM_FOCUS      'F' /* Allow focus on the login window again (optional) */
+#define GDM_SAVEDIE    '!' /* Save wm order and die (and set busy cursor) */
 
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'
