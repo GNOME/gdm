@@ -1,3 +1,17 @@
+Sat Dec 21 12:09:44 2002  George Lebl <jirka@5z.com>
+
+	* gui/gdmcomm.c: update the message when GDM is not running
+
+	* gui/gdmphotosetup.c: when not using GDM, then check for this
+	  and tell the user and not let him in as it would then make no
+	  sense.  Fixes RH #70326 and GNOME #101653
+
+	* gui/greeter/greeter_item.c: Fix greeter_item_expand_text to
+	  be utf8 safe.  Fixes GNOME #100738
+
+	* gui/greeter/greeter_session.c, gui/gdmlogin.c: Fix symlinks as
+	  session files.  Fixes GNOME #95380
+
 Fri Dec 20 14:53:26 2002  George Lebl <jirka@5z.com>
 
 	* config/locale.alias, gui/gdmlanguages.c: add Amharic language to

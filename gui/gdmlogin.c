@@ -1406,16 +1406,21 @@ gdm_login_session_init (GtkWidget *menu)
 	lstat (s, &statbuf);
 
 	/* If default session link exists, find out what it points to */
-	if (S_ISLNK (statbuf.st_mode) &&
-	    g_ascii_strcasecmp (dent->d_name, "default") == 0) {
-	    gchar t[_POSIX_PATH_MAX];
-	    
-	    linklen = readlink (s, t, _POSIX_PATH_MAX);
-	    t[linklen] = 0;
-	    g_free (defsess);
-	    defsess = g_strdup (t);
+	if (S_ISLNK (statbuf.st_mode)) {
+		if (g_ascii_strcasecmp (dent->d_name, "default") == 0) {
+			gchar t[_POSIX_PATH_MAX];
 
-	    got_default_link = TRUE;
+			linklen = readlink (s, t, _POSIX_PATH_MAX);
+			t[linklen] = 0;
+			g_free (defsess);
+			defsess = g_strdup (t);
+
+			got_default_link = TRUE;
+		} else {
+			/* This may just be a link to somewhere so
+			 * stat the file itself */
+			stat (s, &statbuf);
+		}
 	}
 
 	/* If session script is readable/executable add it to the list */

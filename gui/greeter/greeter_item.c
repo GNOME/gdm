@@ -109,7 +109,7 @@ greeter_item_expand_text (const char *text)
   const char *p;
   char *clock;
   int r;
-  gboolean underline = FALSE;
+  int underline = -1;
   char buf[256];
 
   str = g_string_sized_new (strlen (text));
@@ -164,22 +164,25 @@ greeter_item_expand_text (const char *text)
 	}
       else if (*p == '_')
         {
-	  underline = TRUE;
+	  underline = g_utf8_skip[*(guchar *)(p+1)];
 	  g_string_append (str, "<u>");
 	}
       else
 	{
 	  g_string_append_c (str, *p);
-	  if (underline)
-	    g_string_append (str, "</u>");
-	  underline = FALSE;
+	  if (underline >= 0)
+	    {
+	      underline--;
+	      if (underline == 0)
+	        g_string_append (str, "</u>");
+	    }
 	}
       p++;
     }
   
  bail:
 
-  if (underline)
+  if (underline >= 0)
     g_string_append (str, "</u>");
 
   return g_string_free (str, FALSE);

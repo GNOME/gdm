@@ -377,6 +377,8 @@ gdmcomm_check (gboolean gui_bitching)
 		fclose (fp);
 	}
 
+	g_free (pidfile);
+
 	errno = 0;
 	if (pid <= 1 ||
 	    (kill (pid, 0) < 0 &&
@@ -387,9 +389,17 @@ gdmcomm_check (gboolean gui_bitching)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
-				 _("GDM is not running.\n"
-				   "Please ask your "
-				   "system administrator to start it."));
+				 "foo");
+			 gtk_label_set_markup
+				 (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label),
+				  _("<b>GDM (The GNOME Display Manager) "
+				    "is not running.</b>\n\n"
+				    "You might in fact be using a different "
+				    "display manager, such as KDM "
+				    "(KDE Display Manager or xdm).\n"
+				    "If you still wish to use this feature, "
+				    "either start GDM your self or ask your "
+				    "system administrator to start GDM."));
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -404,7 +414,8 @@ gdmcomm_check (gboolean gui_bitching)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
-				 _("Cannot communicate with gdm, perhaps "
+				 _("Cannot communicate with GDM "
+				   "(The GNOME Display Manager), perhaps "
 				   "you have an old version running."));
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));

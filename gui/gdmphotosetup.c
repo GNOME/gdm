@@ -32,6 +32,58 @@
 
 int response = -999;
 
+static gboolean
+gdm_check (void)
+{
+	GtkWidget *dialog;
+	FILE *fp = NULL;
+	long pid;
+	char *pidfile;
+
+	pidfile = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+					GDM_KEY_PIDFILE);
+
+	pid = 0;
+	if (pidfile != NULL)
+		fp = fopen (pidfile, "r");
+	if (fp != NULL) {
+		fscanf (fp, "%ld", &pid);
+		fclose (fp);
+	}
+
+	g_free (pidfile);
+
+	errno = 0;
+	if (pid <= 1 ||
+	    (kill (pid, 0) < 0 &&
+	     errno != EPERM)) {
+		dialog = gtk_message_dialog_new
+			(NULL /* parent */,
+			 GTK_DIALOG_MODAL /* flags */,
+			 GTK_MESSAGE_WARNING,
+			 GTK_BUTTONS_OK,
+			 "foo");
+		 gtk_label_set_markup
+			 (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label),
+			  _("<b>GDM (The GNOME Display Manager) "
+			    "is not running.</b>\n\n"
+			    "You might in fact be using a different "
+			    "display manager, such as KDM "
+			    "(KDE Display Manager or xdm).\n"
+			    "If you still wish to use this feature, "
+			    "either start GDM your self or ask your "
+			    "system administrator to start GDM."));
+		gtk_widget_show_all (dialog);
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+
+
 static void
 dialog_response (GtkWidget *dialog, int res, gpointer data)
 {
@@ -63,6 +115,10 @@ main (int argc, char *argv[])
 	face_browser = gnome_config_get_bool (GDM_KEY_BROWSER);
 	max_size = gnome_config_get_int (GDM_KEY_MAXFILE);
 	gnome_config_pop_prefix ();
+
+	if ( ! gdm_check ()) {
+		return 1;
+	}
 
 	if ( ! face_browser) {
 		GtkWidget *d;
