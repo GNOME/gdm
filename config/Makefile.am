@@ -50,9 +50,11 @@ install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -f $(confdir)/gdm.conf; then \
 		$(INSTALL_DATA) gdm.conf $(confdir)/gdm.conf; \
 	fi
+
 	if test '!' -f $(localedir)/locale.alias; then \
 		$(INSTALL_DATA) $(srcdir)/locale.alias $(localedir)/locale.alias; \
 	fi
+
 	if test '!' -d $(sessdir); then \
 		$(mkinstalldirs) $(sessdir); \
 		chmod 755 $(sessdir); \
@@ -63,6 +65,7 @@ install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -f $(sessdir)/Gnome; then \
 		$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome; \
 	fi
+
 	if test '!' -d $(initdir); then \
 		$(mkinstalldirs) $(initdir); \
 		chmod 755 $(initdir); \
@@ -70,6 +73,7 @@ install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -f $(initdir)/Default; then \
 		$(INSTALL_SCRIPT) $(srcdir)/Default $(initdir)/Default; \
 	fi
+
 	if test '!' -d $(predir); then \
 		$(mkinstalldirs) $(predir); \
 		chmod 755 $(predir); \
@@ -77,6 +81,7 @@ install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -f $(predir)/Default; then \
 		$(INSTALL_SCRIPT) $(srcdir)/PreSession $(predir)/Default; \
 	fi
+
 	if test '!' -d $(postdir); then \
 		$(mkinstalldirs) $(postdir); \
 		chmod 755 $(postdir); \
@@ -84,6 +89,15 @@ install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -f $(postdir)/Default; then \
 		$(INSTALL_SCRIPT) $(srcdir)/PostSession $(postdir)/Default; \
 	fi
+
+	if test '!' -d $(gnomercdir); then \
+		$(mkinstalldirs) $(gnomercdir); \
+		chmod 755 $(gnomercdir); \
+	fi
+	if test '!' -f $(gnomercdir)/gnomerc; then \
+		$(INSTALL_SCRIPT) $(srcdir)/gnomerc $(gnomercdir)/gnomerc; \
+	fi
+
 	if test '!' -d $(authdir); then \
 		$(mkinstalldirs) $(authdir); \
 		chown gdm.gdm $(authdir); \

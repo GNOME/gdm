@@ -1,5 +1,6 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
+ * Copyright (C) Rik Faith <faith@precisioninsight.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,6 @@
  * Functions for generating MIT-MAGIC-COOKIEs. 
  * 
  * This code was derived (i.e. stolen) from mcookie.c written by Rik Faith
- * <faith@cs.unc.edu>
  *  
  */
 
@@ -35,6 +35,7 @@
 
 #include "gdm.h"
 #include "md5.h"
+#include "cookie.h"
 
 #define MAXBUFFERSIZE 512
 
@@ -51,7 +52,6 @@ struct rngs {
 
 #define RNGS (sizeof(rngs)/sizeof(struct rngs))
 
-void gdm_cookie_generate (GdmDisplay *);
 
 void 
 gdm_cookie_generate (GdmDisplay *d)

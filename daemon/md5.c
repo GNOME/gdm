@@ -15,7 +15,7 @@
  * gdm_md5_final, which will fill a supplied 16-byte array with the
  * digest. 
  *
- * Changed all names to avoid namespace pollution -- mkp
+ * Changed all names to avoid glibc namespace pollution -- mkp
  *
  */
 

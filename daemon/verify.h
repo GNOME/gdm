@@ -16,25 +16,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __GDM_CHOOSER_H__
-#define __GDM_CHOOSER_H__
+#ifndef GDM_VERIFY_H
+#define GDM_VERIFY_H
 
-#include <gnome.h>
+#include "gdm.h"
 
-/* If you (for some odd reason) have more than 16 interfaces in your
- * machine, redefine this */
+gchar *gdm_verify_user    (const gchar *display);
+void   gdm_verify_cleanup (void);
+void   gdm_verify_check   (void);
 
-#define MAXIF 16
-
-
-typedef struct _GdmChooserHost GdmChooserHost;
-
-struct _GdmChooserHost {
-    gchar *name;
-    gchar *desc;
-    GdkImlibImage *picture;
-};
-
-#endif /* __GDM_CHOOSER_H__ */
+#endif /* GDM_VERIFY_H */
 
 /* EOF */

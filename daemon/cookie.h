@@ -16,25 +16,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __GDM_CHOOSER_H__
-#define __GDM_CHOOSER_H__
+#ifndef GDM_COOKIE_H
+#define GDM_COOKIE_H
 
-#include <gnome.h>
+#include "gdm.h"
 
-/* If you (for some odd reason) have more than 16 interfaces in your
- * machine, redefine this */
+void gdm_cookie_generate (GdmDisplay *);
 
-#define MAXIF 16
-
-
-typedef struct _GdmChooserHost GdmChooserHost;
-
-struct _GdmChooserHost {
-    gchar *name;
-    gchar *desc;
-    GdkImlibImage *picture;
-};
-
-#endif /* __GDM_CHOOSER_H__ */
+#endif /* GDM_COOKIE_H */
 
 /* EOF */

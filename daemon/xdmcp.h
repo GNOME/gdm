@@ -16,25 +16,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __GDM_CHOOSER_H__
-#define __GDM_CHOOSER_H__
+#ifndef GDM_XDMCP_H
+#define GDM_XDMCP_H
 
-#include <gnome.h>
+#include <glib.h>
+#include <X11/Xlib.h>
+#include <X11/Xmd.h>
+#include <X11/Xauth.h>
+#include <X11/Xdmcp.h>
+#include "gdm.h"
 
-/* If you (for some odd reason) have more than 16 interfaces in your
- * machine, redefine this */
+int  gdm_xdmcp_init  (void);
+void gdm_xdmcp_run   (void);
+void gdm_xdmcp_close (void);
 
-#define MAXIF 16
+/* Fix broken X includes */
+int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);
 
-
-typedef struct _GdmChooserHost GdmChooserHost;
-
-struct _GdmChooserHost {
-    gchar *name;
-    gchar *desc;
-    GdkImlibImage *picture;
-};
-
-#endif /* __GDM_CHOOSER_H__ */
+#endif /* GDM_XDMCP_H */
 
 /* EOF */

@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@SunSITE.auc.dk>
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,7 @@
  */
 
 /* This is the gdm slave process. gdmslave runs the chooser, greeter
- * and the user's session scripts. 
- */
+ * and the user's session scripts. */
 
 #include <config.h>
 #include <gnome.h>
@@ -34,11 +33,27 @@
 #include <pwd.h>
 #include <grp.h>
 #include <errno.h>
+#include <syslog.h>
 
 #include "gdm.h"
+#include "slave.h"
+#include "misc.h"
+#include "verify.h"
+#include "filecheck.h"
+#include "auth.h"
+
 
 static const gchar RCSid[]="$Id$";
 
+/* Global vars */
+GdmDisplay *d;
+gchar *login = NULL;
+sigset_t mask, omask;
+gboolean pingack;
+gboolean greet = TRUE;
+FILE *greeter;
+
+/* Configuration option variables */
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
 extern gchar *GdmSessDir;
@@ -55,42 +70,22 @@ extern gint GdmRelaxPerms;
 extern gint GdmKillInitClients;
 extern gint GdmRetryDelay;
 extern sigset_t sysmask;
+extern gchar *argdelim;
 
-extern gboolean gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file, 
-				gboolean absentok, gint maxsize, gint perms);
-extern gchar **gdm_arg_munch (const gchar *p);
-extern gint gdm_exec_script (GdmDisplay*, gchar *dir);
-extern void gdm_abort (const char*, ...);
-extern void gdm_error (const char*, ...);
-extern void gdm_debug (const char*, ...);
-extern void gdm_remanage (const char*, ...);
-extern void gdm_verify_cleanup (void);
-extern gboolean gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir);
-extern void gdm_auth_user_remove (GdmDisplay *d, uid_t user);
-extern void gdm_exec_command (gchar *cmd);
-extern gchar *gdm_verify_user (gchar *display);
-
-void   gdm_slave_start (GdmDisplay *d);
-static gint gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt);
-static gint gdm_slave_xioerror_handler (Display *disp);
-static void gdm_slave_greeter (void);
-static void gdm_slave_session_start (gchar *login);
-static void gdm_slave_session_stop (void);
-static void gdm_slave_session_cleanup (void);
-static void gdm_slave_term_handler (int sig);
-static void gdm_slave_child_handler (int sig);
-static void gdm_slave_windows_kill (void);
-static void gdm_slave_xsync_handler (int sig);
+/* Local prototypes */
+static gint     gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt);
+static gint     gdm_slave_xioerror_handler (Display *disp);
+static void     gdm_slave_greeter (void);
+static void     gdm_slave_session_start (void);
+static void     gdm_slave_session_stop (void);
+static void     gdm_slave_session_cleanup (void);
+static void     gdm_slave_term_handler (int sig);
+static void     gdm_slave_child_handler (int sig);
+static void     gdm_slave_windows_kill (void);
+static void     gdm_slave_xsync_handler (int sig);
 static gboolean gdm_slave_xsync_ping (void);
-gchar  *gdm_slave_greeter_ctl (gchar cmd, gchar *str);
-
-
-GdmDisplay *d;
-struct passwd *pwent;
-sigset_t mask, omask;
-gboolean pingack;
-gboolean greet = TRUE;
-FILE *greeter;
+static void     gdm_slave_exit (gint status, const gchar *format, ...);
+static gint     gdm_slave_exec_script (GdmDisplay*, gchar *dir);
 
 
 void 
@@ -106,8 +101,8 @@ gdm_slave_start (GdmDisplay *display)
     
     d = display;
     
-    setenv ("XAUTHORITY", d->authfile, TRUE);
-    setenv ("DISPLAY", d->name, TRUE);
+    gdm_setenv ("XAUTHORITY", d->authfile);
+    gdm_setenv ("DISPLAY", d->name);
     
     /* Handle a INT/TERM signals from gdm master */
     term.sa_handler = gdm_slave_term_handler;
@@ -117,7 +112,7 @@ gdm_slave_start (GdmDisplay *display)
     sigaddset (&term.sa_mask, SIGINT);
     
     if ((sigaction (SIGTERM, &term, NULL) < 0) || (sigaction (SIGINT, &term, NULL) < 0))
-	gdm_abort (_("gdm_slave_init: Error setting up TERM/INT signal handler"));
+	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_init: Error setting up TERM/INT signal handler"));
     
     /* Child handler. Keeps an eye on greeter/session */
     child.sa_handler = gdm_slave_child_handler;
@@ -125,7 +120,7 @@ gdm_slave_start (GdmDisplay *display)
     sigemptyset (&child.sa_mask);
     
     if (sigaction (SIGCHLD, &child, NULL) < 0) 
-	gdm_abort (_("gdm_slave_init: Error setting up CHLD signal handler"));
+	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_init: Error setting up CHLD signal handler"));
     
     /* The signals we wish to listen to */
     sigfillset (&mask);
@@ -161,21 +156,20 @@ gdm_slave_start (GdmDisplay *display)
 }
 
 
-static void
+void
 gdm_slave_greeter (void)
 {
     gint pipe1[2], pipe2[2];  
-    gchar *login = NULL;
     gchar **argv;
     
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     
     /* Run the init script. gdmslave suspends until script has terminated */
-    gdm_exec_script (d, GdmDisplayInit);
+    gdm_slave_exec_script (d, GdmDisplayInit);
     
     /* Open a pipe for greeter communications */
     if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
-	gdm_abort (_("gdm_slave_greeter: Can't init pipe to gdmgreeter"));
+	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't init pipe to gdmgreeter"));
     
     greet = TRUE;
     
@@ -200,23 +194,23 @@ gdm_slave_greeter (void)
 	    dup2 (pipe2[1], STDOUT_FILENO);
 	
 	if (setgid (GdmGroupId) < 0) 
-	    gdm_abort (_("gdm_slave_greeter: Couldn't set groupid to %d"), GdmGroupId);
+	    gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set groupid to %d"), GdmGroupId);
 	
 	if (setuid (GdmUserId) < 0) 
-	    gdm_abort (_("gdm_slave_greeter: Couldn't set userid to %d"), GdmUserId);
+	    gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set userid to %d"), GdmUserId);
 	
-	setenv ("XAUTHORITY", d->authfile, TRUE);
-	setenv ("DISPLAY", d->name, TRUE);
-	setenv ("HOME", "/", TRUE); /* Hack */
-	setenv ("PATH", GdmDefaultPath, TRUE);
+	gdm_setenv ("XAUTHORITY", d->authfile);
+	gdm_setenv ("DISPLAY", d->name);
+	gdm_setenv ("HOME", "/"); /* Hack */
+	gdm_setenv ("PATH", GdmDefaultPath);
 
-	argv = gdm_arg_munch (GdmGreeter);
+	argv = g_strsplit (GdmGreeter, argdelim, MAX_ARGS);
 	execv (argv[0], argv);
 	
-	gdm_abort (_("gdm_slave_greeter: Error starting greeter on display %s"), d->name);
+	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Error starting greeter on display %s"), d->name);
 	
     case -1:
-	gdm_abort (_("gdm_slave_greeter: Can't fork gdmgreeter process"));
+	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't fork gdmgreeter process"));
 	
     default:
 	close (pipe1[0]);
@@ -247,23 +241,25 @@ gdm_slave_greeter (void)
 	}
     }
 
-    gdm_slave_session_start (login);
+    gdm_slave_session_start();
 }
 
 
-static void
-gdm_slave_session_start (gchar *login)
+void
+gdm_slave_session_start ()
 {
     gchar *cfgdir, *sesspath;
     struct stat statbuf;
+    struct passwd *pwent;
     gchar *session, *language, *usrsess, *usrlang;
     gboolean savesess = FALSE, savelang = FALSE, usrcfgok = FALSE, authok = FALSE;
     gint i;
 
     pwent = getpwnam (login);
-    
+
     if (!pwent) 
-	gdm_remanage (_("gdm_slave_session_start: User passed authentication but getpwnam(%s) failed. Spooky!"), login);
+	gdm_slave_exit (DISPLAY_REMANAGE,
+			_("gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"), login);
 
     setegid (pwent->pw_gid);
     seteuid (pwent->pw_uid);
@@ -322,36 +318,37 @@ gdm_slave_session_start (gchar *login)
     waitpid (d->greetpid, 0, 0); 
     d->greetpid = 0;
     
-    sigprocmask (SIG_UNBLOCK, &omask, NULL);
+    sigprocmask (SIG_SETMASK, &omask, NULL);
     
     if (GdmKillInitClients)
 	gdm_slave_windows_kill();
  
     /* Prepare user session */
-    setenv ("DISPLAY", d->name, TRUE);
-    setenv ("LOGNAME", login, TRUE);
-    setenv ("USER", login, TRUE);
-    setenv ("USERNAME", login, TRUE);
-    setenv ("HOME", pwent->pw_dir, TRUE);
-    setenv ("GDMSESSION", session, TRUE);
-    setenv ("SHELL", pwent->pw_shell, TRUE);
-    putenv ("MAIL");
+    gdm_setenv ("DISPLAY", d->name);
+    gdm_setenv ("LOGNAME", login);
+    gdm_setenv ("USER", login);
+    gdm_setenv ("USERNAME", login);
+    gdm_setenv ("HOME", pwent->pw_dir);
+    gdm_setenv ("GDMSESSION", session);
+    gdm_setenv ("SHELL", pwent->pw_shell);
+    gdm_setenv ("MAIL", NULL);	/* Unset $MAIL for broken shells */
 
     /* Special PATH for root */
-    if(pwent->pw_uid == 0)
-	setenv ("PATH", GdmRootPath, TRUE);
+    if (pwent->pw_uid == 0)
+	gdm_setenv ("PATH", GdmRootPath);
     else
-	setenv ("PATH", GdmDefaultPath, TRUE);
+	gdm_setenv ("PATH", GdmDefaultPath);
 
     /* Set locale */
     if (!strcasecmp (language, "english"))
-	setenv ("LANG", "C", TRUE);
+	gdm_setenv ("LANG", "C");
     else
-	setenv ("LANG", language, TRUE);
+	gdm_setenv ("LANG", language);
     
     /* If script fails reset X server and restart greeter */
-    if (gdm_exec_script (d, GdmPreSession) != EXIT_SUCCESS) 
-	gdm_remanage (_("gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."));
+    if (gdm_slave_exec_script (d, GdmPreSession) != EXIT_SUCCESS) 
+	gdm_slave_exit (DISPLAY_REMANAGE,
+			_("gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."));
 
     /* Setup cookie -- We need this information during cleanup, thus
      * cookie handling is done before fork()ing */
@@ -375,7 +372,7 @@ gdm_slave_session_start (gchar *login)
     switch (d->sesspid = fork()) {
 	
     case -1:
-	gdm_abort (_("gdm_slave_session_start: Error forking user session"));
+	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_session_start: Error forking user session"));
 	
     case 0:
 	setpgid (0, 0);
@@ -383,13 +380,16 @@ gdm_slave_session_start (gchar *login)
 	umask (022);
 	
 	if (setgid (pwent->pw_gid) < 0) 
-	    gdm_remanage (_("gdm_slave_session_start: Could not setgid %d. Aborting."), pwent->pw_gid);
+	    gdm_slave_exit (DISPLAY_REMANAGE,
+			    _("gdm_slave_session_start: Could not setgid %d. Aborting."), pwent->pw_gid);
 	
 	if (initgroups (login, pwent->pw_gid) < 0)
-	    gdm_remanage (_("gdm_slave_session_start: initgroups() failed for %s. Aborting."), login);
+	    gdm_slave_exit (DISPLAY_REMANAGE,
+			    _("gdm_slave_session_start: initgroups() failed for %s. Aborting."), login);
 	
 	if (setuid (pwent->pw_uid) < 0) 
-	    gdm_remanage (_("gdm_slave_session_start: Could not become %s. Aborting."), login);
+	    gdm_slave_exit (DISPLAY_REMANAGE,
+			    _("gdm_slave_session_start: Could not become %s. Aborting."), login);
 	
 	chdir (pwent->pw_dir);
 	
@@ -444,14 +444,21 @@ gdm_slave_session_start (gchar *login)
 }
 
 
-static void
-gdm_slave_session_stop (void)
+void
+gdm_slave_session_stop ()
 {
-    gdm_debug ("gdm_slave_session_stop: %s on %s", pwent->pw_name, d->name);
+    struct passwd *pwent;
+
+    gdm_debug ("gdm_slave_session_stop: %s on %s", login, d->name);
     
     kill (- (d->sesspid), SIGTERM);
     
     gdm_verify_cleanup();
+    
+    pwent = getpwnam (login);	/* PAM overwrites our pwent */
+
+    if (!pwent)
+	return;
     
     /* Remove display from ~user/.Xauthority */
     setegid (pwent->pw_gid);
@@ -464,15 +471,14 @@ gdm_slave_session_stop (void)
 }
 
 
-/* Only executed if display is still alive */
-static void
+void
 gdm_slave_session_cleanup (void)
 {
-    gdm_debug ("gdm_slave_session_cleanup: %s on %s", pwent->pw_name, d->name);
+    gdm_debug ("gdm_slave_session_cleanup: %s on %s", login, d->name);
     
     /* Execute post session script */
     gdm_debug ("gdm_slave_session_cleanup: Running post session script");
-    gdm_exec_script (d, GdmPostSession);
+    gdm_slave_exec_script (d, GdmPostSession);
 	
     if (d->dsp && gdm_slave_xsync_ping()) {
 	
@@ -498,7 +504,7 @@ gdm_slave_term_handler (int sig)
 	waitpid (d->greetpid, 0, 0); 
 	d->greetpid = 0;
     } 
-    else if (pwent)
+    else if (login)
 	gdm_slave_session_stop();
     
     gdm_debug ("gdm_slave_term_handler: Whacking client connections");
@@ -557,8 +563,8 @@ gdm_slave_windows_kill (void)
     
     gdm_debug ("gdm_slave_windows_kill: Killing windows on %s", d->name);
     
-    setenv ("XAUTHORITY", d->authfile, TRUE);
-    setenv ("DISPLAY", d->name, TRUE);
+    gdm_setenv ("XAUTHORITY", d->authfile);
+    gdm_setenv ("DISPLAY", d->name);
     
     for (screen = 0 ; screen < ScreenCount (disp) ; screen++) {
 	
@@ -597,7 +603,7 @@ gdm_slave_xioerror_handler (Display *disp)
 {
     gdm_debug ("gdm_slave_xioerror_handler: I/O error for display %s", d->name);
     
-    if (pwent)
+    if (login)
 	gdm_slave_session_stop();
     
     gdm_error (_("gdm_slave_windows_kill_ioerror_handler: Fatal X error - Restarting %s"), d->name);
@@ -632,7 +638,7 @@ gdm_slave_xsync_ping (void)
     sigemptyset (&sigalarm.sa_mask);
     
     if (sigaction (SIGALRM, &sigalarm, NULL) < 0)
-	gdm_abort (_("gdm_slave_xsync_ping: Error setting up ALARM signal handler"));
+	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_xsync_ping: Error setting up ALARM signal handler"));
     
     sigemptyset (&mask);
     sigaddset (&mask, SIGALRM);
@@ -655,8 +661,15 @@ gchar *
 gdm_slave_greeter_ctl (gchar cmd, gchar *str)
 {
     gchar buf[FIELD_SIZE];
-    
-    g_print ("%c%s\n", cmd, str);
+    guchar c;
+
+    if (str)
+	g_print ("%c%c%s\n", STX, cmd, str);
+    else
+	g_print ("%c%c\n", STX, cmd);
+
+    /* Skip random junk that might have accumulated */
+    do { c = getc (greeter); } while (c && c != STX);
     
     fgets (buf, FIELD_SIZE-1, greeter);
     
@@ -666,6 +679,82 @@ gdm_slave_greeter_ctl (gchar cmd, gchar *str)
     }
     else
 	return (NULL);
+}
+
+
+static void 
+gdm_slave_exit (gint status, const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+    
+    syslog (LOG_ERR, s);
+    
+    g_free (s);
+
+    /* Kill children where applicable */
+    if (d->greetpid)
+	kill (SIGTERM, d->greetpid);
+
+    if (d->chooserpid)
+	kill (SIGTERM, d->chooserpid);
+
+    if (d->sesspid)
+	kill (SIGTERM, d->sesspid);
+
+    if (d->servpid)
+	kill (SIGTERM, d->servpid);
+
+    exit (status);
+}
+
+
+static gint
+gdm_slave_exec_script (GdmDisplay *d, gchar *dir)
+{
+    pid_t pid;
+    gchar *script, *defscript, *scr;
+    gchar **argv;
+    gint status;
+
+    if (!d || !dir)
+	return EXIT_SUCCESS;
+
+    script = g_strconcat (dir, "/", d->name, NULL);
+    defscript = g_strconcat (dir, "/Default", NULL);
+
+    if (! access (script, R_OK|X_OK))
+	scr = script;
+    else if (! access (defscript, R_OK|X_OK)) 
+	scr = defscript;
+    else
+	return EXIT_SUCCESS;
+
+    switch (pid = fork()) {
+	    
+    case 0:
+	gdm_setenv ("PATH", GdmRootPath);
+	argv = g_strsplit (scr, argdelim, MAX_ARGS);
+	execv (argv[0], argv);
+	syslog (LOG_ERR, _("gdm_slave_exec_script: Failed starting: %s"), scr);
+	return EXIT_SUCCESS;
+	    
+    case -1:
+	syslog (LOG_ERR, _("gdm_slave_exec_script: Can't fork script process!"));
+	return EXIT_SUCCESS;
+	
+    default:
+	waitpid (pid, &status, 0);	/* Wait for script to finish */
+
+	if (WIFEXITED (status))
+	    return WEXITSTATUS (status);
+	else
+	    return EXIT_SUCCESS;
+    }
 }
 
 

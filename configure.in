@@ -1,7 +1,7 @@
 AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.0beta4)
+AM_INIT_AUTOMAKE(gdm,2.0beta5)
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
@@ -23,35 +23,6 @@ dnl ## internationalization support
 ALL_LINGUAS="da de es et fr hu ko nl no sv ru pl pt_BR uk tr"
 AM_GNOME_GETTEXT
 
-dnl ## Autentication scheme
-have_pam=no
-AC_CHECK_HEADERS(security/pam_appl.h, [
-	have_pam=yes
-        LIBS="$LIBS -lpam"
-        AC_DEFINE(HAVE_PAM)])
-
-if test $have_pam = no; then
-
-  # Check if -lcrypt is necessary
-  AC_CHECK_LIB(crypt, crypt, [
-  	      LIBS="$LIBS -lcrypt"])
-
-  # Check if crypt lives in a separate header file
-  AC_CHECK_HEADERS(crypt.h, [
-		AC_DEFINE(HAVE_CRYPT)])
-
-  # Check for shadow passwords (hack)
-  AC_MSG_CHECKING("for /etc/shadow")
-
-  if test -f /etc/shadow; then
-	AC_MSG_RESULT(yes)
-	AC_DEFINE(HAVE_SHADOW)
-  else	
-	AC_MSG_RESULT(no)
-  fi
-
-fi
-
 # TCP Wrappers for XDMCP access control
 AC_MSG_CHECKING("whether to use TCP wrappers")
 LIBWRAP_PATH=""
@@ -69,10 +40,9 @@ for I in $LDFLAGS $LIBS -L/usr/lib; do
 done
 
 if test -n "$LIBWRAP_PATH"; then
-	AC_MSG_RESULT(yes)
-	AC_CHECK_LIB(nsl, yp_get_default_domain, LIBS="$LIBS -lnsl")
+        AC_MSG_RESULT(yes)
 else
-	AC_MSG_RESULT(no)
+        AC_MSG_RESULT(no)
 fi
 
 if test -n "$LIBWRAP_PATH"; then
@@ -91,6 +61,69 @@ if test -n "$LIBWRAP_PATH"; then
 	fi
 fi
 LIBS="$LIBS $LIBWRAP_PATH"
+
+dnl find out if we need -lnsl or whatever
+LIB_NSL=
+if test -n "$LIBWRAP_PATH"; then
+        AC_MSG_CHECKING(whether -lwrap requires -lnsl)
+        ORIG_LIBS="$LIBS"
+        LIBS="$LIBWRAP_PATH $LIBS"
+        AC_TRY_LINK([
+#include <tcpd.h>
+int allow_severity, deny_severity;
+], [return hosts_access;], ,[
+dnl try with -lnsl
+OLD_LIBS="$LIBS"
+LIBS="$LIBS -lnsl"
+AC_TRY_LINK([
+#include <tcpd.h>
+int allow_severity, deny_severity;
+], [return hosts_access;], LIB_NSL="-lnsl",
+LIBWRAP_PATH="")
+LIBS="$OLD_LIBS"
+])
+        LIBS="$ORIG_LIBS"
+if test -n "$LIB_NSL"; then
+        AC_MSG_RESULT(yes)
+        LIBS="$LIBS $LIB_NSL"
+else
+        AC_MSG_RESULT(no)
+fi
+fi
+
+dnl ## Autentication scheme
+have_pam=no
+VRFY="verify-crypt"
+AC_CHECK_HEADERS(security/pam_appl.h, [
+	have_pam=yes
+        LIBS="$LIBS -lpam"
+        VRFY="verify-pam"
+        AC_DEFINE(HAVE_PAM)])
+
+if test $have_pam = no; then
+
+  # Check if -lcrypt is necessary
+  AC_CHECK_LIB(crypt, crypt, [
+  	      LIBS="$LIBS -lcrypt"])
+
+  # Check if crypt lives in a separate header file
+  AC_CHECK_HEADERS(crypt.h, [
+		AC_DEFINE(HAVE_CRYPT)])
+
+  # Check for shadow passwords (hack)
+  AC_MSG_CHECKING("for /etc/shadow")
+
+  if test -f /etc/shadow; then
+	VRFY="verify-shadow"
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(HAVE_SHADOW)
+  else	
+	AC_MSG_RESULT(no)
+  fi
+
+fi
+
+AC_SUBST(VRFY)
 
 AC_OUTPUT([
 Makefile

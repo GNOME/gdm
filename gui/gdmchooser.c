@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
+ * Copyright (C) 1998, 1999, 2000 Martin K, Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,7 @@
 
 /* gdmchooser discovers hosts running XDMCP on the local network(s),
  * presents a list of them and allows the user to choose one. The
- * selected hostname will be printed on stdout.
- */
+ * selected hostname will be printed on stdout. */
 
 #include <config.h>
 #include <gnome.h>
@@ -103,9 +102,9 @@ gdm_chooser_sort_func(gpointer d1, gpointer d2)
     GdmChooserHost *b = d2;
 
     if (!d1 || !d2)
-	return (0);
+	return 0;
 
-    return (strcmp (a->name, b->name));
+    return strcmp (a->name, b->name);
 }
 
 
@@ -130,42 +129,42 @@ gdm_chooser_decode_packet (void)
     if (header.version != XDM_PROTOCOL_VERSION)
 	return;
 
-    if (header.opcode == WILLING) {
-
-	if (! XdmcpReadARRAY8 (&buf, &auth))
-	    goto done;
-
-	if (! XdmcpReadARRAY8 (&buf, &host))
-	    goto done;
-
-	if (! XdmcpReadARRAY8 (&buf, &stat))
-	    goto done;
-
-	status = g_strndup (stat.data, stat.length);
-
-	he = gethostbyaddr ((gchar *) &clnt_sa.sin_addr, 
-			    sizeof (struct in_addr), 
-			    AF_INET);
-
-	hostname = (he && he->h_name) ? he->h_name : inet_ntoa (clnt_sa.sin_addr);
-
-	/* We can't pipe hostnames larger than this */
-	if (strlen (hostname)+1 > PIPE_BUF)
-	    goto done;
-
-	hosts = g_list_insert_sorted (hosts, 
-				      gdm_chooser_host_alloc (hostname, (gchar *) status),
-				      (GCompareFunc) gdm_chooser_sort_func);
-
-    done:
-	XdmcpDisposeARRAY8 (&auth);
-	XdmcpDisposeARRAY8 (&host);
-	XdmcpDisposeARRAY8 (&stat);
-
-	g_free (status);
-
+    if (header.opcode != WILLING)
 	return;
-    }
+    
+    if (! XdmcpReadARRAY8 (&buf, &auth))
+	goto done;
+    
+    if (! XdmcpReadARRAY8 (&buf, &host))
+	goto done;
+    
+    if (! XdmcpReadARRAY8 (&buf, &stat))
+	goto done;
+    
+    status = g_strndup (stat.data, stat.length);
+    
+    he = gethostbyaddr ((gchar *) &clnt_sa.sin_addr, 
+			sizeof (struct in_addr), 
+			AF_INET);
+    
+    hostname = (he && he->h_name) ? he->h_name : inet_ntoa (clnt_sa.sin_addr);
+    
+    /* We can't pipe hostnames larger than this */
+    if (strlen (hostname)+1 > PIPE_BUF)
+	goto done;
+    
+    hosts = g_list_insert_sorted (hosts, 
+				  gdm_chooser_host_alloc (hostname, (gchar *) status),
+				  (GCompareFunc) gdm_chooser_sort_func);
+    
+ done:
+    XdmcpDisposeARRAY8 (&auth);
+    XdmcpDisposeARRAY8 (&host);
+    XdmcpDisposeARRAY8 (&stat);
+    
+    g_free (status);
+    
+    return;
 }
 
 
@@ -204,9 +203,8 @@ gdm_chooser_find_bcaddr (void)
 	    if ((ifreq->ifr_flags & IFF_BROADCAST) == 0)
 		goto done;
 
-	    if (ioctl (sockfd, SIOCGIFBRDADDR, ifreq) < 0) {
+	    if (ioctl (sockfd, SIOCGIFBRDADDR, ifreq) < 0)
 		goto done;
-	    }
 
 	    ba = (struct sockaddr_in *) &ifreq->ifr_broadaddr;
 
@@ -253,10 +251,10 @@ gdm_chooser_xdmcp_discover (void)
 	bl = bl->next;
     }
 
-    tid = g_timeout_add (GdmScanTime*1000, 
+    tid = g_timeout_add (GdmScanTime * 1000, 
 			 (GSourceFunc) gdm_chooser_browser_update, NULL);
 
-    return (TRUE);
+    return TRUE;
 }
 
 
@@ -299,7 +297,7 @@ gdm_chooser_cancel (void)
     closelog();
     gtk_main_quit();
 
-    return (TRUE);
+    return TRUE;
 }
 
 
@@ -312,7 +310,7 @@ gdm_chooser_manage (void)
     closelog();
     gtk_main_quit();
 
-    return (TRUE);
+    return TRUE;
 }
 
 
@@ -359,7 +357,7 @@ static gboolean
 gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 {
     if (!widget || !event)
-	return (TRUE);
+	return TRUE;
 
     switch (event->type) {
 	
@@ -373,7 +371,7 @@ gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 	break;
     }
     
-    return (TRUE);
+    return TRUE;
 }
 
 
@@ -381,7 +379,7 @@ static gboolean
 gdm_chooser_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
 {
     if (!event) 
-	return(TRUE);
+	return TRUE;
 
     switch (event->type) {
 	
@@ -395,7 +393,7 @@ gdm_chooser_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
 	break;
     }
 
-    return (TRUE);
+    return TRUE;
 }
 
 
@@ -636,7 +634,7 @@ gdm_chooser_host_alloc (gchar *hostname, gchar *description)
 
     g_free (hostimg);
 
-    return (host);
+    return host;
 }
 
 

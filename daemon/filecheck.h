@@ -16,25 +16,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __GDM_CHOOSER_H__
-#define __GDM_CHOOSER_H__
+#ifndef GDM_FILECHECK_H
+#define GDM_FILECHECK_H
 
-#include <gnome.h>
+gboolean gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file, 
+                         gboolean absentok, gint maxsize, gint perms);
 
-/* If you (for some odd reason) have more than 16 interfaces in your
- * machine, redefine this */
-
-#define MAXIF 16
-
-
-typedef struct _GdmChooserHost GdmChooserHost;
-
-struct _GdmChooserHost {
-    gchar *name;
-    gchar *desc;
-    GdkImlibImage *picture;
-};
-
-#endif /* __GDM_CHOOSER_H__ */
+#endif /* GDM_FILECHECK_H */
 
 /* EOF */

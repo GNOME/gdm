@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,10 +81,12 @@
 #endif
 
 #include "gdm.h"
+#include "xdmcp.h"
+#include "display.h"
+#include "misc.h"
+#include "auth.h"
 
 static const gchar RCSid[]="$Id$";
-
-int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);
 
 /* TCP Wrapper syslog control */
 gint allow_severity = LOG_INFO;
@@ -110,6 +112,29 @@ extern gint GdmMaxSessions;	/* Maximum number of remote sessions */
 extern gint GdmPort;		/* UDP port number */
 extern gint GdmIndirect;	/* Honor XDMCP_INDIRECT, i.e. choosing */
 extern gint GdmMaxIndirectWait;	/* Max wait between INDIRECT_QUERY and MANAGE */
+extern gint GdmDispPerHost;	/* Max number of displays per remote host */
+
+/* Local prototypes */
+static void gdm_xdmcp_decode_packet (void);
+static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type);
+static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist);
+static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
+static void gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len);
+static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
+static void gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len);
+static void gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa);
+static void gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type);
+static void gdm_xdmcp_send_accept (struct sockaddr_in *clnt_sa, gint displaynum);
+static void gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa);
+static void gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid);
+static void gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid);
+static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid);
+static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *cnlt_sa);
+static GdmDisplay *gdm_xdmcp_display_alloc (struct sockaddr_in *, gint);
+static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
+static void gdm_xdmcp_display_dispose_check (gchar *name);
+static void gdm_xdmcp_displays_check (void);
+
 
 /* 
  * We don't support XDM-AUTHENTICATION-1 and XDM-AUTHORIZATION-1.
@@ -134,40 +159,9 @@ static XdmAuthRec serv_authlist = {
 };
 
 
-extern gchar *gdm_cookie_generate (void);
-extern void gdm_abort (const gchar *format, ...);
-extern void gdm_debug (const gchar *format, ...);
-extern void gdm_error (const gchar *format, ...);
-extern gboolean gdm_auth_secure_display (GdmDisplay *d);
-extern gint gdm_display_manage (GdmDisplay *d);
-extern void gdm_display_dispose (GdmDisplay *d);
 extern gboolean gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd);
 extern GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
 extern GdmIndirectDisplay *gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
-
-
-int gdm_xdmcp_init (void);
-void gdm_xdmcp_run (void);
-void gdm_xdmcp_close (void);
-static void gdm_xdmcp_decode_packet (void);
-static void gdm_xdmcp_handle_query  (struct sockaddr_in *clnt_sa, gint len, gint type);
-static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist);
-static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
-static void gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len);
-static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
-static void gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len);
-static void gdm_xdmcp_send_willing  (struct sockaddr_in *clnt_sa);
-static void gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type);
-static void gdm_xdmcp_send_accept  (struct sockaddr_in *clnt_sa, gint displaynum);
-static void gdm_xdmcp_send_decline  (struct sockaddr_in *clnt_sa);
-static void gdm_xdmcp_send_refuse  (struct sockaddr_in *clnt_sa, CARD32 sessid);
-static void gdm_xdmcp_send_failed  (struct sockaddr_in *clnt_sa, CARD32 sessid);
-static void gdm_xdmcp_send_alive   (struct sockaddr_in *clnt_sa, CARD32 sessid);
-static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *cnlt_sa);
-static GdmDisplay *gdm_xdmcp_display_alloc (struct sockaddr_in *, gint);
-static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
-static void gdm_xdmcp_display_dispose_check (gchar *name);
-static void gdm_xdmcp_displays_check (void);
 
 
 int
@@ -181,7 +175,7 @@ gdm_xdmcp_init (void)
     
     /* Fetch and store local hostname in XDMCP friendly format */
     if (gethostname (hostbuf, 255))
-	gdm_abort (_("gdm_xdmcp_init: Could not get server hostname: %s!"), strerror (errno));
+	gdm_fail (_("gdm_xdmcp_init: Could not get server hostname: %s!"), strerror (errno));
     
     uname (&name);
     sysid = g_strconcat (name.sysname, " ", name.release, NULL);
@@ -195,14 +189,14 @@ gdm_xdmcp_init (void)
     xdmcpfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
     
     if (xdmcpfd == -1)
-	gdm_abort (_("gdm_xdmcp_init: Could not create socket!"));
+	gdm_fail (_("gdm_xdmcp_init: Could not create socket!"));
     
     serv_sa.sin_family = AF_INET;
     serv_sa.sin_port = htons (GdmPort); /* UDP 177 */
     serv_sa.sin_addr.s_addr = htonl (INADDR_ANY);
     
     if (bind (xdmcpfd, (struct sockaddr_in *) &serv_sa, sizeof (serv_sa)) == -1)
-	gdm_abort (_("gdm_xdmcp_init: Could not bind to XDMCP socket!"));
+	gdm_fail (_("gdm_xdmcp_init: Could not bind to XDMCP socket!"));
 
     /* Setup FIFO if choosing is enabled */
     if (GdmIndirect) {
@@ -211,17 +205,17 @@ gdm_xdmcp_init (void)
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmchooser", NULL);
 
 	if (!fifopath)
-	    gdm_abort (_("gdm_xdmcp_init: Can't alloc fifopath"));
+	    gdm_fail (_("gdm_xdmcp_init: Can't alloc fifopath"));
 
 	unlink (fifopath);
 
 	if (mkfifo (fifopath, 0660) < 0)
-	    gdm_abort (_("gdm_xdmcp_init: Could not make FIFO for chooser"));
+	    gdm_fail (_("gdm_xdmcp_init: Could not make FIFO for chooser"));
 
 	choosefd = open (fifopath, O_RDWR); /* Open with write to avoid EOF */
 
 	if (!choosefd)
-	    gdm_abort (_("gdm_xdmcp_init: Could not open FIFO for chooser"));
+	    gdm_fail (_("gdm_xdmcp_init: Could not open FIFO for chooser"));
 
 	chmod (fifopath, 0660);
 
@@ -914,8 +908,8 @@ gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa)
 static GdmDisplay *
 gdm_xdmcp_display_alloc (struct sockaddr_in *clnt_sa, gint displaynum)
 {
-    GdmDisplay *d;
-    struct hostent *client_he;
+    GdmDisplay *d = NULL;
+    struct hostent *client_he = NULL;
     
     d = g_malloc (sizeof (GdmDisplay));
     d->authfile = NULL;

@@ -16,25 +16,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __GDM_CHOOSER_H__
-#define __GDM_CHOOSER_H__
+#ifndef GDM_AUTH_H
+#define GDM_AUTH_H
 
-#include <gnome.h>
+#include "gdm.h"
 
-/* If you (for some odd reason) have more than 16 interfaces in your
- * machine, redefine this */
+gboolean gdm_auth_secure_display (GdmDisplay *d);
+gboolean gdm_auth_user_add       (GdmDisplay *d, uid_t user, gchar *homedir);
+void     gdm_auth_user_remove    (GdmDisplay *d, uid_t user);
 
-#define MAXIF 16
-
-
-typedef struct _GdmChooserHost GdmChooserHost;
-
-struct _GdmChooserHost {
-    gchar *name;
-    gchar *desc;
-    GdkImlibImage *picture;
-};
-
-#endif /* __GDM_CHOOSER_H__ */
+#endif /* GDM_AUTH_H */
 
 /* EOF */

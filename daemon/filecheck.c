@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,13 @@
 
 #include <config.h>
 #include <gnome.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
 #include <syslog.h>
-#include <sys/wait.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 #include "gdm.h"
+#include "filecheck.h"
 
 static const gchar RCSid[]="$Id$";
-
-gboolean gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file, 
-                         gboolean absentok, gint maxsize, gint perms);
 
 /**
  * gdm_file_check:
@@ -56,25 +49,25 @@ gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file,
     /* Stat directory */
     if (stat (dir, &statbuf) == -1) {
 	syslog (LOG_WARNING, _("%s: Directory %s does not exist."), caller, dir);
-	return (FALSE);
+	return FALSE;
     }
 
     /* Check if dir is owned by the user ... */
     if (statbuf.st_uid != user) {
 	syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, dir, user);
-	return (FALSE);
+	return FALSE;
     }
     
     /* ... if group has write permission ... */
     if (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
 	syslog (LOG_WARNING, _("%s: %s is writable by group."), caller, dir);
-	return (FALSE);
+	return FALSE;
     }
 
     /* ... and if others have write permission. */
     if (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
 	syslog (LOG_WARNING, _("%s: %s is writable by other."), caller, dir);
-	return (FALSE);
+	return FALSE;
     }
 
     fullpath = g_strconcat(dir, "/", file, NULL);
@@ -84,12 +77,12 @@ gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file,
         /* Return true if file does not exist and that is ok */
 	if (absentok) { 
 	    g_free (fullpath);
-	    return (TRUE);
+	    return TRUE;
 	}
 	else {
-	    syslog (LOG_WARNING,_("%s: does not exist and must."), caller, fullpath);
+	    syslog (LOG_WARNING, _("%s: does not exist and must."), caller, fullpath);
 	    g_free (fullpath);
-	    return (FALSE);
+	    return FALSE;
 	}
     }
 
@@ -97,28 +90,28 @@ gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file,
     if (! S_ISREG (statbuf.st_mode)) {
 	syslog (LOG_WARNING, _("%s: %s is not a regular file."), caller, fullpath);
 	g_free (fullpath);
-	return (FALSE);
+	return FALSE;
     }
 
     /* ... owned by the user ... */
     if (statbuf.st_uid != user) {
 	syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, fullpath, user);
 	g_free (fullpath);
-	return (FALSE);
+	return FALSE;
     }
 
     /* ... unwritable by group ... */
     if (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
 	syslog (LOG_WARNING, _("%s: %s is writable by group."), caller, fullpath);
 	g_free (fullpath);
-	return (FALSE);
+	return FALSE;
     }
 
     /* ... unwritable by others ... */
     if (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
 	syslog (LOG_WARNING, _("%s: %s is writable by group/other."), caller, fullpath);
 	g_free (fullpath);
-	return (FALSE);
+	return FALSE;
     }
 
     /* ... and smaller than sysadmin specified limit. */
@@ -126,13 +119,13 @@ gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file,
 	syslog (LOG_WARNING, _("%s: %s is bigger than sysadmin specified maximum file size."), 
 		caller, fullpath);
 	g_free (fullpath);
-	return (FALSE);
+	return FALSE;
     }
 
     g_free (fullpath);
 
     /* Yeap, this file is ok */
-    return (TRUE);
+    return TRUE;
 }
 
 /* EOF */

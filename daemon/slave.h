@@ -16,25 +16,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __GDM_CHOOSER_H__
-#define __GDM_CHOOSER_H__
+#ifndef GDM_SLAVE_H
+#define GDM_SLAVE_H
 
-#include <gnome.h>
+#include <glib.h>
+#include <X11/Xlib.h>
+#include "gdm.h"
 
-/* If you (for some odd reason) have more than 16 interfaces in your
- * machine, redefine this */
+void     gdm_slave_start       (GdmDisplay *d);
+gchar   *gdm_slave_greeter_ctl (gchar cmd, gchar *str);
 
-#define MAXIF 16
-
-
-typedef struct _GdmChooserHost GdmChooserHost;
-
-struct _GdmChooserHost {
-    gchar *name;
-    gchar *desc;
-    GdkImlibImage *picture;
-};
-
-#endif /* __GDM_CHOOSER_H__ */
+#endif /* GDM_SLAVE_H */
 
 /* EOF */

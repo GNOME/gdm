@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,26 +17,28 @@
  */
 
 /* Code for cookie handling. This really needs to be modularized to
- * support other XAuth types and possibly DECnet...
- */
+ * support other XAuth types and possibly DECnet... */
 
 #include <config.h>
 #include <gnome.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <errno.h>
-#include <netdb.h>
+#include <netdb.h> 
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <X11/Xauth.h>
 
 #include "gdm.h"
+#include "cookie.h"
+#include "misc.h"
+#include "filecheck.h"
+#include "auth.h"
 
 static const gchar RCSid[]="$Id$";
 
+
+/* Local prototypes */
+static void gdm_auth_purge (GdmDisplay *d, FILE *af);
+
+/* Configuration option variables */
 extern gchar *GdmServAuthDir;
 extern gchar *GdmUserAuthDir;
 extern gchar *GdmUserAuthFile;
@@ -44,17 +46,15 @@ extern gchar *GdmUserAuthFB;
 extern gint  GdmUserMaxFile;
 extern gint  GdmRelaxPerms;
 
-extern void gdm_cookie_generate (GdmDisplay *d);
-extern void gdm_debug (const gchar *, ...);
-extern void gdm_error (const gchar *, ...);
-extern gboolean gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file, 
-				gboolean absentok, gint maxsize, gint perms);
 
-gboolean gdm_auth_secure_display (GdmDisplay *d);
-gboolean gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir);
-void gdm_auth_user_remove (GdmDisplay *d, uid_t user);
-static void gdm_auth_purge (GdmDisplay *d, FILE *af);
-
+/**
+ * gdm_auth_secure_display:
+ * @d: Pointer to a GdmDisplay struct
+ * 
+ * Create authentication cookies for local and remote displays.
+ *
+ * Returns TRUE on success and FALSE on error.
+ */
 
 gboolean
 gdm_auth_secure_display (GdmDisplay *d)
@@ -67,24 +67,23 @@ gdm_auth_secure_display (GdmDisplay *d)
     guint i;
 
     if (!d)
-	return (FALSE);
+	return FALSE;
 
     gdm_debug ("gdm_auth_secure_display: Setting up access for %s", d->name);
 
-    if (!d->authfile)
+    if (! d->authfile)
 	d->authfile = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
     
     unlink (d->authfile);
 
     af = fopen (d->authfile, "w");
 
-    if (!af)
-	return (FALSE);
+    if (! af)
+	return FALSE;
 
     /* If this is a local display the struct hasn't changed and we
      * have to eat up old authentication cookies before baking new
-     * ones...
-     */
+     * ones... */
     if (d->type == TYPE_LOCAL && d->auths) {
 	GSList *alist = d->auths;
 
@@ -103,14 +102,15 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    g_free (d->bcookie);
     }
 
+    /* Create new random cookie */
     gdm_cookie_generate (d);
 
-    /* FQDN or IP of display host */
+    /* Find FQDN or IP of display host */
     hentry = gethostbyname (d->hostname);
 
     if (!hentry) {
 	gdm_error ("gdm_auth_secure_display: Error getting hentry for %s", d->hostname);
-	return (FALSE);
+	return FALSE;
     }
 
     /* Local access */
@@ -120,7 +120,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	xa = g_new0 (Xauth, 1);
 	
 	if (!xa)
-	    return (FALSE);
+	    return FALSE;
 
 	xa->family = FamilyLocal;
 	xa->address = strdup (d->hostname);
@@ -137,19 +137,20 @@ gdm_auth_secure_display (GdmDisplay *d)
 
     gdm_debug ("gdm_auth_secure_display: Setting up network access");
     
-    /* Network access */
-    for (i=0 ; i < hentry->h_length ; i++) {
+    /* Network access: Write out an authentication entry for each of
+     * this host's official addresses */
+    for (i = 0 ; i < hentry->h_length ; i++) {
 	xa = g_new0 (Xauth, 1);
 
-	if (!xa)
-	    return (FALSE);
+	if (! xa)
+	    return FALSE;
 
 	xa->family = FamilyInternet;
 
 	addr = g_new0 (gchar, 4);
 
 	if (!addr)
-	    return (FALSE);
+	    return FALSE;
 
 	ia = (struct in_addr *) hentry->h_addr_list[i];
 
@@ -172,14 +173,26 @@ gdm_auth_secure_display (GdmDisplay *d)
     }
 
     fclose (af);
-    setenv ("XAUTHORITY", d->authfile, TRUE);
+    gdm_setenv ("XAUTHORITY", d->authfile);
 
     gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
 	       d->name, g_slist_length (d->auths));
 
-    return (TRUE);
+    return TRUE;
 }
 
+
+/**
+ * gdm_auth_user_add:
+ * @d: Pointer to a GdmDisplay struct
+ * @user: Userid of the user whose cookie file to add entries to
+ * @homedir: The user's home directory
+ * 
+ * Remove all cookies referring to this display from user's cookie
+ * file and append the ones specified in the display's authlist.
+ *
+ * Returns TRUE on success and FALSE on error.  
+ */
 
 gboolean
 gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
@@ -190,12 +203,12 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
     GSList *auths = NULL;
 
     if (!d)
-	return (FALSE);
+	return FALSE;
 
     gdm_debug ("gdm_auth_user_add: Adding cookie for %d", user);
 
     /* Determine whether UserAuthDir is specified. Otherwise ~user is used */
-    if (strlen (GdmUserAuthDir))
+    if (*GdmUserAuthDir)
 	authdir = GdmUserAuthDir;
     else
 	authdir = homedir;
@@ -215,7 +228,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 	    gdm_error (_("gdm_auth_user_add: Could not open cookie file %s"), d->userauth);
 	    g_free (d->userauth);
 	    d->userauth = NULL;
-	    return (FALSE);
+
+	    return FALSE;
 	}
 
 	af = fdopen (authfd, "w");
@@ -229,7 +243,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 	    gdm_error (_("gdm_auth_user_add: Could not lock cookie file %s"), d->userauth);
 	    g_free (d->userauth);
 	    d->userauth = NULL;
-	    return (FALSE);
+
+	    return FALSE;
 	}
 
 	af = fopen (d->userauth, "a+");
@@ -241,12 +256,13 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 	XauUnlockAuth (d->userauth);
 	g_free (d->userauth);
 	d->userauth = NULL;
-	return (FALSE); 
+
+	return FALSE; 
     }
 
     gdm_debug ("gdm_auth_user_add: Using %s for cookies", d->userauth);
 
-    /* If not fallback file, nuke any existing cookies for this display */
+    /* If not a fallback file, nuke any existing cookies for this display */
     if (! d->authfb)
 	gdm_auth_purge (d, af);
 
@@ -260,13 +276,22 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 
     fclose (af);
     XauUnlockAuth (d->userauth);
-    setenv ("XAUTHORITY", d->userauth, TRUE);
+    gdm_setenv ("XAUTHORITY", d->userauth);
 
     gdm_debug ("gdm_auth_user_add: Done");
 
-    return (TRUE);
+    return TRUE;
 }
 
+
+/**
+ * gdm_auth_user_remove:
+ * @d: Pointer to a GdmDisplay struct
+ * @user: Userid of the user whose cookie file to remove entries from
+ * 
+ * Remove all cookies referring to this display from user's cookie
+ * file.
+ */
 
 void 
 gdm_auth_user_remove (GdmDisplay *d, uid_t user)
@@ -298,11 +323,13 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     if (! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
 			  FALSE, GdmUserMaxFile, GdmRelaxPerms)) {
 	gdm_error (_("gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"), d->userauth);
+
 	return; 
     }
 
     g_free (authdir);
 
+    /* Lock user's cookie jar and open it for writing */
     if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS)
 	return;
 
@@ -310,11 +337,14 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 
     if (!af) {
 	XauUnlockAuth (d->userauth);
+
 	return;
     }
 
+    /* Purge entries for this display from the cookie jar */
     gdm_auth_purge (d, af);
 
+    /* Close the file and unlock it */
     fclose (af);
     XauUnlockAuth (d->userauth);
 
@@ -324,6 +354,14 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     return;
 }
 
+
+/**
+ * gdm_auth_purge:
+ * @d: Pointer to a GdmDisplay struct
+ * @af: File handle to a cookie file
+ * 
+ * Remove all cookies referring to this display a cookie file.
+ */
 
 static void
 gdm_auth_purge (GdmDisplay *d, FILE *af)
@@ -339,8 +377,8 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
     fseek (af, 0L, SEEK_SET);
 
     /* Read the user's entire Xauth file into memory to avoid
-     * temporary file issues. Remove any instance of this display in
-     * the cookie jar... */
+     * temporary file issues. Then remove any instance of this display
+     * in the cookie jar... */
 
     while ( (xa = XauReadAuth (af)) ) {
 	gboolean match = FALSE;
@@ -362,10 +400,12 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
 	    keep = g_slist_append (keep, xa);
     }
 
+    /* Rewind the file */
     af = freopen (d->userauth, "w", af);
 
     if (!af) {
 	XauUnlockAuth (d->userauth);
+
 	return;
     }
 

@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,9 @@
 
 #include "gdmlogin.h"
 #include "gdm.h"
+#include "filecheck.h"
 
 static const gchar RCSid[]="$Id$";
-
-extern gboolean gdm_file_check (gchar *caller, uid_t user, gchar *dir, 
-				gchar *file, gboolean absentok, 
-				gint maxsize, gint perms);
 
 static gint  GdmBrowser;
 static gint  GdmDebug;
@@ -461,7 +458,7 @@ gdm_login_session_lookup (gchar* savedsess)
     gtk_widget_set_sensitive (GTK_WIDGET (sessmenu), FALSE);
 
     /* Previously saved session not found in ~user/.gnome/gdm */
-    if (! strlen (savedsess)) {
+    if (savedsess && ! strlen (savedsess)) {
 	/* If "Last" is chosen run Default, else run user's current selection */
 	if (!strcasecmp (cursess, lastsess))
 	    session = defsess;
@@ -519,7 +516,7 @@ gdm_login_language_lookup (gchar* savedlang)
     gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
 
     /* Previously saved language not found in ~user/.gnome/gdm */
-    if (! strlen (savedlang)) {
+    if (savedlang && ! strlen (savedlang)) {
 	/* If "Last" is chosen use Default, else use current selection */
 	if (!strcasecmp (curlang, lastlang))
 	    language = GdmDefaultLocale;
@@ -572,7 +569,7 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	if (!curuser)
 	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
 
-	g_print ("%s\n", gtk_entry_get_text (GTK_ENTRY (entry)));
+	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
 	break;
 
     case GDK_Up:
@@ -799,14 +796,28 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     gint len;
     gint i, x, y;
 
+    /* If this is not incoming i/o then return */
     if (cond != G_IO_IN) 
 	return (TRUE);
 
+    /* Read random garbage from i/o channel until STX is found */
+    do {
+	g_io_channel_read (source, buf, 1, &len);
+
+	if (len != 1)
+	    return (TRUE);
+
+    } 
+    while (buf[0] && buf[0] != STX);
+
+    /* Read opcode */
     g_io_channel_read (source, buf, 1, &len);
 
-    if (len!=1)
+    /* If opcode couldn't be read */
+    if (len != 1)
 	return (TRUE);
 
+    /* Parse opcode */
     switch (buf[0]) {
     case GDM_PROMPT:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
@@ -837,30 +848,29 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 	gtk_label_set (GTK_LABEL (msg), buf);
 	gtk_widget_show (GTK_WIDGET (msg));
-	g_print ("\n");
 	break;
 
     case GDM_SESS:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 	buf[len-1] = '\0';
 	gdm_login_session_lookup (buf);
-	g_print ("%s\n", session);
+	g_print ("%c%s\n", STX, session);
 	break;
 
     case GDM_LANG:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 	buf[len-1] = '\0';
 	gdm_login_language_lookup (buf);
-	g_print ("%s\n", language);
+	g_print ("%c%s\n", STX, language);
 	break;
 
     case GDM_SSESS:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
 	if (savesess)
-	    g_print ("Y\n");
+	    g_print ("%cY\n", STX);
 	else
-	    g_print ("\n");
+	    g_print ("%c\n", STX);
 	
 	break;
 
@@ -868,9 +878,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
 	if (savelang)
-	    g_print ("Y\n");
+	    g_print ("%cY\n", STX);
 	else
-	    g_print ("\n");
+	    g_print ("%c\n", STX);
 
 	break;
 
@@ -899,7 +909,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
 
-	g_print ("\n");
+	g_print ("%c\n", STX);
 	break;
 
     case GDM_QUIT:
@@ -962,7 +972,7 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 
 	gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
-	g_print ("%s\n", gtk_entry_get_text (GTK_ENTRY (entry)));
+	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
 	break;
 	
     default: 
@@ -1007,7 +1017,7 @@ gdm_login_gui_init (void)
     gint cols, rows;
     struct stat statbuf;
 
-    if(GdmGtkRC)
+    if(*GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
 
     rootwin = gdk_window_foreign_new (GDK_ROOT_WINDOW ());

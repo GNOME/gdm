@@ -1,10 +1,56 @@
+1999-12-29    <mkp@mkp.net>
+
+	* Checkin of my devel tree. Some of the new stuff is in. Mostly
+ 	infrastructure changes, though. Oh, and it doesn't actually work
+ 	yet. But it will eventually. Promise!
+
+1999-12-26    <mkp@mkp.net>
+
+	* daemon/verify-*.c: Move each authentication scheme to a separate
+ 	file (Sucks to be a translator :).
+
+1999-12-21    <mkp@mkp.net>
+
+	* daemon/verify.c (gdm_verify_user): Added fix for expired
+ 	passwords when using PAM (Philip Spencer
+ 	<pspencer@fields.utoronto.ca>).
+  
+1999-11-11    <mkp@mkp.net>
+
+	* daemon/misc.c (gdm_setenv): New function to work around POSIX
+ 	brain damage.
+
 1999-11-10  Yuri Syrota <rasta@renome.rovno.ua>
 
 	* configure.in (ALL_LINGUAS): Added uk.
 
+1999-11-01    <mkp@mkp.net>
+
+	* daemon/verify.c (gdm_verify_user): Error in error message.
+
+	* daemon/slave.c (gdm_slave_greeter_ctl): Nuke random junk that
+ 	might have accumulated in the ipc pipe.
+
+	* gui/gdmlogin.c (gdm_login_ctrl_handler): Same as above.
+
+	* configure.in: Fixed -lnsl (again)
+
 1999-10-21  Sergey Panov <sipan@mit.edu>
 
         * configure.in (ALL_LINGUAS): Added ru.
+
+1999-10-03    <mkp@mkp.net>
+
+	* daemon/slave.c: Misc. hacks to solve #2487. PAM messes with
+ 	pwent.
+
+	* daemon/gdm.c (gdm_config_parse): Check that gdmlogin and
+ 	gdmchooser can be executed by gdm before starting up.
+
+1999-10-02    <mkp@mkp.net>
+
+	* daemon/slave.c (gdm_slave_greeter_ctl): Fix NULL string passing
+ 	bug.
 
 1999-09-30    <mkp@mkp.net>
 

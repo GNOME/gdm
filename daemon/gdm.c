@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@SunSITE.auc.dk>
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,54 +16,47 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <config.h>
 #include <gnome.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <signal.h>
-#include <strings.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <ctype.h>
 #include <pwd.h>
 #include <grp.h>
-#include <syslog.h>
-#include <sys/wait.h>
+#include <fcntl.h>
 #include <errno.h>
-#include <ctype.h>
-#include <config.h>
-#include <X11/Xauth.h>
+#include <syslog.h>
 
 #include "gdm.h"
+#include "misc.h"
+#include "slave.h"
+#include "xdmcp.h"
+#include "verify.h"
+#include "display.h"
 
 static const gchar RCSid[]="$Id$";
 
-extern void gdm_slave_start (GdmDisplay *);
-extern gchar **gdm_arg_munch (const gchar *p);
-extern void gdm_fail (const gchar *, ...);
-extern void gdm_info (const gchar *, ...);
-extern void gdm_error (const gchar *, ...);
-extern GdmDisplay *gdm_server_alloc (gint id, gchar *command);
-extern void gdm_server_start (GdmDisplay *d);
-extern void gdm_server_stop (GdmDisplay *d);
-extern void gdm_debug (const gchar *format, ...);
-extern int  gdm_xdmcp_init (void);
-extern void gdm_xdmcp_run (void);
-extern void gdm_xdmcp_close (void);
-extern void gdm_verify_check (void);
 
-gint gdm_display_manage (GdmDisplay *d);
-void gdm_display_dispose (GdmDisplay *d);
+/* Local functions */
+static void gdm_config_parse (void);
 static void gdm_local_servers_start (GdmDisplay *d);
-static void gdm_display_unmanage (GdmDisplay *d);
+static void gdm_daemonify (void);
+static void gdm_local_servers_start (GdmDisplay *d);
+static void gdm_child_handler (gint sig);
+static void gdm_term_handler (int sig);
 
-GSList *displays;
-gint sessions=0;
-static gchar *GdmUser;
-static gchar *GdmGroup;
-sigset_t sysmask;
+/* Global vars */
+GSList *displays;		/* List of displays managed */
+gint sessions = 0;		/* Number of remote sessions */
+sigset_t sysmask;		/* Inherited system signal mask */
+gchar *argdelim = " ";		/* argv argument delimiter */
+uid_t GdmUserId;		/* Userid under which gdm should run */
+gid_t GdmGroupId;		/* Groupid under which gdm should run */
 
-uid_t GdmUserId;
-gid_t GdmGroupId;
+/* Configuration options */
+gchar *GdmUser = NULL;
+gchar *GdmGroup = NULL;
 gchar *GdmSessDir = NULL;
 gchar *GdmGreeter = NULL;
 gchar *GdmChooser = NULL;
@@ -82,74 +75,27 @@ gchar *GdmDefaultPath = NULL;
 gchar *GdmRootPath = NULL;
 gint  GdmKillInitClients = 0;
 gint  GdmUserMaxFile = 0;
-gint  GdmXdmcp;
-gint  GdmMaxPending;
-gint  GdmMaxManageWait;
-gint  GdmMaxSessions;
-gint  GdmPort;
-gint  GdmIndirect;
-gint  GdmMaxIndirect;
-gint  GdmMaxIndirectWait;
-gint  GdmDebug;
-gint  GdmVerboseAuth;
-gint  GdmAllowRoot;
-gint  GdmRelaxPerms;
-gint  GdmRetryDelay;
-
-typedef struct _childstat ChildStat;
-struct _childstat { pid_t pid; gint status; };
+gint  GdmXdmcp = 0;
+gint  GdmDispPerHost = 0;
+gint  GdmMaxPending = 0;
+gint  GdmMaxManageWait = 0;
+gint  GdmMaxSessions = 0;
+gint  GdmPort = 0;
+gint  GdmIndirect = 0;
+gint  GdmMaxIndirect = 0;
+gint  GdmMaxIndirectWait = 0;
+gint  GdmDebug = 0;
+gint  GdmVerboseAuth = 0;
+gint  GdmAllowRoot = 0;
+gint  GdmRelaxPerms = 0;
+gint  GdmRetryDelay = 0;
 
 
-void
-gdm_display_dispose (GdmDisplay *d)
-{
-    GSList *tmpauth;
-
-    if (!d)
-	return;
-
-    if (d->type == TYPE_XDMCP) {
-	displays = g_slist_remove (displays, d);
-	sessions--;
-    }
-
-    if (d->name) {
-	gdm_debug ("gdm_display_dispose: Disposing %s", d->name);
-	g_free (d->name);
-    }
-
-    if (d->hostname)
-	g_free (d->hostname);
-
-    if (d->authfile)
-	g_free (d->authfile);
-
-    if (d->auths) {
-	tmpauth = d->auths;
-
-	while (tmpauth && tmpauth->data) {
-	    XauDisposeAuth ((Xauth *) tmpauth->data);
-	    tmpauth = tmpauth->next;
-	}
-
-	g_slist_free (d->auths);
-    }
-
-    if (d->userauth)
-	g_free (d->userauth);
-
-    if (d->command)
-	g_free (d->command);
-
-    if (d->cookie)
-	g_free (d->cookie);
-
-    if (d->bcookie)
-	g_free (d->bcookie);
-
-    g_free (d);
-}
-
+/**
+ * gdm_config_parse:
+ *
+ * Parse the configuration file and warn about bad permissions etc.
+ */
 
 static void 
 gdm_config_parse (void)
@@ -159,12 +105,14 @@ gdm_config_parse (void)
     struct passwd *pwent;
     struct group *grent;
     struct stat statbuf;
+    gchar *gtemp, *stemp;
     
     displays = NULL;
 
     if (stat (GDM_CONFIG_FILE, &statbuf) == -1)
 	gdm_fail (_("gdm_config_parse: No configuration file: %s. Aborting."), GDM_CONFIG_FILE);
 
+    /* Parse configuration options */
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
     GdmChooser = gnome_config_get_string (GDM_KEY_CHOOSER);
@@ -194,6 +142,7 @@ gdm_config_parse (void)
     GdmVerboseAuth = gnome_config_get_int (GDM_KEY_VERBAUTH);
 
     GdmXdmcp = gnome_config_get_int (GDM_KEY_XDMCP);
+    GdmDispPerHost = gnome_config_get_int (GDM_KEY_DISPERHOST);
     GdmMaxPending = gnome_config_get_int (GDM_KEY_MAXPEND);
     GdmMaxManageWait = gnome_config_get_int (GDM_KEY_MAXWAIT);
     GdmMaxSessions = gnome_config_get_int (GDM_KEY_MAXSESS);
@@ -204,74 +153,50 @@ gdm_config_parse (void)
 
     GdmDebug = gnome_config_get_int (GDM_KEY_DEBUG);
 
-    if (GdmGreeter==NULL && stat ("/usr/local/bin/gdmlogin", &statbuf)==0)
-    	GdmGreeter = "/usr/local/bin/gdmlogin";
-
-    if (GdmGreeter==NULL && stat ("/usr/bin/gdmlogin", &statbuf)==0)
-    	GdmGreeter = "/usr/bin/gdmlogin";
-
-    if (GdmGreeter==NULL && stat ("/opt/gnome/bin/gdmlogin", &statbuf)==0)
-    	GdmGreeter = "/opt/gnome/bin/gdmlogin";
-    	
-    if (GdmGreeter==NULL)
-	gdm_fail (_("gdm_config_parse: No greeter specified and default not found."));
-
-    if (GdmServAuthDir==NULL && stat ("/var/gdm", &statbuf)==0)
-    	GdmServAuthDir = "/var/gdm";
-
-    if (GdmServAuthDir==NULL && stat ("/var/lib/gdm", &statbuf)==0)
-    	GdmServAuthDir = "/var/lib/gdm";
-
-    if (GdmServAuthDir==NULL && stat ("/opt/gnome/var/gdm", &statbuf)==0)
-    	GdmServAuthDir = "/opt/gnome/var/gdm";
-    	
-    if (GdmServAuthDir==NULL)
-	gdm_fail (_("gdm_config_parse: No authdir specified and default not found."));
-
-    if (GdmLogDir==NULL) 
-	GdmLogDir = GdmServAuthDir;
-
-    if (GdmSessDir==NULL && stat ("/usr/local/etc/gdm/Sessions", &statbuf)==0)
-    	GdmSessDir = "/usr/local/etc/gdm/Sessions";
-
-    if (GdmSessDir==NULL && stat ("/usr/etc/gdm/Sessions", &statbuf)==0)
-    	GdmSessDir = "/usr/etc/gdm/Sessions";    
-
-    if (GdmSessDir==NULL && stat ("/etc/gdm/Sessions", &statbuf)==0)
-    	GdmSessDir = "/etc/gdm/Sessions";    
-
-    if (GdmSessDir==NULL && stat ("/etc/X11/gdm/Sessions", &statbuf)==0)
-    	GdmSessDir = "/etc/X11/gdm/Sessions";    
-
-    if (GdmSessDir==NULL) 
-	gdm_fail (_("gdm_config_parse: No sessions directory specified and default not found."));
-
     gnome_config_pop_prefix();
 
+
+    /* Prerequisites */ 
+    if (GdmGreeter == NULL)
+	gdm_fail (_("gdm_config_parse: No greeter specified."));
+
+    if (GdmServAuthDir == NULL)
+	gdm_fail (_("gdm_config_parse: No authdir specified."));
+
+    if (GdmLogDir == NULL) 
+	GdmLogDir = GdmServAuthDir;
+
+    if (GdmSessDir == NULL) 
+	gdm_fail (_("gdm_config_parse: No sessions directory specified."));
+
+
+    /* Find local X server definitions */
     iter = gnome_config_init_iterator ("=" GDM_CONFIG_FILE "=/" GDM_KEY_SERVERS);
     iter = gnome_config_iterator_next (iter, &k, &v);
     
     while (iter) {
 
-	if (isdigit(*k))
-	    displays = g_slist_append (displays, gdm_server_alloc (atoi(k), v));
+	if (isdigit (*k))
+	    displays = g_slist_append (displays, gdm_server_alloc (atoi (k), v));
 	else
 	    gdm_info (_("gdm_config_parse: Invalid server line in config file. Ignoring!"));
 
 	iter = gnome_config_iterator_next (iter, &k, &v);
     }
 
-    if (!displays && !GdmXdmcp) 
+    if (! displays && ! GdmXdmcp) 
 	gdm_fail (_("gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"));
 
+
+    /* Lookup user and groupid for the gdm user */
     pwent = getpwnam (GdmUser);
 
-    if (!pwent)
+    if (! pwent)
 	gdm_fail (_("gdm_config_parse: Can't find the gdm user (%s). Aborting!"), GdmUser);
     else 
 	GdmUserId = pwent->pw_uid;
 
-    if (GdmUserId==0)
+    if (GdmUserId == 0)
 	gdm_fail (_("gdm_config_parse: The gdm user should not be root. Aborting!"));
 
     grent = getgrnam (GdmGroup);
@@ -281,11 +206,40 @@ gdm_config_parse (void)
     else 
 	GdmGroupId = grent->gr_gid;   
 
-    if (GdmGroupId==0)
+    if (GdmGroupId == 0)
 	gdm_fail (_("gdm_config_parse: The gdm group should not be root. Aborting!"));
 
     setegid (GdmGroupId);	/* gid remains `gdm' */
     seteuid (GdmUserId);
+
+
+    /* Check that the greeter can be executed */
+    gtemp = g_strdup (GdmGreeter);
+    stemp = strchr (gtemp, ' ');
+
+    if (stemp) {
+	*stemp = '\0';
+
+	if (access (gtemp, R_OK|X_OK))
+	    gdm_fail ("gdm_config_parse: Greeter not found or can't be executed by the gdm user", gtemp);
+    }
+
+    g_free (gtemp);
+
+
+    /* Check that chooser can be executed */
+    gtemp = g_strdup (GdmChooser);
+    stemp = strchr (gtemp, ' ');
+
+    if (GdmIndirect && stemp) {
+	*stemp = '\0';
+
+	if (access (gtemp, R_OK|X_OK))
+	    gdm_fail ("gdm_config_parse: Chooser not found or it can't be executed by the gdm user", gtemp);
+    }
+    
+    g_free (gtemp);
+
 
     /* Enter paranoia mode */
     if (stat (GdmServAuthDir, &statbuf) == -1) 
@@ -302,6 +256,7 @@ gdm_config_parse (void)
 	gdm_fail (_("gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."), 
 		  GdmServAuthDir, statbuf.st_mode);
 
+
     /* Check that PAM configuration file is in place */
     gdm_verify_check ();
 
@@ -309,68 +264,70 @@ gdm_config_parse (void)
 }
 
 
+/**
+ * gdm_daemonify:
+ *
+ * Detach gdm daemon from the controlling terminal
+ */
+
+static void
+gdm_daemonify (void)
+{
+    FILE *pf;
+    pid_t pid;
+
+    if ((pid = fork ())) {
+
+	if ((pf = fopen (GdmPidFile, "w"))) {
+	    fprintf (pf, "%d\n", pid);
+	    fclose (pf);
+	}
+
+        exit (EXIT_SUCCESS);
+    }
+
+    if (pid < 0) 
+	gdm_fail (_("gdm_daemonify: fork() failed!"));
+
+    if (setsid() < 0)
+	gdm_fail (_("gdm_daemonify: setsid() failed: %s!"), strerror(errno));
+
+    chdir (GdmServAuthDir);
+    umask (022);
+
+    close (0);
+    close (1);
+    close (2);
+
+    open ("/dev/null", O_RDONLY);
+    dup2 (0, 1);
+    dup2 (0, 2);
+}
+
+
+/**
+ * gdm_local_servers_start:
+ * @d: Pointer to a GdmDisplay struct
+ *
+ * Start all local (i.e. non-XDMCP) X servers
+ */
+
 static void 
 gdm_local_servers_start (GdmDisplay *d)
 {
     if (d && d->type == TYPE_LOCAL) {
 	gdm_debug ("gdm_local_servers_start: Starting %s", d->name);
-	gdm_server_start (d);
+	gdm_slave_start (d);
     }
 }
 
 
-gint 
-gdm_display_manage (GdmDisplay *d)
-{
-    sigset_t mask, omask;
-
-    if (!d) 
-	return (FALSE);
-
-    gdm_debug ("gdm_display_manage: Managing %s", d->name);
-
-    /* If we have an old slave process hanging around, kill it */
-    if (d->slavepid) {
-	sigemptyset (&mask);
-	sigaddset (&mask, SIGCHLD);
-	sigprocmask (SIG_BLOCK, &mask, &omask); 
-
-	kill (d->slavepid, SIGINT);
-	waitpid (d->slavepid, 0, 0);
-
-	sigprocmask (SIG_SETMASK, &omask, NULL);
-    }
-
-    switch (d->slavepid=fork()) {
-
-    case 0:
-
-	setpgid (0, 0);
-
-	/* Close XDMCP fd in slave process */
-	if (GdmXdmcp)
-	    gdm_xdmcp_close();
-
-	if (d->type == TYPE_LOCAL && d->servstat == SERVER_RUNNING)
-	    gdm_slave_start (d);
-
-	if (d->type == TYPE_XDMCP && d->dispstat == XDMCP_MANAGED)
-	    gdm_slave_start (d);
-
-	break;
-
-    case -1:
-	gdm_error (_("gdm_display_manage: Failed forking gdm slave process for %d"), d->name);
-	return (FALSE);
-
-    default:
-	gdm_debug ("gdm_display_manage: Forked slave: %d", d->slavepid);
-	break;
-    }
-
-    return (TRUE);
-}
-
+/**
+ * gdm_child_handler:
+ * @sig: Signal value
+ *
+ * ACME Funeral Services
+ */
 
 static void 
 gdm_child_handler (gint sig)
@@ -382,55 +339,32 @@ gdm_child_handler (gint sig)
     gchar **argv;
 
     /* Get status from all dead children */
-    while ((pid=waitpid (-1, &exitstatus, WNOHANG)) > 0) {
+    while ((pid = waitpid (-1, &exitstatus, WNOHANG)) > 0) {
 
 	if (WIFEXITED (exitstatus))
-	    status=WEXITSTATUS (exitstatus);
+	    status = WEXITSTATUS (exitstatus);
 	
 	gdm_debug ("gdm_child_handler: child %d returned %d", pid, status);
 
 	if (pid < 1)
-	    return;
+	    break;
 
 	while (list && list->data) {
 
 	    d = list->data;
 	    gdm_debug ("gdm_child_handler: %s", d->name);
 
-	    /* X server died */
-	    if (pid == d->servpid) {
-		d->servpid = 0;
-
-		switch (status) {
-
-		case SERVER_SUCCESS:
-		case SERVER_FAILURE:
-		    gdm_server_start (d);
-		    break;
-
-		case SERVER_NOTFOUND:
-		case SERVER_ABORT:
-		    gdm_display_unmanage (d);
-		    break;
-
-		default:
-		    gdm_debug ("gdm_child_handler: Server process returned unknown status %d", status);
-		    gdm_display_unmanage (d);
-		    break;
-		}
-	    }
-    
 	    /* Slave died */
-	    if (pid==d->slavepid) {
+	    if (pid == d->slavepid) {
 		d->slavepid = 0;
 	
 		switch (status) {
 
 		case DISPLAY_REMANAGE:
 
-		    if (d->type == TYPE_LOCAL && d->dispstat != DISPLAY_ABORT) {
+		    if (d->type == TYPE_LOCAL) {
 			d->dispstat = DISPLAY_DEAD;
-			gdm_server_start (d);
+			gdm_slave_start (d);
 		    }
 		    
 		    if (d->type == TYPE_XDMCP)
@@ -448,9 +382,9 @@ gdm_child_handler (gint sig)
 		    g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
 		    closelog();
 		    unlink (GdmPidFile);
-		    argv = gdm_arg_munch (GdmReboot);
+		    argv = g_strsplit (GdmReboot, argdelim, MAX_ARGS);
 		    execv (argv[0], argv);
-		    gdm_error (_("gdm_child_action: Reboot failed: %s"), strerror(errno));
+		    gdm_error (_("gdm_child_action: Reboot failed: %s"), strerror (errno));
 		    break;
 		    
 		case DISPLAY_HALT:
@@ -458,9 +392,9 @@ gdm_child_handler (gint sig)
 		    g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
 		    closelog();
 		    unlink (GdmPidFile);
-		    argv = gdm_arg_munch (GdmHalt);
+		    argv = g_strsplit (GdmHalt, argdelim, MAX_ARGS);
 		    execv (argv[0], argv);
-		    gdm_error (_("gdm_child_action: Halt failed: %s"), strerror(errno));
+		    gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
 		    break;
 		    
 		case DISPLAY_RESERVER:
@@ -485,40 +419,12 @@ gdm_child_handler (gint sig)
 }
 
 
-static void
-gdm_display_unmanage (GdmDisplay *d)
-{
-    if (!d)
-	return;
-
-    gdm_debug ("gdm_display_unmanage: Stopping %s", d->name);
-
-    if (d->type == TYPE_LOCAL) {
-
-	/* Kill slave and all its children */
-	if (d->slavepid) {
-	    kill (-(d->slavepid), SIGTERM);
-	    waitpid (d->slavepid, 0, 0);
-	    d->slavepid = 0;
-	}
-
-	if (d->servpid) {
-	    gdm_server_stop (d);
-	}
-
-	d->dispstat = DISPLAY_DEAD;
-    }
-    else { /* TYPE_XDMCP */
-	if (d->slavepid) {
-	    kill (d->slavepid, SIGTERM);
-	    waitpid (d->slavepid, 0, 0);
-	    d->slavepid = 0;
-	}
-
-	gdm_display_dispose (d);
-    }
-}
-
+/**
+ * gdm_term_handler:
+ * @sig: Signal value
+ *
+ * Shutdown all displays and terminate the gdm process
+ */
 
 static void
 gdm_term_handler (int sig)
@@ -527,12 +433,15 @@ gdm_term_handler (int sig)
 
     gdm_debug ("gdm_term_handler: Got TERM/INT. Going down!");
 
+    /* Block SIGCHLD */
     sigemptyset (&mask);
     sigaddset (&mask, SIGCHLD);
     sigprocmask (SIG_BLOCK, &mask, NULL); 
 
+    /* Unmanage all displays */
     g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
 
+    /* Cleanup */
     closelog();
     unlink (GdmPidFile);
 
@@ -540,40 +449,9 @@ gdm_term_handler (int sig)
 }
 
 
-static void
-gdm_daemonify (void)
-{
-    FILE *pf;
-    pid_t pid;
-
-    if ((pid=fork())) {
-
-	if ((pf = fopen (GdmPidFile, "w"))) {
-	    fprintf (pf, "%d\n", pid);
-	    fclose (pf);
-	}
-
-        exit (EXIT_SUCCESS);
-    }
-
-    if (pid<0) 
-	gdm_fail (_("gdm_daemonify: fork() failed!"));
-
-    if (setsid() < 0)
-	gdm_fail (_("gdm_daemonify: setsid() failed: %s!"), strerror(errno));
-
-    chdir (GdmServAuthDir);
-    umask (022);
-
-    close (0);
-    close (1);
-    close (2);
-
-    open ("/dev/null", O_RDONLY);
-    dup2 (0, 1);
-    dup2 (0, 2);
-}
-
+/*
+ * main: The main daemon control
+ */
 
 int 
 main (int argc, char *argv[])
@@ -583,44 +461,36 @@ main (int argc, char *argv[])
     FILE *pf;
     GMainLoop *main_loop;    
  
-    if (getuid()) {
+    /* XDM compliant error message */
+    if (getuid())
+	gdm_fail (_("Only root wants to run x^hgdm\n"));
 
-	/* XDM compliant error message */
-	fprintf (stderr, _("Only root wants to run x^hgdm\n"));
-
-	exit (EXIT_FAILURE);
-    }
-
+    /* Initialize runtime environment */
     umask (022);
     gnome_do_not_create_directories = TRUE;
     gnomelib_init ("gdm", VERSION);
     main_loop = g_main_new (FALSE);
     openlog ("gdm", LOG_PID, LOG_DAEMON);
 
+    /* Parse configuration file */
     gdm_config_parse();
 
-    if (!access (GdmPidFile, R_OK)) {
-        /* Check the process is still alive. Don't abort otherwise. */
-        int pidv;
+    /* Check if another gdm process is already running */
+    if (! access (GdmPidFile, R_OK)) {
+
+        /* Check if the existing process is still alive. */
+        gint pidv;
 
         pf = fopen (GdmPidFile, "r");
-        if (pf && fscanf (pf, "%d", &pidv)==1 && kill (pidv,0)!=-1) {
 
-        	fclose (pf);
-		fprintf (stderr, _("gdm already running. Aborting!\n\n"));
-
-		exit (EXIT_FAILURE);
-	}
-
-	fclose (pf);
-	fprintf (stderr, _("According to %s, gdm was already running (%d),\n"
-			   "but seems to have been murdered mysteriously.\n"), 
-		 GdmPidFile, pidv);
-	unlink (GdmPidFile);
+        if (pf && fscanf (pf, "%d", &pidv) == 1 && kill (pidv, 0) != -1)
+		gdm_fail (_("gdm already running. Aborting!"));
     }
 
     /* Become daemon unless started in -nodaemon mode or child of init */
-    if ( (argc==2 && strcmp (argv[1],"-nodaemon")==0) || getppid()==1) {
+    if ( (argc == 2 && strcmp (argv[1], "-nodaemon") == 0) || getppid() == 1) {
+
+	/* Write pid to pidfile */
 	if ((pf = fopen (GdmPidFile, "w"))) {
 	    fprintf (pf, "%d\n", getpid());
 	    fclose (pf);
@@ -671,7 +541,8 @@ main (int argc, char *argv[])
 
     g_main_run (main_loop);
 
-    return (EXIT_SUCCESS);
+    return EXIT_SUCCESS;	/* Not reached */
 }
+
 
 /* EOF */

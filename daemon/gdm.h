@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,20 @@
 #ifndef __GDM_H__
 #define __GDM_H__
 
+#include <glib.h>
+#include <X11/Xlib.h>
+#include <X11/Xmd.h>
+#include <X11/Xauth.h>
+
+
+#define STX 0x2			/* Start of txt */
+
 #define TYPE_LOCAL 1		/* Local X server */
 #define TYPE_XDMCP 2		/* Remote display */
 
 #define SERVER_SUCCESS 0	/* X server default */
 #define SERVER_FAILURE 1	/* X server default */
+#define SERVER_TIMEOUT 2	/* Server didn't start */
 #define SERVER_NOTFOUND 127	/* X server default */
 #define SERVER_DEAD 250		/* Server stopped */
 #define SERVER_STARTED 251	/* Server started but not ready for connections yet */
@@ -44,8 +53,7 @@
 
 
 /* Opcodes for the highly sophisticated protocol used for
-   daemon<->greeter communications */
-
+ * daemon<->greeter communications */
 #define GDM_MSGERR 'D'
 #define GDM_NOECHO 'U'
 #define GDM_PROMPT 'N'
@@ -57,6 +65,8 @@
 #define GDM_QUIT   'P'
 #define GDM_STOP   '!'
 
+/* The dreaded miscellaneous category */
+#define MAX_ARGS 32
 #define FIELD_SIZE 64
 #define PIPE_SIZE 1024
 
@@ -91,6 +101,7 @@
 #define GDM_KEY_MAXPEND "xdmcp/MaxPending=4"
 #define GDM_KEY_MAXSESS "xdmcp/MaxSessions=16"
 #define GDM_KEY_MAXWAIT "xdmcp/MaxWait=30"
+#define GDM_KEY_DISPERHOST "xdmcp/DisplaysPerHost=1"
 #define GDM_KEY_UDPPORT "xdmcp/Port=177"
 #define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=1"
 #define GDM_KEY_MAXINDIR "xdmcp/MaxPendingIndirect=4"
@@ -122,11 +133,6 @@
 #define GDM_KEY_SERVERS "servers"
 
 
-#include <glib.h>
-#include <X11/Xlib.h>
-#include <X11/Xmd.h>
-#include <X11/Xauth.h>
-
 typedef struct _GdmDisplay GdmDisplay;
 
 struct _GdmDisplay {
@@ -144,11 +150,13 @@ struct _GdmDisplay {
     guint8 dispstat;
     guint16 dispnum;
     guint8 servstat;
+    guint8 servtries;
     guint8 type;
     pid_t greetpid;
     pid_t servpid;
     pid_t sesspid;
     pid_t slavepid;
+    pid_t chooserpid;
     time_t acctime;
 };
 
