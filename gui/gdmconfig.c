@@ -1,4 +1,4 @@
-/* 
+/*
  *    GDMconfig, a graphical configurator for the GNOME display manager
  *    Copyright (C) 1999,2000,2001 Lee Mallabone <lee0@callnetuk.com>
  * 
@@ -24,7 +24,7 @@
 #include "gdmconfig.h"
 
 /* This should always be undefined before building ANY kind of production release. */
-/*#define DOING_DEVELOPMENT 1*/
+#define DOING_DEVELOPMENT 1
 
 /* XML Structures for the various configurator components */
 GladeXML *GUI = NULL;
@@ -61,7 +61,7 @@ gchar *desc3 = N_("This panel displays GDM's fundamental system settings.\n"
 /* Keep track of X servers, and the selected user level */
 int number_of_servers = 0;
 int selected_server_row = -1;
-int selected_user_level = -1;
+GtkWidget *invisible_notebook = NULL;
 
 /* Main application widget pointer */
 GtkWidget *GDMconfigurator = NULL;
@@ -151,18 +151,22 @@ main (int argc, char *argv[])
 	system_notebook = glade_xml_new(glade_filename, "system_notebook");
 	expert_notebook = glade_xml_new(glade_filename, "expert_notebook");
 	
-	gtk_widget_hide(get_widget("basic_notebook"));
-	gtk_widget_hide(get_widget("expert_notebook"));
-	gtk_widget_hide(get_widget("system_notebook"));
-	gtk_box_pack_start(GTK_BOX(get_widget("main_container")),
-					   get_widget("basic_notebook"),
-					   TRUE,TRUE,4);
-	gtk_box_pack_start(GTK_BOX(get_widget("main_container")),
-					   get_widget("expert_notebook"),
-					   TRUE,TRUE,4);
-	gtk_box_pack_start(GTK_BOX(get_widget("main_container")),
-					   get_widget("system_notebook"),
-					   TRUE,TRUE,4);
+   invisible_notebook = gtk_notebook_new();
+   gtk_notebook_set_show_tabs (GTK_NOTEBOOK (invisible_notebook), FALSE);
+   gtk_notebook_set_show_border (GTK_NOTEBOOK (invisible_notebook), FALSE);
+   gtk_notebook_set_tab_border (GTK_NOTEBOOK (invisible_notebook), 0);
+   gtk_notebook_append_page (GTK_NOTEBOOK (invisible_notebook),
+			     get_widget ("basic_notebook"),
+			     NULL);
+   gtk_notebook_append_page (GTK_NOTEBOOK (invisible_notebook),
+			     get_widget ("expert_notebook"),
+			     NULL);
+   gtk_notebook_append_page (GTK_NOTEBOOK (invisible_notebook),
+			     get_widget ("system_notebook"),
+			     NULL);
+   gtk_container_add (GTK_CONTAINER (get_widget ("main_container")),
+		      invisible_notebook);
+   gtk_widget_show (invisible_notebook);
     g_assert(GUI != NULL);
 
     /* Sanity checking */
@@ -204,35 +208,9 @@ main (int argc, char *argv[])
 }
 
 void user_level_row_selected(GtkCList *clist, gint row,
-							 gint column, GdkEvent *event, gpointer data) {
-	/* Keep redraws to a minimum */
-	if (row == selected_user_level)
-	  return;
-	
-	selected_user_level = row;
-	/* This is a bit hacky, but quick and works. */
-	gtk_widget_hide(get_widget("basic_notebook"));
-	gtk_widget_hide(get_widget("expert_notebook"));
-	gtk_widget_hide(get_widget("system_notebook"));
-	switch (row) {
-	 case 0:
-		gtk_widget_show(get_widget("basic_notebook"));
-		gtk_label_set(GTK_LABEL(get_widget("info_label")),
-					  _(desc1));
-		break;
-	 case 1:
-		gtk_widget_show(get_widget("expert_notebook"));
-		gtk_label_set(GTK_LABEL(get_widget("info_label")),
-					  _(desc2));
-		break;
-	 case 2:
-		gtk_widget_show(get_widget("system_notebook"));
-		gtk_label_set(GTK_LABEL(get_widget("info_label")),
-					  _(desc3));
-		break;
-	 default:
-		g_assert_not_reached();
-	}
+			     gint column, GdkEvent *event, gpointer data) {
+   g_assert (row >= 0 && row < 3);
+   gtk_notebook_set_page (GTK_NOTEBOOK (invisible_notebook), row);
 }
 
 void show_about_box(void) {
