@@ -2363,7 +2363,7 @@ gdm_login_gui_init (void)
     gint cols, rows;
     struct stat statbuf;
 
-    if(*GdmGtkRC)
+    if( ! gdm_string_empty (GdmGtkRC))
 	gtk_rc_parse (GdmGtkRC);
 
     login = gtk_window_new (GTK_WINDOW_TOPLEVEL);

@@ -1,3 +1,18 @@
+Thu May 17 15:44:08 2001  George Lebl <jirka@5z.com>
+
+	* config/Makefile.am: install factory settings, and for most settings
+	  files, overwrite the current and save the current in .orig files.
+	  this way changes will propagate.  Don't do this for gdm.conf
+	  however, this is the most likely to be modified by the user.
+
+	* gui/Makefile.am, gui/gdmphotosetip.desktop.in, gui/gdmphotosetup.c:
+	  a small proggie to setup the face for a user.  Should at some point
+	  become a crapplet and include all the gdm user settings
+
+	* gui/gdmconfig.(c|h|glade): fix some segfaults, include a factory
+	  settings reverting, and move the exclude users to the face
+	  browser as that's where it belongs
+
 Thu May 17 03:38:17 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: fix segfault in the login entry checking code 

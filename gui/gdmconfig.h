@@ -142,19 +142,19 @@ void gdm_radio_write (gchar *radio_base_name,
 void user_level_row_selected(GtkCList *clist, gint row,
 			     gint column, GdkEvent *event, gpointer data);
 void show_about_box(void);
-void 
-gdm_config_parse_most                  (void);
-void 
-gdm_config_parse_remaining             (void);
+void gdm_config_parse_most                  (gboolean factory);
+void gdm_config_parse_remaining             (gboolean factory);
 
 void
 write_new_config_file                  (GtkButton *button,
                                         gpointer         user_data);
 void revert_settings_to_file_state (GtkMenuItem *menu_item,
-									gpointer user_data);
+				    gpointer user_data);
+void revert_to_factory_settings (GtkMenuItem *menu_item,
+				 gpointer user_data);
 void
 write_and_close                        (GtkButton *button,
-										gpointer user_data);
+					gpointer user_data);
 void
 open_help_page                         (GtkButton *button,
                                         gpointer         user_data);

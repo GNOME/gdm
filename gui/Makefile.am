@@ -3,7 +3,8 @@ CFLAGS += -g -Wall 	\
 	-Wpointer-arith  	\
 	-Wmissing-prototypes -Wmissing-declarations 
 
-DEFS += -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\"
+DEFS += -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
+	-DGDM_FACTORY_CONFIG_FILE=\"@sysconfdir@/gdm/factory-gdm.conf\"
 
 INCLUDES = -I. -I.. -I$(top_srcdir)/daemon -I$(includedir)		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
@@ -11,7 +12,10 @@ INCLUDES = -I. -I.. -I$(top_srcdir)/daemon -I$(includedir)		\
 	@PIXBUF_CFLAGS@					\
 	$(GNOME_INCLUDEDIR)
 
-bin_PROGRAMS = gdmchooser gdmlogin gdmconfig
+bin_PROGRAMS = gdmchooser gdmlogin gdmconfig gdmphotosetup
+
+gdmphotosetup_SOURCES = \
+	gdmphotosetup.c
 
 gdmchooser_SOURCES = \
 	gdmchooser.c		\
@@ -40,7 +44,11 @@ gdmconfig_SOURCES = \
 gdmchooser_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) -lXdmcp -lX11 $(INTLLIBS) @LIBGLADE_LIBS@
 gdmlogin_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) @PIXBUF_LIBS@
 gdmconfig_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) @LIBGLADE_LIBS@
+gdmphotosetup_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS)
  
+Settingsdir = $(datadir)/gnome/apps/Settings
+Settings_in_files = gdmphotosetup.desktop.in
+Settings_DATA = $(Settings_in_files:.desktop.in=.desktop)
 Systemdir = $(datadir)/gnome/apps/System
 System_in_files = gdmconfig.desktop.in
 System_DATA = $(System_in_files:.desktop.in=.desktop)
@@ -54,4 +62,6 @@ EXTRA_DIST = \
 	gdmchooser-strings.c	\
 	$(Glade_DATA)		\
 	$(System_DATA)		\
-	$(System_in_files)
+	$(System_in_files)	\
+	$(Settings_DATA)	\
+	$(Settings_in_files)

@@ -44,8 +44,9 @@ GladeXML *system_notebook = NULL;
 gchar *glade_filename;
 
 /* FIXME: this is a global and immutable, it should change as the
- * user changes the dir */
-char *sessions_directory;
+ * user changes the dir, but that has many problems, so for now it
+ * stays the same all the time */
+static char *sessions_directory = NULL;
 
 /* 3 user levels are present in the CList */
 gchar *basic_row[1] = { N_("Basic") };
@@ -335,6 +336,17 @@ main (int argc, char *argv[])
     gnome_init ("gdmconfig", VERSION, argc, argv);
     glade_gnome_init();
 
+    /* If we are running under gdm parse the GDM gtkRC */
+    if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+	    char *gtkrc;
+	    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	    gtkrc = gnome_config_get_string (GDM_KEY_GTKRC);
+	    gnome_config_pop_prefix ();
+	    if ( ! gdm_string_empty (gtkrc))
+		    gtk_rc_parse (gtkrc);
+	    g_free (gtkrc);
+    }
+
     /* Make sure the user is root. If not, they shouldn't be messing with 
      * GDM's configuration.
      */
@@ -422,7 +434,7 @@ main (int argc, char *argv[])
      * This ensures sensitivity of some widgets is correct, and that the font picker
      * gets set properly.
      */
-    gdm_config_parse_most();
+    gdm_config_parse_most(FALSE);
     glade_xml_signal_autoconnect(GUI);
 
     /* we hack up our icon entry */
@@ -440,7 +452,7 @@ main (int argc, char *argv[])
 	glade_xml_signal_autoconnect(expert_notebook);
 	glade_xml_signal_autoconnect(system_notebook);
 
-    gdm_config_parse_remaining();
+    gdm_config_parse_remaining(FALSE);
 
 	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("user_level_clist")));
    	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("server_clist")));
@@ -503,29 +515,36 @@ void show_about_box(void) {
 }
 
 void
-gdm_config_parse_most (void)
+gdm_config_parse_most (gboolean factory)
 {
-    void *iter; gchar *key, *value;
+    void *iter;
+    gchar *key, *value, *prefix;
     DIR *sessdir;
     struct dirent *dent;
     struct stat statbuf;
     gchar *default_session_name = NULL;
     gint linklen;
+    const char *config_file;
 
     gtk_clist_clear (GTK_CLIST (get_widget ("sessions_clist")));
     gtk_clist_clear (GTK_CLIST (get_widget ("server_clist")));
     number_of_servers = 0;
 
+    if (factory)
+	    config_file = GDM_FACTORY_CONFIG_FILE;
+    else
+	    config_file = GDM_CONFIG_FILE;
+
     /* If the GDM config file does not exist, we have sensible defaults,
      * but make sure the user is warned.
      */
-    if (!g_file_exists(GDM_CONFIG_FILE))
+    if (!g_file_exists(config_file))
       {
 	      char *a_server[2];
 	      char *error = g_strdup_printf (_("The configuration file: %s\n"
 					       "does not exist! Using "
 					       "default values."),
-					     GDM_CONFIG_FILE);
+					     config_file);
 	      GtkWidget *error_dialog = gnome_error_dialog(error);
 	      g_free (error);
 	      gnome_dialog_set_parent(GNOME_DIALOG(error_dialog), 
@@ -538,9 +557,12 @@ gdm_config_parse_most (void)
 				a_server);
 	      number_of_servers = 1;
       }
-    
-    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
+    prefix = g_strdup_printf ("=%s=/", config_file);
+    gnome_config_push_prefix (prefix);
+    g_free (prefix);
+
+    g_free (sessions_directory);
     sessions_directory = gnome_config_get_string (GDM_KEY_SESSDIR);
     
     /* Fill the widgets in GDM tab */
@@ -808,9 +830,19 @@ gdm_config_parse_most (void)
 
 
 void
-gdm_config_parse_remaining (void)
+gdm_config_parse_remaining (gboolean factory)
 {
-    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+    char *prefix;
+    const char *config_file;
+
+    if (factory)
+	    config_file = GDM_FACTORY_CONFIG_FILE;
+    else
+	    config_file = GDM_CONFIG_FILE;
+
+    prefix = g_strdup_printf ("=%s=/", config_file);
+    gnome_config_push_prefix (prefix);
+    g_free (prefix);
 
     /* Ensure the XDMCP frame is the correct sensitivity */
     gdm_toggle_set("enable_xdmcp", gnome_config_get_bool(GDM_KEY_XDMCP));
@@ -1281,8 +1313,19 @@ revert_settings_to_file_state (GtkMenuItem *menu_item,
 {
 	if (run_query(_("This will destroy any changes made in this session.\n"
 			"Are you sure you want to do this?"))) {
-		gdm_config_parse_most();
-		gdm_config_parse_remaining();
+		gdm_config_parse_most(FALSE);
+		gdm_config_parse_remaining(FALSE);
+	}
+}
+
+void
+revert_to_factory_settings (GtkMenuItem *menu_item,
+			    gpointer user_data)
+{
+	if (run_query (_("This will destroy any changes made in the configuration.\n"
+			"Are you sure you want to do this?"))) {
+		gdm_config_parse_most (TRUE);
+		gdm_config_parse_remaining (TRUE);
 	}
 }
 
@@ -1562,6 +1605,9 @@ sessions_clist_row_selected                  (GtkCList *clist,
    GdmConfigSession *sess_details = (GdmConfigSession *)
      gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
 			     row);
+   if (sess_details == NULL)
+	   return;
+
    /* Stop silly things happening while we fill the text widget. */
    gtk_signal_handler_block_by_func (GTK_OBJECT(get_widget("session_text")),
 				     session_text_edited, NULL);
@@ -1782,12 +1828,21 @@ modify_session_name (GtkEntry *entry, gpointer data)
 void 
 session_directory_modified (GtkEntry *entry, gpointer data) 
 {
-   /* FIXME: Ask user if they wish to reload the sessions clist based on the
-    * new directory. ISSUE: what to do if they say no, especially if the
-    * new dir is invalid. Could get icky.
-    */
-	/* Right now just run a warning */
+	char *str;
 	static gboolean shown_warning = FALSE;
+	/* FIXME: Ask user if they wish to reload the sessions clist based on
+	 * the new directory. ISSUE: what to do if they say no, especially if
+	 * the new dir is invalid. Could get icky.
+	 */
+
+	/* don't warn if we haven't really changed it */
+	str = gtk_entry_get_text (GTK_ENTRY (entry));
+	if (str != NULL &&
+	    sessions_directory != NULL &&
+	    strcmp (str, sessions_directory) == 0)
+		return;
+
+	/* Right now just run a warning */
 	if ( ! shown_warning) {
 		gnome_warning_dialog_parented
 			(_("You have modified the sessions directory.\n"
