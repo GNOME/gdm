@@ -622,7 +622,7 @@ calc_pi (void)
 			h++;
 		n++;
 		if ( ! (n & 0xfff))
-			printf ("pi ~~ %f\t(%lu/%lu * 4) iteration: %lu \r",
+			printf ("pi ~~ %1.10f\t(%lu/%lu * 4) iteration: %lu \r",
 				((double)h)/(double)n * 4.0, h, n, n);
 	}
 	printf ("\n");
