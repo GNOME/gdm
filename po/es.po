@@ -1,7 +1,10 @@
+#
+# Pablo Saratxaga <srtxg@chanae.alphanet.ch>, 1998-2000
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.0\n"
-"POT-Creation-Date: 2000-04-20 17:52+0200\n"
+"POT-Creation-Date: 2000-05-11 23:55+0200\n"
 "PO-Revision-Date: 1998-11-21 01:59:37+0100\n"
 "Last-Translator: Pablo Saratxaga <srtxg@chanae.alphanet.ch>\n"
 "Language-Team: \n"
@@ -17,18 +20,15 @@ msgstr "gdm_config_parse: Ningún archivo de configuración: %s. Abortando."
 
 #: daemon/gdm.c:162
 msgid "gdm_config_parse: No greeter specified."
-msgstr ""
-"gdm_config_parse: no se especificó un programa de bienvenida."
+msgstr "gdm_config_parse: no se especificó un programa de bienvenida."
 
 #: daemon/gdm.c:165
 msgid "gdm_config_parse: No authdir specified."
-msgstr ""
-"gdm_config_parse: no se especificó el directorio authdir."
+msgstr "gdm_config_parse: no se especificó el directorio authdir."
 
 #: daemon/gdm.c:171
 msgid "gdm_config_parse: No sessions directory specified."
-msgstr ""
-"gdm_config_parse: No se especificó el directorio de sesiones."
+msgstr "gdm_config_parse: No se especificó el directorio de sesiones."
 
 #: daemon/gdm.c:183
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
@@ -129,8 +129,7 @@ msgstr "Solamente root puede ejecutar x^hgdm\n"
 
 #: daemon/gdm.c:479
 msgid "gdm already running. Aborting!"
-msgstr ""
-"gdm ya está ejecutándose. ¡Abortando!"
+msgstr "gdm ya está ejecutándose. ¡Abortando!"
 
 #: daemon/gdm.c:500
 msgid "gdm_main: Error setting up TERM signal handler"
@@ -212,10 +211,10 @@ msgstr "gdm_server_start: Error al configurar el controlador de la señal CHLD"
 
 #: daemon/server.c:113
 msgid "gdm_server_start: Error setting up ALRM signal handler"
-msgstr ""
-"gdm_server_start: Error al configurar el controlador de la señal ALARM"
+msgstr "gdm_server_start: Error al configurar el controlador de la señal ALARM"
 
 #: daemon/server.c:196
+#, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr "gdm_server_spawn: ¡No pude abrir la bitácora para el display %s!"
 
@@ -224,6 +223,7 @@ msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Error al configurar la señal USR1 a SIG_IGN"
 
 #: daemon/server.c:237
+#, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_server_spawn: Servidor X no encontrado: %s"
 
@@ -264,6 +264,7 @@ msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: Imposible hacer un fork para el proceso gdmgreeter"
 
 #: daemon/slave.c:266
+#, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: ¡El usuario pasó la autentificación pero "
@@ -314,12 +315,14 @@ msgstr ""
 "gdm_slave_xsync_ping: Error al configurar el controlador de la señal ALARM"
 
 #: daemon/slave.c:747
+#, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_exec_exec_script: Falló el lanzamiento: %s"
 
 #: daemon/slave.c:751
 msgid "gdm_slave_exec_script: Can't fork script process!"
-msgstr "gdm_exec_exec_script: ¡Imposible de hacer un fork para el proceso script!"
+msgstr ""
+"gdm_exec_exec_script: ¡Imposible de hacer un fork para el proceso script!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:123 daemon/verify-shadow.c:60
