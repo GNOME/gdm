@@ -640,16 +640,19 @@ if test -x /usr/X11R6/bin/X; then
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
    X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin"
+   X_CONFIG_OPTIONS="-audit 0"
 elif test -x /usr/openwin/bin/Xsun; then
    X_PATH="/usr/openwin/bin"
    X_SERVER_PATH="/usr/openwin/bin"
    X_SERVER="/usr/openwin/bin/Xsun"
    X_CONF_PATH="/usr/openwin/bin"
+   X_CONFIG_OPTIONS="-audit 0 -nobanner"
 elif test -x /opt/X11R6/bin/X; then
    X_PATH="/opt/X11R6/bin:/usr/X11R6/bin:/usr/bin/X11"
    X_SERVER_PATH="/opt/X11R6/bin"
    X_SERVER="/opt/X11R6/bin/X"
    X_CONF_PATH="/opt/X11R6/bin:/usr/local/bin:/usr/X11R6/bin:/usr/bin/X11"
+   X_CONFIG_OPTIONS="-audit 0"   
 else
    # what to do, what to do, this is wrong, but this just sets the
    # defaults, perhaps this user is cross compiling or some such
@@ -657,14 +660,17 @@ else
    X_SERVER_PATH="/usr/X11R6/bin"
    X_SERVER="/usr/X11R6/bin/X"
    X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin"
+   X_CONFIG_OPTIONS="-audit 0"
 fi
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
 AC_SUBST(X_SERVER_PATH)
 AC_SUBST(X_CONF_PATH)
+AC_SUBST(X_CONFIG_OPTIONS)
 AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER")
 AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH")
 AC_DEFINE_UNQUOTED(X_CONF_PATH,"$X_CONF_PATH")
+AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", Options used when launching xserver)
 
 SYSCONFDIR_TMP="$sysconfdir"
 EXPANDED_SYSCONFDIR=`eval echo $SYSCONFDIR_TMP`
