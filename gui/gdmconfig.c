@@ -725,7 +725,7 @@ gdm_config_parse_most (gboolean factory)
 	    * things up.
 	    */
 	   if (strcmp (g_basename (s), t) != 0) {
-		   printf ("recording %s as default session.\n", t);
+		   /* printf ("recording %s as default session.\n", t); */
 		   g_free (default_session_link_name);
 		   default_session_link_name = g_strdup (dent->d_name);
 		   g_free (default_session_name);
@@ -738,8 +738,7 @@ gdm_config_parse_most (gboolean factory)
 
 	    if ((statbuf.st_mode & (S_IRUSR|S_IXUSR)) == (S_IRUSR|S_IXUSR) &&
 		(statbuf.st_mode & (S_IRGRP|S_IXGRP)) == (S_IRGRP|S_IXGRP) &&
-		(statbuf.st_mode & (S_IROTH|S_IXOTH)) == (S_IROTH|S_IXOTH)) 
-	    {
+		(statbuf.st_mode & (S_IROTH|S_IXOTH)) == (S_IROTH|S_IXOTH)) {
 	       gchar *row[1];
 	       int rowNum;
 	       GdmConfigSession *this_session;
@@ -748,14 +747,17 @@ gdm_config_parse_most (gboolean factory)
 	       this_session = g_malloc0 (sizeof (GdmConfigSession));
 	       this_session->name = g_strdup(dent->d_name);
 	       script_file = fopen(s, "r");
-	       if (!script_file) {
-		  gnome_error_dialog_parented (_("Error reading session script!"),
-					       GTK_WINDOW (GDMconfigurator));
-		  this_session->script_contents = g_strdup (_("Error reading this session script"));
-		  this_session->changable = FALSE;
+	       if (script_file == NULL) {
+		       gnome_error_dialog_parented
+			       (_("Error reading session script!"),
+				GTK_WINDOW (GDMconfigurator));
+		       this_session->script_contents =
+			       g_strdup (_("Error reading this session script"));
+		       this_session->changable = FALSE;
 	       } else {
 		       GString *str = g_string_new (NULL);
 		       gchar buffer[BUFSIZ];
+
 		       while (fgets (buffer, sizeof (buffer),
 				     script_file) != NULL) {
 			       g_string_append (str, buffer);
@@ -764,8 +766,8 @@ gdm_config_parse_most (gboolean factory)
 		       g_string_free (str, FALSE);
 		       /* printf ("got script contents:\n%s.\n", this_session->script_contents); */
 		       this_session->changable = TRUE;
+		       fclose (script_file);
 	       }
-	       fclose (script_file);
 	       this_session->changed = FALSE;
 	       this_session->is_default = FALSE;
 
@@ -777,11 +779,11 @@ gdm_config_parse_most (gboolean factory)
 				       rowNum,
 				       this_session);
 
-	    }
-	    else 
+	    } else  {
 	        /* FIXME: this should have an error dialog I suppose */
 		syslog (LOG_ERR, "Wrong permissions on %s/%s. Should be readable/executable for all.", 
 			sessions_directory, dent->d_name);
+	    }
 	}
 
 	dent = readdir (sessdir);
@@ -798,7 +800,7 @@ gdm_config_parse_most (gboolean factory)
 	 g_assert (data != NULL);
 	 if (strcmp(default_session_name, data->name) == 0) {
 	    
-	    printf ("coloring session %s.\n", data->name);
+	    /*printf ("coloring session %s.\n", data->name);*/
 	    gdk_color_parse ("#d6e8ff", &col);
 	    gdk_color_alloc (gdk_colormap_get_system(), &col);
 	    
@@ -1160,7 +1162,7 @@ write_config (void)
 	full_deleted_file = g_strconcat (sessions_directory, "/", 
 					 file_basename, ".deleted",
 					 NULL);
-	printf ("deleting: %s.\n", full_file);
+	/*printf ("deleting: %s.\n", full_file);*/
 	/* remove old backup file */
 	unlink (full_deleted_file);
 	errno = 0;
@@ -1199,7 +1201,7 @@ write_config (void)
 		char *old;
 		old = g_strconcat (sessions_directory, "/",
 				   session->old_name, NULL);
-		printf ("removing %s\n", session->old_name);
+		/* printf ("removing %s\n", session->old_name); */
 		errno = 0;
 		if (unlink (old) < 0) {
 			if (errors == NULL)
@@ -1223,8 +1225,7 @@ write_config (void)
      }
 
    /* Now write out files that were changed (or renamed above) */
-   for (i=0; i<GTK_CLIST(get_widget ("sessions_clist"))->rows; i++)
-     {
+   for (i=0; i<GTK_CLIST(get_widget ("sessions_clist"))->rows; i++) {
 	GdmConfigSession *session;
 	session = gtk_clist_get_row_data (GTK_CLIST(get_widget ("sessions_clist")),
 					  i);
@@ -1242,7 +1243,7 @@ write_config (void)
 	   else
 		   filename = g_strconcat (sessions_directory, "/",
 					   session->name, NULL);
-	   printf ("writing changes to: %s.\n", filename);
+	   /* printf ("writing changes to: %s.\n", filename); */
 	   errno = 0;
 	   fp = fopen(filename, "w");
 	   if (fp == NULL) {
@@ -1273,8 +1274,7 @@ write_config (void)
 	   /* all went well */
 	   session->changed = FALSE;
 	}
-	
-     }
+   }
 
    if (old_current_default_session != current_default_session) {
 	if (default_session_link_name != NULL) {
@@ -1392,8 +1392,7 @@ revert_to_factory_settings (GtkMenuItem *menu_item,
 }
 
 void
-write_new_config_file                  (GtkButton *button,
-                                        gpointer         user_data)
+write_new_config_file (GtkButton *button, gpointer user_data)
 {
 	write_config ();
 }
@@ -1430,8 +1429,7 @@ open_help_page (GtkButton *button,
 
 
 gint
-exit_configurator                      (void     *gnomedialog,
-                                        gpointer         user_data)
+exit_configurator (GtkWidget *gnomedialog, gpointer user_data)
 {
     gtk_main_quit();
     return 0;
@@ -1781,7 +1779,7 @@ add_session_real (gchar *new_session_name, gpointer data)
 	   char *label[1];
 	   int rowNum;
 
-	   printf ("Will add session with %s.\n", new_session_name);
+	   /* printf ("Will add session with %s.\n", new_session_name); */
 	   a_session = g_malloc0 (sizeof (GdmConfigSession));
 	   a_session->name = g_strdup (new_session_name);
 

@@ -158,9 +158,9 @@ write_and_close                        (GtkButton *button,
 void
 open_help_page                         (GtkButton *button,
                                         gpointer         user_data);
-gint
-exit_configurator                      (void     *gnomedialog,
-                                        gpointer         user_data);
+
+gint exit_configurator (GtkWidget *gnomedialog, gpointer user_data);
+
 void
 can_apply_now                          (GtkEditable     *editable,
                                         gpointer         user_data);

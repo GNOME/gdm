@@ -123,6 +123,8 @@ static gboolean GdmShowLastSession;
 
 static GtkWidget *login;
 static GtkWidget *label;
+static GtkWidget *icon_button = NULL;
+static GtkWidget *title_box = NULL;
 static GtkWidget *clock_label = NULL;
 static GtkWidget *entry;
 static GtkWidget *ok_button;
@@ -1232,6 +1234,26 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
     return (TRUE);
 }
 
+static gboolean
+gdm_login_focus_in (GtkWidget *widget, GdkEventFocus *event)
+{
+	if (title_box != NULL)
+		gtk_widget_set_state (title_box, GTK_STATE_SELECTED);
+
+	if (icon_button != NULL)
+		gtk_widget_set_state (icon_button, GTK_STATE_NORMAL);
+
+	return FALSE;
+}
+
+static gboolean
+gdm_login_focus_out (GtkWidget *widget, GdkEventFocus *event)
+{
+	if (title_box != NULL)
+		gtk_widget_set_state (title_box, GTK_STATE_NORMAL);
+
+	return FALSE;
+}
 
 static void 
 gdm_login_session_handler (GtkWidget *widget) 
@@ -1843,7 +1865,8 @@ get_gnome_session (const char *sess_string)
 static gboolean
 err_box_clear (gpointer data)
 {
-	gtk_label_set_text (GTK_LABEL (err_box), "");
+	if (err_box != NULL)
+		gtk_label_set_text (GTK_LABEL (err_box), "");
 
 	err_box_clear_handler = 0;
 	return FALSE;
@@ -2304,24 +2327,6 @@ gdm_login_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
 }
 
 static gboolean
-handle_expose (GtkWidget *handle, GdkEventExpose *event, gpointer data)
-{
-	if (handle->window != NULL)
-		gtk_paint_handle (handle->style,
-				  handle->window,
-				  handle->state,
-				  GTK_SHADOW_NONE,
-				  &event->area,
-				  handle,
-				  "gdm-handle",
-				  0, 0,
-				  handle->allocation.width,
-				  handle->allocation.height,
-				  GTK_ORIENTATION_HORIZONTAL);
-	return TRUE;
-}
-
-static gboolean
 gdm_login_handle_pressed (GtkWidget *widget, GdkEventButton *event)
 {
     gint xp, yp;
@@ -2425,71 +2430,60 @@ minimize_expose (GtkWidget *icon, GdkEventExpose *event, gpointer data)
 static GtkWidget *
 create_handle (void)
 {
-	GtkWidget *ebox, *hbox, *frame, *w;
+	GtkWidget *hbox, *w;
 
-	ebox = gtk_event_box_new ();
-	gtk_signal_connect (GTK_OBJECT (ebox), "button_press_event",
+	title_box = gtk_event_box_new ();
+	gtk_signal_connect (GTK_OBJECT (title_box), "button_press_event",
 			    GTK_SIGNAL_FUNC (gdm_login_handle_pressed),
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (ebox), "button_release_event",
+	gtk_signal_connect (GTK_OBJECT (title_box), "button_release_event",
 			    GTK_SIGNAL_FUNC (gdm_login_handle_released),
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT (ebox), "motion_notify_event",
+	gtk_signal_connect (GTK_OBJECT (title_box), "motion_notify_event",
 			    GTK_SIGNAL_FUNC (gdm_login_handle_motion),
 			    NULL);
 
-	frame = gtk_frame_new (NULL);
-	gtk_container_add (GTK_CONTAINER (ebox), frame);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
-
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (frame), hbox);
-
-	w = gtk_drawing_area_new ();
-	gtk_signal_connect (GTK_OBJECT (w), "expose_event",
-			    GTK_SIGNAL_FUNC (handle_expose),
-			    NULL);
-	gtk_box_pack_start (GTK_BOX (hbox), w, TRUE, TRUE, 0);
+	gtk_container_add (GTK_CONTAINER (title_box), hbox);
 
 	w = gtk_label_new (_("GNOME Desktop Manager"));
-	gtk_misc_set_padding (GTK_MISC (w), GNOME_PAD_SMALL, GNOME_PAD_SMALL);
-	gtk_box_pack_start (GTK_BOX (hbox), w, FALSE, FALSE, GNOME_PAD_SMALL);
+	gtk_misc_set_padding (GTK_MISC (w),
+			      GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_box_pack_start (GTK_BOX (hbox), w,
+			    TRUE, TRUE, GNOME_PAD_SMALL);
 	
-	w = gtk_drawing_area_new ();
-	gtk_signal_connect (GTK_OBJECT (w), "expose_event",
-			    GTK_SIGNAL_FUNC (handle_expose),
-			    NULL);
-	gtk_box_pack_start (GTK_BOX (hbox), w, TRUE, TRUE, 0);
-
 	if (GdmIcon != NULL) {
 		if (access (GdmIcon, R_OK)) {
 			syslog (LOG_WARNING, _("Can't open icon file: %s. Suspending iconify feature!"), GdmIcon);
 		} else {
 			GtkWidget *icon;
-			w = gtk_button_new ();
-			gtk_container_border_width (GTK_CONTAINER (w), 2);
+			icon_button = gtk_button_new ();
+			gtk_container_border_width
+				(GTK_CONTAINER (icon_button), 2);
 			icon = gtk_drawing_area_new ();
 			gtk_signal_connect (GTK_OBJECT (icon), "expose_event",
 					    GTK_SIGNAL_FUNC (minimize_expose),
 					    NULL);
 			gtk_widget_set_usize (icon, 16, -1);
-			gtk_container_add (GTK_CONTAINER (w), icon);
+			gtk_container_add (GTK_CONTAINER (icon_button), icon);
 			gtk_signal_connect
-				(GTK_OBJECT (w), "clicked",
+				(GTK_OBJECT (icon_button), "clicked",
 				 GTK_SIGNAL_FUNC (gdm_login_iconify_handler), 
 				 NULL);
-			GTK_WIDGET_UNSET_FLAGS (w, GTK_CAN_FOCUS);
-			GTK_WIDGET_UNSET_FLAGS (w, GTK_CAN_DEFAULT);
-			gtk_box_pack_start (GTK_BOX (hbox), w, FALSE, FALSE, 0);
-			gtk_tooltips_set_tip (tooltips, GTK_WIDGET (w),
+			GTK_WIDGET_UNSET_FLAGS (icon_button, GTK_CAN_FOCUS);
+			GTK_WIDGET_UNSET_FLAGS (icon_button, GTK_CAN_DEFAULT);
+			gtk_box_pack_start (GTK_BOX (hbox), icon_button,
+					    FALSE, FALSE, 0);
+			gtk_tooltips_set_tip (tooltips,
+					      GTK_WIDGET (icon_button),
 					      _("Iconify the login window"),
 					      NULL);
 		}
 	}
 
-	gtk_widget_show_all (ebox);
+	gtk_widget_show_all (title_box);
 
-	return ebox;
+	return title_box;
 }
 
 static void
@@ -3026,10 +3020,9 @@ gdm_login_gui_init (void)
     gtk_table_attach (GTK_TABLE (stack), entry, 0, 1, 4, 5,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (0), 10, 0);
-    gtk_signal_connect_object (GTK_OBJECT(entry), 
-			       "key_press_event", 
-			       GTK_SIGNAL_FUNC (gdm_login_entry_handler),
-			       NULL);
+    gtk_signal_connect (GTK_OBJECT(entry), "key_press_event", 
+			GTK_SIGNAL_FUNC (gdm_login_entry_handler),
+			NULL);
     
     hline2 = gtk_hseparator_new ();
     gtk_widget_ref (hline2);
@@ -3115,6 +3108,13 @@ gdm_login_gui_init (void)
     } else {
 	    gdm_wm_center_window (GTK_WINDOW (login));
     }
+
+    gtk_signal_connect (GTK_OBJECT (login), "focus_in_event", 
+			GTK_SIGNAL_FUNC (gdm_login_focus_in),
+			NULL);
+    gtk_signal_connect (GTK_OBJECT (login), "focus_out_event", 
+			GTK_SIGNAL_FUNC (gdm_login_focus_out),
+			NULL);
 
     gtk_widget_show_all (GTK_WIDGET (login));
 }
