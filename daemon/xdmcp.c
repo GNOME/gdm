@@ -458,9 +458,9 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	g_assert (id != NULL);
 	g_assert (id->chosen_host != NULL);
 
-	gdm_debug ("gdm_xdmcp_send_forward_query: Sending forward query to %s,"
-		   " about %s:%d", 
-		   inet_ntoa (*id->chosen_host),
+	gdm_debug ("gdm_xdmcp_send_forward_query: Sending forward query to %s",
+		   inet_ntoa (*id->chosen_host));
+	gdm_debug ("gdm_xdmcp_send_forward_query: Query contains %s:%d", 
 		   inet_ntoa (clnt_sa->sin_addr),
 		   (int) ntohs (clnt_sa->sin_port));
 
@@ -498,7 +498,7 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	sock.sin_port = htons (XDM_UDP_PORT);
 	sock.sin_addr.s_addr = id->chosen_host->s_addr;
 	XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr) &sock,
-		    sizeof (struct sockaddr_in));
+		    (int)sizeof (struct sockaddr_in));
 
 	g_free (port.data);
 	g_free (address.data);
@@ -512,9 +512,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     ARRAY8 clnt_port;
     ARRAYofARRAY8 clnt_authlist;
     gint i = 0, explen = 1;
-    static struct sockaddr_in *disp_sa;
-    guint port = 0;
-    struct in_addr ia;
+    struct sockaddr_in disp_sa = {0};
     
     /* Read display address */
     if (! XdmcpReadARRAY8 (&buf, &clnt_addr)) {
@@ -524,15 +522,15 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     
     /* Read display port */
     if (! XdmcpReadARRAY8 (&buf, &clnt_port)) {
-	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+	XdmcpDisposeARRAY8 (&clnt_addr);
 	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not read display port number"));
 	return;
     }
     
     /* Extract array of authentication names from Xdmcp packet */
     if (! XdmcpReadARRAYofARRAY8 (&buf, &clnt_authlist)) {
-	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
-	XdmcpDisposeARRAYofARRAY8 (&clnt_port);
+	XdmcpDisposeARRAY8 (&clnt_addr);
+	XdmcpDisposeARRAY8 (&clnt_port);
 	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not extract authlist from packet")); 
 	return;
     }
@@ -552,32 +550,32 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 	goto out;
     }
     
+    if (clnt_port.length != 2 ||
+	clnt_addr.length != 4) {
+	    gdm_error (_("gdm_xdmcp_handle_forward_query: Bad address")); 
+	    goto out;
+    }
+
+    disp_sa.sin_family = AF_INET;
+
     /* Find client port number */
-    for (i = 0 ; i < clnt_port.length ; i++)
-	port = port*256+clnt_port.data[i];
+    memcpy (&disp_sa.sin_port, clnt_port.data, 2);
     
-    /* Find client address. Ugly, ugly. Endianness sucks... */
-    memmove (&ia.s_addr, clnt_addr.data, MIN(clnt_addr.length, sizeof(ia.s_addr)));
+    /* Find client address */
+    memcpy (&disp_sa.sin_addr.s_addr, clnt_addr.data, 4);
     
     gdm_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY for display: %s, port %d", 
-	       inet_ntoa (ia), ntohs (port));
+	       inet_ntoa (disp_sa.sin_addr), ntohs (disp_sa.sin_port));
     
-    /* Assemble sockaddr_in struct to pass on */
-    disp_sa = g_new0 (struct sockaddr_in, 1);
-    disp_sa->sin_family = AF_INET;
-    disp_sa->sin_port = port;
-    disp_sa->sin_addr.s_addr = ia.s_addr;
-
     /* Check with tcp_wrappers if display is allowed to access */
-    if (gdm_xdmcp_host_allow (disp_sa)) 
-	    gdm_xdmcp_send_willing (disp_sa);
+    if (gdm_xdmcp_host_allow (&disp_sa)) 
+	    gdm_xdmcp_send_willing (&disp_sa);
 
   out:
-    g_free(disp_sa);
     /* Cleanup */
     XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
-    XdmcpDisposeARRAYofARRAY8 (&clnt_port);
-    XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+    XdmcpDisposeARRAY8 (&clnt_port);
+    XdmcpDisposeARRAY8 (&clnt_addr);
 }
 
 
@@ -601,7 +599,7 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
     XdmcpWriteARRAY8 (&buf, &serv_authlist.authentication); /* Hardcoded authentication */
     XdmcpWriteARRAY8 (&buf, &servhost);
     XdmcpWriteARRAY8 (&buf, &status);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
 }
 
 static void
@@ -624,7 +622,7 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     
     XdmcpWriteARRAY8 (&buf, &servhost);
     XdmcpWriteARRAY8 (&buf, &status);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
 }
 
 
@@ -799,7 +797,7 @@ gdm_xdmcp_send_accept (struct sockaddr_in *clnt_sa, gint displaynum)
     XdmcpWriteARRAY8 (&buf, &authname);
     XdmcpWriteARRAY8 (&buf, &authdata);
     
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
     
     gdm_debug ("gdm_xdmcp_send_accept: Sending ACCEPT to %s with SessionID=%d", 
 	       inet_ntoa (clnt_sa->sin_addr), d->sessionid);
@@ -837,7 +835,7 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa)
     XdmcpWriteARRAY8 (&buf, &authentype);
     XdmcpWriteARRAY8 (&buf, &authendata);
     
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
 }
 
 
@@ -882,16 +880,25 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     }
     
     d = gdm_xdmcp_display_lookup (clnt_sessid);
-    id = gdm_choose_indirect_lookup (clnt_sa);
+    if (GdmIndirect) {
+	    id = gdm_choose_indirect_lookup (clnt_sa);
 
-    /* This was an indirect thingie, use a chooser */
-    if (d != NULL &&
-	d->dispstat == XDMCP_PENDING &&
-	GdmIndirect &&
-	id != NULL) {
-	    d->use_chooser = TRUE;
-	    d->indirect_id = id->id;
+	    /* This was an indirect thingie and nothing was yet chosen,
+	     * use a chooser */
+	    if (d != NULL &&
+		d->dispstat == XDMCP_PENDING &&
+		id != NULL &&
+		id->chosen_host == NULL) {
+		    d->use_chooser = TRUE;
+		    d->indirect_id = id->id;
+	    } else {
+		    d->indirect_id = 0;
+		    d->use_chooser = FALSE;
+		    if (id != NULL)
+			    gdm_choose_indirect_dispose (id);
+	    }
     } else {
+	    d->indirect_id = 0;
 	    d->use_chooser = FALSE;
     }
 
@@ -949,7 +956,7 @@ gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid)
     
     XdmcpWriteHeader (&buf, &header);  
     XdmcpWriteCARD32 (&buf, sessid);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
 }
 
 
@@ -971,7 +978,7 @@ gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid)
     XdmcpWriteHeader (&buf, &header);
     XdmcpWriteCARD32 (&buf, sessid);
     XdmcpWriteARRAY8 (&buf, &status);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
 }
 
 
@@ -1021,7 +1028,7 @@ gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid)
     XdmcpWriteHeader (&buf, &header);
     XdmcpWriteCARD8 (&buf, 1);
     XdmcpWriteCARD32 (&buf, sessid);
-    XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));
+    XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
 }
 
 
@@ -1029,6 +1036,12 @@ static gboolean
 gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa)
 {
 #ifdef HAVE_TCPWRAPPERS
+	
+    /* avoids a warning, my tcpd.h file doesn't include this prototype, even
+     * though the library does include the function and the manpage mentions it
+     */
+    extern int hosts_ctl (char *daemon, char *client_name, char *client_addr, char *client_user);
+
     struct hostent *client_he;
     gchar *client;
     
@@ -1037,7 +1050,7 @@ gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa)
 			       sizeof (struct in_addr),
 			       AF_INET);
     
-    client = (client_he && client_he->h_name) ? client_he->h_name : NULL;
+    client = (client_he != NULL) ? client_he->h_name : NULL;
     
     /* Check with tcp_wrappers if client is allowed to access */
     return (hosts_ctl ("gdm", client ? client : "unknown", inet_ntoa (clnt_sa->sin_addr), ""));

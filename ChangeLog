@@ -1,3 +1,13 @@
+Fri Jun 22 18:53:14 2001  George Lebl <jirka@5z.com>
+
+	* daemon/xdmcp.c: fix up the forward query sending/handeling, fix
+	  some wrong freeing too, and fix the hosts_ctl warning by including
+	  a prototype.  We finally have chooser stuff all working! Yay!
+
+	* daemon/xdmcp.c, gui/gdmchooser.c: we want to be very careful in
+	  what types we pass xdmcp functions, the header does not include
+	  areguments in the prototypes, so usage is snarfed from xdm
+
 Fri Jun 22 15:50:00 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmchooser.c, gui/gdmwm.[ch], gui/gdmlogin.c: unify the

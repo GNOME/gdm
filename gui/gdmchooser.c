@@ -279,7 +279,7 @@ gdm_chooser_xdmcp_discover (void)
     while (bl) {
 	ia = (struct in_addr *) bl->data;
 	sock.sin_addr.s_addr = ia->s_addr; 
-	XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock, sizeof (struct sockaddr_in));
+	XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
 	bl = bl->next;
     }
 
@@ -291,7 +291,7 @@ gdm_chooser_xdmcp_discover (void)
     while (ql != NULL) {
 	    ia = (struct in_addr *) ql->data;
 	    sock.sin_addr.s_addr = ia->s_addr;
-	    XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, sizeof (struct sockaddr_in));
+	    XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
 	    ql = ql->next;
     }
 
