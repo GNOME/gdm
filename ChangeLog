@@ -1,3 +1,11 @@
+Thu May 27 13:42:39 2004  George Lebl <jirka@5z.com>
+
+	* gui/modules/dwellmouselistener.c, gui/modules/keymouselistener.c:
+	  The screen code was wankered, it wanted HAVE_GTK_MULTIHEAD to be
+	  defined to work properly and otherwise it confused bonobo which
+	  is completely moronic (I mean bonobo is moronic) by using slightly
+	  different (but perfectly legal) DISPLAY env var.
+
 Wed May 26 18:23:14 2004  George Lebl <jirka@5z.com>
 
 	* daemon/auth.c, daemon/display.c, daemon/gdm.[ch], daemon/misc.[ch],

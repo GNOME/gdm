@@ -98,7 +98,6 @@ BindingDirection get_binding_direction(char c);
 static gchar *
 screen_exec_display_string (GdkScreen *screen, const char *old)
 {
-#ifdef HAVE_GTK_MULTIHEAD
   GString    *str;
   const gchar *old_display;
   gchar       *retval;
@@ -122,12 +121,6 @@ screen_exec_display_string (GdkScreen *screen, const char *old)
   g_string_free (str, FALSE);
 
   return retval;
-#else
-  if (old)
-	  return g_strdup (old);
-  else
-	  return g_strdup ("DISPLAY=:0.0");
-#endif
 }
 
 /**
