@@ -23,26 +23,75 @@
 #include "gdmconfig.h"
 
 /* This should always be undefined before building ANY kind of production release. */
-#undef DOING_DEVELOPMENT
+/*#define DOING_DEVELOPMENT 1*/
 
+/* XML Structures for the various configurator components */
 GladeXML *GUI = NULL;
+GladeXML *basic_notebook = NULL;
+GladeXML *expert_notebook = NULL;
+GladeXML *system_notebook = NULL;
 
+/* The XML file */
+gchar *glade_filename;
+
+/* 3 user levels are present in the CList */
+gchar *basic_row[1] = { N_("Basic") };
+gchar *expert_row[1] = { N_("Expert") };
+gchar *system_row[1] = { N_("System") };
+
+gchar *desc1 =_("This panel displays the basic options for configuring GDM.\n"
+				"\n"
+				"If you need finer detail, select 'expert' or 'system setup' from the list above.\n"
+				"\n"
+				"This will display some of the more complex options of GDM that rarely need to be changed.");
+gchar *desc2 =_("This panel displays the more advanced options of GDM.\n"
+				"\n"
+				"Be sure to take care when manipulating the security options, or you could be "
+				"vulnerable to attackers.\n"
+				"\n"
+				"Choose \"System setup\" to change fundamental options in GDM.");
+gchar *desc3 =_("This panel displays GDM's fundamental system settings.\n"
+				"\n"
+				"You should only change these paths if you really know what you are doing, as an incorrect "
+				"setup could stop your machine from booting properly.\n"
+				"\n"
+				"Choose \"Basic\" if you just want to change your machine's login appearance.");
+
+/* Keep track of X servers, and the selected user level */
 int number_of_servers = 0;
 int selected_server_row = -1;
+int selected_user_level = -1;
 
+/* Main application widget pointer */
 GtkWidget *GDMconfigurator = NULL;
 
+/** This is something of a hack, but it keeps the code clean and easily extensible later on. */
+GtkWidget *get_widget(gchar *widget_name)
+{
+	GtkWidget *ret = NULL;
+	ret = glade_xml_get_widget(GUI, widget_name);
+	if (!ret) {
+		ret = glade_xml_get_widget(basic_notebook, widget_name);
+		if (!ret) {
+			ret = glade_xml_get_widget(system_notebook, widget_name);
+			if (!ret) {
+				ret = glade_xml_get_widget(expert_notebook, widget_name);
+			}
+		}
+	}
+	return ret;
+}
 
 int
 main (int argc, char *argv[])
 {
-    gchar *glade_filename;
 #ifdef ENABLE_NLS
     bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
     textdomain (PACKAGE);
 #endif
 
-    gnome_init ("gdmconfig", "0.1", argc, argv);
+	/* FIXME! Should replace the number with 'VERSION', but it doesn't seem to pick it up. */
+    gnome_init ("gdmconfig", "2.0.97.1", argc, argv);
     glade_gnome_init();
 
     /* Make sure the user is root. If not, they shouldn't be messing with 
@@ -76,8 +125,23 @@ main (int argc, char *argv[])
 #endif /* DOING_DEVELOPMENT */
 	
     /* Build the user interface */
-    GUI = glade_xml_new(glade_filename, NULL);
-    g_free(glade_filename);
+    GUI = glade_xml_new(glade_filename, "gdmconfigurator");
+	basic_notebook = glade_xml_new(glade_filename, "basic_notebook");
+	system_notebook = glade_xml_new(glade_filename, "system_notebook");
+	expert_notebook = glade_xml_new(glade_filename, "expert_notebook");
+	
+	gtk_widget_hide(get_widget("basic_notebook"));
+	gtk_widget_hide(get_widget("expert_notebook"));
+	gtk_widget_hide(get_widget("system_notebook"));
+	gtk_box_pack_start(GTK_BOX(get_widget("main_container")),
+					   get_widget("basic_notebook"),
+					   TRUE,TRUE,4);
+	gtk_box_pack_start(GTK_BOX(get_widget("main_container")),
+					   get_widget("expert_notebook"),
+					   TRUE,TRUE,4);
+	gtk_box_pack_start(GTK_BOX(get_widget("main_container")),
+					   get_widget("system_notebook"),
+					   TRUE,TRUE,4);
     g_assert(GUI != NULL);
 
     /* Sanity checking */
@@ -92,15 +156,63 @@ main (int argc, char *argv[])
     gdm_config_parse_most();
     glade_xml_signal_autoconnect(GUI);
     gdm_config_parse_remaining();
+	
+	glade_xml_signal_autoconnect(basic_notebook);
+	glade_xml_signal_autoconnect(expert_notebook);
+	glade_xml_signal_autoconnect(system_notebook);
+	
+	gtk_clist_append(GTK_CLIST(get_widget("user_level_clist")),
+					  basic_row);					 
+	gtk_clist_append(GTK_CLIST(get_widget("user_level_clist")),
+					 expert_row);					 
+	gtk_clist_append(GTK_CLIST(get_widget("user_level_clist")),
+					  system_row);
+	
+	gtk_clist_select_row(GTK_CLIST(get_widget("user_level_clist")), 0,0);
 
     gtk_window_set_title(GTK_WINDOW(GDMconfigurator),
-			 _("GNOME Display Manager Configurator"));
-    gnome_property_box_set_state(GNOME_PROPERTY_BOX(GDMconfigurator), FALSE);
+						 _("GNOME Display Manager Configurator"));
+    gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply_button")), FALSE);
     
     gtk_main ();
     return 0;
 }
 
+void user_level_row_selected(GtkCList *clist, gint row,
+							 gint column, GdkEvent *event, gpointer data) {
+	/* Keep redraws to a minimum */
+	if (row == selected_user_level)
+	  return;
+	
+	selected_user_level = row;
+	/* This is a bit hacky, but quick and works. */
+	gtk_widget_hide(get_widget("basic_notebook"));
+	gtk_widget_hide(get_widget("expert_notebook"));
+	gtk_widget_hide(get_widget("system_notebook"));
+	switch (row) {
+	 case 0:
+		gtk_widget_show(get_widget("basic_notebook"));
+		gtk_label_set(GTK_LABEL(get_widget("info_label")),
+					  desc1);
+		break;
+	 case 1:
+		gtk_widget_show(get_widget("expert_notebook"));
+		gtk_label_set(GTK_LABEL(get_widget("info_label")),
+					  desc2);
+		break;
+	 case 2:
+		gtk_widget_show(get_widget("system_notebook"));
+		gtk_label_set(GTK_LABEL(get_widget("info_label")),
+					  desc3);
+		break;
+	 default:
+		g_assert_not_reached();
+	}
+}
+
+void show_about_box(void) {
+	glade_xml_new(glade_filename, "about_gdmconfig");
+}
 
 void
 gdm_config_parse_most (void)
@@ -142,7 +254,7 @@ gdm_config_parse_most (void)
     /* Fill the widgets in Security tab */
     gdm_toggle_set("allow_root", gnome_config_get_bool(GDM_KEY_ALLOWROOT));
     gdm_toggle_set("kill_init_clients", gnome_config_get_bool(GDM_KEY_KILLIC));
-    /* FIXME: see comment on _set */
+    /* FIXME: see comment on _set for relax_perms */
     gdm_toggle_set("relax_perms", gnome_config_get_int(GDM_KEY_RELAXPERM));
     gdm_toggle_set("verbose_auth", gnome_config_get_bool(GDM_KEY_VERBAUTH));
 
@@ -259,7 +371,7 @@ run_query (const gchar *msg)
 				 GNOME_STOCK_BUTTON_YES,
 				 GNOME_STOCK_BUTTON_NO,
 				 NULL);
-	    
+	
     gtk_window_set_modal (GTK_WINDOW (req), TRUE);
     gnome_dialog_set_parent (GNOME_DIALOG (req),
 			     GTK_WINDOW (GDMconfigurator));
@@ -289,13 +401,13 @@ run_warn_reset_dialog (void)
 
 	if (pid > 1 &&
 	    kill (pid, 0) == 0) {
-		if (run_query (_("The settings cannot take effect until gdm\n"
-				 "is restarted or your computer is rebooted.\n"
-				 "Do you wish to restart GDM now?\n"
-				 "This will kill all your current sessions\n"
-				 "and you will lose any unsaved data!")) &&
+		if (run_query (_("The applied settings cannot take effect until gdm\n"
+						 "is restarted or your computer is rebooted.\n"
+						 "Do you wish to restart GDM now?\n"
+						 "This will kill all your current sessions\n"
+						 "and you will lose any unsaved data!")) &&
 		    run_query (_("Are you sure you wish to restart GDM\n"
-				 "and lose any unsaved data?"))) {
+						 "and lose any unsaved data?"))) {
 			kill (pid, SIGHUP);
 			/* now what happens :) */
 		}
@@ -308,21 +420,17 @@ run_warn_reset_dialog (void)
 			 GTK_WINDOW (GDMconfigurator));
 		gnome_dialog_run_and_close (GNOME_DIALOG (w));
 	}
+	/* Don't apply identical settings again. */
+	gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply_button")), FALSE);
 }
 
 
 void
-write_new_config_file                  (GnomePropertyBox *gnomepropertybox,
-                                        gint             arg1,
+write_new_config_file                  (GtkButton *button,
                                         gpointer         user_data)
 {
     int i = -1;
     
-    /* Apply everything only once per click of apply */
-    
-    if (arg1 != -1)
-      return;
-
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
     
     /* Write out the widget contents of the GDM tab */
@@ -417,10 +525,10 @@ write_new_config_file                  (GnomePropertyBox *gnomepropertybox,
 
     for (i=0; i<number_of_servers; i++)
       {
-	  char *current_server;
-	  gtk_clist_get_text(GTK_CLIST(get_widget("server_clist")),
-			     i, 1, &current_server);
-	  gnome_config_set_string(g_strdup_printf("%d", i), current_server);
+		  char *current_server;
+		  gtk_clist_get_text(GTK_CLIST(get_widget("server_clist")),
+							 i, 1, &current_server);
+		  gnome_config_set_string(g_strdup_printf("%d", i), current_server);
       }
 
     gnome_config_pop_prefix();
@@ -429,18 +537,35 @@ write_new_config_file                  (GnomePropertyBox *gnomepropertybox,
     run_warn_reset_dialog ();
 }
 
+void revert_settings_to_file_state (GtkMenuItem *menu_item,
+									gpointer user_data)
+{
+	if (run_query(_("This will destroy any changes made in this session.\n"
+					"Are you sure you want to do this?")) == TRUE) {
+		gdm_config_parse_most();
+		gdm_config_parse_remaining();
+	}
+}
 
 void
-open_help_page                         (GnomePropertyBox *gnomepropertybox,
-                                        gint             arg1,
+write_and_close                        (GtkButton *button,
+										gpointer user_data)
+{
+	write_new_config_file(button, user_data);
+	exit_configurator(NULL, NULL);
+}
+
+void
+open_help_page                         (GtkButton *button,
                                         gpointer         user_data)
 {
+	gnome_error_dialog("No help has been written yet!\nMail docs@gnome.org if you wish to volunteer.");
 	/* FIXME: ! */
 }
 
 
 gint
-exit_configurator                      (GnomeDialog     *gnomedialog,
+exit_configurator                      (void     *gnomedialog,
                                         gpointer         user_data)
 {
     gtk_main_quit();
@@ -452,7 +577,7 @@ void
 can_apply_now                          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-    gnome_property_box_changed(GNOME_PROPERTY_BOX(glade_xml_get_widget(GUI, "gdmconfigurator")));
+	gtk_widget_set_sensitive(get_widget("apply_button"), TRUE);
 }
 
 
@@ -463,8 +588,8 @@ change_xdmcp_sensitivity               (GtkButton       *button,
     g_assert(button != NULL);
     g_assert(GTK_IS_TOGGLE_BUTTON(button));
     
-    gtk_widget_set_sensitive(glade_xml_get_widget(GUI, "xdmcp_frame"), 
-			     GTK_TOGGLE_BUTTON(button)->active);
+    gtk_widget_set_sensitive(get_widget("xdmcp_frame"), 
+							 GTK_TOGGLE_BUTTON(button)->active);
 }
 
 
@@ -509,7 +634,7 @@ add_new_server                         (GtkButton       *button,
                                         gpointer         user_data)
 {
     /* Request the command line for this new server */
-    gnome_request_dialog(FALSE, "Enter the path to the X server,and\nany parameters that should be passed to it.",
+    gnome_request_dialog(FALSE, _("Enter the path to the X server,and\nany parameters that should be passed to it."),
 			 "/usr/bin/X11/X",
 			 -1, handle_server_add_or_edit,
 			 (gpointer)"add", (GtkWindow *)GDMconfigurator);
