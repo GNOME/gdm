@@ -71,9 +71,9 @@ static void
 query_greeter_suspend_handler (void)
 {
 	if (greeter_query (_("Are you sure you want to suspend the machine?"))) {
-		closelog();
-
-		_exit (DISPLAY_SUSPEND);
+		/* suspend interruption */
+		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
+		fflush (stdout);
 	}
 }
 

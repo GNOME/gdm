@@ -70,8 +70,12 @@ KillInitClients=true
 LogDir=@EXPANDED_AUTHDIR@
 # You should probably never change this value unless you have a weird setup
 PidFile=/var/run/gdm.pid
-PostSessionScriptDir=@EXPANDED_SYSCONFDIR@/gdm/PostSession/
+# Note that a post login script is run before a PreSession script.
+# It is run after the login is successful and before any setup is
+# run on behalf of the user
+PostLoginScriptDir=@EXPANDED_SYSCONFDIR@/gdm/PostLogin/
 PreSessionScriptDir=@EXPANDED_SYSCONFDIR@/gdm/PreSession/
+PostSessionScriptDir=@EXPANDED_SYSCONFDIR@/gdm/PostSession/
 # Distributions:  If you have some script that runs an X server in say
 # VGA mode, allowing a login, could you please send it to me?
 FailsafeXServer=
@@ -114,16 +118,24 @@ AllowRoot=true
 AllowRemoteRoot=true
 # This will allow remote timed login
 AllowRemoteAutoLogin=false
-# 0 is the most anal, 1 allows group write permissions, 2 allows all write permissions
+# 0 is the most anal, 1 allows group write permissions, 2 allows all write
+# permissions
 RelaxPermissions=0
 RetryDelay=3
-# Maximum size of a file we wish to read.  This makes it hard for a user to DoS us
-# by using a large file.
+# Maximum size of a file we wish to read.  This makes it hard for a user to DoS
+# us by using a large file.
 UserMaxFile=65536
-# Maximum size of the session file.  This is larger because it matters less as we
-# never keep it all in memory.  Just has an upper limit so that we don't go into too
-# long of a loop
+# Maximum size of the session file.  This is larger because it matters less as
+# we never keep it all in memory.  Just has an upper limit so that we don't go
+# into too long of a loop
 SessionMaxFile=524388
+# If true this will basically append -nolisten tcp to every X command line,
+# a good default to have (why is this a "negative" setting? because if
+# it is false, you could still not allow it by setting command line of
+# any particular server).  It's probably better to ship with this on
+# since most users will not need this and it's more of a security risk
+# then anything else.
+DisallowTCP=true
 
 # XDMCP is the protocol that allows remote login.  If you want to log into
 # gdm remotely (I'd never turn this on on open network, use ssh for such
@@ -291,6 +303,10 @@ Enable=false
 #0=Terminal -query serverhostname
 # or for a chooser (optionally serverhostname could be localhost)
 #0=Terminal -indirect serverhostname
+
+## Note:
+# is your X server not listening to TCP requests?  Perhaps you should look
+# at the security/DisallowTCP setting!
 
 # Definition of the standard X server.
 [server-Standard]

@@ -824,10 +824,9 @@ static void
 gdm_login_suspend_handler (void)
 {
 	if (gdm_login_query (_("Are you sure you want to suspend the machine?"))) {
-		closelog();
-
-		kill_thingies ();
-		_exit (DISPLAY_SUSPEND);
+		/* suspend interruption */
+		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
+		fflush (stdout);
 	}
 }
 
@@ -915,7 +914,7 @@ gdm_login_parse_config (void)
 		    ve_config_get_int (config, GDM_KEY_TIMED_LOGIN_DELAY);
 	    if (GdmTimedLoginDelay < 5) {
 		    syslog (LOG_WARNING,
-			    _("TimedLoginDelay was less then 5.  I'll just use 5."));
+			    _("TimedLoginDelay was less than 5.  I'll just use 5."));
 		    GdmTimedLoginDelay = 5;
 	    }
     } else {

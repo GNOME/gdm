@@ -118,6 +118,7 @@ extern gchar *GdmRemoteGreeter;
 extern gchar *GdmGtkModulesList;
 extern gchar *GdmChooser;
 extern gchar *GdmDisplayInit;
+extern gchar *GdmPostLogin;
 extern gchar *GdmPreSession;
 extern gchar *GdmPostSession;
 extern gchar *GdmSuspend;
@@ -2633,6 +2634,13 @@ gdm_slave_session_start (void)
 			    _("gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"), login);
     }
 
+    /* Run the PostLogin script */
+    gdm_slave_exec_script (d, GdmPostLogin,
+			   login, pwent,
+			   TRUE /* pass_stdout */,
+			   TRUE /* set_parent */);
+    /* FIXME: ignore errors? */
+
     if (pwent->pw_dir == NULL ||
 	! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
 	    char *msg = g_strdup_printf (
@@ -2894,7 +2902,7 @@ gdm_slave_session_start (void)
     if  ((/* sanity */ end_time >= session_start_time) &&
 	 (end_time - 10 <= session_start_time)) {
 	    char *errfile = g_strconcat (home_dir, "/.xsession-errors", NULL);
-	    gdm_debug ("Session less then 10 seconds!");
+	    gdm_debug ("Session less than 10 seconds!");
 
 	    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
 
@@ -2902,7 +2910,7 @@ gdm_slave_session_start (void)
 	     * such as gnome-session missing and such things. */
 	    gdm_error_box_full (d,
 				GTK_MESSAGE_WARNING,
-				_("Your session only lasted less then\n"
+				_("Your session only lasted less than\n"
 				  "10 seconds.  If you have not logged out\n"
 				  "yourself, this could mean that there is\n"
 				  "some installation problem or that you may\n"
@@ -3258,13 +3266,13 @@ gdm_slave_xioerror_handler (Display *disp)
 	return 0;
 }
 
-static void
+static gboolean
 check_for_interruption (const char *msg)
 {
 	/* Hell yeah we were interrupted, the greeter died */
 	if (msg == NULL) {
 		interrupted = TRUE;
-		return;
+		return TRUE;
 	}
 
 	if (msg[0] == BEL) {
@@ -3294,6 +3302,16 @@ check_for_interruption (const char *msg)
 				do_configurator = TRUE;
 			}
 			break;
+		case GDM_INTERRUPT_SUSPEND:
+			if (d->console &&
+			    GdmSystemMenu &&
+			    ! ve_string_empty (GdmSuspend)) {
+				gdm_slave_send (GDM_SOP_SUSPEND_MACHINE,
+						FALSE /* wait_for_ack */);
+			}
+			/* Not interrupted, continue reading input,
+			 * just proxy this to the master server */
+			return TRUE;
 		default:
 			break;
 		}
@@ -3303,7 +3321,9 @@ check_for_interruption (const char *msg)
 		 * entered an invalid login or passward.  Seriously BEL
 		 * cannot be part of a login/password really */
 		interrupted = TRUE;
+		return TRUE;
 	}
+	return FALSE;
 }
 
 
@@ -3326,22 +3346,22 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 	    gdm_fdprintf (greeter_fd_out, "%c%c\n", STX, cmd);
     }
 
-    /* Skip random junk that might have accumulated */
     do {
+      /* Skip random junk that might have accumulated */
+      do {
 	    c = gdm_fdgetc (greeter_fd_in);
-    } while (c != EOF && c != STX);
+      } while (c != EOF && c != STX);
     
-    if (c == EOF ||
-	(buf = gdm_fdgets (greeter_fd_in)) == NULL) {
-	    check_notifies_immediately --;
-	    interrupted = TRUE;
-	    /* things don't seem well with the greeter, it probably died */
-	    return NULL;
-    }
+      if (c == EOF ||
+	  (buf = gdm_fdgets (greeter_fd_in)) == NULL) {
+	      check_notifies_immediately --;
+	      interrupted = TRUE;
+	      /* things don't seem well with the greeter, it probably died */
+	      return NULL;
+      }
+    } while (check_for_interruption (buf) && ! interrupted);
 
-    check_notifies_immediately --;
-
-    check_for_interruption (buf);
+      check_notifies_immediately --;
 
     if ( ! ve_string_empty (buf)) {
 	    return buf;
@@ -3575,13 +3595,20 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	        gnome_setenv ("USERNAME", GdmUser, TRUE);
         }
         if (pwent != NULL) {
-		if (ve_string_empty (pwent->pw_dir))
+		if (ve_string_empty (pwent->pw_dir)) {
 			gnome_setenv ("HOME", "/", TRUE);
-		else
+			gnome_setenv ("PWD", "/", TRUE);
+			chdir ("/");
+		} else {
 			gnome_setenv ("HOME", pwent->pw_dir, TRUE);
+			gnome_setenv ("PWD", pwent->pw_dir, TRUE);
+			chdir (pwent->pw_dir);
+		}
 	        gnome_setenv ("SHELL", pwent->pw_shell, TRUE);
         } else {
 	        gnome_setenv ("HOME", "/", TRUE);
+		gnome_setenv ("PWD", "/", TRUE);
+		chdir ("/");
 	        gnome_setenv ("SHELL", "/bin/sh", TRUE);
         }
 

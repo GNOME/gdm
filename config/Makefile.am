@@ -7,6 +7,7 @@ authdir = $(localstatedir)/gdm
 gnomercdir = $(sysconfdir)/gdm
 postdir = $(sysconfdir)/gdm/PostSession
 predir = $(sysconfdir)/gdm/PreSession
+postlogindir = $(sysconfdir)/gdm/PostLogin
 
 
 noinst_DATA = gdm.conf
@@ -22,6 +23,7 @@ EXTRA_DIST = \
 	Default \
 	PostSession \
 	PreSession \
+	PostLogin \
 	XKeepsCrashing \
 	gettextfoo.h \
 	extract-shell.sh
@@ -80,6 +82,12 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		cp -f $(DESTDIR)$(initdir)/Default $(DESTDIR)$(initdir)/Default.orig; \
 	fi
 	$(INSTALL_SCRIPT) $(srcdir)/Default $(DESTDIR)$(initdir)/Default
+
+	if test '!' -d $(DESTDIR)$(postlogindir); then \
+		$(mkinstalldirs) $(DESTDIR)$(postlogindir); \
+		chmod 755 $(DESTDIR)$(postlogindir); \
+	fi
+	$(INSTALL_SCRIPT) $(srcdir)/PostLogin $(DESTDIR)$(postdir)/Default.sample
 
 	if test '!' -d $(DESTDIR)$(predir); then \
 		$(mkinstalldirs) $(DESTDIR)$(predir); \

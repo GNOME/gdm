@@ -120,6 +120,7 @@ gchar *GdmChooser = NULL;
 gchar *GdmLogDir = NULL;
 gchar *GdmDisplayInit = NULL;
 gchar *GdmSessionDir = NULL;
+gchar *GdmPostLogin = NULL;
 gchar *GdmPreSession = NULL;
 gchar *GdmPostSession = NULL;
 gchar *GdmFailsafeXServer = NULL;
@@ -165,6 +166,7 @@ gint  GdmFlexibleXServers = 5;
 gchar *GdmXnest = NULL;
 int GdmFirstVT = 7;
 gboolean GdmVTAllocation = TRUE;
+gboolean GdmDisallowTCP = TRUE;
 
 
 /* set in the main function */
@@ -250,6 +252,7 @@ gdm_config_parse (void)
     GdmLogDir= gnome_config_get_string (GDM_KEY_LOGDIR);
     GdmPidFile = gnome_config_get_string (GDM_KEY_PIDFILE);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
+    GdmPostLogin = gnome_config_get_string (GDM_KEY_POSTLOGIN);
     GdmPreSession = gnome_config_get_string (GDM_KEY_PRESESS);
     GdmPostSession = gnome_config_get_string (GDM_KEY_POSTSESS);
     GdmFailsafeXServer = gnome_config_get_string (GDM_KEY_FAILSAFE_XSERVER);
@@ -319,6 +322,7 @@ gdm_config_parse (void)
 
     GdmFirstVT = gnome_config_get_int (GDM_KEY_FIRSTVT);    
     GdmVTAllocation = gnome_config_get_bool (GDM_KEY_VTALLOCATION);    
+    GdmDisallowTCP = gnome_config_get_bool (GDM_KEY_DISALLOWTCP);    
 
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
 
@@ -360,7 +364,7 @@ gdm_config_parse (void)
     }
 
     if (GdmTimedLoginDelay < 5) {
-	    gdm_info (_("%s: TimedLoginDelay less then 5, so I will just use 5."), "gdm_config_parse");
+	    gdm_info (_("%s: TimedLoginDelay less than 5, so I will just use 5."), "gdm_config_parse");
 	    GdmTimedLoginDelay = 5;
     }
 
@@ -982,6 +986,29 @@ deal_with_x_crashes (GdmDisplay *d)
     return FALSE;
 }
 
+static void
+suspend_machine (void)
+{
+	if (GdmSuspendReal != NULL &&
+	    fork () == 0) {
+		char **argv;
+		/* In the child setup empty mask and set all signals to
+		 * default values */
+		gdm_unset_signals ();
+
+		/* Also make a new process group */
+		setsid ();
+
+		chdir ("/");
+
+		argv = ve_split (GdmSuspendReal);
+		execv (argv[0], argv);
+		/* FIXME: what about fail */
+		_exit (1);
+	}
+}
+
+
 static gboolean 
 gdm_cleanup_children (void)
 {
@@ -1115,7 +1142,7 @@ start_autopsy:
 	break;
 	
     case DISPLAY_REBOOT:	/* Reboot machine */
-	gdm_info (_("gdm_child_action: Master rebooting..."));
+	gdm_info (_("Master rebooting..."));
 
 	gdm_final_cleanup ();
 	chdir ("/");
@@ -1130,7 +1157,7 @@ start_autopsy:
 	break;
 	
     case DISPLAY_HALT:		/* Halt machine */
-	gdm_info (_("gdm_child_action: Master halting..."));
+	gdm_info (_("Master halting..."));
 
 	gdm_final_cleanup ();
 	chdir ("/");
@@ -1145,15 +1172,10 @@ start_autopsy:
 	break;
 
     case DISPLAY_SUSPEND:	/* Suspend machine */
-	gdm_info (_("gdm_child_action: Master suspending..."));
-
-	gdm_final_cleanup ();
-	chdir ("/");
-
-	argv = ve_split (GdmSuspendReal);
-	execv (argv[0], argv);
-
-	gdm_error (_("gdm_child_action: Suspend failed: %s"), strerror (errno));
+	/* XXX: this is ugly, why should there be a suspend like this,
+	 * see GDM_SOP_SUSPEND_MACHINE */
+	gdm_info (_("Master suspending..."));
+	suspend_machine ();
 
 	status = DISPLAY_REMANAGE;
 	goto start_autopsy;
@@ -2030,6 +2052,13 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			/* send ack */
 			send_slave_ack (d);
 		}
+	} else if (strcmp (msg, GDM_SOP_SUSPEND_MACHINE) == 0) {
+		gdm_info (_("Master suspending..."));
+		if (GdmSuspendReal != NULL &&
+		    GdmSystemMenu) {
+			suspend_machine ();
+		}
+
 	}
 }
 

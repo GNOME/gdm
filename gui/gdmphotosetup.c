@@ -194,7 +194,7 @@ main (int argc, char *argv[])
 						    _("The picture is too large and "
 						      "the system administrator\n"
 						      "disallowed pictures larger "
-						      "then %d bytes to\n"
+						      "than %d bytes to\n"
 						      "show in the face browser"),
 						    max_size);
 			gtk_dialog_run (GTK_DIALOG (d));

@@ -65,8 +65,6 @@
 	  <property name="show_border">True</property>
 	  <property name="tab_pos">GTK_POS_TOP</property>
 	  <property name="scrollable">False</property>
-	  <property name="tab_hborder">2</property>
-	  <property name="tab_vborder">2</property>
 	  <property name="enable_popup">False</property>
 
 	  <child>
@@ -335,8 +333,8 @@
 			  <property name="ypad">0</property>
 			  <property name="mnemonic_widget">autologin_entry</property>
 			  <accessibility>
-			    <atkrelation target="autologin_entry" type="label-for"/>
 			    <atkrelation target="autologin_combo" type="label-for"/>
+			    <atkrelation target="autologin_entry" type="label-for"/>
 			  </accessibility>
 			</widget>
 			<packing>
@@ -1555,6 +1553,24 @@ widget</property>
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
 		      <property name="label" translatable="yes">Allow c_onfiguration from the login screen</property>
+		      <property name="use_underline">True</property>
+		      <property name="relief">GTK_RELIEF_NORMAL</property>
+		      <property name="active">False</property>
+		      <property name="inconsistent">False</property>
+		      <property name="draw_indicator">True</property>
+		    </widget>
+		    <packing>
+		      <property name="padding">0</property>
+		      <property name="expand">False</property>
+		      <property name="fill">False</property>
+		    </packing>
+		  </child>
+
+		  <child>
+		    <widget class="GtkCheckButton" id="disallow_tcp">
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="label" translatable="yes">Always disallow TCP connections to _X server</property>
 		      <property name="use_underline">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <property name="active">False</property>

@@ -64,6 +64,7 @@ extern gchar *GdmServAuthDir;
 extern gchar *GdmLogDir;
 extern gchar *GdmStandardXServer;
 extern gboolean GdmXdmcp;
+extern gboolean GdmDisallowTCP;
 extern gint high_display_num;
 extern pid_t extra_process;
 extern int extra_status;
@@ -826,13 +827,19 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 			gotvtarg = TRUE;
 	}
 
-	argv = g_renew (char *, argv, len + 5);
+	argv = g_renew (char *, argv, len + 7);
 	for (i = len - 1; i >= 1; i--) {
 		argv[i+1] = argv[i];
 	}
 	/* server number is the FIRST argument, before any others */
 	argv[1] = g_strdup (disp->name);
 	len++;
+
+	if (GdmDisallowTCP) {
+		argv[len++] = g_strdup ("-nolisten");
+		argv[len++] = g_strdup ("tcp");
+	}
+
 	if (disp->authfile != NULL) {
 		argv[len++] = g_strdup ("-auth");
 		argv[len++] = g_strdup (disp->authfile);

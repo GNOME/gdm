@@ -112,6 +112,7 @@ enum {
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'
 #define GDM_INTERRUPT_CONFIGURE   'C'
+#define GDM_INTERRUPT_SUSPEND     'S'
 
 /* The dreaded miscellaneous category */
 #define FIELD_SIZE 256
@@ -139,6 +140,7 @@ enum {
 #define GDM_KEY_PIDFILE "daemon/PidFile=/var/run/gdm.pid"
 #define GDM_KEY_POSTSESS "daemon/PostSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PostSession/"
 #define GDM_KEY_PRESESS "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
+#define GDM_KEY_POSTLOGIN "daemon/PostLoginScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
 #define GDM_KEY_FAILSAFE_XSERVER "daemon/FailsafeXServer="
 #define GDM_KEY_XKEEPSCRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
 #define GDM_KEY_REBOOT "daemon/RebootCommand=/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
@@ -185,6 +187,7 @@ enum {
 #define GDM_KEY_SESSIONMAXFILE "security/SessionMaxFile=524288"
 #define GDM_KEY_RELAXPERM "security/RelaxPermissions=0"
 #define GDM_KEY_RETRYDELAY "security/RetryDelay=3"
+#define GDM_KEY_DISALLOWTCP "security/DisallowTCP=true"
 
 #define GDM_KEY_XDMCP "xdmcp/Enable=false"
 #define GDM_KEY_MAXPEND "xdmcp/MaxPending=4"
@@ -444,6 +447,8 @@ void		gdm_final_cleanup	(void);
  * by asking the user if they want to do that.  Note that this will not
  * kill any logged in sessions. */
 #define GDM_SOP_SOFT_RESTART_SERVERS "SOFT_RESTART_SERVERS"  /* no arguments */
+/* Suspend the machine if it is even allowed */
+#define GDM_SOP_SUSPEND_MACHINE "SUSPEND_MACHINE"  /* no arguments */
 
 /* Notification protocol */
 /* keys */

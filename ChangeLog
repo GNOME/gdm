@@ -1,3 +1,26 @@
+Thu May 15 02:17:55 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter_system.c,
+	  daemon/gdm.[ch], daemon/slave.c: add a suspend interruption
+	  and a SOP command.  The greeter interrupts, the slave notices
+	  and proxies with a SOP command to the master which suspends.
+	  perhaps a bit too complex ...  Fixes #108700
+
+	* daemon/slave.c, daemon/gdm.[ch], config/gdm.conf.in,
+	  config/PostLogin, config/Makefile.am:  Add a PostLogin script
+	  which is run right after login before any user setup is done
+	  and allows things like home mounting and stuff.  Should
+	  address issues from bug #103258
+
+	* daemon/gdm.c, daemon/slave.c, gui/gdmlogin.c,
+	  gui/greeter/greeter.c, gui/gdmphotosetup.c:  Fix #106207 by
+	  proper use of 'than' rather than 'then'
+
+	* daemon/gdm.[ch], daemon/server.c, gui/gdmsetup.(c|glade),
+	  config/gdm.conf.in: Add a security/DisallowTCP setting which
+	  will append -nolisten tcp to X server command line always,
+	  and make this the default.  Fixes #87291
+
 Tue May 13 17:00:16 2003  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c, daemon/gdm.h, config/gdm.conf.in,

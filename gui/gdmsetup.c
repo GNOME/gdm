@@ -375,7 +375,6 @@ timeout_remove_all (void)
 	timeout_widgets = NULL;
 
 	for (li = list; li != NULL; li = li->next) {
-		g_print ("Removing %p!\n", li->data);
 		timeout_remove (li->data);
 		li->data = NULL;
 	}
@@ -663,8 +662,6 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 	const char *text;
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
-	g_print ("Timeout %p!\n", entry);
-
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 
 	ve_config_delete_translations (config, key);
@@ -681,7 +678,6 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 static void
 greeter_entry_untranslate_changed (GtkWidget *entry)
 {
-	g_print ("Changed %p!\n", entry);
 	run_timeout (entry, 500, greeter_entry_untranslate_timeout);
 }
 
@@ -1962,6 +1958,9 @@ setup_gui (void)
 	setup_notify_toggle ("config_available",
 			     GDM_KEY_CONFIG_AVAILABLE,
 			     GDM_KEY_CONFIG_AVAILABLE /* notify_key */);
+	setup_notify_toggle ("disallow_tcp",
+			     GDM_KEY_DISALLOWTCP,
+			     GDM_KEY_DISALLOWTCP /* notify_key */);
 
 	setup_notify_toggle ("enable_xdmcp",
 			     GDM_KEY_XDMCP,

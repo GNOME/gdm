@@ -125,7 +125,7 @@ greeter_parse_config (void)
 	if (GdmTimedLoginDelay < 5)
 	  {
 	    syslog (LOG_WARNING,
-		    _("TimedLoginDelay was less then 5.  I'll just use 5."));
+		    _("TimedLoginDelay was less than 5.  I'll just use 5."));
 	    GdmTimedLoginDelay = 5;
 	  }
       }
