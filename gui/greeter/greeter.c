@@ -965,6 +965,42 @@ get_theme_file (const char *in, char **theme_dir)
   return file;
 }
 
+/* Not to look too shaby on Xinerama setups */
+static void
+setup_background_color (void)
+{
+  GdkColormap *colormap;
+  GdkColor color;
+  VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+  char *bg_color = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
+
+  if (bg_color == NULL ||
+      bg_color[0] == '\0' ||
+      ! gdk_color_parse (bg_color, &color))
+    {
+      gdk_color_parse ("#007777", &color);
+    }
+
+  g_free (bg_color);
+
+  colormap = gdk_drawable_get_colormap
+	  (gdk_get_default_root_window ());
+  /* paranoia */
+  if (colormap != NULL)
+    {
+      gboolean success;
+      gdk_error_trap_push ();
+
+      gdk_colormap_alloc_colors (colormap, &color, 1,
+				 FALSE, TRUE, &success);
+      gdk_window_set_background (gdk_get_default_root_window (), &color);
+      gdk_window_clear (gdk_get_default_root_window ());
+
+      gdk_flush ();
+      gdk_error_trap_pop ();
+    }
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -1089,12 +1125,30 @@ main (int argc, char *argv[])
 			gdm_wm_screen.height,
 			&error);
 
-    /* FIXME: beter information should be printed */
     if (root == NULL &&
 	g_getenv ("GDM_THEME") != NULL &&
 	DOING_GDM_DEVELOPMENT)
       {
-        g_warning ("Theme could not be loaded");
+        GtkWidget *dialog;
+
+        gdm_wm_init (0);
+        gdm_wm_focus_new_windows (TRUE);
+    
+        dialog = gtk_message_dialog_new (NULL /* parent */,
+				         GTK_DIALOG_MODAL /* flags */,
+				         GTK_MESSAGE_ERROR,
+				         GTK_BUTTONS_OK,
+				         _("There was an error loading the "
+					   "theme %s"),
+					 g_getenv ("GDM_THEME"));
+    
+        gtk_widget_show_all (dialog);
+        gdm_wm_center_window (GTK_WINDOW (dialog));
+
+        setup_cursor (GDK_LEFT_PTR);
+    
+        gtk_dialog_run (GTK_DIALOG (dialog));
+
         exit(1);
       }
 
@@ -1111,9 +1165,31 @@ main (int argc, char *argv[])
 			    NULL);
     }
 
-  /* FIXME: beter information should be printed */
   if (greeter_lookup_id ("user-pw-entry") == NULL)
-    root = NULL;
+    {
+      GtkWidget *dialog;
+
+      gdm_wm_init (0);
+      gdm_wm_focus_new_windows (TRUE);
+    
+      dialog = gtk_message_dialog_new (NULL /* parent */,
+				       GTK_DIALOG_MODAL /* flags */,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       _("The theme for the graphical greeter "
+					 "is corrupt.  It does not contain "
+					 "definition for the username/password "
+					 "entry element."));
+
+      gtk_widget_show_all (dialog);
+      gdm_wm_center_window (GTK_WINDOW (dialog));
+
+      setup_cursor (GDK_LEFT_PTR);
+
+      gtk_dialog_run (GTK_DIALOG (dialog));
+
+      root = NULL;
+    }
 
   /* FIXME: beter information should be printed */
   if (DOING_GDM_DEVELOPMENT && root == NULL)
@@ -1176,6 +1252,8 @@ main (int argc, char *argv[])
   gtk_widget_show_all (window);
   gtk_window_move (GTK_WINDOW (window), gdm_wm_screen.x, gdm_wm_screen.y);
   gtk_widget_show_now (window);
+
+  setup_background_color ();
 
   /* can it ever happen that it'd be NULL here ??? */
   if (window->window != NULL)
