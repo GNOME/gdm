@@ -641,10 +641,10 @@ main (int argc, char *argv[])
   sigemptyset(&term.sa_mask);
   sigaddset (&term.sa_mask, SIGCHLD);
   
-  if (sigaction (SIGINT, &hup, NULL) < 0) 
+  if (sigaction (SIGINT, &term, NULL) < 0) 
     g_error (_("main: Error setting up INT signal handler"));
   
-  if (sigaction (SIGTERM, &hup, NULL) < 0) 
+  if (sigaction (SIGTERM, &term, NULL) < 0) 
     g_error (_("main: Error setting up TERM signal handler"));
   
   sigfillset (&mask);
@@ -691,9 +691,22 @@ main (int argc, char *argv[])
     }
   else
     {
-      theme_file = g_build_filename (GREETERTHEMEDIR,
-				     GreeterConfTheme,
-				     NULL);
+      theme_file = NULL;
+      if (DOING_GDM_DEVELOPMENT)
+        {
+          theme_file = g_build_filename ("themes",
+					 GreeterConfTheme,
+					 NULL);
+	  if (access (theme_file, F_OK) != 0)
+	    {
+	      g_free (theme_file);
+	      theme_file = NULL;
+	    }
+	}
+      if (theme_file == NULL)
+        theme_file = g_build_filename (GREETERTHEMEDIR,
+				       GreeterConfTheme,
+				       NULL);
     }
 
   theme_dir = g_path_get_dirname (theme_file);
