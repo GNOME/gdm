@@ -505,7 +505,7 @@ authenticate_again:
     pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
 
 #ifdef PAM_FAIL_DELAY
-    pam_fail_delay (pamh, GdmRetryDelay * 1000);
+    pam_fail_delay (pamh, GdmRetryDelay * 1000000);
 #endif /* PAM_FAIL_DELAY */
 
     did_we_ask_for_password = FALSE;
