@@ -153,7 +153,7 @@
 #define GDM_KEY_MAXWAIT "xdmcp/MaxWait=30"
 #define GDM_KEY_DISPERHOST "xdmcp/DisplaysPerHost=1"
 #define GDM_KEY_UDPPORT "xdmcp/Port=177"
-#define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=false"
+#define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=true"
 #define GDM_KEY_MAXINDIR "xdmcp/MaxPendingIndirect=4"
 #define GDM_KEY_MAXINDWAIT "xdmcp/MaxWaitIndirect=30"
 #define GDM_KEY_PINGINTERVAL "xdmcp/PingInterval=5"
