@@ -3585,6 +3585,8 @@ main (int argc, char *argv[])
 	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
     }
 
+    g_atexit (kill_thingies);
+
     gtk_main ();
 
     kill_thingies ();
