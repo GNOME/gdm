@@ -48,6 +48,7 @@ extern char **environ;
 
 extern pid_t extra_process;
 extern int extra_status;
+extern gboolean preserve_ld_vars;
 
 
 /**
@@ -150,24 +151,22 @@ gdm_debug (const gchar *format, ...)
     va_list args;
     gchar *s;
 
-    if (/*0 && */! GdmDebug) 
+    if ( ! GdmDebug) 
 	return;
 
     va_start (args, format);
     s = g_strdup_vprintf (format, args);
     va_end (args);
 
-    /* UGLY DEBUGGING HACK! */
-    
-    /*{ FILE *fp = fopen ("/tmp/foo.gdm", "a"); fprintf (fp, "%s\n", s); fflush (fp); fclose (fp); };*/
-    
-    syslog (LOG_ERR, "%s", s);	/* FIXME: LOG_DEBUG */
+    syslog (LOG_ERR, "%s", s);	/* Maybe should be LOG_DEBUG, but then normally
+				 * you wouldn't get it in the log.  ??? */
     
     g_free (s);
 }
 
 /* clear environment, but keep the i18n ones,
- * note that this leaks memory so only use before exec */
+ * note that this leaks memory so only use before exec
+ * (keep LD_* if preserve_ld_vars is true) */
 void
 gdm_clearenv_no_lang (void)
 {
@@ -179,6 +178,34 @@ gdm_clearenv_no_lang (void)
 		if (strncmp (env, "LC_", 3) == 0 ||
 		    strncmp (env, "LANG", 4) == 0 ||
 		    strncmp (env, "LINGUAS", 7) == 0)
+			envs = g_list_prepend (envs, g_strdup (env));
+		if (preserve_ld_vars &&
+		    strncmp (env, "LD_", 3) == 0)
+			envs = g_list_prepend (envs, g_strdup (env));
+	}
+
+	gnome_clearenv ();
+
+	for (li = envs; li != NULL; li = li->next) {
+		putenv (li->data);
+	}
+
+	g_list_free (envs);
+}
+
+/* clear environment completely
+ * note that this leaks memory so only use before exec
+ * (keep LD_* if preserve_ld_vars is true) */
+void
+gdm_clearenv (void)
+{
+	int i;
+	GList *li, *envs = NULL;
+
+	for (i = 0; environ[i] != NULL; i++) {
+		char *env = environ[i];
+		if (preserve_ld_vars &&
+		    strncmp (env, "LD_", 3) == 0)
 			envs = g_list_prepend (envs, g_strdup (env));
 	}
 

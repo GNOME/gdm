@@ -29,9 +29,13 @@ void gdm_info   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void gdm_error  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void gdm_debug  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
+/* Note that these can actually clear environment without killing
+ * the LD_* env vars if --preserve-ld-vars was passed to the
+ * main daemon */
 /* clear environment, but keep the i18n ones (LANG, LC_ALL, etc...),
  * note that this leak memory so only use before exec */
 void gdm_clearenv_no_lang (void);
+void gdm_clearenv (void);
 
 int gdm_get_free_display (int start, uid_t server_uid);
 

@@ -1825,7 +1825,7 @@ session_child_run (struct passwd *pwent,
 	gboolean need_config_sync = FALSE;
 	const char *shell = NULL;
 
-	gnome_clearenv ();
+	gdm_clearenv ();
 
 	/* Prepare user session */
 	gnome_setenv ("XAUTHORITY", d->userauth, TRUE);

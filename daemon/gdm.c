@@ -75,6 +75,8 @@ gid_t GdmGroupId;		/* Groupid under which gdm should run */
 pid_t extra_process = -1;	/* An extra process.  Used for quickie 
 				   processes, so that they also get whacked */
 int extra_status = 0;		/* Last status from the last extra process */
+gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
+gboolean no_daemon = FALSE;	/* Do not daemonize */
 
 GdmConnection *fifoconn = NULL; /* Fifo connection */
 GdmConnection *unixconn = NULL; /* UNIX Socket connection */
@@ -1158,7 +1160,7 @@ gdm_restart_now (void)
 	gdm_info (_("Gdm restarting ..."));
 	final_cleanup ();
 	if (stored_path != NULL)
-		ve_setenv ("PATH", stored_path, TRUE);
+		gnome_setenv ("PATH", stored_path, TRUE);
 	execvp (stored_argv[0], stored_argv);
 	gdm_error (_("Failed to restart self"));
 	_exit (1);
@@ -1263,6 +1265,15 @@ create_connections (void)
 					    NULL /* destroy_notify */);
 }
 
+struct poptOption options [] = {
+	{ "nodaemon", '\0', POPT_ARG_NONE | POPT_ARGFLAG_ONEDASH,
+	  &no_daemon, 0, N_("Do not fork into the background"), NULL },
+	{ "preserve-ld-vars", '\0', POPT_ARG_NONE,
+	  &preserve_ld_vars, 0, N_("Preserve LD_* variables"), NULL },
+        POPT_AUTOHELP
+	{ NULL, 0, 0, NULL, 0}
+};
+
 int 
 main (int argc, char *argv[])
 {
@@ -1335,9 +1346,10 @@ main (int argc, char *argv[])
     umask (022);
 
     gnome_program_init ("gdm", VERSION,
-			NULL /* module_info */,
+			LIBGNOME_MODULE /* module_info */,
 			argc, argv,
-			"create-directories", FALSE,
+			GNOME_PARAM_POPT_TABLE, options,
+			GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
 			NULL);
 
     main_loop = g_main_new (FALSE);
@@ -1368,7 +1380,7 @@ main (int argc, char *argv[])
     }
 
     /* Become daemon unless started in -nodaemon mode or child of init */
-    if ( (argc == 2 && strcmp (argv[1], "-nodaemon") == 0) || getppid() == 1) {
+    if (no_daemon || getppid() == 1) {
 
 	/* Write pid to pidfile */
 	if ((pf = fopen (GdmPidFile, "w"))) {

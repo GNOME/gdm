@@ -418,7 +418,9 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 			    d->servstat = SERVER_TIMEOUT;
 		    }
 	    } else {
+		    gdm_debug ("gdm_server_start: Before mainloop waiting for server");
 		    gdm_run ();
+		    gdm_debug ("gdm_server_start: After mainloop waiting for server");
 	    }
     }
 

@@ -1240,27 +1240,27 @@ gdm_login_ok_button_press (GtkButton *button, GtkWidget *entry)
 static gboolean
 gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 {
-    if (!event)
-	return(TRUE);
+	if (event == NULL)
+		return FALSE;
 
-    switch (event->keyval) {
+	switch (event->keyval) {
 
-    case GDK_Return:
-    case GDK_KP_Enter:
-        gdm_login_enter (entry);
-	break;
+	case GDK_Return:
+	case GDK_KP_Enter:
+		gdm_login_enter (entry);
+		return TRUE;
 
-    case GDK_Up:
-    case GDK_Down:
-    case GDK_Tab:
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (entry), "key_press_event");
-	break;
+	case GDK_Up:
+	case GDK_Down:
+	case GDK_Tab:
+		gtk_signal_emit_stop_by_name (GTK_OBJECT (entry), "key_press_event");
+		return TRUE;
 
-    default:
-	break;
-    }
+	default:
+		break;
+	}
 
-    return (TRUE);
+	return FALSE;
 }
 
 static gboolean
@@ -2968,10 +2968,15 @@ gdm_login_gui_init (void)
 	    maxwidth = (gint) GdmIconMaxWidth/2;
 	if (maxheight < GdmIconMaxHeight/2)
 	    maxheight = (gint) GdmIconMaxHeight/2;
+
+	/* Browser scroll bar */
+	adj = gtk_layout_get_vadjustment (GTK_LAYOUT (browser));
+	scrollbar = gtk_vscrollbar_new (adj);
 	
 	browser = GNOME_ICON_LIST (gnome_icon_list_new
 				   (maxwidth+20 /* icon_width */,
-				    0 /* flags */));
+				   adj /* adjustment */,
+				   0 /* flags */));
 	gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
 	gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.");
 	gnome_icon_list_set_row_spacing (GNOME_ICON_LIST (browser), 2);
@@ -2991,10 +2996,6 @@ gdm_login_gui_init (void)
 	bframe = gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (bframe), GTK_SHADOW_IN);
 	gtk_container_add (GTK_CONTAINER(bframe), GTK_WIDGET (browser));
-	
-	/* Browser scroll bar */
-	adj = gtk_layout_get_vadjustment (GTK_LAYOUT (browser));
-	scrollbar = gtk_vscrollbar_new (adj);
 	
 	/* Box containing all browser functionality */
 	bbox = gtk_hbox_new (0, 0);

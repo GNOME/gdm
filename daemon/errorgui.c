@@ -161,7 +161,7 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 			geom = "0:0:0:0";
 
 		if (stored_path != NULL)
-			ve_setenv ("PATH", stored_path, TRUE);
+			gnome_setenv ("PATH", stored_path, TRUE);
 
 		execlp (stored_argv[0],
 			stored_argv[0],
@@ -308,7 +308,7 @@ gdm_failsafe_question (GdmDisplay *d,
 			geom = "0:0:0:0";
 
 		if (stored_path != NULL)
-			ve_setenv ("PATH", stored_path, TRUE);
+			gnome_setenv ("PATH", stored_path, TRUE);
 		execlp (stored_argv[0],
 			stored_argv[0],
 			"--run-failsafe-question",
@@ -449,7 +449,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 			geom = "0:0:0:0";
 
 		if (stored_path != NULL)
-			ve_setenv ("PATH", stored_path, TRUE);
+			gnome_setenv ("PATH", stored_path, TRUE);
 		execlp (stored_argv[0],
 			stored_argv[0],
 			"--run-failsafe-yesno",
