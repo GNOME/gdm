@@ -113,7 +113,6 @@ extern gint GdmPingInterval;
 extern gint GdmRetryDelay;
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
-extern sigset_t sysmask;
 extern gchar *GdmGlobalFaceDir;
 extern gboolean GdmBrowser;
 extern gboolean GdmDebug;
@@ -1849,6 +1848,7 @@ session_child_run (struct passwd *pwent,
 		   gboolean sessoptok,
 		   gboolean savegnomesess)
 {
+	sigset_t mask; 
 	int i;
 	char *sesspath, *sessexec;
 	gboolean need_config_sync = FALSE;
@@ -1951,8 +1951,15 @@ session_child_run (struct passwd *pwent,
 	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 	
-	/* Restore sigmask inherited from init */
-	sigprocmask (SIG_SETMASK, &sysmask, NULL);
+	sigemptyset (&mask);
+	sigprocmask (SIG_SETMASK, &mask, NULL);
+
+	signal (SIGCHLD, SIG_DFL);
+	signal (SIGTERM, SIG_DFL);
+	signal (SIGPIPE, SIG_DFL);
+	signal (SIGALRM, SIG_DFL);
+	signal (SIGHUP, SIG_DFL);
+
 
 	/* If "Gnome Chooser" is still set as a session,
 	 * just change that to "Gnome", since "Gnome Chooser" is a

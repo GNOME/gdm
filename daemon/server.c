@@ -60,7 +60,6 @@ extern gchar *GdmServAuthDir;
 extern gchar *GdmLogDir;
 extern gchar *GdmStandardXServer;
 extern gboolean GdmXdmcp;
-extern sigset_t sysmask;
 extern gint high_display_num;
 extern pid_t extra_process;
 extern int extra_status;
@@ -723,14 +722,10 @@ gdm_server_spawn (GdmDisplay *d)
 		_exit (SERVER_ABORT);
 	}
 
-	/* unblock HUP/TERM/USR1 so that we can control the
-	 * X server */
-	sigprocmask (SIG_SETMASK, &sysmask, NULL);
+	/* unblock signals (especially HUP/TERM/USR1) so that we
+	 * can control the X server */
 	sigemptyset (&mask);
-	sigaddset (&mask, SIGUSR1);
-	sigaddset (&mask, SIGHUP);
-	sigaddset (&mask, SIGTERM);
-	sigprocmask (SIG_UNBLOCK, &mask, NULL);
+	sigprocmask (SIG_SETMASK, &mask, NULL);
 
 	if (d->type == TYPE_FLEXI_XNEST) {
 		gnome_setenv ("DISPLAY", d->xnest_disp, TRUE);

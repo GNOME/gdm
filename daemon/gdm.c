@@ -68,7 +68,6 @@ GSList *xservers = NULL;	/* List of x server definitions */
 gint high_display_num = 0;	/* Highest local non-flexi display */
 gint sessions = 0;		/* Number of remote sessions */
 gint flexi_servers = 0;		/* Number of flexi servers */
-sigset_t sysmask;		/* Inherited system signal mask */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
 pid_t extra_process = -1;	/* An extra process.  Used for quickie 
@@ -1412,7 +1411,7 @@ main (int argc, char *argv[])
     sigaddset (&mask, SIGCHLD);
     sigaddset (&mask, SIGHUP);
     sigaddset (&mask, SIGUSR1);
-    sigprocmask (SIG_UNBLOCK, &mask, &sysmask); /* Save system sigmask */
+    sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
     gdm_debug ("gdm_main: Here we go...");
 
