@@ -125,7 +125,11 @@ extern gboolean GdmXdmcp;	/* xdmcp enabled */
 /* Local prototypes */
 static gboolean gdm_xdmcp_decode_packet (void);
 static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type);
+/*
+FIXME: This function is not really implemented to begin with, I dunno
+       what to do there anyway -George
 static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist);
+*/
 static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
@@ -167,9 +171,11 @@ static XdmAuthRec serv_authlist = {
 };
 
 
+/* these ought to be in some header file */
 extern gboolean gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd);
 extern GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
 extern GdmIndirectDisplay *gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
+extern void gdm_choose_indirect_dispose (GdmIndirectDisplay *id);
 
 
 gboolean
@@ -393,6 +399,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     
     if (len != explen) {
 	gdm_error (_("gdm_xdmcp_handle_query: Error in checksum")); 
+	XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
 	return;
     }
     
@@ -402,27 +409,44 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 	/* If this is an INDIRECT_QUERY, try to look up the display in
  	 * the pending list. If found send a FORWARD_QUERY to the
  	 * chosen manager. Otherwise alloc a new indirect display. */
+        /* EEEEEEEEK! dunno what this is suppsoed to do */
 
-	if (GdmIndirect && type==INDIRECT_QUERY) {
+	/* OK, now, we don't do forward query here since I have no clue
+	 * where the fuck would we send it and the code here is bullshit,
+	 * I suppose we really want to just send willing here and run the
+	 * chooser
+	 * -George */
+
+	if (GdmIndirect &&
+	    type == INDIRECT_QUERY) {
 	    GdmIndirectDisplay *id = gdm_choose_indirect_lookup (clnt_sa);
 
+	    /* EEEEEEEEK! dunno what this is suppsoed to do */
+	    /*
 	    if (id) {
 		    gdm_xdmcp_send_forward_query (id, &clnt_authlist);
 	    } else {
+	    }
+		    */
+	    if (id == NULL) {
 		    gdm_choose_indirect_alloc (clnt_sa);
 	    }
+	    gdm_debug ("Got INDIRECT query");
 	}
 
 	gdm_xdmcp_send_willing (clnt_sa);
+    } else if (type == QUERY) {
+	    /* unwilling is ONLY sent for direct queries, never for broadcast
+	     * nor indirects */
+	    gdm_xdmcp_send_unwilling (clnt_sa, type);
     }
-    else
-	gdm_xdmcp_send_unwilling (clnt_sa, type);
 
     /* Dispose authlist from remote display */
-    /* XdmcpDisposeARRAYofARRAY8 (&clnt_authlist); */
+    XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
 }
 
-
+/* EEEEEEEEEK, this function doesn't do anything */
+#if 0
 static void
 gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist)
 {
@@ -443,6 +467,7 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist)
     XdmcpWriteARRAY8 (&buf, &status);
     /* XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in)); */
 }
+#endif
 
 
 static void 
@@ -461,7 +486,6 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     
     /* Read display address */
     if (! XdmcpReadARRAY8 (&buf, &clnt_addr)) {
-	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
 	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not read display address"));
 	return;
     }
@@ -469,7 +493,6 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     /* Read display port */
     if (! XdmcpReadARRAY8 (&buf, &clnt_port)) {
 	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
-	XdmcpDisposeARRAYofARRAY8 (&clnt_port);
 	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not read display port number"));
 	return;
     }
@@ -614,24 +637,34 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     /* This is TCP/IP - we don't care */
     if (! XdmcpReadARRAYofARRAY8 (&buf, &clnt_addr)) {
 	gdm_error (_("gdm_xdmcp_handle_request: Could not read Client Address"));
+        XdmcpDisposeARRAY16 (&clnt_conntyp);
 	return;
     }
     
     /* Read authentication type */
     if (! XdmcpReadARRAY8 (&buf, &clnt_authname)) {
 	gdm_error (_("gdm_xdmcp_handle_request: Could not read Authentication Names"));
+	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+	XdmcpDisposeARRAY16 (&clnt_conntyp);
 	return;
     }
     
     /* Read authentication data */
     if (! XdmcpReadARRAY8 (&buf, &clnt_authdata)) {
 	gdm_error (_("gdm_xdmcp_handle_request: Could not read Authentication Data"));
+	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+	XdmcpDisposeARRAY16 (&clnt_conntyp);
+	XdmcpDisposeARRAY8 (&clnt_authname);
 	return;
     }
     
     /* Read and select from supported authorization list */
     if (! XdmcpReadARRAYofARRAY8 (&buf, &clnt_authorization)) {
 	gdm_error (_("gdm_xdmcp_handle_request: Could not read Authorization List"));
+	XdmcpDisposeARRAY8 (&clnt_authdata);
+	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+	XdmcpDisposeARRAY16 (&clnt_conntyp);
+	XdmcpDisposeARRAY8 (&clnt_authname);
 	return;
     }
     
@@ -643,6 +676,11 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     /* Manufacturer ID */
     if (! XdmcpReadARRAY8 (&buf, &clnt_manufacturer)) {
 	gdm_error (_("gdm_xdmcp_handle_request: Could not read Manufacturer ID"));
+	XdmcpDisposeARRAY8 (&clnt_authname);
+	XdmcpDisposeARRAY8 (&clnt_authdata);
+	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+	XdmcpDisposeARRAYofARRAY8 (&clnt_authorization);
+	XdmcpDisposeARRAY16 (&clnt_conntyp);
 	return;
     }
     
@@ -662,6 +700,12 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     if (explen != len) {
 	gdm_error (_("gdm_xdmcp_handle_request: Failed checksum from %s"),
 		   inet_ntoa (clnt_sa->sin_addr));
+	XdmcpDisposeARRAY8 (&clnt_authname);
+	XdmcpDisposeARRAY8 (&clnt_authdata);
+	XdmcpDisposeARRAY8 (&clnt_manufacturer);
+	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+	XdmcpDisposeARRAYofARRAY8 (&clnt_authorization);
+	XdmcpDisposeARRAY16 (&clnt_conntyp);
 	return;
     }
     
@@ -774,6 +818,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     CARD16 clnt_dspnum;
     ARRAY8 clnt_dspclass;
     GdmDisplay *d;
+    GdmIndirectDisplay *id;
     gint logfd;
     
     gdm_debug ("gdm_xdmcp_handle_manage: Got MANAGE from %s", inet_ntoa (clnt_sa->sin_addr));
@@ -802,13 +847,24 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     
     /* Display Class */
     if (! XdmcpReadARRAY8 (&buf, &clnt_dspclass)) {
-        XdmcpDisposeARRAY8(&clnt_dspclass);
 	gdm_error (_("gdm_xdmcp_handle_manage: Could not read Display Class"));
 	return;
     }
     
     d = gdm_xdmcp_display_lookup (clnt_sessid);
-    
+    id = gdm_choose_indirect_lookup (clnt_sa);
+
+    /* This was an indirect thingie, use a chooser */
+    if (d != NULL &&
+	d->dispstat == XDMCP_PENDING &&
+	GdmIndirect &&
+	id != NULL) {
+	    gdm_choose_indirect_dispose (id);
+	    d->use_chooser = TRUE;
+    } else {
+	    d->use_chooser = FALSE;
+    }
+
     if (d && d->dispstat == XDMCP_PENDING) {
 	gchar *logfile;
 

@@ -55,7 +55,7 @@ extern void gdm_debug (gchar *, ...);
 
 GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
 GdmIndirectDisplay *gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
-static void gdm_choose_indirect_dispose (GdmIndirectDisplay *);
+void gdm_choose_indirect_dispose (GdmIndirectDisplay *id);
 gboolean gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd);
 
 
@@ -109,11 +109,13 @@ gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa)
 GdmIndirectDisplay *
 gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 {
-    GSList *ilist = indirect;
+    GSList *li, *ilist;
     GdmIndirectDisplay *id;
+
+    ilist = g_slist_copy (indirect);
     
-    while (ilist) {
-        id = (GdmIndirectDisplay *) ilist->data;
+    for (li = ilist; li != NULL; li = li->next) {
+        id = (GdmIndirectDisplay *) li->data;
 
 	if (id && time (NULL) > id->acctime + GdmMaxIndirectWait)	{
 	    gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",
@@ -123,9 +125,8 @@ gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 	
 	if (id && id->dsp_sa->sin_addr.s_addr == clnt_sa->sin_addr.s_addr)
 	return (id);
-	
-        ilist = ilist->next;
     }
+    g_slist_free (ilist);
     
     gdm_debug ("gdm_choose_indirect_lookup: Host %s not found", 
 	       inet_ntoa (clnt_sa->sin_addr));
@@ -134,17 +135,19 @@ gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 }
 
 
-static void
+void
 gdm_choose_indirect_dispose (GdmIndirectDisplay *id)
 {
     if (!id)
 	return;
 
+    indirect = g_slist_remove (indirect, id);
+
     gdm_debug ("gdm_choose_indirect_dispose: Disposing %d", 
 	       inet_ntoa (id->dsp_sa->sin_addr));
 
-    if (id->dsp_sa)
-	g_free (id->dsp_sa);
+    g_free (id->dsp_sa);
+    id->dsp_sa = NULL;
 
     g_free (id);
 

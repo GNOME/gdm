@@ -79,6 +79,7 @@ extern gboolean GdmConfigAvailable;
 extern gboolean GdmSystemMenu;
 extern gint GdmXineramaScreen;
 extern gchar *GdmGreeter;
+extern gchar *GdmChooser;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmPreSession;
 extern gchar *GdmPostSession;
@@ -108,6 +109,7 @@ static gint     gdm_slave_xioerror_handler (Display *disp);
 static void	gdm_slave_run (GdmDisplay *display);
 static void	gdm_slave_wait_for_login (void);
 static void     gdm_slave_greeter (void);
+static void     gdm_slave_chooser (void);
 static void     gdm_slave_session_start (void);
 static void     gdm_slave_session_stop (pid_t sesspid);
 static void     gdm_slave_session_cleanup (void);
@@ -375,10 +377,12 @@ gdm_slave_run (GdmDisplay *display)
     /* checkout xinerama */
     gdm_screen_init (d);
 
-    if (d->type == TYPE_LOCAL &&
-	gdm_first_login &&
-	! gdm_string_empty (GdmAutomaticLogin) &&
-	strcmp (GdmAutomaticLogin, "root") != 0) {
+    if (d->use_chooser) {
+	    gdm_slave_chooser ();  /* Run the chooser */
+    } else if (d->type == TYPE_LOCAL &&
+	       gdm_first_login &&
+	       ! gdm_string_empty (GdmAutomaticLogin) &&
+	       strcmp (GdmAutomaticLogin, "root") != 0) {
 	    gdm_first_login = FALSE;
 
 	    setup_automatic_session (d, GdmAutomaticLogin);
@@ -973,7 +977,7 @@ gdm_slave_greeter (void)
 	close (pipe2[1]);
 
 	fcntl(pipe1[1], F_SETFD, fcntl(pipe1[1], F_GETFD, 0) | FD_CLOEXEC);
-	fcntl(pipe2[0], F_SETFD, fcntl(pipe2[2], F_GETFD, 0) | FD_CLOEXEC);
+	fcntl(pipe2[0], F_SETFD, fcntl(pipe2[0], F_GETFD, 0) | FD_CLOEXEC);
 
 	if (pipe1[1] != STDOUT_FILENO) 
 	    dup2 (pipe1[1], STDOUT_FILENO);
@@ -988,6 +992,124 @@ gdm_slave_greeter (void)
 	run_pictures (); /* Append pictures to greeter if browsing is on */
 	break;
     }
+}
+
+static void
+gdm_slave_chooser (void)
+{
+	gint pipe1[2], pipe2[2];  
+	gchar **argv;
+	struct passwd *pwent;
+
+	gdm_debug ("gdm_slave_chooser: Running chooser on %s", d->name);
+
+	/* Open a pipe for chooser communications */
+	if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
+		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Can't init pipe to gdmchooser"));
+
+	/* Run the init script. gdmslave suspends until script has terminated */
+	gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL);
+
+	/* Fork. Parent is gdmslave, child is greeter process. */
+	last_killed_pid = 0; /* race condition wrapper,
+			      * it could be that we recieve sigchld before
+			      * we can set greetpid.  eek! */
+	switch (d->chooserpid = fork()) {
+
+	case 0:
+		sigfillset (&mask);
+		sigdelset (&mask, SIGINT);
+		sigdelset (&mask, SIGTERM);
+		sigdelset (&mask, SIGHUP);
+		sigprocmask (SIG_SETMASK, &mask, NULL);
+
+		/* Plumbing */
+		close (pipe1[1]);
+		close (pipe2[0]);
+
+		if (pipe1[0] != STDIN_FILENO) 
+			dup2 (pipe1[0], STDIN_FILENO);
+
+		if (pipe2[1] != STDOUT_FILENO) 
+			dup2 (pipe2[1], STDOUT_FILENO);
+
+		if (setgid (GdmGroupId) < 0) 
+			gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Couldn't set groupid to %d"), GdmGroupId);
+
+		if (initgroups (GdmUser, GdmGroupId) < 0)
+			gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: initgroups() failed for %s"), GdmUser);
+
+		if (setuid (GdmUserId) < 0) 
+			gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Couldn't set userid to %d"), GdmUserId);
+
+		gdm_clearenv_no_lang ();
+		gdm_setenv ("XAUTHORITY", d->authfile);
+		gdm_setenv ("DISPLAY", d->name);
+
+		gdm_setenv ("LOGNAME", GdmUser);
+		gdm_setenv ("USER", GdmUser);
+		gdm_setenv ("USERNAME", GdmUser);
+
+		gdm_setenv ("GDM_VERSION", VERSION);
+
+		pwent = getpwnam (GdmUser);
+		if (pwent != NULL) {
+			/* Note that usually this doesn't exist */
+			if (g_file_exists (pwent->pw_dir))
+				gdm_setenv ("HOME", pwent->pw_dir);
+			else
+				gdm_setenv ("HOME", "/"); /* Hack */
+			gdm_setenv ("SHELL", pwent->pw_shell);
+		} else {
+			gdm_setenv ("HOME", "/"); /* Hack */
+			gdm_setenv ("SHELL", "/bin/sh");
+		}
+		gdm_setenv ("PATH", GdmDefaultPath);
+		gdm_setenv ("RUNNING_UNDER_GDM", "true");
+
+		argv = g_strsplit (GdmChooser, argdelim, MAX_ARGS);
+		execv (argv[0], argv);
+
+		gdm_error_box (d,
+			       GNOME_MESSAGE_BOX_ERROR,
+			       _("Cannot start the chooser program,\n"
+				 "you will not be able to log in.\n"
+				 "Please contact the system administrator.\n"));
+
+		gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Error starting chooser on display %s"), d->name);
+
+	case -1:
+		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Can't fork gdmchooser process"));
+
+	default:
+		if (last_killed_pid == d->chooserpid) {
+			/* foo, this is a bad case really.  We always remanage since
+			 * we assume that the chooser died, we should probably store
+			 * the status.  But this race is not likely to happen
+			 * normally. */
+			_exit (DISPLAY_REMANAGE);
+		}
+
+		gdm_debug ("gdm_slave_chooser: Chooser on pid %d", d->chooserpid);
+		close (pipe1[0]);
+		close (pipe2[1]);
+
+		fcntl(pipe1[1], F_SETFD, fcntl(pipe1[1], F_GETFD, 0) | FD_CLOEXEC);
+		fcntl(pipe2[0], F_SETFD, fcntl(pipe2[0], F_GETFD, 0) | FD_CLOEXEC);
+
+		if (pipe1[1] != STDOUT_FILENO) 
+			dup2 (pipe1[1], STDOUT_FILENO);
+
+		if (pipe2[0] != STDIN_FILENO) 
+			dup2 (pipe2[0], STDIN_FILENO);
+
+		/* wait for the chooser to die */
+		waitpid (d->chooserpid, 0, 0);
+
+		/* FIXME: read the chosen host here and whack it onto the
+		 * chooser fifo thingie */
+		break;
+	}
 }
 
 static void

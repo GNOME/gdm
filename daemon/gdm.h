@@ -213,6 +213,7 @@ struct _GdmDisplay {
     gboolean authfb;
     gchar *command;
     gboolean failsafe_xserver;
+    gboolean use_chooser;
     gchar *cookie;
     gchar *bcookie;
     gchar *name;

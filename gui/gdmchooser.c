@@ -67,14 +67,14 @@ static const gchar *empty_network = N_("No serving hosts were found.");
 static const gchar *active_network = N_("Choose a host to connect to from the selection below.");
 static gchar *glade_filename = NULL;
 
-static GdmChooserHost *gdm_chooser_host_alloc (gchar *hostname, gchar *description);
+static GdmChooserHost *gdm_chooser_host_alloc (const char *hostname, const char *description);
 static void gdm_chooser_decode_packet (void);
 static void gdm_chooser_abort (const gchar *format, ...);
 static void gdm_chooser_browser_update (void);
-static void gdm_chooser_xdmcp_init (gchar **hosts);
+static void gdm_chooser_xdmcp_init (const char **hosts);
 static void gdm_chooser_host_dispose (GdmChooserHost *host);
-static void gdm_chooser_choose_host (gchar *hostname);
-static void gdm_chooser_add_hosts (gchar **hosts);
+static void gdm_chooser_choose_host (const gchar *hostname);
+static void gdm_chooser_add_hosts (const char **hosts);
 
 /* Fixetyfix */
 int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);
@@ -110,7 +110,6 @@ static GladeXML *chooser_app;
 static GtkWidget *chooser, *manage, *rescan, *cancel;
 static GtkWidget *status_label;
 
-static gint maxwidth = 0;
 static GIOChannel *channel;
 static GList *hosts = NULL;
 static GdkImlibImage *defhostimg;
@@ -358,7 +357,7 @@ gdm_chooser_xdmcp_discover (void)
     gnome_icon_list_clear (GNOME_ICON_LIST (browser));
     gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
     gtk_label_set (GTK_LABEL (status_label),
-		   scanning_message);
+		   _(scanning_message));
 
     while (hl) {
 	gdm_chooser_host_dispose ((GdmChooserHost *) hl->data);
@@ -379,6 +378,7 @@ gdm_chooser_xdmcp_discover (void)
 	bl = bl->next;
     }
 
+    /* FIXME: implement GdmScanTime */
     /*
     tid = g_timeout_add (GdmScanTime * 1000, 
 			 (GSourceFunc) gdm_chooser_browser_update, NULL);
@@ -395,7 +395,7 @@ gdm_chooser_xdmcp_discover (void)
 
 
 static void
-gdm_chooser_xdmcp_init (char **hosts)
+gdm_chooser_xdmcp_init (const char **hosts)
 {
     static XdmcpHeader header;
     gint sockopts = 1;
@@ -575,10 +575,10 @@ gdm_chooser_browser_update (void)
 
     if (hosts) {
       gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
-		     active_network);
+		     _(active_network));
     } else {
       gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
-		     empty_network);
+		     _(empty_network));
     }
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
     gtk_widget_set_sensitive (GTK_WIDGET (rescan), TRUE);
@@ -596,7 +596,6 @@ gdm_chooser_gui_init (void)
 {
     GtkStyle  *style;
     GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
-    struct    stat statbuf;
  
    
         /* Look for the glade file in $(datadir)/gdmconfig or, failing that,
@@ -623,12 +622,10 @@ gdm_chooser_gui_init (void)
 	gtk_rc_parse (GdmGtkRC);
 
     /* Load default host image */
-    if (stat (GdmHostDefaultIcon, &statbuf))
+    if (access (GdmHostDefaultIcon, R_OK) != 0)
 	gdm_chooser_abort (_("Can't open default host icon: %s"), GdmHostDefaultIcon);
-    else {
+    else
 	defhostimg = gdk_imlib_load_image (GdmHostDefaultIcon);
-	maxwidth = defhostimg->rgb_width;
-    }
 
     /* Main window */
     g_assert (glade_filename != NULL);
@@ -672,15 +669,11 @@ gdm_chooser_gui_init (void)
     style->bg[GTK_STATE_NORMAL] = bbg;
     gtk_widget_push_style (style);
 
-    /* Icon list */
-    if (maxwidth < GdmIconMaxWidth/2)
-	maxwidth = (gint) GdmIconMaxWidth/2;
-
     browser = (GnomeIconList *) glade_xml_get_widget (chooser_app, 
 						     "chooser_iconlist");
     gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
     gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.");
-    gnome_icon_list_set_icon_width (GNOME_ICON_LIST (browser), maxwidth+20);
+    gnome_icon_list_set_icon_width (GNOME_ICON_LIST (browser), GdmIconMaxWidth + 20);
     gnome_icon_list_set_icon_border (GNOME_ICON_LIST (browser), 2);
     gtk_widget_pop_style();
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
@@ -722,12 +715,11 @@ gdm_chooser_signals_init (void)
 }
 
 static GdmChooserHost * 
-gdm_chooser_host_alloc (gchar *hostname, gchar *description)
+gdm_chooser_host_alloc (const char *hostname, const char *description)
 {
     GdmChooserHost *host;
     GdkImlibImage *imlibimg;
     gchar *hostimg;
-    struct stat statbuf;
 
     host = g_malloc (sizeof (GdmChooserHost));
     host->name = g_strdup (hostname);
@@ -735,7 +727,8 @@ gdm_chooser_host_alloc (gchar *hostname, gchar *description)
 
     hostimg = g_strconcat (GdmHostIconDir, "/", hostname, NULL);
 
-    if (!stat (hostimg, &statbuf) && (imlibimg = gdk_imlib_load_image (hostimg))) {
+    if (access (hostimg, R_OK) == 0 &&
+	(imlibimg = gdk_imlib_load_image (hostimg))) {
 	gint w, h;
 
 	w = imlibimg->rgb_width;
@@ -744,20 +737,17 @@ gdm_chooser_host_alloc (gchar *hostname, gchar *description)
 	if (w>h && w>GdmIconMaxWidth) {
 	    h = h * ((gfloat) GdmIconMaxWidth/w);
 	    w = GdmIconMaxWidth;
-	} 
-	else if (h>GdmIconMaxHeight) {
+	} else if (h>GdmIconMaxHeight) {
 	    w = w * ((gfloat) GdmIconMaxHeight/h);
 	    h = GdmIconMaxHeight;
 	}
 
-	maxwidth = MAX (maxwidth, w);
-
 	host->picture = gdk_imlib_clone_scaled_image (imlibimg, w, h);
 	
 	gdk_imlib_destroy_image (imlibimg);
-    }
-    else
+    } else {
 	host->picture = defhostimg;
+    }
 
     g_free (hostimg);
 
@@ -773,9 +763,12 @@ gdm_chooser_host_dispose (GdmChooserHost *host)
 
     if (host->picture != defhostimg)
 	gdk_imlib_destroy_image (host->picture);
+    host->picture = NULL;
 
     g_free (host->name);
+    host->name = NULL;
     g_free (host->desc);
+    host->desc = NULL;
     g_free (host);
 }
 
@@ -785,9 +778,8 @@ static gint connection_type = 0;
 
 struct poptOption xdm_options [] = {
   { "xdmaddress", '\0', POPT_ARG_STRING|POPT_ARGFLAG_ONEDASH, &xdm_address, 0,
-    "setting socket for xdm communication", "xdm response socket" },
-  { "clientaddress", '\0', POPT_ARG_STRING|POPT_ARGFLAG_ONEDASH, &client_address, 0, "setting client address to return in response to xdm", "client address" },
-  { "connectionType", '\0', POPT_ARG_INT|POPT_ARGFLAG_ONEDASH, &connection_type, 0, "setting connection type to return in response to xdm", "connection type" },
+    N_("Socket for xdm communication"), N_("SOCKET") }, { "clientaddress", '\0', POPT_ARG_STRING|POPT_ARGFLAG_ONEDASH, &client_address, 0, N_("Client address to return in response to xdm"), N_("ADDRESS") },
+  { "connectionType", '\0', POPT_ARG_INT|POPT_ARGFLAG_ONEDASH, &connection_type, 0, N_("Connection type to return in response to xdm"), N_("TYPE") },
   POPT_AUTOHELP
   { NULL, 0, 0, NULL, 0}
 };
@@ -798,7 +790,7 @@ struct poptOption xdm_options [] = {
 #define HexChar(c)  ('0' <= (c) && (c) <= '9' ? (c) - '0' : (c) - 'a' + 10)
 
 static int
-from_hex (gchar *s, gchar *d, int len)
+from_hex (const char *s, char *d, int len)
 {
   int t;
   while (len >= 2)
@@ -819,7 +811,7 @@ from_hex (gchar *s, gchar *d, int len)
 
 
 static void
-gdm_chooser_choose_host (gchar *hostname)
+gdm_chooser_choose_host (const char *hostname)
 {
   ARRAY8 tmparr;
   struct hostent *hentry;
@@ -834,8 +826,9 @@ gdm_chooser_choose_host (gchar *hostname)
       char buf[1024];
       XdmcpBuffer buffer;
       long family, port, addr;
-      if (strlen (xdm_address) > 64 || from_hex (xdm_address, xdm_addr, strlen (xdm_address)) != 0)
- gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid xdm address.");
+      if (strlen (xdm_address) > 64 ||
+	  from_hex (xdm_address, xdm_addr, strlen (xdm_address)) != 0)
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid xdm address.");
 
       family = (xdm_addr[0] << 8) | xdm_addr[1];
       port = (xdm_addr[2] << 8) | xdm_addr[3];
@@ -844,24 +837,24 @@ gdm_chooser_choose_host (gchar *hostname)
       in_addr.sin_port = htons (port);
       in_addr.sin_addr.s_addr = htonl (addr);
       if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1)
- gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't create response socket.");
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't create response socket.");
 
       if (connect (fd, (struct sockaddr_in *) &in_addr, sizeof (in_addr)) == -1)
- gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
       buffer.data = (BYTE *) buf;
       buffer.size = sizeof (buf);
       buffer.pointer = 0;
       buffer.count = 0;
 
       if (strlen (client_address) > 64 || from_hex (client_address, client_addr, strlen (client_address)) != 0)
- gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid client address.");
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid client address.");
       tmparr.data = (BYTE *) client_addr;
       tmparr.length = strlen (client_address) / 2;
       XdmcpWriteARRAY8 (&buffer, &tmparr);
       XdmcpWriteCARD16 (&buffer, (CARD16) connection_type);
       hentry = gethostbyname (hostname);
       if (!hentry)
- gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't get host entry for %s", hostname);
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't get host entry for %s", hostname);
 
       tmparr.data = (BYTE *) hentry->h_addr_list[0]; /* XXX */
       tmparr.length = 4;
@@ -873,7 +866,7 @@ gdm_chooser_choose_host (gchar *hostname)
 }
 
 static void
-gdm_chooser_add_hosts (gchar **hosts)
+gdm_chooser_add_hosts (const char **hosts)
 {
 	struct hostent *hostent;
 	struct sockaddr_in qa;
@@ -881,7 +874,7 @@ gdm_chooser_add_hosts (gchar **hosts)
 	int i;
 
 	for (i = 0; hosts != NULL && hosts[i] != NULL; i++) {
-		char *name = hosts[i];
+		const char *name = hosts[i];
 
 		if (strcmp (name, "BROADCAST") == 0) {
 			gdm_chooser_find_bcaddr ();
@@ -914,9 +907,9 @@ gdm_chooser_add_hosts (gchar **hosts)
 int 
 main (int argc, char *argv[])
 {
-    gchar **fixedargv;
-    gint fixedargc, i;
-    gchar **hosts;
+    char **fixedargv;
+    int fixedargc, i;
+    const char **hosts;
     poptContext ctx;
 
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
@@ -947,7 +940,7 @@ main (int argc, char *argv[])
     gdm_chooser_gui_init();
     gdm_chooser_signals_init();
 
-    hosts = (gchar **) poptGetArgs (ctx);
+    hosts = poptGetArgs (ctx);
     gdm_chooser_xdmcp_init (hosts);
     poptFreeContext (ctx);
 
