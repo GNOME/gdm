@@ -620,7 +620,7 @@ gdm_server_spawn (GdmDisplay *d)
 
         /* Log all output from spawned programs to a file */
 	logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),
-		      O_CREAT|O_TRUNC|O_WRONLY, 0666);
+		      O_CREAT|O_TRUNC|O_WRONLY, 0644);
 
 	if (logfd != -1) {
 		dup2 (logfd, 1);

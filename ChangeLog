@@ -1,3 +1,31 @@
+Fri Oct 26 00:30:45 2001  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: try also appending .png to the face file to support
+	  KDE like faces (fixed version of Mandrake SRPM patch)
+
+	* gui/gdmlogin.c: Accept KP_Enter as return as well (from Mandrake)
+
+	* daemon/server.c: change perms on open to 0644, those were the perms
+	  actually used anyway because of umask, but this makes the code
+	  easier to read.
+
+	* config/XKeepsCrashing:  fix some logic, fix for filenames with
+	  spaces, test for XFdrake so that this works seemlessy on Mandrake,
+	  also add xf86cfg to the list of configurators, also kill some
+	  bashism.  If we can't find a configurator still offer to display
+	  the server output and then disable the server.
+
+	* gdmconfig-security.in: make FALLBACK false, as it doesn't make
+	  sense to have fallback, also make SESSION true as per redhat
+	  patches
+
+	* gdmconfig-pam: apply the redhat patch.  It seems to me that is
+	  the more correct way to handle it in general.  Scream at me if
+	  it is wrong.
+
+	* configure.in: make console helper automatically detected and
+	  used if present.
+
 Thu Oct 25 20:28:03 2001  George Lebl <jirka@5z.com>
 
 	* daemon/misc.[ch], daemon/display.c, daemon/errorgui.c,

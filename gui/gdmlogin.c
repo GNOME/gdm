@@ -1225,6 +1225,7 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
     switch (event->keyval) {
 
     case GDK_Return:
+    case GDK_KP_Enter:
         gdm_login_enter (entry);
 	break;
 

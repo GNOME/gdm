@@ -40,8 +40,8 @@ dnl
 dnl Configure arguments
 dnl
 AC_ARG_ENABLE(console-helper,
-  [  --enable-console-helper=[no/yes]  Enable PAM console helper [default =no]],,
-  enable_console_helper=no)
+  [  --enable-console-helper=[auto/no/yes]  Enable PAM console helper [default=auto]],,
+  enable_console_helper=auto)
     
 AC_ARG_ENABLE(authentication-scheme,
   [  --enable-authentication-scheme=[auto/pam/crypt/shadow]  Choose a specific
@@ -79,8 +79,16 @@ AC_SUBST(PAM_PREFIX)
 
     
 AC_PATH_PROG(CONSOLE_HELPER,consolehelper,no)
-if test "x$CONSOLE_HELPER" = "xno" -a "x$enable_console_helper" = "xyes" ; then
-	AC_MSG_ERROR(Console helper requested but consolehelper binary not found)
+if test "x$CONSOLE_HELPER" = "xno" ; then
+  if test "x$enable_console_helper" = "xyes" ; then
+    AC_MSG_ERROR(Console helper requested but consolehelper binary not found)
+  fi
+  # if it was no, nothing happens, if it was auto, well then we're out of luck
+  enable_console_helper=no
+else
+  if test ! "x$enable_console_helper" = "xno" ; then
+    enable_console_helper=yes
+  fi
 fi
 
 dnl

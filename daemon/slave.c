@@ -946,6 +946,17 @@ run_pictures (void)
 					continue;
 				}
 
+				g_free (picfile);
+				picfile = g_strconcat (GdmGlobalFaceDir, "/",
+						       response, ".png", NULL);
+
+				if (access (picfile, R_OK) == 0) {
+					gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
+								      picfile);
+					g_free (picfile);
+					continue;
+				}
+
 				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 				g_free (picfile);
 				continue;
