@@ -1,0 +1,188 @@
+
+========================================
+GDM Theme Manual
+By Brian Cameron <Brian.Cameron@Sun.COM>
+Last Updated: June 4, 2003
+========================================
+
+GDM Themes can be created by creating an XML file that follows the
+specification in gui/greeter/greeter.dtd.  Theme files are stored
+in the following directory
+
+   share/gdm/themes/<theme_name>.
+
+Detailed Description of Theme XML format:
+
+Box Nodes:
+
+  Box nodes are container nodes for item nodes.  Box nodes are
+  specified as follows:
+
+  <box orientation="alignment" min-width="int" xpadding="int"
+   ypadding="int" spacing="int">
+
+  The alignment value can be either "horizontal" or "vertical".
+
+Item Nodes:
+
+  A GDM Theme is created by specifying a hierarchy of item and box
+  nodes.  Item nodes can have the following value for "type":
+
+    entry  - Text entry field
+    label  - Label.  Must have a "text" node to specify the text.
+    pixmap - Pixmap (in a format GTK+ supports like PNG, JPEG, Tiff)
+    rect   - Rectangle
+    svg    - Scaled Vector Graphic
+
+  For example:
+
+    <item type="label">
+
+  Items can specify ID values which gives them a specific look
+  and feel or formatting:
+
+  entry:
+
+    Entry items can have id values as follows:
+
+       user-pw-entry - Entry field for userid and password entry.
+
+  label:
+
+    Label items can have id values as follows:
+
+     clock         - Label the displays the date and time.
+     pam-error     - Label the displays PAM error messages.
+     pam-message   - Label the displays PAM message.
+     pam-prompt    - Label the displays PAM prompt.
+     pam-warning   - Label the displays PAM warning messages.
+     timed-label   - Label that displays timed login information
+
+   rect:
+
+     Rectangles can have id values as follows:
+
+       caps-lock-warning - Displays an icon that shows if the
+                           CAPS LOCK key is depressed.
+
+
+     If an item is of type rect, the item can be a button.  Buttons
+     must also include a "button" value as follows:
+
+       <item type="rect" id="disconnect_button" button="true">.
+
+     Possible values for button ids are as follows:
+
+       chooser_button    - Runs XDMCP chooser
+       config_button     - Only allows configure system
+       disconnect_button - Disconnect from remote session
+       language_button   - Select language
+       halt_button       - Halt system
+       reboot_button     - Reboot system
+       session_button    - List available sessions
+       suspend_button    - Suspect system
+       system_button     - Perform halt/reboot/suspend/etc. options
+                           (if allowed by gdm configuration).  Also
+                           allows user to run configurator if user
+                           enters root password (again if allowed
+                           by gdm configuration).
+
+Position Node:
+
+  Each item can specify its position and size via the "pos" node.
+  For example:
+
+    <pos x="0" y="4" width="100%" height="100%"/>
+
+Show Node:
+
+  Some items may only display in certain modes, like when doing a
+  remote display.  Multiple values can be specified and must be
+  separated with commas.  The following values are possible:
+
+    console       - In console mode
+    console-fixed - In console non-flexi mode
+    console-flexi - In console & flexi mode
+    flexi         - In flexi mode
+    remote        - In remote mode
+    remote-flexi  - In remote & flexi mode
+
+  For example:
+
+    <show modes="flexi,remote"/>
+
+  You can also specify the "type" value to indicate that certain
+  items should only be displayed if the type is true.  Valid values
+  include the following:
+
+    chooser  If ChooserButton is set to "true" in gdm.conf file.
+    config   If ConfigAvailable is set to "true" in gdm.conf file.
+    halt     If HaltDaemon is specified in gdm.conf file.
+    reboot   If RebootCommand is specified in gdm.conf file.
+    suspend  If SuspendCommand is specified in gdm.conf file.
+    system   If SystemMenu is specified in gdm.conf file
+    timed    If TimedLoginEnabled is set to "true" in gdm.conf file.
+  
+  For example:
+
+    <show modes="console" type="system"/>
+
+Normal/Active/Prelight Nodes:
+
+  Depending on the item type, it can specify its color, font, or
+  image via the following tags:
+
+    normal   - normal 
+    active   - when the item has active focus
+    prelight - when the mouse is hovering over the item
+
+  When item is "rect" (alpha can be omitted and defaults to 0.0):
+
+    <normal color="#fffff" alpha="0.0">
+
+  When item is "label":
+
+    <normal color="#ffffff" font="Sans 14"/>
+
+  When the item type is "pixmap" or "SVG", then the normal, active,
+  and prelight tags specify the images to use as follows:
+
+    <normal file="picture.png" tint="#dddddd"/>
+
+  Note that relative pathnames are assumed to be in the same 
+  directory as the theme .xml file in share/gdm/themes/<theme_name>.
+
+Text Node:
+
+  Text tags are used by labels.   They can be used to display
+  localized text as follows:
+
+    <text xml:lang="fr">Option</text>
+
+Stock:
+
+  Certain common localized labels can be specified via the stock
+  tags.  The "text" tag is ignored if the "stock" tag is used.
+  The following values are valid:
+
+     caps-lock-warning  _("You've got capslock on!") 
+     chooser            _("_XDMCP Chooser")
+     disconnect         _("D_isconnect")
+     language           _("_Language")
+     quit               _("_Quit")
+     session            _("_Session")
+     system             _("S_ystem")
+     timed-label        _("User %s will login in %d seconds")
+     username-label     _("Username:")
+     welcome-label      _("Welcome to %h")
+
+  For example:
+
+    <stock type="welcome-label"/>
+
+Examples of themes with photos can be found here:
+
+  http://art.gnome.org/theme_list.php?category=gdm_greeter
+
+
+
