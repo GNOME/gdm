@@ -424,6 +424,16 @@ gesture_already_used (Gesture *gesture)
 	return FALSE;
 }
 
+static gboolean
+change_cursor_back (gpointer data)
+{
+	GdkCursor *cursor = gdk_cursor_new (GDK_LEFT_PTR);
+	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+	gdk_cursor_unref (cursor);
+
+	return FALSE;
+}
+
 GdkFilterReturn
 gestures_filter (GdkXEvent *gdk_xevent,
 		    GdkEvent *event,
@@ -645,6 +655,13 @@ gestures_filter (GdkXEvent *gdk_xevent,
 						G_CALLBACK (gtk_widget_destroy),
 						NULL);
 					gtk_widget_show (dialog);
+				} else {
+					GdkCursor *cursor = gdk_cursor_new (GDK_WATCH);
+					gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+					gdk_cursor_unref (cursor);
+					g_timeout_add (2000,
+						       change_cursor_back,
+						       NULL);
 				}
 			}
    			return GDK_FILTER_CONTINUE;

@@ -1,3 +1,17 @@
+Tue Jan 06 10:17:41 2004  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: small leak fix
+
+	* daemon/slave.c: make greeter restarting on notify smarter and
+	  also restart the greeter when the modules stuff changed
+
+	* gui/modules/keymouselistener.c, gui/modules/dwellmouselistener.c:
+	  Fix #125153 by changing to busy cursor for 2 seconds after
+	  launching something.
+
+	* daemon/verify-shadow.c, daemon/verify-crypt.c: loginrestrictions
+	  doesn't use glib to allocate the message (AIX only)
+
 Mon Jan 05 23:35:55 2004  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter_action_language.c: apply patch from #123199

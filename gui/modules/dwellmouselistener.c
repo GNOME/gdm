@@ -419,6 +419,17 @@ load_bindings(gchar *path)
 }
 
 static gboolean
+change_cursor_back (gpointer data)
+{
+  GdkCursor *cursor = gdk_cursor_new (GDK_LEFT_PTR);
+  gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+  gdk_cursor_unref (cursor);
+
+  return FALSE;
+}
+
+
+static gboolean
 leave_enter_emission_hook (GSignalInvocationHint        *ihint,
                            guint                        n_param_values,
                            const GValue                 *param_values,
@@ -561,6 +572,16 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
                                             G_CALLBACK (gtk_widget_destroy),
                                             NULL);
                           gtk_widget_show (dialog);
+			}
+		      else
+		        {
+			  GdkCursor *cursor = gdk_cursor_new (GDK_WATCH);
+			  gdk_window_set_cursor (gdk_get_default_root_window (),
+						 cursor);
+			  gdk_cursor_unref (cursor);
+			  g_timeout_add (2000,
+					 change_cursor_back,
+					 NULL);
                         }
                     }
                 }

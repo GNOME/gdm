@@ -220,7 +220,7 @@ authenticate_again:
 
     /* Check with the 'loginrestrictions' function
        if the user has been disallowed */
-    if (loginrestrictions (login, 0, NULL, &message)) {
+    if (loginrestrictions (login, 0, NULL, &message) != 0) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
 					  _("\nThe system administrator "
@@ -229,11 +229,13 @@ authenticate_again:
 	    g_free (login);
 	    g_free (passwd);
 	    g_free (ppasswd);
-	    g_free (message);
+	    if (message != NULL)
+		    free (message);
 	    return NULL;
     }
     
-    g_free (message);
+    if (message != NULL)
+	    free (message);
     message = NULL;
 
 #else /* ! HAVE_LOGINRESTRICTIONS */

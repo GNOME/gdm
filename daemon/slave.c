@@ -1735,10 +1735,10 @@ gdm_slave_wait_for_login (void)
 		NEVER_FAILS_root_set_euid_egid (0, 0);
 
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
-		login = gdm_verify_user (d,
+		login = gdm_verify_user (d /* the display */,
 					 NULL /* username*/,
-					 d->name,
-					 d->console);
+					 d->name /* display name */,
+					 d->console /* console? (bool) */);
 		gdm_debug ("gdm_slave_wait_for_login: end verify for '%s'",
 			   ve_sure_string (login));
 
@@ -4600,6 +4600,9 @@ gdm_slave_xioerror_handler (Display *disp)
 	return 0;
 }
 
+/* return true for "there was an interruption received",
+   and interrupted will be TRUE if we are actually interrupted from doing what
+   we want.  If FALSE is returned, just continue on as we would normally */
 static gboolean
 check_for_interruption (const char *msg)
 {
@@ -4719,6 +4722,8 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 #endif
 
     do {
+      g_free (buf);
+      buf = NULL;
       /* Skip random junk that might have accumulated */
       do {
 	    c = gdm_fdgetc (greeter_fd_in);
@@ -5233,7 +5238,7 @@ gdm_slave_handle_notify (const char *msg)
 		if (d->console) {
 			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
-				restart_the_greeter ();
+				; /* will get restarted later */
 			} else if (d->type == TYPE_LOCAL) {
 				/* FIXME: can't handle flexi servers like this
 				 * without going all cranky */
@@ -5252,7 +5257,7 @@ gdm_slave_handle_notify (const char *msg)
 		if ( ! d->console) {
 			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
-				restart_the_greeter ();
+				; /* will get restarted later */
 			} else if (d->type == TYPE_XDMCP) {
 				/* FIXME: can't handle flexi servers like this
 				 * without going all cranky */
@@ -5291,8 +5296,36 @@ gdm_slave_handle_notify (const char *msg)
 		g_free (GdmGtkModulesList);
 		GdmGtkModulesList = g_strdup
 			(&msg[strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1]);
+
+		if (GdmAddGtkModules) {
+			do_restart_greeter = TRUE;
+			if (restart_greeter_now) {
+				; /* will get restarted later */
+			} else if (d->type == TYPE_LOCAL) {
+				/* FIXME: can't handle flexi servers like this
+				 * without going all cranky */
+				if ( ! d->logged_in) {
+					gdm_slave_quick_exit (DISPLAY_REMANAGE);
+				} else {
+					remanage_asap = TRUE;
+				}
+			}
+		}
 	} else if (sscanf (msg, GDM_NOTIFY_ADD_GTK_MODULES " %d", &val) == 1) {
 		GdmAddGtkModules = val;
+
+		do_restart_greeter = TRUE;
+		if (restart_greeter_now) {
+			; /* will get restarted later */
+		} else if (d->type == TYPE_LOCAL) {
+			/* FIXME: can't handle flexi servers like this
+			 * without going all cranky */
+			if ( ! d->logged_in) {
+				gdm_slave_quick_exit (DISPLAY_REMANAGE);
+			} else {
+				remanage_asap = TRUE;
+			}
+		}
 	}
 }
 
