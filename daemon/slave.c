@@ -62,7 +62,6 @@ static GdmDisplay *d;
 static gchar *login = NULL;
 static sigset_t mask;
 static gboolean greet = FALSE;
-static FILE *greeter = NULL;
 static pid_t last_killed_pid = 0;
 static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
@@ -482,10 +481,6 @@ gdm_slave_whack_greeter (void)
 	d->greetpid = 0;
 
 	gdm_send_pid (GDM_SOP_GREETPID, 0);
-
-	if (greeter != NULL)
-		fclose (greeter);
-	greeter = NULL;
 
 	sigprocmask (SIG_SETMASK, &omask, NULL);
 }
@@ -1127,13 +1122,14 @@ gdm_slave_greeter (void)
 	fcntl(pipe1[1], F_SETFD, fcntl(pipe1[1], F_GETFD, 0) | FD_CLOEXEC);
 	fcntl(pipe2[0], F_SETFD, fcntl(pipe2[0], F_GETFD, 0) | FD_CLOEXEC);
 
+	/* flush our input before we change the piping */
+	fflush (stdin);
+
 	if (pipe1[1] != STDOUT_FILENO) 
 	    dup2 (pipe1[1], STDOUT_FILENO);
 	
 	if (pipe2[0] != STDIN_FILENO) 
 	    dup2 (pipe2[0], STDIN_FILENO);
-	
-	greeter = fdopen (STDIN_FILENO, "r");
 	
 	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", d->greetpid);
 
@@ -2303,9 +2299,6 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
     gchar buf[FIELD_SIZE];
     guchar c;
 
-    if (greeter == NULL)
-	    return NULL;
-
     if (str)
 	g_print ("%c%c%s\n", STX, cmd, str);
     else
@@ -2313,16 +2306,16 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 
     /* Skip random junk that might have accumulated */
     do {
-	    c = getc (greeter);
+	    c = getc (stdin);
     } while (c && c != STX);
     
-    if (fgets (buf, FIELD_SIZE-1, greeter) == NULL) {
+    if (fgets (buf, FIELD_SIZE-1, stdin) == NULL) {
 	    /* things don't seem well with the greeter, it probably died */
 	    return NULL;
     }
 
     /* don't forget to flush */
-    fflush (greeter);
+    fflush (stdin);
     
     if (buf[0] != '\0') {
 	    int len = strlen (buf);

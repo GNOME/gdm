@@ -450,9 +450,9 @@ gdm_daemonify (void)
     close (1);
     close (2);
 
-    open ("/dev/null", O_RDONLY);
-    dup2 (0, 1);
-    dup2 (0, 2);
+    open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+    open("/dev/null", O_RDWR); /* open stdout - fd 1 */
+    open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 }
 
 

@@ -1,3 +1,13 @@
+Thu Jul 05 23:45:45 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: open 0,1,2 with correct rw flag
+
+	* daemon/slave.c: Ryan Murray pointed me to some of my braindamage
+	  which was causing gdm to fail in horrible ways on debian.  Get rid
+	  of the greeter FILE * which caused us to close fd 0 at one point
+	  which then caused us to prematurely close our X connection.  We
+	  just use stdin now, which makes more sense.
+
 Thu Jul 05 18:50:23 2001  George Lebl <jirka@5z.com>
 
 	* gdm.spec.in: remove the connection to RedHat's default init as that
