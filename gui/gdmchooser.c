@@ -879,17 +879,17 @@ gdm_chooser_gui_init (void)
      */
 	
     if ( ! DOING_GDM_DEVELOPMENT) {
-	    if (g_file_test (GDM_GLADE_DIR "/gdmchooser.glade", G_FILE_TEST_EXISTS)) {
+	    if (g_file_test (GDM_GLADE_DIR "/gdmchooser.glade2", G_FILE_TEST_EXISTS)) {
 		    glade_filename = g_strdup (GDM_GLADE_DIR
-					       "/gdmchooser.glade");
+					       "/gdmchooser.glade2");
 	    } else {
-		    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade");
+		    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade2");
 		    if (glade_filename == NULL) {	  
-			    glade_filename = g_strdup("gdmchooser.glade");
+			    glade_filename = g_strdup("gdmchooser.glade2");
 		    }
 	    }
     } else {
-	    glade_filename = g_strdup("gdmchooser.glade");
+	    glade_filename = g_strdup("gdmchooser.glade2");
     }
     /* Enable theme */
     if (GdmGtkRC)
@@ -913,7 +913,7 @@ gdm_chooser_gui_init (void)
 					    _("Cannot find the glade interface description\n"
 					      "file, cannot run gdmchooser.\n"
 					      "Please check your installation and the\n"
-					      "location of the gdmchooser.glade file."));
+					      "location of the gdmchooser.glade2 file."));
 	    gtk_dialog_run (GTK_DIALOG (fatal_error));
 	    exit (EXIT_FAILURE);
     }

@@ -2491,7 +2491,7 @@ gdm_login_handle_released (GtkWidget *widget, GdkEventButton *event)
 static gboolean
 gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
 {
-    gint xp, yp;
+    int xp, yp;
     CursorOffset *p;
     GdkModifierType mask;
 
@@ -2504,11 +2504,16 @@ gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
 
     set_screen_to_pos (xp, yp);
 
-    set_screen_pos (GTK_WIDGET (login), xp-p->x, yp-p->y);
-
     GdmSetPosition = TRUE;
     GdmPositionX = xp - p->x;
     GdmPositionY = yp - p->y;
+
+    if (GdmPositionX < 0)
+	    GdmPositionX = 0;
+    if (GdmPositionY < 0)
+	    GdmPositionY = 0;
+
+    set_screen_pos (GTK_WIDGET (login), GdmPositionX, GdmPositionY);
 
     return TRUE;
 }
@@ -2987,14 +2992,16 @@ gdm_login_gui_init (void)
 	if (maxheight < GdmIconMaxHeight/2)
 	    maxheight = (gint) GdmIconMaxHeight/2;
 
+	/* browser */
+	browser = GNOME_ICON_LIST (gnome_icon_list_new
+				   (maxwidth+20 /* icon_width */,
+				    NULL /* adjustment */,
+				   0 /* flags */));
+
 	/* Browser scroll bar */
 	adj = gtk_layout_get_vadjustment (GTK_LAYOUT (browser));
 	scrollbar = gtk_vscrollbar_new (adj);
 	
-	browser = GNOME_ICON_LIST (gnome_icon_list_new
-				   (maxwidth+20 /* icon_width */,
-				   adj /* adjustment */,
-				   0 /* flags */));
 	gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
 	gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.");
 	gnome_icon_list_set_row_spacing (GNOME_ICON_LIST (browser), 2);
@@ -3086,7 +3093,7 @@ gdm_login_gui_init (void)
 			    (GDestroyNotify) gtk_widget_unref);
     gtk_widget_show (stack);
 
-    greeting = gdm_parse_enriched_string ("<big>", GdmWelcome, "</big>");    
+    greeting = gdm_parse_enriched_string ("<big><big><big>", GdmWelcome, "</big></big></big>");    
     welcome = gtk_label_new (NULL);
     gtk_label_set_markup (GTK_LABEL (welcome), greeting);
     gtk_widget_set_name (welcome, "Welcome");

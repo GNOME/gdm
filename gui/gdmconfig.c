@@ -395,19 +395,19 @@ main (int argc, char *argv[])
 	 */
 
 	if ( ! DOING_GDM_DEVELOPMENT) {
-		if (g_file_exists (GDM_GLADE_DIR "/gdmconfig.glade")) {
+		if (g_file_exists (GDM_GLADE_DIR "/gdmconfig.glade2")) {
 			glade_filename = g_strdup (GDM_GLADE_DIR
-						   "/gdmconfig.glade");
+						   "/gdmconfig.glade2");
 		} else {
-			glade_filename = gnome_datadir_file ("gdm/gdmconfig.glade");
+			glade_filename = gnome_datadir_file ("gdm/gdmconfig.glade2");
 			if (glade_filename == NULL) {	  
-				glade_filename = g_strdup ("gdmconfig.glade");
+				glade_filename = g_strdup ("gdmconfig.glade2");
 			}
 		}
 
 		glade_helper_add_glade_directory (GDM_GLADE_DIR);
 	} else {
-		glade_filename = g_strdup ("gdmconfig.glade");
+		glade_filename = g_strdup ("gdmconfig.glade2");
 	}
 
 	/* Build the user interface */
@@ -431,7 +431,7 @@ main (int argc, char *argv[])
 						_("Cannot find the glade interface description\n"
 						  "file, cannot run gdmconfig.\n"
 						  "Please check your installation and the\n"
-						  "location of the gdmconfig.glade file."));
+						  "location of the gdmconfig.glade2 file."));
 		gtk_dialog_run (GTK_DIALOG (fatal_error));
 		exit (EXIT_FAILURE);
 	}
@@ -569,7 +569,7 @@ show_about_box (void)
 		return;
 	}
 
-	xml = glade_helper_load ("gdmconfig.glade",
+	xml = glade_helper_load ("gdmconfig.glade2",
 				 "about_gdmconfig",
 				 gnome_about_get_type (),
 				 TRUE /* dump on destroy */);
@@ -1943,7 +1943,7 @@ handle_server_def_edit (gboolean edit)
 
 	server_def_clist = GTK_CLIST (get_widget ("server_def_clist"));
 
-	xml = glade_helper_load ("gdmconfig.glade", "svr_def",
+	xml = glade_helper_load ("gdmconfig.glade2", "svr_def",
 				 gnome_dialog_get_type (),
 				 TRUE /* dump on destroy */);
 	dialog = glade_helper_get (xml, "svr_def",
@@ -2291,7 +2291,7 @@ handle_server_edit (gboolean edit)
 	if (edit && selected_server_row < 0)
 		return;
 
-	xml = glade_helper_load ("gdmconfig.glade", "svr_select",
+	xml = glade_helper_load ("gdmconfig.glade2", "svr_select",
 				 gnome_dialog_get_type (),
 				 TRUE /* dump on destroy */);
 	dialog = glade_helper_get (xml, "svr_select",

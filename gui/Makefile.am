@@ -56,6 +56,7 @@ gdmconfig_SOURCES = \
 	misc.c			\
 	misc.h
 
+gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
 	$(GUI_LIBS)		\
 	$(XDMCP_LIBS)		\
@@ -74,6 +75,7 @@ gdmlogin_LDADD = \
 	-lvicious		\
 	-lviciousui
 
+gdmconfig_LDFLAGS = -export-dynamic
 gdmconfig_LDADD = \
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
@@ -116,12 +118,23 @@ System_DATA = $(System_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
 Gladedir = $(datadir)/gdm
-Glade_DATA = gdmconfig.glade gdmchooser.glade
+Glade_DATA = gdmconfig.glade2 gdmchooser.glade2
+
+Glade_src = gdmconfig.glade gdmchooser.glade
+
+gdmconfig.glade2: gdmconfig.glade $(LIBGLADE_CONVERT)
+	$(LIBGLADE_CONVERT) $(srcdir)/gdmconfig.glade > gdmconfig.glade.tmp \
+	&& mv gdmconfig.glade.tmp gdmconfig.glade2
+
+gdmchooser.glade2: gdmchooser.glade $(LIBGLADE_CONVERT)
+	$(LIBGLADE_CONVERT) $(srcdir)/gdmchooser.glade > gdmchooser.glade.tmp \
+	&& mv gdmchooser.glade.tmp gdmchooser.glade2
 
 EXTRA_DIST = \
 	gdmconfig-strings.c	\
 	gdmchooser-strings.c	\
 	$(Glade_DATA)		\
+	$(Glade_src)		\
 	$(System_DATA)		\
 	$(System_in_files)	\
 	$(Settings_DATA)	\
