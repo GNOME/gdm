@@ -1,3 +1,15 @@
+Thu Mar 04 10:18:40 2004  George Lebl <jirka@5z.com>
+
+	* configure.in, daemon/slave.c: Apply patch from
+	  vincent.berger@ext.bull.net (Vincent Berger), to make
+	  /etc/environment work on AIX using setpenv.  Fixes #135401
+
+	* daemon/slave.c: cosmetic cleanup
+
+	* daemon/errorgui.c: fix the reading of the session errors file
+	  again.  Not critical, but we were showing just the first line.
+	  DOH!
+
 Mon Mar 01 08:25:45 2004  George Lebl <jirka@5z.com>
 
 	* gui/gdmlanguages.c: remove en_DK, will add after string freeze.

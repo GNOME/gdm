@@ -50,6 +50,11 @@
 #elif HAVE_SOLARIS_XINERAMA
 #include <X11/extensions/xinerama.h>
 #endif
+
+#if defined(CAN_USE_SETPENV) && defined(HAVE_USERSEC_H)
+#include <usersec.h>
+#endif
+
 #include <signal.h>
 #include <pwd.h>
 #include <grp.h>
@@ -3368,6 +3373,11 @@ session_child_run (struct passwd *pwent,
 	VeConfig *dmrc = NULL;
 	char *argv[4];
 
+#ifdef CAN_USE_SETPENV
+	extern char **newenv;
+	int i;
+#endif
+
 	gdm_unset_signals ();
 	if G_UNLIKELY (setsid() < 0)
 		/* should never happen */
@@ -3408,7 +3418,7 @@ session_child_run (struct passwd *pwent,
 		       ! failsafe) 
 		/* If script fails reset X server and restart greeter */
 		gdm_child_exit (DISPLAY_REMANAGE,
-				_("%s: Execution of PreSession script returned > 0. Aborting."), "gdm_slave_session_start");
+				_("%s: Execution of PreSession script returned > 0. Aborting."), "session_child_run");
 
 	gdm_clearenv ();
 
@@ -3456,7 +3466,7 @@ session_child_run (struct passwd *pwent,
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Could not setup environment for %s. "
 				  "Aborting."),
-				"gdm_slave_session_start", login);
+				"session_child_run", login);
 
 	/* setup egid to the correct group,
 	 * not to leave the egid around.  It's
@@ -3476,12 +3486,12 @@ session_child_run (struct passwd *pwent,
 			    LOGIN_SETENV) < 0)
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: setusercontext() failed for %s. "
-				  "Aborting."), "gdm_slave_session_start",
+				  "Aborting."), "session_child_run",
 				login);
 #else
 	if G_UNLIKELY (setuid (pwent->pw_uid) < 0) 
 		gdm_child_exit (DISPLAY_REMANAGE,
-				_("%s: Could not become %s. Aborting."), "gdm_slave_session_start", login);
+				_("%s: Could not become %s. Aborting."), "session_child_run", login);
 #endif
 
 	/* Only force GDM_LANG to something if there is other then
@@ -3542,7 +3552,7 @@ session_child_run (struct passwd *pwent,
 					 FALSE /* check_try_exec */);
 		if G_UNLIKELY (exec == NULL) {
 			gdm_error (_("%s: No Exec line in the session file: %s, starting failsafe GNOME"),
-				   "gdm_slave_session_start",
+				   "session_child_run",
 				   session);
 			session = GDM_SESSION_FAILSAFE_GNOME;
 			gdm_error_box
@@ -3562,7 +3572,7 @@ session_child_run (struct passwd *pwent,
 		/* cannot be possibly failsafe */
 		if G_UNLIKELY (access (GdmXsession, X_OK) != 0) {
 			gdm_error (_("%s: Cannot find or run the base Xsession script, will try GNOME failsafe"),
-				   "gdm_slave_session_start");
+				   "session_child_run");
 			session = GDM_SESSION_FAILSAFE_GNOME;
 			exec = NULL;
 			gdm_error_box
@@ -3583,7 +3593,7 @@ session_child_run (struct passwd *pwent,
 		if G_UNLIKELY (argv[0] == NULL) {
 			/* yaikes */
 			gdm_error (_("%s: gnome-session not found for a failsafe GNOME session, trying xterm"),
-				   "gdm_slave_session_start");
+				   "session_child_run");
 			session = GDM_SESSION_FAILSAFE_XTERM;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
@@ -3651,7 +3661,7 @@ session_child_run (struct passwd *pwent,
 	    strcmp (shell, "/bin/false") == 0 ||
 	    strcmp (shell, "/bin/true") == 0) {
 		gdm_error (_("%s: User not allowed to log in"),
-			   "gdm_slave_session_start");
+			   "session_child_run");
 		gdm_error_box (d, GTK_MESSAGE_ERROR,
 			       _("The system administrator has "
 				 "disabled your account."));
@@ -3660,6 +3670,22 @@ session_child_run (struct passwd *pwent,
 		   dialog */
 		_exit (66);
 	}
+
+#ifdef CAN_USE_SETPENV
+	/* Call the function setpenv which instanciates the extern variable "newenv" */
+	setpenv (login, (PENV_INIT | PENV_NOEXEC), NULL, NULL);
+	
+	/* Add the content of the "newenv" variable to the environment */
+	for (i=0; newenv != NULL && newenv[i] != NULL; i++) {
+		char *env_str = g_strdup (newenv[i]);
+		char *p = strchr (env_str, '=');
+		if (p != NULL) {
+			/* Add the variable to the env */
+			ve_setenv (env_str, &p[1], TRUE);
+		}
+		g_free (env_str);
+	}
+#endif
 
 #ifdef HAVE_SELINUX
 	if ( ! gdm_selinux_setup (pwent->pw_name)) {
@@ -3675,12 +3701,12 @@ session_child_run (struct passwd *pwent,
 
 	/* will go to .xsession-errors */
 	fprintf (stderr, _("%s: Could not exec %s %s %s"), 
-		 "gdm_slave_session_start",
+		 "session_child_run",
 		 argv[0],
 		 ve_sure_string (argv[1]),
 		 ve_sure_string (argv[2]));
 	gdm_error ( _("%s: Could not exec %s %s %s"), 
-		 "gdm_slave_session_start",
+		 "session_child_run",
 		 argv[0],
 		 ve_sure_string (argv[1]),
 		 ve_sure_string (argv[2]));

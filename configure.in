@@ -316,6 +316,25 @@ fi
 
 AC_SUBST(VRFY)
 
+dnl Check if we can use the setpenv function to add specialvariable
+dnl to the environment (such as the /etc/environment file under AIX)
+AC_LINK_IFELSE([
+	AC_LANG_PROGRAM([[
+		#ifdef HAVE_USERSEC_H
+		#include <usersec.h>
+		#endif
+		]],[[
+		return (setpenv(NULL, (PENV_INIT | PENV_NOEXEC), NULL, NULL));
+		]])],
+	can_use_setpenv=yes,
+	can_use_setpenv=no)
+
+if test x$can_use_setpenv = xyes ; then
+	AC_DEFINE(CAN_USE_SETPENV,,[Define this variable if the code to use
+		the setpenv function can be compiled and used])
+fi
+
+
 #
 # Can we use BSD's setusercontext
 #

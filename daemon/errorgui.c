@@ -375,6 +375,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 						g_free (loc);
 						break;
 					}
+					VE_IGNORE_EINTR (getsret = fgets (buf, sizeof (buf), fp));
 				}
 				VE_IGNORE_EINTR (fclose (fp));
 			} else {
