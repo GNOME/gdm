@@ -352,6 +352,9 @@ greeter_setup_items (void)
   greeter_item_register_action_callback ("language_button",
 					 greeter_action_language,
 					 window);
+  greeter_item_register_action_callback ("disconnect_button",
+					 (ActionFunc)gtk_main_quit,
+					 NULL);
   greeter_item_system_setup ();
   greeter_item_session_setup ();
 }
