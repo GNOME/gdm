@@ -142,6 +142,7 @@ check_update_error:
 						GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_MESSAGE_ERROR,
 						GTK_BUTTONS_OK,
+						FALSE /* markup */,
 						_("An error occured while "
 						  "trying to contact the "
 						  "login screens.  Not all "
@@ -1584,6 +1585,7 @@ install_ok (GtkWidget *button, gpointer data)
 					   GTK_DIALOG_DESTROY_WITH_PARENT,
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
+					   FALSE /* markup */,
 					   _("No file selected"),
 					   /* avoid warning */ "%s", "");
 		gtk_dialog_run (GTK_DIALOG (dlg));
@@ -1611,6 +1613,7 @@ install_ok (GtkWidget *button, gpointer data)
 					   GTK_DIALOG_DESTROY_WITH_PARENT,
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
+					   FALSE /* markup */,
 					   _("Not a theme archive"),
 					   _("Details: %s"),
 					   error);
@@ -1623,7 +1626,7 @@ install_ok (GtkWidget *button, gpointer data)
 	}
 
 	if (dir_exists (theme_dir, dir)) {
-		char *fname = g_filename_to_utf8 (dir, -1, NULL, NULL, NULL);
+		char *fname = ve_filename_to_utf8 (dir);
 		char *s;
 		GtkWidget *button;
 		GtkWidget *dlg;
@@ -1639,6 +1642,7 @@ install_ok (GtkWidget *button, gpointer data)
 			 GTK_DIALOG_DESTROY_WITH_PARENT,
 			 GTK_MESSAGE_QUESTION,
 			 GTK_BUTTONS_NONE,
+			 FALSE /* markup */,
 			 s,
 			 /* avoid warning */ "%s", "");
 		g_free (fname);
@@ -1706,6 +1710,7 @@ install_ok (GtkWidget *button, gpointer data)
 					   GTK_DIALOG_DESTROY_WITH_PARENT,
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
+					   FALSE /* markup */,
 					   _("Some error occured when "
 					     "installing the theme"),
 					   /* avoid warning */ "%s", "");
@@ -1828,6 +1833,7 @@ delete_theme (GtkWidget *button, gpointer data)
 		 GTK_DIALOG_DESTROY_WITH_PARENT,
 		 GTK_MESSAGE_QUESTION,
 		 GTK_BUTTONS_NONE,
+		 FALSE /* markup */,
 		 s,
 		 /* avoid warning */ "%s", "");
 	g_free (s);
@@ -2414,6 +2420,7 @@ main (int argc, char *argv[])
 					   GTK_DIALOG_MODAL /* flags */,
 					   GTK_MESSAGE_ERROR,
 					   GTK_BUTTONS_OK,
+					   FALSE /* markup */,
 					   _("You must be the superuser (root) to configure GDM."),
 					   /* avoid warning */ "%s", "");
 		if (RUNNING_UNDER_GDM)

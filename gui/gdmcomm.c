@@ -389,6 +389,7 @@ gdmcomm_check (gboolean gui_bitching)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 _("GDM (The GNOME Display Manager) "
 				   "is not running."),
 				 "%s\n%s",
@@ -413,6 +414,7 @@ gdmcomm_check (gboolean gui_bitching)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 _("Cannot communicate with GDM "
 				   "(The GNOME Display Manager)"),
 				 "%s",

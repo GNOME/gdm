@@ -316,6 +316,7 @@ greeter_ctrl_handler (GIOChannel *source,
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 tmp,
 				 /* avoid warning */ "%s", "");
 	g_free (tmp);
@@ -411,6 +412,7 @@ greeter_ctrl_handler (GIOChannel *source,
 					 GTK_DIALOG_MODAL /* flags */,
 					 GTK_MESSAGE_INFO,
 					 GTK_BUTTONS_OK,
+					 FALSE /* markup */,
 					 /* translators:  This is a nice and evil eggie text, translate
 					  * to your favourite currency */
 					 _("Please insert 25 cents "
@@ -615,6 +617,7 @@ verify_gdm_version (void)
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
+				  FALSE /* markup */,
 				  _("Cannot start the greeter"),
 				  _("The greeter version (%s) does not match the daemon "
 				    "version.\n"
@@ -645,6 +648,7 @@ verify_gdm_version (void)
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_WARNING,
 				  GTK_BUTTONS_NONE,
+				  FALSE /* markup */,
 				  _("Cannot start the greeter"),
 				  _("The greeter version (%s) does not match the daemon "
 				    "version.\n"
@@ -689,6 +693,7 @@ verify_gdm_version (void)
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_WARNING,
 				  GTK_BUTTONS_NONE,
+				  FALSE /* markup */,
 				  _("Cannot start the greeter"),
 				  _("The greeter version (%s) does not match the daemon "
 				    "version (%s).\n"
@@ -741,6 +746,7 @@ greeter_message (const gchar *msg)
 			   GTK_DIALOG_MODAL /* flags */,
 			   GTK_MESSAGE_INFO,
 			   GTK_BUTTONS_OK,
+			   FALSE /* markup */,
 			   msg,
 			   /* avoid warning */ "%s", "");
   
@@ -755,7 +761,7 @@ greeter_message (const gchar *msg)
 
 
 gboolean
-greeter_query (const gchar *msg, const char *posbutton, const char *negbutton)
+greeter_query (const gchar *msg, gboolean markup, const char *posbutton, const char *negbutton)
 {
 	int ret;
 	GtkWidget *req;
@@ -768,6 +774,7 @@ greeter_query (const gchar *msg, const char *posbutton, const char *negbutton)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_QUESTION,
 				 GTK_BUTTONS_NONE,
+				 markup,
 				 msg,
 				 /* avoid warning */ "%s", "");
 
@@ -1242,17 +1249,20 @@ main (int argc, char *argv[])
       {
         GtkWidget *dialog;
 	char *s;
+	char *tmp;
 
         gdm_wm_init (0);
         gdm_wm_focus_new_windows (TRUE);
     
+	tmp = ve_filename_to_utf8 (g_getenv ("GDM_THEME"));
 	s = g_strdup_printf (_("There was an error loading the "
-			       "theme %s"),
-			     g_getenv ("GDM_THEME"));
+			       "theme %s"), tmp);
+	g_free (tmp);
         dialog = ve_hig_dialog_new (NULL /* parent */,
 				    GTK_DIALOG_MODAL /* flags */,
 				    GTK_MESSAGE_ERROR,
 				    GTK_BUTTONS_OK,
+				    FALSE /* markup */,
 				    s,
 				    "%s", (error && error->message) ? error->message : "");
 	g_free (s);
@@ -1294,6 +1304,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
+				  FALSE /* markup */,
 				  _("The theme for the graphical greeter "
 				    "is corrupt"),
 				  "%s",
@@ -1329,6 +1340,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
+				  FALSE /* markup */,
 				  _("There was an error loading the "
 				    "theme, and the default theme "
 				    "also could not have been loaded, "
@@ -1350,6 +1362,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
+				  FALSE /* markup */,
 				  _("I could not start the standard "
 				    "greeter.  This display will abort "
 				    "and you may have to login another "
@@ -1398,6 +1411,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
+				  FALSE /* markup */,
 				  _("Session directory is missing"),
 				  "%s",
 				  _("Your session directory is missing or empty!  "
@@ -1424,6 +1438,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
+				  FALSE /* markup */,
 				  _("Configuration is not correct"),
 				  "%s",
 				  _("The configuration file contains an invalid command "
@@ -1452,6 +1467,7 @@ main (int argc, char *argv[])
 				  GTK_DIALOG_MODAL /* flags */,
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
+				  FALSE /* markup */,
 				  _("No configuration was found"),
 				  "%s",
 				  _("The configuration was not found.  GDM is using "

@@ -481,6 +481,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 		     GTK_DIALOG_MODAL /* flags */,
 		     GTK_MESSAGE_ERROR,
 		     GTK_BUTTONS_OK,
+		     FALSE /* markup */,
 		     _("Cannot connect to remote server"),
 		     _("The host \"%s\" is not willing "
 		       "to support a login session right now.  "
@@ -848,6 +849,7 @@ add_check (gpointer data)
 			 GTK_DIALOG_MODAL /* flags */,
 			 GTK_MESSAGE_ERROR,
 			 GTK_BUTTONS_OK,
+			 FALSE /* markup */,
 			 _("Did not receive response from server"),
 			 _("Did not receive any response from host \"%s\" "
 			   "in %d seconds.  Perhaps the host is not "
@@ -901,6 +903,7 @@ gdm_chooser_add_host (void)
 			 GTK_DIALOG_MODAL /* flags */,
 			 GTK_MESSAGE_ERROR,
 			 GTK_BUTTONS_OK,
+			 FALSE /* markup */,
 			 _("Cannot find host"),
 			 _("I cannot find the host \"%s\", "
 			   "perhaps you have mistyped it."),
@@ -1524,6 +1527,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_OK,
+					FALSE /* markup */,
 					_("Cannot run chooser"),
 					_("The chooser version (%s) does not match the daemon "
 					  "version (%s).  "

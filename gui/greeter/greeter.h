@@ -10,7 +10,7 @@ extern GtkWidget *window;
 extern gboolean greeter_probably_login_prompt;
 
 void     greeter_abort   (const gchar *format, ...);
-gboolean greeter_query   (const gchar *msg, const char *posbutton, const char *negbutton);
+gboolean greeter_query   (const gchar *msg, gboolean markup, const char *posbutton, const char *negbutton);
 void     greeter_message (const gchar *msg);
 
 void     greeter_setup_cursor (GdkCursorType type);

@@ -483,6 +483,7 @@ main (int argc, char *argv[])
 				       GTK_DIALOG_MODAL /* flags */,
 				       GTK_MESSAGE_ERROR,
 				       GTK_BUTTONS_OK,
+				       FALSE /* markup */,
 				       _("Xnest doesn't exist."),
 				       "%s",
 				       _("Please ask your system "
@@ -510,6 +511,7 @@ main (int argc, char *argv[])
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 _("Indirect XDMCP is not enabled"),
 				 "%s",
 				 _("Please ask your "
@@ -530,6 +532,7 @@ main (int argc, char *argv[])
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 _("XDMCP is not enabled"),
 				 "%s",
 				 _("Please ask your "
@@ -560,6 +563,7 @@ main (int argc, char *argv[])
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 _("GDM is not running"),
 				 "%s",
 				 _("Please ask your "
@@ -578,6 +582,7 @@ main (int argc, char *argv[])
 				       GTK_DIALOG_MODAL /* flags */,
 				       GTK_MESSAGE_ERROR,
 				       GTK_BUTTONS_OK,
+				       FALSE /* markup */,
 				       _("Could not find a free "
 					 "display number"),
 				       /* avoid warning */ "%s", "");

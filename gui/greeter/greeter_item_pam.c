@@ -385,6 +385,7 @@ greeter_item_pam_leftover_messages (void)
 				   GTK_DIALOG_MODAL /* flags */,
 				   GTK_MESSAGE_INFO,
 				   GTK_BUTTONS_OK,
+				   FALSE /* markup */,
 				   oldtext,
 				   /* avoid warning */ "%s", "");
 	  gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);

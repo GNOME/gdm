@@ -53,6 +53,7 @@ static void
 query_greeter_reboot_handler (void)
 {
 	if (greeter_query (_("Are you sure you want to reboot the machine?"),
+			   FALSE /* markup */,
 			   _("_Reboot"), GTK_STOCK_CANCEL)) {
 		closelog();
 		
@@ -65,6 +66,7 @@ static void
 query_greeter_halt_handler (void)
 {
 	if (greeter_query (_("Are you sure you want to shut down the machine?"),
+			   FALSE /* markup */,
 			   _("Shut_down"), GTK_STOCK_CANCEL)) {
 		closelog();
 
@@ -76,6 +78,7 @@ static void
 query_greeter_suspend_handler (void)
 {
 	if (greeter_query (_("Are you sure you want to suspend the machine?"),
+			   FALSE /* markup */,
 			   _("_Suspend"), GTK_STOCK_CANCEL)) {
 		/* suspend interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);

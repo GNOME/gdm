@@ -126,7 +126,7 @@ greeter_session_lookup (const char *saved_session)
 				   "future sessions?"),
 				 session_name (saved_session),
 				 session_name (default_session));	    
-	  save_session = greeter_query (msg, _("Make _Default"), _("Just _Log In"));
+	  save_session = greeter_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"));
 	  g_free (msg);
 	}
     }
@@ -156,7 +156,7 @@ greeter_session_lookup (const char *saved_session)
 				     session_name (session),
 				     session_name (saved_session),
 				     session_name (session));
-	      save_session = greeter_query (msg, _("Make _Default"), _("Just For _This Session"));
+	      save_session = greeter_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
 	    }
 	  else if (strcmp (session, "Xclients.desktop") != 0 &&
 		   strcmp (session, LAST_SESSION) != 0)

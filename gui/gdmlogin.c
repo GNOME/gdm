@@ -524,6 +524,7 @@ gdm_login_message (const gchar *msg)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_INFO,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 msg,
 				 /* avoid warning */ "%s", "");
 
@@ -536,7 +537,7 @@ gdm_login_message (const gchar *msg)
 }
 
 static gboolean
-gdm_login_query (const gchar *msg, const char *posbutton, const char *negbutton)
+gdm_login_query (const gchar *msg, gboolean markup, const char *posbutton, const char *negbutton)
 {
 	int ret;
 	GtkWidget *req;
@@ -549,6 +550,7 @@ gdm_login_query (const gchar *msg, const char *posbutton, const char *negbutton)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_QUESTION,
 				 GTK_BUTTONS_NONE,
+				 markup,
 				 msg,
 				 /* avoid warning */ "%s", "");
 
@@ -594,6 +596,7 @@ gdm_run_command (const char *command)
 					    GTK_DIALOG_MODAL /* flags */,
 					    GTK_MESSAGE_ERROR,
 					    GTK_BUTTONS_OK,
+					    FALSE /* markup */,
 					    _("Could not fork a new process!"),
 					    "%s",
 					    _("You likely won't be able to log "
@@ -641,6 +644,7 @@ static void
 gdm_login_reboot_handler (void)
 {
 	if (gdm_login_query (_("Are you sure you want to reboot the machine?"),
+			     FALSE /* markup */,
 			     _("_Reboot"), GTK_STOCK_CANCEL)) {
 		closelog();
 
@@ -654,6 +658,7 @@ static void
 gdm_login_halt_handler (void)
 {
 	if (gdm_login_query (_("Are you sure you want to shut down the machine?"),
+			     FALSE /* markup */,
 			     _("Shut _Down"), GTK_STOCK_CANCEL)) {
 		closelog();
 
@@ -675,6 +680,7 @@ static void
 gdm_login_suspend_handler (void)
 {
 	if (gdm_login_query (_("Are you sure you want to suspend the machine?"),
+			     FALSE /* markup */,
 			     _("_Suspend"), GTK_STOCK_CANCEL)) {
 		/* suspend interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
@@ -893,7 +899,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 				     "future sessions?"),
                                    session_name (savedsess),
                                    session_name (defsess));	    
-	    savesess = gdm_login_query (msg, _("Make _Default"), _("Just _Log In"));
+	    savesess = gdm_login_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"));
 	    g_free (msg);
 	}
     }
@@ -920,7 +926,7 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                session_name (session),
                                                session_name (savedsess),
                                                session_name (session));
-			savesess = gdm_login_query (msg, _("Make _Default"), _("Just For _This Session"));
+			savesess = gdm_login_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
                 } else if (strcmp (session, "Xclients.desktop") != 0 &&
                            strcmp (session, LAST_SESSION) != 0) {
                         /* if !GdmShowLastSession then our saved session is
@@ -995,7 +1001,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	    g_free (curname);
 	    g_free (savedname);
 
-	    savelang = gdm_login_query (msg, _("Make _Default"), _("Just For _This Session"));
+	    savelang = gdm_login_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"));
 	    g_free (msg);
 	}
     } else {
@@ -1926,6 +1932,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 tmp,
 				 /* avoid warning */ "%s", "");
 	g_free (tmp);
@@ -2047,6 +2054,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 					 GTK_DIALOG_MODAL /* flags */,
 					 GTK_MESSAGE_INFO,
 					 GTK_BUTTONS_OK,
+					 FALSE /* markup */,
 					 /* translators:  This is a nice and evil eggie text, translate
 					  * to your favourite currency */
 					 _("Please insert 25 cents "
@@ -2075,6 +2083,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 						 GTK_DIALOG_MODAL /* flags */,
 						 GTK_MESSAGE_INFO,
 						 GTK_BUTTONS_OK,
+						 FALSE /* markup */,
 						 oldtext,
 						 /* avoid warning */ "%s", "");
 			gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
@@ -3717,6 +3726,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_OK,
+					FALSE /* markup */,
 					_("Cannot start the greeter"),
 					_("The greeter version (%s) does not match the daemon "
 					  "version.  "
@@ -3747,6 +3757,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_WARNING,
 					GTK_BUTTONS_NONE,
+					FALSE /* markup */,
 					_("Cannot start the greeter"),
 					_("The greeter version (%s) does not match the daemon "
 					  "version.  "
@@ -3790,6 +3801,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_WARNING,
 					GTK_BUTTONS_NONE,
+					FALSE /* markup */,
 					_("Cannot start the greeter"),
 					_("The greeter version (%s) does not match the daemon "
 					  "version (%s).  "
@@ -3949,6 +3961,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_OK,
+					FALSE /* markup */,
 					_("Session directory is missing"),
 					"%s",
 					_("Your session directory is missing or empty!  "
@@ -3974,6 +3987,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_OK,
+					FALSE /* markup */,
 					_("Configuration is not correct"),
 					"%s",
 					_("The configuration file contains an invalid command "
@@ -4000,6 +4014,7 @@ main (int argc, char *argv[])
 					GTK_DIALOG_MODAL /* flags */,
 					GTK_MESSAGE_ERROR,
 					GTK_BUTTONS_OK,
+					FALSE /* markup */,
 					_("No configuration was found"),
 					"%s",
 					_("The configuration was not found.  GDM is using "

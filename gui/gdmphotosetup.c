@@ -63,6 +63,7 @@ gdm_check (void)
 			 GTK_DIALOG_MODAL /* flags */,
 			 GTK_MESSAGE_WARNING,
 			 GTK_BUTTONS_OK,
+			 FALSE /* markup */,
 			 _("GDM (The GNOME Display Manager) "
 			   "is not running."),
 			 "%s\n%s",
@@ -136,6 +137,7 @@ main (int argc, char *argv[])
 				       GTK_DIALOG_MODAL /* flags */,
 				       GTK_MESSAGE_WARNING,
 				       GTK_BUTTONS_OK,
+				       FALSE /* markup */,
 				       _("The face browser is not "
 					 "configured"),
 				       "%s",
@@ -197,6 +199,7 @@ main (int argc, char *argv[])
 					       GTK_DIALOG_MODAL /* flags */,
 					       GTK_MESSAGE_WARNING,
 					       GTK_BUTTONS_OK,
+					       FALSE /* markup */,
 					       _("No picture selected."),
 					       /* avoid warning */ "%s", "");
 			gtk_dialog_run (GTK_DIALOG (d));
@@ -207,6 +210,7 @@ main (int argc, char *argv[])
 					       GTK_DIALOG_MODAL /* flags */,
 					       GTK_MESSAGE_WARNING,
 					       GTK_BUTTONS_OK,
+					       FALSE /* markup */,
 					       _("Picture is too large"),
 					       _("The system administrator "
 						 "disallowed pictures larger "
@@ -229,15 +233,18 @@ main (int argc, char *argv[])
 			fdsrc = open (pixmap, O_RDONLY);
 			if (fdsrc < 0) {
 				GtkWidget *d;
+				char *tmp = ve_filename_to_utf8 (pixmap);
 				d = ve_hig_dialog_new (NULL /* parent */,
 						       GTK_DIALOG_MODAL /* flags */,
 						       GTK_MESSAGE_ERROR,
 						       GTK_BUTTONS_OK,
+						       FALSE /* markup */,
 						       _("Cannot open file"),
 						       _("File %s cannot be open for "
 							 "reading\nError: %s"),
-						       pixmap,
+						       tmp,
 						       g_strerror (errno));
+				g_free (tmp);
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
 				g_free (cfg_file);
@@ -248,15 +255,18 @@ main (int argc, char *argv[])
 			fddest = open (photofile, O_WRONLY | O_CREAT);
 			if (fddest < 0) {
 				GtkWidget *d;
+				char *tmp = ve_filename_to_utf8 (photofile);
 				d = ve_hig_dialog_new (NULL /* parent */,
 						       GTK_DIALOG_MODAL /* flags */,
 						       GTK_MESSAGE_ERROR,
 						       GTK_BUTTONS_OK,
+						       FALSE /* markup */,
 						       _("Cannot open file"),
 						       _("File %s cannot be open for "
 							 "writing\nError: %s"),
-						       photofile,
+						       tmp,
 						       g_strerror (errno));
+				g_free (tmp);
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
 				g_free (cfg_file);

@@ -250,6 +250,7 @@ main (int argc, char *argv[])
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 _("Cannot communicate with GDM "
 				   "(The GNOME Display Manager)"),
 				 "%s",
@@ -270,6 +271,7 @@ main (int argc, char *argv[])
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 _("You do not seem to have the "
 				   "authentication needed for this "
 				   "operation"),
@@ -299,6 +301,7 @@ main (int argc, char *argv[])
 				 GTK_DIALOG_MODAL /* flags */,
 				 GTK_MESSAGE_ERROR,
 				 GTK_BUTTONS_OK,
+				 FALSE /* markup */,
 				 _("You do not seem to be logged in on the "
 				   "console"),
 				 "%s",
@@ -348,6 +351,7 @@ main (int argc, char *argv[])
 		 GTK_DIALOG_MODAL /* flags */,
 		 GTK_MESSAGE_ERROR,
 		 GTK_BUTTONS_OK,
+		 FALSE /* markup */,
 		 _("Cannot start new display"),
 		 "%s", message);
 
