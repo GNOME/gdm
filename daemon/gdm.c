@@ -596,6 +596,8 @@ deal_with_x_crashes (GdmDisplay *d)
 	access ("/usr/bin/open", X_OK) == 0) {
 	    char *dialog; /* do we have dialog?*/
 	    dialog = gnome_is_program_in_path ("dialog");
+	    if (dialog == NULL)
+		    dialog = gnome_is_program_in_path ("gdialog");
 	    if (dialog != NULL) {
 		    char *command = 
 			    g_strdup_printf

@@ -40,6 +40,9 @@ fi
 SETUP=`which $1`
 TEMPFILE="$2"
 DIALOG=`which dialog`
+if test x$DIALOG = x ; then
+	DIALOG=`which gdialog`
+fi
 
 clear
 
