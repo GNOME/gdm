@@ -1,3 +1,15 @@
+Tue May 14 01:25:03 2002  George Lebl <jirka@5z.com>
+
+	* daemon/display.c, daemon/errorgui.c, daemon/misc.[ch],
+	  daemon/gdm.c, daemon/server.c, daemon/slave.c, daemon/verify-pam.c,
+	  gui/gdmlogin.c:  Switch to using the locale specific codeset on
+	  the daemon to simplify things.  Do all utf8 stuff/translations on
+	  the greeter since else the glib gconv cache will get screwed up
+	  and we'll have a mess on our hands.  This finally makes
+	  translations other then ascii using locales work.
+
+	* daemon/slave.c: fix restarting when waiting on the greeter
+
 Mon May 13 22:29:47 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: fix focus on failsafe xterm session

@@ -65,16 +65,10 @@ gdm_fail (const gchar *format, ...)
 {
     va_list args;
     char *s;
-    char *loc;
 
-    /* syslog/stderr is in locale */
-    loc = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
-
-    va_start (args, loc);
-    s = g_strdup_vprintf (loc, args);
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
     va_end (args);
-
-    g_free (loc);
 
     /* Log to both syslog and stderr */
     syslog (LOG_CRIT, "%s", s);
@@ -108,16 +102,10 @@ gdm_info (const gchar *format, ...)
 {
     va_list args;
     char *s;
-    char *loc;
 
-    /* syslog/stderr is in locale */
-    loc = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
-
-    va_start (args, loc);
-    s = g_strdup_vprintf (loc, args);
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
     va_end (args);
-
-    g_free (loc);
 
     syslog (LOG_INFO, "%s", s);
     
@@ -138,16 +126,10 @@ gdm_error (const gchar *format, ...)
 {
     va_list args;
     char *s;
-    char *loc;
 
-    /* syslog/stderr is in locale */
-    loc = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
-
-    va_start (args, loc);
-    s = g_strdup_vprintf (loc, args);
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
     va_end (args);
-
-    g_free (loc);
 
     syslog (LOG_ERR, "%s", s);
     
@@ -168,19 +150,13 @@ gdm_debug (const gchar *format, ...)
 {
     va_list args;
     char *s;
-    char *loc;
 
     if ( ! GdmDebug) 
 	return;
 
-    /* syslog/stderr is in locale */
-    loc = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
-
-    va_start (args, loc);
-    s = g_strdup_vprintf (loc, args);
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
     va_end (args);
-
-    g_free (loc);
 
     syslog (LOG_ERR, "%s", s);	/* Maybe should be LOG_DEBUG, but then normally
 				 * you wouldn't get it in the log.  ??? */
@@ -804,65 +780,5 @@ gdm_setup_gids (const char *login, gid_t gid)
 
 	return TRUE;
 }
-
-/* See comment in misc.h file */
-const char *
-gdm_cons_i18n (const char *string)
-{
-	char *vt_is_UTF8;
-	static gboolean checked = FALSE;
-	static gboolean is_utf8 = FALSE;
-	char *cmd;
-
-	if (checked) {
-		if (is_utf8)
-			return _(string);
-		else
-			return string;
-	}
-
-	checked = TRUE;
-	is_utf8 = FALSE;
-
-	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
-		return string;
-
-	vt_is_UTF8 = g_find_program_in_path ("vt-is-UTF8");
-	if (vt_is_UTF8 == NULL) {
-		int i;
-		char *check_paths[] = {
-			"/usr/bin/vt-is-UTF8",
-			"/usr/sbin/vt-is-UTF8",
-			"/bin/vt-is-UTF8",
-			"/sbin/vt-is-UTF8",
-			NULL
-		};
-		for (i = 0;
-		     check_paths[i] != NULL &&
-		     vt_is_UTF8 == NULL;
-		     i++) {
-			if (access (check_paths[i], X_OK) == 0) {
-				vt_is_UTF8 = g_strdup (check_paths[i]);
-			}
-		}
-	}
-
-	if (vt_is_UTF8 == NULL)
-		return string;
-
-	cmd = g_strdup_printf (EXPANDED_SBINDIR "/gdmopen %s -q",
-			       vt_is_UTF8);
-
-	if (system (cmd) == 0)
-		is_utf8 = TRUE;
-
-	g_free (cmd);
-
-	if (is_utf8)
-		return _(string);
-	else
-		return string;
-}
-
 
 /* EOF */

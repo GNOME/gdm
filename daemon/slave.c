@@ -401,14 +401,14 @@ gdm_slave_run (GdmDisplay *display)
 		     * that we've given up.  The error is likely something
 		     * internal. */
 		    gdm_text_message_dialog
-			    (gdm_cons_i18n (N_("I could not start the X\n"
-					       "server (your graphical environment)\n"
-					       "due to some internal error.\n"
-					       "Please contact your system administrator\n"
-					       "or check your syslog to diagnose.\n"
-					       "In the meantime this display will be\n"
-					       "disabled.  Please restart gdm when\n"
-					       "the problem is corrected.")));
+			    (_("I could not start the X\n"
+			       "server (your graphical environment)\n"
+			       "due to some internal error.\n"
+			       "Please contact your system administrator\n"
+			       "or check your syslog to diagnose.\n"
+			       "In the meantime this display will be\n"
+			       "disabled.  Please restart gdm when\n"
+			       "the problem is corrected."));
 		    _exit (DISPLAY_ABORT);
 	    }
 	    gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
@@ -2796,23 +2796,24 @@ char *
 gdm_slave_greeter_ctl (char cmd, const char *str)
 {
     gchar buf[FIELD_SIZE];
-    guchar c;
+    int c;
 
     /* There is no spoon^H^H^H^H^Hgreeter */
     if ( ! greet)
 	    return NULL;
 
-    if (str)
-	g_print ("%c%c%s\n", STX, cmd, str);
-    else
-	g_print ("%c%c\n", STX, cmd);
+    if ( ! ve_string_empty (str)) {
+	    g_print ("%c%c%s\n", STX, cmd, str);
+    } else {
+	    g_print ("%c%c\n", STX, cmd);
+    }
 
     /* Skip random junk that might have accumulated */
     do {
 	    c = getc (stdin);
-    } while (c && c != STX);
+    } while (c != EOF && c != STX);
     
-    if (fgets (buf, FIELD_SIZE-1, stdin) == NULL) {
+    if (c == EOF || fgets (buf, FIELD_SIZE-1, stdin) == NULL) {
 	    interrupted = TRUE;
 	    /* things don't seem well with the greeter, it probably died */
 	    return NULL;

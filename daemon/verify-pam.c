@@ -58,7 +58,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		     void *appdata_ptr)
 {
     int replies = 0;
-    char *s, *utf8, *tmp;
+    char *s;
     struct pam_response *reply = NULL;
     
     reply = malloc (sizeof (struct pam_response) * num_msg);
@@ -73,11 +73,8 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	switch (msg[replies]->msg_style) {
 	    
 	case PAM_PROMPT_ECHO_ON:
-	    utf8 = g_locale_to_utf8 (msg[replies]->msg, -1, NULL, NULL, NULL);
-
 	    /* PAM requested textual input with echo on */
-	    s = gdm_slave_greeter_ctl (GDM_PROMPT, utf8);
-	    g_free (utf8);
+	    s = gdm_slave_greeter_ctl (GDM_PROMPT, _(msg[replies]->msg));
 
 	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
@@ -86,44 +83,32 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    }
 
 	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    tmp = g_locale_from_utf8 (ve_sure_string (s),
-				      -1, NULL, NULL, NULL);
+	    reply[replies].resp = strdup (ve_sure_string (s));
 	    g_free (s);
-	    reply[replies].resp = strdup (ve_sure_string (tmp));
-	    g_free (tmp);
 	    break;
 	    
 	case PAM_PROMPT_ECHO_OFF:
 	    /* PAM requested textual input with echo off */
-	    utf8 = g_locale_to_utf8 (msg[replies]->msg, -1, NULL, NULL, NULL);
-	    s = gdm_slave_greeter_ctl (GDM_NOECHO, utf8);
-	    g_free (utf8);
+	    s = gdm_slave_greeter_ctl (GDM_NOECHO, _(msg[replies]->msg));
 	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
 		    free (reply);
 		    return PAM_CONV_ERR;
 	    }
 	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    tmp = g_locale_from_utf8 (ve_sure_string (s),
-				      -1, NULL, NULL, NULL);
+	    reply[replies].resp = strdup (ve_sure_string (s));
 	    g_free (s);
-	    reply[replies].resp = strdup (ve_sure_string (tmp));
-	    g_free (tmp);
 	    break;
 	    
 	case PAM_ERROR_MSG:
 	    /* PAM sent a message that should displayed to the user */
-	    utf8 = g_locale_to_utf8 (msg[replies]->msg, -1, NULL, NULL, NULL);
-	    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, utf8);
-	    g_free (utf8);
+	    gdm_slave_greeter_ctl (GDM_ERRDLG, _(msg[replies]->msg));
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
 	case PAM_TEXT_INFO:
 	    /* PAM sent a message that should displayed to the user */
-	    utf8 = g_locale_to_utf8 (msg[replies]->msg, -1, NULL, NULL, NULL);
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, utf8);
-	    g_free (utf8);
+	    gdm_slave_greeter_ctl (GDM_MSG, _(msg[replies]->msg));
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
@@ -152,7 +137,7 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 				void *appdata_ptr)
 {
 	int replies = 0;
-	char *s, *tmp, *utf8;
+	char *s;
 	struct pam_response *reply = NULL;
 
 	reply = malloc (sizeof (struct pam_response) * num_msg);
@@ -167,54 +152,40 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 
 		case PAM_PROMPT_ECHO_ON:
 			/* PAM requested textual input with echo on */
-			utf8 = g_locale_to_utf8 ((gchar *) msg[replies]->msg,
-						 -1, NULL, NULL, NULL);
-			s = gdm_failsafe_question (cur_gdm_disp, utf8,
+			s = gdm_failsafe_question (cur_gdm_disp,
+						   _(msg[replies]->msg),
 						   TRUE /* echo */);
-			g_free (utf8);
 
 			reply[replies].resp_retcode = PAM_SUCCESS;
-			tmp = g_locale_from_utf8 (ve_sure_string (s),
-						  -1, NULL, NULL, NULL);
+			reply[replies].resp = strdup (ve_sure_string (s));
 			g_free (s);
-			reply[replies].resp = strdup (ve_sure_string (tmp));
-			g_free (tmp);
 			break;
 
 		case PAM_PROMPT_ECHO_OFF:
 			/* PAM requested textual input with echo off */
-			utf8 = g_locale_to_utf8 ((gchar *) msg[replies]->msg,
-						 -1, NULL, NULL, NULL);
-			s = gdm_failsafe_question (cur_gdm_disp, utf8,
+			s = gdm_failsafe_question (cur_gdm_disp,
+						   _(msg[replies]->msg),
 						   FALSE /* echo */);
-			g_free (utf8);
 
 			reply[replies].resp_retcode = PAM_SUCCESS;
-			tmp = g_locale_from_utf8 (ve_sure_string (s),
-						  -1, NULL, NULL, NULL);
+			reply[replies].resp = strdup (ve_sure_string (s));
 			g_free (s);
-			reply[replies].resp = strdup (ve_sure_string (tmp));
-			g_free (tmp);
 			break;
 
 		case PAM_ERROR_MSG:
 			/* PAM sent a message that should displayed to the user */
-			utf8 = g_locale_to_utf8 ((gchar *) msg[replies]->msg,
-						 -1, NULL, NULL, NULL);
 			gdm_error_box (cur_gdm_disp,
-				       GTK_MESSAGE_ERROR, utf8);
-			g_free (utf8);
+				       GTK_MESSAGE_ERROR,
+				       _(msg[replies]->msg));
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;
 
 		case PAM_TEXT_INFO:
 			/* PAM sent a message that should displayed to the user */
-			utf8 = g_locale_to_utf8 ((gchar *) msg[replies]->msg,
-						 -1, NULL, NULL, NULL);
 			gdm_error_box (cur_gdm_disp,
-				       GTK_MESSAGE_INFO, utf8);
-			g_free (utf8);
+				       GTK_MESSAGE_INFO,
+				       _(msg[replies]->msg));
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;
@@ -469,12 +440,11 @@ gdm_verify_user (GdmDisplay *d,
 		     * and password.  That is the most common case but not
 		     * neccessairly true, this message needs to be changed
 		     * to allow for such cases */
-		    auth_errmsg = g_strdup_printf
-			    (_("\nIncorrect username or password. "
-			       "Letters must be typed in the correct case. "  
-			       "Please make sure the Caps Lock key is not enabled."));
+		    auth_errmsg = 
+			    _("\nIncorrect username or password. "
+			      "Letters must be typed in the correct case. "  
+			      "Please make sure the Caps Lock key is not enabled.");
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
-		    g_free (auth_errmsg);
 	    } else {
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, _("Authentication failed"));
 	    }
@@ -685,7 +655,7 @@ gdm_verify_check (void)
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		gdm_text_message_dialog
-			(gdm_cons_i18n (N_("Can't find PAM configuration for gdm.")));
+			(_("Can't find PAM configuration for gdm."));
 		gdm_fail ("gdm_verify_check: %s",
 			  _("Can't find PAM configuration for gdm."));
 	}

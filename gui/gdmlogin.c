@@ -1173,6 +1173,7 @@ gdm_login_enter (GtkWidget *entry)
 {
 	static const gchar *login_string;
 	static gboolean first_return = TRUE;
+	char *tmp;
 
 	if (entry == NULL)
 		return;
@@ -1231,7 +1232,10 @@ gdm_login_enter (GtkWidget *entry)
 	gtk_label_set_text (GTK_LABEL (err_box), "");
 
 	login_entry = FALSE;
+	tmp = g_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)),
+				  -1, NULL, NULL, NULL);
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
+	g_free (tmp);
 }
 
 static void
@@ -1914,6 +1918,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 {
     gchar buf[PIPE_SIZE];
     gsize len;
+    char *tmp;
     gint i, x, y;
     GtkWidget *dlg;
     static gboolean replace_msg = TRUE;
@@ -1954,7 +1959,10 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	gtk_label_set_text (GTK_LABEL (label), buf);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	gtk_label_set_text (GTK_LABEL (label), tmp);
+	g_free (tmp);
+
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
@@ -1982,7 +1990,10 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	gtk_label_set_text (GTK_LABEL (label), buf);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	gtk_label_set_text (GTK_LABEL (label), tmp);
+	g_free (tmp);
+
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
@@ -2010,7 +2021,10 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	gtk_label_set_text (GTK_LABEL(label), buf);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	gtk_label_set_text (GTK_LABEL(label), tmp);
+	g_free (tmp);
+
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
@@ -2049,14 +2063,20 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		oldtext = gtk_label_get_text (GTK_LABEL (msg));
 		if ( ! ve_string_empty (oldtext)) {
 			char *newtext;
-			newtext = g_strdup_printf ("%s\n%s", oldtext, buf);
+			tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+			newtext = g_strdup_printf ("%s\n%s", oldtext, tmp);
+			g_free (tmp);
 			gtk_label_set_text (GTK_LABEL (msg), newtext);
 			g_free (newtext);
 		} else {
-			gtk_label_set_text (GTK_LABEL (msg), buf);
+			tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+			gtk_label_set_text (GTK_LABEL (msg), tmp);
+			g_free (tmp);
 		}
 	} else {
-		gtk_label_set_text (GTK_LABEL (msg), buf);
+		tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+		gtk_label_set_text (GTK_LABEL (msg), tmp);
+		g_free (tmp);
 	}
 	replace_msg = FALSE;
 
@@ -2068,7 +2088,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_ERRBOX:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-	gtk_label_set_text (GTK_LABEL (err_box), buf);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	gtk_label_set_text (GTK_LABEL (err_box), tmp);
+	g_free (tmp);
 	if (err_box_clear_handler > 0)
 		gtk_timeout_remove (err_box_clear_handler);
 	if (ve_string_empty (buf))
@@ -2087,12 +2109,14 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
 	dlg = gtk_message_dialog_new (NULL /* parent */,
 				      GTK_DIALOG_MODAL /* flags */,
 				      GTK_MESSAGE_ERROR,
 				      GTK_BUTTONS_OK,
 				      "%s",
-				      buf);
+				      tmp);
+	g_free (tmp);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
 
@@ -2105,10 +2129,14 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_SESS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-	gdm_login_session_lookup (buf);
-	g_print ("%c%s\n", STX, session);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	gdm_login_session_lookup (tmp);
+	g_free (tmp);
+	tmp = g_locale_from_utf8 (session, -1, NULL, NULL, NULL);
+	g_print ("%c%s\n", STX, tmp);
+	g_free (tmp);
 	break;
 
     case GDM_LANG:
@@ -2175,7 +2203,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
 
-	gtk_label_set_text (GTK_LABEL (msg), buf);
+	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	gtk_label_set_text (GTK_LABEL (msg), tmp);
+	g_free (tmp);
 	gtk_widget_show (GTK_WIDGET (msg));
 
 	g_print ("%c\n", STX);
@@ -2255,7 +2285,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		do {
 			g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 			buf[len-1] = '\0';
-			g_string_append (str, buf);
+			tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+			g_string_append (str, tmp);
+			g_free (tmp);
 		} while (len == PIPE_SIZE-1);
 
 
@@ -2263,7 +2295,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 		g_string_free (str, TRUE);
 
-		g_print ("%c%s\n", STX, sess);
+		tmp = g_locale_from_utf8 (sess, -1, NULL, NULL, NULL);
+		g_print ("%c%s\n", STX, tmp);
+		g_free (tmp);
 
 		g_free (sess);
 	}
@@ -2379,6 +2413,7 @@ static gboolean
 gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 {
     GdmLoginUser *user;
+    char *tmp;
 
     if (!widget || !event)
 	return (TRUE);
@@ -2417,7 +2452,10 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 	gtk_widget_set_sensitive (ok_button, FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 	login_entry = FALSE;
-	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
+	tmp = g_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)),
+				  -1, NULL, NULL, NULL);
+	g_print ("%c%s\n", STX, tmp);
+	g_free (tmp);
 	break;
 	
     default: 

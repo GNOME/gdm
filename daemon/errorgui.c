@@ -78,6 +78,7 @@ gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 		int screeny = 0;
 		int screenwidth = 0;
 		int screenheight = 0;
+		char *loc;
 
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
@@ -108,12 +109,14 @@ gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 		if (screenheight <= 0)
 			screenheight = gdk_screen_height ();
 
+		loc = g_locale_to_utf8 (error, -1, NULL, NULL, NULL);
+
 		dlg = gtk_message_dialog_new (NULL /* parent */,
 					      0 /* flags */,
 					      type,
 					      GTK_BUTTONS_OK,
 					      "%s",
-					      error);
+					      loc);
 
 		sid = g_signal_lookup ("event",
 				       GTK_TYPE_WIDGET);
@@ -185,6 +188,7 @@ gdm_failsafe_question (GdmDisplay *d,
 		int screeny = 0;
 		int screenwidth = 0;
 		int screenheight = 0;
+		char *loc;
 
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
 			close(i);
@@ -215,7 +219,9 @@ gdm_failsafe_question (GdmDisplay *d,
 		if (screenheight <= 0)
 			screenheight = gdk_screen_height ();
 
-		dlg = gtk_dialog_new_with_buttons (question,
+		loc = g_locale_to_utf8 (question, -1, NULL, NULL, NULL);
+
+		dlg = gtk_dialog_new_with_buttons (loc,
 						   NULL /* parent */,
 						   0 /* flags */,
 						   GTK_STOCK_OK,
@@ -224,7 +230,7 @@ gdm_failsafe_question (GdmDisplay *d,
 		g_signal_connect (G_OBJECT (dlg), "delete_event",
 				  G_CALLBACK (gtk_true), NULL);
 
-		label = gtk_label_new (question);
+		label = gtk_label_new (loc);
 		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
 				    label, FALSE, FALSE, 0);
 		entry = gtk_entry_new ();
@@ -270,7 +276,10 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		gtk_dialog_run (GTK_DIALOG (dlg));
 
-		g_print (ve_sure_string (gtk_entry_get_text (GTK_ENTRY (entry))));
+		loc = g_locale_from_utf8 (ve_sure_string (gtk_entry_get_text (GTK_ENTRY (entry))),
+					  -1, NULL, NULL, NULL);
+
+		g_print ("%s", ve_sure_string (loc));
 
 		_exit (0);
 	} else if (pid > 0) {
@@ -316,6 +325,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		int screeny = 0;
 		int screenwidth = 0;
 		int screenheight = 0;
+		char *loc;
 
 		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++) {
 			if (p[1] != i)
@@ -348,12 +358,14 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		if (screenheight <= 0)
 			screenheight = gdk_screen_height ();
 
+		loc = g_locale_to_utf8 (question, -1, NULL, NULL, NULL);
+
 		dlg = gtk_message_dialog_new (NULL /* parent */,
 					      0 /* flags */,
 					      GTK_MESSAGE_QUESTION,
 					      GTK_BUTTONS_YES_NO,
 					      "%s",
-					      question);
+					      loc);
 
 		sid = g_signal_lookup ("event",
 				       GTK_TYPE_WIDGET);

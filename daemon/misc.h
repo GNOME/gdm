@@ -30,18 +30,6 @@ void gdm_debug  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 void gdm_fdprintf  (int fd, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 
-/* Console i18n.  A hack, but we'd rather speak english if we can't verify
- * console fonts.  So this will write out things localized only if it can
- * verify a console being utf8.  It will do this by gdmopening "vt-is-UTF8 -q"
- * and checking the return value.  This will only happen on the first try, but
- * should only be used when you want to open a console anyway, so not to cause
- * undue flicker.  If so it will just _() the string, else it will just pass it
- * along verbatim.  The way to use this:
- *
- * foo (gdm_cons_i18n (N_("string")));
- * */
-const char *gdm_cons_i18n (const char *string);
-
 /* Note that these can actually clear environment without killing
  * the LD_* env vars if --preserve-ld-vars was passed to the
  * main daemon */
