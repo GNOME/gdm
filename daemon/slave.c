@@ -1127,6 +1127,9 @@ gdm_slave_greeter (void)
 	
 	if (pipe2[0] != STDIN_FILENO) 
 	    dup2 (pipe2[0], STDIN_FILENO);
+
+	close (pipe1[1]);
+	close (pipe2[0]);
 	
 	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", d->greetpid);
 
@@ -1363,8 +1366,12 @@ gdm_slave_chooser (void)
 				buf[bytes] ='\0';
 			send_chosen_host (d, buf);
 
+			close (p[0]);
+
 			_exit (DISPLAY_CHOSEN);
 		}
+
+		close (p[0]);
 		break;
 	}
 }
