@@ -755,12 +755,14 @@ void		gdm_final_cleanup	(void);
 #define GDM_SUP_QUERY_LOGOUT_ACTION "QUERY_LOGOUT_ACTION" /* no arguments */
 /* QUERY_LOGOUT_ACTION: Query which logout actions are possible
  * Only supported on connections that passed AUTH_LOCAL.
- * Supported since: 2.4.90.0
+ * Supported since: 2.5.90.0
  * Answers:
  *   OK <action>;<action>;...
  *      Where action is one of HALT, REBOOT or SUSPEND.  An empty list
  *      can also be returned if no action is possible.  A '!' is appended
- *      to an action if it was already set with SET_LOGOUT_ACTION
+ *      to an action if it was already set with SET_LOGOUT_ACTION or
+ *      SET_SAFE_LOGOUT_ACTION.  Note that SET_LOGOUT_ACTION has precedence
+ *      over SET_SAFE_LOGOUT_ACTION.
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  *      100 = Not authenticanted
@@ -771,7 +773,30 @@ void		gdm_final_cleanup	(void);
 /* SET_LOGOUT_ACTION:  Tell the daemon to halt/reboot/suspend after slave
  * process exits. 
  * Only supported on connections that passed AUTH_LOCAL.
- * Supported since: 2.4.90.0
+ * Supported since: 2.5.90.0
+ * Arguments:  <action>
+ *   NONE           Set exit action to 'none'
+ *   HALT           Set exit action to 'halt'
+ *   REBOOT         Set exit action to 'reboot'
+ *   SUSPEND        Set exit action to 'suspend'
+ *
+ * Answers:
+ *   OK
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      7 = Unknown logout action, or not available
+ *      100 = Not authenticanted
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_SET_SAFE_LOGOUT_ACTION "SET_SAFE_LOGOUT_ACTION" /* <action> */
+/* SET_SAFE_LOGOUT_ACTION:  Tell the daemon to halt/reboot/suspend after
+ * everybody logs out.  If only one person logs out, then this is obviously
+ * the same as the SET_LOGOUT_ACTION.  Note that SET_LOGOUT_ACTION has
+ * precendence over SET_SAFE_LOGOUT_ACTION if it is set to something other
+ * then NONE.
+ * Only supported on connections that passed AUTH_LOCAL.
+ * Supported since: 2.5.90.0
  * Arguments:  <action>
  *   NONE           Set exit action to 'none'
  *   HALT           Set exit action to 'halt'

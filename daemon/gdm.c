@@ -69,6 +69,7 @@ static void gdm_handle_user_message (GdmConnection *conn,
 				     gpointer data);
 static void gdm_daemonify (void);
 static void gdm_safe_restart (void);
+static void gdm_try_logout_action (GdmDisplay *disp);
 static void gdm_restart_now (void);
 
 /* Global vars */
@@ -115,6 +116,8 @@ gboolean gdm_first_login = TRUE;
 
 int gdm_in_signal = 0;
 gboolean gdm_in_final_cleanup = FALSE;
+
+GdmLogoutAction safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 
 /* Configuration options */
 gchar *GdmUser = NULL;
@@ -1162,6 +1165,8 @@ deal_with_x_crashes (GdmDisplay *d)
 static void
 suspend_machine (void)
 {
+	gdm_info (_("Master suspending..."));
+
 	if (GdmSuspendReal != NULL &&
 	    fork () == 0) {
 		char **argv;
@@ -1177,7 +1182,8 @@ suspend_machine (void)
 		VE_IGNORE_EINTR (chdir ("/"));
 
 		argv = ve_split (GdmSuspendReal);
-		VE_IGNORE_EINTR (execv (argv[0], argv));
+		if (argv != NULL && argv[0] != NULL)
+			VE_IGNORE_EINTR (execv (argv[0], argv));
 		/* FIXME: what about fail */
 		_exit (1);
 	}
@@ -1213,6 +1219,50 @@ change_to_first_and_clear (gboolean reboot)
 }
 #endif /* __linux__ */
 
+static void
+halt_machine (void)
+{
+	char **argv;
+
+	gdm_info (_("Master halting..."));
+
+	gdm_final_cleanup ();
+	VE_IGNORE_EINTR (chdir ("/"));
+
+#ifdef __linux__
+	change_to_first_and_clear (FALSE /* reboot */);
+#endif /* __linux */
+
+	argv = ve_split (GdmHaltReal);
+	if (argv != NULL && argv[0] != NULL)
+		VE_IGNORE_EINTR (execv (argv[0], argv));
+
+	gdm_error (_("%s: Halt failed: %s"),
+		   "gdm_child_action", strerror (errno));
+}
+
+static void
+reboot_machine (void)
+{
+	char **argv;
+
+	gdm_info (_("Master rebooting..."));
+
+	gdm_final_cleanup ();
+	VE_IGNORE_EINTR (chdir ("/"));
+
+#ifdef __linux__
+	change_to_first_and_clear (TRUE /* reboot */);
+#endif /* __linux */
+
+	argv = ve_split (GdmRebootReal);
+	if (argv != NULL && argv[0] != NULL)
+		VE_IGNORE_EINTR (execv (argv[0], argv));
+
+	gdm_error (_("%s: Reboot failed: %s"), 
+		   "gdm_child_action", strerror (errno));
+}
+
 
 static gboolean 
 gdm_cleanup_children (void)
@@ -1220,7 +1270,6 @@ gdm_cleanup_children (void)
     pid_t pid;
     gint exitstatus = 0, status;
     GdmDisplay *d = NULL;
-    gchar **argv;
     gboolean crashed;
 
     /* Pid and exit status of slave that died */
@@ -1302,20 +1351,6 @@ gdm_cleanup_children (void)
     d->slavepid = 0;
     d->dispstat = DISPLAY_DEAD;
 
-    /* change status according to the logout_action */
-    if (status == DISPLAY_REMANAGE &&
-	d->logout_action == GDM_LOGOUT_ACTION_HALT)
-	    status = DISPLAY_HALT;
-    else if (status == DISPLAY_REMANAGE &&
-	     d->logout_action == GDM_LOGOUT_ACTION_REBOOT)
-	    status = DISPLAY_REBOOT;
-    else if (status == DISPLAY_REMANAGE &&
-	     d->logout_action == GDM_LOGOUT_ACTION_SUSPEND)
-	    status = DISPLAY_SUSPEND;
-
-    /* reset the display logout action */
-    d->logout_action = GDM_LOGOUT_ACTION_NONE;
-
     if ( ! GdmSystemMenu &&
 	(status == DISPLAY_REBOOT ||
 	 status == DISPLAY_SUSPEND ||
@@ -1392,8 +1427,8 @@ start_autopsy:
 	gdm_info (_("%s: Aborting display %s"),
 		  "gdm_child_action", d->name);
 
-	if (gdm_restart_mode)
-		gdm_safe_restart ();
+	gdm_try_logout_action (d);
+	gdm_safe_restart ();
 
 	gdm_display_unmanage (d);
 
@@ -1402,40 +1437,14 @@ start_autopsy:
 	break;
 	
     case DISPLAY_REBOOT:	/* Reboot machine */
-	gdm_info (_("Master rebooting..."));
-
-	gdm_final_cleanup ();
-	VE_IGNORE_EINTR (chdir ("/"));
-
-#ifdef __linux__
-	change_to_first_and_clear (TRUE /* reboot */);
-#endif /* __linux */
-
-	argv = ve_split (GdmRebootReal);
-	VE_IGNORE_EINTR (execv (argv[0], argv));
-
-	gdm_error (_("%s: Reboot failed: %s"), 
-		   "gdm_child_action", strerror (errno));
+	reboot_machine ();
 
 	status = DISPLAY_REMANAGE;
 	goto start_autopsy;
 	break;
 	
     case DISPLAY_HALT:		/* Halt machine */
-	gdm_info (_("Master halting..."));
-
-	gdm_final_cleanup ();
-	VE_IGNORE_EINTR (chdir ("/"));
-
-#ifdef __linux__
-	change_to_first_and_clear (FALSE /* reboot */);
-#endif /* __linux */
-
-	argv = ve_split (GdmHaltReal);
-	VE_IGNORE_EINTR (execv (argv[0], argv));
-
-	gdm_error (_("%s: Halt failed: %s"),
-		   "gdm_child_action", strerror (errno));
+	halt_machine ();
 
 	status = DISPLAY_REMANAGE;
 	goto start_autopsy;
@@ -1444,7 +1453,6 @@ start_autopsy:
     case DISPLAY_SUSPEND:	/* Suspend machine */
 	/* XXX: this is ugly, why should there be a suspend like this,
 	 * see GDM_SOP_SUSPEND_MACHINE */
-	gdm_info (_("Master suspending..."));
 	suspend_machine ();
 
 	status = DISPLAY_REMANAGE;
@@ -1465,8 +1473,8 @@ start_autopsy:
 		gdm_connection_write (conn, "ERROR 3 X failed\n");
 	}
 
-	if (gdm_restart_mode)
-		gdm_safe_restart ();
+	gdm_try_logout_action (d);
+	gdm_safe_restart ();
 
 	/* in remote/flexi case just drop to _REMANAGE */
 	if (d->type == TYPE_LOCAL) {
@@ -1514,8 +1522,8 @@ start_autopsy:
 		gdm_connection_write (conn, "ERROR 2 Startup errors\n");
 	}
 
-	if (gdm_restart_mode)
-		gdm_safe_restart ();
+	gdm_try_logout_action (d);
+	gdm_safe_restart ();
 	
 	/* This is a local server so we start a new slave */
 	if (d->type == TYPE_LOCAL) {
@@ -1545,8 +1553,8 @@ start_autopsy:
 	break;
     }
 
-    if (gdm_restart_mode)
-	    gdm_safe_restart ();
+    gdm_try_logout_action (d);
+    gdm_safe_restart ();
 
     return TRUE;
 }
@@ -1567,6 +1575,9 @@ gdm_safe_restart (void)
 {
 	GSList *li;
 
+	if ( ! gdm_restart_mode)
+		return;
+
 	for (li = displays; li != NULL; li = li->next) {
 		GdmDisplay *d = li->data;
 
@@ -1575,6 +1586,54 @@ gdm_safe_restart (void)
 	}
 
 	gdm_restart_now ();
+}
+
+static void
+gdm_do_logout_action (GdmLogoutAction logout_action)
+{
+	switch (logout_action) {
+	case GDM_LOGOUT_ACTION_HALT:
+		halt_machine ();
+		break;
+
+	case GDM_LOGOUT_ACTION_REBOOT:
+		reboot_machine ();
+		break;
+
+	case GDM_LOGOUT_ACTION_SUSPEND:
+		suspend_machine ();
+		break;
+
+	default:
+		break;
+	}
+}
+
+static void
+gdm_try_logout_action (GdmDisplay *disp)
+{
+	GSList *li;
+
+	if (disp != NULL &&
+	    disp->logout_action != GDM_LOGOUT_ACTION_NONE &&
+	    ! disp->logged_in) {
+		gdm_do_logout_action (disp->logout_action);
+		disp->logout_action = GDM_LOGOUT_ACTION_NONE;
+		return;
+	}
+
+	if (safe_logout_action == GDM_LOGOUT_ACTION_NONE)
+		return;
+
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *d = li->data;
+
+		if (d->logged_in)
+			return;
+	}
+
+	gdm_do_logout_action (safe_logout_action);
+	safe_logout_action = GDM_LOGOUT_ACTION_NONE;
 }
 
 static void
@@ -2337,9 +2396,10 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 			/* if the user just logged out,
 			 * let's see if it's safe to restart */
-			if (gdm_restart_mode &&
-			    ! d->logged_in)
+			if ( ! d->logged_in) {
+				gdm_try_logout_action (d);
 				gdm_safe_restart ();
+			}
 
 			/* send ack */
 			send_slave_ack (d, NULL);
@@ -3462,6 +3522,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
 		const char *sep = " ";
 		GdmDisplay *disp;
+		GdmLogoutAction logout_action;
 
 		disp = gdm_connection_get_display (conn);
 
@@ -3478,13 +3539,17 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 
 		gdm_connection_write (conn, "OK");
 
+		logout_action = disp->logout_action;
+		if (logout_action == GDM_LOGOUT_ACTION_NONE)
+			logout_action = safe_logout_action;
+
 		if (GdmSystemMenu &&
 		    disp->console &&
 		    ! ve_string_empty (GdmHaltReal)) {
 			gdm_connection_printf (conn, "%s%s",
 					       sep,
 					       GDM_SUP_LOGOUT_ACTION_HALT);
-			if (disp->logout_action == GDM_LOGOUT_ACTION_HALT)
+			if (logout_action == GDM_LOGOUT_ACTION_HALT)
 				gdm_connection_write (conn, "!");
 			sep = ";";
 		}
@@ -3495,7 +3560,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			gdm_connection_printf (conn, "%s%s",
 					       sep,
 					       GDM_SUP_LOGOUT_ACTION_REBOOT);
-			if (disp->logout_action == GDM_LOGOUT_ACTION_REBOOT)
+			if (logout_action == GDM_LOGOUT_ACTION_REBOOT)
 				gdm_connection_write (conn, "!");
 			sep = ";";
 		}
@@ -3505,7 +3570,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			gdm_connection_printf (conn, "%s%s",
 					       sep,
 					       GDM_SUP_LOGOUT_ACTION_SUSPEND);
-			if (disp->logout_action == GDM_LOGOUT_ACTION_SUSPEND)
+			if (logout_action == GDM_LOGOUT_ACTION_SUSPEND)
 				gdm_connection_write (conn, "!");
 			sep = ";";
 		}
@@ -3560,12 +3625,63 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			}
 		}
 		if (was_ok) {
-			/* Notify the slave to whack its server once it's
-			   done */
-			if (disp->logout_action != GDM_LOGOUT_ACTION_NONE)
-				send_slave_command (disp,
-						    GDM_NOTIFY_DIRTY_SERVERS);
 			gdm_connection_write (conn, "OK\n");
+			gdm_try_logout_action (disp);
+		} else {
+			gdm_connection_write (conn, "ERROR 7 Unknown logout action, or not available\n");
+		}
+	} else if (strncmp (msg, GDM_SUP_SET_SAFE_LOGOUT_ACTION " ",
+		     strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")) == 0) {
+		const char *action = 
+			&msg[strlen (GDM_SUP_SET_SAFE_LOGOUT_ACTION " ")];
+		GdmDisplay *disp;
+		gboolean was_ok = FALSE;
+
+		disp = gdm_connection_get_display (conn);
+
+		/* Only allow locally authenticated connections */
+		if ( ! (gdm_connection_get_user_flags (conn) &
+			GDM_SUP_FLAG_AUTHENTICATED) ||
+		     disp == NULL ||
+		     ! disp->logged_in) {
+			gdm_info (_("Set logout action request denied: "
+				    "Not authenticated"));
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
+
+		if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
+			safe_logout_action = GDM_LOGOUT_ACTION_NONE;
+			was_ok = TRUE;
+		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
+			if (GdmSystemMenu &&
+			    disp->console &&
+			    ! ve_string_empty (GdmHaltReal)) {
+				safe_logout_action =
+					GDM_LOGOUT_ACTION_HALT;
+				was_ok = TRUE;
+			}
+		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
+			if (GdmSystemMenu &&
+			    disp->console &&
+			    ! ve_string_empty (GdmRebootReal)) {
+				safe_logout_action =
+					GDM_LOGOUT_ACTION_REBOOT;
+				was_ok = TRUE;
+			}
+		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
+			if (GdmSystemMenu &&
+			    disp->console &&
+			    ! ve_string_empty (GdmSuspendReal)) {
+				safe_logout_action =
+					GDM_LOGOUT_ACTION_SUSPEND;
+				was_ok = TRUE;
+			}
+		}
+		if (was_ok) {
+			gdm_connection_write (conn, "OK\n");
+			gdm_try_logout_action (disp);
 		} else {
 			gdm_connection_write (conn, "ERROR 7 Unknown logout action, or not available\n");
 		}
