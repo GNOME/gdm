@@ -1079,7 +1079,7 @@ gdm_slave_wait_for_login (void)
 
 /* If path starts with a "trusted" directory, don't sanity check things */
 /* This is really somewhat "outdated" as we now really want things in
- * the picture dir or in ~/.gnome/photo */
+ * the picture dir or in ~/.gnome2/photo */
 static gboolean
 is_in_trusted_pic_dir (const char *path)
 {
@@ -1099,6 +1099,7 @@ run_pictures (void)
 	size_t bytes;
 	struct passwd *pwent;
 	char *picfile;
+	char *picdir;
 	FILE *fp;
 	char *cfgdir;
 
@@ -1126,14 +1127,14 @@ run_pictures (void)
 		setegid (pwent->pw_gid);
 		seteuid (pwent->pw_uid);
 
-		/* Sanity check on ~user/.gnome/gdm */
-		cfgdir = g_strconcat (pwent->pw_dir, "/.gnome/gdm", NULL);
+		/* Sanity check on ~user/.gnome2/gdm */
+		cfgdir = g_strconcat (pwent->pw_dir, "/.gnome2/gdm", NULL);
 		if (gdm_file_check ("run_pictures", pwent->pw_uid,
 				    cfgdir, "gdm", TRUE, GdmUserMaxFile,
 				    GdmRelaxPerms)) {
 			char *cfgstr;
 
-			cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/face/picture", NULL);
+			cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome2/gdm=/face/picture", NULL);
 			picfile = gnome_config_get_string (cfgstr);
 			g_free (cfgstr);
 
@@ -1186,12 +1187,20 @@ run_pictures (void)
 
 		/* Nothing found yet */
 		if (picfile == NULL) {
-			picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
+			picfile = g_strconcat (pwent->pw_dir, "/.gnome2/photo", NULL);
+			picdir = g_strconcat (pwent->pw_dir, "/.gnome2", NULL);
+			if (access (picfile, F_OK) != 0) {
+				g_free (picfile);
+				picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
+				g_free (picdir);
+				picdir = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
+			}
 			if (access (picfile, F_OK) != 0) {
 				seteuid (0);
 				setegid (GdmGroupId);
 
 				g_free (picfile);
+				g_free (picdir);
 				picfile = g_strconcat (GdmGlobalFaceDir, "/",
 						       response, NULL);
 
@@ -1217,14 +1226,12 @@ run_pictures (void)
 				g_free (picfile);
 				continue;
 			}
-			g_free (picfile);
 
-			/* Sanity check on ~user/.gnome/photo */
-			picfile = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
+			/* Sanity check on ~user/.gnome[2]/photo */
 			if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-					       picfile, "photo", TRUE, GdmUserMaxFile,
+					       picdir, "photo", TRUE, GdmUserMaxFile,
 					       GdmRelaxPerms)) {
-				g_free (picfile);
+				g_free (picdir);
 
 				seteuid (0);
 				setegid (GdmGroupId);
@@ -1232,8 +1239,7 @@ run_pictures (void)
 				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 				continue;
 			}
-			g_free (picfile);
-			picfile = g_strconcat (pwent->pw_dir, "/.gnome/photo", NULL);
+			g_free (picdir);
 		}
 
 		if (stat (picfile, &s) < 0) {
@@ -1838,7 +1844,7 @@ gdm_get_sessions (struct passwd *pwent)
 
 	/* we know this exists already, code has already created it,
 	 * when checking the gsm saved options */
-	cfgdir = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
+	cfgdir = g_strconcat (pwent->pw_dir, "/.gnome2", NULL);
 
 	/* We cannot be absolutely strict about the session
 	 * permissions, since by default they will be writable
@@ -1848,12 +1854,12 @@ gdm_get_sessions (struct passwd *pwent)
 	if (session_relax_perms == 0)
 		session_relax_perms = 1;
 
-	/* Sanity check on ~user/.gnome/session */
+	/* Sanity check on ~user/.gnome2/session */
 	session_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
 				     cfgdir, "session",
 				     TRUE, GdmSessionMaxFile,
 				     session_relax_perms);
-	/* Sanity check on ~user/.gnome/session-options */
+	/* Sanity check on ~user/.gnome2/session-options */
 	options_ok = gdm_file_check ("gdm_get_sessions", pwent->pw_uid,
 				     cfgdir, "session-options",
 				     TRUE, GdmUserMaxFile,
@@ -1866,7 +1872,7 @@ gdm_get_sessions (struct passwd *pwent)
 
 		cfgstr = g_strconcat
 			("=", pwent->pw_dir,
-			 "/.gnome/session-options=/Options/CurrentSession",
+			 "/.gnome2/session-options=/Options/CurrentSession",
 			 NULL);
 		def = gnome_config_get_string (cfgstr);
 		if (def == NULL)
@@ -1884,7 +1890,7 @@ gdm_get_sessions (struct passwd *pwent)
 	got_def = FALSE;
 	if (session_ok) {
 		char *sessfile = g_strconcat (pwent->pw_dir,
-					      "/.gnome/session", NULL);
+					      "/.gnome2/session", NULL);
 		FILE *fp = fopen (sessfile, "r");
 		if (fp == NULL &&
 		    GdmGnomeDefaultSession != NULL) {
@@ -2232,7 +2238,7 @@ session_child_run (struct passwd *pwent,
 	
 	if (usrcfgok && savesess && home_dir_ok) {
 		gchar *cfgstr = g_strconcat ("=", home_dir,
-					     "/.gnome/gdm=/session/last", NULL);
+					     "/.gnome2/gdm=/session/last", NULL);
 		gnome_config_set_string (cfgstr, save_session);
 		need_config_sync = TRUE;
 		g_free (cfgstr);
@@ -2240,7 +2246,7 @@ session_child_run (struct passwd *pwent,
 	
 	if (usrcfgok && savelang && home_dir_ok) {
 		gchar *cfgstr = g_strconcat ("=", home_dir,
-					     "/.gnome/gdm=/session/lang", NULL);
+					     "/.gnome2/gdm=/session/lang", NULL);
 		/* we chose the system default language so wipe the lang key */
 		if (def_language)
 			gnome_config_clean_key (cfgstr);
@@ -2254,7 +2260,7 @@ session_child_run (struct passwd *pwent,
 	    savegnomesess &&
 	    gnome_session != NULL &&
 	    home_dir_ok) {
-		gchar *cfgstr = g_strconcat ("=", home_dir, "/.gnome/session-options=/Options/CurrentSession", NULL);
+		gchar *cfgstr = g_strconcat ("=", home_dir, "/.gnome2/session-options=/Options/CurrentSession", NULL);
 		gnome_config_set_string (cfgstr, gnome_session);
 		need_config_sync = TRUE;
 		g_free (cfgstr);
@@ -2498,19 +2504,19 @@ gdm_slave_session_start (void)
 
     if (home_dir_ok) {
 	    char *cfgdir;
-	    /* Check if ~user/.gnome exists. Create it otherwise. */
-	    cfgdir = g_strconcat (home_dir, "/.gnome", NULL);
+	    /* Check if ~user/.gnome2 exists. Create it otherwise. */
+	    cfgdir = g_strconcat (home_dir, "/.gnome2", NULL);
 
 	    if (stat (cfgdir, &statbuf) == -1) {
 		    mkdir (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
 		    chmod (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
 	    }
 
-	    /* Sanity check on ~user/.gnome/gdm */
+	    /* Sanity check on ~user/.gnome2/gdm */
 	    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
 				       cfgdir, "gdm", TRUE, GdmUserMaxFile,
 				       GdmRelaxPerms);
-	    /* Sanity check on ~user/.gnome/session-options */
+	    /* Sanity check on ~user/.gnome2/session-options */
 	    sessoptok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
 					cfgdir, "session-options", TRUE, GdmUserMaxFile,
 					/* We cannot be absolutely strict about the
@@ -2528,13 +2534,13 @@ gdm_slave_session_start (void)
     if (usrcfgok) {
 	gchar *cfgstr;
 
-	cfgstr = g_strconcat ("=", home_dir, "/.gnome/gdm=/session/last", NULL);
+	cfgstr = g_strconcat ("=", home_dir, "/.gnome2/gdm=/session/last", NULL);
 	usrsess = gnome_config_get_string (cfgstr);
 	if (usrsess == NULL)
 		usrsess = g_strdup ("");
 	g_free (cfgstr);
 
-	cfgstr = g_strconcat ("=", home_dir, "/.gnome/gdm=/session/lang", NULL);
+	cfgstr = g_strconcat ("=", home_dir, "/.gnome2/gdm=/session/lang", NULL);
 	usrlang = gnome_config_get_string (cfgstr);
 	if (usrlang == NULL)
 		usrlang = g_strdup ("");

@@ -80,7 +80,7 @@ greeter_session_lookup (const char *saved_session)
   /* Don't save session unless told otherwise */
   save_session = FALSE;
 
-  /* Previously saved session not found in ~user/.gnome/gdm */
+  /* Previously saved session not found in ~user/.gnome2/gdm */
   if ( ! (saved_session != NULL &&
 	  strcmp ("(null)", saved_session) != 0 &&
 	  saved_session[0] != '\0')) {

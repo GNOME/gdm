@@ -947,7 +947,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 
     gtk_widget_set_sensitive (GTK_WIDGET (sessmenu), FALSE);
 
-    /* Previously saved session not found in ~user/.gnome/gdm */
+    /* Previously saved session not found in ~user/.gnome2/gdm */
     if ( ! (savedsess != NULL &&
 	    strcmp ("(null)", savedsess) != 0 &&
 	    savedsess[0] != '\0')) {

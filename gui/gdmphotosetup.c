@@ -1,5 +1,5 @@
 /*
- *    GDMphotosetup - graphical .gnome/photo setup program for users
+ *    GDMphotosetup - graphical .gnome2/photo setup program for users
  *    (c)2001 Queen of England
  *    
  *    This program is free software; you can redistribute it and/or modify
@@ -127,10 +127,10 @@ main (int argc, char *argv[])
 			char buf[4096];
 			size_t size;
 			char *photofile = g_strconcat (g_get_home_dir (),
-						       "/.gnome/photo",
+						       "/.gnome2/photo",
 						       NULL);
 			char *cfg_file = g_strconcat (g_get_home_dir (),
-						      "/.gnome/gdm",
+						      "/.gnome2/gdm",
 						      NULL);
 			int fddest, fdsrc;
 
