@@ -1362,6 +1362,29 @@ linux_only_is_running (pid_t pid)
 	return FALSE;
 }
 
+static void
+ensure_desc_012 (void)
+{
+	int fd;
+	/* We here ensure descriptors 0, 1 and 2
+	 * we of course count on the fact that open
+	 * opens the lowest available descriptor */
+	for (;;) {
+		fd = open("/dev/null", O_RDWR);
+		/* what to do on fail?  I dunno,
+		 * just keep on going is the safest
+		 * bet I suppose */
+		if (fd < 0)
+			break;
+		/* Once we are up to 3, we're beyond stdin,
+		 * stdout and stderr */
+		if (fd >= 3) {
+			close (fd);
+			break;
+		}
+	}
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -1370,6 +1393,9 @@ main (int argc, char *argv[])
     FILE *pf;
     poptContext ctx;
     int nextopt;
+
+    /* We here ensure descriptors 0, 1 and 2 */
+    ensure_desc_012 ();
 
     store_argv (argc, argv);
 
