@@ -38,6 +38,8 @@ enum _GreeterItemPosType {
 };
 
 struct _GreeterItemInfo {
+  GreeterItemInfo *parent;
+  
   GtkAnchorType anchor;
   GreeterItemPosType x_type;
   GreeterItemPosType y_type;
@@ -57,6 +59,7 @@ struct _GreeterItemInfo {
   gdouble alphas[GREETER_ITEM_STATE_MAX];
   gboolean have_tint[GREETER_ITEM_STATE_MAX];
   guint32 tints[GREETER_ITEM_STATE_MAX];
+  GdkPixbuf *orig_pixbufs[GREETER_ITEM_STATE_MAX];
   GdkPixbuf *pixbufs[GREETER_ITEM_STATE_MAX];
 
   gboolean have_color[GREETER_ITEM_STATE_MAX];
@@ -69,9 +72,11 @@ struct _GreeterItemInfo {
   GList *fixed_children;
   
   GtkOrientation box_orientation;
-  gboolean box_homogenous;
+  gboolean box_homogeneous;
   double box_x_padding;
   double box_y_padding;
+  double box_min_width;
+  double box_min_height;
   double box_spacing;
   GList *box_children;
   
@@ -83,13 +88,19 @@ struct _GreeterItemInfo {
   /* Canvas data: */
   GnomeCanvasItem *item;
   GnomeCanvasGroup *group_item;
+
+  /* geometry handling: */
+  gboolean has_requisition;
+  GtkRequisition requisition;
+  GtkAllocation allocation;
 };
 
 gint greeter_item_event_handler (GnomeCanvasItem *item,
 				 GdkEvent        *event,
 				 gpointer         data);
 
-GreeterItemInfo *greeter_item_info_new (GreeterItemType type);
+GreeterItemInfo *greeter_item_info_new (GreeterItemInfo *parent,
+					GreeterItemType  type);
 void greeter_item_info_free (GreeterItemInfo *info);
 
 char *greeter_item_expand_text (const char *text);

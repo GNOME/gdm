@@ -13,9 +13,10 @@ static char *gdm_language = "se";
 
 GHashTable *item_hash = NULL;
 
-static gboolean parse_items (xmlNodePtr  node,
-			     GList     **items_out,
-			     GError    **error);
+static gboolean parse_items (xmlNodePtr       node,
+			     GList          **items_out,
+			     GreeterItemInfo *parent,
+			     GError         **error);
 
 
 GQuark
@@ -203,6 +204,7 @@ parse_fixed (xmlNodePtr       node,
 {
   return parse_items (node,
 		      &info->fixed_children,
+		      info,
 		      error);
 }
 
@@ -236,16 +238,16 @@ parse_box (xmlNodePtr       node,
       xmlFree (prop);
     }
 
-  prop = xmlGetProp (node, "homogenous");
+  prop = xmlGetProp (node, "homogeneous");
   if (prop)
     {
       if (strcmp (prop, "true") == 0)
 	{
-	  info->box_homogenous = TRUE;
+	  info->box_homogeneous = TRUE;
 	}
       else if (strcmp (prop, "false") == 0)
 	{
-	  info->box_homogenous = FALSE;
+	  info->box_homogeneous = FALSE;
 	}
       else
 	{
@@ -288,7 +290,37 @@ parse_box (xmlNodePtr       node,
 	}
       xmlFree (prop);
     }
+  
+  prop = xmlGetProp (node, "min-width");
+  if (prop)
+    {
+      info->box_min_width = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad min-width specification %s\n", prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
 
+  prop = xmlGetProp (node, "min-height");
+  if (prop)
+    {
+      info->box_min_height = g_ascii_strtod (prop, &p);
+      
+      if ((char *)prop == p)
+	{
+	  *error = g_error_new (GREETER_PARSER_ERROR,
+				GREETER_PARSER_ERROR_BAD_SPEC,
+				"Bad min-height specification %s\n", prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
+  
   prop = xmlGetProp (node, "spacing");
   if (prop)
     {
@@ -306,6 +338,7 @@ parse_box (xmlNodePtr       node,
 
   return parse_items (node,
 		      &info->box_children,
+		      info,
 		      error);
 
 }
@@ -483,13 +516,13 @@ parse_pixmap (xmlNodePtr        node,
 	{
 	  if (info->files[i] != NULL)
 	    {
-	      info->pixbufs[i] = gdk_pixbuf_new_from_file (info->files[i], error);
+	      info->orig_pixbufs[i] = gdk_pixbuf_new_from_file (info->files[i], error);
 	      
-	      if (info->pixbufs[i] == NULL)
+	      if (info->orig_pixbufs[i] == NULL)
 		return FALSE;
 	    }
 	  else
-	    info->pixbufs[i] = NULL;
+	    info->orig_pixbufs[i] = NULL;
 	}
     }
 
@@ -768,6 +801,7 @@ parse_entry (xmlNodePtr        node,
 static gboolean
 parse_items (xmlNodePtr  node,
 	     GList     **items_out,
+	     GreeterItemInfo *parent,
 	     GError    **error)
 {
     xmlNodePtr child;
@@ -819,7 +853,7 @@ parse_items (xmlNodePtr  node,
 		return FALSE;
 	      }
 	    
-	    info = greeter_item_info_new (item_type);
+	    info = greeter_item_info_new (parent, item_type);
 	    
 	    parse_id (child, info);
 
@@ -873,14 +907,14 @@ greeter_info_id_hash (GreeterItemInfo *key)
   return g_str_hash (key->id);
 }
 
-gboolean
+GreeterItemInfo *
 greeter_parse (char *file, GnomeCanvas *canvas,
 	       int width, int height, GError **error)
 {
-  GdkRectangle parent_rect;
+  GreeterItemInfo *root;
   xmlDocPtr doc;
   xmlNodePtr node;
-  gboolean retval;
+  gboolean res;
   GList *items;
 
   if (!g_file_test (file, G_FILE_TEST_EXISTS))
@@ -889,7 +923,7 @@ greeter_parse (char *file, GnomeCanvas *canvas,
 	*error = g_error_new (GREETER_PARSER_ERROR,
 			      GREETER_PARSER_ERROR_NO_FILE,
 			      "Can't open file %s", file);
-      return FALSE;
+      return NULL;
     }
   
 
@@ -900,7 +934,7 @@ greeter_parse (char *file, GnomeCanvas *canvas,
 	*error = g_error_new (GREETER_PARSER_ERROR,
 			      GREETER_PARSER_ERROR_BAD_XML,
 			      "XML Parse error reading %s", file);
-      return FALSE;
+      return NULL;
     }
   
   node = xmlDocGetRootElement (doc);
@@ -910,7 +944,7 @@ greeter_parse (char *file, GnomeCanvas *canvas,
 	*error = g_error_new (GREETER_PARSER_ERROR,
 			      GREETER_PARSER_ERROR_BAD_XML,
 			      "Can't find the xml root node in file %s", file);
-      return FALSE;
+      return NULL;
     }
   
   if (strcmp (node->name, "greeter") != 0)
@@ -919,7 +953,7 @@ greeter_parse (char *file, GnomeCanvas *canvas,
 	*error = g_error_new (GREETER_PARSER_ERROR,
 			      GREETER_PARSER_ERROR_WRONG_TYPE,
 			      "The file %s has the wrong xml type", file);
-      return FALSE;
+      return NULL;
     }
 
 
@@ -928,14 +962,28 @@ greeter_parse (char *file, GnomeCanvas *canvas,
 				     NULL,
 				     (GDestroyNotify)greeter_item_info_free);
   
-  parent_rect.x = 0;
-  parent_rect.y = 0;
-  parent_rect.width = width;
-  parent_rect.height = height;
 
-  retval =  parse_items (node, &items, error);
+  root = greeter_item_info_new (NULL, GREETER_ITEM_TYPE_RECT);
+  res = parse_items (node, &items, root, error);
+  if (!res)
+    {
+      greeter_item_info_free (root);
 
+      return NULL;
+    }
+
+  root->fixed_children = items;
+  
+  root->x = 0;
+  root->y = 0;
+  root->x_type = GREETER_ITEM_POS_ABSOLUTE;
+  root->y_type = GREETER_ITEM_POS_ABSOLUTE;
+
+  root->width = width;
+  root->height = height;
+  root->width_type = GREETER_ITEM_SIZE_ABSOLUTE;
+  root->width_type = GREETER_ITEM_SIZE_ABSOLUTE;
   /* TODO: step 2 done here */
   
-  return retval;
+  return root;
 }

@@ -11,13 +11,15 @@
 #endif
 
 GreeterItemInfo *
-greeter_item_info_new (GreeterItemType type)
+greeter_item_info_new (GreeterItemInfo *parent,
+		       GreeterItemType  type)
 {
   GreeterItemInfo *info;
   int i;
 
   info = g_new0 (GreeterItemInfo, 1);
   info->item_type = type;
+  info->parent = parent;
 
   info->anchor = GTK_ANCHOR_NW;
   info->x_type = GREETER_ITEM_POS_UNSET;

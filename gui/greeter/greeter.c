@@ -557,6 +557,7 @@ main (int argc, char *argv[])
   gint w, h;
   gboolean res;
   GError *error;
+  GreeterItemInfo *root;
   int r;
 
   if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
@@ -631,9 +632,9 @@ main (int argc, char *argv[])
   gtk_container_add (GTK_CONTAINER (window), canvas);
 
   error = NULL;
-  res = greeter_parse (argv[1], GNOME_CANVAS (canvas), w, h, &error);
+  root = greeter_parse (argv[1], GNOME_CANVAS (canvas), w, h, &error);
 
-  if (!res)
+  if (root == NULL)
     g_warning ("Failed to parse file: %s!", error->message);
 
   greeter_setup_items ();

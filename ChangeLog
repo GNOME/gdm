@@ -1,3 +1,27 @@
+2002-01-29  Alexander Larsson  <alla@lysator.liu.se>
+
+	* gui/greeter/Makefile.am:
+	Added new files.
+
+	* gui/greeter/greeter.c:
+	Update to get the root GreeterItemInfo.
+
+	* gui/greeter/greeter_item.[ch]:
+	Make items keep track of their parent.
+	Add orig_pixbufs[].
+	Add box_min_widht/height and size allocation stuff
+
+	* gui/greeter/greeter_parser.[ch]:
+	Rename homogenous to homogeneous.
+	Parse box min-width/height
+	Load pixmaps to orig_pixbufs[]
+	Keep track of items parents
+	Create root item info
+
+	* gui/greeter/greeter_canvas_item.[ch]:
+	* gui/greeter/greeter_geometry.[ch]:
+	New files. Not used yet.
+	
 Mon Jan 21 19:14:28 2002  George Lebl <jirka@5z.com>
 
 	* acconfig.h, configure.in: use GETTEXT_PACKAGE

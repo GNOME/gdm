@@ -16,11 +16,11 @@ typedef enum
 #define GREETER_PARSER_ERROR greeter_parser_error_quark()
 GQuark greeter_parser_error_quark (void);
 
-gboolean greeter_parse (char        *file,
-			GnomeCanvas *canvas,
-			int          width,
-			int          height,
-			GError     **error);
+GreeterItemInfo *greeter_parse (char        *file,
+				GnomeCanvas *canvas,
+				int          width,
+				int          height,
+				GError     **error);
 
 GreeterItemInfo *greeter_lookup_id (const char *id);
 
