@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2003-05-20 17:58+0200\n"
-"PO-Revision-Date: 2003-05-20 17:59+0200\n"
+"POT-Creation-Date: 2003-05-27 23:52+0200\n"
+"PO-Revision-Date: 2003-05-27 23:53+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1251,6 +1251,7 @@ msgstr "Ange ditt användarnamn"
 #: gui/gdmlogin.c:3296 gui/greeter/greeter_parser.c:961
 #: gui/greeter/themes/circles/circles.xml.in.h:5
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:5
 msgid "Username:"
 msgstr "Användarnamn:"
 
@@ -2389,6 +2390,7 @@ msgstr "Senaste"
 #: gui/gdmlogin.c:218 gui/greeter/greeter_parser.c:948
 #: gui/greeter/themes/circles/circles.xml.in.h:4
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:4
 #, no-c-format
 msgid "User %s will login in %d seconds"
 msgstr "Användaren %s kommer att logga in om %d sekunder"
@@ -2631,6 +2633,7 @@ msgstr "GDM-inloggning"
 #: gui/greeter/greeter_parser.c:923
 #: gui/greeter/themes/circles/circles.xml.in.h:11
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:11
 msgid "_Session"
 msgstr "_Session"
 
@@ -2638,6 +2641,7 @@ msgstr "_Session"
 #: gui/greeter/greeter_parser.c:918
 #: gui/greeter/themes/circles/circles.xml.in.h:9
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:9
 msgid "_Language"
 msgstr "S_pråk"
 
@@ -2680,6 +2684,7 @@ msgstr "Försätt din dator i viloläge"
 #: gui/greeter/greeter_parser.c:928
 #: gui/greeter/themes/circles/circles.xml.in.h:2
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:2
 msgid "S_ystem"
 msgstr "S_ystem"
 
@@ -2687,6 +2692,7 @@ msgstr "S_ystem"
 #: gui/greeter/greeter_parser.c:938
 #: gui/greeter/themes/circles/circles.xml.in.h:10
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:10
 msgid "_Quit"
 msgstr "_Avsluta"
 
@@ -2694,6 +2700,7 @@ msgstr "_Avsluta"
 #: gui/greeter/greeter_parser.c:933
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:1
 msgid "D_isconnect"
 msgstr "_Koppla från"
 
@@ -3244,12 +3251,14 @@ msgstr "Välj ett språk att använda under din session:"
 #: gui/greeter/greeter_parser.c:943
 #: gui/greeter/themes/circles/circles.xml.in.h:8
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:8
 msgid "You've got capslock on!"
 msgstr "Du har CapsLock på!"
 
 #: gui/greeter/greeter_parser.c:955
 #: gui/greeter/themes/circles/circles.xml.in.h:7
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:7
 #, no-c-format
 msgid "Welcome to %h"
 msgstr "Välkommen till %h"
@@ -3270,6 +3279,23 @@ msgstr "Starta om datorn"
 msgid "Configure the login manager"
 msgstr "Konfigurera inloggningshanteraren"
 
+#: gui/greeter/greeter_item_ulist.c:259
+#, c-format
+msgid "Can't open DefaultImage: %s!"
+msgstr "Kan inte öppna standardbild: %s!"
+
+#: gui/greeter/greeter_item_ulist.c:334
+msgid "Press <enter> to login"
+msgstr "Tryck <Retur> för att logga in"
+
+#: gui/greeter/greeter_item_ulist.c:377
+msgid "Icon"
+msgstr "Ikon"
+
+#: gui/greeter/greeter_item_ulist.c:384
+msgid "Username"
+msgstr "Användarnamn"
+
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
 msgstr "© 2002 Bond, James Bond"
@@ -3287,6 +3313,7 @@ msgid "Theme with blue circles"
 msgstr "Tema med blåa cirklar"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
 msgstr "© 2002 GNOME"
 
@@ -3295,12 +3322,21 @@ msgid "GNOME Art variation of Circles"
 msgstr "GNOME-konstvariation av cirklar"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:3
 msgid "GNOME Artists"
 msgstr "GNOME-artister"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:4
 msgid "Happy GNOME"
 msgstr "Glad GNOME"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:2
+msgid "GNOME Art variation of Circles with a Face Browser"
+msgstr "GNOME-konstvariation av cirklar med en ansiktsbläddrare"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:4
+msgid "Happy GNOME with Browser"
+msgstr "Glad GNOME med bläddrare"
 
 #: gui/modules/dwellmouselistener.c:573 gui/modules/keymouselistener.c:626
 #, c-format
@@ -3401,6 +3437,9 @@ msgstr ""
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Inget gränssnitt kunde läsas in, ILLA! (fil: %s)"
+
+#~ msgid "Can't open DefaultImage: %s"
+#~ msgstr "Kan inte öppna standardbild: %s"
 
 #~ msgid "Marathi"
 #~ msgstr "Marathi"
