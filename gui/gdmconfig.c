@@ -89,8 +89,7 @@ main (int argc, char *argv[])
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
 
-	/* FIXME! Should replace the number with 'VERSION', but it doesn't seem to pick it up. */
-    gnome_init ("gdmconfig", "2.0.97.1", argc, argv);
+    gnome_init ("gdmconfig", VERSION, argc, argv);
     glade_gnome_init();
 
     /* Make sure the user is root. If not, they shouldn't be messing with 

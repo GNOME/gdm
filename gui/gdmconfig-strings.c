@@ -28,18 +28,21 @@ gchar *s = N_("Login appearance");
 gchar *s = N_("Greeter Look and Feel");
 gchar *s = N_("Show the 'system' menu, (for reboot, shutdown etc.)");
 gchar *s = N_("Quiver on failure");
-gchar *s = N_("Welcome to %n");
-gchar *s = N_("%n");
-gchar *s = N_("This is %n");
+gchar *s = N_("Welcome to %n\n"
+              "%n\n"
+              "This is %n\n"
+              "");
 gchar *s = N_("This is %n");
 gchar *s = N_("Default font: ");
-gchar *s = N_("Exclude these users: ");
 gchar *s = N_("Welcome message: ");
 gchar *s = N_("Pick a Font");
 gchar *s = N_("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz");
+gchar *s = N_("Extras");
 gchar *s = N_("Background Program: ");
 gchar *s = N_("Select a file containing Locale information");
 gchar *s = N_("Default locale: ");
+gchar *s = N_("Exclude these users: ");
+gchar *s = N_("Automatic Login: ");
 gchar *s = N_("Position");
 gchar *s = N_("Manually set position");
 gchar *s = N_("Lock position");
@@ -109,7 +112,6 @@ gchar *s = N_("Paths");
 gchar *s = N_("Miscelleaneous");
 gchar *s = N_("Default $PATH: ");
 gchar *s = N_("Root $PATH: ");
-gchar *s = N_("Automatic Login: ");
 gchar *s = N_("Localization");
 gchar *s = N_("Select a file containing Locale information");
 gchar *s = N_("Locale file: ");
@@ -121,4 +123,5 @@ gchar *s = N_("Refresh");
 gchar *s = N_("Scan every 'x' seconds: ");
 gchar *s = N_("Chooser");
 gchar *s = N_("(C) 2001 Lee Mallabone");
-gchar *s = N_("Configure the GNOME Display Manager");
+gchar *s = N_("Configure the GNOME Display Manager.\n"
+              "Please submit any bugs or feature requests at http://bugzilla.gnome.org under the `gdm' product.");
