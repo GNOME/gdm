@@ -1,5 +1,37 @@
 Ahh news...
 
+2.4.2.100 stuff:
+
+- Fix #118878 by actually ensuring /tmp/.ICE-unix
+
+- More doc updates
+
+- Fix up rlimit use and handle cases where we ourself
+  hit SIGXCPU and SIGXFSZ.  Also handle SIGABRT cleanly
+  in the main daemon.
+
+- The error gui uses the same theme as the greeters
+
+- The pam config files don't include the /lib/security
+  prefix as apparently it's more kosher to let pam
+  find the modules itself
+
+- Fix some crashes in main daemon, fix debug output in places
+
+- A whole pile of minor XDMCP updates
+
+- Fix solaris build (Brian Cameron)
+
+- Limit users in face browsers above 100 not 50
+
+- Remove any mentions of SessionMaxFile as it isn't used anymore
+
+- Some typos fixed (Jordi Mallach)
+
+- Translation updates (Jordi Mallach, Artur Flinta, Christian Rose,
+  Miloslav Trmac, Kostas Papadimas, Duarte Loreto, Ole Laursen,
+  Danilo Segan, Christian Neumair)
+
 2.4.2.99 stuff:
 
 - Updated docs a bit
