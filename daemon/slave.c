@@ -184,17 +184,18 @@ gdm_slave_run (GdmDisplay *display)
     gdm_debug ("gdm_slave_start: Opening display %s", d->name);
     d->dsp = NULL;
     
-    while (openretries < 10 && d->dsp == NULL) {
+    while (openretries < 10 &&
+	   d->dsp == NULL) {
 	d->dsp = XOpenDisplay (d->name);
 	
-	if (!d->dsp) {
+	if (d->dsp == NULL) {
 	    gdm_debug ("gdm_slave_start: Sleeping %d on a retry", openretries*2);
 	    sleep (openretries*2);
 	    openretries++;
 	}
     }
     
-    if (d->dsp) {
+    if (d->dsp != NULL) {
 	if (gdm_first_login &&
 	    GdmAutomaticLogin != NULL &&
 	    GdmAutomaticLogin[0] != '\0' &&
