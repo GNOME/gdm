@@ -72,17 +72,115 @@ extern gboolean no_console;
 extern char *gdm_charset;
 
 #ifdef ENABLE_IPV6
+
+#ifdef sun
+static gboolean 
+have_ipv6_solaris (void)
+{
+          int            s, i;
+          int            ret;
+          struct lifnum  ln; 
+          struct lifconf ifc;
+          struct lifreq *ifr;   
+          char          *ifreqs;
+          
+          /* First, try the <AB>classic<BB> way
+           */
+          s = socket (AF_INET6, SOCK_DGRAM, 0);
+          if (s < 0) return FALSE;
+          close(s);
+
+          s = socket (AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
+
+          /* Ok, the system is able to create IPv6 sockets, so
+           * lets check if IPv6 is configured in the machine
+           */
+          ln.lifn_family=AF_UNSPEC;
+          ln.lifn_flags=ln.lifn_count=0; 
+
+          ret = ioctl(s, SIOCGLIFNUM, &ln);
+          if (ret == -1) {
+                        perror("ioctl SIOCGLIFNUM");
+                        return FALSE;
+          }
+
+          /* Alloc the memory and get the configuration
+           */
+          ifc.lifc_flags  = 0; 
+          ifc.lifc_family = AF_UNSPEC;
+          ifc.lifc_len    = ln.lifn_count * sizeof(struct lifreq);
+
+          ifreqs = (char *) malloc (ifc.lifc_len);
+          ifc.lifc_buf = ifreqs;
+
+          if (ioctl (s, SIOCGLIFCONF, &ifc) < 0) {
+                        perror("ioctl SIOCGLIFCONF");
+                        return FALSE;
+          }
+
+          /* Check each interface
+           */
+          ifr  = ifc.lifc_req;
+          ret  = FALSE;
+
+          for (i = ifc.lifc_len/sizeof (struct lifreq); --i >= 0; ifr++) {
+                struct sockaddr_in *sin;
+
+                        /* Check the address
+                         */
+                        if (ioctl (s, SIOCGLIFFLAGS, ifr) < 0) {
+                                   // perror("ioctl SIOCGLIFADDR");
+                                   continue;
+                        }
+
+                        sin = (struct sockaddr_in *)&ifr->lifr_addr;
+
+                        if (sin->sin_family == AF_INET6) {
+                                   ret = TRUE;
+                                   break;
+                        }
+
+                        /* Check the interface flags
+                         */
+                        if (ioctl (s, SIOCGLIFFLAGS, (char *) ifr) < 0) {
+                                   // perror("ioctl SIOCGLIFFLAGS");
+                                   continue;
+                        }
+
+                        if (ifr->lifr_flags & IFF_IPV6) {      
+                                   ret = TRUE;
+                                   break;
+                        }
+          }
+          
+          /* Clean up
+           */
+          free (ifreqs);
+          close(s);
+
+          return ret;
+}
+#endif
+
 static gboolean have_ipv6 (void)
 {
 	int s;
+        static gboolean has_ipv6 = -1;
 
-	s = socket (AF_INET6, SOCK_STREAM, 0);
-	if (s != -1) {
-		VE_IGNORE_EINTR (close (s));
-		return TRUE;
+#ifdef sun
+        has_ipv6 = have_ipv6_solaris();
+#else
+        if (has_ipv6 != -1) return has_ipv6;
+
+        s = socket (AF_INET6, SOCK_STREAM, 0);  
+        if (s < 0) {
+                  has_ipv6 = FALSE;
+                  return FALSE;
 	}
 
-	return FALSE;
+       VE_IGNORE_EINTR (close (s));            
+#endif
+       return has_ipv6;
 }
 #endif
 

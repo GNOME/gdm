@@ -1164,8 +1164,32 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     if (clnt_sa->ss_family == AF_INET6) {
 	char buffer6[INET6_ADDRSTRLEN];
 
-	if (clnt_port.length != 2 ||
-	       clnt_addr.length != 16) {
+	struct in6_addr ipv6_addr;
+	struct in6_addr * ipv6_addr_ptr = NULL;
+
+	if (clnt_port.length == 2 &&
+	       clnt_addr.length == 4) {
+
+		/* Convert IPv4 address to IPv6 if needed */
+		struct sockaddr_in tmp_disp_sa = {0};
+		((struct sockaddr_in *)(&tmp_disp_sa))->sin_family = AF_INET;
+		memcpy (&((struct sockaddr_in *)(&tmp_disp_sa))->sin_port, clnt_port.data, 2);
+		memcpy (&((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr.s_addr, clnt_addr.data, 4);
+
+		char * ipv4_addr = inet_ntoa (((struct sockaddr_in *)(&tmp_disp_sa))->sin_addr);
+		strcpy(buffer6, "::ffff:");
+		strncat(buffer6, ipv4_addr, INET_ADDRSTRLEN);
+
+		inet_pton (AF_INET6, buffer6, &ipv6_addr);
+		ipv6_addr_ptr = &ipv6_addr;
+
+	} else if (clnt_port.length == 2 &&
+	       clnt_addr.length == 16) {
+
+		ipv6_addr_ptr = (struct in6_addr *)clnt_addr.data;
+
+	} else {
+
 		gdm_error (_("%s: Bad address"),
                           "gdm_xdmcp_handle_forward_query");
 		goto out;
@@ -1173,7 +1197,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 
 	g_assert (16 == sizeof (struct in6_addr));
 
-	gdm_xdmcp_whack_queued_managed_forwards6 ((struct sockaddr_in6 *)clnt_sa, (struct in6_addr *)clnt_addr.data);
+	gdm_xdmcp_whack_queued_managed_forwards6 ((struct sockaddr_in6 *)clnt_sa, ipv6_addr_ptr);
 
 	((struct sockaddr_in6 *)(&disp_sa))->sin6_family = AF_INET6;
 
@@ -1181,7 +1205,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 	memcpy (&((struct sockaddr_in6 *)(&disp_sa))->sin6_port, clnt_port.data, 2);
 
 	/* Find client address */
-	memcpy (&((struct sockaddr_in6 *)(&disp_sa))->sin6_addr.s6_addr, clnt_addr.data, 16);
+	memcpy (&((struct sockaddr_in6 *)(&disp_sa))->sin6_addr.s6_addr, ipv6_addr_ptr, 16);
 
 	gdm_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY for display: %s, port %d", inet_ntop (AF_INET6, &((struct sockaddr_in6 *)(&disp_sa))->sin6_addr, buffer6, INET6_ADDRSTRLEN), ntohs (((struct sockaddr_in6 *)(&disp_sa))->sin6_port));
    }

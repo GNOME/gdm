@@ -1071,7 +1071,10 @@ main (int argc, char *argv[])
   if ( ! ve_string_empty (gdm_gtk_theme)) {
 	  gdm_set_theme (gdm_gtk_theme);
   }
-  
+
+  /* set default font size to 12 */
+  gtk_rc_parse_string("gtk-font-name=\"Sans 12\"\n");
+
   gdm_wm_screen_init (GdmXineramaScreen);
   
   r = verify_gdm_version ();

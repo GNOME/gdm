@@ -344,6 +344,7 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
     
   case GREETER_ITEM_TYPE_ENTRY:
     entry = gtk_entry_new ();
+    gtk_widget_set_name (entry, "user-pw-entry");
     gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
     if (GdmUseInvisibleInEntry)
       gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0);

@@ -2188,7 +2188,7 @@ delete_theme (GtkWidget *button, gpointer data)
 	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
 	gtk_widget_show (button);
 
-	button = gtk_button_new_from_stock ("_Remove Theme");
+	button = gtk_button_new_from_stock (_("_Remove Theme"));
 	gtk_dialog_add_action_widget (GTK_DIALOG (dlg), button, GTK_RESPONSE_YES);
 	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
 	gtk_widget_show (button);
