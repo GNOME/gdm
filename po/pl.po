@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-08-12 10:10+0200\n"
-"PO-Revision-Date: 2001-08-12 10:23+0200\n"
+"POT-Creation-Date: 2001-08-19 21:18+0200\n"
+"PO-Revision-Date: 2001-08-19 21:34+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -64,18 +64,26 @@ msgid "gdm_config_parse: No sessions directory specified."
 msgstr "gdm_config_parse: Nie okre¶lono katalogu sesji."
 
 #: daemon/gdm.c:1
+#, c-format
+msgid "%s: Empty server command, using standard one."
+msgstr "%s: Puste polecenie serwera, wykorzystano domy¶lne."
+
+#: daemon/gdm.c:1
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse: Niepoprawny wiersz serwera w pliku konfiguracyjnym. "
 "Rezygnacja!"
 
+#. start
+#. server uid
 #: daemon/gdm.c:1
+#, c-format
 msgid ""
-"gdm_config_parse: Xdmcp disabled and no local servers defined. Adding "
-"/usr/bin/X11/X on :0 to allow configuration!"
+"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on "
+":%d to allow configuration!"
 msgstr ""
-"gdm_config_parse: Deaktywowano Xdmcp i nie zdefiniowano lokalnych serwerów. "
-"Aby pozwoliæ na konfiguracjê, zosta³ dodany /usr/bin/X11/X na ekranie :0!"
+"%s: Deaktywowano Xdmcp i nie zdefiniowano lokalnych serwerów. Aby pozwoliæ "
+"na konfiguracjê, zosta³ dodany /usr/bin/X11/X na ekranie :%d!"
 
 #: daemon/gdm.c:1
 msgid ""
@@ -293,16 +301,6 @@ msgid "Failed to restart self"
 msgstr "Nie mo¿na zrestartowaæ programu"
 
 #: daemon/gdm.c:1
-#, c-format
-msgid "%s: Could not make FIFO"
-msgstr "%s: Nie mo¿na stworzyæ kolejki FIFO"
-
-#: daemon/gdm.c:1
-#, c-format
-msgid "%s: Could not open FIFO"
-msgstr "%s: Nie mo¿na otworzyæ kolejki FIFO"
-
-#: daemon/gdm.c:1
 msgid "Only root wants to run gdm\n"
 msgstr "Tylko nadzorca mo¿e uruchamiaæ gdm\n"
 
@@ -334,6 +332,21 @@ msgstr "%s: B³±d przy ustalaniu obs³ugi przerwania USR1"
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: B³±d przy ustalaniu obs³ugi przerwania CHLD"
+
+#. Don't print the name to syslog as it might be
+#. * long and dangerous
+#: daemon/gdm.c:1
+msgid "Unknown server type requested, using standard server."
+msgstr "Nieznany typ serwera, wykorzystano serwer standardowy."
+
+#: daemon/gdm.c:1
+#, c-format
+msgid ""
+"Requested server %s not allowed to be used for flexible servers, using "
+"standard server."
+msgstr ""
+"Serwer %s nie mo¿e byæ u¿ywany przez zagnie¿d¿one serwery. Wykorzystano "
+"serwer domy¶lny."
 
 #. Really no need to clean up here - this process is a goner anyway
 #: daemon/auth.c:1 daemon/auth.c:1
@@ -439,6 +452,11 @@ msgstr ""
 
 #: daemon/server.c:1
 #, c-format
+msgid "Display '%s' cannot be opened by Xnest"
+msgstr "Xnest nie mo¿e otworzyæ ekranu \"%s\""
+
+#: daemon/server.c:1
+#, c-format
 msgid "Display %s is busy, there is another X server already running"
 msgstr "Ekran %s jest zajêty, uruchomiony jest na nim inny serwer X"
 
@@ -478,6 +496,16 @@ msgstr "gdm_server_spawn: B³±d przy ustawianiu HUP na SIG_DFL"
 #: daemon/server.c:1
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr "gdm_server_spawn: B³±d przy ustawianiu TERM na SIG_DFL"
+
+#: daemon/server.c:1
+#, c-format
+msgid "Invalid server command '%s'"
+msgstr "Niepoprawne polecenie serwera \"%s\""
+
+#: daemon/server.c:1
+#, c-format
+msgid "Server name '%s' not found, using standard server"
+msgstr "Nie odnaleziono serwera o nazwie \"%s\", wykorzystano standardowy"
 
 #: daemon/server.c:1
 #, c-format
@@ -1144,6 +1172,26 @@ msgid "gdm_error_box: Cannot fork to display error/info box"
 msgstr ""
 "gdm_error_box: Nie mo¿na stworzyæ procesu aby wy¶wietliæ okno z "
 "b³êdem/ostrze¿eniem"
+
+#: daemon/gdm-net.c:1
+#, c-format
+msgid "%s: Could not make socket"
+msgstr "%s: Nie mo¿na stworzyæ gniazda"
+
+#: daemon/gdm-net.c:1
+#, c-format
+msgid "%s: Could not bind socket"
+msgstr "%s: Nie mo¿na powi±zaæ gniazda z adresem"
+
+#: daemon/gdm-net.c:1
+#, c-format
+msgid "%s: Could not make FIFO"
+msgstr "%s: Nie mo¿na stworzyæ kolejki FIFO"
+
+#: daemon/gdm-net.c:1
+#, c-format
+msgid "%s: Could not open FIFO"
+msgstr "%s: Nie mo¿na otworzyæ kolejki FIFO"
 
 #: gui/gdmphotosetup.c:1
 msgid ""
@@ -3318,6 +3366,92 @@ msgstr ""
 msgid "Information"
 msgstr "Informacja"
 
+#: gui/gdmXnestchooser.c:1
+msgid ""
+"Xnest doesn't exist.\n"
+"Please ask your system administrator\n"
+"to install it."
+msgstr ""
+"Xnest nie istnieje.\n"
+"Zwróæ siê o jego zainstalowanie do\n"
+"administratora systemu."
+
+#: gui/gdmXnestchooser.c:1
+msgid ""
+"Indirect XDMCP is not enabled,\n"
+"please ask your system administrator to enable it\n"
+"in the GDM configurator program."
+msgstr ""
+"Po¶rednie XDMCP nie jest aktywne.\n"
+"Zwróæ siê do administratora systemu o jego uaktywnienie za pomoc± programu "
+"konfiguracyjnego GDM-a."
+
+#: gui/gdmXnestchooser.c:1 gui/gdmflexiserver.c:1
+msgid ""
+"GDM is not running.\n"
+"Please ask your system administrator to start it."
+msgstr ""
+"GDM nie jest uruchomiony.\n"
+"Zwróæ siê do administratora systemu o uruchomienie go."
+
+#: gui/gdmXnestchooser.c:1
+msgid "Could not find a free display number"
+msgstr "Nie mo¿na odnale¼æ wolnego numeru ekranu"
+
+#: gui/gdmflexiserver.c:1
+msgid "Xnest mode"
+msgstr "Tryb Xnest"
+
+#: gui/gdmflexiserver.c:1 gui/gdmflexiserver.c:1 gui/gdmflexiserver.c:1
+msgid "Cannot communicate with gdm, perhaps you have an old version running."
+msgstr ""
+"Nie mo¿na nawi±zaæ komunikacji z GDM-em, byæ mo¿e uruchomiona jest stara "
+"wersja."
+
+#: gui/gdmflexiserver.c:1
+msgid "The allowed limit of flexible X servers reached."
+msgstr "Osi±gniêto ograniczenie liczby uruchomionych zagnie¿d¿onych serwerów."
+
+#: gui/gdmflexiserver.c:1
+msgid "There were errors trying to start the X server."
+msgstr "Przy próbie uruchomienia serwera X wyst±pi³y b³êdy."
+
+#: gui/gdmflexiserver.c:1
+msgid "The X server failed.  Perhaps it is not configured well."
+msgstr "Serwer X zwróci³ b³±d.  Byæ mo¿e nie jest on poprawnie skonfigurowany."
+
+#: gui/gdmflexiserver.c:1
+msgid "Too many X sessions running."
+msgstr "Zbyt wiele uruchomionych sesji X."
+
+#: gui/gdmflexiserver.c:1
+msgid ""
+"The nested X server (Xnest) cannot connect to your current X server.  You "
+"may be missing an X authorization file."
+msgstr ""
+"Zagnie¿d¿ony serwer X (Xnest) nie mo¿e nawi±zaæ po³±czenia z bie¿±cym "
+"serwerem. Byæ mo¿e brakuje pliku autoryzacji X."
+
+#: gui/gdmflexiserver.c:1
+msgid ""
+"The nested X server (Xnest) is not available, or gdm is badly configured.\n"
+"Please install the Xnest package in order to use the nested login."
+msgstr ""
+"Nie jest dostêpny zagnie¿d¿ony serwer X (Xnest) lub GDM jest niew³a¶ciwie "
+"skonfigurowany.\n"
+"Przed u¿yciem zagnie¿d¿onego logowania zainstaluj pakiet Xnest."
+
+#: gui/gdmflexiserver.c:1
+msgid ""
+"The X server is not available, it is likely that gdm is badly configured."
+msgstr ""
+"Serwer X nie jest dostêpny, prawdopodobnie GDM zosta³ niew³a¶ciwie "
+"skonfigurowany."
+
+#: gui/gdmflexiserver.c:1
+msgid "Unknown error occured."
+msgstr "Wyst±pi³ nieznany b³±d."
+
 #: gui/gdmconfig.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr "Aplikacja pozwalaj±ca na konfiguracjê Mened¿era Ekranu GNOME (GDM)"
@@ -3336,6 +3470,22 @@ msgid ""
 msgstr ""
 "Ustawienie obrazu, który bdzie wy¶wietlany przez GDM-a w przegl±darce "
 "obrazów twarzy"
+
+#: gui/gdmflexiserver.desktop.in.h:1
+msgid "Log in as another user without loging out"
+msgstr "Logowanie jako inny u¿ytkownik bez wylogowywania siê"
+
+#: gui/gdmflexiserver.desktop.in.h:1
+msgid "New login"
+msgstr "Nowy login"
+
+#: gui/gdmflexiserver-xnest.desktop.in.h:1
+msgid "Log in as another user inside a nested window"
+msgstr "Logowanie jako inny u¿ytkownik w zagnie¿d¿onym oknie"
+
+#: gui/gdmflexiserver-xnest.desktop.in.h:1
+msgid "New login in a nested window"
+msgstr "Nowy login w zagnie¿d¿onym oknie"
 
 #: vicious-extensions/glade-helper.c:1
 msgid "(memory buffer)"
