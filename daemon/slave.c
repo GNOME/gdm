@@ -116,7 +116,8 @@ static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);
 static void     gdm_slave_exit (gint status, const gchar *format, ...);
 static void     gdm_child_exit (gint status, const gchar *format, ...);
-static gint     gdm_slave_exec_script (GdmDisplay*, gchar *dir);
+static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
+				       const char *login, struct passwd *pwent);
 
 
 /* Yay thread unsafety */
@@ -240,7 +241,7 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 
 	/* Run the init script. gdmslave suspends until script
 	 * has terminated */
-	gdm_slave_exec_script (display, GdmDisplayInit);
+	gdm_slave_exec_script (display, GdmDisplayInit, NULL, NULL);
 
 	gdm_debug ("gdm_slave_start: DisplayInit script finished");
 }
@@ -815,7 +816,7 @@ gdm_slave_greeter (void)
     gdm_debug ("gdm_slave_greeter: Running greeter on %s", d->name);
     
     /* Run the init script. gdmslave suspends until script has terminated */
-    gdm_slave_exec_script (d, GdmDisplayInit);
+    gdm_slave_exec_script (d, GdmDisplayInit, NULL, NULL);
 
     /* Open a pipe for greeter communications */
     if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
@@ -1378,23 +1379,12 @@ gdm_slave_session_start (void)
 
     /* setup some env for PreSession script */
     gdm_setenv ("DISPLAY", d->name);
-    gdm_setenv ("LOGNAME", login);
-    gdm_setenv ("USER", login);
-    gdm_setenv ("USERNAME", login);
-    gdm_setenv ("HOME", pwent->pw_dir);
-    gdm_setenv ("SHELL", pwent->pw_shell);
 
     /* If script fails reset X server and restart greeter */
-    if (gdm_slave_exec_script (d, GdmPreSession) != EXIT_SUCCESS) 
+    if (gdm_slave_exec_script (d, GdmPreSession,
+			       login, pwent) != EXIT_SUCCESS) 
 	gdm_slave_exit (DISPLAY_REMANAGE,
 			_("gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."));
-
-    /* set things back to moi, for lack of confusion */
-    gdm_setenv ("LOGNAME", GdmUser);
-    gdm_setenv ("USER", GdmUser);
-    gdm_setenv ("USERNAME", GdmUser);
-    gdm_setenv ("HOME", "/");
-    gdm_setenv ("SHELL", "/bin/sh");
 
     /* Setup cookie -- We need this information during cleanup, thus
      * cookie handling is done before fork()ing */
@@ -1695,10 +1685,15 @@ gdm_slave_session_stop (pid_t sesspid)
     
     pwent = getpwnam (local_login);	/* PAM overwrites our pwent */
 
-    g_free (local_login);
+    /* Execute post session script */
+    gdm_debug ("gdm_slave_session_cleanup: Running post session script");
+    gdm_slave_exec_script (d, GdmPostSession, local_login, pwent);
 
-    if (!pwent)
-	return;
+    if (pwent == NULL) {
+	    return;
+    }
+
+    g_free (local_login);
     
     /* Remove display from ~user/.Xauthority */
     setegid (pwent->pw_gid);
@@ -1719,10 +1714,6 @@ gdm_slave_session_cleanup (void)
     g_free (login);
     login = NULL;
     
-    /* Execute post session script */
-    gdm_debug ("gdm_slave_session_cleanup: Running post session script");
-    gdm_slave_exec_script (d, GdmPostSession);
-
     /* things are going to be killed, so ignore errors */
     XSetErrorHandler (ignore_xerror_handler);
     XSetIOErrorHandler (ignore_xioerror_handler);
@@ -1881,6 +1872,7 @@ gdm_slave_xioerror_handler (Display *disp)
 		d->greetpid = 0;
 	} else if (login != NULL) {
 		gdm_slave_session_stop (d->sesspid);
+		gdm_slave_session_cleanup ();
 	}
     
 	gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
@@ -1996,7 +1988,8 @@ gdm_child_exit (gint status, const gchar *format, ...)
 }
 
 static gint
-gdm_slave_exec_script (GdmDisplay *d, gchar *dir)
+gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
+		       struct passwd *pwent)
 {
     pid_t pid;
     gchar *script, *defscript, *scr;
@@ -2019,6 +2012,23 @@ gdm_slave_exec_script (GdmDisplay *d, gchar *dir)
     switch (pid = fork()) {
 	    
     case 0:
+        if (login != NULL) {
+	        gdm_setenv ("LOGNAME", login);
+	        gdm_setenv ("USER", login);
+	        gdm_setenv ("USERNAME", login);
+        } else {
+	        gdm_setenv ("LOGNAME", GdmUser);
+	        gdm_setenv ("USER", GdmUser);
+	        gdm_setenv ("USERNAME", GdmUser);
+        }
+        if (pwent != NULL) {
+	        gdm_setenv ("HOME", pwent->pw_dir);
+	        gdm_setenv ("SHELL", pwent->pw_shell);
+        } else {
+	        gdm_setenv ("HOME", "/");
+	        gdm_setenv ("SHELL", "/bin/sh");
+        }
+
 	gdm_setenv ("XAUTHORITY", d->authfile);
         gdm_setenv ("DISPLAY", d->name);
 	gdm_setenv ("PATH", GdmRootPath);
