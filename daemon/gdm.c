@@ -49,9 +49,6 @@
 #include "errorgui.h"
 #include "gdm-net.h"
 
-static const gchar RCSid[]="$Id$";
-
-
 /* Local functions */
 static void gdm_config_parse (void);
 static void gdm_handle_message (GdmConnection *conn,

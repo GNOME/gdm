@@ -35,8 +35,6 @@
 #include "choose.h"
 #include "gdm-net.h"
 
-static const gchar RCSid[]="$Id$";
-
 /* External vars */
 extern gboolean GdmXdmcp;
 extern gint sessions;

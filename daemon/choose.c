@@ -43,8 +43,6 @@
 #include "choose.h"
 #include "xdmcp.h"
 
-static const gchar RCSid[]="$Id$";
-
 static gint ipending = 0;
 static GSList *indirect = NULL;
 

@@ -37,8 +37,6 @@
 #include "misc.h"
 #include "gdm-net.h"
 
-static const gchar RCSid[]="$Id$";
-
 /* Kind of a weird setup, new connections whack old connections */
 #define MAX_CONNECTIONS 10
 

@@ -31,9 +31,6 @@
 #include "verify.h"
 #include "errorgui.h"
 
-static const gchar RCSid[]="$Id$";
-
-
 /* Configuration option variables */
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;

@@ -32,8 +32,6 @@
 #include "gdmwm.h"
 #include "gdm.h"
 
-static const gchar RCSid[]="$Id$";
-
 typedef struct _GdmWindow GdmWindow;
 struct _GdmWindow {
 	int x, y;

@@ -44,8 +44,6 @@
 #include "auth.h"
 #include "slave.h"
 
-static const gchar RCSid[]="$Id$";
-
 #define SERVER_WAIT_ALARM 10
 
 

@@ -33,9 +33,6 @@
 #include "slave.h"
 #include "verify.h"
 
-static const gchar RCSid[]="$Id$";
-
-
 /* Configuration option variables */
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;

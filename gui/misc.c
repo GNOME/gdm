@@ -22,8 +22,6 @@
 
 #include "misc.h"
 
-static const gchar RCSid[]="$Id$";
-
 /* For now empty */
 
 /* EOF */

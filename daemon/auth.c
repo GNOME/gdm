@@ -34,9 +34,6 @@
 #include "filecheck.h"
 #include "auth.h"
 
-static const gchar RCSid[]="$Id$";
-
-
 /* Local prototypes */
 static void gdm_auth_purge (GdmDisplay *d, FILE *af);
 

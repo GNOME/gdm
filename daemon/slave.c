@@ -58,8 +58,6 @@
 #include "errorgui.h"
 
 
-static const gchar RCSid[]="$Id$";
-
 /* Some per slave globals */
 static GdmDisplay *d;
 static gchar *login = NULL;

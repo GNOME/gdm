@@ -51,8 +51,6 @@
  * within the protocol */
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 
-static const gchar RCSid[]="$Id$";
-
 /* Some strings that are in other files that we may want to
  * translate.  This is not actually used anywhere, it's just
  * to have gettext know about these strings. */
