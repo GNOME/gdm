@@ -60,14 +60,14 @@ GdmDisplay *d;
 sigset_t mask, omask;
 
 
-void 
+void
 gdm_server_start(GdmDisplay *disp)
-{    
+{
     struct sigaction usr1;
     sigset_t usr1mask;
-    int logfd;
     gchar *srvcmd=NULL;
     gchar **argv=NULL;
+    int logfd;
     
     d=disp;
 
@@ -90,7 +90,7 @@ gdm_server_start(GdmDisplay *disp)
     /* Log all output from spawned programs to a file */
     logfd=open(g_strconcat(GdmLogDir, "/", d->name, ".log", NULL),
 	       O_CREAT|O_TRUNC|O_APPEND|O_WRONLY, 0666);
-
+    
     if(logfd != -1) {
 	dup2(logfd, 1);
 	dup2(logfd, 2);

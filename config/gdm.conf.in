@@ -31,7 +31,7 @@ SessionDir=@sysconfdir@/gdm/Sessions
 PidFile=/var/run/gdm.pid
 Greeter=@bindir@/gdmlogin --disable-sound
 Chooser=@bindir@/gdmchooser --disable-sound
-User=nobody
+User=gdm
 Group=gdm
 DisplayInitDir=@sysconfdir@/gdm/Init
 KillInitClients=1
@@ -46,7 +46,6 @@ LogDir=@authdir@
 
 [xdmcp]
 Enable=1
-MaxLoadAvg=10
 MaxPending=4
 MaxManageWait=20
 MaxSessions=4

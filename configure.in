@@ -66,6 +66,7 @@ for I in $LDFLAGS $LIBS -L/usr/lib; do
 done
 if test -n "$LIBWRAP_PATH"; then
 	AC_MSG_RESULT(yes)
+	AC_HAVE_LIBRARY(nsl, LIBS="$LIBS -lnsl")
 else
 	AC_MSG_RESULT(no)
 fi

@@ -141,6 +141,7 @@ void gdm_xdmcp_run(void);
 void gdm_xdmcp_close(void);
 static void gdm_xdmcp_decode_packet (void);
 static void gdm_xdmcp_handle_query  (struct sockaddr_in *clnt_sa, gint len, gint type);
+static void gdm_xdmcp_handle_forward_query(struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_request(struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len);
@@ -246,13 +247,15 @@ gdm_xdmcp_decode_packet(void)
 	break;
 	
     case INDIRECT_QUERY:
+	gdm_xdmcp_handle_query(&clnt_sa, header.length, INDIRECT_QUERY);
 	break;
 	
     case FORWARD_QUERY:
+	gdm_xdmcp_handle_forward_query(&clnt_sa, header.length);
 	break;
 	
     case REQUEST:
-	/* Free pending displays if */
+	/* Purge pending displays */
 	gdm_xdmcp_displays_check();
 
 	gdm_xdmcp_handle_request(&clnt_sa, header.length);
@@ -280,23 +283,23 @@ gdm_xdmcp_handle_query(struct sockaddr_in *clnt_sa, gint len, gint type)
     ARRAYofARRAY8 clnt_authlist;
     gint i, explen=1;
 
-    gdm_debug("gdm_xdmcp_query: Opcode %d from %s", 
+    gdm_debug("gdm_xdmcp_handle_query: Opcode %d from %s", 
 	      type, inet_ntoa(clnt_sa->sin_addr));
 
     /* Extract array of authentication names from Xdmcp packet */
     if(!XdmcpReadARRAYofARRAY8(&buf, &clnt_authlist)) {
-	gdm_error(_("gdm_xdmcp_query: Could not extract authlist from packet")); 
+	gdm_error(_("gdm_xdmcp_handle_query: Could not extract authlist from packet")); 
 	return;
     }
 
     /* Crude checksumming */
     for(i=0 ; i<clnt_authlist.length ; i++) {
-	gdm_debug("gdm_xdmcp_query: authlist: %s", clnt_authlist.data);
+	gdm_debug("gdm_xdmcp_handle_query: authlist: %s", clnt_authlist.data);
 	explen += 2+clnt_authlist.data[i].length;
     }
 
     if(len!=explen) {
-	gdm_error(_("gdm_xdmcp_query: Error in checksum")); 
+	gdm_error(_("gdm_xdmcp_handle_query: Error in checksum")); 
 	return;
     }
 
@@ -308,6 +311,80 @@ gdm_xdmcp_handle_query(struct sockaddr_in *clnt_sa, gint len, gint type)
 	gdm_xdmcp_send_willing(clnt_sa);
     else
 	gdm_xdmcp_send_unwilling(clnt_sa, type);
+}
+
+
+static void 
+gdm_xdmcp_handle_forward_query(struct sockaddr_in *clnt_sa, gint len)
+{
+    ARRAY8 clnt_addr;
+    ARRAY8 clnt_port;
+    ARRAYofARRAY8 clnt_authlist;
+    gint i, explen=1;
+    static struct sockaddr_in *disp_sa;
+    guint port=0;
+    struct in_addr ia;
+
+    gdm_debug("gdm_xdmcp_handle_forward_query: ForwardQuery from %s", 
+	      inet_ntoa(clnt_sa->sin_addr));
+
+    /* Read display address */
+    if(!XdmcpReadARRAY8 (&buf, &clnt_addr)) {
+	gdm_error(_("gdm_xdmcp_handle_forward_query: Could not read display address"));
+	return;
+    }
+
+    /* Read display port */
+    if(!XdmcpReadARRAY8 (&buf, &clnt_port)) {
+	gdm_error(_("gdm_xdmcp_handle_forward_query: Could not read display port number"));
+	return;
+    }
+
+    /* Extract array of authentication names from Xdmcp packet */
+    if(!XdmcpReadARRAYofARRAY8(&buf, &clnt_authlist)) {
+	gdm_error(_("gdm_xdmcp_handle_forward_query: Could not extract authlist from packet")); 
+	return;
+    }
+
+    /* Crude checksumming */
+    explen=1;
+    explen+=2+clnt_addr.length;
+    explen+=2+clnt_port.length;
+
+    for(i=0 ; i<clnt_authlist.length ; i++) {
+	gdm_debug("gdm_xdmcp_handle_forward_query: authlist: %s", clnt_authlist.data);
+	explen += 2+clnt_authlist.data[i].length;
+    }
+
+    if(len!=explen) {
+	gdm_error(_("gdm_xdmcp_handle_forward_query: Error in checksum")); 
+	return;
+    }
+
+    /* Find client port number */
+    for(i=0 ; i<clnt_port.length ; i++)
+	port=port*256+clnt_port.data[i];
+
+    /* Find client address. Ugly, uglu. Endianness sucks... */
+    memmove(&ia.s_addr, clnt_addr.data, clnt_addr.length);
+
+    gdm_debug("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY from display: %s, port %d", 
+	      inet_ntoa(ia), port);
+
+    /* Assemble sockaddr_in struct to pass on */
+    disp_sa=g_new0(struct sockaddr_in, 1);
+    disp_sa->sin_family = AF_INET;
+    disp_sa->sin_port = htons(port);
+    disp_sa->sin_addr.s_addr = ia.s_addr;
+
+    /* Cleanup */
+    XdmcpDisposeARRAYofARRAY8(&clnt_authlist);
+
+    /* Check with tcp_wrappers if display is allowed to access */
+    if(gdm_xdmcp_host_allow(disp_sa)) 
+	gdm_xdmcp_send_willing(disp_sa);
+    else
+	gdm_xdmcp_send_unwilling(disp_sa, FORWARD_QUERY);
 }
 
 
@@ -835,10 +912,10 @@ gdm_xdmcp_displays_check(void)
     while(dlist) {
 	d=(GdmDisplay *)dlist->data;
 
-	if(d && 
-	   d->type==DISPLAY_XDMCP && 
+	if(d &&
+	   d->type==DISPLAY_XDMCP &&
 	   d->dispstat==XDMCP_PENDING &&
-	   time(NULL) > d->acctime + GdmMaxManageWait) 
+	   time(NULL) > d->acctime + GdmMaxManageWait)
 	{
 	    gdm_debug("gdm_xdmcp_displays_check: Disposing session id %d",
 		      d->sessionid);

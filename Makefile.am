@@ -1,4 +1,4 @@
-SUBDIRS = config macros pixmaps gui daemon docs intl po
+SUBDIRS = config macros pixmaps daemon gui docs intl po
 
 EXTRA_DIST = ChangeLog README.install gdm.spec
 

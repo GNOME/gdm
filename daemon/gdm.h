@@ -42,16 +42,16 @@
 #define XDMCP_PENDING 1
 #define XDMCP_MANAGED 2
 
-#define GDM_MSGERR 'M'
-#define GDM_NOECHO 'K'
-#define GDM_PROMPT 'P'
-#define GDM_SESS   '.'
-#define GDM_LANG   'N'
-#define GDM_SSESS  'E'
-#define GDM_SLANG  'T'
-#define GDM_RESET  '!'
-#define GDM_QUIT   'Q'
-
+#define GDM_MSGERR 'D'
+#define GDM_NOECHO 'U'
+#define GDM_PROMPT 'N'
+#define GDM_SESS   'G'
+#define GDM_LANG   '&'
+#define GDM_SSESS  'C'
+#define GDM_SLANG  'R'
+#define GDM_RESET  'A'
+#define GDM_QUIT   'P'
+#define GDM_STOP   '!'
 
 #define FIELD_SIZE 64
 #define PIPE_SIZE 1024

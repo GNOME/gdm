@@ -116,8 +116,9 @@ static struct pam_conv pamc = {
 gchar *
 gdm_verify_user (gchar *display) 
 {
-    gint pamerr;
+    gint pamerr, i;
     gchar *login;
+    gchar **pamenv;
     struct passwd *pwent;
 
     login=gdm_slave_greeter_ctl(GDM_PROMPT, _("Login:"));
@@ -143,7 +144,7 @@ gdm_verify_user (gchar *display)
 	    gdm_slave_greeter_ctl(GDM_MSGERR, _("Root login disallowed"));
 
 	return(NULL);
-    }	
+    }
 
     if((pamerr=pam_start("gdm", login, &pamc, &pamh)) != PAM_SUCCESS) {
 	gdm_error(_("Can't find /etc/pam.d/gdm!"));
@@ -172,6 +173,12 @@ gdm_verify_user (gchar *display)
     if((pamerr=pam_open_session(pamh, 0)) != PAM_SUCCESS) {
 	gdm_error(_("Couldn't open session for %s"), login);
 	goto pamerr;
+    }
+
+    if((pamenv=pam_getenvlist(pamh))) {
+	for(i=0 ; pamenv[i] ; i++) {
+            putenv(pamenv[i]);
+        }
     }
 
     return(login);

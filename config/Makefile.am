@@ -26,13 +26,13 @@ gnomerc: gnomerc.in Makefile
 	    < $(srcdir)/gnomerc.in > gnomerc.tmp \
 	    && mv -f gnomerc.tmp gnomerc
 
-conf_SCRIPTS = gdm.conf
 locale_SCRIPTS = locale.alias
 gnomerc_SCRIPTS = gnomerc
 sess_SCRIPTS = Gnome Xsession
 init_SCRIPTS = Default
 
 EXTRA_DIST = \
+	gdm.conf \
 	gdm.conf.in \
 	Gnome.in \
 	gnomerc.in \
@@ -45,6 +45,9 @@ install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -d $(confdir); then \
 		$(mkinstalldirs) $(confdir); \
 		chmod 755 $(confdir); \
+	fi
+	if test '!' -f $(confdir)/gdm.conf; then \
+		$(INSTALL_DATA) gdm.conf $(confdir)/gdm.conf; \
 	fi
 	if test '!' -d $(sessdir); then \
 		$(mkinstalldirs) $(sessdir); \
