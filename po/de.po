@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.2.1\n"
-"POT-Creation-Date: 2001-05-04 16:18-0700\n"
-"PO-Revision-Date: 2001-04-01 22:37+0100\n"
+"POT-Creation-Date: 2001-05-05 16:40+0200\n"
+"PO-Revision-Date: 2001-05-05 16:38+0200\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -121,9 +121,10 @@ msgid ""
 msgstr ""
 
 #: daemon/gdm.c:454
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_child_action: Reboot or Halt request from a non-local display %s"
-msgstr "gdm_child_action: Abbruch von Display %s"
+msgstr ""
+"gdm_child_action: Reboot- oder Halt-Anfrage von einem fernen Display %s"
 
 #. Bury this display for good
 #: daemon/gdm.c:462
@@ -420,9 +421,9 @@ msgid ""
 msgstr ""
 
 #: daemon/slave.c:1136
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_session_start: Could not find session `%s'"
-msgstr "gdm_slave_session_init: Sitzung '%s' konnte nicht gestartet werden"
+msgstr "gdm_slave_session_start: Sitzung '%s' konnte nicht gefunden werden"
 
 #: daemon/slave.c:1140
 msgid ""
@@ -761,9 +762,8 @@ msgstr ""
 #. default is nicely translated
 #. Translators: default GNOME session
 #: gui/gdmlogin.c:54 gui/gdmlogin.c:1623 gui/gdmlogin.c:1645
-#, fuzzy
 msgid "Default"
-msgstr "Schrift (Vorgabe): "
+msgstr "Vorgabe"
 
 #: gui/gdmlogin.c:55
 msgid "Failsafe"
@@ -778,18 +778,16 @@ msgid "KDE"
 msgstr ""
 
 #: gui/gdmlogin.c:58
-#, fuzzy
 msgid "XSession"
-msgstr "Sitzung"
+msgstr "XSitzung"
 
 #. Add the chooser session, this one doesn't have a script
 #. * really, it's a fake, it runs the Gnome script
 #. For translators:  This is the login that lets users choose the
 #. * specific gnome session they want to use
 #: gui/gdmlogin.c:59 gui/gdmlogin.c:1331
-#, fuzzy
 msgid "Gnome Chooser"
-msgstr "Auswähler"
+msgstr "Gnome-Auswähler"
 
 #: gui/gdmlogin.c:60
 msgid "Last"
@@ -925,9 +923,8 @@ msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Icon-Datei kann nicht geöffnet werden: %s. Minimierung nicht möglich!"
 
 #: gui/gdmlogin.c:2369
-#, fuzzy
 msgid "GDM Login"
-msgstr "Login:"
+msgstr "GDM-Login"
 
 #: gui/gdmlogin.c:2413
 msgid "Session"
@@ -938,9 +935,8 @@ msgid "Language"
 msgstr "Sprache"
 
 #: gui/gdmlogin.c:2435
-#, fuzzy
 msgid "Configure..."
-msgstr "_Konfiguration"
+msgstr "Konfigurieren..."
 
 #: gui/gdmlogin.c:2443
 msgid "Reboot..."
@@ -1017,7 +1013,6 @@ msgstr ""
 "müssen."
 
 #: gui/gdmconfig.c:60
-#, fuzzy
 msgid ""
 "This panel displays the more advanced options of GDM.\n"
 "\n"
@@ -1031,7 +1026,7 @@ msgstr ""
 "Passen Sie auf wenn Sie die Sicherheitsoptionen ändern. Ihr System könnte so "
 "unsicher gegenüber Angriffen werden.\n"
 "\n"
-"Wählen Sie \"System Setup\" um grundlegende Optionen in GDM zu ändern."
+"Wählen Sie \"System\" um grundlegende Optionen in GDM zu ändern."
 
 #: gui/gdmconfig.c:66
 msgid ""
@@ -1082,12 +1077,12 @@ msgid "GNOME Display Manager Configurator"
 msgstr "Konfiguration für GNOME Display Manager"
 
 #: gui/gdmconfig.c:322
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The configuration file: %s\n"
 "does not exist! Using default values."
 msgstr ""
-"\n"
+"Die Konfigurationsdatei: %s\n"
 "existiert nicht! Vorgabewerte werden verwendet."
 
 #: gui/gdmconfig.c:497
@@ -1139,44 +1134,59 @@ msgstr ""
 "wurde."
 
 #: gui/gdmconfig.c:832
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not delete session %s\n"
 "   Error: %s"
-msgstr "Sitzung für %s konnte nicht geöffnet werden"
+msgstr ""
+"\n"
+"Sitzung %s konnte nicht gelöscht werden\n"
+"    Fehler: %s"
 
 #: gui/gdmconfig.c:868
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not remove session %s\n"
 "   Error: %s"
-msgstr "Sitzung für %s konnte nicht geöffnet werden"
+msgstr ""
+"\n"
+"Sitzung %s konnte nicht entfernt werden\n"
+"    Fehler: %s"
 
 #: gui/gdmconfig.c:912
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not write session %s\n"
 "   Error: %s"
-msgstr "Sitzung für %s konnte nicht geöffnet werden"
+msgstr ""
+"\n"
+"Sitzung %s konnte nicht geschrieben werden\n"
+"    Fehler: %s"
 
 #: gui/gdmconfig.c:923
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not write contents to session %s\n"
 "   Error: %s"
-msgstr "Sitzung für %s konnte nicht geöffnet werden"
+msgstr ""
+"\n"
+"Inhalt konnte nicht in Sitzung %s gespeichert werden\n"
+"    Fehler: %s"
 
 #: gui/gdmconfig.c:949
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not unlink old default session\n"
 "   Error: %s"
-msgstr "Sitzung für %s konnte nicht geöffnet werden"
+msgstr ""
+"\n"
+"Alte Sitzung konnte nicht abgetrennt werden\n"
+"    Fehler: %s"
 
 #: gui/gdmconfig.c:988
 msgid ""
@@ -1185,12 +1195,15 @@ msgid ""
 msgstr ""
 
 #: gui/gdmconfig.c:997
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not link new default session\n"
 "   Error: %s"
-msgstr "Sitzung für %s konnte nicht geöffnet werden"
+msgstr ""
+"\n"
+"Voreingestellte Sitzung konnte nicht verknüpft werden\n"
+"    Fehler: %s"
 
 #: gui/gdmconfig.c:1017
 msgid ""
@@ -1495,14 +1508,12 @@ msgid "The program to run in the background of the login."
 msgstr ""
 
 #: gui/gdmconfig-strings.c:71 gui/gdmconfig-strings.c:78
-#, fuzzy
 msgid "Automatic login"
-msgstr "Automatischer Login: "
+msgstr "Automatischer Login"
 
 #: gui/gdmconfig-strings.c:72
-#, fuzzy
 msgid "Automatic login: "
-msgstr "Automatischer Login: "
+msgstr "Automatischer Login:"
 
 #: gui/gdmconfig-strings.c:73
 msgid "User to log in automatically on first bootup."
@@ -1510,12 +1521,11 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:74
 msgid "Timed login"
-msgstr ""
+msgstr "Zeitgesteuerter Login"
 
 #: gui/gdmconfig-strings.c:75
-#, fuzzy
 msgid "Timed login: "
-msgstr "Minimiertes Icon: "
+msgstr "Zeitgesteuerter Login:"
 
 #: gui/gdmconfig-strings.c:76
 msgid "User to log in automatically after the specified number of seconds."
@@ -1544,9 +1554,8 @@ msgid ""
 msgstr ""
 
 #: gui/gdmconfig-strings.c:84
-#, fuzzy
 msgid "Allow root to login remotely with GDM"
-msgstr "root erlauben sich mit GDM anzumelden"
+msgstr "Es root erlauben sich entfernt mit GDM anzumelden"
 
 #: gui/gdmconfig-strings.c:85
 msgid ""
@@ -1649,9 +1658,8 @@ msgid "Maximum user file length: "
 msgstr "Maximale Länge der Benutzerdatei: "
 
 #: gui/gdmconfig-strings.c:108
-#, fuzzy
 msgid "Maximum session file length: "
-msgstr "Maximale Länge der Benutzerdatei: "
+msgstr "Maximum session file length: "
 
 #: gui/gdmconfig-strings.c:109
 msgid ""
@@ -1740,9 +1748,8 @@ msgid "X-server setup"
 msgstr "Setup für X-Server"
 
 #: gui/gdmconfig-strings.c:130
-#, fuzzy
 msgid "Session configuration"
-msgstr "_Konfiguration"
+msgstr "Sitzungskonfiguration"
 
 #: gui/gdmconfig-strings.c:131
 msgid "Session directory: "
@@ -1757,23 +1764,20 @@ msgid "Available Sessions"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:134
-#, fuzzy
 msgid "Add session"
-msgstr "Sitzung"
+msgstr "Sitzung hinzufügen"
 
 #: gui/gdmconfig-strings.c:135
-#, fuzzy
 msgid "Remove session"
-msgstr "Einstellungen zurücknehmen"
+msgstr "Sitzung entfernen"
 
 #: gui/gdmconfig-strings.c:136
 msgid "Set as default"
-msgstr ""
+msgstr "Als Vorgabe einstellen"
 
 #: gui/gdmconfig-strings.c:137
-#, fuzzy
 msgid "Selected session name: "
-msgstr "Wählen Sie wie lockere Rechte sein sollen"
+msgstr "Gewählter Sitzungsname: "
 
 #: gui/gdmconfig-strings.c:138
 msgid ""
@@ -1783,9 +1787,8 @@ msgid ""
 msgstr ""
 
 #: gui/gdmconfig-strings.c:142
-#, fuzzy
 msgid "Login sessions"
-msgstr "Login-Verhalten"
+msgstr ""
 
 #: gui/gdmconfig-strings.c:143
 msgid "system_setup"
@@ -1812,9 +1815,8 @@ msgid "Reboot command: "
 msgstr "Reboot-Kommando: "
 
 #: gui/gdmconfig-strings.c:149
-#, fuzzy
 msgid "Configurator command: "
-msgstr "Auswähler-Kommando: "
+msgstr "Kommando für Konfigurierer: "
 
 #: gui/gdmconfig-strings.c:150
 msgid "Directories"
@@ -1846,7 +1848,7 @@ msgstr "PID-Datei: "
 
 #: gui/gdmconfig-strings.c:157
 msgid "Default GNOME session file: "
-msgstr ""
+msgstr "Voreingestellte GNOME-Sitzungsdatei: "
 
 #: gui/gdmconfig-strings.c:158
 msgid "Paths"
@@ -1911,21 +1913,5 @@ msgstr ""
 "unter `gdm'-Produkt."
 
 #: gui/icon-entry-hack.c:234
-#, fuzzy
 msgid "Choose an icon"
-msgstr "Auswähler-Kommando: "
-
-#: gui/gdmconfig.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr ""
-
-#: gui/gdmconfig.desktop.in.h:2
-#, fuzzy
-msgid "GDM Configurator"
-msgstr "_Konfiguration"
-
-#~ msgid "No session scripts found. Aborting!"
-#~ msgstr "Keine Sitzungsskripte gefunden. Abbruch!"
-
-#~ msgid "The configuration file: "
-#~ msgstr "Die Konfigurationsdatei: "
+msgstr "Wählen Sie ein Icon aus"
