@@ -373,6 +373,30 @@ gdm_display_unmanage (GdmDisplay *d)
     gdm_debug ("gdm_display_unmanage: Display stopped");
 }
 
+/* Why recount?  It's just a lot more robust this way and
+   gets around those nasty one off errors and races.  And we never
+   have so many displays that this would get too slow. */
+static void
+count_session_limits (void)
+{
+	GSList *li;
+
+	xdmcp_sessions = 0;
+	xdmcp_pending = 0;
+	flexi_servers = 0;
+
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *d = li->data;
+		if (d->type == TYPE_XDMCP) {
+			if (d->dispstat == XDMCP_MANAGED)
+				xdmcp_sessions ++;
+			else if (d->dispstat == XDMCP_PENDING)
+				xdmcp_pending ++;
+		} else if (SERVER_IS_FLEXI (d)) {
+			flexi_servers ++;
+		}
+	}
+}
 
 /**
  * gdm_display_dispose:
@@ -405,17 +429,10 @@ gdm_display_dispose (GdmDisplay *d)
 
     displays = g_slist_remove (displays, d);
 
-    if (SERVER_IS_FLEXI (d))
-	    flexi_servers --;
+    d->dispstat = DISPLAY_DEAD;
+    d->type = -1;
 
-    if (d->type == TYPE_XDMCP) {
-	if (d->dispstat == XDMCP_MANAGED)
-		xdmcp_sessions--;
-	else if (d->dispstat == XDMCP_PENDING)
-		xdmcp_pending--;
-
-	d->type = -1;
-    }
+    count_session_limits ();
 
     if (d->name) {
 	gdm_debug ("gdm_display_dispose: Disposing %s", d->name);

@@ -1,3 +1,9 @@
+Wed Dec 10 15:33:09 2003  George Lebl <jirka@5z.com>
+
+	* daemon/display.c: Fix #126465 where xdmcp_sessions would not
+	  get decremented on normal logout.  Doh!  Just do a recount of
+	  all the limits on display dispose that is just a lot more robust.
+
 Fri Oct 17 10:54:12 2003  George Lebl <jirka@5z.com>
 
 	* Release 2.4.4.5
