@@ -3537,9 +3537,10 @@ gdm_slave_session_stop (gboolean run_post_session,
 static void
 gdm_slave_term_handler (int sig)
 {
+	static gboolean got_term_before = FALSE;
+
 	gdm_in_signal++;
 	gdm_wait_for_ack = FALSE;
-	static gboolean got_term_before = FALSE;
 
 	gdm_debug ("gdm_slave_term_handler: %s got TERM/INT signal", d->name);
 

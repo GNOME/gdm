@@ -466,7 +466,7 @@ gdm_connection_close (GdmConnection *conn)
 void
 gdm_connection_set_close_notify (GdmConnection *conn,
 				 gpointer close_data,
-				 gpointer close_notify)
+				 GDestroyNotify close_notify)
 {
 	g_return_if_fail (conn != NULL);
 

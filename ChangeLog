@@ -1,11 +1,21 @@
+Fri Jul 25 17:46:11 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c: fix C99/C++ism that gcc no longer warns about,
+	  anywhere declarations C++ style
+
+	* daemon/gdm.c: when reading with %02x use unsigned int
+
+	* daemon/gdm-net.[ch]: the connection close_notify should be of
+	  type GDestroyNotify
+
 Fri Jul 25 17:09:52 2003  George Lebl <jirka@5z.com>
 
-	* daemon/verify-pam.c: apparently pam can is on crack and so the
-	  best and apparently most portable way of handling the face browser
-	  is by reseting the pam handle after a user has been selected.
-	  This works just as well and we dump any possibly dangerous
-	  state from the pam handle's previous invocation of
-	  pam_authenticate
+	* daemon/verify-pam.c: apparently pam can be on crack and so the
+	  best and apparently most theoretically portable (to different
+	  module configs) way of handling the face browser is by reseting
+	  the pam handle after a user has been selected.  This works just
+	  as well and we dump any possibly dangerous state from the pam
+	  handle's previous invocation of pam_authenticate.
 
 Fri Jul 25 16:31:24 2003  George Lebl <jirka@5z.com>
 

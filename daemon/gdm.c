@@ -2523,7 +2523,7 @@ dehex_cookie (const char *cookie, int *len)
 	for (i = 0, p = cookie;
 	     *p != '\0' && *(p+1) != '\0';
 	     i++, p += 2) {
-		int num;
+		unsigned int num;
 		if (sscanf (p, "%02x", &num) != 1) {
 			g_free (bcookie);
 			return NULL;

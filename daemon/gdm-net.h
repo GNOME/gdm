@@ -46,7 +46,7 @@ GdmConnection *	gdm_connection_open_fifo (const char *fifo,
 
 void		gdm_connection_set_close_notify (GdmConnection *conn,
 						 gpointer close_data,
-						 gpointer close_notify);
+						 GDestroyNotify close_notify);
 
 void		gdm_connection_set_handler (GdmConnection *conn,
 					    GdmConnectionHandler handler,
