@@ -3528,7 +3528,7 @@ gdm_slave_session_start (void)
     setegid (pwent->pw_gid);
     seteuid (pwent->pw_uid);
 
-    if (home_dir_ok) {
+    if G_LIKELY (home_dir_ok) {
 	    /* Sanity check on ~user/.dmrc */
 	    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
 				       home_dir, ".dmrc", TRUE, FALSE,
@@ -3537,7 +3537,7 @@ gdm_slave_session_start (void)
 	    usrcfgok = FALSE;
     }
 
-    if (usrcfgok) {
+    if G_LIKELY (usrcfgok) {
 	gchar *cfgfile = g_build_filename (home_dir, ".dmrc", NULL);
 	VeConfig *cfg = ve_config_new (cfgfile);
 	g_free (cfgfile);
@@ -3545,6 +3545,16 @@ gdm_slave_session_start (void)
 	usrsess = ve_config_get_string (cfg, "Desktop/Session");
 	if (usrsess == NULL)
 		usrsess = g_strdup ("");
+
+	/* ugly workaround for migration */
+	if ((strcmp (usrsess, "Default.desktop") == 0 ||
+	     strcmp (usrsess, "Default") == 0) &&
+	    ! ve_is_prog_in_path ("Default.desktop", GdmSessDir)) {
+		g_free (usrsess);
+		usrsess = g_strdup ("default");
+		savesess = TRUE;
+	}
+
 	usrlang = ve_config_get_string (cfg, "Desktop/Language");
 	if (usrlang == NULL)
 		usrlang = g_strdup ("");
@@ -3581,23 +3591,13 @@ gdm_slave_session_start (void)
 	    }
     }
 
-    if (ve_string_empty (language)) {
+    if G_LIKELY (ve_string_empty (language)) {
 	    g_free (language);
 	    language = NULL;
     }
 
-    /* pretty ugly, but just in case the saved
-       default is 'Default', just make it 'default'
-       that will always work nowdays and we're switching
-       to that. */
-    if (strcmp (session, "default") == 0 &&
-	(strcmp (usrsess, "Default") == 0 ||
-	 strcmp (usrsess, "Default.desktop") == 0))
-	    savesess = TRUE;
-
     g_free (usrsess);
     g_free (usrlang);
-
 
     gdm_debug ("Initial setting: session: '%s' language: '%s'\n",
 	       session, ve_sure_string (language));
@@ -3663,12 +3663,12 @@ gdm_slave_session_start (void)
 	    gdm_slave_quick_exit (DISPLAY_REMANAGE);
     }
 
-    if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
-	strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-	g_ascii_strcasecmp (session, "failsafe") == 0 /* hack */)
+    if G_UNLIKELY (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
+		   strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
+		   g_ascii_strcasecmp (session, "failsafe") == 0 /* hack */)
 	    failsafe = TRUE;
 
-    if ( ! failsafe) {
+    if G_LIKELY ( ! failsafe) {
 	    char *exec = get_session_exec (session);
 	    if ( ! ve_string_empty (exec) &&
 		strcmp (exec, "failsafe") == 0)
@@ -3679,7 +3679,7 @@ gdm_slave_session_start (void)
     /* Write out the Xservers file */
     gdm_slave_send_num (GDM_SOP_WRITE_X_SERVERS, 0 /* bogus */);
 
-    if (d->dsp != NULL) {
+    if G_LIKELY (d->dsp != NULL) {
 	    Cursor xcursor;
 
 	    XSetInputFocus (d->dsp, PointerRoot,

@@ -832,11 +832,6 @@ gdm_login_list_lookup (GSList *l, const gchar *data)
 	list = list->next;
     }
 
-    /* ugly hack for migration from 'Default.desktop'
-       to 'default.desktop' */
-    if (strcmp (data, "Default.desktop") == 0)
-	    return TRUE;
-
     return FALSE;
 }
 
@@ -1269,11 +1264,18 @@ gdm_login_session_init (GtkWidget *menu)
 			    continue;
 		    }
 
+		    /* already found this session, ignore */
+		    if (g_hash_table_lookup (sessnames, dent->d_name) != NULL) {
+			    dent = readdir (sessdir);
+			    continue;
+		    }
+
 		    s = g_strconcat (dir, "/", dent->d_name, NULL);
 		    cfg = ve_config_new (s);
 		    g_free (s);
 
 		    if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false")) {
+			    g_hash_table_insert (sessnames, g_strdup (dent->d_name), "foo");
 			    ve_config_destroy (cfg);
 			    dent = readdir (sessdir);
 			    continue;
@@ -1283,6 +1285,7 @@ gdm_login_session_init (GtkWidget *menu)
 		    if ( ! ve_string_empty (tryexec)) {
 			    char *full = g_find_program_in_path (tryexec);
 			    if (full == NULL) {
+				    g_hash_table_insert (sessnames, g_strdup (dent->d_name), "foo");
 				    g_free (tryexec);
 				    ve_config_destroy (cfg);
 				    dent = readdir (sessdir);
@@ -1299,6 +1302,7 @@ gdm_login_session_init (GtkWidget *menu)
 		    ve_config_destroy (cfg);
 
 		    if G_UNLIKELY (ve_string_empty (exec) || ve_string_empty (name)) {
+			    g_hash_table_insert (sessnames, g_strdup (dent->d_name), "foo");
 			    g_free (exec);
 			    g_free (name);
 			    g_free (comment);
