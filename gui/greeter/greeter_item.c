@@ -35,6 +35,11 @@ greeter_item_info_new (GreeterItemInfo *parent,
   info->box_orientation = GTK_ORIENTATION_VERTICAL;
   
   info->state = GREETER_ITEM_STATE_NORMAL;
+  info->base_state = GREETER_ITEM_STATE_NORMAL;
+
+  info->show_modes = GREETER_ITEM_SHOW_EVERYWHERE;
+
+  info->button = FALSE;
 
   return info;
 }
@@ -72,22 +77,25 @@ greeter_item_update_text (GreeterItemInfo *info)
 }
 
 
-static void
-get_clock (char *str, int str_len)
+static char *
+get_clock (void)
 {
+  char str[256];
   struct tm *the_tm;
   time_t the_time;
 
   time (&the_time);
   the_tm = localtime (&the_time);
 
-  if (strftime (str, str_len, "%a %b %d, %I:%M %p", the_tm) == 0) {
+  if (strftime (str, sizeof (str)-1, _("%a %b %d, %I:%M %p"), the_tm) == 0) {
     /* according to docs, if the string does not fit, the
      * contents of str are undefined, thus just use
      * ??? */
     strcpy (str, "???");
   }
-  str [str_len-1] = '\0'; /* just for sanity */
+  str [sizeof (str)-1] = '\0'; /* just for sanity */
+
+  return g_locale_to_utf8 (str, -1, NULL, NULL, NULL);
 }
 
 
@@ -97,6 +105,7 @@ greeter_item_expand_text (const char *text)
   GString *str;
   const char *p;
   const char *q;
+  char *clock;
   int r;
   char buf[256];
 
@@ -129,8 +138,9 @@ greeter_item_expand_text (const char *text)
 		g_string_append (str, buf);
 	      break;
 	    case 'c':
-	      get_clock (buf, sizeof(buf));
-	      g_string_append (str, buf);
+	      clock = get_clock ();
+	      g_string_append (str, clock);
+	      g_free (clock);
 	      break;
 	    case 0:
 	      g_warning ("Unescape %% at end of text\n");
@@ -160,4 +170,57 @@ greeter_item_expand_text (const char *text)
  bail:
 
   return g_string_free (str, FALSE);
+}
+
+gboolean
+greeter_item_is_visible (GreeterItemInfo *info)
+{
+  static gboolean checked = FALSE;
+  static gboolean GDM_IS_LOCAL = FALSE;
+  static gboolean GDM_FLEXI_SERVER = FALSE;
+  static gboolean GDM_TIMED_LOGIN_OK = FALSE;
+
+  if ( ! checked)
+    {
+      if (g_getenv ("GDM_IS_LOCAL") != NULL)
+	GDM_IS_LOCAL = TRUE;
+      if (g_getenv ("GDM_FLEXI_SERVER") != NULL)
+	GDM_FLEXI_SERVER = TRUE;
+      if (g_getenv ("GDM_TIMED_LOGIN_OK") != NULL)
+	GDM_TIMED_LOGIN_OK = TRUE;
+    }
+
+  if (GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
+      ! (info->show_modes & GREETER_ITEM_SHOW_CONSOLE_FIXED))
+    return FALSE;
+  if (GDM_IS_LOCAL && GDM_FLEXI_SERVER &&
+      ! (info->show_modes & GREETER_ITEM_SHOW_CONSOLE_FLEXI))
+    return FALSE;
+  if ( ! GDM_IS_LOCAL && GDM_FLEXI_SERVER &&
+      ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE_FLEXI))
+    return FALSE;
+  if ( ! GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
+      ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
+    return FALSE;
+
+  /* FIXME: this is somewhat evil, maybe it should be part of the show
+   * modes */
+  if ( ! GDM_TIMED_LOGIN_OK && info->id != NULL)
+    {
+      if (strncmp (info->id, "timed_login", strlen ("timed_login")) == 0)
+        return FALSE;
+    }
+
+  return TRUE;
+}
+
+GreeterItemInfo *
+greeter_item_find_my_button (GreeterItemInfo *info)
+{
+  if (info == NULL)
+    return NULL;
+  else if (info->button)
+    return info;
+  else
+    return greeter_item_find_my_button (info->parent);
 }

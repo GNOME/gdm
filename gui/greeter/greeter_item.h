@@ -8,6 +8,7 @@ typedef enum _GreeterItemState GreeterItemState;
 typedef enum _GreeterItemType GreeterItemType;
 typedef enum _GreeterItemSizeType GreeterItemSizeType;
 typedef enum _GreeterItemPosType GreeterItemPosType;
+typedef enum _GreeterItemShowModes GreeterItemShowModes;
 
 enum _GreeterItemState {
   GREETER_ITEM_STATE_NORMAL,
@@ -37,6 +38,17 @@ enum _GreeterItemPosType {
   GREETER_ITEM_POS_RELATIVE,
 };
 
+enum _GreeterItemShowModes {
+  GREETER_ITEM_SHOW_EVERYWHERE = 0xffff,
+  GREETER_ITEM_SHOW_NOWHERE = 0,
+  GREETER_ITEM_SHOW_CONSOLE_FIXED = 1<<0,
+  GREETER_ITEM_SHOW_CONSOLE = (1<<0) | (1<<1),
+  GREETER_ITEM_SHOW_CONSOLE_FLEXI = 1<<1,
+  GREETER_ITEM_SHOW_REMOTE_FLEXI = 1<<2,
+  GREETER_ITEM_SHOW_FLEXI = (1<<1) | (1<<2),
+  GREETER_ITEM_SHOW_REMOTE = 1<<3
+};
+
 struct _GreeterItemInfo {
   GreeterItemInfo *parent;
   
@@ -45,6 +57,8 @@ struct _GreeterItemInfo {
   GreeterItemPosType y_type;
   double x;
   double y;
+
+  GreeterItemShowModes show_modes;
   
   GreeterItemSizeType width_type;
   GreeterItemSizeType height_type;
@@ -55,6 +69,9 @@ struct _GreeterItemInfo {
   gboolean expand;
   
   char *id;
+
+  /* Button can propagate states and collect states from underlying items */
+  gboolean button;
 
   GreeterItemType item_type;
 
@@ -85,6 +102,7 @@ struct _GreeterItemInfo {
   
   /* Runtime state: */
   GreeterItemState state;
+  GreeterItemState base_state;
   gboolean mouse_down;
   gboolean mouse_over;
 
@@ -109,5 +127,8 @@ void greeter_item_info_free (GreeterItemInfo *info);
 char *greeter_item_expand_text (const char *text);
 
 void greeter_item_update_text (GreeterItemInfo *info);
+
+gboolean greeter_item_is_visible (GreeterItemInfo *info);
+GreeterItemInfo *greeter_item_find_my_button (GreeterItemInfo *info);
 
 #endif /* __GREETER_ITEMS_H__ */

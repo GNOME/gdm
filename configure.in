@@ -133,7 +133,7 @@ if test -z $LIBGLADE_CONVERT; then
 	AC_MSG_ERROR([libglade-convert (from libglade 2.0) is needed to build gdm.])
 fi
 
-dnl Allow users to run gdmconfig using the console helper PAM stuff.
+dnl Allow users to run gdmsetup using the console helper PAM stuff.
 if test "x$enable_console_helper" = "xyes"; then
   AM_CONDITIONAL(CONSOLE_HELPER, true)
 else
@@ -425,8 +425,6 @@ pixmaps/Makefile
 config/Makefile
 docs/Makefile
 docs/C/Makefile
-docs/gdmconfig/Makefile
-docs/gdmconfig/C/Makefile
 omf-install/Makefile
 po/Makefile.in
 vicious-extensions/Makefile
@@ -435,7 +433,6 @@ config/Gnome
 config/gnomerc
 gdm-restart
 gdm-safe-restart
-gdmconfig-security
 gdmsetup-security
 gdm.spec
 ])

@@ -600,6 +600,35 @@ setup_cursor (GdkCursorType type)
 	gdk_cursor_destroy (cursor);
 }
 
+static char *
+get_theme_file (const char *in)
+{
+  char *file;
+
+  if (g_path_is_absolute (in))
+    {
+      file = g_strdup (in);
+    }
+  else
+    {
+      file = NULL;
+      if (DOING_GDM_DEVELOPMENT)
+        {
+          file = g_build_filename ("themes", in, NULL);
+	  if (access (file, F_OK) != 0)
+	    {
+	      g_free (file);
+	      file = NULL;
+	    }
+	}
+      /* FIXME: look for the theme using the gnome_program thingie */
+      /* FIXME: Perhaps there should be a themedir config var */
+      if (file == NULL)
+        file = g_build_filename (GREETERTHEMEDIR, in, NULL);
+    }
+  return file;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -703,30 +732,7 @@ main (int argc, char *argv[])
 			       gdm_wm_screen.height);
   gtk_container_add (GTK_CONTAINER (window), canvas);
 
-  if (g_path_is_absolute (GreeterConfTheme))
-    {
-      theme_file = g_strdup (GreeterConfTheme);
-    }
-  else
-    {
-      theme_file = NULL;
-      if (DOING_GDM_DEVELOPMENT)
-        {
-          theme_file = g_build_filename ("themes",
-					 GreeterConfTheme,
-					 NULL);
-	  if (access (theme_file, F_OK) != 0)
-	    {
-	      g_free (theme_file);
-	      theme_file = NULL;
-	    }
-	}
-      if (theme_file == NULL)
-        theme_file = g_build_filename (GREETERTHEMEDIR,
-				       GreeterConfTheme,
-				       NULL);
-    }
-
+  theme_file = get_theme_file (GreeterConfTheme);
   theme_dir = g_path_get_dirname (theme_file);
   
   error = NULL;
@@ -736,8 +742,64 @@ main (int argc, char *argv[])
 			gdm_wm_screen.height,
 			&error);
 
+  /* Try circles.xml */
   if (root == NULL)
-    g_warning ("Failed to parse file: %s!", error->message);
+    {
+      g_free (theme_file);
+      g_free (theme_dir);
+      theme_file = get_theme_file (GreeterConfTheme);
+      theme_dir = g_path_get_dirname (theme_file);
+  
+      root = greeter_parse (theme_file, theme_dir,
+			    GNOME_CANVAS (canvas), 
+			    gdm_wm_screen.width,
+			    gdm_wm_screen.height,
+			    NULL);
+    }
+
+
+  if (root == NULL)
+    {
+      GtkWidget *dialog;
+
+      gdm_wm_init (0);
+      gdm_wm_focus_new_windows (TRUE);
+    
+      dialog = gtk_message_dialog_new (NULL /* parent */,
+				       GTK_DIALOG_MODAL /* flags */,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       _("There was an error loading the "
+					 "theme, and the default theme "
+					 "also could not have been loaded, "
+					 "I will attempt to start the "
+					 "standard greeter"));
+    
+      gtk_widget_show_all (dialog);
+      gdm_wm_center_window (GTK_WINDOW (dialog));
+    
+      gtk_dialog_run (GTK_DIALOG (dialog));
+
+      execl (EXPANDED_BINDIR "/gdmlogin", EXPANDED_BINDIR "/gdmlogin", NULL);
+      execlp ("gdmlogin", "gdmlogin", NULL);
+
+      dialog = gtk_message_dialog_new (NULL /* parent */,
+				       GTK_DIALOG_MODAL /* flags */,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       _("I could not start the standard "
+					 "greeter.  This display will abort "
+					 "and you may have to login another "
+					 "way and fix the installation of "
+					 "gdm"));
+    
+      gtk_widget_show_all (dialog);
+      gdm_wm_center_window (GTK_WINDOW (dialog));
+    
+      gtk_dialog_run (GTK_DIALOG (dialog));
+
+      _exit (DISPLAY_ABORT);
+    }
 
   greeter_layout (root, GNOME_CANVAS (canvas));
   
@@ -748,79 +810,83 @@ main (int argc, char *argv[])
   gtk_widget_show_now (window);
 
   /* can it ever happen that it'd be NULL here ??? */
-  if (window->window != NULL) {
-	  gdm_wm_init (GDK_WINDOW_XWINDOW (window->window));
+  if (window->window != NULL)
+    {
+      gdm_wm_init (GDK_WINDOW_XWINDOW (window->window));
 
-	  /* Run the focus, note that this will work no matter what
-	   * since gdm_wm_init will set the display to the gdk one
-	   * if it fails */
-	  gdm_wm_focus_window (GDK_WINDOW_XWINDOW (window->window));
-  }
+      /* Run the focus, note that this will work no matter what
+       * since gdm_wm_init will set the display to the gdk one
+       * if it fails */
+      gdm_wm_focus_window (GDK_WINDOW_XWINDOW (window->window));
+    }
 
-  if (session_dir_whacked_out) {
-	  GtkWidget *dialog;
+  if (session_dir_whacked_out)
+    {
+      GtkWidget *dialog;
 
-	  gdm_wm_focus_new_windows (TRUE);
+      gdm_wm_focus_new_windows (TRUE);
 
-	  dialog = gtk_message_dialog_new (NULL /* parent */,
-					   GTK_DIALOG_MODAL /* flags */,
-					   GTK_MESSAGE_ERROR,
-					   GTK_BUTTONS_OK,
-					   _("Your session directory is missing or empty!\n\n"
-					     "There are two available sessions you can use, but\n"
-					     "you should log in and correct the gdm configuration."));
-	  gtk_widget_show_all (dialog);
-	  gdm_wm_center_window (GTK_WINDOW (dialog));
+      dialog = gtk_message_dialog_new (NULL /* parent */,
+				       GTK_DIALOG_MODAL /* flags */,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       _("Your session directory is missing or empty!\n\n"
+					 "There are two available sessions you can use, but\n"
+					 "you should log in and correct the gdm configuration."));
+      gtk_widget_show_all (dialog);
+      gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	  gdm_wm_no_login_focus_push ();
-	  gtk_dialog_run (GTK_DIALOG (dialog));
-	  gtk_widget_destroy (dialog);
-	  gdm_wm_no_login_focus_pop ();
-  }
+      gdm_wm_no_login_focus_push ();
+      gtk_dialog_run (GTK_DIALOG (dialog));
+      gtk_widget_destroy (dialog);
+      gdm_wm_no_login_focus_pop ();
+    }
 
-  if (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL) {
-	  GtkWidget *dialog;
+  if (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL)
+    {
+      GtkWidget *dialog;
 
-	  gdm_wm_focus_new_windows (TRUE);
+      gdm_wm_focus_new_windows (TRUE);
 
-	  dialog = gtk_message_dialog_new (NULL /* parent */,
-					   GTK_DIALOG_MODAL /* flags */,
-					   GTK_MESSAGE_ERROR,
-					   GTK_BUTTONS_OK,
-					   _("The configuration file contains an invalid command\n"
-					     "line for the login dialog, and thus I ran the\n"
-					     "default command.  Please fix your configuration."));
-	  gtk_widget_show_all (dialog);
-	  gdm_wm_center_window (GTK_WINDOW (dialog));
+      dialog = gtk_message_dialog_new (NULL /* parent */,
+				       GTK_DIALOG_MODAL /* flags */,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       _("The configuration file contains an invalid command\n"
+					 "line for the login dialog, and thus I ran the\n"
+					 "default command.  Please fix your configuration."));
+      gtk_widget_show_all (dialog);
+      gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	  gdm_wm_no_login_focus_push ();
-	  gtk_dialog_run (GTK_DIALOG (dialog));
-	  gtk_widget_destroy (dialog);
-	  gdm_wm_no_login_focus_pop ();
+      gdm_wm_no_login_focus_push ();
+      gtk_dialog_run (GTK_DIALOG (dialog));
+      gtk_widget_destroy (dialog);
+      gdm_wm_no_login_focus_pop ();
   }
 
   /* There was no config file */
-  if (used_defaults) {
-	  GtkWidget *dialog;
+  if (used_defaults)
+    {
+      GtkWidget *dialog;
 
-	  gdm_wm_focus_new_windows (TRUE);
+      gdm_wm_focus_new_windows (TRUE);
 
-	  dialog = gtk_message_dialog_new (NULL /* parent */,
-					   GTK_DIALOG_MODAL /* flags */,
-					   GTK_MESSAGE_ERROR,
-					   GTK_BUTTONS_OK,
-					   _("The configuration was not found.  GDM is using\n"
-					     "defaults to run this session.  You should log in\n"
-					     "and create a configuration file with the GDM\n"
-					     "configuration program."));
-	  gtk_widget_show_all (dialog);
-	  gdm_wm_center_window (GTK_WINDOW (dialog));
+      dialog = gtk_message_dialog_new (NULL /* parent */,
+				       GTK_DIALOG_MODAL /* flags */,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_OK,
+				       _("The configuration was not found.  GDM is using\n"
+					 "defaults to run this session.  You should log in\n"
+					 "and create a configuration file with the GDM\n"
+					 "configuration program."));
+      gtk_widget_show_all (dialog);
+      gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	  gdm_wm_no_login_focus_push ();
-	  gtk_dialog_run (GTK_DIALOG (dialog));
-	  gtk_widget_destroy (dialog);
-	  gdm_wm_no_login_focus_pop ();
-  }
+      gdm_wm_no_login_focus_push ();
+      gtk_dialog_run (GTK_DIALOG (dialog));
+      gtk_widget_destroy (dialog);
+      gdm_wm_no_login_focus_pop ();
+    }
 
   gtk_main ();
 

@@ -26,6 +26,7 @@ static void
 capslock_update (gboolean new_state)
 {
   GreeterItemInfo *info;
+  GnomeCanvasItem *item;
 
   caps_lock_state = new_state;
   
@@ -33,10 +34,19 @@ capslock_update (gboolean new_state)
 
   if (info)
     {
-      if (caps_lock_state)
-	gnome_canvas_item_show (GNOME_CANVAS_ITEM (info->group_item));
+      if (info->group_item != NULL)
+	item = GNOME_CANVAS_ITEM (info->group_item);
       else
-	gnome_canvas_item_hide (GNOME_CANVAS_ITEM (info->group_item));
+	item = info->item;
+
+      if (caps_lock_state)
+        {
+	  gnome_canvas_item_show (item);
+	}
+      else
+        {
+	  gnome_canvas_item_hide (item);
+	}
     }
 }
 

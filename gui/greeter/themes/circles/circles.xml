@@ -13,28 +13,93 @@
         <normal color="#ffffff"/>
         <pos x="0" y="4" width="100%" height="100%"/>
         <box orientation="horizontal" spacing="10" xpadding="10">
-	  <item type="pixmap" id="language_button">
-	    <normal file="options.png" tint="#dddddd"/>
-	    <prelight file="options.png"/>
-	    <active file="options.png" tint="#ff0000"/>
-	    <pos y="50%" anchor="w"/>
-	  </item>
-	  <item type="label">
-	    <normal color="#000000" font="Sans 14"/>
-	    <pos y="50%" anchor="w"/>
-	    <text val="Option"/>
-	  </item>
-	  <item type="pixmap" id="session_button">
-	    <normal file="help.png" tint="#dddddd"/>
-	    <prelight file="help.png"/>
-	    <active file="help.png" tint="#ff0000"/>
-	    <pos y="50%" anchor="w"/>
-	  </item>
-	  <item type="label">
-	    <normal color="#000000" font="Sans 14"/>
-	    <pos y="50%" anchor="w"/>
-	    <text val="Session"/>
-	  </item>
+          <item type="rect" id="language_button" button="true">
+            <normal color="#ffffff"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="options.png" tint="#dddddd"/>
+	        <prelight file="options.png"/>
+	        <active file="options.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <text>Option</text>
+	      </item>
+            </box>
+          </item>
+          <item type="rect" id="session_button" button="true">
+            <normal color="#ffffff"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="help.png" tint="#dddddd"/>
+	        <prelight file="help.png"/>
+	        <active file="help.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <text>Session</text>
+	      </item>
+            </box>
+          </item>
+          <item type="rect" id="system_button" button="true">
+            <normal color="#ffffff"/>
+	    <show modes="console"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="options.png" tint="#dddddd"/>
+	        <prelight file="options.png"/>
+	        <active file="options.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <text>System</text>
+	      </item>
+            </box>
+          </item>
+          <item type="rect" id="disconnect_button" button="true">
+            <normal color="#ffffff"/>
+	    <show modes="flexi,remote"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="options.png" tint="#dddddd"/>
+	        <prelight file="options.png"/>
+	        <active file="options.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <text>Disconnect</text>
+	        <show modes="remote"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <text>Quit</text>
+	        <show modes="flexi"/>
+	      </item>
+            </box>
+          </item>
         </box>
       </item>
     </fixed>
@@ -46,7 +111,7 @@
   <item type="label" id="clock">
     <normal color="#000000" font="Sans 16"/>
     <pos x="-20" y="-37" anchor="e"/>
-    <text val="%c"/>
+    <text>%c</text>
   </item>
 
   <item type="rect" id="caps-lock-warning">
@@ -56,7 +121,7 @@
       <item type="label">
         <normal color="#000000" font="Sans 14"/>
         <pos x="66" y="50%" anchor="w"/>
-        <text val="You've got capslock on!"/>
+        <text>You've got capslock on!</text>
       </item>
     </fixed>
   </item>
@@ -67,13 +132,13 @@
       <item type="label">
         <pos anchor="n" x="50%"/>
         <normal color="#000000" font="Sans 18"/>
-	<text val="Welcome to %h"/>
-	<text lang="sv" val="Välkommen till %h"/>
+	<text>Welcome to %h</text>
+	<text lang="sv">Välkommen till %h</text>
       </item>
       <item type="label" id="pam-prompt">
         <pos anchor="nw" x="10%"/>
         <normal color="#000000" font="Sans 16"/>
-	<text val="Username:"/>
+	<text>Username:</text>
       </item>
       <item type="rect">
 	<normal color="#000000"/>
@@ -87,14 +152,14 @@
       <item type="label" id="pam-message">
         <pos anchor="n" x="50%"/>
         <normal color="#000000" font="Sans 16"/>
-	<text val=""/>
+	<text></text>
       </item>
     </box>
     <fixed>
       <item type="label" id="pam-error">
         <pos anchor="n" x="50%" y="110%"/>
         <normal color="#000000" font="Sans 16"/>
-        <text val=""/>
+        <text></text>
       </item>
     </fixed>
   </item>

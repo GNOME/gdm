@@ -1,3 +1,3 @@
-SUBDIRS = C gdmconfig
+SUBDIRS = C
 
 EXTRA_DIST = sgmldocs.make

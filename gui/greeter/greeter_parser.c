@@ -60,6 +60,38 @@ parse_id (xmlNodePtr node,
     }
 }
 
+static gboolean
+parse_button (xmlNodePtr node,
+	      GreeterItemInfo *info,
+	      GError **error)
+{
+  xmlChar *prop;
+  
+  prop = xmlGetProp (node, "button");
+  if (prop)
+    {
+      if (strcmp (prop, "true") == 0)
+	{
+	  info->button = TRUE;
+	}
+      else if (strcmp (prop, "false") == 0)
+	{
+	  info->button = FALSE;
+	}
+      else
+	{
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "bad button spec %s\n", prop);
+	  xmlFree (prop);
+	  return FALSE;
+	}
+      xmlFree (prop);
+    }
+  return TRUE;
+}
+
 /* Doesn't set the parts of rect that are not specified.
  * If you want specific default values you need to fill them out
  * in rect first
@@ -97,9 +129,11 @@ parse_pos (xmlNodePtr       node,
 	info->anchor = GTK_ANCHOR_SE;
       else
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Unknown anchor type %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Unknown anchor type %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -113,9 +147,11 @@ parse_pos (xmlNodePtr       node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad position specifier%s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad position specifier%s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       
@@ -133,9 +169,11 @@ parse_pos (xmlNodePtr       node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad position specifier%s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad position specifier%s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       
@@ -157,9 +195,11 @@ parse_pos (xmlNodePtr       node,
       
 	  if ((char *)prop == p)
 	    {
-	      *error = g_error_new (GREETER_PARSER_ERROR,
-				    GREETER_PARSER_ERROR_BAD_SPEC,
-				    "Bad size specifier%s\n", prop);
+	      g_set_error (error,
+			   GREETER_PARSER_ERROR,
+			   GREETER_PARSER_ERROR_BAD_SPEC,
+			   "Bad size specifier%s\n", prop);
+	      xmlFree (prop);
 	      return FALSE;
 	    }
       
@@ -182,9 +222,11 @@ parse_pos (xmlNodePtr       node,
       
 	  if ((char *)prop == p)
 	    {
-	      *error = g_error_new (GREETER_PARSER_ERROR,
-				    GREETER_PARSER_ERROR_BAD_SPEC,
-				    "Bad size specifier%s\n", prop);
+	      g_set_error (error,
+			   GREETER_PARSER_ERROR,
+			   GREETER_PARSER_ERROR_BAD_SPEC,
+			   "Bad size specifier%s\n", prop);
+	      xmlFree (prop);
 	      return FALSE;
 	    }
       
@@ -209,15 +251,87 @@ parse_pos (xmlNodePtr       node,
 	}
       else
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"bad expand spec %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "bad expand spec %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       
       xmlFree (prop);
     }
 
+  return TRUE;
+}
+
+static gboolean
+parse_show (xmlNodePtr       node,
+	    GreeterItemInfo *info,
+	    GError         **error)
+{
+  xmlChar *prop;
+  char **argv = NULL;
+  int i;
+  
+  prop = xmlGetProp (node, "modes");
+  if (prop != NULL)
+    {
+      if (strcmp (prop, "everywhere") == 0)
+        {
+	  info->show_modes = GREETER_ITEM_SHOW_EVERYWHERE;
+	  xmlFree (prop);
+	  return TRUE;
+	}
+      else if (strcmp (prop, "nowhere") == 0)
+        {
+	  info->show_modes = GREETER_ITEM_SHOW_NOWHERE;
+	  xmlFree (prop);
+	  return TRUE;
+	}
+
+      argv = g_strsplit (prop, ",", 0);
+      xmlFree (prop);
+    }
+  else
+    {
+      info->show_modes = GREETER_ITEM_SHOW_EVERYWHERE;
+      return TRUE;
+    }
+
+  info->show_modes = GREETER_ITEM_SHOW_NOWHERE;
+
+  if (argv != NULL)
+    {
+      for (i = 0; argv[i] != NULL; i++)
+        {
+          if (strcmp (argv[i], "console") == 0)
+            {
+	      info->show_modes |= GREETER_ITEM_SHOW_CONSOLE;
+	    }
+          else if (strcmp (argv[i], "console-fixed") == 0)
+            {
+	      info->show_modes |= GREETER_ITEM_SHOW_CONSOLE_FIXED;
+	    }
+          else if (strcmp (argv[i], "console-flexi") == 0)
+            {
+	      info->show_modes |= GREETER_ITEM_SHOW_CONSOLE_FLEXI;
+	    }
+          else if (strcmp (argv[i], "remote-flexi") == 0)
+            {
+	      info->show_modes |= GREETER_ITEM_SHOW_REMOTE_FLEXI;
+	    }
+          else if (strcmp (argv[i], "flexi") == 0)
+            {
+	      info->show_modes |= GREETER_ITEM_SHOW_FLEXI;
+	    }
+          else if (strcmp (argv[i], "remote") == 0)
+            {
+	      info->show_modes |= GREETER_ITEM_SHOW_REMOTE;
+	    }
+	}
+      g_strfreev (argv);
+    }
   return TRUE;
 }
 
@@ -253,9 +367,11 @@ parse_box (xmlNodePtr       node,
 	}
       else
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"bad orientation %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "bad orientation %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       
@@ -275,9 +391,11 @@ parse_box (xmlNodePtr       node,
 	}
       else
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"bad homogenous spec %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "bad homogenous spec %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       
@@ -292,9 +410,11 @@ parse_box (xmlNodePtr       node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad padding specification %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad padding specification %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -307,9 +427,11 @@ parse_box (xmlNodePtr       node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad padding specification %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad padding specification %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -322,9 +444,11 @@ parse_box (xmlNodePtr       node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad min-width specification %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad min-width specification %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -337,9 +461,11 @@ parse_box (xmlNodePtr       node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad min-height specification %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad min-height specification %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -352,9 +478,11 @@ parse_box (xmlNodePtr       node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad spacing specification %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad spacing specification %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -377,16 +505,18 @@ parse_color (const char *str,
   int i;
   if (str[0] != '#')
     {
-      *error = g_error_new (GREETER_PARSER_ERROR,
-			    GREETER_PARSER_ERROR_BAD_SPEC,
-			    "colors must start with #, %s is an invalid color\n", str);
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "colors must start with #, %s is an invalid color\n", str);
       return FALSE;
     }
   if (strlen (str) != 7)
     {
-      *error = g_error_new (GREETER_PARSER_ERROR,
-			    GREETER_PARSER_ERROR_BAD_SPEC,
-			    "Colors must be on the format #xxxxxx, %s is an invalid color\n", str);
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "Colors must be on the format #xxxxxx, %s is an invalid color\n", str);
       return FALSE;
     }
 
@@ -438,9 +568,11 @@ parse_state_file (xmlNodePtr node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad alpha specifier format %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad alpha specifier format %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -474,9 +606,11 @@ parse_state_color (xmlNodePtr node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad alpha specifier format %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad alpha specifier format %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -528,15 +662,21 @@ parse_pixmap (xmlNodePtr        node,
 	  if (!parse_box (child, info, error))
 	    return FALSE;
 	}
+      else if (strcmp (child->name, "show") == 0)
+	{
+	  if (!parse_show (child, info, error))
+	    return FALSE;
+	}
       
       child = child->next;
     }
 
   if (!info->files[GREETER_ITEM_STATE_NORMAL])
     {
-      *error = g_error_new (GREETER_PARSER_ERROR,
-			    GREETER_PARSER_ERROR_BAD_SPEC,
-			    "No filename specified for normal state\n");
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "No filename specified for normal state\n");
       return FALSE;
     }
   
@@ -601,6 +741,11 @@ parse_rect (xmlNodePtr node,
 	  if (!parse_box (child, info, error))
 	    return FALSE;
 	}
+      else if (strcmp (child->name, "show") == 0)
+	{
+	  if (!parse_show (child, info, error))
+	    return FALSE;
+	}
       
       child = child->next;
     }
@@ -637,9 +782,11 @@ parse_state_text (xmlNodePtr node,
       info->fonts[state] = pango_font_description_from_string (prop);
       if (info->fonts[state] == NULL)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad font specification %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad font specification %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -661,9 +808,11 @@ parse_state_text (xmlNodePtr node,
       
       if ((char *)prop == p)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"Bad alpha specifier format %s\n", prop);
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "Bad alpha specifier format %s\n", prop);
+	  xmlFree (prop);
 	  return FALSE;
 	}
       xmlFree (prop);
@@ -695,6 +844,7 @@ parse_translated_text (xmlNodePtr node,
 		       gint      *translation_score,
 		       GError   **error)
 {
+  xmlChar *text;
   xmlChar *prop;
   gint score;
   
@@ -709,21 +859,22 @@ parse_translated_text (xmlNodePtr node,
   if (score >= *translation_score)
     return TRUE;
   
-  prop = xmlGetProp (node, "val");
-  if (prop == NULL)
+  text = xmlNodeGetContent (node);
+  if (text == NULL)
     {
-      *error = g_error_new (GREETER_PARSER_ERROR,
-			    GREETER_PARSER_ERROR_BAD_SPEC,
-			    "No string defined for text node\n");
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "No string defined for text node\n");
       return FALSE;
     }
 
   *translation_score = score;
   if (*translated_text)
     g_free (*translated_text);
-  *translated_text = g_strdup (prop);
+  *translated_text = g_strdup (text);
   
-  xmlFree (prop);
+  xmlFree (text);
   
   return TRUE;
 }
@@ -765,12 +916,18 @@ parse_label (xmlNodePtr        node,
 	  if (!parse_translated_text (child, &translated_text, &translation_score, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "fixed") == 0 ||
-	       strcmp (child->name, "boxed") == 0)
+      else if (strcmp (child->name, "show") == 0)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"label items cannot have children");
+	  if (!parse_show (child, info, error))
+	    return FALSE;
+	}
+      else if (strcmp (child->name, "fixed") == 0 ||
+	       strcmp (child->name, "box") == 0)
+	{
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "label items cannot have children");
 	  return FALSE;
 	}
 	  
@@ -779,9 +936,10 @@ parse_label (xmlNodePtr        node,
 
   if (translated_text == NULL)
     {
-      *error = g_error_new (GREETER_PARSER_ERROR,
-			    GREETER_PARSER_ERROR_BAD_SPEC,
-			    "A label must specify the text attribute");
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_SPEC,
+		   "A label must specify the text attribute");
     }
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
@@ -820,12 +978,18 @@ parse_entry (xmlNodePtr        node,
 	  if (!parse_pos (child, info, error))
 	    return FALSE;
 	}
-      else if (strcmp (child->name, "fixed") == 0 ||
-	       strcmp (child->name, "boxed") == 0)
+      else if (strcmp (child->name, "show") == 0)
 	{
-	  *error = g_error_new (GREETER_PARSER_ERROR,
-				GREETER_PARSER_ERROR_BAD_SPEC,
-				"entry items cannot have children");
+	  if (!parse_show (child, info, error))
+	    return FALSE;
+	}
+      else if (strcmp (child->name, "fixed") == 0 ||
+	       strcmp (child->name, "box") == 0)
+	{
+	  g_set_error (error,
+		       GREETER_PARSER_ERROR,
+		       GREETER_PARSER_ERROR_BAD_SPEC,
+		       "entry items cannot have children");
 	  return FALSE;
 	}
     
@@ -857,18 +1021,20 @@ parse_items (xmlNodePtr  node,
 	  {
 	    if (strcmp (child->name, "item") != 0)
 	      {
-		*error = g_error_new (GREETER_PARSER_ERROR,
-				      GREETER_PARSER_ERROR_BAD_SPEC,
-				      "found tag %s when looking for item", child->name);
+		g_set_error (error,
+			     GREETER_PARSER_ERROR,
+			     GREETER_PARSER_ERROR_BAD_SPEC,
+			     "found tag %s when looking for item", child->name);
 		return FALSE;
 	      }
 	    
 	    type = xmlGetProp (child, "type");
 	    if (!type)
 	      {
-		*error = g_error_new (GREETER_PARSER_ERROR,
-				      GREETER_PARSER_ERROR_BAD_SPEC,
-				      "items must specify their type");
+		g_set_error (error,
+			     GREETER_PARSER_ERROR,
+			     GREETER_PARSER_ERROR_BAD_SPEC,
+			     "items must specify their type");
 		return FALSE;
 	      }
 
@@ -884,15 +1050,19 @@ parse_items (xmlNodePtr  node,
 	      item_type = GREETER_ITEM_TYPE_ENTRY;
 	    else
 	      {
-		*error = g_error_new (GREETER_PARSER_ERROR,
-				      GREETER_PARSER_ERROR_BAD_SPEC,
-				      "unknown item type %s", type);
+		g_set_error (error,
+			     GREETER_PARSER_ERROR,
+			     GREETER_PARSER_ERROR_BAD_SPEC,
+			     "unknown item type %s", type);
+		xmlFree (type);
 		return FALSE;
 	      }
 	    
 	    info = greeter_item_info_new (parent, item_type);
 	    
 	    parse_id (child, info);
+	    if ( ! parse_button (child, info, error))
+	      return FALSE;
 
 	    switch (item_type)
 	      {
@@ -912,9 +1082,10 @@ parse_items (xmlNodePtr  node,
 		res = parse_entry (child, info, error);
 		break;
 	      default:
-		*error = g_error_new (GREETER_PARSER_ERROR,
-				      GREETER_PARSER_ERROR_BAD_SPEC,
-				      "bad item type");
+		g_set_error (error,
+			     GREETER_PARSER_ERROR,
+			     GREETER_PARSER_ERROR_BAD_SPEC,
+			     "bad item type");
 		res = FALSE;
 	      }
 	    
@@ -945,7 +1116,7 @@ greeter_info_id_hash (GreeterItemInfo *key)
 }
 
 GreeterItemInfo *
-greeter_parse (char *file, char *datadir,
+greeter_parse (const char *file, const char *datadir,
 	       GnomeCanvas *canvas,
 	       int width, int height, GError **error)
 {
@@ -955,14 +1126,15 @@ greeter_parse (char *file, char *datadir,
   gboolean res;
   GList *items;
 
-  file_search_path = datadir;
+  /* FIXME: EVIL! GLOBAL! */
+  file_search_path = g_strdup (datadir);
   
   if (!g_file_test (file, G_FILE_TEST_EXISTS))
     {
-      if (error)
-	*error = g_error_new (GREETER_PARSER_ERROR,
-			      GREETER_PARSER_ERROR_NO_FILE,
-			      "Can't open file %s", file);
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_NO_FILE,
+		   "Can't open file %s", file);
       return NULL;
     }
   
@@ -970,29 +1142,29 @@ greeter_parse (char *file, char *datadir,
   doc = xmlParseFile (file);
   if (doc == NULL)
     {
-      if (error)
-	*error = g_error_new (GREETER_PARSER_ERROR,
-			      GREETER_PARSER_ERROR_BAD_XML,
-			      "XML Parse error reading %s", file);
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_XML,
+		   "XML Parse error reading %s", file);
       return NULL;
     }
   
   node = xmlDocGetRootElement (doc);
   if (node == NULL)
     {
-      if (error)
-	*error = g_error_new (GREETER_PARSER_ERROR,
-			      GREETER_PARSER_ERROR_BAD_XML,
-			      "Can't find the xml root node in file %s", file);
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_BAD_XML,
+		   "Can't find the xml root node in file %s", file);
       return NULL;
     }
   
   if (strcmp (node->name, "greeter") != 0)
     {
-      if (error)
-	*error = g_error_new (GREETER_PARSER_ERROR,
-			      GREETER_PARSER_ERROR_WRONG_TYPE,
-			      "The file %s has the wrong xml type", file);
+      g_set_error (error,
+		   GREETER_PARSER_ERROR,
+		   GREETER_PARSER_ERROR_WRONG_TYPE,
+		   "The file %s has the wrong xml type", file);
       return NULL;
     }
 

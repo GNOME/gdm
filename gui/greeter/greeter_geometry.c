@@ -25,6 +25,9 @@ greeter_item_size_allocate (GreeterItemInfo *item,
 {
   item->allocation = *allocation;
 
+  if ( ! greeter_item_is_visible (item))
+    return;
+
   if (item->item == NULL)
     greeter_item_create_canvas_item (item);
 
@@ -79,6 +82,8 @@ fixup_from_anchor (GtkAllocation *rect,
       rect->x -= rect->width;
       rect->y -= rect->height;
       break;
+    default:
+      break;
     }
 }
 
@@ -98,7 +103,11 @@ greeter_size_allocate_fixed (GreeterItemInfo *fixed,
   while (l != NULL)
     {
       child = l->data;
-      
+      l = l->next;
+
+      if ( ! greeter_item_is_visible (child))
+        continue;
+
       greeter_item_size_request (child,
 				 &requisition,
 				 fixed->allocation.width,
@@ -127,8 +136,6 @@ greeter_size_allocate_fixed (GreeterItemInfo *fixed,
       greeter_item_size_allocate (child,
 				  &child_allocation,
 				  canvas);
-      
-      l = l->next;
     }
 }
 
@@ -162,9 +169,12 @@ greeter_size_allocate_box (GreeterItemInfo *box,
       child = children->data;
       children = children->next;
 
-      nvis_children += 1;
-      if (child->expand)
-	nexpand_children += 1;
+      if (greeter_item_is_visible (child))
+        {
+          nvis_children += 1;
+          if (child->expand)
+	    nexpand_children += 1;
+	}
     }
 
   if (nvis_children > 0)
@@ -220,6 +230,9 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 	{
 	  child = children->data;
 	  children = children->next;
+
+          if ( ! greeter_item_is_visible (child))
+	    continue;
 
 	  if (box->box_homogeneous)
 	    {
@@ -323,6 +336,9 @@ greeter_size_request_box (GreeterItemInfo *box,
     {
       child = children->data;
       children = children->next;
+
+      if ( ! greeter_item_is_visible (child))
+        continue;
 
       greeter_item_size_request (child,
 				 &child_requisition,
@@ -433,7 +449,7 @@ greeter_item_size_request (GreeterItemInfo *item,
       req->width = x2 - x1;
       req->height = y2 - y1;
 
-      gtk_object_destroy (canvas_item);
+      gtk_object_destroy (GTK_OBJECT (canvas_item));
       g_free (text);
     }
 

@@ -102,7 +102,10 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 
   if (item->item != NULL)
     return;
-  
+
+  if ( ! greeter_item_is_visible (item))
+    return;
+
   g_assert (item->parent->group_item);
   
   if (item->fixed_children != NULL ||
@@ -205,7 +208,8 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
 
   if (item->item_type == GREETER_ITEM_TYPE_RECT ||
       item->item_type == GREETER_ITEM_TYPE_SVG ||
-      item->item_type == GREETER_ITEM_TYPE_PIXMAP)
+      item->item_type == GREETER_ITEM_TYPE_PIXMAP ||
+      item->item_type == GREETER_ITEM_TYPE_LABEL)
     gtk_signal_connect (GTK_OBJECT (item->item), "event",
 			(GtkSignalFunc) greeter_item_event_handler,
 			item);

@@ -1,4 +1,5 @@
 <!-- dtd for greeter -->
+<!-- FIXME: this doesn't seem up to date -- George -->
 
 <!ENTITY % colorattrs
 	"file CDATA #IMPLIED
@@ -8,10 +9,11 @@
 >
 
 <!ELEMENT greeter (item+)>
-<!ELEMENT item (pos,normal?,active?,prelight?,children?)>
+<!ELEMENT item (pos,normal?,active?,prelight?,children?,show?,text?)>
 <!ELEMENT children (item+)>
 <!ELEMENT pos EMPTY>
-<!ELEMENT text EMPTY>
+<!ELEMENT show EMPTY>
+<!ELEMENT text (#PCDATA)>
 <!ELEMENT normal EMPTY>
 <!ELEMENT active EMPTY>
 <!ELEMENT prelight EMPTY>
@@ -37,4 +39,8 @@
 >
 <!ATTLIST prelight
 	%colorattrs;
+>
+
+<!ATTLIST show
+	modes CDATA #REQUIRED
 >

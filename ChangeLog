@@ -1,3 +1,27 @@
+Thu Apr 25 17:20:52 2002  George Lebl <jirka@5z.com>
+
+	* Makefile.am, configure.in, gdm.spec.in, gdmsetup-security.in:
+	  Whack the gdmconfig again, gdmconfig is now really dead
+
+	* configure.in, docs/Makefile.am: don't build gdmconfig docs
+
+	* gui/greeter/greeter.c, gui/greeter/greeter_canvas_item.c,
+	  gui/greeter/greeter_events.c, gui/greeter/greeter_geometry.c,
+	  gui/greeter/greeter_item.c, gui/greeter/greeter_item.h,
+	  gui/greeter/greeter_item_capslock.c, gui/greeter/greeter_parser.c,
+	  gui/greeter/greeter_parser.h:  Handle multi-item buttons so that
+	  we can catch clicks on the labels next to the buttons in the
+	  circles theme.  Add 'show modes' since some items may not be shown
+	  depending on what the daemon tells us.  Reformat some code to be in
+	  the same style.  Fix a bunch of leaks and some other minor fixes.
+	  Also the text is now not taken from a "val" property but from the
+	  content since text in a property is just on crack.
+
+	* gui/greeter/greeter.dtd: update a tad but it's still out of date
+
+	* gui/greeter/themes/circles/circles.xml: update for the above
+	  changes
+
 2002-04-25  Jacob Berkman  <jacob@ximian.com>
 
 	* configure.in (AC_OUTPUT): add gdmsetup-security
