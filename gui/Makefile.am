@@ -45,4 +45,4 @@ System_DATA = $(System_in_files:.desktop.in=.desktop)
 Gladedir = $(datadir)/gdm
 Glade_DATA = gdmconfig.glade gdmchooser.glade
 
-EXTRA_DIST = gdmconfig-strings.c $(Glade_DATA) $(System_DATA)
+EXTRA_DIST = gdmconfig-strings.c $(Glade_DATA) $(System_DATA) $(System_in_files)
