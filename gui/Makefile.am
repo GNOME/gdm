@@ -23,7 +23,6 @@ noinst_LIBRARIES = libgdmwm.a
 bin_PROGRAMS = \
 	@GDMCHOOSER@ 		\
 	gdmlogin 		\
-	gdmconfig 		\
 	gdmsetup 		\
 	gdmphotosetup 		\
 	@GDMXNESTCHOOSER@	\
@@ -57,11 +56,11 @@ gdmlogin_SOURCES = \
 	misc.c			\
 	misc.h
 
-gdmconfig_SOURCES = \
-	gdmconfig.c		\
-	gdmconfig.h		\
-	misc.c			\
-	misc.h
+#gdmconfig_SOURCES = \
+#	gdmconfig.c		\
+#	gdmconfig.h		\
+#	misc.c			\
+#	misc.h
 
 gdmsetup_SOURCES = \
 	gdmsetup.c		\
@@ -92,12 +91,12 @@ gdmlogin_LDADD = \
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
 
-gdmconfig_LDFLAGS = -export-dynamic
-gdmconfig_LDADD = \
-	$(GUI_LIBS)		\
-	$(INTLLIBS)		\
-	-L$(top_builddir)/vicious-extensions	\
-	-lviciousui
+#gdmconfig_LDFLAGS = -export-dynamic
+#gdmconfig_LDADD = \
+#	$(GUI_LIBS)		\
+#	$(INTLLIBS)		\
+#	-L$(top_builddir)/vicious-extensions	\
+#	-lviciousui
 
 gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
@@ -130,7 +129,7 @@ Settings_DATA = $(Settings_in_files:.desktop.in=.desktop)
 
 Systemdir = $(datadir)/applications
 System_in_files = \
-	gdmconfig.desktop.in		\
+	gdmsetup.desktop.in		\
 	gdmflexiserver.desktop.in	\
 	gdmflexiserver-xnest.desktop.in
 System_DATA = $(System_in_files:.desktop.in=.desktop)
@@ -138,10 +137,10 @@ System_DATA = $(System_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
 Gladedir = $(datadir)/gdm
-Glade_DATA = gdmconfig.glade gdmsetup.glade gdmchooser.glade
+Glade_DATA = gdmsetup.glade gdmchooser.glade #gdmconfig.glade
 
 EXTRA_DIST = \
-	gdmconfig-strings.c	\
+	gdmsetup-strings.c	\
 	gdmchooser-strings.c	\
 	$(Glade_DATA)		\
 	$(System_DATA)		\

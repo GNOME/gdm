@@ -72,7 +72,6 @@ struct _GdmChooserHost {
 static const gchar *scanning_message = N_("Please wait: scanning local network for XDMCP-enabled hosts...");
 static const gchar *empty_network = N_("No serving hosts were found.");
 static const gchar *active_network = N_("Choose a host to connect to from the selection below.");
-static gchar *glade_filename = NULL;
 
 /* XDM chooser style stuff */
 static gchar *xdm_address = NULL;
@@ -146,7 +145,7 @@ static GtkWidget *status_label;
 static GIOChannel *channel;
 static GList *hosts = NULL;
 static GdkPixbuf *defhostimg;
-static GnomeIconList *browser;
+static GtkWidget *browser;
 static GdmChooserHost *curhost;
 
 static void
@@ -277,11 +276,9 @@ gdm_chooser_browser_update (void)
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
 
     if (any) {
-      gtk_label_set_text (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
-			  _(active_network));
+      gtk_label_set_text (GTK_LABEL (status_label), _(active_network));
     } else {
-      gtk_label_set_text (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
-			  _(empty_network));
+      gtk_label_set_text (GTK_LABEL (status_label), _(empty_network));
     }
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
     gtk_widget_set_sensitive (GTK_WIDGET (rescan), TRUE);
@@ -861,36 +858,39 @@ gdm_chooser_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
 void
 display_chooser_information (void)
 {
-   glade_xml_new (glade_filename, "gdmchooser_help_dialog", PACKAGE);
+	GtkWidget *dialog;
+
+	dialog = gtk_message_dialog_new
+		(GTK_WINDOW (chooser) /* parent */,
+		 GTK_DIALOG_MODAL /* flags */,
+		 GTK_MESSAGE_INFO,
+		 GTK_BUTTONS_OK,
+		 _("The main area of this application shows the hosts on "
+		   "the local network that have \"XDMCP\" enabled. This "
+		   "allows users to login remotely to other machines as "
+		   "if they were logged on using the console.\n\n"
+		   "You can rescan the network for new hosts by clicking "
+		   "\"Refresh\".  When you have selected a host click "
+		   "\"Connect\" to open a session to that machine."));
+
+	gdm_wm_center_window (GTK_WINDOW (dialog));
+
+	gdm_wm_no_login_focus_push ();
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+	gdm_wm_no_login_focus_pop ();
 }
 
 static void 
 gdm_chooser_gui_init (void)
 {
+	glade_helper_add_glade_directory (GDM_GLADE_DIR);
+
 #if 0
     GtkStyle  *style;
     GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
 #endif
    
-        /* Look for the glade file in $(datadir)/gdmconfig or, failing that,
-     * look in the current directory.
-	 * Except when doing development, we want the app to use the glade file
-	 * in the same directory, so we can actually make changes easily.
-     */
-	
-    if ( ! DOING_GDM_DEVELOPMENT) {
-	    if (g_file_test (GDM_GLADE_DIR "/gdmchooser.glade", G_FILE_TEST_EXISTS)) {
-		    glade_filename = g_strdup (GDM_GLADE_DIR
-					       "/gdmchooser.glade");
-	    } else {
-		    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade");
-		    if (glade_filename == NULL) {	  
-			    glade_filename = g_strdup("gdmchooser.glade");
-		    }
-	    }
-    } else {
-	    glade_filename = g_strdup("gdmchooser.glade");
-    }
     /* Enable theme */
     if (GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
@@ -902,66 +902,29 @@ gdm_chooser_gui_init (void)
 	defhostimg = gdk_pixbuf_new_from_file (GdmHostDefaultIcon, NULL);
 
     /* Main window */
-    g_assert (glade_filename != NULL);
-    chooser_app = glade_xml_new (glade_filename, "gdmchooser_main", PACKAGE);
-    if (chooser_app == NULL) {
-	    GtkWidget *fatal_error = 
-		    gtk_message_dialog_new (NULL /* parent */,
-					    GTK_DIALOG_MODAL /* flags */,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("Cannot find the glade interface description\n"
-					      "file, cannot run gdmchooser.\n"
-					      "Please check your installation and the\n"
-					      "location of the gdmchooser.glade2 file."));
-	    gtk_dialog_run (GTK_DIALOG (fatal_error));
-	    exit (EXIT_FAILURE);
-    }
+    chooser_app = glade_helper_load ("gdmchooser.glade",
+				     "gdmchooser_main",
+				     GTK_TYPE_DIALOG,
+				     FALSE /* dump_on_destroy */);
     glade_xml_signal_autoconnect (chooser_app);
    
-    chooser = glade_xml_get_widget (chooser_app, "gdmchooser_main");
-    manage = glade_xml_get_widget (chooser_app, "connect_button");
-    rescan = glade_xml_get_widget (chooser_app, "rescan_button");
-    cancel = glade_xml_get_widget (chooser_app, "quit_button");
-    status_label = glade_xml_get_widget (chooser_app, "status_label");
+    chooser = glade_helper_get (chooser_app, "gdmchooser_main",
+				GTK_TYPE_DIALOG);
+    manage = glade_helper_get (chooser_app, "connect_button",
+			       GTK_TYPE_BUTTON);
+    rescan = glade_helper_get (chooser_app, "rescan_button",
+			       GTK_TYPE_BUTTON);
+    cancel = glade_helper_get (chooser_app, "quit_button",
+			       GTK_TYPE_BUTTON);
+    status_label = glade_helper_get (chooser_app, "status_label",
+				     GTK_TYPE_LABEL);
 
-    if (chooser == NULL ||
-	manage == NULL ||
-	rescan == NULL ||
-	cancel == NULL ||
-	status_label == NULL) {
-	    GtkWidget *fatal_error = 
-		    gtk_message_dialog_new (NULL /* parent */,
-					    GTK_DIALOG_MODAL /* flags */,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("The glade interface description file\n"
-					      "appears to be corrupted.\n"
-					      "Please check your installation."));
-	    gtk_dialog_run (GTK_DIALOG (fatal_error));
-	    exit(EXIT_FAILURE);
-	}
-   
-#if 0
-    /* Find background style for browser */
-    style = gtk_style_copy (chooser->style);
-   
-    /* FIXME: Forcing the background to be white seems a bit off seeing as
-     * the user might like having a dark theme.
-     */
-    style->bg[GTK_STATE_NORMAL] = bbg;
-    gtk_widget_push_style (style);
-#endif
-
-    browser = (GnomeIconList *) glade_xml_get_widget (chooser_app, 
-						     "chooser_iconlist");
+    browser = glade_helper_get (chooser_app, "chooser_iconlist",
+				GNOME_TYPE_ICON_LIST);
     gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
     gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.");
     gnome_icon_list_set_icon_width (GNOME_ICON_LIST (browser), GdmIconMaxWidth + 20);
     gnome_icon_list_set_icon_border (GNOME_ICON_LIST (browser), 2);
-#if 0
-    gtk_widget_pop_style();
-#endif
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
 
     gtk_widget_set_size_request (GTK_WIDGET (chooser), 

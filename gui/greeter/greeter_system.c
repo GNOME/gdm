@@ -87,6 +87,7 @@ greeter_system_handler (GreeterItemInfo *info,
 			 GTK_STOCK_OK,
 			 GTK_RESPONSE_OK);
   
+  gtk_widget_show_all (dialog);
   gdm_wm_center_window (GTK_WINDOW (dialog));
 
   gdm_wm_no_login_focus_push ();

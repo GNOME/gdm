@@ -29,7 +29,7 @@ static GSList *sessions = NULL;
 
 /* This is true if session dir doesn't exist or is whacked out
  * in some way or another */
-static gboolean session_dir_whacked_out = FALSE;
+gboolean session_dir_whacked_out = FALSE;
 static GtkWidget *session_dialog;
 
 static GSList *session_group = NULL;
@@ -473,10 +473,11 @@ greeter_session_handler (GreeterItemInfo *info,
       tmp = tmp->next;
     }
 
+  gtk_widget_show_all (session_dialog);
+
   gdm_wm_center_window (GTK_WINDOW (session_dialog));
   
   gdm_wm_no_login_focus_push ();
-  gtk_widget_show (session_dialog);
   ret = gtk_dialog_run (GTK_DIALOG (session_dialog));
   gdm_wm_no_login_focus_pop ();
   gtk_widget_hide (session_dialog);

@@ -1,3 +1,24 @@
+Tue Apr 23 15:07:17 2002  George Lebl <jirka@5z.com>
+
+	* Makefile.am, gdmconfig, gdmsetup-serurity.in, gdmsetup-pam,
+	  daemon/gdm.h, config/gdm.conf.in, gui/Makefile.am,
+	  gui/gdmsetup.desktop.in: Make the gdmsetup proggie the default
+	  configurator and stop building/installing gdmconfig which wasn't
+	  working to begin with.
+
+	* gui/gdmchooser.(c|glade): redo the glade file for gdmchooser to be
+	  a dialog and also start using glade-helper
+
+	* gui/gdmlogin.c: some gdmwm related fixes
+
+	* gui/greeter/greeter.c, gui/greeter/greeter_action_language.c,
+	  gui/greeter/greeter_session.c, gui/greeter/greeter_system.c:
+	  Add Xinerama support, init the gdmwm so that we actually do
+	  have focus management, do all the cool gdmwm type stuff with
+	  all the dialogs/windows.  Add all the warnings that gdmlogin
+	  can give.  Damn this still needs a LOT of love before it's
+	  a viable replacement of gdmlogin.
+
 Mon Apr 22 19:00:14 2002  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch], daemon/slave.c: support updating the timed login

@@ -66,6 +66,24 @@ GdkRectangle gdm_wm_screen = {0,0,0,0};
 void 
 gdm_wm_screen_init (int cur_screen_num)
 {
+	if (g_getenv ("FAKE_XINERAMA_GDM") != NULL) {
+	/* for testing Xinerama support on non-xinerama setups */
+		gdm_wm_screen.x = 100;
+		gdm_wm_screen.y = 100;
+		gdm_wm_screen.width = gdk_screen_width () / 2 - 100;
+		gdm_wm_screen.height = gdk_screen_height () / 2 - 100;
+
+		gdm_wm_allscreens = g_new0 (GdkRectangle, 2);
+		gdm_wm_allscreens[0] = gdm_wm_screen;
+		gdm_wm_allscreens[1].x = gdk_screen_width () / 2;
+		gdm_wm_allscreens[1].y = gdk_screen_height () / 2;
+		gdm_wm_allscreens[1].width = gdk_screen_width () / 2;
+		gdm_wm_allscreens[1].height = gdk_screen_height () / 2;
+		gdm_wm_screens = 2;
+		return;
+	}
+
+	{
 #ifdef HAVE_LIBXINERAMA
 	gboolean have_xinerama = FALSE;
 
@@ -126,23 +144,7 @@ gdm_wm_screen_init (int cur_screen_num)
 		gdm_wm_allscreens[0] = gdm_wm_screen;
 		gdm_wm_screens = 1;
 	}
-#if 0
-	/* for testing Xinerama support on non-xinerama setups */
-	{
-		gdm_wm_screen.x = 100;
-		gdm_wm_screen.y = 100;
-		gdm_wm_screen.width = gdk_screen_width () / 2 - 100;
-		gdm_wm_screen.height = gdk_screen_height () / 2 - 100;
-
-		gdm_wm_allscreens = g_new0 (GdkRectangle, 2);
-		gdm_wm_allscreens[0] = gdm_wm_screen;
-		gdm_wm_allscreens[1].x = gdk_screen_width () / 2;
-		gdm_wm_allscreens[1].y = gdk_screen_height () / 2;
-		gdm_wm_allscreens[1].width = gdk_screen_width () / 2;
-		gdm_wm_allscreens[1].height = gdk_screen_height () / 2;
-		gdm_wm_screens = 2;
 	}
-#endif
 }
 
 void 

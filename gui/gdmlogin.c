@@ -3966,8 +3966,10 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
+	    gdm_wm_no_login_focus_push ();
 	    gtk_dialog_run (GTK_DIALOG (dialog));
 	    gtk_widget_destroy (dialog);
+	    gdm_wm_no_login_focus_pop ();
     }
 
     if (g_getenv ("GDM_WHACKED_GREETER_CONFIG") != NULL) {
@@ -3985,8 +3987,10 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
+	    gdm_wm_no_login_focus_push ();
 	    gtk_dialog_run (GTK_DIALOG (dialog));
 	    gtk_widget_destroy (dialog);
+	    gdm_wm_no_login_focus_pop ();
     }
 
     /* There was no config file */
@@ -4006,8 +4010,10 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
+	    gdm_wm_no_login_focus_push ();
 	    gtk_dialog_run (GTK_DIALOG (dialog));
 	    gtk_widget_destroy (dialog);
+	    gdm_wm_no_login_focus_pop ();
     }
 
     g_atexit (kill_thingies);

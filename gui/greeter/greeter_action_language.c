@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
+#include "gdmwm.h"
 #include "greeter.h"
 #include "greeter_configuration.h"
 #include "greeter_item_pam.h"
@@ -262,13 +263,15 @@ greeter_action_language (GreeterItemInfo *info,
 			  swindow, TRUE, TRUE, 0);
       gtk_window_set_default_size (GTK_WINDOW (dialog),
 				   -1,
-				   gdk_screen_height ()/2);
+				   gdm_wm_screen.height);
       g_signal_connect (G_OBJECT (gtk_tree_view_get_selection (GTK_TREE_VIEW (view))),
 			"changed",
 			(GCallback) selection_changed,
 			NULL);
-      gtk_widget_show_all (GTK_DIALOG (dialog)->vbox);
+      gtk_widget_show_all (dialog);
+      gdm_wm_center_window (GTK_WINDOW (dialog));
     }
+  gdm_wm_no_login_focus_push ();
   switch (gtk_dialog_run (GTK_DIALOG (dialog)))
     {
     case GTK_RESPONSE_OK:
@@ -279,6 +282,8 @@ greeter_action_language (GreeterItemInfo *info,
     default:
       break;
     }
+
+  gdm_wm_no_login_focus_pop ();
 
   if (dialog)
     gtk_widget_hide (dialog);
