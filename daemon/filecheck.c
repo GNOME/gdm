@@ -81,7 +81,7 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
 	    return TRUE;
 	}
 	else {
-	    syslog (LOG_WARNING, _("%s: %s does not exist and must."), caller, fullpath);
+	    syslog (LOG_WARNING, _("%s: %s does not exist but must exist."), caller, fullpath);
 	    g_free (fullpath);
 	    return FALSE;
 	}
