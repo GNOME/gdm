@@ -3015,7 +3015,7 @@ gdm_login_gui_init (void)
 	menu = gtk_menu_new();
 	if (GdmConfigAvailableReal &&
 	    bin_exists (GdmConfigurator)) {
-		item = gtk_menu_item_new_with_mnemonic (_("_Configure..."));
+		item = gtk_menu_item_new_with_mnemonic (_("_Configure the login manager..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_run_gdmconfig),

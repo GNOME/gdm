@@ -139,6 +139,7 @@ extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gchar *GdmGlobalFaceDir;
 extern gboolean GdmDebug;
+extern gboolean GdmDisallowTCP;
 
 
 /* Local prototypes */
@@ -2321,6 +2322,9 @@ session_child_run (struct passwd *pwent,
 	close (0);
 	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 
+	/* Set this for the PreSession script */
+	gnome_setenv ("GDMSESSION", session, TRUE);
+
 	/* Run the PreSession script */
 	if (gdm_slave_exec_script (d, GdmPreSession,
 				   login, pwent,
@@ -2567,6 +2571,7 @@ session_child_run (struct passwd *pwent,
 	} else {
 		char *exec = g_strconcat ("exec ", sesspath, NULL);
 		char *shellbase = g_path_get_basename (shell);
+		char *dashshell = g_strconcat ("-", shellbase, NULL);
 		/* FIXME: this is a hack currently this is all screwed up
 		 * so I won't run the users shell unless it's one of the
 		 * "listed" ones, I'll just run bash or sh,
@@ -2590,9 +2595,9 @@ session_child_run (struct passwd *pwent,
 			else
 				shell = "/bin/sh";
 		}
-		execl (shell, "-", "-c", exec, NULL);
+		execl (shell, dashshell, "-c", exec, NULL);
 		/* nutcase fallback */
-		execl ("/bin/sh", "-", "-c", exec, NULL);
+		execl ("/bin/sh", "-sh", "-c", exec, NULL);
 
 		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
 		gdm_error_box
@@ -3820,6 +3825,9 @@ gdm_slave_handle_notify (const char *msg)
 			kill (d->greetpid, SIGHUP);
 	} else if (sscanf (msg, GDM_NOTIFY_RETRYDELAY " %d", &val) == 1) {
 		GdmRetryDelay = val;
+	} else if (sscanf (msg, GDM_NOTIFY_DISALLOWTCP " %d", &val) == 1) {
+		GdmDisallowTCP = val;
+		remanage_asap = TRUE;
 	} else if (strncmp (msg, GDM_NOTIFY_GREETER " ",
 			    strlen (GDM_NOTIFY_GREETER) + 1) == 0) {
 		g_free (GdmGreeter);

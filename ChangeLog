@@ -1,3 +1,28 @@
+Fri May 16 20:46:43 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmlanguages.c, config/locale.alias: added Malaylam, Marathi
+	  and Oriya languages
+
+	* gui/gdmlogin.c, gui/greeter/greeter_system.c: fix #105923 by
+	  changing the "Configure..." item to "Configure the login
+	  manager..."
+
+	* utils/gdmopen.c: fix the -l option to actually work right
+
+	* daemon/slave.c: fix Redhat #91031 by prepending the dash
+	  to the command rather then replacing the command with a dash
+	  when running the shell.  This was contributed by
+	  mlblandf@sedona.intel.com (Michael Blandford)
+
+	* config/gdm.conf.in, daemon/gdm.h: change PingInterval to
+	  PingIntervalSeconds
+
+	* daemon/gdm.[ch], daemon/slave.c: update DisallowTCP properly
+
+	* daemon/slave.c: set GDMSESSION before running PreSession
+
+	* daemon/misc.c: fixed warnings and an uninitialized var use
+
 Thu May 15 02:17:55 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter_system.c,

@@ -184,7 +184,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  config_radio = gtk_radio_button_new_with_mnemonic (radio_group,
-							     _("Configure"));
+							     _("Configure the login manager"));
 	  group_radio = config_radio;
 	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			      config_radio,

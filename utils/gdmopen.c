@@ -107,6 +107,7 @@ main (int argc, char *argv[])
 	command = argv[1];
 
 	if (strcmp (argv[1], "-l") == 0) {
+		char *p;
 		if (argc <= 2) {
 			fprintf (stderr, "gdmopen: must supply a command!\n");
 			return 66;
@@ -114,9 +115,16 @@ main (int argc, char *argv[])
 		/* prepend '-' and start the command at
 		 * argument 2 */
 		cmd_start = 2;
-		command = malloc (strlen (argv[2]) + 2);
-		strcpy (command+1, argv[2]);
-		command[0] = '-';
+		command = argv[2];
+		argv[2] = malloc (strlen (command) + 2);
+		p = strrchr (command, '/');
+		if (p != NULL) {
+			/* make it "-basename" */
+			strcpy (argv[2]+1, p+1);
+		} else {
+			strcpy (argv[2]+1, command);
+		}
+		*(argv[2]) = '-';
 	}
 
 	fd = open ("/dev/console", O_WRONLY, 0);
@@ -190,7 +198,7 @@ main (int argc, char *argv[])
 		write (0, "\033(K", 3);
 #endif /* __linux__ */
 
-		execvp (command, &argv[1]);
+		execvp (command, &argv[cmd_start]);
 
 		_exit (66); /* failed */
 	}

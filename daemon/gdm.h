@@ -198,7 +198,7 @@ enum {
 #define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=true"
 #define GDM_KEY_MAXINDIR "xdmcp/MaxPendingIndirect=4"
 #define GDM_KEY_MAXINDWAIT "xdmcp/MaxWaitIndirect=30"
-#define GDM_KEY_PINGINTERVAL "xdmcp/PingInterval=15"
+#define GDM_KEY_PINGINTERVAL "xdmcp/PingIntervalSeconds=15"
 #define GDM_KEY_WILLING "xdmcp/Willing=" EXPANDED_SYSCONFDIR "/gdm/Xwilling"
 
 #define GDM_KEY_GTKRC "gui/GtkRC=" EXPANDED_DATADIR "/themes/Default/gtk/gtkrc"
@@ -462,6 +462,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_NOTIFY_REMOTEGREETER "RemoteGreeter" /* <greeter binary> */
 #define GDM_NOTIFY_TIMED_LOGIN "TimedLogin" /* <login> */
 #define GDM_NOTIFY_TIMED_LOGIN_DELAY "TimedLoginDelay" /* <seconds> */
+#define GDM_NOTIFY_DISALLOWTCP "DisallowTCP" /* <true/false as int> */
 
 /* commands */
 #define GDM_NOTIFY_DIRTY_SERVERS "DIRTY_SERVERS"
@@ -574,7 +575,7 @@ void		gdm_final_cleanup	(void);
  *   and instead of vt, it lists the parent display in standard form.
  */
 #define GDM_SUP_UPDATE_CONFIG "UPDATE_CONFIG" /* <key> */
-/* AUTH_LOCAL: Tell the daemon to update config of some key.  Any user
+/* UPDATE_CONFIG: Tell the daemon to update config of some key.  Any user
  *             can really request that values are re-read but the daemon
  *             caches the last date of the config file so a user can't
  *             actually change any values unless they can write the
@@ -583,6 +584,7 @@ void		gdm_final_cleanup	(void);
  *   		 security/AllowRemoteRoot (2.3.90.2)
  *   		 security/AllowRemoteAutoLogin (2.3.90.2)
  *   		 security/RetryDelay (2.3.90.2)
+ *   		 security/DisallowTCP (2.4.2.0)
  *   		 daemon/Greeter (2.3.90.2)
  *   		 daemon/RemoteGreeter (2.3.90.2)
  *   		 xdmcp/Enable (2.3.90.2)
@@ -595,7 +597,7 @@ void		gdm_final_cleanup	(void);
  *			xdmcp/HonorIndirect
  *			xdmcp/MaxPendingIndirect
  *			xdmcp/MaxWaitIndirect
- *			xdmcp/PingInterval (only affects new connections)
+ *			xdmcp/PingIntervalSeconds (only affects new connections)
  *   		 xdmcp/TimedLogin (2.3.90.3)
  *   		 xdmcp/TimedLoginEnable (2.3.90.3)
  *   		 xdmcp/TimedLoginDelay (2.3.90.3)

@@ -165,7 +165,7 @@ MaxWaitIndirect=15
 DisplaysPerHost=2
 # The number of seconds after which a non-responsive session is logged off.
 # Better keep this low.
-PingInterval=15
+PingIntervalSeconds=15
 # The port.  177 is the standard port so better keep it that way
 Port=177
 # Willing script, none is shipped and by default we'll send
@@ -321,7 +321,11 @@ name=Terminal server
 # Add -terminate to make things behave more nicely
 command=/usr/X11R6/bin/X -terminate
 # Make this not appear in the flexible servers (we need extra params
-# anyway, and terminate would be bad for xdmcp)
+# anyway, and terminate would be bad for xdmcp choosing).  You can
+# make a terminal server flexible, but not with an indirect query.
+# If you need flexible indirect query server, then you must get rid
+# of the -terminate and the only way to kill the flexible server will
+# then be by Ctrl-Alt-Backspace
 flexible=false
 # Not local, we do not handle the logins for this X server
 handled=false

@@ -373,7 +373,6 @@ gboolean
 gdm_text_message_dialog (const char *msg)
 {
 	char *dialog; /* do we have dialog?*/
-	char *msg_locale;
 	char *msg_quoted;
 
 	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
@@ -435,7 +434,6 @@ gboolean
 gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 {
 	char *dialog; /* do we have dialog?*/
-	char *msg_locale;
 	char *msg_quoted;
 	
 	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
@@ -453,7 +451,6 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {
 		char *argv[6];
-		char *msg_quoted;
 		int retint;
 
 		argv[0] = EXPANDED_SBINDIR "/gdmopen";
