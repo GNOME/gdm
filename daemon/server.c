@@ -896,7 +896,8 @@ gdm_server_alarm_handler (gint signal)
 {
     d->servstat = SERVER_TIMEOUT; /* Server didn't start */
 
-    gdm_debug ("gdm_server_alarm_handler: Got SIGALRM, server abort");
+    /* FIXME: apparently this can cause a hang */
+    /* gdm_debug ("gdm_server_alarm_handler: Got SIGALRM, server abort"); */
 
     server_signal_notified = TRUE;
     /* this will quit the select */

@@ -58,7 +58,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		     void *appdata_ptr)
 {
     int replies = 0;
-    char *s, *utf8;
+    char *s, *utf8, *tmp;
     struct pam_response *reply = NULL;
     
     reply = malloc (sizeof (struct pam_response) * num_msg);
@@ -84,10 +84,13 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		    free (reply);
 		    return PAM_CONV_ERR;
 	    }
-	    /* FIXME: convert to locale? */
+
 	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = strdup (ve_sure_string (s));
+	    tmp = g_locale_from_utf8 (ve_sure_string (s),
+				      -1, NULL, NULL, NULL);
 	    g_free (s);
+	    reply[replies].resp = strdup (ve_sure_string (tmp));
+	    g_free (tmp);
 	    break;
 	    
 	case PAM_PROMPT_ECHO_OFF:
@@ -100,10 +103,12 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		    free (reply);
 		    return PAM_CONV_ERR;
 	    }
-	    /* FIXME: convert to locale? */
 	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = strdup (ve_sure_string (s));
+	    tmp = g_locale_from_utf8 (ve_sure_string (s),
+				      -1, NULL, NULL, NULL);
 	    g_free (s);
+	    reply[replies].resp = strdup (ve_sure_string (tmp));
+	    g_free (tmp);
 	    break;
 	    
 	case PAM_ERROR_MSG:
@@ -147,7 +152,7 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 				void *appdata_ptr)
 {
 	int replies = 0;
-	char *s;
+	char *s, *tmp, *utf8;
 	struct pam_response *reply = NULL;
 
 	reply = malloc (sizeof (struct pam_response) * num_msg);
@@ -158,43 +163,58 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 	memset (reply, 0, sizeof (struct pam_response) * num_msg);
 
 	for (replies = 0; replies < num_msg; replies++) {
-
 		switch (msg[replies]->msg_style) {
 
 		case PAM_PROMPT_ECHO_ON:
 			/* PAM requested textual input with echo on */
-			s = gdm_failsafe_question (cur_gdm_disp,
-						   _((gchar *) msg[replies]->msg),
+			utf8 = g_locale_to_utf8 ((gchar *) msg[replies]->msg,
+						 -1, NULL, NULL, NULL);
+			s = gdm_failsafe_question (cur_gdm_disp, utf8,
 						   TRUE /* echo */);
+			g_free (utf8);
+
 			reply[replies].resp_retcode = PAM_SUCCESS;
-			reply[replies].resp = strdup (ve_sure_string (s));
+			tmp = g_locale_from_utf8 (ve_sure_string (s),
+						  -1, NULL, NULL, NULL);
 			g_free (s);
+			reply[replies].resp = strdup (ve_sure_string (tmp));
+			g_free (tmp);
 			break;
 
 		case PAM_PROMPT_ECHO_OFF:
 			/* PAM requested textual input with echo off */
-			s = gdm_failsafe_question (cur_gdm_disp,
-						   _((gchar *) msg[replies]->msg),
+			utf8 = g_locale_to_utf8 ((gchar *) msg[replies]->msg,
+						 -1, NULL, NULL, NULL);
+			s = gdm_failsafe_question (cur_gdm_disp, utf8,
 						   FALSE /* echo */);
+			g_free (utf8);
+
 			reply[replies].resp_retcode = PAM_SUCCESS;
-			reply[replies].resp = strdup (ve_sure_string (s));
+			tmp = g_locale_from_utf8 (ve_sure_string (s),
+						  -1, NULL, NULL, NULL);
 			g_free (s);
+			reply[replies].resp = strdup (ve_sure_string (tmp));
+			g_free (tmp);
 			break;
 
 		case PAM_ERROR_MSG:
 			/* PAM sent a message that should displayed to the user */
+			utf8 = g_locale_to_utf8 ((gchar *) msg[replies]->msg,
+						 -1, NULL, NULL, NULL);
 			gdm_error_box (cur_gdm_disp,
-				       GTK_MESSAGE_ERROR,
-				       _((gchar *) msg[replies]->msg));
+				       GTK_MESSAGE_ERROR, utf8);
+			g_free (utf8);
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;
 
 		case PAM_TEXT_INFO:
 			/* PAM sent a message that should displayed to the user */
+			utf8 = g_locale_to_utf8 ((gchar *) msg[replies]->msg,
+						 -1, NULL, NULL, NULL);
 			gdm_error_box (cur_gdm_disp,
-				       GTK_MESSAGE_INFO,
-				       _((gchar *) msg[replies]->msg));
+				       GTK_MESSAGE_INFO, utf8);
+			g_free (utf8);
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;

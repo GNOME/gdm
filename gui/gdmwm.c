@@ -44,10 +44,6 @@ struct _GdmWindow {
 	gboolean center; /* do centering */
 	gboolean recenter; /* do re-centering */
         gboolean takefocus; /* permit take focus */
-
-	int config_window; /* a config window, we may treat it specially,
-			      may be up to 3 numbers, where the third should
-			      be raised the most */
 };
 
 static GList *windows = NULL;
@@ -56,12 +52,12 @@ static int no_focus_login = 0;
 static Display *wm_disp = NULL;
 static Window wm_root = None;
 static Window wm_login_window = None;
+static Window wm_focus_window = None;
 
 static Atom XA_WM_PROTOCOLS = 0;
 static Atom XA_WM_STATE = 0;
 static Atom XA_WM_TAKE_FOCUS = 0;
 static Atom XA_COMPOUND_TEXT = 0;
-static Atom GDM_CONFIG_WINDOW = 0;
 
 static int trap_depth = 0;
 
@@ -437,6 +433,8 @@ gdm_wm_focus_window (Window window)
 			RevertToPointerRoot,
 			CurrentTime);
 	trap_pop ();
+
+	wm_focus_window = window;
 }
 
 static void
@@ -544,7 +542,7 @@ has_deco (Window win)
 	trap_push ();
 
 	if (hints_atom == None)
-		hints_atom = XInternAtom (wm_disp, "_MOTIF_WM_HINTS", FALSE);
+		hints_atom = XInternAtom (wm_disp, "_MOTIF_WM_HINTS", False);
 
 	hints = NULL;
 
@@ -654,8 +652,6 @@ add_window (Window w, gboolean center)
 		int x, y;
 		Window root;
 		unsigned int width, height, border, depth;
-		long *data;
-		int data_size;
 
 		gw = g_new0 (GdmWindow, 1);
 		gw->win = w;
@@ -715,19 +711,6 @@ add_window (Window w, gboolean center)
 		gw->x = x;
 		gw->y = x;
 
-		data = get_typed_property_data (wm_disp, w,
-						GDM_CONFIG_WINDOW,
-						XA_CARDINAL,
-						&data_size,
-						32);
-		if (data != NULL) {
-			if (data_size >= 1 &&
-			    data[0] != 0) {
-				gw->config_window = data[0];
-			}
-			g_free (data);
-		}
-
 		center_x_window (gw, w, w);
 		add_deco (gw);
 
@@ -742,6 +725,9 @@ static void
 remove_window (Window w)
 {
 	GList *li = find_window_list (w, FALSE);
+
+	if (w == wm_focus_window)
+		wm_focus_window = None;
 
 	if (li != NULL) {
 		GdmWindow *gw = li->data;
@@ -1098,7 +1084,6 @@ gdm_wm_init (Window login_window)
 	XA_WM_TAKE_FOCUS = XInternAtom (wm_disp, "WM_TAKE_FOCUS", False);
 
 	XA_COMPOUND_TEXT = XInternAtom (wm_disp, "COMPOUND_TEXT", False);
-	GDM_CONFIG_WINDOW = XInternAtom (wm_disp, "_GDM_CONFIG_WINDOW", False);
 
 	wm_root = DefaultRootWindow (wm_disp);
 
@@ -1133,6 +1118,8 @@ gdm_wm_focus_new_windows (gboolean focus)
 void
 gdm_wm_no_login_focus_push (void)
 {
+	/* it makes not sense for this to be false then */
+	focus_new_windows = TRUE;
 	no_focus_login ++;
 }
 
@@ -1140,6 +1127,11 @@ void
 gdm_wm_no_login_focus_pop (void)
 {
 	no_focus_login --;
+
+	if (no_focus_login == 0 &&
+	    wm_focus_window == None &&
+	    wm_login_window != None)
+		gdm_wm_focus_window (wm_login_window);
 }
 
 void
@@ -1209,17 +1201,106 @@ gdm_wm_move_window_now (Window window, int x, int y)
 }
 
 void
-gdm_wm_raise_config_windows (void)
+gdm_wm_save_wm_order (void)
 {
-	GList *li;
+	Window *children = NULL;
+	Window xparent, xroot;
+	guint size = 0;
+	int dlen = 0;
+	unsigned long *data;
+
+	gdk_flush ();
+	XSync (wm_disp, False);
+	trap_push ();
+
+	XGrabServer (wm_disp);
+
+	if (XQueryTree (wm_disp, 
+			wm_root,
+			&xroot,
+			&xparent,
+			&children,
+			&size)) {
+		int i;
+		Atom atom;
+		data = g_new0 (long, size);
+
+		for (i = 0; i < size; i++) {
+			GdmWindow *gw = find_window (children[i], TRUE);
+
+			/* Ignore unknowns and shadows */
+			if (gw == NULL ||
+			    gw->shadow == children[i])
+				continue;
+
+			if (gw->win == wm_login_window) {
+				/* Empty spot in the list signifies the
+				 * login window */
+				data [dlen++] = None;
+			} else {
+				data [dlen++] = gw->win;
+			}
+		}
+
+		atom = XInternAtom (wm_disp, "GDMWM_WINDOW_ORDER", False);
+
+		XChangeProperty (wm_disp, wm_root,
+				 atom,
+				 XA_CARDINAL,
+				 32,
+				 PropModeReplace,
+				 (unsigned char *)data,
+				 dlen);
+
+		if (children != NULL)
+			XFree (children);
+		g_free (data);
+	}
+
+	XUngrabServer (wm_disp);
+
+	trap_pop ();
+}
+
+static gboolean
+focus_win (gpointer data)
+{
+	Window focus = (Window)data;
+	focus_new_windows = TRUE;
+	gdm_wm_focus_window (focus);
+	return FALSE;
+}
+
+void
+gdm_wm_restore_wm_order (void)
+{
+	guint32 *data;
+	Window focus = None;
+	int size;
 	int i;
-	Window focus = 0;
+	Atom atom;
 
-	for (i = 1; i <= 3; i++) {
-		for (li = windows; li != NULL; li = li->next) {
-			GdmWindow *gw = li->data;
+	gdk_flush ();
+	XSync (wm_disp, False);
+	trap_push ();
 
-			if (gw->config_window == i) {
+	XGrabServer (wm_disp);
+
+	atom = XInternAtom (wm_disp, "GDMWM_WINDOW_ORDER", False);
+
+	data = get_typed_property_data (wm_disp, wm_root,
+					atom, XA_CARDINAL,
+					&size, 32);
+
+	if (data != NULL) {
+		for (i = 0; i < size/4; i++) {
+			GdmWindow *gw;
+			if (data[i] == None)
+				gw = find_window (wm_login_window, TRUE);
+			else
+				gw = find_window (data[i], TRUE);
+
+			if (gw != NULL) {
 				focus = gw->win;
 				if (gw->shadow != None)
 					XRaiseWindow (wm_disp, gw->shadow);
@@ -1229,11 +1310,19 @@ gdm_wm_raise_config_windows (void)
 					XRaiseWindow (wm_disp, gw->win);
 			}
 		}
+
+		g_free (data);
 	}
 
-	if (focus != 0) {
-		focus_new_windows = TRUE;
-		gdm_wm_focus_window (focus);
+	XUngrabServer (wm_disp);
+
+	trap_pop ();
+
+	process_events ();
+
+	if (focus != None) {
+		/* let us hit the main loop first */ 
+		g_idle_add (focus_win, (gpointer)focus);
 	}
 }
 

@@ -73,6 +73,9 @@ static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
 					       greeter and try again */
 static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
 						SIGCHLD hits */
+static gboolean greeter_disabled = FALSE;
+static gboolean greeter_no_focus = FALSE;
+
 static gboolean interrupted = FALSE;
 static gchar *ParsedAutomaticLogin = NULL;
 static gchar *ParsedTimedLogin = NULL;
@@ -346,12 +349,12 @@ gdm_slave_whack_greeter (void)
 {
 	gdm_sigchld_block_push ();
 
-	greet = FALSE;
-
 	/* do what you do when you quit, this will hang until the
 	 * greeter decides to print an STX\n and die, meaning it can do some
 	 * last minute cleanup */
 	gdm_slave_greeter_ctl_no_ret (GDM_QUIT, "");
+
+	greet = FALSE;
 
 	/* Wait for the greeter to really die, the check is just
 	 * being very anal, the pid is always set to something */
@@ -519,12 +522,17 @@ gdm_slave_run (GdmDisplay *display)
 
 	    gdm_debug ("gdm_slave_run: Automatic login done");
 	    
-	    if (remanage_asap)
+	    if (remanage_asap) {
+		    gdm_server_stop (d);
+		    gdm_verify_cleanup (d);
 		    _exit (DISPLAY_REMANAGE);
+	    }
     } else {
 	    if (gdm_first_login)
 		    gdm_first_login = FALSE;
 	    gdm_slave_greeter ();  /* Start the greeter */
+	    greeter_no_focus = FALSE;
+	    greeter_disabled = FALSE;
 
 	    do {
 		    gdm_slave_wait_for_login (); /* wait for a password */
@@ -549,10 +557,16 @@ gdm_slave_run (GdmDisplay *display)
 		    d->logged_in = FALSE;
 		    gdm_slave_send_string (GDM_SOP_LOGIN, "");
 
-		    if (remanage_asap)
+		    if (remanage_asap) {
+			    gdm_server_stop (d);
+			    gdm_verify_cleanup (d);
 			    _exit (DISPLAY_REMANAGE);
+		    }
 
 		    if (greet) {
+			    greeter_no_focus = FALSE;
+			    gdm_slave_greeter_ctl_no_ret (GDM_FOCUS, "");
+			    greeter_disabled = FALSE;
 			    gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
 			    gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
 		    }
@@ -736,9 +750,28 @@ restart_the_greeter (void)
 	login = NULL;
 
 	/* No restart it */
-	if (greet)
-		gdm_slave_whack_greeter ();
+	if (greet) {
+		gdm_sigchld_block_push ();
+
+		greet = FALSE;
+
+		if (d->greetpid > 0) {
+			if (kill (d->greetpid, SIGTERM) == 0)
+				waitpid (d->greetpid, 0, 0); 
+		}
+		d->greetpid = 0;
+
+		gdm_slave_send_num (GDM_SOP_GREETPID, 0);
+
+		gdm_sigchld_block_pop ();
+	}
 	gdm_slave_greeter ();
+
+	if (greeter_disabled)
+		gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
+
+	if (greeter_no_focus)
+		gdm_slave_greeter_ctl_no_ret (GDM_NOFOCUS, "");
 }
 
 static void
@@ -754,10 +787,9 @@ gdm_slave_wait_for_login (void)
 		do_configurator = FALSE;
 
 		if (do_restart_greeter) {
+			do_restart_greeter = FALSE;
 			restart_the_greeter ();
 		}
-
-		do_restart_greeter = FALSE;
 
 		/* We are NOT interrupted yet */
 		interrupted = FALSE;
@@ -860,6 +892,11 @@ gdm_slave_wait_for_login (void)
 			/* disable the login screen, we don't want people to
 			 * log in in the meantime */
 			gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
+			greeter_disabled = TRUE;
+
+			/* make the login screen not focusable */
+			gdm_slave_greeter_ctl_no_ret (GDM_NOFOCUS, "");
+			greeter_no_focus = TRUE;
 
 			restart_greeter_now = TRUE;
 
@@ -872,9 +909,16 @@ gdm_slave_wait_for_login (void)
 			gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
 			d->logged_in = FALSE;
 
-			if (remanage_asap)
+			if (remanage_asap) {
+				gdm_server_stop (d);
+				gdm_verify_cleanup (d);
 				_exit (DISPLAY_REMANAGE);
+			}
 
+			greeter_no_focus = FALSE;
+			gdm_slave_greeter_ctl_no_ret (GDM_FOCUS, "");
+
+			greeter_disabled = FALSE;
 			gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
 			gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
 			continue;
@@ -2306,7 +2350,7 @@ gdm_slave_session_start (void)
 		    g_free (ret);
 	    }
 
-	    gdm_debug (_("gdm_slave_session_start: Authentication completed. Whacking greeter"));
+	    gdm_debug ("gdm_slave_session_start: Authentication completed. Whacking greeter");
 
 	    gdm_slave_whack_greeter ();
     }
@@ -2586,7 +2630,8 @@ gdm_slave_child_handler (int sig)
 			gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
 			if (restart_greeter_now) {
-				gdm_slave_greeter ();
+				do_restart_greeter = FALSE;
+				restart_the_greeter ();
 			} else {
 				interrupted = TRUE;
 				do_restart_greeter = TRUE;
@@ -3109,30 +3154,39 @@ gdm_slave_handle_notify (GdmConnection *conn, const char *msg, gpointer data)
 		/* FIXME: this is fairly nasty, we should handle this nicer */
 		/* FIXME: can't handle flexi servers without going all cranky */
 		if (display->type == TYPE_LOCAL) {
-			if ( ! display->logged_in)
+			if ( ! display->logged_in) {
+				gdm_server_stop (d);
+				gdm_verify_cleanup (d);
 				_exit (DISPLAY_REMANAGE);
-			else
+			} else {
 				remanage_asap = TRUE;
+			}
 		}
 	} else if (strncmp (msg, GDM_NOTIFY_REMOTEGREETER " ",
 			    strlen (GDM_NOTIFY_REMOTEGREETER) + 1) == 0) {
 		/* FIXME: this is fairly nasty, we should handle this nicer */
 		/* FIXME: can't handle flexi servers without going all cranky */
 		if (display->type == TYPE_XDMCP) {
-			if ( ! display->logged_in)
+			if ( ! display->logged_in) {
+				gdm_server_stop (d);
+				gdm_verify_cleanup (d);
 				_exit (DISPLAY_REMANAGE);
-			else
+			} else {
 				remanage_asap = TRUE;
+			}
 		}
 	} else if (strncmp (msg, GDM_NOTIFY_TIMED_LOGIN " ",
 			    strlen (GDM_NOTIFY_TIMED_LOGIN) + 1) == 0) {
 		/* FIXME: this is fairly nasty, we should handle this nicer */
 		/* FIXME: can't handle flexi servers without going all cranky */
 		if (display->type == TYPE_LOCAL) {
-			if ( ! display->logged_in)
+			if ( ! display->logged_in) {
+				gdm_server_stop (d);
+				gdm_verify_cleanup (d);
 				_exit (DISPLAY_REMANAGE);
-			else
+			} else {
 				remanage_asap = TRUE;
+			}
 		}
 	} else if (sscanf (msg, GDM_NOTIFY_TIMED_LOGIN_DELAY " %d", &val) == 1) {
 		GdmTimedLoginDelay = val;

@@ -105,6 +105,8 @@ enum {
 #define GDM_READPIC    '%' /* Send a user picture in a temp file */
 #define GDM_ERRBOX     'e' /* Puts string in the error box */
 #define GDM_ERRDLG     'E' /* Puts string up in an error dialog */
+#define GDM_NOFOCUS    'f' /* Don't focus the login window (optional) */
+#define GDM_FOCUS      'F' /* Allow focus on the login window again (optional) */
 
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'

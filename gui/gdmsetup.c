@@ -54,43 +54,6 @@ static gboolean gdm_running = FALSE;
 static GladeXML *xml;
 
 static void
-window_realize (GtkWidget *win, gpointer data)
-{
-	int type = GPOINTER_TO_INT (data);
-	long val[1];
-	Atom atom;
-
-	gdk_error_trap_push ();
-
-	atom = XInternAtom (GDK_DISPLAY (), "_GDM_CONFIG_WINDOW", FALSE);
-
-	val[0] = type;
-
-	g_print ("Set on: 0x%lx\n", GDK_WINDOW_XWINDOW (win->window));
-
-	XChangeProperty (GDK_DISPLAY (),
-			 GDK_WINDOW_XWINDOW (win->window),
-			 atom, 
-			 XA_CARDINAL,
-			 32, PropModeReplace,
-			 (unsigned char*)&val, 1);
-
-	gdk_flush ();
-	gdk_error_trap_pop ();
-}
-
-static void
-set_config_window (GtkWidget *win, int type)
-{
-	if (GTK_WIDGET_REALIZED (win))
-		window_realize (win, GINT_TO_POINTER (type));
-	g_signal_connect_after (G_OBJECT (win), "realize",
-				G_CALLBACK (window_realize),
-				GINT_TO_POINTER (type));
-}
-
-
-static void
 update_greeters (void)
 {
 	char *p, *ret;
@@ -144,7 +107,6 @@ check_update_error:
 						  "login screens.  Not all "
 						  "updates may have taken "
 						  "effect."));
-		set_config_window (dlg, 2);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		shown_error = TRUE;
@@ -1509,7 +1471,6 @@ install_ok (GtkWidget *button, gpointer data)
 						GTK_MESSAGE_ERROR,
 						GTK_BUTTONS_OK,
 						_("No file selected"));
-		set_config_window (dlg, 3);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		g_free (cwd);
@@ -1538,7 +1499,6 @@ install_ok (GtkWidget *button, gpointer data)
 						_("Not a theme archive\n"
 						  "Details: %s"),
 						error);
-		set_config_window (dlg, 3);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		g_free (filename);
@@ -1562,7 +1522,6 @@ install_ok (GtkWidget *button, gpointer data)
 			   "installed, install again anyway?"),
 			 fname);
 		g_free (fname);
-		set_config_window (dlg, 3);
 		if (gtk_dialog_run (GTK_DIALOG (dlg)) != GTK_RESPONSE_YES) {
 			gtk_widget_destroy (dlg);
 			g_free (filename);
@@ -1606,7 +1565,6 @@ install_ok (GtkWidget *button, gpointer data)
 						GTK_BUTTONS_OK,
 						_("Some error occured when "
 						  "installing the theme"));
-		set_config_window (dlg, 3);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 	}
@@ -1651,7 +1609,6 @@ install_new_theme (GtkWidget *button, gpointer data)
 	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
 	
 	fs = gtk_file_selection_new (_("Select new theme archive to install"));
-	set_config_window (fs, 2);
 	gtk_window_set_transient_for (GTK_WINDOW (fs),
 				      GTK_WINDOW (setup_dialog));
 	g_object_set_data (G_OBJECT (fs), "ListStore", store);
@@ -1801,7 +1758,6 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 		g_signal_connect_swapped (G_OBJECT (dlg), "response",
 					  G_CALLBACK (gtk_widget_destroy),
 					  dlg);
-		set_config_window (dlg, 2);
 		gtk_widget_show (dlg);
 	}
 }
@@ -1816,7 +1772,6 @@ setup_gui (void)
 				 GTK_TYPE_DIALOG,
 				 TRUE /* dump_on_destroy */);
 	dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_DIALOG);
-	set_config_window (dialog, 1);
 	g_signal_connect (G_OBJECT (dialog), "destroy",
 			  G_CALLBACK (gtk_main_quit), NULL);
 	g_signal_connect (G_OBJECT (dialog), "response",

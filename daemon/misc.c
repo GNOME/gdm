@@ -64,11 +64,17 @@ void
 gdm_fail (const gchar *format, ...)
 {
     va_list args;
-    gchar *s;
+    char *s;
+    char *loc;
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
+    /* syslog/stderr is in locale */
+    loc = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
+
+    va_start (args, loc);
+    s = g_strdup_vprintf (loc, args);
     va_end (args);
+
+    g_free (loc);
 
     /* Log to both syslog and stderr */
     syslog (LOG_CRIT, "%s", s);
@@ -101,12 +107,18 @@ void
 gdm_info (const gchar *format, ...)
 {
     va_list args;
-    gchar *s;
+    char *s;
+    char *loc;
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
+    /* syslog/stderr is in locale */
+    loc = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
+
+    va_start (args, loc);
+    s = g_strdup_vprintf (loc, args);
     va_end (args);
-    
+
+    g_free (loc);
+
     syslog (LOG_INFO, "%s", s);
     
     g_free (s);
@@ -125,12 +137,18 @@ void
 gdm_error (const gchar *format, ...)
 {
     va_list args;
-    gchar *s;
+    char *s;
+    char *loc;
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
+    /* syslog/stderr is in locale */
+    loc = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
+
+    va_start (args, loc);
+    s = g_strdup_vprintf (loc, args);
     va_end (args);
-    
+
+    g_free (loc);
+
     syslog (LOG_ERR, "%s", s);
     
     g_free (s);
@@ -149,14 +167,20 @@ void
 gdm_debug (const gchar *format, ...)
 {
     va_list args;
-    gchar *s;
+    char *s;
+    char *loc;
 
     if ( ! GdmDebug) 
 	return;
 
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
+    /* syslog/stderr is in locale */
+    loc = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
+
+    va_start (args, loc);
+    s = g_strdup_vprintf (loc, args);
     va_end (args);
+
+    g_free (loc);
 
     syslog (LOG_ERR, "%s", s);	/* Maybe should be LOG_DEBUG, but then normally
 				 * you wouldn't get it in the log.  ??? */

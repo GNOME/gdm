@@ -58,8 +58,10 @@ void	gdm_wm_set_screen		(int cur_screen_num);
  * by setting uposition */
 void	gdm_wm_center_window		(GtkWindow *cw);
 
-/* Raise any config windows we have found */
-void	gdm_wm_raise_config_windows	(void);
+/* Save and restore stacking order, useful for restarting
+ * the greeter */
+void	gdm_wm_save_wm_order		(void);
+void	gdm_wm_restore_wm_order		(void);
 
 /* access to the screen structures */
 extern GdkRectangle *gdm_wm_allscreens;

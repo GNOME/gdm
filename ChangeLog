@@ -1,3 +1,25 @@
+Mon May 13 18:09:30 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/slave.c, gui/gdmlogin.c,
+	  gui/greeter/greeter.c, gui/gdmwm.[ch]:  Add focus/no focus on the
+	  login window when running config, as well as restoring the disabled
+	  state after a restart.  Fix restarting of greeter.   Fix a hang
+	  after login.  Fix killing of server on all REMANAGE exits.  Also
+	  create a saving of the window stacking order so that when we
+	  restart with a setup window active the stacking order doesn't
+	  get screwed up.
+
+	* daemon/misc.c, daemon/verify-pam.c: convert to correct codeset.
+	  This is still not all working and it's quite shite.  Must fix
+	  this.  Maybe run the daemon under normal locale codeset.  That
+	  will simplify things.
+
+	* daemon/server.c: doing a syslog in alarm signal handler was hanging
+
+	* gui/gdmlogin.c: remove some cruft
+
+	* gui/gdmsetup.c, gui/gdmwm.[ch]: remove the CONFIG_WINDOW crap
+
 2002-05-13  Rosanna Yuen  <zana@webwynk.net>
 
 	* gui/greeter/greeter.c: include libintl.h and locale.h

@@ -348,6 +348,22 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 	g_print ("%c\n", STX);
 	break;
+
+    case GDM_NOFOCUS:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	gdm_wm_no_login_focus_push ();
+	
+	g_print ("%c\n", STX);
+	break;
+
+    case GDM_FOCUS:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	gdm_wm_no_login_focus_pop ();
+	
+	g_print ("%c\n", STX);
+	break;
 	
     default:
 	break;
@@ -614,6 +630,7 @@ greeter_reread_config (int sig)
 {
   /* FIXME: actually reparse config stuff here, instead of
    * just requesting a restart */
+  gdm_wm_save_wm_order ();
   _exit (DISPLAY_RESTARTGREETER);
 }
 
@@ -948,7 +965,7 @@ main (int argc, char *argv[])
       gdm_wm_no_login_focus_pop ();
     }
 
-  gdm_wm_raise_config_windows ();
+  gdm_wm_restore_wm_order ();
 
   gtk_main ();
 

@@ -538,29 +538,6 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
     
     uname (&name);
 
-    /* FIXME: eek, let's just whack this hack somehow, prolly use
-     * of intltool */
-    /* HAAAAAAAAAAAAAAAAAAAAAAAACK!, do not translate the next line!,
-     * Since this is the default string we might as well use the gettext
-     * translation as we will likely have better translations there.
-     * Yes ugly as fuck, but oh well, unfortunately two standard defaults
-     * are in circulation */
-    if (strcmp (s, "Welcome to %h") == 0) {
-	    char *buffer;
-	    g_free (display);
-	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
-				      pre, hostname, post);
-	    g_free (hostname);
-	    return buffer;
-    } else if (strcmp (s, "Welcome to %n") == 0) {
-	    char *buffer;
-	    g_free (display);
-	    g_free (hostname);
-	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
-				      pre, name.nodename, post);
-	    return buffer;
-    }
-
     if (strlen (s) > 2048) {
 	    char *buffer;
 	    syslog (LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
@@ -1952,9 +1929,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	if (len != 1)
 	    return (TRUE);
+    } while (buf[0] && buf[0] != STX);
 
-    } 
-    while (buf[0] && buf[0] != STX);
 
     /* Read opcode */
     g_io_channel_read (source, buf, 1, &len);
@@ -2136,7 +2112,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_LANG:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 	gdm_login_language_lookup (buf);
 	g_print ("%c%s\n", STX, language);
@@ -2351,6 +2327,22 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_NEEDPIC:
     case GDM_READPIC:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_print ("%c\n", STX);
+	break;
+
+    case GDM_NOFOCUS:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	gdm_wm_no_login_focus_push ();
+	
+	g_print ("%c\n", STX);
+	break;
+
+    case GDM_FOCUS:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	gdm_wm_no_login_focus_pop ();
+	
 	g_print ("%c\n", STX);
 	break;
 	
@@ -3715,6 +3707,10 @@ gdm_reread_config (int sig)
 	     ! bool_same (GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
 		/* restart interruption */
 		gnome_config_pop_prefix ();
+
+		gdm_wm_save_wm_order ();
+
+		kill_thingies ();
 		_exit (DISPLAY_RESTARTGREETER);
 		return;
 	}
@@ -3745,6 +3741,8 @@ gdm_reread_config (int sig)
 		greeting = gdm_parse_enriched_string ("<big><big><big>", GdmWelcome, "</big></big></big>");    
 		gtk_label_set_markup (GTK_LABEL (welcome), greeting);
 		g_free (greeting);
+
+		gtk_widget_queue_resize (login);
 	} else {
 		g_free (str);
 	}
@@ -3774,17 +3772,6 @@ main (int argc, char *argv[])
     textdomain (GETTEXT_PACKAGE);
 
     gtk_init (&argc, &argv);
-
-#if 0
-    gnome_program_init ("gdmlogin", VERSION, 
-			/* FIXME: oh fuck this inits way too much
-			 * shit that we don't want */
-			LIBGNOMEUI_MODULE /* module_info */,
-			argc, argv,
-			GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
-			GNOME_PARAM_ENABLE_SOUND, FALSE,
-			NULL);
-#endif
 
     gdm_login_parse_config ();
 
@@ -4086,7 +4073,7 @@ main (int argc, char *argv[])
 	    gdm_wm_no_login_focus_pop ();
     }
 
-    gdm_wm_raise_config_windows ();
+    gdm_wm_restore_wm_order ();
 
     g_atexit (kill_thingies);
 
