@@ -225,6 +225,8 @@ static Language languages [] = {
 	{ N_("N-Z|Welsh"), "cy_GB", "Cymraeg", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Yiddish"), "yi", "ייִדיש", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Zulu"), "zu_ZA", "IsiZulu", 0 },
 	/* This is the POSIX/C locale for english, should really be in Other */
 	{ N_("Other|POSIX/C English"), "C", "POSIX/C English", 0 },
 	{ NULL, NULL }
