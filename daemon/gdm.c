@@ -82,6 +82,8 @@ gchar *GdmDisplayInit = NULL;
 gchar *GdmSessionDir = NULL;
 gchar *GdmPreSession = NULL;
 gchar *GdmPostSession = NULL;
+gchar *GdmXKeepsCrashing = NULL;
+gchar *GdmXKeepsCrashingConfigurators = NULL;
 gchar *GdmHalt = NULL;
 gchar *GdmReboot = NULL;
 gchar *GdmServAuthDir = NULL;
@@ -157,7 +159,8 @@ gdm_config_parse (void)
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmPreSession = gnome_config_get_string (GDM_KEY_PRESESS);
     GdmPostSession = gnome_config_get_string (GDM_KEY_POSTSESS);
-    GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
+    GdmXKeepsCrashing = gnome_config_get_string (GDM_KEY_XKEEPSCRASHING);
+    GdmXKeepsCrashingConfigurators = gnome_config_get_string (GDM_KEY_XKEEPSCRASHING_CONFIGURATORS);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
     GdmBrowser = gnome_config_get_bool (GDM_KEY_BROWSER);
@@ -462,6 +465,142 @@ final_cleanup (void)
 	unlink (GdmPidFile);
 }
 
+static gboolean
+deal_with_x_crashes (GdmDisplay *d)
+{
+    gboolean just_abort = FALSE;
+
+    /* Eeek X keeps crashing, let's try the XKeepsCrashing script */
+    if ( ! gdm_string_empty (GdmXKeepsCrashing) &&
+	 ! gdm_string_empty (GdmXKeepsCrashingConfigurators) &&
+	access (GdmXKeepsCrashing, X_OK|R_OK) == 0) {
+	    char tempname[256];
+	    int tempfd;
+	    pid_t pid;
+	    char **configurators;
+	    int i;
+
+	    configurators = g_strsplit (GdmXKeepsCrashingConfigurators,
+					argdelim, MAX_ARGS);	
+	    for (i = 0; configurators[i] != NULL; i++) {
+		    if (access (configurators[i], X_OK) == 0)
+			    break;
+	    }
+
+	    if (configurators[i] != NULL) {
+		    strcpy (tempname, "/tmp/gdm-X-failed-XXXXXX");
+		    tempfd = mkstemp (tempname);
+		    close (tempfd);
+
+		    pid = fork ();
+	    } else {
+		    tempfd = -1;
+		    /* no forking, we're screwing this */
+		    pid = -1;
+	    }
+	    if (pid == 0) {
+		    char *argv[9];
+
+		    argv[0] = GdmXKeepsCrashing;
+		    argv[1] = configurators[i];
+		    argv[2] = tempname;
+		    argv[3] = _("I cannot start the X server (your graphical "
+				"interface).  It is likely that it is not set "
+				"up correctly.  You will need to log in on a "
+				"console and rerun the X configuration "
+				"program.  And then restart GDM.");
+		    argv[4] = _("I cannot start the X server (your graphical "
+				"interface).  It is likely that it is not set "
+				"up correctly.  Would you like me to try to "
+				"run the X configuration program?  Note that "
+				"you will need the root password for this.");
+		    argv[5] = _("Please type in the root (privilaged user) "
+				"password.");
+		    argv[6] = _("I will now try to restart the X server "
+				"again.");
+		    argv[7] = _("I will disable this X server for now.  "
+				"Restart GDM when it is configured correctly.");
+		    argv[8] = NULL;
+
+		    execv (argv[0], argv);
+	
+		    /* yaikes! */
+		    _exit (32);
+	    } else if (pid > 0) {
+		    int status;
+		    waitpid (pid, &status, 0);
+		    if (WIFEXITED (status) &&
+			WEXITSTATUS (status) == 0) {
+			    /* Yay, the user wants to try again, so
+			     * here we go */
+			    return TRUE;
+		    } else if (WIFEXITED (status) &&
+			     WEXITSTATUS (status) == 32) {
+			    /* We couldn't run the script, just drop through */
+			    ;
+		    } else {
+			    /* shit went wrong, or the user's a wanker */
+			    just_abort = TRUE;
+		    }
+	    }
+
+	    if (tempfd >= 0)
+		    unlink (tempname);
+
+	    /* if we failed to fork, or something else has happened,
+	     * we fall through to the other options below */
+    }
+
+
+    /* if we have "open" we can talk to the user, not as user
+     * friendly as the above script, but getting there */
+    if ( ! just_abort &&
+	access ("/usr/bin/open", X_OK) == 0) {
+	    char *dialog; /* do we have dialog?*/
+	    dialog = gnome_is_program_in_path ("dialog");
+	    if (dialog != NULL) {
+		    char *command = 
+			    g_strdup_printf
+			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
+			     "%s --msgbox \"%s\" 10 70 ; clear'",
+			     dialog,
+			     _("I cannot start the X server (your graphical "
+			       "interface).  It is likely that it is not set "
+			       "up correctly.  You will need to log in on a "
+			       "console and rerun the X configuration "
+			       "program.  And then restart GDM."));
+		    /* Shit if we knew what the program was to tell the user,
+		     * the above script would have been defined and we'd run
+		     * it for them */
+		    system (command);
+	    } else {
+		    char *command = 
+			    g_strdup_printf
+			    ("/usr/bin/open -s -w -- /bin/sh -c 'clear ; "
+			     "echo \"%s\" 10 70' ; clear",
+			     _("I cannot start the X server (your graphical "
+			       "interface).  It is likely that it is not set "
+			       "up correctly.  You will need to log in on a "
+			       "console and rerun the X configuration "
+			       "program.  And then restart GDM."));
+		    /* Shit if we knew what the program was to tell the user,
+		     * the above script would have been defined and we'd run
+		     * it for them */
+		    system (command);
+	    }
+    } else {
+	    /* At this point .... screw the user, we don't know how to
+	     * talk to him.  He's on some 'l33t system anyway, so syslog
+	     * reading will do him good */
+	    gchar *msg;
+	    msg = g_strdup_printf (_("Failed to start X server several times in a short time period; disabling display %s"), d->name);
+	    gdm_error (msg);
+	    g_free (msg);
+    }
+
+    return FALSE;
+}
+
 static void 
 gdm_cleanup_children (void)
 {
@@ -537,6 +676,37 @@ gdm_cleanup_children (void)
 
 	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
 	break;
+
+    case DISPLAY_XFAILED:       /* X sucks */
+	/* in remote case just drop to _REMANAGE */
+	if (d->type == TYPE_LOCAL) {
+		time_t now = time (NULL);
+		d->x_faileds ++;
+		/* this is a much faster failing, don't even allow the 8
+		 * seconds, just flash but for at most 30 seconds */
+		if (now - d->last_x_failed > 30) {
+			/* reset */
+			d->x_faileds = 1;
+			d->last_x_failed = now;
+		} else if (d->x_faileds > 3) {
+			gdm_debug ("gdm_child_action: dealing with X crashes");
+			if ( ! deal_with_x_crashes (d)) {
+				gdm_debug ("gdm_child_action: Aborting display");
+				/* an original way to deal with these things:
+				 * "Screw you guys, I'm going home!" */
+				gdm_display_unmanage (d);
+				break;
+			}
+			gdm_debug ("gdm_child_action: Trying again");
+		} else {
+			/* well sleep at least 3 seconds before starting */
+			d->sleep_before_run = 3;
+		}
+		/* go around the display loop detection, we're doing
+		 * our own here */
+		d->last_start_time = 0;
+	}
+	/* fall through */
 
     case DISPLAY_REMANAGE:	/* Remanage display */
     default:

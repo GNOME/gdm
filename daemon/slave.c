@@ -1724,7 +1724,7 @@ gdm_slave_xioerror_handler (Display *disp)
 
     gdm_server_stop (d);
     gdm_verify_cleanup ();
-    _exit (DISPLAY_REMANAGE);
+    _exit (DISPLAY_XFAILED);
 }
 
 char * 

@@ -1,0 +1,76 @@
+#!/bin/sh
+
+# DO NOTE! This script may get more arguments in the future, if you set up
+# a custom one keep that in mind.  You should only ever rely on the first
+# and second argument.  Maybe I should figure out a better way to do the
+# translations
+
+# This script gets some arguments, they are translated messages like (not
+# word by word obviously)
+#
+# The first argument is the X setup proggie to run
+# The second argument is a temporary file we can use
+#
+# $3 = 'Your X server is b0rk I will disable this server'
+# $4 = 'Your X server is b0rk would you like to try to reconfigure it?"
+# $5 = 'Please type in the root password'
+# $6 = 'I will now restart the X server again'
+# $7 = 'I will disable this X server'
+
+# when we run ourselves from the open we will pass a -noopen argument
+if test x$1 = x-noopen ; then
+	shift
+else
+	TEMPFILE="$2"
+	# we require "open", to open a console, because we really don't
+	# have one.  Perhaps someone should try to figure out some shell
+	# black magic to get this to work on other then linux systems
+	if test -x /usr/bin/open ; then
+		/usr/bin/open -s -w -- $0 -noopen "$@"
+		if grep TRYAGAIN "$TEMPFILE" >/dev/null ; then
+			exit 0
+		else
+			exit 1
+		fi
+	else
+		exit 1
+	fi
+fi
+
+SETUP=`which $1`
+TEMPFILE="$2"
+DIALOG=`which dialog`
+
+clear
+
+# Note, dialog required, though this script could be fixed to not require it
+# I suppose
+if test x = x$SETUP -o x = x$DIALOG -o x = x$TEMPFILE ; then
+  echo =======================================================================
+  echo
+  echo  "$3"
+  echo
+  echo =======================================================================
+  read
+  if test x != x$TEMPFILE ; then
+  	echo ABORT > $TEMPFILE
+  fi
+  exit 1
+fi
+
+if $DIALOG --yesno "$4" 10 50 ; then 
+  clear
+  echo
+  echo "$5"
+  # dirty trick to fool su into asking the root password even if we're
+  # root
+  su nobody -c "su -c $SETUP"
+  clear
+  $DIALOG --msgbox "$6" 8 50
+  echo TRYAGAIN > $TEMPFILE
+  exit 0
+else
+  $DIALOG --msgbox "$7" 8 50
+  echo ABORT > $TEMPFILE
+  exit 1
+fi

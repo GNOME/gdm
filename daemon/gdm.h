@@ -42,6 +42,7 @@
 #define SERVER_ABORT 253	/* Server failed badly. Suspending display. */
 
 #define DISPLAY_SUCCESS 0	/* All systems are go */
+#define DISPLAY_XFAILED 1	/* X failed */
 #define DISPLAY_REMANAGE 2	/* Restart display */
 #define DISPLAY_ABORT 4		/* Houston, we have a problem */
 #define DISPLAY_REBOOT 8	/* Rebewt */
@@ -107,6 +108,8 @@
 #define GDM_KEY_PIDFILE "daemon/PidFile=/var/run/gdm.pid"
 #define GDM_KEY_POSTSESS "daemon/PostSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PostSession/"
 #define GDM_KEY_PRESESS "daemon/PreSessionScriptDir=" EXPANDED_SYSCONFDIR "/gdm/PreSession/"
+#define GDM_KEY_XKEEPSCRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
+#define GDM_KEY_XKEEPSCRASHING_CONFIGURATORS "daemon/XKeepsCrashingConfigurators=/usr/bin/X11/XF86Setup /usr/bin/X11/Xconfigurator"
 #define GDM_KEY_REBOOT "daemon/RebootCommand=/sbin/shutdown -r now"
 #define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:" EXPANDED_BINDIR
 #define GDM_KEY_GNOMEDEFAULTSESSION "daemon/GnomeDefaultSession=" EXPANDED_DATADIR "/gnome/default.session"
@@ -219,6 +222,9 @@ struct _GdmDisplay {
     gint retry_count;
 
     int sleep_before_run;
+
+    time_t last_x_failed;
+    int x_faileds;
 
     gboolean disabled;
 

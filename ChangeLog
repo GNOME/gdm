@@ -1,3 +1,17 @@
+Thu May 17 01:27:15 2001  George Lebl <jirka@5z.com>
+
+	* config/XKeepsCrashing, config/gdm.conf.in, daemon/gdm.[ch],
+	  daemon/server.c, config/Makefile.am, daemon/slave.c: Added a script
+	  to run when X keeps crashing, this will run an X configuration
+	  tool (after asking for root password of course), only works
+	  on systems with /usr/bin/open (linux only I suppose) and XFree86
+	  for now.
+
+	* gui/Makefile,am:  fix make dist issues
+
+	* gui/gdmconfig.(c|glade): fix some issues, move debugging into it's
+	  own page and add the keeps crashing options from above
+
 Wed May 16 15:10:07 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* gui/gdmlogin.c (update_clock): Have clock update only once a

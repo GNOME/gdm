@@ -153,47 +153,47 @@ gdm_server_start (GdmDisplay *disp)
     /* Create new cookie */
     gdm_auth_secure_display (d);
     gdm_setenv ("DISPLAY", d->name);
-    
+
     /* Catch USR1 from X server */
     usr1.sa_handler = gdm_server_usr1_handler;
     usr1.sa_flags = SA_RESTART|SA_RESETHAND;
     sigemptyset (&usr1.sa_mask);
-    
+
     if (sigaction (SIGUSR1, &usr1, &old_usr1) < 0) {
-	gdm_error (_("gdm_server_start: Error setting up USR1 signal handler"));
-	return FALSE;
+	    gdm_error (_("gdm_server_start: Error setting up USR1 signal handler"));
+	    return FALSE;
     }
 
     /* Catch CHLD from X server */
     chld.sa_handler = gdm_server_child_handler;
     chld.sa_flags = SA_RESTART|SA_RESETHAND;
     sigemptyset (&chld.sa_mask);
-    
+
     if (sigaction (SIGCHLD, &chld, &old_chld) < 0) {
-	gdm_error (_("gdm_server_start: Error setting up CHLD signal handler"));
-	sigaction (SIGUSR1, &old_usr1, NULL);
-	return FALSE;
+	    gdm_error (_("gdm_server_start: Error setting up CHLD signal handler"));
+	    sigaction (SIGUSR1, &old_usr1, NULL);
+	    return FALSE;
     }
 
     /* Catch ALRM from X server */
     alrm.sa_handler = gdm_server_alarm_handler;
     alrm.sa_flags = SA_RESTART|SA_RESETHAND;
     sigemptyset (&alrm.sa_mask);
-    
+
     if (sigaction (SIGALRM, &alrm, &old_alrm) < 0) {
-	gdm_error (_("gdm_server_start: Error setting up ALRM signal handler"));
-	sigaction (SIGUSR1, &old_usr1, NULL);
-	sigaction (SIGCHLD, &old_chld, NULL);
-	return FALSE;
+	    gdm_error (_("gdm_server_start: Error setting up ALRM signal handler"));
+	    sigaction (SIGUSR1, &old_usr1, NULL);
+	    sigaction (SIGCHLD, &old_chld, NULL);
+	    return FALSE;
     }
-    
+
     /* Set signal mask */
     sigemptyset (&mask);
     sigaddset (&mask, SIGUSR1);
     sigaddset (&mask, SIGCHLD);
     sigaddset (&mask, SIGALRM);
     sigprocmask (SIG_UNBLOCK, &mask, &oldmask);
-    
+
     /* We add a timeout in case the X server fails to start. This
      * might happen because X servers take a while to die, close their
      * sockets etc. If the old X server isn't completely dead, the new
@@ -202,7 +202,7 @@ gdm_server_start (GdmDisplay *disp)
     alarm (SERVER_WAIT_ALARM);
 
     d->servstat = SERVER_DEAD;
-    
+
     /* fork X server process */
     gdm_server_spawn (d);
 
@@ -241,7 +241,8 @@ gdm_server_start (GdmDisplay *disp)
 		    waitpid (d->servpid, NULL, 0);
 	    d->servpid = 0;
     }
-    _exit (DISPLAY_REMANAGE);
+
+    _exit (DISPLAY_XFAILED);
 
 spawn_done:
 
