@@ -60,6 +60,9 @@ gchar *GdmGroup = NULL;
 gchar *GdmSessDir = NULL;
 gchar *GdmGnomeDefaultSession = NULL;
 gchar *GdmAutomaticLogin = NULL;
+gchar *GdmConfigurator = NULL;
+gboolean GdmConfigAvailable = FALSE;
+gboolean GdmSystemMenu = FALSE;
 gchar *GdmGreeter = NULL;
 gchar *GdmChooser = NULL;
 gchar *GdmLogDir = NULL;
@@ -136,6 +139,9 @@ gdm_config_parse (void)
     GdmPidFile = gnome_config_get_string (GDM_KEY_PIDFILE);
     GdmPostSession = gnome_config_get_string (GDM_KEY_POSTSESS);
     GdmPreSession = gnome_config_get_string (GDM_KEY_PRESESS);
+    GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
+    GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
+    GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
     GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
     GdmRetryDelay = gnome_config_get_int (GDM_KEY_RETRYDELAY);
     GdmRootPath = gnome_config_get_string (GDM_KEY_ROOTPATH);
@@ -362,11 +368,17 @@ gdm_local_servers_start (GdmDisplay *d)
 {
     if (d && d->type == TYPE_LOCAL) {
 	gdm_debug ("gdm_local_servers_start: Starting %s", d->name);
-	if ( ! gdm_display_manage (d))
-		gdm_display_unmanage (d);
 
-	/* only the first local display gets autologged in */
-	gdm_first_login = FALSE;
+	/* only the first local display has timed login going on */
+	if (gdm_first_login)
+		d->timed_login_ok = TRUE;
+
+	if ( ! gdm_display_manage (d)) {
+		gdm_display_unmanage (d);
+		/* only the first local display gets autologged in */
+		gdm_first_login = FALSE;
+	}
+
     }
 }
 
@@ -422,7 +434,21 @@ gdm_cleanup_children (void)
     /* Declare the display dead */
     d->slavepid = 0;
     d->dispstat = DISPLAY_DEAD;
-	    
+
+    if ( ! GdmSystemMenu &&
+	(status == DISPLAY_REBOOT ||
+	 status == DISPLAY_HALT)) {
+	    gdm_info (_("gdm_child_action: Reboot or Halt request when there is no system menu from display %s"), d->name);
+	    status = DISPLAY_REMANAGE;
+    }
+
+    if (d->type != TYPE_LOCAL &&
+	(status == DISPLAY_REBOOT ||
+	 status == DISPLAY_HALT)) {
+	    gdm_info (_("gdm_child_action: Reboot or Halt request from a non-local display %s"), d->name);
+	    status = DISPLAY_REMANAGE;
+    }
+
     /* Autopsy */
     switch (status) {
 	

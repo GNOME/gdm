@@ -465,6 +465,8 @@ gdm_server_alloc (gint id, const gchar *command)
     d->retry_count = 0;
     d->disabled = FALSE;
     d->sleep_before_run = 0;
+
+    d->timed_login_ok = FALSE;
     
     g_free (hostname);
 

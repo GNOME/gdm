@@ -283,8 +283,10 @@ gdm_config_parse_most (void)
     
     /* Fill the widgets in GDM tab */
     gdm_entry_set("automatic_login", gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN));
+    gdm_entry_set("timed_login", gnome_config_get_string (GDM_KEY_TIMED_LOGIN));
+    gdm_spin_set("timed_delay", gnome_config_get_int(GDM_KEY_TIMED_LOGIN_DELAY));
     gdm_entry_set("chooser_binary", gnome_config_get_string (GDM_KEY_CHOOSER));
-    gdm_entry_set("config_binary", gnome_config_get_string (GDM_KEY_CONFIG));
+    gdm_entry_set("config_binary", gnome_config_get_string (GDM_KEY_CONFIGURATOR));
     gdm_entry_set("greeter_binary", gnome_config_get_string (GDM_KEY_GREETER));
     gdm_entry_set("halt_command", gnome_config_get_string (GDM_KEY_HALT));
     gdm_entry_set("reboot_command", gnome_config_get_string (GDM_KEY_REBOOT));
@@ -616,9 +618,11 @@ write_new_config_file                  (GtkButton *button,
    
     /* Write out the widget contents of the GDM tab */
     gdm_entry_write("automatic_login", GDM_KEY_AUTOMATICLOGIN);
+    gdm_entry_write("timed_login", GDM_KEY_TIMED_LOGIN);
+    gdm_spin_write("timed_delay", GDM_KEY_TIMED_LOGIN_DELAY);
     gdm_entry_write("chooser_binary", GDM_KEY_CHOOSER);
     gdm_entry_write("greeter_binary", GDM_KEY_GREETER);
-    gdm_entry_write("config_binary", GDM_KEY_CONFIG);
+    gdm_entry_write("config_binary", GDM_KEY_CONFIGURATOR);
     gdm_entry_write("halt_command", GDM_KEY_HALT);
     gdm_entry_write("reboot_command", GDM_KEY_REBOOT);
     

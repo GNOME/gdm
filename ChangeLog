@@ -1,3 +1,22 @@
+Sun Apr 29 22:46:12 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/slave.c, gui/gdmlogin.c:  Add running of
+	  the configurator from the slave rather then the login which
+	  doesn't work.  There is a special session setup for this so that
+	  the user gets prompted for the root password first.
+
+	* daemon/gdm.c, daemon/slave.c, gui/gdmlogin.c, daemon/server.c:
+	  Only do the timed logins on the first local display just like
+	  autologin.  We don't want to do simultaneous logins of the same
+	  user on different screens really, that's usually bad.
+
+	* daemon/gdm.c: Increase general paranoia and don't trust the greeter
+	  and only allow reboots/config/halts when they are actually allowed
+	  in the config file and only for local.
+
+	* gui/gdmconfig.glade, gui/gdmconfig.c:  Add a bunch of tooltips,
+	  and add the configuration stuff for the timed logins
+
 Sun Apr 29 18:06:25 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c, daemon/gdm.[ch], daemon/slave.[ch],

@@ -74,6 +74,8 @@
 			 different */
 #define GDM_SETLOGIN 'l' /* this just sets the login to be this, just for
 			    the greeters knowledge */
+#define GDM_DISABLE '-' /* disable the login screen */
+#define GDM_ENABLE '+' /* enable the login screen */
 
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'
@@ -141,7 +143,7 @@
 #define GDM_KEY_LOGO "greeter/Logo="
 #define GDM_KEY_QUIVER "greeter/Quiver=true"
 #define GDM_KEY_SYSMENU "greeter/SystemMenu=true"
-#define GDM_KEY_CONFIG "daemon/Configurator=/usr/sbin/gdmconfig"
+#define GDM_KEY_CONFIGURATOR "daemon/Configurator=/usr/sbin/gdmconfig"
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=false"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %h"
@@ -197,6 +199,8 @@ struct _GdmDisplay {
     int sleep_before_run;
 
     gboolean disabled;
+
+    gboolean timed_login_ok;
 };
 
 

@@ -837,7 +837,6 @@ gdm_login_halt_handler (void)
 static void 
 gdm_login_parse_config (void)
 {
-    gchar *display;
     struct stat unused;
 	
     if (stat (GDM_CONFIG_FILE, &unused) == -1)
@@ -890,17 +889,20 @@ gdm_login_parse_config (void)
 
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
     if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
-    if (GdmUserMaxFile < 0) GdmUserMaxFile = 32768;
+    if (GdmUserMaxFile < 0) GdmUserMaxFile = 65536;
     if (GdmXineramaScreen < 0) GdmXineramaScreen = 0;
 
     /* Disable System menu on non-local displays */
-    display = g_getenv ("DISPLAY");
+    if (gdm_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
+	    GdmSystemMenu = FALSE;
+	    GdmConfigAvailable = FALSE;
+    }
 
-    if (!display)
-	gdm_login_abort ("gdm_login_parse_config: DISPLAY variable not set!");
-
-    if (strncmp (display, ":", 1))
-	GdmSystemMenu = FALSE;
+    /* Disable timed login stuff if it's not ok for this display */
+    if (gdm_string_empty (g_getenv ("GDM_TIMED_LOGIN_OK"))) {
+	    g_free (GdmTimedLogin);
+	    GdmTimedLogin = NULL;
+    }
 }
 
 
@@ -1689,6 +1691,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 	g_free (curuser);
 	curuser = g_strdup (buf);
+	g_print ("%c\n", STX);
 	break;
     case GDM_LOGIN:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
@@ -1918,8 +1921,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 		g_free (sess);
 	}
-
 	break;
+
     case GDM_STARTTIMER:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
@@ -1936,6 +1939,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	}
 	g_print ("%c\n", STX);
 	break;
+
     case GDM_STOPTIMER:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
@@ -1950,6 +1954,17 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_print ("%c\n", STX);
 	break;
 
+    case GDM_DISABLE:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	gtk_widget_set_sensitive (login, FALSE);
+	g_print ("%c\n", STX);
+	break;
+
+    case GDM_ENABLE:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	gtk_widget_set_sensitive (login, TRUE);
+	g_print ("%c\n", STX);
+	break;
 	
     default:
 	break;

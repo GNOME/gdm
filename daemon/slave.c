@@ -53,8 +53,9 @@ static sigset_t mask;
 static gboolean greet = FALSE;
 static FILE *greeter;
 static pid_t last_killed_pid = 0;
-gboolean do_timed_login = FALSE; /* if this is true, login the timed
-				    login immediately when we reset */
+gboolean do_timed_login = FALSE; /* if this is true, login the timed login */
+gboolean do_configurator = FALSE; /* if this is true, login as root
+				   * and start the configurator */
 
 extern gboolean gdm_first_login;
 
@@ -65,6 +66,9 @@ extern gid_t GdmGroupId;
 extern gchar *GdmGnomeDefaultSession;
 extern gchar *GdmSessDir;
 extern gchar *GdmAutomaticLogin;
+extern gchar *GdmConfigurator;
+extern gboolean GdmConfigAvailable;
+extern gboolean GdmSystemMenu;
 extern gchar *GdmGreeter;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmPreSession;
@@ -80,6 +84,7 @@ extern gint GdmUserMaxFile;
 extern gint GdmRelaxPerms;
 extern gboolean GdmKillInitClients;
 extern gint GdmRetryDelay;
+extern gboolean GdmAllowRoot;
 extern sigset_t sysmask;
 extern gchar *argdelim;
 
@@ -228,7 +233,8 @@ gdm_slave_run (GdmDisplay *display)
     }
 
     if (d->dsp != NULL) {
-	if (gdm_first_login &&
+	if (d->type == TYPE_LOCAL &&
+	    gdm_first_login &&
 	    ! gdm_string_empty (GdmAutomaticLogin) &&
 	    strcmp (GdmAutomaticLogin, "root") != 0) {
 		gdm_first_login = FALSE;
@@ -282,6 +288,54 @@ gdm_slave_whack_greeter (void)
 }
 
 static void
+run_config (GdmDisplay *display, struct passwd *pwent)
+{
+	display->sesspid = fork ();
+	if (display->sesspid < 0) {
+		/* can't fork, damnit */
+		display->sesspid = 0;
+		return;
+	}
+
+	if (display->sesspid == 0) {
+		int i;
+		char **argv;
+		/* child */
+
+		/* setup environment */
+		gdm_setenv ("XAUTHORITY", display->authfile);
+		gdm_setenv ("DISPLAY", display->name);
+		gdm_setenv ("LOGNAME", "root");
+		gdm_setenv ("USER", "root");
+		gdm_setenv ("USERNAME", "root");
+		gdm_setenv ("HOME", pwent->pw_dir);
+		gdm_setenv ("SHELL", pwent->pw_shell);
+
+		for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
+			close(i);
+
+		/* No error checking here - if it's messed the best response
+		 * is to ignore & try to continue */
+		open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+		open("/dev/null", O_RDWR); /* open stdout - fd 1 */
+		open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+
+		/* exec the configurator */
+		argv = g_strsplit (GdmConfigurator, " ", MAX_ARGS);	
+		execv (argv[0], argv);
+
+		/* ignore errors */
+		_exit (0);
+	} else {
+		waitpid (display->sesspid, 0, 0);
+		display->sesspid = 0;
+	}
+}
+
+
+
+
+static void
 gdm_slave_wait_for_login (void)
 {
 	g_free (login);
@@ -289,6 +343,7 @@ gdm_slave_wait_for_login (void)
 
 	/* init to a sane value */
 	do_timed_login = FALSE;
+	do_configurator = FALSE;
 
 	/* Chat with greeter */
 	while (login == NULL) {
@@ -296,24 +351,106 @@ gdm_slave_wait_for_login (void)
 		login = gdm_verify_user (NULL /* username*/,
 					 d->name,
 					 d->type == TYPE_LOCAL);
+		/* Complex, make sure to always handle the do_configurator
+		 * and do_timed_login after any call to gdm_verify_user */
+
+		if (do_configurator) {
+			struct passwd *pwent;
+			gboolean oldAllowRoot;
+
+			do_configurator = FALSE;
+			g_free (login);
+			login = NULL;
+			gdm_slave_greeter_ctl_no_ret
+				(GDM_MSGERR,
+				 _("Enter the root password\n"
+				   "to run the configuration."));
+
+			/* we always allow root for this */
+			oldAllowRoot = GdmAllowRoot;
+			GdmAllowRoot = TRUE;
+			gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, "root");
+			login = gdm_verify_user ("root",
+						 d->name,
+						 d->type == TYPE_LOCAL);
+			GdmAllowRoot = oldAllowRoot;
+
+			/* the wanker can't remember his password */
+			if (login == NULL) {
+				gdm_debug (_("gdm_slave_wait_for_login: No login/Bad login"));
+				sleep (GdmRetryDelay);
+				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
+				continue;
+			}
+
+			/* wipe the login */
+			g_free (login);
+			login = NULL;
+
+			/* note that this can still fall through to
+			 * the timed login if the user doesn't type in the
+			 * password fast enough and there is timed login
+			 * enabled */
+			if (do_timed_login) {
+				break;
+			}
+
+			/* the user is a wanker */
+			if (do_configurator) {
+				do_configurator = FALSE;
+				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
+				continue;
+			}
+
+			/* okey dokey, we're root */
+
+			/* get the root pwent */
+			pwent = getpwnam ("root");
+
+			if (pwent == NULL) {
+				/* what? no "root" ??, this is not possible
+				 * since we logged in, but I'm paranoid */
+				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
+				continue;
+			}
+
+			/* disable the login screen, we don't want people to
+			 * log in in the meantime */
+			gdm_slave_greeter_ctl_no_ret (GDM_DISABLE, "");
+
+			run_config (d, pwent);
+			/* note that we may never get here as the configurator
+			 * may have sighupped the main gdm server and with it
+			 * wiped us */
+
+			gdm_verify_cleanup ();
+
+			gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
+			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
+			continue;
+		}
 
 		/* the user timed out into a timed login during the
 		 * conversation */
 		if (do_timed_login) {
-			g_free (login);
-			/* timed login is automatic, thus no need for greeter,
-			 * we'll take default values */
-			gdm_slave_whack_greeter();
-			return;
+			break;
 		}
-		  
+
 		if (login == NULL) {
-			if (gdm_slave_should_complain ()) {
-				gdm_debug (_("gdm_slave_wait_for_login: No login/Bad login"));
-				sleep (GdmRetryDelay);
-			}
+			gdm_debug (_("gdm_slave_wait_for_login: No login/Bad login"));
+			sleep (GdmRetryDelay);
 			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 		}
+	}
+
+	/* the user timed out into a timed login during the
+	 * conversation */
+	if (do_timed_login) {
+		g_free (login);
+		login = NULL;
+		/* timed login is automatic, thus no need for greeter,
+		 * we'll take default values */
+		gdm_slave_whack_greeter();
 	}
 }
 
@@ -372,6 +509,23 @@ gdm_slave_greeter (void)
 	gdm_setenv ("DISPLAY", d->name);
 	gdm_setenv ("HOME", "/"); /* Hack */
 	gdm_setenv ("PATH", GdmDefaultPath);
+
+	/* Note that this is just informative, the slave will not listen to
+	 * the greeter even if it does something it shouldn't on a non-local
+	 * display so it's not a security risk */
+	if (d->type == TYPE_LOCAL) {
+		gdm_setenv ("GDM_IS_LOCAL", "yes");
+	} else {
+		gdm_unsetenv ("GDM_IS_LOCAL");
+	}
+
+	/* this is again informal only, if the greeter does time out it will
+	 * not actually login a user if it's not enabled for this display */
+	if (d->timed_login_ok) {
+		gdm_setenv ("GDM_TIMED_LOGIN_OK", "yes");
+	} else {
+		gdm_unsetenv ("GDM_TIMED_LOGIN_OK");
+	}
 
 	argv = g_strsplit (GdmGreeter, argdelim, MAX_ARGS);
 	execv (argv[0], argv);
@@ -720,11 +874,10 @@ gdm_slave_session_start (void)
 	gdm_setenv ("HOME", pwent->pw_dir);
 	gdm_setenv ("GDMSESSION", session);
 	gdm_setenv ("SHELL", pwent->pw_shell);
+	gdm_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
+
 	if (gnome_session != NULL)
 		gdm_setenv ("GDM_GNOME_SESSION", gnome_session);
-#if 0
-	gdm_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
-#endif
 
 	/* Special PATH for root */
 	if (pwent->pw_uid == 0)
@@ -1116,11 +1269,17 @@ gdm_slave_greeter_check_interruption (const char *msg)
 	if (msg != NULL &&
 	    msg[0] == BEL) {
 		/* Different interruptions come here */
+		/* Note that we don't want to actually do anything.  We want
+		 * to just set some flag and go on and schedule it after we
+		 * dump out of the login in the main login checking loop */
 		switch (msg[1]) {
 		case GDM_INTERRUPT_TIMED_LOGIN:
 			/* only allow timed login if display is local,
-			 * and if it's set up correctly */
+			 * it is allowed for this display (it's only allowed
+			 * for the first local display) and if it's set up
+			 * correctly */
 			if (d->type == TYPE_LOCAL &&
+			    d->timed_login_ok &&
 			    ! gdm_string_empty (GdmTimedLogin) &&
 			    GdmTimedLoginDelay > 0) {
 				do_timed_login = TRUE;
@@ -1128,7 +1287,12 @@ gdm_slave_greeter_check_interruption (const char *msg)
 			}
 			break;
 		case GDM_INTERRUPT_CONFIGURE:
-			/* FIXME: no configuration code here yet */
+			if (d->type == TYPE_LOCAL &&
+			    GdmConfigAvailable &&
+			    GdmSystemMenu &&
+			    ! gdm_string_empty (GdmConfigurator)) {
+				do_configurator = TRUE;
+			}
 			break;
 		default:
 			break;
@@ -1146,7 +1310,8 @@ gdm_slave_greeter_check_interruption (const char *msg)
 gboolean
 gdm_slave_should_complain (void)
 {
-	if (do_timed_login)
+	if (do_timed_login ||
+	    do_configurator)
 		return FALSE;
 	return TRUE;
 }
