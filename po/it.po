@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 \n"
-"POT-Creation-Date: 2000-07-30 00:43+0200\n"
+"POT-Creation-Date: 2001-01-26 00:01-0800\n"
 "PO-Revision-Date: 2000-06-08 15:37+0200\n"
 "Last-Translator: Daniele Medri <madrid@linux.it>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -11,126 +11,133 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: daemon/gdm.c:114
+#: daemon/gdm.c:115
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Aborting."
 msgstr "gdm_config_parse: File di configurazioe assente: %s. Chiusura."
 
-#: daemon/gdm.c:162
+#: daemon/gdm.c:171
 msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse: Nessun greeter specificato."
 
-#: daemon/gdm.c:165
+#: daemon/gdm.c:174
 msgid "gdm_config_parse: No authdir specified."
 msgstr "gdm_config_parse: Nessuna authdir specificata."
 
-#: daemon/gdm.c:171
+#: daemon/gdm.c:180
 msgid "gdm_config_parse: No sessions directory specified."
 msgstr "gdm_config_parse: Nessuna directory di sessione specificata."
 
-#: daemon/gdm.c:183
+#: daemon/gdm.c:192
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr "gdm_config_parse: Linea server invalida nel file di configurazione."
 
-#: daemon/gdm.c:189
+#: daemon/gdm.c:198
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr "gdm_config_parse: Xdmcp disabilitato e nessun server locale definito."
 
-#: daemon/gdm.c:196
+#: daemon/gdm.c:205
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
 msgstr "gdm_config_parse: Impossibile trovare l'utente gdm (%s)."
 
-#: daemon/gdm.c:201
+#: daemon/gdm.c:210
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr "gdm_config_parse: L'utente di gdm non dovrebbe essere root."
 
-#: daemon/gdm.c:206
+#: daemon/gdm.c:215
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
 msgstr "gdm_config_parse: Impossibile trovare il gruppo gdm (%s)."
 
-#: daemon/gdm.c:211
+#: daemon/gdm.c:220
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
 msgstr "gdm_config_parse: Il gruppo di gdm non dovrebbe essere root."
 
-#: daemon/gdm.c:247
+#: daemon/gdm.c:256
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr "gdm_config_parse: Authdir %s inesistente."
 
-#: daemon/gdm.c:250
+#: daemon/gdm.c:259
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
 msgstr "gdm_config_parse: Authdir %s non è una directory."
 
-#: daemon/gdm.c:253
+#: daemon/gdm.c:262
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "gdm_config_parse: Authdir %s non valida per l'utente %s, gruppo %s."
 
-#: daemon/gdm.c:257
+#: daemon/gdm.c:266
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
 msgstr "gdm_config_parse: Authdir %s con permessi errati. Dovrebbe essere 750."
 
-#: daemon/gdm.c:291
+#: daemon/gdm.c:300
 msgid "gdm_daemonify: fork() failed!"
 msgstr "gdm_daemonify: fork() fallita!"
 
-#: daemon/gdm.c:294
+#: daemon/gdm.c:303
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid() fallita: %s!"
 
 #. Bury this display for good
-#: daemon/gdm.c:366
+#: daemon/gdm.c:370
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action: Chiusura display %s"
 
 #. Reboot machine
-#: daemon/gdm.c:372
+#: daemon/gdm.c:376
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action: Riavvio totale..."
 
-#: daemon/gdm.c:381
+#: daemon/gdm.c:385
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action: Riavvio fallito: %s"
 
 #. Halt machine
-#: daemon/gdm.c:385
+#: daemon/gdm.c:389
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action: Chiusura totale..."
 
-#: daemon/gdm.c:394
+#: daemon/gdm.c:398
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: Chiusura fallita: %s"
 
-#: daemon/gdm.c:458
+#: daemon/gdm.c:416
+#, c-format
+msgid ""
+"gdm_child_action: Greeter segfaulted too many times in the last 40 seconds "
+"for display %s, killing it"
+msgstr ""
+
+#: daemon/gdm.c:507
 msgid "Only root wants to run gdm\n"
 msgstr "Solo root vuole avviare gdm\n"
 
-#: daemon/gdm.c:479
+#: daemon/gdm.c:528
 msgid "gdm already running. Aborting!"
 msgstr "gdm già in esecuzione."
 
-#: daemon/gdm.c:500
+#: daemon/gdm.c:553
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr ""
 "gdm_main: Errore ricevuto durante l'attivazione del gestore segnali TERM"
 
-#: daemon/gdm.c:503
+#: daemon/gdm.c:556
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr ""
 "gdm_main: Errore ricevuto durante l'attivazione del gestore segnali INT"
 
-#: daemon/gdm.c:511
+#: daemon/gdm.c:564
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr ""
 "gdm_main: Errore ricevuto durante l'attivazione del gestore segnali CHLD"
@@ -152,6 +159,11 @@ msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr ""
 "gdm_auth_user_remove: Ignorazione di sospette visualizzazioni del file "
 "cookie %s"
+
+#: daemon/display.c:95
+#, c-format
+msgid "gdm_display_manage: Failed forking gdm slave process for %d"
+msgstr ""
 
 #: daemon/filecheck.c:51
 #, c-format
@@ -195,90 +207,109 @@ msgstr ""
 "%s: %s è maggiore della dimensione massima specificata dall'amministratore "
 "di sistema."
 
-#: daemon/server.c:93
+#: daemon/server.c:107
+#, c-format
+msgid ""
+"Failed to start X server several times in a short time period; disabling "
+"display %s"
+msgstr ""
+
+#: daemon/server.c:241
 msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr ""
 "gdm_server_start: Errore ricevuto durante l'attivazione del gestore segnale "
 "USR1"
 
-#: daemon/server.c:103
+#: daemon/server.c:251
 msgid "gdm_server_start: Error setting up CHLD signal handler"
 msgstr ""
 "gdm_server_start: Errore ricevuto durante l'attivazione del gestore segnale "
 "CHLD"
 
-#: daemon/server.c:113
+#: daemon/server.c:262
 msgid "gdm_server_start: Error setting up ALRM signal handler"
 msgstr ""
 "gdm_server_start: Errore ricevuto durante l'attivazione del gestore segnale "
 "ALRM"
 
-#: daemon/server.c:196
+#: daemon/server.c:390
 #, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr "gdm_server_spawn: Impossibile aprire il file log per lo schermo %s!"
 
-#: daemon/server.c:221
+#: daemon/server.c:408
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr ""
 "gdm_server_spawn: Errore ricevuto durante il passaggio da USR1 a SIG_IGN"
 
-#: daemon/server.c:237
+#: daemon/server.c:418
+#, fuzzy
+msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
+msgstr ""
+"gdm_server_spawn: Errore ricevuto durante il passaggio da USR1 a SIG_IGN"
+
+#: daemon/server.c:422
+#, fuzzy
+msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
+msgstr ""
+"gdm_server_spawn: Errore ricevuto durante il passaggio da USR1 a SIG_IGN"
+
+#: daemon/server.c:447
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_server_spawn: Xserver non trovato: %s"
 
-#: daemon/server.c:242
+#: daemon/server.c:452
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: Impossibile attivare il processo del Server X"
 
-#: daemon/slave.c:119
+#: daemon/slave.c:114
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
 msgstr ""
 "gdm_slave_init: Errore ricevuto durante l'attivazione del gestore segnali "
 "TERM/INT"
 
-#: daemon/slave.c:127
+#: daemon/slave.c:123
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr ""
 "gdm_slave_init: Errore ricevuto durante l'attivazione del gestore segnali "
 "CHLD"
 
-#: daemon/slave.c:176
+#: daemon/slave.c:268
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr ""
 
-#: daemon/slave.c:201
+#: daemon/slave.c:293
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr ""
 "gdm_slave_greeter: Impossibile configurare l'identificativo del gruppo a %d"
 
-#: daemon/slave.c:204
+#: daemon/slave.c:296
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr ""
 "gdm_slave_greeter: Impossibile configurare l'identificativo utente a %d"
 
-#: daemon/slave.c:214
+#: daemon/slave.c:306
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr ""
 "gdm_slave_greeter: Errore ricevuto durante l'avvio del greeter sullo schermo "
 "%s"
 
-#: daemon/slave.c:217
+#: daemon/slave.c:309
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr ""
 
-#: daemon/slave.c:266
+#: daemon/slave.c:347
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: Autenticazione avvenuta ma con susseguente "
 "getpwnam(%s)"
 
-#: daemon/slave.c:355
+#: daemon/slave.c:459
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -286,89 +317,87 @@ msgstr ""
 "gdm_slave_session_start: L'esecuzione dello script PreSession ha riportato > "
 "0. Chiusura."
 
-#: daemon/slave.c:379
+#: daemon/slave.c:485
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Virhe käynnistettäessä käyttäjän istuntoa."
 
-#: daemon/slave.c:388
+#: daemon/slave.c:494
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr ""
 "gdm_slave_session_start: Impossibile configurare l'identificativo del gruppo "
 "%d. Chiusura."
 
-#: daemon/slave.c:392
+#: daemon/slave.c:498
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr "gdm_slave_session_start: initgroups() fallita per %s. Chiusura."
 
-#: daemon/slave.c:396
+#: daemon/slave.c:502
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Impossibile diventare %s. Chiusura."
 
-#: daemon/slave.c:432
+#: daemon/slave.c:540
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Impossibile avviare la sessione '%s'"
 
-#: daemon/slave.c:613
-#, c-format
-msgid "gdm_slave_windows_kill_ioerror_handler: Fatal X error - Restarting %s"
+#: daemon/slave.c:740
+#, fuzzy, c-format
+msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 "gdm_slave_windows_kill_ioerror_handler: Errore fatale di X - Riavvio di %s"
 
-#: daemon/slave.c:645
-msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
-msgstr ""
-"gdm_slave_xsync_ping: Errore ricevuto durante l'attivazione del gestore "
-"segnale ALARM"
-
-#: daemon/slave.c:747
+#: daemon/slave.c:835
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Avvio fallito: %s"
 
-#: daemon/slave.c:751
+#: daemon/slave.c:839
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr ""
 
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:58 daemon/verify-pam.c:123 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1230
+#: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
+#: gui/gdmlogin.c:1606
 msgid "Login:"
 msgstr "Login:"
 
-#: daemon/verify-pam.c:130
+#: daemon/verify-pam.c:144 daemon/verify-pam.c:230
 msgid "Can't find /etc/pam.d/gdm!"
 msgstr "Impossibile trovare /etc/pam.d/gdm!"
 
-#: daemon/verify-pam.c:136
+#: daemon/verify-pam.c:150 daemon/verify-pam.c:236
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Impossibile configurare PAM_TTY=%s"
 
-#: daemon/verify-crypt.c:71 daemon/verify-pam.c:142 daemon/verify-shadow.c:81
+#: daemon/verify-crypt.c:71 daemon/verify-pam.c:156 daemon/verify-shadow.c:81
 #, c-format
 msgid "Couldn't authenticate %s"
 msgstr "Autenticazione non possibile per %s"
 
-#: daemon/verify-pam.c:153
+#: daemon/verify-pam.c:167 daemon/verify-pam.c:249
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr ""
 
-#: daemon/verify-pam.c:159
+#: daemon/verify-pam.c:173 daemon/verify-pam.c:256
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Non è possibile configurare le credenziali per %s"
 
-#: daemon/verify-pam.c:165
+#: daemon/verify-pam.c:179 daemon/verify-pam.c:262
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Non è possibile aprire la sessione per %s"
 
-#: daemon/verify-pam.c:232
+#: daemon/verify-pam.c:198
+msgid "Authentication failed"
+msgstr ""
+
+#: daemon/verify-pam.c:322
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
 msgstr ""
 "gdm_verify_check: Impossibile trovare il file di configurazione PAM per gdm"
@@ -395,166 +424,167 @@ msgstr "Accesso negato per l'utente root"
 msgid "Incorrect password"
 msgstr "Password errata"
 
-#: daemon/xdmcp.c:178
+#: daemon/xdmcp.c:179
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr "gdm_xdmcp_init: Impossibile trovare il nome del server: %s!"
 
-#: daemon/xdmcp.c:192
+#: daemon/xdmcp.c:193
 msgid "gdm_xdmcp_init: Could not create socket!"
 msgstr "gdm_xdmcp_init: Impossibile creare uno socket!"
 
-#: daemon/xdmcp.c:199
+#: daemon/xdmcp.c:200
 msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
 msgstr "gdm_xdmcp_init: Impossibile comunicare con uno socket XDMCP!"
 
-#: daemon/xdmcp.c:208
+#: daemon/xdmcp.c:209
 msgid "gdm_xdmcp_init: Can't alloc fifopath"
 msgstr "gdm_xdmcp_init: Impossibile allocare il fifopath"
 
-#: daemon/xdmcp.c:213
+#: daemon/xdmcp.c:214
 msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
 msgstr "gdm_xdmcp_init: Impossibile attivare FIFO per il chooser"
 
-#: daemon/xdmcp.c:218
+#: daemon/xdmcp.c:219
 msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
 msgstr "gdm_xdmcp_init: Impossibile aprire il FIFO per il chooser"
 
-#: daemon/xdmcp.c:278
+#: daemon/xdmcp.c:285
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
 msgstr "gdm_xdmcp_decode: Impossibile creare un buffer per XDMCP!"
 
-#: daemon/xdmcp.c:283
+#: daemon/xdmcp.c:290
 msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode: Impossibile leggere l'intestazione per XDMCP!"
 
-#: daemon/xdmcp.c:288
+#: daemon/xdmcp.c:295
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: Versione incorretta di XDMCP!"
 
-#: daemon/xdmcp.c:328
+#: daemon/xdmcp.c:335
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr "gdm_xdmcp_decode_packet: Codice sconosciuto dal host %s"
 
-#: daemon/xdmcp.c:346
+#: daemon/xdmcp.c:355
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_query: Impossibile estrarre la lista delle autorizzazioni "
 "dal pacchetto"
 
-#: daemon/xdmcp.c:357
+#: daemon/xdmcp.c:366
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: Errore durante il controllo"
 
-#: daemon/xdmcp.c:428
+#: daemon/xdmcp.c:437
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Impossibile leggere l'indirizzo dello schermo"
 
-#: daemon/xdmcp.c:434
+#: daemon/xdmcp.c:444
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Impossibile leggere il numero della porta "
 "dello schermo"
 
-#: daemon/xdmcp.c:440
+#: daemon/xdmcp.c:452
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Impossibile estrarre la lista delle "
 "autorizzazioni dal pacchetto"
 
-#: daemon/xdmcp.c:455
+#: daemon/xdmcp.c:467
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: Errore durante il controllo"
 
-#: daemon/xdmcp.c:518
+#: daemon/xdmcp.c:533
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Interrogazione XDMCP vietata dal host %s"
 
-#: daemon/xdmcp.c:520
+#: daemon/xdmcp.c:535
 msgid "Display not authorized to connect"
 msgstr "Schermo non autorizzato alla connessione"
 
-#: daemon/xdmcp.c:553
+#: daemon/xdmcp.c:568
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: Ricevuta richiesta dal host %s vietato"
 
-#: daemon/xdmcp.c:560
+#: daemon/xdmcp.c:575
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: Impossibile leggere il numero dello schermo"
 
-#: daemon/xdmcp.c:566
+#: daemon/xdmcp.c:581
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: Impossibile leggere il tipo di connessione"
 
-#: daemon/xdmcp.c:572
+#: daemon/xdmcp.c:587
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr "gdm_xdmcp_handle_request: Impossibile leggere l'indirizzo del client"
 
-#: daemon/xdmcp.c:578
+#: daemon/xdmcp.c:593
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr ""
 "gdm_xdmcp_handle_request: Impossibile leggere i nomi per l'autenticazione"
 
-#: daemon/xdmcp.c:584
+#: daemon/xdmcp.c:599
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr ""
 "gdm_xdmcp_handle_request: Impossibile leggere i dati per l'autenticazione"
 
-#: daemon/xdmcp.c:590
+#: daemon/xdmcp.c:605
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr ""
 "gdm_xdmcp_handle_request: Impossibile leggere la lista dell'autenticazione"
 
-#: daemon/xdmcp.c:601
+#: daemon/xdmcp.c:616
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr ""
 "gdm_xdmcp_handle_request: Impossibile leggere l'identificativo del Produttore"
 
-#: daemon/xdmcp.c:619
+#: daemon/xdmcp.c:634
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: Controllo fallito da %s"
 
-#: daemon/xdmcp.c:732
+#: daemon/xdmcp.c:754
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr ""
 
-#: daemon/xdmcp.c:739
+#: daemon/xdmcp.c:761
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage: Non è possibile leggere il Session ID"
 
-#: daemon/xdmcp.c:745
+#: daemon/xdmcp.c:767
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr ""
 "gdm_xdmcp_handle_manage: Non è possibile leggere il numero dello schermo"
 
-#: daemon/xdmcp.c:754
-msgid "gdm_xdmcp_manage: Could not read Display Class"
+#: daemon/xdmcp.c:776
+#, fuzzy
+msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
 msgstr "gdm_xdmcp_manage: Non è possibile leggere la classe dello schermo"
 
-#: daemon/xdmcp.c:775
+#: daemon/xdmcp.c:798
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr ""
 "gdm_xdmcp_handle_manage: Non è possibile aprire il file di log per lo "
 "schermo %s!"
 
-#: daemon/xdmcp.c:847
+#: daemon/xdmcp.c:872
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr "gdm_xdmcp_handle_keepalive: Ricevuto un KEEPALIVE dal host bannato %s"
 
-#: daemon/xdmcp.c:854
+#: daemon/xdmcp.c:879
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr ""
 "gdm_xdmcp_handle_keepalive: Non è possibile leggere il numero dello schermo"
 
-#: daemon/xdmcp.c:860
+#: daemon/xdmcp.c:885
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Non è possibile leggere il Session ID"
 
@@ -593,37 +623,33 @@ msgstr ""
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr ""
 
-#: gui/gdmchooser.c:594 gui/gdmlogin.c:1542
+#: gui/gdmchooser.c:594 gui/gdmlogin.c:1938
 msgid "Could not set signal mask!"
 msgstr ""
 
-#: gui/gdmlogin.c:268
+#: gui/gdmlogin.c:337
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Stringa troppo lunga!"
 
-#: gui/gdmlogin.c:269
+#: gui/gdmlogin.c:339
 #, c-format
 msgid "Welcome to %s"
 msgstr "Benvenuti su %s"
 
-#: gui/gdmlogin.c:273
-msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
-msgstr ""
-
-#: gui/gdmlogin.c:355
+#: gui/gdmlogin.c:420
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Siete sicuri di voler riavviare la macchina?"
 
-#: gui/gdmlogin.c:368
+#: gui/gdmlogin.c:434
 msgid "Are you sure you want to halt the machine?"
 msgstr "Siete sicuri di voler arrestare la macchina?"
 
-#: gui/gdmlogin.c:385
+#: gui/gdmlogin.c:452
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config: Nessun file di configurazione: %s. Chiusura."
 
-#: gui/gdmlogin.c:481
+#: gui/gdmlogin.c:557
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -633,7 +659,7 @@ msgstr ""
 "macchina.\n"
 "Desiderate rendere %s la scelta base per le future sessioni?"
 
-#: gui/gdmlogin.c:496 gui/gdmlogin.c:538
+#: gui/gdmlogin.c:573 gui/gdmlogin.c:617
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -642,93 +668,107 @@ msgstr ""
 "Avete scelto %s per questa sessione, ma la vostra configurazione base è %s.\n"
 "Desiderate rendere %s la scelta base per le future sessioni?"
 
-#: gui/gdmlogin.c:597
+#: gui/gdmlogin.c:728
 #, c-format
 msgid "%s session selected"
 msgstr "Sessione %s selezionata"
 
-#: gui/gdmlogin.c:613 gui/gdmlogin.c:716
+#: gui/gdmlogin.c:744 gui/gdmlogin.c:851
 msgid "Last"
 msgstr "Ultimo"
 
-#: gui/gdmlogin.c:628
+#: gui/gdmlogin.c:761
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr ""
 "gdm_login_session_init: Directory degli script di sessione non trovata!"
 
-#: gui/gdmlogin.c:681
+#: gui/gdmlogin.c:816
 msgid "No session scripts found. Aborting!"
 msgstr "Nessuno script di sessione trovato. Chiusura!"
 
-#: gui/gdmlogin.c:685
+#: gui/gdmlogin.c:820
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr ""
 
-#: gui/gdmlogin.c:699
+#: gui/gdmlogin.c:834
 #, c-format
 msgid "%s language selected"
 msgstr "Lingua selezionata: %s"
 
-#: gui/gdmlogin.c:731
+#: gui/gdmlogin.c:866
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:737
+#: gui/gdmlogin.c:872
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:743
+#: gui/gdmlogin.c:878
 msgid "Other"
 msgstr "Altri"
 
-#: gui/gdmlogin.c:1062
-msgid "Session"
-msgstr "Sessione"
+#: gui/gdmlogin.c:1342
+msgid "GNOME Desktop Manager"
+msgstr ""
 
-#: gui/gdmlogin.c:1069
-msgid "Language"
-msgstr "Lingua"
-
-#: gui/gdmlogin.c:1076
-msgid "Reboot..."
-msgstr "Riavvio..."
-
-#: gui/gdmlogin.c:1083
-msgid "Halt..."
-msgstr "Arresto..."
-
-#: gui/gdmlogin.c:1090
-msgid "System"
-msgstr "Sistema"
-
-#: gui/gdmlogin.c:1098
+#: gui/gdmlogin.c:1354
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Non è possibile aprire il file icona: %s. Riduzione ad icona sospesa!"
 
-#: gui/gdmlogin.c:1101
-msgid "Iconify"
-msgstr "Iconifica"
+#: gui/gdmlogin.c:1459
+msgid "Session"
+msgstr "Sessione"
 
-#: gui/gdmlogin.c:1265
+#: gui/gdmlogin.c:1466
+msgid "Language"
+msgstr "Lingua"
+
+#: gui/gdmlogin.c:1473
+msgid "Reboot..."
+msgstr "Riavvio..."
+
+#: gui/gdmlogin.c:1480
+msgid "Halt..."
+msgstr "Arresto..."
+
+#: gui/gdmlogin.c:1487
+msgid "System"
+msgstr "Sistema"
+
+#: gui/gdmlogin.c:1641
 msgid "Please enter your login"
 msgstr "Si prega di inserire il proprio login"
 
-#: gui/gdmlogin.c:1446
+#: gui/gdmlogin.c:1828
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 "Non è possibile aprire l'immagine base: %s. Visualizzazione volti sospesa!"
 
-#: gui/gdmlogin.c:1528
+#: gui/gdmlogin.c:1915
 msgid "main: Error setting up HUP signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:1531
+#: gui/gdmlogin.c:1918
 msgid "main: Error setting up INT signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:1534
+#: gui/gdmlogin.c:1921
 msgid "main: Error setting up TERM signal handler"
 msgstr ""
+
+#: gui/gdmlogin.c:1929
+#, fuzzy
+msgid "main: Error setting up CHLD signal handler"
+msgstr ""
+"gdm_main: Errore ricevuto durante l'attivazione del gestore segnali CHLD"
+
+#~ msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
+#~ msgstr ""
+#~ "gdm_slave_xsync_ping: Errore ricevuto durante l'attivazione del gestore "
+#~ "segnale ALARM"
+
+#~ msgid "Iconify"
+#~ msgstr "Iconifica"

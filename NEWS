@@ -1,5 +1,31 @@
 Ahh news...
 
+2.0.96 stuff:
+
+- Multiple local display stuff should now work
+
+- Now autologs in only on the first display
+
+- Bunch of fixes for XDMCP but that still doesn't work, I need
+  help here I think
+
+- Local displays are now reset with SIGHUP rather then killed and
+  signals are set properly to begin with, this should actually help
+  with some buggy X servers I think.
+
+- Login window can be moved (has a titlebar), and this position can be
+  set from the config file (not saved however)
+
+- Bunch of cleanup and bugfixes
+
+Open issues:
+
+- XDMCP doesn't work
+
+- Autologin and i18n is not working well (always in english apparently)
+
+2.0.95 stuff:
+
 - Autologin (AutomaticLogin key in [daemon] section of gdm.conf)
   This is a string key that if it's set then gdm will log in that
   user without prompting on the first time it runs a local server.
