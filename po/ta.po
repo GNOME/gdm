@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tamil gdm3 1.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-29 15:42-0500\n"
+"POT-Creation-Date: 2004-06-05 12:25-0500\n"
 "PO-Revision-Date: 2004-05-29 11:48+0530\n"
 "Last-Translator:  <>\n"
 "Language-Team: Tamil <tamilinix@yahoogroups.com>\n"
@@ -132,7 +132,7 @@ msgstr "%s: புதிய உறுதிபேற உள்ளிட்டை
 #: daemon/auth.c:69
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
-msgstr "%s: புதிய உறுதிபேற உள்ளிட்டை எழுத முடியவில்லை. வட்டுஅளவை விட அதிகம்"
+msgstr ""
 
 #: daemon/auth.c:74
 #, c-format
@@ -657,7 +657,7 @@ msgstr "GDM பதிப்பை அச்சிடும்"
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "முதல் X முறைமையை துவக்கு அதன்பின் நிறுத்தி GO வரும் வரை பொரு"
 
-#: daemon/gdm.c:1986 gui/gdmchooser.c:2038
+#: daemon/gdm.c:1986 gui/gdmchooser.c:2056
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -676,8 +676,8 @@ msgstr "மூலம் மட்டும் gdm ஓட்ட விரும�
 #: daemon/misc.c:1663 daemon/misc.c:1667 daemon/misc.c:1671
 #: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:811
 #: daemon/slave.c:825 daemon/slave.c:835 daemon/slave.c:845 daemon/slave.c:857
-#: gui/gdmchooser.c:1917 gui/gdmchooser.c:1920 gui/gdmchooser.c:1923
-#: gui/gdmlogin.c:3936 gui/gdmlogin.c:3944 gui/gdmlogin.c:3947
+#: gui/gdmchooser.c:1935 gui/gdmchooser.c:1938 gui/gdmchooser.c:1941
+#: gui/gdmlogin.c:3940 gui/gdmlogin.c:3948 gui/gdmlogin.c:3951
 #: gui/greeter/greeter.c:1076 gui/greeter/greeter.c:1084
 #: gui/greeter/greeter.c:1087
 #, c-format
@@ -1306,7 +1306,7 @@ msgstr "கேப்ஸ் லாக் விசை செயலில் உ�
 
 #. I think I'll add the buttons next to this
 #: daemon/verify-crypt.c:127 daemon/verify-pam.c:189
-#: daemon/verify-shadow.c:126 gui/gdmlogin.c:3047
+#: daemon/verify-shadow.c:126 gui/gdmlogin.c:3051
 msgid "Please enter your username"
 msgstr "பயனர பெயரை தயவு செய்து உள்ளிடவும்"
 
@@ -1884,11 +1884,11 @@ msgid "Choose a ho_st to connect to:"
 msgstr "ஒன்றை ho_st  தேர்வுசெய் இதனுடன் இனை:"
 
 #. markup
-#: gui/gdmchooser.c:645
+#: gui/gdmchooser.c:658
 msgid "Cannot connect to remote server"
 msgstr "தொலை சேவகனுடன் இனைக்க முடியவில்லை"
 
-#: gui/gdmchooser.c:646
+#: gui/gdmchooser.c:659
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
@@ -1898,11 +1898,11 @@ msgstr ""
 "முயற்சிக்கவும்."
 
 #. markup
-#: gui/gdmchooser.c:1270
+#: gui/gdmchooser.c:1283
 msgid "Did not receive response from server"
 msgstr "சேவகனிடம் இருந்து பதில் எதுவும் கிடைக்கவில்லை"
 
-#: gui/gdmchooser.c:1271
+#: gui/gdmchooser.c:1284
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -1913,16 +1913,16 @@ msgstr ""
 "அல்லது புறவன் நுழைவு அமர்வை இப்பொது அதறிக்க விருமபவில்லாமலோ இருக்கலாம். சிறிது நேரம் "
 "கழித்து முயற்சிக்கவும்."
 
-#: gui/gdmchooser.c:1377
+#: gui/gdmchooser.c:1390
 msgid "Cannot find host"
 msgstr "புறவனை கண்டுபிடிக்க முடியவில்லை"
 
-#: gui/gdmchooser.c:1378
+#: gui/gdmchooser.c:1391
 #, c-format
 msgid "I cannot find the host \"%s\", perhaps you have mistyped it."
 msgstr "என்னால் புறவனை கண்டுபிடிக்க முடியவில்லை \"%s\", நீங்கள் தவறாக அடித்துள்ளிர்."
 
-#: gui/gdmchooser.c:1664
+#: gui/gdmchooser.c:1677
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1938,46 +1938,46 @@ msgstr ""
 "புதிய புறவனுக்காக பினையத்தை மீண்டும் நீங்கள் வருடிக்கலாம் இதை சொடுக்கி \"Refresh\".  "
 "புறவனை தேஎர்வு செய்த பின் சொடுக்கவும் \"Connect\" அந்த கணிணியில் ஒரு அமர்வை திறக்க."
 
-#: gui/gdmchooser.c:1711
+#: gui/gdmchooser.c:1724
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "விருந்தோம்பகத்தின் கொடாநிலை குறும்படத்தை திறக்க முடியவில்லை: %s"
 
-#: gui/gdmchooser.c:1931 gui/gdmlogin.c:3955 gui/gdmlogin.c:3962
+#: gui/gdmchooser.c:1949 gui/gdmlogin.c:3959 gui/gdmlogin.c:3966
 #: gui/greeter/greeter.c:1095 gui/greeter/greeter.c:1102
 msgid "Could not set signal mask!"
 msgstr "குறிப்பு-மூடியை அமைக்க முடியவில்லை!"
 
-#: gui/gdmchooser.c:1937
+#: gui/gdmchooser.c:1955
 msgid "Socket for xdm communication"
 msgstr "xdm தொடர்புக்கான சொருகி"
 
-#: gui/gdmchooser.c:1937
+#: gui/gdmchooser.c:1955
 msgid "SOCKET"
 msgstr "SOCKET"
 
-#: gui/gdmchooser.c:1940
+#: gui/gdmchooser.c:1958
 msgid "Client address to return in response to xdm"
 msgstr "xdm பதிலுக்கு கிளைஞ்சன் விலாசம் திருப்பும்"
 
-#: gui/gdmchooser.c:1940
+#: gui/gdmchooser.c:1958
 msgid "ADDRESS"
 msgstr "ADDRESS"
 
-#: gui/gdmchooser.c:1943
+#: gui/gdmchooser.c:1961
 msgid "Connection type to return in response to xdm"
 msgstr "xdm பதிலுக்கு இனைப்பு வகை திருப்பும்"
 
-#: gui/gdmchooser.c:1943
+#: gui/gdmchooser.c:1961
 msgid "TYPE"
 msgstr "TYPE"
 
 #. markup
-#: gui/gdmchooser.c:2072
+#: gui/gdmchooser.c:2090
 msgid "Cannot run chooser"
 msgstr "தேர்வை ஓடவைக்க முடியவில்லை"
 
-#: gui/gdmchooser.c:2073
+#: gui/gdmchooser.c:2091
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
@@ -2677,12 +2677,12 @@ msgstr "கண்ணியை நிறுத்த நீங்கள் வி
 msgid "_Suspend"
 msgstr "நிறுத்து"
 
-#: gui/gdmlogin.c:685 gui/gdmlogin.c:3730 gui/greeter/greeter.c:155
+#: gui/gdmlogin.c:685 gui/gdmlogin.c:3734 gui/greeter/greeter.c:155
 #: gui/greeter/greeter.c:849
 msgid "Welcome"
 msgstr "வருக"
 
-#: gui/gdmlogin.c:688 gui/gdmlogin.c:3733 gui/greeter/greeter.c:158
+#: gui/gdmlogin.c:688 gui/gdmlogin.c:3737 gui/greeter/greeter.c:158
 #: gui/greeter/greeter.c:852
 #, c-format
 msgid "Welcome to %n"
@@ -2942,23 +2942,23 @@ msgstr "இனைப்பைநீக்கு"
 msgid "Icon"
 msgstr "சின்னம்"
 
-#: gui/gdmlogin.c:3369
+#: gui/gdmlogin.c:3373
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Can't open DefaultImage: %s. Suspending face browser!"
 
-#: gui/gdmlogin.c:3391 gui/gdmsetup.c:515 gui/greeter/greeter_item_ulist.c:297
+#: gui/gdmlogin.c:3395 gui/gdmsetup.c:515 gui/greeter/greeter_item_ulist.c:297
 msgid "Too many users to list here..."
 msgstr "இங்கு பட்டியலிட நிறை பயனர் உள்ளனர்..."
 
 #. markup
-#: gui/gdmlogin.c:3809 gui/gdmlogin.c:3840 gui/gdmlogin.c:3884
+#: gui/gdmlogin.c:3813 gui/gdmlogin.c:3844 gui/gdmlogin.c:3888
 #: gui/greeter/greeter.c:628 gui/greeter/greeter.c:659
 #: gui/greeter/greeter.c:704
 msgid "Cannot start the greeter"
 msgstr "கிரிட்டரை துவக்க முடியவில்லை"
 
-#: gui/gdmlogin.c:3810 gui/gdmlogin.c:3841
+#: gui/gdmlogin.c:3814 gui/gdmlogin.c:3845
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
@@ -2968,12 +2968,12 @@ msgstr ""
 "கிரிட்டர் பதிப்பு (%s) டேமொன் பதிப்புடன் பொருந்தவில்லை.  நீங்கள் gdmமை மேம்படுத்துள்ளீர்.  "
 "தயவுசெய்து gdmமை மீண்டும் துவக்கு அல்லது கணிணியை மீண்டும் இயக்கு."
 
-#: gui/gdmlogin.c:3847 gui/gdmlogin.c:3893 gui/greeter/greeter.c:666
+#: gui/gdmlogin.c:3851 gui/gdmlogin.c:3897 gui/greeter/greeter.c:666
 #: gui/greeter/greeter.c:713
 msgid "Reboot"
 msgstr "மீண்டும்இயக்கு"
 
-#: gui/gdmlogin.c:3885
+#: gui/gdmlogin.c:3889
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
@@ -2983,16 +2983,16 @@ msgstr ""
 "கிரிட்டர் பதிப்பு (%s) டேமொன் பதிப்பு (%s)டுன் பொருந்தவில்லை.  நீங்கள் gdmமை "
 "மேம்படுத்துள்ளீர்.  தயவுசெய்து gdmமை மீண்டும் துவக்கு அல்லது கணிணியை மீண்டும் இயக்கு."
 
-#: gui/gdmlogin.c:3891 gui/greeter/greeter.c:711
+#: gui/gdmlogin.c:3895 gui/greeter/greeter.c:711
 msgid "Restart"
 msgstr "மீண்டும்துவங்கு"
 
 #. markup
-#: gui/gdmlogin.c:4077 gui/greeter/greeter.c:1324
+#: gui/gdmlogin.c:4081 gui/greeter/greeter.c:1326
 msgid "Session directory is missing"
 msgstr "அமர்வு அடைவு காணவில்லை"
 
-#: gui/gdmlogin.c:4079 gui/greeter/greeter.c:1326
+#: gui/gdmlogin.c:4083 gui/greeter/greeter.c:1328
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3002,11 +3002,11 @@ msgstr ""
 "ஆணால் நீங்கள் நுழைந்த அதன்பின் gdm உள்ளமையை சரிசெய்."
 
 #. markup
-#: gui/gdmlogin.c:4103 gui/greeter/greeter.c:1351
+#: gui/gdmlogin.c:4107 gui/greeter/greeter.c:1353
 msgid "Configuration is not correct"
 msgstr "உள்ளமை சரியாக இல்லை"
 
-#: gui/gdmlogin.c:4105 gui/greeter/greeter.c:1353
+#: gui/gdmlogin.c:4109 gui/greeter/greeter.c:1355
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, and thus I ran the default command.  Please fix your configuration."
@@ -3015,11 +3015,11 @@ msgstr ""
 "முன்னிருப்பு கட்டளை ஓட்டினேன்.  தயவு செய்து உங்கள் உள்ளமை பொருத்தவும்."
 
 #. markup
-#: gui/gdmlogin.c:4130 gui/greeter/greeter.c:1380
+#: gui/gdmlogin.c:4134 gui/greeter/greeter.c:1382
 msgid "No configuration was found"
 msgstr "உள்ளமை எதுவும் கிடைக்கவில்லை"
 
-#: gui/gdmlogin.c:4132 gui/greeter/greeter.c:1382
+#: gui/gdmlogin.c:4136 gui/greeter/greeter.c:1384
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
