@@ -1,3 +1,21 @@
+2001-08-02  Havoc Pennington  <hp@redhat.com>
+
+	* daemon/gdm.c (gdm_config_parse): fix format
+
+	* daemon/server.c (display_busy): fix format 
+
+	* daemon/verify-crypt.c (gdm_verify_user): don't put login 
+	in syslog, because people accidentally type their password 
+	in this field.
+
+	* daemon/verify-shadow.c (gdm_verify_user): same
+
+	* daemon/verify-pam.c (gdm_verify_user): same
+	
+	* daemon/misc.c: syslog takes a format string, don't pass it data
+	we got from the user. Reported by Cyril Diakhate
+	<diakhate@easynet.fr>
+
 Thu Aug  2 03:10:23 2001  Abel Cheung <maddog@linux.org.hk>
 
 	* daemon/display.c: GdmDisplay->name should be a %s, not %d (I think)

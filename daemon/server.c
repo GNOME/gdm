@@ -195,7 +195,7 @@ display_busy (GdmDisplay *disp)
 		 * of course additions are welcome to make this more robust */
 		if (strstr (buf, "Server is already active for display")
 		    != NULL) {
-			gdm_error (_("Display %d is busy, there is another "
+			gdm_error (_("Display %s is busy, there is another "
 				     "X server already running"),
 				   disp->name);
 			fclose (fp);

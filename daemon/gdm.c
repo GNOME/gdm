@@ -400,7 +400,7 @@ gdm_config_parse (void)
 		  GdmServAuthDir, GdmUser, GdmGroup);
 
     if (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRGRP|S_IXGRP)) 
-	gdm_fail (_("gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."), 
+	gdm_fail (_("gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. Aborting."), 
 		  GdmServAuthDir, statbuf.st_mode);
 
     seteuid (0);

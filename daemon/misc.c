@@ -55,7 +55,7 @@ gdm_fail (const gchar *format, ...)
     va_end (args);
 
     /* Log to both syslog and stderr */
-    syslog (LOG_CRIT, s);
+    syslog (LOG_CRIT, "%s", s);
     fprintf (stderr, "%s\n", s);
     fflush (stderr);
 
@@ -90,7 +90,7 @@ gdm_info (const gchar *format, ...)
     s = g_strdup_vprintf (format, args);
     va_end (args);
     
-    syslog (LOG_INFO, s);
+    syslog (LOG_INFO, "%s", s);
     
     g_free (s);
 }
@@ -114,7 +114,7 @@ gdm_error (const gchar *format, ...)
     s = g_strdup_vprintf (format, args);
     va_end (args);
     
-    syslog (LOG_ERR, s);
+    syslog (LOG_ERR, "%s", s);
     
     g_free (s);
 }
@@ -145,7 +145,7 @@ gdm_debug (const gchar *format, ...)
     
     /*{ FILE *fp = fopen ("/tmp/foo.gdm", "a"); fprintf (fp, "%s\n", s); fflush (fp); fclose (fp); };*/
     
-    syslog (LOG_ERR, s);	/* FIXME: LOG_DEBUG */
+    syslog (LOG_ERR, "%s", s);	/* FIXME: LOG_DEBUG */
     
     g_free (s);
 }
@@ -176,3 +176,9 @@ gdm_clearenv_no_lang (void)
 }
 
 /* EOF */
+
+
+
+
+
+

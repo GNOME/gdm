@@ -114,7 +114,7 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
     if (!pwent) {
-	    gdm_error (_("Couldn't authenticate %s"), login);
+	    gdm_error (_("Couldn't authenticate user"));
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
 	    return NULL;
     }

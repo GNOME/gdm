@@ -202,7 +202,7 @@ gdm_verify_user (const char *username,
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Couldn't authenticate %s"), login);
+		    gdm_error (_("Couldn't authenticate user"));
 	    goto pamerr;
     }
 
