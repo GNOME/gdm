@@ -52,6 +52,8 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Azerbaijani"), "az_AZ", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Albanian"), "sq_AL", "Shqip", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Amharic"), "am_ET", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Arabic (Egypt)"), "ar_EG", NULL, 0 },
@@ -60,7 +62,15 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Basque"), "eu_ES", "Euskara", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Belarusian"), "be_BY", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Bengali"), "bn_BD", "বাংলা", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Bengali (India)"), "bn_IN", "বাংলা", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Bulgarian"), "bg_BG", "Български", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Bosnian"), "bs_BA", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Catalan"), "ca_ES", "Català", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -98,18 +108,29 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Greek"), "el_GR", "ελληνικά", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Gujarati"), "gu_IN", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Hebrew"), "he_IL", "עברית", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Hebrew"), "iw_IL", "עברית", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Hindi"), "hi_IN", "বাংলা", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Hungarian"), "hu_HU", "Magyar", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Icelandic"), "is_IS", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Irish"), "ga_IE", NULL, 0 },
+	{ N_("A-M|Indonesian"), "id_ID", "Bahasa Indonesia", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Interlingua"), "ia", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Irish"), "ga_IE", "Gaeilge", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Italian"), "it_IT", "Italiano", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Japanese"), "ja_JP", "日本語", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Kannada"), "kn_IN", "﻿ಕನ್ನಡ", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Korean"), "ko_KR", "한국어", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -120,12 +141,14 @@ static Language languages [] = {
         { N_("A-M|Macedonian"), "mk_MK", NULL, 0 },
         /*Note translate the A-M to the A-M you used in the group label */
         { N_("A-M|Malay"), "ms_MY", "Bahasa Melayu", 0 },
-	/*Note translate the A-M to the A-M you used in the group label */
+        /*Note translate the A-M to the A-M you used in the group label */
         { N_("A-M|Mongolian"), "mn_MN", "Монгол", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Norwegian (bokmal)"), "no_NO", "Norsk (bokmål)", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Norwegian (nynorsk)"), "nn_NO", "Norsk (nynorsk)", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Persian"), "fa_IR", "فارسی", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Polish"), "pl_PL", "Polski", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
@@ -133,9 +156,13 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Portuguese (Brazilian)"), "pt_BR", "Português do Brasil", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Panjabi"), "pa_IN", NULL, 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Romanian"), "ro_RO", "Română", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Russian"), "ru_RU", "русский", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Serbian"), "sr_YU", "", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Slovak"), "sk_SK", "Slovenský", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
@@ -151,6 +178,8 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Tamil"), "ta_IN", NULL, 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Telugu"), "te_IN", NULL, 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Thai"), "th_TH", "ไทย", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Turkish"), "tr_TR", "Türkçe", 0 },
@@ -160,6 +189,10 @@ static Language languages [] = {
 	{ N_("N-Z|Vietnamese"), "vi_VN", "Việt Nam", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Walloon"), "wa_BE", "Walon", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Welsh"), "cy_GB", "Cymraeg", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Yiddish"), "yi", "ייִדיש", 0 },
 	/* This is the POSIX/C locale for english, should really be in Other */
 	{ N_("Other|POSIX/C English"), "C", "POSIX/C English", 0 },
 	{ NULL, NULL }
