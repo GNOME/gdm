@@ -171,6 +171,7 @@
 
 #define GDM_SESSION_FAILSAFE_GNOME "GDM_Failsafe.GNOME"
 #define GDM_SESSION_FAILSAFE_XTERM "GDM_Failsafe.XTERM"
+#define GDM_SESSION_GNOME_CHOOSER "Gnome Chooser"
 
 
 typedef struct _GdmDisplay GdmDisplay;

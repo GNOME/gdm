@@ -16,17 +16,15 @@ EXTRA_DIST = \
 	Gnome.in \
 	gnomerc.in \
 	Xsession \
-	Failsafe.in \
 	gdm \
 	locale.alias \
 	Default \
 	PostSession \
 	PreSession \
 	Default.redhat \
-	Default.debian \
-	Failsafe.redhat
+	Default.debian
 
-install-data-hook: gdm.conf gnomerc Gnome Failsafe
+install-data-hook: gdm.conf gnomerc Gnome
 	if test '!' -d $(confdir); then \
 		$(mkinstalldirs) $(confdir); \
 		chmod 755 $(confdir); \
@@ -50,10 +48,6 @@ install-data-hook: gdm.conf gnomerc Gnome Failsafe
 
 	if test '!' -f $(sessdir)/Gnome; then \
 		$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome; \
-	fi
-
-	if test '!' -f $(sessdir)/Failsafe; then \
-		$(INSTALL_SCRIPT) Failsafe $(sessdir)/Failsafe; \
 	fi
 
 	if test -e /etc/debian_version; then \

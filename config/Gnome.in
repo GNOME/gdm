@@ -10,12 +10,78 @@ do
 	fi
 done
 
-resources=$HOME/.Xresources
+#
+#  Distributors:
+#  You should modify the paths here to fit your distro
+#  If you need to do so, send me (jirka@5z.com) a patch
+#  and I'll try to make the script detect the distro stuff
+#
 
-if [ -f "$resources" ]; then
-	xrdb -load "$resources"
+userresources=$HOME/.Xresources 
+usermodmap=$HOME/.Xmodmap 
+userxkbmap=$HOME/.Xkbmap
+
+sysresources=/etc/X11/Xresources 
+sysmodmap=/etc/X11/Xmodmap 
+sysxkbmap=/etc/X11/Xkbmap
+
+rh6sysresources=/etc/X11/xinit/Xresources 
+rh6sysmodmap=/etc/X11/xinit/Xmodmap 
+
+
+# merge in defaults
+if [ -f "$rh6sysresources" ]; then
+    xrdb -merge "$rh6sysresources"
 fi
 
+if [ -f "$sysresources" ]; then
+    xrdb -merge "$sysresources"
+fi
+
+if [ -f "$userresources" ]; then
+    xrdb -merge "$userresources"
+fi
+
+# merge in keymaps
+if [ -f "$sysxkbmap" ]; then
+    setxkbmap `cat "$sysxkbmap"`
+    XKB_IN_USE=yes
+fi
+
+if [ -f "$userxkbmap" ]; then
+    setxkbmap `cat "$userxkbmap"`
+    XKB_IN_USE=yes
+fi
+
+#
+# Eeek, this seems like too much magic here
+#
+if [ -z "$XKB_IN_USE" -a ! -L /etc/X11/X ]; then
+    if grep '^exec.*/Xsun' /etc/X11/X > /dev/null 2>&1 && [ -f /etc/X11/XF86Config ]; then
+       xkbsymbols=`sed -n -e 's/^[     ]*XkbSymbols[   ]*"\(.*\)".*$/\1/p' /etc/X11/XF86Config`
+       if [ -n "$xkbsymbols" ]; then
+           setxkbmap -symbols "$xkbsymbols"
+           XKB_IN_USE=yes
+       fi
+    fi
+fi
+
+# xkb and xmodmap don't play nice together
+if [ -z "$XKB_IN_USE" ]; then
+    if [ -f "$rh6sysmodmap" ]; then
+       xmodmap "$rh6sysmodmap"
+    fi
+
+    if [ -f "$sysmodmap" ]; then
+       xmodmap "$sysmodmap"
+    fi
+
+    if [ -f "$usermodmap" ]; then
+       xmodmap "$usermodmap"
+    fi
+fi
+
+unset XKB_IN_USE
 
 if [ -x "$HOME/.gnomerc" ]; then
 	exec "$HOME/.gnomerc"

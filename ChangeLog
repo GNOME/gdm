@@ -1,3 +1,17 @@
+Sun May 06 16:31:07 2001  George Lebl <jirka@5z.com>
+
+	* config/Failsafe*, config/Makefile.am, configure.in, gui/gdmlogin.c,
+	  daemon/gdm.h: Use our built in Failsafe thingies since they're more
+	  safe from hosage.  Also benicerin translating them and add some
+	  tooltippage.
+
+	* config/Xsession, config/Gnome.in:  Load in the xresources and
+	  modmap and such magic.  Make it work on both rh6 and rh7 and
+	  hopefully others.
+
+	* daemon/slave.c:  Add more errors and pass some nice parameters
+	  to the failsafe thingies.
+
 Sun May 06 05:36:08 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: use the "Default" script if found as default

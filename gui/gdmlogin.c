@@ -60,7 +60,6 @@ const char *session_titles[] = {
 	N_("Last")
 };
 
-#define GNOME_CHOOSER_SESSION "Gnome Chooser"
 #define LAST_SESSION "Last"
 #define LAST_LANGUAGE "Last"
 #define SESSION_NAME "SessionName"
@@ -112,6 +111,7 @@ static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
 static GdkWindow *rootwin;
 static GdkRectangle screen;
+static GtkTooltips *tooltips;
 
 static GnomeIconList *browser;
 static GdkImlibImage *defface;
@@ -932,6 +932,21 @@ gdm_login_list_lookup (GSList *l, const gchar *data)
     return (FALSE);
 }
 
+static const char *
+translate_session (const char *name)
+{
+	/* eek */
+	if (name == NULL)
+		return "(null)";
+
+	if (strcmp (name, GDM_SESSION_FAILSAFE_GNOME) == 0)
+		return _("Failsafe Gnome");
+	else if (strcmp (name, GDM_SESSION_FAILSAFE_XTERM) == 0)
+		return _("Failsafe xterm");
+	else
+		return _(name);
+}
+
 
 static void
 gdm_login_session_lookup (const gchar* savedsess)
@@ -974,7 +989,8 @@ gdm_login_session_lookup (const gchar* savedsess)
 	    session = g_strdup (defsess);
 	    msg = g_strdup_printf (_("Your preferred session type %s is not installed on this machine.\n" \
 				     "Do you wish to make %s the default for future sessions?"),
-				   savedsess, defsess);	    
+				   translate_session (savedsess),
+				   translate_session (defsess));	    
 	    savesess = gdm_login_query (msg);
 	    g_free (msg);
 	}
@@ -990,7 +1006,9 @@ gdm_login_session_lookup (const gchar* savedsess)
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is " \
 				     "%s.\nDo you wish to make %s the default for future sessions?"),
-				   cursess, savedsess, cursess);
+				   translate_session (cursess),
+				   translate_session (savedsess),
+				   translate_session (cursess));
 	    savesess = gdm_login_query (msg);
 	    g_free (msg);
 	}
@@ -1333,18 +1351,33 @@ gdm_login_session_init (GtkWidget *menu)
 		if (strcasecmp_no_locale (dent->d_name, "Gnome") == 0) {
 			if (defsess == NULL)
 				defsess = g_strdup (dent->d_name);
+			
+			/* FIXME: when we get descriptions in session files,
+			 * take this out */
+			gtk_tooltips_set_tip
+				(tooltips, GTK_WIDGET (item),
+				 _("This session will log you directly into "
+				   "GNOME, into your current session."),
+				 NULL);
 
 			/* Add the chooser session, this one doesn't have a script
 			 * really, it's a fake, it runs the Gnome script */
 			/* For translators:  This is the login that lets users choose the
 			 * specific gnome session they want to use */
 			item = gtk_radio_menu_item_new_with_label (sessgrp, _("Gnome Chooser"));
+			gtk_tooltips_set_tip
+				(tooltips, GTK_WIDGET (item),
+				 _("This session will log you into "
+				   "GNOME and it will let you choose which "
+				   "one of the GNOME sessions you want to "
+				   "use."),
+				 NULL);
 			gtk_object_set_data (GTK_OBJECT (item),
 					     "SessionName",
-					     GNOME_CHOOSER_SESSION);
+					     GDM_SESSION_GNOME_CHOOSER);
 
 			sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-			sessions = g_slist_append (sessions, GNOME_CHOOSER_SESSION);
+			sessions = g_slist_append (sessions, GDM_SESSION_GNOME_CHOOSER);
 			gtk_menu_append (GTK_MENU (menu), item);
 			gtk_signal_connect (GTK_OBJECT (item), "activate",
 					    GTK_SIGNAL_FUNC (gdm_login_session_handler),
@@ -1371,37 +1404,51 @@ gdm_login_session_init (GtkWidget *menu)
 	    session_dir_whacked_out = TRUE;
 
 	    defsess = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
-
-	    /* For translators:  This is the login when the session directory
-	     * really is screwed up. */
-	    item = gtk_radio_menu_item_new_with_label (sessgrp,
-						       _("Failsafe Gnome"));
-	    gtk_object_set_data (GTK_OBJECT (item),
-				 "SessionName", GDM_SESSION_FAILSAFE_GNOME);
-
-	    sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-	    sessions = g_slist_append (sessions, GDM_SESSION_FAILSAFE_GNOME);
-	    gtk_menu_append (GTK_MENU (menu), item);
-	    gtk_signal_connect (GTK_OBJECT (item), "activate",
-				GTK_SIGNAL_FUNC (gdm_login_session_handler),
-				NULL);
-	    gtk_widget_show (GTK_WIDGET (item));
-
-	    /* For translators:  This is the login when the session directory
-	     * really is screwed up. */
-	    item = gtk_radio_menu_item_new_with_label (sessgrp,
-						       _("Failsafe xterm"));
-	    gtk_object_set_data (GTK_OBJECT (item),
-				 "SessionName", GDM_SESSION_FAILSAFE_XTERM);
-
-	    sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-	    sessions = g_slist_append (sessions, GDM_SESSION_FAILSAFE_XTERM);
-	    gtk_menu_append (GTK_MENU (menu), item);
-	    gtk_signal_connect (GTK_OBJECT (item), "activate",
-				GTK_SIGNAL_FUNC (gdm_login_session_handler),
-				NULL);
-	    gtk_widget_show (GTK_WIDGET (item));
     }
+
+    /* For translators:  This is the failsafe login when the user
+     * can't login otherwise */
+    item = gtk_radio_menu_item_new_with_label (sessgrp,
+					       _("Failsafe Gnome"));
+    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+		          _("This is a failsafe session that will log you "
+			    "into GNOME.  No startup scripts will be read "
+			    "and it is only to be used when you can't log "
+			    "in otherwise.  GNOME will use the 'Default' "
+			    "session."),
+			  NULL);
+    gtk_object_set_data (GTK_OBJECT (item),
+			 "SessionName", GDM_SESSION_FAILSAFE_GNOME);
+
+    sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+    sessions = g_slist_append (sessions, GDM_SESSION_FAILSAFE_GNOME);
+    gtk_menu_append (GTK_MENU (menu), item);
+    gtk_signal_connect (GTK_OBJECT (item), "activate",
+			GTK_SIGNAL_FUNC (gdm_login_session_handler),
+			NULL);
+    gtk_widget_show (GTK_WIDGET (item));
+
+    /* For translators:  This is the failsafe login when the user
+     * can't login otherwise */
+    item = gtk_radio_menu_item_new_with_label (sessgrp,
+					       _("Failsafe xterm"));
+    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+		          _("This is a failsafe session that will log you "
+			    "into a terminal.  No startup scripts will be read "
+			    "and it is only to be used when you can't log "
+			    "in otherwise.  To exit the terminal, "
+			    "type 'exit'."),
+			  NULL);
+    gtk_object_set_data (GTK_OBJECT (item),
+			 "SessionName", GDM_SESSION_FAILSAFE_XTERM);
+
+    sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+    sessions = g_slist_append (sessions, GDM_SESSION_FAILSAFE_XTERM);
+    gtk_menu_append (GTK_MENU (menu), item);
+    gtk_signal_connect (GTK_OBJECT (item), "activate",
+			GTK_SIGNAL_FUNC (gdm_login_session_handler),
+			NULL);
+    gtk_widget_show (GTK_WIDGET (item));
 
     if (defsess == NULL) {
 	    defsess = gtk_object_get_data (GTK_OBJECT (sessgrp->data), SESSION_NAME);
@@ -3222,6 +3269,8 @@ main (int argc, char *argv[])
     textdomain (PACKAGE);
 
     setup_cursor (GDK_LEFT_PTR);
+
+    tooltips = gtk_tooltips_new ();
 
     rootwin = gdk_window_foreign_new (GDK_ROOT_WINDOW ());
 

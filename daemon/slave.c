@@ -299,35 +299,47 @@ run_error_dialog (const char *error)
 	GtkWidget *dialog;
 	GtkWidget *label;
 	GtkWidget *button;
+	pid_t pid;
 
-	gtk_init (&argc, &argv);
+	pid = fork ();
+	/* if we can't fork or we are a child */
+	if (pid <= 0) {
+		gtk_init (&argc, &argv);
 
-	dialog = gtk_dialog_new ();
+		dialog = gtk_dialog_new ();
 
-	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-			    GTK_SIGNAL_FUNC(gtk_main_quit),
-			    NULL);
+		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+				    GTK_SIGNAL_FUNC(gtk_main_quit),
+				    NULL);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Cannot start session"));
+		gtk_window_set_title (GTK_WINDOW (dialog), _("Cannot start session"));
 
-	label = gtk_label_new (error);
+		label = gtk_label_new (error);
 
-	gtk_container_set_border_width
-		(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
-			    TRUE, TRUE, 0);
+		gtk_container_set_border_width
+			(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
+				    TRUE, TRUE, 0);
 
-	button = gtk_button_new_with_label (_("OK"));
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
-			    button, TRUE, TRUE, 0);
+		button = gtk_button_new_with_label (_("OK"));
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
+				    button, TRUE, TRUE, 0);
 
-	gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
-				   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
-				   GTK_OBJECT (dialog));
+		gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
+					   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
+					   GTK_OBJECT (dialog));
 
-	gtk_widget_show_all (dialog);
+		gtk_widget_show_all (dialog);
 
-	gtk_main ();
+		gtk_main ();
+
+		if (pid == 0)
+			_exit (0);
+	}
+
+	if (pid > 0) {
+		waitpid (pid, 0, 0);
+	}
 }
 
 static void
@@ -781,6 +793,39 @@ find_a_session (void)
 	return session;
 }
 
+static char *
+find_prog (const char *name, const char *args)
+{
+	char *ret;
+	char *path;
+	int i;
+	char *try[] = {
+		"/usr/bin/X11/",
+		"/usr/X11R6/bin/",
+		"/usr/bin/",
+		"/usr/local/bin/",
+		EXPANDED_BINDIR "/",
+		NULL
+	};
+
+	path = gnome_is_program_in_path (name);
+	if (path != NULL) {
+		ret = g_strdup_printf ("%s %s", path, args);
+		g_free (path);
+		return ret;
+	}
+	for (i = 0; try[i] != NULL; i++) {
+		path = g_strconcat (try[i], name, NULL);
+		if (g_file_exists (path)) {
+			ret = g_strdup_printf ("%s %s", path, args);
+			g_free (path);
+			return ret;
+		}
+		g_free (path);
+	}
+	return NULL;
+}
+
 static void
 gdm_slave_session_start (void)
 {
@@ -888,7 +933,7 @@ gdm_slave_session_start (void)
 		    savelang = TRUE;
 	    g_free (ret);
 
-	    if (strcmp (session, "Gnome Chooser") == 0) {
+	    if (strcmp (session, GDM_SESSION_GNOME_CHOOSER) == 0) {
 		    char *sessions = gdm_get_sessions (pwent);
 		    ret = gdm_slave_greeter_ctl (GDM_GNOMESESS, sessions);
 		    g_free (sessions);
@@ -1050,7 +1095,7 @@ gdm_slave_session_start (void)
 	/* If "Gnome Chooser" is still set as a session,
 	 * just change that to "Gnome", since "Gnome Chooser" is a
 	 * fake */
-	if (strcmp (session, "Gnome Chooser") == 0) {
+	if (strcmp (session, GDM_SESSION_GNOME_CHOOSER) == 0) {
 		g_free (session);
 		session = g_strdup ("Gnome");
 	}
@@ -1069,43 +1114,46 @@ gdm_slave_session_start (void)
 	sesspath = NULL;
 
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
-		sesspath = gnome_is_program_in_path ("gnome-session");
+		sesspath = find_prog ("gnome-session",
+				      "--choose-session=Default");
 		if (sesspath == NULL) {
-			if (g_file_exists ("/usr/bin/X11/gnome-session")) {
-				sesspath = g_strdup ("/usr/bin/X11/gnome-session");
-			} else if (g_file_exists ("/usr/X11R6/bin/gnome-session")) {
-				sesspath = g_strdup ("/usr/X11R6/bin/gnome-session");
-			} else if (g_file_exists ("/usr/bin/gnome-session")) {
-				sesspath = g_strdup ("/usr/bin/gnome-session");
-			} else if (g_file_exists ("/usr/local/bin/gnome-session")) {
-				sesspath = g_strdup ("/usr/local/bin/gnome-session");
-			} else {
-				/* yaikes */
-				gdm_error (_("gdm_slave_session_start: gnome-session not found for a failsafe gnome session, trying xterm"));
-				g_free (session);
-				session = g_strdup (GDM_SESSION_FAILSAFE_XTERM);
-			}
+			/* yaikes */
+			gdm_error (_("gdm_slave_session_start: gnome-session not found for a failsafe gnome session, trying xterm"));
+			g_free (session);
+			session = g_strdup (GDM_SESSION_FAILSAFE_XTERM);
+			run_error_dialog
+				(_("Could not find the GNOME installation,\n"
+				   "will try running the \"Failsafe xterm\"\n"
+				   "session."));
+		} else {
+			run_error_dialog
+				(_("This is the Failsafe Gnome session.\n"
+				   "You will be logged into the 'Default'\n"
+				   "session of Gnome with no startup scripts\n"
+				   "run.  This is only to fix problems in\n"
+				   "your installation."));
 		}
 	}
 
 	/* an if and not an else, we could have done a fall-through
 	 * to here in the above code if we can't find gnome-session */
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
-		sesspath = gnome_is_program_in_path ("xterm");
+		sesspath = find_prog ("xterm",
+				      "-geometry 80x24-0-0");
 		if (sesspath == NULL) {
-			if (g_file_exists ("/usr/bin/X11/xterm")) {
-				sesspath = g_strdup ("/usr/bin/X11/xterm");
-			} else if (g_file_exists ("/usr/X11R6/bin/xterm")) {
-				sesspath = g_strdup ("/usr/X11R6/bin/xterm");
-			} else if (g_file_exists ("/usr/bin/xterm")) {
-				sesspath = g_strdup ("/usr/bin/xterm");
-			} else {
-				run_error_dialog
-					(_("Cannot find \"xterm\" to start "
-					   "a failsafe session."));
-				/* nyah nyah nyah nyah nyah */
-				_exit (0);
-			}
+			run_error_dialog
+				(_("Cannot find \"xterm\" to start "
+				   "a failsafe session."));
+			/* nyah nyah nyah nyah nyah */
+			_exit (0);
+		} else {
+			run_error_dialog
+				(_("This is the Failsafe xterm session.\n"
+				   "You will be logged into a terminal\n"
+				   "console so that you may fix your system\n"
+				   "if you cannot log in any other way.\n"
+				   "To exit the terminal emulator, type\n"
+				   "'exit'and an enter into the window."));
 		}
 	} 
 

@@ -211,6 +211,7 @@ AC_SUBST(EXPANDED_PIXMAPDIR)
 BINDIR_TMP="$bindir"
 EXPANDED_BINDIR=`eval echo $BINDIR_TMP`
 AC_SUBST(EXPANDED_BINDIR)
+AC_DEFINE(EXPANDED_BINDIR,"$EXPANDED_BINDIR")
 
 dnl This is where the binary actually resides,
 dnl not the console helper link
@@ -265,7 +266,6 @@ docs/C/Makefile
 po/Makefile.in
 intl/Makefile
 debian/Makefile
-config/Failsafe
 config/gdm.conf
 config/Gnome
 config/gnomerc

@@ -50,7 +50,6 @@ rm -f $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/*
 
 install -m 755 config/Default.redhat $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Default
 install -m 755 config/Gnome $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Gnome
-install -m 755 config/Failsafe.redhat $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/Failsafe
 ln -sf Default $RPM_BUILD_ROOT%{sysconfdir}/X11/gdm/Sessions/default
 
 # change default Init script to be Red Hat default
@@ -100,6 +99,10 @@ exit 0
 
 
 %changelog
+* Sun May 06 2001 George Lebl <jirka@5z.com>
+- Kill the Failsafe script. GDM will now do failsafe itself, in an actual
+  failsafe way (meaning it will work with greater degree of hosage)
+
 * Wed Mar 07 2001 George Lebl <jirka@5z.com>
 - Fixups, move the security dir as well and build with console helper and
   hardwire the sysconfdir to /etc as that seems broke on my 6.2 box otherwise
