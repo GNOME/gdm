@@ -86,6 +86,28 @@ GdmConfigSession *old_current_default_session = NULL;
 char *default_session_link_name = NULL;
 GList *deleted_sessions_list = NULL;
 
+const char *names_to_use[] = {
+	"foo",
+	"bar",
+	"bah",
+	"blurb",
+	"babble",
+	"bubbly",
+	"buck",
+	"bucket",
+	"cabbage",
+	"cackle",
+	"dangle",
+	"dashboard",
+	"dawn",
+	"each",
+	"earmarks",
+	"eastbound",
+	"eclipse",
+	"fabric",
+	NULL };
+
+
 /* Main application widget pointer */
 GtkWidget *GDMconfigurator = NULL;
 
@@ -375,11 +397,11 @@ main (int argc, char *argv[])
 				glade_filename = g_strdup ("gdmconfig.glade");
 			}
 		}
+
+		glade_helper_add_glade_directory (GDM_GLADE_DIR);
 	} else {
 		glade_filename = g_strdup ("gdmconfig.glade");
 	}
-
-	glade_helper_add_glade_directory (GDM_GLADE_DIR);
 
 	/* Build the user interface */
 	GUI = glade_xml_new(glade_filename, "gdmconfigurator");
@@ -521,9 +543,153 @@ void user_level_row_selected(GtkCList *clist, gint row,
    }
 }
 
-void show_about_box(void) {
-	glade_xml_new(glade_filename, "about_gdmconfig");
+void
+show_about_box (void)
+{
+	GladeXML *xml;
+	static GtkWidget *dialog = NULL;
+
+	if (dialog != NULL) {
+		gtk_widget_show_now (dialog);
+		gdk_window_raise (dialog->window);
+		return;
+	}
+
+	xml = glade_helper_load ("gdmconfig.glade",
+				 "about_gdmconfig",
+				 gnome_about_get_type (),
+				 TRUE /* dump on destroy */);
+	dialog = glade_helper_get (xml, "about_gdmconfig",
+				   gnome_about_get_type ());
+	gnome_dialog_set_parent (GNOME_DIALOG (dialog), 
+				 (GtkWindow *) GDMconfigurator);
+	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+			    &dialog);
 }
+
+static int
+find_server_def (const char *id)
+{
+	GtkCList *clist = (GtkCList *) get_widget ("server_def_clist");
+	int i;
+
+	for (i = 0; i < clist->rows; i++) {
+		char *rowid = gtk_clist_get_row_data (clist, i);
+
+		if ((rowid == NULL &&
+		     id == NULL) ||
+		    (rowid != NULL &&
+		     id != NULL &&
+		     strcmp (rowid, id) == 0)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+static int
+find_default_server_def (void)
+{
+	GtkCList *clist = (GtkCList *) get_widget ("server_def_clist");
+	int i;
+
+	for (i = 0; i < clist->rows; i++) {
+		char *rowid = gtk_clist_get_row_data (clist, i);
+
+		if (rowid != NULL &&
+		    strcmp (rowid, GDM_STANDARD) == 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+static char *
+get_unique_name (const char *except)
+{
+	int i, ii;
+
+	for (ii = 0;; ii++) {
+		for (i = 0; names_to_use [i] != NULL; i++) {
+			char *thing;
+
+			if (ii == 0)
+				thing = g_strdup (names_to_use[i]);
+			else
+				thing = g_strdup_printf ("%s%d",
+							 names_to_use[i], ii);
+			if ((except == NULL ||
+			     strcmp (except, thing) != 0) &&
+			    find_server_def (thing) < 0)
+				return thing;
+
+			g_free (thing);
+		}
+	}
+	g_assert_not_reached ();
+	/* never reached */
+	return NULL;
+}
+
+static char *
+get_server_name (const char *id)
+{
+	GtkCList *clist = (GtkCList *) get_widget ("server_def_clist");
+	int row;
+
+	row = find_server_def (id);
+	if (row >= 0) {
+		char *text = NULL;
+		gtk_clist_get_text (clist, row, 0, &text);
+
+		return g_strdup (ve_sure_string (text));
+	} else {
+		return g_strdup ("");
+	}
+}
+
+static void
+rename_row (int row, const char *to)
+{
+	GtkCList *clist = (GtkCList *) get_widget ("server_def_clist");
+	GtkCList *svr_clist = (GtkCList *) get_widget ("server_clist");
+	char *oldid;
+	char *new_name;
+	int i;
+
+	oldid = g_strdup (gtk_clist_get_row_data (clist, row));
+
+	if (to == NULL)
+		new_name = get_unique_name (oldid /* except */);
+	else
+		new_name = g_strdup (to);
+
+	if (strcmp (oldid, new_name) == 0) {
+		g_free (new_name);
+		g_free (oldid);
+		return;
+	}
+
+	gtk_clist_set_row_data_full (clist, row, new_name,
+				     (GDestroyNotify) g_free);
+
+	for (i = 0; i < svr_clist->rows; i++) {
+		char *rowid = gtk_clist_get_row_data (clist, i);
+
+		if ((rowid == NULL &&
+		     oldid == NULL) ||
+		    (rowid != NULL &&
+		     oldid != NULL &&
+		     strcmp (rowid, oldid) == 0)) {
+			gtk_clist_set_row_data_full (svr_clist, i, new_name,
+						     (GDestroyNotify) g_free);
+		}
+	}
+
+	g_free (oldid);
+}
+
 
 void
 gdm_config_parse_most (gboolean factory)
@@ -963,10 +1129,10 @@ gdm_config_parse_most (gboolean factory)
 		} else {
 			int row;
 			char *rest = ve_rest (value);
+			char *name = get_server_name (first);
 			if (rest == NULL)
 				rest = g_strdup ("");
-			/* FIXME: */
-			a_server[1] = _("FIXME");
+			a_server[1] = name;
 			a_server[2] = rest;
 			row = gtk_clist_append
 				(GTK_CLIST (get_widget ("server_clist")),
@@ -976,6 +1142,8 @@ gdm_config_parse_most (gboolean factory)
 				 row,
 				 first,
 				 (GDestroyNotify) g_free);
+			g_free (name);
+			g_free (rest);
 		}
 		number_of_servers++;
 	} else {
@@ -1741,7 +1909,25 @@ delete_selected_server_def (GtkButton *button, gpointer user_data)
 void
 make_server_def_default (GtkButton *button, gpointer user_data)
 {
-	/* FIXME: */
+	int old_dfl;
+	GdkColor col;
+
+	if (selected_server_def_row < 0)
+		return;
+
+	old_dfl = find_default_server_def ();
+
+	if (old_dfl >= 0) {
+		rename_row (old_dfl, NULL);
+		gtk_clist_set_background
+			(GTK_CLIST (get_widget ("server_def_clist")),
+			 old_dfl, NULL);
+	}
+	rename_row (selected_server_def_row, GDM_STANDARD);
+
+	gdk_color_parse ("#d6e8ff", &col);
+	gtk_clist_set_background (GTK_CLIST (get_widget ("server_def_clist")),
+				  selected_server_def_row, &col);
 }
 
 void
@@ -1930,27 +2116,126 @@ handle_server_edit (gboolean edit)
 	gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-	switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
-	case 0:
-		/* OK */
-		break;
-	default:
-		/* Cancel, close */
-		break;
+	for (;;) {
+		if (gnome_dialog_run (GNOME_DIALOG (dialog)) == 0) {
+			if (GTK_TOGGLE_BUTTON (custom_cb)->active) {
+				char *server = gtk_entry_get_text
+					(GTK_ENTRY (cmdline));
+				if (server[0] != '/') {
+					GtkWidget *error_dialog =
+						gnome_error_dialog
+						(_("A command line must start "
+						   "with a forward slash "
+						   "('/')"));
+					gnome_dialog_set_parent
+						(GNOME_DIALOG (error_dialog), 
+						 (GtkWindow *) dialog);
+					gtk_window_set_modal
+						(GTK_WINDOW (error_dialog),
+						 TRUE);
+					gnome_dialog_run_and_close
+						(GNOME_DIALOG (error_dialog));
+					continue;
+				}
+			} else {
+				if (GTK_CLIST (clist)->selection == NULL)
+					continue;
+			}
+			break;
+		} else {
+			gtk_widget_destroy (dialog);
+			return;
+		}
 	}
-	/* FIXME: */
+
+	if (edit) {
+		if (GTK_TOGGLE_BUTTON (custom_cb)->active) {
+			char *server = gtk_entry_get_text (GTK_ENTRY (cmdline));
+			gtk_clist_set_text
+				(GTK_CLIST (get_widget ("server_clist")),
+				 selected_server_row, 1, server);
+			gtk_clist_set_text
+				(GTK_CLIST (get_widget ("server_clist")),
+				 selected_server_row, 2, "");
+			gtk_clist_set_row_data
+				(GTK_CLIST (get_widget ("server_clist")),
+				 selected_server_row, NULL);
+		} else {
+			char *args = gtk_entry_get_text (GTK_ENTRY (extra));
+			char *server, *id;
+			int sel = GPOINTER_TO_INT
+				(GTK_CLIST (clist)->selection->data);
+			server = NULL;
+			gtk_clist_get_text (GTK_CLIST (clist), sel, 0, &server);
+			id = gtk_clist_get_row_data (GTK_CLIST (clist), sel);
+
+			gtk_clist_set_text
+				(GTK_CLIST (get_widget ("server_clist")),
+				 selected_server_row, 1,
+				 ve_sure_string (server));
+			gtk_clist_set_text
+				(GTK_CLIST (get_widget ("server_clist")),
+				 selected_server_row, 2,
+				 ve_sure_string (args));
+			gtk_clist_set_row_data_full
+				(GTK_CLIST (get_widget ("server_clist")),
+				 selected_server_row, 
+				 g_strdup (id),
+				 (GDestroyNotify) g_free);
+		}
+	} else {
+		if (GTK_TOGGLE_BUTTON (custom_cb)->active) {
+			char *server = gtk_entry_get_text (GTK_ENTRY (cmdline));
+			char *new_server[3];
+
+			new_server[0] =
+				g_strdup_printf("%d", number_of_servers);
+			new_server[1] = server;
+			new_server[2] = "";
+
+			/* We now have an extra server */
+			number_of_servers++;
+
+			gtk_clist_append(GTK_CLIST(get_widget("server_clist")),
+					 new_server);
+
+			g_free (new_server[0]);
+		} else {
+			char *new_server[3];
+			char *args = gtk_entry_get_text (GTK_ENTRY (extra));
+			char *server, *id;
+			int row;
+			int sel = GPOINTER_TO_INT
+				(GTK_CLIST (clist)->selection->data);
+			server = NULL;
+			gtk_clist_get_text (GTK_CLIST (clist), sel, 0, &server);
+			id = gtk_clist_get_row_data (GTK_CLIST (clist), sel);
+
+
+			new_server[0] =
+				g_strdup_printf("%d", number_of_servers);
+			new_server[1] = ve_sure_string (server);
+			new_server[2] = ve_sure_string (args);
+
+			/* We now have an extra server */
+			number_of_servers++;
+
+			row = gtk_clist_append
+				(GTK_CLIST (get_widget ("server_clist")),
+				 new_server);
+
+			g_free (new_server[0]);
+
+
+			gtk_clist_set_row_data_full
+				(GTK_CLIST (get_widget ("server_clist")),
+				 row, 
+				 g_strdup (id),
+				 (GDestroyNotify) g_free);
+		}
+	}
 
 	gtk_widget_destroy (dialog);
-
-    /* Ask for the new name of this server */
-	/*
-    gtk_clist_get_text(GTK_CLIST(get_widget("server_clist")),
-		       selected_server_row, 1, &current_server);
-    gnome_request_dialog(FALSE, _("Enter the path to the X server,and\nany parameters that should be passed to it."),
-			 current_server,
-			 -1, handle_server_add_or_edit,
-			 (gpointer)"edit", (GtkWindow *)GDMconfigurator);
-			 */
 }
 
 void
@@ -1960,8 +2245,7 @@ add_new_server (GtkButton *button, gpointer user_data)
 }
 
 void
-edit_selected_server                   (GtkButton       *button,
-                                        gpointer         user_data)
+edit_selected_server (GtkButton *button, gpointer user_data)
 {
 	handle_server_edit (TRUE /*edit*/);
 }
@@ -1984,12 +2268,13 @@ delete_selected_server                 (GtkButton       *button,
     number_of_servers--;
     
     /* The server numbers will be out of sync now, so correct that */ 
-    while (tmp < number_of_servers)
-      {
-	  gtk_clist_set_text(GTK_CLIST(get_widget("server_clist")), tmp, 0,
-			     g_strdup_printf("%d", tmp));
-	  tmp++;
-      }
+    /* FIXME: this is not right */
+    while (tmp < number_of_servers) {
+	      char *num = g_strdup_printf("%d", tmp);
+	      gtk_clist_set_text (GTK_CLIST (get_widget("server_clist")),
+				  tmp, 0, num);
+	      tmp++;
+    }
 }
 
 
