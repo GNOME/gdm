@@ -23,14 +23,16 @@
 #include <gdk/gdkx.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#ifdef HAVE_LIBXINERAMA
+#include <X11/extensions/Xinerama.h>
+#endif
 #include <pwd.h>
+#include <unistd.h>
+#include <syslog.h>
 #include "gdmwm.h"
 #include "gdm.h"
 
 static const gchar RCSid[]="$Id$";
-
-/* This is defined and set up in gdmlogin.c */
-extern GdkRectangle screen;
 
 typedef struct _GdmWindow GdmWindow;
 struct _GdmWindow {
@@ -56,6 +58,123 @@ static gulong XA_WM_TAKE_FOCUS = 0;
 static gulong XA_COMPOUND_TEXT = 0;
 
 static int trap_depth = 0;
+
+GdkRectangle *gdm_wm_allscreens = NULL;
+int gdm_wm_screens = 0;
+GdkRectangle gdm_wm_screen = {0,0,0,0};
+
+void 
+gdm_wm_screen_init (int cur_screen_num)
+{
+#ifdef HAVE_LIBXINERAMA
+	gboolean have_xinerama = FALSE;
+
+	gdk_flush ();
+	gdk_error_trap_push ();
+	have_xinerama = XineramaIsActive (GDK_DISPLAY ());
+	gdk_flush ();
+	if (gdk_error_trap_pop () != 0)
+		have_xinerama = FALSE;
+
+	if (have_xinerama) {
+		int screen_num, i;
+		XineramaScreenInfo *xscreens =
+			XineramaQueryScreens (GDK_DISPLAY (),
+					      &screen_num);
+
+
+		if (screen_num <= 0) {
+			/* should NEVER EVER happen */
+			syslog (LOG_ERR, "Xinerama active, but <= 0 screens?");
+			gdm_wm_screen.x = 0;
+			gdm_wm_screen.y = 0;
+			gdm_wm_screen.width = gdk_screen_width ();
+			gdm_wm_screen.height = gdk_screen_height ();
+
+			gdm_wm_allscreens = g_new0 (GdkRectangle, 1);
+			gdm_wm_allscreens[0] = gdm_wm_screen;
+			gdm_wm_screens = 1;
+			return;
+		}
+
+		if (screen_num <= cur_screen_num)
+			cur_screen_num = 0;
+
+		gdm_wm_allscreens = g_new0 (GdkRectangle, screen_num);
+		gdm_wm_screens = screen_num;
+
+		for (i = 0; i < screen_num; i++) {
+			gdm_wm_allscreens[i].x = xscreens[i].x_org;
+			gdm_wm_allscreens[i].y = xscreens[i].y_org;
+			gdm_wm_allscreens[i].width = xscreens[i].width;
+			gdm_wm_allscreens[i].height = xscreens[i].height;
+
+			if (cur_screen_num == i)
+				gdm_wm_screen = gdm_wm_allscreens[i];
+		}
+
+		XFree (xscreens);
+	} else
+#endif
+	{
+		gdm_wm_screen.x = 0;
+		gdm_wm_screen.y = 0;
+		gdm_wm_screen.width = gdk_screen_width ();
+		gdm_wm_screen.height = gdk_screen_height ();
+
+		gdm_wm_allscreens = g_new0 (GdkRectangle, 1);
+		gdm_wm_allscreens[0] = gdm_wm_screen;
+		gdm_wm_screens = 1;
+	}
+#if 0
+	/* for testing Xinerama support on non-xinerama setups */
+	{
+		gdm_wm_screen.x = 100;
+		gdm_wm_screen.y = 100;
+		gdm_wm_screen.width = gdk_screen_width () / 2 - 100;
+		gdm_wm_screen.height = gdk_screen_height () / 2 - 100;
+
+		gdm_wm_allscreens = g_new0 (GdkRectangle, 2);
+		gdm_wm_allscreens[0] = gdm_wm_screen;
+		gdm_wm_allscreens[1].x = gdk_screen_width () / 2;
+		gdm_wm_allscreens[1].y = gdk_screen_height () / 2;
+		gdm_wm_allscreens[1].width = gdk_screen_width () / 2;
+		gdm_wm_allscreens[1].height = gdk_screen_height () / 2;
+		gdm_wm_screens = 2;
+	}
+#endif
+}
+
+void 
+gdm_wm_set_screen (int cur_screen_num)
+{
+	if (cur_screen_num >= gdm_wm_screens || cur_screen_num < 0)
+		cur_screen_num = 0;
+
+	gdm_wm_screen = gdm_wm_allscreens[cur_screen_num];
+}
+
+/* Not really a WM function, center a gtk window by setting uposition */
+void
+gdm_wm_center_window (GtkWindow *cw) 
+{
+	GtkRequisition req;
+        gint x, y;
+
+	gtk_widget_size_request (GTK_WIDGET (cw), &req);
+
+	x = gdm_wm_screen.x + (gdm_wm_screen.width - req.width)/2;
+	y = gdm_wm_screen.y + (gdm_wm_screen.height - req.height)/2;	
+
+	if (x < gdm_wm_screen.x)
+		x = gdm_wm_screen.x;
+	if (y < gdm_wm_screen.y)
+		y = gdm_wm_screen.y;
+
+ 	gtk_widget_set_uposition (GTK_WIDGET (cw), x, y);	
+}
+
+
 
 static void
 trap_push (void)
@@ -354,21 +473,21 @@ center_x_window (GdmWindow *gw, Window w, Window hintwin)
 	/* we replace the x,y and width,height with some new values */
 
 	if (can_resize) {
-		if (width > screen.width)
-			width = screen.width;
-		if (height > screen.height)
-			height = screen.height;
+		if (width > gdm_wm_screen.width)
+			width = gdm_wm_screen.width;
+		if (height > gdm_wm_screen.height)
+			height = gdm_wm_screen.height;
 	}
 
 	if (can_reposition) {
 		/* we wipe the X with some new values */
-		x = screen.x + (screen.width - width)/2;
-		y = screen.y + (screen.height - height)/2;	
+		x = gdm_wm_screen.x + (gdm_wm_screen.width - width)/2;
+		y = gdm_wm_screen.y + (gdm_wm_screen.height - height)/2;	
 
-		if (x < screen.x)
-			x = screen.x;
-		if (y < screen.y)
-			y = screen.y;
+		if (x < gdm_wm_screen.x)
+			x = gdm_wm_screen.x;
+		if (y < gdm_wm_screen.y)
+			y = gdm_wm_screen.y;
 	}
 	
 	XMoveResizeWindow (wm_disp, w, x, y, width, height);

@@ -48,6 +48,22 @@ void	gdm_wm_get_window_pos		(Window window,
 void	gdm_wm_no_login_focus_push	(void);
 void	gdm_wm_no_login_focus_pop	(void);
 
+/*
+ * Xinerama support stuff
+ */
+void	gdm_wm_screen_init		(int cur_screen_num);
+void	gdm_wm_set_screen		(int cur_screen_num);
+
+/* Not really a WM function, center a gtk window on current screen
+ * by setting uposition */
+void	gdm_wm_center_window		(GtkWindow *cw);
+
+/* access to the screen structures */
+extern GdkRectangle *gdm_wm_allscreens;
+extern int gdm_wm_screens;
+extern GdkRectangle gdm_wm_screen;
+
+
 #endif /* GDM_WM_H */
 
 /* EOF */

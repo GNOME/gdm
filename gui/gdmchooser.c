@@ -44,10 +44,6 @@
 #include <sys/ioctl.h>
 #include <net/if.h>
 
-#ifdef HAVE_LIBXINERAMA
-#include <X11/extensions/Xinerama.h>
-#endif
-
 #include "gdmchooser.h"
 #include "gdm.h"
 #include "misc.h"
@@ -106,7 +102,6 @@ static gint  GdmScanTime;
 static gchar *GdmHostIconDir;
 static gchar *GdmHostDefaultIcon;
 static gchar *GdmGtkRC;
-static gint  GdmMaxIndirectWait;
 
 static GladeXML *chooser_app;
 static GtkWidget *chooser, *manage, *rescan, *cancel;
@@ -117,98 +112,6 @@ static GList *hosts = NULL;
 static GdkImlibImage *defhostimg;
 static GnomeIconList *browser;
 static GdmChooserHost *curhost;
-
-GdkRectangle screen; /* this is an extern since it's used in gdmwm as well */
-
-static void 
-gdm_screen_init (void) 
-{
-#ifdef HAVE_LIBXINERAMA
-	gboolean have_xinerama = FALSE;
-
-	gdk_flush ();
-	gdk_error_trap_push ();
-	have_xinerama = XineramaIsActive (GDK_DISPLAY ());
-	gdk_flush ();
-	if (gdk_error_trap_pop () != 0)
-		have_xinerama = FALSE;
-
-	if (have_xinerama) {
-		int screen_num, i;
-		XineramaScreenInfo *xscreens =
-			XineramaQueryScreens (GDK_DISPLAY (),
-					      &screen_num);
-
-
-		if (screen_num <= 0) {
-			/* should NEVER EVER happen */
-			syslog (LOG_ERR, "Xinerama active, but <= 0 screens?");
-			screen.x = 0;
-			screen.y = 0;
-			screen.width = gdk_screen_width ();
-			screen.height = gdk_screen_height ();
-
-			allscreens = g_new0 (GdkRectangle, 1);
-			allscreens[0] = screen;
-			screens = 1;
-			return;
-		}
-
-		if (screen_num <= GdmXineramaScreen)
-			GdmXineramaScreen = 0;
-
-		screen.x = xscreens[GdmXineramaScreen].x_org;
-		screen.y = xscreens[GdmXineramaScreen].y_org;
-		screen.width = xscreens[GdmXineramaScreen].width;
-		screen.height = xscreens[GdmXineramaScreen].height;
-
-		XFree (xscreens);
-	} else
-#endif
-	{
-		screen.x = 0;
-		screen.y = 0;
-		screen.width = gdk_screen_width ();
-		screen.height = gdk_screen_height ();
-	}
-#if 0
-	/* for testing Xinerama support on non-xinerama setups */
-	{
-		screen.x = 100;
-		screen.y = 100;
-		screen.width = gdk_screen_width () / 2 - 100;
-		screen.height = gdk_screen_height () / 2 - 100;
-
-		allscreens = g_new0 (GdkRectangle, 2);
-		allscreens[0] = screen;
-		allscreens[1].x = gdk_screen_width () / 2;
-		allscreens[1].y = gdk_screen_height () / 2;
-		allscreens[1].width = gdk_screen_width () / 2;
-		allscreens[1].height = gdk_screen_height () / 2;
-		screens = 2;
-	}
-#endif
-}
-
-static void
-gdm_center_window (GtkWindow *cw) 
-{
-	GtkRequisition req;
-        gint x, y;
-
-	gtk_widget_size_request (GTK_WIDGET (cw), &req);
-
-	x = screen.x + (screen.width - req.width)/2;
-	y = screen.y + (screen.height - req.height)/2;	
-
-	if (x < screen.x)
-		x = screen.x;
-	if (y < screen.y)
-		y = screen.y;
-
- 	gtk_widget_set_uposition (GTK_WIDGET (cw), x, y);	
-}
-
 
 static gint 
 gdm_chooser_sort_func (gpointer d1, gpointer d2)
@@ -495,8 +398,6 @@ gdm_chooser_parse_config (void)
     GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
 
-    GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);    
-
     if (GdmScanTime < 1) GdmScanTime = 1;
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
     if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
@@ -686,7 +587,7 @@ gdm_chooser_gui_init (void)
 			  (gint) gdk_screen_width() * 0.4, 
 			  (gint) gdk_screen_height() * 0.6);
 
-    gdm_center_window (GTK_WINDOW (chooser));
+    gdm_wm_center_window (GTK_WINDOW (chooser));
 }
 
 
@@ -908,27 +809,6 @@ gdm_chooser_add_hosts (const char **hosts)
 		gdm_chooser_find_bcaddr ();
 }
 
-static gboolean
-indirect_wait_exceeded (gpointer data)
-{
-	GtkWidget *dialog;
-
-	gdm_wm_focus_new_windows (TRUE);
-
-	dialog = gnome_ok_dialog
-		(_("The maximum wait time exceeded for choosing a session.\n"
-		   "Please press OK and try again."));
-	gtk_widget_show_all (dialog);
-	gdm_center_window (GTK_WINDOW (dialog));
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-
-	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-
-	exit (EXIT_SUCCESS);
-
-	return FALSE;
-}
-
 int 
 main (int argc, char *argv[])
 {
@@ -962,7 +842,7 @@ main (int argc, char *argv[])
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
 
-    gdm_screen_init ();
+    gdm_wm_screen_init (GdmXineramaScreen);
 
     gdm_version = g_getenv ("GDM_VERSION");
 
@@ -985,7 +865,7 @@ main (int argc, char *argv[])
 	    g_free (msg);
 
 	    gtk_widget_show_all (dialog);
-	    gdm_center_window (GTK_WINDOW (dialog));
+	    gdm_wm_center_window (GTK_WINDOW (dialog));
 	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 	    return EXIT_SUCCESS;
@@ -1011,11 +891,6 @@ main (int argc, char *argv[])
 		     * if it fails */
 		    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
 	    }
-    }
-
-    if (RUNNING_UNDER_GDM) {
-	    gtk_timeout_add (GdmMaxIndirectWait * 1000,
-			     indirect_wait_exceeded, NULL);
     }
 
     gtk_main();

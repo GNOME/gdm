@@ -458,8 +458,8 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	g_assert (id != NULL);
 	g_assert (id->chosen_host != NULL);
 
-	gdm_debug ("gdm_xdmcp_send_forward_query: Sending forward query to %s,
-		   about %s:%d", 
+	gdm_debug ("gdm_xdmcp_send_forward_query: Sending forward query to %s,"
+		   " about %s:%d", 
 		   inet_ntoa (*id->chosen_host),
 		   inet_ntoa (clnt_sa->sin_addr),
 		   (int) ntohs (clnt_sa->sin_port));

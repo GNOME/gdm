@@ -37,9 +37,6 @@
 #include <X11/Xlib.h>
 #include <pwd.h>
 #include <sys/utsname.h>
-#ifdef HAVE_LIBXINERAMA
-#include <X11/extensions/Xinerama.h>
-#endif
 #include "gdmlogin.h"
 #include "gdm.h"
 #include "gdmwm.h"
@@ -125,16 +122,10 @@ static gboolean remember_gnome_session = FALSE;
 static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
-static GdkRectangle *allscreens;
-static int screens = 0;
 static GtkTooltips *tooltips;
 
 static gboolean login_is_local = FALSE;
 static gboolean used_defaults = FALSE;
-
-
-
-GdkRectangle screen; /* this is an extern since it's used in gdmwm as well */
 
 static GnomeIconList *browser;
 static GdkImlibImage *defface;
@@ -276,14 +267,14 @@ set_screen_pos (GtkWidget *widget, int x, int y)
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
-	if (x < screen.x)
-		x = screen.x;
-	if (y < screen.y)
-		y = screen.y;
-	if (x > screen.x + screen.width - widget->allocation.width)
-		x = screen.x + screen.width - widget->allocation.width;
-	if (y > screen.y + screen.height - widget->allocation.height)
-		y = screen.y + screen.height - widget->allocation.height;
+	if (x < gdm_wm_screen.x)
+		x = gdm_wm_screen.x;
+	if (y < gdm_wm_screen.y)
+		y = gdm_wm_screen.y;
+	if (x > gdm_wm_screen.x + gdm_wm_screen.width - widget->allocation.width)
+		x = gdm_wm_screen.x + gdm_wm_screen.width - widget->allocation.width;
+	if (y > gdm_wm_screen.y + gdm_wm_screen.height - widget->allocation.height)
+		y = gdm_wm_screen.y + gdm_wm_screen.height - widget->allocation.height;
 
 	gtk_widget_set_uposition (widget, x, y);
 }
@@ -360,15 +351,14 @@ within_rect (GdkRectangle *rect, int x, int y)
 static void
 set_screen_to_pos (int x, int y)
 {
-	if ( ! within_rect (&screen, x, y)) {
+	if ( ! within_rect (&gdm_wm_screen, x, y)) {
 		int i;
-		/* If not within screen boundaries,
+		/* If not within gdm_wm_screen boundaries,
 		 * maybe we want to switch xinerama
 		 * screen */
-		for (i = 0; i < screens; i++) {
-			if (within_rect (&allscreens[i], x, y)) {
-				GdmXineramaScreen = i;
-				screen = allscreens[i];
+		for (i = 0; i < gdm_wm_screens; i++) {
+			if (within_rect (&gdm_wm_allscreens[i], x, y)) {
+				gdm_wm_set_screen (i);
 				break;
 			}
 		}
@@ -450,8 +440,8 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
 
     gtk_widget_show (GTK_WIDGET (icon_win));
 
-    rw = screen.width;
-    rh = screen.height;
+    rw = gdm_wm_screen.width;
+    rh = gdm_wm_screen.height;
 
     set_screen_pos (GTK_WIDGET (icon_win), rw-iw, rh-ih);
 }
@@ -587,25 +577,6 @@ gdm_parse_enriched_string (const gchar *s)
     return buffer;
 }
 
-static void
-gdm_center_window (GtkWindow *cw) 
-{
-	GtkRequisition req;
-        gint x, y;
-
-	gtk_widget_size_request (GTK_WIDGET (cw), &req);
-
-	x = screen.x + (screen.width - req.width)/2;
-	y = screen.y + (screen.height - req.height)/2;	
-
-	if (x < screen.x)
-		x = screen.x;
-	if (y < screen.y)
-		y = screen.y;
-
- 	gtk_widget_set_uposition (GTK_WIDGET (cw), x, y);	
-}
-
 static gboolean
 gdm_login_query (const gchar *msg)
 {
@@ -628,7 +599,7 @@ gdm_login_query (const gchar *msg)
 			    &req);
 
 	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
-	gdm_center_window (GTK_WINDOW (req));
+	gdm_wm_center_window (GTK_WINDOW (req));
 
 	gdm_wm_no_login_focus_push ();
 	ret = gnome_dialog_run (GNOME_DIALOG (req));
@@ -657,7 +628,7 @@ gdm_run_command (const char *command)
 			   "You likely won't be able to log "
 			   "in either."));
 		gtk_widget_show_all (dialog);
-		gdm_center_window (GTK_WINDOW (dialog));
+		gdm_wm_center_window (GTK_WINDOW (dialog));
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
@@ -1007,9 +978,9 @@ dance (gpointer data)
 	static int height = -1;
 
 	if (width == -1)
-		width = screen.width;
+		width = gdm_wm_screen.width;
 	if (height == -1)
-		height = screen.height;
+		height = gdm_wm_screen.height;
 
 	if (login == NULL ||
 	    login->window == NULL) {
@@ -1023,8 +994,8 @@ dance (gpointer data)
 	t1 += 0.03 + (rand () % 10) / 500.0;
 	t2 += 0.03 + (rand () % 10) / 500.0;
 
-	x = screen.x + (width / 2) + (width / 5) * xm;
-	y = screen.y + (height / 2) + (height / 5) * ym;
+	x = gdm_wm_screen.x + (width / 2) + (width / 5) * xm;
+	y = gdm_wm_screen.y + (height / 2) + (height / 5) * ym;
 
 	set_screen_pos (login,
 			x - login->allocation.width / 2,
@@ -1054,7 +1025,7 @@ evil (const char *user)
 		gtk_timeout_remove (dance_handler);
 		dance_handler = 0;
 		GdmLockPosition = old_lock;
-		gdm_center_window (GTK_WINDOW (login));
+		gdm_wm_center_window (GTK_WINDOW (login));
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		return TRUE;
 				 /* do not translate */
@@ -1705,7 +1676,7 @@ get_gnome_session (const char *sess_string)
 
 	gtk_widget_show_all (d);
 
-	gdm_center_window (GTK_WINDOW (d));
+	gdm_wm_center_window (GTK_WINDOW (d));
 	gdm_wm_no_login_focus_push ();
 	gnome_dialog_run (GNOME_DIALOG (d));
 	gdm_wm_no_login_focus_pop ();
@@ -1966,7 +1937,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 					   GNOME_STOCK_BUTTON_OK,
 					   NULL);
 		gtk_window_set_modal (GTK_WINDOW (d), TRUE);
-		gdm_center_window (GTK_WINDOW (d));
+		gdm_wm_center_window (GTK_WINDOW (d));
 
 		gdm_wm_no_login_focus_push ();
 		gnome_dialog_run (GNOME_DIALOG (d));
@@ -2641,13 +2612,13 @@ gdm_login_gui_init (void)
 	/* FIXME: do smarter sizing here */
 	width = maxwidth + (maxwidth + 20) * (number_of_users < 5 ?
 					      number_of_users : 5);
-	if (width > screen.width * 0.5)
-		width = screen.width * 0.5;
+	if (width > gdm_wm_screen.width * 0.5)
+		width = gdm_wm_screen.width * 0.5;
 
 	height = (maxheight * 1.9 ) *
 		(1 + (number_of_users - 1) / 5);
-	if (height > screen.height * 0.25)
-		height = screen.height * 0.25;
+	if (height > gdm_wm_screen.height * 0.25)
+		height = gdm_wm_screen.height * 0.25;
 
 	gtk_widget_set_usize (GTK_WIDGET (bbox), width, height);
     }
@@ -2680,12 +2651,12 @@ gdm_login_gui_init (void)
 
 		gdk_window_get_size ((GdkWindow *) GNOME_PIXMAP (logo)->pixmap,
 				     &lw, &lh);
-		if (lw > screen.width / 2)
-			lw = screen.width / 2;
+		if (lw > gdm_wm_screen.width / 2)
+			lw = gdm_wm_screen.width / 2;
 		else
 			lw = -1;
-		if (lh > (2 * screen.height) / 3)
-			lh = (2 * screen.height) / 3;
+		if (lh > (2 * gdm_wm_screen.height) / 3)
+			lh = (2 * gdm_wm_screen.height) / 3;
 		else
 			lh = -1;
 		if (lw > -1 || lh > -1)
@@ -2811,7 +2782,7 @@ gdm_login_gui_init (void)
 				GTK_SIGNAL_FUNC (login_realized),
 				NULL);
     } else {
-	    gdm_center_window (GTK_WINDOW (login));
+	    gdm_wm_center_window (GTK_WINDOW (login));
     }
 
     gtk_widget_show_all (GTK_WIDGET (login));
@@ -3008,89 +2979,6 @@ gdm_login_users_init (void)
     endpwent ();
 }
 
-
-static void 
-gdm_screen_init (void) 
-{
-#ifdef HAVE_LIBXINERAMA
-	gboolean have_xinerama = FALSE;
-
-	gdk_flush ();
-	gdk_error_trap_push ();
-	have_xinerama = XineramaIsActive (GDK_DISPLAY ());
-	gdk_flush ();
-	if (gdk_error_trap_pop () != 0)
-		have_xinerama = FALSE;
-
-	if (have_xinerama) {
-		int screen_num, i;
-		XineramaScreenInfo *xscreens =
-			XineramaQueryScreens (GDK_DISPLAY (),
-					      &screen_num);
-
-
-		if (screen_num <= 0) {
-			/* should NEVER EVER happen */
-			syslog (LOG_ERR, "Xinerama active, but <= 0 screens?");
-			screen.x = 0;
-			screen.y = 0;
-			screen.width = gdk_screen_width ();
-			screen.height = gdk_screen_height ();
-
-			allscreens = g_new0 (GdkRectangle, 1);
-			allscreens[0] = screen;
-			screens = 1;
-			return;
-		}
-
-		if (screen_num <= GdmXineramaScreen)
-			GdmXineramaScreen = 0;
-
-		allscreens = g_new0 (GdkRectangle, screen_num);
-		screens = screen_num;
-
-		for (i = 0; i < screen_num; i++) {
-			allscreens[i].x = xscreens[i].x_org;
-			allscreens[i].y = xscreens[i].y_org;
-			allscreens[i].width = xscreens[i].width;
-			allscreens[i].height = xscreens[i].height;
-
-			if (GdmXineramaScreen == i)
-				screen = allscreens[i];
-		}
-
-		XFree (xscreens);
-	} else
-#endif
-	{
-		screen.x = 0;
-		screen.y = 0;
-		screen.width = gdk_screen_width ();
-		screen.height = gdk_screen_height ();
-
-		allscreens = g_new0 (GdkRectangle, 1);
-		allscreens[0] = screen;
-		screens = 1;
-	}
-#if 0
-	/* for testing Xinerama support on non-xinerama setups */
-	{
-		screen.x = 100;
-		screen.y = 100;
-		screen.width = gdk_screen_width () / 2 - 100;
-		screen.height = gdk_screen_height () / 2 - 100;
-
-		allscreens = g_new0 (GdkRectangle, 2);
-		allscreens[0] = screen;
-		allscreens[1].x = gdk_screen_width () / 2;
-		allscreens[1].y = gdk_screen_height () / 2;
-		allscreens[1].width = gdk_screen_width () / 2;
-		allscreens[1].height = gdk_screen_height () / 2;
-		screens = 2;
-	}
-#endif
-}
-
 static void
 set_root (GdkPixbuf *pb)
 {
@@ -3136,16 +3024,16 @@ render_scaled_back (const GdkPixbuf *pb)
 	width = gdk_pixbuf_get_width (pb);
 	height = gdk_pixbuf_get_height (pb);
 
-	for (i = 0; i < screens; i++) {
+	for (i = 0; i < gdm_wm_screens; i++) {
 		gdk_pixbuf_scale (pb, back,
-				  allscreens[i].x,
-				  allscreens[i].y,
-				  allscreens[i].width,
-				  allscreens[i].height,
-				  allscreens[i].x /* offset_x */,
-				  allscreens[i].y /* offset_y */,
-				  (double) allscreens[i].width / width,
-				  (double) allscreens[i].height / height,
+				  gdm_wm_allscreens[i].x,
+				  gdm_wm_allscreens[i].y,
+				  gdm_wm_allscreens[i].width,
+				  gdm_wm_allscreens[i].height,
+				  gdm_wm_allscreens[i].x /* offset_x */,
+				  gdm_wm_allscreens[i].y /* offset_y */,
+				  (double) gdm_wm_allscreens[i].width / width,
+				  (double) gdm_wm_allscreens[i].height / height,
 				  GDK_INTERP_BILINEAR);
 	}
 
@@ -3297,7 +3185,7 @@ main (int argc, char *argv[])
 
     tooltips = gtk_tooltips_new ();
 
-    gdm_screen_init ();
+    gdm_wm_screen_init (GdmXineramaScreen);
 
     gdm_version = g_getenv ("GDM_VERSION");
 
@@ -3321,7 +3209,7 @@ main (int argc, char *argv[])
 	    g_free (msg);
 
 	    gtk_widget_show_all (dialog);
-	    gdm_center_window (GTK_WINDOW (dialog));
+	    gdm_wm_center_window (GTK_WINDOW (dialog));
 	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 	    return EXIT_SUCCESS;
@@ -3349,7 +3237,7 @@ main (int argc, char *argv[])
 	    g_free (msg);
 
 	    gtk_widget_show_all (dialog);
-	    gdm_center_window (GTK_WINDOW (dialog));
+	    gdm_wm_center_window (GTK_WINDOW (dialog));
 	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 	    switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
@@ -3383,7 +3271,7 @@ main (int argc, char *argv[])
 	    g_free (msg);
 
 	    gtk_widget_show_all (dialog);
-	    gdm_center_window (GTK_WINDOW (dialog));
+	    gdm_wm_center_window (GTK_WINDOW (dialog));
 	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	    gtk_widget_show_now (dialog);
 
@@ -3499,7 +3387,7 @@ main (int argc, char *argv[])
 		       "There are two available sessions you can use, but\n"
 		       "you should log in and correct the gdm configuration."));
 	    gtk_widget_show_all (dialog);
-	    gdm_center_window (GTK_WINDOW (dialog));
+	    gdm_wm_center_window (GTK_WINDOW (dialog));
 	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
@@ -3515,7 +3403,7 @@ main (int argc, char *argv[])
 		       "line for the login dialog, and thus I ran the\n"
 		       "default command.  Please fix your configuration."));
 	    gtk_widget_show_all (dialog);
-	    gdm_center_window (GTK_WINDOW (dialog));
+	    gdm_wm_center_window (GTK_WINDOW (dialog));
 	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
@@ -3533,7 +3421,7 @@ main (int argc, char *argv[])
 		       "and create a configuration file with the GDM\n"
 		       "configuration program."));
 	    gtk_widget_show_all (dialog);
-	    gdm_center_window (GTK_WINDOW (dialog));
+	    gdm_wm_center_window (GTK_WINDOW (dialog));
 	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
