@@ -80,6 +80,57 @@ strcasecmp_no_locale (const char *s1, const char *s2)
 		return 0; /* equal */
 }
 
+char **
+gdm_split (const char *s)
+{
+	int argc;
+	char **temp_argv;
+	char **ret;
+	int i;
+
+	if (s == NULL)
+		return NULL;
+
+	if (poptParseArgvString (s, &argc, &temp_argv) != 0) {
+		return g_strsplit (s, " ", -1);
+	}
+
+	ret = g_new (char *, argc+1);
+	for (i = 0; i < argc; i++) {
+		ret[i] = g_strdup (temp_argv[i]);
+	}
+	ret[i] = NULL;
+
+	free (temp_argv);
+
+	return ret;
+}
+
+char *
+gdm_first_word (const char *s)
+{
+	int argc;
+	char **temp_argv;
+	char *ret;
+
+	if (s == NULL)
+		return NULL;
+
+	if (poptParseArgvString (s, &argc, &temp_argv) != 0) {
+		char *p;
+		ret = g_strdup (s);
+		p = strchr (ret, ' ');
+		if (p != NULL)
+			*p = '\0';
+		return ret;
+	}
+
+	ret = g_strdup (temp_argv[0]);
+
+	free (temp_argv);
+
+	return ret;
+}
 
 
 /* EOF */

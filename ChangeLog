@@ -1,3 +1,17 @@
+Fri Jul 06 01:55:27 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: Correct checks for chooser greeter binaries, and
+	  fix Suspend feature
+
+	* daemon/gdm.[ch], daemon/misc.[ch], gui/misc.[ch], daemon/server.c,
+	  daemon/slave.c, gui/gdmconfig.c, gui/gdmlogin.c: Use popt for
+	  splitting argv's, this makes things understand quotes which are
+	  apparently already used in places (eek).  This underlines the need
+	  for the vicious-extentions-module, I just cut and paste too much
+	  code.  Watch for this new cvs module soon.
+
+	* daemon/slave.c: fix code for sessions with spaces in them
+
 Thu Jul 05 23:45:45 2001  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c: open 0,1,2 with correct rw flag

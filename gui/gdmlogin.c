@@ -655,7 +655,7 @@ gdm_run_command (const char *command)
 		open("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
-		argv = g_strsplit (command, " ", MAX_ARGS);	
+		argv = gdm_split (command);
 		execv (argv[0], argv);
 		/*ingore errors, this is irrelevant */
 		_exit (0);
@@ -2434,7 +2434,7 @@ bin_exists (const char *command)
 		return FALSE;
 
 	/* Note, check only for existance, not for executability */
-	argv = g_strsplit (command, " ", MAX_ARGS);	
+	argv = gdm_split (command);
 	if (argv != NULL &&
 	    argv[0] != NULL &&
 	    access (argv[0], F_OK) == 0) {

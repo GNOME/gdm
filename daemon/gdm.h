@@ -94,7 +94,6 @@
 #define GDM_INTERRUPT_CONFIGURE   'C'
 
 /* The dreaded miscellaneous category */
-#define MAX_ARGS 32
 #define FIELD_SIZE 256
 #define PIPE_SIZE 4096
 

@@ -59,7 +59,6 @@ static void gdm_restart_now (void);
 GSList *displays;		/* List of displays managed */
 gint sessions = 0;		/* Number of remote sessions */
 sigset_t sysmask;		/* Inherited system signal mask */
-gchar *argdelim = " ";		/* argv argument delimiter */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
 int fifofd = -1;		/* fifo fd for the slave communication fifo */
@@ -157,7 +156,7 @@ gdm_config_parse (void)
     struct passwd *pwent;
     struct group *grent;
     struct stat statbuf;
-    gchar *gtemp, *stemp;
+    gchar *bin;
     
     displays = NULL;
 
@@ -365,31 +364,26 @@ gdm_config_parse (void)
 
 
     /* Check that the greeter can be executed */
-    gtemp = g_strdup (GdmGreeter);
-    stemp = strchr (gtemp, ' ');
+    bin = gdm_first_word (GdmGreeter);
 
-    if (stemp) {
-	*stemp = '\0';
-
-	if (access (gtemp, X_OK))
+    if ( ! gdm_string_empty (bin) &&
+	access (bin, X_OK) != 0) {
 	    gdm_error (_("%s: Greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
     }
 
-    g_free (gtemp);
+    g_free (bin);
 
 
     /* Check that chooser can be executed */
-    gtemp = g_strdup (GdmChooser);
-    stemp = strchr (gtemp, ' ');
+    bin = gdm_first_word (GdmChooser);
 
-    if (GdmIndirect && stemp) {
-	*stemp = '\0';
-
-	if (access (gtemp, X_OK))
+    if (GdmIndirect &&
+	! gdm_string_empty (bin) &&
+	access (bin, X_OK) != 0) {
 	    gdm_error (_("%s: Chooser not found or it can't be executed by the gdm user"), "gdm_config_parse");
     }
     
-    g_free (gtemp);
+    g_free (bin);
 
 
     /* Enter paranoia mode */
@@ -513,12 +507,10 @@ deal_with_x_crashes (GdmDisplay *d)
 
     if ( ! d->failsafe_xserver &&
 	 ! gdm_string_empty (GdmFailsafeXServer)) {
-	    char *bin = g_strdup (GdmFailsafeXServer);
-	    char *p = strchr (bin, argdelim[0]);
-	    if (p != NULL)
-		    *p = '\0';
+	    char *bin = gdm_first_word (GdmFailsafeXServer);
 	    /* Yay we have a failsafe */
-	    if (access (bin, X_OK) == 0) {
+	    if ( ! gdm_string_empty (bin) &&
+		access (bin, X_OK) == 0) {
 		    gdm_info (_("deal_with_x_crashes: Trying failsafe X "
 				"server %s"), GdmFailsafeXServer);
 		    g_free (bin);
@@ -540,8 +532,7 @@ deal_with_x_crashes (GdmDisplay *d)
 	    char **configurators;
 	    int i;
 
-	    configurators = g_strsplit (GdmXKeepsCrashingConfigurators,
-					argdelim, MAX_ARGS);	
+	    configurators = gdm_split (GdmXKeepsCrashingConfigurators);
 	    for (i = 0; configurators[i] != NULL; i++) {
 		    if (access (configurators[i], X_OK) == 0)
 			    break;
@@ -673,7 +664,7 @@ bin_executable (const char *command)
 	if (gdm_string_empty (command))
 		return FALSE;
 
-	argv = g_strsplit (command, argdelim, MAX_ARGS);	
+	argv = gdm_split (command);
 	if (argv != NULL &&
 	    argv[0] != NULL &&
 	    access (argv[0], X_OK) == 0) {
@@ -814,7 +805,7 @@ gdm_cleanup_children (void)
 
 	final_cleanup ();
 
-	argv = g_strsplit (GdmReboot, argdelim, MAX_ARGS);	
+	argv = gdm_split (GdmReboot);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Reboot failed: %s"), strerror (errno));
@@ -825,7 +816,7 @@ gdm_cleanup_children (void)
 
 	final_cleanup ();
 
-	argv = g_strsplit (GdmHalt, argdelim, MAX_ARGS);	
+	argv = gdm_split (GdmHalt);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
@@ -836,7 +827,7 @@ gdm_cleanup_children (void)
 
 	final_cleanup ();
 
-	argv = g_strsplit (GdmReboot, argdelim, MAX_ARGS);	
+	argv = gdm_split (GdmSuspend);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_child_action: Suspend failed: %s"), strerror (errno));

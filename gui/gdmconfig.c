@@ -165,24 +165,15 @@ gdm_event (GtkObject *object,
 static void
 check_binary (GtkEntry *entry)
 {
-	char *p;
-	char *text = g_strdup (gtk_entry_get_text (entry));
+	char *bin = gdm_first_word (gtk_entry_get_text (entry));
 
-	/* paranoia */
-	if (text == NULL)
-		return;
-
-	p = strchr (text, ' ');
-	if (p != NULL)
-		*p = '\0';
-
-	if ( ! gdm_string_empty (text) &&
-	    access (text, X_OK) == 0)
+	if ( ! gdm_string_empty (bin) &&
+	    access (bin, X_OK) == 0)
 		entry_set_red (GTK_WIDGET (entry), FALSE);
 	else
 		entry_set_red (GTK_WIDGET (entry), TRUE);
 
-	g_free (text);
+	g_free (bin);
 }
 
 static void

@@ -50,7 +50,6 @@ static void gdm_server_alarm_handler (gint);
 static void gdm_server_child_handler (gint);
 
 /* Configuration options */
-extern gchar *argdelim;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmServAuthDir;
 extern gchar *GdmLogDir;
@@ -443,7 +442,7 @@ gdm_server_spawn (GdmDisplay *d)
 	sigaddset (&mask, SIGTERM);
 	sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
-	argv = g_strsplit (d->command, argdelim, MAX_ARGS);
+	argv = gdm_split (d->command);
 	for (len = 0; argv != NULL && argv[len] != NULL; len++)
 		;
 

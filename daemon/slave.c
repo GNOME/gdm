@@ -108,7 +108,6 @@ extern gint GdmPingInterval;
 extern gint GdmRetryDelay;
 extern gboolean GdmAllowRoot;
 extern sigset_t sysmask;
-extern gchar *argdelim;
 extern gchar *GdmGlobalFaceDir;
 extern gboolean GdmBrowser;
 
@@ -595,7 +594,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		/* exec the configurator */
-		argv = g_strsplit (GdmConfigurator, " ", MAX_ARGS);
+		argv = gdm_split (GdmConfigurator);
 		if (argv != NULL &&
 		    argv[0] != NULL &&
 		    access (argv[0], X_OK) == 0)
@@ -609,10 +608,9 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 				 "I will attempt to start it from the\n"
 				 "default location."));
 
-		argv = g_strsplit
+		argv = gdm_split
 			(EXPANDED_GDMCONFIGDIR
-			 "/gdmconfig --disable-sound --disable-crash-dialog",
-			 " ", MAX_ARGS);
+			 "/gdmconfig --disable-sound --disable-crash-dialog");
 		if (access (argv[0], X_OK) == 0)
 			execv (argv[0], argv);
 
@@ -1080,7 +1078,7 @@ gdm_slave_greeter (void)
 				 "configure the X server."));
 	}
 
-	argv = g_strsplit (GdmGreeter, argdelim, MAX_ARGS);
+	argv = gdm_split (GdmGreeter);
 	execv (argv[0], argv);
 
 	gdm_error (_("gdm_slave_greeter: Cannot start greeter trying default: %s"),
@@ -1089,9 +1087,8 @@ gdm_slave_greeter (void)
 
 	gdm_setenv ("GDM_WHACKED_GREETER_CONFIG", "true");
 
-	argv = g_strsplit (EXPANDED_BINDIR
-			   "/gdmlogin --disable-sound --disable-crash-dialog",
-			   argdelim, MAX_ARGS);
+	argv = gdm_split (EXPANDED_BINDIR
+			  "/gdmlogin --disable-sound --disable-crash-dialog");
 	execv (argv[0], argv);
 
 	gdm_error_box (d,
@@ -1323,7 +1320,7 @@ gdm_slave_chooser (void)
 		gdm_setenv ("PATH", GdmDefaultPath);
 		gdm_setenv ("RUNNING_UNDER_GDM", "true");
 
-		argv = g_strsplit (GdmChooser, argdelim, MAX_ARGS);
+		argv = gdm_split (GdmChooser);
 		execv (argv[0], argv);
 
 		gdm_error_box (d,
@@ -1616,6 +1613,27 @@ unaliaslang (const char *origlang)
 
 	return g_strdup (origlang);
 
+}
+
+static char *
+dequote (const char *in)
+{
+	GString *str;
+	char *out;
+	const char *p;
+
+	str = g_string_new (NULL);
+
+	for (p = in; *p != '\0'; p++) {
+		if (*p == '\'')
+			g_string_append (str, "'\\''");
+		else
+			g_string_append_c (str, *p);
+	}
+
+	out = str->str;
+	g_string_free (str, FALSE);
+	return out;
 }
 
 static void
@@ -1985,10 +2003,15 @@ gdm_slave_session_start (void)
 	} 
 
 	if (sesspath == NULL) {
-		if (GdmSessDir != NULL)
-			sesspath = g_strconcat (GdmSessDir, "/", session, NULL);
-		else
-			sesspath = g_strdup ("/Eeeeek! Eeeeek!");
+		if (GdmSessDir != NULL) {
+			sesspath = g_strconcat
+				("'", GdmSessDir, "/",
+				 dequote (session), "'", NULL);
+			sessexec = g_strconcat (GdmSessDir, "/",
+						session, NULL);
+		} else {
+			sesspath = g_strdup ("'/Eeeeek! Eeeeek!'");
+		}
 	}
 	
 	gdm_debug (_("Running %s for %s on %s"),
@@ -2438,7 +2461,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         gdm_setenv ("DISPLAY", d->name);
 	gdm_setenv ("PATH", GdmRootPath);
 	gdm_unsetenv ("MAIL");
-	argv = g_strsplit (scr, argdelim, MAX_ARGS);
+	argv = gdm_split (scr);
 	execv (argv[0], argv);
 	syslog (LOG_ERR, _("gdm_slave_exec_script: Failed starting: %s"), scr);
 	_exit (EXIT_SUCCESS);
@@ -2583,7 +2606,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	  gdm_setenv ("PATH", GdmRootPath);
 	  gdm_unsetenv ("MAIL");
 
-	  argv = g_strsplit (str->str, argdelim, MAX_ARGS);
+	  argv = gdm_split (str->str);
 	  execv (argv[0], argv);
 	  syslog (LOG_ERR, _("gdm_parse_enriched_login: Failed executing: %s"),
 		  str->str);

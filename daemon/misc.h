@@ -47,6 +47,9 @@ void gdm_clearenv_no_lang (void);
 
 int gdm_strcasecmp_no_locale (const char *s1, const char *s2);
 
+char ** gdm_split (const char *s);
+char * gdm_first_word (const char *s);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */
