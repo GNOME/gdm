@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.gnome-2-10.hu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-28 12:22+0200\n"
+"POT-Creation-Date: 2005-03-29 04:22+0200\n"
 "PO-Revision-Date: 2005-03-28 19:49+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
@@ -138,13 +138,13 @@ msgstr "Ez a környezet a GNOME-ba jelentkezteti be"
 #: daemon/auth.c:66
 #, c-format
 msgid "%s: Could not write new authorization entry: %s"
-msgstr "%s: Nem lehet kiírni az új engedélyezőbejegyzést: %s"
+msgstr "%s: Nem lehet kiírni az új hitelesítési bejegyzést: %s"
 
 #: daemon/auth.c:69
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
 msgstr ""
-"%s: Nem lehet kiírni az új engedélyezőbejegyzést. Valószínűleg betelt a "
+"%s: Nem lehet kiírni az új hitelesítési bejegyzést. Valószínűleg betelt a "
 "lemez."
 
 #: daemon/auth.c:74
@@ -153,13 +153,13 @@ msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
 "diskspace.%s%s"
 msgstr ""
-"A GDM nem tudta kiírni az új engedélyezőbejegyzést. Valószínűleg betelt a "
+"A GDM nem tudta kiírni az új hitelesítési bejegyzést a lemezre. Valószínűleg betelt a "
 "lemez. %s%s"
 
 #: daemon/auth.c:204
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
-msgstr "%s: Nem lehet létrehozni az új %s süti fájlt"
+msgstr "%s: Nem lehet létrehozni új süti fájlt itt: %s"
 
 #: daemon/auth.c:228 daemon/auth.c:245 daemon/auth.c:879
 #, c-format
@@ -285,7 +285,8 @@ msgstr "%s: A(z) %s írható a csoport/mások számára."
 #: daemon/filecheck.c:139 daemon/filecheck.c:192
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
-msgstr "%s: A(z) %s nagyobb, mint a rendszergazda által megadott maximális fájlméret."
+msgstr ""
+"%s: A(z) %s nagyobb, mint a rendszergazda által megadott maximális fájlméret."
 
 #: daemon/gdm-net.c:271
 #, c-format
@@ -339,7 +340,8 @@ msgstr "%s: A(z) %s authdir nem könyvtár. A művelet megszakítva."
 
 #: daemon/gdm.c:300
 #, c-format
-msgid "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
+msgid ""
+"%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
 "%s: A(z) %s Logdir nem létezik, vagy nem könyvtár. A(z) %s ServAuthDir "
 "használata."
@@ -362,7 +364,8 @@ msgstr "%s: A szabvány X-kiszolgáló nem található, másikat próbálok"
 #: daemon/gdm.c:456
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
-msgstr "%s: Az XDMCP engedélyezve van, holott nincs XDMCP támogatás, kikapcsolom"
+msgstr ""
+"%s: Az XDMCP engedélyezve van, holott nincs XDMCP támogatás, kikapcsolom"
 
 #: daemon/gdm.c:469
 #, c-format
@@ -499,17 +502,20 @@ msgstr "%s: A gdm csoportja nem lehet root. A művelet megszakítva!"
 #: daemon/gdm.c:724
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
-msgstr "%s: Nem található az üdvözlő vagy a gdm felhasználó nem futtathatja azt"
+msgstr ""
+"%s: Nem található az üdvözlő vagy a gdm felhasználó nem futtathatja azt"
 
 #: daemon/gdm.c:731
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the gdm user"
-msgstr "%s: Nem található a távoli üdvözlő vagy a gdm felhasználó nem futtathatja azt"
+msgstr ""
+"%s: Nem található a távoli üdvözlő vagy a gdm felhasználó nem futtathatja azt"
 
 #: daemon/gdm.c:742
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
-msgstr "%s: Nem található a kiválasztó vagy a gdm felhasználó nem futtathatja azt"
+msgstr ""
+"%s: Nem található a kiválasztó vagy a gdm felhasználó nem futtathatja azt"
 
 #: daemon/gdm.c:751
 msgid "No daemon/ServAuthDir specified in the configuration file"
@@ -652,7 +658,8 @@ msgstr "%s: Az újraindítás sikertelen: %s"
 #: daemon/gdm.c:1429
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
-msgstr "Újraindítás vagy Leállítás kérés a(z) %s képernyőről, de nincs rendszer menü"
+msgstr ""
+"Újraindítás vagy Leállítás kérés a(z) %s képernyőről, de nincs rendszer menü"
 
 #: daemon/gdm.c:1438
 #, c-format
@@ -745,7 +752,7 @@ msgstr "%s: Hiba a CHLD jelzés kezelőjének beállításakor"
 #: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
 #, c-format
 msgid "%s request denied: Not authenticated"
-msgstr "%s kérelem megtagadva: Nincs azonosítva"
+msgstr "%s kérelem megtagadva: Nincs hitelesítve"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -854,7 +861,8 @@ msgstr "Érvénytelen kiszolgálóparancs '%s'"
 #: daemon/server.c:935
 #, c-format
 msgid "Server name '%s' not found, using standard server"
-msgstr "A(z) '%s' nevű kiszolgáló nem található, a szabványos kiszolgáló használata"
+msgstr ""
+"A(z) '%s' nevű kiszolgáló nem található, a szabványos kiszolgáló használata"
 
 #: daemon/server.c:1112
 #, c-format
@@ -1128,7 +1136,8 @@ msgstr "Rendszer alapértelmezése"
 #: daemon/slave.c:3528
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
-msgstr "%s: Nem lehet beállítani a környezetet %s részére. A művelet megszakítva."
+msgstr ""
+"%s: Nem lehet beállítani a környezetet %s részére. A művelet megszakítva."
 
 #: daemon/slave.c:3575
 #, c-format
@@ -1138,12 +1147,14 @@ msgstr "%s: setusercontext() %s számára sikertelen. A művelet megszakítva."
 #: daemon/slave.c:3581
 #, c-format
 msgid "%s: Could not become %s. Aborting."
-msgstr "%s: Nem lehet beállítani a környezetet %s számára. A művelet megszakítva."
+msgstr ""
+"%s: Nem lehet beállítani a környezetet %s számára. A művelet megszakítva."
 
 #: daemon/slave.c:3644
 #, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
-msgstr "%s: Nincs Exec sor a(z) %s munkamenetfájlban, csökkentett GNOME indítása"
+msgstr ""
+"%s: Nincs Exec sor a(z) %s munkamenetfájlban, csökkentett GNOME indítása"
 
 #: daemon/slave.c:3650
 msgid ""
@@ -1155,7 +1166,8 @@ msgstr ""
 
 #: daemon/slave.c:3664
 #, c-format
-msgid "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
+msgid ""
+"%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
 msgstr ""
 "%s: Nem található vagy nem futtatható az alap Xsession parancsfájl, ezért a "
 "csökkentett módú GNOME-mal próbálkozom"
@@ -1275,7 +1287,7 @@ msgid ""
 "writing.  In any case, it is not possible to log in.  Please contact your "
 "system administrator"
 msgstr ""
-"A GDM nem tudott írni az engedélyezőfájlba. Ez jelentheti azt, hogy megtelt "
+"A GDM nem tudott írni a hitelesítési fájlba. Ez jelentheti azt, hogy megtelt "
 "a lemez, vagy hogy a saját könyvtárát nem lehet írásra megnyitni. Bármi "
 "történt is, nem tud bejelentkezni. Lépjen kapcsolatba a rendszergazdával."
 
@@ -1379,7 +1391,7 @@ msgstr "Jelszó:"
 #: daemon/verify-shadow.c:202 daemon/verify-shadow.c:216
 #, c-format
 msgid "Couldn't authenticate user \"%s\""
-msgstr "Nem lehet azonosítani a(z) \"%s\" felhasználót"
+msgstr "Nem lehet hitelesíteni a(z) \"%s\" felhasználót"
 
 #: daemon/verify-crypt.c:211 daemon/verify-pam.c:883
 #: daemon/verify-shadow.c:229
@@ -1494,7 +1506,8 @@ msgstr "Azonnal meg kell változtatnia a jelszavát (a rendszergazda kérése)"
 
 #: daemon/verify-pam.c:348
 msgid "Your account has expired; please contact your system administrator"
-msgstr "Az Ön felhasználói fiókja lejárt; lépjen kapcsolatba a rendszergazdával."
+msgstr ""
+"Az Ön felhasználói fiókja lejárt; lépjen kapcsolatba a rendszergazdával."
 
 #: daemon/verify-pam.c:349
 msgid "No password supplied"
@@ -1567,7 +1580,7 @@ msgstr "Nem lehet beállítani a PAM_RHOST=%s változót"
 #: daemon/verify-pam.c:840 daemon/verify-pam.c:858 daemon/verify-pam.c:1152
 #: daemon/verify-pam.c:1164
 msgid "Couldn't authenticate user"
-msgstr "Nem lehet azonosítani a felhasználót"
+msgstr "Nem lehet hitelesíteni a felhasználót"
 
 #: daemon/verify-pam.c:886
 msgid ""
@@ -1632,11 +1645,11 @@ msgid ""
 "Authentication failed.  Letters must be typed in the correct case."
 msgstr ""
 "\n"
-"Sikertelen azonosítás. A karaktereket kis/nagybetű helyesen adja meg."
+"Sikertelen hitelesítés. A karaktereket kis/nagybetű helyesen adja meg."
 
 #: daemon/verify-pam.c:1052 daemon/verify-pam.c:1155 daemon/verify-pam.c:1167
 msgid "Authentication failed"
-msgstr "Azonosítás sikertelen"
+msgstr "Hitelesítés sikertelen"
 
 #: daemon/verify-pam.c:1121
 msgid "Automatic login"
@@ -1850,7 +1863,8 @@ msgstr "Az indirekt XDMCP nem engedélyezett"
 msgid ""
 "Please ask your system administrator to enable it in the GDM configurator "
 "program."
-msgstr "Kérje meg a rendszergazdát, hogy kapcsolja be a GDM beállítóprogramjában."
+msgstr ""
+"Kérje meg a rendszergazdát, hogy kapcsolja be a GDM beállítóprogramjában."
 
 #. markup
 #: gui/gdmXnestchooser.c:570
@@ -2078,7 +2092,8 @@ msgstr "Valószínűleg egy régebbi GDM verzió fut."
 
 #: gui/gdmcomm.c:453 gui/gdmcomm.c:456
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
-msgstr "Nem sikerült kommunikálni a gdm-mel, valószínűleg egy régebbi verzió fut."
+msgstr ""
+"Nem sikerült kommunikálni a gdm-mel, valószínűleg egy régebbi verzió fut."
 
 #: gui/gdmcomm.c:459
 msgid "The allowed limit of flexible X servers reached."
@@ -2090,7 +2105,8 @@ msgstr "Hiba történt az X-kiszolgáló indítása közben."
 
 #: gui/gdmcomm.c:463
 msgid "The X server failed.  Perhaps it is not configured well."
-msgstr "Az X-kiszolgáló nem indult el. Talán rosszul van (vagy nincs) konfigurálva."
+msgstr ""
+"Az X-kiszolgáló nem indult el. Talán rosszul van (vagy nincs) konfigurálva."
 
 #: gui/gdmcomm.c:466
 msgid "Too many X sessions running."
@@ -2102,7 +2118,7 @@ msgid ""
 "may be missing an X authorization file."
 msgstr ""
 "A beültetett X-kiszolgáló (Xnest) nem tud kapcsolódni az Ön jelenlegi X "
-"kiszolgálójához. Talán hiányzik az X engedélyezőfájl."
+"kiszolgálójához. Talán hiányzik az X hitelesítési fájl."
 
 #: gui/gdmcomm.c:473
 msgid ""
@@ -2114,8 +2130,10 @@ msgstr ""
 "Telepítse az Xnest csomagot, hogy a beültetett bejelentkezést használhassa."
 
 #: gui/gdmcomm.c:478
-msgid "The X server is not available, it is likely that gdm is badly configured."
-msgstr "Az X-kiszolgáló nem érhető el. Valószínűleg rosszul van beállítva a gdm."
+msgid ""
+"The X server is not available, it is likely that gdm is badly configured."
+msgstr ""
+"Az X-kiszolgáló nem érhető el. Valószínűleg rosszul van beállítva a gdm."
 
 #: gui/gdmcomm.c:482
 msgid ""
@@ -2131,7 +2149,8 @@ msgstr "A virtuális terminálok nem támogatottak."
 
 #: gui/gdmcomm.c:487
 msgid "Trying to change to an invalid virtual terminal number."
-msgstr "Próbálkozás egy nem létező számú virtuális terminálra való átkapcsolásra."
+msgstr ""
+"Próbálkozás egy nem létező számú virtuális terminálra való átkapcsolásra."
 
 #: gui/gdmcomm.c:489
 msgid "Trying to update an unsupported configuration key."
@@ -2951,7 +2970,8 @@ msgstr "%s nyelv kiválasztva"
 
 #: gui/gdmlogin.c:1495
 msgid "Log in using the language that you have used last time you logged in"
-msgstr "Bejelentkezés a legutóbbi bejelentkezésnél használt nyelv használatával"
+msgstr ""
+"Bejelentkezés a legutóbbi bejelentkezésnél használt nyelv használatával"
 
 #: gui/gdmlogin.c:1499
 msgid "_System Default"
@@ -3027,7 +3047,8 @@ msgstr "Bejelentkezés-kezelő _beállítása..."
 
 #: gui/gdmlogin.c:2776 gui/greeter/greeter_system.c:156
 #: gui/greeter/greeter_system.c:351
-msgid "Configure GDM (this login manager). This will require the root password."
+msgid ""
+"Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "A GDM (a most látható bejelentkezés-kezelő) beállítása. Ehhez a root "
 "jelszava szükséges."
@@ -3224,7 +3245,8 @@ msgstr ""
 "Hiba: %s"
 
 #: gui/gdmphotosetup.desktop.in.h:1
-msgid "Change the picture that will show in the GDM (login manager) face browser"
+msgid ""
+"Change the picture that will show in the GDM (login manager) face browser"
 msgstr ""
 "A GDM (bejelentkezés-kezelő) arcképböngészőjében látható arckép "
 "megváltoztatása"
@@ -3327,7 +3349,8 @@ msgstr "_Várakozás a bejelentkezés előtt (mp):"
 
 #: gui/gdmsetup-strings.c:33 gui/gdmsetup.glade.h:27
 msgid "Login a user automa_tically after a specified number of seconds"
-msgstr "Előre meghatározott felhasználó bejelentkez_tetése adott idő letelte után"
+msgstr ""
+"Előre meghatározott felhasználó bejelentkez_tetése adott idő letelte után"
 
 #: gui/gdmsetup-strings.c:34 gui/gdmsetup.glade.h:20
 msgid "General"
@@ -3567,7 +3590,8 @@ msgstr ""
 
 #. markup
 #: gui/gdmsetup.c:487
-msgid "Autologin or timed login to the superuser (root) account is not allowed."
+msgid ""
+"Autologin or timed login to the superuser (root) account is not allowed."
 msgstr ""
 "Az automatikus vagy időzített bejelentkezés rendszergazdaként (root-ként) "
 "nem engedélyezett."
@@ -3611,7 +3635,8 @@ msgstr "Részletek: %s"
 #. * option to change the dir name
 #: gui/gdmsetup.c:1973
 #, c-format
-msgid "Theme directory '%s' seems to be already installed, install again anyway?"
+msgid ""
+"Theme directory '%s' seems to be already installed, install again anyway?"
 msgstr "A(z) '%s' témakönyvtár már telepítve van. Mégis újratelepíti?"
 
 #. markup
@@ -3705,7 +3730,8 @@ msgstr "A grafikus üdvözlő témája sérült"
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
-msgstr "A téma nem tartalmaz definíciót a felhasználónév/jelszó beviteli elemhez."
+msgstr ""
+"A téma nem tartalmaz definíciót a felhasználónév/jelszó beviteli elemhez."
 
 #. markup
 #: gui/greeter/greeter.c:1273
@@ -3888,7 +3914,7 @@ msgstr "A gdmaskpass csak root-ként fut\n"
 #: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
 #, c-format
 msgid "Authentication failure!\n"
-msgstr "Azonosítási hiba!\n"
+msgstr "Hitelesítési hiba!\n"
 
 #: vicious-extensions/glade-helper.c:84
 msgid "(memory buffer)"
@@ -3980,4 +4006,3 @@ msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr ""
 "Túl sok eleme van a helyi beállításokhoz tartozó álnévláncolatnak, ez "
 "hurokra utalhat"
-
