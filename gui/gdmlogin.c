@@ -42,6 +42,7 @@
 #endif
 #include "gdmlogin.h"
 #include "gdm.h"
+#include "gdmwm.h"
 #include "misc.h"
 
 static const gchar RCSid[]="$Id$";
@@ -110,11 +111,11 @@ static gboolean require_quarter = FALSE;
 static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
-static GdkWindow *rootwin;
-static GdkRectangle screen;
 static GdkRectangle *allscreens;
 static int screens = 0;
 static GtkTooltips *tooltips;
+
+GdkRectangle screen; /* this is an extern since it's used in gdmwm as well */
 
 static GnomeIconList *browser;
 static GdkImlibImage *defface;
@@ -145,191 +146,9 @@ static guint timed_handler_id = 0;
 
 static GHashTable *back_locales = NULL;
 
-typedef struct _GdmWindow GdmWindow;
-struct _GdmWindow {
-	Window win;
-	Window deco;
-	GdkWindow *gdk_win;
-	GdkWindow *gdk_deco;
-};
-
-static GList *windows = NULL;
-static gboolean focus_new_windows = FALSE;
-static gboolean no_focus_login = FALSE;
-
 /* This is true if session dir doesn't exist or is whacked out
  * in some way or another */
 static gboolean session_dir_whacked_out = FALSE;
-
-static gulong XA_WM_NORMAL_HINTS = 0;
-static gulong XA_WM_PROTOCOLS = 0;
-static gulong XA_WM_TAKE_FOCUS = 0;
-static gulong XA_COMPOUND_TEXT = 0;
-
-/* stolen from gwmh */
-static gpointer
-get_typed_property_data (Display *xdisplay,
-			 Window   xwindow,
-			 Atom     property,
-			 Atom     requested_type,
-			 gint    *size_p,
-			 guint    expected_format)
-{
-  static const guint prop_buffer_lengh = 1024 * 1024;
-  unsigned char *prop_data = NULL;
-  Atom type_returned = 0;
-  unsigned long nitems_return = 0, bytes_after_return = 0;
-  int format_returned = 0;
-  gpointer data = NULL;
-  gboolean abort = FALSE;
-
-  g_return_val_if_fail (size_p != NULL, NULL);
-  *size_p = 0;
-
-  gdk_error_trap_push ();
-
-  abort = XGetWindowProperty (xdisplay,
-			      xwindow,
-			      property,
-			      0, prop_buffer_lengh,
-			      False,
-			      requested_type,
-			      &type_returned, &format_returned,
-			      &nitems_return,
-			      &bytes_after_return,
-			      &prop_data) != Success;
-  if (gdk_error_trap_pop () ||
-      type_returned == None)
-    abort++;
-  if (!abort &&
-      requested_type != AnyPropertyType &&
-      requested_type != type_returned)
-    {
-      /* aparently this can happen for some properties of broken apps, be silent */
-      abort++;
-    }
-  if (!abort && bytes_after_return)
-    {
-      g_warning (G_GNUC_PRETTY_FUNCTION "(): Eeek, property has more than %u bytes, stored on harddisk?",
-		 prop_buffer_lengh);
-      abort++;
-    }
-  if (!abort && expected_format && expected_format != format_returned)
-    {
-      g_warning (G_GNUC_PRETTY_FUNCTION "(): Expected format (%u) unmatched (%d), programmer was drunk?",
-		 expected_format, format_returned);
-      abort++;
-    }
-  if (!abort && prop_data && nitems_return && format_returned)
-    {
-      switch (format_returned)
-	{
-	case 32:
-	  *size_p = nitems_return * 4;
-	  if (sizeof (gulong) == 8)
-	    {
-	      guint32 i, *mem = g_malloc0 (*size_p + 1);
-	      gulong *prop_longs = (gulong*) prop_data;
-
-	      for (i = 0; i < *size_p / 4; i++)
-		mem[i] = prop_longs[i];
-	      data = mem;
-	    }
-	  break;
-	case 16:
-	  *size_p = nitems_return * 2;
-	  break;
-	case 8:
-	  *size_p = nitems_return;
-	  break;
-	default:
-	  g_warning ("Unknown property data format with %d bits (extraterrestrial?)",
-		     format_returned);
-	  break;
-	}
-      if (!data && *size_p)
-	{
-	  guint8 *mem = NULL;
-
-	  if (format_returned == 8 && type_returned == XA_COMPOUND_TEXT)
-	    {
-	      gchar **tlist = NULL;
-	      gint count = gdk_text_property_to_text_list (type_returned, 8, prop_data,
-							   nitems_return, &tlist);
-
-	      if (count && tlist && tlist[0])
-		{
-		  mem = (guint8 *)g_strdup (tlist[0]);
-		  *size_p = strlen ((char *)mem);
-		}
-	      if (tlist)
-		gdk_free_text_list (tlist);
-	    }
-	  if (!mem)
-	    {
-	      mem = g_malloc (*size_p + 1);
-	      memcpy (mem, prop_data, *size_p);
-	      mem[*size_p] = 0;
-	    }
-	  data = mem;
-	}
-    }
-
-  if (prop_data)
-    XFree (prop_data);
-  
-  return data;
-}
-
-/* stolen from gwmh */
-static gboolean
-wm_protocol_check_support (Window xwin,
-			   Atom   check_atom)
-{
-  Atom *pdata = NULL;
-  guint32 *gdata = NULL;
-  int n_pids = 0;
-  gboolean is_supported = FALSE;
-  guint i, n_gids = 0;
-
-  gdk_error_trap_push ();
-
-  if (!XGetWMProtocols (GDK_DISPLAY (),
-			xwin,
-			&pdata,
-			&n_pids))
-    {
-      gint size = 0;
-
-      gdata = get_typed_property_data (GDK_DISPLAY (),
-				       xwin,
-				       XA_WM_PROTOCOLS,
-				       XA_WM_PROTOCOLS,
-				       &size, 32);
-      n_gids = size / 4;
-    }
-
-  gdk_error_trap_pop ();
-
-  for (i = 0; i < n_pids; i++)
-    if (pdata[i] == check_atom)
-      {
-	is_supported = TRUE;
-	break;
-      }
-  if (pdata)
-    XFree (pdata);
-  if (!is_supported)
-    for (i = 0; i < n_gids; i++)
-      if (gdata[i] == check_atom)
-        {
-	  is_supported = TRUE;
-	  break;
-        }
-  g_free (gdata);
-
-  return is_supported;
-}
 
 /*
  * Timed Login: Timer
@@ -560,7 +379,7 @@ gdm_login_icon_motion (GtkWidget *widget, GdkEventMotion *event)
 	if (p == NULL)
 		return FALSE;
 
-	gdk_window_get_pointer (rootwin, &xp, &yp, &mask);
+	gdk_window_get_pointer (GDK_ROOT_PARENT (), &xp, &yp, &mask);
 
 	set_screen_to_pos (xp, yp);
 
@@ -789,7 +608,7 @@ gdm_login_query (const gchar *msg)
 		gtk_widget_destroy (req);
 
 	/* we should be now fine for focusing new windows */
-	focus_new_windows = TRUE;
+	gdm_wm_focus_new_windows (TRUE);
 
 	req = gnome_message_box_new (msg,
 				     GNOME_MESSAGE_BOX_QUESTION,
@@ -803,9 +622,9 @@ gdm_login_query (const gchar *msg)
 	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
 	gdm_center_window (GTK_WINDOW (req));
 
-	no_focus_login = TRUE;
+	gdm_wm_no_login_focus_push ();
 	ret = gnome_dialog_run (GNOME_DIALOG (req));
-	no_focus_login = FALSE;
+	gdm_wm_no_login_focus_pop ();
 
 	if (ret == 0)
 		return TRUE;
@@ -854,7 +673,7 @@ static void
 gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 {
 	/* we should be now fine for focusing new windows */
-	focus_new_windows = TRUE;
+	gdm_wm_focus_new_windows (TRUE);
 
 	/* configure interruption */
 	login_entry = FALSE; /* no matter where we are,
@@ -1710,7 +1529,7 @@ get_gnome_session (const char *sess_string)
 		selected = "Default";
 
 	/* we should be now fine for focusing new windows */
-	focus_new_windows = TRUE;
+	gdm_wm_focus_new_windows (TRUE);
 
 	d = gnome_dialog_new (_("Select GNOME session"),
 			      GNOME_STOCK_BUTTON_OK,
@@ -1820,9 +1639,9 @@ get_gnome_session (const char *sess_string)
 	gtk_widget_show_all (d);
 
 	gdm_center_window (GTK_WINDOW (d));
-	no_focus_login = TRUE;
+	gdm_wm_no_login_focus_push ();
 	gnome_dialog_run (GNOME_DIALOG (d));
-	no_focus_login = FALSE;
+	gdm_wm_no_login_focus_pop ();
 
 	/* we've set the just_hide to TRUE, so we can still access the
 	 * window */
@@ -2069,7 +1888,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		GtkWidget *d;
 
 		/* we should be now fine for focusing new windows */
-		focus_new_windows = TRUE;
+		gdm_wm_focus_new_windows (TRUE);
 
 		/* translators:  This is a nice and evil eggie text, translate
 		 * to your favourite currency */
@@ -2081,9 +1900,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		gtk_window_set_modal (GTK_WINDOW (d), TRUE);
 		gdm_center_window (GTK_WINDOW (d));
 
-		no_focus_login = TRUE;
+		gdm_wm_no_login_focus_push ();
 		gnome_dialog_run (GNOME_DIALOG (d));
-		no_focus_login = FALSE;
+		gdm_wm_no_login_focus_pop ();
 	}
 
 	kill_thingies ();
@@ -2331,7 +2150,7 @@ gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
     if (p == NULL)
 	    return FALSE;
 
-    gdk_window_get_pointer (rootwin, &xp, &yp, &mask);
+    gdk_window_get_pointer (GDK_ROOT_PARENT (), &xp, &yp, &mask);
 
     set_screen_to_pos (xp, yp);
 
@@ -2447,45 +2266,6 @@ login_realized (GtkWidget *w)
 }
 
 static void
-focus_window (Window window)
-{
-	if (no_focus_login &&
-	    login != NULL &&
-	    login->window != NULL &&
-	    GDK_WINDOW_XWINDOW (login->window) == window)
-		return;
-
-	gdk_error_trap_push ();
-
-	if (wm_protocol_check_support (window, XA_WM_TAKE_FOCUS)) {
-		XEvent xevent = { 0, };
-
-		xevent.type = ClientMessage;
-		xevent.xclient.window = window;
-		xevent.xclient.message_type = XA_WM_PROTOCOLS;
-		xevent.xclient.format = 32;
-		xevent.xclient.data.l[0] = XA_WM_TAKE_FOCUS;
-		xevent.xclient.data.l[1] = CurrentTime;
-
-		XSendEvent (GDK_DISPLAY (), window, False, 0, &xevent);
-		gdk_flush ();
-	}
-
-	XSetInputFocus (GDK_DISPLAY (),
-			window,
-			RevertToPointerRoot,
-			CurrentTime);
-	gdk_flush ();
-	gdk_error_trap_pop ();
-}
-
-static void
-login_mapped (GtkWidget *w, gpointer data)
-{
-	focus_window (GDK_WINDOW_XWINDOW (login->window));
-}
-
-static void
 gdm_login_gui_init (void)
 {
     GtkWidget *frame1, *frame2;
@@ -2506,9 +2286,6 @@ gdm_login_gui_init (void)
     gtk_object_set_data_full (GTK_OBJECT (login), "login", login,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_window_set_title (GTK_WINDOW (login), _("GDM Login"));
-    gtk_signal_connect_after (GTK_OBJECT (login), "map",
-			      GTK_SIGNAL_FUNC (login_mapped),
-			      NULL);
 
     accel = gtk_accel_group_new ();
     gtk_window_add_accel_group (GTK_WINDOW (login), accel);
@@ -3236,431 +3013,6 @@ run_backgrounds (void)
 	}
 }
 
-/*
- * WM type stuff
- */
-static GdkFilterReturn
-window_filter (GdkXEvent *gdk_xevent,
-	       GdkEvent *event,
-	       gpointer data);
-static GdkFilterReturn
-root_filter (GdkXEvent *gdk_xevent,
-	     GdkEvent *event,
-	     gpointer data);
-
-/* stolen from gwmh */
-static GdkWindow*
-window_ref_from_xid (Window xwin)
-{
-	GdkWindow *window;
-
-	/* the xid maybe invalid already, in that case we return NULL */
-	window = gdk_window_lookup (xwin);
-	if (window == NULL)
-		window = gdk_window_foreign_new (xwin);
-	else
-		gdk_window_ref (window);
-
-	return window;
-}
-
-
-static GList *
-find_window_list (Window w)
-{
-	GList *li;
-
-	for (li = windows; li != NULL; li = li->next) {
-		GdmWindow *gw = li->data;
-
-		if (gw->win == w)
-			return li;
-	}
-
-	return NULL;
-}
-
-static GdmWindow *
-find_window (Window w)
-{
-	GList *li = find_window_list (w);
-	if (li == NULL)
-		return NULL;
-	else
-		return li->data;
-}
-
-static GdmWindow *
-add_window (Window w)
-{
-	XWindowAttributes attribs = { 0, };
-	GdmWindow *gw;
-
-	gw = find_window (w);
-	if (gw == NULL) {
-		gw = g_new0 (GdmWindow, 1);
-		gw->win = w;
-		gw->gdk_win = window_ref_from_xid (w);
-		gdk_window_add_filter (gw->gdk_win,
-				       window_filter, gw);
-		windows = g_list_prepend (windows, gw);
-
-		gdk_error_trap_push ();
-
-		/* set event mask for events on root window */
-		XGetWindowAttributes (GDK_DISPLAY (), w,
-				      &attribs);
-		XSelectInput (GDK_DISPLAY (), w,
-			      attribs.your_event_mask |
-			      EnterWindowMask);
-
-		gdk_flush ();
-		gdk_error_trap_pop ();
-	}
-	return gw;
-}
-
-static void
-remove_window (Window w)
-{
-	GList *li = find_window_list (w);
-
-	if (li != NULL) {
-		GdmWindow *gw = li->data;
-		li->data = NULL;
-
-		gdk_window_remove_filter (gw->gdk_win,
-					  window_filter, gw);
-
-		gdk_window_unref (gw->gdk_win);
-		gw->gdk_win = NULL;
-		gw->win = 0;
-		g_free (gw);
-
-		windows = g_list_remove_link (windows, li);
-		g_list_free_1 (li);
-	}
-}
-
-static void
-revert_focus_to_login (void)
-{
-	if (login != NULL &&
-	    login->window != NULL) {
-		focus_window (GDK_WINDOW_XWINDOW (login->window));
-	}
-}
-
-static void
-center_x_window (Window w)
-{
-	XSizeHints hints;
-	Status status;
-	long ret;
-	int x, y;
-	Window root;
-	unsigned int width, height, border, depth;
-
-	gdk_error_trap_push ();
-
-	status = XGetWMNormalHints (GDK_DISPLAY (),
-				    w,
-				    &hints,
-				    &ret);
-
-	if ( ! status) {
-		gdk_flush ();
-		gdk_error_trap_pop ();
-		return;
-	}
-
-	if (hints.flags & USPosition &&
-	    hints.flags & USSize) {
-		gdk_flush ();
-		gdk_error_trap_pop ();
-		return;
-	}
-
-	XGetGeometry (GDK_DISPLAY (), w,
-		      &root, &x, &y, &width, &height, &border, &depth);
-
-	/* we replace the x,y and width,height with some new values */
-
-	if ( ! (hints.flags & USSize)) {
-		if (width > screen.width)
-			width = screen.width;
-		if (height > screen.height)
-			height = screen.height;
-	}
-
-	if ( ! (hints.flags & USPosition)) {
-		/* we wipe the X with some new values */
-		x = screen.x + (screen.width - width)/2;
-		y = screen.y + (screen.height - height)/2;	
-
-		if (x < screen.x)
-			x = screen.x;
-		if (y < screen.y)
-			y = screen.y;
-	}
-	
-	XMoveResizeWindow (GDK_DISPLAY (), w, x, y, width, height);
-
-	gdk_flush ();
-	gdk_error_trap_pop ();
-}
-
-static void
-add_deco (GdmWindow *w)
-{
-	int x, y;
-	Window root;
-	XSizeHints hints;
-	long ret;
-	unsigned int width, height, border, depth;
-
-	gdk_error_trap_push ();
-
-	XGetGeometry (GDK_DISPLAY (), w->win,
-		      &root, &x, &y, &width, &height, &border, &depth);
-
-	w->deco = XCreateSimpleWindow (GDK_DISPLAY (),
-				       GDK_ROOT_WINDOW (),
-				       x - 1, y - 1,
-				       width + 2 + 2 * border,
-				       height + 2 + 2 * border,
-				       0, 0, 0);
-
-	XSelectInput (GDK_DISPLAY (),
-		      w->deco,
-		      SubstructureNotifyMask |
-		      SubstructureRedirectMask |
-		      ResizeRedirectMask);
-
-	w->gdk_deco = gdk_window_foreign_new (w->deco);
-	gdk_window_add_filter (w->gdk_deco, root_filter, w);
-
-
-	if (XGetWMNormalHints (GDK_DISPLAY (),
-			       w->win,
-			       &hints,
-			       &ret)) {
-		XSetWMSizeHints (GDK_DISPLAY (), w->deco,
-				 &hints,
-				 XA_WM_NORMAL_HINTS);
-	}
-
-	XMapWindow (GDK_DISPLAY (), w->deco);
-	XReparentWindow (GDK_DISPLAY (), w->win, w->deco, 1, 1);
-
-	gdk_flush ();
-	gdk_error_trap_pop ();
-}
-
-static void
-remove_deco (GdmWindow *w, gboolean reparent)
-{
-	int x, y;
-	Window root;
-	unsigned int width, height, border, depth;
-
-	gdk_error_trap_push ();
-
-	XGetGeometry (GDK_DISPLAY (), w->deco,
-		      &root, &x, &y, &width, &height, &border, &depth);
-
-	if (reparent)
-		XReparentWindow (GDK_DISPLAY (), w->win,
-				 GDK_ROOT_WINDOW (), x + 1, y + 1);
-
-	XDestroyWindow (GDK_DISPLAY (), w->deco);
-	w->deco = None;
-	gdk_window_unref (w->gdk_deco);
-	w->gdk_deco = NULL;
-
-	gdk_flush ();
-	gdk_error_trap_pop ();
-}
-
-static GdkFilterReturn
-window_filter (GdkXEvent *gdk_xevent,
-	       GdkEvent *event,
-	       gpointer data)
-{
-	GdmWindow *gw = data;
-	XEvent *xevent = (XEvent *)gdk_xevent;
-
-	switch (xevent->type) {
-	case EnterNotify:
-		focus_window (gw->win);
-		break;
-	default:
-		break;
-	}
-
-	return GDK_FILTER_CONTINUE;
-}
-
-static GdkFilterReturn
-root_filter (GdkXEvent *gdk_xevent,
-	     GdkEvent *event,
-	     gpointer data)
-{
-	Window w;
-	GdmWindow *gw;
-	XEvent *xevent = (XEvent *)gdk_xevent;
-	XWindowChanges wchanges;
-
-	gw = data;
-
-	switch (xevent->type) {
-	case MapRequest:
-		w = xevent->xmaprequest.window;
-		if (gw == NULL && /* only on the root window */
-		    (login == NULL ||
-		     login->window == NULL ||
-		     GDK_WINDOW_XWINDOW (login->window) != w)) {
-			gw = add_window (w);
-			center_x_window (w);
-			add_deco (gw);
-		}
-		XMapWindow (GDK_DISPLAY (), w);
-		break;
-	case ConfigureRequest:
-		w = xevent->xconfigurerequest.window;
-		wchanges.border_width = xevent->xconfigurerequest.border_width;
-		wchanges.sibling = xevent->xconfigurerequest.above;
-		wchanges.stack_mode = xevent->xconfigurerequest.detail;
-		if (gw == NULL) {
-			wchanges.x = xevent->xconfigurerequest.x;
-			wchanges.y = xevent->xconfigurerequest.y;
-		} else {
-			wchanges.x = 1;
-			wchanges.y = 1;
-		}
-		wchanges.width = xevent->xconfigurerequest.width;
-		wchanges.height = xevent->xconfigurerequest.height;
-		XConfigureWindow (GDK_DISPLAY (),
-				  w,
-				  xevent->xconfigurerequest.value_mask,
-				  &wchanges);
-		if (gw == NULL) {
-			center_x_window (w);
-		} else {
-			wchanges.x = xevent->xconfigurerequest.x - 1;
-			wchanges.y = xevent->xconfigurerequest.y - 1;
-			wchanges.width = xevent->xconfigurerequest.width + 2
-				+ 2*xevent->xconfigurerequest.border_width;;
-			wchanges.height = xevent->xconfigurerequest.height + 2
-				+ 2*xevent->xconfigurerequest.border_width;;
-			wchanges.border_width = 0;
-			XConfigureWindow (GDK_DISPLAY (),
-					  gw->deco,
-					  xevent->xconfigurerequest.value_mask,
-					  &wchanges);
-			center_x_window (gw->deco);
-		}
-		break;
-	case CirculateRequest:
-		w = xevent->xcirculaterequest.window;
-		if (gw == NULL)
-			XCirculateSubwindows (GDK_DISPLAY (),
-					      w,
-					      xevent->xcirculaterequest.place);
-		else
-			XCirculateSubwindows (GDK_DISPLAY (),
-					      gw->deco,
-					      xevent->xcirculaterequest.place);
-		break;
-	case MapNotify:
-		if ( ! xevent->xmap.override_redirect) {
-			w = xevent->xmap.window;
-			if (focus_new_windows)
-				focus_window (w);
-		}
-		break;
-	case UnmapNotify:
-		w = xevent->xunmap.window;
-		gw = find_window (w);
-		if (gw == NULL)
-			break;
-		remove_deco (gw, TRUE);
-
-		remove_window (w);
-		revert_focus_to_login ();
-		break;
-	case DestroyNotify:
-		w = xevent->xdestroywindow.window;
-		gw = find_window (w);
-		if (gw == NULL)
-			break;
-		remove_deco (gw, FALSE);
-
-		remove_window (w);
-		revert_focus_to_login ();
-		break;
-	default:
-		break;
-	}
-
-	return GDK_FILTER_CONTINUE;
-}
-
-static void
-add_all_current_windows (void)
-{
-	Window *children = NULL;
-	Window xparent, xroot;
-	guint size = 0;
-
-	gdk_flush ();
-	gdk_error_trap_push ();
-
-	if (XQueryTree (GDK_DISPLAY (), 
-			GDK_ROOT_WINDOW (),
-			&xroot,
-			&xparent,
-			&children,
-			&size)) {
-		int i;
-
-		for (i = 0; i < size; i++) {
-			XWindowAttributes attribs = {0};
-
-			XGetWindowAttributes (GDK_DISPLAY (),
-					      children[i],
-					      &attribs);
-
-			if ( ! attribs.override_redirect &&
-			    attribs.map_state != IsUnmapped) {
-				GdmWindow *gw = add_window (children[i]);
-				if (login == NULL ||
-				    login->window == NULL ||
-				    GDK_WINDOW_XWINDOW (login->window) != 
-				      children[i]) {
-					center_x_window (children[i]);
-					add_deco (gw);
-				}
-			}
-		}
-
-		if (children != NULL)
-			XFree (children);
-	}
-
-	gdk_flush ();
-	gdk_error_trap_pop ();
-}
-
-static void
-atoms_init (void)
-{
-	XA_WM_NORMAL_HINTS = gdk_atom_intern ("WM_NORMAL_HINTS", FALSE);
-	XA_WM_PROTOCOLS = gdk_atom_intern ("WM_PROTOCOLS", FALSE);
-	XA_WM_TAKE_FOCUS = gdk_atom_intern ("WM_TAKE_FOCUS", FALSE);
-	XA_COMPOUND_TEXT = gdk_atom_intern ("COMPOUND_TEXT", FALSE);
-}
-
 int 
 main (int argc, char *argv[])
 {
@@ -3670,7 +3022,6 @@ main (int argc, char *argv[])
     struct sigaction chld;
     sigset_t mask;
     GIOChannel *ctrlch;
-    XWindowAttributes attribs = { 0, };
 
     /* Avoid creating ~gdm/.gnome stuff */
     gnome_do_not_create_directories = TRUE;
@@ -3704,10 +3055,6 @@ main (int argc, char *argv[])
     setup_cursor (GDK_LEFT_PTR);
 
     tooltips = gtk_tooltips_new ();
-
-    rootwin = gdk_window_foreign_new (GDK_ROOT_WINDOW ());
-
-    atoms_init ();
 
     gdm_screen_init ();
 
@@ -3776,30 +3123,22 @@ main (int argc, char *argv[])
 					  NULL);
     }
 
-    add_all_current_windows ();
+    gtk_widget_show_now (login);
 
-    gdk_error_trap_push ();
+    /* can it ever happen that it'd be NULL here ??? */
+    if (login->window != NULL) {
+	    gdm_wm_init (GDK_WINDOW_XWINDOW (login->window));
 
-    /* set event mask for events on root window */
-    XGetWindowAttributes (GDK_DISPLAY (),
-			  GDK_ROOT_WINDOW (),
-			  &attribs);
-    XSelectInput (GDK_DISPLAY (),
-		  GDK_ROOT_WINDOW (),
-		  attribs.your_event_mask |
-		  SubstructureNotifyMask |
-		  SubstructureRedirectMask);
-
-    gdk_flush ();
-
-    gdk_error_trap_pop ();
-
-    gdk_window_add_filter (rootwin, root_filter, NULL);
+	    /* Run the focus, note that this will work no matter what
+	     * since gdm_wm_init will set the display to the gdk one
+	     * if it fails */
+	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (login->window));
+    }
 
     if (session_dir_whacked_out) {
 	    GtkWidget *dialog;
 
-	    focus_new_windows = TRUE;
+	    gdm_wm_focus_new_windows (TRUE);
 
 	    dialog = gnome_error_dialog
 		    (_("Your session directory is missing or empty!\n\n"
