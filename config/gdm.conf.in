@@ -364,7 +364,7 @@ Enable=false
 # Definition of the standard X server.
 [server-Standard]
 name=Standard server
-command=@X_SERVER@
+command=@X_SERVER@ -audit 0
 flexible=true
 
 # To use this server type you should add -query host or -indirect host
@@ -372,7 +372,7 @@ flexible=true
 [server-Terminal]
 name=Terminal server
 # Add -terminate to make things behave more nicely
-command=@X_SERVER@ -terminate
+command=@X_SERVER@ -audit 0 -terminate
 # Make this not appear in the flexible servers (we need extra params
 # anyway, and terminate would be bad for xdmcp choosing).  You can
 # make a terminal server flexible, but not with an indirect query.
@@ -387,7 +387,7 @@ handled=false
 # to the command line
 [server-Chooser]
 name=Chooser server
-command=@X_SERVER@
+command=@X_SERVER@ -audit 0
 # Make this not appear in the flexible servers for now, but if you
 # wish to allow a chooser server then make this true.  This is the
 # only way to make a flexible chooser server that behaves nicely.
