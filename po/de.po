@@ -10,13 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GDM 2.6.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-15 01:05+0100\n"
-"PO-Revision-Date: 2005-01-15 01:11+0100\n"
+"POT-Creation-Date: 2005-02-08 15:10+0100\n"
+"PO-Revision-Date: 2005-02-08 15:04+0100\n"
 "Last-Translator: Hendrik Richter <hendrik@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -764,10 +765,11 @@ msgstr "GDM läuft bereits. Abbruch!"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Fehler beim Einrichten des CHLD-Signalhandlers"
 
-# CHECK
-#: daemon/gdm.c:3633 daemon/gdm.c:3652
-msgid "FLEXI_XSERVER request denied: Not authenticated"
-msgstr "FLEXI_XSERVER-Abfrage abgewiesen: Nicht legitimiert"
+#: daemon/gdm.c:3633 daemon/gdm.c:3652 daemon/gdm.c:3796 daemon/gdm.c:3854
+#: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
+#, c-format
+msgid "%s request denied: Not authenticated"
+msgstr "%s-Anfrage abgewiesen: Nicht legitimiert"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -783,21 +785,6 @@ msgid ""
 msgstr ""
 "Angefragter Server %s darf nicht für flexible Server verwendet werden, "
 "Standard-Server wird benutzt."
-
-# CHECK
-#: daemon/gdm.c:3796
-msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "QUERY_LOGOUT_ACTION-Abfrage abgewiesen: Nicht legitimiert"
-
-# CHECK
-#: daemon/gdm.c:3854 daemon/gdm.c:3909
-msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "SET_LOGOUT_ACTION-Abfrage abgewiesen: Nicht legitimiert"
-
-# CHECK
-#: daemon/gdm.c:3954 daemon/gdm.c:3981
-msgid "QUERY_VT request denied: Not authenticated"
-msgstr "QUERY_VT-Abfrage abgewiesen: Nicht legitimiert"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:652
@@ -1097,7 +1084,7 @@ msgstr "%s: Fehler beim Starten des Begrüßers, Vorgabe wird versucht: %s"
 
 #: daemon/slave.c:2665
 msgid ""
-"Cannot start the greeter program, you will not be able to log in.  This "
+"Cannot start the greeter program; you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
 msgstr ""
@@ -1266,34 +1253,34 @@ msgid "The system administrator has disabled your account."
 msgstr "Der Systemadministrator hat Ihren Zugang deaktiviert."
 
 # CHECK
-#: daemon/slave.c:3790
+#: daemon/slave.c:3792
 msgid "Error! Unable to set executable context."
 msgstr "Fehler! Executable-Kontext konnte nicht gesetzt werden."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3798 daemon/slave.c:3803
+#: daemon/slave.c:3800 daemon/slave.c:3805
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: %s %s %s konnte nicht ausgeführt werden"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3814
+#: daemon/slave.c:3816
 msgid "Cannot start the session due to some internal error."
 msgstr ""
 "Die Sitzung konnte aufgrund eines internen Fehlers nicht gestartet werden."
 
-#: daemon/slave.c:3868
+#: daemon/slave.c:3870
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Benutzer übergab auth, getpwnam(%s) ist jedoch fehlgeschlagen!"
 
-#: daemon/slave.c:3882
+#: daemon/slave.c:3884
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr ""
 "%s: Ausführen des PostLogin-Skripts lieferte einen Rückgabewert > 0. Abbruch."
 
-#: daemon/slave.c:3891
+#: daemon/slave.c:3893
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1312,12 +1299,12 @@ msgstr ""
 "Vermutlich wird nichts funktionieren, sofern Sie keine abgesicherte Sitzung "
 "verwenden."
 
-#: daemon/slave.c:3899
+#: daemon/slave.c:3901
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Heimverzeichnis »%s« für %s existiert nicht!"
 
-#: daemon/slave.c:4076
+#: daemon/slave.c:4078
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1329,12 +1316,12 @@ msgstr ""
 "Schreiben geöffnet werden konnte. In jedem Fall können Sie sich nicht "
 "anmelden. Bitte kontaktieren Sie den Systemadministator."
 
-#: daemon/slave.c:4152
+#: daemon/slave.c:4154
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Fehler beim Abspalten der Benutzersitzung"
 
-#: daemon/slave.c:4233
+#: daemon/slave.c:4235
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1347,27 +1334,27 @@ msgstr ""
 "Versuchen Sie, sich mit einer abgesicherten Sitzung anzumelden, um zu "
 "versuchen, das Problem zu beheben."
 
-#: daemon/slave.c:4241
+#: daemon/slave.c:4243
 msgid "View details (~/.xsession-errors file)"
 msgstr "Details anzeigen (Datei ~/.xsession-errors)"
 
-#: daemon/slave.c:4385
+#: daemon/slave.c:4387
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr ""
 "GDM hat ermittelt, dass momentan ein Herunterfahr- oder Neustartprozess im "
 "Gange ist."
 
-#: daemon/slave.c:4479
+#: daemon/slave.c:4481
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping nach %s fehlgeschlagen."
 
-#: daemon/slave.c:4765
+#: daemon/slave.c:4767
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Schwerwiegender X-Fehler - %s wird neu gestartet"
 
-#: daemon/slave.c:4859
+#: daemon/slave.c:4861
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1376,22 +1363,22 @@ msgstr ""
 "Wiedergabe-Software konnte nicht ausgeführt werden oder der Klang existiert "
 "nicht"
 
-#: daemon/slave.c:5214
+#: daemon/slave.c:5216
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Ausführen fehlgeschlagen: %s"
 
-#: daemon/slave.c:5222 daemon/slave.c:5361
+#: daemon/slave.c:5224 daemon/slave.c:5363
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Skriptprozess konnte nicht abgespalten werden!"
 
-#: daemon/slave.c:5316
+#: daemon/slave.c:5318
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Weiterleitung konnte nicht angelegt werden"
 
-#: daemon/slave.c:5355
+#: daemon/slave.c:5357
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Ausführen fehlgeschlagen: %s"
@@ -1422,7 +1409,7 @@ msgstr ""
 #: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
-#: gui/greeter/greeter_parser.c:1061
+#: gui/greeter/greeter_parser.c:1065
 msgid "Username:"
 msgstr "Benutzername:"
 
@@ -1715,7 +1702,7 @@ msgstr ""
 "Der Systemadministrator den Zugriff durch Sie auf das System vorübergehend "
 "unterbunden."
 
-#: daemon/verify-pam.c:1428 daemon/verify-pam.c:1430
+#: daemon/verify-pam.c:1433 daemon/verify-pam.c:1435
 msgid "Can't find PAM configuration for gdm."
 msgstr "PAM-Konfiguration für GDM konnte nicht gefunden werden"
 
@@ -2828,7 +2815,7 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:222 gui/greeter/greeter_parser.c:1047
+#: gui/gdmlogin.c:222
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Benutzer %s wird in %d Sekunden angemeldet"
@@ -3767,9 +3754,8 @@ msgstr ""
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr ""
-"Eine graphische Anwendung zur Konfiguration des GNOME Display Managers (GDM)"
+msgid "Configure the login screen (Gnome Display Manager)"
+msgstr "Den Anmeldemanager (GNOME Display Manager) _konfigurieren"
 
 #: gui/greeter/greeter.c:638 gui/greeter/greeter.c:670
 #, c-format
@@ -3887,6 +3873,13 @@ msgstr "_Konfigurieren"
 msgid "You've got capslock on!"
 msgstr "Die Dauerumschalttaste ist aktiviert!"
 
+#: gui/greeter/greeter_parser.c:1047
+#, c-format
+msgid "User %s will login in %d second"
+msgid_plural "User %s will login in %d seconds"
+msgstr[0] "Benutzer %s wird in %d Sekunde angemeldet"
+msgstr[1] "Benutzer %s wird in %d Sekunden angemeldet"
+
 #: gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
 msgstr "Eine Sitzung wählen"
@@ -3991,7 +3984,7 @@ msgstr "(Speicherpuffer"
 
 #. markup
 #: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:301
 msgid "Cannot load user interface"
 msgstr "Die Benutzeroberfläche konnte nicht geladen werden"
 
@@ -4022,18 +4015,29 @@ msgstr ""
 #: vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %"
-"s.  CList type widget should have %d columns.  Possibly the glade interface "
-"description was corrupted.  %s cannot continue and will exit now.  You "
-"should check your installation of %s or reinstall %s."
-msgstr ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d column. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgid_plural ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d columns. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgstr[0] ""
+"Beim Laden des Benutzeroberflächenelements %s%s aus der Datei %s trat ein "
+"Fehler auf. Das Widget vom Typ CList sollte %d Spalte haben. Möglicherweise "
+"ist die Glade-Oberflächenbeschreibung fehlerhaft. %s konnte nicht "
+"fortgesetzt werden und wird daher beendet. Sie sollten Ihre %s-Installation "
+"überprüfen oder %s neu installieren."
+msgstr[1] ""
 "Beim Laden des Benutzeroberflächenelements %s%s aus der Datei %s trat ein "
 "Fehler auf. Das Widget vom Typ CList sollte %d Spalten haben. Möglicherweise "
 "ist die Glade-Oberflächenbeschreibung fehlerhaft. %s konnte nicht "
 "fortgesetzt werden und wird daher beendet. Sie sollten Ihre %s-Installation "
 "überprüfen oder %s neu installieren."
 
-#: vicious-extensions/glade-helper.c:266
+#: vicious-extensions/glade-helper.c:277
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -4044,7 +4048,7 @@ msgstr ""
 "installiert ist!\n"
 "Datei: %s Widget: %s erwartete CList-Spalten: %d"
 
-#: vicious-extensions/glade-helper.c:291
+#: vicious-extensions/glade-helper.c:302
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -4056,7 +4060,7 @@ msgstr ""
 "konnte nicht fortgesetzt werden und wird daher beendet. Sie sollten Ihre %s-"
 "Installation überprüfen oder %s neu installieren."
 
-#: vicious-extensions/glade-helper.c:303
+#: vicious-extensions/glade-helper.c:314
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Es konnte keine Oberfläche geladen werden, MIST! (Datei: %s)"
@@ -4066,3 +4070,21 @@ msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr ""
 "Zu viele Aliasebenen für eine Standorteinstellung, deutet auf einen "
 "Ringschluss hin"
+
+# CHECK
+#~ msgid "FLEXI_XSERVER request denied: Not authenticated"
+#~ msgstr "FLEXI_XSERVER-Abfrage abgewiesen: Nicht legitimiert"
+
+# CHECK
+#~ msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
+#~ msgstr "QUERY_LOGOUT_ACTION-Abfrage abgewiesen: Nicht legitimiert"
+
+# CHECK
+#~ msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
+#~ msgstr "SET_LOGOUT_ACTION-Abfrage abgewiesen: Nicht legitimiert"
+
+#~ msgid ""
+#~ "A graphical application for configuring the GNOME Display Manager (GDM)"
+#~ msgstr ""
+#~ "Eine graphische Anwendung zur Konfiguration des GNOME Display Managers "
+#~ "(GDM)"
