@@ -46,6 +46,7 @@ static gboolean got_standard = FALSE;
 static gboolean use_xnest = FALSE;
 static gboolean authenticate = FALSE;
 static gboolean no_lock = FALSE;
+static gboolean monte_carlo_pi = FALSE;
 static const char *send_command = NULL;
 static const char *server = NULL;
 static const char *chosen_server = NULL;
@@ -608,12 +609,32 @@ choose_server (void)
 	return NULL;
 }
 
+static void
+calc_pi (void)
+{
+	unsigned long n = 0, h = 0;
+	double x, y;
+	printf ("\n");
+	for (;;) {
+		x = g_random_double ();
+		y = g_random_double ();
+		if (x*x + y*y <= 1)
+			h++;
+		n++;
+		if ( ! (n & 0xfff))
+			printf ("pi ~~ %f\t(%lu/%lu * 4) iteration: %lu \r",
+				((double)h)/(double)n * 4.0, h, n, n);
+	}
+	printf ("\n");
+}
+
 struct poptOption options [] = {
 	{ "command", 'c', POPT_ARG_STRING, &send_command, 0, N_("Send the specified protocol command to gdm"), N_("COMMAND") },
 	{ "xnest", 'n', POPT_ARG_NONE, &use_xnest, 0, N_("Xnest mode"), NULL },
 	{ "no-lock", 'l', POPT_ARG_NONE, &no_lock, 0, N_("Do not lock current screen"), NULL },
 	{ "debug", 'd', POPT_ARG_NONE, &debug, 0, N_("Debugging output"), NULL },
 	{ "authenticate", 'a', POPT_ARG_NONE, &authenticate, 0, N_("Authenticate before running --command"), NULL },
+	{ "monte-carlo-pi", 0, POPT_ARG_NONE, &monte_carlo_pi, 0, NULL, NULL },
 	POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
 };
@@ -643,6 +664,11 @@ main (int argc, char *argv[])
 	g_object_get (G_OBJECT (program),
 		      GNOME_PARAM_POPT_CONTEXT, &ctx,
 		      NULL);	
+
+	if (monte_carlo_pi) {
+		calc_pi ();
+		return 0;
+	}
 
 	gdmcomm_set_debug (debug);
 
