@@ -83,6 +83,8 @@ pid_t extra_process = 0;	/* An extra process.  Used for quickie
 				   processes, so that they also get whacked */
 int extra_status = 0;		/* Last status from the last extra process */
 pid_t gdm_main_pid = 0;		/* PID of the main daemon */
+
+gboolean print_version = FALSE; /* print version number and quit */
 gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
 gboolean no_daemon = FALSE;	/* Do not daemonize */
 gboolean no_console = FALSE;	/* There are no local servers, this means,
@@ -1713,6 +1715,8 @@ struct poptOption options [] = {
 	  &no_console, 0, N_("No console (local) servers to be run"), NULL },
 	{ "preserve-ld-vars", '\0', POPT_ARG_NONE,
 	  &preserve_ld_vars, 0, N_("Preserve LD_* variables"), NULL },
+	{ "version", '\0', POPT_ARG_NONE,
+	  &print_version, 0, NULL, NULL },
         POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
 };
@@ -1834,8 +1838,14 @@ main (int argc, char *argv[])
 		     poptBadOption (ctx, 0),
 		     poptStrerror (nextopt),
 		     argv[0]);
-	    fflush (stdout);
+	    fflush (stderr);
 	    exit (1);
+    }
+
+    if (print_version) {
+	    printf ("GDM %s\n", VERSION);
+	    fflush (stdout);
+	    exit (0);
     }
 
     /* XDM compliant error message */
