@@ -1,127 +1,112 @@
 # Traditional chinese translation for gdm2
-# Copyright (C) 2000-2001 Free Software Foundation, Inc.
+# Copyright (C) 2000-2002 Free Software Foundation, Inc.
 # Jing-Jong Shyue <shyue@sonoma.com.tw>, 2000
-# Abel Cheung <maddog@linux.org.hk>, 2001
+# Abel Cheung <maddog@linux.org.hk>, 2001-2002
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2 2.2.5.2\n"
-"POT-Creation-Date: 2001-11-29 08:52+0800\n"
-"PO-Revision-Date: 2001-11-29 08:40+0800\n"
+"Project-Id-Version: gdm2 2.2.5.4\n"
+"POT-Creation-Date: 2002-02-09 06:22-0500\n"
+"PO-Revision-Date: 2002-02-10 05:41+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=Big5\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# daemon/auth.c:228
-# daemon/auth.c:255
 #: daemon/auth.c:144
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s：無法在 %s 建立新的 cookie 檔"
 
-# daemon/auth.c:228
-# daemon/auth.c:255
 #. Really no need to clean up here - this process is a goner anyway
 #: daemon/auth.c:367 daemon/auth.c:398
 #, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
 msgstr "gdm_auth_user_add：無法開啟 cookie 檔案 %s"
 
-# daemon/auth.c:243
 #: daemon/auth.c:384
 #, c-format
 msgid "gdm_auth_user_add: Could not lock cookie file %s"
 msgstr "gdm_auth_user_add：無法鎖定 cookie 檔案 %s"
 
-# daemon/auth.c:325
 #: daemon/auth.c:473
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr "gdm_auth_user_remove：忽略可疑的 cookie 檔案 %s"
 
-#: daemon/display.c:92
+#. This means we have no clue what's happening,
+#. * it's not X server crashing as we would have
+#. * cought that elsewhere.  Things are just
+#. * not working out, so tell the user
+#: daemon/display.c:95
 #, c-format
 msgid ""
 "Failed to start the display server several times in a short time period; "
 "disabling display %s"
 msgstr "短時間內執行數次顯示伺服程式都失敗；停止使用顯示畫面 %s"
 
-# daemon/display.c:89
-#: daemon/display.c:210
+#: daemon/display.c:222
 #, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr "gdm_display_manage：無法衍生 %s 的 gdm 副程序"
 
-#: daemon/errorgui.c:163
+#: daemon/errorgui.c:169
 msgid "gdm_error_box: Failed to execute self"
 msgstr ""
 
-#: daemon/errorgui.c:168
+#: daemon/errorgui.c:174
 msgid "gdm_error_box: Cannot fork to display error/info box"
 msgstr ""
 
-# daemon/slave.c:747
-#: daemon/errorgui.c:302 daemon/errorgui.c:435
+#: daemon/errorgui.c:311 daemon/errorgui.c:447
 msgid "gdm_failsafe_question: Failed to execute self"
 msgstr ""
 
-#: daemon/errorgui.c:320 daemon/errorgui.c:455
+#: daemon/errorgui.c:329 daemon/errorgui.c:467
 msgid "gdm_failsafe_question: Cannot fork to display error/info box"
 msgstr ""
 
-# daemon/filecheck.c:51
 #: daemon/filecheck.c:49
 #, c-format
 msgid "%s: Directory %s does not exist."
 msgstr "%s：目錄 %s 不存在。"
 
-# daemon/filecheck.c:57
-# daemon/filecheck.c:98
 #: daemon/filecheck.c:56 daemon/filecheck.c:97
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr "%s：%s 的擁有者 uid 不是 %d。"
 
-# daemon/filecheck.c:63
-# daemon/filecheck.c:105
 #: daemon/filecheck.c:62 daemon/filecheck.c:104
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr "%s：%s 是群組可寫入的。"
 
-# daemon/filecheck.c:69
 #: daemon/filecheck.c:68
 #, c-format
 msgid "%s: %s is writable by other."
 msgstr "%s：%s 是任何人都可寫入的。"
 
-# daemon/filecheck.c:83
 #: daemon/filecheck.c:82
 #, c-format
 msgid "%s: %s does not exist but must exist."
 msgstr "%s：%s 不存在，但必須存在。"
 
-# daemon/filecheck.c:91
 #: daemon/filecheck.c:90
 #, c-format
 msgid "%s: %s is not a regular file."
 msgstr "%s：%s 不是一個正規檔案。"
 
-# daemon/filecheck.c:112
 #: daemon/filecheck.c:111
 #, c-format
 msgid "%s: %s is writable by group/other."
 msgstr "%s：%s 是群組或任何人都可寫入的。"
 
-# daemon/filecheck.c:119
 #: daemon/filecheck.c:118
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr "%s：%s 比系統管理者指定的最大檔案大小還大。"
 
-# daemon/gdm.c:114
 #: daemon/gdm.c:205
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Using defaults."
@@ -146,40 +131,39 @@ msgstr "gdm_config_parse：Root 不可自動登入，關閉計時登入功能"
 msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
 msgstr "gdm_config_parse：TimedLoginDelay 值小於 5，會改為使用 5。"
 
-# daemon/gdm.c:162
 #: daemon/gdm.c:330
 msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse：未指定歡迎程式。"
 
-# daemon/gdm.c:165
 #: daemon/gdm.c:334
+msgid "No daemon/ServAuthDir specified in the configuration file"
+msgstr "組態檔沒有指定 daemon/ServAuthDir"
+
+#: daemon/gdm.c:335
 msgid "gdm_config_parse: No authdir specified."
 msgstr "gdm_config_parse：未指定認證目錄。"
 
-# daemon/gdm.c:171
-#: daemon/gdm.c:340
+#: daemon/gdm.c:342
 msgid "gdm_config_parse: No sessions directory specified."
 msgstr "gdm_config_parse：未指定作業階段目錄。"
 
-#: daemon/gdm.c:364
+#: daemon/gdm.c:366
 #, c-format
 msgid "%s: Empty server command, using standard one."
 msgstr "%s：伺服程式指令是空白的，會使用標準的指令代替。"
 
-#: daemon/gdm.c:409
+#: daemon/gdm.c:411
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
 msgstr ""
 
-# daemon/gdm.c:183
-#: daemon/gdm.c:426
+#: daemon/gdm.c:428
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr "gdm_config_parse：設定檔中伺服程式的設定不正確。會忽略它！"
 
-# daemon/gdm.c:189
 #. start
 #. server uid
-#: daemon/gdm.c:445
+#: daemon/gdm.c:447
 #, c-format
 msgid ""
 "%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
@@ -188,107 +172,159 @@ msgstr ""
 "%s：沒有使用 Xdmcp 而且未定義本機的伺服程式。會將 /usr/bin/X11/X 加到 :%d 使"
 "之允許設定！"
 
-# daemon/gdm.c:189
-#: daemon/gdm.c:459
+#: daemon/gdm.c:461
+#, c-format
+msgid ""
+"Xdmcp is disabled and gdm cannot find any local server to start.  Aborting!  "
+"Please correct the configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:468
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr "gdm_config_parse：沒有使用 Xdmcp 而且未定義本機伺服程式。放棄！"
 
-# daemon/gdm.c:196
-#: daemon/gdm.c:467
+#: daemon/gdm.c:476
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
 msgstr "gdm_config_parse：找不到 gdm 使用者（%s）。試用 'nobody'！"
 
-# daemon/gdm.c:196
-#: daemon/gdm.c:474
+#: daemon/gdm.c:483
+#, c-format
+msgid ""
+"The gdm user does not exist.  Please correct gdm configuration %s and "
+"restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:488
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
 msgstr "gdm_config_parse：找不到 gdm 使用者（%s）。放棄！"
 
-# daemon/gdm.c:201
-#: daemon/gdm.c:479
+#: daemon/gdm.c:494
+#, c-format
+msgid ""
+"The gdm user is set to be root, but this is not allowed since it can pose a "
+"security risk.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:500
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr "gdm_config_parse：gdm 使用者不應該是 root。放棄！"
 
-# daemon/gdm.c:206
-#: daemon/gdm.c:484
+#: daemon/gdm.c:506
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
 msgstr "gdm_config_parse：找不到 gdm 群組（%s）。試用 'nobody'！"
 
-# daemon/gdm.c:206
-#: daemon/gdm.c:491
+#: daemon/gdm.c:513
+#, c-format
+msgid ""
+"The gdm group does not exist.  Please correct gdm configuration %s and "
+"restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:518
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
 msgstr "gdm_config_parse：找不到 gdm 群組（%s）。放棄！"
 
-# daemon/gdm.c:211
-#: daemon/gdm.c:496
+#: daemon/gdm.c:524
+#, c-format
+msgid ""
+"The gdm group is set to be root, but this is not allowed since it can pose a "
+"security risk.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:530
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
 msgstr "gdm_config_parse：gdm 群組不應該是 root。放棄！"
 
-#: daemon/gdm.c:507
+#: daemon/gdm.c:541
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr "%s：找不到歡迎程式或是無法由 gdm 使用者執行"
 
-#: daemon/gdm.c:519
+#: daemon/gdm.c:553
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr "%s：找不到選擇程式或是無法由 gdm 使用者執行"
 
-# daemon/gdm.c:247
-#: daemon/gdm.c:527
+#: daemon/gdm.c:561
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
+"does not exist.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:568
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr "gdm_config_parse：認證目錄 %s 不存在。放棄。"
 
-# daemon/gdm.c:250
-#: daemon/gdm.c:530
+#: daemon/gdm.c:572
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
+"not a directory.  Please correct gdm configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:579
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
 msgstr "gdm_config_parse：認證目錄 %s 並非目錄。放棄。"
 
-# daemon/gdm.c:253
-#: daemon/gdm.c:533
+#: daemon/gdm.c:583
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
+"owned by user %s and group %s.  Please correct the ownership or gdm "
+"configuration %s and restart gdm."
+msgstr ""
+
+#: daemon/gdm.c:592
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "gdm_config_parse：認證目錄 %s 不屬於使用者 %s 及群組 %s。放棄。"
 
-# daemon/gdm.c:257
-#: daemon/gdm.c:537
+#: daemon/gdm.c:597
 #, c-format
 msgid ""
-"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
-"Aborting."
-msgstr "gdm_config_parse：認證目錄 %s 的權限 %o 不正確，應為 750。放棄。"
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
+"wrong permissions, it should have permissions of 0750. Please correct the "
+"permissions or the gdm configuration %s and restart gdm."
+msgstr ""
 
-# daemon/gdm.c:291
-#: daemon/gdm.c:591
+#: daemon/gdm.c:606
+#, c-format
+msgid ""
+"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. "
+"Aborting."
+msgstr "gdm_config_parse：認證目錄 %s 的權限 %o 不正確，應為 0750。放棄。"
+
+#: daemon/gdm.c:661
 msgid "gdm_daemonify: fork() failed!"
 msgstr "gdm_daemonify：fork() 失敗！"
 
-# daemon/gdm.c:294
-#: daemon/gdm.c:594
+#: daemon/gdm.c:664
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify：setsid() 失敗：%s！"
 
-#: daemon/gdm.c:702
+#: daemon/gdm.c:772
 #, c-format
 msgid "deal_with_x_crashes: Trying failsafe X server %s"
 msgstr "deal_with_x_crashes：嘗試後備 X 伺服程式 %s"
 
-#: daemon/gdm.c:718
+#: daemon/gdm.c:788
 msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
 msgstr "deal_with_x_crashes：正在執行 XKeepsCrashing 命令稿"
 
 #. Shit if we knew what the program was to tell the user,
 #. * the above script would have been defined and we'd run
 #. * it for them
-#: config/gettextfoo.h:1 daemon/gdm.c:790
+#: daemon/gdm.c:860 config/gettextfoo.h:1
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  You will need to log in on a console and rerun "
@@ -302,14 +338,14 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:802
+#: daemon/gdm.c:872
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr "短時間內執行數次 X 伺服程式都失敗；停止使用顯示畫面 %s"
 
-#: daemon/gdm.c:908
+#: daemon/gdm.c:978
 #, c-format
 msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
@@ -317,8 +353,7 @@ msgid ""
 msgstr ""
 "gdm_child_action：當顯示畫面 %s 沒有系統選單時接收到重新啟動電腦或停機的要求"
 
-# daemon/gdm.c:366
-#: daemon/gdm.c:916
+#: daemon/gdm.c:986
 #, c-format
 msgid ""
 "gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
@@ -326,108 +361,94 @@ msgstr ""
 "gdm_child_action：非本機的顯示畫面 %s 送出重新啟動程式、重新啟動電腦或停機的"
 "要求"
 
-# daemon/gdm.c:366
 #. Bury this display for good
-#: daemon/gdm.c:950
+#: daemon/gdm.c:1020
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action：放棄顯示畫面 %s"
 
-# daemon/gdm.c:372
 #. Reboot machine
-#: daemon/gdm.c:962
+#: daemon/gdm.c:1032
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action：主機重新啟動中..."
 
-# daemon/gdm.c:381
-#: daemon/gdm.c:969
+#: daemon/gdm.c:1039
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action：重新啟動失敗：%s"
 
-# daemon/gdm.c:385
 #. Halt machine
-#: daemon/gdm.c:973
+#: daemon/gdm.c:1043
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action：停機中..."
 
-# daemon/gdm.c:394
-#: daemon/gdm.c:980
+#: daemon/gdm.c:1050
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action：停機失敗：%s"
 
-# daemon/gdm.c:372
 #. Suspend machine
-#: daemon/gdm.c:984
+#: daemon/gdm.c:1054
 msgid "gdm_child_action: Master suspending..."
 msgstr "gdm_child_action：正在暫停電腦..."
 
-# daemon/gdm.c:381
-#: daemon/gdm.c:991
+#: daemon/gdm.c:1061
 #, c-format
 msgid "gdm_child_action: Suspend failed: %s"
 msgstr "gdm_child_action：暫停失敗：%s"
 
-#: daemon/gdm.c:1086
+#: daemon/gdm.c:1156
 msgid "Gdm restarting ..."
 msgstr "正在重新啟動 gdm..."
 
-#: daemon/gdm.c:1091
+#: daemon/gdm.c:1161
 msgid "Failed to restart self"
 msgstr "無法自行重新啟動"
 
-# daemon/gdm.c:458
-#: daemon/gdm.c:1258
+#: daemon/gdm.c:1328
 msgid "Only root wants to run gdm\n"
 msgstr "只有 root 可以執行 gdm\n"
 
-# daemon/gdm.c:479
-#: daemon/gdm.c:1286
+#: daemon/gdm.c:1356
 msgid "gdm already running. Aborting!"
 msgstr "gdm 已在執行中。放棄！"
 
-# gui/gdmlogin.c:1534
-#: daemon/gdm.c:1317
+#: daemon/gdm.c:1387
 #, c-format
 msgid "%s: Error setting up TERM signal handler"
 msgstr "%s：TERM 訊號處理設定錯誤"
 
-# gui/gdmlogin.c:1531
-#: daemon/gdm.c:1321
+#: daemon/gdm.c:1391
 #, c-format
 msgid "%s: Error setting up INT signal handler"
 msgstr "%s：INT 訊號處理設定錯誤"
 
-# gui/gdmlogin.c:1528
-#: daemon/gdm.c:1325
+#: daemon/gdm.c:1395
 #, c-format
 msgid "%s: Error setting up HUP signal handler"
 msgstr "%s：HUP 訊號處理設定錯誤"
 
-# gui/gdmlogin.c:1528
-#: daemon/gdm.c:1329
+#: daemon/gdm.c:1399
 #, c-format
 msgid "%s: Error setting up USR1 signal handler"
 msgstr "%s：USR1 訊號處理設定錯誤"
 
-# daemon/gdm.c:511
-#: daemon/gdm.c:1338
+#: daemon/gdm.c:1408
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s：CHLD 訊號處理設定錯誤"
 
-#: daemon/gdm.c:2111 daemon/gdm.c:2128
+#: daemon/gdm.c:2181 daemon/gdm.c:2198
 msgid "Flexible server request denied: Not authenticated"
 msgstr ""
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:2146
+#: daemon/gdm.c:2216
 msgid "Unknown server type requested, using standard server."
 msgstr ""
 
-#: daemon/gdm.c:2150
+#: daemon/gdm.c:2220
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -439,8 +460,6 @@ msgstr ""
 msgid "%s: Could not make socket"
 msgstr "%s：無法建立 socket"
 
-# gui/gdmchooser.c:594
-# gui/gdmlogin.c:1542
 #: daemon/gdm-net.c:257
 #, c-format
 msgid "%s: Could not bind socket"
@@ -457,26 +476,34 @@ msgid "%s: Could not open FIFO"
 msgstr "%s：無法開啟 FIFO"
 
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:374
+#: daemon/misc.c:379
 msgid "y = Yes or n = No? >"
 msgstr "y = 是，n = 否 >"
 
-#: daemon/misc.c:611
+#: daemon/misc.c:623
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s：無法取得本機地址！"
 
-# daemon/xdmcp.c:178
-#: daemon/misc.c:652
+#: daemon/misc.c:664
 #, c-format
 msgid "%s: Could not get server hostname: %s!"
 msgstr "%s：無法取得伺服程式主機名稱：%s！"
 
-# daemon/xdmcp.c:178
-#: daemon/misc.c:659
+#: daemon/misc.c:671
 #, c-format
 msgid "%s: Could not get address from hostname!"
 msgstr "%s：無法由主機名稱決定地址！"
+
+#: daemon/misc.c:729
+#, c-format
+msgid "Could not setgid %d. Aborting."
+msgstr "無法設定群組 ID %d。放棄。"
+
+#: daemon/misc.c:734
+#, c-format
+msgid "initgroups() failed for %s. Aborting."
+msgstr "%s 的 initgroups() 已失敗。"
 
 #: daemon/server.c:165
 #, c-format
@@ -507,17 +534,14 @@ msgstr "Xnest 無法開啟顯示畫面 '%s'"
 msgid "Display %s is busy, there is another X server already running"
 msgstr "顯示畫面 %s 使用中，已另有 X 伺服程式執行"
 
-# daemon/server.c:93
 #: daemon/server.c:343
 msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr "gdm_server_start：USR1 訊號處理設定錯誤"
 
-# daemon/server.c:103
 #: daemon/server.c:353
 msgid "gdm_server_start: Error setting up CHLD signal handler"
 msgstr "gdm_server_start：CHLD 訊號處理設定錯誤"
 
-# daemon/server.c:113
 #: daemon/server.c:364
 msgid "gdm_server_start: Error setting up ALRM signal handler"
 msgstr "gdm_server_start：ALRM 訊號處理設定錯誤"
@@ -533,33 +557,27 @@ msgstr "%s：無法找出空置的顯示代號"
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s：顯示畫面 %s 使用中。嘗試其它顯示代號。"
 
-# daemon/server.c:196
 #: daemon/server.c:654
 #, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr "gdm_server_spawn：無法開啟顯示畫面 %s 的紀錄檔！"
 
-# daemon/server.c:221
 #: daemon/server.c:664
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn：將 USR1 設成 SIG_IGN 時發生錯誤"
 
-# daemon/server.c:221
 #: daemon/server.c:668
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
 msgstr "gdm_server_spawn：將 TTIN 設成 SIG_IGN 時發生錯誤"
 
-# daemon/server.c:221
 #: daemon/server.c:672
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
 msgstr "gdm_server_spawn：將 TTOU 設成 SIG_IGN 時發生錯誤"
 
-# daemon/server.c:221
 #: daemon/server.c:682
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
 msgstr "gdm_server_spawn：將 HUP 設成 SIG_DFL 時發生錯誤"
 
-# daemon/server.c:221
 #: daemon/server.c:686
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr "gdm_server_spawn：將 TERM 設成 SIG_DFL 時發生錯誤"
@@ -584,63 +602,53 @@ msgstr "%s：顯示畫面 %s 的伺服程式指令是空白的"
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
 
-# daemon/slave.c:201
-#: daemon/server.c:788 daemon/slave.c:1103 daemon/slave.c:1431
+#: daemon/server.c:788 daemon/slave.c:1108 daemon/slave.c:1453
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s：無法設定群組 id 為 %d"
 
-# daemon/slave.c:392
-#: daemon/server.c:794 daemon/slave.c:1108 daemon/slave.c:1436
+#: daemon/server.c:794 daemon/slave.c:1113 daemon/slave.c:1458
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s：%s 的 initgroups() 已失敗。"
 
-# daemon/slave.c:204
-#: daemon/server.c:800 daemon/slave.c:1113 daemon/slave.c:1441
+#: daemon/server.c:800 daemon/slave.c:1118 daemon/slave.c:1463
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s：無法設定使用者 id 為 %d"
 
-# daemon/slave.c:201
 #: daemon/server.c:807
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s：無法設定群組 id 為 0"
 
-# daemon/server.c:237
 #: daemon/server.c:818
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_server_spawn：找不到 X 伺服程式：%s"
 
-# daemon/server.c:242
 #: daemon/server.c:823
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn：無法衍生 X 伺服程式程序！"
 
-# daemon/slave.c:127
 #: daemon/slave.c:171
 msgid "gdm_slave_init: Error setting up ALRM signal handler"
 msgstr "gdm_slave_init：ALRM 訊號處理設定錯誤"
 
-# daemon/slave.c:119
 #: daemon/slave.c:183
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
 msgstr "gdm_slave_init：TERM/INT 訊號處理設定錯誤"
 
-# daemon/slave.c:127
 #: daemon/slave.c:192
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr "gdm_slave_init：CHLD 訊號處理設定錯誤"
 
-# gui/gdmlogin.c:1528
 #: daemon/slave.c:201
 #, c-format
 msgid "%s: Error setting up USR2 signal handler"
 msgstr "%s：USR2 訊號處理設定錯誤"
 
-#: daemon/slave.c:360
+#: daemon/slave.c:363
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -652,16 +660,16 @@ msgid ""
 "the problem is corrected."
 msgstr ""
 
-#: daemon/slave.c:545
+#: daemon/slave.c:550
 msgid "focus_first_x_window: cannot fork"
 msgstr "focus_first_x_window：無法衍生程序"
 
-#: daemon/slave.c:564
+#: daemon/slave.c:569
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr "focus_first_x_window：無法開啟顯示畫面 %s"
 
-#: daemon/slave.c:669
+#: daemon/slave.c:674
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -673,7 +681,7 @@ msgstr ""
 "內的路徑已設定好。將會嘗試使用\n"
 "預設的位置啟動程式。"
 
-#: daemon/slave.c:683
+#: daemon/slave.c:688
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -682,22 +690,21 @@ msgstr ""
 "無法執行設定程式。請確定設定檔\n"
 "內的路徑已設定好。"
 
-#: daemon/slave.c:738
+#: daemon/slave.c:743
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
 msgstr "輸入 root 的密碼以進行設定。"
 
-#: daemon/slave.c:753 daemon/slave.c:818
+#: daemon/slave.c:758 daemon/slave.c:823
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login：沒有登入名稱/登入錯誤"
 
-# daemon/slave.c:176
-#: daemon/slave.c:1067
+#: daemon/slave.c:1072
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr ""
 
-#: daemon/slave.c:1174
+#: daemon/slave.c:1179
 msgid ""
 "No servers were defined in the\n"
 "configuration file and xdmcp was\n"
@@ -715,7 +722,7 @@ msgstr ""
 "並修正設定。注意自動登入和\n"
 "計時登入功能會不能使用。"
 
-#: daemon/slave.c:1188
+#: daemon/slave.c:1193
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -728,20 +735,19 @@ msgstr ""
 "後備的 X 伺服程式。你應該登入並\n"
 "正確地設定 X 伺服程式。"
 
-#: daemon/slave.c:1197
+#: daemon/slave.c:1202
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
 "%s."
 msgstr "指定的顯示代號正在使用，所以此伺服程式會在顯示畫面 %s 啟動。"
 
-# daemon/slave.c:214
-#: daemon/slave.c:1207
+#: daemon/slave.c:1212
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr "gdm_slave_greeter：無法啟動歡迎程式，改用預設值：%s"
 
-#: daemon/slave.c:1219
+#: daemon/slave.c:1224
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -753,28 +759,25 @@ msgstr ""
 "此顯示畫面已停用。請嘗試以其它\n"
 "方法登入並修改設定檔"
 
-# daemon/slave.c:214
-#: daemon/slave.c:1225
+#: daemon/slave.c:1230
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr "gdm_slave_greeter：於顯示畫面 %s 啟動歡迎程式時發生錯誤"
 
-# daemon/slave.c:217
-#: daemon/slave.c:1228
+#: daemon/slave.c:1233
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: 無法衍生 gdmgreeter 程序"
 
-#: daemon/slave.c:1276 daemon/slave.c:1364
+#: daemon/slave.c:1293 daemon/slave.c:1386
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr ""
 
-# daemon/slave.c:176
-#: daemon/slave.c:1395
+#: daemon/slave.c:1417
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
 msgstr "gdm_slave_chooser：無法初始化到 gdmgreeter 的管線"
 
-#: daemon/slave.c:1474
+#: daemon/slave.c:1496
 msgid ""
 "Cannot start the chooser program,\n"
 "you will not be able to log in.\n"
@@ -783,43 +786,27 @@ msgstr ""
 "無法啟動選擇程式，你將無法登入。\n"
 "請聯絡系統管理員。\n"
 
-# daemon/slave.c:214
-#: daemon/slave.c:1478
+#: daemon/slave.c:1500
 #, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr "gdm_slave_chooser：於顯示畫面 %s 啟動選擇程式時發生錯誤"
 
-# daemon/slave.c:217
-#: daemon/slave.c:1481
+#: daemon/slave.c:1503
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr "gdm_slave_chooser：無法衍生 gdmgreeter 程序"
 
-# daemon/slave.c:388
-#: daemon/slave.c:1846
+#: daemon/slave.c:1867
 #, c-format
-msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
-msgstr "gdm_slave_session_start：無法設定群組 ID %d。放棄。"
+msgid "%s: Could not setup environment for %s. Aborting."
+msgstr "%s：無法設定 %s 的環境變數。放棄。"
 
-# daemon/slave.c:392
-#: daemon/slave.c:1850
-#, c-format
-msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
-msgstr "gdm_slave_session_start：%s 的 initgroups() 失敗。放棄。"
-
-# daemon/verify-pam.c:165
-#: daemon/slave.c:1856
-#, c-format
-msgid "%s: Could not open session for %s. Aborting."
-msgstr "%s：無法開啟作業階段給 %s。放棄。"
-
-# daemon/slave.c:396
-#: daemon/slave.c:1862
+#: daemon/slave.c:1877
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start：無法成為 %s。放棄。"
 
 #. yaikes
-#: daemon/slave.c:1928
+#: daemon/slave.c:1943
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -827,7 +814,7 @@ msgstr ""
 "gdm_slave_session_start：執行後備 gnome 作業階段時找不到 gnome-session，會嘗"
 "試 xterm"
 
-#: daemon/slave.c:1932
+#: daemon/slave.c:1947
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -836,7 +823,7 @@ msgstr ""
 "系統裡找不到 GNOME，會嘗試執行\n"
 "「後備 xterm」作業階段。"
 
-#: daemon/slave.c:1938
+#: daemon/slave.c:1953
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -845,11 +832,11 @@ msgid ""
 "your installation."
 msgstr ""
 
-#: daemon/slave.c:1957
+#: daemon/slave.c:1972
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "找不到 \"xterm\"，無法開始後備的作業階段。"
 
-#: daemon/slave.c:1964
+#: daemon/slave.c:1979
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -864,29 +851,27 @@ msgstr ""
 "模擬程式，在視窗裡輸入 'exit' 和\n"
 "按下 enter 鍵。"
 
-#: daemon/slave.c:1986
+#: daemon/slave.c:2001
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr ""
 
-# daemon/slave.c:388
-#: daemon/slave.c:2000
+#: daemon/slave.c:2015
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start：不允許此使用者登入"
 
-#: daemon/slave.c:2002
+#: daemon/slave.c:2017
 msgid ""
 "The system administrator has\n"
 "disabled your account."
 msgstr "系統管理者已暫停你的戶口。"
 
-# daemon/slave.c:432
-#: daemon/slave.c:2005
+#: daemon/slave.c:2020
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start：無法尋找/啟動作業階段 `%s'"
 
-#: daemon/slave.c:2010
+#: daemon/slave.c:2025
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -894,26 +879,24 @@ msgid ""
 "dialog window."
 msgstr ""
 
-# daemon/slave.c:432
-#: daemon/slave.c:2018
+#: daemon/slave.c:2033
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: 無法啟動作業階段 `%s'"
 
-#: daemon/slave.c:2021
+#: daemon/slave.c:2036
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
 "It could also indicate an error with your account.\n"
 msgstr ""
 
-# daemon/slave.c:266
-#: daemon/slave.c:2053
+#: daemon/slave.c:2068
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr "gdm_slave_session_start：使用者通過認證，但 getpwnam(%s) 失敗！"
 
-#: daemon/slave.c:2059
+#: daemon/slave.c:2074
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -926,95 +909,79 @@ msgid ""
 "you use a failsafe session."
 msgstr ""
 
-# daemon/filecheck.c:51
-#: daemon/slave.c:2067
+#: daemon/slave.c:2082
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s：%s 的使用者目錄：'%s' 不存在！"
 
-# daemon/slave.c:396
-#: daemon/slave.c:2213
+#: daemon/slave.c:2229
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr ""
 
-# daemon/slave.c:355
-#: daemon/slave.c:2231
+#: daemon/slave.c:2247
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
 msgstr "gdm_slave_session_start：執行 PreSession 命令稿的傳回值大於 0。放棄。"
 
-# daemon/slave.c:379
-#: daemon/slave.c:2268
+#: daemon/slave.c:2284
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start：衍生使用者作業階段發生錯誤"
 
-#: daemon/slave.c:2452
+#: daemon/slave.c:2468
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr ""
 
-# daemon/slave.c:613
-#: daemon/slave.c:2573
+#: daemon/slave.c:2589
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler：X 發生致命錯誤 - 重新啟動 %s"
 
-# daemon/slave.c:747
-#: daemon/slave.c:2764
+#: daemon/slave.c:2780
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: 啟動失敗：%s"
 
-# daemon/slave.c:751
-#: daemon/slave.c:2770
+#: daemon/slave.c:2786
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script：無法衍生指令稿程序！"
 
-# gui/gdmlogin.c:268
-#: daemon/slave.c:2894
+#: daemon/slave.c:2910
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "gdm_parse_enriched_login：建立管道發生錯誤"
 
-# daemon/slave.c:747
-#: daemon/slave.c:2916
+#: daemon/slave.c:2932
 #, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "gdm_parse_enriched_login：執行失敗：%s"
 
-# daemon/slave.c:751
-#: daemon/slave.c:2921
+#: daemon/slave.c:2937
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login：無法衍生指令稿程序！"
 
-# gui/gdmlogin.c:1265
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:67 daemon/verify-pam.c:244 daemon/verify-shadow.c:65
-#: gui/gdmlogin.c:3129
+#: daemon/verify-crypt.c:69 daemon/verify-pam.c:296 daemon/verify-shadow.c:68
+#: gui/gdmlogin.c:3146
 msgid "Please enter your username"
 msgstr "請輸入你的帳戶名稱"
 
-#: daemon/verify-crypt.c:68 daemon/verify-pam.c:245 daemon/verify-shadow.c:66
-#: gui/gdmlogin.c:3092
+#: daemon/verify-crypt.c:70 daemon/verify-pam.c:297 daemon/verify-shadow.c:69
+#: gui/gdmlogin.c:3109
 msgid "Username:"
 msgstr "帳戶名稱："
 
-# daemon/verify-crypt.c:64
-# daemon/verify-shadow.c:74
-#: daemon/verify-crypt.c:90 daemon/verify-shadow.c:98
+#: daemon/verify-crypt.c:92 daemon/verify-shadow.c:101
 msgid "Password: "
 msgstr "密碼："
 
-# daemon/verify-crypt.c:71
-# daemon/verify-pam.c:142
-# daemon/verify-shadow.c:81
-#: daemon/verify-crypt.c:108 daemon/verify-pam.c:309
-#: daemon/verify-shadow.c:116
+#: daemon/verify-crypt.c:110 daemon/verify-pam.c:330 daemon/verify-pam.c:496
+#: daemon/verify-shadow.c:119
 msgid "Couldn't authenticate user"
 msgstr "無法認證使用者"
 
-#: daemon/verify-crypt.c:114 daemon/verify-crypt.c:134 daemon/verify-pam.c:389
-#: daemon/verify-shadow.c:122 daemon/verify-shadow.c:142
+#: daemon/verify-crypt.c:116 daemon/verify-crypt.c:136 daemon/verify-pam.c:438
+#: daemon/verify-shadow.c:125 daemon/verify-shadow.c:145
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case.  "
@@ -1023,26 +990,23 @@ msgstr ""
 "\n"
 "不正確的戶口名稱或密碼。大小寫必須正確。請確定沒有按下 Caps Lock 鍵"
 
-# daemon/verify-crypt.c:77
-# daemon/verify-shadow.c:87
-#: daemon/verify-crypt.c:148 daemon/verify-pam.c:322
-#: daemon/verify-shadow.c:156
+#: daemon/verify-crypt.c:150 daemon/verify-pam.c:343
+#: daemon/verify-shadow.c:159
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Root 不允許在在顯示畫面 '%s' 登入"
 
-#: daemon/verify-crypt.c:150 daemon/verify-shadow.c:158
+#: daemon/verify-crypt.c:152 daemon/verify-shadow.c:161
 msgid "The system administrator is not allowed to login from this screen"
 msgstr "系統管理者不允許在此畫面登入"
 
-#: daemon/verify-crypt.c:166 daemon/verify-pam.c:340
-#: daemon/verify-shadow.c:174
+#: daemon/verify-crypt.c:168 daemon/verify-shadow.c:177
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "不允許使用者 %s 登入"
 
-#: daemon/verify-crypt.c:168 daemon/verify-pam.c:342
-#: daemon/verify-shadow.c:176
+#: daemon/verify-crypt.c:170 daemon/verify-pam.c:373 daemon/verify-pam.c:529
+#: daemon/verify-shadow.c:179
 msgid ""
 "\n"
 "The system administrator has disabled your account."
@@ -1050,30 +1014,54 @@ msgstr ""
 "\n"
 "系統管理者已暫停你的戶口。"
 
-# daemon/verify-pam.c:130
-#: daemon/verify-pam.c:264 daemon/verify-pam.c:486
-msgid "Can't find /etc/pam.d/gdm!"
-msgstr "找不到 /etc/pam.d/gdm！"
+#: daemon/verify-crypt.c:185 daemon/verify-crypt.c:219 daemon/verify-pam.c:391
+#: daemon/verify-pam.c:546 daemon/verify-shadow.c:193
+#: daemon/verify-shadow.c:226
+#, c-format
+msgid "Cannot set user group for %s"
+msgstr ""
 
-# daemon/verify-pam.c:136
-#: daemon/verify-pam.c:273 daemon/verify-pam.c:493
+#: daemon/verify-crypt.c:187 daemon/verify-crypt.c:222 daemon/verify-pam.c:393
+#: daemon/verify-pam.c:549 daemon/verify-shadow.c:195
+#: daemon/verify-shadow.c:229
+msgid ""
+"\n"
+"Cannot set your user group, you will not be able to log in, please contact "
+"your system administrator."
+msgstr ""
+"\n"
+"無法設定使用者的群組，你將無法登入。請聯絡系統管理員。"
+
+#: daemon/verify-crypt.c:214 daemon/verify-shadow.c:221
+#, c-format
+msgid "Cannot get passwd structure for %s"
+msgstr "無法取得 %s 的密碼架構"
+
+#: daemon/verify-pam.c:216
+msgid "Cannot setup pam handle with null login and/or display"
+msgstr ""
+
+#: daemon/verify-pam.c:230
+#, c-format
+msgid "Can't find /etc/pam.d/%s!"
+msgstr "找不到 /etc/pam.d/%s！"
+
+#: daemon/verify-pam.c:237
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "無法設定 PAM_TTY=%s"
 
-# daemon/verify-pam.c:136
-#: daemon/verify-pam.c:282 daemon/verify-pam.c:500
+#: daemon/verify-pam.c:244
 #, c-format
 msgid "Can't set PAM_RUSER=%s"
 msgstr "無法設定 PAM_RUSER=%s"
 
-# daemon/verify-pam.c:136
-#: daemon/verify-pam.c:292 daemon/verify-pam.c:508
+#: daemon/verify-pam.c:252
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "無法設定 PAM_RHOST=%s"
 
-#: daemon/verify-pam.c:325
+#: daemon/verify-pam.c:346
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1081,218 +1069,213 @@ msgstr ""
 "\n"
 "系統管理者不允許在此畫面登入"
 
-# daemon/verify-pam.c:153
-#: daemon/verify-pam.c:359 daemon/verify-pam.c:550
+#: daemon/verify-pam.c:362
+#, c-format
+msgid "Authentication token change failed for user %s"
+msgstr ""
+
+#: daemon/verify-pam.c:364
+msgid ""
+"\n"
+"The change of the authentication token failed. Please try again later or "
+"contact the system administrator."
+msgstr ""
+
+#: daemon/verify-pam.c:371 daemon/verify-pam.c:526
+#, c-format
+msgid "User %s no longer permitted to access the system"
+msgstr "永久不允許使用者 %s 進入系統"
+
+#: daemon/verify-pam.c:377 daemon/verify-pam.c:532
+#, c-format
+msgid "User %s not permitted to gain access at this time"
+msgstr "這次不允許使用者 %s 進入系統"
+
+#: daemon/verify-pam.c:379
+msgid ""
+"\n"
+"The system administrator has disabled access to the system temporary."
+msgstr ""
+"\n"
+"系統管理者暫時禁止使用者進入系統。"
+
+#: daemon/verify-pam.c:384 daemon/verify-pam.c:539
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "無法設定 %s 的戶口管理"
 
-#: daemon/verify-pam.c:395
-msgid "Authentication failed"
-msgstr "認證失敗"
-
-#: daemon/verify-pam.c:428
-msgid "Cannot setup pam handle with null login and/or display"
-msgstr ""
-
-# daemon/verify-pam.c:232
-#: daemon/verify-pam.c:644
-msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
-msgstr "gdm_verify_check：無法找到 gdm 使用的 PAM 設定檔"
-
-# daemon/verify-pam.c:165
-#: daemon/verify-pam.c:667
-#, c-format
-msgid "Couldn't open session for %s"
-msgstr "無法開啟 %s 的作業階段"
-
-# daemon/verify-pam.c:159
-#: daemon/verify-pam.c:675
+#: daemon/verify-pam.c:403 daemon/verify-pam.c:567
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr ""
 
-# daemon/xdmcp.c:178
+#: daemon/verify-pam.c:413 daemon/verify-pam.c:559
+#, c-format
+msgid "Couldn't open session for %s"
+msgstr "無法開啟 %s 的作業階段"
+
+#: daemon/verify-pam.c:444 daemon/verify-pam.c:499
+msgid "Authentication failed"
+msgstr "認證失敗"
+
+#: daemon/verify-pam.c:535
+msgid ""
+"\n"
+"The system administrator has disabled your access to the system temporary."
+msgstr ""
+"\n"
+"系統管理者暫時禁止你進入系統。"
+
+#: daemon/verify-pam.c:652
+#, c-format
+msgid "Can't find PAM configuration file for gdm. I've tried %s, %s, %s and %s"
+msgstr "找不到 gdm 使用的 PAM 設定檔。已經找過的設定檔有 %s、%s、%s 及 %s"
+
 #: daemon/xdmcp.c:238
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr "gdm_xdmcp_init：無法取得伺服程式主機名稱: %s!"
 
-# daemon/xdmcp.c:192
 #: daemon/xdmcp.c:255
 msgid "gdm_xdmcp_init: Could not create socket!"
 msgstr "gdm_xdmcp_init：無法建立 socket！"
 
-# daemon/xdmcp.c:199
 #: daemon/xdmcp.c:265
 msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
-msgstr ""
+msgstr "gdm_xdmcp_init：無法結合至 XDMCP socket！"
 
-# daemon/xdmcp.c:278
 #: daemon/xdmcp.c:321
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
 msgstr "gdm_xdmcp_decode：無法建立 XDMCP 緩衝區！"
 
-# daemon/xdmcp.c:283
 #: daemon/xdmcp.c:326
 msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode：無法讀取 XDMCP 標頭！"
 
-# daemon/xdmcp.c:288
 #: daemon/xdmcp.c:332
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode：不正確的 XDMCP 版本！"
 
-# daemon/xdmcp.c:328
 #: daemon/xdmcp.c:385
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr "gdm_xdmcp_decode_packet：來自主機 %s 的未知操作碼"
 
-# daemon/xdmcp.c:346
 #: daemon/xdmcp.c:404
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
-msgstr ""
+msgstr "gdm_xdmcp_handle_query：無法由封包取得認證列表"
 
-# daemon/xdmcp.c:357
 #: daemon/xdmcp.c:416
 msgid "gdm_xdmcp_handle_query: Error in checksum"
-msgstr "gdm_xdmcp_handle_query：檢查碼錯誤"
+msgstr "gdm_xdmcp_handle_query：檢查碼出現錯誤"
 
-# daemon/xdmcp.c:428
 #: daemon/xdmcp.c:659
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr "gdm_xdmcp_handle_forward_query：無法讀取顯示位址"
 
-# daemon/xdmcp.c:434
 #: daemon/xdmcp.c:666
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr "gdm_xdmcp_handle_forward_query：無法讀取顯示埠號"
 
-# daemon/xdmcp.c:440
 #: daemon/xdmcp.c:674
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
-msgstr ""
+msgstr "gdm_xdmcp_handle_forward_query：無法由封包取得認證列表"
 
-# daemon/xdmcp.c:455
 #: daemon/xdmcp.c:690
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query：檢查碼錯誤"
 
-# daemon/xdmcp.c:428
 #: daemon/xdmcp.c:696
 msgid "gdm_xdmcp_handle_forward_query: Bad address"
 msgstr "gdm_xdmcp_handle_forward_query：位址錯誤"
 
-# daemon/xdmcp.c:518
 #: daemon/xdmcp.c:804
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "拒絕由主機 %s 發出的 XDMCP 查詢"
 
-# daemon/xdmcp.c:553
 #: daemon/xdmcp.c:950
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request：收到已拒絕的主機 %s 發出的要求"
 
-# daemon/xdmcp.c:560
 #: daemon/xdmcp.c:957
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request：無法讀取顯示編號"
 
-# daemon/xdmcp.c:566
 #: daemon/xdmcp.c:963
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request：無法讀取連結類型"
 
-# daemon/xdmcp.c:572
 #: daemon/xdmcp.c:969
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr "gdm_xdmcp_handle_request：無法讀取客戶端位址"
 
-# daemon/xdmcp.c:578
 #: daemon/xdmcp.c:976
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr "gdm_xdmcp_handle_request：無法讀取認證名稱"
 
-# daemon/xdmcp.c:584
 #: daemon/xdmcp.c:984
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr "gdm_xdmcp_handle_request：無法讀取認證資料"
 
-# daemon/xdmcp.c:590
 #: daemon/xdmcp.c:993
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr "gdm_xdmcp_handle_request：無法讀取授權列表"
 
-# daemon/xdmcp.c:601
 #: daemon/xdmcp.c:1008
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr ""
 
-# daemon/xdmcp.c:619
 #: daemon/xdmcp.c:1031
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request：從 %s 得到錯誤的檢查碼"
 
-# daemon/xdmcp.c:732
 #: daemon/xdmcp.c:1198
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr "gdm_xdmcp_handle_manage：收到已拒絕的主機 %s 發出的管理訊息"
 
-# daemon/xdmcp.c:739
 #: daemon/xdmcp.c:1205
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage：無法讀取作業階段 ID"
 
-# daemon/xdmcp.c:745
 #: daemon/xdmcp.c:1211
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage：無法讀取顯示編號"
 
-# daemon/xdmcp.c:754
 #: daemon/xdmcp.c:1220
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
 msgstr "gdm_xdmcp_handle_manage：無法讀取顯示類型"
 
-# gui/gdmchooser.c:594
-# gui/gdmlogin.c:1542
 #: daemon/xdmcp.c:1295 daemon/xdmcp.c:1301 daemon/xdmcp.c:1351
 #: daemon/xdmcp.c:1357
 #, c-format
 msgid "%s: Could not read address"
 msgstr "%s：無法讀取地址"
 
-# daemon/xdmcp.c:847
 #: daemon/xdmcp.c:1433
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr "gdm_xdmcp_handle_keepalive：收到已拒絕的主機 %s 發出的 KEEPALIVE 訊息"
 
-# daemon/xdmcp.c:854
 #: daemon/xdmcp.c:1440
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_keepalive：無法讀取顯示編號"
 
-# daemon/xdmcp.c:860
 #: daemon/xdmcp.c:1446
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive：無法讀取作業階段 ID"
 
-# daemon/xdmcp.c:199
 #: daemon/xdmcp.c:1645
 msgid "gdm_xdmcp_init: No XDMCP support"
 msgstr "gdm_xdmcp_init：不支援 XDMCP"
 
-# daemon/xdmcp.c:199
 #: daemon/xdmcp.c:1652
 msgid "gdm_xdmcp_run: No XDMCP support"
 msgstr "gdm_xdmcp_run：不支援 XDMCP"
 
-# daemon/xdmcp.c:288
 #: daemon/xdmcp.c:1658
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_close：不支援 XDMCP"
@@ -1307,15 +1290,13 @@ msgstr ""
 
 #: gui/gdmchooser.c:64
 msgid "Choose a host to connect to from the selection below."
-msgstr ""
+msgstr "從以下的主機中選擇要連接的主機。"
 
-# gui/gdmchooser.c:340
 #: gui/gdmchooser.c:489
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
-msgstr "gdm_chooser_parse_config：缺少設定檔：%s。放棄。"
+msgstr "gdm_chooser_parse_config：找不到設定檔：%s。放棄。"
 
-# gui/gdmchooser.c:449
 #: gui/gdmchooser.c:672
 #, c-format
 msgid "Can't open default host icon: %s"
@@ -1336,38 +1317,33 @@ msgid ""
 "Please check your installation."
 msgstr ""
 
-# gui/gdmchooser.c:580
 #: gui/gdmchooser.c:746
 msgid "gdm_signals_init: Error setting up HUP signal handler"
-msgstr ""
+msgstr "gdm_signals_init：設定 HUP 訊號處理程序時出現錯誤"
 
-# gui/gdmchooser.c:583
 #: gui/gdmchooser.c:749
 msgid "gdm_signals_init: Error setting up INT signal handler"
-msgstr ""
+msgstr "gdm_signals_init：設定 INT 訊號處理程序時出現錯誤"
 
-# gui/gdmchooser.c:586
 #: gui/gdmchooser.c:752
 msgid "gdm_signals_init: Error setting up TERM signal handler"
-msgstr ""
+msgstr "gdm_signals_init：設定 TERM 訊號處理程序時出現錯誤"
 
-# gui/gdmchooser.c:594
-# gui/gdmlogin.c:1542
-#: gui/gdmchooser.c:760 gui/gdmlogin.c:3769
+#: gui/gdmchooser.c:760 gui/gdmlogin.c:3786
 msgid "Could not set signal mask!"
 msgstr ""
 
 #: gui/gdmchooser.c:850
 msgid "Socket for xdm communication"
-msgstr ""
+msgstr "xdm 連線所用的 socket"
 
 #: gui/gdmchooser.c:850
 msgid "SOCKET"
-msgstr ""
+msgstr "SOCKET"
 
 #: gui/gdmchooser.c:850
 msgid "Client address to return in response to xdm"
-msgstr ""
+msgstr "回應 xdm 所用的客戶端地址"
 
 #: gui/gdmchooser.c:850
 msgid "ADDRESS"
@@ -1375,7 +1351,7 @@ msgstr "位址"
 
 #: gui/gdmchooser.c:851
 msgid "Connection type to return in response to xdm"
-msgstr ""
+msgstr "回應 xdm 所用的連線類型"
 
 #: gui/gdmchooser.c:851
 msgid "TYPE"
@@ -1399,21 +1375,18 @@ msgstr ""
 msgid "GDM Host Chooser"
 msgstr ""
 
-# gui/gdmlogin.c:597
 #: gui/gdmchooser-strings.c:8
 msgid "Open a session to the selected host"
 msgstr ""
 
-# gui/gdmchooser.c:516
 #: gui/gdmchooser-strings.c:9
 msgid "Connect"
 msgstr "連接"
 
 #: gui/gdmchooser-strings.c:10
 msgid "Probe the network"
-msgstr ""
+msgstr "偵測網路"
 
-# gui/gdmchooser.c:523
 #: gui/gdmchooser-strings.c:11
 msgid "Rescan"
 msgstr "重新掃描"
@@ -1430,7 +1403,7 @@ msgstr "說明"
 msgid "Exit the application"
 msgstr "離開應用程式"
 
-#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2887
+#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2904
 msgid "Quit"
 msgstr "離開"
 
@@ -1465,10 +1438,9 @@ msgstr "基本"
 
 #: gui/gdmconfig.c:57
 msgid "Expert"
-msgstr ""
+msgstr "進階"
 
-# gui/gdmlogin.c:1090
-#: gui/gdmconfig.c:58 gui/gdmlogin.c:2873
+#: gui/gdmconfig.c:58 gui/gdmlogin.c:2890
 msgid "System"
 msgstr "系統"
 
@@ -1510,6 +1482,9 @@ msgid ""
 "widget \"%s\".  Unfortunately I cannot continue.\n"
 "Please check your installation."
 msgstr ""
+"glade 介面描述檔似乎沒有\n"
+"視窗元件“%s”。無法繼續。\n"
+"請檢查安裝是否出錯。"
 
 #: gui/gdmconfig.c:378
 msgid "You must be the superuser (root) to configure GDM.\n"
@@ -1522,6 +1497,10 @@ msgid ""
 "Please check your installation and the\n"
 "location of the gdmconfig.glade file."
 msgstr ""
+"找不到 glade 介面描述檔，\n"
+"無法執行 gdmconfig。\n"
+"請檢查安裝是否出錯，及檢查\n"
+"gdmconfig.glade 的位置。"
 
 #: gui/gdmconfig.c:446
 msgid ""
@@ -1529,6 +1508,9 @@ msgid ""
 "the glade interface description file\n"
 "Please check your installation."
 msgstr ""
+"glade 介面描述檔中找不到\n"
+"gdmconfigurator 視窗元件。\n"
+"請檢查安裝是否出錯。"
 
 #: gui/gdmconfig.c:504
 msgid "GNOME Display Manager Configurator"
@@ -1541,32 +1523,31 @@ msgid ""
 "does not exist! Using default values."
 msgstr "設定檔：%s不存在！會使用預設值。"
 
-#: gui/gdmconfig.c:738 gui/gdmconfig.c:1090 gui/gdmconfig.c:1953
-#: gui/gdmconfig.c:2175 gui/gdmflexiserver.c:449
+#: gui/gdmconfig.c:738 gui/gdmconfig.c:1090 gui/gdmconfig.c:1984
+#: gui/gdmconfig.c:2206 gui/gdmflexiserver.c:449
 msgid "Standard server"
 msgstr ""
 
 #: gui/gdmconfig.c:938
 msgid "Error reading session script!"
-msgstr ""
+msgstr "讀入作業階段命令稿時發生錯誤！"
 
 #: gui/gdmconfig.c:941
 msgid "Error reading this session script"
-msgstr ""
+msgstr "讀入此作業階段命令稿時發生錯誤！"
 
-#: gui/gdmconfig.c:1049 gui/gdmconfig.c:1095 gui/gdmconfig.c:1937
-#: gui/gdmconfig.c:2015 gui/gdmconfig.c:2031
+#: gui/gdmconfig.c:1049 gui/gdmconfig.c:1095 gui/gdmconfig.c:1534
+#: gui/gdmconfig.c:1968 gui/gdmconfig.c:2046 gui/gdmconfig.c:2062
 msgid "Yes"
 msgstr "是"
 
-#: gui/gdmconfig.c:1051 gui/gdmconfig.c:2019 gui/gdmconfig.c:2033
+#: gui/gdmconfig.c:1051 gui/gdmconfig.c:2050 gui/gdmconfig.c:2064
 msgid "No"
 msgstr "否"
 
-# daemon/gdm.c:183
 #: gui/gdmconfig.c:1126
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr ""
+msgstr "gdm_config_parse_most：設定檔中的 server 無效。會忽略！"
 
 #: gui/gdmconfig.c:1308
 msgid ""
@@ -1577,6 +1558,11 @@ msgid ""
 "restart GDM now (which will kill all current\n"
 "sessions)"
 msgstr ""
+"除非重新啟動 gdm 或是重新啟動電腦，\n"
+"否則已套用的設定仍未可以生效。\n"
+"你可以在所有作業階段關閉（所有使用\n"
+"者都登出）後重新啟動 gdm，或是現在就\n"
+"重新啟動 gdm（會強行中止所有作業階段）。"
 
 #: gui/gdmconfig.c:1314
 msgid "Restart after logout"
@@ -1602,7 +1588,7 @@ msgid ""
 "rebooted"
 msgstr ""
 
-#: gui/gdmconfig.c:1355
+#: gui/gdmconfig.c:1356
 msgid ""
 "You have not defined any local servers.\n"
 "Usually this is not a good idea unless you\n"
@@ -1613,8 +1599,7 @@ msgid ""
 "Are you sure you wish to apply these settings?"
 msgstr ""
 
-# daemon/verify-pam.c:165
-#: gui/gdmconfig.c:1539
+#: gui/gdmconfig.c:1570
 #, c-format
 msgid ""
 "\n"
@@ -1625,8 +1610,7 @@ msgstr ""
 "無法刪除作業階段 %s\n"
 "   錯誤：%s"
 
-# daemon/verify-pam.c:165
-#: gui/gdmconfig.c:1575
+#: gui/gdmconfig.c:1606
 #, c-format
 msgid ""
 "\n"
@@ -1637,8 +1621,7 @@ msgstr ""
 "無法移除作業階段 %s\n"
 "   錯誤：%s"
 
-# daemon/verify-pam.c:165
-#: gui/gdmconfig.c:1618
+#: gui/gdmconfig.c:1649
 #, c-format
 msgid ""
 "\n"
@@ -1649,8 +1632,7 @@ msgstr ""
 "無法寫入作業階段 %s\n"
 "   錯誤：%s"
 
-# daemon/verify-pam.c:165
-#: gui/gdmconfig.c:1629
+#: gui/gdmconfig.c:1660
 #, c-format
 msgid ""
 "\n"
@@ -1658,37 +1640,41 @@ msgid ""
 "   Error: %s"
 msgstr ""
 
-# daemon/verify-pam.c:165
-#: gui/gdmconfig.c:1654
+#: gui/gdmconfig.c:1685
 #, c-format
 msgid ""
 "\n"
 "Could not unlink old default session\n"
 "   Error: %s"
 msgstr ""
+"\n"
+"無法刪除舊的預設作業階段\n"
+"   錯誤：%s"
 
-#: gui/gdmconfig.c:1693
+#: gui/gdmconfig.c:1724
 msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
 msgstr ""
 
-# daemon/verify-pam.c:165
-#: gui/gdmconfig.c:1702
+#: gui/gdmconfig.c:1733
 #, c-format
 msgid ""
 "\n"
 "Could not link new default session\n"
 "   Error: %s"
 msgstr ""
+"\n"
+"無法連結至新的預設作業階段\n"
+"   錯誤：%s"
 
-#: gui/gdmconfig.c:1722
+#: gui/gdmconfig.c:1753
 msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
 msgstr ""
 
-#: gui/gdmconfig.c:1742
+#: gui/gdmconfig.c:1773
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -1696,7 +1682,7 @@ msgstr ""
 "這樣會令此作業階段中的所有變更失效。\n"
 "是否確定要這樣做？"
 
-#: gui/gdmconfig.c:1753
+#: gui/gdmconfig.c:1784
 msgid ""
 "This will destroy any changes made in the configuration.\n"
 "Are you sure you want to do this?"
@@ -1704,23 +1690,23 @@ msgstr ""
 "這樣會令所有已變更的設定失效。\n"
 "是否確定要這樣做？"
 
-#: gui/gdmconfig.c:1974 gui/gdmconfig.c:2305
+#: gui/gdmconfig.c:2005 gui/gdmconfig.c:2336
 msgid "A command line must start with a forward slash ('/')"
 msgstr ""
 
-#: gui/gdmconfig.c:1978
+#: gui/gdmconfig.c:2009
 msgid "A descriptive server name must be supplied"
-msgstr ""
+msgstr "必須提供伺服器名稱"
 
-#: gui/gdmconfig.c:2645
+#: gui/gdmconfig.c:2676
 msgid "A session name must be unique and not empty"
-msgstr ""
+msgstr "作業階段名稱必須是唯一的，而且不可留空"
 
-#: gui/gdmconfig.c:2658
+#: gui/gdmconfig.c:2689
 msgid "Enter a name for the new session"
 msgstr "為新的作業階段命名"
 
-#: gui/gdmconfig.c:2773
+#: gui/gdmconfig.c:2804
 msgid ""
 "You have modified the sessions directory.\n"
 "Your session changes will still get written\n"
@@ -1730,7 +1716,7 @@ msgstr ""
 
 #: gui/gdmconfig.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr ""
+msgstr "用來設定 Gnome 顯示管理程式（GDM）的圖型介面程式"
 
 #: gui/gdmconfig.desktop.in.h:2
 msgid "GDM Configurator"
@@ -1759,7 +1745,7 @@ msgstr "還原設定"
 
 #: gui/gdmconfig-strings.c:11
 msgid "Revert to settings that were shipped with your system"
-msgstr ""
+msgstr "還原至系統原來提供的設定"
 
 #: gui/gdmconfig-strings.c:12
 msgid "Revert to Factory Settings"
@@ -1785,10 +1771,6 @@ msgstr "基本設定"
 msgid "General Appearance"
 msgstr "一般外觀"
 
-# daemon/verify-crypt.c:58
-# daemon/verify-pam.c:123
-# daemon/verify-shadow.c:60
-# gui/gdmlogin.c:1230
 #: gui/gdmconfig-strings.c:19
 msgid "Logo: "
 msgstr "標誌："
@@ -1813,7 +1795,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:24
 msgid "Gtk+ RC file: "
-msgstr ""
+msgstr "Gtk+ RC 檔："
 
 #: gui/gdmconfig-strings.c:25
 msgid "Login appearance"
@@ -1840,7 +1822,7 @@ msgstr ""
 #: gui/gdmconfig-strings.c:30
 msgid ""
 "If the user fails to authenticate himself the login window should Quiver to "
-"indicate failiure"
+"indicate failure"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:31
@@ -1857,7 +1839,6 @@ msgstr ""
 msgid "Show title bar on login window"
 msgstr "在登入視窗中顯示標題列"
 
-# gui/gdmlogin.c:269
 #: gui/gdmconfig-strings.c:34
 #, c-format
 msgid "Welcome to %n"
@@ -1881,7 +1862,6 @@ msgstr "登入視窗中所顯示的歡迎字句"
 msgid "Default font: "
 msgstr "預設字型："
 
-# gui/gdmlogin.c:269
 #: gui/gdmconfig-strings.c:40
 msgid "Welcome message: "
 msgstr "歡迎字句："
@@ -2045,7 +2025,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:81
 msgid "Always use 24 hour clock format"
-msgstr ""
+msgstr "永遠使用 24 小時的時間格式"
 
 #: gui/gdmconfig-strings.c:82
 msgid "Position"
@@ -2081,8 +2061,8 @@ msgstr "Xinerama 畫面："
 
 #: gui/gdmconfig-strings.c:90
 msgid ""
-"If you have xinerama multi display setup which screen should the loginw "
-"indow appear on.  0 will usually do just fine."
+"If you have xinerama multi display setup which screen should the login "
+"window appear on.  0 will usually do just fine."
 msgstr ""
 
 #: gui/gdmconfig-strings.c:91
@@ -2091,7 +2071,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:92 gui/gdmconfig-strings.c:103
 msgid "Face browser"
-msgstr ""
+msgstr "樣貌瀏覽器"
 
 #: gui/gdmconfig-strings.c:93
 msgid ""
@@ -2105,7 +2085,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:95
 msgid "Default face image: "
-msgstr ""
+msgstr "預設樣貌圖像："
 
 #: gui/gdmconfig-strings.c:96
 msgid "Global faces directory: "
@@ -2113,7 +2093,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:97
 msgid "Maximum face width: "
-msgstr ""
+msgstr "樣貌的最大寬度："
 
 #: gui/gdmconfig-strings.c:98
 msgid "Select an image for users with no 'face'"
@@ -2125,7 +2105,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:100
 msgid "Maximum face height: "
-msgstr ""
+msgstr "樣貌的最大高度："
 
 #: gui/gdmconfig-strings.c:101
 msgid "Exclude these users: "
@@ -2153,7 +2133,7 @@ msgstr "無"
 
 #: gui/gdmconfig-strings.c:108
 msgid "The background should be an image"
-msgstr "背景應該是圖像"
+msgstr "背景必須是圖像"
 
 #: gui/gdmconfig-strings.c:109
 msgid "Image"
@@ -2161,7 +2141,7 @@ msgstr "圖像"
 
 #: gui/gdmconfig-strings.c:110
 msgid "The background should be a color"
-msgstr "背景應該是顏色"
+msgstr "背景必須是顏色"
 
 #: gui/gdmconfig-strings.c:111
 msgid "Color"
@@ -2211,7 +2191,7 @@ msgstr "背景程式："
 
 #: gui/gdmconfig-strings.c:122 gui/gdmconfig-strings.c:268
 msgid "Select a file containing Locale information"
-msgstr ""
+msgstr "選擇含有語系資料的檔案"
 
 #: gui/gdmconfig-strings.c:123
 msgid "The program to run in the background of the login."
@@ -2219,31 +2199,31 @@ msgstr "登入時在背景執行的程式。"
 
 #: gui/gdmconfig-strings.c:125 gui/gdmconfig-strings.c:132
 msgid "Automatic login"
-msgstr ""
+msgstr "自動登入"
 
 #: gui/gdmconfig-strings.c:126
 msgid "Automatic login: "
-msgstr ""
+msgstr "自動登入："
 
 #: gui/gdmconfig-strings.c:127
 msgid "Login a user automatically on first bootup"
-msgstr ""
+msgstr "啟動後自動登入成為某位使用者"
 
 #: gui/gdmconfig-strings.c:128
 msgid "Timed login"
-msgstr ""
+msgstr "時限登入"
 
 #: gui/gdmconfig-strings.c:129
 msgid "Timed login: "
-msgstr ""
+msgstr "時限登入："
 
 #: gui/gdmconfig-strings.c:130
 msgid "Seconds before login: "
-msgstr ""
+msgstr "登入前等待的時間："
 
 #: gui/gdmconfig-strings.c:131
 msgid "Login a user automatically after a specified number of seconds"
-msgstr ""
+msgstr "於指定的秒數後自動登入成為某位使用者"
 
 #: gui/gdmconfig-strings.c:133
 msgid "expert"
@@ -2262,6 +2242,8 @@ msgid ""
 "Allow logging in as root (administrator) user from a remote host using GDM.  "
 "This is only relevant if you enable the XDMCP protocol."
 msgstr ""
+"允許遠端的主機透過 GDM 登入成為 root（管理者）。這只在啟用 XDMCP 協定的情形下"
+"有用。"
 
 #: gui/gdmconfig-strings.c:138
 msgid "Allow root to login remotely with GDM"
@@ -2297,7 +2279,6 @@ msgstr ""
 msgid "Select how relaxed permissions are"
 msgstr "選擇權限的寬鬆程度"
 
-# gui/gdmlogin.c:1062
 #: gui/gdmconfig-strings.c:145
 msgid "Permissions: "
 msgstr "權限："
@@ -2332,7 +2313,7 @@ msgstr "認證細節"
 
 #: gui/gdmconfig-strings.c:153
 msgid "GDM runs as this user: "
-msgstr ""
+msgstr "GDM 以此使用者的身份運行："
 
 #: gui/gdmconfig-strings.c:154
 msgid "User 'auth' directory: "
@@ -2348,11 +2329,11 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:157
 msgid "GDM runs as this group: "
-msgstr ""
+msgstr "GDM 以此群組的身份運行："
 
 #: gui/gdmconfig-strings.c:158
 msgid "Limits"
-msgstr ""
+msgstr "限制"
 
 #: gui/gdmconfig-strings.c:159
 msgid ""
@@ -2368,7 +2349,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:161
 msgid "Retry delay: "
-msgstr ""
+msgstr "重新登入延遲時間："
 
 #: gui/gdmconfig-strings.c:162
 msgid "Maximum user file length: "
@@ -2393,6 +2374,7 @@ msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
 msgstr ""
+"程式不支援 XDMCP。要啟用 XDMCP 支援，必須安裝 XDMCP 函式庫並重新編譯 GDM。"
 
 #: gui/gdmconfig-strings.c:167
 msgid "Enable XDMCP, a protocol to allow others to log in remotely"
@@ -2404,7 +2386,7 @@ msgstr "啟用 XDMCP"
 
 #: gui/gdmconfig-strings.c:169
 msgid "Connection Settings"
-msgstr ""
+msgstr "連線設定"
 
 #: gui/gdmconfig-strings.c:170
 msgid "Honour indirect requests"
@@ -2604,7 +2586,7 @@ msgstr "可用的作業階段"
 msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:64 gui/gdmlogin.c:1415
+#: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:64 gui/gdmlogin.c:1434
 msgid "Gnome Chooser"
 msgstr ""
 
@@ -2614,7 +2596,7 @@ msgstr "顯示 Gnome 後備作業階段"
 
 #: gui/gdmconfig-strings.c:220
 msgid "Gnome Failsafe"
-msgstr ""
+msgstr "Gnome 後備"
 
 #: gui/gdmconfig-strings.c:221
 msgid "Show the Xterm failsafe session"
@@ -2622,9 +2604,8 @@ msgstr "顯示 Xterm 後備作業階段"
 
 #: gui/gdmconfig-strings.c:222
 msgid "Xterm Failsafe"
-msgstr ""
+msgstr "Xterm 後備"
 
-# gui/gdmlogin.c:1062
 #: gui/gdmconfig-strings.c:223
 msgid "Add session"
 msgstr "增加作業階段"
@@ -2633,7 +2614,6 @@ msgstr "增加作業階段"
 msgid "Remove session"
 msgstr "移除作業階段"
 
-# gui/gdmlogin.c:269
 #: gui/gdmconfig-strings.c:226
 msgid "Selected session name: "
 msgstr "所選的作業階段名稱："
@@ -2655,11 +2635,11 @@ msgstr "外觀"
 
 #: gui/gdmconfig-strings.c:233
 msgid "Directory for host images: "
-msgstr ""
+msgstr "含有主機圖像的目錄："
 
 #: gui/gdmconfig-strings.c:234
 msgid "Default host image:"
-msgstr ""
+msgstr "預設的主機圖像："
 
 #: gui/gdmconfig-strings.c:235
 msgid "Refresh"
@@ -2736,7 +2716,7 @@ msgstr "重新啟動系統的指令："
 
 #: gui/gdmconfig-strings.c:253
 msgid "Configurator command: "
-msgstr ""
+msgstr "設定程式的指令："
 
 #: gui/gdmconfig-strings.c:254
 msgid "Suspend command: "
@@ -2746,7 +2726,6 @@ msgstr ""
 msgid "Directories"
 msgstr "目錄"
 
-# gui/gdmlogin.c:681
 #: gui/gdmconfig-strings.c:256
 msgid "PRE session scripts directory: "
 msgstr ""
@@ -2789,7 +2768,7 @@ msgstr "本地化"
 
 #: gui/gdmconfig-strings.c:269
 msgid "Locale file: "
-msgstr ""
+msgstr "語系檔："
 
 #: gui/gdmconfig-strings.c:270
 msgid "Environment"
@@ -2805,6 +2784,9 @@ msgid ""
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
 "under the `gdm' product."
 msgstr ""
+"設定 GNOME 顯示管理程式。\n"
+"請提交任何的錯誤報告或新功能的要求至 http://bugzilla.gnome.org，並列明和 gdm "
+"軟件有關。"
 
 #: gui/gdmconfig-strings.c:274
 msgid "label273"
@@ -2818,7 +2800,7 @@ msgstr "額外的參數："
 msgid "Custom command line:"
 msgstr "自訂的指令列："
 
-#: gui/gdmconfig-strings.c:277 gui/gdmlogin.c:1815
+#: gui/gdmconfig-strings.c:277 gui/gdmlogin.c:1834
 msgid "Name: "
 msgstr "名稱："
 
@@ -2844,7 +2826,7 @@ msgstr "選擇要啟動的 X 伺服程式"
 
 #: gui/gdmflexiserver.c:499
 msgid "Send the specified protocol command to gdm"
-msgstr ""
+msgstr "將指定的協定指令送至 gdm"
 
 #: gui/gdmflexiserver.c:499
 msgid "COMMAND"
@@ -2852,11 +2834,11 @@ msgstr "指令"
 
 #: gui/gdmflexiserver.c:500
 msgid "Xnest mode"
-msgstr ""
+msgstr "Xnest 模式"
 
 #: gui/gdmflexiserver.c:501
 msgid "Do not lock current screen"
-msgstr ""
+msgstr "不鎖定目前的畫面"
 
 #: gui/gdmflexiserver.c:502
 msgid "Debugging output"
@@ -2866,7 +2848,7 @@ msgstr "偵錯輸出"
 msgid "Authenticate before running --command"
 msgstr ""
 
-#: gui/gdmXnestchooser.c:261 gui/gdmflexiserver.c:551
+#: gui/gdmflexiserver.c:551 gui/gdmXnestchooser.c:261
 msgid ""
 "GDM is not running.\n"
 "Please ask your system administrator to start it."
@@ -2893,7 +2875,7 @@ msgstr ""
 
 #: gui/gdmflexiserver.c:632
 msgid "Can't lock screen"
-msgstr ""
+msgstr "無法鎖定畫面"
 
 #: gui/gdmflexiserver.c:635
 msgid "Can't disable xscreensaver display hacks"
@@ -2934,11 +2916,11 @@ msgstr ""
 
 #: gui/gdmflexiserver.c:677
 msgid "Unknown error occured."
-msgstr ""
+msgstr "出現不明的錯誤。"
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without loging out"
-msgstr ""
+msgstr "在不登出的情況下登入成為另一位使用者"
 
 #: gui/gdmflexiserver.desktop.in.h:2
 msgid "New login"
@@ -2953,196 +2935,224 @@ msgid "New login in a nested window"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:36
+#: gui/gdmlanguages.c:40
+msgid "A-M|Azerbaijani"
+msgstr "A 至 M|亞賽拜然"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:42
+msgid "A-M|Basque"
+msgstr ""
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:44
+msgid "A-M|Bulgarian"
+msgstr "A 至 M|保加利亞文"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:46
 msgid "A-M|Catalan"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:38
+#: gui/gdmlanguages.c:48
 msgid "A-M|Chinese (simplified)"
 msgstr "A 至 M|簡體中文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:40
+#: gui/gdmlanguages.c:50
 msgid "A-M|Chinese (traditional)"
 msgstr "A 至 M|繁體中文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:42
+#: gui/gdmlanguages.c:52
 msgid "A-M|Croatian"
 msgstr "A 至 M|克羅地亞文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:44
+#: gui/gdmlanguages.c:54
 msgid "A-M|Czech"
 msgstr "A 至 M|捷克文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:46
+#: gui/gdmlanguages.c:56
 msgid "A-M|Danish"
 msgstr "A 至 M|丹麥文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:48
+#: gui/gdmlanguages.c:58
 msgid "A-M|Dutch"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:50
+#: gui/gdmlanguages.c:60
 msgid "A-M|English"
 msgstr "A 至 M|英文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:52
+#: gui/gdmlanguages.c:62
+msgid "A-M|Estonian"
+msgstr "A 至 M|愛沙尼亞文"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:64
 msgid "A-M|American English"
 msgstr "A 至 M|美式英文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:54
+#: gui/gdmlanguages.c:66
 msgid "A-M|British English"
 msgstr "A 至 M|英式英文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:56
+#: gui/gdmlanguages.c:68
 msgid "A-M|Finnish"
 msgstr "A 至 M|芬蘭文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:58
+#: gui/gdmlanguages.c:70
 msgid "A-M|French"
 msgstr "A 至 M|法文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:60
+#: gui/gdmlanguages.c:72
 msgid "A-M|Galician"
 msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:62
+#: gui/gdmlanguages.c:74
 msgid "A-M|German"
 msgstr "A 至 M|德文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:64
+#: gui/gdmlanguages.c:76
 msgid "A-M|Greek"
 msgstr "A 至 M|希臘文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:66
+#: gui/gdmlanguages.c:78
 msgid "A-M|Hebrew"
 msgstr "A 至 M|希伯來文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:68
+#: gui/gdmlanguages.c:80
 msgid "A-M|Hungarian"
 msgstr "A 至 M|匈牙利文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:70
+#: gui/gdmlanguages.c:82
 msgid "A-M|Icelandic"
 msgstr "A 至 M|冰島文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:72
+#: gui/gdmlanguages.c:84
 msgid "A-M|Italian"
 msgstr "A 至 M|意大利文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:74
+#: gui/gdmlanguages.c:86
 msgid "A-M|Japanese"
 msgstr "A 至 M|日文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:76
+#: gui/gdmlanguages.c:88
 msgid "A-M|Korean"
 msgstr "A 至 M|韓文"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:78
+#: gui/gdmlanguages.c:90
+msgid "A-M|Latvian"
+msgstr "A 至 M|拉脫維亞文"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:92
 msgid "A-M|Lithuanian"
-msgstr ""
+msgstr "A 至 M|立陶宛文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:80
+#: gui/gdmlanguages.c:94
 msgid "N-Z|Norwegian (bokmal)"
-msgstr ""
+msgstr "N 至 Z|挪威文（bokmal）"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:82
+#: gui/gdmlanguages.c:96
 msgid "N-Z|Norwegian (nynorsk)"
-msgstr ""
+msgstr "N 至 Z|挪威文（nynorsk）"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:84
+#: gui/gdmlanguages.c:98
 msgid "N-Z|Polish"
 msgstr "N 至 Z|波蘭文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:86
+#: gui/gdmlanguages.c:100
 msgid "N-Z|Portuguese"
 msgstr "N 至 Z|葡萄牙文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:88
+#: gui/gdmlanguages.c:102
 msgid "N-Z|Brazilian Portuguese"
 msgstr "N 至 Z|巴西葡萄牙文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:90
+#: gui/gdmlanguages.c:104
 msgid "N-Z|Romanian"
 msgstr "N 至 Z|羅馬尼亞文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:92
+#: gui/gdmlanguages.c:106
 msgid "N-Z|Russian"
 msgstr "N 至 Z|俄文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:94
+#: gui/gdmlanguages.c:108
 msgid "N-Z|Slovak"
-msgstr ""
+msgstr "N 至 Z|斯洛伐克文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:96
+#: gui/gdmlanguages.c:110
 msgid "N-Z|Slovenian"
 msgstr ""
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:98
+#: gui/gdmlanguages.c:112
 msgid "N-Z|Spanish"
 msgstr "N 至 Z|西班牙文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:100
+#: gui/gdmlanguages.c:114
 msgid "N-Z|Swedish"
 msgstr "N 至 Z|瑞典文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:102
+#: gui/gdmlanguages.c:116
 msgid "N-Z|Turkish"
 msgstr "N 至 Z|土耳其文"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:104
+#: gui/gdmlanguages.c:118
 msgid "N-Z|Ukrainian"
 msgstr "N 至 Z|烏克蘭文"
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:120
+msgid "N-Z|Walloon"
+msgstr "N 至 Z|華隆文"
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:106
+#: gui/gdmlanguages.c:122
 msgid "Other|POSIX/C English"
 msgstr "其它|POSIX/C 英文"
 
-# gui/gdmlogin.c:731
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:233
+#: gui/gdmlanguages.c:249
 msgid "A-M"
 msgstr "A 至 M"
 
-# gui/gdmlogin.c:737
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:241
+#: gui/gdmlanguages.c:257
 msgid "N-Z"
 msgstr "N 至 Z"
 
@@ -3152,7 +3162,7 @@ msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:59 gui/gdmlogin.c:1770 gui/gdmlogin.c:1792
+#: gui/gdmlogin.c:59 gui/gdmlogin.c:1789 gui/gdmlogin.c:1811
 msgid "Default"
 msgstr "預設"
 
@@ -3164,13 +3174,10 @@ msgstr "Gnome"
 msgid "KDE"
 msgstr "KDE"
 
-# gui/gdmlogin.c:1062
 #: gui/gdmlogin.c:63
 msgid "XSession"
-msgstr ""
+msgstr "XSession"
 
-# gui/gdmlogin.c:613
-# gui/gdmlogin.c:716
 #: gui/gdmlogin.c:65
 msgid "Last"
 msgstr "上一個"
@@ -3180,23 +3187,21 @@ msgstr "上一個"
 msgid "User %s will login in %d seconds"
 msgstr "使用者 %s 將會在 %d 內登入"
 
-#: gui/gdmlogin.c:446
+#: gui/gdmlogin.c:452
 msgid ""
 "Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr ""
 
-# gui/gdmlogin.c:269
-#: gui/gdmlogin.c:526 gui/gdmlogin.c:532 gui/gdmlogin.c:539
+#: gui/gdmlogin.c:532 gui/gdmlogin.c:538 gui/gdmlogin.c:545
 #, c-format
 msgid "Welcome to %s"
 msgstr "歡迎來到 %s"
 
-# gui/gdmlogin.c:268
-#: gui/gdmlogin.c:537
+#: gui/gdmlogin.c:543
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string：字串太長！"
 
-#: gui/gdmlogin.c:676
+#: gui/gdmlogin.c:695
 msgid ""
 "Could not fork a new process!\n"
 "\n"
@@ -3206,41 +3211,36 @@ msgstr ""
 "\n"
 "你很可能無法登入。"
 
-# gui/gdmlogin.c:355
-#: gui/gdmlogin.c:723
+#: gui/gdmlogin.c:742
 msgid "Are you sure you want to reboot the machine?"
 msgstr "確定要重新啟動電腦嗎？"
 
-# gui/gdmlogin.c:368
-#: gui/gdmlogin.c:735
+#: gui/gdmlogin.c:754
 msgid "Are you sure you want to shut down the machine?"
 msgstr "確定要關閉電腦嗎？"
 
-# gui/gdmlogin.c:355
-#: gui/gdmlogin.c:746
+#: gui/gdmlogin.c:765
 msgid "Are you sure you want to suspend the machine?"
 msgstr ""
 
-# gui/gdmlogin.c:385
-#: gui/gdmlogin.c:760
+#: gui/gdmlogin.c:779
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr "gdm_login_parse_config：找不到設定檔：%s。使用預設值。"
 
-#: gui/gdmlogin.c:826
+#: gui/gdmlogin.c:845
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr "TimedLoginDelay 少於 5。會使用 5 代替。"
 
-#: gui/gdmlogin.c:888 gui/gdmlogin.c:1463
+#: gui/gdmlogin.c:907 gui/gdmlogin.c:1482
 msgid "Failsafe Gnome"
-msgstr ""
+msgstr "後備 Gnome"
 
-#: gui/gdmlogin.c:890 gui/gdmlogin.c:1488
+#: gui/gdmlogin.c:909 gui/gdmlogin.c:1507
 msgid "Failsafe xterm"
-msgstr ""
+msgstr "後備 xterm"
 
-# gui/gdmlogin.c:481
-#: gui/gdmlogin.c:936
+#: gui/gdmlogin.c:955
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -3249,9 +3249,7 @@ msgstr ""
 "你希望的作業階段種類 %s 沒有安裝在這台機器上.\n"
 "你要將 %s 設成未來作業階段的預設值嗎?"
 
-# gui/gdmlogin.c:496
-# gui/gdmlogin.c:538
-#: gui/gdmlogin.c:961 gui/gdmlogin.c:1049
+#: gui/gdmlogin.c:980 gui/gdmlogin.c:1068
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -3265,7 +3263,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:977
+#: gui/gdmlogin.c:996
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -3274,176 +3272,165 @@ msgid ""
 "(System->Desktop Switching Tool from the panel menu)."
 msgstr ""
 
-# gui/gdmlogin.c:597
-#: gui/gdmlogin.c:1272
+#: gui/gdmlogin.c:1291
 #, c-format
 msgid "%s session selected"
 msgstr "已選擇作業階段 %s"
 
-#: gui/gdmlogin.c:1305
+#: gui/gdmlogin.c:1324
 msgid "Log in using the session that you have used last time you logged in"
 msgstr ""
 
-# gui/gdmlogin.c:628
-#: gui/gdmlogin.c:1318
+#: gui/gdmlogin.c:1337
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init：找不到作業階段指令稿的目錄！"
 
-#: gui/gdmlogin.c:1403
+#: gui/gdmlogin.c:1422
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr ""
 
-#: gui/gdmlogin.c:1418
+#: gui/gdmlogin.c:1437
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
 msgstr ""
 
-#: gui/gdmlogin.c:1453
+#: gui/gdmlogin.c:1472
 msgid "Yaikes, nothing found in the session directory."
 msgstr ""
 
-#: gui/gdmlogin.c:1465
+#: gui/gdmlogin.c:1484
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
 
-#: gui/gdmlogin.c:1490
+#: gui/gdmlogin.c:1509
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
 msgstr ""
 
-# gui/gdmlogin.c:685
-#: gui/gdmlogin.c:1511
+#: gui/gdmlogin.c:1530
 msgid "No default session link found. Using Failsafe GNOME.\n"
-msgstr ""
+msgstr "找不到預設的作業階段連結。使用「後備 Gnome」作業階段。\n"
 
-# gui/gdmlogin.c:699
-#: gui/gdmlogin.c:1551
+#: gui/gdmlogin.c:1570
 #, c-format
 msgid "%s language selected"
-msgstr "選擇 %s 語系"
+msgstr "選擇 %s 語言"
 
-#: gui/gdmlogin.c:1589
+#: gui/gdmlogin.c:1608
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "使用上次的語言作為登入的介面"
 
-# gui/gdmlogin.c:743
-#: gui/gdmlogin.c:1610
+#: gui/gdmlogin.c:1629
 msgid "Other"
 msgstr "其它"
 
-#: gui/gdmlogin.c:1730 gui/gdmlogin.c:1739
+#: gui/gdmlogin.c:1749 gui/gdmlogin.c:1758
 msgid "Select GNOME session"
 msgstr "選擇 GNOME 作業階段"
 
-#: gui/gdmlogin.c:1806
+#: gui/gdmlogin.c:1825
 msgid "Create new session"
 msgstr "建立新的作業階段"
 
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
-#: gui/gdmlogin.c:1836
+#: gui/gdmlogin.c:1855
 msgid "Remember this setting"
 msgstr "記憶此設定"
 
-# gui/gdmlogin.c:1265
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:2166
+#: gui/gdmlogin.c:2185
 msgid "Please insert 25 cents to log in."
-msgstr ""
+msgstr "請投入一元硬幣登入。"
 
-#: gui/gdmlogin.c:2520
+#: gui/gdmlogin.c:2539
 msgid "GNOME Desktop Manager"
 msgstr "GNOME 桌面管理程式"
 
-# gui/gdmlogin.c:1098
-#: gui/gdmlogin.c:2528
+#: gui/gdmlogin.c:2547
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "無法開啟圖示檔：%s。停止圖示化功能！"
 
-#: gui/gdmlogin.c:2550
+#: gui/gdmlogin.c:2569
 msgid "Iconify the login window"
 msgstr "將登入視窗圖示化"
 
-#: gui/gdmlogin.c:2610
+#: gui/gdmlogin.c:2629
 msgid "%a %b %d, %H:%M"
 msgstr "%b %d(%a)，%H:%M"
 
-#: gui/gdmlogin.c:2617
+#: gui/gdmlogin.c:2636
 msgid "%a %b %d, %I:%M %p"
 msgstr "%b %d(%a)，%p %I:%M"
 
-#: gui/gdmlogin.c:2676
+#: gui/gdmlogin.c:2695
 msgid "Finger"
 msgstr ""
 
-# daemon/verify-crypt.c:58
-# daemon/verify-pam.c:123
-# daemon/verify-shadow.c:60
-# gui/gdmlogin.c:1230
-#: gui/gdmlogin.c:2746
+#: gui/gdmlogin.c:2765
 msgid "GDM Login"
 msgstr "GDM 登入"
 
-# gui/gdmlogin.c:1062
-#: gui/gdmlogin.c:2792
+#: gui/gdmlogin.c:2811
 msgid "Session"
 msgstr "作業階段"
 
-#: gui/gdmlogin.c:2819
+#: gui/gdmlogin.c:2822
+msgid "Language"
+msgstr "語言"
+
+#: gui/gdmlogin.c:2836
 msgid "Configure..."
 msgstr "設定..."
 
-#: gui/gdmlogin.c:2826
+#: gui/gdmlogin.c:2843
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr "設定 GDM（此登入管理程式）。這樣需要 root 的密碼。"
 
-# gui/gdmlogin.c:1076
-#: gui/gdmlogin.c:2833
+#: gui/gdmlogin.c:2850
 msgid "Reboot..."
 msgstr "重新啟動..."
 
-#: gui/gdmlogin.c:2840
+#: gui/gdmlogin.c:2857
 msgid "Reboot your computer"
 msgstr "重新啟動電腦"
 
-#: gui/gdmlogin.c:2846
+#: gui/gdmlogin.c:2863
 msgid "Shut down..."
 msgstr "關閉電腦..."
 
-#: gui/gdmlogin.c:2853
+#: gui/gdmlogin.c:2870
 msgid "Shut down your computer so that you may turn it off."
 msgstr ""
 
-#: gui/gdmlogin.c:2860
+#: gui/gdmlogin.c:2877
 msgid "Suspend..."
 msgstr ""
 
-#: gui/gdmlogin.c:2867
+#: gui/gdmlogin.c:2884
 msgid "Suspend your computer"
 msgstr ""
 
-# gui/gdmchooser.c:516
-#: gui/gdmlogin.c:2889
+#: gui/gdmlogin.c:2906
 msgid "Disconnect"
 msgstr ""
 
-# gui/gdmlogin.c:1446
-#: gui/gdmlogin.c:3373
+#: gui/gdmlogin.c:3390
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 
-#: gui/gdmlogin.c:3636 gui/gdmlogin.c:3664
+#: gui/gdmlogin.c:3653 gui/gdmlogin.c:3681
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3451,12 +3438,11 @@ msgid ""
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
 
-# gui/gdmlogin.c:1076
-#: gui/gdmlogin.c:3671 gui/gdmlogin.c:3709
+#: gui/gdmlogin.c:3688 gui/gdmlogin.c:3726
 msgid "Reboot"
 msgstr "重新啟動電腦"
 
-#: gui/gdmlogin.c:3701
+#: gui/gdmlogin.c:3718
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3464,32 +3450,27 @@ msgid ""
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
 
-# gui/gdmchooser.c:523
-#: gui/gdmlogin.c:3708
+#: gui/gdmlogin.c:3725
 msgid "Restart"
 msgstr "重新啟動"
 
-# gui/gdmlogin.c:1528
-#: gui/gdmlogin.c:3746
+#: gui/gdmlogin.c:3763
 msgid "main: Error setting up HUP signal handler"
 msgstr "main：設定 HUP 訊號處理程序時發生錯誤"
 
-# gui/gdmlogin.c:1531
-#: gui/gdmlogin.c:3749
+#: gui/gdmlogin.c:3766
 msgid "main: Error setting up INT signal handler"
 msgstr "main：設定 INT 訊號處理程序時發生錯誤"
 
-# gui/gdmlogin.c:1534
-#: gui/gdmlogin.c:3752
+#: gui/gdmlogin.c:3769
 msgid "main: Error setting up TERM signal handler"
 msgstr "main：設定 TERM 訊號處理程序時發生錯誤"
 
-# daemon/gdm.c:511
-#: gui/gdmlogin.c:3760
+#: gui/gdmlogin.c:3777
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main：設定 CHLD 訊號處理程序時發生錯誤"
 
-#: gui/gdmlogin.c:3825
+#: gui/gdmlogin.c:3842
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -3497,14 +3478,14 @@ msgid ""
 "you should log in and correct the gdm configuration."
 msgstr ""
 
-#: gui/gdmlogin.c:3841
+#: gui/gdmlogin.c:3858
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
 "default command.  Please fix your configuration."
 msgstr ""
 
-#: gui/gdmlogin.c:3858
+#: gui/gdmlogin.c:3875
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -3521,11 +3502,11 @@ msgstr ""
 
 #: gui/gdmphotosetup.c:84
 msgid "Select a photo"
-msgstr ""
+msgstr "選擇樣貌"
 
 #: gui/gdmphotosetup.c:89
 msgid "Select a photograph to show in the facebrowser:"
-msgstr ""
+msgstr "請選擇想在樣貌瀏覽器中出現的樣貌："
 
 #: gui/gdmphotosetup.c:94
 msgid "Browse"
@@ -3533,7 +3514,7 @@ msgstr "瀏覽"
 
 #: gui/gdmphotosetup.c:113
 msgid "No picture selected."
-msgstr ""
+msgstr "未選擇任何圖像。"
 
 #: gui/gdmphotosetup.c:132
 #, c-format
@@ -3568,7 +3549,7 @@ msgstr "設定 GDM 樣貌"
 #: gui/gdmphotosetup.desktop.in.h:2
 msgid ""
 "Setup the picture that will show in the GDM (login manager) face browser"
-msgstr ""
+msgstr "設定在 GDM（登入管理程式）樣貌瀏覽器中會顯示的樣貌"
 
 #: gui/gdmXnestchooser.c:98
 msgid "Xnest command line"
@@ -3604,7 +3585,7 @@ msgstr "在背景執行"
 
 #: gui/gdmXnestchooser.c:104
 msgid "Don't check for running gdm"
-msgstr "不要檢查運行中的 gdm"
+msgstr "不要尋找運行中的 gdm"
 
 #: gui/gdmXnestchooser.c:219
 msgid ""
@@ -3708,7 +3689,7 @@ msgid ""
 msgstr "是否要執行 X 設定程式？請注意此項動作需要 root 的密碼。"
 
 #: config/gettextfoo.h:3
-msgid "Please type in the root (privilaged user) password."
+msgid "Please type in the root (privileged user) password."
 msgstr "請輸入 root（最高權限用者）的密碼。"
 
 #: config/gettextfoo.h:4
@@ -3745,28 +3726,23 @@ msgid ""
 "you will need the root password for this."
 msgstr "是否要執行滑鼠設定程式？請注意此項操作需要 root 的密碼。"
 
-# daemon/slave.c:201
+#~ msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
+#~ msgstr "gdm_slave_session_start：%s 的 initgroups() 失敗。放棄。"
+
 #~ msgid "gdm_slave_chooser: Couldn't set groupid to %d"
 #~ msgstr "gdm_slave_chooser: 無法設定群組 ID 為 %d"
 
-# daemon/slave.c:392
 #~ msgid "gdm_slave_chooser: initgroups() failed for %s"
 #~ msgstr "gdm_slave_chooser：%s 的 initgroups() 已失敗"
 
-# daemon/slave.c:204
 #~ msgid "gdm_slave_chooser: Couldn't set userid to %d"
 #~ msgstr "gdm_slave_chooser：無法設定使用者 id 為 %d"
 
 #~ msgid "Login incorrect"
 #~ msgstr "登入不正確"
 
-# daemon/xdmcp.c:775
 #~ msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 #~ msgstr "gdm_xdmcp_handle_manage：無法開啟顯示 %s 的紀錄檔！"
-
-# gui/gdmlogin.c:1069
-#~ msgid "Language"
-#~ msgstr "語系"
 
 #~ msgid "X configurator binaries to try: "
 #~ msgstr "要嘗試的 X 設定程式："
@@ -3774,52 +3750,35 @@ msgstr "是否要執行滑鼠設定程式？請注意此項操作需要 root 的密碼。"
 #~ msgid "Sleeping 30 seconds before retrying display %s"
 #~ msgstr "暫停 30 秒後再嘗試顯示畫面 %s"
 
-# daemon/verify-crypt.c:58
-# daemon/verify-pam.c:123
-# daemon/verify-shadow.c:60
-# gui/gdmlogin.c:1230
 #~ msgid "Login:"
 #~ msgstr "登入:"
 
-# daemon/verify-crypt.c:78
-# daemon/verify-shadow.c:88
 #~ msgid "Root login disallowed"
 #~ msgstr "不允許 Root 登入"
 
-# daemon/xdmcp.c:208
 #~ msgid "gdm_xdmcp_init: Can't alloc fifopath"
 #~ msgstr "gdm_xdmcp_init: 無法配置 FIFO 路徑"
 
-# daemon/xdmcp.c:213
 #~ msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
 #~ msgstr "gdm_xdmcp_init: 無法為選擇器製作 FIFO"
 
-# daemon/xdmcp.c:218
 #~ msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
 #~ msgstr "gdm_xdmcp_init: 無法為選擇器開啟 FIFO"
 
-# gui/gdmlogin.c:1083
 #~ msgid "Halt..."
 #~ msgstr "停止..."
 
-# gui/gdmchooser.c:529
 #~ msgid "Cancel"
 #~ msgstr "取消"
 
-# daemon/verify-crypt.c:72
-# daemon/verify-shadow.c:82
 #~ msgid "User unknown"
 #~ msgstr "未知的使用者"
 
-# daemon/verify-crypt.c:87
-# daemon/verify-shadow.c:97
 #~ msgid "Incorrect password"
 #~ msgstr "錯誤的密碼"
 
-# gui/gdmlogin.c:273
 #~ msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
 #~ msgstr "gdm_parse_enriched_string: 無法配置暫存緩衝區!"
 
-# gui/gdmlogin.c:1101
 #~ msgid "Iconify"
 #~ msgstr "圖示化"
