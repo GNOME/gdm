@@ -1,3 +1,40 @@
+Mon Jul 21 12:24:01 2003  George Lebl <jirka@5z.com>
+
+	* config/Xsession.in: eek, it's /dev/null, not dev/null
+
+	* daemon/misc.[ch], daemon/gdm.c, daemon/slave.c:
+	  Fix #117527, get the root user name from the passwd info
+	  rather then assuming it's "root".
+
+	* configure.in: fix #117895, when --with-xinerama=no, don't
+	  do the xinerama checks and just don't use xinerama
+
+	* daemon/slave.c:  Fix counting bugs in gdm_in_signal to
+	  fix hangs
+
+	* daemon/slave.c: Fix the waiting for notify when
+	  inside the usr2 signal handler.
+
+	* daemon/gdm.c, daemon/slave.c: Redo the waitpid mess and
+	  just use a pipe and select kind of stuff.  Also remove
+	  the greeter restarts from within signal handlers as we
+	  can just do it now by popping out of the select and doing
+	  it there.  This fixes a bunch of races and hangs related
+	  to doing too many things from signal handlers.  Also
+	  don't do waitpid from the main daemon for slaves children
+	  as it won't work anyway and kill the entire process groups.
+
+	* daemon/slave.c: fix the waiting code in focus_first_x_window
+
+	* gui/gdmlogin.c: fix the clock sensitivity issues by twiddling
+	  the sensitive flags on the clock menuitem directly.  Should
+	  fix theme ugliness issues with the clock.
+
+	* config/Xsession.in: Apply patch from Steve Chaplin
+	  <stevech1097@yahoo.com.au> to fix #117898 to add $0
+	  to all the echo messages in this file to make debugging
+	  easier.
+
 Sun Jul 20 14:34:42 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: add mnemonics to _Username: and _Password: by a

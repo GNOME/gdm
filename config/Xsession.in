@@ -24,7 +24,7 @@
 
 # this will go into the .xsession-errors along with all other echo's
 # good for debugging where things went wrong
-echo "Xsession: Beginning session setup..."
+echo "$0: Beginning session setup..."
 
 # First read /etc/profile and .profile
 test -f /etc/profile && . /etc/profile
@@ -51,7 +51,7 @@ gettextfunc () {
 
 zenity=`which zenity 2>/dev/null`
 if [ -z "$zenity" ] ; then
-    echo "zenity not found!"
+    echo "$0: zenity not found!"
 fi
 
 command="$1"
@@ -186,7 +186,7 @@ if [ "x$command" = "xcustom" ] ; then
   if [ -x "$HOME/.xsession" ]; then
     command="$HOME/.xsession"
   else
-    echo "Xsession: Cannot find ~/.xsession will try the default session"
+    echo "$0: Cannot find ~/.xsession will try the default session"
     command="default"
   fi
 fi
@@ -199,25 +199,25 @@ if [ "x$command" = "xdefault" ] ; then
   elif [ -x /etc/X11/Xclients ]; then
     command="/etc/X11/Xclients"
   else
-    echo "Xsession: Cannot find Xclients"
+    echo "$0: Cannot find Xclients"
     # FIXME: kind of an evil failsafe
     command="xsm"
   fi
 fi
 
 # add ssh-agent if found
-sshagent=`which ssh-agent 2>dev/null`
+sshagent=`which ssh-agent 2>/dev/null`
 if [ -n "$sshagent" ] && [ -x "$sshagent" ] && [ -z "$SSH_AUTH_SOCK" ]; then
     command="$sshagent -- $command"
 elif [ -z "$sshagent" ] ; then
-    echo "ssh-agent not found!"
+    echo "$0: ssh-agent not found!"
 fi
 
-echo "Xsession: Setup done, will execute: $command"
+echo "$0: Setup done, will execute: $command"
 
 eval exec $command
 
-echo "Xsession: Executing $command failed, will run xterm"
+echo "$0: Executing $command failed, will run xterm"
 
 if [ -n "$zenity" ] ; then
 	$zenity --info --text `gettextfunc "I could not start your session and so I have started the failsafe xterm session.  Windows now have focus only if you have your cursor above them.  To get out of this mode type 'exit' in the window in the upper left corner"`

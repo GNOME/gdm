@@ -363,7 +363,7 @@ gdm_config_parse (void)
     }
 
     if (GdmAutomaticLogin != NULL &&
-	strcmp (GdmAutomaticLogin, "root") == 0) {
+	strcmp (GdmAutomaticLogin, gdm_root_user ()) == 0) {
 	    gdm_info (_("%s: Root cannot be autologged in, turing off automatic login"), "gdm_config_parse");
 	    g_free (GdmAutomaticLogin);
 	    GdmAutomaticLogin = NULL;
@@ -376,7 +376,7 @@ gdm_config_parse (void)
     }
 
     if (GdmTimedLogin != NULL &&
-	strcmp (GdmTimedLogin, "root") == 0) {
+	strcmp (GdmTimedLogin, gdm_root_user ()) == 0) {
 	    gdm_info (_("%s: Root cannot be autologged in, turing off timed login"), "gdm_config_parse");
 	    g_free (GdmTimedLogin);
 	    GdmTimedLogin = NULL;
@@ -583,7 +583,7 @@ gdm_config_parse (void)
 	    gdm_error (_("%s: Can't find the gdm group (%s). Trying 'nobody'!"), "gdm_config_parse", GdmUser);
 	    g_free (GdmGroup);
 	    GdmGroup = g_strdup ("nobody");
-	    pwent = getpwnam (GdmUser);
+	    grent = getgrnam (GdmGroup);
     }
 
     if (grent == NULL) {
@@ -1096,25 +1096,24 @@ gdm_cleanup_children (void)
 	    return TRUE;
 
     if (crashed) {
-	    gdm_debug ("gdm_cleanup_children: Slave crashed, killing it's "
+	    gdm_debug ("gdm_cleanup_children: Slave crashed, killing its "
 		       "children");
 
-	    if (d->sesspid > 1 &&
-		kill (d->sesspid, SIGTERM) == 0)
-			    ve_waitpid_no_signal (d->sesspid, NULL, 0);
+	    if (d->sesspid > 1)
+		    kill (-(d->sesspid), SIGTERM);
 	    d->sesspid = 0;
-	    if (d->greetpid > 1 &&
-		kill (d->greetpid, SIGTERM) == 0)
-			    ve_waitpid_no_signal (d->greetpid, NULL, 0);
+	    if (d->greetpid > 1)
+		    kill (-(d->greetpid), SIGTERM);
 	    d->greetpid = 0;
-	    if (d->chooserpid > 1 &&
-		kill (d->chooserpid, SIGTERM) == 0)
-			    ve_waitpid_no_signal (d->chooserpid, NULL, 0);
+	    if (d->chooserpid > 1)
+		    kill (-(d->chooserpid), SIGTERM);
 	    d->chooserpid = 0;
-	    if (d->servpid > 1 &&
-		kill (d->servpid, SIGTERM) == 0)
-			    ve_waitpid_no_signal (d->servpid, NULL, 0);
+	    if (d->servpid > 1)
+		    kill (d->servpid, SIGTERM);
 	    d->servpid = 0;
+
+	    /* race avoider */
+	    sleep (1);
     }
 
     /* null all these, they are not valid most definately */
@@ -1591,6 +1590,9 @@ main (int argc, char *argv[])
     if ( ! g_get_charset (&charset)) {
 	    gdm_charset = g_strdup (charset);
     }
+
+    /* get the name of the root user */
+    gdm_root_user ();
 
     /* Parse configuration file */
     gdm_config_parse();

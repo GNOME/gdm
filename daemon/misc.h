@@ -108,6 +108,8 @@ FILE * gdm_safe_fopen_ap (const char *file);
 
 void gdm_reset_limits (void);
 
+const char *gdm_root_user (void);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

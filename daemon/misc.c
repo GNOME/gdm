@@ -35,6 +35,7 @@
 #include <netdb.h>
 #include <errno.h>
 #include <grp.h>
+#include <pwd.h>
 #include <sys/types.h>
 #ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
@@ -1409,6 +1410,23 @@ gdm_reset_limits (void)
 #ifdef RLIMIT_PTHREAD
 	setrlimit (RLIMIT_PTHREAD, &unlim);
 #endif
+}
+
+const char *
+gdm_root_user (void)
+{
+	static char *root_user = NULL;
+	struct passwd *pwent;
+
+	if (root_user != NULL)
+		return root_user;
+
+	pwent = getpwuid (0);
+	if (pwent == NULL) /* huh? */
+		root_user = g_strdup ("root");
+	else
+		root_user = g_strdup (pwent->pw_name);
+	return root_user;
 }
 
 /* EOF */

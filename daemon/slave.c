@@ -80,10 +80,10 @@ static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
 					       greeter and try again */
 static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
 						SIGCHLD hits */
-static int check_notifies_immediately = 0; /* check notifies as they come */
 static gboolean gdm_wait_for_ack = TRUE; /* wait for ack on all messages to
 				      * the daemon */
 static int in_session_stop = 0;
+static int in_usr2_signal = 0;
 static gboolean need_to_abort_after_session_stop = FALSE;
 static gboolean just_abort_on_TERM = FALSE;
 static gboolean greeter_disabled = FALSE;
@@ -93,8 +93,16 @@ static gboolean interrupted = FALSE;
 static gchar *ParsedAutomaticLogin = NULL;
 static gchar *ParsedTimedLogin = NULL;
 
-int greeter_fd_out = -1;
-int greeter_fd_in = -1;
+static int greeter_fd_out = -1;
+static int greeter_fd_in = -1;
+
+typedef struct {
+	int fd_r;
+	int fd_w;
+	pid_t pid;
+} GdmWaitPid;
+
+static GSList *slave_waitpids = NULL;
 
 extern gboolean gdm_first_login;
 extern gboolean gdm_emergency_server;
@@ -176,9 +184,12 @@ static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       gboolean pass_stdout, 
 				       gboolean set_parent);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
+static void	gdm_slave_handle_usr2_message (void);
 static void	gdm_slave_handle_notify (const char *msg);
 static void	create_temp_auth_file (void);
 static void	set_xnest_parent_stuff (void);
+static void	check_notifies_now (void);
+static void	restart_the_greeter (void);
 
 /* Yay thread unsafety */
 static gboolean x_error_occured = FALSE;
@@ -186,28 +197,137 @@ static gboolean gdm_got_ack = FALSE;
 static char * gdm_ack_response = NULL;
 static GList *unhandled_notifies = NULL;
 
+/* notify all waitpids, make waitpids check notifies */
+static void
+slave_waitpid_notify_all (void)
+{
+	GSList *li;
+
+	if (slave_waitpids == NULL)
+		return;
+
+	gdm_sigchld_block_push ();
+
+	for (li = slave_waitpids; li != NULL; li = li->next) {
+		GdmWaitPid *wp = li->data;
+		if (wp->fd_w >= 0) {
+			write (wp->fd_w, "N", 1);
+		}
+	}
+
+	gdm_sigchld_block_pop ();
+}
+
+/* make sure to wrap this call with sigchld blocks */
+static GdmWaitPid *
+slave_waitpid_setpid (pid_t pid)
+{
+	int p[2];
+	GdmWaitPid *wp;
+
+	if (pid <= 1)
+		return NULL;
+
+	wp = g_new0 (GdmWaitPid, 1);
+	wp->pid = pid;
+
+	if (pipe (p) < 0) {
+		gdm_error ("slave_waitpid_setpid: cannot create pipe, trying to wing it");
+
+		wp->fd_r = -1;
+		wp->fd_w = -1;
+	} else {
+		wp->fd_r = p[0];
+		wp->fd_w = p[1];
+	}
+
+	slave_waitpids = g_slist_prepend (slave_waitpids, wp);
+	return wp;
+}
+
+/* must call slave_waitpid_setpid before calling this */
+static void
+slave_waitpid (GdmWaitPid *wp)
+{
+	if (wp == NULL)
+		return;
+
+	gdm_debug ("slave_waitpid: waiting on %d", (int)wp->pid);
+
+	if (wp->fd_r < 0) {
+		gdm_error ("slave_waitpid: no pipe, trying to wing it");
+
+		/* This is a real stupid fallback for a real stupid case */
+		while (wp->pid > 1) {
+			sleep (5);
+			check_notifies_now ();
+		}
+		check_notifies_now ();
+	} else {
+		fd_set rfds;
+
+		FD_ZERO (&rfds);
+		FD_SET (wp->fd_r, &rfds);
+
+		do {
+			char buf[1];
+			int ret = select (wp->fd_r+1, &rfds, NULL, NULL, NULL);
+			if (ret == 1)
+				read (wp->fd_r, buf, 1);
+			check_notifies_now ();
+		} while (wp->pid > 1);
+		check_notifies_now ();
+	}
+
+	gdm_sigchld_block_push ();
+
+	close (wp->fd_r);
+	close (wp->fd_w);
+	wp->fd_r = -1;
+	wp->fd_w = -1;
+	wp->pid = -1;
+
+	slave_waitpids = g_slist_remove (slave_waitpids, wp);
+	g_free (wp);
+
+	gdm_sigchld_block_pop ();
+
+	gdm_debug ("slave_waitpid: done_waiting");
+}
+
 static void
 check_notifies_now (void)
 {
 	GList *list, *li;
 
-	if (unhandled_notifies == NULL)
-		return;
-       
-	gdm_sigusr2_block_push ();
-	list = unhandled_notifies;
-	unhandled_notifies = NULL;
-	gdm_sigusr2_block_pop ();
-
-	for (li = list; li != NULL; li = li->next) {
-		char *s = li->data;
-		li->data = NULL;
-
-		gdm_slave_handle_notify (s);
-
-		g_free (s);
+	if (restart_greeter_now &&
+	    do_restart_greeter) {
+		do_restart_greeter = FALSE;
+		restart_the_greeter ();
 	}
-	g_list_free (list);
+
+	while (unhandled_notifies != NULL) {
+		gdm_sigusr2_block_push ();
+		list = unhandled_notifies;
+		unhandled_notifies = NULL;
+		gdm_sigusr2_block_pop ();
+
+		for (li = list; li != NULL; li = li->next) {
+			char *s = li->data;
+			li->data = NULL;
+
+			gdm_slave_handle_notify (s);
+
+			g_free (s);
+		}
+		g_list_free (list);
+	}
+
+	if (restart_greeter_now &&
+	    do_restart_greeter) {
+		do_restart_greeter = FALSE;
+		restart_the_greeter ();
+	}
 }
 
 static void
@@ -523,6 +643,8 @@ gdm_screen_init (GdmDisplay *display)
 static void
 gdm_slave_whack_greeter (void)
 {
+	GdmWaitPid *wp;
+
 	gdm_sigchld_block_push ();
 
 	/* do what you do when you quit, this will hang until the
@@ -532,10 +654,11 @@ gdm_slave_whack_greeter (void)
 
 	greet = FALSE;
 
-	/* Wait for the greeter to really die, the check is just
-	 * being very anal, the pid is always set to something */
-	if (d->greetpid > 0)
-		ve_waitpid_no_signal (d->greetpid, 0, 0); 
+	wp = slave_waitpid_setpid (d->greetpid);
+	gdm_sigchld_block_pop ();
+
+	slave_waitpid (wp);
+
 	d->greetpid = 0;
 
 	whack_greeter_fds ();
@@ -543,8 +666,6 @@ gdm_slave_whack_greeter (void)
 	gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
 	gdm_slave_whack_temp_auth_file ();
-
-	gdm_sigchld_block_pop ();
 }
 
 gboolean
@@ -562,7 +683,7 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 	    /* always ignore root here, this is mostly a special case
 	     * since a root login may not be a real login, such as the
 	     config stuff, and people shouldn't log in as root anyway */
-	    strcmp (user, "root") == 0)
+	    strcmp (user, gdm_root_user ()) == 0)
 		return TRUE;
 
 	gdm_slave_send_string (GDM_SOP_QUERYLOGIN, user);
@@ -818,7 +939,7 @@ gdm_slave_run (GdmDisplay *display)
     } else if (d->type == TYPE_LOCAL &&
 	       gdm_first_login &&
 	       ! ve_string_empty (ParsedAutomaticLogin) &&
-	       strcmp (ParsedAutomaticLogin, "root") != 0) {
+	       strcmp (ParsedAutomaticLogin, gdm_root_user ()) != 0) {
 	    gdm_first_login = FALSE;
 
 	    d->logged_in = TRUE;
@@ -925,7 +1046,7 @@ focus_first_x_window (const char *class_res_name)
 			close (p[1]);
 
 			FD_ZERO(&rfds);
-			FD_SET(0, &rfds);
+			FD_SET(p[0], &rfds);
 
 			/* Wait up to 2 seconds. */
 			tv.tv_sec = 2;
@@ -1070,9 +1191,9 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		/* root here */
 		ve_setenv ("XAUTHORITY", display->authfile, TRUE);
 		ve_setenv ("DISPLAY", display->name, TRUE);
-		ve_setenv ("LOGNAME", "root", TRUE);
-		ve_setenv ("USER", "root", TRUE);
-		ve_setenv ("USERNAME", "root", TRUE);
+		ve_setenv ("LOGNAME", pwent->pw_name, TRUE);
+		ve_setenv ("USER", pwent->pw_name, TRUE);
+		ve_setenv ("USERNAME", pwent->pw_name, TRUE);
 		ve_setenv ("HOME", pwent->pw_dir, TRUE);
 		ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 		ve_setenv ("PATH", GdmRootPath, TRUE);
@@ -1122,17 +1243,21 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		_exit (0);
 	} else {
+		GdmWaitPid *wp;
+		
 		configurator = TRUE;
-		/* XXX: is this a race if we don't push a sigchld block?
-		 * but then we don't get a signal for restarting the greeter */
-		/* wait for the config proggie to die */
-		if (d->sesspid > 0)
-			/* must use the pid var here since sesspid might get
-			 * zeroed between the check and here by sigchld
-			 * handler */
-			ve_waitpid_no_signal (pid, 0, 0);
+
+		gdm_sigchld_block_push ();
+		wp = slave_waitpid_setpid (display->sesspid);
+		gdm_sigchld_block_pop ();
+
+		slave_waitpid (wp);
+
 		display->sesspid = 0;
 		configurator = FALSE;
+
+		/* this will clean up the sensitivity property */
+		gdm_slave_sensitize_config ();
 	}
 }
 
@@ -1147,23 +1272,25 @@ restart_the_greeter (void)
 
 	/* No restart it */
 	if (greet) {
+		GdmWaitPid *wp;
+
 		gdm_sigchld_block_push ();
 
 		gdm_slave_greeter_ctl_no_ret (GDM_SAVEDIE, "");
 
 		greet = FALSE;
 
-		/* Wait for the greeter to really die, the check is just
-		 * being very anal, the pid is always set to something */
-		if (d->greetpid > 0)
-			ve_waitpid_no_signal (d->greetpid, 0, 0); 
+		wp = slave_waitpid_setpid (d->greetpid);
+
+		gdm_sigchld_block_pop ();
+
+		slave_waitpid (wp);
+
 		d->greetpid = 0;
 
 		whack_greeter_fds ();
 
 		gdm_slave_send_num (GDM_SOP_GREETPID, 0);
-
-		gdm_sigchld_block_pop ();
 	}
 	gdm_slave_greeter ();
 
@@ -1239,9 +1366,17 @@ gdm_slave_wait_for_login (void)
 			/* we always allow root for this */
 			oldAllowRoot = GdmAllowRoot;
 			GdmAllowRoot = TRUE;
-			gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, "root");
+
+			pwent = getpwuid (0);
+			if (pwent == NULL) {
+				/* what? no "root" ?? */
+				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
+				continue;
+			}
+
+			gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, pwent->pw_name);
 			login = gdm_verify_user (d,
-						 "root",
+						 pwent->pw_name,
 						 d->name,
 						 d->console);
 			GdmAllowRoot = oldAllowRoot;
@@ -1283,7 +1418,7 @@ gdm_slave_wait_for_login (void)
 			/* okey dokey, we're root */
 
 			/* get the root pwent */
-			pwent = getpwnam ("root");
+			pwent = getpwuid (0);
 
 			if (pwent == NULL) {
 				/* what? no "root" ??, this is not possible
@@ -1307,13 +1442,13 @@ gdm_slave_wait_for_login (void)
 			greeter_no_focus = TRUE;
 
 			check_notifies_now ();
-			check_notifies_immediately++;
 			restart_greeter_now = TRUE;
 
+			gdm_debug ("gdm_slave_wait_for_login: Running GDM Configurator ...");
 			run_config (d, pwent);
+			gdm_debug ("gdm_slave_wait_for_login: GDM Configurator finished ...");
 
 			restart_greeter_now = FALSE;
-			check_notifies_immediately--;
 
 			gdm_verify_cleanup (d);
 
@@ -1972,7 +2107,23 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	     ! gdm_got_ack &&
 	     i < 10;
 	     i++) {
-		sleep (1);
+		if (in_usr2_signal > 0) {
+			fd_set rfds;
+			struct timeval tv;
+
+			FD_ZERO (&rfds);
+			FD_SET (d->slave_notify_fd, &rfds);
+
+			/* Wait up to 1 second. */
+			tv.tv_sec = 1;
+			tv.tv_usec = 0;
+
+			if (select (d->slave_notify_fd+1, &rfds, NULL, NULL, &tv) > 0) {
+				gdm_slave_handle_usr2_message ();
+			}
+		} else {
+			sleep (1);
+		}
 	}
 
 	if (wait_for_ack  &&
@@ -2087,6 +2238,7 @@ gdm_slave_chooser (void)
 	char buf[1024];
 	size_t bytes;
 	pid_t pid;
+	GdmWaitPid *wp;
 
 	gdm_debug ("gdm_slave_chooser: Running chooser on %s", d->name);
 
@@ -2196,14 +2348,15 @@ gdm_slave_chooser (void)
 
 		fcntl(p[0], F_SETFD, fcntl(p[0], F_GETFD, 0) | FD_CLOEXEC);
 
-		gdm_sigchld_block_push ();
 		/* wait for the chooser to die */
-		if (d->chooserpid > 0)
-			ve_waitpid_no_signal (d->chooserpid, 0, 0);
-		d->chooserpid  = 0;
+
+		gdm_sigchld_block_push ();
+		wp = slave_waitpid_setpid (d->chooserpid);
 		gdm_sigchld_block_pop ();
 
+		slave_waitpid (wp);
 
+		d->chooserpid = 0;
 		gdm_slave_send_num (GDM_SOP_CHOOSERPID, 0);
 
 		/* Note: Nothing affecting the chooser needs update
@@ -2860,6 +3013,7 @@ gdm_slave_session_start (void)
     time_t session_start_time, end_time; 
     gboolean failsafe = FALSE;
     pid_t pid;
+    GdmWaitPid *wp;
 
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
 	       login);
@@ -3131,20 +3285,15 @@ gdm_slave_session_start (void)
     g_free (language);
     g_free (gnome_session);
 
-    /* we block sigchld now that we're here */
+    gdm_slave_send_num (GDM_SOP_SESSPID, pid);
+
     gdm_sigchld_block_push ();
+    wp = slave_waitpid_setpid (d->sesspid);
+    gdm_sigchld_block_pop ();
 
-    if (d->sesspid > 0) {
-	    gdm_slave_send_num (GDM_SOP_SESSPID, pid);
+    slave_waitpid (wp);
 
-	    gdm_sigchld_block_pop ();
-
-	    ve_waitpid_no_signal (pid, NULL, 0);
-
-	    d->sesspid = 0;
-    } else {
-	    gdm_sigchld_block_pop ();
-    }
+    d->sesspid = 0;
 
     end_time = time (NULL);
 
@@ -3328,6 +3477,8 @@ gdm_slave_term_handler (int sig)
 	if ( ! just_abort_on_TERM) {
 		/* this should stop some races */
 		if (in_session_stop > 0 && ! need_to_abort_after_session_stop) {
+			gdm_in_signal--;
+			gdm_wait_for_ack = TRUE;
 			need_to_abort_after_session_stop = TRUE;
 			return;
 		}
@@ -3400,7 +3551,19 @@ gdm_slave_child_handler (int sig)
 	    seteuid (0);
     
     while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
+        GSList *li;
+
 	gdm_debug ("gdm_slave_child_handler: %d died", pid);
+
+	for (li = slave_waitpids; li != NULL; li = li->next) {
+		GdmWaitPid *wp = li->data;
+		if (wp->pid == pid) {
+			wp->pid = -1;
+			if (wp->fd_w >= 0) {
+				write (wp->fd_w, "!", 1);
+			}
+		}
+	}
 	
 	if (WIFEXITED (status))
 	    gdm_debug ("gdm_slave_child_handler: %d returned %d",
@@ -3419,14 +3582,12 @@ gdm_slave_child_handler (int sig)
 			whack_greeter_fds ();
 			gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
+			do_restart_greeter = TRUE;
 			if (restart_greeter_now) {
-				do_restart_greeter = FALSE;
-				restart_the_greeter ();
+				slave_waitpid_notify_all ();
 			} else {
 				interrupted = TRUE;
-				do_restart_greeter = TRUE;
 			}
-			gdm_in_signal--;
 			continue;
 		}
 
@@ -3499,20 +3660,15 @@ gdm_slave_child_handler (int sig)
 }
 
 static void
-gdm_slave_usr2_handler (int sig)
+gdm_slave_handle_usr2_message (void)
 {
-	char buf[2048];
+	char buf[256];
 	size_t count;
 	char **vec;
 	int i;
 
-	gdm_in_signal++;
-
-	gdm_debug ("gdm_slave_usr2_handler: %s got USR2 signal", d->name);
-
 	count = read (d->slave_notify_fd, buf, sizeof (buf) -1);
 	if (count <= 0) {
-		gdm_in_signal--;
 		return;
 	}
 
@@ -3520,7 +3676,6 @@ gdm_slave_usr2_handler (int sig)
 
 	vec = g_strsplit (buf, "\n", -1);
 	if (vec == NULL) {
-		gdm_in_signal--;
 		return;
 	}
 
@@ -3534,13 +3689,10 @@ gdm_slave_usr2_handler (int sig)
 			else
 				gdm_ack_response = NULL;
 		} else if (s[0] == GDM_SLAVE_NOTIFY_KEY) {
-			if (check_notifies_immediately > 0) {
-				gdm_slave_handle_notify (&s[1]);
-			} else {
-				unhandled_notifies =
-					g_list_append (unhandled_notifies,
-						       g_strdup (&s[1]));
-			}
+			slave_waitpid_notify_all ();
+			unhandled_notifies =
+				g_list_append (unhandled_notifies,
+					       g_strdup (&s[1]));
 		} else if (s[0] == GDM_SLAVE_NOTIFY_COMMAND) {
 			if (strcmp (&s[1], GDM_NOTIFY_DIRTY_SERVERS) == 0) {
 				/* never restart flexi servers
@@ -3567,7 +3719,19 @@ gdm_slave_usr2_handler (int sig)
 	}
 
 	g_strfreev (vec);
+}
 
+static void
+gdm_slave_usr2_handler (int sig)
+{
+	gdm_in_signal++;
+	in_usr2_signal++;
+
+	gdm_debug ("gdm_slave_usr2_handler: %s got USR2 signal", d->name);
+
+	gdm_slave_handle_usr2_message ();
+
+	in_usr2_signal--;
 	gdm_in_signal--;
 }
 
@@ -3629,7 +3793,7 @@ check_for_interruption (const char *msg)
 			if ((d->console || GdmAllowRemoteAutoLogin) 
                             && d->timed_login_ok &&
 			    ! ve_string_empty (ParsedTimedLogin) &&
-                            strcmp (ParsedTimedLogin, "root") != 0 &&
+                            strcmp (ParsedTimedLogin, gdm_root_user ()) != 0 &&
 			    GdmTimedLoginDelay > 0) {
 				do_timed_login = TRUE;
 			}
@@ -3681,7 +3845,6 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 	    return NULL;
 
     check_notifies_now ();
-    check_notifies_immediately ++;
 
     if ( ! ve_string_empty (str)) {
 	    gdm_fdprintf (greeter_fd_out, "%c%c%s\n", STX, cmd, str);
@@ -3697,14 +3860,11 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
     
       if (c == EOF ||
 	  (buf = gdm_fdgets (greeter_fd_in)) == NULL) {
-	      check_notifies_immediately --;
 	      interrupted = TRUE;
 	      /* things don't seem well with the greeter, it probably died */
 	      return NULL;
       }
     } while (check_for_interruption (buf) && ! interrupted);
-
-      check_notifies_immediately --;
 
     if ( ! ve_string_empty (buf)) {
 	    return buf;

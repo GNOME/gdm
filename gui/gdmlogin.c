@@ -2393,6 +2393,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
     case GDM_DISABLE:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
+	if (clock_label != NULL)
+		GTK_WIDGET_SET_FLAGS (clock_label->parent, GTK_SENSITIVE);
 	gtk_widget_set_sensitive (login, FALSE);
 	printf ("%c\n", STX);
 	fflush (stdout);
@@ -2401,6 +2403,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_ENABLE:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	gtk_widget_set_sensitive (login, TRUE);
+	if (clock_label != NULL)
+		GTK_WIDGET_UNSET_FLAGS (clock_label->parent, GTK_SENSITIVE);
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
@@ -2679,12 +2683,6 @@ update_clock (gpointer data)
 	gtk_timeout_add (time_til_next_min*1000, update_clock, NULL);
 	
 	return FALSE;
-}
-
-static void
-clock_state_changed (GtkWidget *clock)
-{
-	clock->state = login->state;
 }
 
 /* doesn't check for executability, just for existance */
@@ -2983,23 +2981,14 @@ gdm_login_gui_init (void)
     }
 
     /* The clock */
-    ebox = gtk_event_box_new ();
-    gtk_widget_show (ebox);
     clock_label = gtk_label_new ("");
     gtk_widget_show (clock_label);
-    gtk_container_add (GTK_CONTAINER (ebox), clock_label);
     item = gtk_menu_item_new ();
-    gtk_container_add (GTK_CONTAINER (item), ebox);
+    gtk_container_add (GTK_CONTAINER (item), clock_label);
     gtk_widget_show (item);
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), item);
     gtk_menu_item_set_right_justified (GTK_MENU_ITEM (item), TRUE);
-    gtk_widget_set_sensitive (item, FALSE);
-
-    /* hack */
-    clock_label->state = GTK_STATE_NORMAL;
-    g_signal_connect (G_OBJECT (clock_label), "state_changed",
-		      G_CALLBACK (clock_state_changed),
-		      NULL);
+    GTK_WIDGET_UNSET_FLAGS (item, GTK_SENSITIVE);
 
     g_signal_connect (G_OBJECT (clock_label), "destroy",
 		      G_CALLBACK (gtk_widget_destroyed),

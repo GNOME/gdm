@@ -392,7 +392,8 @@ fi
 
 ALL_X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
 
-case "$host" in
+if test ! x$with_xinerama = xno ; then
+  case "$host" in
     *-*-solaris*)
 	# Check for solaris
 	use_solaris_xinerama=yes
@@ -432,7 +433,8 @@ case "$host" in
 	AC_MSG_CHECKING(for Xinerama support on XFree86)
 	AC_MSG_RESULT($use_xfree_xinerama);
 	;;
-esac
+  esac
+fi
 
 AC_SUBST(XINERAMA_LIBS)
 CPPFLAGS="$xinerama_save_cppflags"
