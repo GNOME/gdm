@@ -63,6 +63,7 @@ MSG9=`gettextfunc "Would you like to view the detailed X server output as well?"
 #
 XCONFIGURATOR=
 for n in \
+  /usr/bin/system-config-display \
   /usr/bin/redhat-config-xfree86 \
   /usr/sbin/XFdrake		 \
   /usr/bin/X11/XF86Setup	 \
@@ -101,6 +102,12 @@ if grep '^\(Cannot open mouse\|No core pointer\)' "$XLOG" 2> /dev/null ; then
   if test -x /usr/sbin/mouseconfig ; then
     XCONFIGURATOR=/usr/sbin/mouseconfig
     # Note: we know this is a mouse problem and yay we have mouseconfig
+    MSG4=`gettextfunc "Would you like me to try to run the mouse configuration program?  Note that you will need the root password for this."`
+  fi
+
+  if test -x /usr/bin/system-config-mouse ; then
+    XCONFIGURATOR=/usr/bin/system-config-mouse
+    # Note: we know this is a mouse problem and yay we have system-config-mouse
     MSG4=`gettextfunc "Would you like me to try to run the mouse configuration program?  Note that you will need the root password for this."`
   fi
 

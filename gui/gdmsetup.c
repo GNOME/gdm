@@ -58,6 +58,23 @@ static GladeXML *xml;
 static GList *timeout_widgets = NULL;
 
 static void
+simple_spawn_sync (char **argv)
+{
+	g_spawn_sync (NULL /* working_directory */,
+		      argv,
+		      NULL /* envp */,
+		      G_SPAWN_SEARCH_PATH |
+		        G_SPAWN_STDOUT_TO_DEV_NULL |
+			G_SPAWN_STDERR_TO_DEV_NULL,
+		      NULL /* child_setup */,
+		      NULL /* user_data */,
+		      NULL /* stdout */,
+		      NULL /* stderr */,
+		      NULL /* exit status */,
+		      NULL /* error */);
+}
+
+static void
 setup_cursor (GdkCursorType type)
 {
 	GdkCursor *cursor = gdk_cursor_new (type);
@@ -1953,32 +1970,40 @@ install_response (GtkWidget *chooser, gint response, gpointer data)
 
 	g_assert (untar_cmd != NULL);
 
-	if (chdir (theme_dir) == 0) {
-		if (system (untar_cmd) == 0) {
-			char *cmd;
-			char *quoted = ve_shell_quote_filename (dir);
-			char *chown = find_chown ();
-			char *chmod = find_chmod ();
-			success = TRUE;
+	if (chdir (theme_dir) == 0 &&
+	    /* this is a security sanity check */
+	    strchr (dir, '/') == NULL &&
+	    system (untar_cmd) == 0) {
+		char *argv[5];
+		char *quoted = g_strconcat ("./", dir, NULL);
+		char *chown = find_chown ();
+		char *chmod = find_chmod ();
+		success = TRUE;
 
-			/* HACK! */
-			cmd = g_strdup_printf ("%s -R root:root %s", chown, quoted);
-			system (cmd);
-			g_free (cmd);
+		/* HACK! */
+		argv[0] = chown;
+		argv[1] = "-R";
+		argv[2] = "root:root";
+		argv[3] = quoted;
+		argv[4] = NULL;
+		simple_spawn_sync (argv);
 
-			cmd = g_strdup_printf ("%s -R a+r %s", chmod, quoted);
-			system (cmd);
-			g_free (cmd);
+		argv[0] = chmod;
+		argv[1] = "-R";
+		argv[2] = "a+r";
+		argv[3] = quoted;
+		argv[4] = NULL;
+		simple_spawn_sync (argv);
 
-			cmd = g_strdup_printf ("%s a+x %s", chmod, quoted);
-			system (cmd);
-			g_free (cmd);
+		argv[0] = chmod;
+		argv[1] = "a+x";
+		argv[2] = quoted;
+		argv[3] = NULL;
+		simple_spawn_sync (argv);
 
-			g_free (quoted);
-			g_free (chown);
-			g_free (chmod);
-		}
-		chdir (cwd);
+		g_free (quoted);
+		g_free (chown);
+		g_free (chmod);
 	}
 
 	if ( ! success) {
@@ -2137,12 +2162,14 @@ delete_theme (GtkWidget *button, gpointer data)
 		    strchr (dir, '/') == NULL) {
 			/* HACK! */
 			DIR *dp;
+			char *argv[4];
 			GtkTreeIter *select_iter = NULL;
-			char *quoted = ve_shell_quote_filename (dir);
-			char *cmd = g_strdup_printf ("/bin/rm -fR %s", quoted);
-			system (cmd);
-			g_free (cmd);
-			g_free (quoted);
+			argv[0] = "/bin/rm";
+			argv[1] = "-fR";
+			argv[2] = g_strconcat ("./", dir, NULL);
+			argv[3] = NULL;
+			simple_spawn_sync (argv);
+			g_free (argv[2]);
 
 			/* Update the list */
 			gtk_list_store_clear (store);
