@@ -694,6 +694,7 @@ gdm_slave_term_handler (int sig)
     gdm_debug ("gdm_slave_term_handler: Whacking server");
 
     gdm_server_stop (d);
+    gdm_verify_cleanup();
     _exit (DISPLAY_ABORT);
 }
 
@@ -719,6 +720,7 @@ gdm_slave_child_handler (int sig)
 
 	if (pid == d->greetpid && greet) {
 		gdm_server_stop (d);
+		gdm_verify_cleanup ();
 		if (WIFEXITED (status)) {
 			_exit (WEXITSTATUS (status));
 		} else {
@@ -757,6 +759,7 @@ gdm_slave_xioerror_handler (Display *disp)
     gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
 
     gdm_server_stop (d);
+    gdm_verify_cleanup ();
     _exit (DISPLAY_REMANAGE);
 }
 
@@ -802,6 +805,7 @@ gdm_slave_exit (gint status, const gchar *format, ...)
     g_free (s);
 
     gdm_server_stop (d);
+    gdm_verify_cleanup ();
 
     /* Kill children where applicable */
     if (d->greetpid != 0)

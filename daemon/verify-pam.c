@@ -297,11 +297,11 @@ gdm_verify_cleanup (void)
 	pam_close_session (pamh, 0);
 	pam_end (pamh, PAM_SUCCESS);
 	pamh = NULL;
-    }
     
-    /* Workaround to avoid gdm messages being logged as PAM_pwdb */
-    closelog ();
-    openlog ("gdm", LOG_PID, LOG_DAEMON);
+	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
+	closelog ();
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
+    }
 }
 
 
