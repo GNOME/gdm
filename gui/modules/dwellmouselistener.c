@@ -20,6 +20,8 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <syslog.h>
+#include <math.h>
 
 #include <glib.h>
 #include <gmodule.h>
@@ -85,7 +87,7 @@ static guint max_crossings = 0;
 
 static void create_event_watcher ();
 static void load_bindings(gchar *path);
-static gchar * screen_exec_display_string (GdkScreen *screen);
+static gchar * screen_exec_display_string (GdkScreen *screen, const char *old);
 static gchar ** get_exec_environment (GdkScreen *screen);
 static Binding * parse_line(gchar *buf);
 static gboolean binding_already_used (Binding *binding);
@@ -93,7 +95,7 @@ BindingType get_binding_type(char c);
 BindingDirection get_binding_direction(char c);
 
 static gchar *
-screen_exec_display_string (GdkScreen *screen)
+screen_exec_display_string (GdkScreen *screen, const char *old)
 {
 #ifdef HAVE_GTK_MULTIHEAD
   GString    *str;
@@ -120,7 +122,10 @@ screen_exec_display_string (GdkScreen *screen)
 
   return retval;
 #else
-  return g_strdup ("DISPLAY=:0.0");
+  if (old)
+	  return g_strdup (old);
+  else
+	  return g_strdup ("DISPLAY=:0.0");
 #endif
 }
 
@@ -147,17 +152,17 @@ get_exec_environment (GdkScreen *screen)
   g_assert (GDK_IS_SCREEN (screen));
 
   for (i = 0; environ [i]; i++)
-    if (!strncmp (environ [i], "DISPLAY", 7))
+    if (strncmp (environ [i], "DISPLAY", 7) == 0)
       display_index = i;
 
   if (display_index == -1)
     display_index = i++;
 
-  retval = g_new (char *, i + 1);
+  retval = g_new0 (char *, i + 1);
 
   for (i = 0; environ [i]; i++)
     if (i == display_index)
-      retval [i] = screen_exec_display_string (screen);
+      retval [i] = screen_exec_display_string (screen, environ[i]);
   else
       retval [i] = g_strdup (environ [i]);
 
@@ -200,45 +205,49 @@ get_binding_direction(char c)
   return rc;
 }
 
+static void
+free_binding (Binding *binding)
+{
+	g_slist_foreach (binding->actions, (GFunc)g_free, NULL);
+	g_slist_free (binding->actions);
+	g_free (binding->binding_str);
+	g_free (binding->input.gesture);
+	g_free (binding);
+}
+
 static Binding *
 parse_line(gchar *buf)
 {
-  gchar *c;
   gchar *keystring, *keyservice;
   Binding *tmp_binding = NULL;
   static GdkDisplay *display = NULL;
+
+  lineno++;
   
   if (!display)
     {
       if ((display = gdk_display_get_default ()) == NULL)
         return NULL;
     }
-  lineno++;
 
   if ((*buf == '#') || (iseol (*buf)) || (buf == NULL))
     return NULL;
 
   tmp_binding = g_new0 (Binding, 1);
-  keystring = c = buf;
 
   /*
    * Find the binding name
    */
-  while(!(isspace (*c)))
+  keystring = strtok (buf, " \t\n\r\f");
+  if (keystring == NULL)
     {
-      if (iseol (*c))
-        {
-          /* TODO - Error messages */
-          return NULL;
-        }
-      c++;
+      /* TODO - Add an error message */
+      free_binding (tmp_binding);
+      return NULL;
     }
+  tmp_binding->binding_str = g_strdup (keystring);
 
-  *c++ = '\0';
-  tmp_binding->binding_str = (gchar *)g_malloc (strlen (keystring) + 1);
-  strncpy (tmp_binding->binding_str, keystring, strlen (keystring) + 1);
-
-  if (strcmp (tmp_binding->binding_str, "<Add>"))
+  if (strcmp (tmp_binding->binding_str, "<Add>") != 0)
     {
       BindingType bt;
       BindingDirection bd;
@@ -269,32 +278,13 @@ parse_line(gchar *buf)
 
       /* [TODO] Need to clean up here. */
      
-      /*
-       * Skip over white space
-       */
-      do
+      tmp_string = strtok (NULL, " \t\n\r\f");
+      if (tmp_string == NULL)
         {
-          if (iseol (*c))
-            {
-              /* Add an error message */
-              return NULL;
-            }
+          /* TODO - Add an error message */
+          free_binding (tmp_binding);
+          return NULL;
         }
-      while (isspace (*c) && (c++));
-
-      tmp_string = c;
-
-      while(!(isspace (*c)))
-        {
-          if (iseol (*c))
-            {
-              /* TODO - Error messages */
-              return NULL;
-            }
-          c++;
-        }
-  
-      *c++ = '\0';
 
       bd = get_binding_direction (tmp_string[0]);
 
@@ -303,40 +293,25 @@ parse_line(gchar *buf)
       else
         tmp_binding->input.start_direction = bd;
 
-      /*
-       * Skip over white space
-       */
-      do
-        {
-          if (iseol (*c))
-            {
-              /* Add an error message */
-              return NULL;
-            }
-        }
-      while (isspace (*c) && (c++));
-
-      tmp_string = c;
-
      /*
       * Find the timeout duration (in ms). Timeout value is the 
       * time within which consecutive keypress actions must be performed
       * by the user before the sequence is discarded.
       */
-      while (!(isspace (*c)))
+
+      tmp_string = strtok (NULL, " \t\n\r\f");
+      if (tmp_string == NULL)
         {
-          if (!isdigit (*c))
-            {
-              /* Add an error message */
-              return NULL;
-            }
-          c++;
+          /* TODO - Add an error message */
+          free_binding (tmp_binding);
+          return NULL;
         }
 
-      *c++ = '\0';
-      if ((timeout=atoi (tmp_string)) <= 0)
+      timeout = atoi (tmp_string);
+      if (timeout <= 0)
         {
-          /* Add an error message */;
+          /* TODO - Add an error message */;
+	  free_binding (tmp_binding);
           return NULL;
         }
       tmp_binding->timeout = timeout;
@@ -345,19 +320,14 @@ parse_line(gchar *buf)
   /*
    * Find servcice. Permit blank space so arguments can be supplied.
    */
-  do
+  keyservice = strtok (NULL, "\n\r\f");
+  if (keyservice == NULL)
     {
-      if (iseol (*c))
-        {
-          /* Add an error message */
-          return NULL;
-        }
+      /* TODO - Add an error message */
+      free_binding (tmp_binding);
+      return NULL;
     }
-  while (isspace (*c) && (c++));
 
-  keyservice = c;
-  for (; !iseol (*c); c++);
-  *c = '\0';
   tmp_binding->actions = g_slist_append (tmp_binding->actions, g_strdup (keyservice));
 
   return tmp_binding;
@@ -404,7 +374,7 @@ load_bindings(gchar *path)
       return;
     }
 
-  while (((fgets (buf, 1024, fp)) != NULL) && ((feof (fp)) == 0))
+  while (((fgets (buf, sizeof (buf), fp)) != NULL) && ((feof (fp)) == 0))
     {
       tmp_binding = (Binding *)parse_line (buf);
 
@@ -413,7 +383,7 @@ load_bindings(gchar *path)
          /*
           * Is the key already associated with an existing binding?
           */
-          if (!strcmp (tmp_binding->binding_str, "<Add>"))
+          if (strcmp (tmp_binding->binding_str, "<Add>") == 0)
             {
              /*
               * Add another action to the last binding
@@ -431,9 +401,13 @@ load_bindings(gchar *path)
                  last_binding->actions = g_slist_append (last_binding->actions,
                    g_strdup ((gchar *)tmp_binding->actions->data));
                }
+	      free_binding (tmp_binding);
             /* Ignore duplicate bindings */
-            } else if (!binding_already_used (tmp_binding))
-              binding_list = g_slist_append (binding_list, tmp_binding);
+            }
+	  else if (!binding_already_used (tmp_binding))
+            binding_list = g_slist_append (binding_list, tmp_binding);
+	  else
+	    free_binding (tmp_binding);
         }
     }
   fclose (fp);
@@ -467,7 +441,7 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
       mid_y = rect.y + (rect.height / 2);
 
       /* avoid division by 0 */
-      if (event->x_root - mid_x == 0.0)
+      if (fabs (event->x_root - mid_x) <= 0.001)
         {
           if (event->x_root < mid_x)
             crossings[crossings_position].type = BINDING_DWELL_BORDER_LEFT;
@@ -509,7 +483,10 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
       for (li = binding_list; li != NULL; li = li->next)
         {
           Binding *curr_binding = (Binding *) li->data;
-          int start_position = (crossings_position - curr_binding->input.num_gestures + 1) % max_crossings;
+          int start_position = (crossings_position - curr_binding->input.num_gestures + 1 + max_crossings) % max_crossings;
+	  /* being anal here */
+	  if (start_position < 0)
+		  start_position = 0;
 
           /* check initial crossing direction */
           if (curr_binding->input.start_direction == crossings[start_position].direction)
@@ -592,7 +569,8 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
   return TRUE;
 }
 
-static void create_event_watcher ()
+static void
+create_event_watcher (void)
 {
   GdkDisplay *display;
   gint i;
@@ -604,7 +582,7 @@ static void create_event_watcher ()
 
   load_bindings(CONFIGFILE);
 
-  crossings = g_new(Crossings, max_crossings);
+  crossings = g_new0(Crossings, max_crossings);
 
   for (i=0; i < max_crossings; i++)
     {
@@ -622,8 +600,6 @@ static void create_event_watcher ()
     leave_enter_emission_hook, NULL, (GDestroyNotify) NULL); 
   g_signal_add_emission_hook (leave_signal_id, 0,
     leave_enter_emission_hook, NULL, (GDestroyNotify) NULL); 
-
-  return;
 }
 
 /* The init function for this gtk module */
