@@ -18,10 +18,6 @@
  * 
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
 #include <gnome.h>
 #include <glade/glade.h>
 #include <ctype.h>

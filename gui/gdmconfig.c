@@ -20,6 +20,7 @@
  * 
  */
 
+#include <config.h>
 #include "gdmconfig.h"
 
 /* This should always be undefined before building ANY kind of production release. */
@@ -39,18 +40,18 @@ gchar *basic_row[1] = { N_("Basic") };
 gchar *expert_row[1] = { N_("Expert") };
 gchar *system_row[1] = { N_("System") };
 
-gchar *desc1 =_("This panel displays the basic options for configuring GDM.\n"
+gchar *desc1 = N_("This panel displays the basic options for configuring GDM.\n"
 				"\n"
 				"If you need finer detail, select 'expert' or 'system setup' from the list above.\n"
 				"\n"
 				"This will display some of the more complex options of GDM that rarely need to be changed.");
-gchar *desc2 =_("This panel displays the more advanced options of GDM.\n"
+gchar *desc2 = N_("This panel displays the more advanced options of GDM.\n"
 				"\n"
 				"Be sure to take care when manipulating the security options, or you could be "
 				"vulnerable to attackers.\n"
 				"\n"
 				"Choose \"System setup\" to change fundamental options in GDM.");
-gchar *desc3 =_("This panel displays GDM's fundamental system settings.\n"
+gchar *desc3 = N_("This panel displays GDM's fundamental system settings.\n"
 				"\n"
 				"You should only change these paths if you really know what you are doing, as an incorrect "
 				"setup could stop your machine from booting properly.\n"
@@ -85,10 +86,8 @@ GtkWidget *get_widget(gchar *widget_name)
 int
 main (int argc, char *argv[])
 {
-#ifdef ENABLE_NLS
-    bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+    bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
-#endif
 
 	/* FIXME! Should replace the number with 'VERSION', but it doesn't seem to pick it up. */
     gnome_init ("gdmconfig", "2.0.97.1", argc, argv);
@@ -197,17 +196,17 @@ void user_level_row_selected(GtkCList *clist, gint row,
 	 case 0:
 		gtk_widget_show(get_widget("basic_notebook"));
 		gtk_label_set(GTK_LABEL(get_widget("info_label")),
-					  desc1);
+					  _(desc1));
 		break;
 	 case 1:
 		gtk_widget_show(get_widget("expert_notebook"));
 		gtk_label_set(GTK_LABEL(get_widget("info_label")),
-					  desc2);
+					  _(desc2));
 		break;
 	 case 2:
 		gtk_widget_show(get_widget("system_notebook"));
 		gtk_label_set(GTK_LABEL(get_widget("info_label")),
-					  desc3);
+					  _(desc3));
 		break;
 	 default:
 		g_assert_not_reached();

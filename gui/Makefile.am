@@ -7,7 +7,6 @@ DEFS += -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\"
 
 INCLUDES = -I. -I.. -I$(top_srcdir)/daemon -I$(includedir)		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	-DLOCALEDIR=\"$(datadir)/locale\"		\
 	@LIBGLADE_CFLAGS@				\
 	$(GNOME_INCLUDEDIR)
 
