@@ -570,7 +570,7 @@ read_sessions (FILE *fp, GString *sessions, const char *def, gboolean *got_def)
 	char buf[FIELD_SIZE];
 
 	while (fgets (buf, sizeof (buf), fp) != NULL) {
-		char *p;
+		char *p, *session;
 		if (buf[0] != '[')
 			continue;
 		p = strrchr (buf, ']');
@@ -578,16 +578,18 @@ read_sessions (FILE *fp, GString *sessions, const char *def, gboolean *got_def)
 			continue;
 		*p = '\0';
 
-		if (strcmp (&buf[1], "Trash") == 0 ||
-		    strcmp (&buf[1], "Chooser") == 0 ||
-		    strcmp (&buf[1], "Warner") == 0)
+		session = &buf[1];
+
+		if (strcmp (session, "Trash") == 0 ||
+		    strcmp (session, "Chooser") == 0 ||
+		    strcmp (session, "Warner") == 0)
 			continue;
 
-		if (strcmp (&buf[1], def) == 0)
+		if (strcmp (session, def) == 0)
 			*got_def = TRUE;
 
 		g_string_append_c (sessions, '\n');
-		g_string_append (sessions, &buf[1]);
+		g_string_append (sessions, session);
 	}
 }
 
@@ -639,11 +641,11 @@ gdm_get_sessions (struct passwd *pwent)
 			 NULL);
 		def = gnome_config_get_string (cfgstr);
 		if (def == NULL)
-			def = g_strdup ("Gnome");
+			def = g_strdup ("Default");
 
 		g_free (cfgstr);
 	} else {
-		def = g_strdup ("Gnome");
+		def = g_strdup ("Default");
 	}
 
 	/* the currently selected comes first (it will come later
@@ -1131,7 +1133,8 @@ gdm_slave_session_start (void)
 			   "the list of available sessions in the login\n"
 			   "dialog window."));
 	} else {
-		execl (shell, "-", "-c", sesspath, NULL);
+		char *exec = g_strconcat ("exec ", sesspath, NULL);
+		execl (shell, "-", "-c", exec, NULL);
 
 		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
 		run_error_dialog

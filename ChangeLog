@@ -1,3 +1,18 @@
+Wed May 02 01:44:36 2001  George Lebl <jirka@5z.com>
+
+	* config/Gnome.in, config/Xsession: don't use bash -login, because we
+	  have already ran a login shell which was the users login shell
+
+	* config/gnomerc.in, daemon/slave.c: use exec to avoid running 2
+	  unneeded shells.  Now if you log in there is no extra shell process
+	  running.  This saves quite a bit of ram in fact since things like
+	  bash eat up quite a bit of ram, and if the user doesn't use any
+	  shells, none of it is shared.
+
+	* daemon/slave.c:  Fix a doh! error in the last commit where I got
+	  confused about which sessions I was talking about (gsm vs. gdm),
+	  also a little bit of cleanup
+
 Tue May 01 16:28:17 2001  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c, daemon/gdm.h, daemon/slave.c, gui/gdmconfig.c,
