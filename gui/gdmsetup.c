@@ -1129,6 +1129,8 @@ acc_modules_toggled (GtkWidget *toggle, gpointer data)
 			    GDM_KEY_ADD_GTK_MODULES,
 			    add_gtk_modules);
 
+	ve_config_save (ve_config_get (GDM_CONFIG_FILE), FALSE /*force */);
+
 	g_free (modules_list);
 
 	update_key (GDM_KEY_GTK_MODULES_LIST);
@@ -1141,6 +1143,7 @@ setup_accessibility_support (void)
 	GtkWidget *acc_modules = glade_helper_get (xml, "acc_modules", GTK_TYPE_TOGGLE_BUTTON);
 	GtkWidget *acc_sound_test = glade_helper_get (xml, "acc_sound_test", GTK_TYPE_BUTTON);
 	GtkWidget *acc_sound_file_entry = glade_helper_get (xml, "acc_sound_file_entry", GTK_TYPE_ENTRY);
+	GtkWidget *acc_sound_file = glade_helper_get (xml, "acc_sound_file", GNOME_TYPE_FILE_ENTRY);
 
 	gboolean add_gtk_modules = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
 						       GDM_KEY_ADD_GTK_MODULES);
@@ -1165,6 +1168,9 @@ setup_accessibility_support (void)
 	g_signal_connect (G_OBJECT (acc_sound_test), "clicked",
 			  G_CALLBACK (test_sound),
 			  acc_sound_file_entry);
+
+	if (access ("/usr/share/sounds", F_OK) == 0)
+		gnome_file_entry_set_default_path (GNOME_FILE_ENTRY (acc_sound_file), "/usr/share/sounds/");
 }
 
 static void

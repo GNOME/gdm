@@ -1,3 +1,19 @@
+Fri Jan 02 16:31:34 2004  George Lebl <jirka@5z.com>
+
+	* config/PreSession.in: fix bad color string
+
+	* config/gdm.conf.in: add full path to the default list of modules
+	  comment
+
+	* daemon/verify-pam.c: don't use the pam_fail_delay but rather the
+	  fallback only.  The fail delay will block at bad times when we
+	  don't want it too.
+
+	* gui/gdmsetup.c: save the config after flicking the accessibility
+	  modules setting and set default path on the sounds thing
+	  to /usr/share/sounds, even though it doesn't work because the
+	  stupid GnomeFileEntry is broken!  Will file a bug/fix it later.
+
 2004-01-03  Robert Sedak  <robert.sedak@sk.htnet.hr>
 
         * configure.in: Added "hr" in ALL_LINGUAS.

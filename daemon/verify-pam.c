@@ -504,9 +504,14 @@ authenticate_again:
 
     pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
 
+#if 0
+    /* FIXME: this makes things wait at the wrong places! such as
+       when running the configurator.  We wish to ourselves cancel logins
+       without a delay, so ... evil */
 #ifdef PAM_FAIL_DELAY
     pam_fail_delay (pamh, GdmRetryDelay * 1000000);
 #endif /* PAM_FAIL_DELAY */
+#endif
 
     did_we_ask_for_password = FALSE;
 
@@ -544,9 +549,12 @@ authenticate_again:
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 	    if (gdm_slave_should_complain ()) {
-#ifndef PAM_FAIL_DELAY
+		    /* FIXME: see note above about PAM_FAIL_DELAY */
+/* #ifndef PAM_FAIL_DELAY */
 		    gdm_sleep_no_signal (GdmRetryDelay);
-#endif /* PAM_FAIL_DELAY */
+		    /* wait up to 100ms randomly */
+		    usleep (g_random_int_range (0, 100000));
+/* #endif */ /* PAM_FAIL_DELAY */
 		    gdm_error (_("Couldn't authenticate user"));
 	    }
 	    goto pamerr;

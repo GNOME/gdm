@@ -13,7 +13,7 @@ if [ "x$XSETROOT" != "x" ] ; then
 	# Try to snarf the BackgroundColor from the config file
 	BACKCOLOR=`grep '^BackgroundColor' @EXPANDED_SYSCONFDIR@/gdm/gdm.conf | sed 's/^.*=\(.*\)$/\1/'`
 	if [ "x$BACKCOLOR" = "x" ]; then
-		BACKCOLOR="#76848"
+		BACKCOLOR="#76848F"
 	fi
 	"$XSETROOT" -cursor_name left_ptr -solid "$BACKCOLOR"
 fi
