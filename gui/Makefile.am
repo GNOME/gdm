@@ -10,15 +10,20 @@ INCLUDES = -I. -I.. -I$(top_srcdir)/daemon -I$(includedir)		\
 	-DLOCALEDIR=\"$(datadir)/locale\"		\
 	$(GNOME_INCLUDEDIR)
 
-bin_PROGRAMS = gdmchooser gdmlogin
+bin_PROGRAMS = gdmchooser gdmlogin gdmconfig
 
 gdmchooser_SOURCES = \
 	gdmchooser.c \
 	gdmchooser.h 
 
 gdmlogin_SOURCES = \
-	gdmlogin.c 
+	gdmlogin.c \
+	gdmlogin.h
+
+gdmconfig_SOURCES = \
+	gdmconfig.c 
 
 gdmchooser_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) -lXdmcp -lX11 $(INTLLIBS)
 gdmlogin_LDADD = ../daemon/filecheck.o $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS)
+gdmconfig_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS)
 

@@ -1,7 +1,7 @@
 AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.0.0)
+AM_INIT_AUTOMAKE(gdm,2.0beta1)
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
@@ -64,9 +64,10 @@ for I in $LDFLAGS $LIBS -L/usr/lib; do
 	fi
 	esac
 done
+
 if test -n "$LIBWRAP_PATH"; then
 	AC_MSG_RESULT(yes)
-	AC_HAVE_LIBRARY(nsl, LIBS="$LIBS -lnsl")
+	AC_CHECK_LIB(nsl, ypbind, LIBS="$LIBS -lnsl")
 else
 	AC_MSG_RESULT(no)
 fi
@@ -87,12 +88,6 @@ if test -n "$LIBWRAP_PATH"; then
 	fi
 fi
 LIBS="$LIBS $LIBWRAP_PATH"
-
-AC_PATH_PROG(ac_xauth, xauth)
-GDM_XAUTH_PATH=$ac_xauth
-
-AC_DEFINE_UNQUOTED(GDM_XAUTH_PATH, "$ac_xauth")
-
 
 AC_OUTPUT([
 Makefile

@@ -1,9 +1,13 @@
 QUICK NOTES ON INSTALLATION/USE:
 
-For security reasons a dedicated group id is needed for proper
-operation! gdm assumes that the group is called `gdm'. Furthermore gdm
-relies on the existence of a `nobody' user. Create these before
-running make install.
+First of all: gdm is a *daemon* -- not a common user application. It
+requires extensive knowledge about your system setup to install and
+configure. gdm isn't - and never will be - Plug and Play
+(i.e. ./configure ; make install). 
+
+For security reasons a dedicated user and group id are required for
+proper operation! gdm assumes that both the user and the group are
+called `gdm'. Create these before running make install.
 
 You should run ``make install'' as root to get the permissions right
 on the authentication directory.

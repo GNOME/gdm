@@ -26,5 +26,5 @@ gdm_SOURCES = \
 	md5.c \
 	md5.h 
 
-gdm_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) -lXdmcp -lX11 $(INTLLIBS)
+gdm_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) -lXdmcp -lXau -lX11 $(INTLLIBS)
 

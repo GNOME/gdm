@@ -1,6 +1,35 @@
+1999-08-11    <mkp@mkp.net>
+
+	* daemon/auth.c: Nailed down the bug that has been haunting me the
+ 	past couple of days. gdm no longer corrupts ~user/.Xauthority if
+ 	it contains ``foreign'' cookies.
+
+1999-08-08    <mkp@mkp.net>
+
+	Finally merged the Ottawa megapatch:
+
+	* daemon/auth.c: Real XAuth implementation. Doesn't rely on
+ 	/usr/bin/X11/xauth anymore.
+
+	* gui/gdmlogin.c: Implemented browser functionality.
+
+	* gui/gdmconfig.c: First shot at a graphical configuration tool.
+
+	* gui/gdmface.c: Face selector capplet.
+
+1999-08-07    <mkp@mkp.net>
+
+	* Replaced gdm_putenv() with calls to setenv() as putenv() is
+ 	broken by specification.
+
 1999-08-07  Anders Carlsson <anders.carlsson@tordata.se>
 
 	* configure.in (ALL_LINGUAS): Added sv to ALL_LINGUAS.
+
+1999-08-02    <mkp@mkp.net>
+
+	* md5.c, md5.h, cookie.c: Fixed MD5 endianness problem (Reported
+ 	by <gewrgiou@imbc.gr>, bugzilla 3898).
 
 1999-07-24  Tristan Tarrant  <ttarrant@etnoteam.it>
 

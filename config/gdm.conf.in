@@ -1,59 +1,67 @@
-[appearance]
-Browser=1
-Completion=1
-Logo=1
-LogoImage=@pixmapdir@/gnome-logo-large.png
-NoFaceImage=@pixmapdir@/nophoto.png
-GlobalImageDir=@datadir@/faces/
-Quiver=1
-Iconify=1
-IconFile=@pixmapdir@/gdm.xpm
-Gtkrc=
-
-[system]
-ShutdownMenu=0
-SuspendCommand=
-UserFileCutoffSize=65536
-UserIconMaxWidth=128
-UserIconMaxHeight=128
-DefaultPath=@bindir@:/usr/local/bin:/usr/bin/X11:/usr/bin:/bin
-VerboseAuth=0
-AllowRoot=0
-RelaxPermissions=0
-RetryDelay=3
-LocaleFile=@localedir@/locale.alias
-
-[messages]
-Welcome=Welcome to %h
-
 [daemon]
-SessionDir=@sysconfdir@/gdm/Sessions
-PidFile=/var/run/gdm.pid
-Greeter=@bindir@/gdmlogin --disable-sound
 Chooser=@bindir@/gdmchooser --disable-sound
-User=gdm
+Greeter=@bindir@/gdmlogin --disable-sound
 Group=gdm
+HaltCommand=shutdown -h now
 DisplayInitDir=@sysconfdir@/gdm/Init
 KillInitClients=1
-PreSessionScriptDir=@sysconfdir@/gdm/PreSession
-PostSessionScriptDir=@sysconfdir@/gdm/PostSession
-AuthDir=@authdir@
 LogDir=@authdir@
+DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin
+PidFile=/var/run/gdm.pid
+PostSessionScriptDir=@sysconfdir@/gdm/PostSession/
+PreSessionScriptDir=@sysconfdir@/gdm/PreSession/
+RebootCommand=shutdown -r now
+RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin
+ServAuthDir=@authdir@
+SessionDir=@sysconfdir@/gdm/Sessions/
+UserAuthDir=
+UserAuthFBDir=/tmp
+UserAuthFile=.Xauthority
+User=gdm
+
+[security]
+AllowRoot=0
+UserMaxFile=65536
+RelaxPermissions=0
+RetryDelay=3
+VerboseAuth=1
+
+[xdmcp]
+Enable=0
+MaxPending=4
+MaxSessions=16
+MaxWait=30
+Port=177
+
+[gui]
+GtkRC=
+MaxIconWidth=128
+MaxIconHeight=128
+
+[greeter]
+Browser=0
+Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody
+DefaultFace=@pixmapdir@/nobody.png
+GlobalFaceDir=@datadir@/faces/
+Font=-adobe-helvetica-bold-r-normal-*-*-180-*-*-*-*-*-*
+Icon=@pixmapdir@/gdm.xpm
+DefaultLocale=english
+LocaleFile=@localedir@/locale.alias
+Logo=@pixmapdir@/gnome-logo-large.png
+Quiver=1
+SystemMenu=0
+Welcome=Welcome to %h
+
+[chooser]
+ScanTime=3
+DefaultHostImg=@pixmapdir@/nohost.png
+HostImageDir=@datadir@/hosts/
+
+[debug]
+Enable=0
 
 [servers]
 0=/usr/bin/X11/X
 #1=/usr/bin/X11/X
 
-[xdmcp]
-Enable=1
-MaxPending=4
-MaxManageWait=20
-MaxSessions=4
-Port=177
 
-[chooser]
-ImageDir=@datadir@/hosts
-DefaultImage=@pixmapdir@/nohost.png
-
-[debug]
-Enable=0

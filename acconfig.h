@@ -1,7 +1,6 @@
 #undef PACKAGE
 #undef VERSION
 #undef HAVE_LIBSM
-#undef GDM_XAUTH_PATH
 #undef ENABLE_NLS
 #undef HAVE_CATGETS
 #undef HAVE_GETTEXT

@@ -19,7 +19,7 @@
 /*
  * Functions for generating MIT-MAGIC-COOKIEs. 
  * 
- * This code was derived (stolen!) from mcookie.c written by Rik Faith
+ * This code was derived (i.e. stolen) from mcookie.c written by Rik Faith
  * <faith@cs.unc.edu>
  *  
  */
@@ -51,13 +51,13 @@ struct rngs {
 
 #define RNGS (sizeof(rngs)/sizeof(struct rngs))
 
-void gdm_cookie_generate(GdmDisplay *);
+void gdm_cookie_generate (GdmDisplay *);
 
 void 
-gdm_cookie_generate(GdmDisplay *d)
+gdm_cookie_generate (GdmDisplay *d)
 {
     int i;
-    struct MD5Context ctx;
+    struct GdmMD5Context ctx;
     unsigned char digest[16];
     unsigned char buf[MAXBUFFERSIZE];
     int fd;
@@ -68,38 +68,43 @@ gdm_cookie_generate(GdmDisplay *d)
     char sub[8];
     char cookie[40];
 
-    sub[0]='\0';
-    cookie[0]='\0';
+    sub[0] = '\0';
+    cookie[0] = '\0';
 
-    MD5Init( &ctx );
-        gettimeofday( &tv, &tz );
-    MD5Update( &ctx, (unsigned char *)&tv, sizeof( tv ) );
+    gdm_md5_init (&ctx);
+        gettimeofday (&tv, &tz);
+    gdm_md5_update (&ctx, (unsigned char *) &tv, sizeof (tv));
     pid = getppid();
-    MD5Update( &ctx, (unsigned char *)&pid, sizeof( pid ));
+    gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
     pid = getpid();
-    MD5Update( &ctx, (unsigned char *)&pid, sizeof( pid ));
+    gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
         
     for (i = 0; i < RNGS; i++) {
-	if ((fd = open( rngs[i].path, O_RDONLY|O_NONBLOCK )) >= 0) {
-	    r = read( fd, buf, sizeof( buf ) );
+	if ((fd = open (rngs[i].path, O_RDONLY|O_NONBLOCK)) >= 0) {
+
+	    r = read (fd, buf, sizeof (buf));
+
 	    if (r > 0)
-		MD5Update( &ctx, buf, r );
+		gdm_md5_update (&ctx, buf, r);
 	    else
 		r = 0;
-	    close( fd );
-	    if (r >= rngs[i].length) break;
+
+	    close (fd);
+
+	    if (r >= rngs[i].length) 
+		break;
 	}
     }
     
-    MD5Final(digest, &ctx);
+    gdm_md5_final (digest, &ctx);
 
     for (i = 0; i < 16; i++) {
-	sprintf(sub, "%02x", digest[i]);
-	strcat(cookie, sub);
+	sprintf (sub, "%02x", digest[i]);
+	strcat (cookie, sub);
     }
 
-    d->cookie=g_strdup(cookie);
-    d->bcookie=g_strndup(digest, 16);
+    d->cookie = g_strdup (cookie);
+    d->bcookie = g_strndup (digest, 16);
 }
 
 

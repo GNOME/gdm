@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998 Martin Kasper Petersen <mkp@mkp.net>
+ * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,10 @@
 #define XDMCP_PENDING 1
 #define XDMCP_MANAGED 2
 
+
+/* Opcodes for the highly sophisticated protocol used for
+   daemon<->greeter communications */
+
 #define GDM_MSGERR 'D'
 #define GDM_NOECHO 'U'
 #define GDM_PROMPT 'N'
@@ -56,24 +60,88 @@
 #define FIELD_SIZE 64
 #define PIPE_SIZE 1024
 
+/* Configuration constants */
+#define GDM_KEY_CHOOSER "daemon/Chooser=gdmchooser"
+#define GDM_KEY_GREETER "daemon/Greeter=gdmlogin"
+#define GDM_KEY_GROUP "daemon/Group=gdm"
+#define GDM_KEY_HALT "daemon/HaltCommand=shutdown -h now"
+#define GDM_KEY_INITDIR "daemon/DisplayInitDir="
+#define GDM_KEY_KILLIC "daemon/KillInitClients=1"
+#define GDM_KEY_LOGDIR "daemon/LogDir="
+#define GDM_KEY_PATH "daemon/DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin"
+#define GDM_KEY_PIDFILE "daemon/PidFile=/var/run/gdm.pid"
+#define GDM_KEY_POSTSESS "daemon/PostSessionScriptDir="
+#define GDM_KEY_PRESESS "daemon/PreSessionScriptDir="
+#define GDM_KEY_REBOOT "daemon/RebootCommand=shutdown -r now"
+#define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin"
+#define GDM_KEY_SERVAUTH "daemon/ServAuthDir=/var/gdm"
+#define GDM_KEY_SESSDIR "daemon/SessionDir="
+#define GDM_KEY_UAUTHDIR "daemon/UserAuthDir="
+#define GDM_KEY_UAUTHFB "daemon/UserAuthFBDir=/tmp"
+#define GDM_KEY_UAUTHFILE "daemon/UserAuthFile=.Xauthority"
+#define GDM_KEY_USER "daemon/User=gdm"
+
+#define GDM_KEY_ALLOWROOT "security/AllowRoot=1"
+#define GDM_KEY_MAXFILE "security/UserMaxFile=65536"
+#define GDM_KEY_RELAXPERM "security/RelaxPermissions=0"
+#define GDM_KEY_RETRYDELAY "security/RetryDelay=3"
+#define GDM_KEY_VERBAUTH "security/VerboseAuth=1"
+
+#define GDM_KEY_XDMCP "xdmcp/Enable=1"
+#define GDM_KEY_MAXPEND "xdmcp/MaxPending=4"
+#define GDM_KEY_MAXSESS "xdmcp/MaxSessions=16"
+#define GDM_KEY_MAXWAIT "xdmcp/MaxWait=30"
+#define GDM_KEY_UDPPORT "xdmcp/Port=177"
+
+#define GDM_KEY_GTKRC "gui/GtkRC="
+#define GDM_KEY_ICONWIDTH "gui/MaxIconWidth=128"
+#define GDM_KEY_ICONHEIGHT "gui/MaxIconHeight=128"
+
+#define GDM_KEY_BROWSER "greeter/Browser=0"
+#define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody"
+#define GDM_KEY_FACE "greeter/DefaultFace=nobody.png"
+#define GDM_KEY_FACEDIR "greeter/GlobalFaceDir="
+#define GDM_KEY_FONT "greeter/Font=-adobe-helvetica-bold-r-normal-*-*-180-*-*-*-*-*-*"
+#define GDM_KEY_ICON "greeter/Icon=gdm.xpm"
+#define GDM_KEY_LOCALE "greeter/DefaultLocale=english"
+#define GDM_KEY_LOCFILE "greeter/LocaleFile="
+#define GDM_KEY_LOGO "greeter/Logo="
+#define GDM_KEY_QUIVER "greeter/Quiver=1"
+#define GDM_KEY_SYSMENU "greeter/SystemMenu=0"
+#define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %h"
+
+#define GDM_KEY_SCAN "chooser/ScanTime=3"
+#define GDM_KEY_HOST "chooser/DefaultHostImg=nohost.png"
+#define GDM_KEY_HOSTDIR "chooser/HostImageDir="
+
+#define GDM_KEY_DEBUG "debug/Enable=0"
+
+#define GDM_KEY_SERVERS "servers"
+
+
+#include <glib.h>
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
+#include <X11/Xauth.h>
 
 typedef struct _GdmDisplay GdmDisplay;
 
 struct _GdmDisplay {
     CARD32 sessionid;
     Display *dsp;
-    gchar *auth;
+    gchar *authfile;
+    GSList *auths; 
+    gchar *userauth;
+    gboolean authfb;
     gchar *command;
     gchar *cookie;
     gchar *bcookie;
     gchar *name;
+    gchar *hostname;
     gint dispstat;
-    gint id;
+    gint dispnum;
     gint servstat;
     gint type;
-    gint dispnum;
     pid_t greetpid;
     pid_t servpid;
     pid_t sesspid;

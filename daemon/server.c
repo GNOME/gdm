@@ -8,12 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 /* This file contains functions for controlling local X servers */
@@ -36,23 +36,22 @@
 static const gchar RCSid[]="$Id$";
 
 extern gchar *GdmDisplayInit;
-extern gchar *GdmAuthDir;
+extern gchar *GdmServAuthDir;
 extern gchar *GdmLogDir;
-extern gint  GdmXdmcp;
+extern gint GdmXdmcp;
 
-extern gchar **gdm_arg_munch(const gchar *p);
-extern void gdm_auth_secure_display(GdmDisplay *);
-extern void gdm_debug(const gchar *, ...);
-extern void gdm_error(const gchar *, ...);
-extern gint gdm_display_manage(GdmDisplay *);
-extern void gdm_putenv(gchar *);
+extern gchar **gdm_arg_munch (const gchar *p);
+extern gboolean gdm_auth_secure_display (GdmDisplay *);
+extern void gdm_debug (const gchar *, ...);
+extern void gdm_error (const gchar *, ...);
+extern gint gdm_display_manage (GdmDisplay *);
 extern void gdm_xdmcp_close();
 
-void gdm_server_start(GdmDisplay *d);
-void gdm_server_stop(GdmDisplay *d);
-void gdm_server_restart(GdmDisplay *d);
-void gdm_server_usr1_handler(gint);
-void gdm_server_alarm_handler(gint);
+void gdm_server_start (GdmDisplay *d);
+void gdm_server_stop (GdmDisplay *d);
+void gdm_server_restart (GdmDisplay *d);
+void gdm_server_usr1_handler (gint);
+void gdm_server_alarm_handler (gint);
 GdmDisplay *gdm_server_alloc (gint id, gchar *command);
 
 
@@ -61,245 +60,248 @@ sigset_t mask, omask;
 
 
 void
-gdm_server_start(GdmDisplay *disp)
+gdm_server_start (GdmDisplay *disp)
 {
     struct sigaction usr1;
     sigset_t usr1mask;
-    gchar *srvcmd=NULL;
-    gchar **argv=NULL;
+    gchar *srvcmd = NULL;
+    gchar **argv = NULL;
     int logfd;
     
-    d=disp;
-
-    gdm_debug("gdm_server_start: %s", d->name);
-
+    if (!disp)
+	return;
+    
+    d = disp;
+    
+    gdm_debug ("gdm_server_start: %s", d->name);
+    
     /* Catch USR1 from X server */
     usr1.sa_handler = gdm_server_usr1_handler;
     usr1.sa_flags = SA_RESTART|SA_RESETHAND;
-    sigemptyset(&usr1.sa_mask);
-
-    if(sigaction(SIGUSR1, &usr1, NULL) < 0) {
-        gdm_error(_("gdm_server_start: Error setting up USR1 signal handler"));
-	exit(SERVER_ABORT);
-    }
-
-    sigemptyset(&usr1mask);
-    sigaddset(&usr1mask, SIGUSR1);
-    sigprocmask(SIG_UNBLOCK, &usr1mask, NULL);
-
-    /* Log all output from spawned programs to a file */
-    logfd=open(g_strconcat(GdmLogDir, "/", d->name, ".log", NULL),
-	       O_CREAT|O_TRUNC|O_APPEND|O_WRONLY, 0666);
+    sigemptyset (&usr1.sa_mask);
     
-    if(logfd != -1) {
-	dup2(logfd, 1);
-	dup2(logfd, 2);
+    if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
+	gdm_error (_("gdm_server_start: Error setting up USR1 signal handler"));
+	exit (SERVER_ABORT);
+    }
+    
+    sigemptyset (&usr1mask);
+    sigaddset (&usr1mask, SIGUSR1);
+    sigprocmask (SIG_UNBLOCK, &usr1mask, NULL);
+    
+    /* Log all output from spawned programs to a file */
+    logfd = open (g_strconcat (GdmLogDir, "/", d->name, ".log", NULL),
+		  O_CREAT|O_TRUNC|O_APPEND|O_WRONLY, 0666);
+    
+    if (logfd != -1) {
+	dup2 (logfd, 1);
+	dup2 (logfd, 2);
     }
     else
-	gdm_error(_("gdm_server_start: Could not open logfile for display %s!"), d->name);
-
+	gdm_error (_("gdm_server_start: Could not open logfile for display %s!"), d->name);
+    
     /* Just in case we have an old server hanging around */
-    if(d->servpid) {
-	gdm_debug("gdm_server_start: Old server found (%d). Killing.", d->servpid);
-	gdm_server_stop(d);
+    if (d->servpid) {
+	gdm_debug ("gdm_server_start: Old server found (%d). Killing.", d->servpid);
+	gdm_server_stop (d);
     }
-
+    
     /* Secure display with cookie */
-    gdm_auth_secure_display(d);
-    gdm_putenv(g_strconcat("XAUTHORITY=", d->auth, NULL));
-    gdm_putenv(g_strconcat("DISPLAY=", d->name, NULL));
-
-    /* Fork into two processes. Parent remains the gdm slave
-     * process. Child becomes the X server.
+    gdm_auth_secure_display (d);
+    setenv ("DISPLAY", d->name, TRUE);
+    
+    /* Fork into two processes. Parent remains the gdm process. Child
+     * becomes the X server.  
      */
-
-    switch(d->servpid=fork()) {
+    
+    switch (d->servpid = fork()) {
 	
     case 0:
 	/* Close the XDMCP fd inherited by the daemon process */
-	if(GdmXdmcp)
+	if (GdmXdmcp)
 	    gdm_xdmcp_close();
-
+	
 	/* The X server expects USR1 to be SIG_IGN */
 	usr1.sa_handler = SIG_IGN;
 	usr1.sa_flags = SA_RESTART;
-	sigemptyset(&usr1.sa_mask);
-
-	if(sigaction(SIGUSR1, &usr1, NULL) < 0) {
-	    gdm_error(_("gdm_server_start: Error setting USR1 to SIG_IGN"));
-	    exit(SERVER_ABORT);
+	sigemptyset (&usr1.sa_mask);
+	
+	if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
+	    gdm_error (_("gdm_server_start: Error setting USR1 to SIG_IGN"));
+	    exit (SERVER_ABORT);
 	}
 	
-	srvcmd=g_strconcat(d->command, " -auth ", GdmAuthDir, \
-			      "/", d->name, ".xauth ", 
+	srvcmd = g_strconcat (d->command, " -auth ", GdmServAuthDir, \
+			      "/", d->name, ".Xauth ", 
 			      d->name, NULL);
-
-	gdm_debug("gdm_server_start: '%s'", srvcmd);
 	
-	argv=gdm_arg_munch(srvcmd);
-	g_free(srvcmd);
-
-	setpgid(0, 0);
-
-	execv(argv[0], argv);
-
-	gdm_error(_("gdm_server_start: Xserver not found: %s"), d->command);
-
-	exit(SERVER_ABORT);
+	gdm_debug ("gdm_server_start: '%s'", srvcmd);
+	
+	argv = gdm_arg_munch (srvcmd);
+	g_free (srvcmd);
+	
+	setpgid (0, 0);
+	
+	execv (argv[0], argv);
+	
+	gdm_error (_("gdm_server_start: Xserver not found: %s"), d->command);
+	
+	exit (SERVER_ABORT);
 	break;
 	
     case -1:
-	gdm_error(_("gdm_server_start: Can't fork Xserver process!"));
-	d->servpid=0;
+	gdm_error (_("gdm_server_start: Can't fork Xserver process!"));
+	d->servpid = 0;
 	break;
 	
     default:
 	break;
     }
-
-    d->servstat=SERVER_STARTED;
-
+    
+    d->servstat = SERVER_STARTED;
+    
     /* Wait for X server to send ready signal */
     pause();
 }
 
 
 void
-gdm_server_stop(GdmDisplay *d)
+gdm_server_stop (GdmDisplay *d)
 {
-    gdm_debug("gdm_server_stop: Server for %s going down!", d->name);
-
-    kill(d->servpid, SIGTERM);
-    waitpid(d->servpid, 0, 0);
-    d->servpid=0;
-    d->servstat=SERVER_DEAD;
-
-    if(unlink(d->auth) == -1)
-	gdm_error(_("gdm_server_stop: Could not unlink auth file: %s!"), strerror(errno));
+    gdm_debug ("gdm_server_stop: Server for %s going down!", d->name);
+    
+    kill (d->servpid, SIGTERM);
+    waitpid (d->servpid, 0, 0);
+    d->servpid = 0;
+    d->servstat = SERVER_DEAD;
+    
+    if (unlink (d->authfile) == -1)
+	gdm_error (_("gdm_server_stop: Could not unlink auth file: %s!"), strerror (errno));
 }
 
 
-/* FIXME: We have a race here. What if USR1 is delivered before we enable the handler? 
- * This only succeeds because the X server takes ages to shut down...
- * Maybe we should jump directly to display_manage and bail out on error?
- * Needs thinking for sure...
- */
-
 void
-gdm_server_restart(GdmDisplay *d)
+gdm_server_restart (GdmDisplay *d)
 {
     sigset_t usr1mask;
     struct sigaction usr1, sigalarm;
-
-    gdm_debug("gdm_server_restart: Server for %s restarting!", d->name);
-
-    if(d->servpid && kill(d->servpid, 0)<0) {
-	gdm_debug("gdm_server_restart: Old server for %s still alive. Killing!", d->name);
-	gdm_server_stop(d);
-	gdm_server_start(d);
+    
+    gdm_debug ("gdm_server_restart: Server for %s restarting!", d->name);
+    
+    if (d->servpid && kill (d->servpid, 0) < 0) {
+	gdm_debug ("gdm_server_restart: Old server for %s still alive. Killing!", d->name);
+	gdm_server_stop (d);
+	gdm_server_start (d);
     }
-
+    
     /* Create new cookie */
-    gdm_auth_secure_display(d);
-    gdm_putenv(g_strconcat("XAUTHORITY=", d->auth, NULL));
-    gdm_putenv(g_strconcat("DISPLAY=", d->name, NULL));
-
+    gdm_auth_secure_display (d);
+    setenv ("DISPLAY", d->name, TRUE);
+    
     /* Catch USR1 from X server */
     usr1.sa_handler = gdm_server_usr1_handler;
     usr1.sa_flags = SA_RESTART|SA_RESETHAND;
-    sigemptyset(&usr1.sa_mask);
-
-    if(sigaction(SIGUSR1, &usr1, NULL) < 0) {
-        gdm_error(_("gdm_server_start: Error setting up USR1 signal handler"));
-	exit(SERVER_ABORT);
+    sigemptyset (&usr1.sa_mask);
+    
+    if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
+	gdm_error (_("gdm_server_start: Error setting up USR1 signal handler"));
+	exit (SERVER_ABORT);
     }
+    
+    sigemptyset (&usr1mask);
+    sigaddset (&usr1mask, SIGUSR1);
+    sigprocmask (SIG_UNBLOCK, &usr1mask, NULL);
+    
+    /* Reset X and force auth file reread. XCloseDisplay works on most
+     * servers but just like young Zaphod, we play it safe */
 
-    sigemptyset(&usr1mask);
-    sigaddset(&usr1mask, SIGUSR1);
-    sigprocmask(SIG_UNBLOCK, &usr1mask, NULL);
-
-    /* Reset X and force auth file reread. XCloseDisplay works on most servers but we play it safe */
-    gdm_debug("gdm_server_restart: Servpid=%d", d->servpid);
-    kill(d->servpid, SIGHUP);
-
+    gdm_debug ("gdm_server_restart: Servpid=%d", d->servpid);
+    kill (d->servpid, SIGHUP);
+    
     d->servstat=SERVER_STARTED;
-
-    /* We add a timeout in case the X server fails to start.  This
+    
+    /* We add a timeout in case the X server fails to start. This
      * might happen because X servers take a while to die, close their
      * sockets etc. If the old X server isn't completely dead, the new
      * one will fail and we'll hang here forever */
-
+    
     sigalarm.sa_handler = gdm_server_alarm_handler;
     sigalarm.sa_flags = 0;
-    sigemptyset(&sigalarm.sa_mask);
+    sigemptyset (&sigalarm.sa_mask);
     
-    if(sigaction(SIGALRM, &sigalarm, NULL) < 0) {
-	gdm_error(_("gdm_server_restart: Error setting up ALARM signal handler"));
+    if (sigaction (SIGALRM, &sigalarm, NULL) < 0) {
+	gdm_error (_("gdm_server_restart: Error setting up ALARM signal handler"));
 	return;
     }
-
-    sigemptyset(&mask);
-    sigaddset(&mask, SIGALRM);
-    sigprocmask(SIG_UNBLOCK, &mask, &omask);
-
-    alarm(10);
-
+    
+    sigemptyset (&mask);
+    sigaddset (&mask, SIGALRM);
+    sigprocmask (SIG_UNBLOCK, &mask, &omask);
+    
+    alarm (10);
+    
     /* Wait for X server to send ready signal */
     pause();
 }
 
 
 void 
-gdm_server_alarm_handler(gint signal)
+gdm_server_alarm_handler (gint signal)
 {
-   /* Unset alarm and try again */
-    alarm(0);
-    sigprocmask(SIG_SETMASK, &omask, NULL); 
-
-    waitpid(d->servpid, 0, WNOHANG);
-
-    gdm_debug("gdm_server_alarm_handler: Temporary server failure");
-    gdm_server_restart(d);
+    /* Unset alarm and try again */
+    alarm (0);
+    sigprocmask (SIG_SETMASK, &omask, NULL); 
+    
+    waitpid (d->servpid, 0, WNOHANG);
+    
+    gdm_debug ("gdm_server_alarm_handler: Temporary server failure");
+    gdm_server_restart (d);
 }
 
 
 void
-gdm_server_usr1_handler(gint sig)
+gdm_server_usr1_handler (gint sig)
 {
     sigset_t usr1mask;
-
-    /* Unset alarm */
-    alarm(0);
-    sigprocmask(SIG_SETMASK, &omask, NULL);
     
-    gdm_debug("gdm_server_usr1_handler: Starting display %s!", d->name);
-
-    d->servstat=SERVER_RUNNING;
-
+    /* Unset alarm */
+    alarm (0);
+    sigprocmask (SIG_SETMASK, &omask, NULL);
+    
+    gdm_debug ("gdm_server_usr1_handler: Starting display %s!", d->name);
+    
+    d->servstat = SERVER_RUNNING;
+    
     /* Block USR1 */
-    sigemptyset(&usr1mask);
-    sigaddset(&usr1mask, SIGUSR1);
-    sigprocmask(SIG_BLOCK, &usr1mask, NULL);
-
-    gdm_display_manage(d);
+    sigemptyset (&usr1mask);
+    sigaddset (&usr1mask, SIGUSR1);
+    sigprocmask (SIG_BLOCK, &usr1mask, NULL);
+    
+    gdm_display_manage (d);
 }
 
 
 GdmDisplay * 
 gdm_server_alloc (gint id, gchar *command)
 {
-    gchar dname[1024];
+    gchar *dname = g_new0 (gchar, 1024);
+    gchar *hostname = g_new0 (gchar, 1024);
+    GdmDisplay *d = g_new0 (GdmDisplay, 1);
+    
+    if (gethostname (hostname, 1023) == -1)
+	return (NULL);
 
-    GdmDisplay *d = g_malloc(sizeof(GdmDisplay));
-
-    sprintf(dname, ":%d", id);    
-    d->auth = NULL;
-    d->command = g_strdup(command);
+    sprintf (dname, ":%d", id);  
+    d->authfile = NULL;
+    d->auths = NULL;
+    d->userauth = NULL;
+    d->command = g_strdup (command);
     d->cookie = NULL;
     d->dispstat = DISPLAY_DEAD;
     d->greetpid = 0;
-    d->id = id;
-    d->name = strdup(dname);
+    d->name = g_strdup (dname);
+    d->hostname = g_strdup (hostname);
+    d->dispnum = id;
     d->servpid = 0;
     d->servstat = SERVER_DEAD;
     d->sessionid = 0;
@@ -309,9 +311,12 @@ gdm_server_alloc (gint id, gchar *command)
     d->sessionid = 0;
     d->acctime = 0;
     d->dsp = NULL;
+    
+    g_free (dname);
+    g_free (hostname);
 
     return (d);
 }
 
-		
+
 /* EOF */

@@ -1,5 +1,5 @@
 /* GDM - The Gnome Display Manager
- * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@SunSITE.auc.dk>
+ * Copyright (C) 1998, 1999 Martin Kasper Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,91 +30,106 @@
 
 static const gchar RCSid[]="$Id$";
 
-gboolean gdm_file_check(gchar *caller, uid_t user, gchar *dir, gchar *file, gboolean absentok);
+gboolean gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file, 
+                         gboolean absentok, gint maxsize, gint perms);
 
-extern gint GdmUserMaxFile;
-extern gint GdmRelaxPerms;
+/**
+ * gdm_file_check:
+ * @caller: String to be prepended to syslog error messages.
+ * @user: User id for the user owning the file/dir.
+ * @dir: Directory to be examined.
+ * @file: File to be examined.
+ * @absentok: Accept absent files if TRUE.
+ * @maxsize: Maximum acceptable filesize in KB. 0 to disable.
+ * @perms: 0 to allow user writable file/dir only. 1 to allow group and 2 to allow global writable file/dir.
+ *
+ * Examines a file to determine whether it is safe for the daemon to write to it.
+ */
 
 gboolean
-gdm_file_check(gchar *caller, uid_t user, gchar *dir, gchar *file, gboolean absentok)
+gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file, 
+		gboolean absentok, gint maxsize, gint perms)
 {
     struct stat statbuf;
-    gchar *str;
+    gchar *fullpath;
 
     /* Stat directory */
-    if(stat(dir, &statbuf) == -1) 
-	return(FALSE);
+    if (stat (dir, &statbuf) == -1) {
+	syslog (LOG_WARNING, _("%s: Directory %s does not exist."), caller, dir);
+	return (FALSE);
+    }
 
-    /* Check if dir is owned by the user */
-    if(statbuf.st_uid != user) {
-	syslog(LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, dir, user);
-	return(FALSE);
+    /* Check if dir is owned by the user ... */
+    if (statbuf.st_uid != user) {
+	syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, dir, user);
+	return (FALSE);
     }
     
-    /* Check if group has write permission */
-    if(GdmRelaxPerms<1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
-	syslog(LOG_WARNING, _("%s: %s is writable by group."), caller, dir);
-	return(FALSE);
+    /* ... if group has write permission ... */
+    if (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
+	syslog (LOG_WARNING, _("%s: %s is writable by group."), caller, dir);
+	return (FALSE);
     }
 
-    /* Check if other has write permission */
-    if(GdmRelaxPerms<2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
-	syslog(LOG_WARNING, _("%s: %s is writable by other."), caller, dir);
-	return(FALSE);
+    /* ... and if others have write permission. */
+    if (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
+	syslog (LOG_WARNING, _("%s: %s is writable by other."), caller, dir);
+	return (FALSE);
     }
 
-    str=g_strconcat(dir, "/", file, NULL);
+    fullpath = g_strconcat(dir, "/", file, NULL);
 
     /* Stat file */
-    if(stat(str, &statbuf) == -1) {
-	g_free(str);
+    if (stat (fullpath, &statbuf) == -1) {
+	g_free (fullpath);
 
-	/* Return true if file is absent and that is ok */
-	if(absentok)
-	    return(TRUE);
+	/* Return true if file does not exist and that is ok */
+	if (absentok)
+	    return (TRUE);
 	else
-	    return(FALSE);
+	    return (FALSE);
     }
 
     /* Check that it is a regular file ... */
-    if(! S_ISREG(statbuf.st_mode)) {
-	syslog(LOG_WARNING,_("%s: %s is not a regular file."), caller, str);
-	g_free(str);
-	return(FALSE);
+    if (! S_ISREG (statbuf.st_mode)) {
+	syslog (LOG_WARNING,_("%s: %s is not a regular file."), caller, fullpath);
+	g_free (fullpath);
+	return (FALSE);
     }
 
     /* ... owned by the user ... */
-    if(statbuf.st_uid != user) {
-	syslog(LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, str, user);
-	g_free(str);
-	return(FALSE);
+    if (statbuf.st_uid != user) {
+	syslog (LOG_WARNING, _("%s: %s is not owned by uid %d."), caller, fullpath, user);
+	g_free (fullpath);
+	return (FALSE);
     }
 
     /* ... unwritable by group ... */
-    if(GdmRelaxPerms<1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
-	syslog(LOG_WARNING, _("%s: %s is writable by group."), caller, str);
-	g_free(str);
-	return(FALSE);
+    if (perms < 1 && (statbuf.st_mode & S_IWGRP) == S_IWGRP) {
+	syslog (LOG_WARNING, _("%s: %s is writable by group."), caller, fullpath);
+	g_free (fullpath);
+	return (FALSE);
     }
 
     /* ... unwritable by others ... */
-    if(GdmRelaxPerms<2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
-	syslog(LOG_WARNING, _("%s: %s is writable by group/other."), caller, str);
-	g_free(str);
-	return(FALSE);
+    if (perms < 2 && (statbuf.st_mode & S_IWOTH) == S_IWOTH) {
+	syslog (LOG_WARNING, _("%s: %s is writable by group/other."), caller, fullpath);
+	g_free (fullpath);
+	return (FALSE);
     }
 
     /* ... and smaller than sysadmin specified limit. */
-    if(statbuf.st_size > GdmUserMaxFile) {
-	syslog(LOG_WARNING, _("%s: %s is bigger than sysadmin specified maximum file size."), caller, str);
-	g_free(str);
-	return(FALSE);
+    if (maxsize && statbuf.st_size > maxsize) {
+	syslog (LOG_WARNING, _("%s: %s is bigger than sysadmin specified maximum file size."), 
+		caller, fullpath);
+	g_free (fullpath);
+	return (FALSE);
     }
 
-    g_free(str);
+    g_free (fullpath);
 
     /* Yeap, this file is ok */
-    return(TRUE);
+    return (TRUE);
 }
 
 /* EOF */

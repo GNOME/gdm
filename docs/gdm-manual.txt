@@ -95,25 +95,6 @@ proper operation.
 
 3. The Login Window
 
-gdm supports two different login modes (which happen to be selected
-by changing greeter programs).
-
-
-The gdmlogin program is a bare bones gui application providing only a
-few menus and a login prompt. A graphical version of the textmode
-login program, if you wish.
-
-gdmlogin was designed for use in environments, where usernames can't
-be exposed.
-
-
-gdmgreeter is slightly more powerful. It consists of a browser window
-containing faces of all users on the system.
-
-~user/.gnome/photo is expected to contain an Imlib supported
-image. gdmgreeter will scale down large images to the sysadmin
-specified maximum.
-
 
 4. The config file
 
@@ -233,11 +214,19 @@ Welcome=Welcome to %h
 
 4.4 Section: [daemon]
 
-SessionDir=@sysconfdir@/gdm/Sessions
-	Directory containing the Session scripts.
-
 PidFile=/var/run/gdm.pid
 	Name of the gdm daemon pidfile.
+
+User=gdm
+	The username under which gdm is run.
+
+Group=gdm
+	The group id under which gdmgreeter is run.
+
+
+
+SessionDir=@sysconfdir@/gdm/Sessions
+	Directory containing the Session scripts.
 
 Greeter=@bindir@/gdmgreeter
 	Path and name of the login program executable.
@@ -248,12 +237,6 @@ Greeter=@bindir@/gdmgreeter
 
 Chooser=@bindir@/gdmchooser
 	Path and name of the gdmchooser executable.
-
-User=gdm
-	The username under which gdm is run.
-
-Group=gdm
-	The group id under which gdmgreeter is run.
 
 DisplayInitDir=@sysconfdir@/gdm/Init
 	Directory containing the Init scripts.

@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * This file contains the X Authentication code
+/* Code for cookie handling. This really needs to be modularized to
+ * support other XAuth types and possibly DECnet...
  */
 
 #include <config.h>
@@ -28,130 +28,297 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <X11/Xauth.h>
 
 #include "gdm.h"
 
 static const gchar RCSid[]="$Id$";
 
-extern gchar *GdmAuthDir;
-extern gid_t GdmGroupId;
+extern gchar *GdmServAuthDir;
+extern gchar *GdmUserAuthDir;
+extern gchar *GdmUserAuthFile;
+extern gchar *GdmUserAuthFB;
+extern gint  GdmUserMaxFile;
+extern gint  GdmRelaxPerms;
 
-extern gchar **gdm_arg_munch(gchar *);
-extern void gdm_cookie_generate(GdmDisplay *d);
-extern void *gdm_debug(const gchar *, ...);
-extern void *gdm_error(const gchar *, ...);
+extern void gdm_cookie_generate (GdmDisplay *d);
+extern void gdm_debug (const gchar *, ...);
+extern void gdm_error (const gchar *, ...);
+extern gboolean gdm_file_check (gchar *caller, uid_t user, gchar *dir, gchar *file, 
+				gboolean absentok, gint maxsize, gint perms);
 
-void gdm_auth_secure_display(GdmDisplay *d);
-void gdm_auth_user_add(GdmDisplay *d, gchar *home);
-void gdm_auth_user_remove(GdmDisplay *d, gchar *home);
+gboolean gdm_auth_secure_display (GdmDisplay *d);
+gboolean gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir);
+void gdm_auth_user_remove (GdmDisplay *d, uid_t user);
 
 
-void gdm_auth_secure_display(GdmDisplay *d)
+gboolean
+gdm_auth_secure_display (GdmDisplay *d)
 {
-    gchar *authstr;
-    gchar **argv;
-    pid_t authpid;
+    FILE *af;
+    struct hostent *hentry;
+    struct in_addr *ia;
+    gchar *addr;
+    Xauth *xa;
+    guint i;
 
-    gdm_debug("gdm_auth_secure_display: Securing %s", d->name);
+    if (!d)
+	return (FALSE);
 
-    gdm_cookie_generate(d);
+    gdm_debug ("gdm_auth_secure_display: Setting up access for %s", d->name);
 
-    d->auth=g_strconcat(GdmAuthDir, "/", d->name, ".xauth", NULL);
+    if (!d->authfile)
+	d->authfile = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
     
-    if(unlink(d->auth) == -1)
-	gdm_debug(_("gdm_auth_secure_display: Could not unlink %s file: %s"),\
-		  d->auth, strerror(errno));
-    
-    authstr=g_strconcat(GDM_XAUTH_PATH, " -i -f ", d->auth, \
-			" add ", d->name, " . ", d->cookie, NULL);
-    argv=gdm_arg_munch(authstr);
-    
-    switch(authpid=fork()) {
-	
-    case 0:
-	execv(argv[0], argv);
-	gdm_error(_("gdm_auth_secure_display: Error starting xauth process: %s. Running insecure!"), strerror(errno));
-	return;
-	
-    case -1:
-	gdm_error(_("gdm_auth_secure_display: Error forking xauth process. Running insecure!"));
-	return;
-	
-    default:
-	waitpid(authpid, 0, 0); /* Wait for xauth to finish */
-	chown(d->auth, 0, GdmGroupId);
-	chmod(d->auth, S_IRUSR|S_IWUSR|S_IRGRP);
-	break;
+    unlink (d->authfile);
+
+    af = fopen (d->authfile, "w");
+
+    if (!af)
+	return (FALSE);
+
+    gdm_cookie_generate (d);
+
+    /* FQDN or IP of display host */
+    hentry = gethostbyname (d->hostname);
+
+    if (!hentry) {
+	gdm_error ("gdm_auth_secure_display: Error getting hentry for %s", d->hostname);
+	return (FALSE);
     }
 
+    /* Local access */
+    if (d->type == DISPLAY_LOCAL) {
+	gdm_debug ("gdm_auth_secure_display: Setting up socket access");
+
+	xa = g_new0 (Xauth, 1);
+	
+	if (!xa)
+	    return (FALSE);
+
+	xa->family = FamilyLocal;
+	xa->address = d->hostname;
+	xa->address_length = strlen (d->hostname);
+	xa->number = g_strdup_printf ("%d", d->dispnum);
+	xa->number_length = 1;
+	xa->name = "MIT-MAGIC-COOKIE-1";
+	xa->name_length = 18;
+	xa->data = d->bcookie;
+	xa->data_length = strlen (d->bcookie);
+	XauWriteAuth (af, xa);
+	d->auths = g_slist_append (d->auths, xa);
+    }
+
+    gdm_debug ("gdm_auth_secure_display: Setting up network access");
+    
+    /* Network access */
+    for (i=0 ; i < hentry->h_length ; i++) {
+	xa = g_new0 (Xauth, 1);
+
+	if (!xa)
+	    return (FALSE);
+
+	xa->family = FamilyInternet;
+
+	addr = g_new0 (gchar, 4);
+
+	if (!addr)
+	    return (FALSE);
+
+	ia = (struct in_addr *) hentry->h_addr_list[i];
+
+	if (!ia)
+	    break;
+
+	memcpy (addr, &ia->s_addr, 4);
+	xa->address = addr; 
+	xa->address_length = 4;
+	xa->number = g_strdup_printf ("%d", d->dispnum);
+	xa->number_length = 1;
+	xa->name = "MIT-MAGIC-COOKIE-1";
+	xa->name_length = 18;
+	xa->data = d->bcookie;
+	xa->data_length = strlen (d->bcookie);
+
+	XauWriteAuth (af, xa);
+
+	d->auths = g_slist_append (d->auths, xa);
+    }
+
+    fclose (af);
+    setenv ("XAUTHORITY", d->authfile, TRUE);
+
+    gdm_debug ("gdm_auth_secure_display: Setting up access for %s ... done", d->name);
+
+    return (TRUE);
 }
 
 
-void gdm_auth_user_add(GdmDisplay *d, gchar *home)
+gboolean
+gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 {
-    gchar *authfile, *authstr;
-    gchar **argv;
-    pid_t authpid;
+    gchar *authdir;
+    gint authfd;
+    FILE *af;
+    GSList *auths = NULL;
 
-    gdm_debug("gdm_auth_user_add: Adding cookie to %s", home);
+    if (!d || !user)
+	return (FALSE);
 
-    authfile=g_strconcat(home, "/.Xauthority", NULL);
-    authstr=g_strconcat(GDM_XAUTH_PATH, " -i -f ", authfile, \
-			   " add ", d->name, " . ", d->cookie, NULL);
+    gdm_debug ("gdm_auth_user_add: Adding cookie for %d", user);
 
-    argv=gdm_arg_munch(authstr);
-    g_free(authstr);
+    /* Determine whether UserAuthDir is specified. Otherwise ~user is used */
+    if (strlen (GdmUserAuthDir))
+	authdir = GdmUserAuthDir;
+    else
+	authdir = homedir;
 
-    switch(authpid=fork()) {
-	
-    case 0:
-	execv(argv[0], argv);
-	gdm_error(_("gdm_auth_user_add: Error starting xauth process: %s"), strerror(errno));
-	return;
-	
-    case -1:
-	gdm_error(_("gdm_auth_user_add: Error forking xauth process."));
-	return;
-	
-    default:
-	waitpid(authpid, 0,0); /* Wait for xauth to finish */
-	chmod(authfile, S_IRUSR|S_IWUSR);
-	g_free(authfile);
-	break;
+    umask (077);
 
+    /* Find out if the Xauthority file passes the paranoia check */
+    if (! gdm_file_check ("gdm_auth_user_add", user, authdir, GdmUserAuthFile, 
+			  TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
+
+	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp) */
+	d->authfb = TRUE;
+	d->userauth = g_strconcat (GdmUserAuthFB, "/.gdmXXXXXX", NULL);
+	authfd = mkstemp (d->userauth);
+
+	if (authfd == -1) {
+	    g_free (d->userauth);
+	    d->userauth = NULL;
+	    return (FALSE);
+	}
+
+	af = fdopen (authfd, "w");
     }
+    else { /* User's Xauthority file is ok */
+	d->authfb = FALSE;
+	d->userauth = g_strconcat (authdir, "/", GdmUserAuthFile, NULL);
+
+	/* FIXME: Better implement my own locking. The libXau one is not kosher */
+	if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS) {
+	    g_free (d->userauth);
+	    d->userauth = NULL;
+	    return (FALSE);
+	}
+
+	af = fopen (d->userauth, "a+");	
+    }
+
+    if (!af) {
+	/* Really no need to clean up here - this process is a goner anyway */
+	XauUnlockAuth (d->userauth);
+	g_free (d->userauth);
+	d->userauth = NULL;
+	return (FALSE); 
+    }
+
+    gdm_debug ("gdm_auth_user_add: Using %s for cookies", d->userauth);
+
+    /* Write the authlist for the display to the cookie file */
+    auths = d->auths;
+
+    while (auths) {
+	XauWriteAuth (af, auths->data);
+	auths = auths->next;
+    }
+
+    fclose (af);
+    XauUnlockAuth (d->userauth);
+    setenv ("XAUTHORITY", d->userauth, TRUE);
+
+    gdm_debug ("gdm_auth_user_add: Done");
+
+    return (TRUE);
 }
 
 
-void gdm_auth_user_remove(GdmDisplay *d, gchar *home)
+void 
+gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 {
-    gchar *authstr;
-    gchar **argv;
-    pid_t authpid;
+    FILE *af;
+    Xauth *xa;
+    GSList *keep = NULL;
+    gchar *authfile, *authdir;
 
-    gdm_debug("gdm_auth_user_remove: Removing cookie from %s", home);
-
-    authstr=g_strconcat(GDM_XAUTH_PATH, " -i -f ", home, "/.Xauthority", \
-			   " remove ", d->name, NULL);
-    argv=gdm_arg_munch(authstr);
-    g_free(authstr);
-
-    switch(authpid=fork()) {
-	
-    case 0:
-	execv(argv[0], argv);
-	gdm_error(_("gdm_auth_user_remove: Error starting xauth process: %s"), strerror(errno));
+    if (!d || !d->userauth)
 	return;
-	
-    case -1:
-	gdm_error(_("gdm_auth_user_remove: Error forking xauth process."));
-	return;
-	
-    default:
-	waitpid(authpid, 0, 0); /* Wait for xauth to finish */
-	break;
 
+    gdm_debug ("gdm_auth_user_remove: Removing cookie from %s (%d)", d->userauth, d->authfb);
+
+    /* If we are using the fallback cookie location, simply nuke the
+     * cookie file */
+    if (d->authfb) {
+	unlink (d->userauth);
+	g_free (d->userauth);
+	d->userauth = NULL;
+	return;
     }
+
+    authfile = g_basename (d->userauth);
+    authdir = g_dirname (d->userauth);
+
+    /* Now, the cookie file could be owned by a malicious user who
+     * decided to concatenate something like /dev/kcore or his entire
+     * MP3 collection to it. So we better play it safe... */
+
+    if (! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
+			  FALSE, GdmUserMaxFile, GdmRelaxPerms)) {
+	gdm_error (_("gdm_auth_user_remove: Ignoring suspicious looking cookie file %s"), d->userauth);
+	return; 
+    }
+
+    g_free (authfile);
+    g_free (authdir);
+
+    if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS)
+	return;
+
+    af = fopen (d->userauth, "r");
+
+    if (!af) {
+	XauUnlockAuth (d->userauth);
+	return;
+    }
+
+    /* Read the user's entire Xauth file into memory to avoid temporary file
+     * issues */
+    while ( (xa = XauReadAuth (af)) ) 
+	if (memcmp (d->bcookie, xa->data, xa->data_length)) 
+	    keep = g_slist_append (keep, xa);
+	else
+	    XauDisposeAuth (xa);
+
+    fclose (af);
+
+    /* Truncate and write out all cookies not belonging to this display */
+    af = fopen (d->userauth, "w");
+
+    if (!af) {
+	XauUnlockAuth (d->userauth);
+	return;
+    }
+
+    while (keep) {
+	XauWriteAuth (af, keep->data);
+	XauDisposeAuth (keep->data);
+	keep = keep->next;
+    }
+
+    g_slist_free (keep);
+
+    fclose (af);
+    XauUnlockAuth (d->userauth);
+
+    g_free (d->userauth);
+    d->userauth = NULL;
+
+    return;
 }
+
 
 /* EOF */
