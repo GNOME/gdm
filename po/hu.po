@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2.HEAD.hu\n"
-"POT-Creation-Date: 2003-10-20 11:54+0200\n"
+"POT-Creation-Date: 2003-11-27 11:07+0100\n"
 "PO-Revision-Date: 2003-10-14 23:01+0200\n"
 "Last-Translator: Gabor Sari <saga@chello.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -433,13 +433,7 @@ msgstr ""
 "művelet megszakítva! Javítsd ki a(z) %s konfigurációt, és indítsd újra a GDM-"
 "et."
 
-#. FIXME: this is evil!
-#: daemon/gdm.c:612
-#, c-format
-msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
-msgstr "%s: Nem találom a (%s) GDM felhasználót. Megpróbálom 'nobody'-val!"
-
-#: daemon/gdm.c:620
+#: daemon/gdm.c:613
 #, c-format
 msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
@@ -448,12 +442,12 @@ msgstr ""
 "A gdm felhasználó nem létezik. Javítsd ki a(z) %s GDM konfigurációt, majd "
 "indítsd újra a GDM-et."
 
-#: daemon/gdm.c:627
+#: daemon/gdm.c:620
 #, c-format
 msgid "%s: Can't find the gdm user (%s). Aborting!"
 msgstr "%s: Nem találom a (%s) GDM felhasználót. A művelet megszakítva!"
 
-#: daemon/gdm.c:634
+#: daemon/gdm.c:627
 #, c-format
 msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
@@ -462,18 +456,12 @@ msgstr ""
 "A GDM felhasználó rootra van állítva, de ez nincs engedélyezve biztonsági "
 "okok miatt. Javítsd ki a(z) %s GDM konfigurációt, és indítsd újra a GDM-et."
 
-#: daemon/gdm.c:642
+#: daemon/gdm.c:635
 #, c-format
 msgid "%s: The gdm user should not be root. Aborting!"
 msgstr "%s: A GDM felhasználó ne legyen a root. A művelet megszakítva!"
 
-#. FIXME: this is evil!
-#: daemon/gdm.c:648
-#, c-format
-msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
-msgstr "%s: Nem találom a GDM csoportját (%s). Megpróbálom 'nobody'-val!"
-
-#: daemon/gdm.c:656
+#: daemon/gdm.c:642
 #, c-format
 msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
@@ -482,12 +470,12 @@ msgstr ""
 "A gdm csoport nem létezik. Javítsd ki a(z) %s GDM konfigurációt majd indítsd "
 "újra a GDM-et."
 
-#: daemon/gdm.c:663
+#: daemon/gdm.c:649
 #, c-format
 msgid "%s: Can't find the gdm group (%s). Aborting!"
 msgstr "%s: Nem találom a GDM csoportját (%s). A művelet megszakítva!"
 
-#: daemon/gdm.c:670
+#: daemon/gdm.c:656
 #, c-format
 msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
@@ -496,38 +484,38 @@ msgstr ""
 "A GDM csoportot rootra állítottad, de ez nincs engedélyezve biztonsági okok "
 "miatt. Javítsd ki a(z) %s GDM konfigurációt, majd indítsd újra a GDM-et."
 
-#: daemon/gdm.c:678
+#: daemon/gdm.c:664
 #, c-format
 msgid "%s: The gdm group should not be root. Aborting!"
 msgstr "%s: A GDM csoportja ne legyen root. A művelet megszakítva!"
 
-#: daemon/gdm.c:693
+#: daemon/gdm.c:679
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr "%s: Nem találom az üdvözlőt vagy a GDM felhasználó nem futtathatja azt"
 
-#: daemon/gdm.c:700
+#: daemon/gdm.c:686
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the gdm user"
 msgstr ""
 "%s: Nem találom a távoli üdvözlőt vagy a gdm felhasználó nem futtathatja azt"
 
-#: daemon/gdm.c:711
+#: daemon/gdm.c:697
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr ""
 "%s: Nem találom a kiválasztót vagy a gdm felhasználó nem futtathatja azt"
 
-#: daemon/gdm.c:720
+#: daemon/gdm.c:706
 msgid "No daemon/ServAuthDir specified in the configuration file"
 msgstr "Nincs daemon/ServAuthDir megadva a konfigurációs fájlban"
 
-#: daemon/gdm.c:722
+#: daemon/gdm.c:708
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Nincs daemon/ServAuthDir megadva."
 
-#: daemon/gdm.c:748
+#: daemon/gdm.c:734
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -539,14 +527,14 @@ msgstr ""
 "könyvtár jogait, vagy javítsd ki a(z) %s GDM konfigurációt és indítsd újra a "
 "GDM-et."
 
-#: daemon/gdm.c:759
+#: daemon/gdm.c:745
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "%s: A(z) %s authdir nem %s felhasználó és %s csoport tulajdonában van. A "
 "művelet megszakítva."
 
-#: daemon/gdm.c:765
+#: daemon/gdm.c:751
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -557,35 +545,46 @@ msgstr ""
 "hibásan állítva, mert annak %o jogokkal kellene rendelkeznie. Javítsd ki a "
 "könyvtár jogait, vagy a(z) %s GDM konfigurációt, majd indítsd újra a GDM-et."
 
-#: daemon/gdm.c:776
+#: daemon/gdm.c:762
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
 "%s: A(z) %s authorizációs könyvtár jogosultságai rosszak (%o). %o kellene "
 "legyen. A művelet megszakítva."
 
-#: daemon/gdm.c:853
+#. FIXME: how to handle this?
+#: daemon/gdm.c:819 daemon/gdm.c:827 daemon/gdm.c:1906 daemon/gdm.c:1914
+#, c-format
+msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
+msgstr ""
+
+#: daemon/gdm.c:821 daemon/gdm.c:829 daemon/gdm.c:1908 daemon/gdm.c:1916
+#, c-format
+msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
+msgstr ""
+
+#: daemon/gdm.c:839
 #, c-format
 msgid "%s: fork() failed!"
 msgstr "%s: fork() sikertelen!"
 
 #. should never happen
-#: daemon/gdm.c:856 daemon/slave.c:3298
+#: daemon/gdm.c:842 daemon/slave.c:3298
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() sikertelen: %s!"
 
-#: daemon/gdm.c:1026
+#: daemon/gdm.c:1012
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: Megpróbálom csökkentett módban az X szervert (%s)"
 
-#: daemon/gdm.c:1044
+#: daemon/gdm.c:1030
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: XKeepsCrashing script futtatása"
 
-#: daemon/gdm.c:1156
+#: daemon/gdm.c:1142
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
@@ -600,7 +599,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:1168
+#: daemon/gdm.c:1154
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -609,47 +608,47 @@ msgstr ""
 "Nem sikerült elindítani az X szervert több próbálkozás után sem. A(z) %s "
 "képernyő letiltva"
 
-#: daemon/gdm.c:1219
+#: daemon/gdm.c:1205
 msgid "System is rebooting, please wait ..."
 msgstr "A rendszer újraindul, várj türelemmel..."
 
-#: daemon/gdm.c:1221
+#: daemon/gdm.c:1207
 msgid "System is shutting down, please wait ..."
 msgstr "A rendszer leáll, várj türelemmel..."
 
-#: daemon/gdm.c:1316
+#: daemon/gdm.c:1302
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
 "Újraindítás, vagy Leállítás kérés a(z) %s képernyőről, de nincs rendszer menü"
 
-#: daemon/gdm.c:1325
+#: daemon/gdm.c:1311
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-local display %s"
 msgstr "Újraindítási vagy leállási kérelem %s nem helyi képernyőről."
 
 #. Bury this display for good
-#: daemon/gdm.c:1385
+#: daemon/gdm.c:1371
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: A(z) %s képernyő kikapcsolása"
 
 #. Reboot machine
-#: daemon/gdm.c:1398
+#: daemon/gdm.c:1384
 msgid "Master rebooting..."
 msgstr "A számítógép újraindul..."
 
-#: daemon/gdm.c:1410
+#: daemon/gdm.c:1396
 #, c-format
 msgid "%s: Reboot failed: %s"
 msgstr "%s: Az újraindítás sikertelen: %s"
 
 #. Halt machine
-#: daemon/gdm.c:1418
+#: daemon/gdm.c:1404
 msgid "Master halting..."
 msgstr "A számítógép leáll..."
 
-#: daemon/gdm.c:1430
+#: daemon/gdm.c:1416
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s: A leállítás sikertelen: %s"
@@ -657,31 +656,36 @@ msgstr "%s: A leállítás sikertelen: %s"
 #. Suspend machine
 #. XXX: this is ugly, why should there be a suspend like this,
 #. * see GDM_SOP_SUSPEND_MACHINE
-#: daemon/gdm.c:1440 daemon/gdm.c:2609
+#: daemon/gdm.c:1426 daemon/gdm.c:2595
 msgid "Master suspending..."
 msgstr "A számítógép működésének felfüggesztése..."
 
-#: daemon/gdm.c:1550
+#: daemon/gdm.c:1536
 msgid "GDM restarting ..."
 msgstr "A GDM újraindul ..."
 
-#: daemon/gdm.c:1554
+#: daemon/gdm.c:1540
 msgid "Failed to restart self"
 msgstr "Sikertelen újraindítás"
 
-#: daemon/gdm.c:1715
+#. FIXME: note that this could mean out of memory
+#: daemon/gdm.c:1563
+msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
+msgstr ""
+
+#: daemon/gdm.c:1701
 msgid "Do not fork into the background"
 msgstr "Ne forkoljon a háttérben"
 
-#: daemon/gdm.c:1717
+#: daemon/gdm.c:1703
 msgid "No console (local) servers to be run"
 msgstr "Nincs konzol (helyi) szerver a futtatáshoz"
 
-#: daemon/gdm.c:1719
+#: daemon/gdm.c:1705
 msgid "Preserve LD_* variables"
 msgstr "Az LD_* környezeti változók megtartása"
 
-#: daemon/gdm.c:1840 gui/gdmchooser.c:1497
+#: daemon/gdm.c:1826 gui/gdmchooser.c:1497
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -690,13 +694,13 @@ msgstr ""
 "Hiba a(z) %s kapcsolónál: %s.\n"
 "Futtasd a '%s --help' parancsot a parancssori kapcsolók listájáért.\n"
 
-#: daemon/gdm.c:1858
+#: daemon/gdm.c:1844
 msgid "Only root wants to run gdm\n"
 msgstr "Csak a rendszergazda futtathatja a GDM-et!\n"
 
-#: daemon/gdm.c:1874 daemon/gdm.c:1878 daemon/gdm.c:1953 daemon/gdm.c:1957
-#: daemon/gdm.c:1961 daemon/gdm.c:1965 daemon/gdm.c:1975 daemon/gdm.c:1981
-#: daemon/gdm.c:1992 daemon/misc.c:1429 daemon/misc.c:1433 daemon/misc.c:1437
+#: daemon/gdm.c:1860 daemon/gdm.c:1864 daemon/gdm.c:1939 daemon/gdm.c:1943
+#: daemon/gdm.c:1947 daemon/gdm.c:1951 daemon/gdm.c:1961 daemon/gdm.c:1967
+#: daemon/gdm.c:1978 daemon/misc.c:1429 daemon/misc.c:1433 daemon/misc.c:1437
 #: daemon/misc.c:1444 daemon/misc.c:1448 daemon/misc.c:1452
 #: daemon/server.c:499 daemon/server.c:512 daemon/slave.c:766
 #: daemon/slave.c:780 daemon/slave.c:790 daemon/slave.c:800 daemon/slave.c:812
@@ -708,26 +712,26 @@ msgstr "Csak a rendszergazda futtathatja a GDM-et!\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Hiba a(z) %s jelzés kezelésének beállításakor: %s"
 
-#: daemon/gdm.c:1902
+#: daemon/gdm.c:1888
 msgid "gdm already running. Aborting!"
 msgstr "A GDM már fut. A művelet megszakítva!"
 
-#: daemon/gdm.c:2001
+#: daemon/gdm.c:1987
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Hiba a CHLD jelzés kezelőjének beállításakor"
 
-#: daemon/gdm.c:3266 daemon/gdm.c:3285
+#: daemon/gdm.c:3252 daemon/gdm.c:3271
 msgid "Flexible server request denied: Not authenticated"
 msgstr "Dinamikus szerver kérés letiltva: Nem engedélyezett"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:3303
+#: daemon/gdm.c:3289
 msgid "Unknown server type requested, using standard server."
 msgstr "Ismeretlen szerver típus kérelem, az általános szervert használom."
 
-#: daemon/gdm.c:3307
+#: daemon/gdm.c:3293
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -1255,36 +1259,36 @@ msgstr ""
 msgid "View details (~/.xsession-errors file)"
 msgstr "Részletek megtekintése (~/.xsession-errors fájl)"
 
-#: daemon/slave.c:4169
+#: daemon/slave.c:4180
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "A GDM észrevette, hogy leállítás vagy újraindítás folyik."
 
-#: daemon/slave.c:4263
+#: daemon/slave.c:4274
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "A(z) %s pingelése sikertelen, a képernyő hibás lehet!"
 
-#: daemon/slave.c:4539
+#: daemon/slave.c:4550
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Végzetes X hiba - %s újraindítása"
 
-#: daemon/slave.c:4943
+#: daemon/slave.c:4954
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: %s indítása sikertelen"
 
-#: daemon/slave.c:4951 daemon/slave.c:5088
+#: daemon/slave.c:4962 daemon/slave.c:5099
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: A parancsfájl folyamata nem forkolható!"
 
-#: daemon/slave.c:5045
+#: daemon/slave.c:5056
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Nem tudtam csövet létrehozni"
 
-#: daemon/slave.c:5082
+#: daemon/slave.c:5093
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: %s indítása sikertelen"
@@ -3683,3 +3687,9 @@ msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr ""
 "Túl sok eleme van a helyi beállításokhoz tartozó álnévláncolatnak, ez "
 "hurokra utalhat"
+
+#~ msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
+#~ msgstr "%s: Nem találom a (%s) GDM felhasználót. Megpróbálom 'nobody'-val!"
+
+#~ msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
+#~ msgstr "%s: Nem találom a GDM csoportját (%s). Megpróbálom 'nobody'-val!"
