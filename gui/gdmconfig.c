@@ -1448,13 +1448,33 @@ write_config (void)
     
     /* Write out the widget contents of the Servers tab */
 
-    for (i=0; i<number_of_servers; i++)
-      {
-	char *current_server;
-	gtk_clist_get_text(GTK_CLIST(get_widget("server_clist")),
-			   i, 1, &current_server);
-	gnome_config_set_string(g_strdup_printf("%d", i), current_server);
-      }
+    for (i = 0; i < number_of_servers; i++) {
+	    char *key;
+	    char *val;
+	    char *extra_args = NULL;
+	    char *current_server =
+		    gtk_clist_get_row_data (GTK_CLIST (get_widget ("server_clist")), i);
+	    g_print ("foo %d: %s\n", i, current_server);
+
+	    if (ve_string_empty (current_server))
+		    continue;
+
+	    gtk_clist_get_text (GTK_CLIST (get_widget ("server_clist")),
+				i, 2, &extra_args);
+
+	    if (ve_string_empty (extra_args))
+		    val = g_strdup (current_server);
+	    else
+		    val = g_strdup_printf ("%s %s", current_server,
+					   extra_args);
+
+
+	    key = g_strdup_printf ("%d", i);
+	    g_print ("%s=%s\n", key, val);
+	    gnome_config_set_string(key, val);
+	    g_free (key);
+	    g_free (val);
+    }
 
    /* It would be nice to be able to do some paranoid sanity checking on
     * more of this stuff.
