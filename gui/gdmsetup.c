@@ -1962,7 +1962,7 @@ install_response (GtkWidget *chooser, gint response, gpointer data)
 			success = TRUE;
 
 			/* HACK! */
-			cmd = g_strdup_printf ("%s -R root.root %s", chown, quoted);
+			cmd = g_strdup_printf ("%s -R root:root %s", chown, quoted);
 			system (cmd);
 			g_free (cmd);
 

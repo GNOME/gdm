@@ -1,3 +1,10 @@
+Fri May 28 12:35:22 2004  George Lebl <jirka@5z.com>
+
+	* gui/gdmsetup.c, config/Makefile.am: solaris chown doesn't like 
+	  a dot separator but : is the standard separator and works for
+	  gnu chown as well, so switch to that.  Thanks to
+	  vix@vazka.sk (Ivan Noris).  Fixes #142732
+
 Fri May 28 12:01:02 2004  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c: Cut after

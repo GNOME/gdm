@@ -139,13 +139,13 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop D
 
 	if test '!' -d $(DESTDIR)$(logdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(logdir); \
-		chown root.root $(DESTDIR)$(logdir); \
+		chown root:root $(DESTDIR)$(logdir); \
 		chmod 755 $(DESTDIR)$(logdir); \
 	fi
 
 	if test '!' -d $(DESTDIR)$(authdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(authdir); \
-		chown root.gdm $(DESTDIR)$(authdir); \
+		chown root:gdm $(DESTDIR)$(authdir); \
 		chmod 1770 $(DESTDIR)$(authdir); \
 	fi
 
