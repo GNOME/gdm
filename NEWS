@@ -1,5 +1,38 @@
 Ahh news...
 
+2.4.2.96 stuff:
+
+- When you log in twice on a different server, gdm warns you and if
+  both logins are console logins on linux, then you can have gdm switch
+  consoles for you instead of logging on.
+
+- Errorgui (failsafe) dialogs now run mostly under the gdm user and not as root
+
+- In the .desktop files we now refer to GDM as Login Screen and not GDM,
+  fixes #85543
+
+- Add ALL_SERVERS to the socket protocol which returns all the displays
+
+- DESKTOP_SESSION is set in addition to GDMSESSION
+
+- Add CDE session .desktop (Brian Cameron)
+
+- Remove some debugging output (and make it only output stuff when debug is on)
+
+- Fix the output reading of failsafe yes/no dialog
+
+- Fix some typos in config stuff (Ali Akcaagac, me)
+
+- Graphical greeter should now work again (Frederic Crozat, Diego Gonzalez, me)
+
+- Fix compilation on non-pam setups and non-linux setup
+
+- Fix default paths (Brian Cameron, me)
+
+- Actually include the theme document!
+
+- Minor other fixes
+
 2.4.2.95 stuff:
 
 - Completely new session setup, born out of discussions with Oswald

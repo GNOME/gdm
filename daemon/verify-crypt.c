@@ -101,7 +101,7 @@ gdm_verify_user (GdmDisplay *d,
 		 const gchar *display,
 		 gboolean local) 
 {
-    gchar *login, *passwd, *ppasswd, *auth_errmsg;
+    gchar *login, *passwd, *ppasswd;
     struct passwd *pwent;
 
     if (local)
