@@ -5,9 +5,9 @@
 # Changwoo Ryu <cwryu@debian.org>, 2002.
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm 2.3.90.1\n"
-"POT-Creation-Date: 2002-04-26 12:50+0900\n"
-"PO-Revision-Date: 2002-04-26 12:54+0900\n"
+"Project-Id-Version: gdm 2.3.90.2\n"
+"POT-Creation-Date: 2002-04-29 13:02+0900\n"
+"PO-Revision-Date: 2002-04-29 13:05+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -641,12 +641,12 @@ msgstr "%s: 파이프를 여는 데 오류: %s"
 msgid "%s: Error setting up USR1 signal handler: %s"
 msgstr "%s: USR1 시그날 처리기 설정에 오류: %s"
 
-#: daemon/server.c:365 daemon/slave.c:199
+#: daemon/server.c:365 daemon/slave.c:201
 #, c-format
 msgid "%s: Error setting up CHLD signal handler: %s"
 msgstr "%s: CHLD 시그날 처리기를 설정하는 데 오류: %s"
 
-#: daemon/server.c:379 daemon/slave.c:175
+#: daemon/server.c:379 daemon/slave.c:177
 #, c-format
 msgid "%s: Error setting up ALRM signal handler: %s"
 msgstr "%s: TERM 시그날 처리기 설정에 오류: %s"
@@ -707,17 +707,17 @@ msgstr "%s: 화면 %s에 비어있는 서버 명령"
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: 서버가 uid %d에 의해 만들어 졌지만 그러한 사용자가 없습니다"
 
-#: daemon/server.c:819 daemon/slave.c:1144 daemon/slave.c:1482
+#: daemon/server.c:819 daemon/slave.c:1155 daemon/slave.c:1493
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: 그룹 아이디를 %d로 맞출 수 없습니다"
 
-#: daemon/server.c:825 daemon/slave.c:1149 daemon/slave.c:1487
+#: daemon/server.c:825 daemon/slave.c:1160 daemon/slave.c:1498
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: %s에 대하여 initgroups() 실패"
 
-#: daemon/server.c:831 daemon/slave.c:1154 daemon/slave.c:1492
+#: daemon/server.c:831 daemon/slave.c:1165 daemon/slave.c:1503
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: 사용자 아이디를 %d로 맞출 수 없습니다"
@@ -736,17 +736,17 @@ msgstr "gdm_server_spawn: Xserver가 없습니다: %s"
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: Xserver 프로세스를 fork할 수 없습니다!"
 
-#: daemon/slave.c:189
+#: daemon/slave.c:191
 #, c-format
 msgid "%s: Error setting up TERM/INT signal handler: %s"
 msgstr "%s: TERM/INT 시그날 처리기 설정에 오류: %s"
 
-#: daemon/slave.c:209
+#: daemon/slave.c:211
 #, c-format
 msgid "%s: Error setting up USR2 signal handler: %s"
 msgstr "%s: USR2 시그날 처리기 설정에 오류: %s"
 
-#: daemon/slave.c:372
+#: daemon/slave.c:398
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -766,16 +766,16 @@ msgstr ""
 "문제가 해결되면 gdm을 다시\n"
 "시작해 주십시오."
 
-#: daemon/slave.c:569
+#: daemon/slave.c:580
 msgid "focus_first_x_window: cannot fork"
 msgstr "focus_first_x_window: 포크할 수 없음"
 
-#: daemon/slave.c:588
+#: daemon/slave.c:599
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr "focus_first_x_window: 디스플레이 %s 를 열 수 없음"
 
-#: daemon/slave.c:693
+#: daemon/slave.c:704
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -789,7 +789,7 @@ msgstr ""
 "것입니다. \n"
 " "
 
-#: daemon/slave.c:707
+#: daemon/slave.c:718
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -799,7 +799,7 @@ msgstr ""
 "설정파일의 경로가 제대로 되어 있는지\n"
 "확인하십시오."
 
-#: daemon/slave.c:762
+#: daemon/slave.c:773
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -807,16 +807,16 @@ msgstr ""
 "설정을 실행하려면 root사용자의 \n"
 "비밀번호를 입력하십시오."
 
-#: daemon/slave.c:777 daemon/slave.c:847
+#: daemon/slave.c:788 daemon/slave.c:858
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: 로그인 없음/잘못된 로그인"
 
-#: daemon/slave.c:1107
+#: daemon/slave.c:1118
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: gdmgreeter에 대한 파이프를 초기화할 수 없습니다"
 
-#: daemon/slave.c:1215
+#: daemon/slave.c:1226
 msgid ""
 "No servers were defined in the\n"
 "configuration file and XDMCP was\n"
@@ -835,7 +835,7 @@ msgstr ""
 "지금부터 자동 로그인과 시간제한\n"
 "로그인을 사용할 수 없습니다."
 
-#: daemon/slave.c:1229
+#: daemon/slave.c:1240
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -849,7 +849,7 @@ msgstr ""
 "시작합니다. 로그인해서 X서버를\n"
 "올바로 설정하십시오."
 
-#: daemon/slave.c:1238
+#: daemon/slave.c:1249
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -857,12 +857,12 @@ msgid ""
 msgstr ""
 "지정한 화면 번호가 사용되고 있습니다, 이 서버는 화면 %s에서 시작되었습니다."
 
-#: daemon/slave.c:1251
+#: daemon/slave.c:1262
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr "gdm_slave_greeter: 기본값으로 환영 프로그램을 시작할 수 없음: %s"
 
-#: daemon/slave.c:1263
+#: daemon/slave.c:1274
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -876,26 +876,26 @@ msgstr ""
 "다른 방법으로 로그인 하여서 \n"
 "설정파일을 편집하십시오."
 
-#: daemon/slave.c:1269
+#: daemon/slave.c:1280
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: 디스플레이 %s에서 환영 프로그램을 시작하는 데 문제 발생"
 
-#: daemon/slave.c:1272
+#: daemon/slave.c:1283
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: gdmgreeter 프로세스를 fork할 수 없습니다"
 
-#: daemon/slave.c:1331 daemon/slave.c:1419
+#: daemon/slave.c:1342 daemon/slave.c:1430
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: fifo를 열지 못했습니다"
 
-#: daemon/slave.c:1446
+#: daemon/slave.c:1457
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
 msgstr "gdm_slave_chooser: gdmchooser에 대한 파이프를 초기화할 수 없습니다"
 
-#: daemon/slave.c:1525
+#: daemon/slave.c:1536
 msgid ""
 "Cannot start the chooser program,\n"
 "you will not be able to log in.\n"
@@ -905,27 +905,27 @@ msgstr ""
 "로그인을 할 수 없습니다.\n"
 "시스템 관리자에게 연락하십시오.\n"
 
-#: daemon/slave.c:1529
+#: daemon/slave.c:1540
 #, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
 msgstr "gdm_slave_chooser: 디스플레이 %s에서 chooser를 시작하는 데 문제 발생"
 
-#: daemon/slave.c:1532
+#: daemon/slave.c:1543
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
 msgstr "gdm_slave_chooser: gdmchooser 프로세스를 fork할 수 없습니다"
 
-#: daemon/slave.c:1897
+#: daemon/slave.c:1908
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: %s의 환경을 설정하지 못했습니다: 취소합니다!"
 
-#: daemon/slave.c:1907
+#: daemon/slave.c:1918
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: %s로(으로) 변신하지 못했습니다. 중지."
 
 #. yaikes
-#: daemon/slave.c:1980
+#: daemon/slave.c:1991
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -933,7 +933,7 @@ msgstr ""
 "gdm_slave_session_start: gnome-session이 안전모드 그놈 세션을 찾을 수 없습니"
 "다, xterm으로 시도합니다"
 
-#: daemon/slave.c:1984
+#: daemon/slave.c:1995
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -943,7 +943,7 @@ msgstr ""
 "\"안전 모드 xterm\" 세션을\n"
 "실행하려 합니다."
 
-#: daemon/slave.c:1990
+#: daemon/slave.c:2001
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -957,11 +957,11 @@ msgstr ""
 "이것은 설치에서 문제점을\n"
 "고치기 위해 실행 됩니다."
 
-#: daemon/slave.c:2009
+#: daemon/slave.c:2020
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "안전모드 세션을 시작하기 위한 \"xterm\"을 찾을 수 없습니다."
 
-#: daemon/slave.c:2016
+#: daemon/slave.c:2027
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -977,16 +977,16 @@ msgstr ""
 "나가려면, 창 안에서 'exit'라고 타이프하고\n"
 "엔터를 누르십시오."
 
-#: daemon/slave.c:2038
+#: daemon/slave.c:2049
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "%s 실행중 (사용자: %s, 디스플레이: %s)"
 
-#: daemon/slave.c:2052
+#: daemon/slave.c:2063
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: 사용자가 로그인하게 허용하지 않습니다"
 
-#: daemon/slave.c:2054
+#: daemon/slave.c:2065
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -994,12 +994,12 @@ msgstr ""
 "시스템 관리자가 당신의 계정을\n"
 "막아놓았습니다."
 
-#: daemon/slave.c:2057
+#: daemon/slave.c:2068
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: 세션 `%s'을(를) 찾지/시작하지 못했습니다"
 
-#: daemon/slave.c:2062
+#: daemon/slave.c:2073
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -1011,12 +1011,12 @@ msgstr ""
 "사용할수 있는 세션 목록에서 올바른 세션을\n"
 "선택하십시오."
 
-#: daemon/slave.c:2070
+#: daemon/slave.c:2081
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: 세션 `%s'을(를) 시작하지 못했습니다"
 
-#: daemon/slave.c:2073
+#: daemon/slave.c:2084
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -1026,13 +1026,13 @@ msgstr ""
 "로그인을 막아놓았을 것입니다.\n"
 "당신의 계정으로 접근하는 것을 오류로 인식할 것 입니다.\n"
 
-#: daemon/slave.c:2105
+#: daemon/slave.c:2116
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: 인증을 통과했지만 getpwnam(%s)이 실패했습니다!"
 
-#: daemon/slave.c:2111
+#: daemon/slave.c:2122
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1053,16 +1053,16 @@ msgstr ""
 "로그인한다고 해도 안전모드 세션이 아니라면\n"
 "아무 것도 동작하지 않을 것입니다."
 
-#: daemon/slave.c:2119
+#: daemon/slave.c:2130
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: %s: '%s'의 홈디렉토리가 존재하지 않습니다."
 
-#: daemon/slave.c:2266
+#: daemon/slave.c:2277
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr "gdm_slave_session_start: 인증을 완료했습니다. 환영 프로그램 강제 종료"
 
-#: daemon/slave.c:2284
+#: daemon/slave.c:2295
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -1070,39 +1070,39 @@ msgstr ""
 "gdm_slave_session_start: PreSession 스크립트가 0보다 큰 값을 리턴했습니다. 중"
 "지."
 
-#: daemon/slave.c:2321
+#: daemon/slave.c:2332
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: 사용자 세션을 fork하는 데 문제 발생"
 
-#: daemon/slave.c:2505
+#: daemon/slave.c:2516
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "%s(으)로의 ping이 실패했습니다. 디스플레이 강제 종료!"
 
-#: daemon/slave.c:2626
+#: daemon/slave.c:2637
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: 치명적 X 문제 - %s 재시작"
 
-#: daemon/slave.c:2817
+#: daemon/slave.c:2828
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: 시작 실패: %s"
 
-#: daemon/slave.c:2823
+#: daemon/slave.c:2834
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: 스크립트 프로세스를 fork할 수 없습니다!"
 
-#: daemon/slave.c:2947
+#: daemon/slave.c:2961
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "gdm_parse_enriched_login: 파이프를 만들수 없습니다"
 
-#: daemon/slave.c:2969
+#: daemon/slave.c:2983
 #, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "gdm_parse_enriched_login: 실행 실패: %s"
 
-#: daemon/slave.c:2974
+#: daemon/slave.c:2988
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login: 스크립트 프로세스를 fork할 수 없습니다!"
 
@@ -1473,7 +1473,8 @@ msgstr ""
 "호스트들을 보여줍니다. 이 기능을 통해 사용자는 마치 콘솔에 로그인한 \n"
 "것처럼 원격에서 다른 기계에 로그인할 수 있습니다.\n"
 "\n"
-"'다시 읽기'를 클릭하면 네트워크를 다시 읽어 새로운 호스트를 찾을 수 있습니다.  \n"
+"'다시 읽기'를 클릭하면 네트워크를 다시 읽어 새로운 호스트를 찾을 수 있습니"
+"다.  \n"
 "호스트를 선택하면 \"연결\"을 클릭해 그 기계에서 세션을 열 수 있습니다."
 
 #: gui/gdmchooser.c:900
@@ -1493,7 +1494,7 @@ msgstr "gdm_signals_init: INT 시그날 처리기를 설정하는 데 문제 발
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: TERM 시그날 처리기를 설정하는 데 문제 발생"
 
-#: gui/gdmchooser.c:963 gui/gdmlogin.c:3898 gui/greeter/greeter.c:705
+#: gui/gdmchooser.c:963 gui/gdmlogin.c:3955 gui/greeter/greeter.c:721
 msgid "Could not set signal mask!"
 msgstr "시그날 마스크를 맞추지 못했습니다!"
 
@@ -1579,12 +1580,79 @@ msgstr ""
 "호스트들을 보여줍니다. 이 기능을 통해 사용자는 마치 콘솔에 로그인한 \n"
 "것처럼 원격에서 다른 기계에 로그인할 수 있습니다.\n"
 "\n"
-"'다시 읽기'를 클릭하면 네트워크를 다시 읽어 새로운 호스트를 찾을 수 있습니다.  \n"
+"'다시 읽기'를 클릭하면 네트워크를 다시 읽어 새로운 호스트를 찾을 수 있습니"
+"다.  \n"
 "호스트를 선택하면 \"연결\"을 클릭해 그 기계에서 세션을 열 수 있습니다."
 
 #: gui/gdmchooser-strings.c:17
 msgid "Information"
 msgstr "정보"
+
+#: gui/gdmXnestchooser.c:263 gui/gdmcomm.c:380
+msgid ""
+"GDM is not running.\n"
+"Please ask your system administrator to start it."
+msgstr ""
+"GDM이 실행중이 아닙니다.\n"
+"시스템 관리자에게 실행을 요청하십시오."
+
+#: gui/gdmcomm.c:391 gui/gdmcomm.c:406 gui/gdmcomm.c:409
+#: gui/gdmflexiserver.c:239
+msgid "Cannot communicate with gdm, perhaps you have an old version running."
+msgstr "gdm과 통신할 수 없습니다. 아마도 옛날 버전을 실행하고 있을 것입니다."
+
+#: gui/gdmcomm.c:412
+msgid "The allowed limit of flexible X servers reached."
+msgstr "탄력적 X 서버의 최대 허용치에 다다랐습니다."
+
+#: gui/gdmcomm.c:414
+msgid "There were errors trying to start the X server."
+msgstr "X서버를 시작하는 데 오류가 발생했습니다."
+
+#: gui/gdmcomm.c:416
+msgid "The X server failed.  Perhaps it is not configured well."
+msgstr "X 서버 실패.  X 서버가 제대로 설정되지 않았을 것입니다."
+
+#: gui/gdmcomm.c:419
+msgid "Too many X sessions running."
+msgstr "너무 많은 X 세션이 실행중입니다."
+
+#: gui/gdmcomm.c:421
+msgid ""
+"The nested X server (Xnest) cannot connect to your current X server.  You "
+"may be missing an X authorization file."
+msgstr ""
+"중첩 X 서버가 (Xnest) 현재 X 서버에 연결할 수 없습니다.  아마 X 인증 파일이 "
+"없을 것입니다."
+
+#: gui/gdmcomm.c:426
+msgid ""
+"The nested X server (Xnest) is not available, or gdm is badly configured.\n"
+"Please install the Xnest package in order to use the nested login."
+msgstr ""
+"중첩 X 서버가 (Xnest) 없거나, gdm이 잘못 설정되어 있습니다.\n"
+"중첩 로그인을 사용하려면 Xnest 패키지를 설치하십시오."
+
+#: gui/gdmcomm.c:431
+msgid ""
+"The X server is not available, it is likely that gdm is badly configured."
+msgstr "X 서버를 사용할 수 없습니다. gdm이 잘못 설정되었을 것입니다."
+
+#: gui/gdmcomm.c:435
+msgid "Trying to update an unsupported configuration key."
+msgstr "지원하지 않는 설정 키의 업데이트를 시도합니다."
+
+#: gui/gdmcomm.c:437 gui/gdmflexiserver.c:250
+msgid ""
+"You do not seem to have authentication needed be for this operation.  "
+"Perhaps your .Xauthority file is not set up correctly."
+msgstr ""
+"이 작업을 하기 위해 필요한 인증한 내용이 없습니다.  아마도 .Xauthority 파일"
+"이 올바르게 설정되지 않았을 것입니다."
+
+#: gui/gdmcomm.c:441
+msgid "Unknown error occured."
+msgstr "알 수 없는 오류가 발생했습니다."
 
 #. 3 user levels are present in the CList
 #: gui/gdmconfig.c:60
@@ -1658,7 +1726,7 @@ msgstr ""
 "않습니다. 더 이상 진행 할 수 없습니다.\n"
 "설치가 올바르게 되었는지 확인 하십시오."
 
-#: gui/gdmconfig.c:393
+#: gui/gdmconfig.c:393 gui/gdmsetup.c:627
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "GDM을 설정하려면 슈퍼유저(root)이여야만 합니다.\n"
 
@@ -1910,11 +1978,12 @@ msgstr ""
 "이전 디렉토리에 세션 변경 사항이\n"
 "저장됩니다."
 
-#: gui/gdmconfig.desktop.in.h:1
+#. EOF
+#: gui/gdmconfig.desktop.in.h:1 gui/gdmsetup.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr "그놈 디스플레이 관리자(GDM)을 그래픽하게 설정하는 응용프로그램"
 
-#: gui/gdmconfig.desktop.in.h:2
+#: gui/gdmconfig.desktop.in.h:2 gui/gdmsetup.desktop.in.h:2
 msgid "GDM Configurator"
 msgstr "GDM 설정 도구"
 
@@ -1956,6 +2025,7 @@ msgid "Apply"
 msgstr "적용"
 
 #: gui/gdmconfig-strings.c:15 gui/gdmconfig-strings.c:135
+#: gui/gdmsetup-strings.c:31
 msgid "Options"
 msgstr "옵션"
 
@@ -2415,6 +2485,7 @@ msgid "The program to run in the background of the login."
 msgstr "로그인 배경에 실행되는 프로그램"
 
 #: gui/gdmconfig-strings.c:126 gui/gdmconfig-strings.c:133
+#: gui/gdmsetup-strings.c:18
 msgid "Automatic login"
 msgstr "자동 로그인"
 
@@ -2422,11 +2493,11 @@ msgstr "자동 로그인"
 msgid "Automatic login: "
 msgstr "자동 로그인: "
 
-#: gui/gdmconfig-strings.c:128
+#: gui/gdmconfig-strings.c:128 gui/gdmsetup-strings.c:15
 msgid "Login a user automatically on first bootup"
 msgstr "처음 시동될때 자동으로 사용자 로그인"
 
-#: gui/gdmconfig-strings.c:129
+#: gui/gdmconfig-strings.c:129 gui/gdmsetup-strings.c:23
 msgid "Timed login"
 msgstr "시간제한 로그인"
 
@@ -2438,7 +2509,7 @@ msgstr "시간제한 아이콘: "
 msgid "Seconds before login: "
 msgstr "로그인 전 시간: "
 
-#: gui/gdmconfig-strings.c:132
+#: gui/gdmconfig-strings.c:132 gui/gdmsetup-strings.c:19
 msgid "Login a user automatically after a specified number of seconds"
 msgstr "지정한 시간 후 자동으로 사용자로 로그인"
 
@@ -2450,7 +2521,7 @@ msgstr "고급"
 msgid "Allow logging in as root (administrator) user."
 msgstr "root (관리자) 사용자로 로그인 허용합니다."
 
-#: gui/gdmconfig-strings.c:137
+#: gui/gdmconfig-strings.c:137 gui/gdmsetup-strings.c:27
 msgid "Allow root to login with GDM"
 msgstr "GDM으로 root 사용자 로그인 허용"
 
@@ -2462,7 +2533,7 @@ msgstr ""
 "GDM을 사용해 원격 호스트에서 root (관리자) 사용자로 로그인을 허용합니다.  이 "
 "옵션은 XDMCP 프로토콜을 사용한 경우에만 의미가 있습니다."
 
-#: gui/gdmconfig-strings.c:139
+#: gui/gdmconfig-strings.c:139 gui/gdmsetup-strings.c:28
 msgid "Allow root to login remotely with GDM"
 msgstr "GDM으로 root 사용자 원격 로그인 허용"
 
@@ -2480,7 +2551,7 @@ msgstr ""
 "점에 유의하십시오."
 
 # timed login?
-#: gui/gdmconfig-strings.c:141
+#: gui/gdmconfig-strings.c:141 gui/gdmsetup-strings.c:29
 msgid "Allow remote timed logins"
 msgstr "원격 한시적 로그인 허용"
 
@@ -2594,11 +2665,11 @@ msgstr ""
 "최대 크기에 도달했을 경우에도 세션 파일을 읽습니다.  즉 메모리에 저장되지 않"
 "습니다."
 
-#: gui/gdmconfig-strings.c:166
+#: gui/gdmconfig-strings.c:166 gui/gdmsetup-strings.c:32
 msgid "Security"
 msgstr "보안"
 
-#: gui/gdmconfig-strings.c:167
+#: gui/gdmconfig-strings.c:167 gui/gdmsetup-strings.c:33
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -2610,15 +2681,15 @@ msgstr ""
 msgid "Enable XDMCP, a protocol to allow others to log in remotely"
 msgstr "원격에서 다른 사람들이 로그 할수 있도록 하는 프로토콜인 XDMCP 사용"
 
-#: gui/gdmconfig-strings.c:169
+#: gui/gdmconfig-strings.c:169 gui/gdmsetup-strings.c:34
 msgid "Enable XDMCP"
 msgstr "XDMCP 사용"
 
-#: gui/gdmconfig-strings.c:170
+#: gui/gdmconfig-strings.c:170 gui/gdmsetup-strings.c:44
 msgid "Connection Settings"
 msgstr "연결 설정"
 
-#: gui/gdmconfig-strings.c:171
+#: gui/gdmconfig-strings.c:171 gui/gdmsetup-strings.c:35
 msgid "Honour indirect requests"
 msgstr "간접 요청 받음"
 
@@ -2642,11 +2713,11 @@ msgstr "최대 미정 간접 요청: "
 msgid "Maximum pending requests: "
 msgstr "최대 미정 요청: "
 
-#: gui/gdmconfig-strings.c:177
+#: gui/gdmconfig-strings.c:177 gui/gdmsetup-strings.c:36
 msgid "Listen on UDP port: "
 msgstr "감시할 UDP 포트: "
 
-#: gui/gdmconfig-strings.c:178
+#: gui/gdmconfig-strings.c:178 gui/gdmsetup-strings.c:43
 msgid "Ping interval (minutes):"
 msgstr "ping 간격 (분):"
 
@@ -2681,11 +2752,11 @@ msgstr ""
 "한 개의 호스트 당 최대 디스플레이.   이 옵션은 모든 디스플레이를 사용해 gdm"
 "을 \"공격\"하는 것을 막는 데 쓰입니다.  로컬 연결에는 적용되지 않습니다."
 
-#: gui/gdmconfig-strings.c:183
+#: gui/gdmconfig-strings.c:183 gui/gdmsetup-strings.c:42
 msgid "Displays per host:"
 msgstr "호스트별 디스플레이:"
 
-#: gui/gdmconfig-strings.c:184
+#: gui/gdmconfig-strings.c:184 gui/gdmsetup-strings.c:45
 msgid "XDMCP"
 msgstr "XDMCP"
 
@@ -3102,18 +3173,6 @@ msgstr "디버깅 출력"
 #: gui/gdmflexiserver.c:195
 msgid "Authenticate before running --command"
 msgstr "--command를 실행하기 전에 인증을 합니다"
-
-#: gui/gdmflexiserver.c:239
-msgid "Cannot communicate with gdm, perhaps you have an old version running."
-msgstr "gdm과 통신할 수 없습니다. 아마도 옛날 버전을 실행하고 있을 것입니다."
-
-#: gui/gdmflexiserver.c:250
-msgid ""
-"You do not seem to have authentication needed be for this operation.  "
-"Perhaps your .Xauthority file is not set up correctly."
-msgstr ""
-"이 작업을 하기 위해 필요한 인증한 내용이 없습니다.  아마도 .Xauthority 파일"
-"이 올바르게 설정되지 않았을 것입니다."
 
 #: gui/gdmflexiserver.c:269
 msgid ""
@@ -3595,7 +3654,7 @@ msgstr "로그인 창을 아이콘화"
 msgid "%a %b %d, %H:%M"
 msgstr "%b %d %a, %H:%M"
 
-#: gui/gdmlogin.c:2654
+#: gui/gdmlogin.c:2654 gui/greeter/greeter_item.c:93
 msgid "%a %b %d, %I:%M %p"
 msgstr "%b %d %a, %p %I:%M"
 
@@ -3663,8 +3722,8 @@ msgstr "연결 해제"
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "기본 이미지를 열 수 없습니다: %s. 얼굴 브라우저 중지."
 
-#: gui/gdmlogin.c:3756 gui/gdmlogin.c:3783 gui/greeter/greeter.c:391
-#: gui/greeter/greeter.c:418
+#: gui/gdmlogin.c:3813 gui/gdmlogin.c:3840 gui/greeter/greeter.c:404
+#: gui/greeter/greeter.c:431
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3675,12 +3734,12 @@ msgstr ""
 "아마도 gdm을 막 업그레이드했을 것입니다.\n"
 "gdm 데몬을 재시작하거나 컴퓨터를 재시작하십시오."
 
-#: gui/gdmlogin.c:3789 gui/gdmlogin.c:3831 gui/greeter/greeter.c:424
-#: gui/greeter/greeter.c:467
+#: gui/gdmlogin.c:3846 gui/gdmlogin.c:3888 gui/greeter/greeter.c:437
+#: gui/greeter/greeter.c:480
 msgid "Reboot"
 msgstr "재시작"
 
-#: gui/gdmlogin.c:3823 gui/greeter/greeter.c:459
+#: gui/gdmlogin.c:3880 gui/greeter/greeter.c:472
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3691,27 +3750,27 @@ msgstr ""
 "아마도 gdm을 막 업그레이드했을 것입니다.\n"
 "gdm 데몬을 재시작하거나 컴퓨터를 재시작하십시오."
 
-#: gui/gdmlogin.c:3829 gui/greeter/greeter.c:465
+#: gui/gdmlogin.c:3886 gui/greeter/greeter.c:478
 msgid "Restart"
 msgstr "다시 시작"
 
-#: gui/gdmlogin.c:3870 gui/greeter/greeter.c:685
+#: gui/gdmlogin.c:3927 gui/greeter/greeter.c:701
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: HUP 시그날 처리기 설정에 문제 발생"
 
-#: gui/gdmlogin.c:3878 gui/greeter/greeter.c:693
+#: gui/gdmlogin.c:3935 gui/greeter/greeter.c:709
 msgid "main: Error setting up INT signal handler"
 msgstr "main: INT 시그날 처리기 설정에 문제 발생"
 
-#: gui/gdmlogin.c:3881 gui/greeter/greeter.c:696
+#: gui/gdmlogin.c:3938 gui/greeter/greeter.c:712
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: TERM 시그날 처리기 설정에 문제 발생"
 
-#: gui/gdmlogin.c:3889
+#: gui/gdmlogin.c:3946
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: CHLD 시그날 처리기를 설정하는 데 문제 발생"
 
-#: gui/gdmlogin.c:3963 gui/greeter/greeter.c:833
+#: gui/gdmlogin.c:4020 gui/greeter/greeter.c:849
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -3723,7 +3782,7 @@ msgstr ""
 "사용가능한 세션은 2가지 입니다, 하지만\n"
 "로그인 하여서 gdm 설정을 올바르게 고쳐야 할것 입니다."
 
-#: gui/gdmlogin.c:3984 gui/greeter/greeter.c:855
+#: gui/gdmlogin.c:4041 gui/greeter/greeter.c:871
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -3733,7 +3792,7 @@ msgstr ""
 "포함하고 있습니다, 그래서 기본 명령으로 실행합니다.\n"
 "설정을 고쳐 주십시오."
 
-#: gui/gdmlogin.c:4006 gui/greeter/greeter.c:878
+#: gui/gdmlogin.c:4063 gui/greeter/greeter.c:894
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -3809,6 +3868,83 @@ msgstr "GDM(로그인 관리자) 얼굴 찾아보기에서 나타나는 사진�
 msgid "Login Photo"
 msgstr "로그인 사진"
 
+#: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
+#: gui/gdmsetup-strings.c:25 gui/gdmsetup.c:362
+msgid "Standard greeter"
+msgstr "표준 환영 프로그램"
+
+#: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
+#: gui/gdmsetup-strings.c:26 gui/gdmsetup.c:364
+msgid "Graphical greeter"
+msgstr "그래픽 환영 프로그램"
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: gui/gdmsetup-strings.c:7
+msgid "GDM Setup"
+msgstr "GDM 설정"
+
+#: gui/gdmsetup-strings.c:8
+msgid "Local: "
+msgstr "로컬: "
+
+#: gui/gdmsetup-strings.c:9
+msgid "Remote: "
+msgstr "원격: "
+
+#: gui/gdmsetup-strings.c:14
+msgid "Greeter"
+msgstr "환영 프로그램"
+
+#: gui/gdmsetup-strings.c:16
+msgid "Automatic login username:"
+msgstr "자동 로그인 사용자 이름:"
+
+#: gui/gdmsetup-strings.c:17 gui/gdmsetup-strings.c:22
+msgid "*"
+msgstr "*"
+
+#: gui/gdmsetup-strings.c:20
+msgid "Timed login username:"
+msgstr "시간제한 로그인 사용자 이름:"
+
+#: gui/gdmsetup-strings.c:21
+msgid "Seconds before login:"
+msgstr "로그인 전 시간(초):"
+
+#: gui/gdmsetup-strings.c:24
+msgid "General"
+msgstr "일반"
+
+#: gui/gdmsetup-strings.c:30
+msgid "Retry delay (seconds) :"
+msgstr "재시도 지연(초) : "
+
+# ?pending
+#: gui/gdmsetup-strings.c:37
+msgid "Maximum pending requests:"
+msgstr "최대 미정 요청:"
+
+# ?pending
+#: gui/gdmsetup-strings.c:38
+msgid "Max pending indirect requests:"
+msgstr "최대 미정 간접 요청:"
+
+#: gui/gdmsetup-strings.c:39
+msgid "Maximum remote sessions:"
+msgstr "최대 원격 세션:"
+
+#: gui/gdmsetup-strings.c:40
+msgid "Maximum wait time:"
+msgstr "최대 대기 시간:"
+
+#: gui/gdmsetup-strings.c:41
+msgid "Maximum indirect wait time:"
+msgstr "최대 간접 대기 시간:"
+
 #: gui/gdmXnestchooser.c:99
 msgid "Xnest command line"
 msgstr "Xnest 명령 행"
@@ -3865,34 +4001,30 @@ msgstr ""
 "시스템 관리자에게 GDM 설정 프로그램에서 간접\n"
 "XDMCP를 사용할 수 있도록 요청 하십시오."
 
-#: gui/gdmXnestchooser.c:263
-msgid ""
-"GDM is not running.\n"
-"Please ask your system administrator to start it."
-msgstr ""
-"GDM이 실행중이 아닙니다.\n"
-"시스템 관리자에게 실행을 요청하십시오."
-
 #: gui/gdmXnestchooser.c:274
 msgid "Could not find a free display number"
 msgstr "사용 가능한 디스플레이 번호를 찾을 수 없습니다"
 
-#: gui/greeter/greeter.c:53
+#: gui/greeter/greeter.c:58
 #, c-format
 msgid "greeter_parse_config: No configuration file: %s. Using defaults."
 msgstr "greeter_parse_config: 설정 파일이 없습니다: %s. 기본값 사용."
 
-#: gui/greeter/greeter.c:772
+#: gui/greeter/greeter.c:788
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
-msgstr "테마를 읽어들이는 데 오류가 발생했고, 기본 테마도 읽어들일 수 없었습니다.  기본 환영 프로그램을 시작하겠습니다"
+msgstr ""
+"테마를 읽어들이는 데 오류가 발생했고, 기본 테마도 읽어들일 수 없었습니다.  기"
+"본 환영 프로그램을 시작하겠습니다"
 
-#: gui/greeter/greeter.c:790
+#: gui/greeter/greeter.c:806
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
-msgstr "기본 환영 프로그램을 시작할 수 없습니다.  디스플레이가 취소될 것이고, 다른 방법으로 로그인하여 gdm 설치를 수정해야 합니다"
+msgstr ""
+"기본 환영 프로그램을 시작할 수 없습니다.  디스플레이가 취소될 것이고, 다른 방"
+"법으로 로그인하여 gdm 설치를 수정해야 합니다"
 
 #: gui/greeter/greeter_lang_list.c:11
 msgid "Catalan"
@@ -4034,15 +4166,15 @@ msgstr "스웨덴어"
 msgid "Turkish"
 msgstr "터키어"
 
-#: gui/greeter/greeter_system.c:60
+#: gui/greeter/greeter_system.c:78
 msgid "Shut down the computer"
 msgstr "컴퓨터를 종료합니다"
 
-#: gui/greeter/greeter_system.c:68
+#: gui/greeter/greeter_system.c:86
 msgid "Suspend the computer"
 msgstr "컴퓨터를 일시 중단합니다"
 
-#: gui/greeter/greeter_system.c:76
+#: gui/greeter/greeter_system.c:94
 msgid "Reboot the computer"
 msgstr "컴퓨터를 재시작 합니다"
 
@@ -4132,66 +4264,3 @@ msgstr ""
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "인터페이스를 읽어들일 수 없습니다, 상태가 안 좋아요! (파일: %s)"
-
-#~ msgid ""
-#~ "Cannot find the glade interface description\n"
-#~ "file, cannot run gdmchooser.\n"
-#~ "Please check your installation and the\n"
-#~ "location of the gdmchooser.glade2 file."
-#~ msgstr ""
-#~ "glade 인터페이스 명세 파일을 찾을 수가 없어서\n"
-#~ "gdmchooser를 실행할 수 없습니다.\n"
-#~ "설치가 제대로 되었는지, 그리고 gdmchooser.glade2\n"
-#~ "파일의 위치가 올비른지 확인 하십시오."
-
-#~ msgid ""
-#~ "The glade interface description file\n"
-#~ "appears to be corrupted.\n"
-#~ "Please check your installation."
-#~ msgstr ""
-#~ "glade 인터페이스 명세 파일이 손상된 것\n"
-#~ "같습니다. 설치가 제대로 되었는지\n"
-#~ "확인하십시오."
-
-#~ msgid "Rescan"
-#~ msgstr "다시 읽음"
-
-#~ msgid "Help"
-#~ msgstr "도움말"
-
-#~ msgid "Most recently queried hosts"
-#~ msgstr "가장 최근 질의된 호스트"
-
-#~ msgid "The allowed limit of flexible X servers reached."
-#~ msgstr "탄력적 X 서버의 최대 허용치에 다다랐습니다."
-
-#~ msgid "There were errors trying to start the X server."
-#~ msgstr "X서버를 시작하는 데 오류가 발생했습니다."
-
-#~ msgid "The X server failed.  Perhaps it is not configured well."
-#~ msgstr "X 서버 실패.  X 서버가 제대로 설정되지 않았을 것입니다."
-
-#~ msgid "Too many X sessions running."
-#~ msgstr "너무 많은 X 세션이 실행중입니다."
-
-#~ msgid ""
-#~ "The nested X server (Xnest) cannot connect to your current X server.  You "
-#~ "may be missing an X authorization file."
-#~ msgstr ""
-#~ "중첩 X 서버가 (Xnest) 현재 X 서버에 연결할 수 없습니다.  아마 X 인증 파일"
-#~ "이 없을 것입니다."
-
-#~ msgid ""
-#~ "The nested X server (Xnest) is not available, or gdm is badly "
-#~ "configured.\n"
-#~ "Please install the Xnest package in order to use the nested login."
-#~ msgstr ""
-#~ "중첩 X 서버가 (Xnest) 없거나, gdm이 잘못 설정되어 있습니다.\n"
-#~ "중첩 로그인을 사용하려면 Xnest 패키지를 설치하십시오."
-
-#~ msgid ""
-#~ "The X server is not available, it is likely that gdm is badly configured."
-#~ msgstr "X 서버를 사용할 수 없습니다. gdm이 잘못 설정되었을 것입니다."
-
-#~ msgid "Unknown error occured."
-#~ msgstr "알 수 없는 오류가 발생했습니다."
