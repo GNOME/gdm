@@ -1,5 +1,59 @@
 Ahh news...
 
+2.2.4.0 stuff:
+
+- New unix socket protocol for controlling the daemon from outside.
+
+- A way to add servers at runtime by any local user.  So called flexible
+  servers.  That is implementing a "New login" kind of thing.  This new
+  server can also be a nested login with Xnest.  In which case anyone on
+  an X connection can run this.  All without the use of XDMCP and openning
+  up an extra TCP port.  This is more user friendly and also this way the
+  daemon can manage the servers better.
+
+- PAM usage more correct with respect to setting credentials.  This makes
+  pam_group actually work, and probably some other things
+
+- Implement a vt open (gdmopen) alternative inside gdm itself.  This
+  version is stripped down version of open and it works much better for
+  gdm's purposes of it.
+
+- Implement a local helper (if pam is used) for the password asking
+  when attempting to run X configuration.  This is more friendly
+  and more correct.
+
+- Keep track of all new helper processes and kill them off on exit.
+  Previously some of these could be left hanging.
+
+- When a display number is busy, ask the user about starting the
+  server on an empty display number (if no gdmopen or dialog, just
+  do it)
+
+- Keep track of the VT (on linux) of local servers and allow programs to
+  query this list through the socket protocol.  Perhaps to offer the
+  user a menu and a gui way to switch between logins.
+
+- More thorough closing of file descriptors.
+
+- Also look for 'whiptail' when looking for a 'dialog' implementation
+
+- In the photo setup, don't require a browser to be on.  In that case,
+  just warn the user.
+
+- Some doc fixes (Kjartan Maraas)
+
+- Added Galician (gl_ES) and Brazilian Portuguese (pt_BR) to the menu
+  (Jesus Bravo Alvarez)
+
+- Various minor fixes.
+
+- RPM Epoch raised to 1 since it seems others have been in an Epoch arms
+  race.
+
+- Translation updates (Ole Laursen, Christophe Merlet, Abel Cheung,
+  Jesus Bravo Alvarez, Pablo Saratxaga, Andras Timar, Zbigniew Chyla,
+  Kjartan Maraas, Marius Andreiana, me)
+
 2.2.3.2 stuff:
 
 - printf/syslog format bugs fixed which fixes possible security
