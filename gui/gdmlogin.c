@@ -312,8 +312,8 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
 
     gtk_widget_show (GTK_WIDGET (win));
 
-    rw = gdk_screen_width();
-    rh = gdk_screen_height();
+    rw = screen.width;
+    rh = screen.height;
 
     set_screen_pos (GTK_WIDGET (win), rw-iw, rh-ih);
 }
@@ -734,9 +734,9 @@ dance (gpointer data)
 	static int height = -1;
 
 	if (width == -1)
-		width = gdk_screen_width ();
+		width = screen.width;
 	if (height == -1)
-		height = gdk_screen_height ();
+		height = screen.height;
 
 	if (login == NULL ||
 	    login->window == NULL) {
@@ -750,8 +750,8 @@ dance (gpointer data)
 	t1 += 0.03 + (rand () % 10) / 500.0;
 	t2 += 0.03 + (rand () % 10) / 500.0;
 
-	x = (width / 2) + (width / 5) * xm;
-	y = (height / 2) + (height / 5) * ym;
+	x = screen.x + (width / 2) + (width / 5) * xm;
+	y = screen.y + (height / 2) + (height / 5) * ym;
 
 	set_screen_pos (login,
 			x - login->allocation.width / 2,
