@@ -1374,15 +1374,23 @@ gdm_verify_cleanup (GdmDisplay *d)
 
 		pam_end (tmp_pamh, pamerr);
 
+#ifdef  HAVE_LOGINDEVPERM
+        if (old_opened_session && old_did_setcred && d->console)
+        {
+            struct passwd *gdm_pwent = NULL;
+            (void) di_devperm_logout("/dev/console");
+
+            gdm_pwent = getpwnam (GdmUser);
+            (void) di_devperm_login("/dev/console", gdm_pwent->pw_uid,
+                gdm_pwent->pw_gid, NULL);
+        }
+#endif  /* HAVE_LOGINDEVPERM */
+
 		/* Workaround to avoid gdm messages being logged as PAM_pwdb */
 		closelog ();
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 	}
 
-#ifdef	HAVE_LOGINDEVPERM
-	if (d->console)
-		(void) di_devperm_logout("/dev/console");
-#endif	/* HAVE_LOGINDEVPERM */
 	/* Clear the group setup */
 	setgid (0);
 	/* this will get rid of any suplementary groups etc... */

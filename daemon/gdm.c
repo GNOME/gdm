@@ -59,6 +59,10 @@
 #include "cookie.h"
 #include "filecheck.h"
 
+#ifdef  HAVE_LOGINDEVPERM
+#include <libdevinfo.h>
+#endif  /* HAVE_LOGINDEVPERM */
+
 /* Local functions */
 static void gdm_config_parse (void);
 static void gdm_handle_message (GdmConnection *conn,
@@ -928,6 +932,10 @@ gdm_final_cleanup (void)
 	gdm_debug ("gdm_final_cleanup");
 
 	gdm_in_final_cleanup = TRUE;
+
+#ifdef  HAVE_LOGINDEVPERM
+    (void) di_devperm_logout("/dev/console");
+#endif  /* HAVE_LOGINDEVPERM */
 
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
@@ -2036,6 +2044,16 @@ main (int argc, char *argv[])
 
     /* Parse configuration file */
     gdm_config_parse();
+
+#ifdef  HAVE_LOGINDEVPERM
+    {
+    struct passwd *gdm_pwent = NULL;
+    gdm_pwent = getpwnam (GdmUser);
+
+    di_devperm_login("/dev/console", gdm_pwent->pw_uid,
+        gdm_pwent->pw_gid, NULL);
+    }
+#endif  /* HAVE_LOGINDEVPERM */
 
     /* Check if another gdm process is already running */
     if (access (GdmPidFile, R_OK) == 0) {

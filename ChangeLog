@@ -1,3 +1,13 @@
+Tue Sep 22 12:45:00 2004  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/gdm.c, daemon/verify-pam.c: Modification to logindevperm
+	  logic so that device permissions are given to the gdm user
+	  while gdm is running.  This allows a11y programs like
+	  gnopernicus to access the sound device for text-to-speech.
+	  Minor correction to the logindevperm logout logic in 
+	  verify-pam.c so that di_devperm_logout isn't called in
+	  situations where di_devperm_login was not called.
+
 Tue Sep 15 12:45:00 2004  Brian Cameron  <brian.cameron@sun.com>
 
 	* configure.in: Corrected check for Solaris auditing API so it
