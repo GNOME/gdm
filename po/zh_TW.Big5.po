@@ -1,18 +1,13 @@
-# gdm2 1.3
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Li-Jen Hsin <hsin@med.cgu.edu.tw>, 1999.
-# Jing-Jong SHYUE <shyue@sonoma.com.tw>, 2000
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 1.3\n"
-"POT-Creation-Date: 2000-05-07 08:00+0800\n"
-"PO-Revision-Date: 2000-05-07 18:00-0500\n"
-"Last-Translator: Jing-Jong SHYUE <shyue@sonoma.com.tw\n"
-"Language-Team: Chinese <zh@li.org>\n"
+"POT-Creation-Date: 2000-11-16 00:10+0800\n"
+"PO-Revision-Date: 2000-11-16 17:44Taipei Standard Time\n"
+"Last-Translator: Jing-Jong Shyue <shyue@sonoma.com.tw>\n"
+"Language-Team: Chinese <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=big5\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8-bit\n"
 
 #: daemon/gdm.c:114
 #, c-format
@@ -36,10 +31,8 @@ msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr "gdm_config_parse: 設定檔不存在: %s. 忽略中!"
 
 #: daemon/gdm.c:189
-msgid ""
-"gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
-msgstr ""
-"gdm_config_parse: Xdmcp 關閉且未定義區域伺服器. 放棄中!"
+msgid "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
+msgstr "gdm_config_parse: Xdmcp 關閉且未定義區域伺服器. 放棄中!"
 
 #: daemon/gdm.c:196
 #, c-format
@@ -71,17 +64,13 @@ msgstr "gdm_config_parse: 授權目錄 %s 非目錄. 放棄中!"
 
 #: daemon/gdm.c:253
 #, c-format
-msgid ""
-"gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
-msgstr ""
-"gdm_config_parse: 授權目錄 %s 不屬於使用者 %s (群組 %s ). 放棄中!"
+msgid "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
+msgstr "gdm_config_parse: 授權目錄 %s 不屬於使用者 %s (群組 %s ). 放棄中!"
 
 #: daemon/gdm.c:257
 #, c-format
-msgid ""
-"gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
-msgstr ""
-"gdm_config_parse:  授權目錄 %s 權限錯誤 (應為 750 ). 放棄中!"
+msgid "gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
+msgstr "gdm_config_parse:  授權目錄 %s 權限錯誤 (應為 750 ). 放棄中!"
 
 #: daemon/gdm.c:291
 msgid "gdm_daemonify: fork() failed!"
@@ -92,13 +81,11 @@ msgstr "gdm_daemonify: fork() 失敗!"
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify:setsid() 失敗: %s!"
 
-#. Bury this display for good
 #: daemon/gdm.c:366
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action: 放棄顯示 %s"
 
-#. Reboot machine
 #: daemon/gdm.c:372
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action: 主機重新啟動中..."
@@ -108,7 +95,6 @@ msgstr "gdm_child_action: 主機重新啟動中..."
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action: 重新啟動失敗: %s"
 
-#. Halt machine
 #: daemon/gdm.c:385
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action: 主機停止中..."
@@ -119,8 +105,8 @@ msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: 停止失敗: %s"
 
 #: daemon/gdm.c:458
-msgid "Only root wants to run x^hgdm\n"
-msgstr "只有 root 可以執行 x^hgdm\n"
+msgid "Only root wants to run gdm\n"
+msgstr "只有 root 可以執行 gdm\n"
 
 #: daemon/gdm.c:479
 msgid "gdm already running. Aborting!"
@@ -138,8 +124,8 @@ msgstr "gdm_main: INT 訊號掌控器設定錯誤."
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr "gdm_main: CHLD 訊號掌控器設定錯誤."
 
-#. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:228 daemon/auth.c:255
+#: daemon/auth.c:228
+#: daemon/auth.c:255
 #, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
 msgstr "gdm_auth_user_add: 無法開啟 Cookie 檔案 %s"
@@ -154,17 +140,24 @@ msgstr "gdm_auth_user_add: 無法鎖定 Cookie 檔案 %s"
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr "gdm_auth_user_remove: 忽略可疑的 Cookie 檔案 %s"
 
+#: daemon/display.c:89
+#, c-format
+msgid "gdm_display_manage: Failed forking gdm slave process for %d"
+msgstr "gdm_display_manage: 無法衍生 gdm 子程序於 %d"
+
 #: daemon/filecheck.c:51
 #, c-format
 msgid "%s: Directory %s does not exist."
 msgstr "%s: 目錄 %s 不存在."
 
-#: daemon/filecheck.c:57 daemon/filecheck.c:98
+#: daemon/filecheck.c:57
+#: daemon/filecheck.c:98
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr "%s: %s 的擁有者 uid 不是 %d."
 
-#: daemon/filecheck.c:63 daemon/filecheck.c:105
+#: daemon/filecheck.c:63
+#: daemon/filecheck.c:105
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr "%s: %s 是群組可寫入的."
@@ -207,6 +200,7 @@ msgid "gdm_server_start: Error setting up ALRM signal handler"
 msgstr "gdm_server_start: ALRM 訊號掌控器設定錯誤."
 
 #: daemon/server.c:196
+#, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr "gdm_server_spawn: 無法開啟顯示 %s 的紀錄檔!"
 
@@ -260,12 +254,8 @@ msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr "gdm_slave_session_start: 使用者通過認證, 但 getpwnam(%s) 失敗!"
 
 #: daemon/slave.c:355
-msgid ""
-"gdm_slave_session_start: Execution of PreSession script returned > 0. "
-"Aborting."
-msgstr ""
-"gdm_slave_session_start: 執行前階段作業敘述傳回值 > 0."
-"放棄中!"
+msgid "gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."
+msgstr "gdm_slave_session_start: 執行前階段作業敘述傳回值 > 0.放棄中!"
 
 #: daemon/slave.c:379
 msgid "gdm_slave_session_start: Error forking user session"
@@ -309,8 +299,9 @@ msgstr "gdm_slave_exec_script: 啟動失敗: %s"
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: 無法衍生指令搞程序!"
 
-#. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:58 daemon/verify-pam.c:123 daemon/verify-shadow.c:60
+#: daemon/verify-crypt.c:58
+#: daemon/verify-pam.c:123
+#: daemon/verify-shadow.c:60
 #: gui/gdmlogin.c:1230
 msgid "Login:"
 msgstr "登入:"
@@ -324,7 +315,9 @@ msgstr "找不到 /etc/pam.d/gdm!"
 msgid "Can't set PAM_TTY=%s"
 msgstr "無法指定 PAM_TTY=%s"
 
-#: daemon/verify-crypt.c:71 daemon/verify-pam.c:142 daemon/verify-shadow.c:81
+#: daemon/verify-crypt.c:71
+#: daemon/verify-pam.c:142
+#: daemon/verify-shadow.c:81
 #, c-format
 msgid "Couldn't authenticate %s"
 msgstr "%s 無法認證"
@@ -348,25 +341,29 @@ msgstr "無法開啟階段作業給 %s"
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
 msgstr "gdm_verify_check: 無法找到給 gdm 使用的 PAM 設定檔"
 
-#. Request the user's password
-#: daemon/verify-crypt.c:64 daemon/verify-shadow.c:74
+#: daemon/verify-crypt.c:64
+#: daemon/verify-shadow.c:74
 msgid "Password:"
 msgstr "密碼:"
 
-#: daemon/verify-crypt.c:72 daemon/verify-shadow.c:82
+#: daemon/verify-crypt.c:72
+#: daemon/verify-shadow.c:82
 msgid "User unknown"
 msgstr "未知的使用者"
 
-#: daemon/verify-crypt.c:77 daemon/verify-shadow.c:87
+#: daemon/verify-crypt.c:77
+#: daemon/verify-shadow.c:87
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Root 不允許\在在顯示器 '%s' 登入"
 
-#: daemon/verify-crypt.c:78 daemon/verify-shadow.c:88
+#: daemon/verify-crypt.c:78
+#: daemon/verify-shadow.c:88
 msgid "Root login disallowed"
 msgstr "不允許\ Root 登入"
 
-#: daemon/verify-crypt.c:87 daemon/verify-shadow.c:97
+#: daemon/verify-crypt.c:87
+#: daemon/verify-shadow.c:97
 msgid "Incorrect password"
 msgstr "錯誤的密碼"
 
@@ -528,7 +525,6 @@ msgstr "gdm_chooser_parse_config: 缺少設定檔: %s. 放棄中!"
 msgid "Can't open default host icon: %s"
 msgstr "無法開啟預設主機圖示: %s"
 
-#. Buttons
 #: gui/gdmchooser.c:516
 msgid "Connect"
 msgstr "連接"
@@ -553,7 +549,8 @@ msgstr "gdm_signals_init: INT 訊號掌控器設定錯誤."
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: TERM 訊號掌控器設定錯誤."
 
-#: gui/gdmchooser.c:594 gui/gdmlogin.c:1542
+#: gui/gdmchooser.c:594
+#: gui/gdmlogin.c:1542
 msgid "Could not set signal mask!"
 msgstr "無法設定信號遮罩!"
 
@@ -585,28 +582,22 @@ msgstr "gdm_login_parse_config: 找不到設定檔: %s. 放棄中!"
 
 #: gui/gdmlogin.c:481
 #, c-format
-msgid ""
-"Your preferred session type %s is not installed on this machine.\n"
-"Do you wish to make %s the default for future sessions?"
-msgstr ""
-"您希望的階段作業種類 %s 沒有安裝在這台機器上.\n"
-"您要將 %s 設成未來階段作業的預設值嗎?"
+msgid "Your preferred session type %s is not installed on this machine.\nDo you wish to make %s the default for future sessions?"
+msgstr "您希望的階段作業種類 %s 沒有安裝在這台機器上.\n您要將 %s 設成未來階段作業的預設值嗎?"
 
-#: gui/gdmlogin.c:496 gui/gdmlogin.c:538
+#: gui/gdmlogin.c:496
+#: gui/gdmlogin.c:538
 #, c-format
-msgid ""
-"You have chosen %s for this session, but your default setting is %s.\n"
-"Do you wish to make %s the default for future sessions?"
-msgstr ""
-"您已經選擇以 %s 用在這個階段作業, 但您的預設值是 %s.\n"
-"您要將 %s 設成未來階段作業的預設值嗎?"
+msgid "You have chosen %s for this session, but your default setting is %s.\nDo you wish to make %s the default for future sessions?"
+msgstr "您已經選擇以 %s 用在這個階段作業, 但您的預設值是 %s.\n您要將 %s 設成未來階段作業的預設值嗎?"
 
 #: gui/gdmlogin.c:597
 #, c-format
 msgid "%s session selected"
 msgstr "已選擇階段作業 %s"
 
-#: gui/gdmlogin.c:613 gui/gdmlogin.c:716
+#: gui/gdmlogin.c:613
+#: gui/gdmlogin.c:716
 msgid "Last"
 msgstr "上一個"
 
@@ -690,15 +681,3 @@ msgstr "main: INT 訊號掌控器設定錯誤."
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: TERM 訊號掌控器設定錯誤."
 
-#~ msgid "gdm_display_manage: Failed forking gdm slave process for %d"
-#~ msgstr "gdm_display_manage: 無法衍生 gdm 子程序於 %d"
-
-#~ msgid ""
-#~ "According to %s, gdm was already running (%d),\n"
-#~ "but seems to have been murdered mysteriously.\n"
-#~ msgstr ""
-#~ "依據 %s, gdm 已在執行中 (%d),\n"
-#~ "但似乎已經莫名其妙地死掉了.\n"
-
-#~ msgid "gdm_server_stop: Could not unlink auth file: %s!"
-#~ msgstr "gdm_server_stop: 無法反連結認證檔: %s!"
