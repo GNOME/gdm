@@ -97,6 +97,9 @@ AM_PROG_LIBTOOL
 GNOME_X_CHECKS
 
 AM_PATH_LIBGLADE(,,gnome)
+if test "x$LIBGLADE_CFLAGS" = "x"; then
+  AC_MSG_ERROR(Libglade is required for gdm)
+fi
 
 dnl Allow users to run gdmconfig using the console helper PAM stuff.
 if test "x$enable_console_helper" = "xyes"; then

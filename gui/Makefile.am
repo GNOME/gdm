@@ -14,8 +14,8 @@ INCLUDES = \
 	-I$(top_srcdir)/vicious-extensions		\
 	-I$(includedir)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	@LIBGLADE_CFLAGS@				\
-	@PIXBUF_CFLAGS@					\
+	$(LIBGLADE_CFLAGS)				\
+	$(PIXBUF_CFLAGS)				\
 	$(GNOME_CFLAGS)					\
 	$(GNOME_INCLUDEDIR)
 
