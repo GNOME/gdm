@@ -18,7 +18,7 @@
 <widget>
   <class>GnomeApp</class>
   <name>gdmconfigurator</name>
-  <height>480</height>
+  <visible>False</visible>
   <signal>
     <name>delete_event</name>
     <handler>exit_configurator</handler>
@@ -28,7 +28,6 @@
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
-  <default_width>622</default_width>
   <allow_shrink>True</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
@@ -244,7 +243,7 @@
 	<widget>
 	  <class>GtkVBox</class>
 	  <child_name>GnomePropertyBox:notebook</child_name>
-	  <name>main_vbox</name>
+	  <name>main_container</name>
 	  <border_width>2</border_width>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
@@ -255,35 +254,7 @@
 	  </child>
 
 	  <widget>
-	    <class>GtkScrolledWindow</class>
-	    <child_name>GnomePropertyBox:notebook</child_name>
-	    <name>scrolledwindow3</name>
-	    <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-	    <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-	    <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	    <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-	    <child>
-	      <padding>0</padding>
-	      <expand>True</expand>
-	      <fill>True</fill>
-	    </child>
-
-	    <widget>
-	      <class>GtkViewport</class>
-	      <name>main_viewport</name>
-	      <shadow_type>GTK_SHADOW_NONE</shadow_type>
-
-	      <widget>
-		<class>GtkVBox</class>
-		<name>main_container</name>
-		<homogeneous>False</homogeneous>
-		<spacing>0</spacing>
-
-		<widget>
-		  <class>Placeholder</class>
-		</widget>
-	      </widget>
-	    </widget>
+	    <class>Placeholder</class>
 	  </widget>
 	</widget>
       </widget>
@@ -324,6 +295,7 @@
 	    <last_modification_time>Mon, 05 Feb 2001 17:44:47 GMT</last_modification_time>
 	  </signal>
 	  <stock_button>GNOME_STOCK_BUTTON_OK</stock_button>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
 	<widget>
@@ -337,6 +309,7 @@
 	    <last_modification_time>Mon, 05 Feb 2001 17:44:33 GMT</last_modification_time>
 	  </signal>
 	  <stock_button>GNOME_STOCK_BUTTON_APPLY</stock_button>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
 	<widget>
@@ -350,6 +323,7 @@
 	    <last_modification_time>Mon, 05 Feb 2001 17:44:59 GMT</last_modification_time>
 	  </signal>
 	  <stock_button>GNOME_STOCK_BUTTON_CLOSE</stock_button>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
 	<widget>
@@ -363,6 +337,7 @@
 	    <last_modification_time>Mon, 05 Feb 2001 17:45:09 GMT</last_modification_time>
 	  </signal>
 	  <stock_button>GNOME_STOCK_BUTTON_HELP</stock_button>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
       </widget>
     </widget>
@@ -3089,6 +3064,7 @@ This is %n
 		<last_modification_time>Tue, 21 Mar 2000 21:40:24 GMT</last_modification_time>
 	      </signal>
 	      <label>Add Server</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -3106,6 +3082,7 @@ This is %n
 		<last_modification_time>Tue, 21 Mar 2000 21:40:32 GMT</last_modification_time>
 	      </signal>
 	      <label>Edit Server</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -3123,6 +3100,7 @@ This is %n
 		<last_modification_time>Tue, 21 Mar 2000 21:41:27 GMT</last_modification_time>
 	      </signal>
 	      <label>Delete Server</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -3150,6 +3128,7 @@ This is %n
 		<last_modification_time>Wed, 22 Mar 2000 21:08:56 GMT</last_modification_time>
 	      </signal>
 	      <stock_button>GNOME_STOCK_BUTTON_UP</stock_button>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -3167,6 +3146,7 @@ This is %n
 		<last_modification_time>Wed, 22 Mar 2000 21:08:49 GMT</last_modification_time>
 	      </signal>
 	      <stock_button>GNOME_STOCK_BUTTON_DOWN</stock_button>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>

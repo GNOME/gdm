@@ -1,3 +1,12 @@
+Mon Mar 12 16:08:34 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmconfig.c, gui/gdmconfig.glade:  Remove the scrolled window
+	  and make the window initially not shown so that the size doesn't
+	  flicker.  Also nuke the hardcoded width and height.  Still has
+	  some issues with really large fonts, but works good enough for a
+	  release now.  Also set the side help string again, and comment out
+	  the DOING_DEVELOPMENT define :)
+
 Mon Mar 12 23:20:15 2001  Lee Mallabone <lee0@callnetuk.com>
 
 	* gui/gdmconfig.c: Use a notebook instead of doing the container

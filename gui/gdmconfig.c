@@ -24,7 +24,7 @@
 #include "gdmconfig.h"
 
 /* This should always be undefined before building ANY kind of production release. */
-#define DOING_DEVELOPMENT 1
+/*#define DOING_DEVELOPMENT 1*/
 
 /* XML Structures for the various configurator components */
 GladeXML *GUI = NULL;
@@ -172,7 +172,7 @@ main (int argc, char *argv[])
     /* Sanity checking */
     GDMconfigurator = get_widget("gdmconfigurator");
     g_assert(GDMconfigurator != NULL);
-    
+
     /* We set most of the user interface NOT wanting signals to get triggered as
      * we do it. Then we hook up the signals, and THEN set a few remaining elements.
      * This ensures sensitivity of some widgets is correct, and that the font picker
@@ -202,6 +202,8 @@ main (int argc, char *argv[])
     gtk_window_set_title(GTK_WINDOW(GDMconfigurator),
 						 _("GNOME Display Manager Configurator"));
     gtk_widget_set_sensitive(GTK_WIDGET(get_widget("apply_button")), FALSE);
+
+    gtk_widget_show (GDMconfigurator);
     
     gtk_main ();
     return 0;
@@ -211,6 +213,23 @@ void user_level_row_selected(GtkCList *clist, gint row,
 			     gint column, GdkEvent *event, gpointer data) {
    g_assert (row >= 0 && row < 3);
    gtk_notebook_set_page (GTK_NOTEBOOK (invisible_notebook), row);
+
+   switch (row) {
+   case 0:
+	   gtk_label_set(GTK_LABEL(get_widget("info_label")),
+			 _(desc1));
+	   break;
+   case 1:
+	   gtk_label_set(GTK_LABEL(get_widget("info_label")),
+			 _(desc2));
+	   break;
+   case 2:
+	   gtk_label_set(GTK_LABEL(get_widget("info_label")),
+			 _(desc3));
+	   break;
+   default:
+	   g_assert_not_reached();
+   }
 }
 
 void show_about_box(void) {
