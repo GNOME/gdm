@@ -45,13 +45,13 @@ get_free_vt (int *vtfd)
 		return -1;
 
 	if ((ioctl(fd, VT_OPENQRY, &vtno) < 0) || (vtno == -1)) {
-		close (fd);
+		IGNORE_EINTR (close (fd));
 		return -1;
 	}
 
 	fdv = open_vt (vtno);
 	if (fdv < 0) {
-		close (fd);
+		IGNORE_EINTR (close (fd));
 		return -1;
 	}
 
@@ -81,7 +81,7 @@ get_free_vt (int *vtfd)
 
 cleanup:
 	for (li = to_close_vts; li != NULL; li = li->next) {
-		close (GPOINTER_TO_INT (li->data));
+		IGNORE_EINTR (close (GPOINTER_TO_INT (li->data)));
 	}
 	return vtno;
 }

@@ -222,8 +222,11 @@ compare_displays (gconstpointer a, gconstpointer b)
 static void
 check_servauthdir (struct stat *statbuf)
 {
+    int r;
+
     /* Enter paranoia mode */
-    if (stat (GdmServAuthDir, statbuf) == -1)  {
+    IGNORE_EINTR (r = stat (GdmServAuthDir, statbuf));
+    if (r < 0) {
 	    char *s = g_strdup_printf
 		    (_("Server Authorization directory "
 		       "(daemon/ServAuthDir) is set to %s "
@@ -256,8 +259,10 @@ static void
 check_logdir (void)
 {
 	struct stat statbuf;
+	int r;
    
-	if (stat (GdmLogDir, &statbuf) == -1 ||
+	IGNORE_EINTR (r = stat (GdmLogDir, &statbuf));
+	if (r < 0 ||
 	    ! S_ISDIR (statbuf.st_mode))  {
 		gdm_error (_("%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."), "gdm_config_parse",
 			   GdmLogDir, GdmServAuthDir);
@@ -281,11 +286,13 @@ gdm_config_parse (void)
     gchar *bin;
     VeConfig *cfg;
     GList *list, *li;
+    int r;
     
     displays = NULL;
     high_display_num = 0;
 
-    if (stat (GDM_CONFIG_FILE, &statbuf) == -1) {
+    IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
+    if (r < 0) {
 	    gdm_error (_("%s: No configuration file: %s. Using defaults."),
 		       "gdm_config_parse", GDM_CONFIG_FILE);
     } else {
@@ -828,12 +835,12 @@ gdm_daemonify (void)
 	gdm_fail (_("%s: setsid() failed: %s!"), "gdm_daemonify",
 		  strerror(errno));
 
-    chdir (GdmServAuthDir);
+    IGNORE_EINTR (chdir (GdmServAuthDir));
     umask (022);
 
-    close (0);
-    close (1);
-    close (2);
+    IGNORE_EINTR (close (0));
+    IGNORE_EINTR (close (1));
+    IGNORE_EINTR (close (2));
 
     gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
     gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
@@ -928,7 +935,7 @@ gdm_final_cleanup (void)
 		char *path;
 		gdm_connection_close (fifoconn);
 		path = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
-		unlink (path);
+		IGNORE_EINTR (unlink (path));
 		g_free (path);
 		fifoconn = NULL;
 	}
@@ -939,20 +946,20 @@ gdm_final_cleanup (void)
 	}
 
 	if (slave_fifo_pipe_fd >= 0) {
-		close (slave_fifo_pipe_fd);
+		IGNORE_EINTR (close (slave_fifo_pipe_fd));
 		slave_fifo_pipe_fd = -1;
 	}
 
 	if (unixconn != NULL) {
 		gdm_connection_close (unixconn);
-		unlink (GDM_SUP_SOCKET);
+		IGNORE_EINTR (unlink (GDM_SUP_SOCKET));
 		unixconn = NULL;
 	}
 
 	closelog();
 
 	if (GdmPidFile != NULL)
-		unlink (GdmPidFile);
+		IGNORE_EINTR (unlink (GdmPidFile));
 }
 
 static gboolean
@@ -1037,7 +1044,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		    ve_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
 		    ve_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
-		    execv (argv[0], argv);
+		    IGNORE_EINTR (execv (argv[0], argv));
 	
 		    /* yaikes! */
 		    _exit (32);
@@ -1125,10 +1132,10 @@ suspend_machine (void)
 		/* Also make a new process group */
 		setsid ();
 
-		chdir ("/");
+		IGNORE_EINTR (chdir ("/"));
 
 		argv = ve_split (GdmSuspendReal);
-		execv (argv[0], argv);
+		IGNORE_EINTR (execv (argv[0], argv));
 		/* FIXME: what about fail */
 		_exit (1);
 	}
@@ -1139,8 +1146,8 @@ static void
 change_to_first_and_clear (gboolean reboot)
 {
 	gdm_change_vt (1);
-	close (1);
-	close (2);
+	IGNORE_EINTR (close (1));
+	IGNORE_EINTR (close (2));
 	open ("/dev/tty1", O_WRONLY);
 	open ("/dev/tty1", O_WRONLY);
 	/* yet again lazy */
@@ -1323,14 +1330,14 @@ start_autopsy:
 	gdm_info (_("Master rebooting..."));
 
 	gdm_final_cleanup ();
-	chdir ("/");
+	IGNORE_EINTR (chdir ("/"));
 
 #ifdef __linux__
 	change_to_first_and_clear (TRUE /* reboot */);
 #endif /* __linux */
 
 	argv = ve_split (GdmRebootReal);
-	execv (argv[0], argv);
+	IGNORE_EINTR (execv (argv[0], argv));
 
 	gdm_error (_("%s: Reboot failed: %s"), 
 		   "gdm_child_action", strerror (errno));
@@ -1343,14 +1350,14 @@ start_autopsy:
 	gdm_info (_("Master halting..."));
 
 	gdm_final_cleanup ();
-	chdir ("/");
+	IGNORE_EINTR (chdir ("/"));
 
 #ifdef __linux__
 	change_to_first_and_clear (FALSE /* reboot */);
 #endif /* __linux */
 
 	argv = ve_split (GdmHaltReal);
-	execv (argv[0], argv);
+	IGNORE_EINTR (execv (argv[0], argv));
 
 	gdm_error (_("%s: Halt failed: %s"),
 		   "gdm_child_action", strerror (errno));
@@ -1475,7 +1482,7 @@ gdm_restart_now (void)
 	gdm_info (_("GDM restarting ..."));
 	gdm_final_cleanup ();
 	gdm_restoreenv ();
-	execvp (stored_argv[0], stored_argv);
+	IGNORE_EINTR (execvp (stored_argv[0], stored_argv));
 	gdm_error (_("Failed to restart self"));
 	_exit (1);
 }
@@ -1589,8 +1596,8 @@ create_connections (void)
 						 &pipeconn,
 						 close_notify);
 	} else {
-		close (p[0]);
-		close (p[1]);
+		IGNORE_EINTR (close (p[0]));
+		IGNORE_EINTR (close (p[1]));
 		slave_fifo_pipe_fd = -1;
 	}
 
@@ -1658,7 +1665,7 @@ ensure_desc_012 (void)
 		/* Once we are up to 3, we're beyond stdin,
 		 * stdout and stderr */
 		if (fd >= 3) {
-			close (fd);
+			IGNORE_EINTR (close (fd));
 			break;
 		}
 	}
@@ -1799,7 +1806,7 @@ main (int argc, char *argv[])
 	    fclose (pf);
 	}
 
-	chdir (GdmServAuthDir);
+	IGNORE_EINTR (chdir (GdmServAuthDir));
 	umask (022);
     }
     else
@@ -1961,16 +1968,12 @@ send_slave_ack (GdmDisplay *d, const char *resp)
 			char not[2];
 			not[0] = GDM_SLAVE_NOTIFY_ACK;
 			not[1] = '\n';
-			while (write (d->master_notify_fd, not, 2) < 0 &&
-			       errno == EINTR)
-				;
+			IGNORE_EINTR (write (d->master_notify_fd, not, 2));
 		} else {
 			char *not = g_strdup_printf ("%c%s\n",
 						     GDM_SLAVE_NOTIFY_ACK,
 						     resp);
-			while (write (d->master_notify_fd, not, strlen (not)) < 0 &&
-			       errno == EINTR)
-				;
+			IGNORE_EINTR (write (d->master_notify_fd, not, strlen (not)));
 			g_free (not);
 		}
 	}
@@ -1991,9 +1994,7 @@ send_slave_command (GdmDisplay *d, const char *command)
 		char *cmd = g_strdup_printf ("%c%s\n",
 					     GDM_SLAVE_NOTIFY_COMMAND,
 					     command);
-		while (write (d->master_notify_fd, cmd, strlen (cmd)) < 0 &&
-		       errno == EINTR)
-			;
+		IGNORE_EINTR (write (d->master_notify_fd, cmd, strlen (cmd)));
 		g_free (cmd);
 	}
 	if (d->slavepid > 1) {
@@ -2652,6 +2653,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 
 	if (type == TYPE_FLEXI_XNEST) {
 		struct stat s;
+		int r;
 		gboolean authorized = TRUE;
 
 		seteuid (xnest_uid);
@@ -2660,7 +2662,8 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		g_assert (xnest_disp != NULL);
 		g_assert (xnest_cookie != NULL);
 
-		if (stat (xnest_auth_file, &s) < 0)
+		IGNORE_EINTR (r = stat (xnest_auth_file, &s));
+		if (r < 0)
 			authorized = FALSE;
 		if (authorized &&
 		    /* if readable or writable by group or others,
@@ -2829,8 +2832,10 @@ update_config (const char *key)
 {
 	struct stat statbuf;
 	VeConfig *cfg;
+	int r;
 
-	if (stat (GDM_CONFIG_FILE, &statbuf) == -1) {
+	IGNORE_EINTR (r = stat (GDM_CONFIG_FILE, &statbuf));
+	if (r < 0) {
 		/* if the file didn't exist before either */
 		if (config_file_mtime == 0)
 			return TRUE;

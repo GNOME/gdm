@@ -580,7 +580,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     /* If we are using the fallback cookie location, simply nuke the
      * cookie file */
     if (d->authfb) {
-	unlink (d->userauth);
+	IGNORE_EINTR (unlink (d->userauth));
 	g_free (d->userauth);
 	d->userauth = NULL;
 	return;

@@ -219,9 +219,7 @@ gdm_fdprintf (int fd, const gchar *format, ...)
 	s = g_strdup_vprintf (format, args);
 	va_end (args);
 
-	while (write (fd, s, strlen (s)) < 0 &&
-	       errno == EINTR)
-		;
+	IGNORE_EINTR (write (fd, s, strlen (s)));
 
 	g_free (s);
 }
@@ -328,6 +326,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 		struct stat s;
 		char buf[256];
 		FILE *fp;
+		int r;
 
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *dsp = li->data;
@@ -345,17 +344,19 @@ gdm_get_free_display (int start, uid_t server_uid)
 		serv_addr.sin_port = htons (6000 + i);
 
 		errno = 0;
-		if (connect (sock, (struct sockaddr *)&serv_addr,
-			     sizeof (serv_addr)) >= 0 ||
-		    errno != ECONNREFUSED) {
-			close (sock);
+		IGNORE_EINTR (connect (sock,
+				       (struct sockaddr *)&serv_addr,
+				       sizeof (serv_addr)));
+		if (errno != 0 && errno != ECONNREFUSED) {
+			IGNORE_EINTR (close (sock));
 			continue;
 		}
-		close (sock);
+		IGNORE_EINTR (close (sock));
 
 		/* if lock file exists and the process exists */
 		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
-		if (stat (buf, &s) == 0 &&
+		IGNORE_EINTR (r = stat (buf, &s));
+		if (r == 0 &&
 		    ! S_ISREG (s.st_mode)) {
 			/* Eeeek! not a regular file?  Perhaps someone
 			   is trying to play tricks on us */
@@ -376,7 +377,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 			fclose (fp);
 
 			/* whack the file, it's a stale lock file */
-			unlink (buf);
+			IGNORE_EINTR (unlink (buf));
 		}
 
 		/* if starting as root, we'll be able to overwrite any
@@ -385,14 +386,16 @@ gdm_get_free_display (int start, uid_t server_uid)
 		if (server_uid > 0) {
 			g_snprintf (buf, sizeof (buf),
 				    "/tmp/.X11-unix/X%d", i);
-			if (stat (buf, &s) == 0 &&
+			IGNORE_EINTR (r = stat (buf, &s));
+			if (r == 0 &&
 			    s.st_uid != server_uid) {
 				continue;
 			}
 
 			g_snprintf (buf, sizeof (buf),
 				    "/tmp/.X%d-lock", i);
-			if (stat (buf, &s) == 0 &&
+			IGNORE_EINTR (r = stat (buf, &s));
+			if (r == 0 &&
 			    s.st_uid != server_uid) {
 				continue;
 			}
@@ -532,7 +535,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 			return FALSE;
 		}
 
-		close (tempfd);
+		IGNORE_EINTR (close (tempfd));
 
 		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
 		argv[1] = "-l";
@@ -569,7 +572,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 			}
 		}
 
-		unlink (tempname);
+		IGNORE_EINTR (unlink (tempname));
 
 		g_free (msg_quoted);
 		return TRUE;
@@ -611,7 +614,7 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 			ve_unsetenv ("XAUTHORITY");
 		}
 		
-		execv (argv[0], argv);
+		IGNORE_EINTR (execv (argv[0], argv));
 
 		_exit (-1);
 	}
@@ -781,15 +784,18 @@ gdm_ensure_sanity (void)
 
         if (mkdir ("/tmp/.ICE-unix", 0777) == 0) {
 		/* Make sure it is root */
-		if (chown ("/tmp/.ICE-unix", 0, 0) == 0)
-			chmod ("/tmp/.ICE-unix", 01777);
+		IGNORE_EINTR (chown ("/tmp/.ICE-unix", 0, 0));
+		if (errno != 0)
+			IGNORE_EINTR (chmod ("/tmp/.ICE-unix", 01777));
         } else {
 		struct stat s;
-		if (lstat ("/tmp/.ICE-unix", &s) == 0 &&
-		    S_ISDIR (s.st_mode)) {
+		int r;
+		IGNORE_EINTR (r = lstat ("/tmp/.ICE-unix", &s));
+		if (r == 0 && S_ISDIR (s.st_mode)) {
 			/* Make sure it is root and sticky */
-			if (chown ("/tmp/.ICE-unix", 0, 0) == 0)
-				chmod ("/tmp/.ICE-unix", 01777);
+			IGNORE_EINTR (chown ("/tmp/.ICE-unix", 0, 0));
+			if (errno != 0)
+				IGNORE_EINTR (chmod ("/tmp/.ICE-unix", 01777));
 		}
 	}
 
@@ -847,7 +853,7 @@ gdm_peek_local_address_list (void)
 			   "gdm_peek_local_address_list");
 		g_free (buf);
 		if (sockfd != gdm_xdmcpfd)
-			close (sockfd);
+			IGNORE_EINTR (close (sockfd));
 		addr = g_new0 (struct in_addr, 1);
 		addr->s_addr = INADDR_LOOPBACK;
 		return g_list_append (NULL, addr);
@@ -879,7 +885,7 @@ gdm_peek_local_address_list (void)
 	}
 
 	if (sockfd != gdm_xdmcpfd)
-		close (sockfd);
+		IGNORE_EINTR (close (sockfd));
 
 	g_free (buf);
 #else /* SIOCGIFCONF */
@@ -1068,10 +1074,7 @@ gdm_fdgetc (int fd)
 	char buf[1];
 	int bytes;
 
-	do {
-		errno = 0;
-		bytes = read (fd, buf, 1);
-	} while (bytes < 0 && errno == EINTR);
+	IGNORE_EINTR (bytes = read (fd, buf, 1));
 	if (bytes != 1)
 		return EOF;
 	else
@@ -1110,7 +1113,7 @@ gdm_close_all_descriptors (int from, int except, int except2)
 	int max = sysconf (_SC_OPEN_MAX);
 	for (i = from; i < max; i++) {
 		if (i != except && i != except2)
-			close(i);
+			IGNORE_EINTR (close(i));
 	}
 }
 
@@ -1354,13 +1357,16 @@ jumpback_sighandler (int signal)
 GdmHostent *
 gdm_gethostbyname (const char *name)
 {
-	struct hostent *he_;
+	/* static because of Setjmp */
+	static struct hostent * he_;
 	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
 	/* the cached address */
 	static GdmHostent *he = NULL;
 	static time_t last_time = 0;
 	static char *cached_hostname = NULL;
+
+	he_ = NULL;
 
 	if (cached_hostname != NULL &&
 	    strcmp (cached_hostname, name) == 0) {
@@ -1396,13 +1402,16 @@ gdm_gethostbyname (const char *name)
 GdmHostent *
 gdm_gethostbyaddr (struct in_addr *ia)
 {
-	struct hostent *he_;
+	/* static because of Setjmp */
+	static struct hostent * he_;
 	SETUP_INTERRUPTS_FOR_TERM_DECLS
 
 	/* the cached address */
 	static GdmHostent *he = NULL;
 	static time_t last_time = 0;
 	static struct in_addr cached_addr;
+
+	he_ = NULL;
 
 	if (last_time != 0 &&
 	    memcmp (&cached_addr, ia, sizeof (struct in_addr)) == 0) {
@@ -1476,7 +1485,7 @@ FILE *
 gdm_safe_fopen_w (const char *file)
 {
 	int fd;
-	unlink (file);
+	IGNORE_EINTR (unlink (file));
 	fd = open (file, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644);
 	if (fd < 0)
 		return NULL;

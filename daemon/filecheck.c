@@ -45,9 +45,11 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
 {
     struct stat statbuf;
     gchar *fullpath;
+    int r;
 
     /* Stat directory */
-    if (stat (dir, &statbuf) == -1) {
+    IGNORE_EINTR (r = stat (dir, &statbuf));
+    if (r < 0) {
 	    if ( ! absentdirok)
 		 syslog (LOG_WARNING, _("%s: Directory %s does not exist."),
 			 caller, dir);
@@ -75,7 +77,8 @@ gdm_file_check (const gchar *caller, uid_t user, const gchar *dir,
     fullpath = g_strconcat(dir, "/", file, NULL);
 
     /* Stat file */
-    if (stat (fullpath, &statbuf) == -1) {
+    IGNORE_EINTR (r = stat (fullpath, &statbuf));
+    if (r < 0) {
         /* Return true if file does not exist and that is ok */
 	if (absentok) { 
 	    g_free (fullpath);

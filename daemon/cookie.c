@@ -81,14 +81,14 @@ gdm_cookie_generate (GdmDisplay *d)
     for (i = 0; i < RNGS; i++) {
 	if ((fd = open (rngs[i].path, O_RDONLY|O_NONBLOCK)) >= 0) {
 
-	    r = read (fd, buf, sizeof (buf));
+	    IGNORE_EINTR (r = read (fd, buf, sizeof (buf)));
 
 	    if (r > 0)
 		gdm_md5_update (&ctx, buf, r);
 	    else
 		r = 0;
 
-	    close (fd);
+	    IGNORE_EINTR (close (fd));
 
 	    if (r >= rngs[i].length) 
 		break;

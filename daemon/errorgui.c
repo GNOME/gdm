@@ -251,11 +251,13 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		if (details_file) {
 			FILE *fp;
 			struct stat s;
+			int r;
 			gboolean valid_utf8 = TRUE;
 			GString *gs = g_string_new (NULL);
 
 			fp = NULL;
-			if (stat (details_file, &s) == 0) {
+			IGNORE_EINTR (r = stat (details_file, &s));
+			if (r == 0) {
 				if (S_ISREG (s.st_mode))
 					fp = fopen (details_file, "r");
 				else {
@@ -479,17 +481,17 @@ gdm_failsafe_question (GdmDisplay *d,
 		char buf[BUFSIZ];
 		int bytes;
 
-		close (p[1]);
+		IGNORE_EINTR (close (p[1]));
 
 		gdm_wait_for_extra (NULL);
 
-		bytes = read (p[0], buf, BUFSIZ-1);
+		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
-			close (p[0]);
+			IGNORE_EINTR (close (p[0]));
 			buf[bytes] = '\0';
 			return g_strdup (buf);
 		} 
-		close (p[0]);
+		IGNORE_EINTR (close (p[0]));
 	} else {
 		gdm_error (_("%s: Cannot fork to display error/info box"),
 			   "gdm_failsafe_question");
@@ -564,19 +566,19 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		char buf[BUFSIZ];
 		int bytes;
 
-		close (p[1]);
+		IGNORE_EINTR (close (p[1]));
 
 		gdm_wait_for_extra (NULL);
 
-		bytes = read (p[0], buf, BUFSIZ-1);
+		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
-			close (p[0]);
+			IGNORE_EINTR (close (p[0]));
 			if (buf[0] == 'y')
 				return TRUE;
 			else
 				return FALSE;
 		} 
-		close (p[0]);
+		IGNORE_EINTR (close (p[0]));
 	} else {
 		gdm_error (_("%s: Cannot fork to display error/info box"),
 			   "gdm_failsafe_yesno");
@@ -659,21 +661,21 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 		char buf[BUFSIZ];
 		int bytes;
 
-		close (p[1]);
+		IGNORE_EINTR (close (p[1]));
 
 		gdm_wait_for_extra (NULL);
 
-		bytes = read (p[0], buf, BUFSIZ-1);
+		IGNORE_EINTR (bytes = read (p[0], buf, BUFSIZ-1));
 		if (bytes > 0) {
 			int i;
-			close (p[0]);
+			IGNORE_EINTR (close (p[0]));
 			buf[bytes] = '\0';
 			if (sscanf (buf, "%d", &i) == 1)
 				return i;
 			else
 				return -1;
 		} 
-		close (p[0]);
+		IGNORE_EINTR (close (p[0]));
 	} else {
 		gdm_error (_("%s: Cannot fork to display error/info box"),
 			   "gdm_failsafe_ask_buttons");

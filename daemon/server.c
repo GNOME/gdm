@@ -96,12 +96,12 @@ gdm_server_whack_lockfile (GdmDisplay *disp)
 
 	    /* if lock file exists and it is our process, whack it! */
 	    g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", disp->dispnum);
-	    unlink (buf);
+	    IGNORE_EINTR (unlink (buf));
 
 	    /* whack the unix socket as well */
 	    g_snprintf (buf, sizeof (buf),
 			"/tmp/.X11-unix/X%d", disp->dispnum);
-	    unlink (buf);
+	    IGNORE_EINTR (unlink (buf));
 }
 
 
@@ -110,11 +110,11 @@ void
 gdm_server_wipe_cookies (GdmDisplay *disp)
 {
 	if ( ! ve_string_empty (disp->authfile))
-		unlink (disp->authfile);
+		IGNORE_EINTR (unlink (disp->authfile));
 	g_free (disp->authfile);
 	disp->authfile = NULL;
 	if ( ! ve_string_empty (disp->authfile_gdm))
-		unlink (disp->authfile_gdm);
+		IGNORE_EINTR (unlink (disp->authfile_gdm));
 	g_free (disp->authfile_gdm);
 	disp->authfile_gdm = NULL;
 }
@@ -166,8 +166,12 @@ gdm_server_reinit (GdmDisplay *disp)
 	d->servstat = SERVER_PENDING;
 
 	if (disp->dsp != NULL) {
-		int (*old_xerror_handler)(Display *, XErrorEvent *) = NULL;
-		int (*old_xioerror_handler)(Display *) = NULL;
+		/* static because of the Setjmp */
+		static int (*old_xerror_handler)(Display *, XErrorEvent *) = NULL;
+		static int (*old_xioerror_handler)(Display *) = NULL;
+
+		old_xerror_handler = NULL;
+		old_xioerror_handler = NULL;
 
 		/* Do note the interaction of this Setjmp and the signal
 	   	   handlers and the Setjmp in slave.c */
@@ -462,8 +466,8 @@ setup_server_wait (GdmDisplay *d)
     if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
 	    gdm_error (_("%s: Error setting up %s signal handler: %s"),
 		       "gdm_server_start", "USR1", strerror (errno));
-	    close (server_signal_pipe[0]);
-	    close (server_signal_pipe[1]);
+	    IGNORE_EINTR (close (server_signal_pipe[0]));
+	    IGNORE_EINTR (close (server_signal_pipe[1]));
 	    return FALSE;
     }
 
@@ -476,8 +480,8 @@ setup_server_wait (GdmDisplay *d)
 	    gdm_error (_("%s: Error setting up %s signal handler: %s"),
 		       "gdm_server_start", "CHLD", strerror (errno));
 	    gdm_signal_ignore (SIGUSR1);
-	    close (server_signal_pipe[0]);
-	    close (server_signal_pipe[1]);
+	    IGNORE_EINTR (close (server_signal_pipe[0]));
+	    IGNORE_EINTR (close (server_signal_pipe[1]));
 	    return FALSE;
     }
 
@@ -552,7 +556,7 @@ do_server_wait (GdmDisplay *d)
 			    if (select (server_signal_pipe[0]+1, &rfds, NULL, NULL, &tv) > 0) {
 				    char buf[4];
 				    /* read the Yay! */
-				    read (server_signal_pipe[0], buf, 4);
+				    IGNORE_EINTR (read (server_signal_pipe[0], buf, 4));
 			    }
 			    if ( ! server_signal_notified &&
 				t + SERVER_WAIT_ALARM < time (NULL)) {
@@ -575,8 +579,8 @@ do_server_wait (GdmDisplay *d)
     sigaction (SIGCHLD, &old_svr_wait_chld, NULL);
     sigprocmask (SIG_SETMASK, &old_svr_wait_mask, NULL);
 
-    close (server_signal_pipe[0]);
-    close (server_signal_pipe[1]);
+    IGNORE_EINTR (close (server_signal_pipe[0]));
+    IGNORE_EINTR (close (server_signal_pipe[1]));
 
     if (d->servpid <= 1) {
 	    d->servstat = SERVER_ABORT;
@@ -655,7 +659,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     /* If we were holding a vt open for the server, close it now as it has
      * already taken the bait. */
     if (vtfd > 0)
-	    close (vtfd);
+	    IGNORE_EINTR (close (vtfd));
 
     switch (d->servstat) {
 
@@ -784,16 +788,16 @@ safer_rename (const char *a, const char *b)
 	errno = 0;
 	if (link (a, b) < 0) {
 		if (errno == EEXIST) {
-			unlink (a);
+			IGNORE_EINTR (unlink (a));
 			return;
 		} 
-		unlink (b);
+		IGNORE_EINTR (unlink (b));
 		/* likely this system doesn't support hard links */
 		rename (a, b);
-		unlink (a);
+		IGNORE_EINTR (unlink (a));
 		return;
 	}
-	unlink (a);
+	IGNORE_EINTR (unlink (a));
 }
 
 static void
@@ -807,7 +811,7 @@ rotate_logs (const char *dname)
 	char *fname = g_strconcat (GdmLogDir, "/", dname, ".log", NULL);
 
 	/* Rotate the logs (keep 4 last) */
-	unlink (fname4);
+	IGNORE_EINTR (unlink (fname4));
 	safer_rename (fname3, fname4);
 	safer_rename (fname2, fname3);
 	safer_rename (fname1, fname2);
@@ -1008,12 +1012,12 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
         /* Log all output from spawned programs to a file */
 	logfile = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
-	unlink (logfile);
+	IGNORE_EINTR (unlink (logfile));
 	logfd = open (logfile, O_CREAT|O_TRUNC|O_WRONLY|O_EXCL, 0644);
 
 	if (logfd != -1) {
-		dup2 (logfd, 1);
-		dup2 (logfd, 2);
+		IGNORE_EINTR (dup2 (logfd, 1));
+		IGNORE_EINTR (dup2 (logfd, 2));
         } else {
 		gdm_error (_("%s: Could not open logfile for display %s!"),
 			   "gdm_server_spawn", d->name);
@@ -1133,7 +1137,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		setgroups (1, groups);
 	}
 
-	execv (argv[0], argv);
+	IGNORE_EINTR (execv (argv[0], argv));
 	
 	gdm_error (_("%s: Xserver not found: %s"), 
 		   "gdm_server_spawn", command);
@@ -1178,7 +1182,7 @@ gdm_server_usr1_handler (gint sig)
 
     server_signal_notified = TRUE;
     /* this will quit the select */
-    write (server_signal_pipe[1], "Yay!", 4);
+    IGNORE_EINTR (write (server_signal_pipe[1], "Yay!", 4));
 
     gdm_in_signal--;
 }
@@ -1202,7 +1206,7 @@ gdm_server_child_handler (int signal)
 	gdm_slave_child_handler (signal);
 
 	/* this will quit the select */
-	write (server_signal_pipe[1], "Yay!", 4);
+	IGNORE_EINTR (write (server_signal_pipe[1], "Yay!", 4));
 
 	gdm_in_signal--;
 }

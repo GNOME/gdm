@@ -312,7 +312,7 @@ gdm_xdmcp_close (void)
 	}
 
 	if (gdm_xdmcpfd > 0) {
-		close (gdm_xdmcpfd);
+		IGNORE_EINTR (close (gdm_xdmcpfd));
 		gdm_xdmcpfd = -1;
 	}
 }

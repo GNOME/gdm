@@ -1,3 +1,17 @@
+Mon Jul 28 14:10:12 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/*.c: for all functions for which I found in
+	  the manpages that EINTR could be returned on at least some
+	  systems, use a new IGNORE_EINTR macro which will ignore the EINTR
+	  errno.  This should fix any bugs with signals coming at the
+	  wrong times, though that is quite unlikely I'd say.  Apparently
+	  SVr4 can return EINTR even for execv which is realy anal since
+	  EINTR is pretty much useless.  Why can't we all be sane like BSD.
+
+	* daemon/misc.c, daemon/server.c: automatic vars have weird behaviour
+	  when using Setjmp, so use static (volatile wouldn't work here if
+	  I'm reading the docs right)
+
 Mon Jul 28 10:36:52 2003  George Lebl <jirka@5z.com>
 
 	* confiugure.in, acconfig.h, daemon/slave.c, daemon/gdm.c:  check

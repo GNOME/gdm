@@ -237,9 +237,7 @@ slave_waitpid_notify_all (void)
 	for (li = slave_waitpids; li != NULL; li = li->next) {
 		GdmWaitPid *wp = li->data;
 		if (wp->fd_w >= 0) {
-			while (write (wp->fd_w, "N", 1) < 0 &&
-			       errno == EINTR)
-				;
+			IGNORE_EINTR (write (wp->fd_w, "N", 1));
 		}
 	}
 
@@ -308,7 +306,7 @@ slave_waitpid (GdmWaitPid *wp)
 
 			ret = select (wp->fd_r+1, &rfds, NULL, NULL, NULL);
 			if (ret == 1)
-				read (wp->fd_r, buf, 1);
+				IGNORE_EINTR (read (wp->fd_r, buf, 1));
 			check_notifies_now ();
 		} while (wp->pid > 1);
 		check_notifies_now ();
@@ -316,8 +314,8 @@ slave_waitpid (GdmWaitPid *wp)
 
 	gdm_sigchld_block_push ();
 
-	close (wp->fd_r);
-	close (wp->fd_w);
+	IGNORE_EINTR (close (wp->fd_r));
+	IGNORE_EINTR (close (wp->fd_w));
 	wp->fd_r = -1;
 	wp->fd_w = -1;
 	wp->pid = -1;
@@ -409,10 +407,10 @@ static void
 whack_greeter_fds (void)
 {
 	if (greeter_fd_out > 0)
-		close (greeter_fd_out);
+		IGNORE_EINTR (close (greeter_fd_out));
 	greeter_fd_out = -1;
 	if (greeter_fd_in > 0)
-		close (greeter_fd_in);
+		IGNORE_EINTR (close (greeter_fd_in));
 	greeter_fd_in = -1;
 }
 
@@ -473,8 +471,8 @@ gdm_slave_start (GdmDisplay *display)
 {  
 	time_t first_time;
 	int death_count;
-	static sigset_t mask;
 	struct sigaction alrm, term, child, usr2;
+	sigset_t mask;
 
 	/* Ignore SIGUSR1/SIGPIPE, and especially ignore it
 	   before the Setjmp */
@@ -1163,7 +1161,7 @@ focus_first_x_window (const char *class_res_name)
 			fd_set rfds;
 			struct timeval tv;
 
-			close (p[1]);
+			IGNORE_EINTR (close (p[1]));
 
 			FD_ZERO(&rfds);
 			FD_SET(p[0], &rfds);
@@ -1174,7 +1172,7 @@ focus_first_x_window (const char *class_res_name)
 
 			select(p[0]+1, &rfds, NULL, NULL, &tv);
 
-			close (p[0]);
+			IGNORE_EINTR (close (p[0]));
 		}
 		return;
 	}
@@ -1218,8 +1216,8 @@ focus_first_x_window (const char *class_res_name)
 		      SubstructureNotifyMask);
 
 	if (p[1] >= 0) {
-		write (p[1], "!", 1);
-		close (p[1]);
+		IGNORE_EINTR (write (p[1], "!", 1));
+		IGNORE_EINTR (close (p[1]));
 	}
 
 	for (;;) {
@@ -1336,15 +1334,16 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		if (chdir (pwent->pw_dir) != 0)
-			chdir ("/");
+		IGNORE_EINTR (chdir (pwent->pw_dir));
+		if (errno != 0)
+			IGNORE_EINTR (chdir ("/"));
 
 		/* exec the configurator */
 		argv = ve_split (GdmConfigurator);
 		if (argv != NULL &&
 		    argv[0] != NULL &&
 		    access (argv[0], X_OK) == 0)
-			execv (argv[0], argv);
+			IGNORE_EINTR (execv (argv[0], argv));
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
@@ -1358,7 +1357,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			(EXPANDED_BINDIR
 			 "/gdmsetup --disable-sound --disable-crash-dialog");
 		if (access (argv[0], X_OK) == 0)
-			execv (argv[0], argv);
+			IGNORE_EINTR (execv (argv[0], argv));
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
@@ -1652,7 +1651,7 @@ run_pictures (void)
 	for (;;) {
 		struct stat s;
 		char *tmp, *ret;
-		int i;
+		int i, r;
 
 		g_free (response);
 		response = gdm_slave_greeter_ctl (GDM_NEEDPIC, "");
@@ -1808,7 +1807,8 @@ run_pictures (void)
 			g_free (picdir);
 		}
 
-		if (stat (picfile, &s) < 0) {
+		IGNORE_EINTR (r = stat (picfile, &s));
+		if (r < 0) {
 			seteuid (0);
 			setegid (GdmGroupId);
 
@@ -1859,28 +1859,22 @@ run_pictures (void)
 			int written;
 
 			/* write until we succeed in writing something */
-			do {
-				errno = 0;
-				written = write (greeter_fd_out, buf, bytes);
-				if (written < 0 && errno == EPIPE) {
-					/* something very, very bad has happened */
-					gdm_slave_quick_exit (DISPLAY_REMANAGE);
-				}
-			} while (written < 0 && errno == EINTR);
+			IGNORE_EINTR (written = write (greeter_fd_out, buf, bytes));
+			if (written < 0 && errno == EPIPE) {
+				/* something very, very bad has happened */
+				gdm_slave_quick_exit (DISPLAY_REMANAGE);
+			}
 
 			/* write until we succeed in writing everything */
 			while (written < bytes) {
 				int n;
-				do {
-					errno = 0;
-					n = write (greeter_fd_out, &buf[written], bytes-written);
-					if (n < 0 && errno == EPIPE) {
-						/* something very, very bad has happened */
-						gdm_slave_quick_exit (DISPLAY_REMANAGE);
-					}
-					if (n > 0)
-						written += n;
-				} while (n < 0 && errno == EINTR);
+				IGNORE_EINTR (n = write (greeter_fd_out, &buf[written], bytes-written));
+				if (n < 0 && errno == EPIPE) {
+					/* something very, very bad has happened */
+					gdm_slave_quick_exit (DISPLAY_REMANAGE);
+				}
+				if (n > 0)
+					written += n;
 			}
 
 			/* we have written bytes btyes if it likes it or not */
@@ -1934,25 +1928,22 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 	name = g_strconcat (GdmServAuthDir, "/", d->name, ".XnestAuth", NULL);
 
-	unlink (name);
+	IGNORE_EINTR (unlink (name));
 	authfd = open (name, O_EXCL|O_TRUNC|O_WRONLY|O_CREAT, 0600);
 
 	if (authfd < 0) {
-		close (fromfd);
+		IGNORE_EINTR (close (fromfd));
 		seteuid (old);
 		g_free (name);
 		return NULL;
 	}
 
 	/* Make it owned by the user that Xnest is started as */
-	fchown (authfd, touid, -1);
+	IGNORE_EINTR (fchown (authfd, touid, -1));
 
 	for (;;) {
 		int written, n;
-		do {
-			errno = 0;
-			bytes = read (fromfd, buf, sizeof (buf));
-		} while (bytes < 0 && errno == EINTR);
+		IGNORE_EINTR (bytes = read (fromfd, buf, sizeof (buf)));
 
 		/* EOF */
 		if (bytes == 0)
@@ -1960,14 +1951,11 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 		written = 0;
 		do {
-			do {
-				errno = 0;
-				n = write (authfd, &buf[written], bytes-written);
-			} while (n < 0 && errno == EINTR);
+			IGNORE_EINTR (n = write (authfd, &buf[written], bytes-written));
 			if (n < 0) {
 				/*Error writing*/
-				close (fromfd);
-				close (authfd);
+				IGNORE_EINTR (close (fromfd));
+				IGNORE_EINTR (close (authfd));
 				setuid (old);
 				g_free (name);
 				return NULL;
@@ -1976,8 +1964,8 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 		} while (written < bytes);
 	}
 
-	close (fromfd);
-	close (authfd);
+	IGNORE_EINTR (close (fromfd));
+	IGNORE_EINTR (close (authfd));
 
 	seteuid (old);
 
@@ -2025,11 +2013,11 @@ gdm_slave_greeter (void)
 	gdm_unset_signals ();
 
 	/* Plumbing */
-	close (pipe1[1]);
-	close (pipe2[0]);
+	IGNORE_EINTR (close (pipe1[1]));
+	IGNORE_EINTR (close (pipe2[0]));
 
-	dup2 (pipe1[0], STDIN_FILENO);
-	dup2 (pipe2[1], STDOUT_FILENO);
+	IGNORE_EINTR (dup2 (pipe1[0], STDIN_FILENO));
+	IGNORE_EINTR (dup2 (pipe2[1], STDOUT_FILENO));
 
 	closelog ();
 
@@ -2184,14 +2172,14 @@ gdm_slave_greeter (void)
 	       perhaps it's the modules causing the problem in the first place */
 	    ! d->try_different_greeter) {
 		gchar *modules =  g_strdup_printf("--gtk-module=%s", GdmGtkModulesList);
-		execl (argv[0], argv[0], modules, NULL);
+		IGNORE_EINTR (execl (argv[0], argv[0], modules, NULL));
 		/* Something went wrong */
 		gdm_error (_("%s: Cannot start greeter with gtk modules: %s. Trying without modules"),
 			   "gdm_slave_greeter",
 			   GdmGtkModulesList);
 		g_free(modules);
 	}
-	execv (argv[0], argv);
+	IGNORE_EINTR (execv (argv[0], argv));
 
 	gdm_error (_("%s: Cannot start greeter trying default: %s"),
 		   "gdm_slave_greeter",
@@ -2202,7 +2190,7 @@ gdm_slave_greeter (void)
 	argv = g_new0 (char *, 2);
 	argv[0] = EXPANDED_BINDIR "/gdmlogin";
 	argv[1] = NULL;
-	execv (argv[0], argv);
+	IGNORE_EINTR (execv (argv[0], argv));
 
 	gdm_error_box (d,
 		       GTK_MESSAGE_ERROR,
@@ -2220,11 +2208,8 @@ gdm_slave_greeter (void)
 	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't fork gdmgreeter process"), "gdm_slave_greeter");
 	
     default:
-	close (pipe1[0]);
-	close (pipe2[1]);
-
-	fcntl(pipe1[1], F_SETFD, fcntl(pipe1[1], F_GETFD, 0) | FD_CLOEXEC);
-	fcntl(pipe2[0], F_SETFD, fcntl(pipe2[0], F_GETFD, 0) | FD_CLOEXEC);
+	IGNORE_EINTR (close (pipe1[0]));
+	IGNORE_EINTR (close (pipe2[1]));
 
 	whack_greeter_fds ();
 
@@ -2322,8 +2307,9 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 
 	gdm_fdprintf (fd, "\n%s\n", str);
 
-	if (fd != slave_fifo_pipe_fd)
-		close (fd);
+	if (fd != slave_fifo_pipe_fd) {
+		IGNORE_EINTR (close (fd));
+	}
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
 	if (wait_for_ack && ! gdm_got_ack) {
@@ -2494,14 +2480,14 @@ gdm_slave_chooser (void)
 		gdm_unset_signals ();
 
 		/* Plumbing */
-		close (p[0]);
+		IGNORE_EINTR (close (p[0]));
 
 		if (p[1] != STDOUT_FILENO) 
-			dup2 (p[1], STDOUT_FILENO);
+			IGNORE_EINTR (dup2 (p[1], STDOUT_FILENO));
 
 		closelog ();
 
-		close (0);
+		IGNORE_EINTR (close (0));
 		gdm_close_all_descriptors (2 /* from */, -1 /* except */, -1 /* except2 */);
 
 		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
@@ -2553,7 +2539,7 @@ gdm_slave_chooser (void)
 		ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 
 		argv = ve_split (GdmChooser);
-		execv (argv[0], argv);
+		IGNORE_EINTR (execv (argv[0], argv));
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
@@ -2570,9 +2556,7 @@ gdm_slave_chooser (void)
 		gdm_debug ("gdm_slave_chooser: Chooser on pid %d", d->chooserpid);
 		gdm_slave_send_num (GDM_SOP_CHOOSERPID, d->chooserpid);
 
-		close (p[1]);
-
-		fcntl(p[0], F_SETFD, fcntl(p[0], F_GETFD, 0) | FD_CLOEXEC);
+		IGNORE_EINTR (close (p[1]));
 
 		/* wait for the chooser to die */
 
@@ -2588,9 +2572,9 @@ gdm_slave_chooser (void)
 		/* Note: Nothing affecting the chooser needs update
 		 * from notifies */
 
-		bytes = read (p[0], buf, sizeof(buf)-1);
+		IGNORE_EINTR (bytes = read (p[0], buf, sizeof(buf)-1));
 		if (bytes > 0) {
-			close (p[0]);
+			IGNORE_EINTR (close (p[0]));
 
 			if (buf[bytes-1] == '\n')
 				buf[bytes-1] ='\0';
@@ -2606,7 +2590,7 @@ gdm_slave_chooser (void)
 			}
 		}
 
-		close (p[0]);
+		IGNORE_EINTR (close (p[0]));
 
 		gdm_slave_quick_exit (DISPLAY_REMANAGE);
 		break;
@@ -2751,7 +2735,7 @@ session_child_run (struct passwd *pwent,
 		setegid (pwent->pw_gid);
 		seteuid (pwent->pw_uid);
 		/* unlink to be anal */
-		unlink (filename);
+		IGNORE_EINTR (unlink (filename));
 		logfd = open (filename, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644);
 		seteuid (old);
 		setegid (oldg);
@@ -2759,25 +2743,25 @@ session_child_run (struct passwd *pwent,
 		g_free (filename);
 
 		if (logfd != -1) {
-			dup2 (logfd, 1);
-			dup2 (logfd, 2);
-			close (logfd);
+			IGNORE_EINTR (dup2 (logfd, 1));
+			IGNORE_EINTR (dup2 (logfd, 2));
+			IGNORE_EINTR (close (logfd));
 		} else {
-			close (1);
-			close (2);
+			IGNORE_EINTR (close (1));
+			IGNORE_EINTR (close (2));
 			gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 			gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 			gdm_error (_("%s: Could not open ~/.xsession-errors"),
 				   "run_session_child");
 		}
 	} else {
-		close (1);
-		close (2);
+		IGNORE_EINTR (close (1));
+		IGNORE_EINTR (close (2));
 		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
 		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 	}
 
-	close (0);
+	IGNORE_EINTR (close (0));
 	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 
 	/* Set this for the PreSession script */
@@ -2832,7 +2816,7 @@ session_child_run (struct passwd *pwent,
 
 	/* Now still as root make the system authfile not readable by others,
 	   and therefore not by the gdm user */
-	chmod (GDM_AUTHFILE (d), 0640);
+	IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
 
 	setpgid (0, 0);
 	
@@ -2849,8 +2833,9 @@ session_child_run (struct passwd *pwent,
 	 * not to leave the egid around */
 	setegid (pwent->pw_gid);
 
-	if (chdir (home_dir) != 0) {
-		chdir ("/");
+	IGNORE_EINTR (chdir (home_dir));
+	if (errno != 0) {
+		IGNORE_EINTR (chdir ("/"));
 	}
 
 #ifdef HAVE_LOGINCAP
@@ -3038,7 +3023,7 @@ session_child_run (struct passwd *pwent,
 		_exit (0);
 	}
 
-	execv (argv[0], argv);
+	IGNORE_EINTR (execv (argv[0], argv));
 
 	/* will go to .xsession-errors */
 	fprintf (stderr, _("%s: Could not exec %s %s %s"), 
@@ -3351,7 +3336,7 @@ gdm_slave_session_start (void)
 
     /* Now still as root make the system authfile readable by others,
        and therefore by the gdm user */
-    chmod (GDM_AUTHFILE (d), 0644);
+    IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0644));
 
     end_time = time (NULL);
 
@@ -3414,7 +3399,7 @@ gdm_slave_session_stop (gboolean run_post_session,
     /* Now still as root make the system authfile not readable by others,
        and therefore not by the gdm user */
     if (GDM_AUTHFILE (d) != NULL)
-	    chmod (GDM_AUTHFILE (d), 0640);
+	    IGNORE_EINTR (chmod (GDM_AUTHFILE (d), 0640));
 
     gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
 
@@ -3446,7 +3431,7 @@ gdm_slave_session_stop (gboolean run_post_session,
 				   TRUE /* set_parent */);
     }
 
-    unlink (x_servers_file);
+    IGNORE_EINTR (unlink (x_servers_file));
     g_free (x_servers_file);
 
     g_free (local_login);
@@ -3643,9 +3628,7 @@ gdm_slave_child_handler (int sig)
 		if (wp->pid == pid) {
 			wp->pid = -1;
 			if (wp->fd_w >= 0) {
-				while (write (wp->fd_w, "!", 1) < 0 &&
-				       errno == EINTR)
-					;
+				IGNORE_EINTR (write (wp->fd_w, "!", 1));
 			}
 		}
 	}
@@ -3760,7 +3743,7 @@ gdm_slave_handle_usr2_message (void)
 	char **vec;
 	int i;
 
-	count = read (d->slave_notify_fd, buf, sizeof (buf) -1);
+	IGNORE_EINTR (count = read (d->slave_notify_fd, buf, sizeof (buf) -1));
 	if (count <= 0) {
 		return;
 	}
@@ -4094,7 +4077,7 @@ gdm_slave_whack_temp_auth_file (void)
 	if (old != 0)
 		seteuid (0);
 	if (d->xnest_temp_auth_file != NULL)
-		unlink (d->xnest_temp_auth_file);
+		IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
 	g_free (d->xnest_temp_auth_file);
 	d->xnest_temp_auth_file = NULL;
 	if (old != 0)
@@ -4107,7 +4090,7 @@ create_temp_auth_file (void)
 	if (d->type == TYPE_FLEXI_XNEST &&
 	    d->xnest_auth_file != NULL) {
 		if (d->xnest_temp_auth_file != NULL)
-			unlink (d->xnest_temp_auth_file);
+			IGNORE_EINTR (unlink (d->xnest_temp_auth_file));
 		g_free (d->xnest_temp_auth_file);
 		d->xnest_temp_auth_file =
 			copy_auth_file (d->server_uid,
@@ -4195,12 +4178,12 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     case 0:
         closelog ();
 
-	close (0);
+	IGNORE_EINTR (close (0));
 	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 
 	if ( ! pass_stdout) {
-		close (1);
-		close (2);
+		IGNORE_EINTR (close (1));
+		IGNORE_EINTR (close (2));
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
 		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
@@ -4224,12 +4207,13 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		if (ve_string_empty (pwent->pw_dir)) {
 			ve_setenv ("HOME", "/", TRUE);
 			ve_setenv ("PWD", "/", TRUE);
-			chdir ("/");
+			IGNORE_EINTR (chdir ("/"));
 		} else {
 			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 			ve_setenv ("PWD", pwent->pw_dir, TRUE);
-			if (chdir (pwent->pw_dir) != 0) {
-				chdir ("/");
+			IGNORE_EINTR (chdir (pwent->pw_dir));
+			if (errno != 0) {
+				IGNORE_EINTR (chdir ("/"));
 				ve_setenv ("PWD", "/", TRUE);
 			}
 		}
@@ -4237,7 +4221,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         } else {
 	        ve_setenv ("HOME", "/", TRUE);
 		ve_setenv ("PWD", "/", TRUE);
-		chdir ("/");
+		IGNORE_EINTR (chdir ("/"));
 	        ve_setenv ("SHELL", "/bin/sh", TRUE);
         }
 
@@ -4262,7 +4246,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 	ve_unsetenv ("MAIL");
 	argv = ve_split (script);
-	execv (argv[0], argv);
+	IGNORE_EINTR (execv (argv[0], argv));
 	syslog (LOG_ERR, _("%s: Failed starting: %s"), "gdm_slave_exec_script",
 		script);
 	_exit (EXIT_SUCCESS);
@@ -4376,9 +4360,9 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	    /* The child will write the username to stdout based on the DISPLAY
 	       environment variable. */
 
-            close (pipe1[0]);
+            IGNORE_EINTR (close (pipe1[0]));
             if(pipe1[1] != STDOUT_FILENO) 
-	      dup2 (pipe1[1], STDOUT_FILENO);
+	      IGNORE_EINTR (dup2 (pipe1[1], STDOUT_FILENO));
 
 	    closelog ();
 
@@ -4396,7 +4380,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	    ve_unsetenv ("MAIL");
 
 	    argv = ve_split (str->str);
-	    execv (argv[0], argv);
+	    IGNORE_EINTR (execv (argv[0], argv));
 	    gdm_error (_("%s: Failed executing: %s"),
 		       "gdm_parse_enriched_login",
 		       str->str);
@@ -4405,24 +4389,27 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
         case -1:
 	    gdm_error (_("%s: Can't fork script process!"),
 		       "gdm_parse_enriched_login");
-            close (pipe1[0]);
-            close (pipe1[1]);
+            IGNORE_EINTR (close (pipe1[0]));
+            IGNORE_EINTR (close (pipe1[1]));
 	    break;
 	
         default:
 	    /* The parent reads username from the pipe a chunk at a time */
-            close(pipe1[1]);
-            g_string_truncate(str,0);
-            while((in_buffer_len = read(pipe1[0],in_buffer,
-				        sizeof(in_buffer)/sizeof(char)- 1)) > 0) {
-	      in_buffer[in_buffer_len] = '\000';
-              g_string_append(str,in_buffer);
-            }
+            IGNORE_EINTR (close (pipe1[1]));
+            g_string_truncate (str, 0);
+	    do {
+		    IGNORE_EINTR (in_buffer_len = read (pipe1[0], in_buffer,
+							sizeof(in_buffer) - 1));
+		    if (in_buffer_len > 0) {
+			    in_buffer[in_buffer_len] = '\0';
+			    g_string_append (str, in_buffer);
+		    }
+            } while (in_buffer_len > 0);
 
             if(str->len > 0 && str->str[str->len - 1] == '\n')
               g_string_truncate(str, str->len - 1);
 
-            close(pipe1[0]);
+            IGNORE_EINTR (close(pipe1[0]));
 
 	    gdm_wait_for_extra (NULL);
         }

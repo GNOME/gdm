@@ -99,7 +99,7 @@ gdm_connection_handler (GIOChannel *source,
 	if ( ! (cond & G_IO_IN)) 
 		return close_if_needed (conn, cond);
 
-	len = read (conn->fd, buf, sizeof (buf) -1);
+	IGNORE_EINTR (len = read (conn->fd, buf, sizeof (buf) -1));
 	if (len <= 0) {
 		return close_if_needed (conn, cond);
 	}
@@ -158,10 +158,10 @@ gdm_connection_write (GdmConnection *conn, const char *str)
 		return FALSE;
 
 #ifdef MSG_NOSIGNAL
-	ret = send (conn->fd, str, strlen (str), MSG_NOSIGNAL);
+	IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), MSG_NOSIGNAL));
 #else
 	old_handler = signal (SIGPIPE, SIG_IGN);
-	ret = send (conn->fd, str, strlen (str), 0);
+	IGNORE_EINTR (ret = send (conn->fd, str, strlen (str), 0));
 	signal (SIGPIPE, old_handler);
 #endif
 
@@ -186,9 +186,9 @@ gdm_socket_handler (GIOChannel *source,
 	if ( ! (cond & G_IO_IN)) 
 		return TRUE;
 
-	fd = accept (conn->fd,
-		     (struct sockaddr *)&addr,
-		     &addr_size);
+	IGNORE_EINTR (fd = accept (conn->fd,
+				   (struct sockaddr *)&addr,
+				   &addr_size));
 	if (fd < 0) {
 		gdm_debug ("gdm_socket_handler: Rejecting connection");
 		return TRUE;
@@ -241,7 +241,7 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 	struct sockaddr_un addr;
 	int fd;
 
-	unlink (sockname);
+	IGNORE_EINTR (unlink (sockname));
 
 	fd = socket (AF_UNIX, SOCK_STREAM, 0);
 	if (fd < 0) {
@@ -257,11 +257,11 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 		  (struct sockaddr *) &addr, sizeof (addr)) < 0) {
 		gdm_error (_("%s: Could not bind socket"),
 			   "gdm_connection_open_unix");
-		close (fd);
+		IGNORE_EINTR (close (fd));
 		return NULL;
 	}
 
-	chmod (sockname, mode);
+	IGNORE_EINTR (chmod (sockname, mode));
 
 	conn = g_new0 (GdmConnection, 1);
 	conn->close_level = 0;
@@ -328,7 +328,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	GdmConnection *conn;
 	int fd;
 
-	unlink (fifo);
+	IGNORE_EINTR (unlink (fifo));
 
 	if (mkfifo (fifo, 0660) < 0) {
 		gdm_error (_("%s: Could not make FIFO"),
@@ -344,7 +344,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 		return NULL;
 	}
 
-	chmod (fifo, mode);
+	IGNORE_EINTR (chmod (fifo, mode));
 
 	conn = g_new0 (GdmConnection, 1);
 	conn->close_level = 0;
@@ -453,7 +453,7 @@ gdm_connection_close (GdmConnection *conn)
 	}
 
 	if (conn->fd > 0) {
-		close (conn->fd);
+		IGNORE_EINTR (close (conn->fd));
 		conn->fd = -1;
 	}
 
