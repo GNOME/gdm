@@ -130,6 +130,10 @@ main (int argc, char *argv[])
 
 	child_pid = fork();
 	if (child_pid == 0) {
+		char VT_NUMBER[256];
+
+		snprintf (VT_NUMBER, sizeof (VT_NUMBER), "VT_NUMBER=%d", vtno);
+		putenv (VT_NUMBER);
 
 		signal (SIGTERM, SIG_DFL);
 		signal (SIGINT, SIG_DFL);

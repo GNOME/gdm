@@ -597,14 +597,14 @@ add_deco (GdmWindow *w)
 				       0, 
 				       black, black);
 
-	XMapWindow (wm_disp, w->deco);
-
 	XGetWindowAttributes (wm_disp, w->deco, &attribs);
 	XSelectInput (wm_disp, w->deco,
 		      attribs.your_event_mask |
 		      EnterWindowMask |
 		      SubstructureNotifyMask |
 		      SubstructureRedirectMask);
+
+	XMapWindow (wm_disp, w->deco);
 
 	XReparentWindow (wm_disp, w->win, w->deco, 1, 1);
 
@@ -830,7 +830,7 @@ event_process (XEvent *ev)
 		if (gw == NULL) {
 			if (ev->xmaprequest.parent == wm_root) {
 				XGrabServer (wm_disp);
-				add_window (w, TRUE /*center*/);
+				gw = add_window (w, TRUE /*center*/);
 				XUngrabServer (wm_disp);
 			}
 		}
