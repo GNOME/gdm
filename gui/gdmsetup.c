@@ -1095,7 +1095,12 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 		if (dent->d_name[0] == '.')
 			continue;
 		n = g_strconcat (theme_dir, "/", dent->d_name,
-				 "/GdmGreeterTheme.info", NULL);
+				 "/GdmGreeterTheme.desktop", NULL);
+		if (access (n, R_OK) != 0) {
+			g_free (n);
+			n = g_strconcat (theme_dir, "/", dent->d_name,
+					 "/GdmGreeterTheme.info", NULL);
+		}
 		if (access (n, R_OK) != 0) {
 			g_free (n);
 			continue;
@@ -1333,10 +1338,19 @@ get_the_dir (FILE *fp, char **error)
 			return NULL;
 		}
 
-		s = g_strconcat (dir, "/GdmGreeterTheme.info", NULL);
-		if (strcmp (buf, s) == 0)
-			got_info = TRUE;
-		g_free (s);
+		if ( ! got_info) {
+			s = g_strconcat (dir, "/GdmGreeterTheme.info", NULL);
+			if (strcmp (buf, s) == 0)
+				got_info = TRUE;
+			g_free (s);
+		}
+
+		if ( ! got_info) {
+			s = g_strconcat (dir, "/GdmGreeterTheme.desktop", NULL);
+			if (strcmp (buf, s) == 0)
+				got_info = TRUE;
+			g_free (s);
+		}
 	}
 
 	if (got_info)

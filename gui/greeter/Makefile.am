@@ -41,7 +41,10 @@ gdmgreeter_SOURCES =  \
 	greeter_system.h 
 
 gdmgreeter_LDADD = \
-	../libgdmwm.a 		\
+	-L$(top_builddir)/gui	\
+	-lgdmwm			\
+	-L$(top_builddir)/vicious-extensions	\
+	-lvicious		\
 	$(X_LIBS)		\
 	-lX11			\
 	$(XINERAMA_LIBS)	\

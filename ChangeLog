@@ -1,3 +1,22 @@
+Fri May 24 13:40:35 2002  George Lebl <jirka@5z.com>
+
+	* gui/gdmsetup.c, gui/greeter/greeter.c,
+	  gui/greeter/themes/circles/Makefile.am,
+	  gui/greeter/themes/circles/circles.xml.in,
+	  gui/greeter/themes/circles/GdmGreeterTheme.desktop.in,
+	  po/POTFILES.in: Start using intltool for the theme stuff.  And
+	  while doing this rename the GdmGreeterTheme.info to
+	  GdmGreeterTheme.desktop since that's more convenient for intltool.
+	  But still accept themes with GdmGreeterTheme.info for laughs.
+	  This should make the greeter at least translatable
+
+	* gui/greeter/greeter_system.c, gui/greeter/greeter.c,
+	  gui/greeter/greeter_configuration.h:  Add configuration option
+	  to the system dialog thingie (it's ugly!) and don't add items which
+	  we know won't work (such as suspend if GdmSuspend isn't there)
+
+	* gui/greeter/Makefile.am: link with libvicious at least
+
 Tue May 21 19:13:49 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c, gui/gdmlogin.c: Remove the bad hack with sending

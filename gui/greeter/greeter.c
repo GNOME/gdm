@@ -44,6 +44,7 @@ gchar *GdmLocaleFile = NULL;
 gchar *GdmHalt = NULL;
 gchar *GdmReboot = NULL;
 gchar *GdmSuspend = NULL;
+gchar *GdmConfigurator = NULL;
 gboolean GdmSystemMenu = TRUE;
 gboolean GdmConfigAvailable = TRUE;
 
@@ -94,6 +95,7 @@ greeter_parse_config (void)
     GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
     GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
     GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
+    GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
     
     gnome_config_pop_prefix();
 
@@ -706,7 +708,11 @@ get_theme_file (const char *in, char **theme_dir)
 
   *theme_dir = dir;
 
-  info = g_build_filename (dir, "GdmGreeterTheme.info", NULL);
+  info = g_build_filename (dir, "GdmGreeterTheme.desktop", NULL);
+  if (access (info, F_OK) != 0) {
+	  g_free (info);
+	  info = g_build_filename (dir, "GdmGreeterTheme.info", NULL);
+  }
   if (access (info, F_OK) != 0)
     {
       /* just guess the name, we have no info about the theme at

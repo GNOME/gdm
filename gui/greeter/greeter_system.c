@@ -11,6 +11,28 @@
 
 #include "gdm.h"
 #include "gdmwm.h"
+#include "vicious.h"
+
+/* doesn't check for executability, just for existance */
+static gboolean
+bin_exists (const char *command)
+{
+	char *bin;
+
+	if (ve_string_empty (command))
+		return FALSE;
+
+	/* Note, check only for existance, not for executability */
+	bin = ve_first_word (command);
+	if (bin != NULL &&
+	    access (bin, F_OK) == 0) {
+		g_free (bin);
+		return TRUE;
+	} else {
+		g_free (bin);
+		return FALSE;
+	}
+}
 
 static void
 greeter_reboot_handler (void)
@@ -44,8 +66,7 @@ greeter_suspend_handler (void)
 }
 
 static void
-greeter_config_handler (GreeterItemInfo *info,
-			gpointer         user_data)
+greeter_config_handler (void)
 {
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
@@ -66,36 +87,66 @@ greeter_system_handler (GreeterItemInfo *info,
 			gpointer         user_data)
 {
   GtkWidget *dialog;
-  GtkWidget *halt_radio;
-  GtkWidget *suspend_radio;
-  GtkWidget *reboot_radio;
+  GtkWidget *group_radio = NULL;
+  GtkWidget *halt_radio = NULL;
+  GtkWidget *suspend_radio = NULL;
+  GtkWidget *reboot_radio = NULL;
+  GtkWidget *config_radio = NULL;
   int ret;
   GSList *radio_group = NULL;
 
+  /* should never be allowed by the UI */
+  if ( ! GdmSystemMenu)
+	  return;
+
   dialog = gtk_dialog_new ();
 
-  halt_radio = gtk_radio_button_new_with_mnemonic (NULL,
-						   _("Shut down the computer"));
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-		      halt_radio,
-		      FALSE, FALSE, 4);
-  gtk_widget_show (halt_radio);
+  if (bin_exists (GdmHalt)) {
+	  halt_radio = gtk_radio_button_new_with_mnemonic (NULL,
+							   _("Shut down the computer"));
+	  group_radio = halt_radio;
+	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			      halt_radio,
+			      FALSE, FALSE, 4);
+	  gtk_widget_show (halt_radio);
+  }
 
-  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (halt_radio));
-  suspend_radio = gtk_radio_button_new_with_mnemonic (radio_group,
-						      _("Suspend the computer"));
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-		      suspend_radio,
-		      FALSE, FALSE, 4);
-  gtk_widget_show (suspend_radio);
+  if (bin_exists (GdmSuspend)) {
+	  if (group_radio != NULL)
+		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
+	  suspend_radio = gtk_radio_button_new_with_mnemonic (radio_group,
+							      _("Suspend the computer"));
+	  group_radio = suspend_radio;
+	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			      suspend_radio,
+			      FALSE, FALSE, 4);
+	  gtk_widget_show (suspend_radio);
+  }
   
-  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (halt_radio));
-  reboot_radio = gtk_radio_button_new_with_mnemonic (radio_group,
-						     _("Reboot the computer"));
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-		      reboot_radio,
-		      FALSE, FALSE, 4);
-  gtk_widget_show (reboot_radio);
+  if (bin_exists (GdmReboot)) {
+	  if (group_radio != NULL)
+		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
+	  reboot_radio = gtk_radio_button_new_with_mnemonic (radio_group,
+							     _("Reboot the computer"));
+	  group_radio = reboot_radio;
+	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			      reboot_radio,
+			      FALSE, FALSE, 4);
+	  gtk_widget_show (reboot_radio);
+  }
+
+  if (GdmConfigAvailable &&
+      bin_exists (GdmConfigurator)) {
+	  if (group_radio != NULL)
+		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
+	  config_radio = gtk_radio_button_new_with_mnemonic (radio_group,
+							     _("Configure"));
+	  group_radio = config_radio;
+	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			      config_radio,
+			      FALSE, FALSE, 4);
+	  gtk_widget_show (config_radio);
+  }
   
   gtk_dialog_add_button (GTK_DIALOG (dialog),
 			 GTK_STOCK_CANCEL,
@@ -124,6 +175,8 @@ greeter_system_handler (GreeterItemInfo *info,
     greeter_reboot_handler ();
   else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (suspend_radio)))
     greeter_suspend_handler ();
+  else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (config_radio)))
+    greeter_config_handler ();
 
   gtk_widget_destroy (dialog);
 }

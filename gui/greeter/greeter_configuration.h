@@ -9,5 +9,6 @@ extern gboolean GdmConfigAvailable;
 extern gchar *GdmHalt;
 extern gchar *GdmReboot;
 extern gchar *GdmSuspend;
+extern gchar *GdmConfigurator;
 extern gchar *GdmSessionDir;
 extern gchar *GdmDefaultLocale;
