@@ -114,8 +114,27 @@ static void     gdm_slave_alrm_handler (int sig);
 static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);
 static void     gdm_slave_exit (gint status, const gchar *format, ...);
+static void     gdm_child_exit (gint status, const gchar *format, ...);
 static gint     gdm_slave_exec_script (GdmDisplay*, gchar *dir);
 
+
+/* Yay thread unsafety */
+static gboolean x_error_occured = FALSE;
+
+/* ignore handlers */
+static int
+ignore_xerror_handler (Display *disp, XErrorEvent *evt)
+{
+	x_error_occured = TRUE;
+	return 0;
+}
+
+static int
+ignore_xioerror_handler (Display *disp)
+{
+	x_error_occured = TRUE;
+	return 0;
+}
 
 void 
 gdm_slave_start (GdmDisplay *display)
@@ -128,7 +147,7 @@ gdm_slave_start (GdmDisplay *display)
 		return;
 
 	gdm_debug ("gdm_slave_start: Starting slave process for %s", display->name);
-	if (d->type != TYPE_LOCAL &&
+	if (display->type != TYPE_LOCAL &&
 	    GdmPingInterval > 0) {
 		/* Handle a ALRM signals from our ping alarms */
 		alrm.sa_handler = gdm_slave_alrm_handler;
@@ -165,7 +184,7 @@ gdm_slave_start (GdmDisplay *display)
 	sigdelset (&mask, SIGINT);
 	sigdelset (&mask, SIGTERM);
 	sigdelset (&mask, SIGCHLD);
-	if (d->type != TYPE_LOCAL &&
+	if (display->type != TYPE_LOCAL &&
 	    GdmPingInterval > 0) {
 		sigdelset (&mask, SIGALRM);
 	}
@@ -180,7 +199,7 @@ gdm_slave_start (GdmDisplay *display)
 		gdm_debug ("gdm_slave_start: Loop Thingie");
 		gdm_slave_run (display);
 
-		if (d->type != TYPE_LOCAL)
+		if (display->type != TYPE_LOCAL)
 			break;
 
 		the_time = time (NULL);
@@ -216,26 +235,6 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 
 	gdm_debug ("gdm_slave_start: DisplayInit script finished");
 }
-
-#ifdef HAVE_LIBXINERAMA
-/* Yay thread unsafety */
-static gboolean x_error_occured = FALSE;
-
-/* ignore handlers */
-static int
-ignore_xerror_handler (Display *disp, XErrorEvent *evt)
-{
-	x_error_occured = TRUE;
-	return 0;
-}
-
-static int
-ignore_xioerror_handler (Display *disp)
-{
-	x_error_occured = TRUE;
-	return 0;
-}
-#endif
 
 static void 
 gdm_screen_init (GdmDisplay *display) 
@@ -288,6 +287,7 @@ static void
 gdm_slave_run (GdmDisplay *display)
 {  
     gint openretries = 0;
+    gint maxtries = 0;
     
     d = display;
 
@@ -315,55 +315,66 @@ gdm_slave_run (GdmDisplay *display)
 
     gdm_debug ("gdm_slave_start: Opening display %s", d->name);
     d->dsp = NULL;
+
+    /* if local then the the server should be ready for openning, so
+     * don't try so long before killing it and trying again */
+    if (d->type == TYPE_LOCAL)
+	    maxtries = 2;
+    else
+	    maxtries = 10;
     
-    while (openretries < 10 &&
+    while (openretries < maxtries &&
 	   d->dsp == NULL) {
 	d->dsp = XOpenDisplay (d->name);
 	
 	if (d->dsp == NULL) {
-	    gdm_debug ("gdm_slave_start: Sleeping %d on a retry", openretries*2);
-	    sleep (openretries*2);
+	    gdm_debug ("gdm_slave_start: Sleeping %d on a retry", 1+openretries*2);
+	    sleep (1+openretries*2);
 	    openretries++;
 	}
     }
 
-    if (d->dsp != NULL) {
+    /* something may have gone wrong, try remanaging, if local, the toplevel
+     * loop of death will handle us */ 
+    if (d->dsp == NULL) {
+	    gdm_server_stop (d);
+	    if (d->type == TYPE_LOCAL)
+		    _exit (DISPLAY_REMANAGE);
+	    else
+		    _exit (DISPLAY_ABORT);
+    }
 
-	/* If XDMCP setup pinging */
-	if (d->type != TYPE_LOCAL &&
-	    GdmPingInterval > 0) {
-		alarm (GdmPingInterval * 60);
-	}
+    /* If XDMCP setup pinging */
+    if (d->type != TYPE_LOCAL &&
+	GdmPingInterval > 0) {
+	    alarm (GdmPingInterval * 60);
+    }
 
-	/* checkout xinerama */
-        gdm_screen_init (d);
+    /* checkout xinerama */
+    gdm_screen_init (d);
 
-	if (d->type == TYPE_LOCAL &&
-	    gdm_first_login &&
-	    ! gdm_string_empty (GdmAutomaticLogin) &&
-	    strcmp (GdmAutomaticLogin, "root") != 0) {
-		gdm_first_login = FALSE;
+    if (d->type == TYPE_LOCAL &&
+	gdm_first_login &&
+	! gdm_string_empty (GdmAutomaticLogin) &&
+	strcmp (GdmAutomaticLogin, "root") != 0) {
+	    gdm_first_login = FALSE;
 
-		setup_automatic_session (d, GdmAutomaticLogin);
+	    setup_automatic_session (d, GdmAutomaticLogin);
 
-		gdm_slave_session_start();
+	    gdm_slave_session_start();
 
-		gdm_debug ("gdm_slave_start: Automatic login done");
-	} else {
-		if (gdm_first_login)
-			gdm_first_login = FALSE;
-		gdm_slave_greeter ();  /* Start the greeter */
-		gdm_slave_wait_for_login (); /* wait for a password */
-		if (do_timed_login) {
-			/* timed out into a timed login */
-			do_timed_login = FALSE;
-			setup_automatic_session (d, GdmTimedLogin);
-		}
-		gdm_slave_session_start ();
-	}
+	    gdm_debug ("gdm_slave_start: Automatic login done");
     } else {
-	gdm_server_stop (d);
-	_exit (DISPLAY_ABORT);
+	    if (gdm_first_login)
+		    gdm_first_login = FALSE;
+	    gdm_slave_greeter ();  /* Start the greeter */
+	    gdm_slave_wait_for_login (); /* wait for a password */
+	    if (do_timed_login) {
+		    /* timed out into a timed login */
+		    do_timed_login = FALSE;
+		    setup_automatic_session (d, GdmTimedLogin);
+	    }
+	    gdm_slave_session_start ();
     }
 }
 
@@ -624,6 +635,10 @@ gdm_slave_wait_for_login (void)
 
 	/* Chat with greeter */
 	while (login == NULL) {
+		/* just for paranoia's sake */
+		seteuid (0);
+		setegid (0);
+
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
 		login = gdm_verify_user (NULL /* username*/,
 					 d->name,
@@ -886,13 +901,13 @@ gdm_slave_greeter (void)
 	    dup2 (pipe2[1], STDOUT_FILENO);
 	
 	if (setgid (GdmGroupId) < 0) 
-	    gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set groupid to %d"), GdmGroupId);
+	    gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set groupid to %d"), GdmGroupId);
 
 	if (initgroups (GdmUser, GdmGroupId) < 0)
-            gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: initgroups() failed for %s"), GdmUser);
+            gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: initgroups() failed for %s"), GdmUser);
 	
 	if (setuid (GdmUserId) < 0) 
-	    gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set userid to %d"), GdmUserId);
+	    gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set userid to %d"), GdmUserId);
 	
 	gdm_clearenv_no_lang ();
 	gdm_setenv ("XAUTHORITY", d->authfile);
@@ -974,7 +989,7 @@ gdm_slave_greeter (void)
 			    "Try logging in by other means and\n"
 			    "editting the configuration file"));
 	
-	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Error starting greeter on display %s"), d->name);
+	gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Error starting greeter on display %s"), d->name);
 	
     case -1:
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't fork gdmgreeter process"));
@@ -1502,16 +1517,16 @@ gdm_slave_session_start (void)
 	umask (022);
 	
 	if (setgid (pwent->pw_gid) < 0) 
-	    gdm_slave_exit (DISPLAY_REMANAGE,
-			    _("gdm_slave_session_start: Could not setgid %d. Aborting."), pwent->pw_gid);
-	
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("gdm_slave_session_start: Could not setgid %d. Aborting."), pwent->pw_gid);
+
 	if (initgroups (login, pwent->pw_gid) < 0)
-	    gdm_slave_exit (DISPLAY_REMANAGE,
-			    _("gdm_slave_session_start: initgroups() failed for %s. Aborting."), login);
-	
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("gdm_slave_session_start: initgroups() failed for %s. Aborting."), login);
+
 	if (setuid (pwent->pw_uid) < 0) 
-	    gdm_slave_exit (DISPLAY_REMANAGE,
-			    _("gdm_slave_session_start: Could not become %s. Aborting."), login);
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("gdm_slave_session_start: Could not become %s. Aborting."), login);
 	
 	chdir (pwent->pw_dir);
 
@@ -1712,11 +1727,14 @@ gdm_slave_session_stop (pid_t sesspid)
     local_login = login;
     login = NULL;
 
+    seteuid (0);
+    setegid (0);
+
     gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
 
     if (sesspid > 0)
 	    kill (- (sesspid), SIGTERM);
-    
+
     gdm_verify_cleanup();
     
     pwent = getpwnam (local_login);	/* PAM overwrites our pwent */
@@ -1733,21 +1751,25 @@ gdm_slave_session_stop (pid_t sesspid)
     gdm_auth_user_remove (d, pwent->pw_uid);
 
     seteuid (0);
-    setegid (GdmGroupId);
+    setegid (0);
 }
 
 static void
 gdm_slave_session_cleanup (void)
 {
-    gdm_debug ("gdm_slave_session_cleanup: %s on %s", login, d->name);
+    gdm_debug ("gdm_slave_session_cleanup: on %s", d->name);
 
-    /* kill login */
+    /* kill login if it still exists */
     g_free (login);
     login = NULL;
     
     /* Execute post session script */
     gdm_debug ("gdm_slave_session_cleanup: Running post session script");
     gdm_slave_exec_script (d, GdmPostSession);
+
+    /* things are going to be killed, so ignore errors */
+    XSetErrorHandler (ignore_xerror_handler);
+    XSetIOErrorHandler (ignore_xioerror_handler);
 
     /* Cleanup */
     gdm_debug ("gdm_slave_session_cleanup: Killing windows");
@@ -1758,6 +1780,10 @@ static void
 gdm_slave_term_handler (int sig)
 {
     gdm_debug ("gdm_slave_term_handler: %s got TERM signal", d->name);
+
+    /* just for paranoia's sake */
+    seteuid (0);
+    setegid (0);
 
     if (d->greetpid != 0) {
 	gdm_debug ("gdm_slave_term_handler: Whacking greeter");
@@ -1827,6 +1853,10 @@ gdm_slave_child_handler (int sig)
 		       (int)pid, (int)WTERMSIG (status));
 
 	if (pid == d->greetpid && greet) {
+		/* just for paranoia's sake */
+		seteuid (0);
+		setegid (0);
+
 		/* if greet is TRUE, then the greeter died outside of our
 		 * control really */
 		gdm_server_stop (d);
@@ -1862,11 +1892,16 @@ static gint
 gdm_slave_xioerror_handler (Display *disp)
 {
     gdm_debug ("gdm_slave_xioerror_handler: I/O error for display %s", d->name);
+
+    /* just for paranoia's sake */
+    seteuid (0);
+    setegid (0);
     
     if (login)
 	gdm_slave_session_stop (d->sesspid);
     
     gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
+    
 
     gdm_server_stop (d);
     gdm_verify_cleanup ();
@@ -1923,6 +1958,10 @@ gdm_slave_exit (gint status, const gchar *format, ...)
     
     g_free (s);
 
+    /* just for paranoia's sake */
+    seteuid (0);
+    setegid (0);
+
     gdm_server_stop (d);
     gdm_verify_cleanup ();
 
@@ -1946,6 +1985,22 @@ gdm_slave_exit (gint status, const gchar *format, ...)
     _exit (status);
 }
 
+static void 
+gdm_child_exit (gint status, const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+    
+    syslog (LOG_ERR, s);
+    
+    g_free (s);
+
+    _exit (status);
+}
 
 static gint
 gdm_slave_exec_script (GdmDisplay *d, gchar *dir)

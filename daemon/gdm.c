@@ -374,12 +374,11 @@ gdm_config_parse (void)
 	gdm_fail (_("gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."), 
 		  GdmServAuthDir, statbuf.st_mode);
 
+    seteuid (0);
+    setegid (0);
 
     /* Check that user authentication is properly configured */
     gdm_verify_check ();
-
-    seteuid (0);
-    setegid (0);
 }
 
 

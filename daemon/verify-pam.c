@@ -37,7 +37,7 @@ extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 
 /* Local PAM handle */
-pam_handle_t *pamh = NULL;
+static pam_handle_t *pamh = NULL;
 
 
 /* Internal PAM conversation function. Interfaces between the PAM
@@ -149,6 +149,7 @@ gdm_verify_user (const char *username,
     gchar *login;
     struct passwd *pwent;
     gboolean error_msg_given = FALSE;
+    gboolean opened_session = FALSE;
 
     /* start the timer for timed logins */
     if (local)
@@ -239,6 +240,15 @@ gdm_verify_user (const char *username,
 	    goto pamerr;
     }
     
+    /* Register the session */
+    if ((pamerr = pam_open_session (pamh, 0)) != PAM_SUCCESS) {
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't open session for %s"), login);
+	    goto pamerr;
+    }
+
+    opened_session = TRUE;
+
     /* Set credentials */
     if ((pamerr = pam_setcred (pamh, 0)) != PAM_SUCCESS) {
 	    if (gdm_slave_should_complain ())
@@ -246,12 +256,6 @@ gdm_verify_user (const char *username,
 	    goto pamerr;
     }
     
-    /* Register the session */
-    if ((pamerr = pam_open_session (pamh, 0)) != PAM_SUCCESS) {
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Couldn't open session for %s"), login);
-	    goto pamerr;
-    }
     
     return login;
     
@@ -262,6 +266,8 @@ gdm_verify_user (const char *username,
     if ( ! error_msg_given &&
 	gdm_slave_should_complain ())
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Authentication failed"));
+    if (opened_session)
+	    pam_close_session (pamh, 0);
     
     pam_end (pamh, pamerr);
     pamh = NULL;
@@ -286,6 +292,7 @@ void
 gdm_verify_setup_user (const gchar *login, const gchar *display) 
 {
     gint pamerr;
+    gboolean opened_session = FALSE;
 
     if (!login)
 	return;
@@ -318,6 +325,15 @@ gdm_verify_setup_user (const gchar *login, const gchar *display)
     }
 #endif
     
+    /* Register the session */
+    if ((pamerr = pam_open_session (pamh, PAM_SILENT)) != PAM_SUCCESS) {
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't open session for %s"), login);
+	    goto setup_pamerr;
+    }
+
+    opened_session = TRUE;
+    
     /* Set credentials */
     if ((pamerr = pam_setcred (pamh, PAM_SILENT)) != PAM_SUCCESS) {
 	    if (gdm_slave_should_complain ())
@@ -325,16 +341,12 @@ gdm_verify_setup_user (const gchar *login, const gchar *display)
 	    goto setup_pamerr;
     }
     
-    /* Register the session */
-    if ((pamerr = pam_open_session (pamh, PAM_SILENT)) != PAM_SUCCESS) {
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Couldn't open session for %s"), login);
-	    goto setup_pamerr;
-    }
-    
     return;
     
  setup_pamerr:
+    
+    if (opened_session)
+	    pam_close_session (pamh, PAM_SILENT);
     
     pam_end (pamh, pamerr);
     pamh = NULL;
@@ -355,7 +367,7 @@ void
 gdm_verify_cleanup (void)
 {
     if (pamh) {
-	pam_close_session (pamh, 0);
+	pam_close_session (pamh, PAM_SILENT);
 	pam_end (pamh, PAM_SUCCESS);
 	pamh = NULL;
     

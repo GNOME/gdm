@@ -1,3 +1,23 @@
+Thu May 31 03:17:32 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: set euid/egid to 0 before verify check
+
+	* daemon/slave.c: set euid/egid to 0 at a bunch of places just to
+	  make sure that's how they're set.  When children want to exit they
+	  shouldn't use the slave_exit function as that's dangerous to the
+	  slave's health.  Instead use a new function for this which
+	  doesn't do slave specific cleanup.  Also fix segfaults on startup.
+
+	* daemon/verify-pam.c: the credential setting is supposed to be done
+	  after openning a session.  Closing of a session is done silently as
+	  well, jsut for good meassure as wel don't have anything to talk to
+	  anymore anyway
+
+	* daemon/slave.c, daemon/server.c: when reinitting ignore X errors
+	  and do not reopen the display.  When openning the display the first
+	  time, don't try so hard for a local display and instead wipe slave
+	  and try again.
+
 Wed May 30 21:43:21 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: make iconify button nicer by making it smaller and

@@ -71,25 +71,19 @@ static GdmDisplay *d = NULL;
 void
 gdm_server_reinit (GdmDisplay *disp)
 {
-	gboolean had_connection = FALSE;
-
 	if (disp == NULL ||
 	    disp->servpid <= 0)
 		return;
 
-	/* Kill our connection */
+	/* Kill our connection if one existed */
 	if (disp->dsp != NULL) {
 		XCloseDisplay (disp->dsp);
 		disp->dsp = NULL;
-		had_connection = TRUE;
 	}
 
 	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
 
 	kill (disp->servpid, SIGHUP);
-
-	if (had_connection)
-		disp->dsp = XOpenDisplay (disp->name);
 }
 
 /**
@@ -108,7 +102,7 @@ gdm_server_stop (GdmDisplay *disp)
 
     gdm_debug ("gdm_server_stop: Server for %s going down!", disp->name);
 
-    /* Kill our connection */
+    /* Kill our connection if one existed */
     if (disp->dsp != NULL) {
 	XCloseDisplay (disp->dsp);
 	disp->dsp = NULL;
