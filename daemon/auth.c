@@ -285,7 +285,6 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 
     fclose (af);
     XauUnlockAuth (d->userauth);
-    gdm_setenv ("XAUTHORITY", d->userauth);
 
     gdm_debug ("gdm_auth_user_add: Done");
 

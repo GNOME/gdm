@@ -39,6 +39,12 @@ gint gdm_setenv (const gchar *var, const gchar *value);
 gint gdm_unsetenv (const gchar *var);
 #endif
 
+void gdm_clearenv (void);
+
+/* clear environment, but keep the i18n ones (LANG, LC_ALL, etc...),
+ * note that this leak memory so only use before exec */
+void gdm_clearenv_no_lang (void);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

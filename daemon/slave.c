@@ -308,6 +308,7 @@ gdm_slave_greeter (void)
 	if (setuid (GdmUserId) < 0) 
 	    gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Couldn't set userid to %d"), GdmUserId);
 	
+	gdm_clearenv_no_lang ();
 	gdm_setenv ("XAUTHORITY", d->authfile);
 	gdm_setenv ("DISPLAY", d->name);
 	gdm_setenv ("HOME", "/"); /* Hack */
@@ -460,35 +461,25 @@ gdm_slave_session_start (void)
     if (GdmKillInitClients)
 	    gdm_server_whack_clients (d);
 
-    /* Prepare user session */
+    /* setup some env for PreSession script */
     gdm_setenv ("DISPLAY", d->name);
     gdm_setenv ("LOGNAME", login);
     gdm_setenv ("USER", login);
     gdm_setenv ("USERNAME", login);
     gdm_setenv ("HOME", pwent->pw_dir);
-    gdm_setenv ("GDMSESSION", session);
     gdm_setenv ("SHELL", pwent->pw_shell);
-    gdm_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
-    /* Special PATH for root */
-    if (pwent->pw_uid == 0)
-	gdm_setenv ("PATH", GdmRootPath);
-    else
-	gdm_setenv ("PATH", GdmDefaultPath);
-
-    /* Set locale */
-    if (strcasecmp (language, "english") == 0) {
-	gdm_setenv ("LANG", "C");
-	gdm_setenv ("GDM_LANG", "C");
-    } else {
-	gdm_setenv ("LANG", language);
-	gdm_setenv ("GDM_LANG", language);
-    }
-    
     /* If script fails reset X server and restart greeter */
     if (gdm_slave_exec_script (d, GdmPreSession) != EXIT_SUCCESS) 
 	gdm_slave_exit (DISPLAY_REMANAGE,
 			_("gdm_slave_session_start: Execution of PreSession script returned > 0. Aborting."));
+
+    /* set things back to moi, for lack of confusion */
+    gdm_setenv ("LOGNAME", GdmUser);
+    gdm_setenv ("USER", GdmUser);
+    gdm_setenv ("USERNAME", GdmUser);
+    gdm_setenv ("HOME", "/");
+    gdm_setenv ("SHELL", "/bin/sh");
 
     /* Setup cookie -- We need this information during cleanup, thus
      * cookie handling is done before fork()ing */
@@ -517,6 +508,40 @@ gdm_slave_session_start (void)
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_session_start: Error forking user session"));
 	
     case 0:
+
+	gdm_clearenv ();
+
+	/* Prepare user session */
+	gdm_setenv ("XAUTHORITY", d->userauth);
+	gdm_setenv ("DISPLAY", d->name);
+	gdm_setenv ("LOGNAME", login);
+	gdm_setenv ("USER", login);
+	gdm_setenv ("USERNAME", login);
+	gdm_setenv ("HOME", pwent->pw_dir);
+	gdm_setenv ("GDMSESSION", session);
+	gdm_setenv ("SHELL", pwent->pw_shell);
+#if 0
+	gdm_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
+#endif
+
+	/* Special PATH for root */
+	if (pwent->pw_uid == 0)
+		gdm_setenv ("PATH", GdmRootPath);
+	else
+		gdm_setenv ("PATH", GdmDefaultPath);
+
+	/* Set locale */
+	if (strcasecmp (language, "english") == 0) {
+		gdm_setenv ("LANG", "C");
+		gdm_setenv ("GDM_LANG", "C");
+	} else {
+		gdm_setenv ("LANG", language);
+		gdm_setenv ("GDM_LANG", language);
+	}
+    
+	/* setup the verify env vars */
+	gdm_verify_env_setup ();
+    
 	setpgid (0, 0);
 	
 	umask (022);
@@ -641,7 +666,7 @@ gdm_slave_session_stop (pid_t sesspid)
     seteuid (pwent->pw_uid);
 
     gdm_auth_user_remove (d, pwent->pw_uid);
-    
+
     seteuid (0);
     setegid (GdmGroupId);
 }
@@ -841,7 +866,10 @@ gdm_slave_exec_script (GdmDisplay *d, gchar *dir)
     switch (pid = fork()) {
 	    
     case 0:
+	gdm_setenv ("XAUTHORITY", d->authfile);
+        gdm_setenv ("DISPLAY", d->name);
 	gdm_setenv ("PATH", GdmRootPath);
+	gdm_unsetenv ("MAIL");
 	argv = g_strsplit (scr, argdelim, MAX_ARGS);
 	execv (argv[0], argv);
 	syslog (LOG_ERR, _("gdm_slave_exec_script: Failed starting: %s"), scr);

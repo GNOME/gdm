@@ -24,6 +24,8 @@
 gchar *gdm_verify_user    (const gchar *display);
 void   gdm_verify_cleanup (void);
 void   gdm_verify_check   (void);
+/* used in pam */
+void   gdm_verify_env_setup (void);
 void   gdm_verify_setup_user (const gchar *login, const gchar *display) ;
 
 #endif /* GDM_VERIFY_H */

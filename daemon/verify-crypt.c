@@ -143,4 +143,10 @@ gdm_verify_check (void)
 {
 }
 
+/* used in pam */
+void
+gdm_verify_env_setup (void)
+{
+}
+
 /* EOF */

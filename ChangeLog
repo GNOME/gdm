@@ -1,3 +1,14 @@
+Mon Apr 23 22:04:24 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, acconfig.h, daemon/auth.c, daemon/misc.[ch],
+	  daemon/slave.c, daemon/verify.h,
+	  daemon/verify-(pam|crypt|shadow).h:  Fixup enviroment issues.
+	  Clear the environment before running a session and before launching
+	  the greeter (taking care to save the localisation vars).  Also
+	  don't set user env on the slave and leave it, if we set it it's
+	  only temporary.  Also fix one possible crash by strduping the
+	  pam env since that will go away and putenv doesn't strdup.
+
 Mon Apr 23 20:16:07 2001  George Lebl <jirka@5z.com>
 
 	* configure.in: when we find libwrap.a instead of specifying that

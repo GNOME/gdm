@@ -30,6 +30,8 @@ static const gchar RCSid[]="$Id$";
 extern gchar *GdmPidFile;
 extern gboolean GdmDebug;
 
+extern char **environ;
+
 
 /**
  * gdm_fail:
@@ -249,5 +251,40 @@ gdm_unsetenv (const gchar *var)
     return result;
 }
 #endif
+
+void
+gdm_clearenv (void)
+{
+#ifdef HAVE_CLEARENV
+	clearenv ();
+#else
+	environ[0] = NULL;
+#endif
+}
+
+/* clear environment, but keep the i18n ones,
+ * note that this leak memory so only use before exec */
+void
+gdm_clearenv_no_lang (void)
+{
+	int i;
+	GList *li, *envs = NULL;
+
+	for (i = 0; environ[i] != NULL; i++) {
+		char *env = environ[i];
+		if (strncmp (env, "LC_", 3) == 0 ||
+		    strncmp (env, "LANG", 4) == 0 ||
+		    strncmp (env, "LINGUAS", 7) == 0)
+			envs = g_list_prepend (envs, g_strdup (env));
+	}
+
+	gdm_clearenv ();
+
+	for (li = envs; li != NULL; li = li->next) {
+		putenv (li->data);
+	}
+
+	g_list_free (envs);
+}
 
 /* EOF */

@@ -132,7 +132,6 @@ gdm_verify_user (const gchar *display)
 {
     gint pamerr;
     gchar *login;
-    gchar **pamenv;
     struct passwd *pwent;
     gboolean error_msg_given = FALSE;
 
@@ -210,14 +209,6 @@ gdm_verify_user (const gchar *display)
 	goto pamerr;
     }
     
-    /* Migrate any PAM env. variables to the user's environment */
-    if ((pamenv = pam_getenvlist (pamh))) {
-	gint i;
-
-	for (i = 0 ; pamenv[i] ; i++)
-	    putenv (pamenv[i]);
-    }
-    
     return login;
     
  pamerr:
@@ -250,7 +241,6 @@ void
 gdm_verify_setup_user (const gchar *login, const gchar *display) 
 {
     gint pamerr;
-    gchar **pamenv;
 
     if (!login)
 	return;
@@ -291,14 +281,6 @@ gdm_verify_setup_user (const gchar *login, const gchar *display)
     if ((pamerr = pam_open_session (pamh, PAM_SILENT)) != PAM_SUCCESS) {
 	gdm_error (_("Couldn't open session for %s"), login);
 	goto setup_pamerr;
-    }
-    
-    /* Migrate any PAM env. variables to the user's environment */
-    if ((pamenv = pam_getenvlist (pamh))) {
-	gint i;
-
-	for (i = 0 ; pamenv[i] ; i++)
-	    putenv (pamenv[i]);
     }
     
     return;
@@ -352,5 +334,20 @@ gdm_verify_check (void)
 	gdm_fail (_("gdm_verify_check: Can't find PAM configuration file for gdm"));
 }
 
+/* used in pam */
+void
+gdm_verify_env_setup (void)
+{
+    gchar **pamenv;
+
+    /* Migrate any PAM env. variables to the user's environment */
+    if ((pamenv = pam_getenvlist (pamh))) {
+	gint i;
+
+	for (i = 0 ; pamenv[i] ; i++) {
+	    putenv (g_strdup (pamenv[i]));
+	}
+    }
+}
 
 /* EOF */
