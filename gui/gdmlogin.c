@@ -2813,7 +2813,6 @@ gdm_login_gui_init (void)
     GtkWidget *bbox = NULL;
     GtkWidget *logoframe = NULL;
     GtkWidget /**help_button,*/ *button_box;
-    GtkAccelGroup *accel;
     gchar *greeting;
     gint cols, rows;
     struct stat statbuf;
@@ -2831,9 +2830,6 @@ gdm_login_gui_init (void)
 	    g_signal_connect (G_OBJECT (login), "event",
 			      G_CALLBACK (window_browser_event),
 			      NULL);
-
-    accel = gtk_accel_group_new ();
-    gtk_window_add_accel_group (GTK_WINDOW (login), accel);
 
     frame1 = gtk_frame_new (NULL);
     gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_OUT);
@@ -2871,22 +2867,16 @@ gdm_login_gui_init (void)
 
     menu = gtk_menu_new();
     gdm_login_session_init (menu);
-    sessmenu = gtk_menu_item_new_with_label (_("Session"));
+    sessmenu = gtk_menu_item_new_with_mnemonic (_("_Session"));
     gtk_menu_shell_append (GTK_MENU_SHELL (menubar), sessmenu);
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (sessmenu), menu);
-    gtk_widget_add_accelerator (sessmenu, "activate", accel,
-				GDK_Escape, 0, 0);
-    gtk_widget_add_accelerator (sessmenu, "activate", accel,
-				GDK_s, GDK_MOD1_MASK, 0);
     gtk_widget_show (GTK_WIDGET (sessmenu));
 
     menu = gdm_login_language_menu_new ();
     if (menu != NULL) {
-	langmenu = gtk_menu_item_new_with_label (_("Language"));
+	langmenu = gtk_menu_item_new_with_mnemonic (_("_Language"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menubar), langmenu);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (langmenu), menu);
-	gtk_widget_add_accelerator (langmenu, "activate", accel,
-				    GDK_l, GDK_MOD1_MASK, 0);
 	gtk_widget_show (GTK_WIDGET (langmenu));
     }
 
@@ -2896,7 +2886,7 @@ gdm_login_gui_init (void)
 	menu = gtk_menu_new();
 	if (GdmConfigAvailable &&
 	    bin_exists (GdmConfigurator)) {
-		item = gtk_menu_item_new_with_label (_("Configure..."));
+		item = gtk_menu_item_new_with_mnemonic (_("_Configure..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_run_gdmconfig),
@@ -2910,7 +2900,7 @@ gdm_login_gui_init (void)
 	}
 
 	if (bin_exists (GdmReboot)) {
-		item = gtk_menu_item_new_with_label (_("Reboot..."));
+		item = gtk_menu_item_new_with_mnemonic (_("_Reboot..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_login_reboot_handler), 
@@ -2923,7 +2913,7 @@ gdm_login_gui_init (void)
 	}
 	
 	if (bin_exists (GdmHalt)) {
-		item = gtk_menu_item_new_with_label (_("Shut down..."));
+		item = gtk_menu_item_new_with_mnemonic (_("Shut _down..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_login_halt_handler), 
@@ -2937,7 +2927,7 @@ gdm_login_gui_init (void)
 	}
 
 	if (bin_exists (GdmSuspend)) {
-		item = gtk_menu_item_new_with_label (_("Suspend..."));
+		item = gtk_menu_item_new_with_mnemonic (_("_Suspend..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
 				  G_CALLBACK (gdm_login_suspend_handler), 
@@ -2950,11 +2940,9 @@ gdm_login_gui_init (void)
 	}
 	
 	if (got_anything) {
-		item = gtk_menu_item_new_with_label (_("System"));
+		item = gtk_menu_item_new_with_mnemonic (_("S_ystem"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menubar), item);
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
-		gtk_widget_add_accelerator (item, "activate", accel,
-					    GDK_y, GDK_MOD1_MASK, 0);
 		gtk_widget_show (GTK_WIDGET (item));
 	}
     }
@@ -2964,16 +2952,14 @@ gdm_login_gui_init (void)
      * flexi, even if not local (non-local xnest).  and Disconnect
      * only for xdmcp */
     if ( ! ve_string_empty (g_getenv ("GDM_FLEXI_SERVER"))) {
-	    item = gtk_menu_item_new_with_label (_("Quit"));
+	    item = gtk_menu_item_new_with_mnemonic (_("_Quit"));
     } else if (ve_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
-	    item = gtk_menu_item_new_with_label (_("Disconnect"));
+	    item = gtk_menu_item_new_with_mnemonic (_("D_isconnect"));
     } else {
 	    item = NULL;
     }
     if (item != NULL) {
 	    gtk_menu_shell_append (GTK_MENU_SHELL (menubar), item);
-	    gtk_widget_add_accelerator (item, "activate", accel,
-					GDK_q, GDK_MOD1_MASK, 0);
 	    gtk_widget_show (GTK_WIDGET (item));
 	    g_signal_connect (G_OBJECT (item), "activate",
 			      G_CALLBACK (gtk_main_quit), NULL);

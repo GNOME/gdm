@@ -1020,12 +1020,17 @@ gdm_slave_wait_for_login (void)
 static gboolean
 is_in_trusted_pic_dir (const char *path)
 {
+#if 0
 	GSList *locations = NULL, *li;
+#endif
 
 	/* our own pixmap dir is trusted */
 	if (strncmp (path, EXPANDED_PIXMAPDIR, sizeof (EXPANDED_PIXMAPDIR)) == 0)
 		return TRUE;
 
+	/* FIXME: somehow get gnomes locations and all that */
+#if 0
+	/* we have no gnome-program and we don't want one */
 	g_free (gnome_program_locate_file (NULL /* program */,
 					   GNOME_FILE_DOMAIN_PIXMAP,
 					   "" /* file_name */,
@@ -1041,6 +1046,7 @@ is_in_trusted_pic_dir (const char *path)
 	}
 	g_slist_foreach (locations, (GFunc)g_free, NULL);
 	g_slist_free (locations);
+#endif
 
 	return FALSE;
 }
@@ -2008,6 +2014,7 @@ dequote (const char *in)
 static void
 session_child_run (struct passwd *pwent,
 		   const char *home_dir,
+		   gboolean home_dir_ok,
 		   const char *session,
 		   const char *save_session,
 		   const char *language,
@@ -2020,10 +2027,21 @@ session_child_run (struct passwd *pwent,
 		   gboolean savegnomesess)
 {
 	sigset_t mask; 
+	int logfd;
 	int i;
+	gboolean failsafe = FALSE;
 	char *sesspath, *sessexec;
 	gboolean need_config_sync = FALSE;
 	const char *shell = NULL;
+	Display *disp;
+
+	disp = XOpenDisplay (d->name);
+	if (disp != NULL) {
+		XSetInputFocus (disp, PointerRoot,
+				RevertToPointerRoot, CurrentTime);
+		XCloseDisplay (disp);
+	}
+
 
 	gdm_clearenv ();
 
@@ -2109,7 +2127,7 @@ session_child_run (struct passwd *pwent,
 	 * to write */
 	gnome_config_drop_all ();
 	
-	if (usrcfgok && savesess) {
+	if (usrcfgok && savesess && home_dir_ok) {
 		gchar *cfgstr = g_strconcat ("=", home_dir,
 					     "/.gnome/gdm=/session/last", NULL);
 		gnome_config_set_string (cfgstr, save_session);
@@ -2117,7 +2135,7 @@ session_child_run (struct passwd *pwent,
 		g_free (cfgstr);
 	}
 	
-	if (usrcfgok && savelang) {
+	if (usrcfgok && savelang && home_dir_ok) {
 		gchar *cfgstr = g_strconcat ("=", home_dir,
 					     "/.gnome/gdm=/session/lang", NULL);
 		gnome_config_set_string (cfgstr, language);
@@ -2127,7 +2145,8 @@ session_child_run (struct passwd *pwent,
 
 	if (sessoptok &&
 	    savegnomesess &&
-	    gnome_session != NULL) {
+	    gnome_session != NULL &&
+	    home_dir_ok) {
 		gchar *cfgstr = g_strconcat ("=", home_dir, "/.gnome/session-options=/Options/CurrentSession", NULL);
 		gnome_config_set_string (cfgstr, gnome_session);
 		need_config_sync = TRUE;
@@ -2194,6 +2213,7 @@ session_child_run (struct passwd *pwent,
 				   "run.  This is only to fix problems in\n"
 				   "your installation."));
 		}
+		failsafe = TRUE;
 	}
 
 	/* an if and not an else, we could have done a fall-through
@@ -2222,7 +2242,13 @@ session_child_run (struct passwd *pwent,
 				   "'exit' and an enter into the window."));
 			focus_first_x_window ("xterm");
 		}
+		failsafe = TRUE;
 	} 
+
+	/* hack */
+	if (strcmp (session, "Failsafe") == 0) {
+		failsafe = TRUE;
+	}
 
 	if (sesspath == NULL) {
 		if (GdmSessDir != NULL) {
@@ -2243,6 +2269,21 @@ session_child_run (struct passwd *pwent,
 		shell = pwent->pw_shell;
 	} else {
 		shell = "/bin/sh";
+	}
+
+        /* Log all output from session programs to a file,
+	 * unless in failsafe mode which needs to work when there is
+	 * no diskspace as well */
+	if ( ! failsafe && home_dir_ok) {
+		logfd = open (g_strconcat (home_dir, "/.xsession-errors", NULL),
+			      O_CREAT|O_TRUNC|O_WRONLY, 0644);
+		if (logfd != -1) {
+			dup2 (logfd, 1);
+			dup2 (logfd, 2);
+		} else {
+			gdm_error (_("%s: Could not open ~/.xsession-errors"),
+				   "run_session_child");
+		}
 	}
 
 	/* just a stupid test, the below would fail, but this gives a better
@@ -2292,6 +2333,8 @@ gdm_slave_session_start (void)
     gboolean def_language = FALSE;
     const char *home_dir = NULL;
     gboolean home_dir_ok = FALSE;
+    time_t session_start_time, end_time; 
+    gboolean failsafe = FALSE;
     pid_t pid;
 
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
@@ -2501,15 +2544,36 @@ gdm_slave_session_start (void)
     setegid (GdmGroupId);
     
     if ( ! authok) {
-	gdm_debug ("gdm_slave_session_start: Auth not OK");
-	gdm_slave_session_stop (0);
-	gdm_slave_session_cleanup ();
-	
-	gdm_server_stop (d);
-	gdm_verify_cleanup (d);
+	    gdm_debug ("gdm_slave_session_start: Auth not OK");
 
-	_exit (DISPLAY_REMANAGE);
-    } 
+	    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+
+	    gdm_error_box (d,
+			   GTK_MESSAGE_ERROR,
+			   _("GDM could not write to your authorization\n"
+			     "file.  This could mean that you are out of\n"
+			     "disk space or that your home directory could\n"
+			     "not be opened for writing.  In any case, it\n"
+			     "is not possible to log in.  Please contact\n"
+			     "your system administrator"));
+
+	    gdm_slave_session_stop (0);
+	    gdm_slave_session_cleanup ();
+
+	    gdm_server_stop (d);
+	    gdm_verify_cleanup (d);
+
+	    _exit (DISPLAY_REMANAGE);
+    }
+
+    if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
+	strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
+	strcmp (session, "Failsafe") == 0 /* hack */)
+	    failsafe = TRUE;
+
+    /* don't completely rely on this, the user
+     * could reset time or do other crazy things */
+    session_start_time = time (NULL);
 
     /* Start user process */
     gdm_sigchld_block_push ();
@@ -2528,6 +2592,7 @@ gdm_slave_session_start (void)
 	/* Never returns */
 	session_child_run (pwent,
 			   home_dir,
+			   home_dir_ok,
 			   session,
 			   save_session,
 			   language,
@@ -2562,6 +2627,36 @@ gdm_slave_session_start (void)
 	    waitpid (pid, NULL, 0);
     } else {
 	    gdm_sigchld_block_pop ();
+    }
+
+    end_time = time (NULL);
+
+    gdm_debug ("Session: start_time: %ld end_time: %ld",
+	       (long)session_start_time, (long)end_time);
+
+    if  ((/* sanity */ end_time >= session_start_time) &&
+	 (end_time - 10 <= session_start_time)) {
+	    char *errfile = g_strconcat (home_dir, "/.xsession-errors", NULL);
+	    gdm_debug ("Session less then 10 seconds!");
+
+	    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
+
+	    /* FIXME: perhaps do some checking to display a better error,
+	     * such as gnome-session missing and such things. */
+	    gdm_error_box_full (d,
+				GTK_MESSAGE_WARNING,
+				_("Your session only lasted less then\n"
+				  "10 seconds.  If you have not logged out\n"
+				  "yourself, this could mean that there is\n"
+				  "some installation problem or that you may\n"
+				  "be out of diskspace.  Try logging in with\n"
+				  "one of the failsafe sessions to see if you\n"
+				  "can fix this problem."),
+				(home_dir_ok && ! failsafe) ?
+			       	  _("View details (~/.xsession-errors file)") :
+				  NULL,
+				errfile);
+	    g_free (errfile);
     }
 
     gdm_debug ("gdm_slave_session_start: Session ended OK");

@@ -491,8 +491,7 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
 		if (de_setuid) {
-			seteuid (getuid ());
-			setegid (getgid ());
+			gdm_desetuid ();
 		}
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
@@ -827,6 +826,25 @@ gdm_setup_gids (const char *login, gid_t gid)
 	}
 
 	return TRUE;
+}
+
+void
+gdm_desetuid (void)
+{
+	uid_t uid = getuid (); 
+	gid_t gid = getgid (); 
+
+#ifdef HAVE_SETRESUID
+	{
+		int setresuid(uid_t ruid, uid_t euid, uid_t suid);
+		int setresgid(gid_t rgid, gid_t egid, gid_t sgid);
+		setresuid (uid, uid, uid);
+		setresgid (gid, gid, gid);
+	}
+#else
+	seteuid (getuid ());
+	setegid (getgid ());
+#endif
 }
 
 /* EOF */

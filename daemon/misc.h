@@ -67,6 +67,8 @@ gboolean gdm_is_loopback_addr (struct in_addr *ia);
 
 gboolean gdm_setup_gids (const char *login, gid_t gid);
 
+void gdm_desetuid (void);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

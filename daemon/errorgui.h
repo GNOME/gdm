@@ -22,6 +22,12 @@
 #include "gdm.h"
 #include <gtk/gtkmessagedialog.h>
 
+void		gdm_error_box_full	(GdmDisplay *d,
+					 GtkMessageType type,
+					 const char *error,
+					 const char *details_label,
+					 const char *details_file);
+
 void		gdm_error_box		(GdmDisplay *d,
 					 GtkMessageType type,
 					 const char *error);

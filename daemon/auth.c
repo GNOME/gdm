@@ -48,6 +48,27 @@ extern gint  GdmUserMaxFile;
 extern gint  GdmRelaxPerms;
 extern gboolean GdmDebug;
 
+static void
+display_add_error (GdmDisplay *d)
+{
+	if (errno != 0)
+		gdm_error (_("%s: Could not write new authorization entry: %s"),
+			   "add_auth_entry", g_strerror (errno));
+	else
+		gdm_error (_("%s: Could not write new authorization entry.  "
+			     "Possibly out of diskspace"),
+			   "add_auth_entry");
+	if (d->console) {
+		char *s = g_strdup_printf
+			(_("GDM could not write a new authorization "
+			   "entry to disk.  Possibly out of diskspace.%s%s"),
+			 errno != 0 ? "  Error: " : "",
+			 errno != 0 ? g_strerror (errno) : "");
+		gdm_text_message_dialog (s);
+		g_free (s);
+	}
+}
+
 static gboolean
 add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 		unsigned short family, const char *addr, int addrlen)
@@ -92,9 +113,19 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 	memcpy (xa->data, d->bcookie, 16);
 	xa->data_length = 16;
 
-	XauWriteAuth (af, xa);
-	if (af2 != NULL)
-		XauWriteAuth (af2, xa);
+	errno = 0;
+	if ( ! XauWriteAuth (af, xa)) {
+		display_add_error (d);
+		return FALSE;
+	}
+
+	if (af2 != NULL) {
+		errno = 0;
+		if ( ! XauWriteAuth (af2, xa)) {
+			display_add_error (d);
+			return FALSE;
+		}
+	}
 
 	d->auths = g_slist_append (d->auths, xa);
 
@@ -323,6 +354,18 @@ gdm_auth_secure_display (GdmDisplay *d)
     return TRUE;
 }
 
+static gboolean
+try_open_append (const char *file)
+{
+	FILE *fp;
+	fp = fopen (file, "a+");
+	if (fp != NULL) {
+		fclose (fp);
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
 
 /**
  * gdm_auth_user_add:
@@ -343,6 +386,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     gint authfd;
     FILE *af;
     GSList *auths = NULL;
+    gboolean ret = TRUE;
 
     if (!d)
 	return FALSE;
@@ -357,13 +401,17 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 
     umask (077);
 
+    d->userauth = g_strconcat (authdir, "/", GdmUserAuthFile, NULL);
+
     /* Find out if the Xauthority file passes the paranoia check */
     if (authdir == NULL ||
 	! gdm_file_check ("gdm_auth_user_add", user, authdir, GdmUserAuthFile, 
-			  TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
+			  TRUE, GdmUserMaxFile, GdmRelaxPerms) ||
+	! try_open_append (d->userauth)) {
 
 	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp) */
 	d->authfb = TRUE;
+	g_free (d->userauth);
 	d->userauth = g_strconcat (GdmUserAuthFB, "/.gdmXXXXXX", NULL);
 	authfd = g_mkstemp (d->userauth);
 
@@ -381,7 +429,6 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     }
     else { /* User's Xauthority file is ok */
 	d->authfb = FALSE;
-	d->userauth = g_strconcat (authdir, "/", GdmUserAuthFile, NULL);
 
 	/* FIXME: Better implement my own locking. The libXau one is not kosher */
 	if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS) {
@@ -419,7 +466,12 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
     auths = d->auths;
 
     while (auths) {
-	XauWriteAuth (af, auths->data);
+	if ( ! XauWriteAuth (af, auths->data)) {
+		gdm_error (_("%s: Could not write cookie"));
+		ret = FALSE;
+		break;
+	}
+
 	auths = auths->next;
     }
 
@@ -430,7 +482,7 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 
     umask (022);
 
-    return TRUE;
+    return ret;
 }
 
 

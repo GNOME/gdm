@@ -1,3 +1,34 @@
+Tue May 21 15:12:51 2002  George Lebl <jirka@5z.com>
+
+	* configure.in, accconfig.h: check for setresuid
+
+	* daemon/errorgui.c, daemon/misc.[ch]: use setresuid to really
+	  get rid of setuidiness
+
+	* gui/gdmlogin.c: fix accelerators.  Since now we have nice
+	  visible accelerators (mnemonics) we no longer need the Esc one
+	  which wasn't working anyway
+
+	* daemon/gdm.c, daemon/slave.c, gui/gdmphotosetup.c:  Don't init
+	  gnome.  This only breaks the getting of the gnome pixmap dir, so
+	  whack the places where this is done.  It's not a big deal really.
+	  And not initting things really helps a lot in both init speed,
+	  random crashes, hangs, and security.
+
+	* daemon/slave.c, daemon/errorgui.[ch], config/Xsession:  Now
+	  we open the .xsession-errors file early on, in fact for all
+	  non-failsafe sessions.  If the session is less then 10 seconds
+	  long warn the user of possible errors and let him view the
+	  .xsession-errors file.
+
+	* daemon/slave.c, daemon/auth.c: give error output when we can't
+	  setup the authentication file.
+
+	* daemon/slave.c, daemon/errorgui.c: fix focus issues, fix crash
+	  for the error gui boxes
+
+	* daemon/verify-pam.c: fix typo
+
 Mon May 20 17:55:57 2002  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: don't allow autologin on anything but

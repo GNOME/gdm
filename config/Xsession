@@ -10,16 +10,8 @@ case $# in
 	esac
 esac
 
-# redirect errors to a file in user's home directory if we can
-for errfile in "$HOME/.xsession-errors" "${TMPDIR-/tmp}/xses-$USER" "/tmp/xses-$USER"
-do
-	if ( cp /dev/null "$errfile" 2> /dev/null )
-	then
-		chmod 600 "$errfile"
-		exec > "$errfile" 2>&1
-		break
-	fi
-done
+# Note: ~/.xsession-errors is now done in the daemon so that it
+# works for ALL sessions (except ones named 'Failsafe')
 
 # clean up after xbanner
 if which freetemp 2> /dev/null ; then

@@ -34,12 +34,17 @@
 static gboolean
 is_in_trusted_pic_dir (const char *path)
 {
+#if 0
 	char *globalpix;
+#endif
 
 	/* our own pixmap dir is trusted */
 	if (strncmp (path, EXPANDED_PIXMAPDIR, sizeof (EXPANDED_PIXMAPDIR)) == 0)
 		return TRUE;
 
+	/* FIXME: the daemon is no longer looking here, we need to figure
+	 * out how to make it do that again */
+#if 0
 	/* gnome's pixmap dir is trusted */
 	globalpix = gnome_unconditional_pixmap_file ("");
 	if (strncmp (path, globalpix, strlen (globalpix)) == 0) {
@@ -47,6 +52,7 @@ is_in_trusted_pic_dir (const char *path)
 		return TRUE;
 	}
 	g_free (globalpix);
+#endif
 
 	return FALSE;
 }

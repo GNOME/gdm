@@ -46,11 +46,17 @@ gdm_event (GSignalInvocationHint *ihint,
 	   const GValue	       *param_values,
 	   gpointer		data)
 {
+	GdkEvent *event;
+
 	/* HAAAAAAAAAAAAAAAAACK */
 	/* Since the user has not logged in yet and may have left/right
 	 * mouse buttons switched, we just translate every right mouse click
 	 * to a left mouse click */
-	GdkEvent *event = g_value_get_pointer ((GValue *)param_values);
+	if (n_param_values != 2 ||
+	    !G_VALUE_HOLDS (&param_values[1], GDK_TYPE_EVENT))
+	  return FALSE;
+	
+	event = g_value_get_boxed (&param_values[1]);
 	if ((event->type == GDK_BUTTON_PRESS ||
 	     event->type == GDK_2BUTTON_PRESS ||
 	     event->type == GDK_3BUTTON_PRESS ||
@@ -61,8 +67,52 @@ gdm_event (GSignalInvocationHint *ihint,
 	return TRUE;
 }      
 
+static void
+show_errors (GtkWidget *button, gpointer data)
+{
+	const char *file = data;
+	FILE *fp;
+	GtkWidget *sw;
+	GtkWidget *label;
+	GtkWidget *parent = button->parent;
+	GString *gs = g_string_new (NULL);
+
+	fp = fopen (file, "r");
+	if (fp != NULL) {
+		char buf[256];
+		while (fgets (buf, sizeof (buf), fp))
+			g_string_append (gs, buf);
+		fclose (fp);
+	} else {
+		g_string_printf (gs, _("%s could not be opened"), file);
+	}
+
+	gtk_widget_destroy (button);
+
+	sw = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_set_size_request (sw, 200, 150);
+	gtk_widget_show (sw);
+
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_ALWAYS);
+
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
+					     GTK_SHADOW_IN);
+
+	label = gtk_label_new (gs->str);
+	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (sw), label);
+	gtk_widget_show (label);
+
+	gtk_box_pack_start (GTK_BOX (parent),
+			    sw, TRUE, TRUE, 0);
+
+	g_string_free (gs, TRUE);
+}
+
 void
-gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
+gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
+		    const char *details_label, const char *details_file)
 {
 	pid_t pid;
 
@@ -74,6 +124,7 @@ gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 		int argc = 1;
 		char **argv;
 		GtkWidget *dlg;
+		GtkWidget *button;
 		GtkRequisition req;
 		int screenx = 0;
 		int screeny = 0;
@@ -92,10 +143,9 @@ gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
+		gdm_desetuid ();
 
-		seteuid (getuid ());
-		setegid (getgid ());
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		argv = g_new0 (char *, 2);
 		argv[0] = "gtk-error-box";
@@ -119,10 +169,31 @@ gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 		dlg = gtk_message_dialog_new (NULL /* parent */,
 					      0 /* flags */,
 					      type,
-					      GTK_BUTTONS_OK,
+					      GTK_BUTTONS_NONE,
 					      "%s",
 					      loc);
+		g_free (loc);
 
+		if (details_label != NULL) {
+			loc = g_locale_to_utf8 (details_label,
+						-1, NULL, NULL, NULL);
+			button = gtk_button_new_with_label (loc);
+			g_free (loc);
+
+			gtk_widget_show (button);
+			g_signal_connect (button, "clicked",
+					  G_CALLBACK (show_errors),
+					  /* leak? who cares we exit right
+					   * away */
+					  g_strdup (details_file));
+
+			gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
+					    button, FALSE, FALSE, 3);
+		}
+
+		button = gtk_dialog_add_button (GTK_DIALOG (dlg),
+						GTK_STOCK_OK,
+						GTK_RESPONSE_OK);
 		sid = g_signal_lookup ("event",
 				       GTK_TYPE_WIDGET);
 		g_signal_add_emission_hook (sid,
@@ -141,6 +212,8 @@ gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 				 (screenheight / 2) -
 				 (req.height / 2));
 
+		gtk_widget_grab_focus (button);
+
 		gtk_widget_show_now (dlg);
 
 		if (dlg->window != NULL) {
@@ -155,6 +228,11 @@ gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
 
 		gtk_dialog_run (GTK_DIALOG (dlg));
 
+		XSetInputFocus (GDK_DISPLAY (),
+				PointerRoot,
+				RevertToPointerRoot,
+				CurrentTime);
+
 		_exit (0);
 	} else if (pid > 0) {
 		gdm_wait_for_extra (NULL);
@@ -168,6 +246,12 @@ press_ok (GtkWidget *entry, gpointer data)
 {
 	GtkWidget *dlg = data;
 	gtk_dialog_response (GTK_DIALOG (dlg), GTK_RESPONSE_OK);
+}
+
+void
+gdm_error_box (GdmDisplay *d, GtkMessageType type, const char *error)
+{
+	gdm_error_box_full (d, type, error, NULL, NULL);
 }
 
 char *
@@ -206,10 +290,9 @@ gdm_failsafe_question (GdmDisplay *d,
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
+		gdm_desetuid ();
 
-		seteuid (getuid ());
-		setegid (getgid ());
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		argv = g_new0 (char *, 2);
 		argv[0] = "gtk-failsafe-question";
@@ -349,10 +432,9 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
 		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
 
-		openlog ("gdm", LOG_PID, LOG_DAEMON);
+		gdm_desetuid ();
 
-		seteuid (getuid ());
-		setegid (getgid ());
+		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
 		argv = g_new0 (char *, 2);
 		argv[0] = "gtk-failsafe-yesno";

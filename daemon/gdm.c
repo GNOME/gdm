@@ -1325,6 +1325,8 @@ main (int argc, char *argv[])
     sigset_t mask;
     struct sigaction term, child;
     FILE *pf;
+    poptContext ctx;
+    int nextopt;
 
     store_argv (argc, argv);
 
@@ -1336,12 +1338,18 @@ main (int argc, char *argv[])
     /* Initialize runtime environment */
     umask (022);
 
-    gnome_program_init ("gdm", VERSION,
-			LIBGNOME_MODULE /* module_info */,
-			argc, argv,
-			GNOME_PARAM_POPT_TABLE, options,
-			GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
-			NULL);
+    ctx = poptGetContext ("gdm", argc, (const char **) argv,
+			  options, 0);
+    while ((nextopt = poptGetNextOpt (ctx)) > 0 || nextopt == POPT_ERROR_BADOPT)
+	/* do nothing */ ;
+
+    if (nextopt != -1) {
+	    g_print (_("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
+		     poptBadOption (ctx, 0),
+		     poptStrerror (nextopt),
+		     argv[0]);
+	    exit (1);
+    }
 
     /* XDM compliant error message */
     if (getuid () != 0) {
