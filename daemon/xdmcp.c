@@ -1081,7 +1081,7 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	    * don't know the charset or language, so it must be ascii */
 	    if ( ! mitauth)
 		    gdm_xdmcp_send_decline (clnt_sa, "Only MIT-MAGIC-COOKIE-1 supported");	
-	    else if (sessions < GdmMaxSessions)
+	    else if (sessions >= GdmMaxSessions)
 		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions reached");	
 	    else 
 		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions from your host reached");	
