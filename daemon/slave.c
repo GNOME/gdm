@@ -169,6 +169,8 @@ gdm_slave_start (GdmDisplay *display)
 		greet = FALSE;
 		gdm_debug ("gdm_slave_start: Automatic login: %s", login);
 
+		gdm_verify_setup_user (login, d->name);
+
 		/* Run the init script. gdmslave suspends until script
 		 * has terminated */
 		gdm_slave_exec_script (d, GdmDisplayInit);

@@ -92,6 +92,20 @@ gdm_verify_user (const gchar *display)
     return login;
 }
 
+/**
+ * gdm_verify_setup_user:
+ * @login: The name of the user
+ * @display: The name of the display
+ *
+ * This is used for auto loging in.  This just sets up the login
+ * session for this user
+ */
+
+void
+gdm_verify_setup_user (const gchar *login, const gchar *display) 
+{
+}
+
 
 /**
  * gdm_verify_cleanup:
