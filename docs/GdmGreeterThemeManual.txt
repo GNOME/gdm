@@ -2,16 +2,67 @@
 ========================================
 GDM Theme Manual
 By Brian Cameron <Brian.Cameron@Sun.COM>
-Last Updated: June 4, 2003
+Updated by George Lebl <jirka@5z.com>
+Last Updated: June 6, 2003
 ========================================
 
 GDM Themes can be created by creating an XML file that follows the
 specification in gui/greeter/greeter.dtd.  Theme files are stored
 in the following directory
 
-   share/gdm/themes/<theme_name>.
+   share/gdm/themes/<theme_name>
+
+Usually this would be under /usr/share.  The theme directory should contain a
+file called GdmGreeterTheme.desktop which has similar format to other
+.desktop files and looks like:
+
+[GdmGreeterTheme]
+Encoding=UTF-8
+Greeter=circles.xml
+Name=Circles
+Description=Theme with blue circles
+Author=Bond, James Bond
+Copyright=(c) 2002 Bond, James Bond
+Screenshot=screenshot.png
+
+The Name, Description, Author and Copyright fields can be translated just
+like the other .desktop files.  All the files that are mentioned should
+be in the theme directory itself.  The Screenshot field points to a file
+which should be a 200x150 screenshot of the theme in action (it is ok
+not to have one, but it makes it nicer for user).  The Greeter field points
+to an XML file that contains the description of the theme.   The description
+will be given later.
+
+Once you have theme ready and installed you can test it with the installed
+"gdmthemetester" script.  This script assumes that you also have installed
+the Xnest X server.  It takes two arguments, first the environment that
+should be used.  This is one of console, console-timed, flexi, remote-flexi,
+xdmcp.  Where console is a standard console login, console-timed is a
+console login with a timed login going on, flexi is for any local
+flexible server, remote-flexi is for flexi server that is not local (such
+as an Xnest flexiserver run from a remote display) and xdmcp is for remote
+xdmcp connections.  The second argument is the theme name.  So for example
+to test how things look in the xdmcp mode with the circles theme you would
+run:
+
+ gdmthemetester xdmcp circles
+
+Be sure to test all the environments with your theme, and make sure to test
+how the caps lock warning looks by pressing capslock.  This is also a good
+way to take screenshots, just take a screenshot of the Xnest window.  This
+can be done in GNOME by focusing the Xnest window and pressing
+Alt-PrintScreen.
+
+Once you have all this done, then make a tarball that contains the directory
+name (so that you could just untar it in the /usr/share/gdm/themes directory).
+And this is the tarball you distribute and people can install from the
+graphical setup program.  You can do this with the commands:
+
+cd /usr/share/gdm/themes
+tar czvf <theme_name>.tar.gz <theme_name>/
 
 Detailed Description of Theme XML format:
+=========================================
 
 Box Nodes:
 
@@ -127,6 +178,9 @@ Show Node:
 
     <show modes="console" type="system"/>
 
+  Note that if SystemMenu is off then all of halt, reboot, suspend, chooser
+  and config will not show, so this is a global toggle for them all.
+
 Normal/Active/Prelight Nodes:
 
   Depending on the item type, it can specify its color, font, or
@@ -171,7 +225,7 @@ Stock:
      language           _("_Language")
      quit               _("_Quit")
      session            _("_Session")
-     system             _("S_ystem")
+     system             _("_Actions")  (Formerly "S_ystem")
      timed-label        _("User %s will login in %d seconds")
      username-label     _("Username:")
      welcome-label      _("Welcome to %h")
