@@ -788,7 +788,7 @@ gdm_start_first_unborn_local (int delay)
 void
 gdm_final_cleanup (void)
 {
-	GSList *list;
+	GSList *list, *li;
 	sigset_t mask;
 
 	gdm_debug ("gdm_final_cleanup");
@@ -805,7 +805,30 @@ gdm_final_cleanup (void)
 	}
 
 	list = g_slist_copy (displays);
-	g_slist_foreach (list, (GFunc) gdm_display_unmanage, NULL);
+	for (li = list; li != NULL; li = li->next) {
+		GdmDisplay *d = li->data;
+		/* XDMCP and FLEXI_XNEST are safe to kill
+		 * immediately */
+		if (d->type == TYPE_XDMCP ||
+		    d->type == TYPE_FLEXI_XNEST)
+			gdm_display_unmanage (d);
+	}
+	g_slist_free (list);
+
+	list = g_slist_copy (displays);
+	/* somewhat of a hack to kill last server
+	 * started first.  This mostly makes things end up on
+	 * the right vt */
+	list = g_slist_reverse (list);
+	for (li = list; li != NULL; li = li->next) {
+		GdmDisplay *d = li->data;
+		/* HACK! Wait 2 seconds between killing of local servers
+		 * because X is stupid and full of races and will hang my
+		 * keyboard if I don't */
+		if (li != list)
+			sleep (2);
+		gdm_display_unmanage (d);
+	}
 	g_slist_free (list);
 
 	/* Close stuff */
@@ -1368,11 +1391,6 @@ ensure_desc_012 (void)
 	 * opens the lowest available descriptor */
 	for (;;) {
 		fd = gdm_open_dev_null (O_RDWR);
-		/* what to do on fail?  I dunno,
-		 * just keep on going is the safest
-		 * bet I suppose */
-		if (fd < 0)
-			break;
 		/* Once we are up to 3, we're beyond stdin,
 		 * stdout and stderr */
 		if (fd >= 3) {

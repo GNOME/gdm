@@ -170,6 +170,8 @@ gdm_server_stop (GdmDisplay *disp)
     }
 
     gdm_server_wipe_cookies (disp);
+
+    gdm_slave_whack_temp_auth_file ();
 }
 
 static gboolean

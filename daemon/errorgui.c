@@ -45,6 +45,14 @@ static int screeny = 0;
 static int screenwidth = 0;
 static int screenheight = 0;
 
+static void
+setup_cursor (GdkCursorType type)
+{
+	GdkCursor *cursor = gdk_cursor_new (type);
+	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+	gdk_cursor_unref (cursor);
+}
+
 static gboolean
 gdm_event (GSignalInvocationHint *ihint,
 	   guint		n_param_values,
@@ -244,6 +252,8 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 			gdk_error_trap_pop ();
 		}
 
+		setup_cursor (GDK_LEFT_PTR);
+
 		gtk_dialog_run (GTK_DIALOG (dlg));
 
 		XSetInputFocus (GDK_DISPLAY (),
@@ -324,9 +334,11 @@ gdm_failsafe_question (GdmDisplay *d,
 				  G_CALLBACK (gtk_true), NULL);
 
 		label = gtk_label_new (loc);
+		gtk_widget_show_all (label);
 		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
 				    label, FALSE, FALSE, 0);
 		entry = gtk_entry_new ();
+		gtk_widget_show_all (entry);
 		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox),
 				    entry, FALSE, FALSE, 0);
 		if ( ! echo)
@@ -359,12 +371,19 @@ gdm_failsafe_question (GdmDisplay *d,
 
 		gtk_widget_grab_focus (entry);
 
+		setup_cursor (GDK_LEFT_PTR);
+
 		gtk_dialog_run (GTK_DIALOG (dlg));
 
 		loc = g_locale_from_utf8 (ve_sure_string (gtk_entry_get_text (GTK_ENTRY (entry))),
 					  -1, NULL, NULL, NULL);
 
 		gdm_fdprintf (p[1], "%s", ve_sure_string (loc));
+
+		XSetInputFocus (GDK_DISPLAY (),
+				PointerRoot,
+				RevertToPointerRoot,
+				CurrentTime);
 
 		_exit (0);
 	} else if (pid > 0) {
@@ -458,10 +477,17 @@ gdm_failsafe_yesno (GdmDisplay *d,
 			gdk_error_trap_pop ();
 		}
 
+		setup_cursor (GDK_LEFT_PTR);
+
 		if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES)
 			gdm_fdprintf (STDOUT_FILENO, "yes\n");
 		else
 			gdm_fdprintf (STDOUT_FILENO, "no\n");
+
+		XSetInputFocus (GDK_DISPLAY (),
+				PointerRoot,
+				RevertToPointerRoot,
+				CurrentTime);
 
 		_exit (0);
 	} else if (pid > 0) {

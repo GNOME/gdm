@@ -155,7 +155,6 @@ static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       gboolean set_parent);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
 static void	gdm_slave_handle_notify (const char *msg);
-static void	whack_temp_auth_file (void);
 static void	create_temp_auth_file (void);
 static void	set_xnest_parent_stuff (void);
 
@@ -433,7 +432,7 @@ gdm_slave_whack_greeter (void)
 
 	gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
-	whack_temp_auth_file ();
+	gdm_slave_whack_temp_auth_file ();
 
 	gdm_sigchld_block_pop ();
 }
@@ -1340,7 +1339,6 @@ static char *
 copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 {
 	uid_t old = geteuid ();
-	mode_t oldmask;
 	char *name;
 	int authfd;
 	int fromfd;
@@ -1358,11 +1356,9 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 	seteuid (0);
 
-	name = g_strconcat (GdmServAuthDir, "/XnestAuth.XXXXXX", NULL);
+	name = g_strconcat (GdmServAuthDir, "/", d->name, ".XnestAuth", NULL);
 
-	oldmask = umask (077);
-	authfd = g_mkstemp (name);
-	umask (oldmask);
+	authfd = open (name, O_TRUNC|O_WRONLY|O_CREAT, 0600);
 
 	if (authfd < 0) {
 		seteuid (old);
@@ -1620,6 +1616,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	int fd;
 	char *fifopath;
 	int i;
+	uid_t old;
 
 	if (gdm_in_signal == 0)
 		gdm_debug ("Sending %s", str);
@@ -1628,7 +1625,12 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 		gdm_got_ack = FALSE;
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
+	old = geteuid ();
+	if (old != 0)
+		seteuid (0);
 	fd = open (fifopath, O_WRONLY);
+	if (old != 0)
+		seteuid (old);
 	g_free (fifopath);
 
 	/* eek */
@@ -1703,6 +1705,7 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 	int fd;
 	char *fifopath;
 	struct hostent *host;
+	uid_t old;
 
 	host = gethostbyname (hostname);
 
@@ -1716,7 +1719,12 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 
+	old = geteuid ();
+	if (old != 0)
+		seteuid (0);
 	fd = open (fifopath, O_WRONLY);
+	if (old != 0)
+		seteuid (old);
 
 	g_free (fifopath);
 
@@ -2180,8 +2188,19 @@ session_child_run (struct passwd *pwent,
 
 	disp = XOpenDisplay (d->name);
 	if (disp != NULL) {
+		Cursor xcursor;
+			
 		XSetInputFocus (disp, PointerRoot,
 				RevertToPointerRoot, CurrentTime);
+
+		/* return left pointer */
+		xcursor = XCreateFontCursor (disp, GDK_LEFT_PTR);
+		XDefineCursor (disp,
+			       DefaultRootWindow (disp),
+			       xcursor);
+		XFreeCursor (disp, xcursor);
+		XSync (disp, False);
+
 		XCloseDisplay (disp);
 	}
 
@@ -2199,8 +2218,14 @@ session_child_run (struct passwd *pwent,
 	 * unless in failsafe mode which needs to work when there is
 	 * no diskspace as well */
 	if ( ! failsafe && home_dir_ok) {
+		uid_t old = geteuid ();
+		uid_t oldg = getegid ();
+		setegid (pwent->pw_gid);
+		seteuid (pwent->pw_uid);
 		logfd = open (g_strconcat (home_dir, "/.xsession-errors", NULL),
 			      O_CREAT|O_TRUNC|O_WRONLY, 0644);
+		seteuid (old);
+		setegid (oldg);
 		if (logfd != -1) {
 			dup2 (logfd, 1);
 			dup2 (logfd, 2);
@@ -2227,7 +2252,7 @@ session_child_run (struct passwd *pwent,
 	if (gdm_slave_exec_script (d, GdmPreSession,
 				   login, pwent,
 				   TRUE /* pass_stdout */,
-				   FALSE /* set_parent */) != EXIT_SUCCESS &&
+				   TRUE /* set_parent */) != EXIT_SUCCESS &&
 	    /* ignore errors in failsafe modes */
 	    ! failsafe) 
 		/* If script fails reset X server and restart greeter */
@@ -2906,7 +2931,7 @@ gdm_slave_session_stop (pid_t sesspid)
 	    gdm_debug ("gdm_slave_session_cleanup: Running post session script");
 	    gdm_slave_exec_script (d, GdmPostSession, local_login, pwent,
 				   FALSE /* pass_stdout */,
-				   FALSE /* set_parent */);
+				   TRUE /* set_parent */);
 
 	    gnome_unsetenv ("X_SERVERS");
 	    if (d->type == TYPE_XDMCP)
@@ -3000,9 +3025,6 @@ gdm_slave_term_handler (int sig)
 
 	gdm_server_stop (d);
 	gdm_verify_cleanup (d);
-
-	if (d->xnest_temp_auth_file != NULL)
-		unlink (d->xnest_temp_auth_file);
 
 	_exit (DISPLAY_ABORT);
 }
@@ -3425,13 +3447,20 @@ gdm_child_exit (gint status, const gchar *format, ...)
     _exit (status);
 }
 
-static void
-whack_temp_auth_file (void)
+void
+gdm_slave_whack_temp_auth_file (void)
 {
+	uid_t old;
+
+	old = geteuid ();
+	if (old != 0)
+		seteuid (0);
 	if (d->xnest_temp_auth_file != NULL)
 		unlink (d->xnest_temp_auth_file);
 	g_free (d->xnest_temp_auth_file);
 	d->xnest_temp_auth_file = NULL;
+	if (old != 0)
+		seteuid (old);
 }
 
 static void
@@ -3469,25 +3498,52 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 		       gboolean set_parent)
 {
     pid_t pid;
-    gchar *script, *defscript;
-    const char *scr;
+    char *script;
     gchar **argv;
     gint status;
     char *x_servers_file;
 
-    if (!d || !dir)
+    if (!d || ve_string_empty (dir))
 	return EXIT_SUCCESS;
 
     script = g_strconcat (dir, "/", d->name, NULL);
-    defscript = g_strconcat (dir, "/Default", NULL);
-
-    if (access (script, R_OK|X_OK) == 0) {
-	    scr = script;
-    } else if (access (defscript, R_OK|X_OK) == 0)  {
-	    scr = defscript;
-    } else {
+    if (access (script, R_OK|X_OK) != 0) {
 	    g_free (script);
-	    g_free (defscript);
+	    script = NULL;
+    }
+    if (script == NULL &&
+	! ve_string_empty (d->hostname)) {
+	    script = g_strconcat (dir, "/", d->hostname, NULL);
+	    if (access (script, R_OK|X_OK) != 0) {
+		    g_free (script);
+		    script = NULL;
+	    }
+    }
+    if (script == NULL &&
+	d->type == TYPE_XDMCP) {
+	    script = g_strconcat (dir, "/XDMCP", NULL);
+	    if (access (script, R_OK|X_OK) != 0) {
+		    g_free (script);
+		    script = NULL;
+	    }
+    }
+    if (script == NULL &&
+	SERVER_IS_FLEXI (d)) {
+	    script = g_strconcat (dir, "/Flexi", NULL);
+	    if (access (script, R_OK|X_OK) != 0) {
+		    g_free (script);
+		    script = NULL;
+	    }
+    }
+    if (script == NULL) {
+	    script = g_strconcat (dir, "/Default", NULL);
+	    if (access (script, R_OK|X_OK) != 0) {
+		    g_free (script);
+		    script = NULL;
+	    }
+    }
+    
+    if (script == NULL) {
 	    return EXIT_SUCCESS;
     }
 
@@ -3554,16 +3610,16 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	gnome_setenv ("PATH", GdmRootPath, TRUE);
 	gnome_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 	gnome_unsetenv ("MAIL");
-	argv = ve_split (scr);
+	argv = ve_split (script);
 	execv (argv[0], argv);
-	syslog (LOG_ERR, _("gdm_slave_exec_script: Failed starting: %s"), scr);
+	syslog (LOG_ERR, _("gdm_slave_exec_script: Failed starting: %s"),
+		script);
 	_exit (EXIT_SUCCESS);
 	    
     case -1:
 	if (set_parent)
-		whack_temp_auth_file ();
+		gdm_slave_whack_temp_auth_file ();
 	g_free (script);
-	g_free (defscript);
 	syslog (LOG_ERR, _("gdm_slave_exec_script: Can't fork script process!"));
 	return EXIT_SUCCESS;
 	
@@ -3571,10 +3627,9 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	gdm_wait_for_extra (&status);
 
 	if (set_parent)
-		whack_temp_auth_file ();
+		gdm_slave_whack_temp_auth_file ();
 
 	g_free (script);
-	g_free (defscript);
 
 	if (WIFEXITED (status))
 	    return WEXITSTATUS (status);

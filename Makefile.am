@@ -14,11 +14,12 @@ EXTRA_DIST = \
 	intltool-extract.in	\
 	intltool-merge.in	\
 	intltool-update.in	\
+	gdm-stop.in		\
 	gdm-restart.in		\
 	gdm-safe-restart.in	\
 	gdmconfig
 
-sbin_SCRIPTS = gdm-restart gdm-safe-restart gdmconfig
+sbin_SCRIPTS = gdm-stop gdm-restart gdm-safe-restart gdmconfig
 
 install-data-local: gdmsetup-security
 if CONSOLE_HELPER

@@ -34,6 +34,8 @@ void	 gdm_slave_send_num	(const char *opcode, long num);
 void     gdm_slave_send_string	(const char *opcode, const char *str);
 gboolean gdm_slave_final_cleanup (void);
 
+void     gdm_slave_whack_temp_auth_file (void);
+
 #endif /* GDM_SLAVE_H */
 
 /* EOF */

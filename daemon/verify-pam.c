@@ -48,7 +48,6 @@ static pam_handle_t *pamh = NULL;
 
 static GdmDisplay *cur_gdm_disp = NULL;
 
-
 /* Internal PAM conversation function. Interfaces between the PAM
  * authentication system and the actual greeter program */
 
@@ -131,13 +130,16 @@ static struct pam_conv pamc = {
     NULL
 };
 
+/* Extra message to give on queries */
+static char *extra_standalone_message = NULL;
+
 static gint 
 gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 				struct pam_response **resp,
 				void *appdata_ptr)
 {
 	int replies = 0;
-	char *s;
+	char *s, *text;
 	struct pam_response *reply = NULL;
 
 	reply = malloc (sizeof (struct pam_response) * num_msg);
@@ -151,10 +153,17 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 		switch (msg[replies]->msg_style) {
 
 		case PAM_PROMPT_ECHO_ON:
+			if (extra_standalone_message != NULL)
+				text = g_strdup_printf
+					("%s\n%s", extra_standalone_message,
+					 _(msg[replies]->msg));
+			else
+				text = g_strdup (_(msg[replies]->msg));
+
 			/* PAM requested textual input with echo on */
-			s = gdm_failsafe_question (cur_gdm_disp,
-						   _(msg[replies]->msg),
+			s = gdm_failsafe_question (cur_gdm_disp, text,
 						   TRUE /* echo */);
+			g_free (text);
 
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = strdup (ve_sure_string (s));
@@ -162,10 +171,18 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 			break;
 
 		case PAM_PROMPT_ECHO_OFF:
+			if (extra_standalone_message != NULL)
+				text = g_strdup_printf
+					("%s\n%s", extra_standalone_message,
+					 _(msg[replies]->msg));
+			else
+				text = g_strdup (_(msg[replies]->msg));
+
 			/* PAM requested textual input with echo off */
-			s = gdm_failsafe_question (cur_gdm_disp,
-						   _(msg[replies]->msg),
+			s = gdm_failsafe_question (cur_gdm_disp, text,
 						   FALSE /* echo */);
+
+			g_free (text);
 
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = strdup (ve_sure_string (s));
@@ -498,6 +515,11 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
 
     cur_gdm_disp = d;
 
+    g_free (extra_standalone_message);
+    extra_standalone_message = g_strdup_printf ("%s (%s)",
+						_("Automatic login"),
+						login);
+
     /* Initialize a PAM session for the user */
     if ( ! create_pamh (d, "gdm-autologin", login, &standalone_pamc,
 			display, &pamerr)) {
@@ -590,6 +612,9 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
     openlog ("gdm", LOG_PID, LOG_DAEMON);
 
     cur_gdm_disp = NULL;
+
+    g_free (extra_standalone_message);
+    extra_standalone_message = NULL;
     
     return TRUE;
     
@@ -604,6 +629,9 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
     openlog ("gdm", LOG_PID, LOG_DAEMON);
 
     cur_gdm_disp = NULL;
+
+    g_free (extra_standalone_message);
+    extra_standalone_message = NULL;
 
     return FALSE;
 }
