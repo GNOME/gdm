@@ -243,7 +243,7 @@ greeter_action_language (GreeterItemInfo *info,
 			  swindow, TRUE, TRUE, 0);
       gtk_window_set_default_size (GTK_WINDOW (dialog),
 				   MIN (400, gdm_wm_screen.width),
-				   gdm_wm_screen.height);
+				   MIN (600, gdm_wm_screen.height));
       g_signal_connect (G_OBJECT (gtk_tree_view_get_selection (GTK_TREE_VIEW (view))),
 			"changed",
 			(GCallback) selection_changed,
