@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.4.1.100"> 
-    <!ENTITY date "8/6/2003"> 
+    <!ENTITY date "8/8/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -2181,7 +2181,7 @@
 	      <synopsis>Welcome=Welcome</synopsis>
 	      <para>
 		Controls which text to display next to the logo image in the
-		greeter. The following control chars are supported:
+		standard greeter. The following control chars are supported:
 	      </para>
 	      
 	      <para>
@@ -2220,7 +2220,7 @@
 	      <para>
 		In the Graphical Greeter the location of this text depends on
 		the theme.  Unless the theme uses the stock welcome string
-		this string will not be displayed at all.
+		somewhere this string will not be displayed at all.
 	      </para>
 	      	      
 	    </listitem>
@@ -2844,10 +2844,24 @@
           Box nodes are container nodes for item nodes.  Box nodes are
           specified as follows:
       <screen>
-     &lt;box orientation="alignment" min-width="int" xpadding="int"
-      ypadding="int" spacing="int"&gt;</screen>
-          The alignment value can be either "horizontal" or "vertical".
+     &lt;box orientation="alignment" min-width="num" xpadding="num"
+      ypadding="num" spacing="num" homogeneous="bool"&gt;</screen>
+	  Where "num" means number and bool means either "true"
+	  or "false".  The alignment value can be either "horizontal" or "vertical".
+	  If you leave any property off it will default to
+	  zero or "false" in case of "homogeneous", and "vertical" for
+	  the orientation.
         </para>
+
+	<para>
+	  If the box is homogeneous then the children are allocated equal
+	  amount of space.
+	</para>
+
+	<para>
+	  If the box is homogeneous then the children are allocated equal
+	  amount of space.
+	</para>
       </sect3>
 
       <sect3 id="itemnodes">
@@ -3150,6 +3164,39 @@
         <screen>
        &lt;pos x="0" y="4" width="100%" height="100%"/&gt;</screen>
         </para>
+
+	<para>
+	  Both position and size can be given in percent and it will be taken
+	  as the percentage of the size of the current container.  For toplevel
+	  items it's the percentage of the whole screen.
+	</para>
+
+	<para>
+	  For x and y, you can also specify a negative position which means position
+	  from the right or bottom edge.  But this only applies with absolute
+	  coordinates.  With percentage you can specify negative position and
+	  it will be still from the same edge.
+	</para>
+
+	<para>
+	  The position also specifies the anchor of the item, this can be
+	  "n", "ne", "e", "se", "s", "sw", "w" and "nw" or "center" which stand
+	  for the different edges/corners or "center" for center.  For example:
+        <screen>
+       &lt;pos x="10%" y="50%" anchor="w" width="80%" height="95"/&gt;</screen>
+	</para>
+
+	<para>
+	  If the item contains a box, you can specify width and height to be
+	  "box" to mean that they are supposed to be the width and height
+	  of the box, that is the items in the box plus the padding.
+	</para>
+
+	<para>
+	  You can also specify an "expand" property to either be "true"
+	  or false.  If true then the child will be expanded in the box
+	  as much as possible (that is it will be given more space if available).
+	</para>
       </sect3>
 
       <sect3 id="shownodes">

@@ -154,7 +154,7 @@ parse_pos (xmlNodePtr       node,
   if (prop)
     {
       info->x = g_ascii_strtod (prop, &p);
-      
+
       if ((char *)prop == p)
 	{
 	  g_set_error (error,
@@ -164,6 +164,11 @@ parse_pos (xmlNodePtr       node,
 	  xmlFree (prop);
 	  return FALSE;
 	}
+
+      if (prop[0] == '-' || info->x < 0)
+        info->x_negative = TRUE;
+      else
+        info->x_negative = FALSE;
       
       if (strchr (prop, '%') != NULL)
 	info->x_type = GREETER_ITEM_POS_RELATIVE;
@@ -186,6 +191,11 @@ parse_pos (xmlNodePtr       node,
 	  xmlFree (prop);
 	  return FALSE;
 	}
+
+      if (prop[0] == '-' || info->y < 0)
+        info->y_negative = TRUE;
+      else
+        info->y_negative = FALSE;
       
       if (strchr (prop, '%') != NULL)
 	info->y_type = GREETER_ITEM_POS_RELATIVE;
@@ -1053,6 +1063,11 @@ parse_label (xmlNodePtr        node,
       else if (strcmp (child->name, "prelight") == 0)
 	{
 	  if (!parse_state_text (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
+	    return FALSE;
+	}
+      else if (strcmp (child->name, "active") == 0)
+	{
+	  if (!parse_state_text (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "pos") == 0)

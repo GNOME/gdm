@@ -25,6 +25,57 @@ gboolean require_quarter = FALSE;
 
 extern gboolean greeter_probably_login_prompt;
 
+static char *
+break_at (const char *orig, int columns)
+{
+  PangoLogAttr *attrs;
+  int n_chars;
+  GString *str;
+  int i;
+  int in_current_row;
+  const char *p;
+  
+  str = g_string_new (NULL);
+  n_chars = g_utf8_strlen (orig, -1);
+
+  attrs = g_new0 (PangoLogAttr, n_chars + 1);
+  pango_get_log_attrs (orig, -1,
+                       0, gtk_get_default_language (),
+                       attrs, n_chars + 1);  
+
+  in_current_row = 0;
+  i = 0;
+  p = orig;
+  while (i < n_chars)
+    {
+      gunichar ch;
+
+      ch = g_utf8_get_char (p);
+      
+      /* Broken algorithm for simplicity; we just break
+       * at the first place we can within 10 of the end
+       */
+      
+      if (in_current_row > (columns - 10) &&
+          attrs[i].is_line_break)
+        {
+          in_current_row = 0;
+          g_string_append_unichar (str, '\n');
+        }
+
+      ++in_current_row;
+      g_string_append_unichar (str, ch);
+      
+      p = g_utf8_next_char (p);
+      ++i;
+    }
+  
+  g_free (attrs);
+
+  return g_string_free (str, FALSE);
+}
+
+
 void
 greeter_item_pam_set_user (const char *user)
 {
@@ -168,9 +219,21 @@ greeter_item_pam_prompt (const char *message,
   entry_info = greeter_lookup_id ("user-pw-entry");
 
   if (conversation_info)
-    g_object_set (G_OBJECT (conversation_info->item),
-		  "text", message,
-		  NULL);
+    {
+      char *text;
+
+      /* This is a bad hack that I added because
+       * the canvas text item doesn't support
+       * text wrapping...
+       */
+      text = break_at (message, 50);
+
+      g_object_set (G_OBJECT (conversation_info->item),
+		    "text", text,
+		    NULL);
+
+      g_free (text);
+    }
   
   if (entry_info && entry_info->item &&
       GNOME_IS_CANVAS_WIDGET (entry_info->item))
@@ -202,6 +265,14 @@ greeter_item_pam_message (const char *message)
 
   if (message_info)
     {
+      char *text;
+
+      /* This is a bad hack that I added because
+       * the canvas text item doesn't support
+       * text wrapping...
+       */
+      text = break_at (message, 50);
+
       /* HAAAAAAACK.  Sometimes pam sends many many messages, SO
        * we try to collect them until the next prompt or reset or
        * whatnot */
@@ -220,13 +291,15 @@ greeter_item_pam_message (const char *message)
 	    }
 	  else
 	    g_object_set (G_OBJECT (message_info->item),
-			  "text", message,
+			  "text", text,
 			  NULL);
 	}
       else
 	g_object_set (G_OBJECT (message_info->item),
-		      "text", message,
+		      "text", text,
 		      NULL);
+
+      g_free (text);
     }
   replace_msg = FALSE;
 }
@@ -243,56 +316,6 @@ error_clear (gpointer data)
 
 	err_box_clear_handler = 0;
 	return FALSE;
-}
-
-static char *
-break_at (const char *orig, int columns)
-{
-  PangoLogAttr *attrs;
-  int n_chars;
-  GString *str;
-  int i;
-  int in_current_row;
-  const char *p;
-  
-  str = g_string_new (NULL);
-  n_chars = g_utf8_strlen (orig, -1);
-
-  attrs = g_new0 (PangoLogAttr, n_chars + 1);
-  pango_get_log_attrs (orig, -1,
-                       0, gtk_get_default_language (),
-                       attrs, n_chars + 1);  
-
-  in_current_row = 0;
-  i = 0;
-  p = orig;
-  while (i < n_chars)
-    {
-      gunichar ch;
-
-      ch = g_utf8_get_char (p);
-      
-      /* Broken algorithm for simplicity; we just break
-       * at the first place we can within 10 of the end
-       */
-      
-      if (in_current_row > (columns - 10) &&
-          attrs[i].is_line_break)
-        {
-          in_current_row = 0;
-          g_string_append_unichar (str, '\n');
-        }
-
-      ++in_current_row;
-      g_string_append_unichar (str, ch);
-      
-      p = g_utf8_next_char (p);
-      ++i;
-    }
-  
-  g_free (attrs);
-
-  return g_string_free (str, FALSE);
 }
 
 void

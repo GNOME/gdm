@@ -59,6 +59,8 @@ struct _GreeterItemInfo {
   GreeterItemPosType y_type;
   double x;
   double y;
+  gboolean x_negative; /* needed for -0 */
+  gboolean y_negative; /* needed for -0 */
 
   GreeterItemShowModes show_modes;
   char *show_type; /* timed, system, config, chooser, halt, suspend, reboot */

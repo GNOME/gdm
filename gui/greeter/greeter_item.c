@@ -181,7 +181,7 @@ greeter_item_expand_text (const char *text)
 	      g_free (clock);
 	      break;
 	    case 0:
-	      g_warning ("Unescape %% at end of text\n");
+	      g_warning ("Unescaped %% at end of text\n");
 	      goto bail;
 	      break;
 	    default:

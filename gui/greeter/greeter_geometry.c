@@ -123,12 +123,12 @@ greeter_size_allocate_fixed (GreeterItemInfo *fixed,
       child_allocation.height = requisition.height;
       
       if (child->x_type == GREETER_ITEM_POS_ABSOLUTE)
-	child_allocation.x += (child->x >= 0) ? child->x : fixed->allocation.width + child->x;
+	child_allocation.x += ( ! child->x_negative) ? child->x : fixed->allocation.width + child->x;
       else if (child->x_type == GREETER_ITEM_POS_RELATIVE)
 	child_allocation.x += fixed->allocation.width * child->x / 100.0;
       
       if (child->y_type == GREETER_ITEM_POS_ABSOLUTE)
-	child_allocation.y += (child->y >= 0) ? child->y : fixed->allocation.height + child->y;
+	child_allocation.y += ( ! child->y_negative) ? child->y : fixed->allocation.height + child->y;
       else if (child->y_type == GREETER_ITEM_POS_RELATIVE)
 	child_allocation.y += fixed->allocation.height * child->y / 100.0;
 
@@ -296,12 +296,12 @@ greeter_size_allocate_box (GreeterItemInfo *box,
 	    }
 
 	  if (child->x_type == GREETER_ITEM_POS_ABSOLUTE)
-	    child_allocation.x += (child->x >= 0) ? child->x : w + child->x;
+	    child_allocation.x += ( ! child->x_negative) ? child->x : w + child->x;
 	  else if (child->x_type == GREETER_ITEM_POS_RELATIVE)
 	    child_allocation.x += w * child->x / 100.0;
 
 	  if (child->y_type == GREETER_ITEM_POS_ABSOLUTE)
-	    child_allocation.y += (child->y >= 0) ? child->y : h + child->y;
+	    child_allocation.y += ( ! child->y_negative) ? child->y : h + child->y;
 	  else if (child->y_type == GREETER_ITEM_POS_RELATIVE)
 	    child_allocation.y += h * child->y / 100.0;
 

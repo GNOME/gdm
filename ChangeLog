@@ -1,3 +1,21 @@
+Fri Aug 08 17:20:59 2003  George Lebl <jirka@5z.com>
+
+	* docs/C/gdm.xml: fill in missing info in the theme manual
+
+	* gui/greeter/greeter_geometry.c, gui/greeter/greeter_item.h,
+	  gui/greeter/greeter_parser.c:
+	  respect negative coordinates with "-0", must store the
+	  negativity in a flag for that.
+
+	* gui/greeter/greeter_item_pam.c: break all pam messages at
+	  50 columns, not just pam-error (actually those are not
+	  all pam messages we just call them that)
+
+	* gui/greeter/greeter_parser.c: parse "active" for text
+	  items, not just prelight and normal.
+	  
+	* gui/greeter/greeter_item.c: fix typo in g_warning
+
 Fri Aug 08 09:35:41 2003  George Lebl <jirka@5z.com>
 
 	* Release 2.4.2.100
