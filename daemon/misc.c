@@ -55,6 +55,7 @@ extern char **environ;
 
 extern pid_t extra_process;
 extern int extra_status;
+extern pid_t gdm_main_pid;
 extern gboolean preserve_ld_vars;
 extern int gdm_in_signal;
 
@@ -93,13 +94,26 @@ gdm_fail (const gchar *format, ...)
 
     /* Log to both syslog and stderr */
     do_syslog (LOG_CRIT, s);
-    fprintf (stderr, "%s\n", s);
-    fflush (stderr);
+    if (getpid () == gdm_main_pid) {
+	    gdm_fdprintf (2, "%s\n", s);
+    }
 
     g_free (s);
 
-    if (GdmPidFile != NULL)
-	    unlink (GdmPidFile);
+    /* If main process do final cleanup to kill all processes */
+    if (getpid () == gdm_main_pid) {
+	    gdm_final_cleanup ();
+    } else if ( ! gdm_slave_final_cleanup ()) {
+	    /* If we weren't even a slave do some random cleanup only */
+	    /* FIXME: is this all fine? */
+	    if (extra_process > 1 && extra_process != getpid ()) {
+		    /* we sigterm extra processes, and we
+		     * don't wait */
+		    kill (extra_process, SIGTERM);
+		    extra_process = -1;
+	    }
+    }
+
     closelog ();
 
     /* Slow down respawning if we're started from init */
@@ -489,9 +503,9 @@ gdm_exec_wait (char * const *argv, gboolean no_display,
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
-		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 		if (de_setuid) {
 			gdm_desetuid ();
@@ -999,6 +1013,18 @@ gdm_is_a_no_password_user (const char *user)
 	}
 	g_strfreev (vector);
 	return FALSE;
+}
+
+int
+gdm_open_dev_null (mode_t mode)
+{
+	int ret;
+	ret = open ("/dev/null", mode);
+	if (ret < 0) {
+		gdm_fail ("Cannot open /dev/null, system on crack!");
+	}
+
+	return ret;
 }
 
 

@@ -712,9 +712,9 @@ focus_first_x_window (const char *class_res_name)
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
-	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-	open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -835,9 +835,9 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
-		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -1376,7 +1376,7 @@ gdm_slave_greeter (void)
 
 	gdm_close_all_descriptors (2 /* from */, -1 /* except */);
 
-	open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
@@ -1718,8 +1718,8 @@ gdm_slave_chooser (void)
 		close (0);
 		gdm_close_all_descriptors (2 /* from */, -1 /* except */);
 
-		open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+		gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
@@ -2144,20 +2144,20 @@ session_child_run (struct passwd *pwent,
 		} else {
 			close (1);
 			close (2);
-			open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-			open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+			gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+			gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 			gdm_error (_("%s: Could not open ~/.xsession-errors"),
 				   "run_session_child");
 		}
 	} else {
 		close (1);
 		close (2);
-		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 	}
 
 	close (0);
-	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 
 	/* Run the PreSession script */
 	if (gdm_slave_exec_script (d, GdmPreSession,
@@ -3390,15 +3390,15 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
         closelog ();
 
 	close (0);
-	open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
+	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
 
 	if ( ! pass_stdout) {
 		close (1);
 		close (2);
 		/* No error checking here - if it's messed the best response
 		 * is to ignore & try to continue */
-		open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-		open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+		gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+		gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 	}
 
 	gdm_close_all_descriptors (3 /* from */, -1 /* except */);
@@ -3684,6 +3684,18 @@ gdm_slave_handle_notify (const char *msg)
 		if (d->greetpid > 0)
 			kill (d->greetpid, SIGHUP);
 	}
+}
+
+/* do cleanup but only if we are a slave, if we're not a slave, just
+ * return FALSE */
+gboolean
+gdm_slave_final_cleanup (void)
+{
+	if (getpid () != d->slavepid)
+		return FALSE;
+	gdm_debug ("slave killing self");
+	gdm_slave_term_handler (SIGTERM);
+	return TRUE;
 }
 
 /* EOF */

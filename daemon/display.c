@@ -187,6 +187,8 @@ gdm_display_manage (GdmDisplay *d)
     case 0:
 	setpgid (0, 0);
 
+	d->slavepid = getpid ();
+
 	/* Close XDMCP fd in slave process */
 	if (GdmXdmcp)
 	    gdm_xdmcp_close ();
@@ -203,9 +205,9 @@ gdm_display_manage (GdmDisplay *d)
 
 	/* No error checking here - if it's messed the best response
          * is to ignore & try to continue */
-	open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-	open("/dev/null", O_RDWR); /* open stdout - fd 1 */
-	open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+	gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+	gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+	gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 

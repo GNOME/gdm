@@ -396,6 +396,7 @@ enum {
 
 /* If id == NULL, then get the first X server */
 GdmXServer *	gdm_find_x_server	(const char *id);
+void		gdm_final_cleanup	(void);
 
 
 /* primitive protocol for controlling the daemon from slave

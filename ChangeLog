@@ -1,3 +1,15 @@
+Tue Aug 13 17:05:55 2002  George Lebl <jirka@5z.com>
+
+	* daemon/slave.[ch], daemon/gdm.[ch], daemon/misc.[ch],
+	  daemon/server.c, daemon/errorgui.c, daemon/display.c:
+	  Sure fire way to open /dev/null and give error when system
+	  on crack.  Also clean up processes properly on gdm_fail
+	  and don't use the buffered stderr.
+
+	* config/Makefile.am: if the user is using the default config
+	  (gdm.conf is the same as the factory-gdm.conf) then just overwrite
+	  gdm.conf with the new one in the installation.
+
 Tue Aug 13 16:15:08 2002  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch], gui/gdmlogin.c, gui/greeter/greeter_system.c,

@@ -75,6 +75,7 @@ gid_t GdmGroupId;		/* Groupid under which gdm should run */
 pid_t extra_process = -1;	/* An extra process.  Used for quickie 
 				   processes, so that they also get whacked */
 int extra_status = 0;		/* Last status from the last extra process */
+pid_t gdm_main_pid = 0;
 gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
 gboolean no_daemon = FALSE;	/* Do not daemonize */
 
@@ -743,9 +744,9 @@ gdm_daemonify (void)
     close (1);
     close (2);
 
-    open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-    open("/dev/null", O_RDWR); /* open stdout - fd 1 */
-    open("/dev/null", O_RDWR); /* open stderr - fd 2 */
+    gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+    gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+    gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 }
 
 static void 
@@ -784,13 +785,13 @@ gdm_start_first_unborn_local (int delay)
 	}
 }
 
-static void
-final_cleanup (void)
+void
+gdm_final_cleanup (void)
 {
 	GSList *list;
 	sigset_t mask;
 
-	gdm_debug ("final_cleanup");
+	gdm_debug ("gdm_final_cleanup");
 
 	sigemptyset (&mask);
 	sigaddset (&mask, SIGCHLD);
@@ -874,9 +875,9 @@ deal_with_x_crashes (GdmDisplay *d)
 
 		    /* No error checking here - if it's messed the best response
 		    * is to ignore & try to continue */
-		    open ("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-		    open ("/dev/null", O_RDWR); /* open stdout - fd 1 */
-		    open ("/dev/null", O_RDWR); /* open stderr - fd 2 */
+		    gdm_open_dev_null (O_RDONLY); /* open stdin - fd 0 */
+		    gdm_open_dev_null (O_RDWR); /* open stdout - fd 1 */
+		    gdm_open_dev_null (O_RDWR); /* open stderr - fd 2 */
 
 		    argv[0] = GdmXKeepsCrashing;
 		    argv[1] = NULL;
@@ -1088,7 +1089,7 @@ start_autopsy:
     case DISPLAY_REBOOT:	/* Reboot machine */
 	gdm_info (_("gdm_child_action: Master rebooting..."));
 
-	final_cleanup ();
+	gdm_final_cleanup ();
 	chdir ("/");
 
 	argv = ve_split (GdmRebootReal);
@@ -1103,7 +1104,7 @@ start_autopsy:
     case DISPLAY_HALT:		/* Halt machine */
 	gdm_info (_("gdm_child_action: Master halting..."));
 
-	final_cleanup ();
+	gdm_final_cleanup ();
 	chdir ("/");
 
 	argv = ve_split (GdmHaltReal);
@@ -1118,7 +1119,7 @@ start_autopsy:
     case DISPLAY_SUSPEND:	/* Suspend machine */
 	gdm_info (_("gdm_child_action: Master suspending..."));
 
-	final_cleanup ();
+	gdm_final_cleanup ();
 	chdir ("/");
 
 	argv = ve_split (GdmSuspendReal);
@@ -1223,7 +1224,7 @@ static void
 gdm_restart_now (void)
 {
 	gdm_info (_("GDM restarting ..."));
-	final_cleanup ();
+	gdm_final_cleanup ();
 	if (stored_path != NULL)
 		gnome_setenv ("PATH", stored_path, TRUE);
 	execvp (stored_argv[0], stored_argv);
@@ -1260,7 +1261,7 @@ mainloop_sig_callback (int sig, gpointer data)
     case SIGINT:
     case SIGTERM:
       gdm_debug ("mainloop_sig_callback: Got TERM/INT. Going down!");
-      final_cleanup ();
+      gdm_final_cleanup ();
       exit (EXIT_SUCCESS);
       break;
 
@@ -1366,7 +1367,7 @@ ensure_desc_012 (void)
 	 * we of course count on the fact that open
 	 * opens the lowest available descriptor */
 	for (;;) {
-		fd = open("/dev/null", O_RDWR);
+		fd = gdm_open_dev_null (O_RDWR);
 		/* what to do on fail?  I dunno,
 		 * just keep on going is the safest
 		 * bet I suppose */
@@ -1389,6 +1390,8 @@ main (int argc, char *argv[])
     FILE *pf;
     poptContext ctx;
     int nextopt;
+
+    gdm_main_pid = getpid ();
 
     /* We here ensure descriptors 0, 1 and 2 */
     ensure_desc_012 ();

@@ -32,6 +32,7 @@ gboolean gdm_slave_should_complain (void);
 void	 gdm_slave_send		(const char *str, gboolean wait_for_ack);
 void	 gdm_slave_send_num	(const char *opcode, long num);
 void     gdm_slave_send_string	(const char *opcode, const char *str);
+gboolean gdm_slave_final_cleanup (void);
 
 #endif /* GDM_SLAVE_H */
 

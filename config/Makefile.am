@@ -34,6 +34,10 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
 	fi
+	-if cmp -s $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf 2>&1 /dev/null ; then \
+		cp -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/gdm.conf.orig; \
+		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/gdm.conf; \
+	fi
 	if test '!' -f $(DESTDIR)$(confdir)/gdm.conf; then \
 		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/gdm.conf; \
 	fi
@@ -42,7 +46,7 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(DESTDIR)$(confdir)/XKeepsCrashing
 
 	-if test -f $(DESTDIR)$(localedir)/locale.alias; then \
-		cp $(DESTDIR)$(localedir)/locale.alias $(DESTDIR)$(localedir)/locale.alias.orig; \
+		cp -f $(DESTDIR)$(localedir)/locale.alias $(DESTDIR)$(localedir)/locale.alias.orig; \
 	fi
 	$(INSTALL_DATA) $(srcdir)/locale.alias $(DESTDIR)$(localedir)/locale.alias
 
@@ -52,18 +56,18 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 	fi
 
 	-if test -f $(DESTDIR)$(sessdir)/Xsession; then \
-		cp $(DESTDIR)$(sessdir)/Xsession $(DESTDIR)$(sessdir)/Xsession.orig; \
+		cp -f $(DESTDIR)$(sessdir)/Xsession $(DESTDIR)$(sessdir)/Xsession.orig; \
 	fi
 	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(sessdir)/Xsession
 
 	-if test -f $(DESTDIR)$(sessdir)/Gnome; then \
-		cp $(DESTDIR)$(sessdir)/Gnome $(DESTDIR)$(sessdir)/Gnome.orig; \
+		cp -f $(DESTDIR)$(sessdir)/Gnome $(DESTDIR)$(sessdir)/Gnome.orig; \
 	fi
 	$(INSTALL_SCRIPT) Gnome $(DESTDIR)$(sessdir)/Gnome
 
 	-if test -f /usr/bin/switchdesk; then \
 		if test -f $(DESTDIR)$(sessdir)/Default; then \
-			cp $(DESTDIR)$(sessdir)/Default $(DESTDIR)$(sessdir)/Default.orig; \
+			cp -f $(DESTDIR)$(sessdir)/Default $(DESTDIR)$(sessdir)/Default.orig; \
 		fi; \
 		$(LN_S) -f $(sessdir)/Xsession $(DESTDIR)$(sessdir)/Default; \
 	fi
@@ -73,7 +77,7 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		chmod 755 $(DESTDIR)$(initdir); \
 	fi
 	-if test -f $(DESTDIR)$(initdir)/Default; then \
-		cp $(DESTDIR)$(initdir)/Default $(DESTDIR)$(initdir)/Default.orig; \
+		cp -f $(DESTDIR)$(initdir)/Default $(DESTDIR)$(initdir)/Default.orig; \
 	fi
 	$(INSTALL_SCRIPT) $(srcdir)/Default $(DESTDIR)$(initdir)/Default
 
@@ -82,7 +86,7 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		chmod 755 $(DESTDIR)$(predir); \
 	fi
 	-if test -f $(DESTDIR)$(predir)/Default; then \
-		cp $(DESTDIR)$(predir)/Default $(DESTDIR)$(predir)/Default.orig; \
+		cp -f $(DESTDIR)$(predir)/Default $(DESTDIR)$(predir)/Default.orig; \
 	fi
 	$(INSTALL_SCRIPT) $(srcdir)/PreSession $(DESTDIR)$(predir)/Default
 
@@ -91,7 +95,7 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		chmod 755 $(DESTDIR)$(postdir); \
 	fi
 	-if test -f $(DESTDIR)$(postdir)/Default; then \
-		cp $(DESTDIR)$(postdir)/Default $(DESTDIR)$(postdir)/Default.orig; \
+		cp -f $(DESTDIR)$(postdir)/Default $(DESTDIR)$(postdir)/Default.orig; \
 	fi
 	$(INSTALL_SCRIPT) $(srcdir)/PostSession $(DESTDIR)$(postdir)/Default
 
@@ -101,7 +105,7 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 	fi
 
 	-if test -f $(DESTDIR)$(gnomercdir)/gnomerc; then \
-		cp $(DESTDIR)$(gnomercdir)/gnomerc $(DESTDIR)$(gnomercdir)/gnomerc.orig; \
+		cp -f $(DESTDIR)$(gnomercdir)/gnomerc $(DESTDIR)$(gnomercdir)/gnomerc.orig; \
 	fi
 	$(INSTALL_SCRIPT) gnomerc $(DESTDIR)$(gnomercdir)/gnomerc
 
