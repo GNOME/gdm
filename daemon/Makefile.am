@@ -57,6 +57,7 @@ EXTRA_gdm_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
 
 gdm_LDADD = \
 	$(DAEMON_LIBS)				\
+	$(X_LIBS)				\
 	$(XDMCP_LIBS)				\
 	-lXau					\
 	-lX11					\

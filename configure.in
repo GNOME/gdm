@@ -105,16 +105,13 @@ AC_PROG_CC
 AC_STDC_HEADERS
 dnl AC_ARG_PROGRAM
 AM_PROG_LIBTOOL
+AC_PATH_XTRA
 
 GNOME_COMPILE_WARNINGS
 
 PKG_CHECK_MODULES(DAEMON, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libgnome-2.0 >= $LIBGNOME_REQUIRED)
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
-
-PKG_CHECK_MODULES(JUSTGTK, gtk+-2.0 >= $GTK_REQUIRED)
-AC_SUBST(JUSTGTK_CFLAGS)
-AC_SUBST(JUSTGTK_LIBS)
 
 PKG_CHECK_MODULES(GUI, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
 AC_SUBST(GUI_CFLAGS)
@@ -160,7 +157,7 @@ AM_GLIB_GNU_GETTEXT
 if test x$with_tcp_wrappers = xno ; then
 	echo "TCP wrappers disabled"
 else
-  AC_MSG_CHECKING("whether to use TCP wrappers")
+  AC_MSG_CHECKING([whether to use TCP wrappers])
   LIBWRAP_PATH=""
   for I in $LDFLAGS $LIBS -L/usr/lib; do
 	case "$I" in
@@ -232,7 +229,7 @@ LIBS="$OLD_LIBS"
   fi
 fi
 
-AC_MSG_CHECKING("for corrupt government")
+AC_MSG_CHECKING([for corrupt government])
 AC_MSG_RESULT(yes)
 
 dnl ## gdmopen building
@@ -305,7 +302,7 @@ if test x$with_xdmcp != xno ; then
 		AC_CHECK_LIB(Xdmcp, XdmcpFlush, [
 		     	AC_DEFINE(HAVE_LIBXDMCP)
 		     	XDMCP_LIBS="-lXdmcp"
-		     	XDMCP_SUPPORT=yes],,$JUSTGTK_LIBS)
+		     	XDMCP_SUPPORT=yes],,[$X_LIBS $X_EXTRA_LIBS])
 	])
 
 	if test x$with_xdmcp = xyes -a x$XDMCP_SUPPORT = x ; then
@@ -335,7 +332,7 @@ if test x$with_xinerama != xno ; then
 		AC_CHECK_LIB(Xinerama, XineramaQueryScreens, [
 		     	AC_DEFINE(HAVE_LIBXINERAMA)
 		     	XINERAMA_LIBS="-lXinerama"
-		     	XINERAMA_SUPPORT=yes],,$JUSTGTK_LIBS)
+		     	XINERAMA_SUPPORT=yes],,$[X_LIBS -lX11 -lXext $X_EXTRA_LIBS])
 	])
 
 	if test x$with_xinerama = xyes -a x$XINERAMA_SUPPORT = x ; then
