@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-10-28 12:44+0100\n"
-"PO-Revision-Date: 2001-10-28 12:50+0200\n"
+"POT-Creation-Date: 2001-10-28 22:07+0100\n"
+"PO-Revision-Date: 2001-10-28 22:14+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -454,6 +454,21 @@ msgstr "%s: Nie mo¿na otworzyæ kolejki FIFO"
 msgid "y = Yes or n = No? >"
 msgstr "y = Tak lub n = Nie? >"
 
+#: daemon/misc.c:1
+#, c-format
+msgid "%s: Cannot get local addresses!"
+msgstr "%s: Nie mo¿na pobraæ lokalnego adresu!"
+
+#: daemon/misc.c:1
+#, c-format
+msgid "%s: Could not get server hostname: %s!"
+msgstr "%s: Nie mo¿na pobraæ nazwy serwera: %s!"
+
+#: daemon/misc.c:1
+#, c-format
+msgid "%s: Could not get address from hostname!"
+msgstr "%s: Nie mo¿na uzyskaæ adresu na podstawie nazwy serwera!"
+
 #: daemon/server.c:1
 #, c-format
 msgid ""
@@ -600,6 +615,26 @@ msgstr "gdm_slave_init: B³±d przy ustalaniu obs³ugi przerwania CHLD"
 #, c-format
 msgid "%s: Error setting up USR2 signal handler"
 msgstr "%s: B³±d przy ustalaniu obs³ugi przerwania USR2"
+
+#: daemon/slave.c:1
+msgid ""
+"I could not start the X\n"
+"server (your graphical environment)\n"
+"due to some internal error.\n"
+"Please contact your system administrator\n"
+"or check your syslog to diagnose.\n"
+"In the meantime this display will be\n"
+"disabled.  Please restart gdm when\n"
+"the problem is corrected."
+msgstr ""
+"Z powodu wewnêtrznego b³êdu nie mo¿na\n"
+"uruchomiæ serwera X (odpowiedzialnego za\n"
+"interfejs graficzny).\n"
+"Skontaktuj siê z administratorem systemu\n"
+"lub zdiagnozuj problem na podstawie zawarto¶ci\n"
+"pliku syslog. Ekran zostanie tymczasowo\n"
+"unieaktywniony. Po naprawieniu problemu\n"
+"ponownie uruchom GDM-a."
 
 #: daemon/slave.c:1
 msgid "focus_first_x_window: cannot fork"
@@ -1067,21 +1102,6 @@ msgstr "Nie mo¿na otworzyæ sesji dla %s"
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Nie mo¿na ustawiæ wierzytelno¶ci dla %s"
-
-#: daemon/xdmcp.c:1
-#, c-format
-msgid "%s: Cannot get local addresses!"
-msgstr "%s: Nie mo¿na pobraæ lokalnego adresu!"
-
-#: daemon/xdmcp.c:1
-#, c-format
-msgid "%s: Could not get server hostname: %s!"
-msgstr "%s: Nie mo¿na pobraæ nazwy serwera: %s!"
-
-#: daemon/xdmcp.c:1
-#, c-format
-msgid "%s: Could not get address from hostname!"
-msgstr "%s: Nie mo¿na uzyskaæ adresu na podstawie nazwy serwera!"
 
 #: daemon/xdmcp.c:1
 #, c-format
@@ -3721,7 +3741,7 @@ msgid "Just run Xnest, no query (no chooser)"
 msgstr "Bezpo¶rednie uruchomienie Xnest, bez zapytania (bez choosera)"
 
 #: gui/gdmXnestchooser.c:1
-msgid "Do direct query insted of indirect (chooser)"
+msgid "Do direct query instead of indirect (chooser)"
 msgstr "Bezpo¶rednie zapytanie zamiast po¶redniego (chooser)"
 
 #: gui/gdmXnestchooser.c:1
