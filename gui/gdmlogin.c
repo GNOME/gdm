@@ -235,6 +235,9 @@ gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
 	    gtk_widget_show_now (login);
 	    gdk_window_raise (login->window);
 	    gtk_widget_grab_focus (entry);	
+	    gtk_window_set_focus (GTK_WINDOW (login), entry);	
+	    GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
+	    gtk_widget_queue_draw (entry);
 	    return TRUE;
     }
     
@@ -849,6 +852,9 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 		    curuser = NULL;
 		    gtk_widget_set_sensitive (entry, TRUE);
 		    gtk_widget_grab_focus (entry);	
+		    gtk_window_set_focus (GTK_WINDOW (login), entry);	
+		    GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
+		    gtk_widget_queue_draw (entry);
 		    return TRUE;
 	    }
 	}
@@ -1142,7 +1148,10 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_grab_focus (entry);	
+	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
+	GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
+	gtk_widget_queue_draw (entry);
 
 	/* replace rapther then append next message string */
 	replace_msg = TRUE;
@@ -1159,7 +1168,10 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
 	gtk_widget_set_sensitive (entry, TRUE);
 	gtk_widget_grab_focus (entry);	
+	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
+	GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
+	gtk_widget_queue_draw (entry);
 
 	/* replace rapther then append next message string */
 	replace_msg = TRUE;
