@@ -3,7 +3,7 @@
 # Kenneth Christiansen <kenneth@ripen.dk>, 1998, 1999.
 # Birger Langkjer <birger.langkjer@image.dk>, 2000.
 # Ole Laursen <olau@hardworking.dk>, 2001.
-# Keld Simonsen <keld@dkuug.dk>, 2001
+# Keld Simonsen <keld@dkuug.dk>, 2001.
 #
 # Konventioner:
 #
@@ -19,8 +19,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.2.4.2\n"
-"POT-Creation-Date: 2001-09-30 20:38+0200\n"
-"PO-Revision-Date: 2001-09-14 11:43+0200\n"
+"POT-Creation-Date: 2001-10-07 20:10-0400\n"
+"PO-Revision-Date: 2001-10-08 11:43+0200\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Dansk/Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -524,7 +524,7 @@ msgid "%s: Could not open FIFO"
 msgstr "%s: Kunne ikke åbne FIFO"
 
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:366
+#: daemon/misc.c:374
 msgid "y = Yes or n = No? >"
 msgstr "y = Ja eller n = Nej? >"
 
@@ -650,14 +650,20 @@ msgstr "%s: initgroups() mislykkedes for %s"
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Kunne ikke sætte bruger-id til %d"
 
+# src/gdmslave.c:184
+#: daemon/server.c:737
+#, c-format
+msgid "%s: Couldn't set groupid to 0"
+msgstr "%s: Kunne ikke sætte gruppe-id til 0"
+
 # src/gdm.c:268
-#: daemon/server.c:738
+#: daemon/server.c:748
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_server_spawn: X-server ikke fundet: %s"
 
 # src/gdmmisc.c:277
-#: daemon/server.c:743
+#: daemon/server.c:753
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: Kan ikke splitte X-serverproces!"
 
@@ -854,7 +860,7 @@ msgstr ""
 "gdm_slave_session_start: Godkendelseproces færdig. Slår velkomstbyderen ned."
 
 # src/gdmslave.c:351
-#: daemon/slave.c:1878
+#: daemon/slave.c:1881
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -863,36 +869,36 @@ msgstr ""
 "Afbryder."
 
 # src/gdmslave.c:356
-#: daemon/slave.c:1905
+#: daemon/slave.c:1908
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Fejl under fraspaltning af brugersession"
 
 # src/gdmslave.c:362
-#: daemon/slave.c:1950
+#: daemon/slave.c:1953
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: Kunne ikke udføre setgid %d. Afbryder."
 
 # src/gdmslave.c:365
-#: daemon/slave.c:1954
+#: daemon/slave.c:1957
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr "gdm_slave_session_start: initgroups() fejlede for %s. Afbryder."
 
 # src/gdmverify.c:141
-#: daemon/slave.c:1960
+#: daemon/slave.c:1963
 #, c-format
 msgid "%s: Could not open session for %s. Aborting."
 msgstr "%s: Kunne ikke åbne session for %s. Afbryder."
 
 # src/gdmslave.c:368
-#: daemon/slave.c:1966
+#: daemon/slave.c:1969
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Kunne ikke blive %s. Afbryder."
 
 #. yaikes
-#: daemon/slave.c:2036
+#: daemon/slave.c:2039
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -900,7 +906,7 @@ msgstr ""
 "gdm_slave_session_start: gnome-session ikke fundet til en fejlsikret Gnome-"
 "session, prøver xterm"
 
-#: daemon/slave.c:2041
+#: daemon/slave.c:2044
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -910,7 +916,7 @@ msgstr ""
 "prøver at køre sessionen 'Fejlsikret\n"
 "xterm'."
 
-#: daemon/slave.c:2047
+#: daemon/slave.c:2050
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -924,11 +930,11 @@ msgstr ""
 "udført. Dette bør kun bruges til at ordne\n"
 "problemer i din installation."
 
-#: daemon/slave.c:2066
+#: daemon/slave.c:2069
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Kan ikke finde 'xterm' til at starte en fejlsikret session."
 
-#: daemon/slave.c:2073
+#: daemon/slave.c:2076
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -945,17 +951,17 @@ msgstr ""
 "terminalemuleringen, indtast 'exit' i\n"
 "vinduet og tryk på retur på tastaturet."
 
-#: daemon/slave.c:2095
+#: daemon/slave.c:2098
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "Kører %s for %s på %s"
 
 # src/gdmslave.c:362
-#: daemon/slave.c:2109
+#: daemon/slave.c:2112
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: Brugeren har ikke tilladelse til at logge på"
 
-#: daemon/slave.c:2111
+#: daemon/slave.c:2114
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -964,12 +970,12 @@ msgstr ""
 "deaktiveret din adgang."
 
 # src/gdmslave.c:415
-#: daemon/slave.c:2114
+#: daemon/slave.c:2117
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr "gdm_slave_session_start: Kunne ikke finde/starte sessionen '%s'"
 
-#: daemon/slave.c:2119
+#: daemon/slave.c:2122
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -982,12 +988,12 @@ msgstr ""
 "i logind-vinduet."
 
 # src/gdmslave.c:415
-#: daemon/slave.c:2127
+#: daemon/slave.c:2130
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Kunne ikke starte sessionen '%s'"
 
-#: daemon/slave.c:2130
+#: daemon/slave.c:2133
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -997,41 +1003,41 @@ msgstr ""
 "at systemadministrator har deaktiveret din adgang,\n"
 "men kan også indikere ind fejl i den.\n"
 
-#: daemon/slave.c:2291
+#: daemon/slave.c:2294
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Pingning af %s mislykkedes, deaktiver terminal!"
 
 # src/gdmslave.c:579
-#: daemon/slave.c:2397
+#: daemon/slave.c:2400
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_xioerror_handler: Fatal X-fejl - genstarter %s"
 
 # src/gdmmisc.c:273
-#: daemon/slave.c:2569
+#: daemon/slave.c:2572
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Fejl under opstart: %s"
 
 # src/gdmmisc.c:277
-#: daemon/slave.c:2573
+#: daemon/slave.c:2576
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Kan ikke fraspalte skriptproces!"
 
 # src/gdmmisc.c:202
-#: daemon/slave.c:2697
+#: daemon/slave.c:2700
 msgid "gdm_parse_enriched_login: Failed creating pipe"
 msgstr "gdm_parse_enriched_login: Det mislykkedes at oprette videreledning"
 
 # src/gdmmisc.c:273
-#: daemon/slave.c:2719
+#: daemon/slave.c:2722
 #, c-format
 msgid "gdm_parse_enriched_login: Failed executing: %s"
 msgstr "gdm_parse_enriched_login: Det mislykkedes at køre: %s"
 
 # src/gdmmisc.c:277
-#: daemon/slave.c:2724
+#: daemon/slave.c:2727
 msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login: Kan ikke fraspalte script-proces!"
 
@@ -3100,7 +3106,7 @@ msgstr "Fejlsøgingsinformation"
 msgid "Authenticate before running --command"
 msgstr "Autenticér før kørsel af --command"
 
-#: gui/gdmXnestchooser.c:153 gui/gdmflexiserver.c:551
+#: gui/gdmXnestchooser.c:159 gui/gdmflexiserver.c:551
 msgid ""
 "GDM is not running.\n"
 "Please ask your system administrator to start it."
@@ -3846,7 +3852,7 @@ msgid ""
 "Setup the picture that will show in the GDM (login manager) face browser"
 msgstr "Vælg det billede som bliver vist i logindhåndteringens ansigtsvælger"
 
-#: gui/gdmXnestchooser.c:114
+#: gui/gdmXnestchooser.c:120
 msgid ""
 "Xnest doesn't exist.\n"
 "Please ask your system administrator\n"
@@ -3856,7 +3862,7 @@ msgstr ""
 "Venligst bed din systemadministrator\n"
 "om at installere det."
 
-#: gui/gdmXnestchooser.c:130
+#: gui/gdmXnestchooser.c:136
 msgid ""
 "Indirect XDMCP is not enabled,\n"
 "please ask your system administrator to enable it\n"
@@ -3866,7 +3872,7 @@ msgstr ""
 "Venligst bed din systemadministrator om dette kan\n"
 "aktiveres i GDM konfigurationsprogrammet."
 
-#: gui/gdmXnestchooser.c:164
+#: gui/gdmXnestchooser.c:170
 msgid "Could not find a free display number"
 msgstr "Kunne ikke finde et ledigt skærmnummer"
 
