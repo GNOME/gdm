@@ -927,23 +927,26 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                session_name (savedsess),
                                                session_name (session));
 			savesess = gdm_login_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
-                } else if (strcmp (session, "Xclients.desktop") != 0 &&
+                } else if (g_ascii_strcasecmp (session, "Xclients.desktop") != 0 &&
+			   g_ascii_strcasecmp (session, "default.desktop") != 0 &&
                            strcmp (session, LAST_SESSION) != 0) {
                         /* if !GdmShowLastSession then our saved session is
                          * irrelevant, we are in "switchdesk mode"
                          * and the relevant thing is the saved session
                          * in .Xclients
                          */
-                        msg = g_strdup_printf (_("You have chosen %s for this "
-                                                 "session.\nIf you wish to make %s "
-                                                 "the default for future sessions,\n"
-                                                 "run the 'switchdesk' utility\n"
-                                                 "(System->Desktop Switching Tool from "
-                                                 "the panel menu)."),
-                                               session_name (session),
-                                               session_name (session));
-                        savesess = FALSE;
-                        gdm_login_message (msg);
+			if (access ("/usr/bin/switchdesk", F_OK) == 0) {
+				msg = g_strdup_printf (_("You have chosen %s for this "
+							 "session.\nIf you wish to make %s "
+							 "the default for future sessions,\n"
+							 "run the 'switchdesk' utility\n"
+							 "(System->Desktop Switching Tool from "
+							 "the panel menu)."),
+						       session_name (session),
+						       session_name (session));
+				gdm_login_message (msg);
+			}
+			savesess = FALSE;
                 }
 		g_free (msg);
 	}

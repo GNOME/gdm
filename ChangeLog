@@ -1,3 +1,10 @@
+Fri Sep 19 18:59:28 2003  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, gui/greeter/greeter_session.c: fix rh bug #104287,
+	  The default session is not 'Xclients.desktop' but
+	  'default.desktop'.  Also don't talk of 'switchdesk' if
+	  /usr/bin/switchdesk is not around.
+
 Fri Sep 19 18:00:37 2003  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: Launch the greeter from a shell so that we get
