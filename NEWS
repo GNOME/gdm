@@ -1,5 +1,92 @@
 Ahh news...
 
+2.4.2.98 stuff:
+
+- DOCUMENTATION!  We have documentation!  I've updated the
+  xml docs and they're installed so you can use the GNOME
+  help browser to browse them under GNOME|System.  Or you
+  can view the HTML versions on the webpage
+  (www.jirka.org/gdm.html)
+
+- Whack the GdmGreeterThemeManual.txt as it is now part
+  of the xml documentation
+
+- Add mnemonics/keynav to a bunch of things and generally try to
+  fix issues from the HIG bugs filed in bugzilla (partially
+  fixes #117776, #117784, #117504
+
+- Add "listitem" tag to the graphical themes.  This allows
+  custom list widgets in the theme and then you can get
+  the info in a PreSession script or whatnot.
+
+- The graphical greeter now scales down fonts on screens
+  800x600 and less, and scalles down fonts even more
+  on screens 640x480 and less.
+
+- Remove the iconification of Standard greeter feature,
+  it was broken and I didn't want to fix it, and it was
+  weird anyway.
+
+- Internal messaging is now faster as we use an internal pipe
+  instead of the FIFO file.  Also reduces the damage gdm user
+  can do
+
+- Don't XOpenDisplay so many times to make things run along
+  a lot faster, and use XSetAuthority instead of XAUTHORITY
+  env var internaly
+
+- The server reinit is now safer, doesn't fork an extra process
+  and it's quite a bit faster
+
+- Justification of text in the graphical greeter is based on
+  the anchor of the text
+
+- We're very careful about the log directory as well as the
+  ServAuthDir
+
+- Fix a bunch of errors (mostly portability stuff) by looking at the
+  FreeBSD cvs repository
+
+- The server authfile is now unreadable by the gdm user during
+  a user sessions for security
+
+- Fixed #109331, by catching term/int/hup signals properly when inside
+  the hanging gethostbyaddr/name
+
+- The name resolution stuff now caches the last result for 60
+  seconds
+
+- Get the name of the root user instead of assuming it's "root"
+  (fixes #117527)
+
+- Fix hangs with the signal stuff by fixing the in_signal flag
+  undercounts and redoing the waitpid mess in the slave by using
+  a select call, and not doing that many things in the signal
+  handlers.  Also fixes a long delay when restarting the greeter
+
+- Fix configuration with --with-xinerama=no (#117895)
+
+- The standard greeter clock will now look much better with
+  some themes.
+
+- An empty return will once again log you into the timed user
+  as it did before I broke it
+
+- The Xsession now displays $0 in output (Steve Chaplin, #117898)
+
+- There is now a gdmtranslate libexec proggie that does what
+  the gettext command does, so we get translations from scripts
+  even on user systems (ones without developer kind of packages)
+
+- Fix gdmaskpass internationalization
+
+- Lots of random minor fixes
+
+- Translation updates (Artur Flinta, Vincent van Adrighem,
+  Duarte Loreto, Pablo Gonzalo del Campo, Francisco Javier Fernandez,
+  Hasbullah Bin Pit, Noor Azurah Anuar, Christian Neumair, 
+  Miloslav Trmac, Danilo Segan, Serbian team, Kang Jeong-Hee)
+
 2.4.2.97 stuff:
 
 - HIGify almost all the alert boxes.
