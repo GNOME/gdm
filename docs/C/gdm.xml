@@ -2487,14 +2487,67 @@
       The GDM package provides quite a few different commands.
     </para>
 
-    <sect2 id="mainbinaries">
-      <title>Main GDM Commands</title>
+    <sect2 id="gdmcommandline">
+      <title>GDM Command Line Options</title>
 
       <para>
-        First is the <filename>gdm</filename> command which is really just a script
+        First command is the <filename>gdm</filename> command which is really just a script
         which runs the <filename>gdm-binary</filename>.  If you really need to set
-        some environment before launching GDM, you can do it in this file.
+        some environment before launching GDM, you can do it in this file.  This command
+	accepts several command line parameters.
       </para>
+
+      <variablelist>
+	<title><filename>gdm</filename> Command Line Options</title>
+
+	<varlistentry>
+	  <term>--help</term>
+	  <listitem>
+	    <para>
+              Gives a brief overview of the command line options.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>-nodaemon</term>
+	  <listitem>
+	    <para>
+              If this option is specified, then gdm does not fork into the background when
+              run.  You can use just a single dash with this option to preserve compatibility
+              with XDM.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>--no-console</term>
+	  <listitem>
+	    <para>
+              Tell the daemon that it should not run anything on the console.  This means that
+              none of the local servers from the <filename>[servers]</filename> section will
+              be run, and the console will not be used for communicating errors to the user.
+              An empty <filename>[servers]</filename> section automatically implies this
+              option.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>--preserve-ld-vars</term>
+	  <listitem>
+	    <para>
+              When clearing the environment internally, preserve all variables starting with
+              LD_.  This is mostly for debugging purposes.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+    </sect2>
+
+    <sect2 id="mainbinaries">
+      <title>Other Main GDM Commands</title>
 
       <para>
         Next are the two greeters, <filename>gdmlogin</filename> which is the

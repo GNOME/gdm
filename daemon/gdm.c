@@ -80,9 +80,12 @@ gid_t GdmGroupId;		/* Groupid under which gdm should run */
 pid_t extra_process = 0;	/* An extra process.  Used for quickie 
 				   processes, so that they also get whacked */
 int extra_status = 0;		/* Last status from the last extra process */
-pid_t gdm_main_pid = 0;
+pid_t gdm_main_pid = 0;		/* PID of the main daemon */
 gboolean preserve_ld_vars = FALSE; /* Preserve the ld environment variables */
 gboolean no_daemon = FALSE;	/* Do not daemonize */
+gboolean no_console = FALSE;	/* There are no local servers, this means,
+				   don't run local servers and second,
+				   don't display info on the console */
 
 GdmConnection *fifoconn = NULL; /* Fifo connection */
 GdmConnection *pipeconn = NULL; /* slavepipe (handled just like Fifo for compatibility) connection */
@@ -228,7 +231,8 @@ check_servauthdir (struct stat *statbuf)
 		       "correct gdm configuration %s and "
 		       "restart gdm."), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
+	    if ( ! no_console)
+		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
@@ -241,7 +245,8 @@ check_servauthdir (struct stat *statbuf)
 		       "correct gdm configuration %s and "
 		       "restart gdm."), GdmServAuthDir,
 		     GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
+	    if ( ! no_console)
+		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s is not a directory. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
@@ -442,18 +447,6 @@ gdm_config_parse (void)
 	    gdm_error (_("%s: No remote greeter specified."), "gdm_config_parse");
     }
 
-    if (ve_string_empty (GdmServAuthDir)) {
-	    gdm_text_message_dialog
-		    (_("No daemon/ServAuthDir specified in the configuration file"));
-	    GdmPidFile = NULL;
-	    gdm_fail (_("%s: No authdir specified."), "gdm_config_parse");
-    }
-
-    if (ve_string_empty (GdmLogDir)) {
-	g_free (GdmLogDir);
-	GdmLogDir = g_strdup (GdmServAuthDir);
-    }
-
     if (ve_string_empty (GdmSessDir))
 	gdm_error (_("%s: No sessions directory specified."), "gdm_config_parse");
 
@@ -508,7 +501,9 @@ gdm_config_parse (void)
 
     /* Find local X server definitions */
     list = ve_config_get_keys (cfg, GDM_KEY_SERVERS);
-    for (li = list; li != NULL; li = li->next) {
+    /* only read the list if no_console is FALSE
+       at this stage */
+    for (li = list; ! no_console && li != NULL; li = li->next) {
 	    const char *key = li->data;
 	    if (isdigit (*key)) {
 		    char *full;
@@ -547,6 +542,13 @@ gdm_config_parse (void)
 
     if (displays == NULL && ! GdmXdmcp) {
 	    char *server = NULL;
+
+	    /* if we requested no local servers (there is no console),
+	       then don't display errors in console messages */
+	    if (no_console) {
+		    gdm_fail (_("%s: XDMCP disabled and no local servers defined. Aborting!"), "gdm_config_parse");
+	    }
+
 	    if (access (GdmStandardXServer, X_OK) == 0) {
 		    server = GdmStandardXServer;
 	    } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
@@ -587,6 +589,11 @@ gdm_config_parse (void)
 	    }
     }
 
+    /* If no displays were found, then obviously
+       we're in a no console mode */
+    if (displays == NULL)
+	    no_console = TRUE;
+
     /* Lookup user and groupid for the gdm user */
     pwent = getpwnam (GdmUser);
 
@@ -603,7 +610,8 @@ gdm_config_parse (void)
 		       "Please correct gdm configuration %s "
 		       "and restart gdm."),
 		     GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
+	    if ( ! no_console)
+		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Can't find the gdm user (%s). Aborting!"), "gdm_config_parse", GdmUser);
     } else {
@@ -617,7 +625,8 @@ gdm_config_parse (void)
 		       "pose a security risk.  Please "
 		       "correct gdm configuration %s and "
 		       "restart gdm."), GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
+	    if ( ! no_console)
+		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: The gdm user should not be root. Aborting!"), "gdm_config_parse");
     }
@@ -637,7 +646,8 @@ gdm_config_parse (void)
 		       "Please correct gdm configuration %s "
 		       "and restart gdm."),
 		     GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
+	    if ( ! no_console)
+		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Can't find the gdm group (%s). Aborting!"), "gdm_config_parse", GdmGroup);
     } else  {
@@ -651,7 +661,8 @@ gdm_config_parse (void)
 		       "pose a security risk. Please "
 		       "correct gdm configuration %s and "
 		       "restart gdm."), GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
+	    if ( ! no_console)
+		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: The gdm group should not be root. Aborting!"), "gdm_config_parse");
     }
@@ -691,6 +702,20 @@ gdm_config_parse (void)
     
     g_free (bin);
 
+    /* Check the serv auth and log dirs */
+    if (ve_string_empty (GdmServAuthDir)) {
+	    if ( ! no_console)
+		    gdm_text_message_dialog
+			    (_("No daemon/ServAuthDir specified in the configuration file"));
+	    GdmPidFile = NULL;
+	    gdm_fail (_("%s: No daemon/ServAuthDir specified."), "gdm_config_parse");
+    }
+
+    if (ve_string_empty (GdmLogDir)) {
+	g_free (GdmLogDir);
+	GdmLogDir = g_strdup (GdmServAuthDir);
+    }
+
     /* Enter paranoia mode */
     check_servauthdir (&statbuf);
 
@@ -717,7 +742,8 @@ gdm_config_parse (void)
 		       "gdm."),
 		     GdmServAuthDir, GdmUser, GdmGroup,
 		     GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
+	    if ( ! no_console)
+		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s is not owned by user %s, group %s. Aborting."), "gdm_config_parse", 
 		      GdmServAuthDir, gdm_root_user (), GdmGroup);
@@ -733,7 +759,8 @@ gdm_config_parse (void)
 		       "the gdm configuration %s and "
 		       "restart gdm."),
 		     GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX), GDM_CONFIG_FILE);
-	    gdm_text_message_dialog (s);
+	    if ( ! no_console)
+		    gdm_text_message_dialog (s);
 	    GdmPidFile = NULL;
 	    gdm_fail (_("%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."), "gdm_config_parse", 
 		      GdmServAuthDir, statbuf.st_mode, (S_IRWXU|S_IRWXG|S_ISVTX));
@@ -792,6 +819,7 @@ gdm_daemonify (void)
 
         exit (EXIT_SUCCESS);
     }
+    gdm_main_pid = getpid ();
 
     if (pid < 0) 
 	gdm_fail (_("%s: fork() failed!"), "gdm_daemonify");
@@ -1552,6 +1580,8 @@ create_connections (void)
 struct poptOption options [] = {
 	{ "nodaemon", '\0', POPT_ARG_NONE | POPT_ARGFLAG_ONEDASH,
 	  &no_daemon, 0, N_("Do not fork into the background"), NULL },
+	{ "no-console", '\0', POPT_ARG_NONE,
+	  &no_console, 0, N_("No console (local) servers to be run"), NULL },
 	{ "preserve-ld-vars", '\0', POPT_ARG_NONE,
 	  &preserve_ld_vars, 0, N_("Preserve LD_* variables"), NULL },
         POPT_AUTOHELP
@@ -1655,10 +1685,11 @@ main (int argc, char *argv[])
 	/* do nothing */ ;
 
     if (nextopt != -1) {
-	    printf (_("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
-		    poptBadOption (ctx, 0),
-		    poptStrerror (nextopt),
-		    argv[0]);
+	    fprintf (stderr,
+		     _("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
+		     poptBadOption (ctx, 0),
+		     poptStrerror (nextopt),
+		     argv[0]);
 	    fflush (stdout);
 	    exit (1);
     }

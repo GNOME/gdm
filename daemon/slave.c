@@ -576,6 +576,7 @@ gdm_slave_start (GdmDisplay *display)
 		/* remote and flexi only run once */
 		if (display->type != TYPE_LOCAL) {
 			gdm_server_stop (display);
+			gdm_slave_send_num (GDM_SOP_XPID, 0);
 			gdm_slave_quick_exit (DISPLAY_REMANAGE);
 		}
 
@@ -858,6 +859,7 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 		if (d->type == TYPE_FLEXI) {
 			gdm_slave_whack_greeter ();
 			gdm_server_stop (d);
+			gdm_slave_send_num (GDM_SOP_XPID, 0);
 
 			/* wait for a few seconds to avoid any vt changing race
 			 */

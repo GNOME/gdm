@@ -47,6 +47,8 @@ extern gchar *GdmUser;
 extern gboolean GdmAllowRemoteAutoLogin;
 extern gint GdmRetryDelay;
 
+extern gboolean no_console;
+
 /* Evil, but this way these things are passed to the child session */
 static pam_handle_t *pamh = NULL;
 
@@ -1014,8 +1016,9 @@ gdm_verify_check (void)
 		closelog ();
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		gdm_text_message_dialog
-			(_("Can't find PAM configuration for gdm."));
+		if ( ! no_console)
+			gdm_text_message_dialog
+				(_("Can't find PAM configuration for gdm."));
 		gdm_fail ("gdm_verify_check: %s",
 			  _("Can't find PAM configuration for gdm."));
 	}

@@ -1,3 +1,19 @@
+Fri Jul 25 16:31:24 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c:  Fix updating the gdm_main_pid, which fixes gdm_fail
+	  that is done after daemonification.
+
+	* daemon/gdm.c, daemon/misc.c, daemon/verify-pam.c: Fix debian bug
+	  194613 by adding an option --no-console which ignores the [servers]
+	  section.  An empty [servers] section implies --no-console.  In this
+	  mode the console will not be used (so no opening of text dialogs on
+	  virtual terminals which just screws up XDMCP only headless servers)
+
+	* daemon/slave.c: always send XPID after server_stop unless of course
+	  we're just about to exit
+
+	* docs/C/gdm.xml: add documentation of command line options
+
 Fri Jul 25 13:06:49 2003  George Lebl <jirka@5z.com>
 
 	* daemon/display.c, daemon/gdm.c: if child crashed (died of a signal)
