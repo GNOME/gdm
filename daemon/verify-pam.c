@@ -664,7 +664,7 @@ gdm_verify_open_session (GdmDisplay *d)
 	}
 
 	/* Set credentials */
-	if ((pamerr = pam_setcred (pamh, 0)) != PAM_SUCCESS) {
+	if ((pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED)) != PAM_SUCCESS) {
 		if (gdm_slave_should_complain ())
 			gdm_error (_("Couldn't set credentials for %s"),
 				   current_login);
