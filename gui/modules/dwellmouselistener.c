@@ -27,11 +27,10 @@
 #include <gmodule.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+#include <vicious.h>
 #include <gnome.h>
 
 #include <config.h>
-
-#include <vicious.h>
 
 /*
  * Note that CONFIGFILE will have to be changed to something more generic

@@ -1,3 +1,12 @@
+Tue Jan 06  Brian Cameron <Brian.Cameron@Sun.COM>
+
+	* gui/modules/dwellmouselistener.c,
+      gui/modules/keymouselistener.c:  Moved include of vicious.h 
+      before gnome.h because gnome.h causes macros to be defined
+      for dcgettext, dgettext, gettext, textdomain, bindtextdomain.
+      And this causes a conflict with Solaris libintl.h which is
+      included by locale.h which is included by vicious.h.
+ 
 Tue Jan 06 11:49:29 2004  George Lebl <jirka@5z.com>
 
 	* daemon/display.c, daemon/gdm.h, daemon/server.c, daemon/slave.c,
