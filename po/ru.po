@@ -1,4 +1,5 @@
-# translation of gdm-ru.po to 
+# 
+# translation of gdm-ru.po to
 # Russian translation of gdm
 # Copyright (C) 1999,2003 Free Software Foundation, Inc.
 # Sergey Panov <sipan@mit.edu>, 1999.
@@ -9,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm-ru\n"
 "POT-Creation-Date: 2003-09-02 12:12-0700\n"
-"PO-Revision-Date: 2003-11-18 17:54+0200\n"
+"PO-Revision-Date: 2003-12-18 21:16+0200\n"
 "Last-Translator: Leonid Kanter <leon@asplinux.ru>\n"
 "Language-Team:  <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -374,7 +375,7 @@ msgstr ""
 msgid "%s: Root cannot be autologged in, turing off timed login"
 msgstr ""
 "%s: Суперпользователь (root) не может автоматически начать сеанс, "
-"интервальное начало сеанса отключается"
+"автоматический вход отключается"
 
 #: daemon/gdm.c:449
 #, c-format
@@ -990,7 +991,7 @@ msgstr ""
 "протокол XDMCP был отключён. Это может быть только ошибкой "
 "конфигурации. Так что будет запущен единственный сервер. "
 "Следует войти в сеанс и исправить конфигурацию. Учтите, что "
-"автоматический вход и вход с дадержкой сейчас запрещены."
+"автоматический вход и автоматический вход с после паузы сейчас запрещены."
 
 #: daemon/slave.c:2326
 msgid ""
@@ -1238,12 +1239,12 @@ msgid ""
 msgstr ""
 "Ваш домашний каталог определён как:\n"
 "\"%s\",\n"
-"но, похоже, он не существует.  "
-"Желаете войти в сеанс, имея каталог "
-"суперпользователя в качестве домашнего каталога?\n"
+"но, похоже, он не существует.\n"
+"Желаете войти в сеанс, имея каталог \"/\" (корневой)\n"
+"в качестве домашнего каталога?\n"
 "\n"
-"Скорее всего, ничего не будет работать, "
-"пока не будет использован безопасный сеанс."
+"Скорее всего, ничего не будет работать,\n"
+"пока не будет использован резервный сеанс."
 
 #: daemon/slave.c:3368
 #, c-format
@@ -1366,7 +1367,7 @@ msgstr "Вход в сеанс для суперпользователя (root) 
 
 #: daemon/verify-crypt.c:200 daemon/verify-shadow.c:218
 msgid "The system administrator is not allowed to login from this screen"
-msgstr "Администратор системы не позволил входить в систему с этого экрана"
+msgstr "Администратору не разрешено входить в систему с этого экрана"
 
 #: daemon/verify-crypt.c:216 daemon/verify-shadow.c:234
 #, c-format
@@ -1452,7 +1453,7 @@ msgstr "Необходимо выбрать более длинный парол
 
 #: daemon/verify-pam.c:107
 msgid "Password has been already used. Choose another."
-msgstr "Пароль уже используется. Выберите другой пароль."
+msgstr "Пароль уже использовался ранее. Выберите другой пароль."
 
 #: daemon/verify-pam.c:108
 msgid "You must wait longer to change your password"
@@ -1843,7 +1844,7 @@ msgstr "Пожалуйста подождите: сканируется лока
 
 #: gui/gdmchooser.c:76
 msgid "No serving hosts were found."
-msgstr "Не найдены обслуживаемые узлы."
+msgstr "Не найдены обслуживающие узлы."
 
 #: gui/gdmchooser.c:77
 msgid "Choose a ho_st to connect to:"
@@ -1975,7 +1976,7 @@ msgstr ""
 
 #: gui/gdmcomm.c:416 gui/gdmflexiserver.c:253
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
-msgstr "Невозможно связаться с демоном GDM (Менеджер дисплеев среды Гном), возможно, "
+msgstr "Невозможно связаться с демоном GDM (Менеджер дисплеев среды Гном)"
 
 #: gui/gdmcomm.c:419 gui/gdmflexiserver.c:256
 msgid "Perhaps you have an old version of GDM running."
@@ -2030,8 +2031,8 @@ msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
-"Похоже, для этой операции не нужна авторизация. Возможно, файл .Xauthority "
-"не установлен корректно."
+"Похоже, что ваш уровень авторизации недостаточен для этой операции. Возможно, файл .Xauthority "
+"установлен некорректно."
 
 #: gui/gdmcomm.c:471
 msgid "Unknown error occured."
@@ -3073,11 +3074,11 @@ msgstr "_Входить в систему автоматически при пе
 
 #: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:51
 msgid "Timed Login"
-msgstr "Автоматический вход с задержкой"
+msgstr "Автоматический вход после паузы"
 
 #: gui/gdmsetup-strings.c:30 gui/gdmsetup.glade.h:52
 msgid "Timed login us_ername:"
-msgstr "И_мя пользователя для входа с задержкой:"
+msgstr "И_мя пользователя для автоматического входа после паузы:"
 
 #: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:64
 msgid "_Seconds before login:"
@@ -3195,9 +3196,7 @@ msgstr ""
 
 #: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:6
 msgid "Allow remote _timed logins"
-msgstr ""
-"Позволять суперпользователю (root) _интервально входить в сеанс с помощью "
-"сервера GDM"
+msgstr "Разрешить _автоматический вход после паузы с удаленных дисплеев"
 
 #: gui/gdmsetup-strings.c:69 gui/gdmsetup.glade.h:45
 msgid ""
@@ -3374,6 +3373,7 @@ msgstr ""
 "Заметьте, что не все параметры конфигурации перечислены здесь. Может "
 "возникнуть потребность отредактировать файл \"%s\", если здесь не будет "
 "найден искомый параметр.\n"
+"\n"
 "Полную документацию по этой программе можно найти в обозревателе справки "
 "среды GNOME, в категории GNOME/System."
 
