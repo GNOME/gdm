@@ -132,6 +132,8 @@ extern gchar *GdmWilling;	/* The willing script */
 
 extern gboolean GdmXdmcp;	/* xdmcp enabled */
 
+extern gboolean GdmDebug;	/* debug enabled */
+
 /* Local prototypes */
 static gboolean gdm_xdmcp_decode_packet (GIOChannel *source,
 					 GIOCondition cond,
@@ -188,7 +190,7 @@ typedef struct {
 } ManagedForward;
 #define MANAGED_FORWARD_INTERVAL 1500 /* 1.5 seconds */
 
-static GList *managed_forwards = NULL;
+static GSList *managed_forwards = NULL;
 
 
 /* 
@@ -429,9 +431,13 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     
     /* Crude checksumming */
     for (i = 0 ; i < clnt_authlist.length ; i++) {
-	gdm_debug ("gdm_xdmcp_handle_query: authlist: %s",
-		   (char *)clnt_authlist.data);
-	explen += 2+clnt_authlist.data[i].length;
+	    if (GdmDebug) {
+		    char *s = g_new0 (char, clnt_authlist.length+1);
+		    memcpy (s, clnt_authlist.data[i].data, clnt_authlist.length);
+		    gdm_debug ("gdm_xdmcp_handle_query: authlist: %s", s);
+		    g_free (s);
+	    }
+	    explen += 2+clnt_authlist.data[i].length;
     }
     
     if (len != explen) {
@@ -632,8 +638,9 @@ gdm_forward_query_lookup (struct sockaddr_in *clnt_sa)
 		if (q->acctime > 0 &&
 		    curtime > q->acctime + GDM_FORWARD_QUERY_TIMEOUT)	{
 			gdm_debug ("gdm_forward_query_lookup: Disposing stale forward query from %s",
-				   inet_ntoa (clnt_sa->sin_addr));
+				   inet_ntoa (q->dsp_sa->sin_addr));
 			gdm_forward_query_dispose (q);
+			continue;
 		}
 
 	}
@@ -707,9 +714,13 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     explen += 2+clnt_port.length;
     
     for (i = 0 ; i < clnt_authlist.length ; i++) {
-	gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s",
-		   (char *)clnt_authlist.data);
-	explen += 2+clnt_authlist.data[i].length;
+	    if (GdmDebug) {
+		    char *s = g_new0 (char, clnt_authlist.length+1);
+		    memcpy (s, clnt_authlist.data[i].data, clnt_authlist.length);
+		    gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s", s);
+		    g_free (s);
+	    }
+	    explen += 2+clnt_authlist.data[i].length;
     }
     
     if (len != explen) {
@@ -882,7 +893,7 @@ managed_forward_handler (gpointer data)
 						       &(mf->origin));
 	mf->times ++;
 	if (gdm_xdmcpfd <= 0 || mf->times >= 2) {
-		managed_forwards = g_list_remove (managed_forwards, mf);
+		managed_forwards = g_slist_remove (managed_forwards, mf);
 		mf->handler = 0;
 		/* mf freed by glib */
 		return FALSE;
@@ -908,7 +919,7 @@ gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa,
 					  managed_forward_handler,
 					  mf,
 					  (GDestroyNotify) g_free);
-	managed_forwards = g_list_prepend (managed_forwards, mf);
+	managed_forwards = g_slist_prepend (managed_forwards, mf);
 }
 
 static void
@@ -1016,7 +1027,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     
     /* libXdmcp doesn't terminate strings properly so we cheat and use strncmp() */
     for (i = 0 ; i < clnt_authorization.length ; i++)
-	if (! strncmp (clnt_authorization.data[i].data, "MIT-MAGIC-COOKIE-1", 18))
+	if (clnt_authorization.data[i].length == 18 &&
+	    strncmp (clnt_authorization.data[i].data, "MIT-MAGIC-COOKIE-1", 18) == 0)
 	    mitauth = TRUE;
     
     /* Manufacturer ID */
@@ -1350,14 +1362,14 @@ static void
 gdm_xdmcp_whack_queued_managed_forwards (struct sockaddr_in *clnt_sa,
 					 struct in_addr *origin)
 {
-	GList *li;
+	GSList *li;
 
 	for (li = managed_forwards; li != NULL; li = li->next) {
 		ManagedForward *mf = li->data;
 		if (mf->manager.sin_addr.s_addr == clnt_sa->sin_addr.s_addr &&
 		    mf->origin.sin_addr.s_addr == origin->s_addr) {
-			managed_forwards = g_list_remove_link (managed_forwards, li);
-			g_list_free_1 (li);
+			managed_forwards = g_slist_remove_link (managed_forwards, li);
+			g_slist_free_1 (li);
 			g_source_remove (mf->handler);
 			/* mf freed by glib */
 			return;
@@ -1371,7 +1383,7 @@ gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 	ARRAY8 clnt_address;
 
 	gdm_debug ("gdm_xdmcp_handle_got_managed_forward: "
-		   "Got MANAGED_FORWARD from %s",
+		   "Got GOT_MANAGED_FORWARD from %s",
 		   inet_ntoa (clnt_sa->sin_addr));
 
 	/* Hostname */

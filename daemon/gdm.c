@@ -1976,6 +1976,9 @@ main (int argc, char *argv[])
 
     create_connections ();
 
+    /* make sure things (currently /tmp/.ICE-unix) are sane */
+    gdm_ensure_sanity () ;
+
     /* Start local X servers */
     gdm_start_first_unborn_local (0 /* delay */);
 

@@ -1,3 +1,12 @@
+Mon Aug 04 15:05:26 2003  George Lebl <jirka@5z.com>
+
+	* daemon/choose.c: fix crash when indirect display expires
+
+	* daemon/gdm.c: call gdm_ensure_sanity on startup as well, seems like
+	  a good place to ensure sanity too
+
+	* daemon/xdmcp.c: fix checking auth string, fix debug messages
+
 Mon Aug 04 13:43:29 2003  George Lebl <jirka@5z.com>
 
 	* daemon/misc.c: Fixed #118878 by actually ensuring the /tmp/.ICE-unix
