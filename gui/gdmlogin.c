@@ -676,6 +676,7 @@ evil (const char *user)
 	if (dance_handler == 0 &&
 	    strcmp (user, "Start Dancing") == 0) {
 		dance_handler = gtk_timeout_add (50, dance, NULL);
+		GdmLockPosition = TRUE;
 	}
 }
 
@@ -1055,15 +1056,19 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	if (GdmQuiver) {
 	    gdk_window_get_position (login->window, &x, &y);
 	    
-	    for (i=32 ; i > 0 ; i=i/2) {
+	    for (i=32 ; i > 0 ; i=i/4) {
 		gdk_window_move (login->window, i+x, y);
 		gdk_flush ();
+		usleep (200);
 		gdk_window_move (login->window, x, y);
 		gdk_flush ();
+		usleep (200);
 		gdk_window_move (login->window, -i+x, y);
 		gdk_flush ();
+		usleep (200);
 		gdk_window_move (login->window, x, y);
 		gdk_flush ();
+		usleep (200);
 	    }
 	}
 

@@ -69,7 +69,7 @@ gdm_verify_user (const gchar *display)
 
 	if (!pwent) {
 	    gdm_error (_("Couldn't authenticate %s"), login);
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("User unknown"));
+	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Login incorrect"));
 	    return NULL;
 	}
     
@@ -84,7 +84,7 @@ gdm_verify_user (const gchar *display)
     if (!passwd || !ppasswd || strcmp (crypt (passwd, ppasswd), ppasswd)) {
 
 	if (GdmVerboseAuth)
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Incorrect password"));
+	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Login incorrect"));
 	
 	return NULL;
     }
