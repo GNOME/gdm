@@ -14,43 +14,69 @@
 # Have fun! - George
 
 [daemon]
+# Automatic login, if true the first local screen will automatically logged
+# in as user as set with AutomaticLogin key.
 AutomaticLoginEnable=false
 AutomaticLogin=
+# Timed login, useful for kiosks.  Log in a certain user after a certain
+# amount of time
+TimedLoginEnable=false
+TimedLogin=
+TimedLoginDelay=30
 # If you are having trouble with using a single server for a long time and
 # want gdm to kill/restart the server, turn this on
 AlwaysRestartServer=false
+# The gdm configuration program that is run from the login screen, you should
+# probably leave this alone
 Configurator=@EXPANDED_GDMCONFIGDIR@/gdmsetup --disable-sound --disable-crash-dialog
 GnomeDefaultSession=@EXPANDED_DATADIR@/gnome/default.session
+# The chooser program.  Must output the chosen host on stdout, probably you
+# should leave this alone
 Chooser=@EXPANDED_BINDIR@/gdmchooser
 DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:@EXPANDED_BINDIR@
 DisplayInitDir=@EXPANDED_SYSCONFDIR@/gdm/Init
+# Greeter for local (non-xdmcp) logins.  Change gdmlogin to gdmgreeter to
+# get the new graphical greeter.
 Greeter=@EXPANDED_BINDIR@/gdmlogin
+# Greeter for xdmcp logins, usually you want a less graphically intensive
+# greeter here so it's better to leave this with gdmlogin
 RemoteGreeter=@EXPANDED_BINDIR@/gdmlogin
+# User and group that gdm should run as.  Probably should be gdm and gdm and
+# you should create these user and group.  Anyone found running this as
+# someone too privilaged will get a kick in the ass.  This should have
+# access to only the gdm directories and files.
+User=gdm
 Group=gdm
-HaltCommand=/sbin/shutdown -h now
+# To try to kill all clients started at greeter time or in the Init script.
+# doesn't always work, only if those clients have a window of their own
 KillInitClients=true
 LogDir=@EXPANDED_AUTHDIR@
+# You should probably never change this value unless you have a weird setup
 PidFile=/var/run/gdm.pid
 PostSessionScriptDir=@EXPANDED_SYSCONFDIR@/gdm/PostSession/
 PreSessionScriptDir=@EXPANDED_SYSCONFDIR@/gdm/PreSession/
 # Distributions:  If you have some script that runs an X server in say
 # VGA mode, allowing a login, could you please send it to me?
 FailsafeXServer=
+# if X keeps crashing on us we run this script.  The default one does a bunch
+# of cool stuff to figure out what to tell the user and such and can
+# run an X configuration program.
 XKeepsCrashing=@EXPANDED_SYSCONFDIR@/gdm/XKeepsCrashing
+# Reboot, Halt and suspend commands
 RebootCommand=/sbin/shutdown -r now
+HaltCommand=/sbin/shutdown -h now
+SuspendCommand=
 RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:@EXPANDED_BINDIR@
 ServAuthDir=@EXPANDED_AUTHDIR@
 SessionDir=@EXPANDED_SYSCONFDIR@/gdm/Sessions/
-SuspendCommand=
-User=gdm
 UserAuthDir=
 UserAuthFBDir=/tmp
 UserAuthFile=.Xauthority
-TimedLoginEnable=false
-TimedLogin=
-TimedLoginDelay=30
+# The X server to use if we can't figure out what else to run.
 StandardXServer=/usr/X11R6/bin/X
+# The maximum number of flexible X servers to run.
 FlexibleXServers=5
+# the X nest command
 Xnest=/usr/X11R6/bin/Xnest -name Xnest -kb
 
 [security]
@@ -60,6 +86,7 @@ Xnest=/usr/X11R6/bin/Xnest -name Xnest -kb
 AllowRoot=true
 # If you want to be paranoid, turn this one off
 AllowRemoteRoot=true
+# This will allow remote timed login
 AllowRemoteAutoLogin=false
 RelaxPermissions=0
 RetryDelay=3
@@ -96,6 +123,8 @@ DefaultFace=@EXPANDED_PIXMAPDIR@/nobody.png
 DefaultLocale=en_US
 # These are things excluded from the face browser, not from logging in
 Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm,rpm
+# As an alternative to the above this is the minimum uid to show
+MinimalUID=100
 GlobalFaceDir=@EXPANDED_DATADIR@/faces/
 Icon=@EXPANDED_PIXMAPDIR@/gdm.png
 LocaleFile=@EXPANDED_LOCALEDIR@/locale.alias
@@ -125,7 +154,9 @@ RunBackgroundProgramAlways=false
 ShowGnomeChooserSession=true
 ShowGnomeFailsafeSession=true
 ShowXtermFailsafeSession=true
+# Always use 24 hour clock no matter what the locale.
 Use24Clock=false
+# Use circles in the password field.  Looks kind of cool actually
 UseCirclesInEntry=false
 # These two keys are for the new greeter.  Circles is the standard
 # shipped theme

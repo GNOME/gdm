@@ -30,6 +30,15 @@
 
 #include "gdm.h"
 
+int response = -999;
+
+static void
+dialog_response (GtkWidget *dialog, int res, gpointer data)
+{
+	response = res;
+	gtk_main_quit ();
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -96,9 +105,20 @@ main (int argc, char *argv[])
 
 	gtk_widget_show_all (dialog);
 
-	while (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
+	g_signal_connect (G_OBJECT (dialog), "response",
+			  G_CALLBACK (dialog_response),
+			  NULL);
+
+	for (;;) {
 		struct stat s;
-		char *pixmap = gnome_pixmap_entry_get_filename (GNOME_PIXMAP_ENTRY (photo));
+		char *pixmap;
+
+		gtk_main ();
+
+		if (response != GTK_RESPONSE_OK)
+			break;
+
+		pixmap = gnome_pixmap_entry_get_filename (GNOME_PIXMAP_ENTRY (photo));
 		if (ve_string_empty (pixmap) ||
 		    stat (pixmap, &s) < 0) {
 			GtkWidget *d;

@@ -1,3 +1,16 @@
+Tue Aug 13 12:49:18 2002  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in: update this, add MinimalUID, add a bunch of
+	  comments and reorganize a little bit to be more logical
+
+	* gui/gdmlogin.c: when the gdm.xpm isn't found for icon try gdm.png
+	  to make it easier for transition to the new nicer icon
+
+	* gui/gdmphotosetup.c: Don't use gtk_dialog_run, that makes the
+	  main window here modal and we don't want that.  Fixes #90613.  
+
+	* pixmaps/Makefile.am: don't install gdm.xpm anymore
+
 Tue Aug 13 11:52:28 2002  George Lebl <jirka@5z.com>
 
 	* pixmaps/Makefile.am, pixmaps/gdm.png, pixmaps/gdm-foot-logo.png:

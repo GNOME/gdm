@@ -857,6 +857,13 @@ gdm_login_parse_config (void)
     GdmBrowser = ve_config_get_bool (config, GDM_KEY_BROWSER);
     GdmLogo = ve_config_get_string (config, GDM_KEY_LOGO);
     GdmIcon = ve_config_get_string (config, GDM_KEY_ICON);
+    /* XXX: hack */
+    if (GdmIcon != NULL &&
+	strcmp (GdmIcon, EXPANDED_PIXMAPDIR "/gdm.xpm") == 0 &&
+	access (GdmIcon, F_OK) != 0) {
+	    g_free (GdmIcon);
+	    GdmIcon = g_strdup (EXPANDED_PIXMAPDIR "/gdm.png");
+    }
     GdmQuiver = ve_config_get_bool (config, GDM_KEY_QUIVER);
     GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
     GdmHalt = ve_config_get_string (config, GDM_KEY_HALT);
