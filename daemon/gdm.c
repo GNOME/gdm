@@ -1799,7 +1799,10 @@ main (int argc, char *argv[])
     int nextopt;
     const char *charset;
 
+    /* semi init pseudorandomness */
     gdm_random_tick ();
+    srand (g_random_int ());
+    srandom (g_random_int ());
 
     gdm_main_pid = getpid ();
 

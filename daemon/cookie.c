@@ -92,16 +92,18 @@ gdm_random_tick (void)
 
 	gettimeofday (&tv, &tz);
 
-	if (rnd == NULL)
+	if G_UNLIKELY (rnd == NULL)
 		rnd = g_rand_new_with_seed (tv.tv_usec ^ tv.tv_sec);
 	else
 		g_rand_set_seed (rnd, tv.tv_usec ^ tv.tv_sec);
-	randnums[0] += g_rand_int (rnd);
-	randnums[1] *= g_rand_int (rnd);
-	randnums[2] ^= g_rand_int (rnd);
+	randnums[0] ^= g_rand_int (rnd);
+	randnums[1] ^= g_random_int ();
+	randnums[2] ^= rand ();
+	randnums[3] ^= random ();
 
-	randnums[3] += g_random_int ();
-	randnums[4] ^= g_random_int ();
+	/* a little bit of dependence on speed of execution */
+	gettimeofday (&tv, &tz);
+	randnums[4] ^= (tv.tv_usec ^ randnums[3]);
 }
 
 /* check a few values and if we get the same
@@ -116,8 +118,8 @@ data_seems_random (const char buf[], int size)
 		return FALSE;
 	for (i = 0; i < 10; i++) {
 		int idx = g_random_int_range (0, size);
-		if (i > 0 &&
-		    lastval != buf[idx])
+		if G_LIKELY (i > 0 &&
+			     lastval != buf[idx])
 			return TRUE;
 		lastval = buf[idx];
 	}
@@ -150,6 +152,9 @@ gdm_cookie_generate (GdmDisplay *d)
     /* use the last cookie */
     gdm_md5_update (&ctx, old_cookie, 16);
 
+    /* use some uninitialized stack space */
+    gdm_md5_update (&ctx, digest, 16);
+
     pid = getppid();
     gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
     pid = getpid();
@@ -157,9 +162,9 @@ gdm_cookie_generate (GdmDisplay *d)
         
     for (i = 0; i < RNGS; i++) {
 	const char *file = rngs[i].path;
-	if (file == NULL)
+	if G_UNLIKELY (file == NULL)
 	    file = d->authfile;
-	if (file == NULL)
+	if G_UNLIKELY (file == NULL)
 	    continue;
 	fd = open (file, O_RDONLY|O_NONBLOCK
 #ifdef O_NOCTTY
@@ -169,7 +174,7 @@ gdm_cookie_generate (GdmDisplay *d)
 			|O_NOFOLLOW
 #endif
 		   );
-	if (fd >= 0) {
+	if G_LIKELY (fd >= 0) {
 	    /* Apparently this can sometimes block anyway even if it is O_NONBLOCK,
 	       so use select to figure out if there is something available */
 	    fd_set rfds;
@@ -182,21 +187,21 @@ gdm_cookie_generate (GdmDisplay *d)
 	    tv.tv_usec = 10*1000 /* 10 ms */;
 	    r = 0;
 
-	    if (rngs[i].seek > 0)
+	    if G_UNLIKELY (rngs[i].seek > 0)
 		lseek (fd, rngs[i].seek, SEEK_SET);
 
-	    if (select (fd+1, &rfds, NULL, NULL, &tv) > 0) {
+	    if G_LIKELY (select (fd+1, &rfds, NULL, NULL, &tv) > 0) {
 	        IGNORE_EINTR (r = read (fd, buf, MIN (sizeof (buf), rngs[i].length)));
 	    }
 
-	    if (r > 0)
+	    if G_LIKELY (r > 0)
 		gdm_md5_update (&ctx, buf, r);
 	    else
 		r = 0;
 
 	    IGNORE_EINTR (close (fd));
 
-	    if (r >= rngs[i].length &&
+	    if G_LIKELY (r >= rngs[i].length &&
 		data_seems_random (buf, r)) 
 		break;
 	}
