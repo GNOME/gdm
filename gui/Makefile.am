@@ -147,6 +147,7 @@ Icons_DATA = \
 	login-photo.png
 
 install-data-local:
+	-test -z "$(DESTDIR)$(bindir)/gdmXnest" || rm -f $(DESTDIR)$(bindir)/gdmXnest
 	$(LN_S) -f gdmXnestchooser $(DESTDIR)$(bindir)/gdmXnest
 
 EXTRA_DIST = \
