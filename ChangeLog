@@ -1,3 +1,16 @@
+Mon Dec 31 18:54:25 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, NEWS: raise version
+
+	* daemon/slave.c: set egid to the correct value before we do setuid
+	  to avoid running the session with gdm group privilages.  (Note
+	  that all session files run bash and thus drop those, but this
+	  is a problem for the failsafes)
+
+	* gui/gdmlogin.c: Make PositionX and PositionY follow the standard
+	  X geometry behaviour where negative values mean position from
+	  lower/right edge
+
 Thu Dec 27 00:59:43 2001  George Lebl <jirka@5z.com>
 
 	* Release 2.2.5.3

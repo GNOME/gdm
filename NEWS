@@ -1,5 +1,16 @@
 Ahh news...
 
+2.2.5.4 stuff:
+
+- SECURITY FIX! Make sure the egid is reset to the user gid before
+  starting a session.  This could present a security risk under a
+  certain circumstances, that is if your /bin/sh does not drop privilages.
+  It also fixes the failsafe gnome session
+
+- PositionX and PositionY now take negative values that work
+  like standard X geometries.  A negative value is an offset from
+  the right/lower edge.
+
 2.2.5.3 stuff:
 
 - PAM support revamped.  Session open and credentials are done before
