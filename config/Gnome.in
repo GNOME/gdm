@@ -22,6 +22,7 @@ usermodmap=$HOME/.Xmodmap
 userxkbmap=$HOME/.Xkbmap
 
 sysresources=/etc/X11/Xresources 
+xdmsysresources=/etc/X11/xdm/Xresources 
 sysmodmap=/etc/X11/Xmodmap 
 sysxkbmap=/etc/X11/Xkbmap
 
@@ -45,6 +46,10 @@ fi
 # merge in defaults
 if [ -f "$rh6sysresources" ]; then
     xrdb -merge "$rh6sysresources"
+fi
+
+if [ -f "$xdmsysresources" ]; then
+    xrdb -merge "$xdmsysresources"
 fi
 
 if [ -f "$sysresources" ]; then
