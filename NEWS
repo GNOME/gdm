@@ -1,5 +1,20 @@
 Ahh news...
 
+2.3.90.1 stuff:
+
+- All changes up to 2.2.5.4
+
+2.2.5.4 stuff:
+
+- SECURITY FIX! Make sure the egid is reset to the user gid before
+  starting a session.  This could present a security risk under a
+  certain circumstances, that is if your /bin/sh does not drop privilages.
+  It also fixes the failsafe gnome session
+
+- PositionX and PositionY now take negative values that work
+  like standard X geometries.  A negative value is an offset from
+  the right/lower edge.
+
 2.3.90.0 stuff:
 
 - All changes up to 2.2.5.3

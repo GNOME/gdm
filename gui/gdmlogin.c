@@ -289,6 +289,12 @@ set_screen_pos (GtkWidget *widget, int x, int y)
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
+	/* allow negative values, to be like standard X geometry ones */
+	if (x < 0)
+		x = gdm_wm_screen.width + x - widget->allocation.width;
+	if (y < 0)
+		y = gdm_wm_screen.height + y - widget->allocation.height;
+
 	if (x < gdm_wm_screen.x)
 		x = gdm_wm_screen.x;
 	if (y < gdm_wm_screen.y)

@@ -32,6 +32,10 @@ struct _Language {
 	int found;
 };
 
+/* Note: these should NOT include the encodings, this is just a translation
+ * matrix for language_country names.  This is NOT a list of available
+ * languages, just their names and where they are placed in the menu.
+ * The available languages come from the supplied locale.alias */
 static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Catalan"), "ca_ES", 0 },

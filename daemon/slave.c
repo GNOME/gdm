@@ -1886,6 +1886,10 @@ session_child_run (struct passwd *pwent,
 				  "Aborting."),
 				"gdm_slave_session_start", login);
 
+	/* setup egid to the correct group,
+	 * not to leave the egid around */
+	setegid (pwent->pw_gid);
+
 	if (setuid (pwent->pw_uid) < 0) 
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("gdm_slave_session_start: Could not become %s. Aborting."), login);
