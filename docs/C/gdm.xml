@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.4.1.99"> 
-    <!ENTITY date "7/24/2003"> 
+    <!ENTITY date "7/28/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -448,6 +448,75 @@
 
     </sect2>
 
+    <sect2 id="gdmuser">
+      <title>Security and the GDM User</title>
+
+      <para>
+	The GDM daemon normally runs as root, as does the slave.
+	However GDM should also have a dedicated user id and a group
+	id which it uses for its graphical interfaces such
+	as <filename>gdmgreeter</filename> and <filename>gdmlogin</filename>.
+	You can choose the name of this user and group in the
+	<filename>[daemon]</filename> section of the configuration
+	file.
+      </para>
+
+      <para>
+	The GDM user, and group, which are normally just
+	<filename>gdm</filename> should not be user or group of
+	any particular privilage.  The reason for using them is
+	to have the user interface run as a user without privilages
+	so that in the unlikely case that someone finds a weakness
+	in the GUI, they cannot access root on the machine.
+      </para>
+
+      <para>
+	It should however be noted that the GDM user and
+	group have some privilages that make them somewhat
+	dangerous.  For one they have access to the server
+	authorization directory (the <filename>ServAuthDir</filename>),
+	which contains all the X server authorization files
+	and other private information.  This means that
+	someone who gains the GDM user/group privilages
+	can then connect to any session.  So you should
+	not, under any circumstances, make this some user/group
+	which may be easy to get access to, such as the
+	user <filename>nobody</filename>.
+      </para>
+
+      <para>
+	The server authorization directory
+	(the <filename>ServAuthDir</filename>) is used for
+	a host of random internal data in addition to the
+	X server authorization files, and the naming is really
+	a relic of history.  GDM daemon enforces this dirctory
+	to be owned by <filename>root.gdm</filename> with
+	the permissions of 1770.  This way, only root and
+	the GDM group have write access to this directory,
+	but the GDM group cannot remove the root owned files
+	from this directory, such as the X server authorization
+	files.
+      </para>
+
+      <para>
+	GDM by default doesn't trust the server authorization
+	directory and treats it in the same way as the temporary
+	directory with respect to creating files.  This way
+	someone breaking the GDM user cannot mount attacks by
+	creating links in this directory.  Similarly the X server
+	log directory is treated safely, but that directory should
+	really be owned and writable only by root.
+      </para>
+
+      <para>
+	Anybody found not using a dedicated user for GDM
+	should be whacked over the head with a large, blunt,
+	heavy and rusty object, although the rusty requirement
+	may be dropped if there is not enough time to have the
+	object develop rust.
+      </para>
+    </sect2>
+	  
   </sect1>
 
   <sect1 id="configuration">
@@ -887,9 +956,16 @@
 	    <listitem>
 	      <synopsis>Group=gdm</synopsis>
 	      <para>
-		The group id under which
-		<filename>gdmlogin</filename>/<filename>gdmchooser</filename>
-		are run.
+		The group name under which <filename>gdmlogin</filename>,
+		<filename>gdmgreeter</filename>,
+		<filename>gdmchooser</filename> and the internal
+		failsafe GTK+ dialogs are run.  Also see <filename>User</filename>.
+		This user will have access to all the X authorization files,
+		and perhaps to other internal GDM data and it should not
+		therefore be a user such as nobody, but rather a dedicated
+		user.  The <filename>ServAuthDir</filename> is owned by this
+		group.  The ownership and permissions of <filename>ServAuthDir<filename>
+		should be <filename>root.gdm</filename> and 1770.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1035,8 +1111,10 @@
 	      <para>
 		Directory containing the X authentication files for the
 		individual displays.  Should be owned by
-		<filename>root.gdm</filename> with permissions 1770.
-		That is should be owned by root, with gdm group having
+		<filename>root.gdm</filename> with permissions 1770,
+		where <filename>gdm</filename> is the GDM group as defined
+		by the <filename>Group</filename> option.
+		That is should be owned by root, with <filename>gdm</filename> group having
 		full write permissions and the directory should be
 		sticky and others should have no permission to the directory.
 		This way the gdm user can't remove files owned
@@ -1135,8 +1213,14 @@
 	    <listitem>
 	      <synopsis>User=gdm</synopsis>
 	      <para>
-		The username under which <filename>gdmlogin</filename> /
-		<filename>gdmchooser</filename> are run.
+		The username under which <filename>gdmlogin</filename>,
+		<filename>gdmgreeter</filename>,
+		<filename>gdmchooser</filename> and the internal
+		failsafe GTK+ dialogs are run.  Also see <filename>Group</filename>.
+		This user will have access to all the X authorization files,
+		and perhaps to other internal GDM data and it should not
+		therefore be a user such as nobody, but rather a dedicated
+		user.
 	      </para>
 	    </listitem>
 	  </varlistentry>
