@@ -102,7 +102,9 @@ ServAuthDir=@EXPANDED_AUTHDIR@
 # default for more information.
 BaseXsession=@EXPANDED_SYSCONFDIR@/gdm/Xsession
 # This is a directory where .desktop files describing the sessions live
-#SessionDesktopDir=@EXPANDED_SYSCONFDIR@/dm/Sessions/
+# It is really a PATH style variable since 2.4.4.2 to allow actual
+# interoperability with KDM
+#SessionDesktopDir=@EXPANDED_SYSCONFDIR@/sessions/:@EXPANDED_SYSCONFDIR@/dm/Sessions/:/usr/share/xsessions/:/usr/share/X11/sessions/
 # This is the default .desktop session.  One of the ones in SessionDesktopDir
 #DefaultSession=gnome.desktop
 # Better leave this blank and HOME will be used.  You can use syntax ~/ below

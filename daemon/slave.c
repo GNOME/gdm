@@ -2782,27 +2782,6 @@ gdm_slave_chooser (void)
 }
 
 static gboolean
-is_prog_in_path (const char *prog, const char *path)
-{
-	char **vec;
-	int i;
-
-	if (ve_string_empty (prog) || ve_string_empty (path))
-		return FALSE;
-
-	vec = g_strsplit (path, ":", -1);
-	for (i = 0; vec != NULL && vec[i] != NULL; i++) {
-		char *full = g_build_filename (vec[i], prog, NULL);
-		if (access (full, X_OK) == 0) {
-			g_free (full);
-			return TRUE;
-		}
-		g_free (full);
-	}
-	return FALSE;
-}
-
-static gboolean
 is_session_magic (const char *session_name)
 {
 	return (strcmp (session_name, GDM_SESSION_DEFAULT) == 0 ||
@@ -2814,6 +2793,7 @@ static char *
 get_session_exec (const char *session_name)
 {
 	char *file;
+	char *full;
 	VeConfig *cfg;
 	static char *exec;
 	static char *cached = NULL;
@@ -2836,10 +2816,12 @@ get_session_exec (const char *session_name)
 	g_free (cached);
 	cached = g_strdup (session_name);
 
-	file = gdm_make_filename (GdmSessDir, session_name, ".desktop");
+	file = gdm_ensure_extension (session_name, ".desktop");
+	full = ve_find_prog_in_path (file, GdmSessDir);
+	g_free (file);
 
-	if (access (file, R_OK) != 0) {
-		g_free (file);
+	if (ve_string_empty (full) || access (full, R_OK) != 0) {
+		g_free (full);
 		if (is_session_magic (session_name)) {
 			exec = g_strdup (session_name);
 			return g_strdup (exec);
@@ -2848,19 +2830,18 @@ get_session_exec (const char *session_name)
 		}
 	}
 
-	cfg = ve_config_get (file);
-	g_free (file);
+	cfg = ve_config_get (full);
+	g_free (full);
 	if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false"))
 		return NULL;
 
 	tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
 	if ( ! ve_string_empty (tryexec) &&
-	     ! is_prog_in_path (tryexec, GdmDefaultPath)) {
+	     ! ve_is_prog_in_path (tryexec, GdmDefaultPath)) {
 		g_free (tryexec);
 		return NULL;
 	}
 	g_free (tryexec);
-
 
 	exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
 	return g_strdup (exec);

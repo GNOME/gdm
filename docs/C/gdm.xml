@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.4.4.1"> 
-    <!ENTITY date "9/12/2003"> 
+    <!ENTITY version "2.4.4.2"> 
+    <!ENTITY date "9/18/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -1379,10 +1379,12 @@
 	  <varlistentry>
 	    <term>SessionDesktopDir</term>
 	    <listitem>
-	      <synopsis>SessionDesktopDir=etc/dm/Sessions</synopsis>
+	      <synopsis>SessionDesktopDir=etc/sessions:etc/dm/Sessions:/usr/share/X11/sessions</synopsis>
 	      <para>
 		Directory containing the <filename>.desktop</filename>
 		files which are the available sessions on the system.
+		Since 2.4.4.2 this is treated like a PATH type variable
+		and the first file found is used.
 	      </para>
 	    </listitem>
 	  </varlistentry>

@@ -1190,6 +1190,9 @@ gdm_login_session_init (GtkWidget *menu)
     struct dirent *dent;
     gboolean searching_for_default = TRUE;
     int num = 1;
+    int i;
+    char **vec;
+    gboolean some_dir_exists = FALSE;
 
     cursess = NULL;
     
@@ -1215,141 +1218,150 @@ gdm_login_session_init (GtkWidget *menu)
             gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
             gtk_widget_show (GTK_WIDGET (item));
     }
-    
-    /* Check that session dir is readable */
-    if G_UNLIKELY (GdmSessionDir == NULL ||
-		   access (GdmSessionDir, R_OK|X_OK)) {
-	syslog (LOG_ERR, _("%s: Session directory %s not found!"), "gdm_login_session_init", ve_sure_string (GdmSessionDir));
-	GdmShowXtermFailsafeSession = TRUE;
-	session_dir_whacked_out = TRUE;
-    }
-
-    /* Read directory entries in session dir */
-    if G_UNLIKELY (GdmSessionDir == NULL)
-	    sessdir = NULL;
-    else
-	    sessdir = opendir (GdmSessionDir);
-
-    if G_LIKELY (sessdir != NULL)
-	    dent = readdir (sessdir);
-    else
-	    dent = NULL;
 
     sessnames = g_hash_table_new (g_str_hash, g_str_equal);
     g_hash_table_insert (sessnames, GDM_SESSION_FAILSAFE_GNOME, _("Failsafe Gnome"));
     g_hash_table_insert (sessnames, GDM_SESSION_FAILSAFE_XTERM, _("Failsafe xterm"));
 
-    while (dent != NULL) {
-	    VeConfig *cfg;
-	    char *exec;
-	    char *name;
-	    char *comment;
-	    char *s;
-	    char *label;
-	    char *tryexec;
+    vec = g_strsplit (GdmSessionDir, ":", -1);
+    for (i = 0; vec != NULL && vec[i] != NULL; i++) {
+	    const char *dir = vec[i];
 
-	    /* ignore everything but the .desktop files */
-	    if (strstr (dent->d_name, ".desktop") == NULL) {
-		    dent = readdir (sessdir);
+	    /* Check that session dir is readable */
+	    if G_UNLIKELY (dir == NULL || access (dir, R_OK|X_OK) != 0)
 		    continue;
-	    }
 
-	    s = g_strconcat (GdmSessionDir, "/", dent->d_name, NULL);
-	    cfg = ve_config_new (s);
-	    g_free (s);
+	    some_dir_exists = TRUE;
 
-	    if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false")) {
-		    ve_config_destroy (cfg);
+	    /* Read directory entries in session dir */
+	    sessdir = opendir (dir);
+
+	    if G_LIKELY (sessdir != NULL)
 		    dent = readdir (sessdir);
-		    continue;
-	    }
+	    else
+		    dent = NULL;
 
-	    tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
-	    if ( ! ve_string_empty (tryexec)) {
-		    char *full = g_find_program_in_path (tryexec);
-		    if (full == NULL) {
-			    g_free (tryexec);
+	    while (dent != NULL) {
+		    VeConfig *cfg;
+		    char *exec;
+		    char *name;
+		    char *comment;
+		    char *s;
+		    char *label;
+		    char *tryexec;
+
+		    /* ignore everything but the .desktop files */
+		    if (strstr (dent->d_name, ".desktop") == NULL) {
+			    dent = readdir (sessdir);
+			    continue;
+		    }
+
+		    s = g_strconcat (dir, "/", dent->d_name, NULL);
+		    cfg = ve_config_new (s);
+		    g_free (s);
+
+		    if (ve_config_get_bool (cfg, "Desktop Entry/Hidden=false")) {
 			    ve_config_destroy (cfg);
 			    dent = readdir (sessdir);
 			    continue;
 		    }
-		    g_free (full);
-	    }
-	    g_free (tryexec);
 
-	    exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
-	    name = ve_config_get_translated_string (cfg, "Desktop Entry/Name");
-	    comment = ve_config_get_translated_string (cfg, "Desktop Entry/Comment");
+		    tryexec = ve_config_get_string (cfg, "Desktop Entry/TryExec");
+		    if ( ! ve_string_empty (tryexec)) {
+			    char *full = g_find_program_in_path (tryexec);
+			    if (full == NULL) {
+				    g_free (tryexec);
+				    ve_config_destroy (cfg);
+				    dent = readdir (sessdir);
+				    continue;
+			    }
+			    g_free (full);
+		    }
+		    g_free (tryexec);
 
-	    ve_config_destroy (cfg);
+		    exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
+		    name = ve_config_get_translated_string (cfg, "Desktop Entry/Name");
+		    comment = ve_config_get_translated_string (cfg, "Desktop Entry/Comment");
 
-	    if G_UNLIKELY (ve_string_empty (exec) || ve_string_empty (name)) {
-		    g_free (exec);
-		    g_free (name);
-		    g_free (comment);
-		    dent = readdir (sessdir);
-		    continue;
-	    }
+		    ve_config_destroy (cfg);
 
-	    if (num < 10)
-		    label = g_strdup_printf ("_%d. %s", num, name);
-	    else
-		    label = g_strdup (name);
-	    num ++;
+		    if G_UNLIKELY (ve_string_empty (exec) || ve_string_empty (name)) {
+			    g_free (exec);
+			    g_free (name);
+			    g_free (comment);
+			    dent = readdir (sessdir);
+			    continue;
+		    }
 
-	    item = gtk_radio_menu_item_new_with_mnemonic (sessgrp, label);
-	    g_free (label);
-	    g_object_set_data_full (G_OBJECT (item),
-				    SESSION_NAME,
-				    g_strdup (dent->d_name),
-				    (GDestroyNotify) g_free);
+		    if (num < 10)
+			    label = g_strdup_printf ("_%d. %s", num, name);
+		    else
+			    label = g_strdup (name);
+		    num ++;
 
-	    if ( ! ve_string_empty (comment))
-		    gtk_tooltips_set_tip
-			    (tooltips, GTK_WIDGET (item), comment, NULL);
+		    item = gtk_radio_menu_item_new_with_mnemonic (sessgrp, label);
+		    g_free (label);
+		    g_object_set_data_full (G_OBJECT (item),
+					    SESSION_NAME,
+					    g_strdup (dent->d_name),
+					    (GDestroyNotify) g_free);
 
-	    sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-	    sessions = g_slist_append (sessions, g_strdup (dent->d_name));
-	    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-	    g_signal_connect (G_OBJECT (item), "activate",
-			      G_CALLBACK (gdm_login_session_handler),
-			      NULL);
-	    gtk_widget_show (GTK_WIDGET (item));
+		    if ( ! ve_string_empty (comment))
+			    gtk_tooltips_set_tip
+				    (tooltips, GTK_WIDGET (item), comment, NULL);
 
-	    /* if we found the default session */
-	    if ( ! ve_string_empty (GdmDefaultSession) &&
-		 strcmp (dent->d_name, GdmDefaultSession) == 0) {
-		    g_free (defsess);
-		    defsess = g_strdup (dent->d_name);
-		    searching_for_default = FALSE;
-	    }
+		    sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
+		    sessions = g_slist_append (sessions, g_strdup (dent->d_name));
+		    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+		    g_signal_connect (G_OBJECT (item), "activate",
+				      G_CALLBACK (gdm_login_session_handler),
+				      NULL);
+		    gtk_widget_show (GTK_WIDGET (item));
 
-	    /* if there is a session called Default */
-	    if (searching_for_default &&
-		g_ascii_strcasecmp (dent->d_name, "Default.desktop") == 0) {
-		    g_free (defsess);
-		    defsess = g_strdup (dent->d_name);
-	    }
-
-	    if (searching_for_default &&
-		g_ascii_strcasecmp (dent->d_name, "Gnome.desktop") == 0) {
-		    /* Just in case there is no Default session and
-		     * no default link, make Gnome the default */
-		    if (defsess == NULL)
+		    /* if we found the default session */
+		    if ( ! ve_string_empty (GdmDefaultSession) &&
+			 strcmp (dent->d_name, GdmDefaultSession) == 0) {
+			    g_free (defsess);
 			    defsess = g_strdup (dent->d_name);
+			    searching_for_default = FALSE;
+		    }
 
+		    /* if there is a session called Default */
+		    if (searching_for_default &&
+			g_ascii_strcasecmp (dent->d_name, "Default.desktop") == 0) {
+			    g_free (defsess);
+			    defsess = g_strdup (dent->d_name);
+		    }
+
+		    if (searching_for_default &&
+			g_ascii_strcasecmp (dent->d_name, "Gnome.desktop") == 0) {
+			    /* Just in case there is no Default session and
+			     * no default link, make Gnome the default */
+			    if (defsess == NULL)
+				    defsess = g_strdup (dent->d_name);
+
+		    }
+
+		    g_hash_table_insert (sessnames, g_strdup (dent->d_name), name);
+
+		    g_free (exec);
+		    g_free (comment);
+
+		    dent = readdir (sessdir);
 	    }
 
-	    g_hash_table_insert (sessnames, g_strdup (dent->d_name), name);
-
-	    g_free (exec);
-	    g_free (comment);
-
-	    dent = readdir (sessdir);
+	    if G_LIKELY (sessdir != NULL)
+		    closedir (sessdir);
     }
 
-    if G_LIKELY (sessdir != NULL)
-	    closedir (sessdir);
+    g_strfreev (vec);
+
+    /* Check that session dir is readable */
+    if G_UNLIKELY ( ! some_dir_exists) {
+	syslog (LOG_ERR, _("%s: Session directory %s not found!"), "gdm_login_session_init", ve_sure_string (GdmSessionDir));
+	GdmShowXtermFailsafeSession = TRUE;
+	session_dir_whacked_out = TRUE;
+    }
 
     if G_UNLIKELY (sessions == NULL) {
 	    syslog (LOG_WARNING, _("Yaikes, nothing found in the session directory."));

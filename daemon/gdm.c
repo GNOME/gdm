@@ -137,7 +137,6 @@ gchar *GdmGtkModulesList = NULL;
 gchar *GdmChooser = NULL;
 gchar *GdmLogDir = NULL;
 gchar *GdmDisplayInit = NULL;
-gchar *GdmSessionDir = NULL;
 gchar *GdmPostLogin = NULL;
 gchar *GdmPreSession = NULL;
 gchar *GdmPostSession = NULL;
@@ -321,7 +320,6 @@ gdm_config_parse (void)
     GdmKillInitClients = ve_config_get_bool (cfg, GDM_KEY_KILLIC);
     GdmLogDir= ve_config_get_string (cfg, GDM_KEY_LOGDIR);
     GdmPidFile = ve_config_get_string (cfg, GDM_KEY_PIDFILE);
-    GdmSessionDir = ve_config_get_string (cfg, GDM_KEY_SESSDIR);
     GdmPostLogin = ve_config_get_string (cfg, GDM_KEY_POSTLOGIN);
     GdmPreSession = ve_config_get_string (cfg, GDM_KEY_PRESESS);
     GdmPostSession = ve_config_get_string (cfg, GDM_KEY_POSTSESS);

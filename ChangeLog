@@ -1,3 +1,19 @@
+Thu Sep 18 13:53:37 2003  George Lebl <jirka@5z.com>
+
+	* configure.in: update version
+
+	* daemon/gdm.[ch], daemon/slave.c, gui/gdmlogin.c,
+	  gui/greeter/greeter_session.c: treat SessionDesktopDir
+	  as a PATH type variable using the first element.  This
+	  will allow full interoperability with upcoming KDM
+	  without sacrificing backcompat for GDM itself.  Also
+	  it will be easier to change the dir in the future
+	  this way.
+
+	* config/gdm.conf.in: update for the path stuff
+
+	* docs/C/gdm.xml: update for the path stuff
+
 Thu Sep 18 03:33:44 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c, daemon/cookie.c: Can't sleep, so re-clean the random
