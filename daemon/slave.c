@@ -350,10 +350,25 @@ gdm_slave_run (GdmDisplay *display)
      * exist */
     if (SERVER_IS_LOCAL (d) &&
 	d->servpid <= 0) {
-	    gdm_server_start (d,
-			      FALSE /* treat_as_flexi */,
-			      20 /* min_flexi_disp */,
-			      5 /* flexi_retries */);
+	    if ( ! gdm_server_start (d,
+				     FALSE /* treat_as_flexi */,
+				     20 /* min_flexi_disp */,
+				     5 /* flexi_retries */)) {
+		    /* We're really not sure what is going on,
+		     * so we throw up our hands and tell the user
+		     * that we've given up.  The error is likely something
+		     * internal. */
+		    gdm_text_message_dialog
+			    (_("I could not start the X\n"
+			       "server (your graphical environment)\n"
+			       "due to some internal error.\n"
+			       "Please contact your system administrator\n"
+			       "or check your syslog to diagnose.\n"
+			       "In the meantime this display will be\n"
+			       "disabled.  Please restart gdm when\n"
+			       "the problem is corrected."));
+		    _exit (DISPLAY_ABORT);
+	    }
 	    gdm_slave_send_num (GDM_SOP_XPID, d->servpid);
     }
     
