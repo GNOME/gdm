@@ -14,5 +14,7 @@
 void	hack_dentry_edit		(GnomeDEntryEdit *dedit);
 void	hack_icon_entry			(GnomeIconEntry *ientry);
 char *	hack_icon_entry_get_icon	(GnomeIconEntry *ientry);
+void 	hack_icon_entry_set_icon	(GnomeIconEntry *ientry,
+					 const char *icon);
 
 #endif /* ICON_ENTRY_HACK_H */

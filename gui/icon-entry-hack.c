@@ -90,6 +90,60 @@ sync_orig_to_new (GnomeIconEntry *ientry)
 }
 
 static void
+idle_remove (gpointer data)
+{
+	guint idle = GPOINTER_TO_UINT (data);
+
+	gtk_idle_remove (idle);
+}
+
+static gboolean
+sync_orig_to_new_idle (gpointer data)
+{
+	sync_orig_to_new (data);
+	gtk_object_remove_data (GTK_OBJECT (data), "IconHackToNewIdle");
+	return FALSE;
+}
+
+static void
+add_sync_orig_to_new_idle_for_entry (GnomeIconEntry *ientry)
+{
+	guint idle = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (ientry),
+							    "IconHackToNewIdle"));
+	if (idle != 0)
+		return;
+
+	idle = gtk_idle_add (sync_orig_to_new_idle, ientry);
+
+	gtk_object_set_data_full (GTK_OBJECT (ientry), "IconHackToNewIdle",
+				  GUINT_TO_POINTER (idle),
+				  (GtkDestroyNotify) idle_remove);
+}
+
+static gboolean
+sync_new_to_orig_idle (gpointer data)
+{
+	sync_new_to_orig (data);
+	gtk_object_remove_data (GTK_OBJECT (data), "IconHackToOrigIdle");
+	return FALSE;
+}
+
+static void
+add_sync_new_to_orig_idle_for_entry (GnomeIconEntry *ientry)
+{
+	guint idle = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (ientry),
+							    "IconHackToOrigIdle"));
+	if (idle != 0)
+		return;
+
+	idle = gtk_idle_add (sync_new_to_orig_idle, ientry);
+
+	gtk_object_set_data_full (GTK_OBJECT (ientry), "IconHackToOrigIdle",
+				  GUINT_TO_POINTER (idle),
+				  (GtkDestroyNotify) idle_remove);
+}
+
+static void
 icon_selected (GtkWidget *w, gint num, GdkEvent *event, gpointer data)
 {
 	if(event &&
@@ -163,8 +217,9 @@ orig_entry_changed (GtkWidget *w, gpointer data)
 	origientry = gtk_object_get_data (GTK_OBJECT (ientry),
 					  "IconHackOrigIconEntry");
 
-	if ( ! gtk_object_get_data (GTK_OBJECT (origientry), "IconHackNoSync"))
-		sync_orig_to_new (ientry);
+	if ( ! gtk_object_get_data (GTK_OBJECT (origientry), "IconHackNoSync")) {
+		add_sync_orig_to_new_idle_for_entry (ientry);
+	}
 }
 
 void
@@ -177,6 +232,7 @@ hack_dentry_edit (GnomeDEntryEdit *dedit)
 	g_return_if_fail (GNOME_IS_DENTRY_EDIT (dedit));
 
 	ientry = gnome_icon_entry_new ("icon", _("Choose an icon"));
+	gtk_widget_show (ientry);
 	gtk_object_set_data (GTK_OBJECT (ientry),
 			     "IconHackOrigIconEntry", dedit->icon_entry);
 
@@ -218,7 +274,7 @@ hack_icon_entry (GnomeIconEntry *ientry)
 			    GTK_SIGNAL_FUNC (shown_icon_selection),
 			    ientry);
 
-	sync_new_to_orig (ientry);
+	add_sync_new_to_orig_idle_for_entry (ientry);
 }
 
 char *
@@ -226,4 +282,11 @@ hack_icon_entry_get_icon (GnomeIconEntry *ientry)
 {
 	return g_strdup (gtk_object_get_data (GTK_OBJECT (ientry),
 					      "IconHackText"));
+}
+
+void
+hack_icon_entry_set_icon (GnomeIconEntry *ientry, const char *icon)
+{
+	gnome_icon_entry_set_icon (ientry, icon);
+	add_sync_new_to_orig_idle_for_entry (ientry);
 }
