@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0.0\n"
-"POT-Creation-Date: 2001-02-01 17:57-0800\n"
-"PO-Revision-Date: 2001-01-26 13:14+03:00\n"
+"POT-Creation-Date: 2001-02-02 21:00+0300\n"
+"PO-Revision-Date: 2001-02-02 21:18+03:00\n"
 "Last-Translator: Sergey Panov <sipan@mit.edu>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -148,9 +148,8 @@ msgid "gdm_main: Error setting up INT signal handler"
 msgstr "gdm_main: Ошибка при задании обработчика сигнала INT"
 
 #: daemon/gdm.c:566
-#, fuzzy
 msgid "gdm_main: Error setting up HUP signal handler"
-msgstr "main: Ошибка при задании обработчика сигнала HUP"
+msgstr "gdm_main: Ошибка при задании обработчика сигнала HUP"
 
 #: daemon/gdm.c:574
 msgid "gdm_main: Error setting up CHLD signal handler"
@@ -355,7 +354,7 @@ msgstr "gdm_slave_exec_script: Не удалось отпочковать скрипт-процесс!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1695
+#: gui/gdmlogin.c:1714
 msgid "Login:"
 msgstr "Имя:"
 
@@ -398,14 +397,13 @@ msgstr "gdm_verify_check: Не удалось найти  файл конфигурации PAM для gdm"
 
 #. Request the user's password
 #: daemon/verify-crypt.c:64 daemon/verify-shadow.c:74
-#, fuzzy
 msgid "Password: "
-msgstr "Пароль:"
+msgstr "Пароль: "
 
 #: daemon/verify-crypt.c:72 daemon/verify-crypt.c:87 daemon/verify-shadow.c:82
 #: daemon/verify-shadow.c:97
 msgid "Login incorrect"
-msgstr ""
+msgstr "Регистрация не прошла"
 
 #: daemon/verify-crypt.c:77 daemon/verify-shadow.c:87
 #, c-format
@@ -610,35 +608,35 @@ msgstr "gdm_signals_init: Ошибка при задании обработчика сигнала INT"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Ошибка при задании обработчика сигнала TERM"
 
-#: gui/gdmchooser.c:594 gui/gdmlogin.c:2063
+#: gui/gdmchooser.c:594 gui/gdmlogin.c:2082
 msgid "Could not set signal mask!"
 msgstr "Невозможно установить маску сигнала!"
 
-#: gui/gdmlogin.c:375
-msgid "gdm_parse_enriched_string: String too long!"
-msgstr "gdm_parse_enriched_string: Слишком длинная строка!"
-
-#: gui/gdmlogin.c:377
+#: gui/gdmlogin.c:381 gui/gdmlogin.c:387 gui/gdmlogin.c:394
 #, c-format
 msgid "Welcome to %s"
 msgstr "Добро пожаловать в %s"
 
-#: gui/gdmlogin.c:469
+#: gui/gdmlogin.c:392
+msgid "gdm_parse_enriched_string: String too long!"
+msgstr "gdm_parse_enriched_string: Слишком длинная строка!"
+
+#: gui/gdmlogin.c:488
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Вы действительно хотите перезагрузить машину?"
 
-#: gui/gdmlogin.c:483
+#: gui/gdmlogin.c:502
 msgid "Are you sure you want to halt the machine?"
 msgstr "Вы действительно хотите остановить машину?"
 
-#: gui/gdmlogin.c:501
+#: gui/gdmlogin.c:520
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr ""
 "gdm_login_parse_config: Нет конфигурационного файла: %s. Аварийное окончание "
 "работы!"
 
-#: gui/gdmlogin.c:607
+#: gui/gdmlogin.c:626
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -647,7 +645,7 @@ msgstr ""
 "Предпочитаемый вами тип сеанса %s не установлен на этой машине.\n"
 "Хотите ли вы использовать %s по умолчанию в последующих сеансах?"
 
-#: gui/gdmlogin.c:623 gui/gdmlogin.c:678
+#: gui/gdmlogin.c:642 gui/gdmlogin.c:697
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -656,120 +654,115 @@ msgstr ""
 "Вы выбрали %s для этого сеанса вместо вашего обычного, %s.\n"
 "Хотите ли вы и впредь использовать по умолчанию %s?"
 
-#: gui/gdmlogin.c:789
+#: gui/gdmlogin.c:808
 #, c-format
 msgid "%s session selected"
 msgstr "Выбран сеанс %s"
 
-#: gui/gdmlogin.c:805 gui/gdmlogin.c:914
+#: gui/gdmlogin.c:824 gui/gdmlogin.c:933
 msgid "Last"
 msgstr "Последний"
 
-#: gui/gdmlogin.c:822
+#: gui/gdmlogin.c:841
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Не найден каталог со скриптами сеансов!"
 
-#: gui/gdmlogin.c:877
+#: gui/gdmlogin.c:896
 msgid "No session scripts found. Aborting!"
 msgstr "Не найдено ни одного скрипта сеанса. Аварийное окончание работы!"
 
-#: gui/gdmlogin.c:881
+#: gui/gdmlogin.c:900
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Не найдена ссылка на подразумеваемый сеанс. Будет выбран %s.\n"
 
-#: gui/gdmlogin.c:895
+#: gui/gdmlogin.c:914
 #, c-format
 msgid "%s language selected"
 msgstr "Выбранный язык: %s"
 
-#: gui/gdmlogin.c:932
+#: gui/gdmlogin.c:951
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:938
+#: gui/gdmlogin.c:957
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:944
+#: gui/gdmlogin.c:963
 msgid "Other"
 msgstr "Другие"
 
-#: gui/gdmlogin.c:1430
+#: gui/gdmlogin.c:1449
 msgid "GNOME Desktop Manager"
 msgstr "Диспетчер рабочего стола GNOME"
 
-#: gui/gdmlogin.c:1442
+#: gui/gdmlogin.c:1461
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr ""
 "Невозможно открыть файл пиктограммы: %s. Минимизация будет заблокирована!"
 
-#: gui/gdmlogin.c:1548
+#: gui/gdmlogin.c:1567
 msgid "Session"
 msgstr "Сеанс"
 
-#: gui/gdmlogin.c:1555
+#: gui/gdmlogin.c:1574
 msgid "Language"
 msgstr "Язык"
 
-#: gui/gdmlogin.c:1562
+#: gui/gdmlogin.c:1581
 msgid "Reboot..."
 msgstr "Перезагрузить..."
 
-#: gui/gdmlogin.c:1569
+#: gui/gdmlogin.c:1588
 msgid "Halt..."
 msgstr "Остановить..."
 
-#: gui/gdmlogin.c:1576
+#: gui/gdmlogin.c:1595
 msgid "System"
 msgstr "Система"
 
-#: gui/gdmlogin.c:1730
+#: gui/gdmlogin.c:1749
 msgid "Please enter your login"
 msgstr "Введите пожалуйста ваше имя"
 
-#: gui/gdmlogin.c:1917
+#: gui/gdmlogin.c:1936
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Невозможно открыть DefaultImage: %s. Доска портретов будет выключена!"
 
-#: gui/gdmlogin.c:2040
+#: gui/gdmlogin.c:2059
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Ошибка при задании обработчика сигнала HUP"
 
-#: gui/gdmlogin.c:2043
+#: gui/gdmlogin.c:2062
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Ошибка при задании обработчика сигнала INT"
 
-#: gui/gdmlogin.c:2046
+#: gui/gdmlogin.c:2065
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Ошибка при задании обработчика сигнала TERM"
 
-#: gui/gdmlogin.c:2054
+#: gui/gdmlogin.c:2073
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Ошибка при задании обработчика сигнала CHLD"
 
 #: gui/gdmconfig.c:51
 msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr ""
+msgstr "Вы должны быть суперпользователем (root) для настройки GDM.\n"
 
 #: gui/gdmconfig.c:84
-#, fuzzy
 msgid "GNOME Display Manager Configurator"
-msgstr "Диспетчер рабочего стола GNOME"
+msgstr "Настройщик диспетчера рабочего стола GNOME"
 
 #: gui/gdmconfig.c:103
-#, fuzzy
 msgid "The configuration file: "
-msgstr "Сбой идентификации"
+msgstr "Файл конфигурации: "
 
 #: gui/gdmconfig.c:212
-#, fuzzy
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr ""
-"gdm_config_parse: Неправильно задан сервер в конфигурационном файле. "
-"Проигнорирован!"
+msgstr "gdm_config_parse_most: Неправильно задан сервер в конфигурационном файле. Проигнорирован!"
 
 #: gui/gdmconfig.c:279
 msgid ""
@@ -779,12 +772,19 @@ msgid ""
 "This will kill all your current sessions\n"
 "and you will lose any unsaved data!"
 msgstr ""
+"Настройки не будут иметь эффекта пока gdm\n"
+"не будет перезапущен или ваш компьютер перезагружен.\n"
+"Вы хотите перезапустить GDM сейчас?\n"
+"Все ваши текущие сеансы будут закрыты\n"
+"и вы потеряете все несохраненные данные!"
 
 #: gui/gdmconfig.c:284
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
 msgstr ""
+"Вы уверены, что хотите перезапустить GDM\n"
+"и потерять несохраненные данные?"
 
 #: gui/gdmconfig.c:291
 msgid ""
@@ -793,12 +793,18 @@ msgid ""
 "take effect until gdm is restarted or the computer is\n"
 "rebooted"
 msgstr ""
+"Настройки приветствия будут иметь эффект в следующий раз\n"
+"при отображении. Остальные настройки не будут иметь\n"
+"эффетка пока GDM не будет перезапущен или компьютер\n"
+"не будет перезагружен"
 
 #: gui/gdmconfig.c:518
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
 msgstr ""
+"Введите путь к X-серверу и любые\n"
+"параметры, которые должны быть ему переданы."
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -807,7 +813,7 @@ msgstr ""
 #.
 #: gui/gdmconfig-strings.c:7
 msgid "Executables"
-msgstr ""
+msgstr "Исполняемые"
 
 #: gui/gdmconfig-strings.c:8
 msgid "Chooser binary: "
@@ -815,28 +821,27 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:9
 msgid "Greeter binary: "
-msgstr ""
+msgstr "Программа приветствия: "
 
 #: gui/gdmconfig-strings.c:10
 msgid "Halt command: "
-msgstr ""
+msgstr "Команда останова: "
 
 #: gui/gdmconfig-strings.c:11
 msgid "Reboot command: "
-msgstr ""
+msgstr "Команда перезагрузки: "
 
 #: gui/gdmconfig-strings.c:12
 msgid "Directories"
-msgstr ""
+msgstr "Каталоги"
 
 #: gui/gdmconfig-strings.c:13
 msgid "Session directory: "
-msgstr ""
+msgstr "Каталог сеанса: "
 
 #: gui/gdmconfig-strings.c:14
-#, fuzzy
 msgid "PRE session scripts directory: "
-msgstr "Не найдено ни одного скрипта сеанса. Аварийное окончание работы!"
+msgstr ""
 
 #: gui/gdmconfig-strings.c:15
 msgid "POST session scripts directory: "
@@ -844,19 +849,19 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:16
 msgid "Logging directory: "
-msgstr ""
+msgstr "Каталог журналирования: "
 
 #: gui/gdmconfig-strings.c:17
 msgid "Display initialization directory: "
-msgstr ""
+msgstr "Каталог инициализации дисплея: "
 
 #: gui/gdmconfig-strings.c:18
 msgid "Miscelleaneous"
-msgstr ""
+msgstr "Разное"
 
 #: gui/gdmconfig-strings.c:19
 msgid "PID file: "
-msgstr ""
+msgstr "Файл PID: "
 
 #: gui/gdmconfig-strings.c:20
 msgid "Default $PATH: "
@@ -868,23 +873,23 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:22
 msgid "Automatic Login: "
-msgstr ""
+msgstr "Автоматическая регистрация:"
 
 #: gui/gdmconfig-strings.c:23
 msgid "GDM"
-msgstr ""
+msgstr "GDM"
 
 #: gui/gdmconfig-strings.c:24
 msgid "Options"
-msgstr ""
+msgstr "Параметры"
 
 #: gui/gdmconfig-strings.c:25
 msgid "Allow root to login with GDM"
-msgstr ""
+msgstr "Позволить root регистрироваться в GDM"
 
 #: gui/gdmconfig-strings.c:26
 msgid "Kill 'init' clients"
-msgstr ""
+msgstr "Убить клиентов 'init'"
 
 #: gui/gdmconfig-strings.c:27
 msgid "Relax permissions"
@@ -895,13 +900,12 @@ msgid "Authentication errors should be verbose"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:29
-#, fuzzy
 msgid "Authorization Details"
-msgstr "Сбой идентификации"
+msgstr "Подробности авторизации"
 
 #: gui/gdmconfig-strings.c:30
 msgid "GDM runs as this user: "
-msgstr ""
+msgstr "GDM запущен как этот пользователь: "
 
 #: gui/gdmconfig-strings.c:31
 msgid "User 'auth' directory: "
@@ -921,27 +925,27 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:35
 msgid "Limits"
-msgstr ""
+msgstr "Пределы"
 
 #: gui/gdmconfig-strings.c:36
 msgid "Retry delay: "
-msgstr ""
+msgstr "Задержка повтора: "
 
 #: gui/gdmconfig-strings.c:37
 msgid "Maximum user file length: "
-msgstr ""
+msgstr "Максимальная длина файла пользователя: "
 
 #: gui/gdmconfig-strings.c:38
 msgid "Security"
-msgstr ""
+msgstr "Безопасность"
 
 #: gui/gdmconfig-strings.c:39
 msgid "Enable XDMCP"
-msgstr ""
+msgstr "Включить XDMCP"
 
 #: gui/gdmconfig-strings.c:40
 msgid "Connection Settings"
-msgstr ""
+msgstr "Настройки соединения"
 
 #: gui/gdmconfig-strings.c:41
 msgid "Honour indirect requests"
@@ -953,11 +957,11 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:43
 msgid "Maximum wait time: "
-msgstr ""
+msgstr "Максимальное время ожидания:"
 
 #: gui/gdmconfig-strings.c:44
 msgid "Maximum remote sessions: "
-msgstr ""
+msgstr "Максимальное число удаленных сеансов: "
 
 #: gui/gdmconfig-strings.c:45
 msgid "Max pending indirect requests: "
@@ -969,32 +973,31 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:47
 msgid "Listen on UDP port: "
-msgstr ""
+msgstr "Слушать на UDP-порту: "
 
 #: gui/gdmconfig-strings.c:48
 msgid "XDMCP"
-msgstr ""
+msgstr "XDMCP"
 
 #: gui/gdmconfig-strings.c:49
 msgid "General Appearance"
-msgstr ""
+msgstr "Общий вид"
 
 #: gui/gdmconfig-strings.c:50
 msgid "Gtk+ RC file: "
-msgstr ""
+msgstr "Файл Gtk+ RC: "
 
 #: gui/gdmconfig-strings.c:51
-#, fuzzy
 msgid "Logo: "
-msgstr "Имя:"
+msgstr "Эмблема: "
 
 #: gui/gdmconfig-strings.c:52
 msgid "Select a GTK+ theme file (gtkrc)"
-msgstr ""
+msgstr "Выбрать файл темы GTK+ (gtkrc)"
 
 #: gui/gdmconfig-strings.c:53
 msgid "Minimised Icon: "
-msgstr ""
+msgstr "Минимизированная пиктограмма: "
 
 #: gui/gdmconfig-strings.c:54
 msgid "Select a log to be displayed during login"
@@ -1013,144 +1016,143 @@ msgid "Quiver on failure"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:58
-#, fuzzy, c-format
+#, c-format
 msgid "Welcome to %n"
-msgstr "Добро пожаловать в %s"
+msgstr "Добро пожаловать в %n"
 
 #: gui/gdmconfig-strings.c:59
 #, c-format
 msgid "%n"
-msgstr ""
+msgstr "%n"
 
 #: gui/gdmconfig-strings.c:60 gui/gdmconfig-strings.c:61
 #, c-format
 msgid "This is %n"
-msgstr ""
+msgstr "Это %n"
 
 #: gui/gdmconfig-strings.c:62
 msgid "Default font: "
-msgstr ""
+msgstr "Шрифт по умолчанию: "
 
 #: gui/gdmconfig-strings.c:63
 msgid "Exclude these users: "
-msgstr ""
+msgstr "Исключить этих пользователей: "
 
 #: gui/gdmconfig-strings.c:64
-#, fuzzy
 msgid "Welcome message: "
-msgstr "Добро пожаловать в %s"
+msgstr "Сообщение приветствия: "
 
 #: gui/gdmconfig-strings.c:65
 msgid "Pick a Font"
-msgstr ""
+msgstr "Выбрать шрифт"
 
 #: gui/gdmconfig-strings.c:66
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr ""
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmАаБбВвГгДдЕеЁёЖжЗзИиКкЛлМм"
 
 #: gui/gdmconfig-strings.c:67
 msgid "Background Program: "
-msgstr ""
+msgstr "Фоновая программа: "
 
 #: gui/gdmconfig-strings.c:68 gui/gdmconfig-strings.c:85
 msgid "Select a file containing Locale information"
-msgstr ""
+msgstr "Выбрать файл содержащий информацию о локализации"
 
 #: gui/gdmconfig-strings.c:69
 msgid "Position"
-msgstr ""
+msgstr "Позиция"
 
 #: gui/gdmconfig-strings.c:70
 msgid "Manually set position"
-msgstr ""
+msgstr "Установить позицию вручную"
 
 #: gui/gdmconfig-strings.c:71
 msgid "Lock position"
-msgstr ""
+msgstr "Зафиксировать позицию"
 
 #: gui/gdmconfig-strings.c:72
 msgid "X position: "
-msgstr ""
+msgstr "Позиция по X: "
 
 #: gui/gdmconfig-strings.c:73
 msgid "Y position: "
-msgstr ""
+msgstr "Позиция по Y: "
 
 #: gui/gdmconfig-strings.c:74
 msgid "Xinerama screen: "
-msgstr ""
+msgstr "Экран Xinerama: "
 
 #: gui/gdmconfig-strings.c:75
 msgid "User Interface"
-msgstr ""
+msgstr "Интерфейс пользователя"
 
 #: gui/gdmconfig-strings.c:76
 msgid "Face browser"
-msgstr ""
+msgstr "Просмотр лиц"
 
 #: gui/gdmconfig-strings.c:77
 msgid "Show choosable user images (enable face browser)"
-msgstr ""
+msgstr "Показать выбираемые пользователем изображения (включить просмотр лиц)"
 
 #: gui/gdmconfig-strings.c:78
 msgid "Default face image to use: "
-msgstr ""
+msgstr "Изображение лица используемое по умолчанию:"
 
 #: gui/gdmconfig-strings.c:79
 msgid "Global faces directory: "
-msgstr ""
+msgstr "Глобальный каталог лиц: "
 
 #: gui/gdmconfig-strings.c:80
 msgid "Maximum face width: "
-msgstr ""
+msgstr "Максимальная ширина лица: "
 
 #: gui/gdmconfig-strings.c:81
 msgid "Select an image for users with no 'face'"
-msgstr ""
+msgstr "Выбрать изображения для пользователей без \"лица\""
 
 #: gui/gdmconfig-strings.c:82
 msgid "Choose the directory to search for faces"
-msgstr ""
+msgstr "Выбрать каталог для поиска лиц"
 
 #: gui/gdmconfig-strings.c:83
 msgid "Maximum face height: "
-msgstr ""
+msgstr "Максимальная высота лица: "
 
 #: gui/gdmconfig-strings.c:84
 msgid "Localization"
-msgstr ""
+msgstr "Локализация"
 
 #: gui/gdmconfig-strings.c:86
 msgid "Locale file: "
-msgstr ""
+msgstr "Файл локализации: "
 
 #: gui/gdmconfig-strings.c:87
 msgid "Default locale: "
-msgstr ""
+msgstr "Локализация по умолчанию: "
 
 #: gui/gdmconfig-strings.c:88
 msgid "Greeter"
-msgstr ""
+msgstr "Приветствие"
 
 #: gui/gdmconfig-strings.c:89
 msgid "Appearance"
-msgstr ""
+msgstr "Внешний вид"
 
 #: gui/gdmconfig-strings.c:90
 msgid "Directory for host images: "
-msgstr ""
+msgstr "Каталог для изображений хостов: "
 
 #: gui/gdmconfig-strings.c:91
 msgid "Default host image:"
-msgstr ""
+msgstr "Изображение хоста по умолчанию: "
 
 #: gui/gdmconfig-strings.c:92
 msgid "Refresh"
-msgstr ""
+msgstr "Обновить"
 
 #: gui/gdmconfig-strings.c:93
 msgid "Scan every 'x' seconds: "
-msgstr ""
+msgstr "Сканировать каждые \"x\" секунд: "
 
 #: gui/gdmconfig-strings.c:94
 msgid "Chooser"
@@ -1158,7 +1160,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:95
 msgid "Server Definitions"
-msgstr ""
+msgstr "Описания серверов"
 
 #: gui/gdmconfig-strings.c:96
 msgid "No."
@@ -1166,41 +1168,28 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:97
 msgid "Path to X server"
-msgstr ""
+msgstr "Путь к X-серверу"
 
 #: gui/gdmconfig-strings.c:98
 msgid "Add Server"
-msgstr ""
+msgstr "Добавить сервер"
 
 #: gui/gdmconfig-strings.c:99
 msgid "Edit Server"
-msgstr ""
+msgstr "Правка сервера"
 
 #: gui/gdmconfig-strings.c:100
 msgid "Delete Server"
-msgstr ""
+msgstr "Удалить сервер"
 
 #: gui/gdmconfig-strings.c:101
 msgid "Debugging"
-msgstr ""
+msgstr "Отладка"
 
 #: gui/gdmconfig-strings.c:102
 msgid "Enable debugging output"
-msgstr ""
+msgstr "Включить отладочный вывод"
 
 #: gui/gdmconfig-strings.c:103
 msgid "Servers"
-msgstr ""
-
-#~ msgid ""
-#~ "gdm_child_action: Greeter segfaulted too many times in the last 40 seconds "
-#~ "for display %s, killing it"
-#~ msgstr ""
-#~ "gdm_child_action: Программа приветствия рухнула слишком много раз за "
-#~ "последние 40 секунд для дисплея %s, уничтожена."
-
-#~ msgid "User unknown"
-#~ msgstr "Неизвестный пользователь"
-
-#~ msgid "Incorrect password"
-#~ msgstr "Неправильный пароль"
+msgstr "Сервера"
