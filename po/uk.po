@@ -16,7 +16,7 @@ msgstr ""
 #: daemon/auth.c:144
 #, fuzzy, c-format
 msgid "%s: Could not make new cookie file in %s"
-msgstr "gdm_auth_user_add: Не вдалося в╕дкрити файл cookie %s"
+msgstr "%s: не вдалося створити файл cookie у %s"
 
 #. Really no need to clean up here - this process is a goner anyway
 #: daemon/auth.c:367 daemon/auth.c:398
@@ -48,10 +48,10 @@ msgstr ""
 "вимкнення дисплея %s"
 
 #: daemon/display.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
-"gdm_display_manage: Не вдалося розгалудити допом╕жний процес gdm для %d"
+"gdm_display_manage: Не вдалося розгалудити допом╕жний процес gdm для %s"
 
 #: daemon/errorgui.c:169
 msgid "gdm_error_box: Failed to execute self"
@@ -83,7 +83,7 @@ msgstr "%s: %s не належить uid %d."
 #: daemon/filecheck.c:62 daemon/filecheck.c:104
 #, c-format
 msgid "%s: %s is writable by group."
-msgstr "%s: Заи╕с %s дозволений груп╕."
+msgstr "%s: Запис %s дозволений груп╕."
 
 #: daemon/filecheck.c:68
 #, c-format
@@ -141,15 +141,15 @@ msgstr "gdm_config_parse: Не встановлено прив╕тання."
 #: daemon/gdm.c:334
 #, fuzzy
 msgid "No daemon/ServAuthDir specified in the configuration file"
-msgstr "Конф╕╜урац╕йний файл: "
+msgstr "Конф╕гурац╕йний файл: "
 
 #: daemon/gdm.c:335
 msgid "gdm_config_parse: No authdir specified."
-msgstr "gdm_config_parse: Не визначено католог авторизиц╕╖."
+msgstr "gdm_config_parse: Не визначено каталог авторизац╕╖."
 
 #: daemon/gdm.c:342
 msgid "gdm_config_parse: No sessions directory specified."
-msgstr "gdm_config_parse: Не вказано каталог санс╕в."
+msgstr "gdm_config_parse: Не вказано каталог сеанс╕в."
 
 #: daemon/gdm.c:366
 #, c-format
@@ -215,7 +215,7 @@ msgstr ""
 
 #: daemon/gdm.c:500
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
-msgstr "gdm_config_parse: root не может бути власником gdm. Зупинка!"
+msgstr "gdm_config_parse: root не може бути власником gdm. Зупинка!"
 
 #: daemon/gdm.c:506
 #, fuzzy, c-format
@@ -304,12 +304,12 @@ msgid ""
 msgstr ""
 
 #: daemon/gdm.c:606
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions %o. Should be 0750. "
 "Aborting."
 msgstr ""
-"gdm_config_parse: Каталог авторизац╕╖ %s ма╓ не в╕рн╕ права. Мають бути 750. "
+"gdm_config_parse: Каталог авторизац╕╖ %s ма╓ не в╕рн╕ права %o. Мають бути 0750. "
 "Зупинка."
 
 #: daemon/gdm.c:661
@@ -421,29 +421,29 @@ msgid "gdm already running. Aborting!"
 msgstr "gdm вже запущено. Зупинка!"
 
 #: daemon/gdm.c:1387
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up TERM signal handler"
-msgstr "main: Помилка встановлення обробника сигналу TERM"
+msgstr "%s: Помилка встановлення обробника сигналу TERM"
 
 #: daemon/gdm.c:1391
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up INT signal handler"
-msgstr "main: Помилка встановлення обробника сигналу INT"
+msgstr "%s: Помилка встановлення обробника сигналу INT"
 
 #: daemon/gdm.c:1395
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up HUP signal handler"
-msgstr "main: Помилка встановлення обробника сигналу HUP"
+msgstr "%s: Помилка встановлення обробника сигналу HUP"
 
 #: daemon/gdm.c:1399
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up USR1 signal handler"
-msgstr "main: Помилка встановлення обробника сигналу HUP"
+msgstr "%s: Помилка встановлення обробника сигналу USR1"
 
 #: daemon/gdm.c:1408
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up CHLD signal handler"
-msgstr "main: Помилка встановлення обробника сигналу CHLD"
+msgstr "%s: Помилка встановлення обробника сигналу CHLD"
 
 #: daemon/gdm.c:2181 daemon/gdm.c:2198
 msgid "Flexible server request denied: Not authenticated"
@@ -480,7 +480,7 @@ msgstr "%s: не вдалося створити FIFO"
 #: daemon/gdm-net.c:306
 #, c-format
 msgid "%s: Could not open FIFO"
-msgstr "%s: невдалося в╕дкрити FIFO"
+msgstr "%s: не вдалося в╕дкрити FIFO"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:379
@@ -493,9 +493,9 @@ msgid "%s: Cannot get local addresses!"
 msgstr "%s: неможливо отримати локальн╕ адреси!"
 
 #: daemon/misc.c:664
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not get server hostname: %s!"
-msgstr "gdm_xdmcp_init: Не вдалося отримати назву хоста: %s!"
+msgstr "%s: Не вдалося отримати назву хоста: %s!"
 
 #: daemon/misc.c:671
 #, fuzzy, c-format
@@ -503,15 +503,15 @@ msgid "%s: Could not get address from hostname!"
 msgstr "gdm_xdmcp_init: Не вдалося отримати назву хоста: %s!"
 
 #: daemon/misc.c:729
-#, fuzzy, c-format
+#, c-format
 msgid "Could not setgid %d. Aborting."
-msgstr "gdm_slave_session_start: Не вдалося встановити gid %d. Зупинка."
+msgstr "Не вдалося встановити gid %d. Зупинка."
 
 #: daemon/misc.c:734
-#, fuzzy, c-format
+#, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr ""
-"gdm_slave_session_start: Невдалося виконання initgroups() для %s. Зупинка."
+"Не вдалося виконання initgroups() для %s. Зупинка."
 
 #: daemon/server.c:165
 #, c-format
@@ -571,14 +571,12 @@ msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Помилка встановлення USR1 у SIG_IGN"
 
 #: daemon/server.c:668
-#, fuzzy
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
-msgstr "gdm_server_spawn: Помилка встановлення USR1 у SIG_IGN"
+msgstr "gdm_server_spawn: Помилка встановлення TTIN у SIG_IGN"
 
 #: daemon/server.c:672
-#, fuzzy
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
-msgstr "gdm_server_spawn: Помилка встановлення USR1 у SIG_IGN"
+msgstr "gdm_server_spawn: Помилка встановлення TTOU у SIG_IGN"
 
 #: daemon/server.c:682
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
@@ -611,24 +609,24 @@ msgstr ""
 #: daemon/server.c:788 daemon/slave.c:1108 daemon/slave.c:1453
 #, fuzzy, c-format
 msgid "%s: Couldn't set groupid to %d"
-msgstr "gdm_slave_greeter: Не вдалося встановити %d як ╕дентификатор групи"
+msgstr "gdm_slave_greeter: Не вдалося встановити %d як ╕дентиф╕катор групи"
 
 #: daemon/server.c:794 daemon/slave.c:1113 daemon/slave.c:1458
 #, fuzzy, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr ""
-"gdm_slave_session_start: Невдалося виконання initgroups() для %s. Зупинка."
+"gdm_slave_session_start: Не вдалося виконання initgroups() для %s. Зупинка."
 
 #: daemon/server.c:800 daemon/slave.c:1118 daemon/slave.c:1463
 #, fuzzy, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr ""
-"gdm_slave_greeter: Не вдалося встановити %d як ╕дентификатор користувача"
+"gdm_slave_greeter: Не вдалося встановити %d як ╕дентиф╕катор користувача"
 
 #: daemon/server.c:807
 #, fuzzy, c-format
 msgid "%s: Couldn't set groupid to 0"
-msgstr "gdm_slave_greeter: Не вдалося встановити %d як ╕дентификатор групи"
+msgstr "gdm_slave_greeter: Не вдалося встановити %d як ╕дентиф╕катор групи"
 
 #: daemon/server.c:818
 #, c-format
@@ -640,9 +638,8 @@ msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: Не вдалося розгалудити процес X-сервера!"
 
 #: daemon/slave.c:171
-#, fuzzy
 msgid "gdm_slave_init: Error setting up ALRM signal handler"
-msgstr "gdm_slave_init: Помилка встановлення обробника сигналу CHLD"
+msgstr "gdm_slave_init: Помилка встановлення обробника сигналу ALRM"
 
 #: daemon/slave.c:183
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
@@ -653,9 +650,9 @@ msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr "gdm_slave_init: Помилка встановлення обробника сигналу CHLD"
 
 #: daemon/slave.c:201
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting up USR2 signal handler"
-msgstr "main: Помилка встановлення обробника сигналу HUP"
+msgstr "%s: Помилка встановлення обробника сигналу USR2"
 
 #: daemon/slave.c:363
 msgid ""
@@ -765,9 +762,8 @@ msgid "%s: Can't open fifo!"
 msgstr "%s: неможливо в╕дкрити FIFO!"
 
 #: daemon/slave.c:1417
-#, fuzzy
 msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
-msgstr "gdm_slave_greeter: Не вдалося ╕н╕ц╕ал╕зувати канал до gdmgreeter"
+msgstr "gdm_slave_chooser: Не вдалося ╕н╕ц╕ал╕зувати канал до gdmchooser"
 
 #: daemon/slave.c:1496
 msgid ""
@@ -777,14 +773,13 @@ msgid ""
 msgstr ""
 
 #: daemon/slave.c:1500
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_chooser: Error starting chooser on display %s"
-msgstr "gdm_slave_greeter: Помилка запуску greeter на диспле╖ %s"
+msgstr "gdm_slave_chooser: Помилка запуску chooser на диспле╖ %s"
 
 #: daemon/slave.c:1503
-#, fuzzy
 msgid "gdm_slave_chooser: Can't fork gdmchooser process"
-msgstr "gdm_slave_greeter: Не вдалося розгалудити процес gdmgreeter"
+msgstr "gdm_slave_chooser: Не вдалося розгалудити процес gdmchooser"
 
 #: daemon/slave.c:1867
 #, fuzzy, c-format
@@ -851,9 +846,9 @@ msgstr ""
 "заборонив ваш рахунок."
 
 #: daemon/slave.c:2016
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
-msgstr "gdm_slave_session_start: Не вдалося запустити сеанс `%s'"
+msgstr "gdm_slave_session_start: Не вдалося знайти/запустити сеанс `%s'"
 
 #: daemon/slave.c:2021
 msgid ""
@@ -914,7 +909,7 @@ msgstr ""
 
 #: daemon/slave.c:2280
 msgid "gdm_slave_session_start: Error forking user session"
-msgstr "gdm_slave_session_start: Помилка розгалудження сеансу користувача"
+msgstr "gdm_slave_session_start: Помилка розгалуження сеансу користувача"
 
 #: daemon/slave.c:2464
 #, c-format
@@ -933,7 +928,7 @@ msgstr "gdm_slave_exec_script: Запуск не вдався: %s"
 
 #: daemon/slave.c:2782
 msgid "gdm_slave_exec_script: Can't fork script process!"
-msgstr "gdm_slave_exec_script: Не вдалося розгалуди скрипт-процес!"
+msgstr "gdm_slave_exec_script: Не вдалося розгалужити скрипт-процес!"
 
 #: daemon/slave.c:2906
 msgid "gdm_parse_enriched_login: Failed creating pipe"
@@ -1106,7 +1101,7 @@ msgstr ""
 #: daemon/verify-pam.c:652
 #, fuzzy, c-format
 msgid "Can't find PAM configuration file for gdm. I've tried %s, %s, %s and %s"
-msgstr "gdm_verify_check: Не вдалося знайти файл конфигурац╕╖ PAM для gdm"
+msgstr "gdm_verify_check: Не вдалося знайти файл конф╕гурац╕╖ PAM для gdm"
 
 #: daemon/xdmcp.c:238
 #, c-format
@@ -1210,7 +1205,7 @@ msgstr "gdm_xdmcp_handle_request: Не вдалося зчитати ╕дентиф╕катор виробника"
 #: daemon/xdmcp.c:1031
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
-msgstr "gdm_xdmcp_handle_request: Нев╕рна котрольна сума з %s"
+msgstr "gdm_xdmcp_handle_request: Нев╕рна контрольна сума з %s"
 
 #: daemon/xdmcp.c:1198
 #, c-format
@@ -1318,7 +1313,7 @@ msgstr "Неможливо встановити маску сигналу!"
 
 #: gui/gdmchooser.c:850
 msgid "Socket for xdm communication"
-msgstr "Сокет для помун╕кування з xdm"
+msgstr "Сокет для комун╕кування з xdm"
 
 #: gui/gdmchooser.c:850
 msgid "SOCKET"
@@ -1396,7 +1391,7 @@ msgstr " "
 
 #: gui/gdmchooser-strings.c:17
 msgid "Most recently queried hosts"
-msgstr "Останн╕ запитуван╕ хочти"
+msgstr "Останн╕ запитуван╕ хости"
 
 #: gui/gdmchooser-strings.c:18
 msgid ""
@@ -1437,7 +1432,7 @@ msgid ""
 "This will display some of the more complex options of GDM that rarely need "
 "to be changed."
 msgstr ""
-"Ця пель показу╓ основн╕ параметри конф╕╜урац╕╖ GDM.\n"
+"Ця панель показу╓ основн╕ параметри конф╕гурац╕╖ GDM.\n"
 "\n"
 "Якщо вам потр╕бн╕ др╕бн╕ш╕ детал╕, вибер╕ть \"Експертн╕\" чи \"Встановлення "
 "системи\" з списку приведеного вище.\n"
@@ -1457,8 +1452,8 @@ msgid ""
 msgstr ""
 "Ця панель показу╓ додатков╕ параметри GDM.\n"
 "\n"
-"Будьте уважн╕ зм╕нюючи параментри безпеки, ╕никше ви можете стати зручною "
-"м╕шенью для нападник╕в.\n"
+"Будьте уважн╕ зм╕нюючи параметри безпеки, ╕накше ви можете стати зручною "
+"м╕шенню для нападник╕в.\n"
 "\n"
 "Вибер╕ть \"Встановлення системи\" для зм╕ни найважлив╕ших параметр╕в GDM."
 
@@ -1471,7 +1466,7 @@ msgid ""
 "\n"
 "Choose \"Basic\" if you just want to change your machine's login appearance."
 msgstr ""
-"Ця панель показу╓ систен╕ установки найважлив╕ших параметр╕в GDM.\n"
+"Ця панель показу╓ системн╕ установки найважлив╕ших параметр╕в GDM.\n"
 "\n"
 "Ви ма╓те зм╕нювати ц╕ шляхи лише, якщо ви Д╤ЙСНО ЗНА╢ТЕ що ви робите, бо "
 "некоректне встановлення може не дати ваш╕й машин╕ в╕рно завантажиться.\n"
@@ -1490,7 +1485,7 @@ msgstr ""
 #: gui/gdmconfig.c:378
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr ""
-"Вам потр╕бно бути заре╓строваним користувачем root для зм╕ни конф╕╜урац╕╖ "
+"Вам потр╕бно бути заре╓строваним користувачем root для зм╕ни конф╕гурац╕╖ "
 "GDM.\n"
 
 #: gui/gdmconfig.c:417
@@ -1510,7 +1505,7 @@ msgstr ""
 
 #: gui/gdmconfig.c:504
 msgid "GNOME Display Manager Configurator"
-msgstr "Конф╕╜уратор менеджера дисплея GNOME"
+msgstr "Конф╕гуратор менеджера дисплея GNOME"
 
 #: gui/gdmconfig.c:727
 #, c-format
@@ -1722,12 +1717,12 @@ msgstr "Утил╕та конф╕╜урування GDM"
 
 #: gui/gdmconfig-strings.c:8
 msgid "_Configuration"
-msgstr "Конф╕╜урац╕я"
+msgstr "Конф╕гурац╕я"
 
 #: gui/gdmconfig-strings.c:9
 #, fuzzy
 msgid "Revert to settings in the configuration file"
-msgstr "Конф╕╜урац╕йний файл: "
+msgstr "Конф╕гурац╕йний файл: "
 
 #: gui/gdmconfig-strings.c:10
 msgid "Revert settings"
@@ -1772,7 +1767,7 @@ msgstr "Вибер╕ть логотип, що буде в╕дображатись п╕д час ре╓страц╕╖"
 
 #: gui/gdmconfig-strings.c:21
 msgid "Minimised Icon: "
-msgstr "М╕н╕м╕завана п╕ктограма: "
+msgstr "М╕н╕м╕зована п╕ктограма: "
 
 #: gui/gdmconfig-strings.c:22
 msgid "Select a GTK+ theme file (gtkrc)"
@@ -2096,7 +2091,7 @@ msgstr "Вибер╕ть каталог для пошуку портрет╕в"
 
 #: gui/gdmconfig-strings.c:100
 msgid "Maximum face height: "
-msgstr "Максимальна висота портета:"
+msgstr "Максимальна висота портрета:"
 
 #: gui/gdmconfig-strings.c:101
 msgid "Exclude these users: "
@@ -2208,7 +2203,7 @@ msgstr ""
 #: gui/gdmconfig-strings.c:129
 #, fuzzy
 msgid "Timed login: "
-msgstr "М╕н╕м╕завана п╕ктограма: "
+msgstr "М╕н╕м╕зована п╕ктограма: "
 
 #: gui/gdmconfig-strings.c:130
 msgid "Seconds before login: "
@@ -2273,7 +2268,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:144
 msgid "Select how relaxed permissions are"
-msgstr "Вибер╕ть наск╕льк╕ гнучк╕ права"
+msgstr "Вибер╕ть наск╕льки гнучк╕ права"
 
 #: gui/gdmconfig-strings.c:145
 msgid "Permissions: "
@@ -2493,7 +2488,7 @@ msgstr "Сервер"
 
 #: gui/gdmconfig-strings.c:195
 msgid "Extra arguments"
-msgstr "Додатков╕ ар╜ументи"
+msgstr "Додатков╕ аргументи"
 
 #: gui/gdmconfig-strings.c:196
 msgid ""
@@ -2564,7 +2559,7 @@ msgstr "Налаштування X-сервера"
 
 #: gui/gdmconfig-strings.c:213
 msgid "Session configuration"
-msgstr "Конф╕╜урац╕я сеансу"
+msgstr "Конф╕гурац╕я сеансу"
 
 #: gui/gdmconfig-strings.c:214
 msgid "Session directory: "
@@ -2791,7 +2786,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:275
 msgid "Extra arguments:"
-msgstr "Додатков╕ ар╜ументи:"
+msgstr "Додатков╕ аргументи:"
 
 #: gui/gdmconfig-strings.c:276
 msgid "Custom command line:"
@@ -2819,7 +2814,7 @@ msgstr "Вибрати сервер"
 
 #: gui/gdmflexiserver.c:443
 msgid "Choose the X server to start"
-msgstr "Виберати X-сервер для запуску"
+msgstr "Вибрати X-сервер для запуску"
 
 #: gui/gdmflexiserver.c:499
 msgid "Send the specified protocol command to gdm"
@@ -2851,7 +2846,7 @@ msgid ""
 "Please ask your system administrator to start it."
 msgstr ""
 "GDM не запущено.\n"
-"Будь даска, попрос╕ть системного адм╕н╕стратора запустити його."
+"Будь ласка, попрос╕ть системного адм╕н╕стратора запустити його."
 
 #: gui/gdmflexiserver.c:560 gui/gdmflexiserver.c:576 gui/gdmflexiserver.c:644
 #: gui/gdmflexiserver.c:647
@@ -2922,7 +2917,7 @@ msgstr ""
 #: gui/gdmflexiserver.desktop.in.h:2
 #, fuzzy
 msgid "New login"
-msgstr "М╕н╕м╕завана п╕ктограма: "
+msgstr "М╕н╕м╕зована п╕ктограма: "
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:1
 msgid "Log in as another user inside a nested window"
@@ -2955,7 +2950,7 @@ msgstr "М-Я|Хорватська"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:44
 msgid "A-M|Czech"
-msgstr "М-Я|Чешська"
+msgstr "М-Я|Чеська"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:46
@@ -2965,7 +2960,7 @@ msgstr "А-Л|Датська"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:48
 msgid "A-M|Dutch"
-msgstr "А-Л|Голондська"
+msgstr "А-Л|Голландська"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:50
@@ -3045,12 +3040,12 @@ msgstr "А-Л|Литовська"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:80
 msgid "N-Z|Norwegian (bokmal)"
-msgstr "М-Я|Норвежзька (бокмель)"
+msgstr "М-Я|Норвезька (бокмель)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:82
 msgid "N-Z|Norwegian (nynorsk)"
-msgstr "М-Я|Новежзька (ньорськ)"
+msgstr "М-Я|Норвезька (ньорськ)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:84
@@ -3060,12 +3055,12 @@ msgstr "М-Я|Польська"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:86
 msgid "N-Z|Portuguese"
-msgstr "М-Я|Порту╜альська"
+msgstr "М-Я|Португальська"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:88
 msgid "N-Z|Brazilian Portuguese"
-msgstr "М-Я|Бразильська порту╜альська"
+msgstr "М-Я|Бразильська португальська"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:90
@@ -3193,7 +3188,7 @@ msgstr "Ви д╕йсно хочете призупинити машину?"
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
-"gdm_login_parse_config: Нема╓ файлу конф╕╜урац╕╖: %s. Використову╓ться "
+"gdm_login_parse_config: Нема╓ файлу конф╕гурац╕╖: %s. Використову╓ться "
 "типовий."
 
 #: gui/gdmlogin.c:839
@@ -3223,7 +3218,7 @@ msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
-"Ви вибрали %s для цього сеансу зам╕сть вашого звичайоного - %s.\n"
+"Ви вибрали %s для цього сеансу зам╕сть вашого звичайного - %s.\n"
 "Чи хочете ви зробити %s типовим для майбутн╕х сеанс╕в?"
 
 #. if !GdmShowLastSession then our saved session is
@@ -3312,7 +3307,7 @@ msgstr "Створити новий сеанс"
 #. * for next time
 #: gui/gdmlogin.c:1849
 msgid "Remember this setting"
-msgstr "Запам'ятити ц╕ параметнри"
+msgstr "Запам'ятати ц╕ параметри"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
