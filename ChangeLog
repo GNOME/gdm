@@ -1,3 +1,21 @@
+Sat Apr 28 16:01:48 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c: Remove the overlay window crap and write a simple
+	  windowmanager.  Yeah I feared this would happen one day.  Focus
+	  now works properly finally, focus shows and GTK+ seems happy.
+	  This also makes it possible to have the background clients have
+	  sane focus management (with sloppy focus).  Though no frames,
+	  window movement, nor icons.  (the login window still manages
+	  it's frame, movement and icon itself)
+
+	* config/gdm.conf.in, daemon/gdm.h, gui/gdmlogin.c, gui/gdmconfig.c,
+	  gui/gdmconfig.glade:  Add a setting for disabeling the titlebar,
+	  apaprently some people hate it and I'd rather this be done by
+	  configuration then patches.  Then the user can easily reenable it.
+
+	* gui/gdmlogin.c: a little bit of work on the session chooser dialog
+	  still doesn't actually do anything
+
 Sat Apr 28 17:50:00 2001  Lee Mallabone <lee0@callnetuk.com>
 
         * gui/gdmlogin.c, daemon/gdm.h, config/gdm.conf.in: Add the option

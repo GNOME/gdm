@@ -100,6 +100,7 @@ static gboolean GdmLockPosition;
 static gboolean GdmSetPosition;
 static gint GdmPositionX;
 static gint GdmPositionY;
+static gboolean GdmTitleBar;
 
 static GtkWidget *login;
 static GtkWidget *label;
@@ -110,7 +111,6 @@ static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
 static GdkWindow *rootwin;
-static GdkWindow *rootwin_overlay = NULL;
 static GdkRectangle screen;
 
 static GnomeIconList *browser;
@@ -135,6 +135,185 @@ static gint maxwidth;
 static pid_t backgroundpid = 0;
 
 static GHashTable *back_locales = NULL;
+
+typedef struct _GdmWindow GdmWindow;
+struct _GdmWindow {
+	Window win;
+	GdkWindow *gdk_win;
+};
+
+static GList *windows = NULL;
+static gboolean focus_new_windows = FALSE;
+static gboolean no_focus_login = FALSE;
+
+static gulong XA_WM_PROTOCOLS = 0;
+static gulong XA_WM_TAKE_FOCUS = 0;
+static gulong XA_COMPOUND_TEXT = 0;
+
+/* stolen from gwmh */
+static gpointer
+get_typed_property_data (Display *xdisplay,
+			 Window   xwindow,
+			 Atom     property,
+			 Atom     requested_type,
+			 gint    *size_p,
+			 guint    expected_format)
+{
+  static const guint prop_buffer_lengh = 1024 * 1024;
+  unsigned char *prop_data = NULL;
+  Atom type_returned = 0;
+  unsigned long nitems_return = 0, bytes_after_return = 0;
+  int format_returned = 0;
+  gpointer data = NULL;
+  gboolean abort = FALSE;
+
+  g_return_val_if_fail (size_p != NULL, NULL);
+  *size_p = 0;
+
+  gdk_error_trap_push ();
+
+  abort = XGetWindowProperty (xdisplay,
+			      xwindow,
+			      property,
+			      0, prop_buffer_lengh,
+			      False,
+			      requested_type,
+			      &type_returned, &format_returned,
+			      &nitems_return,
+			      &bytes_after_return,
+			      &prop_data) != Success;
+  if (gdk_error_trap_pop () ||
+      type_returned == None)
+    abort++;
+  if (!abort &&
+      requested_type != AnyPropertyType &&
+      requested_type != type_returned)
+    {
+      /* aparently this can happen for some properties of broken apps, be silent */
+      abort++;
+    }
+  if (!abort && bytes_after_return)
+    {
+      g_warning (G_GNUC_PRETTY_FUNCTION "(): Eeek, property has more than %u bytes, stored on harddisk?",
+		 prop_buffer_lengh);
+      abort++;
+    }
+  if (!abort && expected_format && expected_format != format_returned)
+    {
+      g_warning (G_GNUC_PRETTY_FUNCTION "(): Expected format (%u) unmatched (%d), programmer was drunk?",
+		 expected_format, format_returned);
+      abort++;
+    }
+  if (!abort && prop_data && nitems_return && format_returned)
+    {
+      switch (format_returned)
+	{
+	case 32:
+	  *size_p = nitems_return * 4;
+	  if (sizeof (gulong) == 8)
+	    {
+	      guint32 i, *mem = g_malloc0 (*size_p + 1);
+	      gulong *prop_longs = (gulong*) prop_data;
+
+	      for (i = 0; i < *size_p / 4; i++)
+		mem[i] = prop_longs[i];
+	      data = mem;
+	    }
+	  break;
+	case 16:
+	  *size_p = nitems_return * 2;
+	  break;
+	case 8:
+	  *size_p = nitems_return;
+	  break;
+	default:
+	  g_warning ("Unknown property data format with %d bits (extraterrestrial?)",
+		     format_returned);
+	  break;
+	}
+      if (!data && *size_p)
+	{
+	  guint8 *mem = NULL;
+
+	  if (format_returned == 8 && type_returned == XA_COMPOUND_TEXT)
+	    {
+	      gchar **tlist = NULL;
+	      gint count = gdk_text_property_to_text_list (type_returned, 8, prop_data,
+							   nitems_return, &tlist);
+
+	      if (count && tlist && tlist[0])
+		{
+		  mem = (guint8 *)g_strdup (tlist[0]);
+		  *size_p = strlen ((char *)mem);
+		}
+	      if (tlist)
+		gdk_free_text_list (tlist);
+	    }
+	  if (!mem)
+	    {
+	      mem = g_malloc (*size_p + 1);
+	      memcpy (mem, prop_data, *size_p);
+	      mem[*size_p] = 0;
+	    }
+	  data = mem;
+	}
+    }
+
+  if (prop_data)
+    XFree (prop_data);
+  
+  return data;
+}
+
+/* stolen from gwmh */
+static gboolean
+wm_protocol_check_support (Window xwin,
+			   Atom   check_atom)
+{
+  Atom *pdata = NULL;
+  guint32 *gdata = NULL;
+  int n_pids = 0;
+  gboolean is_supported = FALSE;
+  guint i, n_gids = 0;
+
+  gdk_error_trap_push ();
+
+  if (!XGetWMProtocols (GDK_DISPLAY (),
+			xwin,
+			&pdata,
+			&n_pids))
+    {
+      gint size = 0;
+
+      gdata = get_typed_property_data (GDK_DISPLAY (),
+				       xwin,
+				       XA_WM_PROTOCOLS,
+				       XA_WM_PROTOCOLS,
+				       &size, 32);
+      n_gids = size / 4;
+    }
+
+  gdk_error_trap_pop ();
+
+  for (i = 0; i < n_pids; i++)
+    if (pdata[i] == check_atom)
+      {
+	is_supported = TRUE;
+	break;
+      }
+  if (pdata)
+    XFree (pdata);
+  if (!is_supported)
+    for (i = 0; i < n_gids; i++)
+      if (gdata[i] == check_atom)
+        {
+	  is_supported = TRUE;
+	  break;
+        }
+  g_free (gdata);
+
+  return is_supported;
+}
 
 static void
 setup_cursor (GdkCursorType type)
@@ -235,9 +414,6 @@ gdm_login_icon_released (GtkWidget *widget)
 
 	gtk_object_remove_data (GTK_OBJECT (widget), "offset");
 
-	/* no longer send events from this window to widget */
-	gdk_window_set_user_data (rootwin_overlay, NULL);
-
 	return TRUE;
 }
 
@@ -255,8 +431,6 @@ gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
 	    gdk_window_raise (login->window);
 	    gtk_widget_grab_focus (entry);	
 	    gtk_window_set_focus (GTK_WINDOW (login), entry);	
-	    GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
-	    gtk_widget_queue_draw (entry);
 	    return TRUE;
     }
     
@@ -272,7 +446,7 @@ gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
 
     gtk_grab_add (widget);
     fleur_cursor = gdk_cursor_new (GDK_FLEUR);
-    gdk_pointer_grab (rootwin_overlay, TRUE,
+    gdk_pointer_grab (widget->window, TRUE,
 		      GDK_BUTTON_RELEASE_MASK |
 		      GDK_BUTTON_MOTION_MASK |
 		      GDK_POINTER_MOTION_HINT_MASK,
@@ -280,8 +454,6 @@ gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
 		      fleur_cursor,
 		      GDK_CURRENT_TIME);
     gdk_cursor_destroy (fleur_cursor);
-    /* send events from this window to widget */
-    gdk_window_set_user_data (rootwin_overlay, widget);
     gdk_flush ();
 
     return TRUE;
@@ -507,6 +679,9 @@ gdm_login_query (const gchar *msg)
 	if (req != NULL)
 		gtk_widget_destroy (req);
 
+	/* we should be now fine for focusing new windows */
+	focus_new_windows = TRUE;
+
 	req = gnome_message_box_new (msg,
 				     GNOME_MESSAGE_BOX_QUESTION,
 				     GNOME_STOCK_BUTTON_YES,
@@ -519,7 +694,9 @@ gdm_login_query (const gchar *msg)
 	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
 	gdm_center_window (GTK_WINDOW (req));
 
+	no_focus_login = TRUE;
 	ret = gnome_dialog_run (GNOME_DIALOG (req));
+	no_focus_login = FALSE;
 
 	if (ret == 0)
 		return TRUE;
@@ -527,12 +704,17 @@ gdm_login_query (const gchar *msg)
 		return FALSE;
 }
 
-static gboolean
-gdm_run_gdmconfig (void) {
+static void
+gdm_run_gdmconfig (GtkWidget *w, gpointer data)
+{
    char **argv;
    pid_t gdmconfig_pid;
+
+   /* FIXME: we should clean up if gdmlogin ends, like the background prog */
+
+   /* we should be now fine for focusing new windows */
+   focus_new_windows = TRUE;
    
-   printf ("running gdmconfig.\n");
    gdmconfig_pid = fork ();
    
    if (gdmconfig_pid == -1) {
@@ -593,6 +775,7 @@ gdm_login_parse_config (void)
     GdmQuiver = gnome_config_get_bool (GDM_KEY_QUIVER);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
+    GdmTitleBar = gnome_config_get_bool (GDM_KEY_TITLE_BAR);
     GdmConfig = gnome_config_get_string (GDM_KEY_CONFIG);
     GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
@@ -893,8 +1076,8 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 		    gtk_widget_set_sensitive (entry, TRUE);
 		    gtk_widget_grab_focus (entry);	
 		    gtk_window_set_focus (GTK_WINDOW (login), entry);	
-		    GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
-		    gtk_widget_queue_draw (entry);
+		    //GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
+		    //gtk_widget_queue_draw (entry);
 		    return TRUE;
 	    }
 	}
@@ -1178,29 +1361,64 @@ gdm_login_language_menu_new (void)
     return menu;
 }
 
+static void
+toggle_sensitize (GtkWidget *w, gpointer data)
+{
+	gtk_widget_set_sensitive (GTK_WIDGET (data),
+				  GTK_TOGGLE_BUTTON (w)->active);
+}
+static void
+toggle_insensitize (GtkWidget *w, gpointer data)
+{
+	gtk_widget_set_sensitive (GTK_WIDGET (data),
+				  ! GTK_TOGGLE_BUTTON (w)->active);
+}
+
 static char *
 get_gnome_session (const char *sess_string)
 {
 	GtkWidget *d;
-	GtkWidget *clist;
+	GtkWidget *clist, *sw;
 	GtkWidget *hbox;
 	GtkWidget *entry;
+	GtkWidget *newcb;
+
+	/* we should be now fine for focusing new windows */
+	focus_new_windows = TRUE;
 
 	/* translators:  This is a nice and evil eggie text, translate
 	 * to your favourite currency */
 	d = gnome_dialog_new (_("Select GNOME session"),
 			      GNOME_STOCK_BUTTON_OK,
 			      NULL);
-	clist = gtk_clist_new (1);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), clist,
+
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox),
+			    gtk_label_new (_("Select GNOME session")),
+			    FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox),
+			    gtk_hseparator_new (),
+			    FALSE, FALSE, 0);
+
+	sw = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), sw,
 			    TRUE, TRUE, 0);
+	clist = gtk_clist_new (1);
+	gtk_container_add (GTK_CONTAINER (sw), clist);
+	gtk_widget_set_usize (sw, 120, 180);
+
+	newcb = gtk_check_button_new_with_label (_("Create new session"));
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), newcb,
+			    FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), hbox,
 			    FALSE, FALSE, 0);
 
 	gtk_box_pack_start (GTK_BOX (hbox),
-			    gtk_label_new (_("New session: ")),
+			    gtk_label_new (_("Name: ")),
 			    FALSE, FALSE, 0);
 
 	entry = gtk_entry_new ();
@@ -1208,12 +1426,26 @@ get_gnome_session (const char *sess_string)
 			    entry,
 			    TRUE, TRUE, 0);
 
+	gtk_widget_set_sensitive (hbox, FALSE);
+
+	gtk_signal_connect (GTK_OBJECT (newcb), "toggled",
+			    GTK_SIGNAL_FUNC (toggle_sensitize),
+			    hbox);
+	gtk_signal_connect (GTK_OBJECT (newcb), "toggled",
+			    GTK_SIGNAL_FUNC (toggle_insensitize),
+			    clist);
+
+
 	gtk_window_set_modal (GTK_WINDOW (d), TRUE);
 
 	gtk_widget_show_all (d);
 
 	gdm_center_window (GTK_WINDOW (d));
+	no_focus_login = TRUE;
 	gnome_dialog_run (GNOME_DIALOG (d));
+	no_focus_login = FALSE;
+
+	return NULL;
 }
 
 static gboolean
@@ -1260,8 +1492,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
-	GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
-	gtk_widget_queue_draw (entry);
+	//GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
+	//gtk_widget_queue_draw (entry);
 
 	/* replace rapther then append next message string */
 	replace_msg = TRUE;
@@ -1280,8 +1512,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
-	GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
-	gtk_widget_queue_draw (entry);
+	//GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
+	//gtk_widget_queue_draw (entry);
 
 	/* replace rapther then append next message string */
 	replace_msg = TRUE;
@@ -1393,6 +1625,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	if (require_quater) {
 		GtkWidget *d;
 
+		/* we should be now fine for focusing new windows */
+		focus_new_windows = TRUE;
+
 		/* translators:  This is a nice and evil eggie text, translate
 		 * to your favourite currency */
 		d = gnome_message_box_new (_("Please insert 25 cents "
@@ -1403,7 +1638,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		gtk_window_set_modal (GTK_WINDOW (d), TRUE);
 		gdm_center_window (GTK_WINDOW (d));
 
+		no_focus_login = TRUE;
 		gnome_dialog_run (GNOME_DIALOG (d));
+		no_focus_login = FALSE;
 	}
 
 	kill_background ();
@@ -1523,65 +1760,6 @@ gdm_login_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
     return (TRUE);
 }
 
-static GdkFilterReturn
-root_keys_filter (GdkXEvent *gdk_xevent,
-		  GdkEvent *event,
-		  gpointer data)
-{
-	XEvent *xevent = (XEvent *)gdk_xevent;
-	XEvent new_xevent;
-
-	if (xevent->type != KeyPress &&
-	    xevent->type != KeyRelease)
-		return GDK_FILTER_CONTINUE;
-
-	if (entry->window == NULL ||
-	    icon_win != NULL)
-		return GDK_FILTER_CONTINUE;
-
-	/* EVIIIIIIIIIL, but works */
-	/* -George */
-	new_xevent = *xevent;
-	new_xevent.xany.window = GDK_WINDOW_XWINDOW (entry->window);
-	XSendEvent (GDK_DISPLAY (),
-		    GDK_WINDOW_XWINDOW (entry->window),
-		    True, NoEventMask, &new_xevent);
-
-	return GDK_FILTER_CONTINUE;
-}
-
-static void
-gdm_init_root_window_overlay (void)
-{
-	GdkWindowAttr attributes;
-	gint attributes_mask;
-
-	attributes.window_type = GDK_WINDOW_TEMP;
-	attributes.x = 0;
-	attributes.y = 0;
-	attributes.width = gdk_screen_width ();
-	attributes.height = gdk_screen_height ();
-	attributes.wclass = GDK_INPUT_ONLY;
-	attributes.override_redirect = TRUE;
-	attributes.event_mask = (GDK_BUTTON_PRESS_MASK |
-				 GDK_BUTTON_RELEASE_MASK |
-				 GDK_POINTER_MOTION_MASK |
-				 GDK_POINTER_MOTION_HINT_MASK |
-				 GDK_KEY_PRESS_MASK |
-				 GDK_KEY_RELEASE_MASK |
-				 GDK_ENTER_NOTIFY_MASK |
-				 GDK_LEAVE_NOTIFY_MASK);
-	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_NOREDIR;
-
-	rootwin_overlay = gdk_window_new (NULL,
-					  &attributes,
-					  attributes_mask);
-
-	gdk_window_show (rootwin_overlay);
-
-	gdk_window_add_filter (rootwin_overlay, root_keys_filter, NULL);
-}
-
 static gboolean
 handle_expose (GtkWidget *handle, GdkEventExpose *event, gpointer data)
 {
@@ -1626,7 +1804,7 @@ gdm_login_handle_pressed (GtkWidget *widget, GdkEventButton *event)
 
     gtk_grab_add (widget);
     fleur_cursor = gdk_cursor_new (GDK_FLEUR);
-    gdk_pointer_grab (rootwin_overlay, TRUE,
+    gdk_pointer_grab (widget->window, TRUE,
 		      GDK_BUTTON_RELEASE_MASK |
 		      GDK_BUTTON_MOTION_MASK |
 		      GDK_POINTER_MOTION_HINT_MASK,
@@ -1634,8 +1812,6 @@ gdm_login_handle_pressed (GtkWidget *widget, GdkEventButton *event)
 		      fleur_cursor,
 		      GDK_CURRENT_TIME);
     gdk_cursor_destroy (fleur_cursor);
-    /* send events from this window to widget */
-    gdk_window_set_user_data (rootwin_overlay, widget);
     gdk_flush ();
     
     return TRUE;
@@ -1648,9 +1824,6 @@ gdm_login_handle_released (GtkWidget *widget, GdkEventButton *event)
 	gdk_pointer_ungrab (GDK_CURRENT_TIME);
 
 	gtk_object_remove_data (GTK_OBJECT (widget), "offset");
-
-	/* no longer send events from this window to widget */
-	gdk_window_set_user_data (rootwin_overlay, NULL);
 
 	return TRUE;
 }
@@ -1778,6 +1951,45 @@ login_realized (GtkWidget *w)
 }
 
 static void
+focus_window (Window window)
+{
+	if (no_focus_login &&
+	    login != NULL &&
+	    login->window != NULL &&
+	    GDK_WINDOW_XWINDOW (login->window) == window)
+		return;
+
+	gdk_error_trap_push ();
+
+	if (wm_protocol_check_support (window, XA_WM_TAKE_FOCUS)) {
+		XEvent xevent = { 0, };
+
+		xevent.type = ClientMessage;
+		xevent.xclient.window = window;
+		xevent.xclient.message_type = XA_WM_PROTOCOLS;
+		xevent.xclient.format = 32;
+		xevent.xclient.data.l[0] = XA_WM_TAKE_FOCUS;
+		xevent.xclient.data.l[1] = CurrentTime;
+
+		XSendEvent (GDK_DISPLAY (), window, False, 0, &xevent);
+		gdk_flush ();
+	}
+
+	XSetInputFocus (GDK_DISPLAY (),
+			window,
+			RevertToPointerRoot,
+			CurrentTime);
+	gdk_flush ();
+	gdk_error_trap_pop ();
+}
+
+static void
+login_mapped (GtkWidget *w, gpointer data)
+{
+	focus_window (GDK_WINDOW_XWINDOW (login->window));
+}
+
+static void
 gdm_login_gui_init (void)
 {
     GtkWidget *frame1, *frame2;
@@ -1793,16 +2005,14 @@ gdm_login_gui_init (void)
     if(*GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
 
-
-    rootwin = gdk_window_foreign_new (GDK_ROOT_WINDOW ());
-
-    gdm_init_root_window_overlay ();
-
     login = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_widget_ref (login);
     gtk_object_set_data_full (GTK_OBJECT (login), "login", login,
 			      (GtkDestroyNotify) gtk_widget_unref);
-    gtk_window_set_title (GTK_WINDOW (login), "GDM Login");
+    gtk_window_set_title (GTK_WINDOW (login), _("GDM Login"));
+    gtk_signal_connect_after (GTK_OBJECT (login), "map",
+			      GTK_SIGNAL_FUNC (login_mapped),
+			      NULL);
 
     accel = gtk_accel_group_new ();
     gtk_window_add_accel_group (GTK_WINDOW (login), accel);
@@ -1832,8 +2042,10 @@ gdm_login_gui_init (void)
     gtk_widget_show (mbox);
     gtk_container_add (GTK_CONTAINER (frame2), mbox);
 
-    handle = create_handle ();
-    gtk_box_pack_start (GTK_BOX (mbox), handle, FALSE, FALSE, 0);
+    if (GdmTitleBar) {
+	    handle = create_handle ();
+	    gtk_box_pack_start (GTK_BOX (mbox), handle, FALSE, FALSE, 0);
+    }
 
     menubar = gtk_menu_bar_new();
     gtk_widget_ref (GTK_WIDGET (menubar));
@@ -1862,16 +2074,18 @@ gdm_login_gui_init (void)
 
     if (GdmSystemMenu) {
 	menu = gtk_menu_new();
-        if (GdmConfigAvailable) {
+        if (GdmConfigAvailable &&
+	    GdmConfig != NULL &&
+	    GdmConfig[0] != '\0' &&
+	    access (GdmConfig, X_OK) == 0) {
 	   item = gtk_menu_item_new_with_label (_("Configure..."));
 	   gtk_menu_append (GTK_MENU (menu), item);
 	   gtk_signal_connect (GTK_OBJECT (item), "activate",
 			       GTK_SIGNAL_FUNC (gdm_run_gdmconfig),
 			       NULL);
 	   gtk_widget_show (item);
-	   printf ("config option.\n");
 	}
-       printf ("sys menu.\n");
+
 	item = gtk_menu_item_new_with_label (_("Reboot..."));
 	gtk_menu_append (GTK_MENU (menu), item);
 	gtk_signal_connect (GTK_OBJECT (item), "activate",
@@ -2407,6 +2621,190 @@ run_backgrounds (void)
 }
 
 
+/* stolen from gwmh */
+static GdkWindow*
+window_ref_from_xid (Window xwin)
+{
+	GdkWindow *window;
+
+	/* the xid maybe invalid already, in that case we return NULL */
+	window = gdk_window_lookup (xwin);
+	if (window == NULL)
+		window = gdk_window_foreign_new (xwin);
+	else
+		gdk_window_ref (window);
+
+	return window;
+}
+
+
+static GList *
+find_window (Window w)
+{
+	GList *li;
+
+	for (li = windows; li != NULL; li = li->next) {
+		GdmWindow *gw = li->data;
+
+		if (gw->win == w)
+			return li;
+	}
+
+	return NULL;
+}
+
+static GdkFilterReturn
+window_filter (GdkXEvent *gdk_xevent,
+	       GdkEvent *event,
+	       gpointer data)
+{
+	GdmWindow *gw = data;
+	XEvent *xevent = (XEvent *)gdk_xevent;
+
+	switch (xevent->type) {
+	case EnterNotify:
+		focus_window (gw->win);
+		break;
+	default:
+		break;
+	}
+
+	return GDK_FILTER_CONTINUE;
+}
+
+static void
+add_window (Window w)
+{
+	XWindowAttributes attribs = { 0, };
+
+	if (find_window (w) == NULL) {
+		GdmWindow *gw = g_new0 (GdmWindow, 1);
+		gw->win = w;
+		gw->gdk_win = window_ref_from_xid (w);
+		gdk_window_add_filter (gw->gdk_win,
+				       window_filter, gw);
+		windows = g_list_prepend (windows, gw);
+
+		gdk_error_trap_push ();
+
+		/* set event mask for events on root window */
+		XGetWindowAttributes (GDK_DISPLAY (), w,
+				      &attribs);
+		XSelectInput (GDK_DISPLAY (), w,
+			      attribs.your_event_mask |
+			      EnterWindowMask);
+
+		gdk_flush ();
+		gdk_error_trap_pop ();
+	}
+}
+
+static void
+remove_window (Window w)
+{
+	GList *li = find_window (w);
+
+	if (li != NULL) {
+		GdmWindow *gw = li->data;
+		li->data = NULL;
+
+		gdk_window_remove_filter (gw->gdk_win,
+					  window_filter, gw);
+
+		gdk_window_unref (gw->gdk_win);
+		gw->gdk_win = NULL;
+		gw->win = 0;
+		g_free (gw);
+
+		windows = g_list_remove_link (windows, li);
+		g_list_free_1 (li);
+	}
+}
+
+static void
+revert_focus_to_login (void)
+{
+	if (login != NULL &&
+	    login->window != NULL) {
+		focus_window (GDK_WINDOW_XWINDOW (login->window));
+	}
+}
+
+static GdkFilterReturn
+root_filter (GdkXEvent *gdk_xevent,
+	     GdkEvent *event,
+	     gpointer data)
+{
+	Window w;
+	XEvent *xevent = (XEvent *)gdk_xevent;
+
+	switch (xevent->type) {
+	case MapNotify:
+		if ( ! xevent->xmap.override_redirect) {
+			w = xevent->xmap.window;
+			add_window (w);
+			if (focus_new_windows)
+				focus_window (w);
+		}
+		break;
+	case UnmapNotify:
+		w = xevent->xunmap.window;
+		remove_window (w);
+		revert_focus_to_login ();
+		break;
+	default:
+		break;
+	}
+
+	return GDK_FILTER_CONTINUE;
+}
+
+static void
+add_all_current_windows (void)
+{
+	Window *children = NULL;
+	Window xparent, xroot;
+	guint size = 0;
+
+	gdk_flush ();
+	gdk_error_trap_push ();
+
+	if (XQueryTree (GDK_DISPLAY (), 
+			GDK_ROOT_WINDOW (),
+			&xroot,
+			&xparent,
+			&children,
+			&size)) {
+		int i;
+
+		for (i = 0; i < size; i++) {
+			XWindowAttributes attribs = {0};
+
+			XGetWindowAttributes (GDK_DISPLAY (),
+					      children[i],
+					      &attribs);
+
+			if ( ! attribs.override_redirect &&
+			    attribs.map_state != IsUnmapped)
+				add_window (children[i]);
+		}
+
+		if (children != NULL)
+			XFree (children);
+	}
+
+	gdk_flush ();
+	gdk_error_trap_pop ();
+}
+
+static void
+atoms_init (void)
+{
+	XA_WM_PROTOCOLS = gdk_atom_intern ("WM_PROTOCOLS", FALSE);
+	XA_WM_TAKE_FOCUS = gdk_atom_intern ("WM_TAKE_FOCUS", FALSE);
+	XA_COMPOUND_TEXT = gdk_atom_intern ("COMPOUND_TEXT", FALSE);
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -2416,6 +2814,7 @@ main (int argc, char *argv[])
     struct sigaction chld;
     sigset_t mask;
     GIOChannel *ctrlch;
+    XWindowAttributes attribs = { 0, };
 
     /* Avoid creating ~gdm/.gnome stuff */
     gnome_do_not_create_directories = TRUE;
@@ -2448,6 +2847,10 @@ main (int argc, char *argv[])
     textdomain (PACKAGE);
 
     setup_cursor (GDK_LEFT_PTR);
+
+    rootwin = gdk_window_foreign_new (GDK_ROOT_WINDOW ());
+
+    atoms_init ();
 
     gdm_screen_init ();
 
@@ -2499,6 +2902,24 @@ main (int argc, char *argv[])
 		    (GIOFunc) gdm_login_ctrl_handler,
 		    NULL);
     g_io_channel_unref (ctrlch);
+
+    add_all_current_windows ();
+
+    gdk_error_trap_push ();
+
+    /* set event mask for events on root window */
+    XGetWindowAttributes (GDK_DISPLAY (),
+			  GDK_ROOT_WINDOW (),
+			  &attribs);
+    XSelectInput (GDK_DISPLAY (),
+		  GDK_ROOT_WINDOW (),
+		  attribs.your_event_mask |
+		  SubstructureNotifyMask);
+
+    gdk_flush ();
+    gdk_error_trap_pop ();
+
+    gdk_window_add_filter (rootwin, root_filter, NULL);
 
     gtk_main ();
 

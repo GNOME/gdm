@@ -21,6 +21,7 @@ gchar *s = N_("Login appearance");
 gchar *s = N_("Greeter Look and Feel");
 gchar *s = N_("Show the 'system' menu, (for reboot, shutdown etc.)");
 gchar *s = N_("Quiver on failure");
+gchar *s = N_("Show title bar on login window");
 gchar *s = N_("Welcome to %n");
 gchar *s = N_("%n");
 gchar *s = N_("This is %n");

@@ -319,6 +319,7 @@ gdm_config_parse_most (void)
     
     gdm_toggle_set("show_system", gnome_config_get_bool (GDM_KEY_SYSMENU));
     gdm_toggle_set("quiver", gnome_config_get_bool (GDM_KEY_QUIVER));
+    gdm_toggle_set("title_bar", gnome_config_get_bool(GDM_KEY_TITLE_BAR));
     gdm_toggle_set ("lock_position", gnome_config_get_bool (GDM_KEY_LOCK_POSITION));
     gdm_toggle_set ("set_position", gnome_config_get_bool (GDM_KEY_SET_POSITION));
     gdm_spin_set ("position_x", gnome_config_get_int (GDM_KEY_POSITIONX));
@@ -526,6 +527,7 @@ write_new_config_file                  (GtkButton *button,
     
     gdm_toggle_write("show_system", GDM_KEY_SYSMENU);
     gdm_toggle_write("quiver", GDM_KEY_QUIVER);
+    gdm_toggle_write("title_bar", GDM_KEY_TITLE_BAR);
     gdm_toggle_write("lock_position", GDM_KEY_LOCK_POSITION);
     gdm_toggle_write("set_position", GDM_KEY_SET_POSITION);
     gdm_spin_write("position_x", GDM_KEY_POSITIONX);
