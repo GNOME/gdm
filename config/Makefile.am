@@ -48,7 +48,9 @@ install-data-hook: gdm.conf gnomerc Gnome Failsafe
 		$(INSTALL_SCRIPT) $(srcdir)/Xsession $(sessdir)/Xsession; \
 	fi
 
-	$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome;
+	if test '!' -f $(sessdir)/Gnome; then \
+		$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome; \
+	fi
 
 	if test '!' -f $(sessdir)/Failsafe; then \
 		$(INSTALL_SCRIPT) Failsafe $(sessdir)/Failsafe; \
@@ -87,7 +89,9 @@ install-data-hook: gdm.conf gnomerc Gnome Failsafe
 		chmod 755 $(gnomercdir); \
 	fi
 
-	$(INSTALL_SCRIPT) gnomerc $(gnomercdir)/gnomerc;
+	if test '!' -f $(gnomercdir)/gnomerc; then \
+		$(INSTALL_SCRIPT) gnomerc $(gnomercdir)/gnomerc; \
+	fi
 
 	if test '!' -d $(authdir); then \
 		$(mkinstalldirs) $(authdir); \

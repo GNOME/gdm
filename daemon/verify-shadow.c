@@ -62,7 +62,7 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 
     if (username == NULL) {
 	    /* Ask for the user's login */
-	    login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Login:"));
+	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Login:"));
 	    if (login == NULL ||
 		gdm_slave_greeter_check_interruption (login)) {
 		    if (local)

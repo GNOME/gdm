@@ -382,7 +382,9 @@ gdm_config_parse_most (void)
 	gchar *s;
 
 	/* Ignore backups and rpmsave files */
-	if ((strstr (dent->d_name, "~")) || (strstr (dent->d_name, ".rpmsave"))) {
+	if ((strstr (dent->d_name, "~")) ||
+	    (strstr (dent->d_name, ".rpmsave")) ||
+	    (strstr (dent->d_name, ".orig"))) {
 	    dent = readdir (sessdir);
 	    continue;
 	}

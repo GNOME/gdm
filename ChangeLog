@@ -1,3 +1,15 @@
+Sun Apr 29 23:54:34 2001  George Lebl <jirka@5z.com>
+
+	* config/Gnome.in, config/gnomerc, config/Makefile.am:  Revert stupid
+	  changes, now we rely on a new enough gnome-core where gsm
+	  understands GDM_GNOME_SESSION (in a similar way to GDM_LANG)
+
+	* daemon/verify-*.c:  Eeeek Forgot to use the GDM_LOGIN prompter
+	  opcode and that made the greeter very unhappy
+
+	* gui/gdmconfig.c, gui/gdmlogin.c: Ignore .orig files as well when
+	  looking at the Sessions dir
+
 Sun Apr 29 22:46:12 2001  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch], daemon/slave.c, gui/gdmlogin.c:  Add running of
