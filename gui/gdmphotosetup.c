@@ -91,8 +91,8 @@ main (int argc, char *argv[])
 	}
 
 	dialog = gnome_dialog_new (_("Select a photo"),
-				   GNOME_STOCK_BUTTON_OK,
 				   GNOME_STOCK_BUTTON_CANCEL,
+				   GNOME_STOCK_BUTTON_OK,
 				   NULL);
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
 			    gtk_label_new (_("Select a photograph to show "
