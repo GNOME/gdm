@@ -12,28 +12,51 @@
 
 static gboolean caps_lock_state = FALSE;
 
-extern gboolean DOING_GDM_DEVELOPMENT;
+static Display *
+get_parent_display (void)
+{
+  static gboolean tested = FALSE;
+  static Display *dsp = NULL;
+
+  if (tested)
+    return dsp;
+
+  tested = TRUE;
+
+  if (g_getenv ("GDM_PARENT_DISPLAY") != NULL)
+    {
+      char *old_xauth = g_strdup (g_getenv ("XAUTHORITY"));
+      if (g_getenv ("GDM_PARENT_XAUTHORITY") != NULL)
+        {
+	  gnome_setenv ("XAUTHORITY",
+			g_getenv ("GDM_PARENT_XAUTHORITY"), TRUE);
+	}
+      dsp = XOpenDisplay (g_getenv ("GDM_PARENT_DISPLAY"));
+      if (old_xauth != NULL)
+        gnome_setenv ("XAUTHORITY", old_xauth, TRUE);
+      else
+        gnome_unsetenv ("XAUTHORITY");
+      g_free (old_xauth);
+    }
+
+  return dsp;
+}
 
 static gboolean
 is_caps_lock_on (void)
 {
   unsigned int states;
-  Display *dsp = NULL;
+  Display *dsp;
 
   /* HACK! incredible hack, if this is set we get
    * indicator state from the parent display, since we must be inside an
    * Xnest */
-  if (g_getenv ("GDM_PARENT_DISPLAY") != NULL)
-    dsp = XOpenDisplay (g_getenv ("GDM_PARENT_DISPLAY"));
-
+  dsp = get_parent_display ();
   if (dsp == NULL)
     dsp = GDK_DISPLAY ();
-	
+
   if (XkbGetIndicatorState (dsp, XkbUseCoreKbd, &states) != Success)
       return FALSE;
-
-  if (dsp != GDK_DISPLAY ())
-    XCloseDisplay (dsp);
 
   return (states & ShiftMask) != 0;
 }

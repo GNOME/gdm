@@ -158,13 +158,13 @@ enum {
 #define GDM_KEY_TIMED_LOGIN "daemon/TimedLogin="
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=30"
 
-#define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=/usr/bin/X11/X"
+#define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=/usr/X11R6/bin/X"
 #define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
-#define GDM_KEY_XNEST "daemon/Xnest=/usr/bin/X11/Xnest -name Xnest -kb"
+#define GDM_KEY_XNEST "daemon/Xnest=/usr/X11R6/bin/Xnest -name Xnest"
 
 /* Per server definitions */
 #define GDM_KEY_SERVER_NAME "name=Standard server"
-#define GDM_KEY_SERVER_COMMAND "command=/usr/bin/X11/X"
+#define GDM_KEY_SERVER_COMMAND "command=/usr/X11R6/bin/X"
 /* runnable as flexi server */
 #define GDM_KEY_SERVER_FLEXIBLE "flexible=true"
 /* choosable from the login screen */
@@ -325,6 +325,7 @@ struct _GdmDisplay {
     /* Flexi stuff */
     char *xnest_disp;
     char *xnest_auth_file;
+    char *xnest_temp_auth_file;
     uid_t server_uid;
     GdmConnection *socket_conn;
 

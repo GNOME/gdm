@@ -349,6 +349,11 @@ gdm_display_dispose (GdmDisplay *d)
     g_free (d->authfile_gdm);
     d->authfile_gdm = NULL;
 
+    if (d->xnest_temp_auth_file != NULL)
+	    unlink (d->xnest_temp_auth_file);
+    g_free (d->xnest_temp_auth_file);
+    d->xnest_temp_auth_file = NULL;
+
     if (d->auths) {
 	GSList *tmpauth = d->auths;
 

@@ -1,3 +1,13 @@
+Wed Aug 14 19:59:26 2002  George Lebl <jirka@5z.com>
+
+	* config/Default, config/gdm.conf.in, daemon/display.c,
+	  daemon/gdm.h, daemon/slave.c, gui/greeter/greeter_item_capslock.c:
+	  Set GDM_PARENT_DISPLAY and GDM_PARENT_XAUTHORITY for greeter and
+	  the Init script.  In the Init script try to migrate the keyboard
+	  configuration to the new server.  Also kill the -kb option from the
+	  Xnest command line.  This should fix all the fun problems with
+	  keyboard and Xnest.  More likely Xnest should get fixed.
+
 Wed Aug 14 16:01:41 2002  George Lebl <jirka@5z.com>
 
 	* gui/greeter/Makfile.am, gui/greeter/gdmthemetester: a script to
