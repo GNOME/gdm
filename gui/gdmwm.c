@@ -44,6 +44,11 @@ struct _GdmWindow {
 	gboolean center; /* do centering */
 	gboolean recenter; /* do re-centering */
         gboolean takefocus; /* permit take focus */
+
+	/* hack, when we reparent, we will get an unmap and then
+	 * an map, and we want to ignore those */
+	int ignore_next_map;
+	int ignore_next_unmap;
 };
 
 static GList *windows = NULL;
@@ -569,7 +574,7 @@ has_deco (Window win)
 
 
 static void
-add_deco (GdmWindow *w)
+add_deco (GdmWindow *w, gboolean is_mapped)
 {
 	int x, y;
 	Window root;
@@ -619,9 +624,20 @@ add_deco (GdmWindow *w)
 
 	XMapWindow (wm_disp, w->deco);
 
-	XReparentWindow (wm_disp, w->win, w->deco, 1, 1);
-
+	XSync (wm_disp, False);
 	trap_pop ();
+
+	trap_push ();
+	XReparentWindow (wm_disp, w->win, w->deco, 1, 1);
+	XSync (wm_disp, False);
+	if (trap_pop () == 0) {
+		if (is_mapped) {
+			/* Ignore the next unmap/map, but only
+			 * if reparent window really succeeded */
+			w->ignore_next_map++;
+			w->ignore_next_unmap++;
+		}
+	}
 }
 
 static gboolean
@@ -641,7 +657,7 @@ is_wm_class (XClassHint *hint, const char *string, int len)
 }
 
 static GdmWindow *
-add_window (Window w, gboolean center)
+add_window (Window w, gboolean center, gboolean is_mapped)
 {
 	GdmWindow *gw;
 
@@ -664,6 +680,9 @@ add_window (Window w, gboolean center)
 		gw->center = center;
 		gw->recenter = FALSE;
 		gw->takefocus = TRUE;
+
+		gw->ignore_next_map = 0;
+		gw->ignore_next_unmap = 0;
 
 		wmhints = XGetWMHints (wm_disp, w);
 		if (wmhints != NULL) {
@@ -712,7 +731,7 @@ add_window (Window w, gboolean center)
 		gw->y = x;
 
 		center_x_window (gw, w, w);
-		add_deco (gw);
+		add_deco (gw, is_mapped);
 
 		XAddToSaveSet (wm_disp, w);
 
@@ -795,7 +814,9 @@ add_all_current_windows (void)
 
 			if ( ! attribs.override_redirect &&
 			    attribs.map_state != IsUnmapped) {
-				add_window (children[i], FALSE /*center*/);
+				add_window (children[i],
+					    FALSE /*center*/,
+					    TRUE /* is_mapped */);
 			}
 		}
 
@@ -861,7 +882,9 @@ event_process (XEvent *ev)
 		if (gw == NULL) {
 			if (ev->xmaprequest.parent == wm_root) {
 				XGrabServer (wm_disp);
-				gw = add_window (w, TRUE /*center*/);
+				gw = add_window (w,
+						 TRUE /* center */,
+						 FALSE /* is_mapped */);
 				XUngrabServer (wm_disp);
 			}
 		}
@@ -939,17 +962,26 @@ event_process (XEvent *ev)
 		break;
 	case MapNotify:
 		w = ev->xmap.window;
-		if ( ! ev->xmap.override_redirect &&
-		    focus_new_windows) {
-			gw = find_window (w, FALSE);
-			if (gw != NULL)
+		gw = find_window (w, FALSE);
+		if (gw != NULL) {
+			if (gw->ignore_next_map > 0) {
+				gw->ignore_next_map --;
+				break;
+			}
+			if ( ! ev->xmap.override_redirect &&
+			     focus_new_windows) {
 				gdm_wm_focus_window (w);
+			}
 		}
 		break;
 	case UnmapNotify:
 		w = ev->xunmap.window;
 		gw = find_window (w, FALSE);
 		if (gw != NULL) {
+			if (gw->ignore_next_unmap > 0) {
+				gw->ignore_next_unmap --;
+				break;
+			}
 			XGrabServer (wm_disp);
 			if (gw->deco != None)
 				XUnmapWindow (wm_disp, gw->deco);
@@ -1192,6 +1224,7 @@ gdm_wm_move_window_now (Window window, int x, int y)
 
 		XSync (wm_disp, False);
 		trap_pop ();
+		return;
 	}
 
 	if (gw->deco != None)

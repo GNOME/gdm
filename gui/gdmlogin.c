@@ -3744,6 +3744,7 @@ run_backgrounds (void)
 	if (GdmBackgroundProg != NULL &&
 	    GdmBackgroundProg[0] != '\0') {
 		backgroundpid = gdm_run_command (GdmBackgroundProg);
+		g_atexit (kill_thingies);
 	}
 }
 
@@ -4213,8 +4214,6 @@ main (int argc, char *argv[])
     }
 
     gdm_wm_restore_wm_order ();
-
-    g_atexit (kill_thingies);
 
     /* Only setup the cursor now since it will be a WATCH from before */
     setup_cursor (GDK_LEFT_PTR);
