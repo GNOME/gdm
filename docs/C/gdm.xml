@@ -277,8 +277,15 @@
 
       <para>
 	GDM only supports the MIT-MAGIC-COOKIE-1 authentication
-	system.  Little is gained from the other schemes, and no
-	effort has been made to implement them so far.
+	system.  Normally little is gained from the other schemes,
+	and no effort has been made to implement them so far.
+	Because of this the cookies go over the wire as
+	clear text, and thus you should be careful about what
+	network you use this on.  If snooping is possible
+	and undesirable, then you had better use ssh for tunneling
+	an X connection anyway rather then using GDM's XDMCP.
+	It is a planned feature to support ssh instead of XDMCP
+	inside GDM.
       </para>
 
       <para>
@@ -299,13 +306,54 @@
       </para>
 
       <para>
+	In addition to UDP port 177, you should also block all the
+	X server ports (TCP ports 6000 + display number) on the firewall
+	as well.  Do note that various places in GDM will use display
+	numbers 20 and higher (for example the on demand server stuff).
+	X is not a very safe protocol for leaving on the net, and XDMCP
+	is even less safe.
+      </para>
+
+      <para>
 	Even though your display is protected by cookies the XEvents
 	and thus the keystrokes typed when entering passwords will
 	still go over the wire in clear text. It is trivial to capture
 	these. You should also be aware that cookies, if placed on an
 	NFS mounted directory, are prone to eavesdropping too.
       </para>
+    </sect2>
 
+    <sect2 id="xdmcpaccess">
+      <title>
+	XDMCP Access Control
+      </title>
+
+      <para>
+	XDMCP access control is done using TCP wrappers.  It is possible
+	to compile GDM without TCP wrappers however, so you should test
+	your configuration to see if they work.
+      </para>
+
+      <para>
+	You should use the daemon name <filename>gdm</filename> in the
+	<filename>/etc/hosts.allow</filename> and
+	<filename>/etc/hosts.deny</filename> files.  For example to 
+	deny computers from <filename>.evil.domain</filename> from logging in, then
+	add
+        <screen>
+    gdm: .evil.domain
+        </screen>
+	to <filename>/etc/hosts.deny</filename>.  See the
+	<filename>hosts_access(5)</filename> man page for details.
+      </para>
+
+      <para>
+        Even though GDM now tries
+	very hard to ignore things coming from banned hosts you should
+	not rely on the TCP Wrappers for complete protection.  It is really
+	best to block UDP port 177 (and all the X ports which are TCP ports
+	6000 + the display number of course) on your firewall.
+      </para>
     </sect2>
 
     <sect2 id="stdgreeter">
@@ -1552,14 +1600,11 @@
 	      
 	      <para>
 		You should add 
-	      </para>
-	      
-	      <screen>
-		gdm:	.my.domain
-	      </screen>
-	      
-	      <para>
-		to your <filename>/etc/hosts.allow</filename>. See the
+	        <screen>
+  gdm:	.my.domain
+	        </screen>
+		to your <filename>/etc/hosts.allow</filename>, depending on your
+		TCP Wrappers configuration.  See the
 		<filename>hosts_access(5)</filename> man page for details.
 	      </para>
 	      

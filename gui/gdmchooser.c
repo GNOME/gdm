@@ -384,6 +384,9 @@ gdm_chooser_decode_packet (GIOChannel   *source,
     GdmChooserHost *gh;
     int pipe_buf;
 
+    if ( ! (condition & G_IO_IN)) 
+        return TRUE;
+
     if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt_sa, &sa_len))
 	return TRUE;
 

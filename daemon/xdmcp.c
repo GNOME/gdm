@@ -161,7 +161,7 @@ static void gdm_xdmcp_send_accept (GdmHostent *he /* eaten and freed */,
 static void gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa, const char *reason);
 static void gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid);
-static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid);
+static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD16 dspnum, CARD32 sessid);
 static void gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa,
 					    struct sockaddr_in *origin);
 static void gdm_xdmcp_send_got_managed_forward (struct sockaddr_in *clnt_sa,
@@ -171,6 +171,8 @@ static GdmDisplay *gdm_xdmcp_display_alloc (struct in_addr *addr,
 					    GdmHostent *he /* eaten and freed */,
 					    int displaynum);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
+static GdmDisplay *gdm_xdmcp_display_lookup_by_host (struct in_addr *addr,
+						     int dspnum);
 static void gdm_xdmcp_display_dispose_check (const gchar *name);
 static void gdm_xdmcp_displays_check (void);
 static int gdm_xdmcp_displays_from_host (struct in_addr *addr);
@@ -231,6 +233,23 @@ gdm_xdmcp_displays_from_host (struct in_addr *addr)
 	return count;
 }
 
+static GdmDisplay *
+gdm_xdmcp_display_lookup_by_host (struct in_addr *addr, int dspnum)
+{
+	GSList *li;
+
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *disp = li->data;
+		if (disp->type == TYPE_XDMCP &&
+		    memcmp (&disp->addr, addr, sizeof (struct in_addr)) == 0 &&
+		    disp->dispnum == dspnum) {
+			return disp;
+		}
+	}
+
+	return NULL;
+}
+
 
 gboolean
 gdm_xdmcp_init (void)
@@ -241,8 +260,12 @@ gdm_xdmcp_init (void)
 
     if ( ! GdmXdmcp)
 	    return TRUE;
-    
-    globsessid = time (NULL);
+
+    /* do we care that this is not the most random number?
+       no.  All we care about that it is likely far enough
+       away from any previous run */
+    srand (getpid () * time (NULL));
+    globsessid = rand ();
     
     /* Fetch and store local hostname in XDMCP friendly format */
     hostbuf[1023] = '\0';
@@ -335,7 +358,13 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
     static const char * const gdm_opcode_names[] = {
 	"MANAGED_FORWARD", "GOT_MANAGED_FORWARD"
     };
-    
+
+    if (cond != G_IO_IN)
+	    gdm_debug ("gdm_xdmcp_decode_packet: GIOCondition %d", (int)cond);
+
+    if ( ! (cond & G_IO_IN)) 
+        return TRUE;
+
     if (!XdmcpFill (gdm_xdmcpfd, &buf, (XdmcpNetaddr)&clnt_sa, &sa_len)) {
 	gdm_error (_("%s: Could not create XDMCP buffer!"),
 		   "gdm_xdmcp_decode_packet");
@@ -356,11 +385,11 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
     }
 
     if (header.opcode <= ALIVE)
-	    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", 
+	    gdm_debug ("gdm_xdmcp_decode_packet: Received opcode %s from client %s", 
 		       opcode_names[header.opcode], inet_ntoa (clnt_sa.sin_addr));
     if (header.opcode >= GDM_XDMCP_FIRST_OPCODE &&
         header.opcode < GDM_XDMCP_LAST_OPCODE)
-	    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", 
+	    gdm_debug ("gdm_xdmcp_decode_packet: Received opcode %s from client %s", 
 		       gdm_opcode_names[header.opcode - GDM_XDMCP_FIRST_OPCODE],
 		       inet_ntoa (clnt_sa.sin_addr));
 
@@ -383,7 +412,6 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 	break;
 	
     case REQUEST:
-	gdm_xdmcp_displays_check(); /* Purge pending displays */
 	gdm_xdmcp_handle_request (&clnt_sa, header.length);
 	break;
 	
@@ -432,9 +460,8 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     /* Crude checksumming */
     for (i = 0 ; i < clnt_authlist.length ; i++) {
 	    if (GdmDebug) {
-		    char *s = g_new0 (char, clnt_authlist.length+1);
-		    memcpy (s, clnt_authlist.data[i].data, clnt_authlist.length);
-		    gdm_debug ("gdm_xdmcp_handle_query: authlist: %s", s);
+		    char *s = g_strndup (clnt_authlist.data[i].data, clnt_authlist.length);
+		    gdm_debug ("gdm_xdmcp_handle_query: authlist: %s", ve_sure_string (s));
 		    g_free (s);
 	    }
 	    explen += 2+clnt_authlist.data[i].length;
@@ -683,6 +710,14 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     ARRAYofARRAY8 clnt_authlist;
     gint i = 0, explen = 1;
     struct sockaddr_in disp_sa = {0};
+
+    /* Check with tcp_wrappers if client is allowed to access */
+    if (! gdm_xdmcp_host_allow (clnt_sa)) {
+	    gdm_error ("%s: Got FORWARD_QUERY from banned host %s", 
+		       "gdm_xdmcp_handle_forward query",
+		       inet_ntoa (clnt_sa->sin_addr));
+	    return;
+    }
     
     /* Read display address */
     if (! XdmcpReadARRAY8 (&buf, &clnt_addr)) {
@@ -715,9 +750,8 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     
     for (i = 0 ; i < clnt_authlist.length ; i++) {
 	    if (GdmDebug) {
-		    char *s = g_new0 (char, clnt_authlist.length+1);
-		    memcpy (s, clnt_authlist.data[i].data, clnt_authlist.length);
-		    gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s", s);
+		    char *s = g_strndup (clnt_authlist.data[i].data, clnt_authlist.length);
+		    gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s", ve_sure_string (s));
 		    g_free (s);
 	    }
 	    explen += 2+clnt_authlist.data[i].length;
@@ -837,6 +871,12 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
 {
     ARRAY8 status;
     XdmcpHeader header;
+    static time_t last_time = 0;
+
+    /* only send at most one packet per second,
+       no harm done if we don't send it at all */
+    if (last_time + 1 >= time (NULL))
+	    return;
     
     gdm_debug ("gdm_xdmcp_send_unwilling: Sending UNWILLING to %s", inet_ntoa (clnt_sa->sin_addr));
     
@@ -856,6 +896,8 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
     XdmcpWriteARRAY8 (&buf, &status);
     XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
+
+    last_time = time (NULL);
 }
 
 static void
@@ -972,6 +1014,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 		   inet_ntoa (clnt_sa->sin_addr));
 	return;
     }
+
+    gdm_xdmcp_displays_check(); /* Purge pending displays */
     
     /* Remote display number */
     if (! XdmcpReadCARD16 (&buf, &clnt_dspnum)) {
@@ -1068,10 +1112,13 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	XdmcpDisposeARRAY16 (&clnt_conntyp);
 	return;
     }
-    
-    gdm_debug ("gdm_xdmcp_handle_request: xdmcp_pending=%d, MaxPending=%d, xdmcp_sessions=%d, MaxSessions=%d",
-	       xdmcp_pending, GdmMaxPending, xdmcp_sessions, GdmMaxSessions);
 
+    if (GdmDebug) {
+	    char *s = g_strndup (clnt_manufacturer.data, clnt_manufacturer.length);
+	    gdm_debug ("gdm_xdmcp_handle_request: xdmcp_pending=%d, MaxPending=%d, xdmcp_sessions=%d, MaxSessions=%d, ManufacturerID=%s",
+		       xdmcp_pending, GdmMaxPending, xdmcp_sessions, GdmMaxSessions, ve_sure_string (s));
+	    g_free (s);
+    }
 
     /* Check if ok to manage display */
     if (mitauth &&
@@ -1251,15 +1298,20 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	return;
     }
     
-    gdm_debug ("gdm_xdmcp_handle_manage: Got Display=%d, SessionID=%ld from %s", 
-	       (int)clnt_dspnum, (long)clnt_sessid, inet_ntoa (clnt_sa->sin_addr));
-    
     /* Display Class */
     if (! XdmcpReadARRAY8 (&buf, &clnt_dspclass)) {
 	gdm_error (_("%s: Could not read Display Class"),
 		   "gdm_xdmcp_handle_manage");
 	return;
     }
+
+    if (GdmDebug) {
+	    char *s = g_strndup (clnt_dspclass.data, clnt_dspclass.length);
+	    gdm_debug ("gdm_xdmcp_handle_manage: Got Display=%d, SessionID=%ld Class=%s from %s", 
+		       (int)clnt_dspnum, (long)clnt_sessid, ve_sure_string (s), inet_ntoa (clnt_sa->sin_addr));
+	    g_free (s);
+    }
+    
     
     d = gdm_xdmcp_display_lookup (clnt_sessid);
     if (d != NULL &&
@@ -1330,6 +1382,14 @@ gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 		   "Got MANAGED_FORWARD from %s",
 		   inet_ntoa (clnt_sa->sin_addr));
 
+	/* Check with tcp_wrappers if client is allowed to access */
+	if (! gdm_xdmcp_host_allow (clnt_sa)) {
+		gdm_error ("%s: Got MANAGED_FORWARD from banned host %s", 
+			   "gdm_xdmcp_handle_request",
+			   inet_ntoa (clnt_sa->sin_addr));
+		return;
+	}
+
 	/* Hostname */
 	if ( ! XdmcpReadARRAY8 (&buf, &clnt_address)) {
 		gdm_error (_("%s: Could not read address"),
@@ -1385,6 +1445,14 @@ gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 	gdm_debug ("gdm_xdmcp_handle_got_managed_forward: "
 		   "Got GOT_MANAGED_FORWARD from %s",
 		   inet_ntoa (clnt_sa->sin_addr));
+
+	/* Check with tcp_wrappers if client is allowed to access */
+	if (! gdm_xdmcp_host_allow (clnt_sa)) {
+		gdm_error ("%s: Got GOT_MANAGED_FORWARD from banned host %s", 
+			   "gdm_xdmcp_handle_request",
+			   inet_ntoa (clnt_sa->sin_addr));
+		return;
+	}
 
 	/* Hostname */
 	if ( ! XdmcpReadARRAY8 (&buf, &clnt_address)) {
@@ -1467,7 +1535,7 @@ gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len)
     
     gdm_debug ("gdm_xdmcp_handle_keepalive: Got KEEPALIVE from %s", 
 	       inet_ntoa (clnt_sa->sin_addr));
-    
+
     /* Check with tcp_wrappers if client is allowed to access */
     if (! gdm_xdmcp_host_allow (clnt_sa)) {
 	gdm_error (_("%s: Got KEEPALIVE from banned host %s"), 
@@ -1490,24 +1558,38 @@ gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len)
 	return;
     }
     
-    gdm_xdmcp_send_alive (clnt_sa, clnt_sessid);
+    gdm_xdmcp_send_alive (clnt_sa, clnt_dspnum, clnt_sessid);
 }
 
 
 static void
-gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid)
+gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD16 dspnum, CARD32 sessid)
 {
     XdmcpHeader header;
+    GdmDisplay *d;
+    int send_running = 0;
+    CARD32 send_sessid = 0;
     
-    gdm_debug ("Sending ALIVE to %ld", (long)sessid);
+    d = gdm_xdmcp_display_lookup (sessid);
+    if (d == NULL)
+	    d = gdm_xdmcp_display_lookup_by_host (&(clnt_sa->sin_addr), dspnum);
+
+    if (d != NULL) {
+	    send_sessid = d->sessionid;
+	    if (d->dispstat == XDMCP_MANAGED)
+		    send_running = 1;
+    }
+
+    gdm_debug ("Sending ALIVE to %ld (running %d, sessid %ld)",
+	       (long)sessid, send_running, (long)send_sessid);
     
     header.version = XDM_PROTOCOL_VERSION;
     header.opcode = (CARD16) ALIVE;
     header.length = 5;
     
     XdmcpWriteHeader (&buf, &header);
-    XdmcpWriteCARD8 (&buf, 1);
-    XdmcpWriteCARD32 (&buf, sessid);
+    XdmcpWriteCARD8 (&buf, send_running);
+    XdmcpWriteCARD32 (&buf, send_sessid);
     XdmcpFlush (gdm_xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
 }
@@ -1568,6 +1650,8 @@ gdm_xdmcp_display_alloc (struct in_addr *addr,
     d->console = FALSE;
     d->dispstat = XDMCP_PENDING;
     d->sessionid = globsessid++;
+    if (d->sessionid == 0)
+	    d->sessionid = globsessid++;
     d->acctime = time (NULL);
     d->dispnum = displaynum;
 
@@ -1678,6 +1762,7 @@ static void
 gdm_xdmcp_displays_check (void)
 {
 	GSList *dlist;
+	time_t curtime = time (NULL);
 
 	dlist = displays;
 	while (dlist != NULL) {
@@ -1686,7 +1771,7 @@ gdm_xdmcp_displays_check (void)
 		if (d != NULL &&
 		    d->type == TYPE_XDMCP &&
 		    d->dispstat == XDMCP_PENDING &&
-		    time (NULL) > d->acctime + GdmMaxManageWait) {
+		    curtime > d->acctime + GdmMaxManageWait) {
 			gdm_debug ("gdm_xdmcp_displays_check: Disposing session id %ld",
 				   (long)d->sessionid);
 			gdm_display_dispose (d);

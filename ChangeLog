@@ -1,3 +1,32 @@
+Wed Aug 06 17:40:27 2003  George Lebl <jirka@5z.com>
+
+	* gdmsetup-pam: don't use the paths but let pam find modules itself
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c: limit number of
+	  users at 100 (rather then 50) where it really becomes bad.  We need
+	  to handle this in a nicer way.
+
+	* daemon/xdmcp.c: make the globsessid default to rand() so that they
+	  really differ from run to run, rather then just time(NULL).  check
+	  tcp wrappers for managed_forward and got_managed_forward (just to
+	  be anal), also check tcp wrappers on forward query, the Alive packet
+	  now gets sent with real info rather then just whatever keepalive
+	  sent us (and thus follows the spec).  Make sure the session id is
+	  never zero as that can happen now.  Send at most one unwilling packet
+	  per second, and try to defer doing any actual work until after
+	  we checked with tcp wrappers.  Also add some more potential
+	  debugging.
+
+	* daemon/verify-pam.c: translate the lowercase "username:" and
+	  "password:", some modules seem to be using those.
+
+	* daemon/xdmcp.c, gui/gdmchooser.c: if the condition is not new
+	  data to be read, don't try to run XdmcpFill
+
+	* docs/C/gdm.xml: more notes on security of XDMCP and using
+	  MIT-MAGIC-COOKIE-1 added, plus a section on the TCP Wrappers,
+	  though it kind of sucks.
+
 Wed Aug 06 12:05:52 2003  George Lebl <jirka@5z.com>
 
 	* configure.in, docs/C/gdm.xml: update version number

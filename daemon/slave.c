@@ -4307,7 +4307,7 @@ gdm_slave_should_complain (void)
 static gchar *
 gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 {
-    gchar cmd, *buffer, in_buffer[20];
+    gchar cmd, in_buffer[20];
     GString *str;
     gint pipe1[2], in_buffer_len;  
     gchar **argv;
@@ -4382,7 +4382,11 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	    else
 		    ve_unsetenv ("XAUTHORITY");
 	    ve_setenv ("DISPLAY", display->name, TRUE);
+	    if (display->type == TYPE_XDMCP)
+		    ve_setenv ("REMOTE_HOST", display->hostname, TRUE);
 	    ve_setenv ("PATH", GdmRootPath, TRUE);
+	    ve_setenv ("SHELL", "/bin/sh", TRUE);
+	    ve_setenv ("RUNNING_UNDER_GDM", "true", TRUE);
 	    ve_unsetenv ("MAIL");
 
 	    argv = ve_split (str->str);
@@ -4422,10 +4426,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
       }
     }
 
-    buffer = str->str;
-    g_string_free (str, FALSE);
-
-    return buffer;
+    return g_string_free (str, FALSE);
 }
 
 static void

@@ -3224,7 +3224,7 @@ gdm_login_users_init (void)
     while (pwent != NULL) {
 
 	/* FIXME: fix properly, see bug #111830 */
-	if (number_of_users > 50) {
+	if (number_of_users > 100) {
 		user = gdm_login_user_alloc ("",
 					     9999 /*fake uid*/,
 					     "/",

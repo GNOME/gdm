@@ -84,12 +84,15 @@ perhaps_translate_message (const char *msg)
 	if (hash == NULL) {
 		/* Here we come with some fairly standard messages so that
 		   we have as much as possible translated.  Should really be
-		   translated in pam I suppose */
+		   translated in pam I suppose.  This way we can "change"
+		   some of these messages to be more sane. */
 		hash = g_hash_table_new (g_str_hash, g_str_equal);
 		/* login: is whacked always translate to Username: */
 		g_hash_table_insert (hash, "login:", _("Username:"));
 		g_hash_table_insert (hash, "Username:", _("Username:"));
+		g_hash_table_insert (hash, "username:", _("Username:"));
 		g_hash_table_insert (hash, "Password:", _("Password:"));
+		g_hash_table_insert (hash, "password:", _("Password:"));
 		g_hash_table_insert (hash, "You are required to change your password immediately (password aged)", _("You are required to change your password immediately (password aged)"));
 		g_hash_table_insert (hash, "You are required to change your password immediately (root enforced)", _("You are required to change your password immediately (root enforced)"));
 		g_hash_table_insert (hash, "Your account has expired; please contact your system administrator", _("Your account has expired; please contact your system administrator"));
@@ -104,6 +107,7 @@ perhaps_translate_message (const char *msg)
 		g_hash_table_insert (hash, "Password has been already used. Choose another.", _("Password has been already used. Choose another."));
 		g_hash_table_insert (hash, "You must wait longer to change your password", _("You must wait longer to change your password"));
 		g_hash_table_insert (hash, "Sorry, passwords do not match", _("Sorry, passwords do not match"));
+		/* FIXME: what about messages which have some variables in them, perhaps try to do those as well */
 	}
 	s = g_strstrip (g_strdup (msg));
 	ret = g_hash_table_lookup (hash, s);
