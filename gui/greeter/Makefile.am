@@ -26,6 +26,8 @@ gdmgreeter_SOURCES =  \
 	greeter_geometry.c \
 	greeter_geometry.h \
 	greeter_item.c \
+	greeter_item_timed.c \
+	greeter_item_timed.h \
 	greeter_item_capslock.c \
 	greeter_item_capslock.h \
 	greeter_item_clock.c \

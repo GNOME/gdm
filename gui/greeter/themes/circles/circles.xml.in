@@ -116,15 +116,29 @@
 
   <item type="rect" id="caps-lock-warning">
     <normal color="#FFFFFF" alpha="0.5"/>
-    <pos anchor="c" x="50%" y="75%" width="40%" height="5%"/>
-    <fixed>
+    <pos anchor="c" x="50%" y="75%" width="box" height="box"/>
+    <box orientation="vertical" min-width="400" xpadding="10" ypadding="5" spacing="0">
       <item type="label">
         <normal color="#000000" font="Sans 14"/>
-        <pos x="66" y="50%" anchor="w"/>
+        <pos x="50%" anchor="n"/>
         <_text>You've got capslock on!</_text>
       </item>
-    </fixed>
+    </box>
   </item>
+
+  <item type="rect" id="timed-rect">
+    <show type="timed"/>
+    <normal color="#FFFFFF" alpha="0.5"/>
+    <pos anchor="c" x="50%" y="25%" width="box" height="box"/>
+    <box orientation="vertical" min-width="400" xpadding="10" ypadding="5" spacing="0">
+      <item type="label" id="timed-label">
+        <normal color="#000000" font="Sans 14"/>
+        <pos x="50%" anchor="n"/>
+        <_text>User %s will login in %d seconds</_text>
+      </item>
+    </box>
+  </item>
+
   <item type="rect">
     <normal color="#FFFFFF" alpha="0.5"/>
     <pos anchor="c" x="50%" y="50%" width="box" height="box"/>

@@ -13,3 +13,6 @@ extern gchar *GdmConfigurator;
 extern gchar *GdmSessionDir;
 extern gchar *GdmDefaultLocale;
 extern gchar *GdmLocaleFile;
+extern gboolean GdmTimedLoginEnable;
+extern gchar *GdmTimedLogin;
+extern gint GdmTimedLoginDelay;

@@ -22,6 +22,7 @@
 #include "greeter_item_clock.h"
 #include "greeter_item_pam.h"
 #include "greeter_item_capslock.h"
+#include "greeter_item_timed.h"
 #include "greeter_events.h"
 #include "greeter_action_language.h"
 #include "greeter_session.h"
@@ -48,10 +49,14 @@ gchar *GdmSuspend = NULL;
 gchar *GdmConfigurator = NULL;
 gboolean GdmSystemMenu = TRUE;
 gboolean GdmConfigAvailable = TRUE;
+gboolean GdmTimedLoginEnable;
+gchar *GdmTimedLogin;
+gint GdmTimedLoginDelay;
 
 gboolean GdmUseCirclesInEntry = FALSE;
 
 static gboolean used_defaults = FALSE;
+gint greeter_current_delay = 0;
 
 extern gboolean session_dir_whacked_out;
 
@@ -59,10 +64,11 @@ extern gboolean session_dir_whacked_out;
 static void 
 greeter_parse_config (void)
 {
-    if (!g_file_test (GDM_CONFIG_FILE, G_FILE_TEST_EXISTS)) {
+    if (!g_file_test (GDM_CONFIG_FILE, G_FILE_TEST_EXISTS))
+      {
 	syslog (LOG_ERR, _("greeter_parse_config: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
 	used_defaults = TRUE;
-    }
+      }
 
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
@@ -97,11 +103,41 @@ greeter_parse_config (void)
     GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
     GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
     GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
+
+    GdmTimedLoginEnable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
+
+    /* Note: TimedLogin here is not gotten out of the config
+     * but from the daemon since it's been munged on by the daemon a bit
+     * already maybe */
+    if (GdmTimedLoginEnable)
+      {
+        GdmTimedLogin = g_strdup (g_getenv("GDM_TIMED_LOGIN_OK"));
+	if (ve_string_empty (GdmTimedLogin))
+	  {
+	    g_free (GdmTimedLogin);
+	    GdmTimedLogin = NULL;
+	  }
+
+	GdmTimedLoginDelay =
+		gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+	if (GdmTimedLoginDelay < 5)
+	  {
+	    syslog (LOG_WARNING,
+		    _("TimedLoginDelay was less then 5.  I'll just use 5."));
+	    GdmTimedLoginDelay = 5;
+	  }
+      }
+    else
+      {
+        GdmTimedLogin = NULL;
+	GdmTimedLoginDelay = 5;
+      }
+    greeter_current_delay = GdmTimedLoginDelay;
     
     gnome_config_pop_prefix();
 
     if (GdmXineramaScreen < 0)
-	    GdmXineramaScreen = 0;
+      GdmXineramaScreen = 0;
 }
 
 static gboolean
@@ -116,6 +152,7 @@ greeter_ctrl_handler (GIOChannel *source,
     char *session;
     GreeterItemInfo *conversation_info;
     GreeterItemInfo *entry_info;
+    static GnomeCanvasItem *disabled_cover = NULL;
     gchar *language;
 
     /* If this is not incoming i/o then return */
@@ -296,7 +333,8 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_QUIT:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
-	/* TODO: Stuff. */
+	greeter_item_timed_stop ();
+	greeter_item_pam_leftover_messages ();
 
 	gdk_flush ();
 
@@ -348,11 +386,7 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_STARTTIMER:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
-	/*
-	 * Timed Login: Start Timer Loop
-	 */
-
-	/* TODO */
+	greeter_item_timed_start ();
 	
 	printf ("%c\n", STX);
 	fflush (stdout);
@@ -361,26 +395,43 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_STOPTIMER:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
-	/*
-	 * Timed Login: Stop Timer Loop
-	 */
+	greeter_item_timed_stop ();
 
-	/* TODO */
-	
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
 
     case GDM_DISABLE:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
-	/* TODO */
+	gtk_widget_set_sensitive (window, FALSE);
+
+	if (disabled_cover == NULL)
+	  {
+	    disabled_cover = gnome_canvas_item_new
+		    (gnome_canvas_root (GNOME_CANVAS (canvas)),
+		     GNOME_TYPE_CANVAS_RECT,
+		     "x1", 0.0,
+		     "y1", 0.0,
+		     "x2", (double)canvas->allocation.width,
+		     "y2", (double)canvas->allocation.height,
+		     "fill_color_rgba", (guint)0x00000088,
+		     NULL);
+	  }
+
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
 
     case GDM_ENABLE:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
-	/* TODO */
+	gtk_widget_set_sensitive (window, TRUE);
+
+	if (disabled_cover != NULL)
+	  {
+	    gtk_object_destroy (GTK_OBJECT (disabled_cover));
+	    disabled_cover = NULL;
+	  }
+
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
@@ -439,6 +490,7 @@ greeter_setup_items (void)
   greeter_item_clock_setup ();
   greeter_item_pam_setup ();
   greeter_item_capslock_setup (window);
+  greeter_item_timed_setup ();
   greeter_item_register_action_callback ("language_button",
 					 greeter_action_language,
 					 window);

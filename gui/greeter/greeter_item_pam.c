@@ -257,3 +257,46 @@ greeter_item_pam_error (const char *message)
 					       error_info);
     }
 }
+
+void
+greeter_item_pam_leftover_messages (void)
+{
+  if (messages_to_give)
+    {
+      char *oldtext = NULL;
+      GreeterItemInfo *message_info;
+
+      message_info = greeter_lookup_id ("pam-message");
+
+      if (message_info != NULL)
+        {
+	  g_object_get (G_OBJECT (message_info->item),
+			"text", &oldtext,
+			NULL);
+	}
+
+      if ( ! ve_string_empty (oldtext))
+        {
+	  GtkWidget *dlg;
+
+	  /* we should be now fine for focusing new windows */
+	  gdm_wm_focus_new_windows (TRUE);
+
+	  dlg = gtk_message_dialog_new (NULL /* parent */,
+					GTK_DIALOG_MODAL /* flags */,
+					GTK_MESSAGE_INFO,
+					GTK_BUTTONS_OK,
+					"%s",
+					oldtext);
+	  gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
+	  gdm_wm_center_window (GTK_WINDOW (dlg));
+
+	  gdm_wm_no_login_focus_push ();
+	  gtk_dialog_run (GTK_DIALOG (dlg));
+	  gtk_widget_destroy (dlg);
+	  gdm_wm_no_login_focus_pop ();
+	}
+      messages_to_give = FALSE;
+    }
+}
+

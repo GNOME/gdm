@@ -11,6 +11,8 @@
 #include "greeter_configuration.h"
 #include "vicious.h"
 
+extern gint greeter_current_delay;
+
 GreeterItemInfo *
 greeter_item_info_new (GreeterItemInfo *parent,
 		       GreeterItemType  type)
@@ -125,12 +127,19 @@ greeter_item_expand_text (const char *text)
 	      else
 		g_string_append (str, buf);
 	      break;
-	    case 'd':
+	    case 'o':
 	      r = getdomainname (buf, sizeof(buf));
 	      if (r)
 		g_string_append (str, "localdomain");
 	      else
 		g_string_append (str, buf);
+	      break;
+	    case 'd':
+	      g_string_append_printf (str, "%d",
+				      greeter_current_delay);
+	      break;
+	    case 's':
+	      g_string_append (str, ve_sure_string (GdmTimedLogin));
 	      break;
 	    case 'c':
 	      clock = get_clock ();
@@ -173,7 +182,6 @@ greeter_item_is_visible (GreeterItemInfo *info)
   static gboolean checked = FALSE;
   static gboolean GDM_IS_LOCAL = FALSE;
   static gboolean GDM_FLEXI_SERVER = FALSE;
-  static gboolean GDM_TIMED_LOGIN_OK = FALSE;
 
   if ( ! checked)
     {
@@ -181,8 +189,6 @@ greeter_item_is_visible (GreeterItemInfo *info)
 	GDM_IS_LOCAL = TRUE;
       if (g_getenv ("GDM_FLEXI_SERVER") != NULL)
 	GDM_FLEXI_SERVER = TRUE;
-      if (g_getenv ("GDM_TIMED_LOGIN_OK") != NULL)
-	GDM_TIMED_LOGIN_OK = TRUE;
     }
 
   if (GDM_IS_LOCAL && ! GDM_FLEXI_SERVER &&
@@ -221,7 +227,7 @@ greeter_item_is_visible (GreeterItemInfo *info)
       strcmp (info->show_subtype, "suspend") == 0)
 	  return FALSE;
 
-  if ( ! GDM_TIMED_LOGIN_OK &&
+  if (ve_string_empty (GdmTimedLogin) &&
       info->show_type != NULL &&
       strcmp (info->show_type, "timed") == 0)
 	  return FALSE;

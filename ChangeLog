@@ -1,3 +1,30 @@
+Sat Jun 01 17:21:38 2002  George Lebl <jirka@5z.com>
+
+	* gui/greeter/greeter_capslock_item.c: include config.h
+
+	* gui/greeter/greeter_timed_item.[ch], gui/greeter/greeter_item.c,
+	  gui/greeter/greeter_configuration.h, gui/greeter/greeter.c:
+	  Implement timed logins so that we're on par with the standard
+	  login on this.  Implement the timed show type stuff and add
+	  %s and %d (named such so that we don't have to add strings)
+	  and change the original %d to %o for domain.
+
+	* gui/greeter/greeter.c: implement disable/enable stuff
+
+	* gui/greeter/greeter_item.h, gui/greeter/greeter_canvas_item.h:
+	  cleanup
+
+	* gui/greeter/themes/circles/circles.xml.in: some geometry fixes,
+	  add a timed item.
+
+	* gui/greeter/greeter.c, gui/greeter/greeter_item_pam.[ch]:
+	  add the support for leftover messages on QUIT.
+
+	* gui/greeter/greeter_item_timed.c, gui/gdmlogin.c: up the timer
+	  on both keypress and button press events on ALL widgets.
+
+	* daemon/misc.h: fix gdm_test_opt prototype
+
 Sun Jun 02 01:35:00 2002  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* config/locale.alias: The es_ES locale is now ISO-8859-15 to add euro

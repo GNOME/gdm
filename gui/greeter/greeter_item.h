@@ -1,5 +1,5 @@
-#ifndef __GREETER_ITEMS_H__
-#define __GREETER_ITEMS_H__
+#ifndef GREETER_ITEM_H
+#define GREETER_ITEM_H
 
 #include <libgnomecanvas/libgnomecanvas.h>
 
@@ -133,4 +133,4 @@ void greeter_item_update_text (GreeterItemInfo *info);
 gboolean greeter_item_is_visible (GreeterItemInfo *info);
 GreeterItemInfo *greeter_item_find_my_button (GreeterItemInfo *info);
 
-#endif /* __GREETER_ITEMS_H__ */
+#endif /* GREETER_ITEM_H */

@@ -69,7 +69,7 @@ gboolean gdm_setup_gids (const char *login, gid_t gid);
 
 void gdm_desetuid (void);
 
-void gdm_test_opt (const char *cmd, const char *help, const char *option);
+gboolean gdm_test_opt (const char *cmd, const char *help, const char *option);
 
 #endif /* GDM_MISC_H */
 

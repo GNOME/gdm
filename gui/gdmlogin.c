@@ -4085,7 +4085,15 @@ main (int argc, char *argv[])
 					NULL /* destroy_notify */);
 
 	    sid = g_signal_lookup ("key_press_event",
-				   GTK_TYPE_ENTRY);
+				   GTK_TYPE_WIDGET);
+	    g_signal_add_emission_hook (sid,
+					0 /* detail */,
+					gdm_timer_up_delay,
+					NULL /* data */,
+					NULL /* destroy_notify */);
+
+	    sid = g_signal_lookup ("button_press_event",
+				   GTK_TYPE_WIDGET);
 	    g_signal_add_emission_hook (sid,
 					0 /* detail */,
 					gdm_timer_up_delay,
