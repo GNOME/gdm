@@ -65,7 +65,7 @@ AC_ARG_WITH(selinux, [  --with-selinux  Add SELinux support])
 
 withval=""
 AC_ARG_WITH(post-path,
-[      --with-post-path=<PATH>   add PATH to end of user's PATH when logging in],[
+[  --with-post-path=<PATH>   add PATH to end of user's PATH when logging in],[
 if test x$withval != x; then
    AC_MSG_RESULT("PATH ${withval} with be added to end of user's PATH when logging in.")
 fi])
@@ -78,7 +78,7 @@ dnl PAM prefix
 dnl
 withval=""
 AC_ARG_WITH(pam-prefix,
-[      --with-pam-prefix=<prefix>   specify where pam files go],[
+[  --with-pam-prefix=<prefix>   specify where pam files go],[
 if test x$withval != x; then
    AC_MSG_RESULT("PAM files will be installed in prefix ${withval}.")
 fi])
@@ -675,6 +675,19 @@ LOGDIR_TMP="$localstatedir/log/gdm"
 EXPANDED_LOGDIR=`eval echo $LOGDIR_TMP`
 AC_SUBST(EXPANDED_LOGDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LOGDIR,"$EXPANDED_LOGDIR")
+
+withval=""
+AC_ARG_WITH(at-bindir,
+[  --with-at-bindir=<PATH>   PATH to Accessible Technology programs [default=EXPANDED_BINDIR]],)
+
+if test x$withval != x; then
+	AT_BINDIR="$withval"
+else
+	AT_BINDIR=$EXPANDED_BINDIR
+fi
+
+AC_SUBST(AT_BINDIR)
+AC_DEFINE_UNQUOTED(AT_BINDIR,"$AT_BINDIR")
 
 AC_MSG_CHECKING(for fbconsole (for Solaris))
 if test -x /usr/openwin/bin/fbconsole; then

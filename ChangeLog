@@ -3,6 +3,12 @@ Tue Mar 08 14:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
         * gui/modules/AccessKeyMouseEvents.in: Added -u when
           launching magnifier so it is launched in horizontal
           split mode which works better.
+	* acconfig.h, configure.in, AccessDwellMouseEvents.in,
+	  AccessKeyMouseEvents.in: Now use full path to AT
+	  programs so gesture listeners do not depend on the
+	  PATH environment variable to run.  By default gdm
+	  with use EXPANDED_BINDIR, but this can be overridden
+	  via the --with-at-bindir configure option.
 
 Mon Mar 07 14:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
