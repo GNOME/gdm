@@ -151,35 +151,53 @@ greeter_item_expand_text (const char *text)
   GString *str;
   const char *p;
   char *clock;
-  int r;
-  int underline = -1;
+  int r, i, n_chars;
+  gboolean underline = FALSE;
   char buf[256];
   struct utsname name;
 
   str = g_string_sized_new (strlen (text));
 
   p = text;
+  n_chars = g_utf8_strlen (text, -1);
+  i = 0;
   
-  while (*p)
+  while (i < n_chars)
     {
+      gunichar ch;
+
+      ch = g_utf8_get_char (p);
+
       /* Backslash commands */
-      if (*p == '\\')
+      if (ch == '\\')
         {
-	  p++;
-	  if (*p == '\n')
-	    g_string_append_c (str, '\n');
-	  else if (*p != '\0')
-	    g_string_append_c (str, *p);
-	  else
+	  p = g_utf8_next_char (p);
+	  i++;
+	  ch = g_utf8_get_char (p);
+
+	  if (i >= n_chars || ch == '\0')
 	    {
 	      g_warning ("Unescaped \\ at end of text\n");
 	      goto bail;
 	    }
+	  else if (ch == 'n')
+	    g_string_append_unichar (str, '\n');
+	  else
+	    g_string_append_unichar (str, ch);
 	}
-      else if (*p == '%')
+      else if (ch == '%')
 	{
-	  p++;
-	  switch (*p)
+	  p = g_utf8_next_char (p);
+	  i++;
+	  ch = g_utf8_get_char (p);
+
+	  if (i >= n_chars || ch == '\0')
+	    {
+	      g_warning ("Unescaped %% at end of text\n");
+	      goto bail;
+	    }
+
+	  switch (ch)
 	    {
 	    case '%':
 	      g_string_append (str, "%");
@@ -216,35 +234,34 @@ greeter_item_expand_text (const char *text)
 	      g_string_append (str, clock);
 	      g_free (clock);
 	      break;
-	    case 0:
-	      g_warning ("Unescaped %% at end of text\n");
-	      goto bail;
-	      break;
 	    default:
-	      g_warning ("unknown escape code %%%c in text\n", *p);
+	      if (ch < 127)
+	        g_warning ("unknown escape code %%%c in text\n", (char)ch);
+	      else
+		g_warning ("unknown escape code %%(U%x) in text\n", (int)ch);
 	    }
 	}
-      else if (*p == '_')
+      else if (ch == '_')
         {
-	  underline = g_utf8_skip[*(guchar *)(p+1)];
+	  underline = TRUE;
 	  g_string_append (str, "<u>");
 	}
       else
 	{
-	  g_string_append_c (str, *p);
-	  if (underline >= 0)
+	  g_string_append_unichar (str, ch);
+	  if (underline)
 	    {
-	      underline--;
-	      if (underline == 0)
-	        g_string_append (str, "</u>");
+	      underline = FALSE;
+	      g_string_append (str, "</u>");
 	    }
 	}
-      p++;
+      p = g_utf8_next_char (p);
+      i++;
     }
   
  bail:
 
-  if (underline >= 0)
+  if (underline)
     g_string_append (str, "</u>");
 
   return g_string_free (str, FALSE);
