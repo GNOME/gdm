@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2002-05-27 20:09+0200\n"
-"PO-Revision-Date: 2002-05-27 20:10+0200\n"
+"POT-Creation-Date: 2002-06-02 10:09+0200\n"
+"PO-Revision-Date: 2002-06-02 10:10+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -597,7 +597,7 @@ msgstr "Bez tworzenia procesu potomnego działającego w tle"
 msgid "Preserve LD_* variables"
 msgstr "Zachowanie zmiennych środowiskowych LD_*"
 
-#: daemon/gdm.c:1
+#: daemon/gdm.c:1 gui/gdmchooser.c:1
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -2017,7 +2017,7 @@ msgid "A-M|Greek"
 msgstr "A-M|Grecki"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:1
+#: gui/gdmlanguages.c:1 gui/gdmlanguages.c:1
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebrajski"
 
@@ -2177,8 +2177,8 @@ msgstr "GNOME - program wybierający"
 msgid "Last"
 msgstr "Poprzedni"
 
-#: gui/gdmlogin.c:1
-#, c-format
+#: gui/gdmlogin.c:1 gui/greeter/themes/circles/circles.xml.in.h:1
+#, no-c-format
 msgid "User %s will login in %d seconds"
 msgstr "Użytkownik %s zostanie zalogowany w ciągu %d sekund"
 
@@ -2231,7 +2231,7 @@ msgstr ""
 msgid "Welcome to %n"
 msgstr "%n wita"
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter.c:1
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr "Wartość TimedLoginDelay jest mniejsza od 5, więc przyjęto 5."
 
@@ -2254,6 +2254,10 @@ msgstr ""
 "Twój preferowany typ sesji %s nie jest zainstalowany.\n"
 "Czy chcesz użyć %s jako domyślnego dla przyszłych sesji?"
 
+#. never_encoding
+#. no_group
+#. untranslated
+#. markup
 #: gui/gdmlogin.c:1 gui/gdmlogin.c:1
 #: gui/greeter/greeter_action_language.c:1 gui/greeter/greeter_session.c:1
 #, c-format
@@ -2343,6 +2347,10 @@ msgstr ""
 "Nie odnaleziono dowiązania do domyślnej sesji. Wykorzystano awaryjną sesję "
 "GNOME.\n"
 
+#. never_encoding
+#. no_group
+#. untranslated
+#. makrup
 #: gui/gdmlogin.c:1
 #, c-format
 msgid "%s language selected"
@@ -2964,6 +2972,14 @@ msgstr ""
 "Nie można uruchomić standardowego greetera. Działanie GDM-a na tym ekranie "
 "zostanie przerwane. Aby naprawić konfigurację, konieczne jest zalogowanie "
 "się do systemu w inny sposób."
+
+#: gui/greeter/greeter_action_language.c:1
+msgid "Select a language"
+msgstr "Wybór języka"
+
+#: gui/greeter/greeter_action_language.c:1
+msgid "Select a language for your session to use:"
+msgstr "Wybierz język używany w sesji:"
 
 #: gui/greeter/greeter_lang_list.c:1
 msgid "Catalan"
