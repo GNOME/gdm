@@ -379,6 +379,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 					      "%s",
 					      loc);
 		g_free (loc);
+		gtk_widget_set_events (dlg, GDK_ALL_EVENTS_MASK);
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 		if (details_label != NULL) {
@@ -509,6 +510,7 @@ gdm_failsafe_question (GdmDisplay *d,
 						   GTK_STOCK_OK,
 						   GTK_RESPONSE_OK,
 						   NULL);
+		gtk_widget_set_events (dlg, GDK_ALL_EVENTS_MASK);
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		g_signal_connect (G_OBJECT (dlg), "delete_event",
 				  G_CALLBACK (gtk_true), NULL);
@@ -633,6 +635,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 					      GTK_BUTTONS_YES_NO,
 					      "%s",
 					      loc);
+		gtk_widget_set_events (dlg, GDK_ALL_EVENTS_MASK);
 		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 		sid = g_signal_lookup ("event",
@@ -743,6 +746,7 @@ gdm_failsafe_ask_buttons (GdmDisplay *d,
 					      "%s",
 					      loc);
 		g_free (loc);
+		gtk_widget_set_events (dlg, GDK_ALL_EVENTS_MASK);
 		for (i = 0; but[i] != NULL; i++) {
 			loc = gdm_locale_to_utf8 (but[i]);
 			gtk_dialog_add_button (GTK_DIALOG (dlg),

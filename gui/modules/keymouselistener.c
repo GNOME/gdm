@@ -150,7 +150,6 @@ static void create_event_watcher ()
 	/*
 	 * Switch off keyboard autorepeat
 	 */
-	XAutoRepeatOff(GDK_DISPLAY_XDISPLAY(display));
 	load_gestures(CONFIGFILE);
 	gdk_window_add_filter (NULL, gestures_filter, NULL);
 
@@ -296,6 +295,12 @@ parse_line (gchar *buf)
 			gtk_accelerator_parse(tmp_gesture->gesture_str, 
 	 			&(tmp_gesture->input.key.keysym), 
 	 			&(tmp_gesture->input.key.state));
+			if (tmp_gesture->input.key.keysym == 0 &&
+			    tmp_gesture->input.key.state == 0) {
+				/* TODO - Error messages here */
+				free_gesture (tmp_gesture);
+				return NULL;
+			}
 			tmp_gesture->input.key.keycode = 
 				XKeysymToKeycode(GDK_DISPLAY_XDISPLAY (display), tmp_gesture->input.key.keysym);
 		}
@@ -440,10 +445,15 @@ gestures_filter (GdkXEvent *gdk_xevent,
 	if (!last_event)
 		last_event = g_new0(XEvent, 1);
 
-
 	switch (xevent->type) {
 
 	case KeyPress:
+		if (last_event->type == KeyPress &&
+		    last_event->xkey.keycode == xevent->xkey.keycode) {
+			/* they comes from auto key-repeat */
+			return GDK_FILTER_CONTINUE;
+		}
+
 		if (seq_count > 0 &&
 		    last_event->type != KeyRelease) {
 			seq_count = 0;
@@ -451,8 +461,7 @@ gestures_filter (GdkXEvent *gdk_xevent,
 		}
 
 		if (seq_count > 0 &&
-		    (last_event->xkey.keycode != xevent->xkey.keycode ||
-		     last_event->xkey.state != xevent->xkey.state)) {
+		    last_event->xkey.keycode != xevent->xkey.keycode) {
 			seq_count = 0;
 			break;
 		}
@@ -484,9 +493,8 @@ gestures_filter (GdkXEvent *gdk_xevent,
 
 	case KeyRelease:
 		if (seq_count > 0 &&
-		    ((last_event->type != KeyPress) ||
-		     last_event->xkey.keycode != xevent->xkey.keycode ||
-		     last_event->xkey.state != xevent->xkey.state)) {
+		    (last_event->type != KeyPress ||
+		     last_event->xkey.keycode != xevent->xkey.keycode)) {
 			seq_count = 0;
 			break;
 		}
@@ -494,12 +502,14 @@ gestures_filter (GdkXEvent *gdk_xevent,
 		/*
 		 * Find the associated gesture for this keycode &state
 		 * TODO: write a custom g_slist_find function.
+		 *
+		 * Note that here we don't check the state, otherwise key gestures based on
+		 * modifier keys such as Control_R won't work.
 		 */
 		for (li = gesture_list; li != NULL; li = li->next) {
 			Gesture *gesture = (Gesture *) li->data;
 			if (gesture->type == GESTURE_TYPE_KEY &&
-			    xevent->xkey.keycode == gesture->input.key.keycode &&
-			    (xevent->xkey.state & USED_MODS) == gesture->input.key.state) {
+			    xevent->xkey.keycode == gesture->input.key.keycode) {
 				/* 
 				 * OK Found the gesture.
 				 * Now check if it has a duration value > 0.
@@ -597,7 +607,6 @@ gestures_filter (GdkXEvent *gdk_xevent,
 		if (seq_count != curr_gesture->n_times) {
 			return GDK_FILTER_CONTINUE;
 		} else {
-			GError* error = NULL;
 			gboolean retval;
 			gchar **argv = NULL;
 			gchar **envp = NULL; 
@@ -606,8 +615,8 @@ gestures_filter (GdkXEvent *gdk_xevent,
 			for (act_li = curr_gesture->actions; act_li != NULL; act_li = act_li->next) {
 				gchar *action = (gchar *)act_li->data;
 				g_return_val_if_fail (action != NULL, GDK_FILTER_CONTINUE);
-				if (!g_shell_parse_argv (action, NULL, &argv, &error))
-					return GDK_FILTER_CONTINUE;
+				if (!g_shell_parse_argv (action, NULL, &argv, NULL))
+					continue;
 
 				envp = get_exec_environment (xevent);
 
@@ -618,7 +627,7 @@ gestures_filter (GdkXEvent *gdk_xevent,
 					NULL,
 					NULL,
 					NULL,
-					&error);
+					NULL);
 				g_strfreev (argv);
 				g_strfreev (envp); 
 

@@ -521,7 +521,6 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
               /* If this is true, then gesture was recognized */
               if (i == curr_binding->input.num_gestures)
                 {
-                  GError* error = NULL;
                   gboolean retval;
                   gchar **argv = NULL;
                   gchar **envp = NULL;
@@ -531,8 +530,8 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
                       gchar *action = (gchar *)act_li->data;
                       g_return_val_if_fail (action != NULL, TRUE);
 
-                      if (!g_shell_parse_argv (action, NULL, &argv, &error))
-                        return TRUE;
+                      if (!g_shell_parse_argv (action, NULL, &argv, NULL))
+		        continue;
 
                       envp = get_exec_environment (gtk_window_get_screen(window));
 
@@ -543,7 +542,7 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
                                               NULL,
                                               NULL,
                                               NULL,
-                                              &error);
+                                              NULL);
                       g_strfreev (argv);
                       g_strfreev (envp);
 

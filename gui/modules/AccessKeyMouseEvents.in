@@ -6,7 +6,12 @@
 # <modifier>[<modifier>...]key  #times duration timeout executable_path +args
 #
 # For executable_path give the full executable path path of the program or the
-# DefaultPath is used.
+# DefaultPath is used.  For key, this can be one of the normal keys such as 'k'
+# for the letter 'k', or 'F10' for the F10 key.  If you wish to use one of the
+# 'modifier' keys you have to specify which one exactly, meaning usually
+# appending _L or _R depending on if it's the left or right one.  The useful
+# ones are: Shift_L, Shift_R, Control_L, Control_R, Meta_L, Meta_R, Alt_L, Alt_R.
+# Do note that the modifier is optional.
 #
 # e.g.
 #
@@ -19,6 +24,13 @@
 # Completing the above example sequence will invoke the gnome on screen keyboard
 # program, gok.  Note that you cannot release the <Control> key while pressing
 # otherwise the sequence will be lost.
+#
+# e.g.
+# Shift_L  5 1000 10000  gok --login --access-method=directselection
+# Shift_R  5 1000 10000  gok --login --access-method=directselection
+#
+# Will start gok if you press either shift key 5 times holding it down for more
+# then 1 second each time.
 #
 # For mouse button gestures the format is the same except the mouse button number
 # is specified instead of a key gesture:

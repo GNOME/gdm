@@ -1,3 +1,16 @@
+Mon Sep 22 13:55:50 2003  George Lebl <jirka@5z.com>
+
+	* gui/modules/dwellmouselistener.c: fix error handling / leaks
+
+	* gui/modules/keymouselistener.c: fix error handling and leaks,
+	  fix the stupid and annoying as hell "turn of key-repeat" hack,
+	  fix using modifier keys as the gestures themselves (#122944)
+
+	* gui/modules/AccessKeyMouseEvents.in: fix documentation a bit
+
+	* daemon/errorgui.c: listen to all events on the dialogs to
+	  make the accessibility gestures work
+
 Mon Sep 22 12:25:44 2003  George Lebl <jirka@5z.com>
 
 	* daemon/errorgui.c: reenable the gtk modules stuff, it wasn't
