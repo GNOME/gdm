@@ -12,7 +12,8 @@ EXTRA_DIST = \
 	intltool-merge.in	\
 	intltool-update.in	\
 	gdm-restart.in		\
-	gdm-safe-restart.in
+	gdm-safe-restart.in	\
+	gdmconfig
 
 sbin_SCRIPTS = gdm-restart gdm-safe-restart gdmconfig
 
