@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-05 13:08+0100\n"
-"PO-Revision-Date: 2005-03-05 13:28+0100\n"
+"POT-Creation-Date: 2005-03-11 06:09+0100\n"
+"PO-Revision-Date: 2005-03-11 15:31+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -182,7 +182,7 @@ msgstr "%s: Nemohu zapsat cookie"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Ignoruji podezřelý soubor cookie %s"
 
-#: daemon/auth.c:898 daemon/gdm.c:2018 daemon/gdm.c:2374
+#: daemon/auth.c:898 daemon/gdm.c:2017 daemon/gdm.c:2373
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Nemohu zapisovat do %s: %s"
@@ -547,12 +547,12 @@ msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: AuthDir %s má špatně nastavená práva %o. Měly by být %o. Končím."
 
 #. FIXME: how to handle this?
-#: daemon/gdm.c:861 daemon/gdm.c:869 daemon/gdm.c:2149 daemon/gdm.c:2157
+#: daemon/gdm.c:861 daemon/gdm.c:869 daemon/gdm.c:2148 daemon/gdm.c:2156
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
 msgstr "Nemohu zapsat soubor PID %s, možná došlo místo na disku. Chyba: %s\n"
 
-#: daemon/gdm.c:863 daemon/gdm.c:871 daemon/gdm.c:2151 daemon/gdm.c:2159
+#: daemon/gdm.c:863 daemon/gdm.c:871 daemon/gdm.c:2150 daemon/gdm.c:2158
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
 msgstr "Nemohu zapsat soubor PID %s, možná došlo místo na disku. Chyba: %s"
@@ -602,7 +602,7 @@ msgstr ""
 "V krátkém čase selhalo několikrát za sebou spuštění X serveru; vypínám "
 "displej %s"
 
-#: daemon/gdm.c:1229 daemon/gdm.c:2877
+#: daemon/gdm.c:1229 daemon/gdm.c:2876
 msgid "Master suspending..."
 msgstr "Master uspává..."
 
@@ -666,33 +666,33 @@ msgstr "Nemohu se restartovat"
 msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
 msgstr "hlavní démon: Dostal jsem SIGABRT, něco se hodně pokazilo. Končím!"
 
-#: daemon/gdm.c:1892
+#: daemon/gdm.c:1891
 msgid "Do not fork into the background"
 msgstr "Nevětvit se do pozadí"
 
-#: daemon/gdm.c:1894
+#: daemon/gdm.c:1893
 msgid "No console (local) servers to be run"
 msgstr "Nemají být spuštěny žádné místní servery"
 
-#: daemon/gdm.c:1896
+#: daemon/gdm.c:1895
 msgid "Preserve LD_* variables"
 msgstr "Zachovat proměnné LD_*"
 
-#: daemon/gdm.c:1898
+#: daemon/gdm.c:1897
 msgid "Print GDM version"
 msgstr "Vypsat verzi GDM"
 
-#: daemon/gdm.c:1900
+#: daemon/gdm.c:1899
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr ""
 "Spustit první X server, ale pak se zastavit, dokud ve fifo nedostaneme GO"
 
-#: daemon/gdm.c:2007 daemon/gdm.c:2343
+#: daemon/gdm.c:2006 daemon/gdm.c:2342
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "Nemohu otevřít %s pro zápis"
 
-#: daemon/gdm.c:2064 gui/gdmchooser.c:2057
+#: daemon/gdm.c:2063 gui/gdmchooser.c:2057
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -702,13 +702,13 @@ msgstr ""
 "Spusťte '%s --help' a získáte úplný výpis voleb dostupných z příkazové "
 "řádky.\n"
 
-#: daemon/gdm.c:2087
+#: daemon/gdm.c:2086
 msgid "Only root wants to run gdm\n"
 msgstr "Pouze root chce spustit gdm\n"
 
-#: daemon/gdm.c:2103 daemon/gdm.c:2107 daemon/gdm.c:2182 daemon/gdm.c:2186
-#: daemon/gdm.c:2190 daemon/gdm.c:2194 daemon/gdm.c:2204 daemon/gdm.c:2210
-#: daemon/gdm.c:2221 daemon/misc.c:1746 daemon/misc.c:1750 daemon/misc.c:1754
+#: daemon/gdm.c:2102 daemon/gdm.c:2106 daemon/gdm.c:2181 daemon/gdm.c:2185
+#: daemon/gdm.c:2189 daemon/gdm.c:2193 daemon/gdm.c:2203 daemon/gdm.c:2209
+#: daemon/gdm.c:2220 daemon/misc.c:1746 daemon/misc.c:1750 daemon/misc.c:1754
 #: daemon/misc.c:1761 daemon/misc.c:1765 daemon/misc.c:1769
 #: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:810
 #: daemon/slave.c:824 daemon/slave.c:834 daemon/slave.c:844 daemon/slave.c:856
@@ -720,28 +720,28 @@ msgstr "Pouze root chce spustit gdm\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Chyba při nastavování zpracování signálu %s: %s"
 
-#: daemon/gdm.c:2131
+#: daemon/gdm.c:2130
 msgid "gdm already running. Aborting!"
 msgstr "gdm již běží. Končím!"
 
-#: daemon/gdm.c:2230
+#: daemon/gdm.c:2229
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Chyba při nastavování zpracování signálu CHLD"
 
-#: daemon/gdm.c:3633 daemon/gdm.c:3652 daemon/gdm.c:3796 daemon/gdm.c:3854
-#: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
+#: daemon/gdm.c:3632 daemon/gdm.c:3651 daemon/gdm.c:3813 daemon/gdm.c:3871
+#: daemon/gdm.c:3926 daemon/gdm.c:3971 daemon/gdm.c:3998
 #, c-format
 msgid "%s request denied: Not authenticated"
 msgstr "Požadavek %s odepřen: Nepřihlášen"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:3670
+#: daemon/gdm.c:3669
 msgid "Unknown server type requested, using standard server."
 msgstr "Požadován neznámý typ serveru, použiji standardní server."
 
-#: daemon/gdm.c:3674
+#: daemon/gdm.c:3673
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -2027,11 +2027,11 @@ msgstr ""
 "počítač."
 
 #. markup
-#: gui/gdmcomm.c:405 gui/gdmphotosetup.c:70
+#: gui/gdmcomm.c:405 gui/gdmphotosetup.c:76
 msgid "GDM (The GNOME Display Manager) is not running."
 msgstr "GDM (Správce displeje GNOME) neběží."
 
-#: gui/gdmcomm.c:408 gui/gdmphotosetup.c:73
+#: gui/gdmcomm.c:408 gui/gdmphotosetup.c:79
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
 "Display Manager) or xdm."
@@ -2039,7 +2039,7 @@ msgstr ""
 "Možná ve skutečnosti používáte jiného správce displeje, např. KDM (KDE "
 "Display Manager) nebo xdm."
 
-#: gui/gdmcomm.c:411 gui/gdmphotosetup.c:76
+#: gui/gdmcomm.c:411 gui/gdmphotosetup.c:82
 msgid ""
 "If you still wish to use this feature, either start GDM yourself or ask your "
 "system administrator to start GDM."
@@ -2347,388 +2347,383 @@ msgstr "A-M|Čínsky (zjednodušené)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:83
-msgid "A-M|Chinese (HongKong)"
-msgstr "A-M|Čínsky (Hong Kong)"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:85
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|Čínsky (tradiční)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:85
 msgid "A-M|Croatian"
 msgstr "A-M|Chorvatsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:87
 msgid "A-M|Czech"
 msgstr "A-M|Česky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:89
 msgid "A-M|Danish"
 msgstr "A-M|Dánsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:91
 msgid "A-M|Dutch"
 msgstr "A-M|Holandsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:93
 msgid "A-M|English"
 msgstr "A-M|Anglicky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:95
 msgid "A-M|English (USA)"
 msgstr "A-M|Anglicky (USA)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:97
 msgid "A-M|English (Australia)"
 msgstr "A-M|Anglicky (Austrálie)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:99
 msgid "A-M|English (UK)"
 msgstr "A-M|Anglicky (VB)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
+#: gui/gdmlanguages.c:101
 msgid "A-M|English (Canada)"
 msgstr "A-M|Anglicky (Kanada)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:103
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Anglicky (Irsko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:105
 msgid "A-M|English (Denmark)"
 msgstr "A-M|Anglicky (Dánsko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:107
 msgid "A-M|English (South Africa)"
 msgstr "A-M|Anglicky (Jižní Afrika)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:109
 msgid "A-M|Estonian"
 msgstr "A-M|Estonsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:113
+#: gui/gdmlanguages.c:111
 msgid "A-M|Finnish"
 msgstr "A-M|Finsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:115
+#: gui/gdmlanguages.c:113
 msgid "A-M|French"
 msgstr "A-M|Francouzsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:117
+#: gui/gdmlanguages.c:115
 msgid "A-M|French (Belgium)"
 msgstr "A-M|Francouzsky (Belgie)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:119
+#: gui/gdmlanguages.c:117
 msgid "A-M|French (Switzerland)"
 msgstr "A-M|Francouzsky (Švýcarsko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:119
 msgid "A-M|Galician"
 msgstr "A-M|Galsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:121
 msgid "A-M|German"
 msgstr "N-Z|Německy"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:123
 msgid "A-M|German (Austria)"
 msgstr "N-Z|Německy (Rakousko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:127
+#: gui/gdmlanguages.c:125
 msgid "A-M|German (Switzerland)"
 msgstr "N-Z|Německy (Švýcarsko)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:127
 msgid "A-M|Greek"
 msgstr "N-Z|Řecky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:129
 msgid "A-M|Gujarati"
 msgstr "A-M|Gujarati"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:133 gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:131 gui/gdmlanguages.c:133
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebrejsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:137
+#: gui/gdmlanguages.c:135
 msgid "A-M|Hindi"
 msgstr "A-M|Hindsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:139
+#: gui/gdmlanguages.c:137
 msgid "A-M|Hungarian"
 msgstr "A-M|Maďarsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:141
+#: gui/gdmlanguages.c:139
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:143
+#: gui/gdmlanguages.c:141
 msgid "A-M|Indonesian"
 msgstr "A-M|Indonésky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:145
+#: gui/gdmlanguages.c:143
 msgid "A-M|Interlingua"
 msgstr "A-M|Interlingua"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:147
+#: gui/gdmlanguages.c:145
 msgid "A-M|Irish"
 msgstr "A-M|Irsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:149
+#: gui/gdmlanguages.c:147
 msgid "A-M|Italian"
 msgstr "A-M|Italsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:151
+#: gui/gdmlanguages.c:149
 msgid "A-M|Japanese"
 msgstr "A-M|Japonsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:153
+#: gui/gdmlanguages.c:151
 msgid "A-M|Kannada"
 msgstr "A-M|Kannada"
 
 #. Note translate the A-M to the A-M you used in the group label
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:156
+#: gui/gdmlanguages.c:154
 msgid "A-M|Kinyarwanda"
 msgstr "A-M|Kinyarwanda"
 
-#: gui/gdmlanguages.c:157
+#: gui/gdmlanguages.c:155
 msgid "A-M|Korean"
 msgstr "A-M|Korejsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:159
+#: gui/gdmlanguages.c:157
 msgid "A-M|Latvian"
 msgstr "A-M|Lotyšsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:161
+#: gui/gdmlanguages.c:159
 msgid "A-M|Lithuanian"
 msgstr "A-M|Litevsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:163
+#: gui/gdmlanguages.c:161
 msgid "A-M|Macedonian"
 msgstr "A-M|Makedonsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:165
+#: gui/gdmlanguages.c:163
 msgid "A-M|Malay"
 msgstr "A-M|Malajsky"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:167
+#: gui/gdmlanguages.c:165
 msgid "A-M|Malayalam"
 msgstr "A-M|Malayalam"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:169
+#: gui/gdmlanguages.c:167
 msgid "A-M|Marathi"
 msgstr "A-M|Marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:171
+#: gui/gdmlanguages.c:169
 msgid "A-M|Mongolian"
 msgstr "A-M|Mongolsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:173
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Northern Sotho"
 msgstr "N-Z|Severní Sotho"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:175
+#: gui/gdmlanguages.c:173
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norsky (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:177
+#: gui/gdmlanguages.c:175
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norsky (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:179
+#: gui/gdmlanguages.c:177
 msgid "N-Z|Oriya"
 msgstr "N-Z|Oriya"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:181
+#: gui/gdmlanguages.c:179
 msgid "N-Z|Panjabi"
 msgstr "N-Z|Pandžábsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:183
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Persian"
 msgstr "N-Z|Persky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:185
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Polish"
 msgstr "N-Z|Polsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:187
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugalsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:189
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portugalsky (Brazílie)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:191
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Romanian"
 msgstr "N-Z|Rumunsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:193
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Russian"
 msgstr "N-Z|Rusky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:195 gui/gdmlanguages.c:197
+#: gui/gdmlanguages.c:193 gui/gdmlanguages.c:195
 msgid "N-Z|Serbian"
 msgstr "N-Z|Srbsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:199
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Serbian (Latin)"
 msgstr "N-Z|Srbsky (latinka)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:201
+#: gui/gdmlanguages.c:199
 msgid "N-Z|Serbian (Jekavian)"
 msgstr "N-Z|Srbsky (Jekavian)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:203
+#: gui/gdmlanguages.c:201
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovensky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:205
+#: gui/gdmlanguages.c:203
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovinsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:207
+#: gui/gdmlanguages.c:205
 msgid "N-Z|Spanish"
 msgstr "N-Z|Španělsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:209
+#: gui/gdmlanguages.c:207
 msgid "N-Z|Spanish (Mexico)"
 msgstr "N-Z|Španělsky (Mexiko)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:211
+#: gui/gdmlanguages.c:209
 msgid "N-Z|Swedish"
 msgstr "N-Z|Švédsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:213
+#: gui/gdmlanguages.c:211
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Švédsky (Finsko)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:215
+#: gui/gdmlanguages.c:213
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamilsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:217
+#: gui/gdmlanguages.c:215
 msgid "N-Z|Telugu"
 msgstr "N-Z|Telugu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:219
+#: gui/gdmlanguages.c:217
 msgid "N-Z|Thai"
 msgstr "N-Z|Thajsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:221
+#: gui/gdmlanguages.c:219
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turecky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:223
+#: gui/gdmlanguages.c:221
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrajinsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:225
+#: gui/gdmlanguages.c:223
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:227
+#: gui/gdmlanguages.c:225
 msgid "N-Z|Walloon"
 msgstr "N-Z|Valonsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:229
+#: gui/gdmlanguages.c:227
 msgid "N-Z|Welsh"
 msgstr "N-Z|Velšsky"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:231
+#: gui/gdmlanguages.c:229
 msgid "N-Z|Yiddish"
 msgstr "N-Z|Yiddish"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:233
+#: gui/gdmlanguages.c:231
 msgid "N-Z|Zulu"
 msgstr "N-Z|Zulu"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:235
+#: gui/gdmlanguages.c:233
 msgid "Other|POSIX/C English"
 msgstr "Jiné|POSIX/C Anglicky"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:431
+#: gui/gdmlanguages.c:429
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:439
+#: gui/gdmlanguages.c:437
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -3147,11 +3142,11 @@ msgstr ""
 "nastavení GDM."
 
 #. markup
-#: gui/gdmphotosetup.c:144
+#: gui/gdmphotosetup.c:266
 msgid "The face browser is not configured"
 msgstr "Prohlížeč tváří není nastaven"
 
-#: gui/gdmphotosetup.c:147
+#: gui/gdmphotosetup.c:269
 msgid ""
 "The face browser is not configured in the GDM configuration.  Please ask "
 "your system administrator to enable it in the GDM configurator program."
@@ -3159,57 +3154,32 @@ msgstr ""
 "Prohlížeč tváří není nastaven. Požádejte prosím svého správce systému, aby "
 "jej povolil v programu pro nastavení GDM."
 
-#: gui/gdmphotosetup.c:157 gui/gdmphotosetup.desktop.in.h:2
+#: gui/gdmphotosetup.c:279 gui/gdmphotosetup.desktop.in.h:2
 msgid "Login Photo"
 msgstr "Fotka přihlášení"
 
-#: gui/gdmphotosetup.c:167
+#: gui/gdmphotosetup.c:289
 msgid "Select a photograph to show in the facebrowser:"
 msgstr "Vyberte fotografii, kterou chcete zobrazovat v prohlížeči tváří:"
 
-#: gui/gdmphotosetup.c:172
-msgid "Browse"
-msgstr "Probírat"
+#: gui/gdmphotosetup.c:315
+msgid "_Browse"
+msgstr "_Probírat"
 
 #. markup
-#: gui/gdmphotosetup.c:206
+#: gui/gdmphotosetup.c:348
 msgid "No picture selected."
 msgstr "Žádný obrázek nebyl vybrán."
 
 #. markup
-#: gui/gdmphotosetup.c:217
-msgid "Picture is too large"
-msgstr "Obrázek je příliš velký"
-
-#: gui/gdmphotosetup.c:218
-#, c-format
-msgid ""
-"The system administrator disallowed pictures larger than %d bytes to show in "
-"the face browser"
-msgstr "Správce systému zakázal v prohlížeči tváří obrázky větší než %d bajtů"
-
-#. markup
-#: gui/gdmphotosetup.c:245 gui/gdmphotosetup.c:267
+#: gui/gdmphotosetup.c:372
 msgid "Cannot open file"
 msgstr "Nemohu otevřít soubor"
 
-#: gui/gdmphotosetup.c:246
+#: gui/gdmphotosetup.c:373
 #, c-format
-msgid ""
-"File %s cannot be open for reading\n"
-"Error: %s"
-msgstr ""
-"Soubor %s nelze otevřít pro čtení\n"
-"Chyba: %s"
-
-#: gui/gdmphotosetup.c:268
-#, c-format
-msgid ""
-"File %s cannot be open for writing\n"
-"Error: %s"
-msgstr ""
-"Soubor %s nelze otevřít pro zápis\n"
-"Chyba: %s"
+msgid "File %s cannot be open for writing\n"
+msgstr "Soubor %s nelze otevřít pro zápis\n"
 
 #: gui/gdmphotosetup.desktop.in.h:1
 msgid ""
@@ -3976,6 +3946,25 @@ msgstr "Nelze nalézt rozhraní, což je ŠPATNÉ! (soubor: %s)"
 #: vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr "Příliš mnoho úrovní aliasů pro locale, možná znamená smyčku"
+
+#~ msgid "A-M|Chinese (HongKong)"
+#~ msgstr "A-M|Čínsky (Hong Kong)"
+
+#~ msgid "Picture is too large"
+#~ msgstr "Obrázek je příliš velký"
+
+#~ msgid ""
+#~ "The system administrator disallowed pictures larger than %d bytes to show "
+#~ "in the face browser"
+#~ msgstr ""
+#~ "Správce systému zakázal v prohlížeči tváří obrázky větší než %d bajtů"
+
+#~ msgid ""
+#~ "File %s cannot be open for reading\n"
+#~ "Error: %s"
+#~ msgstr ""
+#~ "Soubor %s nelze otevřít pro čtení\n"
+#~ "Chyba: %s"
 
 #~ msgid ""
 #~ "A graphical application for configuring the GNOME Display Manager (GDM)"
