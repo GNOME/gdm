@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-12-06 03:12+0100\n"
-"PO-Revision-Date: 2001-12-06 03:13+0100\n"
+"POT-Creation-Date: 2001-12-08 03:33+0100\n"
+"PO-Revision-Date: 2001-12-08 03:33+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1072,12 +1072,12 @@ msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login: Kan inte grena skriptprocessen!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:68 daemon/verify-pam.c:245 daemon/verify-shadow.c:67
+#: daemon/verify-crypt.c:68 daemon/verify-pam.c:295 daemon/verify-shadow.c:67
 #: gui/gdmlogin.c:3127
 msgid "Please enter your username"
 msgstr "Ange ditt användarnamn"
 
-#: daemon/verify-crypt.c:69 daemon/verify-pam.c:246 daemon/verify-shadow.c:68
+#: daemon/verify-crypt.c:69 daemon/verify-pam.c:296 daemon/verify-shadow.c:68
 #: gui/gdmlogin.c:3090
 msgid "Username:"
 msgstr "Användarnamn:"
@@ -1086,12 +1086,12 @@ msgstr "Användarnamn:"
 msgid "Password: "
 msgstr "Lösenord: "
 
-#: daemon/verify-crypt.c:109 daemon/verify-pam.c:310
+#: daemon/verify-crypt.c:109 daemon/verify-pam.c:329 daemon/verify-pam.c:489
 #: daemon/verify-shadow.c:118
 msgid "Couldn't authenticate user"
 msgstr "Kunde inte autentisera användaren"
 
-#: daemon/verify-crypt.c:115 daemon/verify-crypt.c:135 daemon/verify-pam.c:416
+#: daemon/verify-crypt.c:115 daemon/verify-crypt.c:135 daemon/verify-pam.c:435
 #: daemon/verify-shadow.c:124 daemon/verify-shadow.c:144
 msgid ""
 "\n"
@@ -1102,7 +1102,7 @@ msgstr ""
 "Ogiltigt användarnamn eller lösenord. Bokstäver måste skrivas med rätt "
 "skiftläge. Försäkra dig om att Caps Lock inte är på"
 
-#: daemon/verify-crypt.c:149 daemon/verify-pam.c:323
+#: daemon/verify-crypt.c:149 daemon/verify-pam.c:342
 #: daemon/verify-shadow.c:158
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1117,7 +1117,7 @@ msgstr "Systemadministratören får inte logga in från denna skärm"
 msgid "User %s not allowed to log in"
 msgstr "Användaren %s får inte logga in"
 
-#: daemon/verify-crypt.c:169 daemon/verify-pam.c:353 daemon/verify-pam.c:544
+#: daemon/verify-crypt.c:169 daemon/verify-pam.c:372 daemon/verify-pam.c:522
 #: daemon/verify-shadow.c:178
 msgid ""
 "\n"
@@ -1126,15 +1126,15 @@ msgstr ""
 "\n"
 "Systemadministratören har stängt av ditt konto."
 
-#: daemon/verify-crypt.c:184 daemon/verify-crypt.c:218 daemon/verify-pam.c:371
-#: daemon/verify-pam.c:561 daemon/verify-shadow.c:192
+#: daemon/verify-crypt.c:184 daemon/verify-crypt.c:218 daemon/verify-pam.c:390
+#: daemon/verify-pam.c:539 daemon/verify-shadow.c:192
 #: daemon/verify-shadow.c:225
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Kan inte ställa in användargruppen för %s"
 
-#: daemon/verify-crypt.c:186 daemon/verify-crypt.c:221 daemon/verify-pam.c:373
-#: daemon/verify-pam.c:563 daemon/verify-shadow.c:194
+#: daemon/verify-crypt.c:186 daemon/verify-crypt.c:221 daemon/verify-pam.c:392
+#: daemon/verify-pam.c:542 daemon/verify-shadow.c:194
 #: daemon/verify-shadow.c:228
 msgid ""
 "\n"
@@ -1150,26 +1150,31 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "Kan inte få tag i passwd-struktur för %s"
 
-#: daemon/verify-pam.c:265 daemon/verify-pam.c:464
-msgid "Can't find /etc/pam.d/gdm!"
-msgstr "Kan inte hitta /etc/pam.d/gdm!"
+#: daemon/verify-pam.c:216
+msgid "Cannot setup pam handle with null login and/or display"
+msgstr "Kan inte konfigurera pam-handtag med tom inloggning och/eller display"
 
-#: daemon/verify-pam.c:274 daemon/verify-pam.c:471
+#: daemon/verify-pam.c:230
+#, c-format
+msgid "Can't find /etc/pam.d/%s!"
+msgstr "Kan inte hitta /etc/pam.d/%s!"
+
+#: daemon/verify-pam.c:237
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Kan inte ställa in PAM_TTY=%s"
 
-#: daemon/verify-pam.c:283 daemon/verify-pam.c:478
+#: daemon/verify-pam.c:244
 #, c-format
 msgid "Can't set PAM_RUSER=%s"
 msgstr "Kan inte ställa in PAM_RUSER=%s"
 
-#: daemon/verify-pam.c:293 daemon/verify-pam.c:486
+#: daemon/verify-pam.c:252
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Kan inte ställa in PAM_RHOST=%s"
 
-#: daemon/verify-pam.c:326
+#: daemon/verify-pam.c:345
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1177,12 +1182,12 @@ msgstr ""
 "\n"
 "Systemadministratören får inte logga in från denna skärm"
 
-#: daemon/verify-pam.c:342
+#: daemon/verify-pam.c:361
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Byte av autentiseringselement misslyckades för användaren %s"
 
-#: daemon/verify-pam.c:344
+#: daemon/verify-pam.c:363
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1192,17 +1197,17 @@ msgstr ""
 "Ändringen av autentiseringselementet misslyckades. Försök igen senare eller "
 "kontakta systemadministratören."
 
-#: daemon/verify-pam.c:351 daemon/verify-pam.c:541
+#: daemon/verify-pam.c:370 daemon/verify-pam.c:519
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Användaren %s är inte längre tillåten att komma åt systemet"
 
-#: daemon/verify-pam.c:357 daemon/verify-pam.c:547
+#: daemon/verify-pam.c:376 daemon/verify-pam.c:525
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Användaren %s är för tillfället inte tillåten att komma åt systemet"
 
-#: daemon/verify-pam.c:359
+#: daemon/verify-pam.c:378
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporary."
@@ -1210,30 +1215,26 @@ msgstr ""
 "\n"
 "Systemadministratören har tillfälligt stängt av åtkomst till systemet."
 
-#: daemon/verify-pam.c:364 daemon/verify-pam.c:554
+#: daemon/verify-pam.c:383 daemon/verify-pam.c:532
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Kunde inte sätta kontohantering för %s"
 
-#: daemon/verify-pam.c:383 daemon/verify-pam.c:573
+#: daemon/verify-pam.c:402 daemon/verify-pam.c:552
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Kunde inte öppna session för %s"
 
-#: daemon/verify-pam.c:391 daemon/verify-pam.c:581
+#: daemon/verify-pam.c:410 daemon/verify-pam.c:560
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Kunde inte sätta referenser för %s"
 
-#: daemon/verify-pam.c:422
+#: daemon/verify-pam.c:441 daemon/verify-pam.c:492
 msgid "Authentication failed"
 msgstr "Autentisering misslyckades"
 
-#: daemon/verify-pam.c:450
-msgid "Cannot setup pam handle with null login and/or display"
-msgstr "Kan inte konfigurera pam-handtag med tom inloggning och/eller display"
-
-#: daemon/verify-pam.c:550
+#: daemon/verify-pam.c:528
 msgid ""
 "\n"
 "The system administrator has your disabled access to the system temporary."
@@ -1241,7 +1242,7 @@ msgstr ""
 "\n"
 "Systemadministratören har tillfälligt stängt av din åtkomst till systemet."
 
-#: daemon/verify-pam.c:666
+#: daemon/verify-pam.c:645
 #, c-format
 msgid "Can't find PAM configuration file for gdm. I've tried %s, %s, %s and %s"
 msgstr ""
