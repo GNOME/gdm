@@ -1696,6 +1696,11 @@ This is %n
 		<handler>can_apply_now</handler>
 		<last_modification_time>Fri, 30 Mar 2001 23:58:15 GMT</last_modification_time>
 	      </signal>
+	      <signal>
+		<name>toggled</name>
+		<handler>change_background_sensitivity_none</handler>
+		<last_modification_time>Sat, 31 Mar 2001 00:01:34 GMT</last_modification_time>
+	      </signal>
 	      <label>None</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
@@ -1741,11 +1746,6 @@ This is %n
 		<handler>can_apply_now</handler>
 		<last_modification_time>Fri, 30 Mar 2001 23:58:35 GMT</last_modification_time>
 	      </signal>
-	      <signal>
-		<name>toggled</name>
-		<handler>change_background_sensitivity_color</handler>
-		<last_modification_time>Sat, 31 Mar 2001 00:01:34 GMT</last_modification_time>
-	      </signal>
 	      <label>Color</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
@@ -1776,7 +1776,7 @@ This is %n
 	  <widget>
 	    <class>GtkTable</class>
 	    <name>table48</name>
-	    <rows>2</rows>
+	    <rows>3</rows>
 	    <columns>4</columns>
 	    <homogeneous>False</homogeneous>
 	    <row_spacing>3</row_spacing>
@@ -1801,8 +1801,8 @@ This is %n
 	      <child>
 		<left_attach>0</left_attach>
 		<right_attach>1</right_attach>
-		<top_attach>1</top_attach>
-		<bottom_attach>2</bottom_attach>
+		<top_attach>2</top_attach>
+		<bottom_attach>3</bottom_attach>
 		<xpad>0</xpad>
 		<ypad>0</ypad>
 		<xexpand>False</xexpand>
@@ -1830,8 +1830,8 @@ This is %n
 	      <child>
 		<left_attach>1</left_attach>
 		<right_attach>4</right_attach>
-		<top_attach>1</top_attach>
-		<bottom_attach>2</bottom_attach>
+		<top_attach>2</top_attach>
+		<bottom_attach>3</bottom_attach>
 		<xpad>0</xpad>
 		<ypad>0</ypad>
 		<xexpand>False</xexpand>
@@ -1914,6 +1914,30 @@ This is %n
 		  <text></text>
 		</widget>
 	      </widget>
+	    </widget>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>remote_only_color</name>
+	      <tooltip>On remote login screens only set color to reduce network traffic</tooltip>
+	      <can_focus>True</can_focus>
+	      <label>Only color on remote displays</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<left_attach>0</left_attach>
+		<right_attach>4</right_attach>
+		<top_attach>1</top_attach>
+		<bottom_attach>2</bottom_attach>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<xexpand>False</xexpand>
+		<yexpand>False</yexpand>
+		<xshrink>False</xshrink>
+		<yshrink>False</yshrink>
+		<xfill>True</xfill>
+		<yfill>False</yfill>
+	      </child>
 	    </widget>
 	  </widget>
 	</widget>

@@ -171,7 +171,7 @@ void
 change_background_sensitivity_image    (GtkButton       *button,
                                         gpointer         user_data);
 void
-change_background_sensitivity_color    (GtkButton       *button,
+change_background_sensitivity_none     (GtkButton       *button,
                                         gpointer         user_data);
 void
 set_face_sensitivity                   (GtkButton       *button,

@@ -78,6 +78,7 @@ static gchar *GdmBackgroundProg;
 static gchar *GdmBackgroundImage;
 static gchar *GdmBackgroundColor;
 static gboolean GdmBackgroundScaleToFit;
+static gboolean GdmBackgroundRemoteOnlyColor;
 static int GdmBackgroundType;
 enum {
 	GDM_BACKGROUND_NONE = 0,
@@ -602,6 +603,10 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
 	    gtk_widget_set_usize (icon, 64, 64);
 	    iw = ih = 64;
     }
+    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (icon_win),
+			  _("Doubleclick here to un-iconify the login "
+			    "window, so that you may log in."),
+			  NULL);
     
     gtk_fixed_put(GTK_FIXED (fixed), GTK_WIDGET (icon), 0, 0);
     gtk_widget_show(GTK_WIDGET (icon));
@@ -910,6 +915,7 @@ gdm_login_parse_config (void)
     GdmBackgroundColor = gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR);
     GdmBackgroundType = gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE);
     GdmBackgroundScaleToFit = gnome_config_get_bool (GDM_KEY_BACKGROUNDSCALETOFIT);
+    GdmBackgroundRemoteOnlyColor = gnome_config_get_bool (GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
     GdmGtkRC = gnome_config_get_string (GDM_KEY_GTKRC);
     GdmExclude = gnome_config_get_string (GDM_KEY_EXCLUDE);
     GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
@@ -942,6 +948,14 @@ gdm_login_parse_config (void)
     if (gdm_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    GdmSystemMenu = FALSE;
 	    GdmConfigAvailable = FALSE;
+	    if (GdmBackgroundRemoteOnlyColor &&
+		GdmBackgroundType == GDM_BACKGROUND_IMAGE)
+		    GdmBackgroundType = GDM_BACKGROUND_COLOR;
+	    if (GdmBackgroundRemoteOnlyColor &&
+		! gdm_string_empty (GdmBackgroundProg)) {
+		    g_free (GdmBackgroundProg);
+		    GdmBackgroundProg = NULL;
+	    }
     }
 
     /* Disable timed login stuff if it's not ok for this display */
@@ -1307,6 +1321,10 @@ gdm_login_session_init (GtkWidget *menu)
 			GTK_SIGNAL_FUNC (gdm_login_session_handler),
 			NULL);
     gtk_widget_show (GTK_WIDGET (item));
+    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+			  _("Log in using the session that you have used "
+			    "last time you logged in"),
+			  NULL);
 
     item = gtk_menu_item_new();
     gtk_widget_set_sensitive (item, FALSE);
@@ -1542,6 +1560,10 @@ gdm_login_language_menu_new (void)
     gtk_object_set_data (GTK_OBJECT (item),
 			 "Language",
 			 LAST_LANGUAGE);
+    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+			  _("Log in using the language that you have used "
+			    "last time you logged in"),
+			  NULL);
 
     item = gtk_menu_item_new();
     gtk_widget_set_sensitive (item, FALSE);
@@ -2538,6 +2560,10 @@ gdm_login_gui_init (void)
 			       GTK_SIGNAL_FUNC (gdm_run_gdmconfig),
 			       NULL);
 	   gtk_widget_show (item);
+	   gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+				 _("Configure GDM (this login manager). "
+				   "This will require the root password."),
+				 NULL);
 	}
 
 	item = gtk_menu_item_new_with_label (_("Reboot..."));
@@ -2546,6 +2572,9 @@ gdm_login_gui_init (void)
 			    GTK_SIGNAL_FUNC (gdm_login_reboot_handler), 
 			    NULL);
 	gtk_widget_show (GTK_WIDGET (item));
+	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+			      _("Reboot your computer"),
+			      NULL);
 	
 	item = gtk_menu_item_new_with_label (_("Halt..."));
 	gtk_menu_append (GTK_MENU (menu), item);
@@ -2553,6 +2582,10 @@ gdm_login_gui_init (void)
 			   GTK_SIGNAL_FUNC (gdm_login_halt_handler), 
 			    NULL);
 	gtk_widget_show (GTK_WIDGET (item));
+	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+			      _("Shut down your computer so that "
+				"you may turn it off."),
+			      NULL);
 	
 	item = gtk_menu_item_new_with_label (_("System"));
 	gtk_menu_bar_append (GTK_MENU_BAR (menubar), item);
@@ -3064,7 +3097,8 @@ render_scaled_back (const GdkPixbuf *pb)
 	int width, height;
 
 	GdkPixbuf *back = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-					  FALSE, 8,
+					  gdk_pixbuf_get_has_alpha (pb),
+					  8,
 					  gdk_screen_width (),
 					  gdk_screen_height ());
 
@@ -3087,16 +3121,61 @@ render_scaled_back (const GdkPixbuf *pb)
 	return back;
 }
 
+static void
+add_color_to_pb (GdkPixbuf *pb, GdkColor *color)
+{
+	int width = gdk_pixbuf_get_width (pb);
+	int height = gdk_pixbuf_get_height (pb);
+	int rowstride = gdk_pixbuf_get_rowstride (pb);
+	guchar *pixels = gdk_pixbuf_get_pixels (pb);
+	gboolean has_alpha = gdk_pixbuf_get_has_alpha (pb);
+	int i;
+	int cr = color->red >> 8;
+	int cg = color->green >> 8;
+	int cb = color->blue >> 8;
+
+	if ( ! has_alpha)
+		return;
+
+	for (i = 0; i < height; i++) {
+		int ii;
+		guchar *p = pixels + (rowstride * i);
+		for (ii = 0; ii < width; ii++) {
+			int r = p[0];
+			int g = p[1];
+			int b = p[2];
+			int a = p[3];
+
+			p[0] = (r * a + cr * (255 - a)) >> 8;
+			p[1] = (g * a + cg * (255 - a)) >> 8;
+			p[2] = (b * a + cb * (255 - a)) >> 8;
+			p[3] = 255;
+
+			p += 4;
+		}
+	}
+}
+
 /* Load the background stuff, the image and program */
 static void
 run_backgrounds (void)
 {
+	GdkColor color;
 	/* Load background image */
 	if (GdmBackgroundType == GDM_BACKGROUND_IMAGE &&
 	    GdmBackgroundImage != NULL &&
 	    GdmBackgroundImage[0] != '\0') {
 		GdkPixbuf *pb = gdk_pixbuf_new_from_file (GdmBackgroundImage);
 		if (pb != NULL) {
+			if (gdk_pixbuf_get_has_alpha (pb)) {
+				if (GdmBackgroundColor == NULL ||
+				    GdmBackgroundColor[0] == '\0' ||
+				    ! gdk_color_parse (GdmBackgroundColor,
+						       &color)) {
+					gdk_color_parse ("#007777", &color);
+				}
+				add_color_to_pb (pb, &color);
+			}
 			if (GdmBackgroundScaleToFit) {
 				GdkPixbuf *spb = render_scaled_back (pb);
 				gdk_pixbuf_unref (pb);
@@ -3111,7 +3190,6 @@ run_backgrounds (void)
 		}
 	/* Load background color */
 	} else if (GdmBackgroundType == GDM_BACKGROUND_COLOR) {
-		GdkColor color;
 		GdkColormap *colormap;
 
 		if (GdmBackgroundColor == NULL ||

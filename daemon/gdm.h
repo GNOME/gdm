@@ -157,6 +157,7 @@
 #define GDM_KEY_BACKGROUNDCOLOR "greeter/BackgroundColor=#007777"
 #define GDM_KEY_BACKGROUNDTYPE "greeter/BackgroundType=2"
 #define GDM_KEY_BACKGROUNDSCALETOFIT "greeter/BackgroundScaleToFit=true"
+#define GDM_KEY_BACKGROUNDREMOTEONLYCOLOR "greeter/BackgroundRemoteOnlyColor=true"
 #define GDM_KEY_LOCK_POSITION "greeter/LockPosition=false"
 #define GDM_KEY_SET_POSITION "greeter/SetPosition=false"
 #define GDM_KEY_POSITIONX "greeter/PositionX=0"

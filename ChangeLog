@@ -1,3 +1,17 @@
+Thu May 10 00:29:06 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, daemon/gdm.h, gui/gdmconfig.(c|glade): Add setting
+	  (which is default) to only set background color on remote logins.
+
+	* gdm/gdmlogin.c:  Icon has a tooltip now, and a bunch of the menu
+	  items as well
+
+	* config/gdm.conf.in, config/gdm.h, gui/gdmconfig.(c|glade),
+	  gui/gdmlogin.c:  Allow color to "seep through" transparent images
+	  and thus the color selector is on even for images.  Add a setting
+	  for only allowing color on remote logins.  This is useful to avoid
+	  net traffic.
+
 Wed May 09 18:19:22 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c: Center all mapped windows, also disallow
