@@ -98,7 +98,7 @@ static const struct poptOption options[] = {
 	{ "xnest", 'x', POPT_ARG_STRING, &xnest_binary, 0, N_("Xnest command line"), N_("STRING") },
 	{ "xnest-extra-options", 'o', POPT_ARG_STRING, &xnest_options, 0, N_("Extra options for Xnest"), N_("OPTIONS") },
 	{ "no-query", 'n', POPT_ARG_NONE, &no_query, 0, N_("Just run Xnest, no query (no chooser)"), NULL },
-	{ "direct", 'd', POPT_ARG_NONE, &do_direct, 0, N_("Do direct query insted of indirect (chooser)"), NULL },
+	{ "direct", 'd', POPT_ARG_NONE, &do_direct, 0, N_("Do direct query instead of indirect (chooser)"), NULL },
 	{ "broadcast", 'B', POPT_ARG_NONE, &do_broadcast, 0, N_("Run broadcast instead of indirect (chooser)"), NULL },
 	{ "background", 'b', POPT_ARG_NONE, &background, 0, N_("Run in background"), NULL },
 	{ "no-gdm-check", '\0', POPT_ARG_NONE, &no_gdm_check, 0, N_("Don't check for running gdm"), NULL },
