@@ -1821,7 +1821,6 @@ install_new_theme (GtkWidget *button, gpointer data)
 	g_signal_connect (G_OBJECT (chooser), "response",
 			  G_CALLBACK (install_response), store);
 
-	gtk_window_set_default_size (GTK_WINDOW (chooser), 600, 400);
 	gtk_widget_show (chooser);
 }
 
