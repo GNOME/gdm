@@ -190,6 +190,8 @@ gchar *GdmXnest = NULL;
 int GdmFirstVT = 7;
 gboolean GdmVTAllocation = TRUE;
 gboolean GdmDisallowTCP = TRUE;
+gchar *GdmSoundProgram = NULL;
+gchar *GdmSoundOnLoginFile = NULL;
 
 
 /* set in the main function */
@@ -407,9 +409,12 @@ gdm_config_parse (void)
     if (ve_string_empty (GdmXnest))
 	    GdmXnest = NULL;
 
-    GdmFirstVT = ve_config_get_int (cfg, GDM_KEY_FIRSTVT);    
-    GdmVTAllocation = ve_config_get_bool (cfg, GDM_KEY_VTALLOCATION);    
-    GdmDisallowTCP = ve_config_get_bool (cfg, GDM_KEY_DISALLOWTCP);    
+    GdmFirstVT = ve_config_get_int (cfg, GDM_KEY_FIRSTVT);
+    GdmVTAllocation = ve_config_get_bool (cfg, GDM_KEY_VTALLOCATION);
+    GdmDisallowTCP = ve_config_get_bool (cfg, GDM_KEY_DISALLOWTCP);
+
+    GdmSoundProgram = ve_config_get_string (cfg, GDM_KEY_SOUND_PROGRAM);
+    GdmSoundOnLoginFile = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_FILE);
 
     GdmDebug = ve_config_get_bool (cfg, GDM_KEY_DEBUG);
 
@@ -1170,6 +1175,11 @@ suspend_machine (void)
 	if (GdmSuspendReal != NULL &&
 	    fork () == 0) {
 		char **argv;
+
+		/* sync everything to disk, just in case something goes
+		 * wrong with the suspend */
+		sync ();
+
 		if (GdmXdmcp)
 			gdm_xdmcp_close ();
 		/* In the child setup empty mask and set all signals to
@@ -1180,6 +1190,9 @@ suspend_machine (void)
 		setsid ();
 
 		VE_IGNORE_EINTR (chdir ("/"));
+
+		/* short sleep to give some processing time to master */
+		usleep (1000);
 
 		argv = ve_split (GdmSuspendReal);
 		if (argv != NULL && argv[0] != NULL)
@@ -2170,7 +2183,7 @@ write_x_servers (GdmDisplay *d)
 
 	fp = gdm_safe_fopen_w (file);
 	if G_UNLIKELY (fp == NULL) {
-		gdm_error ("Can't open %s for writing", file);
+		gdm_error (_("Can't open %s for writing"), file);
 		g_free (file);
 		return;
 	}
@@ -2198,7 +2211,14 @@ write_x_servers (GdmDisplay *d)
 	}
 
 	/* FIXME: What about out of disk space errors? */
+	errno = 0;
 	VE_IGNORE_EINTR (fclose (fp));
+	if G_UNLIKELY (errno != 0) {
+		gdm_error (_("Can't write to %s: %s"), file,
+			   strerror (errno));
+	}
+
+	g_free (file);
 }
 
 static void
@@ -3306,6 +3326,39 @@ update_config (const char *key)
 			if (gdm_xdmcp_init ())
 				gdm_xdmcp_run ();
 		}
+	} else if (is_key (key, GDM_KEY_SOUND_ON_LOGIN_FILE)) {
+		char *val = ve_config_get_string (cfg, GDM_KEY_SOUND_ON_LOGIN_FILE);
+		if (strcmp (ve_sure_string (val), ve_sure_string (GdmSoundOnLoginFile)) == 0) {
+			g_free (val);
+			goto update_config_ok;
+		}
+		g_free (GdmSoundOnLoginFile);
+		GdmSoundOnLoginFile = val;
+
+		notify_displays_string (GDM_NOTIFY_SOUND_ON_LOGIN_FILE, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_GTK_MODULES_LIST)) {
+		char *val = ve_config_get_string (cfg, GDM_KEY_GTK_MODULES_LIST);
+		if (strcmp (ve_sure_string (val), ve_sure_string (GdmGtkModulesList)) == 0) {
+			g_free (val);
+			goto update_config_ok;
+		}
+		g_free (GdmGtkModulesList);
+		GdmGtkModulesList = val;
+
+		notify_displays_string (GDM_NOTIFY_GTK_MODULES_LIST, val);
+
+		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_ADD_GTK_MODULES)) {
+		gboolean val = ve_config_get_bool (cfg, GDM_KEY_ADD_GTK_MODULES);
+		if (ve_bool_equal (val, GdmAddGtkModules))
+			goto update_config_ok;
+		GdmAddGtkModules = val;
+
+		notify_displays_int (GDM_NOTIFY_ADD_GTK_MODULES, val);
+
+		goto update_config_ok;
 	}
 
 	ve_config_destroy (cfg);

@@ -73,6 +73,9 @@ gchar *GdmServAuthDir;
 gchar *GdmInfoMsgFile;
 gchar *GdmInfoMsgFont;
 gint GdmFlexiReapDelayMinutes;
+gboolean GdmSoundOnLogin;
+gchar *GdmSoundOnLoginFile;
+gchar *GdmSoundProgram;
 
 gboolean GdmUseCirclesInEntry = FALSE;
 
@@ -194,6 +197,10 @@ greeter_parse_config (void)
     GdmGlobalFaceDir = ve_config_get_string (config, GDM_KEY_FACEDIR);
     GdmDefaultFace = ve_config_get_string (config, GDM_KEY_FACE);
 
+    GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
+    GdmSoundOnLogin = ve_config_get_bool (config, GDM_KEY_SOUND_ON_LOGIN);
+    GdmSoundOnLoginFile = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+
     if (GdmXineramaScreen < 0)
       GdmXineramaScreen = 0;
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
@@ -261,7 +268,7 @@ greeter_ctrl_handler (GIOChannel *source,
 
 	tmp = ve_locale_to_utf8 (buf);
 	if (tmp != NULL && strcmp (tmp, _("Username:")) == 0) {
-		gdk_beep ();
+		gdm_common_login_sound ();
 		greeter_probably_login_prompt = TRUE;
 	} else {
 		greeter_probably_login_prompt = FALSE;
@@ -818,9 +825,13 @@ greeter_reread_config (int sig, gpointer data)
 		_exit (DISPLAY_RESTARTGREETER);
 	}
 
+	GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
+	GdmSoundOnLogin = ve_config_get_bool (config, GDM_KEY_SOUND_ON_LOGIN);
+	GdmSoundOnLoginFile = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+
 	if ( ! gdm_common_bool_same (config,
-			  GdmUse24Clock,
-			  GDM_KEY_USE_24_CLOCK)) {
+				     GdmUse24Clock,
+				     GDM_KEY_USE_24_CLOCK)) {
 		GdmUse24Clock = ve_config_get_bool (config,
 						    GDM_KEY_USE_24_CLOCK);
 		greeter_item_clock_update ();

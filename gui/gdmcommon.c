@@ -36,6 +36,9 @@
 
 extern gchar *GdmInfoMsgFile;
 extern gchar *GdmInfoMsgFont;
+extern gchar *GdmSoundProgram;
+extern gboolean GdmSoundOnLogin;
+extern gchar *GdmSoundOnLoginFile;
 
 void
 gdm_common_show_info_msg (void)
@@ -223,4 +226,21 @@ gdm_common_int_same (VeConfig *config, int cur, const char *key)
 	}
 }
 
+void
+gdm_common_login_sound (void)
+{
+	if ( ! GdmSoundOnLogin)
+		return;
 
+	if (ve_string_empty (g_getenv ("GDM_IS_LOCAL")) ||
+	    ve_string_empty (GdmSoundProgram) ||
+	    ve_string_empty (GdmSoundOnLoginFile) ||
+	    access (GdmSoundProgram, F_OK) != 0 ||
+	    access (GdmSoundOnLoginFile, F_OK) != 0) {
+		gdk_beep ();
+	} else {
+		/* login sound interruption */
+		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_LOGIN_SOUND);
+		fflush (stdout);
+	}
+}

@@ -1,3 +1,18 @@
+Tue Dec 30 15:34:59 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c, daemon/auth.c:  Complain on some more errors
+
+	* gui/gdmlogin.c, gui/gdmcommon.[ch], gui/gdmsetup.(c|glade),
+	  gui/greeter/greeter.c, gui/greeter/greeter_configuration.h,
+	  daemon/gdm.[ch], daemon/slave.c: Make the login sound thingie
+	  configurable and make it possible to play an arbitrary sound with
+	  /usr/bin/play (or whatever else is configured).  Add accessibility
+	  section to gdmsetup which configures the accessibility modules
+	  and the sound.  Fixes #125487
+
+	* config/gdm.conf.in, docs/C/gdm.xml:  Update docs for the
+	  accessibility/sound stuff
+
 Mon Dec 29 16:52:32 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch]: add SET_SAFE_LOGOUT_ACTION which is like schedule

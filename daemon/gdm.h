@@ -113,6 +113,7 @@ enum {
 #define GDM_INTERRUPT_CONFIGURE   'C'
 #define GDM_INTERRUPT_SUSPEND     'S'
 #define GDM_INTERRUPT_SELECT_USER 'U'
+#define GDM_INTERRUPT_LOGIN_SOUND 'L'
 
 /* The dreaded miscellaneous category */
 #define FIELD_SIZE 256
@@ -246,6 +247,10 @@ enum {
 
 #define GDM_KEY_INFO_MSG_FILE "greeter/InfoMsgFile="
 #define GDM_KEY_INFO_MSG_FONT "greeter/InfoMsgFont="
+
+#define GDM_KEY_SOUND_ON_LOGIN "greeter/SoundOnLogin=true"
+#define GDM_KEY_SOUND_ON_LOGIN_FILE "greeter/SoundOnLoginFile="
+#define GDM_KEY_SOUND_PROGRAM "daemon/SoundProgram=/usr/bin/play"
 
 #define GDM_KEY_SCAN "chooser/ScanTime=4"
 #define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
@@ -553,6 +558,9 @@ void		gdm_final_cleanup	(void);
 #define GDM_NOTIFY_TIMED_LOGIN "TimedLogin" /* <login> */
 #define GDM_NOTIFY_TIMED_LOGIN_DELAY "TimedLoginDelay" /* <seconds> */
 #define GDM_NOTIFY_DISALLOWTCP "DisallowTCP" /* <true/false as int> */
+#define GDM_NOTIFY_SOUND_ON_LOGIN_FILE "SoundOnLoginFile" /* <sound file> */
+#define GDM_NOTIFY_ADD_GTK_MODULES "AddGtkModules" /* <true/false as int> */
+#define GDM_NOTIFY_GTK_MODULES_LIST "GtkModulesList" /* <modules list> */
 
 /* commands */
 #define GDM_NOTIFY_DIRTY_SERVERS "DIRTY_SERVERS"
@@ -723,12 +731,15 @@ void		gdm_final_cleanup	(void);
  *			xdmcp/MaxPendingIndirect
  *			xdmcp/MaxWaitIndirect
  *			xdmcp/PingIntervalSeconds (only affects new connections)
- *   		 xdmcp/TimedLogin (2.3.90.3)
- *   		 xdmcp/TimedLoginEnable (2.3.90.3)
- *   		 xdmcp/TimedLoginDelay (2.3.90.3)
+ *   		 daemon/TimedLogin (2.3.90.3)
+ *   		 daemon/TimedLoginEnable (2.3.90.3)
+ *   		 daemon/TimedLoginDelay (2.3.90.3)
  *   		 greeter/SystemMenu (2.3.90.3)
  *   		 greeter/ConfigAvailable (2.3.90.3)
  *   		 greeter/ChooserButton (2.4.2.0)
+ *               greeter/SoundOnLoginFile (2.5.90.0)
+ *               daemon/AddGtkModules (2.5.90.0)
+ *               daemon/GtkModulesList (2.5.90.0)
  * Supported since: 2.3.90.2
  * Arguments:  <key>
  *   <key> is just the base part of the key such as "security/AllowRemoteRoot"

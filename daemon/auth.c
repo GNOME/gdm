@@ -881,9 +881,15 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     af = gdm_auth_purge (d, af, TRUE /* remove when empty */);
 
     /* Close the file and unlock it */
-    if (af != NULL)
+    if (af != NULL) {
 	    /* FIXME: what about out of diskspace errors on errors close */
+	    errno = 0;
 	    VE_IGNORE_EINTR (fclose (af));
+	    if G_UNLIKELY (errno != 0) {
+		    gdm_error (_("Can't write to %s: %s"), d->userauth,
+			       strerror (errno));
+	    }
+    }
 
     XauUnlockAuth (d->userauth);
 

@@ -137,6 +137,10 @@ Xnest=@X_SERVER_PATH@/Xnest -audit 0 -name Xnest
 # vts on linux systems for console logins)
 #DoubleLoginWarning=true
 
+# Program used to play sounds.  Should not require any 'daemon' or anything
+# like that as it will be run when no one is logged in yet.
+#SoundProgram=/usr/bin/play
+
 [security]
 # If any distributions ship with this one off, they should be shot
 # this is only local, so it's only for say kiosk use, when you
@@ -317,6 +321,12 @@ GraphicalThemeDir=@EXPANDED_DATADIR@/gdm/themes/
 # If InfoMsgFile is present then InfoMsgFont can be used to specify the font
 # to be used when displaying the contents of the file.
 #InfoMsgFont=Sans 24
+# If SoundOnLogin is true, then the greeter will beep when login is ready
+# for user input.  If SoundOnLogin is a file and the greeter finds the
+# 'play' executable (see daemon/SoundProgram) it will play that file
+# instead of just beeping
+#SoundOnLogin=true
+#SoundOnLoginFile=
 
 # The chooser is what's displayed when a user wants an indirect XDMCP
 # session, or selects Run XDMCP chooser from the system menu

@@ -124,6 +124,10 @@ static gint GdmPositionX;
 static gint GdmPositionY;
 static gboolean GdmTitleBar;
 
+gboolean GdmSoundOnLogin;
+gchar *GdmSoundOnLoginFile;
+gchar *GdmSoundProgram;
+
 static gboolean GdmShowGnomeFailsafeSession;
 static gboolean GdmShowXtermFailsafeSession;
 static gboolean GdmShowLastSession;
@@ -715,6 +719,10 @@ gdm_login_parse_config (void)
   
     GdmFlexiReapDelayMinutes = ve_config_get_int (config, GDM_KEY_FLEXI_REAP_DELAY_MINUTES);
     GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
+
+    GdmSoundOnLogin = ve_config_get_bool (config, GDM_KEY_SOUND_ON_LOGIN);
+    GdmSoundOnLoginFile = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+    GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
 
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
     if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
@@ -1744,7 +1752,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	tmp = ve_locale_to_utf8 (buf);
 	if (strcmp (tmp, _("Username:")) == 0) {
-		gdk_beep ();
+		gdm_common_login_sound ();
 		gtk_label_set_text_with_mnemonic (GTK_LABEL (label), _("_Username:"));
 	} else {
 		gtk_label_set_text (GTK_LABEL (label), tmp);
@@ -3505,6 +3513,10 @@ gdm_reread_config (int sig, gpointer data)
 			backgroundpid = gdm_run_command (GdmBackgroundProg);
 		}
 	}
+
+	GdmSoundProgram = ve_config_get_string (config, GDM_KEY_SOUND_PROGRAM);
+	GdmSoundOnLogin = ve_config_get_bool (config, GDM_KEY_SOUND_ON_LOGIN);
+	GdmSoundOnLoginFile = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
 
 	GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 	update_clock (NULL);

@@ -557,6 +557,11 @@ EXPANDED_LIBEXECDIR=`eval echo $LIBEXECDIR_TMP`
 AC_SUBST(EXPANDED_LIBEXECDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LIBEXECDIR,"$EXPANDED_LIBEXECDIR")
 
+LIBDIR_TMP="$libdir"
+EXPANDED_LIBDIR=`eval echo $LIBDIR_TMP`
+AC_SUBST(EXPANDED_LIBDIR)
+AC_DEFINE_UNQUOTED(EXPANDED_LIBDIR,"$EXPANDED_LIBDIR")
+
 dnl This is where the binary actually resides,
 dnl not the console helper link
 if test "x$enable_console_helper" = "xyes"; then

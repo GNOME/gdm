@@ -51,6 +51,7 @@ static gboolean RUNNING_UNDER_GDM = FALSE;
 
 static gboolean gdm_running = FALSE;
 static int GdmMinimalUID = 100;
+static char *GdmSoundProgram = NULL;
 
 static GladeXML *xml;
 
@@ -565,6 +566,27 @@ setup_intspin (const char *name,
 			  G_CALLBACK (intspin_changed), NULL);
 }
 
+static void
+setup_notify_entry (const char *name,
+		       const char *key)
+{
+	GtkWidget *entry = glade_helper_get (xml, name, GTK_TYPE_ENTRY);
+	char *val;
+
+	val = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
+
+	g_object_set_data_full (G_OBJECT (entry),
+				"key", g_strdup (key),
+				(GDestroyNotify) g_free);
+
+	gtk_entry_set_text (GTK_ENTRY (entry), ve_sure_string (val));
+
+	g_signal_connect (G_OBJECT (entry), "changed",
+			  G_CALLBACK (entry_changed), NULL);
+
+	g_free (val);
+}
+
 static gboolean
 greeter_toggle_timeout (GtkWidget *toggle)
 {
@@ -945,6 +967,204 @@ setup_xdmcp_support (void)
 	g_signal_connect (G_OBJECT (xdmcp_toggle), "toggled",
 			  G_CALLBACK (xdmcp_toggled),
 			  xdmcp_frame);
+}
+
+static void
+test_sound (GtkWidget *button, gpointer data)
+{
+	GtkEntry *entry = GTK_ENTRY (data);
+	const char *file = gtk_entry_get_text (GTK_ENTRY (entry));
+	const char *argv[3];
+
+	if (ve_string_empty (file) ||
+	    access (file, R_OK) != 0 ||
+	    ve_string_empty (GdmSoundProgram))
+	       return;
+
+	argv[0] = GdmSoundProgram;
+	argv[1] = file;
+	argv[2] = NULL;
+
+	g_spawn_async ("/" /* working directory */,
+		       (char **)argv,
+		       NULL /* envp */,
+		       0 /* flags */,
+		       NULL /* child setup */,
+		       NULL /* user data */,
+		       NULL /* child pid */,
+		       NULL /* error */);
+}
+
+static gboolean
+module_compare (const char *mod1, const char *mod2)
+{
+	char *base1;
+	char *base2;
+	char *p;
+	gboolean ret;
+
+	/* first cannonify the names */
+	base1 = g_path_get_basename (mod1);
+	base2 = g_path_get_basename (mod2);
+	if (strncmp (base1, "lib", 3) == 0)
+		strcpy (base1, &base1[3]);
+	if (strncmp (base2, "lib", 3) == 0)
+		strcpy (base2, &base2[3]);
+	p = strstr (base1, ".so");
+	if (p != NULL)
+		*p = '\0';
+	p = strstr (base2, ".so");
+	if (p != NULL)
+		*p = '\0';
+
+	ret = (strcmp (base1, base2) == 0);
+
+	g_free (base1);
+	g_free (base2);
+
+	return ret;
+}
+
+static gboolean
+modules_list_contains (const char *modules_list, const char *module)
+{
+	char **vec;
+	int i;
+
+	if (ve_string_empty (modules_list))
+		return FALSE;
+
+	vec = g_strsplit (modules_list, ":", -1);
+	if (vec == NULL)
+		return FALSE;
+
+	for (i = 0; vec[i] != NULL; i++) {
+		if (module_compare (vec[i], module)) {
+			g_strfreev (vec);
+			return TRUE;
+		}
+	}
+
+	g_strfreev (vec);
+	return FALSE;
+}
+
+static char *
+modules_list_remove (char *modules_list, const char *module)
+{
+	char **vec;
+	GString *str;
+	char *sep = "";
+	int i;
+
+	if (ve_string_empty (modules_list))
+		return g_strdup ("");
+
+	vec = g_strsplit (modules_list, ":", -1);
+	if (vec == NULL)
+		return g_strdup ("");
+
+	str = g_string_new (NULL);
+
+	for (i = 0; vec[i] != NULL; i++) {
+		if ( ! module_compare (vec[i], module)) {
+			g_string_append (str, sep);
+			sep = ":";
+			g_string_append (str, vec[i]);
+		}
+	}
+
+	g_strfreev (vec);
+
+	return g_string_free (str, FALSE);
+}
+
+static char *
+modules_list_add (char *modules_list, const char *module)
+{
+	char *n;
+	if (ve_string_empty (modules_list))
+		n = g_strdup (module);
+	else
+		n = g_strconcat (modules_list, ":", module, NULL);
+	g_free (modules_list);
+	return n;
+}
+
+static void
+acc_modules_toggled (GtkWidget *toggle, gpointer data)
+{
+	gboolean add_gtk_modules = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
+						       GDM_KEY_ADD_GTK_MODULES);
+	char *modules_list = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+						   GDM_KEY_GTK_MODULES_LIST);
+
+	/* first whack the modules from the list */
+	modules_list = modules_list_remove (modules_list, "gail");
+	modules_list = modules_list_remove (modules_list, "atk-bridge");
+	modules_list = modules_list_remove (modules_list, "dwellmouselistener");
+	modules_list = modules_list_remove (modules_list, "keymouselistener");
+
+	if (GTK_TOGGLE_BUTTON (toggle)->active) {
+		if ( ! add_gtk_modules) {
+			g_free (modules_list);
+			modules_list = NULL;
+		}
+
+		modules_list = modules_list_add (modules_list, "gail");
+		modules_list = modules_list_add (modules_list, "atk-bridge");
+		modules_list = modules_list_add (modules_list, EXPANDED_LIBDIR "/gtk-2.0/modules/libkeymouselistener");
+		modules_list = modules_list_add (modules_list, EXPANDED_LIBDIR "/gtk-2.0/modules/libdwellmouselistener");
+
+		add_gtk_modules = TRUE;
+	}
+
+	if (ve_string_empty (modules_list))
+		add_gtk_modules = FALSE;
+
+	ve_config_set_string (ve_config_get (GDM_CONFIG_FILE),
+			      GDM_KEY_GTK_MODULES_LIST,
+			      ve_sure_string (modules_list));
+	ve_config_set_bool (ve_config_get (GDM_CONFIG_FILE),
+			    GDM_KEY_ADD_GTK_MODULES,
+			    add_gtk_modules);
+
+	g_free (modules_list);
+
+	update_key (GDM_KEY_GTK_MODULES_LIST);
+	update_key (GDM_KEY_ADD_GTK_MODULES);
+}
+
+static void
+setup_accessibility_support (void)
+{
+	GtkWidget *acc_modules = glade_helper_get (xml, "acc_modules", GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *acc_sound_test = glade_helper_get (xml, "acc_sound_test", GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_file_entry = glade_helper_get (xml, "acc_sound_file_entry", GTK_TYPE_ENTRY);
+
+	gboolean add_gtk_modules = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
+						       GDM_KEY_ADD_GTK_MODULES);
+	char *modules_list = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+						   GDM_KEY_GTK_MODULES_LIST);
+
+	if (add_gtk_modules &&
+	    modules_list_contains (modules_list, "gail") &&
+	    modules_list_contains (modules_list, "atk-bridge") &&
+	    modules_list_contains (modules_list, "dwellmouselistener") &&
+	    modules_list_contains (modules_list, "keymouselistener")) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (acc_modules),
+					      TRUE);
+	} else {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (acc_modules),
+					      FALSE);
+	}
+
+	g_signal_connect (G_OBJECT (acc_modules), "toggled",
+			  G_CALLBACK (acc_modules_toggled),
+			  NULL);
+	g_signal_connect (G_OBJECT (acc_sound_test), "clicked",
+			  G_CALLBACK (test_sound),
+			  acc_sound_file_entry);
 }
 
 static void
@@ -2148,8 +2368,11 @@ setup_gui (void)
 	glade_helper_tagify_label (xml, "gg_desc_label", "b");
 	glade_helper_tagify_label (xml, "gg_copyright_label", "b");
 
+	glade_helper_tagify_label (xml, "acc_options_cat_label", "b");
+
 	glade_helper_tagify_label (xml, "enable_xdmcp", "b");
 
+	setup_accessibility_support ();
 	setup_xdmcp_support ();
 	setup_background_support ();
 	setup_greeter_backselect ();
@@ -2227,9 +2450,17 @@ setup_gui (void)
 			     GDM_KEY_DISALLOWTCP,
 			     GDM_KEY_DISALLOWTCP /* notify_key */);
 
-	/* setup sensitivities */
+	/* security sensitivities */
 	setup_sensitivity_positive_toggle ("sysmenu", "config_available");
 	setup_sensitivity_positive_toggle ("sysmenu", "chooser_button");
+
+	setup_greeter_toggle ("acc_beep",
+			      GDM_KEY_SOUND_ON_LOGIN);
+	setup_notify_entry ("acc_sound_file_entry",
+			    GDM_KEY_SOUND_ON_LOGIN_FILE);
+
+	/* accesibility sensitivities */
+	setup_sensitivity_positive_toggle ("acc_beep", "acc_sound_file_box");
 
 	setup_notify_toggle ("enable_xdmcp",
 			     GDM_KEY_XDMCP,
@@ -2485,6 +2716,13 @@ main (int argc, char *argv[])
 	 * ui?  Say it ain't so.  Our config sections are SUCH A MESS */
 	GdmMinimalUID = ve_config_get_int (ve_config_get (GDM_CONFIG_FILE),
 					   GDM_KEY_MINIMALUID);
+	GdmSoundProgram = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+						GDM_KEY_SOUND_PROGRAM);
+	if (ve_string_empty (GdmSoundProgram) ||
+	    access (GdmSoundProgram, X_OK) != 0) {
+		g_free (GdmSoundProgram);
+		GdmSoundProgram = NULL;
+	}
 
 	setup_gui ();
 

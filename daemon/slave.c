@@ -174,6 +174,8 @@ extern gboolean GdmAllowRemoteRoot;
 extern gchar *GdmGlobalFaceDir;
 extern gboolean GdmDebug;
 extern gboolean GdmDisallowTCP;
+extern gchar *GdmSoundProgram;
+extern gchar *GdmSoundOnLoginFile;
 
 
 /* Local prototypes */
@@ -3625,13 +3627,9 @@ session_child_run (struct passwd *pwent,
 	if ( ! gdm_selinux_setup (pwent->pw_name)) {
 		/* 66 means no "session crashed" examine .xsession-errors
 		   dialog */
-		/* FIXME: do this when we get out of string freeze */
-		/*
-		gdm_error_box (d, GTK_MESSAGE_ERROR, _("Error! Unable to set executable context."));
+		gdm_error_box (d, GTK_MESSAGE_ERROR,
+			       _("Error! Unable to set executable context."));
 		_exit (66);
-		*/
-		/* errors have alredy been logged to .xsession-errors */
-		_exit (1);
 	}
 #endif
 
@@ -4646,6 +4644,37 @@ check_for_interruption (const char *msg)
 			/* Not interrupted, continue reading input,
 			 * just proxy this to the master server */
 			return TRUE;
+		case GDM_INTERRUPT_LOGIN_SOUND:
+			if (d->console &&
+			    ! ve_string_empty (GdmSoundProgram) &&
+			    ! ve_string_empty (GdmSoundOnLoginFile) &&
+			    access (GdmSoundProgram, X_OK) == 0 &&
+			    access (GdmSoundOnLoginFile, F_OK) == 0) {
+				pid_t pid;
+
+				gdm_sigchld_block_push ();
+				gdm_sigterm_block_push ();
+				pid = fork ();
+				if (pid == 0)
+					gdm_unset_signals ();
+				gdm_sigterm_block_pop ();
+				gdm_sigchld_block_pop ();
+
+				if (pid == 0) {
+					setsid ();
+					seteuid (0);
+					setegid (0);
+					execl (GdmSoundProgram,
+					       GdmSoundProgram,
+					       GdmSoundOnLoginFile,
+					       NULL);
+
+					_exit (0);
+				}
+			} else {
+				gdm_error (_("Login sound requested on non-local display or the play software cannot be run or the sound does not exist"));
+			}
+			return TRUE;
 		case GDM_INTERRUPT_SELECT_USER:
 			gdm_verify_select_user (&msg[2]);
 			break;
@@ -5248,6 +5277,20 @@ gdm_slave_handle_notify (const char *msg)
 		GdmTimedLoginDelay = val;
 		if (d->greetpid > 1)
 			kill (d->greetpid, SIGHUP);
+	} else if (strncmp (msg, GDM_NOTIFY_SOUND_ON_LOGIN_FILE " ",
+			    strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1) == 0) {
+		g_free (GdmSoundOnLoginFile);
+		GdmSoundOnLoginFile = g_strdup
+			(&msg[strlen (GDM_NOTIFY_SOUND_ON_LOGIN_FILE) + 1]);
+		if (d->greetpid > 1)
+			kill (d->greetpid, SIGHUP);
+	} else if (strncmp (msg, GDM_NOTIFY_GTK_MODULES_LIST " ",
+			    strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1) == 0) {
+		g_free (GdmGtkModulesList);
+		GdmGtkModulesList = g_strdup
+			(&msg[strlen (GDM_NOTIFY_GTK_MODULES_LIST) + 1]);
+	} else if (sscanf (msg, GDM_NOTIFY_ADD_GTK_MODULES " %d", &val) == 1) {
+		GdmAddGtkModules = val;
 	}
 }
 

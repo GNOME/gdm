@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.5.90.0"> 
-    <!ENTITY date "12/12/2003"> 
+    <!ENTITY date "12/30/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -33,7 +33,7 @@
       <year>1998</year> <year>1999</year> <holder>Martin K. Petersen</holder>
     </copyright>
     <copyright>
-      <year>2001</year> <holder>George Lebl</holder>
+      <year>2001</year> <year>2003</year> <holder>George Lebl</holder>
     </copyright>
     <copyright>
       <year>2003</year> <holder>Red Hat, Inc.</holder>
@@ -61,7 +61,7 @@
 
     <para>
       GDM - Gnome Display Manager. Used to describe the software
-      package as a whole.
+      package as a whole.  Sometimes also referred to as GDM2.
     </para>
 
     <para>
@@ -1461,6 +1461,19 @@
 	  </varlistentry>
 
 	  <varlistentry>
+	    <term>SoundProgram</term>
+	    <listitem>
+	      <synopsis>SoundProgram=/usr/bin/play</synopsis>
+	      <para>
+	        Program to use when playing a sound.  Currently used for
+		playing the login sound, see
+		the <filename>SoundOnLoginFile</filename> key.
+	        Supported since 2.5.90.0.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>StandardXServer</term>
 	    <listitem>
 	      <synopsis>StandardXServer=/usr/X11R6/bin/X</synopsis>
@@ -2454,6 +2467,36 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>SoundOnLogin</term>
+	    <listitem>
+	      <synopsis>SoundOnLogin=true</synopsis>
+	      <para>
+	        If true, the greeter will play a sound or beep when
+		it is ready for a login.  See also the
+		<filename>SoundOnLoginFile</filename> key.
+	        Supported since 2.5.90.0.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>SoundOnLoginFile</term>
+	    <listitem>
+	      <synopsis>SoundOnLogin=/path/to/sound.wav</synopsis>
+	      <para>
+	        The file that will be played using the specified
+		sound program (by default that is
+		<filename>/usr/bin/play</filename>) instead of a beep
+		when the greeter is ready for a login.
+		See also the
+		<filename>SoundOnLogin</filename> key and the
+		<filename>SoundProgram</filename> key.
+	        Supported since 2.5.90.0.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>SystemMenu</term>

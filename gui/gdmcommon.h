@@ -40,6 +40,8 @@ gboolean gdm_common_bool_same		(VeConfig *config,
 gboolean gdm_common_int_same		(VeConfig *config,
 					 int cur, const char *key);
 
+void	gdm_common_login_sound		(void);
+
 /* The greeter defines this, we just call it from here */
 void	gdm_kill_thingies		(void);
 
