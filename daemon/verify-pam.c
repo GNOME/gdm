@@ -362,7 +362,7 @@ gdm_verify_user (GdmDisplay *d,
 	    gdm_error (_("Authentication token change failed for user %s"), login);
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, 
 		    _("\nThe change of the authentication token failed. "
-		      "Please try again later or cantact the system administrator."));
+		      "Please try again later or contact the system administrator."));
 	    error_msg_given = TRUE;
 	    goto pamerr;
 	}

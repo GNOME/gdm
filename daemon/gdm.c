@@ -597,7 +597,7 @@ gdm_config_parse (void)
 	    char *s = g_strdup_printf (_("Server Authorization directory "
 					 "(daemon/ServAuthDir) is set to %s "
 					 "but has the wrong permissions, it "
-					 "should have permissions of 0750."
+					 "should have permissions of 0750. "
 					 "Please correct the permissions or "
 					 "the gdm configuration %s and "
 					 "restart gdm."),
