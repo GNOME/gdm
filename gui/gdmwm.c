@@ -25,8 +25,10 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-#ifdef HAVE_LIBXINERAMA
+#ifdef HAVE_XFREE_XINERAMA
 #include <X11/extensions/Xinerama.h>
+#elif HAVE_SOLARIS_XINERAMA
+#include <X11/extensions/xinerama.h>
 #endif
 #include <pwd.h>
 #include <unistd.h>
@@ -91,7 +93,7 @@ gdm_wm_screen_init (int cur_screen_num)
 	}
 
 	{
-#ifdef HAVE_LIBXINERAMA
+#ifdef HAVE_XFREE_XINERAMA
 	gboolean have_xinerama = FALSE;
 
 	gdk_flush ();
@@ -139,6 +141,67 @@ gdm_wm_screen_init (int cur_screen_num)
 		}
 
 		XFree (xscreens);
+	} else
+#elif HAVE_SOLARIS_XINERAMA
+	gboolean have_xinerama = FALSE;
+ 	/* This code from GDK, Copyright (C) 2002 Sun Microsystems */
+ 	int opcode;
+	int firstevent;
+	int firsterror;
+	int n_monitors = 0;
+	
+	gdk_flush ();
+	gdk_error_trap_push ();
+	have_xinerama = XQueryExtension (GDK_DISPLAY (),
+			"XINERAMA",
+			&opcode,
+			&firstevent,
+			&firsterror);
+	gdk_flush ();
+	if (gdk_error_trap_pop () != 0)
+		have_xinerama = FALSE;
+
+	if (have_xinerama) {
+		int i;
+		int result;
+		XRectangle monitors[MAXFRAMEBUFFERS];
+		unsigned char  hints[16];
+		
+		result = XineramaGetInfo (GDK_DISPLAY (), 0, monitors, hints, &n_monitors);
+		/* Yes I know it should be Success but the current implementation 
+		 * returns the num of monitor
+		 */
+
+		if (result <= 0) {
+			/* should NEVER EVER happen */
+			syslog (LOG_ERR, "Xinerama active, but <= 0 screens?");
+			gdm_wm_screen.x = 0;
+			gdm_wm_screen.y = 0;
+			gdm_wm_screen.width = gdk_screen_width ();
+			gdm_wm_screen.height = gdk_screen_height ();
+
+			gdm_wm_allscreens = g_new0 (GdkRectangle, 1);
+			gdm_wm_allscreens[0] = gdm_wm_screen;
+			gdm_wm_screens = 1;
+			return;
+		}
+
+		if (n_monitors <= cur_screen_num)
+			cur_screen_num = 0;
+
+		gdm_wm_allscreens = g_new0 (GdkRectangle, n_monitors);
+		gdm_wm_screens = n_monitors;
+
+		for (i = 0; i < n_monitors; i++) {
+			gdm_wm_allscreens[i].x = monitors[i].x;
+			gdm_wm_allscreens[i].y = monitors[i].y;
+			gdm_wm_allscreens[i].width = monitors[i].width;
+			gdm_wm_allscreens[i].height = monitors[i].height;
+
+			if (cur_screen_num == i)
+				gdm_wm_screen = gdm_wm_allscreens[i];
+		}
+
 	} else
 #endif
 	{

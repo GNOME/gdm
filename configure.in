@@ -327,7 +327,7 @@ if test x$with_xdmcp != xno ; then
 		     	AC_DEFINE(HAVE_LIBXDMCP)
 		     	XDMCP_LIBS="-lXdmcp"
 		     	XDMCP_SUPPORT=yes],,[$X_LIBS -lX11 $X_EXTRA_LIBS])
-	])
+	],,[#include <X11/Xproto.h>])
 
 	if test x$with_xdmcp = xyes -a x$XDMCP_SUPPORT = x ; then
 		AC_MSG_ERROR(XDMCP support requested but XDMCP libraries not found)
@@ -351,20 +351,57 @@ AC_SUBST(GDMXNESTCHOOSER)
 #
 # X11 Xinerama extension
 #
-XINERAMA_LIBS=
-if test x$with_xinerama != xno ; then
-	AC_CHECK_HEADER(X11/extensions/Xinerama.h, [
-		AC_CHECK_LIB(Xinerama, XineramaQueryScreens, [
-		     	AC_DEFINE(HAVE_LIBXINERAMA)
-		     	XINERAMA_LIBS="-lXinerama"
-		     	XINERAMA_SUPPORT=yes],,$[X_LIBS -lX11 -lXext $X_EXTRA_LIBS])
-	])
+# Check for Xinerama extension (Solaris impl or Xfree impl)
+xinerama_save_cppflags="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 
-	if test x$with_xinerama = xyes -a x$XINERAMA_SUPPORT = x ; then
-		AC_MSG_ERROR(Xinerama support requested but Xinerama libraries not found)
+ALL_X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
+
+case "$host" in
+    *-*-solaris*)
+	# Check for solaris
+	use_solaris_xinerama=yes
+	AC_CHECK_LIB(Xext, XineramaGetInfo,
+                     use_solaris_xinerama=yes, use_solaris_xinerama=no,
+                     $ALL_X_LIBS)
+	if test "x$use_solaris_xinerama" = "xyes"; then
+            AC_CHECK_HEADER(X11/extensions/xinerama.h,
+                            if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
+ 				X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
+                            fi
+                            AC_DEFINE(HAVE_SOLARIS_XINERAMA)
+                            AC_DEFINE(HAVE_XINERAMA)
+		     	    XINERAMA_LIBS=""
+		     	    XINERAMA_SUPPORT=yes,
+                            use_solaris_xinerama=no,
+                            [#include <X11/Xlib.h>])
 	fi
-fi
+        AC_MSG_CHECKING(for Xinerama support on Solaris)
+	AC_MSG_RESULT($use_solaris_xinerama);
+	;;
+    *)
+      	# Check for XFree
+	use_xfree_xinerama=yes
+	AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
+            [AC_CHECK_HEADER(X11/extensions/Xinerama.h,
+                             if test -z "`echo $ALL_X_LIBS | grep "\-lXext" 2> /dev/null`"; then
+  				 X_EXTRA_LIBS="-lXext $X_EXTRA_LIBS"
+                             fi
+                             AC_DEFINE(HAVE_XFREE_XINERAMA)
+                             AC_DEFINE(HAVE_XINERAMA)
+		     	     XINERAMA_LIBS="-lXinerama"
+		     	     XINERAMA_SUPPORT=yes,
+                             use_xfree_xinerama=no,
+                             [#include <X11/Xlib.h>])],
+            use_xfree_xinerama=no, -lXext $ALL_X_LIBS)
+	AC_MSG_CHECKING(for Xinerama support on XFree86)
+	AC_MSG_RESULT($use_xfree_xinerama);
+	;;
+esac
+
 AC_SUBST(XINERAMA_LIBS)
+CPPFLAGS="$xinerama_save_cppflags"
+
 
 #
 # Subst the extra libs
@@ -417,6 +454,16 @@ AUTHDIR_TMP="$localstatedir/gdm"
 EXPANDED_AUTHDIR=`eval echo $AUTHDIR_TMP`
 AC_SUBST(EXPANDED_AUTHDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_AUTHDIR,"$EXPANDED_AUTHDIR")
+
+if test -x /usr/X11R6/bin/X; then
+   X_PATH="/usr/X11R6/bin"
+   X_SERVER="/usr/X11R6/bin/X"
+elif test -x /usr/openwin/bin/Xsun; then
+   X_PATH="/usr/openwin/bin"
+   X_SERVER="/usr/openwin/bin/Xsun"
+fi
+AC_SUBST(X_PATH)
+AC_SUBST(X_SERVER)
 
 SYSCONFDIR_TMP="$sysconfdir"
 EXPANDED_SYSCONFDIR=`eval echo $SYSCONFDIR_TMP`

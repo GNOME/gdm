@@ -41,8 +41,10 @@
 #include <arpa/inet.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-#ifdef HAVE_LIBXINERAMA
+#ifdef HAVE_XFREE_XINERAMA
 #include <X11/extensions/Xinerama.h>
+#elif HAVE_SOLARIS_XINERAMA
+#include <X11/extensions/xinerama.h>
 #endif
 #include <signal.h>
 #include <pwd.h>
@@ -390,7 +392,7 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 static void 
 gdm_screen_init (GdmDisplay *display) 
 {
-#ifdef HAVE_LIBXINERAMA
+#ifdef HAVE_XFREE_XINERAMA
 	int (* old_xerror_handler) (Display *, XErrorEvent *);
 	gboolean have_xinerama = FALSE;
 
@@ -433,6 +435,51 @@ gdm_screen_init (GdmDisplay *display)
 			- (display->screeny + display->screenheight);
 
 		XFree (xscreens);
+	} else
+#elif HAVE_SOLARIS_XINERAMA
+ /* This code from GDK, Copyright (C) 2002 Sun Microsystems */
+ 	int opcode;
+	int firstevent;
+	int firsterror;
+	int n_monitors = 0;
+
+	gboolean have_xinerama = FALSE;
+	have_xinerama = XQueryExtension (display->dsp,
+			"XINERAMA",
+			&opcode,
+			&firstevent,
+			&firsterror);
+
+	if (have_xinerama) {
+	
+		int result;
+		XRectangle monitors[MAXFRAMEBUFFERS];
+		unsigned char  hints[16];
+		
+		result = XineramaGetInfo (display->dsp, 0, monitors, hints, &n_monitors);
+		/* Yes I know it should be Success but the current implementation 
+		 * returns the num of monitor
+		 */
+		if (result <= 0)
+			gdm_fail ("Xinerama active, but <= 0 screens?");
+
+		if (n_monitors <= GdmXineramaScreen)
+			GdmXineramaScreen = 0;
+
+		display->screenx = monitors[GdmXineramaScreen].x;
+		display->screeny = monitors[GdmXineramaScreen].y;
+		display->screenwidth = monitors[GdmXineramaScreen].width;
+		display->screenheight = monitors[GdmXineramaScreen].height;
+
+		display->lrh_offsetx =
+			DisplayWidth (display->dsp,
+				      DefaultScreen (display->dsp))
+			- (display->screenx + display->screenwidth);
+		display->lrh_offsety =
+			DisplayHeight (display->dsp,
+				       DefaultScreen (display->dsp))
+			- (display->screeny + display->screenheight);
+
 	} else
 #endif
 	{

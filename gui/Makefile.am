@@ -76,6 +76,7 @@ gdmchooser_LDADD = \
 	$(XDMCP_LIBS)		\
 	-lX11			\
 	$(XINERAMA_LIBS)	\
+	$(X_EXTRA_LIBS)	\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
@@ -110,6 +111,7 @@ gdmphotosetup_LDADD = \
 gdmXnestchooser_LDADD = \
 	$(GUI_LIBS)		\
 	-lXau			\
+	-lX11			\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
