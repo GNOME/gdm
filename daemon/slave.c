@@ -250,13 +250,13 @@ slave_waitpid_setpid (pid_t pid)
 	int p[2];
 	GdmWaitPid *wp;
 
-	if (pid <= 1)
+	if G_UNLIKELY (pid <= 1)
 		return NULL;
 
 	wp = g_new0 (GdmWaitPid, 1);
 	wp->pid = pid;
 
-	if (pipe (p) < 0) {
+	if G_UNLIKELY (pipe (p) < 0) {
 		gdm_error ("slave_waitpid_setpid: cannot create pipe, trying to wing it");
 
 		wp->fd_r = -1;
@@ -274,12 +274,12 @@ slave_waitpid_setpid (pid_t pid)
 static void
 slave_waitpid (GdmWaitPid *wp)
 {
-	if (wp == NULL)
+	if G_UNLIKELY (wp == NULL)
 		return;
 
 	gdm_debug ("slave_waitpid: waiting on %d", (int)wp->pid);
 
-	if (wp->fd_r < 0) {
+	if G_UNLIKELY (wp->fd_r < 0) {
 		gdm_error ("slave_waitpid: no pipe, trying to wing it");
 
 		/* This is a real stupid fallback for a real stupid case */
@@ -471,9 +471,9 @@ parent_exists (void)
 	pid_t ppid = getppid ();
 	static gboolean parent_dead = FALSE; /* once dead, always dead */
 
-	if (parent_dead ||
-	    ppid <= 1 ||
-	    kill (ppid, 0) < 0) {
+	if G_UNLIKELY (parent_dead ||
+		       ppid <= 1 ||
+		       kill (ppid, 0) < 0) {
 		parent_dead = TRUE;
 		return FALSE;
 	}
@@ -699,7 +699,7 @@ gdm_screen_init (GdmDisplay *display)
 					      &screen_num);
 
 
-		if (screen_num <= 0)
+		if G_UNLIKELY (screen_num <= 0)
 			gdm_fail ("Xinerama active, but <= 0 screens?");
 
 		if (screen_num <= GdmXineramaScreen)
@@ -745,7 +745,7 @@ gdm_screen_init (GdmDisplay *display)
 		/* Yes I know it should be Success but the current implementation 
 		 * returns the num of monitor
 		 */
-		if (result <= 0)
+		if G_UNLIKELY (result <= 0)
 			gdm_fail ("Xinerama active, but <= 0 screens?");
 
 		if (n_monitors <= GdmXineramaScreen)
@@ -840,7 +840,7 @@ gdm_slave_check_user_wants_to_log_in (const char *user)
 
 	g_strfreev (vec);
 
-	if ( ! loggedin)
+	if G_LIKELY ( ! loggedin)
 		return TRUE;
 
 	but[0] = _("Log in anyway");
@@ -916,7 +916,7 @@ gdm_slave_run (GdmDisplay *display)
     
     d = display;
 
-    if (d->sleep_before_run > 0) {
+    if G_UNLIKELY (d->sleep_before_run > 0) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
 	    gdm_sleep_no_signal (d->sleep_before_run);
 	    d->sleep_before_run = 0;
@@ -932,10 +932,10 @@ gdm_slave_run (GdmDisplay *display)
      * exist */
     if (SERVER_IS_LOCAL (d) &&
 	d->servpid <= 0) {
-	    if ( ! gdm_server_start (d,
-				     FALSE /* treat_as_flexi */,
-				     20 /* min_flexi_disp */,
-				     5 /* flexi_retries */)) {
+	    if G_UNLIKELY ( ! gdm_server_start (d,
+						FALSE /* treat_as_flexi */,
+						20 /* min_flexi_disp */,
+						5 /* flexi_retries */)) {
 		    /* We're really not sure what is going on,
 		     * so we throw up our hands and tell the user
 		     * that we've given up.  The error is likely something
@@ -1002,7 +1002,7 @@ gdm_slave_run (GdmDisplay *display)
 	   ( ! SERVER_IS_LOCAL (d) || d->servpid > 1)) {
 	d->dsp = XOpenDisplay (d->name);
 	
-	if (d->dsp == NULL) {
+	if G_UNLIKELY (d->dsp == NULL) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d on a retry", 1+openretries*2);
 	    gdm_sleep_no_signal (1+openretries*2);
 	    openretries++;
@@ -1032,7 +1032,7 @@ gdm_slave_run (GdmDisplay *display)
 
     /* something may have gone wrong, try xfailed, if local (non-flexi),
      * the toplevel loop of death will handle us */ 
-    if (d->handled && d->dsp == NULL) {
+    if G_UNLIKELY (d->handled && d->dsp == NULL) {
 	    if (d->type == TYPE_LOCAL)
 		    gdm_slave_quick_exit (DISPLAY_XFAILED);
 	    else
@@ -1162,13 +1162,17 @@ focus_first_x_window (const char *class_res_name)
 	int p[2];
 	XWindowAttributes attribs = { 0, };
 
-	if (pipe (p) < 0) {
+	if G_UNLIKELY (pipe (p) < 0) {
 		p[0] = -1;
 		p[1] = -1;
 	}
 
 	pid = fork ();
-	if (pid < 0) {
+	if G_UNLIKELY (pid < 0) {
+		if (p[0] != -1)
+			IGNORE_EINTR (close (p[0]));
+		if (p[1] != -1)
+			IGNORE_EINTR (close (p[1]));
 		gdm_error (_("%s: cannot fork"), "focus_first_x_window");
 		return;
 	}
@@ -1215,7 +1219,7 @@ focus_first_x_window (const char *class_res_name)
 	gdm_auth_set_local_auth (d);
 
 	disp = XOpenDisplay (d->name);
-	if (disp == NULL) {
+	if G_UNLIKELY (disp == NULL) {
 		gdm_error (_("%s: cannot open display %s"),
 			   "focus_first_x_window",
 			   d->name);
@@ -1233,7 +1237,7 @@ focus_first_x_window (const char *class_res_name)
 		      attribs.your_event_mask |
 		      SubstructureNotifyMask);
 
-	if (p[1] >= 0) {
+	if G_LIKELY (p[1] >= 0) {
 		IGNORE_EINTR (write (p[1], "!", 1));
 		IGNORE_EINTR (close (p[1]));
 	}
@@ -1296,7 +1300,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 	gdm_sigterm_block_pop ();
 	gdm_sigchld_block_pop ();
 
-	if (pid < 0) {
+	if G_UNLIKELY (pid < 0) {
 		/* return left pointer */
 		Cursor xcursor;
 
@@ -1510,7 +1514,7 @@ gdm_slave_wait_for_login (void)
 			GdmAllowRoot = TRUE;
 
 			pwent = getpwuid (0);
-			if (pwent == NULL) {
+			if G_UNLIKELY (pwent == NULL) {
 				/* what? no "root" ?? */
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 				continue;
@@ -1562,7 +1566,7 @@ gdm_slave_wait_for_login (void)
 			/* get the root pwent */
 			pwent = getpwuid (0);
 
-			if (pwent == NULL) {
+			if G_UNLIKELY (pwent == NULL) {
 				/* what? no "root" ??, this is not possible
 				 * since we logged in, but I'm paranoid */
 				gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
@@ -1937,7 +1941,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 	fromfd = open (file, O_RDONLY);
 
-	if (fromfd < 0) {
+	if G_UNLIKELY (fromfd < 0) {
 		seteuid (old);
 		return NULL;
 	}
@@ -1949,7 +1953,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	IGNORE_EINTR (unlink (name));
 	authfd = open (name, O_EXCL|O_TRUNC|O_WRONLY|O_CREAT, 0600);
 
-	if (authfd < 0) {
+	if G_UNLIKELY (authfd < 0) {
 		IGNORE_EINTR (close (fromfd));
 		seteuid (old);
 		g_free (name);
@@ -1970,7 +1974,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 		written = 0;
 		do {
 			IGNORE_EINTR (n = write (authfd, &buf[written], bytes-written));
-			if (n < 0) {
+			if G_UNLIKELY (n < 0) {
 				/*Error writing*/
 				IGNORE_EINTR (close (fromfd));
 				IGNORE_EINTR (close (authfd));
@@ -2006,9 +2010,15 @@ gdm_slave_greeter (void)
 			   TRUE /* set_parent */);
 
     /* Open a pipe for greeter communications */
-    if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
+    if G_UNLIKELY (pipe (pipe1) < 0)
 	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmgreeter"),
 			"gdm_slave_greeter");
+    if G_UNLIKELY (pipe (pipe2) < 0) {
+	IGNORE_EINTR (close (pipe1[0]));
+	IGNORE_EINTR (close (pipe1[1]));
+	gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmgreeter"),
+			"gdm_slave_greeter");
+    }
 
     /* hackish ain't it */
     create_temp_auth_file ();
@@ -2078,7 +2088,7 @@ gdm_slave_greeter (void)
 	ve_setenv ("GDM_VERSION", VERSION, TRUE);
 
 	pwent = getpwnam (GdmUser);
-	if (pwent != NULL) {
+	if G_LIKELY (pwent != NULL) {
 		/* Note that usually this doesn't exist */
 		if (pwent->pw_dir != NULL &&
 		    g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
@@ -2121,7 +2131,7 @@ gdm_slave_greeter (void)
 		ve_unsetenv ("GDM_FLEXI_SERVER");
 	}
 
-	if(gdm_emergency_server) {
+	if G_UNLIKELY (gdm_emergency_server) {
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("No servers were defined in the "
@@ -2135,7 +2145,7 @@ gdm_slave_greeter (void)
 		ve_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
 
-	if (d->failsafe_xserver) {
+	if G_UNLIKELY (d->failsafe_xserver) {
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("I could not start the regular X "
@@ -2145,7 +2155,7 @@ gdm_slave_greeter (void)
 				 "configure the X server."));
 	}
 
-	if (d->busy_display) {
+	if G_UNLIKELY (d->busy_display) {
 		char *msg = g_strdup_printf
 			(_("The specified display number was busy, so "
 			   "this server was started on display %s."),
@@ -2159,7 +2169,7 @@ gdm_slave_greeter (void)
 	else
 		argv = ve_split (GdmRemoteGreeter);
 
-	if (d->try_different_greeter) {
+	if G_UNLIKELY (d->try_different_greeter) {
 		/* FIXME: we should also really be able to do standalone failsafe
 		   login, but that requires some work and is perhaps an overkill. */
 		/* This should handle mostly the case where gdmgreeter is crashing
@@ -2259,7 +2269,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 		wait_for_ack = FALSE;
 
 	/* Evil!, all this for debugging? */
-	if (GdmDebug && gdm_in_signal == 0) {
+	if G_UNLIKELY (GdmDebug && gdm_in_signal == 0) {
 		if (strncmp (str, GDM_SOP_COOKIE " ",
 			     strlen (GDM_SOP_COOKIE " ")) == 0) {
 			char *s = g_strndup
@@ -2279,13 +2289,13 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	}
 
 	/* ensure this is sent from the actual slave with the pipe always, this is anal I know */
-	if (d->slavepid == getpid ()) {
+	if G_LIKELY (d->slavepid == getpid ()) {
 		fd = slave_fifo_pipe_fd;
 	} else {
 		fd = -1;
 	}
 
-	if (fd < 0) {
+	if G_UNLIKELY (fd < 0) {
 		/* FIXME: This is not likely to ever be used, remove
 		   at some point.  Other then slaves shouldn't be using
 		   these functions.  And if the pipe creation failed
@@ -2306,7 +2316,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	}
 
 	/* eek */
-	if (fd < 0) {
+	if G_UNLIKELY (fd < 0) {
 		if (gdm_in_signal == 0)
 			gdm_error (_("%s: Can't open fifo!"), "gdm_slave_send");
 		return;
@@ -2314,7 +2324,7 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 
 	gdm_fdprintf (fd, "\n%s\n", str);
 
-	if (fd != slave_fifo_pipe_fd) {
+	if G_UNLIKELY (fd != slave_fifo_pipe_fd) {
 		IGNORE_EINTR (close (fd));
 	}
 
@@ -2356,9 +2366,9 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 		}
 	}
 
-	if (wait_for_ack  &&
-	    ! gdm_got_ack &&
-	    gdm_in_signal == 0) {
+	if G_UNLIKELY (wait_for_ack  &&
+		       ! gdm_got_ack &&
+		       gdm_in_signal == 0) {
 		if (strncmp (str, GDM_SOP_COOKIE " ",
 			     strlen (GDM_SOP_COOKIE " ")) == 0) {
 			char *s = g_strndup
@@ -2397,7 +2407,7 @@ gdm_slave_send_string (const char *opcode, const char *str)
 	char *msg;
 
 	/* Evil!, all this for debugging? */
-	if (GdmDebug && gdm_in_signal == 0) {
+	if G_UNLIKELY (GdmDebug && gdm_in_signal == 0) {
 		if (strcmp (opcode, GDM_SOP_COOKIE) == 0)
 			gdm_debug ("Sending %s == <secret> for slave %ld",
 				   opcode,
@@ -2426,7 +2436,7 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 
 	host = gdm_gethostbyname (hostname);
 
-	if (host->addrs == NULL) {
+	if G_UNLIKELY (host->addrs == NULL) {
 		gdm_error ("Cannot get address of host '%s'", hostname);
 		gdm_hostent_free (host);
 		return;
@@ -2462,7 +2472,7 @@ gdm_slave_chooser (void)
 	gdm_debug ("gdm_slave_chooser: Running chooser on %s", d->name);
 
 	/* Open a pipe for chooser communications */
-	if (pipe (p) < 0)
+	if G_UNLIKELY (pipe (p) < 0)
 		gdm_slave_exit (DISPLAY_REMANAGE, _("%s: Can't init pipe to gdmchooser"), "gdm_slave_chooser");
 
 	/* Run the init script. gdmslave suspends until script has terminated */
@@ -2502,17 +2512,17 @@ gdm_slave_chooser (void)
 
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 
-		if (setgid (GdmGroupId) < 0) 
+		if G_UNLIKELY (setgid (GdmGroupId) < 0) 
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set groupid to %d"),
 					"gdm_slave_chooser", GdmGroupId);
 
-		if (initgroups (GdmUser, GdmGroupId) < 0)
+		if G_UNLIKELY (initgroups (GdmUser, GdmGroupId) < 0)
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: initgroups() failed for %s"),
 					"gdm_slave_chooser", GdmUser);
 
-		if (setuid (GdmUserId) < 0) 
+		if G_UNLIKELY (setuid (GdmUserId) < 0) 
 			gdm_child_exit (DISPLAY_ABORT,
 					_("%s: Couldn't set userid to %d"),
 					"gdm_slave_chooser", GdmUserId);
@@ -2531,7 +2541,7 @@ gdm_slave_chooser (void)
 		ve_setenv ("GDM_VERSION", VERSION, TRUE);
 
 		pwent = getpwnam (GdmUser);
-		if (pwent != NULL) {
+		if G_LIKELY (pwent != NULL) {
 			/* Note that usually this doesn't exist */
 			if (g_file_test (pwent->pw_dir, G_FILE_TEST_EXISTS))
 				ve_setenv ("HOME", pwent->pw_dir, TRUE);
@@ -2719,7 +2729,7 @@ session_child_run (struct passwd *pwent,
 	char *argv[4];
 
 	gdm_unset_signals ();
-	if (setsid() < 0)
+	if G_UNLIKELY (setsid() < 0)
 		/* should never happen */
 		gdm_error (_("%s: setsid() failed: %s!"),
 			   "session_child_run", strerror(errno));
@@ -2749,7 +2759,7 @@ session_child_run (struct passwd *pwent,
 
 		g_free (filename);
 
-		if (logfd != -1) {
+		if G_LIKELY (logfd != -1) {
 			IGNORE_EINTR (dup2 (logfd, 1));
 			IGNORE_EINTR (dup2 (logfd, 2));
 			IGNORE_EINTR (close (logfd));
@@ -2778,12 +2788,12 @@ session_child_run (struct passwd *pwent,
 	ve_setenv ("DESKTOP_SESSION", session, TRUE);
 
 	/* Run the PreSession script */
-	if (gdm_slave_exec_script (d, GdmPreSession,
-				   login, pwent,
-				   TRUE /* pass_stdout */,
-				   TRUE /* set_parent */) != EXIT_SUCCESS &&
-	    /* ignore errors in failsafe modes */
-	    ! failsafe) 
+	if G_UNLIKELY (gdm_slave_exec_script (d, GdmPreSession,
+					      login, pwent,
+					      TRUE /* pass_stdout */,
+					      TRUE /* set_parent */) != EXIT_SUCCESS &&
+		       /* ignore errors in failsafe modes */
+		       ! failsafe) 
 		/* If script fails reset X server and restart greeter */
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Execution of PreSession script returned > 0. Aborting."), "gdm_slave_session_start");
@@ -2813,8 +2823,8 @@ session_child_run (struct passwd *pwent,
 
 	/* Eeeeek, this no lookie as a correct language code,
 	 * just use the system default */
-	if ( ! ve_string_empty (language) &&
-	     ! ve_locale_exists (language)) {
+	if G_UNLIKELY ( ! ve_string_empty (language) &&
+			! ve_locale_exists (language)) {
 		char *msg = g_strdup_printf (_("Language %s does not exist, using %s"),
 					     language, _("System default"));
 		gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
@@ -2830,7 +2840,7 @@ session_child_run (struct passwd *pwent,
 	umask (022);
 	
 	/* setup the verify env vars */
-	if ( ! gdm_verify_setup_env (d))
+	if G_UNLIKELY ( ! gdm_verify_setup_env (d))
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Could not setup environment for %s. "
 				  "Aborting."),
@@ -2841,7 +2851,7 @@ session_child_run (struct passwd *pwent,
 	setegid (pwent->pw_gid);
 
 	IGNORE_EINTR (chdir (home_dir));
-	if (errno != 0) {
+	if G_UNLIKELY (errno != 0) {
 		IGNORE_EINTR (chdir ("/"));
 	}
 
@@ -2856,7 +2866,7 @@ session_child_run (struct passwd *pwent,
 				  "Aborting."), "gdm_slave_session_start",
 				login);
 #else
-	if (setuid (pwent->pw_uid) < 0) 
+	if G_UNLIKELY (setuid (pwent->pw_uid) < 0) 
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("%s: Could not become %s. Aborting."), "gdm_slave_session_start", login);
 #endif
@@ -2916,7 +2926,7 @@ session_child_run (struct passwd *pwent,
 	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
 	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
 		exec = get_session_exec (session);
-		if (exec == NULL) {
+		if G_UNLIKELY (exec == NULL) {
 			gdm_error (_("%s: No Exec line in the session file: %s, starting failsafe GNOME"),
 				   "gdm_slave_session_start",
 				   session);
@@ -2936,7 +2946,7 @@ session_child_run (struct passwd *pwent,
 
 	if (exec != NULL) {
 		/* cannot be possibly failsafe */
-		if (access (GdmXsession, X_OK) != 0) {
+		if G_UNLIKELY (access (GdmXsession, X_OK) != 0) {
 			gdm_error (_("%s: Cannot find or run the base Xsession script, will try GNOME failsafe"),
 				   "gdm_slave_session_start");
 			session = GDM_SESSION_FAILSAFE_GNOME;
@@ -2955,7 +2965,7 @@ session_child_run (struct passwd *pwent,
 
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
 		argv[0] = find_prog ("gnome-session");
-		if (argv[0] == NULL) {
+		if G_UNLIKELY (argv[0] == NULL) {
 			/* yaikes */
 			gdm_error (_("%s: gnome-session not found for a failsafe GNOME session, trying xterm"),
 				   "gdm_slave_session_start");
@@ -3084,7 +3094,7 @@ gdm_slave_session_start (void)
 
     pwent = getpwnam (login);
 
-    if (pwent == NULL)  {
+    if G_UNLIKELY (pwent == NULL)  {
 	    /* This is sort of an "assert", this should NEVER happen */
 	    if (greet)
 		    gdm_slave_whack_greeter();
@@ -3096,12 +3106,12 @@ gdm_slave_session_start (void)
     gid = pwent->pw_gid;
 
     /* Run the PostLogin script */
-    if (gdm_slave_exec_script (d, GdmPostLogin,
-			       login, pwent,
-			       TRUE /* pass_stdout */,
-			       TRUE /* set_parent */) != EXIT_SUCCESS &&
-	/* ignore errors in failsafe modes */
-	! failsafe) {
+    if G_UNLIKELY (gdm_slave_exec_script (d, GdmPostLogin,
+					  login, pwent,
+					  TRUE /* pass_stdout */,
+					  TRUE /* set_parent */) != EXIT_SUCCESS &&
+		   /* ignore errors in failsafe modes */
+		   ! failsafe) {
 	    gdm_verify_cleanup (d);
 	    gdm_error (_("%s: Execution of PostLogin script returned > 0. Aborting."), "gdm_slave_session_start");
 	    /* script failed so just try again */
@@ -3109,8 +3119,8 @@ gdm_slave_session_start (void)
 		
     }
 
-    if (pwent->pw_dir == NULL ||
-	! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
+    if G_UNLIKELY (pwent->pw_dir == NULL ||
+		   ! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
 	    char *msg = g_strdup_printf (
 		     _("Your home directory is listed as:\n'%s'\n"
 		       "but it does not appear to exist.  "
@@ -3243,7 +3253,7 @@ gdm_slave_session_start (void)
     seteuid (0);
     setegid (GdmGroupId);
     
-    if ( ! authok) {
+    if G_UNLIKELY ( ! authok) {
 	    gdm_debug ("gdm_slave_session_start: Auth not OK");
 
 	    gdm_error_box (d,
@@ -3324,7 +3334,7 @@ gdm_slave_session_start (void)
 			   usrcfgok,
 			   savesess,
 			   savelang);
-	g_assert_not_reached ();
+	gdm_assert_not_reached ();
 	
     default:
 	break;
@@ -3362,11 +3372,11 @@ gdm_slave_session_start (void)
 	       (long)session_start_time, (long)end_time);
 
     /* 66 is a very magical number signifying failure in GDM */
-    if  ((d->last_sess_status != 66) &&
-	 (/* sanity */ end_time >= session_start_time) &&
-	 (end_time - 10 <= session_start_time) &&
-	 /* only if the X server still exist! */
-	 d->servpid > 1) {
+    if G_UNLIKELY ((d->last_sess_status != 66) &&
+		   (/* sanity */ end_time >= session_start_time) &&
+		   (end_time - 10 <= session_start_time) &&
+		   /* only if the X server still exist! */
+		   d->servpid > 1) {
 	    char *errfile = g_build_filename (home_dir, ".xsession-errors", NULL);
 	    gdm_debug ("Session less than 10 seconds!");
 
@@ -3580,7 +3590,7 @@ gdm_slave_alrm_handler (int sig)
 {
 	static gboolean in_ping = FALSE;
 
-	if (already_in_slave_start_jmp)
+	if G_UNLIKELY (already_in_slave_start_jmp)
 		return;
 
 	gdm_in_signal++;
@@ -3588,13 +3598,13 @@ gdm_slave_alrm_handler (int sig)
 	gdm_debug ("gdm_slave_alrm_handler: %s got ARLM signal, "
 		   "to ping display", d->name);
 
-	if (d->dsp == NULL) {
+	if G_UNLIKELY (d->dsp == NULL) {
 		gdm_in_signal --;
 		/* huh? */
 		return;
 	}
 
-	if (in_ping) {
+	if G_UNLIKELY (in_ping) {
 		slave_start_jmp_error_to_print = 
 			g_strdup_printf (_("Ping to %s failed, whacking display!"),
 					 d->name);
@@ -3628,7 +3638,7 @@ gdm_slave_child_handler (int sig)
     pid_t pid;
     uid_t old;
 
-    if (already_in_slave_start_jmp)
+    if G_UNLIKELY (already_in_slave_start_jmp)
 	    return;
 
     gdm_in_signal++;
@@ -3957,7 +3967,7 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
     int c;
 
     /* There is no spoon^H^H^H^H^Hgreeter */
-    if ( ! greet)
+    if G_UNLIKELY ( ! greet)
 	    return NULL;
 
     check_notifies_now ();
@@ -4142,7 +4152,7 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
     gint status;
     char *x_servers_file;
 
-    if (!d || ve_string_empty (dir))
+    if G_UNLIKELY (!d || ve_string_empty (dir))
 	return EXIT_SUCCESS;
 
     script = g_build_filename (dir, d->name, NULL);
@@ -4366,7 +4376,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 
     if(str->len > 0 && str->str[str->len - 1] == '|') {
       g_string_truncate(str, str->len - 1);
-      if (pipe (pipe1) < 0) {
+      if G_UNLIKELY (pipe (pipe1) < 0) {
         gdm_error (_("%s: Failed creating pipe"),
 		   "gdm_parse_enriched_login");
       } else {
@@ -4379,7 +4389,7 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 	       environment variable. */
 
             IGNORE_EINTR (close (pipe1[0]));
-            if(pipe1[1] != STDOUT_FILENO) 
+            if G_LIKELY (pipe1[1] != STDOUT_FILENO) 
 	      IGNORE_EINTR (dup2 (pipe1[1], STDOUT_FILENO));
 
 	    closelog ();

@@ -49,7 +49,7 @@ load_pixbuf (const char *fname, GError **error)
     return g_object_ref (pb);
 
   pb = gdk_pixbuf_new_from_file (fname, error);
-  if (pb == NULL)
+  if G_UNLIKELY (pb == NULL)
     return NULL;
 
   g_hash_table_insert (pixbuf_hash, g_strdup (fname), g_object_ref (pb));
@@ -60,7 +60,7 @@ load_pixbuf (const char *fname, GError **error)
 GQuark
 greeter_parser_error_quark (void)
 {
-  static GQuark quark;
+  static GQuark quark = 0;
   if (!quark)
     quark = g_quark_from_static_string ("greeter_parser_error");
 
@@ -330,7 +330,7 @@ parse_show (xmlNodePtr       node,
 
   /* Note: subtype is deprecated, use type only */
   prop = xmlGetProp (node, "subtype");
-  if (prop != NULL)
+  if G_UNLIKELY (prop != NULL)
     {
       /* code for legacy uses of subtype only, are there any such
        * themes out there?  The Bluecurve was the one this was made
@@ -477,7 +477,7 @@ parse_box (xmlNodePtr       node,
     {
       info->box_x_padding = g_ascii_strtod (prop, &p);
       
-      if ((char *)prop == p)
+      if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -494,7 +494,7 @@ parse_box (xmlNodePtr       node,
     {
       info->box_y_padding = g_ascii_strtod (prop, &p);
       
-      if ((char *)prop == p)
+      if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -511,7 +511,7 @@ parse_box (xmlNodePtr       node,
     {
       info->box_min_width = g_ascii_strtod (prop, &p);
       
-      if ((char *)prop == p)
+      if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -528,7 +528,7 @@ parse_box (xmlNodePtr       node,
     {
       info->box_min_height = g_ascii_strtod (prop, &p);
       
-      if ((char *)prop == p)
+      if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -545,7 +545,7 @@ parse_box (xmlNodePtr       node,
     {
       info->box_spacing = g_ascii_strtod (prop, &p);
       
-      if ((char *)prop == p)
+      if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -572,7 +572,7 @@ parse_color (const char *str,
 {
   guint32 col;
   int i;
-  if (str[0] != '#')
+  if G_UNLIKELY (str[0] != '#')
     {
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
@@ -580,7 +580,7 @@ parse_color (const char *str,
 		   "colors must start with #, %s is an invalid color\n", str);
       return FALSE;
     }
-  if (strlen (str) != 7)
+  if G_UNLIKELY (strlen (str) != 7)
     {
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
@@ -637,7 +637,7 @@ parse_state_file (xmlNodePtr node,
     {
       info->alphas[state] = g_ascii_strtod (prop, &p);
       
-      if ((char *)prop == p)
+      if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -666,7 +666,7 @@ parse_state_color (xmlNodePtr node,
   prop = xmlGetProp (node, "color");
   if (prop)
     {
-      if (!parse_color (prop, &info->colors[state], error))
+      if G_UNLIKELY (!parse_color (prop, &info->colors[state], error))
 	return FALSE;
       info->have_color |= (1<<state);
       xmlFree (prop);
@@ -677,7 +677,7 @@ parse_state_color (xmlNodePtr node,
     {
       info->alphas[state] = g_ascii_strtod (prop, &p);
       
-      if ((char *)prop == p)
+      if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -707,44 +707,44 @@ parse_pixmap (xmlNodePtr        node,
     {
       if (strcmp (child->name, "normal") == 0)
 	{
-	  if (!parse_state_file (child, info, GREETER_ITEM_STATE_NORMAL, error))
+	  if G_UNLIKELY (!parse_state_file (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "prelight") == 0)
 	{
-	  if (!parse_state_file (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
+	  if G_UNLIKELY (!parse_state_file (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "active") == 0)
 	{
-	  if (!parse_state_file (child, info, GREETER_ITEM_STATE_ACTIVE, error))
+	  if G_UNLIKELY (!parse_state_file (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "pos") == 0)
 	{
-	  if (!parse_pos (child, info, error))
+	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "fixed") == 0)
 	{
-	  if (!parse_fixed (child, info, error))
+	  if G_UNLIKELY (!parse_fixed (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "box") == 0)
 	{
-	  if (!parse_box (child, info, error))
+	  if G_UNLIKELY (!parse_box (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "show") == 0)
 	{
-	  if (!parse_show (child, info, error))
+	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
 	}
       
       child = child->next;
     }
 
-  if (!info->files[GREETER_ITEM_STATE_NORMAL])
+  if G_UNLIKELY (!info->files[GREETER_ITEM_STATE_NORMAL])
     {
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
@@ -761,7 +761,7 @@ parse_pixmap (xmlNodePtr        node,
 	    {
 	      info->pixbufs[i] = load_pixbuf (info->files[i], error);
 	      
-	      if (info->pixbufs[i] == NULL)
+	      if G_UNLIKELY (info->pixbufs[i] == NULL)
 		return FALSE;
 	    }
 	  else
@@ -786,37 +786,37 @@ parse_rect (xmlNodePtr node,
     {
       if (strcmp (child->name, "normal") == 0)
 	{
-	  if (!parse_state_color (child, info, GREETER_ITEM_STATE_NORMAL, error))
+	  if G_UNLIKELY (!parse_state_color (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "prelight") == 0)
 	{
-	  if (!parse_state_color (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
+	  if G_UNLIKELY (!parse_state_color (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "active") == 0)
 	{
-	  if (!parse_state_color (child, info, GREETER_ITEM_STATE_ACTIVE, error))
+	  if G_UNLIKELY (!parse_state_color (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "pos") == 0)
 	{
-	  if (!parse_pos (child, info, error))
+	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "fixed") == 0)
 	{
-	  if (!parse_fixed (child, info, error))
+	  if G_UNLIKELY (!parse_fixed (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "box") == 0)
 	{
-	  if (!parse_box (child, info, error))
+	  if G_UNLIKELY (!parse_box (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "show") == 0)
 	{
-	  if (!parse_show (child, info, error))
+	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
 	}
       
@@ -855,7 +855,7 @@ parse_state_text (xmlNodePtr node,
   if (prop)
     {
       info->fonts[state] = pango_font_description_from_string (prop);
-      if (info->fonts[state] == NULL)
+      if G_UNLIKELY (info->fonts[state] == NULL)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -870,7 +870,7 @@ parse_state_text (xmlNodePtr node,
   prop = xmlGetProp (node, "color");
   if (prop)
     {
-      if (!parse_color (prop, &info->colors[state], error))
+      if G_UNLIKELY (!parse_color (prop, &info->colors[state], error))
 	return FALSE;
       info->have_color |= (1<<state);
       xmlFree (prop);
@@ -881,7 +881,7 @@ parse_state_text (xmlNodePtr node,
     {
       info->alphas[state] = g_ascii_strtod (prop, &p);
       
-      if ((char *)prop == p)
+      if G_UNLIKELY ((char *)prop == p)
 	{
 	  g_set_error (error,
 		       GREETER_PARSER_ERROR,
@@ -1089,39 +1089,39 @@ parse_label (xmlNodePtr        node,
     {
       if (strcmp (child->name, "normal") == 0)
 	{
-	  if (!parse_state_text (child, info, GREETER_ITEM_STATE_NORMAL, error))
+	  if G_UNLIKELY (!parse_state_text (child, info, GREETER_ITEM_STATE_NORMAL, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "prelight") == 0)
 	{
-	  if (!parse_state_text (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
+	  if G_UNLIKELY (!parse_state_text (child, info, GREETER_ITEM_STATE_PRELIGHT, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "active") == 0)
 	{
-	  if (!parse_state_text (child, info, GREETER_ITEM_STATE_ACTIVE, error))
+	  if G_UNLIKELY (!parse_state_text (child, info, GREETER_ITEM_STATE_ACTIVE, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "pos") == 0)
 	{
-	  if (!parse_pos (child, info, error))
+	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
 	}
       else if (child->type == XML_ELEMENT_NODE &&
 	       strcmp (child->name, "text") == 0)
 	{
-	  if (!parse_translated_text (child, &translated_text, &translation_score, error))
+	  if G_UNLIKELY (!parse_translated_text (child, &translated_text, &translation_score, error))
 	    return FALSE;
 	}
       else if (child->type == XML_ELEMENT_NODE &&
 	       strcmp (child->name, "stock") == 0)
 	{
-	  if (!parse_stock (child, info, &translated_text, &translation_score, error))
+	  if G_UNLIKELY (!parse_stock (child, info, &translated_text, &translation_score, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "show") == 0)
 	{
-	  if (!parse_show (child, info, error))
+	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "fixed") == 0 ||
@@ -1206,7 +1206,7 @@ parse_listitem (xmlNodePtr        node,
   
   prop = xmlGetProp (node, "id");
   
-  if (prop)
+  if G_LIKELY (prop)
     {
       li = g_new0 (GreeterItemListItem, 1);
       li->id = g_strdup (prop);
@@ -1227,7 +1227,7 @@ parse_listitem (xmlNodePtr        node,
       if (child->type == XML_ELEMENT_NODE &&
 	  strcmp (child->name, "text") == 0)
 	{
-	  if ( ! parse_translated_text (child, &translated_text, &translation_score, error))
+	  if G_UNLIKELY ( ! parse_translated_text (child, &translated_text, &translation_score, error))
 	    {
               g_free (li->id);
               g_free (li);
@@ -1238,7 +1238,7 @@ parse_listitem (xmlNodePtr        node,
       child = child->next;
     }
 
-  if (translated_text == NULL)
+  if G_UNLIKELY (translated_text == NULL)
     {
       g_free (li->id);
       g_free (li);
@@ -1267,17 +1267,17 @@ parse_list (xmlNodePtr        node,
     {
       if (strcmp (child->name, "pos") == 0)
 	{
-	  if (!parse_pos (child, info, error))
+	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "show") == 0)
 	{
-	  if (!parse_show (child, info, error))
+	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "listitem") == 0)
 	{
-	  if ( ! parse_listitem (child, info, error))
+	  if G_UNLIKELY ( ! parse_listitem (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "fixed") == 0 ||
@@ -1294,7 +1294,7 @@ parse_list (xmlNodePtr        node,
     }
 
   if (info->list_items != NULL) {
-    if (strcmp (info->id, "userlist") == 0) {
+    if G_UNLIKELY (strcmp (info->id, "userlist") == 0) {
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
 		   GREETER_PARSER_ERROR_BAD_SPEC,
@@ -1319,12 +1319,12 @@ parse_entry (xmlNodePtr        node,
     {
       if (strcmp (child->name, "pos") == 0)
 	{
-	  if (!parse_pos (child, info, error))
+	  if G_UNLIKELY (!parse_pos (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "show") == 0)
 	{
-	  if (!parse_show (child, info, error))
+	  if G_UNLIKELY (!parse_show (child, info, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "fixed") == 0 ||
@@ -1365,7 +1365,7 @@ parse_items (xmlNodePtr  node,
       {
 	if (child->type == XML_ELEMENT_NODE)
 	  {
-	    if (strcmp (child->name, "item") != 0)
+	    if G_UNLIKELY (strcmp (child->name, "item") != 0)
 	      {
 		g_set_error (error,
 			     GREETER_PARSER_ERROR,
@@ -1375,7 +1375,7 @@ parse_items (xmlNodePtr  node,
 	      }
 	    
 	    type = xmlGetProp (child, "type");
-	    if (!type)
+	    if G_UNLIKELY (!type)
 	      {
 		g_set_error (error,
 			     GREETER_PARSER_ERROR,
@@ -1409,7 +1409,7 @@ parse_items (xmlNodePtr  node,
 	    info = greeter_item_info_new (parent, item_type);
 	    
 	    parse_id (child, info);
-	    if ( ! parse_button (child, info, error))
+	    if G_UNLIKELY ( ! parse_button (child, info, error))
 	      return FALSE;
 
 	    if (button_stack != NULL)
@@ -1448,7 +1448,7 @@ parse_items (xmlNodePtr  node,
 	    if (info->button)
 	      button_stack = g_list_remove (button_stack, info);
 	    
-	    if (!res)
+	    if G_UNLIKELY (!res)
 	      return FALSE;
 
 	    items = g_list_prepend (items, info);
@@ -1489,7 +1489,7 @@ greeter_parse (const char *file, const char *datadir,
   g_free (file_search_path);
   file_search_path = g_strdup (datadir);
   
-  if (!g_file_test (file, G_FILE_TEST_EXISTS))
+  if G_UNLIKELY (!g_file_test (file, G_FILE_TEST_EXISTS))
     {
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
@@ -1500,7 +1500,7 @@ greeter_parse (const char *file, const char *datadir,
   
 
   doc = xmlParseFile (file);
-  if (doc == NULL)
+  if G_UNLIKELY (doc == NULL)
     {
       g_set_error (error,
 		   GREETER_PARSER_ERROR,
@@ -1510,7 +1510,7 @@ greeter_parse (const char *file, const char *datadir,
     }
   
   node = xmlDocGetRootElement (doc);
-  if (node == NULL)
+  if G_UNLIKELY (node == NULL)
     {
       xmlFreeDoc (doc);
       g_set_error (error,
@@ -1520,7 +1520,7 @@ greeter_parse (const char *file, const char *datadir,
       return NULL;
     }
   
-  if (strcmp (node->name, "greeter") != 0)
+  if G_UNLIKELY (strcmp (node->name, "greeter") != 0)
     {
       xmlFreeDoc (doc);
       g_set_error (error,
@@ -1543,7 +1543,7 @@ greeter_parse (const char *file, const char *datadir,
   g_hash_table_destroy (pixbuf_hash);
   pixbuf_hash = NULL;
 
-  if (!res)
+  if G_UNLIKELY (!res)
     {
       welcome_string_info = NULL;
 

@@ -227,7 +227,7 @@ check_servauthdir (struct stat *statbuf)
 
     /* Enter paranoia mode */
     IGNORE_EINTR (r = stat (GdmServAuthDir, statbuf));
-    if (r < 0) {
+    if G_UNLIKELY (r < 0) {
 	    char *s = g_strdup_printf
 		    (_("Server Authorization directory "
 		       "(daemon/ServAuthDir) is set to %s "
@@ -241,7 +241,7 @@ check_servauthdir (struct stat *statbuf)
 	    gdm_fail (_("%s: Authdir %s does not exist. Aborting."), "gdm_config_parse", GdmServAuthDir);
     }
 
-    if (! S_ISDIR (statbuf->st_mode)) {
+    if G_UNLIKELY (! S_ISDIR (statbuf->st_mode)) {
 	    char *s = g_strdup_printf
 		    (_("Server Authorization directory "
 		       "(daemon/ServAuthDir) is set to %s "
@@ -554,7 +554,7 @@ gdm_config_parse (void)
     }
     ve_config_free_list_of_strings (list);
 
-    if (displays == NULL && ! GdmXdmcp) {
+    if G_UNLIKELY (displays == NULL && ! GdmXdmcp) {
 	    char *server = NULL;
 
 	    /* if we requested no local servers (there is no console),
@@ -611,14 +611,14 @@ gdm_config_parse (void)
     /* Lookup user and groupid for the gdm user */
     pwent = getpwnam (GdmUser);
 
-    if (pwent == NULL) {
+    if G_UNLIKELY (pwent == NULL) {
 	    gdm_error (_("%s: Can't find the gdm user (%s). Trying 'nobody'!"), "gdm_config_parse", GdmUser);
 	    g_free (GdmUser);
 	    GdmUser = g_strdup ("nobody");
 	    pwent = getpwnam (GdmUser);
     }
 
-    if (pwent == NULL) {
+    if G_UNLIKELY (pwent == NULL) {
 	    char *s = g_strdup_printf
 		    (_("The gdm user does not exist. "
 		       "Please correct gdm configuration %s "
@@ -632,7 +632,7 @@ gdm_config_parse (void)
 	    GdmUserId = pwent->pw_uid;
     }
 
-    if (GdmUserId == 0) {
+    if G_UNLIKELY (GdmUserId == 0) {
 	    char *s = g_strdup_printf
 		    (_("The gdm user is set to be root, but "
 		       "this is not allowed since it can "
@@ -647,14 +647,14 @@ gdm_config_parse (void)
 
     grent = getgrnam (GdmGroup);
 
-    if (grent == NULL) {
+    if G_UNLIKELY (grent == NULL) {
 	    gdm_error (_("%s: Can't find the gdm group (%s). Trying 'nobody'!"), "gdm_config_parse", GdmUser);
 	    g_free (GdmGroup);
 	    GdmGroup = g_strdup ("nobody");
 	    grent = getgrnam (GdmGroup);
     }
 
-    if (grent == NULL) {
+    if G_UNLIKELY (grent == NULL) {
 	    char *s = g_strdup_printf
 		    (_("The gdm group does not exist. "
 		       "Please correct gdm configuration %s "
@@ -668,7 +668,7 @@ gdm_config_parse (void)
 	    GdmGroupId = grent->gr_gid;   
     }
 
-    if (GdmGroupId == 0) {
+    if G_UNLIKELY (GdmGroupId == 0) {
 	    char *s = g_strdup_printf
 		    (_("The gdm group is set to be root, but "
 		       "this is not allowed since it can "
@@ -691,15 +691,15 @@ gdm_config_parse (void)
 
     /* Check that the greeter can be executed */
     bin = ve_first_word (GdmGreeter);
-    if (ve_string_empty (bin) ||
-	access (bin, X_OK) != 0) {
+    if G_UNLIKELY (ve_string_empty (bin) ||
+		   access (bin, X_OK) != 0) {
 	    gdm_error (_("%s: Greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
     }
     g_free (bin);
 
     bin = ve_first_word (GdmRemoteGreeter);
-    if (ve_string_empty (bin) ||
-	access (bin, X_OK) != 0) {
+    if G_UNLIKELY (ve_string_empty (bin) ||
+		   access (bin, X_OK) != 0) {
 	    gdm_error (_("%s: Remote greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
     }
     g_free (bin);
@@ -708,16 +708,16 @@ gdm_config_parse (void)
     /* Check that chooser can be executed */
     bin = ve_first_word (GdmChooser);
 
-    if (GdmIndirect &&
-	(ve_string_empty (bin) ||
-	 access (bin, X_OK) != 0)) {
+    if G_UNLIKELY (GdmIndirect &&
+		   (ve_string_empty (bin) ||
+		    access (bin, X_OK) != 0)) {
 	    gdm_error (_("%s: Chooser not found or it can't be executed by the gdm user"), "gdm_config_parse");
     }
     
     g_free (bin);
 
     /* Check the serv auth and log dirs */
-    if (ve_string_empty (GdmServAuthDir)) {
+    if G_UNLIKELY (ve_string_empty (GdmServAuthDir)) {
 	    if ( ! no_console)
 		    gdm_text_message_dialog
 			    (_("No daemon/ServAuthDir specified in the configuration file"));
@@ -746,7 +746,7 @@ gdm_config_parse (void)
     /* again paranoid */
     check_servauthdir (&statbuf);
 
-    if (statbuf.st_uid != 0 || statbuf.st_gid != GdmGroupId)  {
+    if G_UNLIKELY (statbuf.st_uid != 0 || statbuf.st_gid != GdmGroupId)  {
 	    char *s = g_strdup_printf
 		    (_("Server Authorization directory "
 		       "(daemon/ServAuthDir) is set to %s "
@@ -763,7 +763,7 @@ gdm_config_parse (void)
 		      GdmServAuthDir, gdm_root_user (), GdmGroup);
     }
 
-    if (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRWXG|S_ISVTX))  {
+    if G_UNLIKELY (statbuf.st_mode != (S_IFDIR|S_IRWXU|S_IRWXG|S_ISVTX))  {
 	    char *s = g_strdup_printf
 		    (_("Server Authorization directory "
 		       "(daemon/ServAuthDir) is set to %s "
@@ -835,10 +835,10 @@ gdm_daemonify (void)
     }
     gdm_main_pid = getpid ();
 
-    if (pid < 0) 
+    if G_UNLIKELY (pid < 0) 
 	gdm_fail (_("%s: fork() failed!"), "gdm_daemonify");
 
-    if (setsid() < 0)
+    if G_UNLIKELY (setsid() < 0)
 	gdm_fail (_("%s: setsid() failed: %s!"), "gdm_daemonify",
 		  strerror(errno));
 
@@ -1218,7 +1218,7 @@ gdm_cleanup_children (void)
     if (pid <= 0)
 	    return FALSE;
 
-    if (WIFEXITED (exitstatus)) {
+    if G_LIKELY (WIFEXITED (exitstatus)) {
 	    status = WEXITSTATUS (exitstatus);
 	    crashed = FALSE;
 	    gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
@@ -1253,7 +1253,7 @@ gdm_cleanup_children (void)
     if (d == NULL)
 	    return TRUE;
 
-    if (crashed) {
+    if G_UNLIKELY (crashed) {
 	    gdm_error ("gdm_cleanup_children: Slave crashed, killing its "
 		       "children");
 
@@ -1638,7 +1638,7 @@ create_connections (void)
 	fifoconn = gdm_connection_open_fifo (path, 0660);
 	g_free (path);
 
-	if (fifoconn != NULL) {
+	if G_LIKELY (fifoconn != NULL) {
 		gdm_connection_set_handler (fifoconn,
 					    gdm_handle_message,
 					    NULL /* data */,
@@ -1648,7 +1648,7 @@ create_connections (void)
 						 close_notify);
 	}
 
-	if (pipe (p) < 0) {
+	if G_UNLIKELY (pipe (p) < 0) {
 		slave_fifo_pipe_fd = -1;
 		pipeconn = NULL;
 	} else {
@@ -1656,7 +1656,7 @@ create_connections (void)
 		pipeconn = gdm_connection_open_fd (p[0]);
 	}
 
-	if (pipeconn != NULL) {
+	if G_LIKELY (pipeconn != NULL) {
 		gdm_connection_set_handler (pipeconn,
 					    gdm_handle_message,
 					    NULL /* data */,
@@ -1673,7 +1673,7 @@ create_connections (void)
 
 	unixconn = gdm_connection_open_unix (GDM_SUP_SOCKET, 0666);
 
-	if (unixconn != NULL) {
+	if G_LIKELY (unixconn != NULL) {
 		gdm_connection_set_handler (unixconn,
 					    gdm_handle_user_message,
 					    NULL /* data */,
@@ -1802,7 +1802,7 @@ main (int argc, char *argv[])
     while ((nextopt = poptGetNextOpt (ctx)) > 0 || nextopt == POPT_ERROR_BADOPT)
 	/* do nothing */ ;
 
-    if (nextopt != -1) {
+    if G_UNLIKELY (nextopt != -1) {
 	    fprintf (stderr,
 		     _("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
 		     poptBadOption (ctx, 0),
@@ -1813,7 +1813,7 @@ main (int argc, char *argv[])
     }
 
     /* XDM compliant error message */
-    if (getuid () != 0) {
+    if G_UNLIKELY (getuid () != 0) {
 	    /* make sure the pid file doesn't get wiped */
 	    GdmPidFile = NULL;
 	    gdm_fail (_("Only root wants to run gdm\n"));
@@ -1831,11 +1831,11 @@ main (int argc, char *argv[])
     sig.sa_flags = SA_RESTART;
     sigemptyset (&sig.sa_mask);
 
-    if (sigaction (SIGTERM, &sig, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGTERM, &sig, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "TERM", strerror (errno));
 
-    if (sigaction (SIGINT, &sig, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGINT, &sig, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "INT", strerror (errno));
 
@@ -1893,19 +1893,19 @@ main (int argc, char *argv[])
     sig.sa_flags = SA_RESTART;
     sigemptyset (&sig.sa_mask);
 
-    if (sigaction (SIGTERM, &sig, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGTERM, &sig, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "TERM", strerror (errno));
 
-    if (sigaction (SIGINT, &sig, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGINT, &sig, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "INT", strerror (errno));
 
-    if (sigaction (SIGHUP, &sig, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGHUP, &sig, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "HUP", strerror (errno));
 
-    if (sigaction (SIGUSR1, &sig, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGUSR1, &sig, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "USR1", strerror (errno));
 
@@ -1915,13 +1915,13 @@ main (int argc, char *argv[])
        (terminated by signal), and we clean up appropriately */
 #ifdef SIGXCPU
     ve_signal_add (SIGXCPU, mainloop_sig_callback, NULL);
-    if (sigaction (SIGXCPU, &sig, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGXCPU, &sig, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "XCPU", strerror (errno));
 #endif
 #ifdef SIGXFSZ
     ve_signal_add (SIGXFSZ, mainloop_sig_callback, NULL);
-    if (sigaction (SIGXFSZ, &sig, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGXFSZ, &sig, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "XFSZ", strerror (errno));
 #endif
@@ -1932,7 +1932,7 @@ main (int argc, char *argv[])
     abrt.sa_flags = SA_RESTART;
     sigemptyset (&abrt.sa_mask);
 
-    if (sigaction (SIGABRT, &abrt, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGABRT, &abrt, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "ABRT", strerror (errno));
 
@@ -1941,7 +1941,7 @@ main (int argc, char *argv[])
     sigemptyset (&child.sa_mask);
     sigaddset (&child.sa_mask, SIGCHLD);
 
-    if (sigaction (SIGCHLD, &child, NULL) < 0) 
+    if G_UNLIKELY (sigaction (SIGCHLD, &child, NULL) < 0) 
 	gdm_fail (_("%s: Error setting up CHLD signal handler"), "gdm_main");
 
     sigemptyset (&mask);
@@ -2045,7 +2045,7 @@ write_x_servers (GdmDisplay *d)
 		d->x_servers_order = get_new_order (d);
 
 	fp = gdm_safe_fopen_w (file);
-	if (fp == NULL) {
+	if G_UNLIKELY (fp == NULL) {
 		gdm_error ("Can't open %s for writing", file);
 		g_free (file);
 		return;
@@ -2128,7 +2128,7 @@ static void
 gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	/* Evil!, all this for debugging? */
-	if (GdmDebug) {
+	if G_UNLIKELY (GdmDebug) {
 		if (strncmp (msg, GDM_SOP_COOKIE " ",
 			     strlen (GDM_SOP_COOKIE " ")) == 0) {
 			char *s = g_strndup
@@ -2668,7 +2668,7 @@ extract_dispnum (const char *addy)
 	int num;
 	char *p;
 
-	g_assert (addy != NULL);
+	gdm_assert (addy != NULL);
 
 	p = strchr (addy, ':');
 	if (p == NULL)
@@ -2774,9 +2774,9 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 
 		seteuid (xnest_uid);
 
-		g_assert (xnest_auth_file != NULL);
-		g_assert (xnest_disp != NULL);
-		g_assert (xnest_cookie != NULL);
+		gdm_assert (xnest_auth_file != NULL);
+		gdm_assert (xnest_disp != NULL);
+		gdm_assert (xnest_cookie != NULL);
 
 		IGNORE_EINTR (r = stat (xnest_auth_file, &s));
 		if (r < 0)
@@ -2826,7 +2826,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	g_free (bin);
 
 	display = gdm_server_alloc (-1, server);
-	if (display == NULL) {
+	if G_UNLIKELY (display == NULL) {
 		gdm_connection_write (conn,
 				      "ERROR 2 Startup errors\n");
 		return;
@@ -2841,7 +2841,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	if (type == TYPE_FLEXI_XNEST) {
 		GdmDisplay *parent;
 		char *disp, *p;
-		g_assert (xnest_disp != NULL);
+		gdm_assert (xnest_disp != NULL);
 
 		disp = g_strdup (xnest_disp);
 		/* whack the screen info */
@@ -3220,13 +3220,13 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 
 		svr = gdm_find_x_server (name);
-		if (svr == NULL) {
+		if G_UNLIKELY (svr == NULL) {
 			/* Don't print the name to syslog as it might be
 			 * long and dangerous */
 			gdm_error (_("Unknown server type requested, using "
 				     "standard server."));
 			command = GdmStandardXServer;
-		} else if ( ! svr->flexible) {
+		} else if G_UNLIKELY ( ! svr->flexible) {
 			gdm_error (_("Requested server %s not allowed to be "
 				     "used for flexible servers, using "
 				     "standard server."), name);

@@ -38,7 +38,7 @@
 #include "auth.h"
 
 /* Local prototypes */
-static void gdm_auth_purge (GdmDisplay *d, FILE *af);
+static FILE *gdm_auth_purge (GdmDisplay *d, FILE *af);
 
 /* Configuration option variables */
 extern gchar *GdmServAuthDir;
@@ -47,7 +47,6 @@ extern gchar *GdmUserAuthFile;
 extern gchar *GdmUserAuthFB;
 extern gint  GdmUserMaxFile;
 extern gint  GdmRelaxPerms;
-extern gboolean GdmDebug;
 
 static void
 display_add_error (GdmDisplay *d)
@@ -77,17 +76,17 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 	Xauth *xa;
 	gchar *dispnum;
 
-	if (!d)
+	if G_UNLIKELY (!d)
 		return FALSE;
 
 	xa = malloc (sizeof (Xauth));
 
-	if (xa == NULL)
+	if G_UNLIKELY (xa == NULL)
 		return FALSE;
 
 	xa->family = family;
 	xa->address = malloc (addrlen);
-	if (xa->address == NULL) {
+	if G_UNLIKELY (xa->address == NULL) {
 		free (xa);
 		return FALSE;
 	}
@@ -104,7 +103,7 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
 	xa->name_length = strlen ("MIT-MAGIC-COOKIE-1");
 	xa->data = malloc (16);
-	if (xa->data == NULL) {
+	if G_UNLIKELY (xa->data == NULL) {
 		free (xa->number);
 		free (xa->name);
 		free (xa->address);
@@ -115,7 +114,7 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 	xa->data_length = 16;
 
 	errno = 0;
-	if ( ! XauWriteAuth (af, xa)) {
+	if G_UNLIKELY ( ! XauWriteAuth (af, xa)) {
 		free (xa->data);
 		free (xa->number);
 		free (xa->name);
@@ -127,7 +126,7 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 
 	if (af2 != NULL) {
 		errno = 0;
-		if ( ! XauWriteAuth (af2, xa)) {
+		if G_UNLIKELY ( ! XauWriteAuth (af2, xa)) {
 			free (xa->data);
 			free (xa->number);
 			free (xa->name);
@@ -161,7 +160,7 @@ gdm_auth_secure_display (GdmDisplay *d)
     guint i;
     const GList *local_addys = NULL;
 
-    if (!d)
+    if G_UNLIKELY (!d)
 	return FALSE;
 
     umask (022);
@@ -185,7 +184,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    authfd = g_mkstemp (d->authfile);
 	    umask (022);
 
-	    if (authfd == -1) {
+	    if G_UNLIKELY (authfd == -1) {
 		    gdm_error (_("%s: Could not make new cookie file in %s"),
 			       "gdm_auth_secure_display", GdmUserAuthFB);
 		    g_free (d->authfile);
@@ -198,7 +197,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 
 	    af = fdopen (authfd, "w");
 
-	    if (af == NULL) {
+	    if G_UNLIKELY (af == NULL) {
 		    g_free (d->authfile);
 		    d->authfile = NULL;
 		    return FALSE;
@@ -209,7 +208,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    d->authfile_gdm = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
 	    af_gdm = gdm_safe_fopen_w (d->authfile_gdm);
 
-	    if (af_gdm == NULL) {
+	    if G_UNLIKELY (af_gdm == NULL) {
 		    gdm_error (_("%s: Cannot safely open %s"),
 			       "gdm_auth_user_remove",
 			       d->authfile_gdm);
@@ -226,7 +225,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    d->authfile = g_strconcat (GdmServAuthDir, "/", d->name, ".Xauth", NULL);
 	    af = gdm_safe_fopen_w (d->authfile);
 
-	    if (af == NULL) {
+	    if G_UNLIKELY (af == NULL) {
 		    gdm_error (_("%s: Cannot safely open %s"),
 			       "gdm_auth_user_remove",
 			       d->authfile);
@@ -267,7 +266,7 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    char hostname[1024];
 
 	    hostname[1023] = '\0';
-	    if (gethostname (hostname, 1023) == 0) {
+	    if G_LIKELY (gethostname (hostname, 1023) == 0) {
 		    g_free (d->hostname);
 		    d->hostname = g_strdup (hostname);
 	    }
@@ -370,9 +369,8 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    fclose (af_gdm);
     ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 
-    if (GdmDebug)
-	    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
-		       d->name, g_slist_length (d->auths));
+    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
+	       d->name, g_slist_length (d->auths));
 
     return TRUE;
 }
@@ -384,7 +382,7 @@ try_open_append (const char *file)
 	FILE *fp;
 
 	fp = fopen (file, "a+");
-	if (fp != NULL) {
+	if G_LIKELY (fp != NULL) {
 		fclose (fp);
 		return TRUE;
 	} else {
@@ -400,7 +398,7 @@ try_open_read_as_root (const char *file)
 	seteuid (0);
 
 	fd = open (file, O_RDONLY);
-	if (fd < 0) {
+	if G_UNLIKELY (fd < 0) {
 		seteuid (oldeuid);
 		return FALSE;
 	} else {
@@ -486,7 +484,7 @@ try_user_add_again:
 		d->userauth = g_build_filename (GdmUserAuthFB, ".gdmXXXXXX", NULL);
 	authfd = g_mkstemp (d->userauth);
 
-	if (authfd < 0 && authdir_is_tmp_dir) {
+	if G_UNLIKELY (authfd < 0 && authdir_is_tmp_dir) {
 	    g_free (d->userauth);
 	    d->userauth = NULL;
 
@@ -496,7 +494,7 @@ try_user_add_again:
 	    goto try_user_add_again;
 	}
 
-	if (authfd < 0) {
+	if G_UNLIKELY (authfd < 0) {
 	    gdm_error (_("%s: Could not open cookie file %s"),
 		       "gdm_auth_user_add",
 		       d->userauth);
@@ -515,7 +513,7 @@ try_user_add_again:
 	d->authfb = FALSE;
 
 	/* FIXME: Better implement my own locking. The libXau one is not kosher */
-	if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS) {
+	if G_UNLIKELY (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS) {
 	    gdm_error (_("%s: Could not lock cookie file %s"),
 		       "gdm_auth_user_add",
 		       d->userauth);
@@ -533,7 +531,7 @@ try_user_add_again:
 	af = gdm_safe_fopen_ap (d->userauth);
     }
 
-    if (!af) {
+    if G_UNLIKELY (af == NULL) {
 	/* Really no need to clean up here - this process is a goner anyway */
 	gdm_error (_("%s: Could not open cookie file %s"),
 		   "gdm_auth_user_add",
@@ -559,13 +557,13 @@ try_user_add_again:
 
     /* If not a fallback file, nuke any existing cookies for this display */
     if (! d->authfb)
-	gdm_auth_purge (d, af);
+	af = gdm_auth_purge (d, af);
 
     /* Append the authlist for this display to the cookie file */
     auths = d->auths;
 
     while (auths) {
-	if ( ! XauWriteAuth (af, auths->data)) {
+	if G_UNLIKELY ( ! XauWriteAuth (af, auths->data)) {
 		gdm_error (_("%s: Could not write cookie"),
 			   "gdm_auth_user_add");
 
@@ -615,7 +613,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     gchar *authfile;
     gchar *authdir;
 
-    if (!d || !d->userauth)
+    if G_UNLIKELY (!d || !d->userauth)
 	return;
 
     gdm_debug ("gdm_auth_user_remove: Removing cookie from %s (%d)", d->userauth, d->authfb);
@@ -629,6 +627,13 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 	return;
     }
 
+    /* if the file doesn't exist, oh well, just ignore this then */
+    if G_UNLIKELY (access (d->userauth, F_OK) != 0) {
+	g_free (d->userauth);
+	d->userauth = NULL;
+	return;
+    }
+
     authfile = g_path_get_basename (d->userauth);
     authdir = g_path_get_dirname (d->userauth);
 
@@ -636,7 +641,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
      * decided to concatenate something like his entire MP3 collection
      * to it. So we better play it safe... */
 
-    if ( ! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
+    if G_UNLIKELY ( ! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
 			   TRUE, FALSE, GdmUserMaxFile, GdmRelaxPerms)) {
 	    g_free (authdir);
 	    g_free (authfile);
@@ -651,7 +656,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     g_free (authfile);
 
     /* Lock user's cookie jar and open it for writing */
-    if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS) {
+    if G_UNLIKELY (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS) {
 	g_free (d->userauth);
 	d->userauth = NULL;
 	return;
@@ -659,7 +664,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 
     af = gdm_safe_fopen_ap (d->userauth);
 
-    if (!af) {
+    if G_UNLIKELY (af == NULL) {
 	XauUnlockAuth (d->userauth);
 
 	gdm_error (_("%s: Cannot safely open %s"),
@@ -673,7 +678,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     }
 
     /* Purge entries for this display from the cookie jar */
-    gdm_auth_purge (d, af);
+    af = gdm_auth_purge (d, af);
 
     /* Close the file and unlock it */
     fclose (af);
@@ -692,14 +697,14 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
  * Remove all cookies referring to this display a cookie file.
  */
 
-static void
+static FILE *
 gdm_auth_purge (GdmDisplay *d, FILE *af)
 {
     Xauth *xa;
     GSList *keep = NULL, *li;
 
-    if (!d || !af)
-	return;
+    if G_UNLIKELY (!d || !af)
+	return af;
 
     gdm_debug ("gdm_auth_purge: %s", d->name);
 
@@ -716,8 +721,10 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
 	while (alist) {
 	    Xauth *da = alist->data;
 
-	    if (! memcmp (da->address, xa->address, xa->address_length) &&
-		! memcmp (da->number, xa->number, xa->number_length))
+	    if (xa->address_length == da->address_length &&
+		xa->number_length == da->number_length &&
+		memcmp (da->address, xa->address, xa->address_length) == 0 &&
+		memcmp (da->number, xa->number, xa->number_length) == 0)
 		match = TRUE;
 
 	    alist = alist->next;
@@ -730,19 +737,22 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
     }
 
     /* Rewind the file */
-    af = freopen (d->userauth, "w", af);
+    fclose (af);
+    af = gdm_safe_fopen_w (d->userauth);
 
     /* Write out remaining entries */
     for (li = keep; li != NULL; li = li->next) {
 	    /* FIXME: is this correct, if we can't open
 	     * this is quite crap isn't it ... */
-	    if (af != NULL)
+	    if G_LIKELY (af != NULL)
 		    XauWriteAuth (af, li->data);
 	    XauDisposeAuth (li->data);
 	    li->data = NULL;
     }
 
     g_slist_free (keep);
+
+    return af;
 }
 
 void

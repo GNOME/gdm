@@ -28,6 +28,20 @@ void gdm_info   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void gdm_error  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void gdm_debug  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
+#define gdm_assert(expr)		G_STMT_START{			\
+     if G_LIKELY(expr) { } else 					\
+        gdm_fail ("GDM file %s: line %d (%s): assertion failed: (%s)",	\
+		  __FILE__,						\
+		  __LINE__,						\
+		  __PRETTY_FUNCTION__,					\
+                  #expr);			}G_STMT_END
+
+#define gdm_assert_not_reached()	G_STMT_START{			\
+     gdm_fail ("GDM file %s: line %d (%s): should not be reached",	\
+	       __FILE__,						\
+	       __LINE__,						\
+	       __PRETTY_FUNCTION__);	}G_STMT_END
+
 void gdm_fdprintf  (int fd, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 int gdm_fdgetc     (int fd);
 char *gdm_fdgets   (int fd);

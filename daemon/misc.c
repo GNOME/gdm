@@ -197,7 +197,7 @@ gdm_debug (const gchar *format, ...)
     va_list args;
     char *s;
 
-    if ( ! GdmDebug) 
+    if G_LIKELY ( ! GdmDebug) 
 	return;
 
     va_start (args, format);
@@ -865,7 +865,7 @@ gdm_peek_local_address_list (void)
 
 	ifc.ifc_len = sizeof(struct ifreq) * num;
 	ifc.ifc_buf = buf = g_malloc0 (ifc.ifc_len);
-	if (ioctl (sockfd, SIOCGIFCONF, &ifc) < 0) {
+	if G_UNLIKELY (ioctl (sockfd, SIOCGIFCONF, &ifc) < 0) {
 		gdm_error (_("%s: Cannot get local addresses!"),
 			   "gdm_peek_local_address_list");
 		g_free (buf);
@@ -980,12 +980,12 @@ gdm_setup_gids (const char *login, gid_t gid)
 {
 	/* FIXME: perhaps for *BSD there should be setusercontext
 	 * stuff here */
-	if (setgid (gid) < 0)  {
+	if G_UNLIKELY (setgid (gid) < 0)  {
 		gdm_error (_("Could not setgid %d. Aborting."), (int)gid);
 		return FALSE;
 	}
 
-	if (initgroups (login, gid) < 0) {
+	if G_UNLIKELY (initgroups (login, gid) < 0) {
 		gdm_error (_("initgroups() failed for %s. Aborting."), login);
 		return FALSE;
 	}
@@ -1177,7 +1177,7 @@ gdm_open_dev_null (mode_t mode)
 {
 	int ret;
 	ret = open ("/dev/null", mode);
-	if (ret < 0) {
+	if G_UNLIKELY (ret < 0) {
 		/* never output anything, we're likely in some
 		 * strange state right now */
 		gdm_signal_ignore (SIGPIPE);
@@ -1215,7 +1215,7 @@ gdm_signal_ignore (int signal)
 	ign_signal.sa_flags = SA_RESTART;
 	sigemptyset (&ign_signal.sa_mask);
 
-	if (sigaction (signal, &ign_signal, NULL) < 0)
+	if G_UNLIKELY (sigaction (signal, &ign_signal, NULL) < 0)
 		gdm_error (_("%s: Error setting signal %d to %s"),
 			   "gdm_signal_ignore", signal, "SIG_IGN");
 }
@@ -1229,7 +1229,7 @@ gdm_signal_default (int signal)
 	def_signal.sa_flags = SA_RESTART;
 	sigemptyset (&def_signal.sa_mask);
 
-	if (sigaction (signal, &def_signal, NULL) < 0)
+	if G_UNLIKELY (sigaction (signal, &def_signal, NULL) < 0)
 		gdm_error (_("%s: Error setting signal %d to %s"),
 			   "gdm_signal_ignore", signal, "SIG_DFL");
 }
@@ -1387,30 +1387,30 @@ jumpback_sighandler (int signal)
     term.sa_flags = SA_RESTART;						\
     sigemptyset (&term.sa_mask);					\
 									\
-    if (sigaction (SIGTERM, &term, &oldterm) < 0) 			\
+    if G_UNLIKELY (sigaction (SIGTERM, &term, &oldterm) < 0) 		\
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
 		  "SETUP_INTERRUPTS_FOR_TERM", "TERM", strerror (errno)); \
 									\
-    if (sigaction (SIGINT, &term, &oldint) < 0)				\
+    if G_UNLIKELY (sigaction (SIGINT, &term, &oldint) < 0)		\
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
 		  "SETUP_INTERRUPTS_FOR_TERM", "INT", strerror (errno)); \
 									\
-    if (sigaction (SIGHUP, &term, &oldhup) < 0) 			\
+    if G_UNLIKELY (sigaction (SIGHUP, &term, &oldhup) < 0) 		\
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
 		  "SETUP_INTERRUPTS_FOR_TERM", "HUP", strerror (errno)); \
 
 #define SETUP_INTERRUPTS_FOR_TERM_TEARDOWN \
     do_jumpback = FALSE;						\
 									\
-    if (sigaction (SIGTERM, &oldterm, NULL) < 0) 			\
+    if G_UNLIKELY (sigaction (SIGTERM, &oldterm, NULL) < 0) 		\
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
 		  "SETUP_INTERRUPTS_FOR_TERM", "TERM", strerror (errno)); \
 									\
-    if (sigaction (SIGINT, &oldint, NULL) < 0) 				\
+    if G_UNLIKELY (sigaction (SIGINT, &oldint, NULL) < 0) 		\
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
 		  "SETUP_INTERRUPTS_FOR_TERM", "INT", strerror (errno)); \
 									\
-    if (sigaction (SIGHUP, &oldhup, NULL) < 0) 				\
+    if G_UNLIKELY (sigaction (SIGHUP, &oldhup, NULL) < 0) 		\
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),	\
 		  "SETUP_INTERRUPTS_FOR_TERM", "HUP", strerror (errno));
 

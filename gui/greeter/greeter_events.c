@@ -100,16 +100,16 @@ greeter_item_run_action_callback (const char *id)
 
   g_return_if_fail (id != NULL);
 
-  if (callback_hash == NULL)
+  if G_UNLIKELY (callback_hash == NULL)
     return;
 
   info = greeter_lookup_id (id);
-  if (info == NULL)
+  if G_UNLIKELY (info == NULL)
     return;
 
   cb_info = g_hash_table_lookup (callback_hash, info->id);
 
-  if (cb_info)
+  if G_LIKELY (cb_info)
     (*cb_info->func) (info, cb_info->user_data);
 }
 
@@ -197,7 +197,7 @@ greeter_item_register_action_callback (char            *id,
 {
   struct CallbackInfo *info;
 
-  if (callback_hash == NULL)
+  if G_UNLIKELY (callback_hash == NULL)
     callback_hash = g_hash_table_new_full (g_str_hash,
 					   g_str_equal,
 					   g_free,

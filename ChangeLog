@@ -1,3 +1,20 @@
+Fri Aug 15 01:59:53 2003  George Lebl <jirka@5z.com>
+
+	* daemon/auth.c: fix possible crash on on purge and redo the
+	  purge reopening to be more anal
+
+	* daemon/slave.c: fix some possible fd leaks
+
+	* daemon/gdm.c, daemon/misc.[ch], daemon/slave.c,
+	  daemon/xdmcp.c: Implement our own asserts that do
+	  gdm_fail
+
+	* daemon/auth.c, daemon/gdm.c, daemon/misc.c, daemon/slave.c,
+	  daemon/xdmcp.c, gui/greeter/greeter_events.c,
+	  gui/greeter/greeter_parser.c:  Go crazy with G_LIKELY
+	  and G_UNLIKELY.  It's 1:50am, I can't sleep and am bored.
+	  Might as well do some soptimizations.
+
 Thu Aug 14 17:50:30 2003  George Lebl <jirka@5z.com>
 
 	* daemon/auth.c: The UserAuthDir is treated just like /tmp when
