@@ -2561,6 +2561,31 @@
 	  </varlistentry>
 	  
 	  <varlistentry>
+	    <term>Multicast</term>
+	    <listitem>
+	      <synopsis>Multicast=true</synopsis>
+	      <para>
+		If true and IPv6 is enabled, the chooser will send a multicast
+		query to the local network and collect responses from the hosts
+		who have joined multicast group. If you don't want to send a
+		multicast, you can specify IPv6 address in the <filename>Hosts
+		</filename> key. The host will respond if it is listening to
+		XDMCP requests and IPv6 is enabled there.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Multicast_Addr</term>
+	    <listitem>
+	      <synopsis>Multicast_Addr=ff02::1</synopsis>
+	      <para>
+		This is the Link-local Multicast address, and is hardcoded here.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
 	    <term>DefaultHostImage</term>
 	    <listitem>
 	      <synopsis>DefaultHostImage=&lt;share&gt;/pixmaps/nohost.png</synopsis>
