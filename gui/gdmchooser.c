@@ -1389,8 +1389,8 @@ gdm_chooser_add_host (void)
 					 GTK_BUTTONS_OK,
 					 FALSE,
 					 _("Cannot find host"),
-					 _("I cannot find the host \"%s\", "
-					   "perhaps you have mistyped it."),
+					 _("I cannot find the host \"%s\". "
+					   "Perhaps you have mistyped it."),
 					 name);
 
 					if (RUNNING_UNDER_GDM)

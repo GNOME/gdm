@@ -295,9 +295,9 @@ authenticate_again:
     if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
 	    gdm_error (_("Cannot set user group for %s"), login);
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nCannot set your user group, "
-					    "you will not be able to log in, "
-					    "please contact your system administrator."));
+					  _("\nCannot set your user group; "
+					    "you will not be able to log in. "
+					    "Please contact your system administrator."));
 	    g_free (login);
 	    return NULL;
     }
@@ -319,9 +319,9 @@ authenticate_again:
 		    if (ret != 1) {
 			    if (ret != 0) {
 				    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-								  _("\nCannot change your password, "
-								    "you will not be able to log in, "
-								    "please try again later or contact "
+								  _("\nCannot change your password; "
+								    "you will not be able to log in. "
+								    "Please try again later or contact "
 								    "your system administrator."));
 			    } else if ((reEnter != 0) && (message)) {
 				    response = gdm_slave_greeter_ctl (GDM_NOECHO, message);
@@ -364,15 +364,15 @@ authenticate_again:
 	    if (ret) {
 		    gdm_error_box (d, GTK_MESSAGE_WARNING,
 				   _("Your password has been changed but "
-				     "you may have to change it again, "
-				     "please try again later or contact "
+				     "you may have to change it again. "
+				     "Please try again later or contact "
 				     "your system administrator."));
 	    }
 
 #else /* !CAN_CLEAR_ADMCHG */
 	    gdm_error_box (d, GTK_MESSAGE_WARNING,
 			   _("Your password has been changed but you "
-			     "may have to change it again, please try again "
+			     "may have to change it again. Please try again "
 			     "later or contact your system administrator."));
 
 #endif /* CAN_CLEAR_ADMCHG */
@@ -391,7 +391,7 @@ authenticate_again:
     case -1 :
 	    gdm_error (_("Internal error on passwdexpired"));
 	    gdm_error_box (d, GTK_MESSAGE_ERROR,
-			   _("An internal error occurred, you will not be able to log in.\n"
+			   _("An internal error occurred. You will not be able to log in.\n"
 			     "Please try again later or contact your system administrator."));
 	    g_free (info_msg);
 	    return NULL;
@@ -434,9 +434,9 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 		gdm_error (_("Cannot set user group for %s"), login);
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("\nCannot set your user group, "
-				 "you will not be able to log in, "
-				 "please contact your system administrator."));
+			       _("\nCannot set your user group; "
+				 "you will not be able to log in. "
+				 "Please contact your system administrator."));
 		return FALSE;
 	}
 

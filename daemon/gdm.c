@@ -377,7 +377,7 @@ gdm_config_parse (void)
     GdmSessDir = ve_config_get_string (cfg, GDM_KEY_SESSDIR);
     GdmXsession = ve_config_get_string (cfg, GDM_KEY_BASEXSESSION);
     if (ve_string_empty (GdmXsession)) {
-	    gdm_info (_("%s: BaseXsession empty, using %s/gdm/Xsession"),
+	    gdm_info (_("%s: BaseXsession empty; using %s/gdm/Xsession"),
 			"gdm_config_parse",
 			EXPANDED_SYSCONFDIR);
 	    g_free (GdmXsession);
@@ -421,7 +421,7 @@ gdm_config_parse (void)
     bin = ve_first_word (GdmStandardXServer);
     if G_UNLIKELY (ve_string_empty (bin) ||
 		   access (bin, X_OK) != 0) {
-	    gdm_info (_("%s: Standard X server not found, trying alternatives"),
+	    gdm_info (_("%s: Standard X server not found; trying alternatives"),
 			"gdm_config_parse");
 	    if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
 		    g_free (GdmStandardXServer);
@@ -453,7 +453,7 @@ gdm_config_parse (void)
 
 #ifndef HAVE_LIBXDMCP
     if (GdmXdmcp) {
-	    gdm_info (_("%s: XDMCP was enabled while there is no XDMCP support, turning it off"), "gdm_config_parse");
+	    gdm_info (_("%s: XDMCP was enabled while there is no XDMCP support; turning it off"), "gdm_config_parse");
 	    GdmXdmcp = FALSE;
     }
 #endif
@@ -466,7 +466,7 @@ gdm_config_parse (void)
 
     if (GdmAutomaticLogin != NULL &&
 	strcmp (GdmAutomaticLogin, gdm_root_user ()) == 0) {
-	    gdm_info (_("%s: Root cannot be autologged in, turing off automatic login"), "gdm_config_parse");
+	    gdm_info (_("%s: Root cannot be autologged in; turning off automatic login"), "gdm_config_parse");
 	    g_free (GdmAutomaticLogin);
 	    GdmAutomaticLogin = NULL;
     }
@@ -527,8 +527,8 @@ gdm_config_parse (void)
 		    svr->chooser = ve_config_get_bool (cfg, buf);
 
 		    if (ve_string_empty (svr->command)) {
-			    gdm_error (_("%s: Empty server command, "
-					 "using standard one."),
+			    gdm_error (_("%s: Empty server command; "
+					 "using standard command."),
 				       "gdm_config_parse");
 			    g_free (svr->command);
 			    svr->command = g_strdup (GdmStandardXServer);
@@ -793,7 +793,7 @@ gdm_config_parse (void)
 	    char *s = g_strdup_printf
 		    (C_(N_("Server Authorization directory "
 			   "(daemon/ServAuthDir) is set to %s "
-			   "but has the wrong permissions, it "
+			   "but has the wrong permissions: it "
 			   "should have permissions of %o. "
 			   "Please correct the permissions or "
 			   "the gdm configuration %s and "
@@ -858,17 +858,17 @@ gdm_daemonify (void)
 	    VE_IGNORE_EINTR (fclose (pf));
 	    if G_UNLIKELY (errno != 0) {
 		    /* FIXME: how to handle this? */
-		    gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
+		    gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
 				  GdmPidFile, strerror (errno));
-		    gdm_error (_("Cannot write PID file %s, possibly out of diskspace.  Error: %s"),
+		    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
 			       GdmPidFile, strerror (errno));
 
 	    }
 	} else if G_UNLIKELY (errno != 0) {
 	    /* FIXME: how to handle this? */
-	    gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
+	    gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
 			  GdmPidFile, strerror (errno));
-	    gdm_error (_("Cannot write PID file %s, possibly out of diskspace.  Error: %s"),
+	    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
 		       GdmPidFile, strerror (errno));
 
 	}
@@ -1730,7 +1730,7 @@ static void
 main_daemon_abrt (int sig)
 {
 	/* FIXME: note that this could mean out of memory */
-	gdm_error (_("main daemon: Got SIGABRT, something went very wrong. Going down!"));
+	gdm_error (_("main daemon: Got SIGABRT. Something went very wrong. Going down!"));
 	gdm_final_cleanup ();
 	exit (EXIT_FAILURE);
 }
@@ -2145,17 +2145,17 @@ main (int argc, char *argv[])
 	    VE_IGNORE_EINTR (fclose (pf));
 	    if (errno != 0) {
 		    /* FIXME: how to handle this? */
-		    gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
+		    gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
 				  GdmPidFile, strerror (errno));
-		    gdm_error (_("Cannot write PID file %s, possibly out of diskspace.  Error: %s"),
+		    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
 			       GdmPidFile, strerror (errno));
 
 	    }
 	} else if (errno != 0) {
 	    /* FIXME: how to handle this? */
-		gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
+		gdm_fdprintf (2, _("Cannot write PID file %s: possibly out of diskspace.  Error: %s\n"),
 			      GdmPidFile, strerror (errno));
-	    gdm_error (_("Cannot write PID file %s, possibly out of diskspace.  Error: %s"),
+	    gdm_error (_("Cannot write PID file %s: possibly out of diskspace.  Error: %s"),
 		       GdmPidFile, strerror (errno));
 
 	}
@@ -3666,12 +3666,12 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		if G_UNLIKELY (svr == NULL) {
 			/* Don't print the name to syslog as it might be
 			 * long and dangerous */
-			gdm_error (_("Unknown server type requested, using "
+			gdm_error (_("Unknown server type requested; using "
 				     "standard server."));
 			command = GdmStandardXServer;
 		} else if G_UNLIKELY ( ! svr->flexible) {
 			gdm_error (_("Requested server %s not allowed to be "
-				     "used for flexible servers, using "
+				     "used for flexible servers; using "
 				     "standard server."), name);
 			command = GdmStandardXServer;
 		} else {

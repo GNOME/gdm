@@ -109,8 +109,8 @@ gdm_display_check_loop (GdmDisplay *disp)
 	   * or just wait for the stupid malicious user to get bored
 	   * and go away */
 	  char *s = g_strdup_printf (C_(N_("The display server has been shut down "
-					   "about 6 times in the last 90 seconds, "
-					   "it is likely that something bad is "
+					   "about 6 times in the last 90 seconds. "
+					   "It is likely that something bad is "
 					   "going on.  I will wait for 2 minutes "
 					   "before trying again on display %s.")),
 					disp->name);

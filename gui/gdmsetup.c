@@ -1955,7 +1955,7 @@ install_response (GtkWidget *chooser, gint response, gpointer data)
 		/* FIXME: if exists already perhaps we could also have an
 		 * option to change the dir name */
 		s = g_strdup_printf (_("Theme directory '%s' seems to be already "
-				       "installed, install again anyway?"),
+				       "installed. Install again anyway?"),
 				     fname);
 		dlg = ve_hig_dialog_new
 			(GTK_WINDOW (chooser),

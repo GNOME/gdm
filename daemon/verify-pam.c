@@ -946,9 +946,9 @@ authenticate_again:
        	! gdm_setup_gids (login, pwent->pw_gid)) {
 	    gdm_error (_("Cannot set user group for %s"), login);
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nCannot set your user group, "
-					    "you will not be able to log in, "
-					    "please contact your system administrator."));
+					  _("\nCannot set your user group; "
+					    "you will not be able to log in. "
+					    "Please contact your system administrator."));
 #ifdef  HAVE_ADT
 		/*
 		 * map group setup error as a pam_setcred() failure
@@ -1230,9 +1230,9 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    gdm_error (_("Cannot set user group for %s"), login);
 	    gdm_error_box (cur_gdm_disp,
 			   GTK_MESSAGE_ERROR,
-			   _("\nCannot set your user group, "
-			     "you will not be able to log in, "
-			     "please contact your system administrator."));
+			   _("\nCannot set your user group; "
+			     "you will not be able to log in. "
+			     "Please contact your system administrator."));
 #ifdef  HAVE_ADT
 		/*
 		 * map group setup error as a pam_setcred() failure

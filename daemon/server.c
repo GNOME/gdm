@@ -932,7 +932,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 	} else if (bin[0] != '/') {
 		GdmXServer *svr = gdm_find_x_server (bin);
 		if (svr == NULL) {
-			gdm_error (_("Server name '%s' not found, "
+			gdm_error (_("Server name '%s' not found; "
 				     "using standard server"), bin);
 			argv = ve_split (GdmStandardXServer);
 		} else {

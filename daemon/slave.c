@@ -3027,8 +3027,8 @@ gdm_slave_chooser (void)
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("Cannot start the chooser program, "
-				 "you will probably not be able to log in.  "
+			       _("Cannot start the chooser program. "
+				 "You will probably not be able to log in.  "
 				 "Please contact the system administrator."));
 
 		gdm_child_exit (DISPLAY_REMANAGE, _("%s: Error starting chooser on display %s"), "gdm_slave_chooser", d->name);
@@ -3507,7 +3507,7 @@ session_child_run (struct passwd *pwent,
 	 * just use the system default */
 	if G_UNLIKELY ( ! ve_string_empty (language) &&
 			! ve_locale_exists (language)) {
-		char *msg = g_strdup_printf (_("Language %s does not exist, using %s"),
+		char *msg = g_strdup_printf (_("Language %s does not exist; using %s"),
 					     language, _("System default"));
 		gdm_error_box (d, GTK_MESSAGE_ERROR, msg);
 		language = NULL;
@@ -3640,7 +3640,7 @@ session_child_run (struct passwd *pwent,
 		exec = get_session_exec (session,
 					 FALSE /* check_try_exec */);
 		if G_UNLIKELY (exec == NULL) {
-			gdm_error (_("%s: No Exec line in the session file: %s, starting failsafe GNOME"),
+			gdm_error (_("%s: No Exec line in the session file: %s. Starting failsafe GNOME"),
 				   "session_child_run",
 				   session);
 			session = GDM_SESSION_FAILSAFE_GNOME;
@@ -3660,13 +3660,13 @@ session_child_run (struct passwd *pwent,
 	if (exec != NULL) {
 		/* cannot be possibly failsafe */
 		if G_UNLIKELY (access (GdmXsession, X_OK) != 0) {
-			gdm_error (_("%s: Cannot find or run the base Xsession script, will try GNOME failsafe"),
+			gdm_error (_("%s: Cannot find or run the base Xsession script; will try GNOME failsafe"),
 				   "session_child_run");
 			session = GDM_SESSION_FAILSAFE_GNOME;
 			exec = NULL;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
-				 _("Cannot find or run the base session script, will try the GNOME failsafe session for you."));
+				 _("Cannot find or run the base session script; will try the GNOME failsafe session for you."));
 		} else {
 			/* This is where everything is OK, and note that
 			   we really DON'T care about leaks, we are going to
@@ -3681,12 +3681,12 @@ session_child_run (struct passwd *pwent,
 		argv[0] = find_prog ("gnome-session");
 		if G_UNLIKELY (argv[0] == NULL) {
 			/* yaikes */
-			gdm_error (_("%s: gnome-session not found for a failsafe GNOME session, trying xterm"),
+			gdm_error (_("%s: gnome-session not found for a failsafe GNOME session; trying xterm"),
 				   "session_child_run");
 			session = GDM_SESSION_FAILSAFE_XTERM;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
-				 _("Could not find the GNOME installation, "
+				 _("Could not find the GNOME installation; "
 				   "will try running the \"Failsafe xterm\" "
 				   "session."));
 		} else {
@@ -4470,7 +4470,7 @@ gdm_slave_alrm_handler (int sig)
 
 	if G_UNLIKELY (in_ping) {
 		slave_start_jmp_error_to_print = 
-			g_strdup_printf (_("Ping to %s failed, whacking display!"),
+			g_strdup_printf (_("Ping to %s failed; whacking display!"),
 					 d->name);
 		need_to_quit_after_session_stop = TRUE;
 		exit_code_to_use = DISPLAY_REMANAGE;

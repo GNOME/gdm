@@ -1302,7 +1302,7 @@ main (int argc, char *argv[])
 				  FALSE /* markup */,
 				  _("There was an error loading the "
 				    "theme, and the default theme "
-				    "also could not have been loaded, "
+				    "could not be loaded. "
 				    "I will attempt to start the "
 				    "standard greeter"),
 				  /* avoid warning */ "%s", "");

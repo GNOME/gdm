@@ -450,10 +450,10 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 {
 	/* These need a bit more refinement */
 	if (ret == NULL) {
-		return _("Cannot communicate with gdm, perhaps "
+		return _("Cannot communicate with gdm. Perhaps "
 			 "you have an old version running.");
 	} else if (strncmp (ret, "ERROR 0 ", strlen ("ERROR 0 ")) == 0) {
-		return _("Cannot communicate with gdm, perhaps "
+		return _("Cannot communicate with gdm. Perhaps "
 			 "you have an old version running.");
 	} else if (strncmp (ret, "ERROR 1 ", strlen ("ERROR 1 ")) == 0) {
 		return _("The allowed limit of flexible X servers reached.");
@@ -475,9 +475,8 @@ gdmcomm_get_error_message (const char *ret, gboolean use_xnest)
 				 "Please install the Xnest package in "
 				 "order to use the nested login.");
 		else
-			return _("The X server is not available, "
-				 "it is likely that gdm is badly "
-				 "configured.");
+			return _("The X server is not available. "
+				 "Gdm may be misconfigured.");
 	} else if (strncmp (ret, "ERROR 7 ", strlen ("ERROR 7 ")) == 0) {
 		return _("Trying to set an unknown logout action, or trying "
 			 "to set a logout action which is not available.");
