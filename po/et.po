@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.4\n"
-"POT-Creation-Date: 2002-03-25 00:26+0200\n"
-"PO-Revision-Date: 2002-03-25 00:30+0200\n"
+"POT-Creation-Date: 2002-04-02 22:08+0300\n"
+"PO-Revision-Date: 2002-04-02 22:19+0300\n"
 "Last-Translator: Tõivo Leedjärv <toivo@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr ""
 
 #: config/gettextfoo.h:3
 msgid "Please type in the root (privileged user) password."
-msgstr ""
+msgstr "Palun sisesta root (administraatori) parool."
 
 #: config/gettextfoo.h:4
 msgid "I will now try to restart the X server again."
@@ -62,9 +62,9 @@ msgid ""
 msgstr ""
 
 #: daemon/auth.c:146
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not make new cookie file in %s"
-msgstr "%s: Ei saanud uut cookie faili luua %s"
+msgstr "%s: Ei saa luua uut cookie faili kataloogis %s"
 
 #. Really no need to clean up here - this process is a goner anyway
 #: daemon/auth.c:369 daemon/auth.c:400
@@ -103,11 +103,11 @@ msgstr ""
 
 #: daemon/errorgui.c:154
 msgid "gdm_error_box: Cannot fork to display error/info box"
-msgstr ""
+msgstr "gdm_error_box: Ei saa vea/info akna jaoks forkida"
 
 #: daemon/errorgui.c:292 daemon/errorgui.c:412
 msgid "gdm_failsafe_question: Cannot fork to display error/info box"
-msgstr ""
+msgstr "gdm_failsafe_question: Ei saa vea/info akna jaoks forkida"
 
 #: daemon/filecheck.c:49
 #, c-format
@@ -161,19 +161,25 @@ msgid ""
 "gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
 "it off"
 msgstr ""
+"gdm_config_parse: XDMCP on aktiveeritud, kuigi puudub XDMCP toetus. Säte ei "
+"kehti"
 
 #: daemon/gdm.c:306
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
+"gdm_config_parse: Kasutajat root ei saa automaatselt sisse logida, "
+"automaatset logimist ei toimu"
 
 #: daemon/gdm.c:319
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
+"gdm_config_parse: Kasutajat root ei saa automaatselt sisse logida, "
+"aeglogimist ei toimu"
 
 #: daemon/gdm.c:325
 msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
-msgstr ""
+msgstr "gdm_config_parse: TimedLoginDelay on väiksem kui 5, kasutatakse 5."
 
 #: daemon/gdm.c:335
 msgid "gdm_config_parse: No greeter specified."
@@ -181,7 +187,7 @@ msgstr "gdm_config_parse: Tervitajat (greeter) pole määratud."
 
 #: daemon/gdm.c:340
 msgid "No daemon/ServAuthDir specified in the configuration file"
-msgstr ""
+msgstr "Deemonit/'ServAuthDir'-i ei ole konfiguratsioonifailis määratud"
 
 #: daemon/gdm.c:341
 msgid "gdm_config_parse: No authdir specified."
@@ -223,6 +229,8 @@ msgid ""
 "XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
 "Please correct the configuration %s and restart gdm."
 msgstr ""
+"XDMCP on välja lülitatud ja gdm ei leia ühtegi kohalikku käivitatavat "
+"serverit. Lõpetame! Palun paranda konfiguratsioon %s ja taaskäivita gdm."
 
 #: daemon/gdm.c:475
 msgid ""
@@ -243,6 +251,8 @@ msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
 "gdm."
 msgstr ""
+"Kasutajat gdm ei ole olemas. Palun paranda gdm-i konfiguratsioon %s ja "
+"taaskäivita gdm."
 
 #: daemon/gdm.c:496
 #, c-format
@@ -255,6 +265,8 @@ msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
 "security risk.  Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"gdm kasutajaks on määratud root, aga see ei ole turvariski tõttu lubatav. "
+"Palun paranda gdm-i konfiguratsioon %s ja taaskäivita gdm."
 
 #: daemon/gdm.c:509
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
@@ -271,6 +283,8 @@ msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
 "restart gdm."
 msgstr ""
+"Gruppi gdm ei ole olemas. Palun paranda gdm-i konfiguratsioon %s ja "
+"taaskäivita gdm."
 
 #: daemon/gdm.c:528
 #, c-format
@@ -283,6 +297,8 @@ msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct gdm configuration %s and restart gdm."
 msgstr ""
+"gdm grupiks on määratud root, aga see ei ole turvariski tõttu lubatav. "
+"Palun paranda gdm-i konfiguratsioon %s ja taaskäivita gdm."
 
 #: daemon/gdm.c:541
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
@@ -444,19 +460,19 @@ msgstr "gdm_child_action: Peatamine ebaõnnestus: %s"
 
 #: daemon/gdm.c:1172
 msgid "Gdm restarting ..."
-msgstr ""
+msgstr "Gdm taaskäivitamine ..."
 
 #: daemon/gdm.c:1177
 msgid "Failed to restart self"
-msgstr ""
+msgstr "Iseenda taaskäivitamine ebaõnnestus"
 
 #: daemon/gdm.c:1280
 msgid "Do not fork into the background"
-msgstr ""
+msgstr "Ära forgi taustaprotsessiks"
 
 #: daemon/gdm.c:1282
 msgid "Preserve LD_* variables"
-msgstr ""
+msgstr "Hoia LD_* keskkonnamuutujad alles"
 
 #: daemon/gdm.c:1306
 msgid "Only root wants to run gdm\n"
@@ -722,7 +738,7 @@ msgstr ""
 
 #: daemon/slave.c:557
 msgid "focus_first_x_window: cannot fork"
-msgstr ""
+msgstr "focus_first_x_window: ei saa forkida"
 
 #: daemon/slave.c:576
 #, c-format
@@ -750,10 +766,12 @@ msgid ""
 "Enter the root password\n"
 "to run the configuration."
 msgstr ""
+"Häälestamiseks sisesta\n"
+"root parool."
 
 #: daemon/slave.c:765 daemon/slave.c:830
 msgid "gdm_slave_wait_for_login: No login/Bad login"
-msgstr ""
+msgstr "gdm_slave_wait_for_login: Ei ole sisse logitud/Vigane sisselogimine"
 
 #: daemon/slave.c:1090
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
@@ -897,6 +915,9 @@ msgid ""
 "The system administrator has\n"
 "disabled your account."
 msgstr ""
+"Süsteemi administraator\n"
+"on sinu kasutajakonto\n"
+"ära keelanud."
 
 #: daemon/slave.c:2038
 #, c-format
@@ -1034,12 +1055,12 @@ msgstr "Root ei tohi displei '%s' kaudu sisse logida"
 
 #: daemon/verify-crypt.c:154 daemon/verify-shadow.c:163
 msgid "The system administrator is not allowed to login from this screen"
-msgstr ""
+msgstr "Süsteemi administraatoril ei ole siit sisse logimine lubatud"
 
 #: daemon/verify-crypt.c:170 daemon/verify-shadow.c:179
 #, c-format
 msgid "User %s not allowed to log in"
-msgstr ""
+msgstr "Kasutajal %s on sisselogimine keelatud"
 
 #: daemon/verify-crypt.c:172 daemon/verify-pam.c:375 daemon/verify-pam.c:532
 #: daemon/verify-shadow.c:181
@@ -1047,6 +1068,9 @@ msgid ""
 "\n"
 "The system administrator has disabled your account."
 msgstr ""
+"\n"
+"Süsteemi administraator on\n"
+"sinu kasutajakonto keelanud."
 
 #: daemon/verify-crypt.c:187 daemon/verify-crypt.c:221 daemon/verify-pam.c:393
 #: daemon/verify-pam.c:549 daemon/verify-shadow.c:195
@@ -1418,9 +1442,8 @@ msgid "GDM Host Chooser"
 msgstr ""
 
 #: gui/gdmchooser-strings.c:8
-#, fuzzy
 msgid "Open a session to the selected host"
-msgstr "valitud sessioon %s"
+msgstr "Ava sessioon valitud serverisse"
 
 #: gui/gdmchooser-strings.c:9
 msgid "Connect"
@@ -1628,44 +1651,59 @@ msgid ""
 msgstr ""
 
 #: gui/gdmconfig.c:1587
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not delete session %s\n"
 "   Error: %s"
-msgstr "Ei õnnestunud avada sessiooni %s jaoks"
+msgstr ""
+"\n"
+"Ei saa sessiooni %s kustutada\n"
+"   Viga: %s"
 
 #: gui/gdmconfig.c:1623
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not remove session %s\n"
 "   Error: %s"
-msgstr "Ei õnnestunud avada sessiooni %s jaoks"
+msgstr ""
+"\n"
+"Ei saa sessiooni %s eemaldada\n"
+"   Viga: %s"
 
 #: gui/gdmconfig.c:1666
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not write session %s\n"
 "   Error: %s"
-msgstr "Ei õnnestunud avada sessiooni %s jaoks"
+msgstr ""
+"\n"
+"Ei saa sessiooni %s kirjutada\n"
+"   Viga: %s"
 
 #: gui/gdmconfig.c:1677
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not write contents to session %s\n"
 "   Error: %s"
-msgstr "Ei õnnestunud avada sessiooni %s jaoks"
+msgstr ""
+"\n"
+"Ei saa sisu sessiooni %s kirjutada\n"
+"   Viga: %s"
 
 #: gui/gdmconfig.c:1702
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not unlink old default session\n"
 "   Error: %s"
-msgstr "Ei õnnestunud avada sessiooni %s jaoks"
+msgstr ""
+"\n"
+"Ei saa vana vaikesessiooni eemaldada\n"
+"   Viga: %s"
 
 #: gui/gdmconfig.c:1741
 msgid ""
@@ -1674,12 +1712,12 @@ msgid ""
 msgstr ""
 
 #: gui/gdmconfig.c:1750
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Could not link new default session\n"
 "   Error: %s"
-msgstr "Ei õnnestunud avada sessiooni %s jaoks"
+msgstr ""
 
 #: gui/gdmconfig.c:1770
 msgid ""
@@ -2291,9 +2329,8 @@ msgid "Select how relaxed permissions are"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:146
-#, fuzzy
 msgid "Permissions: "
-msgstr "Sessioon"
+msgstr "Õigused: "
 
 #: gui/gdmconfig-strings.c:147
 msgid "Allow world writable files and directories"
@@ -2739,9 +2776,8 @@ msgid "Directories"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:257
-#, fuzzy
 msgid "PRE session scripts directory: "
-msgstr "Ei leidnud sessiooniskripte. Lõpetame!"
+msgstr ""
 
 #: gui/gdmconfig-strings.c:258
 msgid "POST session scripts directory: "
@@ -2944,9 +2980,8 @@ msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:41
-#, fuzzy
 msgid "A-M|Azerbaijani"
-msgstr "A-M|Hrvatski (Croatian)"
+msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:43
@@ -2955,9 +2990,8 @@ msgstr "A-M|Euskara (Basque)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:45
-#, fuzzy
 msgid "A-M|Bulgarian"
-msgstr "A-M|Magyar (Hungarian)"
+msgstr ""
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:47
@@ -2967,12 +3001,12 @@ msgstr "A-M|Català (Catalan)"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:49
 msgid "A-M|Chinese (simplified)"
-msgstr ""
+msgstr "A-M|簡體中文 (Chinese simplified)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:51
 msgid "A-M|Chinese (traditional)"
-msgstr ""
+msgstr "A-M|繁體中文 (Chinese traditional)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:53
@@ -2997,7 +3031,7 @@ msgstr "N-Z|Nederlands (Dutch)"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:61
 msgid "A-M|English"
-msgstr ""
+msgstr "A-M|English"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:63
@@ -3168,7 +3202,7 @@ msgstr "N-Z"
 
 #: gui/gdmlogin.c:65
 msgid "AnotherLevel"
-msgstr ""
+msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
@@ -3203,9 +3237,9 @@ msgid ""
 msgstr ""
 
 #: gui/gdmlogin.c:547 gui/gdmlogin.c:555 gui/gdmlogin.c:564
-#, fuzzy, c-format
+#, c-format
 msgid "%sWelcome to %s%s"
-msgstr "%s - Tere tulemast!"
+msgstr "%s%s - tere tulemast!%s"
 
 #: gui/gdmlogin.c:562
 msgid "gdm_parse_enriched_string: String too long!"
@@ -3223,9 +3257,8 @@ msgid "Are you sure you want to reboot the machine?"
 msgstr "Soovite Te kindlasti teha masinale uut alglaadimist?"
 
 #: gui/gdmlogin.c:773 gui/greeter/greeter_system.c:28
-#, fuzzy
 msgid "Are you sure you want to shut down the machine?"
-msgstr "Soovite Te kindlasti masinat välja lülitada?"
+msgstr "Soovid sa kindlasti masinat välja lülitada?"
 
 #: gui/gdmlogin.c:784 gui/greeter/greeter_system.c:38
 msgid "Are you sure you want to suspend the machine?"
@@ -3328,9 +3361,8 @@ msgid ""
 msgstr ""
 
 #: gui/gdmlogin.c:1548 gui/greeter/greeter_session.c:440
-#, fuzzy
 msgid "No default session link found. Using Failsafe GNOME.\n"
-msgstr "Ei leidnud vaikimisi sessiooni linki. Kasutame %s.\n"
+msgstr "Ei leia vaikesessiooni linki. Kasutusele läheb Failsafe GNOME.\n"
 
 #: gui/gdmlogin.c:1588
 #, c-format
@@ -3382,16 +3414,15 @@ msgstr "%a, %d. %b, %H:%M"
 
 #: gui/gdmlogin.c:2643
 msgid "%a %b %d, %I:%M %p"
-msgstr "%a, %d. %b. %I:%M %p"
+msgstr "%a, %d. %b, %I:%M %p"
 
 #: gui/gdmlogin.c:2704
 msgid "Finger"
 msgstr ""
 
 #: gui/gdmlogin.c:2778
-#, fuzzy
 msgid "GDM Login"
-msgstr "Kasutajanimi:"
+msgstr "GDM Login"
 
 #: gui/gdmlogin.c:2824
 msgid "Session"
@@ -3409,10 +3440,12 @@ msgstr "Häälesta..."
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
+"Häälesta GDMi (see login-haldur). Sul läheb vaja root (administraatori) "
+"parooli."
 
 #: gui/gdmlogin.c:2863
 msgid "Reboot..."
-msgstr "Alglaadimine..."
+msgstr "Tee alglaadimine..."
 
 #: gui/gdmlogin.c:2870
 msgid "Reboot your computer"
@@ -3764,9 +3797,8 @@ msgid "Turkish"
 msgstr "Türgi (Türkçe)"
 
 #: gui/greeter/greeter_system.c:59
-#, fuzzy
 msgid "Shut down the computer"
-msgstr "Peata arvuti (säästuresiim)"
+msgstr "Seiska arvuti (saab välja lülitada)"
 
 #: gui/greeter/greeter_system.c:67
 msgid "Suspend the computer"
