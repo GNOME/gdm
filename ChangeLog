@@ -1,3 +1,11 @@
+Fri May 28 11:36:46 2004  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: Fix for #141497, that is the last_x_failed is
+	  properly reset, we only restart 3 times and we allow those
+	  to happen in a much longer timeframe (5 minutes), which is OK
+	  since we reset on successful remanage rather then just based
+	  on time.
+
 Fri May 28 11:08:51 2004  George Lebl <jirka@5z.com>
 
 	* configure.in: eek, evil we had GETTEXT_PACKAGE set to

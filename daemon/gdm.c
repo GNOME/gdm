@@ -1522,13 +1522,15 @@ start_autopsy:
 	if (d->type == TYPE_LOCAL) {
 		time_t now = time (NULL);
 		d->x_faileds ++;
-		/* this is a much faster failing, don't even allow a few
-		 * seconds, just flash but for at most 30 seconds */
-		if (now - d->last_x_failed > 30) {
+		/* This really is likely the first time if it's been,
+		   some time, say 5 minutes */
+		if (now - d->last_x_failed > (5*60)) {
 			/* reset */
 			d->x_faileds = 1;
 			d->last_x_failed = now;
-		} else if (d->x_faileds > 3) {
+			/* well sleep at least 3 seconds before starting */
+			d->sleep_before_run = 3;
+		} else if (d->x_faileds >= 3) {
 			gdm_debug ("gdm_child_action: dealing with X crashes");
 			if ( ! deal_with_x_crashes (d)) {
 				gdm_debug ("gdm_child_action: Aborting display");
@@ -1542,6 +1544,10 @@ start_autopsy:
 				break;
 			}
 			gdm_debug ("gdm_child_action: Trying again");
+
+			/* reset */
+			d->x_faileds = 0;
+			d->last_x_failed = 0;
 		} else {
 			/* well sleep at least 3 seconds before starting */
 			d->sleep_before_run = 3;
@@ -1555,6 +1561,13 @@ start_autopsy:
     case DISPLAY_REMANAGE:	/* Remanage display */
     default:
 	gdm_debug ("gdm_child_action: In remanage");
+
+	/* if we did REMANAGE, that means that we're no longer failing */
+	if (status == DISPLAY_REMANAGE) {
+		/* reset */
+		d->x_faileds = 0;
+		d->last_x_failed = 0;
+	}
 
 	/* inform about error if needed */
 	if (d->socket_conn != NULL) {
