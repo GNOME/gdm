@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager
+/* GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -430,7 +430,7 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 
     hostbuf[sizeof (hostbuf) - 1] = '\0';
     if (gethostname (hostbuf, sizeof (hostbuf) - 1) < 0)
-	    hostname = g_strdup ("Gnome");
+	    hostname = g_strdup ("GNOME");
     else
 	    hostname = g_strdup (hostbuf);
 
@@ -1207,7 +1207,7 @@ gdm_login_session_init (GtkWidget *menu)
     }
 
     sessnames = g_hash_table_new (g_str_hash, g_str_equal);
-    g_hash_table_insert (sessnames, GDM_SESSION_FAILSAFE_GNOME, _("Failsafe Gnome"));
+    g_hash_table_insert (sessnames, GDM_SESSION_FAILSAFE_GNOME, _("Failsafe GNOME"));
     g_hash_table_insert (sessnames, GDM_SESSION_FAILSAFE_XTERM, _("Failsafe xterm"));
 
     vec = g_strsplit (GdmSessionDir, ":", -1);
@@ -1374,7 +1374,7 @@ gdm_login_session_init (GtkWidget *menu)
             /* For translators:  This is the failsafe login when the user
              * can't login otherwise */
             item = gtk_radio_menu_item_new_with_mnemonic (sessgrp,
-							  _("Failsafe _Gnome"));
+							  _("Failsafe _GNOME"));
             gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
                                   _("This is a failsafe session that will log you "
                                     "into GNOME.  No startup scripts will be read "
@@ -3367,6 +3367,7 @@ gdm_reread_config (int sig, gpointer data)
 	     ! gdm_common_bool_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
 	     ! gdm_common_bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
 	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_CHOOSER_BUTTON) ||
+	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_ALLOW_GTK_THEME_CHANGE) ||
 	     ! gdm_common_bool_same (config, GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);

@@ -157,10 +157,6 @@
 			      <property name="yalign">0.5</property>
 			      <property name="xpad">0</property>
 			      <property name="ypad">0</property>
-			      <property name="mnemonic_widget">local_greeter</property>
-			      <accessibility>
-				<atkrelation target="local_greeter" type="label-for"/>
-			      </accessibility>
 			    </widget>
 			    <packing>
 			      <property name="left_attach">0</property>
@@ -185,10 +181,6 @@
 			      <property name="yalign">0.5</property>
 			      <property name="xpad">0</property>
 			      <property name="ypad">0</property>
-			      <property name="mnemonic_widget">remote_greeter</property>
-			      <accessibility>
-				<atkrelation target="remote_greeter" type="label-for"/>
-			      </accessibility>
 			    </widget>
 			    <packing>
 			      <property name="left_attach">0</property>
@@ -231,7 +223,7 @@
 			  <child>
 			    <widget class="GtkLabel" id="remote_welcome_label">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Re_mote welcome string: </property>
+			      <property name="label" translatable="yes">Re_mote welcome string (%n = hostname): </property>
 			      <property name="use_underline">True</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -251,86 +243,6 @@
 			      <property name="right_attach">1</property>
 			      <property name="top_attach">4</property>
 			      <property name="bottom_attach">5</property>
-			      <property name="x_options">fill</property>
-			      <property name="y_options"></property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkOptionMenu" id="local_greeter">
-			      <property name="visible">True</property>
-			      <property name="can_focus">True</property>
-			      <property name="history">0</property>
-			      <accessibility>
-				<atkrelation target="local_greeter_label" type="labelled-by"/>
-			      </accessibility>
-
-			      <child>
-				<widget class="GtkMenu" id="menu1">
-
-				  <child>
-				    <widget class="GtkMenuItem" id="standard_greeter_local">
-				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">GTK+ Greeter</property>
-				      <property name="use_underline">True</property>
-				    </widget>
-				  </child>
-
-				  <child>
-				    <widget class="GtkMenuItem" id="graphical_greeter_local">
-				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">Themed Greeter</property>
-				      <property name="use_underline">True</property>
-				    </widget>
-				  </child>
-				</widget>
-			      </child>
-			    </widget>
-			    <packing>
-			      <property name="left_attach">1</property>
-			      <property name="right_attach">2</property>
-			      <property name="top_attach">0</property>
-			      <property name="bottom_attach">1</property>
-			      <property name="x_options">fill</property>
-			      <property name="y_options"></property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkOptionMenu" id="remote_greeter">
-			      <property name="visible">True</property>
-			      <property name="can_focus">True</property>
-			      <property name="history">0</property>
-			      <accessibility>
-				<atkrelation target="remote_greeter_label" type="labelled-by"/>
-			      </accessibility>
-
-			      <child>
-				<widget class="GtkMenu" id="menu2">
-
-				  <child>
-				    <widget class="GtkMenuItem" id="standard_greeter_remote">
-				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">GTK+ Greeter</property>
-				      <property name="use_underline">True</property>
-				    </widget>
-				  </child>
-
-				  <child>
-				    <widget class="GtkMenuItem" id="graphical_greeter_remote">
-				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">Themed Greeter</property>
-				      <property name="use_underline">True</property>
-				    </widget>
-				  </child>
-				</widget>
-			      </child>
-			    </widget>
-			    <packing>
-			      <property name="left_attach">1</property>
-			      <property name="right_attach">2</property>
-			      <property name="top_attach">1</property>
-			      <property name="bottom_attach">2</property>
 			      <property name="x_options">fill</property>
 			      <property name="y_options"></property>
 			    </packing>
@@ -407,6 +319,37 @@
 			      <property name="bottom_attach">3</property>
 			      <property name="x_options">fill</property>
 			      <property name="y_options"></property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkComboBox" id="local_greeter">
+			      <property name="visible">True</property>
+			      <property name="items" translatable="yes">GTK+ Greeter
+Themed Greeter</property>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">1</property>
+			      <property name="right_attach">2</property>
+			      <property name="top_attach">0</property>
+			      <property name="bottom_attach">1</property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkComboBox" id="remote_greeter">
+			      <property name="visible">True</property>
+			      <property name="items" translatable="yes">GTK+ Greeter
+Themed Greeter
+Disabled</property>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">1</property>
+			      <property name="right_attach">2</property>
+			      <property name="top_attach">1</property>
+			      <property name="bottom_attach">2</property>
+			      <property name="x_options">fill</property>
+			      <property name="y_options">fill</property>
 			    </packing>
 			  </child>
 			</widget>
@@ -507,61 +450,10 @@
 			      <property name="yalign">0.5</property>
 			      <property name="xpad">0</property>
 			      <property name="ypad">0</property>
-			      <property name="mnemonic_widget">autologin_entry</property>
-			      <accessibility>
-				<atkrelation target="autologin_combo" type="label-for"/>
-				<atkrelation target="autologin_entry" type="label-for"/>
-			      </accessibility>
 			    </widget>
 			    <packing>
 			      <property name="left_attach">0</property>
 			      <property name="right_attach">1</property>
-			      <property name="top_attach">1</property>
-			      <property name="bottom_attach">2</property>
-			      <property name="x_options">fill</property>
-			      <property name="y_options"></property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkCombo" id="autologin_combo">
-			      <property name="visible">True</property>
-			      <property name="value_in_list">False</property>
-			      <property name="allow_empty">True</property>
-			      <property name="case_sensitive">False</property>
-			      <property name="enable_arrow_keys">True</property>
-			      <property name="enable_arrows_always">False</property>
-			      <accessibility>
-				<atkrelation target="autologin_label" type="labelled-by"/>
-			      </accessibility>
-
-			      <child internal-child="entry">
-				<widget class="GtkEntry" id="autologin_entry">
-				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="editable">True</property>
-				  <property name="visibility">True</property>
-				  <property name="max_length">0</property>
-				  <property name="text" translatable="yes"></property>
-				  <property name="has_frame">True</property>
-				  <property name="invisible_char" translatable="yes">*</property>
-				  <property name="activates_default">False</property>
-				  <accessibility>
-				    <atkrelation target="autologin_label" type="labelled-by"/>
-				  </accessibility>
-				</widget>
-			      </child>
-
-			      <child internal-child="list">
-				<widget class="GtkList" id="combo-list2">
-				  <property name="visible">True</property>
-				  <property name="selection_mode">GTK_SELECTION_BROWSE</property>
-				</widget>
-			      </child>
-			    </widget>
-			    <packing>
-			      <property name="left_attach">1</property>
-			      <property name="right_attach">2</property>
 			      <property name="top_attach">1</property>
 			      <property name="bottom_attach">2</property>
 			      <property name="x_options">fill</property>
@@ -588,6 +480,21 @@
 			      <property name="bottom_attach">1</property>
 			      <property name="x_options">fill</property>
 			      <property name="y_options"></property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkComboBoxEntry" id="autologin_combo">
+			      <property name="visible">True</property>
+			      <property name="items" translatable="yes">dummy</property>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">1</property>
+			      <property name="right_attach">2</property>
+			      <property name="top_attach">1</property>
+			      <property name="bottom_attach">2</property>
+			      <property name="x_options">fill</property>
+			      <property name="y_options">fill</property>
 			    </packing>
 			  </child>
 			</widget>
@@ -688,11 +595,6 @@
 			      <property name="yalign">0.5</property>
 			      <property name="xpad">0</property>
 			      <property name="ypad">0</property>
-			      <property name="mnemonic_widget">timedlogin_entry</property>
-			      <accessibility>
-				<atkrelation target="timedlogin_combo" type="label-for"/>
-				<atkrelation target="timedlogin_entry" type="label-for"/>
-			      </accessibility>
 			    </widget>
 			    <packing>
 			      <property name="left_attach">0</property>
@@ -742,7 +644,7 @@
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">1 0 100 1 10 10</property>
+			      <property name="adjustment">0 0 100 1 10 10</property>
 			      <accessibility>
 				<atkrelation target="timedlogin_seconds_label" type="labelled-by"/>
 			      </accessibility>
@@ -752,52 +654,6 @@
 			      <property name="right_attach">2</property>
 			      <property name="top_attach">2</property>
 			      <property name="bottom_attach">3</property>
-			      <property name="x_options">fill</property>
-			      <property name="y_options"></property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkCombo" id="timedlogin_combo">
-			      <property name="visible">True</property>
-			      <property name="value_in_list">False</property>
-			      <property name="allow_empty">True</property>
-			      <property name="case_sensitive">False</property>
-			      <property name="enable_arrow_keys">True</property>
-			      <property name="enable_arrows_always">False</property>
-			      <accessibility>
-				<atkrelation target="timed_login_label" type="labelled-by"/>
-			      </accessibility>
-
-			      <child internal-child="entry">
-				<widget class="GtkEntry" id="timedlogin_entry">
-				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="editable">True</property>
-				  <property name="visibility">True</property>
-				  <property name="max_length">0</property>
-				  <property name="text" translatable="yes"></property>
-				  <property name="has_frame">True</property>
-				  <property name="invisible_char" translatable="yes">*</property>
-				  <property name="activates_default">False</property>
-				  <accessibility>
-				    <atkrelation target="timed_login_label" type="labelled-by"/>
-				  </accessibility>
-				</widget>
-			      </child>
-
-			      <child internal-child="list">
-				<widget class="GtkList" id="combo-list1">
-				  <property name="visible">True</property>
-				  <property name="selection_mode">GTK_SELECTION_BROWSE</property>
-				</widget>
-			      </child>
-			    </widget>
-			    <packing>
-			      <property name="left_attach">1</property>
-			      <property name="right_attach">2</property>
-			      <property name="top_attach">1</property>
-			      <property name="bottom_attach">2</property>
 			      <property name="x_options">fill</property>
 			      <property name="y_options"></property>
 			    </packing>
@@ -822,6 +678,21 @@
 			      <property name="bottom_attach">1</property>
 			      <property name="x_options">fill</property>
 			      <property name="y_options"></property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkComboBoxEntry" id="timedlogin_combo">
+			      <property name="visible">True</property>
+			      <property name="items" translatable="yes">dummy</property>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">1</property>
+			      <property name="right_attach">2</property>
+			      <property name="top_attach">1</property>
+			      <property name="bottom_attach">2</property>
+			      <property name="x_options">fill</property>
+			      <property name="y_options">fill</property>
 			    </packing>
 			  </child>
 			</widget>
@@ -874,7 +745,7 @@
 	  <child>
 	    <widget class="GtkHBox" id="hbox12">
 	      <property name="visible">True</property>
-	      <property name="homogeneous">False</property>
+	      <property name="homogeneous">True</property>
 	      <property name="spacing">18</property>
 
 	      <child>
@@ -939,31 +810,34 @@
 			  </child>
 
 			  <child>
-			    <widget class="GtkVBox" id="vbox3">
+			    <widget class="GtkVBox" id="vbox28">
 			      <property name="visible">True</property>
 			      <property name="homogeneous">False</property>
-			      <property name="spacing">6</property>
+			      <property name="spacing">0</property>
 
 			      <child>
-				<widget class="GnomePixmapEntry" id="sg_logo">
+				<widget class="GtkScrolledWindow" id="scrolledwindow5">
 				  <property name="visible">True</property>
-				  <property name="history_id">logo</property>
-				  <property name="max_saved">10</property>
-				  <property name="modal">False</property>
-				  <property name="do_preview">True</property>
-				  <property name="use_filechooser">False</property>
+				  <property name="can_focus">True</property>
+				  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
+				  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
+				  <property name="shadow_type">GTK_SHADOW_NONE</property>
+				  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
-				  <child internal-child="entry">
-				    <widget class="GtkEntry" id="combo-entry1">
+				  <child>
+				    <widget class="GtkViewport" id="viewport2">
 				      <property name="visible">True</property>
-				      <property name="can_focus">True</property>
-				      <property name="editable">True</property>
-				      <property name="visibility">True</property>
-				      <property name="max_length">0</property>
-				      <property name="text" translatable="yes"></property>
-				      <property name="has_frame">True</property>
-				      <property name="invisible_char" translatable="yes">*</property>
-				      <property name="activates_default">False</property>
+				      <property name="shadow_type">GTK_SHADOW_IN</property>
+
+				      <child>
+					<widget class="GtkImage" id="sg_logo">
+					  <property name="visible">True</property>
+					  <property name="xalign">0.5</property>
+					  <property name="yalign">0.5</property>
+					  <property name="xpad">0</property>
+					  <property name="ypad">0</property>
+					</widget>
+				      </child>
 				    </widget>
 				  </child>
 				</widget>
@@ -971,6 +845,38 @@
 				  <property name="padding">0</property>
 				  <property name="expand">True</property>
 				  <property name="fill">True</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkButton" id="sg_browselogo">
+				  <property name="visible">True</property>
+				  <property name="can_focus">True</property>
+				  <property name="label" translatable="yes">Browse</property>
+				  <property name="use_underline">True</property>
+				  <property name="relief">GTK_RELIEF_NORMAL</property>
+				  <property name="focus_on_click">True</property>
+				</widget>
+				<packing>
+				  <property name="padding">5</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkButton" id="sg_nologo">
+				  <property name="visible">True</property>
+				  <property name="can_focus">True</property>
+				  <property name="label" translatable="yes">No Logo</property>
+				  <property name="use_underline">True</property>
+				  <property name="relief">GTK_RELIEF_NORMAL</property>
+				  <property name="focus_on_click">True</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
 				</packing>
 			      </child>
 			    </widget>
@@ -1174,26 +1080,74 @@
 			      </child>
 
 			      <child>
-				<widget class="GnomePixmapEntry" id="sg_backimage">
+				<widget class="GtkVBox" id="vbox27">
 				  <property name="visible">True</property>
-				  <property name="history_id">background</property>
-				  <property name="max_saved">10</property>
-				  <property name="modal">False</property>
-				  <property name="do_preview">True</property>
-				  <property name="use_filechooser">False</property>
+				  <property name="homogeneous">False</property>
+				  <property name="spacing">0</property>
 
-				  <child internal-child="entry">
-				    <widget class="GtkEntry" id="combo-entry2">
+				  <child>
+				    <widget class="GtkScrolledWindow" id="scrolledwindow6">
 				      <property name="visible">True</property>
 				      <property name="can_focus">True</property>
-				      <property name="editable">True</property>
-				      <property name="visibility">True</property>
-				      <property name="max_length">0</property>
-				      <property name="text" translatable="yes"></property>
-				      <property name="has_frame">True</property>
-				      <property name="invisible_char" translatable="yes">*</property>
-				      <property name="activates_default">False</property>
+				      <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
+				      <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
+				      <property name="shadow_type">GTK_SHADOW_NONE</property>
+				      <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
+
+				      <child>
+					<widget class="GtkViewport" id="viewport3">
+					  <property name="visible">True</property>
+					  <property name="shadow_type">GTK_SHADOW_IN</property>
+
+					  <child>
+					    <widget class="GtkImage" id="sg_backimage">
+					      <property name="visible">True</property>
+					      <property name="xalign">0.5</property>
+					      <property name="yalign">0.5</property>
+					      <property name="xpad">0</property>
+					      <property name="ypad">0</property>
+					    </widget>
+					  </child>
+					</widget>
+				      </child>
 				    </widget>
+				    <packing>
+				      <property name="padding">0</property>
+				      <property name="expand">True</property>
+				      <property name="fill">True</property>
+				    </packing>
+				  </child>
+
+				  <child>
+				    <widget class="GtkButton" id="sg_browsebackimage">
+				      <property name="visible">True</property>
+				      <property name="can_focus">True</property>
+				      <property name="label" translatable="yes">Browse</property>
+				      <property name="use_underline">True</property>
+				      <property name="relief">GTK_RELIEF_NORMAL</property>
+				      <property name="focus_on_click">True</property>
+				    </widget>
+				    <packing>
+				      <property name="padding">5</property>
+				      <property name="expand">False</property>
+				      <property name="fill">False</property>
+				    </packing>
+				  </child>
+
+				  <child>
+				    <widget class="GtkButton" id="sg_nobackimage">
+				      <property name="visible">True</property>
+				      <property name="can_focus">True</property>
+				      <property name="label" translatable="yes">No Background</property>
+				      <property name="use_underline">True</property>
+				      <property name="relief">GTK_RELIEF_NORMAL</property>
+				      <property name="focus_on_click">True</property>
+				    </widget>
+				    <packing>
+				      <property name="padding">0</property>
+				      <property name="expand">False</property>
+				      <property name="fill">False</property>
+				    </packing>
 				  </child>
 				</widget>
 				<packing>
@@ -1725,7 +1679,7 @@ widget</property>
 	      <property name="spacing">0</property>
 
 	      <child>
-		<widget class="GtkCheckButton" id="sg_browser">
+		<widget class="GtkCheckButton" id="fb_browser">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="label" translatable="yes">_Show choosable user images (Face Browser)</property>
@@ -1744,7 +1698,7 @@ widget</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkCheckButton" id="sg_allusers">
+		<widget class="GtkCheckButton" id="fb_allusers">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="label" translatable="yes">_Include All Users</property>
@@ -1805,7 +1759,7 @@ widget</property>
 			  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
 			  <child>
-			    <widget class="GtkTreeView" id="include_treeview">
+			    <widget class="GtkTreeView" id="fb_include_treeview">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="headers_visible">False</property>
@@ -1837,7 +1791,7 @@ widget</property>
 			  <property name="ypad">0</property>
 			</widget>
 			<packing>
-			  <property name="padding">0</property>
+			  <property name="padding">3</property>
 			  <property name="expand">False</property>
 			  <property name="fill">False</property>
 			</packing>
@@ -1850,7 +1804,7 @@ widget</property>
 			  <property name="spacing">0</property>
 
 			  <child>
-			    <widget class="GtkEntry" id="sg_includeentry">
+			    <widget class="GtkEntry" id="fb_includeentry">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="editable">True</property>
@@ -1869,7 +1823,7 @@ widget</property>
 			  </child>
 
 			  <child>
-			    <widget class="GtkButton" id="sg_includeadd">
+			    <widget class="GtkButton" id="fb_includeadd">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">_Add</property>
@@ -1885,14 +1839,14 @@ widget</property>
 			  </child>
 			</widget>
 			<packing>
-			  <property name="padding">0</property>
+			  <property name="padding">3</property>
 			  <property name="expand">False</property>
 			  <property name="fill">True</property>
 			</packing>
 		      </child>
 
 		      <child>
-			<widget class="GtkButton" id="sg_includedelete">
+			<widget class="GtkButton" id="fb_includedelete">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">Delete</property>
@@ -1901,7 +1855,7 @@ widget</property>
 			  <property name="focus_on_click">True</property>
 			</widget>
 			<packing>
-			  <property name="padding">0</property>
+			  <property name="padding">3</property>
 			  <property name="expand">False</property>
 			  <property name="fill">False</property>
 			</packing>
@@ -1921,7 +1875,7 @@ widget</property>
 		      <property name="spacing">0</property>
 
 		      <child>
-			<widget class="GtkButton" id="sg_toinclude">
+			<widget class="GtkButton" id="fb_toinclude">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">&lt;</property>
@@ -1937,7 +1891,7 @@ widget</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkButton" id="sg_toexclude">
+			<widget class="GtkButton" id="fb_toexclude">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">&gt;</property>
@@ -1996,7 +1950,7 @@ widget</property>
 			  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
 
 			  <child>
-			    <widget class="GtkTreeView" id="exclude_treeview">
+			    <widget class="GtkTreeView" id="fb_exclude_treeview">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="headers_visible">False</property>
@@ -2028,7 +1982,7 @@ widget</property>
 			  <property name="ypad">0</property>
 			</widget>
 			<packing>
-			  <property name="padding">0</property>
+			  <property name="padding">3</property>
 			  <property name="expand">False</property>
 			  <property name="fill">False</property>
 			</packing>
@@ -2041,7 +1995,7 @@ widget</property>
 			  <property name="spacing">0</property>
 
 			  <child>
-			    <widget class="GtkEntry" id="sg_excludeentry">
+			    <widget class="GtkEntry" id="fb_excludeentry">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="editable">True</property>
@@ -2060,7 +2014,7 @@ widget</property>
 			  </child>
 
 			  <child>
-			    <widget class="GtkButton" id="sg_excludeadd">
+			    <widget class="GtkButton" id="fb_excludeadd">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">_Add</property>
@@ -2076,14 +2030,14 @@ widget</property>
 			  </child>
 			</widget>
 			<packing>
-			  <property name="padding">0</property>
+			  <property name="padding">3</property>
 			  <property name="expand">False</property>
 			  <property name="fill">True</property>
 			</packing>
 		      </child>
 
 		      <child>
-			<widget class="GtkButton" id="sg_excludedelete">
+			<widget class="GtkButton" id="fb_excludedelete">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">Delete</property>
@@ -2092,7 +2046,7 @@ widget</property>
 			  <property name="focus_on_click">True</property>
 			</widget>
 			<packing>
-			  <property name="padding">0</property>
+			  <property name="padding">3</property>
 			  <property name="expand">False</property>
 			  <property name="fill">False</property>
 			</packing>
@@ -2119,7 +2073,7 @@ widget</property>
 		  <property name="spacing">0</property>
 
 		  <child>
-		    <widget class="GtkButton" id="sg_faceapply">
+		    <widget class="GtkButton" id="fb_faceapply">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
 		      <property name="label" translatable="yes">Apply</property>
@@ -2136,7 +2090,7 @@ widget</property>
 		  </child>
 
 		  <child>
-		    <widget class="GtkLabel" id="sg_message">
+		    <widget class="GtkLabel" id="fb_message">
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes"></property>
 		      <property name="use_underline">False</property>
@@ -2255,6 +2209,25 @@ widget</property>
 			  <property name="visible">True</property>
 			  <property name="homogeneous">False</property>
 			  <property name="spacing">6</property>
+
+			  <child>
+			    <widget class="GtkCheckButton" id="enable_xdmcp">
+			      <property name="visible">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="label" translatable="yes">Enable _XDMCP</property>
+			      <property name="use_underline">True</property>
+			      <property name="relief">GTK_RELIEF_NORMAL</property>
+			      <property name="focus_on_click">True</property>
+			      <property name="active">False</property>
+			      <property name="inconsistent">False</property>
+			      <property name="draw_indicator">True</property>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">False</property>
+			      <property name="fill">False</property>
+			    </packing>
+			  </child>
 
 			  <child>
 			    <widget class="GtkCheckButton" id="allowroot">
@@ -2651,6 +2624,25 @@ widget</property>
 			  </child>
 
 			  <child>
+			    <widget class="GtkCheckButton" id="acc_theme">
+			      <property name="visible">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="label" translatable="yes">Allow theme selection in _GTK+ Greeter.</property>
+			      <property name="use_underline">True</property>
+			      <property name="relief">GTK_RELIEF_NORMAL</property>
+			      <property name="focus_on_click">True</property>
+			      <property name="active">False</property>
+			      <property name="inconsistent">False</property>
+			      <property name="draw_indicator">True</property>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">False</property>
+			      <property name="fill">False</property>
+			    </packing>
+			  </child>
+
+			  <child>
 			    <widget class="GtkCheckButton" id="acc_beep">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
@@ -2671,6 +2663,7 @@ widget</property>
 
 			  <child>
 			    <widget class="GtkHBox" id="hbox19">
+			      <property name="border_width">3</property>
 			      <property name="visible">True</property>
 			      <property name="homogeneous">False</property>
 			      <property name="spacing">0</property>
@@ -2697,60 +2690,58 @@ widget</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkHBox" id="acc_sound_file_box">
+				<widget class="GtkVBox" id="acc_sound_file_box">
 				  <property name="visible">True</property>
 				  <property name="homogeneous">False</property>
-				  <property name="spacing">12</property>
-				  <accessibility>
-				    <atkproperty name="AtkObject::accessible_name" translatable="yes">acc_sound_file_box</atkproperty>
-				  </accessibility>
+				  <property name="spacing">0</property>
 
 				  <child>
-				    <widget class="GtkLabel" id="label65">
+				    <widget class="GtkHBox" id="hbox24">
+				      <property name="border_width">3</property>
 				      <property name="visible">True</property>
-				      <property name="label" translatable="yes">Sound _file:</property>
-				      <property name="use_underline">True</property>
-				      <property name="use_markup">False</property>
-				      <property name="justify">GTK_JUSTIFY_LEFT</property>
-				      <property name="wrap">False</property>
-				      <property name="selectable">False</property>
-				      <property name="xalign">0.5</property>
-				      <property name="yalign">0.5</property>
-				      <property name="xpad">0</property>
-				      <property name="ypad">0</property>
-				      <property name="mnemonic_widget">acc_sound_file_entry</property>
-				      <accessibility>
-					<atkrelation target="acc_sound_file_entry" type="label-for"/>
-					<atkrelation target="acc_sound_test" type="label-for"/>
-				      </accessibility>
-				    </widget>
-				    <packing>
-				      <property name="padding">0</property>
-				      <property name="expand">False</property>
-				      <property name="fill">False</property>
-				    </packing>
-				  </child>
+				      <property name="homogeneous">False</property>
+				      <property name="spacing">0</property>
 
-				  <child>
-				    <widget class="GnomeFileEntry" id="acc_sound_file">
-				      <property name="visible">True</property>
-				      <property name="max_saved">10</property>
-				      <property name="directory_entry">False</property>
-				      <property name="modal">False</property>
-				      <property name="use_filechooser">False</property>
-
-				      <child internal-child="entry">
-					<widget class="GtkEntry" id="acc_sound_file_entry">
+				      <child>
+					<widget class="GtkLabel" id="label73">
 					  <property name="visible">True</property>
-					  <property name="can_focus">True</property>
-					  <property name="editable">True</property>
-					  <property name="visibility">True</property>
-					  <property name="max_length">0</property>
-					  <property name="text" translatable="yes"></property>
-					  <property name="has_frame">True</property>
-					  <property name="invisible_char" translatable="yes">*</property>
-					  <property name="activates_default">False</property>
+					  <property name="label" translatable="yes">Sound file:</property>
+					  <property name="use_underline">False</property>
+					  <property name="use_markup">False</property>
+					  <property name="justify">GTK_JUSTIFY_LEFT</property>
+					  <property name="wrap">False</property>
+					  <property name="selectable">False</property>
+					  <property name="xalign">0.5</property>
+					  <property name="yalign">0.5</property>
+					  <property name="xpad">0</property>
+					  <property name="ypad">0</property>
 					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkLabel" id="acc_soundfile">
+					  <property name="visible">True</property>
+					  <property name="label" translatable="yes"></property>
+					  <property name="use_underline">False</property>
+					  <property name="use_markup">False</property>
+					  <property name="justify">GTK_JUSTIFY_LEFT</property>
+					  <property name="wrap">False</property>
+					  <property name="selectable">False</property>
+					  <property name="xalign">0.5</property>
+					  <property name="yalign">0.5</property>
+					  <property name="xpad">0</property>
+					  <property name="ypad">0</property>
+					</widget>
+					<packing>
+					  <property name="padding">5</property>
+					  <property name="expand">True</property>
+					  <property name="fill">True</property>
+					</packing>
 				      </child>
 				    </widget>
 				    <packing>
@@ -2761,25 +2752,73 @@ widget</property>
 				  </child>
 
 				  <child>
-				    <widget class="GtkButton" id="acc_sound_test">
+				    <widget class="GtkHBox" id="hbox25">
 				      <property name="visible">True</property>
-				      <property name="can_focus">True</property>
-				      <property name="label" translatable="yes">_Test sound</property>
-				      <property name="use_underline">True</property>
-				      <property name="relief">GTK_RELIEF_NORMAL</property>
-				      <property name="focus_on_click">True</property>
+				      <property name="homogeneous">False</property>
+				      <property name="spacing">0</property>
+
+				      <child>
+					<widget class="GtkButton" id="acc_soundbutton">
+					  <property name="border_width">5</property>
+					  <property name="visible">True</property>
+					  <property name="can_focus">True</property>
+					  <property name="label" translatable="yes">Browse</property>
+					  <property name="use_underline">True</property>
+					  <property name="relief">GTK_RELIEF_NORMAL</property>
+					  <property name="focus_on_click">True</property>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkButton" id="acc_nosoundbutton">
+					  <property name="border_width">5</property>
+					  <property name="visible">True</property>
+					  <property name="can_focus">True</property>
+					  <property name="label" translatable="yes">No Sound</property>
+					  <property name="use_underline">True</property>
+					  <property name="relief">GTK_RELIEF_NORMAL</property>
+					  <property name="focus_on_click">True</property>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkButton" id="acc_soundtest">
+					  <property name="border_width">5</property>
+					  <property name="visible">True</property>
+					  <property name="can_focus">True</property>
+					  <property name="label" translatable="yes">Test Sound</property>
+					  <property name="use_underline">True</property>
+					  <property name="relief">GTK_RELIEF_NORMAL</property>
+					  <property name="focus_on_click">True</property>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
-				      <property name="expand">False</property>
-				      <property name="fill">False</property>
+				      <property name="expand">True</property>
+				      <property name="fill">True</property>
 				    </packing>
 				  </child>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
+				  <property name="expand">True</property>
+				  <property name="fill">True</property>
 				</packing>
 			      </child>
 			    </widget>
@@ -2799,8 +2838,8 @@ widget</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
-		      <property name="expand">True</property>
-		      <property name="fill">True</property>
+		      <property name="expand">False</property>
+		      <property name="fill">False</property>
 		    </packing>
 		  </child>
 		</widget>
@@ -2872,25 +2911,6 @@ widget</property>
 		  <property name="spacing">6</property>
 
 		  <child>
-		    <widget class="GtkCheckButton" id="enable_xdmcp">
-		      <property name="visible">True</property>
-		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">Enable _XDMCP</property>
-		      <property name="use_underline">True</property>
-		      <property name="relief">GTK_RELIEF_NORMAL</property>
-		      <property name="focus_on_click">True</property>
-		      <property name="active">False</property>
-		      <property name="inconsistent">False</property>
-		      <property name="draw_indicator">True</property>
-		    </widget>
-		    <packing>
-		      <property name="padding">0</property>
-		      <property name="expand">False</property>
-		      <property name="fill">False</property>
-		    </packing>
-		  </child>
-
-		  <child>
 		    <widget class="GtkHBox" id="hbox14">
 		      <property name="visible">True</property>
 		      <property name="homogeneous">False</property>
@@ -2919,6 +2939,7 @@ widget</property>
 
 		      <child>
 			<widget class="GtkTable" id="xdmcp_frame">
+			  <property name="border_width">4</property>
 			  <property name="visible">True</property>
 			  <property name="n_rows">9</property>
 			  <property name="n_columns">2</property>
@@ -3402,7 +3423,7 @@ widget</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkLabel" id="label3">
+	    <widget class="GtkLabel" id="XDMCP_label">
 	      <property name="visible">True</property>
 	      <property name="label" translatable="yes">_7 XDMCP</property>
 	      <property name="use_underline">True</property>

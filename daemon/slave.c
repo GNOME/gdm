@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager
+/* GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -3694,9 +3694,9 @@ session_child_run (struct passwd *pwent,
 			argv[2] = NULL;
 			gdm_error_box
 				(d, GTK_MESSAGE_INFO,
-				 _("This is the Failsafe Gnome session.  "
+				 _("This is the Failsafe GNOME session.  "
 				   "You will be logged into the 'Default' "
-				   "session of Gnome with no startup scripts "
+				   "session of GNOME with no startup scripts "
 				   "run.  This is only to fix problems in "
 				   "your installation."));
 		}

@@ -67,6 +67,9 @@ static GladeXML *xml;
 
 static GList *timeout_widgets = NULL;
 
+static int last_remote_login_setting = -1;
+static gboolean have_soundfile = FALSE;
+
 enum {
 	THEME_COLUMN_SELECTED,
 	THEME_COLUMN_DIR,
@@ -329,52 +332,90 @@ intspin_timeout (GtkWidget *spin)
 	return FALSE;
 }
 
-#define ITEM_STRING "GdmSetup:ItemString"
-
-static const char *
-get_str_from_option (GtkOptionMenu *option)
-{
-	GtkWidget *menu, *active;
-
-	menu = gtk_option_menu_get_menu (option);
-	if (menu == NULL)
-		return NULL;
-
-	active = gtk_menu_get_active (GTK_MENU (menu));
-	if (active == NULL)
-		return NULL;
-
-	return g_object_get_data (G_OBJECT (active), ITEM_STRING);
-}
-
 static gboolean
-option_timeout (GtkWidget *option_menu)
+combobox_timeout (GtkWidget *combo_box)
 {
-	const char *key = g_object_get_data (G_OBJECT (option_menu), "key");
-	const char *new_val;
-	char *val;
+	const char *key = g_object_get_data (G_OBJECT (combo_box), "key");
+	char *new_val = NULL;
+	gchar *val;
+	int selected;
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
-	new_val = get_str_from_option (GTK_OPTION_MENU (option_menu));
+	selected = gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box));
+
+	if (strcmp (key, GDM_KEY_REMOTEGREETER) == 0 ||
+	    strcmp (key, GDM_KEY_GREETER) == 0) {
+
+		if (strcmp (key, GDM_KEY_REMOTEGREETER) == 0 &&
+		    selected == 2) {
+
+			/* Disable remote login if selected */
+			GtkWidget *toggle = glade_helper_get (xml, "enable_xdmcp",
+			      GTK_TYPE_TOGGLE_BUTTON);
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), FALSE);
+			return FALSE;
+		}
+
+		else if (selected == 0) {
+			new_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
+			last_remote_login_setting = 0;
+		} else if (selected == 1) {
+			new_val = g_strdup (EXPANDED_LIBEXECDIR "/gdmgreeter");
+			last_remote_login_setting = 1;
+		}
+	} else if (strcmp (key, GDM_KEY_AUTOMATICLOGIN) == 0 ||
+		   strcmp (key, GDM_KEY_TIMED_LOGIN) == 0) {
+
+		GtkTreeIter iter;
+		
+		if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo_box), 
+		    &iter)) {
+			gtk_tree_model_get (gtk_combo_box_get_model (
+				GTK_COMBO_BOX (combo_box)), &iter,
+				0, &new_val, -1);
+		}
+	}
 
 	val = ve_config_get_string (config, key);
 
-	if (strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
+	if (new_val && strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
 		ve_config_set_string (config, key, new_val);
-
 		ve_config_save (config, FALSE /* force */);
 
 		update_key (key);
 	}
 
-	g_free (val);
-
+	g_free (new_val);
 	return FALSE;
 }
 
 static void
 toggle_toggled (GtkWidget *toggle)
 {
+	run_timeout (toggle, 200, toggle_timeout);
+}
+
+static void
+remote_toggled (GtkWidget *toggle)
+{
+	GtkWidget *remote_greeter = glade_helper_get (xml,
+		"remote_greeter", GTK_TYPE_COMBO_BOX);
+	gboolean val;
+
+	val = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (toggle));
+
+	if (val == TRUE) {
+		if (last_remote_login_setting != -1)
+		gtk_combo_box_set_active (GTK_COMBO_BOX (remote_greeter),
+			last_remote_login_setting);
+		gtk_widget_set_sensitive (remote_greeter, TRUE);
+
+	} else {
+		gtk_widget_set_sensitive (remote_greeter, FALSE);
+		gtk_combo_box_set_active (GTK_COMBO_BOX (remote_greeter),
+			2);
+	}
+
 	run_timeout (toggle, 200, toggle_timeout);
 }
 
@@ -391,9 +432,9 @@ intspin_changed (GtkWidget *spin)
 }
 
 static void
-option_changed (GtkWidget *option_menu)
+combobox_changed (GtkWidget *option_menu)
 {
-	run_timeout (option_menu, 500, option_timeout);
+	run_timeout (option_menu, 500, combobox_timeout);
 }
 
 static void
@@ -449,8 +490,19 @@ setup_notify_toggle (const char *name,
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (toggle), val);
 
-	g_signal_connect (G_OBJECT (toggle), "toggled",
+	if (strcmp ("enable_xdmcp", name) == 0) {
+		if (val == FALSE) {
+			GtkWidget *remote_greeter = glade_helper_get (xml,
+				"remote_greeter", GTK_TYPE_COMBO_BOX);
+			gtk_widget_set_sensitive (remote_greeter, FALSE);
+		}
+		
+		g_signal_connect (G_OBJECT (toggle), "toggled",
+			  G_CALLBACK (remote_toggled), NULL);
+	} else {
+		g_signal_connect (G_OBJECT (toggle), "toggled",
 			  G_CALLBACK (toggle_toggled), NULL);
+	}
 }
 
 static void
@@ -493,15 +545,21 @@ get_root_user (void)
 }
 
 static void
-root_not_allowed (GtkWidget *entry)
+root_not_allowed (GtkWidget *combo_box)
 {
 	static gboolean warned = FALSE;
-	const char *text;
+	const char *text = NULL;
+	GtkTreeIter iter;
 
 	if (warned)
 		return;
 
-	text = gtk_entry_get_text (GTK_ENTRY (entry));
+	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo_box), 
+	    &iter)) {
+		gtk_tree_model_get (gtk_combo_box_get_model (
+			GTK_COMBO_BOX (combo_box)), &iter,
+				0, &text, -1);
+		}
 
 	if ( ! ve_string_empty (text) &&
 	    strcmp (text, get_root_user ()) == 0) {
@@ -552,16 +610,21 @@ check_exclude (struct passwd *pwent, char **excludes)
 }
 
 static void
-setup_user_combo (const char *name, const char *key)
+setup_user_combobox (const char *name, const char *key)
 {
-	GtkWidget *combo = glade_helper_get (xml, name, GTK_TYPE_COMBO);
-	GtkWidget *entry= GTK_COMBO (combo)->entry;
+	GtkWidget *combobox_entry = glade_helper_get (xml, name, GTK_TYPE_COMBO_BOX_ENTRY);
+	GtkListStore *combobox_store = gtk_list_store_new (USERLIST_NUM_COLUMNS,
+		G_TYPE_STRING);
+	GtkTreeModel *tree_model;
+	GtkTreeIter iter;
 	GList *users = NULL;
 	GList *users_string = NULL;
+	GList *li;
 	static gboolean GDM_IS_LOCAL = FALSE;
 	char *selected_user;
-	char *testme;
 	gint size_of_users = 0;
+	int selected = -1;
+	int cnt;
 
 	selected_user = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
@@ -582,18 +645,27 @@ setup_user_combo (const char *name, const char *key)
 
 	users_string = g_list_reverse (users_string);
 
-	gtk_combo_set_popdown_strings (GTK_COMBO (combo), users_string);
+	cnt=0;
+        for (li = users_string; li != NULL; li = li->next) {
+		gtk_list_store_append (combobox_store, &iter);
+		if (strcmp (li->data, selected_user) == 0)
+			selected=cnt;
+		gtk_list_store_set(combobox_store, &iter, USERLIST_NAME, li->data, -1);
+		cnt++;
+	}
 
-	gtk_entry_set_text (GTK_ENTRY (entry),
-			    ve_sure_string (selected_user));
+	gtk_combo_box_set_model (GTK_COMBO_BOX (combobox_entry),
+		GTK_TREE_MODEL (combobox_store));
 
-	g_object_set_data_full (G_OBJECT (entry),
-				"key", g_strdup (key),
-				(GDestroyNotify) g_free);
+	if (selected != -1)
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combobox_entry), selected);
 
-	g_signal_connect (G_OBJECT (entry), "changed",
-			  G_CALLBACK (entry_changed), NULL);
-	g_signal_connect (G_OBJECT (entry), "changed",
+        g_object_set_data_full (G_OBJECT (combobox_entry),
+                                "key", g_strdup (key),
+                                (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (combobox_entry), "changed",
+			  G_CALLBACK (combobox_changed), NULL);
+	g_signal_connect (G_OBJECT (combobox_entry), "changed",
 			  G_CALLBACK (root_not_allowed), NULL);
 
 	g_list_foreach (users, (GFunc)g_free, NULL);
@@ -976,27 +1048,27 @@ setup_face (void)
 
 	GtkTreeSelection *selection;
 
-	fc.include_add = glade_helper_get (xml, "sg_includeadd",
+	fc.include_add = glade_helper_get (xml, "fb_includeadd",
 		GTK_TYPE_WIDGET);
-	fc.include_del = glade_helper_get (xml, "sg_includedelete",
+	fc.include_del = glade_helper_get (xml, "fb_includedelete",
 		GTK_TYPE_WIDGET);
-	fc.exclude_add = glade_helper_get (xml, "sg_excludeadd",
+	fc.exclude_add = glade_helper_get (xml, "fb_excludeadd",
 		GTK_TYPE_WIDGET);
-	fc.exclude_del = glade_helper_get (xml, "sg_excludedelete",
+	fc.exclude_del = glade_helper_get (xml, "fb_excludedelete",
 		GTK_TYPE_WIDGET);
-	fc.to_include_button = glade_helper_get (xml, "sg_toinclude",
+	fc.to_include_button = glade_helper_get (xml, "fb_toinclude",
 		GTK_TYPE_WIDGET);
-	fc.to_exclude_button = glade_helper_get (xml, "sg_toexclude",
+	fc.to_exclude_button = glade_helper_get (xml, "fb_toexclude",
 		GTK_TYPE_WIDGET);
-	fc.apply = glade_helper_get (xml, "sg_faceapply", GTK_TYPE_WIDGET);
-	fc.label = glade_helper_get (xml, "sg_message", GTK_TYPE_WIDGET);
-	fc.include_entry = glade_helper_get (xml, "sg_includeentry",
+	fc.apply = glade_helper_get (xml, "fb_faceapply", GTK_TYPE_WIDGET);
+	fc.label = glade_helper_get (xml, "fb_message", GTK_TYPE_WIDGET);
+	fc.include_entry = glade_helper_get (xml, "fb_includeentry",
 		GTK_TYPE_WIDGET);
-	fc.exclude_entry = glade_helper_get (xml, "sg_excludeentry",
+	fc.exclude_entry = glade_helper_get (xml, "fb_excludeentry",
 		GTK_TYPE_WIDGET);
-        fc.include_treeview = glade_helper_get (xml, "include_treeview",
+        fc.include_treeview = glade_helper_get (xml, "fb_include_treeview",
 		GTK_TYPE_TREE_VIEW);
-	fc.exclude_treeview = glade_helper_get (xml, "exclude_treeview",
+	fc.exclude_treeview = glade_helper_get (xml, "fb_exclude_treeview",
 		GTK_TYPE_TREE_VIEW);
 
 	fc.include_store = setup_include_exclude (fc.include_treeview,
@@ -1061,27 +1133,6 @@ setup_face (void)
 
 	g_signal_connect (fc.apply, "clicked",
 			  G_CALLBACK (browser_apply), &fc);
-}
-
-static void
-setup_notify_entry (const char *name,
-		       const char *key)
-{
-	GtkWidget *entry = glade_helper_get (xml, name, GTK_TYPE_ENTRY);
-	char *val;
-
-	val = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
-
-	g_object_set_data_full (G_OBJECT (entry),
-				"key", g_strdup (key),
-				(GDestroyNotify) g_free);
-
-	gtk_entry_set_text (GTK_ENTRY (entry), ve_sure_string (val));
-
-	g_signal_connect (G_OBJECT (entry), "changed",
-			  G_CALLBACK (entry_changed), NULL);
-
-	g_free (val);
 }
 
 static gboolean
@@ -1219,36 +1270,163 @@ greeter_editable_timeout (GtkWidget *editable)
 	return FALSE;
 }
 
+typedef enum {
+	BACKIMAGE,
+	LOGO
+} ImageType;
+
+typedef struct _ImageData {
+	GtkWidget *image;
+	gchar *filename;
+	gchar *key;
+} ImageData;
+
 static void
-greeter_editable_changed (GtkWidget *editable)
+update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 {
-	run_timeout (editable, 500, greeter_editable_timeout);
+	ImageData *image_data = data;
+
+	char *filename = gtk_file_chooser_get_preview_filename (file_chooser);
+	GdkPixbuf *pixbuf = NULL;
+
+	if (filename != NULL)
+		pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+
+	if (pixbuf)
+		gtk_image_set_from_file (GTK_IMAGE (image_data->image), filename);
 }
 
 static void
-setup_greeter_editable (const char *name,
-			const char *key)
+image_install_response (GtkWidget *file_dialog, gint response, gpointer data)
 {
-	GtkWidget *editable = glade_helper_get (xml, name, GTK_TYPE_EDITABLE);
-	char *val;
-	int pos;
+	ImageData *image_data = data;
 
-	val = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
+        if (response == GTK_RESPONSE_ACCEPT) {
+		char *val;
+		VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
-	g_object_set_data_full (G_OBJECT (editable),
-				"key", g_strdup (key),
-				(GDestroyNotify) g_free);
+                image_data->filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_dialog));
 
-	gtk_editable_delete_text (GTK_EDITABLE (editable), 0, -1);
-	pos = 0;
-	gtk_editable_insert_text (GTK_EDITABLE (editable),
-				  ve_sure_string (val), -1,
-				  &pos);
+		val = ve_config_get_string (config, image_data->key);
 
-	g_signal_connect (G_OBJECT (editable), "changed",
-			  G_CALLBACK (greeter_editable_changed), NULL);
+		if (strcmp (ve_sure_string (val), ve_sure_string (image_data->filename)) != 0) {
+			ve_config_set_string (config, image_data->key,
+				ve_sure_string (image_data->filename));
 
-	g_free (val);
+			ve_config_save (config, FALSE /* force */);
+
+			update_greeters ();
+		}
+
+		g_free (val);
+        } else {
+		gtk_image_set_from_file (GTK_IMAGE (image_data->image), image_data->filename);
+        }
+
+        gtk_widget_destroy (file_dialog);
+}
+
+static void
+browse_button_cb (GtkWidget *widget, gpointer data)
+{
+	ImageData *image_data = data;
+        GtkFileFilter *filter;
+	GtkWidget *setup_dialog = glade_helper_get (xml, "setup_dialog",
+		GTK_TYPE_WINDOW);
+
+        GtkWidget *file_dialog = gtk_file_chooser_dialog_new (_("Open File"),
+                                              GTK_WINDOW (setup_dialog),
+                                              GTK_FILE_CHOOSER_ACTION_OPEN,
+                                              GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                              GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                                              NULL);
+
+        if (image_data->filename != NULL && *(image_data->filename) != NULL)
+                gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_dialog),
+                        image_data->filename);
+        else
+                gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
+                        EXPANDED_DATADIR "/pixmaps");
+
+        filter = gtk_file_filter_new ();
+        gtk_file_filter_set_name (filter, _("PNG and JPEG"));
+        gtk_file_filter_add_mime_type (filter, "image/jpeg");
+        gtk_file_filter_add_mime_type (filter, "image/png");
+        gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (file_dialog), filter);
+
+	g_signal_connect (file_dialog, "update-preview",
+			  G_CALLBACK (update_preview_cb), image_data);
+        g_signal_connect (G_OBJECT (file_dialog), "destroy",
+                          G_CALLBACK (gtk_widget_destroyed), &file_dialog);
+        g_signal_connect (G_OBJECT (file_dialog), "response",
+                          G_CALLBACK (image_install_response), image_data);
+
+        gtk_widget_show (file_dialog);
+}
+
+static void
+noimage_button_cb (GtkWidget *widget, gpointer data)
+{
+	ImageData *image_data = data;
+	GtkWidget *preview;
+
+	gtk_image_set_from_file (GTK_IMAGE (image_data->image), NULL);
+	image_data->filename = NULL;
+}
+
+static void
+setup_greeter_image (GtkWidget *dialog)
+{
+	static ImageData logo_data;
+	static ImageData backimage_data;
+	GdkPixbuf *pixbuf;
+	GtkWidget *logo_button      = glade_helper_get (xml, "sg_browselogo",
+		GTK_TYPE_WIDGET);
+	GtkWidget *backimage_button = glade_helper_get (xml, "sg_browsebackimage",
+		GTK_TYPE_WIDGET);
+	GtkWidget *nologo_button = glade_helper_get (xml, "sg_nologo",
+		GTK_TYPE_WIDGET);
+	GtkWidget *nobackimage_button = glade_helper_get (xml, "sg_nobackimage",
+		GTK_TYPE_WIDGET);
+
+	logo_data.image    = glade_helper_get (xml, "sg_logo", GTK_TYPE_WIDGET);
+	logo_data.filename = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+		GDM_KEY_LOGO);
+	logo_data.key = GDM_KEY_LOGO;
+
+	backimage_data.image    = glade_helper_get (xml, "sg_backimage",
+		GTK_TYPE_WIDGET);
+	backimage_data.filename = ve_config_get_string (
+		ve_config_get (GDM_CONFIG_FILE), GDM_KEY_BACKGROUNDIMAGE);
+	backimage_data.key = GDM_KEY_BACKGROUNDIMAGE;
+
+
+	if (logo_data.filename != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (logo_data.filename, NULL);
+		if (pixbuf != NULL)
+			gtk_image_set_from_file (GTK_IMAGE(logo_data.image),
+				logo_data.filename);
+		else
+			logo_data.filename = NULL;
+	}
+	if (backimage_data.filename != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (backimage_data.filename, NULL);
+		if (pixbuf != NULL)
+			gtk_image_set_from_file (GTK_IMAGE(backimage_data.image),
+				backimage_data.filename);
+		else
+			backimage_data.filename = NULL;
+	}
+
+	g_signal_connect (G_OBJECT (logo_button), "clicked",
+		G_CALLBACK (browse_button_cb), &logo_data);
+	g_signal_connect (G_OBJECT (nologo_button), "clicked",
+		G_CALLBACK (noimage_button_cb), &logo_data);
+
+	g_signal_connect (G_OBJECT (backimage_button), "clicked",
+		G_CALLBACK (browse_button_cb), &backimage_data);
+	g_signal_connect (G_OBJECT (nobackimage_button), "clicked",
+		G_CALLBACK (noimage_button_cb), &backimage_data);
 }
 
 static gboolean
@@ -1369,30 +1547,15 @@ setup_greeter_backselect (void)
 
 
 static void
-add_menuitem (GtkWidget *menu, const char *str, const char *label,
-	      const char *select, GtkWidget **selected)
-{
-	GtkWidget *item = gtk_menu_item_new_with_label (label);
-	gtk_widget_show (item);
-	g_object_set_data_full (G_OBJECT (item), ITEM_STRING,
-				g_strdup (str),
-				(GDestroyNotify)g_free);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-
-	if (select != NULL &&
-	    strcmp (str, select) == 0)
-		*selected = item;
-}
-
-static void
-setup_greeter_option (const char *name,
+setup_greeter_combobox (const char *name,
 		      const char *key)
 {
 	GtkWidget *menu;
 	GtkWidget *selected = NULL;
+	GtkWidget *combobox = glade_helper_get (xml, name, GTK_TYPE_COMBO_BOX);
+	GtkWidget *toggle   = glade_helper_get (xml, "enable_xdmcp",
+	      GTK_TYPE_TOGGLE_BUTTON);
 	char *val;
-	GtkWidget *option_menu = glade_helper_get (xml, name,
-						   GTK_TYPE_OPTION_MENU);
 
 	val = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
@@ -1402,35 +1565,27 @@ setup_greeter_option (const char *name,
 		val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
 	}
 
-	menu = gtk_menu_new ();
-
-	add_menuitem (menu, EXPANDED_LIBEXECDIR "/gdmlogin",
-		      _("GTK+ Greeter"), val, &selected);
-	add_menuitem (menu, EXPANDED_LIBEXECDIR "/gdmgreeter",
-		      _("Themed Greeter"), val, &selected);
-
-	if (val != NULL &&
-	    selected == NULL)
-		add_menuitem (menu, val, val, val, &selected);
-
-	/* FIXME: Evil, but GtkOptionMenu is SOOOO STUPID! */
-	if (selected != NULL) {
-		if (GTK_MENU (menu)->old_active_menu_item)
-			gtk_widget_unref (GTK_MENU (menu)->old_active_menu_item);
-		GTK_MENU (menu)->old_active_menu_item = selected;
-		gtk_widget_ref (GTK_MENU (menu)->old_active_menu_item);
+	if (strcmp (key, GDM_KEY_REMOTEGREETER) == 0 &&
+	    gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (toggle)) == FALSE)
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), 2);
+		
+	else if (strcmp (val, EXPANDED_LIBEXECDIR "/gdmlogin") == 0) {
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), 0);
+		last_remote_login_setting = 0;
 	}
 
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
-
+	else if (strcmp (val, EXPANDED_LIBEXECDIR "/gdmgreeter") == 0) {
+		gtk_combo_box_set_active (GTK_COMBO_BOX (combobox), 1);
+		last_remote_login_setting = 1;
+	}
+		
 	g_free (val);
 
-	g_object_set_data_full (G_OBJECT (option_menu),
-				"key", g_strdup (key),
-				(GDestroyNotify) g_free);
-
-	g_signal_connect (G_OBJECT (option_menu), "changed",
-			  G_CALLBACK (option_changed), NULL);
+        g_object_set_data_full (G_OBJECT (combobox),
+                                "key", g_strdup (key),
+                                (GDestroyNotify) g_free);
+	g_signal_connect (G_OBJECT (combobox), "changed",
+		  G_CALLBACK (combobox_changed), NULL);
 }
 
 static void
@@ -1446,6 +1601,7 @@ static void
 setup_xdmcp_support (void)
 {
 	GtkWidget *xdmcp_toggle = glade_helper_get (xml, "enable_xdmcp", GTK_TYPE_TOGGLE_BUTTON);
+	GtkWidget *xdmcp_label = glade_helper_get (xml, "XDMCP_label", GTK_TYPE_WIDGET);
 	GtkWidget *xdmcp_frame = glade_helper_get (xml, "xdmcp_frame", GTK_TYPE_WIDGET);
 	GtkWidget *xdmcp_vbox = glade_helper_get (xml, "xdmcp_vbox", GTK_TYPE_WIDGET);
 	GtkWidget *no_xdmcp_label = glade_helper_get (xml, "no_xdmcp_label", GTK_TYPE_WIDGET);
@@ -1458,38 +1614,17 @@ setup_xdmcp_support (void)
 	gtk_widget_show (xdmcp_vbox);
 #endif /* HAVE_LIBXDMCP */
 
+	gtk_widget_set_sensitive (xdmcp_label, 
+				  GTK_TOGGLE_BUTTON (xdmcp_toggle)->active);
 	gtk_widget_set_sensitive (xdmcp_frame, 
 				  GTK_TOGGLE_BUTTON (xdmcp_toggle)->active);
 
 	g_signal_connect (G_OBJECT (xdmcp_toggle), "toggled",
 			  G_CALLBACK (xdmcp_toggled),
 			  xdmcp_frame);
-}
-
-static void
-test_sound (GtkWidget *button, gpointer data)
-{
-	GtkEntry *entry = GTK_ENTRY (data);
-	const char *file = gtk_entry_get_text (GTK_ENTRY (entry));
-	const char *argv[3];
-
-	if (ve_string_empty (file) ||
-	    access (file, R_OK) != 0 ||
-	    ve_string_empty (GdmSoundProgram))
-	       return;
-
-	argv[0] = GdmSoundProgram;
-	argv[1] = file;
-	argv[2] = NULL;
-
-	g_spawn_async ("/" /* working directory */,
-		       (char **)argv,
-		       NULL /* envp */,
-		       0 /* flags */,
-		       NULL /* child setup */,
-		       NULL /* user data */,
-		       NULL /* child pid */,
-		       NULL /* error */);
+	g_signal_connect (G_OBJECT (xdmcp_toggle), "toggled",
+			  G_CALLBACK (xdmcp_toggled),
+			  xdmcp_label);
 }
 
 static gboolean
@@ -1635,23 +1770,156 @@ acc_modules_toggled (GtkWidget *toggle, gpointer data)
 }
 
 static void
+test_sound (GtkWidget *button, gpointer data)
+{
+	GtkWidget *acc_sound_file_label = data;
+	const char *file = gtk_label_get_text (GTK_LABEL (acc_sound_file_label));
+	const char *argv[3];
+
+	if (strcmp (_("None"), file) == 0 ||
+	    access (file, R_OK) != 0 ||
+	    ve_string_empty (GdmSoundProgram))
+	       return;
+
+	argv[0] = GdmSoundProgram;
+	argv[1] = file;
+	argv[2] = NULL;
+
+	g_spawn_async ("/" /* working directory */,
+		       (char **)argv,
+		       NULL /* envp */,
+		       0 /* flags */,
+		       NULL /* child setup */,
+		       NULL /* user data */,
+		       NULL /* child pid */,
+		       NULL /* error */);
+}
+
+static void
+no_sound_cb (GtkWidget *widget, gpointer data)
+{
+	GtkWidget *acc_sound_file_label = data;
+	GtkWidget *acc_no_sound_file = glade_helper_get (xml, "acc_nosoundbutton",
+		GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_test = glade_helper_get (xml, "acc_soundtest",
+		GTK_TYPE_BUTTON);
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+	char *val, *config_val;
+
+	gtk_label_set_text (GTK_LABEL (acc_sound_file_label), _("None"));
+
+	gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
+	gtk_widget_set_sensitive (acc_sound_test, FALSE);
+
+        val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+	config_val = ve_sure_string (val);
+
+	if (config_val != NULL && *config_val != NULL) {
+		ve_config_set_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE, "");
+
+		ve_config_save (config, FALSE /* force */);
+
+		update_greeters ();
+	}
+
+	g_free (val);
+}
+
+static void
+sound_response (GtkWidget *file_dialog, gint response, gpointer data)
+{
+	GtkWidget *acc_sound_file_label = data;
+	GtkWidget *acc_no_sound_file = glade_helper_get (xml, "acc_nosoundbutton",
+		GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_test = glade_helper_get (xml, "acc_soundtest",
+		GTK_TYPE_BUTTON);
+
+	if (response == GTK_RESPONSE_ACCEPT) {
+		VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+		char *filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_dialog));
+		char *val;
+
+		have_soundfile = TRUE;
+		gtk_label_set_text (GTK_LABEL (acc_sound_file_label), filename);
+
+		gtk_widget_set_sensitive (acc_no_sound_file, TRUE);
+		gtk_widget_set_sensitive (acc_sound_test, TRUE);
+
+                val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+
+                if (strcmp (ve_sure_string (val), ve_sure_string (filename)) != 0) {
+                        ve_config_set_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE,
+                                ve_sure_string (filename));
+
+                        ve_config_save (config, FALSE /* force */);
+
+                        update_greeters ();
+                }
+
+                g_free (val);
+	} else {
+		if (have_soundfile) {
+			gtk_widget_set_sensitive (acc_no_sound_file, TRUE);
+			gtk_widget_set_sensitive (acc_sound_test, TRUE);
+		} else {
+			gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
+			gtk_widget_set_sensitive (acc_sound_test, FALSE);
+		}
+	}
+
+	gtk_widget_destroy (file_dialog);
+}
+
+static void
+browse_sound_cb (GtkWidget *widget, gpointer data)
+{
+	GtkWidget *setup_dialog = glade_helper_get (xml, "setup_dialog",
+		GTK_TYPE_WINDOW);
+	GtkWidget *label = data;
+        GtkFileFilter *filter;
+	GtkWidget *file_dialog = gtk_file_chooser_dialog_new (_("Open File"),
+					GTK_WINDOW (setup_dialog),
+					GTK_FILE_CHOOSER_ACTION_OPEN,
+					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+					NULL);
+
+        filter = gtk_file_filter_new ();
+        gtk_file_filter_set_name (filter, _("All files"));
+	gtk_file_filter_add_pattern(filter, "*");
+        gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (file_dialog), filter);
+
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
+		EXPANDED_DATADIR "/sounds");
+
+	g_signal_connect (G_OBJECT (file_dialog), "destroy",
+		G_CALLBACK (gtk_widget_destroyed), &file_dialog);
+	g_signal_connect (G_OBJECT (file_dialog), "response",
+		G_CALLBACK (sound_response), label);
+
+	gtk_widget_show (file_dialog);
+}
+
+static void
 setup_accessibility_support (void)
 {
 	GtkWidget *acc_modules = glade_helper_get (xml, "acc_modules", GTK_TYPE_TOGGLE_BUTTON);
-	GtkWidget *acc_sound_test = glade_helper_get (xml, "acc_sound_test", GTK_TYPE_BUTTON);
-	GtkWidget *acc_sound_file_entry = glade_helper_get (xml, "acc_sound_file_entry", GTK_TYPE_ENTRY);
-	GtkWidget *acc_sound_file = glade_helper_get (xml, "acc_sound_file", GNOME_TYPE_FILE_ENTRY);
-
+	GtkWidget *acc_sound_file_label = glade_helper_get (xml, "acc_soundfile", GTK_TYPE_LABEL);
+	GtkWidget *acc_sound_file = glade_helper_get (xml, "acc_soundbutton", GTK_TYPE_BUTTON);
+	GtkWidget *acc_no_sound_file = glade_helper_get (xml, "acc_nosoundbutton", GTK_TYPE_BUTTON);
+	GtkWidget *acc_sound_test = glade_helper_get (xml, "acc_soundtest", GTK_TYPE_BUTTON);
 	gboolean add_gtk_modules = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
 						       GDM_KEY_ADD_GTK_MODULES);
 	char *modules_list = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 						   GDM_KEY_GTK_MODULES_LIST);
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+	char *val;
 
 	if (add_gtk_modules &&
 	    modules_list_contains (modules_list, "gail") &&
-	    modules_list_contains (modules_list, "atk-bridge") &&
-	    modules_list_contains (modules_list, "dwellmouselistener") &&
-	    modules_list_contains (modules_list, "keymouselistener")) {
+		modules_list_contains (modules_list, "atk-bridge") &&
+		modules_list_contains (modules_list, "dwellmouselistener") &&
+		modules_list_contains (modules_list, "keymouselistener")) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (acc_modules),
 					      TRUE);
 	} else {
@@ -1659,15 +1927,29 @@ setup_accessibility_support (void)
 					      FALSE);
 	}
 
+	val = ve_config_get_string (config, GDM_KEY_SOUND_ON_LOGIN_FILE);
+
+	if (val != NULL && *val != NULL) {
+		gtk_label_set_text (GTK_LABEL (acc_sound_file_label), val);
+		have_soundfile = TRUE;
+	} else {
+		gtk_label_set_text (GTK_LABEL (acc_sound_file_label), _("None"));
+		gtk_widget_set_sensitive (acc_no_sound_file, FALSE);
+		gtk_widget_set_sensitive (acc_sound_test, FALSE);
+	}
+
 	g_signal_connect (G_OBJECT (acc_modules), "toggled",
 			  G_CALLBACK (acc_modules_toggled),
 			  NULL);
+	g_signal_connect (G_OBJECT (acc_sound_file), "clicked",
+			  G_CALLBACK (browse_sound_cb),
+			  acc_sound_file_label);
+	g_signal_connect (G_OBJECT (acc_no_sound_file), "clicked",
+			  G_CALLBACK (no_sound_cb),
+			  acc_sound_file_label);
 	g_signal_connect (G_OBJECT (acc_sound_test), "clicked",
 			  G_CALLBACK (test_sound),
-			  acc_sound_file_entry);
-
-	if (access ("/usr/share/sounds", F_OK) == 0)
-		gnome_file_entry_set_default_path (GNOME_FILE_ENTRY (acc_sound_file), "/usr/share/sounds/");
+			  acc_sound_file_label);
 }
 
 static void
@@ -1681,6 +1963,8 @@ background_toggled (void)
 	GtkWidget *onlycolor = glade_helper_get (xml, "sg_remote_color_only", GTK_TYPE_TOGGLE_BUTTON);
 	GtkWidget *color_label = glade_helper_get (xml, "sg_backcolor_label", GTK_TYPE_WIDGET);
 	GtkWidget *color = glade_helper_get (xml, "sg_backcolor", GTK_TYPE_WIDGET);
+	GtkWidget *browse_button = glade_helper_get (xml, "sg_browsebackimage", GTK_TYPE_WIDGET);
+	GtkWidget *no_image_button = glade_helper_get (xml, "sg_nobackimage", GTK_TYPE_WIDGET);
 
 	if (GTK_TOGGLE_BUTTON (no_bg)->active) {
 		gtk_widget_set_sensitive (scale, FALSE);
@@ -1688,10 +1972,14 @@ background_toggled (void)
 		gtk_widget_set_sensitive (onlycolor, FALSE);
 		gtk_widget_set_sensitive (color_label, FALSE);
 		gtk_widget_set_sensitive (color, FALSE);
+		gtk_widget_set_sensitive (browse_button, FALSE);
+		gtk_widget_set_sensitive (no_image_button, FALSE);
 	} else if (GTK_TOGGLE_BUTTON (image_bg)->active) {
 		gtk_widget_set_sensitive (scale, TRUE);
 		gtk_widget_set_sensitive (image, TRUE);
 		gtk_widget_set_sensitive (onlycolor, TRUE);
+		gtk_widget_set_sensitive (browse_button, TRUE);
+		gtk_widget_set_sensitive (no_image_button, TRUE);
 		if (GTK_TOGGLE_BUTTON (onlycolor)->active) {
 			gtk_widget_set_sensitive (color_label, TRUE);
 			gtk_widget_set_sensitive (color, TRUE);
@@ -1705,6 +1993,8 @@ background_toggled (void)
 		gtk_widget_set_sensitive (onlycolor, FALSE);
 		gtk_widget_set_sensitive (color_label, TRUE);
 		gtk_widget_set_sensitive (color, TRUE);
+		gtk_widget_set_sensitive (browse_button, FALSE);
+		gtk_widget_set_sensitive (no_image_button, FALSE);
 	}
 }
 
@@ -2319,7 +2609,7 @@ dir_exists (const char *parent, const char *dir)
 }
 
 static void
-install_response (GtkWidget *chooser, gint response, gpointer data)
+theme_install_response (GtkWidget *chooser, gint response, gpointer data)
 {
 	GtkListStore *store = data;
 	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
@@ -2518,14 +2808,8 @@ install_new_theme (GtkWidget *button, gpointer data)
 {
 	GtkListStore *store = data;
 	static GtkWidget *chooser = NULL;
-	GtkWidget *setup_dialog;
-
-	if (chooser != NULL) {
-		gtk_window_present (GTK_WINDOW (chooser));
-		return;
-	}
-       
-	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
+	GtkWidget *setup_dialog = glade_helper_get (xml, "setup_dialog",
+		GTK_TYPE_WINDOW);
 	
 	chooser = gtk_file_chooser_dialog_new (_("Select new theme archive to install"),
 					       GTK_WINDOW (setup_dialog),
@@ -2537,7 +2821,7 @@ install_new_theme (GtkWidget *button, gpointer data)
 	g_signal_connect (G_OBJECT (chooser), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed), &chooser);
 	g_signal_connect (G_OBJECT (chooser), "response",
-			  G_CALLBACK (install_response), store);
+			  G_CALLBACK (theme_install_response), store);
 
 	gtk_widget_show (chooser);
 }
@@ -2915,9 +3199,9 @@ setup_gui (void)
 	   (or chooser) or whereever this is actually being
 	   updated. */
 
-	setup_user_combo ("autologin_combo",
+	setup_user_combobox ("autologin_combo",
 			  GDM_KEY_AUTOMATICLOGIN);
-	setup_user_combo ("timedlogin_combo",
+	setup_user_combobox ("timedlogin_combo",
 			  GDM_KEY_TIMED_LOGIN);
 
 	setup_notify_toggle ("autologin",
@@ -2955,8 +3239,8 @@ setup_gui (void)
 
 	setup_greeter_toggle ("acc_beep",
 			      GDM_KEY_SOUND_ON_LOGIN);
-	setup_notify_entry ("acc_sound_file_entry",
-			    GDM_KEY_SOUND_ON_LOGIN_FILE);
+	setup_greeter_toggle ("acc_theme",
+			      GDM_KEY_ALLOW_GTK_THEME_CHANGE);
 
 	/* accesibility sensitivities */
 	setup_sensitivity_positive_toggle ("acc_beep", "acc_sound_file_box");
@@ -3001,8 +3285,8 @@ setup_gui (void)
 		       GDM_KEY_PINGINTERVAL,
 		       "xdmcp/PARAMETERS" /* notify_key */);
 
-	setup_greeter_option ("local_greeter", GDM_KEY_GREETER);
-	setup_greeter_option ("remote_greeter", GDM_KEY_REMOTEGREETER);
+	setup_greeter_combobox ("local_greeter", GDM_KEY_GREETER);
+	setup_greeter_combobox ("remote_greeter", GDM_KEY_REMOTEGREETER);
 
 	/* Greeter configurations */
 
@@ -3013,11 +3297,8 @@ setup_gui (void)
 	setup_greeter_toggle ("sg_remote_color_only",
 			      GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
 
-	setup_greeter_editable ("sg_logo",
-				GDM_KEY_LOGO);
-	setup_greeter_editable ("sg_backimage",
-				GDM_KEY_BACKGROUNDIMAGE);
-	setup_greeter_color ("sg_backcolor",
+	setup_greeter_image (dialog);
+        setup_greeter_color ("sg_backcolor",
 			     GDM_KEY_BACKGROUNDCOLOR);
 
 	setup_greeter_untranslate_entry ("welcome",
@@ -3027,9 +3308,9 @@ setup_gui (void)
 
 	/* Face browser setup */
 	setup_face ();
-	setup_greeter_toggle ("sg_browser",
+	setup_greeter_toggle ("fb_browser",
 			      GDM_KEY_BROWSER);
-	setup_greeter_toggle ("sg_allusers",
+	setup_greeter_toggle ("fb_allusers",
 			      GDM_KEY_INCLUDEALL);
 }
 

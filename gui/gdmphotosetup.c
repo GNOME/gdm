@@ -92,8 +92,6 @@ gdm_check (void)
 	return TRUE;
 }
 
-
-
 static void
 dialog_response (GtkWidget *dialog, int res, gpointer data)
 {
@@ -104,12 +102,9 @@ dialog_response (GtkWidget *dialog, int res, gpointer data)
 static void
 update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 {
-	char *filename;
-
-	filename = gtk_file_chooser_get_preview_filename (file_chooser);
+	char *filename = gtk_file_chooser_get_preview_filename (file_chooser);
 
 	if (filename != NULL) {
-		GtkWidget *temp_preview = GTK_WIDGET (data);
 		GdkPixbuf *pixbuf;
 		gboolean have_preview;
 
@@ -163,9 +158,23 @@ update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 }
 
 static void
+install_response (GtkWidget *file_dialog, gint response, gpointer data)
+{
+	if (response == GTK_RESPONSE_ACCEPT) {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (current_image),
+			gtk_image_get_pixbuf (GTK_IMAGE (preview)));
+		current_pix = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_dialog));
+	} else {
+		gtk_image_set_from_pixbuf (GTK_IMAGE (preview),
+			gtk_image_get_pixbuf (GTK_IMAGE (current_image)));
+	}
+
+	gtk_widget_destroy (file_dialog);
+}
+
+static void
 browse_button_cb (GtkWidget *widget, gpointer data)
 {
-	GtkWidget *temp_preview = gtk_image_new ();
 	GtkWindow *parent = GTK_WINDOW (data);
 	GtkFileFilter *filter;
 	GtkWidget *file_dialog = gtk_file_chooser_dialog_new (_("Open File"),
@@ -191,23 +200,14 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 	gtk_file_filter_add_mime_type (filter, "image/png");
 	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (file_dialog), filter);
 
-	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (file_dialog), temp_preview);
 	g_signal_connect (file_dialog, "update-preview",
-	    G_CALLBACK (update_preview_cb), NULL);
+			  G_CALLBACK (update_preview_cb), NULL);
+        g_signal_connect (G_OBJECT (file_dialog), "destroy",
+                          G_CALLBACK (gtk_widget_destroyed), &file_dialog);
+        g_signal_connect (G_OBJECT (file_dialog), "response",
+                          G_CALLBACK (install_response), NULL);
 
-	if (gtk_dialog_run (GTK_DIALOG (file_dialog)) == GTK_RESPONSE_ACCEPT) {
-		char *filename;
-
-		gtk_image_set_from_pixbuf (GTK_IMAGE (current_image),
-			gtk_image_get_pixbuf (GTK_IMAGE (preview)));
-		current_pix = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_dialog));
-		g_free (filename);
-	} else {
-		gtk_image_set_from_pixbuf (GTK_IMAGE (preview),
-			gtk_image_get_pixbuf (GTK_IMAGE (current_image)));
-	}
-
-	gtk_widget_destroy (file_dialog);
+	gtk_widget_show (file_dialog);
 }
 
 int

@@ -1,3 +1,24 @@
+2005-04-01  Brian Cameron  <Brian.Cameron@sun.com>
+
+	* gui/gdmlogin.c, gui/gdmsetup.c, gui/gdmsetup-strings.c,
+	  gui/gdmsetup.glade: Revamped gdmsetup so that it uses the
+	  new file browser everywhere, uses GtkComboBox and
+	  GtkComboBoxEntryinstead of GtkEntry and GtkOptionMenu
+	  since they are deprecated.  This fixed bug 171558.
+	  Improved Remote Welcome label to fix bug 105156.
+	  Now Remote Greeter option in the Greeter tab reads
+	  "Disabled" if XDMCP is disabled.  It returns to the
+	  real choice if XDMCP is enabled again.  This fixes
+	  bug 117888.  Also changed glade widget names for the
+	  face browser to have the "fb" prefix rather than "sg".
+	  Some other minor cleanup of the glade file.
+	* gui/gdmphotosetup.c: On March 10th I fixed gdmphotosetup so
+	  it uses the new file browser.  I noticed that the code had
+	  a bug which was causing an assert, now fixed.  Now make the
+	  file browser work more like the ones gdmsetup.c
+	* gui/gdmsetup.desktop.in: Make GNOME in all-caps to fix
+	  bug 167054.
+	  
 2005-03-29  Brian Cameron  <Brian.Cameron@sun.com>
 
 	* gui/gdmlanguages.c: Correct inconsistant spacing in 
