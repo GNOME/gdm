@@ -215,6 +215,14 @@ gdm_slave_start (GdmDisplay *display)
 			 * abort actually */
 			break;
 		}
+
+		gdm_debug ("gdm_slave_start: Reinitializing things");
+
+		/* OK about to start again so redo our cookies and reinit
+		 * the server */
+		if ( ! gdm_auth_secure_display (d))
+			break;
+		gdm_server_reinit (d);
 	}
 }
 
@@ -342,6 +350,14 @@ gdm_slave_run (GdmDisplay *display)
 		    _exit (DISPLAY_REMANAGE);
 	    else
 		    _exit (DISPLAY_ABORT);
+    }
+
+    /* Some sort of a bug foo to make some servers work or whatnot,
+     * stolem from xdm sourcecode, perhaps not necessary, but can't hurt */
+    {
+	    Display *dsp = XOpenDisplay (d->name);
+	    if (dsp != NULL)
+		    XCloseDisplay (dsp);
     }
 
     /* If XDMCP setup pinging */
@@ -509,6 +525,7 @@ run_error_dialog (const char *error)
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Cannot start session"));
 
 		label = gtk_label_new (error);
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 
 		gtk_container_set_border_width
 			(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
@@ -896,7 +913,7 @@ gdm_slave_greeter (void)
 	sigdelset (&mask, SIGTERM);
 	sigdelset (&mask, SIGHUP);
 	sigprocmask (SIG_SETMASK, &mask, NULL);
-	
+
 	/* Plumbing */
 	close (pipe1[1]);
 	close (pipe2[0]);
@@ -923,7 +940,8 @@ gdm_slave_greeter (void)
 	gdm_setenv ("LOGNAME", GdmUser);
 	gdm_setenv ("USER", GdmUser);
 	gdm_setenv ("USERNAME", GdmUser);
-	
+
+
 	pwent = getpwnam (GdmUser);
 	if (pwent != NULL) {
 		/* Note that usually this doesn't exist */
@@ -1360,8 +1378,7 @@ gdm_slave_session_start (void)
     g_free (usrsess);
     g_free (usrlang);
     
-    if (session == NULL ||
-	session[0] == '\0') {
+    if (gdm_string_empty (session)) {
 	    g_free (session);
 	    session = find_a_session ();
 	    if (session == NULL) {
@@ -1370,8 +1387,7 @@ gdm_slave_session_start (void)
 	    }
     }
 
-    if (language == NULL ||
-	language[0] == '\0') {
+    if (gdm_string_empty (language)) {
 	    const char *lang = g_getenv ("LANG");
 
 	    g_free (language);
@@ -1382,6 +1398,11 @@ gdm_slave_session_start (void)
 	    else
 		    language = g_strdup (GdmDefaultLocale);
 	    savelang = TRUE;
+
+	    if (gdm_string_empty (language)) {
+		    g_free (language);
+		    language = g_strdup ("C");
+	    }
     }
 
     /* save this session as the users session */
@@ -1782,8 +1803,11 @@ gdm_slave_session_cleanup (void)
     XSetIOErrorHandler (ignore_xioerror_handler);
 
     /* Cleanup */
-    gdm_debug ("gdm_slave_session_cleanup: Killing windows");
-    gdm_server_reinit (d);
+    gdm_debug ("gdm_slave_session_cleanup: Severing connection");
+    if (d->dsp != NULL) {
+	    XCloseDisplay (d->dsp);
+	    d->dsp = NULL;
+    }
 }
 
 static void
@@ -1871,6 +1895,7 @@ gdm_slave_child_handler (int sig)
 		 * control really */
 		gdm_server_stop (d);
 		gdm_verify_cleanup ();
+
 		if (WIFEXITED (status)) {
 			_exit (WEXITSTATUS (status));
 		} else {

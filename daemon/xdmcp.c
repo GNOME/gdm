@@ -704,7 +704,7 @@ gdm_xdmcp_send_accept (struct sockaddr_in *clnt_sa, gint displaynum)
     authname.length = strlen (authname.data);
     
     authdata.data = d->bcookie;
-    authdata.length = strlen (d->bcookie); /* I.e. 16 */
+    authdata.length = 16;
     
     header.version = XDM_PROTOCOL_VERSION;
     header.opcode = (CARD16) ACCEPT;
@@ -810,7 +810,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	gchar *logfile;
 
 	gdm_debug ("gdm_xdmcp_handle_manage: Looked up %s", d->name);
-	
+
 	/* Log all output from spawned programs to a file */
 	logfile = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
 	logfd = open (logfile, O_CREAT|O_TRUNC|O_APPEND|O_WRONLY, 0666);

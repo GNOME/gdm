@@ -1,3 +1,24 @@
+Sat Jun 02 01:58:15 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: bump version
+
+	* auth.c, xdmcp.c, cookie.c: fix clobering of cookies with zeros, only
+	  reget hostname on local displays, correctly setup authentication for
+	  local xdmcp case. reset umask to sane gdm value after setting the
+	  use auth
+
+	* gdm.c: cleanup, possible fd leak if there was a stale pid file
+
+	* server.c: handle memory errors in cookie setup
+
+	* slave.c: from xdm stole the idea of a bogus first client which
+	  apparently fixes some things.  Also actually close initial display
+	  on xdmcp session end.  Also make sure language is at least "C" if
+	  we can't find any other language
+
+	* slave.c: SECURITY! when reinitializing the display for another go,
+	  first bake new cookies
+
 Fri Jun 01 17:51:52 2001  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: when sending GDM_QUIT to the greeter, first make

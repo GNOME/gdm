@@ -1,5 +1,44 @@
 Ahh news...
 
+2.2.2.1 stuff:
+
+- SECURITY FIX!  Rebake cookies before reinitializing the local X server.
+  Only local X servers are affected, this bug allowed an attacker to log in,
+  save his cookie, which would then be used for the user who logs in next.
+
+- Fix a race preventing users to log in sometimes
+
+- Ability to turn of failsafe and chooser sessions (Havoc)
+
+- Fix mit cookie usage to not clobber cookies containing zeros
+
+- Fix remote XDMCP authentication
+
+- Pinging for XDMCP sessions to detect if they're dead
+
+- Saving current gnome session is done from gdm (gnome-core HEAD no longer
+  saves it)
+
+- Don't change utmp from Pre/Post session scripts
+
+- PAM related fixes
+
+- Better handeling of X failiures
+
+- Nicer iconify button
+
+- gdmphotosetup permissions fixes
+
+- Always add POSIX/C locale setting to language menu
+
+- Nicer minimize button
+
+- Ignore .rpmorig files
+
+- Other fixes
+
+- Translations (Stanislav Visnovsky, Kjartan Maraas, me)
+
 2.2.2 stuff:
 
 - When X keeps crashing ask if we should run the X configuration

@@ -834,7 +834,7 @@ main (int argc, char *argv[])
     textdomain(PACKAGE);
 
     /* XDM compliant error message */
-    if (getuid())
+    if (getuid() != 0)
 	gdm_fail (_("Only root wants to run gdm\n"));
 
 
@@ -850,15 +850,20 @@ main (int argc, char *argv[])
     gdm_config_parse();
 
     /* Check if another gdm process is already running */
-    if (! access (GdmPidFile, R_OK)) {
+    if (access (GdmPidFile, R_OK) == 0) {
 
         /* Check if the existing process is still alive. */
         gint pidv;
 
         pf = fopen (GdmPidFile, "r");
 
-        if (pf && fscanf (pf, "%d", &pidv) == 1 && kill (pidv, 0) != -1)
+        if (pf != NULL &&
+	    fscanf (pf, "%d", &pidv) == 1 &&
+	    kill (pidv, 0) != -1)
 		gdm_fail (_("gdm already running. Aborting!"));
+
+	if (pf != NULL)
+		fclose (pf);
     }
 
     /* Become daemon unless started in -nodaemon mode or child of init */

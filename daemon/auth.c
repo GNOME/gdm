@@ -46,6 +46,47 @@ extern gchar *GdmUserAuthFB;
 extern gint  GdmUserMaxFile;
 extern gint  GdmRelaxPerms;
 
+static gboolean
+add_auth_entry (GdmDisplay *d, FILE *af,
+		unsigned short family, char *addr, int addrlen)
+{
+	Xauth *xa;
+	gchar *dispnum;
+
+	if (!d)
+		return FALSE;
+
+	dispnum = g_strdup_printf ("%d", d->dispnum);
+
+	xa = malloc (sizeof (Xauth));
+
+	if (xa == NULL)
+		return FALSE;
+
+	xa->family = family;
+	xa->address = malloc (addrlen);
+	if (xa->address == NULL)
+		return FALSE;
+	memcpy (xa->address, addr, addrlen);
+	xa->address_length = addrlen;
+	xa->number = strdup (dispnum);
+	xa->number_length = strlen (dispnum);
+	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
+	xa->name_length = strlen ("MIT-MAGIC-COOKIE-1");
+	xa->data = malloc (16);
+	if (xa->data == NULL)
+		return FALSE;
+	memcpy (xa->data, d->bcookie, 16);
+	xa->data_length = 16;
+
+	XauWriteAuth (af, xa);
+
+	d->auths = g_slist_append (d->auths, xa);
+
+	g_free (dispnum);
+
+	return TRUE;
+}
 
 /**
  * gdm_auth_secure_display:
@@ -62,13 +103,13 @@ gdm_auth_secure_display (GdmDisplay *d)
     FILE *af;
     struct hostent *hentry;
     struct in_addr *ia;
-    gchar *addr;
-    Xauth *xa;
     guint i;
-    gchar *hostname;
+    char lo[4] = {127,0,0,1};
 
     if (!d)
 	return FALSE;
+
+    umask (022);
 
     gdm_debug ("gdm_auth_secure_display: Setting up access for %s", d->name);
 
@@ -106,13 +147,16 @@ gdm_auth_secure_display (GdmDisplay *d)
     /* Create new random cookie */
     gdm_cookie_generate (d);
 
-    hostname = g_new0 (gchar, 1024);
+    /* reget local host if local as it may have changed */
+    if (d->type == TYPE_LOCAL) {
+	    char * hostname = g_new0 (gchar, 1024);
 
-    if (gethostname (hostname, 1023) == 0) {
-        g_free( d->hostname );
-        d->hostname = g_strdup( hostname );
+	    if (gethostname (hostname, 1023) == 0) {
+		    g_free( d->hostname );
+		    d->hostname = g_strdup( hostname );
+	    }
+	    g_free (hostname);
     }
-    g_free( hostname );
 
     /* Find FQDN or IP of display host */
     hentry = gethostbyname (d->hostname);
@@ -122,26 +166,33 @@ gdm_auth_secure_display (GdmDisplay *d)
 	return FALSE;
     }
 
-    /* Local access */
-    if (d->type == TYPE_LOCAL) {
-	gdm_debug ("gdm_auth_secure_display: Setting up socket access");
+    /* first addy, would be loopback in case of local */
+    ia = (struct in_addr *) hentry->h_addr_list[0];
 
-	xa = g_new0 (Xauth, 1);
-	
-	if (!xa)
-	    return FALSE;
+    /* Local access also in case the host is very local */
+    if (d->type == TYPE_LOCAL || memcmp (&ia->s_addr, lo, 4) == 0) {
 
-	xa->family = FamilyLocal;
-	xa->address = strdup (d->hostname);
-	xa->address_length = strlen (d->hostname);
-	xa->number = g_strdup_printf ("%d", d->dispnum);
-	xa->number_length = 1;
-	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
-	xa->name_length = 18;
-	xa->data = strdup (d->bcookie);
-	xa->data_length = strlen (d->bcookie);
-	XauWriteAuth (af, xa);
-	d->auths = g_slist_append (d->auths, xa);
+	    gdm_debug ("gdm_auth_secure_display: Setting up socket access");
+
+	    if ( ! add_auth_entry (d, af, FamilyLocal,
+				   d->hostname, strlen (d->hostname)))
+		    return FALSE;
+
+	    /* local machine but not local if you get my meaning, add
+	     * the host gotten by gethostname as well if it's different
+	     * since the above is probably localhost */
+	    if (d->type != TYPE_LOCAL) {
+		    char * hostname = g_new0 (gchar, 1024);
+
+		    if (gethostname (hostname, 1023) == 0 &&
+			strcmp (hostname, d->hostname) != 0) {
+			    if ( ! add_auth_entry (d, af, FamilyLocal,
+						   hostname,
+						   strlen (hostname)))
+				    return FALSE;
+		    }
+		    g_free (hostname);
+	    }
     }
 
     gdm_debug ("gdm_auth_secure_display: Setting up network access");
@@ -149,36 +200,14 @@ gdm_auth_secure_display (GdmDisplay *d)
     /* Network access: Write out an authentication entry for each of
      * this host's official addresses */
     for (i = 0 ; i < hentry->h_length ; i++) {
-	xa = g_new0 (Xauth, 1);
+	    ia = (struct in_addr *) hentry->h_addr_list[i];
 
-	if (! xa)
-	    return FALSE;
+	    if (ia == NULL)
+		    break;
 
-	xa->family = FamilyInternet;
-
-	addr = g_new0 (gchar, 4);
-
-	if (!addr)
-	    return FALSE;
-
-	ia = (struct in_addr *) hentry->h_addr_list[i];
-
-	if (!ia)
-	    break;
-
-	memcpy (addr, &ia->s_addr, 4);
-	xa->address = addr; 
-	xa->address_length = 4;
-	xa->number = g_strdup_printf ("%d", d->dispnum);
-	xa->number_length = 1;
-	xa->name = strdup ("MIT-MAGIC-COOKIE-1");
-	xa->name_length = 18;
-	xa->data = strdup (d->bcookie);
-	xa->data_length = strlen (d->bcookie);
-
-	XauWriteAuth (af, xa);
-
-	d->auths = g_slist_append (d->auths, xa);
+	    if ( ! add_auth_entry (d, af, FamilyInternet,
+				   (char *)&ia->s_addr, 4))
+		    return FALSE;
     }
 
     fclose (af);
@@ -238,6 +267,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 	    g_free (d->userauth);
 	    d->userauth = NULL;
 
+	    umask (022);
+
 	    return FALSE;
 	}
 
@@ -253,6 +284,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 	    g_free (d->userauth);
 	    d->userauth = NULL;
 
+	    umask (022);
+
 	    return FALSE;
 	}
 
@@ -265,6 +298,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
 	XauUnlockAuth (d->userauth);
 	g_free (d->userauth);
 	d->userauth = NULL;
+
+	umask (022);
 
 	return FALSE; 
     }
@@ -287,6 +322,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
     XauUnlockAuth (d->userauth);
 
     gdm_debug ("gdm_auth_user_add: Done");
+
+    umask (022);
 
     return TRUE;
 }

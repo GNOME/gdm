@@ -145,7 +145,8 @@ gdm_server_start (GdmDisplay *disp)
     gdm_debug ("gdm_server_start: %s", d->name);
 
     /* Create new cookie */
-    gdm_auth_secure_display (d);
+    if ( ! gdm_auth_secure_display (d))
+	    return FALSE;
     gdm_setenv ("DISPLAY", d->name);
 
     /* Catch USR1 from X server */

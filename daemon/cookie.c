@@ -72,7 +72,7 @@ gdm_cookie_generate (GdmDisplay *d)
     cookie[0] = '\0';
 
     gdm_md5_init (&ctx);
-        gettimeofday (&tv, &tz);
+    gettimeofday (&tv, &tz);
     gdm_md5_update (&ctx, (unsigned char *) &tv, sizeof (tv));
     pid = getppid();
     gdm_md5_update (&ctx, (unsigned char *) &pid, sizeof (pid));
@@ -99,12 +99,13 @@ gdm_cookie_generate (GdmDisplay *d)
     gdm_md5_final (digest, &ctx);
 
     for (i = 0; i < 16; i++) {
-	sprintf (sub, "%02x", digest[i]);
+	g_snprintf (sub, sizeof (sub), "%02x", digest[i]);
 	strcat (cookie, sub);
     }
 
     d->cookie = g_strdup (cookie);
-    d->bcookie = g_strndup (digest, 16);
+    d->bcookie = g_new (char, 16);
+    memcpy (d->bcookie, digest, 16);
 }
 
 
