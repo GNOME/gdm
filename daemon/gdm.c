@@ -862,7 +862,7 @@ gdm_cleanup_children (void)
     /* Pid and exit status of slave that died */
     pid = waitpid (-1, &exitstatus, WNOHANG);
 
-    if (pid < 0)
+    if (pid <= 0)
 	    return FALSE;
 
     if (WIFEXITED (exitstatus)) {

@@ -1,3 +1,13 @@
+Tue Sep 11 01:37:42 2001  George Lebl <jirka@5z.com>
+
+	* daemon/errorgui.c: use the safe fork function
+
+	* daemon/gdm.c: a doh kind of error, waitpid returns 0 to mean
+	  'no child', not -1 as I assumed.
+
+	* gui/gdmflexiserver.c:  another doh!, actually whack the screen
+	  portion of the display number
+
 Mon Sep 10 20:20:59 2001  George Lebl <jirka@5z.com>
 
 	* configure.in: raise version

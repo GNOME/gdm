@@ -210,12 +210,12 @@ get_dispnum (void)
 			while (*number == ':') {
 				number++;
 			}
+			p = strchr (number, '.');
+			if (p != NULL)
+				*p = '\0';
 		} else {
 			number = "0";
 		}
-		p = strchr (number, '.');
-		if (p != NULL)
-			p = '\0';
 	}
 
 	return number;

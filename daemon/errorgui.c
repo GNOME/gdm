@@ -129,7 +129,8 @@ gdm_error_box (GdmDisplay *d, const char *dialog_type, const char *error)
 {
 	pid_t pid;
 
-	extra_process = pid = fork ();
+	gdm_safe_fork (&extra_process);
+	pid = extra_process;
 	if (pid == 0) {
 		char *geom;
 		int i;
