@@ -557,7 +557,7 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 	    return buffer;
     }
 
-    if (strlen (s) > 1023) {
+    if (strlen (s) > 2048) {
 	    char *buffer;
 	    syslog (LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
 	    g_free (display);

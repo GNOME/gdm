@@ -38,6 +38,12 @@ struct _Language {
  * The available languages come from the supplied locale.alias */
 static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Azerbaijani"), "az_AZ", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Basque"), "eu_ES", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Bulgarian"), "bg_BG", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Catalan"), "ca_ES", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Chinese (simplified)"), "zh_CN", 0 },
@@ -54,6 +60,8 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|English"), "en", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Estonian"), "et_EE", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|American English"), "en_US", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|British English"), "en_GB", 0 },
@@ -68,7 +76,7 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Greek"), "el_GR", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Hebrew"), "iw_IL", 0 },
+	{ N_("A-M|Hebrew"), "he_IL", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Hungarian"), "hu_HU", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -79,6 +87,8 @@ static Language languages [] = {
 	{ N_("A-M|Japanese"), "ja_JP", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Korean"), "ko_KR", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Latvian"), "lv_LV", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Lithuanian"), "lt_LT", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
@@ -107,6 +117,8 @@ static Language languages [] = {
 	{ N_("N-Z|Turkish"), "tr_TR", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Ukrainian"), "uk_UA", 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Walloon"), "wa_BE", 0 },
 	/* This is the POSIX/C locale for english, should really be in Other */
 	{ N_("Other|POSIX/C English"), "C", 0 },
 	{ NULL, NULL }
