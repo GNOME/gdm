@@ -2,7 +2,7 @@ AC_PREREQ(2.52)
 AC_INIT(daemon/gdm.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.6.0.1)
+AM_INIT_AUTOMAKE(gdm,2.6.0.2)
 AM_MAINTAINER_MODE
 
 AC_PROG_INTLTOOL([0.28])
@@ -172,7 +172,7 @@ dnl *****************************
 dnl     IPv6 specific checks
 dnl *****************************
 AC_MSG_CHECKING([whether to enable IPv6])
-AC_ARG_ENABLE(ipv6, [--enables compilation of IPv6 code], ,enable_ipv6=yes)
+AC_ARG_ENABLE(ipv6, [--enables compilation of IPv6 code], ,enable_ipv6=no)
 if test x$enable_ipv6 = xyes; then
   AC_TRY_COMPILE([
     #include <sys/types.h>
