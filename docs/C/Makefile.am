@@ -23,12 +23,12 @@ dist-hook:
 	-cp $(srcdir)/gdm.html $(distdir)/gdm/index.html
 
 install-data-local: gdm.html
-	$(mkinstalldirs) $(gdm_helpdir)/images
+	$(mkinstalldirs) $(DESTDIR)$(gdm_helpdir)/images
 	-for file in $(srcdir)/gdm/*.html $(srcdir)/gdm/*.css; do \
 	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(gdm_helpdir)/$$basefile; \
+	$(INSTALL_DATA) $$file $(DESTDIR)$(gdm_helpdir)/$$basefile; \
 	done
-	$(INSTALL_DATA) $(srcdir)/gdm.html $(gdm_helpdir)/index.html
+	$(INSTALL_DATA) $(srcdir)/gdm.html $(DESTDIR)$(gdm_helpdir)/index.html
 
 gdm.ps: $(SGML_FILES)
 	db2ps $<
