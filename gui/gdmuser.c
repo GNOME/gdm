@@ -118,7 +118,7 @@ gdm_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
 	if (size < 2) {
 		img = NULL;
 	} else if (sscanf (&buf[1], "buffer:%d", &bufsize) == 1) {
-		char buffer[2048];
+		unsigned char buffer[2048];
 		int pos = 0;
 		int n;
 		GdkPixbufLoader *loader;
@@ -303,6 +303,17 @@ gboolean setup_user(struct passwd *pwent, GList **users, GList **users_string,
     return (TRUE);
 }
 
+gboolean
+gdm_is_user_valid (const char *username)
+{
+    struct passwd *pwent;
+    pwent = getpwnam(username);
+    if (pwent != NULL)
+	return TRUE;
+
+    return FALSE;
+}
+
 void 
 gdm_users_init (GList **users, GList **users_string, char *exclude_user,
    GdkPixbuf *defface, int *size_of_users, gboolean is_local,
@@ -327,13 +338,14 @@ gdm_users_init (GList **users, GList **users_string, char *exclude_user,
     for (i=0 ; excludes != NULL && excludes[i] != NULL ; i++)
 	g_strstrip (excludes[i]);
 
-    if (found_include == FALSE && GdmIncludeAll == TRUE) {
+    if (GdmIncludeAll == TRUE) {
 	    setpwent ();
 	    pwent = getpwent();
 	    while (pwent != NULL) {
 
-		if (! setup_user(pwent, users, users_string, excludes, exclude_user,
-			defface, size_of_users, is_local, read_faces))
+		if (! setup_user(pwent, users, users_string, excludes,
+			exclude_user, defface, size_of_users, is_local,
+			read_faces))
 			break;
 
 		pwent = getpwent();

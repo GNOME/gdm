@@ -82,12 +82,12 @@
     </para>
 
     <para>
-      Standard Greeter - The standard login window (
+      GTK+ Greeter - The standard login window (
       <filename>gdmlogin</filename>).
     </para>
 
     <para>
-      Graphical Greeter - The themable login window (
+      Themed Greeter - The themable login window (
       <filename>gdmgreeter</filename>).
     </para>
 
@@ -164,9 +164,9 @@
         asynchronously with the slave process through a pipe.  Alternatively
         <filename>gdmgreeter</filename> command can be used which is the same
         as <filename>gdmlogin</filename> but allows greater themability.
-        <filename>gdmgreeter</filename> is referred to as the Graphical
+        <filename>gdmgreeter</filename> is referred to as the Themed
         Greeter, while <filename>gdmlogin</filename> is refereed to as the
-        Standard Greeter.
+        GTK+ Greeter.
       </para>
       
       <para> 
@@ -420,10 +420,10 @@
     </sect2>
 
     <sect2 id="stdgreeter">
-      <title>The Standard Greeter</title>
+      <title>The GTK+ Greeter</title>
 
       <para>
-        The Standard Greeter is the default graphical user interface that is
+        The GTK+ Greeter is the default graphical user interface that is
         presented to the user. The greeter contains a menu at the top, an
         optional face browser, an optional logo and a text entry
         widget.
@@ -487,11 +487,11 @@
 	configuration options that can be used.  If the
 	<filename>Include</filename> option contains a list of users
 	separated by commas, then only the specified users will be displayed.
-	If the <filename>IncludeAll</filename> option is set to true and the
-	<filename>Include</filename> option is empty, then the password file
-	will be scanned and all users will be displayed.  Any user listed in
-	the <filename>Exclude</filename> option and users whose UID's is
-	lower than <filename>MinimalUID</filename> will be filtered out.
+	If the <filename>IncludeAll</filename> option is set to true, then
+	the password file will be scanned and all users will be displayed.
+	Any user listed in the <filename>Exclude</filename> option and users
+	whose UID's is lower than <filename>MinimalUID</filename> will be
+	filtered out.
       </para>
 
       <para>
@@ -513,10 +513,10 @@
     </sect2>
 
     <sect2 id="graphgreeter">
-      <title>The Graphical Greeter</title>
+      <title>The Themed Greeter</title>
 
       <para>
-        The Graphical Greeter is a greeter interface that takes up the whole
+        The Themed Greeter is a greeter interface that takes up the whole
         screen and is very themable.  Themes can be selected and new themes
         can be installed by the Configuration program or by setting the
         <filename>GraphicalTheme</filename> configuration key.
@@ -526,7 +526,7 @@
         The look and feel of this greeter is really controlled by the theme and
         so the user interface elements that are present may be different.  The
         only thing that must always be present is the text entry field as
-        described above in the Standard Greeter.
+        described above in the GTK+ Greeter.
       </para>
 
       <para>
@@ -1421,7 +1421,7 @@ XKeepsCrashing
                 Full path and name of the greeter executable followed by
                 optional arguments.  This is used for all remote XDMCP
                 sessions.  It is useful to have the less graphically demanding
-                greeter here if you use the Graphical Greeter for your main
+                greeter here if you use the Themed Greeter for your main
                 greeter.  See also the <filename>Greeter</filename> key.
               </para>
             </listitem>
@@ -2174,7 +2174,7 @@ XKeepsCrashing
                 of the greeter.  Also use it as the back of transparent images
                 set on the background and if the BackgroundRemoteOnlyColor
                 is set and this is a remote display.
-                This only affects the Standard Greeter.
+                This only affects the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>        
@@ -2185,7 +2185,7 @@ XKeepsCrashing
               <synopsis>BackgroundImage=somefile.png</synopsis>
               <para>
                 If the BackgroundType is 1, then display this file as the
-                background in the greeter.  This only affects the Standard
+                background in the greeter.  This only affects the GTK+
                 Greeter.
               </para>
             </listitem>
@@ -2201,7 +2201,7 @@ XKeepsCrashing
                 programs will run this way, since gdm does not usually have
                 a home directory.  You could set up home directory for the
                 gdm user if you wish to run applications which require it.
-                This only affects the Standard Greeter.
+                This only affects the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>        
@@ -2214,7 +2214,7 @@ XKeepsCrashing
                 On remote displays only set the color background.  This is to
                 make network load lighter.  The
                 <filename>BackgroundProgram</filename> is also not run.  This
-                only affects the Standard Greeter.
+                only affects the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>        
@@ -2225,7 +2225,7 @@ XKeepsCrashing
               <synopsis>BackgroundScaleToFit=true</synopsis>
               <para>
                 Scale background image to fit the screen.  This only affects
-                the Standard Greeter.
+                the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>        
@@ -2236,7 +2236,7 @@ XKeepsCrashing
               <synopsis>BackgroundType=2</synopsis>
               <para>
                 The type of background to set.  0 is none, 1 is image and 2
-                is color.  This only affects the Standard Greeter.
+                is color.  This only affects the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>        
@@ -2247,9 +2247,9 @@ XKeepsCrashing
               <synopsis>Browser=true</synopsis>
               <para>
                 Set to true to enable the face browser. See the
-                ``The Standard Greeter'' section for more information on the
-                face browser.  This option only works for the Standard Greeter.
-                For the Graphical Greeter, the face browser is enabled by
+                ``The GTK+ Greeter'' section for more information on the
+                face browser.  This option only works for the GTK+ Greeter.
+                For the Themed Greeter, the face browser is enabled by
                 choosing a theme which includes a face browser
               </para>
             </listitem>
@@ -2334,8 +2334,7 @@ XKeepsCrashing
 		excluded via the Exclude setting and user ID's less than
 		MinimalUID.  Scanning the password file can be slow on
 		systems with large numbers of users and this feature should
-		not be used in such environments.  The setting of IncludeAll
-		does nothing if Include is set to a non-empty value.
+		not be used in such environments.
 		See also <filename>Include</filename>,
 		<filename>Exclude</filename>, and
 		<filename>MinimalUID</filename>.
@@ -2377,7 +2376,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>GraphicalTheme=circles</synopsis>
               <para>
-                The graphical theme that the Graphical Greeter should use.  it
+                The graphical theme that the Themed Greeter should use.  it
                 should refer to a directory in the theme directory set by
                 <filename>GraphicalThemeDir</filename>.
               </para>
@@ -2389,7 +2388,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>GraphicalThemeDir=&lt;share&gt;/gdm/themes/</synopsis>
               <para>
-                The directory where themes for the Graphical Greeter are
+                The directory where themes for the Themed Greeter are
                 installed.
               </para>
             </listitem>
@@ -2441,7 +2440,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>LockPosition=true</synopsis>
               <para>
-                If true the position of the login window of the Standard
+                If true the position of the login window of the GTK+
                 Greeter cannot be changed even if the title bar is turned on.
               </para>
             </listitem>
@@ -2456,7 +2455,7 @@ XKeepsCrashing
                 in an gdk-pixbuf supported format and it must be readable by
                 the GDM user. If no file is specified the logo feature
                 is disabled.
-                This only affects the Standard Greeter.
+                This only affects the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>
@@ -2480,7 +2479,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>PositionX=200</synopsis>
               <para>
-                The horizontal position of the login window of the Standard
+                The horizontal position of the login window of the GTK+
                 Greeter.
               </para>
             </listitem>
@@ -2491,7 +2490,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>PositionY=100</synopsis>
               <para>
-                The vertical position of the login window of the Standard
+                The vertical position of the login window of the GTK+
                 Greeter.
               </para>
             </listitem>
@@ -2505,7 +2504,7 @@ XKeepsCrashing
                 Controls whether <filename>gdmlogin</filename> should
                 shake the display when an incorrect username/password is
                 entered.
-                This only affects the Standard Greeter.
+                This only affects the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>
@@ -2530,7 +2529,7 @@ XKeepsCrashing
                 If this is true then the background program is run always,
                 otherwise it is only run when the
                 <filename>BackgroundType</filename> is 0 (None)
-                This only affects the Standard Greeter.
+                This only affects the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>        
@@ -2540,7 +2539,7 @@ XKeepsCrashing
             <listitem>
               <synopsis>SetPosition=true</synopsis>
               <para>
-                If true the position of the login window of the Standard Greeter
+                If true the position of the login window of the GTK+ Greeter
                 is determined by <filename>PositionX</filename> 
                 / <filename>PositionY</filename>.
               </para>
@@ -2646,7 +2645,7 @@ XKeepsCrashing
               <synopsis>TitleBar=true</synopsis>
               <para>
                 Display the title bar in the greeter.
-                This only affects the Standard Greeter.
+                This only affects the GTK+ Greeter.
               </para>
             </listitem>
           </varlistentry>
@@ -2730,7 +2729,7 @@ XKeepsCrashing
               </para>
 
               <para>
-                In the Graphical Greeter the location of this text depends on
+                In the Themed Greeter the location of this text depends on
                 the theme.  Unless the theme uses the stock welcome string
                 somewhere this string will not be displayed at all.
               </para>
@@ -4004,10 +4003,10 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
   <!-- ============= Theme manual ============================= -->
 
   <sect1 id="thememanual">
-    <title>Graphical Greeter Themes</title>
+    <title>Themed Greeter</title>
 
     <para>
-      This section describes the creation of themes for the Graphical
+      This section describes the creation of themes for the Themed
       Greeter.  For examples including screenshots, see the standard installed
       themes and the themes from
       <ulink type="http" url="http://art.gnome.org/themes/gdm_greeter/index.php">
@@ -4736,8 +4735,8 @@ ypadding="num" spacing="num" homogeneous="bool"&gt;
        allows the user to change the visual appearance of the login UI
        before logging in, for instance to use a higher-contrast color
        scheme for better visibility.  GDM only supports accessibility with
-       the Standard Greeter, so the "Greeter" parameter in gdm.conf must be
-       set to the Standard Greeter "gdmlogin".
+       the GTK+ Greeter, so the "Greeter" parameter in gdm.conf must be
+       set to the GTK+ Greeter "gdmlogin".
        </para>
 
        <sect2 id="accessibilityconfig">

@@ -2622,7 +2622,7 @@ gdm_slave_greeter (void)
 				 "I will attempt to use a different one."));
 		if (strstr (command, "gdmlogin") != NULL) {
 			/* in case it is gdmlogin that's crashing
-			   try the graphical greeter for luck */
+			   try the themed greeter for luck */
 			command = EXPANDED_LIBEXECDIR "/gdmgreeter";
 		} else {
 			/* in all other cases, try the gdmlogin (standard greeter)

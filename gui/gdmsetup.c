@@ -41,6 +41,7 @@
 #include "gdmcommon.h"
 #include "misc.h"
 #include "gdmcomm.h"
+#include "gdmuser.h"
 
 /* set the DOING_GDM_DEVELOPMENT env variable if you want to
  * search for the glade file in the current dir and not the system
@@ -66,6 +67,24 @@ static GladeXML *xml;
 
 static GList *timeout_widgets = NULL;
 
+enum {
+	THEME_COLUMN_SELECTED,
+	THEME_COLUMN_DIR,
+	THEME_COLUMN_FILE,
+	THEME_COLUMN_NAME,
+	THEME_COLUMN_DESCRIPTION,
+	THEME_COLUMN_AUTHOR,
+	THEME_COLUMN_COPYRIGHT,
+	THEME_COLUMN_SCREENSHOT,
+	THEME_NUM_COLUMNS
+};
+
+enum {
+    USERLIST_NAME,
+    USERLIST_NUM_COLUMNS
+};
+
+static char *selected_theme = NULL;
 static void
 simple_spawn_sync (char **argv)
 {
@@ -608,6 +627,442 @@ setup_intspin (const char *name,
 			  G_CALLBACK (intspin_changed), NULL);
 }
 
+static GtkListStore *
+setup_include_exclude (GtkWidget *treeview, const char *key)
+{
+	GtkListStore *face_store = gtk_list_store_new (USERLIST_NUM_COLUMNS,
+		G_TYPE_STRING);
+	GtkTreeIter iter;
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+        char **list;
+	char *val;
+        int i;
+
+	column = gtk_tree_view_column_new ();
+
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+
+	gtk_tree_view_column_set_attributes (column, renderer,
+		"text", USERLIST_NAME, NULL);
+
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview), column);
+	gtk_tree_view_set_model (GTK_TREE_VIEW(treeview),
+		(GTK_TREE_MODEL (face_store)));
+
+	if (strcmp (key, GDM_KEY_INCLUDE) == 0)
+		list = g_strsplit (GdmInclude, ",", 0);
+	else if (strcmp (key, GDM_KEY_EXCLUDE) == 0)
+		list = g_strsplit (GdmExclude, ",", 0);
+
+        for (i=0; list != NULL && list[i] != NULL; i++) {
+		gtk_list_store_append (face_store, &iter);
+		gtk_list_store_set(face_store, &iter, USERLIST_NAME, list[i], -1);
+	}
+	g_strfreev (list);
+
+	return (face_store);
+}
+
+typedef enum {
+	INCLUDE,
+	EXCLUDE
+} FaceType;
+
+typedef struct _FaceCommon {
+	GtkWidget *label;
+	GtkWidget *apply;
+	GtkWidget *include_treeview;
+	GtkWidget *exclude_treeview;
+	GtkListStore *include_store;
+	GtkListStore *exclude_store;
+	GtkTreeModel *include_model;
+	GtkTreeModel *exclude_model;
+	GtkWidget *include_add;
+	GtkWidget *exclude_add;
+	GtkWidget *include_del;
+	GtkWidget *exclude_del;
+	GtkWidget *to_include_button;
+	GtkWidget *to_exclude_button;
+	GtkWidget *include_entry;
+	GtkWidget *exclude_entry;
+} FaceCommon;
+
+typedef struct _FaceData {
+	FaceCommon *fc;
+	FaceType type;
+} FaceData;
+
+typedef struct _FaceApply {
+	FaceData *exclude;
+	FaceData *include;
+} FaceApply;
+
+static void
+face_add (GtkWidget *button, gpointer data)
+{
+	FaceData *fd = data;
+	const char *text, *model_text;
+	GtkTreeIter iter;
+	GtkWidget *message;
+	gboolean valid;
+
+	if (fd->type == INCLUDE)
+		text = gtk_entry_get_text (GTK_ENTRY (fd->fc->include_entry));
+	else if (fd->type == EXCLUDE)
+		text = gtk_entry_get_text (GTK_ENTRY (fd->fc->exclude_entry));
+
+	if (gdm_is_user_valid (text)) {
+		valid = gtk_tree_model_get_iter_first (fd->fc->include_model, &iter);
+		while (valid) {
+			gtk_tree_model_get (fd->fc->include_model, &iter, USERLIST_NAME,
+				 &model_text, -1);
+			if (strcmp (text, model_text) == 0) {
+				gtk_label_set_text (GTK_LABEL (fd->fc->label),
+					 "User already in Include list");
+				return;
+			}
+
+			valid = gtk_tree_model_iter_next (fd->fc->include_model, &iter);
+		}
+
+		valid = gtk_tree_model_get_iter_first (fd->fc->exclude_model, &iter);
+		while (valid) {
+			gtk_tree_model_get (fd->fc->exclude_model, &iter, USERLIST_NAME,
+				 &model_text, -1);
+			if (strcmp (text, model_text) == 0) {
+				gtk_label_set_text (GTK_LABEL (fd->fc->label),
+					 "User already in Exclude list");
+				return;
+			}
+
+			valid = gtk_tree_model_iter_next (fd->fc->exclude_model, &iter);
+		}
+
+		if (fd->type == INCLUDE) {
+			gtk_list_store_append (fd->fc->include_store, &iter);
+			gtk_list_store_set (fd->fc->include_store, &iter,
+				USERLIST_NAME, text, -1);
+			gtk_entry_set_text (GTK_ENTRY (fd->fc->include_entry),
+				"");
+		} else if (fd->type == EXCLUDE) {
+			gtk_list_store_append (fd->fc->exclude_store, &iter);
+			gtk_list_store_set (fd->fc->exclude_store, &iter,
+				USERLIST_NAME, text, -1);
+			gtk_entry_set_text (GTK_ENTRY (fd->fc->exclude_entry),
+				"");
+		}
+		gtk_widget_set_sensitive (fd->fc->apply, TRUE);
+		gtk_label_set_text (GTK_LABEL (fd->fc->label), "");
+	} else {
+		gtk_label_set_text (GTK_LABEL (fd->fc->label),
+			"Not a valid user");
+	}
+}
+
+static void
+face_del (GtkWidget *button, gpointer data)
+{
+	FaceData *fd = data;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+
+	if (fd->type == INCLUDE) { 
+		selection = gtk_tree_view_get_selection (
+			GTK_TREE_VIEW (fd->fc->include_treeview));
+
+		if (gtk_tree_selection_get_selected (selection, &(fd->fc->include_model), &iter)) {
+			gtk_list_store_remove (fd->fc->include_store, &iter);
+			gtk_widget_set_sensitive (fd->fc->apply, TRUE);
+		}
+	} else if (fd->type == EXCLUDE) {
+		selection = gtk_tree_view_get_selection (
+			GTK_TREE_VIEW (fd->fc->exclude_treeview));
+
+		if (gtk_tree_selection_get_selected (selection, &(fd->fc->exclude_model), &iter)) {
+			gtk_list_store_remove (fd->fc->exclude_store, &iter);
+			gtk_widget_set_sensitive (fd->fc->apply, TRUE);
+		}
+	}
+}
+
+static void
+browser_move (GtkWidget *button, gpointer data)
+{
+	FaceData *fd = data;
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	char *text;
+
+	/* The fd->type value passed in corresponds with the list moving to */
+	if (fd->type == INCLUDE) {
+		model = fd->fc->exclude_model;
+		selection = gtk_tree_view_get_selection (
+			GTK_TREE_VIEW (fd->fc->exclude_treeview));
+	} else if (fd->type == EXCLUDE) {
+		model = fd->fc->include_model;
+		selection = gtk_tree_view_get_selection (
+			GTK_TREE_VIEW (fd->fc->include_treeview));
+	}
+
+	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+	        gtk_tree_model_get (model, &iter, USERLIST_NAME, &text, -1);
+		if (fd->type == INCLUDE) {
+			gtk_list_store_remove (fd->fc->exclude_store, &iter);
+			gtk_list_store_append (fd->fc->include_store, &iter);
+			gtk_list_store_set (fd->fc->include_store, &iter,
+				USERLIST_NAME, text, -1);
+		} else if (fd->type == EXCLUDE) {
+			gtk_list_store_remove (fd->fc->include_store, &iter);
+			gtk_list_store_append (fd->fc->exclude_store, &iter);
+			gtk_list_store_set (fd->fc->exclude_store, &iter,
+				USERLIST_NAME, text, -1);
+		}
+		gtk_widget_set_sensitive (fd->fc->apply, TRUE);
+	}
+}
+
+static void
+browser_apply (GtkWidget *button, gpointer data)
+{
+	FaceCommon *fc = data;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+	GString *userlist = g_string_new (NULL);
+	const char *model_text;
+	char *val;
+	GtkTreeIter iter;
+	gboolean valid;
+	gboolean first = TRUE;
+	char *sep = "";
+
+	valid = gtk_tree_model_get_iter_first (fc->include_model, &iter);
+	while (valid) {
+		gtk_tree_model_get (fc->include_model, &iter, USERLIST_NAME,
+			 &model_text, -1);
+
+		g_string_append (userlist, sep);
+		sep = ",";
+		g_string_append (userlist, model_text);
+
+		valid = gtk_tree_model_iter_next (fc->include_model, &iter);
+	}
+
+	val = ve_config_get_string (config, GDM_KEY_INCLUDE);
+
+	if (strcmp (ve_sure_string (val),
+		    ve_sure_string (userlist->str)) != 0) {
+		ve_config_set_string (config, GDM_KEY_INCLUDE, userlist->str);
+		ve_config_save (config, FALSE /* force */);
+
+		update_greeters ();
+	}
+
+	g_string_free (userlist, TRUE);
+	g_free (val);
+
+	userlist = g_string_new (NULL);
+	sep = "";
+	valid = gtk_tree_model_get_iter_first (fc->exclude_model, &iter);
+	while (valid) {
+		gtk_tree_model_get (fc->exclude_model, &iter, USERLIST_NAME,
+			 &model_text, -1);
+
+		g_string_append (userlist, sep);
+		sep = ",";
+		g_string_append (userlist, model_text);
+
+		valid = gtk_tree_model_iter_next (fc->exclude_model, &iter);
+	}
+
+	val = ve_config_get_string (config, GDM_KEY_EXCLUDE);
+
+	if (strcmp (ve_sure_string (val),
+		    ve_sure_string (userlist->str)) != 0) {
+		ve_config_set_string (config, GDM_KEY_EXCLUDE, userlist->str);
+		ve_config_save (config, FALSE /* force */);
+
+		update_key (GDM_KEY_EXCLUDE);
+	}
+
+	g_string_free (userlist, TRUE);
+	g_free (val);
+}
+
+
+static void
+face_rowdel (GtkTreeModel *treemodel, GtkTreePath *arg1, gpointer data)
+{
+	FaceCommon *fc = data;
+	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+
+	selection = gtk_tree_view_get_selection (
+		GTK_TREE_VIEW (fc->include_treeview));
+	if (gtk_tree_selection_get_selected (selection, &(fc->include_model), &iter)) {
+		gtk_widget_set_sensitive (fc->to_exclude_button, TRUE);
+		gtk_widget_set_sensitive (fc->include_del, TRUE);
+	} else {
+		gtk_widget_set_sensitive (fc->to_exclude_button, FALSE);
+		gtk_widget_set_sensitive (fc->include_del, FALSE);
+	}
+
+	selection = gtk_tree_view_get_selection (
+		GTK_TREE_VIEW (fc->exclude_treeview));
+	if (gtk_tree_selection_get_selected (selection, &(fc->exclude_model), &iter)) {
+		gtk_widget_set_sensitive (fc->to_include_button, TRUE);
+		gtk_widget_set_sensitive (fc->exclude_del, TRUE);
+	} else {
+		gtk_widget_set_sensitive (fc->to_include_button, FALSE);
+		gtk_widget_set_sensitive (fc->exclude_del, FALSE);
+	}
+}
+
+static void 
+face_entry_changed (GtkEditable *editable, gpointer data)
+{
+	FaceData *fd = data;
+	const char *text;
+
+	if (fd->type == INCLUDE) {
+		text = gtk_entry_get_text (GTK_ENTRY (fd->fc->include_entry));
+		if (strlen (text) < 1)
+			gtk_widget_set_sensitive (fd->fc->include_add, FALSE);
+		else
+			gtk_widget_set_sensitive (fd->fc->include_add, TRUE);
+	}
+	else if (fd->type == EXCLUDE) {
+		text = gtk_entry_get_text (GTK_ENTRY (fd->fc->exclude_entry));
+		if (strlen (text) < 1)
+			gtk_widget_set_sensitive (fd->fc->exclude_add, FALSE);
+		else
+			gtk_widget_set_sensitive (fd->fc->exclude_add, TRUE);
+	}
+}
+
+static void
+face_selection_changed (GtkTreeSelection *selection, gpointer data)
+{
+	FaceData *fd = data;
+	GtkTreeIter iter;
+
+	if (fd->type == INCLUDE) {
+		if (gtk_tree_selection_get_selected (selection, &(fd->fc->include_model), &iter)) {
+			gtk_widget_set_sensitive (fd->fc->to_exclude_button, TRUE);
+			gtk_widget_set_sensitive (fd->fc->include_del, TRUE);
+		} else {
+			gtk_widget_set_sensitive (fd->fc->to_exclude_button, FALSE);
+			gtk_widget_set_sensitive (fd->fc->include_del, FALSE);
+		}
+	} else if (fd->type == EXCLUDE) {
+		if (gtk_tree_selection_get_selected (selection, &(fd->fc->exclude_model), &iter)) {
+			gtk_widget_set_sensitive (fd->fc->to_include_button, TRUE);
+			gtk_widget_set_sensitive (fd->fc->exclude_del, TRUE);
+		} else {
+			gtk_widget_set_sensitive (fd->fc->to_include_button, FALSE);
+			gtk_widget_set_sensitive (fd->fc->exclude_del, FALSE);
+		}
+	}
+}
+
+static void
+setup_face (void)
+{
+	static FaceCommon fc;
+	static FaceData fd_include;
+	static FaceData fd_exclude;
+	static FaceApply face_apply;
+
+	GtkTreeSelection *selection;
+
+	fc.include_add = glade_helper_get (xml, "sg_includeadd",
+		GTK_TYPE_WIDGET);
+	fc.include_del = glade_helper_get (xml, "sg_includedelete",
+		GTK_TYPE_WIDGET);
+	fc.exclude_add = glade_helper_get (xml, "sg_excludeadd",
+		GTK_TYPE_WIDGET);
+	fc.exclude_del = glade_helper_get (xml, "sg_excludedelete",
+		GTK_TYPE_WIDGET);
+	fc.to_include_button = glade_helper_get (xml, "sg_toinclude",
+		GTK_TYPE_WIDGET);
+	fc.to_exclude_button = glade_helper_get (xml, "sg_toexclude",
+		GTK_TYPE_WIDGET);
+	fc.apply = glade_helper_get (xml, "sg_faceapply", GTK_TYPE_WIDGET);
+	fc.label = glade_helper_get (xml, "sg_message", GTK_TYPE_WIDGET);
+	fc.include_entry = glade_helper_get (xml, "sg_includeentry",
+		GTK_TYPE_WIDGET);
+	fc.exclude_entry = glade_helper_get (xml, "sg_excludeentry",
+		GTK_TYPE_WIDGET);
+        fc.include_treeview = glade_helper_get (xml, "include_treeview",
+		GTK_TYPE_TREE_VIEW);
+	fc.exclude_treeview = glade_helper_get (xml, "exclude_treeview",
+		GTK_TYPE_TREE_VIEW);
+
+	fc.include_store = setup_include_exclude (fc.include_treeview,
+		GDM_KEY_INCLUDE);
+	fc.exclude_store = setup_include_exclude (fc.exclude_treeview,
+		GDM_KEY_EXCLUDE);
+
+	fc.include_model = gtk_tree_view_get_model (GTK_TREE_VIEW (fc.include_treeview));
+	fc.exclude_model = gtk_tree_view_get_model (GTK_TREE_VIEW (fc.exclude_treeview));
+
+	fd_include.fc = &fc;
+	fd_include.type = INCLUDE;
+
+	fd_exclude.fc = &fc;
+	fd_exclude.type = EXCLUDE;
+
+	gtk_widget_set_sensitive (fc.include_add, FALSE);
+	gtk_widget_set_sensitive (fc.exclude_add, FALSE);
+	gtk_widget_set_sensitive (fc.include_del, FALSE);
+	gtk_widget_set_sensitive (fc.exclude_del, FALSE);
+	gtk_widget_set_sensitive (fc.to_include_button, FALSE);
+	gtk_widget_set_sensitive (fc.to_exclude_button, FALSE);
+	gtk_widget_set_sensitive (fc.apply, FALSE);
+
+	face_apply.include = &fd_include;
+	face_apply.exclude = &fd_exclude;
+
+	g_signal_connect (fc.include_add, "clicked",
+			  G_CALLBACK (face_add), &fd_include);
+	g_signal_connect (fc.exclude_add, "clicked",
+			  G_CALLBACK (face_add), &fd_exclude);
+	g_signal_connect (fc.include_del, "clicked",
+			  G_CALLBACK (face_del), &fd_include);
+	g_signal_connect (fc.exclude_del, "clicked",
+			  G_CALLBACK (face_del), &fd_exclude);
+
+	g_signal_connect (fc.include_entry, "changed",
+			  G_CALLBACK (face_entry_changed), &fd_include);
+	g_signal_connect (fc.exclude_entry, "changed",
+			  G_CALLBACK (face_entry_changed), &fd_exclude);
+
+        g_signal_connect (fc.include_model, "row-deleted",
+		G_CALLBACK (face_rowdel), &fc);
+        g_signal_connect (fc.exclude_model, "row-deleted",
+		G_CALLBACK (face_rowdel), &fc);
+
+	selection = gtk_tree_view_get_selection (
+		GTK_TREE_VIEW (fc.include_treeview));
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+        g_signal_connect (selection, "changed", G_CALLBACK (face_selection_changed),
+		&fd_include);
+	selection = gtk_tree_view_get_selection (
+		GTK_TREE_VIEW (fc.exclude_treeview));
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+        g_signal_connect (selection, "changed", G_CALLBACK (face_selection_changed),
+		&fd_exclude);
+
+	g_signal_connect (fc.to_include_button, "clicked",
+			  G_CALLBACK (browser_move), &fd_include);
+	g_signal_connect (fc.to_exclude_button, "clicked",
+			  G_CALLBACK (browser_move), &fd_exclude);
+
+	g_signal_connect (fc.apply, "clicked",
+			  G_CALLBACK (browser_apply), &fc);
+}
+
 static void
 setup_notify_entry (const char *name,
 		       const char *key)
@@ -950,9 +1405,9 @@ setup_greeter_option (const char *name,
 	menu = gtk_menu_new ();
 
 	add_menuitem (menu, EXPANDED_LIBEXECDIR "/gdmlogin",
-		      _("Standard greeter"), val, &selected);
+		      _("GTK+ Greeter"), val, &selected);
 	add_menuitem (menu, EXPANDED_LIBEXECDIR "/gdmgreeter",
-		      _("Graphical greeter"), val, &selected);
+		      _("Themed Greeter"), val, &selected);
 
 	if (val != NULL &&
 	    selected == NULL)
@@ -1276,20 +1731,6 @@ setup_background_support (void)
 
 	background_toggled ();
 }
-
-enum {
-	THEME_COLUMN_SELECTED,
-	THEME_COLUMN_DIR,
-	THEME_COLUMN_FILE,
-	THEME_COLUMN_NAME,
-	THEME_COLUMN_DESCRIPTION,
-	THEME_COLUMN_AUTHOR,
-	THEME_COLUMN_COPYRIGHT,
-	THEME_COLUMN_SCREENSHOT,
-	THEME_NUM_COLUMNS
-};
-
-static char *selected_theme = NULL;
 
 static char *
 get_theme_dir (void)
@@ -2418,7 +2859,6 @@ setup_gui (void)
 
 	glade_helper_tagify_label (xml, "sg_logo_cat_label", "b");
 	glade_helper_tagify_label (xml, "sg_background_cat_label", "b");
-	glade_helper_tagify_label (xml, "sg_misc_cat_label", "b");
 
 	glade_helper_tagify_label (xml, "options_cat_label", "b");
 
@@ -2568,8 +3008,6 @@ setup_gui (void)
 
 	setup_greeter_toggle ("sg_use_24_clock",
 			      GDM_KEY_USE_24_CLOCK);
-	setup_greeter_toggle ("sg_browser",
-			      GDM_KEY_BROWSER);
 	setup_greeter_toggle ("sg_scale_background",
 			      GDM_KEY_BACKGROUNDSCALETOFIT);
 	setup_greeter_toggle ("sg_remote_color_only",
@@ -2586,6 +3024,13 @@ setup_gui (void)
 					 GDM_KEY_WELCOME);
 	setup_greeter_untranslate_entry ("remote_welcome",
 					 GDM_KEY_REMOTEWELCOME);
+
+	/* Face browser setup */
+	setup_face ();
+	setup_greeter_toggle ("sg_browser",
+			      GDM_KEY_BROWSER);
+	setup_greeter_toggle ("sg_allusers",
+			      GDM_KEY_INCLUDEALL);
 }
 
 static gboolean
@@ -2802,9 +3247,9 @@ main (int argc, char *argv[])
 					   GDM_KEY_EXCLUDE);
 	GdmSoundProgram = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
 						GDM_KEY_SOUND_PROGRAM);
-	GdmAllowRoot = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+	GdmAllowRoot = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
 						GDM_KEY_ALLOWROOT);
-	GdmAllowRemoteRoot = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+	GdmAllowRemoteRoot = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE),
 						GDM_KEY_ALLOWREMOTEROOT);
 	if (ve_string_empty (GdmSoundProgram) ||
 	    access (GdmSoundProgram, X_OK) != 0) {

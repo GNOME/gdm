@@ -36,7 +36,8 @@ struct _GdmUser {
     GdkPixbuf *picture;
 };
 
-void    gdm_users_init                  (GList **users, GList **users_string,
+gboolean gdm_is_user_valid		(const char *username);
+void     gdm_users_init                 (GList **users, GList **users_string,
 					char *exclude_user, GdkPixbuf *defface,
 					int *size_of_users, gboolean is_local,
 					gboolean read_faces);

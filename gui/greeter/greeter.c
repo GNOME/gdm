@@ -807,66 +807,30 @@ greeter_reread_config (int sig, gpointer data)
 	/* Also we may not need to check ALL those keys but just a few */
 	if (strcmp (theme, GdmGraphicalTheme) != 0 ||
 	    strcmp (theme_dir, GdmGraphicalThemeDir) != 0 ||
-	     ! gdm_common_string_same (config,
-			    GdmGtkRC,
-			    GDM_KEY_GTKRC) ||
-	     ! gdm_common_string_same (config,
-			    GdmGtkTheme,
-			    GDM_KEY_GTK_THEME) ||
-	     ! gdm_common_int_same (config,
-			 GdmXineramaScreen,
-			 GDM_KEY_XINERAMASCREEN) ||
-	     ! gdm_common_bool_same (config,
-			  GdmUseCirclesInEntry,
-			  GDM_KEY_ENTRY_CIRCLES) ||
-	     ! gdm_common_bool_same (config,
-			  GdmUseInvisibleInEntry,
-			  GDM_KEY_ENTRY_INVISIBLE) ||
-	     ! gdm_common_bool_same (config,
-			  GdmShowXtermFailsafeSession,
-			  GDM_KEY_SHOW_XTERM_FAILSAFE) ||
-	     ! gdm_common_bool_same (config,
-			  GdmShowGnomeFailsafeSession,
-			  GDM_KEY_SHOW_GNOME_FAILSAFE) ||
-	     ! gdm_common_string_same (config,
-			    GdmSessionDir,
-			    GDM_KEY_SESSDIR) ||
-	     ! gdm_common_string_same (config,
-			    GdmLocaleFile,
-			    GDM_KEY_LOCFILE) ||
-	     ! gdm_common_bool_same (config,
-			  GdmSystemMenu,
-			  GDM_KEY_SYSMENU) ||
-	     ! gdm_common_string_same (config,
-			    GdmHalt,
-			    GDM_KEY_HALT) ||
-	     ! gdm_common_string_same (config,
-			    GdmReboot,
-			    GDM_KEY_REBOOT) ||
-	     ! gdm_common_string_same (config,
-			    GdmSuspend,
-			    GDM_KEY_SUSPEND) ||
-	     ! gdm_common_string_same (config,
-			    GdmConfigurator,
-			    GDM_KEY_CONFIGURATOR) ||
-	     ! gdm_common_string_same (config,
-			    GdmInfoMsgFile,
-			    GDM_KEY_INFO_MSG_FILE) ||
-	     ! gdm_common_string_same (config,
-			    GdmInfoMsgFont,
-			    GDM_KEY_INFO_MSG_FONT) ||
-	     ! gdm_common_bool_same (config,
-			  GdmConfigAvailable,
-			  GDM_KEY_CONFIG_AVAILABLE) ||
-	     ! gdm_common_bool_same (config,
-			  GdmChooserButton,
-			  GDM_KEY_CHOOSER_BUTTON) ||
-	     ! gdm_common_bool_same (config,
-			  GdmTimedLoginEnable,
-			  GDM_KEY_TIMED_LOGIN_ENABLE) ||
-	     ! gdm_common_int_same (config,
-			 GdmTimedLoginDelay,
-			 GDM_KEY_TIMED_LOGIN_DELAY)) {
+	     ! gdm_common_string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
+	     ! gdm_common_string_same (config, GdmGtkTheme, GDM_KEY_GTK_THEME) ||
+	     ! gdm_common_int_same (config, GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
+	     ! gdm_common_bool_same (config, GdmUseCirclesInEntry, GDM_KEY_ENTRY_CIRCLES) ||
+	     ! gdm_common_bool_same (config, GdmUseInvisibleInEntry, GDM_KEY_ENTRY_INVISIBLE) ||
+	     ! gdm_common_bool_same (config, GdmShowXtermFailsafeSession, GDM_KEY_SHOW_XTERM_FAILSAFE) ||
+	     ! gdm_common_bool_same (config, GdmShowGnomeFailsafeSession, GDM_KEY_SHOW_GNOME_FAILSAFE) ||
+	     ! gdm_common_bool_same (config, GdmIncludeAll, GDM_KEY_INCLUDEALL) ||
+	     ! gdm_common_bool_same (config, GdmInclude, GDM_KEY_INCLUDE) ||
+	     ! gdm_common_bool_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
+	     ! gdm_common_string_same (config, GdmSessionDir, GDM_KEY_SESSDIR) ||
+	     ! gdm_common_string_same (config, GdmLocaleFile, GDM_KEY_LOCFILE) ||
+	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
+	     ! gdm_common_string_same (config, GdmHalt, GDM_KEY_HALT) ||
+	     ! gdm_common_string_same (config, GdmReboot, GDM_KEY_REBOOT) ||
+	     ! gdm_common_string_same (config, GdmSuspend, GDM_KEY_SUSPEND) ||
+	     ! gdm_common_string_same (config, GdmConfigurator, GDM_KEY_CONFIGURATOR) ||
+	     ! gdm_common_string_same (config, GdmInfoMsgFile, GDM_KEY_INFO_MSG_FILE) ||
+	     ! gdm_common_string_same (config, GdmInfoMsgFont, GDM_KEY_INFO_MSG_FONT) ||
+	     ! gdm_common_bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
+	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_CHOOSER_BUTTON) ||
+	     ! gdm_common_bool_same (config, GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE) ||
+	     ! gdm_common_int_same (config, GdmTimedLoginDelay, GDM_KEY_TIMED_LOGIN_DELAY)) {
+
 		/* Set busy cursor */
 		gdm_common_setup_cursor (GDK_WATCH);
 
@@ -1263,8 +1227,7 @@ main (int argc, char *argv[])
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
 				  FALSE /* markup */,
-				  _("The theme for the graphical greeter "
-				    "is corrupt"),
+				  _("The greeter theme is corrupt"),
 				  "%s",
 				  _("The theme does not contain "
 				    "definition for the username/password "

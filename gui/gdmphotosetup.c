@@ -252,7 +252,7 @@ main (int argc, char *argv[])
 
 	/* HACK */
 	/* only warn if gdmlogin is set for both local and remote greeter,
-	 * the graphical greeter does a different setup thingie for
+	 * the themed greeter does a different setup thingie for
 	 * the face browser and it would be hard to figure out here ... */
 	if ( ! face_browser &&
 	     strstr (greeter, "gdmlogin") != NULL &&

@@ -3362,6 +3362,9 @@ gdm_reread_config (int sig, gpointer data)
 			 GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
 	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
 	     ! gdm_common_bool_same (config, GdmBrowser, GDM_KEY_BROWSER) ||
+	     ! gdm_common_bool_same (config, GdmIncludeAll, GDM_KEY_INCLUDEALL) ||
+	     ! gdm_common_bool_same (config, GdmInclude, GDM_KEY_INCLUDE) ||
+	     ! gdm_common_bool_same (config, GdmExclude, GDM_KEY_EXCLUDE) ||
 	     ! gdm_common_bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
 	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_CHOOSER_BUTTON) ||
 	     ! gdm_common_bool_same (config, GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
