@@ -21,7 +21,6 @@
 
 #include <sys/types.h>
 
-#include "config.h"
 #include "gdm.h"
 
 void gdm_fail   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);

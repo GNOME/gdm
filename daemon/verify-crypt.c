@@ -169,8 +169,8 @@ gdm_verify_user (GdmDisplay *d,
 	 strcmp (pwent->pw_shell, "/bin/false") == 0)) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nThe system administrator"
-					    " has disabled your "
+					  _("\nThe system administrator "
+					    "has disabled your "
 					    "account."));
 	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
 	      _("Login disabled"));*/

@@ -485,7 +485,7 @@ gdm_config_parse (void)
     }
 
     if (pwent == NULL) {
-	    char *s = g_strdup_printf (_("The gdm user does not exist.  "
+	    char *s = g_strdup_printf (_("The gdm user does not exist. "
 					 "Please correct gdm configuration %s "
 					 "and restart gdm."),
 				       GDM_CONFIG_FILE);
@@ -515,7 +515,7 @@ gdm_config_parse (void)
     }
 
     if (grent == NULL) {
-	    char *s = g_strdup_printf (_("The gdm group does not exist.  "
+	    char *s = g_strdup_printf (_("The gdm group does not exist. "
 					 "Please correct gdm configuration %s "
 					 "and restart gdm."),
 				       GDM_CONFIG_FILE);
@@ -528,7 +528,7 @@ gdm_config_parse (void)
     if (GdmGroupId == 0) {
 	    char *s = g_strdup_printf (_("The gdm group is set to be root, but "
 					 "this is not allowed since it can "
-					 "pose a security risk.  Please "
+					 "pose a security risk. Please "
 					 "correct gdm configuration %s and "
 					 "restart gdm."), GDM_CONFIG_FILE);
 	    gdm_text_message_dialog (s);
@@ -565,7 +565,7 @@ gdm_config_parse (void)
     if (stat (GdmServAuthDir, &statbuf) == -1)  {
 	    char *s = g_strdup_printf (_("Server Authorization directory "
 					 "(daemon/ServAuthDir) is set to %s "
-					 "but this does not exist.  Please "
+					 "but this does not exist. Please "
 					 "correct gdm configuration %s and "
 					 "restart gdm."), GdmServAuthDir,
 				       GDM_CONFIG_FILE);
@@ -576,7 +576,7 @@ gdm_config_parse (void)
     if (! S_ISDIR (statbuf.st_mode)) {
 	    char *s = g_strdup_printf (_("Server Authorization directory "
 					 "(daemon/ServAuthDir) is set to %s "
-					 "but this is not a directory.  Please "
+					 "but this is not a directory. Please "
 					 "correct gdm configuration %s and "
 					 "restart gdm."), GdmServAuthDir,
 				       GDM_CONFIG_FILE);
@@ -588,7 +588,7 @@ gdm_config_parse (void)
 	    char *s = g_strdup_printf (_("Server Authorization directory "
 					 "(daemon/ServAuthDir) is set to %s "
 					 "but is not owned by user %s and group "
-					 "%s.  Please correct the ownership or "
+					 "%s. Please correct the ownership or "
 					 "gdm configuration %s and restart "
 					 "gdm."),
 				       GdmServAuthDir, GdmUser, GdmGroup,
@@ -602,7 +602,7 @@ gdm_config_parse (void)
 	    char *s = g_strdup_printf (_("Server Authorization directory "
 					 "(daemon/ServAuthDir) is set to %s "
 					 "but has the wrong permissions, it "
-					 "should have permissions of 0750."
+					 "should have permissions of 0750. "
 					 "Please correct the permissions or "
 					 "the gdm configuration %s and "
 					 "restart gdm."),
@@ -864,7 +864,7 @@ deal_with_x_crashes (GdmDisplay *d)
 	     * it for them */
 	    char *error = _("I cannot start the X server (your graphical "
 			    "interface).  It is likely that it is not set "
-			    "up correctly.  You will need to log in on a "
+			    "up correctly. You will need to log in on a "
 			    "console and rerun the X configuration "
 			    "program.  Then restart GDM.");
 	    gdm_text_message_dialog (error);
@@ -1521,10 +1521,10 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			char *s = g_strndup
 				(msg, strlen (GDM_SOP_COOKIE " XXXX XX"));
 			/* cut off most of the cookie for "security" */
-			gdm_debug ("Handeling message: '%s...'", s);
+			gdm_debug ("Handling message: '%s...'", s);
 			g_free (s);
 		} else {
-			gdm_debug ("Handeling message: '%s'", msg);
+			gdm_debug ("Handling message: '%s'", msg);
 		}
 	}
 
@@ -2090,7 +2090,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 static void
 gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 {
-	gdm_debug ("Handeling user message: '%s'", msg);
+	gdm_debug ("Handling user message: '%s'", msg);
 
 	if (strncmp (msg, GDM_SUP_AUTH_LOCAL " ",
 		     strlen (GDM_SUP_AUTH_LOCAL " ")) == 0) {

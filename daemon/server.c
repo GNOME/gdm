@@ -241,8 +241,8 @@ display_busy (GdmDisplay *disp)
 		 * of course additions are welcome to make this more robust */
 		if (strstr (buf, "Server is already active for display")
 		    == buf) {
-			gdm_error (_("Display %s is busy, there is another "
-				     "X server already running"),
+			gdm_error (_("Display %s is busy. There is another "
+				     "X server running already."),
 				   disp->name);
 			fclose (fp);
 			return TRUE;
@@ -338,7 +338,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     gnome_setenv ("DISPLAY", d->name, TRUE);
 
     if (pipe (server_signal_pipe) != 0) {
-	    gdm_error (_("%s: Error openning a pipe: %s"),
+	    gdm_error (_("%s: Error opening a pipe: %s"),
 		       "gdm_server_start", g_strerror (errno));
 	    return FALSE; 
     }

@@ -345,8 +345,8 @@ gdm_verify_user (GdmDisplay *d,
 	    gdm_error (_("Root login disallowed on display '%s'"),
 		       display);
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nThe system administrator"
-					    " is not allowed to login "
+					  _("\nThe system administrator "
+					    "is not allowed to login "
 					    "from this screen"));
 	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
 	      _("Root login disallowed"));*/
@@ -364,7 +364,7 @@ gdm_verify_user (GdmDisplay *d,
 	    gdm_error (_("Authentication token change failed for user %s"), login);
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, 
 		    _("\nThe change of the authentication token failed. "
-		      "Please try again later or cantact the system administrator."));
+		      "Please try again later or contact the system administrator."));
 	    error_msg_given = TRUE;
 	    goto pamerr;
 	}
@@ -437,9 +437,9 @@ gdm_verify_user (GdmDisplay *d,
 		     * neccessairly true, this message needs to be changed
 		     * to allow for such cases */
 		    auth_errmsg = g_strdup_printf
-			    (_("\nIncorrect username or password.  "
-			       "Letters must be typed in the correct case.  "  
-			       "Please be sure the Caps Lock key is not enabled"));
+			    (_("\nIncorrect username or password. "
+			       "Letters must be typed in the correct case. "  
+			       "Please make sure the Caps Lock key is not enabled."));
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
 		    g_free (auth_errmsg);
 	    } else {

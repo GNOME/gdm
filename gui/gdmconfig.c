@@ -140,7 +140,7 @@ GtkWidget *get_widget(const gchar *widget_name)
 						GTK_BUTTONS_OK,
 						_("The glade ui description file "
 						  "doesn't seem to contain the\n"
-						  "widget \"%s\".  "
+						  "widget \"%s\". "
 						  "Unfortunately I cannot continue.\n"
 						  "Please check your installation."),
 						widget_name);

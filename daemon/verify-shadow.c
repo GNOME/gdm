@@ -124,9 +124,9 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 	     * neccessairly true, this message needs to be changed
 	     * to allow for such cases */
 	    auth_errmsg = g_strdup_printf
-		    (_("\nIncorrect username or password.  "
-		       "Letters must be typed in the correct case.  "  
-		       "Please be sure the Caps Lock key is not enabled"));
+		    (_("\nIncorrect username or password. "
+		       "Letters must be typed in the correct case. "  
+		       "Please make sure the Caps Lock key is not enabled"));
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
 	    g_free (auth_errmsg);
 	    g_free (login);
@@ -144,9 +144,9 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 	     * neccessairly true, this message needs to be changed
 	     * to allow for such cases */
 	    auth_errmsg = g_strdup_printf
-		    (_("\nIncorrect username or password.  "
-		       "Letters must be typed in the correct case.  "  
-		       "Please be sure the Caps Lock key is not enabled"));
+		    (_("\nIncorrect username or password. "
+		       "Letters must be typed in the correct case. "  
+		       "Please make sure the Caps Lock key is not enabled"));
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
 	    g_free (auth_errmsg);
 	    g_free (login);
@@ -178,8 +178,8 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 	 strcmp (pwent->pw_shell, "/bin/false") == 0)) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
-					  _("\nThe system administrator"
-					    " has disabled your "
+					  _("\nThe system administrator "
+					    "has disabled your "
 					    "account."));
 	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
 	      _("Login disabled"));*/
