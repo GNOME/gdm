@@ -109,19 +109,6 @@ main (int argc, char *argv[])
 						       NULL);
 			int fddest, fdsrc;
 
-			fddest = open (photofile, O_WRONLY | O_CREAT);
-			if (fddest < 0) {
-				GtkWidget *d;
-				char *msg = g_strdup_printf
-					(_("File %s cannot be open for "
-					   "writing\nError: %s"),
-					 photofile,
-					 g_strerror (errno));
-				d = gnome_warning_dialog (msg);
-				gnome_dialog_run_and_close (GNOME_DIALOG (d));
-				g_free (photofile);
-				continue;
-			}
 			fdsrc = open (pixmap, O_RDONLY);
 			if (fdsrc < 0) {
 				GtkWidget *d;
@@ -133,12 +120,26 @@ main (int argc, char *argv[])
 				d = gnome_warning_dialog (msg);
 				gnome_dialog_run_and_close (GNOME_DIALOG (d));
 				g_free (photofile);
-				close (fddest);
+				continue;
+			}
+			fddest = open (photofile, O_WRONLY | O_CREAT);
+			if (fddest < 0) {
+				GtkWidget *d;
+				char *msg = g_strdup_printf
+					(_("File %s cannot be open for "
+					   "writing\nError: %s"),
+					 photofile,
+					 g_strerror (errno));
+				d = gnome_warning_dialog (msg);
+				gnome_dialog_run_and_close (GNOME_DIALOG (d));
+				g_free (photofile);
+				close (fdsrc);
 				continue;
 			}
 			while ((size = read (fdsrc, buf, sizeof (buf))) > 0) {
 				write (fddest, buf, size);
 			}
+			fchmod (fddest, 0600);
 			close (fdsrc);
 			close (fddest);
 			gnome_config_set_string ("/gdmphotosetup/last/picture",
