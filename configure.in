@@ -23,6 +23,8 @@ dnl ## internationalization support
 ALL_LINGUAS="ca cs da de el es et fi fr gl hu ja ko lt nl no pl pt_BR ru sv tr uk"
 AM_GNOME_GETTEXT
 
+AC_CHECK_FUNCS([setenv unsetenv])
+
 # TCP Wrappers for XDMCP access control
 AC_MSG_CHECKING("whether to use TCP wrappers")
 LIBWRAP_PATH=""

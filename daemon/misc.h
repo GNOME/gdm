@@ -19,13 +19,25 @@
 #ifndef GDM_MISC_H
 #define GDM_MISC_H
 
+#include "config.h"
 #include "gdm.h"
 
 void gdm_fail   (const gchar *format, ...);
 void gdm_info   (const gchar *format, ...);
 void gdm_error  (const gchar *format, ...);
 void gdm_debug  (const gchar *format, ...);
+
+#ifdef HAVE_SETENV
+#define gdm_setenv(var,value) setenv(var,value,-1)
+#else
 gint gdm_setenv (const gchar *var, const gchar *value);
+#endif
+
+#ifdef HAVE_UNSETENV
+#define gdm_unsetenv(var) unsetenv(var)
+#else
+gint gdm_unsetenv (const gchar *var);
+#endif
 
 #endif /* GDM_MISC_H */
 

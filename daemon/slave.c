@@ -335,7 +335,7 @@ gdm_slave_session_start ()
     gdm_setenv ("HOME", pwent->pw_dir);
     gdm_setenv ("GDMSESSION", session);
     gdm_setenv ("SHELL", pwent->pw_shell);
-    gdm_setenv ("MAIL", NULL);	/* Unset $MAIL for broken shells */
+    gdm_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
 
     /* Special PATH for root */
     if (pwent->pw_uid == 0)

@@ -164,8 +164,9 @@ gdm_debug (const gchar *format, ...)
  * interface is what the standard C Library is all about. - Duh!
  */
 
+#ifndef HAVE_SETENV
 gint 
-gdm_setenv (const gchar *var, const gchar *value) 
+gdm_setenv (const gchar *var, const gchar *value)
 {
     static gchar *lastenv = NULL; /* Holds last successful assignment pointer */
     gchar *envstr;		  /* Temporary environment string */
@@ -175,11 +176,11 @@ gdm_setenv (const gchar *var, const gchar *value)
     if (!var)
 	return -1;
 
-    /* If `value' is specified then set the variable accordingly. Otherwise clear it. */
-    if (value)
-	envstr = g_strconcat (var, "=", value, NULL);
-    else
-	envstr = g_strconcat (var, "=", NULL);
+    /* `value' is a prerequisite */
+    if (!value)
+	return -1;
+
+    envstr = g_strconcat (var, "=", value, NULL);
 
     /* If string space allocation failed then abort */
     if (!envstr)
@@ -197,6 +198,38 @@ gdm_setenv (const gchar *var, const gchar *value)
     
     return result;
 }
+#endif
 
+#ifndef HAVE_UNSETENV
+gint 
+gdm_unsetenv (const gchar *var)
+{
+    static gchar *lastenv = NULL; /* Holds last successful assignment pointer */
+    gchar *envstr;		  /* Temporary environment string */
+    gint result;		  /* Return value from the putenv() call */
+
+    /* `var' is a prerequisite */
+    if (!var)
+	return -1;
+
+    envstr = g_strdup (var);
+
+    /* If string space allocation failed then abort */
+    if (!envstr)
+	return -1;
+
+    /* Stuff the resulting string into the environment */
+    result = putenv (envstr);
+
+    /* If putenv() succeeded and lastenv is set, free the old pointer */
+    if (result == 0 && lastenv)
+	g_free (lastenv);
+
+    /* Save the current string pointer for the next gdm_setenv call */
+    lastenv = envstr;
+    
+    return result;
+}
+#endif
 
 /* EOF */
