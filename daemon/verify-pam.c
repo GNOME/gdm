@@ -1377,12 +1377,10 @@ gdm_verify_cleanup (GdmDisplay *d)
 #ifdef  HAVE_LOGINDEVPERM
         if (old_opened_session && old_did_setcred && d->console)
         {
-            struct passwd *gdm_pwent = NULL;
             (void) di_devperm_logout("/dev/console");
-
-            gdm_pwent = getpwnam (GdmUser);
-            (void) di_devperm_login("/dev/console", gdm_pwent->pw_uid,
-                gdm_pwent->pw_gid, NULL);
+            /* give it back to gdm user */
+            (void) di_devperm_login("/dev/console", GdmUserId, GdmGroupId,
+                NULL);
         }
 #endif  /* HAVE_LOGINDEVPERM */
 

@@ -933,10 +933,6 @@ gdm_final_cleanup (void)
 
 	gdm_in_final_cleanup = TRUE;
 
-#ifdef  HAVE_LOGINDEVPERM
-    (void) di_devperm_logout("/dev/console");
-#endif  /* HAVE_LOGINDEVPERM */
-
 	if (extra_process > 1) {
 		/* we sigterm extra processes, and we
 		 * don't wait */
@@ -1030,6 +1026,10 @@ gdm_final_cleanup (void)
 	if (GdmPidFile != NULL) {
 		VE_IGNORE_EINTR (unlink (GdmPidFile));
 	}
+
+#ifdef  HAVE_LOGINDEVPERM
+    (void) di_devperm_logout("/dev/console");
+#endif  /* HAVE_LOGINDEVPERM */
 }
 
 static gboolean
@@ -2045,16 +2045,6 @@ main (int argc, char *argv[])
     /* Parse configuration file */
     gdm_config_parse();
 
-#ifdef  HAVE_LOGINDEVPERM
-    {
-    struct passwd *gdm_pwent = NULL;
-    gdm_pwent = getpwnam (GdmUser);
-
-    di_devperm_login("/dev/console", gdm_pwent->pw_uid,
-        gdm_pwent->pw_gid, NULL);
-    }
-#endif  /* HAVE_LOGINDEVPERM */
-
     /* Check if another gdm process is already running */
     if (access (GdmPidFile, R_OK) == 0) {
 
@@ -2200,6 +2190,10 @@ main (int argc, char *argv[])
 #endif
 
     gdm_debug ("gdm_main: Here we go...");
+
+#ifdef  HAVE_LOGINDEVPERM
+    di_devperm_login("/dev/console", GdmUserId, GdmGroupId, NULL);
+#endif  /* HAVE_LOGINDEVPERM */
 
     /* Init XDMCP if applicable */
     if (GdmXdmcp && ! gdm_wait_for_go)
