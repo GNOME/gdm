@@ -60,9 +60,9 @@ TimedLoginDelay=30
 #GtkModulesList=gail:atk-bridge:@EXPANDED_LIBDIR@/gtk-2.0/modules/libdwellmouselistener:@EXPANDED_LIBDIR@/gtk-2.0/modules/libkeymouselistener
 
 # Default path to set.  The profile scripts will likely override this
-#DefaultPath=/bin:/usr/bin:@X_CONF_PATH@:@EXPANDED_BINDIR@
+#DefaultPath=@GDM_USER_PATH@
 # Default path for root.  The profile scripts will likely override this
-#RootPath=/sbin:/usr/sbin:/bin:/usr/bin:@X_CONF_PATH@:@EXPANDED_BINDIR@
+#RootPath=/sbin:/usr/sbin:@GDM_USER_PATH@
 
 # If you are having trouble with using a single server for a long time and
 # want gdm to kill/restart the server, turn this on
@@ -95,9 +95,9 @@ DisplayInitDir=@EXPANDED_SYSCONFDIR@/gdm/Init
 XKeepsCrashing=@EXPANDED_SYSCONFDIR@/gdm/XKeepsCrashing
 # Reboot, Halt and suspend commands, you can add different commands
 # separated by a semicolon and gdm will use the first one it can find
-#RebootCommand=/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now
-#HaltCommand=/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now
-#SuspendCommand=
+#RebootCommand=@REBOOT_COMMAND@
+#HaltCommand=@HALT_COMMAND@
+#SuspendCommand=@SUSPEND_COMMAND@
 # Probably should not touch the below this is the standard setup
 ServAuthDir=@EXPANDED_AUTHDIR@
 # This is our standard startup script.  A bit different from a normal

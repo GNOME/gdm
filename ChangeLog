@@ -1,3 +1,11 @@
+Thu Feb 02 2:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* configure.in, config/gdm.conf.in, daemon/gdm.h: Cleaned up
+	  the way the user's default PATH is set and allow it to be
+	  configurable.  Also allow default Halt, Reboot, and Suspend
+	  commands to be different on Solaris.
+	* acconfig.h: Cleanup, added new configure options.
+	
 Wed Feb 02 11:20:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* Release 2.6.0.7
@@ -6,7 +14,7 @@ Tue Jan 28 15:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* This patch makes gdm2 build with newer versions of the build
 	  tools.  Previously it was requiring automake-1.4, autoconf-1.4,
-	  and clocal-1.4.  Better error checking in the newer version
+	  and aclocal-1.4.  Better error checking in the newer version
 	  caught the following issues:
 	* Makefile.am:  Added distuninstallcheck_listfiles for the
 	  files in /var/scrollkeeper, which were causing "makedist"

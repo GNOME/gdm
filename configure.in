@@ -63,6 +63,16 @@ AC_ARG_WITH(tcp-wrappers,
 
 AC_ARG_WITH(selinux, [  --with-selinux  Add SELinux support])
 
+withval=""
+AC_ARG_WITH(post-path,
+[      --with-post-path=<PATH>   add PATH to end of user's PATH when logging in],[
+if test x$withval != x; then
+   AC_MSG_RESULT("PATH ${withval} with be added to end of user's PATH when logging in.")
+fi])
+if test x$withval != x; then
+	USER_POST_PATH="$withval"
+fi
+
 dnl
 dnl PAM prefix
 dnl
@@ -592,6 +602,9 @@ EXPANDED_PIXMAPDIR=`eval echo $PIXMAPDIR_TMP`
 AC_SUBST(EXPANDED_PIXMAPDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_PIXMAPDIR,"$EXPANDED_PIXMAPDIR")
 
+# Only set EXPANDED_BINDIR if it is a value that is not in
+# the path already (/bin or /usr/bin)
+#
 BINDIR_TMP="$bindir"
 EXPANDED_BINDIR=`eval echo $BINDIR_TMP`
 AC_SUBST(EXPANDED_BINDIR)
@@ -673,34 +686,6 @@ AC_CHECK_LIB(devinfo, di_devperm_login, [
 		     	AC_DEFINE(HAVE_LOGINDEVPERM)
 			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -ldevinfo" ])
 
-if test -x /usr/X11R6/bin/X; then
-   X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
-   X_SERVER_PATH="/usr/X11R6/bin"
-   X_SERVER="/usr/X11R6/bin/X"
-   X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin"
-   X_CONFIG_OPTIONS="-audit 0"
-elif test -x /usr/openwin/bin/Xsun; then
-   X_PATH="/usr/openwin/bin"
-   X_SERVER_PATH="/usr/openwin/bin"
-   X_SERVER="/usr/openwin/bin/Xsun"
-   X_CONF_PATH="/usr/openwin/bin"
-   X_CONFIG_OPTIONS="-audit 0 -nobanner"
-elif test -x /opt/X11R6/bin/X; then
-   X_PATH="/opt/X11R6/bin:/usr/X11R6/bin:/usr/bin/X11"
-   X_SERVER_PATH="/opt/X11R6/bin"
-   X_SERVER="/opt/X11R6/bin/X"
-   X_CONF_PATH="/opt/X11R6/bin:/usr/local/bin:/usr/X11R6/bin:/usr/bin/X11"
-   X_CONFIG_OPTIONS="-audit 0"   
-else
-   # what to do, what to do, this is wrong, but this just sets the
-   # defaults, perhaps this user is cross compiling or some such
-   X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
-   X_SERVER_PATH="/usr/X11R6/bin"
-   X_SERVER="/usr/X11R6/bin/X"
-   X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin"
-   X_CONFIG_OPTIONS="-audit 0"
-fi
-
 # On Solaris, Xnest is only shipped in /usr/openwin/, so set path
 # properly.  The Xsun version of Xnest also requires the -pn
 # argument so it can be run as the user.  Note that you can have
@@ -708,27 +693,106 @@ fi
 # Solaris doesn't ship with Xnest), so this makes Solaris work
 # properly when the X.org Xserver is included.
 #
+# Define different Halt, and Reboot commands differently for Solaris.
+#
+# On Solaris/bin is a symlink to /usr/bin, so don't include it in
+# GDM_USER_PATH.
+#
 case "$host" in
 *solaris*)
+        GDM_USER_PATH="/usr/bin"
         X_XNEST_PATH="/usr/openwin/bin"
         X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
+        HALT_COMMAND="/sbin/init 0"
+        REBOOT_COMMAND="/sbin/init 6"
+        SUSPEND_COMMAND="/usr/openwin/bin/sys-suspend -n"
         ;;
 *)
+        GDM_USER_PATH="/bin:/usr/bin"
         X_XNEST_PATH=$X_SERVER_PATH
         X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
+        HALT_COMMAND="/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shutdown -h now"
+        REBOOT_COMMAND="/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
+        SUSPEND_COMMAND=""
         ;;
 esac
+
+# First check with "! -h" for /usr/X11R6 and /usr/X11 since they often
+# symlink to each other, and configure should use the more stable
+# location (the real directory) if possible.
+#
+if test ! -h /usr/X11R6 -a -x /usr/X11R6/bin/X; then
+   X_PATH="/usr/X11R6/bin"
+   X_SERVER_PATH="/usr/X11R6/bin"
+   X_SERVER="/usr/X11R6/bin/X"
+   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11R6/bin"
+   X_CONFIG_OPTIONS="-audit 0"
+elif test ! -h /usr/X11 -a -x /usr/X11/bin/X; then
+   X_PATH="/usr/X11/bin"
+   X_SERVER_PATH="/usr/X11/bin"
+   X_SERVER="/usr/X11/bin/X"
+   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11/bin"
+   X_CONFIG_OPTIONS="-audit 0"
+elif test -x /usr/X11R6/bin/X; then
+   X_PATH="/usr/X11R6/bin"
+   X_SERVER_PATH="/usr/X11R6/bin"
+   X_SERVER="/usr/X11R6/bin/X"
+   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11R6/bin"
+   X_CONFIG_OPTIONS="-audit 0"
+elif test -x /usr/X11/bin/X; then
+   X_PATH="/usr/X11/bin"
+   X_SERVER_PATH="/usr/X11/bin"
+   X_SERVER="/usr/X11/bin/X"
+   GDM_USER_PATH="$GDM_USER_PATH:/usr/X11/bin"
+   X_CONFIG_OPTIONS="-audit 0"
+elif test -x /usr/openwin/bin/Xsun; then
+   X_PATH="/usr/openwin/bin"
+   X_SERVER_PATH="/usr/openwin/bin"
+   X_SERVER="/usr/openwin/bin/Xsun"
+   GDM_USER_PATH="$GDM_USER_PATH:/usr/openwin/bin"
+   X_CONFIG_OPTIONS="-audit 0 -nobanner"
+elif test -x /opt/X11R6/bin/X; then
+   X_PATH="/opt/X11R6/bin"
+   X_SERVER_PATH="/opt/X11R6/bin"
+   X_SERVER="/opt/X11R6/bin/X"
+   GDM_USER_PATH="$GDM_USER_PATH:/opt/X11R6/bin"
+   X_CONFIG_OPTIONS="-audit 0"   
+else
+   # what to do, what to do, this is wrong, but this just sets the
+   # defaults, perhaps this user is cross compiling or some such
+   X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
+   X_SERVER_PATH="/usr/X11R6/bin"
+   X_SERVER="/usr/X11R6/bin/X"
+   GDM_USER_PATH="$GDM_USER_PATH:/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin:/usr/openwin/bin"
+   X_CONFIG_OPTIONS="-audit 0"
+fi
+
+# Don't add EXPANDED_BINDIR to GDM_USER_PATH if it is already in the PATH.
+if test "x$EXPANDED_BINDIR" != "x/bin" -a "x$EXPANDED_BINDIR" != "x/usr/bin"; then
+   GDM_USER_PATH="$GDM_USER_PATH:$EXPANDED_BINDIR"
+fi
+
+if test "x$USER_POST_PATH" != "x"; then
+   GDM_USER_PATH="$GDM_USER_PATH:$USER_POST_PATH"
+fi
+
+AC_SUBST(HALT_COMMAND)
+AC_DEFINE_UNQUOTED(HALT_COMMAND,"$HALT_COMMAND")
+AC_SUBST(REBOOT_COMMAND)
+AC_DEFINE_UNQUOTED(REBOOT_COMMAND,"$REBOOT_COMMAND")
+AC_SUBST(SUSPEND_COMMAND)
+AC_DEFINE_UNQUOTED(SUSPEND_COMMAND,"$SUSPEND_COMMAND")
+AC_SUBST(GDM_USER_PATH)
+AC_DEFINE_UNQUOTED(GDM_USER_PATH,"$GDM_USER_PATH")
 
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
 AC_SUBST(X_SERVER_PATH)
 AC_SUBST(X_XNEST_PATH)
 AC_SUBST(X_XNEST_CONFIG_OPTIONS)
-AC_SUBST(X_CONF_PATH)
 AC_SUBST(X_CONFIG_OPTIONS)
 AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER")
 AC_DEFINE_UNQUOTED(X_SERVER_PATH,"$X_SERVER_PATH")
-AC_DEFINE_UNQUOTED(X_CONF_PATH,"$X_CONF_PATH")
 AC_DEFINE_UNQUOTED(X_CONFIG_OPTIONS,"$X_CONFIG_OPTIONS", Options used when launching xserver)
 
 SYSCONFDIR_TMP="$sysconfdir"
