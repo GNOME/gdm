@@ -1,29 +1,18 @@
-#
-# This was based on the RedHat gdm2 beta2 rpm package with some surgery
-# -George
-#
-# Note that this is NOT a relocatable package
-#
+%define ver           @VERSION@
+%define rel           1
+%define localstatedir /var/lib
 
-%define ver      @VERSION@
-%define rel      1
-%define prefix   /usr
-
-Summary: The GNOME Display Manager.
-Name: gdm
-Version: %ver
-Release: %rel
-Copyright: LGPL/GPL
-Group: User Interface/X
-Source: ftp://ftp.5z.com/pub/unix/gdm-%{PACKAGE_VERSION}.tar.gz
-
-BuildRoot: /var/tmp/gdm-%{PACKAGE_VERSION}-root
-
-Prereq: /usr/sbin/useradd
-Requires: pam >= 0.68
-Requires: gnome-libs >= 1.0.17
-
-Docdir: %{prefix}/doc
+Summary:     The GNOME Display Manager.
+Name:        gdm
+Version:     %ver
+Release:     %rel
+Copyright:   LGPL/GPL
+Group:       User Interface/X
+Source:      ftp://ftp.5z.com/pub/unix/gdm-%{version}.tar.gz
+BuildRoot:   /var/tmp/gdm-%{version}-root
+Prereq:      /usr/sbin/useradd
+Requires:    pam >= 0.68
+Requires:    gnome-libs >= 1.0.17
 
 %description
 Gdm (the GNOME Display Manager) is a highly configurable
@@ -35,7 +24,10 @@ several different X sessions on your local machine at the same time.
 %setup -q
 
 %build
-CFLAGS="-g $RPM_OPT_FLAGS" ./configure --prefix=%prefix --sysconfdir=/etc/X11 --localstatedir=/var --enable-console-helper
+CFLAGS="-g $RPM_OPT_FLAGS" ./configure --localstatedir=%{localstatedir} \
+    --prefix=%{_prefix} --sysconfdir=%{_sysconfdir}/X11 \
+    --bindir=%{_bindir} --datadir=%{_datadir} --sbindir=%{_sbindir}
+
 make
 
 %install
@@ -43,30 +35,31 @@ rm -rf $RPM_BUILD_ROOT
 
 /usr/sbin/useradd -r gdm > /dev/null 2>&1 || /bin/true
 
-make prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT/etc/X11 localstatedir=$RPM_BUILD_ROOT/var install
-# docs go elsewhere
-rm -rf $RPM_BUILD_ROOT/%{prefix}/doc
+make sysconfdir=$RPM_BUILD_ROOT%{_sysconfdir}/X11 \
+    prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
+    datadir=$RPM_BUILD_ROOT%{_datadir} \
+    localstatedir=$RPM_BUILD_ROOT%{localstatedir} \
+    sbindir=$RPM_BUILD_ROOT%{_sbindir} install
+
 
 # install RH specific session files
-rm -f $RPM_BUILD_ROOT/etc/X11/gdm/Sessions/*
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/*
 
-install -m 755 config/Default.redhat $RPM_BUILD_ROOT/etc/X11/gdm/Sessions/Default
-install -m 755 config/Gnome $RPM_BUILD_ROOT/etc/X11/gdm/Sessions/Gnome
-install -m 755 config/Failsafe.redhat $RPM_BUILD_ROOT/etc/X11/gdm/Sessions/Failsafe
-ln -sf Default $RPM_BUILD_ROOT/etc/X11/gdm/Sessions/default
+install -m 755 config/Default.redhat $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/Default
+install -m 755 config/Gnome $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/Gnome
+install -m 755 config/Failsafe.redhat $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/Failsafe
+ln -sf Default $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Sessions/default
 
 # change default Init script to be Red Hat default
-ln -sf ../../xdm/Xsetup_0 $RPM_BUILD_ROOT/etc/X11/gdm/Init/Default
+ln -sf ../../xdm/Xsetup_0 $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/Init/Default
 
 # run GiveConsole/TakeConsole
-ln -sf ../../xdm/GiveConsole $RPM_BUILD_ROOT/etc/X11/gdm/PreSession/Default
-ln -sf ../../xdm/TakeConsole $RPM_BUILD_ROOT/etc/X11/gdm/PostSession/Default
+ln -sf ../../xdm/GiveConsole $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/PreSession/Default
+ln -sf ../../xdm/TakeConsole $RPM_BUILD_ROOT%{_sysconfdir}/X11/gdm/PostSession/Default
 
 # move pam.d stuff to right place
-mv $RPM_BUILD_ROOT/etc/X11/pam.d $RPM_BUILD_ROOT/etc
+mv $RPM_BUILD_ROOT%{_sysconfdir}/X11/pam.d $RPM_BUILD_ROOT%{_sysconfdir}
 
-# strip binaries
-strip $RPM_BUILD_ROOT%{prefix}/bin/*
 
 %clean
 [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
@@ -81,32 +74,43 @@ exit 0
 %defattr(-, root, root)
 
 %doc AUTHORS COPYING ChangeLog NEWS README
-%{prefix}/bin/*
-${prefix}/sbin/gdmconfig
-%config /etc/pam.d/gdm
-%config /etc/pam.d/gdmconfig
-%config /etc/security/console.apps/gdmconfig
-%config /etc/X11/gdm/gnomerc
-%config /etc/X11/gdm/gdm.conf
-%config /etc/X11/gdm/locale.alias
-%config /etc/X11/gdm/Sessions/*
-%config /etc/X11/gdm/Init/*
-%config /etc/X11/gdm/PreSession/*
-%config /etc/X11/gdm/PostSession/*
-%{prefix}/share/gdm/gdmconfig.glade
-%{prefix}/share/gdm/gdmchooser.glade
-%{prefix}/share/gnome/apps/System/gdmconfig.desktop
-%{prefix}/share/locale/*/*/*
-%{prefix}/share/pixmaps/*
+<<<<<<< gdm.spec.in
+%{_bindir}/*
+%{_sbindir}/*
+%config %{_sysconfdir}/pam.d/gdm
+%config %{_sysconfdir}/pam.d/gdmconfig
+%config %{_sysconfdir}/security/console.apps/gdmconfig
+%config %{_sysconfdir}/X11/gdm/gnomerc
+%config %{_sysconfdir}/X11/gdm/gdm.conf
+%config %{_sysconfdir}/X11/gdm/locale.alias
+%config %{_sysconfdir}/X11/gdm/Sessions/*
+%config %{_sysconfdir}/X11/gdm/Init/*
+%config %{_sysconfdir}/X11/gdm/PreSession/*
+%config %{_sysconfdir}/X11/gdm/PostSession/*
+%{_datadir}/gdm/gdmconfig.glade
+%{_datadir}/gdm/gdmchooser.glade
+%{_datadir}/gnome/apps/System/gdmconfig.desktop
+%{_datadir}/locale/*/*/*
+%{_datadir}/pixmaps/*
+%attr(750, gdm, gdm) %dir %{localstatedir}/gdm
 
-%attr(750, gdm, gdm) %dir /var/gdm
 
 %changelog
+* Wed Mar 07 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
+- finalize patches that have been pending.  Merge changes forward, and
+  commit to CVS.
+
 * Mon Mar 05 2001 Lee Mallabone <lee0@callnetuk.com>
 - Change glade file paths and add gdmchooser glade file.
 
 * Wed Feb 28 2001 Lee Mallabone <lee0@callnetuk.com>
 - Add necessary paths/flags to use console-helper for gdmconfig.
+
+* Thu Feb 22 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
+- %define localstatedir /var/lib and related changes
+
+* Tue Feb 20 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
+- macro cleanups
 
 * Fri Feb 03 2001 George Lebl <jirka@5z.com>
 - Add gdmconfig files
