@@ -752,6 +752,7 @@ gdm_start_first_unborn_local (int delay)
 				 * autologged in */
 				gdm_first_login = FALSE;
 			} else {
+				gdm_first_login = FALSE;
 				break;
 			}
 		}

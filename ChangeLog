@@ -1,3 +1,16 @@
+Tue Jun 04 21:45:19 2002  George Lebl <jirka@5z.com>
+
+	* Release 2.3.90.6
+
+	* configure.in: raise version
+
+	* daemon/gdm.c: properly update the first login bool so
+	  that not all logins after a slave dies are first logins.
+
+	* daemon/slave.c: SECURITY FIX! after the automatic login,
+	  return from the gdm_slave_run so that the display can be
+	  reinitted.  Else clients may be left around.  Fixes #84055
+
 Mon Jun 03 11:43:25 2002  George Lebl <jirka@5z.com>
 
 	* Release 2.3.90.5

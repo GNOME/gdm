@@ -566,6 +566,10 @@ gdm_slave_run (GdmDisplay *display)
 		    gdm_verify_cleanup (d);
 		    _exit (DISPLAY_REMANAGE);
 	    }
+
+	    /* return to gdm_slave_start so that the server
+	     * can be reinitted and all that kind of fun stuff. */
+	    return;
     }
 
     if (gdm_first_login)
@@ -615,6 +619,9 @@ gdm_slave_run (GdmDisplay *display)
 		    gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
 		    gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
 	    }
+	    /* Note that greet is only true if the above was no 'login',
+	     * so no need to reinit the server nor rebake cookies
+	     * nor such nonsense */
     } while (greet);
 }
 
