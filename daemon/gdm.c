@@ -75,20 +75,20 @@ gchar *GdmPidFile = NULL;
 gchar *GdmDefaultPath = NULL;
 gchar *GdmRootPath = NULL;
 gchar *GdmDefaultLocale = NULL;
-gint  GdmKillInitClients = 0;
+gboolean  GdmKillInitClients = FALSE;
 gint  GdmUserMaxFile = 0;
-gint  GdmXdmcp = 0;
+gboolean  GdmXdmcp = FALSE;
 gint  GdmDispPerHost = 0;
 gint  GdmMaxPending = 0;
 gint  GdmMaxManageWait = 0;
 gint  GdmMaxSessions = 0;
 gint  GdmPort = 0;
-gint  GdmIndirect = 0;
+gboolean  GdmIndirect = FALSE;
 gint  GdmMaxIndirect = 0;
 gint  GdmMaxIndirectWait = 0;
-gint  GdmDebug = 0;
-gint  GdmVerboseAuth = 0;
-gint  GdmAllowRoot = 0;
+gboolean  GdmDebug = FALSE;
+gboolean  GdmVerboseAuth = FALSE;
+gboolean  GdmAllowRoot = FALSE;
 gint  GdmRelaxPerms = 0;
 gint  GdmRetryDelay = 0;
 
@@ -124,7 +124,7 @@ gdm_config_parse (void)
     GdmGreeter = gnome_config_get_string (GDM_KEY_GREETER);
     GdmGroup = gnome_config_get_string (GDM_KEY_GROUP);
     GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
-    GdmKillInitClients = gnome_config_get_int (GDM_KEY_KILLIC);
+    GdmKillInitClients = gnome_config_get_bool (GDM_KEY_KILLIC);
     GdmLogDir= gnome_config_get_string (GDM_KEY_LOGDIR);
     GdmPidFile = gnome_config_get_string (GDM_KEY_PIDFILE);
     GdmPostSession = gnome_config_get_string (GDM_KEY_POSTSESS);
@@ -140,22 +140,22 @@ gdm_config_parse (void)
     GdmUserAuthFile = gnome_config_get_string (GDM_KEY_UAUTHFILE);
     GdmUserAuthFB = gnome_config_get_string (GDM_KEY_UAUTHFB);
 
-    GdmAllowRoot = gnome_config_get_int (GDM_KEY_ALLOWROOT);
+    GdmAllowRoot = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
     GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
-    GdmVerboseAuth = gnome_config_get_int (GDM_KEY_VERBAUTH);
+    GdmVerboseAuth = gnome_config_get_bool (GDM_KEY_VERBAUTH);
 
-    GdmXdmcp = gnome_config_get_int (GDM_KEY_XDMCP);
+    GdmXdmcp = gnome_config_get_bool (GDM_KEY_XDMCP);
     GdmDispPerHost = gnome_config_get_int (GDM_KEY_DISPERHOST);
     GdmMaxPending = gnome_config_get_int (GDM_KEY_MAXPEND);
     GdmMaxManageWait = gnome_config_get_int (GDM_KEY_MAXWAIT);
     GdmMaxSessions = gnome_config_get_int (GDM_KEY_MAXSESS);
     GdmPort = gnome_config_get_int (GDM_KEY_UDPPORT);
-    GdmIndirect = gnome_config_get_int (GDM_KEY_INDIRECT);
+    GdmIndirect = gnome_config_get_bool (GDM_KEY_INDIRECT);
     GdmMaxIndirect = gnome_config_get_int (GDM_KEY_MAXINDIR);
     GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);    
 
-    GdmDebug = gnome_config_get_int (GDM_KEY_DEBUG);
+    GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
 
     gnome_config_pop_prefix();
 

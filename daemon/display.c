@@ -32,7 +32,7 @@
 static const gchar RCSid[]="$Id$";
 
 /* External vars */
-extern gint GdmXdmcp;
+extern gboolean GdmXdmcp;
 extern gint sessions;
 extern gint pending;
 extern GSList *displays;

@@ -6,7 +6,7 @@ DisplayInitDir=@sysconfdir@/gdm/Init
 Greeter=@bindir@/gdmlogin --disable-sound --disable-crash-dialog
 Group=gdm
 HaltCommand=/sbin/shutdown -h now
-KillInitClients=1
+KillInitClients=true
 LogDir=@authdir@
 PidFile=/var/run/gdm.pid
 PostSessionScriptDir=@sysconfdir@/gdm/PostSession/
@@ -21,15 +21,15 @@ UserAuthFBDir=/tmp
 UserAuthFile=.Xauthority
 
 [security]
-AllowRoot=1
+AllowRoot=true
 RelaxPermissions=0
 RetryDelay=3
 UserMaxFile=65536
-VerboseAuth=0
+VerboseAuth=false
 
 [xdmcp]
-Enable=0
-HonorIndirect=0
+Enable=false
+HonorIndirect=false
 MaxPending=4
 MaxPendingIndirect=4
 MaxSessions=16
@@ -71,7 +71,7 @@ HostImageDir=@datadir@/hosts/
 ScanTime=3
 
 [debug]
-Enable=0
+Enable=false
 
 [servers]
 0=/usr/bin/X11/X

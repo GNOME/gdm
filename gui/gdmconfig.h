@@ -76,6 +76,8 @@
         gnome_config_set_int(key, gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(glade_xml_get_widget(GUI, spin_button_name))));
 
 #define gdm_toggle_write(toggle_name, key) \
+        gnome_config_set_bool(key, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(GUI, toggle_name)))?TRUE:FALSE);
+#define gdm_toggle_write_int(toggle_name, key) \
         gnome_config_set_int(key, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(GUI, toggle_name)))?1:0);
 
 #define gdm_icon_write(icon_name, key) \

@@ -1046,9 +1046,13 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	    
 	    for (i=32 ; i > 0 ; i=i/2) {
 		gdk_window_move (login->window, i+x, y);
+		gdk_flush ();
 		gdk_window_move (login->window, x, y);
+		gdk_flush ();
 		gdk_window_move (login->window, -i+x, y);
+		gdk_flush ();
 		gdk_window_move (login->window, x, y);
+		gdk_flush ();
 	    }
 	}
 

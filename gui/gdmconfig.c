@@ -126,10 +126,11 @@ gdm_config_parse_most (void)
  
 
     /* Fill the widgets in Security tab */
-    gdm_toggle_set("allow_root", gnome_config_get_int(GDM_KEY_ALLOWROOT));
-    gdm_toggle_set("kill_init_clients", gnome_config_get_int(GDM_KEY_KILLIC));
+    gdm_toggle_set("allow_root", gnome_config_get_bool(GDM_KEY_ALLOWROOT));
+    gdm_toggle_set("kill_init_clients", gnome_config_get_bool(GDM_KEY_KILLIC));
+    /* FIXME: see comment on _set */
     gdm_toggle_set("relax_perms", gnome_config_get_int(GDM_KEY_RELAXPERM));
-    gdm_toggle_set("verbose_auth", gnome_config_get_int(GDM_KEY_VERBAUTH));
+    gdm_toggle_set("verbose_auth", gnome_config_get_bool(GDM_KEY_VERBAUTH));
 
     gdm_entry_set("gdm_runs_as_user", gnome_config_get_string (GDM_KEY_USER));
     gdm_entry_set("gdm_runs_as_group", gnome_config_get_string (GDM_KEY_GROUP));
@@ -143,7 +144,7 @@ gdm_config_parse_most (void)
 
     /* Fill the widgets in the XDMCP tab */
     /* enable toggle is in parse_remaining() */
-    gdm_toggle_set("honour_indirect", gnome_config_get_int(GDM_KEY_INDIRECT));
+    gdm_toggle_set("honour_indirect", gnome_config_get_bool(GDM_KEY_INDIRECT));
     gdm_spin_set("net_port", gnome_config_get_int(GDM_KEY_UDPPORT));
     gdm_spin_set("net_requests", gnome_config_get_int(GDM_KEY_MAXPEND));
     gdm_spin_set("net_indirect_requests", gnome_config_get_int(GDM_KEY_MAXINDIR));
@@ -157,8 +158,8 @@ gdm_config_parse_most (void)
     gdm_entry_set("logo_file", gnome_config_get_string (GDM_KEY_LOGO));
     gdm_icon_set("gdm_icon", gnome_config_get_string (GDM_KEY_ICON));
     
-    gdm_toggle_set("show_system", gnome_config_get_int (GDM_KEY_SYSMENU));
-    gdm_toggle_set("quiver", gnome_config_get_int (GDM_KEY_QUIVER));
+    gdm_toggle_set("show_system", gnome_config_get_bool (GDM_KEY_SYSMENU));
+    gdm_toggle_set("quiver", gnome_config_get_bool (GDM_KEY_QUIVER));
     
     gdm_entry_set("exclude_users", gnome_config_get_string (GDM_KEY_EXCLUDE));
     /* font picker is in parse_remaining() */
@@ -181,7 +182,7 @@ gdm_config_parse_most (void)
     gdm_entry_set("default_host_image_file", gnome_config_get_string (GDM_KEY_HOST));
     gdm_spin_set("refresh_interval", gnome_config_get_int(GDM_KEY_SCAN));
 
-    gdm_toggle_set("enable_debug", gnome_config_get_int(GDM_KEY_DEBUG));
+    gdm_toggle_set("enable_debug", gnome_config_get_bool(GDM_KEY_DEBUG));
 
     gnome_config_pop_prefix();
     
@@ -215,7 +216,7 @@ gdm_config_parse_remaining (void)
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
     /* Ensure the XDMCP frame is the correct sensitivity */
-    gdm_toggle_set("enable_xdmcp", gnome_config_get_int(GDM_KEY_XDMCP));
+    gdm_toggle_set("enable_xdmcp", gnome_config_get_bool(GDM_KEY_XDMCP));
     
     /* This should make the font picker to update itself. But for some
      * strange reason, it doesn't.
@@ -223,9 +224,23 @@ gdm_config_parse_remaining (void)
     gdm_font_set("font_picker", gnome_config_get_string (GDM_KEY_FONT));
 
     /* Face browser stuff */
-    gdm_toggle_set("enable_face_browser", gnome_config_get_int (GDM_KEY_BROWSER));
+    gdm_toggle_set("enable_face_browser", gnome_config_get_bool (GDM_KEY_BROWSER));
     
     gnome_config_pop_prefix();
+}
+
+static void
+run_warn_dialog (void)
+{
+	GtkWidget *w;
+
+	w = gnome_ok_dialog_parented
+		(_("The greeter settings will take effect the next time\n"
+		   "it is displayed.  The rest of the settings will not\n"
+		   "take effect until gdm is restarted or the computer is\n"
+		   "rebooted"),
+		 GTK_WINDOW (GDMconfigurator));
+	gnome_dialog_run_and_close (GNOME_DIALOG (w));
 }
 
 
@@ -244,6 +259,7 @@ write_new_config_file                  (GnomePropertyBox *gnomepropertybox,
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
     
     /* Write out the widget contents of the GDM tab */
+    gdm_entry_write("automatic_login", GDM_KEY_AUTOMATICLOGIN);
     gdm_entry_write("chooser_binary", GDM_KEY_CHOOSER);
     gdm_entry_write("greeter_binary", GDM_KEY_GREETER);
     gdm_entry_write("halt_command", GDM_KEY_HALT);
@@ -263,7 +279,8 @@ write_new_config_file                  (GnomePropertyBox *gnomepropertybox,
     /* Write out the widget contents of the Security tab */
     gdm_toggle_write("allow_root", GDM_KEY_ALLOWROOT);
     gdm_toggle_write("kill_init_clients", GDM_KEY_KILLIC);
-    gdm_toggle_write("relax_perms", GDM_KEY_RELAXPERM);
+    /* FIXME: This should allow 0, 1, 2 levels, it should really be an enum! */
+    gdm_toggle_write_int("relax_perms", GDM_KEY_RELAXPERM);
     gdm_toggle_write("verbose_auth", GDM_KEY_VERBAUTH);
 
     gdm_entry_write("gdm_runs_as_user", GDM_KEY_USER);
@@ -294,6 +311,11 @@ write_new_config_file                  (GnomePropertyBox *gnomepropertybox,
     
     gdm_toggle_write("show_system", GDM_KEY_SYSMENU);
     gdm_toggle_write("quiver", GDM_KEY_QUIVER);
+    gdm_entry_write("background_program", GDM_KEY_BACKGROUNDPROG);
+    gdm_toggle_write("lock_position", GDM_KEY_LOCK_POSITION);
+    gdm_toggle_write("set_position", GDM_KEY_SET_POSITION);
+    gdm_spin_write("position_x", GDM_KEY_POSITIONX);
+    gdm_spin_write("position_y", GDM_KEY_POSITIONY);
     
     gdm_entry_write("exclude_users", GDM_KEY_EXCLUDE);
     gdm_font_write("font_picker", GDM_KEY_FONT);
@@ -335,6 +357,8 @@ write_new_config_file                  (GnomePropertyBox *gnomepropertybox,
 
     gnome_config_pop_prefix();
     gnome_config_sync();
+
+    run_warn_dialog ();
 }
 
 

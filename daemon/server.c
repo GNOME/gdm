@@ -52,7 +52,7 @@ extern gchar *argdelim;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmServAuthDir;
 extern gchar *GdmLogDir;
-extern gint GdmXdmcp;
+extern gboolean GdmXdmcp;
 extern sigset_t sysmask;
 
 /* Global vars */

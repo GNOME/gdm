@@ -71,7 +71,7 @@ extern gchar *GdmUserAuthFile;
 extern gchar *GdmDefaultLocale;
 extern gint GdmUserMaxFile;
 extern gint GdmRelaxPerms;
-extern gint GdmKillInitClients;
+extern gboolean GdmKillInitClients;
 extern gint GdmRetryDelay;
 extern sigset_t sysmask;
 extern gchar *argdelim;

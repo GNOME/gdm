@@ -111,7 +111,7 @@ extern gint GdmMaxPending;	/* only accept this number of pending sessions */
 extern gint GdmMaxManageWait;	/* Dispose sessions not responding with MANAGE after 10 secs */
 extern gint GdmMaxSessions;	/* Maximum number of remote sessions */
 extern gint GdmPort;		/* UDP port number */
-extern gint GdmIndirect;	/* Honor XDMCP_INDIRECT, i.e. choosing */
+extern gboolean GdmIndirect;	/* Honor XDMCP_INDIRECT, i.e. choosing */
 extern gint GdmMaxIndirectWait;	/* Max wait between INDIRECT_QUERY and MANAGE */
 extern gint GdmDispPerHost;	/* Max number of displays per remote host */
 

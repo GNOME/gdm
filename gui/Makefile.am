@@ -34,3 +34,5 @@ System_DATA = gdmconfig.desktop
 
 Gladedir = $(datadir)/gdmconfig
 Glade_DATA = gdmconfig.glade
+
+EXTRA_DIST = gdmconfig-strings.c

@@ -28,7 +28,7 @@ static const gchar RCSid[]="$Id$";
 
 /* Configuration option variables */
 extern gchar *GdmPidFile;
-extern gint GdmDebug;
+extern gboolean GdmDebug;
 
 
 /**
