@@ -39,10 +39,13 @@ rm -rf $RPM_BUILD_ROOT
 /usr/sbin/useradd -r gdm > /dev/null 2>&1 || /bin/true
 
 make sysconfdir=$RPM_BUILD_ROOT%{sysconfdir}/X11 \
-    prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
+    prefix=$RPM_BUILD_ROOT%{_prefix} \
+    bindir=$RPM_BUILD_ROOT%{_bindir} \
     datadir=$RPM_BUILD_ROOT%{_datadir} \
     localstatedir=$RPM_BUILD_ROOT%{localstatedir} \
-    sbindir=$RPM_BUILD_ROOT%{_sbindir} install
+    sbindir=$RPM_BUILD_ROOT%{_sbindir} \
+    PAM_PREFIX=$RPM_BUILD_ROOT%/etc \
+    install
 
 
 # install RH specific session files
