@@ -20,6 +20,7 @@ EXTRA_DIST = \
 	intltool-extract.in	\
 	intltool-merge.in	\
 	intltool-update.in	\
+	intltool-modules/XML/Parser/Style/OrigTree.pm \
 	gdm-stop.in		\
 	gdm-restart.in		\
 	gdm-safe-restart.in	\

@@ -3,11 +3,6 @@ SUBDIRS = . themes
 ## Process this file with automake to produce makefile.in
 INCLUDES = \
 	-I.						\
-	-DG_DISABLE_DEPRECATED				\
-	-DGDK_DISABLE_DEPRECATED			\
-	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
-	-DGTK_DISABLE_DEPRECATED			\
-	-DGNOME_DISABLE_DEPRECATED			\
 	-I$(top_srcdir)/gui				\
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\
@@ -15,6 +10,12 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DGREETERTHEMEDIR=\""$(datadir)/gdm/themes"\" 	\
 	$(GREETER_CFLAGS)
+
+#	-DG_DISABLE_DEPRECATED				\
+#	-DGDK_DISABLE_DEPRECATED			\
+#	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
+#	-DGTK_DISABLE_DEPRECATED			\
+#	-DGNOME_DISABLE_DEPRECATED			\
 
 bin_PROGRAMS = \
 	gdmgreeter
