@@ -97,32 +97,18 @@ else
   fi
 fi
 
-dnl
-dnl Standard stuff
-dnl
-GNOME_COMMON_INIT
-
 AC_ISC_POSIX
 AC_PROG_CC
 AC_STDC_HEADERS
 dnl AC_ARG_PROGRAM
 AM_PROG_LIBTOOL
 
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \ ]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall -Wpointer-arith -Wmissing-prototypes -Wmissing-declarations" ;;
-  esac
-fi
-changequote([,])dnl
-
-
 AC_PATH_XTRA
 AC_CHECK_TYPE(socklen_t,size_t)
 AC_CHECK_FUNCS([setresuid setenv unsetenv clearenv])
 
-GNOME_COMPILER_WARNINGS
+GNOME_COMPILE_WARNINGS
+CFLAGS="$CFLAGS $WARN_CFLAGS"
 
 PKG_CHECK_MODULES(DAEMON, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED)
 AC_SUBST(DAEMON_CFLAGS)
