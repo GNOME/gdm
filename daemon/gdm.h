@@ -335,13 +335,24 @@ enum {
 	GDM_XDMCP_FIRST_OPCODE = 1000, /*just a marker, not an opcode */
 
 	GDM_XDMCP_MANAGED_FORWARD = 1000,
-		/* manager -> manager
-		 * A single packet with MANAGED_FORWARD is sent to the
+		/* manager (master) -> manager
+		 * A packet with MANAGED_FORWARD is sent to the
 		 * manager that sent the forward query from the manager to
-		 * which forward query was sent.  Note that there is no
-		 * ack that this was received, thus it could have been
-		 * dropped on the floor, however, it is not completely
-		 * necessary for it to get through.
+		 * which forward query was sent.  It indicates that the forward
+		 * was fully processed and that the client now has either
+		 * a managed session, or has been sent denial, refuse or failed.
+		 * (if the denial gets lost then client gets dumped into the
+		 * chooser again).  This should be resent a few times
+		 * until some (short) timeout or until GOT_MANAGED_FORWARD
+		 * is sent.  GDM sends at most 3 packates with 1.5 seconds
+		 * between each.
+		 *
+		 * Argument is ARRAY8 with the address of the originating host */
+	GDM_XDMCP_GOT_MANAGED_FORWARD,
+		/* manager -> manager (master)
+		 * A single packet with GOT_MANAGED_FORWARD is sent to indicate
+		 * that we did receive the MANAGED_FORWARD packet.  The argument
+		 * must match the MANAGED_FORWARD one or it will just be ignored.
 		 *
 		 * Argument is ARRAY8 with the address of the originating host */
 	GDM_XDMCP_LAST_OPCODE /*just a marker, not an opcode */

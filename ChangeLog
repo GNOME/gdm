@@ -1,3 +1,10 @@
+Sun Sep 02 16:44:28 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/xdmcp.c: Implement a GOT_MANAGED_FORWARD
+	  opcode.  Also send MANAGED_FORWARD 3 times (1.5 sec spaced apart)
+	  or until we get a GOT_MANAGED_FORWARD.  This is a compatible
+	  change to the gdm xdmcp protocol so version wasn't raised.
+
 Sat Sep 01 14:53:22 2001  George Lebl <jirka@5z.com>
 
 	* AUTHORS, docs/gdmconfig/C/gdmconfig.sgml:  Updated trevors email

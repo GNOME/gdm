@@ -140,13 +140,16 @@ static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa,
 				    gint type);
 static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 					  struct sockaddr_in *clnt_sa,
-					  struct in_addr *local_addr,
+					  struct in_addr *display_addr,
 					  ARRAYofARRAY8Ptr authlist);
 static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len);
+static void gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len);
+static void gdm_xdmcp_whack_queued_managed_forwards (struct sockaddr_in *clnt_sa,
+						     struct in_addr *origin);
 static void gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa);
 static void gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type);
 static void gdm_xdmcp_send_accept (const char *hostname, struct sockaddr_in *clnt_sa, gint displaynum);
@@ -156,6 +159,8 @@ static void gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa,
 					    struct sockaddr_in *origin);
+static void gdm_xdmcp_send_got_managed_forward (struct sockaddr_in *clnt_sa,
+						struct in_addr *origin);
 static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *cnlt_sa);
 static GdmDisplay *gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
@@ -169,6 +174,16 @@ static GdmForwardQuery * gdm_forward_query_lookup (struct sockaddr_in *clnt_sa);
 static void gdm_forward_query_dispose (GdmForwardQuery *q);
 
 static GSList *forward_queries = NULL;
+
+typedef struct {
+	int times;
+	guint handler;
+	struct sockaddr_in manager; 
+	struct sockaddr_in origin;
+} ManagedForward;
+#define MANAGED_FORWARD_INTERVAL 1500 /* 1.5 seconds */
+
+static GList *managed_forwards = NULL;
 
 
 /* 
@@ -399,7 +414,7 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 	"FAILED", "KEEPALIVE", "ALIVE"
     };
     static const char * const gdm_opcode_names[] = {
-	"MANAGED_FORWARD"
+	"MANAGED_FORWARD", "GOT_MANAGED_FORWARD"
     };
     
     if (!XdmcpFill (xdmcpfd, &buf, (XdmcpNetaddr)&clnt_sa, &sa_len)) {
@@ -460,6 +475,10 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 
     case GDM_XDMCP_MANAGED_FORWARD:
 	gdm_xdmcp_handle_managed_forward (&clnt_sa, header.length);
+	break;
+
+    case GDM_XDMCP_GOT_MANAGED_FORWARD:
+	gdm_xdmcp_handle_got_managed_forward (&clnt_sa, header.length);
 	break;
 	
     default:
@@ -568,7 +587,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 static void
 gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 			      struct sockaddr_in *clnt_sa,
-			      struct in_addr *local_addr,
+			      struct in_addr *display_addr,
 			      ARRAYofARRAY8Ptr authlist)
 {
 	struct sockaddr_in sock = {0};
@@ -583,7 +602,7 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	gdm_debug ("gdm_xdmcp_send_forward_query: Sending forward query to %s",
 		   inet_ntoa (*id->chosen_host));
 	gdm_debug ("gdm_xdmcp_send_forward_query: Query contains %s:%d", 
-		   inet_ntoa (*local_addr),
+		   inet_ntoa (*display_addr),
 		   (int) ntohs (clnt_sa->sin_port));
 
 	authlen = 1;
@@ -598,7 +617,7 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 
 	address.length = sizeof (struct in_addr);
 	address.data = (void *)g_new (struct in_addr, 1);
-	memcpy (address.data, local_addr, sizeof (struct in_addr));
+	memcpy (address.data, display_addr, sizeof (struct in_addr));
 
 	header.opcode = (CARD16) FORWARD_QUERY;
 	header.length = authlen;
@@ -778,6 +797,10 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 	    goto out;
     }
 
+    g_assert (4 == sizeof (struct in_addr));
+    gdm_xdmcp_whack_queued_managed_forwards
+	    (clnt_sa, (struct in_addr *)clnt_addr.data);
+
     disp_sa.sin_family = AF_INET;
 
     /* Find client port number */
@@ -896,20 +919,86 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
 }
 
 static void
-gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa,
-				struct sockaddr_in *origin)
+gdm_xdmcp_really_send_managed_forward (struct sockaddr_in *clnt_sa,
+				       struct sockaddr_in *origin)
 {
 	ARRAY8 address;
 	XdmcpHeader header;
 	struct in_addr addr;
 
-	gdm_debug ("gdm_xdmcp_send_managed_forward: Sending MANAGED_FORWARD to %s", inet_ntoa (clnt_sa->sin_addr));
+	gdm_debug ("gdm_xdmcp_really_send_managed_forward: "
+		   "Sending MANAGED_FORWARD to %s",
+		   inet_ntoa (clnt_sa->sin_addr));
 
 	address.length = sizeof (struct in_addr);
 	address.data = (void *)&addr;
 	memcpy (address.data, &(origin->sin_addr), sizeof (struct in_addr));
 
 	header.opcode = (CARD16) GDM_XDMCP_MANAGED_FORWARD;
+	header.length = 4 + address.length;
+	header.version = GDM_XDMCP_PROTOCOL_VERSION;
+	XdmcpWriteHeader (&buf, &header);
+
+	XdmcpWriteARRAY8 (&buf, &address);
+	XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
+		    (int)sizeof (struct sockaddr_in));
+}
+
+static gboolean
+managed_forward_handler (gpointer data)
+{
+	ManagedForward *mf = data;
+	if (xdmcpfd > 0)
+		gdm_xdmcp_really_send_managed_forward (&(mf->manager),
+						       &(mf->origin));
+	mf->times ++;
+	if (xdmcpfd <= 0 || mf->times >= 2) {
+		managed_forwards = g_list_remove (managed_forwards, mf);
+		mf->handler = 0;
+		/* mf freed by glib */
+		return FALSE;
+	}
+	return TRUE;
+}
+
+static void
+gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa,
+				struct sockaddr_in *origin)
+{
+	ManagedForward *mf;
+
+	gdm_xdmcp_really_send_managed_forward (clnt_sa, origin);
+
+	mf = g_new0 (ManagedForward, 1);
+	mf->times = 0;
+	memcpy (&(mf->manager), clnt_sa, sizeof (struct sockaddr_in));
+	memcpy (&(mf->origin), origin, sizeof (struct sockaddr_in));
+
+	mf->handler = g_timeout_add_full (G_PRIORITY_DEFAULT,
+					  MANAGED_FORWARD_INTERVAL,
+					  managed_forward_handler,
+					  mf,
+					  (GDestroyNotify) g_free);
+	managed_forwards = g_list_prepend (managed_forwards, mf);
+}
+
+static void
+gdm_xdmcp_send_got_managed_forward (struct sockaddr_in *clnt_sa,
+				    struct in_addr *origin)
+{
+	ARRAY8 address;
+	XdmcpHeader header;
+	struct in_addr addr;
+
+	gdm_debug ("gdm_xdmcp_send_managed_forward: "
+		   "Sending GOT_MANAGED_FORWARD to %s",
+		   inet_ntoa (clnt_sa->sin_addr));
+
+	address.length = sizeof (struct in_addr);
+	address.data = (void *)&addr;
+	memcpy (address.data, origin, sizeof (struct in_addr));
+
+	header.opcode = (CARD16) GDM_XDMCP_GOT_MANAGED_FORWARD;
 	header.length = 4 + address.length;
 	header.version = GDM_XDMCP_PROTOCOL_VERSION;
 	XdmcpWriteHeader (&buf, &header);
@@ -1200,7 +1289,6 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     GdmDisplay *d;
     GdmIndirectDisplay *id;
     GdmForwardQuery *fq;
-    gint logfd;
     
     gdm_debug ("gdm_xdmcp_handle_manage: Got MANAGE from %s", inet_ntoa (clnt_sa->sin_addr));
     
@@ -1235,7 +1323,6 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     d = gdm_xdmcp_display_lookup (clnt_sessid);
     if (d != NULL &&
         d->dispstat == XDMCP_PENDING) {
-	gchar *logfile;
 
 	gdm_debug ("gdm_xdmcp_handle_manage: Looked up %s", d->name);
 
@@ -1267,19 +1354,6 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 		gdm_xdmcp_send_managed_forward (fq->from_sa, clnt_sa);
 		gdm_forward_query_dispose (fq);
 	}
-
-	/* Log all output from spawned programs to a file */
-	logfile = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
-	logfd = open (logfile, O_CREAT|O_TRUNC|O_APPEND|O_WRONLY, 0666);
-	g_free (logfile);
-
-	if (logfd != -1) {
-	    dup2 (logfd, 1);
-	    dup2 (logfd, 2);
-            close (logfd);
-	}
-	else
-	    gdm_error (_("gdm_xdmcp_handle_manage: Could not open logfile for display %s!"), d->name);
 	
 	d->dispstat = XDMCP_MANAGED;
 	sessions++;
@@ -1311,8 +1385,9 @@ gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 	ARRAY8 clnt_address;
 	GdmIndirectDisplay *id;
 
-
-	gdm_debug ("gdm_xdmcp_handle_managed_forward: Got MANAGED_FORWARD from %s", inet_ntoa (clnt_sa->sin_addr));
+	gdm_debug ("gdm_xdmcp_handle_managed_forward: "
+		   "Got MANAGED_FORWARD from %s",
+		   inet_ntoa (clnt_sa->sin_addr));
 
 	/* Hostname */
 	if ( ! XdmcpReadARRAY8 (&buf, &clnt_address)) {
@@ -1328,21 +1403,74 @@ gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 		return;
 	}
 
-	id = gdm_choose_indirect_lookup_by_chosen (&(clnt_sa->sin_addr),
-						   (struct in_addr *)clnt_address.data);
+	id = gdm_choose_indirect_lookup_by_chosen
+		(&(clnt_sa->sin_addr), (struct in_addr *)clnt_address.data);
 	if (id != NULL) {
 		gdm_choose_indirect_dispose (id);
 	}
 
 	XdmcpDisposeARRAY8 (&clnt_address);
+
+	/* Note: we send GOT even on not found, just in case our previous
+	 * didn't get through and this was a second managed forward */
+	gdm_xdmcp_send_got_managed_forward
+		(clnt_sa, (struct in_addr *)clnt_address.data);
 }
 
+static void
+gdm_xdmcp_whack_queued_managed_forwards (struct sockaddr_in *clnt_sa,
+					 struct in_addr *origin)
+{
+	GList *li;
+
+	for (li = managed_forwards; li != NULL; li = li->next) {
+		ManagedForward *mf = li->data;
+		if (mf->manager.sin_addr.s_addr == clnt_sa->sin_addr.s_addr &&
+		    mf->origin.sin_addr.s_addr == origin->s_addr) {
+			managed_forwards = g_list_remove_link (managed_forwards, li);
+			g_list_free_1 (li);
+			g_source_remove (mf->handler);
+			/* mf freed by glib */
+			return;
+		}
+	}
+}
+
+static void 
+gdm_xdmcp_handle_got_managed_forward (struct sockaddr_in *clnt_sa, gint len)
+{
+	ARRAY8 clnt_address;
+
+	gdm_debug ("gdm_xdmcp_handle_got_managed_forward: "
+		   "Got MANAGED_FORWARD from %s",
+		   inet_ntoa (clnt_sa->sin_addr));
+
+	/* Hostname */
+	if ( ! XdmcpReadARRAY8 (&buf, &clnt_address)) {
+		gdm_error (_("%s: Could not read address"),
+			   "gdm_xdmcp_handle_got_managed_forward");
+		return;
+	}
+
+	if (clnt_address.length != sizeof (struct in_addr)) {
+		gdm_error (_("%s: Could not read address"),
+			   "gdm_xdmcp_handle_got_managed_forward");
+		XdmcpDisposeARRAY8 (&clnt_address);
+		return;
+	}
+
+	gdm_xdmcp_whack_queued_managed_forwards
+		(clnt_sa, (struct in_addr *)clnt_address.data);
+
+	XdmcpDisposeARRAY8 (&clnt_address);
+}
 
 
 static void
 gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid)
 {
     XdmcpHeader header;
+    GdmForwardQuery *fq;
     
     gdm_debug ("gdm_xdmcp_send_refuse: Sending REFUSE to %ld", (long)sessid);
     
@@ -1354,6 +1482,14 @@ gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid)
     XdmcpWriteCARD32 (&buf, sessid);
     XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
+
+    /* this was from a forwarded query quite apparently so
+    * send MANAGED_FORWARD */
+    fq = gdm_forward_query_lookup (clnt_sa);
+    if (fq != NULL) {
+	    gdm_xdmcp_send_managed_forward (fq->from_sa, clnt_sa);
+	    gdm_forward_query_dispose (fq);
+    }
 }
 
 
