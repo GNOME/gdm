@@ -1,5 +1,47 @@
 Ahh news...
 
+2.6.0.3 stuff:
+
+- Fix cpu/bandwidth eating on idle displays by not blinking the cursor
+  after 20 seconds of inactivity on anything other then :0, fixes #135764
+
+- In the face greeter cut after a comma in the gecos field if there are
+  at least two commas since then it's probably some login arguments and
+  not the name of the user, "fixes" #142274
+
+- Apply patch to make the language dialog at most 600 pixels so that it
+  doesn't look too crappy on large displays, #142175 (Leonard Michlmayr)
+
+- Fix last_x_failed possible infinite loop on slow machines, #141497
+
+- Fix multihead wanker code in the *mouselistener modules, this confused
+  the moronic bonobo DISPLAY logic
+
+- Don't use certain languages on the console.  Controlled by the
+  daemon/ConsoleCannotHandle config key, but that's a hack.  Oh well,
+  better then displaying garbage in cjk and similar.  "fixes" #135387
+
+- Ensure proper ~/.ICEauthority permissions to fix broken cases such
+  as gnome-session vs. suid root apps that create root owned ~/.ICEauthority,
+  "fixes" #137345
+
+- We no longer use `which' command which is horribly broken on some horribly
+  broken systems and use a private shell version, #133245 (Brian Cameron, me)
+
+- Solaris fixes, #137600 (build), #133245 (chown arguments)  (Brian Cameron,
+  Ivan Noris)
+
+- Support system-config-display as X setup for FC2
+
+- Further shell quoting paranoia in gdmsetup
+
+- Many minor fixes
+
+- Add some new new icons (James M. Cape)
+
+- Translation updates (Francisco Javier F. Serrador, Alexander Shopov,
+  Rostislav Raykov, Dinesh Nadarajah, Asmund Skjaeveland)
+
 2.6.0.2 stuff:
 
 - Fix PAM braindamage in #119853 and #126984 (Frederic Crozat, me)

@@ -9,5 +9,6 @@ const char *foo = N_("I cannot start the X server (your graphical interface).  I
 const char *foo = N_("Would you like to view the detailed X server output as well?");
 const char *foo = N_("I cannot start the X server (your graphical interface).  It seems that the pointer device (your mouse) is not set up correctly.  Would you like to view the X server output to diagnose the problem?");
 const char *foo = N_("Would you like me to try to run the mouse configuration program?  Note that you will need the root password for this.");
+const char *foo = N_("Would you like me to try to run the mouse configuration program?  Note that you will need the root password for this.");
 const char *foo = N_("This is the failsafe xterm session.  Windows now have focus only if you have your cursor above them.  To get out of this mode type 'exit' in the window in the upper left corner");
 const char *foo = N_("I could not start your session and so I have started the failsafe xterm session.  Windows now have focus only if you have your cursor above them.  To get out of this mode type 'exit' in the window in the upper left corner");
