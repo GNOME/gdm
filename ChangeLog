@@ -1,9 +1,17 @@
+Mon Sep 22 10:20:56 2003  George Lebl <jirka@5z.com>
+
+	* daemon/errorgui.c: add the gtk modules to error dialogs, so
+	  that accessibility works there as well.
+
+	* daemon/slave.c: Look in ~/.face and ~/.face.icon to get faces set
+	  by KDM.  Also a bit of cleanup in the face reading routine.
+
 Mon Sep 22 10:03:10 2003  George Lebl <jirka@5z.com>
 
-	* slave/gdm.c, gui/gdmlogin.c, gui/greeter/greeter_session.c: Fix
+	* daemon/slave.c, gui/gdmlogin.c, gui/greeter/greeter_session.c: Fix
 	  session masking by path in the greeters and rework the 'Desktop'
 	  -> 'desktop' migration code to be correct and simpler (migrate
-	  where we read from the .dmrc)
+	  where we read from the ~/.dmrc)
 
 Sat Sep 20 09:32:52 2003  George Lebl <jirka@5z.com>
 

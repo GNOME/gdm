@@ -49,6 +49,8 @@ extern gchar *GdmServAuthDir;
 extern gchar *GdmGtkRC;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
+extern gboolean GdmAddGtkModules;
+extern gchar *GdmGtkModulesList;
 
 static int screenx = 0;
 static int screeny = 0;
@@ -231,8 +233,15 @@ setup_dialog (GdmDisplay *d, const char *name, int closefdexcept, gboolean set_i
 	else
 		ve_setenv ("HOME", ve_sure_string (GdmServAuthDir), TRUE);
 
-	argv = g_new0 (char *, 2);
+	argv = g_new0 (char *, 3);
 	argv[0] = (char *)name;
+	argc = 1;
+
+	if (GdmAddGtkModules &&
+	    ! ve_string_empty (GdmGtkModulesList)) {
+		argv[1] = g_strdup_printf("--gtk-module=%s", GdmGtkModulesList);
+		argc = 2;
+	}
 
 	gtk_init (&argc, &argv);
 

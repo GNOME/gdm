@@ -1836,7 +1836,7 @@ run_pictures (void)
 		}
 
 		pwent = getpwnam (response);
-		if (pwent == NULL) {
+		if G_UNLIKELY (pwent == NULL) {
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
 		}
@@ -1846,75 +1846,14 @@ run_pictures (void)
 		setegid (pwent->pw_gid);
 		seteuid (pwent->pw_uid);
 
-		/* Sanity check on ~user/.gnome2/gdm */
-		cfgdir = g_build_filename (pwent->pw_dir, ".gnome2", "gdm", NULL);
-		if (gdm_file_check ("run_pictures", pwent->pw_uid,
-				    cfgdir, "gdm", TRUE, TRUE, GdmUserMaxFile,
-				    GdmRelaxPerms)) {
-			VeConfig *cfg;
-			char *cfgfile;
-
-			cfgfile = g_build_filename (pwent->pw_dir, ".gnome2", "gdm", NULL);
-			cfg = ve_config_new (cfgfile);
-			g_free (cfgfile);
-			picfile = ve_config_get_string (cfg, "face/picture=");
-			ve_config_destroy (cfg);
-
-			/* must exist and be absolute (note that this check
-			 * catches empty strings)*/
-			if (picfile != NULL &&
-			    (picfile[0] != '/' ||
-			     access (picfile, R_OK) != 0)) {
-				g_free (picfile);
-				picfile = NULL;
-			}
-
-			if (picfile != NULL) {
-				char *dir;
-				char *base;
-
-				/* if in trusted dir, just use it */
-				if (is_in_trusted_pic_dir (picfile)) {
-					seteuid (0);
-					setegid (GdmGroupId);
-
-					g_free (cfgdir);
-
-					gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
-								      picfile);
-					g_free (picfile);
-					continue;
-				}
-
-				/* if not in trusted dir, check it out */
-				dir = g_path_get_dirname (picfile);
-				base = g_path_get_basename (picfile);
-
-				/* Note that strict permissions checking is done
-				 * on this file.  Even if it may not even be owned by the
-				 * user.  This setting should ONLY point to pics in trusted
-				 * dirs. */
-				if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-						       dir, base, TRUE, TRUE, GdmUserMaxFile,
-						       GdmRelaxPerms)) {
-					g_free (picfile);
-					picfile = NULL;
-				}
-
-				g_free (base);
-				g_free (dir);
-			}
-		}
-		g_free (cfgdir);
-
-		if (picfile == NULL) {
+		if G_LIKELY (picfile == NULL) {
 			picfile = g_build_filename (pwent->pw_dir, ".face", NULL);
 			if (access (picfile, R_OK) != 0) {
 				g_free (picfile);
 				picfile = NULL;
-			} else if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
-						      pwent->pw_dir, ".face", TRUE, TRUE, GdmUserMaxFile,
-						      GdmRelaxPerms)) {
+			} else if G_UNLIKELY ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
+								 pwent->pw_dir, ".face", TRUE, TRUE, GdmUserMaxFile,
+								 GdmRelaxPerms)) {
 				g_free (picfile);
 
 				seteuid (0);
@@ -1925,7 +1864,92 @@ run_pictures (void)
 			}
 		}
 
-		/* Nothing found yet, try the old location */
+		if (picfile == NULL) {
+			picfile = g_build_filename (pwent->pw_dir, ".face.icon", NULL);
+			if (access (picfile, R_OK) != 0) {
+				g_free (picfile);
+				picfile = NULL;
+			} else if G_UNLIKELY ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
+								 pwent->pw_dir, ".face.icon", TRUE, TRUE, GdmUserMaxFile,
+								 GdmRelaxPerms)) {
+				g_free (picfile);
+
+				seteuid (0);
+				setegid (GdmGroupId);
+
+				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+				continue;
+			}
+		}
+
+		if (picfile == NULL) {
+			/* Sanity check on ~user/.gnome2/gdm */
+			cfgdir = g_build_filename (pwent->pw_dir, ".gnome2", "gdm", NULL);
+			if G_LIKELY (gdm_file_check ("run_pictures", pwent->pw_uid,
+						     cfgdir, "gdm", TRUE, TRUE, GdmUserMaxFile,
+						     GdmRelaxPerms)) {
+				VeConfig *cfg;
+				char *cfgfile;
+
+				cfgfile = g_build_filename (pwent->pw_dir, ".gnome2", "gdm", NULL);
+				cfg = ve_config_new (cfgfile);
+				g_free (cfgfile);
+				picfile = ve_config_get_string (cfg, "face/picture=");
+				ve_config_destroy (cfg);
+
+				/* must exist and be absolute (note that this check
+				 * catches empty strings)*/
+				/* Note that these days we just set ~/.face */
+				if G_UNLIKELY (picfile != NULL &&
+					       (picfile[0] != '/' ||
+						access (picfile, R_OK) != 0)) {
+					g_free (picfile);
+					picfile = NULL;
+				}
+
+				if G_UNLIKELY (picfile != NULL) {
+					char *dir;
+					char *base;
+
+					/* if in trusted dir, just use it */
+					if (is_in_trusted_pic_dir (picfile)) {
+						seteuid (0);
+						setegid (GdmGroupId);
+
+						g_free (cfgdir);
+
+						gdm_slave_greeter_ctl_no_ret (GDM_READPIC,
+									      picfile);
+						g_free (picfile);
+						continue;
+					}
+
+					/* if not in trusted dir, check it out */
+					dir = g_path_get_dirname (picfile);
+					base = g_path_get_basename (picfile);
+
+					/* Note that strict permissions checking is done
+					 * on this file.  Even if it may not even be owned by the
+					 * user.  This setting should ONLY point to pics in trusted
+					 * dirs. */
+					if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
+							       dir, base, TRUE, TRUE, GdmUserMaxFile,
+							       GdmRelaxPerms)) {
+						g_free (picfile);
+						picfile = NULL;
+					}
+
+					g_free (base);
+					g_free (dir);
+				}
+			}
+			g_free (cfgdir);
+		}
+
+		/* Nothing found yet, try the old location,
+		 * and if we don't find anything there we try the global
+		 * dir.  So this is NOT JUST A FALLBACK, don't remove
+		 * this branch in the future! */
 		if (picfile == NULL) {
 			picfile = g_build_filename (pwent->pw_dir, ".gnome2", "photo", NULL);
 			picdir = g_build_filename (pwent->pw_dir, ".gnome2", NULL);
@@ -1938,6 +1962,8 @@ run_pictures (void)
 			if (access (picfile, F_OK) != 0) {
 				seteuid (0);
 				setegid (GdmGroupId);
+
+				/* Try the global face directory */
 
 				g_free (picfile);
 				g_free (picdir);
@@ -2391,7 +2417,7 @@ gdm_slave_greeter (void)
 	    /* don't add modules if we're trying to prevent crashes,
 	       perhaps it's the modules causing the problem in the first place */
 	    ! d->try_different_greeter) {
-		gchar *modules =  g_strdup_printf("%s --gtk-module=%s", command, GdmGtkModulesList);
+		gchar *modules = g_strdup_printf("%s --gtk-module=%s", command, GdmGtkModulesList);
 		exec_in_shell (modules);
 		/* Something went wrong */
 		gdm_error (_("%s: Cannot start greeter with gtk modules: %s. Trying without modules"),
