@@ -26,7 +26,6 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
 {
   char *tmp;
   GreeterItemInfo *error_info;
-  GreeterItemInfo *message_info;
   
   gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
 
@@ -60,6 +59,28 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   g_free (tmp);
 }
 
+static gboolean
+key_press_handler (GtkWidget *widget, GdkEventKey *event)
+{
+	if (event == NULL)
+		return FALSE;
+
+	switch (event->keyval) {
+
+	case GDK_Up:
+	case GDK_Down:
+	case GDK_Tab:
+		g_signal_stop_emission_by_name (G_OBJECT (widget),
+						"key_press_event");
+		return TRUE;
+
+	default:
+		break;
+	}
+
+	return FALSE;
+}
+
 gboolean
 greeter_item_pam_setup (void)
 {
@@ -84,6 +105,9 @@ greeter_item_pam_setup (void)
 
       g_signal_connect (entry, "activate",
 			GTK_SIGNAL_FUNC (user_pw_activate), entry_info);
+      g_signal_connect (entry, "key_press_event", 
+			G_CALLBACK (key_press_handler),
+			NULL);
     }
   return TRUE;
 }
