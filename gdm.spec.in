@@ -60,8 +60,6 @@ ln -sf Default $RPM_BUILD_ROOT/etc/X11/gdm/Sessions/default
 ln -sf ../../xdm/Xsetup_0 $RPM_BUILD_ROOT/etc/X11/gdm/Init/Default
 
 # run GiveConsole/TakeConsole
-mkdir $RPM_BUILD_ROOT/etc/X11/gdm/PreSession
-mkdir $RPM_BUILD_ROOT/etc/X11/gdm/PostSession
 ln -sf ../../xdm/GiveConsole $RPM_BUILD_ROOT/etc/X11/gdm/PreSession/Default
 ln -sf ../../xdm/TakeConsole $RPM_BUILD_ROOT/etc/X11/gdm/PostSession/Default
 

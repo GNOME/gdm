@@ -4,12 +4,16 @@ If you didn't compile Gnome yourself, make sure you have the appropriate
 -devel packages installed.
 
 ============
-To install OVER the RedHat or HelixCode/Ximian package use following
-configure options:
+If you want to install OVER RedHat or Ximian/HelixCode packages use,
+following configure options:
 --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
-At least that works for me.  But rpm will still think the old one
-is installed like this.  If someone writes a proper spec file, I'd
-appreciate it.
+However, there is now a spec file so you can build an rpm by just doing
+
+rpm -ta gdm-<version>.tar.gz
+
+This should work on RedHat 6.x and maybe even 7.0, and if you're very
+lucky then on your favourite other distribution, but no promises
+
 -George
 ============
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 \n"
-"POT-Creation-Date: 2001-02-01 17:57-0800\n"
+"POT-Creation-Date: 2001-02-02 23:19-0800\n"
 "PO-Revision-Date: 2001-01-24 15:15+0100\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -358,7 +358,7 @@ msgstr "gdm_slave_exec_script: Nem tudom a szkript folyamatot indítani!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1695
+#: gui/gdmlogin.c:1714
 msgid "Login:"
 msgstr "Bejelentkezés:"
 
@@ -607,33 +607,33 @@ msgstr "gdm_signals_init: Hiba az INT jelzés kezelésének beállításakor"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Hiba a TERM jelzés kezelésének beállításakor"
 
-#: gui/gdmchooser.c:594 gui/gdmlogin.c:2063
+#: gui/gdmchooser.c:594 gui/gdmlogin.c:2090
 msgid "Could not set signal mask!"
 msgstr "Nem tudtam beállítani a jel maszkot!"
 
-#: gui/gdmlogin.c:375
-msgid "gdm_parse_enriched_string: String too long!"
-msgstr "gdm_parse_enriched_string: A karaktersor túl hosszú!"
-
-#: gui/gdmlogin.c:377
+#: gui/gdmlogin.c:381 gui/gdmlogin.c:387 gui/gdmlogin.c:394
 #, c-format
 msgid "Welcome to %s"
 msgstr "%s üdvözli önt!"
 
-#: gui/gdmlogin.c:469
+#: gui/gdmlogin.c:392
+msgid "gdm_parse_enriched_string: String too long!"
+msgstr "gdm_parse_enriched_string: A karaktersor túl hosszú!"
+
+#: gui/gdmlogin.c:488
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Biztosan újra szeretné indítani a számítógépet?"
 
-#: gui/gdmlogin.c:483
+#: gui/gdmlogin.c:502
 msgid "Are you sure you want to halt the machine?"
 msgstr "Biztosan le akarja állítani a számítógépet?"
 
-#: gui/gdmlogin.c:501
+#: gui/gdmlogin.c:520
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config: Nincs %s beállítás fájl. Mûvelet megszakítása."
 
-#: gui/gdmlogin.c:607
+#: gui/gdmlogin.c:626
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -643,7 +643,7 @@ msgstr ""
 "számítógépen.\n"
 "Szeretné, hogy a(z) %s legyen az alapértelmezett mostantól?"
 
-#: gui/gdmlogin.c:623 gui/gdmlogin.c:678
+#: gui/gdmlogin.c:642 gui/gdmlogin.c:697
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -652,96 +652,96 @@ msgstr ""
 "%s-t választotta erre a sessionre, de az ön alapértelmezett beállítása %s.\n"
 "Akarja, hogy %s legyen az alapértelmezett mostantól?"
 
-#: gui/gdmlogin.c:789
+#: gui/gdmlogin.c:808
 #, c-format
 msgid "%s session selected"
 msgstr "%s session kiválasztva"
 
-#: gui/gdmlogin.c:805 gui/gdmlogin.c:914
+#: gui/gdmlogin.c:824 gui/gdmlogin.c:933
 msgid "Last"
 msgstr "Utolsó"
 
-#: gui/gdmlogin.c:822
+#: gui/gdmlogin.c:841
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: A session szkript könyvtár nem található!"
 
-#: gui/gdmlogin.c:877
+#: gui/gdmlogin.c:896
 msgid "No session scripts found. Aborting!"
 msgstr "A session szkriptek nem találhatók. Mûvelet megszakítása."
 
-#: gui/gdmlogin.c:881
+#: gui/gdmlogin.c:900
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Nem található alapértelmezett session hivatkozás. %s-t használom.\n"
 
-#: gui/gdmlogin.c:895
+#: gui/gdmlogin.c:914
 #, c-format
 msgid "%s language selected"
 msgstr "%s nyelv kiválasztva"
 
-#: gui/gdmlogin.c:932
+#: gui/gdmlogin.c:951
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:938
+#: gui/gdmlogin.c:957
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:944
+#: gui/gdmlogin.c:963
 msgid "Other"
 msgstr "Egyéb"
 
-#: gui/gdmlogin.c:1430
+#: gui/gdmlogin.c:1449
 msgid "GNOME Desktop Manager"
 msgstr ""
 
-#: gui/gdmlogin.c:1442
+#: gui/gdmlogin.c:1461
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Nem találom a(z) %s ikon fájlt. Az ikonizáló funkció felfüggesztése!"
 
-#: gui/gdmlogin.c:1548
+#: gui/gdmlogin.c:1567
 msgid "Session"
 msgstr "Felület"
 
-#: gui/gdmlogin.c:1555
+#: gui/gdmlogin.c:1574
 msgid "Language"
 msgstr "Nyelv"
 
-#: gui/gdmlogin.c:1562
+#: gui/gdmlogin.c:1581
 msgid "Reboot..."
 msgstr "Újraindít..."
 
-#: gui/gdmlogin.c:1569
+#: gui/gdmlogin.c:1588
 msgid "Halt..."
 msgstr "Leállít..."
 
-#: gui/gdmlogin.c:1576
+#: gui/gdmlogin.c:1595
 msgid "System"
 msgstr "Rendszer"
 
-#: gui/gdmlogin.c:1730
+#: gui/gdmlogin.c:1749
 msgid "Please enter your login"
 msgstr "Kérem adja meg az azonosítóját"
 
-#: gui/gdmlogin.c:1917
+#: gui/gdmlogin.c:1936
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Nem tudom megnyitni a(z) %s AlapKépet. Arc böngészõ felfüggesztése!"
 
-#: gui/gdmlogin.c:2040
+#: gui/gdmlogin.c:2067
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Hiba a HUP jelzés kezelésének beállításakor"
 
-#: gui/gdmlogin.c:2043
+#: gui/gdmlogin.c:2070
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Hiba az INT jelzés kezelésének beállításakor"
 
-#: gui/gdmlogin.c:2046
+#: gui/gdmlogin.c:2073
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Hiba a TERM jelzés kezelésének beállításakor"
 
-#: gui/gdmlogin.c:2054
+#: gui/gdmlogin.c:2081
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Hiba a CHLD jelzés kezelõjének beállításakor"
 
