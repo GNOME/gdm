@@ -1,5 +1,7 @@
 #include "config.h"
 
+#include <libintl.h>
+#include <locale.h>
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
