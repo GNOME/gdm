@@ -450,7 +450,7 @@ gdm_config_parse (void)
 	    if (server != NULL) {
 		    int num = gdm_get_free_display (0 /* start */,
 						    0 /* server uid */);
-		    gdm_error (_("%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%d to allow configuration!"),
+		    gdm_error (_("%s: XDMCP disabled and no local servers defined. Adding /usr/bin/X11/X on :%d to allow configuration!"),
 			       "gdm_config_parse",
 			       num);
 
@@ -465,14 +465,14 @@ gdm_config_parse (void)
 		    GdmTimedLogin = NULL;
 	    } else {
 		    char *s = g_strdup_printf
-			    (gdm_cons_i18n (N_("Xdmcp is disabled and gdm "
+			    (gdm_cons_i18n (N_("XDMCP is disabled and gdm "
 					       "cannot find any local server "
 					       "to start.  Aborting!  Please "
 					       "correct the configuration %s "
 					       "and restart gdm.")),
 			     GDM_CONFIG_FILE);
 		    gdm_text_message_dialog (s);
-		    gdm_fail (_("gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"));
+		    gdm_fail (_("gdm_config_parse: XDMCP disabled and no local servers defined. Aborting!"));
 	    }
     }
 

@@ -1365,7 +1365,7 @@ write_config (void)
 		       "Usually this is not a good idea unless you\n"
 		       "are sure you do not want users to be able to\n"
 		       "log in with the graphical interface on the\n"
-		       "local console and only use the xdmcp service.\n\n"
+		       "local console and only use the XDMCP service.\n\n"
 		       "Are you sure you wish to apply these settings?"))) {
 	    return FALSE;
     }

@@ -1195,7 +1195,7 @@ gdm_slave_greeter (void)
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("No servers were defined in the\n"
-				 "configuration file and xdmcp was\n"
+				 "configuration file and XDMCP was\n"
 				 "disabled.  This can only be a\n"
 				 "configuration error.  So I have started\n"
 				 "a single server for you.  You should\n"
