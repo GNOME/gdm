@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 \n"
-"POT-Creation-Date: 2001-03-02 20:37+0000\n"
-"PO-Revision-Date: 2001-02-15 23:37+0200\n"
+"POT-Creation-Date: 2001-03-18 13:22+0000\n"
+"PO-Revision-Date: 2001-03-18 23:37+0200\n"
 "Last-Translator: Jarkko Ranta <jjranta@cc.joensuu.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -188,37 +188,37 @@ msgstr ""
 msgid "%s: Directory %s does not exist."
 msgstr "%s: Hakemistoa %s ei ole olemassa."
 
-#: daemon/filecheck.c:57 daemon/filecheck.c:98
+#: daemon/filecheck.c:58 daemon/filecheck.c:99
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr "%s: %s ei ole UID:in %d omistuksessa."
 
-#: daemon/filecheck.c:63 daemon/filecheck.c:105
+#: daemon/filecheck.c:64 daemon/filecheck.c:106
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr "%s: %s on ryhm‰n kirjoitettavissa."
 
-#: daemon/filecheck.c:69
+#: daemon/filecheck.c:70
 #, c-format
 msgid "%s: %s is writable by other."
 msgstr "%s: %s on muiden kirjoitettavissa."
 
-#: daemon/filecheck.c:83
+#: daemon/filecheck.c:84
 #, c-format
-msgid "%s: does not exist and must."
-msgstr "%s: ei ole olemassa, vaikka pit‰isi."
+msgid "%s: %s does not exist and must."
+msgstr "%s: %s ei ole olemassa, vaikka pit‰isi."
 
-#: daemon/filecheck.c:91
+#: daemon/filecheck.c:92
 #, c-format
 msgid "%s: %s is not a regular file."
 msgstr "%s: %s ei ole tavallinen tiedosto."
 
-#: daemon/filecheck.c:112
+#: daemon/filecheck.c:113
 #, c-format
 msgid "%s: %s is writable by group/other."
 msgstr "%s: %s on ryhm‰n/muiden kirjoitettavissa."
 
-#: daemon/filecheck.c:119
+#: daemon/filecheck.c:120
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr "%s: %s on suurempi kuin yll‰pit‰j‰n m‰‰rittelem‰ maksimitiedostokoko."
@@ -299,7 +299,11 @@ msgstr ""
 "gdm_slave_session_start: K‰ytt‰j‰ l‰p‰isi todentamisen, mutta getpwnam(%s) "
 "ep‰onnistui."
 
-#: daemon/slave.c:485
+#: daemon/slave.c:438
+msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
+msgstr "gdm_slave_session_start: Todennus suoritettu."
+
+#: daemon/slave.c:484
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -307,49 +311,49 @@ msgstr ""
 "gdm_slave_session_start: Esi-istuntokomentojonon suoritus palautti > 0. "
 "Keskeytet‰‰n."
 
-#: daemon/slave.c:511
+#: daemon/slave.c:510
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Virhe k‰ynnistett‰ess‰ k‰ytt‰j‰n istuntoa."
 
-#: daemon/slave.c:520
+#: daemon/slave.c:519
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: Setgid %d ep‰onnistui. Keskeytet‰‰n."
 
-#: daemon/slave.c:524
+#: daemon/slave.c:523
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr ""
 "gdm_slave_session_start: initgroups() ep‰onnistui %s:lle. Keskeytet‰‰n."
 
-#: daemon/slave.c:528
+#: daemon/slave.c:527
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Ei voitu muuttua %s:ksi. Keskeytet‰‰n."
 
-#: daemon/slave.c:566
+#: daemon/slave.c:565
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Ei voitu k‰ynnist‰‰ istuntoa '%s'"
 
-#: daemon/slave.c:759
+#: daemon/slave.c:760
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 "gdm_slave_xioerror_handler: Vakava X-virhe - %s k‰ynnistet‰‰n uudelleen"
 
-#: daemon/slave.c:858
+#: daemon/slave.c:859
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: K‰ynnistys ep‰onnistui: %s"
 
-#: daemon/slave.c:862
+#: daemon/slave.c:863
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Komentojonoprosessia ei voitu k‰ynnist‰‰."
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1751
+#: gui/gdmlogin.c:1803
 msgid "Login:"
 msgstr "Tunnus:"
 
@@ -558,68 +562,67 @@ msgstr "gdm_xdmcp_handle_keepalive: N‰yttˆnumeroa ei voitu lukea"
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Istuntotunnusta ei voitu lukea"
 
-#: gui/gdmchooser.c:369
+#: gui/gdmchooser.c:58
+msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
+msgstr "Odota: etsit‰‰n paikallisesta verkkoymp‰ristˆst‰ XDMCP-is‰nti‰..."
+
+#: gui/gdmchooser.c:59
+msgid "No serving hosts were found."
+msgstr "Is‰nnˆivi‰ palvelimia ei lˆytynyt."
+
+#: gui/gdmchooser.c:60
+msgid "Choose a host to connect to from the selection below."
+msgstr "Valitse alla olevasta listasta palvelin johon yhdistet‰‰n."
+
+#: gui/gdmchooser.c:384
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_chooser_parse_config: Ei asetustiedostoa: %s. Keskeytet‰‰n."
 
-#: gui/gdmchooser.c:483
+#: gui/gdmchooser.c:519
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Oletusarvoista koneen kuvaketta ei voitu avata: %s"
 
-#. Buttons
-#: gui/gdmchooser.c:550
-msgid "Connect"
-msgstr "Yhdist‰"
-
-#: gui/gdmchooser.c:557
-msgid "Rescan"
-msgstr "Hae uudelleen"
-
-#: gui/gdmchooser.c:563
-msgid "Cancel"
-msgstr "Peruuta"
-
-#: gui/gdmchooser.c:614
+#: gui/gdmchooser.c:581
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Virhe asetettaessa HUP-signaalin k‰sittelij‰‰"
 
-#: gui/gdmchooser.c:617
+#: gui/gdmchooser.c:584
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Virhe asetettaessa INT-signaalin k‰sittelij‰‰"
 
-#: gui/gdmchooser.c:620
+#: gui/gdmchooser.c:587
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Virhe asetettaessa TERM-signaalin k‰sittelij‰‰"
 
-#: gui/gdmchooser.c:628 gui/gdmlogin.c:2122
+#: gui/gdmchooser.c:595 gui/gdmlogin.c:2168
 msgid "Could not set signal mask!"
 msgstr "Signaalimaskia ei voitu asettaa."
 
-#: gui/gdmlogin.c:389 gui/gdmlogin.c:395 gui/gdmlogin.c:402
+#: gui/gdmlogin.c:390 gui/gdmlogin.c:396 gui/gdmlogin.c:403
 #, c-format
 msgid "Welcome to %s"
 msgstr "%s - tervetuloa."
 
-#: gui/gdmlogin.c:400
+#: gui/gdmlogin.c:401
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Merkkijono liian pitk‰."
 
-#: gui/gdmlogin.c:496
+#: gui/gdmlogin.c:498
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Haluatko varmasti k‰ynnist‰‰ koneen uudestaan?"
 
-#: gui/gdmlogin.c:510
+#: gui/gdmlogin.c:512
 msgid "Are you sure you want to halt the machine?"
 msgstr "Haluatko varmasti sammuttaa koneen?"
 
-#: gui/gdmlogin.c:528
+#: gui/gdmlogin.c:530
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config: Ei asetustiedostoa: %s. Keskeytet‰‰n."
 
-#: gui/gdmlogin.c:638
+#: gui/gdmlogin.c:640
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -628,7 +631,7 @@ msgstr ""
 "Ensisijaista istuntotyyppi‰si %s ei ole asennettu t‰lle koneelle.\n"
 "Haluatko muuttaa %s:n ensisijaiseksi istuntotyypiksesi?"
 
-#: gui/gdmlogin.c:654 gui/gdmlogin.c:709
+#: gui/gdmlogin.c:656 gui/gdmlogin.c:711
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -637,96 +640,102 @@ msgstr ""
 "Olet valinnut %s:n t‰m‰n istunnon ajaksi, mutta oletusarvosi on %s.\n"
 "Haluatko muuttaa %s:n ensisijaiseksi istuntotyypiksesi?"
 
-#: gui/gdmlogin.c:844
+#: gui/gdmlogin.c:865
 #, c-format
 msgid "%s session selected"
 msgstr "Istunto %s valittu"
 
-#: gui/gdmlogin.c:860 gui/gdmlogin.c:969
+#: gui/gdmlogin.c:881 gui/gdmlogin.c:990
 msgid "Last"
 msgstr "Edellinen"
 
-#: gui/gdmlogin.c:877
+#: gui/gdmlogin.c:898
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Istuntokomentojonohakemistoa ei lˆytynyt."
 
-#: gui/gdmlogin.c:932
+#: gui/gdmlogin.c:953
 msgid "No session scripts found. Aborting!"
 msgstr "Istuntokomentojonoja ei lˆytynyt. Keskeytet‰‰n."
 
-#: gui/gdmlogin.c:936
+#: gui/gdmlogin.c:957
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "Oletusarvoisen istunnon linkki‰ ei lˆytynyt. K‰ytet‰‰n %s:a.\n"
 
-#: gui/gdmlogin.c:950
+#: gui/gdmlogin.c:971
 #, c-format
 msgid "%s language selected"
 msgstr "Valittu kieleksi %s"
 
-#: gui/gdmlogin.c:987
+#: gui/gdmlogin.c:1008
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:993
+#: gui/gdmlogin.c:1014
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:999
+#: gui/gdmlogin.c:1020
 msgid "Other"
 msgstr "Muu"
 
-#: gui/gdmlogin.c:1485
+#. translators:  This is a nice and evil eggie text, translate
+#. * to your favourite currency
+#: gui/gdmlogin.c:1252
+msgid "Please insert 25 cents to log in."
+msgstr ""
+
+#: gui/gdmlogin.c:1536
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Desktop Manager"
 
-#: gui/gdmlogin.c:1497
+#: gui/gdmlogin.c:1548
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Ikonitiedostoa ei voitu avata: %s. Pienennysominaisuus ei k‰ytˆss‰."
 
-#: gui/gdmlogin.c:1604
+#: gui/gdmlogin.c:1655
 msgid "Session"
 msgstr "Istunto"
 
-#: gui/gdmlogin.c:1611
+#: gui/gdmlogin.c:1662
 msgid "Language"
 msgstr "Kieli"
 
-#: gui/gdmlogin.c:1618
+#: gui/gdmlogin.c:1669
 msgid "Reboot..."
 msgstr "K‰ynnist‰ uudelleen..."
 
-#: gui/gdmlogin.c:1625
+#: gui/gdmlogin.c:1676
 msgid "Halt..."
 msgstr "Sammuta..."
 
-#: gui/gdmconfig.c:41 gui/gdmlogin.c:1632
+#: gui/gdmconfig.c:41 gui/gdmlogin.c:1683
 msgid "System"
 msgstr "J‰rjestelm‰"
 
-#: gui/gdmlogin.c:1786
+#: gui/gdmlogin.c:1839
 msgid "Please enter your login"
 msgstr "Ole hyv‰ ja anna k‰ytt‰j‰tunnuksesi"
 
-#: gui/gdmlogin.c:1973
+#: gui/gdmlogin.c:2024
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Oletuskuvaa ei voitu avata: %s. Kasvoselain ei k‰ytˆss‰."
 
-#: gui/gdmlogin.c:2099
+#: gui/gdmlogin.c:2145
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Virhe asetettaessa HUP-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:2102
+#: gui/gdmlogin.c:2148
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Virhe asetettaessa INT-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:2105
+#: gui/gdmlogin.c:2151
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Virhe asetettaessa TERM-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:2113
+#: gui/gdmlogin.c:2159
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Virhe asetettaessa CHLD-signaalin k‰sittelij‰‰"
 
@@ -789,25 +798,25 @@ msgstr ""
 "tekem‰ss‰, sill‰ v‰‰r‰nlaiset asetukset saattavat est‰‰ j‰rjestelm‰si "
 "k‰ynnistymisen kunnolla."
 
-#: gui/gdmconfig.c:103
+#: gui/gdmconfig.c:126
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "Sinun tulee olla p‰‰k‰ytt‰j‰ asettaaksesi GDM:‰‰.\n"
 
-#: gui/gdmconfig.c:176
+#: gui/gdmconfig.c:203
 msgid "GNOME Display Manager Configurator"
 msgstr "GNOME Display Managerin asetusohjelma"
 
-#: gui/gdmconfig.c:230
+#: gui/gdmconfig.c:250
 msgid "The configuration file: "
 msgstr "Asetustiedosto: "
 
-#: gui/gdmconfig.c:339
+#: gui/gdmconfig.c:358
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse_most: Virheellinen palvelinrivi asetustiedostossa, "
 "sivuutetaan."
 
-#: gui/gdmconfig.c:406
+#: gui/gdmconfig.c:425
 msgid ""
 "The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
@@ -821,7 +830,7 @@ msgstr ""
 "T‰m‰ tappaa kaikki p‰‰ll‰ olevat istunnut\n"
 "ja tallentamattomat tiedot menetet‰‰n!"
 
-#: gui/gdmconfig.c:411
+#: gui/gdmconfig.c:430
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
@@ -829,7 +838,7 @@ msgstr ""
 "Haluatko varmasti k‰ynnist‰‰ GDM:n uudelleen\n"
 "ja menett‰‰ tallentamattomat tiedot?"
 
-#: gui/gdmconfig.c:418
+#: gui/gdmconfig.c:437
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -841,7 +850,7 @@ msgstr ""
 "kun GDM tai tietokone k‰ynnistet‰‰n\n"
 "uudelleen."
 
-#: gui/gdmconfig.c:545
+#: gui/gdmconfig.c:563
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -850,7 +859,7 @@ msgstr ""
 "Oletko varma ett‰ haluat tehd‰ n‰in?"
 
 #. Request the command line for this new server
-#: gui/gdmconfig.c:639 gui/gdmconfig.c:658
+#: gui/gdmconfig.c:657 gui/gdmconfig.c:676
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
@@ -864,449 +873,473 @@ msgstr ""
 #. * DO NOT compile it as part of your application.
 #.
 #: gui/gdmconfig-strings.c:7
-msgid "GDM"
-msgstr "GDM"
-
-#: gui/gdmconfig-strings.c:8 gui/gdmconfig-strings.c:77
-msgid "Security"
-msgstr "Turvallisuus"
-
-#: gui/gdmconfig-strings.c:9 gui/gdmconfig-strings.c:87
-msgid "XDMCP"
-msgstr "XDMCP"
-
-#: gui/gdmconfig-strings.c:10
-msgid "User Interface"
-msgstr "K‰yttˆliittym‰"
-
-#: gui/gdmconfig-strings.c:11
-msgid "Greeter"
-msgstr "Tervehtij‰"
-
-#: gui/gdmconfig-strings.c:12 gui/gdmconfig-strings.c:124
-msgid "Chooser"
-msgstr "Valitsin"
-
-#: gui/gdmconfig-strings.c:13
-msgid "Servers"
-msgstr "Palvelimet"
-
-#: gui/gdmconfig-strings.c:14
 msgid "GDM Configuration Utility"
 msgstr "GDM:n asetustyˆkalu"
 
-#: gui/gdmconfig-strings.c:15
+#: gui/gdmconfig-strings.c:8
 msgid "_Configuration"
 msgstr "Asetukset"
 
-#: gui/gdmconfig-strings.c:16
+#: gui/gdmconfig-strings.c:9
 msgid "Revert settings"
 msgstr "Palauta tallennetut asetukset"
 
-#: gui/gdmconfig-strings.c:17
+#: gui/gdmconfig-strings.c:10
 msgid "Apply"
 msgstr "Toteuta"
 
-#: gui/gdmconfig-strings.c:18 gui/gdmconfig-strings.c:63
+#: gui/gdmconfig-strings.c:11 gui/gdmconfig-strings.c:55
 msgid "Options"
 msgstr "Asetukset"
 
-#: gui/gdmconfig-strings.c:19
+#: gui/gdmconfig-strings.c:12
 msgid " "
 msgstr " "
 
-#: gui/gdmconfig-strings.c:20
+#: gui/gdmconfig-strings.c:13
 msgid "basic_settings"
 msgstr "perus_asetukset"
 
-#: gui/gdmconfig-strings.c:21
+#: gui/gdmconfig-strings.c:14
 msgid "General Appearance"
 msgstr "Yleinen ulkon‰kˆ"
 
-#: gui/gdmconfig-strings.c:22
+#: gui/gdmconfig-strings.c:15
 msgid "Logo: "
 msgstr "Logo: "
 
-#: gui/gdmconfig-strings.c:23
+#: gui/gdmconfig-strings.c:16
 msgid "Select a logo to be displayed during login"
 msgstr "Valitse kirjautumisen yhteydess‰ n‰ytett‰v‰ logo"
 
-#: gui/gdmconfig-strings.c:24
+#: gui/gdmconfig-strings.c:17
 msgid "Minimised Icon: "
 msgstr "Pienennetyn kuvake: "
 
-#: gui/gdmconfig-strings.c:25
+#: gui/gdmconfig-strings.c:18
 msgid "Select a GTK+ theme file (gtkrc)"
 msgstr "Valitse GTK+ -teematiedosto (gtkrc)"
 
-#: gui/gdmconfig-strings.c:26
+#: gui/gdmconfig-strings.c:19
 msgid "Gtk+ RC file: "
 msgstr "Gtk+ RC-tiedosto: "
 
-#: gui/gdmconfig-strings.c:27
+#: gui/gdmconfig-strings.c:20
 msgid "Login appearance"
 msgstr "Kirjautumisen ulkon‰kˆ"
 
-#: gui/gdmconfig-strings.c:28
+#: gui/gdmconfig-strings.c:21
 msgid "Greeter Look and Feel"
 msgstr "Tervehtij‰n asetukset"
 
-#: gui/gdmconfig-strings.c:29
+#: gui/gdmconfig-strings.c:22
 msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
 msgstr "N‰yt‰ 'j‰rjestelm‰'-valikko (uudelleenk‰ynnistys, sammutus jne.)"
 
-#: gui/gdmconfig-strings.c:30
+#: gui/gdmconfig-strings.c:23
 msgid "Quiver on failure"
-msgstr ""
+msgstr "V‰rist‰ ep‰onnistuttaessa"
 
-#: gui/gdmconfig-strings.c:31
+#: gui/gdmconfig-strings.c:24
 #, c-format
-msgid ""
-"Welcome to %n\n"
-"%n\n"
-"This is %n\n"
-msgstr "%n - tervetuloa\n"
-"%n\n"
-"T‰m‰ on %n\n"
+msgid "Welcome to %n"
+msgstr "%n - tervetuloa."
 
-#: gui/gdmconfig-strings.c:35
+#: gui/gdmconfig-strings.c:25
+#, c-format
+msgid "%n"
+msgstr "%n"
+
+#: gui/gdmconfig-strings.c:26 gui/gdmconfig-strings.c:27
 #, c-format
 msgid "This is %n"
 msgstr "T‰m‰ on %n"
 
-#: gui/gdmconfig-strings.c:36
+#: gui/gdmconfig-strings.c:28
 msgid "Default font: "
 msgstr "Oletuskirjasin: "
 
-#: gui/gdmconfig-strings.c:37
+#: gui/gdmconfig-strings.c:29
 msgid "Welcome message: "
 msgstr "Tervehdysviesti: "
 
-#: gui/gdmconfig-strings.c:38
+#: gui/gdmconfig-strings.c:30
 msgid "Pick a Font"
 msgstr "Valitse kirjasin"
 
-#: gui/gdmconfig-strings.c:39
+#: gui/gdmconfig-strings.c:31
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz≈Âƒ‰÷ˆ"
 
-#: gui/gdmconfig-strings.c:40
+#: gui/gdmconfig-strings.c:32
 msgid "Extras"
-msgstr ""
+msgstr "Lis‰asetukset"
 
-#: gui/gdmconfig-strings.c:41
+#: gui/gdmconfig-strings.c:33
 msgid "Background Program: "
 msgstr "Taustan ohjelma: "
 
-#: gui/gdmconfig-strings.c:42 gui/gdmconfig-strings.c:116
+#: gui/gdmconfig-strings.c:34 gui/gdmconfig-strings.c:117
 msgid "Select a file containing Locale information"
 msgstr "Valitse tiedosto joka sis‰lt‰‰ lokaalitiedot"
 
-#: gui/gdmconfig-strings.c:43
+#: gui/gdmconfig-strings.c:35
 msgid "Default locale: "
 msgstr "Oletuslokaali: "
 
-#: gui/gdmconfig-strings.c:44
+#: gui/gdmconfig-strings.c:36
 msgid "Exclude these users: "
 msgstr "J‰t‰ n‰m‰ k‰ytt‰j‰t pois: "
 
-#: gui/gdmconfig-strings.c:45
+#: gui/gdmconfig-strings.c:37
 msgid "Automatic Login: "
 msgstr "Automaattinen kirjautuminen: "
 
-#: gui/gdmconfig-strings.c:46
+#: gui/gdmconfig-strings.c:38
 msgid "Position"
 msgstr "Sijainti"
 
-#: gui/gdmconfig-strings.c:47
+#: gui/gdmconfig-strings.c:39
 msgid "Manually set position"
 msgstr "Aseta sijainti manuaalisesti"
 
-#: gui/gdmconfig-strings.c:48
+#: gui/gdmconfig-strings.c:40
 msgid "Lock position"
 msgstr "Lukitse sijainti"
 
-#: gui/gdmconfig-strings.c:49
+#: gui/gdmconfig-strings.c:41
 msgid "X position: "
 msgstr "X-sijainti: "
 
-#: gui/gdmconfig-strings.c:50
+#: gui/gdmconfig-strings.c:42
 msgid "Y position: "
 msgstr "Y-sijainti: "
 
-#: gui/gdmconfig-strings.c:51
+#: gui/gdmconfig-strings.c:43
 msgid "Xinerama screen: "
 msgstr "Xinerama-ruutu: "
 
-#: gui/gdmconfig-strings.c:52
+#: gui/gdmconfig-strings.c:44
 msgid "Login behaviour"
 msgstr "Kirjautumisk‰ytt‰ytyminen"
 
-#: gui/gdmconfig-strings.c:53 gui/gdmconfig-strings.c:61
+#: gui/gdmconfig-strings.c:45 gui/gdmconfig-strings.c:53
 msgid "Face browser"
 msgstr "Kasvoselain"
 
-#: gui/gdmconfig-strings.c:54
+#: gui/gdmconfig-strings.c:46
 msgid "Show choosable user images (enable face browser)"
 msgstr "N‰yt‰ valittavat k‰ytt‰j‰kuvat (laita naamaselain p‰‰lle)"
 
-#: gui/gdmconfig-strings.c:55
+#: gui/gdmconfig-strings.c:47
 msgid "Default face image: "
 msgstr "Oletuskasvo: "
 
-#: gui/gdmconfig-strings.c:56
+#: gui/gdmconfig-strings.c:48
 msgid "Global faces directory: "
 msgstr "Yleinen kasvohakemisto: "
 
-#: gui/gdmconfig-strings.c:57
+#: gui/gdmconfig-strings.c:49
 msgid "Maximum face width: "
 msgstr "Kasvojen maksimileveys: "
 
-#: gui/gdmconfig-strings.c:58
+#: gui/gdmconfig-strings.c:50
 msgid "Select an image for users with no 'face'"
 msgstr "Valitse kuva kasvottomille k‰ytt‰jille"
 
-#: gui/gdmconfig-strings.c:59
+#: gui/gdmconfig-strings.c:51
 msgid "Choose the directory to search for faces"
 msgstr "Valitse hakemisto josta kasvoja etsit‰‰n"
 
-#: gui/gdmconfig-strings.c:60
+#: gui/gdmconfig-strings.c:52
 msgid "Maximum face height: "
 msgstr "Kasvojen maksimikorkeus: "
 
-#: gui/gdmconfig-strings.c:62
+#: gui/gdmconfig-strings.c:54
 msgid "expert"
 msgstr "ekspertti"
 
-#: gui/gdmconfig-strings.c:64
+#: gui/gdmconfig-strings.c:56
 msgid "Allow root to login with GDM"
 msgstr "Anna p‰‰k‰ytt‰j‰n kirjautua k‰ytt‰en GDM:‰‰"
 
-#: gui/gdmconfig-strings.c:65
+#: gui/gdmconfig-strings.c:57
+msgid ""
+"Determines whether GDM should kill X clients started by the init scripts "
+"when the user logs in."
+msgstr ""
+"M‰‰ritt‰‰ josko GDM:n tulee tappaa init-skriptien k‰ynnist‰m‰t X-asiakkaat "
+"kun k‰ytt‰j‰n kirjautuessa sis‰‰n."
+
+#: gui/gdmconfig-strings.c:58
 msgid "Kill 'init' clients"
 msgstr "Tapa 'init'-asiakkaat"
 
+#: gui/gdmconfig-strings.c:59
+msgid "Should GDM print authentication errors in the greeter"
+msgstr "Tulostaako GDM kirjautumisvirheet tervehtij‰‰n"
+
+#: gui/gdmconfig-strings.c:60
+msgid "Authentication errors should be verbose"
+msgstr "Kirjautumisvirheist‰ tulee antaa palautetta"
+
+#: gui/gdmconfig-strings.c:61
+msgid "Select how relaxed permissions are"
+msgstr "Valitse turva-asetusten tiukkuus"
+
+#: gui/gdmconfig-strings.c:62
+msgid "Permissions: "
+msgstr "Turva-asetukset: "
+
+#: gui/gdmconfig-strings.c:63
+msgid "Allow world writable files and directories"
+msgstr "Salli tiedostot ja hakemistot joihin kaikilla on kirjoitusoikeudet"
+
+#: gui/gdmconfig-strings.c:64
+msgid "World writable"
+msgstr "Kaikilla kirjoitusoikeudet"
+
+#: gui/gdmconfig-strings.c:65
+msgid "Allow group writable files and directories"
+msgstr "Salli tiedostot ja hakemistot joihin ryhm‰ll‰ on kirjoitusoikeudet"
+
 #: gui/gdmconfig-strings.c:66
-msgid "Relax permissions"
-msgstr "Heikenn‰ turva-asetuksia"
+msgid "Group writable"
+msgstr "Ryhm‰ll‰ kirjoitusoikeudet"
 
 #: gui/gdmconfig-strings.c:67
-msgid "Authentication errors should be verbose"
-msgstr "Kirjautumisvirheist‰ tulee antaa palaute"
+msgid "Only accept user owned files and directories"
+msgstr "Hyv‰ksy ainoastaan tiedostot ja hakemistot jotka k‰ytt‰j‰ omistaa"
 
 #: gui/gdmconfig-strings.c:68
+msgid "Paranoia"
+msgstr "Vainoharhainen"
+
+#: gui/gdmconfig-strings.c:69
 msgid "Authorization Details"
 msgstr "Todentamisen yksityiskohdat"
 
-#: gui/gdmconfig-strings.c:69
+#: gui/gdmconfig-strings.c:70
 msgid "GDM runs as this user: "
 msgstr "GDM ajetaan t‰ll‰ k‰ytt‰j‰ll‰: "
 
-#: gui/gdmconfig-strings.c:70
+#: gui/gdmconfig-strings.c:71
 msgid "User 'auth' directory: "
 msgstr "K‰ytt‰j‰n 'auth'-hakemisto: "
 
-#: gui/gdmconfig-strings.c:71
+#: gui/gdmconfig-strings.c:72
 msgid "User 'auth' FB directory: "
 msgstr "K‰ytt‰j‰n 'auth' FB-hakemisto: "
 
-#: gui/gdmconfig-strings.c:72
+#: gui/gdmconfig-strings.c:73
 msgid "User 'auth' file: "
 msgstr "K‰ytt‰j‰n 'auth'-tiedosto: "
 
-#: gui/gdmconfig-strings.c:73
+#: gui/gdmconfig-strings.c:74
 msgid "GDM runs as this group: "
 msgstr "GDM ajetaan t‰ll‰ ryhm‰ll‰: "
 
-#: gui/gdmconfig-strings.c:74
+#: gui/gdmconfig-strings.c:75
 msgid "Limits"
 msgstr "Rajoitukset"
 
-#: gui/gdmconfig-strings.c:75
+#: gui/gdmconfig-strings.c:76
 msgid "Retry delay: "
 msgstr "Uudelleenyrityksen viive: "
 
-#: gui/gdmconfig-strings.c:76
+#: gui/gdmconfig-strings.c:77
 msgid "Maximum user file length: "
 msgstr "K‰ytt‰j‰tiedoston maksimipituus: "
 
 #: gui/gdmconfig-strings.c:78
+msgid "Security"
+msgstr "Turvallisuus"
+
+#: gui/gdmconfig-strings.c:79
 msgid "Enable XDMCP"
 msgstr "K‰yt‰ XDMCP:t‰"
 
-#: gui/gdmconfig-strings.c:79
+#: gui/gdmconfig-strings.c:80
 msgid "Connection Settings"
 msgstr "Yhteysasetukset"
 
-#: gui/gdmconfig-strings.c:80
+#: gui/gdmconfig-strings.c:81
 msgid "Honour indirect requests"
 msgstr "Kunnioita ep‰suoria pyyntˆj‰"
 
-#: gui/gdmconfig-strings.c:81
+#: gui/gdmconfig-strings.c:82
 msgid "Maximum indirect wait time: "
 msgstr "Ep‰suoran odottamisen maksimiaika: "
 
-#: gui/gdmconfig-strings.c:82
+#: gui/gdmconfig-strings.c:83
 msgid "Maximum wait time: "
 msgstr "Odottamisen maksimiaika: "
 
-#: gui/gdmconfig-strings.c:83
+#: gui/gdmconfig-strings.c:84
 msgid "Maximum remote sessions: "
 msgstr "Suurin sallittu et‰istuntojen m‰‰r‰: "
 
-#: gui/gdmconfig-strings.c:84
-msgid "Max pending indirect requests: "
-msgstr ""
-
 #: gui/gdmconfig-strings.c:85
-msgid "Maximum pending requests: "
-msgstr ""
+msgid "Max pending indirect requests: "
+msgstr "Voimassaolevien ep‰suorien pyyntˆjen enimm‰ism‰‰r‰: "
 
 #: gui/gdmconfig-strings.c:86
+msgid "Maximum pending requests: "
+msgstr "Voimassaolevien pyyntˆjen enimm‰ism‰‰r‰: "
+
+#: gui/gdmconfig-strings.c:87
 msgid "Listen on UDP port: "
 msgstr "Kuuntele UDP-porttia: "
 
 #: gui/gdmconfig-strings.c:88
+msgid "XDMCP"
+msgstr "XDMCP"
+
+#: gui/gdmconfig-strings.c:89
 msgid "Server Definitions"
 msgstr "Palvelinten m‰‰ritykset"
 
-#: gui/gdmconfig-strings.c:89
+#: gui/gdmconfig-strings.c:90
 msgid "No."
 msgstr "Ei."
 
-#: gui/gdmconfig-strings.c:90
+#: gui/gdmconfig-strings.c:91
 msgid "Path to X server"
 msgstr "Polku X-palvelimeen"
 
-#: gui/gdmconfig-strings.c:91
+#: gui/gdmconfig-strings.c:92
 msgid "Add Server"
 msgstr "Lis‰‰ palvelin"
 
-#: gui/gdmconfig-strings.c:92
+#: gui/gdmconfig-strings.c:93
 msgid "Edit Server"
 msgstr "Muokkaa palvelinta"
 
-#: gui/gdmconfig-strings.c:93
+#: gui/gdmconfig-strings.c:94
 msgid "Delete Server"
 msgstr "Poista palvelin"
 
-#: gui/gdmconfig-strings.c:94
+#: gui/gdmconfig-strings.c:95
 msgid "Debugging"
 msgstr "Debuggaus"
 
-#: gui/gdmconfig-strings.c:95
+#: gui/gdmconfig-strings.c:96
 msgid "Enable debugging output"
 msgstr "Aseta debuggaus p‰‰lle"
 
-#: gui/gdmconfig-strings.c:96
+#: gui/gdmconfig-strings.c:97
 msgid "X-server setup"
 msgstr "X-palvelimen asetukset"
 
-#: gui/gdmconfig-strings.c:97
+#: gui/gdmconfig-strings.c:98
 msgid "system_setup"
 msgstr "j‰rjestelm‰_asetukset"
 
-#: gui/gdmconfig-strings.c:98
+#: gui/gdmconfig-strings.c:99
 msgid "Executables"
 msgstr "Suoritettavat tiedostot"
 
-#: gui/gdmconfig-strings.c:99
+#: gui/gdmconfig-strings.c:100
 msgid "Chooser command: "
 msgstr "Valitsinkomento: "
 
-#: gui/gdmconfig-strings.c:100
+#: gui/gdmconfig-strings.c:101
 msgid "Greeter command: "
 msgstr "Tervehtij‰komento: "
 
-#: gui/gdmconfig-strings.c:101
+#: gui/gdmconfig-strings.c:102
 msgid "Halt command: "
 msgstr "Sammutuskomento: "
 
-#: gui/gdmconfig-strings.c:102
+#: gui/gdmconfig-strings.c:103
 msgid "Reboot command: "
 msgstr "Uudelleenk‰ynnistyskomento: "
 
-#: gui/gdmconfig-strings.c:103
+#: gui/gdmconfig-strings.c:104
 msgid "Directories"
 msgstr "Hakemistot"
 
-#: gui/gdmconfig-strings.c:104
+#: gui/gdmconfig-strings.c:105
 msgid "Session directory: "
 msgstr "Istuntohakemisto: "
 
-#: gui/gdmconfig-strings.c:105
+#: gui/gdmconfig-strings.c:106
 msgid "PRE session scripts directory: "
 msgstr "Istuntoa edelt‰vien (PRE) skriptien hakemisto: "
 
-#: gui/gdmconfig-strings.c:106
+#: gui/gdmconfig-strings.c:107
 msgid "POST session scripts directory: "
 msgstr "Istuntoa seuraavien (POST) skriptien hakemisto: "
 
-#: gui/gdmconfig-strings.c:107
+#: gui/gdmconfig-strings.c:108
 msgid "Logging directory: "
 msgstr "Lokihakemisto: "
 
-#: gui/gdmconfig-strings.c:108
+#: gui/gdmconfig-strings.c:109
 msgid "Display initialization directory: "
 msgstr "N‰ytˆnalustushakemisto: "
 
-#: gui/gdmconfig-strings.c:109 gui/gdmconfig-strings.c:112
+#: gui/gdmconfig-strings.c:110 gui/gdmconfig-strings.c:113
 msgid "Miscelleaneous"
 msgstr "Sekalaiset"
 
-#: gui/gdmconfig-strings.c:110
+#: gui/gdmconfig-strings.c:111
 msgid "PID file: "
 msgstr "PID-tiedosto: "
 
-#: gui/gdmconfig-strings.c:111
+#: gui/gdmconfig-strings.c:112
 msgid "Paths"
 msgstr "Polut"
 
-#: gui/gdmconfig-strings.c:113
+#: gui/gdmconfig-strings.c:114
 msgid "Default $PATH: "
 msgstr "$PATH:n oletus: "
 
-#: gui/gdmconfig-strings.c:114
+#: gui/gdmconfig-strings.c:115
 msgid "Root $PATH: "
 msgstr "P‰‰k‰ytt‰j‰n $PATH: "
 
-#: gui/gdmconfig-strings.c:115
+#: gui/gdmconfig-strings.c:116
 msgid "Localization"
 msgstr "Lokalisaatio"
 
-#: gui/gdmconfig-strings.c:117
+#: gui/gdmconfig-strings.c:118
 msgid "Locale file: "
 msgstr "Lokaalitiedosto: "
 
-#: gui/gdmconfig-strings.c:118
+#: gui/gdmconfig-strings.c:119
 msgid "Environment"
 msgstr "Ymp‰ristˆ"
 
-#: gui/gdmconfig-strings.c:119
+#: gui/gdmconfig-strings.c:120
 msgid "Appearance"
 msgstr "Ulkon‰kˆ"
 
-#: gui/gdmconfig-strings.c:120
+#: gui/gdmconfig-strings.c:121
 msgid "Directory for host images: "
 msgstr "Is‰nt‰kuvien hakemisto: "
 
-#: gui/gdmconfig-strings.c:121
+#: gui/gdmconfig-strings.c:122
 msgid "Default host image:"
 msgstr "Is‰nt‰kuvan oletus:"
 
-#: gui/gdmconfig-strings.c:122
+#: gui/gdmconfig-strings.c:123
 msgid "Refresh"
 msgstr "Virkistys"
 
-#: gui/gdmconfig-strings.c:123
+#: gui/gdmconfig-strings.c:124
 msgid "Scan every 'x' seconds: "
 msgstr "Virkist‰ joka 'x':s sekunti: "
 
 #: gui/gdmconfig-strings.c:125
+msgid "Chooser"
+msgstr "Valitsin"
+
+#: gui/gdmconfig-strings.c:126
 msgid "(C) 2001 Lee Mallabone"
 msgstr "(C) 2001 Lee Mallabone"
 
-#: gui/gdmconfig-strings.c:126
+#: gui/gdmconfig-strings.c:127
 msgid ""
 "Configure the GNOME Display Manager.\n"
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
