@@ -724,8 +724,9 @@ find_a_session (void)
 }
 
 /* A hack really, this pretends to be a standalone gtk program */
+/* this should only be called once forked and all thingies are closed */
 static void
-run_error_dialog (void)
+run_error_dialog (const char *error)
 {
 	char *argv_s[] = { "error", NULL };
 	char **argv = argv_s;
@@ -744,10 +745,7 @@ run_error_dialog (void)
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Cannot start session"));
 
-	label = gtk_label_new (_("Cannot start the session, most likely the\n"
-				 "session does not exist.  Please select from\n"
-				 "the list of available sessions in the login\n"
-				 "dialog window."));
+	label = gtk_label_new (error);
 
 	gtk_container_set_border_width
 		(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
@@ -1056,19 +1054,28 @@ gdm_slave_session_start (void)
 	 * message */
 	if (strcmp (shell, "/bin/false") == 0) {
 		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
+		run_error_dialog (_("The system administrator has\n"
+				    "disabled your account."));
 	} else if (access (sesspath, X_OK|R_OK) != 0) {
+		gdm_error (_("gdm_slave_session_start: Could not find session `%s'"), sesspath);
 		/* if we can't read and exec the session, then make a nice
 		 * error dialog */
-		run_error_dialog ();
-
-		/* ends as if nothing bad happened */
-		_exit (0);
+		run_error_dialog
+			(_("Cannot start the session, most likely the\n"
+			   "session does not exist.  Please select from\n"
+			   "the list of available sessions in the login\n"
+			   "dialog window."));
 	} else {
 		execl (shell, "-", "-c", sesspath, NULL);
 
 		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
+		run_error_dialog
+			(_("Cannot start your shell.  It could be that the\n"
+			   "system administrator has disabled your login.\n"
+			   "It could also indicate an error with your account.\n"));
 	}
 	
+	/* ends as if nothing bad happened */
 	_exit (0);
 	
     default:

@@ -37,6 +37,7 @@ static const gchar RCSid[]="$Id$";
 /* Configuration option variables */
 extern gboolean GdmVerboseAuth;
 extern gboolean GdmAllowRoot;
+extern gboolean GdmAllowRemoteRoot;
 
 /**
  * gdm_verify_user:
@@ -107,7 +108,8 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 	    return NULL;
     }
 
-    if ( ! GdmAllowRoot &&
+    if ( ( ! GdmAllowRoot ||
+	  ( ! GdmAllowRemoteRoot && ! local) ) &&
 	pwent->pw_uid == 0) {
 	    gdm_error (_("Root login disallowed on display '%s'"), display);
 	    if (GdmVerboseAuth) {

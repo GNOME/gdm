@@ -113,6 +113,7 @@
 #define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=0"
 
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
+#define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
 #define GDM_KEY_MAXFILE "security/UserMaxFile=65536"
 #define GDM_KEY_SESSIONMAXFILE "security/SessionMaxFile=524288"
 #define GDM_KEY_RELAXPERM "security/RelaxPermissions=0"

@@ -305,6 +305,7 @@ gdm_config_parse_most (void)
 
     /* Fill the widgets in Security tab */
     gdm_toggle_set("allow_root", gnome_config_get_bool(GDM_KEY_ALLOWROOT));
+    gdm_toggle_set("allow_remote_root", gnome_config_get_bool(GDM_KEY_ALLOWREMOTEROOT));
     gdm_toggle_set("kill_init_clients", gnome_config_get_bool(GDM_KEY_KILLIC));
     gdm_radio_set ("relax_perms", gnome_config_get_int(GDM_KEY_RELAXPERM), 2);
     gdm_toggle_set("verbose_auth", gnome_config_get_bool(GDM_KEY_VERBAUTH));
@@ -642,6 +643,7 @@ write_new_config_file                  (GtkButton *button,
 
     /* Write out the widget contents of the Security tab */
     gdm_toggle_write("allow_root", GDM_KEY_ALLOWROOT);
+    gdm_toggle_write("allow_remote_root", GDM_KEY_ALLOWREMOTEROOT);
     gdm_toggle_write("kill_init_clients", GDM_KEY_KILLIC);
     gdm_radio_write ("relax_perms", GDM_KEY_RELAXPERM, 2);
     gdm_toggle_write("verbose_auth", GDM_KEY_VERBAUTH);

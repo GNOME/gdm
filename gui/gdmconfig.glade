@@ -2364,6 +2364,7 @@ This is %n
 	  <widget>
 	    <class>GtkCheckButton</class>
 	    <name>allow_root</name>
+	    <tooltip>Allow logging in as root (administrator) user.</tooltip>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>clicked</name>
@@ -2371,6 +2372,26 @@ This is %n
 	      <last_modification_time>Tue, 21 Mar 2000 21:29:53 GMT</last_modification_time>
 	    </signal>
 	    <label>Allow root to login with GDM</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>allow_remote_root</name>
+	    <tooltip>Allow logging in as root (administrator) user from a remote host using GDM.  This is only relevant if you enable the XDMCP protocol.</tooltip>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>can_apply_now</handler>
+	      <last_modification_time>Tue, 21 Mar 2000 21:29:53 GMT</last_modification_time>
+	    </signal>
+	    <label>Allow root to login remotely with GDM</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
 	    <child>

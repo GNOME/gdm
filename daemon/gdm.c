@@ -95,6 +95,7 @@ gint  GdmMaxIndirectWait = 0;
 gboolean  GdmDebug = FALSE;
 gboolean  GdmVerboseAuth = FALSE;
 gboolean  GdmAllowRoot = FALSE;
+gboolean  GdmAllowRemoteRoot = FALSE;
 gint  GdmRelaxPerms = 0;
 gint  GdmRetryDelay = 0;
 gchar *GdmTimedLogin = NULL;
@@ -160,6 +161,7 @@ gdm_config_parse (void)
     GdmTimedLoginDelay = gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
 
     GdmAllowRoot = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
+    GdmAllowRemoteRoot = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEROOT);
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
     GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
     GdmSessionMaxFile = gnome_config_get_int (GDM_KEY_SESSIONMAXFILE);
