@@ -64,6 +64,7 @@ gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
 	libgdmwm.a		\
 	$(GUI_LIBS)		\
+	$(X_LIBS)		\
 	$(XDMCP_LIBS)		\
 	-lX11			\
 	$(XINERAMA_LIBS)	\
@@ -75,7 +76,9 @@ gdmchooser_LDADD = \
 gdmlogin_LDADD = \
 	libgdmwm.a		\
 	$(GUI_LIBS)		\
+	$(X_LIBS)		\
 	$(XINERAMA_LIBS)	\
+	$(X_EXTRA_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\
@@ -109,7 +112,7 @@ gdmflexiserver_LDADD = \
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious		\
 	-lviciousui
- 
+
 Settingsdir = $(datadir)/gnome/apps/Settings
 Settings_in_files = gdmphotosetup.desktop.in
 Settings_DATA = $(Settings_in_files:.desktop.in=.desktop)

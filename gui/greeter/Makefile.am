@@ -43,7 +43,9 @@ gdmgreeter_SOURCES =  \
 
 gdmgreeter_LDADD = \
 	../libgdmwm.a 		\
+	$(X_LIBS)		\
 	$(XINERAMA_LIBS)	\
+	$(X_EXTRA_LIBS)		\
 	$(GREETER_LIBS)
 
 EXTRA_DIST = \

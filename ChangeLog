@@ -1,5 +1,10 @@
 2002-03-05  jacob berkman  <jacob@ximian.com>
 
+	* gui/Makefile.am (gdmchooser_LDADD): 
+	(gdmlogin_LDADD): 
+	* gui/greeter/Makefile.am (gdmgreeter_LDADD): add $(X_LIBS) and
+	$(X_EXTRA_LIBS)
+
 	* configure.in: fix some quoting, and add $(X_LIBS) and
 	$(X_EXTRA_LIBS) to the Xinerama and Xdmcp checks, since GTK
 	doesn't export them any more
