@@ -1,4 +1,4 @@
-SUBDIRS = config pixmaps intl vicious-extensions \
+SUBDIRS = config pixmaps vicious-extensions \
 	daemon gui utils docs omf-install po
 
 EXTRA_DIST = \
