@@ -88,6 +88,7 @@ main (int argc, char *argv[])
 					      "it\nin the GDM configurator "
 					      "program."));
 		gtk_dialog_run (GTK_DIALOG (d));
+		gtk_widget_destroy (d);
 	}
 
 	dialog = gnome_dialog_new (_("Select a photo"),
@@ -125,6 +126,7 @@ main (int argc, char *argv[])
 						    GTK_BUTTONS_OK,
 						    _("No picture selected."));
 			gtk_dialog_run (GTK_DIALOG (d));
+			gtk_widget_destroy (d);
 		} else if (is_in_trusted_pic_dir (pixmap)) {
 			/* Picture is in trusted dir, no need to copy nor
 			 * check it */
@@ -152,6 +154,7 @@ main (int argc, char *argv[])
 						      "show in the face browser"),
 						    max_size);
 			gtk_dialog_run (GTK_DIALOG (d));
+			gtk_widget_destroy (d);
 		} else {
 			char buf[4096];
 			size_t size;
@@ -176,6 +179,7 @@ main (int argc, char *argv[])
 							    pixmap,
 							    g_strerror (errno));
 				gtk_dialog_run (GTK_DIALOG (d));
+				gtk_widget_destroy (d);
 				g_free (cfg_file);
 				g_free (photofile);
 				continue;
@@ -193,6 +197,7 @@ main (int argc, char *argv[])
 							    photofile,
 							    g_strerror (errno));
 				gtk_dialog_run (GTK_DIALOG (d));
+				gtk_widget_destroy (d);
 				g_free (cfg_file);
 				g_free (photofile);
 				close (fdsrc);
