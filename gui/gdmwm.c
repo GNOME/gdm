@@ -600,6 +600,7 @@ static gboolean
 has_deco (Window win)
 {
 	static Atom hints_atom = None;
+	unsigned char *foo;
 	MotifWmHints *hints;
 	Atom type;
 	gint format;
@@ -618,7 +619,8 @@ has_deco (Window win)
 			    hints_atom, 0,
 			    sizeof (MotifWmHints) / sizeof (long),
 			    False, AnyPropertyType, &type, &format, &nitems,
-			    &bytes_after, (guchar **)&hints);
+			    &bytes_after, &foo);
+	hints = (MotifWmHints *)foo;
 
 	if (type != None &&
 	    hints != NULL &&

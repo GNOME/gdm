@@ -19,7 +19,8 @@
 #ifndef MISC_H
 #define MISC_H
 
-void	gdm_set_theme			(const char *theme_name);
+void		gdm_set_theme			(const char *theme_name);
+gboolean	gdm_working_command_exists	(const char *commands);
 
 #endif /* MISC_H */
 

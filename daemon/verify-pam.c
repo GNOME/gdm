@@ -131,6 +131,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
     int i;
     char *s;
     struct pam_response *reply = NULL;
+    const void *p;
     const char *login;
 
     if (pamh == NULL)
@@ -152,8 +153,10 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
     /* Here we set the login if it wasn't already set,
      * this is kind of anal, but this way we guarantee that
      * the greeter always is up to date on the login */
-    if (pam_get_item (pamh, PAM_USER, (const void **)&login) == PAM_SUCCESS ||
+    if (pam_get_item (pamh, PAM_USER, &p) == PAM_SUCCESS ||
 	tmp_PAM_USER != NULL) {
+	    login = (const char *)p;
+
 	    /* FIXME: this is a HACK HACK HACK, for some reason needed */
 	    if (tmp_PAM_USER != NULL)
 		    login = tmp_PAM_USER;
@@ -462,6 +465,7 @@ gdm_verify_user (GdmDisplay *d,
 		 gboolean local) 
 {
     gint pamerr;
+    const void *p;
     char *login;
     struct passwd *pwent;
     gboolean error_msg_given;
@@ -588,8 +592,7 @@ authenticate_again:
     g_free (login);
     login = NULL;
     
-    if ((pamerr = pam_get_item (pamh, PAM_USER, (const void **)&login))
-	!= PAM_SUCCESS) {
+    if ((pamerr = pam_get_item (pamh, PAM_USER, &p)) != PAM_SUCCESS) {
 	    login = NULL;
 	    /* is not really an auth problem, but it will
 	       pretty much look as such, it shouldn't really
@@ -598,7 +601,7 @@ authenticate_again:
 		    gdm_error (_("Couldn't authenticate user"));
 	    goto pamerr;
     }
-    login = g_strdup (login);
+    login = g_strdup ((const char *)p);
     /* kind of anal, the greeter likely already knows, but it could have
        been changed */
     gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
@@ -806,6 +809,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 {
     gint pamerr = 0;
     struct passwd *pwent;
+    const void *p;
     const char *after_login;
     int null_tok = 0;
     
@@ -857,8 +861,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    goto setup_pamerr;
     }
 
-    if ((pamerr = pam_get_item (pamh, PAM_USER, (const void **)&after_login))
-	!= PAM_SUCCESS) {
+    if ((pamerr = pam_get_item (pamh, PAM_USER, &p)) != PAM_SUCCESS) {
 	    /* is not really an auth problem, but it will
 	       pretty much look as such, it shouldn't really
 	       happen */
@@ -868,6 +871,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 			   _("Authentication failed"));
 	    goto setup_pamerr;
     }
+    after_login = (const char *)p;
 
     if (after_login != NULL /* should never be */ &&
 	strcmp (after_login, login) != 0) {

@@ -3524,7 +3524,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		/* Only allow locally authenticated connections */
 		if ( ! (gdm_connection_get_user_flags (conn) &
 			GDM_SUP_FLAG_AUTHENTICATED)) {
-			gdm_info (_("Flexible server request denied: "
+			gdm_info (_("FLEXI_XSERVER request denied: "
 				    "Not authenticated"));
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");
@@ -3543,7 +3543,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		/* Only allow locally authenticated connections */
 		if ( ! (gdm_connection_get_user_flags (conn) &
 			GDM_SUP_FLAG_AUTHENTICATED)) {
-			gdm_info (_("Flexible server request denied: "
+			gdm_info (_("FLEXI_XSERVER request denied: "
 				    "Not authenticated"));
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");
@@ -3687,7 +3687,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		if ( ! (gdm_connection_get_user_flags (conn) &
 			GDM_SUP_FLAG_AUTHENTICATED) ||
 		     disp == NULL) {
-			gdm_info (_("Query logout action request denied: "
+			gdm_info (_("QUERY_LOGOUT_ACTION request denied: "
 				    "Not authenticated"));
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");
@@ -3745,7 +3745,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			GDM_SUP_FLAG_AUTHENTICATED) ||
 		     disp == NULL ||
 		     ! disp->logged_in) {
-			gdm_info (_("Set logout action request denied: "
+			gdm_info (_("SET_LOGOUT_ACTION request denied: "
 				    "Not authenticated"));
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");
@@ -3800,7 +3800,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			GDM_SUP_FLAG_AUTHENTICATED) ||
 		     disp == NULL ||
 		     ! disp->logged_in) {
-			gdm_info (_("Set logout action request denied: "
+			gdm_info (_("SET_LOGOUT_ACTION request denied: "
 				    "Not authenticated"));
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");
@@ -3845,7 +3845,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		/* Only allow locally authenticated connections */
 		if ( ! (gdm_connection_get_user_flags (conn) &
 			GDM_SUP_FLAG_AUTHENTICATED)) {
-			gdm_info (_("Query vt request denied: "
+			gdm_info (_("QUERY_VT request denied: "
 				    "Not authenticated"));
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");
@@ -3872,7 +3872,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		/* Only allow locally authenticated connections */
 		if ( ! (gdm_connection_get_user_flags (conn) &
 			GDM_SUP_FLAG_AUTHENTICATED)) {
-			gdm_info (_("Query vt request denied: "
+			gdm_info (_("QUERY_VT request denied: "
 				    "Not authenticated"));
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");

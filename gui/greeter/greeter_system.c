@@ -39,17 +39,6 @@ bin_exists (const char *command)
 	}
 }
 
-static gboolean
-working_command_exists (const char *commands)
-{
-	char *command = ve_get_first_working_command
-		(commands, TRUE /* only_existance */);
-	if (command == NULL)
-		return FALSE;
-	g_free (command);
-	return TRUE;
-}
-
 static void
 query_greeter_reboot_handler (void)
 {
@@ -132,7 +121,6 @@ greeter_system_append_system_menu (GtkWidget *menu)
 {
 	GtkWidget *w, *sep;
 	static GtkTooltips *tooltips = NULL;
-	gboolean add_reboot, add_halt, add_suspend;
 
 	/* should never be allowed by the UI */
 	if ( ! GdmSystemMenu ||
@@ -170,17 +158,13 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				      NULL);
 	}
 
-	add_reboot = working_command_exists (GdmReboot);
-	add_halt = working_command_exists (GdmHalt);
-	add_suspend = working_command_exists (GdmSuspend);
-
-	if (add_reboot || add_halt || add_suspend) {
+	if (GdmRebootFound || GdmHaltFound || GdmSuspendFound) {
 		sep = gtk_separator_menu_item_new ();
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), sep);
 		gtk_widget_show (sep);
 	}
 
-	if (add_reboot) {
+	if (GdmRebootFound) {
 		w = gtk_menu_item_new_with_mnemonic (_("_Reboot"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
@@ -192,7 +176,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				      NULL);
 	}
 
-	if (add_halt) {
+	if (GdmHaltFound) {
 		w = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
@@ -205,7 +189,7 @@ greeter_system_append_system_menu (GtkWidget *menu)
 				      NULL);
 	}
 
-	if (add_suspend) {
+	if (GdmSuspendFound) {
 		w = gtk_menu_item_new_with_mnemonic (_("Sus_pend"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), w);
 		gtk_widget_show (GTK_WIDGET (w));
@@ -218,8 +202,10 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 }
 
-static gboolean radio_button_press_event(GtkWidget *widget, GdkEventButton *event,
-                                          gpointer data)
+static gboolean
+radio_button_press_event (GtkWidget *widget,
+			  GdkEventButton *event,
+			  gpointer data)
 {
     if (event->type == GDK_2BUTTON_PRESS) {
         gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
@@ -289,7 +275,7 @@ greeter_system_handler (GreeterItemInfo *info,
 		      vbox,
 		      TRUE, TRUE, 0);
 
-  if (working_command_exists (GdmHalt)) {
+  if (GdmHaltFound) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  halt_radio = gtk_radio_button_new_with_mnemonic (radio_group,
@@ -307,7 +293,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_widget_show (halt_radio);
   }
 
-  if (working_command_exists (GdmReboot)) {
+  if (GdmRebootFound) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  reboot_radio = gtk_radio_button_new_with_mnemonic (radio_group,
@@ -321,7 +307,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  gtk_widget_show (reboot_radio);
   }
 
-  if (working_command_exists (GdmSuspend)) {
+  if (GdmSuspendFound) {
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  suspend_radio = gtk_radio_button_new_with_mnemonic (radio_group,
@@ -359,7 +345,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  if (group_radio != NULL)
 		  radio_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (group_radio));
 	  config_radio = gtk_radio_button_new_with_mnemonic (radio_group,
-							     _("_Configure the login manager"));
+							     _("Confi_gure the login manager"));
 	  group_radio = config_radio;
 	  gtk_tooltips_set_tip (tooltips, GTK_WIDGET (config_radio),
 				_("Configure GDM (this login manager). "

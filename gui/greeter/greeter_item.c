@@ -295,7 +295,7 @@ greeter_item_is_visible (GreeterItemInfo *info)
       ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
     return FALSE;
 
-  if (( ! GdmConfigAvailable || ! GdmSystemMenu) &&
+  if (( ! GdmConfigAvailable || ! GdmSystemMenu || ! GdmConfiguratorFound) &&
       info->show_type != NULL &&
       strcmp (info->show_type, "config") == 0)
 	  return FALSE;
@@ -310,15 +310,15 @@ greeter_item_is_visible (GreeterItemInfo *info)
       strcmp (info->show_type, "system") == 0)
 	  return FALSE;
 
-  if (( ! GdmSystemMenu || GdmHalt == NULL) &&
+  if (( ! GdmSystemMenu || ! GdmHaltFound) &&
       info->show_type != NULL &&
       strcmp (info->show_type, "halt") == 0)
 	  return FALSE;
-  if (( ! GdmSystemMenu || GdmReboot == NULL) &&
+  if (( ! GdmSystemMenu || ! GdmRebootFound) &&
       info->show_type != NULL &&
       strcmp (info->show_type, "reboot") == 0)
 	  return FALSE;
-  if (( ! GdmSystemMenu || GdmSuspend == NULL) &&
+  if (( ! GdmSystemMenu || ! GdmSuspendFound) &&
       info->show_type != NULL &&
       strcmp (info->show_type, "suspend") == 0)
 	  return FALSE;

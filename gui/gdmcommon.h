@@ -24,6 +24,8 @@
 
 #include <vicious.h>
 
+#include "misc.h"
+
 void	gdm_common_show_info_msg	(void);
 void	gdm_common_message		(const gchar *msg);
 void	gdm_common_abort		(const gchar *format, ...) G_GNUC_PRINTF (1, 2);

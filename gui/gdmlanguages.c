@@ -58,7 +58,7 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Arabic (Lebanon)"), "ar_LB", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Azerbaijani"), "az_AZ", NULL, 0 },
+	{ N_("A-M|Azerbaijani"), "az_AZ", "Azərbaycanca", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Basque"), "eu_ES", "Euskara", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -88,15 +88,17 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|English"), "en", "English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|English (American)"), "en_US", "American English", 0 },
+	{ N_("A-M|English (USA)"), "en_US", "American English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|English (Australian)"), "en_AU", "Australian English", 0 },
+	{ N_("A-M|English (Australia)"), "en_AU", "Australian English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|English (British)"), "en_GB", "British English", 0 },
+	{ N_("A-M|English (UK)"), "en_GB", "British English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|English (Canadian)"), "en_CA", "Canadian English", 0 },
+	{ N_("A-M|English (Canada)"), "en_CA", "Canadian English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|English (Ireland)"), "en_IE", "Irish English", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|English (Danmark)"), "en_IE", "Danish English", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Estonian"), "et_EE", "Eesti", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -104,13 +106,21 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|French"), "fr_FR", "Français", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|French (Belgium)"), "fr_BE", "Français (Belgique)", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|French (Switzerland)"), "fr_CH", "Français (Suisse)", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Galician"), "gl_ES", "Galego", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|German"), "de_DE", "Deutsch", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Greek"), "el_GR", "ελληνικά", 0 },
+	{ N_("A-M|German (Austria)"), "de_AT", "Deutsch (Österreich)", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Gujarati"), "gu_IN", NULL, 0 },
+	{ N_("A-M|German (Switzerland)"), "de_CH", "Deutsch (Schweiz)", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Greek"), "el_GR", "Ελληνικά", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Gujarati"), "gu_IN", "ગુજરાતી", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Hebrew"), "he_IL", "עברית", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */

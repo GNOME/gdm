@@ -2539,17 +2539,6 @@ bin_exists (const char *command)
 }
 
 static gboolean
-working_command_exists (const char *commands)
-{
-	char *command = ve_get_first_working_command
-		(commands, TRUE /* only_existance */);
-	if (command == NULL)
-		return FALSE;
-	g_free (command);
-	return TRUE;
-}
-
-static gboolean
 window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 {
 	switch (event->type) {
@@ -2759,7 +2748,7 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 
-	if (working_command_exists (GdmReboot)) {
+	if (gdm_working_command_exists (GdmReboot)) {
 		item = gtk_menu_item_new_with_mnemonic (_("_Reboot"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
@@ -2772,7 +2761,7 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 	
-	if (working_command_exists (GdmHalt)) {
+	if (gdm_working_command_exists (GdmHalt)) {
 		item = gtk_menu_item_new_with_mnemonic (_("Shut _Down"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
@@ -2786,7 +2775,7 @@ gdm_login_gui_init (void)
 		got_anything = TRUE;
 	}
 
-	if (working_command_exists (GdmSuspend)) {
+	if (gdm_working_command_exists (GdmSuspend)) {
 		item = gtk_menu_item_new_with_mnemonic (_("_Suspend"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",

@@ -53,6 +53,7 @@
 #include "gdm.h"
 #include "misc.h"
 #include "gdmwm.h"
+#include "gdmcommon.h"
 
 static gboolean RUNNING_UNDER_GDM = FALSE;
 

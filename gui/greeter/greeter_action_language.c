@@ -188,6 +188,7 @@ greeter_action_language (GreeterItemInfo *info,
 
   if (dialog == NULL)
     {
+      GtkWidget **tmp_p;
       GtkWidget *swindow;
       GtkWidget *label;
       char *s;
@@ -207,7 +208,9 @@ greeter_action_language (GreeterItemInfo *info,
 
       gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 				       GTK_RESPONSE_OK);
-      g_object_add_weak_pointer (G_OBJECT (dialog), (gpointer *) &dialog);
+      /* evil gcc warnings */
+      tmp_p = &dialog;
+      g_object_add_weak_pointer (G_OBJECT (dialog), (gpointer *)tmp_p);
       s = g_strdup_printf ("<span size=\"x-large\" weight=\"bold\">%s</span>",
 			   _("Select a language for your session to use:"));
       label = gtk_label_new (s);

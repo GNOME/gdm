@@ -52,6 +52,10 @@ gchar *GdmHalt = NULL;
 gchar *GdmReboot = NULL;
 gchar *GdmSuspend = NULL;
 gchar *GdmConfigurator = NULL;
+gboolean GdmHaltFound = FALSE;
+gboolean GdmRebootFound = FALSE;
+gboolean GdmSuspendFound = FALSE;
+gboolean GdmConfiguratorFound = FALSE;
 gboolean GdmSystemMenu = TRUE;
 gboolean GdmConfigAvailable = TRUE;
 gboolean GdmChooserButton = TRUE;
@@ -147,6 +151,11 @@ greeter_parse_config (void)
     GdmServAuthDir = ve_config_get_string (config, GDM_KEY_SERVAUTH);
     GdmInfoMsgFile = ve_config_get_string (config, GDM_KEY_INFO_MSG_FILE);
     GdmInfoMsgFont = ve_config_get_string (config, GDM_KEY_INFO_MSG_FONT);
+
+    GdmHaltFound = gdm_working_command_exists (GdmHalt);
+    GdmRebootFound = gdm_working_command_exists (GdmReboot);
+    GdmSuspendFound = gdm_working_command_exists (GdmSuspend);
+    GdmConfiguratorFound = gdm_working_command_exists (GdmConfigurator);
 
     GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
     /* A hack! */

@@ -1,3 +1,49 @@
+Tue Aug 03 16:29:08 2004  George Lebl <jirka@5z.com>
+
+	* gui/gdmlanguages.c: "fix" #148349 by adding French (Belgium),
+	  French (Switzerland), German (Austria), German (Switzerland)
+	  to the translation matrix applying the patch.  Patch from
+	  Christian Rose
+
+	* config/locale.alias: add de_AT, de_CH, fr_BE, fr_CH
+
+	* gui/gdmlanguages.c: normalize english names, patch mostly from
+	  Christian Rose, #148350
+
+	* gui/gdmlanguages.c: fix #148356 by including a native version of
+	  Azerbaijani language name
+
+	* gui/gdmlanguages.c: fix #148486 by including native name for
+	  Gujarati
+
+	* gui/gdmlanguages.c: fix #148373 by fixing the greek language string
+
+	* gui/gdmlanguages.c: add en_DK just to have the translation, but
+	  don't add it to config/locale.alias
+
+	* configure.in: fixing #148042 by settings GETTEXT_PACKAGE to gdm
+
+	* gui/greeter/greeter_system.c: fix #147800 by changing the shortcut
+	  for configure from c to g
+
+	* gui/greeter/greeter.c, gui/greeter/greeter_configuration.c,
+	  gui/greeter/greeter_system.c, gui/greeter/greeter_canvas_item.c:
+	  Fix #147940 by actually checking if the command exists and not just
+	  for NULLs, then disabeling Halt,Suspend or Reboot is really as
+	  simple as "RebootCommand=" as it is for gdmlogin
+
+	* gui/gdmlogin.c, gui/gdmsetup.c, gui/gdmwm.c, gui/gdmcommon.c,
+	  gui/gdmchooser.c, gui/greeter/greeter_item.c,
+	  gui/greeter/greeter_action_language.c:
+	  fix some compiler warnings
+
+	* daemon/gdm.c: Fix #144076, 144077, the request denied errors
+	  that are printed to syslog now just give the request by real name
+	  instead of making it look like part of the sentence and so it
+	  all makes more sense.
+
+	* daemon/verify-pam.c: fix some compiler warnings
+
 Fri Jul 02 Arvind Samptur  <arvind.samptur@wipro.com>
 
 	* configure.in: Define a macro to set the xserver options

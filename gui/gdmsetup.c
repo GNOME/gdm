@@ -2568,6 +2568,7 @@ get_sensitivity (void)
 	static Atom atom = 0;
 	Display *disp = gdk_x11_get_default_xdisplay ();
 	Window root = gdk_x11_get_default_root_xwindow ();
+	unsigned char *datac;
 	gulong *data;
 	gulong nitems_return;
 	gulong bytes_after_return;
@@ -2586,8 +2587,10 @@ get_sensitivity (void)
 				&type_returned, &format_returned,
 				&nitems_return,
 				&bytes_after_return,
-				(unsigned char **)&data) != Success)
+				&datac) != Success)
 		return TRUE;
+
+	data = (gulong *)datac;
 
 	if (format_returned != 32 ||
 	    data[0] == 0) {

@@ -8,6 +8,7 @@
 #include "vicious.h"
 
 #include "gdm.h"
+#include "gdmcommon.h"
 #include "greeter.h"
 #include "greeter_item.h"
 #include "greeter_events.h"
