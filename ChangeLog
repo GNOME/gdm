@@ -1,3 +1,19 @@
+Thu Jul 11 13:31:01 2002  George Lebl <jirka@5z.com>
+
+	* gui/greeter/greeter_action_language.c:  Fix saving of languages,
+	  Add Last and System default language choices.  When setting system
+	  default just return "" as that's what the daemon expects
+
+	* gui/gdmlogin.c: add the System default language choice, and
+	  for system default just return "" as above
+
+	* gui/gdmlogin.c, gui/greeter/greeter_action_language.c: Ask before
+	  saving a new language if nothing was saved before and we were
+	  using the system default
+
+	* daemon/slave.c: when we get the system default language wipe the
+	  user lang setting
+
 Thu Jul 11 10:54:28 2002  George Lebl <jirka@5z.com>
 
 	* gui/greeter/greeter.c, gui/greeter/greeter_configuration.h,
