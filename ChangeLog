@@ -1,5 +1,15 @@
 2001-08-02  Havoc Pennington  <hp@redhat.com>
 
+	* gui/gdmlogin.c (gdm_login_session_init): add config option to
+	not show the Last session item, because it's confusing to have in
+	addition to Default, and interacts badly with switchdesk and
+	kdm/xdm. Need a better solution, such as a unified session system
+	across kdm/gdm. Lang-setting is screwed up too (e.g.
+	/etc/sysconfig/i18n overrides it, and does not work for non-GNOME
+	sessions).
+
+2001-08-02  Havoc Pennington  <hp@redhat.com>
+
 	* daemon/gdm.c (gdm_config_parse): fix format
 
 	* daemon/server.c (display_busy): fix format 

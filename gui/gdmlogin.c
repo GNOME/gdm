@@ -119,6 +119,7 @@ static gboolean GdmTitleBar;
 static gboolean GdmShowGnomeChooserSession;
 static gboolean GdmShowGnomeFailsafeSession;
 static gboolean GdmShowXtermFailsafeSession;
+static gboolean GdmShowLastSession;
 
 static GtkWidget *login;
 static GtkWidget *label;
@@ -171,6 +172,7 @@ static char *selected_browser_user = NULL;
 static gboolean session_dir_whacked_out = FALSE;
 
 static void gdm_login_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+static void gdm_login_message (const gchar *msg);
 
 /*
  * Timed Login: Timer
@@ -589,6 +591,35 @@ gdm_parse_enriched_string (const gchar *s)
     return buffer;
 }
 
+
+static void
+gdm_login_message (const gchar *msg)
+{
+	int ret;
+	static GtkWidget *req = NULL;
+
+	if (req != NULL)
+		gtk_widget_destroy (req);
+
+	/* we should be now fine for focusing new windows */
+	gdm_wm_focus_new_windows (TRUE);
+
+	req = gnome_message_box_new (msg,
+				     GNOME_MESSAGE_BOX_INFO,
+                                     GNOME_STOCK_BUTTON_CLOSE,
+				     NULL);
+	gtk_signal_connect (GTK_OBJECT (req), "destroy",
+			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+			    &req);
+
+	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
+	gdm_wm_center_window (GTK_WINDOW (req));
+
+	gdm_wm_no_login_focus_push ();
+	ret = gnome_dialog_run (GNOME_DIALOG (req));
+	gdm_wm_no_login_focus_pop ();
+}
+
 static gboolean
 gdm_login_query (const gchar *msg)
 {
@@ -768,6 +799,7 @@ gdm_login_parse_config (void)
     GdmShowXtermFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE);
     GdmShowGnomeFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_FAILSAFE);
     GdmShowGnomeChooserSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_CHOOSER);
+    GdmShowLastSession = gnome_config_get_bool (GDM_KEY_SHOW_LAST_SESSION);
     
     GdmTimedLoginEnable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
 
@@ -893,11 +925,10 @@ gdm_login_session_lookup (const gchar* savedsess)
 
 	    g_free (session);
 	    session = g_strdup (defsess);
-	    msg = g_strdup_printf (_("Your preferred session type %s is not installed on this machine.\n" \
-				     "Do you wish to make %s the default for future sessions?"),
-				   translate_session (savedsess),
-				   translate_session (defsess));	    
-	    savesess = gdm_login_query (msg);
+            msg = g_strdup_printf (_("Your preferred session type %s is not installed on this machine.\n" \
+                                     "Do you wish to make %s the default for future sessions?"),
+                                   translate_session (savedsess),
+                                   translate_session (defsess));	    
 	    g_free (msg);
 	}
     }
@@ -908,20 +939,41 @@ gdm_login_session_lookup (const gchar* savedsess)
 
 	/* User's saved session is not the chosen one */
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
-	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
+	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
+            /* bad hack, "Failsafe" is just a name in the session dir */
+            strcmp (session, "Failsafe") == 0) {
 		savesess = FALSE;
 	} else if (strcmp (savedsess, session) != 0) {
-		gchar *msg;
+		gchar *msg = NULL;
 
-		msg = g_strdup_printf (_("You have chosen %s for this "
-					"session, but your default "
-					"setting is %s.\nDo you wish "
-					"to make %s the default for "
-					"future sessions?"),
-				translate_session (session),
-				translate_session (savedsess),
-				translate_session (session));
-		savesess = gdm_login_query (msg);
+                if (GdmShowLastSession) {
+                        msg = g_strdup_printf (_("You have chosen %s for this "
+                                                 "session, but your default "
+                                                 "setting is %s.\nDo you wish "
+                                                 "to make %s the default for "
+                                                 "future sessions?"),
+                                               translate_session (session),
+                                               translate_session (savedsess),
+                                               translate_session (session));
+                        savesess = gdm_login_query (msg);
+                } else if (strcmp (session, "Default") != 0 &&
+                           strcmp (session, LAST_SESSION) != 0) {
+                        /* if !GdmShowLastSession then our saved session is
+                         * irrelevant, we are in "switchdesk mode"
+                         * and the relevant thing is the saved session
+                         * in .Xclients
+                         */
+                        msg = g_strdup_printf (_("You have chosen %s for this "
+                                                 "session.\nIf you wish to make %s "
+                                                 "the default for future sessions,\n"
+                                                 "run the 'switchdesk' utility\n"
+                                                 "(System->Desktop Switching Tool from "
+                                                 "the panel menu)."),
+                                               translate_session (session),
+                                               translate_session (session));
+                        savesess = FALSE;
+                        gdm_login_message (msg);
+                }
 		g_free (msg);
 	}
     }
@@ -1180,27 +1232,31 @@ gdm_login_session_init (GtkWidget *menu)
     gint linklen;
     gboolean got_default_link = FALSE;
 
-    cursess = LAST_SESSION;
-    item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_SESSION));
-    gtk_object_set_data (GTK_OBJECT (item),
-			 SESSION_NAME,
-			 LAST_SESSION);
-    sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-    gtk_menu_append (GTK_MENU (menu), item);
-    gtk_signal_connect (GTK_OBJECT (item), "activate",
-			GTK_SIGNAL_FUNC (gdm_login_session_handler),
-			NULL);
-    gtk_widget_show (GTK_WIDGET (item));
-    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
-			  _("Log in using the session that you have used "
-			    "last time you logged in"),
-			  NULL);
-
-    item = gtk_menu_item_new();
-    gtk_widget_set_sensitive (item, FALSE);
-    gtk_menu_append (GTK_MENU (menu), item);
-    gtk_widget_show (GTK_WIDGET (item));
-
+    cursess = NULL;
+    
+    if (GdmShowLastSession) {
+            cursess = LAST_SESSION;
+            item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_SESSION));
+            gtk_object_set_data (GTK_OBJECT (item),
+                                 SESSION_NAME,
+                                 LAST_SESSION);
+            sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+            gtk_menu_append (GTK_MENU (menu), item);
+            gtk_signal_connect (GTK_OBJECT (item), "activate",
+                                GTK_SIGNAL_FUNC (gdm_login_session_handler),
+                                NULL);
+            gtk_widget_show (GTK_WIDGET (item));
+            gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+                                  _("Log in using the session that you have used "
+                                    "last time you logged in"),
+                                  NULL);
+      
+            item = gtk_menu_item_new();
+            gtk_widget_set_sensitive (item, FALSE);
+            gtk_menu_append (GTK_MENU (menu), item);
+            gtk_widget_show (GTK_WIDGET (item));
+    }
+    
     /* Check that session dir is readable */
     if (GdmSessionDir == NULL ||
 	access (GdmSessionDir, R_OK|X_OK)) {
@@ -1277,7 +1333,7 @@ gdm_login_session_init (GtkWidget *menu)
 		    ve_strcasecmp_no_locale (dent->d_name, "Default") == 0) {
 			g_free (defsess);
 			defsess = g_strdup (dent->d_name);
-		}	
+		}
 
 		if (ve_strcasecmp_no_locale (dent->d_name, "Gnome") == 0) {
 			/* Just in case there is no Default session and
@@ -1399,7 +1455,30 @@ gdm_login_session_init (GtkWidget *menu)
 	    defsess = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
 	    syslog (LOG_WARNING, _("No default session link found. Using Failsafe GNOME.\n"));
     }
+    
+    if (cursess == NULL)
+            cursess = defsess;
 
+    /* Select the proper session */
+    {
+            GSList *tmp;
+            
+            tmp = sessgrp;
+            while (tmp != NULL) {
+                    GtkWidget *w = tmp->data;
+                    const char *n;
+
+                    n = gtk_object_get_data (GTK_OBJECT (w), SESSION_NAME);
+                    
+                    if (n && strcmp (n, cursess) == 0) {
+                            gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (w),
+                                                            TRUE);
+                            break;
+                    }
+                    
+                    tmp = tmp->next;
+            }
+    }
 }
 
 
