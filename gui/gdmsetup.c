@@ -863,10 +863,6 @@ setup_xdmcp_support (void)
 	gtk_widget_show (xdmcp_vbox);
 #endif /* HAVE_LIBXDMCP */
 
-	/* Why doesn't glade have this? */
-	gtk_label_set_use_markup (GTK_LABEL (GTK_BIN (xdmcp_toggle)->child),
-				  TRUE);
-
 	gtk_widget_set_sensitive (xdmcp_frame, 
 				  GTK_TOGGLE_BUTTON (xdmcp_toggle)->active);
 
@@ -1946,6 +1942,24 @@ setup_gui (void)
 			  G_CALLBACK (delete_event), NULL);
 	g_signal_connect (G_OBJECT (dialog), "response",
 			  G_CALLBACK (dialog_response), NULL);
+
+	/* setup bold thingies */
+	glade_helper_tagify_label (xml, "greeter_cat_label", "b");
+	glade_helper_tagify_label (xml, "autologin_cat_label", "b");
+	glade_helper_tagify_label (xml, "timedlogin_cat_label", "b");
+
+	glade_helper_tagify_label (xml, "sg_logo_cat_label", "b");
+	glade_helper_tagify_label (xml, "sg_background_cat_label", "b");
+	glade_helper_tagify_label (xml, "sg_misc_cat_label", "b");
+
+	glade_helper_tagify_label (xml, "options_cat_label", "b");
+
+	glade_helper_tagify_label (xml, "gg_preview_cat_label", "b");
+	glade_helper_tagify_label (xml, "gg_author_label", "b");
+	glade_helper_tagify_label (xml, "gg_desc_label", "b");
+	glade_helper_tagify_label (xml, "gg_copyright_label", "b");
+
+	glade_helper_tagify_label (xml, "enable_xdmcp", "b");
 
 	setup_xdmcp_support ();
 	setup_background_support ();

@@ -384,6 +384,7 @@ gdmcomm_check (gboolean gui_bitching)
 	    (kill (pid, 0) < 0 &&
 	     errno != EPERM)) {
 		if (gui_bitching) {
+			char *s;
 			dialog = gtk_message_dialog_new
 				(NULL /* parent */,
 				 GTK_DIALOG_MODAL /* flags */,
@@ -391,16 +392,19 @@ gdmcomm_check (gboolean gui_bitching)
 				 GTK_BUTTONS_OK,
 				 "foo");
 			gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+			s = g_strdup_printf ("<b>%s</b>\n\n%s\n%s",
+				  _("GDM (The GNOME Display Manager) "
+				    "is not running."),
+				  _("You might in fact be using a different "
+				    "display manager, such as KDM "
+				    "(KDE Display Manager or xdm)."),
+				  _("If you still wish to use this feature, "
+				    "either start GDM yourself or ask your "
+				    "system administrator to start GDM."));
 			gtk_label_set_markup
 				 (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label),
-				  _("<b>GDM (The GNOME Display Manager) "
-				    "is not running.</b>\n\n"
-				    "You might in fact be using a different "
-				    "display manager, such as KDM "
-				    "(KDE Display Manager or xdm).\n"
-				    "If you still wish to use this feature, "
-				    "either start GDM your self or ask your "
-				    "system administrator to start GDM."));
+				  s);
+			g_free (s);
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);

@@ -1,11 +1,11 @@
 /*
  * Soubor s přeložitelnými řetězci generovaný programem Glade.
- * Přidejte tento soubor do POTFILES.in svého projektu.
- * NEPŘEKLÁDEJTE JEJ jako součást své aplikace.
+ * Přidejte tento soubor do souboru vašeho projektu POTFILES.in.
+ * NEPŘEKLÁDEJTE JEJ jako součást vaší aplikace.
  */
 
 gchar *s = N_("Login Screen Setup");
-gchar *s = N_("<b>Greeter</b>");
+gchar *s = N_("Greeter");
 gchar *s = N_("    ");
 gchar *s = N_("L_ocal: ");
 gchar *s = N_("_Remote: ");
@@ -20,25 +20,25 @@ gchar *s = N_("*");
 gchar *s = N_("String to be shown in the greeter for people logging in remotely with XDMCP.  You can insert %n in here and it will be replaced by the name of your computer.");
 gchar *s = N_("*");
 gchar *s = N_("Always use 24 hour cloc_k format");
-gchar *s = N_("<b>Automatic Login</b>");
+gchar *s = N_("Automatic Login");
 gchar *s = N_("    ");
 gchar *s = N_("_Automatic login username:");
 gchar *s = N_("*");
 gchar *s = N_("_Login a user automatically on first bootup");
-gchar *s = N_("<b>Timed Login</b>");
+gchar *s = N_("Timed Login");
 gchar *s = N_("    ");
 gchar *s = N_("Timed login us_ername:");
 gchar *s = N_("_Seconds before login:");
 gchar *s = N_("*");
 gchar *s = N_("Login a user automa_tically after a specified number of seconds");
 gchar *s = N_("General");
-gchar *s = N_("<b>Logo</b>");
+gchar *s = N_("Logo");
 gchar *s = N_("    ");
 gchar *s = N_("*");
-gchar *s = N_("<b>Miscellaneous</b>");
+gchar *s = N_("Miscellaneous");
 gchar *s = N_("    ");
 gchar *s = N_("Show choosable user images (_face browser)");
-gchar *s = N_("<b>Background</b>");
+gchar *s = N_("Background");
 gchar *s = N_("    ");
 gchar *s = N_("_No background");
 gchar *s = N_("_Image");
@@ -49,11 +49,11 @@ gchar *s = N_("_Only color on remote displays");
 gchar *s = N_("_Background color: ");
 gchar *s = N_("Pick a color");
 gchar *s = N_("Standard greeter");
-gchar *s = N_("<b>Preview:</b>");
+gchar *s = N_("Preview:");
 gchar *s = N_("No screenshot available");
-gchar *s = N_("<b>Description:</b>");
-gchar *s = N_("<b>Copyright:</b>");
-gchar *s = N_("<b>Author:</b>");
+gchar *s = N_("Description:");
+gchar *s = N_("Copyright:");
+gchar *s = N_("Author:");
 gchar *s = N_("description\n"
               "widget");
 gchar *s = N_("author");
@@ -61,7 +61,7 @@ gchar *s = N_("copyright");
 gchar *s = N_("_Install new theme");
 gchar *s = N_("_Delete theme");
 gchar *s = N_("Graphical greeter");
-gchar *s = N_("<b>Options</b>");
+gchar *s = N_("Options");
 gchar *s = N_("    ");
 gchar *s = N_("Allow _root to login with GDM");
 gchar *s = N_("Allow root to login r_emotely with GDM");
@@ -74,7 +74,7 @@ gchar *s = N_("Always disallow TCP connections to _X server");
 gchar *s = N_("Retry _delay (seconds) :");
 gchar *s = N_("Security");
 gchar *s = N_("No XDMCP support in the binary.  To enable XDMCP support you must recompile GDM with the XDMCP libraries.");
-gchar *s = N_("<b>Enable _XDMCP</b>");
+gchar *s = N_("Enable _XDMCP");
 gchar *s = N_("    ");
 gchar *s = N_("Honour _indirect requests");
 gchar *s = N_("Listen on _UDP port: ");

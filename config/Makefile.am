@@ -1,5 +1,6 @@
 pixmapdir = $(datadIR)/pixmaps
 confdir = $(sysconfdir)/gdm
+crossconfdir = $(sysconfdir)/dm
 localedir = $(sysconfdir)/gdm
 sessdir = $(sysconfdir)/dm/Sessions
 initdir = $(sysconfdir)/gdm/Init
@@ -38,6 +39,10 @@ install-data-hook: gdm.conf Xsession gnome.desktop Default.desktop CDE.desktop D
 	if test '!' -d $(DESTDIR)$(confdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
+	fi
+	if test '!' -d $(DESTDIR)$(crossconfdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(crossconfdir); \
+		chmod 755 $(DESTDIR)$(crossconfdir); \
 	fi
 	-if cmp -s $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf > /dev/null 2>&1 ; then \
 		cp -f $(DESTDIR)$(confdir)/gdm.conf $(DESTDIR)$(confdir)/gdm.conf.orig; \
