@@ -691,9 +691,30 @@ else
    X_CONF_PATH="/usr/bin/X11:/usr/X11R6/bin:/usr/local/bin:/opt/X11R6/bin"
    X_CONFIG_OPTIONS="-audit 0"
 fi
+
+# On Solaris, Xnest is only shipped in /usr/openwin/, so set path
+# properly.  The Xsun version of Xnest also requires the -pn
+# argument so it can be run as the user.  Note that you can have
+# both the X.org and Xsun Xservers on the same system (but X.org on
+# Solaris doesn't ship with Xnest), so this makes Solaris work
+# properly when the X.org Xserver is included.
+#
+case "$host" in
+*solaris*)
+        X_XNEST_PATH="/usr/openwin/bin"
+        X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest -pn"
+        ;;
+*)
+        X_XNEST_PATH=$X_SERVER_PATH
+        X_XNEST_CONFIG_OPTIONS="-audit 0 -name Xnest"
+        ;;
+esac
+
 AC_SUBST(X_PATH)
 AC_SUBST(X_SERVER)
 AC_SUBST(X_SERVER_PATH)
+AC_SUBST(X_XNEST_PATH)
+AC_SUBST(X_XNEST_CONFIG_OPTIONS)
 AC_SUBST(X_CONF_PATH)
 AC_SUBST(X_CONFIG_OPTIONS)
 AC_DEFINE_UNQUOTED(X_SERVER,"$X_SERVER")
