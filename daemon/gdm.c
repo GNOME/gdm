@@ -355,6 +355,8 @@ final_cleanup (void)
 	g_slist_foreach (list, (GFunc) gdm_display_unmanage, NULL);
 	g_slist_free (list);
 
+	gdm_xdmcp_close ();
+
 	closelog();
 	unlink (GdmPidFile);
 }
@@ -469,6 +471,8 @@ mainloop_sig_callback (gint8 sig, gpointer data)
     case SIGHUP:
       term_cleanup ();
       execvp (stored_argv[0], stored_argv);
+      gdm_error (_("Failed to restart self"));
+      _exit (1);
       break;
  
     default:

@@ -115,6 +115,8 @@ extern gboolean GdmIndirect;	/* Honor XDMCP_INDIRECT, i.e. choosing */
 extern gint GdmMaxIndirectWait;	/* Max wait between INDIRECT_QUERY and MANAGE */
 extern gint GdmDispPerHost;	/* Max number of displays per remote host */
 
+extern gboolean GdmXdmcp;	/* xdmcp enabled */
+
 /* Local prototypes */
 static gboolean gdm_xdmcp_decode_packet (void);
 static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type);
@@ -175,8 +177,11 @@ gdm_xdmcp_init (void)
     globsessid = time (NULL);
     
     /* Fetch and store local hostname in XDMCP friendly format */
-    if (gethostname (hostbuf, 255))
-	gdm_fail (_("gdm_xdmcp_init: Could not get server hostname: %s!"), strerror (errno));
+    if (gethostname (hostbuf, 255)) {
+	gdm_error (_("gdm_xdmcp_init: Could not get server hostname: %s!"), strerror (errno));
+	GdmXdmcp = FALSE;
+	return FALSE;
+    }
     
     uname (&name);
     sysid = g_strconcat (name.sysname, " ", name.release, NULL);
@@ -189,15 +194,22 @@ gdm_xdmcp_init (void)
     /* Open socket for communications */
     xdmcpfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
     
-    if (xdmcpfd < 0)
-	gdm_fail (_("gdm_xdmcp_init: Could not create socket!"));
+    if (xdmcpfd < 0) {
+	gdm_error (_("gdm_xdmcp_init: Could not create socket!"));
+	GdmXdmcp = FALSE;
+	return FALSE;
+    }
     
     serv_sa.sin_family = AF_INET;
     serv_sa.sin_port = htons (GdmPort); /* UDP 177 */
     serv_sa.sin_addr.s_addr = htonl (INADDR_ANY);
     
-    if (bind (xdmcpfd, (struct sockaddr_in *) &serv_sa, sizeof (serv_sa)) == -1)
-	gdm_fail (_("gdm_xdmcp_init: Could not bind to XDMCP socket!"));
+    if (bind (xdmcpfd, (struct sockaddr_in *) &serv_sa, sizeof (serv_sa)) == -1) {
+	gdm_error (_("gdm_xdmcp_init: Could not bind to XDMCP socket!"));
+	gdm_xdmcp_close ();
+	GdmXdmcp = FALSE;
+	return FALSE;
+    }
 
     /* Setup FIFO if choosing is enabled */
     if (GdmIndirect) {
@@ -205,18 +217,30 @@ gdm_xdmcp_init (void)
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmchooser", NULL);
 
-	if (!fifopath)
-	    gdm_fail (_("gdm_xdmcp_init: Can't alloc fifopath"));
+	if (!fifopath) {
+	    gdm_error (_("gdm_xdmcp_init: Can't alloc fifopath"));
+	    gdm_xdmcp_close ();
+	    GdmXdmcp = FALSE;
+	    return FALSE;
+	}
 
 	unlink (fifopath);
 
-	if (mkfifo (fifopath, 0660) < 0)
-	    gdm_fail (_("gdm_xdmcp_init: Could not make FIFO for chooser"));
+	if (mkfifo (fifopath, 0660) < 0) {
+	    gdm_error (_("gdm_xdmcp_init: Could not make FIFO for chooser"));
+	    gdm_xdmcp_close ();
+	    GdmXdmcp = FALSE;
+	    return FALSE;
+	}
 
 	choosefd = open (fifopath, O_RDWR); /* Open with write to avoid EOF */
 
-	if (choosefd < 0)
-	    gdm_fail (_("gdm_xdmcp_init: Could not open FIFO for chooser"));
+	if (choosefd < 0) {
+	    gdm_error (_("gdm_xdmcp_init: Could not open FIFO for chooser"));
+	    gdm_xdmcp_close ();
+	    GdmXdmcp = FALSE;
+	    return FALSE;
+	}
 
 	chmod (fifopath, 0660);
 
@@ -255,13 +279,13 @@ gdm_xdmcp_run (void)
 void
 gdm_xdmcp_close (void)
 {
-	if (xdmcpfd < 0) {
+	if (xdmcpfd > 0) {
 		close (xdmcpfd);
 		xdmcpfd = -1;
 	}
 
 	if (GdmIndirect &&
-	    choosefd < 0) {
+	    choosefd > 0) {
 		close (choosefd);
 		choosefd = -1;
 	}

@@ -1,3 +1,9 @@
+Tue Feb 27 16:44:34 2001  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in: apply patch from Vlad Harchev <hvv@hippo.ru>
+	  to not force the adobe helvetica font and to exclude postgres and
+	  pvm users by default
+
 Tue Feb 27 13:27:00 2001  Lee Mallabone <lee0@callnetuk.com>
 
         * gui/gdmconfig.c, gui/gdmconfig-strings.c, gui/gdmconfig.glade:
@@ -8,6 +14,17 @@ Tue Feb 27 13:27:00 2001  Lee Mallabone <lee0@callnetuk.com>
 	* gdmconfig/Makefile.am: removed DLOCALEDIR.
 	* gdmconfig/gdmconfig.c/h: include config.h in c file, not h.
 	i18n fixes, gui now translated.
+
+Tue Feb 27 00:25:10 2001  George Lebl <jirka@5z.com>
+
+	* Release 2.0.99
+
+Tue Feb 27 00:25:09 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c, daemon/xdmcp.c:  Fixed xdmcp closing routine, and
+	  close the xdmcp fd before restarting after a HUP so that xdmcp
+	  doesn't fail.  If we fail when initting xdmcp don't die, but just
+	  disable xdmcp and continue after screaming stuff into syslog.
 
 Wed Feb 21 01:46:34 2001  George Lebl <jirka@5z.com>
 
