@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2\n"
+"Project-Id-Version: gdm2.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-04 15:26+0100\n"
-"PO-Revision-Date: 2004-01-04 15:33+0100\n"
+"POT-Creation-Date: 2004-01-14 23:51+0100\n"
+"PO-Revision-Date: 2004-01-14 23:57+0100\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -129,19 +129,19 @@ msgstr "GNOME"
 msgid "This session logs you into GNOME"
 msgstr "Kjo seancë do t'ju fusë në GNOME"
 
-#: daemon/auth.c:57
+#: daemon/auth.c:58
 #, c-format
 msgid "%s: Could not write new authorization entry: %s"
 msgstr "%s: I pamundur shkrimi i vlerës së rë të autorizimit %s"
 
-#: daemon/auth.c:60
+#: daemon/auth.c:61
 #, c-format
 msgid "%s: Could not write new authorization entry.  Possibly out of diskspace"
 msgstr ""
 "%s: I pamundur shkrimi i vlerës së rë të autorizimit.  Ndoshta nuk ka më "
 "hapësirë në disk"
 
-#: daemon/auth.c:65
+#: daemon/auth.c:66
 #, c-format
 msgid ""
 "GDM could not write a new authorization entry to disk.  Possibly out of "
@@ -150,52 +150,42 @@ msgstr ""
 "GDM nuk arrin të regjistrojë vlerën e re të autorizimit në disk.  Ndoshta "
 "nuk ka më hapësirë në disk.%s%s"
 
-#: daemon/auth.c:195
+#: daemon/auth.c:196
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: I pamundur krijimi i file të ri cookie në %s"
 
-#: daemon/auth.c:219 daemon/auth.c:236 daemon/auth.c:870
+#: daemon/auth.c:220 daemon/auth.c:237 daemon/auth.c:871
 #, c-format
 msgid "%s: Cannot safely open %s"
 msgstr "%s: Nuk arrij të hap vetë %s"
 
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:668 daemon/auth.c:708
+#: daemon/auth.c:669 daemon/auth.c:709
 #, c-format
 msgid "%s: Could not open cookie file %s"
 msgstr "%s: I pamundur hapja e file cookie %s"
 
-#: daemon/auth.c:689
+#: daemon/auth.c:690
 #, c-format
 msgid "%s: Could not lock cookie file %s"
 msgstr "%s: I pamundur bllokimi i file cookie %s"
 
-#: daemon/auth.c:739 daemon/auth.c:761
+#: daemon/auth.c:740 daemon/auth.c:762
 #, c-format
 msgid "%s: Could not write cookie"
 msgstr "%s: I pamundur krijimi i cookie"
 
-#: daemon/auth.c:846
+#: daemon/auth.c:847
 #, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: File cookie %s duket i pasigurt, nuk përfillet"
 
-#: daemon/auth.c:889 daemon/gdm.c:2217
+#: daemon/auth.c:890 daemon/gdm.c:2219
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "I pamundur shkrimi tek %s: %s"
 
-#. This means we have no clue what's happening,
-#. * it's not X server crashing as we would have
-#. * cought that elsewhere.  Things are just
-#. * not working out, so tell the user.
-#. * However this may have been caused by a malicious local user
-#. * zapping the display repeatedly, that shouldn't cause gdm
-#. * to stop working completely so just wait for 2 minutes,
-#. * that should give people ample time to stop gdm if needed,
-#. * or just wait for the stupid malicious user to get bored
-#. * and go away
 #: daemon/display.c:114
 #, c-format
 msgid ""
@@ -305,7 +295,7 @@ msgstr "%s: I pamundur krijimi i FIFO"
 msgid "%s: Could not open FIFO"
 msgstr "%s: E pamundur hapja e FIFO"
 
-#: daemon/gdm.c:242
+#: daemon/gdm.c:243
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
@@ -314,12 +304,12 @@ msgstr ""
 "Directory e autorizimit të server (daemon/ServAuthDir) është vendosur në %s "
 "që nuk ekziston. Korrigjo konfigurimin e dgm %s dhe rinis gdm."
 
-#: daemon/gdm.c:251
+#: daemon/gdm.c:252
 #, c-format
 msgid "%s: Authdir %s does not exist. Aborting."
 msgstr "%s: Authdir %s nuk ekziston. Duke dalë!"
 
-#: daemon/gdm.c:256
+#: daemon/gdm.c:257
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
@@ -328,48 +318,48 @@ msgstr ""
 "Directory e autorizimit të server (daemon/ServAuthDir) është vendosur në %s "
 "që nuk është një directory. Korrigjo konfigurimin e dgm %s dhe rinis gdm."
 
-#: daemon/gdm.c:265
+#: daemon/gdm.c:266
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
 msgstr "%s: Authdir %s nuk është një directory. Duke dalë!"
 
-#: daemon/gdm.c:278
+#: daemon/gdm.c:279
 #, c-format
 msgid "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
 "%s: Logdir %s nuk ekziston ose nuk është një directory.  Po përdor "
 "ServAuthDir %s."
 
-#: daemon/gdm.c:307 gui/gdmlogin.c:630 gui/greeter/greeter.c:100
+#: daemon/gdm.c:308 gui/gdmlogin.c:630 gui/greeter/greeter.c:100
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
 msgstr "%s: Mungon file i konfigurimit \"%s\". Do të përdoren vlerat standart."
 
-#: daemon/gdm.c:351
+#: daemon/gdm.c:353
 #, c-format
 msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
 msgstr "%s: BaseXsession është bosh, po përdor %s/gdm/Xsession"
 
-#: daemon/gdm.c:393
+#: daemon/gdm.c:395
 #, c-format
 msgid "%s: Standard X server not found, trying alternatives"
 msgstr "%s: Serveri X standart mungon, do të provohen alternativat"
 
-#: daemon/gdm.c:425
+#: daemon/gdm.c:427
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
 msgstr ""
 "%s: XDMCP është i aktivuar ndërkohë që suporti për të mungon, po e "
 "disaktivojmë"
 
-#: daemon/gdm.c:438
+#: daemon/gdm.c:440
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off automatic login"
 msgstr ""
 "%s: Përdoruesi root nuk mund të kryej auto-login, u disaktivua login "
 "automatik"
 
-#: daemon/gdm.c:451
+#: daemon/gdm.c:453
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off timed login"
 msgstr ""
@@ -378,46 +368,46 @@ msgstr ""
 
 # login i kronometruar do të përdoret derisa
 # të gjejmë një fjalë më të përshtatshme
-#: daemon/gdm.c:457
+#: daemon/gdm.c:459
 #, c-format
 msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
 msgstr ""
 "%s: Intervali i login të kronometruar është më i shkurtër se 5 sekonda, "
 "sidoqoftë do të kryhet në 5 sekonda."
 
-#: daemon/gdm.c:467
+#: daemon/gdm.c:469
 #, c-format
 msgid "%s: No greeter specified."
 msgstr "%s: Asnjë greeter i specifikuar."
 
-#: daemon/gdm.c:470
+#: daemon/gdm.c:472
 #, c-format
 msgid "%s: No remote greeter specified."
 msgstr "%s: Nuk është specifikuar asnjë greeter remot."
 
 # session=seanca, nuk gjej fjalë më të saktë,
 # që të dyja janë fjalë të huaja
-#: daemon/gdm.c:474
+#: daemon/gdm.c:476
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Nuk është specifikuar asnjë directory per seancat."
 
-#: daemon/gdm.c:499
+#: daemon/gdm.c:501
 #, c-format
 msgid "%s: Empty server command, using standard one."
 msgstr "%s: Komandë jo e specifikuar, do të përdoret komanda standart."
 
-#: daemon/gdm.c:542
+#: daemon/gdm.c:544
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
 msgstr "%s: Display numër %d është e zënë!  Do të përdoret %d"
 
-#: daemon/gdm.c:561
+#: daemon/gdm.c:563
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Rresht server i pavlefshëm tek file i konfigurimit. Injorohet!"
 
-#: daemon/gdm.c:572 daemon/gdm.c:613
+#: daemon/gdm.c:574 daemon/gdm.c:615
 #, c-format
 msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
 msgstr ""
@@ -426,7 +416,7 @@ msgstr ""
 
 #. start
 #. server uid
-#: daemon/gdm.c:590
+#: daemon/gdm.c:592
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
@@ -435,7 +425,7 @@ msgstr ""
 "%s: XDMCP është disaktivuar dhe nuk është përcaktuar asnjë server lokal. Do "
 "të shtohet %s tek: %d për të mundësuar konfigurimin!"
 
-#: daemon/gdm.c:605
+#: daemon/gdm.c:607
 #, c-format
 msgid ""
 "XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
@@ -444,7 +434,7 @@ msgstr ""
 "XDMCP është disaktivuar dhe gdm nuk arrin të gjejë asnjë server lokal për të "
 "filluar.  Duke dalë!  Korrigjo konfigurimin %s dhe rinis gdm."
 
-#: daemon/gdm.c:627
+#: daemon/gdm.c:629
 #, c-format
 msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
@@ -453,12 +443,12 @@ msgstr ""
 "Përdoruesi i gdm nuk ekziston.  Korrigjo konfigurimin e gdm %s dhe rifillo "
 "gdm."
 
-#: daemon/gdm.c:634
+#: daemon/gdm.c:636
 #, c-format
 msgid "%s: Can't find the gdm user (%s). Aborting!"
 msgstr "%s: Nuk arrij të gjej përdoruesin e gdm (%s). Duke u mbyllur!"
 
-#: daemon/gdm.c:641
+#: daemon/gdm.c:643
 #, c-format
 msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
@@ -467,24 +457,24 @@ msgstr ""
 "Është zgjedhur root si përdorues i gdm, por kjo ndalohet pasi sjell rreziqe "
 "sigurie. Korrigjo konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:649
+#: daemon/gdm.c:651
 #, c-format
 msgid "%s: The gdm user should not be root. Aborting!"
 msgstr "%s: Përdoruesi i gdm nuk duhet të jetë root. Duke dalë!"
 
-#: daemon/gdm.c:656
+#: daemon/gdm.c:658
 #, c-format
 msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
 "restart gdm."
 msgstr "Grupi i gdm nuk ekziston. Korrigjo konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:663
+#: daemon/gdm.c:665
 #, c-format
 msgid "%s: Can't find the gdm group (%s). Aborting!"
 msgstr "%s: Nuk arrij të gjej grupin e gdm (%s). Duke dalë!"
 
-#: daemon/gdm.c:670
+#: daemon/gdm.c:672
 #, c-format
 msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
@@ -493,38 +483,38 @@ msgstr ""
 "Është zgjedhur root si grup i gdm, por kjo ndalohet pasi sjell rreziqe "
 "sigurie. Korrigjo konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:678
+#: daemon/gdm.c:680
 #, c-format
 msgid "%s: The gdm group should not be root. Aborting!"
 msgstr "%s: Grupi i gdm nuk mund të jetë root. Duke dalë!"
 
-#: daemon/gdm.c:693
+#: daemon/gdm.c:695
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr "%s: Greeter nuk u gjet ose është i paekzekutueshëm nga përdoruesi i gdm"
 
 # remot = në distancë,
 # kur do të përdoret?
-#: daemon/gdm.c:700
+#: daemon/gdm.c:702
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the gdm user"
 msgstr "%s: Greeter remot nuk u gjet ose është i paekzekutueshëm nga përdoruesi i gdm"
 
-#: daemon/gdm.c:711
+#: daemon/gdm.c:713
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr "%s: Chooser nuk u gjet ose është i paekzekutueshëm nga përdoruesi i gdm"
 
-#: daemon/gdm.c:720
+#: daemon/gdm.c:722
 msgid "No daemon/ServAuthDir specified in the configuration file"
 msgstr "Asnjë daemon/ServAuthDir është specifikuar tek file i konfigurimit"
 
-#: daemon/gdm.c:722
+#: daemon/gdm.c:724
 #, c-format
 msgid "%s: No daemon/ServAuthDir specified."
 msgstr "%s: Nuk është specifikuar asnjë demon apo ServAuthDir."
 
-#: daemon/gdm.c:746
+#: daemon/gdm.c:748
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -535,12 +525,12 @@ msgstr ""
 "që nuk i takon as përdoruesit %s dhe as grupit %s. Korrigjo të drejtat ose "
 "konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:757
+#: daemon/gdm.c:759
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s: Authdir %s nuk i takon përdoruesit %s, grupit %s. Duke dalë."
 
-#: daemon/gdm.c:763
+#: daemon/gdm.c:765
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
@@ -551,48 +541,48 @@ msgstr ""
 "që ka të drejta të gabuara, duhet të jenë %o. Korrigjo të drejtat ose "
 "konfigurimin e gdm %s dhe rinis gdm."
 
-#: daemon/gdm.c:774
+#: daemon/gdm.c:776
 #, c-format
 msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr "%s: Authdir %s ka të drejta të gabuara %o. Duhet të jenë %o. Duke dalë."
 
 #. FIXME: how to handle this?
-#: daemon/gdm.c:830 daemon/gdm.c:838 daemon/gdm.c:2001 daemon/gdm.c:2009
+#: daemon/gdm.c:832 daemon/gdm.c:840 daemon/gdm.c:2003 daemon/gdm.c:2011
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
 msgstr ""
 "I pamundur shkrimi i file PID %s, ndoshta nuk ka më hapsirë në disk.  Gabim: "
 "%s\n"
 
-#: daemon/gdm.c:832 daemon/gdm.c:840 daemon/gdm.c:2003 daemon/gdm.c:2011
+#: daemon/gdm.c:834 daemon/gdm.c:842 daemon/gdm.c:2005 daemon/gdm.c:2013
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
 msgstr ""
 "I pamundur shkrimi i file PID %s, ndoshta nuk ka më hapsirë në disk.  Gabim: "
 "%s"
 
-#: daemon/gdm.c:850
+#: daemon/gdm.c:852
 #, c-format
 msgid "%s: fork() failed!"
 msgstr "%s: fork() dështoi!"
 
 #. should never happen
-#: daemon/gdm.c:853 daemon/slave.c:3336
+#: daemon/gdm.c:855 daemon/slave.c:3367
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() dështoi %s!"
 
-#: daemon/gdm.c:1023
+#: daemon/gdm.c:1025
 #, c-format
 msgid "%s: Trying failsafe X server %s"
 msgstr "%s: Përpjekje për të nisur server-in X të emergjencës %s"
 
-#: daemon/gdm.c:1041
+#: daemon/gdm.c:1043
 #, c-format
 msgid "%s: Running the XKeepsCrashing script"
 msgstr "%s: duke ekzekutuar script-in XKeepsCrashing"
 
-#: daemon/gdm.c:1153
+#: daemon/gdm.c:1155
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
@@ -607,7 +597,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:1165
+#: daemon/gdm.c:1167
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -616,86 +606,88 @@ msgstr ""
 "Tepër gabime të njëpasnjëshme gjatë nisjes së server-it X, display %s "
 "disaktivohet"
 
-#: daemon/gdm.c:1173 daemon/gdm.c:2719
+#: daemon/gdm.c:1175 daemon/gdm.c:2721
 msgid "Master suspending..."
 msgstr "Ndërprerje e përgjithshme..."
 
-#: daemon/gdm.c:1227
+#: daemon/gdm.c:1229
+#, c-format
 msgid "System is rebooting, please wait ..."
 msgstr "Ju lutem durim, sistemi është në fazën e rinisjes ..."
 
-#: daemon/gdm.c:1229
+#: daemon/gdm.c:1231
+#, c-format
 msgid "System is shutting down, please wait ..."
 msgstr "Ju lutem prisni, sistemi është duke u fikur ..."
 
-#: daemon/gdm.c:1240
+#: daemon/gdm.c:1242
 msgid "Master halting..."
 msgstr "Ndalim i përgjithshëm..."
 
-#: daemon/gdm.c:1253
+#: daemon/gdm.c:1255
 #, c-format
 msgid "%s: Halt failed: %s"
 msgstr "%s: Ndalimi dështoi %s"
 
-#: daemon/gdm.c:1262
+#: daemon/gdm.c:1264
 msgid "Master rebooting..."
 msgstr "Rinisje gjenerale..."
 
-#: daemon/gdm.c:1275
+#: daemon/gdm.c:1277
 #, c-format
 msgid "%s: Reboot failed: %s"
 msgstr "%s: Rinisja dështoi: %s"
 
-#: daemon/gdm.c:1371
+#: daemon/gdm.c:1373
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr "Kërkesë Rinisje apo Ndalimi në mungesë të menu të sistemit nga display %s"
 
-#: daemon/gdm.c:1380
+#: daemon/gdm.c:1382
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-local display %s"
 msgstr "Kërkesa për Restart, Reboot apo Halt nga diplay jo lokale %s"
 
 #. Bury this display for good
-#: daemon/gdm.c:1440
+#: daemon/gdm.c:1442
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: Duke mbyllur display %s"
 
-#: daemon/gdm.c:1578
+#: daemon/gdm.c:1580
 msgid "GDM restarting ..."
 msgstr "GDM në rinisje e sipër ..."
 
-#: daemon/gdm.c:1582
+#: daemon/gdm.c:1584
 msgid "Failed to restart self"
 msgstr "Përpjekja për rinisje dështoi"
 
 #. FIXME: note that this could mean out of memory
-#: daemon/gdm.c:1656
+#: daemon/gdm.c:1658
 msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
 msgstr "main daemon: Mora SIGABRT, ndonjë gjë ka shkuar me të vërtetë shumë keq. Ika!"
 
-#: daemon/gdm.c:1794
+#: daemon/gdm.c:1796
 msgid "Do not fork into the background"
 msgstr "Mos kryej një fork në background"
 
-#: daemon/gdm.c:1796
+#: daemon/gdm.c:1798
 msgid "No console (local) servers to be run"
 msgstr "Nuk ka server (lokalë) konsolë që të ekzekutohen"
 
-#: daemon/gdm.c:1798
+#: daemon/gdm.c:1800
 msgid "Preserve LD_* variables"
 msgstr "Konservo të ndryshueshmet LD_*"
 
-#: daemon/gdm.c:1800
+#: daemon/gdm.c:1802
 msgid "Print GDM version"
 msgstr "Printo versionin e GDM"
 
-#: daemon/gdm.c:1802
+#: daemon/gdm.c:1804
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "Nis fillimisht server-in X pastaj prit që të kemi një VAZHDO në fifo"
 
-#: daemon/gdm.c:1921 gui/gdmchooser.c:2016
+#: daemon/gdm.c:1923 gui/gdmchooser.c:2023
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -704,17 +696,17 @@ msgstr ""
 "Opcion %s i gabuar: %s.\n"
 "Ekzekuto '%s --help' për të shikuar të gjithë opcionet e mundshme.\n"
 
-#: daemon/gdm.c:1939
+#: daemon/gdm.c:1941
 msgid "Only root wants to run gdm\n"
 msgstr "Vetëm root mund të nisë gdm\n"
 
-#: daemon/gdm.c:1955 daemon/gdm.c:1959 daemon/gdm.c:2034 daemon/gdm.c:2038
-#: daemon/gdm.c:2042 daemon/gdm.c:2046 daemon/gdm.c:2056 daemon/gdm.c:2062
-#: daemon/gdm.c:2073 daemon/misc.c:1602 daemon/misc.c:1606 daemon/misc.c:1610
-#: daemon/misc.c:1617 daemon/misc.c:1621 daemon/misc.c:1625
-#: daemon/server.c:510 daemon/server.c:523 daemon/slave.c:776
-#: daemon/slave.c:790 daemon/slave.c:800 daemon/slave.c:810 daemon/slave.c:822
-#: gui/gdmchooser.c:1895 gui/gdmchooser.c:1898 gui/gdmchooser.c:1901
+#: daemon/gdm.c:1957 daemon/gdm.c:1961 daemon/gdm.c:2036 daemon/gdm.c:2040
+#: daemon/gdm.c:2044 daemon/gdm.c:2048 daemon/gdm.c:2058 daemon/gdm.c:2064
+#: daemon/gdm.c:2075 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
+#: daemon/misc.c:1618 daemon/misc.c:1622 daemon/misc.c:1626
+#: daemon/server.c:510 daemon/server.c:523 daemon/slave.c:805
+#: daemon/slave.c:819 daemon/slave.c:829 daemon/slave.c:839 daemon/slave.c:851
+#: gui/gdmchooser.c:1902 gui/gdmchooser.c:1905 gui/gdmchooser.c:1908
 #: gui/gdmlogin.c:3783 gui/gdmlogin.c:3791 gui/gdmlogin.c:3794
 #: gui/greeter/greeter.c:1063 gui/greeter/greeter.c:1071
 #: gui/greeter/greeter.c:1074
@@ -722,31 +714,29 @@ msgstr "Vetëm root mund të nisë gdm\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Gabim gjatë hapjes së kontrolluesit të sinjalit %s: %s"
 
-#: daemon/gdm.c:1983
+#: daemon/gdm.c:1985
 msgid "gdm already running. Aborting!"
 msgstr "dgm është aktualisht në përdorim. Duke dalë!"
 
-#: daemon/gdm.c:2082
+#: daemon/gdm.c:2084
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Gabim gjatë aktivimit të kontrolluesit të sinjalit CHLD"
 
-#: daemon/gdm.c:2186
+#: daemon/gdm.c:2188
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "Nuk arrij të hap %s në shkrim"
 
-#: daemon/gdm.c:3423 daemon/gdm.c:3442
+#: daemon/gdm.c:3425 daemon/gdm.c:3444
 msgid "Flexible server request denied: Not authenticated"
 msgstr "Kërkesa flexible server nuk u pranua. I pa identifikuar"
 
-#. Don't print the name to syslog as it might be
-#. * long and dangerous
-#: daemon/gdm.c:3460
+#: daemon/gdm.c:3462
 msgid "Unknown server type requested, using standard server."
 msgstr "Lloj i panjohur kërkese, do të përdoret server-i standart."
 
-#: daemon/gdm.c:3464
+#: daemon/gdm.c:3466
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -755,38 +745,51 @@ msgstr ""
 "Serveri i kërkuar %s nuk mund të përdoret për flexible servers, po përdor "
 "server-in standart."
 
-#: daemon/gdm.c:3586
+#: daemon/gdm.c:3588
 msgid "Query logout action request denied: Not authenticated"
 msgstr "Kërkesa për të kryer daljen nuk u pranua. I pa identifikuar"
 
-#: daemon/gdm.c:3644 daemon/gdm.c:3699
+#: daemon/gdm.c:3646 daemon/gdm.c:3701
 msgid "Set logout action request denied: Not authenticated"
 msgstr "Rregullimi i kryerjes së daljes nuk u lejua. I pa identifikuar"
 
+#: daemon/gdm.c:3746 daemon/gdm.c:3773
+msgid "Query vt request denied: Not authenticated"
+msgstr "Kërkesa për të vt nuk u pranua. I pa identifikuar"
+
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:622
+#: daemon/misc.c:623
 msgid "y = Yes or n = No? >"
 msgstr "y = Si ose n = Jo? >"
 
-#: daemon/misc.c:976
+#: daemon/misc.c:977
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: I pamundur përcaktimi i adresave lokale!"
 
-#: daemon/misc.c:1128
+#: daemon/misc.c:1129
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "E pamundur vendosja e identifikuesve të grupit %d. Duke u mbyllur."
 
-#: daemon/misc.c:1133
+#: daemon/misc.c:1134
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr "Gabim gjatë zbatimit të initgroups() për %s. Duke u mbyllur."
 
-#: daemon/misc.c:1370 daemon/misc.c:1384
+#: daemon/misc.c:1371 daemon/misc.c:1385
 #, c-format
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s: Gabim gjatë rregullimit të sinjalit %d në %s"
+
+#: daemon/misc.c:2270
+#, c-format
+msgid ""
+"Last login:\n"
+"%s"
+msgstr ""
+"Hyrja e fundit:\n"
+"%s"
 
 #: daemon/server.c:160
 msgid "Can not start fallback console"
@@ -828,7 +831,6 @@ msgstr "Display %s është duke u përdorur nga një tjetër sever X në ekzekut
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Gabim gjatë hapjes së pipe: %s"
 
-#. Send X too busy
 #: daemon/server.c:780
 #, c-format
 msgid "%s: Cannot find a free display number"
@@ -869,17 +871,17 @@ msgstr "%s: Mungon komanda server për display %s"
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: Serveri duhet të rilëshohet nga uid %d por ky përdorues nuk ekziston "
 
-#: daemon/server.c:1160 daemon/slave.c:2462 daemon/slave.c:2940
+#: daemon/server.c:1160 daemon/slave.c:2491 daemon/slave.c:2967
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: E pamundur vendosja e groupid në %d"
 
-#: daemon/server.c:1166 daemon/slave.c:2467 daemon/slave.c:2945
+#: daemon/server.c:1166 daemon/slave.c:2496 daemon/slave.c:2972
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: gabim gjatë zbatimit të initgroups() për %s"
 
-#: daemon/server.c:1172 daemon/slave.c:2472 daemon/slave.c:2950
+#: daemon/server.c:1172 daemon/slave.c:2501 daemon/slave.c:2977
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Nuk arrij të vendos userid nv %d"
@@ -907,11 +909,11 @@ msgstr "E pamundur vendosja e EGID për përdoruesin GID"
 msgid "Can't set EUID to user UID"
 msgstr "E pamundur vendosja e EUID për përdoruesin UID"
 
-#: daemon/slave.c:1085
+#: daemon/slave.c:1114
 msgid "Log in anyway"
 msgstr "Futu sidoqoftë"
 
-#: daemon/slave.c:1087
+#: daemon/slave.c:1116
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
@@ -919,21 +921,21 @@ msgstr ""
 "Ju tani jeni futur.  Mund të kryeni një login të ri, të riktheheni tek login "
 "i mëparshëm, ose të braktisni këtë login"
 
-#: daemon/slave.c:1091
+#: daemon/slave.c:1120
 msgid "Return to previous login"
 msgstr "Kthehu tek login i mëparshëm"
 
-#: daemon/slave.c:1092 daemon/slave.c:1098
+#: daemon/slave.c:1121 daemon/slave.c:1127
 msgid "Abort login"
 msgstr "Anullo login"
 
-#: daemon/slave.c:1095
+#: daemon/slave.c:1124
 msgid "You are already logged in.  You can log in anyway or abort this login"
 msgstr ""
 "Keni kryer login rregullisht.  Mund të kryeni një login të ri ose të "
 "braktisni këtë login"
 
-#: daemon/slave.c:1185
+#: daemon/slave.c:1214
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -953,17 +955,17 @@ msgstr ""
 "deaktivohet.  Rinis gdm pasi të keni\n"
 "korrigjuar problemin."
 
-#: daemon/slave.c:1434
+#: daemon/slave.c:1463
 #, c-format
 msgid "%s: cannot fork"
 msgstr ":%s: nuk arrij të kryej fork"
 
-#: daemon/slave.c:1481
+#: daemon/slave.c:1510
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: nuk arrij të hap display %s"
 
-#: daemon/slave.c:1630
+#: daemon/slave.c:1659
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file.  I will attempt to start it from the "
@@ -973,7 +975,7 @@ msgstr ""
 "tijtë jetë korrekt tek file i konfigurimit.  Po përpiqem t'a filloj atë "
 "ngapozicioni i default."
 
-#: daemon/slave.c:1644
+#: daemon/slave.c:1673
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file."
@@ -981,7 +983,7 @@ msgstr ""
 "Nuk arrij të ekzekutoj programin e konfigurimit.  Sigurohu që pozicioni i "
 "tij të jetë korrekt tek file i konfigurimit."
 
-#: daemon/slave.c:1774
+#: daemon/slave.c:1803
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -989,12 +991,12 @@ msgstr ""
 "Shkruaj password e root\n"
 "për të ndryshuar konfigurimin."
 
-#: daemon/slave.c:2416 daemon/slave.c:2421
+#: daemon/slave.c:2445 daemon/slave.c:2450
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: I pamundur inicializimi i pipe drejt gdmgreeter"
 
-#: daemon/slave.c:2542
+#: daemon/slave.c:2571
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  So I have started a single server "
@@ -1006,7 +1008,7 @@ msgstr ""
 "një serveri vetëm për ty, kryeni login dhe korrigjoni konfigurimin. Ki "
 "parasysh që login-et automatikë dhe me kohë janë të disaktivuar për tani."
 
-#: daemon/slave.c:2556
+#: daemon/slave.c:2585
 msgid ""
 "I could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -1016,7 +1018,7 @@ msgstr ""
 "të niset server-i X i emergjencës.  Kryeni login në të dhe konfiguroni si "
 "duhet server-in X."
 
-#: daemon/slave.c:2565
+#: daemon/slave.c:2594
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1025,7 +1027,7 @@ msgstr ""
 "Numri i display të specifikuar është i zënë, prandaj ky server është nisur "
 "tek display %s."
 
-#: daemon/slave.c:2585
+#: daemon/slave.c:2614
 msgid ""
 "The greeter program appears to be crashing.\n"
 "I will attempt to use a different one."
@@ -1034,17 +1036,17 @@ msgstr ""
 "Po përpiqem të përdor një tjetër."
 
 #. Something went wrong
-#: daemon/slave.c:2606
+#: daemon/slave.c:2635
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr "%s: E pamundur nisja e greeter me modulët gtk: %s. Po provoj nisjen pa modulë"
 
-#: daemon/slave.c:2613
+#: daemon/slave.c:2642
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: E pamundur nisja e greeter si zakonisht: %s"
 
-#: daemon/slave.c:2625
+#: daemon/slave.c:2654
 msgid ""
 "Cannot start the greeter program, you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1055,27 +1057,27 @@ msgstr ""
 "menyrë tjetër dhe korrigjo problemin duke ndryshuar file e konfigurimit"
 
 #. If no greeter we really have to disable the display
-#: daemon/slave.c:2632
+#: daemon/slave.c:2661
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Gabim gjatë nisjes së greeter tek display %s"
 
-#: daemon/slave.c:2636
+#: daemon/slave.c:2665
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: E pamundur kryerja e një fork mbi procesin gdmgreeter"
 
-#: daemon/slave.c:2721
+#: daemon/slave.c:2750
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Nuk arrij të hap fifo!"
 
-#: daemon/slave.c:2899
+#: daemon/slave.c:2926
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: I pamundur inicializimi i pipe drejt gdmchooser"
 
-#: daemon/slave.c:2995
+#: daemon/slave.c:3022
 msgid ""
 "Cannot start the chooser program, you will probably not be able to log in.  "
 "Please contact the system administrator."
@@ -1083,60 +1085,60 @@ msgstr ""
 "Nuk arrij të nis programin chooser, nuk do të mund të kryeni log in.  Vihu "
 "në kontakt me administratorin e sistemit."
 
-#: daemon/slave.c:2999
+#: daemon/slave.c:3026
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: Gabim gjatë nisjes së chooser tek display %s"
 
-#: daemon/slave.c:3002
+#: daemon/slave.c:3029
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: E pamundur kryerja e një fork mbi procesin gdmchooser"
 
-#: daemon/slave.c:3242
+#: daemon/slave.c:3273
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: e pamundur hapja e «~/.session-errors»"
 
-#: daemon/slave.c:3373
+#: daemon/slave.c:3404
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr ""
 "%s: Ekzekutimi i script-it \"PreSession\" ktheu si rezultat një vlerë > 0, "
 "po mbaroj."
 
-#: daemon/slave.c:3402
+#: daemon/slave.c:3433
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "Gjuha %s nuk ekziston, do të përdoret %s"
 
-#: daemon/slave.c:3403
+#: daemon/slave.c:3434
 msgid "System default"
 msgstr "Gjuha e sistemit"
 
-#: daemon/slave.c:3419
+#: daemon/slave.c:3450
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: i pamundur përcaktimi i ambientit për %s, po mbaroj."
 
-#: daemon/slave.c:3440
+#: daemon/slave.c:3471
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: gabim gjatë zbatimit të setusercontext() për %s, po mbaroj."
 
-#: daemon/slave.c:3446
+#: daemon/slave.c:3477
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Nuk arrij të marr identitetin e %s. Anullohet."
 
-#: daemon/slave.c:3506
+#: daemon/slave.c:3537
 #, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
 msgstr ""
 "%s: Asnjë rresht Exec tek file i seancës: %s. Do të përdoret seanca e "
 "emergjencës së GNOME"
 
-#: daemon/slave.c:3512
+#: daemon/slave.c:3543
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
@@ -1144,14 +1146,14 @@ msgstr ""
 "Seanca që keni zgjedhur nuk është e vlefshme.  Do të filloj për ju seancën e "
 "emergjencës së GNOME."
 
-#: daemon/slave.c:3526
+#: daemon/slave.c:3557
 #, c-format
 msgid "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
 msgstr ""
 "%s: Nuk arrij të gjej apo të ekzekutoj script-in bazë të Xsession, do të "
 "provoj seancën e emergjencës së GNOME"
 
-#: daemon/slave.c:3532
+#: daemon/slave.c:3563
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
@@ -1160,14 +1162,14 @@ msgstr ""
 "seancën e emergjencës së GNOME."
 
 #. yaikes
-#: daemon/slave.c:3547
+#: daemon/slave.c:3578
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s: gnome-session nuk u gjet për seancën e emergjencës së GNOME, do të kryej "
 "një provë me xterm"
 
-#: daemon/slave.c:3552
+#: daemon/slave.c:3583
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
@@ -1175,7 +1177,7 @@ msgstr ""
 "E pamundur gjetja e instalimit të GNOME, do të kryhet një përpjekje me "
 "seancën \"xterm i emergjencës\"."
 
-#: daemon/slave.c:3560
+#: daemon/slave.c:3591
 msgid ""
 "This is the Failsafe Gnome session.  You will be logged into the 'Default' "
 "session of Gnome with no startup scripts run.  This is only to fix problems "
@@ -1185,11 +1187,11 @@ msgstr ""
 "'Prezgjedhur' të Gnome duke mos ekzekutuar script-et e nisjes.  Shërben "
 "vetëm për të zgjidhur problemet e instalimit."
 
-#: daemon/slave.c:3575
+#: daemon/slave.c:3606
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Nuk arrij të gjej \"xterm\" për të filluar një seancë emergjence."
 
-#: daemon/slave.c:3588
+#: daemon/slave.c:3619
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1200,43 +1202,42 @@ msgstr ""
 "mos gjeni menyrë tjetër për të kryer log in.  Për të mbyllur terminalin, "
 "shkruaj 'exit' dhe shtyp enter tek dritarja e terminalit."
 
-#: daemon/slave.c:3615
+#: daemon/slave.c:3646
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Përdoruesi nuk lejohet të kryej log in"
 
-#: daemon/slave.c:3618
+#: daemon/slave.c:3649
 msgid "The system administrator has disabled your account."
 msgstr "Administratori i sistemit ka disaktivuar account-in tuaj."
 
-#: daemon/slave.c:3631
+#: daemon/slave.c:3662
 msgid "Error! Unable to set executable context."
 msgstr "Gabim! Nuk arrij të vendos kontekstin e ekzekutueshëm."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3639 daemon/slave.c:3644
+#: daemon/slave.c:3670 daemon/slave.c:3675
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: I pamundur ekzekutimi i %s %s %s"
 
-#. we can't really be any more specific
-#: daemon/slave.c:3655
+#: daemon/slave.c:3686
 msgid "Cannot start the session due to some internal error."
 msgstr "Nuk arrij të nis seancën për shkak të ndonjë gabimi të brendshëm."
 
-#: daemon/slave.c:3709
+#: daemon/slave.c:3740
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Përdoruesi u identifikua por getpwnam(%s) dështoi!"
 
-#: daemon/slave.c:3723
+#: daemon/slave.c:3754
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr ""
 "%s: Ekzekutimi i script-it \"PostLogin\" ktheu si rezultat një vlerë > 0. "
 "Procesi po ndërpritet."
 
-#: daemon/slave.c:3732
+#: daemon/slave.c:3763
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1252,12 +1253,12 @@ msgstr ""
 "\n"
 "Që desktop të funksionojë si duhet përdorni një seancë emergjence."
 
-#: daemon/slave.c:3740
+#: daemon/slave.c:3771
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Directory home për %s: '%s' nuk ekziston!"
 
-#: daemon/slave.c:3903
+#: daemon/slave.c:3934
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1269,12 +1270,12 @@ msgstr ""
 "nuk mund të kryhet login.  Vihu në kontakt me administratorin tuaj të "
 "sistemit"
 
-#: daemon/slave.c:3979
+#: daemon/slave.c:4010
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: gabim gjatë kryerjes së fork të seancës së përdoruesit"
 
-#: daemon/slave.c:4060
+#: daemon/slave.c:4091
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1286,51 +1287,53 @@ msgstr ""
 "më hapësirë në disk.  Mundohuni të përdorni seancën e emergjencës për të "
 "kryer një përpjekjepër të korrigjuar problemin."
 
-#: daemon/slave.c:4068
+#: daemon/slave.c:4099
 msgid "View details (~/.xsession-errors file)"
 msgstr "Shiko hollësitë (tek file  ~/.xsession-errors)"
 
-#: daemon/slave.c:4212
+#: daemon/slave.c:4243
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM zbuloi një proces ndalje apo rinisje në progres."
 
-#: daemon/slave.c:4306
+#: daemon/slave.c:4337
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "I pamundur kryerja e ping tek %s, display do të shkëputet!"
 
-#: daemon/slave.c:4584
+#: daemon/slave.c:4617
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Gabim fatal i X - Po filloj përsëri %s"
 
-#: daemon/slave.c:4675
+#: daemon/slave.c:4711
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
-msgstr "Tingulli i hyrjes është kërkuar në një display jo lokale ose programi audio nuk mund të zbatohet ose tingulli nuk ekziston"
+msgstr ""
+"Tingulli i hyrjes është kërkuar në një display jo lokale ose programi audio "
+"nuk mund të zbatohet ose tingulli nuk ekziston"
 
-#: daemon/slave.c:5019
+#: daemon/slave.c:5057
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Gabim gjatë nisjes: %s"
 
-#: daemon/slave.c:5027 daemon/slave.c:5164
+#: daemon/slave.c:5065 daemon/slave.c:5202
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: E pamundur kryerja e një fork mbi procesin e script!"
 
-#: daemon/slave.c:5121
+#: daemon/slave.c:5159
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Krijimi i pipe dështoi"
 
-#: daemon/slave.c:5158
+#: daemon/slave.c:5196
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Gabim gjatë ekzekutimit: %s"
 
-#: daemon/verify-crypt.c:70 daemon/verify-pam.c:716 daemon/verify-shadow.c:71
+#: daemon/verify-crypt.c:71 daemon/verify-pam.c:723 daemon/verify-shadow.c:72
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
@@ -1338,55 +1341,55 @@ msgstr ""
 "\n"
 "Emër përdoruesi apo password i gabuar.  Kujdes gërmat e mëdha dhe të voglat."
 
-#: daemon/verify-crypt.c:75 daemon/verify-pam.c:726 daemon/verify-shadow.c:76
+#: daemon/verify-crypt.c:76 daemon/verify-pam.c:733 daemon/verify-shadow.c:77
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Sigurohu që pulsanti Caps Lock nuk është aktiv."
 
 #. I think I'll add the buttons next to this
-#: daemon/verify-crypt.c:122 daemon/verify-pam.c:175
-#: daemon/verify-shadow.c:121 gui/gdmlogin.c:2908
+#: daemon/verify-crypt.c:123 daemon/verify-pam.c:176
+#: daemon/verify-shadow.c:122 gui/gdmlogin.c:2908
 msgid "Please enter your username"
 msgstr "Shkruani emrin e përdoruesit"
 
 #. login: is whacked always translate to Username:
-#: daemon/verify-crypt.c:123 daemon/verify-pam.c:91 daemon/verify-pam.c:92
-#: daemon/verify-pam.c:93 daemon/verify-pam.c:169 daemon/verify-pam.c:505
-#: daemon/verify-shadow.c:122 gui/gdmlogin.c:1049 gui/gdmlogin.c:1063
+#: daemon/verify-crypt.c:124 daemon/verify-pam.c:92 daemon/verify-pam.c:93
+#: daemon/verify-pam.c:94 daemon/verify-pam.c:170 daemon/verify-pam.c:512
+#: daemon/verify-shadow.c:123 gui/gdmlogin.c:1049 gui/gdmlogin.c:1063
 #: gui/gdmlogin.c:1754 gui/gdmlogin.c:2223 gui/greeter/greeter.c:270
 #: gui/greeter/greeter_parser.c:1061
 msgid "Username:"
 msgstr "Përdoruesi: "
 
-#: daemon/verify-crypt.c:161 daemon/verify-pam.c:94 daemon/verify-pam.c:95
-#: daemon/verify-pam.c:216 daemon/verify-shadow.c:179 gui/gdmlogin.c:1786
+#: daemon/verify-crypt.c:162 daemon/verify-pam.c:95 daemon/verify-pam.c:96
+#: daemon/verify-pam.c:223 daemon/verify-shadow.c:180 gui/gdmlogin.c:1786
 msgid "Password:"
 msgstr "Password:"
 
-#: daemon/verify-crypt.c:179 daemon/verify-crypt.c:193
-#: daemon/verify-shadow.c:197 daemon/verify-shadow.c:211
+#: daemon/verify-crypt.c:180 daemon/verify-crypt.c:194
+#: daemon/verify-shadow.c:198 daemon/verify-shadow.c:212
 #, c-format
 msgid "Couldn't authenticate user \"%s\""
 msgstr "I pamundur identifikimi i përdoruesit \"%s\""
 
-#: daemon/verify-crypt.c:206 daemon/verify-pam.c:602
-#: daemon/verify-shadow.c:224
+#: daemon/verify-crypt.c:207 daemon/verify-pam.c:609
+#: daemon/verify-shadow.c:225
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Login i root ndalohet në display '%s'"
 
-#: daemon/verify-crypt.c:208 daemon/verify-shadow.c:226
+#: daemon/verify-crypt.c:209 daemon/verify-shadow.c:227
 msgid "The system administrator is not allowed to login from this screen"
 msgstr "Administratori i sistemit nuk lejohet të futet nga kjo dritare"
 
-#: daemon/verify-crypt.c:224 daemon/verify-crypt.c:246
-#: daemon/verify-shadow.c:242 daemon/verify-shadow.c:264
+#: daemon/verify-crypt.c:225 daemon/verify-crypt.c:249
+#: daemon/verify-shadow.c:243 daemon/verify-shadow.c:267
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Përdoruesit %s nuk i lejohet kryerja e log in"
 
-#: daemon/verify-crypt.c:226 daemon/verify-crypt.c:248 daemon/verify-pam.c:632
-#: daemon/verify-pam.c:881 daemon/verify-shadow.c:244
-#: daemon/verify-shadow.c:266
+#: daemon/verify-crypt.c:227 daemon/verify-crypt.c:251 daemon/verify-pam.c:639
+#: daemon/verify-pam.c:888 daemon/verify-shadow.c:245
+#: daemon/verify-shadow.c:269
 msgid ""
 "\n"
 "The system administrator has disabled your account."
@@ -1394,16 +1397,16 @@ msgstr ""
 "\n"
 "Administratori i sistemit ka disaktivuar account-in tuaj."
 
-#: daemon/verify-crypt.c:265 daemon/verify-crypt.c:370 daemon/verify-pam.c:650
-#: daemon/verify-pam.c:898 daemon/verify-shadow.c:283
-#: daemon/verify-shadow.c:387
+#: daemon/verify-crypt.c:274 daemon/verify-crypt.c:379 daemon/verify-pam.c:657
+#: daemon/verify-pam.c:905 daemon/verify-shadow.c:292
+#: daemon/verify-shadow.c:396
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "I pamundur përcaktimi i grupit të përdoruesit për %s"
 
-#: daemon/verify-crypt.c:267 daemon/verify-crypt.c:373 daemon/verify-pam.c:652
-#: daemon/verify-pam.c:901 daemon/verify-shadow.c:285
-#: daemon/verify-shadow.c:390
+#: daemon/verify-crypt.c:276 daemon/verify-crypt.c:382 daemon/verify-pam.c:659
+#: daemon/verify-pam.c:908 daemon/verify-shadow.c:294
+#: daemon/verify-shadow.c:399
 msgid ""
 "\n"
 "Cannot set your user group, you will not be able to log in, please contact "
@@ -1413,13 +1416,13 @@ msgstr ""
 "Nuk arrij të përcaktoj grupin tuaj të përdoruesit, nuk do të jeni në gjendje "
 "të futeni, vihuni në kontakt me administratorin e sistemit tuaj."
 
-#: daemon/verify-crypt.c:278 daemon/verify-crypt.c:318
-#: daemon/verify-shadow.c:296 daemon/verify-shadow.c:336
+#: daemon/verify-crypt.c:287 daemon/verify-crypt.c:327
+#: daemon/verify-shadow.c:305 daemon/verify-shadow.c:345
 #, c-format
 msgid "Password of %s has expired"
 msgstr "Password e %s ka skaduar"
 
-#: daemon/verify-crypt.c:280 daemon/verify-shadow.c:298
+#: daemon/verify-crypt.c:289 daemon/verify-shadow.c:307
 msgid ""
 "You are required to change your password.\n"
 "Please choose a new one."
@@ -1427,7 +1430,7 @@ msgstr ""
 "Jeni i detyruar të ndryshoni password-in tuaj.\n"
 "Ju lutem zgjidhni një tjetër."
 
-#: daemon/verify-crypt.c:291 daemon/verify-shadow.c:309
+#: daemon/verify-crypt.c:300 daemon/verify-shadow.c:318
 msgid ""
 "\n"
 "Cannot change your password, you will not be able to log in, please try "
@@ -1438,7 +1441,7 @@ msgstr ""
 "futeni,, provo edhe një herë më vonë ose vihuni në kontakt me "
 "administratorin e sistemit tuaj."
 
-#: daemon/verify-crypt.c:320 daemon/verify-shadow.c:338
+#: daemon/verify-crypt.c:329 daemon/verify-shadow.c:347
 msgid ""
 "Your password has expired.\n"
 "Only a system administrator can now change it"
@@ -1446,11 +1449,11 @@ msgstr ""
 "Password-i juaj ka skaduar.\n"
 "Vetëm një administrator sistemi mund t'a ndryshojë atë tani"
 
-#: daemon/verify-crypt.c:327 daemon/verify-shadow.c:345
+#: daemon/verify-crypt.c:336 daemon/verify-shadow.c:354
 msgid "Internal error on passwdexpired"
 msgstr "Gabim i brendshëm në passwdexpired"
 
-#: daemon/verify-crypt.c:329 daemon/verify-shadow.c:347
+#: daemon/verify-crypt.c:338 daemon/verify-shadow.c:356
 msgid ""
 "An internal error occured, you will not be able to log in.\n"
 "Please try again later or contact your system administrator."
@@ -1459,94 +1462,97 @@ msgstr ""
 "Ju lutem provoje dhe një herë ose vihuni në kontakt me administratorin e "
 "sistemit tuaj."
 
-#: daemon/verify-crypt.c:365 daemon/verify-shadow.c:382
+#: daemon/verify-crypt.c:374 daemon/verify-shadow.c:391
 #, c-format
 msgid "Cannot get passwd structure for %s"
 msgstr "E pamundur marrja e strukturës së passwd për %s"
 
-#: daemon/verify-pam.c:96
+#: daemon/verify-pam.c:97
 msgid "You are required to change your password immediately (password aged)"
 msgstr "Duhet të ndryshoni menjëherë password-in tuaj (password është duke skaduar)"
 
-#: daemon/verify-pam.c:97
+#: daemon/verify-pam.c:98
 msgid "You are required to change your password immediately (root enforced)"
 msgstr "Duhet të ndryshoni menjëherë password-in tuaj (root është çarë)"
 
-#: daemon/verify-pam.c:98
+#: daemon/verify-pam.c:99
 msgid "Your account has expired; please contact your system administrator"
 msgstr "Llogaria juaj ka skaduar, vihuni në kontakt me administratorin e sistemit"
 
-#: daemon/verify-pam.c:99
+#: daemon/verify-pam.c:100
 msgid "No password supplied"
 msgstr "Asnjë paswword e shkruar"
 
-#: daemon/verify-pam.c:100
+#: daemon/verify-pam.c:101
 msgid "Password unchanged"
 msgstr "Password nuk është ndryshuar"
 
-#: daemon/verify-pam.c:101
+#: daemon/verify-pam.c:102
 msgid "Can not get username"
 msgstr "Nuk arrij të marr emrin e përdoruesit"
 
-#: daemon/verify-pam.c:102
+#: daemon/verify-pam.c:103
 msgid "Retype new UNIX password:"
 msgstr "Rishkruaj password-in e ri UNIX:"
 
-#: daemon/verify-pam.c:103
+#: daemon/verify-pam.c:104
 msgid "Enter new UNIX password:"
 msgstr "Shkruaj password-in e ri UNIX:"
 
-#: daemon/verify-pam.c:104
+#: daemon/verify-pam.c:105
 msgid "(current) UNIX password:"
 msgstr "UNIX password (aktuale):"
 
-#: daemon/verify-pam.c:105
+#: daemon/verify-pam.c:106
 msgid "Error while changing NIS password."
 msgstr "Gabim gjatë ndryshimit të NIS password."
 
-#: daemon/verify-pam.c:106
+#: daemon/verify-pam.c:107
 msgid "You must choose a longer password"
 msgstr "Duhet të zgjidhni një password më të gjatë"
 
-#: daemon/verify-pam.c:107
+#: daemon/verify-pam.c:108
 msgid "Password has been already used. Choose another."
 msgstr "Ky password është përdorur njëherë. Zgjidh një tjetër."
 
-#: daemon/verify-pam.c:108
+#: daemon/verify-pam.c:109
 msgid "You must wait longer to change your password"
 msgstr "Do t'ju duhet të prisni gjatë për të ndryshuar paswword-in tuaj"
 
-#: daemon/verify-pam.c:109
+#: daemon/verify-pam.c:110
 msgid "Sorry, passwords do not match"
 msgstr "Më vjen keq, password-et nuk korrispondojnë"
 
-#: daemon/verify-pam.c:380
+#: daemon/verify-pam.c:387
 msgid "Cannot setup pam handle with null display"
 msgstr "E pamundur vendosja e manazhuesit pam me display null"
 
-#: daemon/verify-pam.c:397
+#: daemon/verify-pam.c:404
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "Nuk arrij të stabilizoj shërbimin %s: %s\n"
 
-#: daemon/verify-pam.c:405
+#: daemon/verify-pam.c:412
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Nuk arrij të vendos PAM_TTY=%s"
 
-#: daemon/verify-pam.c:415
+#: daemon/verify-pam.c:422
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Nuk arrij të vendos PAM_RHOST=%s"
 
 #. #endif
 #. PAM_FAIL_DELAY
-#: daemon/verify-pam.c:558 daemon/verify-pam.c:577 daemon/verify-pam.c:831
-#: daemon/verify-pam.c:844
+#. is not really an auth problem, but it will
+#. pretty much look as such, it shouldn't really
+#. happen
+#: daemon/verify-pam.c:565 daemon/verify-pam.c:584 daemon/verify-pam.c:838
+#: daemon/verify-pam.c:851
 msgid "Couldn't authenticate user"
 msgstr "I pamundur identifikimi i përdoruesit"
 
-#: daemon/verify-pam.c:605
+#: daemon/verify-pam.c:612
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1554,12 +1560,12 @@ msgstr ""
 "\n"
 "Administratori i sistemit nuk lejohet të futet nga kjo dritare"
 
-#: daemon/verify-pam.c:621
+#: daemon/verify-pam.c:628
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Gabim gjatë ndryshimit të token të autentifikimit për përdoruesin %s"
 
-#: daemon/verify-pam.c:623
+#: daemon/verify-pam.c:630
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1569,17 +1575,17 @@ msgstr ""
 "Ndryshimi i token të autentifikimit dështoi. Provo dhe njëherë më vonë ose "
 "vihu në kontakt me administratorin e sistemit."
 
-#: daemon/verify-pam.c:630 daemon/verify-pam.c:878
+#: daemon/verify-pam.c:637 daemon/verify-pam.c:885
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Përdoruesi %s nuk ka më të drejtë të futet në sistem"
 
-#: daemon/verify-pam.c:636 daemon/verify-pam.c:884
+#: daemon/verify-pam.c:643 daemon/verify-pam.c:891
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Përdoruesi %s nuk lejohet të fitojë hyrjen për këtë moment"
 
-#: daemon/verify-pam.c:638
+#: daemon/verify-pam.c:645
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1587,22 +1593,22 @@ msgstr ""
 "\n"
 "Administratori i sistemit ka ndaluar përkohësisht hyrjen në sistem."
 
-#: daemon/verify-pam.c:643 daemon/verify-pam.c:891
+#: daemon/verify-pam.c:650 daemon/verify-pam.c:898
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "I pamundur vendosja e manazhimit të account për %s"
 
-#: daemon/verify-pam.c:664 daemon/verify-pam.c:914
+#: daemon/verify-pam.c:671 daemon/verify-pam.c:921
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "E pamundur vendosja e kredive për %s"
 
-#: daemon/verify-pam.c:678 daemon/verify-pam.c:929
+#: daemon/verify-pam.c:685 daemon/verify-pam.c:936
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Nuk arrij të hap seancën për %s"
 
-#: daemon/verify-pam.c:720
+#: daemon/verify-pam.c:727
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1610,15 +1616,15 @@ msgstr ""
 "\n"
 "Autentifikimi dështoi.  Kujdes dallimin midis gërmave të mëdha e të vogla."
 
-#: daemon/verify-pam.c:736 daemon/verify-pam.c:834 daemon/verify-pam.c:847
+#: daemon/verify-pam.c:743 daemon/verify-pam.c:841 daemon/verify-pam.c:854
 msgid "Authentication failed"
 msgstr "Identifikimi dështoi"
 
-#: daemon/verify-pam.c:800
+#: daemon/verify-pam.c:807
 msgid "Automatic login"
 msgstr "Login automatik"
 
-#: daemon/verify-pam.c:887
+#: daemon/verify-pam.c:894
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
@@ -1626,7 +1632,7 @@ msgstr ""
 "\n"
 "Administratori i sistemit ka bllokuar përkohësisht hyrjen tuaj në sistem."
 
-#: daemon/verify-pam.c:1062 daemon/verify-pam.c:1064
+#: daemon/verify-pam.c:1069 daemon/verify-pam.c:1071
 msgid "Can't find PAM configuration for gdm."
 msgstr "Nuk arrij të gjej konfigurimin PAm për gdm."
 
@@ -1766,7 +1772,7 @@ msgstr "%s: i pamundur leximi i adresës"
 msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr "%s: Mora \"KEEPALIVE\" nga host i përjashtuar (banned) %s"
 
-#: daemon/xdmcp.c:2685 daemon/xdmcp.c:2692 daemon/xdmcp.c:2698
+#: daemon/xdmcp.c:2688 daemon/xdmcp.c:2695 daemon/xdmcp.c:2701
 #, c-format
 msgid "%s: No XDMCP support"
 msgstr "%s: Mungon suporti për XDMCP"
@@ -1843,7 +1849,6 @@ msgstr "GDM nuk është duke u ekzekutuar"
 msgid "Please ask your system administrator to start it."
 msgstr "Kërkoi administratorit të sistemit t'a nisë."
 
-#. markup
 #: gui/gdmXnestchooser.c:623
 msgid "Could not find a free display number"
 msgstr "Nuk arrij të gjej një display në dispozicion"
@@ -1875,7 +1880,7 @@ msgstr "Hap një seancë tek host i zgjedhur"
 
 #: gui/gdmchooser-strings.c:12 gui/gdmchooser.glade.h:3
 msgid "C_onnect"
-msgstr "L_idhu"
+msgstr "Li_dhu"
 
 #: gui/gdmchooser-strings.c:13 gui/gdmchooser.glade.h:10
 msgid "Status"
@@ -1915,11 +1920,11 @@ msgid "Choose a ho_st to connect to:"
 msgstr "Zgjidh ho_st-in me të cilin dëshiron të lidhesh:"
 
 #. markup
-#: gui/gdmchooser.c:637
+#: gui/gdmchooser.c:644
 msgid "Cannot connect to remote server"
 msgstr "Nuk arrij të lidhem me server-in remot"
 
-#: gui/gdmchooser.c:638
+#: gui/gdmchooser.c:645
 #, c-format
 msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
@@ -1929,11 +1934,11 @@ msgstr ""
 "momentin.  Ju lutem riprovo edhe njëherë më vonë."
 
 #. markup
-#: gui/gdmchooser.c:1262
+#: gui/gdmchooser.c:1269
 msgid "Did not receive response from server"
 msgstr "Nuk mora asnjë përgjigje nga server-i"
 
-#: gui/gdmchooser.c:1263
+#: gui/gdmchooser.c:1270
 #, c-format
 msgid ""
 "Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
@@ -1944,16 +1949,16 @@ msgstr ""
 "është duke funksionuar, ose nuk është në gjendje të suportojë një seancë "
 "login për momentin.  Ju lutem riprovo edhe njëherë më vonë."
 
-#: gui/gdmchooser.c:1369
+#: gui/gdmchooser.c:1376
 msgid "Cannot find host"
 msgstr "Nuk arrij të gjej host-in"
 
-#: gui/gdmchooser.c:1370
+#: gui/gdmchooser.c:1377
 #, c-format
 msgid "I cannot find the host \"%s\", perhaps you have mistyped it."
 msgstr "Nuk arrij të gjej host \"%s\", mos e keni shkruar keq?"
 
-#: gui/gdmchooser.c:1655
+#: gui/gdmchooser.c:1662
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1970,46 +1975,46 @@ msgstr ""
 "\"Rifresko\". Mbasi të keni zgjedhur një host kliko tek \"Lidhu\" për të "
 "hapur një seancë në atë makinë."
 
-#: gui/gdmchooser.c:1690
+#: gui/gdmchooser.c:1697
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Nuk arrij të hap ikonën e prezgjedhur të host: %s"
 
-#: gui/gdmchooser.c:1909 gui/gdmlogin.c:3802 gui/gdmlogin.c:3809
+#: gui/gdmchooser.c:1916 gui/gdmlogin.c:3802 gui/gdmlogin.c:3809
 #: gui/greeter/greeter.c:1082 gui/greeter/greeter.c:1089
 msgid "Could not set signal mask!"
 msgstr "E pamundur vendosja e maskës së sinjalit!"
 
-#: gui/gdmchooser.c:1915
+#: gui/gdmchooser.c:1922
 msgid "Socket for xdm communication"
 msgstr "Socket për komunikimin xdm"
 
-#: gui/gdmchooser.c:1915
+#: gui/gdmchooser.c:1922
 msgid "SOCKET"
 msgstr "SOCKET"
 
-#: gui/gdmchooser.c:1918
+#: gui/gdmchooser.c:1925
 msgid "Client address to return in response to xdm"
 msgstr "Adresa klient që i duhet dërguar si përgjigje xdm-së"
 
-#: gui/gdmchooser.c:1918
+#: gui/gdmchooser.c:1925
 msgid "ADDRESS"
 msgstr "ADRESA"
 
-#: gui/gdmchooser.c:1921
+#: gui/gdmchooser.c:1928
 msgid "Connection type to return in response to xdm"
 msgstr "Lloji i lidhjes që i duhet dërguar si përgjigje xdm-së"
 
-#: gui/gdmchooser.c:1921
+#: gui/gdmchooser.c:1928
 msgid "TYPE"
 msgstr "LLOJI"
 
 #. markup
-#: gui/gdmchooser.c:2050
+#: gui/gdmchooser.c:2057
 msgid "Cannot run chooser"
 msgstr "Nuk arrij të nis chooser"
 
-#: gui/gdmchooser.c:2051
+#: gui/gdmchooser.c:2058
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
@@ -2020,12 +2025,11 @@ msgstr ""
 "mundësi që sapo keni kryer një upgrade të gdm. Rifillo daemon e gdm ose "
 "rinis kompjuterin."
 
-#. markup
-#: gui/gdmcomm.c:398 gui/gdmphotosetup.c:70
+#: gui/gdmcomm.c:405 gui/gdmphotosetup.c:70
 msgid "GDM (The GNOME Display Manager) is not running."
 msgstr "GDM (GNOME Display Manager) nuk është në ekzekutim."
 
-#: gui/gdmcomm.c:401 gui/gdmphotosetup.c:73
+#: gui/gdmcomm.c:408 gui/gdmphotosetup.c:73
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
 "Display Manager) or xdm."
@@ -2033,7 +2037,7 @@ msgstr ""
 "Ndoshta je duke përdorur një manazhues tjetër display, si p.sh. KDM (KDE "
 "Display Manager) ose xdm."
 
-#: gui/gdmcomm.c:404 gui/gdmphotosetup.c:76
+#: gui/gdmcomm.c:411 gui/gdmphotosetup.c:76
 msgid ""
 "If you still wish to use this feature, either start GDM yourself or ask your "
 "system administrator to start GDM."
@@ -2041,38 +2045,37 @@ msgstr ""
 "Nëse dëshiron të shfrytëzosh këtë mundësi, duhet të nisësh vetë GDM ose "
 "tikërkosh administratorit të sistemit të nisë GDM."
 
-#. markup
-#: gui/gdmcomm.c:426 gui/gdmflexiserver.c:254
+#: gui/gdmcomm.c:433 gui/gdmflexiserver.c:671
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
 msgstr "Nuk arrij të komunikoj me GDM (GNOME Display Manager)"
 
-#: gui/gdmcomm.c:429 gui/gdmflexiserver.c:257
+#: gui/gdmcomm.c:436 gui/gdmflexiserver.c:674
 msgid "Perhaps you have an old version of GDM running."
 msgstr "Ka mundësi që versioni në përdorim i GDM të jetë i vjetër."
 
-#: gui/gdmcomm.c:446 gui/gdmcomm.c:449
+#: gui/gdmcomm.c:453 gui/gdmcomm.c:456
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr ""
 "Nuk arrij të komunikoj me gdm, ka mundësi që versioni në përdorim të jetë i "
 "vjetër."
 
-#: gui/gdmcomm.c:452
+#: gui/gdmcomm.c:459
 msgid "The allowed limit of flexible X servers reached."
 msgstr "Është arritur limiti maksimum i lejuar për servers X flexible."
 
-#: gui/gdmcomm.c:454
+#: gui/gdmcomm.c:461
 msgid "There were errors trying to start the X server."
 msgstr "Janë verifikuar disa gabime gjatë nisjes së server-it X."
 
-#: gui/gdmcomm.c:456
+#: gui/gdmcomm.c:463
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "Server-i X dështoi.  Ndoshta nuk është i konfiguruar si duhet."
 
-#: gui/gdmcomm.c:459
+#: gui/gdmcomm.c:466
 msgid "Too many X sessions running."
 msgstr "Shumë seanca X aktive."
 
-#: gui/gdmcomm.c:461
+#: gui/gdmcomm.c:468
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
@@ -2080,7 +2083,7 @@ msgstr ""
 "Xnest nuk arrin të lidhet me server-in tuaj X aktual.  Ka mundësi që file "
 "autorizues i X mungon."
 
-#: gui/gdmcomm.c:466
+#: gui/gdmcomm.c:473
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
@@ -2088,11 +2091,11 @@ msgstr ""
 "Xnest jo në dispozicion, ose gdm e konfiguruar keq.\n"
 "Instalo pakon Xnest që të përdorësh dritaren e login."
 
-#: gui/gdmcomm.c:471
+#: gui/gdmcomm.c:478
 msgid "The X server is not available, it is likely that gdm is badly configured."
 msgstr "Server-i X jo në dispozicion, ka mundësi që gdm të jetë konfiguruar keq."
 
-#: gui/gdmcomm.c:475
+#: gui/gdmcomm.c:482
 msgid ""
 "Trying to set an unknown logout action, or trying to set a logout action "
 "which is not available."
@@ -2100,11 +2103,19 @@ msgstr ""
 "Jeni duke u përpjekur të kryeni një procedurë dalje të panjohur, ose që nuk "
 "është në dispozicion."
 
-#: gui/gdmcomm.c:478
+#: gui/gdmcomm.c:485
+msgid "Virtual terminals not supported."
+msgstr "Terminalët virtualë nuk suportohen."
+
+#: gui/gdmcomm.c:487
+msgid "Trying to change to an invalid virtual terminal number."
+msgstr "Përpjekje për të ndryshuar në një terminal virtual me numër të pasaktë."
+
+#: gui/gdmcomm.c:489
 msgid "Trying to update an unsupported configuration key."
 msgstr "Përpjekje për të rifreskuar një çelës konfigurimi të pasuportuar."
 
-#: gui/gdmcomm.c:480
+#: gui/gdmcomm.c:491
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
@@ -2112,11 +2123,11 @@ msgstr ""
 "Nuk keni të drejtat e duhura për këtë operacion. Ka mundësi që file juaj \"."
 "Xauthority\" nuk është konfiguruar si duhet."
 
-#: gui/gdmcomm.c:484
+#: gui/gdmcomm.c:495
 msgid "Too many messages were sent to gdm and it hung upon us."
 msgstr "Janë dërguar tepër mesazhe drejt gdm dhe ai na i ka përcjellë neve."
 
-#: gui/gdmcomm.c:487
+#: gui/gdmcomm.c:498
 msgid "Unknown error occured."
 msgstr "Gabim i panjohur."
 
@@ -2128,70 +2139,118 @@ msgstr "Mundëson kryerjen e një login të ri në një dritare"
 msgid "New Login in a Nested Window"
 msgstr "Login i ri në Nested Window"
 
-#: gui/gdmflexiserver.c:129
-msgid "Choose server"
-msgstr "Zgjidh një server"
-
-#: gui/gdmflexiserver.c:140
-msgid "Choose the X server to start"
-msgstr "Zgjidh një server X për të nisur"
-
-#: gui/gdmflexiserver.c:146
-msgid "Standard server"
-msgstr "Server standart"
-
-#: gui/gdmflexiserver.c:194
-msgid "Send the specified protocol command to gdm"
-msgstr "Dërgoi gdm-së komandën e protokollit të caktuar"
-
-#: gui/gdmflexiserver.c:194
-msgid "COMMAND"
-msgstr "KOMANDA"
-
-#: gui/gdmflexiserver.c:195
-msgid "Xnest mode"
-msgstr "Modalitet Xnest"
-
-#: gui/gdmflexiserver.c:196
-msgid "Do not lock current screen"
-msgstr "Mos kryej lock e screen aktual"
-
-#: gui/gdmflexiserver.c:197
-msgid "Debugging output"
-msgstr "Lejo output për debug"
-
-#: gui/gdmflexiserver.c:198
-msgid "Authenticate before running --command"
-msgstr "Kryej identifikimin përpara se të zbatotosh --command"
-
 #. markup
-#: gui/gdmflexiserver.c:275
-msgid "You do not seem to have the authentication needed for this operation"
-msgstr "Nuk keni të drejtat e duhura për këtë operacion"
+#: gui/gdmflexiserver.c:99
+msgid "Cannot change display"
+msgstr "Nuk arrij të ndryshoj display"
 
-#: gui/gdmflexiserver.c:279
-msgid "Perhaps your .Xauthority file is not set up correctly."
-msgstr "Ka mundësi që file juaj \".Xauthority\" nuk është konfiguruar si duhet."
+#: gui/gdmflexiserver.c:176
+msgid "Nobody"
+msgstr "Askush"
 
-#. markup
-#: gui/gdmflexiserver.c:305
-msgid "You do not seem to be logged in on the console"
-msgstr "Mesa duket nuk keni kryer login në konsolë"
+#: gui/gdmflexiserver.c:211
+#, c-format
+msgid "Display %s on virtual terminal %d"
+msgstr "Display %s në terminalin virtual %d"
 
-#: gui/gdmflexiserver.c:308
-msgid "Starting a new login only works correctly on the console."
-msgstr "Një login i ri funksionon si duhet vetëm nga konsolë."
+#: gui/gdmflexiserver.c:216
+#, c-format
+msgid "Nested display %s on virtual terminal %d"
+msgstr "Display i zhytur %s në terminalin virtual %d"
 
-#: gui/gdmflexiserver.c:337
+#: gui/gdmflexiserver.c:246 gui/gdmlogin.c:2760
+#: gui/greeter/greeter_item_ulist.c:436
+msgid "Username"
+msgstr "Përdoruesi "
+
+#: gui/gdmflexiserver.c:255
+msgid "Display"
+msgstr "Shfaq"
+
+#: gui/gdmflexiserver.c:309
+msgid "Open Displays"
+msgstr "Hap displays"
+
+#. parent
+#. flags
+#: gui/gdmflexiserver.c:312
+msgid "_Open New Display"
+msgstr "_Hap një display të re"
+
+#: gui/gdmflexiserver.c:314
+msgid "Change to _Existing Display"
+msgstr "Shko tek display _ekzistues"
+
+#: gui/gdmflexiserver.c:322
+msgid ""
+"There are some displays already open.  You can select one from the list "
+"below or open a new one."
+msgstr ""
+"Kemi disa displays rregullisht të hapur.  Ju mund të zgjidhni njërin nga lista "
+"në vazhdim ose të hapni një të ri."
+
+#: gui/gdmflexiserver.c:389 gui/gdmflexiserver.c:759
 msgid "Can't lock screen"
 msgstr "I pamundur bllokimi i ekranit"
 
-#: gui/gdmflexiserver.c:340
+#: gui/gdmflexiserver.c:392 gui/gdmflexiserver.c:762
 msgid "Can't disable xscreensaver display hacks"
 msgstr "I pamundur disaktivimi i \"hack\" për display e xscreensaver"
 
+#: gui/gdmflexiserver.c:547
+msgid "Choose server"
+msgstr "Zgjidh një server"
+
+#: gui/gdmflexiserver.c:558
+msgid "Choose the X server to start"
+msgstr "Zgjidh një server X për të nisur"
+
+#: gui/gdmflexiserver.c:564
+msgid "Standard server"
+msgstr "Server standart"
+
+#: gui/gdmflexiserver.c:612
+msgid "Send the specified protocol command to gdm"
+msgstr "Dërgoi gdm-së komandën e protokollit të caktuar"
+
+#: gui/gdmflexiserver.c:612
+msgid "COMMAND"
+msgstr "KOMANDA"
+
+#: gui/gdmflexiserver.c:613
+msgid "Xnest mode"
+msgstr "Modalitet Xnest"
+
+#: gui/gdmflexiserver.c:614
+msgid "Do not lock current screen"
+msgstr "Mos kryej lock e screen aktual"
+
+#: gui/gdmflexiserver.c:615
+msgid "Debugging output"
+msgstr "Lejo output për debug"
+
+#: gui/gdmflexiserver.c:616
+msgid "Authenticate before running --command"
+msgstr "Kryej identifikimin përpara se të zbatotosh --command"
+
+#: gui/gdmflexiserver.c:699
+msgid "You do not seem to have the authentication needed for this operation"
+msgstr "Nuk keni të drejtat e duhura për këtë operacion"
+
+#: gui/gdmflexiserver.c:703
+msgid "Perhaps your .Xauthority file is not set up correctly."
+msgstr "Ka mundësi që file juaj \".Xauthority\" nuk është konfiguruar si duhet."
+
+#: gui/gdmflexiserver.c:727
+msgid "You do not seem to be logged in on the console"
+msgstr "Mesa duket nuk keni kryer login në konsolë"
+
+#: gui/gdmflexiserver.c:730
+msgid "Starting a new login only works correctly on the console."
+msgstr "Një login i ri funksionon si duhet vetëm nga konsolë."
+
 #. markup
-#: gui/gdmflexiserver.c:355
+#: gui/gdmflexiserver.c:777
 msgid "Cannot start new display"
 msgstr "Nuk arrij të filloj një display të re"
 
@@ -2679,10 +2738,6 @@ msgstr "Përcaktoje si të _Prezgjedhur"
 msgid "Just _Log In"
 msgstr "Vetëm kryej _Log In"
 
-#. never_encoding
-#. no_group
-#. untranslated
-#. markup
 #: gui/gdmlogin.c:855 gui/gdmlogin.c:935
 #: gui/greeter/greeter_action_language.c:149 gui/greeter/greeter_session.c:147
 #, c-format
@@ -2730,7 +2785,7 @@ msgstr "Seanca e zgjedhur: %s"
 
 #: gui/gdmlogin.c:1148 gui/gdmlogin.c:1458 gui/greeter/greeter_session.c:271
 msgid "_Last"
-msgstr "E _fundit"
+msgstr "_I/e fundit"
 
 #: gui/gdmlogin.c:1159 gui/greeter/greeter_session.c:277
 msgid "Log in using the session that you have used last time you logged in"
@@ -2816,11 +2871,8 @@ msgstr "_Tjetër"
 
 #: gui/gdmlogin.c:1787
 msgid "_Password:"
-msgstr "_Password:"
+msgstr "_Fjalëkalimi:"
 
-#. markup
-#. translators:  This is a nice and evil eggie text, translate
-#. * to your favourite currency
 #: gui/gdmlogin.c:2009 gui/greeter/greeter.c:423
 msgid "Please insert 25 cents to log in."
 msgstr "Të lutem, fut 25 cents për të hyrë."
@@ -2843,7 +2895,7 @@ msgstr "%a %d %b, %I:%M %p"
 
 #: gui/gdmlogin.c:2444
 msgid "Finger"
-msgstr "Finger"
+msgstr "Kërkuesi"
 
 #: gui/gdmlogin.c:2540
 msgid "GDM Login"
@@ -2899,7 +2951,7 @@ msgstr "Vë në pauzë kompjuterin tuaj"
 
 #: gui/gdmlogin.c:2672 gui/greeter/greeter_parser.c:1002
 msgid "_Actions"
-msgstr "_Veprime"
+msgstr "_Veprimet"
 
 #: gui/gdmlogin.c:2684 gui/greeter/greeter_canvas_item.c:145
 #: gui/greeter/greeter_parser.c:1012
@@ -2914,10 +2966,6 @@ msgstr "Sh_këputu"
 #: gui/gdmlogin.c:2753 gui/greeter/greeter_item_ulist.c:429
 msgid "Icon"
 msgstr "Ikona"
-
-#: gui/gdmlogin.c:2760 gui/greeter/greeter_item_ulist.c:436
-msgid "Username"
-msgstr "Përdoruesi "
 
 #: gui/gdmlogin.c:3217
 #, c-format
@@ -3013,7 +3061,6 @@ msgstr ""
 "Futuni dhe krijoni një file konfigurimi duke shfrytëzuarprogramin e "
 "konfigurimit të GDM."
 
-#. markup
 #: gui/gdmphotosetup.c:144
 msgid "The face browser is not configured"
 msgstr "Shfletuesi i faqeve nuk është i konfiguruar"
@@ -3189,11 +3236,11 @@ msgstr "Login automa_tikisht një përdorues mbas një numri të caktuar sekonda
 
 #: gui/gdmsetup-strings.c:34 gui/gdmsetup.glade.h:20
 msgid "General"
-msgstr "Përgjithshëm"
+msgstr "E përgjithshme"
 
 #: gui/gdmsetup-strings.c:35 gui/gdmsetup.glade.h:28
 msgid "Logo"
-msgstr "Logo"
+msgstr "Stema"
 
 #: gui/gdmsetup-strings.c:38 gui/gdmsetup.glade.h:35
 msgid "Miscellaneous"
@@ -3213,7 +3260,7 @@ msgstr "_Asnjë sfond"
 
 #: gui/gdmsetup-strings.c:44 gui/gdmsetup.glade.h:61
 msgid "_Image"
-msgstr "_Imazh"
+msgstr "_Imazhi"
 
 #: gui/gdmsetup-strings.c:45 gui/gdmsetup.glade.h:14
 msgid "Co_lor"
@@ -3281,7 +3328,7 @@ msgstr "_Fshi temën"
 
 #: gui/gdmsetup-strings.c:64 gui/gdmsetup-strings.c:78 gui/gdmsetup.glade.h:38
 msgid "Options"
-msgstr "Opcione"
+msgstr "Opcionet"
 
 #: gui/gdmsetup-strings.c:66 gui/gdmsetup.glade.h:5
 msgid "Allow _root to login with GDM"
@@ -3345,7 +3392,7 @@ msgstr "acc_sound_file_box"
 
 #: gui/gdmsetup-strings.c:84 gui/gdmsetup.glade.h:49
 msgid "Sound _file:"
-msgstr "_File audio:"
+msgstr "_File i tingullit:"
 
 #: gui/gdmsetup-strings.c:86 gui/gdmsetup.glade.h:69
 msgid "_Test sound"
@@ -3353,7 +3400,7 @@ msgstr "_Provo tingullin"
 
 #: gui/gdmsetup-strings.c:87 gui/gdmsetup.glade.h:3
 msgid "Accessibility"
-msgstr "Hyrja"
+msgstr "Açesibiliteti"
 
 #: gui/gdmsetup-strings.c:88 gui/gdmsetup.glade.h:36
 msgid ""
@@ -3411,7 +3458,6 @@ msgstr "Intervali i ping (në sekonda):"
 msgid "XDMCP"
 msgstr "XDMCP"
 
-#. markup
 #: gui/gdmsetup.c:147
 msgid ""
 "An error occured while trying to contact the login screens.  Not all updates "
@@ -3462,14 +3508,11 @@ msgstr "Nuk është arkiv i një teme"
 msgid "Details: %s"
 msgstr "Hollësi: %s"
 
-#. FIXME: if exists already perhaps we could also have an
-#. * option to change the dir name
 #: gui/gdmsetup.c:1914
 #, c-format
 msgid "Theme directory '%s' seems to be already installed, install again anyway?"
 msgstr "Directory e temës '%s' ekziston, t'a instaloj edhe njëherë?"
 
-#. markup
 #: gui/gdmsetup.c:1992
 msgid "Some error occured when installing the theme"
 msgstr "Gabime gjatë instalimit të temës"
@@ -3487,7 +3530,6 @@ msgstr "_Instalo"
 msgid "Do you really wish to remove theme '%s' from the system?"
 msgstr "Me të vërtetë dëshiron të heqësh temën '%s' nga sistemi?"
 
-#. This is the temporary help dialog
 #: gui/gdmsetup.c:2317
 #, c-format
 msgid ""
@@ -3548,7 +3590,6 @@ msgstr ""
 msgid "There was an error loading the theme %s"
 msgstr "Gabim gjatë ngarkimit të temës %s"
 
-#. markup
 #: gui/greeter/greeter.c:1204
 msgid "The theme for the graphical greeter is corrupt"
 msgstr "Tema për greeter-in grafik është e dëmtuar"
@@ -3559,7 +3600,6 @@ msgid ""
 "element."
 msgstr "Tema nuk përmban përcaktimin e elementit username/paswword."
 
-#. markup
 #: gui/greeter/greeter.c:1240
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
@@ -3568,7 +3608,6 @@ msgstr ""
 "Gabim gjatë ngarkimit të temës së zgjedhur, dhe tema e prezgjedhur nuk arrin "
 "të ngarkohet. Po përpiqem të filloj greeter standart"
 
-#. markup
 #: gui/greeter/greeter.c:1262
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
@@ -3582,11 +3621,11 @@ msgstr ""
 msgid "Last"
 msgstr "E fundit"
 
-#: gui/greeter/greeter_action_language.c:189
+#: gui/greeter/greeter_action_language.c:206
 msgid "Select a language"
 msgstr "Zgjidh një gjuhë"
 
-#: gui/greeter/greeter_action_language.c:206
+#: gui/greeter/greeter_action_language.c:223
 msgid "Select a language for your session to use:"
 msgstr "Zgjidh gjuhën për seancën:"
 
@@ -3707,7 +3746,7 @@ msgstr "GNOME Art variation of Circles"
 msgid "Happy GNOME"
 msgstr "Happy GNOME"
 
-#: gui/modules/dwellmouselistener.c:554 gui/modules/keymouselistener.c:638
+#: gui/modules/dwellmouselistener.c:586 gui/modules/keymouselistener.c:669
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -3717,10 +3756,12 @@ msgstr ""
 "që është i lidhur me (%s)"
 
 #: utils/gdmaskpass.c:26
+#, c-format
 msgid "gdmaskpass only runs as root\n"
 msgstr "gdmaskpass funksionon vetëm po të niset nga root\n"
 
 #: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
+#, c-format
 msgid "Authentication failure!\n"
 msgstr "Autentifikimi dështoi!\n"
 
