@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<!DOCTYPE greeter SYSTEM "greeter.dtd">
+<greeter>
+  <item type="svg">
+    <normal file="background.svg"/>
+    <pos x="0" y="0" width="100%" height="-75"/>
+  </item>
+  <item type="rect">
+    <normal color="#000000"/>
+    <pos x="0" y="-75" width="100%" height="75"/>
+    <fixed>
+      <item type="rect">
+        <normal color="#ffffff"/>
+        <pos x="0" y="4" width="100%" height="100%"/>
+        <box orientation="horizontal" spacing="10" xpadding="10">
+          <item type="rect" id="language_button" button="true">
+            <normal color="#ffffff"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="options.png" tint="#dddddd"/>
+	        <prelight file="options.png"/>
+	        <active file="options.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <_text>Option</_text>
+	      </item>
+            </box>
+          </item>
+          <item type="rect" id="session_button" button="true">
+            <normal color="#ffffff"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="session.png" tint="#dddddd"/>
+	        <prelight file="session.png"/>
+	        <active file="session.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <_text>Session</_text>
+	      </item>
+            </box>
+          </item>
+          <item type="rect" id="system_button" button="true">
+            <normal color="#ffffff"/>
+	    <show modes="console" type="system"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="system.png" tint="#dddddd"/>
+	        <prelight file="system.png"/>
+	        <active file="system.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <_text>System</_text>
+	      </item>
+            </box>
+          </item>
+          <item type="rect" id="disconnect_button" button="true">
+            <normal color="#ffffff"/>
+	    <show modes="flexi,remote"/>
+	    <pos y="50%" anchor="w" width="box" height="box"/>
+            <box orientation="horizontal" spacing="10" xpadding="10">
+	      <item type="pixmap">
+	        <normal file="options.png" tint="#dddddd"/>
+	        <prelight file="options.png"/>
+	        <active file="options.png" tint="#ff0000"/>
+	        <pos y="50%" anchor="w"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <_text>Disconnect</_text>
+	        <show modes="remote"/>
+	      </item>
+	      <item type="label">
+	        <normal color="#000000" font="Sans 14"/>
+		<prelight color="#666666" font="Sans 14"/>
+		<active color="#ff0000" font="Sans 14"/>
+	        <pos y="50%" anchor="w"/>
+	        <_text>Quit</_text>
+	        <show modes="flexi"/>
+	      </item>
+            </box>
+          </item>
+        </box>
+      </item>
+    </fixed>
+  </item>
+  <item type="pixmap">
+    <normal file="gnome-logo.png"/>
+    <pos x="100%" y="100%" anchor="se"/>
+  </item>
+  <item type="label" id="clock">
+    <normal color="#000000" font="Sans 16"/>
+    <pos x="-150" y="-37" anchor="e"/>
+    <text>%c</text>
+  </item>
+
+  <item type="rect" id="caps-lock-warning">
+    <normal color="#FFFFFF" alpha="0.5"/>
+    <pos anchor="c" x="50%" y="75%" width="box" height="box"/>
+    <box orientation="vertical" min-width="400" xpadding="10" ypadding="5" spacing="0">
+      <item type="label">
+        <normal color="#000000" font="Sans 14"/>
+        <pos x="50%" anchor="n"/>
+        <_text>You've got capslock on!</_text>
+      </item>
+    </box>
+  </item>
+
+  <item type="rect" id="timed-rect">
+    <show type="timed"/>
+    <normal color="#FFFFFF" alpha="0.5"/>
+    <pos anchor="c" x="50%" y="25%" width="box" height="box"/>
+    <box orientation="vertical" min-width="400" xpadding="10" ypadding="5" spacing="0">
+      <item type="label" id="timed-label">
+        <normal color="#000000" font="Sans 14"/>
+        <pos x="50%" anchor="n"/>
+        <_text>User %s will login in %d seconds</_text>
+      </item>
+    </box>
+  </item>
+
+  <item type="rect">
+    <normal color="#FFFFFF" alpha="0.5"/>
+    <pos anchor="c" x="50%" y="50%" width="box" height="box"/>
+    <box orientation="vertical" min-width="300" xpadding="30" ypadding="30" spacing="10">
+      <item type="label">
+        <pos anchor="n" x="50%"/>
+        <normal color="#000000" font="Sans 18"/>
+	<_text>Welcome to %h</_text>
+      </item>
+      <item type="label" id="pam-prompt">
+        <pos anchor="nw" x="10%"/>
+        <normal color="#000000" font="Sans 16"/>
+	<_text>Username:</_text>
+      </item>
+      <item type="rect">
+	<normal color="#000000"/>
+        <pos anchor="n" x="50%" height="24" width="80%"/>
+	<fixed>
+	  <item type="entry" id="user-pw-entry">
+            <pos anchor="nw" x="1" y="1" height="-2" width="-2"/>
+	  </item>
+	</fixed>
+      </item>
+      <item type="label" id="pam-message">
+        <pos anchor="n" x="50%"/>
+        <normal color="#000000" font="Sans 16"/>
+	<text></text>
+      </item>
+    </box>
+    <fixed>
+      <item type="label" id="pam-error">
+        <pos anchor="n" x="50%" y="110%"/>
+        <normal color="#000000" font="Sans 16"/>
+        <text></text>
+      </item>
+    </fixed>
+  </item>
+</greeter>
+
+
