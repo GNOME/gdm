@@ -1,3 +1,14 @@
+Thu Aug 22 16:04:56 2002  George Lebl <jirka@5z.com>
+
+	* gui/gdmlanguages.c, config/locale.alias: The locale in the
+	  locale.alias file can be a comma separated list now and we
+	  now test locales to make sure they exist.  This way we can
+	  use the utf8 locales if they exist rather then plain locales.
+	  And we also don't list locales that the C library doesn't support
+	  in the first place.  This should make things very nice if you're
+	  installing gdm over the latest redhat betas (as in, you will
+	  get utf8 locales as in the redhat version)
+
 Thu Aug 22 12:23:49 2002  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch], daemon/server.[ch], daemon/Makefile.am,

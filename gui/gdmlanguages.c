@@ -24,6 +24,8 @@
 #include <libgnomeui/libgnomeui.h>
 #include <string.h>
 
+#include <vicious.h>
+
 #include "gdmlanguages.h"
 
 typedef struct _Language Language;
@@ -153,7 +155,7 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Walloon"), "wa_BE", "Walon", 0 },
 	/* This is the POSIX/C locale for english, should really be in Other */
-	{ N_("Other|POSIX/C English"), "C", NULL, 0 },
+	{ N_("Other|POSIX/C English"), "C", "POSIX/C English", 0 },
 	{ NULL, NULL }
 };
 
@@ -400,6 +402,8 @@ gdm_lang_read_locale_file (const char *locale_file)
 	while (fgets (curline, sizeof (curline), langlist)) {
 		char *name;
 		char *lang;
+		char **lang_list;
+		int i;
 
 		if (curline[0] <= ' ' ||
 		    curline[0] == '#')
@@ -413,7 +417,20 @@ gdm_lang_read_locale_file (const char *locale_file)
 		if (lang == NULL)
 			continue;
 
-		if (g_hash_table_lookup (dupcheck, lang) != NULL) {
+		lang_list = g_strsplit (lang, ",", -1);
+		if (lang_list == NULL)
+			continue;
+
+		lang = NULL;
+		for (i = 0; lang_list[i] != NULL; i++) {
+			if (ve_locale_exists (lang_list[i])) {
+				lang = lang_list[i];
+				break;
+			}
+		}
+		if (lang == NULL ||
+		    g_hash_table_lookup (dupcheck, lang) != NULL) {
+			g_strfreev (lang_list);
 			continue;
 		}
 		language = find_lang (lang, &clean);
@@ -436,8 +453,11 @@ gdm_lang_read_locale_file (const char *locale_file)
 				     GINT_TO_POINTER (1));
 
 		/* if we have an english locale */
-		if (strncmp (lang, "en_", 3) == 0)
+		if (strncmp (lang, "en_", 3) == 0 ||
+		    strcmp (lang, "C") == 0)
 			got_english = TRUE;
+
+		g_strfreev (lang_list);
 	}
 
 	g_hash_table_foreach (dupcheck, (GHFunc) g_free, NULL);
