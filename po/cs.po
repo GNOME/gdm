@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
-"POT-Creation-Date: 2003-05-20 12:23+0200\n"
-"PO-Revision-Date: 2003-05-20 15:00+0200\n"
+"POT-Creation-Date: 2003-05-29 12:13+0200\n"
+"PO-Revision-Date: 2003-05-29 14:35+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1249,6 +1249,7 @@ msgstr "Zadejte své uživatelské jméno"
 #: gui/gdmlogin.c:3296 gui/greeter/greeter_parser.c:961
 #: gui/greeter/themes/circles/circles.xml.in.h:5
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:5
 msgid "Username:"
 msgstr "Uživatel:"
 
@@ -2388,6 +2389,7 @@ msgstr "Předchozí"
 #: gui/gdmlogin.c:218 gui/greeter/greeter_parser.c:948
 #: gui/greeter/themes/circles/circles.xml.in.h:4
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:4
 #, no-c-format
 msgid "User %s will login in %d seconds"
 msgstr "Uživatel %s bude přihlášen za %d vteřin"
@@ -2629,6 +2631,7 @@ msgstr "GDM Přihlášení"
 #: gui/greeter/greeter_parser.c:923
 #: gui/greeter/themes/circles/circles.xml.in.h:11
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:11
 msgid "_Session"
 msgstr "_Sezení"
 
@@ -2636,6 +2639,7 @@ msgstr "_Sezení"
 #: gui/greeter/greeter_parser.c:918
 #: gui/greeter/themes/circles/circles.xml.in.h:9
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:9
 msgid "_Language"
 msgstr "_Jazyk"
 
@@ -2678,6 +2682,7 @@ msgstr "Uspat váš počítač"
 #: gui/greeter/greeter_parser.c:928
 #: gui/greeter/themes/circles/circles.xml.in.h:2
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:2
 msgid "S_ystem"
 msgstr "S_ystém"
 
@@ -2685,6 +2690,7 @@ msgstr "S_ystém"
 #: gui/greeter/greeter_parser.c:938
 #: gui/greeter/themes/circles/circles.xml.in.h:10
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:10
 msgid "_Quit"
 msgstr "_Konec"
 
@@ -2692,6 +2698,7 @@ msgstr "_Konec"
 #: gui/greeter/greeter_parser.c:933
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:1
 msgid "D_isconnect"
 msgstr "Odpoj_it se"
 
@@ -3239,12 +3246,14 @@ msgstr "Vyberte si jazyk pro své sezení:"
 #: gui/greeter/greeter_parser.c:943
 #: gui/greeter/themes/circles/circles.xml.in.h:8
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:8
 msgid "You've got capslock on!"
 msgstr "Máte zapnut Caps Lock!"
 
 #: gui/greeter/greeter_parser.c:955
 #: gui/greeter/themes/circles/circles.xml.in.h:7
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
+#: gui/greeter/themes/happygnome-list/happygnome.xml.in.h:7
 #, no-c-format
 msgid "Welcome to %h"
 msgstr "Vítejte na %h"
@@ -3265,6 +3274,23 @@ msgstr "Restartovat váš počítač"
 msgid "Configure the login manager"
 msgstr "Nastavit správce přihlášení"
 
+#: gui/greeter/greeter_item_ulist.c:259
+#, c-format
+msgid "Can't open DefaultImage: %s!"
+msgstr "Nemohu otevřít DefaultImage: %s!"
+
+#: gui/greeter/greeter_item_ulist.c:334
+msgid "Press <enter> to login"
+msgstr "Pro přihlášení stisněte <enter>"
+
+#: gui/greeter/greeter_item_ulist.c:377
+msgid "Icon"
+msgstr "Ikona"
+
+#: gui/greeter/greeter_item_ulist.c:384
+msgid "Username"
+msgstr "Jméno uživatele"
+
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
 msgstr "(c) 2002 Bond, James Bond"
@@ -3282,6 +3308,7 @@ msgid "Theme with blue circles"
 msgstr "Téma s modrými kruhy"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
 msgstr "(c) 2002 GNOME"
 
@@ -3290,12 +3317,21 @@ msgid "GNOME Art variation of Circles"
 msgstr "Variace kruhů s obrázky z GNOME"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:3
 msgid "GNOME Artists"
 msgstr "Umělci GNOME"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:4
 msgid "Happy GNOME"
 msgstr "Šťastný GNOME"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:2
+msgid "GNOME Art variation of Circles with a Face Browser"
+msgstr "Variace kruhů s obrázky z GNOME a prohlížečem tváří"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:4
+msgid "Happy GNOME with Browser"
+msgstr "Šťastný GNOME s prohlížečem"
 
 #: gui/modules/dwellmouselistener.c:573 gui/modules/keymouselistener.c:626
 #, c-format
