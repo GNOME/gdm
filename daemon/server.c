@@ -362,6 +362,38 @@ display_vt (GdmDisplay *disp)
 	return -1;
 }
 
+static void
+check_child_status (void)
+{
+	int status;
+	pid_t pid;
+
+	while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
+		gdm_debug ("check_child_status: %d died", pid);
+
+		if (WIFEXITED (status))
+			gdm_debug ("check_child_status: %d returned %d",
+				   (int)pid, (int)WEXITSTATUS (status));
+		if (WIFSIGNALED (status))
+			gdm_debug ("check_child_status: %d died of %d",
+				   (int)pid, (int)WTERMSIG (status));
+
+		if (pid == d->servpid) {
+			gdm_debug ("check_child_status: Got SIGCHLD from server, "
+				   "server abort");
+
+			d->servstat = SERVER_ABORT;	/* Server died unexpectedly */
+			d->servpid = 0;
+
+			server_signal_notified = TRUE;
+		} else if (pid == extra_process) {
+			/* an extra process died, yay! */
+			extra_process = 0;
+			extra_status = status;
+		}
+	}
+}
+
 /**
  * gdm_server_start:
  * @disp: Pointer to a GdmDisplay structure
@@ -504,6 +536,8 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		     * fortunately there is no such case yet and probably
 		     * never will, but just for code anality's sake */
 		    sleep (5);
+		    /* In case we got a SIGCHLD */
+		    check_child_status ();
 	    } else if (d->server_uid != 0) {
 		    int i;
 
@@ -512,6 +546,9 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		    /* if we're running the server as a non-root, we can't
 		     * use USR1 of course, so try openning the display 
 		     * as a test, but the */
+
+		    /* In case we got a SIGCHLD */
+		    check_child_status ();
 
 		    gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
 		    for (i = 0;
@@ -524,6 +561,9 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 				    sleep (1);
 			    else
 				    d->servstat = SERVER_RUNNING;
+
+			    /* In case we got a SIGCHLD */
+			    check_child_status ();
 		    }
 		    gnome_unsetenv ("XAUTHORITY");
 		    if (d->dsp == NULL &&
@@ -541,11 +581,16 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
 		    do {
 			    select (server_signal_pipe[0]+1, &rfds, NULL, NULL, NULL);
+			    /* In case we got a SIGCHLD */
+			    check_child_status ();
 		    } while ( ! server_signal_notified);
 
 		    gdm_debug ("gdm_server_start: After mainloop waiting for server");
 	    }
     }
+
+    /* In case we got a SIGCHLD */
+    check_child_status ();
 
     /* Unset alarm */
     if (d->server_uid == 0) {
@@ -617,6 +662,9 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     gdm_server_wipe_cookies (disp);
 
     sigprocmask (SIG_SETMASK, &oldmask, NULL);
+
+    /* In case we got a SIGCHLD */
+    check_child_status ();
 
     /* restore default handlers */
     sigaction (SIGUSR1, &old_usr1, NULL);
@@ -1086,39 +1134,12 @@ gdm_server_alarm_handler (gint signal)
 static void 
 gdm_server_child_handler (int signal)
 {
-	int status;
-	pid_t pid;
-
 	gdm_in_signal++;
 
 	gdm_debug ("gdm_server_child_handler: Got SIGCHLD");
 
-	while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
-		gdm_debug ("gdm_server_child_handler: %d died", pid);
-
-		if (WIFEXITED (status))
-			gdm_debug ("gdm_server_child_handler: %d returned %d",
-				   (int)pid, (int)WEXITSTATUS (status));
-		if (WIFSIGNALED (status))
-			gdm_debug ("gdm_server_child_handler: %d died of %d",
-				   (int)pid, (int)WTERMSIG (status));
-
-		if (pid == d->servpid) {
-			gdm_debug ("gdm_server_child_handler: Got SIGCHLD from server, "
-				   "server abort");
-
-			d->servstat = SERVER_ABORT;	/* Server died unexpectedly */
-			d->servpid = 0;
-
-			server_signal_notified = TRUE;
-			/* this will quit the select */
-			write (server_signal_pipe[1], "Yay!", 4);
-		} else if (pid == extra_process) {
-			/* an extra process died, yay! */
-			extra_process = 0;
-			extra_status = status;
-		}
-	}
+	/* this will quit the select */
+	write (server_signal_pipe[1], "Yay!", 4);
 
 	gdm_in_signal--;
 }
