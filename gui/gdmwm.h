@@ -36,6 +36,14 @@ void	gdm_wm_focus_new_windows	(gboolean focus);
 
 void	gdm_wm_focus_window		(Window window);
 
+/* movement for the impatient */
+void	gdm_wm_move_window_now		(Window window,
+					 int x,
+					 int y);
+void	gdm_wm_get_window_pos		(Window window,
+					 int *xp,
+					 int *yp);
+
 /* refuse to focus the login window, poor mans modal dialogs */
 void	gdm_wm_no_login_focus_push	(void);
 void	gdm_wm_no_login_focus_pop	(void);

@@ -817,4 +817,61 @@ gdm_wm_no_login_focus_pop (void)
 	no_focus_login --;
 }
 
+void
+gdm_wm_get_window_pos (Window window, int *xp, int *yp)
+{
+	int x, y;
+	Window root;
+	unsigned int width, height, border, depth;
+	GdmWindow *gw;
+
+	trap_push ();
+
+	gw = find_window (window, TRUE);
+
+	if (gw == NULL) {
+		XGetGeometry (wm_disp, window,
+			      &root, &x, &y, &width, &height, &border, &depth);
+
+		*xp = x;
+		*yp = y;
+
+		trap_pop ();
+
+		return;
+	}
+
+	XGetGeometry (wm_disp, gw->deco,
+		      &root, &x, &y, &width, &height, &border, &depth);
+
+	*xp = x + 1;
+	*yp = y + 1;
+
+	trap_pop ();
+}
+
+void
+gdm_wm_move_window_now (Window window, int x, int y)
+{
+	GdmWindow *gw;
+
+	trap_push ();
+
+	gw = find_window (window, TRUE);
+
+	if (gw == NULL) {
+		XMoveWindow (wm_disp, window, x, y);
+
+		XSync (wm_disp, False);
+		trap_pop ();
+	}
+
+	XMoveWindow (wm_disp, gw->deco, x - 1, y - 1);
+	if (gw->shadow != None)
+		XMoveWindow (wm_disp, gw->deco, x + 4, y + 4);
+
+	XSync (wm_disp, False);
+	trap_pop ();
+}
+
 /* EOF */

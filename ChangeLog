@@ -1,3 +1,18 @@
+Thu May 24 15:32:54 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, gdm-restart.in, Makefile.am: a script to restart
+	  the gdm daemon, in sbin for root pleasure only
+
+	* gdm.spec.in: redo the file list to be hopefully sane
+
+	* daemon/gdm.c: actually read in GdmConfigurator
+
+	* gui/gdmconfig.c: show help fromt he help button
+
+	* gui/gdmlogin.c, gui/gdmwm.[ch]: add some short-circuit functions
+	  for window moving, bypassing the window management foo.  This makes
+	  quiver nice again.
+
 Thu May 24 13:22:49 2001  George Lebl <jirka@5z.com>
 
 	* configure.in: add ms (Bahasa Melayu), the official Microsoft

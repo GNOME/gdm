@@ -80,25 +80,34 @@ exit 0
 %doc AUTHORS COPYING ChangeLog NEWS README
 %{_bindir}/*
 %{_sbindir}/*
-%config %{sysconfdir}/pam.d/gdm
-%config %{sysconfdir}/pam.d/gdmconfig
-%config %{sysconfdir}/security/console.apps/gdmconfig
-%config %{sysconfdir}/X11/gdm/gnomerc
-%config %{sysconfdir}/X11/gdm/gdm.conf
-%config %{sysconfdir}/X11/gdm/locale.alias
-%config %{sysconfdir}/X11/gdm/Sessions/*
-%config %{sysconfdir}/X11/gdm/Init/*
-%config %{sysconfdir}/X11/gdm/PreSession/*
-%config %{sysconfdir}/X11/gdm/PostSession/*
-%{_datadir}/gdm/gdmconfig.glade
-%{_datadir}/gdm/gdmchooser.glade
-%{_datadir}/gnome/apps/System/gdmconfig.desktop
-%{_datadir}/locale/*/*/*
-%{_datadir}/pixmaps/*
+%config %{sysconfdir}/*
+%{_datadir}/*
+# %config %{sysconfdir}/pam.d/gdm
+# %config %{sysconfdir}/pam.d/gdmconfig
+# %config %{sysconfdir}/security/console.apps/gdmconfig
+# %config %{sysconfdir}/X11/gdm/gnomerc
+# %config %{sysconfdir}/X11/gdm/gdm.conf
+# %config %{sysconfdir}/X11/gdm/locale.alias
+# %config %{sysconfdir}/X11/gdm/Sessions/*
+# %config %{sysconfdir}/X11/gdm/Init/*
+# %config %{sysconfdir}/X11/gdm/PreSession/*
+# %config %{sysconfdir}/X11/gdm/PostSession/*
+# %{_datadir}/gdm/gdmconfig.glade
+# %{_datadir}/gdm/gdmchooser.glade
+# %{_datadir}/gnome/apps/System/gdmconfig.desktop
+# %{_datadir}/gnome/apps/Settings/gdmphotosetup.desktop
+# %{_datadir}/locale/*/*/*
+# %{_datadir}/pixmaps/*
+# %{_datadir}/gnome/help/gdm/*
+# %{_datadir}/gnome/help/gdmconfig/*
 %attr(750, gdm, gdm) %dir %{localstatedir}/gdm
 
 
 %changelog
+* Sun May 24 2001 George Lebl <jirka@5z.com>
+- Hmmm, simplified the file listing, dunno why normally people list
+  things file by file/dir by dir, but the old file list was out of date
+
 * Sun May 06 2001 George Lebl <jirka@5z.com>
 - Kill the Failsafe script. GDM will now do failsafe itself, in an actual
   failsafe way (meaning it will work with greater degree of hosage)

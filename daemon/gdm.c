@@ -163,6 +163,7 @@ gdm_config_parse (void)
     GdmFailsafeXServer = gnome_config_get_string (GDM_KEY_FAILSAFE_XSERVER);
     GdmXKeepsCrashing = gnome_config_get_string (GDM_KEY_XKEEPSCRASHING);
     GdmXKeepsCrashingConfigurators = gnome_config_get_string (GDM_KEY_XKEEPSCRASHING_CONFIGURATORS);
+    GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
     GdmBrowser = gnome_config_get_bool (GDM_KEY_BROWSER);

@@ -1356,8 +1356,22 @@ void
 open_help_page (GtkButton *button,
 		gpointer user_data)
 {
-	gnome_warning_dialog(_("Documentation is being written but is not yet finished.\nPlease be patient."));
-	/* FIXME: ! */
+	gchar *tmp;
+	tmp = gnome_help_file_find_file ("gdmconfig", "index.html");
+	if (tmp != NULL) {
+		/* If we are running under gdm, try the help browser */
+		if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
+			char *argv[] = {
+				"gnome-help-browser",
+				tmp,
+				NULL
+			};
+			gnome_execute_async (NULL, 2, argv);
+		} else {
+			gnome_help_goto (0, tmp);
+		}
+		g_free (tmp);
+	}
 }
 
 

@@ -1875,22 +1875,20 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
     case GDM_RESET:
 	if (GdmQuiver) {
-	    gdk_window_get_position (login->window, &x, &y);
-	    
-	    for (i=32 ; i > 0 ; i=i/4) {
-		gdk_window_move (login->window, i+x, y);
-		gdk_flush ();
-		usleep (200);
-		gdk_window_move (login->window, x, y);
-		gdk_flush ();
-		usleep (200);
-		gdk_window_move (login->window, -i+x, y);
-		gdk_flush ();
-		usleep (200);
-		gdk_window_move (login->window, x, y);
-		gdk_flush ();
-		usleep (200);
-	    }
+		Window lw = GDK_WINDOW_XWINDOW (login->window);
+
+		gdm_wm_get_window_pos (lw, &x, &y);
+
+		for (i = 32 ; i > 0 ; i = i/4) {
+			gdm_wm_move_window_now (lw, i+x, y);
+			usleep (200);
+			gdm_wm_move_window_now (lw, x, y);
+			usleep (200);
+			gdm_wm_move_window_now (lw, -i+x, y);
+			usleep (200);
+			gdm_wm_move_window_now (lw, x, y);
+			usleep (200);
+		}
 	}
 
     case GDM_RESETOK:
