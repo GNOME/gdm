@@ -2252,13 +2252,15 @@ gdm_get_last_info (const char *username)
 
 	if G_LIKELY (cmd != NULL) {
 		char *user_quoted = g_shell_quote (username);
-		char *cmd = g_strdup_printf ("%s %s", cmd, user_quoted);
+		char *newcmd;
 		FILE *fp;
 
-		VE_IGNORE_EINTR (fp = popen (cmd, "r"));
+		newcmd = g_strdup_printf ("%s %s", cmd, user_quoted);
+
+		VE_IGNORE_EINTR (fp = popen (newcmd, "r"));
 
 		g_free (user_quoted);
-		g_free (cmd);
+		g_free (newcmd);
 
 		if G_LIKELY (fp != NULL) {
 			char buf[256];
