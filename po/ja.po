@@ -4,13 +4,14 @@
 # ITANI Eiichiro <emu@ceres.dti.ne.jp>, 1999.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2000.
 # Yukihior Nakai <nakai@gnome.gr.jp>, 2000.
+# Taku YASUI <tach@debian.or.jp>, 2001.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0beta5\n"
-"POT-Creation-Date: 2001-02-02 23:19-0800\n"
-"PO-Revision-Date: 2000-10-10 15:00+09:00\n"
-"Last-Translator: Yukihiro Nakai <nakai@gnome.gr.jp>\n"
+"POT-Creation-Date: 2001-02-19 18:21+0900\n"
+"PO-Revision-Date: 2001-02-19 16:23+09:00\n"
+"Last-Translator: Taku YASUI <tach@debian.or.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-jp\n"
@@ -99,53 +100,52 @@ msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid()に失敗しました: %s!"
 
 #. Bury this display for good
-#: daemon/gdm.c:375
+#: daemon/gdm.c:397
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action: ディスプレイ %s を中止してます"
 
 #. Reboot machine
-#: daemon/gdm.c:381
+#: daemon/gdm.c:403
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action: マスターリブート中..."
 
-#: daemon/gdm.c:390
+#: daemon/gdm.c:410
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action: リブートに失敗しました: %s"
 
 #. Halt machine
-#: daemon/gdm.c:394
+#: daemon/gdm.c:414
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action: マスター停止中..."
 
-#: daemon/gdm.c:403
+#: daemon/gdm.c:421
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: 停止は失敗しました: %s"
 
-#: daemon/gdm.c:511
+#: daemon/gdm.c:520
 msgid "Only root wants to run gdm\n"
 msgstr "rootだけがgdmを起動できます\n"
 
-#: daemon/gdm.c:534
+#: daemon/gdm.c:543
 msgid "gdm already running. Aborting!"
 msgstr "gdmはすでに実行中です。中止します!"
 
-#: daemon/gdm.c:560
+#: daemon/gdm.c:569
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr "gdm_main: TERMシグナルハンドラを設定できません"
 
-#: daemon/gdm.c:563
+#: daemon/gdm.c:572
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr "gdm_main: INTシグナルハンドラを設定できません"
 
-#: daemon/gdm.c:566
-#, fuzzy
+#: daemon/gdm.c:575
 msgid "gdm_main: Error setting up HUP signal handler"
-msgstr "main: HUPシグナルハンドラを設定できません"
+msgstr "gdm_main: HUPシグナルハンドラを設定できません"
 
-#: daemon/gdm.c:574
+#: daemon/gdm.c:583
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr "gdm_main: CHLDシグナルハンドラを設定できません"
 
@@ -171,6 +171,8 @@ msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr ""
+"短期間に数回の X サーバの起動を試みましたが失敗しました．\n"
+"DISPLAY %s は無効です"
 
 #: daemon/display.c:184
 #, c-format
@@ -239,14 +241,12 @@ msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: USR1 を SIG_IGN に設定できません"
 
 #: daemon/server.c:325
-#, fuzzy
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
-msgstr "gdm_server_spawn: USR1 を SIG_IGN に設定できません"
+msgstr "gdm_server_spawn: HUP を SIG_DFL に設定できません"
 
 #: daemon/server.c:329
-#, fuzzy
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
-msgstr "gdm_server_spawn: USR1 を SIG_IGN に設定できません"
+msgstr "gdm_server_spawn: TERM を SIG_DFL に設定できません"
 
 #: daemon/server.c:354
 #, c-format
@@ -325,19 +325,17 @@ msgstr "gdm_slave_session_start: %sになれませんでした。中止します。"
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: セッション「%s」が開始できませんでした"
 
-#: daemon/slave.c:757
-#, fuzzy, c-format
+#: daemon/slave.c:759
+#, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
-msgstr ""
-"gdm_slave_windows_kill_ioerror_handler: Xの致命的エラーです - "
-"%sを再起動します"
+msgstr "gdm_slave_xioerror_handler: X の致命的エラー - %sを再起動します"
 
-#: daemon/slave.c:854
+#: daemon/slave.c:858
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: 起動に失敗しました: %s"
 
-#: daemon/slave.c:858
+#: daemon/slave.c:862
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: スクリプトのプロセスをforkできません!"
 
@@ -378,7 +376,7 @@ msgstr "%sのセッションを開けませんでした"
 
 #: daemon/verify-pam.c:198
 msgid "Authentication failed"
-msgstr ""
+msgstr "認証失敗"
 
 #: daemon/verify-pam.c:322
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
@@ -386,14 +384,13 @@ msgstr "gdm_verify_check: gdm の PAM 設定ファイルが見つかりません"
 
 #. Request the user's password
 #: daemon/verify-crypt.c:64 daemon/verify-shadow.c:74
-#, fuzzy
 msgid "Password: "
 msgstr "パスワード:"
 
 #: daemon/verify-crypt.c:72 daemon/verify-crypt.c:87 daemon/verify-shadow.c:82
 #: daemon/verify-shadow.c:97
 msgid "Login incorrect"
-msgstr ""
+msgstr "ログインできません"
 
 #: daemon/verify-crypt.c:77 daemon/verify-shadow.c:87
 #, c-format
@@ -454,102 +451,101 @@ msgstr "gdm_xdmcp_handle_query: パケットから認証リストを展開できません"
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: チェックサムのエラー"
 
-#: daemon/xdmcp.c:437
+#: daemon/xdmcp.c:438
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr "gdm_xdmcp_handle_forward_query: ディスプレイのアドレスがわかりません"
 
-#: daemon/xdmcp.c:444
+#: daemon/xdmcp.c:446
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr "gdm_xdmcp_handle_forward_query: ディスプレイのポート番号がわかりません"
 
-#: daemon/xdmcp.c:452
+#: daemon/xdmcp.c:454
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr "gdm_xdmcp_handle_forward_query: パケットから認証リストが展開できません"
 
-#: daemon/xdmcp.c:467
+#: daemon/xdmcp.c:469
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: チェックサムのエラー"
 
-#: daemon/xdmcp.c:533
+#: daemon/xdmcp.c:535
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "ホスト %s の XDMCP 要求を拒否"
 
-#: daemon/xdmcp.c:535
+#: daemon/xdmcp.c:537
 msgid "Display not authorized to connect"
 msgstr "ディスプレイに接続許可がありません"
 
-#: daemon/xdmcp.c:568
+#: daemon/xdmcp.c:570
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: 禁止されたホスト %s より REQUEST を受信"
 
-#: daemon/xdmcp.c:575
+#: daemon/xdmcp.c:577
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: ディスプレイ番号がわかりません"
 
-#: daemon/xdmcp.c:581
+#: daemon/xdmcp.c:583
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: 接続方式がわかりません"
 
-#: daemon/xdmcp.c:587
+#: daemon/xdmcp.c:589
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr "gdm_xdmcp_handle_request: クライアントのアドレスがわかりません"
 
-#: daemon/xdmcp.c:593
+#: daemon/xdmcp.c:595
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr "gdm_xdmcp_handle_request: 認証名がわかりません"
 
-#: daemon/xdmcp.c:599
+#: daemon/xdmcp.c:601
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr "gdm_xdmcp_handle_request: 認証データがわかりません"
 
-#: daemon/xdmcp.c:605
+#: daemon/xdmcp.c:607
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr "gdm_xdmcp_handle_request: 認証リストがわかりません"
 
-#: daemon/xdmcp.c:616
+#: daemon/xdmcp.c:618
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr "gdm_xdmcp_handle_request: 製造者IDがわかりません"
 
-#: daemon/xdmcp.c:634
+#: daemon/xdmcp.c:636
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: %s からのチェックサムに間違い"
 
-#: daemon/xdmcp.c:754
+#: daemon/xdmcp.c:756
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr "gdm_xdmcp_handle_manage: 禁止されたホスト %s から Manage を受信"
 
-#: daemon/xdmcp.c:761
+#: daemon/xdmcp.c:763
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage: セッションIDがわかりません"
 
-#: daemon/xdmcp.c:767
+#: daemon/xdmcp.c:769
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: ディスプレイ番号がわかりません"
 
-#: daemon/xdmcp.c:776
-#, fuzzy
+#: daemon/xdmcp.c:779
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
-msgstr "gdm_xdmcp_manage: ディスプレイクラスがわかりません"
+msgstr "gdm_xdmcp_handle_manage: ディスプレイクラスがわかりません"
 
-#: daemon/xdmcp.c:798
+#: daemon/xdmcp.c:801
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr "gdm_xdmcp_handle_manage: ディスプレイ%s用のログファイルを開けません!"
 
-#: daemon/xdmcp.c:872
+#: daemon/xdmcp.c:876
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr "gdm_xdmcp_handle_keepalive: 禁止されたホスト %s より KEEPALIVE を受信"
 
-#: daemon/xdmcp.c:879
+#: daemon/xdmcp.c:883
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_keepalive: ディスプレイ番号がわかりません"
 
-#: daemon/xdmcp.c:885
+#: daemon/xdmcp.c:889
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: セッションIDがわかりません"
 
@@ -589,7 +585,7 @@ msgstr "gdm_signals_init: INTシグナルハンドラを設定できません"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: TERMシグナルハンドラを設定できません"
 
-#: gui/gdmchooser.c:594 gui/gdmlogin.c:2090
+#: gui/gdmchooser.c:594 gui/gdmlogin.c:2084
 msgid "Could not set signal mask!"
 msgstr "シグナルマスクを設定できません!"
 
@@ -675,7 +671,7 @@ msgstr "その他"
 
 #: gui/gdmlogin.c:1449
 msgid "GNOME Desktop Manager"
-msgstr ""
+msgstr "GNOME デスクトップマネージャ"
 
 #: gui/gdmlogin.c:1461
 #, c-format
@@ -698,7 +694,7 @@ msgstr "再起動..."
 msgid "Halt..."
 msgstr "停止..."
 
-#: gui/gdmlogin.c:1595
+#: gui/gdmconfig.c:40 gui/gdmlogin.c:1595
 msgid "System"
 msgstr "システム"
 
@@ -711,68 +707,153 @@ msgstr "あなたのIDを入力して下さい"
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "デフォルト画像を開けません: %s フェイスブラウザは見合わせます!"
 
-#: gui/gdmlogin.c:2067
+#: gui/gdmlogin.c:2061
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: HUPシグナルハンドラを設定できません"
 
-#: gui/gdmlogin.c:2070
+#: gui/gdmlogin.c:2064
 msgid "main: Error setting up INT signal handler"
 msgstr "main: INTシグナルハンドラを設定できません"
 
-#: gui/gdmlogin.c:2073
+#: gui/gdmlogin.c:2067
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: TERMシグナルハンドラを設定できません"
 
-#: gui/gdmlogin.c:2081
-#, fuzzy
+#: gui/gdmlogin.c:2075
 msgid "main: Error setting up CHLD signal handler"
-msgstr "gdm_main: CHLDシグナルハンドラを設定できません"
+msgstr "main: CHLD シグナルハンドラを設定できません"
 
-#: gui/gdmconfig.c:51
-msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr ""
+#. 3 user levels are present in the CList
+#: gui/gdmconfig.c:38
+msgid "Basic"
+msgstr "基本"
 
-#: gui/gdmconfig.c:84
-msgid "GNOME Display Manager Configurator"
-msgstr ""
+#: gui/gdmconfig.c:39
+msgid "Expert"
+msgstr "高度"
 
-#: gui/gdmconfig.c:103
-msgid "The configuration file: "
-msgstr ""
-
-#: gui/gdmconfig.c:212
-#, fuzzy
-msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr "gdm_config_parse: 設定ファイルに正しくない server 行があります。無視!"
-
-#: gui/gdmconfig.c:279
+#: gui/gdmconfig.c:42
 msgid ""
-"The settings cannot take effect until gdm\n"
+"This panel displays the basic options for configuring GDM.\n"
+"\n"
+"If you need finer detail, select 'expert' or 'system setup' from the list "
+"above.\n"
+"\n"
+"This will display some of the more complex options of GDM that rarely need "
+"to be changed."
+msgstr ""
+"このパネルは GDM の設定の基本オプションを表示しています．\n"
+"\n"
+"さらに細かい設定が必要な場合は，上のリストから「高度」か「システム設定」を\n"
+"選択してください．\n"
+"\n"
+"そうすると，ほとんど変える必要のないいくつかの複雑な GDM の設定を表示します．"
+
+#: gui/gdmconfig.c:47
+msgid ""
+"This panel displays the more advanced options of GDM.\n"
+"\n"
+"Be sure to take care when manipulating the security options, or you could be "
+"vulnerable to attackers.\n"
+"\n"
+"Choose \"System setup\" to change fundamental options in GDM."
+msgstr ""
+"このパネルは，GDM の高度なオプションを表示します．\n"
+"\n"
+"セキュリティに関するオプションを扱う場合はとくに気をつけてください．クラッカーに弱点をさらすことになります．\n"
+"\n"
+"GDM の基本的なオプションを変更するには「システム設定」を選択します．"
+
+#: gui/gdmconfig.c:53
+msgid ""
+"This panel displays GDM's fundamental system settings.\n"
+"\n"
+"You should only change these paths if you really know what you are doing, as "
+"an incorrect setup could stop your machine from booting properly.\n"
+"\n"
+"Choose \"Basic\" if you just want to change your machine's login appearance."
+msgstr ""
+"このパネルは GDM の基本的なシステム設定を表示します．\n"
+"\n"
+"設定の変更により，何が起こるか本当に理解している場合以外はさわらないでくださ"
+"い．間違った設定をすると，起動時にシステムが止まってしまう場合があります｡磁\n"
+"\n"
+"ログインの外観を変更したいだけなら，「基本」を選択してください．"
+
+#: gui/gdmconfig.c:105
+msgid "You must be the superuser (root) to configure GDM.\n"
+msgstr "GDM の設定をするには，スーパユーザ (root) になる必要があります．\n"
+
+#: gui/gdmconfig.c:178
+msgid "GNOME Display Manager Configurator"
+msgstr "GNOME ディスプレイマネージャ 設定"
+
+#: gui/gdmconfig.c:232
+msgid "The configuration file: "
+msgstr "設定ファイル: "
+
+#: gui/gdmconfig.c:232
+msgid ""
+"\n"
+"does not exist! Using default values."
+msgstr ""
+"\n"
+"存在しません! デフォルト値を使います．"
+
+#: gui/gdmconfig.c:341
+msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
+msgstr ""
+"gdm_config_parse_most: 設定ファイルに間違った server 行があります．無視!"
+
+#: gui/gdmconfig.c:408
+msgid ""
+"The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
 "Do you wish to restart GDM now?\n"
 "This will kill all your current sessions\n"
 "and you will lose any unsaved data!"
 msgstr ""
+"適用された設定は，GDM が再起動されるか，コンピュータが\n"
+"再起動されたときに有効になります．\n"
+"GDM を再起動しますか?\n"
+"今再起動すると，現在のセッションが終了し，\n"
+"保存していないデータが失われます!"
 
-#: gui/gdmconfig.c:284
+#: gui/gdmconfig.c:413
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
 msgstr ""
+"本当に GDM を再起動して，保存していない\n"
+"データを破棄してもいいですか?"
 
-#: gui/gdmconfig.c:291
+#: gui/gdmconfig.c:420
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
 "take effect until gdm is restarted or the computer is\n"
 "rebooted"
 msgstr ""
+"greeter の設定は，次に表示したときに有効になります．\n"
+"残りの設定は，GDM が再起動されるか，コンピュータが\n"
+"再起動されるまで，有効になりません．"
 
-#: gui/gdmconfig.c:518
+#: gui/gdmconfig.c:547
+msgid ""
+"This will destroy any changes made in this session.\n"
+"Are you sure you want to do this?"
+msgstr ""
+"このセッションで行った変更を破棄します．\n"
+"本当に行ってもいいですか?"
+
+#. Request the command line for this new server
+#: gui/gdmconfig.c:641 gui/gdmconfig.c:660
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
 msgstr ""
+"X サーバのパスと，渡すパラメータを\n"
+"入力してください．"
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -780,402 +861,444 @@ msgstr ""
 #. * DO NOT compile it as part of your application.
 #.
 #: gui/gdmconfig-strings.c:7
-msgid "Executables"
-msgstr ""
+msgid "GDM"
+msgstr "GDM"
 
-#: gui/gdmconfig-strings.c:8
-msgid "Chooser binary: "
-msgstr ""
+#: gui/gdmconfig-strings.c:8 gui/gdmconfig-strings.c:74
+msgid "Security"
+msgstr "セキュリティ"
 
-#: gui/gdmconfig-strings.c:9
-msgid "Greeter binary: "
-msgstr ""
+#: gui/gdmconfig-strings.c:9 gui/gdmconfig-strings.c:84
+msgid "XDMCP"
+msgstr "XDMCP"
 
 #: gui/gdmconfig-strings.c:10
-msgid "Halt command: "
-msgstr ""
+msgid "User Interface"
+msgstr "ユーザインターフェース"
 
 #: gui/gdmconfig-strings.c:11
-msgid "Reboot command: "
-msgstr ""
+msgid "Greeter"
+msgstr "Greeter"
 
-#: gui/gdmconfig-strings.c:12
-msgid "Directories"
-msgstr ""
+#: gui/gdmconfig-strings.c:12 gui/gdmconfig-strings.c:122
+msgid "Chooser"
+msgstr "Chooser"
 
 #: gui/gdmconfig-strings.c:13
-msgid "Session directory: "
-msgstr ""
+msgid "Servers"
+msgstr "サーバ"
 
 #: gui/gdmconfig-strings.c:14
-#, fuzzy
-msgid "PRE session scripts directory: "
-msgstr "セッションスクリプトが見つかりません。中止します。"
+msgid "GDM Configuration Utility"
+msgstr "GDM 設定ユーティリティ"
 
 #: gui/gdmconfig-strings.c:15
-msgid "POST session scripts directory: "
-msgstr ""
+msgid "_Configuration"
+msgstr "設定(_C)"
 
 #: gui/gdmconfig-strings.c:16
-msgid "Logging directory: "
-msgstr ""
+msgid "Revert settings"
+msgstr "設定を元に戻す"
 
 #: gui/gdmconfig-strings.c:17
-msgid "Display initialization directory: "
-msgstr ""
+msgid "Apply"
+msgstr "適用"
 
-#: gui/gdmconfig-strings.c:18
-msgid "Miscelleaneous"
-msgstr ""
+#: gui/gdmconfig-strings.c:18 gui/gdmconfig-strings.c:60
+msgid "Options"
+msgstr "オプション"
 
 #: gui/gdmconfig-strings.c:19
-msgid "PID file: "
-msgstr ""
+msgid " "
+msgstr " "
 
 #: gui/gdmconfig-strings.c:20
-msgid "Default $PATH: "
-msgstr ""
+msgid "basic_settings"
+msgstr "基本設定(_S)"
 
 #: gui/gdmconfig-strings.c:21
-msgid "Root $PATH: "
-msgstr ""
+msgid "General Appearance"
+msgstr "一般的な外観"
 
 #: gui/gdmconfig-strings.c:22
-msgid "Automatic Login: "
-msgstr ""
+msgid "Logo: "
+msgstr "ロゴ: "
 
 #: gui/gdmconfig-strings.c:23
-msgid "GDM"
-msgstr ""
+msgid "Select a log to be displayed during login"
+msgstr "ログイン時に表示するログの選択"
 
 #: gui/gdmconfig-strings.c:24
-msgid "Options"
-msgstr ""
+msgid "Minimised Icon: "
+msgstr "最小化時のアイコン: "
 
 #: gui/gdmconfig-strings.c:25
-msgid "Allow root to login with GDM"
-msgstr ""
+msgid "Select a GTK+ theme file (gtkrc)"
+msgstr "Gtk+ テーマファイルの選択 (gtkrc)"
 
 #: gui/gdmconfig-strings.c:26
-msgid "Kill 'init' clients"
-msgstr ""
+msgid "Gtk+ RC file: "
+msgstr "Gtk+ の RC ファイル: "
 
 #: gui/gdmconfig-strings.c:27
-msgid "Relax permissions"
-msgstr ""
+msgid "Login appearance"
+msgstr "ログインの外観"
 
 #: gui/gdmconfig-strings.c:28
-msgid "Authentication errors should be verbose"
-msgstr ""
+msgid "Greeter Look and Feel"
+msgstr "Greeter の外観"
 
 #: gui/gdmconfig-strings.c:29
-msgid "Authorization Details"
-msgstr ""
+msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
+msgstr "「システム」メニューを表示 (再起動・シャットダウンなど)"
 
 #: gui/gdmconfig-strings.c:30
-msgid "GDM runs as this user: "
-msgstr ""
+msgid "Quiver on failure"
+msgstr "失敗におののく"
 
 #: gui/gdmconfig-strings.c:31
-msgid "User 'auth' directory: "
-msgstr ""
+#, c-format
+msgid "Welcome to %n"
+msgstr "%n へようこそ"
 
 #: gui/gdmconfig-strings.c:32
-msgid "User 'auth' FB directory: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:33
-msgid "User 'auth' file: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:34
-msgid "GDM runs as this group: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:35
-msgid "Limits"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:36
-msgid "Retry delay: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:37
-msgid "Maximum user file length: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:38
-msgid "Security"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:39
-msgid "Enable XDMCP"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:40
-msgid "Connection Settings"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:41
-msgid "Honour indirect requests"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:42
-msgid "Maximum indirect wait time: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:43
-msgid "Maximum wait time: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:44
-msgid "Maximum remote sessions: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:45
-msgid "Max pending indirect requests: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:46
-msgid "Maximum pending requests: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:47
-msgid "Listen on UDP port: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:48
-msgid "XDMCP"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:49
-msgid "General Appearance"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:50
-msgid "Gtk+ RC file: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:51
-#, fuzzy
-msgid "Logo: "
-msgstr "ログイン:"
-
-#: gui/gdmconfig-strings.c:52
-msgid "Select a GTK+ theme file (gtkrc)"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:53
-msgid "Minimised Icon: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:54
-msgid "Select a log to be displayed during login"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:55
-msgid "Greeter Look and Feel"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:56
-msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:57
-msgid "Quiver on failure"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:58
-#, fuzzy, c-format
-msgid "Welcome to %n"
-msgstr "%s へようこそ"
-
-#: gui/gdmconfig-strings.c:59
 #, c-format
 msgid "%n"
-msgstr ""
+msgstr "%n"
 
-#: gui/gdmconfig-strings.c:60 gui/gdmconfig-strings.c:61
+#: gui/gdmconfig-strings.c:33 gui/gdmconfig-strings.c:34
 #, c-format
 msgid "This is %n"
-msgstr ""
+msgstr "これは %n です"
+
+#: gui/gdmconfig-strings.c:35
+msgid "Default font: "
+msgstr "デフォルトフォント: "
+
+#: gui/gdmconfig-strings.c:36
+msgid "Exclude these users: "
+msgstr "これらのユーザを除外: "
+
+#: gui/gdmconfig-strings.c:37
+msgid "Welcome message: "
+msgstr "ウエルカムメッセージ: "
+
+#: gui/gdmconfig-strings.c:38
+msgid "Pick a Font"
+msgstr "フォントを選択"
+
+#: gui/gdmconfig-strings.c:39
+msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+msgstr "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+
+#: gui/gdmconfig-strings.c:40
+msgid "Background Program: "
+msgstr "バックグラウンドプログラム: "
+
+#: gui/gdmconfig-strings.c:41 gui/gdmconfig-strings.c:114
+msgid "Select a file containing Locale information"
+msgstr "ロカール情報の入ったファイルの選択"
+
+#: gui/gdmconfig-strings.c:42
+msgid "Default locale: "
+msgstr "デフォルトロカール: "
+
+#: gui/gdmconfig-strings.c:43
+msgid "Position"
+msgstr "位置"
+
+#: gui/gdmconfig-strings.c:44
+msgid "Manually set position"
+msgstr "手動で位置を設定"
+
+#: gui/gdmconfig-strings.c:45
+msgid "Lock position"
+msgstr "位置を固定"
+
+#: gui/gdmconfig-strings.c:46
+msgid "X position: "
+msgstr "X 位置: "
+
+#: gui/gdmconfig-strings.c:47
+msgid "Y position: "
+msgstr "Y 位置: "
+
+#: gui/gdmconfig-strings.c:48
+msgid "Xinerama screen: "
+msgstr "Xinerama スクリーン: "
+
+#: gui/gdmconfig-strings.c:49
+msgid "Login behaviour"
+msgstr "ログインのふるまい"
+
+#: gui/gdmconfig-strings.c:50 gui/gdmconfig-strings.c:58
+msgid "Face browser"
+msgstr "顔画像ブラウザ"
+
+#: gui/gdmconfig-strings.c:51
+msgid "Show choosable user images (enable face browser)"
+msgstr "選択可能なユーザ画像を表示 (顔画像ブラウザを有効にする)"
+
+#: gui/gdmconfig-strings.c:52
+msgid "Default face image: "
+msgstr "デフォルトの顔画像: "
+
+#: gui/gdmconfig-strings.c:53
+msgid "Global faces directory: "
+msgstr "全体の顔画像ディレクトリ: "
+
+#: gui/gdmconfig-strings.c:54
+msgid "Maximum face width: "
+msgstr "顔画像の幅の最大値: "
+
+#: gui/gdmconfig-strings.c:55
+msgid "Select an image for users with no 'face'"
+msgstr "顔画像のないユーザの画像の選択"
+
+#: gui/gdmconfig-strings.c:56
+msgid "Choose the directory to search for faces"
+msgstr "顔画像を探すディレクトリの選択"
+
+#: gui/gdmconfig-strings.c:57
+msgid "Maximum face height: "
+msgstr "顔画像の高さの最大値: "
+
+#: gui/gdmconfig-strings.c:59
+msgid "expert"
+msgstr "高度"
+
+#: gui/gdmconfig-strings.c:61
+msgid "Allow root to login with GDM"
+msgstr "GDM からの root ログインを許可"
 
 #: gui/gdmconfig-strings.c:62
-msgid "Default font: "
-msgstr ""
+msgid "Kill 'init' clients"
+msgstr "'init' クライアントを殺す"
 
 #: gui/gdmconfig-strings.c:63
-msgid "Exclude these users: "
-msgstr ""
+msgid "Relax permissions"
+msgstr "ゆるやかなパーミッション"
 
 #: gui/gdmconfig-strings.c:64
-#, fuzzy
-msgid "Welcome message: "
-msgstr "%s へようこそ"
+msgid "Authentication errors should be verbose"
+msgstr "認証エラーは冗長に"
 
 #: gui/gdmconfig-strings.c:65
-msgid "Pick a Font"
-msgstr ""
+msgid "Authorization Details"
+msgstr "認証の詳細"
 
 #: gui/gdmconfig-strings.c:66
-msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-msgstr ""
+msgid "GDM runs as this user: "
+msgstr "GDM はこのユーザで動作: "
 
 #: gui/gdmconfig-strings.c:67
-msgid "Background Program: "
-msgstr ""
+msgid "User 'auth' directory: "
+msgstr "ユーザ 'auth' ディレクトリ: "
 
-#: gui/gdmconfig-strings.c:68 gui/gdmconfig-strings.c:85
-msgid "Select a file containing Locale information"
-msgstr ""
+#: gui/gdmconfig-strings.c:68
+msgid "User 'auth' FB directory: "
+msgstr "ユーザ 'auth' FB ディレクトリ: "
 
 #: gui/gdmconfig-strings.c:69
-msgid "Position"
-msgstr ""
+msgid "User 'auth' file: "
+msgstr "ユーザ 'auth' ファイル: "
 
 #: gui/gdmconfig-strings.c:70
-msgid "Manually set position"
-msgstr ""
+msgid "GDM runs as this group: "
+msgstr "GDM はこのグループで動作: "
 
 #: gui/gdmconfig-strings.c:71
-msgid "Lock position"
-msgstr ""
+msgid "Limits"
+msgstr "制限"
 
 #: gui/gdmconfig-strings.c:72
-msgid "X position: "
-msgstr ""
+msgid "Retry delay: "
+msgstr "再試行の遅延: "
 
 #: gui/gdmconfig-strings.c:73
-msgid "Y position: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:74
-msgid "Xinerama screen: "
-msgstr ""
+msgid "Maximum user file length: "
+msgstr "ユーザファイルの長さの最大値: "
 
 #: gui/gdmconfig-strings.c:75
-msgid "User Interface"
-msgstr ""
+msgid "Enable XDMCP"
+msgstr "XDMCP を有効にする"
 
 #: gui/gdmconfig-strings.c:76
-msgid "Face browser"
-msgstr ""
+msgid "Connection Settings"
+msgstr "接続の設定"
 
 #: gui/gdmconfig-strings.c:77
-msgid "Show choosable user images (enable face browser)"
-msgstr ""
+msgid "Honour indirect requests"
+msgstr "名誉ある間接的な要求"
 
 #: gui/gdmconfig-strings.c:78
-msgid "Default face image to use: "
-msgstr ""
+msgid "Maximum indirect wait time: "
+msgstr "間接的な待ち時間の最大値: "
 
 #: gui/gdmconfig-strings.c:79
-msgid "Global faces directory: "
-msgstr ""
+msgid "Maximum wait time: "
+msgstr "待ち時間の最大値: "
 
 #: gui/gdmconfig-strings.c:80
-msgid "Maximum face width: "
-msgstr ""
+msgid "Maximum remote sessions: "
+msgstr "遠隔セッションの最大数: "
 
 #: gui/gdmconfig-strings.c:81
-msgid "Select an image for users with no 'face'"
-msgstr ""
+msgid "Max pending indirect requests: "
+msgstr "未解決の間接的要求の最大値: "
 
 #: gui/gdmconfig-strings.c:82
-msgid "Choose the directory to search for faces"
-msgstr ""
+msgid "Maximum pending requests: "
+msgstr "未解決の要求の最大値: "
 
 #: gui/gdmconfig-strings.c:83
-msgid "Maximum face height: "
-msgstr ""
+msgid "Listen on UDP port: "
+msgstr "監視する UDP ポート: "
 
-#: gui/gdmconfig-strings.c:84
-msgid "Localization"
-msgstr ""
+#: gui/gdmconfig-strings.c:85
+msgid "Server Definitions"
+msgstr "サーバの定義"
 
 #: gui/gdmconfig-strings.c:86
-msgid "Locale file: "
-msgstr ""
+msgid "No."
+msgstr "いいえ．"
 
 #: gui/gdmconfig-strings.c:87
-msgid "Default locale: "
-msgstr ""
+msgid "Path to X server"
+msgstr "X サーバの PATH"
 
 #: gui/gdmconfig-strings.c:88
-msgid "Greeter"
-msgstr ""
+msgid "Add Server"
+msgstr "サーバを追加"
 
 #: gui/gdmconfig-strings.c:89
-msgid "Appearance"
-msgstr ""
+msgid "Edit Server"
+msgstr "サーバを編集"
 
 #: gui/gdmconfig-strings.c:90
-msgid "Directory for host images: "
-msgstr ""
+msgid "Delete Server"
+msgstr "サーバを削除"
 
 #: gui/gdmconfig-strings.c:91
-msgid "Default host image:"
-msgstr ""
+msgid "Debugging"
+msgstr "デバッグ"
 
 #: gui/gdmconfig-strings.c:92
-msgid "Refresh"
-msgstr ""
+msgid "Enable debugging output"
+msgstr "デバッグ出力を有効にする"
 
 #: gui/gdmconfig-strings.c:93
-msgid "Scan every 'x' seconds: "
-msgstr ""
+msgid "X-server setup"
+msgstr "X サーバの設定"
 
 #: gui/gdmconfig-strings.c:94
-msgid "Chooser"
-msgstr ""
+msgid "system_setup"
+msgstr "システム設定(_S)"
 
 #: gui/gdmconfig-strings.c:95
-msgid "Server Definitions"
-msgstr ""
+msgid "Executables"
+msgstr "実行可能"
 
 #: gui/gdmconfig-strings.c:96
-msgid "No."
-msgstr ""
+msgid "Chooser command: "
+msgstr "Chooser コマンド: "
 
 #: gui/gdmconfig-strings.c:97
-msgid "Path to X server"
-msgstr ""
+msgid "Greeter command: "
+msgstr "Greeter コマンド: "
 
 #: gui/gdmconfig-strings.c:98
-msgid "Add Server"
-msgstr ""
+msgid "Halt command: "
+msgstr "停止コマンド: "
 
 #: gui/gdmconfig-strings.c:99
-msgid "Edit Server"
-msgstr ""
+msgid "Reboot command: "
+msgstr "再起動コマンド: "
 
 #: gui/gdmconfig-strings.c:100
-msgid "Delete Server"
-msgstr ""
+msgid "Directories"
+msgstr "ディレクトリ"
 
 #: gui/gdmconfig-strings.c:101
-msgid "Debugging"
-msgstr ""
+msgid "Session directory: "
+msgstr "セッションディレクトリ: "
 
 #: gui/gdmconfig-strings.c:102
-msgid "Enable debugging output"
-msgstr ""
+msgid "PRE session scripts directory: "
+msgstr "前置セッションスクリプトディレクトリ: "
 
 #: gui/gdmconfig-strings.c:103
-msgid "Servers"
-msgstr ""
+msgid "POST session scripts directory: "
+msgstr "後置セッションスクリプトディレクトリ: "
 
-#~ msgid "User unknown"
-#~ msgstr "不明なユーザ"
+#: gui/gdmconfig-strings.c:104
+msgid "Logging directory: "
+msgstr "ログディレクトリ: "
 
-#~ msgid "Incorrect password"
-#~ msgstr "パスワードが違います"
+#: gui/gdmconfig-strings.c:105
+msgid "Display initialization directory: "
+msgstr "ディスプレイ初期化ディレクトリ: "
 
-#~ msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
-#~ msgstr "gdm_slave_xsync_ping: ALARM シグナルハンドラを設定できません"
+#: gui/gdmconfig-strings.c:106 gui/gdmconfig-strings.c:109
+msgid "Miscelleaneous"
+msgstr "その他"
 
-#~ msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
-#~ msgstr "gdm_parase_enriched_string: 一時バッファをmallocできません!"
+#: gui/gdmconfig-strings.c:107
+msgid "PID file: "
+msgstr "PID ファイル: "
 
-#~ msgid "Iconify"
-#~ msgstr "アイコン化"
+#: gui/gdmconfig-strings.c:108
+msgid "Paths"
+msgstr "パス"
+
+#: gui/gdmconfig-strings.c:110
+msgid "Default $PATH: "
+msgstr "デフォルト $PATH: "
+
+#: gui/gdmconfig-strings.c:111
+msgid "Root $PATH: "
+msgstr "Root $PATH: "
+
+#: gui/gdmconfig-strings.c:112
+msgid "Automatic Login: "
+msgstr "自動 Login: "
+
+#: gui/gdmconfig-strings.c:113
+msgid "Localization"
+msgstr "言語設定"
+
+#: gui/gdmconfig-strings.c:115
+msgid "Locale file: "
+msgstr "ロカールファイル: "
+
+#: gui/gdmconfig-strings.c:116
+msgid "Environment"
+msgstr "環境"
+
+#: gui/gdmconfig-strings.c:117
+msgid "Appearance"
+msgstr "外観"
+
+#: gui/gdmconfig-strings.c:118
+msgid "Directory for host images: "
+msgstr "ホストイメージのディレクトリ: "
+
+#: gui/gdmconfig-strings.c:119
+msgid "Default host image:"
+msgstr "デフォルトのホストイメージ: "
+
+#: gui/gdmconfig-strings.c:120
+msgid "Refresh"
+msgstr "更新"
+
+#: gui/gdmconfig-strings.c:121
+msgid "Scan every 'x' seconds: "
+msgstr "x 秒ごとにスキャン: "
+
+#: gui/gdmconfig-strings.c:123
+msgid "(C) 2001 Lee Mallabone"
+msgstr "(C) 2001 Lee Mallabone"
+
+#: gui/gdmconfig-strings.c:124
+msgid "Configure the GNOME Display Manager"
+msgstr "GNOME ディスプレイマネージャ 設定"
