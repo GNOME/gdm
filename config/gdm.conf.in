@@ -37,9 +37,9 @@ Configurator=@EXPANDED_GDMCONFIGDIR@/gdmsetup --disable-sound --disable-crash-di
 # should leave this alone
 Chooser=@EXPANDED_BINDIR@/gdmchooser
 # Default path to set.  The profile scripts will likely override this
-DefaultPath=/bin:/usr/bin:/usr/bin/X11:@X_SERVER_PATH@:/usr/local/bin:@EXPANDED_BINDIR@
+DefaultPath=/bin:/usr/bin:@X_CONF_PATH@:@EXPANDED_BINDIR@
 # Default path for root.  The profile scripts will likely override this
-RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:@X_SERVER_PATH@:/usr/local/bin:@EXPANDED_BINDIR@
+RootPath=/sbin:/usr/sbin:/bin:/usr/bin:@X_CONF_PATH@:@EXPANDED_BINDIR@
 DisplayInitDir=@EXPANDED_SYSCONFDIR@/gdm/Init
 # Greeter for local (non-xdmcp) logins.  Change gdmlogin to gdmgreeter to
 # get the new graphical greeter.
