@@ -1,3 +1,9 @@
+Thu Jan 01 11:24:30 2004  Ray Strode <halfline@hawaii.rr.com>
+
+	* daemon/gdm.c (handle_user_message): Fix bug where
+	REBOOT would get written to the socket before the separator
+	when user queries available logout actions.
+
 Thu Jan 01 10:39:00 2004  Ray Strode <halfline@hawaii.rr.com>
 
 	* gui/gdmcomm.c (gdmcomm_get_display): Plug small leak.

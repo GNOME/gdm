@@ -3609,7 +3609,6 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		if (GdmSystemMenu &&
 		    disp->console &&
 		    ! ve_string_empty (GdmRebootReal)) {
-			gdm_connection_write (conn, GDM_SUP_LOGOUT_ACTION_REBOOT);
 			gdm_connection_printf (conn, "%s%s",
 					       sep,
 					       GDM_SUP_LOGOUT_ACTION_REBOOT);
