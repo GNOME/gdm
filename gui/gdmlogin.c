@@ -66,6 +66,8 @@ const char *session_titles[] = {
 #define LAST_LANGUAGE "Last"
 #define SESSION_NAME "SessionName"
 
+static gboolean GdmAllowRoot;
+static gboolean GdmAllowRemoteRoot;
 static gboolean GdmBrowser;
 static gboolean GdmDebug;
 static gint  GdmIconMaxHeight;
@@ -118,6 +120,8 @@ static GdkRectangle *allscreens;
 static int screens = 0;
 static GtkTooltips *tooltips;
 
+static gboolean login_is_local = FALSE;
+
 GdkRectangle screen; /* this is an extern since it's used in gdmwm as well */
 
 static GnomeIconList *browser;
@@ -127,6 +131,7 @@ static GdkImlibImage *defface;
 static GSList *sessions = NULL;
 static GSList *languages = NULL;
 static GList *users = NULL;
+static gint number_of_users = 0;
 
 static gchar *defsess = NULL;
 static const gchar *cursess = NULL;
@@ -139,9 +144,10 @@ static gint curdelay = 0;
 /* this is true if the prompt is for a login name */
 static gboolean login_entry = FALSE;
 
-static gboolean savesess;
-static gboolean savelang;
-static gint maxwidth;
+static gboolean savesess = FALSE;
+static gboolean savelang = FALSE;
+static gint maxwidth = 0;
+static gint maxheight = 0;
 
 static pid_t backgroundpid = 0;
 
@@ -710,6 +716,8 @@ gdm_login_parse_config (void)
 
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
+    GdmAllowRoot = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
+    GdmAllowRemoteRoot = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEROOT);
     GdmBrowser = gnome_config_get_bool (GDM_KEY_BROWSER);
     GdmLogo = gnome_config_get_string (GDM_KEY_LOGO);
     GdmFont = gnome_config_get_string (GDM_KEY_FONT);
@@ -774,6 +782,9 @@ gdm_login_parse_config (void)
 		    g_free (GdmBackgroundProg);
 		    GdmBackgroundProg = NULL;
 	    }
+	    login_is_local = FALSE;
+    } else {
+	    login_is_local = TRUE;
     }
 
     /* Disable timed login stuff if it's not ok for this display */
@@ -2479,6 +2490,8 @@ gdm_login_gui_init (void)
 	GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
 	GtkWidget *bframe;
 	GtkWidget *scrollbar;
+	int width;
+	int height;
 
 	/* Find background style for browser */
 	style = gtk_style_copy (login->style);
@@ -2488,6 +2501,8 @@ gdm_login_gui_init (void)
 	/* Icon list */
 	if (maxwidth < GdmIconMaxWidth/2)
 	    maxwidth = (gint) GdmIconMaxWidth/2;
+	if (maxheight < GdmIconMaxHeight/2)
+	    maxheight = (gint) GdmIconMaxHeight/2;
 	
 	browser = GNOME_ICON_LIST (gnome_icon_list_new (maxwidth+20, NULL, FALSE));
 	gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
@@ -2517,10 +2532,18 @@ gdm_login_gui_init (void)
 	gtk_box_pack_start (GTK_BOX (bbox), GTK_WIDGET (scrollbar), 0, 0, 0);
 	gtk_widget_show_all (GTK_WIDGET (bbox));
 
-	/* FIXME */
-	gtk_widget_set_usize (GTK_WIDGET (bbox),
-			      (gint) screen.width * 0.5,
-			      (gint) screen.height * 0.25);
+	/* FIXME: do smarter sizing here */
+	width = maxwidth + (maxwidth + 20) * (number_of_users < 5 ?
+					      number_of_users : 5);
+	if (width > screen.width * 0.5)
+		width = screen.width * 0.5;
+
+	height = (maxheight * 1.9 ) *
+		(1 + (number_of_users - 1) / 5);
+	if (height > screen.height * 0.25)
+		height = screen.height * 0.25;
+
+	gtk_widget_set_usize (GTK_WIDGET (bbox), width, height);
     }
 
     if (GdmLogo &&
@@ -2531,21 +2554,23 @@ gdm_login_gui_init (void)
 
 	if (logo != NULL) {
 		GtkWidget *ebox;
+		GtkWidget *frame;
 		int lw, lh;
 
-		logoframe = gtk_frame_new (NULL);
-		gtk_widget_ref (logoframe);
-		gtk_object_set_data_full (GTK_OBJECT (login), "logoframe",
-					  logoframe,
-					  (GtkDestroyNotify) gtk_widget_unref);
+		/* this will make the logo always left justified */
+		logoframe = gtk_alignment_new (0, 0.5, 0, 0);
 		gtk_widget_show (logoframe);
-		gtk_frame_set_shadow_type (GTK_FRAME (logoframe),
+
+		frame = gtk_frame_new (NULL);
+		gtk_widget_show (frame);
+		gtk_frame_set_shadow_type (GTK_FRAME (frame),
 					   GTK_SHADOW_IN);
 
 		ebox = gtk_event_box_new ();
 		gtk_widget_show (ebox);
 		gtk_container_add (GTK_CONTAINER (ebox), logo);
-		gtk_container_add (GTK_CONTAINER (logoframe), ebox);
+		gtk_container_add (GTK_CONTAINER (frame), ebox);
+		gtk_container_add (GTK_CONTAINER (logoframe), frame);
 
 		gdk_window_get_size ((GdkWindow *) GNOME_PIXMAP (logo)->pixmap,
 				     &lw, &lh);
@@ -2640,37 +2665,35 @@ gdm_login_gui_init (void)
 
     /* Put it nicely together */
 
-    if (GdmBrowser && GdmLogo) {
-	gtk_table_attach (GTK_TABLE (table), bbox, 0, 2, 0, 1,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_table_attach (GTK_TABLE (table), logoframe, 0, 1, 1, 2,
-			  (GtkAttachOptions) (0),
-			  (GtkAttachOptions) (0), 0, 0);
-	gtk_table_attach (GTK_TABLE (table), stack, 1, 2, 1, 2,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (GTK_FILL), 0, 0);
+    if (bbox != NULL && logoframe != NULL) {
+	    gtk_table_attach (GTK_TABLE (table), bbox, 0, 2, 0, 1,
+			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+	    gtk_table_attach (GTK_TABLE (table), logoframe, 0, 1, 1, 2,
+			      (GtkAttachOptions) (GTK_FILL),
+			      (GtkAttachOptions) (0), 0, 0);
+	    gtk_table_attach (GTK_TABLE (table), stack, 1, 2, 1, 2,
+			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    } else if (bbox != NULL) {
+	    gtk_table_attach (GTK_TABLE (table), bbox, 0, 1, 0, 1,
+			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+	    gtk_table_attach (GTK_TABLE (table), stack, 0, 1, 1, 2,
+			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    } else if (logoframe != NULL) {
+	    gtk_table_attach (GTK_TABLE (table), logoframe, 0, 1, 0, 1,
+			      (GtkAttachOptions) (0),
+			      (GtkAttachOptions) (0), 0, 0);
+	    gtk_table_attach (GTK_TABLE (table), stack, 1, 2, 0, 1,
+			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			      (GtkAttachOptions) (GTK_FILL), 0, 0);
+    } else {
+	    gtk_table_attach (GTK_TABLE (table), stack, 0, 1, 0, 1,
+			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			      (GtkAttachOptions) (GTK_FILL), 0, 0);
     }
-    else if (GdmBrowser) {
-	gtk_table_attach (GTK_TABLE (table), bbox, 0, 1, 0, 1,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_table_attach (GTK_TABLE (table), stack, 0, 1, 1, 2,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (GTK_FILL), 0, 0);
-    }
-    else if (GdmLogo) {
-	gtk_table_attach (GTK_TABLE (table), logoframe, 0, 1, 0, 1,
-			  (GtkAttachOptions) (0),
-			  (GtkAttachOptions) (0), 0, 0);
-	gtk_table_attach (GTK_TABLE (table), stack, 1, 2, 0, 1,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (GTK_FILL), 0, 0);
-    }
-    else
-	gtk_table_attach (GTK_TABLE (table), stack, 0, 1, 0, 1,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (GTK_FILL), 0, 0);
     
     gtk_widget_grab_focus (entry);	
     gtk_window_set_focus (GTK_WINDOW (login), entry);	
@@ -2740,21 +2763,21 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 	w = img->rgb_width;
 	h = img->rgb_height;
 	
-	if (w>h && w > GdmIconMaxWidth) {
+	if (w > h && w > GdmIconMaxWidth) {
 	    h = h * ((gfloat) GdmIconMaxWidth/w);
 	    w = GdmIconMaxWidth;
-	} 
-	else if (h>GdmIconMaxHeight) {
+	} else if (h > GdmIconMaxHeight) {
 	    w = w * ((gfloat) GdmIconMaxHeight/h);
 	    h = GdmIconMaxHeight;
 	}
 	
 	maxwidth = MAX (maxwidth, w);
+	maxheight = MAX (maxheight, h);
 	user->picture = gdk_imlib_clone_scaled_image (img, w, h);
 	gdk_imlib_destroy_image (img);
+    } else {
+	user->picture = defface;
     }
-    else
-	user->picture=defface;
 
     return (user);
 }
@@ -2765,6 +2788,12 @@ gdm_login_check_exclude (struct passwd *pwent)
 {
 	const char * const lockout_passes[] = { "*", "!!", NULL };
 	gint i;
+
+	if ( ! GdmAllowRoot && pwent->pw_uid == 0)
+		return TRUE;
+
+	if ( ! GdmAllowRemoteRoot && ! login_is_local && pwent->pw_uid == 0)
+		return TRUE;
 
 	for (i=0 ; lockout_passes[i] != NULL ; i++)  {
 		if (strcmp (lockout_passes[i], pwent->pw_passwd) == 0) {
@@ -2825,7 +2854,9 @@ gdm_login_users_init (void)
 	    defface = gdk_imlib_load_image (GdmDefaultFace);
     }
 
-    pwent = NULL;
+    setpwent ();
+
+    pwent = getpwent();
 	
     while (pwent != NULL) {
 	
@@ -2838,13 +2869,17 @@ gdm_login_users_init (void)
 					pwent->pw_dir);
 
 	    if ((user) &&
-		(! g_list_find_custom (users, user, (GCompareFunc) gdm_login_sort_func)))
+		(! g_list_find_custom (users, user, (GCompareFunc) gdm_login_sort_func))) {
 		users = g_list_insert_sorted(users, user,
 					     (GCompareFunc) gdm_login_sort_func);
+		number_of_users ++;
+	    }
 	}
 	
 	pwent = getpwent();
     }    
+
+    endpwent ();
 }
 
 
