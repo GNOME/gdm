@@ -1,0 +1,1929 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY version "1.4.0"> 
+<!ENTITY date "4/20/2001"> 
+]>
+
+<book id="index">
+  <bookinfo>
+    <title>Gnome Display Manager Reference Manual</title>
+    <authorgroup>
+      <author>
+        <firstname>Martin</firstname><othername>K.</othername><surname>Petersen</surname>
+        <affiliation>
+          <address><email>mkp@mkp.net</email></address>
+        </affiliation>
+      </author>
+      <author>
+        <firstname>George</firstname><surname>Lebl</surname>
+        <affiliation>
+          <address><email>jirka@5z.com</email></address>
+        </affiliation>
+      </author>
+      <author>
+        <firstname>Tim</firstname><surname>Jansen</surname>
+        <affiliation>
+          <address><email>tim@tjansen.de</email></address>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <copyright>
+      <year>1998, 1999</year> <holder>Martin K. Petersen</holder>
+    </copyright>
+    <copyright>
+      <year>2001</year> <holder>Tim Jansen</holder>
+    </copyright>
+    <copyright>
+      <year>2001</year> <holder>George Lebl</holder>
+    </copyright>
+
+    <legalnotice>
+      <para>
+	This documentation is free software; you can redistribute it
+	and/or modify it under the terms of the GNU General Public
+	License as published by the Free Software Foundation; either
+	version 2 of the License, or (at your option) any later
+	version.
+      </para>
+      
+      <para>
+        This program is distributed in the hope that it will be
+        useful, but WITHOUT ANY WARRANTY; without even the implied
+        warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+        PURPOSE.  See the GNU General Public License for more details.
+      </para>
+
+      <para>
+        You should have received a copy of the GNU General Public
+        License along with this program; if not, write to the Free
+        Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+        MA 02111-1307 USA
+      </para>
+      
+      <para>
+        For more details see the file COPYING in the source
+        distribution of GDM.
+      </para>
+    </legalnotice>
+  </bookinfo>
+
+  <toc></toc>
+
+  <preface>
+    <title>Terms and conventions used in this book</title>
+
+    <para>
+      GDM - Gnome Display Manager. Used to describe the software
+      package as a whole.
+    </para>
+
+    <para>
+      gdm - The Gnome Display Manager daemon (<filename>gdm</filename>).
+    </para>
+
+    <para>
+      Greeter - The graphical login window (<filename>gdmlogin</filename>).
+    </para>
+
+    <para>
+      Chooser - The host chooser which appears on remote displays
+      sending INDIRECT queries (<filename>gdmchooser</filename>).
+    </para>
+
+    <para>
+      Configurator - The configuration program (<filename>gdmconfig</filename>).
+    </para>
+
+    <para>
+      Paths without a leading '/' are relative to the installation
+      prefix. I.e. <filename>share/pixmaps/</filename> refers to
+      <filename>/usr/share/pixmaps</filename> if GDM was configured
+      with <filename>--prefix=/usr</filename>.
+    </para>
+
+  </preface>
+
+  <chapter id="intro">
+    <title>Overview</title>
+
+    <sect1>
+      <title>
+	Introduction
+      </title>
+
+      <para> 
+	GDM is a replacement for XDM, the X Display Manager. Unlike its
+	competitors (X3DM, KDM, WDM) GDM was written from scratch and
+	does not contain any original XDM / X Consortium code. 
+      </para>
+    </sect1>
+
+    <sect1 id="daemonov">
+      <title>The GDM Daemon</title>
+      
+      <para> 
+	GDM was written with simplicity and security in mind. The
+	overall design concept is this: 
+      </para>
+      
+      <para> 
+	Upon startup the <filename>gdm</filename> daemon parses its config file
+	<filename>gdm.conf</filename>.  For each of the local displays <filename>gdm</filename>
+	forks an Xserver and a slave process. The main <filename>gdm</filename> process
+	will then listen to XDMCP requests from remote displays and
+	monitor the local display sessions.
+      </para>
+      
+      <para> 
+	The <filename>gdm</filename> slave process opens the display and starts
+	<filename>gdmlogin</filename>, the graphical login
+	program. <filename>gdmlogin</filename> runs as a dedicated
+	user and communicates asynchronously with the slave process
+	through a pipe.
+      </para>
+      
+      <para> 
+	GDM relies heavily on the presence of PAM, Pluggable
+	Authentication Modules, but supports regular crypt() 
+	and shadow passwords on legacy systems.
+      </para>
+
+      <para>
+	Remote displays can connect to the XDMCP port on the GDM
+	host. <filename>gdm</filename> will grant access to hosts specified in
+	the gdm service section in your TCP Wrappers configuration
+	file. GDM does not support remote display access control on
+	systems without TCP Wrappers. XDMCP support can be turned off
+	completely, however.
+      </para>
+
+      <para>
+	GDM includes several measures making it more resistant to
+	denial of service attacks on the XDMCP service. A lot of the
+	protocol parameters, handshaking timeouts etc. can be fine
+	tuned. The defaults should work for most systems, however.
+	Don't change them unless you know what you're doing.
+      </para>
+
+      <para>
+	In general GDM is very reluctant regarding reading/writing of
+	user files. For instance it refuses to touch anything but
+	regular files.  Links, sockets and devices are ignored.  The
+	value of the RelaxPermissions parameter determines whether GDM
+	should accept files writable by the user's group or others.
+	These are ignored by default.
+      </para>
+
+      <para>
+	All operations on user files are done with the effective
+	userid of the user. If the sanity check fails on the user's
+	<filename>.Xauthority</filename> file, a fallback cookie is created in
+	<filename>/tmp</filename>.
+      </para>
+
+      <para>
+	Finally, the sysadmin can specify the maximum file size GDM
+	should accept, and, if the face browser is enabled, a tunable
+	maximum icon size is also enforced.  On large systems it is
+	still advised to turn off the face browser for performance
+	reasons. Looking up icons in homedirs, scaling and rendering
+	face icons can take quite a long time. YMMV.
+      </para>
+    </sect1>
+
+    <sect1>
+      <title>
+	XDMCP
+      </title>
+
+      <para>
+	GDM also supports the X Display Manager Protocol (XDMCP) for
+	managing remote displays.
+      </para>
+
+      <para>
+	GDM listens to UDP port 177 and will repond to QUERY and
+	BROADCAST_QUERY requests by sending a WILLING packet to the
+	originator.
+      </para>
+
+      <para>
+	GDM can also be configured to honor INDIRECT queries and
+	present a host chooser to the remote display. GDM will
+	remember the user's choice and forward subsequent requests to
+	the chosen manager.
+      </para>
+
+      <para>
+	GDM only supports the MIT-MAGIC-COOKIE-1 authentication
+	system.  Little is gained from the other schemes, and no
+	effort has been made to implement them so far.
+      </para>
+
+      <para>
+	Since it is fairly easy to do denial of service attacks on the
+	XDMCP service, GDM incorporates a few features to guard
+	against attacks. Please read the XDMCP reference section below
+	for more information.
+      </para>
+
+      <para>
+	Even though GDM tries to outsmart potential attackers, it is
+	still adviced that you block UDP port 177 on your firewall
+	unless you really need it. GDM guards against DoS attacks, but
+	the X protocol is still inherently insecure and should only be
+	used in controlled environments.
+      </para>
+
+      <para>
+	Even though your display is protected by cookies the XEvents
+	and thus the keystrokes typed when entering passwords will
+	still go over the wire in clear text. It is trivial to capture
+	these. You should also be aware that cookies, if placed on an
+	NFS mounted directory, are prone to eavesdropping too.
+      </para>
+
+    </sect1>
+
+    <sect1>
+      <title>The Greeter</title>
+
+      <para>
+	The greeter is the graphical user interface that is presented
+	to the user. The greeter contains a menu at the top, an
+	optional face browser, an optional logo and a text entry
+	widget.
+      </para>
+
+      <sect2>
+	<title>
+	  Text entry
+	</title>
+
+	<para>
+	  The text entry field is used for entering logins, passwords,
+	  passphrases etc. <filename>gdmlogin</filename> is controlled by the
+	  underlying daemon and is basically stateless. The daemon
+	  controls the greeter through a simple protocol where it can
+	  ask the greeter for a text string with echo turned on or
+	  off. Similarly, the daemon can change the label above the
+	  text entry widget to correspond to the value the
+	  authentication system wants the user to enter.
+	</para>
+
+      </sect2>
+
+      <sect2>
+	<title>
+	  The Menu
+	</title>
+
+	<para>
+	  The menu bar in the top of the greeter enables the user to
+	  select the requested session type/desktop environment,
+	  select an appropriate locale/language and optionally
+	  shutdown/reboot the machine. The greeter window can also be
+	  iconified to make room for other applications on the login
+	  screen.
+	</para>
+
+      </sect2>
+
+      <sect2>
+	<title>
+	  The face browser
+	</title>
+
+	<para>
+	  The greeter provides a face browser containing icons for all
+	  the users on a system. The icons can be installed globally
+	  by the sysadmin or in the users' home directories.
+	</para>
+	
+	<para>
+	  Face icons placed in the global face directory
+	  must be readable to the gdm user.  However, the daemon, proxies
+	  user pictures to the greeter and thus those don't have be be
+	  readable by the gdm user, but root.
+	</para>
+
+	<para>
+	  Please note that loading and scaling face icons located in
+	  user home directories can be a very time consuming task.
+	  Especially on large systems or systems running NIS. The
+	  browser feature is only intended for systems with relatively
+	  few users.
+	</para>
+
+	<para>
+	  To filter out unwanted user names in the browser, an exclude
+	  option is implemented. The greeter will automatically ignore
+	  usernames listed in the <filename>Exclude</filename> statement in the
+	  config file.
+	</para>
+
+	<para>
+	  When the browser is turned on, valid usernames on the
+	  machine are inherently exposed to a potential intruder. If
+	  your system is connected directly to the Internet, this
+	  might be a bad idea.
+	</para>
+
+      </sect2>
+
+      <sect2>
+	<title>
+	  The Logo
+	</title>
+
+	<para>
+	  The greeter can optionally display a logo in the login
+	  window. The image must be in a format readable to the Imlib
+	  library (GIF, JPG, PNG, TIFF, XPM and possibly others), and
+	  it must be readable to the gdm user. See the <filename>
+	  Logo</filename> option in the reference section below for detauls.
+	</para>
+
+      </sect2>
+
+    </sect1>
+
+  </chapter>
+
+  <chapter id="Configuration">
+    <title>The Configuration Directory</title>
+
+    <para> 
+      This chapter will cover the structure of the configuration
+      directory and the format of the configuration file.  However you 
+      can use the <filename>gdmconfig</filename> binary to configure
+      GDM from a graphical environment.  The terms from this chapter
+      could however still come in handy.  If you want to run the
+      configurator from the GNOME menu, it should be installed under
+      the <filename>System</filename> submenu.
+    </para>
+
+    <para> 
+      The configuration files for GDM are located in the
+      <filename>etc/gdm/</filename> directory.
+    </para>
+
+    <para>
+      This is a listing of the config directory contents:
+    </para>
+
+    <screen>
+	Init/
+	PostSession/
+	PreSession/
+	Sessions/
+	gdm.conf
+    </screen>
+
+    <para> 
+      <filename>gdm.conf</filename> is the main GDM configuration file. The
+      options will be described later in this chapter.
+    </para>
+
+    <para>
+      <filename>gdm.conf</filename> is configuration file for both <filename>
+      gdm</filename>, <filename>gdmlogin</filename>, and <filename>gdmchooser</filename> since a
+      lot of parameters overlap.
+    </para>
+
+    <para> 
+      The remaining configuration is done by dropping scripts in the
+      subdirectories of the <filename>etc/gdm</filename> folder. This
+      approach makes it easy for package management systems to install
+      window managers and different session types without requiring
+      the sysadmin to edit files.
+    </para>
+
+    <sect1>
+      <title>The Script Directories</title>
+      
+      <para>
+	In this section we will explain the <filename>Init</filename>,
+	<filename>PreRoot</filename> and <filename>PostRoot</filename> directories as
+	they are very similar.
+      </para>
+
+      <para>
+	When the X server has been successfully started, GDM will try
+	to run the script called
+	<filename>Init/&lt;displayname&gt;</filename>. I.e. <filename>Init/:0</filename>
+	for the first local display.  If this file is not found, GDM
+	will attempt to to run <filename>Init/Default</filename>. The
+	script will be run as root and GDM blocks until it
+	terminates. Use the <filename>Init/*</filename> script for
+	programs that are supposed to run alongside with the GDM login
+	window. xconsole for instance.  Commands to set the background
+	etc. goes in this file too.
+      </para>
+
+      <para> 
+	It is up to the sysadmin to decide whether clients started by
+	the Init script should be killed before starting the user
+	session. This is controlled with the KillInitClients option in
+	<filename>gdm.conf</filename>.
+      </para>
+
+      <para>
+	When the user has been successfully authenticated, GDM tries
+	to run the PreSession script. Similar to the Init-scripts,
+	<filename>PreSession/&lt;displayname&gt;</filename> will be
+	executed, if this file doesn't exist, GDM will attempt to run
+	<filename>PreSession/Default</filename>. The script will be
+	run as root and GDM blocks until it terminates. Use this
+	script for local session management or accounting stuff. The
+	$USER environment variable contains the login of the
+	authenticated user. The script should return 0 on success. Any
+	other value will cause GDM to terminate the current login
+	process.
+      </para>
+
+      <para>
+	Then the session script is run. Session scripts are located in
+	the <filename>etc/gdm/Session</filename> directory. Which one
+	GDM runs, depends on the session the user chose in the
+	Sessions-menu in the greeter. If no session is selected and
+	the user has no last session stored in his
+	<filename>~/.gnome/gdm</filename> file, the system will choose
+	or first script found or -- if
+	<filename>Sessions/Default</filename> exists -- this will be
+	run. For instance you can create a symlink from
+	<filename>Gnome</filename> to <filename>Default</filename> to
+	make Gnome the default desktop environment.
+      </para>
+
+      <para> 
+	When the user terminates his session, the PostSession script
+	will be run. Operation is similar to Init and PreSession. That
+	is, GDM will attempt to execute the script
+	<filename>PostSession/&lt;displayname&gt;</filename> and if
+	that doesn't exist <filename>PostSession/Default</filename>
+	will be run. Again the script will be run with root
+	priviledges, the slave daemon will block and the $USER
+	environment variable will contain the name of the user who
+	just logged out.
+      </para>
+
+      <para>
+	Note that the PostSession script will be run even when the
+	display fails to respond due to an I/O error or similar. Thus,
+	there is no guarantee that X applications will work during
+	script execution.
+      </para>
+
+      <para> 
+	Neither of the Init, PreSession or PostSession scripts are
+	necessary and can be left out. At least one session script is
+	required for proper operation.
+      </para>
+
+    </sect1>
+
+    <sect1>
+      <title>The Configuration File - <filename>gdm.conf</filename></title>
+      
+      <para>
+	The daemon and the accompanying utilities share a common
+	configuration file: <filename>etc/gdm/gdm.conf</filename>.
+      </para>
+
+      <para>
+	The configuration file is divided into sections each
+	containing variables that define the behaviour for a specific
+	part of the GDM suite.
+      </para>
+
+      <para>
+	<filename>gdm.conf</filename> follows the standard GNOME configuration
+	file syntax. Keywords in brackets define sections, strings
+	before an equal sign (=) are variables and the data after
+	equal sign represents their value.
+      </para>
+
+      <sect2>
+	<title>Daemon Configuration</title>
+
+	<variablelist>
+	  <title>[daemon]</title>
+
+	  <varlistentry>
+	    <term>AlwaysRestartServer</term>
+	    <listitem>
+	      <synopsis>AlwaysRestartServer=false</synopsis>
+	      <para>
+		If true, then gdm never tries to reuse existing X servers by
+		reinitializing them.  It will just kill the existing server and
+		start over.  Normally, just reinitializing is a nicer way to go
+		but if the X server memory usage keeps growing this may be
+		a safer option.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>AutomaticLoginEnable</term>
+	    <listitem>
+	      <synopsis>AutomaticLoginEnable=false</synopsis>
+	      <para>
+	 	If the user given in AutomaticLogin should be logged in upon
+		first bootup.  No password will be asked.  This is useful
+		for single user workstations where local console security
+		is not an issue.  Also could be useful for public terminals,
+		although there see TimedLogin.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>AutomaticLogin</term>
+	    <listitem>
+	      <synopsis>AutomaticLogin=</synopsis>
+	      <para>
+		This user should be automatically logged in on first bootup.
+		AutomaticLoginEnable must be true and this must be
+		a valid user for this to happen.  "root" can never be
+		autologged in however and gdm will just refuse to do it even
+		if you set it up.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Chooser</term>
+	    <listitem>
+	      <synopsis>Chooser=bin/gdmchooser --disable-sound --disable-crash-dialog</synopsis>
+	      <para>
+		Full path and name of the chooser executable followed by optional arguments.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Configurator</term>
+	    <listitem>
+	      <synopsis>Configurator=bin/gdmconfig --disable-sound --disable-crash-dialog</synopsis>
+	      <para>
+		The pathname to the configurator binary.  If the greeter
+		ConfigAvailable option is set to true then run this binary
+		when somebody chooses Configuration from the system menu.
+		Of course GDM will first ask for root password however.
+		And it will never allow this to happen from a remote display.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>DefaultPath</term>
+	    <listitem>
+	      <synopsis>DefaultPath=/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis>
+	      <para>
+		Specifies the path which will be set in the user's session.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>DisplayInitDir</term>
+	    <listitem>
+	      <synopsis>DisplayInitDir=etc/gdm/Init</synopsis>
+	      <para>
+		Directory containing the display init scripts. See the
+		``Script Directories'' section for more info.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>FailsafeXServer</term>
+	    <listitem>
+	      <synopsis>FailsafeXServer=</synopsis>
+	      <para>
+		An X command line in case we can't start the normal X server.
+		should probably be some sort of a script that runs an
+		appropriate low resolution server that will just work.
+		This is tried before the XKeepsCrashing script is run.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>FlexibleXServers</term>
+	    <listitem>
+	      <synopsis>FlexibleXServers=5</synopsis>
+	      <para>
+		The maximum number of allowed flexible servers.  These are
+		servers that can be run using the /tmp/.gdm_socket socket
+		connection.  This is used for both full servers and for
+		Xnest servers.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>GnomeDefaultSession</term>
+	    <listitem>
+	      <synopsis>GnomeDefaultSession=share/gnome/default.session</synopsis>
+	      <para>
+		The filename which GDM should read if there is no per user
+		GNOME session file, and the user has requested the Gnome
+		Chooser session.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Greeter</term>
+	    <listitem>
+	      <synopsis>Greeter=bin/gdmlogin --disable-sound --disable-crash-dialog</synopsis>
+	      <para>
+		Full path and name of the greeter executable followed by optional arguments.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Group</term>
+	    <listitem>
+	      <synopsis>Group=gdm</synopsis>
+	      <para>
+		The group id under which
+		<filename>gdmlogin</filename>/<filename>gdmchooser</filename>
+		are run.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>HaltCommand</term>
+	    <listitem>
+	      <synopsis>HaltCommand=/sbin/shutdown -h now</synopsis>
+	      <para>
+		Full path and arguments to command to be executed when
+		user selects Halt from the System menu.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>KillInitClients</term>
+	    <listitem>
+	      <synopsis>KillInitClients=true</synopsis>
+	      <para>
+		Determines whether GDM should kill X clients started by
+		the init scripts when the user logs in.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>LogDir</term>
+	    <listitem>
+	      <synopsis>LogDir=var/gdm</synopsis>
+	      <para>
+		Directory containing the log files for the individual
+		displays.  By default this is the same as the
+		ServAuthDir.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>PidFile</term>
+	    <listitem>
+	      <synopsis>PidFile=var/run/gdm.pid</synopsis>
+	      <para>
+		Name of the file containing the <filename>gdm</filename>
+		process id.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>PostSessionScriptDir</term>
+	    <listitem>
+	      <synopsis>PostSessionScriptDir=etc/gdm/PostSession</synopsis>
+	      <para>
+		Directory containing the scripts run after the user logs
+		out.  See the ``Script Directories'' section for more
+		info.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>PreSessionScriptDir</term>
+	    <listitem>
+	      <synopsis>PreSessionScriptDir=etc/gdm/PreSession</synopsis>
+	      <para>
+		Directory containing the scripts run before the user
+		logs in.  See the ``Script Directories'' section for
+		more info.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RebootCommand</term>
+	    <listitem>
+	      <synopsis>RebootCommand=/sbin/shutdown -r now</synopsis>
+	      <para>
+		Full path and optional arguments to the program to be
+		executed when user selects Reboot from the System menu.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RootPath</term>
+	    <listitem>
+	      <synopsis>RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin</synopsis>
+	      <para>
+		Specifies the path which will be set in the root's
+		session and the {Init,PreSession,PostSession} scripts
+		executed by GDM.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>ServAuthDir</term>
+	    <listitem>
+	      <synopsis>ServAuthDir=/var/gdm</synopsis>
+	      <para>
+		Directory containing the X authentication files for the
+		individual displays.  Should be owned by
+		<filename>gdm.gdm</filename> with permissions 750.
+		This directory is also used for other private files that
+		the daemon needs to store.  Other user should not
+		have any way to get into this directory and read/change
+		it's contents.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>SessionDir</term>
+	    <listitem>
+	      <synopsis>SessionDir=etc/gdm/Sessions</synopsis>
+	      <para>
+		Directory containing the scripts for all session types
+		available on the system.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>StandardXServer</term>
+	    <listitem>
+	      <synopsis>StandardXServer=/usr/bin/X11/X</synopsis>
+	      <para>
+		Full path and arguments to the standard X server command.
+		This is used when gdm cannot find any other definition,
+		and it's used as the default and failsafe fallback in a
+		number of places.  This should be able to run some sort
+		of X server.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>SuspendCommand</term>
+	    <listitem>
+	      <synopsis>SuspendCommand=</synopsis>
+	      <para>
+		Full path and arguments to command to be executed when
+		user selects Suspend from the System menu.  If empty
+		there is no such menu item.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>TimedLoginEnable</term>
+	    <listitem>
+	      <synopsis>TimedLoginEnable=false</synopsis>
+	      <para>
+	 	If the user given in TimedLogin should be logged in after
+		a number of seconds (set with TimedLoginDelay) of inactivity
+		on the login screen.  This is useful for public access
+		terminals or perhaps even home use.  If the user uses the
+		keyboard or browses the menus, the timeout will be reset to
+		TimedLoginDelay or 30 seconds, whichever is higher.  Note that
+		no password will be asked for this user so you should be
+		careful.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>TimedLogin</term>
+	    <listitem>
+	      <synopsis>TimedLogin=</synopsis>
+	      <para>
+		This is the user that should be logged in after a specified
+		number of seconds of inactivity.  This can never be "root"
+		and gdm will refuse to log in root this way.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>TimedLoginDelay</term>
+	    <listitem>
+	      <synopsis>TimedLoginDelay=30</synopsis>
+	      <para>
+		This is the delay before the TimedLogin user will be logged
+		in.  It must be greater then or equal to 10.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>User</term>
+	    <listitem>
+	      <synopsis>User=gdm</synopsis>
+	      <para>
+		The username under which <filename>gdmlogin</filename> /
+		<filename>gdmchooser</filename> are run.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>UserAuthDir</term>
+	    <listitem>
+	      <synopsis>UserAuthDir=</synopsis>
+	      <para>
+		The directory where user's
+		<filename>.Xauthority</filename> file should be
+		saved. When nothing is specfied the user's home
+		directory is used.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>UserAuthFBDir</term>
+	    <listitem>
+	      <synopsis>UserAuthFBDir=/tmp</synopsis>
+	      <para>
+		If GDM fails to update the user's
+		<filename>.Xauthority</filename> file a
+		fallback cookie is created in this directory.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>UserAuthFile</term>
+	    <listitem>
+	      <synopsis>UserAuthFile=.Xauthority</synopsis>
+	      <para>
+		Name of the file used for storing user cookies.  
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>XKeepsCrashing</term>
+	    <listitem>
+	      <synopsis>XKeepsCrashing=etc/gdm/XKeepsCrashing</synopsis>
+	      <para>
+		A script to run in case X keeps crashing.  This is for running
+		An X configuration or whatever else to make the X configuration
+		work.  See the script that came with the distribution for an
+		example.  The distributed XKeepsCrashing script is tested
+		on RedHat, but may work elsewhere.  Your system integrator should
+		make sure this script is up to date for your particular system.
+	      </para>
+	      <para>
+		In case FailsafeXServer is setup, that will be tried first.
+		and this only used as a backup if even that server keeps
+		crashing.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Xnest</term>
+	    <listitem>
+	      <synopsis>Xnest=/usr/bin/X11/Xnest</synopsis>
+	      <para>
+		The full path and arguments to the Xnest command.  This is used
+		for the flexible Xnest servers.  This way the user can start new
+		login screens in a nested window.  Of course you must have the Xnest
+		server from your X server packages installed for this to work.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+	
+      </sect2>
+
+      <sect2>
+	<title>Security Options</title>
+	
+	<variablelist>
+	  <title>[security]</title>
+	  
+	  <varlistentry>
+	    <term>AllowRoot</term>
+	    <listitem>
+	      <synopsis>AllowRoot=true</synopsis>
+	      <para>
+		Allow root (privilaged user) to log in through GDM.  Set
+		this to false if you want to disallow such logins.
+	      </para>
+	      <para>
+		On systems that support PAM, this parameter is
+		not as useful as you can use PAM to do the same thing,
+		and in fact do even more.  However it is still followed,
+		so you should probably leave it true for PAM systems.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>AllowRemoteRoot</term>
+	    <listitem>
+	      <synopsis>AllowRemoteRoot=true</synopsis>
+	      <para>
+		Allow root (privilaged user) to log in remotely through GDM.
+		Set this to false if you want to disallow such logins.  Remote
+		logins are any logins that come in through the xdmcp.
+	      </para>
+	      <para>
+		On systems that support PAM, this parameter is
+		not as useful as you can use PAM to do the same thing,
+		and in fact do even more.  However it is still followed,
+		so you should probably leave it true for PAM systems.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>AllowRemoteAutoLogin</term>
+	    <listitem>
+	      <synopsis>AllowRemoteAutoLogin=false</synopsis>
+	      <para>
+		Allow the timed login to work remotely.  That is, remote
+		connections through XDMCP will be allowed to log into the
+		"TimedLogin" user by letting the login window time out, just
+		like the local user on the first console.
+	      </para>
+	      <para>
+		Note that this can make a system quite insecure, and thus is
+		off by default.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RelaxPermissions</term>
+	    <listitem>
+	      <synopsis>RelaxPermissions=0</synopsis>
+	      <para>
+		By default GDM ignores files and directories writable to
+		other users than the owner. 
+	      </para> 
+	      
+	      <para> 
+		Changing the value of RelaxPermissions makes it
+		possible to alter this behaviour:
+	      </para>
+	      
+	      <para>
+        	0 - Paranoia option. Only accepts user owned files and directories.
+	      </para>
+	      <para>
+        	1 - Allow group writable files and directories.
+	      </para>
+	      <para>
+        	2 - Allow world writable files and directories.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>RetryDelay</term>
+	    <listitem>
+	      <synopsis>RetryDelay=3</synopsis>
+	      <para>
+		The number of seconds GDM should wait before
+		reactivating the entry field after a failed login.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>SessionMaxFile</term>
+	    <listitem>
+	      <synopsis>SessionMaxFile=524288</synopsis>
+	      <para>
+	      	GDM will refuse to read session files bigger than this
+	      	number (specified in bytes).  This can be bigger then
+		UserMaxFile, since these are never read into memory, and
+		so it is harder to "attack" gdm in this way.
+	      </para>
+	      
+	      <para>
+        	In addition to the size check both
+        	<filename>gdm</filename> and
+        	<filename>gdmlogin</filename> are extremely picky
+        	about accessing files in user directories. Neither
+        	will follow symlinks and they can optionally refuse to
+        	read files and directories writable by other than the
+        	owner. See the RelaxPermissions option for more info.
+	      </para>
+
+	      <para>
+		However for the session files, GDM is not as picky.  If you
+		set RelaxPermissions to 0, GDM will assume it to be 1 for
+		the case of session files.  This is unfortunately because
+		the session files would then never be able to be read in.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>UserMaxFile</term>
+	    <listitem>
+	      <synopsis>UserMaxFile=65536</synopsis>
+	      <para>
+		GDM will refuse to read/write files bigger than this number
+		(specified in bytes).
+	      </para>
+	      
+	      <para>
+        	In addition to the size check both
+        	<filename>gdm</filename> and
+        	<filename>gdmlogin</filename> are extremely picky
+        	about accessing files in user directories. Neither
+        	will follow symlinks and they can optionally refuse to
+        	read files and directories writable by other than the
+        	owner. See the RelaxPermissions option for more info.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+	
+      </sect2>
+
+      <sect2>
+	<title>XDCMP Support</title>
+
+	<variablelist>
+	  <title>[xdmcp]</title>
+	  
+	  <varlistentry>
+	    <term>DisplaysPerHost</term>
+	    <listitem>
+	      <synopsis>DisplaysPerHost=1</synopsis>
+	      <para>
+		To prevent attackers from filling up the pending
+		queue, GDM will only allow one connection for each
+		remote machine.  If you want to provide display
+		services to machines with more than one screen, you
+		should increase the DisplaysPerHost value accordingly.
+	      </para>
+
+	      <para>
+		Note that the number of connections from the local
+		machine is unlimited.  Only remote connections
+		are limited by this number.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Enable</term>
+	    <listitem>
+	      <synopsis>Enable=false</synopsis>
+	      <para>
+		Setting this to true enables XDMCP support allowing remote displays/X
+		terminals to be managed by GDM.
+	      </para>
+	      
+	      <para>
+		<filename>gdm</filename> listens for requests on UDP
+		port 177. See the Port option for more information.
+	      </para>
+	      
+	      <para>
+		If GDM is compiled to support it, access from remote displays
+		can be controlled using the TCP Wrappers library. The service name is 
+		<filename>gdm</filename>
+	      </para>
+	      
+	      <para>
+		You should add 
+	      </para>
+	      
+	      <screen>
+		gdm:	.my.domain
+	      </screen>
+	      
+	      <para>
+		to your <filename>/etc/hosts.allow</filename>. See the
+		<filename>hosts_access(5)</filename> man page for details.
+	      </para>
+	      
+	      <para>
+		Please note that XDMCP is not a particularly secure protocol
+		and that it is a good idea to block UDP port 177 on your
+		firewall unless you really need it.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>HonorIndirect</term>
+	    <listitem>
+	      <synopsis>HonorIndirect=true</synopsis>
+	      <para>
+		Enables XDMCP INDIRECT choosing (i.e. remote execution
+		of <filename>gdmchooser</filename>) for X-terminals
+		which don't supply their own display browser.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>MaxPending</term>
+	    <listitem>
+	      <synopsis>MaxPending=4</synopsis>
+	      <para>
+		To avoid denial of service attacks, GDM has fixed size
+		queue of pending connections. Only MaxPending displays
+		can start at the same time.
+	      </para>
+	      
+	      <para>
+		Please note that this parameter does *not* limit the
+		number of remote displays which can be managed. It only
+		limits the number of displays initiating a connection
+		simultaneously.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>MaxPendingIndirect</term>
+	    <listitem>
+	      <synopsis>MaxPendingIndirect=4</synopsis>
+	      <para>
+		GDM will only provide MaxPendingIndirect displays with
+		host choosers simultaneously.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>MaxSessions</term>
+	    <listitem>
+	      <synopsis>MaxSessions=16</synopsis>
+	      <para>
+		Determines the maximum number of remote display
+		connections which will be managed
+		simultaneously. I.e. the total number of remote displays
+		that can use your host.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>MaxWait</term>
+	    <listitem>
+	      <synopsis>MaxWait=30</synopsis>
+	      <para>
+		When GDM is ready to manage a display an ACCEPT packet
+		is sent to it containing a unique session id which will
+		be used in future XDMCP conversations.
+	      </para>
+	      
+	      <para>
+		GDM will then place the session id in the pending queue
+		waiting for the display to respond with a MANAGE request.
+	      </para>
+	      
+	      <para>
+		If no response is received within MaxWait seconds, GDM
+		will declare the display dead and erase it from the pending
+		queue freeing up the slot for other displays.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>MaxWaitIndirect</term>
+	    <listitem>
+	      <synopsis>MaxWaitIndirect=30</synopsis>
+	      <para>
+		The MaxWaitIndirect parameter determines the maximum
+		number of seconds between the time where a user chooses
+		a host and the subsequent indirect query where the user is
+		connected to the host.  When the timeout is exceeded, the
+		information about the chosen host is removed and the indirect
+		slot freed up for under displays.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Port</term>
+	    <listitem>
+	      <synopsis>Port=177</synopsis>
+	      <para>
+		The UDP port number <filename>gdm</filename> should
+		listen to for XDMCP requests. Don't change this unless
+		you know what you're doing.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>PingInterval</term>
+	    <listitem>
+	      <synopsis>PingInterval=5</synopsis>
+	      <para>
+		Interval in which to ping the X server in minutes.  If the
+		X server doesn't return before the next time we ping it,
+		the connection is stopped and the session ended.  This is
+		a combination of the xdm PingInterval and PingTimeout.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Willing</term>
+	    <listitem>
+	      <synopsis>Willing=etc/gdm/Xwilling</synopsis>
+	      <para>
+		When the server sends a WILLING packet back after a QUERY
+		it sends a string that gives the current status of this
+		server.  The default message is the system ID, but it is
+		possible to create a script that displays customized
+		message.  If this script doesn't exist or this key is
+		empty the default message is sent.  If this script succeeds
+		and produces some output, the first line of it's output
+		is sent (and only the first line).  It runs at most once
+		every 3 seconds to prevent possible denial of service
+		by flooding the server with QUERY packets.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+	
+      </sect2>
+
+      <sect2>
+	<title>Common GUI Configuration Options</title>
+
+	<variablelist>
+	  <title>[gui]</title>
+	  
+	  <varlistentry>
+	    <term>Gtkrc</term>
+	    <listitem>
+	      <synopsis>Gtkrc=</synopsis>
+	      <para>
+		Path to a <filename>gtkrc</filename> containing the
+		theme for use in <filename>gdmlogin</filename> /
+		<filename>gdmchooser</filename>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>MaxIconWidth</term>
+	    <listitem>
+	      <synopsis>MaxIconWidth=128</synopsis>
+	      <para>
+		Specifies the maximum icon width (in pixels) that the
+		face browser will display. Icons larger than this will
+		be scaled.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>MaxIconHeight</term>
+	    <listitem>
+	      <synopsis>MaxIconHeight=128</synopsis>
+	      <para>
+		Specifies the maximum icon height (in pixels) that the
+		face browser will display. Icons larger than this will
+		be scaled.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+	
+      </sect2>
+	
+      <sect2>
+
+	<title>Greeter Configuration</title>
+
+	<variablelist>
+	  <title>[greeter]</title>
+	  
+	  <varlistentry>
+	    <term>Browser</term>
+	    <listitem>
+	      <synopsis>Browser=true</synopsis>
+	      <para>
+		Set to true to enable the face browser. See the ``Greeter''
+		section for more information on the face browser.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>ConfigAvailable</term>
+	    <listitem>
+	      <synopsis>ConfigAvailable=true</synopsis>
+	      <para>
+		Allow the configurator to be run from the greeter.  Note that
+		the user will need to type in the root password before the
+		configurator is run however.  See the Configurator option
+		in the daemon section.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>DefaultFace</term>
+	    <listitem>
+	      <synopsis>DefaultFace=share/pixmaps/nophoto.png</synopsis>
+	      <para>
+		Default icon file for users without a personal picture
+		in <filename>~/gnome/photo</filename>. The image must be
+		in an Imlib supported format and the file must be
+		readable for the gdm user.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>DefaultLocale</term>
+	    <listitem>
+	      <synopsis>DefaultLocale=english</synopsis>
+	      <para>
+		This language is used for the session unless nothing is
+		specified in <filename>~user/.gnome/gdm</filename> and
+		the user didn't select a language in the Locale menu in
+		the greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Exclude</term>
+	    <listitem>
+	      <synopsis>Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,...</synopsis>
+	      <para>
+		Comma-separated list of usernames to exclude from the
+		face browser. The excluded users will still be able to
+		log in.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Font</term>
+	    <listitem>
+	      <synopsis>Font=-adobe-helvetica-bold-r-normal-*-*-180-*-*-*-*-*-*</synopsis>
+	      <para>
+		Font to use for the welcome message in the greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>GlobalFaceDir</term>
+	    <listitem>
+	      <synopsis>GlobalFaceDir=share/faces/</synopsis>
+	      <para>
+		Systemwide directory for face files. The sysadmin can
+		place icons for users here without touching their
+		homedirs. Faces are named after their users' logins.
+	      </para>
+	      
+	      <para>
+		I.e. <filename>&lt;GlobalFaceDir&gt;/johndoe</filename>
+		would contain the face icon for the user ``johndoe''. No
+		image format extension should be specified. 
+	      </para>
+	      
+	      <para>
+		The face images must be stored in Imlib supported formats and
+		they must be readable for the GDM user.
+	      </para>
+	      
+	      <para>
+		A user's own icon file will always take precedence over the sysadmin
+		provided one.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Icon</term>
+	    <listitem>
+	      <synopsis>Icon=share/pixmaps/gdm.xpm</synopsis>
+	      <para>
+		Icon to use for <filename>gdmlogin</filename> when it's
+		in the iconified state. The image must be in an Imlib
+		supported format and it must be readable for the GDM
+		user. If no file is specified the iconify feature is
+		disabled.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>LocaleFile</term>
+	    <listitem>
+	      <synopsis>LocaleFile=etc/gdm/locale.alias</synopsis>
+	      <para>
+		File in GNU locale format with entries for all supported
+		languages on the system.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Logo</term>
+	    <listitem>
+	      <synopsis>Logo=share/pixmaps/gnome-logo-large.png</synopsis>
+	      <para>
+		Image file to display in the logo box. The file must be
+		in an Imlib supported format and it must be readable by
+		the GDM user. If no file is specified the logo feature
+		is disabled.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Quiver</term>
+	    <listitem>
+	      <synopsis>Quiver=true</synopsis>
+	      <para>
+		Controls whether <filename>gdmlogin</filename> should
+		shake the display when an incorrect username/password is
+		entered.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>SystemMenu</term>
+	    <listitem>
+	      <synopsis>SystemMenu=false</synopsis>
+	      <para>
+		Turns the Shutdown/Halt menu on/off.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>TitleBar</term>
+	    <listitem>
+	      <synopsis>TitleBar=true</synopsis>
+	      <para>
+		Display the title bar in the greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Use24Clock</term>
+	    <listitem>
+	      <synopsis>Use24Clock=false</synopsis>
+	      <para>
+		Force the use of 24 hour clock even if the locale would default
+		to a 12 hour clock.  In some locales that normally use 24 hour
+		format (like cs_CZ) this setting has no effect.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>Welcome</term>
+	    <listitem>
+	      <synopsis>Welcome=Welcome to &percnt;n</synopsis>
+	      <para>
+		Controls which text to display next to the logo image in the
+		greeter. The following control chars are supported:
+	      </para>
+	      
+	      <para>
+		&percnt;&percnt; &mdash; the `&percnt;' character
+	      </para>
+	      
+	      <para>
+		&percnt;d &mdash; display's hostname
+	      </para>
+	      
+	      <para>
+		&percnt;h &mdash; Fully qualified hostname
+	      </para>
+
+	      <para>
+		&percnt;m &mdash; machine (processor type)
+	      </para>
+
+	      <para>
+		&percnt;n &mdash; Nodename (i.e. hostname without .domain)
+	      </para>
+	      
+	      <para>
+		&percnt;r &mdash; release (OS version)
+	      </para>
+	      
+	      <para>
+		&percnt;s &mdash; sysname (i.e. OS)
+	      </para>
+	      	      
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>XineramaScreen</term>
+	    <listitem>
+	      <synopsis>XineramaScreen=0</synopsis>
+	      <para>
+		If the Xinerama extension is active the login window
+                will be centered on this physical screen (use 0 for
+                the first screen, 1 for the second..).
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundColor</term>
+	    <listitem>
+	      <synopsis>BackgroundColor=#007777</synopsis>
+	      <para>
+		If the BackgroundType is 2, use this color in the background
+		of the greeter.  Also use it as the back of transparent images
+		set on the background and if the BackgroundRemoteOnlyColor
+		is set and this is a remote display.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundImage</term>
+	    <listitem>
+	      <synopsis>BackgroundImage=somefile.png</synopsis>
+	      <para>
+		If the BackgroundType is 1, then display this file as the
+		bacground in the greeter.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundProgram</term>
+	    <listitem>
+	      <synopsis>BackgroundProgram=/usr/bin/xeyes</synopsis>
+	      <para>
+		If set this program will be run in the background while
+                the login window is being displayed.  Note that not all
+		programs will run this way, since gdm does not usually have
+		a home directory.  You could set up home directory for the
+		gdm user if you wish to run applications which require it.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundRemoteOnlyColor</term>
+	    <listitem>
+	      <synopsis>BackgroundRemoteOnlyColor=true</synopsis>
+	      <para>
+		On remote displays only set the color background.  This is
+		to make network load lighter.  The BackgroundProgram is also
+		not run.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundScaleToFit</term>
+	    <listitem>
+	      <synopsis>BackgroundScaleToFit=true</synopsis>
+	      <para>
+		Scale background image to fit the screen.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>BackgroundType</term>
+	    <listitem>
+	      <synopsis>BackgroundType=2</synopsis>
+	      <para>
+		The type of background to set.  0 is none, 1 is image and 2
+		is color.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+
+	  <varlistentry>
+	    <term>SetPosition</term>
+	    <listitem>
+	      <synopsis>SetPosition=true</synopsis>
+	      <para>
+		If true the position of the login window is determined
+                by PositionX/PositionY.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>PositionX</term>
+	    <listitem>
+	      <synopsis>PositionX=200</synopsis>
+	      <para>
+		The horizontal position of the login window.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>PositionY</term>
+	    <listitem>
+	      <synopsis>PositionY=100</synopsis>
+	      <para>
+		The vertical position of the login window.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>ShowGnomeChooserSession</term>
+	    <listitem>
+	      <synopsis>ShowGnomeChooserSession=true</synopsis>
+	      <para>
+		Should the greeter show the Gnome Chooser session, when
+		a session named 'Gnome' session is also present
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>ShowGnomeFailsafeSession</term>
+	    <listitem>
+	      <synopsis>ShowGnomeFailsafeSession=true</synopsis>
+	      <para>
+		Should the greeter show the Gnome Failsafe session
+		in the sessions list.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	  <varlistentry>
+	    <term>ShowXtermFailsafeSession</term>
+	    <listitem>
+	      <synopsis>ShowXtermFailsafeSession=true</synopsis>
+	      <para>
+		Should the greeter show the Xterm Failsafe session
+		in the sessions list.
+	      </para>
+	    </listitem>
+	  </varlistentry>	
+
+	</variablelist>
+
+      </sect2>
+
+      <sect2>
+
+	<title>XDCMP Chooser Options</title>
+
+	<variablelist>
+	  <title>[chooser]</title>
+
+	  <varlistentry>
+	    <term>Broadcast</term>
+	    <listitem>
+	      <synopsis>Broadcast=true</synopsis>
+	      <para>
+		If true, the chooser will broadcast a query to the local
+		network and collect responses.  This way the chooser will
+		always show all available managers on the network.  If you
+		need to add some hosts not local to this network, or if you
+		don't want to use Broadcast, you can list them in the Hosts
+		key.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>DefaultHostImage</term>
+	    <listitem>
+	      <synopsis>DefaultHostImage=share/pixmaps/nohost.png</synopsis>
+	      <para>
+		File name for the default host icon. This image will be
+		displayed if no icon is specified for a given host. The
+		file must be in an Imlib supported format and it must be
+		readable for the GDM user.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>HostImageDir</term>
+	    <listitem>
+	      <synopsis>HostImageDir=share/hosts</synopsis>
+	      <para>
+		Repository for host icon files. The sysadmin can place
+		icons for remote hosts here and they will appear in
+		<filename>gdmchooser</filename>.
+	      </para>
+	      
+	      <para>
+		The file name must match the fully qualified name (FQDN) for
+		the host.  The icons must be stored in Imlib supported formats
+		and they must be readable to the gdm user.
+	      </para>
+	      
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Hosts</term>
+	    <listitem>
+	      <synopsis>Hosts=host1,host2</synopsis>
+	      <para>
+		The hosts which should be listed in the chooser.  The chooser
+		will only list them if they respond.  This is done in addition
+		to broadcast (if Broadcast is set), so you need not list
+		hosts on the local network.  This is useful if your
+		networking setup doesn't allow all hosts to be reachable
+		by a broadcast packet.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>ScanTime</term>
+	    <listitem>
+	      <synopsis>ScanTime=3</synopsis>
+	      <para>
+		Specifies how many seconds the chooser should wait for
+		replies to its BROADCAST_QUERY.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+	
+      </sect2>
+
+      <sect2>
+
+	<title>X Server definitions</title>
+
+	<para>
+	  To set up X servers, you need to provide gdm with
+	  information about the installed X servers.  You can
+	  have as many different definitions as you wish, each
+	  identified with a unique name.  The name
+	  <filename>Standard</filename>
+	  is required.  If you do not specify this server, gdm
+	  will assume default values for a 'Standard' server
+	  and the path given by <filename>daemon/StandardXServer</filename>.
+	  <filename>Standard</filename> is used as the default,
+	  in situations when no other server has been defined.
+	</para>
+
+	<para>
+	  Servers are defined by sections named <filename>server-</filename>
+	  followed by the identifier of this server.  This should be a 
+	  simple ascii string with no spaces.  If you use the GUI
+	  configurator, it will use random words for these.  These will
+	  not be user visible, they are just needed to uniquel identify the
+	  server.
+	</para>
+	
+	<variablelist>
+	  <title>[server-Standard]</title>
+
+	  <varlistentry>
+	    <term>name</term>
+	    <listitem>
+	      <synopsis>name=Standard server</synopsis>
+	      <para>
+		The name that will be displayed to the user.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>command</term>
+	    <listitem>
+	      <synopsis>command=/usr/bin/X11/X</synopsis>
+	      <para>
+		The command to execute, with full path to the binary
+		of the X server, and any extra arguments needed.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>flexible</term>
+	    <listitem>
+	      <synopsis>flexible=true</synopsis>
+	      <para>
+		Indicates if this server is available as a choice when a
+		user wishes to run a flexible server.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	</variablelist>
+
+      </sect2>
+
+      <sect2>
+
+	<title>Local X Server Configuration</title>
+
+	<variablelist>
+	  <title>[servers]</title>
+	  
+	  <varlistentry>
+	    <term>0</term>
+	    <listitem>
+	      <synopsis>0=Standard</synopsis>
+	      <para>
+		Control section for local X servers. Each line indicates
+		the local display number and the command that needs to
+		be run to start the X server(s).
+	      </para>
+
+	      <para>
+		The command can either be a path to an X executable, or
+		a name of one of the server definitions.  This can be
+		followed by some arguments that should be passed to the
+		X server when executed.
+	      </para>
+
+	      <para>
+		The gdm daemon doesn't enforce the numbers to be in
+		order or for them to be "packed".  However when you use
+		the GUI configurator, the servers will always start from
+		0 and go up by 1.  That is, leaving no holes.
+	      </para>
+	      
+	      <para>
+		GDM will splice "<filename>-auth
+		  &lt;ServAuthDir&gt;/:n.Xauth :n</filename>", where n is
+		the display number.  Inside the command line before all
+		other arguments before running the server.
+	      </para>
+
+	      <para>
+		On some systems it is necessary for gdm to know on which
+		virtual consoles to run the X server.  In this case,
+		(if running XFree86) add "vt7" to the command line for example
+		to run on virtual console 7.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	</variablelist>
+
+      </sect2>
+	
+    </sect1>
+    
+  </chapter>
+  
+</book>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->               
