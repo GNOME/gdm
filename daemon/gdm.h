@@ -330,7 +330,7 @@ struct _GdmForwardQuery {
 
 /* some extra xdmcp opcodes that xdm will happily ignore since they'll be
  * the wrong xdmcp version anyway */
-#define GDM_XDMCP_PROTOCOL_VERSION 1000
+#define GDM_XDMCP_PROTOCOL_VERSION 1001
 enum {
 	GDM_XDMCP_FIRST_OPCODE = 1000, /*just a marker, not an opcode */
 
@@ -343,7 +343,7 @@ enum {
 		 * dropped on the floor, however, it is not completely
 		 * necessary for it to get through.
 		 *
-		 * Argument is ARRAY8 with the hostname of the manager */
+		 * Argument is ARRAY8 with the address of the originating host */
 	GDM_XDMCP_LAST_OPCODE /*just a marker, not an opcode */
 };
 

@@ -1,3 +1,15 @@
+Sat Sep 01 04:15:38 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/xdmcp.c, daemon/choose.[ch]: Change the gdm
+	  extension protocol, the MANAGED_FORWARD passes address of origin
+	  rather then hostname of self.  And we now handle the message
+	  correctly.  Also on DECLINE, send a descriptive english string
+	  to aid in debugging XDMCP setup.
+
+	* configure.in: raise version
+
+	* config/gdm.conf.in: add the DisplaysPerHost default
+
 Sat Sep 01 00:47:36 2001  George Lebl <jirka@5z.com>
 
 	* daemon/xdmcp.c, daemon/gdm.[ch], daemon/server.c: Implement

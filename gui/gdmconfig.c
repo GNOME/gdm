@@ -814,6 +814,7 @@ gdm_config_parse_most (gboolean factory)
     gdm_spin_set("max_wait_time", gnome_config_get_int(GDM_KEY_MAXWAIT));
     gdm_spin_set("max_indirect_wait_time", gnome_config_get_int(GDM_KEY_MAXINDWAIT));
     gdm_spin_set("ping_interval", gnome_config_get_int(GDM_KEY_PINGINTERVAL));
+    gdm_spin_set("displays_per_host", gnome_config_get_int(GDM_KEY_DISPERHOST));
     gdm_entry_set("xdmcp_willing_entry", gnome_config_get_string (GDM_KEY_WILLING));
     
     /* Fill the widgets in Sessions tab */
@@ -1421,6 +1422,7 @@ write_config (void)
     gdm_spin_write("max_wait_time", GDM_KEY_MAXWAIT);
     gdm_spin_write("max_indirect_wait_time", GDM_KEY_MAXINDWAIT);
     gdm_spin_write("ping_interval", GDM_KEY_PINGINTERVAL);
+    gdm_spin_write("displays_per_host", GDM_KEY_DISPERHOST);
     gdm_entry_write("xdmcp_willing_entry", GDM_KEY_WILLING);
     
     /* write out the widget contents of the Sessions tab */

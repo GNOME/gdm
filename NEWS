@@ -9,6 +9,19 @@ Ahh news...
   of did before)
 
 - XDMCP can now run a script to get a custom WILLING status script
+  (Matt Forrest, me)
+
+- Change the gdm extension protocol to XDMCP.  The MANAGED_FORWARD
+  was being used in a wrong way and required a slight protocol change,
+  as this is a non-required part of the protocol nothing will break.
+
+- When declining a connection, give statement why it is, to aid in
+  debugging your XDMCP setup.
+
+- Implement the (previously documented) xdmcp/DisplaysPerHost
+  configuration option.  So now the default is one connection per
+  host, so you may need to change this in your setup if you need
+  more.
 
 - Fix one case of s/login/username/ in the greeter and in XDMCP mode,
   the button to kill the login is "Disconnect" and not "Quit"
@@ -17,6 +30,9 @@ Ahh news...
   the configurator documentation has not been updated however.
 
 - Many, many fixes mostly leaks, some minor some bigger
+
+- Updated translations (Christian Rose, Abel Cheung, Kjartan Maraas,
+  Zbigniew Chyla)
 
 2.2.4.0 stuff:
 

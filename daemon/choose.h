@@ -23,6 +23,8 @@
 
 GdmIndirectDisplay *	gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
 GdmIndirectDisplay *	gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
+GdmIndirectDisplay *	gdm_choose_indirect_lookup_by_chosen (struct in_addr *chosen,
+							      struct in_addr *origin);
 void			gdm_choose_indirect_dispose (GdmIndirectDisplay *id);
 
 /* dispose of indirect display of id, if no host is set */

@@ -150,11 +150,12 @@ static void gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa);
 static void gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type);
 static void gdm_xdmcp_send_accept (const char *hostname, struct sockaddr_in *clnt_sa, gint displaynum);
-static void gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa);
+static void gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa, const char *reason);
 static void gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid);
 static void gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid);
-static void gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa);
+static void gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa,
+					    struct sockaddr_in *origin);
 static gboolean gdm_xdmcp_host_allow (struct sockaddr_in *cnlt_sa);
 static GdmDisplay *gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint);
 static GdmDisplay *gdm_xdmcp_display_lookup (CARD32 sessid);
@@ -933,28 +934,25 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
 }
 
 static void
-gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa)
+gdm_xdmcp_send_managed_forward (struct sockaddr_in *clnt_sa,
+				struct sockaddr_in *origin)
 {
-	ARRAY8 hostname;
+	ARRAY8 address;
 	XdmcpHeader header;
-	char buffer[1024] = "";
+	struct in_addr addr;
 
 	gdm_debug ("gdm_xdmcp_send_managed_forward: Sending MANAGED_FORWARD to %s", inet_ntoa (clnt_sa->sin_addr));
 
-	hostname.data = buffer;
-	if (gethostname (hostname.data, 1023) != 0) {
-		/* eek ! */
-		return;
-	}
-
-	hostname.length = strlen (hostname.data);
+	address.length = sizeof (struct in_addr);
+	address.data = (void *)&addr;
+	memcpy (address.data, &(origin->sin_addr), sizeof (struct in_addr));
 
 	header.opcode = (CARD16) GDM_XDMCP_MANAGED_FORWARD;
-	header.length = 4 + hostname.length;
+	header.length = 4 + address.length;
 	header.version = GDM_XDMCP_PROTOCOL_VERSION;
 	XdmcpWriteHeader (&buf, &header);
 
-	XdmcpWriteARRAY8 (&buf, &hostname);
+	XdmcpWriteARRAY8 (&buf, &address);
 	XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		    (int)sizeof (struct sockaddr_in));
 }
@@ -966,7 +964,7 @@ get_host_from_addr (struct sockaddr_in *clnt_sa)
 	struct hostent *he;
 
 	/* Find client hostname */
-	he = gethostbyaddr ((gchar *) &clnt_sa->sin_addr,
+	he = gethostbyaddr ((gchar *) &(clnt_sa->sin_addr),
 			    sizeof (struct in_addr),
 			    AF_INET);
 
@@ -1108,14 +1106,23 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 
 	    if (pending >= GdmMaxPending) {
 		    gdm_debug ("gdm_xdmcp_handle_request: maximum pending");
-		    gdm_xdmcp_send_decline (clnt_sa);	
+		    /* Don't translate, this goes over the wire to servers where we
+		    * don't know the charset or language, so it must be ascii */
+		    gdm_xdmcp_send_decline (clnt_sa, "Maximum pending servers");	
 	    } else {
 		    gdm_xdmcp_send_accept (hostname, clnt_sa, clnt_dspnum);
 	    }
 
 	    g_free (hostname);
     } else {
-	    gdm_xdmcp_send_decline (clnt_sa);	
+	    /* Don't translate, this goes over the wire to servers where we
+	    * don't know the charset or language, so it must be ascii */
+	    if (mitauth)
+		    gdm_xdmcp_send_decline (clnt_sa, "Only MIT-MAGIC-COOKIE-1 supported");	
+	    else if (sessions < GdmMaxSessions)
+		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions reached");	
+	    else 
+		    gdm_xdmcp_send_decline (clnt_sa, "Maximum number of open sessions from your host reached");	
     }
 
     XdmcpDisposeARRAY8 (&clnt_authname);
@@ -1178,12 +1185,13 @@ gdm_xdmcp_send_accept (const char *hostname,
 
 
 static void
-gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa)
+gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa, const char *reason)
 {
     XdmcpHeader header;
     ARRAY8 authentype;
     ARRAY8 authendata;
     ARRAY8 status;
+    GdmForwardQuery *fq;
     
     gdm_debug ("gdm_xdmcp_send_decline: Sending DECLINE to %s", 
 	       inet_ntoa (clnt_sa->sin_addr));
@@ -1194,9 +1202,7 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa)
     authendata.data = (CARD8 *) 0;
     authendata.length = (CARD16) 0;
     
-    /* Don't translate, this goes over the wire to servers where we
-     * don't know the charset or language, so it must be ascii */
-    status.data = "Session refused";
+    status.data = (char *)reason;
     status.length = strlen (status.data);
     
     header.version = XDM_PROTOCOL_VERSION;
@@ -1212,6 +1218,14 @@ gdm_xdmcp_send_decline (struct sockaddr_in *clnt_sa)
     
     XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr)clnt_sa,
 		(int)sizeof (struct sockaddr_in));
+
+    /* Send MANAGED_FORWARD to indicate that the connection 
+     * reached some sort of resolution */
+    fq = gdm_forward_query_lookup (clnt_sa);
+    if (fq != NULL) {
+	    gdm_xdmcp_send_managed_forward (fq->from_sa, clnt_sa);
+	    gdm_forward_query_dispose (fq);
+    }
 }
 
 
@@ -1288,7 +1302,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	 * send MANAGED_FORWARD */
 	fq = gdm_forward_query_lookup (clnt_sa);
 	if (fq != NULL) {
-		gdm_xdmcp_send_managed_forward (fq->from_sa);
+		gdm_xdmcp_send_managed_forward (fq->from_sa, clnt_sa);
 		gdm_forward_query_dispose (fq);
 	}
 
@@ -1332,24 +1346,33 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 static void 
 gdm_xdmcp_handle_managed_forward (struct sockaddr_in *clnt_sa, gint len)
 {
-	ARRAY8 clnt_hostname;
+	ARRAY8 clnt_address;
 	GdmIndirectDisplay *id;
+
 
 	gdm_debug ("gdm_xdmcp_handle_managed_forward: Got MANAGED_FORWARD from %s", inet_ntoa (clnt_sa->sin_addr));
 
 	/* Hostname */
-	if ( ! XdmcpReadARRAY8 (&buf, &clnt_hostname)) {
-		gdm_error (_("%s: Could not read hostname"),
+	if ( ! XdmcpReadARRAY8 (&buf, &clnt_address)) {
+		gdm_error (_("%s: Could not read address"),
 			   "gdm_xdmcp_handle_managed_forward");
 		return;
 	}
 
-	id = gdm_choose_indirect_lookup (clnt_sa);
+	if (clnt_address.length != sizeof (struct in_addr)) {
+		gdm_error (_("%s: Could not read address"),
+			   "gdm_xdmcp_handle_managed_forward");
+		XdmcpDisposeARRAY8 (&clnt_address);
+		return;
+	}
+
+	id = gdm_choose_indirect_lookup_by_chosen (&(clnt_sa->sin_addr),
+						   (struct in_addr *)clnt_address.data);
 	if (id != NULL) {
 		gdm_choose_indirect_dispose (id);
 	}
 
-	XdmcpDisposeARRAY8(&clnt_hostname);
+	XdmcpDisposeARRAY8 (&clnt_address);
 }
 
 
