@@ -1,16 +1,17 @@
 # gdm nl.po
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Hein-Jan Leliveld <h.j.leliveld@student.tn.tudelft.nl>, 1999.
-#
+# Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu, 2001.
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm VERSION\n"
+"Project-Id-Version: gdm 2.2\n"
 "POT-Creation-Date: 2001-09-01 04:19-0700\n"
-"PO-Revision-Date: 1998-10-05 21:08+0200\n"
-"Last-Translator: Dennis Smit <sienap@area101.penguin.nl>\n"
-"Language-Team: nl <nl@li.org>\n"
+"PO-Revision-Date: 2001-12-07 03:16+0100\n"
+"Last-Translator: Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>\n"
+"Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=iso-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Really no need to clean up here - this process is a goner anyway
@@ -35,19 +36,21 @@ msgid ""
 "Failed to start the display server several times in a short time period; "
 "disabling display %s"
 msgstr ""
+"Kon de schermserver enkele keren na elkaar niet starten. Scherm %s wordt "
+"uitgeschakeld."
 
 #: daemon/display.c:209
-#, fuzzy, c-format
+#, fuzzy
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr "gdm_display_manage: Niet gelukt om gdm slaaf proces te forken voor %d"
 
 #: daemon/errorgui.c:164
 msgid "gdm_error_box: Failed to execute self"
-msgstr ""
+msgstr "gdm_error_box: Kon mezelf niet starten"
 
 #: daemon/errorgui.c:170
 msgid "gdm_error_box: Cannot fork to display error/info box"
-msgstr ""
+msgstr "gdm_error_box: Kan fout/info venster niet fork-en"
 
 #: daemon/filecheck.c:51
 #, c-format
@@ -99,19 +102,25 @@ msgid ""
 "gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
 "it off"
 msgstr ""
+"gdm_config_parse: XDMCP was ingeschakeld terwijl er geen XDMCP ondersteuning "
+"aanwezig is. Wordt uitgeschakeld."
 
 #: daemon/gdm.c:292
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
+"gdm_config_parse: Root mag niet automatisch inloggen. Automatisch inloggen "
+"wordt uitgeschakeld"
 
 #: daemon/gdm.c:305
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
+"gdm_config_parse: Root mag niet automatisch inloggen. Tijdgeschakeld inloggen "
+"wordt uitgeschakeld"
 
 #: daemon/gdm.c:311
 msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
-msgstr ""
+msgstr "gdm_config_parse: TimedLoginDelay minder dan 5, dus 5 wordt gebruikt."
 
 #: daemon/gdm.c:321
 msgid "gdm_config_parse: No greeter specified."
@@ -128,12 +137,12 @@ msgstr "gdm_config_parse: Sessiemap niet ingesteld."
 #: daemon/gdm.c:355
 #, c-format
 msgid "%s: Empty server command, using standard one."
-msgstr ""
+msgstr "%s: Lege serveropdracht. Standaard wordt gebruikt."
 
 #: daemon/gdm.c:400
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
-msgstr ""
+msgstr "%s: Scherm nummer %d in gebruik! Ik gebruik %d"
 
 #: daemon/gdm.c:415
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
@@ -145,8 +154,8 @@ msgstr ""
 #: daemon/gdm.c:434
 #, fuzzy, c-format
 msgid ""
-"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%"
-"d to allow configuration!"
+"%s: Xdmcp disabled and no local servers defined. Adding /usr/bin/X11/X on :%d "
+"to allow configuration!"
 msgstr ""
 "gdm_config_parse: XDMCP uitgeschakeld en geen lokale servers ingesteld. "
 "Gestopt."
@@ -190,11 +199,13 @@ msgstr "gdm_config_parse: De gdm groep mag geen root zijn. Gestopt!"
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
 msgstr ""
+"%s Groeter niet gevonden of kan niet gestart worden door de gdm gebruiker"
 
 #: daemon/gdm.c:509
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr ""
+"%s Kiezer niet gevonden of kan niet gestart worden door de gdm gebruiker"
 
 #: daemon/gdm.c:517
 #, c-format
@@ -234,48 +245,58 @@ msgstr "gdm_daemonify: setid() mislukt: %s!"
 #: daemon/gdm.c:679
 #, c-format
 msgid "deal_with_x_crashes: Trying failsafe X server %s"
-msgstr ""
+msgstr "deal_with_x_crashes: Veilige-modus X server wordt gestart %s"
 
 #: daemon/gdm.c:712
 msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
-msgstr ""
+msgstr "deal_with_x_crashes: Het Xkeepscrashing script wordt gestart"
 
 #. Shit if we knew what the program was to tell the user,
 #. * the above script would have been defined and we'd run
 #. * it for them
 #: daemon/gdm.c:742 daemon/gdm.c:811
 msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  You will need to log in on a console and rerun "
-"the X configuration program.  Then restart GDM."
+"I cannot start the X server (your graphical interface).  It is likely that it "
+"is not set up correctly.  You will need to log in on a console and rerun the "
+"X configuration program.  Then restart GDM."
 msgstr ""
+"Ik kan de X server (grafische omgeving) niet starten. Waarschijnlijk is deze "
+"niet goed geconfigureerd. U kunt het beste inloggen in een console en het X "
+"configuratieprogramma uitvoeren. Start daarna GDM opnieuw."
 
 #: daemon/gdm.c:747
 msgid ""
 "Would you like me to try to run the X configuration program?  Note that you "
 "will need the root password for this."
 msgstr ""
+"Wilt u dat ik het X configuratieprogramma start? Let op dat u hiervoor wel "
+"het root wachtwoord nodig heeft."
 
 #: daemon/gdm.c:750
 msgid "Please type in the root (privilaged user) password."
-msgstr ""
+msgstr "Geef alstublieft het root (supergebruiker) wachtwoord."
 
 #: daemon/gdm.c:752
 msgid "I will now try to restart the X server again."
-msgstr ""
+msgstr "Ik zal nu proberen om de X server opnieuw te starten."
 
 #: daemon/gdm.c:754
 msgid ""
 "I will disable this X server for now.  Restart GDM when it is configured "
 "correctly."
 msgstr ""
+"Ik zal de X server voorlopig uitschakelen. Start GDM opnieuw wanneer alles "
+"juist geconfigureerd is."
 
 #: daemon/gdm.c:756
 msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  Would you like to view the X server output to "
+"I cannot start the X server (your graphical interface).  It is likely that it "
+"is not set up correctly.  Would you like to view the X server output to "
 "diagnose the problem?"
 msgstr ""
+"Ik kan de X server (grafische omgaving) niet starten. Waarschijnlijk is deze "
+"niet juist geconfigureerd. Wilt u de uitvoer van de X server doorlezen om zo "
+"het probleem te vinden?"
 
 #. else {
 #. * At this point .... screw the user, we don't know how to
@@ -288,6 +309,8 @@ msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr ""
+"Kon de X server meerdere malen in korte tijd niet starten. Scherm %s wordt "
+"uitgeschakeld."
 
 #: daemon/gdm.c:922
 #, c-format
@@ -295,6 +318,8 @@ msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
 "display %s"
 msgstr ""
+"gdm_child_action: Herstart of Halt opdracht gekregen van scherm %s terwijl "
+"het systeemmenu niet zichtbaar is."
 
 #: daemon/gdm.c:930
 #, fuzzy, c-format
@@ -341,11 +366,11 @@ msgstr "gdm_child_action: Herstart mislukt: %s"
 
 #: daemon/gdm.c:1087
 msgid "Gdm restarting ..."
-msgstr ""
+msgstr "Gdm herstart ..."
 
 #: daemon/gdm.c:1092
 msgid "Failed to restart self"
-msgstr ""
+msgstr "Kon mezelf niet herstarten"
 
 #: daemon/gdm.c:1225
 msgid "Only root wants to run gdm\n"
@@ -382,13 +407,13 @@ msgstr "gdm_main: Fout bij het instellen van het CHLD signaal"
 
 #: daemon/gdm.c:1923 daemon/gdm.c:1940
 msgid "Flexible server request denied: Not authenticated"
-msgstr ""
+msgstr "Geen toegang tot flexibele server: Niet geverifieerd"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
 #: daemon/gdm.c:1958
 msgid "Unknown server type requested, using standard server."
-msgstr ""
+msgstr "Onbekend servertype aangevraagd. Standaard wordt gebruikt."
 
 #: daemon/gdm.c:1962
 #, c-format
@@ -426,8 +451,8 @@ msgstr ""
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
-"another display number?  If you answer no, I will attempt to start the "
-"server on %s again.%s"
+"another display number?  If you answer no, I will attempt to start the server "
+"on %s again.%s"
 msgstr ""
 
 #: daemon/server.c:143
@@ -1286,8 +1311,8 @@ msgid ""
 "If you need finer detail, select 'expert' or 'system setup' from the list "
 "above.\n"
 "\n"
-"This will display some of the more complex options of GDM that rarely need "
-"to be changed."
+"This will display some of the more complex options of GDM that rarely need to "
+"be changed."
 msgstr ""
 
 #: gui/gdmconfig.c:65
@@ -1517,7 +1542,8 @@ msgid ""
 msgstr ""
 
 #: gui/gdmconfig.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
+msgid ""
+"A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr ""
 
 #: gui/gdmconfig.desktop.in.h:2
@@ -1857,8 +1883,8 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:88
 msgid ""
-"If you have xinerama multi display setup which screen should the loginw "
-"indow appear on.  0 will usually do just fine."
+"If you have xinerama multi display setup which screen should the loginw indow "
+"appear on.  0 will usually do just fine."
 msgstr ""
 
 #: gui/gdmconfig-strings.c:89
@@ -1871,8 +1897,8 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:91
 msgid ""
-"Show a browser of user face images. The users can put their picture in ~/."
-"gnome/photo"
+"Show a browser of user face images. The users can put their picture in "
+"~/.gnome/photo"
 msgstr ""
 
 #: gui/gdmconfig-strings.c:92
@@ -2058,8 +2084,8 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:139
 msgid ""
-"Determines whether GDM should kill X clients started by the init scripts "
-"when the user logs in."
+"Determines whether GDM should kill X clients started by the init scripts when "
+"the user logs in."
 msgstr ""
 
 #: gui/gdmconfig-strings.c:140
@@ -2355,9 +2381,9 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:210
 msgid ""
-"A script to run when the X server keeps crashing and the failsafe X server "
-"is either empty or also didn't take.  This will run an X setup program "
-"defined below."
+"A script to run when the X server keeps crashing and the failsafe X server is "
+"either empty or also didn't take.  This will run an X setup program defined "
+"below."
 msgstr ""
 
 #: gui/gdmconfig-strings.c:211
@@ -2596,8 +2622,8 @@ msgstr ""
 #: gui/gdmconfig-strings.c:273
 msgid ""
 "Configure the GNOME Display Manager.\n"
-"Please submit any bugs or feature requests at http://bugzilla.gnome.org "
-"under the `gdm' product."
+"Please submit any bugs or feature requests at http://bugzilla.gnome.org under "
+"the `gdm' product."
 msgstr ""
 
 #: gui/gdmconfig-strings.c:275
@@ -2692,8 +2718,8 @@ msgstr ""
 
 #: gui/gdmflexiserver.c:551
 msgid ""
-"The nested X server (Xnest) cannot connect to your current X server.  You "
-"may be missing an X authorization file."
+"The nested X server (Xnest) cannot connect to your current X server.  You may "
+"be missing an X authorization file."
 msgstr ""
 
 #: gui/gdmflexiserver.c:556
@@ -2952,7 +2978,7 @@ msgid ""
 msgstr ""
 
 #: gui/gdmlogin.c:526 gui/gdmlogin.c:532 gui/gdmlogin.c:539
-#, c-format
+#, fuzzy, c-format
 msgid "Welcome to %s"
 msgstr "Welkom bij %s"
 
@@ -3407,167 +3433,237 @@ msgstr ""
 msgid "Choose an icon"
 msgstr ""
 
-#~ msgid "gdm_main: Error setting up TERM signal handler"
-#~ msgstr "gdm_main: Fout bij het instellen van het TERM signaal"
+msgid "gdm_main: Error setting up TERM signal handler"
+msgstr "gdm_main: Fout bij het instellen van het TERM signaal"
 
-#~ msgid "gdm_main: Error setting up INT signal handler"
-#~ msgstr "gdm_main: Fout bij het instellen van het INT signaal"
-
-#, fuzzy
-#~ msgid "gdm_main: Error setting up HUP signal handler"
-#~ msgstr "main: Fout bij het instellen van het HUP signaal"
-
-#~ msgid "gdm_main: Error setting up CHLD signal handler"
-#~ msgstr "gdm_main: Fout bij het instellen van het CHLD signaal"
-
-#~ msgid "Login:"
-#~ msgstr "Login:"
-
-#~ msgid "Root login disallowed"
-#~ msgstr "Root login niet toegestaan"
+msgid "gdm_main: Error setting up INT signal handler"
+msgstr "gdm_main: Fout bij het instellen van het INT signaal"
 
 #, fuzzy
-#~ msgid "Login disabled"
-#~ msgstr "Root login niet toegestaan"
+msgid "gdm_main: Error setting up HUP signal handler"
+msgstr "main: Fout bij het instellen van het HUP signaal"
 
-#~ msgid "gdm_xdmcp_init: Can't alloc fifopath"
-#~ msgstr "gdm_xdmcp_init: Kan het fifopad niet aanmaken!"
+msgid "gdm_main: Error setting up CHLD signal handler"
+msgstr "gdm_main: Fout bij het instellen van het CHLD signaal"
 
-#~ msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
-#~ msgstr "gdm_xdmcp_init: Kan FIFO voor kiezer niet aanmaken"
+msgid "Login:"
+msgstr "Login:"
 
-#~ msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
-#~ msgstr "gdm_xdmcp_init: Kan FIFO niet openen voor kiezer"
+msgid "Root login disallowed"
+msgstr "Root login niet toegestaan"
 
-#~ msgid "Display not authorized to connect"
-#~ msgstr "Beeld heeft geen toestemming om verbinding te maken"
+#, fuzzy
+msgid "Login disabled"
+msgstr "Root login niet toegestaan"
 
-#~ msgid "Halt..."
-#~ msgstr "Stoppen..."
+msgid "gdm_xdmcp_init: Can't alloc fifopath"
+msgstr "gdm_xdmcp_init: Kan het fifopad niet aanmaken!"
 
-#~ msgid "Cancel"
-#~ msgstr "Annuleer"
+msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
+msgstr "gdm_xdmcp_init: Kan FIFO voor kiezer niet aanmaken"
 
-#~ msgid "No session scripts found. Aborting!"
-#~ msgstr "Geen sessiescripts gevonden. Gestopt!"
+msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
+msgstr "gdm_xdmcp_init: Kan FIFO niet openen voor kiezer"
 
-#~ msgid "User unknown"
-#~ msgstr "Onbekende gebruiker"
+msgid "Display not authorized to connect"
+msgstr "Beeld heeft geen toestemming om verbinding te maken"
 
-#~ msgid "Incorrect password"
-#~ msgstr "Wachtwoord is niet goed"
+msgid "Halt..."
+msgstr "Stoppen..."
 
-#~ msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
-#~ msgstr "gdm_slave_xsync_ping: Fout bij het instellen van het ALARM signaal"
+msgid "Cancel"
+msgstr "Annuleer"
 
-#~ msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
-#~ msgstr "gdm_parse_enriched_string: Kan tijdelijke buffer niet mallocen!"
+msgid "No session scripts found. Aborting!"
+msgstr "Geen sessiescripts gevonden. Gestopt!"
 
-#~ msgid "Iconify"
-#~ msgstr "Minimaliseer"
+msgid "User unknown"
+msgstr "Onbekende gebruiker"
 
-#~ msgid ""
-#~ "According to %s, gdm was already running (%d),\n"
-#~ "but seems to have been murdered mysteriously.\n"
-#~ msgstr ""
-#~ "Volgens %s was gdm al gestart (%d),\n"
-#~ "maar het lijkt of gdm gestopt is.\n"
+msgid "Incorrect password"
+msgstr "Wachtwoord is niet goed"
 
-#~ msgid "gdm_server_stop: Could not unlink auth file: %s!"
-#~ msgstr "gdm_server_stop: Kan de link van het auth bestand niet wissen: %s!"
+msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
+msgstr "gdm_slave_xsync_ping: Fout bij het instellen van het ALARM signaal"
 
-#~ msgid "gdm_slave_session_init: User '%s' not found. Aborting."
-#~ msgstr "gdm_slave_session_init: Gebruiker '%s' niet gevonden. Gestopt."
+msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
+msgstr "gdm_parse_enriched_string: Kan tijdelijke buffer niet mallocen!"
 
-#~ msgid ""
-#~ "gdm_auth_secure_display: Error starting xauth process: %s. Running "
-#~ "insecure!"
-#~ msgstr ""
-#~ "gdm_auth_secure_display: Fout bij het starten van het xauth proces: %s. "
-#~ "Onveilig gestart!"
+msgid "Iconify"
+msgstr "Minimaliseer"
 
-#~ msgid ""
-#~ "gdm_auth_secure_display: Error forking xauth process. Running insecure!"
-#~ msgstr ""
-#~ "gdm_auth_secure_display: Fout bij het forken van het xauth proces. "
-#~ "Onveilig gestart!"
+msgid ""
+"According to %s, gdm was already running (%d),\n"
+"but seems to have been murdered mysteriously.\n"
+msgstr ""
+"Volgens %s was gdm al gestart (%d),\n"
+"maar het lijkt of gdm gestopt is.\n"
 
-#~ msgid "gdm_auth_user_add: Error starting xauth process: %s"
-#~ msgstr "gdm_auth_user_add: Fout bij het starten van het xauth proces: %s"
+msgid "gdm_server_stop: Could not unlink auth file: %s!"
+msgstr "gdm_server_stop: Kan de link van het auth bestand niet wissen: %s!"
 
-#~ msgid "gdm_auth_user_add: Error forking xauth process."
-#~ msgstr "gdm_auth_user_add: Fout bij het forken van het xauth proces."
+msgid "gdm_slave_session_init: User '%s' not found. Aborting."
+msgstr "gdm_slave_session_init: Gebruiker '%s' niet gevonden. Gestopt."
 
-#~ msgid "gdm_auth_user_remove: Error forking xauth process."
-#~ msgstr "gdm_auth_user_remove: Fout bij het forken van het xauth proces."
+msgid ""
+"gdm_auth_secure_display: Error starting xauth process: %s. Running insecure!"
+msgstr ""
+"gdm_auth_secure_display: Fout bij het starten van het xauth proces: %s. "
+"Onveilig gestart!"
 
-#~ msgid "gdm_exec_command: Can't fork process!"
-#~ msgstr "gdm_exec_command: Kan het proces niet forken!"
+msgid ""
+"gdm_auth_secure_display: Error forking xauth process. Running insecure!"
+msgstr ""
+"gdm_auth_secure_display: Fout bij het forken van het xauth proces. Onveilig "
+"gestart!"
 
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
+msgid "gdm_auth_user_add: Error starting xauth process: %s"
+msgstr "gdm_auth_user_add: Fout bij het starten van het xauth proces: %s"
 
-#~ msgid "Copyright Martin K. Petersen (C) 1998, 1999"
-#~ msgstr "Copyright Martin K. Petersen (C) 1998, 1999"
+msgid "gdm_auth_user_add: Error forking xauth process."
+msgstr "gdm_auth_user_add: Fout bij het forken van het xauth proces."
 
-#~ msgid ""
-#~ "gdm manages local and remote displays and provides the user with a login "
-#~ "window."
-#~ msgstr ""
-#~ "gdm beheert lokale en externe beeldschermen en geeft de gebruikers een "
-#~ "inlog scherm."
+msgid "gdm_auth_user_remove: Error forking xauth process."
+msgstr "gdm_auth_user_remove: Fout bij het forken van het xauth proces."
 
-#~ msgid "Logo not found. No image will be displayed!"
-#~ msgstr "Logo niet gevonden. Er zal geen figuur weergegeven worden!"
+msgid "gdm_exec_command: Can't fork process!"
+msgstr "gdm_exec_command: Kan het proces niet forken!"
 
-#~ msgid "gdm_greeter_parse_config: No configuration file: %s. Aborting."
-#~ msgstr "gdm_greeter_parse_config: Geen configuratiebestand: %s. Gestopt."
+msgid "GNOME"
+msgstr "GNOME"
 
-#~ msgid "messages/welcome=Welcome to %h"
-#~ msgstr "messages/welcome=Welkom bij %h"
+msgid "Copyright Martin K. Petersen (C) 1998, 1999"
+msgstr "Copyright Martin K. Petersen (C) 1998, 1999"
 
-#~ msgid ""
-#~ "Your previous session type %s is not installed on this machine.\n"
-#~ "Do you wish to make %s the default for future sessions?"
-#~ msgstr ""
-#~ "Uw vorige sessie type %s is niet geinstalleerd op deze machine\n"
-#~ "Wilt u %s het standaard type maken voor toekomstige sessies?"
+msgid ""
+"gdm manages local and remote displays and provides the user with a login "
+"window."
+msgstr ""
+"gdm beheert lokale en externe beeldschermen en geeft de gebruikers een inlog "
+"scherm."
 
-#~ msgid ""
-#~ "Your previous session type %s is not installed on this machine.\n"
-#~ "You will be logged in using the %s environment."
-#~ msgstr ""
-#~ "Uw vorige sessie type %s is niet geinstalleerd op deze machine.\n"
-#~ "Er wordt ingelogd met de %s omgeving."
+msgid "Logo not found. No image will be displayed!"
+msgstr "Logo niet gevonden. Er zal geen figuur weergegeven worden!"
 
-#~ msgid ""
-#~ "You have chosen the language %s for this session, but your default "
-#~ "setting is %s.\n"
-#~ "Do you wish to make %s the default language for future sessions?"
-#~ msgstr ""
-#~ "Uw heeft gekozen voor de taal %s voor deze sessie, maar uw "
-#~ "standaardinstelling is %s.\n"
-#~ "Wilt u %s de standaardtaal voor toekomstige sessies maken?"
+msgid "gdm_greeter_parse_config: No configuration file: %s. Aborting."
+msgstr "gdm_greeter_parse_config: Geen configuratiebestand: %s. Gestopt."
 
-#~ msgid ""
-#~ "Your previous language %s is not installed on this machine.\n"
-#~ "Do you wish to make %s the default language for future sessions?"
-#~ msgstr ""
-#~ "Uw vorige taal %s is niet geinstalleerd op deze machine.\n"
-#~ "Wilt u %s de standaardtaal voor toekomstige sessies maken?"
+msgid "messages/welcome=Welcome to %h"
+msgstr "messages/welcome=Welkom bij %h"
 
-#~ msgid ""
-#~ "Your previous language %s is not installed on this machine.\n"
-#~ "Your environment will be %s."
-#~ msgstr ""
-#~ "Uw vorige taal %s is niet geinstalleerd op deze machine.\n"
-#~ "Uw omgeving zal %s worden."
+msgid ""
+"Your previous session type %s is not installed on this machine.\n"
+"Do you wish to make %s the default for future sessions?"
+msgstr ""
+"Uw vorige sessie type %s is niet geinstalleerd op deze machine\n"
+"Wilt u %s het standaard type maken voor toekomstige sessies?"
 
-#~ msgid "Invalid username or password!"
-#~ msgstr "Gebruikersnaam of wachtwoord niet goed!"
+msgid ""
+"Your previous session type %s is not installed on this machine.\n"
+"You will be logged in using the %s environment."
+msgstr ""
+"Uw vorige sessie type %s is niet geinstalleerd op deze machine.\n"
+"Er wordt ingelogd met de %s omgeving."
 
-#~ msgid "gdm_greeter_session_init: Session script directory not found!"
-#~ msgstr "gdm_greeter_session_init: Sessie scriptmap niet gevonden!"
+msgid ""
+"You have chosen the language %s for this session, but your default setting is "
+"%s.\n"
+"Do you wish to make %s the default language for future sessions?"
+msgstr ""
+"Uw heeft gekozen voor de taal %s voor deze sessie, maar uw "
+"standaardinstelling is %s.\n"
+"Wilt u %s de standaardtaal voor toekomstige sessies maken?"
 
-#~ msgid "Languages"
-#~ msgstr "Talen"
+msgid ""
+"Your previous language %s is not installed on this machine.\n"
+"Do you wish to make %s the default language for future sessions?"
+msgstr ""
+"Uw vorige taal %s is niet geinstalleerd op deze machine.\n"
+"Wilt u %s de standaardtaal voor toekomstige sessies maken?"
+
+msgid ""
+"Your previous language %s is not installed on this machine.\n"
+"Your environment will be %s."
+msgstr ""
+"Uw vorige taal %s is niet geinstalleerd op deze machine.\n"
+"Uw omgeving zal %s worden."
+
+msgid "Invalid username or password!"
+msgstr "Gebruikersnaam of wachtwoord niet goed!"
+
+msgid "gdm_greeter_session_init: Session script directory not found!"
+msgstr "gdm_greeter_session_init: Sessie scriptmap niet gevonden!"
+
+msgid "Languages"
+msgstr "Talen"
+
+#, fuzzy
+msgid "%s: Could not make new cookie file in %s"
+msgstr "gdm_auth_secure_display: Kan cookie bestand %s niet openen"
+
+#, fuzzy
+msgid "gdm_failsafe_question: Failed to execute self"
+msgstr "gdm_exec_command: Starten van %s mislukt"
+
+msgid "gdm_failsafe_question: Cannot fork to display error/info box"
+msgstr ""
+
+msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
+msgstr ""
+
+#, fuzzy
+msgid "%s: Couldn't set groupid to 0"
+msgstr "gdm_slave_greeter: Kan groepsid niet instellen naar %d"
+
+msgid ""
+"I could not start the X\n"
+"server (your graphical environment)\n"
+"due to some internal error.\n"
+"Please contact your system administrator\n"
+"or check your syslog to diagnose.\n"
+"In the meantime this display will be\n"
+"disabled.  Please restart gdm when\n"
+"the problem is corrected."
+msgstr ""
+
+msgid ""
+"Your home directory is listed as:\n"
+"'%s'\n"
+"but it does not appear to exist.\n"
+"Do you want to log in with the root\n"
+"directory as your home directory?\n"
+"\n"
+"It is unlikely anything will work unless\n"
+"you use a failsafe session."
+msgstr ""
+
+#, fuzzy
+msgid "%s: Home directory for %s: '%s' does not exist!"
+msgstr "%s: Map %s bestaat niet."
+
+#, fuzzy
+msgid "Can't set PAM_RUSER=%s"
+msgstr "Kan PAM_TTY=%s niet instellen"
+
+#, fuzzy
+msgid "Can't set PAM_RHOST=%s"
+msgstr "Kan PAM_TTY=%s niet instellen"
+
+msgid "Cannot setup pam handle with null login and/or display"
+msgstr ""
+
+#, fuzzy
+#~ msgid "%s: Couldn't set groupid to %d"
+#~ msgstr "gdm_slave_greeter: Kan groepsid niet instellen naar %d"
+
+#, fuzzy
+#~ msgid "%s: initgroups() failed for %s"
+#~ msgstr "gdm_slave_session_start: initgroups() mislukt voor %s. Gestopt."
+
+#, fuzzy
+#~ msgid "%s: Couldn't set userid to %d"
+#~ msgstr "gdm_slave_greeter: Kan gebruikersid niet instellen naar %d"
+
+#, fuzzy
+#~ msgid "%sWelcome to %s%s"
+#~ msgstr "Welkom bij %s"
