@@ -35,7 +35,7 @@ several different X sessions on your local machine at the same time.
 %setup -q
 
 %build
-CFLAGS="-g $RPM_OPT_FLAGS" ./configure --prefix=%prefix --sysconfdir=/etc/X11 --localstatedir=/var
+CFLAGS="-g $RPM_OPT_FLAGS" ./configure --prefix=%prefix --sysconfdir=/etc/X11 --localstatedir=/var --enable-console-helper
 make
 
 %install
@@ -82,7 +82,10 @@ exit 0
 
 %doc AUTHORS COPYING ChangeLog NEWS README
 %{prefix}/bin/*
+${prefix}/sbin/gdmconfig
 %config /etc/pam.d/gdm
+%config /etc/pam.d/gdmconfig
+%config /etc/security/console.apps/gdmconfig
 %config /etc/X11/gdm/gnomerc
 %config /etc/X11/gdm/gdm.conf
 %config /etc/X11/gdm/locale.alias
@@ -94,9 +97,13 @@ exit 0
 %{prefix}/share/gnome/apps/System/gdmconfig.desktop
 %{prefix}/share/locale/*/*/*
 %{prefix}/share/pixmaps/*
+
 %attr(750, gdm, gdm) %dir /var/gdm
 
 %changelog
+* Wed Feb 28 2001 Lee Mallabone <lee0@callnetuk.com>
+- Add necessary paths/flags to use console-helper for gdmconfig.
+
 * Fri Feb 03 2001 George Lebl <jirka@5z.com>
 - Add gdmconfig files
 

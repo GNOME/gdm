@@ -17,6 +17,18 @@ GNOME_X_CHECKS
 
 AM_PATH_LIBGLADE(,,gnome)
 
+dnl Allow users to run gdmconfig using the console helper PAM stuff.
+
+AC_ARG_ENABLE(console-helper,
+  [  --enable-console-helper=[no/yes]],,
+  enable_console_helper=no)
+    
+if test "x$enable_console_helper" = "xyes"; then
+  AM_CONDITIONAL(CONSOLE_HELPER, true)
+else
+  AM_CONDITIONAL(CONSOLE_HELPER, false)
+fi
+
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
