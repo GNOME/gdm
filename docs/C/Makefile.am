@@ -28,6 +28,7 @@ install-data-local: gdm.html
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $$file $(gdm_helpdir)/$$basefile; \
 	done
+	$(INSTALL_DATA) $(srcdir)/gdm.html $(gdm_helpdir)/index.html
 
 gdm.ps: $(SGML_FILES)
 	db2ps $<
