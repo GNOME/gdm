@@ -6,8 +6,7 @@
 gboolean greeter_item_pam_setup (void);
 void greeter_item_pam_prompt (const char *message,
 			      int         entry_len,
-			      gboolean    entry_visible,
-			      gboolean    is_login);
+			      gboolean    entry_visible);
 void greeter_item_pam_message (const char *message);
 void greeter_item_pam_error (const char *message);
 void greeter_item_pam_set_user (const char *user);

@@ -1,3 +1,24 @@
+Wed Jun 04 16:30:38 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/slave.c, daemon/verify-*.c, daemon/verify.h:
+	  The pam setup now asks for the username itself.  This is
+	  accompanied by a set of hacks to make this actually work and
+	  make it work with the browsers.  Add a select user interrupt,	
+	  since user selection is now done differently.  Also support
+	  the username changing during the pam_authenticate as it apparently
+	  can.  Also fix the authenticate sleep delay to not be done if
+	  we have interrupted.
+
+	* config/gdm.conf.in, daemon/gdm.[ch], daemon/misc.[ch],
+	  daemon/verify-*.c: Kill the LocalNoPasswordUsers since it won't
+	  work with the new pam setup
+
+	* gui/gdmlogin.c, gui/greeter/greeter.[ch],
+	  gui/greeter/greeter_item_ulist.c, gui/greeter/greeter_item_pam.[ch]:
+	  Update to the new protocol for the new pam setup.  Also replace the
+	  standard greeter browser with a tree view based browser just like
+	  in the graphical greeter.
+
 Wed Jun 04  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* docs/GdmGreeterThemeManual.txt: Added theme docs.

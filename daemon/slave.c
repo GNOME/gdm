@@ -373,6 +373,7 @@ gdm_slave_start (GdmDisplay *display)
 static gboolean
 setup_automatic_session (GdmDisplay *display, const char *name)
 {
+	char *new_login;
 	g_free (login);
 	login = g_strdup (name);
 
@@ -387,8 +388,15 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 
 	gdm_debug ("setup_automatic_session: DisplayInit script finished");
 
-	if ( ! gdm_verify_setup_user (display, login, display->name))
+	new_login = NULL;
+	if ( ! gdm_verify_setup_user (display, login,
+				      display->name, &new_login))
 		return FALSE;
+
+	if (new_login != NULL) {
+		g_free (login);
+		login = g_strdup (new_login);
+	}
 
 	gdm_debug ("setup_automatic_session: Automatic login successful");
 
@@ -3328,6 +3336,9 @@ check_for_interruption (const char *msg)
 			/* Not interrupted, continue reading input,
 			 * just proxy this to the master server */
 			return TRUE;
+		case GDM_INTERRUPT_SELECT_USER:
+			gdm_verify_select_user (&msg[2]);
+			break;
 		default:
 			break;
 		}

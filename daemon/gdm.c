@@ -104,7 +104,6 @@ gchar *GdmLocaleFile = NULL;
 gchar *GdmGnomeDefaultSession = NULL;
 gchar *GdmAutomaticLogin = NULL;
 gboolean GdmAutomaticLoginEnable = FALSE;
-gchar *GdmLocalNoPasswordUsers = NULL;
 gboolean GdmAlwaysRestartServer = FALSE;
 gchar *GdmConfigurator = NULL;
 gboolean GdmConfigAvailable = FALSE;
@@ -241,7 +240,6 @@ gdm_config_parse (void)
     GdmDisplayInit = gnome_config_get_string (GDM_KEY_INITDIR);
     GdmAutomaticLoginEnable = gnome_config_get_bool (GDM_KEY_AUTOMATICLOGIN_ENABLE);
     GdmAutomaticLogin = gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN);
-    GdmLocalNoPasswordUsers = gnome_config_get_string (GDM_KEY_LOCALNOPASSWORDUSERS);
     GdmAlwaysRestartServer = gnome_config_get_bool (GDM_KEY_ALWAYSRESTARTSERVER);
     GdmGreeter = gnome_config_get_string (GDM_KEY_GREETER);
     GdmRemoteGreeter = gnome_config_get_string (GDM_KEY_REMOTEGREETER);

@@ -57,8 +57,9 @@ static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 typedef struct _GdmLoginUser GdmLoginUser;
 struct _GdmLoginUser {
     uid_t uid;
-    gchar *login;
-    gchar *homedir;
+    char *login;
+    char *homedir;
+    char *gecos;
     GdkPixbuf *picture;
 };
 
@@ -80,6 +81,12 @@ const char *session_titles[] = {
 #define LAST_LANGUAGE "Last"
 #define DEFAULT_LANGUAGE "Default"
 #define SESSION_NAME "SessionName"
+
+enum {
+	GREETER_ULIST_ICON_COLUMN = 0,
+	GREETER_ULIST_LABEL_COLUMN,
+	GREETER_ULIST_LOGIN_COLUMN
+};
 
 static gboolean GdmAllowRoot;
 static gboolean GdmAllowRemoteRoot;
@@ -162,7 +169,8 @@ static GtkTooltips *tooltips;
 static gboolean login_is_local = FALSE;
 static gboolean used_defaults = FALSE;
 
-static GnomeIconList *browser;
+static GtkWidget *browser;
+static GtkTreeModel *browser_model;
 static GdkPixbuf *defface;
 
 /* Eew. Loads of global vars. It's hard to be event controlled while maintaining state */
@@ -170,6 +178,7 @@ static GSList *sessions = NULL;
 static GSList *languages = NULL;
 static GList *users = NULL;
 static gint number_of_users = 0;
+static gint size_of_users = 0;
 
 static gchar *defsess = NULL;
 static const gchar *cursess = NULL;
@@ -178,9 +187,6 @@ static gchar *curuser = NULL;
 static gchar *session = NULL;
 static gchar *language = NULL;
 static gint curdelay = 0;
-
-/* this is true if the prompt is for a login name */
-static gboolean login_entry = FALSE;
 
 static gboolean savesess = FALSE;
 static gboolean savelang = FALSE;
@@ -192,6 +198,7 @@ static pid_t backgroundpid = 0;
 static guint timed_handler_id = 0;
 
 static char *selected_browser_user = NULL;
+static gboolean selecting_user = TRUE;
 
 /* This is true if session dir doesn't exist or is whacked out
  * in some way or another */
@@ -210,8 +217,6 @@ gdm_timer (gpointer data)
 {
 	curdelay --;
 	if ( curdelay <= 0 ) {
-		login_entry = FALSE; /* no matter where we are,
-					this is no longer a login_entry */
 		/* timed interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
 		fflush (stdout);
@@ -792,9 +797,6 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 	gdm_wm_focus_new_windows (TRUE);
 
 	/* configure interruption */
-	login_entry = FALSE; /* no matter where we are,
-				this is no longer a login_entry */
-	/* configure interruption */
 	printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
 	fflush (stdout);
 }
@@ -1241,7 +1243,8 @@ evil (const char *user)
 static void
 gdm_login_enter (GtkWidget *entry)
 {
-	static const gchar *login_string;
+	const char *login_string;
+	const char *str;
 	char *tmp;
 
 	if (entry == NULL)
@@ -1250,11 +1253,11 @@ gdm_login_enter (GtkWidget *entry)
 	gtk_widget_set_sensitive (entry, FALSE);
 	gtk_widget_set_sensitive (ok_button, FALSE);
 
-	if (GdmBrowser)
-		gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
-
 	login_string = gtk_entry_get_text (GTK_ENTRY (entry));
 
+
+#if 0
+	/* FIXME: we can't know this is a login entry */
 	/* If in timed login mode, and if this is the login
 	 * entry.  Then an enter by itself is sort of like I want to
 	 * log in as the timed user "damn it".  */
@@ -1267,26 +1270,20 @@ gdm_login_enter (GtkWidget *entry)
 		fflush (stdout);
 		return;
 	}
+#endif
 
-	/* Save login. I'm making the assumption that login is always
-	 * the first thing entered. This might not be true for all PAM
-	 * setups. Needs thinking! 
-	 */
-
-	if (login_entry) {
-		g_free (curuser);
-		curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
-
-		/* evilness */
-		if (evil (curuser)) {
-			g_free (curuser);
-			curuser = NULL;
-			gtk_widget_set_sensitive (entry, TRUE);
-			gtk_widget_set_sensitive (ok_button, TRUE);
-			gtk_widget_grab_focus (entry);	
-			gtk_window_set_focus (GTK_WINDOW (login), entry);	
-			return;
-		}
+	str = gtk_label_get_text (GTK_LABEL (label));
+	if (str != NULL &&
+	    strcmp (str, _("Username:")) == 0 &&
+	    /* evilness */
+	    evil (login_string)) {
+		/* obviously being 100% reliable is not an issue for
+		   this test */
+		gtk_widget_set_sensitive (entry, TRUE);
+		gtk_widget_set_sensitive (ok_button, TRUE);
+		gtk_widget_grab_focus (entry);	
+		gtk_window_set_focus (GTK_WINDOW (login), entry);	
+		return;
 	}
 
 	/* clear the err_box */
@@ -1295,7 +1292,6 @@ gdm_login_enter (GtkWidget *entry)
 	err_box_clear_handler = 0;
 	gtk_label_set_text (GTK_LABEL (err_box), "");
 
-	login_entry = FALSE;
 	tmp = ve_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)));
 	printf ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
 	fflush (stdout);
@@ -2007,6 +2003,51 @@ err_box_clear (gpointer data)
 	return FALSE;
 }
 
+static void
+browser_set_user (const char *user)
+{
+  gboolean old_selecting_user = selecting_user;
+  GtkTreeSelection *selection;
+  GtkTreeIter iter = {0};
+  GtkTreeModel *tm = NULL;
+
+  if (browser == NULL)
+    return;
+
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
+  gtk_tree_selection_unselect_all (selection);
+
+  if (ve_string_empty (user))
+    return;
+
+  selecting_user = FALSE;
+
+  tm = gtk_tree_view_get_model (GTK_TREE_VIEW (browser));
+
+  if (gtk_tree_model_get_iter_first (tm, &iter))
+    {
+      do
+        {
+          char *login;
+	  gtk_tree_model_get (tm, &iter, GREETER_ULIST_LOGIN_COLUMN,
+			      &login, -1);
+	  if (login != NULL && strcmp (user, login) == 0)
+	    {
+	      GtkTreePath *path = gtk_tree_model_get_path (tm, &iter);
+	      gtk_tree_selection_select_iter (selection, &iter);
+	      gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (browser),
+					    path, NULL,
+					    FALSE, 0.0, 0.0);
+	      gtk_tree_path_free (path);
+	      break;
+	    }
+	  
+        }
+      while (gtk_tree_model_iter_next (tm, &iter));
+    }
+  selecting_user = old_selecting_user;
+}
+
 static gboolean
 gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 {
@@ -2047,40 +2088,15 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 	g_free (curuser);
 	curuser = g_strdup (buf);
+	if (GdmBrowser) {
+		browser_set_user (curuser);
+		if (ve_string_empty (curuser))
+			gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
+		else
+			gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
+	}
 	printf ("%c\n", STX);
 	fflush (stdout);
-	break;
-    case GDM_LOGIN:
-	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-	buf[len-1] = '\0';
-
-	tmp = ve_locale_to_utf8 (buf);
-	gtk_label_set_text (GTK_LABEL (label), tmp);
-	g_free (tmp);
-
-	gtk_widget_show (GTK_WIDGET (label));
-	gtk_entry_set_text (GTK_ENTRY (entry), "");
-	gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
-	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
-	gtk_widget_set_sensitive (entry, TRUE);
-	gtk_widget_set_sensitive (ok_button, TRUE);
-	gtk_widget_grab_focus (entry);	
-	gtk_window_set_focus (GTK_WINDOW (login), entry);	
-	gtk_widget_show (entry);
-
-	if (GdmBrowser)
-	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
-
-	/* replace rapther then append next message string */
-	replace_msg = TRUE;
-
-	/* the user has seen messages */
-	messages_to_give = FALSE;
-
-	/* this is a login prompt */
-	login_entry = TRUE;
-
-	login_window_resize (FALSE /* force */);
 	break;
 
     case GDM_PROMPT:
@@ -2101,17 +2117,11 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
 
-	if (GdmBrowser)
-	    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
-
-	/* replace rapther then append next message string */
+	/* replace rather then append next message string */
 	replace_msg = TRUE;
 
 	/* the user has seen messages */
 	messages_to_give = FALSE;
-
-	/* this is not a login prompt */
-	login_entry = FALSE;
 
 	login_window_resize (FALSE /* force */);
 	break;
@@ -2134,17 +2144,11 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
 
-	if (GdmBrowser)
-	    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
-
-	/* replace rapther then append next message string */
+	/* replace rather then append next message string */
 	replace_msg = TRUE;
 
 	/* the user has seen messages */
 	messages_to_give = FALSE;
-
-	/* this is not a login prompt */
-	login_entry = FALSE;
 
 	login_window_resize (FALSE /* force */);
 	break;
@@ -2527,103 +2531,74 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 
 static void
-gdm_login_browser_update (void)
+gdm_login_browser_populate (void)
 {
-    GList *list = users;
+    GList *li;
 
-    gnome_icon_list_clear (GNOME_ICON_LIST (browser));
-
-    while (list) {
-	GdmLoginUser *user = list->data;
-
-	gnome_icon_list_append_pixbuf (GNOME_ICON_LIST (browser),
-				       user->picture,
-				       NULL /* icon_filename */,
-				       user->login);
-	list = list->next;
+    for (li = users; li != NULL; li = li->next) {
+	    GdmLoginUser *usr = li->data;
+	    GtkTreeIter iter = {0};
+	    char *label = g_strdup_printf ("%s\n%s", usr->login, usr->gecos);
+	    gtk_list_store_append (GTK_LIST_STORE (browser_model), &iter);
+	    gtk_list_store_set (GTK_LIST_STORE (browser_model), &iter,
+				GREETER_ULIST_ICON_COLUMN, usr->picture,
+				GREETER_ULIST_LOGIN_COLUMN, usr->login,
+				GREETER_ULIST_LABEL_COLUMN, label,
+				-1);
+	    g_free (label);
     }
-
-    gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
 }
 
-
-static gboolean 
-gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
+static void
+user_selected (GtkTreeSelection *selection, gpointer data)
 {
-    GdmLoginUser *user;
-    char *tmp;
+  GtkTreeModel *tm = NULL;
+  GtkTreeIter iter = {0};
 
-    if (!widget || !event)
-	return (TRUE);
+  if ( ! ve_string_empty (curuser))
+	  /* eek, this shouldn't get here, but just in case */
+	  return;
 
-    /* eek, this shouldn't get here, but just in case */
-    if ( ! login_entry)
-	    return TRUE;
+  g_free (selected_browser_user);
+  selected_browser_user = NULL;
 
-    switch (event->type) {
-	    
-    case GDK_BUTTON_PRESS:
-    case GDK_BUTTON_RELEASE:
-	user = g_list_nth_data (users, selected);
-
-	if (user && user->login) {
-		gtk_entry_set_text (GTK_ENTRY (entry), user->login);
-		g_free (selected_browser_user);
-		selected_browser_user = g_strdup (user->login);
-	}
-
-	break;
-
-    case GDK_2BUTTON_PRESS:
-	user = g_list_nth_data (users, selected);
-
-	if (user && user->login) {
-		gtk_entry_set_text (GTK_ENTRY (entry), user->login);
-		g_free (selected_browser_user);
-		selected_browser_user = g_strdup (user->login);
-	}
-
-	if (curuser == NULL)
-	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
-
-	gtk_widget_set_sensitive (entry, FALSE);
-	gtk_widget_set_sensitive (ok_button, FALSE);
-	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
-	login_entry = FALSE;
-	tmp = ve_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)));
-	printf ("%c%s\n", STX, tmp);
-	fflush (stdout);
-	g_free (tmp);
-	break;
-	
-    default: 
-	break;
-    }
-    
-    return (TRUE);
+  if (gtk_tree_selection_get_selected (selection, &tm, &iter)) {
+	  char *login;
+	  gtk_tree_model_get (tm, &iter, GREETER_ULIST_LOGIN_COLUMN,
+			      &login, -1);
+	  if (login != NULL) {
+		  const char *str;
+		  str = gtk_label_get_text (GTK_LABEL (label));
+		  if (selecting_user &&
+		      str != NULL &&
+		      strcmp (str, _("Username:")) == 0) {
+			  /* This is pretty evil, but we really don't
+			     know when it is ok to set the entry */
+			  gtk_entry_set_text (GTK_ENTRY (entry), login);
+		  }
+		  selected_browser_user = g_strdup (login);
+		  if (selecting_user)
+			  gtk_label_set_text (GTK_LABEL (msg),
+					      _("Doubleclick on the user "
+						"to log in"));
+	  }
+  }
 }
 
-
-static gboolean
-gdm_login_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
+static void
+row_activated (GtkTreeView *tree_view,
+	       GtkTreePath *path,
+	       GtkTreeViewColumn *column)
 {
-    if (!widget || !event)
-	return (TRUE);
-
-    switch (event->type) {
-	    
-    case GDK_BUTTON_PRESS:
-    case GDK_BUTTON_RELEASE:
-	gtk_entry_set_text (GTK_ENTRY (entry), "");
-	g_free (selected_browser_user);
-	selected_browser_user = NULL;
-	break;
-	
-    default:
-	break;
-    }
-
-    return (TRUE);
+	if (selected_browser_user != NULL) {
+		gtk_widget_set_sensitive (entry, FALSE);
+		gtk_widget_set_sensitive (ok_button, FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (browser),
+					  FALSE);
+		printf ("%c%c%c%s\n", STX, BEL, GDM_INTERRUPT_SELECT_USER,
+			selected_browser_user);
+		fflush (stdout);
+	}
 }
 
 static gboolean
@@ -3164,77 +3139,55 @@ gdm_login_gui_init (void)
     gtk_table_set_col_spacings (GTK_TABLE (table), 10);
 
     if (GdmBrowser) {
-#if 0
-	GtkStyle *style;
-	GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
-#endif
-	GtkAdjustment *adj;
-	GtkWidget *bframe;
-	GtkWidget *scrollbar;
-	int width;
-	int height;
+	    int height;
+	    GtkTreeSelection *selection;
+	    GtkTreeViewColumn *column;
 
-#if 0
-	/* Find background style for browser */
-	style = gtk_style_copy (login->style);
-	style->bg[GTK_STATE_NORMAL] = bbg;
-	gtk_widget_push_style (style);
-#endif
+	    browser = gtk_tree_view_new ();
+	    gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (browser),
+					       FALSE);
+	    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (browser));
+	    gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+
+	    g_signal_connect (selection, "changed",
+			      G_CALLBACK (user_selected),
+			      NULL);
+	    g_signal_connect (browser, "row_activated",
+			      G_CALLBACK (row_activated),
+			      NULL);
+
+	    browser_model = (GtkTreeModel *)gtk_list_store_new (3,
+								GDK_TYPE_PIXBUF,
+								G_TYPE_STRING,
+								G_TYPE_STRING);
+	    gtk_tree_view_set_model (GTK_TREE_VIEW (browser), browser_model);
+	    column = gtk_tree_view_column_new_with_attributes
+		    (_("Icon"),
+		     gtk_cell_renderer_pixbuf_new (),
+		     "pixbuf", GREETER_ULIST_ICON_COLUMN,
+		     NULL);
+	    gtk_tree_view_append_column (GTK_TREE_VIEW (browser), column);
+      
+	    column = gtk_tree_view_column_new_with_attributes
+		    (_("Username"),
+		     gtk_cell_renderer_text_new (),
+		     "text", GREETER_ULIST_LABEL_COLUMN,
+		     NULL);
+	    gtk_tree_view_append_column (GTK_TREE_VIEW (browser), column);
+
+	    bbox = gtk_scrolled_window_new (NULL, NULL);
+	    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (bbox),
+						 GTK_SHADOW_IN);
+	    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (bbox),
+					    GTK_POLICY_NEVER,
+					    GTK_POLICY_AUTOMATIC);
+	    gtk_container_add (GTK_CONTAINER (bbox), browser);
 	
-	/* Icon list */
-	if (maxwidth < GdmIconMaxWidth/2)
-	    maxwidth = (gint) GdmIconMaxWidth/2;
-	if (maxheight < GdmIconMaxHeight/2)
-	    maxheight = (gint) GdmIconMaxHeight/2;
+	    height = size_of_users + 4 /* some padding */;
+	    if (height > gdm_wm_screen.height * 0.25)
+		    height = gdm_wm_screen.height * 0.25;
 
-	/* browser */
-	browser = GNOME_ICON_LIST (gnome_icon_list_new
-				   (maxwidth+20 /* icon_width */,
-				    NULL /* adjustment */,
-				   0 /* flags */));
-
-	/* Browser scroll bar */
-	adj = gtk_layout_get_vadjustment (GTK_LAYOUT (browser));
-	scrollbar = gtk_vscrollbar_new (adj);
-	
-	gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
-	gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.");
-	gnome_icon_list_set_row_spacing (GNOME_ICON_LIST (browser), 2);
-	gnome_icon_list_set_col_spacing (GNOME_ICON_LIST (browser), 2);
-	gnome_icon_list_set_icon_border (GNOME_ICON_LIST (browser), 2);
-	gnome_icon_list_set_text_spacing (GNOME_ICON_LIST (browser), 2);
-	gnome_icon_list_set_selection_mode (GNOME_ICON_LIST (browser), GTK_SELECTION_SINGLE);
-	g_signal_connect (G_OBJECT (browser), "select_icon",
-			  G_CALLBACK (gdm_login_browser_select), NULL);
-	g_signal_connect (G_OBJECT (browser), "unselect_icon",
-			  G_CALLBACK (gdm_login_browser_unselect), NULL);
-#if 0
-	gtk_widget_pop_style();
-#endif
-	
-	/* Browser 3D frame */
-	bframe = gtk_frame_new (NULL);
-	gtk_frame_set_shadow_type (GTK_FRAME (bframe), GTK_SHADOW_IN);
-	gtk_container_add (GTK_CONTAINER(bframe), GTK_WIDGET (browser));
-	
-	/* Box containing all browser functionality */
-	bbox = gtk_hbox_new (0, 0);
-	gtk_box_pack_start (GTK_BOX (bbox), GTK_WIDGET (bframe), 1, 1, 0);
-	gtk_box_pack_start (GTK_BOX (bbox), GTK_WIDGET (scrollbar), 0, 0, 0);
-	gtk_widget_show_all (GTK_WIDGET (bbox));
-
-	/* FIXME: do smarter sizing here */
-	width = maxwidth + (maxwidth + 20) * (number_of_users < 5 ?
-					      number_of_users : 5);
-	if (width > gdm_wm_screen.width * 0.5)
-		width = gdm_wm_screen.width * 0.5;
-
-	height = (maxheight * 1.9 ) *
-		(1 + (number_of_users - 1) / 5);
-	if (height > gdm_wm_screen.height * 0.25)
-		height = gdm_wm_screen.height * 0.25;
-
-	gtk_widget_set_size_request (GTK_WIDGET (bbox), width, height);
+	    gtk_widget_set_size_request (GTK_WIDGET (bbox), -1, height);
     }
 
     if (GdmLogo != NULL) {
@@ -3411,13 +3364,6 @@ gdm_login_gui_init (void)
 	    gtk_table_attach (GTK_TABLE (table), stack, 1, 2, 1, 2,
 			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			      (GtkAttachOptions) (GTK_FILL), 0, 0);
-    } else if (bbox != NULL) {
-	    gtk_table_attach (GTK_TABLE (table), bbox, 0, 1, 0, 1,
-			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-	    gtk_table_attach (GTK_TABLE (table), stack, 0, 1, 1, 2,
-			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			      (GtkAttachOptions) (GTK_FILL), 0, 0);
     } else {
 	    gtk_table_attach (GTK_TABLE (table), logo_frame, 0, 1, 0, 1,
 			      (GtkAttachOptions) (0),
@@ -3477,7 +3423,8 @@ gdm_login_sort_func (gpointer d1, gpointer d2)
 
 
 static GdmLoginUser * 
-gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
+gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
+		      const char *gecos)
 {
 	GdmLoginUser *user;
 	GdkPixbuf *img = NULL;
@@ -3489,6 +3436,7 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 
 	user->uid = uid;
 	user->login = g_strdup (logname);
+	user->gecos = g_strdup (gecos);
 	user->homedir = g_strdup (homedir);
 	if (defface != NULL)
 		user->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defface));
@@ -3689,13 +3637,20 @@ gdm_login_users_init (void)
 
 	    user = gdm_login_user_alloc(pwent->pw_name,
 					pwent->pw_uid,
-					pwent->pw_dir);
+					pwent->pw_dir,
+					pwent->pw_gecos);
 
 	    if ((user) &&
 		(! g_list_find_custom (users, user, (GCompareFunc) gdm_login_sort_func))) {
 		users = g_list_insert_sorted(users, user,
 					     (GCompareFunc) gdm_login_sort_func);
 		number_of_users ++;
+		if (user->picture != NULL) {
+			size_of_users +=
+				gdk_pixbuf_get_height (user->picture) + 2;
+		} else {
+			size_of_users += GdmIconMaxHeight;
+		}
 	    }
 	}
 	
@@ -4222,7 +4177,7 @@ main (int argc, char *argv[])
     gdm_login_gui_init ();
 
     if (GdmBrowser)
-	gdm_login_browser_update();
+	gdm_login_browser_populate ();
 
     ve_signal_add (SIGHUP, gdm_reread_config, NULL);
 

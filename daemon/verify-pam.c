@@ -48,6 +48,20 @@ static pam_handle_t *pamh = NULL;
 
 static GdmDisplay *cur_gdm_disp = NULL;
 
+static char *tmp_PAM_USER = NULL;
+
+static char *selected_user = NULL;
+
+void
+gdm_verify_select_user (const char *user)
+{
+	g_free (selected_user);
+	if (ve_string_empty (user))
+		selected_user = NULL;
+	else
+		selected_user = g_strdup (user);
+}
+
 /* Internal PAM conversation function. Interfaces between the PAM
  * authentication system and the actual greeter program */
 
@@ -59,6 +73,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
     int replies = 0;
     char *s;
     struct pam_response *reply = NULL;
+    const char *login;
     
     reply = malloc (sizeof (struct pam_response) * num_msg);
     
@@ -66,19 +81,67 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	return PAM_CONV_ERR;
 
     memset (reply, 0, sizeof (struct pam_response) * num_msg);
+
+    /* Here we set the login if it wasn't already set,
+     * this is kind of anal, but this way we guarantee that
+     * the greeter always is up to date on the login */
+    if (pam_get_item (pamh, PAM_USER, (const void **)&login) == PAM_SUCCESS ||
+	tmp_PAM_USER != NULL) {
+	    /* FIXME: this is a HACK HACK HACK, for some reason needed */
+	    if (tmp_PAM_USER != NULL)
+		    login = tmp_PAM_USER;
+	    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
+    }
     
     for (replies = 0; replies < num_msg; replies++) {
+	gboolean islogin = FALSE;
 	
 	switch (msg[replies]->msg_style) {
 	    
+	/* PAM requested textual input with echo on */
 	case PAM_PROMPT_ECHO_ON:
-	    /* PAM requested textual input with echo on */
-	    s = gdm_slave_greeter_ctl (GDM_PROMPT, msg[replies]->msg);
+	    /* Why do we do this hack of noticing "login: " ??
+	       That's because it seems pam is on crack and
+	       ignores PAM_USER_PROMPT and uses "login: " instead
+	       even though that is not in the docs.  "login: " is
+	       completely crackass stupid */
+ 	    if (strcmp(msg[replies]->msg, "login: ") == 0 ||
+		strcmp(msg[replies]->msg, _("Username:")) == 0) {
+		    /* this is an evil hack, but really there is no way we'll
+		       know this is a username prompt.  However we SHOULD NOT
+		       rely on this working.  The pam modules can set their
+		       prompt to whatever they wish to */
+		    gdm_slave_greeter_ctl_no_ret
+			    (GDM_MSG, _("Please enter your username"));
+		    s = gdm_slave_greeter_ctl (GDM_PROMPT, _("Username:"));
+		    /* this will clear the message */
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
+		    islogin = TRUE;
+	    } else {
+		    s = gdm_slave_greeter_ctl (GDM_PROMPT, msg[replies]->msg);
+	    }
 
 	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
 		    free (reply);
 		    return PAM_CONV_ERR;
+	    }
+
+	    if (islogin) {
+		    /* note that we should NOT rely on this for anything
+		       that is REALLY needed.  The reason this is here
+		       is for the face browser to work correctly.  The
+		       best way would really be to ask all questions at
+		       once, but that would 1) need some protocol rethinking,
+		       2) the gdmgreeter program is really not equipped
+		       for this, would need theme format change */
+		    /* Second problem is that pam will not actually set
+		       PAM_USER itself after it asks for it.  This is
+		       pretty evil, evil, evil, evil, but somewhat necessary
+		       then. */
+		    /* FIXME: this is a HACK HACK HACK */
+		    g_free (tmp_PAM_USER);
+		    tmp_PAM_USER = g_strdup (s);
 	    }
 
 	    reply[replies].resp_retcode = PAM_SUCCESS;
@@ -233,10 +296,8 @@ create_pamh (GdmDisplay *d,
 	     const char *display,
 	     int *pamerr)
 {
-	if (login == NULL ||
-	    display == NULL) {
-		gdm_error (_("Cannot setup pam handle with null login "
-			     "and/or display"));
+	if (display == NULL) {
+		gdm_error (_("Cannot setup pam handle with null display"));
 		return FALSE;
 	}
 
@@ -299,8 +360,7 @@ gdm_verify_user (GdmDisplay *d,
 		 gboolean local) 
 {
     gint pamerr = 0;
-    char *login;
-    const char *service = "gdm";
+    char *login = NULL;
     struct passwd *pwent;
     gboolean error_msg_given = FALSE;
     gboolean credentials_set = FALSE;
@@ -314,58 +374,75 @@ gdm_verify_user (GdmDisplay *d,
 	    started_timer = TRUE;
     }
 
-    if (username == NULL) {
-	    /* Ask gdmgreeter for the user's login. Just for good measure */
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
-	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Username:"));
-	    if (login == NULL ||
-		gdm_slave_greeter_check_interruption ()) {
-		    if (started_timer)
-			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-		    g_free (login);
-		    return NULL;
-	    }
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
-    } else {
+    if (username != NULL) {
 	    login = g_strdup (username);
-    }
-
-    if (local &&
-	gdm_is_a_no_password_user (login)) {
-	    service = "gdm-autologin";
-    } else {
-	    service = "gdm";
+	    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
     }
 
     cur_gdm_disp = d;
 
     /* Initialize a PAM session for the user */
-    if ( ! create_pamh (d, service, login, &pamc, display, &pamerr)) {
+    if ( ! create_pamh (d, "gdm", username, &pamc, display, &pamerr)) {
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 	    goto pamerr;
     }
+
+    pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
 	    
 #ifdef PAM_FAIL_DELAY
     pam_fail_delay (pamh, GdmRetryDelay * 1000);
 #endif /* PAM_FAIL_DELAY */
 
+authenticate_again:
+    /* hack */
+    g_free (tmp_PAM_USER);
+    tmp_PAM_USER = NULL;
+
+    gdm_verify_select_user (NULL);
     /* Start authentication session */
     if ((pamerr = pam_authenticate (pamh, 0)) != PAM_SUCCESS) {
-#ifndef PAM_FAIL_DELAY
-	    sleep (GdmRetryDelay);
-#endif /* PAM_FAIL_DELAY */
+	    if ( ! ve_string_empty (selected_user)) {
+		    /* FIXME: what about errors */
+		    pam_set_item (pamh, PAM_USER, selected_user);
+		    /* Note that the GDM_SETUSER will be sent in the
+		       authenticate conversation.  This is a more robust
+		       solution. */
+		    goto authenticate_again;
+	    }
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
-	    if (gdm_slave_should_complain ())
+	    if (gdm_slave_should_complain ()) {
+#ifndef PAM_FAIL_DELAY
+		    sleep (GdmRetryDelay);
+#endif /* PAM_FAIL_DELAY */
 		    gdm_error (_("Couldn't authenticate user"));
+	    }
 	    goto pamerr;
     }
 
     /* stop the timer for timed logins */
     if (started_timer)
 	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+
+    g_free (login);
+    login = NULL;
     
+    if ((pamerr = pam_get_item (pamh, PAM_USER, (const void **)&login))
+	!= PAM_SUCCESS) {
+	    login = NULL;
+	    /* is not really an auth problem, but it will
+	       pretty much look as such, it shouldn't really
+	       happen */
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't authenticate user"));
+	    goto pamerr;
+    }
+    login = g_strdup (login);
+    /* kind of anal, the greeter likely already knows, but it could have
+       been changed */
+    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
+
     pwent = getpwnam (login);
     if ( ( ! GdmAllowRoot ||
 	  ( ! GdmAllowRemoteRoot && ! local) ) &&
@@ -505,10 +582,14 @@ gdm_verify_user (GdmDisplay *d,
  */
 
 gboolean
-gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display) 
+gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
+		       char **new_login) 
 {
     gint pamerr = 0;
     struct passwd *pwent;
+    const char *after_login;
+    
+    *new_login = NULL;
 
     if (login == NULL)
 	    return FALSE;
@@ -535,6 +616,23 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
 				   _("Authentication failed"));
 	    }
 	    goto setup_pamerr;
+    }
+
+    if ((pamerr = pam_get_item (pamh, PAM_USER, (const void **)&after_login))
+	!= PAM_SUCCESS) {
+	    /* is not really an auth problem, but it will
+	       pretty much look as such, it shouldn't really
+	       happen */
+	    gdm_error (_("Couldn't authenticate user"));
+	    gdm_error_box (cur_gdm_disp,
+			   GTK_MESSAGE_ERROR,
+			   _("Authentication failed"));
+	    goto setup_pamerr;
+    }
+
+    if (after_login != NULL /* should never be */ &&
+	strcmp (after_login, login) != 0) {
+	    *new_login = g_strdup (after_login);
     }
 
     /* Check if the user's account is healthy. */

@@ -78,7 +78,7 @@ enum {
 
 /* This will change if there are incompatible
  * protocol changes */
-#define GDM_GREETER_PROTOCOL_VERSION "2"
+#define GDM_GREETER_PROTOCOL_VERSION "3"
 
 #define GDM_MSG        'D'
 #define GDM_NOECHO     'U'
@@ -94,8 +94,6 @@ enum {
 #define GDM_SGNOMESESS '*'
 #define GDM_STARTTIMER 's'
 #define GDM_STOPTIMER  'S'
-#define GDM_LOGIN      'L' /* this is the login prompt, much like PROMPT but
-			      different */
 #define GDM_SETLOGIN   'l' /* this just sets the login to be this, just for
 			      the greeters knowledge */
 #define GDM_DISABLE    '-' /* disable the login screen */
@@ -114,6 +112,7 @@ enum {
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'
 #define GDM_INTERRUPT_CONFIGURE   'C'
 #define GDM_INTERRUPT_SUSPEND     'S'
+#define GDM_INTERRUPT_SELECT_USER 'U'
 
 /* The dreaded miscellaneous category */
 #define FIELD_SIZE 256
@@ -126,7 +125,6 @@ enum {
  * to nothing */
 #define GDM_KEY_AUTOMATICLOGIN_ENABLE "daemon/AutomaticLoginEnable=true"
 #define GDM_KEY_AUTOMATICLOGIN "daemon/AutomaticLogin="
-#define GDM_KEY_LOCALNOPASSWORDUSERS "daemon/LocalNoPasswordUsers="
 #define GDM_KEY_ALWAYSRESTARTSERVER "daemon/AlwaysRestartServer=true"
 #define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin"
 #define GDM_KEY_REMOTEGREETER "daemon/RemoteGreeter=" EXPANDED_BINDIR "/gdmlogin"

@@ -72,6 +72,7 @@ gint greeter_current_delay = 0;
 
 extern gboolean session_dir_whacked_out;
 
+gboolean greeter_probably_login_prompt = FALSE;
 
 static void 
 greeter_parse_config (void)
@@ -219,18 +220,12 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 	
 	greeter_item_pam_set_user (buf);
-	greeter_item_ulist_disable ();
+	if (ve_string_empty (buf))
+	  greeter_item_ulist_enable ();
+	else
+	  greeter_item_ulist_disable ();
 	printf ("%c\n", STX);
 	fflush (stdout);
-	break;
-    case GDM_LOGIN:
-        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
-	buf[len-1] = '\0';
-
-	tmp = ve_locale_to_utf8 (buf);
-	greeter_item_pam_prompt (tmp, 32, TRUE, TRUE);
-	g_free (tmp);
-	greeter_item_ulist_enable ();
 	break;
 
     case GDM_PROMPT:
@@ -238,9 +233,12 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	greeter_item_pam_prompt (tmp, 128, TRUE, FALSE);
+	if (tmp != NULL && strcmp (tmp, _("Username:")) == 0)
+		greeter_probably_login_prompt = TRUE;
+	else
+		greeter_probably_login_prompt = FALSE;
+	greeter_item_pam_prompt (tmp, 128, TRUE);
 	g_free (tmp);
-	greeter_item_ulist_disable ();
 	break;
 
     case GDM_NOECHO:
@@ -248,9 +246,8 @@ greeter_ctrl_handler (GIOChannel *source,
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
-	greeter_item_pam_prompt (tmp, 128, FALSE, FALSE);
+	greeter_item_pam_prompt (tmp, 128, FALSE);
 	g_free (tmp);
-	greeter_item_ulist_disable ();
 	break;
 
     case GDM_MSG:

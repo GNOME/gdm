@@ -16,6 +16,7 @@
 #include "vicious.h"
 
 #include "gdm.h"
+#include "greeter.h"
 #include "greeter_item_ulist.h"
 #include "greeter_parser.h"
 #include "greeter_configuration.h"
@@ -245,7 +246,6 @@ gdm_greeter_sort_func (gpointer d1, gpointer d2)
     return (strcmp (a->login, b->login));
 }
 
-
 static void 
 gdm_greeter_users_init (void)
 {
@@ -327,11 +327,12 @@ user_selected (GtkTreeSelection *selection, gpointer data)
       if (login != NULL)
         {
           GreeterItemInfo *pamlabel;
-          gtk_entry_set_text (GTK_ENTRY (pam_entry), login);
+	  if (greeter_probably_login_prompt)
+		  gtk_entry_set_text (GTK_ENTRY (pam_entry), login);
 	  pamlabel = greeter_lookup_id ("pam-message");
 	  if (pamlabel != NULL)
 	    g_object_set (G_OBJECT (pamlabel->item),
-			  "text", _("Press <enter> to login"),
+			  "text", _("Doubleclick on the user to log in"),
 			  NULL);
 	}
     }
@@ -342,9 +343,27 @@ row_activated (GtkTreeView *tree_view,
 	       GtkTreePath *path,
 	       GtkTreeViewColumn *column)
 {
-  /* have this just act as "enter" in the pam_entry */
-  if (pam_entry != NULL)
-    g_signal_emit_by_name (pam_entry, "activate");
+  GtkTreeModel *tm = NULL;
+  GtkTreeIter iter = {0};
+  GtkTreeSelection *selection;
+
+  if ( ! selecting_user)
+    return;
+
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
+
+  if (gtk_tree_selection_get_selected (selection, &tm, &iter))
+    {
+      char *login;
+      gtk_tree_model_get (tm, &iter, GREETER_ULIST_LOGIN_COLUMN,
+			  &login, -1);
+      if (login != NULL)
+        {
+	  printf ("%c%c%c%s\n", STX, BEL, GDM_INTERRUPT_SELECT_USER,
+		  login);
+	  fflush (stdout);
+	}
+    }
 }
 
 static void
@@ -355,12 +374,12 @@ greeter_generate_userlist (GtkWidget *tv)
   GtkTreeSelection *selection;
 
   gdm_greeter_users_init ();
+  gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tv),
+				     FALSE);
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
+  gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
   if (users != NULL)
     {
-      gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tv),
-				         FALSE);
-      selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tv));
-      gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
       g_signal_connect (selection, "changed",
 			G_CALLBACK (user_selected),
 			NULL);
@@ -450,7 +469,7 @@ greeter_item_ulist_set_user (const char *user)
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (user_list));
   gtk_tree_selection_unselect_all (selection);
 
-  if (user == NULL)
+  if (ve_string_empty (user))
     return;
 
   /* Make sure we don't set the pam_entry and pam label stuff,

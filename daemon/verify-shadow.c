@@ -68,7 +68,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
     if (username == NULL) {
 	    /* Ask for the user's login */
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, _("Please enter your username"));
-	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Username:"));
+	    login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Username:"));
 	    if (login == NULL ||
 		gdm_slave_greeter_check_interruption ()) {
 		    if (local)
@@ -80,6 +80,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
     } else {
 	    login = g_strdup (username);
     }
+    gdm_slave_greeter_ctl_no_ret (GDM_SETLOGIN, login);
 
     pwent = getpwnam (login);
 
@@ -106,8 +107,7 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
 
     /* Request the user's password */
     if (pwent != NULL &&
-        (ve_string_empty (ppasswd) ||
-	 (local && gdm_is_a_no_password_user (login)))) {
+        ve_string_empty (ppasswd)) {
 	    /* eeek a passwordless account */
 	    passwd = g_strdup ("");
     } else {
@@ -225,9 +225,12 @@ gdm_verify_user (GdmDisplay *d, const char *username, const gchar *display, gboo
  */
 
 gboolean
-gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display) 
+gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
+		       char **new_login) 
 {
 	struct passwd *pwent;
+
+	*new_login = NULL;
 
 	pwent = getpwnam (login);
 	if (pwent == NULL) {
