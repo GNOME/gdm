@@ -124,48 +124,48 @@ typedef struct _cursoroffset {gint x,y;} CursorOffset;
 static void
 gdm_login_icon_pressed(GtkWidget *widget, GdkEventButton *event)
 {
-  CursorOffset *p;
-
-  if(event->type == GDK_2BUTTON_PRESS) {
-      gtk_widget_destroy(win);
-      gdk_window_show(login->window);
-      return;
-  }
-
-  if (event->type != GDK_BUTTON_PRESS)
-      return;
-
-  p=gtk_object_get_user_data(GTK_OBJECT (widget));
-  p->x=(gint)event->x;
-  p->y=(gint)event->y;
-
-  gtk_grab_add(widget);
-  gdk_pointer_grab(widget->window, TRUE,
-		   GDK_BUTTON_RELEASE_MASK |
-		   GDK_BUTTON_MOTION_MASK |
-		   GDK_POINTER_MOTION_HINT_MASK,
-		   NULL, NULL, 0);
+    CursorOffset *p;
+    
+    if(event->type == GDK_2BUTTON_PRESS) {
+	gtk_widget_destroy(win);
+	gdk_window_show(login->window);
+	return;
+    }
+    
+    if (event->type != GDK_BUTTON_PRESS)
+	return;
+    
+    p=gtk_object_get_user_data(GTK_OBJECT (widget));
+    p->x=(gint)event->x;
+    p->y=(gint)event->y;
+    
+    gtk_grab_add(widget);
+    gdk_pointer_grab(widget->window, TRUE,
+		     GDK_BUTTON_RELEASE_MASK |
+		     GDK_BUTTON_MOTION_MASK |
+		     GDK_POINTER_MOTION_HINT_MASK,
+		     NULL, NULL, 0);
 }
 
 
 static void
 gdm_login_icon_released(GtkWidget *widget)
 {
-  gtk_grab_remove(widget);
-  gdk_pointer_ungrab(0);
+    gtk_grab_remove(widget);
+    gdk_pointer_ungrab(0);
 }
 
 
 static void
 gdm_login_icon_motion(GtkWidget *widget, GdkEventMotion *event)
 {
-  gint xp, yp;
-  CursorOffset *p;
-  GdkModifierType mask;
-
-  p=gtk_object_get_user_data(GTK_OBJECT (widget));
-  gdk_window_get_pointer(rootwin, &xp, &yp, &mask);
-  gtk_widget_set_uposition(widget, xp-p->x, yp-p->y);
+    gint xp, yp;
+    CursorOffset *p;
+    GdkModifierType mask;
+    
+    p=gtk_object_get_user_data(GTK_OBJECT (widget));
+    gdk_window_get_pointer(rootwin, &xp, &yp, &mask);
+    gtk_widget_set_uposition(widget, xp-p->x, yp-p->y);
 }
 
 

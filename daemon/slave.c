@@ -50,6 +50,7 @@ extern gchar *GdmSuspend;
 extern gchar *GdmDefaultPath;
 extern gint  GdmKillInitClients;
 extern gint  GdmRetryDelay;
+extern sigset_t sysmask;
 
 extern gboolean gdm_file_check(gchar *caller, uid_t user, gchar *dir, gchar *file, gboolean absentok);
 extern gchar **gdm_arg_munch(const gchar *p);
@@ -249,6 +250,7 @@ gdm_slave_greeter(void)
     sigemptyset(&mask);
     sigaddset(&mask, SIGCHLD);
     sigprocmask(SIG_BLOCK, &mask, &omask);    
+
     greet=FALSE;
 
     /* Kill greeter and wait for it to die */
@@ -363,10 +365,8 @@ gdm_slave_session_start(gchar *login, gchar *session, gboolean savesess, gchar *
 
 	gdm_debug("Running %s for %s on %s", sessdir, login, d->name);
 
-	/* Unblock SIGCHLD for broken terminals */
-	sigemptyset(&mask);
-	sigaddset(&mask, SIGCHLD);
-	sigprocmask(SIG_UNBLOCK, &mask, NULL);
+	/* Restore system inherited sigmask */
+	sigprocmask(SIG_SETMASK, &sysmask, NULL);
 
 	execl(sessdir, NULL);
 	

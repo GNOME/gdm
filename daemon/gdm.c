@@ -59,6 +59,7 @@ GSList *displays;
 gint sessions=0;
 static gchar *GdmUser;
 static gchar *GdmGroup;
+sigset_t sysmask;
 
 uid_t GdmUserId;
 gid_t GdmGroupId;
@@ -289,7 +290,7 @@ gdm_display_manage(GdmDisplay *d)
     if(d->slavepid) {
 	sigemptyset(&mask);
 	sigaddset(&mask, SIGCHLD);
-	sigprocmask(SIG_BLOCK, &mask, &omask);
+	sigprocmask(SIG_BLOCK, &mask, &omask); 
 
 	kill(d->slavepid, SIGINT);
 	waitpid(d->slavepid, 0, 0);
@@ -484,7 +485,7 @@ gdm_term_handler(int sig)
 
     sigemptyset(&mask);
     sigaddset(&mask, SIGCHLD);
-    sigprocmask(SIG_BLOCK, &mask, NULL);
+    sigprocmask(SIG_BLOCK, &mask, NULL); 
 
     g_slist_foreach(displays, (GFunc) gdm_display_unmanage, NULL);
 
@@ -598,7 +599,7 @@ main (int argc, char *argv[])
     sigaddset(&mask, SIGINT);
     sigaddset(&mask, SIGTERM);
     sigaddset(&mask, SIGCHLD);
-    sigprocmask(SIG_UNBLOCK, &mask, NULL);
+    sigprocmask(SIG_UNBLOCK, &mask, &sysmask); /* Save system sigmask */
 
     gdm_debug("gdm_main: Here we go...");
 

@@ -219,8 +219,8 @@ gdm_server_restart(GdmDisplay *d)
     sigprocmask(SIG_UNBLOCK, &usr1mask, NULL);
 
     /* Reset X and force auth file reread. XCloseDisplay works on most servers but we play it safe */
-    /*gdm_debug("gdm_server_restart: Servpid=%d", d->servpid);*/
-    /*kill(d->servpid, SIGHUP);*/
+    gdm_debug("gdm_server_restart: Servpid=%d", d->servpid);
+    kill(d->servpid, SIGHUP);
 
     d->servstat=SERVER_STARTED;
 
