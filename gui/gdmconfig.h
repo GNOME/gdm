@@ -32,6 +32,16 @@
  */
 GtkWidget *get_widget(gchar *widget_name);
 
+
+struct GdmConfigSession {
+   char *name;
+   char *script_contents;
+   gboolean changed;
+   gboolean renamed;
+   char *old_name;
+   gboolean is_default;
+};
+
 /* Set a GtkEntry to 'value'. entry_name is retrieved from the GladeXML 
  * pointed to by 'GUI'. 'value' should always have been allocated (usually 
  * with gnome_config_get_string), as it is freed here.
@@ -187,3 +197,32 @@ move_server_up                         (GtkButton       *button,
 void
 move_server_down                       (GtkButton       *button,
                                         gpointer         user_data);
+void
+session_text_edited (GtkEditable *text, gpointer data);
+void
+modify_session_name (GtkEntry *entry, gpointer data);
+
+
+void
+sessions_clist_row_selected                  (GtkCList *clist,
+					      gint row,
+					      gint column,
+					      GdkEventButton *event,
+					      gpointer user_data);
+void
+set_new_default_session (GtkButton *button,
+			 gpointer user_data);
+void
+add_session_real (gchar *new_session_name, gpointer data);
+void
+add_session (GtkButton *button,
+	     gpointer user_data);
+void
+remove_session (GtkButton *button,
+		gpointer user_data);
+void
+session_text_edited (GtkEditable *text, gpointer data);
+void
+modify_session_name (GtkEntry *entry, gpointer data);
+void 
+session_directory_modified (GtkEntry *entry, gpointer data);

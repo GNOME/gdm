@@ -20,11 +20,13 @@ gchar *s = N_("Gtk+ RC file: ");
 gchar *s = N_("Login appearance");
 gchar *s = N_("Greeter Look and Feel");
 gchar *s = N_("Show the 'system' menu, (for reboot, shutdown etc.)");
+gchar *s = N_("Allow users to run the configurator from the system menu");
 gchar *s = N_("Quiver on failure");
 gchar *s = N_("Show title bar on login window");
-gchar *s = N_("Welcome to %n");
-gchar *s = N_("%n");
-gchar *s = N_("This is %n");
+gchar *s = N_("Welcome to %n\n"
+              "%n\n"
+              "This is %n\n"
+              "");
 gchar *s = N_("This is %n");
 gchar *s = N_("Default font: ");
 gchar *s = N_("Welcome message: ");
@@ -107,14 +109,27 @@ gchar *s = N_("Delete Server");
 gchar *s = N_("Debugging");
 gchar *s = N_("Enable debugging output");
 gchar *s = N_("X-server setup");
+gchar *s = N_("Session configuration");
+gchar *s = N_("Session directory: ");
+gchar *s = N_("Select a directory to be used for system-wide session scripts");
+gchar *s = N_("Available Sessions");
+gchar *s = N_("Add session");
+gchar *s = N_("Remove session");
+gchar *s = N_("Set as default");
+gchar *s = N_("Selected session name: ");
+gchar *s = N_("The exact script details of a session\n"
+              "will appear here when you select\n"
+              "one from the list on the left.\n"
+              "");
+gchar *s = N_("Login sessions");
 gchar *s = N_("system_setup");
 gchar *s = N_("Executables");
 gchar *s = N_("Chooser command: ");
 gchar *s = N_("Greeter command: ");
 gchar *s = N_("Halt command: ");
 gchar *s = N_("Reboot command: ");
+gchar *s = N_("Configurator command: ");
 gchar *s = N_("Directories");
-gchar *s = N_("Session directory: ");
 gchar *s = N_("PRE session scripts directory: ");
 gchar *s = N_("POST session scripts directory: ");
 gchar *s = N_("Logging directory: ");

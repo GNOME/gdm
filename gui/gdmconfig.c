@@ -21,6 +21,9 @@
  */
 
 #include <config.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <syslog.h>
 #include "gdmconfig.h"
 #include "icon-entry-hack.h"
 
@@ -51,7 +54,7 @@ gchar *desc2 = N_("This panel displays the more advanced options of GDM.\n"
 				"Be sure to take care when manipulating the security options, or you could be "
 				"vulnerable to attackers.\n"
 				"\n"
-				"Choose \"System setup\" to change fundamental options in GDM.");
+				"Choose \"System\" to change fundamental options in GDM.");
 gchar *desc3 = N_("This panel displays GDM's fundamental system settings.\n"
 				"\n"
 				"You should only change these paths if you really know what you are doing, as an incorrect "
@@ -59,15 +62,20 @@ gchar *desc3 = N_("This panel displays GDM's fundamental system settings.\n"
 				"\n"
 				"Choose \"Basic\" if you just want to change your machine's login appearance.");
 
-/* Keep track of X servers, and the selected user level */
+/* Keep track of X servers, the selected user level and session details */
 int number_of_servers = 0;
 int selected_server_row = -1;
+int selected_session_row = -1, default_session_row = -1;
 GtkWidget *invisible_notebook = NULL;
+struct GdmConfigSession *current_default_session = NULL;
+GList *deleted_sessions_list = NULL;
 
 /* Main application widget pointer */
 GtkWidget *GDMconfigurator = NULL;
 
-/** This is something of a hack, but it keeps the code clean and easily extensible later on. */
+/** This is something of a hack, but it keeps the code clean and
+ * easily extensible later on. 
+ */
 GtkWidget *get_widget(gchar *widget_name)
 {
 	GtkWidget *ret = NULL;
@@ -151,7 +159,7 @@ main (int argc, char *argv[])
 	basic_notebook = glade_xml_new(glade_filename, "basic_notebook");
 	system_notebook = glade_xml_new(glade_filename, "system_notebook");
 	expert_notebook = glade_xml_new(glade_filename, "expert_notebook");
-	
+
    invisible_notebook = gtk_notebook_new();
    gtk_notebook_set_show_tabs (GTK_NOTEBOOK (invisible_notebook), FALSE);
    gtk_notebook_set_show_border (GTK_NOTEBOOK (invisible_notebook), FALSE);
@@ -201,6 +209,7 @@ main (int argc, char *argv[])
 
 	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("user_level_clist")));
    	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("server_clist")));
+      	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("sessions_clist")));
 	
 	gtk_clist_append(GTK_CLIST(get_widget("user_level_clist")),
 					  basic_row);					 
@@ -252,6 +261,11 @@ void
 gdm_config_parse_most (void)
 {
     void *iter; gchar *key, *value;
+    DIR *sessdir;
+    struct dirent *dent;
+    struct stat statbuf;
+    gchar *default_session_name = NULL;
+    gint linklen;
 
     /* If the GDM config file does not exist, we have sensible defaults,
      * but make sure the user is warned.
@@ -270,6 +284,7 @@ gdm_config_parse_most (void)
     /* Fill the widgets in GDM tab */
     gdm_entry_set("automatic_login", gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN));
     gdm_entry_set("chooser_binary", gnome_config_get_string (GDM_KEY_CHOOSER));
+    gdm_entry_set("config_binary", gnome_config_get_string (GDM_KEY_CONFIG));
     gdm_entry_set("greeter_binary", gnome_config_get_string (GDM_KEY_GREETER));
     gdm_entry_set("halt_command", gnome_config_get_string (GDM_KEY_HALT));
     gdm_entry_set("reboot_command", gnome_config_get_string (GDM_KEY_REBOOT));
@@ -319,6 +334,7 @@ gdm_config_parse_most (void)
     gdm_icon_set("gdm_icon", gnome_config_get_string (GDM_KEY_ICON));
     
     gdm_toggle_set("show_system", gnome_config_get_bool (GDM_KEY_SYSMENU));
+    gdm_toggle_set("run_configurator", gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE));
     gdm_toggle_set("quiver", gnome_config_get_bool (GDM_KEY_QUIVER));
     gdm_toggle_set("title_bar", gnome_config_get_bool(GDM_KEY_TITLE_BAR));
     gdm_toggle_set ("lock_position", gnome_config_get_bool (GDM_KEY_LOCK_POSITION));
@@ -356,6 +372,122 @@ gdm_config_parse_most (void)
 
     gdm_toggle_set("enable_debug", gnome_config_get_bool(GDM_KEY_DEBUG));
 
+    /* Read directory entries in session dir */
+    sessdir = opendir (gnome_config_get_string (GDM_KEY_SESSDIR));
+    dent = readdir (sessdir);
+
+    while (dent != NULL) {
+	gchar *s;
+
+	/* Ignore backups and rpmsave files */
+	if ((strstr (dent->d_name, "~")) || (strstr (dent->d_name, ".rpmsave"))) {
+	    dent = readdir (sessdir);
+	    continue;
+	}
+
+	s = g_strconcat (gnome_config_get_string (GDM_KEY_SESSDIR),
+			 "/", dent->d_name, NULL);
+	lstat (s, &statbuf);
+
+        /* If default session link exists, find out what it points to */
+	if (S_ISLNK (statbuf.st_mode) &&
+	    g_strcasecmp (dent->d_name, "default") == 0) 
+	 {
+	    gchar t[_POSIX_PATH_MAX];
+	    
+	    linklen = readlink (s, t, _POSIX_PATH_MAX);
+	    t[linklen] = 0;
+	    
+	   /* Prevent sym links of default to default from screwing
+	    * things up.
+	    */
+	   if (g_strcasecmp("default", t) != 0) {
+	      printf ("recording %s as default session.\n", t);
+	     default_session_name = g_strdup(t);
+	   }
+	 }
+
+	/* If session script is readable/executable add it to the list */
+	if (S_ISREG (statbuf.st_mode)) {
+
+	    if ((statbuf.st_mode & (S_IRUSR|S_IXUSR)) == (S_IRUSR|S_IXUSR) &&
+		(statbuf.st_mode & (S_IRGRP|S_IXGRP)) == (S_IRGRP|S_IXGRP) &&
+		(statbuf.st_mode & (S_IROTH|S_IXOTH)) == (S_IROTH|S_IXOTH)) 
+	    {
+	       gchar *row[1];
+	       int rowNum;
+	       struct GdmConfigSession *this_session;
+	       FILE *script_file;
+	       
+	       this_session = g_malloc0 (sizeof (struct GdmConfigSession));
+	       this_session->name = g_strdup(dent->d_name);
+	       script_file = fopen(s, "r");
+	       if (!script_file) {
+		  gnome_error_dialog_parented (_("Error reading session script!"),
+					       GTK_WINDOW (GDMconfigurator));
+		  this_session->script_contents = _("Error reading this session script");
+	       } else {
+		  gchar buffer[BUFSIZ];
+		  int charPos = 0, character;
+		  for (character = fgetc(script_file);
+		       character != EOF;
+		       character = fgetc(script_file)) {
+		     buffer[charPos] = (gchar) character;
+		     charPos++;
+		  }
+		  buffer[charPos] = '\0';
+		  this_session->script_contents = g_strdup(buffer);
+		  /* printf ("got script contents:\n%s.\n", this_session->script_contents); */
+	       }
+	       fclose (script_file);
+	       this_session->changed = FALSE;
+	       this_session->is_default = FALSE;
+
+	       row[0] = this_session->name;
+	       
+	       rowNum = gtk_clist_append (GTK_CLIST (get_widget("sessions_clist")),
+					  row);
+	       gtk_clist_set_row_data (GTK_CLIST (get_widget ("sessions_clist")),
+				       rowNum,
+				       this_session);
+
+	    }
+	    else 
+		syslog (LOG_ERR, "Wrong permissions on %s/%s. Should be readable/executable for all.", 
+			gnome_config_get_string(GDM_KEY_SESSDIR), dent->d_name);
+	}
+
+	dent = readdir (sessdir);
+	g_free (s);
+    }
+
+   if (default_session_name) {
+      int i;
+      GdkColor col;
+
+      for (i=0; i< GTK_CLIST(get_widget ("sessions_clist"))->rows; i++) {
+	 struct GdmConfigSession *data = gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
+								 i);
+	 g_assert (data != NULL);
+	 if (!g_strcasecmp(default_session_name,
+			   data->name)) {
+	    
+	    printf ("coloring session %s.\n", data->name);
+	    gdk_color_parse ("#d6e8ff", &col);
+	    gdk_color_alloc (gdk_colormap_get_system(), &col);
+	    
+	    gtk_clist_set_background (GTK_CLIST (get_widget("sessions_clist")),
+				      i, &col);
+	    data->is_default = TRUE;
+	    current_default_session = gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
+							      i);;
+	    default_session_row = i;
+	 }
+      }
+   } else {
+      /* FIXME: failsafe "no default session" stuff. */
+   }
+
     gnome_config_pop_prefix();
     
     /* Fill the widgets in Servers tab */
@@ -374,7 +506,8 @@ gdm_config_parse_most (void)
 	  }
 	else
 	  {
-	      gnome_warning_dialog(_("gdm_config_parse_most: Invalid server line in config file. Ignoring!"));
+	      gnome_warning_dialog_parented(_("gdm_config_parse_most: Invalid server line in config file. Ignoring!"),
+					    GTK_WINDOW(GDMconfigurator));
 	  }
 	iter=gnome_config_iterator_next (iter, &key, &value);
     }
@@ -474,13 +607,18 @@ write_new_config_file                  (GtkButton *button,
                                         gpointer         user_data)
 {
     int i = -1;
-    
+    GList *tmp = NULL;
+    gchar *sessions_directory;
+   
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
     
+    sessions_directory = gnome_config_get_string (GDM_KEY_SESSDIR);
+   
     /* Write out the widget contents of the GDM tab */
     gdm_entry_write("automatic_login", GDM_KEY_AUTOMATICLOGIN);
     gdm_entry_write("chooser_binary", GDM_KEY_CHOOSER);
     gdm_entry_write("greeter_binary", GDM_KEY_GREETER);
+    gdm_entry_write("config_binary", GDM_KEY_CONFIG);
     gdm_entry_write("halt_command", GDM_KEY_HALT);
     gdm_entry_write("reboot_command", GDM_KEY_REBOOT);
     
@@ -528,6 +666,7 @@ write_new_config_file                  (GtkButton *button,
     gdm_icon_write("gdm_icon", GDM_KEY_ICON);
     
     gdm_toggle_write("show_system", GDM_KEY_SYSMENU);
+    gdm_toggle_write("run_configurator", GDM_KEY_CONFIG_AVAILABLE);
     gdm_toggle_write("quiver", GDM_KEY_QUIVER);
     gdm_toggle_write("title_bar", GDM_KEY_TITLE_BAR);
     gdm_toggle_write("lock_position", GDM_KEY_LOCK_POSITION);
@@ -580,6 +719,64 @@ write_new_config_file                  (GtkButton *button,
 		  gnome_config_set_string(g_strdup_printf("%d", i), current_server);
       }
 
+   /* It would be nice to be able to do some paranoid sanity checking on
+    * more of this stuff.
+    */
+   /* FIXME: check all the return codes on the I/O functions. */
+   for (i=0; i<GTK_CLIST(get_widget ("sessions_clist"))->rows; i++)
+     {
+	struct GdmConfigSession *session;
+	session = gtk_clist_get_row_data (GTK_CLIST(get_widget ("sessions_clist")),
+					  i);
+	g_assert (session != NULL);
+
+	/* Rename any files that need to be. */
+	if (session->renamed == TRUE) {
+	   printf ("renaming %s to %s.\n", session->old_name, session->name);
+	   rename (g_strconcat (sessions_directory,
+				session->old_name, NULL),
+		   g_strconcat (sessions_directory,
+				session->name, NULL));
+	}
+
+	/* Set new contents of a changed session file */
+	if (session->changed == TRUE) {
+	   char *filename;
+	   FILE *fp;
+	   
+	   filename = g_strconcat (sessions_directory, session->name, NULL);
+	   printf ("writing changes to: %s.\n", filename);
+	   fp = fopen(filename,
+		      "w");
+	   if (fp == NULL) {
+	      gnome_error_dialog_parented (_("There was an error writing changes to the session files.\nThe configuration may not be completely saved."),
+					   GTK_WINDOW(GDMconfigurator));
+	      return;
+	   }
+	   /* This isn't so great as we fail silently. */
+	   if (fputs (session->script_contents, fp) == EOF)
+	     continue;
+	   fclose (fp);
+	}
+	
+     }
+
+   /* Remove any deleted session files */
+   for (tmp=deleted_sessions_list; tmp; tmp=tmp->next)
+     {
+	char *file_basename = (char *)tmp->data;
+	char *full_file = g_strconcat (sessions_directory, "/", 
+				       file_basename, NULL);
+	printf ("Would remove: %s.\n", full_file);
+/*	if (remove (full_file) != 0)
+	  printf ("ERROR! Could not remove file.\n");*/
+     }
+
+/*   if (g_strcasecmp (name_Default_sym_points_to, current_default_session->name) != 0)
+     {
+	 FIXME: relink the Default sym link to point to the right place. 
+     }
+*/
     gnome_config_pop_prefix();
     gnome_config_sync();
 
@@ -821,4 +1018,181 @@ move_server_down                       (GtkButton       *button,
 			 ++selected_server_row, 0);
     gtk_clist_set_text(GTK_CLIST(get_widget("server_clist")),
 		       selected_server_row, 0, g_strdup_printf("%d", selected_server_row));
+}
+
+void
+sessions_clist_row_selected                  (GtkCList *clist,
+					      gint row,
+					      gint column,
+					      GdkEventButton *event,
+					      gpointer user_data)
+{
+   gint pos = 0;
+   struct GdmConfigSession *sess_details = (struct GdmConfigSession *)
+     gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
+			     row);
+   /* Stop silly things happening while we fill the text widget. */
+   gtk_signal_handler_block_by_func (GTK_OBJECT(get_widget("session_text")),
+				     session_text_edited, NULL);
+   gtk_signal_handler_block_by_func (GTK_OBJECT(get_widget("session_name_entry")),
+				     modify_session_name, NULL);
+   selected_session_row = row;
+   
+   gtk_text_freeze (GTK_TEXT (get_widget("session_text")));
+   if (sess_details->script_contents != NULL) {
+      gtk_editable_delete_text (GTK_EDITABLE (get_widget ("session_text")),
+				0, gtk_text_get_length(GTK_TEXT (get_widget ("session_text"))));
+      gtk_editable_insert_text (GTK_EDITABLE (get_widget ("session_text")),
+				sess_details->script_contents,
+				strlen (sess_details->script_contents), &pos);
+   } else {
+      gtk_editable_delete_text (GTK_EDITABLE (get_widget ("session_text")),
+				0, -1);
+   }
+   gtk_text_thaw (GTK_TEXT (get_widget("session_text")));
+   
+   gtk_entry_set_text (GTK_ENTRY (get_widget("session_name_entry")),
+		       sess_details->name);
+   gtk_signal_handler_unblock_by_func (GTK_OBJECT(get_widget("session_text")),
+				       session_text_edited, NULL);
+   gtk_signal_handler_unblock_by_func (GTK_OBJECT(get_widget("session_name_entry")),
+				       modify_session_name, NULL);
+}
+
+void
+set_new_default_session (GtkButton *button,
+			 gpointer user_data)
+{
+   GdkColor *col = malloc(sizeof(GdkColor));
+   
+   if (current_default_session != NULL)
+      current_default_session->is_default = FALSE;
+   current_default_session = gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
+						     selected_session_row);
+   current_default_session->is_default = TRUE;
+   
+   gdk_color_parse ("#d6e8ff", col);
+   gdk_color_alloc (gdk_colormap_get_system(),
+		    col);
+   gtk_clist_freeze (GTK_CLIST (get_widget("sessions_clist")));
+   gtk_clist_set_background (GTK_CLIST (get_widget("sessions_clist")),
+			     default_session_row,
+			     NULL);
+   gtk_clist_set_background (GTK_CLIST (get_widget("sessions_clist")),
+			     selected_session_row,
+			     col);
+   default_session_row = selected_session_row;
+   gtk_clist_thaw (GTK_CLIST (get_widget("sessions_clist")));
+}
+
+void
+add_session_real (gchar *new_session_name, gpointer data)
+{
+   struct GdmConfigSession *a_session;
+   if (new_session_name && strlen(new_session_name) > 0)
+     {
+	char *label[1];
+	int rowNum;
+	
+	printf ("Will add session with %s.\n", new_session_name);
+	a_session = g_malloc0 (sizeof (struct GdmConfigSession));
+	a_session->name = g_strdup(new_session_name);
+
+	label[0] = a_session->name;
+	       
+	rowNum = gtk_clist_append (GTK_CLIST (get_widget("sessions_clist")),
+				   label);
+	gtk_clist_set_row_data (GTK_CLIST (get_widget ("sessions_clist")),
+				rowNum,
+				a_session);
+     }
+}
+
+void
+add_session (GtkButton *button,
+		gpointer user_data)
+{
+   gnome_request_dialog (FALSE, _("Enter a name for the new session"),
+			 NULL, 50, add_session_real,
+			 NULL, GTK_WINDOW(GDMconfigurator));
+}
+
+void
+remove_session (GtkButton *button,
+		gpointer user_data)
+{
+   if (selected_session_row >= 0) {
+      struct GdmConfigSession *data = gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")), 
+							      selected_session_row);
+      g_assert (data != NULL);
+
+      deleted_sessions_list = g_list_append (deleted_sessions_list,
+					     g_strdup(data->name));
+      if (data->name)
+	g_free (data->name);
+      if (data->script_contents)
+	g_free (data->script_contents);
+      g_free (data);
+
+      gtk_clist_remove (GTK_CLIST (get_widget ("sessions_clist")),
+			selected_session_row);
+   }
+}
+
+void
+session_text_edited (GtkEditable *text, gpointer data)
+{
+   struct GdmConfigSession *selected_session;
+   selected_session = gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
+							 selected_session_row);
+   g_assert (selected_session != NULL);
+					      
+   if (selected_session->script_contents)
+     g_free (selected_session->script_contents);
+   
+   selected_session->script_contents = g_strdup(gtk_editable_get_chars (text, 0,
+									gtk_text_get_length(GTK_TEXT(text))));
+   selected_session->changed = TRUE;
+}
+
+void
+modify_session_name (GtkEntry *entry, gpointer data)
+{
+   struct GdmConfigSession *selected_session;
+   gchar *text;
+   selected_session = gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
+							 selected_session_row);
+   g_assert (selected_session != NULL);
+
+   text = gtk_entry_get_text (entry);
+   
+   if (text && strlen(text) > 0)
+     {
+	/* We need to track the first name of this session to rename
+	 * the actual session file.
+	 */
+	if (!selected_session->renamed) {
+	   selected_session->old_name = selected_session->name;
+	   selected_session->renamed = TRUE;
+	}
+	selected_session->name = text;
+	gtk_clist_set_text (GTK_CLIST (get_widget ("sessions_clist")),
+			    selected_session_row, 0,
+			    selected_session->name);
+     }
+   else
+     {
+	gnome_warning_dialog_parented (_("You must give each session a unique name."),
+				       GTK_WINDOW (GDMconfigurator));
+	return;
+     }
+}
+
+void 
+session_directory_modified (GtkEntry *entry, gpointer data) 
+{
+   /* FIXME: Ask user if they wish to reload the sessions clist based on the
+    * new directory. ISSUE: what to do if they say no, especially if the
+    * new dir is invalid. Could get icky.
+    */
 }
