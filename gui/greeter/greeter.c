@@ -27,6 +27,7 @@ GtkWidget *window;
 GtkWidget *canvas;
 
 static char *GreeterConfTheme = NULL;
+static gchar *GdmDefaultLocale = NULL;
 
 static void 
 greeter_parse_config (void)
@@ -38,6 +39,7 @@ greeter_parse_config (void)
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
     GreeterConfTheme = gnome_config_get_string (GREETER_KEY_THEME);
+    GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
 
     gnome_config_pop_prefix();
 }
@@ -590,6 +592,15 @@ main (int argc, char *argv[])
   textdomain (PACKAGE);
 
   greeter_parse_config ();
+
+  /* no language set, use the GdmDefaultLocale */
+  if (GdmDefaultLocale != NULL &&
+      strlen (GdmDefaultLocale) != 0 &&
+      g_getenv ("LANG") == NULL &&
+      g_getenv ("LC_ALL") == NULL)
+    setlocale (LC_ALL, GdmDefaultLocale);
+  else
+    setlocale (LC_ALL, "");
   
   gtk_init (&argc, &argv);
 

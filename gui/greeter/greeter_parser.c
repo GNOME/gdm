@@ -5,11 +5,12 @@
 #include <librsvg/rsvg.h>
 #include <math.h>
 #include <gdk/gdkx.h>
+#include <locale.h>
+#include <libgnome/gnome-i18n.h>
 
 #include "greeter_parser.h"
 #include "greeter_events.h"
 
-static char *gdm_language = "se";
 static char *file_search_path = NULL;
 
 GHashTable *item_hash = NULL;
@@ -367,7 +368,7 @@ parse_box (xmlNodePtr       node,
 }
 
 
-gboolean
+static gboolean
 parse_color (const char *str,
 	     guint32 *col_out,
 	     GError **error)
@@ -671,44 +672,59 @@ parse_state_text (xmlNodePtr node,
   return TRUE;
 }
 
+static gint
+is_current_locale (const char *lang)
+{
+  const GList *l = gnome_i18n_get_language_list ("LC_MESSAGES");
+  int score = 0;
+  
+  while (l != NULL)
+    {
+      if (strcmp (l->data, lang) == 0)
+	return score;
+
+      l = l->next;
+      score++;
+    }
+  return 1000;
+}
+
 static gboolean
 parse_translated_text (xmlNodePtr node,
-		       char     **default_text,
 		       char     **translated_text,
+		       gint      *translation_score,
 		       GError   **error)
 {
   xmlChar *prop;
-  gboolean translated = FALSE;
+  gint score;
   
   prop = xmlGetProp (node, "lang");
   if (prop)
     {
-      if (strcmp (prop, gdm_language) == 0)
-	translated = TRUE;
-      else
-	{
-	  xmlFree (prop);
-	  return TRUE;
-	}
+      score = is_current_locale (prop);
       xmlFree (prop);
-    }
+    } else
+      score = 999;
 
+  if (score >= *translation_score)
+    return TRUE;
+  
   prop = xmlGetProp (node, "val");
   if (prop == NULL)
     {
-      xmlFree (prop);
       *error = g_error_new (GREETER_PARSER_ERROR,
 			    GREETER_PARSER_ERROR_BAD_SPEC,
 			    "No string defined for text node\n");
       return FALSE;
     }
-  
-  if (translated)
-    *translated_text = g_strdup (prop);
-  else
-    *default_text = g_strdup (prop);
+
+  *translation_score = score;
+  if (*translated_text)
+    g_free (*translated_text);
+  *translated_text = g_strdup (prop);
   
   xmlFree (prop);
+  
   return TRUE;
 }
 
@@ -720,10 +736,9 @@ parse_label (xmlNodePtr        node,
 {
   xmlNodePtr child;
   int i;
-  char *default_text;
   char *translated_text;
+  gint translation_score = 1000;
   
-  default_text = NULL;
   translated_text = NULL;
   
   child = node->children;
@@ -747,7 +762,7 @@ parse_label (xmlNodePtr        node,
       else if (child->type == XML_ELEMENT_NODE &&
 	       strcmp (child->name, "text") == 0)
 	{
-	  if (!parse_translated_text (child, &default_text, &translated_text, error))
+	  if (!parse_translated_text (child, &translated_text, &translation_score, error))
 	    return FALSE;
 	}
       else if (strcmp (child->name, "fixed") == 0 ||
@@ -762,8 +777,7 @@ parse_label (xmlNodePtr        node,
       child = child->next;
     }
 
-  if (default_text == NULL &&
-      translated_text == NULL)
+  if (translated_text == NULL)
     {
       *error = g_error_new (GREETER_PARSER_ERROR,
 			    GREETER_PARSER_ERROR_BAD_SPEC,
@@ -786,13 +800,7 @@ parse_label (xmlNodePtr        node,
   if (info->fonts[GREETER_ITEM_STATE_NORMAL] == NULL)
     info->fonts[GREETER_ITEM_STATE_NORMAL] = pango_font_description_from_string ("Sans");
 
-  if (translated_text)
-    {
-      info->orig_text = translated_text;
-      g_free (default_text);
-    }
-  else
-    info->orig_text = default_text;
+  info->orig_text = translated_text;
   
   return TRUE;
 }
