@@ -1,3 +1,31 @@
+Wed May 09 18:19:22 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c: Center all mapped windows, also disallow
+	  negative positions in centered windows.  Also clip size of
+	  windows to the screen size.
+
+	* daemon/gdm.h, acconfig.h, configure.in:  Make sure proper defaults 
+	  are read in.  That is, if gdm.conf is missing the result should be
+	  same as the supplied gdm.conf.  Also make ConfigAvailable=true the
+	  default.  It will always query for root password so it's safe.
+
+	* gui/gdmlogin.c, daemon/gdm.h, daemon/slave.c: When resetting after
+	  config don't quiver.
+
+	* gui/gdmlogin.c: properly translate failsafes
+
+	* daemon/slave.c:  properly test for existance/executability of
+	  just the path not arguments, and don't test for read on session
+	  executions.
+
+	* daemon/server.c:  Properly XSync before popping error handler
+
+	* daemon/slave.c, daemon/gdm.[ch], daemon/server.c:  Check for
+	  xinerama and start error dialogs and xterm failsafe at the
+	  correct offset.
+
+	* daemon/slave.c: Properly handle focus on the error dialog
+
 Tue May 08 16:38:02 2001  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c:  Actually make the xinerama scaling thing work.
