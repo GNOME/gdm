@@ -22,6 +22,7 @@
 
 #include <config.h>
 #include "gdmconfig.h"
+#include "icon-entry-hack.h"
 
 /* This should always be undefined before building ANY kind of production release. */
 /*#define DOING_DEVELOPMENT 1*/
@@ -180,6 +181,17 @@ main (int argc, char *argv[])
      */
     gdm_config_parse_most();
     glade_xml_signal_autoconnect(GUI);
+
+    /* we hack up our icon entry */
+    hack_icon_entry (GNOME_ICON_ENTRY (get_widget ("gdm_icon")));
+    {
+	    GtkWidget *entry = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY (get_widget ("gdm_icon")));
+	    gtk_signal_connect (GTK_OBJECT (entry), "changed",
+				GTK_SIGNAL_FUNC (can_apply_now),
+				NULL);
+    }
+
+
 	
 	glade_xml_signal_autoconnect(basic_notebook);
 	glade_xml_signal_autoconnect(expert_notebook);
@@ -276,7 +288,7 @@ gdm_config_parse_most (void)
     /* Fill the widgets in Security tab */
     gdm_toggle_set("allow_root", gnome_config_get_bool(GDM_KEY_ALLOWROOT));
     gdm_toggle_set("kill_init_clients", gnome_config_get_bool(GDM_KEY_KILLIC));
-    gdm_radio_set ("relax_perms", gnome_config_get_int(GDM_KEY_RELAXPERM));
+    gdm_radio_set ("relax_perms", gnome_config_get_int(GDM_KEY_RELAXPERM), 2);
     gdm_toggle_set("verbose_auth", gnome_config_get_bool(GDM_KEY_VERBAUTH));
 
     gdm_entry_set("gdm_runs_as_user", gnome_config_get_string (GDM_KEY_USER));
@@ -307,7 +319,6 @@ gdm_config_parse_most (void)
     
     gdm_toggle_set("show_system", gnome_config_get_bool (GDM_KEY_SYSMENU));
     gdm_toggle_set("quiver", gnome_config_get_bool (GDM_KEY_QUIVER));
-    gdm_entry_set ("background_program", gnome_config_get_string (GDM_KEY_BACKGROUNDPROG));
     gdm_toggle_set ("lock_position", gnome_config_get_bool (GDM_KEY_LOCK_POSITION));
     gdm_toggle_set ("set_position", gnome_config_get_bool (GDM_KEY_SET_POSITION));
     gdm_spin_set ("position_x", gnome_config_get_int (GDM_KEY_POSITIONX));
@@ -318,6 +329,11 @@ gdm_config_parse_most (void)
     /* font picker is in parse_remaining() */
     gdm_entry_set("welcome_message", gnome_config_get_string (GDM_KEY_WELCOME));
     
+
+    /* Fill the widgets in Background tab */
+    gdm_entry_set ("background_program", gnome_config_get_string (GDM_KEY_BACKGROUNDPROG));
+    gdm_entry_set ("background_image", gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE));
+    gdm_color_set ("background_color", gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR));
 
     /* Fill the widgets in Greeter tab */
     /* enable_face_browser is in parse_remaining() */
@@ -370,6 +386,10 @@ gdm_config_parse_remaining (void)
 
     /* Ensure the XDMCP frame is the correct sensitivity */
     gdm_toggle_set("enable_xdmcp", gnome_config_get_bool(GDM_KEY_XDMCP));
+
+    /* The background radios */
+    gdm_radio_set ("background_type",
+		   gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE), 2);
     
     /* This should make the font picker to update itself. But for some
      * strange reason, it doesn't.
@@ -470,7 +490,6 @@ write_new_config_file                  (GtkButton *button,
     gdm_entry_write("pid_file", GDM_KEY_PIDFILE);
     gdm_entry_write("default_path", GDM_KEY_PATH);
     gdm_entry_write("root_path", GDM_KEY_ROOTPATH);
- 
 
     /* Write out the widget contents of the Security tab */
     gdm_toggle_write("allow_root", GDM_KEY_ALLOWROOT);
@@ -506,7 +525,6 @@ write_new_config_file                  (GtkButton *button,
     
     gdm_toggle_write("show_system", GDM_KEY_SYSMENU);
     gdm_toggle_write("quiver", GDM_KEY_QUIVER);
-    gdm_entry_write("background_program", GDM_KEY_BACKGROUNDPROG);
     gdm_toggle_write("lock_position", GDM_KEY_LOCK_POSITION);
     gdm_toggle_write("set_position", GDM_KEY_SET_POSITION);
     gdm_spin_write("position_x", GDM_KEY_POSITIONX);
@@ -517,6 +535,11 @@ write_new_config_file                  (GtkButton *button,
     gdm_font_write("font_picker", GDM_KEY_FONT);
     gdm_entry_write("welcome_message", GDM_KEY_WELCOME);
     
+    /* Write out the widget contents of the Background tab */
+    gdm_radio_write ("background_type", GDM_KEY_BACKGROUNDTYPE, 2);
+    gdm_entry_write("background_image", GDM_KEY_BACKGROUNDIMAGE);
+    gdm_color_write("background_color", GDM_KEY_BACKGROUNDCOLOR);
+    gdm_entry_write("background_program", GDM_KEY_BACKGROUNDPROG);
 
     /* Write out the widget contents of the Greeter tab */
     gdm_toggle_write("enable_face_browser", GDM_KEY_BROWSER);
@@ -603,13 +626,39 @@ can_apply_now                          (GtkEditable     *editable,
 
 void
 change_xdmcp_sensitivity               (GtkButton       *button,
+					gpointer         user_data)
+{
+	g_assert(button != NULL);
+	g_assert(GTK_IS_TOGGLE_BUTTON(button));
+
+	gtk_widget_set_sensitive(get_widget("xdmcp_frame"), 
+				 GTK_TOGGLE_BUTTON(button)->active);
+}
+
+void
+change_background_sensitivity_image    (GtkButton       *button,
                                         gpointer         user_data)
 {
-    g_assert(button != NULL);
-    g_assert(GTK_IS_TOGGLE_BUTTON(button));
-    
-    gtk_widget_set_sensitive(get_widget("xdmcp_frame"), 
-							 GTK_TOGGLE_BUTTON(button)->active);
+	g_assert (button != NULL);
+	g_assert (GTK_IS_TOGGLE_BUTTON (button));
+
+	gtk_widget_set_sensitive (get_widget ("background_image_pixmap_entry"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+	gtk_widget_set_sensitive (get_widget ("background_image_label"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+}
+
+void
+change_background_sensitivity_color    (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	g_assert (button != NULL);
+	g_assert (GTK_IS_TOGGLE_BUTTON (button));
+
+	gtk_widget_set_sensitive (get_widget ("background_color"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
+	gtk_widget_set_sensitive (get_widget ("background_color_label"), 
+				  GTK_TOGGLE_BUTTON (button)->active);
 }
 
 

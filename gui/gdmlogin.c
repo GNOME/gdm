@@ -18,6 +18,7 @@
 
 #include <config.h>
 #include <gnome.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,6 +41,7 @@
 #endif
 #include "gdmlogin.h"
 #include "gdm.h"
+#include "misc.h"
 
 static const gchar RCSid[]="$Id$";
 
@@ -55,6 +57,14 @@ static gint GdmXineramaScreen;
 static gchar *GdmLogo;
 static gchar *GdmWelcome;
 static gchar *GdmBackgroundProg;
+static gchar *GdmBackgroundImage;
+static gchar *GdmBackgroundColor;
+static int GdmBackgroundType;
+enum {
+	GDM_BACKGROUND_NONE = 0,
+	GDM_BACKGROUND_IMAGE = 1,
+	GDM_BACKGROUND_COLOR = 2
+};
 static gchar *GdmFont;
 static gchar *GdmGtkRC;
 static gchar *GdmIcon;
@@ -74,7 +84,7 @@ static GtkWidget *label;
 static GtkWidget *entry;
 static GtkWidget *msg;
 static gboolean require_quater = FALSE;
-static GtkWidget *win;
+static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
 static GdkWindow *rootwin;
@@ -219,8 +229,10 @@ gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
 
     if (event->type == GDK_2BUTTON_PRESS) {
 	    gdm_login_icon_released (widget);
-	    gtk_widget_destroy (GTK_WIDGET (win));
-	    gtk_widget_show (login);
+	    gtk_widget_destroy (GTK_WIDGET (icon_win));
+	    icon_win = NULL;
+	    gtk_widget_show_now (login);
+	    gdk_window_raise (login->window);
 	    gtk_widget_grab_focus (entry);	
 	    return TRUE;
     }
@@ -283,18 +295,18 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
     gtk_widget_hide (login);
     style = gtk_widget_get_default_style();
     gc = style->black_gc; 
-    win = gtk_window_new (GTK_WINDOW_POPUP);
+    icon_win = gtk_window_new (GTK_WINDOW_POPUP);
 
-    gtk_widget_set_events (win, 
-			   gtk_widget_get_events (GTK_WIDGET (win)) | 
+    gtk_widget_set_events (icon_win, 
+			   gtk_widget_get_events (GTK_WIDGET (icon_win)) | 
 			   GDK_BUTTON_PRESS_MASK |
 			   GDK_BUTTON_MOTION_MASK |
 			   GDK_POINTER_MOTION_HINT_MASK);
 
-    gtk_widget_realize (GTK_WIDGET (win));
+    gtk_widget_realize (GTK_WIDGET (icon_win));
 
     fixed = gtk_fixed_new();
-    gtk_container_add (GTK_CONTAINER (win), fixed);
+    gtk_container_add (GTK_CONTAINER (icon_win), fixed);
     gtk_widget_show (fixed);
 
     icon = gnome_pixmap_new_from_file (GdmIcon);
@@ -303,19 +315,19 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
     gtk_fixed_put(GTK_FIXED (fixed), GTK_WIDGET (icon), 0, 0);
     gtk_widget_show(GTK_WIDGET (icon));
 
-    gtk_signal_connect (GTK_OBJECT (win), "button_press_event",
+    gtk_signal_connect (GTK_OBJECT (icon_win), "button_press_event",
 			GTK_SIGNAL_FUNC (gdm_login_icon_pressed),NULL);
-    gtk_signal_connect (GTK_OBJECT (win), "button_release_event",
+    gtk_signal_connect (GTK_OBJECT (icon_win), "button_release_event",
 			GTK_SIGNAL_FUNC (gdm_login_icon_released),NULL);
-    gtk_signal_connect (GTK_OBJECT (win), "motion_notify_event",
+    gtk_signal_connect (GTK_OBJECT (icon_win), "motion_notify_event",
 			GTK_SIGNAL_FUNC (gdm_login_icon_motion),NULL);
 
-    gtk_widget_show (GTK_WIDGET (win));
+    gtk_widget_show (GTK_WIDGET (icon_win));
 
     rw = screen.width;
     rh = screen.height;
 
-    set_screen_pos (GTK_WIDGET (win), rw-iw, rh-ih);
+    set_screen_pos (GTK_WIDGET (icon_win), rw-iw, rh-ih);
 }
 
 
@@ -478,17 +490,30 @@ gdm_center_window (GtkWindow *cw)
 static gboolean
 gdm_login_query (const gchar *msg)
 {
-    GtkWidget *req;
+	int ret;
+	static GtkWidget *req = NULL;
 
-    req = gnome_message_box_new (msg,
-				 GNOME_MESSAGE_BOX_QUESTION,
-				 GNOME_STOCK_BUTTON_YES,
-				 GNOME_STOCK_BUTTON_NO,
-				 NULL);
-	    
-    gtk_window_set_modal (GTK_WINDOW (req), TRUE);
-    gdm_center_window (GTK_WINDOW (req));
-    return (!gnome_dialog_run (GNOME_DIALOG (req)));
+	if (req != NULL)
+		gtk_widget_destroy (req);
+
+	req = gnome_message_box_new (msg,
+				     GNOME_MESSAGE_BOX_QUESTION,
+				     GNOME_STOCK_BUTTON_YES,
+				     GNOME_STOCK_BUTTON_NO,
+				     NULL);
+	gtk_signal_connect (GTK_OBJECT (req), "destroy",
+			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+			    &req);
+
+	gtk_window_set_modal (GTK_WINDOW (req), TRUE);
+	gdm_center_window (GTK_WINDOW (req));
+
+	ret = gnome_dialog_run (GNOME_DIALOG (req));
+
+	if (ret == 0)
+		return TRUE;
+	else /* this includes -1 which is "destroyed" */
+		return FALSE;
 }
 
 
@@ -544,6 +569,9 @@ gdm_login_parse_config (void)
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmWelcome = gnome_config_get_translated_string (GDM_KEY_WELCOME);
     GdmBackgroundProg = gnome_config_get_string (GDM_KEY_BACKGROUNDPROG);
+    GdmBackgroundImage = gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE);
+    GdmBackgroundColor = gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR);
+    GdmBackgroundType = gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE);
     GdmGtkRC = gnome_config_get_string (GDM_KEY_GTKRC);
     GdmExclude = gnome_config_get_string (GDM_KEY_EXCLUDE);
     GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
@@ -1364,7 +1392,8 @@ root_keys_filter (GdkXEvent *gdk_xevent,
 	    xevent->type != KeyRelease)
 		return GDK_FILTER_CONTINUE;
 
-	if (entry->window == NULL)
+	if (entry->window == NULL ||
+	    icon_win != NULL)
 		return GDK_FILTER_CONTINUE;
 
 	/* EVIIIIIIIIIL, but works */
@@ -1390,6 +1419,7 @@ gdm_init_root_window_overlay (void)
 	attributes.width = gdk_screen_width ();
 	attributes.height = gdk_screen_height ();
 	attributes.wclass = GDK_INPUT_ONLY;
+	attributes.override_redirect = TRUE;
 	attributes.event_mask = (GDK_BUTTON_PRESS_MASK |
 				 GDK_BUTTON_RELEASE_MASK |
 				 GDK_POINTER_MOTION_MASK |
@@ -1398,7 +1428,7 @@ gdm_init_root_window_overlay (void)
 				 GDK_KEY_RELEASE_MASK |
 				 GDK_ENTER_NOTIFY_MASK |
 				 GDK_LEAVE_NOTIFY_MASK);
-	attributes_mask = GDK_WA_X | GDK_WA_Y;
+	attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_NOREDIR;
 
 	rootwin_overlay = gdk_window_new (NULL,
 					  &attributes,
@@ -1440,6 +1470,8 @@ gdm_login_handle_pressed (GtkWidget *widget, GdkEventButton *event)
 	event->type != GDK_BUTTON_PRESS ||
 	GdmLockPosition)
 	    return FALSE;
+
+    gdk_window_raise (login->window);
 
     p = g_new0 (CursorOffset, 1);
     gtk_object_set_data_full (GTK_OBJECT (widget), "offset", p,
@@ -1590,6 +1622,16 @@ gdm_login_set_font (GtkWidget *widget, const char *font_name)
 	
 	gtk_widget_set_style (widget, new_style);
 	gtk_style_unref (new_style);
+}
+
+static void
+login_realized (GtkWidget *w)
+{
+	/* In case we're out of bounds, after realization we'll have correct
+	 * limits to make the window be on screen */
+	if (GdmSetPosition) {
+		set_screen_pos (login, GdmPositionX, GdmPositionY);
+	}
 }
 
 static void
@@ -1886,6 +1928,9 @@ gdm_login_gui_init (void)
     
     if (GdmSetPosition) {
 	    set_screen_pos (login, GdmPositionX, GdmPositionY);
+	    gtk_signal_connect (GTK_OBJECT (login), "realize",
+				GTK_SIGNAL_FUNC (login_realized),
+				NULL);
     } else {
 	    gdm_center_window (GTK_WINDOW (login));
     }
@@ -2094,6 +2139,105 @@ gdm_screen_init (void)
 	}
 }
 
+static void
+set_root (GdkPixbuf *pb)
+{
+	GdkPixmap *pm;
+
+	g_return_if_fail (pb != NULL);
+
+	gdk_pixbuf_render_pixmap_and_mask (pb,
+					   &pm,
+					   NULL /* mask_return */,
+					   0 /* alpha_threshold */);
+
+	/* paranoia */
+	if (pm == NULL)
+		return;
+
+	gdk_error_trap_push ();
+
+	gdk_window_set_back_pixmap (GDK_ROOT_PARENT (),
+				    pm,
+				    FALSE /* parent_relative */);
+
+	gdk_pixmap_unref (pm);
+
+	gdk_window_clear (GDK_ROOT_PARENT ());
+
+	gdk_flush ();
+	gdk_error_trap_pop ();
+}
+
+/* Load the background stuff, the image and program */
+static void
+run_backgrounds (void)
+{
+	/* Load background image */
+	if (GdmBackgroundType == GDM_BACKGROUND_IMAGE &&
+	    GdmBackgroundImage != NULL &&
+	    GdmBackgroundImage[0] != '\0') {
+		GdkPixbuf *pb = gdk_pixbuf_new_from_file (GdmBackgroundImage);
+		if (pb != NULL) {
+			GdkPixbuf *spb =
+				gdk_pixbuf_scale_simple (pb,
+							 gdk_screen_width (),
+							 gdk_screen_height (),
+							 GDK_INTERP_BILINEAR);
+			gdk_pixbuf_unref (pb);
+
+			/* paranoia */
+			if (spb != NULL) {
+				set_root (spb);
+				gdk_pixbuf_unref (spb);
+			}
+
+		}
+	/* Load background color */
+	} else if (GdmBackgroundType == GDM_BACKGROUND_COLOR) {
+		GdkColor color;
+		GdkColormap *colormap;
+
+		if (GdmBackgroundColor == NULL ||
+		    GdmBackgroundColor[0] == '\0' ||
+		    ! gdk_color_parse (GdmBackgroundColor, &color)) {
+			gdk_color_parse ("#007777", &color);
+		}
+
+		colormap = gdk_window_get_colormap (GDK_ROOT_PARENT ());
+		/* paranoia */
+		if (colormap != NULL) {
+			gdk_error_trap_push ();
+
+			gdk_color_alloc (colormap, &color);
+			gdk_window_set_background (GDK_ROOT_PARENT (), &color);
+			gdk_window_clear (GDK_ROOT_PARENT ());
+
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
+	}
+
+
+	/* Launch a background program if one exists */
+	if (GdmBackgroundProg != NULL &&
+	    GdmBackgroundProg[0] != '\0') {
+		backgroundpid = fork ();
+
+		if (backgroundpid == -1) {
+			/*ingore errors, this is irrelevant */
+			backgroundpid = 0;
+		} else if (backgroundpid == 0) {
+			char **argv;
+			argv = g_strsplit (GdmBackgroundProg, " ", MAX_ARGS);
+			execv (argv[0], argv);
+			/*ingore errors, this is irrelevant */
+			_exit (0);
+		}
+	}
+}
+
+
 int 
 main (int argc, char *argv[])
 {
@@ -2167,22 +2311,7 @@ main (int argc, char *argv[])
     if (sigprocmask (SIG_SETMASK, &mask, NULL) == -1) 
 	gdm_login_abort (_("Could not set signal mask!"));
 
-    /* Launch a background program if one exists */
-    if (GdmBackgroundProg != NULL &&
-	GdmBackgroundProg[0] != '\0') {
-	    backgroundpid = fork ();
-
-	    if (backgroundpid == -1) {
-		    /*ingore errors, this is irrelevant */
-		    backgroundpid = 0;
-	    } else if (backgroundpid == 0) {
-		    char **argv;
-		    argv = g_strsplit (GdmBackgroundProg, " ", MAX_ARGS);
-		    execv (argv[0], argv);
-		    /*ingore errors, this is irrelevant */
-		    _exit (0);
-	    }
-    }
+    run_backgrounds ();
 
     ctrlch = g_io_channel_unix_new (STDIN_FILENO);
     g_io_channel_init (ctrlch);

@@ -43,8 +43,8 @@ GtkWidget *get_widget(gchar *widget_name);
                               (char *)value); \
            g_free(value); \
         }
-#define gdm_radio_set(radio_name, value) \
-        if (value >= 0) { \
+#define gdm_radio_set(radio_name, value, maximum) \
+        if (value >= 0 && value <= maximum) { \
 	   gchar *widget_name = g_strdup_printf ("%s_%d", radio_name, value); \
            gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(get_widget(widget_name)), TRUE); \
 	   g_free (widget_name); \
@@ -67,6 +67,13 @@ GtkWidget *get_widget(gchar *widget_name);
         if (value) \
            gnome_font_picker_set_font_name(GNOME_FONT_PICKER(get_widget(font_name)), \
                                            (char *)value);
+#define gdm_color_set(picker_name, value) \
+        if (value) { \
+	   GdkColor color; \
+	   if (gdk_color_parse (value, &color)) \
+		   gnome_color_picker_set_i16 (GNOME_COLOR_PICKER (get_widget (picker_name)), \
+					       color.red, color.green, color.blue, 0); \
+	}
 
 /* Some more macros for readable coding of the gnome_config_set_* functions */
 
@@ -85,13 +92,29 @@ GtkWidget *get_widget(gchar *widget_name);
         gnome_config_set_int(key, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_widget(toggle_name)))?1:0);
 
 #define gdm_icon_write(icon_name, key) \
-        if (gnome_icon_entry_get_filename(GNOME_ICON_ENTRY(get_widget(icon_name)))) \
-           gnome_config_set_string(key, gnome_icon_entry_get_filename(GNOME_ICON_ENTRY(get_widget(icon_name)))); \
+	{ \
+	char *icon = hack_icon_entry_get_icon(GNOME_ICON_ENTRY(get_widget(icon_name))); \
+        if (icon != NULL) \
+           gnome_config_set_string(key, icon); \
         else \
-           gnome_config_set_string(key, "");
+           gnome_config_set_string(key, ""); \
+	g_free (icon); \
+	}
 
 #define gdm_font_write(picker_name, key) \
         gnome_config_set_string(key, gnome_font_picker_get_font_name(GNOME_FONT_PICKER(get_widget(picker_name))));
+
+#define gdm_color_write(picker_name, key) \
+	{ \
+		char *value; \
+		guint8 r, g, b; \
+		gnome_color_picker_get_i8 (GNOME_COLOR_PICKER (get_widget (picker_name)), \
+					   &r, &g, &b, NULL); \
+		value = g_strdup_printf ("#%02x%02x%02x", (int)r, (int)g, (int)b); \
+		gnome_config_set_string (key, value); \
+		g_free (value); \
+	}
+
 
 
 /* Function Prototypes */
@@ -131,6 +154,12 @@ can_apply_now                          (GtkEditable     *editable,
                                         gpointer         user_data);
 void
 change_xdmcp_sensitivity               (GtkButton       *button,
+                                        gpointer         user_data);
+void
+change_background_sensitivity_image    (GtkButton       *button,
+                                        gpointer         user_data);
+void
+change_background_sensitivity_color    (GtkButton       *button,
                                         gpointer         user_data);
 void
 set_face_sensitivity                   (GtkButton       *button,

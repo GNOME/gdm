@@ -1,3 +1,22 @@
+Fri Mar 30 18:17:00 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: up version to 2.2.1, and check for GdkPixbuf
+
+	* config/Default, config/gdm.conf.in, daemon/gdm.h, gui/Makefile.am,
+	  gui/gdmconfig-strings.c, gui/gdmconfig.c, gui/gdmconfig.glade,
+	  gui/gdmconfig.h, gui/gdmlogin.c:  Add background image/color
+	  setting and remove that setup from the Default init.
+
+	* gui/Makefile.am, gui/gdmconfig.c, gui/icon-entry-hack.[ch]:
+	  Put in the icon entry hack fromt he panel to make the icon
+	  entry behave properly
+
+	* gui/gdmlogin.c:  Make overlay window override redirect, don't
+	  proxy keyboard events to entry when window is iconified, raise
+	  window when moving, raise window on uniconify, set initial manual
+	  position after realize to avoid manual position being an offscreen
+	  one properly, only allow one query dialog to be up
+
 Mon Mar 12 16:21:47 2001  George Lebl <jirka@5z.com>
 
 	* Release 2.2.0

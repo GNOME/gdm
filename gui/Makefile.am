@@ -8,6 +8,7 @@ DEFS += -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\"
 INCLUDES = -I. -I.. -I$(top_srcdir)/daemon -I$(includedir)		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	@LIBGLADE_CFLAGS@				\
+	@PIXBUF_CFLAGS@					\
 	$(GNOME_INCLUDEDIR)
 
 bin_PROGRAMS = gdmchooser gdmlogin gdmconfig
@@ -21,11 +22,13 @@ gdmlogin_SOURCES = \
 	gdmlogin.h
 
 gdmconfig_SOURCES = \
+	icon-entry-hack.c \
+	icon-entry-hack.h \
 	gdmconfig.c \
 	gdmconfig.h
 
 gdmchooser_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) -lXdmcp -lX11 $(INTLLIBS) @LIBGLADE_LIBS@
-gdmlogin_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS)
+gdmlogin_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) @PIXBUF_LIBS@
 gdmconfig_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) @LIBGLADE_LIBS@
  
 Systemdir = $(datadir)/gnome/apps/System
