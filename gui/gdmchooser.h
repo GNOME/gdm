@@ -32,7 +32,9 @@ typedef struct _GdmChooserHost GdmChooserHost;
 struct _GdmChooserHost {
     gchar *name;
     gchar *desc;
+    struct in_addr ia;
     GdkImlibImage *picture;
+    gboolean willing;
 };
 
 gboolean gdm_chooser_cancel (void);

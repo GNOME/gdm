@@ -64,7 +64,10 @@ static const gchar *empty_network = N_("No serving hosts were found.");
 static const gchar *active_network = N_("Choose a host to connect to from the selection below.");
 static gchar *glade_filename = NULL;
 
-static GdmChooserHost *gdm_chooser_host_alloc (const char *hostname, const char *description);
+static GdmChooserHost * gdm_chooser_host_alloc (const char *hostname,
+						const char *description,
+						struct in_addr *ia,
+						gboolean willing);
 static void gdm_chooser_decode_packet (void);
 static void gdm_chooser_abort (const gchar *format, ...);
 static void gdm_chooser_browser_update (void);
@@ -74,6 +77,11 @@ static void gdm_chooser_choose_host (const gchar *hostname);
 static void gdm_chooser_add_hosts (char **hosts);
 
 static guint scan_time_handler = 0;
+
+#define PING_TIMEOUT 2000
+#define PING_TRIES 3
+static int ping_tries = PING_TRIES;
+static guint ping_try_handler = 0;
 
 /* Fixetyfix */
 int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);
@@ -129,6 +137,32 @@ gdm_chooser_sort_func (gpointer d1, gpointer d2)
     return strcmp (a->name, b->name);
 }
 
+static gboolean
+gdm_host_known (struct in_addr *ia)
+{
+	GList *li;
+
+	for (li = hosts; li != NULL; li = li->next) {
+		GdmChooserHost *host = li->data;
+		if (memcmp (&host->ia, ia, sizeof (struct in_addr)) == 0) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+static gboolean
+is_loopback_addr (struct in_addr *ia)
+{
+	const char lo[] = {127,0,0,1};
+
+	if (ia->s_addr == INADDR_LOOPBACK ||
+	    memcmp (&ia->s_addr, lo, 4) == 0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
 
 static void
 gdm_chooser_decode_packet (void)
@@ -141,7 +175,6 @@ gdm_chooser_decode_packet (void)
     gchar *hostname = NULL;
     gchar *status = NULL;
     ARRAY8 auth, host, stat;
-    GdmChooserHost *new_host;
 
     if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt_sa, &sa_len))
 	return;
@@ -152,48 +185,59 @@ gdm_chooser_decode_packet (void)
     if (header.version != XDM_PROTOCOL_VERSION)
 	return;
 
-    if (header.opcode != WILLING)
-	return;
-    
-    if (! XdmcpReadARRAY8 (&buf, &auth))
-	goto done;
-    
-    if (! XdmcpReadARRAY8 (&buf, &host))
-	goto done;
-    
-    if (! XdmcpReadARRAY8 (&buf, &stat))
-	goto done;
-    
-    status = g_strndup (stat.data, stat.length);
-    
-    he = gethostbyaddr ((gchar *) &clnt_sa.sin_addr, 
-			sizeof (struct in_addr), 
-			AF_INET);
-    
-    hostname = (he && he->h_name) ? he->h_name : inet_ntoa (clnt_sa.sin_addr);
-    
-    /* We can't pipe hostnames larger than this */
-    if (strlen (hostname)+1 > PIPE_BUF)
-	goto done;
+    if (header.opcode == WILLING) {
+	    if (! XdmcpReadARRAY8 (&buf, &auth))
+		    goto done;
 
-    new_host = gdm_chooser_host_alloc (hostname, (gchar *) status);
-    if (g_list_find_custom (hosts,
-			    new_host,
-			    (GCompareFunc) gdm_chooser_sort_func)) {
-	    gdm_chooser_host_dispose (new_host);
-	    goto done;
+	    if (! XdmcpReadARRAY8 (&buf, &host))
+		    goto done;
+
+	    if (! XdmcpReadARRAY8 (&buf, &stat))
+		    goto done;
+
+	    status = g_strndup (stat.data, stat.length);
+    } else if (header.opcode == UNWILLING) {
+	    /* immaterial, will not be shown */
+	    status = NULL;
+    } else {
+	    return;
     }
-    
-    hosts = g_list_insert_sorted (hosts, 
-				  new_host,
-				  (GCompareFunc) gdm_chooser_sort_func);
+
+    if ( ! is_loopback_addr (&clnt_sa.sin_addr)) {
+	    he = gethostbyaddr ((gchar *) &clnt_sa.sin_addr,
+				sizeof (struct in_addr),
+				AF_INET);
+
+	    hostname = (he && he->h_name) ? he->h_name : inet_ntoa (clnt_sa.sin_addr);
+
+	    /* We can't pipe hostnames larger than this */
+	    if (strlen (hostname)+1 > PIPE_BUF)
+		    goto done;
+
+	    hostname = g_strdup (hostname);
+    } else {
+	    hostname = g_new0 (char, 1024);
+	    if (gethostname (hostname, 1023) != 0) {
+		    g_free (hostname);
+		    goto done;
+	    }
+    }
+
+    gdm_chooser_host_alloc (hostname,
+			    status,
+			    &clnt_sa.sin_addr,
+			    header.opcode == WILLING);
+
+    g_free (hostname);
 
     gdm_chooser_browser_update ();
     
  done:
-    XdmcpDisposeARRAY8 (&auth);
-    XdmcpDisposeARRAY8 (&host);
-    XdmcpDisposeARRAY8 (&stat);
+    if (header.opcode == WILLING) {
+	    XdmcpDisposeARRAY8 (&auth);
+	    XdmcpDisposeARRAY8 (&host);
+	    XdmcpDisposeARRAY8 (&stat);
+    }
     
     g_free (status);
     
@@ -260,13 +304,50 @@ chooser_scan_time_update (gpointer data)
 	return FALSE;
 }
 
-gboolean 
-gdm_chooser_xdmcp_discover (void)
+static void
+do_ping (gboolean full)
 {
     struct sockaddr_in sock;
     GSList *bl = bcaddr;
     GSList *ql = queryaddr;
     struct in_addr *ia;
+
+    sock.sin_family = AF_INET;
+    sock.sin_port = htons (XDM_UDP_PORT);
+
+    while (bl) {
+	    ia = (struct in_addr *) bl->data;
+	    sock.sin_addr.s_addr = ia->s_addr; 
+	    XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
+	    bl = bl->next;
+    }
+
+    while (ql != NULL) {
+	    ia = (struct in_addr *) ql->data;
+	    if (full ||
+		! gdm_host_known (ia)) {
+		    sock.sin_addr.s_addr = ia->s_addr;
+		    XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
+	    }
+	    ql = ql->next;
+    }
+}
+
+static gboolean
+ping_try (gpointer data)
+{
+	do_ping (FALSE);
+
+	ping_tries --;
+	if (ping_tries <= 0)
+		return FALSE;
+	else
+		return TRUE;
+}
+
+gboolean 
+gdm_chooser_xdmcp_discover (void)
+{
     GList *hl = hosts;
 
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
@@ -284,26 +365,18 @@ gdm_chooser_xdmcp_discover (void)
 
     hosts = NULL;
 
-    sock.sin_family = AF_INET;
-    sock.sin_port = htons (XDM_UDP_PORT);
-
-    while (bl) {
-	ia = (struct in_addr *) bl->data;
-	sock.sin_addr.s_addr = ia->s_addr; 
-	XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
-	bl = bl->next;
-    }
+    do_ping (TRUE);
 
     if (scan_time_handler > 0)
 	    g_source_remove (scan_time_handler);
     scan_time_handler = g_timeout_add (GdmScanTime * 1000, 
 				       chooser_scan_time_update, NULL);
-    while (ql != NULL) {
-	    ia = (struct in_addr *) ql->data;
-	    sock.sin_addr.s_addr = ia->s_addr;
-	    XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
-	    ql = ql->next;
-    }
+
+    /* Note we already used up one try */
+    ping_tries = PING_TRIES - 1;
+    if (ping_try_handler > 0)
+	    g_source_remove (ping_try_handler);
+    ping_try_handler = g_timeout_add (PING_TIMEOUT, ping_try, NULL);
 
     return TRUE;
 }
@@ -435,6 +508,24 @@ gdm_chooser_parse_config (void)
     gnome_config_pop_prefix();
 }
 
+static GdmChooserHost *
+gdm_nth_willing_host (int n)
+{
+	GList *li;
+	int i;
+
+	i = 0;
+	for (li = hosts; li != NULL; li = li->next) {
+		GdmChooserHost *host = li->data;
+		if (host->willing) {
+			if (i == n)
+				return host;
+			i++;
+		}
+	}
+	return NULL;
+}
+
 
 gboolean 
 gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
@@ -446,12 +537,12 @@ gdm_chooser_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 	
     case GDK_BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
-	curhost = g_list_nth_data (hosts, selected);
+	curhost = gdm_nth_willing_host (selected);
 	gtk_widget_set_sensitive (manage, TRUE);
 	break;
 
     case GDK_2BUTTON_PRESS:
-	curhost = g_list_nth_data (hosts, selected);
+	curhost = gdm_nth_willing_host (selected);
 	gdm_chooser_manage (NULL, NULL);
 	break;
 	
@@ -488,27 +579,31 @@ gdm_chooser_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
 static void
 gdm_chooser_browser_update (void)
 {
-    GList *list = hosts;
+    GList *li;
+    gboolean any;
 
     gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
     gnome_icon_list_clear (GNOME_ICON_LIST (browser));
 
-    while (list) {
-	GdmChooserHost *host;
-	gchar *temp;
+    any = FALSE;
+    for (li = hosts; li != NULL; li = li->next) {
+	    GdmChooserHost *host = (GdmChooserHost *) li->data;
 
-	host = (GdmChooserHost *) list->data;
-
-	temp = g_strconcat (host->name, "\n", host->desc, NULL);
-	gnome_icon_list_append_imlib (GNOME_ICON_LIST (browser), host->picture, temp);
-	g_free (temp);
-
-	list = list->next;
+	    if (host->willing) {
+		    /* FIXME: the \n doesn't actually propagate
+		     * since the icon list is a broken piece of horsedung */
+		    char *temp = g_strconcat (host->name, " \n",
+					      host->desc, NULL);
+		    gnome_icon_list_append_imlib (GNOME_ICON_LIST (browser),
+						  host->picture, temp);
+		    g_free (temp);
+		    any = TRUE;
+	    }
     }
 
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
 
-    if (hosts) {
+    if (any) {
       gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
 		     _(active_network));
     } else {
@@ -650,15 +745,38 @@ gdm_chooser_signals_init (void)
 }
 
 static GdmChooserHost * 
-gdm_chooser_host_alloc (const char *hostname, const char *description)
+gdm_chooser_host_alloc (const char *hostname,
+			const char *description,
+			struct in_addr *ia,
+			gboolean willing)
 {
     GdmChooserHost *host;
     GdkImlibImage *imlibimg;
     gchar *hostimg;
+    GList *hostl;
 
     host = g_malloc (sizeof (GdmChooserHost));
     host->name = g_strdup (hostname);
     host->desc = g_strdup (description);
+    memcpy (&host->ia, ia, sizeof (struct in_addr));
+    host->willing = willing;
+
+    hostl = g_list_find_custom (hosts,
+				host,
+				(GCompareFunc) gdm_chooser_sort_func);
+    /* replace */
+    if (hostl != NULL) {
+	    GdmChooserHost *old = hostl->data;
+	    hostl->data = host;
+	    gdm_chooser_host_dispose (old);
+    } else {
+	    hosts = g_list_insert_sorted (hosts, 
+					  host,
+					  (GCompareFunc) gdm_chooser_sort_func);
+    }
+    
+    if ( ! willing)
+	    return host;
 
     hostimg = g_strconcat (GdmHostIconDir, "/", hostname, NULL);
 
