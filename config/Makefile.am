@@ -31,84 +31,84 @@ gettextfoo.h: XKeepsCrashing
 	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
 
 install-data-hook: gdm.conf gnomerc Gnome
-	if test '!' -d $(confdir); then \
-		$(mkinstalldirs) $(confdir); \
-		chmod 755 $(confdir); \
+	if test '!' -d $(DESTDIR)$(confdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(confdir); \
+		chmod 755 $(DESTDIR)$(confdir); \
 	fi
-	if test '!' -f $(confdir)/gdm.conf; then \
-		$(INSTALL_DATA) gdm.conf $(confdir)/gdm.conf; \
+	if test '!' -f $(DESTDIR)$(confdir)/gdm.conf; then \
+		$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/gdm.conf; \
 	fi
-	$(INSTALL_DATA) gdm.conf $(confdir)/factory-gdm.conf
+	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf
 
-	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(confdir)/XKeepsCrashing
+	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(DESTDIR)$(confdir)/XKeepsCrashing
 
-	-if test -f $(localedir)/locale.alias; then \
-		cp $(localedir)/locale.alias $(localedir)/locale.alias.orig; \
+	-if test -f $(DESTDIR)$(localedir)/locale.alias; then \
+		cp $(DESTDIR)$(localedir)/locale.alias $(DESTDIR)$(localedir)/locale.alias.orig; \
 	fi
-	$(INSTALL_DATA) $(srcdir)/locale.alias $(localedir)/locale.alias
+	$(INSTALL_DATA) $(srcdir)/locale.alias $(DESTDIR)$(localedir)/locale.alias
 
-	if test '!' -d $(sessdir); then \
-		$(mkinstalldirs) $(sessdir); \
-		chmod 755 $(sessdir); \
+	if test '!' -d $(DESTDIR)$(sessdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(sessdir); \
+		chmod 755 $(DESTDIR)$(sessdir); \
 	fi
 
-	-if test -f $(sessdir)/Xsession; then \
-		cp $(sessdir)/Xsession $(sessdir)/Xsession.orig; \
+	-if test -f $(DESTDIR)$(sessdir)/Xsession; then \
+		cp $(DESTDIR)$(sessdir)/Xsession $(DESTDIR)$(sessdir)/Xsession.orig; \
 	fi
-	$(INSTALL_SCRIPT) $(srcdir)/Xsession $(sessdir)/Xsession
+	$(INSTALL_SCRIPT) $(srcdir)/Xsession $(DESTDIR)$(sessdir)/Xsession
 
-	-if test -f $(sessdir)/Gnome; then \
-		cp $(sessdir)/Gnome $(sessdir)/Gnome.orig; \
+	-if test -f $(DESTDIR)$(sessdir)/Gnome; then \
+		cp $(DESTDIR)$(sessdir)/Gnome $(DESTDIR)$(sessdir)/Gnome.orig; \
 	fi
-	$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome
+	$(INSTALL_SCRIPT) Gnome $(DESTDIR)$(sessdir)/Gnome
 
 	-if test -f /etc/redhat-release; then \
-		if test -f $(sessdir)/Default; then \
-			cp $(sessdir)/Default $(sessdir)/Default.orig; \
+		if test -f $(DESTDIR)$(sessdir)/Default; then \
+			cp $(DESTDIR)$(sessdir)/Default $(DESTDIR)$(sessdir)/Default.orig; \
 		fi; \
-		$(INSTALL_SCRIPT) $(srcdir)/Default.redhat $(sessdir)/Default; \
+		$(INSTALL_SCRIPT) $(srcdir)/Default.redhat $(DESTDIR)$(sessdir)/Default; \
 	fi
 
-	if test '!' -d $(initdir); then \
-		$(mkinstalldirs) $(initdir); \
-		chmod 755 $(initdir); \
+	if test '!' -d $(DESTDIR)$(initdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(initdir); \
+		chmod 755 $(DESTDIR)$(initdir); \
 	fi
-	-if test -f $(initdir)/Default; then \
-		cp $(initdir)/Default $(initdir)/Default.orig; \
+	-if test -f $(DESTDIR)$(initdir)/Default; then \
+		cp $(DESTDIR)$(initdir)/Default $(DESTDIR)$(initdir)/Default.orig; \
 	fi
-	$(INSTALL_SCRIPT) $(srcdir)/Default $(initdir)/Default
+	$(INSTALL_SCRIPT) $(srcdir)/Default $(DESTDIR)$(initdir)/Default
 
-	if test '!' -d $(predir); then \
-		$(mkinstalldirs) $(predir); \
-		chmod 755 $(predir); \
+	if test '!' -d $(DESTDIR)$(predir); then \
+		$(mkinstalldirs) $(DESTDIR)$(predir); \
+		chmod 755 $(DESTDIR)$(predir); \
 	fi
-	-if test -f $(predir)/Default; then \
-		cp $(predir)/Default $(predir)/Default.orig; \
+	-if test -f $(DESTDIR)$(predir)/Default; then \
+		cp $(DESTDIR)$(predir)/Default $(DESTDIR)$(predir)/Default.orig; \
 	fi
-	$(INSTALL_SCRIPT) $(srcdir)/PreSession $(predir)/Default
+	$(INSTALL_SCRIPT) $(srcdir)/PreSession $(DESTDIR)$(predir)/Default
 
-	if test '!' -d $(postdir); then \
-		$(mkinstalldirs) $(postdir); \
-		chmod 755 $(postdir); \
+	if test '!' -d $(DESTDIR)$(postdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(postdir); \
+		chmod 755 $(DESTDIR)$(postdir); \
 	fi
-	-if test -f $(postdir)/Default; then \
-		cp $(postdir)/Default $(postdir)/Default.orig; \
+	-if test -f $(DESTDIR)$(postdir)/Default; then \
+		cp $(DESTDIR)$(postdir)/Default $(DESTDIR)$(postdir)/Default.orig; \
 	fi
-	$(INSTALL_SCRIPT) $(srcdir)/PostSession $(postdir)/Default
+	$(INSTALL_SCRIPT) $(srcdir)/PostSession $(DESTDIR)$(postdir)/Default
 
-	if test '!' -d $(gnomercdir); then \
-		$(mkinstalldirs) $(gnomercdir); \
-		chmod 755 $(gnomercdir); \
-	fi
-
-	if test '!' -f $(gnomercdir)/gnomerc; then \
-		$(INSTALL_SCRIPT) gnomerc $(gnomercdir)/gnomerc; \
+	if test '!' -d $(DESTDIR)$(gnomercdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(gnomercdir); \
+		chmod 755 $(DESTDIR)$(gnomercdir); \
 	fi
 
-	if test '!' -d $(authdir); then \
-		$(mkinstalldirs) $(authdir); \
-		chown gdm.gdm $(authdir); \
-		chmod 750 $(authdir); \
+	if test '!' -f $(DESTDIR)$(gnomercdir)/gnomerc; then \
+		$(INSTALL_SCRIPT) gnomerc $(DESTDIR)$(gnomercdir)/gnomerc; \
+	fi
+
+	if test '!' -d $(DESTDIR)$(authdir); then \
+		$(mkinstalldirs) $(DESTDIR)$(authdir); \
+		chown gdm.gdm $(DESTDIR)$(authdir); \
+		chmod 750 $(DESTDIR)$(authdir); \
 	fi
 
 	system=`uname`; \

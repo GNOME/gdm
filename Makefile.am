@@ -24,9 +24,9 @@ install-data-local: gdmsetup-security
 if CONSOLE_HELPER
 	$(INSTALL_DATA) -D $(srcdir)/gdmsetup-pam $(DESTDIR)$(PAM_PREFIX)/pam.d/gdmsetup
 	$(INSTALL_DATA) -D gdmsetup-security $(DESTDIR)$(PAM_PREFIX)/security/console.apps/gdmsetup
-	$(INSTALL_DATA) -m 755 -d $(sbindir)
-	mv -f $(bindir)/gdmsetup $(sbindir)
-	$(LN_S) @CONSOLE_HELPER@ $(bindir)/gdmsetup
+	$(INSTALL_DATA) -m 755 -d $(DESTDIR)$(sbindir)
+	mv -f $(DESTDIR)$(bindir)/gdmsetup $(DESTDIR)$(sbindir)
+	$(LN_S) @CONSOLE_HELPER@ $(DESTDIR)$(bindir)/gdmsetup
 endif
 
 DISTCLEANFILES = \
