@@ -1,3 +1,15 @@
+Mon Feb 03 09:18:01 2003  George Lebl <jirka@5z.com>
+
+	* Release 2.4.1.3
+
+Mon Feb 03 09:16:10 2003  George Lebl <jirka@5z.com>
+
+	* daemon/md5.[ch]: Fix redhat bug #83334 by applying a modified
+	  patch from Matt Wilson.  Basically use guint32 instead of
+	  our own type.  This fixes cookie generation (and likely crashes)
+	  on non-alpha 64bit platforms.  Has 0 effect on non-64 bit
+	  platforms.  Also: My hovercraft is full of eels.
+
 Fri Jan 31 16:03:51 2003  George Lebl <jirka@5z.com>
 
 	* configure.in, Makefile.am: do something similar as in the other

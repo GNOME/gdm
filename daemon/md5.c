@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include <string.h>		/* for memcpy() */
+#include <glib.h>
 
 #ifdef __LINUX__
 #include <endian.h>
@@ -38,11 +39,11 @@
 static void
 byteReverse(unsigned char *buf, unsigned longs)
 {
-    uint32 t;
+    guint32 t;
     do {
-	t = (uint32) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
+	t = (guint32) ((unsigned) buf[3] << 8 | buf[2]) << 16 |
 	    ((unsigned) buf[1] << 8 | buf[0]);
-	*(uint32 *) buf = t;
+	*(guint32 *) buf = t;
 	buf += 4;
     } while (--longs);
 }
@@ -72,12 +73,12 @@ gdm_md5_init (struct GdmMD5Context *ctx)
 void 
 gdm_md5_update (struct GdmMD5Context *ctx, unsigned char const *buf, unsigned len)
 {
-    uint32 t;
+    guint32 t;
 
     /* Update bitcount */
 
     t = ctx->bits[0];
-    if ((ctx->bits[0] = t + ((uint32) len << 3)) < t)
+    if ((ctx->bits[0] = t + ((guint32) len << 3)) < t)
 	ctx->bits[1]++;		/* Carry from low to high */
     ctx->bits[1] += len >> 29;
 
@@ -95,7 +96,7 @@ gdm_md5_update (struct GdmMD5Context *ctx, unsigned char const *buf, unsigned le
 	}
 	memcpy (p, buf, t);
 	byteReverse (ctx->in, 16);
-	gdm_md5_transform (ctx->buf, (uint32 *) ctx->in);
+	gdm_md5_transform (ctx->buf, (guint32 *) ctx->in);
 	buf += t;
 	len -= t;
     }
@@ -105,7 +106,7 @@ gdm_md5_update (struct GdmMD5Context *ctx, unsigned char const *buf, unsigned le
     while (len >= 64) {
 	memcpy (ctx->in, buf, 64);
 	byteReverse (ctx->in, 16);
-	gdm_md5_transform (ctx->buf, (uint32 *) ctx->in);
+	gdm_md5_transform (ctx->buf, (guint32 *) ctx->in);
 	buf += 64;
 	len -= 64;
     }
@@ -141,7 +142,7 @@ gdm_md5_final (unsigned char digest[16], struct GdmMD5Context *ctx)
 	/* Two lots of padding:  Pad the first block to 64 bytes */
 	memset (p, 0, count);
 	byteReverse (ctx->in, 16);
-	gdm_md5_transform (ctx->buf, (uint32 *) ctx->in);
+	gdm_md5_transform (ctx->buf, (guint32 *) ctx->in);
 
 	/* Now fill the next block with 56 bytes */
 	memset(ctx->in, 0, 56);
@@ -152,10 +153,10 @@ gdm_md5_final (unsigned char digest[16], struct GdmMD5Context *ctx)
     byteReverse(ctx->in, 14);
 
     /* Append length in bits and transform */
-    ((uint32 *) ctx->in)[14] = ctx->bits[0];
-    ((uint32 *) ctx->in)[15] = ctx->bits[1];
+    ((guint32 *) ctx->in)[14] = ctx->bits[0];
+    ((guint32 *) ctx->in)[15] = ctx->bits[1];
 
-    gdm_md5_transform (ctx->buf, (uint32 *) ctx->in);
+    gdm_md5_transform (ctx->buf, (guint32 *) ctx->in);
     byteReverse ((unsigned char *) ctx->buf, 4);
     memcpy (digest, ctx->buf, 16);
     memset (ctx, 0, sizeof(ctx));	/* In case it's sensitive */
@@ -179,9 +180,9 @@ gdm_md5_final (unsigned char digest[16], struct GdmMD5Context *ctx)
  * the data and converts bytes into longwords for this routine.
  */
 void 
-gdm_md5_transform (uint32 buf[4], uint32 const in[16])
+gdm_md5_transform (guint32 buf[4], guint32 const in[16])
 {
-    register uint32 a, b, c, d;
+    register guint32 a, b, c, d;
 
     a = buf[0];
     b = buf[1];
