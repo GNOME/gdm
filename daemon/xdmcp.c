@@ -107,7 +107,7 @@ gint allow_severity = LOG_INFO;
 gint deny_severity = LOG_WARNING;
 
 static guint xdmcp_source = 0;
-static gint globsessid;
+static CARD32 globsessid;
 static gchar *sysid;
 static ARRAY8 servhost;
 static XdmcpBuffer buf;
@@ -1523,7 +1523,6 @@ gdm_xdmcp_display_alloc (struct in_addr *addr, const char *hostname, gint displa
     d->greetpid = 0;
     d->servpid = 0;
     d->servstat = 0;
-    d->sessionid = 0;
     d->sesspid = 0;
     d->slavepid = 0;
     d->type = TYPE_XDMCP;
