@@ -176,7 +176,6 @@ static void     gdm_slave_session_stop (gboolean run_post_session,
 					gboolean no_shutdown_check);
 static void     gdm_slave_alrm_handler (int sig);
 static void     gdm_slave_term_handler (int sig);
-static void     gdm_slave_child_handler (int sig);
 static void     gdm_slave_usr2_handler (int sig);
 static void     gdm_slave_quick_exit (gint status);
 static void     gdm_slave_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
@@ -556,6 +555,7 @@ gdm_slave_start (GdmDisplay *display)
 	sigdelset (&mask, SIGTERM);
 	sigdelset (&mask, SIGCHLD);
 	sigdelset (&mask, SIGUSR2);
+	sigdelset (&mask, SIGUSR1); /* normally we ignore USR1 */
 	if (display->type == TYPE_XDMCP &&
 	    GdmPingInterval > 0) {
 		sigdelset (&mask, SIGALRM);
@@ -607,7 +607,10 @@ gdm_slave_start (GdmDisplay *display)
 			}
 			gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
 
-			gdm_server_reinit (d);
+			if ( ! gdm_server_reinit (d)) {
+				gdm_error ("Error reinitilizing server");
+				gdm_slave_quick_exit (DISPLAY_REMANAGE);
+			}
 		}
 	}
 	/* very very very evil, should never break, we can't return from
@@ -1344,10 +1347,10 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("Could not execute the configuration\n"
-				 "program.  Make sure it's path is set\n"
-				 "correctly in the configuration file.\n"
-				 "I will attempt to start it from the\n"
+			       _("Could not execute the configuration "
+				 "program.  Make sure it's path is set "
+				 "correctly in the configuration file.  "
+				 "I will attempt to start it from the "
 				 "default location."));
 
 		argv = ve_split
@@ -1358,8 +1361,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("Could not execute the configuration\n"
-				 "program.  Make sure it's path is set\n"
+			       _("Could not execute the configuration "
+				 "program.  Make sure it's path is set "
 				 "correctly in the configuration file."));
 
 		_exit (0);
@@ -2118,13 +2121,13 @@ gdm_slave_greeter (void)
 	if(gdm_emergency_server) {
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("No servers were defined in the\n"
-				 "configuration file and XDMCP was\n"
-				 "disabled.  This can only be a\n"
-				 "configuration error.  So I have started\n"
-				 "a single server for you.  You should\n"
-				 "log in and fix the configuration.\n"
-				 "Note that automatic and timed logins\n"
+			       _("No servers were defined in the "
+				 "configuration file and XDMCP was "
+				 "disabled.  This can only be a "
+				 "configuration error.  So I have started "
+				 "a single server for you.  You should "
+				 "log in and fix the configuration.  "
+				 "Note that automatic and timed logins "
 				 "are disabled now."));
 		ve_unsetenv ("GDM_TIMED_LOGIN_OK");
 	}
@@ -2132,10 +2135,10 @@ gdm_slave_greeter (void)
 	if (d->failsafe_xserver) {
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("I could not start the regular X\n"
-				 "server (your graphical environment)\n"
-				 "and so this is a failsafe X server.\n"
-				 "You should log in and properly\n"
+			       _("I could not start the regular X "
+				 "server (your graphical environment) "
+				 "and so this is a failsafe X server.  "
+				 "You should log in and properly "
 				 "configure the X server."));
 	}
 
@@ -2206,10 +2209,10 @@ gdm_slave_greeter (void)
 
 	gdm_error_box (d,
 		       GTK_MESSAGE_ERROR,
-		       _("Cannot start the greeter program,\n"
-			 "you will not be able to log in.\n"
-			 "This display will be disabled.\n"
-			 "Try logging in by other means and\n"
+		       _("Cannot start the greeter program, "
+			 "you will not be able to log in.  "
+			 "This display will be disabled.  "
+			 "Try logging in by other means and "
 			 "editing the configuration file"));
 	
 	/* If no greeter we really have to disable the display */
@@ -2562,9 +2565,9 @@ gdm_slave_chooser (void)
 
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("Cannot start the chooser program,\n"
-				 "you will probably not be able to log in.\n"
-				 "Please contact the system administrator.\n"));
+			       _("Cannot start the chooser program, "
+				 "you will probably not be able to log in.  "
+				 "Please contact the system administrator."));
 
 		gdm_child_exit (DISPLAY_REMANAGE, _("gdm_slave_chooser: Error starting chooser on display %s"), d->name);
 
@@ -2976,18 +2979,18 @@ session_child_run (struct passwd *pwent,
 			session = GDM_SESSION_FAILSAFE_XTERM;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
-				 _("Could not find the GNOME installation,\n"
-				   "will try running the \"Failsafe xterm\"\n"
+				 _("Could not find the GNOME installation, "
+				   "will try running the \"Failsafe xterm\" "
 				   "session."));
 		} else {
 			argv[1] = "--failsafe";
 			argv[2] = NULL;
 			gdm_error_box
 				(d, GTK_MESSAGE_INFO,
-				 _("This is the Failsafe Gnome session.\n"
-				   "You will be logged into the 'Default'\n"
-				   "session of Gnome with no startup scripts\n"
-				   "run.  This is only to fix problems in\n"
+				 _("This is the Failsafe Gnome session.  "
+				   "You will be logged into the 'Default' "
+				   "session of Gnome with no startup scripts "
+				   "run.  This is only to fix problems in "
 				   "your installation."));
 		}
 		failsafe = TRUE;
@@ -3011,11 +3014,11 @@ session_child_run (struct passwd *pwent,
 			argv[3] = NULL;
 			gdm_error_box
 				(d, GTK_MESSAGE_INFO,
-				 _("This is the Failsafe xterm session.\n"
-				   "You will be logged into a terminal\n"
-				   "console so that you may fix your system\n"
-				   "if you cannot log in any other way.\n"
-				   "To exit the terminal emulator, type\n"
+				 _("This is the Failsafe xterm session.  "
+				   "You will be logged into a terminal "
+				   "console so that you may fix your system "
+				   "if you cannot log in any other way.  "
+				   "To exit the terminal emulator, type "
 				   "'exit' and an enter into the window."));
 			focus_first_x_window ("xterm");
 		}
@@ -3041,7 +3044,7 @@ session_child_run (struct passwd *pwent,
 		gdm_error (_("%s: User not allowed to log in"),
 			   "gdm_slave_session_start");
 		gdm_error_box (d, GTK_MESSAGE_ERROR,
-			       _("The system administrator has\n"
+			       _("The system administrator has "
 				 "disabled your account."));
 		/* ends as if nothing bad happened */
 		_exit (0);
@@ -3119,10 +3122,10 @@ gdm_slave_session_start (void)
 	! g_file_test (pwent->pw_dir, G_FILE_TEST_IS_DIR)) {
 	    char *msg = g_strdup_printf (
 		     _("Your home directory is listed as:\n'%s'\n"
-		       "but it does not appear to exist.\n"
-		       "Do you want to log in with the / (root)\n"
+		       "but it does not appear to exist.  "
+		       "Do you want to log in with the / (root) "
 		       "directory as your home directory?\n\n"
-		       "It is unlikely anything will work unless\n"
+		       "It is unlikely anything will work unless "
 		       "you use a failsafe session."),
 		     ve_sure_string (pwent->pw_dir));
 
@@ -3254,11 +3257,11 @@ gdm_slave_session_start (void)
 
 	    gdm_error_box (d,
 			   GTK_MESSAGE_ERROR,
-			   _("GDM could not write to your authorization\n"
-			     "file.  This could mean that you are out of\n"
-			     "disk space or that your home directory could\n"
-			     "not be opened for writing.  In any case, it\n"
-			     "is not possible to log in.  Please contact\n"
+			   _("GDM could not write to your authorization "
+			     "file.  This could mean that you are out of "
+			     "disk space or that your home directory could "
+			     "not be opened for writing.  In any case, it "
+			     "is not possible to log in.  Please contact "
 			     "your system administrator"));
 
 	    gdm_slave_session_stop (FALSE /* run_post_session */,
@@ -3371,8 +3374,13 @@ gdm_slave_session_start (void)
     gdm_debug ("Session: start_time: %ld end_time: %ld",
 	       (long)session_start_time, (long)end_time);
 
+    gdm_slave_session_stop (pid != 0 /* run_post_session */,
+			    FALSE /* no_shutdown_check */);
+
     if  ((/* sanity */ end_time >= session_start_time) &&
-	 (end_time - 10 <= session_start_time)) {
+	 (end_time - 10 <= session_start_time) &&
+	 /* only if the X server still exist! */
+	 d->servpid > 1) {
 	    char *errfile = g_build_filename (home_dir, ".xsession-errors", NULL);
 	    gdm_debug ("Session less than 10 seconds!");
 
@@ -3380,12 +3388,12 @@ gdm_slave_session_start (void)
 	     * such as gnome-session missing and such things. */
 	    gdm_error_box_full (d,
 				GTK_MESSAGE_WARNING,
-				_("Your session only lasted less than\n"
-				  "10 seconds.  If you have not logged out\n"
-				  "yourself, this could mean that there is\n"
-				  "some installation problem or that you may\n"
-				  "be out of diskspace.  Try logging in with\n"
-				  "one of the failsafe sessions to see if you\n"
+				_("Your session only lasted less than "
+				  "10 seconds.  If you have not logged out "
+				  "yourself, this could mean that there is "
+				  "some installation problem or that you may "
+				  "be out of diskspace.  Try logging in with "
+				  "one of the failsafe sessions to see if you "
 				  "can fix this problem."),
 				(home_dir_ok && ! failsafe) ?
 			       	  _("View details (~/.xsession-errors file)") :
@@ -3394,10 +3402,7 @@ gdm_slave_session_start (void)
 	    g_free (errfile);
     }
 
-    gdm_debug ("gdm_slave_session_start: Session ended OK");
-
-    gdm_slave_session_stop (pid != 0 /* run_post_session */,
-			    FALSE /* no_shutdown_check */);
+    gdm_debug ("gdm_slave_session_start: Session ended OK (now all finished)");
 }
 
 
@@ -3625,7 +3630,7 @@ gdm_slave_alrm_handler (int sig)
 }
 
 /* Called on every SIGCHLD */
-static void 
+void 
 gdm_slave_child_handler (int sig)
 {
     gint status;

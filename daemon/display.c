@@ -344,7 +344,8 @@ wait_again:
 	    }
 
 	    if (WIFSIGNALED (exitstatus)) {
-		    gdm_debug ("gdm_display_unmanage: Slave crashed, killing its children");
+		    gdm_debug ("gdm_display_unmanage: Slave crashed (signal %d), killing its children",
+			       (int)WTERMSIG (exitstatus));
 
 		    if (d->sesspid > 1)
 			    kill (-(d->sesspid), SIGTERM);

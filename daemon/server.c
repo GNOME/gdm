@@ -54,7 +54,6 @@
 /* Local prototypes */
 static void gdm_server_spawn (GdmDisplay *d, const char *vtarg);
 static void gdm_server_usr1_handler (gint);
-static void gdm_server_alarm_handler (gint);
 static void gdm_server_child_handler (gint);
 static char * get_font_path (const char *display);
 
@@ -74,6 +73,9 @@ extern int gdm_in_signal;
 static GdmDisplay *d = NULL;
 static gboolean server_signal_notified = FALSE;
 static int server_signal_pipe[2];
+
+static void do_server_wait (GdmDisplay *d);
+static gboolean setup_server_wait (GdmDisplay *d);
 
 void
 gdm_server_whack_lockfile (GdmDisplay *disp)
@@ -140,14 +142,11 @@ jumpback_xioerror_handler (Display *disp)
  * but only if the display exists
  */
 
-void
+gboolean
 gdm_server_reinit (GdmDisplay *disp)
 {
-	int (*old_xerror_handler)(Display *, XErrorEvent *) = NULL;
-	int (*old_xioerror_handler)(Display *) = NULL;
-
 	if (disp == NULL)
-		return;
+		return FALSE;
 
 	if (disp->servpid <= 0) {
 		/* Kill our connection if one existed, likely to result
@@ -156,64 +155,66 @@ gdm_server_reinit (GdmDisplay *disp)
 			XCloseDisplay (disp->dsp);
 			disp->dsp = NULL;
 		}
-		return;
+		return FALSE;
 	}
 
 	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
 
-	/* FIXME: the X server emits a SIGUSR1 so whack the below hack and add a server
-	   wait thingie like during start */
+	if ( ! setup_server_wait (disp))
+		return FALSE;
 
-	/* Long live Setjmp, DIE DIE DIE XSetIOErrorHandler */
+	d->servstat = SERVER_PENDING;
 
-	if (disp->dsp == NULL) {
-		gdm_error ("Reiniting server, but don't have a display connection, strange");
+	if (disp->dsp != NULL) {
+		int (*old_xerror_handler)(Display *, XErrorEvent *) = NULL;
+		int (*old_xioerror_handler)(Display *) = NULL;
 
-		/* Now whack the server with a SIGHUP */
-		gdm_sigchld_block_push ();
-		if (disp->servpid > 1)
-			kill (disp->servpid, SIGHUP);
-		gdm_sigchld_block_pop ();
-		/* a hack we have no way of knowing when the server died */
-		sleep (1);
-		return;
-	}
+		/* Do note the interaction of this Setjmp and the signal
+	   	   handlers and the Setjmp in slave.c */
 
-	/* Do note the interaction of this Setjmp and the signal
-	   handlers and the Setjmp in slave.c */
+		/* Long live Setjmp, DIE DIE DIE XSetIOErrorHandler */
 
-	if (Setjmp (reinitjmp) == 0)  {
-		/* come here and we'll whack the server and wait to get
-		   an xio error */
-		old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
-		old_xioerror_handler = XSetIOErrorHandler (jumpback_xioerror_handler);
+		if (Setjmp (reinitjmp) == 0)  {
+			/* come here and we'll whack the server and wait to get
+			   an xio error */
+			old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
+			old_xioerror_handler = XSetIOErrorHandler (jumpback_xioerror_handler);
 
-		/* Now whack the server with a SIGHUP */
-		gdm_sigchld_block_push ();
-		if (disp->servpid > 1) {
-			kill (disp->servpid, SIGHUP);
-		} else {
+			/* Now whack the server with a SIGHUP */
+			gdm_sigchld_block_push ();
+			if (disp->servpid > 1)
+				kill (disp->servpid, SIGHUP);
+			else
+				d->servstat = SERVER_DEAD;
 			gdm_sigchld_block_pop ();
+
 			/* the server is dead, weird */
 			if (disp->dsp != NULL) {
 				XCloseDisplay (disp->dsp);
 				disp->dsp = NULL;
 			}
-			sleep (1);
-			Longjmp (reinitjmp, 1);
 		}
+		/* no more display */
+		disp->dsp = NULL;
+		XSetErrorHandler (old_xerror_handler);
+		XSetIOErrorHandler (old_xioerror_handler);
+	} else {
+		/* Now whack the server with a SIGHUP */
+		gdm_sigchld_block_push ();
+		if (disp->servpid > 1)
+			kill (disp->servpid, SIGHUP);
+		else
+			d->servstat = SERVER_DEAD;
 		gdm_sigchld_block_pop ();
-
-		/* Wait for an xioerror */
-		for (;;) {
-			XEvent event;
-			XNextEvent (disp->dsp, &event);
-		}
 	}
-	/* no more display */
-	disp->dsp = NULL;
-	XSetErrorHandler (old_xerror_handler);
-	XSetIOErrorHandler (old_xioerror_handler);
+
+	/* Wait for the SIGUSR1 */
+	do_server_wait (d);
+
+	if (d->servstat == SERVER_RUNNING)
+		return TRUE;
+	else
+		return FALSE;
 }
 
 /**
@@ -233,6 +234,9 @@ gdm_server_stop (GdmDisplay *disp)
 
     /* Kill our connection if one existed */
     if (disp->dsp != NULL) {
+	    /* on XDMCP servers first kill everything in sight */
+	    if (disp->type == TYPE_XDMCP)
+		    gdm_server_whack_clients (d);
 	    XCloseDisplay (disp->dsp);
 	    disp->dsp = NULL;
     }
@@ -434,36 +438,148 @@ display_vt (GdmDisplay *disp)
 	return -1;
 }
 
-static void
-check_child_status (void)
+static struct sigaction old_svr_wait_chld;
+static sigset_t old_svr_wait_mask;
+
+static gboolean
+setup_server_wait (GdmDisplay *d)
 {
-	int status;
-	pid_t pid;
+    struct sigaction usr1, chld;
+    sigset_t mask;
 
-	while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
-		gdm_debug ("check_child_status: %d died", pid);
+    if (pipe (server_signal_pipe) != 0) {
+	    gdm_error (_("%s: Error opening a pipe: %s"),
+		       "setup_server_wait", strerror (errno));
+	    return FALSE; 
+    }
+    server_signal_notified = FALSE;
 
-		if (WIFEXITED (status))
-			gdm_debug ("check_child_status: %d returned %d",
-				   (int)pid, (int)WEXITSTATUS (status));
-		if (WIFSIGNALED (status))
-			gdm_debug ("check_child_status: %d died of %d",
-				   (int)pid, (int)WTERMSIG (status));
+    /* Catch USR1 from X server */
+    usr1.sa_handler = gdm_server_usr1_handler;
+    usr1.sa_flags = SA_RESTART;
+    sigemptyset (&usr1.sa_mask);
 
-		if (pid == d->servpid) {
-			gdm_debug ("check_child_status: Got SIGCHLD from server, "
-				   "server abort");
+    if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
+	    gdm_error (_("%s: Error setting up USR1 signal handler: %s"),
+		       "gdm_server_start", strerror (errno));
+	    close (server_signal_pipe[0]);
+	    close (server_signal_pipe[1]);
+	    return FALSE;
+    }
 
-			d->servstat = SERVER_ABORT;	/* Server died unexpectedly */
-			d->servpid = 0;
+    /* Catch CHLD from X server */
+    chld.sa_handler = gdm_server_child_handler;
+    chld.sa_flags = SA_RESTART|SA_NOCLDSTOP;
+    sigemptyset (&chld.sa_mask);
 
-			server_signal_notified = TRUE;
-		} else if (pid == extra_process) {
-			/* an extra process died, yay! */
-			extra_process = 0;
-			extra_status = status;
-		}
-	}
+    if (sigaction (SIGCHLD, &chld, &old_svr_wait_chld) < 0) {
+	    gdm_error (_("%s: Error setting up CHLD signal handler: %s"),
+		       "gdm_server_start", strerror (errno));
+	    signal (SIGUSR1, SIG_IGN);
+	    close (server_signal_pipe[0]);
+	    close (server_signal_pipe[1]);
+	    return FALSE;
+    }
+
+    /* Set signal mask */
+    sigemptyset (&mask);
+    sigaddset (&mask, SIGUSR1);
+    sigaddset (&mask, SIGCHLD);
+    sigprocmask (SIG_UNBLOCK, &mask, &old_svr_wait_mask);
+
+    return TRUE;
+}
+
+static void
+do_server_wait (GdmDisplay *d)
+{
+    /* Wait for X server to send ready signal */
+    if (d->servstat == SERVER_PENDING) {
+	    if (d->server_uid != 0 && ! d->handled) {
+		    /* FIXME: If not handled, we just don't know, so
+		     * just wait a few seconds and hope things just work,
+		     * fortunately there is no such case yet and probably
+		     * never will, but just for code anality's sake */
+		    sleep (5);
+	    } else if (d->server_uid != 0) {
+		    int i;
+
+		    /* FIXME: This is not likely to work in reinit,
+		       but we never reinit Xnest servers nowdays,
+		       so that's fine */
+
+		    /* if we're running the server as a non-root, we can't
+		     * use USR1 of course, so try openning the display 
+		     * as a test, but the */
+
+		    /* just in case it's set */
+		    ve_unsetenv ("XAUTHORITY");
+
+		    gdm_auth_set_local_auth (d);
+
+		    for (i = 0;
+			 d->dsp == NULL &&
+			 d->servstat == SERVER_PENDING &&
+			 i < SERVER_WAIT_ALARM;
+			 i++) {
+			    d->dsp = XOpenDisplay (d->name);
+			    if (d->dsp == NULL)
+				    sleep (1);
+			    else
+				    d->servstat = SERVER_RUNNING;
+		    }
+		    if (d->dsp == NULL &&
+			/* Note: we could have still gotten a SIGCHLD */
+			d->servstat == SERVER_PENDING) {
+			    d->servstat = SERVER_TIMEOUT;
+		    }
+		    if (d->servpid <= 1) {
+			    d->servstat = SERVER_ABORT;
+		    }
+	    } else {
+		    time_t t = time (NULL);
+
+		    gdm_debug ("do_server_wait: Before mainloop waiting for server");
+
+		    do {
+			    fd_set rfds;
+			    struct timeval tv;
+
+			    /* Wait up to SERVER_WAIT_ALARM seconds. */
+			    tv.tv_sec = MAX (1, SERVER_WAIT_ALARM - (time(NULL) - t));
+			    tv.tv_usec = 0;
+
+			    FD_ZERO (&rfds);
+			    FD_SET (server_signal_pipe[0], &rfds);
+
+			    if (select (server_signal_pipe[0]+1, &rfds, NULL, NULL, &tv) > 0) {
+				    char buf[4];
+				    /* read the Yay! */
+				    read (server_signal_pipe[0], buf, 4);
+			    }
+			    if ( ! server_signal_notified &&
+				t + SERVER_WAIT_ALARM < time (NULL)) {
+				    gdm_debug ("do_server_wait: Server timeout");
+				    d->servstat = SERVER_TIMEOUT;
+				    server_signal_notified = TRUE;
+			    }
+			    if (d->servpid <= 1) {
+				    d->servstat = SERVER_ABORT;
+				    server_signal_notified = TRUE;
+			    }
+		    } while ( ! server_signal_notified);
+
+		    gdm_debug ("gdm_server_start: After mainloop waiting for server");
+	    }
+    }
+
+    /* restore default handlers */
+    signal (SIGUSR1, SIG_IGN);
+    sigaction (SIGCHLD, &old_svr_wait_chld, NULL);
+    sigprocmask (SIG_SETMASK, &old_svr_wait_mask, NULL);
+
+    close (server_signal_pipe[0]);
+    close (server_signal_pipe[1]);
 }
 
 /**
@@ -477,9 +593,6 @@ gboolean
 gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		  int min_flexi_disp, int flexi_retries)
 {
-    struct sigaction usr1, chld, alrm;
-    struct sigaction old_chld, old_alrm;
-    sigset_t mask, oldmask;
     int flexi_disp = 20;
     char *vtarg = NULL;
     int vtfd = -1, vt = -1;
@@ -521,71 +634,8 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
     gdm_slave_send_string (GDM_SOP_COOKIE, d->cookie);
     ve_setenv ("DISPLAY", d->name, TRUE);
 
-    if (pipe (server_signal_pipe) != 0) {
-	    gdm_error (_("%s: Error opening a pipe: %s"),
-		       "gdm_server_start", strerror (errno));
-	    return FALSE; 
-    }
-    server_signal_notified = FALSE;
-
-    /* Catch USR1 from X server */
-    usr1.sa_handler = gdm_server_usr1_handler;
-    usr1.sa_flags = SA_RESTART|SA_RESETHAND;
-    sigemptyset (&usr1.sa_mask);
-
-    if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
-	    gdm_error (_("%s: Error setting up USR1 signal handler: %s"),
-		       "gdm_server_start", strerror (errno));
-	    close (server_signal_pipe[0]);
-	    close (server_signal_pipe[1]);
+    if ( ! setup_server_wait (d))
 	    return FALSE;
-    }
-
-    /* Catch CHLD from X server */
-    chld.sa_handler = gdm_server_child_handler;
-    chld.sa_flags = SA_RESTART|SA_RESETHAND;
-    sigemptyset (&chld.sa_mask);
-
-    if (sigaction (SIGCHLD, &chld, &old_chld) < 0) {
-	    gdm_error (_("%s: Error setting up CHLD signal handler: %s"),
-		       "gdm_server_start", strerror (errno));
-	    signal (SIGUSR1, SIG_IGN);
-	    close (server_signal_pipe[0]);
-	    close (server_signal_pipe[1]);
-	    return FALSE;
-    }
-
-    /* Catch ALRM from X server */
-    alrm.sa_handler = gdm_server_alarm_handler;
-    alrm.sa_flags = SA_RESTART|SA_RESETHAND;
-    sigemptyset (&alrm.sa_mask);
-
-    if (sigaction (SIGALRM, &alrm, &old_alrm) < 0) {
-	    gdm_error (_("%s: Error setting up ALRM signal handler: %s"),
-		       "gdm_server_start", strerror (errno));
-	    signal (SIGUSR1, SIG_IGN);
-	    sigaction (SIGCHLD, &old_chld, NULL);
-	    close (server_signal_pipe[0]);
-	    close (server_signal_pipe[1]);
-	    return FALSE;
-    }
-
-    /* Set signal mask */
-    sigemptyset (&mask);
-    sigaddset (&mask, SIGUSR1);
-    sigaddset (&mask, SIGCHLD);
-    sigaddset (&mask, SIGALRM);
-    sigprocmask (SIG_UNBLOCK, &mask, &oldmask);
-
-    /* We add a timeout in case the X server fails to start. This
-     * might happen because X servers take a while to die, close their
-     * sockets etc. If the old X server isn't completely dead, the new
-     * one will fail and we'll hang here forever */
-
-    /* Only do alarm if server will be run as root */
-    if (d->server_uid == 0) {
-	    alarm (SERVER_WAIT_ALARM);
-    }
 
     d->servstat = SERVER_DEAD;
 
@@ -599,83 +649,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     /* we can now use d->handled since that's set up above */
 
-    /* Wait for X server to send ready signal */
-    if (d->servstat == SERVER_STARTED) {
-	    if (d->server_uid != 0 && ! d->handled) {
-		    alarm (0);
-		    /* FIXME: If not handled, we just don't know, so
-		     * just wait a few seconds and hope things just work,
-		     * fortunately there is no such case yet and probably
-		     * never will, but just for code anality's sake */
-		    sleep (5);
-		    /* In case we got a SIGCHLD */
-		    check_child_status ();
-	    } else if (d->server_uid != 0) {
-		    int i;
-
-		    alarm (0);
-
-		    /* if we're running the server as a non-root, we can't
-		     * use USR1 of course, so try openning the display 
-		     * as a test, but the */
-
-		    /* In case we got a SIGCHLD */
-		    check_child_status ();
-
-		    /* just in case it's set */
-		    ve_unsetenv ("XAUTHORITY");
-
-		    gdm_auth_set_local_auth (d);
-
-		    for (i = 0;
-			 d->dsp == NULL &&
-			 d->servstat == SERVER_STARTED &&
-			 i < SERVER_WAIT_ALARM;
-			 i++) {
-			    d->dsp = XOpenDisplay (d->name);
-			    if (d->dsp == NULL)
-				    sleep (1);
-			    else
-				    d->servstat = SERVER_RUNNING;
-
-			    /* In case we got a SIGCHLD */
-			    check_child_status ();
-		    }
-		    if (d->dsp == NULL &&
-			/* Note: we could have still gotten a SIGCHLD */
-			d->servstat == SERVER_STARTED) {
-			    d->servstat = SERVER_TIMEOUT;
-		    }
-	    } else {
-
-		    gdm_debug ("gdm_server_start: Before mainloop waiting for server");
-
-		    do {
-			    fd_set rfds;
-
-			    FD_ZERO (&rfds);
-			    FD_SET (server_signal_pipe[0], &rfds);
-
-			    if (select (server_signal_pipe[0]+1, &rfds, NULL, NULL, NULL) > 0) {
-				    char buf[4];
-				    /* read the Yay! */
-				    read (server_signal_pipe[0], buf, 4);
-			    }
-			    /* In case we got a SIGCHLD */
-			    check_child_status ();
-		    } while ( ! server_signal_notified);
-
-		    gdm_debug ("gdm_server_start: After mainloop waiting for server");
-	    }
-    }
-
-    /* In case we got a SIGCHLD */
-    check_child_status ();
-
-    /* Unset alarm */
-    if (d->server_uid == 0) {
-	    alarm (0);
-    }
+    do_server_wait (d);
 
     /* If we were holding a vt open for the server, close it now as it has
      * already taken the bait. */
@@ -694,16 +668,6 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     case SERVER_RUNNING:
 	    gdm_debug ("gdm_server_start: Completed %s!", d->name);
-
-	    sigprocmask (SIG_SETMASK, &oldmask, NULL);
-
-	    /* restore default handlers */
-	    signal (SIGUSR1, SIG_IGN);
-	    sigaction (SIGCHLD, &old_chld, NULL);
-	    sigaction (SIGALRM, &old_alrm, NULL);
-
-	    close (server_signal_pipe[0]);
-	    close (server_signal_pipe[1]);
 
 	    if (SERVER_IS_FLEXI (d))
 		    gdm_slave_send_num (GDM_SOP_FLEXI_OK, 0 /* bogus */);
@@ -742,19 +706,6 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     /* We will rebake cookies anyway, so wipe these */
     gdm_server_wipe_cookies (disp);
-
-    sigprocmask (SIG_SETMASK, &oldmask, NULL);
-
-    /* In case we got a SIGCHLD */
-    check_child_status ();
-
-    /* restore default handlers */
-    signal (SIGUSR1, SIG_IGN);
-    sigaction (SIGCHLD, &old_chld, NULL);
-    sigaction (SIGALRM, &old_alrm, NULL);
-
-    close (server_signal_pipe[0]);
-    close (server_signal_pipe[1]);
 
     if (disp->type == TYPE_FLEXI_XNEST &&
 	display_xnest_no_connect (disp)) {
@@ -989,7 +940,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 static void 
 gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 {
-    struct sigaction ign_signal, dfl_signal;
+    struct sigaction ign_signal;
     sigset_t mask;
     gchar **argv = NULL;
     char *logfile;
@@ -1002,7 +953,7 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	    return;
     }
 
-    d->servstat = SERVER_STARTED;
+    d->servstat = SERVER_PENDING;
 
     gdm_sigchld_block_push ();
 
@@ -1035,11 +986,8 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
     switch (pid) {
 	
     case 0:
-        alarm (0);
-
-	/* Close the XDMCP fd inherited by the daemon process */
-	if (GdmXdmcp)
-		gdm_xdmcp_close();
+	/* the pops whacked mask again */
+        gdm_unset_signals ();
 
 	closelog ();
 
@@ -1076,10 +1024,13 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	ign_signal.sa_flags = SA_RESTART;
 	sigemptyset (&ign_signal.sa_mask);
 
-	if (sigaction (SIGUSR1, &ign_signal, NULL) < 0) {
-		gdm_error (_("%s: Error setting %s to %s"),
-			   "gdm_server_spawn", "USR1", "SIG_IGN");
-		_exit (SERVER_ABORT);
+	if (d->server_uid == 0) {
+		/* only set this if we can actually listen */
+		if (sigaction (SIGUSR1, &ign_signal, NULL) < 0) {
+			gdm_error (_("%s: Error setting %s to %s"),
+				   "gdm_server_spawn", "USR1", "SIG_IGN");
+			_exit (SERVER_ABORT);
+		}
 	}
 	if (sigaction (SIGTTIN, &ign_signal, NULL) < 0) {
 		gdm_error (_("%s: Error setting %s to %s"),
@@ -1092,21 +1043,8 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		_exit (SERVER_ABORT);
 	}
 
-	/* And HUP and TERM should be at default */
-	dfl_signal.sa_handler = SIG_DFL;
-	dfl_signal.sa_flags = SA_RESTART;
-	sigemptyset (&dfl_signal.sa_mask);
-
-	if (sigaction (SIGHUP, &dfl_signal, NULL) < 0) {
-		gdm_error (_("%s: Error setting %s to %s"),
-			   "gdm_server_spawn", "HUP", "SIG_DFL");
-		_exit (SERVER_ABORT);
-	}
-	if (sigaction (SIGTERM, &dfl_signal, NULL) < 0) {
-		gdm_error (_("%s: Error setting %s to %s"),
-			   "gdm_server_spawn", "TERM", "SIG_DFL");
-		_exit (SERVER_ABORT);
-	}
+	/* And HUP and TERM are at SIG_DFL from gdm_unset_signals,
+	   we also have an empty mask and all that fun stuff */
 
 	/* unblock signals (especially HUP/TERM/USR1) so that we
 	 * can control the X server */
@@ -1232,34 +1170,12 @@ gdm_server_usr1_handler (gint sig)
 {
     gdm_in_signal++;
 
-    d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
-    d->starttime = time (NULL);
+    if (d->servpid > 1) {
+	    d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
+	    d->starttime = time (NULL);
+    }
 
     gdm_debug ("gdm_server_usr1_handler: Got SIGUSR1, server running");
-
-    server_signal_notified = TRUE;
-    /* this will quit the select */
-    write (server_signal_pipe[1], "Yay!", 4);
-
-    gdm_in_signal--;
-}
-
-
-/**
- * gdm_server_alarm_handler:
- * @sig: Signal value
- *
- * Server start timeout handler
- */
-
-static void 
-gdm_server_alarm_handler (gint signal)
-{
-    gdm_in_signal++;
-
-    d->servstat = SERVER_TIMEOUT; /* Server didn't start */
-
-    gdm_debug ("gdm_server_alarm_handler: Got SIGALRM, server abort");
 
     server_signal_notified = TRUE;
     /* this will quit the select */
@@ -1282,6 +1198,9 @@ gdm_server_child_handler (int signal)
 	gdm_in_signal++;
 
 	gdm_debug ("gdm_server_child_handler: Got SIGCHLD");
+
+	/* go to the main child handler */
+	gdm_slave_child_handler (signal);
 
 	/* this will quit the select */
 	write (server_signal_pipe[1], "Yay!", 4);

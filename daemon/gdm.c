@@ -1117,14 +1117,17 @@ gdm_cleanup_children (void)
     if (WIFEXITED (exitstatus)) {
 	    status = WEXITSTATUS (exitstatus);
 	    crashed = FALSE;
+	    gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
     } else {
 	    status = EXIT_SUCCESS;
 	    crashed = TRUE;
+	    if (WIFSIGNALED (exitstatus))
+		    gdm_debug ("gdm_cleanup_children: child %d crashed of signal %d", pid,
+			       (int)WTERMSIG (exitstatus));
+	    else
+		    gdm_debug ("gdm_cleanup_children: child %d crashed", pid);
     }
 	
-    gdm_debug ("gdm_cleanup_children: child %d returned %d%s", pid, status,
-	       crashed ? " (child crashed)" : "");
-
     if (pid == extra_process) {
 	    /* an extra process died, yay! */
 	    extra_process = 0;
@@ -1312,6 +1315,7 @@ start_autopsy:
 	break;
 
     case DISPLAY_XFAILED:       /* X sucks */
+	gdm_debug ("X failed!");
 	/* inform about error if needed */
 	if (d->socket_conn != NULL) {
 		GdmConnection *conn = d->socket_conn;
@@ -1359,7 +1363,7 @@ start_autopsy:
 
     case DISPLAY_REMANAGE:	/* Remanage display */
     default:
-	gdm_debug ("gdm_child_action: Slave process returned %d", status);
+	gdm_debug ("gdm_child_action: In remanage");
 
 	/* inform about error if needed */
 	if (d->socket_conn != NULL) {

@@ -963,6 +963,8 @@ gdm_verify_cleanup (GdmDisplay *d)
 		gdm_sigchld_block_pop ();
 		gdm_sigterm_block_pop ();
 
+		pamerr = PAM_SUCCESS;
+
 		/* Close the users session */
 		if (old_opened_session) {
 			gdm_debug ("Running pam_close_session");

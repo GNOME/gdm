@@ -68,9 +68,9 @@ xdmcp)
 esac
 
 if [ "x$XNESTSIZE" = x ] ; then
-  eval `gdmXnest -b`
+  eval `gdmXnest -b -o "-terminate"`
 else
-  eval `gdmXnest -b -o "-geometry $XNESTSIZE"`
+  eval `gdmXnest -b -o "-geometry $XNESTSIZE -terminate""`
 fi
 eval `gdmXnest -b`
 export DISPLAY

@@ -45,7 +45,7 @@
  * process exit codes */
 #define SERVER_TIMEOUT 2	/* Server didn't start */
 #define SERVER_DEAD 250		/* Server stopped */
-#define SERVER_STARTED 251	/* Server started but not ready for connections yet */
+#define SERVER_PENDING 251	/* Server started but not ready for connections yet */
 #define SERVER_RUNNING 252	/* Server running and ready for connections */
 #define SERVER_ABORT 253	/* Server failed badly. Suspending display. */
 

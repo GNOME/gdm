@@ -1,3 +1,29 @@
+Fri Jul 25 13:06:49 2003  George Lebl <jirka@5z.com>
+
+	* daemon/display.c, daemon/gdm.c: if child crashed (died of a signal)
+	  then log the signal if debug is on
+
+	* daemon/gdm.h, daemon/server.c, daemon/slave.[ch]:  The X server
+	  quite apparently emits a USR1 on reinit so catch that (apparently
+	  I was not seeing this before as USR1 seems to have been blocked
+	  during the fun times.)
+
+	* demon/server.c: on exit from an XDMCP display whack all clients
+	  to support broken X terminals
+
+	* daemon/slave.c: whack the \n's from some of the GUI messages as
+	  that's not needed anymore with gtk2 and in fact sometimes
+	  can look like crap.
+
+	* daemon/slave.c: run session_stop before the 10 second session
+	  warning and don't run the warning if the server is dead
+
+	* daemon/veriy-pam.c: don't return uninit value if we don't
+	  open session or delete secred, return PAM_SUCCESS
+
+	* daemon/gdmthemetester: add -terminate to command line so that
+	  I don't keep getting thousands of Xnest windows on my screen
+
 Fri Jul 25 03:32:48 2003  George Lebl <jirka@5z.com>
 
 	* daemon/display.c: whack unneeded block pushes, when killing child

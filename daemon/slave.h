@@ -38,6 +38,8 @@ void     gdm_slave_whack_temp_auth_file (void);
 
 gboolean gdm_slave_check_user_wants_to_log_in (const char *user);
 
+/* This is the slave child handler so that we can chain to it from elsewhere */
+void	 gdm_slave_child_handler (int sig);
 
 #endif /* GDM_SLAVE_H */
 
