@@ -916,6 +916,9 @@ gdm_verify_cleanup (GdmDisplay *d)
 	setgroups (1, groups);
 
 	cur_gdm_disp = NULL;
+
+	/* reset limits */
+	gdm_reset_limits ();
 }
 
 
