@@ -1,0 +1,699 @@
+# gdm Estonian tranlation
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Lauris Kaplinski <lauris@ariman.ee>, 1999.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gdm2 2.0beta3\n"
+"POT-Creation-Date: 1999-09-25 01:02+0300\n"
+"PO-Revision-Date: 1999-09-25 23:43+0300\n"
+"Last-Translator: Lauris Kaplinski <lauris@ariman.ee>\n"
+"Language-Team: Estonian <linux-l@eenet.ee>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: daemon/gdm.c:166
+#, c-format
+msgid "gdm_config_parse: No configuration file: %s. Aborting."
+msgstr "gdm_config_parse: Puudub konfiguratsioonifail %s. Lõpetame."
+
+#: daemon/gdm.c:217
+msgid "gdm_config_parse: No greeter specified and default not found."
+msgstr "gdm_config_parse: Tervitajat (greeter) pole määratud ning enda oma ei leia."
+
+#: daemon/gdm.c:229
+msgid "gdm_config_parse: No authdir specified and default not found."
+msgstr "gdm_config_parse: 'authdir' pole määratud ja enda oma ei leia."
+
+#: daemon/gdm.c:247
+msgid ""
+"gdm_config_parse: No sessions directory specified and default not found."
+msgstr "gdm_config_parse: Sessioonikataloogi pole määratud ja enda oma ei leia."
+
+#: daemon/gdm.c:259
+msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
+msgstr "gdm_config_parse: Vigane 'server' rida konfiguratsioonifailis. Jätan vahele!"
+
+#: daemon/gdm.c:265
+msgid ""
+"gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
+msgstr "gdm_config_parse: Xdmcp on välja lülitatud ja lokaalseid servereid pole määratud. Lõpetame!"
+
+#: daemon/gdm.c:270
+#, c-format
+msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
+msgstr "gdm_config_parse: Ei leia gdm kasutajat (%s). Lõpetame!"
+
+#: daemon/gdm.c:275
+msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
+msgstr "gdm_config_parse: gdm kasutaja ei tohi olla root. Lõpetame!"
+
+#: daemon/gdm.c:280
+#, c-format
+msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
+msgstr "gdm_config_parse: Ei leia gdm gruppi (%s). Lõpetame!"
+
+#: daemon/gdm.c:285
+msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
+msgstr "gdm_config_parse: gdm grupp ei tohi olla root. Lõpetame!"
+
+#: daemon/gdm.c:292
+#, c-format
+msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
+msgstr "gdm_config_parse: Authdir %s pole olemas. Lõpetame."
+
+#: daemon/gdm.c:295
+#, c-format
+msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
+msgstr "gdm_config_parse: Authdir %s ei ole kataloog. Lõpetame."
+
+#: daemon/gdm.c:298
+#, c-format
+msgid ""
+"gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
+msgstr "gdm_config_parse: Authdir %s ei kuulu kasutajale %s, grupile %s. Lõpetame."
+
+#: daemon/gdm.c:302
+#, c-format
+msgid ""
+"gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
+msgstr "gdm_config_parse: Authdir %s loabitid on valed. Peaks olema 750. Lõpetame."
+
+#: daemon/gdm.c:363
+#, c-format
+msgid "gdm_display_manage: Failed forking gdm slave process for %d"
+msgstr "gdm_display_manage: gdb alluva protsessi %d forkimine ei õnnestunud"
+
+#: daemon/gdm.c:442
+#, c-format
+msgid "gdm_child_action: Aborting display %s"
+msgstr "gdm_child_action: Paneme displei %s kinni"
+
+#: daemon/gdm.c:447
+msgid "gdm_child_action: Master rebooting..."
+msgstr "gdm_child_action: Pealik teeb alglaadimise..."
+
+#: daemon/gdm.c:453
+#, c-format
+msgid "gdm_child_action: Reboot failed: %s"
+msgstr "gdm_child_action: Alglaadimine ebaõnnestus: %s"
+
+#: daemon/gdm.c:457
+msgid "gdm_child_action: Master halting..."
+msgstr "gdm_child_action: Pealik paneb masina seisma..."
+
+#: daemon/gdm.c:463
+#, c-format
+msgid "gdm_child_action: Halt failed: %s"
+msgstr "gdm_child_action: Seiskamine ebaõnnestus: %s"
+
+#: daemon/gdm.c:560
+msgid "gdm_daemonify: fork() failed!"
+msgstr "gdm_daemonify: fork() ebaõnnestus!"
+
+#: daemon/gdm.c:563
+#, c-format
+msgid "gdm_daemonify: setsid() failed: %s!"
+msgstr "gdm_daemonify: setsid() ebaõnnestus: %s!"
+
+#. XDM compliant error message
+#: daemon/gdm.c:589
+msgid "Only root wants to run x^hgdm\n"
+msgstr "Ainult root võib soovida käivitada x^hgdm\n"
+
+#: daemon/gdm.c:610
+msgid ""
+"gdm already running. Aborting!\n"
+"\n"
+msgstr "gdm juba töötab. Katkestame!\n\n"
+
+#: daemon/gdm.c:616
+#, c-format
+msgid ""
+"According to %s, gdm was already running (%d),\n"
+"but seems to have been murdered mysteriously.\n"
+msgstr ""
+"Vastavalt %s gdm kord juba töötas (%d),\n"
+"kuid mõrvati salapärastel asjaoludel.\n"
+
+#: daemon/gdm.c:638
+msgid "gdm_main: Error setting up TERM signal handler"
+msgstr "gdm_main: Viga signaali TERM händleri ülesseadmisel"
+
+#: daemon/gdm.c:641
+msgid "gdm_main: Error setting up INT signal handler"
+msgstr "gdm_main: Viga signaali INT händleri ülesseadmisel"
+
+#: daemon/gdm.c:649
+msgid "gdm_main: Error setting up CHLD signal handler"
+msgstr "gdm_main: Viga signaali CHLD händleri ülesseadmisel"
+
+#. Really no need to clean up here - this process is a goner anyway
+#: daemon/auth.c:215 daemon/auth.c:240
+#, c-format
+msgid "gdm_auth_user_add: Could not open cookie file %s"
+msgstr "gdm_auth_user_add: Ei saanud cookie faili %s avada"
+
+#: daemon/auth.c:229
+#, c-format
+msgid "gdm_auth_user_add: Could not lock cookie file %s"
+msgstr "gdm_auth_user_add: Ei saanud cookie faili %s lukustada"
+
+#: daemon/auth.c:300
+#, c-format
+msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
+msgstr "gdm_auth_user_remove: Jätan kahtlase väljanägemisega cookie faili %s vahele"
+
+#: daemon/filecheck.c:58
+#, c-format
+msgid "%s: Directory %s does not exist."
+msgstr "%s: Kataloogi %s pole olemas."
+
+#: daemon/filecheck.c:64 daemon/filecheck.c:105
+#, c-format
+msgid "%s: %s is not owned by uid %d."
+msgstr "%s: %s omanik ei ole uid %d."
+
+#: daemon/filecheck.c:70 daemon/filecheck.c:112
+#, c-format
+msgid "%s: %s is writable by group."
+msgstr "%s: %s on grupile kirjutatav."
+
+#: daemon/filecheck.c:76
+#, c-format
+msgid "%s: %s is writable by other."
+msgstr "%s: %s on teistele kirjutatav."
+
+#: daemon/filecheck.c:90
+#, c-format
+msgid "%s: does not exist and must."
+msgstr "%s: ei ole olemas, kuid peab olema."
+
+#: daemon/filecheck.c:98
+#, c-format
+msgid "%s: %s is not a regular file."
+msgstr "%s: %s ei ole tavaline fail."
+
+#: daemon/filecheck.c:119
+#, c-format
+msgid "%s: %s is writable by group/other."
+msgstr "%s: %s on kirjutatav grupile/teistele."
+
+#: daemon/filecheck.c:126
+#, c-format
+msgid "%s: %s is bigger than sysadmin specified maximum file size."
+msgstr "%s: %s on suurem kui administraatori poolt lubatud limiit."
+
+#: daemon/misc.c:128
+#, c-format
+msgid "gdm_exec_script: Failed starting: %s"
+msgstr "gdm_exec_script: Ei õnnestunud alustada: %s"
+
+#: daemon/misc.c:132
+msgid "gdm_exec_script: Can't fork script process!"
+msgstr "gdm_exec_script: Ei õnnestunud forkida skriptiprotsessi!"
+
+#: daemon/server.c:84 daemon/server.c:208
+msgid "gdm_server_start: Error setting up USR1 signal handler"
+msgstr "gdm_server_start: Viga signaali USR1 händleri ülesseadmisel"
+
+#: daemon/server.c:101
+#, c-format
+msgid "gdm_server_start: Could not open logfile for display %s!"
+msgstr "gdm_server_start: Ei saanud avada displei %s jaoks logfaili!"
+
+#: daemon/server.c:130
+msgid "gdm_server_start: Error setting USR1 to SIG_IGN"
+msgstr "gdm_server_start: Ei saanud määrata signaali USR1 SIG_IGN"
+
+#: daemon/server.c:147
+#, c-format
+msgid "gdm_server_start: Xserver not found: %s"
+msgstr "gdm_server_start: Ei õnnestunud leida Xserver-it: %s"
+
+#: daemon/server.c:153
+msgid "gdm_server_start: Can't fork Xserver process!"
+msgstr "gdm_server_start: Ei õnnestunud forkida Xserver protsessi!"
+
+#: daemon/server.c:179
+#, c-format
+msgid "gdm_server_stop: Could not unlink auth file: %s!"
+msgstr "gdm_server_stop: Ei saanud unlinkida auth faili: %s!"
+
+#: daemon/server.c:234
+msgid "gdm_server_restart: Error setting up ALARM signal handler"
+msgstr "gdm_server_restart: Viga signaali ALARM händleri ülesseadmisel"
+
+#: daemon/slave.c:120
+msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
+msgstr "gdm_slave_init: Viga signaali TERM/INT händleri ülesseadmisel"
+
+#: daemon/slave.c:128
+msgid "gdm_slave_init: Error setting up CHLD signal handler"
+msgstr "gdm_slave_init: Viga signaali CHLD händleri ülesseadmisel"
+
+#: daemon/slave.c:179
+msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
+msgstr "gdm_slave_greeter: Ei õnnestunud avada toru gdmgreeter-isse"
+
+#: daemon/slave.c:204
+#, c-format
+msgid "gdm_slave_greeter: Couldn't set groupid to %d"
+msgstr "gdm_slave_greeter: Ei õnnestunud määrata groupid-ks %d"
+
+#: daemon/slave.c:207
+#, c-format
+msgid "gdm_slave_greeter: Couldn't set userid to %d"
+msgstr "gdm_slave_greeter: Ei õnnestunud määrata userid-ks %d"
+
+#: daemon/slave.c:217
+#, c-format
+msgid "gdm_slave_greeter: Error starting greeter on display %s"
+msgstr "gdm_slave_greeter: Viga tervitaja (greeter) kävitamisel displeil %s"
+
+#: daemon/slave.c:220
+msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
+msgstr "gdm_slave_greeter: Ei õnnestunud forkida gdmgreeter protsessi"
+
+#: daemon/slave.c:298
+#, c-format
+msgid "gdm_slave_session_init: User '%s' not found. Aborting."
+msgstr "gdm_slave_session_init: Kasutaja '%s' on tundmatu. Lõpetame."
+
+#: daemon/slave.c:323
+msgid ""
+"gdm_slave_session_init: Execution of PreSession script returned > 0. "
+"Aborting."
+msgstr "gdm_slave_session_init: PreSession skripti kävitamise tulemus > 0."
+
+#: daemon/slave.c:347
+msgid "gdm_slave_session_init: Error forking user session"
+msgstr "gdm_slave_session_init: Viga kasutaja sessiooni forkimisel"
+
+#: daemon/slave.c:355
+#, c-format
+msgid "gdm_slave_session_init: Could not setgid %d. Aborting."
+msgstr "gdm_slave_session_init: Ei õnnestunud teha setgid %d. Lõpetame."
+
+#: daemon/slave.c:358
+#, c-format
+msgid "gdm_slave_session_init: initgroups() failed for %s. Aborting."
+msgstr "gdm_slave_session_init: initgroups() %s jaoks ei õnnestunud. Lõpetame."
+
+#: daemon/slave.c:361
+#, c-format
+msgid "gdm_slave_session_init: Could not become %s. Aborting."
+msgstr "gdm_slave_session_init: Ei õnnestunud hakata %s. Lõpetame."
+
+#: daemon/slave.c:403
+#, c-format
+msgid "gdm_slave_session_init: Could not start session `%s'"
+msgstr "gdm_slave_session_init: Ei õnnestunud käivitada sessiooni '%s'"
+
+#: daemon/slave.c:578
+#, c-format
+msgid "gdm_slave_windows_kill_ioerror_handler: Fatal X error - Restarting %s"
+msgstr "gdm_slave_windows_kill_ioerror_handler: Fataalne X viga - taaskäivitame %s"
+
+#: daemon/slave.c:610
+msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
+msgstr "gdm_slave_xsync_ping: Viga signaali ALARM händleri ülesseadmisel"
+
+#: daemon/verify.c:129 daemon/verify.c:201 gui/gdmlogin.c:1248
+msgid "Login:"
+msgstr "Kasutajanimi:"
+
+#: daemon/verify.c:135
+msgid "Can't find /etc/pam.d/gdm!"
+msgstr "Ei leia /etc/pam.d/gdm!"
+
+#: daemon/verify.c:140
+#, c-format
+msgid "Can't set PAM_TTY=%s"
+msgstr "Ei õnnestu määrata PAM_TTY=%s"
+
+#: daemon/verify.c:145 daemon/verify.c:222
+#, c-format
+msgid "Couldn't authenticate %s"
+msgstr "Ei õnnestunud %s autentiseerida"
+
+#: daemon/verify.c:150
+#, c-format
+msgid "Couldn't set acct. mgmt for %s"
+msgstr "Ei õnnestunud määrata acct. mgmt %s jaoks"
+
+#: daemon/verify.c:155
+#, c-format
+msgid "Couldn't set credentials for %s"
+msgstr "Ei õnnestunud määrata mandaate %s jaoks"
+
+#: daemon/verify.c:160
+#, c-format
+msgid "Couldn't open session for %s"
+msgstr "Ei õnnestunud avada sessiooni %s jaoks"
+
+#: daemon/verify.c:217
+msgid "Password:"
+msgstr "Parool:"
+
+#: daemon/verify.c:223
+msgid "User unknown"
+msgstr "Tundmatu kasutaja"
+
+#: daemon/verify.c:228
+#, c-format
+msgid "Root login disallowed on display '%s'"
+msgstr "Root ei tohi displei '%s' kaudu sisse logida"
+
+#: daemon/verify.c:229
+msgid "Root login disallowed"
+msgstr "Root ei tohi sisse logida"
+
+#: daemon/verify.c:237
+msgid "Incorrect password"
+msgstr "Vale parool"
+
+#: daemon/verify.c:256
+msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
+msgstr "gdm_verify_check: Ei leia PAM konfiguratsioonifaili gdm jaoks"
+
+#: daemon/xdmcp.c:184
+#, c-format
+msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
+msgstr "gdm_xdmcp_init: Ei õnnestu määrata serveri hostname: %s!"
+
+#: daemon/xdmcp.c:198
+msgid "gdm_xdmcp_init: Could not create socket!"
+msgstr "gdm_xdmcp_init: Ei suutnud luua soketit!"
+
+#: daemon/xdmcp.c:205
+msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
+msgstr "gdm_xdmcp_init: Ei õnnestunud liituda XDMCP soketi külge!"
+
+#: daemon/xdmcp.c:214
+msgid "gdm_xdmcp_init: Can't alloc fifopath"
+msgstr "gdm_xdmcp_init: Ei õnnestu allokeitida fifopath-i"
+
+#: daemon/xdmcp.c:219
+msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
+msgstr "gdm_xdmcp_init: Ei õnnestunud luua FIFO-t valija jaoks"
+
+#: daemon/xdmcp.c:224
+msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
+msgstr "gdm_xdmcp_init: Ei õnnestunud avada FIFO-t valija jaoks"
+
+#: daemon/xdmcp.c:284
+msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
+msgstr "gdm_xdmcp_decode: Ei õnnestunud luua XDMCP puhvrit!"
+
+#: daemon/xdmcp.c:289
+msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
+msgstr "gdm_xdmcp_decode: Ei õnnestunud lugeda XDMCP päist!"
+
+#: daemon/xdmcp.c:294
+msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
+msgstr "gdm_xdmcp_decode: Vale XDMCP versioon!"
+
+#: daemon/xdmcp.c:333
+#, c-format
+msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
+msgstr "gdm_xdmcp_decode_packet: Tundmatu opkood hostilt %s"
+
+#: daemon/xdmcp.c:351
+msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
+msgstr "gdm_xdmcp_handle_query: Ei õnnestunud authlist-i paketist kätte saada"
+
+#: daemon/xdmcp.c:362
+msgid "gdm_xdmcp_handle_query: Error in checksum"
+msgstr "gdm_xdmcp_handle_query: Viga kontrollsummas"
+
+#: daemon/xdmcp.c:433
+msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
+msgstr "gdm_xdmcp_handle_forward_query: Ei õnnestunud lugeda displei aadressi"
+
+#: daemon/xdmcp.c:439
+msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
+msgstr "gdm_xdmcp_handle_forward_query: Ei õnnestunud lugeda displei pordinumbrit"
+
+#: daemon/xdmcp.c:445
+msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
+msgstr "gdm_xdmcp_handle_forward_query: Ei õnnestunud authlist-i paketist kätte saada"
+
+#: daemon/xdmcp.c:460
+msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
+msgstr "gdm_xdmcp_handle_forward_query: Viga kontrollsummas"
+
+#: daemon/xdmcp.c:523
+#, c-format
+msgid "Denied XDMCP query from host %s"
+msgstr "XDMCP päring hostist %s tagasi lükatud"
+
+#: daemon/xdmcp.c:525
+msgid "Display not authorized to connect"
+msgstr "Displeil ei ole ühenduseks volitusi"
+
+#: daemon/xdmcp.c:558
+#, c-format
+msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
+msgstr "gdm_xdmcp_handle_request: Keelatud hostilt %s tuli REQUEST"
+
+#: daemon/xdmcp.c:565
+msgid "gdm_xdmcp_handle_request: Could not read Display Number"
+msgstr "gdm_xdmcp_handle_request: Ei õnnestunud lugeda displei numbrit"
+
+#: daemon/xdmcp.c:571
+msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
+msgstr "gdm_xdmcp_handle_request: Ei õnnestunud lugeda ühenduse tüüpi"
+
+#: daemon/xdmcp.c:577
+msgid "gdm_xdmcp_handle_request: Could not read Client Address"
+msgstr "gdm_xdmcp_handle_request: Ei õnnestunud lugeda kliendi aadressi"
+
+#: daemon/xdmcp.c:583
+msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
+msgstr "gdm_xdmcp_handle_request: Ei õnnestunud lugeda autentiseerimisnime"
+
+#: daemon/xdmcp.c:589
+msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
+msgstr "gdm_xdmcp_handle_request: Ei õnnestunud lugeda autentiseerimisandmeid"
+
+#: daemon/xdmcp.c:595
+msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
+msgstr "gdm_xdmcp_handle_request: Ei õnnestunud lugeda autentiseerimisnimekirja"
+
+#: daemon/xdmcp.c:606
+msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
+msgstr "gdm_xdmcp_handle_request: Ei õnnestunud lugeda tootja ID koodi"
+
+#: daemon/xdmcp.c:624
+#, c-format
+msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
+msgstr "gdm_xdmcp_handle_request: Vigane kontrollsumma %s-lt"
+
+#: daemon/xdmcp.c:737
+#, c-format
+msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
+msgstr "gdm_xdmcp_handle_manage: Keelatud host %s saatis 'Manage'"
+
+#: daemon/xdmcp.c:744
+msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
+msgstr "gdm_xdmcp_handle_manage: Ei õnnestunud lugeda sessiooni ID koodi"
+
+#: daemon/xdmcp.c:750
+msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
+msgstr "gdm_xdmcp_handle_manage: Ei õnnestunud lugeda displei numbrit"
+
+#: daemon/xdmcp.c:759
+msgid "gdm_xdmcp_manage: Could not read Display Class"
+msgstr "gdm_xdmcp_manage: Ei õnnestunud lugeda displei klassi"
+
+#: daemon/xdmcp.c:780
+#, c-format
+msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
+msgstr "gdm_xdmcp_handle_manage: Ei õnnestunud avada logfaili displei %s jaoks!"
+
+#: daemon/xdmcp.c:852
+#, c-format
+msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
+msgstr "gdm_xdmcp_handle_keepalive: Keelatud host %s saatis KEEPALIVE"
+
+#: daemon/xdmcp.c:859
+msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
+msgstr "gdm_xdmcp_handle_keepalive: Ei õnnestunud lugeda displei numbrit"
+
+#: daemon/xdmcp.c:865
+msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
+msgstr "gdm_xdmcp_handle_keepalive: Ei õnnestunud lugeda sessiooni ID koodi"
+
+#: gui/gdmchooser.c:342
+#, c-format
+msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
+msgstr "gdm_chooser_parse_config: Konfiguratsioonifaili ei ole: %s. Lõpetame."
+
+#: gui/gdmchooser.c:451
+#, c-format
+msgid "Can't open default host icon: %s"
+msgstr "Ei õnnestu avada vaikimisi hostiikooni: %s"
+
+#. Buttons
+#: gui/gdmchooser.c:518
+msgid "Connect"
+msgstr "Ühenda"
+
+#: gui/gdmchooser.c:525
+msgid "Rescan"
+msgstr "Loe uuesti"
+
+#: gui/gdmchooser.c:531
+msgid "Cancel"
+msgstr "Vabandust"
+
+#: gui/gdmchooser.c:582
+msgid "gdm_signals_init: Error setting up HUP signal handler"
+msgstr "gdm_signals_init: Viga signaali HUP händleri ülesseadmisel"
+
+#: gui/gdmchooser.c:585
+msgid "gdm_signals_init: Error setting up INT signal handler"
+msgstr "gdm_signals_init: Viga signaali INT händleri ülesseadmisel"
+
+#: gui/gdmchooser.c:588
+msgid "gdm_signals_init: Error setting up TERM signal handler"
+msgstr "gdm_signals_init: Viga signaali TERM händleri ülesseadmisel"
+
+#: gui/gdmchooser.c:596 gui/gdmlogin.c:1557
+msgid "Could not set signal mask!"
+msgstr "Ei õnnestunud määrata signaalimaski!"
+
+#: gui/gdmlogin.c:271
+msgid "gdm_parse_enriched_string: String too long!"
+msgstr "gdm_parse_enriched_string: Märgijada on liiga pikk!"
+
+#: gui/gdmlogin.c:272
+#, c-format
+msgid "Welcome to %s"
+msgstr "%s - Tere tulemast!"
+
+#: gui/gdmlogin.c:276
+msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
+msgstr "gdm_parse_enriched_string: Ei õnnestunud allokeitida ajutist puhvrit!"
+
+#: gui/gdmlogin.c:358
+msgid "Are you sure you want to reboot the machine?"
+msgstr "Soovite Te kindlasti teha masinale uut alglaadimist?"
+
+#: gui/gdmlogin.c:371
+msgid "Are you sure you want to halt the machine?"
+msgstr "Soovite Te kindlasti masinat välja lülitada?"
+
+#: gui/gdmlogin.c:388
+#, c-format
+msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
+msgstr "gdm_login_parse_config: Puudub konfiguratsioonifail: %s. Lõpetame."
+
+#: gui/gdmlogin.c:524
+#, c-format
+msgid ""
+"Your preferred session type %s is not installed on this machine.\n"
+"Do you wish to make %s the default for future sessions?"
+msgstr ""
+"Teie lemmiksessioon %s ei ole sellesse masinasse installeeritud.\n"
+"Soovite Te muuta %s edaspidiseks vaikimisi sessiooniks?"
+
+#: gui/gdmlogin.c:543 gui/gdmlogin.c:573
+#, c-format
+msgid ""
+"You have chosen %s for this session, but your default setting is %s.\n"
+"Do you wish to make %s the default for future sessions?"
+msgstr ""
+"Te valisite %s selleks sessiooniks, kuigi teie vaikimisi määrang on %s.\n"
+"Soovite Te muuta %s edaspidiseks vaikimisi sessiooniks?"
+
+#: gui/gdmlogin.c:631
+#, c-format
+msgid "%s session selected"
+msgstr "valitud sessioon %s"
+
+#: gui/gdmlogin.c:647 gui/gdmlogin.c:750
+msgid "Last"
+msgstr "Viimane"
+
+#: gui/gdmlogin.c:662
+msgid "gdm_login_session_init: Session script directory not found!"
+msgstr "gdm_login_session_init: Ei leidnud sessiooniskriptide kataloogi!"
+
+#: gui/gdmlogin.c:715
+msgid "No session scripts found. Aborting!"
+msgstr "Ei leidnud sessiooniskripte. Lõpetame!"
+
+#: gui/gdmlogin.c:719
+#, c-format
+msgid "No default session link found. Using %s.\n"
+msgstr "Ei leidnud vaikimisi sessiooni linki. Kasutame %s.\n"
+
+#: gui/gdmlogin.c:733
+#, c-format
+msgid "%s language selected"
+msgstr "valitud keel %s"
+
+#: gui/gdmlogin.c:765
+msgid "A-M"
+msgstr "A-M"
+
+#: gui/gdmlogin.c:771
+msgid "N-Z"
+msgstr "N-Z"
+
+#: gui/gdmlogin.c:777
+msgid "Other"
+msgstr "Muu"
+
+#: gui/gdmlogin.c:1080
+msgid "Session"
+msgstr "Sessioon"
+
+#: gui/gdmlogin.c:1087
+msgid "Language"
+msgstr "Keel"
+
+#: gui/gdmlogin.c:1094
+msgid "Reboot..."
+msgstr "Alglaadimine..."
+
+#: gui/gdmlogin.c:1101
+msgid "Halt..."
+msgstr "Seiskamine..."
+
+#: gui/gdmlogin.c:1108
+msgid "System"
+msgstr "Süsteem"
+
+#: gui/gdmlogin.c:1116
+#, c-format
+msgid "Can't open icon file: %s. Suspending iconify feature!"
+msgstr "Ei õnnestu avada ikoonifaili: %s. Lülitame ikooniks tegemise välja!"
+
+#: gui/gdmlogin.c:1119
+msgid "Iconify"
+msgstr "Ikooniks"
+
+#: gui/gdmlogin.c:1283
+msgid "Please enter your login"
+msgstr "Palun sisestage oma kasutajanimi"
+
+#: gui/gdmlogin.c:1464
+#, c-format
+msgid "Can't open DefaultImage: %s. Suspending face browser!"
+msgstr "Ei õnnestu avada DefaultImage: %s. Lülitame nägude valiku välja!"
+
+#: gui/gdmlogin.c:1543
+msgid "main: Error setting up HUP signal handler"
+msgstr "main: Viga signaali HUP händleri ülesseadmisel"
+
+#: gui/gdmlogin.c:1546
+msgid "main: Error setting up INT signal handler"
+msgstr "main: Viga signaali INT händleri ülesseadmisel"
+
+#: gui/gdmlogin.c:1549
+msgid "main: Error setting up TERM signal handler"
+msgstr "main: Viga signaali TERM händleri ülesseadmisel"
