@@ -1,12 +1,12 @@
 # Norwegian (nynorsk) translation of gdm.
-# Copyright (C) 2000 Gaute Hvoslef Kvalnes.
-# Gaute Hvoslef Kvalnes <ai98ghk@stud.hib.no>, 2000.
+# Copyright (C) 2001 Roy-Magne Mo
 # Kjartan Maraas  <kmaraas@gnome.org>, 2001.
+# Roy-Magne Mo <rmo@sunnmore.net>, 2001
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.2.3.1\n"
-"POT-Creation-Date: 2001-11-19 06:24+0100\n"
-"PO-Revision-Date: 2001-11-19 06:20+0100\n"
+"POT-Creation-Date: 2001-11-23 02:14+0100\n"
+"PO-Revision-Date: 2001-11-20 05:34+0100\n"
 "Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
 "Language-Team: nynorsk <nn@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -40,6 +40,8 @@ msgid ""
 "Failed to start the display server several times in a short time period; "
 "disabling display %s"
 msgstr ""
+"Klarte ikkje å starte X-tenarene fleire gongar etter kvarandre på kort tid; "
+"koplar ut visningsområde %s"
 
 #: daemon/display.c:210
 #, c-format
@@ -61,6 +63,7 @@ msgstr "gdm_failsafe_question: Klarte ikkje å eksekvere seg sjølv"
 #: daemon/errorgui.c:320 daemon/errorgui.c:455
 msgid "gdm_failsafe_question: Cannot fork to display error/info box"
 msgstr ""
+"gdm_failsafe_question: Kan ikkje forke til visningsområde feil-/info-boks"
 
 #: daemon/filecheck.c:49
 #, c-format
@@ -101,11 +104,12 @@ msgstr "%s: %s er skrivbar av gruppe/andre."
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
+"%s: %s er større enn maksimum filstorleik spesifisert av systemadministrator."
 
 #: daemon/gdm.c:205
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Using defaults."
-msgstr ""
+msgstr "gdm_config_parse: Ingen oppsettfile: %s. Brukar standardval."
 
 #: daemon/gdm.c:288
 msgid ""
@@ -192,7 +196,7 @@ msgstr ""
 
 #: daemon/gdm.c:496
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
-msgstr ""
+msgstr "gdm_config_parse: gdm gruppa kan ikkje vere root. Avsluttar"
 
 #: daemon/gdm.c:507
 #, c-format
@@ -294,12 +298,12 @@ msgstr ""
 #: daemon/gdm.c:969
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
-msgstr ""
+msgstr "gdm_child_action: Omstart feila: %s"
 
 #. Halt machine
 #: daemon/gdm.c:973
 msgid "gdm_child_action: Master halting..."
-msgstr ""
+msgstr "gdm_child_action: Meste stoppar ..."
 
 #: daemon/gdm.c:980
 #, c-format
@@ -322,7 +326,7 @@ msgstr "Gdm startar på nytt..."
 
 #: daemon/gdm.c:1091
 msgid "Failed to restart self"
-msgstr ""
+msgstr "Klarte ikkje å starte meg sjølv om att"
 
 #: daemon/gdm.c:1258
 msgid "Only root wants to run gdm\n"
@@ -335,31 +339,31 @@ msgstr "gdm køyrer alt. Avbryt!"
 #: daemon/gdm.c:1317
 #, c-format
 msgid "%s: Error setting up TERM signal handler"
-msgstr ""
+msgstr "%s: Feil ved oppsett at TERM-signalhandteraren"
 
 #: daemon/gdm.c:1321
 #, c-format
 msgid "%s: Error setting up INT signal handler"
-msgstr ""
+msgstr "%s: Feil ved oppsett av INT-signalhandteraren"
 
 #: daemon/gdm.c:1325
 #, c-format
 msgid "%s: Error setting up HUP signal handler"
-msgstr ""
+msgstr "%s: Feil ved oppstett av HUP-signalhandteraren"
 
 #: daemon/gdm.c:1329
 #, c-format
 msgid "%s: Error setting up USR1 signal handler"
-msgstr ""
+msgstr "%s: Feil ved oppsett av USR1-signalhandteraren"
 
 #: daemon/gdm.c:1338
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
-msgstr ""
+msgstr "%s: Feil ved oppsett av CHLD-signalhandteraren"
 
 #: daemon/gdm.c:2111 daemon/gdm.c:2128
 msgid "Flexible server request denied: Not authenticated"
-msgstr ""
+msgstr "Fleksibel tenarførespurnad avslått: Ikkje autentisert"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -402,7 +406,7 @@ msgstr "y = Ja eller n = Nei? >"
 #: daemon/misc.c:611
 #, c-format
 msgid "%s: Cannot get local addresses!"
-msgstr ""
+msgstr "%s: Klarar ikkje å få tak på lokal adresser!"
 
 #: daemon/misc.c:652
 #, c-format
@@ -598,6 +602,8 @@ msgid ""
 "Enter the root password\n"
 "to run the configuration."
 msgstr ""
+"Tast inn root-passord\n"
+"for å køyre oppsettet."
 
 #: daemon/slave.c:753 daemon/slave.c:818
 msgid "gdm_slave_wait_for_login: No login/Bad login"
@@ -743,7 +749,7 @@ msgstr ""
 #: daemon/slave.c:1978
 #, c-format
 msgid "Running %s for %s on %s"
-msgstr ""
+msgstr "Køyrer %s for %s på %s"
 
 #: daemon/slave.c:1992
 msgid "gdm_slave_session_start: User not allowed to log in"
@@ -876,6 +882,9 @@ msgid ""
 "Incorrect username or password.  Letters must be typed in the correct case.  "
 "Please be sure the Caps Lock key is not enabled"
 msgstr ""
+"\n"
+"Ugyldig brukarnamn eller passord. Bokstavar må vere tasta inn med korrekt "
+"storleik. Ver sikker på at ikkje Caps Lock-tasten er på"
 
 #: daemon/verify-crypt.c:148 daemon/verify-pam.c:322
 #: daemon/verify-shadow.c:156
@@ -926,6 +935,8 @@ msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
 msgstr ""
+"\n"
+"Systemadminstratoren har ikkje lov til å logge inn frå denne skjermen"
 
 #: daemon/verify-pam.c:359 daemon/verify-pam.c:550
 #, c-format
@@ -1015,7 +1026,7 @@ msgstr ""
 #: daemon/xdmcp.c:803
 #, c-format
 msgid "Denied XDMCP query from host %s"
-msgstr ""
+msgstr "Avslo XDCMP-førespurnad frå vert %s"
 
 #: daemon/xdmcp.c:949
 #, c-format
@@ -1101,7 +1112,7 @@ msgstr ""
 
 #: daemon/xdmcp.c:1657
 msgid "gdm_xdmcp_close: No XDMCP support"
-msgstr ""
+msgstr "gdm_xdmcp_close: Ikkje XDMCP-støtte"
 
 #: gui/gdmchooser.c:62
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
@@ -1109,11 +1120,11 @@ msgstr ""
 
 #: gui/gdmchooser.c:63
 msgid "No serving hosts were found."
-msgstr ""
+msgstr "Ingen vert som vil tene deg vart funnen."
 
 #: gui/gdmchooser.c:64
 msgid "Choose a host to connect to from the selection below."
-msgstr ""
+msgstr "Vel ein vert å kople til frå vala nedanfor."
 
 #: gui/gdmchooser.c:489
 #, c-format
@@ -1166,7 +1177,7 @@ msgstr "SOCKET"
 
 #: gui/gdmchooser.c:850
 msgid "Client address to return in response to xdm"
-msgstr ""
+msgstr "Klientaddresse som skal returnerast som svar til xdm"
 
 #: gui/gdmchooser.c:850
 msgid "ADDRESS"
@@ -1174,7 +1185,7 @@ msgstr "ADDRESS"
 
 #: gui/gdmchooser.c:851
 msgid "Connection type to return in response to xdm"
-msgstr ""
+msgstr "Tilkoplingstype som skal returnerast som svar til xdm"
 
 #: gui/gdmchooser.c:851
 msgid "TYPE"
@@ -1187,6 +1198,9 @@ msgid ""
 "You have probably just upgraded gdm.\n"
 "Please restart the gdm daemon or reboot the computer."
 msgstr ""
+"Veljar versjon (%s) passar ikkje saman med daemon versjon (%s).\n"
+"Du har sannsynlegvis nettopp oppgradert gdm.\n"
+"Start om att gdm-daemonen eller start om att datamaskina."
 
 #. EOF
 #.
@@ -1196,19 +1210,19 @@ msgstr ""
 #.
 #: gui/gdmchooser-strings.c:7
 msgid "GDM Host Chooser"
-msgstr ""
+msgstr "GDM vertsveljar"
 
 #: gui/gdmchooser-strings.c:8
 msgid "Open a session to the selected host"
-msgstr "Opprett ein sesjon til vald maskin"
+msgstr "Opprett ei økt mot vald maskin"
 
 #: gui/gdmchooser-strings.c:9
 msgid "Connect"
-msgstr "Kopla til"
+msgstr "Kople til"
 
 #: gui/gdmchooser-strings.c:10
 msgid "Probe the network"
-msgstr ""
+msgstr "Prøv i nettverket"
 
 #: gui/gdmchooser-strings.c:11
 msgid "Rescan"
@@ -1216,7 +1230,7 @@ msgstr "Søk på nytt"
 
 #: gui/gdmchooser-strings.c:12
 msgid "How to use this application"
-msgstr ""
+msgstr "Korleis bruke dette programmet"
 
 #: gui/gdmchooser-strings.c:13
 msgid "Help"
@@ -1224,7 +1238,7 @@ msgstr "Hjelp"
 
 #: gui/gdmchooser-strings.c:14
 msgid "Exit the application"
-msgstr ""
+msgstr "Avslutt programmet"
 
 #: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2885
 msgid "Quit"
@@ -1236,7 +1250,7 @@ msgstr " "
 
 #: gui/gdmchooser-strings.c:17
 msgid "Most recently queried hosts"
-msgstr ""
+msgstr "Sist spurde vertar"
 
 #: gui/gdmchooser-strings.c:18
 msgid ""
@@ -1249,6 +1263,13 @@ msgid ""
 "When you have selected a host click \"Connect\" to open a session\n"
 "to that machine."
 msgstr ""
+"Hovudområdet av dette programmet viser vertane på lokalnettet som\n"
+"har «XDMCP» påslått. Dette tillet brukarar å logge inn mot ande \n"
+"maskiner som om dei satt ved konsollet.\n"
+"\n"
+"Du kan søke på nytt i nettverket  for nye vertar ved å klikke på \n"
+"«Søk på nytt». Når du har vald ein vert, klikk «Kople til» for å \n"
+"starte ei økt på den maskina."
 
 #: gui/gdmchooser-strings.c:26
 msgid "Information"
@@ -1277,6 +1298,12 @@ msgid ""
 "This will display some of the more complex options of GDM that rarely need "
 "to be changed."
 msgstr ""
+"Dette panelet viser dei enkle val for oppsett av GDM.\n"
+"\n"
+"Dersom du treng meir detaljert oppsett, velj ekspert eller systemoppsett frå "
+"lista over.\n"
+"Dette vil gjere at ein får opp meir komplekse val om GDM, som ein sjeldan "
+"treng å endre på."
 
 #: gui/gdmconfig.c:65
 msgid ""
@@ -1308,7 +1335,7 @@ msgstr ""
 
 #: gui/gdmconfig.c:378
 msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr ""
+msgstr "Du må vere superbrukar (root) for å konfigurer GDM.\n"
 
 #: gui/gdmconfig.c:417
 msgid ""
@@ -1548,19 +1575,19 @@ msgstr "Gå tilbake til innstillingar i konfigurasjonsfil"
 
 #: gui/gdmconfig-strings.c:10
 msgid "Revert settings"
-msgstr ""
+msgstr "Gjer om innstillingar"
 
 #: gui/gdmconfig-strings.c:11
 msgid "Revert to settings that were shipped with your system"
-msgstr ""
+msgstr "Gå tilbake til innstillingane som var levert saman med systemet ditt"
 
 #: gui/gdmconfig-strings.c:12
 msgid "Revert to Factory Settings"
-msgstr ""
+msgstr "Gå tilbake til standardinnstillingar"
 
 #: gui/gdmconfig-strings.c:13
 msgid "Apply the current changes"
-msgstr ""
+msgstr "Bruk aktive endringar"
 
 #: gui/gdmconfig-strings.c:14
 msgid "Apply"
@@ -1572,11 +1599,11 @@ msgstr "Val"
 
 #: gui/gdmconfig-strings.c:17
 msgid "basic_settings"
-msgstr ""
+msgstr "basic_settings"
 
 #: gui/gdmconfig-strings.c:18
 msgid "General Appearance"
-msgstr ""
+msgstr "Almenn utsjånad"
 
 #: gui/gdmconfig-strings.c:19
 msgid "Logo: "
@@ -1584,7 +1611,7 @@ msgstr "Logo: "
 
 #: gui/gdmconfig-strings.c:20
 msgid "Select a logo to be displayed during login"
-msgstr ""
+msgstr "Vel ein logo som skal visast under oppstart"
 
 #: gui/gdmconfig-strings.c:21
 msgid "Minimised Icon: "
@@ -1592,59 +1619,64 @@ msgstr "Minimert ikon:"
 
 #: gui/gdmconfig-strings.c:22
 msgid "Select a GTK+ theme file (gtkrc)"
-msgstr ""
+msgstr "Vel ei GTK+-tema fil (gtkrc)"
 
 #: gui/gdmconfig-strings.c:23
 msgid ""
 "This is the GTK+ RC file that describes the theme that the login window "
 "should use"
 msgstr ""
+"Dette er GTK+-RC-fila som skildrar temaet som påloggingsvindauget skal bruke"
 
 #: gui/gdmconfig-strings.c:24
 msgid "Gtk+ RC file: "
-msgstr "Gtk+ RC fil: "
+msgstr "Gtk+-RC-fil: "
 
 #: gui/gdmconfig-strings.c:25
 msgid "Login appearance"
-msgstr ""
+msgstr "Utsjånad på pålogging"
 
 #: gui/gdmconfig-strings.c:26
 msgid "Greeter Look and Feel"
-msgstr ""
+msgstr "Utsjånad for helsar"
 
 #: gui/gdmconfig-strings.c:27
 msgid ""
 "Show the \"System\" menu.  This has the shutdown, reboot and configuration "
 "items"
-msgstr ""
+msgstr "Vis «System»-menyen. Denne har steng av, omstart og oppsett vala"
 
 #: gui/gdmconfig-strings.c:28
 msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
-msgstr ""
+msgstr "Vis «System»-menyen, (for omstart, steng av, o.a.)"
 
 #: gui/gdmconfig-strings.c:29
 msgid "Allow users to run the configurator from the system menu"
-msgstr ""
+msgstr "Tillat brukarar å køyrer oppsettverktyet frå systemmenyen"
 
 #: gui/gdmconfig-strings.c:30
 msgid ""
 "If the user fails to authenticate himself the login window should Quiver to "
 "indicate failiure"
 msgstr ""
+"Om brukaren ikkje autentiserar seg korrekt, la påloggingsbiletet skjelve for "
+"å indikere feil"
 
 #: gui/gdmconfig-strings.c:31
 msgid "Quiver on failure"
-msgstr ""
+msgstr "Skjelv ved feil"
 
 #: gui/gdmconfig-strings.c:32
 msgid ""
 "Show the title bar on the login window.  If this is off the user won't be "
 "able to move nor iconify the login window"
 msgstr ""
+"Vis tittellinja i pålogginsvindauget. Dersom denne er av, vil ikkje brukaren "
+"vere i stand til å flytte eller ikonfisere vindauget"
 
 #: gui/gdmconfig-strings.c:33
 msgid "Show title bar on login window"
-msgstr ""
+msgstr "Vis tittellinje på pålogginsvindauget"
 
 #: gui/gdmconfig-strings.c:34
 #, c-format
@@ -1663,7 +1695,7 @@ msgstr "Dette er %n"
 
 #: gui/gdmconfig-strings.c:37
 msgid "The welcome message displayed on the login window"
-msgstr ""
+msgstr "Velkomstmeldinga som blir vist på påloggingsvindauget"
 
 #: gui/gdmconfig-strings.c:39
 msgid "Default font: "
@@ -1675,7 +1707,7 @@ msgstr "Velkomsthelsing"
 
 #: gui/gdmconfig-strings.c:41
 msgid "The font to use on the welcome message"
-msgstr ""
+msgstr "Skrifttype som skal brukast på velkomstmelding"
 
 #: gui/gdmconfig-strings.c:42
 msgid "Pick a Font"
@@ -1864,7 +1896,7 @@ msgstr "Y-posisjon:"
 
 #: gui/gdmconfig-strings.c:89
 msgid "Xinerama screen: "
-msgstr ""
+msgstr "Xinerama skjerm:"
 
 #: gui/gdmconfig-strings.c:90
 msgid ""
@@ -1970,11 +2002,11 @@ msgstr "Bakgrunnsfarge:"
 
 #: gui/gdmconfig-strings.c:115
 msgid "The color to use on the background"
-msgstr ""
+msgstr "Farge som skal brukast på bakgrunnen"
 
 #: gui/gdmconfig-strings.c:116
 msgid "Pick a color"
-msgstr "Velg ei farge"
+msgstr "Velg ein farge"
 
 #: gui/gdmconfig-strings.c:117
 msgid "Background image:"
@@ -1990,11 +2022,11 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:120
 msgid "Background program"
-msgstr ""
+msgstr "Bakgrunnsprogram"
 
 #: gui/gdmconfig-strings.c:121
 msgid "Background program: "
-msgstr ""
+msgstr "Bakgrunnsprogram: "
 
 #: gui/gdmconfig-strings.c:122 gui/gdmconfig-strings.c:268
 msgid "Select a file containing Locale information"
@@ -2118,11 +2150,11 @@ msgstr "Autoriseringsdetaljar"
 
 #: gui/gdmconfig-strings.c:153
 msgid "GDM runs as this user: "
-msgstr ""
+msgstr "GDM køyrer som denne brukaren:"
 
 #: gui/gdmconfig-strings.c:154
 msgid "User 'auth' directory: "
-msgstr ""
+msgstr "Brukaren sin «auth»-katalog:"
 
 #: gui/gdmconfig-strings.c:155
 msgid "User 'auth' FB directory: "
@@ -2358,7 +2390,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:210
 msgid "Failsafe X server:"
-msgstr ""
+msgstr "Feilsikker X-tenar:"
 
 #: gui/gdmconfig-strings.c:211
 msgid ""
@@ -2368,7 +2400,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:212
 msgid "X-server setup"
-msgstr ""
+msgstr "X-tenar oppsett"
 
 #: gui/gdmconfig-strings.c:213
 msgid "Session configuration"
@@ -2756,7 +2788,7 @@ msgstr "A-M|Kroatisk"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:44
 msgid "A-M|Czech"
-msgstr "A-M|Tjekkisk"
+msgstr "N-Å|Tjekkisk"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:46
@@ -2801,7 +2833,7 @@ msgstr "A-M|Galisisk"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:62
 msgid "A-M|German"
-msgstr "A-M|Tysk"
+msgstr "N-Å|Tysk"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:64
@@ -2816,7 +2848,7 @@ msgstr "A-M|Hebraisk"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:68
 msgid "A-M|Hungarian"
-msgstr "A-M|Ungarsk"
+msgstr "N-Å|Ungarsk"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:70
@@ -2861,12 +2893,12 @@ msgstr "N-Å|Polsk"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:86
 msgid "N-Z|Portuguese"
-msgstr "N-Å|Portogisisk"
+msgstr "N-Å|Portugisisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:88
 msgid "N-Z|Brazilian Portuguese"
-msgstr "N-Å|Brasiliansk Portogisisk"
+msgstr "A-M|Brasiliansk Portugisisk"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:90
@@ -2933,7 +2965,7 @@ msgstr "AnotherLevel"
 #. Translators: default GNOME session
 #: gui/gdmlogin.c:59 gui/gdmlogin.c:1770 gui/gdmlogin.c:1792
 msgid "Default"
-msgstr "Forvald"
+msgstr "Standard"
 
 #: gui/gdmlogin.c:61
 msgid "Gnome"
@@ -2954,7 +2986,7 @@ msgstr "Siste"
 #: gui/gdmlogin.c:196
 #, c-format
 msgid "User %s will login in %d seconds"
-msgstr "Brukar %s vil logga inn om %d sekunder"
+msgstr "Brukar %s vil logge inn om %d sekund"
 
 #: gui/gdmlogin.c:446
 msgid ""
@@ -2969,7 +3001,7 @@ msgstr "Velkomen til %s"
 
 #: gui/gdmlogin.c:537
 msgid "gdm_parse_enriched_string: String too long!"
-msgstr ""
+msgstr "gdm_parse_enriched_string: Streng er for lang"
 
 #: gui/gdmlogin.c:676
 msgid ""
@@ -3038,7 +3070,7 @@ msgstr ""
 #: gui/gdmlogin.c:1272
 #, c-format
 msgid "%s session selected"
-msgstr "%s sesjon valt"
+msgstr "%s økt valt"
 
 #: gui/gdmlogin.c:1305
 msgid "Log in using the session that you have used last time you logged in"
@@ -3116,7 +3148,7 @@ msgstr "Ver vennleg og legg på 5 kroner for å logge inn."
 
 #: gui/gdmlogin.c:2520
 msgid "GNOME Desktop Manager"
-msgstr "GNOME skrivebordbehandlar"
+msgstr "GNOME skrivebordhandterar"
 
 #: gui/gdmlogin.c:2528
 #, c-format
@@ -3125,15 +3157,15 @@ msgstr "Kan ikkje opne ikonfil: %s. Koplar ut ikonifiseringsfunksjon!"
 
 #: gui/gdmlogin.c:2550
 msgid "Iconify the login window"
-msgstr "Ikonifiser loginnvindauget"
+msgstr "Ikonifiser påloggingsvindauget"
 
 #: gui/gdmlogin.c:2610
 msgid "%a %b %d, %H:%M"
-msgstr "%a %b %d, %H:%M %p"
+msgstr "%a %d. %b, %H:%M %p"
 
 #: gui/gdmlogin.c:2617
 msgid "%a %b %d, %I:%M %p"
-msgstr "%a %b %d, %I:%M %p"
+msgstr "%a %d. %b, %I:%M %p"
 
 #: gui/gdmlogin.c:2676
 msgid "Finger"
@@ -3220,11 +3252,11 @@ msgstr "Start om att"
 
 #: gui/gdmlogin.c:3744
 msgid "main: Error setting up HUP signal handler"
-msgstr ""
+msgstr "main: Feil ved oppsett av HUP-signalhandsamar"
 
 #: gui/gdmlogin.c:3747
 msgid "main: Error setting up INT signal handler"
-msgstr ""
+msgstr "main: Feil ved oppsetting av INT-signalhandsamar"
 
 #: gui/gdmlogin.c:3750
 msgid "main: Error setting up TERM signal handler"
@@ -3232,7 +3264,7 @@ msgstr "main: Feil ved oppsett av TERM signalhandsamar"
 
 #: gui/gdmlogin.c:3758
 msgid "main: Error setting up CHLD signal handler"
-msgstr ""
+msgstr "main: Feil ved oppsetting av CHLD-signalhandsamar"
 
 #: gui/gdmlogin.c:3823
 msgid ""
@@ -3270,7 +3302,7 @@ msgstr "Vel eit fotografi"
 
 #: gui/gdmphotosetup.c:89
 msgid "Select a photograph to show in the facebrowser:"
-msgstr ""
+msgstr "Vel eit fotografig som skal vise i andletevisaren:"
 
 #: gui/gdmphotosetup.c:94
 msgid "Browse"
@@ -3452,7 +3484,7 @@ msgstr "Tast inn passord til root (priviligert brukar)."
 
 #: config/gettextfoo.h:4
 msgid "I will now try to restart the X server again."
-msgstr ""
+msgstr "Eg vil no prøve å starte om att X-tenaren igjen."
 
 #: config/gettextfoo.h:5
 msgid ""
@@ -3473,6 +3505,9 @@ msgid ""
 "pointer device (your mouse) is not set up correctly.  Would you like to view "
 "the X server output to diagnose the problem?"
 msgstr ""
+"Eg kan ikkje starte X-tenaren (det grafiske grensesnittet). Det ser ut som "
+"om at peikareininga (musa di) ikkje er sett opp skikkeleg. Vil du sjå utdata "
+"frå X-tenaren for å diagnostisere problemet?"
 
 #: config/gettextfoo.h:8
 msgid ""
