@@ -1657,6 +1657,21 @@
 
 	<variablelist>
 	  <title>[chooser]</title>
+
+	  <varlistentry>
+	    <term>Broadcast</term>
+	    <listitem>
+	      <synopsis>Broadcast=true</synopsis>
+	      <para>
+		If true, the chooser will broadcast a query to the local
+		network and collect responses.  This way the chooser will
+		always show all available managers on the network.  If you
+		need to add some hosts not local to this network, or if you
+		don't want to use Broadcast, you can list them in the Hosts
+		key.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	  
 	  <varlistentry>
 	    <term>DefaultHostImage</term>
@@ -1682,11 +1697,26 @@
 	      </para>
 	      
 	      <para>
-		The file name must match the fully qualified name (FQDN) for the host.
-		The icons must be stored in Imlib supported formats and they must be
-		readable to the gdm user.
+		The file name must match the fully qualified name (FQDN) for
+		the host.  The icons must be stored in Imlib supported formats
+		and they must be readable to the gdm user.
 	      </para>
 	      
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>Hosts</term>
+	    <listitem>
+	      <synopsis>Hosts=host1,host2</synopsis>
+	      <para>
+		The hosts which should be listed in the chooser.  The chooser
+		will only list them if they respond.  This is done in addition
+		to broadcast (if Broadcast is set), so you need not list
+		hosts on the local network.  This is useful if your
+		networking setup doesn't allow all hosts to be reachable
+		by a broadcast packet.
+	      </para>
 	    </listitem>
 	  </varlistentry>
 	  

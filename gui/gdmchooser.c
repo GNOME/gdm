@@ -68,10 +68,10 @@ static GdmChooserHost *gdm_chooser_host_alloc (const char *hostname, const char 
 static void gdm_chooser_decode_packet (void);
 static void gdm_chooser_abort (const gchar *format, ...);
 static void gdm_chooser_browser_update (void);
-static void gdm_chooser_xdmcp_init (const char **hosts);
+static void gdm_chooser_xdmcp_init (char **hosts);
 static void gdm_chooser_host_dispose (GdmChooserHost *host);
 static void gdm_chooser_choose_host (const gchar *hostname);
-static void gdm_chooser_add_hosts (const char **hosts);
+static void gdm_chooser_add_hosts (char **hosts);
 
 static guint scan_time_handler = 0;
 
@@ -104,6 +104,8 @@ static gint  GdmScanTime;
 static gchar *GdmHostIconDir;
 static gchar *GdmHostDefaultIcon;
 static gchar *GdmGtkRC;
+static gchar *GdmHosts;
+static gboolean GdmBroadcast;
 
 static GladeXML *chooser_app;
 static GtkWidget *chooser, *manage, *rescan, *cancel;
@@ -308,7 +310,7 @@ gdm_chooser_xdmcp_discover (void)
 
 
 static void
-gdm_chooser_xdmcp_init (const char **hosts)
+gdm_chooser_xdmcp_init (char **hosts)
 {
     static XdmcpHeader header;
     gint sockopts = 1;
@@ -410,6 +412,21 @@ gdm_chooser_parse_config (void)
     GdmIconMaxWidth = gnome_config_get_int (GDM_KEY_ICONWIDTH);
     GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
+
+    /* note that command line arguments will prevail over these */
+    GdmHosts = gnome_config_get_string (GDM_KEY_HOSTS);
+    GdmBroadcast = gnome_config_get_bool (GDM_KEY_BROADCAST);
+    /* if broadcasting, then append BROADCAST to hosts */
+    if (GdmBroadcast) {
+	    if (gdm_string_empty (GdmHosts)) {
+		    g_free (GdmHosts);
+		    GdmHosts = "BROADCAST";
+	    } else {
+		    char *tmp = g_strconcat (GdmHosts, ",BROADCAST", NULL);
+		    g_free (GdmHosts);
+		    GdmHosts = tmp;
+	    }
+    }
 
     if (GdmScanTime < 1) GdmScanTime = 1;
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
@@ -784,7 +801,7 @@ gdm_chooser_choose_host (const char *hostname)
 }
 
 static void
-gdm_chooser_add_hosts (const char **hosts)
+gdm_chooser_add_hosts (char **hosts)
 {
 	struct hostent *hostent;
 	struct sockaddr_in qa;
@@ -827,7 +844,7 @@ main (int argc, char *argv[])
 {
     char **fixedargv;
     int fixedargc, i;
-    const char **hosts;
+    char **hosts;
     poptContext ctx;
     const char *gdm_version;
 
@@ -888,22 +905,29 @@ main (int argc, char *argv[])
     gdm_chooser_gui_init();
     gdm_chooser_signals_init();
 
-    hosts = poptGetArgs (ctx);
+    hosts = (char **)poptGetArgs (ctx);
+    /* when no hosts on the command line, take them from the config */
+    if (hosts == NULL ||
+	hosts[0] == NULL) {
+	    int i;
+	    hosts = g_strsplit (GdmHosts, ",", -1);
+	    for (i = 0; hosts != NULL && hosts[i] != NULL; i++) {
+		    g_strstrip (hosts[i]);
+	    }
+    }
     gdm_chooser_xdmcp_init (hosts);
     poptFreeContext (ctx);
 
     gtk_widget_show_now (chooser);
 
-    if ( ! DOING_GDM_DEVELOPMENT) {
-	    /* can it ever happen that it'd be NULL here ??? */
-	    if (chooser->window != NULL) {
-		    gdm_wm_init (GDK_WINDOW_XWINDOW (chooser->window));
+    /* can it ever happen that it'd be NULL here ??? */
+    if (chooser->window != NULL) {
+	    gdm_wm_init (GDK_WINDOW_XWINDOW (chooser->window));
 
-		    /* Run the focus, note that this will work no matter what
-		     * since gdm_wm_init will set the display to the gdk one
-		     * if it fails */
-		    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
-	    }
+	    /* Run the focus, note that this will work no matter what
+	     * since gdm_wm_init will set the display to the gdk one
+	     * if it fails */
+	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
     }
 
     gtk_main();

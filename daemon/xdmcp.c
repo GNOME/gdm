@@ -76,6 +76,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/utsname.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
 #include <fcntl.h>
 
 #ifdef HAVE_TCPWRAPPERS
@@ -130,6 +132,7 @@ static gboolean gdm_xdmcp_decode_packet (void);
 static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type);
 static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 					  struct sockaddr_in *clnt_sa,
+					  struct in_addr *local_addr,
 					  ARRAYofARRAY8Ptr authlist);
 static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len);
@@ -171,13 +174,139 @@ static XdmAuthRec serv_authlist = {
     { (CARD16) 0, (CARD8 *) 0 }
 };
 
+static const GList *
+peek_local_address_list (void)
+{
+	static GList *the_list = NULL;
+	static time_t last_time = 0;
+	struct in_addr *addr;
+#ifdef SIOCGIFCONF
+	struct sockaddr_in *sin;
+	struct ifconf ifc;
+	struct ifreq *ifr;
+	char *buf;
+	int num;
+#else /* SIOCGIFCONF */
+	char hostbuf[BUFSIZ];
+	struct hostent *he;
+	int i;
+#endif
+
+	/* don't check more then every 5 seconds */
+	if (last_time + 5 > time (NULL))
+		return the_list;
+
+	g_list_foreach (the_list, (GFunc)g_free, NULL);
+	g_list_free (the_list);
+	the_list = NULL;
+
+	last_time = time (NULL);
+
+#ifdef SIOCGIFCONF
+#ifdef SIOCGIFNUM
+	if (ioctl (xdmcpfd, SIOCGIFNUM, &num) < 0) {
+		num = 64;
+	}
+#else
+	num = 64;
+#endif
+
+	ifc.ifc_len = sizeof(struct ifreq) * num;
+	ifc.ifc_buf = buf = g_malloc (ifc.ifc_len);
+	if (ioctl (xdmcpfd, SIOCGIFCONF, &ifc) < 0) {
+		gdm_error (_("%s: Cannot get local addresses!"),
+			   "peek_local_address_list");
+		return NULL;
+	}
+
+	ifr = ifc.ifc_req;
+	num = ifc.ifc_len / sizeof(struct ifreq);
+	for (; num-- > 0; ifr++) {
+		if (ioctl (xdmcpfd, SIOCGIFFLAGS, ifr) < 0 ||
+		    ! (ifr->ifr_flags & IFF_UP))
+			continue;
+#ifdef IFF_UNNUMBERED
+		if (ifr->ifr_flags & IFF_UNNUMBERED)
+			continue;
+#endif
+		if (ioctl (xdmcpfd, SIOCGIFADDR, ifr) < 0)
+			continue;
+
+		sin = (struct sockaddr_in *)&ifr->ifr_addr;
+
+		if (sin->sin_family != AF_INET ||
+		    sin->sin_addr.s_addr == INADDR_ANY ||
+		    sin->sin_addr.s_addr == INADDR_LOOPBACK)
+			continue;
+		addr = g_new0 (struct in_addr, 1);
+		memcpy (addr, &(sin->sin_addr.s_addr),
+			sizeof (struct in_addr));
+		the_list = g_list_append (the_list, addr);
+	}
+
+	g_free (buf);
+#else /* SIOCGIFCONF */
+	/* host based fallback, will likely only get 127.0.0.1 i think */
+
+	if (gethostname (hostbuf, BUFSIZ-1) != 0) {
+		gdm_error (_("%s: Could not get server hostname: %s!"),
+			   "peek_local_address_list",
+			   strerror (errno));
+		return NULL;
+	}
+	he = gethostbyname (hostbuf);
+	if (he == NULL) {
+		gdm_error (_("%s: Could not get address from hostname!"),
+			   "peek_local_address_list");
+		return NULL;
+	}
+	for (i = 0; he->h_addr_list[i] != NULL; i++) {
+		struct in_addr *laddr = (struct in_addr *)he->h_addr_list[i];
+
+		addr = g_new0 (struct in_addr, 1);
+		memcpy (addr, laddr, sizeof (struct in_addr));
+		the_list = g_list_append (the_list, addr);
+	}
+#endif
+
+	return the_list;
+}
+
+
+static gboolean
+is_loopback_addr (struct in_addr *ia)
+{
+	const char lo[] = {127,0,0,1};
+
+	if (ia->s_addr == INADDR_LOOPBACK ||
+	    memcmp (&ia->s_addr, lo, 4) == 0) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
 static gboolean
 is_local_addr (struct in_addr *ia)
 {
 	const char lo[] = {127,0,0,1};
-	if (memcmp (&ia->s_addr, lo, 4) == 0) {
+
+	if (ia->s_addr == INADDR_LOOPBACK ||
+	    memcmp (&ia->s_addr, lo, 4) == 0) {
 		return TRUE;
 	} else {
+		const GList *list = peek_local_address_list ();
+
+		while (list != NULL) {
+			struct in_addr *addr = list->data;
+
+			if (memcmp (&ia->s_addr, &addr->s_addr, 4) == 0) {
+				return TRUE;
+			}
+
+			list = list->next;
+		}
+
 		return FALSE;
 	}
 }
@@ -379,7 +508,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 {
     ARRAYofARRAY8 clnt_authlist;
     gint i = 0, explen = 1;
-    
+
     gdm_debug ("gdm_xdmcp_handle_query: Opcode %d from %s", 
 	       type, inet_ntoa (clnt_sa->sin_addr));
     
@@ -420,10 +549,31 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 				 * the chooser */
 				gdm_choose_indirect_dispose (id);
 				gdm_xdmcp_send_willing (clnt_sa);
+			} else if (is_loopback_addr (&(clnt_sa->sin_addr))) {
+				/* woohoo! fun, I have no clue how to get
+				 * the correct ip, SO I just send forward
+				 * queries with all the different IPs */
+				const GList *list = peek_local_address_list ();
+
+				while (list != NULL) {
+					struct in_addr *addr = list->data;
+					
+					if ( ! is_loopback_addr (addr)) {
+						/* forward query to
+						 * chosen host */
+						gdm_xdmcp_send_forward_query
+							(id, clnt_sa, addr,
+							 &clnt_authlist);
+					}
+
+					list = list->next;
+				}
 			} else {
 				/* or send forward query to chosen host */
-				gdm_xdmcp_send_forward_query (id, clnt_sa,
-							      &clnt_authlist);
+				gdm_xdmcp_send_forward_query
+					(id, clnt_sa,
+					 &(clnt_sa->sin_addr),
+					 &clnt_authlist);
 			}
 		} else if (id == NULL) {
 			id = gdm_choose_indirect_alloc (clnt_sa);
@@ -449,6 +599,7 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 static void
 gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 			      struct sockaddr_in *clnt_sa,
+			      struct in_addr *local_addr,
 			      ARRAYofARRAY8Ptr authlist)
 {
 	struct sockaddr_in sock = {0};
@@ -463,7 +614,7 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	gdm_debug ("gdm_xdmcp_send_forward_query: Sending forward query to %s",
 		   inet_ntoa (*id->chosen_host));
 	gdm_debug ("gdm_xdmcp_send_forward_query: Query contains %s:%d", 
-		   inet_ntoa (clnt_sa->sin_addr),
+		   inet_ntoa (*local_addr),
 		   (int) ntohs (clnt_sa->sin_port));
 
 	authlen = 1;
@@ -476,14 +627,9 @@ gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
 	port.data = g_new (char, 2);
 	memcpy (port.data, &(clnt_sa->sin_port), 2);
 
-	/* FIXME:
-	 * This is broken!, this could be loopback which is just plain wrong,
-	 * since the other host can't access us from the loopback, this would
-	 * need to be changed to an actual address, however note that xdm
-	 * fucks this up as well and noone yet complained there */
 	address.length = sizeof (struct in_addr);
 	address.data = (void *)g_new (struct in_addr, 1);
-	memcpy (address.data, &(clnt_sa->sin_addr), sizeof (struct in_addr));
+	memcpy (address.data, local_addr, sizeof (struct in_addr));
 
 	header.opcode = (CARD16) FORWARD_QUERY;
 	header.length = authlen;

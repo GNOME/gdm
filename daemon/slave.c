@@ -409,6 +409,7 @@ gdm_slave_run (GdmDisplay *display)
     gdm_screen_init (d);
 
     if (d->use_chooser) {
+	    /* this usually doesn't return */
 	    gdm_slave_chooser ();  /* Run the chooser */
     } else if ((d->type == TYPE_LOCAL || GdmAllowRemoteAutoLogin) &&
 	       gdm_first_login &&
@@ -1234,10 +1235,10 @@ gdm_slave_chooser (void)
 
 	default:
 		if (last_killed_pid == d->chooserpid) {
-			/* foo, this is a bad case really.  We always remanage since
-			 * we assume that the chooser died, we should probably store
-			 * the status.  But this race is not likely to happen
-			 * normally. */
+			/* foo, this is a bad case really.  We always remanage
+			 * since we assume that the chooser died, we should
+			 * probably store the status.  But this race is not
+			 * likely to happen normally. */
 			_exit (DISPLAY_REMANAGE);
 		}
 
@@ -1256,6 +1257,8 @@ gdm_slave_chooser (void)
 			else
 				buf[bytes] ='\0';
 			send_chosen_host (d, buf);
+
+			_exit (DISPLAY_CHOSEN);
 		}
 		break;
 	}

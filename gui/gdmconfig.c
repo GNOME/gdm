@@ -682,6 +682,8 @@ gdm_config_parse_most (gboolean factory)
     gdm_entry_set("host_images_dir", gnome_config_get_string (GDM_KEY_HOSTDIR));
     gdm_entry_set("default_host_image_file", gnome_config_get_string (GDM_KEY_HOST));
     gdm_spin_set("refresh_interval", gnome_config_get_int(GDM_KEY_SCAN));
+    gdm_entry_set("chooser_hosts", gnome_config_get_string (GDM_KEY_HOSTS));
+    gdm_toggle_set("chooser_broadcast", gnome_config_get_bool (GDM_KEY_BROADCAST));
 
     gdm_toggle_set("enable_debug", gnome_config_get_bool(GDM_KEY_DEBUG));
 
@@ -1092,6 +1094,8 @@ write_config (void)
     gdm_entry_write("host_images_dir", GDM_KEY_HOSTDIR);
     gdm_entry_write("default_host_image_file", GDM_KEY_HOST);
     gdm_spin_write("refresh_interval", GDM_KEY_SCAN);
+    gdm_entry_write("chooser_hosts", GDM_KEY_HOSTS);
+    gdm_toggle_write("chooser_broadcast", GDM_KEY_BROADCAST);
 
     gdm_toggle_write("enable_debug", GDM_KEY_DEBUG);
 

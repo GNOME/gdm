@@ -1,3 +1,29 @@
+Thu Jun 28 18:48:56 2001  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in, gui/gdmconfig.(c|glade), gui/gdmchooser.c:
+	  Add two keys Broadcast and Hosts to the chooser configuration
+	  to allow more fine grained control as to what appears in the
+	  chooser.  And to allow listing of hosts not reachable by
+	  broadcast.
+
+	* doc/C/gdm.sgml: add docs for the above two keys
+
+	* daemon/choose.c, daemon/gdm.[ch], daemon/slave.c, daemon/xdmcp.c:
+	  Fix a race with the daemon not getting the chooesr response in
+	  time.  Also move the chooser page from system setup to expert
+
+	* daemon/xdmcp.c: get all local interface addresses and use those
+	  for forward query in case we see only loopback as our address.
+	  This is useful if you do an indirect query to the local host
+	  and choose a remote server.  xdm screws this case up, so we have
+	  one up on xdm here.
+
+	* daemon/gdmlogin.c, daemon/gdmchooser.c, daemon/gdmwm.c:  Fix some
+	  gdmwm issues.  In the browser window allow Ctrl-F after selecting
+	  a face to finger that user and display the result, useful to check
+	  if you have new mail or whatnot.  Also strip excluded users before
+	  checking to allow spaces in the Exclude list.
+
 2001-06-28  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* gui/gdmconfig.glade: Added nn_NO.

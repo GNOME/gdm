@@ -713,6 +713,14 @@ gdm_cleanup_children (void)
 	    status = DISPLAY_REMANAGE;
     }
 
+    if (status == DISPLAY_CHOSEN) {
+	    /* forget about this indirect id, since this
+	     * display will be dead very soon, and we don't want it
+	     * to take the indirect display with it */
+	    d->indirect_id = 0;
+	    status = DISPLAY_REMANAGE;
+    }
+
     /* checkout if we can actually do stuff */
     switch (status) {
     case DISPLAY_REBOOT:

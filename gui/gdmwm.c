@@ -1126,7 +1126,7 @@ gdm_wm_move_window_now (Window window, int x, int y)
 		trap_pop ();
 	}
 
-	if (gw->shadow != None)
+	if (gw->deco != None)
 		XMoveWindow (wm_disp, gw->deco, x - 1, y - 1);
 	else
 		XMoveWindow (wm_disp, gw->win, x, y);

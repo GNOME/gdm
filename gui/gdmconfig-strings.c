@@ -208,6 +208,17 @@ gchar *s = N_("The exact script details of a session\n"
               "one from the list on the left.\n"
               "");
 gchar *s = N_("Login sessions");
+gchar *s = N_("Appearance");
+gchar *s = N_("Directory for host images: ");
+gchar *s = N_("Default host image:");
+gchar *s = N_("Refresh");
+gchar *s = N_("Scan every 'x' seconds: ");
+gchar *s = N_("Hosts");
+gchar *s = N_("Send a query to the local network and list all servers that respond");
+gchar *s = N_("Broadcast query");
+gchar *s = N_("Hosts to list: ");
+gchar *s = N_("Comma separated list of hostnames to list in the chooser (in addition to the broadcast above)");
+gchar *s = N_("Chooser");
 gchar *s = N_("Debugging");
 gchar *s = N_("Enable debugging output to be printed into the syslog.  Useful for tracking down problems.  But not so useful for normal usage as it can fill up your logs very quickly.");
 gchar *s = N_("Enable debugging output");
@@ -236,12 +247,6 @@ gchar *s = N_("Localization");
 gchar *s = N_("Select a file containing Locale information");
 gchar *s = N_("Locale file: ");
 gchar *s = N_("Environment");
-gchar *s = N_("Appearance");
-gchar *s = N_("Directory for host images: ");
-gchar *s = N_("Default host image:");
-gchar *s = N_("Refresh");
-gchar *s = N_("Scan every 'x' seconds: ");
-gchar *s = N_("Chooser");
 gchar *s = N_("(C) 2001 Lee Mallabone");
 gchar *s = N_("Configure the GNOME Display Manager.\n"
               "Please submit any bugs or feature requests at http://bugzilla.gnome.org under the `gdm' product.");

@@ -140,6 +140,9 @@ void
 gdm_choose_indirect_dispose_empty_id (guint id)
 {
 	GSList *li;
+	
+	if (id == 0)
+		return;
 
 	for (li = indirect; li != NULL; li = li->next) {
 		GdmIndirectDisplay *idisp = li->data;

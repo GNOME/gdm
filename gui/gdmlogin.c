@@ -32,6 +32,7 @@
 #include <ctype.h>
 #include <signal.h>
 #include <dirent.h>
+#include <locale.h>
 #include <gdk/gdkx.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -159,6 +160,8 @@ static gint maxheight = 0;
 static pid_t backgroundpid = 0;
 
 static guint timed_handler_id = 0;
+
+static char *selected_browser_user = NULL;
 
 /* This is true if session dir doesn't exist or is whacked out
  * in some way or another */
@@ -2094,16 +2097,22 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
     case GDK_BUTTON_RELEASE:
 	user = g_list_nth_data (users, selected);
 
-	if (user && user->login)
-	    gtk_entry_set_text (GTK_ENTRY (entry), user->login);
+	if (user && user->login) {
+		gtk_entry_set_text (GTK_ENTRY (entry), user->login);
+		g_free (selected_browser_user);
+		selected_browser_user = g_strdup (user->login);
+	}
 
 	break;
 
     case GDK_2BUTTON_PRESS:
 	user = g_list_nth_data (users, selected);
 
-	if (user && user->login)
-	    gtk_entry_set_text (GTK_ENTRY (entry), user->login);
+	if (user && user->login) {
+		gtk_entry_set_text (GTK_ENTRY (entry), user->login);
+		g_free (selected_browser_user);
+		selected_browser_user = g_strdup (user->login);
+	}
 
 	if (curuser == NULL)
 	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
@@ -2133,6 +2142,8 @@ gdm_login_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
     case GDK_BUTTON_PRESS:
     case GDK_BUTTON_RELEASE:
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
+	g_free (selected_browser_user);
+	selected_browser_user = NULL;
 	break;
 	
     default:
@@ -2427,6 +2438,66 @@ bin_exists (const char *command)
 	}
 }
 
+static gboolean
+window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
+{
+	switch (event->type) {
+	case GDK_KEY_PRESS:
+		if ((event->key.state & GDK_CONTROL_MASK) &&
+		    (event->key.keyval == GDK_f ||
+		     event->key.keyval == GDK_F) &&
+		    selected_browser_user != NULL) {
+			GtkWidget *d, *less;
+			char *command;
+			d = gnome_dialog_new (_("Finger"),
+					      GNOME_STOCK_BUTTON_OK,
+					      NULL);
+			less = gnome_less_new ();
+			gtk_widget_show (less);
+			gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox),
+					    less,
+					    TRUE,
+					    TRUE,
+					    0);
+
+			/* hack to make this be the size of a terminal */
+			gnome_less_set_fixed_font (GNOME_LESS (less), TRUE);
+			{
+				int i;
+				char buf[82];
+				GtkWidget *text = GTK_WIDGET (GNOME_LESS (less)->text);
+				GdkFont *font = GNOME_LESS (less)->font;
+				for (i = 0; i < 81; i++)
+					buf[i] = 'X';
+				buf[i] = '\0';
+				gtk_widget_set_usize
+					(text,
+					 gdk_string_width (font, buf) + 30,
+					 gdk_string_height (font, buf)*24+30);
+			}
+
+			command = g_strconcat ("finger ",
+					       selected_browser_user,
+					       NULL);
+			gnome_less_show_command (GNOME_LESS (less), command);
+
+			gtk_widget_grab_focus (GTK_WIDGET (less));
+
+			gtk_window_set_modal (GTK_WINDOW (d), TRUE);
+			gdm_wm_center_window (GTK_WINDOW (d));
+
+			gdm_wm_no_login_focus_push ();
+			gnome_dialog_run_and_close (GNOME_DIALOG (d));
+			gdm_wm_no_login_focus_pop ();
+		}
+		break;
+	default:
+		break;
+	}
+
+	return FALSE;
+}
+
 static void
 gdm_login_gui_init (void)
 {
@@ -2448,6 +2519,11 @@ gdm_login_gui_init (void)
     gtk_object_set_data_full (GTK_OBJECT (login), "login", login,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_window_set_title (GTK_WINDOW (login), _("GDM Login"));
+    /* connect for fingering */
+    if (GdmBrowser)
+	    gtk_signal_connect (GTK_OBJECT (login), "event",
+				GTK_SIGNAL_FUNC (window_browser_event),
+				NULL);
 
     accel = gtk_accel_group_new ();
     gtk_window_add_accel_group (GTK_WINDOW (login), accel);
@@ -2963,6 +3039,7 @@ gdm_login_check_exclude (struct passwd *pwent)
 		excludes = g_strsplit (GdmExclude, ",", 0);
 
 		for (i=0 ; excludes[i] != NULL ; i++)  {
+			g_strstrip (excludes[i]);
 			if (strcasecmp_no_locale (excludes[i],
 						  pwent->pw_name) == 0) {
 				g_strfreev (excludes);
@@ -3248,7 +3325,8 @@ main (int argc, char *argv[])
 
     gdm_version = g_getenv ("GDM_VERSION");
 
-    if ((gdm_version == NULL ||
+    if ( ! DOING_GDM_DEVELOPMENT &&
+	(gdm_version == NULL ||
 	 strcmp (gdm_version, VERSION) != 0) &&
 	gdm_string_empty (g_getenv ("GDM_IS_LOCAL"))) {
 	    char *msg;
@@ -3271,10 +3349,13 @@ main (int argc, char *argv[])
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
+	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+
 	    return EXIT_SUCCESS;
     }
 
-    if (gdm_version == NULL) {
+    if ( ! DOING_GDM_DEVELOPMENT &&
+	gdm_version == NULL) {
 	    char *msg;
 	    GtkWidget *dialog;
 
@@ -3307,7 +3388,8 @@ main (int argc, char *argv[])
 	    }
     }
 
-    if (strcmp (gdm_version, VERSION) != 0) {
+    if ( ! DOING_GDM_DEVELOPMENT &&
+	strcmp (gdm_version, VERSION) != 0) {
 	    char *msg;
 	    GtkWidget *dialog;
 
@@ -3424,16 +3506,14 @@ main (int argc, char *argv[])
 
     gtk_widget_show_now (login);
 
-    if ( ! DOING_GDM_DEVELOPMENT) {
-	    /* can it ever happen that it'd be NULL here ??? */
-	    if (login->window != NULL) {
-		    gdm_wm_init (GDK_WINDOW_XWINDOW (login->window));
+    /* can it ever happen that it'd be NULL here ??? */
+    if (login->window != NULL) {
+	    gdm_wm_init (GDK_WINDOW_XWINDOW (login->window));
 
-		    /* Run the focus, note that this will work no matter what
-		     * since gdm_wm_init will set the display to the gdk one
-		     * if it fails */
-		    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (login->window));
-	    }
+	    /* Run the focus, note that this will work no matter what
+	     * since gdm_wm_init will set the display to the gdk one
+	     * if it fails */
+	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (login->window));
     }
 
     if (session_dir_whacked_out) {
@@ -3485,7 +3565,6 @@ main (int argc, char *argv[])
 
 	    gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
     }
-
 
     gtk_main ();
 
