@@ -1,3 +1,8 @@
+Fri Dec 19 16:40:23 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: move the setegid to before the seteuid to fix an
+	  assert failure.  Fixes #127780
+
 Fri Dec 12 09:36:34 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmcomm.c: check ownership of /tmp/.gdm_socket before using

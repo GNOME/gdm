@@ -2843,13 +2843,14 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 			return;
 		}
 
+		NEVER_FAILS_setegid (0);
+		if (setegid (pw->pw_gid) < 0)
+			NEVER_FAILS_setegid (GdmGroupId);
 		if (seteuid (xnest_uid) < 0) {
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");
 			return;
 		}
-		if (setegid (pw->pw_gid) < 0)
-			NEVER_FAILS_setegid (GdmGroupId);
 
 		gdm_assert (xnest_auth_file != NULL);
 		gdm_assert (xnest_disp != NULL);
