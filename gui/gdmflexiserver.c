@@ -197,7 +197,7 @@ get_display (void)
 	static char *display = NULL;
 
 	if (display == NULL) {
-		display = g_strdup (gdk_display_name);
+		display = g_strdup (gdk_get_display ());
 		if (display == NULL) {
 			display = g_strdup (g_getenv ("DISPLAY"));
 			if (display == NULL) /*eek!*/ {

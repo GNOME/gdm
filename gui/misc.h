@@ -19,8 +19,6 @@
 #ifndef MISC_H
 #define MISC_H
 
-#include <gnome.h>
-
 #endif /* MISC_H */
 
 /* EOF */

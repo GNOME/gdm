@@ -192,7 +192,6 @@ enum {
 #define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm"
 #define GDM_KEY_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "nobody.png"
 #define GDM_KEY_FACEDIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/faces/"
-#define GDM_KEY_FONT "greeter/Font=-adobe-helvetica-bold-r-normal-*-*-180-*-*-*-*-*-*"
 #define GDM_KEY_ICON "greeter/Icon=" EXPANDED_PIXMAPDIR "/gdm.xpm"
 #define GDM_KEY_LOCALE "greeter/DefaultLocale=english"
 #define GDM_KEY_LOCFILE "greeter/LocaleFile=" EXPANDED_LOCALEDIR "/locale.alias"

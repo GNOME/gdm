@@ -12,7 +12,6 @@ INCLUDES = \
 	-I..						\
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\
-	-I$(includedir)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)
 

@@ -35,7 +35,6 @@ gdmflexiserver_SOURCES = \
 
 gdmchooser_SOURCES = \
 	gdmchooser.c		\
-	gdmchooser.h		\
 	misc.c			\
 	misc.h			\
 	gdmwm.c			\
@@ -43,7 +42,6 @@ gdmchooser_SOURCES = \
 
 gdmlogin_SOURCES = \
 	gdmlogin.c		\
-	gdmlogin.h		\
 	gdmlanguages.c		\
 	gdmlanguages.h		\
 	gdmwm.c			\

@@ -41,7 +41,6 @@
 
 #include <viciousui.h>
 
-#include "gdmlogin.h"
 #include "gdm.h"
 #include "gdmwm.h"
 #include "gdmlanguages.h"
@@ -50,6 +49,14 @@
 /* set the DOING_GDM_DEVELOPMENT env variable if you aren't running
  * within the protocol */
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
+
+typedef struct _GdmLoginUser GdmLoginUser;
+struct _GdmLoginUser {
+    uid_t uid;
+    gchar *login;
+    gchar *homedir;
+    GdkPixbuf *picture;
+};
 
 /* Some strings that are in other files that we may want to
  * translate.  This is not actually used anywhere, it's just
@@ -96,7 +103,6 @@ enum {
 	GDM_BACKGROUND_IMAGE = 1,
 	GDM_BACKGROUND_COLOR = 2
 };
-static gchar *GdmFont;
 static gchar *GdmGtkRC;
 static gchar *GdmIcon;
 static gchar *GdmSessionDir;
@@ -141,7 +147,7 @@ static gboolean login_is_local = FALSE;
 static gboolean used_defaults = FALSE;
 
 static GnomeIconList *browser;
-static GdkImlibImage *defface;
+static GdkPixbuf *defface;
 
 /* Eew. Loads of global vars. It's hard to be event controlled while maintaining state */
 static GSList *sessions = NULL;
@@ -209,11 +215,10 @@ gdm_timer (gpointer data)
  */
 
 static gboolean
-gdm_timer_up_delay (GtkObject *object,
-		    guint signal_id,
-		    guint n_params,
-		    GtkArg *params,
-		    gpointer data)
+gdm_timer_up_delay (GSignalInvocationHint *ihint,
+		    guint	           n_param_values,
+		    const GValue	  *param_values,
+		    gpointer		   data)
 {
 	if (curdelay < 30)
 		curdelay = 30;
@@ -410,6 +415,7 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
 {
     GtkWidget *fixed;
     GtkWidget *icon;
+    GdkPixbuf *pb;
     GdkGC *gc;
     GtkStyle *style;
     gint rw, rh, iw, ih;
@@ -431,10 +437,12 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
     gtk_container_add (GTK_CONTAINER (icon_win), fixed);
     gtk_widget_show (fixed);
 
-    icon = gnome_pixmap_new_from_file (GdmIcon);
-    if (icon != NULL) {
-	    gdk_window_get_size ((GdkWindow *) GNOME_PIXMAP (icon)->pixmap,
-				 &iw, &ih);
+    pb = gdk_pixbuf_new_from_file (GdmIcon, NULL);
+    if (pb != NULL) {
+	    icon = gtk_image_new_from_pixbuf (pb);
+	    iw = gdk_pixbuf_get_width (pb);
+	    ih = gdk_pixbuf_get_height (pb);
+	    gdk_pixbuf_unref (pb);
     } else {
 	    /* sanity fallback */
 	    icon = gtk_event_box_new ();
@@ -492,9 +500,8 @@ gdm_login_abort (const gchar *format, ...)
 
 /* I *really* need to rewrite this crap */
 static gchar *
-gdm_parse_enriched_string (const gchar *s)
+gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 {
-    gchar cmd, *buffer;
     gchar hostbuf[256] = "";
     gchar *hostname, *display;
     struct utsname name;
@@ -515,37 +522,45 @@ gdm_parse_enriched_string (const gchar *s)
     
     uname (&name);
 
+    /* FIXME: eek, let's just whack this hack somehow, prolly use
+     * of intltool */
     /* HAAAAAAAAAAAAAAAAAAAAAAAACK!, do not translate the next line!,
      * Since this is the default string we might as well use the gettext
      * translation as we will likely have better translations there.
      * Yes ugly as fuck, but oh well, unfortunately two standard defaults
      * are in circulation */
     if (strcmp (s, "Welcome to %h") == 0) {
-	g_free (display);
-	buffer = g_strdup_printf (_("Welcome to %s"), hostname);
-	g_free (hostname);
-	return buffer;
+	    char *buffer;
+	    g_free (display);
+	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
+				      pre, hostname, post);
+	    g_free (hostname);
+	    return buffer;
     } else if (strcmp (s, "Welcome to %n") == 0) {
-	g_free (display);
-	g_free (hostname);
-	buffer = g_strdup_printf (_("Welcome to %s"), name.nodename);
-	return buffer;
+	    char *buffer;
+	    g_free (display);
+	    g_free (hostname);
+	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
+				      pre, name.nodename, post);
+	    return buffer;
     }
 
     if (strlen (s) > 1023) {
-	syslog (LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
-	g_free (display);
-	buffer = g_strdup_printf (_("Welcome to %s"), hostname);
-	g_free (hostname);
-	return buffer;
+	    char *buffer;
+	    syslog (LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
+	    g_free (display);
+	    buffer = g_strdup_printf (_("%sWelcome to %s%s"),
+				      pre, hostname, post);
+	    g_free (hostname);
+	    return buffer;
     }
 
-    str = g_string_new (NULL);
+    str = g_string_new (pre);
 
     while (s[0] != '\0') {
 
 	if (s[0] == '%' && s[1] != 0) {
-		cmd = s[1];
+		char cmd = s[1];
 		s++;
 
 		switch (cmd) {
@@ -587,13 +602,12 @@ gdm_parse_enriched_string (const gchar *s)
 	s++;
     }
 
-    buffer = str->str;
-    g_string_free (str, FALSE);
+    g_string_append (str, post);
 
     g_free (display);
     g_free (hostname);
 
-    return buffer;
+    return g_string_free (str, FALSE);
 }
 
 
@@ -766,7 +780,6 @@ gdm_login_parse_config (void)
     GdmAllowRemoteRoot = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEROOT);
     GdmBrowser = gnome_config_get_bool (GDM_KEY_BROWSER);
     GdmLogo = gnome_config_get_string (GDM_KEY_LOGO);
-    GdmFont = gnome_config_get_string (GDM_KEY_FONT);
     GdmIcon = gnome_config_get_string (GDM_KEY_ICON);
     GdmQuiver = gnome_config_get_bool (GDM_KEY_QUIVER);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
@@ -812,7 +825,7 @@ gdm_login_parse_config (void)
      * but from the daemon since it's been munged on by the daemon a bit
      * already maybe */
     if (GdmTimedLoginEnable) {
-	    GdmTimedLogin = g_getenv("GDM_TIMED_LOGIN_OK");
+	    GdmTimedLogin = g_strdup (g_getenv("GDM_TIMED_LOGIN_OK"));
             if (ve_string_empty (GdmTimedLogin)) {
 	      g_free (GdmTimedLogin);
 	      GdmTimedLogin = NULL;
@@ -1011,7 +1024,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	g_free (language);
 	if (curlang == NULL ||
 	    strcmp (curlang, LAST_LANGUAGE) == 0) {
-		char *lang = g_getenv ("LANG");
+		const char *lang = g_getenv ("LANG");
 		if (lang == NULL ||
 		    lang[0] == '\0' ||
 		    g_ascii_strcasecmp (lang, "C") == 0) {
@@ -1145,7 +1158,7 @@ evil (const char *user)
 static void
 gdm_login_enter (GtkWidget *entry)
 {
-	static gchar *login_string;
+	static const gchar *login_string;
 	static gboolean first_return = TRUE;
 
 	if (entry == NULL)
@@ -2313,7 +2326,10 @@ gdm_login_browser_update (void)
     while (list) {
 	GdmLoginUser *user = list->data;
 
-	gnome_icon_list_append_imlib (GNOME_ICON_LIST (browser), user->picture, user->login);
+	gnome_icon_list_append_pixbuf (GNOME_ICON_LIST (browser),
+				       user->picture,
+				       NULL /* icon_filename */,
+				       user->login);
 	list = list->next;
     }
 
@@ -2557,31 +2573,6 @@ create_handle (void)
 }
 
 static void
-gdm_login_set_font (GtkWidget *widget, const char *font_name)
-{
-	GdkFont *font;
-	GtkStyle *new_style;
-	
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (font_name != NULL);
-
-	font = gdk_fontset_load (font_name);
-
-	if (font == NULL)
-		return;
-	
-	gtk_widget_set_rc_style (widget);
-	new_style = gtk_style_copy (gtk_widget_get_style (widget));
-
-	gdk_font_unref (new_style->font);
-	new_style->font = font;
-	
-	gtk_widget_set_style (widget, new_style);
-	gtk_style_unref (new_style);
-}
-
-static void
 login_realized (GtkWidget *w)
 {
 	/* In case we're out of bounds, after realization we'll have correct
@@ -2665,6 +2656,8 @@ static gboolean
 window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 {
 	switch (event->type) {
+		/* FIXME: Fix fingering cuz it's cool */
+#ifdef FIXME
 	case GDK_KEY_PRESS:
 		if ((event->key.state & GDK_CONTROL_MASK) &&
 		    (event->key.keyval == GDK_f ||
@@ -2714,6 +2707,7 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 			gdm_wm_no_login_focus_pop ();
 		}
 		break;
+#endif
 	default:
 		break;
 	}
@@ -2942,17 +2936,22 @@ gdm_login_gui_init (void)
     gtk_table_set_col_spacings (GTK_TABLE (table), 10);
 
     if (GdmBrowser) {
+#if 0
 	GtkStyle *style;
 	GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
+#endif
+	GtkAdjustment *adj;
 	GtkWidget *bframe;
 	GtkWidget *scrollbar;
 	int width;
 	int height;
 
+#if 0
 	/* Find background style for browser */
 	style = gtk_style_copy (login->style);
 	style->bg[GTK_STATE_NORMAL] = bbg;
 	gtk_widget_push_style (style);
+#endif
 	
 	/* Icon list */
 	if (maxwidth < GdmIconMaxWidth/2)
@@ -2960,7 +2959,9 @@ gdm_login_gui_init (void)
 	if (maxheight < GdmIconMaxHeight/2)
 	    maxheight = (gint) GdmIconMaxHeight/2;
 	
-	browser = GNOME_ICON_LIST (gnome_icon_list_new (maxwidth+20, NULL, FALSE));
+	browser = GNOME_ICON_LIST (gnome_icon_list_new
+				   (maxwidth+20 /* icon_width */,
+				    0 /* flags */));
 	gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
 	gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.");
 	gnome_icon_list_set_row_spacing (GNOME_ICON_LIST (browser), 2);
@@ -2972,7 +2973,9 @@ gdm_login_gui_init (void)
 			    GTK_SIGNAL_FUNC (gdm_login_browser_select), NULL);
 	gtk_signal_connect (GTK_OBJECT (browser), "unselect_icon",
 			    GTK_SIGNAL_FUNC (gdm_login_browser_unselect), NULL);
+#if 0
 	gtk_widget_pop_style();
+#endif
 	
 	/* Browser 3D frame */
 	bframe = gtk_frame_new (NULL);
@@ -2980,7 +2983,8 @@ gdm_login_gui_init (void)
 	gtk_container_add (GTK_CONTAINER(bframe), GTK_WIDGET (browser));
 	
 	/* Browser scroll bar */
-	scrollbar = gtk_vscrollbar_new (browser->adj);
+	adj = gtk_layout_get_vadjustment (GTK_LAYOUT (browser));
+	scrollbar = gtk_vscrollbar_new (adj);
 	
 	/* Box containing all browser functionality */
 	bbox = gtk_hbox_new (0, 0);
@@ -3002,16 +3006,21 @@ gdm_login_gui_init (void)
 	gtk_widget_set_usize (GTK_WIDGET (bbox), width, height);
     }
 
-    if (GdmLogo &&
+    if (GdmLogo != NULL &&
 	access (GdmLogo, R_OK) == 0) {
-	GtkWidget *logo;
+	GdkPixbuf *pb;
 
-	logo = gnome_pixmap_new_from_file (GdmLogo);
-
-	if (logo != NULL) {
+	pb = gdk_pixbuf_new_from_file (GdmLogo, NULL);
+	if (pb != NULL) {
+		GtkWidget *logo;
 		GtkWidget *ebox;
 		GtkWidget *frame;
 		int lw, lh;
+
+		logo = gtk_image_new_from_pixbuf (pb);
+		lw = gdk_pixbuf_get_width (pb);
+		lh = gdk_pixbuf_get_height (pb);
+		gdk_pixbuf_unref (pb);
 
 		/* this will make the logo always left justified */
 		logoframe = gtk_alignment_new (0, 0.5, 0, 0);
@@ -3028,8 +3037,6 @@ gdm_login_gui_init (void)
 		gtk_container_add (GTK_CONTAINER (frame), ebox);
 		gtk_container_add (GTK_CONTAINER (logoframe), frame);
 
-		gdk_window_get_size ((GdkWindow *) GNOME_PIXMAP (logo)->pixmap,
-				     &lw, &lh);
 		if (lw > gdm_wm_screen.width / 2)
 			lw = gdm_wm_screen.width / 2;
 		else
@@ -3050,8 +3057,9 @@ gdm_login_gui_init (void)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (stack);
 
-    greeting = gdm_parse_enriched_string (GdmWelcome);    
-    welcome = gtk_label_new (greeting);
+    greeting = gdm_parse_enriched_string ("<big>", GdmWelcome, "</big>");    
+    welcome = gtk_label_new (NULL);
+    gtk_label_set_markup (GTK_LABEL (welcome), greeting);
     gtk_widget_set_name (welcome, "Welcome");
     g_free (greeting);
     gtk_widget_ref (welcome);
@@ -3061,8 +3069,6 @@ gdm_login_gui_init (void)
     gtk_table_attach (GTK_TABLE (stack), welcome, 0, 1, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-    if (GdmFont != NULL)
-	    gdm_login_set_font (welcome, GdmFont);
 
     /* Put in error box here */
 
@@ -3134,10 +3140,10 @@ gdm_login_gui_init (void)
     gtk_widget_show (msg);
 
     /* FIXME: No Documentation yet.... */
-    /*help_button = gnome_stock_button (GNOME_STOCK_BUTTON_HELP);
+    /*help_button = gtk_button_new_from_stock (GTK_STOCK_OK);
     gtk_widget_show (help_button);*/
 
-    ok_button = gnome_stock_button (GNOME_STOCK_BUTTON_OK);
+    ok_button = gtk_button_new_from_stock (GTK_STOCK_OK);
     gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
 			GTK_SIGNAL_FUNC (gdm_login_ok_button_press),
 			entry);
@@ -3229,7 +3235,7 @@ static GdmLoginUser *
 gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 {
 	GdmLoginUser *user;
-	GdkImlibImage *img = NULL;
+	GdkPixbuf *img = NULL;
 	gchar buf[PIPE_SIZE];
 	size_t size;
 
@@ -3238,7 +3244,8 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 	user->uid = uid;
 	user->login = g_strdup (logname);
 	user->homedir = g_strdup (homedir);
-	user->picture = defface;
+	if (defface != NULL)
+		user->picture = gdk_pixbuf_ref (defface);
 
 	/* don't read faces, since that requires the daemon */
 	if (DOING_GDM_DEVELOPMENT)
@@ -3274,7 +3281,7 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 		return user;
 	}
 
-	img = gdk_imlib_load_image (&buf[1]);
+	img = gdk_pixbuf_new_from_file (&buf[1], NULL);
 
 	/* the daemon is now free to go on */
 	g_print ("%c\n", STX);
@@ -3282,8 +3289,8 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 	if (img != NULL) {
 		gint w, h;
 
-		w = img->rgb_width;
-		h = img->rgb_height;
+		w = gdk_pixbuf_get_width (img);
+		h = gdk_pixbuf_get_height (img);
 
 		if (w > h && w > GdmIconMaxWidth) {
 			h = h * ((gfloat) GdmIconMaxWidth/w);
@@ -3293,10 +3300,19 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 			h = GdmIconMaxHeight;
 		}
 
+		if (user->picture != NULL)
+			gdk_pixbuf_unref (user->picture);
+
 		maxwidth = MAX (maxwidth, w);
 		maxheight = MAX (maxheight, h);
-		user->picture = gdk_imlib_clone_scaled_image (img, w, h);
-		gdk_imlib_destroy_image (img);
+		if (w != gdk_pixbuf_get_width (img) ||
+		    h != gdk_pixbuf_get_height (img)) {
+			user->picture = gdk_pixbuf_scale_simple
+				(img, w, h, GDK_INTERP_BILINEAR);
+			gdk_pixbuf_unref (img);
+		} else {
+			user->picture = img;
+		}
 	}
 
 	return user;
@@ -3372,7 +3388,7 @@ gdm_login_users_init (void)
 	    GdmBrowser = FALSE;
 	    return;
     } else  {
-	    defface = gdk_imlib_load_image (GdmDefaultFace);
+	    defface = gdk_pixbuf_new_from_file (GdmDefaultFace, NULL);
     }
 
     setpwent ();
@@ -3508,7 +3524,8 @@ run_backgrounds (void)
 	if (GdmBackgroundType == GDM_BACKGROUND_IMAGE &&
 	    GdmBackgroundImage != NULL &&
 	    GdmBackgroundImage[0] != '\0') {
-		GdkPixbuf *pb = gdk_pixbuf_new_from_file (GdmBackgroundImage);
+		GdkPixbuf *pb = gdk_pixbuf_new_from_file (GdmBackgroundImage,
+							  NULL);
 		if (pb != NULL) {
 			if (gdk_pixbuf_get_has_alpha (pb)) {
 				if (GdmBackgroundColor == NULL ||
@@ -3571,14 +3588,11 @@ main (int argc, char *argv[])
     struct sigaction chld;
     sigset_t mask;
     GIOChannel *ctrlch;
-    char *gdm_version;
-    char *gdm_protocol_version;
+    const char *gdm_version;
+    const char *gdm_protocol_version;
 
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
-
-    /* Avoid creating ~gdm/.gnome stuff */
-    gnome_do_not_create_directories = TRUE;
 
     openlog ("gdmlogin", LOG_PID, LOG_DAEMON);
 
@@ -3589,7 +3603,13 @@ main (int argc, char *argv[])
 	fixedargv[i] = argv[i];
     
     fixedargv[fixedargc-1] = "--disable-sound";
-    gnome_init ("gdmlogin", VERSION, fixedargc, fixedargv);
+    gnome_program_init ("gdmlogin", VERSION, 
+			/* FIXME: oh fuck this inits way too much
+			 * shit that we don't want */
+			LIBGNOMEUI_MODULE /* module_info */,
+			fixedargc, fixedargv,
+			GNOME_PARAM_CREATE_DIRECTORIES, FALSE,
+			NULL);
     g_free (fixedargv);
 
     gdm_login_parse_config ();

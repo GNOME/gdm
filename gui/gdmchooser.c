@@ -47,7 +47,6 @@
 
 #include <viciousui.h>
 
-#include "gdmchooser.h"
 #include "gdm.h"
 #include "misc.h"
 #include "gdmwm.h"
@@ -75,21 +74,24 @@ static const gchar *empty_network = N_("No serving hosts were found.");
 static const gchar *active_network = N_("Choose a host to connect to from the selection below.");
 static gchar *glade_filename = NULL;
 
-static GdmChooserHost * gdm_chooser_host_alloc (const char *hostname,
-						const char *description,
-						struct in_addr *ia,
-						gboolean willing);
-
-static gboolean gdm_chooser_decode_packet (GIOChannel   *source,
-					   GIOCondition  condition,
-					   gpointer      data);
+/* XDM chooser style stuff */
+static gchar *xdm_address = NULL;
+static gchar *client_address = NULL;
+static gint connection_type = 0;
 
 static void gdm_chooser_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-static void gdm_chooser_browser_update (void);
-static void gdm_chooser_xdmcp_init (char **hosts);
-static void gdm_chooser_host_dispose (GdmChooserHost *host);
-static void gdm_chooser_choose_host (const gchar *hostname);
-static void gdm_chooser_add_hosts (char **hosts);
+
+/* Exported for glade */
+gboolean gdm_chooser_cancel (void);
+gboolean gdm_chooser_manage (GtkButton *button, gpointer data);
+gboolean gdm_chooser_browser_select (GtkWidget *widget,
+				     gint selected,
+				     GdkEvent *event);
+gboolean gdm_chooser_browser_unselect (GtkWidget *widget,
+				       gint selected,
+				       GdkEvent *event);
+gboolean gdm_chooser_xdmcp_discover (void);
+void display_chooser_information (void);
 
 static guint scan_time_handler = 0;
 
@@ -147,6 +149,23 @@ static GdkPixbuf *defhostimg;
 static GnomeIconList *browser;
 static GdmChooserHost *curhost;
 
+static void
+gdm_chooser_host_dispose (GdmChooserHost *host)
+{
+    if (!host)
+	return;
+
+    if (host->picture != NULL)
+	    gdk_pixbuf_unref (host->picture);
+    host->picture = NULL;
+
+    g_free (host->name);
+    host->name = NULL;
+    g_free (host->desc);
+    host->desc = NULL;
+    g_free (host);
+}
+
 static gint 
 gdm_chooser_sort_func (gpointer d1, gpointer d2)
 {
@@ -158,6 +177,117 @@ gdm_chooser_sort_func (gpointer d1, gpointer d2)
 
     return strcmp (a->name, b->name);
 }
+
+static GdmChooserHost * 
+gdm_chooser_host_alloc (const char *hostname,
+			const char *description,
+			struct in_addr *ia,
+			gboolean willing)
+{
+    GdmChooserHost *host;
+    GdkPixbuf *img;
+    gchar *hostimg;
+    GList *hostl;
+
+    host = g_new0 (GdmChooserHost, 1);
+    host->name = g_strdup (hostname);
+    host->desc = g_strdup (description);
+    memcpy (&host->ia, ia, sizeof (struct in_addr));
+    host->willing = willing;
+
+    hostl = g_list_find_custom (hosts,
+				host,
+				(GCompareFunc) gdm_chooser_sort_func);
+    /* replace */
+    if (hostl != NULL) {
+	    GdmChooserHost *old = hostl->data;
+	    hostl->data = host;
+	    gdm_chooser_host_dispose (old);
+    } else {
+	    hosts = g_list_insert_sorted (hosts, 
+					  host,
+					  (GCompareFunc) gdm_chooser_sort_func);
+    }
+    
+    if ( ! willing)
+	    return host;
+
+    hostimg = g_strconcat (GdmHostIconDir, "/", hostname, NULL);
+
+    if (access (hostimg, R_OK) == 0 &&
+	(img = gdk_pixbuf_new_from_file (hostimg, NULL)) != NULL) {
+	gint w, h;
+
+	w = gdk_pixbuf_get_width (img);
+	h = gdk_pixbuf_get_height (img);
+	
+	if (w>h && w>GdmIconMaxWidth) {
+	    h = h * ((gfloat) GdmIconMaxWidth/w);
+	    w = GdmIconMaxWidth;
+	} else if (h>GdmIconMaxHeight) {
+	    w = w * ((gfloat) GdmIconMaxHeight/h);
+	    h = GdmIconMaxHeight;
+	}
+
+
+	if (w != gdk_pixbuf_get_width (img) ||
+	    h != gdk_pixbuf_get_height (img))
+		host->picture = gdk_pixbuf_scale_simple (img, w, h,
+							 GDK_INTERP_BILINEAR);
+	else
+		host->picture = gdk_pixbuf_ref (img);
+	
+	gdk_pixbuf_unref (img);
+    } else if (defhostimg != NULL) {
+	    host->picture = gdk_pixbuf_ref (defhostimg);
+    }
+
+    g_free (hostimg);
+
+    return host;
+}
+
+static void
+gdm_chooser_browser_update (void)
+{
+    GList *li;
+    gboolean any;
+
+    gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
+    gnome_icon_list_clear (GNOME_ICON_LIST (browser));
+
+    any = FALSE;
+    for (li = hosts; li != NULL; li = li->next) {
+	    GdmChooserHost *host = (GdmChooserHost *) li->data;
+
+	    if (host->willing) {
+		    /* FIXME: the \n doesn't actually propagate
+		     * since the icon list is a broken piece of horsedung */
+		    char *temp = g_strconcat (host->name, " \n",
+					      host->desc, NULL);
+		    gnome_icon_list_append_pixbuf (GNOME_ICON_LIST (browser),
+						   host->picture,
+						   NULL /* icon_filename */,
+						   temp);
+		    g_free (temp);
+		    any = TRUE;
+	    }
+    }
+
+    gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
+
+    if (any) {
+      gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
+		     _(active_network));
+    } else {
+      gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
+		     _(empty_network));
+    }
+    gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
+    gtk_widget_set_sensitive (GTK_WIDGET (rescan), TRUE);
+    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
+}
+
 
 static gboolean
 gdm_host_known (struct in_addr *ia)
@@ -414,6 +544,69 @@ gdm_chooser_xdmcp_discover (void)
     return TRUE;
 }
 
+#ifndef ishexdigit
+#define ishexdigit(c) (isdigit(c) || ('a' <= (c) && (c) <= 'f'))
+#endif
+#define HexChar(c)  ('0' <= (c) && (c) <= '9' ? (c) - '0' : (c) - 'a' + 10)
+
+static int
+from_hex (const char *s, char *d, int len)
+{
+  int t;
+  while (len >= 2)
+    {
+      if (!ishexdigit(*s))
+ return 1;
+      t = HexChar (*s) << 4;
+      s++;
+      if (!ishexdigit(*s))
+ return 1;
+      t += HexChar (*s);
+      s++;
+      *d++ = t;
+      len -= 2;
+    }
+  return len;
+}
+
+static void
+gdm_chooser_add_hosts (char **hosts)
+{
+	struct hostent *hostent;
+	struct sockaddr_in qa;
+	struct in_addr *ia;
+	int i;
+
+	for (i = 0; hosts != NULL && hosts[i] != NULL; i++) {
+		const char *name = hosts[i];
+
+		if (strcmp (name, "BROADCAST") == 0) {
+			gdm_chooser_find_bcaddr ();
+			continue;
+		}
+		if (strlen (name) == 8 &&
+		    from_hex (name, (char *) &qa.sin_addr, strlen (name)) == 0)
+			qa.sin_family = AF_INET;
+		else if ((qa.sin_addr.s_addr = inet_addr (name)) != -1)
+			qa.sin_family = AF_INET;
+		else if ((hostent = gethostbyname (name)) != NULL
+			 && hostent->h_addrtype == AF_INET
+			 && hostent->h_length == 4) {
+			qa.sin_family = AF_INET;
+			memmove (&qa.sin_addr, hostent->h_addr, 4);
+		} else {
+			continue; /* not a valid address */
+		}
+
+		ia = g_new0 (struct in_addr, 1);
+		ia->s_addr = qa.sin_addr.s_addr;
+		queryaddr = g_slist_append (queryaddr, ia);
+	}
+
+	if (bcaddr == NULL &&
+	    queryaddr == NULL)
+		gdm_chooser_find_bcaddr ();
+}
 
 static void
 gdm_chooser_xdmcp_init (char **hosts)
@@ -452,6 +645,60 @@ gdm_chooser_xdmcp_init (char **hosts)
     g_io_channel_unref (channel);
 
     gdm_chooser_xdmcp_discover();
+}
+
+static void
+gdm_chooser_choose_host (const char *hostname)
+{
+  ARRAY8 tmparr;
+  struct hostent *hentry;
+
+  g_print ("%s\n", curhost->name);
+  if (xdm_address != NULL) {
+      struct sockaddr_in in_addr;
+      char xdm_addr[32];
+      char client_addr[32];
+      int fd;
+      char buf[1024];
+      XdmcpBuffer buffer;
+      long family, port, addr;
+      if (strlen (xdm_address) > 64 ||
+	  from_hex (xdm_address, xdm_addr, strlen (xdm_address)) != 0)
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid xdm address.");
+
+      family = (xdm_addr[0] << 8) | xdm_addr[1];
+      port = (xdm_addr[2] << 8) | xdm_addr[3];
+      addr = (xdm_addr[4] << 24) | (xdm_addr[5] << 16) | (xdm_addr[6] << 8) | xdm_addr[7];
+      in_addr.sin_family = AF_INET;
+      in_addr.sin_port = htons (port);
+      in_addr.sin_addr.s_addr = htonl (addr);
+      if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1)
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't create response socket.");
+
+      if (connect (fd, (struct sockaddr *) &in_addr, sizeof (in_addr)) == -1)
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
+      buffer.data = (BYTE *) buf;
+      buffer.size = sizeof (buf);
+      buffer.pointer = 0;
+      buffer.count = 0;
+
+      if (strlen (client_address) > 64 || from_hex (client_address, client_addr, strlen (client_address)) != 0)
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid client address.");
+      tmparr.data = (BYTE *) client_addr;
+      tmparr.length = strlen (client_address) / 2;
+      XdmcpWriteARRAY8 (&buffer, &tmparr);
+      XdmcpWriteCARD16 (&buffer, (CARD16) connection_type);
+      hentry = gethostbyname (hostname);
+      if (!hentry)
+	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't get host entry for %s", hostname);
+
+      tmparr.data = (BYTE *) hentry->h_addr_list[0]; /* XXX */
+      tmparr.length = 4;
+
+      XdmcpWriteARRAY8 (&buffer, &tmparr);
+      write (fd, (char *) buffer.data, buffer.pointer);
+      close (fd);
+  }
 }
 
 
@@ -611,48 +858,6 @@ gdm_chooser_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
     return TRUE;
 }
 
-
-static void
-gdm_chooser_browser_update (void)
-{
-    GList *li;
-    gboolean any;
-
-    gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
-    gnome_icon_list_clear (GNOME_ICON_LIST (browser));
-
-    any = FALSE;
-    for (li = hosts; li != NULL; li = li->next) {
-	    GdmChooserHost *host = (GdmChooserHost *) li->data;
-
-	    if (host->willing) {
-		    /* FIXME: the \n doesn't actually propagate
-		     * since the icon list is a broken piece of horsedung */
-		    char *temp = g_strconcat (host->name, " \n",
-					      host->desc, NULL);
-		    gnome_icon_list_append_pixbuf (GNOME_ICON_LIST (browser),
-						   host->picture,
-						   NULL /* icon_filename */,
-						   temp);
-		    g_free (temp);
-		    any = TRUE;
-	    }
-    }
-
-    gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
-
-    if (any) {
-      gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
-		     _(active_network));
-    } else {
-      gtk_label_set (GTK_LABEL (glade_xml_get_widget (chooser_app, "status_label")),
-		     _(empty_network));
-    }
-    gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
-    gtk_widget_set_sensitive (GTK_WIDGET (rescan), TRUE);
-    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
-}
-
 void
 display_chooser_information (void)
 {
@@ -787,97 +992,6 @@ gdm_chooser_signals_init (void)
 	gdm_chooser_abort (_("Could not set signal mask!"));
 }
 
-static GdmChooserHost * 
-gdm_chooser_host_alloc (const char *hostname,
-			const char *description,
-			struct in_addr *ia,
-			gboolean willing)
-{
-    GdmChooserHost *host;
-    GdkPixbuf *img;
-    gchar *hostimg;
-    GList *hostl;
-
-    host = g_new0 (GdmChooserHost, 1);
-    host->name = g_strdup (hostname);
-    host->desc = g_strdup (description);
-    memcpy (&host->ia, ia, sizeof (struct in_addr));
-    host->willing = willing;
-
-    hostl = g_list_find_custom (hosts,
-				host,
-				(GCompareFunc) gdm_chooser_sort_func);
-    /* replace */
-    if (hostl != NULL) {
-	    GdmChooserHost *old = hostl->data;
-	    hostl->data = host;
-	    gdm_chooser_host_dispose (old);
-    } else {
-	    hosts = g_list_insert_sorted (hosts, 
-					  host,
-					  (GCompareFunc) gdm_chooser_sort_func);
-    }
-    
-    if ( ! willing)
-	    return host;
-
-    hostimg = g_strconcat (GdmHostIconDir, "/", hostname, NULL);
-
-    if (access (hostimg, R_OK) == 0 &&
-	(img = gdk_pixbuf_new_from_file (hostimg, NULL)) != NULL) {
-	gint w, h;
-
-	w = gdk_pixbuf_get_width (img);
-	h = gdk_pixbuf_get_height (img);
-	
-	if (w>h && w>GdmIconMaxWidth) {
-	    h = h * ((gfloat) GdmIconMaxWidth/w);
-	    w = GdmIconMaxWidth;
-	} else if (h>GdmIconMaxHeight) {
-	    w = w * ((gfloat) GdmIconMaxHeight/h);
-	    h = GdmIconMaxHeight;
-	}
-
-
-	if (w != gdk_pixbuf_get_width (img) ||
-	    h != gdk_pixbuf_get_height (img))
-		host->picture = gdk_pixbuf_scale_simple (img, w, h,
-							 GDK_INTERP_BILINEAR);
-	else
-		host->picture = gdk_pixbuf_ref (img);
-	
-	gdk_pixbuf_unref (img);
-    } else if (defhostimg != NULL) {
-	    host->picture = gdk_pixbuf_ref (defhostimg);
-    }
-
-    g_free (hostimg);
-
-    return host;
-}
-
-
-static void
-gdm_chooser_host_dispose (GdmChooserHost *host)
-{
-    if (!host)
-	return;
-
-    if (host->picture != NULL)
-	    gdk_pixbuf_unref (host->picture);
-    host->picture = NULL;
-
-    g_free (host->name);
-    host->name = NULL;
-    g_free (host->desc);
-    host->desc = NULL;
-    g_free (host);
-}
-
-static gchar *xdm_address = NULL;
-static gchar *client_address = NULL;
-static gint connection_type = 0;
-
 struct poptOption xdm_options [] = {
 	{ "xdmaddress", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 	  &xdm_address, 0,
@@ -891,126 +1005,6 @@ struct poptOption xdm_options [] = {
         POPT_AUTOHELP
 	{ NULL, 0, 0, NULL, 0}
 };
-
-#ifndef ishexdigit
-#define ishexdigit(c) (isdigit(c) || ('a' <= (c) && (c) <= 'f'))
-#endif
-#define HexChar(c)  ('0' <= (c) && (c) <= '9' ? (c) - '0' : (c) - 'a' + 10)
-
-static int
-from_hex (const char *s, char *d, int len)
-{
-  int t;
-  while (len >= 2)
-    {
-      if (!ishexdigit(*s))
- return 1;
-      t = HexChar (*s) << 4;
-      s++;
-      if (!ishexdigit(*s))
- return 1;
-      t += HexChar (*s);
-      s++;
-      *d++ = t;
-      len -= 2;
-    }
-  return len;
-}
-
-
-static void
-gdm_chooser_choose_host (const char *hostname)
-{
-  ARRAY8 tmparr;
-  struct hostent *hentry;
-
-  g_print ("%s\n", curhost->name);
-  if (xdm_address)
-    {
-      struct sockaddr_in in_addr;
-      char xdm_addr[32];
-      char client_addr[32];
-      int fd;
-      char buf[1024];
-      XdmcpBuffer buffer;
-      long family, port, addr;
-      if (strlen (xdm_address) > 64 ||
-	  from_hex (xdm_address, xdm_addr, strlen (xdm_address)) != 0)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid xdm address.");
-
-      family = (xdm_addr[0] << 8) | xdm_addr[1];
-      port = (xdm_addr[2] << 8) | xdm_addr[3];
-      addr = (xdm_addr[4] << 24) | (xdm_addr[5] << 16) | (xdm_addr[6] << 8) | xdm_addr[7];
-      in_addr.sin_family = AF_INET;
-      in_addr.sin_port = htons (port);
-      in_addr.sin_addr.s_addr = htonl (addr);
-      if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't create response socket.");
-
-      if (connect (fd, (struct sockaddr *) &in_addr, sizeof (in_addr)) == -1)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
-      buffer.data = (BYTE *) buf;
-      buffer.size = sizeof (buf);
-      buffer.pointer = 0;
-      buffer.count = 0;
-
-      if (strlen (client_address) > 64 || from_hex (client_address, client_addr, strlen (client_address)) != 0)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid client address.");
-      tmparr.data = (BYTE *) client_addr;
-      tmparr.length = strlen (client_address) / 2;
-      XdmcpWriteARRAY8 (&buffer, &tmparr);
-      XdmcpWriteCARD16 (&buffer, (CARD16) connection_type);
-      hentry = gethostbyname (hostname);
-      if (!hentry)
-	      gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't get host entry for %s", hostname);
-
-      tmparr.data = (BYTE *) hentry->h_addr_list[0]; /* XXX */
-      tmparr.length = 4;
-
-      XdmcpWriteARRAY8 (&buffer, &tmparr);
-      write (fd, (char *) buffer.data, buffer.pointer);
-      close (fd);
-    }
-}
-
-static void
-gdm_chooser_add_hosts (char **hosts)
-{
-	struct hostent *hostent;
-	struct sockaddr_in qa;
-	struct in_addr *ia;
-	int i;
-
-	for (i = 0; hosts != NULL && hosts[i] != NULL; i++) {
-		const char *name = hosts[i];
-
-		if (strcmp (name, "BROADCAST") == 0) {
-			gdm_chooser_find_bcaddr ();
-			continue;
-		}
-		if (strlen (name) == 8 &&
-		    from_hex (name, (char *) &qa.sin_addr, strlen (name)) == 0)
-			qa.sin_family = AF_INET;
-		else if ((qa.sin_addr.s_addr = inet_addr (name)) != -1)
-			qa.sin_family = AF_INET;
-		else if ((hostent = gethostbyname (name)) != NULL
-			 && hostent->h_addrtype == AF_INET
-			 && hostent->h_length == 4) {
-			qa.sin_family = AF_INET;
-			memmove (&qa.sin_addr, hostent->h_addr, 4);
-		} else {
-			continue; /* not a valid address */
-		}
-
-		ia = g_new0 (struct in_addr, 1);
-		ia->s_addr = qa.sin_addr.s_addr;
-		queryaddr = g_slist_append (queryaddr, ia);
-	}
-
-	if (bcaddr == NULL &&
-	    queryaddr == NULL)
-		gdm_chooser_find_bcaddr ();
-}
 
 static void
 set_background (void)
@@ -1086,7 +1080,9 @@ main (int argc, char *argv[])
     fixedargv[fixedargc-1] = "--disable-sound";
 
     program = gnome_program_init ("gdmchooser", VERSION, 
-				  NULL /* module_info */,
+				  /* FIXME: oh fuck this inits way too much
+				   * shit that we don't want */
+				  LIBGNOMEUI_MODULE /* module_info */,
 				  fixedargc, fixedargv,
 				  GNOME_PARAM_POPT_TABLE, xdm_options,
 				  GNOME_PARAM_CREATE_DIRECTORIES, FALSE,

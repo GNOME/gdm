@@ -1,3 +1,26 @@
+Fri Nov 16 12:38:30 2001  George Lebl <jirka@5z.com>
+
+	Yay! it like all builds and stuff
+
+	* gui/gdmlogin.c: fix crash for timed logins
+
+	* config/gdm.conf.in, daemon/gdm.h, gui/gdmlogin.c,
+	  gui/gdmconfig.(c|h|glade):  Remove the font option, it can now be
+	  done by using the pango markup in the welcome message
+
+	* gui/gdmchooser.h gui/gdmlogin.h, gui/Makefile.am: remove useless
+	  header files.
+
+	* gui/gdmchooser.c: reorganize the code a bit to remove useless
+	  forward declarations
+
+	* gui/gdmchooser.c, gui/gdmlogin.c, gui/gdmconfig.[ch],
+	  gui/gdmflexiserver.c, gui/gdmwm.[ch], gui/misc.h:  Port to
+	  pixbuf and gnome2.
+
+	* utils/Makefile.am: remove (includedir) to make it not pickup gnome1
+	  headers
+
 Fri Nov 16 02:15:06 2001  George Lebl <jirka@5z.com>
 
 	* daemon/xdmcp.c: include unistd.h

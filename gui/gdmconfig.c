@@ -169,17 +169,16 @@ void gdm_radio_write (gchar *radio_base_name,
 }
 
 static gboolean
-gdm_event (GtkObject *object,
-	   guint signal_id,
-	   guint n_params,
-	   GtkArg *params,
-	   gpointer data)
+gdm_event (GSignalInvocationHint *ihint,
+	   guint		n_param_values,
+	   const GValue	       *param_values,
+	   gpointer		data)
 {
 	/* HAAAAAAAAAAAAAAAAACK */
 	/* Since the user has not logged in yet and may have left/right
 	 * mouse buttons switched, we just translate every right mouse click
 	 * to a left mouse click */
-	GdkEvent *event = GTK_VALUE_POINTER(params[0]);
+	GdkEvent *event = g_value_get_pointer ((GValue *)param_values);
 	if ((event->type == GDK_BUTTON_PRESS ||
 	     event->type == GDK_2BUTTON_PRESS ||
 	     event->type == GDK_3BUTTON_PRESS ||
@@ -207,7 +206,7 @@ check_binary (GtkEntry *entry)
 static void
 check_dir (GtkEntry *entry)
 {
-	char *text = gtk_entry_get_text (entry);
+	const char *text = gtk_entry_get_text (entry);
 
 	/* first try access as it's a LOT faster then stat */
 	if ( ! ve_string_empty (text) &&
@@ -227,7 +226,7 @@ check_dir (GtkEntry *entry)
 static void
 check_dirname (GtkEntry *entry)
 {
-	char *text = gtk_entry_get_text (entry);
+	const char *text = gtk_entry_get_text (entry);
 	char *dir;
 
 	if (text == NULL)
@@ -256,7 +255,7 @@ check_dirname (GtkEntry *entry)
 static void
 check_file (GtkEntry *entry)
 {
-	char *text = gtk_entry_get_text (entry);
+	const char *text = gtk_entry_get_text (entry);
 
 	if ( ! ve_string_empty (text) &&
 	    access (text, R_OK) == 0) {
@@ -405,10 +404,13 @@ main (int argc, char *argv[])
 	}
 
 	/* Build the user interface */
-	GUI = glade_xml_new(glade_filename, "gdmconfigurator");
-	basic_notebook = glade_xml_new(glade_filename, "basic_notebook");
-	system_notebook = glade_xml_new(glade_filename, "system_notebook");
-	expert_notebook = glade_xml_new(glade_filename, "expert_notebook");
+	GUI = glade_xml_new (glade_filename, "gdmconfigurator", PACKAGE);
+	basic_notebook = glade_xml_new (glade_filename, "basic_notebook",
+					PACKAGE);
+	system_notebook = glade_xml_new (glade_filename, "system_notebook",
+					 PACKAGE);
+	expert_notebook = glade_xml_new (glade_filename, "expert_notebook",
+					 PACKAGE);
 
 	if (GUI == NULL ||
 	    basic_notebook == NULL ||
@@ -457,24 +459,17 @@ main (int argc, char *argv[])
 	connect_dirname_checks ();
 	connect_file_checks ();
 
-	/* We set most of the user interface NOT wanting signals to get triggered as
-	 * we do it. Then we hook up the signals, and THEN set a few remaining elements.
-	 * This ensures sensitivity of some widgets is correct, and that the font picker
-	 * gets set properly.
-	 */
+	/* We set most of the user interface NOT wanting signals to get
+	 * triggered as we do it. Then we hook up the signals, and THEN set a
+	 * few remaining elements.  This ensures sensitivity of some widgets is
+	 * correct */
 	gdm_config_parse_most(FALSE);
 	glade_xml_signal_autoconnect(GUI);
 
-	/* we hack up our icon entry */
-	hack_icon_entry (GNOME_ICON_ENTRY (get_widget ("gdm_icon")));
-	{
-		GtkWidget *entry = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY (get_widget ("gdm_icon")));
-		gtk_signal_connect (GTK_OBJECT (entry), "changed",
-				    GTK_SIGNAL_FUNC (can_apply_now),
-				    NULL);
-	}
-
-
+	gtk_signal_connect (GTK_OBJECT (get_widget ("gdm_icon")),
+			    "changed",
+			    GTK_SIGNAL_FUNC (can_apply_now),
+			    NULL);
 
 	glade_xml_signal_autoconnect(basic_notebook);
 	glade_xml_signal_autoconnect(expert_notebook);
@@ -510,11 +505,13 @@ main (int argc, char *argv[])
 	/* If we are running under gdm and not in a normal session we want to
 	 * treat the right mouse button like the first */
 	if (g_getenv ("RUNNING_UNDER_GDM") != NULL) {
-		guint sid = gtk_signal_lookup ("event",
-					       GTK_TYPE_WIDGET);
-		gtk_signal_add_emission_hook (sid,
-					      gdm_event,
-					      NULL);
+		guint sid = g_signal_lookup ("event",
+					     GTK_TYPE_WIDGET);
+		g_signal_add_emission_hook (sid,
+					    0 /* detail */,
+					    gdm_event,
+					    NULL /* data */,
+					    NULL /* destroy_notify */);
 	}
 
 	gtk_main ();
@@ -838,7 +835,6 @@ gdm_config_parse_most (gboolean factory)
     gdm_toggle_set("use_24_clock", gnome_config_get_bool (GDM_KEY_USE_24_CLOCK));
     
     gdm_entry_set("exclude_users", gnome_config_get_string (GDM_KEY_EXCLUDE));
-    /* font picker is in parse_remaining() */
     gdm_entry_set("welcome_message", gnome_config_get_string (GDM_KEY_WELCOME));
     
 
@@ -1217,11 +1213,6 @@ gdm_config_parse_remaining (gboolean factory)
     gdm_radio_set ("background_type",
 		   gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE), 2);
     
-    /* This should make the font picker to update itself. But for some
-     * strange reason, it doesn't.
-     */
-    gdm_font_set("font_picker", gnome_config_get_string (GDM_KEY_FONT));
-
     /* Face browser stuff */
     gdm_toggle_set("enable_face_browser", gnome_config_get_bool (GDM_KEY_BROWSER));
 
@@ -1445,7 +1436,6 @@ write_config (void)
     gdm_toggle_write("use_24_clock", GDM_KEY_USE_24_CLOCK);
     
     gdm_entry_write("exclude_users", GDM_KEY_EXCLUDE);
-    gdm_font_write("font_picker", GDM_KEY_FONT);
     gdm_entry_write("welcome_message", GDM_KEY_WELCOME);
     
     /* Write out the widget contents of the Background tab */
@@ -1776,6 +1766,8 @@ void
 open_help_page (GtkButton *button,
 		gpointer user_data)
 {
+	/* FIXME: evil shit in help stuff */
+#ifdef FIXME
 	gchar *tmp;
 	tmp = gnome_help_file_find_file ("gdmconfig", "index.html");
 	if (tmp != NULL) {
@@ -1792,6 +1784,7 @@ open_help_page (GtkButton *button,
 		}
 		g_free (tmp);
 	}
+#endif
 }
 
 
@@ -1968,9 +1961,10 @@ handle_server_def_edit (gboolean edit)
 	for (;;) {
 		if (gnome_dialog_run (GNOME_DIALOG (dialog)) == 0) {
 			char *errmsg = NULL;
-			char *cmdline = gtk_entry_get_text
+			const char *cmdline = gtk_entry_get_text
 					(GTK_ENTRY (command_line));
-			char *thename = gtk_entry_get_text (GTK_ENTRY (name));
+			const char *thename =
+				gtk_entry_get_text (GTK_ENTRY (name));
 			if (cmdline[0] != '/') {
 				errmsg = _("A command line must start "
 					   "with a forward slash "
@@ -2000,8 +1994,9 @@ handle_server_def_edit (gboolean edit)
 		}
 	}
 
-	current_name = gtk_entry_get_text (GTK_ENTRY (name));
-	current_command = gtk_entry_get_text (GTK_ENTRY (command_line));
+	/* cast! Evil! */
+	current_name = (char *)gtk_entry_get_text (GTK_ENTRY (name));
+	current_command = (char *)gtk_entry_get_text (GTK_ENTRY (command_line));
 
 	if (edit) {
 		gtk_clist_set_text (server_def_clist,
@@ -2298,7 +2293,7 @@ handle_server_edit (gboolean edit)
 	for (;;) {
 		if (gnome_dialog_run (GNOME_DIALOG (dialog)) == 0) {
 			if (GTK_TOGGLE_BUTTON (custom_cb)->active) {
-				char *server = gtk_entry_get_text
+				const char *server = gtk_entry_get_text
 					(GTK_ENTRY (cmdline));
 				if (server[0] != '/') {
 					GtkWidget *error_dialog =
@@ -2329,7 +2324,7 @@ handle_server_edit (gboolean edit)
 
 	if (edit) {
 		if (GTK_TOGGLE_BUTTON (custom_cb)->active) {
-			char *server = gtk_entry_get_text (GTK_ENTRY (cmdline));
+			const char *server = gtk_entry_get_text (GTK_ENTRY (cmdline));
 			gtk_clist_set_text
 				(GTK_CLIST (get_widget ("server_clist")),
 				 selected_server_row, 1, server);
@@ -2340,7 +2335,7 @@ handle_server_edit (gboolean edit)
 				(GTK_CLIST (get_widget ("server_clist")),
 				 selected_server_row, NULL);
 		} else {
-			char *args = gtk_entry_get_text (GTK_ENTRY (extra));
+			const char *args = gtk_entry_get_text (GTK_ENTRY (extra));
 			char *server, *id;
 			int sel = GPOINTER_TO_INT
 				(GTK_CLIST (clist)->selection->data);
@@ -2364,12 +2359,13 @@ handle_server_edit (gboolean edit)
 		}
 	} else {
 		if (GTK_TOGGLE_BUTTON (custom_cb)->active) {
-			char *server = gtk_entry_get_text (GTK_ENTRY (cmdline));
+			const char *server =
+				gtk_entry_get_text (GTK_ENTRY (cmdline));
 			char *new_server[3];
 
 			new_server[0] =
 				g_strdup_printf("%d", number_of_servers);
-			new_server[1] = server;
+			new_server[1] = (char *)server;
 			new_server[2] = "";
 
 			/* We now have an extra server */
@@ -2381,7 +2377,8 @@ handle_server_edit (gboolean edit)
 			g_free (new_server[0]);
 		} else {
 			char *new_server[3];
-			char *args = gtk_entry_get_text (GTK_ENTRY (extra));
+			const char *args =
+				gtk_entry_get_text (GTK_ENTRY (extra));
 			char *server, *id;
 			int row;
 			int sel = GPOINTER_TO_INT
@@ -2394,7 +2391,7 @@ handle_server_edit (gboolean edit)
 			new_server[0] =
 				g_strdup_printf("%d", number_of_servers);
 			new_server[1] = ve_sure_string (server);
-			new_server[2] = ve_sure_string (args);
+			new_server[2] = ve_sure_string ((char *)args);
 
 			/* We now have an extra server */
 			number_of_servers++;
@@ -2527,7 +2524,9 @@ sessions_clist_row_selected                  (GtkCList *clist,
 					      GdkEventButton *event,
 					      gpointer user_data)
 {
+#ifdef FIXME
    gint pos = 0;
+#endif
    GdmConfigSession *sess_details = (GdmConfigSession *)
      gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
 			     row);
@@ -2536,11 +2535,15 @@ sessions_clist_row_selected                  (GtkCList *clist,
 
    /* Stop silly things happening while we fill the text widget. */
    gtk_signal_handler_block_by_func (GTK_OBJECT(get_widget("session_text")),
-				     session_text_edited, NULL);
+				     GTK_SIGNAL_FUNC (session_text_edited),
+				     NULL);
    gtk_signal_handler_block_by_func (GTK_OBJECT(get_widget("session_name_entry")),
-				     modify_session_name, NULL);
+				     GTK_SIGNAL_FUNC (modify_session_name), NULL);
    selected_session_row = row;
    
+   /* FIXME: gtk text shit */
+   g_warning ("FIXME: Eeeek, no gtk_text!!!!");
+#ifdef FIXME
    gtk_text_freeze (GTK_TEXT (get_widget("session_text")));
    if (sess_details->script_contents != NULL) {
       gtk_editable_delete_text (GTK_EDITABLE (get_widget ("session_text")),
@@ -2553,6 +2556,7 @@ sessions_clist_row_selected                  (GtkCList *clist,
 				0, -1);
    }
    gtk_text_thaw (GTK_TEXT (get_widget("session_text")));
+#endif
    
    gtk_entry_set_text (GTK_ENTRY (get_widget("session_name_entry")),
 		       sess_details->name);
@@ -2567,9 +2571,11 @@ sessions_clist_row_selected                  (GtkCList *clist,
    ve_entry_set_red (get_widget ("session_name_entry"), FALSE);
 
    gtk_signal_handler_unblock_by_func (GTK_OBJECT(get_widget("session_text")),
-				       session_text_edited, NULL);
+				       GTK_SIGNAL_FUNC (session_text_edited),
+				       NULL);
    gtk_signal_handler_unblock_by_func (GTK_OBJECT(get_widget("session_name_entry")),
-				       modify_session_name, NULL);
+				       GTK_SIGNAL_FUNC (modify_session_name),
+				       NULL);
 }
 
 void
@@ -2707,9 +2713,12 @@ session_text_edited (GtkEditable *text, gpointer data)
    /* The editable_get_chars g_strdups it's result already, note that this
     * is different from entry_get_text which doesn't.  Chaulk that up to
     * too much crack use. */
+   /* FIXME: gtk text shit */
+#ifdef FIXME
    selected_session->script_contents =
 	   gtk_editable_get_chars (text, 0,
 				   gtk_text_get_length(GTK_TEXT(text)));
+#endif
    selected_session->changed = TRUE;
 }
 
@@ -2717,7 +2726,7 @@ void
 modify_session_name (GtkEntry *entry, gpointer data)
 {
    GdmConfigSession *selected_session;
-   gchar *text;
+   const gchar *text;
    if (selected_session_row < 0)
 	   return;
    selected_session = gtk_clist_get_row_data (GTK_CLIST (get_widget ("sessions_clist")),
@@ -2754,7 +2763,7 @@ modify_session_name (GtkEntry *entry, gpointer data)
 void 
 session_directory_modified (GtkEntry *entry, gpointer data) 
 {
-	char *str;
+	const char *str;
 	static gboolean shown_warning = FALSE;
 	/* FIXME: Ask user if they wish to reload the sessions clist based on
 	 * the new directory. ISSUE: what to do if they say no, especially if

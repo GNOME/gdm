@@ -18,7 +18,8 @@
  * 
  */
 
-#include <gnome.h>
+#include <libgnome/libgnome.h>
+#include <libgnomeui/libgnomeui.h>
 #include <glade/glade.h>
 #include <ctype.h>
 #include <unistd.h>
@@ -75,10 +76,6 @@ struct _GdmConfigSession {
            gnome_icon_entry_set_icon(GNOME_ICON_ENTRY(get_widget(icon_name)), \
                               (char *)value);
 
-#define gdm_font_set(font_name, value) \
-        if (value) \
-           gnome_font_picker_set_font_name(GNOME_FONT_PICKER(get_widget(font_name)), \
-                                           (char *)value);
 #define gdm_color_set(picker_name, value) \
         if (value) { \
 	   GdkColor color; \
@@ -105,16 +102,13 @@ struct _GdmConfigSession {
 
 #define gdm_icon_write(icon_name, key) \
 	{ \
-	char *icon = hack_icon_entry_get_icon(GNOME_ICON_ENTRY(get_widget(icon_name))); \
+	char *icon = gnome_icon_entry_get_filename(GNOME_ICON_ENTRY(get_widget(icon_name))); \
         if (icon != NULL) \
            gnome_config_set_string(key, icon); \
         else \
            gnome_config_set_string(key, ""); \
 	g_free (icon); \
 	}
-
-#define gdm_font_write(picker_name, key) \
-        gnome_config_set_string(key, gnome_font_picker_get_font_name(GNOME_FONT_PICKER(get_widget(picker_name))));
 
 #define gdm_color_write(picker_name, key) \
 	{ \
