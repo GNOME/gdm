@@ -163,6 +163,7 @@ main (int argc, char *argv[])
     gdm_config_parse_remaining();
 
 	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("user_level_clist")));
+   	gtk_clist_column_titles_passive (GTK_CLIST (get_widget ("server_clist")));
 	
 	gtk_clist_append(GTK_CLIST(get_widget("user_level_clist")),
 					  basic_row);					 
