@@ -1,3 +1,15 @@
+Mon May 28 02:24:43 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: Fixed a stupid mistake cased by a missed warning,
+	  not really that crucial since the default config has no failsafe
+	  X servers, because AFAIK, no such beast exists yet
+
+	* daemon/gdm.c, daemon/misc.[ch], daemon/slave.c:  In case the
+	  language doesn't have '_' as the third character it's a communist
+	  and must be executed.  Or perhaps we should just read the alias
+	  file and translate it.  This should really only happen if sysadmin
+	  and screwed up or the user has a very old setting from pre 2.2 days
+
 Sun May 27 23:39:19 2001  George Lebl <jirka@5z.com>
 
 	* config/PostSession, config/PreSession: Don't change utmp since

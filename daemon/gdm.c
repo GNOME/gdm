@@ -66,6 +66,7 @@ gboolean gdm_first_login = TRUE;
 gchar *GdmUser = NULL;
 gchar *GdmGroup = NULL;
 gchar *GdmSessDir = NULL;
+gchar *GdmLocaleFile = NULL;
 gchar *GdmGnomeDefaultSession = NULL;
 gchar *GdmAutomaticLogin = NULL;
 gboolean GdmAutomaticLoginEnable = FALSE;
@@ -175,6 +176,7 @@ gdm_config_parse (void)
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmServAuthDir = gnome_config_get_string (GDM_KEY_SERVAUTH);
     GdmSessDir = gnome_config_get_string (GDM_KEY_SESSDIR);
+    GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     GdmGnomeDefaultSession = gnome_config_get_string (GDM_KEY_GNOMEDEFAULTSESSION);
     GdmUser = gnome_config_get_string (GDM_KEY_USER);
     GdmUserAuthDir = gnome_config_get_string (GDM_KEY_UAUTHDIR);
@@ -477,7 +479,7 @@ deal_with_x_crashes (GdmDisplay *d)
     if ( ! d->failsafe_xserver &&
 	 ! gdm_string_empty (GdmFailsafeXServer)) {
 	    char *bin = g_strdup (GdmFailsafeXServer);
-	    char *p = strchr (bin, argdelim);
+	    char *p = strchr (bin, argdelim[0]);
 	    if (p != NULL)
 		    *p = '\0';
 	    /* Yay we have a failsafe */

@@ -287,4 +287,38 @@ gdm_clearenv_no_lang (void)
 	g_list_free (envs);
 }
 
+/* Do strcasecmp but ignore locale */
+int
+gdm_strcasecmp_no_locale (const char *s1, const char *s2)
+{
+	int i;
+
+	/* Error, but don't make them equal then */
+	g_return_val_if_fail (s1 != NULL, G_MAXINT);
+	g_return_val_if_fail (s2 != NULL, G_MININT);
+
+	for (i = 0; s1[i] != '\0' && s2[i] != '\0'; i++) {
+		char a = s1[i];
+		char b = s2[i];
+
+		if (a >= 'A' && a <= 'Z')
+			a -= 'A' - 'a';
+		if (b >= 'A' && b <= 'Z')
+			b -= 'A' - 'a';
+
+		if (a < b)
+			return -1;
+		else if (a > b)
+			return 1;
+	}
+
+	/* find out which string is smaller */
+	if (s2[i] != '\0')
+		return -1; /* s1 is smaller */
+	else if (s1[i] != '\0')
+		return 1; /* s2 is smaller */
+	else
+		return 0; /* equal */
+}
+
 /* EOF */

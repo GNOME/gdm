@@ -71,6 +71,7 @@ extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
 extern gchar *GdmGnomeDefaultSession;
 extern gchar *GdmSessDir;
+extern gchar *GdmLocaleFile;
 extern gchar *GdmAutomaticLogin;
 extern gchar *GdmConfigurator;
 extern gboolean GdmConfigAvailable;
@@ -1186,6 +1187,50 @@ find_prog (const char *name, const char *args, char **retpath)
 	return NULL;
 }
 
+/* this is for the unforunate case when something went seriously wrong, the
+ * sysadmin's a wanker or the user has an old language setting */
+static char *
+unaliaslang (const char *origlang)
+{
+	FILE *langlist;
+	char curline[256];
+
+	if (gdm_string_empty (GdmLocaleFile))
+		return g_strdup (origlang);
+
+	langlist = fopen (GdmLocaleFile, "r");
+
+	if (langlist == NULL)
+		return g_strdup (origlang);
+
+	while (fgets (curline, sizeof (curline), langlist)) {
+		char *name;
+		char *lang;
+
+		if (curline[0] <= ' ' ||
+		    curline[0] == '#')
+			continue;
+
+		name = strtok (curline, " \t\r\n");
+		if (name == NULL)
+			continue;
+
+		lang = strtok (NULL, " \t\r\n");
+		if (lang == NULL)
+			continue;
+
+		if (gdm_strcasecmp_no_locale (name, origlang) == 0) {
+			fclose (langlist);
+			return g_strdup (lang);
+		}
+	}
+
+	fclose (langlist);
+
+	return g_strdup (origlang);
+
+}
+
 static void
 gdm_slave_session_start (void)
 {
@@ -1395,14 +1440,18 @@ gdm_slave_session_start (void)
 	else
 		gdm_setenv ("PATH", GdmDefaultPath);
 
-	/* Set locale */
-	if (strcasecmp (language, "english") == 0) {
-		gdm_setenv ("LANG", "C");
-		gdm_setenv ("GDM_LANG", "C");
-	} else {
-		gdm_setenv ("LANG", language);
-		gdm_setenv ("GDM_LANG", language);
+	/* Eeeeek, this no lookie as a correct language code, let's
+	 * try unaliasing it */
+	if (strlen (language) < 3 ||
+	    language[2] != '_') {
+		char *newlang = unaliaslang (language);
+		g_free (language);
+		language = newlang;
 	}
+
+	/* Set locale */
+	gdm_setenv ("LANG", language);
+	gdm_setenv ("GDM_LANG", language);
     
 	/* setup the verify env vars */
 	gdm_verify_env_setup ();

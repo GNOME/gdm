@@ -45,6 +45,8 @@ void gdm_clearenv (void);
  * note that this leak memory so only use before exec */
 void gdm_clearenv_no_lang (void);
 
+int gdm_strcasecmp_no_locale (const char *s1, const char *s2);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */
