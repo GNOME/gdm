@@ -73,7 +73,6 @@ static gboolean GdmQuiver;
 static gint  GdmRelaxPerms;
 static gboolean GdmSystemMenu;
 static gboolean GdmConfigAvailable;
-static gchar *GdmConfig;
 static gint  GdmUserMaxFile;
 static gint GdmXineramaScreen;
 static gchar *GdmLogo;
@@ -97,11 +96,13 @@ static gchar *GdmDefaultLocale;
 static gchar *GdmExclude;
 static gchar *GdmGlobalFaceDir;
 static gchar *GdmDefaultFace;
+static gchar *GdmTimedLogin;
 static gboolean GdmLockPosition;
 static gboolean GdmSetPosition;
 static gint GdmPositionX;
 static gint GdmPositionY;
 static gboolean GdmTitleBar;
+static gint GdmTimedLoginDelay;
 
 static GtkWidget *login;
 static GtkWidget *label;
@@ -128,14 +129,18 @@ static gchar *curlang = NULL;
 static gchar *curuser = NULL;
 static gchar *session = NULL;
 static gchar *language = NULL;
+static gint curdelay = 0;
+
+/* this is true if the prompt is for a login name */
+static gboolean login_entry = FALSE;
 
 static gboolean savesess;
 static gboolean savelang;
 static gint maxwidth;
 
 static pid_t backgroundpid = 0;
-static pid_t gdmconfigpid = 0;
 
+static guint timed_handler_id = 0;
 
 static GHashTable *back_locales = NULL;
 
@@ -318,6 +323,51 @@ wm_protocol_check_support (Window xwin,
   return is_supported;
 }
 
+/*
+ * Timed Login: Timer
+ */
+
+static gboolean
+gdm_timer (gpointer data)
+{
+	curdelay --;
+	if ( curdelay <= 0 ) {
+		login_entry = FALSE; /* no matter where we are,
+					this is no longer a login_entry */
+		/* timed interruption */
+		g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
+	} else if ((curdelay % 5) == 0) {
+		gchar *autologin_msg = 
+			g_strdup_printf (_("User %s will login in %d seconds"),
+					 GdmTimedLogin, curdelay);
+		gtk_label_set (GTK_LABEL (msg), autologin_msg);
+		gtk_widget_show (GTK_WIDGET (msg));
+		g_free (autologin_msg);
+	}
+	return TRUE;
+}
+
+/*
+ * Timed Login: On GTK events, increase delay to
+ * at least 30 seconds. Or the TimedLoginDelay,
+ * whichever is higher
+ */
+
+static gboolean
+gdm_timer_up_delay (GtkObject *object,
+		    guint signal_id,
+		    guint n_params,
+		    GtkArg *params,
+		    gpointer data)
+{
+	if (curdelay < 30)
+		curdelay = 30;
+	if (curdelay < GdmTimedLoginDelay)
+		curdelay = GdmTimedLoginDelay;
+	return TRUE;
+}      
+
+
 static void
 setup_cursor (GdkCursorType type)
 {
@@ -365,10 +415,6 @@ gdm_greeter_chld (int sig)
 	    waitpid (backgroundpid, NULL, WNOHANG) > 0) {
 		backgroundpid = 0;
 	}
-	if (gdmconfigpid != 0 &&
-	    waitpid (gdmconfigpid, NULL, WNOHANG) > 0) {
-		gdmconfigpid = 0;
-	}
 }
 
 static void
@@ -377,12 +423,6 @@ kill_thingies (void)
 	pid_t pid = backgroundpid;
 
 	backgroundpid = 0;
-	if (pid != 0) {
-		kill (pid, SIGTERM);
-	}
-
-	pid = gdmconfigpid;
-	gdmconfigpid = 0;
 	if (pid != 0) {
 		kill (pid, SIGTERM);
 	}
@@ -759,9 +799,11 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 	/* we should be now fine for focusing new windows */
 	focus_new_windows = TRUE;
 
-	/* only run this once, if already running just ignore */
-	if (gdmconfigpid == 0)
-		gdmconfigpid = gdm_run_command (GdmConfig);
+	/* configure interruption */
+	login_entry = FALSE; /* no matter where we are,
+				this is no longer a login_entry */
+	/* timed interruption */
+	g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
 }
 
 static gboolean
@@ -811,7 +853,6 @@ gdm_login_parse_config (void)
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
     GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
     GdmTitleBar = gnome_config_get_bool (GDM_KEY_TITLE_BAR);
-    GdmConfig = gnome_config_get_string (GDM_KEY_CONFIG);
     GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
@@ -835,6 +876,15 @@ gdm_login_parse_config (void)
     GdmSetPosition = gnome_config_get_bool (GDM_KEY_SET_POSITION);
     GdmPositionX = gnome_config_get_int (GDM_KEY_POSITIONX);
     GdmPositionY = gnome_config_get_int (GDM_KEY_POSITIONY);
+
+    GdmTimedLogin = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
+    GdmTimedLoginDelay =
+      gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+    if (GdmTimedLoginDelay < 10) {
+	    syslog (LOG_WARNING,
+		    _("TimedLoginDelay was less then 10.  I'll just use 10."));
+	    GdmTimedLoginDelay = 10;
+    }
 
     gnome_config_pop_prefix();
 
@@ -1084,6 +1134,7 @@ static gboolean
 gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 {
     static gboolean first_return = TRUE;
+    static gchar *login;
 
     if (!event)
 	return(TRUE);
@@ -1096,25 +1147,38 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 
+	login = gtk_entry_get_text (GTK_ENTRY (entry));
+
+	/* If in timed login mode, and if this is the login
+	 * entry.  Then an enter by itself is sort of like I want to
+	 * log in as the timed user "damn it".  */
+	if (gdm_string_empty (login) &&
+	    timed_handler_id != 0 &&
+	    login_entry) {
+		login_entry = FALSE;
+		/* timed interruption */
+		g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
+		return TRUE;
+	}
+
 	/* Save login. I'm making the assumption that login is always
 	 * the first thing entered. This might not be true for all PAM
 	 * setups. Needs thinking! 
 	 */
 
-	if (curuser == NULL) {
-	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+	if (login_entry) {
+		g_free (curuser);
+		curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
 
-	    /* evilness */
-	    if (evil (curuser)) {
-		    g_free (curuser);
-		    curuser = NULL;
-		    gtk_widget_set_sensitive (entry, TRUE);
-		    gtk_widget_grab_focus (entry);	
-		    gtk_window_set_focus (GTK_WINDOW (login), entry);	
-		    //GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
-		    //gtk_widget_queue_draw (entry);
-		    return TRUE;
-	    }
+		/* evilness */
+		if (evil (curuser)) {
+			g_free (curuser);
+			curuser = NULL;
+			gtk_widget_set_sensitive (entry, TRUE);
+			gtk_widget_grab_focus (entry);	
+			gtk_window_set_focus (GTK_WINDOW (login), entry);	
+			return TRUE;
+		}
 	}
 
 	/* somewhat ugly thing to clear the initial message */
@@ -1123,6 +1187,7 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	       gtk_label_set (GTK_LABEL (msg), "");
 	}
 
+	login_entry = FALSE;
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
 	break;
 
@@ -1617,7 +1682,15 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
     /* Parse opcode */
     switch (buf[0]) {
-    case GDM_PROMPT:
+    case GDM_SETLOGIN:
+	/* somebody is trying to fool us this is the user that
+	 * wants to log in, and well, we are the gullible kind */
+        g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	buf[len-1] = '\0';
+	g_free (curuser);
+	curuser = g_strdup (buf);
+	break;
+    case GDM_LOGIN:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
@@ -1630,11 +1703,39 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
-	//GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
-	//gtk_widget_queue_draw (entry);
+
+	if (GdmBrowser)
+	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
 
 	/* replace rapther then append next message string */
 	replace_msg = TRUE;
+
+	/* this is a login prompt */
+	login_entry = TRUE;
+	break;
+
+    case GDM_PROMPT:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	buf[len-1] = '\0';
+
+	gtk_label_set (GTK_LABEL (label), buf);
+	gtk_widget_show (GTK_WIDGET (label));
+	gtk_entry_set_text (GTK_ENTRY (entry), "");
+	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
+	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
+	gtk_widget_set_sensitive (entry, TRUE);
+	gtk_widget_grab_focus (entry);	
+	gtk_window_set_focus (GTK_WINDOW (login), entry);	
+	gtk_widget_show (entry);
+
+	if (GdmBrowser)
+	    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
+
+	/* replace rapther then append next message string */
+	replace_msg = TRUE;
+
+	/* this is not a login prompt */
+	login_entry = FALSE;
 	break;
 
     case GDM_NOECHO:
@@ -1650,11 +1751,15 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
-	//GTK_WIDGET_SET_FLAGS (entry, GTK_HAS_FOCUS);
-	//gtk_widget_queue_draw (entry);
+
+	if (GdmBrowser)
+	    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 
 	/* replace rapther then append next message string */
 	replace_msg = TRUE;
+
+	/* this is not a login prompt */
+	login_entry = FALSE;
 	break;
 
     case GDM_MSGERR:
@@ -1760,6 +1865,11 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_QUIT:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
+	if (timed_handler_id != 0) {
+		gtk_timeout_remove (timed_handler_id);
+		timed_handler_id = 0;
+	}
+
 	if (require_quater) {
 		GtkWidget *d;
 
@@ -1810,6 +1920,36 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	}
 
 	break;
+    case GDM_STARTTIMER:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	/*
+	 * Timed Login: Start Timer Loop
+	 */
+
+	if (timed_handler_id == 0 &&
+	    ! gdm_string_empty (GdmTimedLogin) &&
+	    GdmTimedLoginDelay > 0) {
+		curdelay = GdmTimedLoginDelay;
+		timed_handler_id = gtk_timeout_add (1000,
+						    gdm_timer, NULL);
+	}
+	g_print ("%c\n", STX);
+	break;
+    case GDM_STOPTIMER:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	/*
+	 * Timed Login: Stop Timer Loop
+	 */
+
+	if (timed_handler_id != 0) {
+		gtk_timeout_remove (timed_handler_id);
+		timed_handler_id = 0;
+	}
+	g_print ("%c\n", STX);
+	break;
+
 	
     default:
 	break;
@@ -1845,6 +1985,10 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
     if (!widget || !event)
 	return (TRUE);
 
+    /* eek, this shouldn't get here, but just in case */
+    if ( ! login_entry)
+	    return TRUE;
+
     switch (event->type) {
 	    
     case GDK_BUTTON_PRESS:
@@ -1867,6 +2011,7 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 
 	gtk_widget_set_sensitive (entry, FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
+	login_entry = FALSE;
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
 	break;
 	
@@ -2212,10 +2357,7 @@ gdm_login_gui_init (void)
 
     if (GdmSystemMenu) {
 	menu = gtk_menu_new();
-        if (GdmConfigAvailable &&
-	    GdmConfig != NULL &&
-	    GdmConfig[0] != '\0' &&
-	    access (GdmConfig, X_OK) == 0) {
+        if (GdmConfigAvailable) {
 	   item = gtk_menu_item_new_with_label (_("Configure..."));
 	   gtk_menu_append (GTK_MENU (menu), item);
 	   gtk_signal_connect (GTK_OBJECT (item), "activate",
@@ -2592,9 +2734,7 @@ gdm_login_users_init (void)
 	    defface = gdk_imlib_load_image (GdmDefaultFace);
     }
 
-    setpwent ();
-
-    pwent = getpwent();
+    pwent = NULL;
 	
     while (pwent != NULL) {
 	
@@ -2739,33 +2879,10 @@ run_backgrounds (void)
 		}
 	}
 
-
 	/* Launch a background program if one exists */
 	if (GdmBackgroundProg != NULL &&
 	    GdmBackgroundProg[0] != '\0') {
-		backgroundpid = fork ();
-
-		if (backgroundpid == -1) {
-			/*ingore errors, this is irrelevant */
-			backgroundpid = 0;
-		} else if (backgroundpid == 0) {
-			char **argv;
-			int i;
-
-			for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
-				close(i);
-
-			/* No error checking here - if it's messed the best
-			 * response is to ignore & try to continue */
-			open("/dev/null", O_RDONLY); /* open stdin - fd 0 */
-			open("/dev/null", O_RDWR); /* open stdout - fd 1 */
-			open("/dev/null", O_RDWR); /* open stderr - fd 2 */
-
-			argv = g_strsplit (GdmBackgroundProg, " ", MAX_ARGS);
-			execv (argv[0], argv);
-			/*ingore errors, this is irrelevant */
-			_exit (0);
-		}
+		backgroundpid = gdm_run_command (GdmBackgroundProg);
 	}
 }
 
@@ -3051,6 +3168,22 @@ main (int argc, char *argv[])
 		    (GIOFunc) gdm_login_ctrl_handler,
 		    NULL);
     g_io_channel_unref (ctrlch);
+
+    /* if in timed mode, delay timeout on keyboard or menu
+     * activity */
+    if ( ! gdm_string_empty (GdmTimedLogin)) {
+	    guint sid = gtk_signal_lookup ("activate",
+					   GTK_TYPE_MENU_ITEM);
+	    gtk_signal_add_emission_hook (sid,
+					  gdm_timer_up_delay,
+					  NULL);
+
+	    sid = gtk_signal_lookup ("key_press_event",
+				     GTK_TYPE_ENTRY);
+	    gtk_signal_add_emission_hook (sid,
+					  gdm_timer_up_delay,
+					  NULL);
+    }
 
     add_all_current_windows ();
 

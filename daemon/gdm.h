@@ -26,6 +26,8 @@
 
 
 #define STX 0x2			/* Start of txt */
+#define BEL 0x7			/* Bell, used to interrupt login for
+				 * say timed login or something similar */
 
 #define TYPE_LOCAL 1		/* Local X server */
 #define TYPE_XDMCP 2		/* Remote display */
@@ -63,7 +65,19 @@
 #define GDM_RESET  'A'
 #define GDM_QUIT   'P'
 #define GDM_STOP   '!'
+/* crap, these don't fit into the above theme, this protocol
+ * is thus liable to change */
 #define GDM_GNOMESESS '?'
+#define GDM_STARTTIMER 's'
+#define GDM_STOPTIMER 'S'
+#define GDM_LOGIN 'L' /* this is the login prompt, much like PROMPT but
+			 different */
+#define GDM_SETLOGIN 'l' /* this just sets the login to be this, just for
+			    the greeters knowledge */
+
+/* Different login interruptions */
+#define GDM_INTERRUPT_TIMED_LOGIN 'T'
+#define GDM_INTERRUPT_CONFIGURE 'C'
 
 /* The dreaded miscellaneous category */
 #define MAX_ARGS 32
@@ -92,6 +106,9 @@
 #define GDM_KEY_UAUTHFB "daemon/UserAuthFBDir=/tmp"
 #define GDM_KEY_UAUTHFILE "daemon/UserAuthFile=.Xauthority"
 #define GDM_KEY_USER "daemon/User=gdm"
+
+#define GDM_KEY_TIMED_LOGIN "daemon/TimedLogin="
+#define GDM_KEY_TIMED_LOGIN_DELAY "daemon/TimedLoginDelay=0"
 
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_MAXFILE "security/UserMaxFile=65536"
@@ -215,6 +232,8 @@ void    g_signal_notify         (gint8          signal);
 
 void gdm_run (void);
 void gdm_quit (void);
+
+#define gdm_string_empty(x) ((x)==NULL||(x)[0]=='\0')
 
 #endif /* __GDM_H__ */
 

@@ -24,8 +24,12 @@
 #include "gdm.h"
 
 void     gdm_slave_start       (GdmDisplay *d);
-gchar   *gdm_slave_greeter_ctl (gchar cmd, const gchar *str);
+void     gdm_slave_greeter_ctl_no_ret (char cmd, const char *str);
+char    *gdm_slave_greeter_ctl (char cmd, const char *str);
+gboolean gdm_slave_greeter_check_interruption (const char *msg);
+gboolean gdm_slave_should_complain (void);
 
 #endif /* GDM_SLAVE_H */
 
 /* EOF */
+

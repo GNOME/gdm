@@ -89,7 +89,7 @@ gdm_server_reinit (GdmDisplay *disp)
 	kill (disp->servpid, SIGHUP);
 
 	if (had_connection)
-		d->dsp = XOpenDisplay (d->name);
+		disp->dsp = XOpenDisplay (disp->name);
 }
 
 /**

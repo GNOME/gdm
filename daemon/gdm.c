@@ -92,6 +92,8 @@ gboolean  GdmVerboseAuth = FALSE;
 gboolean  GdmAllowRoot = FALSE;
 gint  GdmRelaxPerms = 0;
 gint  GdmRetryDelay = 0;
+gchar *GdmTimedLogin = NULL;
+gint GdmTimedLoginDelay = 0;
 
 /* set in the main function */
 static char **stored_argv = NULL;
@@ -145,6 +147,8 @@ gdm_config_parse (void)
     GdmUserAuthDir = gnome_config_get_string (GDM_KEY_UAUTHDIR);
     GdmUserAuthFile = gnome_config_get_string (GDM_KEY_UAUTHFILE);
     GdmUserAuthFB = gnome_config_get_string (GDM_KEY_UAUTHFB);
+    GdmTimedLogin = gnome_config_get_string (GDM_KEY_TIMED_LOGIN);
+    GdmTimedLoginDelay = gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
 
     GdmAllowRoot = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
@@ -165,11 +169,35 @@ gdm_config_parse (void)
 
     gnome_config_pop_prefix();
 
-    if (GdmAutomaticLogin != NULL &&
-	strcmp (GdmAutomaticLogin, "root") == 0) {
-	    gdm_info ("gdm_config_parse: Root cannot be autologged in, turing off");
+    /* sanitize some values */
+
+    if (gdm_string_empty (GdmAutomaticLogin)) {
 	    g_free (GdmAutomaticLogin);
 	    GdmAutomaticLogin = NULL;
+    }
+
+    if (GdmAutomaticLogin != NULL &&
+	strcmp (GdmAutomaticLogin, "root") == 0) {
+	    gdm_info (_("gdm_config_parse: Root cannot be autologged in, turing off automatic login"));
+	    g_free (GdmAutomaticLogin);
+	    GdmAutomaticLogin = NULL;
+    }
+
+    if (gdm_string_empty (GdmTimedLogin)) {
+	    g_free (GdmTimedLogin);
+	    GdmTimedLogin = NULL;
+    }
+
+    if (GdmTimedLogin != NULL &&
+	strcmp (GdmTimedLogin, "root") == 0) {
+	    gdm_info (_("gdm_config_parse: Root cannot be autologged in, turing off timed login"));
+	    g_free (GdmTimedLogin);
+	    GdmTimedLogin = NULL;
+    }
+
+    if (GdmTimedLoginDelay < 10) {
+	    gdm_info (_("gdm_config_parse: TimedLoginDelay less then 10, so I will just use 10."));
+	    GdmTimedLoginDelay = 10;
     }
 
     /* Prerequisites */ 

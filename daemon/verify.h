@@ -21,7 +21,11 @@
 
 #include "gdm.h"
 
-gchar *gdm_verify_user    (const gchar *display);
+/* If username is NULL, we ask, if local is FALSE, don't start
+ * the timed login timer */
+gchar *gdm_verify_user    (const char *username,
+			   const gchar *display,
+			   gboolean local);
 void   gdm_verify_cleanup (void);
 void   gdm_verify_check   (void);
 /* used in pam */

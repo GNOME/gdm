@@ -46,13 +46,15 @@
 
 static const gchar RCSid[]="$Id$";
 
-/* Global vars */
+/* Some per slave globals */
 static GdmDisplay *d;
 static gchar *login = NULL;
 static sigset_t mask;
 static gboolean greet = FALSE;
 static FILE *greeter;
 static pid_t last_killed_pid = 0;
+gboolean do_timed_login = FALSE; /* if this is true, login the timed
+				    login immediately when we reset */
 
 extern gboolean gdm_first_login;
 
@@ -72,12 +74,15 @@ extern gchar *GdmDefaultPath;
 extern gchar *GdmRootPath;
 extern gchar *GdmUserAuthFile;
 extern gchar *GdmDefaultLocale;
+extern gchar *GdmTimedLogin;
+extern gint GdmTimedLoginDelay;
 extern gint GdmUserMaxFile;
 extern gint GdmRelaxPerms;
 extern gboolean GdmKillInitClients;
 extern gint GdmRetryDelay;
 extern sigset_t sysmask;
 extern gchar *argdelim;
+
 
 /* Local prototypes */
 static gint     gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt);
@@ -92,6 +97,7 @@ static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);
 static void     gdm_slave_exit (gint status, const gchar *format, ...);
 static gint     gdm_slave_exec_script (GdmDisplay*, gchar *dir);
+
 
 void 
 gdm_slave_start (GdmDisplay *display)
@@ -159,6 +165,24 @@ gdm_slave_start (GdmDisplay *display)
 	}
 }
 
+static void
+setup_automatic_session (GdmDisplay *display, const char *name)
+{
+	g_free (login);
+	login = g_strdup (name);
+
+	greet = FALSE;
+	gdm_debug ("gdm_slave_start: Automatic login: %s", login);
+
+	gdm_verify_setup_user (login, display->name);
+
+	/* Run the init script. gdmslave suspends until script
+	 * has terminated */
+	gdm_slave_exec_script (display, GdmDisplayInit);
+
+	gdm_debug ("gdm_slave_start: DisplayInit script finished");
+}
+
 
 static void 
 gdm_slave_run (GdmDisplay *display)
@@ -202,27 +226,14 @@ gdm_slave_run (GdmDisplay *display)
 	    openretries++;
 	}
     }
-    
+
     if (d->dsp != NULL) {
 	if (gdm_first_login &&
-	    GdmAutomaticLogin != NULL &&
-	    GdmAutomaticLogin[0] != '\0' &&
+	    ! gdm_string_empty (GdmAutomaticLogin) &&
 	    strcmp (GdmAutomaticLogin, "root") != 0) {
 		gdm_first_login = FALSE;
 
-		g_free (login);
-		login = g_strdup (GdmAutomaticLogin);
-
-		greet = FALSE;
-		gdm_debug ("gdm_slave_start: Automatic login: %s", login);
-
-		gdm_verify_setup_user (login, d->name);
-
-		/* Run the init script. gdmslave suspends until script
-		 * has terminated */
-		gdm_slave_exec_script (d, GdmDisplayInit);
-
-		gdm_debug ("gdm_slave_start: DisplayInit script finished");
+		setup_automatic_session (d, GdmAutomaticLogin);
 
 		gdm_slave_session_start();
 
@@ -232,6 +243,11 @@ gdm_slave_run (GdmDisplay *display)
 			gdm_first_login = FALSE;
 		gdm_slave_greeter ();  /* Start the greeter */
 		gdm_slave_wait_for_login (); /* wait for a password */
+		if (do_timed_login) {
+			/* timed out into a timed login */
+			do_timed_login = FALSE;
+			setup_automatic_session (d, GdmTimedLogin);
+		}
 		gdm_slave_session_start ();
 	}
     } else {
@@ -241,20 +257,62 @@ gdm_slave_run (GdmDisplay *display)
 }
 
 static void
+gdm_slave_whack_greeter (void)
+{
+	sigset_t tmask, omask;
+
+	sigemptyset (&tmask);
+	sigaddset (&tmask, SIGCHLD);
+	sigprocmask (SIG_BLOCK, &tmask, &omask);  
+
+	/* do what you do when you quit, this will hang until the
+	 * greeter decides to print an STX\n, meaning it can do some
+	 * last minute cleanup */
+	gdm_slave_greeter_ctl_no_ret (GDM_QUIT, "");
+
+	greet = FALSE;
+
+	/* Kill greeter and wait for it to die */
+	if (d->greetpid > 0 &&
+	    kill (d->greetpid, SIGINT) == 0)
+		waitpid (d->greetpid, 0, 0); 
+	d->greetpid = 0;
+
+	sigprocmask (SIG_SETMASK, &omask, NULL);
+}
+
+static void
 gdm_slave_wait_for_login (void)
 {
 	g_free (login);
 	login = NULL;
 
+	/* init to a sane value */
+	do_timed_login = FALSE;
+
 	/* Chat with greeter */
 	while (login == NULL) {
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
-		login = gdm_verify_user (d->name);
+		login = gdm_verify_user (NULL /* username*/,
+					 d->name,
+					 d->type == TYPE_LOCAL);
 
+		/* the user timed out into a timed login during the
+		 * conversation */
+		if (do_timed_login) {
+			g_free (login);
+			/* timed login is automatic, thus no need for greeter,
+			 * we'll take default values */
+			gdm_slave_whack_greeter();
+			return;
+		}
+		  
 		if (login == NULL) {
-			gdm_debug ("gdm_slave_wait_for_login: No login/Bad login");
-			sleep (GdmRetryDelay);
-			g_free (gdm_slave_greeter_ctl (GDM_RESET, ""));
+			if (gdm_slave_should_complain ()) {
+				gdm_debug (_("gdm_slave_wait_for_login: No login/Bad login"));
+				sleep (GdmRetryDelay);
+			}
+			gdm_slave_greeter_ctl_no_ret (GDM_RESET, "");
 		}
 	}
 }
@@ -518,8 +576,7 @@ gdm_slave_session_start (void)
 	if (usrlang == NULL)
 		usrlang = g_strdup ("");
 	g_free (cfgstr);
-    } 
-    else {
+    } else {
 	usrsess = g_strdup ("");
 	usrlang = g_strdup ("");
     }
@@ -591,7 +648,7 @@ gdm_slave_session_start (void)
 	    /* do what you do when you quit, this will hang until the
 	     * greeter decides to print an STX\n, meaning it can do some
 	     * last minute cleanup */
-	    gdm_slave_greeter_ctl (GDM_QUIT, "");
+	    gdm_slave_greeter_ctl_no_ret (GDM_QUIT, "");
 
 	    greet = FALSE;
 
@@ -932,8 +989,8 @@ gdm_slave_xioerror_handler (Display *disp)
     _exit (DISPLAY_REMANAGE);
 }
 
-gchar * 
-gdm_slave_greeter_ctl (gchar cmd, const gchar *str)
+char * 
+gdm_slave_greeter_ctl (char cmd, const char *str)
 {
     gchar buf[FIELD_SIZE];
     guchar c;
@@ -949,6 +1006,9 @@ gdm_slave_greeter_ctl (gchar cmd, const gchar *str)
     } while (c && c != STX);
     
     fgets (buf, FIELD_SIZE-1, greeter);
+
+    /* don't forget to flush */
+    fflush (greeter);
     
     if (strlen (buf)) {
 	buf[strlen (buf)-1] = '\0';
@@ -956,6 +1016,12 @@ gdm_slave_greeter_ctl (gchar cmd, const gchar *str)
     }
     else
 	return NULL;
+}
+
+void
+gdm_slave_greeter_ctl_no_ret (char cmd, const char *str)
+{
+	g_free (gdm_slave_greeter_ctl (cmd, str));
 }
 
 
@@ -1044,5 +1110,45 @@ gdm_slave_exec_script (GdmDisplay *d, gchar *dir)
     }
 }
 
+gboolean
+gdm_slave_greeter_check_interruption (const char *msg)
+{
+	if (msg != NULL &&
+	    msg[0] == BEL) {
+		/* Different interruptions come here */
+		switch (msg[1]) {
+		case GDM_INTERRUPT_TIMED_LOGIN:
+			/* only allow timed login if display is local,
+			 * and if it's set up correctly */
+			if (d->type == TYPE_LOCAL &&
+			    ! gdm_string_empty (GdmTimedLogin) &&
+			    GdmTimedLoginDelay > 0) {
+				do_timed_login = TRUE;
+				return TRUE;
+			}
+			break;
+		case GDM_INTERRUPT_CONFIGURE:
+			/* FIXME: no configuration code here yet */
+			break;
+		default:
+			break;
+		}
+
+		/* Return true, this was an interruption, if it wasn't
+		 * handled then the user will just get an error as if he
+		 * entered an invalid login or passward.  Seriously BEL
+		 * cannot be part of a login/password really */
+		return TRUE;
+	}
+	return FALSE;
+}
+
+gboolean
+gdm_slave_should_complain (void)
+{
+	if (do_timed_login)
+		return FALSE;
+	return TRUE;
+}
 
 /* EOF */

@@ -1,3 +1,16 @@
+Sun Apr 29 18:06:25 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c, daemon/gdm.[ch], daemon/slave.[ch],
+	  daemon/verify.h, daemon/verify-(pam|crypt|shadow).c,
+	  config/gdm.conf.in:  Create the concept of interruptions where the
+	  greeter can interrupt a query to have the daemon do something.
+	  and use it to do timeout logins, such as would be useful for
+	  say a kiosk operation.  Only on local displays of course.
+	  Originally based on the patch from Jim Bray.
+
+	* gui/gdmconfig.glade:  Raise the maximum allowable max user file
+	  size to 2^18 from 2^16
+
 Sun Apr 29 21:40:00 2001  Lee Mallabone <lee0@callnetuk.com>
 
         * gui/gdmconfig.c, gui/gdmconfig.glade: Add the "run configurator"

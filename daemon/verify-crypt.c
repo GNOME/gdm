@@ -40,7 +40,9 @@ extern gboolean GdmAllowRoot;
 
 /**
  * gdm_verify_user:
+ * @username: Name of user or NULL if we should ask
  * @display: Name of display to register with the authentication system
+ * @local: boolean if local
  *
  * Provides a communication layer between the operating system's
  * authentication functions and the gdmgreeter. 
@@ -49,23 +51,52 @@ extern gboolean GdmAllowRoot;
  */
 
 gchar *
-gdm_verify_user (const gchar *display) 
+gdm_verify_user (const char *username,
+		 const gchar *display,
+		 gboolean local) 
 {
     gchar *login, *passwd, *ppasswd;
     struct passwd *pwent;
 
+    if (local)
+	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
+
     /* Ask for the user's login */
-    login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Login:"));
+    if (username == NULL) {
+	    login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Login:"));
+	    if (login == NULL ||
+		gdm_slave_greeter_check_interruption (login)) {
+		    if (local)
+			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+		    g_free (login);
+		    return NULL;
+	    }
+    } else {
+	    login = g_strdup (username);
+    }
+
     pwent = getpwnam (login);
         
     ppasswd = !pwent ? NULL : pwent->pw_passwd;
     
     /* Request the user's password */
     passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
+    if (passwd == NULL)
+	    passwd = g_strdup ("");
+    if (gdm_slave_greeter_check_interruption (passwd)) {
+	    if (local)
+		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+	    g_free (login);
+	    g_free (passwd);
+	    return NULL;
+    }
 
-    if (!pwent) {
+    if (local)
+	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+
+    if (pwent == NULL) {
 	    gdm_error (_("Couldn't authenticate %s"), login);
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Login incorrect"));
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
 	    return NULL;
     }
 
@@ -73,11 +104,11 @@ gdm_verify_user (const gchar *display)
 	pwent->pw_uid == 0) {
 	    gdm_error (_("Root login disallowed on display '%s'"), display);
 	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl (GDM_MSGERR,
-					   _("Root login disallowed"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+						  _("Root login disallowed"));
 	    } else {
-		    gdm_slave_greeter_ctl (GDM_MSGERR,
-					   _("Login incorrect"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+						  _("Login incorrect"));
 	    }
 	    return NULL;
     }
@@ -87,18 +118,18 @@ gdm_verify_user (const gchar *display)
 	strcmp (pwent->pw_shell, "/bin/false") == 0) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl (GDM_MSGERR,
-					   _("Login disabled"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+						  _("Login disabled"));
 	    } else {
-		    gdm_slave_greeter_ctl (GDM_MSGERR,
-					   _("Login incorrect"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+						  _("Login incorrect"));
 	    }
 	    return NULL;
     }	
 
     /* Check whether password is valid */
     if (!passwd || !ppasswd || strcmp (crypt (passwd, ppasswd), ppasswd)) {
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Login incorrect"));
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
 	    return NULL;
     }
     

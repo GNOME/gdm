@@ -63,23 +63,33 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	case PAM_PROMPT_ECHO_ON:
 	    /* PAM requested textual input with echo on */
 	    s = gdm_slave_greeter_ctl (GDM_PROMPT, _((gchar *) msg[replies]->msg));
+	    if (gdm_slave_greeter_check_interruption (s)) {
+		    g_free (s);
+		    free (reply);
+		    return PAM_CONV_ERR;
+	    }
 	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = strdup (s);
+	    reply[replies].resp = strdup (s != NULL ? s : "");
 	    g_free (s);
 	    break;
 	    
 	case PAM_PROMPT_ECHO_OFF:
 	    /* PAM requested textual input with echo off */
 	    s = gdm_slave_greeter_ctl (GDM_NOECHO, _((gchar *) msg[replies]->msg));
+	    if (gdm_slave_greeter_check_interruption (s)) {
+		    g_free (s);
+		    free (reply);
+		    return PAM_CONV_ERR;
+	    }
 	    reply[replies].resp_retcode = PAM_SUCCESS;
-	    reply[replies].resp = strdup (s);
+	    reply[replies].resp = strdup (s != NULL ? s : "");
 	    g_free (s);
 	    break;
 	    
 	case PAM_ERROR_MSG:
 	case PAM_TEXT_INFO:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _((gchar *) msg[replies]->msg));
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _((gchar *) msg[replies]->msg));
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
@@ -119,7 +129,9 @@ static struct pam_conv standalone_pamc = {
 
 /**
  * gdm_verify_user:
+ * @username: Name of user or NULL if we should ask
  * @display: Name of display to register with the authentication system
+ * @local: boolean if local
  *
  * Provides a communication layer between the operating system's
  * authentication functions and the gdmgreeter. 
@@ -128,36 +140,63 @@ static struct pam_conv standalone_pamc = {
  */
 
 gchar *
-gdm_verify_user (const gchar *display) 
+gdm_verify_user (const char *username,
+		 const gchar *display,
+		 gboolean local) 
 {
     gint pamerr;
     gchar *login;
     struct passwd *pwent;
     gboolean error_msg_given = FALSE;
 
-    /* Ask gdmgreeter for the user's login. Just for good measure */
-    login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Login:"));
-    
-    if (!login)
-	return NULL;
+    /* start the timer for timed logins */
+    if (local)
+	    gdm_slave_greeter_ctl_no_ret (GDM_STARTTIMER, "");
 
+    if (username == NULL) {
+	    /* Ask gdmgreeter for the user's login. Just for good measure */
+	    login = gdm_slave_greeter_ctl (GDM_PROMPT, _("Login:"));
+	    if (login == NULL ||
+		gdm_slave_greeter_check_interruption (login)) {
+		    if (local)
+			    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+		    g_free (login);
+		    return NULL;
+	    }
+    } else {
+	    login = g_strdup (username);
+    }
+	    
     /* Initialize a PAM session for the user */
     if ((pamerr = pam_start ("gdm", login, &pamc, &pamh)) != PAM_SUCCESS) {
-	gdm_error (_("Can't find /etc/pam.d/gdm!"));
-	goto pamerr;
+	    if (local)
+		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Can't find /etc/pam.d/gdm!"));
+	    goto pamerr;
     }
     
     /* Inform PAM of the user's tty */
     if ((pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
-	gdm_error (_("Can't set PAM_TTY=%s"), display);
-	goto pamerr;
+	    if (local)
+		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Can't set PAM_TTY=%s"), display);
+	    goto pamerr;
     }
 
     /* Start authentication session */
     if ((pamerr = pam_authenticate (pamh, 0)) != PAM_SUCCESS) {
-	gdm_error (_("Couldn't authenticate %s"), login);
-	goto pamerr;
+	    if (local)
+		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't authenticate %s"), login);
+	    goto pamerr;
     }
+
+    /* stop the timer for timed logins */
+    if (local)
+	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
     
     pwent = getpwnam (login);
     if ( ! GdmAllowRoot &&
@@ -166,8 +205,8 @@ gdm_verify_user (const gchar *display)
 	    gdm_error (_("Root login disallowed on display '%s'"),
 		       display);
 	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl (GDM_MSGERR,
-					   _("Root login disallowed"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+						  _("Root login disallowed"));
 		    error_msg_given = TRUE;
 	    }
 	    goto pamerr;
@@ -179,8 +218,8 @@ gdm_verify_user (const gchar *display)
 	strcmp (pwent->pw_shell, "/bin/false") == 0) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl (GDM_MSGERR,
-					   _("Login disabled"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+						  _("Login disabled"));
 		    error_msg_given = TRUE;
 	    }
 	    goto pamerr;
@@ -193,20 +232,23 @@ gdm_verify_user (const gchar *display)
 	pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK); 
 
     if (pamerr != PAM_SUCCESS) {
-	gdm_error (_("Couldn't set acct. mgmt for %s"), login);
-	goto pamerr;
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't set acct. mgmt for %s"), login);
+	    goto pamerr;
     }
     
     /* Set credentials */
     if ((pamerr = pam_setcred (pamh, 0)) != PAM_SUCCESS) {
-	gdm_error (_("Couldn't set credentials for %s"), login);
-	goto pamerr;
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't set credentials for %s"), login);
+	    goto pamerr;
     }
     
     /* Register the session */
     if ((pamerr = pam_open_session (pamh, 0)) != PAM_SUCCESS) {
-	gdm_error (_("Couldn't open session for %s"), login);
-	goto pamerr;
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't open session for %s"), login);
+	    goto pamerr;
     }
     
     return login;
@@ -215,8 +257,9 @@ gdm_verify_user (const gchar *display)
     
     /* The verbose authentication is turned on, output the error
      * message from the PAM subsystem */
-    if ( ! error_msg_given)
-	    gdm_slave_greeter_ctl (GDM_MSGERR, _("Authentication failed"));
+    if ( ! error_msg_given &&
+	gdm_slave_should_complain ())
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Authentication failed"));
     
     pam_end (pamh, pamerr);
     pamh = NULL;
@@ -247,14 +290,16 @@ gdm_verify_setup_user (const gchar *login, const gchar *display)
 
     /* Initialize a PAM session for the user */
     if ((pamerr = pam_start ("gdm", login, &standalone_pamc, &pamh)) != PAM_SUCCESS) {
-	gdm_error (_("Can't find /etc/pam.d/gdm!"));
-	goto setup_pamerr;
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Can't find /etc/pam.d/gdm!"));
+	    goto setup_pamerr;
     }
     
     /* Inform PAM of the user's tty */
     if ((pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
-	gdm_error (_("Can't set PAM_TTY=%s"), display);
-	goto setup_pamerr;
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Can't set PAM_TTY=%s"), display);
+	    goto setup_pamerr;
     }
 
     /* If the user's password has expired, ask for a new one */
@@ -273,14 +318,16 @@ gdm_verify_setup_user (const gchar *login, const gchar *display)
     
     /* Set credentials */
     if ((pamerr = pam_setcred (pamh, PAM_SILENT)) != PAM_SUCCESS) {
-	gdm_error (_("Couldn't set credentials for %s"), login);
-	goto setup_pamerr;
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't set credentials for %s"), login);
+	    goto setup_pamerr;
     }
     
     /* Register the session */
     if ((pamerr = pam_open_session (pamh, PAM_SILENT)) != PAM_SUCCESS) {
-	gdm_error (_("Couldn't open session for %s"), login);
-	goto setup_pamerr;
+	    if (gdm_slave_should_complain ())
+		    gdm_error (_("Couldn't open session for %s"), login);
+	    goto setup_pamerr;
     }
     
     return;
