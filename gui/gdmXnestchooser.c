@@ -60,14 +60,20 @@ get_free_display (void)
 			continue;
 		}
 
+		close (sock);
+
 		g_snprintf (buf, sizeof (buf), "/tmp/.X11-unix/X%d", i);
 		if (stat (buf, &s) == 0 &&
 		    s.st_uid != getuid ()) {
-			close (sock);
 			continue;
 		}
 
-		close (sock);
+		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
+		if (stat (buf, &s) == 0 &&
+		    s.st_uid != getuid ()) {
+			continue;
+		}
+
 		return i;
 	}
 	fprintf (stderr, "ERROR! Can't find free display!\n");

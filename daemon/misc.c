@@ -231,10 +231,18 @@ gdm_get_free_display (int start, uid_t server_uid)
 		close (sock);
 
 		/* if starting as root, we'll be able to overwrite any
-		 * stale sockets, but a user may not be able to */
+		 * stale sockets or lock files, but a user may not be
+		 * able to */
 		if (server_uid > 0) {
 			g_snprintf (buf, sizeof (buf),
 				    "/tmp/.X11-unix/X%d", i);
+			if (stat (buf, &s) == 0 &&
+			    s.st_uid != server_uid) {
+				continue;
+			}
+
+			g_snprintf (buf, sizeof (buf),
+				    "/tmp/.%d-lock", i);
 			if (stat (buf, &s) == 0 &&
 			    s.st_uid != server_uid) {
 				continue;
