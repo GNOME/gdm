@@ -2,11 +2,11 @@
 
 # Do we have gnome-volume-control?
 # If so we should run it to load the gnome-volume-control settings
-if command -v gnome-volume-control > /dev/null 2>&1; then
-	gnome-volume-control -i
-elif [ -x @EXPANDED_BINDIR@/gnome-volume-control ] ; then
-	@EXPANDED_BINDIR@/gnome-volume-control -i
-fi
+#if command -v gnome-volume-control > /dev/null 2>&1; then
+#	gnome-volume-control -i
+#elif [ -x @EXPANDED_BINDIR@/gnome-volume-control ] ; then
+#	@EXPANDED_BINDIR@/gnome-volume-control -i
+#fi
 
 # path takes precedence
 exec gnome-session
