@@ -1,0 +1,21 @@
+Ahh news...
+
+- Autologin (AutomaticLogin key in [daemon] section of gdm.conf)
+  This is a string key that if it's set then gdm will log in that
+  user without prompting on the first time it runs a local server.
+  Will not autologin "root" though as that would be dumb.
+
+- You can have your cursor anywhere while you log in, yay!
+
+- [greeter]/BackgroundProgram thingie.  A program that is run from
+  the greeter and killed when the greeter exists.  useful for things
+  that do some cool graphics on the root window.
+
+- If greeter keeps segfaulting, it will "unmanage" that display so that you
+  can actually log in on a console
+
+- Slave process is actually forked
+
+- Bugfixes galore
+
+-George
