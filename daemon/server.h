@@ -21,10 +21,12 @@
 
 #include "gdm.h"
 
-gboolean gdm_server_start (GdmDisplay *d);
-void gdm_server_kill (GdmDisplay *disp);
-void gdm_server_stop (GdmDisplay *d);
-GdmDisplay *gdm_server_alloc (gint id, gchar *command);
+gboolean	gdm_server_start	(GdmDisplay *d);
+void		gdm_server_stop		(GdmDisplay *d);
+void		gdm_server_reinit	(GdmDisplay *d);
+GdmDisplay *	gdm_server_alloc	(gint id,
+					 const gchar *command);
+void		gdm_server_whack_clients (GdmDisplay *disp);
 
 
 #endif /* GDM_SERVER_H */

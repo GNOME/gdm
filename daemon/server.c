@@ -133,6 +133,38 @@ gdm_server_check_loop (GdmDisplay *disp)
 }
 
 /**
+ * gdm_server_reinit:
+ * @disp: Pointer to a GdmDisplay structure
+ *
+ * Reinit the display, basically sends a HUP signal
+ * but only if the display exists
+ */
+
+void
+gdm_server_reinit (GdmDisplay *disp)
+{
+	gboolean had_connection = FALSE;
+
+	if (disp == NULL ||
+	    disp->servpid <= 0)
+		return;
+
+	/* Kill our connection */
+	if (disp->dsp != NULL) {
+		XCloseDisplay (disp->dsp);
+		disp->dsp = NULL;
+		had_connection = TRUE;
+	}
+
+	gdm_debug ("gdm_server_reinit: Server for %s is about to be reinitialized!", disp->name);
+
+	kill (disp->servpid, SIGHUP);
+
+	if (had_connection)
+		d->dsp = XOpenDisplay (d->name);
+}
+
+/**
  * gdm_server_stop:
  * @disp: Pointer to a GdmDisplay structure
  *
@@ -140,13 +172,29 @@ gdm_server_check_loop (GdmDisplay *disp)
  */
 
 void
-gdm_server_kill (GdmDisplay *disp)
+gdm_server_stop (GdmDisplay *disp)
 {
     if (disp == NULL ||
 	disp->servpid <= 0)
 	return;
 
-    gdm_server_stop (disp);
+    gdm_debug ("gdm_server_stop: Server for %s going down!", disp->name);
+
+    /* Kill our connection */
+    if (disp->dsp != NULL) {
+	XCloseDisplay (disp->dsp);
+	disp->dsp = NULL;
+    }
+    
+    disp->servstat = SERVER_DEAD;
+
+    if (disp->servpid != 0) {
+	    if (kill (disp->servpid, SIGTERM) == 0)
+		    waitpid (disp->servpid, 0, 0);
+	    disp->servpid = 0;
+    }
+
+    unlink (disp->authfile);
 }
 
 /**
@@ -171,7 +219,7 @@ gdm_server_start (GdmDisplay *disp)
     d->servtries = 0;
 
     /* if an X server exists, wipe it */
-    gdm_server_kill (d);
+    gdm_server_stop (d);
 
     gdm_debug ("gdm_server_start: %s", d->name);
 
@@ -224,6 +272,13 @@ gdm_server_start (GdmDisplay *disp)
     sigaddset (&mask, SIGALRM);
     sigprocmask (SIG_UNBLOCK, &mask, &oldmask);
     
+    /* We add a timeout in case the X server fails to start. This
+     * might happen because X servers take a while to die, close their
+     * sockets etc. If the old X server isn't completely dead, the new
+     * one will fail and we'll hang here forever */
+
+    alarm (10);
+    
     /* fork X server process */
     gdm_server_spawn (d);
 
@@ -231,7 +286,8 @@ gdm_server_start (GdmDisplay *disp)
 
     /* Wait for X server to send ready signal */
     while (d->servtries < 5) {
-	gdm_run ();
+	if (d->servstat == SERVER_STARTED)
+		gdm_run ();
 
 	switch (d->servstat) {
 
@@ -242,6 +298,13 @@ gdm_server_start (GdmDisplay *disp)
 
 	    gdm_debug ("gdm_server_start: Temporary server failure (%d)", d->name);
 	    sleep (1 + d->servtries*2);
+    
+	    /* We add a timeout in case the X server fails to start. This
+	     * might happen because X servers take a while to die, close their
+	     * sockets etc. If the old X server isn't completely dead, the new
+	     * one will fail and we'll hang here forever */
+
+	    alarm (10);
 
 	    gdm_server_spawn (d);
 	    
@@ -257,9 +320,17 @@ gdm_server_start (GdmDisplay *disp)
 	    goto spawn_done;
 
 	case SERVER_ABORT:
+	    /* Unset alarm */
 	    alarm (0);
 	    gdm_debug ("gdm_server_start: Server %s died during startup!", d->name);
 	    sleep (1 + d->servtries*2);
+
+	    /* We add a timeout in case the X server fails to start. This
+	     * might happen because X servers take a while to die, close their
+	     * sockets etc. If the old X server isn't completely dead, the new
+	     * one will fail and we'll hang here forever */
+
+	    alarm (10);
 
 	    gdm_server_spawn (d);
 
@@ -296,7 +367,8 @@ spawn_done:
 static void 
 gdm_server_spawn (GdmDisplay *d)
 {
-    struct sigaction usr1;
+    struct sigaction usr1, dfl_signal;
+    sigset_t mask;
     gchar *srvcmd = NULL;
     gchar **argv = NULL;
     int logfd;
@@ -316,13 +388,6 @@ gdm_server_spawn (GdmDisplay *d)
     }
     else
 	gdm_error (_("gdm_server_spawn: Could not open logfile for display %s!"), d->name);
-    
-    /* We add a timeout in case the X server fails to start. This
-     * might happen because X servers take a while to die, close their
-     * sockets etc. If the old X server isn't completely dead, the new
-     * one will fail and we'll hang here forever */
-
-    alarm (10);
 
     /* Fork into two processes. Parent remains the gdm process. Child
      * becomes the X server. */
@@ -338,11 +403,34 @@ gdm_server_spawn (GdmDisplay *d)
 	usr1.sa_handler = SIG_IGN;
 	usr1.sa_flags = SA_RESTART;
 	sigemptyset (&usr1.sa_mask);
-	
+
 	if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
 	    gdm_error (_("gdm_server_spawn: Error setting USR1 to SIG_IGN"));
 	    exit (SERVER_ABORT);
 	}
+
+	/* And HUP and TERM should be at default */
+	dfl_signal.sa_handler = SIG_IGN;
+	dfl_signal.sa_flags = SA_RESTART;
+	sigemptyset (&dfl_signal.sa_mask);
+
+	if (sigaction (SIGHUP, &dfl_signal, NULL) < 0) {
+	    gdm_error (_("gdm_server_spawn: Error setting HUP to SIG_DFL"));
+	    exit (SERVER_ABORT);
+	}
+	if (sigaction (SIGTERM, &dfl_signal, NULL) < 0) {
+	    gdm_error (_("gdm_server_spawn: Error setting TERM to SIG_DFL"));
+	    exit (SERVER_ABORT);
+	}
+
+	/* unblock HUP/TERM/USR1 so that we can control the
+	 * X server */
+	sigprocmask (SIG_SETMASK, &sysmask, NULL);
+	sigemptyset (&mask);
+	sigaddset (&mask, SIGUSR1);
+	sigaddset (&mask, SIGHUP);
+	sigaddset (&mask, SIGTERM);
+	sigprocmask (SIG_UNBLOCK, &mask, NULL);
 	
 	srvcmd = g_strconcat (d->command, " -auth ", GdmServAuthDir, \
 			      "/", d->name, ".Xauth ", 
@@ -364,35 +452,12 @@ gdm_server_spawn (GdmDisplay *d)
 	gdm_error (_("gdm_server_spawn: Can't fork Xserver process!"));
 	d->servpid = 0;
 	d->servstat = SERVER_DEAD;
+
 	break;
 	
     default:
 	break;
     }
-}
-
-
-/**
- * gdm_server_stop:
- * @disp: Pointer to a GdmDisplay structure
- *
- * Stops a local X server
- */
-
-void
-gdm_server_stop (GdmDisplay *d)
-{
-    gdm_debug ("gdm_server_stop: Server for %s going down!", d->name);
-    
-    d->servstat = SERVER_DEAD;
-
-    if (d->servpid != 0) {
-	    if (kill (d->servpid, SIGTERM) == 0)
-		    waitpid (d->servpid, 0, 0);
-	    d->servpid = 0;
-    }
-
-    unlink (d->authfile);
 }
 
 
@@ -456,16 +521,14 @@ gdm_server_child_handler (gint signal)
  */
 
 GdmDisplay * 
-gdm_server_alloc (gint id, gchar *command)
+gdm_server_alloc (gint id, const gchar *command)
 {
-    gchar *dname = g_new0 (gchar, 1024);
     gchar *hostname = g_new0 (gchar, 1024);
     GdmDisplay *d = g_new0 (GdmDisplay, 1);
     
     if (gethostname (hostname, 1023) == -1)
 	return NULL;
 
-    sprintf (dname, ":%d", id);  
     d->authfile = NULL;
     d->auths = NULL;
     d->userauth = NULL;
@@ -473,7 +536,7 @@ gdm_server_alloc (gint id, gchar *command)
     d->cookie = NULL;
     d->dispstat = DISPLAY_DEAD;
     d->greetpid = 0;
-    d->name = g_strdup (dname);
+    d->name = g_strdup_printf (":%d", id);  
     d->hostname = g_strdup (hostname);
     d->dispnum = id;
     d->servpid = 0;
@@ -490,10 +553,61 @@ gdm_server_alloc (gint id, gchar *command)
     d->retry_count = 0;
     d->disabled = FALSE;
     
-    g_free (dname);
     g_free (hostname);
 
     return d;
+}
+
+/* ignore handlers */
+static gint
+ignore_xerror_handler (Display *disp, XErrorEvent *evt)
+{
+    return 0;
+}
+
+static gint
+ignore_xioerror_handler (Display *disp)
+{
+    return 0;
+}
+
+void
+gdm_server_whack_clients (GdmDisplay *disp)
+{
+	int i, screen_count;
+	gint (* old_xerror_handler) (Display *, XErrorEvent *);
+	gint (* old_xioerror_handler) (Display *);
+
+	if (disp == NULL ||
+	    disp->dsp == NULL)
+		return;
+
+	old_xerror_handler = XSetErrorHandler (ignore_xerror_handler);
+	old_xioerror_handler = XSetIOErrorHandler (ignore_xioerror_handler);
+
+	screen_count = ScreenCount (disp->dsp);
+
+	for (i = 0; i < screen_count; i++) {
+		Window root_ret, parent_ret;
+		Window *childs = NULL;
+		unsigned int childs_count = 0;
+		Window root = RootWindow (disp->dsp, i);
+
+		while (XQueryTree (disp->dsp, root, &root_ret, &parent_ret,
+				   &childs, &childs_count) &&
+		       childs_count > 0) {
+			int ii;
+
+			for (ii = 0; ii < childs_count; ii++) {
+				XKillClient (disp->dsp, childs[ii]);
+			}
+
+			XFree (childs);
+		}
+	}
+
+	XSetErrorHandler (old_xerror_handler);
+	XSetIOErrorHandler (old_xioerror_handler);
 }
 
 

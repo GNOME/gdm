@@ -77,25 +77,25 @@ static GnomeIconList *browser;
 static GdkImlibImage *defface;
 
 /* Eew. Loads of global vars. It's hard to be event controlled while maintaining state */
-GSList *sessions = NULL;
-GSList *languages = NULL;
-GList *users = NULL;
-GSList *exclude = NULL;
+static GSList *sessions = NULL;
+static GSList *languages = NULL;
+static GList *users = NULL;
+static GSList *exclude = NULL;
 
-gchar *defsess=NULL;
-gchar *cursess=NULL;
-gchar *curlang=NULL;
-gchar *curuser=NULL;
-gchar *lastsess=NULL;
-gchar *lastlang=NULL;
-gchar *session=NULL;
-gchar *language=NULL;
+static gchar *defsess = NULL;
+static gchar *cursess = NULL;
+static gchar *curlang = NULL;
+static gchar *curuser = NULL;
+static gchar *lastsess = NULL;
+static gchar *lastlang = NULL;
+static gchar *session = NULL;
+static gchar *language = NULL;
 
-gboolean savesess;
-gboolean savelang;
-gint maxwidth;
+static gboolean savesess;
+static gboolean savelang;
+static gint maxwidth;
 
-pid_t backgroundpid = 0;
+static pid_t backgroundpid = 0;
 
 static void
 gdm_greeter_chld (int sig)
@@ -111,6 +111,7 @@ kill_background (void)
 {
 	if (backgroundpid != 0) {
 		kill (backgroundpid, SIGTERM);
+		backgroundpid = 0;
 	}
 }
 
@@ -122,7 +123,10 @@ gdm_login_done (int sig)
 }
 
 
-typedef struct _cursoroffset { gint x,y; } CursorOffset;
+typedef struct _CursorOffset {
+	int x;
+	int y;
+} CursorOffset;
 
 
 static void
@@ -486,7 +490,7 @@ gdm_login_list_lookup (GSList *l, gchar *data)
 static void
 gdm_login_session_lookup (gchar* savedsess)
 {
-    if (!curuser)
+    if (curuser == NULL)
 	gdm_login_abort("gdm_login_session_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
 			"information on your PAM and user database setup");
 
@@ -546,7 +550,7 @@ gdm_login_session_lookup (gchar* savedsess)
 static void
 gdm_login_language_lookup (gchar* savedlang)
 {
-    if (!curuser)
+    if (curuser == NULL)
 	gdm_login_abort("gdm_login_language_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
 			"information on your PAM and user database setup");
 
@@ -609,7 +613,7 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	 * setups. Needs thinking! 
 	 */
 
-	if (!curuser)
+	if (curuser == NULL)
 	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
 
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
@@ -960,9 +964,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	    }
 	}
 
-	if (curuser) {
+	if (curuser != NULL) {
 	    g_free (curuser);
-	    curuser=NULL;
+	    curuser = NULL;
 	}
 
 	gtk_widget_set_sensitive (GTK_WIDGET (entry), TRUE);
@@ -1029,7 +1033,7 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 	if (user && user->login)
 	    gtk_entry_set_text (GTK_ENTRY (entry), user->login);
 
-	if (!curuser)
+	if (curuser == NULL)
 	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
 
 	gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);

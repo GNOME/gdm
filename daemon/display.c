@@ -77,11 +77,15 @@ gdm_display_manage (GdmDisplay *d)
 	if (GdmXdmcp)
 	    gdm_xdmcp_close ();
 
-	if (d->type == TYPE_LOCAL)
+	if (d->type == TYPE_LOCAL) {
 	    gdm_slave_start (d);
-
-	if (d->type == TYPE_XDMCP && d->dispstat == XDMCP_MANAGED)
+	    /* if we ever return, bad things are happening */
+	    _exit (DISPLAY_ABORT);
+	} else if (d->type == TYPE_XDMCP && d->dispstat == XDMCP_MANAGED) {
 	    gdm_slave_start (d);
+	    /* we expect to return after the session finishes */
+	    _exit (DISPLAY_REMANAGE);
+	}
 
 	break;
 
@@ -114,9 +118,9 @@ gdm_display_unmanage (GdmDisplay *d)
 
     gdm_debug ("gdm_display_unmanage: Stopping %s", d->name);
 
-    /* Kill slave and all its children */
+    /* Kill slave */
     if (d->slavepid) {
-	kill (-(d->slavepid), SIGTERM);
+	kill (d->slavepid, SIGTERM);
 	waitpid (d->slavepid, 0, 0);
 	d->slavepid = 0;
     }

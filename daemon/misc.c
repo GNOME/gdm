@@ -130,7 +130,7 @@ gdm_debug (const gchar *format, ...)
     va_list args;
     gchar *s;
 
-    if (/*0 &&*/ ! GdmDebug) 
+    if (/*0 && */! GdmDebug) 
 	return;
 
     va_start (args, format);
@@ -138,9 +138,8 @@ gdm_debug (const gchar *format, ...)
     va_end (args);
 
     /* UGLY DEBUGGING HACK! */
-    /*
-    { FILE *fp = fopen ("/tmp/foo.gdm", "a"); fprintf (fp, "%s\n", s); fflush (fp); fclose (fp); };
-    */
+    
+    /*{ FILE *fp = fopen ("/tmp/foo.gdm", "a"); fprintf (fp, "%s\n", s); fflush (fp); fclose (fp); };*/
     
     syslog (LOG_ERR, s);	/* FIXME: LOG_DEBUG */
     
