@@ -1,5 +1,60 @@
 Ahh news...
 
+2.4.0.3 stuff:
+
+- My girlfriend doesn't like that ugly green color that is used as the
+  default so use the one that ximian is using since that one is pretty cool.
+
+- Update the session scripts (especially the Xsession) setup and update the Pre
+  and Post scripts to be all nice and all that.  This fixes a whole bunch of
+  weird problems.
+
+- Run gnome-volume-control -i in gnomerc
+
+- When the users shell is some weird binary name (something that we don't know
+  if it is a shell or not) run users session in bash or sh.  should fix #64662
+
+- Make sessreg very happy.  Should fix sessreg issues on BSD, and now
+  sessreg registers the correct pid with the utmp/wtmp so it all works
+  out nicely
+
+- Run xmodmap with the default Xmodmap in the Init script, this might fix
+  #86098
+
+- Fix the error display to be nicer and wider
+
+- In main server wake up the main loop on signals, this may fix some
+  non-linux issues on systems where poll is not woken up by signals
+
+- Apply a few ximain patches, or at least do changes inspired by them
+
+- Some cleanups/fixes of places where unix is very weird and could cause
+  problems in fringe cases
+
+- The gdmXnestchooser now works much better in the Xnest only mode, that
+  is on rh 7.3 it now actually works again.  You can also start it only
+  as gdmXnest to get the pure Xnest only mode.  This would be the user
+  friendly way of starting Xnest.
+
+- Add busy cursor when starting the configurator, and a busy cursor when
+  restarting the greeter
+
+- Fix restoring the window order after we change the greeter, fixes #88533
+  (The window was disappearing before)
+
+- Happygnome theme yet again fixed (Frederic Crozat)
+
+- 24 hour clock preference now on the main page in gdmsetup
+
+- gdmsetup greeter themebrowser now wraps test correctly
+
+- Corrected some language names and added a few extra languages, fixes
+  among others #88273, #88423
+
+- Translation updates (Christian Rose, Vincent van Adrighem, Zbigniew Chyla,
+  Ole Laursen, Hasbullah Bin Pit, Christophe Merlet, Changwoo Ryu,
+  Kjartan Maraas, Jarkko Ranta, Jordi Mallach, Yanko Kaneti, me)
+
 2.4.0.2 stuff:
 
 - Add busy cursor when we start X so that the user knows that GDM
