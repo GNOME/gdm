@@ -1405,8 +1405,11 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		/* FIXME: */
 		gdm_connection_write (conn, "ERROR 0 Not implemented\n");
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
-		gdm_connection_write (conn, "VERSION " VERSION "\n");
+		gdm_connection_write (conn, "GDM " VERSION "\n");
 	} else if (strcmp (msg, GDM_SUP_CLOSE) == 0) {
+		gdm_connection_close (conn);
+	} else {
+		gdm_connection_write (conn, "ERROR 0 Not implemented\n");
 		gdm_connection_close (conn);
 	}
 }

@@ -19,11 +19,23 @@ INCLUDES = \
 	$(GNOME_CFLAGS)					\
 	$(GNOME_INCLUDEDIR)
 
-bin_PROGRAMS = @GDMCHOOSER@ gdmlogin gdmconfig gdmphotosetup
-EXTRA_PROGRAMS = gdmchooser
+bin_PROGRAMS = \
+	@GDMCHOOSER@ 		\
+	gdmlogin 		\
+	gdmconfig 		\
+	gdmphotosetup 		\
+	@GDMXNESTCHOOSER@	\
+	gdmflexiserver
+EXTRA_PROGRAMS = gdmchooser gdmXnestchooser
 
 gdmphotosetup_SOURCES = \
 	gdmphotosetup.c
+
+gdmXnestchooser_SOURCES = \
+	gdmXnestchooser.c
+
+gdmflexiserver_SOURCES = \
+	gdmflexiserver.c
 
 gdmchooser_SOURCES = \
 	gdmchooser.c		\
@@ -82,6 +94,24 @@ gdmconfig_LDADD = \
 	-lviciousui
 
 gdmphotosetup_LDADD = \
+	$(GNOME_LIBDIR)		\
+	$(GNOME_LIBS)		\
+	$(GNOMEUI_LIBS)		\
+	$(INTLLIBS)		\
+	-L$(top_builddir)/vicious-extensions	\
+	-lvicious		\
+	-lviciousui
+
+gdmXnestchooser_LDADD = \
+	$(GNOME_LIBDIR)		\
+	$(GNOME_LIBS)		\
+	$(GNOMEUI_LIBS)		\
+	$(INTLLIBS)		\
+	-L$(top_builddir)/vicious-extensions	\
+	-lvicious		\
+	-lviciousui
+
+gdmflexiserver_LDADD = \
 	$(GNOME_LIBDIR)		\
 	$(GNOME_LIBS)		\
 	$(GNOMEUI_LIBS)		\

@@ -351,7 +351,7 @@ void gdm_quit (void);
 /* VERSION: Query version
  * Arguments:  None
  * Answers:
- *   VERSION <gdm version>
+ *   GDM <gdm version>
  */
 #define GDM_SUP_FLEXI_XSERVER "FLEXI_XSERVER" /* no arguments */
 /* FLEXI_XSERVER: Start a new X flexible server
@@ -361,9 +361,9 @@ void gdm_quit (void);
  *   ERROR <err number> <english error description>
  *      0 = Not implemented
  */
-#define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <ascii xauth data> */
+#define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> [<ascii xauth data>] */
 /* FLEXI_XNEXT: Start a new flexible Xnest server
- * Arguments:  <display> <ascii xauth data from "xauth nextract - $DISPLAY">
+ * Arguments:  <display> [<ascii xauth data from "xauth nextract - $DISPLAY">]
  * Answers:
  *   OK <display>
  *   ERROR <err number> <english error description>

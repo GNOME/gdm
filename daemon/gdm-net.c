@@ -47,6 +47,8 @@ struct _GdmConnection {
 	guint source;
 	gboolean writable;
 
+	GString *buffer;
+
 	int close_level; /* 0 - normal
 			    1 - no close, when called raise to 2
 			    2 - close was requested */
@@ -71,8 +73,9 @@ close_if_needed (GdmConnection *conn, GIOCondition cond)
 	if (conn->filename != NULL)
 		return TRUE;
 
-	if (cond | G_IO_ERR ||
-	    cond | G_IO_HUP) {
+	if (cond & G_IO_ERR ||
+	    cond & G_IO_HUP) {
+		gdm_debug ("close_if_needed: Got HUP/ERR on %d", conn->fd);
 		conn->source = 0;
 		gdm_connection_close (conn);
 		return FALSE;
@@ -90,7 +93,7 @@ gdm_connection_handler (GIOChannel *source,
 	char *p;
 	gint len;
 
-	if ( ! (cond | G_IO_IN)) 
+	if ( ! (cond & G_IO_IN)) 
 		return close_if_needed (conn, cond);
 
 	if (g_io_channel_read (source, buf, sizeof (buf) - 1, &len)
@@ -103,11 +106,19 @@ gdm_connection_handler (GIOChannel *source,
 	/* null terminate as the string is NOT */
 	buf[len] = '\0';
 
-	p = strtok (buf, "\n");
-	while (p != NULL) {
-		if (conn->handler != NULL) {
+	if (conn->buffer == NULL)
+		conn->buffer = g_string_new (NULL);
+
+	for (p = buf; *p != '\0'; p++) {
+		if (*p == '\r' ||
+		    (*p == '\n' &&
+		     ve_string_empty (conn->buffer->str)))
+			/*ignore \r or empty lines*/
+			continue;
+		if (*p == '\n') {
 			conn->close_level = 1;
-			conn->handler (conn, p, conn->data);
+			conn->handler (conn, conn->buffer->str,
+				       conn->data);
 			if (conn->close_level == 2) {
 				conn->close_level = 0;
 				conn->source = 0;
@@ -115,8 +126,10 @@ gdm_connection_handler (GIOChannel *source,
 				return FALSE;
 			}
 			conn->close_level = 0;
+			g_string_truncate (conn->buffer, 0);
+		} else {
+			g_string_append_c (conn->buffer, *p);
 		}
-		p = strtok (NULL, "\n");
 	}
 
 	return close_if_needed (conn, cond);
@@ -157,18 +170,23 @@ gdm_socket_handler (GIOChannel *source,
 	struct sockaddr addr;
 	socklen_t addr_size = sizeof (addr);
 
-	if ( ! (cond | G_IO_IN)) 
+	if ( ! (cond & G_IO_IN)) 
 		return TRUE;
 
 	fd = accept (conn->fd, &addr, &addr_size);
-	if (fd < 0)
+	if (fd < 0) {
+		gdm_debug ("gdm_socket_handler: Rejecting connection");
 		return TRUE;
+	}
+
+	gdm_debug ("gdm_socket_handler: Accepting new connection fd %d", fd);
 
 	newconn = g_new0 (GdmConnection, 1);
 	newconn->close_level = 0;
 	newconn->fd = fd;
 	newconn->writable = TRUE;
 	newconn->filename = NULL;
+	newconn->buffer = NULL;
 	newconn->parent = conn;
 	newconn->subconnections = NULL;
 	newconn->n_subconnections = 0;
@@ -230,6 +248,7 @@ gdm_connection_open_unix (const char *sockname, mode_t mode)
 	conn->close_level = 0;
 	conn->fd = fd;
 	conn->writable = FALSE;
+	conn->buffer = NULL;
 	conn->filename = g_strdup (sockname);
 	conn->parent = NULL;
 	conn->subconnections = NULL;
@@ -276,6 +295,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	conn->close_level = 0;
 	conn->fd = fd;
 	conn->writable = FALSE;
+	conn->buffer = NULL;
 	conn->filename = g_strdup (fifo);
 	conn->parent = NULL;
 	conn->subconnections = NULL;
@@ -318,6 +338,11 @@ gdm_connection_close (GdmConnection *conn)
 		/* flag that close was requested */
 		conn->close_level = 2;
 		return;
+	}
+
+	if (conn->buffer != NULL) {
+		g_string_free (conn->buffer, TRUE);
+		conn->buffer = NULL;
 	}
 
 	if (conn->parent != NULL) {
