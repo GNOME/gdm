@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2002-12-23 05:56+0100\n"
-"PO-Revision-Date: 2002-12-25 00:21+0200\n"
-"Last-Translator: Artis Trops <hornet@navigators.lv>\n"
+"POT-Creation-Date: 2003-03-14 19:59+0100\n"
+"PO-Revision-Date: 2003-03-15 12:41+0200\n"
+"Last-Translator: Artis Trops  <hornet@navigator.lv>\n"
 "Language-Team: Latvian <ll10nt@inbox.lv>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -474,7 +474,7 @@ msgid "Preserve LD_* variables"
 msgstr "Pasargāt LD_* mainīgos"
 
 #: daemon/gdm.c:1436
-#: gui/gdmchooser.c:1103
+#: gui/gdmchooser.c:1071
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -1128,6 +1128,7 @@ msgstr "Lūdzu ievadi savu lietotājvārdu"
 #: daemon/verify-pam.c:320
 #: daemon/verify-shadow.c:71
 #: gui/gdmlogin.c:3297
+#: gui/greeter/greeter_parser.c:961
 #: gui/greeter/themes/circles/circles.xml.in.h:5
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
 msgid "Username:"
@@ -1468,15 +1469,15 @@ msgstr "gdm_xdmcp_handle_keepalive: Nevarēja nolasīt Displeja Numuru"
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: Nevarēja nolasīt Sesijas ID"
 
-#: daemon/xdmcp.c:1662
+#: daemon/xdmcp.c:1661
 msgid "gdm_xdmcp_init: No XDMCP support"
 msgstr "gdm_xdmcp_init: Nav XDMCP atbalsta"
 
-#: daemon/xdmcp.c:1669
+#: daemon/xdmcp.c:1668
 msgid "gdm_xdmcp_run: No XDMCP support"
 msgstr "gdm_xdmcp_run: Nav XDMCP atbalsta"
 
-#: daemon/xdmcp.c:1675
+#: daemon/xdmcp.c:1674
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "gdm_xdmcp_close: Nav XDMCP atbalsta"
 
@@ -1622,7 +1623,7 @@ msgstr "Neviens servera resursdators netika atrasts."
 msgid "Choose a host to connect to from the selection below."
 msgstr "Izvēlies resursdatoru, kuram pieslēgties, no zemākesošās izvēles."
 
-#: gui/gdmchooser.c:903
+#: gui/gdmchooser.c:871
 msgid ""
 "The main area of this application shows the hosts on the local network that have \"XDMCP\" enabled. This allows users to login remotely to other machines as if they were logged on using the console.\n"
 "\n"
@@ -1632,54 +1633,54 @@ msgstr ""
 "\n"
 "Jūs varat pārskanēt tīklu priekš jauniem resursdatoriem, klikšķinot \"Atsvaidzināt\". Klikšķini uz \"Pieslēgties\", kad esi izvēlējies resursdatoru, uz kura atvērt sesiju."
 
-#: gui/gdmchooser.c:931
+#: gui/gdmchooser.c:899
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Nevarēju atvērt noklusēto resursdatora ikonu: %s"
 
-#: gui/gdmchooser.c:987
+#: gui/gdmchooser.c:955
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Kļūda uzstādot HUP signāla noteicēju"
 
-#: gui/gdmchooser.c:990
+#: gui/gdmchooser.c:958
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Kļūda uzstādot INT signāla noteicēju"
 
-#: gui/gdmchooser.c:993
+#: gui/gdmchooser.c:961
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Kļūda uzstādot TERM signāla noteicēju"
 
-#: gui/gdmchooser.c:1001
+#: gui/gdmchooser.c:969
 #: gui/gdmlogin.c:4227
 #: gui/greeter/greeter.c:1075
 msgid "Could not set signal mask!"
 msgstr "Nevarēja uzstādīt signāla masku!"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "Socket for xdm communication"
 msgstr "Ligzda xdm komunikācijai"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:975
 msgid "SOCKET"
 msgstr "LIGZDA"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "Client address to return in response to xdm"
 msgstr "Klienta adrese, kuru atgriezt atbildei uz xdm"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:978
 msgid "ADDRESS"
 msgstr "ADRESE"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "Connection type to return in response to xdm"
 msgstr "Savienojuma tips, kuru atgriezt atbildei uz xdm"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:981
 msgid "TYPE"
 msgstr "Tips"
 
-#: gui/gdmchooser.c:1133
+#: gui/gdmchooser.c:1101
 #, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).\n"
@@ -1832,279 +1833,369 @@ msgstr "A-M|Azerbaidžānu"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:55
+msgid "A-M|Albanian"
+msgstr "A-M|Albāņu"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:57
 msgid "A-M|Amharic"
 msgstr "A-M|Amharu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:57
+#: gui/gdmlanguages.c:59
 msgid "A-M|Arabic (Egypt)"
 msgstr "A-M|Arābu (Ēģiptes)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:59
+#: gui/gdmlanguages.c:61
 msgid "A-M|Arabic (Lebanon)"
 msgstr "A-M|Arābu (Lebanonas)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:61
+#: gui/gdmlanguages.c:63
 msgid "A-M|Basque"
 msgstr "A-M|Basku"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:63
+#: gui/gdmlanguages.c:65
+msgid "A-M|Belarusian"
+msgstr "A-M|Baltkrievu"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:67
+msgid "A-M|Bengali"
+msgstr "A-M|Bengāļu"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:69
+msgid "A-M|Bengali (India)"
+msgstr "A-M|Bengāļu (Indijas)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:71
 msgid "A-M|Bulgarian"
 msgstr "A-M|Bulgāru"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:65
+#: gui/gdmlanguages.c:73
+msgid "A-M|Bosnian"
+msgstr "A-M|Bosniešu"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:75
 msgid "A-M|Catalan"
 msgstr "A-M|Katalīna"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:67
+#: gui/gdmlanguages.c:77
 msgid "A-M|Chinese (simplified)"
 msgstr "A-M|Ķīniešu (vienkāršota)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:69
+#: gui/gdmlanguages.c:79
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|Ķīniešu (tradicionālā)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:71
+#: gui/gdmlanguages.c:81
 msgid "A-M|Croatian"
 msgstr "A-M|Horvātu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:73
+#: gui/gdmlanguages.c:83
 msgid "A-M|Czech"
 msgstr "A-M|Čehu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:75
+#: gui/gdmlanguages.c:85
 msgid "A-M|Danish"
 msgstr "A-M|Dāņu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:77
+#: gui/gdmlanguages.c:87
 msgid "A-M|Dutch"
 msgstr "A-M|Holandiešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:79
+#: gui/gdmlanguages.c:89
 msgid "A-M|English"
 msgstr "A-M|Angļu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:81
+#: gui/gdmlanguages.c:91
 msgid "A-M|Estonian"
 msgstr "A-M|Igauņu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:83
+#: gui/gdmlanguages.c:93
 msgid "A-M|English (American)"
 msgstr "A-M|Angļu (Amerikāņu)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:95
 msgid "A-M|English (Australian)"
 msgstr "A-M|Angļu (Austrāliešu)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:97
 msgid "A-M|English (British)"
 msgstr "A-M|Angļu (Britu)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:99
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Angļu (Īrijas)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:101
 msgid "A-M|Finnish"
 msgstr "A-M|Somu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:103
 msgid "A-M|French"
 msgstr "A-M|Franču"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:105
 msgid "A-M|Galician"
 msgstr "A-M|Gallu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:107
 msgid "A-M|German"
 msgstr "A-M|Vācu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:109
 msgid "A-M|Greek"
 msgstr "A-M|Grieķu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101
-#: gui/gdmlanguages.c:102
+#: gui/gdmlanguages.c:111
+msgid "A-M|Gujarati"
+msgstr "A-M|Gudžarati"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:113
+#: gui/gdmlanguages.c:115
 msgid "A-M|Hebrew"
 msgstr "A-M|Ebreju"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:104
+#: gui/gdmlanguages.c:117
+msgid "A-M|Hindi"
+msgstr "A-M|Hindu"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:119
 msgid "A-M|Hungarian"
 msgstr "A-M|Ungāru"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:106
+#: gui/gdmlanguages.c:121
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandiešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:108
+#: gui/gdmlanguages.c:123
+msgid "A-M|Indonesian"
+msgstr "A-M|Indonēziešu"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:125
+msgid "A-M|Interlingua"
+msgstr "A-M|Interlingva"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:127
 msgid "A-M|Irish"
 msgstr "A-M|Īru"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:110
+#: gui/gdmlanguages.c:129
 msgid "A-M|Italian"
 msgstr "A-M|Itāļu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:112
+#: gui/gdmlanguages.c:131
 msgid "A-M|Japanese"
 msgstr "A-M|Japāņu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:114
+#: gui/gdmlanguages.c:133
+msgid "A-M|Kannada"
+msgstr "A-M|Kannadu"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:135
 msgid "A-M|Korean"
 msgstr "A-M|Korejiešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:116
+#: gui/gdmlanguages.c:137
 msgid "A-M|Latvian"
 msgstr "A-M|Latviešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:118
+#: gui/gdmlanguages.c:139
 msgid "A-M|Lithuanian"
 msgstr "A-M|Lietuviešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:120
+#: gui/gdmlanguages.c:141
 msgid "A-M|Macedonian"
 msgstr "A-M|Maķedoniešu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:122
+#: gui/gdmlanguages.c:143
 msgid "A-M|Malay"
 msgstr "A-M|Malaju"
 
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:145
+msgid "A-M|Mongolian"
+msgstr "A-M|Mōngoļu"
+
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:124
+#: gui/gdmlanguages.c:147
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norvēģu (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:126
+#: gui/gdmlanguages.c:149
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norvēģu (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:128
+#: gui/gdmlanguages.c:151
+msgid "N-Z|Persian"
+msgstr "N-Z|Persiešu"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:153
 msgid "N-Z|Polish"
 msgstr "N-Z|Poļu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:130
+#: gui/gdmlanguages.c:155
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugāļu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:132
+#: gui/gdmlanguages.c:157
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portugāļu (Brazīlijas)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:134
+#: gui/gdmlanguages.c:159
+msgid "N-Z|Panjabi"
+msgstr "N-Z|Pandžabi"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:161
 msgid "N-Z|Romanian"
 msgstr "N-Z|Rumāņu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:136
+#: gui/gdmlanguages.c:163
 msgid "N-Z|Russian"
 msgstr "N-Z|Krievu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:138
+#: gui/gdmlanguages.c:165
+msgid "N-Z|Serbian"
+msgstr "N-Z|Serbu"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:167
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovāku"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:140
+#: gui/gdmlanguages.c:169
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovēņu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:142
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Spanish"
 msgstr "N-Z|Spāņu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:144
+#: gui/gdmlanguages.c:173
 msgid "N-Z|Spanish (Mexico)"
 msgstr "N-Z|Spāņu (Meksikas)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:146
+#: gui/gdmlanguages.c:175
 msgid "N-Z|Swedish"
 msgstr "N-Z|Zviedru"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:148
+#: gui/gdmlanguages.c:177
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Zviedru (Somijas)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:150
+#: gui/gdmlanguages.c:179
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamilu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:152
+#: gui/gdmlanguages.c:181
+msgid "N-Z|Telugu"
+msgstr "N-Z|Telugu"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:183
+msgid "N-Z|Thai"
+msgstr "N-Z|Taizemiešu"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turku"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:154
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukraiņu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:156
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vjetnamiešu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:158
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Walloon"
 msgstr "N-Z|Walloon"
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:193
+msgid "N-Z|Welsh"
+msgstr "N-Z|Velsiešu"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:195
+msgid "N-Z|Yiddish"
+msgstr "N-Z|Jidišs"
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:160
+#: gui/gdmlanguages.c:197
 msgid "Other|POSIX/C English"
 msgstr "Cita|POSIX/C Angļu"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:335
+#: gui/gdmlanguages.c:372
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:343
+#: gui/gdmlanguages.c:380
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2149,6 +2240,7 @@ msgid "Last"
 msgstr "Pēdējā"
 
 #: gui/gdmlogin.c:218
+#: gui/greeter/greeter_parser.c:948
 #: gui/greeter/themes/circles/circles.xml.in.h:4
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
 #, no-c-format
@@ -2180,14 +2272,17 @@ msgstr ""
 "Jūs laikam arī nevarēsiet pieteikties."
 
 #: gui/gdmlogin.c:803
+#: gui/greeter/greeter_system.c:52
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Vai esi pārliecināts, ka vēlies pārstartēt datoru?"
 
 #: gui/gdmlogin.c:815
+#: gui/greeter/greeter_system.c:63
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Vai esi pārliecināts, ka vēlies izslēgt datoru?"
 
 #: gui/gdmlogin.c:826
+#: gui/greeter/greeter_system.c:73
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Vai esi pārliecināts, ka vēlies atslēgt datoru?"
 
@@ -2392,6 +2487,7 @@ msgstr "GDM Pieteikšanās"
 
 #: gui/gdmlogin.c:3000
 #: gui/greeter/greeter_canvas_item.c:129
+#: gui/greeter/greeter_parser.c:923
 #: gui/greeter/themes/circles/circles.xml.in.h:11
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
 msgid "_Session"
@@ -2399,6 +2495,7 @@ msgstr "_Sesija"
 
 #: gui/gdmlogin.c:3007
 #: gui/greeter/greeter_canvas_item.c:122
+#: gui/greeter/greeter_parser.c:918
 #: gui/greeter/themes/circles/circles.xml.in.h:9
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
 msgid "_Language"
@@ -2438,6 +2535,7 @@ msgstr "Atslēgt tavu datoru"
 
 #: gui/gdmlogin.c:3073
 #: gui/greeter/greeter_canvas_item.c:138
+#: gui/greeter/greeter_parser.c:928
 #: gui/greeter/themes/circles/circles.xml.in.h:2
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
 msgid "S_ystem"
@@ -2445,6 +2543,7 @@ msgstr "S_istēma"
 
 #: gui/gdmlogin.c:3085
 #: gui/greeter/greeter_canvas_item.c:151
+#: gui/greeter/greeter_parser.c:938
 #: gui/greeter/themes/circles/circles.xml.in.h:10
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
 msgid "_Quit"
@@ -2452,6 +2551,7 @@ msgstr "_Iziet"
 
 #: gui/gdmlogin.c:3087
 #: gui/greeter/greeter_canvas_item.c:153
+#: gui/greeter/greeter_parser.c:933
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "D_isconnect"
@@ -3024,21 +3124,34 @@ msgstr "Izvēlieties valodu"
 msgid "Select a language for your session to use:"
 msgstr "Izvēlieties valodu savai sesijai:"
 
-#: gui/greeter/greeter_system.c:119
+#: gui/greeter/greeter_system.c:150
 msgid "Shut down the computer"
 msgstr "Izslēgt datoru"
 
-#: gui/greeter/greeter_system.c:131
+#: gui/greeter/greeter_system.c:162
 msgid "Suspend the computer"
 msgstr "Atslēgt datoru"
 
-#: gui/greeter/greeter_system.c:143
+#: gui/greeter/greeter_system.c:174
 msgid "Reboot the computer"
 msgstr "Pārstartēt datoru"
 
-#: gui/greeter/greeter_system.c:156
+#: gui/greeter/greeter_system.c:187
 msgid "Configure"
 msgstr "Konfigurēt"
+
+#: gui/greeter/greeter_parser.c:943
+#: gui/greeter/themes/circles/circles.xml.in.h:8
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
+msgid "You've got capslock on!"
+msgstr "Tev ir ieslēgts capslock!"
+
+#: gui/greeter/greeter_parser.c:955
+#: gui/greeter/themes/circles/circles.xml.in.h:7
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
+#, no-c-format
+msgid "Welcome to %h"
+msgstr "Laipni lūgti %h"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
@@ -3055,17 +3168,6 @@ msgstr "Rinķi"
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:4
 msgid "Theme with blue circles"
 msgstr "Tēma ar ziliem rinķiem"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:7
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
-#, no-c-format
-msgid "Welcome to %h"
-msgstr "Laipni lūgti %h"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:8
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
-msgid "You've got capslock on!"
-msgstr "Tev ir ieslēgts capslock!"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
