@@ -4,10 +4,10 @@
 # Changwoo Ryu <cwryu@debian.org>, 1999, 2002, 2004.
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm 2.5.90\n"
+"Project-Id-Version: gdm 2.6.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-06 14:08+0900\n"
-"PO-Revision-Date: 2004-08-06 14:10+0900\n"
+"POT-Creation-Date: 2004-08-13 14:23+0900\n"
+"PO-Revision-Date: 2004-08-13 14:28+0900\n"
 "Last-Translator: Young-Ho, Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -594,7 +594,7 @@ msgstr "마스터 일시 중단..."
 #: daemon/gdm.c:1250
 #, c-format
 msgid "System is rebooting, please wait ..."
-msgstr "시스템을 재시작합니다, 잠시만 기다리십시오..."
+msgstr "시스템을 다시 시작합니다, 잠시만 기다리십시오..."
 
 #: daemon/gdm.c:1252
 #, c-format
@@ -612,22 +612,22 @@ msgstr "%s: 시스템 종료 실패: %s"
 
 #: daemon/gdm.c:1285
 msgid "Master rebooting..."
-msgstr "마스터 시스템 재시작..."
+msgstr "마스터 시스템 다시 시작..."
 
 #: daemon/gdm.c:1298
 #, c-format
 msgid "%s: Reboot failed: %s"
-msgstr "%s: 시스템 재시작 실패: %s"
+msgstr "%s: 시스템 다시 시작 실패: %s"
 
 #: daemon/gdm.c:1396
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
-msgstr "디스플레이 %s에서 시스템 메뉴가 없을때 재시작 또는 중지요청"
+msgstr "디스플레이 %s에서 시스템 메뉴가 없을때 다시 시작 또는 중지요청"
 
 #: daemon/gdm.c:1405
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-local display %s"
-msgstr "로컬 디스플레이가 아닌 곳 %s에서 재시작 또는 중지 요청"
+msgstr "로컬 디스플레이가 아닌 곳 %s에서 다시 시작 또는 중지 요청"
 
 #. Bury this display for good
 #: daemon/gdm.c:1471
@@ -641,7 +641,7 @@ msgstr "GDM 다시 시작중..."
 
 #: daemon/gdm.c:1626
 msgid "Failed to restart self"
-msgstr "재시작 실패"
+msgstr "다시 시작 실패"
 
 #. FIXME: note that this could mean out of memory
 #: daemon/gdm.c:1700
@@ -1264,7 +1264,7 @@ msgstr "자세한 사항 보기 (~/.xsession-error 파일)"
 
 #: daemon/slave.c:4369
 msgid "GDM detected a shutdown or reboot in progress."
-msgstr "시스템이 종료 또는 재시작하는 것을 감지했습니다."
+msgstr "시스템이 종료 또는 다시 시작하는 것을 감지했습니다."
 
 #: daemon/slave.c:4463
 #, c-format
@@ -1274,7 +1274,7 @@ msgstr "%s(으)로의 ping이 실패했습니다. 디스플레이 강제 종료!
 #: daemon/slave.c:4749
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
-msgstr "%s: 치명적 X 문제 - %s 재시작"
+msgstr "%s: 치명적 X 문제 - %s 다시 시작"
 
 #: daemon/slave.c:4843
 msgid ""
@@ -1304,7 +1304,7 @@ msgstr "%s: 파이프를 만들 수 없습니다"
 msgid "%s: Failed executing: %s"
 msgstr "%s: 실행 실패: %s"
 
-#: daemon/verify-crypt.c:75 daemon/verify-pam.c:740 daemon/verify-shadow.c:76
+#: daemon/verify-crypt.c:75 daemon/verify-pam.c:1033 daemon/verify-shadow.c:76
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
@@ -1312,27 +1312,27 @@ msgstr ""
 "\n"
 "잘못된 사용자이름이나 열쇠글 입니다. 대소문자를 정확히 입력하여야 합니다. "
 
-#: daemon/verify-crypt.c:80 daemon/verify-pam.c:750 daemon/verify-shadow.c:81
+#: daemon/verify-crypt.c:80 daemon/verify-pam.c:1043 daemon/verify-shadow.c:81
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "<Caps Lock> 키를 끄고 입력하십시오."
 
 #. I think I'll add the buttons next to this
-#: daemon/verify-crypt.c:127 daemon/verify-pam.c:192
+#: daemon/verify-crypt.c:127 daemon/verify-pam.c:439
 #: daemon/verify-shadow.c:126 gui/gdmlogin.c:3040
 msgid "Please enter your username"
 msgstr "사용자 이름을 입력하십시오"
 
 #. login: is whacked always translate to Username:
-#: daemon/verify-crypt.c:128 daemon/verify-pam.c:92 daemon/verify-pam.c:93
-#: daemon/verify-pam.c:94 daemon/verify-pam.c:179 daemon/verify-pam.c:530
+#: daemon/verify-crypt.c:128 daemon/verify-pam.c:339 daemon/verify-pam.c:340
+#: daemon/verify-pam.c:341 daemon/verify-pam.c:426 daemon/verify-pam.c:785
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2344 gui/greeter/greeter.c:281
 #: gui/greeter/greeter_parser.c:1061
 msgid "Username:"
 msgstr "사용자이름:"
 
-#: daemon/verify-crypt.c:166 daemon/verify-pam.c:95 daemon/verify-pam.c:96
-#: daemon/verify-pam.c:240 daemon/verify-shadow.c:184 gui/gdmlogin.c:1905
+#: daemon/verify-crypt.c:166 daemon/verify-pam.c:342 daemon/verify-pam.c:343
+#: daemon/verify-pam.c:487 daemon/verify-shadow.c:184 gui/gdmlogin.c:1905
 msgid "Password:"
 msgstr "열쇠글:"
 
@@ -1342,7 +1342,7 @@ msgstr "열쇠글:"
 msgid "Couldn't authenticate user \"%s\""
 msgstr "사용자 \"%s\"을(를) 인증할 수 없습니다."
 
-#: daemon/verify-crypt.c:211 daemon/verify-pam.c:626
+#: daemon/verify-crypt.c:211 daemon/verify-pam.c:881
 #: daemon/verify-shadow.c:229
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1358,8 +1358,8 @@ msgstr "시스템 관리자가 이 화면에서 로그인 하는 것을 허용�
 msgid "User %s not allowed to log in"
 msgstr "사용자 %s은(는) 로그인이 허용되지 않음"
 
-#: daemon/verify-crypt.c:231 daemon/verify-crypt.c:255 daemon/verify-pam.c:656
-#: daemon/verify-pam.c:906 daemon/verify-shadow.c:249
+#: daemon/verify-crypt.c:231 daemon/verify-crypt.c:255 daemon/verify-pam.c:927
+#: daemon/verify-pam.c:1214 daemon/verify-shadow.c:249
 #: daemon/verify-shadow.c:273
 msgid ""
 "\n"
@@ -1368,15 +1368,15 @@ msgstr ""
 "\n"
 "시스템 관리자가 당신의 계정을 막아놓았습니다."
 
-#: daemon/verify-crypt.c:278 daemon/verify-crypt.c:416 daemon/verify-pam.c:674
-#: daemon/verify-pam.c:923 daemon/verify-shadow.c:296
+#: daemon/verify-crypt.c:278 daemon/verify-crypt.c:416 daemon/verify-pam.c:945
+#: daemon/verify-pam.c:1231 daemon/verify-shadow.c:296
 #: daemon/verify-shadow.c:434
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "사용자 그룹을 %s(으)로 설정할 수 없습니다"
 
-#: daemon/verify-crypt.c:280 daemon/verify-crypt.c:419 daemon/verify-pam.c:676
-#: daemon/verify-pam.c:926 daemon/verify-shadow.c:298
+#: daemon/verify-crypt.c:280 daemon/verify-crypt.c:419 daemon/verify-pam.c:947
+#: daemon/verify-pam.c:1234 daemon/verify-shadow.c:298
 #: daemon/verify-shadow.c:437
 msgid ""
 "\n"
@@ -1445,77 +1445,77 @@ msgstr ""
 msgid "Cannot get passwd structure for %s"
 msgstr "%s의 passwd 구조를 얻을 수 없습니다"
 
-#: daemon/verify-pam.c:97
+#: daemon/verify-pam.c:344
 msgid "You are required to change your password immediately (password aged)"
 msgstr "열쇠글이 지금 바뀌어져야 합니다. (열쇠글이 오래되었습니다)"
 
-#: daemon/verify-pam.c:98
+#: daemon/verify-pam.c:345
 msgid "You are required to change your password immediately (root enforced)"
 msgstr "열쇠글이 지금 바뀌어져야 합니다. (root사용자가 설정하였습니다)"
 
-#: daemon/verify-pam.c:99
+#: daemon/verify-pam.c:346
 msgid "Your account has expired; please contact your system administrator"
 msgstr "계정 사용기한이 넘었습니다. 시스템 관리자에게 연락하십시오"
 
-#: daemon/verify-pam.c:100
+#: daemon/verify-pam.c:347
 msgid "No password supplied"
 msgstr "열쇠글이 없습니다"
 
-#: daemon/verify-pam.c:101
+#: daemon/verify-pam.c:348
 msgid "Password unchanged"
 msgstr "열쇠글이 바뀌지 않았습니다"
 
-#: daemon/verify-pam.c:102
+#: daemon/verify-pam.c:349
 msgid "Can not get username"
 msgstr "사용자 이름을 얻을 수 없습니다"
 
-#: daemon/verify-pam.c:103
+#: daemon/verify-pam.c:350
 msgid "Retype new UNIX password:"
 msgstr "새 UNIX 열쇠글을 다시 입력하십시오:"
 
-#: daemon/verify-pam.c:104
+#: daemon/verify-pam.c:351
 msgid "Enter new UNIX password:"
 msgstr "새 UNIX 열쇠글을 입력하십시오:"
 
-#: daemon/verify-pam.c:105
+#: daemon/verify-pam.c:352
 msgid "(current) UNIX password:"
 msgstr "(현재) UNIX 열쇠글:"
 
-#: daemon/verify-pam.c:106
+#: daemon/verify-pam.c:353
 msgid "Error while changing NIS password."
 msgstr "NIS 열쇠글을 바꾸는 중 오류가 발생했습니다."
 
-#: daemon/verify-pam.c:107
+#: daemon/verify-pam.c:354
 msgid "You must choose a longer password"
 msgstr "더 긴 열쇠글을 써야합니다"
 
-#: daemon/verify-pam.c:108
+#: daemon/verify-pam.c:355
 msgid "Password has been already used. Choose another."
 msgstr "열쇠글이 이미 쓰이고 있습니다. 다른것을 골라주십시오."
 
-#: daemon/verify-pam.c:109
+#: daemon/verify-pam.c:356
 msgid "You must wait longer to change your password"
 msgstr "나중에 열쇠글을 바꿔주십시오"
 
-#: daemon/verify-pam.c:110
+#: daemon/verify-pam.c:357
 msgid "Sorry, passwords do not match"
 msgstr "열쇠글이 맞지 안습니다"
 
-#: daemon/verify-pam.c:404
+#: daemon/verify-pam.c:651
 msgid "Cannot setup pam handle with null display"
 msgstr "null 로그인 또는 화면으로 pam 처리 설정을 할 수 없습니다"
 
-#: daemon/verify-pam.c:421
+#: daemon/verify-pam.c:668
 #, c-format
 msgid "Unable to establish service %s: %s\n"
 msgstr "서비스 %s을(를) 시작할 수 없습니다: %s\n"
 
-#: daemon/verify-pam.c:429
+#: daemon/verify-pam.c:681
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "PAM_TTY=%s을(를) 설정할 수 없습니다"
 
-#: daemon/verify-pam.c:439
+#: daemon/verify-pam.c:691
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "PAM_RHOST=%s을(를) 설정할 수 없습니다"
@@ -1525,12 +1525,12 @@ msgstr "PAM_RHOST=%s을(를) 설정할 수 없습니다"
 #. is not really an auth problem, but it will
 #. pretty much look as such, it shouldn't really
 #. happen
-#: daemon/verify-pam.c:583 daemon/verify-pam.c:601 daemon/verify-pam.c:856
-#: daemon/verify-pam.c:868
+#: daemon/verify-pam.c:838 daemon/verify-pam.c:856 daemon/verify-pam.c:1153
+#: daemon/verify-pam.c:1165
 msgid "Couldn't authenticate user"
 msgstr "사용자를 인증할 수 없습니다."
 
-#: daemon/verify-pam.c:629
+#: daemon/verify-pam.c:884
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1538,12 +1538,12 @@ msgstr ""
 "\n"
 "시스템 관리자가 이 화면에서 로그인을 허용하지 않았습니다"
 
-#: daemon/verify-pam.c:645
+#: daemon/verify-pam.c:908 daemon/verify-pam.c:1195
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "인증 토근 교환이 %s 사용자에 대해 실패했습니다"
 
-#: daemon/verify-pam.c:647
+#: daemon/verify-pam.c:910 daemon/verify-pam.c:1198
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1553,17 +1553,17 @@ msgstr ""
 "인증 토근 교환이 실패했습니다. 나중에 다시 시도하거나 시스템 관리자에게 연락"
 "하십시오."
 
-#: daemon/verify-pam.c:654 daemon/verify-pam.c:903
+#: daemon/verify-pam.c:925 daemon/verify-pam.c:1211
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "사용자 %s은(는) 더 이상 이 시스템에 접근을 허용하지 않습니다"
 
-#: daemon/verify-pam.c:660 daemon/verify-pam.c:909
+#: daemon/verify-pam.c:931 daemon/verify-pam.c:1217
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "사용자 %s은(는) 현재 접근이 허용되지 않습니다"
 
-#: daemon/verify-pam.c:662
+#: daemon/verify-pam.c:933
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1571,22 +1571,22 @@ msgstr ""
 "\n"
 "시스템 관리자가 임시로 시스템에 접근을 막았습니다."
 
-#: daemon/verify-pam.c:667 daemon/verify-pam.c:916
+#: daemon/verify-pam.c:938 daemon/verify-pam.c:1224
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "%s에 대해 acct. mgmt를 결정할 수 없습니다"
 
-#: daemon/verify-pam.c:688 daemon/verify-pam.c:939
+#: daemon/verify-pam.c:966 daemon/verify-pam.c:1254
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "%s에 대한 인증서를 만들 수 없습니다"
 
-#: daemon/verify-pam.c:702 daemon/verify-pam.c:954
+#: daemon/verify-pam.c:980 daemon/verify-pam.c:1269
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "%s에 대한 세션을 열 수 없습니다"
 
-#: daemon/verify-pam.c:744
+#: daemon/verify-pam.c:1037
 msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
@@ -1594,15 +1594,15 @@ msgstr ""
 "\n"
 "인증이 실패했습니다. 대소문자가 맞아야 합니다."
 
-#: daemon/verify-pam.c:760 daemon/verify-pam.c:859 daemon/verify-pam.c:871
+#: daemon/verify-pam.c:1053 daemon/verify-pam.c:1156 daemon/verify-pam.c:1168
 msgid "Authentication failed"
 msgstr "인증 실패"
 
-#: daemon/verify-pam.c:825
+#: daemon/verify-pam.c:1122
 msgid "Automatic login"
 msgstr "자동 로그인"
 
-#: daemon/verify-pam.c:912
+#: daemon/verify-pam.c:1220
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
@@ -1610,7 +1610,7 @@ msgstr ""
 "\n"
 "시스템 관리자가 임시로 시스템에 접근할 수 없도록 하였습니다."
 
-#: daemon/verify-pam.c:1087 daemon/verify-pam.c:1089
+#: daemon/verify-pam.c:1425 daemon/verify-pam.c:1427
 msgid "Can't find PAM configuration for gdm."
 msgstr "gdm에 대한 PAM 설정 파일을 찾을 수 없습니다."
 
@@ -1998,9 +1998,7 @@ msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
 "probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
 "computer."
-msgstr ""
-"선택 프로그램의 버전(%s)이 데몬의 버전(%s)과 맞지 않습니다.  아마도 gdm을 막 "
-"업그레이드했을 것입니다. gdm 데몬을 재시작하거나 컴퓨터를 재시작하십시오."
+msgstr "선택 프로그램의 버전(%s)이 데몬의 버전(%s)과 맞지 않습니다.  아마도 gdm을 막 업그레이드했을 것입니다. gdm 데몬을 다시 시작하거나 컴퓨터를 다시 시작하십시오."
 
 #. markup
 #: gui/gdmcomm.c:405 gui/gdmphotosetup.c:70
@@ -2369,7 +2367,7 @@ msgstr "ㅇ-ㅎ|영어 (아일랜드)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:103
-msgid "A-M|English (Danmark)"
+msgid "A-M|English (Denmark)"
 msgstr "ㅇ-ㅎ|영어 (덴마크)"
 
 #. Note translate the A-M to the A-M you used in the group label
@@ -2700,13 +2698,13 @@ msgstr "로그인 할 수 없습니다."
 
 #: gui/gdmlogin.c:583 gui/greeter/greeter_system.c:45
 msgid "Are you sure you want to reboot the machine?"
-msgstr "정말로 이 시스템을 재시작하시겠습니까?"
+msgstr "정말로 이 시스템을 다시 시작하시겠습니까?"
 
 #. markup
 #: gui/gdmlogin.c:585 gui/gdmlogin.c:2752 gui/greeter/greeter_parser.c:1027
 #: gui/greeter/greeter_system.c:47 gui/greeter/greeter_system.c:168
 msgid "_Reboot"
-msgstr "재시작(_R)"
+msgstr "다시 시작(_R)"
 
 #: gui/gdmlogin.c:597 gui/greeter/greeter_system.c:58
 msgid "Are you sure you want to shut down the machine?"
@@ -2960,7 +2958,7 @@ msgstr ""
 
 #: gui/gdmlogin.c:2759 gui/greeter/greeter_system.c:175
 msgid "Reboot your computer"
-msgstr "컴퓨터를 재시작 합니다"
+msgstr "컴퓨터를 다시 시작 합니다"
 
 #: gui/gdmlogin.c:2772 gui/greeter/greeter_system.c:187
 msgid "Shut down the system so that you may safely turn off the computer."
@@ -3014,14 +3012,12 @@ msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
 "probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
 "computer."
-msgstr ""
-"환영 프로그램의 버전(%s)이 데몬의 버전과 맞지 않습니다. 아마도 gdm을 막 업그"
-"레이드했을 것입니다. gdm 데몬을 재시작하거나 컴퓨터를 재시작하십시오."
+msgstr "환영 프로그램의 버전(%s)이 데몬의 버전과 맞지 않습니다. 아마도 gdm을 막 업그레이드했을 것입니다. gdm 데몬을 다시 시작하거나 컴퓨터를 다시 시작하십시오."
 
 #: gui/gdmlogin.c:3840 gui/gdmlogin.c:3886 gui/greeter/greeter.c:675
 #: gui/greeter/greeter.c:722
 msgid "Reboot"
-msgstr "재시작"
+msgstr "다시 시작"
 
 #: gui/gdmlogin.c:3878
 #, c-format
@@ -3029,9 +3025,7 @@ msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
 "probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
 "computer."
-msgstr ""
-"환영 프로그램의 버전(%s)이 데몬의 버전(%s)과 맞지 않습니다.아마도 gdm을 막 업"
-"그레이드했을 것입니다.gdm 데몬을 재시작하거나 컴퓨터를 재시작하십시오."
+msgstr "환영 프로그램의 버전(%s)이 데몬의 버전(%s)과 맞지 않습니다.아마도 gdm을 막 업그레이드했을 것입니다.gdm 데몬을 다시 시작하거나 컴퓨터를 다시 시작하십시오."
 
 #: gui/gdmlogin.c:3884 gui/greeter/greeter.c:720
 msgid "Restart"
@@ -3364,9 +3358,7 @@ msgid ""
 "Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
 "set, none of the system commands will be available (this includes reboot, "
 "shutdown, configure, chooser)"
-msgstr ""
-"(이전의 \"시스템\" 메뉴)를 보입니다. 설정되지 않으면 시스템 명령(리붓, 종료, "
-"설정, 선택기)를 쓸 수 없게됩니다."
+msgstr "(이전의 \"시스템\" 메뉴)를 보입니다. 설정되지 않으면 시스템 명령(다시 시작, 종료, 설정, 선택기)를 쓸 수 없게됩니다."
 
 #: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:46
 msgid "Show _actions menu"
@@ -3596,7 +3588,7 @@ msgid ""
 msgstr ""
 "환영 프로그램의 버전(%s)이 데몬의 버전과 맞지 않습니다.\n"
 "아마도 gdm을 막 업그레이드했을 것입니다.\n"
-"gdm 데몬을 재시작하거나 컴퓨터를 재시작하십시오."
+"gdm 데몬을 다시 시작하거나 컴퓨터를 다시 시작하십시오."
 
 #: gui/greeter/greeter.c:714
 #, c-format
@@ -3607,7 +3599,7 @@ msgid ""
 msgstr ""
 "환영 프로그램의 버전(%s)이 데몬의 버전(%s)과 맞지 않습니다.\n"
 "아마도 gdm을 막 업그레이드했을 것입니다.\n"
-"gdm 데몬을 재시작하거나 컴퓨터를 재시작하십시오."
+"gdm 데몬을 다시 시작하거나 컴퓨터를 다시 시작하십시오."
 
 #: gui/greeter/greeter.c:1173
 #, c-format
@@ -3714,7 +3706,7 @@ msgstr "컴퓨터를 끄기 위해 종료 합니다."
 
 #: gui/greeter/greeter_system.c:300
 msgid "_Reboot the computer"
-msgstr "컴퓨터 재시작(_R)"
+msgstr "컴퓨터 다시 시작(_R)"
 
 #: gui/greeter/greeter_system.c:314
 msgid "Sus_pend the computer"
@@ -3867,21 +3859,3 @@ msgstr "인터페이스를 읽어들일 수 없습니다, 상태가 안 좋아�
 #: vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr "로케일에 너무 많은 별명이 걸려있습니다. 되돌고 있는 것처럼 보입니다"
-
-#~ msgid "Flexible server request denied: Not authenticated"
-#~ msgstr "탄력적 서버 요청이 거부되었습니다: 인증되지 않았습니다"
-
-#~ msgid "Query logout action request denied: Not authenticated"
-#~ msgstr "로그아웃 요청이 거부되었습니다: 인증되지 않았습니다"
-
-#~ msgid "Set logout action request denied: Not authenticated"
-#~ msgstr "바로 로그아웃 요청이 거부되었습니다: 인증되지 않았습니다"
-
-#~ msgid "A-M|English (American)"
-#~ msgstr "ㅇ-ㅎ|영어 (미국)"
-
-#~ msgid "A-M|English (British)"
-#~ msgstr "ㅇ-ㅎ|영어 (영국)"
-
-#~ msgid "Shut_down"
-#~ msgstr "시스템 종료(_D)"
