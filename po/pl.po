@@ -1,8 +1,16 @@
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Aktualn± wersjê tego pliku mo¿esz odnale¼æ w repozytorium cvs.gnome.pl
+# (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste has³o)
+# Je¶li masz jakiekolwiek uwagi odnosz±ce siê do t³umaczenia lub chcesz
+# pomóc w jego rozwijaniu i pielêgnowaniu, napisz do nas na adres:
+# translators@gnome.pl
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-07-08 13:12+0200\n"
-"PO-Revision-Date: 2001-07-08 13:26+0200\n"
+"POT-Creation-Date: 2001-08-12 10:10+0200\n"
+"PO-Revision-Date: 2001-08-12 10:23+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -144,10 +152,11 @@ msgstr ""
 #: daemon/gdm.c:1
 #, c-format
 msgid ""
-"gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
+"gdm_config_parse: Authdir %s has wrong permissions %o. Should be 750. "
+"Aborting."
 msgstr ""
-"gdm_config_parse: Niew³a¶ciwe prawa do katalogu autoryzacji %s. Powinno byæ "
-"750. Rezygnacja."
+"gdm_config_parse: Katalog autoryzacji %s ma niew³a¶ciwe prawa %o. Powinno "
+"byæ 750. Rezygnacja."
 
 #: daemon/gdm.c:1
 msgid "gdm_daemonify: fork() failed!"
@@ -355,9 +364,9 @@ msgstr ""
 
 #: daemon/display.c:1
 #, c-format
-msgid "gdm_display_manage: Failed forking gdm slave process for %d"
+msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
-"gdm_display_manage: Utworzenie procesu potomnego gdm dla %d nie powiod³o siê"
+"gdm_display_manage: Utworzenie procesu potomnego gdm dla %s nie powiod³o siê"
 
 #: daemon/filecheck.c:1
 #, c-format
@@ -430,8 +439,8 @@ msgstr ""
 
 #: daemon/server.c:1
 #, c-format
-msgid "Display %d is busy, there is another X server already running"
-msgstr "Ekran %d jest zajêty, uruchomiony jest na nim inny serwer X"
+msgid "Display %s is busy, there is another X server already running"
+msgstr "Ekran %s jest zajêty, uruchomiony jest na nim inny serwer X"
 
 #: daemon/server.c:1
 msgid "gdm_server_start: Error setting up USR1 signal handler"
@@ -851,8 +860,8 @@ msgstr "gdm_parse_enriched_login: Nie mo¿na utworzyæ procesu dla skryptu!"
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:1 daemon/verify-pam.c:1 daemon/verify-shadow.c:1
 #: gui/gdmlogin.c:1
-msgid "Login:"
-msgstr "Login:"
+msgid "Username:"
+msgstr "Nazwa u¿ytkownika:"
 
 #: daemon/verify-pam.c:1 daemon/verify-pam.c:1
 msgid "Can't find /etc/pam.d/gdm!"
@@ -865,9 +874,8 @@ msgstr "Nie mo¿na ustawiæ PAM_TTY=%s"
 
 #: daemon/verify-crypt.c:1 daemon/verify-pam.c:1
 #: daemon/verify-shadow.c:1
-#, c-format
-msgid "Couldn't authenticate %s"
-msgstr "Uwierzytelnienie %s nie powiod³o siê"
+msgid "Couldn't authenticate user"
+msgstr "Uwierzytelnienie u¿ytkownika nie powiod³o siê"
 
 #: daemon/verify-crypt.c:1 daemon/verify-pam.c:1
 #: daemon/verify-shadow.c:1
@@ -875,10 +883,13 @@ msgstr "Uwierzytelnienie %s nie powiod³o siê"
 msgid "Root login disallowed on display '%s'"
 msgstr "Zablokowano logowanie u¿ytkownika \"root\" na ekranie '%s'"
 
-#: daemon/verify-crypt.c:1 daemon/verify-pam.c:1
-#: daemon/verify-shadow.c:1
-msgid "Root login disallowed"
-msgstr "Zablokowano logowanie u¿ytkownika \"root\""
+#: daemon/verify-pam.c:1
+msgid ""
+"\n"
+"The system administrator is not allowed to login from this screen"
+msgstr ""
+"\n"
+"Logowanie siê administratora z tego ekranu jest niedozwolone"
 
 #: daemon/verify-crypt.c:1 daemon/verify-pam.c:1
 #: daemon/verify-shadow.c:1
@@ -888,8 +899,12 @@ msgstr "U¿ytkownik %s nie ma uprawnieñ do logowania"
 
 #: daemon/verify-crypt.c:1 daemon/verify-pam.c:1
 #: daemon/verify-shadow.c:1
-msgid "Login disabled"
-msgstr "Zablokowano logowanie"
+msgid ""
+"\n"
+"The system administrator has disabled your account."
+msgstr ""
+"\n"
+"Administrator systemu zablokowa³ to konto."
 
 #: daemon/verify-pam.c:1 daemon/verify-pam.c:1
 #, c-format
@@ -905,6 +920,17 @@ msgstr "Nie mo¿na otworzyæ sesji dla %s"
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Nie mo¿na ustawiæ wierzytelno¶ci dla %s"
+
+#: daemon/verify-crypt.c:1 daemon/verify-crypt.c:1 daemon/verify-pam.c:1
+#: daemon/verify-shadow.c:1 daemon/verify-shadow.c:1
+msgid ""
+"\n"
+"Incorrect username or password.  Letters must be typed in the correct case.  "
+"Please be sure the Caps Lock key is not enabled"
+msgstr ""
+"\n"
+"Niepoprawna nazwa u¿ytkownika lub has³o. Pamiêtaj, ¿e wielko¶æ liter jest "
+"wa¿na. Upewnij siê, ¿e nie jest w³±czony Caps Lock."
 
 #: daemon/verify-pam.c:1
 msgid "Authentication failed"
@@ -925,6 +951,10 @@ msgstr "Has³o: "
 #: daemon/verify-shadow.c:1 daemon/verify-shadow.c:1
 msgid "Login incorrect"
 msgstr "Niepoprawny login"
+
+#: daemon/verify-crypt.c:1 daemon/verify-shadow.c:1
+msgid "The system administrator is not allowed to login from this screen"
+msgstr "Logowanie siê administratora z tego ekranu jest niedozwolone"
 
 #: daemon/xdmcp.c:1
 #, c-format
@@ -1072,6 +1102,11 @@ msgstr "gdm_xdmcp_handle_manage: Nie mo¿na odczytaæ klasy ekranu"
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr "gdm_xdmcp_handle_manage: Nie mo¿na otworzyæ dziennika dla ekranu %s!"
+
+#: daemon/xdmcp.c:1
+#, c-format
+msgid "%s: Could not read hostname"
+msgstr "%s: Nie mo¿na uzyskaæ nazwy komputera"
 
 #: daemon/xdmcp.c:1
 #, c-format
@@ -1332,8 +1367,8 @@ msgid "Are you sure you want to reboot the machine?"
 msgstr "Czy na pewno chcesz zrestartowaæ maszynê?"
 
 #: gui/gdmlogin.c:1
-msgid "Are you sure you want to halt the machine?"
-msgstr "Czy na pewno chcesz zakoñczyæ pracê maszyny?"
+msgid "Are you sure you want to shut down the machine?"
+msgstr "Czy na pewno chcesz wy³±czyæ maszynê?"
 
 #: gui/gdmlogin.c:1
 msgid "Are you sure you want to suspend the machine?"
@@ -1375,6 +1410,24 @@ msgid ""
 msgstr ""
 "Wybrano dla tej sesji %s, lecz domy¶lnym ustawieniem jest %s.\n"
 "Czy chcesz, aby %s by³o domy¶lne dla przysz³ych sesji?"
+
+#. if !GdmShowLastSession then our saved session is
+#. * irrelevant, we are in "switchdesk mode"
+#. * and the relevant thing is the saved session
+#. * in .Xclients
+#.
+#: gui/gdmlogin.c:1
+#, c-format
+msgid ""
+"You have chosen %s for this session.\n"
+"If you wish to make %s the default for future sessions,\n"
+"run the 'switchdesk' utility\n"
+"(System->Desktop Switching Tool from the panel menu)."
+msgstr ""
+"Dla tej sesji wybrano %s.\n"
+"Je¶li chcesz, aby %s by³o domy¶lnym wyborem dla przysz³ych sesji,\n"
+"uruchom narzêdzie \"switchdesk\"\n"
+"(w menu panelu: System->Narzêdzie do prze³±czania ¶rodowisk)."
 
 #: gui/gdmlogin.c:1
 #, c-format
@@ -1528,8 +1581,8 @@ msgid "Reboot your computer"
 msgstr "Ponownie uruchamia komputer"
 
 #: gui/gdmlogin.c:1
-msgid "Halt..."
-msgstr "Koniec pracy..."
+msgid "Shut down..."
+msgstr "Wy³±cz..."
 
 #: gui/gdmlogin.c:1
 msgid "Shut down your computer so that you may turn it off."
@@ -1551,6 +1604,7 @@ msgstr "Systemowe"
 msgid "Quit"
 msgstr "Zakoñcz"
 
+#. I think I'll add the buttons next to this
 #: gui/gdmlogin.c:1
 msgid "Please enter your login"
 msgstr "Wprowad¼ login"
@@ -1962,6 +2016,16 @@ msgstr ""
 #: gui/gdmlanguages.c:1
 msgid "A-M|Catalan"
 msgstr "A-M|Kataloñski"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:1
+msgid "A-M|Chinese (simplified)"
+msgstr "A-M|Chiñski (uproszczony)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:1
+msgid "A-M|Chinese (traditional)"
+msgstr "A-M|Chiñski (tradycyjny)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:1
@@ -3189,10 +3253,6 @@ msgstr ""
 "Prosimy o zg³aszanie b³êdów lub pomys³ów na nowe mo¿liwo¶ci za pomoc± "
 "witryny http://bugzilla.gnome.org, wykorzystuj±c \"gdm\" jako nazwê produktu."
 
-#: gui/icon-entry-hack.c:1
-msgid "Choose an icon"
-msgstr "Wybór ikony"
-
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
@@ -3276,3 +3336,88 @@ msgid ""
 msgstr ""
 "Ustawienie obrazu, który bdzie wy¶wietlany przez GDM-a w przegl±darce "
 "obrazów twarzy"
+
+#: vicious-extensions/glade-helper.c:1
+msgid "(memory buffer)"
+msgstr "(bufor w pamiêci)"
+
+#: vicious-extensions/glade-helper.c:1 vicious-extensions/glade-helper.c:1
+#: vicious-extensions/glade-helper.c:1
+msgid "(memory buffer"
+msgstr " (bufor w pamiêci"
+
+#: vicious-extensions/glade-helper.c:1
+#, c-format
+msgid ""
+"An error occured while loading the user interface\n"
+"element %s%s from file %s.\n"
+"Possibly the glade interface description was corrupted.\n"
+"%s cannot continue and will exit now.\n"
+"You should check your installation of %s or reinstall %s."
+msgstr ""
+"W czasie pobierania elementu interfejsu u¿ytkownika o\n"
+"nazwie %s%s z pliku %s wyst±pi³ b³±d.\n"
+"Prawdopodobnie zosta³ uszkodzony plik glade opisuj±cy interfejs.\n"
+"%s nie mo¿e kontynuowaæ pracy i zostanie zakoñczony.\n"
+"Zweryfikuj instalacjê %s lub przeinstaluj %s."
+
+#: vicious-extensions/glade-helper.c:1
+#, c-format
+msgid ""
+"Glade file is on crack! Make sure the correct file is installed!\n"
+"file: %s widget: %s"
+msgstr ""
+"Plik glade jest uszkodzony. Upewnij siê, ¿e zainstalowany jest w³a¶ciwy "
+"plik!\n"
+"plik: %s, widget: %s"
+
+#: vicious-extensions/glade-helper.c:1
+#, c-format
+msgid ""
+"An error occured while loading the user interface\n"
+"element %s%s from file %s.\n"
+"CList type widget should have %d columns.\n"
+"Possibly the glade interface description was corrupted.\n"
+"%s cannot continue and will exit now.\n"
+"You should check your installation of %s or reinstall %s."
+msgstr ""
+"W czasie pobierania elementu interfejsu u¿ytkownika o\n"
+"nazwie %s%s z pliku %s wyst±pi³ b³±d.\n"
+"Widget CList powinien zawieraæ %d kolumn.\n"
+"Prawdopodobnie zosta³ uszkodzony plik glade opisuj±cy interfejs.\n"
+"%s nie mo¿e kontynuowaæ pracy i zostanie zakoñczony.\n"
+"Zweryfikuj instalacjê %s lub przeinstaluj %s."
+
+#: vicious-extensions/glade-helper.c:1
+#, c-format
+msgid ""
+"Glade file is on crack! Make sure the correct file is installed!\n"
+"file: %s widget: %s expected clist columns: %d"
+msgstr ""
+"Plik glade jest uszkodzony. Upewnij siê, ¿e zainstalowany jest w³a¶ciwy "
+"plik!\n"
+"plik: %s, widget: %s, oczekiwana liczba kolumn: %d"
+
+#: vicious-extensions/glade-helper.c:1
+#, c-format
+msgid ""
+"An error occured while loading the user interface\n"
+"from file %s.\n"
+"Possibly the glade interface description was not found.\n"
+"%s cannot continue and will exit now.\n"
+"You should check your installation of %s or reinstall %s."
+msgstr ""
+"W czasie wczytywanie interfejsu u¿ytkownika z pliku %s\n"
+"wyst±pi³ b³±d.\n"
+"Prawdopodobnie plik glade opisuj±cy interfejs nie istnieje.\n"
+"%s nie mo¿e kontynuowaæ pracy i zostanie zakoñczony.\n"
+"Zweryfikuj instalacjê %s lub przeinstaluj %s."
+
+#: vicious-extensions/glade-helper.c:1
+#, c-format
+msgid "No interface could be loaded, BAD! (file: %s)"
+msgstr "Nie mo¿na wczytaæ interfejsu (plik: %s). Niedobrze."
+
+#: vicious-extensions/icon-entry-hack.c:1
+msgid "Choose an icon"
+msgstr "Wybór ikony"
