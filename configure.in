@@ -128,14 +128,6 @@ PKG_CHECK_MODULES(UTILS, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK
 AC_SUBST(UTILS_CFLAGS)
 AC_SUBST(UTILS_LIBS)
 
-dnl
-dnl libglade conversion script
-dnl
-AC_PATH_PROG(LIBGLADE_CONVERT, libglade-convert)
-if test -z $LIBGLADE_CONVERT; then
-	AC_MSG_ERROR([libglade-convert (from libglade 2.0) is needed to build gdm.])
-fi
-
 dnl Allow users to run gdmsetup using the console helper PAM stuff.
 if test "x$enable_console_helper" = "xyes"; then
   AM_CONDITIONAL(CONSOLE_HELPER, true)
