@@ -1,3 +1,37 @@
+Wed Dec 10 13:08:13 2003  Wanker who should set his $CHANGELOGNAME <wanker@wankers.com>
+
+	* daemon/gdm.[ch], daemon/display.c, daemon/gdm-net.[ch],
+	  daemon/server.c, daemon/xdmcp.c:  Add possibility to request
+	  logout action to happen when the display dies using the SUP socket
+	  protocol.  Very loosely based on a patch from Jarno Gassenbauer,
+	  but simplified and not having a DoS and/or authentication leak
+	  as the original patches do.  The commands are named different to
+	  avoid naming conflict.
+
+	* daemon/gdm.h, config/gdm.conf.in, docs/C/gdm.xml,
+	  config/Makefile.am, gdm.spec.in: move the built in sessions to
+	  a more appropriate place (datadir)
+
+	* gui/gdmcommon.[ch], gui/gdmlogin.c, gui/greeter/greeter.[ch],
+	  gui/greeter/greeter*.c: move some common utility functions to
+	  a common sublibrary (renamed the language lib to libgdmcommon),
+	  should cut down a little on the code duplication.  Needs more.
+
+	* gui/gdmcommon.[ch], gui/gdmlogin.c, gui/greeter/greeter.c,
+	  docs/C/gdm.xml, daemon/gdm.h, config/gdm.conf.in: Apply a patch
+	  from Anton Altaparmakov to add an optional info message to the
+	  greeters
+
+	* gui/gdmsetup.c: fix RH 97716 by putting up a dialog when user
+	  tries to input root for the first time
+
+	* docs/C/gdm.xml: minor updates.
+
+	* daemon/gdm.c: GdmStandardXServer can now have arguments (we used
+	  to parse them, but if there were arguments, sanity checks would
+	  fail making it not work), so no real change in how it works, it
+	  just accepts more inputs
+
 Wed Dec 10 2003 Archana Shah <archana.shah@wipro.com>
 
 	* docs/C/gdm.xml: Add documentation for Multicast and Multicast_Addr. 

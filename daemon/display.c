@@ -362,6 +362,10 @@ gdm_display_unmanage (GdmDisplay *d)
     gdm_debug ("gdm_display_unmanage: Stopping %s (slave pid: %d)",
 	       d->name, (int)d->slavepid);
 
+    /* whack connections about this display */
+    if (unixconn != NULL)
+      gdm_kill_subconnections_with_display (unixconn, d);
+
     /* Kill slave, this may in fact hang for a bit at least until the
      * slave dies, which should be ASAP though */
     whack_old_slave (d);

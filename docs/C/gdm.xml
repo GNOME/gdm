@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.4.4.4"> 
-    <!ENTITY date "10/6/2003"> 
+    <!ENTITY version "2.4.90.0"> 
+    <!ENTITY date "12/10/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -576,6 +576,16 @@
       </para>
 
       <para>
+        You can suppress the 10 second warning by returning code 66
+	from the <filename>Xsession</filename>script or from your session
+	binary (the default <filename>Xsession</filename> script
+	propagates those codes back).  This is useful if you have some sort of
+	special logins for which it is not an error to return less then 10
+	seconds later, or if you setup the session to already display some
+	error message and the gdm message would be confusing and redundant.
+      </para>
+
+      <para>
 	The session output is piped through the GDM daemon and so the
 	<filename>~/.xsession-errors</filename> file is capped at about
 	200 kilobytes by GDM to prevent a possible denial of service attack
@@ -787,11 +797,12 @@
       The remaining configuration is done by dropping scripts in the
       subdirectories of the <filename>&lt;etc&gt;/gdm/</filename> folder or
       dropping <filename>.desktop</filename>-style files in
-      <filename>&lt;etc&gt;/dm/Sessions/</filename> or
       <filename>/etc/X11/sessions/</filename>.  The latter is also
-      read by KDM for common configuration.  The <filename>&lt;etc&gt;/dm/Sessions/</filename>
-      directory will likely move in the future to reflect that it is
-      GDM specific and used only for the default configuration.
+      read by KDM for common configuration.
+      Next the directory
+      <filename>&lt;share&gt;/gdm/BuiltInSessions/</filename> is read for
+      GDM specific built in sessions (KDM hardcodes these at time of this
+      writing).
       Also the default setup will also read <filename>&lt;share&gt;/xsessions/</filename>
       (which should be <filename>/usr/share/xsessions/</filename> if you really
       wish to cooperate with KDM)
@@ -800,7 +811,11 @@
       This approach makes it easy for package management systems to install
       window managers and different session types without requiring
       the sysadmin to edit files.  See the <filename>SessionDesktopDir</filename>
-      configuration key for changing the paths.  Note that prior to version
+      configuration key for changing the paths.
+      It used to be that GDM stored
+      its built in sessions in <filename>&lt;etc&gt;/dm/Sessions/</filename>
+      but this is now deprecated as of 2.4.90.0.
+      Note that prior to version
       2.4.4.2 only the <filename>&lt;etc&gt;/dm/Sessions/</filename> was being read.
     </para>
 
@@ -2238,6 +2253,35 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+
+	  <varlistentry>
+	    <term>InfoMsgFile</term>
+	    <listitem>
+	      <synopsis>InfoMsgFile=/path/to/infofile</synopsis>
+	      <para>
+		If present and /path/to/infofile specifies an existing and
+		readable text file (e.g. /etc/infomsg.txt) the contents of the
+		file will be displayed in a modal dialog box before the user
+		is allowed to login.
+		This works both with the standard and the themable greeters.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+	    <term>InfoMsgFont</term>
+	    <listitem>
+	      <synopsis>InfoMsgFont=fontspec</synopsis>
+	      <para>
+		If present and InfoMsgFile (see above) is used, this specifies
+		the font to use when displaying the contents of the InfoMsgFile
+		text file.  For example fontspec could be Sans 24 to get a
+		sans serif font of size 24 points.
+		This works both with the standard and the themable greeters.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  
 	  
 	  <varlistentry>
 	    <term>LocaleFile</term>
@@ -2576,9 +2620,9 @@
 	  </varlistentry>
 	  
 	  <varlistentry>
-	    <term>Multicast_Addr</term>
+	    <term>MulticastAddr</term>
 	    <listitem>
-	      <synopsis>Multicast_Addr=ff02::1</synopsis>
+	      <synopsis>MulticastAddr=ff02::1</synopsis>
 	      <para>
 		This is the Link-local Multicast address and is hardcoded here.
 	      </para>

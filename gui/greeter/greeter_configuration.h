@@ -30,6 +30,8 @@ extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gchar *GdmWelcome;
 extern gchar *GdmServAuthDir;
+extern gchar *GdmInfoMsgFile;
+extern gchar *GdmInfoMsgFont;
 
 extern gboolean GDM_IS_LOCAL;
 extern gboolean DOING_GDM_DEVELOPMENT;

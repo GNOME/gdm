@@ -13,6 +13,7 @@
 
 #include "gdm.h"
 #include "gdmwm.h"
+#include "gdmcommon.h"
 #include "vicious.h"
 #include "viciousui.h"
 
@@ -69,6 +70,8 @@ gboolean GdmAllowRoot;
 gboolean GdmAllowRemoteRoot;
 gchar *GdmWelcome;
 gchar *GdmServAuthDir;
+gchar *GdmInfoMsgFile;
+gchar *GdmInfoMsgFont;
 
 gboolean GdmUseCirclesInEntry = FALSE;
 
@@ -82,8 +85,6 @@ extern gboolean session_dir_whacked_out;
 extern gboolean require_quarter;
 
 gboolean greeter_probably_login_prompt = FALSE;
-
-static void gdm_login_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 static void 
 greeter_parse_config (void)
@@ -138,6 +139,8 @@ greeter_parse_config (void)
     GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
     GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
     GdmServAuthDir = ve_config_get_string (config, GDM_KEY_SERVAUTH);
+    GdmInfoMsgFile = ve_config_get_string (config, GDM_KEY_INFO_MSG_FILE);
+    GdmInfoMsgFont = ve_config_get_string (config, GDM_KEY_INFO_MSG_FONT);
 
     GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
     /* A hack! */
@@ -197,14 +200,6 @@ greeter_parse_config (void)
     } else {
 	    GDM_IS_LOCAL = TRUE;
     }
-}
-
-void
-greeter_setup_cursor (GdkCursorType type)
-{
-	GdkCursor *cursor = gdk_cursor_new (type);
-	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
-	gdk_cursor_unref (cursor);
 }
 
 static gboolean
@@ -521,7 +516,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	/* Set busy cursor */
-	greeter_setup_cursor (GDK_WATCH);
+	gdm_common_setup_cursor (GDK_WATCH);
 
 	gdm_wm_save_wm_order ();
 
@@ -541,7 +536,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 	
     default:
-	gdm_login_abort ("Unexpected greeter command received: '%c'", buf[0]);
+	gdm_common_abort ("Unexpected greeter command received: '%c'", buf[0]);
 	break;
     }
 
@@ -628,7 +623,7 @@ verify_gdm_version (void)
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      greeter_setup_cursor (GDK_LEFT_PTR);
+      gdm_common_setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
     
@@ -665,7 +660,7 @@ verify_gdm_version (void)
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
       
-      greeter_setup_cursor (GDK_LEFT_PTR);
+      gdm_common_setup_cursor (GDK_LEFT_PTR);
 
       switch (gtk_dialog_run (GTK_DIALOG (dialog)))
 	{
@@ -715,7 +710,7 @@ verify_gdm_version (void)
     
       gtk_dialog_set_default_response (GTK_DIALOG (dialog), RESPONSE_RESTART);
       
-      greeter_setup_cursor (GDK_LEFT_PTR);
+      gdm_common_setup_cursor (GDK_LEFT_PTR);
 
       switch (gtk_dialog_run (GTK_DIALOG (dialog)))
 	{
@@ -733,135 +728,6 @@ verify_gdm_version (void)
   
   return 0;
 }
-
-void
-greeter_message (const gchar *msg)
-{
- GtkWidget *req = NULL;
-  
-  /* we should be now fine for focusing new windows */
-  gdm_wm_focus_new_windows (TRUE);
-  
-  req = ve_hig_dialog_new (NULL /* parent */,
-			   GTK_DIALOG_MODAL /* flags */,
-			   GTK_MESSAGE_INFO,
-			   GTK_BUTTONS_OK,
-			   FALSE /* markup */,
-			   msg,
-			   /* avoid warning */ "%s", "");
-  
-  gdm_wm_center_window (GTK_WINDOW (req));
-  
-  gdm_wm_no_login_focus_push ();
-  gtk_dialog_run (GTK_DIALOG (req));
-  gdm_wm_no_login_focus_pop ();
-
-  gtk_widget_destroy (req);
-}
-
-
-gboolean
-greeter_query (const gchar *msg, gboolean markup, const char *posbutton, const char *negbutton)
-{
-	int ret;
-	GtkWidget *req;
-	GtkWidget *button;
-
-	/* we should be now fine for focusing new windows */
-	gdm_wm_focus_new_windows (TRUE);
-
-	req = ve_hig_dialog_new (NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_QUESTION,
-				 GTK_BUTTONS_NONE,
-				 markup,
-				 msg,
-				 /* avoid warning */ "%s", "");
-
-	button = gtk_button_new_from_stock (negbutton);
-	gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_NO);
-	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-	gtk_widget_show (button);
-
-	button = gtk_button_new_from_stock (posbutton);
-	gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_YES);
-	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-	gtk_widget_show (button);
-
-	gtk_dialog_set_default_response (GTK_DIALOG (req),
-					 GTK_RESPONSE_YES);
-
-	gdm_wm_center_window (GTK_WINDOW (req));
-
-	gdm_wm_no_login_focus_push ();
-	ret = gtk_dialog_run (GTK_DIALOG (req));
-	gdm_wm_no_login_focus_pop ();
-
-	gtk_widget_destroy (req);
-
-	if (ret == GTK_RESPONSE_YES)
-		return TRUE;
-	else /* this includes window close */
-		return FALSE;
-}
-
-void
-greeter_abort (const gchar *format, ...)
-{
-    va_list args;
-    gchar *s;
-
-    if (!format) {
-	_exit (DISPLAY_ABORT);
-    }
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-    
-    syslog (LOG_ERR, "%s", s);
-    closelog();
-
-    g_free (s);
-
-    _exit (DISPLAY_ABORT);
-}
-
-static gboolean
-string_same (VeConfig *config, const char *cur, const char *key)
-{
-	char *val = ve_config_get_string (config, key);
-	if (strcmp (ve_sure_string (cur), ve_sure_string (val)) == 0) {
-		g_free (val);
-		return TRUE;
-	} else {
-		g_free (val);
-		return FALSE;
-	}
-}
-
-static gboolean
-bool_same (VeConfig *config, gboolean cur, const char *key)
-{
-	gboolean val = ve_config_get_bool (config, key);
-	if (ve_bool_equal (cur, val)) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
-
-static gboolean
-int_same (VeConfig *config, int cur, const char *key)
-{
-	int val = ve_config_get_int (config, key);
-	if (cur == val) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
-
 
 static gboolean
 greeter_reread_config (int sig, gpointer data)
@@ -887,63 +753,69 @@ greeter_reread_config (int sig, gpointer data)
 	/* Also we may not need to check ALL those keys but just a few */
 	if (strcmp (theme, GdmGraphicalTheme) != 0 ||
 	    strcmp (theme_dir, GdmGraphicalThemeDir) != 0 ||
-	     ! string_same (config,
+	     ! gdm_common_string_same (config,
 			    GdmGtkRC,
 			    GDM_KEY_GTKRC) ||
-	     ! int_same (config,
+	     ! gdm_common_int_same (config,
 			 GdmXineramaScreen,
 			 GDM_KEY_XINERAMASCREEN) ||
-	     ! bool_same (config,
+	     ! gdm_common_bool_same (config,
 			  GdmUseCirclesInEntry,
 			  GDM_KEY_ENTRY_CIRCLES) ||
-	     ! bool_same (config,
+	     ! gdm_common_bool_same (config,
 			  GdmShowXtermFailsafeSession,
 			  GDM_KEY_SHOW_XTERM_FAILSAFE) ||
-	     ! bool_same (config,
+	     ! gdm_common_bool_same (config,
 			  GdmShowGnomeFailsafeSession,
 			  GDM_KEY_SHOW_GNOME_FAILSAFE) ||
-	     ! string_same (config,
+	     ! gdm_common_string_same (config,
 			    GdmSessionDir,
 			    GDM_KEY_SESSDIR) ||
-	     ! string_same (config,
+	     ! gdm_common_string_same (config,
 			    GdmLocaleFile,
 			    GDM_KEY_LOCFILE) ||
-	     ! bool_same (config,
+	     ! gdm_common_bool_same (config,
 			  GdmSystemMenu,
 			  GDM_KEY_SYSMENU) ||
-	     ! string_same (config,
+	     ! gdm_common_string_same (config,
 			    GdmHalt,
 			    GDM_KEY_HALT) ||
-	     ! string_same (config,
+	     ! gdm_common_string_same (config,
 			    GdmReboot,
 			    GDM_KEY_REBOOT) ||
-	     ! string_same (config,
+	     ! gdm_common_string_same (config,
 			    GdmSuspend,
 			    GDM_KEY_SUSPEND) ||
-	     ! string_same (config,
+	     ! gdm_common_string_same (config,
 			    GdmConfigurator,
 			    GDM_KEY_CONFIGURATOR) ||
-	     ! bool_same (config,
+	     ! gdm_common_string_same (config,
+			    GdmInfoMsgFile,
+			    GDM_KEY_INFO_MSG_FILE) ||
+	     ! gdm_common_string_same (config,
+			    GdmInfoMsgFont,
+			    GDM_KEY_INFO_MSG_FONT) ||
+	     ! gdm_common_bool_same (config,
 			  GdmConfigAvailable,
 			  GDM_KEY_CONFIG_AVAILABLE) ||
-	     ! bool_same (config,
+	     ! gdm_common_bool_same (config,
 			  GdmChooserButton,
 			  GDM_KEY_CHOOSER_BUTTON) ||
-	     ! bool_same (config,
+	     ! gdm_common_bool_same (config,
 			  GdmTimedLoginEnable,
 			  GDM_KEY_TIMED_LOGIN_ENABLE) ||
-	     ! int_same (config,
+	     ! gdm_common_int_same (config,
 			 GdmTimedLoginDelay,
 			 GDM_KEY_TIMED_LOGIN_DELAY)) {
 		/* Set busy cursor */
-		greeter_setup_cursor (GDK_WATCH);
+		gdm_common_setup_cursor (GDK_WATCH);
 
 		gdm_wm_save_wm_order ();
 
 		_exit (DISPLAY_RESTARTGREETER);
 	}
 
-	if ( ! bool_same (config,
+	if ( ! gdm_common_bool_same (config,
 			  GdmUse24Clock,
 			  GDM_KEY_USE_24_CLOCK)) {
 		GdmUse24Clock = ve_config_get_bool (config,
@@ -1092,26 +964,11 @@ setup_background_color (void)
     }
 }
 
-static void
-gdm_login_abort (const gchar *format, ...)
+void
+gdm_kill_thingies (void)
 {
-    va_list args;
-    gchar *s;
-
-    if (!format) {
-	_exit (DISPLAY_GREETERFAILED);
-    }
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-    
-    syslog (LOG_ERR, "%s", s);
-    closelog();
-
-    g_free (s);
-
-    _exit (DISPLAY_GREETERFAILED);
+	/* Empty kill thingies */
+	return;
 }
 
 int
@@ -1143,7 +1000,7 @@ main (int argc, char *argv[])
   gtk_init (&argc, &argv);
 
   /* Should be a watch already, but anyway */
-  greeter_setup_cursor (GDK_WATCH);
+  gdm_common_setup_cursor (GDK_WATCH);
 
   if ( ! ve_string_empty (GdmGtkRC))
     gtk_rc_parse (GdmGtkRC);
@@ -1165,7 +1022,7 @@ main (int argc, char *argv[])
   sigaddset (&hup.sa_mask, SIGCHLD);
   
   if (sigaction (SIGHUP, &hup, NULL) < 0) 
-    gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
+    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
 
   term.sa_handler = greeter_done;
   term.sa_flags = 0;
@@ -1173,10 +1030,10 @@ main (int argc, char *argv[])
   sigaddset (&term.sa_mask, SIGCHLD);
   
   if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) 
-    gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
+    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
   
   if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) 
-    gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
+    gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
   
   sigemptyset (&mask);
   sigaddset (&mask, SIGTERM);
@@ -1184,14 +1041,14 @@ main (int argc, char *argv[])
   sigaddset (&mask, SIGINT);
 
   if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) 
-	  gdm_login_abort (_("Could not set signal mask!"));
+	  gdm_common_abort (_("Could not set signal mask!"));
 
   /* ignore SIGCHLD */
   sigemptyset (&mask);
   sigaddset (&mask, SIGCHLD);
 
   if G_UNLIKELY (sigprocmask (SIG_BLOCK, &mask, NULL) == -1) 
-	  gdm_login_abort (_("Could not set signal mask!"));
+	  gdm_common_abort (_("Could not set signal mask!"));
   
   if G_LIKELY (! DOING_GDM_DEVELOPMENT) {
     ctrlch = g_io_channel_unix_new (STDIN_FILENO);
@@ -1268,7 +1125,7 @@ main (int argc, char *argv[])
         gtk_widget_show_all (dialog);
         gdm_wm_center_window (GTK_WINDOW (dialog));
 
-        greeter_setup_cursor (GDK_LEFT_PTR);
+        gdm_common_setup_cursor (GDK_LEFT_PTR);
     
         gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1316,7 +1173,7 @@ main (int argc, char *argv[])
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      greeter_setup_cursor (GDK_LEFT_PTR);
+      gdm_common_setup_cursor (GDK_LEFT_PTR);
 
       gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1352,7 +1209,7 @@ main (int argc, char *argv[])
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      greeter_setup_cursor (GDK_LEFT_PTR);
+      gdm_common_setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1374,7 +1231,7 @@ main (int argc, char *argv[])
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      greeter_setup_cursor (GDK_LEFT_PTR);
+      gdm_common_setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1421,7 +1278,7 @@ main (int argc, char *argv[])
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      greeter_setup_cursor (GDK_LEFT_PTR);
+      gdm_common_setup_cursor (GDK_LEFT_PTR);
 
       gdm_wm_no_login_focus_push ();
       gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1449,7 +1306,7 @@ main (int argc, char *argv[])
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      greeter_setup_cursor (GDK_LEFT_PTR);
+      gdm_common_setup_cursor (GDK_LEFT_PTR);
 
       gdm_wm_no_login_focus_push ();
       gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1479,7 +1336,7 @@ main (int argc, char *argv[])
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      greeter_setup_cursor (GDK_LEFT_PTR);
+      gdm_common_setup_cursor (GDK_LEFT_PTR);
 
       gdm_wm_no_login_focus_push ();
       gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1489,7 +1346,9 @@ main (int argc, char *argv[])
 
   gdm_wm_restore_wm_order ();
 
-  greeter_setup_cursor (GDK_LEFT_PTR);
+  gdm_common_show_info_msg ();
+
+  gdm_common_setup_cursor (GDK_LEFT_PTR);
 
   gtk_main ();
 

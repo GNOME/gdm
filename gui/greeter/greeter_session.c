@@ -14,6 +14,7 @@
 
 #include "gdm.h"
 #include "gdmwm.h"
+#include "gdmcommon.h"
 
 #include "greeter.h"
 #include "greeter_session.h"
@@ -121,7 +122,7 @@ greeter_session_lookup (const char *saved_session)
 				   "future sessions?"),
 				 session_name (saved_session),
 				 session_name (default_session));	    
-	  save_session = greeter_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"));
+	  save_session = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"));
 	  g_free (msg);
 	}
     }
@@ -151,7 +152,7 @@ greeter_session_lookup (const char *saved_session)
 				     session_name (session),
 				     session_name (saved_session),
 				     session_name (session));
-	      save_session = greeter_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
+	      save_session = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
 	    }
 	  else if (strcmp (session, default_session) != 0 &&
 		   strcmp (session, saved_session) != 0 &&
@@ -172,7 +173,7 @@ greeter_session_lookup (const char *saved_session)
 					   "the panel menu)."),
 					 session_name (session),
 					 session_name (session));
-		  greeter_message (msg);
+		  gdm_common_message (msg);
 		}
 	      save_session = FALSE;
 	    }

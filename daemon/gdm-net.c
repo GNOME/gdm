@@ -71,6 +71,8 @@ struct _GdmConnection {
 
 	GList *subconnections;
 	int n_subconnections;
+
+	GdmDisplay *disp;
 };
 
 static gboolean
@@ -216,6 +218,7 @@ gdm_socket_handler (GIOChannel *source,
 	gdm_debug ("gdm_socket_handler: Accepting new connection fd %d", fd);
 
 	newconn = g_new0 (GdmConnection, 1);
+	newconn->disp = NULL;
 	newconn->message_count = 0;
 	newconn->nonblock = conn->nonblock;
 	newconn->close_level = 0;
@@ -309,6 +312,7 @@ try_again:
 	IGNORE_EINTR (chmod (sockname, mode));
 
 	conn = g_new0 (GdmConnection, 1);
+	conn->disp = NULL;
 	conn->message_count = 0;
 	conn->nonblock = FALSE;
 	conn->close_level = 0;
@@ -345,6 +349,7 @@ gdm_connection_open_fd (int fd)
 	g_return_val_if_fail (fd >= 0, NULL);
 
 	conn = g_new0 (GdmConnection, 1);
+	conn->disp = NULL;
 	conn->message_count = 0;
 	conn->nonblock = FALSE;
 	conn->close_level = 0;
@@ -396,6 +401,7 @@ gdm_connection_open_fifo (const char *fifo, mode_t mode)
 	IGNORE_EINTR (chmod (fifo, mode));
 
 	conn = g_new0 (GdmConnection, 1);
+	conn->disp = NULL;
 	conn->message_count = 0;
 	conn->nonblock = FALSE;
 	conn->close_level = 0;
@@ -566,6 +572,45 @@ gdm_connection_set_nonblock (GdmConnection *conn,
 {
 	g_return_if_fail (conn != NULL);
 	conn->nonblock = nonblock;
+}
+
+GdmDisplay *
+gdm_connection_get_display (GdmConnection *conn)
+{
+	g_return_val_if_fail (conn != NULL, NULL);
+	return conn->disp;
+}
+
+void
+gdm_connection_set_display (GdmConnection *conn,
+			    GdmDisplay *disp)
+{
+	g_return_if_fail (conn != NULL);
+	conn->disp = disp;
+}
+
+void
+gdm_kill_subconnections_with_display (GdmConnection *conn,
+				      GdmDisplay *disp)
+{
+	GList *subs;
+
+	g_return_if_fail (conn != NULL);
+	g_return_if_fail (disp != NULL);
+
+	subs = conn->subconnections;
+	while (subs != NULL) {
+		GdmConnection *subcon = subs->data;
+		if (subcon->disp == disp) {
+			subcon->disp = NULL;
+			conn->subconnections =
+				g_list_remove (conn->subconnections, subcon);
+			gdm_connection_close (subcon);
+			subs = conn->subconnections;
+		} else {
+			subs = subs->next;
+		}
+	}
 }
 
 /* EOF */

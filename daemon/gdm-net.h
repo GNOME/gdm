@@ -26,6 +26,11 @@
 typedef struct _GdmConnection GdmConnection;
 #endif  /* TYPEDEF_GDM_CONNECTION */
 
+#ifndef TYPEDEF_GDM_DISPLAY
+#define TYPEDEF_GDM_DISPLAY
+typedef struct _GdmDisplay GdmDisplay;
+#endif /* TYPEDEF_GDM_DISPLAY */
+
 /* Something that will get stuff line by line */
 typedef void (* GdmConnectionHandler) (GdmConnection *conn,
 				       const char *str,
@@ -70,6 +75,12 @@ void		gdm_connection_set_user_flags (GdmConnection *conn,
 			_flags &= ~flag;					\
 			gdm_connection_set_user_flags (conn, _flags);		\
 		}
+
+GdmDisplay *	gdm_connection_get_display   (GdmConnection *conn);
+void		gdm_connection_set_display   (GdmConnection *conn,
+					      GdmDisplay *disp);
+void		gdm_kill_subconnections_with_display (GdmConnection *conn,
+						      GdmDisplay *disp);
 
 int		gdm_connection_get_message_count (GdmConnection *conn);
 

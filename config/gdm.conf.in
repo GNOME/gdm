@@ -103,8 +103,9 @@ ServAuthDir=@EXPANDED_AUTHDIR@
 BaseXsession=@EXPANDED_SYSCONFDIR@/gdm/Xsession
 # This is a directory where .desktop files describing the sessions live
 # It is really a PATH style variable since 2.4.4.2 to allow actual
-# interoperability with KDM
-#SessionDesktopDir=/etc/X11/sessions/:@EXPANDED_SYSCONFDIR@/dm/Sessions/:@EXPANDED_DATADIR@/xsessions/
+# interoperability with KDM.  Note that <sysconfdir>/dm/Sessions is there
+# for backwards compatibility reasons with 2.4.4.x
+#SessionDesktopDir=/etc/X11/sessions/:@EXPANDED_SYSCONFDIR@/dm/Sessions/:@EXPANDED_DATADIR@/gdm/BuiltInSessions/:@EXPANDED_DATADIR@/xsessions/
 # This is the default .desktop session.  One of the ones in SessionDesktopDir
 #DefaultSession=gnome.desktop
 # Better leave this blank and HOME will be used.  You can use syntax ~/ below
@@ -306,6 +307,12 @@ Browser=false
 # shipped theme
 #GraphicalTheme=circles
 GraphicalThemeDir=@EXPANDED_DATADIR@/gdm/themes/
+# If InfoMsgFile points to a file, the greeter will display the contents of the
+# file in a modal dialog box before the user is allowed to log in.
+#InfoMsgFile=
+# If InfoMsgFile is present then InfoMsgFont can be used to specify the font
+# to be used when displaying the contents of the file.
+#InfoMsgFont=Sans 24
 
 # The chooser is what's displayed when a user wants an indirect XDMCP
 # session, or selects Run XDMCP chooser from the system menu

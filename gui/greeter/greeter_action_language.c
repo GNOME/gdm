@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "gdmwm.h"
+#include "gdmcommon.h"
 #include "gdmlanguages.h"
 #include "greeter.h"
 #include "greeter_configuration.h"
@@ -151,7 +152,7 @@ greeter_language_get_language (const char *old_language)
 	  g_free (current_name);
 	  g_free (saved_name);
 
-	  savelang = greeter_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"));
+	  savelang = gdm_common_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"));
 	  g_free (msg);
 	}
     }

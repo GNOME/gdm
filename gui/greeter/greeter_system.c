@@ -12,6 +12,7 @@
 
 #include "gdm.h"
 #include "gdmwm.h"
+#include "gdmcommon.h"
 #include "vicious.h"
 
 
@@ -52,7 +53,7 @@ working_command_exists (const char *commands)
 static void
 query_greeter_reboot_handler (void)
 {
-	if (greeter_query (_("Are you sure you want to reboot the machine?"),
+	if (gdm_common_query (_("Are you sure you want to reboot the machine?"),
 			   FALSE /* markup */,
 			   _("_Reboot"), GTK_STOCK_CANCEL)) {
 		closelog();
@@ -65,7 +66,7 @@ query_greeter_reboot_handler (void)
 static void
 query_greeter_halt_handler (void)
 {
-	if (greeter_query (_("Are you sure you want to shut down the machine?"),
+	if (gdm_common_query (_("Are you sure you want to shut down the machine?"),
 			   FALSE /* markup */,
 			   _("Shut_down"), GTK_STOCK_CANCEL)) {
 		closelog();
@@ -77,7 +78,7 @@ query_greeter_halt_handler (void)
 static void
 query_greeter_suspend_handler (void)
 {
-	if (greeter_query (_("Are you sure you want to suspend the machine?"),
+	if (gdm_common_query (_("Are you sure you want to suspend the machine?"),
 			   FALSE /* markup */,
 			   _("_Suspend"), GTK_STOCK_CANCEL)) {
 		/* suspend interruption */

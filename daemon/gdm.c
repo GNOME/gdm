@@ -380,8 +380,9 @@ gdm_config_parse (void)
     GdmWilling = ve_config_get_string (cfg, GDM_KEY_WILLING);    
 
     GdmStandardXServer = ve_config_get_string (cfg, GDM_KEY_STANDARD_XSERVER);    
-    if (ve_string_empty (GdmStandardXServer) ||
-	access (GdmStandardXServer, X_OK) != 0) {
+    bin = ve_first_word (GdmStandardXServer);
+    if G_UNLIKELY (ve_string_empty (bin) ||
+		   access (bin, X_OK) != 0) {
 	    gdm_info (_("%s: Standard X server not found, trying alternatives"),
 			"gdm_config_parse");
 	    if (access ("/usr/X11R6/bin/X", X_OK) == 0) {
@@ -395,6 +396,7 @@ gdm_config_parse (void)
 		    GdmStandardXServer = g_strdup ("/usr/bin/X11/X");
 	    }
     }
+    g_free (bin);
     GdmFlexibleXServers = ve_config_get_int (cfg, GDM_KEY_FLEXIBLE_XSERVERS);    
     GdmXnest = ve_config_get_string (cfg, GDM_KEY_XNEST);    
     if (ve_string_empty (GdmXnest))
@@ -560,7 +562,8 @@ gdm_config_parse (void)
 		    gdm_fail (_("%s: XDMCP disabled and no local servers defined. Aborting!"), "gdm_config_parse");
 	    }
 
-	    if (access (GdmStandardXServer, X_OK) == 0) {
+	    bin = ve_first_word (GdmStandardXServer);
+	    if G_LIKELY (access (bin, X_OK) == 0) {
 		    server = GdmStandardXServer;
 	    } else if (access ("/usr/bin/X11/X", X_OK) == 0) {
 		    server = "/usr/bin/X11/X";
@@ -569,6 +572,7 @@ gdm_config_parse (void)
 	    } else if (access ("/opt/X11R6/bin/X", X_OK) == 0) {
 		    server = "/opt/X11R6/bin/X";
 	    }
+	    g_free (bin);
 	    /* yay, we can add a backup emergency server */
 	    if (server != NULL) {
 		    int num = gdm_get_free_display (0 /* start */,
@@ -1261,6 +1265,10 @@ gdm_cleanup_children (void)
     if (d == NULL)
 	    return TRUE;
 
+    /* whack connections about this display */
+    if (unixconn != NULL)
+      gdm_kill_subconnections_with_display (unixconn, d);
+
     if G_UNLIKELY (crashed) {
 	    gdm_error ("gdm_cleanup_children: Slave crashed, killing its "
 		       "children");
@@ -1294,6 +1302,20 @@ gdm_cleanup_children (void)
     /* Declare the display dead */
     d->slavepid = 0;
     d->dispstat = DISPLAY_DEAD;
+
+    /* change status according to the logout_action */
+    if (status == DISPLAY_REMANAGE &&
+	d->logout_action == GDM_LOGOUT_ACTION_HALT)
+	    status = DISPLAY_HALT;
+    else if (status == DISPLAY_REMANAGE &&
+	     d->logout_action == GDM_LOGOUT_ACTION_REBOOT)
+	    status = DISPLAY_REBOOT;
+    else if (status == DISPLAY_REMANAGE &&
+	     d->logout_action == GDM_LOGOUT_ACTION_SUSPEND)
+	    status = DISPLAY_SUSPEND;
+
+    /* reset the display logout action */
+    d->logout_action = GDM_LOGOUT_ACTION_NONE;
 
     if ( ! GdmSystemMenu &&
 	(status == DISPLAY_REBOOT ||
@@ -2306,6 +2328,12 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 			gdm_debug ("Got logged in == %s",
 				   d->logged_in ? "TRUE" : "FALSE");
 
+			/* whack connections about this display if a user
+			 * just logged out since we don't want such
+			 * connections persisting to be authenticated */
+			if ( ! logged_in && unixconn != NULL)
+				gdm_kill_subconnections_with_display (unixconn, d);
+
 			/* if the user just logged out,
 			 * let's see if it's safe to restart */
 			if (gdm_restart_mode &&
@@ -3235,6 +3263,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 				g_free (cookie);
 				GDM_CONNECTION_SET_USER_FLAG
 					(conn, GDM_SUP_FLAG_AUTHENTICATED);
+				gdm_connection_set_display (conn, disp);
 				gdm_connection_write (conn, "OK\n");
 				return;
 			}
@@ -3243,6 +3272,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		/* Hmmm, perhaps this is better defined behaviour */
 		GDM_CONNECTION_UNSET_USER_FLAG
 			(conn, GDM_SUP_FLAG_AUTHENTICATED);
+		gdm_connection_set_display (conn, NULL);
 		gdm_connection_write (conn, "ERROR 100 Not authenticated\n");
 		g_free (cookie);
 	} else if (strcmp (msg, GDM_SUP_FLEXI_XSERVER) == 0) {
@@ -3400,6 +3430,110 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 					      "ERROR 50 Unsupported key\n");
 		} else {
 			gdm_connection_write (conn, "OK\n");
+		}
+	} else if (strcmp (msg, GDM_SUP_QUERY_LOGOUT_ACTION) == 0) {
+		const char *sep = " ";
+		GdmDisplay *disp;
+
+		disp = gdm_connection_get_display (conn);
+
+		/* Only allow locally authenticated connections */
+		if ( ! (gdm_connection_get_user_flags (conn) &
+			GDM_SUP_FLAG_AUTHENTICATED) ||
+		     disp == NULL) {
+			gdm_info (_("Query logout action request denied: "
+				    "Not authenticated"));
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
+
+		gdm_connection_write (conn, "OK");
+
+		if (GdmSystemMenu &&
+		    disp->console &&
+		    ! ve_string_empty (GdmHaltReal)) {
+			gdm_connection_printf (conn, "%s%s",
+					       sep,
+					       GDM_SUP_LOGOUT_ACTION_HALT);
+			sep = ";";
+		}
+		if (GdmSystemMenu &&
+		    disp->console &&
+		    ! ve_string_empty (GdmRebootReal)) {
+			gdm_connection_write (conn, GDM_SUP_LOGOUT_ACTION_REBOOT);
+			gdm_connection_printf (conn, "%s%s",
+					       sep,
+					       GDM_SUP_LOGOUT_ACTION_REBOOT);
+			sep = ";";
+		}
+		if (GdmSystemMenu &&
+		    disp->console &&
+		    ! ve_string_empty (GdmSuspendReal)) {
+			gdm_connection_printf (conn, "%s%s",
+					       sep,
+					       GDM_SUP_LOGOUT_ACTION_SUSPEND);
+			sep = ";";
+		}
+		gdm_connection_write (conn, "\n");
+	} else if (strncmp (msg, GDM_SUP_SET_LOGOUT_ACTION " ",
+		     strlen (GDM_SUP_SET_LOGOUT_ACTION " ")) == 0) {
+		const char *action = 
+			&msg[strlen (GDM_SUP_SET_LOGOUT_ACTION " ")];
+		GdmDisplay *disp;
+		gboolean was_ok = FALSE;
+
+		disp = gdm_connection_get_display (conn);
+
+		/* Only allow locally authenticated connections */
+		if ( ! (gdm_connection_get_user_flags (conn) &
+			GDM_SUP_FLAG_AUTHENTICATED) ||
+		     disp == NULL ||
+		     ! disp->logged_in) {
+			gdm_info (_("Set logout action request denied: "
+				    "Not authenticated"));
+			gdm_connection_write (conn,
+					      "ERROR 100 Not authenticated\n");
+			return;
+		}
+
+		if (strcmp (action, GDM_SUP_LOGOUT_ACTION_NONE) == 0) {
+			disp->logout_action = GDM_LOGOUT_ACTION_NONE;
+			was_ok = TRUE;
+		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_HALT) == 0) {
+			if (GdmSystemMenu &&
+			    disp->console &&
+			    ! ve_string_empty (GdmHaltReal)) {
+				disp->logout_action =
+					GDM_LOGOUT_ACTION_HALT;
+				was_ok = TRUE;
+			}
+		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_REBOOT) == 0) {
+			if (GdmSystemMenu &&
+			    disp->console &&
+			    ! ve_string_empty (GdmRebootReal)) {
+				disp->logout_action =
+					GDM_LOGOUT_ACTION_REBOOT;
+				was_ok = TRUE;
+			}
+		} else if (strcmp (action, GDM_SUP_LOGOUT_ACTION_SUSPEND) == 0) {
+			if (GdmSystemMenu &&
+			    disp->console &&
+			    ! ve_string_empty (GdmSuspendReal)) {
+				disp->logout_action =
+					GDM_LOGOUT_ACTION_SUSPEND;
+				was_ok = TRUE;
+			}
+		}
+		if (was_ok) {
+			/* Notify the slave to whack its server once it's
+			   done */
+			if (disp->logout_action != GDM_LOGOUT_ACTION_NONE)
+				send_slave_command (disp,
+						    GDM_NOTIFY_DIRTY_SERVERS);
+			gdm_connection_write (conn, "OK\n");
+		} else {
+			gdm_connection_write (conn, "ERROR 7 Unknown logout action, or not available\n");
 		}
 	} else if (strcmp (msg, GDM_SUP_VERSION) == 0) {
 		gdm_connection_write (conn, "GDM " VERSION "\n");

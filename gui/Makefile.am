@@ -26,7 +26,7 @@ INCLUDES = \
 #	-DGNOME_DISABLE_DEPRECATED			\
 #
 
-noinst_LIBRARIES = libgdmwm.a libgdmlang.a
+noinst_LIBRARIES = libgdmwm.a libgdmcommon.a
 
 bin_PROGRAMS = \
 	@GDMCHOOSER@ 		\
@@ -54,9 +54,11 @@ libgdmwm_a_SOURCES = \
 	gdmwm.c			\
 	gdmwm.h
 
-libgdmlang_a_SOURCES = \
+libgdmcommon_a_SOURCES = \
 	gdmlanguages.c		\
-	gdmlanguages.h
+	gdmlanguages.h		\
+	gdmcommon.c		\
+	gdmcommon.h
 
 gdmchooser_SOURCES = \
 	gdmchooser.c		\
@@ -92,7 +94,7 @@ gdmchooser_LDADD = \
 
 gdmlogin_LDADD = \
 	libgdmwm.a		\
-	libgdmlang.a		\
+	libgdmcommon.a		\
 	$(GUING_LIBS)		\
 	$(X_LIBS)		\
 	-lX11			\

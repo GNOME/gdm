@@ -46,6 +46,7 @@
 #include "gdm.h"
 #include "gdmwm.h"
 #include "gdmlanguages.h"
+#include "gdmcommon.h"
 #include "misc.h"
 
 /* set the DOING_GDM_DEVELOPMENT env variable if you aren't running
@@ -129,6 +130,10 @@ static gboolean GdmShowLastSession;
 
 static gboolean GdmUseCirclesInEntry;
 
+/* FIXME: Should move everything to externs and move reading to gdmcommon.c */
+gchar *GdmInfoMsgFile;
+gchar *GdmInfoMsgFont;
+
 static GtkWidget *login;
 static GtkWidget *logo_frame = NULL;
 static GtkWidget *logo_image = NULL;
@@ -188,8 +193,6 @@ static gboolean selecting_user = TRUE;
  * in some way or another */
 static gboolean session_dir_whacked_out = FALSE;
 
-static void gdm_login_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
-static void gdm_login_message (const gchar *msg);
 static void login_window_resize (gboolean force);
 
 /*
@@ -262,16 +265,8 @@ gdm_event (GSignalInvocationHint *ihint,
 	return TRUE;
 }      
 
-static void
-setup_cursor (GdkCursorType type)
-{
-	GdkCursor *cursor = gdk_cursor_new (type);
-	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
-	gdk_cursor_unref (cursor);
-}
-
-static void
-kill_thingies (void)
+void
+gdm_kill_thingies (void)
 {
 	pid_t pid = backgroundpid;
 
@@ -286,7 +281,7 @@ kill_thingies (void)
 static void
 gdm_login_done (int sig)
 {
-    kill_thingies ();
+    gdm_kill_thingies ();
     _exit (EXIT_SUCCESS);
 }
 
@@ -389,30 +384,6 @@ set_screen_to_pos (int x, int y)
 	}
 }
 
-static void
-gdm_login_abort (const gchar *format, ...)
-{
-    va_list args;
-    gchar *s;
-
-    if (!format) {
-	kill_thingies ();
-	_exit (DISPLAY_GREETERFAILED);
-    }
-
-    va_start (args, format);
-    s = g_strdup_vprintf (format, args);
-    va_end (args);
-    
-    syslog (LOG_ERR, "%s", s);
-    closelog();
-
-    g_free (s);
-
-    kill_thingies ();
-    _exit (DISPLAY_GREETERFAILED);
-}
-
 
 /* I *really* need to rewrite this crap */
 static gchar *
@@ -511,75 +482,6 @@ gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
     return g_string_free (str, FALSE);
 }
 
-
-static void
-gdm_login_message (const gchar *msg)
-{
-	GtkWidget *req = NULL;
-
-	/* we should be now fine for focusing new windows */
-	gdm_wm_focus_new_windows (TRUE);
-
-	req = ve_hig_dialog_new (NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_INFO,
-				 GTK_BUTTONS_OK,
-				 FALSE /* markup */,
-				 msg,
-				 /* avoid warning */ "%s", "");
-
-	gdm_wm_center_window (GTK_WINDOW (req));
-
-	gdm_wm_no_login_focus_push ();
-	gtk_dialog_run (GTK_DIALOG (req));
-	gtk_widget_destroy (req);
-	gdm_wm_no_login_focus_pop ();
-}
-
-static gboolean
-gdm_login_query (const gchar *msg, gboolean markup, const char *posbutton, const char *negbutton)
-{
-	int ret;
-	GtkWidget *req;
-	GtkWidget *button;
-
-	/* we should be now fine for focusing new windows */
-	gdm_wm_focus_new_windows (TRUE);
-
-	req = ve_hig_dialog_new (NULL /* parent */,
-				 GTK_DIALOG_MODAL /* flags */,
-				 GTK_MESSAGE_QUESTION,
-				 GTK_BUTTONS_NONE,
-				 markup,
-				 msg,
-				 /* avoid warning */ "%s", "");
-
-	button = gtk_button_new_from_stock (negbutton);
-	gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_NO);
-	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-	gtk_widget_show (button);
-
-	button = gtk_button_new_from_stock (posbutton);
-	gtk_dialog_add_action_widget (GTK_DIALOG (req), button, GTK_RESPONSE_YES);
-	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-	gtk_widget_show (button);
-
-	gtk_dialog_set_default_response (GTK_DIALOG (req),
-					 GTK_RESPONSE_YES);
-
-	gdm_wm_center_window (GTK_WINDOW (req));
-
-	gdm_wm_no_login_focus_push ();
-	ret = gtk_dialog_run (GTK_DIALOG (req));
-	gtk_widget_destroy (req);
-	gdm_wm_no_login_focus_pop ();
-
-	if (ret == GTK_RESPONSE_YES)
-		return TRUE;
-	else /* this includes window close */
-		return FALSE;
-}
-
 static pid_t
 gdm_run_command (const char *command)
 {
@@ -643,12 +545,12 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 static void
 gdm_login_reboot_handler (void)
 {
-	if (gdm_login_query (_("Are you sure you want to reboot the machine?"),
+	if (gdm_common_query (_("Are you sure you want to reboot the machine?"),
 			     FALSE /* markup */,
 			     _("_Reboot"), GTK_STOCK_CANCEL)) {
 		closelog();
 
-		kill_thingies ();
+		gdm_kill_thingies ();
 		_exit (DISPLAY_REBOOT);
 	}
 }
@@ -657,12 +559,12 @@ gdm_login_reboot_handler (void)
 static void
 gdm_login_halt_handler (void)
 {
-	if (gdm_login_query (_("Are you sure you want to shut down the machine?"),
+	if (gdm_common_query (_("Are you sure you want to shut down the machine?"),
 			     FALSE /* markup */,
 			     _("Shut _Down"), GTK_STOCK_CANCEL)) {
 		closelog();
 
-		kill_thingies ();
+		gdm_kill_thingies ();
 		_exit (DISPLAY_HALT);
 	}
 }
@@ -672,14 +574,14 @@ gdm_login_use_chooser_handler (void)
 {
 	closelog();
 
-	kill_thingies ();
+	gdm_kill_thingies ();
 	_exit (DISPLAY_RUN_CHOOSER);
 }
 
 static void
 gdm_login_suspend_handler (void)
 {
-	if (gdm_login_query (_("Are you sure you want to suspend the machine?"),
+	if (gdm_common_query (_("Are you sure you want to suspend the machine?"),
 			     FALSE /* markup */,
 			     _("_Suspend"), GTK_STOCK_CANCEL)) {
 		/* suspend interruption */
@@ -720,6 +622,8 @@ gdm_login_parse_config (void)
     GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
     GdmConfigAvailableReal = GdmConfigAvailable = ve_config_get_bool (config, GDM_KEY_CONFIG_AVAILABLE);
     GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
+    GdmInfoMsgFile = ve_config_get_string (config, GDM_KEY_INFO_MSG_FILE);
+    GdmInfoMsgFont = ve_config_get_string (config, GDM_KEY_INFO_MSG_FONT);
     GdmTitleBar = ve_config_get_bool (config, GDM_KEY_TITLE_BAR);
     GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
     GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
@@ -894,7 +798,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 				     "future sessions?"),
                                    session_name (savedsess),
                                    session_name (defsess));	    
-	    savesess = gdm_login_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"));
+	    savesess = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just _Log In"));
 	    g_free (msg);
 	}
     }
@@ -921,7 +825,7 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                session_name (session),
                                                session_name (savedsess),
                                                session_name (session));
-			savesess = gdm_login_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
+			savesess = gdm_common_query (msg, FALSE /* markup */, _("Make _Default"), _("Just For _This Session"));
                 } else if (strcmp (session, defsess) != 0 &&
 			   strcmp (session, savedsess) != 0 &&
                            strcmp (session, LAST_SESSION) != 0) {
@@ -939,7 +843,7 @@ gdm_login_session_lookup (const gchar* savedsess)
 							 "the panel menu)."),
 						       session_name (session),
 						       session_name (session));
-				gdm_login_message (msg);
+				gdm_common_message (msg);
 			}
 			savesess = FALSE;
                 }
@@ -999,7 +903,7 @@ gdm_login_language_lookup (const gchar* savedlang)
 	    g_free (curname);
 	    g_free (savedname);
 
-	    savelang = gdm_login_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"));
+	    savelang = gdm_common_query (msg, TRUE /* markup */, _("Make _Default"), _("Just For _This Session"));
 	    g_free (msg);
 	}
     } else {
@@ -1054,7 +958,7 @@ evil (const char *user)
 	if (dance_handler == 0 &&
 	    /* do not translate */
 	    strcmp (user, "Start Dancing") == 0) {
-		setup_cursor (GDK_UMBRELLA);
+		gdm_common_setup_cursor (GDK_UMBRELLA);
 		dance_handler = g_timeout_add (50, dance, NULL);
 		old_lock = GdmLockPosition;
 		GdmLockPosition = TRUE;
@@ -1063,7 +967,7 @@ evil (const char *user)
 	} else if (dance_handler != 0 &&
 		   /* do not translate */
 		   strcmp (user, "Stop Dancing") == 0) {
-		setup_cursor (GDK_LEFT_PTR);
+		gdm_common_setup_cursor (GDK_LEFT_PTR);
 		g_source_remove (dance_handler);
 		dance_handler = 0;
 		GdmLockPosition = old_lock;
@@ -1072,7 +976,7 @@ evil (const char *user)
 		return TRUE;
 				 /* do not translate */
 	} else if (strcmp (user, "Gimme Random Cursor") == 0) {
-		setup_cursor (((rand () >> 3) % (GDK_LAST_CURSOR/2)) * 2);
+		gdm_common_setup_cursor (((rand () >> 3) % (GDK_LAST_CURSOR/2)) * 2);
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		return TRUE;
 				 /* do not translate */
@@ -2107,7 +2011,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		messages_to_give = FALSE;
 	}
 
-	kill_thingies ();
+	gdm_kill_thingies ();
 
 	gdk_flush ();
 
@@ -2200,11 +2104,11 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	/* Set busy cursor */
-	setup_cursor (GDK_WATCH);
+	gdm_common_setup_cursor (GDK_WATCH);
 
 	gdm_wm_save_wm_order ();
 
-	kill_thingies ();
+	gdm_kill_thingies ();
 	gdk_flush ();
 
 	_exit (EXIT_SUCCESS);
@@ -2221,7 +2125,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 	
     default:
-	gdm_login_abort ("Unexpected greeter command received: '%c'", buf[0]);
+	gdm_common_abort ("Unexpected greeter command received: '%c'", buf[0]);
 	break;
     }
 
@@ -3503,7 +3407,7 @@ run_backgrounds (void)
 	     GdmRunBackgroundProgAlways) &&
 	    ! ve_string_empty (GdmBackgroundProg)) {
 		backgroundpid = gdm_run_command (GdmBackgroundProg);
-		g_atexit (kill_thingies);
+		g_atexit (gdm_kill_thingies);
 	}
 }
 
@@ -3512,41 +3416,6 @@ enum {
 	RESPONSE_REBOOT,
 	RESPONSE_CLOSE
 };
-
-static gboolean
-string_same (VeConfig *config, const char *cur, const char *key)
-{
-	char *val = ve_config_get_string (config, key);
-	if (strcmp (ve_sure_string (cur), ve_sure_string (val)) == 0) {
-		g_free (val);
-		return TRUE;
-	} else {
-		g_free (val);
-		return FALSE;
-	}
-}
-
-static gboolean
-bool_same (VeConfig *config, gboolean cur, const char *key)
-{
-	gboolean val = ve_config_get_bool (config, key);
-	if (ve_bool_equal (cur, val)) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
-
-static gboolean
-int_same (VeConfig *config, int cur, const char *key)
-{
-	int val = ve_config_get_int (config, key);
-	if (cur == val) {
-		return TRUE;
-	} else {
-		return FALSE;
-	}
-}
 
 static gboolean
 gdm_reread_config (int sig, gpointer data)
@@ -3561,31 +3430,33 @@ gdm_reread_config (int sig, gpointer data)
 	/* FIXME: The following is evil, we should update on the fly rather
 	 * then just restarting */
 	/* Also we may not need to check ALL those keys but just a few */
-	if ( ! string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
-	     ! int_same (config,
+	if ( ! gdm_common_string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
+	     ! gdm_common_string_same (config, GdmInfoMsgFile, GDM_KEY_INFO_MSG_FILE) ||
+	     ! gdm_common_string_same (config, GdmInfoMsgFont, GDM_KEY_INFO_MSG_FONT) ||
+	     ! gdm_common_int_same (config,
 			 GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
-	     ! bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
-	     ! bool_same (config, GdmBrowser, GDM_KEY_BROWSER) ||
-	     ! bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
-	     ! bool_same (config, GdmChooserButton, GDM_KEY_CHOOSER_BUTTON) ||
-	     ! bool_same (config, GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
+	     ! gdm_common_bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
+	     ! gdm_common_bool_same (config, GdmBrowser, GDM_KEY_BROWSER) ||
+	     ! gdm_common_bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
+	     ! gdm_common_bool_same (config, GdmChooserButton, GDM_KEY_CHOOSER_BUTTON) ||
+	     ! gdm_common_bool_same (config, GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
 		/* Set busy cursor */
-		setup_cursor (GDK_WATCH);
+		gdm_common_setup_cursor (GDK_WATCH);
 
 		gdm_wm_save_wm_order ();
 
-		kill_thingies ();
+		gdm_kill_thingies ();
 		_exit (DISPLAY_RESTARTGREETER);
 		return TRUE;
 	}
 
-	if ( ! string_same (config, GdmBackgroundImage, GDM_KEY_BACKGROUNDIMAGE) ||
-	     ! string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
-	     ! int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE) ||
-	     ! bool_same (config,
+	if ( ! gdm_common_string_same (config, GdmBackgroundImage, GDM_KEY_BACKGROUNDIMAGE) ||
+	     ! gdm_common_string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
+	     ! gdm_common_int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE) ||
+	     ! gdm_common_bool_same (config,
 			  GdmBackgroundScaleToFit,
 			  GDM_KEY_BACKGROUNDSCALETOFIT) ||
-	     ! bool_same (config,
+	     ! gdm_common_bool_same (config,
 			  GdmBackgroundRemoteOnlyColor,
 			  GDM_KEY_BACKGROUNDREMOTEONLYCOLOR)) {
 		GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUNDIMAGE);
@@ -3596,7 +3467,7 @@ gdm_reread_config (int sig, gpointer data)
 
 		if (GdmBackgroundType != GDM_BACKGROUND_NONE &&
 		    ! GdmRunBackgroundProgAlways)
-			kill_thingies ();
+			gdm_kill_thingies ();
 
 		setup_background ();
 
@@ -3712,7 +3583,7 @@ main (int argc, char *argv[])
     gtk_init (&argc, &argv);
 
     /* Should be a watch already, but just in case */
-    setup_cursor (GDK_WATCH);
+    gdm_common_setup_cursor (GDK_WATCH);
 
     gdm_login_parse_config ();
 
@@ -3753,7 +3624,7 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	    setup_cursor (GDK_LEFT_PTR);
+	    gdm_common_setup_cursor (GDK_LEFT_PTR);
 
 	    gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -3790,7 +3661,7 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	    setup_cursor (GDK_LEFT_PTR);
+	    gdm_common_setup_cursor (GDK_LEFT_PTR);
 
 	    switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
 	    case RESPONSE_REBOOT:
@@ -3839,7 +3710,7 @@ main (int argc, char *argv[])
 
 	    gtk_dialog_set_default_response (GTK_DIALOG (dialog), RESPONSE_RESTART);
 
-	    setup_cursor (GDK_LEFT_PTR);
+	    gdm_common_setup_cursor (GDK_LEFT_PTR);
 
 	    switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
 	    case RESPONSE_RESTART:
@@ -3870,7 +3741,7 @@ main (int argc, char *argv[])
     sigaddset (&hup.sa_mask, SIGCHLD);
 
     if G_UNLIKELY (sigaction (SIGHUP, &hup, NULL) < 0) 
-        gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
+        gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "HUP", strerror (errno));
 
     term.sa_handler = gdm_login_done;
     term.sa_flags = 0;
@@ -3878,10 +3749,10 @@ main (int argc, char *argv[])
     sigaddset (&term.sa_mask, SIGCHLD);
 
     if G_UNLIKELY (sigaction (SIGINT, &term, NULL) < 0) 
-        gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
+        gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "INT", strerror (errno));
 
     if G_UNLIKELY (sigaction (SIGTERM, &term, NULL) < 0) 
-        gdm_login_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
+        gdm_common_abort (_("%s: Error setting up %s signal handler: %s"), "main", "TERM", strerror (errno));
 
     sigemptyset (&mask);
     sigaddset (&mask, SIGTERM);
@@ -3889,14 +3760,14 @@ main (int argc, char *argv[])
     sigaddset (&mask, SIGINT);
     
     if G_UNLIKELY (sigprocmask (SIG_UNBLOCK, &mask, NULL) == -1) 
-	gdm_login_abort (_("Could not set signal mask!"));
+	gdm_common_abort (_("Could not set signal mask!"));
 
     /* ignore SIGCHLD */
     sigemptyset (&mask);
     sigaddset (&mask, SIGCHLD);
     
     if G_UNLIKELY (sigprocmask (SIG_BLOCK, &mask, NULL) == -1) 
-	gdm_login_abort (_("Could not set signal mask!"));
+	gdm_common_abort (_("Could not set signal mask!"));
 
     run_backgrounds ();
 
@@ -3986,7 +3857,7 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	    setup_cursor (GDK_LEFT_PTR);
+	    gdm_common_setup_cursor (GDK_LEFT_PTR);
 
 	    gdm_wm_no_login_focus_push ();
 	    gtk_dialog_run (GTK_DIALOG (dialog));
@@ -4012,7 +3883,7 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	    setup_cursor (GDK_LEFT_PTR);
+	    gdm_common_setup_cursor (GDK_LEFT_PTR);
 
 	    gdm_wm_no_login_focus_push ();
 	    gtk_dialog_run (GTK_DIALOG (dialog));
@@ -4040,7 +3911,7 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
-	    setup_cursor (GDK_LEFT_PTR);
+	    gdm_common_setup_cursor (GDK_LEFT_PTR);
 
 	    gdm_wm_no_login_focus_push ();
 	    gtk_dialog_run (GTK_DIALOG (dialog));
@@ -4050,12 +3921,14 @@ main (int argc, char *argv[])
 
     gdm_wm_restore_wm_order ();
 
+    gdm_common_show_info_msg ();
+
     /* Only setup the cursor now since it will be a WATCH from before */
-    setup_cursor (GDK_LEFT_PTR);
+    gdm_common_setup_cursor (GDK_LEFT_PTR);
 
     gtk_main ();
 
-    kill_thingies ();
+    gdm_kill_thingies ();
 
     return EXIT_SUCCESS;
 }

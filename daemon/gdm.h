@@ -145,7 +145,7 @@ enum {
 #define GDM_KEY_REBOOT "daemon/RebootCommand=/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
 #define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:" X_CONF_PATH ":" EXPANDED_BINDIR
 #define GDM_KEY_SERVAUTH "daemon/ServAuthDir=" EXPANDED_AUTHDIR
-#define GDM_KEY_SESSDIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" EXPANDED_SYSCONFDIR "/dm/Sessions/:" EXPANDED_DATADIR "/xsessions/"
+#define GDM_KEY_SESSDIR "daemon/SessionDesktopDir=/etc/X11/sessions/:" EXPANDED_SYSCONFDIR "/dm/Sessions/:" EXPANDED_DATADIR "/gdm/BuiltInSessions/:" EXPANDED_DATADIR "/xsessions/"
 #define GDM_KEY_BASEXSESSION "daemon/BaseXsession=" EXPANDED_SYSCONFDIR "/gdm/Xsession"
 #define GDM_KEY_DEFAULTSESSION "daemon/DefaultSession=gnome.desktop"
 #define GDM_KEY_SUSPEND "daemon/SuspendCommand="
@@ -242,6 +242,9 @@ enum {
 #define GDM_KEY_GRAPHICAL_THEME "greeter/GraphicalTheme=circles"
 #define GDM_KEY_GRAPHICAL_THEME_DIR "greeter/GraphicalThemeDir=" EXPANDED_DATADIR "/gdm/themes/"
 
+#define GDM_KEY_INFO_MSG_FILE "greeter/InfoMsgFile="
+#define GDM_KEY_INFO_MSG_FONT "greeter/InfoMsgFont="
+
 #define GDM_KEY_SCAN "chooser/ScanTime=4"
 #define GDM_KEY_HOST "chooser/DefaultHostImg=" EXPANDED_PIXMAPDIR "/nohost.png"
 #define GDM_KEY_HOSTDIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
@@ -276,7 +279,18 @@ enum {
 typedef struct _GdmConnection GdmConnection;
 #endif  /* TYPEDEF_GDM_CONNECTION */
 
+typedef enum {
+	GDM_LOGOUT_ACTION_NONE = 0,
+	GDM_LOGOUT_ACTION_HALT,
+	GDM_LOGOUT_ACTION_REBOOT,
+	GDM_LOGOUT_ACTION_SUSPEND,
+	GDM_LOGOUT_ACTION_LAST
+} GdmLogoutAction;
+
+#ifndef TYPEDEF_GDM_DISPLAY
+#define TYPEDEF_GDM_DISPLAY
 typedef struct _GdmDisplay GdmDisplay;
+#endif /* TYPEDEF_GDM_DISPLAY */
 
 /* Use this to get the right authfile name */
 #define GDM_AUTHFILE(display) \
@@ -386,6 +400,9 @@ struct _GdmDisplay {
 						the ~/.xsession-errors file */
     char *xsession_errors_filename; /* if NULL then there is no .xsession-errors
 				       file */
+
+    /* Only set in the main daemon as that's the only place that cares */
+    GdmLogoutAction logout_action;
 };
 
 typedef struct _GdmXServer GdmXServer;
@@ -493,16 +510,20 @@ void		gdm_final_cleanup	(void);
 #define GDM_SOP_SOFT_RESTART "SOFT_RESTART" /* no arguments */
 #define GDM_SOP_START_NEXT_LOCAL "START_NEXT_LOCAL" /* no arguments */
 #define GDM_SOP_HUP_ALL_GREETERS "HUP_ALL_GREETERS" /* no arguments */
+
 /* sometimes we can't do a syslog so we tell the main daemon */
 #define GDM_SOP_SYSLOG "SYSLOG" /* <pid> <type> <message> */
+
 /* write out a sessreg (xdm) compatible Xservers file
  * in the ServAuthDir as <name>.Xservers */
 #define GDM_SOP_WRITE_X_SERVERS "WRITE_X_SERVERS" /* <slave pid> */
+
 /* All X servers should be restarted rather then regenerated.  Useful
  * if you have updated the X configuration.  Note that this happens
  * only when the user logs out or when we otherwise would have restarted
  * a server, nothing is done by this command. */
 #define GDM_SOP_DIRTY_SERVERS "DIRTY_SERVERS"  /* no arguments */
+
 /* restart all servers that people aren't logged in on.  Maybe you may not
  * want to do this on every change of X server config since this may cause
  * flicker on screen and jumping around on the vt.  Perhaps useful to do
@@ -723,6 +744,46 @@ void		gdm_final_cleanup	(void);
  *      0 = Not implemented
  *      200 = Too many messages
  *      999 = Unknown error
+ */
+#define GDM_SUP_QUERY_LOGOUT_ACTION "QUERY_LOGOUT_ACTION" /* no arguments */
+/* QUERY_LOGOUT_ACTION: Query which logout actions are possible
+ * Only supported on connections that passed AUTH_LOCAL.
+ * Supported since: 2.4.90.0
+ * Answers:
+ *   OK <action>;<action>;...
+ *      Where action is one of HALT, REBOOT or SUSPEND.  An empty list
+ *      can also be returned if no action is possible
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      100 = Not authenticanted
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_SET_LOGOUT_ACTION "SET_LOGOUT_ACTION" /* <action> */
+/* SET_LOGOUT_ACTION:  Tell the daemon to halt/reboot/suspend after slave
+ * process exits. 
+ * Only supported on connections that passed AUTH_LOCAL.
+ * Supported since: 2.4.90.0
+ * Arguments:  <action>
+ *   NONE           Set exit action to 'none'
+ *   HALT           Set exit action to 'halt'
+ *   REBOOT         Set exit action to 'reboot'
+ *   SUSPEND        Set exit action to 'suspend'
+ *
+ * Answers:
+ *   OK
+ *   ERROR <err number> <english error description>
+ *      0 = Not implemented
+ *      7 = Unknown logout action, or not available
+ *      100 = Not authenticanted
+ *      200 = Too many messages
+ *      999 = Unknown error
+ */
+#define GDM_SUP_LOGOUT_ACTION_NONE	"NONE"
+#define GDM_SUP_LOGOUT_ACTION_HALT	"HALT"
+#define GDM_SUP_LOGOUT_ACTION_REBOOT	"REBOOT"
+#define GDM_SUP_LOGOUT_ACTION_SUSPEND	"SUSPEND"
+/*
  */
 #define GDM_SUP_CLOSE        "CLOSE" /* no arguments */
 /* CLOSE Answers: None

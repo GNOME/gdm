@@ -2507,6 +2507,7 @@ gdm_xdmcp_display_alloc (struct sockaddr_in *addr,
     GdmDisplay *d = NULL;
     
     d = g_new0 (GdmDisplay, 1);
+    d->logout_action = GDM_LOGOUT_ACTION_NONE;
     d->authfile = NULL;
     d->auths = NULL;
     d->userauth = NULL;

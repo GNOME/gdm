@@ -12,6 +12,7 @@
 #include "greeter_canvas_item.h"
 #include "gdm.h"
 #include "gdmwm.h"
+#include "gdmcommon.h"
 #include "vicious.h"
 #include "viciousui.h"
 #include <string.h>
@@ -39,7 +40,7 @@ evil (GtkEntry *entry, const char *user)
 {
 	/* do not translate */
 	if (strcmp (user, "Gimme Random Cursor") == 0) {
-		greeter_setup_cursor (((rand () >> 3) % (GDK_LAST_CURSOR/2)) * 2);
+		gdm_common_setup_cursor (((rand () >> 3) % (GDK_LAST_CURSOR/2)) * 2);
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		return TRUE;
 		/* do not translate */

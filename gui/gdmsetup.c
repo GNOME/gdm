@@ -430,6 +430,52 @@ setup_sensitivity_positive_toggle (const char *name,
 			  depend);
 }
 
+static const char *
+get_root_user (void)
+{
+	static char *root_user = NULL;
+	struct passwd *pwent;
+
+	if (root_user != NULL)
+		return root_user;
+
+	pwent = getpwuid (0);
+	if (pwent == NULL) /* huh? */
+		root_user = g_strdup ("root");
+	else
+		root_user = g_strdup (pwent->pw_name);
+	return root_user;
+}
+
+static void
+root_not_allowed (GtkWidget *entry)
+{
+	static gboolean warned = FALSE;
+	const char *text;
+
+	if (warned)
+		return;
+
+	text = gtk_entry_get_text (GTK_ENTRY (entry));
+
+	if ( ! ve_string_empty (text) &&
+	    strcmp (text, get_root_user ()) == 0) {
+		GtkWidget *dlg = 
+			ve_hig_dialog_new (NULL /* parent */,
+					   GTK_DIALOG_MODAL /* flags */,
+					   GTK_MESSAGE_ERROR,
+					   GTK_BUTTONS_OK,
+					   FALSE /* markup */,
+					   _("Autologin or timed login to the superuser (root) account is not allowed."),
+					   /* avoid warning */ "%s", "");
+		if (RUNNING_UNDER_GDM)
+			setup_cursor (GDK_LEFT_PTR);
+		gtk_dialog_run (GTK_DIALOG (dlg));
+		gtk_widget_destroy (dlg);
+		warned = TRUE;
+	}
+}
+
 static void
 setup_user_combo (const char *name, const char *key)
 {
@@ -487,6 +533,8 @@ setup_user_combo (const char *name, const char *key)
 
 	g_signal_connect (G_OBJECT (entry), "changed",
 			  G_CALLBACK (entry_changed), NULL);
+	g_signal_connect (G_OBJECT (entry), "changed",
+			  G_CALLBACK (root_not_allowed), NULL);
 
 	g_list_foreach (users, (GFunc)g_free, NULL);
 	g_list_free (users);

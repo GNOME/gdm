@@ -1269,6 +1269,8 @@ gdm_server_alloc (gint id, const gchar *command)
 
     d = g_new0 (GdmDisplay, 1);
 
+    d->logout_action = GDM_LOGOUT_ACTION_NONE;
+
     d->authfile = NULL;
     d->authfile_gdm = NULL;
     d->auths = NULL;
