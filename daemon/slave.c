@@ -2537,7 +2537,11 @@ session_child_run (struct passwd *pwent,
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
 				 _("The session you selected does not look valid.  I will run the GNOME failsafe session for you."));
-		}
+		} else {
+			/* HACK!, if failsafe, we really wish to run the
+			   internal one */
+			if (strcmp (exec, "failsafe") == 0)
+				session = GDM_SESSION_FAILSAFE_XTERM;
 	} else {
 		exec = NULL;
 	}
