@@ -54,7 +54,7 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 	-if test -f $(DESTDIR)$(sessdir)/Xsession; then \
 		cp $(DESTDIR)$(sessdir)/Xsession $(DESTDIR)$(sessdir)/Xsession.orig; \
 	fi
-	$(INSTALL_SCRIPT) $(srcdir)/Xsession $(DESTDIR)$(sessdir)/Xsession
+	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(sessdir)/Xsession
 
 	-if test -f $(DESTDIR)$(sessdir)/Gnome; then \
 		cp $(DESTDIR)$(sessdir)/Gnome $(DESTDIR)$(sessdir)/Gnome.orig; \
