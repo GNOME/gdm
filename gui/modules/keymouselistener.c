@@ -441,9 +441,9 @@ gestures_filter (GdkXEvent *gdk_xevent,
 	XEvent *xevent = (XEvent *)gdk_xevent;
 	GSList *li, *act_li;
 	KeySym sym;
+	Gesture *curr_gesture = NULL;
 	
 	static XEvent *last_event = NULL;
-	static Gesture *curr_gesture = NULL;
 	static gint seq_count = 0;
 
 	if (xevent->type != KeyPress &&
@@ -483,8 +483,10 @@ gestures_filter (GdkXEvent *gdk_xevent,
 						curr_gesture = gesture;
 						if (gesture->timeout > 0) {
 							 /* xevent time values are in milliseconds. The config file spec is in ms */
-							if ((xevent->xkey.time - last_event->xkey.time) > gesture->timeout)	
+							if ((xevent->xkey.time - last_event->xkey.time) > gesture->timeout) {
 								seq_count = 0; /* The timeout has been exceeded. Reset the sequence. */
+								curr_gesture = NULL;
+							}
 						}
 					}
 				}
@@ -514,8 +516,10 @@ gestures_filter (GdkXEvent *gdk_xevent,
 					 */
 					curr_gesture = gesture;
 					if ((gesture->duration > 0) &&
-						((xevent->xkey.time - last_event->xkey.time) < gesture->duration))
+						((xevent->xkey.time - last_event->xkey.time) < gesture->duration)) {
 						seq_count = 0;
+						curr_gesture = NULL;
+					}
 					else
 						seq_count++;
 				}
@@ -545,8 +549,10 @@ gestures_filter (GdkXEvent *gdk_xevent,
 						curr_gesture = gesture;
 						if (gesture->timeout > 0 ) {
 							/* xevent time values are in milliseconds. The config file spec is in ms */
-							if ((xevent->xbutton.time - last_event->xbutton.time) > gesture->timeout)
+							if ((xevent->xbutton.time - last_event->xbutton.time) > gesture->timeout) {
 								seq_count = 0; /* Timeout has elapsed. Reset the sequence. */
+								curr_gesture = NULL;
+							}
 						}
 					}
 				}
@@ -573,8 +579,10 @@ gestures_filter (GdkXEvent *gdk_xevent,
 					 */
 					curr_gesture = gesture;
 					if ((gesture->duration > 0) &&
-						((xevent->xbutton.time - last_event->xbutton.time) < gesture->duration))
+						((xevent->xbutton.time - last_event->xbutton.time) < gesture->duration)) {
 						seq_count = 0;
+						curr_gesture = NULL;
+					}
 					else
 						seq_count++;
 				}
