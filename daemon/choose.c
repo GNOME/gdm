@@ -232,6 +232,7 @@ gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
 	    gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",
 		       inet_ntoa (clnt_sa->sin_addr));
 	    gdm_choose_indirect_dispose (id);
+	    continue;
 	}
 	
 	if (id->dsp_sa->sin_addr.s_addr == clnt_sa->sin_addr.s_addr) {
