@@ -113,11 +113,11 @@ gdmflexiserver_LDADD = \
 	-lvicious		\
 	-lviciousui
 
-Settingsdir = $(datadir)/gnome/apps/Settings
+Settingsdir = $(datadir)/gnome/capplets
 Settings_in_files = gdmphotosetup.desktop.in
 Settings_DATA = $(Settings_in_files:.desktop.in=.desktop)
 
-Systemdir = $(datadir)/gnome/apps/System
+Systemdir = $(datadir)/applications
 System_in_files = \
 	gdmconfig.desktop.in		\
 	gdmflexiserver.desktop.in	\
