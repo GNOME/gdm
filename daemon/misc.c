@@ -1132,10 +1132,14 @@ gdm_close_all_descriptors (int from, int except, int except2)
 
 	/* evil, but less evil then going to _SC_OPEN_MAX
 	   which can be very VERY large */
-	dir = opendir ("/proc/self/fd/");
+	dir = opendir ("/proc/self/fd/"); /* This is the Linux dir */
+	if (dir == NULL)
+		dir = opendir ("/dev/fd/"); /* This is the FreeBSD dir */
 	if (dir != NULL) {
 		GSList *li;
 		while ((ent = readdir (dir)) != NULL) {
+			if (ent->d_name[0] == '.')
+				continue;
 			openfds = g_slist_prepend (openfds,
 						   GINT_TO_POINTER (atoi (ent->d_name)));
 		}
