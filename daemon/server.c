@@ -31,6 +31,7 @@
 #include <strings.h>
 #include <signal.h>
 #include <errno.h>
+#include <time.h>
 #include <X11/Xlib.h>
 
 #include <vicious.h>
@@ -534,13 +535,13 @@ void
 gdm_server_checklog (GdmDisplay *disp)
 {
 #ifdef __linux__
-	    if (d->vt < 0 &&
-		(d->type == TYPE_LOCAL ||
-		 d->type == TYPE_FLEXI)) {
-		    d->vt = display_vt (d);
-		    if (d->vt >= 0)
-			    gdm_slave_send_num (GDM_SOP_VT_NUM, d->vt);
-	    }
+	if (d->vt < 0 &&
+	    (d->type == TYPE_LOCAL ||
+	     d->type == TYPE_FLEXI)) {
+		d->vt = display_vt (d);
+		if (d->vt >= 0)
+			gdm_slave_send_num (GDM_SOP_VT_NUM, d->vt);
+	}
 #endif
 }
 
@@ -588,7 +589,7 @@ gdm_server_spawn (GdmDisplay *d)
 
 	/* Close the XDMCP fd inherited by the daemon process */
 	if (GdmXdmcp)
-	    gdm_xdmcp_close();
+		gdm_xdmcp_close();
 
 	/* close things */
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)
@@ -636,12 +637,12 @@ gdm_server_spawn (GdmDisplay *d)
 	sigemptyset (&dfl_signal.sa_mask);
 
 	if (sigaction (SIGHUP, &dfl_signal, NULL) < 0) {
-	    gdm_error (_("gdm_server_spawn: Error setting HUP to SIG_DFL"));
-	    _exit (SERVER_ABORT);
+		gdm_error (_("gdm_server_spawn: Error setting HUP to SIG_DFL"));
+		_exit (SERVER_ABORT);
 	}
 	if (sigaction (SIGTERM, &dfl_signal, NULL) < 0) {
-	    gdm_error (_("gdm_server_spawn: Error setting TERM to SIG_DFL"));
-	    _exit (SERVER_ABORT);
+		gdm_error (_("gdm_server_spawn: Error setting TERM to SIG_DFL"));
+		_exit (SERVER_ABORT);
 	}
 
 	/* unblock HUP/TERM/USR1 so that we can control the
@@ -801,6 +802,7 @@ static void
 gdm_server_usr1_handler (gint sig)
 {
     d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
+    d->starttime = time (NULL);
 
     gdm_debug ("gdm_server_usr1_handler: Got SIGUSR1, server running");
 

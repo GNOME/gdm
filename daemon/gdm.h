@@ -24,6 +24,7 @@
 #include <X11/Xmd.h>
 #include <X11/Xauth.h>
 #include <netinet/in.h>
+#include <time.h>
 
 #define STX 0x2			/* Start of txt */
 #define BEL 0x7			/* Bell, used to interrupt login for
@@ -268,6 +269,7 @@ struct _GdmDisplay {
     guint8 dispstat;
     guint16 dispnum;
     guint8 servstat;
+    time_t starttime;
     guint8 type;
     pid_t greetpid;
     pid_t servpid;

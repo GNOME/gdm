@@ -42,6 +42,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <errno.h>
+#include <time.h>
 #include <syslog.h>
 
 #include <vicious.h>
@@ -373,9 +374,9 @@ gdm_slave_run (GdmDisplay *display)
 
     
     /* X error handlers to avoid the default one (i.e. exit (1)) */
+    do_xfailed_on_xio_error = TRUE;
     XSetErrorHandler (gdm_slave_xerror_handler);
     XSetIOErrorHandler (gdm_slave_xioerror_handler);
-    do_xfailed_on_xio_error = TRUE;
     
     /* We keep our own (windowless) connection (dsp) open to avoid the
      * X server resetting due to lack of active connections. */
@@ -2446,10 +2447,14 @@ gdm_slave_xioerror_handler (Display *disp)
 	gdm_server_stop (d);
 	gdm_verify_cleanup (d);
 
-	if (do_xfailed_on_xio_error)
+	if ((d->type == TYPE_LOCAL ||
+	     d->type == TYPE_FLEXI) &&
+	    (do_xfailed_on_xio_error ||
+	     d->starttime + 5 >= time (NULL))) {
 		_exit (DISPLAY_XFAILED);
-	else
+	} else {
 		_exit (DISPLAY_REMANAGE);
+	}
 }
 
 char * 

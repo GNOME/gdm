@@ -1,9 +1,9 @@
 #!/bin/sh
 
-MSG3=`gettext -s _"I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  You will need to log in on a console and rerun the X configuration program.  Then restart GDM."`
+MSG3=`gettext -s "I cannot start the X server (your graphical interface).  It is likely that it is not set up correctly.  You will need to log in on a console and rerun the X configuration program.  Then restart GDM."`
 MSG4=`gettext -s "Would you like me to try to run the X configuration program?  Note that you will need the root password for this."`
 MSG5=`gettext -s "Please type in the root (privilaged user) password."`
-MSG6=`gettest -s "I will now try to restart the X server again."`
+MSG6=`gettext -s "I will now try to restart the X server again."`
 MSG7=`gettext -s "I will disable this X server for now.  Restart GDM when it is configured correctly."`
 
 # there are some env vars defined:
@@ -75,7 +75,7 @@ else
   exit $?
 fi
 
-SETUP=`which $1`
+SETUP=`which $XCONFIGURATOR`
 DIALOG=`which dialog`
 if test x$DIALOG = x ; then
   DIALOG=`which gdialog`
@@ -100,7 +100,11 @@ if test x = x$SETUP -o x = x$DIALOG ; then
   echo 
   echo =======================================================================
   echo
-  echo  "$MSG3"
+  if test -x /usr/bin/fmt ; then
+    echo  "$MSG3" | /usr/bin/fmt
+  else
+    echo  "$MSG3"
+  fi
   echo
   echo =======================================================================
   read

@@ -171,6 +171,11 @@ main (int argc, char *argv[])
 		/* wait to be really sure we have switched */
 		(void) ioctl(fd, VT_WAITACTIVE, vtno);
 
+#ifdef __linux__
+		/* Turn on fonts */
+		write (0, "\033(K", 3);
+#endif /* __linux__ */
+
 		execvp (argv[1], &argv[1]);
 
 		_exit (66); /* failed */

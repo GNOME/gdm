@@ -721,9 +721,14 @@ deal_with_x_crashes (GdmDisplay *d)
 		    ve_unsetenv ("DISPLAY");
 		    ve_unsetenv ("XAUTHORITY");
 
+		    /* some promised variables */
 		    ve_setenv ("XLOG", xlog, TRUE);
 		    ve_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
 		    ve_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
+
+		    /* To enable gettext stuff in the script */
+		    ve_setenv ("TEXTDOMAIN", PACKAGE, TRUE);
+		    ve_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
 		    execv (argv[0], argv);
 	

@@ -1,3 +1,20 @@
+Thu Oct 25 01:49:57 2001  George Lebl <jirka@5z.com>
+
+	* config/XKeepsCrashing: fix minor issues
+
+	* daemon/gdm.c: set TEXTDOMAIN and TEXTDOMAINDIR for XKeepsCrashing
+
+	* utils/gdmopen.c: echo \033(K onto the console to make sure
+	  that non lat1 fonts get set up
+
+	* daemon/gdm.h, daemon/server.c, daemon/slave.c:  When starting
+	  a server consider loss of connection within 5 seconds a crash
+	  no matter what.  It seems that for example not being able
+	  to open a mouse manifests self AFTER server tells us
+	  it's ready and we XOpenDisplay.  Actually it's 5 seconds from
+	  the USR1, which means 5 seconds after it's ready to accept
+	  connections.
+
 Wed Oct 24 17:57:03 2001  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch], gui/gdmconfig.(c|glade), config/gdm.conf.in:
