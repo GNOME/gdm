@@ -1,4 +1,12 @@
-Wed Dec 10 13:08:13 2003  Wanker who should set his $CHANGELOGNAME <wanker@wankers.com>
+Wed Dec 10 15:36:31 2003  George Lebl <jirka@5z.com>
+
+        * daemon/display.c: Fix #126465 where xdmcp_sessions would not
+          get decremented on normal logout.  Doh!  Just do a recount of
+          all the limits on display dispose that is just a lot more robust.
+
+	* daemon/xdmcp.c: minor cosmetic cleanup
+
+Wed Dec 10 13:08:13 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch], daemon/display.c, daemon/gdm-net.[ch],
 	  daemon/server.c, daemon/xdmcp.c:  Add possibility to request
@@ -20,9 +28,9 @@ Wed Dec 10 13:08:13 2003  Wanker who should set his $CHANGELOGNAME <wanker@wanke
 	* gui/gdmcommon.[ch], gui/gdmlogin.c, gui/greeter/greeter.c,
 	  docs/C/gdm.xml, daemon/gdm.h, config/gdm.conf.in: Apply a patch
 	  from Anton Altaparmakov to add an optional info message to the
-	  greeters
+	  greeters.  Fixes #125219
 
-	* gui/gdmsetup.c: fix RH 97716 by putting up a dialog when user
+	* gui/gdmsetup.c: fix RH #97716 by putting up a dialog when user
 	  tries to input root for the first time
 
 	* docs/C/gdm.xml: minor updates.

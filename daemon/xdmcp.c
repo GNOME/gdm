@@ -2447,11 +2447,13 @@ gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD16 dspnum, CARD32 sessid)
 
 
 static gboolean
+gdm_xdmcp_host_allow (
 #ifdef ENABLE_IPV6
-gdm_xdmcp_host_allow (struct sockaddr_storage *clnt_sa)
+                      struct sockaddr_storage *clnt_sa
 #else
-gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa)
+		      struct sockaddr_in *clnt_sa
 #endif
+		     )
 {
 #ifdef HAVE_TCPWRAPPERS
 	
@@ -2496,10 +2498,11 @@ gdm_xdmcp_host_allow (struct sockaddr_in *clnt_sa)
 
 
 static GdmDisplay *
+gdm_xdmcp_display_alloc (
 #ifdef ENABLE_IPV6
-gdm_xdmcp_display_alloc (struct sockaddr_storage *addr,
+			 struct sockaddr_storage *addr,
 #else
-gdm_xdmcp_display_alloc (struct sockaddr_in *addr,
+			 struct sockaddr_in *addr,
 #endif
 			 GdmHostent *he /* eaten and freed */,
 			 int displaynum)
@@ -2585,7 +2588,7 @@ gdm_xdmcp_display_alloc (struct sockaddr_in *addr,
     gdm_debug ("gdm_xdmcp_display_alloc: display=%s, session id=%ld, xdmcp_pending=%d ",
 	       d->name, (long)d->sessionid, xdmcp_pending);
     
-    return (d);
+    return d;
 }
 
 
