@@ -2716,16 +2716,6 @@ create_handle (void)
 	return title_box;
 }
 
-static void
-login_realized (GtkWidget *w)
-{
-	/* In case we're out of bounds, after realization we'll have correct
-	 * limits to make the window be on screen */
-	if (GdmSetPosition) {
-		set_screen_pos (login, GdmPositionX, GdmPositionY);
-	}
-}
-
 static gboolean
 update_clock (gpointer data)
 {
@@ -3331,11 +3321,9 @@ gdm_login_gui_init (void)
 		  "resizable", TRUE,
 		  NULL);
     
+    /* do it now, and we'll also do it later */
     if (GdmSetPosition) {
 	    set_screen_pos (login, GdmPositionX, GdmPositionY);
-	    g_signal_connect (G_OBJECT (login), "realize",
-			      G_CALLBACK (login_realized),
-			      NULL);
     } else {
 	    gdm_wm_center_window (GTK_WINDOW (login));
     }
@@ -4119,7 +4107,14 @@ main (int argc, char *argv[])
 					NULL /* destroy_notify */);
     }
 
+    gtk_widget_queue_resize (login);
     gtk_widget_show_now (login);
+
+    if (GdmSetPosition) {
+	    set_screen_pos (login, GdmPositionX, GdmPositionY);
+    } else {
+	    gdm_wm_center_window (GTK_WINDOW (login));
+    }
 
     /* can it ever happen that it'd be NULL here ??? */
     if (login->window != NULL) {

@@ -44,6 +44,9 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
+#ifdef HAVE_SYS_SOCKIO_H
+#include <sys/sockio.h>
+#endif
 
 #include <viciousui.h>
 
@@ -79,6 +82,7 @@ static gchar *client_address = NULL;
 static gint connection_type = 0;
 
 static void gdm_chooser_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+static void gdm_chooser_warn (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 /* Exported for glade */
 gboolean gdm_chooser_cancel (void);
@@ -415,14 +419,15 @@ gdm_chooser_find_bcaddr (void)
 #endif
 
 	ifc.ifc_len = sizeof (struct ifreq) * num;
-	ifc.ifc_buf = buf = g_malloc (ifc.ifc_len);
+	ifc.ifc_buf = buf = g_malloc0 (ifc.ifc_len);
 	if (ioctl (sockfd, SIOCGIFCONF, &ifc) < 0) {
 		g_free (buf);
-		gdm_chooser_abort ("Cannot get local addresses!");
+		gdm_chooser_warn ("Cannot get local addresses!");
 		return;
 	}
 
 	ifr = ifc.ifc_req;
+	num = ifc.ifc_len / sizeof(struct ifreq);
 	for (i = 0 ; i < num ; i++) {
 		if ( ! ve_string_empty (ifr[i].ifr_name)) {
 			struct ifreq ifreq;
@@ -436,7 +441,7 @@ gdm_chooser_find_bcaddr (void)
 			ifreq.ifr_name[sizeof (ifreq.ifr_name) - 1] = '\0';
 
 			if (ioctl (sockfd, SIOCGIFFLAGS, &ifreq) < 0) 
-				gdm_chooser_abort ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
+				gdm_chooser_warn ("Could not get SIOCGIFFLAGS for %s", ifr[i].ifr_name);
 
 			if ((ifreq.ifr_flags & IFF_UP) == 0 ||
 			    (ifreq.ifr_flags & IFF_BROADCAST) == 0 ||
@@ -744,14 +749,29 @@ gdm_chooser_abort (const gchar *format, ...)
     exit (EXIT_FAILURE);
 }
 
+static void
+gdm_chooser_warn (const gchar *format, ...)
+{
+    va_list args;
+    gchar *s;
+
+    va_start (args, format);
+    s = g_strdup_vprintf (format, args);
+    va_end (args);
+
+    syslog (LOG_ERR, "%s", s);
+    closelog ();
+}
+
 
 static void 
 gdm_chooser_parse_config (void)
 {
+    /* stupid, or is it?
     struct stat unused;
-	
     if (stat (GDM_CONFIG_FILE, &unused) == -1)
 	gdm_chooser_abort (_("gdm_chooser_parse_config: No configuration file: %s. Aborting."), GDM_CONFIG_FILE);
+	*/
 
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
@@ -897,10 +917,17 @@ gdm_chooser_gui_init (void)
 	gtk_rc_parse (GdmGtkRC);
 
     /* Load default host image */
-    if (access (GdmHostDefaultIcon, R_OK) != 0)
-	gdm_chooser_abort (_("Can't open default host icon: %s"), GdmHostDefaultIcon);
-    else
+    if (access (GdmHostDefaultIcon, R_OK) != 0) {
+	gdm_chooser_warn (_("Can't open default host icon: %s"), GdmHostDefaultIcon);
+	/* bogus image */
+	defhostimg = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+				     FALSE /* has_alpha */,
+				     8 /* bits_per_sample */,
+				     48 /* width */,
+				     48 /* height */);
+    } else {
 	defhostimg = gdk_pixbuf_new_from_file (GdmHostDefaultIcon, NULL);
+    }
 
     /* Main window */
     chooser_app = glade_helper_load ("gdmchooser.glade",
@@ -1011,11 +1038,17 @@ gdm_event (GSignalInvocationHint *ihint,
 	   const GValue	       *param_values,
 	   gpointer		data)
 {
+	GdkEvent *event;
+
 	/* HAAAAAAAAAAAAAAAAACK */
 	/* Since the user has not logged in yet and may have left/right
 	 * mouse buttons switched, we just translate every right mouse click
 	 * to a left mouse click */
-	GdkEvent *event = g_value_get_pointer ((GValue *)param_values);
+	if (n_param_values != 2 ||
+	    !G_VALUE_HOLDS (&param_values[1], GDK_TYPE_EVENT))
+	  return FALSE;
+	
+	event = g_value_get_boxed (&param_values[1]);
 	if ((event->type == GDK_BUTTON_PRESS ||
 	     event->type == GDK_2BUTTON_PRESS ||
 	     event->type == GDK_3BUTTON_PRESS ||
@@ -1122,7 +1155,10 @@ main (int argc, char *argv[])
 					NULL /* destroy_notify */);
     }
 
+    gtk_widget_queue_resize (chooser);
     gtk_widget_show_now (chooser);
+
+    gdm_wm_center_window (GTK_WINDOW (chooser));
 
     /* can it ever happen that it'd be NULL here ??? */
     if (chooser->window != NULL) {

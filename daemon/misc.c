@@ -34,6 +34,9 @@
 #include <errno.h>
 #include <grp.h>
 #include <sys/types.h>
+#ifdef HAVE_SYS_SOCKIO_H
+#include <sys/sockio.h>
+#endif
 
 #include <vicious.h>
 
@@ -708,7 +711,7 @@ gdm_peek_local_address_list (void)
 #endif
 
 	ifc.ifc_len = sizeof(struct ifreq) * num;
-	ifc.ifc_buf = buf = g_malloc (ifc.ifc_len);
+	ifc.ifc_buf = buf = g_malloc0 (ifc.ifc_len);
 	if (ioctl (sockfd, SIOCGIFCONF, &ifc) < 0) {
 		gdm_error (_("%s: Cannot get local addresses!"),
 			   "gdm_peek_local_address_list");

@@ -21,9 +21,9 @@ INCLUDES = \
 	$(GNOME_INCLUDEDIR)
 
 
-bin_PROGRAMS = gdm
+bin_PROGRAMS = gdm-binary
 
-gdm_SOURCES = \
+gdm_binary_SOURCES = \
 	gdm.c \
 	gdm.h \
 	display.c \
@@ -53,9 +53,9 @@ gdm_SOURCES = \
 	gdm-net.c \
 	gdm-net.h
 
-EXTRA_gdm_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
+EXTRA_gdm_binary_SOURCES = verify-pam.c verify-crypt.c verify-shadow.c
 
-gdm_LDADD = \
+gdm_binary_LDADD = \
 	$(DAEMON_LIBS)				\
 	$(X_LIBS)				\
 	$(XDMCP_LIBS)				\
@@ -67,3 +67,6 @@ gdm_LDADD = \
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious
 
+bin_SCRIPTS = gdm
+
+EXTRA_DIST = gdm.in

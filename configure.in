@@ -304,6 +304,12 @@ AC_CHECK_HEADER(login_cap.h, [
 		AC_DEFINE(HAVE_LOGINCAP)])
 
 #
+# Check for sys/sockio.h
+#
+AC_CHECK_HEADERS(sys/sockio.h, [
+		 AC_DEFINE(HAVE_SYS_SOCKIO_H)])
+
+#
 # Xdmcp checking
 #
 XDMCP_LIBS=""
@@ -442,6 +448,7 @@ vicious-extensions/Makefile
 config/gdm.conf
 config/Gnome
 config/gnomerc
+daemon/gdm
 gdm-restart
 gdm-safe-restart
 gdmsetup-security

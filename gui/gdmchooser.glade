@@ -17,7 +17,6 @@
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox1">
-      <property name="border_width">2</property>
       <property name="visible">True</property>
       <property name="homogeneous">False</property>
       <property name="spacing">0</property>
@@ -188,6 +187,8 @@
 	      <property name="text_spacing">2</property>
 	      <property name="text_editable">False</property>
 	      <property name="text_static">False</property>
+	      <signal name="select_icon" handler="gdm_chooser_browser_select" last_modification_time="Tue, 09 Jul 2002 02:43:48 GMT"/>
+	      <signal name="unselect_icon" handler="gdm_chooser_browser_unselect" last_modification_time="Tue, 09 Jul 2002 02:44:00 GMT"/>
 	    </widget>
 	  </child>
 	</widget>

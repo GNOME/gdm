@@ -1,3 +1,36 @@
+Mon Jul 08 20:01:23 2002  George Lebl <jirka@5z.com>
+
+	* configure.in, acconfig.h, daemon/misc.c, gui/gdmchooser.c:
+	  if available include <sys/sockio.h>.  Should fix first
+	  part of #86679
+
+	* gui/Makefile.am: link gdmsetup and gdmflexiserver with -lXau,
+	  should fix second part of #86679
+
+	* gui/gdmwm.c: Fix #86620, don't set up the wm stuff if the
+	  substructureredirect selection fails on the root window.
+
+	* daemon/slave.c: don't clear the env for chooser, greeter and
+	  config.  I suppose it was fairly foolish to do so anyway.
+	  Should fix #87387 partly
+
+	* configure.in, daemon/gdm.in, daemon/Makefile.am: rename
+	  gdm to gdm-binary and install a new script called gdm
+	  which calls gdm-binary.  This way the standard env is
+	  read in and other good stuff can happen.  Should fix #87387
+	  completely
+
+	* gui/gdmchooser.c, gui/gdmlogin.c: properly center windows
+
+	* gui/gdmchooser.c: don't die on every minor problem, and
+	  fix querying the interfaces
+
+	* gui/gdmchooser.c, gui/gdmsetup.c: fix crashes and the event
+	  fixup function
+
+	* gui/gdmchooser.glade: fix signal connections so that we can
+	  actually select some host
+
 2002-07-08  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* gui/greeter/themes/happygnome/Makefile.am:

@@ -92,6 +92,7 @@ gdmlogin_LDADD = \
 gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
 	$(GUI_LIBS)		\
+	-lXau			\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
@@ -110,6 +111,7 @@ gdmXnestchooser_LDADD = \
 
 gdmflexiserver_LDADD = \
 	$(GUI_LIBS)		\
+	-lXau			\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui

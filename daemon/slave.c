@@ -736,7 +736,9 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		setgid (0);
 
 		/* setup environment */
-		gdm_clearenv_no_lang ();
+		/* FIXME: clearing environment is likely fairly stupid,
+		 * is there any reason we should do it anyway? */
+		/* gdm_clearenv_no_lang (); */
 
 		/* root here */
 		gnome_setenv ("XAUTHORITY", display->authfile, TRUE);
@@ -1308,7 +1310,10 @@ gdm_slave_greeter (void)
 			    _("%s: Couldn't set userid to %d"),
 			    "gdm_slave_greeter", GdmUserId);
 	
-	gdm_clearenv_no_lang ();
+	/* FIXME: clearing environment is likely fairly stupid,
+	 * is there any reason we should do it anyway? */
+	/* gdm_clearenv_no_lang (); */
+
 	gnome_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 	gnome_setenv ("DISPLAY", d->name, TRUE);
 
@@ -1656,7 +1661,10 @@ gdm_slave_chooser (void)
 					_("%s: Couldn't set userid to %d"),
 					"gdm_slave_chooser", GdmUserId);
 
-		gdm_clearenv_no_lang ();
+		/* FIXME: clearing environment is likely fairly stupid,
+		 * is there any reason we should do it anyway? */
+		/* gdm_clearenv_no_lang (); */
+
 		gnome_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
 		gnome_setenv ("DISPLAY", d->name, TRUE);
 

@@ -187,7 +187,7 @@ trap_push (void)
 	gdk_error_trap_push ();
 }
 
-static gboolean
+static int
 trap_pop (void)
 {
 	trap_depth --;
@@ -1087,6 +1087,18 @@ gdm_wm_init (Window login_window)
 
 	wm_root = DefaultRootWindow (wm_disp);
 
+	/* set event mask for events on root window */
+	XGetWindowAttributes (wm_disp, wm_root, &attribs);
+	XSelectInput (wm_disp, wm_root,
+		      attribs.your_event_mask |
+		      SubstructureNotifyMask |
+		      SubstructureRedirectMask);
+
+	if (trap_pop () != 0)
+		return;
+
+	trap_push ();
+
 	add_all_current_windows ();
 
 	source = g_source_new (&event_funcs, sizeof (GSource));
@@ -1098,13 +1110,6 @@ gdm_wm_init (Window login_window)
 	g_source_set_priority (source, GDK_PRIORITY_EVENTS);
 	g_source_set_can_recurse (source, FALSE);
 	g_source_attach (source, NULL);
-
-	/* set event mask for events on root window */
-	XGetWindowAttributes (wm_disp, wm_root, &attribs);
-	XSelectInput (wm_disp, wm_root,
-		      attribs.your_event_mask |
-		      SubstructureNotifyMask |
-		      SubstructureRedirectMask);
 
 	trap_pop ();
 }

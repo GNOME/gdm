@@ -1,0 +1,9 @@
+#!/bin/sh
+# A script so that
+#    1) we read the standard system env vars
+#    2) syadmins/integrators can add their own private options etc...
+
+exec @EXPANDED_BINDIR@/gdm-binary "$@"
+
+# fallback, use PATH
+exec gdm-binary "$@"

@@ -1905,11 +1905,17 @@ gdm_event (GSignalInvocationHint *ihint,
 	   const GValue	       *param_values,
 	   gpointer		data)
 {
+	GdkEvent *event;
+
 	/* HAAAAAAAAAAAAAAAAACK */
 	/* Since the user has not logged in yet and may have left/right
 	 * mouse buttons switched, we just translate every right mouse click
 	 * to a left mouse click */
-	GdkEvent *event = g_value_get_pointer ((GValue *)param_values);
+	if (n_param_values != 2 ||
+	    !G_VALUE_HOLDS (&param_values[1], GDK_TYPE_EVENT))
+	  return FALSE;
+	
+	event = g_value_get_boxed (&param_values[1]);
 	if ((event->type == GDK_BUTTON_PRESS ||
 	     event->type == GDK_2BUTTON_PRESS ||
 	     event->type == GDK_3BUTTON_PRESS ||
@@ -1954,6 +1960,9 @@ main (int argc, char *argv[])
 		if ( ! ve_string_empty (gtkrc))
 			gtk_rc_parse (gtkrc);
 		g_free (gtkrc);
+
+		/* evil, but oh well */
+		g_type_class_ref (GTK_TYPE_WIDGET);	
 
 		/* also setup third button to work as first to work in reverse
 		 * situations transparently */
