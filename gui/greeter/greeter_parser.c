@@ -932,7 +932,7 @@ parse_stock (xmlNodePtr node,
       else if (g_ascii_strcasecmp (prop, "system") == 0)
         {
 	  g_free (*translated_text);
-	  *translated_text = g_strdup (_("S_ystem"));
+	  *translated_text = g_strdup (_("_Actions"));
 	}
       else if (g_ascii_strcasecmp (prop, "disconnect") == 0)
         {

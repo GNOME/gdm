@@ -241,7 +241,8 @@ gdm_xdmcp_init (void)
     /* Fetch and store local hostname in XDMCP friendly format */
     hostbuf[1023] = '\0';
     if (gethostname (hostbuf, 1023) != 0) {
-	gdm_error (_("gdm_xdmcp_init: Could not get server hostname: %s!"), strerror (errno));
+	gdm_error (_("%s: Could not get server hostname: %s!"), 
+		   "gdm_xdmcp_init", strerror (errno));
 	strcmp (hostbuf, "localhost.localdomain");
     }
 
@@ -261,7 +262,7 @@ gdm_xdmcp_init (void)
     gdm_xdmcpfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */
     
     if (gdm_xdmcpfd < 0) {
-	gdm_error (_("gdm_xdmcp_init: Could not create socket!"));
+	gdm_error (_("%s: Could not create socket!"), "gdm_xdmcp_init");
 	GdmXdmcp = FALSE;
 	return FALSE;
     }
@@ -271,7 +272,7 @@ gdm_xdmcp_init (void)
     serv_sa.sin_addr.s_addr = htonl (INADDR_ANY);
     
     if (bind (gdm_xdmcpfd, (struct sockaddr*) &serv_sa, sizeof (serv_sa)) == -1) {
-	gdm_error (_("gdm_xdmcp_init: Could not bind to XDMCP socket!"));
+	gdm_error (_("%s: Could not bind to XDMCP socket!"), "gdm_xdmcp_init");
 	gdm_xdmcp_close ();
 	GdmXdmcp = FALSE;
 	return FALSE;
@@ -330,18 +331,21 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
     };
     
     if (!XdmcpFill (gdm_xdmcpfd, &buf, (XdmcpNetaddr)&clnt_sa, &sa_len)) {
-	gdm_error (_("gdm_xdmcp_decode: Could not create XDMCP buffer!"));
+	gdm_error (_("%s: Could not create XDMCP buffer!"),
+		   "gdm_xdmcp_decode_packet");
 	return TRUE;
     }
     
     if (!XdmcpReadHeader (&buf, &header)) {
-	gdm_error (_("gdm_xdmcp_decode: Could not read XDMCP header!"));
+	gdm_error (_("%s: Could not read XDMCP header!"),
+		   "gdm_xdmcp_decode_packet");
 	return TRUE;
     }
     
     if (header.version != XDM_PROTOCOL_VERSION &&
 	header.version != GDM_XDMCP_PROTOCOL_VERSION) {
-	gdm_error (_("gdm_xdmcp_decode: Incorrect XDMCP version!"));
+	gdm_error (_("%s: Incorrect XDMCP version!"),
+		   "gdm_xdmcp_decode_packet");
 	return TRUE;
     }
 
@@ -394,7 +398,8 @@ gdm_xdmcp_decode_packet (GIOChannel *source, GIOCondition cond, gpointer data)
 	break;
 	
     default:
-	gdm_error (_("gdm_xdmcp_decode_packet: Unknown opcode from host %s"),
+	gdm_error (_("%s: Unknown opcode from host %s"),
+		   "gdm_xdmcp_decode_packet",
 		   inet_ntoa (clnt_sa.sin_addr));
 	break;
     }
@@ -413,7 +418,8 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     
     /* Extract array of authentication names from Xdmcp packet */
     if (! XdmcpReadARRAYofARRAY8 (&buf, &clnt_authlist)) {
-	gdm_error (_("gdm_xdmcp_handle_query: Could not extract authlist from packet")); 
+	gdm_error (_("%s: Could not extract authlist from packet"),
+		   "gdm_xdmcp_handle_query"); 
 	return;
     }
     
@@ -425,7 +431,8 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     }
     
     if (len != explen) {
-	gdm_error (_("gdm_xdmcp_handle_query: Error in checksum")); 
+	gdm_error (_("%s: Error in checksum"),
+		   "gdm_xdmcp_handle_query"); 
 	XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
 	return;
     }
@@ -668,14 +675,16 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     
     /* Read display address */
     if (! XdmcpReadARRAY8 (&buf, &clnt_addr)) {
-	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not read display address"));
+	gdm_error (_("%s: Could not read display address"),
+		   "gdm_xdmcp_handle_forward_query");
 	return;
     }
     
     /* Read display port */
     if (! XdmcpReadARRAY8 (&buf, &clnt_port)) {
 	XdmcpDisposeARRAY8 (&clnt_addr);
-	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not read display port number"));
+	gdm_error (_("%s: Could not read display port number"),
+		   "gdm_xdmcp_handle_forward_query");
 	return;
     }
     
@@ -683,7 +692,8 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     if (! XdmcpReadARRAYofARRAY8 (&buf, &clnt_authlist)) {
 	XdmcpDisposeARRAY8 (&clnt_addr);
 	XdmcpDisposeARRAY8 (&clnt_port);
-	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not extract authlist from packet")); 
+	gdm_error (_("%s: Could not extract authlist from packet"),
+		   "gdm_xdmcp_handle_forward_query"); 
 	return;
     }
     
@@ -699,13 +709,15 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     }
     
     if (len != explen) {
-	gdm_error (_("gdm_xdmcp_handle_forward_query: Error in checksum")); 
+	gdm_error (_("%s: Error in checksum"),
+		   "gdm_xdmcp_handle_forward_query"); 
 	goto out;
     }
     
     if (clnt_port.length != 2 ||
 	clnt_addr.length != 4) {
-	    gdm_error (_("gdm_xdmcp_handle_forward_query: Bad address")); 
+	    gdm_error (_("%s: Bad address"),
+		       "gdm_xdmcp_handle_forward_query"); 
 	    goto out;
     }
 
@@ -959,33 +971,38 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     
     /* Check with tcp_wrappers if client is allowed to access */
     if (! gdm_xdmcp_host_allow (clnt_sa)) {
-	gdm_error (_("gdm_xdmcp_handle_request: Got REQUEST from banned host %s"), 
+	gdm_error (_("%s: Got REQUEST from banned host %s"), 
+		   "gdm_xdmcp_handle_request",
 		   inet_ntoa (clnt_sa->sin_addr));
 	return;
     }
     
     /* Remote display number */
     if (! XdmcpReadCARD16 (&buf, &clnt_dspnum)) {
-	gdm_error (_("gdm_xdmcp_handle_request: Could not read Display Number"));
+	gdm_error (_("%s: Could not read Display Number"),
+		   "gdm_xdmcp_handle_request");
 	return;
     }
     
     /* We don't care about connection type. Address says it all */
     if (! XdmcpReadARRAY16 (&buf, &clnt_conntyp)) {
-	gdm_error (_("gdm_xdmcp_handle_request: Could not read Connection Type"));
+	gdm_error (_("%s: Could not read Connection Type"),
+		   "gdm_xdmcp_handle_request");
 	return;
     }
     
     /* This is TCP/IP - we don't care */
     if (! XdmcpReadARRAYofARRAY8 (&buf, &clnt_addr)) {
-	gdm_error (_("gdm_xdmcp_handle_request: Could not read Client Address"));
+	gdm_error (_("%s: Could not read Client Address"),
+		   "gdm_xdmcp_handle_request");
         XdmcpDisposeARRAY16 (&clnt_conntyp);
 	return;
     }
     
     /* Read authentication type */
     if (! XdmcpReadARRAY8 (&buf, &clnt_authname)) {
-	gdm_error (_("gdm_xdmcp_handle_request: Could not read Authentication Names"));
+	gdm_error (_("%s: Could not read Authentication Names"),
+		   "gdm_xdmcp_handle_request");
 	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
 	XdmcpDisposeARRAY16 (&clnt_conntyp);
 	return;
@@ -993,7 +1010,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     
     /* Read authentication data */
     if (! XdmcpReadARRAY8 (&buf, &clnt_authdata)) {
-	gdm_error (_("gdm_xdmcp_handle_request: Could not read Authentication Data"));
+	gdm_error (_("%s: Could not read Authentication Data"),
+		   "gdm_xdmcp_handle_request");
 	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
 	XdmcpDisposeARRAY16 (&clnt_conntyp);
 	XdmcpDisposeARRAY8 (&clnt_authname);
@@ -1002,7 +1020,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     
     /* Read and select from supported authorization list */
     if (! XdmcpReadARRAYofARRAY8 (&buf, &clnt_authorization)) {
-	gdm_error (_("gdm_xdmcp_handle_request: Could not read Authorization List"));
+	gdm_error (_("%s: Could not read Authorization List"),
+		   "gdm_xdmcp_handle_request");
 	XdmcpDisposeARRAY8 (&clnt_authdata);
 	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
 	XdmcpDisposeARRAY16 (&clnt_conntyp);
@@ -1017,7 +1036,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     
     /* Manufacturer ID */
     if (! XdmcpReadARRAY8 (&buf, &clnt_manufacturer)) {
-	gdm_error (_("gdm_xdmcp_handle_request: Could not read Manufacturer ID"));
+	gdm_error (_("%s: Could not read Manufacturer ID"),
+		   "gdm_xdmcp_handle_request");
 	XdmcpDisposeARRAY8 (&clnt_authname);
 	XdmcpDisposeARRAY8 (&clnt_authdata);
 	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
@@ -1040,7 +1060,8 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
     explen += 2+clnt_manufacturer.length;
     
     if (explen != len) {
-	gdm_error (_("gdm_xdmcp_handle_request: Failed checksum from %s"),
+	gdm_error (_("%s: Failed checksum from %s"),
+		   "gdm_xdmcp_handle_request",
 		   inet_ntoa (clnt_sa->sin_addr));
 	XdmcpDisposeARRAY8 (&clnt_authname);
 	XdmcpDisposeARRAY8 (&clnt_authdata);
@@ -1207,20 +1228,23 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     
     /* Check with tcp_wrappers if client is allowed to access */
     if (! gdm_xdmcp_host_allow (clnt_sa)) {
-	gdm_error (_("gdm_xdmcp_handle_manage: Got Manage from banned host %s"), 
+	gdm_error (_("%s: Got Manage from banned host %s"), 
+		   "gdm_xdmcp_handle_manage",
 		   inet_ntoa (clnt_sa->sin_addr));
 	return;
     }
     
     /* SessionID */
     if (! XdmcpReadCARD32 (&buf, &clnt_sessid)) {
-	gdm_error (_("gdm_xdmcp_handle_manage: Could not read Session ID"));
+	gdm_error (_("%s: Could not read Session ID"),
+		   "gdm_xdmcp_handle_manage");
 	return;
     }
     
     /* Remote display number */
     if (! XdmcpReadCARD16 (&buf, &clnt_dspnum)) {
-	gdm_error (_("gdm_xdmcp_handle_manage: Could not read Display Number"));
+	gdm_error (_("%s: Could not read Display Number"),
+		   "gdm_xdmcp_handle_manage");
 	return;
     }
     
@@ -1229,7 +1253,8 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
     
     /* Display Class */
     if (! XdmcpReadARRAY8 (&buf, &clnt_dspclass)) {
-	gdm_error (_("gdm_xdmcp_handle_manage: Could not read Display Class"));
+	gdm_error (_("%s: Could not read Display Class"),
+		   "gdm_xdmcp_handle_manage");
 	return;
     }
     
@@ -1442,20 +1467,23 @@ gdm_xdmcp_handle_keepalive (struct sockaddr_in *clnt_sa, gint len)
     
     /* Check with tcp_wrappers if client is allowed to access */
     if (! gdm_xdmcp_host_allow (clnt_sa)) {
-	gdm_error (_("gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"), 
+	gdm_error (_("%s: Got KEEPALIVE from banned host %s"), 
+		   "gdm_xdmcp_handle_keepalive",
 		   inet_ntoa (clnt_sa->sin_addr));
 	return;
     }
     
     /* Remote display number */
     if (! XdmcpReadCARD16 (&buf, &clnt_dspnum)) {
-	gdm_error (_("gdm_xdmcp_handle_keepalive: Could not read Display Number"));
+	gdm_error (_("%s: Could not read Display Number"),
+		   "gdm_xdmcp_handle_keepalive");
 	return;
     }
     
     /* SessionID */
     if (! XdmcpReadCARD32 (&buf, &clnt_sessid)) {
-	gdm_error (_("gdm_xdmcp_handle_keepalive: Could not read Session ID"));
+	gdm_error (_("%s: Could not read Session ID"),
+		   "gdm_xdmcp_handle_keepalive");
 	return;
     }
     
@@ -1658,20 +1686,20 @@ gdm_xdmcp_displays_check (void)
 int
 gdm_xdmcp_init  (void)
 {
-	gdm_error (_("gdm_xdmcp_init: No XDMCP support"));
+	gdm_error (_("%s: No XDMCP support"), "gdm_xdmcp_init");
 	return FALSE;
 }
 
 void
 gdm_xdmcp_run (void)
 {
-	gdm_error (_("gdm_xdmcp_run: No XDMCP support"));
+	gdm_error (_("%s: No XDMCP support"), "gdm_xdmcp_run");
 }
 
 void
 gdm_xdmcp_close (void)
 {
-	gdm_error (_("gdm_xdmcp_close: No XDMCP support"));
+	gdm_error (_("%s: No XDMCP support"), "gdm_xdmcp_close");
 }
 
 #endif /* HAVE_LIBXDMCP */

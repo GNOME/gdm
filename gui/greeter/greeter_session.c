@@ -195,6 +195,11 @@ greeter_save_gnome_session (void)
 void 
 greeter_session_init (void)
 {
+  GtkWidget *w = NULL;
+  GtkWidget *hbox = NULL;
+  GtkWidget *main_vbox = NULL;
+  GtkWidget *vbox = NULL;
+  GtkWidget *cat_vbox = NULL;
   GtkWidget *radio;
   GtkWidget *dialog;
   DIR *sessdir;
@@ -202,15 +207,16 @@ greeter_session_init (void)
   struct stat statbuf;
   gint linklen;
   gboolean got_default_link = FALSE;
-  GtkTooltips *tooltips;
-  GtkWidget *vbox;
+  static GtkTooltips *tooltips = NULL;
   GtkRequisition req;
+  char *s;
 
   g_free (current_session);
   current_session = NULL;
   
   session_dialog = dialog = gtk_dialog_new ();
-  tooltips = gtk_tooltips_new ();
+  if (tooltips == NULL)
+	  tooltips = gtk_tooltips_new ();
 
   gtk_dialog_add_button (GTK_DIALOG (dialog),
 			 GTK_STOCK_CANCEL,
@@ -222,7 +228,37 @@ greeter_session_init (void)
   gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 				   GTK_RESPONSE_OK);
 
-  vbox = gtk_vbox_new (FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+  gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+  gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+
+  main_vbox = gtk_vbox_new (FALSE, 18);
+  gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 5);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+		      main_vbox,
+		      FALSE, FALSE, 0);
+
+  cat_vbox = gtk_vbox_new (FALSE, 6);
+  gtk_box_pack_start (GTK_BOX (main_vbox),
+		      cat_vbox,
+		      FALSE, FALSE, 0);
+
+  s = g_strdup_printf ("<b>%s</b>",
+		       _("Choose a Session"));
+  w = gtk_label_new (s);
+  gtk_label_set_use_markup (GTK_LABEL (w), TRUE);
+  g_free (s);
+  gtk_misc_set_alignment (GTK_MISC (w), 0.0, 0.5);
+  gtk_box_pack_start (GTK_BOX (cat_vbox), w, FALSE, FALSE, 0);
+
+  hbox = gtk_hbox_new (FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (cat_vbox),
+		      hbox, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox),
+		      gtk_label_new ("    "),
+		      FALSE, FALSE, 0);
+  vbox = gtk_vbox_new (FALSE, 6);
+  /* we will pack this later depending on size */
 
   if (GdmShowLastSession)
     {
@@ -451,7 +487,7 @@ greeter_session_init (void)
     if (current_session == NULL)
             current_session = g_strdup (default_session);
 
-    gtk_widget_show (vbox);
+    gtk_widget_show_all (vbox);
     gtk_widget_size_request (vbox, &req);
 
     /* if too large */
@@ -460,6 +496,9 @@ greeter_session_init (void)
 	    gtk_widget_set_size_request (sw,
 					 req.width, 
 					 0.7 * gdm_wm_screen.height);
+	    gtk_scrolled_window_set_shadow_type
+		    (GTK_SCROLLED_WINDOW (sw),
+		     GTK_SHADOW_NONE);
 	    gtk_scrolled_window_set_policy
 		    (GTK_SCROLLED_WINDOW (sw),
 		     GTK_POLICY_NEVER,
@@ -467,13 +506,13 @@ greeter_session_init (void)
 	    gtk_scrolled_window_add_with_viewport
 		    (GTK_SCROLLED_WINDOW (sw), vbox);
 	    gtk_widget_show (sw);
-	    gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	    gtk_box_pack_start (GTK_BOX (hbox),
 				sw,
-				FALSE, FALSE, 4);
+				TRUE, TRUE, 0);
     } else {
-	    gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	    gtk_box_pack_start (GTK_BOX (hbox),
 				vbox,
-				FALSE, FALSE, 4);
+				TRUE, TRUE, 0);
     }
 }
 

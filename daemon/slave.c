@@ -795,7 +795,7 @@ focus_first_x_window (const char *class_res_name)
 
 	pid = fork ();
 	if (pid < 0) {
-		gdm_error (_("focus_first_x_window: cannot fork"));
+		gdm_error (_("%s: cannot fork"), "focus_first_x_window");
 		return;
 	}
 	/* parent */
@@ -819,7 +819,8 @@ focus_first_x_window (const char *class_res_name)
 
 	disp = XOpenDisplay (d->name);
 	if (disp == NULL) {
-		gdm_error (_("focus_first_x_window: cannot open display %s"),
+		gdm_error (_("%s: cannot open display %s"),
+			   "focus_first_x_window",
 			   d->name);
 		_exit (0);
 	}
@@ -1656,13 +1657,15 @@ gdm_slave_greeter (void)
 		gchar *modules =  g_strdup_printf("--gtk-module=%s", GdmGtkModulesList);
 		execl (argv[0], argv[0], modules, NULL);
 		/* Something went wrong */
-		gdm_error (_("gdm_slave_greeter: Cannot start greeter with gtk modules: %s. Trying without modules"),
-		   GdmGtkModulesList);
+		gdm_error (_("%s: Cannot start greeter with gtk modules: %s. Trying without modules"),
+			   "gdm_slave_greeter",
+			   GdmGtkModulesList);
 		g_free(modules);
 	}
 	execv (argv[0], argv);
 
-	gdm_error (_("gdm_slave_greeter: Cannot start greeter trying default: %s"),
+	gdm_error (_("%s: Cannot start greeter trying default: %s"),
+		   "gdm_slave_greeter",
 		   EXPANDED_BINDIR "/gdmlogin");
 
 	gnome_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
@@ -2492,7 +2495,8 @@ session_child_run (struct passwd *pwent,
 				      &sessexec);
 		if (sesspath == NULL) {
 			/* yaikes */
-			gdm_error (_("gdm_slave_session_start: gnome-session not found for a failsafe gnome session, trying xterm"));
+			gdm_error (_("%s: gnome-session not found for a failsafe gnome session, trying xterm"),
+				   "gdm_slave_session_start");
 			session = GDM_SESSION_FAILSAFE_XTERM;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
@@ -2572,12 +2576,14 @@ session_child_run (struct passwd *pwent,
 	if (strcmp (shell, "/sbin/nologin") == 0 ||
 	    strcmp (shell, "/bin/false") == 0 ||
 	    strcmp (shell, "/bin/true") == 0) {
-		gdm_error (_("gdm_slave_session_start: User not allowed to log in"));
+		gdm_error (_("%s: User not allowed to log in"),
+			   "gdm_slave_session_start");
 		gdm_error_box (d, GTK_MESSAGE_ERROR,
 			       _("The system administrator has\n"
 				 "disabled your account."));
 	} else if (access (sessexec != NULL ? sessexec : sesspath, X_OK) != 0) {
-		gdm_error (_("gdm_slave_session_start: Could not find/run session `%s'"), sesspath);
+		gdm_error (_("%s: Could not find/run session `%s'"), 
+			   "gdm_slave_session_start", sesspath);
 		/* if we can't read and exec the session, then make a nice
 		 * error dialog */
 		gdm_error_box
@@ -2617,7 +2623,8 @@ session_child_run (struct passwd *pwent,
 		/* nutcase fallback */
 		execl ("/bin/sh", "-sh", "-c", exec, NULL);
 
-		gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
+		gdm_error (_("%s: Could not start session `%s'"), 
+			   "gdm_slave_session_start", sesspath);
 		gdm_error_box
 			(d, GTK_MESSAGE_ERROR,
 			 _("Cannot start your shell.  It could be that the\n"
@@ -3276,7 +3283,8 @@ gdm_slave_xioerror_handler (Display *disp)
 
 	gdm_slave_session_stop (d->logged_in && login != NULL);
 
-	gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
+	gdm_error (_("%s: Fatal X error - Restarting %s"), 
+		   "gdm_slave_xioerror_handler", d->name);
 
 	if ((d->type == TYPE_LOCAL ||
 	     d->type == TYPE_FLEXI) &&
@@ -3760,7 +3768,8 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
     if(str->len > 0 && str->str[str->len - 1] == '|') {
       g_string_truncate(str, str->len - 1);
       if (pipe (pipe1) < 0) {
-        gdm_error (_("gdm_parse_enriched_login: Failed creating pipe"));
+        gdm_error (_("%s: Failed creating pipe"),
+		   "gdm_parse_enriched_login");
       } else {
 	pid = gdm_fork_extra ();
 
@@ -3788,12 +3797,14 @@ gdm_parse_enriched_login (const gchar *s, GdmDisplay *display)
 
 	    argv = ve_split (str->str);
 	    execv (argv[0], argv);
-	    gdm_error (_("gdm_parse_enriched_login: Failed executing: %s"),
-		    str->str);
+	    gdm_error (_("%s: Failed executing: %s"),
+		       "gdm_parse_enriched_login",
+		       str->str);
 	    _exit (EXIT_SUCCESS);
 	    
         case -1:
-	    gdm_error (_("gdm_parse_enriched_login: Can't fork script process!"));
+	    gdm_error (_("%s: Can't fork script process!"),
+		       "gdm_parse_enriched_login");
             close (pipe1[0]);
             close (pipe1[1]);
 	    break;

@@ -3073,7 +3073,7 @@ gdm_login_gui_init (void)
 	}
 	
 	if (got_anything) {
-		item = gtk_menu_item_new_with_mnemonic (_("S_ystem"));
+		item = gtk_menu_item_new_with_mnemonic (_("_Actions"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menubar), item);
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
 		gtk_widget_show (GTK_WIDGET (item));

@@ -965,7 +965,8 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 		dup2 (logfd, 1);
 		dup2 (logfd, 2);
         } else {
-		gdm_error (_("gdm_server_spawn: Could not open logfile for display %s!"), d->name);
+		gdm_error (_("%s: Could not open logfile for display %s!"),
+			   "gdm_server_spawn", d->name);
 	}
 
 	
@@ -975,15 +976,18 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	sigemptyset (&ign_signal.sa_mask);
 
 	if (sigaction (SIGUSR1, &ign_signal, NULL) < 0) {
-		gdm_error (_("gdm_server_spawn: Error setting USR1 to SIG_IGN"));
+		gdm_error (_("%s: Error setting %s to %s"),
+			   "gdm_server_spawn", "USR1", "SIG_IGN");
 		_exit (SERVER_ABORT);
 	}
 	if (sigaction (SIGTTIN, &ign_signal, NULL) < 0) {
-		gdm_error (_("gdm_server_spawn: Error setting TTIN to SIG_IGN"));
+		gdm_error (_("%s: Error setting %s to %s"),
+			   "gdm_server_spawn", "TTIN", "SIG_IGN");
 		_exit (SERVER_ABORT);
 	}
 	if (sigaction (SIGTTOU, &ign_signal, NULL) < 0) {
-		gdm_error (_("gdm_server_spawn: Error setting TTOU to SIG_IGN"));
+		gdm_error (_("%s: Error setting %s to %s"),
+			   "gdm_server_spawn", "TTOU", "SIG_IGN");
 		_exit (SERVER_ABORT);
 	}
 
@@ -993,11 +997,13 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 	sigemptyset (&dfl_signal.sa_mask);
 
 	if (sigaction (SIGHUP, &dfl_signal, NULL) < 0) {
-		gdm_error (_("gdm_server_spawn: Error setting HUP to SIG_DFL"));
+		gdm_error (_("%s: Error setting %s to %s"),
+			   "gdm_server_spawn", "HUP", "SIG_DFL");
 		_exit (SERVER_ABORT);
 	}
 	if (sigaction (SIGTERM, &dfl_signal, NULL) < 0) {
-		gdm_error (_("gdm_server_spawn: Error setting TERM to SIG_DFL"));
+		gdm_error (_("%s: Error setting %s to %s"),
+			   "gdm_server_spawn", "TERM", "SIG_DFL");
 		_exit (SERVER_ABORT);
 	}
 
@@ -1089,14 +1095,16 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
 	execv (argv[0], argv);
 	
-	gdm_error (_("gdm_server_spawn: Xserver not found: %s"), command);
+	gdm_error (_("%s: Xserver not found: %s"), 
+		   "gdm_server_spawn", command);
 	
 	_exit (SERVER_ABORT);
 	
     case -1:
 	g_strfreev (argv);
 	g_free (command);
-	gdm_error (_("gdm_server_spawn: Can't fork Xserver process!"));
+	gdm_error (_("%s: Can't fork Xserver process!"),
+		   "gdm_server_spawn");
 	d->servpid = 0;
 	d->servstat = SERVER_DEAD;
 
@@ -1105,7 +1113,8 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
     default:
 	g_strfreev (argv);
 	g_free (command);
-	gdm_debug ("gdm_server_spawn: Forked server on pid %d", (int)pid);
+	gdm_debug ("%s: Forked server on pid %d", 
+		   "gdm_server_spawn", (int)pid);
 	break;
     }
 }

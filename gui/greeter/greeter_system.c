@@ -14,6 +14,9 @@
 #include "gdmwm.h"
 #include "vicious.h"
 
+
+GtkWidget *dialog;
+
 /* doesn't check for executability, just for existance */
 static gboolean
 bin_exists (const char *command)
@@ -105,12 +108,6 @@ greeter_config_handler (void)
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-#if 0
-	/* Taken from gdmlogin, does this apply? */
-	/* configure interruption */
-	login_entry = FALSE; /* no matter where we are,
-				this is no longer a login_entry */
-#endif
 	/* configure interruption */
 	printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
 	fflush (stdout);
@@ -213,12 +210,25 @@ greeter_system_append_system_menu (GtkWidget *menu)
 	}
 }
 
+static gboolean radio_button_press_event(GtkWidget *widget, GdkEventButton *event,
+                                          gpointer data)
+{
+    if (event->type == GDK_2BUTTON_PRESS) {
+        gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_OK);
+    }
+    return FALSE;
+}
 
 static void
 greeter_system_handler (GreeterItemInfo *info,
 			gpointer         user_data)
 {
-  GtkWidget *dialog;
+  char *s;
+  GtkWidget *w = NULL;
+  GtkWidget *hbox = NULL;
+  GtkWidget *main_vbox = NULL;
+  GtkWidget *vbox = NULL;
+  GtkWidget *cat_vbox = NULL;
   GtkWidget *group_radio = NULL;
   GtkWidget *halt_radio = NULL;
   GtkWidget *suspend_radio = NULL;
@@ -237,6 +247,39 @@ greeter_system_handler (GreeterItemInfo *info,
   dialog = gtk_dialog_new ();
   if (tooltips == NULL)
 	  tooltips = gtk_tooltips_new ();
+  gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+  gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+  gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+
+  main_vbox = gtk_vbox_new (FALSE, 18);
+  gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 5);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+		      main_vbox,
+		      FALSE, FALSE, 0);
+
+  cat_vbox = gtk_vbox_new (FALSE, 6);
+  gtk_box_pack_start (GTK_BOX (main_vbox),
+		      cat_vbox,
+		      FALSE, FALSE, 0);
+
+  s = g_strdup_printf ("<b>%s</b>",
+		       _("Choose an Action"));
+  w = gtk_label_new (s);
+  gtk_label_set_use_markup (GTK_LABEL (w), TRUE);
+  g_free (s);
+  gtk_misc_set_alignment (GTK_MISC (w), 0.0, 0.5);
+  gtk_box_pack_start (GTK_BOX (cat_vbox), w, FALSE, FALSE, 0);
+
+  hbox = gtk_hbox_new (FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (cat_vbox),
+		      hbox, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox),
+		      gtk_label_new ("    "),
+		      FALSE, FALSE, 0);
+  vbox = gtk_vbox_new (FALSE, 6);
+  gtk_box_pack_start (GTK_BOX (hbox),
+		      vbox,
+		      TRUE, TRUE, 0);
 
   if (working_command_exists (GdmHalt)) {
 	  if (group_radio != NULL)
@@ -248,7 +291,9 @@ greeter_system_handler (GreeterItemInfo *info,
 				_("Shut down your computer so that "
 				  "you may turn it off."),
 				NULL);
-	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	  g_signal_connect(G_OBJECT(halt_radio), "button_press_event",
+			   G_CALLBACK(radio_button_press_event), NULL);
+	  gtk_box_pack_start (GTK_BOX (vbox),
 			      halt_radio,
 			      FALSE, FALSE, 4);
 	  gtk_widget_show (halt_radio);
@@ -260,7 +305,9 @@ greeter_system_handler (GreeterItemInfo *info,
 	  reboot_radio = gtk_radio_button_new_with_mnemonic (radio_group,
 							     _("_Reboot the computer"));
 	  group_radio = reboot_radio;
-	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	  g_signal_connect(G_OBJECT(reboot_radio), "button_press_event",
+			   G_CALLBACK(radio_button_press_event), NULL);
+	  gtk_box_pack_start (GTK_BOX (vbox),
 			      reboot_radio,
 			      FALSE, FALSE, 4);
 	  gtk_widget_show (reboot_radio);
@@ -272,7 +319,9 @@ greeter_system_handler (GreeterItemInfo *info,
 	  suspend_radio = gtk_radio_button_new_with_mnemonic (radio_group,
 							      _("Sus_pend the computer"));
 	  group_radio = suspend_radio;
-	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	  g_signal_connect(G_OBJECT(suspend_radio), "button_press_event",
+			   G_CALLBACK(radio_button_press_event), NULL);
+	  gtk_box_pack_start (GTK_BOX (vbox),
 			      suspend_radio,
 			      FALSE, FALSE, 4);
 	  gtk_widget_show (suspend_radio);
@@ -289,7 +338,9 @@ greeter_system_handler (GreeterItemInfo *info,
 				  "you to log into available remote "
 				  "machines, if there are any."),
 				NULL);
-	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	  g_signal_connect(G_OBJECT(chooser_radio), "button_press_event",
+			   G_CALLBACK(radio_button_press_event), NULL);
+	  gtk_box_pack_start (GTK_BOX (vbox),
 			      chooser_radio,
 			      FALSE, FALSE, 4);
 	  gtk_widget_show (chooser_radio);
@@ -306,7 +357,9 @@ greeter_system_handler (GreeterItemInfo *info,
 				_("Configure GDM (this login manager). "
 				  "This will require the root password."),
 				NULL);
-	  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+	  g_signal_connect(G_OBJECT(config_radio), "button_press_event",
+			   G_CALLBACK(radio_button_press_event), NULL);
+	  gtk_box_pack_start (GTK_BOX (vbox),
 			      config_radio,
 			      FALSE, FALSE, 4);
 	  gtk_widget_show (config_radio);

@@ -280,7 +280,8 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 	} else if (pid > 0) {
 		gdm_wait_for_extra (NULL);
 	} else {
-		gdm_error (_("gdm_error_box: Cannot fork to display error/info box"));
+		gdm_error (_("%s: Cannot fork to display error/info box"),
+			   "gdm_error_box");
 	}
 }
 
@@ -432,7 +433,8 @@ gdm_failsafe_question (GdmDisplay *d,
 		} 
 		close (p[0]);
 	} else {
-		gdm_error (_("gdm_failsafe_question: Cannot fork to display error/info box"));
+		gdm_error (_("%s: Cannot fork to display error/info box"),
+			   "gdm_failsafe_question");
 	}
 	return NULL;
 }
@@ -554,7 +556,8 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		} 
 		close (p[0]);
 	} else {
-		gdm_error (_("gdm_failsafe_question: Cannot fork to display error/info box"));
+		gdm_error (_("%s: Cannot fork to display error/info box"),
+			   "gdm_failsafe_question");
 	}
 	return FALSE;
 }

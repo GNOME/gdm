@@ -434,7 +434,9 @@ try_user_add_again:
 	authfd = g_mkstemp (d->userauth);
 
 	if (authfd == -1) {
-	    gdm_error (_("gdm_auth_user_add: Could not open cookie file %s"), d->userauth);
+	    gdm_error (_("%s: Could not open cookie file %s"),
+		       "gdm_auth_user_add",
+		       d->userauth);
 	    g_free (d->userauth);
 	    d->userauth = NULL;
 
@@ -451,7 +453,9 @@ try_user_add_again:
 
 	/* FIXME: Better implement my own locking. The libXau one is not kosher */
 	if (XauLockAuth (d->userauth, 3, 3, 0) != LOCK_SUCCESS) {
-	    gdm_error (_("gdm_auth_user_add: Could not lock cookie file %s"), d->userauth);
+	    gdm_error (_("%s: Could not lock cookie file %s"),
+		       "gdm_auth_user_add",
+		       d->userauth);
 	    g_free (d->userauth);
 	    d->userauth = NULL;
 
@@ -468,7 +472,9 @@ try_user_add_again:
 
     if (!af) {
 	/* Really no need to clean up here - this process is a goner anyway */
-	gdm_error (_("gdm_auth_user_add: Could not open cookie file %s"), d->userauth);
+	gdm_error (_("%s: Could not open cookie file %s"),
+		   "gdm_auth_user_add",
+		   d->userauth);
 	if (locked)
 		XauUnlockAuth (d->userauth);
 	g_free (d->userauth);
@@ -571,7 +577,9 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
 			   TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
 	    g_free (authdir);
 	    g_free (authfile);
-	    gdm_error (_("gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"), d->userauth);
+	    gdm_error (_("%s: Ignoring suspiciously looking cookie file %s"),
+		       "gdm_auth_user_remove",
+		       d->userauth);
 
 	    return; 
     }

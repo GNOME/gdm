@@ -882,8 +882,10 @@ deal_with_x_crashes (GdmDisplay *d)
 	    /* Yay we have a failsafe */
 	    if ( ! ve_string_empty (bin) &&
 		access (bin, X_OK) == 0) {
-		    gdm_info (_("deal_with_x_crashes: Trying failsafe X "
-				"server %s"), GdmFailsafeXServer);
+		    gdm_info (_("%s: Trying failsafe X "
+				"server %s"), 
+			      "deal_with_x_crashes",
+			      GdmFailsafeXServer);
 		    g_free (bin);
 		    g_free (d->command);
 		    d->command = g_strdup (GdmFailsafeXServer);
@@ -898,8 +900,9 @@ deal_with_x_crashes (GdmDisplay *d)
 	access (GdmXKeepsCrashing, X_OK|R_OK) == 0) {
 	    pid_t pid;
 
-	    gdm_info (_("deal_with_x_crashes: Running the "
-			"XKeepsCrashing script"));
+	    gdm_info (_("%s: Running the "
+			"XKeepsCrashing script"),
+		      "deal_with_x_crashes");
 
 	    pid = gdm_fork_extra ();
 
@@ -1147,7 +1150,8 @@ start_autopsy:
     switch (status) {
 	
     case DISPLAY_ABORT:		/* Bury this display for good */
-	gdm_info (_("gdm_child_action: Aborting display %s"), d->name);
+	gdm_info (_("%s: Aborting display %s"),
+		  "gdm_child_action", d->name);
 
 	if (gdm_restart_mode)
 		gdm_safe_restart ();
@@ -1167,7 +1171,8 @@ start_autopsy:
 	argv = ve_split (GdmRebootReal);
 	execv (argv[0], argv);
 
-	gdm_error (_("gdm_child_action: Reboot failed: %s"), strerror (errno));
+	gdm_error (_("%s: Reboot failed: %s"), 
+		   "gdm_child_action", strerror (errno));
 
 	status = DISPLAY_REMANAGE;
 	goto start_autopsy;
@@ -1182,7 +1187,8 @@ start_autopsy:
 	argv = ve_split (GdmHaltReal);
 	execv (argv[0], argv);
 
-	gdm_error (_("gdm_child_action: Halt failed: %s"), strerror (errno));
+	gdm_error (_("%s: Halt failed: %s"),
+		   "gdm_child_action", strerror (errno));
 
 	status = DISPLAY_REMANAGE;
 	goto start_autopsy;
