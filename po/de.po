@@ -7,59 +7,66 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm2 2.2.1\n"
-"POT-Creation-Date: 2001-05-24 22:18+0200\n"
-"PO-Revision-Date: 2001-05-24 22:1822:18+02:00\n"
+"Project-Id-Version: gdm2 2.2.2.x\n"
+"POT-Creation-Date: 2001-06-06 19:10+0200\n"
+"PO-Revision-Date: 2001-06-06 19:10+02:00\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: daemon/gdm.c:144
+#: daemon/gdm.c:148
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Using defaults."
 msgstr ""
 "gdm_config_parse: Keine Konfigurationsdatei: %s. Vorgaben werden verwendet."
 
-#: daemon/gdm.c:218
+#: daemon/gdm.c:219
+msgid ""
+"gdm_config_parse: XDMCP was enabled while there is no XDMCP support, turning "
+"it off"
+msgstr ""
+"gdm_config_parse: XDMCP wurde aktiviert, aber es ist keine "
+"XDMCP-Unertstützung vorhanden. Wird deaktiviert."
+
+#: daemon/gdm.c:232
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
 "gdm_config_parse: Root kann nicht automatisch angemeldet werden. "
 "Automatisches Anmelden wird ausgeschaltet."
 
-#: daemon/gdm.c:231
+#: daemon/gdm.c:245
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
 "gdm_config_parse: Root kann nicht automatisch angemeldet werden. "
 "Zeitgesteuertes Anmelden wird ausgeschaltet."
 
-#: daemon/gdm.c:237
-msgid "gdm_config_parse: TimedLoginDelay less then 10, so I will just use 10."
+#: daemon/gdm.c:251
+msgid "gdm_config_parse: TimedLoginDelay less then 5, so I will just use 5."
 msgstr ""
-"gdm_config_parse: TimedLoginDelay kleiner als 10. Es wird einfach 10 "
-"verwendet."
+"gdm_config_parse: TimedLoginDelay kleiner als 5. Es wird einfach 5 verwendet."
 
-#: daemon/gdm.c:243
+#: daemon/gdm.c:257
 msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse: Es wurde kein Begrüßer angegeben"
 
-#: daemon/gdm.c:247
+#: daemon/gdm.c:261
 msgid "gdm_config_parse: No authdir specified."
 msgstr "gdm_config_parse: Es wurde kein authdir angegeben."
 
-#: daemon/gdm.c:253
+#: daemon/gdm.c:267
 msgid "gdm_config_parse: No sessions directory specified."
 msgstr "gdm_config_parse: Kein Sitzungsverzeichnis angegeben."
 
-#: daemon/gdm.c:265
+#: daemon/gdm.c:279
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse: Ungültige Server-Zeile in Konfigurationsdatei. Wird "
 "ignoriert."
 
-#: daemon/gdm.c:273
+#: daemon/gdm.c:287
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Adding "
 "/usr/bin/X11/X on :0 to allow configuration!"
@@ -67,65 +74,65 @@ msgstr ""
 "gdm_config_parse: Xdmcp deaktiviert und keine lokalen Server definiert. Um "
 "Konfiguration zu ermöglichen, wird /usr/bin/X11/X auf :0 hinzugefügt!"
 
-#: daemon/gdm.c:285
+#: daemon/gdm.c:299
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr ""
 "gdm_config_parse: Xdmpc deaktiviert und keine lokalen Server definiert. "
 "Abbruch!"
 
-#: daemon/gdm.c:294
+#: daemon/gdm.c:308
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Trying 'nobody'!"
 msgstr ""
 "gdm_config_parse: Der gdm-Benutzer (%s) kann nicht gefunden werden. Wir "
 "versuchen's mit `nobody'!"
 
-#: daemon/gdm.c:301
+#: daemon/gdm.c:315
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
 msgstr ""
 "gdm_config_parse: Der gdm-Benutzer (%s) kann nicht gefunden werden. Abbruch!"
 
-#: daemon/gdm.c:306
+#: daemon/gdm.c:320
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr "gdm_config_parse: Der gdm-Benutzer sollte nicht root sein. Abbruch!"
 
-#: daemon/gdm.c:311
+#: daemon/gdm.c:325
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Trying 'nobody'!"
 msgstr ""
 "gdm_config_parse: Die gdm-Gruppe (%s) kann nicht gefunden werden. Wir "
 "versuchen's mit `nobody'!"
 
-#: daemon/gdm.c:318
+#: daemon/gdm.c:332
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
 msgstr ""
 "gdm_config_parse: Die gdm-Gruppe (%s) kann nicht gefunden werden. Abbruch!"
 
-#: daemon/gdm.c:323
+#: daemon/gdm.c:337
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
 msgstr "gdm_config_parse: Die gdm-Gruppe sollte nicht root sein. Abbruch!"
 
-#: daemon/gdm.c:359
+#: daemon/gdm.c:373
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr "gdm_config_parse: Authdir %s existiert nicht. Abbruch."
 
-#: daemon/gdm.c:362
+#: daemon/gdm.c:376
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
 msgstr "gdm_config_parse: Authdir %s ist kein Verzeichnis. Abbruch."
 
-#: daemon/gdm.c:365
+#: daemon/gdm.c:379
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 "gdm_config_parse: Authdir %s gehört nicht Benutzer %s und Gruppe %s. Abbruch."
 
-#: daemon/gdm.c:369
+#: daemon/gdm.c:383
 #, c-format
 msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
@@ -133,25 +140,25 @@ msgstr ""
 "gdm_config_parse: Authdir %s hat falsche Zugriffsrechte. Sollte 750 sein. "
 "Abbruch."
 
-#: daemon/gdm.c:404
+#: daemon/gdm.c:417
 msgid "gdm_daemonify: fork() failed!"
 msgstr "gdm_daemonify: fork() fehlgeschlagen!"
 
-#: daemon/gdm.c:407
+#: daemon/gdm.c:420
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid() fehlgeschlagen: %s!"
 
-#: daemon/gdm.c:484
+#: daemon/gdm.c:497
 #, c-format
 msgid "deal_with_x_crashes: Trying failsafe X server %s"
 msgstr "deal_with_x_crashes: Abgesicherter X-Server %s wird ausprobiert"
 
-#: daemon/gdm.c:517
+#: daemon/gdm.c:530
 msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
 msgstr "deal_with_x_crashes: Das Skript XKeepsCrashing wird gestartet"
 
-#: daemon/gdm.c:532 daemon/gdm.c:592 daemon/gdm.c:606
+#: daemon/gdm.c:545 daemon/gdm.c:605 daemon/gdm.c:619
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  You will need to log in on a console and rerun "
@@ -162,7 +169,7 @@ msgstr ""
 "Konsole anmelden und Ihr X-Konfigurationsprogramm nochmals ausführen müssen. "
 "Starten Sie GDM dann neu."
 
-#: daemon/gdm.c:537
+#: daemon/gdm.c:550
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly.  Would you like me to try to run the X "
@@ -173,15 +180,15 @@ msgstr ""
 "X-Konfigurationsprogramm zu starten? Hinweis: Dafür benötigen Sie das "
 "root-Passwort."
 
-#: daemon/gdm.c:542
+#: daemon/gdm.c:555
 msgid "Please type in the root (privilaged user) password."
 msgstr "Bitte geben Sie das Passwort für root (den allmächtigen Benutzer) ein."
 
-#: daemon/gdm.c:544
+#: daemon/gdm.c:557
 msgid "I will now try to restart the X server again."
 msgstr "Es wird jetzt versucht, den X-Server neu zu starten."
 
-#: daemon/gdm.c:546
+#: daemon/gdm.c:559
 msgid ""
 "I will disable this X server for now.  Restart GDM when it is configured "
 "correctly."
@@ -194,7 +201,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:622
+#: daemon/gdm.c:635
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -203,7 +210,7 @@ msgstr ""
 "X-Server konnte in kurzen Zeitabständen nicht gestartet werden; Display %s "
 "wird deaktiviert"
 
-#: daemon/gdm.c:663
+#: daemon/gdm.c:676
 #, c-format
 msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
@@ -212,78 +219,78 @@ msgstr ""
 "gdm_child_action: Anfrage zum Neustarten oder Herunterfahren, ohne dass es "
 "ein Systemmenü des Displays %s gibt"
 
-#: daemon/gdm.c:670
+#: daemon/gdm.c:683
 #, c-format
 msgid "gdm_child_action: Reboot or Halt request from a non-local display %s"
 msgstr ""
 "gdm_child_action: Reboot- oder Halt-Anfrage von einem fernen Display %s"
 
 #. Bury this display for good
-#: daemon/gdm.c:678
+#: daemon/gdm.c:691
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action: Abbruch von Display %s"
 
 #. Reboot machine
-#: daemon/gdm.c:684
+#: daemon/gdm.c:697
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action: Master bootet neu..."
 
-#: daemon/gdm.c:691
+#: daemon/gdm.c:704
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action: Neustart fehlgeschlagen: %s"
 
 #. Halt machine
-#: daemon/gdm.c:695
+#: daemon/gdm.c:708
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action: Master hält an..."
 
-#: daemon/gdm.c:702
+#: daemon/gdm.c:715
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: Anhalten fehlgeschlagen: %s"
 
-#: daemon/gdm.c:784
+#: daemon/gdm.c:799
 msgid "Failed to restart self"
 msgstr "Neustart fehlgeschlagen"
 
-#: daemon/gdm.c:834
+#: daemon/gdm.c:865
 msgid "Only root wants to run gdm\n"
 msgstr "Nur root darf gdm starten\n"
 
-#: daemon/gdm.c:857
+#: daemon/gdm.c:890
 msgid "gdm already running. Aborting!"
 msgstr "gdm läuft schon. Abbruch!"
 
-#: daemon/gdm.c:883
+#: daemon/gdm.c:919
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr "gdm_main: Fehler beim Einrichten des TERM-Signalhandlers"
 
-#: daemon/gdm.c:886
+#: daemon/gdm.c:922
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr "gdm_main: Fehler beim Einrichten des INT-Signalhandlers"
 
-#: daemon/gdm.c:889
+#: daemon/gdm.c:925
 msgid "gdm_main: Error setting up HUP signal handler"
 msgstr "gdm_main: Fehler beim Einrichten des HUP-Signalhandlers"
 
-#: daemon/gdm.c:897
+#: daemon/gdm.c:933
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr "gdm_main: Fehler beim Einrichten des CHLD-Signalhandlers"
 
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:237 daemon/auth.c:264
+#: daemon/auth.c:266 daemon/auth.c:297
 #, c-format
 msgid "gdm_auth_user_add: Could not open cookie file %s"
 msgstr "gdm_auth_user_add: Cookie-Datei %s konnte nicht geöffnet werden."
 
-#: daemon/auth.c:252
+#: daemon/auth.c:283
 #, c-format
 msgid "gdm_auth_user_add: Could not lock cookie file %s"
 msgstr "gdm_auth_user_add: Cookie-Datei %s konnte nicht gesperrt werden."
 
-#: daemon/auth.c:333
+#: daemon/auth.c:370
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
 msgstr ""
@@ -298,7 +305,7 @@ msgstr ""
 "Mehrere Startversuche des Display-Servers schlugen innerhalb von kurzer Zeit "
 "fehl; Display %s wird deaktiviert"
 
-#: daemon/display.c:184
+#: daemon/display.c:183
 #, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %d"
 msgstr ""
@@ -346,79 +353,75 @@ msgstr ""
 "%s: %s ist größer als die vom Systemadministrator festgelegte maximale "
 "Dateigröße."
 
-#: daemon/server.c:163
+#: daemon/server.c:158
 msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr "gdm_server_start: Fehler beim Einrichten des USR1-Signalhandlers"
 
-#: daemon/server.c:173
+#: daemon/server.c:168
 msgid "gdm_server_start: Error setting up CHLD signal handler"
 msgstr "gdm_server_start: Fehler beim Einrichten des CHLD-Signalhandlers"
 
-#: daemon/server.c:184
+#: daemon/server.c:179
 msgid "gdm_server_start: Error setting up ALRM signal handler"
 msgstr "gdm_server_start: Fehler beim Einrichten des ALRM-Signalhandlers"
 
-#: daemon/server.c:307
+#: daemon/server.c:302
 #, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
 msgstr ""
 "gdm_server_spawn: Protokolldatei für Display %s konnte nicht geöffnet werden!"
 
-#: daemon/server.c:317
+#: daemon/server.c:312
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
 msgstr "gdm_server_spawn: Fehler beim Versuch, USR1 auf SIG_IGN zu setzen"
 
-#: daemon/server.c:321
+#: daemon/server.c:316
 msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
 msgstr "gdm_server_spawn: Fehler beim Versuch, TTIN auf SIG_IGN zu setzen"
 
-#: daemon/server.c:325
+#: daemon/server.c:320
 msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
 msgstr "gdm_server_spawn: Fehler beim Versuch, TTOU auf SIG_IGN zu setzen"
 
-#: daemon/server.c:335
+#: daemon/server.c:330
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
 msgstr "gdm_server_spawn: Fehler beim Versuch, HUP auf SIG_DFL zu setzen"
 
-#: daemon/server.c:339
+#: daemon/server.c:334
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
 msgstr "gdm_server_spawn: Fehler beim Versuch, TERM auf SIG_DFL zu setzen"
 
-#: daemon/server.c:364
+#: daemon/server.c:359
 #, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
 msgstr "gdm_server_spawn: X-Server nicht gefunden: %s"
 
-#: daemon/server.c:369
+#: daemon/server.c:364
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr "gdm_server_spawn: X-Server kann nicht abgespaltet werden!"
 
-#: daemon/slave.c:137
+#: daemon/slave.c:160
+msgid "gdm_slave_init: Error setting up ALRM signal handler"
+msgstr "gdm_slave_init: Fehler beim Einrichten des ALRM-Signalhandlers"
+
+#: daemon/slave.c:172
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
 msgstr "gdm_slave_init: Fehler beim Einrichten des TERM/INT-Signalhandlers"
 
-#: daemon/slave.c:146
+#: daemon/slave.c:181
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr "gdm_slave_init: Fehler beim Einrichten des CHLD-Signalhandlers"
 
-#: daemon/slave.c:381
+#: daemon/slave.c:442
 msgid "focus_first_x_window: cannot fork"
 msgstr "focus_first_x_window: Abspalten nicht möglich"
 
-#: daemon/slave.c:391
+#: daemon/slave.c:452
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr "focus_first_x_window: Display %s kann nicht geöffnet werden"
 
-#: daemon/slave.c:473
-msgid "Cannot start session"
-msgstr "Sitzung kann nicht gestartet werden"
-
-#: daemon/slave.c:482
-msgid "OK"
-msgstr "OK"
-
-#: daemon/slave.c:563
+#: daemon/slave.c:536
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -432,7 +435,7 @@ msgstr ""
 "richtig gesetzt ist. Es wird versucht, es\n"
 "vom Vorgabeort zu starten."
 
-#: daemon/slave.c:576
+#: daemon/slave.c:551
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
@@ -443,7 +446,7 @@ msgstr ""
 "dass der Pfad in der Konfigurationsdatei\n"
 "richtig gesetzt ist."
 
-#: daemon/slave.c:618
+#: daemon/slave.c:599
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -451,32 +454,32 @@ msgstr ""
 "Geben Sie für die Konfiguration\n"
 "das root-Passwort ein."
 
-#: daemon/slave.c:632 daemon/slave.c:692
+#: daemon/slave.c:613 daemon/slave.c:673
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr "gdm_slave_wait_for_login: Keine Anmeldung/Falsche Anmeldung"
 
-#: daemon/slave.c:836
+#: daemon/slave.c:822
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr ""
 "gdm_slave_greeter: Weiterleitung zum gdmgreeter kann nicht initialisiert "
 "werden"
 
-#: daemon/slave.c:864
+#: daemon/slave.c:850
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr "gdm_slave_greeter: Gruppenkennung konnte nicht auf %d gesetzt werden"
 
-#: daemon/slave.c:867
+#: daemon/slave.c:853
 #, c-format
 msgid "gdm_slave_greeter: initgroups() failed for %s"
 msgstr "gdm_slave_greeter: initgroups() fehlgeschlagen für %s"
 
-#: daemon/slave.c:870
+#: daemon/slave.c:856
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr "gdm_slave_greeter: Benutzerkennung konnte nicht auf %d gesetzt werden"
 
-#: daemon/slave.c:913
+#: daemon/slave.c:902
 msgid ""
 "No servers were defined in the\n"
 "configuration file and xdmcp was\n"
@@ -498,7 +501,7 @@ msgstr ""
 "automatische Anmeldungen sind jetzt\n"
 "deaktiviert."
 
-#: daemon/slave.c:925
+#: daemon/slave.c:916
 msgid ""
 "I could not start the regular X\n"
 "server (your graphical environment)\n"
@@ -513,14 +516,14 @@ msgstr ""
 "sich anmelden und den X-Server\n"
 "richtig konfigurieren."
 
-#: daemon/slave.c:935
+#: daemon/slave.c:926
 #, c-format
 msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
 msgstr ""
 "gdm_slave_greeter: Fehler beim Starten des Begrüßers, Vorgabe wird "
 "ausprobiert: %s"
 
-#: daemon/slave.c:946
+#: daemon/slave.c:939
 msgid ""
 "Cannot start the greeter program,\n"
 "you will not be able to log in.\n"
@@ -535,27 +538,27 @@ msgstr ""
 "andere Weise anzumelden und die\n"
 "Konfigurationsdatei zu bearbeiten."
 
-#: daemon/slave.c:952
+#: daemon/slave.c:945
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr "gdm_slave_greeter: Fehler beim Starten des Begrüßers auf Display %s"
 
-#: daemon/slave.c:955
+#: daemon/slave.c:948
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: gdmgreeter-Prozess kann nicht abgespaltet werden"
 
-#: daemon/slave.c:1206
+#: daemon/slave.c:1248
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "gdm_slave_session_start: Nutzer nannte auth, aber getpwnan(%s) ist "
 "fehlgeschlagen!"
 
-#: daemon/slave.c:1310
+#: daemon/slave.c:1370
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr "gdm_slave_session_start: Legitimation abgeschlossen."
 
-#: daemon/slave.c:1339
+#: daemon/slave.c:1389
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
@@ -563,27 +566,27 @@ msgstr ""
 "gdm_slave_session_start: Ausführung des PreSession-Skripts ergab einen "
 "Rückgabewert > 0. Abbruch."
 
-#: daemon/slave.c:1372
+#: daemon/slave.c:1422
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr "gdm_slave_session_start: Fehler beim Abspalten der Benutzersitzung"
 
-#: daemon/slave.c:1416
+#: daemon/slave.c:1470
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: Fehler bei setgid %d. Abbruch."
 
-#: daemon/slave.c:1420
+#: daemon/slave.c:1474
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr "gdm_slave_session_start: initgroups() fehlgeschlagen für %s. Abbruch."
 
-#: daemon/slave.c:1424
+#: daemon/slave.c:1478
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr "gdm_slave_session_start: Konnte nicht %s werden. Abbruch."
 
 #. yaikes
-#: daemon/slave.c:1483
+#: daemon/slave.c:1556
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
@@ -591,7 +594,7 @@ msgstr ""
 "gdm_slave_session_start: gnome-session wurde für eine 'failsafe' "
 "GNOME-Sitzung nicht gefunden. xterm wird ausprobiert."
 
-#: daemon/slave.c:1487
+#: daemon/slave.c:1561
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
@@ -601,7 +604,7 @@ msgstr ""
 "gefunden werden, die Sitzung\n"
 "\"Abgesichertes XTerm\" wird ausprobiert."
 
-#: daemon/slave.c:1492
+#: daemon/slave.c:1567
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -615,11 +618,11 @@ msgstr ""
 "Startskripte ausgeführt. Dies dient nur\n"
 "zur Behebung Ihrer Installationsprobleme."
 
-#: daemon/slave.c:1511
+#: daemon/slave.c:1586
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "\"xterm\" kann nicht gefunden werden um 'failsafe'-Sitzung zu starten"
 
-#: daemon/slave.c:1517
+#: daemon/slave.c:1593
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -637,16 +640,16 @@ msgstr ""
 "geben Sie `exit' im Fenster ein und\n"
 "drücken Sie die Eingabetaste."
 
-#: daemon/slave.c:1534
+#: daemon/slave.c:1610
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "%s für %s auf %s wird ausgeführt"
 
-#: daemon/slave.c:1547
+#: daemon/slave.c:1623
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr "gdm_slave_session_start: Benutzer darf sich nicht anmelden."
 
-#: daemon/slave.c:1548
+#: daemon/slave.c:1625
 msgid ""
 "The system administrator has\n"
 "disabled your account."
@@ -654,13 +657,13 @@ msgstr ""
 "Der Systemadministrator hat Ihren\n"
 "Zugang deaktiviert."
 
-#: daemon/slave.c:1551
+#: daemon/slave.c:1628
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr ""
 "gdm_slave_session_start: Sitzung '%s' konnte nicht gefunden/gestartet werden"
 
-#: daemon/slave.c:1555
+#: daemon/slave.c:1633
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -672,12 +675,12 @@ msgstr ""
 "Bitte wählen Sie aus der Liste der verfügbaren\n"
 "Sitzungen im Anmelde-Dialogfenster."
 
-#: daemon/slave.c:1563
+#: daemon/slave.c:1641
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_init: Sitzung '%s' konnte nicht gestartet werden"
 
-#: daemon/slave.c:1565
+#: daemon/slave.c:1644
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
@@ -688,85 +691,90 @@ msgstr ""
 "deaktiviert hat. Es kann aber auch ein Fehler Ihres\n"
 "Zugangs sein.\n"
 
-#: daemon/slave.c:1730
+#: daemon/slave.c:1790
+#, c-format
+msgid "Ping to %s failed, whacking display!"
+msgstr "Ping nach %s fehlgeschlagen."
+
+#: daemon/slave.c:1885
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 "gdm_slave_xioerror_handler: Schwerwiegender X-Fehler - %s wird erneut "
 "gestartet"
 
-#: daemon/slave.c:1841
+#: daemon/slave.c:2027
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: Start fehlgeschlagen: %s"
 
-#: daemon/slave.c:1845
+#: daemon/slave.c:2031
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Skriptprozess kann nicht abgespaltet werden!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:67 daemon/verify-pam.c:159 daemon/verify-shadow.c:66
-#: gui/gdmlogin.c:2654
+#: daemon/verify-crypt.c:67 daemon/verify-pam.c:160 daemon/verify-shadow.c:66
+#: gui/gdmlogin.c:2726
 msgid "Login:"
 msgstr "Login:"
 
-#: daemon/verify-pam.c:176 daemon/verify-pam.c:296
+#: daemon/verify-pam.c:177 daemon/verify-pam.c:303
 msgid "Can't find /etc/pam.d/gdm!"
 msgstr "/etc/pam.d/gdm existiert nicht!"
 
-#: daemon/verify-pam.c:185 daemon/verify-pam.c:303
+#: daemon/verify-pam.c:186 daemon/verify-pam.c:310
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "PAM_TTY=%s kann nicht gesetzt werden"
 
-#: daemon/verify-crypt.c:105 daemon/verify-pam.c:194
+#: daemon/verify-crypt.c:105 daemon/verify-pam.c:195
 #: daemon/verify-shadow.c:113
 #, c-format
 msgid "Couldn't authenticate %s"
 msgstr "%s konnte nicht legitimiert werden"
 
-#: daemon/verify-crypt.c:124 daemon/verify-pam.c:207
+#: daemon/verify-crypt.c:124 daemon/verify-pam.c:208
 #: daemon/verify-shadow.c:130
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Root-Login auf Display '%s' verboten"
 
-#: daemon/verify-crypt.c:127 daemon/verify-pam.c:211
+#: daemon/verify-crypt.c:127 daemon/verify-pam.c:212
 #: daemon/verify-shadow.c:133
 msgid "Root login disallowed"
 msgstr "Root-Login verboten"
 
-#: daemon/verify-crypt.c:140 daemon/verify-pam.c:221
+#: daemon/verify-crypt.c:140 daemon/verify-pam.c:222
 #: daemon/verify-shadow.c:146
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Benutzer %s darf sich nicht anmelden"
 
-#: daemon/verify-crypt.c:143 daemon/verify-pam.c:224
+#: daemon/verify-crypt.c:143 daemon/verify-pam.c:225
 #: daemon/verify-shadow.c:149
 msgid "Login disabled"
 msgstr "Login deaktiviert"
 
-#: daemon/verify-pam.c:238 daemon/verify-pam.c:316
+#: daemon/verify-pam.c:239 daemon/verify-pam.c:323
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Zugangsverwaltung für %s konnte nicht gesetzt werden"
 
-#: daemon/verify-pam.c:245 daemon/verify-pam.c:324
-#, c-format
-msgid "Couldn't set credentials for %s"
-msgstr "Berechtigungsnachweise für %s konnte nicht gesetzt werden"
-
-#: daemon/verify-pam.c:252 daemon/verify-pam.c:331
+#: daemon/verify-pam.c:246 daemon/verify-pam.c:331
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Sitzung für %s konnte nicht geöffnet werden"
 
-#: daemon/verify-pam.c:264
+#: daemon/verify-pam.c:255 daemon/verify-pam.c:340
+#, c-format
+msgid "Couldn't set credentials for %s"
+msgstr "Berechtigungsnachweise für %s konnte nicht gesetzt werden"
+
+#: daemon/verify-pam.c:268
 msgid "Authentication failed"
 msgstr "Legitimation fehlgeschlagen"
 
-#: daemon/verify-pam.c:383
+#: daemon/verify-pam.c:395
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
 msgstr "gdm_verify_check: PAM-Konfiguration für gdm existiert nicht"
 
@@ -781,166 +789,178 @@ msgstr "Passwort: "
 msgid "Login incorrect"
 msgstr "Falscher Login"
 
-#: daemon/xdmcp.c:181
+#: daemon/xdmcp.c:186
 #, c-format
 msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
 msgstr "gdm_xdmcp_init: Server-Rechnername konnte nicht ermittelt werden: %s!"
 
-#: daemon/xdmcp.c:198
+#: daemon/xdmcp.c:203
 msgid "gdm_xdmcp_init: Could not create socket!"
 msgstr "gdm_xdmcp_init: Socket konnte nicht erzeugt werden!"
 
-#: daemon/xdmcp.c:208
+#: daemon/xdmcp.c:213
 msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
 msgstr "gdm_xdmcp_init: Es konnte nicht an XDMCP-Socket gebunden werden!"
 
-#: daemon/xdmcp.c:221
+#: daemon/xdmcp.c:226
 msgid "gdm_xdmcp_init: Can't alloc fifopath"
 msgstr "gdm_xdmcp_init: fifpath konnte nicht alloziiert werden"
 
-#: daemon/xdmcp.c:230
+#: daemon/xdmcp.c:235
 msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
 msgstr "gdm_xdmcp_init: FIFO als Auswähler konnte nicht erzeugt werden"
 
-#: daemon/xdmcp.c:239
+#: daemon/xdmcp.c:244
 msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
 msgstr "gdm_xdmcp_init: FIFO als Auswähler konnte nicht geöffnet werden"
 
-#: daemon/xdmcp.c:309
+#: daemon/xdmcp.c:314
 msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
 msgstr "gdm_xdmcp_decode: XDMCP-Puffer konnte nicht erzeugt werden!"
 
-#: daemon/xdmcp.c:314
+#: daemon/xdmcp.c:319
 msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
 msgstr "gdm_xdmcp_decode: XDMCP-Header konnte nicht gelesen werden!"
 
-#: daemon/xdmcp.c:319
+#: daemon/xdmcp.c:324
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: Falsche XDMCP-Version!"
 
-#: daemon/xdmcp.c:359
+#: daemon/xdmcp.c:364
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr "gdm_xdmcp_decode_packet: Unbekannter Opcode von Host %s"
 
-#: daemon/xdmcp.c:379
+#: daemon/xdmcp.c:384
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_query: authlist konnte nicht aus Paket entnommen werden"
 
-#: daemon/xdmcp.c:390
+#: daemon/xdmcp.c:395
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: Fehler in Prüfsumme"
 
-#: daemon/xdmcp.c:462
+#: daemon/xdmcp.c:465
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Display-Adresse konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:470
+#: daemon/xdmcp.c:473
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: Display-Portnummer konnte nicht gelesen "
 "werden"
 
-#: daemon/xdmcp.c:478
+#: daemon/xdmcp.c:481
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: authlist konnte nicht aus Paket entnommen "
 "werden"
 
-#: daemon/xdmcp.c:493
+#: daemon/xdmcp.c:496
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: Fehler in Prüfsumme"
 
-#: daemon/xdmcp.c:559
+#: daemon/xdmcp.c:562
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "XDMCP-Anfrage von Rechner %s abgelehnt"
 
-#: daemon/xdmcp.c:561
+#: daemon/xdmcp.c:564
 msgid "Display not authorized to connect"
 msgstr "Display ist nicht legitimiert zu verbinden"
 
-#: daemon/xdmcp.c:594
+#: daemon/xdmcp.c:597
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: REQUEST von gesperrtem Host %s erhalten"
 
-#: daemon/xdmcp.c:601
+#: daemon/xdmcp.c:604
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: Display-Nummer konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:607
+#: daemon/xdmcp.c:610
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: Verbindungstyp konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:613
+#: daemon/xdmcp.c:616
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr "gdm_xdmcp_handle_request: Client-Adresse konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:619
+#: daemon/xdmcp.c:622
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr ""
 "gdm_xdmcp_handle_request: Legitimationsnamen konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:625
+#: daemon/xdmcp.c:628
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr ""
 "gdm_xdmcp_handle_request: Legitimationsdaten konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:631
+#: daemon/xdmcp.c:634
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr ""
 "gdm_xdmcp_handle_request: Legitimationsliste konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:642
+#: daemon/xdmcp.c:645
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr ""
 "gdm_xdmcp_handle_request: Herstellerkennung konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:660
+#: daemon/xdmcp.c:663
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: Falsche Prüfsumme von %s"
 
-#: daemon/xdmcp.c:780
+#: daemon/xdmcp.c:783
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr "gdm_xdmcp_handle_manage: Manage von gesperrtem Host %s erhalten"
 
-#: daemon/xdmcp.c:787
+#: daemon/xdmcp.c:790
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage: Sitzungskennung konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:793
+#: daemon/xdmcp.c:796
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: Display-Nummer konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:803
+#: daemon/xdmcp.c:806
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
 msgstr "gdm_xdmcp_handle_manage: Display-Klasse konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:825
+#: daemon/xdmcp.c:828
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr ""
 "gdm_xdmcp_handle_manage: Protokolldatei für Display %s konnte nicht geöffnet "
 "werden"
 
-#: daemon/xdmcp.c:900
+#: daemon/xdmcp.c:903
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr "gdm_xdmcp_handle_keepalive: KEEPALIVE von gesperrtem Host %s erhalten"
 
-#: daemon/xdmcp.c:907
+#: daemon/xdmcp.c:910
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_keepalive: Display-Nummer konnte nicht gelesen werden"
 
-#: daemon/xdmcp.c:913
+#: daemon/xdmcp.c:916
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr ""
 "gdm_xdmcp_handle_keepalive: Sitzungskennung konnte nicht gelesen werden"
+
+#: daemon/xdmcp.c:1105
+msgid "gdm_xdmcp_init: No XDMCP support"
+msgstr "gdm_xdmcp_init: Keine XDMCP-Unterstützung"
+
+#: daemon/xdmcp.c:1112
+msgid "gdm_xdmcp_run: No XDMCP support"
+msgstr "gdm_xdmcp_run: Keine XDMCP-Unterstützung"
+
+#: daemon/xdmcp.c:1118
+msgid "gdm_xdmcp_close: No XDMCP support"
+msgstr "gdm_xdmcp_close: Keine XDMCP-Unterstützung"
 
 #: gui/gdmphotosetup.c:52
 msgid ""
@@ -982,47 +1002,47 @@ msgstr ""
 #: gui/gdmphotosetup.c:116
 #, c-format
 msgid ""
-"File %s cannot be open for writing\n"
-"Error: %s"
-msgstr ""
-"Datei %s kann nicht zum Schreiben geöffnet werden\n"
-"Fehler: %s"
-
-#: gui/gdmphotosetup.c:129
-#, c-format
-msgid ""
 "File %s cannot be open for reading\n"
 "Error: %s"
 msgstr ""
 "Datei %s kann nicht zum Schreiben geöffnet werden.\n"
 "Fehler: %s"
 
-#: gui/gdmchooser.c:60
+#: gui/gdmphotosetup.c:129
+#, c-format
+msgid ""
+"File %s cannot be open for writing\n"
+"Error: %s"
+msgstr ""
+"Datei %s kann nicht zum Schreiben geöffnet werden\n"
+"Fehler: %s"
+
+#: gui/gdmchooser.c:65
 msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
 msgstr ""
 "Bitte warten Sie: Lokales Netzwerk wird auf Hosts überprüft die XDMCP "
 "aktiviert haben..."
 
-#: gui/gdmchooser.c:61
+#: gui/gdmchooser.c:66
 msgid "No serving hosts were found."
 msgstr "Keine `Serving Hosts' gefunden."
 
-#: gui/gdmchooser.c:62
+#: gui/gdmchooser.c:67
 msgid "Choose a host to connect to from the selection below."
 msgstr ""
 "Wählen Sie einen Host mit dem verbunden werden soll, aus der Liste unten."
 
-#: gui/gdmchooser.c:386
+#: gui/gdmchooser.c:483
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_chooser_parse_config: Keine Konfigurationsdatei: %s. Abbruch."
 
-#: gui/gdmchooser.c:525
+#: gui/gdmchooser.c:627
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Voreingestelltes Hosticon konnte nicht geöffnet werden: %s"
 
-#: gui/gdmchooser.c:539
+#: gui/gdmchooser.c:638
 msgid ""
 "Cannot find the glade interface description\n"
 "file, cannot run gdmchooser.\n"
@@ -1034,7 +1054,7 @@ msgstr ""
 "nicht gestartet werden. Bitte überprüfen Sie\n"
 "Ihre Installation und den Ort der gdmchooser.glade-Datei."
 
-#: gui/gdmchooser.c:560
+#: gui/gdmchooser.c:659
 msgid ""
 "The glade interface description file\n"
 "appears to be corrupted.\n"
@@ -1044,19 +1064,19 @@ msgstr ""
 "scheint defekt zu sein.\n"
 "Bitte überprüfen Sie Ihre Installation."
 
-#: gui/gdmchooser.c:609
+#: gui/gdmchooser.c:707
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr "gdm_signals_init: Fehler beim Einrichten des HUP-Signalhandlers"
 
-#: gui/gdmchooser.c:612
+#: gui/gdmchooser.c:710
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr "gdm_signals_init: Fehler beim Einrichten des INT-Signalhandlers"
 
-#: gui/gdmchooser.c:615
+#: gui/gdmchooser.c:713
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Fehler beim Einrichten des TERM-Signalhandlers"
 
-#: gui/gdmchooser.c:623 gui/gdmlogin.c:3266
+#: gui/gdmchooser.c:721 gui/gdmlogin.c:3338
 msgid "Could not set signal mask!"
 msgstr "Signalmaske konnte nicht gesetzt werden!"
 
@@ -1066,11 +1086,11 @@ msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:60 gui/gdmlogin.c:1611 gui/gdmlogin.c:1633
+#: gui/gdmlogin.c:60 gui/gdmlogin.c:1633 gui/gdmlogin.c:1655
 msgid "Default"
 msgstr "Vorgabe"
 
-#: gui/gdmconfig-strings.c:177 gui/gdmlogin.c:61
+#: gui/gdmconfig-strings.c:180 gui/gdmlogin.c:61
 msgid "Failsafe"
 msgstr "Failsafe"
 
@@ -1086,11 +1106,7 @@ msgstr "KDE"
 msgid "XSession"
 msgstr "XSitzung"
 
-#. Add the chooser session, this one doesn't have a script
-#. * really, it's a fake, it runs the Gnome script
-#. For translators:  This is the login that lets users choose the
-#. * specific gnome session they want to use
-#: gui/gdmlogin.c:65 gui/gdmlogin.c:1285
+#: gui/gdmlogin.c:65 gui/gdmlogin.c:1301
 msgid "Gnome Chooser"
 msgstr "Gnome-Auswähler"
 
@@ -1098,28 +1114,28 @@ msgstr "Gnome-Auswähler"
 msgid "Last"
 msgstr "Letzte"
 
-#: gui/gdmlogin.c:180
+#: gui/gdmlogin.c:187
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Benutzer %s wird in %d Sekunden angemeldet"
 
-#: gui/gdmlogin.c:430
+#: gui/gdmlogin.c:437
 msgid ""
 "Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr ""
 "Doppelklicken Sie hier, um das Anmeldefenster wiederherzustellen, so dass "
 "Sie sich anmelden können"
 
-#: gui/gdmlogin.c:509 gui/gdmlogin.c:515 gui/gdmlogin.c:522
+#: gui/gdmlogin.c:516 gui/gdmlogin.c:522 gui/gdmlogin.c:529
 #, c-format
 msgid "Welcome to %s"
 msgstr "Willkommen auf %s"
 
-#: gui/gdmlogin.c:520
+#: gui/gdmlogin.c:527
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Zeichenkette ist zu lang!"
 
-#: gui/gdmlogin.c:649
+#: gui/gdmlogin.c:656
 msgid ""
 "Could not fork a new process!\n"
 "\n"
@@ -1129,34 +1145,34 @@ msgstr ""
 "\n"
 "Sie werden wohl auch nicht anmelden können."
 
-#: gui/gdmlogin.c:696
+#: gui/gdmlogin.c:703
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Sind Sie sicher, dass Sie den Rechner neustarten möchten?"
 
-#: gui/gdmlogin.c:710
+#: gui/gdmlogin.c:717
 msgid "Are you sure you want to halt the machine?"
 msgstr "Sind Sie sicher, dass Sie den Rechner anhalten möchten?"
 
-#: gui/gdmlogin.c:727
+#: gui/gdmlogin.c:734
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
 "gdm_login_parse_config: Keine Konfigurationsdatei: %s. Vorgaben werden "
 "verwendet."
 
-#: gui/gdmlogin.c:775
-msgid "TimedLoginDelay was less then 10.  I'll just use 10."
-msgstr "TimedLoginDelay war kleiner als 10. Es wird 10 verwendet."
+#: gui/gdmlogin.c:786
+msgid "TimedLoginDelay was less then 5.  I'll just use 5."
+msgstr "TimedLoginDelay war kleiner als 5. Es wird 5 verwendet."
 
-#: gui/gdmlogin.c:841 gui/gdmlogin.c:1331
+#: gui/gdmlogin.c:852 gui/gdmlogin.c:1349
 msgid "Failsafe Gnome"
 msgstr "Failsafe·GNOME"
 
-#: gui/gdmlogin.c:843 gui/gdmlogin.c:1354
+#: gui/gdmlogin.c:854 gui/gdmlogin.c:1374
 msgid "Failsafe xterm"
 msgstr "Failsafe·xterm"
 
-#: gui/gdmlogin.c:889
+#: gui/gdmlogin.c:900
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -1165,7 +1181,7 @@ msgstr ""
 "Ihr bevorzugter Sitzungstyp %s ist auf diesem Rechner nicht installiert.\n"
 "Möchten Sie %s zu Ihrer Voreinstellung für zukünftige Sitzungen machen?"
 
-#: gui/gdmlogin.c:906 gui/gdmlogin.c:972
+#: gui/gdmlogin.c:917 gui/gdmlogin.c:983
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -1174,26 +1190,26 @@ msgstr ""
 "Sie haben %s für diese Sitzung ausgewählt. Ihre Voreinstellung ist aber %s.\n"
 "Möchten Sie %s zu Ihrer Voreinstellung für zukünftige Sitzungen machen?"
 
-#: gui/gdmlogin.c:1151
+#: gui/gdmlogin.c:1162
 #, c-format
 msgid "%s session selected"
 msgstr "Sitzung %s ausgewählt"
 
-#: gui/gdmlogin.c:1181
+#: gui/gdmlogin.c:1192
 msgid "Log in using the session that you have used last time you logged in"
 msgstr ""
 "Mit der Sitzung anmelden, die Sie bei Ihrer letzten Anmeldung verwendet haben"
 
-#: gui/gdmlogin.c:1193
+#: gui/gdmlogin.c:1204
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: Sitzungsskript-Verzeichnis nicht gefunden!"
 
-#: gui/gdmlogin.c:1277
+#: gui/gdmlogin.c:1289
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr "Diese Sitzung meldet Sie direkt bei Ihrer aktuellen GNOME-Sitzung an"
 
-#: gui/gdmlogin.c:1288
+#: gui/gdmlogin.c:1304
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
@@ -1201,11 +1217,11 @@ msgstr ""
 "Diese Sitzung meldet Sie bei GNOME an und lässt Sie auswählen, welche "
 "GNOME-Sitzung Sie verwenden wollen."
 
-#: gui/gdmlogin.c:1322
+#: gui/gdmlogin.c:1339
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Ups, nichts im Situngsverzeichnis gefunden."
 
-#: gui/gdmlogin.c:1333
+#: gui/gdmlogin.c:1351
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -1216,7 +1232,7 @@ msgstr ""
 "falls Sie sich anders nicht anmelden können. GNOME wird die Vorgabe-Sitzung "
 "verwenden."
 
-#: gui/gdmlogin.c:1356
+#: gui/gdmlogin.c:1376
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -1227,132 +1243,138 @@ msgstr ""
 "werden, wenn Sie sich anders nicht anmelden können. Um das Terminal zu "
 "verlassen, geben Sie `exit' ein."
 
-#: gui/gdmlogin.c:1376
+#: gui/gdmlogin.c:1397
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 "Keinen Link zur voreingestellten Sitzung gefunden. Abgesichertes GNOME wird "
 "verwendet.\n"
 
-#: gui/gdmlogin.c:1393
+#: gui/gdmlogin.c:1414
 #, c-format
 msgid "%s language selected"
 msgstr "Sprache %s gewählt"
 
-#: gui/gdmlogin.c:1431
+#: gui/gdmlogin.c:1452
 msgid "Log in using the language that you have used last time you logged in"
 msgstr ""
 "Mit der Sprache anmelden, die Sie bei Ihrer letzten Anmeldung verwendet haben"
 
-#: gui/gdmlogin.c:1452
+#: gui/gdmlogin.c:1473
 msgid "Other"
 msgstr "Andere"
 
-#: gui/gdmlogin.c:1571 gui/gdmlogin.c:1580
+#: gui/gdmlogin.c:1593 gui/gdmlogin.c:1602
 msgid "Select GNOME session"
 msgstr "Wählen Sie GNOME-Sitzung"
 
-#: gui/gdmlogin.c:1647
+#: gui/gdmlogin.c:1669
 msgid "Create new session"
 msgstr "Neue Sitzung erstellen"
 
-#: gui/gdmlogin.c:1656
+#: gui/gdmlogin.c:1678
 msgid "Name: "
 msgstr "Name: "
 
+#. Translators: this is to remember the chosen gnome session
+#. * for next time
+#: gui/gdmlogin.c:1699
+msgid "Remember this setting"
+msgstr "An diese Einstellungen erinnern"
+
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:1932
+#: gui/gdmlogin.c:1963
 msgid "Please insert 25 cents to log in."
 msgstr "Bitte werfen Sie 50 Pfennig ein um sich anzumelden."
 
-#: gui/gdmlogin.c:2241
+#: gui/gdmlogin.c:2309
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Desktop Manager"
 
-#: gui/gdmlogin.c:2253
+#: gui/gdmlogin.c:2321
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Icon-Datei kann nicht geöffnet werden: %s. Minimierung nicht möglich!"
 
-#: gui/gdmlogin.c:2268
+#: gui/gdmlogin.c:2340
 msgid "Iconify the login window"
 msgstr "Das Anmeldefenster minimieren"
 
-#: gui/gdmlogin.c:2327
+#: gui/gdmlogin.c:2399
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a, %d. %b, %H.%M"
 
-#: gui/gdmlogin.c:2373
+#: gui/gdmlogin.c:2445
 msgid "GDM Login"
 msgstr "GDM-Login"
 
-#: gui/gdmlogin.c:2414
+#: gui/gdmlogin.c:2486
 msgid "Session"
 msgstr "Sitzung"
 
-#: gui/gdmlogin.c:2425
+#: gui/gdmlogin.c:2497
 msgid "Language"
 msgstr "Sprache"
 
-#: gui/gdmlogin.c:2436
+#: gui/gdmlogin.c:2508
 msgid "Configure..."
 msgstr "Konfigurieren..."
 
-#: gui/gdmlogin.c:2443
+#: gui/gdmlogin.c:2515
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "GDM (diesen Anmeldemanager) konfigurieren. Hierzu wird das root-Passwort "
 "benötigt."
 
-#: gui/gdmlogin.c:2448
+#: gui/gdmlogin.c:2520
 msgid "Reboot..."
 msgstr "Neustart..."
 
-#: gui/gdmlogin.c:2455
+#: gui/gdmlogin.c:2527
 msgid "Reboot your computer"
 msgstr "Ihren Computer neu starten"
 
-#: gui/gdmlogin.c:2458
+#: gui/gdmlogin.c:2530
 msgid "Halt..."
 msgstr "Herunterfahren..."
 
-#: gui/gdmlogin.c:2465
+#: gui/gdmlogin.c:2537
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Ihren Computer so herunterfahren, dass Sie Ihn ausschalten können."
 
-#: gui/gdmconfig.c:54 gui/gdmlogin.c:2469
+#: gui/gdmconfig.c:54 gui/gdmlogin.c:2541
 msgid "System"
 msgstr "System"
 
-#: gui/gdmlogin.c:2690
+#: gui/gdmlogin.c:2762
 msgid "Please enter your login"
 msgstr "Bitte geben Sie Ihren Login ein"
 
-#: gui/gdmlogin.c:2903
+#: gui/gdmlogin.c:2975
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 "Voreingestelltes Bild kann nicht geöffnet werden: %s. Gesichterliste "
 "abgeschaltet!"
 
-#: gui/gdmlogin.c:3243
+#: gui/gdmlogin.c:3315
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Fehler beim Einrichten des HUP-Signalhandlers"
 
-#: gui/gdmlogin.c:3246
+#: gui/gdmlogin.c:3318
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Fehler beim Einrichten des INT-Signalhandlers"
 
-#: gui/gdmlogin.c:3249
+#: gui/gdmlogin.c:3321
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Fehler beim Einrichten des TERM-Signalhandlers"
 
-#: gui/gdmlogin.c:3257
+#: gui/gdmlogin.c:3329
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Fehler beim Einrichten des CHLD-Signalhandlers"
 
-#: gui/gdmlogin.c:3322
+#: gui/gdmlogin.c:3396
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -1365,7 +1387,7 @@ msgstr ""
 "können, aber Sie sollten sich anmelden und Ihre gdm-Konfiguration\n"
 "korrigieren."
 
-#: gui/gdmlogin.c:3338
+#: gui/gdmlogin.c:3412
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -1376,7 +1398,7 @@ msgstr ""
 "wurde der Vorgabebefehl ausgeführt. Bitte\n"
 "reparieren Sie Ihre Konfiguration."
 
-#: gui/gdmlogin.c:3355
+#: gui/gdmlogin.c:3429
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
@@ -1486,11 +1508,11 @@ msgstr ""
 "Oberflächen-Beschreibungsdatei nicht gefunden\n"
 "werden. Bitte überprüfen Sie Ihre Installation."
 
-#: gui/gdmconfig.c:477
+#: gui/gdmconfig.c:483
 msgid "GNOME Display Manager Configurator"
 msgstr "Konfiguration für GNOME Display Manager"
 
-#: gui/gdmconfig.c:550
+#: gui/gdmconfig.c:556
 #, c-format
 msgid ""
 "The configuration file: %s\n"
@@ -1499,21 +1521,21 @@ msgstr ""
 "Die Konfigurationsdatei: %s\n"
 "existiert nicht! Vorgabewerte werden verwendet."
 
-#: gui/gdmconfig.c:739
+#: gui/gdmconfig.c:747
 msgid "Error reading session script!"
 msgstr "Fehler beim Lesen des Sitzungsskripts."
 
-#: gui/gdmconfig.c:741
+#: gui/gdmconfig.c:749
 msgid "Error reading this session script"
 msgstr "Fehler beim Lesen dieses Sitzungsskripts"
 
-#: gui/gdmconfig.c:830
+#: gui/gdmconfig.c:838
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr ""
 "gdm_config_parse_most: Ungültige Server-Zeile in Konfigurationsdatei. Wird "
 "ignoriert!"
 
-#: gui/gdmconfig.c:931
+#: gui/gdmconfig.c:939
 msgid ""
 "The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
@@ -1527,7 +1549,7 @@ msgstr ""
 "Dies wird Ihre gesamten Sitzungen töten\n"
 "und ungespeicherte Daten gehen verloren!"
 
-#: gui/gdmconfig.c:936
+#: gui/gdmconfig.c:944
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
@@ -1535,7 +1557,7 @@ msgstr ""
 "Sind Sie sicher, dass Sie GDM neustarten wollen\n"
 "und so ungespeicherte Daten verlieren?"
 
-#: gui/gdmconfig.c:943
+#: gui/gdmconfig.c:951
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -1547,7 +1569,7 @@ msgstr ""
 "wirksam, bevor gdm oder der Computer neugestartet\n"
 "wurde."
 
-#: gui/gdmconfig.c:964
+#: gui/gdmconfig.c:972
 msgid ""
 "You have not defined any local servers.\n"
 "Usually this is not a good idea unless you\n"
@@ -1566,7 +1588,7 @@ msgstr ""
 "\n"
 "Wollen Sie diese Einstellungen wirklich anwenden?"
 
-#: gui/gdmconfig.c:1118
+#: gui/gdmconfig.c:1127
 #, c-format
 msgid ""
 "\n"
@@ -1577,7 +1599,7 @@ msgstr ""
 "Sitzung %s konnte nicht gelöscht werden\n"
 "    Fehler: %s"
 
-#: gui/gdmconfig.c:1154
+#: gui/gdmconfig.c:1163
 #, c-format
 msgid ""
 "\n"
@@ -1588,7 +1610,7 @@ msgstr ""
 "Sitzung %s konnte nicht entfernt werden\n"
 "    Fehler: %s"
 
-#: gui/gdmconfig.c:1198
+#: gui/gdmconfig.c:1207
 #, c-format
 msgid ""
 "\n"
@@ -1599,7 +1621,7 @@ msgstr ""
 "Sitzung %s konnte nicht geschrieben werden\n"
 "    Fehler: %s"
 
-#: gui/gdmconfig.c:1209
+#: gui/gdmconfig.c:1218
 #, c-format
 msgid ""
 "\n"
@@ -1610,7 +1632,7 @@ msgstr ""
 "Inhalt konnte nicht in Sitzung %s gespeichert werden\n"
 "    Fehler: %s"
 
-#: gui/gdmconfig.c:1235
+#: gui/gdmconfig.c:1244
 #, c-format
 msgid ""
 "\n"
@@ -1621,7 +1643,7 @@ msgstr ""
 "Alte Sitzung konnte nicht abgetrennt werden\n"
 "    Fehler: %s"
 
-#: gui/gdmconfig.c:1274
+#: gui/gdmconfig.c:1283
 msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
@@ -1630,7 +1652,7 @@ msgstr ""
 "Es konnte kein geeigneter Name für die voreingestellte Sitzungsverknüpfung "
 "gefunden werden"
 
-#: gui/gdmconfig.c:1283
+#: gui/gdmconfig.c:1292
 #, c-format
 msgid ""
 "\n"
@@ -1641,7 +1663,7 @@ msgstr ""
 "Voreingestellte Sitzung konnte nicht verknüpft werden\n"
 "    Fehler: %s"
 
-#: gui/gdmconfig.c:1303
+#: gui/gdmconfig.c:1312
 msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
@@ -1649,7 +1671,7 @@ msgstr ""
 "Es traten Fehler während des Schreibens der Sitzungsdateien auf.\n"
 "Die Konfiguration wurde wahrscheinlich nicht erfolgreich abgeschlossen.\n"
 
-#: gui/gdmconfig.c:1322
+#: gui/gdmconfig.c:1331
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -1657,7 +1679,7 @@ msgstr ""
 "Dies wird alle Veränderungen, die in dieser Sitzung gemacht wurden \n"
 "zerstören. Sind Sie sicher, dass Sie das tun möchten?"
 
-#: gui/gdmconfig.c:1333
+#: gui/gdmconfig.c:1342
 msgid ""
 "This will destroy any changes made in the configuration.\n"
 "Are you sure you want to do this?"
@@ -1665,16 +1687,8 @@ msgstr ""
 "Dies wird alle Veränderungen an dieser Konfiguration zerstören.\n"
 "Sind Sie sicher, dass Sie das tun möchten?"
 
-#: gui/gdmconfig.c:1359
-msgid ""
-"Documentation is being written but is not yet finished.\n"
-"Please be patient."
-msgstr ""
-"Die Dokumentation wird derzeit geschrieben, ist aber nicht vollständig.\n"
-"Bitte haben Sie Geduld."
-
 #. Request the command line for this new server
-#: gui/gdmconfig.c:1493 gui/gdmconfig.c:1512
+#: gui/gdmconfig.c:1516 gui/gdmconfig.c:1535
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
@@ -1682,15 +1696,15 @@ msgstr ""
 "Geben Sie den Pfad zum X-Server ein und\n"
 "alle weiteren Parameter die an ihn gegeben werden sollen."
 
-#: gui/gdmconfig.c:1729
+#: gui/gdmconfig.c:1752
 msgid "A session name must be unique and not empty"
 msgstr "Ein Sitzungsname muss eindeutig, darf aber nicht leer sein"
 
-#: gui/gdmconfig.c:1741
+#: gui/gdmconfig.c:1764
 msgid "Enter a name for the new session"
 msgstr "Geben Sie einen Namen für die neue Sitzung ein"
 
-#: gui/gdmconfig.c:1856
+#: gui/gdmconfig.c:1879
 msgid ""
 "You have modified the sessions directory.\n"
 "Your session changes will still get written\n"
@@ -1847,15 +1861,20 @@ msgstr "N-Z|Schwedisch"
 msgid "N-Z|Turkish"
 msgstr "N-Z|Türkisch"
 
+#. This is the POSIX/C locale for english, should really be in Other
+#: gui/gdmlanguages.c:94
+msgid "Other|POSIX/C English"
+msgstr "Andere|POSIX/C Englisch"
+
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:219
+#: gui/gdmlanguages.c:221
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:227
+#: gui/gdmlanguages.c:229
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2333,7 +2352,7 @@ msgstr "Hintergrundprogramm"
 msgid "Background program: "
 msgstr "Hintergrundprogramm: "
 
-#: gui/gdmconfig-strings.c:117 gui/gdmconfig-strings.c:222
+#: gui/gdmconfig-strings.c:117 gui/gdmconfig-strings.c:225
 msgid "Select a file containing Locale information"
 msgstr "Wählen Sie eine Datei aus, die die Locale-Informationen beinhaltet"
 
@@ -2515,91 +2534,110 @@ msgid "Security"
 msgstr "Sicherheit"
 
 #: gui/gdmconfig-strings.c:160
+msgid ""
+"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
+"GDM with the XDMCP libraries."
+msgstr ""
+"Keine XDMCP-Unterstützung im Programm. Um XDMCP-Unterstützung zu aktivieren, "
+"müssen Sie GDM mit den XDMCP-Bibliotheken compileren."
+
+#: gui/gdmconfig-strings.c:161
 msgid "Enable XDMCP, a protocol to allow others to log in remotely"
 msgstr ""
 "XDMCP aktivieren, ein Protokoll, über das sich andere aus der Ferne anmelden "
 "können"
 
-#: gui/gdmconfig-strings.c:161
+#: gui/gdmconfig-strings.c:162
 msgid "Enable XDMCP"
 msgstr "XDMCP aktivieren"
 
-#: gui/gdmconfig-strings.c:162
+#: gui/gdmconfig-strings.c:163
 msgid "Connection Settings"
 msgstr "Verbindungseinstellungen"
 
-#: gui/gdmconfig-strings.c:163
+#: gui/gdmconfig-strings.c:164
 msgid "Honour indirect requests"
 msgstr "Indirekte Anforderungen annehmen"
 
-#: gui/gdmconfig-strings.c:164
+#: gui/gdmconfig-strings.c:165
 msgid "Maximum indirect wait time: "
 msgstr "Maximale indirekte Wartezeit: "
 
-#: gui/gdmconfig-strings.c:165
+#: gui/gdmconfig-strings.c:166
 msgid "Maximum wait time: "
 msgstr "Maximale Wartezeit: "
 
-#: gui/gdmconfig-strings.c:166
+#: gui/gdmconfig-strings.c:167
 msgid "Maximum remote sessions: "
 msgstr "Maximale Fernsitzungen: "
 
-#: gui/gdmconfig-strings.c:167
+#: gui/gdmconfig-strings.c:168
 msgid "Max pending indirect requests: "
 msgstr "Maximale abhängige indirekte Anforderungen: "
 
-#: gui/gdmconfig-strings.c:168
+#: gui/gdmconfig-strings.c:169
 msgid "Maximum pending requests: "
 msgstr "Maximale abhängige Anforderungen: "
 
-#: gui/gdmconfig-strings.c:169
+#: gui/gdmconfig-strings.c:170
 msgid "Listen on UDP port: "
 msgstr "An UDP-Port horchen: "
 
-#: gui/gdmconfig-strings.c:170
+#: gui/gdmconfig-strings.c:171
+msgid "Ping interval (minutes):"
+msgstr "Ping-Interval (Minuten):"
+
+#: gui/gdmconfig-strings.c:172
+msgid ""
+"Interval in minutes in which to ping the server.  If the server doesn't "
+"respond in this many minutes (that is before the next time we ping it) the "
+"display will be terminated."
+msgstr ""
+
+#: gui/gdmconfig-strings.c:173
 msgid "XDMCP"
 msgstr "XDMCP"
 
-#: gui/gdmconfig-strings.c:171
+#: gui/gdmconfig-strings.c:174
 msgid "Server Definitions"
 msgstr "Server-Definitionen"
 
-#: gui/gdmconfig-strings.c:172
+#: gui/gdmconfig-strings.c:175
 msgid "No."
 msgstr "Nein."
 
-#: gui/gdmconfig-strings.c:173
+#: gui/gdmconfig-strings.c:176
 msgid "Path to X server"
 msgstr "Pfad zum X-Server"
 
-#: gui/gdmconfig-strings.c:174
+#: gui/gdmconfig-strings.c:177
 msgid "Add Server"
 msgstr "Server hinzufügen"
 
-#: gui/gdmconfig-strings.c:175
+#: gui/gdmconfig-strings.c:178
 msgid "Edit Server"
 msgstr "Server bearbeiten"
 
-#: gui/gdmconfig-strings.c:176
+#: gui/gdmconfig-strings.c:179
 msgid "Delete Server"
 msgstr "Server löschen"
 
-#: gui/gdmconfig-strings.c:178
+#: gui/gdmconfig-strings.c:181
 msgid "Script to run when X is crashing: "
 msgstr "Skript, das ausgeführt wird, wenn X abstürzt: "
 
-#: gui/gdmconfig-strings.c:179
+#: gui/gdmconfig-strings.c:182
 msgid "X configurator binaries to try: "
 msgstr "Auszuprobierende X-Konfigurationsprogramme: "
 
-#: gui/gdmconfig-strings.c:180
+#: gui/gdmconfig-strings.c:183
 msgid ""
 "A list of X setup programs to try for the above script, separated by spaces"
 msgstr ""
 "Eine Liste von X-Konfigurationsprogrammen, die für das obige Skript "
 "ausprobiert werden sollen; durch Leerzeichen getrennt"
 
-#: gui/gdmconfig-strings.c:181
+#: gui/gdmconfig-strings.c:184
 msgid ""
 "A script to run when the X server keeps crashing and the failsafe X server "
 "is either empty or also didn't take.  This will run an X setup program "
@@ -2609,11 +2647,11 @@ msgstr ""
 "abgesicherte X-Server entweder nicht eingestellt ist oder auch nicht läuft. "
 "Dies wird ein unten angegebenes X-Konfigurationsprogramm ausführen."
 
-#: gui/gdmconfig-strings.c:182
+#: gui/gdmconfig-strings.c:185
 msgid "Failsafe X server:"
 msgstr "Abgesicherter X-Server:"
 
-#: gui/gdmconfig-strings.c:183
+#: gui/gdmconfig-strings.c:186
 msgid ""
 "An X server binary to run if the standard one keeps crashing.  If this fails "
 "the script below will be run."
@@ -2621,45 +2659,45 @@ msgstr ""
 "Ein X-Server, der gestartet wird, wenn der normale ständig abstürzt. Falls "
 "dies fehlschlägt, wird das Skript darunter ausgeführt."
 
-#: gui/gdmconfig-strings.c:184
+#: gui/gdmconfig-strings.c:187
 msgid "X-server setup"
 msgstr "Setup für X-Server"
 
-#: gui/gdmconfig-strings.c:185
+#: gui/gdmconfig-strings.c:188
 msgid "Session configuration"
 msgstr "Sitzungskonfiguration"
 
-#: gui/gdmconfig-strings.c:186
+#: gui/gdmconfig-strings.c:189
 msgid "Session directory: "
 msgstr "Sitzungsverzeichnis: "
 
-#: gui/gdmconfig-strings.c:187
+#: gui/gdmconfig-strings.c:190
 msgid "Select a directory to be used for system-wide session scripts"
 msgstr ""
 "Wählen Sie ein Verzeichnis, das für systemweite Sitzungsskripte verwendet "
 "werden soll."
 
-#: gui/gdmconfig-strings.c:188
+#: gui/gdmconfig-strings.c:191
 msgid "Available Sessions"
 msgstr "Verfügbare Sitzungen"
 
-#: gui/gdmconfig-strings.c:189
+#: gui/gdmconfig-strings.c:192
 msgid "Add session"
 msgstr "Sitzung hinzufügen"
 
-#: gui/gdmconfig-strings.c:190
+#: gui/gdmconfig-strings.c:193
 msgid "Remove session"
 msgstr "Sitzung entfernen"
 
-#: gui/gdmconfig-strings.c:191
+#: gui/gdmconfig-strings.c:194
 msgid "Set as default"
 msgstr "Als Vorgabe einstellen"
 
-#: gui/gdmconfig-strings.c:192
+#: gui/gdmconfig-strings.c:195
 msgid "Selected session name: "
 msgstr "Gewählter Sitzungsname: "
 
-#: gui/gdmconfig-strings.c:193
+#: gui/gdmconfig-strings.c:196
 msgid ""
 "The exact script details of a session\n"
 "will appear here when you select\n"
@@ -2669,15 +2707,15 @@ msgstr ""
 "werden hier erscheinen, wenn Sie eines\n"
 "von der Liste auf der linken Seite auswählen.\n"
 
-#: gui/gdmconfig-strings.c:197
+#: gui/gdmconfig-strings.c:200
 msgid "Login sessions"
 msgstr "Anmeldesitzungen"
 
-#: gui/gdmconfig-strings.c:198
+#: gui/gdmconfig-strings.c:201
 msgid "Debugging"
 msgstr "Diagnose"
 
-#: gui/gdmconfig-strings.c:199
+#: gui/gdmconfig-strings.c:202
 msgid ""
 "Enable debugging output to be printed into the syslog.  Useful for tracking "
 "down problems.  But not so useful for normal usage as it can fill up your "
@@ -2687,124 +2725,124 @@ msgstr ""
 "Problemen, aber im normalen Gebrauch weniger nützlich, da dies Ihre "
 "Logbücher sehr schnell auffüllen kann."
 
-#: gui/gdmconfig-strings.c:200
+#: gui/gdmconfig-strings.c:203
 msgid "Enable debugging output"
 msgstr "Diagnose-Ausgabe aktivieren"
 
-#: gui/gdmconfig-strings.c:201 gui/gdmconfig-strings.c:214
-#: gui/gdmconfig-strings.c:218
+#: gui/gdmconfig-strings.c:204 gui/gdmconfig-strings.c:217
+#: gui/gdmconfig-strings.c:221
 msgid "Miscellaneous"
 msgstr "Verschiedenes"
 
-#: gui/gdmconfig-strings.c:202
+#: gui/gdmconfig-strings.c:205
 msgid "system_setup"
 msgstr "system_setup"
 
-#: gui/gdmconfig-strings.c:203
+#: gui/gdmconfig-strings.c:206
 msgid "Executables"
 msgstr "Ausführbare Dateien"
 
-#: gui/gdmconfig-strings.c:204
+#: gui/gdmconfig-strings.c:207
 msgid "Chooser command: "
 msgstr "Auswähler-Kommando: "
 
-#: gui/gdmconfig-strings.c:205
+#: gui/gdmconfig-strings.c:208
 msgid "Greeter command: "
 msgstr "Begrüßer-Kommando: "
 
-#: gui/gdmconfig-strings.c:206
+#: gui/gdmconfig-strings.c:209
 msgid "Halt command: "
 msgstr "Halt-Kommando: "
 
-#: gui/gdmconfig-strings.c:207
+#: gui/gdmconfig-strings.c:210
 msgid "Reboot command: "
 msgstr "Reboot-Kommando: "
 
-#: gui/gdmconfig-strings.c:208
+#: gui/gdmconfig-strings.c:211
 msgid "Configurator command: "
 msgstr "Kommando für Konfigurierer: "
 
-#: gui/gdmconfig-strings.c:209
+#: gui/gdmconfig-strings.c:212
 msgid "Directories"
 msgstr "Verzeichnisse"
 
-#: gui/gdmconfig-strings.c:210
+#: gui/gdmconfig-strings.c:213
 msgid "PRE session scripts directory: "
 msgstr "PRE Sitzungsskript-Verzeichnis: "
 
-#: gui/gdmconfig-strings.c:211
+#: gui/gdmconfig-strings.c:214
 msgid "POST session scripts directory: "
 msgstr "POST Sitzungsskript-Verzeichnis: "
 
-#: gui/gdmconfig-strings.c:212
+#: gui/gdmconfig-strings.c:215
 msgid "Logging directory: "
 msgstr "Login-Verzeichnis: "
 
-#: gui/gdmconfig-strings.c:213
+#: gui/gdmconfig-strings.c:216
 msgid "Display initialization directory: "
 msgstr "Initialisierungsverzeichnis anzeigen: "
 
-#: gui/gdmconfig-strings.c:215
+#: gui/gdmconfig-strings.c:218
 msgid "PID file: "
 msgstr "PID-Datei: "
 
-#: gui/gdmconfig-strings.c:216
+#: gui/gdmconfig-strings.c:219
 msgid "Default GNOME session file: "
 msgstr "Voreingestellte GNOME-Sitzungsdatei: "
 
-#: gui/gdmconfig-strings.c:217
+#: gui/gdmconfig-strings.c:220
 msgid "Paths"
 msgstr "Pfade"
 
-#: gui/gdmconfig-strings.c:219
+#: gui/gdmconfig-strings.c:222
 msgid "Default $PATH: "
 msgstr "Vorgabe $PATH: "
 
-#: gui/gdmconfig-strings.c:220
+#: gui/gdmconfig-strings.c:223
 msgid "Root $PATH: "
 msgstr "Root $PATH: "
 
-#: gui/gdmconfig-strings.c:221
+#: gui/gdmconfig-strings.c:224
 msgid "Localization"
 msgstr "Lokalisierung"
 
-#: gui/gdmconfig-strings.c:223
+#: gui/gdmconfig-strings.c:226
 msgid "Locale file: "
 msgstr "Locale-Datei: "
 
-#: gui/gdmconfig-strings.c:224
+#: gui/gdmconfig-strings.c:227
 msgid "Environment"
 msgstr "Umgebung"
 
-#: gui/gdmconfig-strings.c:225
+#: gui/gdmconfig-strings.c:228
 msgid "Appearance"
 msgstr "Aussehen"
 
-#: gui/gdmconfig-strings.c:226
+#: gui/gdmconfig-strings.c:229
 msgid "Directory for host images: "
 msgstr "Verzeichnis für Host-Bilder: "
 
-#: gui/gdmconfig-strings.c:227
+#: gui/gdmconfig-strings.c:230
 msgid "Default host image:"
 msgstr "Host-Bild (Vorgabe):"
 
-#: gui/gdmconfig-strings.c:228
+#: gui/gdmconfig-strings.c:231
 msgid "Refresh"
 msgstr "Neuladen"
 
-#: gui/gdmconfig-strings.c:229
+#: gui/gdmconfig-strings.c:232
 msgid "Scan every 'x' seconds: "
 msgstr "Alle 'x' Sekunden neu einlesen: "
 
-#: gui/gdmconfig-strings.c:230
+#: gui/gdmconfig-strings.c:233
 msgid "Chooser"
 msgstr "Auswähler"
 
-#: gui/gdmconfig-strings.c:231
+#: gui/gdmconfig-strings.c:234
 msgid "(C) 2001 Lee Mallabone"
 msgstr "(C) 2001 Lee Mallabone"
 
-#: gui/gdmconfig-strings.c:232
+#: gui/gdmconfig-strings.c:235
 msgid ""
 "Configure the GNOME Display Manager.\n"
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
@@ -2887,3 +2925,23 @@ msgstr ""
 #: gui/gdmchooser-strings.c:26
 msgid "Information"
 msgstr "Information"
+
+#: gui/gdmconfig.desktop.in.h:1
+msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
+msgstr ""
+"Eine graphische Anwendung um den GNOME Display Manager (GDM) zu konfigurieren"
+
+#: gui/gdmconfig.desktop.in.h:2
+msgid "GDM Configurator"
+msgstr "GDM-Konfigurationswerkzeug"
+
+#: gui/gdmphotosetup.desktop.in.h:1
+msgid "Setup my GDM Face"
+msgstr "Mein GDM-Gesicht einstellen"
+
+#: gui/gdmphotosetup.desktop.in.h:2
+msgid ""
+"Setup the picture that will show in the GDM (login manager) face browser"
+msgstr ""
+"Das Bild einstellen, das im GDM (bei der Anmeldung) Gesichts-Browser gezeigt "
+"wird"
