@@ -695,7 +695,7 @@ gdm_login_reboot_handler (void)
 static void
 gdm_login_halt_handler (void)
 {
-	if (gdm_login_query (_("Are you sure you want to halt the machine?"))) {
+	if (gdm_login_query (_("Are you sure you want to shut down the machine?"))) {
 		closelog();
 
 		kill_thingies ();
@@ -907,16 +907,22 @@ gdm_login_session_lookup (const gchar* savedsess)
 	session = g_strdup (cursess);
 
 	/* User's saved session is not the chosen one */
-	if (strcmp (savedsess, session) != 0) {
-	    gchar *msg;
+	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
+	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0) {
+		savesess = FALSE;
+	} else if (strcmp (savedsess, session) != 0) {
+		gchar *msg;
 
-	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is " \
-				     "%s.\nDo you wish to make %s the default for future sessions?"),
-				   translate_session (cursess),
-				   translate_session (savedsess),
-				   translate_session (cursess));
-	    savesess = gdm_login_query (msg);
-	    g_free (msg);
+		msg = g_strdup_printf (_("You have chosen %s for this "
+					"session, but your default "
+					"setting is %s.\nDo you wish "
+					"to make %s the default for "
+					"future sessions?"),
+				translate_session (session),
+				translate_session (savedsess),
+				translate_session (session));
+		savesess = gdm_login_query (msg);
+		g_free (msg);
 	}
     }
 }
@@ -2626,7 +2632,7 @@ gdm_login_gui_init (void)
 	}
 	
 	if (bin_exists (GdmHalt)) {
-		item = gtk_menu_item_new_with_label (_("Halt..."));
+		item = gtk_menu_item_new_with_label (_("Shut down..."));
 		gtk_menu_append (GTK_MENU (menu), item);
 		gtk_signal_connect (GTK_OBJECT (item), "activate",
 				    GTK_SIGNAL_FUNC (gdm_login_halt_handler), 
