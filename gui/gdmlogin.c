@@ -808,8 +808,8 @@ gdm_login_list_lookup (GSList *l, const gchar *data)
 {
     GSList *list = l;
 
-    if (!list || !data)
-	return(FALSE);
+    if (list == NULL || data == NULL)
+	return FALSE;
 
     /* FIXME: Hack, will support these builtin types later */
     if (strcmp (data, GDM_SESSION_DEFAULT ".desktop") == 0 ||
@@ -825,6 +825,11 @@ gdm_login_list_lookup (GSList *l, const gchar *data)
 	
 	list = list->next;
     }
+
+    /* ugly hack for migration from 'Default.desktop'
+       to 'default.desktop' */
+    if (strcmp (data, "Default.desktop") == 0)
+	    return TRUE;
 
     return FALSE;
 }
@@ -900,9 +905,8 @@ gdm_login_session_lookup (const gchar* savedsess)
 	/* User's saved session is not the chosen one */
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
 	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-            /* bad hack, "Failsafe.desktop" is just a name in the session dir */
-            g_ascii_strcasecmp (session, "Failsafe") == 0 ||
-            g_ascii_strcasecmp (session, "Failsafe.desktop") == 0) {
+	    g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE ".desktop") == 0 ||
+	    g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE) == 0) {
 		savesess = FALSE;
 	} else if (strcmp (savedsess, session) != 0) {
 		gchar *msg = NULL;
@@ -1328,15 +1332,15 @@ gdm_login_session_init (GtkWidget *menu)
 
 		    /* if there is a session called Default */
 		    if (searching_for_default &&
-			g_ascii_strcasecmp (dent->d_name, "Default.desktop") == 0) {
+			g_ascii_strcasecmp (dent->d_name, "default.desktop") == 0) {
 			    g_free (defsess);
 			    defsess = g_strdup (dent->d_name);
 		    }
 
 		    if (searching_for_default &&
-			g_ascii_strcasecmp (dent->d_name, "Gnome.desktop") == 0) {
-			    /* Just in case there is no Default session and
-			     * no default link, make Gnome the default */
+			g_ascii_strcasecmp (dent->d_name, "gnome.desktop") == 0) {
+			    /* Just in case there is no default session and
+			     * no default link, make gnome the default */
 			    if (defsess == NULL)
 				    defsess = g_strdup (dent->d_name);
 

@@ -43,8 +43,8 @@ greeter_login_list_lookup (GSList *l, const gchar *data)
 {
     GSList *list = l;
 
-    if (!list || !data)
-	return(FALSE);
+    if (list == NULL || data == NULL)
+	return FALSE;
 
     /* FIXME: Hack, will support these builtin types later */
     if (strcmp (data, GDM_SESSION_DEFAULT ".desktop") == 0 ||
@@ -56,12 +56,17 @@ greeter_login_list_lookup (GSList *l, const gchar *data)
     while (list) {
 
 	if (strcmp (list->data, data) == 0)
-	    return (TRUE);
+	    return TRUE;
 	
 	list = list->next;
     }
 
-    return (FALSE);
+    /* ugly hack for migration from 'Default.desktop'
+       to 'default.desktop' */
+    if (strcmp (data, "Default.desktop") == 0)
+	    return TRUE;
+
+    return FALSE;
 }
 
 static const char *
@@ -92,7 +97,7 @@ greeter_session_lookup (const char *saved_session)
   if ( ! (saved_session != NULL &&
 	  strcmp ("(null)", saved_session) != 0 &&
 	  saved_session[0] != '\0')) {
-    /* If "Last" is chosen run Default,
+    /* If "Last" is chosen run default,
      * else run user's current selection */
     if (current_session == NULL || strcmp (current_session, LAST_SESSION) == 0)
       session = g_strdup (default_session);
@@ -132,9 +137,8 @@ greeter_session_lookup (const char *saved_session)
       /* User's saved session is not the chosen one */
       if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
 	  strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-	  /* bad hack, "Failsafe" is just a name in the session dir */
-	  strcmp (session, "Failsafe.desktop") == 0 ||
-	  strcmp (session, "Failsafe") == 0)
+	  g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE ".desktop") == 0 ||
+	  g_ascii_strcasecmp (session, GDM_SESSION_FAILSAFE) == 0)
 	{
 	  save_session = FALSE;
 	}
@@ -378,16 +382,16 @@ greeter_session_init (void)
 			searching_for_default = FALSE;
 		}
 
-		/* if there is a session called Default */
+		/* if there is a session called default */
 		if (searching_for_default &&
-		    g_ascii_strcasecmp (dent->d_name, "Default.desktop") == 0) {
+		    g_ascii_strcasecmp (dent->d_name, "default.desktop") == 0) {
 			g_free (default_session);
 			default_session = g_strdup (dent->d_name);
 		}
 
 		if (searching_for_default &&
-		    g_ascii_strcasecmp (dent->d_name, "Gnome.desktop") == 0) {
-			/* Just in case there is no Default session and
+		    g_ascii_strcasecmp (dent->d_name, "gnome.desktop") == 0) {
+			/* Just in case there is no default session and
 			 * no default link, make Gnome the default */
 			if (default_session == NULL)
 				default_session = g_strdup (dent->d_name);

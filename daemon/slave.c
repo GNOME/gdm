@@ -2798,7 +2798,7 @@ static char *
 get_session_exec (const char *session_name)
 {
 	char *file;
-	char *full;
+	char *full = NULL;
 	VeConfig *cfg;
 	static char *exec;
 	static char *cached = NULL;
@@ -2821,9 +2821,18 @@ get_session_exec (const char *session_name)
 	g_free (cached);
 	cached = g_strdup (session_name);
 
-	file = gdm_ensure_extension (session_name, ".desktop");
-	full = ve_find_prog_in_path (file, GdmSessDir);
-	g_free (file);
+	/* Some ugly special casing for legacy "Default.desktop", oh well,
+	 * we changed to "default.desktop" */
+	if (g_ascii_strcasecmp (session_name, "default") == 0 ||
+	    g_ascii_strcasecmp (session_name, "default.desktop") == 0) {
+		full = ve_find_prog_in_path ("default.desktop", GdmSessDir);
+	}
+
+	if (full == NULL) {
+		file = gdm_ensure_extension (session_name, ".desktop");
+		full = ve_find_prog_in_path (file, GdmSessDir);
+		g_free (file);
+	}
 
 	if (ve_string_empty (full) || access (full, R_OK) != 0) {
 		g_free (full);
@@ -3529,16 +3538,10 @@ gdm_slave_session_start (void)
 	    language = g_strdup (usrlang);
     }
 
-    g_free (usrsess);
-    g_free (usrlang);
-
     tmp = gdm_strip_extension (session, ".desktop");
     g_free (session);
     session = tmp;
 
-    gdm_debug ("Initial setting: session: '%s' language: '%s'\n",
-	       session, language);
-    
     if (ve_string_empty (session)) {
 	    g_free (session);
 	    session = find_a_session ();
@@ -3552,6 +3555,22 @@ gdm_slave_session_start (void)
 	    g_free (language);
 	    language = NULL;
     }
+
+    /* pretty ugly, but just in case the saved
+       default is 'Default', just make it 'default'
+       that will always work nowdays and we're switching
+       to that. */
+    if (strcmp (session, "default") == 0 &&
+	(strcmp (usrsess, "Default") == 0 ||
+	 strcmp (usrsess, "Default.desktop") == 0))
+	    savesess = TRUE;
+
+    g_free (usrsess);
+    g_free (usrlang);
+
+
+    gdm_debug ("Initial setting: session: '%s' language: '%s'\n",
+	       session, ve_sure_string (language));
 
     /* save this session as the users session */
     save_session = g_strdup (session);

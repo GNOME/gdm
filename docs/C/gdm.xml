@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.4.4.2"> 
-    <!ENTITY date "9/18/2003"> 
+    <!ENTITY date "9/19/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -91,10 +91,14 @@
     </para>
 
     <para>
-      Paths without a leading '/' are relative to the installation
-      prefix. I.e. <filename>share/pixmaps/</filename> refers to
+      Paths that start with a word in angle brackets are relative to the installation
+      prefix. I.e. <filename>&lt;share&gt;/pixmaps/</filename> refers to
       <filename>/usr/share/pixmaps</filename> if GDM was configured
-      with <filename>--prefix=/usr</filename>.
+      with <filename>--prefix=/usr</filename>.  Normally also note that
+      GDM is installed with <filename>--sysconfigdir=/etc/X11</filename>,
+      meaning any path to which we refer to as
+      <filename>&lt;etc&gt;/gdm/PreSession</filename> usually means
+      <filename>/etc/X11/gdm/PreSession</filename>.
     </para>
 
   </sect1>
@@ -301,26 +305,33 @@
 	and no effort has been made to implement them so far.
 	Because of this the cookies go over the wire as
 	clear text, and thus you should be careful about what
-	network you use this on.  If snooping is possible
+	network you use this on.  That is, you should be careful
+	about through where your XDMCP connection is going.
+	Note that obviously if snooping is possible, then the
+	attacker could just snoop your password as you log in,
+	so a better XDMCP authentication wouldn't help you much
+	anyway.
+	If snooping is possible
 	and undesirable, then you had better use ssh for tunneling
 	an X connection anyway rather then using GDM's XDMCP.
+	You could think of XDMCP as a sort of graphical telnet,
+	having the same security issues.
       </para>
 
       <para>
-	On the upside, GDM's random number generation is far superior
-	to XDM or KDM.  At least the last time I looked at both of
-	those.  XDM or KDM will only really have 31 bits of randomness
-	for the MIT-MAGIC-COOKIE-1 (they both get a 31bit seed and then
-	user a pseudorandom number generator to get 128 bits).  GDM goes
+	On the upside, GDM's random number generation is very
+	anal and GDM goes
 	to extraordinary measures to truly get a 128 bit random number,
 	using hardware random number generators if available, plus the
 	current time (in microsecond precision), a 20 byte array of pseudorandom
 	numbers, process pid's, plus other random information (possibly using
-	<filename>/dev/audio</filename> or <filename>/dev/mem</filename>)
-	to create a large buffer and then run MD5.
+	<filename>/dev/audio</filename> or <filename>/dev/mem</filename>
+	if hardware random generators are not available)
+	to create a large buffer and then run MD5 digest on this.
 	Obviously, all this work is wasted if you send this cookie over
 	an open network or store it on an NFS directory (see
-	<filename>UserAuthDir</filename> configuration key).
+	<filename>UserAuthDir</filename> configuration key).  So be careful
+	about where you use remote X display.
       </para>
 
       <para>
@@ -337,7 +348,7 @@
 	the X protocol is still inherently insecure and should only be
 	used in controlled environments.  Also each remote connection
 	takes up lots of resources, so it is much easier to to DoS
-	an XDMCP server.
+	an XDMCP server then say a webserver.
       </para>
 
       <para>
@@ -363,7 +374,8 @@
       <para>
 	XDMCP is primarily useful for running thin clients such
 	as in terminal labs.  Those thin
-	clients will only ever need to access the server, and so it seems
+	clients will only ever need the network to access the server, and
+	so it seems
 	like the best policy securitywise to have those thin clients on
 	a separate network that cannot be accessed by the outside world,
 	and can only connect to the server.  The only point from which you
@@ -441,7 +453,7 @@
         Optionally the greeter can provide a face browser containing
 	icons for all the users on a system. The icons can be installed globally
         by the sysadmin or in the users' home directories.  If installed
-        globally they should be in the <filename>share/faces/</filename>
+        globally they should be in the <filename>&lt;share&gt;/faces/</filename>
         directory (though this can be configured with the
         <filename>GlobalFaceDir</filename>
         configuration option) and the filename should be the name of
@@ -538,7 +550,7 @@
 
       <para>
 	Output from the various X servers is stored in the GDM log directory,	
-	which is configurable, but is usually <filename>var/log/gdm/</filename>.
+	which is configurable, but is usually <filename>&lt;var&gt;/log/gdm/</filename>.
 	The output from the session can be found in a file called
 	<filename>&lt;display&gt;.log</filename>.  Four older files are
 	also stored with <filename>.1</filename> through 
@@ -703,9 +715,9 @@
 
     <para> 
       The configuration files for GDM are located in the
-      <filename>etc/gdm/</filename> directory.  And some which
+      <filename>&lt;etc&gt;/gdm/</filename> directory.  And some which
       can be shared among other display managers are
-      located in the <filename>etc/dm/</filename> directory.
+      located in the <filename>&lt;etc&gt;/dm/</filename> directory.
     </para>
 
     <para>
@@ -760,17 +772,38 @@
 
     <para>
       Accessibility modules are configured in the <filename>modules/</filename>
-      subdirectory, and are a separate topic.
+      subdirectory, and are a separate topic.  Read the default files provided,
+      they have adequate documentation.  Again normally the default install
+      is given in the files with <filename>factory</filename> in their name,
+      and those files are not read, they are just there for you so you can
+      always revert to default config.
     </para>
 
     <para>
       The remaining configuration is done by dropping scripts in the
-      subdirectories of the <filename>etc/gdm</filename> folder or
-      dropping <filename>.desktop</filename> style files in
-      <filename>etc/dm/Sessions</filename>. This
-      approach makes it easy for package management systems to install
+      subdirectories of the <filename>&lt;etc&gt;/gdm/</filename> folder or
+      dropping <filename>.desktop</filename>-style files in
+      <filename>&lt;etc&gt;/dm/Sessions/</filename> or
+      <filename>/etc/X11/sessions/</filename>.  The latter is also
+      read by KDM for common configuration.  The <filename>&lt;etc&gt;/dm/Sessions/</filename>
+      directory will likely move in the future to reflect that it is
+      GDM specific and used only for the default configuration.
+      Also the default setup will also read <filename>/usr/share/xsessions/</filename>
+      where desktop packages can install their session files.  The directories
+      under the <filename>/etc</filename> should be reserved for configuration.
+      This approach makes it easy for package management systems to install
       window managers and different session types without requiring
-      the sysadmin to edit files.
+      the sysadmin to edit files.  See the <filename>SessionDesktopDir</filename>
+      configuration key for changing the paths.  Note that prior to version
+      2.4.4.2 only the <filename>&lt;etc&gt;/dm/Sessions/</filename> was being read.
+    </para>
+
+    <para>
+      A session can be disabled (if it was installed in
+      <filename>/usr/share/xsessions/</filename>) by adding an identically named
+      <filename>.desktop</filename> to one of the directories earlier in the path
+      (likely <filename>/etc/X11/sessions</filename>) and using <filename>Hidden=true</filename>
+      in that file.
     </para>
 
     <sect2 id="scriptdirs">
@@ -846,9 +879,12 @@
 	This is run as the user, and really this is the user session.
 	The available session executables are taken from the
 	<filename>Exec=</filename> line in the
-	<filename>.desktop</filename> files in the
-	<filename>etc/dm/Sessions</filename> directory.  The user
-	either picks from these sessions or GDM will look inside
+	<filename>.desktop</filename> files in the path
+	specified by <filename>SessionDesktopDir</filename>.
+	Usually this path is
+	<filename>/etc/X11/sessions/:&lt;etc&gt;/dm/Sessions:/usr/share/xsessions/</filename>.
+	The first found file is used.
+	The user either picks from these sessions or GDM will look inside
 	the file <filename>~/.dmrc</filename> for the stored
 	preference.
       </para>
@@ -915,7 +951,7 @@
       
       <para>
 	The daemon and the accompanying utilities share a common
-	configuration file: <filename>etc/gdm/gdm.conf</filename>.
+	configuration file: <filename>&lt;etc&gt;/gdm/gdm.conf</filename>.
       </para>
 
       <para>
@@ -1032,7 +1068,7 @@
 	  <varlistentry>
 	    <term>BaseXsession</term>
 	    <listitem>
-	      <synopsis>BaseXsession=etc/gdm/Xsession</synopsis>
+	      <synopsis>BaseXsession=&lt;etc&gt;/gdm/Xsession</synopsis>
 	      <para>
 		This is the base X session file.  When a user logs in, this script
 		will be run with the selected session as the first argument.  The
@@ -1070,7 +1106,7 @@
 	  <varlistentry>
 	    <term>Chooser</term>
 	    <listitem>
-	      <synopsis>Chooser=bin/gdmchooser</synopsis>
+	      <synopsis>Chooser=&lt;bin&gt;/gdmchooser</synopsis>
 	      <para>
 		Full path and name of the chooser executable followed by optional arguments.
 	      </para>
@@ -1080,7 +1116,7 @@
 	  <varlistentry>
 	    <term>Configurator</term>
 	    <listitem>
-	      <synopsis>Configurator=bin/gdmsetup --disable-sound --disable-crash-dialog</synopsis>
+	      <synopsis>Configurator=&lt;bin&gt;/gdmsetup --disable-sound --disable-crash-dialog</synopsis>
 	      <para>
 		The pathname to the configurator binary.  If the greeter
 		<filename>ConfigAvailable</filename> option is set to true then run this binary
@@ -1118,7 +1154,7 @@
 	  <varlistentry>
 	    <term>DisplayInitDir</term>
 	    <listitem>
-	      <synopsis>DisplayInitDir=etc/gdm/Init</synopsis>
+	      <synopsis>DisplayInitDir=&lt;etc&gt;/gdm/Init</synopsis>
 	      <para>
 		Directory containing the display init scripts. See the
 		``The Script Directories'' section for more info.
@@ -1181,7 +1217,7 @@
 	  <varlistentry>
 	    <term>Greeter</term>
 	    <listitem>
-	      <synopsis>Greeter=bin/gdmlogin</synopsis>
+	      <synopsis>Greeter=&lt;bin&gt;/gdmlogin</synopsis>
 	      <para>
 		Full path and name of the greeter executable followed by optional arguments.
 		This is the greeter used for all servers except for the XDMCP remote servers.
@@ -1251,7 +1287,7 @@
 	  <varlistentry>
 	    <term>LogDir</term>
 	    <listitem>
-	      <synopsis>LogDir=var/gdm</synopsis>
+	      <synopsis>LogDir=&lt;var&gt;/log/gdm</synopsis>
 	      <para>
 		Directory containing the log files for the individual
 		displays.  By default this is the same as the
@@ -1263,7 +1299,7 @@
 	  <varlistentry>
 	    <term>PidFile</term>
 	    <listitem>
-	      <synopsis>PidFile=var/run/gdm.pid</synopsis>
+	      <synopsis>PidFile=&lt;var&gt;/run/gdm.pid</synopsis>
 	      <para>
 		Name of the file containing the <filename>gdm</filename>
 		process id.
@@ -1274,7 +1310,7 @@
 	  <varlistentry>
 	    <term>PostLoginScriptDir</term>
 	    <listitem>
-	      <synopsis>PostLoginScriptDir=etc/gdm/PostLogin</synopsis>
+	      <synopsis>PostLoginScriptDir=&lt;etc&gt;/gdm/PostLogin</synopsis>
 	      <para>
 		Directory containing the scripts run right after the
 		user logs in, but before any session setup is done.
@@ -1286,7 +1322,7 @@
 	  <varlistentry>
 	    <term>PostSessionScriptDir</term>
 	    <listitem>
-	      <synopsis>PostSessionScriptDir=etc/gdm/PostSession</synopsis>
+	      <synopsis>PostSessionScriptDir=&lt;etc&gt;/gdm/PostSession</synopsis>
 	      <para>
 		Directory containing the scripts run after the user logs
 		out.  See the ``The Script Directories'' section for more
@@ -1298,7 +1334,7 @@
 	  <varlistentry>
 	    <term>PreSessionScriptDir</term>
 	    <listitem>
-	      <synopsis>PreSessionScriptDir=etc/gdm/PreSession</synopsis>
+	      <synopsis>PreSessionScriptDir=&lt;etc&gt;/gdm/PreSession</synopsis>
 	      <para>
 		Directory containing the scripts run before the user
 		logs in.  See the ``The Script Directories'' section for
@@ -1326,7 +1362,7 @@
 	  <varlistentry>
 	    <term>RemoteGreeter</term>
 	    <listitem>
-	      <synopsis>RemoteGreeter=bin/gdmlogin</synopsis>
+	      <synopsis>RemoteGreeter=&lt;bin&gt;/gdmlogin</synopsis>
 	      <para>
 		Full path and name of the greeter executable followed by optional arguments.  This
 		is used for all remote XDMCP sessions.  It is useful to have the less 
@@ -1352,7 +1388,7 @@
 	  <varlistentry>
 	    <term>ServAuthDir</term>
 	    <listitem>
-	      <synopsis>ServAuthDir=/var/gdm</synopsis>
+	      <synopsis>ServAuthDir=&lt;var&gt;/gdm</synopsis>
 	      <para>
 		Directory containing the X authentication files for the
 		individual displays.  Should be owned by
@@ -1379,7 +1415,7 @@
 	  <varlistentry>
 	    <term>SessionDesktopDir</term>
 	    <listitem>
-	      <synopsis>SessionDesktopDir=etc/sessions:etc/dm/Sessions:/usr/share/X11/sessions</synopsis>
+	      <synopsis>SessionDesktopDir=/etc/X11/sessions/:&lt;etc&gt;/dm/Sessions/:/usr/share/xsessions/</synopsis>
 	      <para>
 		Directory containing the <filename>.desktop</filename>
 		files which are the available sessions on the system.
@@ -1392,7 +1428,7 @@
 	  <varlistentry>
 	    <term>StandardXServer</term>
 	    <listitem>
-	      <synopsis>StandardXServer=/usr/bin/X11/X</synopsis>
+	      <synopsis>StandardXServer=/usr/X11R6/bin/X</synopsis>
 	      <para>
 		Full path and arguments to the standard X server command.
 		This is used when gdm cannot find any other definition,
@@ -1545,7 +1581,7 @@
 	  <varlistentry>
 	    <term>XKeepsCrashing</term>
 	    <listitem>
-	      <synopsis>XKeepsCrashing=etc/gdm/XKeepsCrashing</synopsis>
+	      <synopsis>XKeepsCrashing=&lt;etc&gt;/gdm/XKeepsCrashing</synopsis>
 	      <para>
 		A script to run in case X keeps crashing.  This is for running
 		An X configuration or whatever else to make the X configuration
@@ -1911,7 +1947,7 @@
 	  <varlistentry>
 	    <term>Willing</term>
 	    <listitem>
-	      <synopsis>Willing=etc/gdm/Xwilling</synopsis>
+	      <synopsis>Willing=&lt;etc&gt;/gdm/Xwilling</synopsis>
 	      <para>
 		When the server sends a WILLING packet back after a QUERY
 		it sends a string that gives the current status of this
@@ -2100,7 +2136,7 @@
 	  <varlistentry>
 	    <term>DefaultFace</term>
 	    <listitem>
-	      <synopsis>DefaultFace=share/pixmaps/nophoto.png</synopsis>
+	      <synopsis>DefaultFace=&lt;share&gt;/pixmaps/nophoto.png</synopsis>
 	      <para>
 		Default icon file for users without a personal picture
 		in <filename>~/gnome/photo</filename>. The image must be
@@ -2125,7 +2161,7 @@
 	  <varlistentry>
 	    <term>GlobalFaceDir</term>
 	    <listitem>
-	      <synopsis>GlobalFaceDir=share/faces/</synopsis>
+	      <synopsis>GlobalFaceDir=&lt;share&gt;/faces/</synopsis>
 	      <para>
 		Systemwide directory for face files. The sysadmin can
 		place icons for users here without touching their
@@ -2165,7 +2201,7 @@
 	  <varlistentry>
 	    <term>GraphicalThemeDir</term>
 	    <listitem>
-	      <synopsis>GraphicalThemeDir=share/gdm/themes/</synopsis>
+	      <synopsis>GraphicalThemeDir=&lt;share&gt;/gdm/themes/</synopsis>
 	      <para>
 		The directory where themes for the Graphical Greeter are
 		installed.
@@ -2176,7 +2212,7 @@
 	  <varlistentry>
 	    <term>LocaleFile</term>
 	    <listitem>
-	      <synopsis>LocaleFile=etc/gdm/locale.alias</synopsis>
+	      <synopsis>LocaleFile=&lt;etc&gt;/gdm/locale.alias</synopsis>
 	      <para>
 		File in format similar to the GNU locale format with entries
 		for all supported languages on the system.  The format is
@@ -2199,7 +2235,7 @@
 	  <varlistentry>
 	    <term>Logo</term>
 	    <listitem>
-	      <synopsis>Logo=share/pixmaps/gnome-logo-large.png</synopsis>
+	      <synopsis>Logo=&lt;share&gt;/pixmaps/gnome-logo-large.png</synopsis>
 	      <para>
 		Image file to display in the logo box. The file must be
 		in an gdk-pixbuf supported format and it must be readable by
@@ -2497,7 +2533,7 @@
 	  <varlistentry>
 	    <term>DefaultHostImage</term>
 	    <listitem>
-	      <synopsis>DefaultHostImage=share/pixmaps/nohost.png</synopsis>
+	      <synopsis>DefaultHostImage=&lt;share&gt;/pixmaps/nohost.png</synopsis>
 	      <para>
 		File name for the default host icon. This image will be
 		displayed if no icon is specified for a given host. The
@@ -2510,7 +2546,7 @@
 	  <varlistentry>
 	    <term>HostImageDir</term>
 	    <listitem>
-	      <synopsis>HostImageDir=share/hosts</synopsis>
+	      <synopsis>HostImageDir=&lt;share&gt;/hosts</synopsis>
 	      <para>
 		Repository for host icon files. The sysadmin can place
 		icons for remote hosts here and they will appear in
@@ -2733,6 +2769,7 @@
 	file.  It has one section called <filename>[Desktop]</filename> and can have
 	two keys, <filename>Session</filename>, which is the basename of the session
 	<filename>.desktop</filename> file that the user wishes to normally use
+	(but without the <filename>.desktop</filename> extension)
 	and a <filename>Language</filename> key that is the language that the user
 	wishes to use.  If either of these keys is missing, the system default is
 	used.  The file would normally look as follows:
@@ -2740,7 +2777,7 @@
 
       <screen>
 	[Desktop]
-	Session=gnome.desktop
+	Session=gnome
 	Language=cs_CZ.UTF-8
 </screen>
 
@@ -2752,7 +2789,7 @@
 
       <para>
 	Face images can also be placed in the global face directory, which is
-	normally <filename>share/faces/</filename>
+	normally <filename>&lt;share&gt;/faces/</filename>
         (though this can be configured with the <filename>GlobalFaceDir</filename>
         configuration option) and the filename should be the name of
         the user, optionally with a <filename>.png</filename> appended.
@@ -2775,13 +2812,13 @@
 
       <para>
 	To stop GDM, you can either send the TERM signal to the main daemon or run
-	the <filename>gdm-stop</filename> command which is in the <filename>sbin/</filename>
+	the <filename>gdm-stop</filename> command which is in the <filename>&lt;sbin&gt;/</filename>
 	directory.  To restart GDM, you can either send the HUP signal to the main daemon or run
-	the <filename>gdm-restart</filename> command which is also in the <filename>sbin/</filename>
+	the <filename>gdm-restart</filename> command which is also in the <filename>&lt;sbin&gt;/</filename>
 	directory.
 	To restart GDM but only after all the users have logged out, you can either send
 	the USR1 signal to the main daemon or run
-	the <filename>gdm-safe-restart</filename> command which is in the <filename>sbin/</filename>
+	the <filename>gdm-safe-restart</filename> command which is in the <filename>&lt;sbin&gt;/</filename>
 	directory as well.
       </para>
 
@@ -2822,7 +2859,7 @@
       <para>
 	GDM also provides a FIFO called <filename>.gdmfifo</filename> in the
 	<filename>ServAuthDir</filename> directory
-	(usually <filename>var/gdm/.gdmfifo</filename>).  You must be root to use this protocol,
+	(usually <filename>&lt;var&gt;/gdm/.gdmfifo</filename>).  You must be root to use this protocol,
 	and it is mostly used for internal GDM chatter.  It is a very simple protocol where
 	you just echo a command on a single line to this file.  It can be used to tell
 	GDM things such as restart, suspend the machine, or restart all X servers next
@@ -2935,7 +2972,7 @@
 	There are also the commands <filename>gdm-stop</filename>, <filename>gdm-restart</filename>
 	and <filename>gdm-safe-restart</filename> which stop, restart, or restart the
 	GDM daemon after all users have logged out, respectively.  These are
-	installed in the <filename>sbin/</filename> directory.
+	installed in the <filename>&lt;sbin&gt;/</filename> directory.
       </para>
 
       <para>
@@ -2994,8 +3031,8 @@
       <para>
         GDM Themes can be created by creating an XML file that follows the
         specification in gui/greeter/greeter.dtd.  Theme files are stored
-        in the directory <filename>share/gdm/themes/&lt;theme_name&gt;</filename>.
-        Usually this would be under /usr/share.  The theme directory should contain a
+        in the directory <filename>&lt;share&gt;/gdm/themes/&lt;theme_name&gt;</filename>.
+        Usually this would be under <filename>/usr/share</filename>.  The theme directory should contain a
         file called <filename>GdmGreeterTheme.desktop</filename> which has similar format to other
         .desktop files and looks like:
       </para>
@@ -3538,7 +3575,8 @@
 
         <para>
 	  Note that relative pathnames are assumed to be in the same 
-	  directory as the theme .xml file in share/gdm/themes/&lt;theme_name&gt;.
+	  directory as the theme <filename>.xml</filename> file in
+	  <filename>&lt;share&gt;/gdm/themes/&lt;theme_name&gt;</filename>.
         </para>
       </sect3>
 
@@ -3640,7 +3678,8 @@
         </para>
 
         <para>
-	  For example suppose we are on display :0, ServAuthDir is /var/gdm
+	  For example suppose we are on display :0, <filename>ServAuthDir</filename>
+	  is <filename>/var/gdm</filename>
 	  and we have the following in the theme:
         </para>
 

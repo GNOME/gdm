@@ -1,3 +1,24 @@
+Fri Sep 19 13:41:37 2003  George Lebl <jirka@5z.com>
+
+	* config/Makefile.am, config/default.desktop.in:  Rename
+	  'Default.desktop' to 'default.desktop' for KDM compatibility
+	  since default session is now marked by 'default'
+
+	* config/gdm.conf.in: update the path after discussion with
+	  the KDM maintainer
+
+	* daemon/gdm.h: update the session path.
+
+	* daemon/slave.c, gui/gdmlogin.c, gui/greeter/greeter_session.c:
+	  minor cleanup and make sure that 'Default' gets rewritten
+	  to 'default' as it should be.  'default' will actually work
+	  with the previous version of gdm so it's quite OK.
+
+	* docs/C/gdm.xml:  Update the session docs to reflect reality,
+	  plus some other minor cleanup
+
+	* po/POTFILES.in: s/Default/default/
+
 Thu Sep 18 17:41:25 2003  George Lebl <jirka@5z.com>
 
 	* gui/modules/keymouselistener.c: Fix the parser to use strtok
