@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.98\n"
-"POT-Creation-Date: 2001-05-14 20:52-0700\n"
+"POT-Creation-Date: 2001-05-15 14:16-0700\n"
 "PO-Revision-Date: 2001-02-02 23:19-0800\n"
 "Last-Translator: George Lebl <jirka@5z.com>\n"
 "Language-Team: czech <cs@li.org>\n"
@@ -13,157 +13,164 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: daemon/gdm.c:131
+#: daemon/gdm.c:133
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Aborting."
 msgstr "gdm_config_parse: ®ádný konfiguraèní soubor: %s. Konèím."
 
-#: daemon/gdm.c:201
+#: daemon/gdm.c:205
 msgid ""
 "gdm_config_parse: Root cannot be autologged in, turing off automatic login"
 msgstr ""
+"gdm_config_parse: Root se nemù¾e automaticky pøihla¹ovat, vypínám "
+"automatické pøihla¹ování"
 
-#: daemon/gdm.c:214
+#: daemon/gdm.c:218
 msgid "gdm_config_parse: Root cannot be autologged in, turing off timed login"
 msgstr ""
+"gdm_config_parse: Root se nemù¾e automaticky pøihla¹ovat, vypínám èasované "
+"pøihla¹ování"
 
-#: daemon/gdm.c:220
+#: daemon/gdm.c:224
 msgid "gdm_config_parse: TimedLoginDelay less then 10, so I will just use 10."
-msgstr ""
+msgstr "gdm_config_parse: TimedLoginDelay ménì ne¾ 10, proto pou¾iji 10"
 
-#: daemon/gdm.c:226
+#: daemon/gdm.c:230
 msgid "gdm_config_parse: No greeter specified."
 msgstr "gdm_config_parse: ®ádný vítaè specifikován."
 
-#: daemon/gdm.c:229
+#: daemon/gdm.c:233
 msgid "gdm_config_parse: No authdir specified."
 msgstr "gdm_config_parse: ®ádné authdir specifikováno."
 
-#: daemon/gdm.c:235
+#: daemon/gdm.c:239
 msgid "gdm_config_parse: No sessions directory specified."
 msgstr "gdm_config_parse: ®ádný adresáø sezení nespecifikován."
 
-#: daemon/gdm.c:247
+#: daemon/gdm.c:251
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
 msgstr ""
+"gdm_config_parse: Nesprávná linka serveru v konfiguraèním soubotu.  Ignoruji!"
 
-#: daemon/gdm.c:253
+#: daemon/gdm.c:257
 msgid ""
 "gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"
 msgstr ""
+"gdm_config_parse: Xdmcp nepovoleno and ¾ádné místní servery nebyly "
+"definovány. Konèím!"
 
-#: daemon/gdm.c:260
+#: daemon/gdm.c:264
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm user (%s). Aborting!"
-msgstr ""
+msgstr "gdm_config_parse: Nemohu najít u¾ivatele gdm (%s). Konèím!"
 
-#: daemon/gdm.c:265
+#: daemon/gdm.c:269
 msgid "gdm_config_parse: The gdm user should not be root. Aborting!"
 msgstr ""
 
-#: daemon/gdm.c:270
+#: daemon/gdm.c:274
 #, c-format
 msgid "gdm_config_parse: Can't find the gdm group (%s). Aborting!"
-msgstr ""
+msgstr "gdm_config_parse: Nemohu najít skupinu gdm (%s). Konèím!"
 
-#: daemon/gdm.c:275
+#: daemon/gdm.c:279
 msgid "gdm_config_parse: The gdm group should not be root. Aborting!"
 msgstr ""
 
-#: daemon/gdm.c:311
+#: daemon/gdm.c:315
 #, c-format
 msgid "gdm_config_parse: Authdir %s does not exist. Aborting."
 msgstr ""
 
-#: daemon/gdm.c:314
+#: daemon/gdm.c:318
 #, c-format
 msgid "gdm_config_parse: Authdir %s is not a directory. Aborting."
-msgstr ""
-
-#: daemon/gdm.c:317
-#, c-format
-msgid ""
-"gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr ""
 
 #: daemon/gdm.c:321
 #, c-format
 msgid ""
+"gdm_config_parse: Authdir %s is not owned by user %s, group %s. Aborting."
+msgstr ""
+
+#: daemon/gdm.c:325
+#, c-format
+msgid ""
 "gdm_config_parse: Authdir %s has wrong permissions. Should be 750. Aborting."
 msgstr ""
 
-#: daemon/gdm.c:356
+#: daemon/gdm.c:360
 msgid "gdm_daemonify: fork() failed!"
 msgstr "gdm_daemonify: fork() selhal!"
 
-#: daemon/gdm.c:359
+#: daemon/gdm.c:363
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid() selhal: %s!"
 
-#: daemon/gdm.c:456
+#: daemon/gdm.c:460
 #, c-format
 msgid ""
 "gdm_child_action: Reboot or Halt request when there is no system menu from "
 "display %s"
 msgstr ""
 
-#: daemon/gdm.c:463
+#: daemon/gdm.c:467
 #, c-format
 msgid "gdm_child_action: Reboot or Halt request from a non-local display %s"
 msgstr ""
 
 #. Bury this display for good
-#: daemon/gdm.c:471
+#: daemon/gdm.c:475
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr ""
 
 #. Reboot machine
-#: daemon/gdm.c:477
+#: daemon/gdm.c:481
 msgid "gdm_child_action: Master rebooting..."
 msgstr ""
 
-#: daemon/gdm.c:484
+#: daemon/gdm.c:488
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr ""
 
 #. Halt machine
-#: daemon/gdm.c:488
+#: daemon/gdm.c:492
 msgid "gdm_child_action: Master halting..."
 msgstr ""
 
-#: daemon/gdm.c:495
+#: daemon/gdm.c:499
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr ""
 
-#: daemon/gdm.c:546
+#: daemon/gdm.c:550
 msgid "Failed to restart self"
 msgstr "Nemohu se restartovat"
 
-#: daemon/gdm.c:596
+#: daemon/gdm.c:600
 msgid "Only root wants to run gdm\n"
 msgstr "Jen root chce spustit gdm\n"
 
-#: daemon/gdm.c:619
+#: daemon/gdm.c:623
 msgid "gdm already running. Aborting!"
 msgstr "gdm ji¾ bì¾í. Konèím!"
 
-#: daemon/gdm.c:645
+#: daemon/gdm.c:649
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr ""
 
-#: daemon/gdm.c:648
+#: daemon/gdm.c:652
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr ""
 
-#: daemon/gdm.c:651
+#: daemon/gdm.c:655
 msgid "gdm_main: Error setting up HUP signal handler"
 msgstr ""
 
-#: daemon/gdm.c:659
+#: daemon/gdm.c:663
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr ""
 
@@ -282,39 +289,42 @@ msgstr ""
 msgid "gdm_server_spawn: Can't fork Xserver process!"
 msgstr ""
 
-#: daemon/slave.c:133
+#: daemon/slave.c:136
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
 msgstr ""
 
-#: daemon/slave.c:142
+#: daemon/slave.c:145
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr ""
 
-#: daemon/slave.c:377
+#: daemon/slave.c:380
 msgid "focus_first_x_window: cannot fork"
 msgstr ""
 
-#: daemon/slave.c:387
+#: daemon/slave.c:390
 #, c-format
 msgid "focus_first_x_window: cannot open display %s"
 msgstr ""
 
-#: daemon/slave.c:469
+#: daemon/slave.c:472
 msgid "Cannot start session"
 msgstr "Nelze spustit sezení"
 
-#: daemon/slave.c:478
+#: daemon/slave.c:481
 msgid "OK"
 msgstr "OK"
 
-#: daemon/slave.c:559
+#: daemon/slave.c:562
 msgid ""
 "Could not execute the configuration\n"
 "program.  Make sure it's path is set\n"
 "correctly in the configuration file."
 msgstr ""
+"Nelze spustit konfiguraèní aplikaci.\n"
+"Zkontrolujte ¾e je správnì nastavena\n"
+"v konfiguraèním souboru."
 
-#: daemon/slave.c:601
+#: daemon/slave.c:604
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -322,87 +332,89 @@ msgstr ""
 "Pro start nastavení vlo¾te\n"
 "heslo u¾ivatele root."
 
-#: daemon/slave.c:615 daemon/slave.c:675
+#: daemon/slave.c:618 daemon/slave.c:678
 msgid "gdm_slave_wait_for_login: No login/Bad login"
 msgstr ""
 
-#: daemon/slave.c:706
+#: daemon/slave.c:822
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr ""
 
-#: daemon/slave.c:734
+#: daemon/slave.c:850
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr ""
 
-#: daemon/slave.c:737
+#: daemon/slave.c:853
 #, c-format
 msgid "gdm_slave_greeter: initgroups() failed for %s"
 msgstr ""
 
-#: daemon/slave.c:740
+#: daemon/slave.c:856
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr ""
 
-#: daemon/slave.c:769
+#: daemon/slave.c:901
 #, c-format
 msgid "gdm_slave_greeter: Error starting greeter on display %s"
 msgstr ""
 
-#: daemon/slave.c:772
+#: daemon/slave.c:904
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr ""
 
-#: daemon/slave.c:1021
+#: daemon/slave.c:1155
 #, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 
-#: daemon/slave.c:1125
+#: daemon/slave.c:1259
 msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 msgstr ""
 
-#: daemon/slave.c:1154
+#: daemon/slave.c:1288
 msgid ""
 "gdm_slave_session_start: Execution of PreSession script returned > 0. "
 "Aborting."
 msgstr ""
 
-#: daemon/slave.c:1187
+#: daemon/slave.c:1321
 msgid "gdm_slave_session_start: Error forking user session"
 msgstr ""
 
-#: daemon/slave.c:1231
+#: daemon/slave.c:1365
 #, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr ""
 
-#: daemon/slave.c:1235
+#: daemon/slave.c:1369
 #, c-format
 msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 msgstr ""
 
-#: daemon/slave.c:1239
+#: daemon/slave.c:1373
 #, c-format
 msgid "gdm_slave_session_start: Could not become %s. Aborting."
 msgstr ""
 
 #. yaikes
-#: daemon/slave.c:1298
+#: daemon/slave.c:1432
 msgid ""
 "gdm_slave_session_start: gnome-session not found for a failsafe gnome "
 "session, trying xterm"
 msgstr ""
 
-#: daemon/slave.c:1302
+#: daemon/slave.c:1436
 msgid ""
 "Could not find the GNOME installation,\n"
 "will try running the \"Failsafe xterm\"\n"
 "session."
 msgstr ""
+"Nemohu najít instalaci GNOME,\n"
+"zkusím sezení \"Záchranný xterm\"."
 
-#: daemon/slave.c:1307
+#: daemon/slave.c:1441
 msgid ""
 "This is the Failsafe Gnome session.\n"
 "You will be logged into the 'Default'\n"
@@ -410,12 +422,17 @@ msgid ""
 "run.  This is only to fix problems in\n"
 "your installation."
 msgstr ""
+"Toto je sezení Záchranný Gnome.\n"
+"Budete pøihlá¹en(a) do Implicitního\n"
+"Gnomového sezení, a poèáteèní skripty\n"
+"nebudou pou¾ity.  Toto je jen ke\n"
+"spravení problémù s va¹í instalací."
 
-#: daemon/slave.c:1326
+#: daemon/slave.c:1460
 msgid "Cannot find \"xterm\" to start a failsafe session."
-msgstr ""
+msgstr "Nemohu najít \"xterm\" ke spu¹tìní záchranného sezení."
 
-#: daemon/slave.c:1332
+#: daemon/slave.c:1466
 msgid ""
 "This is the Failsafe xterm session.\n"
 "You will be logged into a terminal\n"
@@ -425,27 +442,29 @@ msgid ""
 "'exit' and an enter into the window."
 msgstr ""
 
-#: daemon/slave.c:1349
+#: daemon/slave.c:1483
 #, c-format
 msgid "Running %s for %s on %s"
 msgstr "Spou¹tím %s pro %s na %s"
 
-#: daemon/slave.c:1362
+#: daemon/slave.c:1496
 msgid "gdm_slave_session_start: User not allowed to log in"
 msgstr ""
 
-#: daemon/slave.c:1363
+#: daemon/slave.c:1497
 msgid ""
 "The system administrator has\n"
 "disabled your account."
 msgstr ""
+"Administrátor systému\n"
+"vypnul vá¹ ùèet."
 
-#: daemon/slave.c:1366
+#: daemon/slave.c:1500
 #, c-format
 msgid "gdm_slave_session_start: Could not find/run session `%s'"
 msgstr ""
 
-#: daemon/slave.c:1370
+#: daemon/slave.c:1504
 msgid ""
 "Cannot start the session, most likely the\n"
 "session does not exist.  Please select from\n"
@@ -453,35 +472,35 @@ msgid ""
 "dialog window."
 msgstr ""
 
-#: daemon/slave.c:1378
+#: daemon/slave.c:1512
 #, c-format
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr ""
 
-#: daemon/slave.c:1380
+#: daemon/slave.c:1514
 msgid ""
 "Cannot start your shell.  It could be that the\n"
 "system administrator has disabled your login.\n"
 "It could also indicate an error with your account.\n"
 msgstr ""
 
-#: daemon/slave.c:1545
+#: daemon/slave.c:1679
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 
-#: daemon/slave.c:1656
+#: daemon/slave.c:1790
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr ""
 
-#: daemon/slave.c:1660
+#: daemon/slave.c:1794
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr ""
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:67 daemon/verify-pam.c:159 daemon/verify-shadow.c:66
-#: gui/gdmlogin.c:2595
+#: gui/gdmlogin.c:2628
 msgid "Login:"
 msgstr "U¾ivatel:"
 
@@ -754,7 +773,7 @@ msgstr ""
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr ""
 
-#: gui/gdmchooser.c:618 gui/gdmlogin.c:3163
+#: gui/gdmchooser.c:618 gui/gdmlogin.c:3222
 msgid "Could not set signal mask!"
 msgstr "Nelze nastavit masku signálù!"
 
@@ -764,7 +783,7 @@ msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:56 gui/gdmlogin.c:1581 gui/gdmlogin.c:1603
+#: gui/gdmlogin.c:56 gui/gdmlogin.c:1592 gui/gdmlogin.c:1614
 msgid "Default"
 msgstr "Implicitní"
 
@@ -788,7 +807,7 @@ msgstr "XSession"
 #. * really, it's a fake, it runs the Gnome script
 #. For translators:  This is the login that lets users choose the
 #. * specific gnome session they want to use
-#: gui/gdmlogin.c:61 gui/gdmlogin.c:1258
+#: gui/gdmlogin.c:61 gui/gdmlogin.c:1269
 msgid "Gnome Chooser"
 msgstr "Gnome výbìr"
 
@@ -796,62 +815,62 @@ msgstr "Gnome výbìr"
 msgid "Last"
 msgstr "Pøedchozí"
 
-#: gui/gdmlogin.c:169
+#: gui/gdmlogin.c:175
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "U¾ivatel %s bude pøihlá¹en za %d vteøin"
 
-#: gui/gdmlogin.c:419
+#: gui/gdmlogin.c:425
 msgid ""
 "Doubleclick here to un-iconify the login window, so that you may log in."
 msgstr ""
 "Dvojite kliknìte zde pro deikonifikaci okna pøihlá¹ení, abyste jste se "
 "mohli(a) pøihlásit."
 
-#: gui/gdmlogin.c:498 gui/gdmlogin.c:504 gui/gdmlogin.c:511
+#: gui/gdmlogin.c:504 gui/gdmlogin.c:510 gui/gdmlogin.c:517
 #, c-format
 msgid "Welcome to %s"
 msgstr "Vítejte na %s"
 
-#: gui/gdmlogin.c:509
+#: gui/gdmlogin.c:515
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr ""
 
 #. We can't fork, that means we're pretty much up shit creek
 #. * without a paddle.
-#: gui/gdmlogin.c:636
+#: gui/gdmlogin.c:642
 msgid ""
 "Could not fork a new procss!\n"
 "\n"
 "You likely won't be able to log in either."
 msgstr ""
 
-#: gui/gdmlogin.c:678
+#: gui/gdmlogin.c:684
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Jste si jist(a) ¾e chcete restartovat vá¹ poèítaè"
 
-#: gui/gdmlogin.c:692
+#: gui/gdmlogin.c:698
 msgid "Are you sure you want to halt the machine?"
 msgstr "Jste si jist(a) ¾e chcete zastavit vá¹ poèítaè"
 
-#: gui/gdmlogin.c:709
+#: gui/gdmlogin.c:715
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr ""
 
-#: gui/gdmlogin.c:751
+#: gui/gdmlogin.c:759
 msgid "TimedLoginDelay was less then 10.  I'll just use 10."
 msgstr ""
 
-#: gui/gdmlogin.c:814 gui/gdmlogin.c:1303
+#: gui/gdmlogin.c:825 gui/gdmlogin.c:1314
 msgid "Failsafe Gnome"
 msgstr "Záchranný gnome"
 
-#: gui/gdmlogin.c:816 gui/gdmlogin.c:1325
+#: gui/gdmlogin.c:827 gui/gdmlogin.c:1336
 msgid "Failsafe xterm"
 msgstr "Záchranný xterm"
 
-#: gui/gdmlogin.c:862
+#: gui/gdmlogin.c:873
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -860,7 +879,7 @@ msgstr ""
 "Zvolili jste sezení typu %s, které není nainstalováno na této ma¹inì.\n"
 "Chcete udìlat %s implicitní nastavení pro pøí¹tí sezení?"
 
-#: gui/gdmlogin.c:879 gui/gdmlogin.c:945
+#: gui/gdmlogin.c:890 gui/gdmlogin.c:956
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -869,169 +888,171 @@ msgstr ""
 "Zvolili jste %s pro toto sezení, ale va¹e standardní nastavení je %s.\n"
 "Chcete udìlat %s va¹e standardní nastavení pro pøí¹tí sezení?"
 
-#: gui/gdmlogin.c:1124
+#: gui/gdmlogin.c:1135
 #, c-format
 msgid "%s session selected"
 msgstr "Vybráno sezení %s"
 
-#: gui/gdmlogin.c:1154
+#: gui/gdmlogin.c:1165
 msgid "Log in using the session that you have used last time you logged in"
-msgstr ""
+msgstr "Pøihlásit se v sezení s kterým jste se pøihlásili(a) poslednì"
 
-#: gui/gdmlogin.c:1166
+#: gui/gdmlogin.c:1177
 msgid "gdm_login_session_init: Session script directory not found!"
-msgstr ""
-
-#: gui/gdmlogin.c:1250
-msgid ""
-"This session will log you directly into GNOME, into your current session."
 msgstr ""
 
 #: gui/gdmlogin.c:1261
 msgid ""
+"This session will log you directly into GNOME, into your current session."
+msgstr "Toto sezení vás pøihlásí do GNOME, do va¹eho souèasného GNOME sezení."
+
+#: gui/gdmlogin.c:1272
+msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
 msgstr ""
+"Toto sezení vás pøihlásí do GNOME, a nechá vás vybrat GNOME sezení které "
+"chcete pou¾ít."
 
-#: gui/gdmlogin.c:1294
+#: gui/gdmlogin.c:1305
 msgid "Yaikes, nothing found in the session directory."
 msgstr ""
 
-#: gui/gdmlogin.c:1305
+#: gui/gdmlogin.c:1316
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
 
-#: gui/gdmlogin.c:1327
+#: gui/gdmlogin.c:1338
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
 msgstr ""
 
-#: gui/gdmlogin.c:1346
+#: gui/gdmlogin.c:1357
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 
-#: gui/gdmlogin.c:1363
+#: gui/gdmlogin.c:1374
 #, c-format
 msgid "%s language selected"
 msgstr "Vybrán jazyk %s"
 
-#: gui/gdmlogin.c:1401
+#: gui/gdmlogin.c:1412
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "Pøihlásit se s jayzkem s kterým jste se pøihlásili(a) poslednì"
 
-#: gui/gdmlogin.c:1422
+#: gui/gdmlogin.c:1433
 msgid "Other"
 msgstr "Ostatní"
 
-#: gui/gdmlogin.c:1541 gui/gdmlogin.c:1550
+#: gui/gdmlogin.c:1552 gui/gdmlogin.c:1561
 msgid "Select GNOME session"
 msgstr "Vyberte sezení GNOME"
 
-#: gui/gdmlogin.c:1617
+#: gui/gdmlogin.c:1628
 msgid "Create new session"
 msgstr "Vytvoøit nové sezení"
 
-#: gui/gdmlogin.c:1626
+#: gui/gdmlogin.c:1637
 msgid "Name: "
 msgstr "Jméno: "
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:1902
+#: gui/gdmlogin.c:1913
 msgid "Please insert 25 cents to log in."
 msgstr "Za pøihlá¹ení vhodit 5 korun."
 
-#: gui/gdmlogin.c:2203
+#: gui/gdmlogin.c:2222
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Správce pøihlá¹ení"
 
-#: gui/gdmlogin.c:2215
+#: gui/gdmlogin.c:2234
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr ""
 
-#: gui/gdmlogin.c:2230
+#: gui/gdmlogin.c:2249
 msgid "Iconify the login window"
 msgstr "Ikonifikovat okno pøihlá¹ení"
 
-#: gui/gdmlogin.c:2288
+#: gui/gdmlogin.c:2307
 msgid "%a %b %d, %X"
 msgstr "%a %d. %b, %X"
 
-#: gui/gdmlogin.c:2327
+#: gui/gdmlogin.c:2346
 msgid "GDM Login"
 msgstr "GDM Pøihlá¹ení"
 
-#: gui/gdmlogin.c:2368
+#: gui/gdmlogin.c:2387
 msgid "Session"
 msgstr "Sezení"
 
-#: gui/gdmlogin.c:2379
+#: gui/gdmlogin.c:2398
 msgid "Language"
 msgstr "Jazyk"
 
-#: gui/gdmlogin.c:2390
+#: gui/gdmlogin.c:2409
 msgid "Configure..."
 msgstr "Nastavení..."
 
-#: gui/gdmlogin.c:2397
+#: gui/gdmlogin.c:2416
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "Nastavit GDM (tento správce pøihlá¹ení). Budu potøebovat heslo u¾ivatele "
 "root."
 
-#: gui/gdmlogin.c:2402
+#: gui/gdmlogin.c:2421
 msgid "Reboot..."
 msgstr "Restartovat..."
 
-#: gui/gdmlogin.c:2409
+#: gui/gdmlogin.c:2428
 msgid "Reboot your computer"
 msgstr "Restartovat vá¹ poèítaè"
 
-#: gui/gdmlogin.c:2412
+#: gui/gdmlogin.c:2431
 msgid "Halt..."
 msgstr "Zastavit..."
 
-#: gui/gdmlogin.c:2419
+#: gui/gdmlogin.c:2438
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Zastavit vá¹ poèítaè, abyste jej mohli vypnout."
 
-#: gui/gdmconfig.c:53 gui/gdmlogin.c:2423
+#: gui/gdmconfig.c:53 gui/gdmlogin.c:2442
 msgid "System"
 msgstr "Systém"
 
-#: gui/gdmlogin.c:2631
+#: gui/gdmlogin.c:2664
 msgid "Please enter your login"
 msgstr "Zadejte své pøihla¹ovací jméno"
 
-#: gui/gdmlogin.c:2820
+#: gui/gdmlogin.c:2873
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 
-#: gui/gdmlogin.c:3140
+#: gui/gdmlogin.c:3199
 msgid "main: Error setting up HUP signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:3143
+#: gui/gdmlogin.c:3202
 msgid "main: Error setting up INT signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:3146
+#: gui/gdmlogin.c:3205
 msgid "main: Error setting up TERM signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:3154
+#: gui/gdmlogin.c:3213
 msgid "main: Error setting up CHLD signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:3217
+#: gui/gdmlogin.c:3276
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -1122,6 +1143,8 @@ msgid ""
 "The configuration file: %s\n"
 "does not exist! Using default values."
 msgstr ""
+"Konfiguraèní soubor: %s\n"
+"neexistuje! Pou¾iji implicitní hodnoty."
 
 #: gui/gdmconfig.c:532
 msgid "Error reading session script!"
@@ -1167,6 +1190,9 @@ msgid ""
 "Could not delete session %s\n"
 "   Error: %s"
 msgstr ""
+"\n"
+"Nelze smazat sezení %s\n"
+"   Chyba: %s"
 
 #: gui/gdmconfig.c:925
 #, c-format
@@ -1175,6 +1201,9 @@ msgid ""
 "Could not remove session %s\n"
 "   Error: %s"
 msgstr ""
+"\n"
+"Nelze odstranit sezení %s\n"
+"   Chyba: %s"
 
 #: gui/gdmconfig.c:969
 #, c-format
@@ -1183,6 +1212,9 @@ msgid ""
 "Could not write session %s\n"
 "   Error: %s"
 msgstr ""
+"\n"
+"Nelze zapsat sezení %s\n"
+"   Chyba: %s"
 
 #: gui/gdmconfig.c:980
 #, c-format
@@ -1191,6 +1223,9 @@ msgid ""
 "Could not write contents to session %s\n"
 "   Error: %s"
 msgstr ""
+"\n"
+"Nelze zapsat obsah do sezení %s\n"
+"   Chyba: %s"
 
 #: gui/gdmconfig.c:1006
 #, c-format
@@ -1199,6 +1234,9 @@ msgid ""
 "Could not unlink old default session\n"
 "   Error: %s"
 msgstr ""
+"\n"
+"Nelze odlinkovat implicitní sezení\n"
+"   Chyba: %s"
 
 #: gui/gdmconfig.c:1045
 msgid ""
@@ -1213,6 +1251,9 @@ msgid ""
 "Could not link new default session\n"
 "   Error: %s"
 msgstr ""
+"\n"
+"Nelze nalinkovat nové implicitní sezení\n"
+"   Chyba: %s"
 
 #: gui/gdmconfig.c:1074
 msgid ""
@@ -1225,6 +1266,8 @@ msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
 msgstr ""
+"Toto zru¹í v¹echny zmìny provedeny v tomto sezení.\n"
+"Jste si jist(a) ¾e to chcete provést?"
 
 #: gui/gdmconfig.c:1110
 msgid ""
@@ -1241,7 +1284,7 @@ msgstr ""
 
 #: gui/gdmconfig.c:1477
 msgid "A session name must be unique and not empty"
-msgstr ""
+msgstr "Jméno sezení musí být unikátní a né prázdné"
 
 #: gui/gdmconfig.c:1489
 msgid "Enter a name for the new session"
@@ -1957,9 +2000,8 @@ msgid ""
 msgstr ""
 
 #: gui/gdmconfig-strings.c:144
-#, fuzzy
 msgid "Login sessions"
-msgstr "Chování pøihlá¹ování"
+msgstr "Pøihla¹ovací sezení"
 
 #: gui/gdmconfig-strings.c:145
 msgid "system_setup"
@@ -2116,19 +2158,19 @@ msgstr "Znovu pøeèíst"
 
 #: gui/gdmchooser-strings.c:12
 msgid "How to use this application"
-msgstr ""
+msgstr "Jak pou¾ívat tuto aplikaci"
 
 #: gui/gdmchooser-strings.c:13
 msgid "Help"
-msgstr ""
+msgstr "Nápovìda"
 
 #: gui/gdmchooser-strings.c:14
 msgid "Exit the application"
-msgstr ""
+msgstr "Skonèit tuto aplikaci"
 
 #: gui/gdmchooser-strings.c:15
 msgid "Quit"
-msgstr ""
+msgstr "Konec"
 
 #: gui/gdmchooser-strings.c:17
 msgid "Most recently queried hosts"
@@ -2147,9 +2189,8 @@ msgid ""
 msgstr ""
 
 #: gui/gdmchooser-strings.c:26
-#, fuzzy
 msgid "Information"
-msgstr "_Nastavení"
+msgstr "Informace"
 
 #: gui/gdmconfig.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
