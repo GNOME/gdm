@@ -1,3 +1,29 @@
+Tue Jan 30 14:25:20 2001  George Lebl <jirka@5z.com>
+
+	Patch from ChiDeok Hwang <hwang@mizi.co.kr>:
+
+	* config/locale.alias:  remove one of the entries for french as
+	  that turns out to be blank on non -1 locales
+
+	* daemon/gdm.c, daemon/verify-pam.c, daemon/verify-crypt.c,
+	  daemon/verify-shadow.c: i18n fixes
+
+	* daemon/slave.c: made user to see last message when gdm sleeps.
+
+	* gui/gdmlogin.c: empty other menu is ugly. So remove it when it is
+	  empty.  gdm_slave_greeter_ctl(GDM_MSGERR, ...) was stalled waiting
+	  output from gui.
+
+	Patch from Lee Mallabone <lee@fonicmonkey.net>:
+
+	* configure.in, gui/Makefile.am: make gdmconfig buile and depend on
+	  libglade
+
+	* gui/gdmconfig.(c|h|desktop|glade): A working implementation of
+	  the configuration.  Doesn't yet restart gdm and only works for root
+	  (has no pam stuff), but much better then nothing.  Still missing
+	  the new options for 2.1
+
 2001-01-30  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Added "nn" to ALL_LINGUAS.

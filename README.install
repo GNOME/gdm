@@ -3,6 +3,16 @@ QUICK NOTES ON INSTALLATION/USE:
 If you didn't compile Gnome yourself, make sure you have the appropriate
 -devel packages installed.
 
+============
+To install OVER the RedHat or HelixCode/Ximian package use following
+configure options:
+--prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var
+At least that works for me.  But rpm will still think the old one
+is installed like this.  If someone writes a proper spec file, I'd
+appreciate it.
+-George
+============
+
 WARNING: gdm is a *daemon* -- not a common user application. It
 requires extensive knowledge about your system setup to install and
 configure. gdm isn't - and never will be - Plug and Play
