@@ -8,6 +8,20 @@ Ahh news...
 
 - Read and honour the gtkrc setting in the graphical greeter, fixes #90003
 
+- Add a DIRTY_SERVERS and SOFT_RESTART_SERVERS fifo commands which will
+  make gdm restart all the X servers next time it wants to reinit (such as
+  when a user logs out) or as soon as possible (in case of SOFT_RESTART_SERVERS)
+  (See doc in daemon/gdm.h, look for the GDM_SOP_)
+  Useful for changing X configuration.
+  You can do "(echo;echo DIRTY_SERVERS) > /var/gdm/.gdmfifo" (Given that
+  ServAuthDir is /var/gdm).  This is a possible solution to issues
+  such as in redhat bug 70072
+
+- Clear the initial message even on further tries to log in, fixes redhat bug
+  70991
+
+- When starting Xnest give it the current font path.  Should fix #89308
+
 - make the gdmXnest link relative
 
 - Gnome and Xsession scripts no longer read in the xdm resources, I was

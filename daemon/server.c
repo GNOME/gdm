@@ -54,8 +54,7 @@ static void gdm_server_spawn (GdmDisplay *d);
 static void gdm_server_usr1_handler (gint);
 static void gdm_server_alarm_handler (gint);
 static void gdm_server_child_handler (gint);
-/* Install gnome2 font dir, (for the cursor, etc...) */
-static void gdm_setup_gnome2_font_dir (uid_t uid, Display *disp);
+static char * get_font_path (const char *display);
 
 /* Configuration options */
 extern gchar *GdmDisplayInit;
@@ -496,10 +495,6 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 	    close (server_signal_pipe[0]);
 	    close (server_signal_pipe[1]);
 
-	    if (d->server_uid != 0 &&
-		d->dsp != NULL)
-		    gdm_setup_gnome2_font_dir (d->server_uid, d->dsp);
-
 	    if (SERVER_IS_FLEXI (d))
 		    gdm_slave_send_num (GDM_SOP_FLEXI_OK, 0 /* bogus */);
 #ifdef __linux__
@@ -825,11 +820,26 @@ gdm_server_spawn (GdmDisplay *d)
 	sigprocmask (SIG_SETMASK, &mask, NULL);
 
 	if (d->type == TYPE_FLEXI_XNEST) {
+		char *font_path = NULL;
 		gnome_setenv ("DISPLAY", d->xnest_disp, TRUE);
 		if (d->xnest_auth_file != NULL)
 			gnome_setenv ("XAUTHORITY", d->xnest_auth_file, TRUE);
 		else
 			gnome_unsetenv ("XAUTHORITY");
+
+		/* Add -fp with the current font path, but only if not
+		 * already among the arguments */
+		if (strstr (command, "-fp") == NULL)
+			font_path = get_font_path (d->xnest_disp);
+		if (font_path != NULL) {
+			int argc = ve_vector_len (argv);
+			argv = g_renew (char *, argv, argc + 3);
+			argv[argc++] = "-fp";
+			argv[argc++] = font_path;
+			argv[argc++] = NULL;
+			command = g_strconcat (command, " -fp ",
+					       font_path, NULL);
+		}
 	}
 
 	if (argv[0] == NULL) {
@@ -1126,76 +1136,37 @@ gdm_server_whack_clients (GdmDisplay *disp)
 	XSetErrorHandler (old_xerror_handler);
 }
 
-/* Install gnome2 font dir, (for the cursor, etc...) */
-static void
-gdm_setup_gnome2_font_dir (uid_t uid, Display *disp)
+static char *
+get_font_path (const char *display)
 {
-	struct passwd *pwent;
-	gchar *font_dir_name;
-	gchar *dir_name;
-	gchar **font_path;
-	gchar **new_font_path;
-	gint n_fonts;
-	gint new_n_fonts;
-	gint i;
+	Display *disp;
+	char **font_path;
+	int n_fonts;
+	int i;
+	GString *gs;
 
-	pwent = getpwuid (uid);
-	if (pwent == NULL)
-		return;
-	if (pwent->pw_dir == NULL)
-		return;
+	disp = XOpenDisplay (display);
+	if (disp == NULL)
+		return NULL;
 
-	font_dir_name = g_build_path (G_DIR_SEPARATOR_S, pwent->pw_dir,
-				      ".gnome2/share/fonts", NULL);
-	if ( ! g_file_test (font_dir_name, G_FILE_TEST_IS_DIR)) {
-		g_free (font_dir_name);
-		font_dir_name = NULL;
-		return;
-	}
-
-	dir_name = g_build_path (G_DIR_SEPARATOR_S, pwent->pw_dir,
-				 ".gnome2/share/cursor-fonts", NULL);
-	if ( ! g_file_test (dir_name, G_FILE_TEST_IS_DIR)) {
-		g_free (dir_name);
-		dir_name = NULL;
-		return;
-	}
-
-	/* Set the font path */
 	font_path = XGetFontPath (disp, &n_fonts);
-	new_n_fonts = n_fonts;
-	if (n_fonts == 0 ||
-	    strcmp (font_path[0], dir_name) != 0)
-		new_n_fonts++;
-	if (n_fonts == 0 ||
-	    strcmp (font_path[n_fonts-1], font_dir_name) != 0)
-		new_n_fonts++;
-
-	new_font_path = g_new0 (gchar*, new_n_fonts);
-	if (n_fonts == 0 || strcmp (font_path[0], dir_name)) {
-		new_font_path[0] = dir_name;
-		for (i = 0; i < n_fonts; i++)
-			new_font_path [i+1] = font_path [i];
-	} else {
-		for (i = 0; i < n_fonts; i++)
-			new_font_path [i] = font_path [i];
+	if (font_path == NULL) {
+		XCloseDisplay (disp);
+		return NULL;
 	}
 
-	if (n_fonts == 0 || strcmp (font_path[n_fonts-1], font_dir_name)) {
-		new_font_path[new_n_fonts-1] = font_dir_name;
+	gs = g_string_new (NULL);
+	for (i = 0; i < n_fonts; i++) {
+		if (i != 0)
+			g_string_append_c (gs, ',');
+		g_string_append (gs, font_path[i]);
 	}
 
-	gdk_error_trap_push ();
-	XSetFontPath (disp, new_font_path, new_n_fonts);
-	XSync (disp, False);
-	gdk_error_trap_pop ();
- 
 	XFreeFontPath (font_path);
 
-	g_free (new_font_path);
-	g_free (font_dir_name);
-	g_free (dir_name);
-}
+	XCloseDisplay (disp);
 
+	return g_string_free (gs, FALSE);
+}
 
 /* EOF */

@@ -77,6 +77,7 @@ gdm_verify_user (GdmDisplay *d,
 		    g_free (login);
 		    return NULL;
 	    }
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
     } else {
 	    login = g_strdup (username);
     }

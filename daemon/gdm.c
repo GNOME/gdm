@@ -1634,6 +1634,22 @@ send_slave_ack (GdmDisplay *d)
 }
 
 static void
+send_slave_command (GdmDisplay *d, const char *command)
+{
+	if (d->master_notify_fd >= 0) {
+		char *cmd = g_strdup_printf ("%c%s\n",
+					     GDM_SLAVE_NOTIFY_COMMAND,
+					     command);
+		write (d->master_notify_fd, cmd, strlen (cmd));
+		g_free (cmd);
+	}
+	if (d->slavepid > 0) {
+		kill (d->slavepid, SIGUSR2);
+	}
+}
+
+
+static void
 gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 {
 	/* Evil!, all this for debugging? */
@@ -1921,6 +1937,18 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strcmp (msg, GDM_SOP_SOFT_RESTART) == 0) {
 		gdm_restart_mode = TRUE;
 		gdm_safe_restart ();
+	} else if (strcmp (msg, GDM_SOP_DIRTY_SERVERS) == 0) {
+		GSList *li;
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *d = li->data;
+			send_slave_command (d, GDM_NOTIFY_DIRTY_SERVERS);
+		}
+	} else if (strcmp (msg, GDM_SOP_SOFT_RESTART_SERVERS) == 0) {
+		GSList *li;
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *d = li->data;
+			send_slave_command (d, GDM_NOTIFY_SOFT_RESTART_SERVERS);
+		}
 	} else if (strncmp (msg, GDM_SOP_SYSLOG " ",
 		            strlen (GDM_SOP_SYSLOG " ")) == 0) {
 		char *p;

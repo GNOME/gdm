@@ -24,7 +24,6 @@ greeter_item_pam_set_user (const char *user)
 static void
 user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
 {
-  static gboolean first_return = TRUE;
   char *tmp;
   GreeterItemInfo *error_info;
   GreeterItemInfo *message_info;
@@ -39,16 +38,6 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   if (entry_is_login) {
     g_free (greeter_current_user);
     greeter_current_user = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
-  }
-  
-  /* somewhat ugly thing to clear the initial message */
-  if (first_return) {
-    first_return = FALSE;
-    message_info = greeter_lookup_id ("pam-message");
-    if (message_info)
-      g_object_set (G_OBJECT (message_info->item),
-		    "text", "",
-		    NULL);
   }
   
   /* clear the err_box */

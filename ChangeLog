@@ -1,3 +1,31 @@
+Wed Aug 07 12:01:06 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/slave.c: add a SOFT_RESTART_SERVERS
+	  fifo command to force a restart of X servers that no one is logged
+	  in on right away, unlike the DIRTY_SERVERS which just marks servers
+	  as dirty and to be restarted
+
+Wed Aug 07 11:22:16 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/gdm.c, daemon/slave.c: Add a DIRTY_SERVERS
+	  command and related slave notification to have the slave remanage
+	  instead of regenerating the X server.  This is good for upgrading
+	  X configuration and all that.  This can be done by a simple:
+	  (echo;echo DIRTY_SERVERS) > /var/gdm/.gdmfifo
+	  This is a possible soultion for issues as described in redhat
+	  bug 70072
+
+	* daemon/verify-(pam|crypt|shadow).c, gui/gdmlogin.c,
+	  gui/greeter/greeter_item_pam.c:  Clear the initial notice
+	  from the daemon rather then on the greeter with the ugly
+	  first_return hack.  Should fix redhat bug 70991
+
+	* daemon/server.c, gui/gdmXnestchooser.c: redo the font path stuff.
+	  Now we just get the current font path from the parent and pass -fp
+	  argument to Xnest with that path.  This should work more generally
+	  and besides the last night fix was not 100% correct anyway.  Also
+	  make this work for gdmXnestchooser.
+
 Wed Aug 07 01:23:55 2002  George Lebl <jirka@5z.com>
 
 	* daemon/server.c: when starting up a server as a different uid, add

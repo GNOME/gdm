@@ -156,6 +156,39 @@ test_opt (const char *cmd, const char *help, const char *option)
 }
 #endif
 
+static char *
+get_font_path (const char *display)
+{
+	Display *disp;
+	char **font_path;
+	int n_fonts;
+	int i;
+	GString *gs;
+
+	disp = XOpenDisplay (display);
+	if (disp == NULL)
+		return NULL;
+
+	font_path = XGetFontPath (disp, &n_fonts);
+	if (font_path == NULL) {
+		XCloseDisplay (disp);
+		return NULL;
+	}
+
+	gs = g_string_new (NULL);
+	for (i = 0; i < n_fonts; i++) {
+		if (i != 0)
+			g_string_append_c (gs, ',');
+		g_string_append (gs, font_path[i]);
+	}
+
+	XFreeFontPath (font_path);
+
+	XCloseDisplay (disp);
+
+	return g_string_free (gs, FALSE);
+}
+
 static char **
 make_us_an_exec_vector (const char *xnest)
 {
@@ -164,6 +197,8 @@ make_us_an_exec_vector (const char *xnest)
 	int argc;
 	char **xnest_vec;
 	char **options_vec = NULL;
+	gboolean got_font_path = FALSE;
+	char *font_path = NULL;
 
 	if( ! ve_string_empty (xnest_binary))
 		xnest = xnest_binary;
@@ -180,7 +215,8 @@ make_us_an_exec_vector (const char *xnest)
 	argc = ve_vector_len (xnest_vec) +
 		1 +
 		ve_vector_len (options_vec) +
-		3;
+		3 +
+		2;
 
 	vector = g_new0 (char *, argc);
 
@@ -193,11 +229,15 @@ make_us_an_exec_vector (const char *xnest)
 
 	for (i = 1; xnest_vec[i] != NULL; i++) {
 		vector[ii++] = xnest_vec[i];
+		if (strcmp (xnest_vec[i], "-fp") == 0)
+			got_font_path = TRUE;
 	}
 
 	if (options_vec != NULL) {
 		for (i = 0; options_vec[i] != NULL; i++) {
 			vector[ii++] = options_vec[i];
+			if (strcmp (options_vec[i], "-fp") == 0)
+				got_font_path = TRUE;
 		}
 	}
 
@@ -211,6 +251,14 @@ make_us_an_exec_vector (const char *xnest)
 			vector[ii++] = "-indirect";
 			vector[ii++] = indirect_host;
 		}
+	}
+
+	if ( ! got_font_path)
+		font_path = get_font_path (NULL);
+
+	if (font_path != NULL) {
+		vector[ii++] = "-fp";
+		vector[ii++] = font_path;
 	}
 
 	return vector;

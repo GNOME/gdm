@@ -3089,6 +3089,30 @@ gdm_slave_usr2_handler (int sig)
 					g_list_append (unhandled_notifies,
 						       g_strdup (&s[1]));
 			}
+		} else if (s[0] == GDM_SLAVE_NOTIFY_COMMAND) {
+			if (strcmp (&s[1], GDM_NOTIFY_DIRTY_SERVERS) == 0) {
+				/* never restart flexi servers
+				 * they whack themselves */
+				if (d->type != TYPE_FLEXI_XNEST &&
+				    d->type != TYPE_FLEXI)
+					remanage_asap = TRUE;
+			} else if (strcmp (&s[1], GDM_NOTIFY_SOFT_RESTART_SERVERS) == 0) {
+				/* never restart flexi servers,
+				 * they whack themselves */
+				/* FIXME: here we should handle actual
+				 * restarts of flexi servers, but it probably
+				 * doesn't matter */
+				if (d->type != TYPE_FLEXI_XNEST &&
+				    d->type != TYPE_FLEXI) {
+					if ( ! d->logged_in) {
+						gdm_server_stop (d);
+						gdm_verify_cleanup (d);
+						_exit (DISPLAY_REMANAGE);
+					} else {
+						remanage_asap = TRUE;
+					}
+				}
+			}
 		}
 	}
 

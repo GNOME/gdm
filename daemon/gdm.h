@@ -424,8 +424,20 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 /* write out a sessreg (xdm) compatible Xservers file
  * in the ServAuthDir as <name>.Xservers */
 #define GDM_SOP_WRITE_X_SERVERS "WRITE_X_SERVERS" /* <slave pid> */
+/* All X servers should be restarted rather then regenerated.  Useful
+ * if you have updated the X configuration.  Note that this happens
+ * only when the user logs out or when we otherwise would have restarted
+ * a server, nothing is done by this command. */
+#define GDM_SOP_DIRTY_SERVERS "DIRTY_SERVERS"  /* no arguments */
+/* restart all servers that people aren't logged in on.  Maybe you may not
+ * want to do this on every change of X server config since this may cause
+ * flicker on screen and jumping around on the vt.  Perhaps useful to do
+ * by asking the user if they want to do that.  Note that this will not
+ * kill any logged in sessions. */
+#define GDM_SOP_SOFT_RESTART_SERVERS "SOFT_RESTART_SERVERS"  /* no arguments */
 
 /* Notification protocol */
+/* keys */
 #define GDM_NOTIFY_ALLOWREMOTEROOT "AllowRemoteRoot" /* <true/false as int> */
 #define GDM_NOTIFY_ALLOWROOT "AllowRoot" /* <true/false as int> */
 #define GDM_NOTIFY_ALLOWREMOTEAUTOLOGIN "AllowRemoteAutoLogin" /* <true/false as int> */
@@ -437,10 +449,16 @@ GdmXServer *	gdm_find_x_server	(const char *id);
 #define GDM_NOTIFY_TIMED_LOGIN "TimedLogin" /* <login> */
 #define GDM_NOTIFY_TIMED_LOGIN_DELAY "TimedLoginDelay" /* <seconds> */
 
+/* commands */
+#define GDM_NOTIFY_DIRTY_SERVERS "DIRTY_SERVERS"
+#define GDM_NOTIFY_SOFT_RESTART_SERVERS "SOFT_RESTART_SERVERS"
+
 /* Ack for a slave message */
 #define GDM_SLAVE_NOTIFY_ACK 'A'
 /* Update this key */
 #define GDM_SLAVE_NOTIFY_KEY '!'
+/* notify a command */
+#define GDM_SLAVE_NOTIFY_COMMAND '#'
 
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
 

@@ -1229,7 +1229,6 @@ static void
 gdm_login_enter (GtkWidget *entry)
 {
 	static const gchar *login_string;
-	static gboolean first_return = TRUE;
 	char *tmp;
 
 	if (entry == NULL)
@@ -1275,12 +1274,6 @@ gdm_login_enter (GtkWidget *entry)
 			gtk_window_set_focus (GTK_WINDOW (login), entry);	
 			return;
 		}
-	}
-
-	/* somewhat ugly thing to clear the initial message */
-	if (first_return) {
-	       first_return = FALSE;
-	       gtk_label_set_text (GTK_LABEL (msg), "");
 	}
 
 	/* clear the err_box */
