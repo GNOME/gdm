@@ -236,10 +236,10 @@ greeter_action_language (GreeterItemInfo *info,
 #endif
 					    NULL,
 					    0,
-					    GTK_STOCK_OK,
-					    GTK_RESPONSE_OK,
 					    GTK_STOCK_CANCEL,
 					    GTK_RESPONSE_CANCEL,
+					    GTK_STOCK_OK,
+					    GTK_RESPONSE_OK,
 					    NULL);
       g_object_add_weak_pointer (G_OBJECT (dialog), (gpointer *) &dialog);
       label = gtk_label_new ("<span size=\"x-large\" weight=\"bold\">Select a language for your session to use:</span>");

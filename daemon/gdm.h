@@ -497,20 +497,21 @@ GdmXServer *	gdm_find_x_server	(const char *id);
  *      100 = Not authenticated
  *      999 = Unknown error
  */
-#define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <xauth cookie> <xauth file> */
+#define GDM_SUP_FLEXI_XNEST  "FLEXI_XNEST" /* <display> <uid> <xauth cookie> <xauth file> */
 /* FLEXI_XNEXT: Start a new flexible Xnest server
- * Supported since: 2.2.4.2
- *   Note: supported an older version from 2.2.4.0, but since 2.2.4.2 you must
- *   supply 3 arguments or ERROR 100 will be returned.  This will start Xnest
- *   using the XAUTHORITY file supplied and as the uid same as the owner of that
- *   file.  You Must also supply the cookie as the third argument for this
+ * Supported since: 2.3.90.4
+ *   Note: supported an older version from 2.2.4.0, later 2.2.4.2, but
+ *   since 2.3.90.4 you must supply 4 arguments or ERROR 100 will be returned.
+ *   This will start Xnest  using the XAUTHORITY file supplied and as the
+ *   uid same as the owner of that file (and same as you supply).  You must
+ *   also supply the cookie as the third argument for this
  *   display, to prove that you indeed are this user.  Also this file must be
  *   readable ONLY by this user, that is have a mode of 0600.  If this all is
  *   not met, ERROR 100 is returned.
  *   Note: The cookie should be the MIT-MAGIC-COOKIE-1, the first one gdm
  *   can find in the XAUTHORITY file for this display.  If that's not what you
  *   use you should generate one first.  The cookie should be in hex form.
- * Arguments:  <display to run on> <xauth cookie for the display> <xauth file>
+ * Arguments:  <display to run on> <uid of requesting user> <xauth cookie for the display> <xauth file>
  * Answers:
  *   OK <display>
  *   ERROR <err number> <english error description>

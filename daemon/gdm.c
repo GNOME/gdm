@@ -1903,12 +1903,14 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 
 /* extract second word and the rest of the string */
 static void
-extract_dispname_xauthfile_cookie (const char *msg,
-				   char **dispname,
-				   char **xauthfile,
-				   char **cookie)
+extract_dispname_uid_xauthfile_cookie (const char *msg,
+				       char **dispname,
+				       uid_t *uid,
+				       char **xauthfile,
+				       char **cookie)
 {
 	const char *p;
+	int i;
 	char *pp;
 
 	*dispname = NULL;
@@ -1927,6 +1929,23 @@ extract_dispname_xauthfile_cookie (const char *msg,
 	pp = strchr (*dispname, ' ');
 	if (pp != NULL)
 		*pp = '\0';
+
+	/* Get uid */
+	p = strchr (p, ' ');
+	if (p == NULL) {
+		*dispname = NULL;
+		g_free (*dispname);
+		return;
+	}
+	while (*p == ' ')
+		p++;
+
+	if (sscanf (p, "%d", &i) != 1) {
+		*dispname = NULL;
+		g_free (*dispname);
+		return;
+	}
+	*uid = i;
 
 	/* Get cookie */
 	p = strchr (p, ' ');
@@ -2079,7 +2098,8 @@ check_cookie (const char *file, const char *disp, const char *cookie)
 
 static void
 handle_flexi_server (GdmConnection *conn, int type, const char *server,
-		     const char *xnest_disp, const char *xnest_auth_file,
+		     const char *xnest_disp, uid_t xnest_uid,
+		     const char *xnest_auth_file,
 		     const char *xnest_cookie)
 {
 	GdmDisplay *display;
@@ -2091,6 +2111,8 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	if (type == TYPE_FLEXI_XNEST) {
 		struct stat s;
 		gboolean authorized = TRUE;
+
+		seteuid (xnest_uid);
 
 		g_assert (xnest_auth_file != NULL);
 		g_assert (xnest_disp != NULL);
@@ -2109,6 +2131,11 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 				    xnest_cookie)) {
 			authorized = FALSE;
 		}
+
+		if (s.st_uid != xnest_uid)
+			authorized = FALSE;
+
+		seteuid (0);
 
 		if ( ! authorized) {
 			/* Sorry dude, you're not doing something
@@ -2477,7 +2504,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			return;
 		}
 		handle_flexi_server (conn, TYPE_FLEXI, GdmStandardXServer,
-				     NULL, NULL, NULL);
+				     NULL, 0, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XSERVER " ",
 		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
 		char *name;
@@ -2519,12 +2546,14 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		g_free (name);
 
 		handle_flexi_server (conn, TYPE_FLEXI, command,
-				     NULL, NULL, NULL);
+				     NULL, 0, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
 		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
 		char *dispname = NULL, *xauthfile = NULL, *cookie = NULL;
+		uid_t uid;
 
-		extract_dispname_xauthfile_cookie (msg, &dispname, &xauthfile, &cookie);
+		extract_dispname_uid_xauthfile_cookie (msg, &dispname, &uid,
+						       &xauthfile, &cookie);
 
 		if (dispname == NULL) {
 			/* Something bogus is going on, so just whack the
@@ -2545,7 +2574,7 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 		
 		handle_flexi_server (conn, TYPE_FLEXI_XNEST, GdmXnest,
-				     dispname, xauthfile, cookie);
+				     dispname, uid, xauthfile, cookie);
 
 		g_free (dispname);
 		g_free (xauthfile);

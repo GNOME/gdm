@@ -43,6 +43,7 @@ gdmgreeter_SOURCES =  \
 gdmgreeter_LDADD = \
 	../libgdmwm.a 		\
 	$(X_LIBS)		\
+	-lX11			\
 	$(XINERAMA_LIBS)	\
 	$(X_EXTRA_LIBS)		\
 	$(GREETER_LIBS)

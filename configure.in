@@ -8,7 +8,7 @@ dnl
 AC_PROG_INTLTOOL
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gdm,2.3.90.3)
+AM_INIT_AUTOMAKE(gdm,2.3.90.4)
 AM_MAINTAINER_MODE
 
 GDK_PIXBUF_REQUIRED=1.3.1
@@ -311,7 +311,7 @@ if test x$with_xdmcp != xno ; then
 		AC_CHECK_LIB(Xdmcp, XdmcpFlush, [
 		     	AC_DEFINE(HAVE_LIBXDMCP)
 		     	XDMCP_LIBS="-lXdmcp"
-		     	XDMCP_SUPPORT=yes],,[$X_LIBS $X_EXTRA_LIBS])
+		     	XDMCP_SUPPORT=yes],,[$X_LIBS -lX11 $X_EXTRA_LIBS])
 	])
 
 	if test x$with_xdmcp = xyes -a x$XDMCP_SUPPORT = x ; then

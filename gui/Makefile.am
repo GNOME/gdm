@@ -79,6 +79,7 @@ gdmlogin_LDADD = \
 	libgdmwm.a		\
 	$(GUI_LIBS)		\
 	$(X_LIBS)		\
+	-lX11			\
 	$(XINERAMA_LIBS)	\
 	$(X_EXTRA_LIBS)		\
 	$(INTLLIBS)		\

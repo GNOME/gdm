@@ -1,3 +1,18 @@
+Tue May 21 16:47:53 2002  George Lebl <jirka@5z.com>
+
+	* configure.in: raise version to .4
+
+	* configure.in, gui/Makefile.am, gui/greeter/Makefile.am: hopefully
+	  fix #79374 by add -lX11 to the link lines
+
+	* gui/greeter/greeter_action_language.c: fix OK/CANCEL order, #80038
+
+	* daemon/gdm.[ch], gui/gdmflexiserver.c: change the format of the
+	  FLEXI_XNEST request.  Now we require version 2.3.90.4 and
+	  there is also a uid parameter.  We then seteuid to this uid
+	  before checking authenticity, this makes things work when the
+	  home dir is on nfs.  Fixes #82122
+
 Tue May 21 15:44:00 2002  George Lebl <jirka@5z.com>
 
 	* daemon/misc.c: make the interface querying work again

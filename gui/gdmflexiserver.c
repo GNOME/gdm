@@ -254,12 +254,13 @@ main (int argc, char *argv[])
 			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 			return 1;
 		}
-		command = g_strdup_printf (GDM_SUP_FLEXI_XNEST " %s %s %s",
+		command = g_strdup_printf (GDM_SUP_FLEXI_XNEST " %s %d %s %s",
 					   gdmcomm_get_display (),
+					   (int)getuid (),
 					   cookie,
 					   XauFileName ());
 		g_free (cookie);
-		version = "2.2.4.2";
+		version = "2.3.90.4";
 		auth_cookie = NULL;
 	} else {
 		auth_cookie = gdmcomm_get_auth_cookie ();
