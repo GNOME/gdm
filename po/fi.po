@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-16 23:52+0200\n"
-"PO-Revision-Date: 2004-02-13 11:18+0200\n"
+"POT-Creation-Date: 2004-03-03 14:54+0200\n"
+"PO-Revision-Date: 2004-03-03 14:54+0200\n"
 "Last-Translator: Tommi Vainikainen <Tommi.Vainikainen@iki.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
 "sourceforge.net>\n"
@@ -57,7 +57,7 @@ msgstr ""
 
 #: config/gettextfoo.h:5
 msgid "Please type in the root (privileged user) password."
-msgstr "Anna pääkäyttäjän salasana."
+msgstr "Syötä pääkäyttäjän salasana."
 
 #: config/gettextfoo.h:6
 msgid "I will now try to restart the X server again."
@@ -208,12 +208,12 @@ msgstr ""
 "luultavasti kaikki ei ole kunnossa. Nyt odotetaan kaksi minuuttia ennen kuin "
 "yritetään uudelleen näyttöä %s."
 
-#: daemon/display.c:243
+#: daemon/display.c:244
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s: Putken luominen epäonnistui"
 
-#: daemon/display.c:315
+#: daemon/display.c:316
 #, c-format
 msgid "%s: Failed forking gdm slave process for %s"
 msgstr "%s: GDM:n lapsiprosessin haaroittaminen %s:lle epäonnistui"
@@ -577,7 +577,7 @@ msgid "%s: fork() failed!"
 msgstr "%s: fork() epäonnistui!"
 
 #. should never happen
-#: daemon/gdm.c:859 daemon/slave.c:3373
+#: daemon/gdm.c:859 daemon/slave.c:3374
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() epäonnistui: %s!"
@@ -721,12 +721,12 @@ msgstr "Vain pääkäyttäjä haluaa ajaa GDM:n\n"
 #: daemon/gdm.c:2084 daemon/gdm.c:2088 daemon/gdm.c:2098 daemon/gdm.c:2104
 #: daemon/gdm.c:2115 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
 #: daemon/misc.c:1618 daemon/misc.c:1622 daemon/misc.c:1626
-#: daemon/server.c:510 daemon/server.c:523 daemon/slave.c:805
+#: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:805
 #: daemon/slave.c:819 daemon/slave.c:829 daemon/slave.c:839 daemon/slave.c:851
 #: gui/gdmchooser.c:1924 gui/gdmchooser.c:1927 gui/gdmchooser.c:1930
 #: gui/gdmlogin.c:3928 gui/gdmlogin.c:3936 gui/gdmlogin.c:3939
-#: gui/greeter/greeter.c:1084 gui/greeter/greeter.c:1092
-#: gui/greeter/greeter.c:1095
+#: gui/greeter/greeter.c:1083 gui/greeter/greeter.c:1091
+#: gui/greeter/greeter.c:1094
 #, c-format
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Virhe asetettaessa %s-signaalin käsittelijää: %s"
@@ -814,7 +814,7 @@ msgstr ""
 msgid "Can not start fallback console"
 msgstr "Varapäätettä ei voi käynnistää"
 
-#: daemon/server.c:330
+#: daemon/server.c:341
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -825,7 +825,7 @@ msgstr ""
 "käyttää toista näyttönumeroa? Jos vastaus on ei, yritetään uudelleen "
 "käynnistää palvelin näytöllä %s.%s"
 
-#: daemon/server.c:337
+#: daemon/server.c:348
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -835,90 +835,90 @@ msgstr ""
 "esimerkiksi Ctrl-Alt-F6 siirtyy konsoliin 6. X-palvelimet ovat yleensä "
 "konsolissa 7 ja siitä eteenpäin.)"
 
-#: daemon/server.c:383
+#: daemon/server.c:394
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Xnest ei onnistunut avaamaan näyttöä \"%s\"."
 
-#: daemon/server.c:414
+#: daemon/server.c:425
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "Näyttö %s on varattu. Toinen X-palvelin on jo käynnissä."
 
-#: daemon/server.c:498
+#: daemon/server.c:509
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Virhe putkitettaessa: %s"
 
 #. Send X too busy
-#: daemon/server.c:780
+#: daemon/server.c:794
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s: Vapaata näytön numeroa ei löydy"
 
-#: daemon/server.c:795
+#: daemon/server.c:821
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s: Näyttö %s varattu. Kokeillaan toisella näyttönumerolla."
 
-#: daemon/server.c:889
+#: daemon/server.c:916
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Epäkelpo palvelinkomento \"%s\""
 
-#: daemon/server.c:894
+#: daemon/server.c:921
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "Palvelimen nimeä \"%s\" ei löytynyt, käytetään vakiopalvelinta"
 
-#: daemon/server.c:1070
+#: daemon/server.c:1097
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: Näytön %s lokitiedostoa ei voitu avata!"
 
-#: daemon/server.c:1083 daemon/server.c:1089 daemon/server.c:1094
+#: daemon/server.c:1110 daemon/server.c:1116 daemon/server.c:1121
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s: Virhe asetettaessa %s arvoksi %s"
 
-#: daemon/server.c:1131
+#: daemon/server.c:1158
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Tyhjä palvelinkomento näytölle %s"
 
-#: daemon/server.c:1145
+#: daemon/server.c:1172
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
 "%s: Palvelin käynnistettiin uid:lla %d, mutta kyseistä käyttäjää ei ole "
 "olemassa"
 
-#: daemon/server.c:1160 daemon/slave.c:2493 daemon/slave.c:2971
+#: daemon/server.c:1187 daemon/slave.c:2494 daemon/slave.c:2972
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Ryhmätunnusta ei voitu asettaa %d:ksi."
 
-#: daemon/server.c:1166 daemon/slave.c:2498 daemon/slave.c:2976
+#: daemon/server.c:1193 daemon/slave.c:2499 daemon/slave.c:2977
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgroups() epäonnistui %s:lle"
 
-#: daemon/server.c:1172 daemon/slave.c:2503 daemon/slave.c:2981
+#: daemon/server.c:1199 daemon/slave.c:2504 daemon/slave.c:2982
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: userid:tä ei voitu asettaa arvoon %d."
 
-#: daemon/server.c:1179
+#: daemon/server.c:1206
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: groupid:tä ei voitu asettaa arvoon 0."
 
-#: daemon/server.c:1190
+#: daemon/server.c:1217
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s: X-palvelinta ei löytynyt: %s"
 
-#: daemon/server.c:1198
+#: daemon/server.c:1225
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: Xserver-prosessia ei voitu haaroittaa!"
@@ -957,7 +957,7 @@ msgstr ""
 "Olet jo kirjautunut sisään. Voit sisäänkirjautua siitä huolimatta tai "
 "keskeyttää tämän kirjautumisen"
 
-#: daemon/slave.c:1214
+#: daemon/slave.c:1215
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -977,17 +977,17 @@ msgstr ""
 "käytöstä. Käynnistä GDM uudelleen kun\n"
 "ongelma on korjattu."
 
-#: daemon/slave.c:1463
+#: daemon/slave.c:1464
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s: ei voi haaroittua"
 
-#: daemon/slave.c:1510
+#: daemon/slave.c:1511
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s: näytön %s avaaminen ei onnistu"
 
-#: daemon/slave.c:1661
+#: daemon/slave.c:1662
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file.  I will attempt to start it from the "
@@ -996,7 +996,7 @@ msgstr ""
 "Asetusohjelman ajaminen ei onnistunut. Varmista, että sen polku on asetettu "
 "oikein asetustiedostossa. Se yritetään käynnistää oletussijainnistaan."
 
-#: daemon/slave.c:1675
+#: daemon/slave.c:1676
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file."
@@ -1004,20 +1004,20 @@ msgstr ""
 "Asetusohjelman ajaminen ei onnistunut. Varmista, että sen polku on asetettu "
 "oikein asetustiedostossa."
 
-#: daemon/slave.c:1805
+#: daemon/slave.c:1806
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
 msgstr ""
-"Anna pääkäyttäjän salasana\n"
+"Syötä pääkäyttäjän salasana\n"
 "asetusohjelman ajamiseksi."
 
-#: daemon/slave.c:2447 daemon/slave.c:2452
+#: daemon/slave.c:2448 daemon/slave.c:2453
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Putkea gdmgreeter-tervehtimeen ei voitu avata"
 
-#: daemon/slave.c:2575
+#: daemon/slave.c:2576
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  So I have started a single server "
@@ -1029,7 +1029,7 @@ msgstr ""
 "Kirjaudu sisään ja korjaa asetukset. Ajastetut ja automaattiset "
 "kirjautumiset eivät ole nyt käytössä."
 
-#: daemon/slave.c:2589
+#: daemon/slave.c:2590
 msgid ""
 "I could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
@@ -1039,7 +1039,7 @@ msgstr ""
 "on vikasietoinen X-palvelin. Kirjaudu sisään ja aseta X-palvelimen asetukset "
 "oikeiksi."
 
-#: daemon/slave.c:2598
+#: daemon/slave.c:2599
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1048,7 +1048,7 @@ msgstr ""
 "Annettu näyttönumero oli varattu, joten tämä palvelin käynnistettiin "
 "näytölle %s."
 
-#: daemon/slave.c:2618
+#: daemon/slave.c:2619
 msgid ""
 "The greeter program appears to be crashing.\n"
 "I will attempt to use a different one."
@@ -1057,19 +1057,19 @@ msgstr ""
 "Yritetään käyttää toista."
 
 #. Something went wrong
-#: daemon/slave.c:2639
+#: daemon/slave.c:2640
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 "%s: Tervehtimen käynnistys epäonnistui gtk-moduulien kanssa: %s. Yritetään "
 "ilman moduuleja"
 
-#: daemon/slave.c:2646
+#: daemon/slave.c:2647
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr "%s: Tervehtimen käynnistys epäonnistui yritettäessä oletuksella: %s"
 
-#: daemon/slave.c:2658
+#: daemon/slave.c:2659
 msgid ""
 "Cannot start the greeter program, you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
@@ -1080,27 +1080,27 @@ msgstr ""
 "kirjautumiseen sekä asetustiedoston asetusten korjaamista"
 
 #. If no greeter we really have to disable the display
-#: daemon/slave.c:2665
+#: daemon/slave.c:2666
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s: Virhe käynnistettäessä tervehdintä näytölle %s"
 
-#: daemon/slave.c:2669
+#: daemon/slave.c:2670
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Gdmgreeter-tervehdintä ei voitu haaroittaa"
 
-#: daemon/slave.c:2754
+#: daemon/slave.c:2755
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: FIFO:n avaaminen epäonnistui!"
 
-#: daemon/slave.c:2930
+#: daemon/slave.c:2931
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s: Putkea gdmgreeter-tervehdintä ei voitu avata"
 
-#: daemon/slave.c:3028
+#: daemon/slave.c:3029
 msgid ""
 "Cannot start the chooser program, you will probably not be able to log in.  "
 "Please contact the system administrator."
@@ -1108,58 +1108,58 @@ msgstr ""
 "Valitsimen käynnistys epäonnistui, joten sisäänkirjautuminen ei ole "
 "mahdollista. Ota yhteyttä järjestelmän ylläpitäjään."
 
-#: daemon/slave.c:3032
+#: daemon/slave.c:3033
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s: Virhe käynnistettäessä valitsinta näytölle %s"
 
-#: daemon/slave.c:3035
+#: daemon/slave.c:3036
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s: gdmchooser-prosessia ei voitu haaroittaa"
 
-#: daemon/slave.c:3279
+#: daemon/slave.c:3280
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Tiedoston ~/.xsession-errors avaaminen epäonnistui"
 
-#: daemon/slave.c:3410
+#: daemon/slave.c:3411
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr "%s: Esi-istuntokomentojonon suoritus palautti > 0. Keskeytetään."
 
-#: daemon/slave.c:3439
+#: daemon/slave.c:3440
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "Kieltä %s ei ole olemassa, käytetään kieltä %s"
 
-#: daemon/slave.c:3440
+#: daemon/slave.c:3441
 msgid "System default"
 msgstr "Järjestelmän oletuskieli"
 
-#: daemon/slave.c:3456
+#: daemon/slave.c:3457
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Ei voitu asettaa ympäristöä %s:lle. Keskeytetään."
 
-#: daemon/slave.c:3477
+#: daemon/slave.c:3478
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: setusercontext() epäonnistui %s:lle. Keskeytetään."
 
-#: daemon/slave.c:3483
+#: daemon/slave.c:3484
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s: Ei voitu ryhtyä käyttäjäksi %s. Keskeytetään."
 
-#: daemon/slave.c:3543
+#: daemon/slave.c:3544
 #, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
 msgstr ""
 "%s: Istuntotiedostossa %s ei ole Exec-riviä, joten käynnistetään "
 "vikasietoinen Gnome."
 
-#: daemon/slave.c:3549
+#: daemon/slave.c:3550
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
@@ -1167,7 +1167,7 @@ msgstr ""
 "Valitsemasi istunto ei näytä kelvolliselta. Käynnistetään vikasietoinen "
 "Gnome-istunto."
 
-#: daemon/slave.c:3563
+#: daemon/slave.c:3564
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
@@ -1175,7 +1175,7 @@ msgstr ""
 "%s: Xsession-komentotiedostoa ei löydy tai sitä ei voida suorittaa, "
 "yritetään vikasietoista Gnomea"
 
-#: daemon/slave.c:3569
+#: daemon/slave.c:3570
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
@@ -1184,21 +1184,21 @@ msgstr ""
 "vikasietoista Gnome-istuntoa."
 
 #. yaikes
-#: daemon/slave.c:3584
+#: daemon/slave.c:3585
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s: gnome-session:ia ei löytynyt vikasietoiselle Gnome-istunnolle. "
 "Kokeillaan xterm:iä"
 
-#: daemon/slave.c:3589
+#: daemon/slave.c:3590
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
 msgstr ""
 "Gnomen asennusta ei löytynyt. Koetetaan ajaa \"Vikasietoinen xterm\"-istunto."
 
-#: daemon/slave.c:3597
+#: daemon/slave.c:3598
 msgid ""
 "This is the Failsafe Gnome session.  You will be logged into the 'Default' "
 "session of Gnome with no startup scripts run.  This is only to fix problems "
@@ -1208,12 +1208,12 @@ msgstr ""
 "istuntoon suorittamatta käynnistyskomentotiedostoja. Tämä tehdään, jotta "
 "asennuksessa olevien vikojen korjaaminen olisi mahdollista."
 
-#: daemon/slave.c:3612
+#: daemon/slave.c:3613
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr ""
 "Vikasietoisen istunnon ajamiseksi tarvittavaa ohjelmaa \"xterm\" ei löydy."
 
-#: daemon/slave.c:3625
+#: daemon/slave.c:3626
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
@@ -1223,41 +1223,41 @@ msgstr ""
 "järjestelmän voi korjata muiden kirjautumistapojen toimimattomuudesta  "
 "huolimatta. Kirjoita ikkunaan \"exit\" ja paina rivinvaihtoa poistuaksesi."
 
-#: daemon/slave.c:3652
+#: daemon/slave.c:3653
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s: Käyttäjällä ei ole lupaa kirjautua sisään"
 
-#: daemon/slave.c:3655
+#: daemon/slave.c:3656
 msgid "The system administrator has disabled your account."
 msgstr "Järjestelmän ylläpitäjä on poistanut tunnuksen käytöstä."
 
-#: daemon/slave.c:3668
+#: daemon/slave.c:3669
 msgid "Error! Unable to set executable context."
 msgstr "Virhe! Ei voi asettaa suorituskontekstia."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3676 daemon/slave.c:3681
+#: daemon/slave.c:3677 daemon/slave.c:3682
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Komennon %s %s %s suoritus epäonnistui"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3692
+#: daemon/slave.c:3693
 msgid "Cannot start the session due to some internal error."
 msgstr "Istuntoa ei voi käynnistää jonkun sisäisen virheen takia."
 
-#: daemon/slave.c:3746
+#: daemon/slave.c:3747
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Käyttäjä läpäisi todentamisen, mutta getpwnam(%s) epäonnistui."
 
-#: daemon/slave.c:3760
+#: daemon/slave.c:3761
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Jälki-istuntokomentojonon suoritus palautti > 0. Keskeytetään."
 
-#: daemon/slave.c:3769
+#: daemon/slave.c:3770
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1274,12 +1274,12 @@ msgstr ""
 "\n"
 "Todennäköisesti mikään ei toimi ellet kirjaudu vikasietoiseen istuntoon."
 
-#: daemon/slave.c:3777
+#: daemon/slave.c:3778
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Käyttäjän %s kotihakemisto: \"%s\" ei ole olemassa."
 
-#: daemon/slave.c:3940
+#: daemon/slave.c:3941
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1291,12 +1291,12 @@ msgstr ""
 "tapauksessa sisäänkirjautuminen ei ole mahdollista. Ota yhteyttä "
 "järjestelmän ylläpitäjään"
 
-#: daemon/slave.c:4016
+#: daemon/slave.c:4017
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Virhe käynnistettäessä käyttäjän istuntoa."
 
-#: daemon/slave.c:4097
+#: daemon/slave.c:4098
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1307,25 +1307,25 @@ msgstr ""
 "olla merkki asennusongelmasta tai levytilan loppumisesta. Yritä kirjautua "
 "jollakin vikasietoisella istunnolla ja tarkista pystytkö korjaamaan ongelman."
 
-#: daemon/slave.c:4105
+#: daemon/slave.c:4106
 msgid "View details (~/.xsession-errors file)"
 msgstr "Katso yksityiskohdat (tiedosto ~/.xsession-errors)"
 
-#: daemon/slave.c:4249
+#: daemon/slave.c:4250
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM havaitsi sammutuksen tai uudelleenkäynnistyksen olevan meneillään."
 
-#: daemon/slave.c:4343
+#: daemon/slave.c:4344
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping kohteeseen %s epäonnistui, poistetaan näyttö."
 
-#: daemon/slave.c:4623
+#: daemon/slave.c:4630
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Vakava X-virhe - %s käynnistetään uudelleen"
 
-#: daemon/slave.c:4717
+#: daemon/slave.c:4724
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1333,22 +1333,22 @@ msgstr ""
 "Sisäänkirjautumisääntä pyydetty ei-paikallisella näytöllä tai soitto-"
 "ohjelmistoa ei voi suorittaa tai äänitiedostoa ei ole"
 
-#: daemon/slave.c:5072
+#: daemon/slave.c:5079
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Käynnistys epäonnistui: %s"
 
-#: daemon/slave.c:5080 daemon/slave.c:5219
+#: daemon/slave.c:5087 daemon/slave.c:5226
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Komentotiedosto-prosessia ei voitu haaroittaa!"
 
-#: daemon/slave.c:5174
+#: daemon/slave.c:5181
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Putken luominen epäonnistui"
 
-#: daemon/slave.c:5213
+#: daemon/slave.c:5220
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Suoritus epäonnistui: %s"
@@ -1369,7 +1369,7 @@ msgstr " Varmista, ettei Caps Lock ole jäänyt päälle."
 #: daemon/verify-crypt.c:127 daemon/verify-pam.c:176
 #: daemon/verify-shadow.c:126 gui/gdmlogin.c:3052
 msgid "Please enter your username"
-msgstr "Anna käyttäjätunnus"
+msgstr "Syötä käyttäjätunnus"
 
 #. login: is whacked always translate to Username:
 #: daemon/verify-crypt.c:128 daemon/verify-pam.c:92 daemon/verify-pam.c:93
@@ -2007,7 +2007,7 @@ msgid "Can't open default host icon: %s"
 msgstr "Koneen oletuskuvaketta ei voitu avata: %s"
 
 #: gui/gdmchooser.c:1938 gui/gdmlogin.c:3947 gui/gdmlogin.c:3954
-#: gui/greeter/greeter.c:1103 gui/greeter/greeter.c:1110
+#: gui/greeter/greeter.c:1102 gui/greeter/greeter.c:1109
 msgid "Could not set signal mask!"
 msgstr "Signaalimaskia ei voitu asettaa."
 
@@ -2404,278 +2404,293 @@ msgstr "A-M|englanti (britti-)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:97
+msgid "A-M|English (Canadian)"
+msgstr "A-M|englanti (kanadan-)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:99
 msgid "A-M|English (Ireland)"
 msgstr "A-M|englanti (irlannin-)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:101
 msgid "A-M|Estonian"
 msgstr "N-Z|viro"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:103
 msgid "A-M|Finnish"
 msgstr "N-Z|suomi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
+#: gui/gdmlanguages.c:105
 msgid "A-M|French"
 msgstr "N-Z|ranska"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:107
 msgid "A-M|Galician"
 msgstr "A-M|galicia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:109
 msgid "A-M|German"
 msgstr "N-Z|saksa"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:111
 msgid "A-M|Greek"
 msgstr "A-M|kreikka"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:113
 msgid "A-M|Gujarati"
 msgstr "A-M|gudžarati"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:113 gui/gdmlanguages.c:115
+#: gui/gdmlanguages.c:115 gui/gdmlanguages.c:117
 msgid "A-M|Hebrew"
 msgstr "A-M|heprea"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:117
+#: gui/gdmlanguages.c:119
 msgid "A-M|Hindi"
 msgstr "A-M|hindi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:119
+#: gui/gdmlanguages.c:121
 msgid "A-M|Hungarian"
 msgstr "N-Z|unkari"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:123
 msgid "A-M|Icelandic"
 msgstr "A-M|islanti"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:125
 msgid "A-M|Indonesian"
 msgstr "A-M|indonesia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:127
 msgid "A-M|Interlingua"
 msgstr "A-M|interlingue"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:127
+#: gui/gdmlanguages.c:129
 msgid "A-M|Irish"
 msgstr "A-M|iiri"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:131
 msgid "A-M|Italian"
 msgstr "A-M|italia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:133
 msgid "A-M|Japanese"
 msgstr "A-M|japani"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:133
+#: gui/gdmlanguages.c:135
 msgid "A-M|Kannada"
 msgstr "A-M|kannada"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:137
 msgid "A-M|Korean"
 msgstr "A-M|korea"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:137
+#: gui/gdmlanguages.c:139
 msgid "A-M|Latvian"
 msgstr "A-M|latvia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:139
+#: gui/gdmlanguages.c:141
 msgid "A-M|Lithuanian"
 msgstr "A-M|liettua"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:141
+#: gui/gdmlanguages.c:143
 msgid "A-M|Macedonian"
 msgstr "A-M|makedonia"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:143
+#: gui/gdmlanguages.c:145
 msgid "A-M|Malay"
 msgstr "A-M|malaiji"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:145
+#: gui/gdmlanguages.c:147
 msgid "A-M|Malayalam"
 msgstr "A-M|malajalam"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:147
+#: gui/gdmlanguages.c:149
 msgid "A-M|Marathi"
 msgstr "A-M|marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:149
+#: gui/gdmlanguages.c:151
 msgid "A-M|Mongolian"
 msgstr "A-M|mongoli"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:151
+#: gui/gdmlanguages.c:153
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|norja (bokmål)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:153
+#: gui/gdmlanguages.c:155
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|norja (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:155
+#: gui/gdmlanguages.c:157
 msgid "N-Z|Oriya"
 msgstr "N-Z|orija"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:157
+#: gui/gdmlanguages.c:159
 msgid "N-Z|Panjabi"
 msgstr "N-Z|pandžabi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:159
+#: gui/gdmlanguages.c:161
 msgid "N-Z|Persian"
 msgstr "N-Z|persia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:161
+#: gui/gdmlanguages.c:163
 msgid "N-Z|Polish"
 msgstr "N-Z|puola"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:163
+#: gui/gdmlanguages.c:165
 msgid "N-Z|Portuguese"
 msgstr "N-Z|portugali"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:165
+#: gui/gdmlanguages.c:167
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|portugali (brasilian-)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:167
+#: gui/gdmlanguages.c:169
 msgid "N-Z|Romanian"
 msgstr "N-Z|romania"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:169
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Russian"
 msgstr "N-Z|venäjä"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:171
+#: gui/gdmlanguages.c:173 gui/gdmlanguages.c:175
 msgid "N-Z|Serbian"
 msgstr "N-Z|serbia"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:173
+#: gui/gdmlanguages.c:177
+msgid "N-Z|Serbian (Latin)"
+msgstr "N-Z|serbia (latinalainen)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:179
+msgid "N-Z|Serbian (Jekavian)"
+msgstr "N-Z|serbia (jekavian)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Slovak"
 msgstr "N-Z|slovakki"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:175
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Slovenian"
 msgstr "N-Z|sloveeni"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:177
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Spanish"
 msgstr "A-M|espanja"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:179
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Spanish (Mexico)"
 msgstr "A-M|espanja (meksikon-)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:181
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Swedish"
 msgstr "N-Z|ruotsi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:183
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|ruotsi (suomen-)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:185
+#: gui/gdmlanguages.c:193
 msgid "N-Z|Tamil"
 msgstr "N-Z|tamili"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:187
+#: gui/gdmlanguages.c:195
 msgid "N-Z|Telugu"
 msgstr "N-Z|telugu"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:189
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Thai"
 msgstr "N-Z|thai"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:191
+#: gui/gdmlanguages.c:199
 msgid "N-Z|Turkish"
 msgstr "N-Z|turkki"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:193
+#: gui/gdmlanguages.c:201
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|ukraina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:195
+#: gui/gdmlanguages.c:203
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|vietnam"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:197
+#: gui/gdmlanguages.c:205
 msgid "N-Z|Walloon"
 msgstr "N-Z|valloni"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:199
+#: gui/gdmlanguages.c:207
 msgid "N-Z|Welsh"
 msgstr "N-Z|wales"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:201
+#: gui/gdmlanguages.c:209
 msgid "N-Z|Yiddish"
 msgstr "A-M|jiddiš"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:203
+#: gui/gdmlanguages.c:211
 msgid "Other|POSIX/C English"
 msgstr "Muu|POSIX/C: englanti"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:378
+#: gui/gdmlanguages.c:407
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:386
+#: gui/gdmlanguages.c:415
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2757,7 +2772,7 @@ msgstr ""
 
 #. markup
 #: gui/gdmlogin.c:860 gui/gdmlogin.c:887 gui/gdmlogin.c:965
-#: gui/greeter/greeter_action_language.c:155 gui/greeter/greeter_session.c:125
+#: gui/greeter/greeter_action_language.c:143 gui/greeter/greeter_session.c:125
 #: gui/greeter/greeter_session.c:155
 msgid "Make _Default"
 msgstr "Aseta _oletus"
@@ -2771,7 +2786,7 @@ msgstr "Kirjaudu vain _sisään"
 #. untranslated
 #. markup
 #: gui/gdmlogin.c:879 gui/gdmlogin.c:959
-#: gui/greeter/greeter_action_language.c:149 gui/greeter/greeter_session.c:147
+#: gui/greeter/greeter_action_language.c:137 gui/greeter/greeter_session.c:147
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -2781,7 +2796,7 @@ msgstr ""
 "Haluatko, että %s muutetaan oletukseksi tuleviin istuntoihin?"
 
 #: gui/gdmlogin.c:887 gui/gdmlogin.c:965
-#: gui/greeter/greeter_action_language.c:155 gui/greeter/greeter_session.c:155
+#: gui/greeter/greeter_action_language.c:143 gui/greeter/greeter_session.c:155
 msgid "Just For _This Session"
 msgstr "Vain _tämä istunto"
 
@@ -2800,8 +2815,8 @@ msgstr ""
 
 #: gui/gdmlogin.c:941 gui/gdmlogin.c:950
 #: gui/greeter/greeter_action_language.c:53
-#: gui/greeter/greeter_action_language.c:133
-#: gui/greeter/greeter_action_language.c:141
+#: gui/greeter/greeter_action_language.c:121
+#: gui/greeter/greeter_action_language.c:129
 msgid "System Default"
 msgstr "Järjestelmän oletus"
 
@@ -3057,11 +3072,11 @@ msgid "Restart"
 msgstr "Käynnistä GDM uudelleen"
 
 #. markup
-#: gui/gdmlogin.c:4069 gui/greeter/greeter.c:1332
+#: gui/gdmlogin.c:4069 gui/greeter/greeter.c:1331
 msgid "Session directory is missing"
 msgstr "Istuntohakemistoa ei ole."
 
-#: gui/gdmlogin.c:4071 gui/greeter/greeter.c:1334
+#: gui/gdmlogin.c:4071 gui/greeter/greeter.c:1333
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
@@ -3072,11 +3087,11 @@ msgstr ""
 "jälkeen."
 
 #. markup
-#: gui/gdmlogin.c:4095 gui/greeter/greeter.c:1359
+#: gui/gdmlogin.c:4095 gui/greeter/greeter.c:1358
 msgid "Configuration is not correct"
 msgstr "Asetukset ovat rikki"
 
-#: gui/gdmlogin.c:4097 gui/greeter/greeter.c:1361
+#: gui/gdmlogin.c:4097 gui/greeter/greeter.c:1360
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, and thus I ran the default command.  Please fix your configuration."
@@ -3085,11 +3100,11 @@ msgstr ""
 "takia ajettiin oletuskomento. Ole hyvä ja korjaa asetukset."
 
 #. markup
-#: gui/gdmlogin.c:4122 gui/greeter/greeter.c:1388
+#: gui/gdmlogin.c:4122 gui/greeter/greeter.c:1387
 msgid "No configuration was found"
 msgstr "Asetuksia ei löytynyt"
 
-#: gui/gdmlogin.c:4124 gui/greeter/greeter.c:1390
+#: gui/gdmlogin.c:4124 gui/greeter/greeter.c:1389
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
@@ -3375,7 +3390,7 @@ msgstr "Salli _pääkäyttäjän kirjautua GDM:llä"
 
 #: gui/gdmsetup-strings.c:67 gui/gdmsetup.glade.h:8
 msgid "Allow root to login r_emotely with GDM"
-msgstr "Anna pääkäyttäjän e_täkirjautua GDM:llä"
+msgstr "Salli pääkäyttäjän e_täkirjautua GDM:llä"
 
 #: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:7
 msgid "Allow remote _timed logins"
@@ -3633,24 +3648,24 @@ msgstr ""
 "GDM on todennäköisesti juuri päivitetty.\n"
 "Käynnistä GDM-palvelin tai koko tietokone uudelleen."
 
-#: gui/greeter/greeter.c:1172
+#: gui/greeter/greeter.c:1171
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Virhe ladattaessa teemaa %s"
 
 #. markup
-#: gui/greeter/greeter.c:1225
+#: gui/greeter/greeter.c:1224
 msgid "The theme for the graphical greeter is corrupt"
 msgstr "Graafisen tervehtimen teema on rikki"
 
-#: gui/greeter/greeter.c:1228
+#: gui/greeter/greeter.c:1227
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
 msgstr "Teema ei sisällä määritelmää tunnuksen/salasanansyöttöelementille."
 
 #. markup
-#: gui/greeter/greeter.c:1261
+#: gui/greeter/greeter.c:1260
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
@@ -3659,7 +3674,7 @@ msgstr ""
 "Yritetään käynnistää oletustervehdin."
 
 #. markup
-#: gui/greeter/greeter.c:1283
+#: gui/greeter/greeter.c:1282
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -3671,11 +3686,11 @@ msgstr ""
 msgid "Last"
 msgstr "Edellinen"
 
-#: gui/greeter/greeter_action_language.c:206
+#: gui/greeter/greeter_action_language.c:195
 msgid "Select a language"
 msgstr "Valitse kieli"
 
-#: gui/greeter/greeter_action_language.c:223
+#: gui/greeter/greeter_action_language.c:212
 msgid "Select a language for your session to use:"
 msgstr "Valitse istunnossa käytettävä kieli:"
 
@@ -3894,9 +3909,3 @@ msgstr ""
 #: vicious-extensions/ve-nongnome.c:135
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr "Maa-asetustolla on liian monta aliastasoa, tämä voi olla silmukka"
-
-#~ msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
-#~ msgstr "%s: GDM-käyttäjää (%s) ei löydy. Yritetään käyttäjää \"nobody\"."
-
-#~ msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
-#~ msgstr "%s: GDM-ryhmää (%s) ei löydy. Yritetään ryhmällä \"nobody\"."
