@@ -158,7 +158,7 @@ enum {
 
 #define GDM_KEY_STANDARD_XSERVER "daemon/StandardXServer=/usr/bin/X11/X"
 #define GDM_KEY_FLEXIBLE_XSERVERS "daemon/FlexibleXServers=5"
-#define GDM_KEY_XNEST "daemon/Xnest=/usr/bin/X11/Xnest -name Xnest"
+#define GDM_KEY_XNEST "daemon/Xnest=/usr/bin/X11/Xnest -name Xnest -kb"
 
 /* Per server definitions */
 #define GDM_KEY_SERVER_NAME "name=Standard server"

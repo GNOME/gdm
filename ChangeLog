@@ -1,3 +1,12 @@
+Sat Jun 01 09:12:59 2002  George Lebl <jirka@5z.com>
+
+	* config/gdm.conf.in, daemon/gdm.h: Default the -kb argument to Xnest
+	  This is because Xnest doesn't seem to want to read the x config
+	  file and so you'd have to manually set xkb kind of stuff and this
+	  way you'll sort of inherit the layout from the toplevel X server,
+	  except you won't have access to xkb, and hopefully that's not a
+	  problem.  Fixes #66610
+
 Fri May 31 15:55:25 2002  George Lebl <jirka@5z.com>
 
 	* daemon/misc.[ch]: a new function (yet unused) to find out valid
