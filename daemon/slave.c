@@ -59,9 +59,6 @@
 #include "choose.h"
 #include "errorgui.h"
 
-
-static const gchar RCSid[]="$Id$";
-
 /* Some per slave globals */
 static GdmDisplay *d;
 static gchar *login = NULL;
@@ -417,6 +414,10 @@ gdm_slave_run (GdmDisplay *display)
 	    sleep (1+openretries*2);
 	    openretries++;
 	}
+    }
+
+    if (SERVER_IS_LOCAL (d)) {
+	    gdm_slave_send (GDM_SOP_START_NEXT_LOCAL, FALSE);
     }
 
     /* something may have gone wrong, try xfailed, if local (non-flexi),
@@ -1253,30 +1254,27 @@ gdm_slave_greeter (void)
 }
 
 void
-gdm_slave_send_num (const char *opcode, long num)
+gdm_slave_send (const char *str, gboolean wait_for_usr2)
 {
 	char *msg;
 	int fd;
 	char *fifopath;
 
-	gdm_debug ("Sending %s == %ld for slave %ld",
-		   opcode,
-		   (long)num,
-		   (long)getpid ());
+	gdm_debug ("Sending %s", str);
 
-	gdm_got_usr2 = FALSE;
+	if (wait_for_usr2)
+		gdm_got_usr2 = FALSE;
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 
 	fd = open (fifopath, O_WRONLY);
 	/* eek */
 	if (fd < 0) {
-		gdm_error (_("%s: Can't open fifo!"), "gdm_send_num");
+		gdm_error (_("%s: Can't open fifo!"), "gdm_slave_send");
 		return;
 	}
 
-	msg = g_strdup_printf ("\n%s %ld %ld\n", opcode,
-			       (long)getpid (), (long)num);
+	msg = g_strdup_printf ("\n%s\n", str);
 
 	write (fd, msg, strlen (msg));
 
@@ -1284,16 +1282,34 @@ gdm_slave_send_num (const char *opcode, long num)
 
 	close (fd);
 
-	if ( ! gdm_got_usr2)
+	if (wait_for_usr2 &&
+	    ! gdm_got_usr2)
 		sleep (10);
+}
+
+void
+gdm_slave_send_num (const char *opcode, long num)
+{
+	char *msg;
+
+	gdm_debug ("Sending %s == %ld for slave %ld",
+		   opcode,
+		   (long)num,
+		   (long)getpid ());
+
+
+	msg = g_strdup_printf ("%s %ld %ld", opcode,
+			       (long)getpid (), (long)num);
+
+	gdm_slave_send (msg, TRUE);
+
+	g_free (msg);
 }
 
 void
 gdm_slave_send_string (const char *opcode, const char *str)
 {
 	char *msg;
-	int fd;
-	char *fifopath;
 
 	/* Evil!, all this for debugging? */
 	if (GdmDebug) {
@@ -1308,28 +1324,12 @@ gdm_slave_send_string (const char *opcode, const char *str)
 				   (long)getpid ());
 	}
 
-	gdm_got_usr2 = FALSE;
-
-	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
-
-	fd = open (fifopath, O_WRONLY);
-	/* eek */
-	if (fd < 0) {
-		gdm_error (_("%s: Can't open fifo!"), "gdm_slave_send_string");
-		return;
-	}
-
-	msg = g_strdup_printf ("\n%s %ld %s\n", opcode,
+	msg = g_strdup_printf ("%s %ld %s", opcode,
 			       (long)getpid (), ve_sure_string (str));
 
-	write (fd, msg, strlen (msg));
+	gdm_slave_send (msg, TRUE);
 
 	g_free (msg);
-
-	close (fd);
-
-	if ( ! gdm_got_usr2)
-		sleep (10);
 }
 
 static void
@@ -2485,13 +2485,22 @@ gdm_slave_child_handler (int sig)
 		gdm_server_stop (d);
 		gdm_verify_cleanup (d);
 
-		if (WIFEXITED (status)) {
+		/* The greeter is only allowed to pass back these
+		 * exit codes, else we'll just remanage */
+		if (WIFEXITED (status) &&
+		    (WEXITSTATUS (status) == DISPLAY_ABORT ||
+		     WEXITSTATUS (status) == DISPLAY_REBOOT ||
+		     WEXITSTATUS (status) == DISPLAY_HALT ||
+		     WEXITSTATUS (status) == DISPLAY_SUSPEND ||
+		     WEXITSTATUS (status) == DISPLAY_RESTARTGDM)) {
 			_exit (WEXITSTATUS (status));
 		} else {
 			_exit (DISPLAY_REMANAGE);
 		}
 	} else if (pid != 0 && pid == d->sesspid) {
 		d->sesspid = 0;
+	} else if (pid != 0 && pid == d->chooserpid) {
+		d->chooserpid = 0;
 	} else if (pid != 0 && pid == d->servpid) {
 		d->servstat = SERVER_DEAD;
 		d->servpid = 0;

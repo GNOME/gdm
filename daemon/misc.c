@@ -36,9 +36,6 @@
 #include "gdm.h"
 #include "misc.h"
 
-static const gchar RCSid[]="$Id$";
-
-
 /* Configuration option variables */
 extern gchar *GdmPidFile;
 extern gboolean GdmDebug;

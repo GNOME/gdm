@@ -1,3 +1,28 @@
+Thu Nov 15 23:25:41 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: some build fixes
+
+	* **/*.c: remove RCSid's as they are un-fun for merging
+
+	* Merge from gdm-2-2:
+
+	Thu Nov 15 21:18:48 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch], daemon/slave.[ch], daemon/server.c, gui/gdmlogin.c:
+	  clean up a bit of the constants mess (though it's still an utter
+	  mess).  Implement a new SUP opcode so that the daemon knows
+	  when the server was started so that it can start local servers
+	  in order, so that things like complete machine lockups don't occur
+	  (I got one just testing this).  Also add a 3 second 'padding'
+	  between server starts to really be sure.
+
+	* config/gdm.conf.in:  add some comments, mostly for distributions
+
+	2001-11-06  Gregory Leblanc  <gleblanc@linuxweasel.com>
+
+	* gdm.spec.in: more minor updates, just to piss George off.  :-)
+	There's a ChangeLog in the file, if you care that much.
+
 Mon Nov 05 21:28:43 2001  George Lebl <jirka@5z.com>
 
 	* configure.in, **/Makefile.am, daemon/*.[ch], utils/*.[ch],

@@ -96,7 +96,6 @@
 #include "choose.h"
 #include "xdmcp.h"
 
-static const gchar RCSid[]="$Id$";
 gint pending = 0;
 
 #ifdef HAVE_LIBXDMCP

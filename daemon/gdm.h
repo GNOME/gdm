@@ -41,10 +41,9 @@
 #define SERVER_IS_FLEXI(d) (d->type == TYPE_FLEXI || \
 			    d->type == TYPE_FLEXI_XNEST)
 
-#define SERVER_SUCCESS 0	/* X server default */
-#define SERVER_FAILURE 1	/* X server default */
+/* These are the servstat values, also used as server
+ * process exit codes */
 #define SERVER_TIMEOUT 2	/* Server didn't start */
-#define SERVER_NOTFOUND 127	/* X server default */
 #define SERVER_DEAD 250		/* Server stopped */
 #define SERVER_STARTED 251	/* Server started but not ready for connections yet */
 #define SERVER_RUNNING 252	/* Server running and ready for connections */
@@ -53,7 +52,7 @@
 /* DO NOTE USE 1, that's used as error if x connection fails usually */
 /* Note that there is no reasons why these were a power of two, and note
  * that they have to fit in 256 */
-#define DISPLAY_SUCCESS 0	/* All systems are go */
+/* These are the exit codes */
 #define DISPLAY_REMANAGE 2	/* Restart display */
 #define DISPLAY_ABORT 4		/* Houston, we have a problem */
 #define DISPLAY_REBOOT 8	/* Rebewt */
@@ -61,14 +60,16 @@
 #define DISPLAY_SUSPEND 17	/* Suspend */
 #define DISPLAY_CHOSEN 20	/* successful chooser session,
 				   restart display */
-#define DISPLAY_DEAD 32		/* Display not configured/started yet */
 #define DISPLAY_XFAILED 64	/* X failed */
 #define DISPLAY_RESTARTGDM 128	/* Restart GDM */
 
-#define XDMCP_DEAD 0
-#define XDMCP_PENDING 1
-#define XDMCP_MANAGED 2
-
+enum {
+	DISPLAY_UNBORN /* Not yet started */,
+	DISPLAY_ALIVE /* Yay! we're alive (non-xdmcp) */,
+	XDMCP_PENDING /* Pending XDMCP display */,
+	XDMCP_MANAGED /* Managed XDMCP display */,
+	DISPLAY_DEAD /* Left for dead */
+};
 
 /* Opcodes for the highly sophisticated protocol used for
  * daemon<->greeter communications */
@@ -413,6 +414,7 @@ void gdm_quit (void);
 	/* 5 = Xnest can't connect */
 #define GDM_SOP_FLEXI_OK     "FLEXI_OK" /* <slave pid> */
 #define GDM_SOP_SOFT_RESTART "SOFT_RESTART" /* no arguments */
+#define GDM_SOP_START_NEXT_LOCAL "START_NEXT_LOCAL" /* no arguments */
 
 #define GDM_SUP_SOCKET "/tmp/.gdm_socket"
 

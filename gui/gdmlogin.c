@@ -51,8 +51,6 @@
  * within the protocol */
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 
-static const gchar RCSid[]="$Id$";
-
 /* Some strings that are in other files that we may want to
  * translate.  This is not actually used anywhere, it's just
  * to have gettext know about these strings. */
@@ -277,7 +275,7 @@ static void
 gdm_login_done (int sig)
 {
     kill_thingies ();
-    _exit (DISPLAY_SUCCESS);
+    _exit (EXIT_SUCCESS);
 }
 
 static void
@@ -2211,7 +2209,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_print ("%c\n", STX);
 
 	/* screw gtk_main_quit, we want to make sure we definately die */
-	_exit (DISPLAY_SUCCESS);
+	_exit (EXIT_SUCCESS);
 	break;
 
     case GDM_GNOMESESS:

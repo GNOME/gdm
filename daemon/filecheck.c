@@ -24,8 +24,6 @@
 #include "gdm.h"
 #include "filecheck.h"
 
-static const gchar RCSid[]="$Id$";
-
 /**
  * gdm_file_check:
  * @caller: String to be prepended to syslog error messages.

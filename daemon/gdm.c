@@ -51,12 +51,8 @@
 #include "errorgui.h"
 #include "gdm-net.h"
 
-static const gchar RCSid[]="$Id$";
-
-
 /* Local functions */
 static void gdm_config_parse (void);
-static void gdm_local_servers_start (GdmDisplay *d);
 static void gdm_handle_message (GdmConnection *conn,
 				const char *msg,
 				gpointer data);
@@ -175,6 +171,18 @@ display_exists (int num)
 	return FALSE;
 }
 
+static int
+compare_displays (gconstpointer a, gconstpointer b)
+{
+	const GdmDisplay *d1 = a;
+	const GdmDisplay *d2 = b;
+	if (d1->dispnum < d2->dispnum)
+		return -1;
+	else if (d1->dispnum > d2->dispnum)
+		return 1;
+	else
+		return 0;
+}	
 
 /**
  * gdm_config_parse:
@@ -411,7 +419,9 @@ gdm_config_parse (void)
 			    iter = gnome_config_iterator_next (iter, &k, &v);
 			    continue;
 		    }
-		    displays = g_slist_append (displays, disp);
+		    displays = g_slist_insert_sorted (displays,
+						      disp,
+						      compare_displays);
 		    if (disp_num > high_display_num)
 			    high_display_num = disp_num;
 	    } else {
@@ -451,7 +461,6 @@ gdm_config_parse (void)
 		    gdm_fail (_("gdm_config_parse: Xdmcp disabled and no local servers defined. Aborting!"));
 	    }
     }
-
 
     /* Lookup user and groupid for the gdm user */
     pwent = getpwnam (GdmUser);
@@ -598,30 +607,39 @@ gdm_daemonify (void)
     open("/dev/null", O_RDWR); /* open stderr - fd 2 */
 }
 
-
-/**
- * gdm_local_servers_start:
- * @d: Pointer to a GdmDisplay struct
- *
- * Start all local (i.e. non-XDMCP) X servers
- */
-
 static void 
-gdm_local_servers_start (GdmDisplay *d)
+gdm_start_first_unborn_local (int delay)
 {
-    if (d && d->type == TYPE_LOCAL) {
-	gdm_debug ("gdm_local_servers_start: Starting %s", d->name);
+	GSList *li;
 
-	/* only the first local display has timed login going on */
-	if (gdm_first_login)
-		d->timed_login_ok = TRUE;
+	for (li = displays; li != NULL; li = li->next) {
+		GdmDisplay *d = li->data;
 
-	if ( ! gdm_display_manage (d)) {
-		gdm_display_unmanage (d);
-		/* only the first local display gets autologged in */
-		gdm_first_login = FALSE;
+		if (d != NULL &&
+		    d->type == TYPE_LOCAL &&
+		    d->dispstat == DISPLAY_UNBORN) {
+			gdm_debug ("gdm_start_first_unborn_local: "
+				   "Starting %s", d->name);
+
+			/* well sleep at least 'delay' seconds
+			 * before starting */
+			d->sleep_before_run = delay;
+
+			/* only the first local display has
+			 * timed login going on */
+			if (gdm_first_login)
+				d->timed_login_ok = TRUE;
+
+			if ( ! gdm_display_manage (d)) {
+				gdm_display_unmanage (d);
+				/* only the first local display gets
+				 * autologged in */
+				gdm_first_login = FALSE;
+			} else {
+				break;
+			}
+		}
 	}
-    }
 }
 
 static void
@@ -827,7 +845,7 @@ gdm_cleanup_children (void)
 	    status = WEXITSTATUS (exitstatus);
 	    crashed = FALSE;
     } else {
-	    status = DISPLAY_SUCCESS;
+	    status = EXIT_SUCCESS;
 	    crashed = TRUE;
     }
 	
@@ -937,6 +955,9 @@ gdm_cleanup_children (void)
 		gdm_safe_restart ();
 
 	gdm_display_unmanage (d);
+
+	/* If there are some pending locals, start them now */
+	gdm_start_first_unborn_local (3 /* delay */);
 	break;
 	
     case DISPLAY_REBOOT:	/* Reboot machine */
@@ -1005,6 +1026,10 @@ gdm_cleanup_children (void)
 				/* an original way to deal with these things:
 				 * "Screw you guys, I'm going home!" */
 				gdm_display_unmanage (d);
+
+				/* If there are some pending locals,
+				 * start them now */
+				gdm_start_first_unborn_local (3 /* delay */);
 				break;
 			}
 			gdm_debug ("gdm_child_action: Trying again");
@@ -1035,8 +1060,12 @@ gdm_cleanup_children (void)
 	
 	/* This is a local server so we start a new slave */
 	if (d->type == TYPE_LOCAL) {
-		if ( ! gdm_display_manage (d))
+		if ( ! gdm_display_manage (d)) {
 			gdm_display_unmanage (d);
+			/* If there are some pending locals,
+			 * start them now */
+			gdm_start_first_unborn_local (3 /* delay */);
+		}
 	/* Remote displays will send a request to be managed */
 	} else /* TYPE_XDMCP, TYPE_FLEXI, TYPE_FLEXI_XNEST */ {
 		gdm_display_unmanage (d);
@@ -1332,7 +1361,7 @@ main (int argc, char *argv[])
     create_connections ();
 
     /* Start local X servers */
-    g_slist_foreach (displays, (GFunc) gdm_local_servers_start, NULL);
+    gdm_start_first_unborn_local (0 /* delay */);
 
     /* Accept remote connections */
     if (GdmXdmcp) {
@@ -1759,6 +1788,8 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 	} else if (strcmp (msg, GDM_SOP_SOFT_RESTART) == 0) {
 		gdm_restart_mode = TRUE;
 		gdm_safe_restart ();
+	} else if (strcmp (msg, GDM_SOP_START_NEXT_LOCAL) == 0) {
+		gdm_start_first_unborn_local (3 /* delay */);
 	}
 }
 

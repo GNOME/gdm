@@ -4,7 +4,7 @@ dnl
 dnl Due to the sed scripts being split on 90 line
 dnl blocks, this macro needs to be right at the beggining.
 dnl
-AM_PROG_XML_I18N_TOOLS
+AC_PROG_INTLTOOL
 
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gdm,2.3.90.0)
@@ -112,6 +112,10 @@ GNOME_COMPILE_WARNINGS(maximum)
 PKG_CHECK_MODULES(DAEMON, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
 AC_SUBST(DAEMON_CFLAGS)
 AC_SUBST(DAEMON_LIBS)
+
+PKG_CHECK_MODULES(JUSTGTK, gtk+-2.0 >= $GTK_REQUIRED)
+AC_SUBST(JUSTGTK_CFLAGS)
+AC_SUBST(JUSTGTK_LIBS)
 
 PKG_CHECK_MODULES(GUI, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED)
 AC_SUBST(GUI_CFLAGS)
@@ -295,7 +299,7 @@ if test x$with_xdmcp != xno ; then
 		AC_CHECK_LIB(Xdmcp, XdmcpFlush, [
 		     	AC_DEFINE(HAVE_LIBXDMCP)
 		     	XDMCP_LIBS="-lXdmcp"
-		     	XDMCP_SUPPORT=yes],, $GUI_LIBS)
+		     	XDMCP_SUPPORT=yes],,$JUSTGTK_LIBS)
 	])
 
 	if test x$with_xdmcp = xyes -a x$XDMCP_SUPPORT = x ; then
@@ -324,7 +328,7 @@ if test x$with_xinerama != xno ; then
 		AC_CHECK_LIB(Xinerama, XineramaQueryScreens, [
 		     	AC_DEFINE(HAVE_LIBXINERAMA)
 		     	LIBS="$LIBS -lXinerama"
-		     	XINERAMA_SUPPORT=yes],, $GUI_LIBS)
+		     	XINERAMA_SUPPORT=yes],,$JUSTGTK_LIBS)
 	])
 
 	if test x$with_xinerama = xyes -a x$XINERAMA_SUPPORT = x ; then
@@ -410,7 +414,6 @@ daemon/Makefile
 gui/Makefile
 utils/Makefile
 pixmaps/Makefile
-macros/Makefile
 config/Makefile
 docs/Makefile
 docs/C/Makefile

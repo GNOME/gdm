@@ -52,8 +52,6 @@
 #include "misc.h"
 #include "gdmwm.h"
 
-static const gchar RCSid[]="$Id$";
-
 /* set the DOING_GDM_DEVELOPMENT env variable if you want to
  * search for the glade file in the current dir and not the system
  * install dir, better then something you have to change
