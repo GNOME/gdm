@@ -35,6 +35,10 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Catalan"), "ca_ES", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Chinese (simplified)"), "zh_CN", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Chinese (traditional)"), "zh_TW", 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Croatian"), "hr_HR", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Czech"), "cs_CZ", 0 },

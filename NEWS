@@ -1,5 +1,27 @@
 Ahh news...
 
+2.2.3.1 stuff:
+
+- file descriptor leaks and messups dealt with, making gdm2 work again
+  on debian and probably others (Ryan Murray, me)
+
+- Posibility of a "soft" restart, that is scheduling a restart when all logins
+  end.  This is now possible from gdmconfig.
+
+- A new "protocol" for the slave to talk to the daemon by way of a fifo.
+
+- The spec file now schedules a soft restart on install (this will work only
+  for upgrades from 2.2.3.1 to higher versions obviously)
+
+- Handle the slave process crashing much more gracefully.  And be generally
+  more thorough in killing our children.
+
+- Killing an X server while running is no longer treated as an X crash by gdm
+
+- Other cleanups and minor fixes
+
+- Translation updates (Christian Rose, Ole Laursen, Zbigniew Chyla)
+
 2.2.3 stuff:
 
 - Various XDMCP fixes, including a working indirect queries (the host chooser).
