@@ -59,6 +59,7 @@ extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
 extern gchar *GdmSessDir;
 extern gchar *GdmGreeter;
+extern gchar *GdmBackgroundProg;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmPreSession;
 extern gchar *GdmPostSession;
@@ -123,6 +124,7 @@ gdm_slave_start (GdmDisplay *display)
     child.sa_handler = gdm_slave_child_handler;
     child.sa_flags = SA_RESTART|SA_NOCLDSTOP;
     sigemptyset (&child.sa_mask);
+    sigaddset (&child.sa_mask, SIGCHLD);
     
     if (sigaction (SIGCHLD, &child, NULL) < 0) 
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_init: Error setting up CHLD signal handler"));
@@ -171,13 +173,30 @@ gdm_slave_greeter (void)
     
     /* Run the init script. gdmslave suspends until script has terminated */
     gdm_slave_exec_script (d, GdmDisplayInit);
+
+    if (GdmBackgroundProg != NULL &&
+	GdmBackgroundProg[0] != '\0') {
+	    d->backgroundpid = fork ();
+
+	    if (d->backgroundpid == -1) {
+		    /*ingore errors, this is irrelevant */
+		    d->backgroundpid = 0;
+	    } else if (d->backgroundpid == 0) {
+		    argv = g_strsplit (GdmBackgroundProg, argdelim, MAX_ARGS);
+		    execv (argv[0], argv);
+		    /*ingore errors, this is irrelevant */
+		    _exit (0);
+	    }
+    } else {
+	    d->backgroundpid = 0;
+    }
     
     /* Open a pipe for greeter communications */
     if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't init pipe to gdmgreeter"));
     
     greet = TRUE;
-    
+
     /* Fork. Parent is gdmslave, child is greeter process. */
     switch (d->greetpid = fork()) {
 	
@@ -323,6 +342,12 @@ gdm_slave_session_start (void)
     kill (d->greetpid, SIGINT);
     waitpid (d->greetpid, 0, 0); 
     d->greetpid = 0;
+
+    /* Kill background */
+    if (d->backgroundpid != 0) {
+	    kill (d->backgroundpid, SIGTERM);
+	    d->backgroundpid = 0;
+    }
     
     sigprocmask (SIG_SETMASK, &omask, NULL);
     
@@ -542,6 +567,12 @@ static void
 gdm_slave_term_handler (int sig)
 {
     gdm_debug ("gdm_slave_term_handler: %s got TERM signal", d->name);
+
+    if (d->backgroundpid != 0) {
+	    gdm_debug ("gdm_slave_term_handler: Whacking background");
+	    kill (d->backgroundpid, SIGTERM);
+	    d->backgroundpid = 0;
+    } 
     
     if (d->greetpid) {
 	gdm_debug ("gdm_slave_term_handler: Whacking greeter");
@@ -576,7 +607,12 @@ gdm_slave_child_handler (int sig)
 	if (WIFEXITED (status))
 	    gdm_debug ("gdm_slave_child_handler: %d returned %d", pid, WEXITSTATUS (status));
 	
-	if (pid == d->greetpid && greet)
+	if (pid == d->greetpid && greet) {
+	    if (d->backgroundpid != 0) {
+		kill (d->backgroundpid, SIGTERM);
+	        d->backgroundpid = 0;
+	    }
+
 	    if (WIFEXITED (status))
 		exit (WEXITSTATUS (status));
 	    else {
@@ -587,10 +623,15 @@ gdm_slave_child_handler (int sig)
 		
 		exit (DISPLAY_REMANAGE);
 	    }
+	}
 	
 	if (pid && pid == d->sesspid) {
 	    gdm_slave_session_stop();
 	    gdm_slave_session_cleanup();
+	}
+
+	if (pid && pid == d->backgroundpid) {
+	    d->backgroundpid = 0;
 	}
     }
 }
@@ -790,16 +831,24 @@ gdm_slave_exit (gint status, const gchar *format, ...)
 
     /* Kill children where applicable */
     if (d->greetpid)
-	kill (SIGTERM, d->greetpid);
+	kill (d->greetpid, SIGTERM);
+    d->greetpid = 0;
+
+    if (d->backgroundpid)
+	kill (d->backgroundpid, SIGTERM);
+    d->backgroundpid = 0;
 
     if (d->chooserpid)
-	kill (SIGTERM, d->chooserpid);
+	kill (d->chooserpid, SIGTERM);
+    d->chooserpid = 0;
 
     if (d->sesspid)
-	kill (SIGTERM, d->sesspid);
+	kill (d->sesspid, SIGTERM);
+    d->sesspid = 0;
 
     if (d->servpid)
-	kill (SIGTERM, d->servpid);
+	kill (d->servpid, SIGTERM);
+    d->servpid = 0;
 
     exit (status);
 }

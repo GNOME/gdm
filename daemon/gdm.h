@@ -72,6 +72,7 @@
 /* Configuration constants */
 #define GDM_KEY_CHOOSER "daemon/Chooser=gdmchooser"
 #define GDM_KEY_GREETER "daemon/Greeter=gdmlogin"
+#define GDM_KEY_BACKGROUNDPROG "daemon/BackgroundProgram="
 #define GDM_KEY_GROUP "daemon/Group=gdm"
 #define GDM_KEY_HALT "daemon/HaltCommand=shutdown -h now"
 #define GDM_KEY_INITDIR "daemon/DisplayInitDir="
@@ -152,6 +153,8 @@ struct _GdmDisplay {
     guint8 servtries;
     guint8 type;
     pid_t greetpid;
+    pid_t backgroundpid; /* background process running on greeter, such as
+			    screensavers and cool stuff like that */
     pid_t servpid;
     pid_t sesspid;
     pid_t slavepid;

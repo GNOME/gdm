@@ -58,6 +58,7 @@ gchar *GdmUser = NULL;
 gchar *GdmGroup = NULL;
 gchar *GdmSessDir = NULL;
 gchar *GdmGreeter = NULL;
+gchar *GdmBackgroundProg = NULL;
 gchar *GdmChooser = NULL;
 gchar *GdmLogDir = NULL;
 gchar *GdmDisplayInit = NULL;
@@ -118,6 +119,7 @@ gdm_config_parse (void)
     GdmDefaultPath = gnome_config_get_string (GDM_KEY_PATH);
     GdmDisplayInit = gnome_config_get_string (GDM_KEY_INITDIR);
     GdmGreeter = gnome_config_get_string (GDM_KEY_GREETER);
+    GdmBackgroundProg = gnome_config_get_string (GDM_KEY_BACKGROUNDPROG);
     GdmGroup = gnome_config_get_string (GDM_KEY_GROUP);
     GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
     GdmKillInitClients = gnome_config_get_int (GDM_KEY_KILLIC);
