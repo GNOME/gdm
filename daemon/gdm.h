@@ -806,22 +806,34 @@ enum {
 
 
 #define NEVER_FAILS_seteuid(uid) \
-	{ int r = seteuid (uid); \
+	{ int r = 0; \
+	  if (geteuid () != uid) \
+	    r = seteuid (uid); \
 	  if G_UNLIKELY (r != 0) \
-        gdm_fail ("GDM file %s: line %d (%s): Cannot run seteuid to %d", \
+        gdm_fail ("GDM file %s: line %d (%s): Cannot run seteuid to %d: %s", \
 		  __FILE__,						\
 		  __LINE__,						\
 		  __PRETTY_FUNCTION__,					\
-                  (int)uid);			}
+                  (int)uid,						\
+		  strerror (errno));			}
 #define NEVER_FAILS_setegid(gid) \
-	{ int r = setegid (gid); \
+	{ int r = 0; \
+	  if (getegid () != gid) \
+	    r = setegid (gid); \
 	  if G_UNLIKELY (r != 0) \
-        gdm_fail ("GDM file %s: line %d (%s): Cannot run setegid to %d", \
+        gdm_fail ("GDM file %s: line %d (%s): Cannot run setegid to %d: %s", \
 		  __FILE__,						\
 		  __LINE__,						\
 		  __PRETTY_FUNCTION__,					\
-                  (int)gid);			}
-		
+                  (int)gid,						\
+		  strerror (errno));			}
+
+/* first goes to euid-root and then sets the egid and euid, to make sure
+ * this succeeds */
+#define NEVER_FAILS_root_set_euid_egid(uid,gid) \
+	{ NEVER_FAILS_seteuid (0); \
+	  NEVER_FAILS_setegid (gid); \
+	  if (uid != 0) { NEVER_FAILS_seteuid (uid); } }
 
 #endif /* GDM_H */
 

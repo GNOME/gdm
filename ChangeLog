@@ -1,3 +1,10 @@
+Fri Dec 19 16:50:12 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c, daemon/gdm.[ch], daemon/auth.c, daemon/misc.c:
+	  Lots of general paranoia stemming from fixing #127780.  Make sure
+	  that the NEVER_FAILS_ eid/uid setting never actually fails by just
+	  setting euid root before doing anything and such.
+
 Fri Dec 19 15:44:03 2003  George Lebl <jirka@5z.com>
 
 	* configure.in, acconfig.h, daemon/verify-(crypt|shadow).c: Massage

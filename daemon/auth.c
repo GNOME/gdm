@@ -530,18 +530,15 @@ try_open_read_as_root (const char *file)
 	int fd;
 	uid_t oldeuid = geteuid ();
 	uid_t oldegid = getegid ();
-	setegid (0);
-	seteuid (0);
+	NEVER_FAILS_root_set_euid_egid (0, 0);
 
 	VE_IGNORE_EINTR (fd = open (file, O_RDONLY));
 	if G_UNLIKELY (fd < 0) {
-		seteuid (oldeuid);
-		setegid (oldegid);
+		NEVER_FAILS_root_set_euid_egid (oldeuid, oldegid);
 		return FALSE;
 	} else {
 		VE_IGNORE_EINTR (close (fd));
-		seteuid (oldeuid);
-		setegid (oldegid);
+		NEVER_FAILS_root_set_euid_egid (oldeuid, oldegid);
 		return TRUE;
 	}
 }

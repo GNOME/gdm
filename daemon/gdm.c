@@ -675,8 +675,8 @@ gdm_config_parse (void)
     GdmRebootReal = ve_get_first_working_command (GdmReboot, FALSE);
     GdmSuspendReal = ve_get_first_working_command (GdmSuspend, FALSE);
 
-    NEVER_FAILS_setegid (GdmGroupId);	/* gid remains `gdm' */
-    NEVER_FAILS_seteuid (GdmUserId);
+    /* gid remains `gdm' */
+    NEVER_FAILS_root_set_euid_egid (GdmUserId, GdmGroupId);
 
     /* Check that the greeter can be executed */
     bin = ve_first_word (GdmGreeter);
@@ -722,15 +722,13 @@ gdm_config_parse (void)
     /* Enter paranoia mode */
     check_servauthdir (&statbuf);
 
-    NEVER_FAILS_seteuid (0);
-    NEVER_FAILS_setegid (0);
+    NEVER_FAILS_root_set_euid_egid (0, 0);
 
     /* Now set things up for us as  */
     chown (GdmServAuthDir, 0, GdmGroupId);
     chmod (GdmServAuthDir, (S_IRWXU|S_IRWXG|S_ISVTX));
 
-    NEVER_FAILS_setegid (GdmGroupId);
-    NEVER_FAILS_seteuid (GdmUserId);
+    NEVER_FAILS_root_set_euid_egid (GdmUserId, GdmGroupId);
 
     /* again paranoid */
     check_servauthdir (&statbuf);
@@ -769,8 +767,7 @@ gdm_config_parse (void)
 		      GdmServAuthDir, statbuf.st_mode, (S_IRWXU|S_IRWXG|S_ISVTX));
     }
 
-    NEVER_FAILS_seteuid (0);
-    NEVER_FAILS_setegid (0);
+    NEVER_FAILS_root_set_euid_egid (0, 0);
 
     check_logdir ();
 
@@ -2882,13 +2879,17 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 			return;
 		}
 
+		/* paranoia */
+		NEVER_FAILS_seteuid (0);
+
+		if (setegid (pw->pw_gid) < 0)
+			NEVER_FAILS_setegid (GdmGroupId);
+
 		if (seteuid (xnest_uid) < 0) {
 			gdm_connection_write (conn,
 					      "ERROR 100 Not authenticated\n");
 			return;
 		}
-		if (setegid (pw->pw_gid) < 0)
-			NEVER_FAILS_setegid (GdmGroupId);
 
 		gdm_assert (xnest_auth_file != NULL);
 		gdm_assert (xnest_disp != NULL);
@@ -2906,8 +2907,7 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 		}
 
 		/* this must always work, thus the asserts */
-		NEVER_FAILS_seteuid (0);
-		NEVER_FAILS_setegid (oldgid);
+		NEVER_FAILS_root_set_euid_egid (0, oldgid);
 
 		if ( ! authorized) {
 			/* Sorry dude, you're not doing something

@@ -288,20 +288,24 @@ run_session_output (gboolean read_until_eof)
 	old = geteuid ();
 	oldg = getegid ();
 
+	/* make sure we can set the gid */
+	NEVER_FAILS_seteuid (0);
+
 	/* make sure we are the user when we do this,
 	   for purposes of file limits and all that kind of
 	   stuff */
 	if G_LIKELY (logged_in_gid >= 0) {
 		if G_UNLIKELY (setegid (logged_in_gid) != 0) {
-			gdm_error ("Can't set GID to user GID");
+			gdm_error (_("Can't set EGID to user GID"));
+			NEVER_FAILS_root_set_euid_egid (old, oldg);
 			return;
 		}
 	}
 
 	if G_LIKELY (logged_in_uid >= 0) {
 		if G_UNLIKELY (seteuid (logged_in_uid) != 0) {
-			gdm_error ("Can't set UID to user UID");
-			NEVER_FAILS_seteuid (old);
+			gdm_error (_("Can't set EUID to user UID"));
+			NEVER_FAILS_root_set_euid_egid (old, oldg);
 			return;
 		}
 	}
@@ -370,8 +374,7 @@ run_session_output (gboolean read_until_eof)
 			break;
 	}
 
-	NEVER_FAILS_seteuid (old);
-	NEVER_FAILS_setegid (oldg);
+	NEVER_FAILS_root_set_euid_egid (old, oldg);
 }
 
 #define TIME_UNSET_P(tv) ((tv)->tv_sec == 0 && (tv)->tv_usec == 0)
@@ -415,12 +418,15 @@ try_to_touch_fb_userauth (void)
 			old = geteuid ();
 			oldg = getegid ();
 
+			NEVER_FAILS_seteuid (0);
+
 			/* make sure we are the user when we do this,
 			   for purposes of file limits and all that kind of
 			   stuff */
 			if G_LIKELY (logged_in_gid >= 0) {
 				if G_UNLIKELY (setegid (logged_in_gid) != 0) {
 					gdm_error ("Can't set GID to user GID");
+					NEVER_FAILS_root_set_euid_egid (old, oldg);
 					return;
 				}
 			}
@@ -428,7 +434,7 @@ try_to_touch_fb_userauth (void)
 			if G_LIKELY (logged_in_uid >= 0) {
 				if G_UNLIKELY (seteuid (logged_in_uid) != 0) {
 					gdm_error ("Can't set UID to user UID");
-					NEVER_FAILS_seteuid (old);
+					NEVER_FAILS_root_set_euid_egid (old, oldg);
 					return;
 				}
 			}
@@ -436,8 +442,7 @@ try_to_touch_fb_userauth (void)
 			/* This will "touch" the file */
 			utime (d->userauth, NULL);
 
-			NEVER_FAILS_seteuid (old);
-			NEVER_FAILS_setegid (oldg);
+			NEVER_FAILS_root_set_euid_egid (old, oldg);
 
 			d->last_auth_touch = ct;
 		}
@@ -1725,8 +1730,7 @@ gdm_slave_wait_for_login (void)
 		check_notifies_now ();
 
 		/* just for paranoia's sake */
-		NEVER_FAILS_seteuid (0);
-		NEVER_FAILS_setegid (0);
+		NEVER_FAILS_root_set_euid_egid (0, 0);
 
 		gdm_debug ("gdm_slave_wait_for_login: In loop");
 		login = gdm_verify_user (d,
@@ -1958,10 +1962,10 @@ run_pictures (void)
 
 		picfile = NULL;
 
+		NEVER_FAILS_seteuid (0);
 		if G_UNLIKELY (setegid (pwent->pw_gid) != 0 ||
 			       seteuid (pwent->pw_uid) != 0) {
-			NEVER_FAILS_seteuid (0);
-			NEVER_FAILS_setegid (GdmGroupId);
+			NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
 		}
@@ -1976,8 +1980,7 @@ run_pictures (void)
 								 GdmRelaxPerms)) {
 				g_free (picfile);
 
-				NEVER_FAILS_seteuid (0);
-				NEVER_FAILS_setegid (GdmGroupId);
+				NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 
 				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 				continue;
@@ -1994,8 +1997,7 @@ run_pictures (void)
 								 GdmRelaxPerms)) {
 				g_free (picfile);
 
-				NEVER_FAILS_seteuid (0);
-				NEVER_FAILS_setegid (GdmGroupId);
+				NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 
 				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 				continue;
@@ -2052,8 +2054,7 @@ run_pictures (void)
 							g_free (picfile);
 							picfile = g_strdup ("");
 						}
-						NEVER_FAILS_seteuid (0);
-						NEVER_FAILS_setegid (GdmGroupId);
+						NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 
 						g_free (cfgdir);
 
@@ -2101,8 +2102,7 @@ run_pictures (void)
 				picdir = g_build_filename (pwent->pw_dir, ".gnome", NULL);
 			}
 			if (access (picfile, F_OK) != 0) {
-				NEVER_FAILS_seteuid (0);
-				NEVER_FAILS_setegid (GdmGroupId);
+				NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 
 				/* Try the global face directory */
 
@@ -2140,8 +2140,7 @@ run_pictures (void)
 					       GdmRelaxPerms)) {
 				g_free (picdir);
 
-				NEVER_FAILS_seteuid (0);
-				NEVER_FAILS_setegid (GdmGroupId);
+				NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 
 				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 				continue;
@@ -2151,8 +2150,7 @@ run_pictures (void)
 
 		VE_IGNORE_EINTR (r = stat (picfile, &s));
 		if G_UNLIKELY (r < 0 || s.st_size > GdmUserMaxFile) {
-			NEVER_FAILS_seteuid (0);
-			NEVER_FAILS_setegid (GdmGroupId);
+			NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
@@ -2161,8 +2159,7 @@ run_pictures (void)
 		VE_IGNORE_EINTR (fp = fopen (picfile, "r"));
 		g_free (picfile);
 		if G_UNLIKELY (fp == NULL) {
-			NEVER_FAILS_seteuid (0);
-			NEVER_FAILS_setegid (GdmGroupId);
+			NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 
 			gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
 			continue;
@@ -2176,8 +2173,7 @@ run_pictures (void)
 			VE_IGNORE_EINTR (fclose (fp));
 			g_free (ret);
 
-			NEVER_FAILS_seteuid (0);
-			NEVER_FAILS_setegid (GdmGroupId);
+			NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 
 			continue;
 		}
@@ -2255,8 +2251,7 @@ run_pictures (void)
 			
 		gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "done");
 
-		NEVER_FAILS_seteuid (0);
-		NEVER_FAILS_setegid (GdmGroupId);
+		NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 	}
 	g_free (response);
 }
@@ -2274,17 +2269,17 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	char buf[2048];
 	int cnt;
 
+	NEVER_FAILS_seteuid (0);
 	NEVER_FAILS_setegid (GdmGroupId);
 
 	if G_UNLIKELY (seteuid (fromuid) != 0) {
-		NEVER_FAILS_setegid (oldg);
+		NEVER_FAILS_root_set_euid_egid (old, oldg);
 		return NULL;
 	}
 
 	if ( ! gdm_auth_file_check ("copy_auth_file", fromuid,
 				    file, FALSE /* absentok */, NULL)) {
-		NEVER_FAILS_seteuid (old);
-		NEVER_FAILS_seteuid (oldg);
+		NEVER_FAILS_root_set_euid_egid (old, oldg);
 		return NULL;
 	}
 
@@ -2301,13 +2296,11 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	} while G_UNLIKELY (errno == EINTR);
 
 	if G_UNLIKELY (fromfd < 0) {
-		NEVER_FAILS_seteuid (old);
-		NEVER_FAILS_seteuid (oldg);
+		NEVER_FAILS_root_set_euid_egid (old, oldg);
 		return NULL;
 	}
 
-	NEVER_FAILS_seteuid (0);
-	NEVER_FAILS_setegid (0);
+	NEVER_FAILS_root_set_euid_egid (0, 0);
 
 	name = gdm_make_filename (GdmServAuthDir, d->name, ".XnestAuth");
 
@@ -2316,8 +2309,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 
 	if G_UNLIKELY (authfd < 0) {
 		VE_IGNORE_EINTR (close (fromfd));
-		NEVER_FAILS_seteuid (old);
-		NEVER_FAILS_setegid (oldg);
+		NEVER_FAILS_root_set_euid_egid (old, oldg);
 		g_free (name);
 		return NULL;
 	}
@@ -2338,8 +2330,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 			gdm_error ("Error reading %s: %s", file, strerror (errno));
 			VE_IGNORE_EINTR (close (fromfd));
 			VE_IGNORE_EINTR (close (authfd));
-			NEVER_FAILS_seteuid (old);
-			NEVER_FAILS_setegid (oldg);
+			NEVER_FAILS_root_set_euid_egid (old, oldg);
 			g_free (name);
 			return NULL;
 		}
@@ -2352,8 +2343,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 				gdm_error ("Error writing %s: %s", name, strerror (errno));
 				VE_IGNORE_EINTR (close (fromfd));
 				VE_IGNORE_EINTR (close (authfd));
-				NEVER_FAILS_seteuid (old);
-				NEVER_FAILS_setegid (oldg);
+				NEVER_FAILS_root_set_euid_egid (old, oldg);
 				g_free (name);
 				return NULL;
 			}
@@ -2370,8 +2360,7 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 	VE_IGNORE_EINTR (close (fromfd));
 	VE_IGNORE_EINTR (close (authfd));
 
-	NEVER_FAILS_seteuid (old);
-	NEVER_FAILS_setegid (oldg);
+	NEVER_FAILS_root_set_euid_egid (old, oldg);
 
 	return name;
 }
@@ -3238,14 +3227,14 @@ open_xsession_errors (struct passwd *pwent,
 		uid_t old = geteuid ();
 		uid_t oldg = getegid ();
 
+		seteuid (0);
 		if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
 			     seteuid (pwent->pw_uid) == 0) {
 			/* unlink to be anal */
 			VE_IGNORE_EINTR (unlink (filename));
 			VE_IGNORE_EINTR (logfd = open (filename, O_EXCL|O_CREAT|O_TRUNC|O_WRONLY, 0644));
 		}
-		NEVER_FAILS_seteuid (old);
-		NEVER_FAILS_setegid (oldg);
+		NEVER_FAILS_root_set_euid_egid (old, oldg);
 
 		if G_UNLIKELY (logfd < 0) {
 			gdm_error (_("%s: Could not open ~/.xsession-errors"),
@@ -3265,6 +3254,7 @@ open_xsession_errors (struct passwd *pwent,
 		uid_t old = geteuid ();
 		uid_t oldg = getegid ();
 
+		seteuid (0);
 		if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
 			     seteuid (pwent->pw_uid) == 0) {
 			oldmode = umask (077);
@@ -3272,8 +3262,7 @@ open_xsession_errors (struct passwd *pwent,
 			umask (oldmode);
 		}
 
-		NEVER_FAILS_seteuid (old);
-		NEVER_FAILS_setegid (oldg);
+		NEVER_FAILS_root_set_euid_egid (old, oldg);
 
 		if G_LIKELY (logfd >= 0) {
 			d->xsession_errors_filename = filename;
@@ -3827,8 +3816,7 @@ gdm_slave_session_start (void)
 	usrlang = g_strdup ("");
     }
 
-    NEVER_FAILS_seteuid (0);
-    NEVER_FAILS_setegid (GdmGroupId);
+    NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
 
     if (greet) {
 	    tmp = gdm_ensure_extension (usrsess, ".desktop");
@@ -3907,8 +3895,7 @@ gdm_slave_session_start (void)
 				 * it was ok */
 				home_dir_ok ? home_dir : NULL);
 
-    NEVER_FAILS_seteuid (0);
-    NEVER_FAILS_setegid (GdmGroupId);
+    NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
     
     if G_UNLIKELY ( ! authok) {
 	    gdm_debug ("gdm_slave_session_start: Auth not OK");
@@ -4028,8 +4015,7 @@ gdm_slave_session_start (void)
     }
 
     /* We must be root for this, and we are, but just to make sure */
-    NEVER_FAILS_seteuid (0);
-    NEVER_FAILS_setegid (GdmGroupId);
+    NEVER_FAILS_root_set_euid_egid (0, GdmGroupId);
     /* Reset all the process limits, pam may have set some up for our process and that
        is quite evil.  But pam is generally evil, so this is to be expected. */
     gdm_reset_limits ();
@@ -4171,6 +4157,7 @@ gdm_slave_session_stop (gboolean run_post_session,
     g_free (local_login);
 
     if (pwent != NULL) {
+	    seteuid (0); /* paranoia */
 	    /* Remove display from ~user/.Xauthority */
 	    if G_LIKELY (setegid (pwent->pw_gid) == 0 &&
 			 seteuid (pwent->pw_uid) == 0) {
