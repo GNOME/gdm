@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.5.90.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-15 12:33+0100\n"
-"PO-Revision-Date: 2004-02-15 12:05+0100\n"
+"POT-Creation-Date: 2004-02-26 19:45+0100\n"
+"PO-Revision-Date: 2004-02-26 19:10+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -112,8 +112,8 @@ msgid ""
 "your cursor above them.  To get out of this mode type 'exit' in the window "
 "in the upper left corner"
 msgstr ""
-"C'est la session de secours xterm.  Les fenêtres n'ont maintenant le focus "
-"que si vous avez le curseur au-dessus.  Pour quitter ce mode, saisissez "
+"C'est la session de secours xterm. Les fenêtres n'ont maintenant le focus "
+"que si vous avez le curseur au-dessus. Pour quitter ce mode, saisissez "
 "« exit » dans la fenêtre du coin supérieur gauche."
 
 #: config/gettextfoo.h:13
@@ -123,8 +123,8 @@ msgid ""
 "To get out of this mode type 'exit' in the window in the upper left corner"
 msgstr ""
 "Je ne peux démarrer votre session et j'ai donc démarré une session de "
-"secours xterm.  Les fenêtres n'ont maintenant le focus que si vous avez le "
-"curseur au-dessus.  Pour quitter ce mode, saisissez « exit » dans la fenêtre "
+"secours xterm. Les fenêtres n'ont maintenant le focus que si vous avez le "
+"curseur au-dessus. Pour quitter ce mode, saisissez « exit » dans la fenêtre "
 "du coin supérieur gauche."
 
 #: config/gnome.desktop.in.h:1
@@ -203,12 +203,12 @@ msgstr ""
 "secondes, il y a quelquechose de mauvais qui se passe. Je vais attendre 2 "
 "minutes avant d'essayer de nouveau sur le visuel %s."
 
-#: daemon/display.c:243
+#: daemon/display.c:244
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s : impossible de créer de tube"
 
-#: daemon/display.c:315
+#: daemon/display.c:316
 #, c-format
 msgid "%s: Failed forking gdm slave process for %s"
 msgstr "%s : la création du processus esclave gdm pour %s a échoué"
@@ -250,16 +250,12 @@ msgstr "%s : %s n'appartient pas à l'uid %d."
 #: daemon/filecheck.c:76 daemon/filecheck.c:119
 #, c-format
 msgid "%s: %s is writable by group."
-msgstr ""
-"%s : %s peut être modifié par les membres du groupe. Les droits d'accès "
-"devraient être 644. Ignore."
+msgstr "%s : %s peut être modifié par le groupe."
 
 #: daemon/filecheck.c:82
 #, c-format
 msgid "%s: %s is writable by other."
-msgstr ""
-"%s : %s peut être modifié par d'autres utilisateurs. Les droits d'accès "
-"devraient être 755. Ignore."
+msgstr "%s : %s peut être modifié par les autres utilisateurs."
 
 #: daemon/filecheck.c:97 daemon/filecheck.c:162
 #, c-format
@@ -274,16 +270,14 @@ msgstr "%s : %s n'est pas un fichier."
 #: daemon/filecheck.c:126
 #, c-format
 msgid "%s: %s is writable by group/other."
-msgstr ""
-"%s : %s peut être modifié par d'autres utilisateurs. Les droits d'accès "
-"devraient être 755. Ignore."
+msgstr "%s : %s peut être modifié par le groupe et les autres utilisateurs."
 
 #: daemon/filecheck.c:133 daemon/filecheck.c:186
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
 "%s : %s est plus grand que la taille maximale de fichiers définie par "
-"l'administrateur système. Ignore."
+"l'administrateur système."
 
 #: daemon/gdm-net.c:271
 #, c-format
@@ -340,7 +334,7 @@ msgstr "%s : Authdir %s n'est pas un répertoire. Abandon."
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
 msgstr ""
-"%s: Logdir %s n'existe pas ou n'est pas un répertoire.  Utulise ServAuthDir %"
+"%s: Logdir %s n'existe pas ou n'est pas un répertoire. Utilise ServAuthDir %"
 "s."
 
 #: daemon/gdm.c:311 gui/gdmlogin.c:650 gui/greeter/greeter.c:101
@@ -573,14 +567,14 @@ msgstr ""
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
 msgstr ""
 "Impossible d'écrire le fichier PID %s, probablement par manque d'espace "
-"disque.  Erreur : %s\n"
+"disque. Erreur : %s\n"
 
 #: daemon/gdm.c:838 daemon/gdm.c:846 daemon/gdm.c:2045 daemon/gdm.c:2053
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
 msgstr ""
 "Impossible d'écrire le fichier PID %s, probablement par manque d'espace "
-"disque.  Erreur : %s"
+"disque. Erreur : %s"
 
 #: daemon/gdm.c:856
 #, c-format
@@ -588,7 +582,7 @@ msgid "%s: fork() failed!"
 msgstr "%s : fork() a échoué !"
 
 #. should never happen
-#: daemon/gdm.c:859 daemon/slave.c:3373
+#: daemon/gdm.c:859 daemon/slave.c:3374
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s : setsid() a échoué : %s !"
@@ -730,7 +724,7 @@ msgstr "Seul le root peut lancer gdm\n"
 #: daemon/gdm.c:2084 daemon/gdm.c:2088 daemon/gdm.c:2098 daemon/gdm.c:2104
 #: daemon/gdm.c:2115 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
 #: daemon/misc.c:1618 daemon/misc.c:1622 daemon/misc.c:1626
-#: daemon/server.c:510 daemon/server.c:523 daemon/slave.c:805
+#: daemon/server.c:521 daemon/server.c:534 daemon/slave.c:805
 #: daemon/slave.c:819 daemon/slave.c:829 daemon/slave.c:839 daemon/slave.c:851
 #: gui/gdmchooser.c:1924 gui/gdmchooser.c:1927 gui/gdmchooser.c:1930
 #: gui/gdmlogin.c:3928 gui/gdmlogin.c:3936 gui/gdmlogin.c:3939
@@ -744,7 +738,7 @@ msgstr ""
 
 #: daemon/gdm.c:2025
 msgid "gdm already running. Aborting!"
-msgstr "GDM est déjà lancé. Abandon !"
+msgstr "gdm est déjà lancé. Abandon !"
 
 #: daemon/gdm.c:2124
 #, c-format
@@ -827,7 +821,7 @@ msgstr ""
 msgid "Can not start fallback console"
 msgstr "Impossible de démarrer la console de secours"
 
-#: daemon/server.c:330
+#: daemon/server.c:341
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -838,7 +832,7 @@ msgstr ""
 "autre visuel ? Si vous répondez non, j'essaierai de démarrer le serveur sur %"
 "s une nouvelle fois.%s"
 
-#: daemon/server.c:337
+#: daemon/server.c:348
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -848,90 +842,90 @@ msgstr ""
 "touche de fonction, par exemple Ctrl-Alt-F7 affiche la console 7. Les "
 "serveurs X utilisent généralement les consoles 7 et plus.)"
 
-#: daemon/server.c:383
+#: daemon/server.c:394
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Le visuel « %s » ne peut être ouvert par Xnest"
 
-#: daemon/server.c:414
+#: daemon/server.c:425
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "Le visuel %s est occupé. Il y a déjà un serveur X en fonctionnement."
 
-#: daemon/server.c:498
+#: daemon/server.c:509
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s : erreur à l'ouverture du tube : %s"
 
-#: daemon/server.c:780
+#: daemon/server.c:794
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s : impossible de trouver un numéro de visuel libre"
 
-#: daemon/server.c:795
+#: daemon/server.c:821
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
-msgstr "%s : visuel %s occupé.  Essaie un autre numéro de visuel."
+msgstr "%s : visuel %s occupé. Essaie un autre numéro de visuel."
 
-#: daemon/server.c:889
+#: daemon/server.c:916
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Commande de serveur invalide « %s »"
 
-#: daemon/server.c:894
+#: daemon/server.c:921
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr ""
 "Le nom de serveur « %s » n'a pas été trouvé, utilise le serveur standard"
 
-#: daemon/server.c:1070
+#: daemon/server.c:1097
 #, c-format
 msgid "%s: Could not open logfile for display %s!"
 msgstr ""
 "%s : impossible d'ouvrir le fichier de journalisation pour le visuel %s !"
 
-#: daemon/server.c:1083 daemon/server.c:1089 daemon/server.c:1094
+#: daemon/server.c:1110 daemon/server.c:1116 daemon/server.c:1121
 #, c-format
 msgid "%s: Error setting %s to %s"
 msgstr "%s : erreur lors de la définition de %s à %s"
 
-#: daemon/server.c:1131
+#: daemon/server.c:1158
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s : commande de serveur vide pour le visuel %s"
 
-#: daemon/server.c:1145
+#: daemon/server.c:1172
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr ""
 "%s : le serveur a été lancé par l'uid %d mais cet utilisateur n'existe pas"
 
-#: daemon/server.c:1160 daemon/slave.c:2493 daemon/slave.c:2971
+#: daemon/server.c:1187 daemon/slave.c:2494 daemon/slave.c:2972
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s : impossible de régler l'id de groupe à %d"
 
-#: daemon/server.c:1166 daemon/slave.c:2498 daemon/slave.c:2976
+#: daemon/server.c:1193 daemon/slave.c:2499 daemon/slave.c:2977
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s : initgroups() a échoué pour %s"
 
-#: daemon/server.c:1172 daemon/slave.c:2503 daemon/slave.c:2981
+#: daemon/server.c:1199 daemon/slave.c:2504 daemon/slave.c:2982
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s : impossible de régler l'id d'utilisateur à %d"
 
-#: daemon/server.c:1179
+#: daemon/server.c:1206
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s : impossible de régler l'id de groupe à 0"
 
-#: daemon/server.c:1190
+#: daemon/server.c:1217
 #, c-format
 msgid "%s: Xserver not found: %s"
 msgstr "%s : serveur X non trouvé : %s"
 
-#: daemon/server.c:1198
+#: daemon/server.c:1225
 #, c-format
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s : impossible de cloner le processus du serveur X"
@@ -953,8 +947,8 @@ msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
 msgstr ""
-"Vous êtes déjà connecté.  Vous pouvez malgré tout vous connecter, retourner "
-"à votre session précédente, ou annuler cette connexion."
+"Vous êtes déjà connecté. Vous pouvez malgré tout vous connecter, retourner à "
+"votre session précédente, ou annuler cette connexion."
 
 #: daemon/slave.c:1120
 msgid "Return to previous login"
@@ -970,7 +964,7 @@ msgstr ""
 "Vous êtes déjà connecté. Vous pouvez malgré tout vous connecter ou annuler "
 "cette connexion"
 
-#: daemon/slave.c:1214
+#: daemon/slave.c:1215
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -986,40 +980,40 @@ msgstr ""
 "cause d'une erreur interne.\n"
 "Veuillez contacter votre administrateur\n"
 "système ou vérifier votre syslog pour\n"
-"diagnostiquer.  Dans le même temps, ce\n"
-"visuel sera désactivé.  Veuillez\n"
+"diagnostiquer. Dans le même temps, ce\n"
+"visuel sera désactivé. Veuillez\n"
 "redémarrer gdm lorsque le problème\n"
 "sera résolu."
 
-#: daemon/slave.c:1463
+#: daemon/slave.c:1464
 #, c-format
 msgid "%s: cannot fork"
 msgstr "%s : impossible de cloner"
 
-#: daemon/slave.c:1510
+#: daemon/slave.c:1511
 #, c-format
 msgid "%s: cannot open display %s"
 msgstr "%s : impossible d'ouvrir le visuel %s"
 
-#: daemon/slave.c:1661
+#: daemon/slave.c:1662
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file.  I will attempt to start it from the "
 "default location."
 msgstr ""
-"Impossible d'exécuter le programme de configuration.  Vérifiez que son "
-"chemin est correctement défini dans le fichier de configuration. J'essaye de "
-"le lancer depuis l'emplacement par défaut."
+"Impossible d'exécuter le programme de configuration. Vérifiez que son chemin "
+"est correctement défini dans le fichier de configuration. J'essaye de le "
+"lancer depuis l'emplacement par défaut."
 
-#: daemon/slave.c:1675
+#: daemon/slave.c:1676
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file."
 msgstr ""
-"Impossible d'exécuter le programme de configuration.  Vérifiez que son "
-"chemin est correctement défini dans le fichier de configuration."
+"Impossible d'exécuter le programme de configuration. Vérifiez que son chemin "
+"est correctement défini dans le fichier de configuration."
 
-#: daemon/slave.c:1805
+#: daemon/slave.c:1806
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -1027,12 +1021,12 @@ msgstr ""
 "Saisissez le mot de passe de root\n"
 "pour modifier la configuration."
 
-#: daemon/slave.c:2447 daemon/slave.c:2452
+#: daemon/slave.c:2448 daemon/slave.c:2453
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s : impossible d'initialiser le tube vers gdmgreeter"
 
-#: daemon/slave.c:2575
+#: daemon/slave.c:2576
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  So I have started a single server "
@@ -1044,17 +1038,17 @@ msgstr ""
 "unique serveur. Vous devriez vous connecter et corriger la configuration. "
 "Veuillez noter que les connexions automatiques et différées sont désactivées."
 
-#: daemon/slave.c:2589
+#: daemon/slave.c:2590
 msgid ""
 "I could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
 "server."
 msgstr ""
 "Je ne peux démarrer le serveur X habituel (votre environnement graphique) et "
-"c'est donc un serveur X de secours.  Vous devriez vous connecter et "
+"c'est donc un serveur X de secours. Vous devriez vous connecter et "
 "configurer proprement votre serveur X."
 
-#: daemon/slave.c:2598
+#: daemon/slave.c:2599
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -1062,7 +1056,7 @@ msgid ""
 msgstr ""
 "Le visuel demandé était utilisé, ce serveur a été lancé sur le visuel %s."
 
-#: daemon/slave.c:2618
+#: daemon/slave.c:2619
 msgid ""
 "The greeter program appears to be crashing.\n"
 "I will attempt to use a different one."
@@ -1071,120 +1065,120 @@ msgstr ""
 "Je vais essayer d'en utiliser un autre."
 
 #. Something went wrong
-#: daemon/slave.c:2639
+#: daemon/slave.c:2640
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
 msgstr ""
 "%s : impossible de démarrer la bannière avec les modules gtk : %s. Essaye "
 "sans les modules"
 
-#: daemon/slave.c:2646
+#: daemon/slave.c:2647
 #, c-format
 msgid "%s: Cannot start greeter trying default: %s"
 msgstr ""
 "%s : impossible de démarrer la bannière en utilisant les valeurs par "
 "défaut : %s"
 
-#: daemon/slave.c:2658
+#: daemon/slave.c:2659
 msgid ""
 "Cannot start the greeter program, you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
 msgstr ""
 "Impossible de démarrer la bannière d'accueil, vous ne pourrez pas vous "
-"connecter.  Ce visuel sera désactivé.  Essayez de vous connecter d'une autre "
+"connecter. Ce visuel sera désactivé. Essayez de vous connecter d'une autre "
 "manière et éditez le fichier de configuration."
 
 #. If no greeter we really have to disable the display
-#: daemon/slave.c:2665
+#: daemon/slave.c:2666
 #, c-format
 msgid "%s: Error starting greeter on display %s"
 msgstr "%s : erreur au lancement de la bannière d'accueil sur le visuel %s"
 
-#: daemon/slave.c:2669
+#: daemon/slave.c:2670
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s : impossible de cloner le processus gdmgreeter"
 
-#: daemon/slave.c:2754
+#: daemon/slave.c:2755
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s : impossible d'ouvrir le fifo !"
 
-#: daemon/slave.c:2930
+#: daemon/slave.c:2931
 #, c-format
 msgid "%s: Can't init pipe to gdmchooser"
 msgstr "%s : impossible d'initialiser le tube vers gdmchooser"
 
-#: daemon/slave.c:3028
+#: daemon/slave.c:3029
 msgid ""
 "Cannot start the chooser program, you will probably not be able to log in.  "
 "Please contact the system administrator."
 msgstr ""
 "Impossible de démarrer le sélecteur, vous ne pourrez probablement pas vous "
-"connecter.  Veuillez contacter votre administrateur système."
+"connecter. Veuillez contacter votre administrateur système."
 
-#: daemon/slave.c:3032
+#: daemon/slave.c:3033
 #, c-format
 msgid "%s: Error starting chooser on display %s"
 msgstr "%s : erreur au lancement du sélecteur sur le visuel %s"
 
-#: daemon/slave.c:3035
+#: daemon/slave.c:3036
 #, c-format
 msgid "%s: Can't fork gdmchooser process"
 msgstr "%s : impossible de cloner le processus gdmchooser"
 
-#: daemon/slave.c:3279
+#: daemon/slave.c:3280
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s : impossible d'ouvrir ~/.xsession-errors"
 
-#: daemon/slave.c:3410
+#: daemon/slave.c:3411
 #, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr ""
 "%s : l'exécution du script de pré-session a renvoyé une valeur > 0. Abandon."
 
-#: daemon/slave.c:3439
+#: daemon/slave.c:3440
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "La langue %s n'existe pas, utilise %s"
 
-#: daemon/slave.c:3440
+#: daemon/slave.c:3441
 msgid "System default"
 msgstr "Système par défaut"
 
-#: daemon/slave.c:3456
+#: daemon/slave.c:3457
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s : impossible de configurer l'environnement pour %s. Abandon."
 
-#: daemon/slave.c:3477
+#: daemon/slave.c:3478
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s : setusercontext() a échoué pour %s. Abandon."
 
-#: daemon/slave.c:3483
+#: daemon/slave.c:3484
 #, c-format
 msgid "%s: Could not become %s. Aborting."
 msgstr "%s : impossible de devenir %s. Abandon."
 
-#: daemon/slave.c:3543
+#: daemon/slave.c:3544
 #, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
 msgstr ""
 "%s : aucune ligne Exec dans le fichier de session : %s, démarrage de la "
 "session de secours GNOME"
 
-#: daemon/slave.c:3549
+#: daemon/slave.c:3550
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
 msgstr ""
-"La session que vous avez sélectionné ne semble pas valide.  je vais lancer "
-"la session de secours GNOME pour vous."
+"La session que vous avez sélectionné ne semble pas valide. Je vais lancer la "
+"session de secours GNOME pour vous."
 
-#: daemon/slave.c:3563
+#: daemon/slave.c:3564
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
@@ -1192,7 +1186,7 @@ msgstr ""
 "%s : impossible de trouver ou d'exécuter le script de base Xsession, essaye "
 "la session de secours GNOME"
 
-#: daemon/slave.c:3569
+#: daemon/slave.c:3570
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
@@ -1201,13 +1195,13 @@ msgstr ""
 "session de secours GNOME"
 
 #. yaikes
-#: daemon/slave.c:3584
+#: daemon/slave.c:3585
 #, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
 "%s : gnome-session non trouvé pour une session de secours GNOME, essaye Xterm"
 
-#: daemon/slave.c:3589
+#: daemon/slave.c:3590
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
@@ -1215,67 +1209,67 @@ msgstr ""
 "Impossible de trouver l'installation GNOME, je vais essayer d'exécuter la "
 "« Session de secours Xterm »."
 
-#: daemon/slave.c:3597
+#: daemon/slave.c:3598
 msgid ""
 "This is the Failsafe Gnome session.  You will be logged into the 'Default' "
 "session of Gnome with no startup scripts run.  This is only to fix problems "
 "in your installation."
 msgstr ""
-"C'est une « Session de secours GNOME ».  Vous serez connecté dans la session "
-"« Default » de GNOME sans aucun script de démarrage au lancement.  C'est "
+"C'est une « Session de secours GNOME ». Vous serez connecté dans la session "
+"« Default » de GNOME sans aucun script de démarrage au lancement. C'est "
 "seulement pour corriger Les problèmes de votre installation."
 
-#: daemon/slave.c:3612
+#: daemon/slave.c:3613
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Impossible de trouver « xterm » pour démarrer une session de secours"
 
-#: daemon/slave.c:3625
+#: daemon/slave.c:3626
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
 "To exit the terminal emulator, type 'exit' and an enter into the window."
 msgstr ""
-"C'est une session de secours Xterm.  Vous serez connecté dans une console de "
+"C'est une session de secours Xterm. Vous serez connecté dans une console de "
 "terminal afin que vous puissiez corriger votre système si vous ne pouvez "
 "vous connecter d'une autre manière. Pour quitter l'émulateur de terminal, "
 "saisissez « exit » et tapez « Entrée » dans la fenêtre."
 
-#: daemon/slave.c:3652
+#: daemon/slave.c:3653
 #, c-format
 msgid "%s: User not allowed to log in"
 msgstr "%s : l'utilisateur n'est pas autorisé à se connecter"
 
-#: daemon/slave.c:3655
+#: daemon/slave.c:3656
 msgid "The system administrator has disabled your account."
 msgstr "L'administrateur système a désactivé votre compte."
 
-#: daemon/slave.c:3668
+#: daemon/slave.c:3669
 msgid "Error! Unable to set executable context."
 msgstr "Erreur ! Impossible de définir le contexte de l'exécutable."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3676 daemon/slave.c:3681
+#: daemon/slave.c:3677 daemon/slave.c:3682
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s : impossible d'exécuter %s %s %s"
 
-#: daemon/slave.c:3692
+#: daemon/slave.c:3693
 msgid "Cannot start the session due to some internal error."
 msgstr "Impossible de démarrer la session à cause d'une erreur interne."
 
-#: daemon/slave.c:3746
+#: daemon/slave.c:3747
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr ""
 "%s : l'utilisateur a passé l'authentification mais getpwnam(%s) a échoué !"
 
-#: daemon/slave.c:3760
+#: daemon/slave.c:3761
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr ""
 "%s : l'exécution du script de pré-session a renvoyé une valeur > 0. Abandon."
 
-#: daemon/slave.c:3769
+#: daemon/slave.c:3770
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1287,66 +1281,66 @@ msgid ""
 msgstr ""
 "Votre dossier personnel est censé être :\n"
 "« %s »\n"
-"mais il ne semble pas exister.  Voulez-vous vous connecter en utilisant le "
+"mais il ne semble pas exister. Voulez-vous vous connecter en utilisant le "
 "répertoire /tmp comme votre dossier personnel ?\n"
 "\n"
 "Il est plus que certain que rien ne fonctionne à moins que vous n'utilisiez "
 "une session de secours."
 
-#: daemon/slave.c:3777
+#: daemon/slave.c:3778
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s : dossier personnel pour %s : « %s » n'existe pas !"
 
-#: daemon/slave.c:3940
+#: daemon/slave.c:3941
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
 "writing.  In any case, it is not possible to log in.  Please contact your "
 "system administrator"
 msgstr ""
-"GDM ne peut écrire dans votre fichier d'autorisation.  Cela peut signifier "
+"GDM ne peut écrire dans votre fichier d'autorisation. Cela peut signifier "
 "que vous êtes à cours d'espace disque ou que votre dossier personnel ne peut "
-"être ouvert en écriture.  Dans tous les cas, il n'est pas possible de vous "
-"connecter.  Veuillez contacter votre administrateur système."
+"être ouvert en écriture. Dans tous les cas, il n'est pas possible de vous "
+"connecter. Veuillez contacter votre administrateur système."
 
-#: daemon/slave.c:4016
+#: daemon/slave.c:4017
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s : erreur à la création de la session de l'utilisateur"
 
-#: daemon/slave.c:4097
+#: daemon/slave.c:4098
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
 "you may be out of diskspace.  Try logging in with one of the failsafe "
 "sessions to see if you can fix this problem."
 msgstr ""
-"Votre session n'a même pas duré 10 secondes.  Si vous ne vous êtes pas "
+"Votre session n'a même pas duré 10 secondes. Si vous ne vous êtes pas "
 "déconnecté vous-même, cela peut signifier qu'il y a des problèmes "
-"d'installation ou que vous êtes à cours d'espace disque.  Essayez de vous "
+"d'installation ou que vous êtes à cours d'espace disque. Essayez de vous "
 "connecter avec une des sessions de secours pour voir si cela résoud le "
 "problème."
 
-#: daemon/slave.c:4105
+#: daemon/slave.c:4106
 msgid "View details (~/.xsession-errors file)"
 msgstr "Afficher les détails (fichier ~/.xsession-errors)"
 
-#: daemon/slave.c:4249
+#: daemon/slave.c:4250
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM a détecté un arrêt ou un redémarrage en cours."
 
-#: daemon/slave.c:4343
+#: daemon/slave.c:4344
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Le ping vers %s a échoué, destruction du visuel !"
 
-#: daemon/slave.c:4623
+#: daemon/slave.c:4630
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s : erreur X fatale - Redémarrage de %s"
 
-#: daemon/slave.c:4717
+#: daemon/slave.c:4724
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1354,22 +1348,22 @@ msgstr ""
 "Son de connexion requis sur un visuel non-local ou le logiciel de lecture ne "
 "peut être lancé ou le son n'existe pas"
 
-#: daemon/slave.c:5072
+#: daemon/slave.c:5079
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s : l'exécution a échoué : %s"
 
-#: daemon/slave.c:5080 daemon/slave.c:5219
+#: daemon/slave.c:5087 daemon/slave.c:5226
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s : impossible de cloner le processus script !"
 
-#: daemon/slave.c:5174
+#: daemon/slave.c:5181
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s : la création d'un tube a échoué"
 
-#: daemon/slave.c:5213
+#: daemon/slave.c:5220
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s : l'exécution a échoué : %s"
@@ -1938,7 +1932,7 @@ msgstr "Ouvre une session sur l'hôte sélectionné"
 
 #: gui/gdmchooser-strings.c:12 gui/gdmchooser.glade.h:3
 msgid "C_onnect"
-msgstr "C_onnecter"
+msgstr "_Se connecter"
 
 #: gui/gdmchooser-strings.c:13 gui/gdmchooser.glade.h:10
 msgid "Status"
@@ -2027,7 +2021,7 @@ msgid ""
 "have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
 "La zone principale de cette application affiche les hôtes du\n"
-"réseau local qui ont « XDMCP » activé.  Ceci autorise les utilisateurs\n"
+"réseau local qui ont « XDMCP » activé. Ceci autorise les utilisateurs\n"
 "à se connecter à distance à d'autres machine de la même manière\n"
 "que si elles utilisaient une console.\n"
 "\n"
@@ -2081,8 +2075,8 @@ msgid ""
 "probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
 "computer."
 msgstr ""
-"La version du sélecteur (%s) ne correspond pas à celle du démon (%s).  Vous "
-"venez probablement de mettre à jour gdm.  Veuillez relancer le démon gdm ou "
+"La version du sélecteur (%s) ne correspond pas à celle du démon (%s). Vous "
+"venez probablement de mettre à jour gdm. Veuillez relancer le démon gdm ou "
 "redémarrer votre ordinateur."
 
 #: gui/gdmcomm.c:405 gui/gdmphotosetup.c:70
@@ -2133,7 +2127,7 @@ msgstr "Il y a eu des erreurs en essayant de démarrer le serveur X."
 
 #: gui/gdmcomm.c:463
 msgid "The X server failed.  Perhaps it is not configured well."
-msgstr "Le serveur X a échoué.  Peut-être n'est-il pas bien configuré."
+msgstr "Le serveur X a échoué. Peut-être n'est-il pas bien configuré."
 
 #: gui/gdmcomm.c:466
 msgid "Too many X sessions running."
@@ -2448,278 +2442,293 @@ msgstr "A-M|Anglais (Britannique)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:97
+msgid "A-M|English (Canadian)"
+msgstr "A-M|Anglais (Canadien)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:99
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Anglais (Irlandais)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:101
 msgid "A-M|Estonian"
 msgstr "A-M|Estonien"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101
+#: gui/gdmlanguages.c:103
 msgid "A-M|Finnish"
 msgstr "A-M|Finnois"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:103
+#: gui/gdmlanguages.c:105
 msgid "A-M|French"
 msgstr "A-M|Français"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:105
+#: gui/gdmlanguages.c:107
 msgid "A-M|Galician"
 msgstr "A-M|Galicien"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:107
+#: gui/gdmlanguages.c:109
 msgid "A-M|German"
 msgstr "A-M|Allemand"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:109
+#: gui/gdmlanguages.c:111
 msgid "A-M|Greek"
 msgstr "A-M|Grec"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:111
+#: gui/gdmlanguages.c:113
 msgid "A-M|Gujarati"
 msgstr "A-M|Goujarati"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:113 gui/gdmlanguages.c:115
+#: gui/gdmlanguages.c:115 gui/gdmlanguages.c:117
 msgid "A-M|Hebrew"
 msgstr "A-M|Hébreu"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:117
+#: gui/gdmlanguages.c:119
 msgid "A-M|Hindi"
 msgstr "A-M|Hindi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:119
+#: gui/gdmlanguages.c:121
 msgid "A-M|Hungarian"
 msgstr "A-M|Hongrois"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:121
+#: gui/gdmlanguages.c:123
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandais"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:123
+#: gui/gdmlanguages.c:125
 msgid "A-M|Indonesian"
 msgstr "A-M|Indonésien"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:125
+#: gui/gdmlanguages.c:127
 msgid "A-M|Interlingua"
 msgstr "A-M|Interlingua"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:127
+#: gui/gdmlanguages.c:129
 msgid "A-M|Irish"
 msgstr "A-M|Irlandais"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:129
+#: gui/gdmlanguages.c:131
 msgid "A-M|Italian"
 msgstr "A-M|Italien"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:131
+#: gui/gdmlanguages.c:133
 msgid "A-M|Japanese"
 msgstr "A-M|Japonais"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:133
+#: gui/gdmlanguages.c:135
 msgid "A-M|Kannada"
 msgstr "A-M|Kannada"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:135
+#: gui/gdmlanguages.c:137
 msgid "A-M|Korean"
 msgstr "A-M|Coréen"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:137
+#: gui/gdmlanguages.c:139
 msgid "A-M|Latvian"
 msgstr "A-M|Latvian"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:139
+#: gui/gdmlanguages.c:141
 msgid "A-M|Lithuanian"
 msgstr "A-M|Lituanien"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:141
+#: gui/gdmlanguages.c:143
 msgid "A-M|Macedonian"
 msgstr "A-M|Macédonien"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:143
+#: gui/gdmlanguages.c:145
 msgid "A-M|Malay"
 msgstr "A-M|Malais"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:145
+#: gui/gdmlanguages.c:147
 msgid "A-M|Malayalam"
 msgstr "A-M|Malayalam"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:147
+#: gui/gdmlanguages.c:149
 msgid "A-M|Marathi"
 msgstr "A-M|Marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:149
+#: gui/gdmlanguages.c:151
 msgid "A-M|Mongolian"
 msgstr "A-M|Mongolien"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:151
+#: gui/gdmlanguages.c:153
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norvégien (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:153
+#: gui/gdmlanguages.c:155
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norvégien (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:155
+#: gui/gdmlanguages.c:157
 msgid "N-Z|Oriya"
 msgstr "N-Z|Oriya"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:157
+#: gui/gdmlanguages.c:159
 msgid "N-Z|Panjabi"
 msgstr "A-M|Pendjabi"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:159
+#: gui/gdmlanguages.c:161
 msgid "N-Z|Persian"
 msgstr "N-Z|Perse"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:161
+#: gui/gdmlanguages.c:163
 msgid "N-Z|Polish"
 msgstr "N-Z|Polonais"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:163
+#: gui/gdmlanguages.c:165
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugais"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:165
+#: gui/gdmlanguages.c:167
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portuguais (Brésilien)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:167
+#: gui/gdmlanguages.c:169
 msgid "N-Z|Romanian"
 msgstr "N-Z|Roumain"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:169
+#: gui/gdmlanguages.c:171
 msgid "N-Z|Russian"
 msgstr "N-Z|Russe"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:171
+#: gui/gdmlanguages.c:173 gui/gdmlanguages.c:175
 msgid "N-Z|Serbian"
 msgstr "N-Z|Serbe"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:173
+#: gui/gdmlanguages.c:177
+msgid "N-Z|Serbian (Latin)"
+msgstr "N-Z|Serbe (Latin)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:179
+msgid "N-Z|Serbian (Jekavian)"
+msgstr "N-Z|Serbe (Jekavien)"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovaque"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:175
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovène"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:177
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Spanish"
 msgstr "A-M|Espagnol"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:179
+#: gui/gdmlanguages.c:187
 msgid "N-Z|Spanish (Mexico)"
 msgstr "A-M|Espagnol (Mexicain)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:181
+#: gui/gdmlanguages.c:189
 msgid "N-Z|Swedish"
 msgstr "N-Z|Suédois"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:183
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Suédois (Finlandais)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:185
+#: gui/gdmlanguages.c:193
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamil"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:187
+#: gui/gdmlanguages.c:195
 msgid "N-Z|Telugu"
 msgstr "N-Z|Telougou"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:189
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Thai"
 msgstr "N-Z|Thaï"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:191
+#: gui/gdmlanguages.c:199
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turc"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:193
+#: gui/gdmlanguages.c:201
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrainien"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:195
+#: gui/gdmlanguages.c:203
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamien"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:197
+#: gui/gdmlanguages.c:205
 msgid "N-Z|Walloon"
 msgstr "N-Z|Wallon"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:199
+#: gui/gdmlanguages.c:207
 msgid "N-Z|Welsh"
 msgstr "A-M|Gallois"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:201
+#: gui/gdmlanguages.c:209
 msgid "N-Z|Yiddish"
 msgstr "N-Z|Yiddish"
 
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:203
+#: gui/gdmlanguages.c:211
 msgid "Other|POSIX/C English"
 msgstr "Autre|Anglais POSIX/C"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:378
+#: gui/gdmlanguages.c:407
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:386
+#: gui/gdmlanguages.c:415
 msgid "N-Z"
 msgstr "N-Z"
 
@@ -2893,9 +2902,9 @@ msgid ""
 "will be read and it is only to be used when you can't log in otherwise.  "
 "GNOME will use the 'Default' session."
 msgstr ""
-"C'est une session de secours qui vous connectera dans GNOME.  Aucun script "
-"de démarrage ne sera lu et ne devrait être utilisé que lorsque vous ne "
-"pouvez pas vous connecter autrement.  GNOME utilisera la session « Default »."
+"C'est une session de secours qui vous connectera dans GNOME. Aucun script de "
+"démarrage ne sera lu et ne devrait être utilisé que lorsque vous ne pouvez "
+"pas vous connecter autrement. GNOME utilisera la session « Default »."
 
 #: gui/gdmlogin.c:1386 gui/greeter/greeter_session.c:473
 msgid "Failsafe _Terminal"
@@ -2907,9 +2916,9 @@ msgid ""
 "scripts will be read and it is only to be used when you can't log in "
 "otherwise.  To exit the terminal, type 'exit'."
 msgstr ""
-"C'est une session de secours qui vous connectera dans un terminal.  Aucun "
+"C'est une session de secours qui vous connectera dans un terminal. Aucun "
 "script de démarrage ne sera lu et ne devrait être utilisé que lorsque vous "
-"ne pouvez pas vous connecter autrement.  Pour quitter le terminal, saisissez "
+"ne pouvez pas vous connecter autrement. Pour quitter le terminal, saisissez "
 "« exit »."
 
 #: gui/gdmlogin.c:1409 gui/greeter/greeter_session.c:495
@@ -2958,7 +2967,7 @@ msgstr "Double-cliquez sur l'utilisateur pour vous connecter"
 
 #: gui/gdmlogin.c:2475
 msgid "GNOME Desktop Manager"
-msgstr "Gestionnaire de bureau GNOME"
+msgstr "Gestionnaire de bureaux GNOME"
 
 #: gui/gdmlogin.c:2501 gui/greeter/greeter_item.c:139
 msgid "%a %b %d, %H:%M"
@@ -3006,7 +3015,7 @@ msgstr "_Configurer le gestionnaire de connexions..."
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
-"Configure GDM (ce gestionnaire de connexions).  Ceci nécessite le mot de "
+"Configure GDM (ce gestionnaire de connexions). Ceci nécessite le mot de "
 "passe d'administrateur."
 
 #: gui/gdmlogin.c:2775 gui/greeter/greeter_system.c:191
@@ -3077,7 +3086,7 @@ msgid ""
 "computer."
 msgstr ""
 "La version de la bannière d'accueil (%s) ne correspond pas à la version du "
-"démon.  Vous avez probablement mis à jour gdm.  Veuillez redémarrer le démon "
+"démon. Vous avez probablement mis à jour gdm. Veuillez redémarrer le démon "
 "gdm ou redémarrer l'ordinateur."
 
 #: gui/gdmlogin.c:3839 gui/gdmlogin.c:3885 gui/greeter/greeter.c:666
@@ -3093,7 +3102,7 @@ msgid ""
 "computer."
 msgstr ""
 "La version de la bannière d'accueil (%s) ne correspond pas à la version du "
-"démon (%s).  Vous avez probablement mis à jour gdm.  Veuillez redémarrer le "
+"démon (%s). Vous avez probablement mis à jour gdm. Veuillez redémarrer le "
 "démon gdm ou redémarrer l'ordinateur."
 
 #: gui/gdmlogin.c:3883 gui/greeter/greeter.c:711
@@ -3111,7 +3120,7 @@ msgid ""
 "sessions you can use, but you should log in and correct the gdm "
 "configuration."
 msgstr ""
-"Votre répertoire de sessions est manquant ou vide !  Il y a deux sessions "
+"Votre répertoire de sessions est manquant ou vide ! Il y a deux sessions "
 "disponibles que vous pouvez utiliser, mais vous devriez vous connecter et "
 "corriger la configuration de gdm."
 
@@ -3127,7 +3136,7 @@ msgid ""
 msgstr ""
 "Le fichier de configuration contient une ligne de commande non valide pour "
 "le dialogue de connexion, et par conséquence j'exécute la commande par "
-"défaut.  Veuillez corriger votre configuration."
+"défaut. Veuillez corriger votre configuration."
 
 #. markup
 #: gui/gdmlogin.c:4122 gui/greeter/greeter.c:1388
@@ -3140,8 +3149,8 @@ msgid ""
 "session.  You should log in and create a configuration file with the GDM "
 "configuration program."
 msgstr ""
-"La configuration n'a pas été trouvée.  GDM utilise les valeurs par défaut "
-"pour lancer cette session.  Vous devriez vous connecter et créer un fichier "
+"La configuration n'a pas été trouvée. GDM utilise les valeurs par défaut "
+"pour lancer cette session. Vous devriez vous connecter et créer un fichier "
 "de configuration avec le programme de configuration de GDM."
 
 #: gui/gdmphotosetup.c:144
@@ -3154,7 +3163,7 @@ msgid ""
 "your system administrator to enable it in the GDM configurator program."
 msgstr ""
 "Le navigateur de figures n'est pas configuré dans le fichier de "
-"configuration de GDM.  veuillez demander à votre administrateur système de "
+"configuration de GDM. Veuillez demander à votre administrateur système de "
 "l'activer dans le programme de configuration de GDM."
 
 #: gui/gdmphotosetup.c:157 gui/gdmphotosetup.desktop.in.h:2
@@ -3497,7 +3506,7 @@ msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
 msgstr ""
-"Aucun support XDMCP dans le binaire.  Pour activer le support XDMCP vous "
+"Aucun support XDMCP dans le binaire. Pour activer le support XDMCP vous "
 "devez recompiler GDM avec les bibliothèques XDMCP."
 
 #: gui/gdmsetup-strings.c:89 gui/gdmsetup.glade.h:18
@@ -3638,10 +3647,10 @@ msgid ""
 "GNOME/System."
 msgstr ""
 "Cette fenêtre de configuration modifie les réglages pour le démon GDM, qui "
-"est l'écran de connexion graphique de GNOME.  Les modifications que vous "
+"est l'écran de connexion graphique de GNOME. Les modifications que vous "
 "effecturez prendront effet immédiatement.\n"
 "\n"
-"Notez que toutes les options de configuration ne sont pas listées ici.  Vous "
+"Notez que toutes les options de configuration ne sont pas listées ici. Vous "
 "devrez éditer %s si vous ne trouvez pas ce que vous cherchez.\n"
 "\n"
 "Pour une documentation complète, voyez dans le navigateur d'aide GNOME sous "
@@ -3713,7 +3722,7 @@ msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
 msgstr ""
-"Impossible de démarrer la bannière d'accueil standard.  Ce visuel va "
+"Impossible de démarrer la bannière d'accueil standard. Ce visuel va "
 "s'interrompre et vous devrez vous connecter d'une autre manière et corriger "
 "l'installation de gdm"
 
@@ -3731,11 +3740,11 @@ msgstr "Sélectionnez une langue à utiliser pour votre session :"
 
 #: gui/greeter/greeter_canvas_item.c:124
 msgid "Select _Language..."
-msgstr "Sélectionnez une _langue..."
+msgstr "Sélectionner une _langue..."
 
 #: gui/greeter/greeter_canvas_item.c:131
 msgid "Select _Session..."
-msgstr "Sélectionnez une _session..."
+msgstr "Sélectionner une _session..."
 
 #: gui/greeter/greeter_canvas_item.c:373
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
@@ -3774,11 +3783,11 @@ msgstr "Vous avez la touche Verr. Maj. activé !"
 
 #: gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
-msgstr "Choisir une session"
+msgstr "Choisissez une session"
 
 #: gui/greeter/greeter_system.c:274
 msgid "Choose an Action"
-msgstr "Choisir une action"
+msgstr "Choisissez une action"
 
 #: gui/greeter/greeter_system.c:296
 msgid "Shut _down the computer"
@@ -3889,9 +3898,9 @@ msgid ""
 "reinstall %s."
 msgstr ""
 "Une erreur s'est produite lors du chargement de l'élément d'interface "
-"utilisateur %s%s dans le fichier %s.  Le fichier glade décrivant l'interface "
-"était probablement corrompu.  %s ne peut continuer à s'éxécuter et va se "
-"terminer.  Vous devriez vérifier l'installation de %s ou réinstaller %s."
+"utilisateur %s%s dans le fichier %s. Le fichier glade décrivant l'interface "
+"était probablement corrompu. %s ne peut continuer à s'éxécuter et va se "
+"terminer. Vous devriez vérifier l'installation de %s ou réinstaller %s."
 
 #: vicious-extensions/glade-helper.c:210
 #, c-format
@@ -3912,9 +3921,9 @@ msgid ""
 "should check your installation of %s or reinstall %s."
 msgstr ""
 "Une erreur s'est produite lors du chargement de l'élément d'interface\n"
-"utilisateur %s%s à partir du fichier %s.  Les éléments de type CList "
-"devraient avoir %d colonnes.  Le fichier glade décrivant l'interface est "
-"probablement corrompu.  %s ne peut continuer et va se terminer maintenant.  "
+"utilisateur %s%s à partir du fichier %s. Les éléments de type CList "
+"devraient avoir %d colonnes. Le fichier glade décrivant l'interface est "
+"probablement corrompu. %s ne peut continuer et va se terminer maintenant. "
 "Vous devriez vérifier l'installation de %s, ou réinstaller %s."
 
 #: vicious-extensions/glade-helper.c:265
@@ -3935,8 +3944,8 @@ msgid ""
 "exit now.  You should check your installation of %s or reinstall %s."
 msgstr ""
 "Une erreur est survenue durant le chargement de l'interface utilisateur "
-"depuis le fichier %s.  Il est possible que la description d'interface glade "
-"n'ai pas été trouvée.  %s ne peut continuer et va maintenant se terminer.  "
+"depuis le fichier %s. Il est possible que la description d'interface glade "
+"n'ai pas été trouvée. %s ne peut continuer et va maintenant se terminer. "
 "Vous devriez vérifier votre installation de %s ou réinstaller %s."
 
 #: vicious-extensions/glade-helper.c:302
