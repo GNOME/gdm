@@ -217,7 +217,7 @@ get_dispnum (void)
 		char *p;
 		number = g_strdup (gdmcomm_get_display ());
 
-		/* whee! handles even DECnet crap */
+		/* whee! handles even DECnet */
 		number = strchr (number, ':');
 		if (number != NULL) {
 			while (*number == ':') {

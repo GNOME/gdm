@@ -1,40 +1,49 @@
-Big TODO: Rewrite the slave to be based around a mainloop.  So that
-we don't have to do things directly from signal handlers.  Some work has already
-been started by making the slave use select calls instead of waitpid.  This needs
-to be extended a bit.  The big issue is things that hang.  We need two things,
-some better general framework for things that hang and handling signals there 
-(see daemon/misc.c for solution when using gethostbyaddr in the main daemon).
-We also need some way to do something like "sleep(5)" with the mainloop nicely.
-We want the slave to still be very synchroneous, but just have some small handlers
-run from within the mainloop.  The one thing that will always cause trouble here
-is the XDMCP server pinging, I think in this case it would be sane to do the setjmp
-thing and just ignore the ping if a signal comes, not sure how this will play with
-the X stuff and if this would completely whack us out.  The other option is to have
-a separate "pinger process" but that seems to heavyweight.  Another option here
-is to give up on complete mainloopishness and during pinging set up an alarm or
-some other polling thing that checks all the mainloops stuff.
 
-All the GUIs running as the gdm user should have some resource limits set to
-make it hard to do DoS attacks by somehow exploiting a leak or some such.
+gdm TODO list:
+
+Big TODO: Rewrite the slave to be based around a mainloop.
+So that we don't have to do things directly from signal handlers.
+Some work has already been started by making the slave use select
+calls instead of waitpid.  This needs to be extended a bit.  The
+big issue is things that hang.  We need two things, some better
+general framework for things that hang and handling signals there 
+(see daemon/misc.c for solution when using gethostbyaddr in the
+main daemon).  We also need some way to do something like
+"sleep(5)" with the mainloop nicely.  We want the slave to still
+be very synchronous, but just have some small handlers run from
+within the mainloop.  The one thing that will always cause
+trouble here is the XDMCP server pinging, I think in this case
+it would be sane to do the setjmp thing and just ignore the ping
+if a signal comes, not sure how this will play with the X stuff
+and if this would completely whack us out.  The other option is
+to have a separate "pinger process" but that seems to
+heavyweight.  Another option here is to give up on complete
+mainloopishness and during pinging set up an alarm or some other
+polling thing that checks all the mainloops stuff.
+
+All the GUIs running as the gdm user should have some resource
+limits set to make it hard to do DoS attacks by somehow exploiting
+a leak or some such.
 
 Small TODO things:
-  - If we can't setup pam display user visible errors and not just syslog stuff
+  - If we can't setup pam display user visible errors and not just
+    syslog stuff
 
-Languages should be read from available locales.  Look at source  for
-locale_config.  Currently the way we do things is utter shit.
+Languages should be read from available locales.  Look at source
+for locale_config.  Currently the way we do things is utter crack.
 
 Perhaps stuff:
  - Keyboard layout menu.
  - native utmp/wtmp handling without sessreg
  - xsri like logo functionality
 
-the photosetup proggie should be put into some sort of crapplet and there
-should be other settings in the crapplet as well.
+The photosetup proggie should be put into some sort of capplet and
+there should be other settings in the capplet as well.
 
-handle all the XFree86 Xserver error thingies, such as
-No "Display" subsection for
-etc...
+Handle all the XFree86 Xserver error thingies, such as No "Display"
+subsection for etc...
 
-Add spacer files.  Files which we can use in case there is disk shortage to
-write a new xauthority stuff so that someone can actually log on and clean up.
-Is this crack?  Maybe.
+Add spacer files.  Files which we can use in case there is disk
+shortage to write a new xauthority stuff so that someone can actually
+log on and clean up.  Is this crack?  Maybe.
+

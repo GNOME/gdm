@@ -223,7 +223,7 @@ greeter_action_language (GreeterItemInfo *info,
       view = gtk_tree_view_new ();
       gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (view), TRUE);
       /* FIXME: we should handle this better, but things really look
-       * like crap if we aren't always LTR */
+       * bad if we aren't always LTR */
       gtk_widget_set_direction (view, GTK_TEXT_DIR_LTR);
       gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (view), FALSE);
       gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),

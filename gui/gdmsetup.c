@@ -974,7 +974,7 @@ setup_greeter_option (const char *name,
 	    selected == NULL)
 		add_menuitem (menu, val, val, val, &selected);
 
-	/* FIXME: Evil, but GtkOptionMenu is SOOOO FUCKING STUPID! */
+	/* FIXME: Evil, but GtkOptionMenu is SOOOO STUPID! */
 	if (selected != NULL) {
 		if (GTK_MENU (menu)->old_active_menu_item)
 			gtk_widget_unref (GTK_MENU (menu)->old_active_menu_item);

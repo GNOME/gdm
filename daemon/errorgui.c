@@ -368,7 +368,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 						valid_utf8 = FALSE;
 					g_string_append (gs, buf);
 					/* cap the lines at 500, that's already
-					   a possibility of 128k of crap */
+					   a possibility of 128k of data */
 					if (lines ++ > 500) {
 						loc = gdm_locale_to_utf8 (_("\n... File too long to display ...\n"));
 						g_string_append (gs, loc);

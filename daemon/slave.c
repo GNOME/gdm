@@ -3897,7 +3897,7 @@ gdm_slave_session_start (void)
 		       login,
 		       ve_sure_string (pwent->pw_dir));
 
-	    /* Does the user want to piss off or try to do stupid crap? */
+	    /* Check what the user wants to do */
 	    if ( ! gdm_failsafe_yesno (d, msg)) {
 		    g_free (msg);
 		    gdm_verify_cleanup (d);

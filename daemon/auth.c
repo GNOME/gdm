@@ -1005,7 +1005,7 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
     /* Write out remaining entries */
     for (li = keep; li != NULL; li = li->next) {
 	    /* FIXME: is this correct, if we can't open
-	     * this is quite crap isn't it ... */
+	     * this is quite bad isn't it ... */
 	    if G_LIKELY (af != NULL)
 		    XauWriteAuth (af, li->data);
 	            /* FIXME: what about errors? */

@@ -1,5 +1,74 @@
 Ahh news...
 
+2.6.0.8 stuff:
+
+- Enhanced a11y gesture listeners so they support XInput events
+  for better a11y support.  (Bill Haneman).
+
+- Add STRUTS support to gdm2's window manager for better a11y
+  support (Bill Haneman).
+
+- Improved the way the user's default PATH is set up by configure
+  so it is set more sanely without redundant PATH's, and is more
+  careful about not putting symlinked X11 directories in the PATH.
+  Now can configure user's default directory via the --with-post-path
+  argument.  (Brian Cameron).
+
+- New configuration option to disallow visible feedback in password
+  entry.  (John Martinsson).
+
+- Fix width of "user name entry" to shrink to fit parent widget so
+  text does not run out-of-bounds.  (Chookij Vanatham)
+
+- Restart slave process if XDMCP chooser is selected from flexi 
+  server.  (Leena Gunda)
+
+- Make default face obey the MaxIconWidth and MaxIconHeight 
+  configuration settings.  (Diego Gonzalez)
+
+- gdm2 slave now sources /etc/environment if it exists. (Vicent Berger)
+
+- Correct gdmsetup's tooltip to conform to GNOME HIG. (Sebastien Bacher)
+
+- Use ngettext for translation.  (Christian Rose)
+
+- Set default font size to "Sans 12".  (Erwann Chenede)
+
+- Set name of password entry for more friendly a11y (Erwann Chenede)
+
+- Mark "Remove Theme" for translation.  (Balamurali Viswanathan)
+
+- Remove <span> tags from language display since they were causing
+  formatting issues for some users.  (Glynn Foster)
+
+- Ensure LC_MESSAGES is set so the user's default language can be
+  displayed (Hidetoshi Tajima).
+
+- Specify font for username/password entry for gdm2 supplied themes.
+  (Alexander Kirillov)
+
+- Add Kinyarwanda and Armenian to language list.  (Steve Murphy and
+  petrosyan@gmail.com)
+
+- Correct IPv6 logic so that it supports an IPv4 XDMCP request when
+  IPv6 is enabled.  Fixed configure help for --enable-ipv6.
+  (Brian Cameron)
+
+- Set more sane Reboot/Halt/Shutdown commands on Solaris.  (Brian
+  Cameron).
+
+- Correct the usage of IFS in the Init/PreSession/PostSession/Xsession
+  scripts so it works on Solaris.  (Leena Gunda)
+
+- Support logindevperm on Solaris for automatic/timed login.  
+  (Brian Cameron)
+
+- Swap Alt and Meta keys on Solaris.  (Leena Gunda)
+
+- Correct IPv6 identification for Solaris.  (Leena Gunda)
+
+- Cleanup.  (Mark McLoughlin and Kjartan Marass)
+
 2.6.0.7 stuff:
 
 - Now using CVS head of vicious-extensions, left out of previous
@@ -74,7 +143,7 @@ Ahh news...
 - Add more native versions of language names and fix up existing ones,
   #148373, #148486, 148356, #148350, #88777, #150293
 
-- Add support for Solaris logindevperm and usiting (Brian Cameron)
+- Add support for Solaris logindevperm and auditing (Brian Cameron)
 
 - Fix some strings, fixes #144076, #144077, #147800
 
@@ -115,7 +184,7 @@ Ahh news...
   not the name of the user, "fixes" #142274
 
 - Apply patch to make the language dialog at most 600 pixels so that it
-  doesn't look too crappy on large displays, #142175 (Leonard Michlmayr)
+  doesn't look too bad on large displays, #142175 (Leonard Michlmayr)
 
 - Fix last_x_failed possible infinite loop on slow machines, #141497
 
@@ -243,7 +312,7 @@ Ahh news...
 
 2.5.90.1 stuff:
 
-- Login field was not clearned when x server / slave crashed (#131389)
+- Login field was not cleared when x server / slave crashed (#131389)
 
 - Change the 12 hour format to be less confusing (#133189)
 
@@ -311,7 +380,7 @@ Ahh news...
 
 - Use GtkFileChooser in gdmsetup (Jan Arne Petersen, #128668)
 
-- Paranoia: Check owenership of the socket before using it
+- Paranoia: Check ownership of the socket before using it
 
 - Fix xdmcp session counting (#126465)
 
@@ -414,7 +483,7 @@ Ahh news...
   fully KDM (kde 3.2) compatible, among others:
   - SessionDesktopDir is now a path
   - Change 'Default' to 'default'
-  - Honour TryExec correctly
+  - Honor TryExec correctly
   - Other then 'default', the gnome and CDE sessions are
     now installed in /usr/share/xsessions (if prefix==/usr)
 
@@ -619,7 +688,7 @@ Major changes in 2.4.4.x since 2.4.1.x:
 
 - Fix lots of minor bugs
 
-- Some soptimization to save a nanosecond or two
+- Some optimization to save a nanosecond or two
 
 - Translation updates (Wang Jian, Funda Wang, Christian Rose, Jordi Mallach,
   Danilo Segan, Artur Flinta, Miloslav Trmac, Duarte Loreto, Kostas Papadimas,
@@ -784,7 +853,7 @@ Major changes in 2.4.4.x since 2.4.1.x:
 
 - Don't XOpenDisplay so many times to make things run along
   a lot faster, and use XSetAuthority instead of XAUTHORITY
-  env var internaly
+  env var internally.
 
 - The server reinit is now safer, doesn't fork an extra process
   and it's quite a bit faster
@@ -973,7 +1042,7 @@ Major changes in 2.4.4.x since 2.4.1.x:
 - The standard greeter has a GtkTreeView based face browser based on the
   new one from the graphical greeter.
 
-- Accesibility work.  Add posibility of adding modules to the greeter through
+- Accesibility work.  Add possibility of adding modules to the greeter through
   AddGtkModules and GtkModulesList.  Add guesture listeners.  Dwell mouse
   events.  (Niall Power, Brian Cameron)
 
@@ -1228,7 +1297,7 @@ Major changes in 2.4.4.x since 2.4.1.x:
 
 - Race fixing galore.  Tested many new codepaths, fixed many new races.
   Well not new.  Really old ones but still.  We're now much better
-  on handling stuff being killed without us knowing, and stuff dieing
+  on handling stuff being killed without us knowing, and stuff dying
   in different orders.  May fix redhat bug #72295
 
 - Automatic VT management.  This should fix #62997.  Basically on
@@ -1304,10 +1373,10 @@ Major changes in 2.4.4.x since 2.4.1.x:
   
 - Busy cursor will never get stuck on autologin
 
-- Wait 2 seconds beween killing local servers on daemon restart or stop.  This
-  prevents a hung keyboard on my box.
+- Wait 2 seconds between killing local servers on daemon restart or stop.
+  This prevents a hung keyboard on my box.
 
-- Xnest keyboard stuff solved in a better way.  Remove the -kb fromt he command
+- Xnest keyboard stuff solved in a better way.  Remove the -kb from the command
   line so that Xnest understands XKB, and then in the Init script migrate
   keyboard configuration.  Also read capslock state from the parent server
   in the greeter.
@@ -1432,7 +1501,6 @@ Major changes in 2.4.4.x since 2.4.1.x:
 
 - Fix George's stupidity to allow people to log in (Jacob)
   The gnomerc was not a correct shell script and I didn't notice
-  DAMNIT!
 
 - Fix some weirdness on setup proggie starting (change dir to something
   sane and fix setting the cursor race)
@@ -1513,7 +1581,7 @@ Major changes in 2.4.4.x since 2.4.1.x:
 
 - Added 'Last' language choice to the graphical greeter.
 
-- The graphical greeter follows the 24 hour clock settting (Terje Rosten)
+- The graphical greeter follows the 24 hour clock setting (Terje Rosten)
 
 - Update the Happy GNOME theme (Steve Fox)
 
@@ -1929,7 +1997,7 @@ Issues with this version:
   the user has the option of canceling the login or logging in with
   the home dir set to root.
 
-- Many MANY races fixed in handeling of extra processes.  Gdm should
+- Many MANY races fixed in handling of extra processes.  Gdm should
   now always clean up after itself well if killed.  And it will
   now not screw up if the child processes die too quickly.
 
@@ -1997,8 +2065,8 @@ Issues with this version:
   dialog when no greeter is up.  Set RHOST and RUSER and fix some
   other pam related things.  Hopefully we're more pam correct now.
 
-- Have an option that forces 24hour clock even in locales which
-  like 12hour clock (Terje Rosten, Ali Akcaagac, me)
+- Have an option that forces 24-hour clock even in locales which
+  like 12-hour clock (Terje Rosten, Ali Akcaagac, me)
 
 - Change how FLEXI_XNEST works, be more paranoid in who we allow to
   run an an xnest, and we always run as the user who requested it.
@@ -2034,10 +2102,10 @@ Issues with this version:
 
 2.2.4.1 stuff:
 
-- X server editting now actually works, and gdmconfig produces
+- X server editing now actually works, and gdmconfig produces
   correct config files.  DOH!
 
-- X server editting now enforces strict order of servers (it only sort
+- X server editing now enforces strict order of servers (it only sort
   of did before)
 
 - XDMCP can now run a script to get a custom WILLING status script
@@ -2073,7 +2141,7 @@ Issues with this version:
 - A way to add servers at runtime by any local user.  So called flexible
   servers.  That is implementing a "New login" kind of thing.  This new
   server can also be a nested login with Xnest.  In which case anyone on
-  an X connection can run this.  All without the use of XDMCP and openning
+  an X connection can run this.  All without the use of XDMCP and opening
   up an extra TCP port.  This is more user friendly and also this way the
   daemon can manage the servers better.
 
@@ -2241,7 +2309,7 @@ Issues with this version:
 
 - PAM related fixes
 
-- Better handeling of X failiures
+- Better handling of X failures
 
 - Nicer iconify button
 
@@ -2281,7 +2349,7 @@ Issues with this version:
 - Accept clicks by the right button as if they are the first button,
   we don't know if the user is left or right handed yet
 
-- Background color seeps through transparent images and allow limitting
+- Background color seeps through transparent images and allow limiting
   remote logins to only a color backgrounds
 
 - Tooltips on things to make the greeter easier to understand
@@ -2302,11 +2370,11 @@ Issues with this version:
 
 - More Xinerama support (backgrounds, error dialogs, xterm failsafe session)
 
-- Greeter segfault fixed when no lanugage file present
+- Greeter segfault fixed when no language file present
 
-- Anti-hosification meassures.  GDM will now try to do something to allow
+- Anti-hosification measures.  GDM will now try to do something to allow
   itself to be fixed on some mistakes.  Rather then just aborting and leaving
-  crap in the syslog.  And gdmconfig let's you see hosification as it hapens
+  crack in the syslog.  And gdmconfig let's you see hosification as it happens
 
 - Updated fixed icon entry
 
@@ -2462,7 +2530,7 @@ Issues with this version:
 
 2.0.97 stuff:
 
-- Graphical configurator in Foot/System/Gdm Confgiurator,
+- Graphical configurator in Foot/System/Gdm Configurator,
   or run "gdmconfig" (Lee Mellabone)
 
 - i18n and greeter/slave communication fixes (ChiDeok Hwang)

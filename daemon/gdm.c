@@ -125,7 +125,7 @@ int gdm_normal_runlevel = -1; /* runlevel on linux that gdm was started in */
  * defined.  If the user kills all his local servers by mistake and keeps
  * xdmcp on.  Well then he's screwed.  The configurator should be smarter
  * about that.  But by default xdmcp is disabled so we're likely to catch
- * some fuckups like this. */
+ * some errors like this. */
 gboolean gdm_emergency_server = FALSE;
 
 gboolean gdm_first_login = TRUE;
@@ -1188,7 +1188,7 @@ deal_with_x_crashes (GdmDisplay *d)
 			    /* We couldn't run the script, just drop through */
 			    ;
 		    } else {
-			    /* shit went wrong, or the user's a wanker */
+			    /* Things went wrong, or the user's a wanker */
 			    just_abort = TRUE;
 		    }
 	    }

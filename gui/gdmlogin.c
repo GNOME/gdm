@@ -421,7 +421,7 @@ set_screen_to_pos (int x, int y)
 }
 
 
-/* I *really* need to rewrite this crap */
+/* I *really* need to rewrite this */
 static gchar *
 gdm_parse_enriched_string (const char *pre, const gchar *s, const char *post)
 {
@@ -528,7 +528,7 @@ gdm_run_command (const char *command)
 
 	if G_UNLIKELY (pid == -1) {
 		GtkWidget *dialog;
-		/* We can't fork, that means we're pretty much up shit creek
+		/* We can't fork, that means we're pretty up a creek
 		 * without a paddle. */
 		dialog = ve_hig_dialog_new (NULL /* parent */,
 					    GTK_DIALOG_MODAL /* flags */,

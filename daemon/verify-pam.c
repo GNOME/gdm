@@ -392,7 +392,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	return PAM_CONV_ERR;
 
     /* Should never happen unless PAM is on crack and keeps asking questions
-       after we told it to piss off.  So tell it to piss off again and
+       after we told it to go away.  So tell it to go away again and
        maybe it will listen */
     if ( ! gdm_slave_action_pending ())
         return PAM_CONV_ERR;

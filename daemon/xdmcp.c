@@ -2668,7 +2668,7 @@ gdm_xdmcp_display_dispose_check (const gchar *name)
 			else
 				gdm_display_dispose (d);
 
-			/* restart as the list is now fucked */
+			/* restart as the list is now broken */
 			dlist = displays;
 		} else {
 			/* just go on */
@@ -2696,7 +2696,7 @@ gdm_xdmcp_displays_check (void)
 				   (long)d->sessionid);
 			gdm_display_dispose (d);
 
-			/* restart as the list is now fucked */
+			/* restart as the list is now broken */
 			dlist = displays;
 		} else {
 			/* just go on */
