@@ -2217,4 +2217,64 @@ gdm_twiddle_pointer (GdmDisplay *disp)
 	XSync (disp->dsp, False);
 }
 
+static char *
+compress_string (const char *s)
+{
+	GString *gs = g_string_new (NULL);
+	const char *p;
+	gboolean in_whitespace = TRUE;
+
+	for (p = s; *p != '\0'; p++) {
+		if (*p == ' ' || *p == '\t') {
+			if ( ! in_whitespace)
+				g_string_append_c (gs, *p);
+			in_whitespace = TRUE;
+		} else {
+			g_string_append_c (gs, *p);
+			in_whitespace = FALSE;
+		}
+	}
+
+	return g_string_free (gs, FALSE);
+}
+
+
+char *
+gdm_get_last_info (const char *username)
+{
+	char *info = NULL;
+	const char *cmd = NULL;
+
+	if G_LIKELY (access ("/usr/bin/last", X_OK) == 0)
+		cmd = "/usr/bin/last";
+	else if (access ("/bin/last", X_OK) == 0)
+		cmd = "/bin/last";
+
+	if G_LIKELY (cmd != NULL) {
+		char *user_quoted = g_shell_quote (username);
+		char *cmd = g_strdup_printf ("%s %s", cmd, user_quoted);
+		FILE *fp;
+
+		VE_IGNORE_EINTR (fp = popen (cmd, "r"));
+
+		g_free (user_quoted);
+		g_free (cmd);
+
+		if G_LIKELY (fp != NULL) {
+			char buf[256];
+			char *r;
+			VE_IGNORE_EINTR (r = fgets (buf, sizeof (buf), fp));
+			if G_LIKELY (r != NULL) {
+				char *s = compress_string (buf);
+				if ( ! ve_string_empty (s))
+					info = g_strdup_printf (_("Last login:\n%s"), s);
+				g_free (s);
+			}
+			VE_IGNORE_EINTR (pclose (fp));
+		}
+	}
+
+	return info;
+}
+
 /* EOF */

@@ -46,6 +46,7 @@ extern gchar *GdmTimedLogin;
 extern gchar *GdmUser;
 extern gboolean GdmAllowRemoteAutoLogin;
 extern gint GdmRetryDelay;
+extern gboolean GdmDisplayLastLogin;
 
 extern gboolean no_console;
 
@@ -205,6 +206,12 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		    /* FIXME: this is a HACK HACK HACK */
 		    g_free (tmp_PAM_USER);
 		    tmp_PAM_USER = g_strdup (s);
+
+		    if (GdmDisplayLastLogin) {
+			    char *info = gdm_get_last_info (s);
+			    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, info);
+			    g_free (info);
+		    }
 	    }
 
 	    reply[replies].resp_retcode = PAM_SUCCESS;

@@ -22,7 +22,7 @@ if [ x$UPDATE = xyes ] ; then
 fi
 	
 echo ./autogen.sh --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var --enable-console-helper --with-pam-prefix=/etc "$@"
-if ! ./autogen.sh --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var --enable-console-helper --with-pam-prefix=/etc "$@" ; then
+if ! ./autogen.sh --enable-compile-warnings=yes --prefix=/usr --sysconfdir=/etc/X11 --localstatedir=/var --enable-console-helper --with-pam-prefix=/etc "$@" ; then
 	echo 
 	echo '*********' autogen.sh failed '*********'
 	echo 

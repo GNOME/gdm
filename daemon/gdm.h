@@ -158,6 +158,8 @@ enum {
 
 #define GDM_KEY_DOUBLELOGINWARNING "daemon/DoubleLoginWarning=true"
 
+#define GDM_KEY_DISPLAY_LAST_LOGIN "daemon/DisplayLastLogin=true"
+
 /* This defaults to true for backward compatibility,
  * it will not actually do timed login since the TimedLogin defaults
  * to nothing */
@@ -192,7 +194,7 @@ enum {
 #define GDM_KEY_ALLOWREMOTEAUTOLOGIN "security/AllowRemoteAutoLogin=false"
 #define GDM_KEY_MAXFILE "security/UserMaxFile=65536"
 #define GDM_KEY_RELAXPERM "security/RelaxPermissions=0"
-#define GDM_KEY_RETRYDELAY "security/RetryDelay=3"
+#define GDM_KEY_RETRYDELAY "security/RetryDelay=1"
 #define GDM_KEY_DISALLOWTCP "security/DisallowTCP=true"
 
 #define GDM_KEY_NEVERPLACECOOKIESONNFS "security/NeverPlaceCookiesOnNFS=true"

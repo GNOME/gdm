@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE greeter SYSTEM "greeter.dtd">
 <greeter>
   <item type="svg">
@@ -38,9 +38,9 @@
 	    <pos y="50%" anchor="w" width="box" height="box"/>
             <box orientation="horizontal" spacing="10" xpadding="10">
 	      <item type="pixmap">
-	        <normal file="help.png" tint="#dddddd"/>
-	        <prelight file="help.png"/>
-	        <active file="help.png" tint="#ff0000"/>
+	        <normal file="session.png" tint="#dddddd"/>
+	        <prelight file="session.png"/>
+	        <active file="session.png" tint="#ff0000"/>
 	        <pos y="50%" anchor="w"/>
 	      </item>
 	      <item type="label">
@@ -59,9 +59,9 @@
 	    <pos y="50%" anchor="w" width="box" height="box"/>
             <box orientation="horizontal" spacing="10" xpadding="10">
 	      <item type="pixmap">
-	        <normal file="options.png" tint="#dddddd"/>
-	        <prelight file="options.png"/>
-	        <active file="options.png" tint="#ff0000"/>
+	        <normal file="system.png" tint="#dddddd"/>
+	        <prelight file="system.png"/>
+	        <active file="system.png" tint="#ff0000"/>
 	        <pos y="50%" anchor="w"/>
 	      </item>
 	      <item type="label">
@@ -80,9 +80,9 @@
 	    <pos y="50%" anchor="w" width="box" height="box"/>
             <box orientation="horizontal" spacing="10" xpadding="10">
 	      <item type="pixmap">
-	        <normal file="options.png" tint="#dddddd"/>
-	        <prelight file="options.png"/>
-	        <active file="options.png" tint="#ff0000"/>
+	        <normal file="disconnect.png" tint="#dddddd"/>
+	        <prelight file="disconnect.png"/>
+	        <active file="disconnect.png" tint="#ff0000"/>
 	        <pos y="50%" anchor="w"/>
 	      </item>
 	      <item type="label">
@@ -110,18 +110,18 @@
     </fixed>
   </item>
   <item type="pixmap">
-    <normal file="flower.png"/>
-    <pos x="100%" y="100%" anchor="se"/>
+    <normal file="gnome-logo.png"/>
+    <pos x="-10" y="-10" anchor="se"/>
   </item>
   <item type="label" id="clock">
     <normal color="#000000" font="Sans 12"/>
-    <pos x="-20" y="-37" anchor="e"/>
+    <pos x="-160" y="-37" anchor="e"/>
     <text>%c</text>
   </item>
 
   <item type="rect" id="caps-lock-warning">
     <normal color="#FFFFFF" alpha="0.5"/>
-    <pos anchor="c" x="50%" y="75%" width="box" height="box"/>
+    <pos anchor="c" x="75%" y="75%" width="box" height="box"/>
     <box orientation="vertical" min-width="400" xpadding="10" ypadding="5" spacing="0">
       <item type="label">
         <normal color="#000000" font="Sans 12"/>
@@ -135,7 +135,7 @@
   <item type="rect">
     <show type="timed"/>
     <normal color="#FFFFFF" alpha="0.5"/>
-    <pos anchor="c" x="50%" y="25%" width="box" height="box"/>
+    <pos anchor="c" x="75%" y="25%" width="box" height="box"/>
     <box orientation="vertical" min-width="400" xpadding="10" ypadding="5" spacing="0">
       <item type="label" id="timed-label">
         <normal color="#000000" font="Sans 12"/>
@@ -148,7 +148,23 @@
 
   <item type="rect">
     <normal color="#FFFFFF" alpha="0.5"/>
-    <pos anchor="c" x="50%" y="50%" width="box" height="box"/>
+    <pos anchor="c" x="25%" y="50%" height="box" width="box"/>
+    <box orientation="vertical" min-width="440" max-width="440" xpadding="4" ypadding="4" height="550" spacing="0">
+      <item type="rect">
+	<normal color="#000000" alpha="0.0"/>
+        <pos anchor="n" x="50%" height="548" width="438"/>
+	<fixed>
+          <item type="list" id="userlist">
+            <pos anchor="nw" x="1" y="1" height="-2" width="-2"/>
+          </item>
+	</fixed>
+      </item>
+    </box>
+  </item>
+
+  <item type="rect">
+    <normal color="#FFFFFF" alpha="0.5"/>
+    <pos anchor="c" x="75%" y="50%" width="box" height="box"/>
     <box orientation="vertical" min-width="340" xpadding="30" ypadding="30" spacing="10">
       <item type="label">
         <pos anchor="n" x="50%"/>

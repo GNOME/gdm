@@ -42,6 +42,7 @@
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
 extern gint GdmRetryDelay;
+extern gboolean GdmDisplayLastLogin;
 
 static char *selected_user = NULL;
 
@@ -137,10 +138,10 @@ authenticate_again:
 	    }
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
 
-	    if ( ! gdm_slave_check_user_wants_to_log_in (login)) {
-		    g_free (login);
-		    login = NULL;
-		    goto authenticate_again;
+	    if (GdmDisplayLastLogin) {
+		    char *info = gdm_get_last_info (s);
+		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, info);
+		    g_free (info);
 	    }
     } else {
 	    login = g_strdup (username);
@@ -280,6 +281,12 @@ authenticate_again:
 
     g_free (passwd);
     g_free (ppasswd);
+
+    if ( ! gdm_slave_check_user_wants_to_log_in (login)) {
+	    g_free (login);
+	    login = NULL;
+	    goto authenticate_again;
+    }
 
     if ( ! gdm_setup_gids (login, pwent->pw_gid)) {
 	    gdm_error (_("Cannot set user group for %s"), login);

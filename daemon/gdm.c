@@ -135,6 +135,7 @@ gboolean GdmChooserButton = FALSE;
 gboolean GdmBrowser = FALSE;
 gboolean GdmAddGtkModules = FALSE;
 gboolean GdmDoubleLoginWarning = TRUE;
+gboolean GdmDisplayLastLogin = TRUE;
 gchar *GdmGlobalFaceDir = NULL;
 gint GdmXineramaScreen = 0;
 gchar *GdmGreeter = NULL;
@@ -323,6 +324,7 @@ gdm_config_parse (void)
     GdmRemoteGreeter = ve_config_get_string (cfg, GDM_KEY_REMOTEGREETER);
     GdmAddGtkModules = ve_config_get_bool (cfg, GDM_KEY_ADD_GTK_MODULES);
     GdmDoubleLoginWarning = ve_config_get_bool (cfg, GDM_KEY_DOUBLELOGINWARNING);
+    GdmDisplayLastLogin = ve_config_get_bool (cfg, GDM_KEY_DISPLAY_LAST_LOGIN);
     GdmGtkModulesList = ve_config_get_string (cfg, GDM_KEY_GTK_MODULES_LIST);	
     GdmGroup = ve_config_get_string (cfg, GDM_KEY_GROUP);
     GdmHalt = ve_config_get_string (cfg, GDM_KEY_HALT);

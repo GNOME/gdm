@@ -2916,8 +2916,6 @@ gdm_slave_chooser (void)
 {
 	gint p[2];
 	struct passwd *pwent;
-	char *buf;
-	size_t bytes;
 	pid_t pid;
 	GdmWaitPid *wp;
 
@@ -3068,7 +3066,7 @@ gdm_slave_chooser (void)
 				send_chosen_host (d, host);
 				gdm_slave_quick_exit (DISPLAY_CHOSEN);
 			} else {
-				gdm_debug ("Sending locally chosen host %s", buf);
+				gdm_debug ("Sending locally chosen host %s", host);
 				gdm_slave_send_string (GDM_SOP_CHOSEN_LOCAL, host);
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}

@@ -172,6 +172,8 @@ char * gdm_strip_extension (const char *name, const char *extension);
 
 void gdm_twiddle_pointer (GdmDisplay *disp);
 
+char * gdm_get_last_info (const char *username);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

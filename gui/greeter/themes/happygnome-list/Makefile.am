@@ -11,10 +11,8 @@ happygnome_DATA = \
 	system.png
 
 happygnome_in_files = \
-	GdmGreeterTheme.desktop.in \
-	happygnome.xml.in
+	GdmGreeterTheme.desktop.in
 
-@INTLTOOL_XML_RULE@
 @INTLTOOL_DESKTOP_RULE@
 
 EXTRA_DIST = $(happygnome_DATA) $(happygnome_in_files)

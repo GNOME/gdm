@@ -9,10 +9,8 @@ circles_DATA = \
 	screenshot.png
 
 circles_in_files = \
-	GdmGreeterTheme.desktop.in \
-	circles.xml.in
+	GdmGreeterTheme.desktop.in
 
-@INTLTOOL_XML_RULE@
 @INTLTOOL_DESKTOP_RULE@
 
 EXTRA_DIST = $(circles_DATA) $(circles_in_files)

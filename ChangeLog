@@ -1,3 +1,23 @@
+Tue Jan 06 17:06:42 2004  George Lebl <jirka@5z.com>
+
+	* gui/greeter/themes/*/*: remove the xml.in files and readd the .xml
+	  files.  There are no translations done anymore.
+
+	* config/gdm.conf.in, daemon/gdm.[ch], daemon/misc.[ch],
+	  daemon/slave.c, daemon/verify-crypt.c, daemon/verify-pam.c,
+	  daemon/verify-shadow.c: Add support for displaying last login
+	  information if daemon/DisplayLastLogin is set (default to true).
+	  Fixes #128940
+
+	* daemon/verify-crypt.c, daemon/verify-shadow.c:  The 'user already
+	  logged in' (double login warning) dialog thingie should only be
+	  shown AFTER all verification is done (as it does for PAM setups)
+
+	* docs/C/gdm.xml: update for DisplayLastLogin
+
+	* config/gdm.conf.in, daemon/gdm.h: the RetryDelay is annoying at 3
+	  now that it works.  Set it to 1.
+
 Tue Jan 06 16:06:12 2004  George Lebl <jirka@5z.com>
 
 	* gui/gdmflexiserver.c: the console/vt check for check_for_users

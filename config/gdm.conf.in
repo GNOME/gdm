@@ -137,6 +137,14 @@ Xnest=@X_SERVER_PATH@/Xnest -audit 0 -name Xnest
 # vts on linux systems for console logins)
 #DoubleLoginWarning=true
 
+# If true then the last login information is printed to the user before
+# being prompted for password.  While this gives away some info on what
+# users are on a system, it on the other hand should give the user an
+# idea of when they logged in and if it doesn't seem kosher to them,
+# they can just abort the login and contact the sysadmin (avoids running
+# malicious startup scripts)
+#DisplayLastLogin=true
+
 # Program used to play sounds.  Should not require any 'daemon' or anything
 # like that as it will be run when no one is logged in yet.
 #SoundProgram=/usr/bin/play
@@ -154,10 +162,10 @@ AllowRemoteAutoLogin=false
 # permissions
 RelaxPermissions=0
 # Number of seconds to wait after a bad login
-RetryDelay=3
+#RetryDelay=1
 # Maximum size of a file we wish to read.  This makes it hard for a user to DoS
 # us by using a large file.
-UserMaxFile=65536
+#UserMaxFile=65536
 # If true this will basically append -nolisten tcp to every X command line,
 # a good default to have (why is this a "negative" setting? because if
 # it is false, you could still not allow it by setting command line of
@@ -190,7 +198,7 @@ UserMaxFile=65536
 Enable=false
 # Honour indirect queries, we run a chooser for these, and then redirect
 # the user to the chosen host.  Otherwise we just log the user in locally.
-HonorIndirect=true
+#HonorIndirect=true
 # Maximum pending requests
 #MaxPending=4
 #MaxPendingIndirect=4
@@ -214,7 +222,7 @@ HonorIndirect=true
 # output of this script will be sent as status of this host so that
 # the chooser can display it.  You could for example send load,
 # or mail details for some user, or some such.
-Willing=@EXPANDED_SYSCONFDIR@/gdm/Xwilling
+#Willing=@EXPANDED_SYSCONFDIR@/gdm/Xwilling
 
 [gui]
 # The 'theme'.  By default we're using the default gtk theme

@@ -3,7 +3,7 @@
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
     <!ENTITY version "2.5.90.0"> 
-    <!ENTITY date "12/30/2003"> 
+    <!ENTITY date "1/6/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -33,7 +33,7 @@
       <year>1998</year> <year>1999</year> <holder>Martin K. Petersen</holder>
     </copyright>
     <copyright>
-      <year>2001</year> <year>2003</year> <holder>George Lebl</holder>
+      <year>2001</year> <year>2003</year> <year>2004</year> <holder>George Lebl</holder>
     </copyright>
     <copyright>
       <year>2003</year> <holder>Red Hat, Inc.</holder>
@@ -1184,6 +1184,29 @@
 	  </varlistentry>
 
 	  <varlistentry>
+	    <term>DisplayLastLogin</term>
+	    <listitem>
+	      <synopsis>DisplayLastLogin=true</synopsis>
+	      <para>
+		If true then the last login information is printed to the user
+		before being prompted for password.  While this gives away some
+		info on what users are on a system, it on the other hand should
+		give the user an idea of when they logged in and if it doesn't
+		seem kosher to them, they can just abort the login and contact
+		the sysadmin (avoids running malicious startup scripts).
+	        This was added in version 2.5.90.0.
+	      </para>
+              <para>
+		This is for making GDM conformant to CSC-STD-002-85, although
+		that is purely theoretical now.  Someone should read that spec
+		and ensure that this actually conforms (in addition to other
+		places in GDM).  See
+		<filename>http://www.radium.ncsc.mil/tpep/library/rainbow/CSC-STD-002-85.html</filename> for more info.
+              </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>DoubleLoginWarning</term>
 	    <listitem>
 	      <synopsis>DoubleLoginWarning=true</synopsis>
@@ -1788,7 +1811,7 @@
 	  <varlistentry>
 	    <term>RetryDelay</term>
 	    <listitem>
-	      <synopsis>RetryDelay=3</synopsis>
+	      <synopsis>RetryDelay=1</synopsis>
 	      <para>
 		The number of seconds GDM should wait before
 		reactivating the entry field after a failed login.
