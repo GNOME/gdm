@@ -22,6 +22,7 @@ libkeymouselistener_la_LDFLAGS =	\
 	-rpath $(moduledir) -module -avoid-version \
 	$(GUI_LIBS)	\
 	$(X_LIBS)	\
+	$(X_EXTRA_LIBS)	\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
 
@@ -32,6 +33,7 @@ libdwellmouselistener_la_LDFLAGS =	\
 	-rpath $(moduledir) -module -avoid-version \
 	$(GUI_LIBS)	\
 	$(X_LIBS)	\
+	$(X_EXTRA_LIBS)	\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
 

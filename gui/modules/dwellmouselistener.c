@@ -26,11 +26,17 @@
 #include <glib.h>
 #include <gmodule.h>
 #include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <vicious.h>
 #include <gnome.h>
 
+#include <X11/Xlib.h>
 #include <config.h>
+
+#ifdef HAVE_XINPUT
+#include <X11/extensions/XInput.h>
+#endif
 
 /*
  * Note that CONFIGFILE will have to be changed to something more generic
@@ -82,9 +88,14 @@ extern char **environ;
 static guint enter_signal_id = 0;
 static guint leave_signal_id = 0;
 
+static int xinput_type_motion = 0;
+
 static Crossings *crossings = NULL;
 static int crossings_position = 0;
 static guint max_crossings = 0;
+static XID *ext_input_devices = NULL;
+static gint ext_device_count = 0;
+static gboolean latch_core_pointer = TRUE;
 
 static void create_event_watcher ();
 static void load_bindings(gchar *path);
@@ -94,6 +105,66 @@ static Binding * parse_line(gchar *buf);
 static gboolean binding_already_used (Binding *binding);
 BindingType get_binding_type(char c);
 BindingDirection get_binding_direction(char c);
+
+static gboolean
+is_ext_device (XID id)
+{
+	gint i;
+	for (i = 0; i < ext_device_count; i++)
+		if (id == ext_input_devices[i]) return TRUE;
+	return FALSE;
+}
+
+static void
+init_xinput (GdkDisplay *display, GdkWindow *root)
+{
+#ifdef HAVE_XINPUT
+	XEventClass      event_list[40];
+	int              i, j, number = 0, num_devices; 
+	XDeviceInfo  *devices = NULL;
+	XDevice      *device = NULL;
+
+	devices = XListInputDevices (GDK_DISPLAY_XDISPLAY (display), &num_devices);
+
+#ifdef DEBUG_GESTURES
+	g_message ("checking %d input devices...", num_devices);
+#endif
+	for (i = 0; i < num_devices; i++) {
+		if (devices[i].use == IsXExtensionDevice)
+		{
+			device = XOpenDevice (GDK_DISPLAY_XDISPLAY (display), devices[i].id);
+			for (j = 0; j < device->num_classes && number < 40; j++) {
+				switch (device->classes[j].input_class) 
+				{
+				case ValuatorClass:
+					DeviceMotionNotify(device, 
+							   xinput_type_motion, 
+							   event_list[number]); number++;
+				default:
+					break;
+				}
+			}
+			++ext_device_count;
+			if (ext_input_devices) {
+				ext_input_devices = g_realloc (ext_input_devices,
+							       sizeof (XID *) * ext_device_count);
+			} else {
+				ext_input_devices = g_malloc (sizeof (XID *));
+			}
+			ext_input_devices[ext_device_count - 1] = devices[i].id;
+		}
+	}
+#ifdef DEBUG_GESTURES
+	g_message ("%d event types available\n", number);
+#endif	
+	if (XSelectExtensionEvent(GDK_WINDOW_XDISPLAY (root), 
+				  GDK_WINDOW_XWINDOW (root),
+				  event_list, number)) 
+	{
+		g_warning ("Can't select input device events!");
+	}
+#endif
+}
 
 static gchar *
 screen_exec_display_string (GdkScreen *screen, const char *old)
@@ -596,6 +667,8 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 			  g_timeout_add (2000,
 					 change_cursor_back,
 					 NULL);
+			  latch_core_pointer = FALSE; 
+                          /* once we've recognized a gesture, we need to leave the pointer alone */
                         }
                     }
                 }
@@ -606,6 +679,25 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
     }
 
   return TRUE;
+}
+
+static GdkFilterReturn
+gestures_filter (GdkXEvent *gdk_xevent,
+		 GdkEvent *event,
+		 gpointer data)
+{
+	XEvent *xevent = (XEvent *)gdk_xevent;
+
+	if (xevent->type == xinput_type_motion) {
+		XDeviceMotionEvent *motion = (XDeviceMotionEvent *) xevent;
+		if ((motion->axes_count < 2) || !is_ext_device (motion->deviceid))
+			return GDK_FILTER_CONTINUE;
+		if (latch_core_pointer)
+		    XWarpPointer (motion->display, None, 
+			      motion->root,
+			      0, 0, 0, 0, motion->axis_data[0], motion->axis_data[1]);
+	}
+       	return GDK_FILTER_CONTINUE;
 }
 
 static void
@@ -630,6 +722,12 @@ create_event_watcher (void)
       crossings[i].time      = 0;
     }
 
+  init_xinput (display, 
+	       gdk_screen_get_root_window (
+		   gdk_display_get_default_screen (display)));
+
+  gdk_window_add_filter (NULL, gestures_filter, NULL);
+
   /* set up emission hook */
   gtk_type_class (GTK_TYPE_WIDGET);
   enter_signal_id = g_signal_lookup ("enter-notify-event", GTK_TYPE_WIDGET);
@@ -645,7 +743,7 @@ create_event_watcher (void)
 G_MODULE_EXPORT void gtk_module_init (int *argc, char* argv[]);
 
 void gtk_module_init (int *argc, char* argv[])
-{
+{ 
   create_event_watcher ();
 }
 
