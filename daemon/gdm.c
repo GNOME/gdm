@@ -29,6 +29,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
+#include <sys/resource.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -1218,11 +1219,19 @@ gdm_cleanup_children (void)
     } else {
 	    status = EXIT_SUCCESS;
 	    crashed = TRUE;
-	    if (WIFSIGNALED (exitstatus))
-		    gdm_debug ("gdm_cleanup_children: child %d crashed of signal %d", pid,
-			       (int)WTERMSIG (exitstatus));
-	    else
-		    gdm_debug ("gdm_cleanup_children: child %d crashed", pid);
+	    if (WIFSIGNALED (exitstatus)) {
+		    if (WTERMSIG (exitstatus) == SIGTERM ||
+			WTERMSIG (exitstatus) == SIGINT) {
+			    /* we send these signals, sometimes children don't handle them */
+			    gdm_debug ("gdm_cleanup_children: child %d died of signal %d (TERM/INT)", pid,
+				       (int)WTERMSIG (exitstatus));
+		    } else {
+			    gdm_error ("gdm_cleanup_children: child %d crashed of signal %d", pid,
+				       (int)WTERMSIG (exitstatus));
+		    }
+	    } else {
+		    gdm_error ("gdm_cleanup_children: child %d crashed", pid);
+	    }
     }
 	
     if (pid == extra_process) {
@@ -1239,7 +1248,7 @@ gdm_cleanup_children (void)
 	    return TRUE;
 
     if (crashed) {
-	    gdm_debug ("gdm_cleanup_children: Slave crashed, killing its "
+	    gdm_error ("gdm_cleanup_children: Slave crashed, killing its "
 		       "children");
 
 	    if (d->sesspid > 1)
@@ -1544,12 +1553,33 @@ mainloop_sig_callback (int sig, gpointer data)
 	      ;
       break;
 
+    case SIGABRT:
+      /* FIXME: note that this could mean out of memory */
+      gdm_error ("main daemon: Got SIGABRT, something went very wrong. Going down!");
+      gdm_final_cleanup ();
+      exit (EXIT_FAILURE);
+      break;
+
     case SIGINT:
     case SIGTERM:
       gdm_debug ("mainloop_sig_callback: Got TERM/INT. Going down!");
       gdm_final_cleanup ();
       exit (EXIT_SUCCESS);
       break;
+
+#ifdef SIGXFSZ
+    case SIGXFSZ:
+      gdm_error ("main daemon: Hit file size rlimit, restarting!");
+      gdm_restart_now ();
+      break;
+#endif
+
+#ifdef SIGXCPU
+    case SIGXCPU:
+      gdm_error ("main daemon: Hit CPU rlimit, restarting!");
+      gdm_restart_now ();
+      break;
+#endif
 
     case SIGHUP:
       gdm_restart_now ();
@@ -1745,9 +1775,10 @@ main (int argc, char *argv[])
     /* We here ensure descriptors 0, 1 and 2 */
     ensure_desc_012 ();
 
+    /* store all initial stuff, args, env, rlimits, runlevel */
     store_argv (argc, argv);
     gdm_saveenv ();
-
+    gdm_get_initial_limits ();
     gdm_get_our_runlevel ();
 
     bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
@@ -1849,7 +1880,8 @@ main (int argc, char *argv[])
     ve_signal_add (SIGINT, mainloop_sig_callback, NULL);
     ve_signal_add (SIGHUP, mainloop_sig_callback, NULL);
     ve_signal_add (SIGUSR1, mainloop_sig_callback, NULL);
-    
+    ve_signal_add (SIGABRT, mainloop_sig_callback, NULL);
+
     sig.sa_handler = ve_signal_notify;
     sig.sa_flags = SA_RESTART;
     sigemptyset (&sig.sa_mask);
@@ -1870,6 +1902,27 @@ main (int argc, char *argv[])
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "USR1", strerror (errno));
 
+    if (sigaction (SIGABRT, &sig, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "ABRT", strerror (errno));
+
+    /* some process limit signals we catch and restart on,
+       note that we don't catch these in the slave, but then
+       we catch those in the main daemon as slave crashing
+       (terminated by signal), and we clean up appropriately */
+#ifdef SIGXCPU
+    ve_signal_add (SIGXCPU, mainloop_sig_callback, NULL);
+    if (sigaction (SIGXCPU, &sig, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "XCPU", strerror (errno));
+#endif
+#ifdef SIGXFSZ
+    ve_signal_add (SIGXFSZ, mainloop_sig_callback, NULL);
+    if (sigaction (SIGXFSZ, &sig, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "XFSZ", strerror (errno));
+#endif
+
     child.sa_handler = ve_signal_notify;
     child.sa_flags = SA_RESTART|SA_NOCLDSTOP;
     sigemptyset (&child.sa_mask);
@@ -1884,10 +1937,26 @@ main (int argc, char *argv[])
     sigaddset (&mask, SIGCHLD);
     sigaddset (&mask, SIGHUP);
     sigaddset (&mask, SIGUSR1);
+    sigaddset (&mask, SIGABRT);
+#ifdef SIGXCPU
+    sigaddset (&mask, SIGXCPU);
+#endif
+#ifdef SIGXFSZ
+    sigaddset (&mask, SIGXFSZ);
+#endif
     sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
     gdm_signal_ignore (SIGUSR2);
-    gdm_signal_ignore (SIGPIPE);
+
+    /* ignore power failures, up to user processes to
+     * handle things correctly */
+#ifdef SIGPWR
+    gdm_signal_ignore (SIGPWR);
+#endif
+    /* can we ever even get this one? */
+#ifdef SIGLOST
+    gdm_signal_ignore (SIGLOST);
+#endif
 
     gdm_debug ("gdm_main: Here we go...");
 

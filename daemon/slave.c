@@ -479,6 +479,12 @@ gdm_slave_start (GdmDisplay *display)
 	gdm_signal_ignore (SIGUSR1);
 	gdm_signal_ignore (SIGPIPE);
 
+	/* ignore power failures, up to user processes to
+	 * handle things correctly */
+#ifdef SIGPWR
+	gdm_signal_ignore (SIGPWR);
+#endif
+
 	/* The signals we wish to listen to */
 	sigemptyset (&mask);
 	sigaddset (&mask, SIGINT);

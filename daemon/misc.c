@@ -1162,6 +1162,10 @@ gdm_open_dev_null (mode_t mode)
 	int ret;
 	ret = open ("/dev/null", mode);
 	if (ret < 0) {
+		/* never output anything, we're likely in some
+		 * strange state right now */
+		gdm_signal_ignore (SIGPIPE);
+		IGNORE_EINTR (close (2));
 		gdm_fail ("Cannot open /dev/null, system on crack!");
 	}
 
@@ -1553,57 +1557,191 @@ gdm_safe_fopen_ap (const char *file)
 	return fdopen (fd, "a+");
 }
 
+#ifdef RLIM_NLIMITS
+#define NUM_OF_LIMITS RLIM_NLIMITS
+#else /* ! RLIM_NLIMITS */
+#ifdef RLIMIT_NLIMITS
+#define NUM_OF_LIMITS RLIMIT_NLIMITS
+#endif /* RLIMIT_NLIMITS */
+#endif /* RLIM_NLIMITS */
+
+/* if we can count limits then the reset code is simple */ 
+#ifdef NUM_OF_LIMITS
+
+static struct rlimit limits[NUM_OF_LIMITS];
+
+void
+gdm_get_initial_limits (void)
+{
+	int i;
+
+	for (i = 0; i < NUM_OF_LIMITS; i++) {
+		/* some sane defaults */
+		limits[i].rlim_cur = RLIM_INFINITY;
+		limits[i].rlim_max = RLIM_INFINITY;
+		/* get the limits */
+		getrlimit (i, &(limits[i]));
+	}
+}
+
 void
 gdm_reset_limits (void)
 {
-	struct rlimit unlim = { RLIM_INFINITY, RLIM_INFINITY };
+	int i;
 
+	for (i = 0; i < NUM_OF_LIMITS; i++) {
+		/* get the limits */
+		setrlimit (i, &(limits[i]));
+	}
+}
+
+#else /* ! NUM_OF_LIMITS */
+/* we have to go one by one here */
+
+#ifdef RLIMIT_CPU
+static struct rlimit limit_cpu = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_DATA
+static struct rlimit limit_data = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_FSIZE
+static struct rlimit limit_fsize = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_LOCKS
+static struct rlimit limit_locks = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_MEMLOCK
+static struct rlimit limit_memlock = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_NOFILE
+static struct rlimit limit_nofile = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_OFILE
+static struct rlimit limit_ofile = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_NPROC
+static struct rlimit limit_nproc = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_RSS
+static struct rlimit limit_rss = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_STACK
+static struct rlimit limit_stack = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_CORE
+static struct rlimit limit_core = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_AS
+static struct rlimit limit_as = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_VMEM
+static struct rlimit limit_vmem = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+#ifdef RLIMIT_PTHREAD
+static struct rlimit limit_pthread = { RLIM_INFINITY, RLIM_INFINITY };
+#endif
+
+void
+gdm_get_initial_limits (void)
+{
 	/* Note: I don't really know which ones are really very standard
 	   and which ones are not, so I just test for them all one by one */
 
 #ifdef RLIMIT_CPU
-	setrlimit (RLIMIT_CPU, &unlim);
+	getrlimit (RLIMIT_CPU, &limit_cpu);
 #endif
 #ifdef RLIMIT_DATA
-	setrlimit (RLIMIT_DATA, &unlim);
+	getrlimit (RLIMIT_DATA, &limit_data);
 #endif
 #ifdef RLIMIT_FSIZE
-	setrlimit (RLIMIT_FSIZE, &unlim);
+	getrlimit (RLIMIT_FSIZE, &limit_fsize);
 #endif
 #ifdef RLIMIT_LOCKS
-	setrlimit (RLIMIT_LOCKS, &unlim);
+	getrlimit (RLIMIT_LOCKS, &limit_locks);
 #endif
 #ifdef RLIMIT_MEMLOCK
-	setrlimit (RLIMIT_MEMLOCK, &unlim);
+	getrlimit (RLIMIT_MEMLOCK, &limit_memlock);
 #endif
 #ifdef RLIMIT_NOFILE
-	setrlimit (RLIMIT_NOFILE, &unlim);
+	getrlimit (RLIMIT_NOFILE, &limit_nofile);
 #endif
 #ifdef RLIMIT_OFILE
-	setrlimit (RLIMIT_OFILE, &unlim);
+	getrlimit (RLIMIT_OFILE, &limit_ofile);
 #endif
 #ifdef RLIMIT_NPROC
-	setrlimit (RLIMIT_NPROC, &unlim);
+	getrlimit (RLIMIT_NPROC, &limit_nproc);
 #endif
 #ifdef RLIMIT_RSS
-	setrlimit (RLIMIT_RSS, &unlim);
+	getrlimit (RLIMIT_RSS, &limit_rss);
 #endif
 #ifdef RLIMIT_STACK
-	setrlimit (RLIMIT_STACK, &unlim);
+	getrlimit (RLIMIT_STACK, &limit_stack);
 #endif
 #ifdef RLIMIT_CORE
-	setrlimit (RLIMIT_CORE, &unlim);
+	getrlimit (RLIMIT_CORE, &limit_core);
 #endif
 #ifdef RLIMIT_AS
-	setrlimit (RLIMIT_AS, &unlim);
+	getrlimit (RLIMIT_AS, &limit_as);
 #endif
 #ifdef RLIMIT_VMEM
-	setrlimit (RLIMIT_VMEM, &unlim);
+	getrlimit (RLIMIT_VMEM, &limit_vmem);
 #endif
 #ifdef RLIMIT_PTHREAD
-	setrlimit (RLIMIT_PTHREAD, &unlim);
+	getrlimit (RLIMIT_PTHREAD, &limit_pthread);
 #endif
 }
+
+void
+gdm_reset_limits (void)
+{
+	/* Note: I don't really know which ones are really very standard
+	   and which ones are not, so I just test for them all one by one */
+
+#ifdef RLIMIT_CPU
+	setrlimit (RLIMIT_CPU, &limit_cpu);
+#endif
+#ifdef RLIMIT_DATA
+	setrlimit (RLIMIT_DATA, &limit_data);
+#endif
+#ifdef RLIMIT_FSIZE
+	setrlimit (RLIMIT_FSIZE, &limit_fsize);
+#endif
+#ifdef RLIMIT_LOCKS
+	setrlimit (RLIMIT_LOCKS, &limit_locks);
+#endif
+#ifdef RLIMIT_MEMLOCK
+	setrlimit (RLIMIT_MEMLOCK, &limit_memlock);
+#endif
+#ifdef RLIMIT_NOFILE
+	setrlimit (RLIMIT_NOFILE, &limit_nofile);
+#endif
+#ifdef RLIMIT_OFILE
+	setrlimit (RLIMIT_OFILE, &limit_ofile);
+#endif
+#ifdef RLIMIT_NPROC
+	setrlimit (RLIMIT_NPROC, &limit_nproc);
+#endif
+#ifdef RLIMIT_RSS
+	setrlimit (RLIMIT_RSS, &limit_rss);
+#endif
+#ifdef RLIMIT_STACK
+	setrlimit (RLIMIT_STACK, &limit_stack);
+#endif
+#ifdef RLIMIT_CORE
+	setrlimit (RLIMIT_CORE, &limit_core);
+#endif
+#ifdef RLIMIT_AS
+	setrlimit (RLIMIT_AS, &limit_as);
+#endif
+#ifdef RLIMIT_VMEM
+	setrlimit (RLIMIT_VMEM, &limit_vmem);
+#endif
+#ifdef RLIMIT_PTHREAD
+	setrlimit (RLIMIT_PTHREAD, &limit_pthread);
+#endif
+}
+
+#endif /* NUM_OF_LIMITS */
 
 const char *
 gdm_root_user (void)

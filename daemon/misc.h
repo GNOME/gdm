@@ -106,6 +106,9 @@ FILE * gdm_safe_fopen_w (const char *file);
 /* like fopen with "a+" and uses O_EXCL and O_NOFOLLOW */
 FILE * gdm_safe_fopen_ap (const char *file);
 
+/* first must get initial limits before attempting to ever reset those
+   limits */
+void gdm_get_initial_limits (void);
 void gdm_reset_limits (void);
 
 const char *gdm_root_user (void);

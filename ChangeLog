@@ -1,3 +1,17 @@
+Fri Aug 01 11:06:37 2003  George Lebl <jirka@5z.com>
+
+	* daemon/misc.[ch]: first get initial rlimits and use those
+	  when restoring limits.  Should fix errors where root limits
+	  are set low and we jack them up uselessly or when someone
+	  wants to limit the gdm process.
+
+	* daemon/gdm.c, daemon/slave.c: ignore SIGPWR, restart on
+	  SIGXCPU and SIGXFSZ, and cleanly exit on SIGABRT (which
+	  could come from glib).  Slave only ignores SIGPWR
+	  otherwise since we handle slave crashes properly.  Also
+	  print error to the log rather then just debug when child
+	  actually crashes, that's an error obviously.
+
 Fri Aug  1 01:51:50 2003  Jordi Mallach <jordi@sindominio.net>
 
 	* gui/gdmcomm.c, gui/gdmphotosetup.c: fix typo. Missed the damn
