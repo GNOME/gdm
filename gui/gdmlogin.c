@@ -2544,7 +2544,7 @@ update_clock (gpointer data)
 	the_tm = localtime (&the_time);
 
 	if (GdmUse24Clock) {
-	        if (strftime (str, sizeof (str), _("%a %b %d, %H:%M %p"), the_tm) == 0) {
+	        if (strftime (str, sizeof (str), _("%a %b %d, %H:%M"), the_tm) == 0) {
 		        /* according to docs, if the string does not fit, the
 		        * contents of str are undefined, thus just use
 		        * ??? */
