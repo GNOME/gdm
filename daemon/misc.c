@@ -459,8 +459,6 @@ gdm_text_message_dialog (const char *msg)
 	
 	dialog = g_find_program_in_path ("dialog");
 	if (dialog == NULL)
-		dialog = g_find_program_in_path ("gdialog");
-	if (dialog == NULL)
 		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {
 		char *argv[6];
@@ -527,8 +525,6 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	msg_quoted = g_shell_quote (msg);
 	
 	dialog = g_find_program_in_path ("dialog");
-	if (dialog == NULL)
-		dialog = g_find_program_in_path ("gdialog");
 	if (dialog == NULL)
 		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {

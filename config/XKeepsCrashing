@@ -8,7 +8,7 @@ fi
 
 gettextfunc () {
   if [ "x$GDMTRANSLATE" != "x" ] ; then
-    $GDMTRANSLATE "$1"
+    "$GDMTRANSLATE" "$1"
   else
     echo "$1"
   fi
@@ -60,10 +60,7 @@ done
 #
 DIALOG=`which dialog`
 if test "x$DIALOG" = "x" ; then
-  DIALOG=`which gdialog`
-  if test "x$DIALOG" = "x" ; then
-    DIALOG=`which whiptail`
-  fi
+  DIALOG=`which whiptail`
 fi
 if test -x "$LIBEXECDIR/gdmaskpass" ; then
   ASKPASS="$LIBEXECDIR/gdmaskpass"

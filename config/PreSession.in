@@ -6,21 +6,21 @@
 #
 # Note that output goes into the .xsession-errors file for easy debugging
 #
-PATH=@X_PATH@:$PATH:/bin:/usr/bin
+PATH="@X_PATH@:$PATH:/bin:/usr/bin"
 
 XSETROOT=`which xsetroot 2>/dev/null`
-if [ x$XSETROOT != x ] ; then
-	$XSETROOT -cursor_name left_ptr -solid "#363047"
+if [ "x$XSETROOT" != "x" ] ; then
+	"$XSETROOT" -cursor_name left_ptr -solid "#363047"
 fi
 
 
 SESSREG=`which sessreg 2>/dev/null`
-if [ x$SESSREG != x ] ; then
+if [ "x$SESSREG" != "x" ] ; then
 	# some output for easy debugging
 	echo "$0: Registering your session with wtmp and utmp"
-	echo "$0: running: $SESSREG -a -w /var/log/wtmp -u /var/run/utmp -x \"$X_SERVERS\" -h \"$REMOTE_HOST\" -l $DISPLAY $USER"
+	echo "$0: running: $SESSREG -a -w /var/log/wtmp -u /var/run/utmp -x \"$X_SERVERS\" -h \"$REMOTE_HOST\" -l \"$DISPLAY\" \"$USER\""
 
-	exec $SESSREG -a -w /var/log/wtmp -u /var/run/utmp -x "$X_SERVERS" -h "$REMOTE_HOST" -l $DISPLAY $USER
+	exec "$SESSREG" -a -w /var/log/wtmp -u /var/run/utmp -x "$X_SERVERS" -h "$REMOTE_HOST" -l "$DISPLAY" "$USER"
 	# this is not reached
 fi
 
