@@ -421,8 +421,8 @@ check_for_users (void)
 	int extra;
 
 	/* only for console logins on vt supporting systems */
-	if (auth_cookie == NULL &&
-	    get_cur_vt () >= 0)
+	if (auth_cookie == NULL ||
+	    get_cur_vt () < 0)
 		return;
 
 	ret = gdmcomm_call_gdm ("CONSOLE_SERVERS", auth_cookie, "2.2.4.0", 5);
