@@ -508,6 +508,24 @@ gdm_display_dispose (GdmDisplay *d)
     g_free (d->xsession_errors_filename);
     d->xsession_errors_filename = NULL;
 
+    if (d->session_output_fd >= 0) {
+	    VE_IGNORE_EINTR (close (d->session_output_fd));
+	    d->session_output_fd = -1;
+    }
+
+    if (d->xsession_errors_fd >= 0) {
+	    VE_IGNORE_EINTR (close (d->xsession_errors_fd));
+	    d->xsession_errors_fd = -1;
+    }
+
+    g_free (d->chooser_last_line);
+    d->chooser_last_line = NULL;
+
+    if (d->chooser_output_fd >= 0) {
+	    VE_IGNORE_EINTR (close (d->chooser_output_fd));
+	    d->chooser_output_fd = -1;
+    }
+
     g_free (d);
 }
 

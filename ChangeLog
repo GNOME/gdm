@@ -1,3 +1,20 @@
+Tue Jan 06 11:49:29 2004  George Lebl <jirka@5z.com>
+
+	* daemon/display.c, daemon/gdm.h, daemon/server.c, daemon/slave.c,
+ 	  daemon/xdmcp.c:  Fix #125064 by correctly reading out the chooser
+	  output and ignoring all but the last line.
+
+	* gui/gdmchooser.c: Send a newline BEFORE the chosen host as well
+	  as after.  Also fix reading the address on hosts that have IPV6,
+	  but that don't use it.
+
+	* gui/greeter/greeter_action_language.c: Get rid of evil 'foo == FALSE'
+	  kind of test
+
+	* gui/modules/Makefile.am, gui/modules/dwellmouselistener.c,
+	  gui/modules/keymouselistener.c:  Link with ve so that we can use it
+	  and ensure that our BINDIR is in the PATH.
+
 Tue Jan 06 10:17:41 2004  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c: small leak fix

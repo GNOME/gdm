@@ -31,6 +31,8 @@
 
 #include <config.h>
 
+#include <vicious.h>
+
 /*
  * Note that CONFIGFILE will have to be changed to something more generic
  * if this module is ever moved outside of gdm.
@@ -539,12 +541,25 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
                   for (act_li = curr_binding->actions; act_li != NULL; act_li = act_li->next)
                     {
                       gchar *action = (gchar *)act_li->data;
+		      char *oldpath, *newpath;
                       g_return_val_if_fail (action != NULL, TRUE);
 
                       if (!g_shell_parse_argv (action, NULL, &argv, NULL))
 		        continue;
 
                       envp = get_exec_environment (gtk_window_get_screen(window));
+
+		      /* add our BINDIR to the path */
+		      oldpath = g_strdup (g_getenv ("PATH"));
+		      if (ve_string_empty (oldpath))
+		        newpath = g_strdup (EXPANDED_BINDIR);
+		      else 
+		        newpath = g_strconcat (oldpath,
+					       ":",
+					       EXPANDED_BINDIR,
+					       NULL);
+		      ve_setenv ("PATH", newpath, TRUE);
+		      g_free (newpath);
 
                       retval = g_spawn_async (NULL,
                                               argv,
@@ -554,10 +569,17 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
                                               NULL,
                                               NULL,
                                               NULL);
+
+		      if (ve_string_empty (oldpath))
+		        ve_unsetenv ("PATH");
+		      else
+			ve_setenv ("PATH", oldpath, TRUE);
+		      g_free (oldpath);
+
                       g_strfreev (argv);
                       g_strfreev (envp);
 
-                      if (!retval)
+                      if ( ! retval)
                         {
                           GtkWidget *dialog =
                             gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR,

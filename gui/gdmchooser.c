@@ -474,13 +474,17 @@ gdm_chooser_decode_packet (GIOChannel   *source,
         return TRUE;
 
 #ifdef ENABLE_IPV6
-    sa_len = sizeof (struct sockaddr_in6);
-    if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt6_sa, &sa_len))
-#else
-    sa_len = sizeof (struct sockaddr_in);
-    if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt_sa, &sa_len))
+    if (have_ipv6) {
+	    sa_len = sizeof (struct sockaddr_in6);
+	    if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt6_sa, &sa_len))
+		    return TRUE;
+    } else
 #endif
-	return TRUE;
+    {
+	    sa_len = sizeof (struct sockaddr_in);
+	    if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt_sa, &sa_len))
+		    return TRUE;
+    }
 
     if (! XdmcpReadHeader (&buf, &header))
 	return TRUE;
@@ -508,7 +512,8 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 #ifdef ENABLE_IPV6
     /*Since, IPv4 addresses will get extracted as V4 mapped IPv6 address*/
 
-    if (IN6_IS_ADDR_V4MAPPED (&(clnt6_sa.sin6_addr))) {
+    if (have_ipv6 &&
+	IN6_IS_ADDR_V4MAPPED (&(clnt6_sa.sin6_addr))) {
         memset (&clnt_sa, 0, sizeof (clnt_sa));
         memcpy (&(clnt_sa.sin_addr), &(clnt6_sa.sin6_addr.s6_addr[12]), 4);
         clnt_sa.sin_family = AF_INET;
@@ -516,7 +521,8 @@ gdm_chooser_decode_packet (GIOChannel   *source,
         clnt6_sa.sin6_family = AF_INET;
     }
 
-    if (((struct sockaddr *) &clnt6_sa)->sa_family == AF_INET6) {
+    if (have_ipv6 &&
+	((struct sockaddr *) &clnt6_sa)->sa_family == AF_INET6) {
         if ( ! is_loopback_addr ((gchar *) &clnt6_sa.sin6_addr, AF_INET6)) {
 	    clnt6_sa.sin6_scope_id = 0;
 	
@@ -575,7 +581,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
     }
 
 #ifdef ENABLE_IPV6
-    if (((struct sockaddr *) &clnt6_sa)->sa_family == AF_INET6) {
+    if (have_ipv6 && ((struct sockaddr *) &clnt6_sa)->sa_family == AF_INET6) {
 	    gh = gdm_host_known ((char *)&clnt6_sa.sin6_addr, AF_INET6);
 	    if (gh == NULL) {
 		gh = gdm_chooser_host_alloc (hostname, status, (char *)&clnt6_sa.sin6_addr, AF_INET6, header.opcode == WILLING);
@@ -602,9 +608,11 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 	       servers really */
     }
 #ifdef ENABLE_IPV6
-    if (((struct sockaddr *) &clnt6_sa)->sa_family == AF_INET6 &&
-         ! gh->willing && added6_addr != NULL &&
-         memcmp (&gh->ia6, added6_addr, sizeof (struct in6_addr)) == 0) {
+    if (have_ipv6 &&
+	((struct sockaddr *) &clnt6_sa)->sa_family == AF_INET6 &&
+        ! gh->willing &&
+	added6_addr != NULL &&
+        memcmp (&gh->ia6, added6_addr, sizeof (struct in6_addr)) == 0) {
 
 	    added6_addr = NULL;
 	    host_not_willing = TRUE;
@@ -612,10 +620,9 @@ gdm_chooser_decode_packet (GIOChannel   *source,
     else
 #endif
     if (clnt_sa.sin_family == AF_INET &&
-       ! gh->willing &&
+	! gh->willing &&
 	added_addr != NULL &&
-	memcmp (&gh->ia, added_addr,
-		sizeof (struct in_addr)) == 0) {
+	memcmp (&gh->ia, added_addr, sizeof (struct in_addr)) == 0) {
 
 	    added_addr = NULL;
 	    host_not_willing = TRUE;
@@ -1105,7 +1112,7 @@ gdm_chooser_xdmcp_init (char **hosts)
     else
 	have_ipv6 = TRUE;
 #endif
-    if (have_ipv6 == FALSE) {
+    if ( ! have_ipv6) {
 	if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) == -1) {
 	    gdm_chooser_abort ("Could not create socket()!");
 	}
@@ -1150,7 +1157,7 @@ gdm_chooser_choose_host (const char *hostname)
   struct hostent *hentry;
 #endif
 
-  printf ("%s\n", curhost->name);
+  printf ("\n%s\n", curhost->name);
   fflush (stdout);
   if (xdm_address != NULL) {
 #ifdef ENABLE_IPV6
@@ -1240,7 +1247,7 @@ gdm_chooser_choose_host (const char *hostname)
 static gboolean
 add_check (gpointer data)
 {
-gboolean check = FALSE;
+	gboolean check = FALSE;
 
 #ifdef ENABLE_IPV6
 	if (have_ipv6 && added6_addr != NULL)
@@ -1386,7 +1393,7 @@ gdm_chooser_add_host (void)
 		sock6.sin6_family = AF_INET6;
 		sock6.sin6_port = htons (XDM_UDP_PORT);
 		status = gdm_addr_known ((char *)&qa6->sin6_addr, AF_INET6);
-		if (status == FALSE) {
+		if ( ! status) {
 			queryaddr = g_slist_append (queryaddr, qa6);
 		}
 		if (IN6_IS_ADDR_V4MAPPED (&qa6->sin6_addr)) {
@@ -1402,7 +1409,7 @@ gdm_chooser_add_host (void)
 		sock.sin_family = AF_INET;
 		sock.sin_port = htons (XDM_UDP_PORT);
 		status = gdm_addr_known ((char *)&qa->sin_addr, AF_INET);
-		if (status == FALSE) {
+		if ( ! status) {
 			queryaddr = g_slist_append (queryaddr, qa);
 		}
 		host = gdm_host_known ((char *) &qa->sin_addr, AF_INET);

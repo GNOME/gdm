@@ -1329,6 +1329,9 @@ gdm_server_alloc (gint id, const gchar *command)
     d->xsession_errors_bytes = 0;
     d->xsession_errors_fd = -1;
     d->session_output_fd = -1;
+
+    d->chooser_output_fd = -1;
+    d->chooser_last_line = NULL;
     
     return d;
 }

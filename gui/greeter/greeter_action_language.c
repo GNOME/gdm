@@ -91,7 +91,7 @@ greeter_language_init (void)
 {
   static gboolean initted = FALSE;
 
-  g_assert (initted == FALSE);
+  g_assert ( ! initted);
     
   greeter_langauge_initialize_model ();
 

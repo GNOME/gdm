@@ -379,6 +379,24 @@ run_session_output (gboolean read_until_eof)
 	NEVER_FAILS_root_set_euid_egid (old, oldg);
 }
 
+static void
+run_chooser_output (void)
+{
+	char *bf;
+
+	if G_UNLIKELY (d->chooser_output_fd < 0)
+		return;
+
+	/* the fd is non-blocking */
+	do {
+		bf = gdm_fdgets (d->chooser_output_fd);
+		if (bf != NULL) {
+			g_free (d->chooser_last_line);
+			d->chooser_last_line = bf;
+		}
+	} while (bf != NULL);
+}
+
 #define TIME_UNSET_P(tv) ((tv)->tv_sec == 0 && (tv)->tv_usec == 0)
 
 /* Try to touch an authfb auth file every 12 hours.  That way if it's
@@ -478,6 +496,8 @@ slave_waitpid (GdmWaitPid *wp)
 
 			if (d->session_output_fd >= 0)
 				run_session_output (FALSE /* read_until_eof */);
+			if (d->chooser_output_fd >= 0)
+				run_chooser_output ();
 			check_notifies_now ();
 		}
 		check_notifies_now ();
@@ -489,18 +509,23 @@ slave_waitpid (GdmWaitPid *wp)
 			fd_set rfds;
 			int ret;
 			struct timeval tv;
+			int maxfd;
 
 			FD_ZERO (&rfds);
 			FD_SET (slave_waitpid_r, &rfds);
 			if (read_session_output &&
 			    d->session_output_fd >= 0)
 				FD_SET (d->session_output_fd, &rfds);
+			if (d->chooser_output_fd >= 0)
+				FD_SET (d->chooser_output_fd, &rfds);
 
 			/* unset time */
 			tv.tv_sec = 0;
 			tv.tv_usec = 0;
+			maxfd = MAX (slave_waitpid_r, d->session_output_fd);
+			maxfd = MAX (maxfd, d->chooser_output_fd);
 
-			ret = select (MAX (slave_waitpid_r, d->session_output_fd)+1, &rfds, NULL, NULL, min_time_to_wait (&tv));
+			ret = select (maxfd + 1, &rfds, NULL, NULL, min_time_to_wait (&tv));
 
 			/* try to touch an fb auth file */
 			try_to_touch_fb_userauth ();
@@ -512,6 +537,10 @@ slave_waitpid (GdmWaitPid *wp)
 				if (d->session_output_fd >= 0 &&
 				    FD_ISSET (d->session_output_fd, &rfds)) {
 					run_session_output (FALSE /* read_until_eof */);
+				}
+				if (d->chooser_output_fd >= 0 &&
+				    FD_ISSET (d->chooser_output_fd, &rfds)) {
+					run_chooser_output ();
 				}
 			} else if (errno == EBADF) {
 				read_session_output = FALSE;
@@ -2887,7 +2916,7 @@ gdm_slave_chooser (void)
 {
 	gint p[2];
 	struct passwd *pwent;
-	char buf[1024];
+	char *buf;
 	size_t bytes;
 	pid_t pid;
 	GdmWaitPid *wp;
@@ -3007,6 +3036,12 @@ gdm_slave_chooser (void)
 
 		VE_IGNORE_EINTR (close (p[1]));
 
+		g_free (d->chooser_last_line);
+		d->chooser_last_line = NULL;
+		d->chooser_output_fd = p[0];
+		/* make the output read fd non-blocking */
+		fcntl (d->chooser_output_fd, F_SETFL, O_NONBLOCK);
+
 		/* wait for the chooser to die */
 
 		gdm_sigchld_block_push ();
@@ -3019,27 +3054,25 @@ gdm_slave_chooser (void)
 		gdm_slave_send_num (GDM_SOP_CHOOSERPID, 0);
 
 		/* Note: Nothing affecting the chooser needs update
-		 * from notifies */
+		 * from notifies, plus we are exitting right now */
 
-		VE_IGNORE_EINTR (bytes = read (p[0], buf, sizeof(buf)-1));
-		if (bytes > 0) {
-			VE_IGNORE_EINTR (close (p[0]));
+		run_chooser_output ();
+		VE_IGNORE_EINTR (close (d->chooser_output_fd));
+		d->chooser_output_fd = -1;
 
-			if (buf[bytes-1] == '\n')
-				buf[bytes-1] ='\0';
-			else
-				buf[bytes] ='\0';
+		if (d->chooser_last_line != NULL) {
+			char *host = d->chooser_last_line;
+			d->chooser_last_line = NULL;
+
 			if (d->type == TYPE_XDMCP) {
-				send_chosen_host (d, buf);
+				send_chosen_host (d, host);
 				gdm_slave_quick_exit (DISPLAY_CHOSEN);
 			} else {
 				gdm_debug ("Sending locally chosen host %s", buf);
-				gdm_slave_send_string (GDM_SOP_CHOSEN_LOCAL, buf);
+				gdm_slave_send_string (GDM_SOP_CHOSEN_LOCAL, host);
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}
 		}
-
-		VE_IGNORE_EINTR (close (p[0]));
 
 		gdm_slave_quick_exit (DISPLAY_REMANAGE);
 		break;

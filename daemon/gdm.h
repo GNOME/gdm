@@ -408,6 +408,9 @@ struct _GdmDisplay {
     char *xsession_errors_filename; /* if NULL then there is no .xsession-errors
 				       file */
 
+    int chooser_output_fd; /* from the chooser */
+    char *chooser_last_line;
+
     /* Only set in the main daemon as that's the only place that cares */
     GdmLogoutAction logout_action;
 };
