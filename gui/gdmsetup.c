@@ -1609,10 +1609,9 @@ dir_exists (const char *parent, const char *dir)
 }
 
 static void
-install_ok (GtkWidget *button, gpointer data)
+install_response (GtkWidget *chooser, gint response, gpointer data)
 {
-	GtkFileSelection *fs = GTK_FILE_SELECTION (data);
-	GtkListStore *store = g_object_get_data (G_OBJECT (fs), "ListStore");
+	GtkListStore *store = data;
 	GtkWidget *theme_list = glade_helper_get (xml, "gg_theme_list",
 						  GTK_TYPE_TREE_VIEW);
 	char *filename, *dir, *untar_cmd, *theme_dir, *cwd;
@@ -1622,13 +1621,18 @@ install_ok (GtkWidget *button, gpointer data)
 	DIR *dp;
 	gboolean success = FALSE;
 
+	if (response != GTK_RESPONSE_OK) {
+		gtk_widget_destroy (chooser);
+		return;
+	}
+
 	cwd = g_get_current_dir ();
 	theme_dir = get_theme_dir ();
 
-	filename = g_strdup (gtk_file_selection_get_filename (fs));
+	filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
 	if (filename == NULL) {
 		GtkWidget *dlg =
-			ve_hig_dialog_new (GTK_WINDOW (fs),
+			ve_hig_dialog_new (GTK_WINDOW (chooser),
 					   GTK_DIALOG_MODAL | 
 					   GTK_DIALOG_DESTROY_WITH_PARENT,
 					   GTK_MESSAGE_ERROR,
@@ -1656,7 +1660,7 @@ install_ok (GtkWidget *button, gpointer data)
 
 	if (dir == NULL) {
 		GtkWidget *dlg =
-			ve_hig_dialog_new (GTK_WINDOW (fs),
+			ve_hig_dialog_new (GTK_WINDOW (chooser),
 					   GTK_DIALOG_MODAL | 
 					   GTK_DIALOG_DESTROY_WITH_PARENT,
 					   GTK_MESSAGE_ERROR,
@@ -1685,7 +1689,7 @@ install_ok (GtkWidget *button, gpointer data)
 				       "installed, install again anyway?"),
 				     fname);
 		dlg = ve_hig_dialog_new
-			(GTK_WINDOW (fs),
+			(GTK_WINDOW (chooser),
 			 GTK_DIALOG_MODAL | 
 			 GTK_DIALOG_DESTROY_WITH_PARENT,
 			 GTK_MESSAGE_QUESTION,
@@ -1753,7 +1757,7 @@ install_ok (GtkWidget *button, gpointer data)
 
 	if ( ! success) {
 		GtkWidget *dlg =
-			ve_hig_dialog_new (GTK_WINDOW (fs),
+			ve_hig_dialog_new (GTK_WINDOW (chooser),
 					   GTK_DIALOG_MODAL | 
 					   GTK_DIALOG_DESTROY_WITH_PARENT,
 					   GTK_MESSAGE_ERROR,
@@ -1788,36 +1792,37 @@ install_ok (GtkWidget *button, gpointer data)
 	g_free (cwd);
 	g_free (theme_dir);
 
-	gtk_widget_destroy (GTK_WIDGET (fs));
+	gtk_widget_destroy (GTK_WIDGET (chooser));
 }
 
 static void
 install_new_theme (GtkWidget *button, gpointer data)
 {
 	GtkListStore *store = data;
-	static GtkWidget *fs = NULL;
+	static GtkWidget *chooser = NULL;
 	GtkWidget *setup_dialog;
 
-	if (fs != NULL) {
-		gtk_window_present (GTK_WINDOW (fs));
+	if (chooser != NULL) {
+		gtk_window_present (GTK_WINDOW (chooser));
 		return;
 	}
        
 	setup_dialog = glade_helper_get (xml, "setup_dialog", GTK_TYPE_WINDOW);
 	
-	fs = gtk_file_selection_new (_("Select new theme archive to install"));
-	gtk_window_set_transient_for (GTK_WINDOW (fs),
-				      GTK_WINDOW (setup_dialog));
-	g_object_set_data (G_OBJECT (fs), "ListStore", store);
-	g_signal_connect (G_OBJECT (fs), "destroy",
-			  G_CALLBACK (gtk_widget_destroyed), &fs);
-	g_signal_connect (GTK_FILE_SELECTION (fs)->ok_button, "clicked",
-			  G_CALLBACK (install_ok), fs);
-	g_signal_connect_swapped (GTK_FILE_SELECTION (fs)->cancel_button,
-				  "clicked",
-				  G_CALLBACK (gtk_widget_destroy), fs);
+	chooser = gtk_file_chooser_dialog_new (_("Select new theme archive to install"),
+					       GTK_WINDOW (setup_dialog),
+					       GTK_FILE_CHOOSER_ACTION_OPEN,
+					       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					       _("_Install"), GTK_RESPONSE_OK,
+					       NULL);
+	
+	g_signal_connect (G_OBJECT (chooser), "destroy",
+			  G_CALLBACK (gtk_widget_destroyed), &chooser);
+	g_signal_connect (G_OBJECT (chooser), "response",
+			  G_CALLBACK (install_response), store);
 
-	gtk_widget_show (fs);
+	gtk_window_set_default_size (GTK_WINDOW (chooser), 600, 400);
+	gtk_widget_show (chooser);
 }
 
 static void
