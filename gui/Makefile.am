@@ -56,12 +56,6 @@ gdmlogin_SOURCES = \
 	misc.c			\
 	misc.h
 
-#gdmconfig_SOURCES = \
-#	gdmconfig.c		\
-#	gdmconfig.h		\
-#	misc.c			\
-#	misc.h
-
 gdmsetup_SOURCES = \
 	gdmsetup.c		\
 	gdmcomm.c		\
@@ -90,13 +84,6 @@ gdmlogin_LDADD = \
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
-
-#gdmconfig_LDFLAGS = -export-dynamic
-#gdmconfig_LDADD = \
-#	$(GUI_LIBS)		\
-#	$(INTLLIBS)		\
-#	-L$(top_builddir)/vicious-extensions	\
-#	-lviciousui
 
 gdmsetup_LDFLAGS = -export-dynamic
 gdmsetup_LDADD = \
@@ -137,7 +124,7 @@ System_DATA = $(System_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
 Gladedir = $(datadir)/gdm
-Glade_DATA = gdmsetup.glade gdmchooser.glade #gdmconfig.glade
+Glade_DATA = gdmsetup.glade gdmchooser.glade
 
 Iconsdir = $(datadir)/pixmaps
 
@@ -147,6 +134,8 @@ Icons_DATA = \
 EXTRA_DIST = \
 	gdmsetup-strings.c	\
 	gdmchooser-strings.c	\
+	gdmsetup.gladep		\
+	gdmchooser.gladep	\
 	$(Glade_DATA)		\
 	$(Icons_DATA)		\
 	$(System_DATA)		\
