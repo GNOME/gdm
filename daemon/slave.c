@@ -2141,8 +2141,11 @@ session_child_run (struct passwd *pwent,
 		gnome_setenv ("LANG", language, TRUE);
 		gnome_setenv ("GDM_LANG", language, TRUE);
 	} else {
-		/* setusercontext sets up user languages */
-		gnome_setenv ("GDM_LANG", g_getenv ("LANG"), TRUE);
+		if (g_getenv ("LANG") == NULL)
+			gnome_unsetenv ("GDM_LANG");
+		else
+			/* setusercontext sets up user languages */
+			gnome_setenv ("GDM_LANG", g_getenv ("LANG"), TRUE);
 	}
 #else
 	if (setuid (pwent->pw_uid) < 0) 
@@ -2171,7 +2174,11 @@ session_child_run (struct passwd *pwent,
 	if (usrcfgok && savelang && home_dir_ok) {
 		gchar *cfgstr = g_strconcat ("=", home_dir,
 					     "/.gnome/gdm=/session/lang", NULL);
-		gnome_config_set_string (cfgstr, language);
+		/* we chose the system default language so wipe the lang key */
+		if (def_language)
+			gnome_config_clean_key (cfgstr);
+		else
+			gnome_config_set_string (cfgstr, language);
 		need_config_sync = TRUE;
 		g_free (cfgstr);
 	}
@@ -2494,8 +2501,7 @@ gdm_slave_session_start (void)
 
 	    g_free (language);
 
-	    if (lang != NULL &&
-		lang[0] != '\0') 
+	    if ( ! ve_string_empty (lang))
 		    language = g_strdup (lang);
 	    else
 		    language = g_strdup (GdmDefaultLocale);

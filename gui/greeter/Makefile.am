@@ -53,6 +53,3 @@ gdmgreeter_LDADD = \
 	$(XINERAMA_LIBS)	\
 	$(X_EXTRA_LIBS)		\
 	$(GREETER_LIBS)
-
-EXTRA_DIST = \
-	greeter_lang_list.c

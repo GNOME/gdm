@@ -74,6 +74,7 @@ const char *session_titles[] = {
 
 #define LAST_SESSION "Last"
 #define LAST_LANGUAGE "Last"
+#define DEFAULT_LANGUAGE "Default"
 #define SESSION_NAME "SessionName"
 
 static gboolean GdmAllowRoot;
@@ -1035,55 +1036,40 @@ gdm_login_language_lookup (const gchar* savedlang)
     if (langmenu != NULL)
 	    gtk_widget_set_sensitive (GTK_WIDGET (langmenu), FALSE);
 
-    /* Previously saved language not found in ~user/.gnome/gdm */
-    if (ve_string_empty (savedlang)) {
-	/* If "Last" is chosen use Default, which is the current language,
-	 * or the GdmDefaultLocale if that's not set or is "C"
-	 * else use current selection */
-	g_free (language);
-	if (curlang == NULL ||
-	    strcmp (curlang, LAST_LANGUAGE) == 0) {
-		const char *lang = g_getenv ("LANG");
-		if (lang == NULL ||
-		    lang[0] == '\0' ||
-		    g_ascii_strcasecmp (lang, "C") == 0) {
-			language = g_strdup (GdmDefaultLocale);
-		} else {
-			language = g_strdup (lang);
-		}
-	} else {
-		language = g_strdup (curlang);
-	}
-
-	if (ve_string_empty (language)) {
-		g_free (language);
-		language = g_strdup ("C");
-	}
-
-	savelang = TRUE;
-	return;
-    }
+    if (savedlang == NULL)
+	    savedlang = "";
 
     /* If a different language is selected */
     if (curlang != NULL && strcmp (curlang, LAST_LANGUAGE) != 0) {
         g_free (language);
-	language = g_strdup (curlang);
+	if (strcmp (curlang, DEFAULT_LANGUAGE) == 0)
+		language = g_strdup ("");
+	else
+		language = g_strdup (curlang);
 
 	/* User's saved language is not the chosen one */
 	if (strcmp (savedlang, language) != 0) {
 	    gchar *msg;
 	    char *curname, *savedname;
 
-	    curname = gdm_lang_name (curlang,
-				     FALSE /* never_encoding */,
-				     TRUE /* no_group */,
-				     TRUE /* untranslated */,
-				     TRUE /* markup */);
-	    savedname = gdm_lang_name (savedlang,
-				       FALSE /* never_encoding */,
-				       TRUE /* no_group */,
-				       TRUE /* untranslated */,
-				       TRUE /* markup */);
+	    if (strcmp (curlang, DEFAULT_LANGUAGE) == 0) {
+		    curname = g_strdup (_("System default"));
+	    } else {
+		    curname = gdm_lang_name (curlang,
+					     FALSE /* never_encoding */,
+					     TRUE /* no_group */,
+					     TRUE /* untranslated */,
+					     TRUE /* markup */);
+	    }
+	    if (strcmp (savedlang, "") == 0) {
+		    savedname = g_strdup (_("System default"));
+	    } else {
+		    savedname = gdm_lang_name (savedlang,
+					       FALSE /* never_encoding */,
+					       TRUE /* no_group */,
+					       TRUE /* untranslated */,
+					       TRUE /* markup */);
+	    }
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
 				     "%s.\nDo you wish to make %s the default for future sessions?"),
@@ -1623,7 +1609,7 @@ gdm_login_language_menu_new (void)
 
     curlang = LAST_LANGUAGE;
 
-    item = gtk_radio_menu_item_new_with_label (NULL, _(LAST_LANGUAGE));
+    item = gtk_radio_menu_item_new_with_label (NULL, _("Last"));
     languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     g_signal_connect (G_OBJECT (item), "activate", 
@@ -1636,6 +1622,20 @@ gdm_login_language_menu_new (void)
     gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
 			  _("Log in using the language that you have used "
 			    "last time you logged in"),
+			  NULL);
+
+    item = gtk_radio_menu_item_new_with_label (languages, _("System default"));
+    languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+    g_signal_connect (G_OBJECT (item), "activate", 
+		      G_CALLBACK (gdm_login_language_handler), 
+		      NULL);
+    gtk_widget_show (GTK_WIDGET (item));
+    g_object_set_data (G_OBJECT (item),
+		       "Language",
+		       DEFAULT_LANGUAGE);
+    gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item),
+			  _("Log in using the default system language"),
 			  NULL);
 
     item = gtk_menu_item_new();

@@ -45,7 +45,7 @@ static Language languages [] = {
 /*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Azerbaijani"), "az_AZ", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Basque"), "eu_ES", NULL, 0 },
+	{ N_("A-M|Basque"), "eu_ES", "Euskara", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Bulgarian"), "bg_BG", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -84,7 +84,7 @@ static Language languages [] = {
 	{ N_("A-M|Hebrew"), "he_IL", "עברית", 0 },
 	{ N_("A-M|Hebrew"), "iw_IL", "עברית", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
-	{ N_("A-M|Hungarian"), "hu_HU", NULL, 0 },
+	{ N_("A-M|Hungarian"), "hu_HU", "Magyar", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Icelandic"), "is_IS", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
@@ -97,6 +97,8 @@ static Language languages [] = {
 	{ N_("A-M|Latvian"), "lv_LV", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Lithuanian"), "lt_LT", "Lietuvių", 0 },
+        /*Note translate the A-M to the A-M you used in the group label */
+        { N_("A-M|Macedonian"), "mk_MK", NULL, 0 },
         /*Note translate the A-M to the A-M you used in the group label */
         { N_("A-M|Malay"), "ms_MY", "Bahasa Melayu", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
@@ -126,7 +128,9 @@ static Language languages [] = {
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Ukrainian"), "uk_UA", NULL, 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
-	{ N_("N-Z|Walloon"), "wa_BE", NULL, 0 },
+	{ N_("N-Z|Vietnamese"), "vi_VN", NULL, 0 },
+	/*Note translate the N-Z to the N-Z you used in the group label */
+	{ N_("N-Z|Walloon"), "wa_BE", "Walon", 0 },
 	/* This is the POSIX/C locale for english, should really be in Other */
 	{ N_("Other|POSIX/C English"), "C", NULL, 0 },
 	{ NULL, NULL }

@@ -11,6 +11,7 @@
 #include "greeter_action_language.h"
 
 #define LAST_LANGUAGE "Last"
+#define DEFAULT_LANGUAGE "Default"
 
 enum {
   LOCALE_COLUMN,
@@ -29,6 +30,7 @@ static void
 greeter_langauge_initialize_model (void)
 {
   GList *list, *li;
+  GtkTreeIter iter;
 
   list = gdm_lang_read_locale_file (GdmLocaleFile);
 
@@ -37,12 +39,25 @@ greeter_langauge_initialize_model (void)
 				   G_TYPE_STRING,
 				   G_TYPE_STRING);
 
+  gtk_list_store_append (lang_model, &iter);
+  gtk_list_store_set (lang_model, &iter,
+		      TRANSLATED_NAME_COLUMN, _("Last"),
+		      UNTRANSLATED_NAME_COLUMN, NULL,
+		      LOCALE_COLUMN, LAST_LANGUAGE,
+		      -1);
+
+  gtk_list_store_append (lang_model, &iter);
+  gtk_list_store_set (lang_model, &iter,
+		      TRANSLATED_NAME_COLUMN, _("System default"),
+		      UNTRANSLATED_NAME_COLUMN, NULL,
+		      LOCALE_COLUMN, DEFAULT_LANGUAGE,
+		      -1);
+
   for (li = list; li != NULL; li = li->next)
     {
       char *lang = li->data;
       char *name;
       char *untranslated;
-      GtkTreeIter iter;
 
       li->data = NULL;
 
@@ -78,14 +93,13 @@ greeter_language_init (void)
     
   greeter_langauge_initialize_model ();
 
-
   initted = TRUE;
 }
 
 gboolean
 greeter_language_get_save_language (void)
 {
-  return FALSE;
+  return savelang;
 }
 
 gchar *
@@ -102,46 +116,16 @@ greeter_language_get_language (const char *old_language)
   /* Don't save language unless told otherwise */
   savelang = FALSE;
 
-  /* Previously saved language not found in ~user/.gnome/gdm */
-  if (old_language == NULL || old_language[0] == '\000')
-    {
-      /* If "Last" is chosen use Default, which is the current language,
-       * or the GdmDefaultLocale if that's not set or is "C"
-       * else use current selection */
-
-      if (current_language == NULL ||
-	  strcmp (current_language, LAST_LANGUAGE) == 0)
-	{
-	  const char *lang = g_getenv ("LANG");
-	  if (lang == NULL || lang[0] == '\000' ||
-	      g_ascii_strcasecmp (lang, "C") == 0)
-	    {
-	      retval = g_strdup (GdmDefaultLocale);
-	    }
-	  else
-	    {
-	      retval = g_strdup (lang);
-	    }
-	}
-      else
-	{
-	  retval = g_strdup (current_language);
-	}
-
-      if (retval == NULL)
-	{
-	  retval= g_strdup ("C");
-	}
-
-	savelang = TRUE;
-
-	return retval;
-    }
+  if (old_language == NULL)
+    old_language = "";
 
   /* If a different language is selected */
   if (current_language != NULL && strcmp (current_language, LAST_LANGUAGE) != 0)
     {
-      retval = g_strdup (current_language);
+      if (strcmp (current_language, DEFAULT_LANGUAGE) == 0)
+	retval = g_strdup ("");
+      else
+        retval = g_strdup (current_language);
 
       /* User's saved language is not the chosen one */
       if (strcmp (old_language, retval) != 0)
@@ -149,16 +133,22 @@ greeter_language_get_language (const char *old_language)
 	  gchar *msg;
 	  char *current_name, *saved_name;
 
-	  current_name = gdm_lang_name (current_language,
+	  if (strcmp (current_language, DEFAULT_LANGUAGE) == 0)
+	    current_name = g_strdup (_("System default"));
+	  else
+	    current_name = gdm_lang_name (current_language,
+					  FALSE /* never_encoding */,
+					  TRUE /* no_group */,
+					  TRUE /* untranslated */,
+					  TRUE /* markup */);
+	  if (strcmp (old_language, "") == 0)
+	    saved_name = g_strdup (_("System default"));
+	  else
+	    saved_name = gdm_lang_name (old_language,
 					FALSE /* never_encoding */,
 					TRUE /* no_group */,
 					TRUE /* untranslated */,
 					TRUE /* markup */);
-	  saved_name = gdm_lang_name (old_language,
-				      FALSE /* never_encoding */,
-				      TRUE /* no_group */,
-				      TRUE /* untranslated */,
-				      TRUE /* markup */);
 
 	  msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is "
 				   "%s.\nDo you wish to make %s the default for future sessions?"),
