@@ -20,7 +20,7 @@ INCLUDES = \
 #	-DGNOME_DISABLE_DEPRECATED			\
 #
 
-bin_PROGRAMS = \
+libexec_PROGRAMS = \
 	gdmgreeter
 
 bin_SCRIPTS = \

@@ -35,6 +35,7 @@ static GtkWidget *preview;
 static GtkWidget *current_image;
 static char *current_pix;
 static char *photofile;
+static char *facedir;
 static int max_width, max_height;
 static int response = -999;
 
@@ -139,12 +140,14 @@ update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 			if (scale_factor >= 1.0) {
 				preview_pixbuf = pixbuf;
 			} else {
-				int scale_x = (int) (gdk_pixbuf_get_width (pixbuf) * scale_factor);
-				int scale_y = (int) (gdk_pixbuf_get_height (pixbuf) * scale_factor);
+				int scale_x = (int) (gdk_pixbuf_get_width (pixbuf) *
+					scale_factor);
+				int scale_y = (int) (gdk_pixbuf_get_height (pixbuf) *
+					scale_factor);
 
-				/* Scale bigger dimension of image to max icon height/width */
-				preview_pixbuf = gdk_pixbuf_scale_simple (pixbuf, scale_x, scale_y,
-					GDK_INTERP_BILINEAR);
+				/* Scale bigger dimension to max icon height/width */
+				preview_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
+					scale_x, scale_y, GDK_INTERP_BILINEAR);
 			}
 
 			gtk_image_set_from_pixbuf (GTK_IMAGE (preview), preview_pixbuf);
@@ -153,7 +156,8 @@ update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
 			if (scale_factor != 1.0)
 				gdk_pixbuf_unref (preview_pixbuf);
 
-			gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
+			gtk_file_chooser_set_preview_widget_active (file_chooser,
+				have_preview);
 		}
 	}
 }
@@ -172,7 +176,11 @@ browse_button_cb (GtkWidget *widget, gpointer data)
 					      NULL);
 
 	if (current_pix != NULL && strcmp (photofile, current_pix))
-		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_dialog), current_pix);
+		gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (file_dialog),
+			current_pix);
+	else if (facedir != NULL && g_file_test (facedir, G_FILE_TEST_IS_DIR))
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
+			facedir);
 	else
 		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_dialog),
 			EXPANDED_DATADIR "/pixmaps");
@@ -235,6 +243,7 @@ main (int argc, char *argv[])
 	max_height = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
 	greeter = gnome_config_get_string (GDM_KEY_GREETER);
 	remotegreeter = gnome_config_get_string (GDM_KEY_REMOTEGREETER);
+	facedir = gnome_config_get_string (GDM_KEY_FACEDIR);
 	gnome_config_pop_prefix ();
 
 	if ( ! gdm_check ()) {

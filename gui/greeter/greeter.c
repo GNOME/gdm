@@ -1285,7 +1285,7 @@ main (int argc, char *argv[])
       gtk_dialog_run (GTK_DIALOG (dialog));
       gtk_widget_destroy (dialog);
 
-      execl (EXPANDED_BINDIR "/gdmlogin", EXPANDED_BINDIR "/gdmlogin", NULL);
+      execl (EXPANDED_LIBEXECDIR "/gdmlogin", EXPANDED_LIBEXECDIR "/gdmlogin", NULL);
       execlp ("gdmlogin", "gdmlogin", NULL);
 
       dialog = ve_hig_dialog_new (NULL /* parent */,

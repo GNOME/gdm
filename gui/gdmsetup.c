@@ -958,16 +958,16 @@ setup_greeter_option (const char *name,
 	val = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
 	if (val != NULL &&
-	    strcmp (val, EXPANDED_BINDIR "/gdmlogin --disable-sound --disable-crash-dialog") == 0) {
+	    strcmp (val, EXPANDED_LIBEXECDIR "/gdmlogin --disable-sound --disable-crash-dialog") == 0) {
 		g_free (val);
-		val = g_strdup (EXPANDED_BINDIR "/gdmlogin");
+		val = g_strdup (EXPANDED_LIBEXECDIR "/gdmlogin");
 	}
 
 	menu = gtk_menu_new ();
 
-	add_menuitem (menu, EXPANDED_BINDIR "/gdmlogin",
+	add_menuitem (menu, EXPANDED_LIBEXECDIR "/gdmlogin",
 		      _("Standard greeter"), val, &selected);
-	add_menuitem (menu, EXPANDED_BINDIR "/gdmgreeter",
+	add_menuitem (menu, EXPANDED_LIBEXECDIR "/gdmgreeter",
 		      _("Graphical greeter"), val, &selected);
 
 	if (val != NULL &&

@@ -23,7 +23,5 @@ then
     fi
 fi
 
-exec @EXPANDED_BINDIR@/gdm-binary "$@"
+exec @EXPANDED_SBINDIR@/gdm-binary "$@"
 
-# fallback, use PATH
-exec gdm-binary "$@"

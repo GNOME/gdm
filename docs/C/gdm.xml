@@ -451,7 +451,7 @@
         Optionally the greeter can provide a face browser containing icons for
         all the users on a system. The icons can be installed globally by the
         sysadmin or in the users' home directories.  If installed globally
-        they should be in the <filename>&lt;share&gt;/faces/</filename>
+        they should be in the <filename>&lt;share&gt;/pixmaps/faces/</filename>
         directory (though this can be configured with the
         <filename>GlobalFaceDir</filename>
         configuration option) and the filename should be the name of the user,
@@ -2304,7 +2304,7 @@ XKeepsCrashing
           <varlistentry>
             <term>GlobalFaceDir</term>
             <listitem>
-              <synopsis>GlobalFaceDir=&lt;share&gt;/faces/</synopsis>
+              <synopsis>GlobalFaceDir=&lt;share&gt;/pixmaps/faces/</synopsis>
               <para>
                 Systemwide directory for face files. The sysadmin can place
                 icons for users here without touching their homedirs. Faces are
@@ -3029,7 +3029,7 @@ Language=cs_CZ.UTF-8
 
       <para>
         Face images can also be placed in the global face directory, which is
-        normally <filename>&lt;share&gt;/faces/</filename>
+        normally <filename>&lt;share&gt;/pixmaps/faces/</filename>
         (though this can be configured with the
         <filename>GlobalFaceDir</filename> configuration option) and the
         filename should be the name of the user, optionally with a
@@ -3128,6 +3128,7 @@ FLEXI_XSERVER
 FLEXI_XNEST
 CONSOLE_SERVERS
 ALL_SERVERS
+GET_CONFIG
 UPDATE_CONFIG
 GREETERPIDS
 QUERY_LOGOUT_ACTION
@@ -3296,6 +3297,25 @@ Answers:
       </screen>
       </sect3>
       
+      <sect3 id="getconfig">
+      <title>GET_CONFIG</title> 
+      <screen>
+GET_CONFIG:  Get configuration value for key.  Useful so
+             that other programs can request configuration
+             information from GDM.  Any key defined as GDM_KEY_*
+             in gdm.h is supported.
+Supported since: 2.6.0.9
+Arguments:  &lt;key&gt;
+Answers:
+  OK &lt;value&gt;
+  ERROR &lt;err number&gt; &lt;english error description&gt;
+     0 = Not implemented
+     50 = Unsupported key
+     200 = Too many messages
+     999 = Unknown error
+      </screen>
+      </sect3>
+
       <sect3 id="updateconfig">
       <title>UPDATE_CONFIG</title> 
       <screen>
@@ -3498,184 +3518,13 @@ Supported since: 2.2.4.0
     </sect2>
   </sect1>
 
-  <sect1 id="binaries">
-    <title>GDM Commands</title>
+  <sect1 id="bindir_binaries">
+    <title>GDM Commands in EXPANDED_BINDIR</title>
 
     <para>
-      The GDM package provides quite a few different commands.  
+      The GDM package provides the following different commands in
+      EXPANDED_BINDIR intended to be used by the end-user:
     </para>
-
-    <sect2 id="gdmcommandline">
-      <title><filename>gdm</filename> and <filename>gdm-binary</filename>
-             Command Line Options</title>
-
-      <para>
-        The <filename>gdm</filename> command is really just a script which
-        runs the <filename>gdm-binary</filename>, passing along any options.
-        Before launching gdm-binary, the gdm wrapper script will source the
-        <filename>/etc/profile</filename> file to set the standard system
-        environment variables.  In order to better support
-        internationalization, it will also set the LC_MESSAGES environment
-        variable to LANG if neither LC_MESSAGES or LC_ALL are set.  If you
-        really need to set some additional environment before launching GDM,
-        you can do so in this file.
-      </para>
-
-      <variablelist>
-        <title><filename>gdm</filename> and <filename>gdm-binary</filename>
-               Command Line Options</title>
-
-        <varlistentry>
-          <term>--help</term>
-          <listitem>
-            <para>
-              Gives a brief overview of the command line options.
-            </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>-nodaemon</term>
-          <listitem>
-            <para>
-              If this option is specified, then gdm does not fork into the
-              background when run.  You can use just a single dash with this
-              option to preserve compatibility with XDM.
-            </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>--no-console</term>
-          <listitem>
-            <para>
-              Tell the daemon that it should not run anything on the console.
-              This means that none of the local servers from the
-              <filename>[servers]</filename> section will be run, and the
-              console will not be used for communicating errors to the user.
-              An empty <filename>[servers]</filename> section automatically
-              implies this option.
-            </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>--preserve-ld-vars</term>
-          <listitem>
-            <para>
-              When clearing the environment internally, preserve all variables
-              starting with LD_.  This is mostly for debugging purposes.
-            </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>--version</term>
-          <listitem>
-            <para>
-              Print the version of the GDM daemon.
-            </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>--wait-for-go</term>
-          <listitem>
-            <para>
-              If started with this option, gdm will init, but only start the
-              first local display and then wait for a GO message in the fifo
-              protocol.  No greeter will be shown until the GO message is
-              sent.  Also flexiserver requests will be denied and XDMCP will
-              not be started until GO is given.  This is useful for
-              initialization scripts which wish to start X early, but where
-              you don't yet want the user to start logging in.  So the script
-              would send the GO to the fifo once it is ready and GDM will
-              then continue.  This functionality was added in version 2.5.90.0.
-            </para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
-
-    <sect2 id="gdmgreeterlogincommandline">
-      <title><filename>gdmchooser</filename> and <filename>gdmlogin</filename>
-             Command Line Options</title>
-
-      <para>
-        The <filename>gdmgreeter</filename> and <filename>gdmlogin</filename>
-        are two different login programs, either can be used by GDM.  
-        <filename>gdmgreeter</filename> is themeable with GDM themes while
-        <filename>gdmlogin</filename> is themable with GTK+ themes.  These
-        programs are normally executed by the GDM daemon.  Both programs
-        support standard GNOME options.
-      </para>
-    </sect2>
-
-    <sect2 id="gdmchoosercommandline">
-      <title><filename>gdmchooser</filename> Command Line Options</title>
-
-      <para>
-        The <filename>gdmchooser</filename> is the XDMCP chooser application.  
-        The <filename>gdmchooser</filename> is normally executed by the GDM
-        daemon.  It supports the following options for XDM compatibility.
-        This program supports standard GNOME options.
-      </para>
-
-      <variablelist>
-        <title><filename>gdmchooser</filename> Command Line Options</title>
-
-        <varlistentry>
-          <term>-xdmaddress=SOCKET</term>
-          <listitem>
-           <para>
-               Socket for XDM communication.
-           </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>--clientaddress=ADDRESS</term>
-          <listitem>
-           <para>
-             Client address to return in response to XDM.  This option is for
-             running gdmchooser with XDM, and is not used within GDM.
-           </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>-connectionType=TYPE</term>
-          <listitem>
-           <para>
-             Connection type to return in response to XDM.  This option is for
-             running gdmchooser with XDM, and is not used within GDM.
-           </para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </sect2>
-       
-    <sect2 id="gdmsetupcommandline">
-      <title><filename>gdmconfig</filename> and
-             <filename>gdmsetup</filename> Command Line Options</title>
-
-      <para>
-       <filename>gdmconfig</filename> is a wrapper script for running
-       <filename>gdmsetup</filename> for binary name compatibility.
-       <filename>gdmconfig</filename> is installed to the
-       <filename>&lt;sbin&gt;/</filename> directory.
-      </para>
-
-      <para>
-       gdmsetup runs a graphical program for modifying the GDM
-       configuration file, gdm.conf.  Normally on systems that support the
-       PAM userhelper, this is setup such that when you run
-       <filename>gdmsetup</filename> as an ordinary user, it will first
-       ask you for your root password before starting.  Otherwise, this
-       program may only be run as root.  This program supports standard
-       GNOME options.
-      </para>
-    </sect2>
 
     <sect2 id="gdmxnestchoosercommandline">
       <title><filename>gdmXnestchooser</filename> and
@@ -3695,20 +3544,8 @@ Supported since: 2.2.4.0
         options.
       </para>
 
-      <para>
-        <filename>gdmXnest</filename> is a symbolic link to
-        <filename>gdmXnestchooser</filename> and is the same as using the
-        --no-query and --no-gdm-check options with
-        <filename>gdmXnestchooser</filename>.  It is useful for running
-        <filename>Xnest</filename> without actually connecting somewhere.  It
-        will print out the display setting on standard output that you can use
-        to connect to this server.  This is useful mostly for developers who
-        perhaps wish to test their apps running on a completely separate server.
-      </para>
-
       <variablelist>
-      <title><filename>gdmXnestchooser</filename> and
-             <filename>gdmXnest</filename> Command Line Options</title>
+      <title><filename>gdmXnestchooser</filename> Command Line Options</title>
 
         <varlistentry>
           <term>-x, --xnest=STRING</term>
@@ -3897,6 +3734,129 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
        </screen>
       </para>
     </sect2>
+  </sect1>
+
+  <sect1 id="sbindir_binaries">
+    <title>GDM Commands in EXPANDED_SBINDIR</title>
+
+    <para>
+      The GDM package provides the following different commands in
+      EXPANDED_SBINDIR intended to be used by the root user:
+    </para>
+
+    <sect2 id="gdmcommandline">
+      <title><filename>gdm</filename> and <filename>gdm-binary</filename>
+             Command Line Options</title>
+
+      <para>
+        The <filename>gdm</filename> command is really just a script which
+        runs the <filename>gdm-binary</filename>, passing along any options.
+        Before launching gdm-binary, the gdm wrapper script will source the
+        <filename>/etc/profile</filename> file to set the standard system
+        environment variables.  In order to better support
+        internationalization, it will also set the LC_MESSAGES environment
+        variable to LANG if neither LC_MESSAGES or LC_ALL are set.  If you
+        really need to set some additional environment before launching GDM,
+        you can do so in this script.
+      </para>
+
+      <variablelist>
+        <title><filename>gdm</filename> and <filename>gdm-binary</filename>
+               Command Line Options</title>
+
+        <varlistentry>
+          <term>--help</term>
+          <listitem>
+            <para>
+              Gives a brief overview of the command line options.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>-nodaemon</term>
+          <listitem>
+            <para>
+              If this option is specified, then gdm does not fork into the
+              background when run.  You can use just a single dash with this
+              option to preserve compatibility with XDM.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>--no-console</term>
+          <listitem>
+            <para>
+              Tell the daemon that it should not run anything on the console.
+              This means that none of the local servers from the
+              <filename>[servers]</filename> section will be run, and the
+              console will not be used for communicating errors to the user.
+              An empty <filename>[servers]</filename> section automatically
+              implies this option.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>--preserve-ld-vars</term>
+          <listitem>
+            <para>
+              When clearing the environment internally, preserve all variables
+              starting with LD_.  This is mostly for debugging purposes.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>--version</term>
+          <listitem>
+            <para>
+              Print the version of the GDM daemon.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>--wait-for-go</term>
+          <listitem>
+            <para>
+              If started with this option, gdm will init, but only start the
+              first local display and then wait for a GO message in the fifo
+              protocol.  No greeter will be shown until the GO message is
+              sent.  Also flexiserver requests will be denied and XDMCP will
+              not be started until GO is given.  This is useful for
+              initialization scripts which wish to start X early, but where
+              you don't yet want the user to start logging in.  So the script
+              would send the GO to the fifo once it is ready and GDM will
+              then continue.  This functionality was added in version 2.5.90.0.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2 id="gdmsetupcommandline">
+      <title><filename>gdmconfig</filename> and
+             <filename>gdmsetup</filename> Command Line Options</title>
+
+      <para>
+       <filename>gdmconfig</filename> is a wrapper script for running
+       <filename>gdmsetup</filename> for binary name compatibility.
+       <filename>gdmconfig</filename> is installed to the
+       <filename>&lt;sbin&gt;/</filename> directory.
+      </para>
+
+      <para>
+       gdmsetup runs a graphical program for modifying the GDM
+       configuration file, gdm.conf.  Normally on systems that support the
+       PAM userhelper, this is setup such that when you run
+       <filename>gdmsetup</filename> as an ordinary user, it will first
+       ask you for your root password before starting.  Otherwise, this
+       program may only be run as root.  This program supports standard
+       GNOME options.
+      </para>
+    </sect2>
 
     <sect2 id="gdmrestartcommandline">
       <title><filename>gdm-restart</filename> Command Line Options</title>
@@ -3905,8 +3865,6 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
         <filename>gdm-restart</filename> stops and restarts GDM by sending
         the GDM daemon a HUP signal.  This command will immediately terminate
         all sessions and log out users currently logged in with GDM.
-        <filename>gdm-restart</filename> is installed to the
-        <filename>&lt;sbin&gt;/</filename> directory.
       </para>
     </sect2>
 
@@ -3916,8 +3874,7 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
       <para>
         <filename>gdm-safe-restart</filename> stops and restarts GDM by
         sending the GDM daemon a USR1 signal.  GDM will be restarted as soon
-        as all users log out.  <filename>gdm-safe-restart</filename> is
-        installed to the <filename>&lt;sbin&gt;/</filename> directory.
+        as all users log out.
       </para>
     </sect2>
 
@@ -3926,9 +3883,76 @@ remote-flexi  - In remote (XDMCP) &amp; flexi mode.
 
       <para>
         <filename>gdm-stop</filename> stops GDM by sending the GDM daemon
-        a TERM signal.  <filename>gdm-stop</filename> is installed to the
-        <filename>&lt;sbin&gt;/</filename> directory.
+        a TERM signal. 
       </para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="sbindir_binaries">
+    <title>GDM Commands in EXPANDED_LIBEXECDIR</title>
+
+    <para>
+      The GDM package provides the following different commands in
+      EXPANDED_LIBEXECDIR intended to be used by the gdm daemon process.
+    </para>
+
+    <sect2 id="gdmgreeterlogincommandline">
+      <title><filename>gdmchooser</filename> and <filename>gdmlogin</filename>
+             Command Line Options</title>
+
+      <para>
+        The <filename>gdmgreeter</filename> and <filename>gdmlogin</filename>
+        are two different login programs, either can be used by GDM.  
+        <filename>gdmgreeter</filename> is themeable with GDM themes while
+        <filename>gdmlogin</filename> is themable with GTK+ themes.  These
+        programs are normally executed by the GDM daemon.  Both programs
+        support standard GNOME options. 
+      </para>
+    </sect2>
+
+    <sect2 id="gdmchoosercommandline">
+      <title><filename>gdmchooser</filename> Command Line Options</title>
+
+      <para>
+        The <filename>gdmchooser</filename> is the XDMCP chooser application.  
+        The <filename>gdmchooser</filename> is normally executed by the GDM
+        daemon.  It supports the following options for XDM compatibility.
+        This program supports standard GNOME options and is found in
+        support standard GNOME options.
+      </para>
+
+      <variablelist>
+        <title><filename>gdmchooser</filename> Command Line Options</title>
+
+        <varlistentry>
+          <term>-xdmaddress=SOCKET</term>
+          <listitem>
+           <para>
+               Socket for XDM communication.
+           </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>--clientaddress=ADDRESS</term>
+          <listitem>
+           <para>
+             Client address to return in response to XDM.  This option is for
+             running gdmchooser with XDM, and is not used within GDM.
+           </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>-connectionType=TYPE</term>
+          <listitem>
+           <para>
+             Connection type to return in response to XDM.  This option is for
+             running gdmchooser with XDM, and is not used within GDM.
+           </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
     </sect2>
   </sect1>
 

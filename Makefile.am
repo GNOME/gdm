@@ -24,11 +24,10 @@ EXTRA_DIST = \
 	gdm-stop.in		\
 	gdm-restart.in		\
 	gdm-safe-restart.in	\
-	gdmconfig		\
 	xmldocs.make		\
 	omf.make
 
-sbin_SCRIPTS = gdm-stop gdm-restart gdm-safe-restart gdmconfig
+sbin_SCRIPTS = gdm-stop gdm-restart gdm-safe-restart
 
 install-data-local: gdmsetup-security
 if CONSOLE_HELPER

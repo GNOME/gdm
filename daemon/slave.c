@@ -1670,7 +1670,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 				 "default location."));
 
 		argv = ve_split
-			(EXPANDED_BINDIR
+			(EXPANDED_LIBEXECDIR
 			 "/gdmsetup --disable-sound --disable-crash-dialog");
 		if (access (argv[0], X_OK) == 0)
 			VE_IGNORE_EINTR (execv (argv[0], argv));
@@ -2624,11 +2624,11 @@ gdm_slave_greeter (void)
 		if (strstr (command, "gdmlogin") != NULL) {
 			/* in case it is gdmlogin that's crashing
 			   try the graphical greeter for luck */
-			command = EXPANDED_BINDIR "/gdmgreeter";
+			command = EXPANDED_LIBEXECDIR "/gdmgreeter";
 		} else {
 			/* in all other cases, try the gdmlogin (standard greeter)
 			   proggie */
-			command = EXPANDED_BINDIR "/gdmlogin";
+			command = EXPANDED_LIBEXECDIR "/gdmlogin";
 		}
 	}
 
@@ -2649,13 +2649,13 @@ gdm_slave_greeter (void)
 
 	gdm_error (_("%s: Cannot start greeter trying default: %s"),
 		   "gdm_slave_greeter",
-		   EXPANDED_BINDIR "/gdmlogin");
+		   EXPANDED_LIBEXECDIR "/gdmlogin");
 
 	ve_setenv ("GDM_WHACKED_GREETER_CONFIG", "true", TRUE);
 
-	exec_command (EXPANDED_BINDIR "/gdmlogin", NULL);
+	exec_command (EXPANDED_LIBEXECDIR "/gdmlogin", NULL);
 
-	VE_IGNORE_EINTR (execl (EXPANDED_BINDIR "/gdmlogin", EXPANDED_BINDIR "/gdmlogin", NULL));
+	VE_IGNORE_EINTR (execl (EXPANDED_LIBEXECDIR "/gdmlogin", EXPANDED_LIBEXECDIR "/gdmlogin", NULL));
 
 	gdm_error_box (d,
 		       GTK_MESSAGE_ERROR,

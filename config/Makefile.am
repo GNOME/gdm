@@ -26,7 +26,7 @@ EXTRA_DIST = \
 	gdm \
 	gdm-autologin \
 	locale.alias \
-	Default.in \
+	Init.in \
 	PostSession.in \
 	PreSession.in \
 	PostLogin \
@@ -59,7 +59,7 @@ uninstall-hook:
 	$(DESTDIR)$(predir)/Default \
 	$(DESTDIR)$(postdir)/Default
 
-install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop Default PostSession PreSession
+install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop Init PostSession PreSession
 	if test '!' -d $(DESTDIR)$(confdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
@@ -126,9 +126,9 @@ install-data-hook: gdm.conf Xsession gnome.desktop default.desktop CDE.desktop D
 		chmod 755 $(DESTDIR)$(initdir); \
 	fi
 	-if test -f $(DESTDIR)$(initdir)/Default; then \
-		cp -f $(DESTDIR)$(initdir)/Default $(DESTDIR)$(initdir)/Default.orig; \
+		cp -f $(DESTDIR)$(initdir)/Init $(DESTDIR)$(initdir)/Default.orig; \
 	fi
-	$(INSTALL_SCRIPT) Default $(DESTDIR)$(initdir)/Default
+	$(INSTALL_SCRIPT) Init $(DESTDIR)$(initdir)/Default
 
 	if test '!' -d $(DESTDIR)$(postlogindir); then \
 		$(mkinstalldirs) $(DESTDIR)$(postlogindir); \

@@ -22,7 +22,7 @@ INCLUDES = \
 #	-DGNOME_DISABLE_DEPRECATED			\
 #
 
-bin_PROGRAMS = gdm-binary
+sbin_PROGRAMS = gdm-binary
 
 gdm_binary_SOURCES = \
 	gdm.c \
@@ -76,6 +76,6 @@ gdm_binary_LDADD = \
 	-L$(top_builddir)/vicious-extensions	\
 	-lvicious
 
-bin_SCRIPTS = gdm
+sbin_SCRIPTS = gdm
 
 EXTRA_DIST = gdm.in

@@ -121,15 +121,15 @@ enum {
 #define PIPE_SIZE 4096
 
 /* Configuration constants */
-#define GDM_KEY_CHOOSER "daemon/Chooser=" EXPANDED_BINDIR "/gdmchooser"
+#define GDM_KEY_CHOOSER "daemon/Chooser=" EXPANDED_LIBEXECDIR "/gdmchooser"
 /* This defaults to true for backward compatibility,
  * it will not actually do automatic login since the AutomaticLogin defaults
  * to nothing */
 #define GDM_KEY_AUTOMATICLOGIN_ENABLE "daemon/AutomaticLoginEnable=true"
 #define GDM_KEY_AUTOMATICLOGIN "daemon/AutomaticLogin="
 #define GDM_KEY_ALWAYSRESTARTSERVER "daemon/AlwaysRestartServer=false"
-#define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_BINDIR "/gdmlogin"
-#define GDM_KEY_REMOTEGREETER "daemon/RemoteGreeter=" EXPANDED_BINDIR "/gdmlogin"
+#define GDM_KEY_GREETER "daemon/Greeter=" EXPANDED_LIBEXECDIR "/gdmlogin"
+#define GDM_KEY_REMOTEGREETER "daemon/RemoteGreeter=" EXPANDED_LIBEXECDIR "/gdmlogin"
 #define GDM_KEY_ADD_GTK_MODULES "daemon/AddGtkModules=false"
 #define GDM_KEY_GTK_MODULES_LIST "daemon/GtkModulesList="
 #define GDM_KEY_GROUP "daemon/Group=gdm"
@@ -227,12 +227,12 @@ enum {
 #define GDM_KEY_EXCLUDE "greeter/Exclude=bin,daemon,adm,lp,sync,shutdown,halt,mail,news,uucp,operator,nobody,gdm,postgres,pvm,rpm,nfsnobody,pcap"
 #define GDM_KEY_MINIMALUID "greeter/MinimalUID=100"
 #define GDM_KEY_FACE "greeter/DefaultFace=" EXPANDED_PIXMAPDIR "/nobody.png"
-#define GDM_KEY_FACEDIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/faces/"
+#define GDM_KEY_FACEDIR "greeter/GlobalFaceDir=" EXPANDED_DATADIR "/pixmaps/faces/"
 #define GDM_KEY_LOCFILE "greeter/LocaleFile=" EXPANDED_LOCALEDIR "/locale.alias"
 #define GDM_KEY_LOGO "greeter/Logo=" EXPANDED_PIXMAPDIR "/gdm-foot-logo.png"
 #define GDM_KEY_QUIVER "greeter/Quiver=true"
 #define GDM_KEY_SYSMENU "greeter/SystemMenu=true"
-#define GDM_KEY_CONFIGURATOR "daemon/Configurator=" EXPANDED_GDMCONFIGDIR "/gdmsetup --disable-sound --disable-crash-dialog"
+#define GDM_KEY_CONFIGURATOR "daemon/Configurator=" EXPANDED_SBINDIR "/gdmsetup --disable-sound --disable-crash-dialog"
 #define GDM_KEY_CONFIG_AVAILABLE "greeter/ConfigAvailable=true"
 #define GDM_KEY_CHOOSER_BUTTON "greeter/ChooserButton=true"
 #define GDM_KEY_TITLE_BAR "greeter/TitleBar=true"
@@ -734,7 +734,8 @@ void		gdm_final_cleanup	(void);
 #define GDM_SUP_GET_CONFIG "GET_CONFIG" /* <key> */
 /* GET_CONFIG:  Get configuration value for key.  Useful so
  * that other programs can request configuration information
- * from GDM.
+ * from GDM.  Any key defined as GDM_KEY_* in gdm.h is 
+ * supported.
  * Supported since: 2.6.0.9
  * Arguments:   <key>
  * Answers:

@@ -650,17 +650,6 @@ EXPANDED_LIBDIR=`eval echo $LIBDIR_TMP`
 AC_SUBST(EXPANDED_LIBDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_LIBDIR,"$EXPANDED_LIBDIR")
 
-dnl This is where the binary actually resides,
-dnl not the console helper link
-if test "x$enable_console_helper" = "xyes"; then
-	GDMCONFIGDIR_TMP="$sbindir"
-else
-	GDMCONFIGDIR_TMP="$bindir"
-fi
-EXPANDED_GDMCONFIGDIR=`eval echo $GDMCONFIGDIR_TMP`
-AC_SUBST(EXPANDED_GDMCONFIGDIR)
-AC_DEFINE_UNQUOTED(EXPANDED_GDMCONFIGDIR,"$EXPANDED_GDMCONFIGDIR")
-
 LOCALEDIR_TMP="$sysconfdir/gdm"
 EXPANDED_LOCALEDIR=`eval echo $LOCALEDIR_TMP`
 AC_SUBST(EXPANDED_LOCALEDIR)
@@ -869,6 +858,7 @@ AC_OUTPUT([
 Makefile
 daemon/Makefile
 gui/Makefile
+gui/faces/Makefile
 gui/greeter/Makefile
 gui/greeter/themes/Makefile
 gui/greeter/themes/circles/Makefile
@@ -899,7 +889,7 @@ docs/zh_HK/Makefile
 docs/zh_TW/Makefile
 config/gdm.conf
 config/Xsession
-config/Default
+config/Init
 config/PreSession
 config/PostSession
 daemon/gdm

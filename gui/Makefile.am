@@ -28,10 +28,14 @@ INCLUDES = \
 
 noinst_LIBRARIES = libgdmwm.a libgdmcommon.a
 
-bin_PROGRAMS = \
+libexec_PROGRAMS = \
 	@GDMCHOOSER@ 		\
-	gdmlogin 		\
-	gdmsetup 		\
+	gdmlogin
+
+sbin_PROGRAMS = \
+	gdmsetup
+
+bin_PROGRAMS = \
 	gdmphotosetup 		\
 	@GDMXNESTCHOOSER@	\
 	gdmflexiserver

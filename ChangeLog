@@ -1,3 +1,35 @@
+Thu Mar 10 17:50:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
+
+	* daemon/gdm.h, config/gdm.conf.in: Changed default face
+	  directory to EXPANDED_DATADIR/pixmaps/faces since putting
+	  the faces subdirectory in pixmaps simply makes more
+	  sense.
+	* Makefile.am, acconfig.h, configure.in, gdmsetup-security.in,
+	  daemon/Makefile.am, daemon/gdm.h, daemon/gdm.in, daemon/slave.c,
+	  gui/Makefile.am, gui/gdmsetup.c, gui/greeter/Makefile.am,
+	  gui/greeter/greeter.c: Changed the way GDM files are installed.
+	  Now all programs intended to be run by root are in
+	  EXPANDED_SBINDIR (gdm/gdm-binary/gdmsetup), all programs
+	  that are not intended to be run by end-users are in 
+	  EXPANDED_LIBEXEC (gdmchooser/gdmgreeter/gdmlogin).  Removed
+	  gdmconfig wrapper script and gdm Xnest symlink since they
+	  only serve to clutter the filesystem.  I announced this 
+	  change in the 2.6.0.8 release notes and will be bumping
+	  the next release to 2.6 because of this change and the 
+	  change to the default face directory.
+
+	* configure.in, gui/faces/*: Add default faces.  Images
+	  provided by Jaap A. Haitsma.  Refer to bugzilla bug
+	  #149838.
+	* gui/gdmphotosetup.c: Now browser will look in the system
+	  face directory first, in EXPANDED_DATADIR/pixmaps if the
+	  default face directory does not exist.
+	* config/Makefile.am: Changed name of Default to Init since
+	  that follows the naming standard used by the other scripts.
+	  Fixes bug 118278.
+	* docs/C/gdm.xml: Updated docs with information about
+	  the changes in today's commits.
+	  
 Thu Mar 10 14:35:00 2005  Brian Cameron <Brian.Cameron@Sun.Com>
 
 	* daemon/gdm.h, daemon/gdm.c:  Added GET_CONFIG gdmflexiserver
