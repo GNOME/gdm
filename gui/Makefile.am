@@ -1,4 +1,4 @@
-SUBDIRS = . greeter
+SUBDIRS = . greeter modules
 
 ## Process this file with automake to produce makefile.in
 DEFS = @DEFS@ -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
