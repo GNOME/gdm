@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager
+/* GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K, Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1389,7 +1389,7 @@ gdm_chooser_add_host (void)
 					 GTK_BUTTONS_OK,
 					 FALSE,
 					 _("Cannot find host"),
-					 _("I cannot find the host \"%s\". "
+					 _("Cannot find the host \"%s\". "
 					   "Perhaps you have mistyped it."),
 					 name);
 

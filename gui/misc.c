@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager - misc functions
+/* GDM - The GNOME Display Manager - misc functions
  * Copyright (C) 1998, 1999, 2000 Martin K, Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify

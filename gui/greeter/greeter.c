@@ -1,3 +1,21 @@
+/* GDM - The GNOME Display Manager
+ * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 #include "config.h"
 
 #include <libintl.h>
@@ -1274,7 +1292,7 @@ main (int argc, char *argv[])
 				  _("There was an error loading the "
 				    "theme, and the default theme "
 				    "could not be loaded. "
-				    "I will attempt to start the "
+				    "Attempting to start the "
 				    "standard greeter"),
 				  /* avoid warning */ "%s", "");
     
@@ -1294,11 +1312,10 @@ main (int argc, char *argv[])
 				  GTK_MESSAGE_ERROR,
 				  GTK_BUTTONS_OK,
 				  FALSE /* markup */,
-				  _("I could not start the standard "
-				    "greeter.  This display will abort "
-				    "and you may have to login another "
-				    "way and fix the installation of "
-				    "gdm"),
+				  _("The GTK+ greeter could not be started.  "
+				    "This display will abort and you may"
+				    "have to login another way and fix the"
+				    "installation of gdm"),
 				  /* avoid warning */ "%s", "");
     
       gtk_widget_show_all (dialog);
@@ -1376,7 +1393,7 @@ main (int argc, char *argv[])
 				  _("Configuration is not correct"),
 				  "%s",
 				  _("The configuration file contains an invalid command "
-				    "line for the login dialog, and thus I ran the "
+				    "line for the login dialog, so running the "
 				    "default command.  Please fix your configuration."));
 
       gtk_widget_show_all (dialog);

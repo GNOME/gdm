@@ -152,6 +152,7 @@ static GtkWidget *entry;
 static GtkWidget *ok_button;
 static GtkWidget *cancel_button;
 static GtkWidget *msg;
+static GtkWidget *auto_timed_msg;
 static GtkWidget *err_box;
 static guint err_box_clear_handler = 0;
 static gboolean require_quarter = FALSE;
@@ -213,12 +214,19 @@ gdm_timer (gpointer data)
 		/* timed interruption */
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
 		fflush (stdout);
-	} else if ((curdelay % 5) == 0) {
-		gchar *autologin_msg = 
-			g_strdup_printf (_("User %s will login in %d seconds"),
-					 GdmTimedLogin, curdelay);
-		gtk_label_set_text (GTK_LABEL (msg), autologin_msg);
-		gtk_widget_show (GTK_WIDGET (msg));
+	} else {
+		gchar *autologin_msg;
+
+		if (curdelay > 1)
+			autologin_msg = g_strdup_printf (
+				_("User %s will login in %d seconds"),
+				GdmTimedLogin, curdelay);
+		else
+			autologin_msg = g_strdup_printf (
+				_("User %s will login in %d second"),
+				GdmTimedLogin, curdelay);
+		gtk_label_set_text (GTK_LABEL (auto_timed_msg), autologin_msg);
+		gtk_widget_show (GTK_WIDGET (auto_timed_msg));
 		g_free (autologin_msg);
 		login_window_resize (FALSE /* force */);
 	}
@@ -3088,6 +3096,17 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
 
+    auto_timed_msg = gtk_label_new (_("GNOME Display Manager"));
+    gtk_widget_set_name(auto_timed_msg, "Message");
+    gtk_label_set_line_wrap (GTK_LABEL (auto_timed_msg), TRUE);
+    gtk_label_set_justify (GTK_LABEL (auto_timed_msg), GTK_JUSTIFY_LEFT);
+    gtk_table_attach (GTK_TABLE (stack), auto_timed_msg, 0, 1, 6, 7,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (GTK_FILL), 0, 10);
+    
+    gtk_widget_ref (auto_timed_msg);
+    gtk_widget_show (auto_timed_msg);
+
     /* I think I'll add the buttons next to this */
     msg = gtk_label_new (_("Please enter your username"));
     gtk_widget_set_name(msg, "Message");
@@ -3121,6 +3140,8 @@ gdm_login_gui_init (void)
     button_box = gtk_hbox_new (0, 5);
     gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (msg),
 			FALSE /* expand */, TRUE /* fill */, 0);
+    gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (auto_timed_msg),
+			FALSE /* expand */, TRUE /* fill */, 0);
     /*gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (help_button),
 			FALSE, FALSE, 0);*/
     gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (cancel_button),
@@ -3129,7 +3150,7 @@ gdm_login_gui_init (void)
 		      FALSE, FALSE, 0);
     gtk_widget_show (button_box);
     
-    gtk_table_attach (GTK_TABLE (stack), button_box, 0, 1, 6, 7,
+    gtk_table_attach (GTK_TABLE (stack), button_box, 0, 1, 7, 8,
 		      (GtkAttachOptions) (GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 10, 10);
 
@@ -3884,7 +3905,7 @@ main (int argc, char *argv[])
 					_("Configuration is not correct"),
 					"%s",
 					_("The configuration file contains an invalid command "
-					  "line for the login dialog, and thus I ran the "
+					  "line for the login dialog, so running the "
 					  "default command.  Please fix your configuration."));
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));

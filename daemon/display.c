@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager
+/* GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -111,7 +111,7 @@ gdm_display_check_loop (GdmDisplay *disp)
 	  char *s = g_strdup_printf (C_(N_("The display server has been shut down "
 					   "about 6 times in the last 90 seconds. "
 					   "It is likely that something bad is "
-					   "going on.  I will wait for 2 minutes "
+					   "going on.  Waiting for 2 minutes "
 					   "before trying again on display %s.")),
 					disp->name);
 	  /* only display a dialog box if this is a local display */
@@ -167,7 +167,7 @@ whack_old_slave (GdmDisplay *d, gboolean kill_connection)
     gboolean waitsleep = TRUE;
 
     if (kill_connection) {
-	    /* This should never happen I don't think, but just in case */
+	    /* This should never happen, but just in case */
 	    if (d->socket_conn != NULL) {
 		    GdmConnection *conn = d->socket_conn;
 		    d->socket_conn = NULL;

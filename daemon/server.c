@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager
+/* GDM - The GNOME Display Manager
  * Copyright (C) 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -339,9 +339,10 @@ busy_ask_user (GdmDisplay *disp)
     if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) == 0) {
 	    char *error = g_strdup_printf
 		    (C_(N_("There already appears to be an X server "
-			   "running on display %s.  Should I try another "
-			   "display number?  If you answer no, I will "
-			   "attempt to start the server on %s again.%s")),
+			   "running on display %s.  Should another "
+			   "display number by tried?  Answering no will "
+			   "cause GDM to attempt starting the server "
+			   "on %s again.%s")),
 		     disp->name,
 		     disp->name,
 #ifdef __linux__

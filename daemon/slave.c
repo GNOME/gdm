@@ -1219,7 +1219,7 @@ gdm_slave_run (GdmDisplay *display)
 		     * that we've given up.  The error is likely something
 		     * internal. */
 		    gdm_text_message_dialog
-			    (C_(N_("I could not start the X\n"
+			    (C_(N_("Could not start the X\n"
 				   "server (your graphical environment)\n"
 				   "due to some internal error.\n"
 				   "Please contact your system administrator\n"
@@ -1669,8 +1669,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			       _("Could not execute the configuration "
 				 "program.  Make sure it's path is set "
 				 "correctly in the configuration file.  "
-				 "I will attempt to start it from the "
-				 "default location."));
+				 "Attempting to start it from the default "
+				 "location."));
 
 		argv = ve_split
 			(EXPANDED_LIBEXECDIR
@@ -2578,7 +2578,7 @@ gdm_slave_greeter (void)
 			       _("No servers were defined in the "
 				 "configuration file and XDMCP was "
 				 "disabled.  This can only be a "
-				 "configuration error.  So I have started "
+				 "configuration error.  GDM has started "
 				 "a single server for you.  You should "
 				 "log in and fix the configuration.  "
 				 "Note that automatic and timed logins "
@@ -2589,7 +2589,7 @@ gdm_slave_greeter (void)
 	if G_UNLIKELY (d->failsafe_xserver) {
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
-			       _("I could not start the regular X "
+			       _("Could not start the regular X "
 				 "server (your graphical environment) "
 				 "and so this is a failsafe X server.  "
 				 "You should log in and properly "
@@ -2619,7 +2619,7 @@ gdm_slave_greeter (void)
 		gdm_error_box (d,
 			       GTK_MESSAGE_ERROR,
 			       _("The greeter program appears to be crashing.\n"
-				 "I will attempt to use a different one."));
+				 "Attempting to use a different one."));
 		if (strstr (command, "gdmlogin") != NULL) {
 			/* in case it is gdmlogin that's crashing
 			   try the themed greeter for luck */
@@ -3646,7 +3646,7 @@ session_child_run (struct passwd *pwent,
 			session = GDM_SESSION_FAILSAFE_GNOME;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
-				 _("The session you selected does not look valid.  I will run the GNOME failsafe session for you."));
+				 _("The session you selected does not look valid.  Running the GNOME failsafe session instead."));
 		} else {
 			/* HACK!, if failsafe, we really wish to run the
 			   internal one */
@@ -3660,13 +3660,13 @@ session_child_run (struct passwd *pwent,
 	if (exec != NULL) {
 		/* cannot be possibly failsafe */
 		if G_UNLIKELY (access (GdmXsession, X_OK) != 0) {
-			gdm_error (_("%s: Cannot find or run the base Xsession script; will try GNOME failsafe"),
+			gdm_error (_("%s: Cannot find or run the base Xsession script.  Running the GNOME failsafe session instead."),
 				   "session_child_run");
 			session = GDM_SESSION_FAILSAFE_GNOME;
 			exec = NULL;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
-				 _("Cannot find or run the base session script; will try the GNOME failsafe session for you."));
+				 _("Cannot find or run the base session script.  Running the GNOME failsafe session instead."));
 		} else {
 			/* This is where everything is OK, and note that
 			   we really DON'T care about leaks, we are going to
@@ -3686,9 +3686,9 @@ session_child_run (struct passwd *pwent,
 			session = GDM_SESSION_FAILSAFE_XTERM;
 			gdm_error_box
 				(d, GTK_MESSAGE_ERROR,
-				 _("Could not find the GNOME installation; "
-				   "will try running the \"Failsafe xterm\" "
-				   "session."));
+				 _("Could not find the GNOME installation.  "
+				   "Running the \"Failsafe xterm\" "
+				   "session instead."));
 		} else {
 			argv[1] = "--failsafe";
 			argv[2] = NULL;
@@ -3696,9 +3696,9 @@ session_child_run (struct passwd *pwent,
 				(d, GTK_MESSAGE_INFO,
 				 _("This is the Failsafe GNOME session.  "
 				   "You will be logged into the 'Default' "
-				   "session of GNOME with no startup scripts "
-				   "run.  This is only to fix problems in "
-				   "your installation."));
+				   "session of GNOME without the startup scripts "
+				   "being run.  This should be used to fix problems "
+				   "in your installation."));
 		}
 		failsafe = TRUE;
 	}

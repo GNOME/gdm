@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager
+/* GDM - The GNOME Display Manager
  * Copyright (C) 2003 Red Hat, Inc.
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  * Copyright (C) Rik Faith <faith@precisioninsight.com>

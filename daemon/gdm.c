@@ -1,4 +1,4 @@
-/* GDM - The Gnome Display Manager
+/* GDM - The GNOME Display Manager
  * Copyright (C) 1998, 1999, 2000 Martin K. Petersen <mkp@mkp.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -485,7 +485,7 @@ gdm_config_parse (void)
     }
 
     if (GdmTimedLoginDelay < 5) {
-	    gdm_info (_("%s: TimedLoginDelay less than 5, so I will just use 5."), "gdm_config_parse");
+	    gdm_info (_("%s: TimedLoginDelay is less than 5, defaulting to 5."), "gdm_config_parse");
 	    GdmTimedLoginDelay = 5;
     }
 
@@ -570,7 +570,7 @@ gdm_config_parse (void)
 		    }
 
 		    if (disp_num != atoi (key)) {
-			    gdm_error (_("%s: Display number %d in use!  I will use %d"),
+			    gdm_error (_("%s: Display number %d in use!  Defaulting to %d"),
 				       "gdm_config_parse", atoi (key), disp_num);
 		    }
 
@@ -991,8 +991,8 @@ gdm_final_cleanup (void)
 		    d->type == TYPE_FLEXI_XNEST)
 			continue;
 		/* HACK! Wait 2 seconds between killing of local servers
-		 * because X is stupid and full of races and will hang my
-		 * keyboard if I don't */
+		 * because X is stupid and full of races and will otherwise
+		 * hang my keyboard */
 		if ( ! first) {
 			/* there could be signals happening
 			   here */
@@ -1206,11 +1206,11 @@ deal_with_x_crashes (GdmDisplay *d)
 	     * the above script would have been defined and we'd run
 	     * it for them */
 	    const char *error =
-		    C_(N_("I cannot start the X server (your graphical "
-			  "interface).  It is likely that it is not set "
-			  "up correctly. You will need to log in on a "
+		    C_(N_("The X server (your graphical interface) "
+			  "cannot be started.  It is likely that it is not "
+			  "set up correctly.  You will need to log in on a "
 			  "console and rerun the X configuration "
-			  "program.  Then restart GDM."));
+			  "program, then restart GDM."));
 	    gdm_text_message_dialog (error);
     } /* else {
        * At this point .... screw the user, we don't know how to

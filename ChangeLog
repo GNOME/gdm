@@ -1,3 +1,26 @@
+2005-04-06  Brian Cameron  <brian.cameron@sun.com>
+
+	* daemon/auth.c, daemon/choose.c, daemon/cookie.c,
+	  daemon/display.c, daemon/errorgui.c, daemon/filecheck.c,
+	  daemon/gdm-net.c, daemon/gdm.c, daemon/md5.h, 
+	  daemon/misc.c, daemon/server.c, daemon/slave.c,
+	  daemon/verify-crypt.c, daemon/verify-pam.c, 
+	  daemon/verify-shadow.c, daemon/xdmcp.c,
+	  gui/gdmXnestchooser.c, gui/gdmchooser.c, gui/gdmcomm.h,
+	  gui/gdmcommon.c, gui/gdmlanguages.c, gui/gdmuser.[ch],
+	  gui/gdmwm.c, gui/misc.c, gui/greeter/*.[ch],
+	  vicious-extensions/test-ve-config.c,
+	  vicious-extensions/ve-i18n.h, vicious-extensions/vicious.h,
+	  vicious-extensions/viciousui.h:  Changed messages so that
+	  I-form isn't used.  Fixes bug #118193.  Noticed many
+	  files didn't have a GPL license as a comment at the top
+	  of the file, so added those.  Changed "Gnome" to "GNOME"
+	  in comments.  
+	* gui/gdmlogin.c: Now display timed login message in a
+	  separate label, which avoids problems caused because different
+	  things (PAM, timed login, etc.) are trying to use the same
+	  label for status messages.  This fixes bug #67647. 
+
 2005-04-05  Adam Weinberger  <adamw@gnome.org>
 
 	* gui/gdmsetup-strings.c, gui/gdmsetup.glade: Removed
