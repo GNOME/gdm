@@ -10,13 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-02 09:23+0100\n"
-"PO-Revision-Date: 2005-02-02 09:24+0100\n"
+"POT-Creation-Date: 2005-02-11 13:48+0100\n"
+"PO-Revision-Date: 2005-02-11 13:48+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: config/CDE.desktop.in.h:1
 msgid "CDE"
@@ -729,9 +730,11 @@ msgstr "gdm kör redan. Avbryter!"
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Fel vid inställning av CHLD-signalhanteraren"
 
-#: daemon/gdm.c:3633 daemon/gdm.c:3652
-msgid "FLEXI_XSERVER request denied: Not authenticated"
-msgstr "FLEXI_XSERVER-begäran nekas: Inte autentiserad"
+#: daemon/gdm.c:3633 daemon/gdm.c:3652 daemon/gdm.c:3796 daemon/gdm.c:3854
+#: daemon/gdm.c:3909 daemon/gdm.c:3954 daemon/gdm.c:3981
+#, c-format
+msgid "%s request denied: Not authenticated"
+msgstr "%s-begäran nekas: Inte autentiserad"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
@@ -747,18 +750,6 @@ msgid ""
 msgstr ""
 "Begärda servern %s är inte tillåten för användning med flexibla servrar, "
 "använder standardserver."
-
-#: daemon/gdm.c:3796
-msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "QUERY_LOGOUT_ACTION-begäran nekas: Inte autentiserad"
-
-#: daemon/gdm.c:3854 daemon/gdm.c:3909
-msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
-msgstr "SET_LOGOUT_ACTION-begäran nekas: Inte autentiserad"
-
-#: daemon/gdm.c:3954 daemon/gdm.c:3981
-msgid "QUERY_VT request denied: Not authenticated"
-msgstr "QUERY_VT-begäran nekas: Inte autentiserad"
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:652
@@ -1213,32 +1204,32 @@ msgstr "%s: Användaren får inte logga in"
 msgid "The system administrator has disabled your account."
 msgstr "Systemadministratören har stängt av ditt konto."
 
-#: daemon/slave.c:3790
+#: daemon/slave.c:3792
 msgid "Error! Unable to set executable context."
 msgstr "Fel! Kan inte ställa in körbart sammanhang."
 
 #. will go to .xsession-errors
-#: daemon/slave.c:3798 daemon/slave.c:3803
+#: daemon/slave.c:3800 daemon/slave.c:3805
 #, c-format
 msgid "%s: Could not exec %s %s %s"
 msgstr "%s: Kunde inte exekvera %s %s %s"
 
 #. we can't really be any more specific
-#: daemon/slave.c:3814
+#: daemon/slave.c:3816
 msgid "Cannot start the session due to some internal error."
 msgstr "Kan inte starta sessionen på grund av ett internt fel."
 
-#: daemon/slave.c:3868
+#: daemon/slave.c:3870
 #, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr "%s: Användaren klarade autentiseringen men getpwnam(%s) misslyckades!"
 
-#: daemon/slave.c:3882
+#: daemon/slave.c:3884
 #, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr "%s: Körning av PostLogin-skriptet returnerade > 0. Avbryter."
 
-#: daemon/slave.c:3891
+#: daemon/slave.c:3893
 #, c-format
 msgid ""
 "Your home directory is listed as:\n"
@@ -1256,12 +1247,12 @@ msgstr ""
 "Det är inte troligt att någonting kommer att fungera såvida du inte använder "
 "en felsäker session."
 
-#: daemon/slave.c:3899
+#: daemon/slave.c:3901
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Hemkatalog för %s: \"%s\" finns inte!"
 
-#: daemon/slave.c:4076
+#: daemon/slave.c:4078
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
@@ -1273,12 +1264,12 @@ msgstr ""
 "skrivning. Hursomhelst går det inte att logga in. Kontakta din "
 "systemadministratör"
 
-#: daemon/slave.c:4152
+#: daemon/slave.c:4154
 #, c-format
 msgid "%s: Error forking user session"
 msgstr "%s: Fel vid grening av användarsession"
 
-#: daemon/slave.c:4233
+#: daemon/slave.c:4235
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
@@ -1290,26 +1281,26 @@ msgstr ""
 "ha slut på diskutrymme. Försök att logga in med en av de felsäkra "
 "sessionerna för att se om du kan åtgärda detta problem."
 
-#: daemon/slave.c:4241
+#: daemon/slave.c:4243
 msgid "View details (~/.xsession-errors file)"
 msgstr "Visa detaljer (~/.xsession-errors file)"
 
-#: daemon/slave.c:4385
+#: daemon/slave.c:4387
 msgid "GDM detected a shutdown or reboot in progress."
 msgstr "GDM upptäckte en pågående nerstängning eller omstart."
 
-#: daemon/slave.c:4479
+#: daemon/slave.c:4481
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping till %s misslyckades, tar bort displayen!"
 
-#: daemon/slave.c:4765
+#: daemon/slave.c:4767
 #, c-format
 msgid "%s: Fatal X error - Restarting %s"
 msgstr "%s: Ödesdigert X-fel - Startar om %s"
 
 # Härligt felmeddelande
-#: daemon/slave.c:4859
+#: daemon/slave.c:4861
 msgid ""
 "Login sound requested on non-local display or the play software cannot be "
 "run or the sound does not exist"
@@ -1317,22 +1308,22 @@ msgstr ""
 "Inloggningsljud begärt på ickelokal display eller uppspelningsprogramvaran "
 "kan inte köras eller ljudet finns inte"
 
-#: daemon/slave.c:5214
+#: daemon/slave.c:5216
 #, c-format
 msgid "%s: Failed starting: %s"
 msgstr "%s: Misslyckades med att starta: %s"
 
-#: daemon/slave.c:5222 daemon/slave.c:5361
+#: daemon/slave.c:5224 daemon/slave.c:5363
 #, c-format
 msgid "%s: Can't fork script process!"
 msgstr "%s: Kan inte grena skriptprocess!"
 
-#: daemon/slave.c:5316
+#: daemon/slave.c:5318
 #, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: Misslyckades med att skapa rör"
 
-#: daemon/slave.c:5355
+#: daemon/slave.c:5357
 #, c-format
 msgid "%s: Failed executing: %s"
 msgstr "%s: Misslyckades med att köra: %s"
@@ -1361,7 +1352,7 @@ msgstr "Ange ditt användarnamn"
 #: daemon/verify-pam.c:343 daemon/verify-pam.c:428 daemon/verify-pam.c:787
 #: daemon/verify-shadow.c:127 gui/gdmlogin.c:1073 gui/gdmlogin.c:1087
 #: gui/gdmlogin.c:1873 gui/gdmlogin.c:2372 gui/greeter/greeter.c:281
-#: gui/greeter/greeter_parser.c:1061
+#: gui/greeter/greeter_parser.c:1065
 msgid "Username:"
 msgstr "Användarnamn:"
 
@@ -1644,7 +1635,7 @@ msgstr ""
 "\n"
 "Systemadministratören har tillfälligt stängt av din åtkomst till systemet."
 
-#: daemon/verify-pam.c:1428 daemon/verify-pam.c:1430
+#: daemon/verify-pam.c:1433 daemon/verify-pam.c:1435
 msgid "Can't find PAM configuration for gdm."
 msgstr "Kan inte hitta PAM-konfigurationsfilen för gdm."
 
@@ -2737,7 +2728,7 @@ msgstr "A-M"
 msgid "N-Z"
 msgstr "N-Ö"
 
-#: gui/gdmlogin.c:222 gui/greeter/greeter_parser.c:1047
+#: gui/gdmlogin.c:222
 #, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Användaren %s kommer att logga in om %d sekunder"
@@ -3664,9 +3655,8 @@ msgstr "Du måste vara superanvändaren (root) för att konfigurera GDM."
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr ""
-"Ett grafiskt program för att konfigurera GNOME:s displayhanterare (GDM)"
+msgid "Configure the login screen (Gnome Display Manager)"
+msgstr "Konfigurera inloggningsskärmen (GNOME-displayhanteraren)"
 
 #: gui/greeter/greeter.c:638 gui/greeter/greeter.c:670
 #, c-format
@@ -3780,6 +3770,13 @@ msgstr "_Konfigurera"
 msgid "You've got capslock on!"
 msgstr "Du har CapsLock på!"
 
+#: gui/greeter/greeter_parser.c:1047
+#, c-format
+msgid "User %s will login in %d second"
+msgid_plural "User %s will login in %d seconds"
+msgstr[0] "Användaren %s kommer att logga in om %d sekund"
+msgstr[1] "Användaren %s kommer att logga in om %d sekunder"
+
 #: gui/greeter/greeter_session.c:247
 msgid "Choose a Session"
 msgstr "Välj en session"
@@ -3884,7 +3881,7 @@ msgstr "(minnesbuffert"
 
 #. markup
 #: vicious-extensions/glade-helper.c:194 vicious-extensions/glade-helper.c:247
-#: vicious-extensions/glade-helper.c:290
+#: vicious-extensions/glade-helper.c:301
 msgid "Cannot load user interface"
 msgstr "Kan inte läsa in användargränssnitt"
 
@@ -3913,18 +3910,28 @@ msgstr ""
 #: vicious-extensions/glade-helper.c:248
 #, c-format
 msgid ""
-"An error occured while loading the user interface element %s%s from file %"
-"s.  CList type widget should have %d columns.  Possibly the glade interface "
-"description was corrupted.  %s cannot continue and will exit now.  You "
-"should check your installation of %s or reinstall %s."
-msgstr ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d column. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgid_plural ""
+"An error occured while loading the user interface element %s%s from file %s. "
+"CList type widget should have %d columns. Possibly the glade interface "
+"description was corrupted. %s cannot continue and will exit now. You should "
+"check your installation of %s or reinstall %s."
+msgstr[0] ""
+"Ett fel uppstod vid inläsningen av användargränssnittselementet %s%s från "
+"filen %s. CList-typwidgeten bör ha %d kolumn. Glade-gränssnittsbeskrivningen "
+"är kanske trasig. %s kan inte fortsätta och kommer att avsluta nu. Du bör "
+"kontrollera din installation av %s eller installera om %s."
+msgstr[1] ""
 "Ett fel uppstod vid inläsningen av användargränssnittselementet %s%s från "
 "filen %s. CList-typwidgeten bör ha %d kolumner. Glade-"
 "gränssnittsbeskrivningen är kanske trasig. %s kan inte fortsätta och kommer "
 "att avsluta nu. Du bör kontrollera din installation av %s eller installera "
 "om %s."
 
-#: vicious-extensions/glade-helper.c:266
+#: vicious-extensions/glade-helper.c:277
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3933,7 +3940,7 @@ msgstr ""
 "Glade-filen är helt åt skogen! Försäkra dig om att rätt fil är installerad!\n"
 "fil: %s widget: %s förväntade clist-kolumner: %d"
 
-#: vicious-extensions/glade-helper.c:291
+#: vicious-extensions/glade-helper.c:302
 #, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
@@ -3945,7 +3952,7 @@ msgstr ""
 "kommer att avsluta nu. Du bör kontrollera din installation av %s eller "
 "installera om %s."
 
-#: vicious-extensions/glade-helper.c:303
+#: vicious-extensions/glade-helper.c:314
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Inget gränssnitt kunde läsas in, ILLA! (fil: %s)"
@@ -3953,6 +3960,44 @@ msgstr "Inget gränssnitt kunde läsas in, ILLA! (fil: %s)"
 #: vicious-extensions/ve-nongnome.c:134
 msgid "Too many alias levels for a locale, may indicate a loop"
 msgstr "För många aliasnivåer för en lokal, kan indikera en slinga"
+
+#~ msgid ""
+#~ "This is the Failsafe GNOME session.  You will be logged into the "
+#~ "'Default' session of GNOME with no startup scripts run.  This is only to "
+#~ "fix problems in your installation."
+#~ msgstr ""
+#~ "Detta är sessionen Felsäker GNOME. Du kommer att loggas in i GNOME:s "
+#~ "\"standardsession\" utan att några uppstartsskript körs. Detta är enbart "
+#~ "för att problem i din installation ska kunna åtgärdas."
+
+#~ msgid "Failsafe GNOME"
+#~ msgstr "Felsäker GNOME"
+
+#~ msgid "Failsafe _GNOME"
+#~ msgstr "Felsäker _GNOME"
+
+#~ msgid "Configure the login screen (GNOME Display Manager)"
+#~ msgstr "Konfigurera inloggningsskärmen (GNOME-displayhanteraren)"
+
+#~ msgid "Configure the login screen"
+#~ msgstr "Konfigurera inloggningsskärmen"
+
+#~ msgid "FLEXI_XSERVER request denied: Not authenticated"
+#~ msgstr "FLEXI_XSERVER-begäran nekas: Inte autentiserad"
+
+#~ msgid "QUERY_LOGOUT_ACTION request denied: Not authenticated"
+#~ msgstr "QUERY_LOGOUT_ACTION-begäran nekas: Inte autentiserad"
+
+#~ msgid "SET_LOGOUT_ACTION request denied: Not authenticated"
+#~ msgstr "SET_LOGOUT_ACTION-begäran nekas: Inte autentiserad"
+
+#~ msgid "QUERY_VT request denied: Not authenticated"
+#~ msgstr "QUERY_VT-begäran nekas: Inte autentiserad"
+
+#~ msgid ""
+#~ "A graphical application for configuring the GNOME Display Manager (GDM)"
+#~ msgstr ""
+#~ "Ett grafiskt program för att konfigurera GNOME:s displayhanterare (GDM)"
 
 #~ msgid "Afrikaans"
 #~ msgstr "Afrikaans"
@@ -3962,9 +4007,6 @@ msgstr "För många aliasnivåer för en lokal, kan indikera en slinga"
 
 #~ msgid "Northern Sotho"
 #~ msgstr "Nordsotho"
-
-#~ msgid "%s request denied: Not authenticated"
-#~ msgstr "%s-begäran nekas: Inte autentiserad"
 
 #~ msgid "Armenian"
 #~ msgstr "Armeniska"
@@ -3993,9 +4035,6 @@ msgstr "För många aliasnivåer för en lokal, kan indikera en slinga"
 
 #~ msgid "German (Switzerland)"
 #~ msgstr "Tyska (Schweiz)"
-
-#~ msgid "Configure the login manager"
-#~ msgstr "Konfigurera inloggningshanteraren"
 
 #~ msgid "Flexible server request denied: Not authenticated"
 #~ msgstr "Flexibel serverbegäran nekas: Inte autentiserad"
