@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 0.5\n"
-"POT-Creation-Date: 1999-09-23 02:31+0200\n"
-"PO-Revision-Date: 1999-08-07 11:00+0200\n"
-"Last-Translator: Anders Carlsson <anders.carlsson@tordata.se>\n"
+"POT-Creation-Date: 1999-09-24 11:23+0200\n"
+"PO-Revision-Date: 1999-09-27 21:20+0200\n"
+"Last-Translator: Richard Hult <rhult@hem2.passagen.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -16,7 +16,7 @@ msgstr ""
 #: daemon/gdm.c:166
 #, c-format
 msgid "gdm_config_parse: No configuration file: %s. Aborting."
-msgstr "gdm_config_parse: Ingen konfigurationsfil kunde hittas: %s. Avbryter"
+msgstr "gdm_config_parse: Ingen konfigurationsfil kunde hittas: %s. Avbryter."
 
 #: daemon/gdm.c:217
 msgid "gdm_config_parse: No greeter specified and default not found."
@@ -199,9 +199,9 @@ msgid "%s: %s is writable by other."
 msgstr "%s: %s kan skrivas av grupp/annan."
 
 #: daemon/filecheck.c:90
-#, fuzzy, c-format
+#, c-format
 msgid "%s: does not exist and must."
-msgstr "%s: Katalogen %s finns inte."
+msgstr "%s: finns inte, vilket den måste göra."
 
 #: daemon/filecheck.c:98
 #, c-format
@@ -337,7 +337,7 @@ msgstr ""
 msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
 msgstr "gdm_slave_xsync_ping: Fel vid installering av ALARM-signalhanterare"
 
-#: daemon/verify.c:129 daemon/verify.c:201 gui/gdmlogin.c:1246
+#: daemon/verify.c:129 daemon/verify.c:201 gui/gdmlogin.c:1248
 msgid "Login:"
 msgstr "Användarnamn:"
 
@@ -580,7 +580,7 @@ msgstr "gdm_signals_init: Fel vid installering av INT signal-hanterare"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Fel vid installering av TERM signal-hanterare"
 
-#: gui/gdmchooser.c:596 gui/gdmlogin.c:1555
+#: gui/gdmchooser.c:596 gui/gdmlogin.c:1557
 msgid "Could not set signal mask!"
 msgstr "Kan inte sätta signalmask!"
 
@@ -589,9 +589,9 @@ msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Strängen är för long!"
 
 #: gui/gdmlogin.c:272
-#, fuzzy, c-format
+#, c-format
 msgid "Welcome to %s"
-msgstr "Välkommen till"
+msgstr "Välkommen till %s"
 
 #: gui/gdmlogin.c:276
 msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
@@ -617,7 +617,7 @@ msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
-"Din föregående sessions-typ %s finns inte installerad på datorn.\n"
+"Din föregående sessionstyp %s finns inte installerad på datorn.\n"
 "Vill du ändra så att %s blir standard för framtida sessioner?"
 
 #: gui/gdmlogin.c:543 gui/gdmlogin.c:573
@@ -691,149 +691,30 @@ msgstr "System"
 #: gui/gdmlogin.c:1116
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
-msgstr "Kan inte öppna ikon-fil: %s. Avaktiverar minimera-funktion"
+msgstr "Kan inte öppna ikon-fil: %s. Avaktiverar minimerafunktion"
 
 #: gui/gdmlogin.c:1119
 msgid "Iconify"
 msgstr "Minimera"
 
-#: gui/gdmlogin.c:1281
+#: gui/gdmlogin.c:1283
 msgid "Please enter your login"
-msgstr "Ange ditt loginnamn"
+msgstr "Ange ditt användarnamn"
 
-#: gui/gdmlogin.c:1462
+#: gui/gdmlogin.c:1464
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
-msgstr "Kan inte öppna DefaultImage: %s. Avaktiverar bild-bläddrare"
+msgstr "Kan inte öppna DefaultImage: %s. Avaktiverar bildbläddrare"
 
-#: gui/gdmlogin.c:1541
+#: gui/gdmlogin.c:1543
 msgid "main: Error setting up HUP signal handler"
-msgstr "main: Fel vid installering av HUP signal-hanterare"
+msgstr "main: Fel vid installering av HUP signalhanterare"
 
-#: gui/gdmlogin.c:1544
+#: gui/gdmlogin.c:1546
 msgid "main: Error setting up INT signal handler"
-msgstr "main: Fel vid installering av INT signal-hanterare"
+msgstr "main: Fel vid installering av INT signalhanterare"
 
-#: gui/gdmlogin.c:1547
+#: gui/gdmlogin.c:1549
 msgid "main: Error setting up TERM signal handler"
-msgstr "main: Fel vid installering av TERM signal-hanterare"
+msgstr "main: Fel vid installering av TERM signalhanterare"
 
-#~ msgid ""
-#~ "gdm_auth_secure_display: Error starting xauth process: %s. Running insecure!"
-#~ msgstr ""
-#~ "gdm_auth_secure_display: Fel vid start av xauth-process: %s. Kör utan "
-#~ "säkerhet!"
-
-#~ msgid ""
-#~ "gdm_auth_secure_display: Error forking xauth process. Running insecure!"
-#~ msgstr ""
-#~ "gdm_auth_secure_display: Fel vid delning av xauth-process. Kör utan säkerhet!"
-
-#~ msgid "gdm_auth_user_add: Error starting xauth process: %s"
-#~ msgstr "gdm_auth_user_add: Fel vid start av xauth-process: %s"
-
-#~ msgid "gdm_auth_user_add: Error forking xauth process."
-#~ msgstr "gdm_auth_user_add: Fel vid delning av xauth-process."
-
-#~ msgid "gdm_auth_user_remove: Error forking xauth process."
-#~ msgstr "gdm_auth_user_remove: Fel vid delning av xauth-process."
-
-#~ msgid "gdm_exec_command: Failed starting: %s"
-#~ msgstr "gdm_exec_command: Fel vid start av: %s"
-
-#~ msgid "gdm_exec_command: Can't fork process!"
-#~ msgstr "gdm_exec_command: Kan inte dela process!"
-
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
-#~ msgid "Gnome Display Manager"
-#~ msgstr "GNOME Displayhanterare"
-
-#~ msgid "Copyright Martin K. Petersen (C) 1998, 1999"
-#~ msgstr "Copyright Matrin K. Petersen (C) 1998, 1999"
-
-#~ msgid ""
-#~ "gdm manages local and remote displays and provides the user with a login "
-#~ "window."
-#~ msgstr ""
-#~ "gdm hanterar lokala och fjärr-skärmar och visar ett login-fönster för "
-#~ "användaren"
-
-#~ msgid "Logo not found. No image will be displayed!"
-#~ msgstr "Kan inte hitta logo. Ingen bild kommer att visas!"
-
-#~ msgid "gdm_greeter_parse_config: No configuration file: %s. Aborting."
-#~ msgstr ""
-#~ "gdm_greeter_parse_config: Konfigurationsfil kunde inte hittas: %s. Avbryter."
-
-#~ msgid "messages/welcome=Welcome to %h"
-#~ msgstr "messages/welcome=Välkommen till %h"
-
-#~ msgid ""
-#~ "Your previous session type %s is not installed on this machine.\n"
-#~ "Do you wish to make %s the default for future sessions?"
-#~ msgstr ""
-#~ "Din föregående sessions-typ %s finns inte installerad på datorn.\n"
-#~ "Vill du ändra så att %s blir standard för framtida sessioner?"
-
-#~ msgid ""
-#~ "Your previous session type %s is not installed on this machine.\n"
-#~ "You will be logged in using the %s environment."
-#~ msgstr ""
-#~ "Din föregående sessions-typ finns inte installerad på datorn.\n"
-#~ "Du kommer att loggas in med %s-sessionen."
-
-#~ msgid ""
-#~ "You have chosen the language %s for this session, but your default setting "
-#~ "is %s.\n"
-#~ "Do you wish to make %s the default language for future sessions?"
-#~ msgstr ""
-#~ "Du har valt språket %s för aktuell session, men ditt standardalternativ är "
-#~ "%s.\n"
-#~ "Vill du ändra så att %s blir standard-språk för framtida sessioner?"
-
-#~ msgid ""
-#~ "Your previous language %s is not installed on this machine.\n"
-#~ "Do you wish to make %s the default language for future sessions?"
-#~ msgstr ""
-#~ "Det föregående språket %s finns inte installerat på datorn.\n"
-#~ "Vill du ändra så att %s blir standard-språk för framtida sessioner?"
-
-#~ msgid ""
-#~ "Your previous language %s is not installed on this machine.\n"
-#~ "Your environment will be %s."
-#~ msgstr ""
-#~ "Ditt föregående språk %s finns inte installerat på datorn.\n"
-#~ "Din miljö kommer att bli %s."
-
-#~ msgid "Invalid username or password!"
-#~ msgstr "Ogiltigt användarnamn eller lösenord!"
-
-#~ msgid "gdm_greeter_session_init: Session script directory not found!"
-#~ msgstr ""
-#~ "gdm_greeter_session_init: Kunde inte hitta script-katalog för sessioner"
-
-#~ msgid "Login"
-#~ msgstr "Logga in"
-
-#~ msgid "Sessions"
-#~ msgstr "Sessioner"
-
-#~ msgid "Languages"
-#~ msgstr "Språk"
-
-#~ msgid "Suspend"
-#~ msgstr "Vänteläge"
-
-#~ msgid "Options..."
-#~ msgstr "Alternativ..."
-
-#~ msgid "main: Error setting up USR1 signal handler"
-#~ msgstr "main: Fel vid installering av USR1 signal-hanterare"
-
-#~ msgid "main: Error setting up USR2 signal handler"
-#~ msgstr "main: Fel vid installering av USR2 signal-hanterare"
-
-#~ msgid "Host chooser"
-#~ msgstr "Datorväljare"
