@@ -1,13 +1,13 @@
 # gdm 2.0 Finnish translation.
 # http://gnome-fi.sourceforge.net/
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Copyright (C) 1999-2001 Free Software Foundation, Inc.
 # Mikko Rauhala <mjr@iki.fi>, 1999.
-# Jarkko Ranta <jjranta@cc.joensuu.fi>, 2000.
+# Jarkko Ranta <jjranta@cc.joensuu.fi>, 2000-2001.
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 \n"
-"POT-Creation-Date: 2001-02-06 11:16+0200\n"
-"PO-Revision-Date: 2000-10-23 15:37+0200\n"
+"POT-Creation-Date: 2001-02-15 21:02+0000\n"
+"PO-Revision-Date: 2001-02-15 23:37+0200\n"
 "Last-Translator: Jarkko Ranta <jjranta@cc.joensuu.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -328,18 +328,18 @@ msgstr "gdm_slave_session_start: Ei voitu muuttua %s:ksi. Keskeytet‰‰n."
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: Ei voitu k‰ynnist‰‰ istuntoa '%s'"
 
-#: daemon/slave.c:757
+#: daemon/slave.c:759
 #, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
 msgstr ""
 "gdm_slave_xioerror_handler: Vakava X-virhe - %s k‰ynnistet‰‰n uudelleen"
 
-#: daemon/slave.c:854
+#: daemon/slave.c:858
 #, c-format
 msgid "gdm_slave_exec_script: Failed starting: %s"
 msgstr "gdm_slave_exec_script: K‰ynnistys ep‰onnistui: %s"
 
-#: daemon/slave.c:858
+#: daemon/slave.c:862
 msgid "gdm_slave_exec_script: Can't fork script process!"
 msgstr "gdm_slave_exec_script: Komentojonoprosessia ei voitu k‰ynnist‰‰."
 
@@ -361,7 +361,7 @@ msgstr "PAM_TTY=%s -asetus ei onnistu"
 #: daemon/verify-crypt.c:71 daemon/verify-pam.c:156 daemon/verify-shadow.c:81
 #, c-format
 msgid "Couldn't authenticate %s"
-msgstr "Ei voitu todentaa %s:‰‰"
+msgstr "Todentaminen ei onnistunut: %s"
 
 #: daemon/verify-pam.c:167 daemon/verify-pam.c:249
 #, c-format
@@ -589,7 +589,7 @@ msgstr "gdm_signals_init: Virhe asetettaessa INT-signaalin k‰sittelij‰‰"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Virhe asetettaessa TERM-signaalin k‰sittelij‰‰"
 
-#: gui/gdmchooser.c:594 gui/gdmlogin.c:2090
+#: gui/gdmchooser.c:594 gui/gdmlogin.c:2084
 msgid "Could not set signal mask!"
 msgstr "Signaalimaskia ei voitu asettaa."
 
@@ -674,7 +674,7 @@ msgstr "Muu"
 
 #: gui/gdmlogin.c:1449
 msgid "GNOME Desktop Manager"
-msgstr ""
+msgstr "GNOME Desktop Manager"
 
 #: gui/gdmlogin.c:1461
 #, c-format
@@ -697,7 +697,7 @@ msgstr "K‰ynnist‰ uudelleen..."
 msgid "Halt..."
 msgstr "Sammuta..."
 
-#: gui/gdmlogin.c:1595
+#: gui/gdmconfig.c:40 gui/gdmlogin.c:1595
 msgid "System"
 msgstr "J‰rjestelm‰"
 
@@ -710,42 +710,102 @@ msgstr "Ole hyv‰ ja anna k‰ytt‰j‰tunnuksesi"
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Oletuskuvaa ei voitu avata: %s. Kasvoselain ei k‰ytˆss‰."
 
-#: gui/gdmlogin.c:2067
+#: gui/gdmlogin.c:2061
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Virhe asetettaessa HUP-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:2070
+#: gui/gdmlogin.c:2064
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Virhe asetettaessa INT-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:2073
+#: gui/gdmlogin.c:2067
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Virhe asetettaessa TERM-signaalin k‰sittelij‰‰"
 
-#: gui/gdmlogin.c:2081
+#: gui/gdmlogin.c:2075
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Virhe asetettaessa CHLD-signaalin k‰sittelij‰‰"
 
-#: gui/gdmconfig.c:56
+#. 3 user levels are present in the CList
+#: gui/gdmconfig.c:38
+msgid "Basic"
+msgstr "Perus"
+
+#: gui/gdmconfig.c:39
+msgid "Expert"
+msgstr "Ekspertti"
+
+#: gui/gdmconfig.c:42
+msgid ""
+"This panel displays the basic options for configuring GDM.\n"
+"\n"
+"If you need finer detail, select 'expert' or 'system setup' from the list "
+"above.\n"
+"\n"
+"This will display some of the more complex options of GDM that rarely need "
+"to be changed."
+msgstr ""
+"T‰m‰ paneeli n‰ytt‰‰ GDM:n asettamisessa k‰ytett‰v‰t perusvalinnat.\n"
+"\n"
+"Jos tarvitset yksityiskohtaisempia asetuksia, valitse 'ekspertti' tai "
+"'j‰rjestelm‰asetukset' yll‰ olevasta listasta.\n"
+"\n"
+"N‰in saat muutettua joitakin harvemmin tarvittavia, monimutkaisempia GDM:n "
+"asetuksia."
+
+#: gui/gdmconfig.c:47
+msgid ""
+"This panel displays the more advanced options of GDM.\n"
+"\n"
+"Be sure to take care when manipulating the security options, or you could be "
+"vulnerable to attackers.\n"
+"\n"
+"Choose \"System setup\" to change fundamental options in GDM."
+msgstr ""
+"T‰m‰ paneeli n‰ytt‰‰ GDM:n edistyneempi‰ valintoja.\n"
+"\n"
+"Ole varovainen muuttaessasi turvallisuusasetuksia. Muutoin voit vahingossa "
+"tehd‰ j‰rjestelm‰st‰si alttiin hyˆkk‰yksille.\n"
+"\n"
+"Valitse \"J‰rjestelm‰asetukset\" muuttaaksesi GDM:n perustavanlaatuisia "
+"asetuksia."
+
+#: gui/gdmconfig.c:53
+msgid ""
+"This panel displays GDM's fundamental system settings.\n"
+"\n"
+"You should only change these paths if you really know what you are doing, as "
+"an incorrect setup could stop your machine from booting properly.\n"
+"\n"
+"Choose \"Basic\" if you just want to change your machine's login appearance."
+msgstr ""
+"T‰m‰ paneeli n‰ytt‰‰ GDM:n perustavanlaatuiset asetukset.\n"
+"\n"
+"Sinun ei kannata muuttaa n‰it‰ polkuja, ellet todella tied‰ mit‰ ole "
+"tekem‰ss‰, sill‰ v‰‰r‰nlaiset asetukset saattavat est‰‰ j‰rjestelm‰si "
+"k‰ynnistymisen kunnolla."
+
+#: gui/gdmconfig.c:105
 msgid "You must be the superuser (root) to configure GDM.\n"
 msgstr "Sinun tulee olla p‰‰k‰ytt‰j‰ asettaaksesi GDM:‰‰.\n"
 
-#: gui/gdmconfig.c:97
+#: gui/gdmconfig.c:174
 msgid "GNOME Display Manager Configurator"
 msgstr "GNOME Display Managerin asetusohjelma"
 
-#: gui/gdmconfig.c:116
+#: gui/gdmconfig.c:228
 msgid "The configuration file: "
 msgstr "Asetustiedosto: "
 
-#: gui/gdmconfig.c:225
+#: gui/gdmconfig.c:337
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr "gdm_config_parse_most: Virheellinen palvelinrivi "
-"asetustiedostossa, sivuutetaan."
+msgstr ""
+"gdm_config_parse_most: Virheellinen palvelinrivi asetustiedostossa, "
+"sivuutetaan."
 
-#: gui/gdmconfig.c:292
+#: gui/gdmconfig.c:404
 msgid ""
-"The settings cannot take effect until gdm\n"
+"The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
 "Do you wish to restart GDM now?\n"
 "This will kill all your current sessions\n"
@@ -755,9 +815,9 @@ msgstr ""
 "tai tietokone k‰ynnistet‰‰n uudelleen.\n"
 "Haluatko k‰ynnist‰‰ GDM:n uudelleen?\n"
 "T‰m‰ tappaa kaikki p‰‰ll‰ olevat istunnut\n"
-"ja tallentamattomat tiedot menetet‰‰n!" 
+"ja tallentamattomat tiedot menetet‰‰n!"
 
-#: gui/gdmconfig.c:297
+#: gui/gdmconfig.c:409
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
@@ -765,18 +825,28 @@ msgstr ""
 "Haluatko varmasti k‰ynnist‰‰ GDM:n uudelleen\n"
 "ja menett‰‰ tallentamattomat tiedot?"
 
-#: gui/gdmconfig.c:304
+#: gui/gdmconfig.c:416
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
 "take effect until gdm is restarted or the computer is\n"
 "rebooted"
 msgstr ""
-"Tervehtij‰asetukset tulevat voimaan seuraavalla kerralla\n"
-"Loput asetuksista tulevat voimaan vasta kun GDM tai\n"
-"tietokone k‰ynnistet‰‰n uudelleen."
+"Tervehtij‰asetukset tulevat voimaan seuraavalla\n"
+"kerralla. Loput asetuksista tulevat voimaan vasta\n"
+"kun GDM tai tietokone k‰ynnistet‰‰n\n"
+"uudelleen."
 
-#: gui/gdmconfig.c:531
+#: gui/gdmconfig.c:543
+msgid ""
+"This will destroy any changes made in this session.\n"
+"Are you sure you want to do this?"
+msgstr ""
+"T‰m‰ kumoaa kaikki istunnon aikana tehdyt muutokset.\n"
+"Oletko varma ett‰ haluat tehd‰ n‰in?"
+
+#. Request the command line for this new server
+#: gui/gdmconfig.c:637 gui/gdmconfig.c:656
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
@@ -939,7 +1009,7 @@ msgstr "Odottamisen maksimiaika: "
 
 #: gui/gdmconfig-strings.c:44
 msgid "Maximum remote sessions: "
-msgstr ""
+msgstr "Suurin sallittu et‰istuntojen m‰‰r‰: "
 
 #: gui/gdmconfig-strings.c:45
 msgid "Max pending indirect requests: "
@@ -1014,7 +1084,7 @@ msgstr "Oletuskirjasin: "
 
 #: gui/gdmconfig-strings.c:63
 msgid "Exclude these users: "
-msgstr ""
+msgstr "J‰t‰ n‰m‰ k‰ytt‰j‰t pois: "
 
 #: gui/gdmconfig-strings.c:64
 msgid "Welcome message: "
@@ -1058,7 +1128,7 @@ msgstr "Y-sijainti: "
 
 #: gui/gdmconfig-strings.c:74
 msgid "Xinerama screen: "
-msgstr ""
+msgstr "Xinerama-ruutu: "
 
 #: gui/gdmconfig-strings.c:75
 msgid "User Interface"
