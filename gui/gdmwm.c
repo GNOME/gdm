@@ -1008,6 +1008,28 @@ static GSourceFuncs event_funcs = {
 	(GDestroyNotify)g_free
 };
 
+/* HAAAAAAAAAAAAAACK */
+void
+gnome_dock_item_grab_pointer (GnomeDockItem *item)
+{
+  GdkCursor *fleur;
+
+  fleur = gdk_cursor_new (GDK_FLEUR);
+
+  /* Hm, not sure this is the right thing to do, but it seems to work.  */
+  while (gdk_pointer_grab (item->bin_window,
+                           FALSE,
+                           (GDK_BUTTON1_MOTION_MASK |
+                            GDK_POINTER_MOTION_HINT_MASK |
+                            GDK_BUTTON_RELEASE_MASK),
+                           NULL,
+                           fleur,
+                           GDK_CURRENT_TIME) != 0)
+	  gtk_main_iteration ();
+
+  gdk_cursor_destroy (fleur);
+}
+
 void
 gdm_wm_init (Window login_window)
 {

@@ -1,3 +1,12 @@
+Thu Sep 06 15:55:20 2001  George Lebl <jirka@5z.com>
+
+	* gui/gdmwm.c: "fix" for the toolbar deadlock problem.  apparently
+	  gnome-dock code is pretty braindead and uses the bulldog technique
+	  for grabbing the pointer, grab in a tight loop until we succeed.
+	  But the it will fail until the main loop is hit so a deadlock
+	  results.  Fix this by defining that function again in gdmwm with
+	  a more "maybe" correct semantics.
+
 Tue Sep  4 18:52:10 2001  Trevor Curtis <tcurtis@somaradio.ca>
 	* docs/gdmconfig/C/figures/GDM_xserv_setup.png,GDM_xdmcp.png: 
 	  Updated the above screenshots to reflect recent changes.
