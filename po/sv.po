@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-12-08 03:33+0100\n"
-"PO-Revision-Date: 2001-12-08 03:33+0100\n"
+"POT-Creation-Date: 2001-12-21 22:27+0100\n"
+"PO-Revision-Date: 2001-12-21 22:28+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -36,7 +36,7 @@ msgstr "gdm_auth_user_add: Kunde inte låsa kakfilen %s"
 #: daemon/auth.c:473
 #, c-format
 msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
-msgstr "gdm_auth_user_remove: Ignorerar den konstiga kakfilen %s"
+msgstr "gdm_auth_user_remove: Ignorerar konstig kakfil %s"
 
 #. This means we have no clue what's happening,
 #. * it's not X server crashing as we would have
@@ -55,7 +55,7 @@ msgstr ""
 #, c-format
 msgid "gdm_display_manage: Failed forking gdm slave process for %s"
 msgstr ""
-"gdm_display_manage: Misslyckades med att grena gdm-slavprocessen för %s"
+"gdm_display_manage: Misslyckades med att grena en gdm-slavprocess för %s"
 
 #: daemon/errorgui.c:169
 msgid "gdm_error_box: Failed to execute self"
@@ -91,7 +91,7 @@ msgstr "%s: %s kan skrivas av gruppen."
 #: daemon/filecheck.c:68
 #, c-format
 msgid "%s: %s is writable by other."
-msgstr "%s: %s kan skrivas av annan."
+msgstr "%s: %s kan skrivas av övriga."
 
 #: daemon/filecheck.c:82
 #, c-format
@@ -106,7 +106,7 @@ msgstr "%s: %s är inte en vanlig fil."
 #: daemon/filecheck.c:111
 #, c-format
 msgid "%s: %s is writable by group/other."
-msgstr "%s: %s kan skrivas av grupp/annan."
+msgstr "%s: %s kan skrivas av grupp/övriga."
 
 #: daemon/filecheck.c:118
 #, c-format
@@ -1072,13 +1072,13 @@ msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login: Kan inte grena skriptprocessen!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:68 daemon/verify-pam.c:295 daemon/verify-shadow.c:67
-#: gui/gdmlogin.c:3127
+#: daemon/verify-crypt.c:68 daemon/verify-pam.c:296 daemon/verify-shadow.c:67
+#: gui/gdmlogin.c:3140
 msgid "Please enter your username"
 msgstr "Ange ditt användarnamn"
 
-#: daemon/verify-crypt.c:69 daemon/verify-pam.c:296 daemon/verify-shadow.c:68
-#: gui/gdmlogin.c:3090
+#: daemon/verify-crypt.c:69 daemon/verify-pam.c:297 daemon/verify-shadow.c:68
+#: gui/gdmlogin.c:3103
 msgid "Username:"
 msgstr "Användarnamn:"
 
@@ -1086,12 +1086,12 @@ msgstr "Användarnamn:"
 msgid "Password: "
 msgstr "Lösenord: "
 
-#: daemon/verify-crypt.c:109 daemon/verify-pam.c:329 daemon/verify-pam.c:489
+#: daemon/verify-crypt.c:109 daemon/verify-pam.c:330 daemon/verify-pam.c:496
 #: daemon/verify-shadow.c:118
 msgid "Couldn't authenticate user"
 msgstr "Kunde inte autentisera användaren"
 
-#: daemon/verify-crypt.c:115 daemon/verify-crypt.c:135 daemon/verify-pam.c:435
+#: daemon/verify-crypt.c:115 daemon/verify-crypt.c:135 daemon/verify-pam.c:438
 #: daemon/verify-shadow.c:124 daemon/verify-shadow.c:144
 msgid ""
 "\n"
@@ -1102,7 +1102,7 @@ msgstr ""
 "Ogiltigt användarnamn eller lösenord. Bokstäver måste skrivas med rätt "
 "skiftläge. Försäkra dig om att Caps Lock inte är på"
 
-#: daemon/verify-crypt.c:149 daemon/verify-pam.c:342
+#: daemon/verify-crypt.c:149 daemon/verify-pam.c:343
 #: daemon/verify-shadow.c:158
 #, c-format
 msgid "Root login disallowed on display '%s'"
@@ -1117,7 +1117,7 @@ msgstr "Systemadministratören får inte logga in från denna skärm"
 msgid "User %s not allowed to log in"
 msgstr "Användaren %s får inte logga in"
 
-#: daemon/verify-crypt.c:169 daemon/verify-pam.c:372 daemon/verify-pam.c:522
+#: daemon/verify-crypt.c:169 daemon/verify-pam.c:373 daemon/verify-pam.c:529
 #: daemon/verify-shadow.c:178
 msgid ""
 "\n"
@@ -1126,15 +1126,15 @@ msgstr ""
 "\n"
 "Systemadministratören har stängt av ditt konto."
 
-#: daemon/verify-crypt.c:184 daemon/verify-crypt.c:218 daemon/verify-pam.c:390
-#: daemon/verify-pam.c:539 daemon/verify-shadow.c:192
+#: daemon/verify-crypt.c:184 daemon/verify-crypt.c:218 daemon/verify-pam.c:391
+#: daemon/verify-pam.c:546 daemon/verify-shadow.c:192
 #: daemon/verify-shadow.c:225
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Kan inte ställa in användargruppen för %s"
 
-#: daemon/verify-crypt.c:186 daemon/verify-crypt.c:221 daemon/verify-pam.c:392
-#: daemon/verify-pam.c:542 daemon/verify-shadow.c:194
+#: daemon/verify-crypt.c:186 daemon/verify-crypt.c:221 daemon/verify-pam.c:393
+#: daemon/verify-pam.c:549 daemon/verify-shadow.c:194
 #: daemon/verify-shadow.c:228
 msgid ""
 "\n"
@@ -1174,7 +1174,7 @@ msgstr "Kan inte ställa in PAM_RUSER=%s"
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Kan inte ställa in PAM_RHOST=%s"
 
-#: daemon/verify-pam.c:345
+#: daemon/verify-pam.c:346
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1182,12 +1182,12 @@ msgstr ""
 "\n"
 "Systemadministratören får inte logga in från denna skärm"
 
-#: daemon/verify-pam.c:361
+#: daemon/verify-pam.c:362
 #, c-format
 msgid "Authentication token change failed for user %s"
 msgstr "Byte av autentiseringselement misslyckades för användaren %s"
 
-#: daemon/verify-pam.c:363
+#: daemon/verify-pam.c:364
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
@@ -1197,17 +1197,17 @@ msgstr ""
 "Ändringen av autentiseringselementet misslyckades. Försök igen senare eller "
 "kontakta systemadministratören."
 
-#: daemon/verify-pam.c:370 daemon/verify-pam.c:519
+#: daemon/verify-pam.c:371 daemon/verify-pam.c:526
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Användaren %s är inte längre tillåten att komma åt systemet"
 
-#: daemon/verify-pam.c:376 daemon/verify-pam.c:525
+#: daemon/verify-pam.c:377 daemon/verify-pam.c:532
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Användaren %s är för tillfället inte tillåten att komma åt systemet"
 
-#: daemon/verify-pam.c:378
+#: daemon/verify-pam.c:379
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporary."
@@ -1215,26 +1215,26 @@ msgstr ""
 "\n"
 "Systemadministratören har tillfälligt stängt av åtkomst till systemet."
 
-#: daemon/verify-pam.c:383 daemon/verify-pam.c:532
+#: daemon/verify-pam.c:384 daemon/verify-pam.c:539
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Kunde inte sätta kontohantering för %s"
 
-#: daemon/verify-pam.c:402 daemon/verify-pam.c:552
-#, c-format
-msgid "Couldn't open session for %s"
-msgstr "Kunde inte öppna session för %s"
-
-#: daemon/verify-pam.c:410 daemon/verify-pam.c:560
+#: daemon/verify-pam.c:403 daemon/verify-pam.c:567
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Kunde inte sätta referenser för %s"
 
-#: daemon/verify-pam.c:441 daemon/verify-pam.c:492
+#: daemon/verify-pam.c:413 daemon/verify-pam.c:559
+#, c-format
+msgid "Couldn't open session for %s"
+msgstr "Kunde inte öppna session för %s"
+
+#: daemon/verify-pam.c:444 daemon/verify-pam.c:499
 msgid "Authentication failed"
 msgstr "Autentisering misslyckades"
 
-#: daemon/verify-pam.c:528
+#: daemon/verify-pam.c:535
 msgid ""
 "\n"
 "The system administrator has your disabled access to the system temporary."
@@ -1242,7 +1242,7 @@ msgstr ""
 "\n"
 "Systemadministratören har tillfälligt stängt av din åtkomst till systemet."
 
-#: daemon/verify-pam.c:645
+#: daemon/verify-pam.c:652
 #, c-format
 msgid "Can't find PAM configuration file for gdm. I've tried %s, %s, %s and %s"
 msgstr ""
@@ -1457,7 +1457,7 @@ msgstr "gdm_signals_init: Fel vid inställning av INT-signalhanteraren"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: Fel vid inställning av TERM-signalhanteraren"
 
-#: gui/gdmchooser.c:760 gui/gdmlogin.c:3767
+#: gui/gdmchooser.c:760 gui/gdmlogin.c:3780
 msgid "Could not set signal mask!"
 msgstr "Kunde inte sätta signalmask!"
 
@@ -1534,7 +1534,7 @@ msgstr "Hjälp"
 msgid "Exit the application"
 msgstr "Avsluta programmet"
 
-#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2885
+#: gui/gdmchooser-strings.c:15 gui/gdmlogin.c:2898
 msgid "Quit"
 msgstr "Avsluta"
 
@@ -1544,7 +1544,7 @@ msgstr " "
 
 #: gui/gdmchooser-strings.c:17
 msgid "Most recently queried hosts"
-msgstr "De vanligast frågade värdarna"
+msgstr "De senast frågade värdarna"
 
 #: gui/gdmchooser-strings.c:18
 msgid ""
@@ -1579,7 +1579,7 @@ msgstr "Grundläggande"
 msgid "Expert"
 msgstr "Expert"
 
-#: gui/gdmconfig.c:58 gui/gdmlogin.c:2871
+#: gui/gdmconfig.c:58 gui/gdmlogin.c:2884
 msgid "System"
 msgstr "System"
 
@@ -1683,8 +1683,8 @@ msgstr ""
 "Konfigurationsfilen: %s\n"
 "finns inte! Använder standardvärden."
 
-#: gui/gdmconfig.c:738 gui/gdmconfig.c:1090 gui/gdmconfig.c:1953
-#: gui/gdmconfig.c:2175 gui/gdmflexiserver.c:449
+#: gui/gdmconfig.c:738 gui/gdmconfig.c:1090 gui/gdmconfig.c:1984
+#: gui/gdmconfig.c:2206 gui/gdmflexiserver.c:449
 msgid "Standard server"
 msgstr "Standardserver"
 
@@ -1696,12 +1696,12 @@ msgstr "Fel vid läsning av sessionsskript!"
 msgid "Error reading this session script"
 msgstr "Fel vid läsning av detta sessionsskript"
 
-#: gui/gdmconfig.c:1049 gui/gdmconfig.c:1095 gui/gdmconfig.c:1937
-#: gui/gdmconfig.c:2015 gui/gdmconfig.c:2031
+#: gui/gdmconfig.c:1049 gui/gdmconfig.c:1095 gui/gdmconfig.c:1534
+#: gui/gdmconfig.c:1968 gui/gdmconfig.c:2046 gui/gdmconfig.c:2062
 msgid "Yes"
 msgstr "Ja"
 
-#: gui/gdmconfig.c:1051 gui/gdmconfig.c:2019 gui/gdmconfig.c:2033
+#: gui/gdmconfig.c:1051 gui/gdmconfig.c:2050 gui/gdmconfig.c:2064
 msgid "No"
 msgstr "Nej"
 
@@ -1754,7 +1754,7 @@ msgstr ""
 "kommer inte att gälla förrän du har startat om gdm\n"
 "eller datorn"
 
-#: gui/gdmconfig.c:1355
+#: gui/gdmconfig.c:1356
 msgid ""
 "You have not defined any local servers.\n"
 "Usually this is not a good idea unless you\n"
@@ -1773,7 +1773,7 @@ msgstr ""
 "Är du säker på att du vill verkställa dessa\n"
 "inställningar?"
 
-#: gui/gdmconfig.c:1539
+#: gui/gdmconfig.c:1570
 #, c-format
 msgid ""
 "\n"
@@ -1784,7 +1784,7 @@ msgstr ""
 "Kunde inte ta bort sessionen %s\n"
 "   Fel: %s"
 
-#: gui/gdmconfig.c:1575
+#: gui/gdmconfig.c:1606
 #, c-format
 msgid ""
 "\n"
@@ -1795,7 +1795,7 @@ msgstr ""
 "Kunde inte ta bort sessionen %s\n"
 "   Fel: %s"
 
-#: gui/gdmconfig.c:1618
+#: gui/gdmconfig.c:1649
 #, c-format
 msgid ""
 "\n"
@@ -1806,7 +1806,7 @@ msgstr ""
 "Kunde inte skriva sessionen %s\n"
 "   Fel: %s"
 
-#: gui/gdmconfig.c:1629
+#: gui/gdmconfig.c:1660
 #, c-format
 msgid ""
 "\n"
@@ -1817,7 +1817,7 @@ msgstr ""
 "Kunde inte skriva innehållet till sessionen %s\n"
 "   Fel: %s"
 
-#: gui/gdmconfig.c:1654
+#: gui/gdmconfig.c:1685
 #, c-format
 msgid ""
 "\n"
@@ -1828,7 +1828,7 @@ msgstr ""
 "Kunde inte avlänka gamla standardsessionen\n"
 "   Fel: %s"
 
-#: gui/gdmconfig.c:1693
+#: gui/gdmconfig.c:1724
 msgid ""
 "\n"
 "Could not find a suitable name for the default session link"
@@ -1836,7 +1836,7 @@ msgstr ""
 "\n"
 "Kunde inte hitta ett passande namn till länken för standardsessionen"
 
-#: gui/gdmconfig.c:1702
+#: gui/gdmconfig.c:1733
 #, c-format
 msgid ""
 "\n"
@@ -1847,7 +1847,7 @@ msgstr ""
 "Kunde inte länka nya standardsessionen\n"
 "   Fel: %s"
 
-#: gui/gdmconfig.c:1722
+#: gui/gdmconfig.c:1753
 msgid ""
 "There were errors writing changes to the session files.\n"
 "The configuration may not be completely saved.\n"
@@ -1855,7 +1855,7 @@ msgstr ""
 "Det uppstod fel vid skrivning av ändringar till sessionsfilerna.\n"
 "Konfigurationen kan vara endast delvis sparad.\n"
 
-#: gui/gdmconfig.c:1742
+#: gui/gdmconfig.c:1773
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
@@ -1864,7 +1864,7 @@ msgstr ""
 "gjorts i denna session. Är du säker på att du vill\n"
 "göra detta?"
 
-#: gui/gdmconfig.c:1753
+#: gui/gdmconfig.c:1784
 msgid ""
 "This will destroy any changes made in the configuration.\n"
 "Are you sure you want to do this?"
@@ -1872,23 +1872,23 @@ msgstr ""
 "Detta kommer att förstöra alla ändringar som har gjorts\n"
 "i konfigurationen. Är du säker på att du vill göra detta?"
 
-#: gui/gdmconfig.c:1974 gui/gdmconfig.c:2305
+#: gui/gdmconfig.c:2005 gui/gdmconfig.c:2336
 msgid "A command line must start with a forward slash ('/')"
 msgstr "En kommandorad måste starta med ett snedstreck (\"/\")"
 
-#: gui/gdmconfig.c:1978
+#: gui/gdmconfig.c:2009
 msgid "A descriptive server name must be supplied"
 msgstr "Ett beskrivande namn måste anges"
 
-#: gui/gdmconfig.c:2645
+#: gui/gdmconfig.c:2676
 msgid "A session name must be unique and not empty"
 msgstr "Ett sessionsnamn måste vara unikt och får inte vara tomt"
 
-#: gui/gdmconfig.c:2658
+#: gui/gdmconfig.c:2689
 msgid "Enter a name for the new session"
 msgstr "Ange ett namn för den nya sessionen"
 
-#: gui/gdmconfig.c:2773
+#: gui/gdmconfig.c:2804
 msgid ""
 "You have modified the sessions directory.\n"
 "Your session changes will still get written\n"
@@ -2266,7 +2266,7 @@ msgid ""
 "indow appear on.  0 will usually do just fine."
 msgstr ""
 "Om du har en xinerama-konfiguration med flera skärmar kan du här ange vilken "
-"skärm som inloggningsfönstret ska visas på. 0 brukar normalt fungera."
+"skärm som inloggningsfönstret ska visas på. 0 brukar normalt fungera bra."
 
 #: gui/gdmconfig-strings.c:91
 msgid "Login behaviour"
@@ -2830,7 +2830,7 @@ msgstr "Tillgängliga sessioner"
 msgid "Show the Gnome Chooser session, if a session named 'Gnome' is present"
 msgstr "Visa Gnome-väljarsessionen om en session med namnet \"Gnome\" finns"
 
-#: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:64 gui/gdmlogin.c:1415
+#: gui/gdmconfig-strings.c:218 gui/gdmlogin.c:64 gui/gdmlogin.c:1428
 msgid "Gnome Chooser"
 msgstr "Gnome-väljare"
 
@@ -3054,7 +3054,7 @@ msgstr "Extra argument:"
 msgid "Custom command line:"
 msgstr "Anpassad kommandorad:"
 
-#: gui/gdmconfig-strings.c:277 gui/gdmlogin.c:1815
+#: gui/gdmconfig-strings.c:277 gui/gdmlogin.c:1828
 msgid "Name: "
 msgstr "Namn: "
 
@@ -3398,7 +3398,7 @@ msgstr "AnotherLevel"
 
 #. default is nicely translated
 #. Translators: default GNOME session
-#: gui/gdmlogin.c:59 gui/gdmlogin.c:1770 gui/gdmlogin.c:1792
+#: gui/gdmlogin.c:59 gui/gdmlogin.c:1783 gui/gdmlogin.c:1805
 msgid "Default"
 msgstr "Standard"
 
@@ -3438,7 +3438,7 @@ msgstr "Välkommen till %s"
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr "gdm_parse_enriched_string: Strängen är för lång!"
 
-#: gui/gdmlogin.c:676
+#: gui/gdmlogin.c:689
 msgid ""
 "Could not fork a new process!\n"
 "\n"
@@ -3448,38 +3448,38 @@ msgstr ""
 "\n"
 "Du kommer troligtvis inte att kunna logga in heller."
 
-#: gui/gdmlogin.c:723
+#: gui/gdmlogin.c:736
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Vill du verkligen starta om datorn?"
 
-#: gui/gdmlogin.c:735
+#: gui/gdmlogin.c:748
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Är du säker på att du vill stänga av datorn?"
 
-#: gui/gdmlogin.c:746
+#: gui/gdmlogin.c:759
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Vill du verkligen försätta datorn i viloläge?"
 
-#: gui/gdmlogin.c:760
+#: gui/gdmlogin.c:773
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
 msgstr ""
 "gdm_login_parse_config: Ingen konfigurationsfil: %s. Använder standardvärden."
 
-#: gui/gdmlogin.c:826
+#: gui/gdmlogin.c:839
 msgid "TimedLoginDelay was less then 5.  I'll just use 5."
 msgstr ""
 "TimedLoginDelay var mindre än 5. Jag kommer helt enkelt bara att använda 5."
 
-#: gui/gdmlogin.c:888 gui/gdmlogin.c:1463
+#: gui/gdmlogin.c:901 gui/gdmlogin.c:1476
 msgid "Failsafe Gnome"
 msgstr "Felsäker Gnome"
 
-#: gui/gdmlogin.c:890 gui/gdmlogin.c:1488
+#: gui/gdmlogin.c:903 gui/gdmlogin.c:1501
 msgid "Failsafe xterm"
 msgstr "Felsäker xterm"
 
-#: gui/gdmlogin.c:936
+#: gui/gdmlogin.c:949
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -3488,7 +3488,7 @@ msgstr ""
 "Den sessionstyp som du föredrar, %s, finns inte installerad på datorn.\n"
 "Vill du ändra så att %s blir standard för framtida sessioner?"
 
-#: gui/gdmlogin.c:961 gui/gdmlogin.c:1049
+#: gui/gdmlogin.c:974 gui/gdmlogin.c:1062
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -3502,7 +3502,7 @@ msgstr ""
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:977
+#: gui/gdmlogin.c:990
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -3515,28 +3515,28 @@ msgstr ""
 "sessioner kör du verktyget \"switchdesk\"\n"
 "(System->Verktyg för skrivbordsbyte i panelmenyn)."
 
-#: gui/gdmlogin.c:1272
+#: gui/gdmlogin.c:1285
 #, c-format
 msgid "%s session selected"
 msgstr "Sessionen %s är vald"
 
-#: gui/gdmlogin.c:1305
+#: gui/gdmlogin.c:1318
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Logga in med den session som du använde senast du loggade in"
 
-#: gui/gdmlogin.c:1318
+#: gui/gdmlogin.c:1331
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr ""
 "gdm_login_session_init: Kunde inte hitta skriptkatalogen för sessioner!"
 
-#: gui/gdmlogin.c:1403
+#: gui/gdmlogin.c:1416
 msgid ""
 "This session will log you directly into GNOME, into your current session."
 msgstr ""
 "Denna session kommer att logga in dig direkt i GNOME, in i din aktuella "
 "session."
 
-#: gui/gdmlogin.c:1418
+#: gui/gdmlogin.c:1431
 msgid ""
 "This session will log you into GNOME and it will let you choose which one of "
 "the GNOME sessions you want to use."
@@ -3544,11 +3544,11 @@ msgstr ""
 "Denna session kommer att logga in dig i GNOME, och kommer att låta dig välja "
 "vilken av GNOME-sessionerna som du vill använda."
 
-#: gui/gdmlogin.c:1453
+#: gui/gdmlogin.c:1466
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Hoppsan, det finns inget i sessionskatalogen."
 
-#: gui/gdmlogin.c:1465
+#: gui/gdmlogin.c:1478
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -3558,7 +3558,7 @@ msgstr ""
 "uppstartsskript kommer att läsas och det bör endast användas om du inte kan "
 "logga in på något annat sätt. GNOME kommer att använda standardsessionen."
 
-#: gui/gdmlogin.c:1490
+#: gui/gdmlogin.c:1503
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -3569,126 +3569,126 @@ msgstr ""
 "kan logga in på något annat sätt. För att avsluta terminalen skriver du "
 "\"exit\"."
 
-#: gui/gdmlogin.c:1511
+#: gui/gdmlogin.c:1524
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr ""
 "Ingen länk för standardsessionen kunde hittas. Använder Felsäker GNOME.\n"
 
-#: gui/gdmlogin.c:1551
+#: gui/gdmlogin.c:1564
 #, c-format
 msgid "%s language selected"
 msgstr "Språket %s har valts"
 
-#: gui/gdmlogin.c:1589
+#: gui/gdmlogin.c:1602
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "Logga in med det språk som du använde senast du loggade in"
 
-#: gui/gdmlogin.c:1610
+#: gui/gdmlogin.c:1623
 msgid "Other"
 msgstr "Annat"
 
-#: gui/gdmlogin.c:1730 gui/gdmlogin.c:1739
+#: gui/gdmlogin.c:1743 gui/gdmlogin.c:1752
 msgid "Select GNOME session"
 msgstr "Välj GNOME-session"
 
-#: gui/gdmlogin.c:1806
+#: gui/gdmlogin.c:1819
 msgid "Create new session"
 msgstr "Skapa ny session"
 
 #. Translators: this is to remember the chosen gnome session
 #. * for next time
-#: gui/gdmlogin.c:1836
+#: gui/gdmlogin.c:1849
 msgid "Remember this setting"
 msgstr "Kom ihåg denna inställning"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:2166
+#: gui/gdmlogin.c:2179
 msgid "Please insert 25 cents to log in."
 msgstr "Lägg i en krona för att logga in."
 
-#: gui/gdmlogin.c:2520
+#: gui/gdmlogin.c:2533
 msgid "GNOME Desktop Manager"
 msgstr "GNOME-skrivbordshanteraren"
 
-#: gui/gdmlogin.c:2528
+#: gui/gdmlogin.c:2541
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "Kan inte öppna ikonfilen: %s. Deaktiverar minimerafunktionen!"
 
-#: gui/gdmlogin.c:2550
+#: gui/gdmlogin.c:2563
 msgid "Iconify the login window"
 msgstr "Förminska inloggningsfönstret"
 
-#: gui/gdmlogin.c:2610
+#: gui/gdmlogin.c:2623
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H.%M"
 
-#: gui/gdmlogin.c:2617
+#: gui/gdmlogin.c:2630
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a %d %b, %H.%M"
 
-#: gui/gdmlogin.c:2676
+#: gui/gdmlogin.c:2689
 msgid "Finger"
 msgstr "Finger"
 
-#: gui/gdmlogin.c:2746
+#: gui/gdmlogin.c:2759
 msgid "GDM Login"
 msgstr "GDM-inloggning"
 
-#: gui/gdmlogin.c:2792
+#: gui/gdmlogin.c:2805
 msgid "Session"
 msgstr "Session"
 
-#: gui/gdmlogin.c:2803
+#: gui/gdmlogin.c:2816
 msgid "Language"
 msgstr "Språk"
 
-#: gui/gdmlogin.c:2817
+#: gui/gdmlogin.c:2830
 msgid "Configure..."
 msgstr "Konfigurera..."
 
-#: gui/gdmlogin.c:2824
+#: gui/gdmlogin.c:2837
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "Konfigurera GDM (denna inloggningshanterare). Detta kommer att kräva "
 "rootlösenordet."
 
-#: gui/gdmlogin.c:2831
+#: gui/gdmlogin.c:2844
 msgid "Reboot..."
 msgstr "Starta om..."
 
-#: gui/gdmlogin.c:2838
+#: gui/gdmlogin.c:2851
 msgid "Reboot your computer"
 msgstr "Starta om din dator"
 
-#: gui/gdmlogin.c:2844
+#: gui/gdmlogin.c:2857
 msgid "Shut down..."
 msgstr "Stäng av..."
 
-#: gui/gdmlogin.c:2851
+#: gui/gdmlogin.c:2864
 msgid "Shut down your computer so that you may turn it off."
 msgstr "Stäng ner datorn så att du kan slå av strömmen."
 
-#: gui/gdmlogin.c:2858
+#: gui/gdmlogin.c:2871
 msgid "Suspend..."
 msgstr "Försätt i viloläge..."
 
-#: gui/gdmlogin.c:2865
+#: gui/gdmlogin.c:2878
 msgid "Suspend your computer"
 msgstr "Försätt din dator i viloläge"
 
-#: gui/gdmlogin.c:2887
+#: gui/gdmlogin.c:2900
 msgid "Disconnect"
 msgstr "Koppla från"
 
-#: gui/gdmlogin.c:3371
+#: gui/gdmlogin.c:3384
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Kan inte öppna DefaultImage: %s. Deaktiverar ansiktsbläddraren!"
 
-#: gui/gdmlogin.c:3634 gui/gdmlogin.c:3662
+#: gui/gdmlogin.c:3647 gui/gdmlogin.c:3675
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -3699,11 +3699,11 @@ msgstr ""
 "Du har troligtvis nyss uppgraderat gdm.\n"
 "Starta om gdm-demonen eller datorn."
 
-#: gui/gdmlogin.c:3669 gui/gdmlogin.c:3707
+#: gui/gdmlogin.c:3682 gui/gdmlogin.c:3720
 msgid "Reboot"
 msgstr "Starta om"
 
-#: gui/gdmlogin.c:3699
+#: gui/gdmlogin.c:3712
 #, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -3714,27 +3714,27 @@ msgstr ""
 "Du har troligtvis nyss uppgraderat gdm.\n"
 "Starta om gdm-demonen eller datorn."
 
-#: gui/gdmlogin.c:3706
+#: gui/gdmlogin.c:3719
 msgid "Restart"
 msgstr "Starta om gdm"
 
-#: gui/gdmlogin.c:3744
+#: gui/gdmlogin.c:3757
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: Fel vid inställning av HUP-signalhanteraren"
 
-#: gui/gdmlogin.c:3747
+#: gui/gdmlogin.c:3760
 msgid "main: Error setting up INT signal handler"
 msgstr "main: Fel vid inställning av INT-signalhanteraren"
 
-#: gui/gdmlogin.c:3750
+#: gui/gdmlogin.c:3763
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: Fel vid inställning av TERM-signalhanteraren"
 
-#: gui/gdmlogin.c:3758
+#: gui/gdmlogin.c:3771
 msgid "main: Error setting up CHLD signal handler"
 msgstr "main: Fel vid inställning av CHLD-signalhanteraren"
 
-#: gui/gdmlogin.c:3823
+#: gui/gdmlogin.c:3836
 msgid ""
 "Your session directory is missing or empty!\n"
 "\n"
@@ -3747,7 +3747,7 @@ msgstr ""
 "använda, men du bör logga in och korrigera gdm-\n"
 "konfigurationen."
 
-#: gui/gdmlogin.c:3839
+#: gui/gdmlogin.c:3852
 msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
@@ -3757,7 +3757,7 @@ msgstr ""
 "rad för inloggningsfönstret, och därför körde jag\n"
 "standardkommandot. Fixa din konfiguration."
 
-#: gui/gdmlogin.c:3856
+#: gui/gdmlogin.c:3869
 msgid ""
 "The configuration was not found.  GDM is using\n"
 "defaults to run this session.  You should log in\n"
