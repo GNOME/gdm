@@ -150,6 +150,8 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Kannada"), "kn_IN", "﻿ಕನ್ನಡ", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
+        /*Note translate the A-M to the A-M you used in the group label */
+        { N_("A-M|Kinyarwanda"), "rw_RW", "Kinyarwanda", 0 },
 	{ N_("A-M|Korean"), "ko_KR", "한국어", 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Latvian"), "lv_LV", "Latviešu", 0 },
