@@ -93,7 +93,7 @@ gdm_verify_user (GdmDisplay *d,
 	    /* eeek a passwordless account */
 	    passwd = g_strdup ("");
     } else {
-	    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
+	    passwd = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password:"));
 	    if (passwd == NULL)
 		    passwd = g_strdup ("");
 	    if (gdm_slave_greeter_check_interruption ()) {

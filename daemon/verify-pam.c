@@ -62,6 +62,45 @@ gdm_verify_select_user (const char *user)
 		selected_user = g_strdup (user);
 }
 
+static const char *
+perhaps_translate_message (const char *msg)
+{
+	char *s;
+	const char *ret;
+	static GHashTable *hash = NULL;
+	if (hash == NULL) {
+		/* Here we come with some fairly standard messages so that
+		   we have as much as possible translated.  Should really be
+		   translated in pam I suppose */
+		hash = g_hash_table_new (g_str_hash, g_str_equal);
+		/* login: is whacked always translate to Username: */
+		g_hash_table_insert (hash, "login:", _("Username:"));
+		g_hash_table_insert (hash, "Username:", _("Username:"));
+		g_hash_table_insert (hash, "Password:", _("Password:"));
+		g_hash_table_insert (hash, "You are required to change your password immediately (password aged)", _("You are required to change your password immediately (password aged)"));
+		g_hash_table_insert (hash, "You are required to change your password immediately (root enforced)", _("You are required to change your password immediately (root enforced)"));
+		g_hash_table_insert (hash, "Your account has expired; please contact your system administrator", _("Your account has expired; please contact your system administrator"));
+		g_hash_table_insert (hash, "No password supplied", _("No password supplied"));
+		g_hash_table_insert (hash, "Password unchanged", _("Password unchanged"));
+		g_hash_table_insert (hash, "Can not get username", _("Can not get username"));
+		g_hash_table_insert (hash, "Retype new UNIX password:", _("Retype new UNIX password:"));
+		g_hash_table_insert (hash, "Enter new UNIX password:", _("Enter new UNIX password:"));
+		g_hash_table_insert (hash, "(current) UNIX password:", _("(current) UNIX password:"));
+		g_hash_table_insert (hash, "Error while changing NIS password.", _("Error while changing NIS password."));
+		g_hash_table_insert (hash, "You must choose a longer password", _("You must choose a longer password"));
+		g_hash_table_insert (hash, "Password has been already used. Choose another.", _("Password has been already used. Choose another."));
+		g_hash_table_insert (hash, "You must wait longer to change your password", _("You must wait longer to change your password"));
+		g_hash_table_insert (hash, "Sorry, passwords do not match", _("Sorry, passwords do not match"));
+	}
+	s = g_strstrip (g_strdup (msg));
+	ret = g_hash_table_lookup (hash, s);
+	g_free (s);
+	if (ret != NULL)
+		return ret;
+	else
+		return msg;
+}
+
 /* Internal PAM conversation function. Interfaces between the PAM
  * authentication system and the actual greeter program */
 
@@ -71,6 +110,7 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 		     void *appdata_ptr)
 {
     int replies = 0;
+    int i;
     char *s;
     struct pam_response *reply = NULL;
     const char *login;
@@ -95,34 +135,33 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
     
     for (replies = 0; replies < num_msg; replies++) {
 	gboolean islogin = FALSE;
+	const char *m = msg[replies]->msg;
+	m = perhaps_translate_message (m);
 	
 	switch (msg[replies]->msg_style) {
 	    
 	/* PAM requested textual input with echo on */
 	case PAM_PROMPT_ECHO_ON:
-	    /* Why do we do this hack of noticing "login: " ??
-	       That's because it seems pam is on crack and
-	       ignores PAM_USER_PROMPT and uses "login: " instead
-	       even though that is not in the docs.  "login: " is
-	       completely crackass stupid */
- 	    if (strcmp(msg[replies]->msg, "login: ") == 0 ||
-		strcmp(msg[replies]->msg, _("Username:")) == 0) {
+ 	    if (strcmp(m, _("Username:")) == 0) {
 		    /* this is an evil hack, but really there is no way we'll
 		       know this is a username prompt.  However we SHOULD NOT
 		       rely on this working.  The pam modules can set their
 		       prompt to whatever they wish to */
 		    gdm_slave_greeter_ctl_no_ret
 			    (GDM_MSG, _("Please enter your username"));
-		    s = gdm_slave_greeter_ctl (GDM_PROMPT, _("Username:"));
+		    s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
 		    /* this will clear the message */
 		    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
 		    islogin = TRUE;
 	    } else {
-		    s = gdm_slave_greeter_ctl (GDM_PROMPT, msg[replies]->msg);
+		    s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
 	    }
 
 	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
+		    for (i = 0; i < replies; i++)
+			    if (reply[replies].resp != NULL)
+				    free (reply[replies].resp);
 		    free (reply);
 		    return PAM_CONV_ERR;
 	    }
@@ -151,9 +190,12 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_PROMPT_ECHO_OFF:
 	    /* PAM requested textual input with echo off */
-	    s = gdm_slave_greeter_ctl (GDM_NOECHO, msg[replies]->msg);
+	    s = gdm_slave_greeter_ctl (GDM_NOECHO, m);
 	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
+		    for (i = 0; i < replies; i++)
+			    if (reply[replies].resp != NULL)
+				    free (reply[replies].resp);
 		    free (reply);
 		    return PAM_CONV_ERR;
 	    }
@@ -164,19 +206,22 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_ERROR_MSG:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl (GDM_ERRDLG, msg[replies]->msg);
+	    gdm_slave_greeter_ctl (GDM_ERRDLG, m);
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
 	case PAM_TEXT_INFO:
 	    /* PAM sent a message that should displayed to the user */
-	    gdm_slave_greeter_ctl (GDM_MSG, msg[replies]->msg);
+	    gdm_slave_greeter_ctl (GDM_MSG, m);
 	    reply[replies].resp_retcode = PAM_SUCCESS;
 	    reply[replies].resp = NULL;
 	    break;
 	    
 	default:
 	    /* PAM has been smoking serious crack */
+	    for (i = 0; i < replies; i++)
+		    if (reply[replies].resp != NULL)
+			    free (reply[replies].resp);
 	    free (reply);
 	    return PAM_CONV_ERR;
 	}
@@ -202,6 +247,7 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 				void *appdata_ptr)
 {
 	int replies = 0;
+	int i;
 	char *s, *text;
 	struct pam_response *reply = NULL;
 
@@ -213,15 +259,17 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 	memset (reply, 0, sizeof (struct pam_response) * num_msg);
 
 	for (replies = 0; replies < num_msg; replies++) {
+		const char *m = msg[replies]->msg;
+		m = perhaps_translate_message (m);
 		switch (msg[replies]->msg_style) {
 
 		case PAM_PROMPT_ECHO_ON:
 			if (extra_standalone_message != NULL)
 				text = g_strdup_printf
 					("%s\n%s", extra_standalone_message,
-					 msg[replies]->msg);
+					 m);
 			else
-				text = g_strdup (msg[replies]->msg);
+				text = g_strdup (m);
 
 			/* PAM requested textual input with echo on */
 			s = gdm_failsafe_question (cur_gdm_disp, text,
@@ -237,9 +285,9 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 			if (extra_standalone_message != NULL)
 				text = g_strdup_printf
 					("%s\n%s", extra_standalone_message,
-					 msg[replies]->msg);
+					 m);
 			else
-				text = g_strdup (msg[replies]->msg);
+				text = g_strdup (m);
 
 			/* PAM requested textual input with echo off */
 			s = gdm_failsafe_question (cur_gdm_disp, text,
@@ -256,7 +304,7 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 			/* PAM sent a message that should displayed to the user */
 			gdm_error_box (cur_gdm_disp,
 				       GTK_MESSAGE_ERROR,
-				       msg[replies]->msg);
+				       m);
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;
@@ -265,13 +313,16 @@ gdm_verify_standalone_pam_conv (int num_msg, const struct pam_message **msg,
 			/* PAM sent a message that should displayed to the user */
 			gdm_error_box (cur_gdm_disp,
 				       GTK_MESSAGE_INFO,
-				       msg[replies]->msg);
+				       m);
 			reply[replies].resp_retcode = PAM_SUCCESS;
 			reply[replies].resp = NULL;
 			break;
 
 		default:
 			/* PAM has been smoking serious crack */
+			for (i = 0; i < replies; i++)
+				if (reply[replies].resp != NULL)
+					free (reply[replies].resp);
 			free (reply);
 			return PAM_CONV_ERR;
 		}
@@ -321,20 +372,27 @@ create_pamh (GdmDisplay *d,
 		return FALSE;
 	}
 
+#if 0
+	/* Apparently we should not set RUSER, docs are unclear but the sun
+           guys are saying don't do it */
 	/* gdm is requesting the login */
 	if ((*pamerr = pam_set_item (pamh, PAM_RUSER, GdmUser)) != PAM_SUCCESS) {
 		if (gdm_slave_should_complain ())
 			gdm_error (_("Can't set PAM_RUSER=%s"), GdmUser);
 		return FALSE;
 	}
+#endif
 
-	/* From the host of the display */
-	if ((*pamerr = pam_set_item (pamh, PAM_RHOST,
-				     d->console ? "localhost" : d->hostname)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
-			gdm_error (_("Can't set PAM_RHOST=%s"),
-				   d->console ? "localhost" : d->hostname);
-		return FALSE;
+	if ( ! d->console) {
+		/* Only set RHOST if host is remote */
+		/* From the host of the display */
+		if ((*pamerr = pam_set_item (pamh, PAM_RHOST,
+					     d->hostname)) != PAM_SUCCESS) {
+			if (gdm_slave_should_complain ())
+				gdm_error (_("Can't set PAM_RHOST=%s"),
+					   d->hostname);
+			return FALSE;
+		}
 	}
 
 	return TRUE;

@@ -1,3 +1,15 @@
+Wed Jun 04 17:34:22 2003  George Lebl <jirka@5z.com>
+
+	* daemon/verify-pam.c: Fix some issues from bug #106537.  don't
+	  ever set RUSER and only set RHOST if not a console login.  Fix
+	  leaks in the conversation functions on error.
+
+	* daemon/verify-pam.c: Translate a bunch of common pam messages (I
+	  got some from strings pam_unix.so)
+
+	* daemon/verify-*.c: change "Password: " to "Password:", that space
+	  didn't make sense
+
 Wed Jun 04 16:30:38 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.h, daemon/slave.c, daemon/verify-*.c, daemon/verify.h:
