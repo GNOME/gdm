@@ -9,31 +9,6 @@ postdir = $(sysconfdir)/gdm/PostSession
 predir = $(sysconfdir)/gdm/PreSession
 
 
-gdm.conf: gdm.conf.in Makefile
-	sed -e 's,\@datadir\@,$(datadir),g' \
-	    -e 's,\@pixmapdir\@,$(pixmapdir),g' \
-	    -e 's,\@bindir\@,$(bindir),g' \
-	    -e 's,\@sysconfdir\@,$(sysconfdir),g' \
-	    -e 's,\@localedir\@,$(localedir),g' \
-	    -e 's,\@authdir\@,$(authdir),g' \
-	    < $(srcdir)/gdm.conf.in > gdm.conf.tmp; \
-	mv -f gdm.conf.tmp gdm.conf
-
-Gnome: Gnome.in Makefile
-	sed -e 's,\@sysconfdir\@,$(sysconfdir),g' \
-	    < $(srcdir)/Gnome.in > Gnome.tmp \
-	    && mv -f Gnome.tmp Gnome
-
-Failsafe: Failsafe.in Makefile
-	sed -e 's,\@sessdir\@,$(sessdir),g' \
-	    < $(srcdir)/Failsafe.in > Failsafe.tmp \
-	    && mv -f Failsafe.tmp Failsafe
-
-gnomerc: gnomerc.in Makefile
-	sed -e 's,\@bindir\@,$(bindir),g' \
-	    < $(srcdir)/gnomerc.in > gnomerc.tmp \
-	    && mv -f gnomerc.tmp gnomerc
-
 noinst_DATA = gdm.conf
 
 EXTRA_DIST = \

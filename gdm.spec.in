@@ -37,7 +37,6 @@ several different X sessions on your local machine at the same time.
 %build
 CFLAGS="-g $RPM_OPT_FLAGS" ./configure --prefix=%prefix --sysconfdir=/etc/X11 --localstatedir=/var
 make
-(cd config; make gdm.conf gnomerc Gnome Failsafe)
 
 %install
 rm -rf $RPM_BUILD_ROOT

@@ -134,6 +134,10 @@ AC_CHECK_HEADER(X11/extensions/Xinerama.h, [
 	AC_CHECK_LIB(Xinerama, XineramaQueryScreens,,, $GTK_LIBS)
 ])
 
+pixmapdir=${datadir}/pixmaps
+AC_SUBST(pixmapdir)
+localedir=${sysconfdir}/gdm
+AC_SUBST(localedir)
 
 AC_OUTPUT([
 Makefile
@@ -146,6 +150,10 @@ docs/Makefile
 docs/C/Makefile
 po/Makefile.in
 intl/Makefile
+config/Failsafe
+config/gdm.conf
+config/Gnome
+config/gnomerc
 gdm.spec
 ],[sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile])
 
