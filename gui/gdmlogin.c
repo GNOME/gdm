@@ -465,7 +465,7 @@ gdm_login_abort (const gchar *format, ...)
 
     if (!format) {
 	kill_thingies ();
-	exit (DISPLAY_ABORT);
+	_exit (DISPLAY_ABORT);
     }
 
     va_start (args, format);
@@ -476,7 +476,7 @@ gdm_login_abort (const gchar *format, ...)
     closelog();
 
     kill_thingies ();
-    exit (DISPLAY_ABORT);
+    _exit (DISPLAY_ABORT);
 }
 
 
@@ -704,7 +704,7 @@ gdm_login_reboot_handler (void)
 	closelog();
 
         kill_thingies ();
-	exit (DISPLAY_REBOOT);
+	_exit (DISPLAY_REBOOT);
     }
 
     return (TRUE);
@@ -718,7 +718,7 @@ gdm_login_halt_handler (void)
 	closelog();
 
         kill_thingies ();
-	exit (DISPLAY_HALT);
+	_exit (DISPLAY_HALT);
     }
 
     return (TRUE);
@@ -1975,9 +1975,12 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	kill_thingies ();
 
+	gdk_flush ();
+
 	g_print ("%c\n", STX);
 
-	gtk_main_quit ();
+	/* screw gtk_main_quit, we want to make sure we definately die */
+	_exit (DISPLAY_SUCCESS);
 	break;
 
     case GDM_GNOMESESS:

@@ -55,7 +55,7 @@ static GdmDisplay *d;
 static gchar *login = NULL;
 static sigset_t mask;
 static gboolean greet = FALSE;
-static FILE *greeter;
+static FILE *greeter = NULL;
 static pid_t last_killed_pid = 0;
 static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
@@ -280,6 +280,8 @@ gdm_screen_init (GdmDisplay *display)
 
 		display->screenx = xscreens[GdmXineramaScreen].x_org;
 		display->screeny = xscreens[GdmXineramaScreen].y_org;
+		display->screenwidth = xscreens[GdmXineramaScreen].width;
+		display->screenheight = xscreens[GdmXineramaScreen].height;
 
 		XFree (xscreens);
 	} else
@@ -287,6 +289,8 @@ gdm_screen_init (GdmDisplay *display)
 	{
 		display->screenx = 0;
 		display->screeny = 0;
+		display->screenwidth = 0; /* we'll use the gdk size */
+		display->screenheight = 0;
 	}
 }
 
@@ -406,15 +410,19 @@ gdm_slave_whack_greeter (void)
 	greet = FALSE;
 
 	/* do what you do when you quit, this will hang until the
-	 * greeter decides to print an STX\n, meaning it can do some
+	 * greeter decides to print an STX\n and die, meaning it can do some
 	 * last minute cleanup */
 	gdm_slave_greeter_ctl_no_ret (GDM_QUIT, "");
 
-	/* Kill greeter and wait for it to die */
-	if (d->greetpid > 0 &&
-	    kill (d->greetpid, SIGINT) == 0)
+	/* Wait for the greeter to really die, the check is just
+	 * being very anal, the pid is always set to something */
+	if (d->greetpid > 0)
 		waitpid (d->greetpid, 0, 0); 
 	d->greetpid = 0;
+
+	if (greeter != NULL)
+		fclose (greeter);
+	greeter = NULL;
 
 	sigprocmask (SIG_SETMASK, &omask, NULL);
 }
@@ -513,31 +521,34 @@ run_error_dialog (const char *error)
 	pid = fork ();
 	/* if we can't fork or we are a child */
 	if (pid <= 0) {
+		GtkRequisition req;
+
 		gtk_init (&argc, &argv);
 
 		dialog = gtk_dialog_new ();
-		gtk_widget_set_uposition (dialog, d->screenx, d->screeny);
 
 		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
 				    GTK_SIGNAL_FUNC(gtk_main_quit),
 				    NULL);
 
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Cannot start session"));
+		/* bogus, no title will be displayed anyway, there is no WM */
+		gtk_window_set_title (GTK_WINDOW (dialog), "GDM");
 
 		label = gtk_label_new (error);
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+		gtk_box_pack_start
+			(GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
+			 TRUE, TRUE, 0);
 
 		gtk_container_set_border_width
 			(GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 10);
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
-				    TRUE, TRUE, 0);
 
 		button = gtk_button_new_with_label (_("OK"));
 		gtk_signal_connect (GTK_OBJECT (button), "event",
 				    GTK_SIGNAL_FUNC (accept_both_clicks),
 				    NULL);
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
-				    button, TRUE, TRUE, 0);
+		gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dialog)->action_area),
+				  button, TRUE, TRUE, 0);
 
 		gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
 					   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
@@ -546,6 +557,24 @@ run_error_dialog (const char *error)
 		gtk_widget_grab_default (button);
 
 		gtk_widget_show_all (dialog);
+
+		gtk_widget_grab_focus (button);
+
+		gtk_widget_get_child_requisition (dialog, &req);
+
+		if (d->screenwidth <= 0)
+			d->screenwidth = gdk_screen_width ();
+		if (d->screenheight <= 0)
+			d->screenheight = gdk_screen_height ();
+
+		gtk_widget_set_uposition (dialog,
+					  d->screenx +
+					    (d->screenwidth / 2) -
+					    (req.width / 2),
+					  d->screeny +
+					    (d->screenheight / 2) -
+					    (req.height / 2));
+
 		gtk_widget_show_now (dialog);
 
 		if (dialog->window != NULL) {
@@ -1441,17 +1470,7 @@ gdm_slave_session_start (void)
 
 	    gdm_debug (_("gdm_slave_session_start: Authentication completed. Whacking greeter"));
 
-	    greet = FALSE;
-
-	    /* do what you do when you quit, this will hang until the
-	     * greeter decides to print an STX\n, meaning it can do some
-	     * last minute cleanup */
-	    gdm_slave_greeter_ctl_no_ret (GDM_QUIT, "");
-
-	    /* Kill greeter and wait for it to die */
-	    if (kill (d->greetpid, SIGINT) == 0)
-		    waitpid (d->greetpid, 0, 0); 
-	    d->greetpid = 0;
+	    gdm_slave_whack_greeter ();
     }
 
     if (GdmKillInitClients)
@@ -1813,27 +1832,37 @@ gdm_slave_session_cleanup (void)
 static void
 gdm_slave_term_handler (int sig)
 {
-    gdm_debug ("gdm_slave_term_handler: %s got TERM signal", d->name);
+	sigset_t tmask, omask;
 
-    /* just for paranoia's sake */
-    seteuid (0);
-    setegid (0);
+	gdm_debug ("gdm_slave_term_handler: %s got TERM signal", d->name);
 
-    if (d->greetpid != 0) {
-	gdm_debug ("gdm_slave_term_handler: Whacking greeter");
-	if (kill (d->greetpid, sig) == 0)
-		waitpid (d->greetpid, 0, 0); 
-	d->greetpid = 0;
-    } else if (login) {
-	gdm_slave_session_stop (d->sesspid);
-	gdm_slave_session_cleanup ();
-    }
-    
-    gdm_debug ("gdm_slave_term_handler: Whacking server");
+	/* just for paranoia's sake */
+	seteuid (0);
+	setegid (0);
 
-    gdm_server_stop (d);
-    gdm_verify_cleanup();
-    _exit (DISPLAY_ABORT);
+	sigemptyset (&tmask);
+	sigaddset (&tmask, SIGCHLD);
+	sigprocmask (SIG_BLOCK, &tmask, &omask);  
+
+
+	if (d->greetpid != 0) {
+		greet = FALSE;
+		gdm_debug ("gdm_slave_term_handler: Whacking greeter");
+		if (kill (d->greetpid, sig) == 0)
+			waitpid (d->greetpid, 0, 0); 
+		d->greetpid = 0;
+	} else if (login) {
+		gdm_slave_session_stop (d->sesspid);
+		gdm_slave_session_cleanup ();
+	}
+
+	sigprocmask (SIG_SETMASK, &omask, NULL);
+
+	gdm_debug ("gdm_slave_term_handler: Whacking server");
+
+	gdm_server_stop (d);
+	gdm_verify_cleanup();
+	_exit (DISPLAY_ABORT);
 }
 
 /* called on alarms to ping */
@@ -1892,7 +1921,7 @@ gdm_slave_child_handler (int sig)
 		setegid (0);
 
 		/* if greet is TRUE, then the greeter died outside of our
-		 * control really */
+		 * control really, so clean up and die, something is wrong */
 		gdm_server_stop (d);
 		gdm_verify_cleanup ();
 
@@ -1906,7 +1935,8 @@ gdm_slave_child_handler (int sig)
 	} else if (pid != 0 && pid == d->servpid) {
 		d->servstat = SERVER_DEAD;
 		d->servpid = 0;
-		unlink (d->authfile);
+		if ( ! gdm_string_empty (d->authfile))
+			unlink (d->authfile);
 	} else if (pid != 0) {
 		last_killed_pid = pid;
 	}
@@ -1926,21 +1956,35 @@ gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
 static gint
 gdm_slave_xioerror_handler (Display *disp)
 {
-    gdm_debug ("gdm_slave_xioerror_handler: I/O error for display %s", d->name);
+	sigset_t tmask, omask;
 
-    /* just for paranoia's sake */
-    seteuid (0);
-    setegid (0);
-    
-    if (login)
-	gdm_slave_session_stop (d->sesspid);
-    
-    gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
-    
+	gdm_debug ("gdm_slave_xioerror_handler: I/O error for display %s", d->name);
 
-    gdm_server_stop (d);
-    gdm_verify_cleanup ();
-    _exit (DISPLAY_XFAILED);
+	/* just for paranoia's sake */
+	seteuid (0);
+	setegid (0);
+
+	sigemptyset (&tmask);
+	sigaddset (&tmask, SIGCHLD);
+	sigprocmask (SIG_BLOCK, &tmask, &omask);  
+
+	if (d->greetpid != 0) {
+		greet = FALSE;
+		if (kill (d->greetpid, SIGINT) == 0)
+			waitpid (d->greetpid, 0, 0); 
+		d->greetpid = 0;
+	} else if (login != NULL) {
+		gdm_slave_session_stop (d->sesspid);
+	}
+    
+	gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
+
+	gdm_server_stop (d);
+	gdm_verify_cleanup ();
+
+	sigprocmask (SIG_SETMASK, &omask, NULL);
+
+	_exit (DISPLAY_XFAILED);
 }
 
 char * 
@@ -1948,6 +1992,9 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 {
     gchar buf[FIELD_SIZE];
     guchar c;
+
+    if (greeter == NULL)
+	    return NULL;
 
     if (str)
 	g_print ("%c%c%s\n", STX, cmd, str);
@@ -1959,17 +2006,22 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 	    c = getc (greeter);
     } while (c && c != STX);
     
-    fgets (buf, FIELD_SIZE-1, greeter);
+    if (fgets (buf, FIELD_SIZE-1, greeter) == NULL) {
+	    /* things don't seem well with the greeter, it probably died */
+	    return NULL;
+    }
 
     /* don't forget to flush */
     fflush (greeter);
     
-    if (strlen (buf)) {
-	buf[strlen (buf)-1] = '\0';
-	return g_strdup (buf);
+    if (buf[0] != '\0') {
+	    int len = strlen (buf);
+	    if (buf[len-1] == '\n')
+		    buf[len-1] = '\0';
+	    return g_strdup (buf);
+    } else {
+	    return NULL;
     }
-    else
-	return NULL;
 }
 
 void

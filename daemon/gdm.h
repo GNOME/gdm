@@ -66,7 +66,6 @@
 #define GDM_SLANG      'R'
 #define GDM_RESET      'A'
 #define GDM_QUIT       'P'
-#define GDM_STOP       '!'
 /* crap, these don't fit into the above theme, this protocol
  * is thus liable to change */
 #define GDM_GNOMESESS  '?'
@@ -240,6 +239,8 @@ struct _GdmDisplay {
 
     int screenx;
     int screeny;
+    int screenwidth; /* Note 0 means use the gdk size */
+    int screenheight;
 };
 
 

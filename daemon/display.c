@@ -154,7 +154,6 @@ gdm_display_manage (GdmDisplay *d)
     switch (d->slavepid = fork()) {
 
     case 0:
-
 	setpgid (0, 0);
 
 	/* Close XDMCP fd in slave process */
