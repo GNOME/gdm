@@ -1,3 +1,14 @@
+Tue Jul 30 16:56:51 2002  George Lebl <jirka@5z.com>
+
+	* gui/gdmsetup.c: fix setting the welcome string properly
+
+	* gui/gdmlogin.c: fix resizing of window.  Resize when the content
+	  doesn't fit.  Update logo and background on the fly, this reduces
+	  the wierdness when trying to change this stuff from the setup
+	  proggie and the wm keeps disappearing since we're restarting the
+	  greeter.  Need to solve the restart thing nicer.  Also when
+	  we can't load the background image, set the color at least.
+
 Tue Jul 30 14:36:28 2002  George Lebl <jirka@5z.com>
 
 	* gui/gdmlanguages.c: added a few more untranslated strings

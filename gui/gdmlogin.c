@@ -135,6 +135,9 @@ static gboolean GdmShowLastSession;
 static gboolean GdmUseCirclesInEntry;
 
 static GtkWidget *login;
+static GtkWidget *logo_frame = NULL;
+static GtkWidget *logo_image = NULL;
+static GtkWidget *table = NULL;
 static GtkWidget *welcome;
 static GtkWidget *label;
 static GtkWidget *icon_button = NULL;
@@ -192,6 +195,7 @@ static gboolean session_dir_whacked_out = FALSE;
 
 static void gdm_login_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 static void gdm_login_message (const gchar *msg);
+static void login_window_resize (gboolean force);
 
 /*
  * Timed Login: Timer
@@ -214,6 +218,7 @@ gdm_timer (gpointer data)
 		gtk_label_set_text (GTK_LABEL (msg), autologin_msg);
 		gtk_widget_show (GTK_WIDGET (msg));
 		g_free (autologin_msg);
+		login_window_resize (FALSE /* force */);
 	}
 	return TRUE;
 }
@@ -303,26 +308,68 @@ gdm_login_done (int sig)
 static void
 set_screen_pos (GtkWidget *widget, int x, int y)
 {
+	int width, height;
+
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
+	gtk_window_get_size (GTK_WINDOW (widget), &width, &height);
+
 	/* allow negative values, to be like standard X geometry ones */
 	if (x < 0)
-		x = gdm_wm_screen.width + x - widget->allocation.width;
+		x = gdm_wm_screen.width + x - width;
 	if (y < 0)
-		y = gdm_wm_screen.height + y - widget->allocation.height;
+		y = gdm_wm_screen.height + y - height;
 
 	if (x < gdm_wm_screen.x)
 		x = gdm_wm_screen.x;
 	if (y < gdm_wm_screen.y)
 		y = gdm_wm_screen.y;
-	if (x > gdm_wm_screen.x + gdm_wm_screen.width - widget->allocation.width)
-		x = gdm_wm_screen.x + gdm_wm_screen.width - widget->allocation.width;
-	if (y > gdm_wm_screen.y + gdm_wm_screen.height - widget->allocation.height)
-		y = gdm_wm_screen.y + gdm_wm_screen.height - widget->allocation.height;
+	if (x > gdm_wm_screen.x + gdm_wm_screen.width - width)
+		x = gdm_wm_screen.x + gdm_wm_screen.width - width;
+	if (y > gdm_wm_screen.y + gdm_wm_screen.height - height)
+		y = gdm_wm_screen.y + gdm_wm_screen.height - height;
 
 	gtk_window_move (GTK_WINDOW (widget), x, y);
 }
+
+static guint set_pos_id = 0;
+
+static gboolean
+set_pos_idle (gpointer data)
+{
+	if (GdmSetPosition) {
+		set_screen_pos (login, GdmPositionX, GdmPositionY);
+	} else {
+		gdm_wm_center_window (GTK_WINDOW (login));
+	}
+	set_pos_id = 0;
+	return FALSE;
+}
+
+static void
+login_window_resize (gboolean force)
+{
+	/* allow opt out if we don't really need
+	 * a resize */
+	if ( ! force) {
+		GtkRequisition req;
+		int width, height;
+
+		gtk_window_get_size (GTK_WINDOW (login), &width, &height);
+		gtk_widget_size_request (login, &req);
+
+		if (req.width <= width && req.height <= height)
+			return;
+	}
+
+	GTK_WINDOW (login)->need_default_size = TRUE;
+	gtk_container_check_resize (GTK_CONTAINER (login));
+
+	if (set_pos_id == 0)
+		set_pos_id = g_idle_add (set_pos_idle, NULL);
+}
+
 
 typedef struct _CursorOffset {
 	int x;
@@ -1313,6 +1360,8 @@ gdm_login_session_handler (GtkWidget *widget)
 
     gtk_label_set_text (GTK_LABEL (msg), s);
     g_free (s);
+
+    login_window_resize (FALSE /* force */);
 }
 
 
@@ -1596,6 +1645,8 @@ gdm_login_language_handler (GtkWidget *widget)
     g_free (name);
     gtk_label_set_markup (GTK_LABEL (msg), s);
     g_free (s);
+
+    login_window_resize (FALSE /* force */);
 }
 
 
@@ -2039,6 +2090,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	/* this is a login prompt */
 	login_entry = TRUE;
+
+	login_window_resize (FALSE /* force */);
 	break;
 
     case GDM_PROMPT:
@@ -2070,6 +2123,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	/* this is not a login prompt */
 	login_entry = FALSE;
+
+	login_window_resize (FALSE /* force */);
 	break;
 
     case GDM_NOECHO:
@@ -2101,6 +2156,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	/* this is not a login prompt */
 	login_entry = FALSE;
+
+	login_window_resize (FALSE /* force */);
 	break;
 
     case GDM_MSG:
@@ -2139,6 +2196,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	printf ("%c\n", STX);
 	fflush (stdout);
 
+	login_window_resize (FALSE /* force */);
+
 	break;
 
     case GDM_ERRBOX:
@@ -2157,6 +2216,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 							 NULL);
 	printf ("%c\n", STX);
 	fflush (stdout);
+
+	login_window_resize (FALSE /* force */);
 	break;
 
     case GDM_ERRDLG:
@@ -2272,6 +2333,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	printf ("%c\n", STX);
 	fflush (stdout);
+
+	login_window_resize (FALSE /* force */);
 	break;
 
     case GDM_QUIT:
@@ -2870,13 +2933,15 @@ gdm_login_gui_init (void)
 {
     GtkWidget *frame1, *frame2, *ebox;
     GtkWidget *mbox, *menu, *menubar, *item;
-    GtkWidget *table, *stack, *hline1, *hline2, *handle;
+    GtkWidget *stack, *hline1, *hline2, *handle;
     GtkWidget *bbox = NULL;
-    GtkWidget *logoframe = NULL;
     GtkWidget /**help_button,*/ *button_box;
     gchar *greeting;
-    gint cols, rows;
-    struct stat statbuf;
+    gint rows;
+    GdkPixbuf *pb;
+    GtkWidget *frame;
+    int lw, lh;
+    gboolean have_logo = FALSE;
 
     if( ! ve_string_empty (GdmGtkRC))
 	gtk_rc_parse (GdmGtkRC);
@@ -2884,7 +2949,7 @@ gdm_login_gui_init (void)
     login = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_widget_ref (login);
     g_object_set_data_full (G_OBJECT (login), "login", login,
-			    (GDestroyNotify) gtk_widget_unref);
+			    (GDestroyNotify) g_object_unref);
     gtk_window_set_title (GTK_WINDOW (login), _("GDM Login"));
     /* connect for fingering */
     if (GdmBrowser)
@@ -3056,12 +3121,7 @@ gdm_login_gui_init (void)
     else
 	rows = 1;
 
-    if (GdmLogo && ! stat (GdmLogo, &statbuf))
-	cols = 2;
-    else 
-	cols = 1;
-
-    table = gtk_table_new (rows, cols, FALSE);
+    table = gtk_table_new (rows, 2, FALSE);
     gtk_widget_ref (table);
     g_object_set_data_full (G_OBJECT (login), "table", table,
 			    (GDestroyNotify) gtk_widget_unref);
@@ -3145,50 +3205,49 @@ gdm_login_gui_init (void)
 	gtk_widget_set_size_request (GTK_WIDGET (bbox), width, height);
     }
 
-    if (GdmLogo != NULL &&
-	access (GdmLogo, R_OK) == 0) {
-	GdkPixbuf *pb;
-
-	pb = gdk_pixbuf_new_from_file (GdmLogo, NULL);
-	if (pb != NULL) {
-		GtkWidget *logo;
-		GtkWidget *ebox;
-		GtkWidget *frame;
-		int lw, lh;
-
-		logo = gtk_image_new_from_pixbuf (pb);
-		lw = gdk_pixbuf_get_width (pb);
-		lh = gdk_pixbuf_get_height (pb);
-		g_object_unref (G_OBJECT (pb));
-
-		/* this will make the logo always left justified */
-		logoframe = gtk_alignment_new (0, 0.5, 0, 0);
-		gtk_widget_show (logoframe);
-
-		frame = gtk_frame_new (NULL);
-		gtk_widget_show (frame);
-		gtk_frame_set_shadow_type (GTK_FRAME (frame),
-					   GTK_SHADOW_IN);
-
-		ebox = gtk_event_box_new ();
-		gtk_widget_show (ebox);
-		gtk_container_add (GTK_CONTAINER (ebox), logo);
-		gtk_container_add (GTK_CONTAINER (frame), ebox);
-		gtk_container_add (GTK_CONTAINER (logoframe), frame);
-
-		if (lw > gdm_wm_screen.width / 2)
-			lw = gdm_wm_screen.width / 2;
-		else
-			lw = -1;
-		if (lh > (2 * gdm_wm_screen.height) / 3)
-			lh = (2 * gdm_wm_screen.height) / 3;
-		else
-			lh = -1;
-		if (lw > -1 || lh > -1)
-			gtk_widget_set_size_request (logo, lw, lh);
-		gtk_widget_show (GTK_WIDGET (logo));
-	}
+    if (GdmLogo != NULL) {
+	    pb = gdk_pixbuf_new_from_file (GdmLogo, NULL);
+    } else {
+	    pb = NULL;
     }
+
+    if (pb != NULL) {
+	    have_logo = TRUE;
+	    logo_image = gtk_image_new_from_pixbuf (pb);
+	    lw = gdk_pixbuf_get_width (pb);
+	    lh = gdk_pixbuf_get_height (pb);
+	    g_object_unref (G_OBJECT (pb));
+    } else {
+	    logo_image = gtk_image_new ();
+	    lw = lh = 100;
+    }
+
+    /* this will make the logo always left justified */
+    logo_frame = gtk_alignment_new (0, 0.5, 0, 0);
+    gtk_widget_show (logo_frame);
+
+    frame = gtk_frame_new (NULL);
+    gtk_widget_show (frame);
+    gtk_frame_set_shadow_type (GTK_FRAME (frame),
+			       GTK_SHADOW_IN);
+
+    ebox = gtk_event_box_new ();
+    gtk_widget_show (ebox);
+    gtk_container_add (GTK_CONTAINER (ebox), logo_image);
+    gtk_container_add (GTK_CONTAINER (frame), ebox);
+    gtk_container_add (GTK_CONTAINER (logo_frame), frame);
+
+    if (lw > gdm_wm_screen.width / 2)
+	    lw = gdm_wm_screen.width / 2;
+    else
+	    lw = -1;
+    if (lh > (2 * gdm_wm_screen.height) / 3)
+	    lh = (2 * gdm_wm_screen.height) / 3;
+    else
+	    lh = -1;
+    if (lw > -1 || lh > -1)
+	    gtk_widget_set_size_request (logo_image, lw, lh);
+    gtk_widget_show (GTK_WIDGET (logo_image));
 
     stack = gtk_table_new (7, 1, FALSE);
     gtk_widget_ref (stack);
@@ -3306,11 +3365,11 @@ gdm_login_gui_init (void)
 
     /* Put it nicely together */
 
-    if (bbox != NULL && logoframe != NULL) {
+    if (bbox != NULL) {
 	    gtk_table_attach (GTK_TABLE (table), bbox, 0, 2, 0, 1,
 			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-	    gtk_table_attach (GTK_TABLE (table), logoframe, 0, 1, 1, 2,
+	    gtk_table_attach (GTK_TABLE (table), logo_frame, 0, 1, 1, 2,
 			      (GtkAttachOptions) (GTK_FILL),
 			      (GtkAttachOptions) (0), 0, 0);
 	    gtk_table_attach (GTK_TABLE (table), stack, 1, 2, 1, 2,
@@ -3323,15 +3382,11 @@ gdm_login_gui_init (void)
 	    gtk_table_attach (GTK_TABLE (table), stack, 0, 1, 1, 2,
 			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			      (GtkAttachOptions) (GTK_FILL), 0, 0);
-    } else if (logoframe != NULL) {
-	    gtk_table_attach (GTK_TABLE (table), logoframe, 0, 1, 0, 1,
+    } else {
+	    gtk_table_attach (GTK_TABLE (table), logo_frame, 0, 1, 0, 1,
 			      (GtkAttachOptions) (0),
 			      (GtkAttachOptions) (0), 0, 0);
 	    gtk_table_attach (GTK_TABLE (table), stack, 1, 2, 0, 1,
-			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			      (GtkAttachOptions) (GTK_FILL), 0, 0);
-    } else {
-	    gtk_table_attach (GTK_TABLE (table), stack, 0, 1, 0, 1,
 			      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			      (GtkAttachOptions) (GTK_FILL), 0, 0);
     }
@@ -3365,6 +3420,10 @@ gdm_login_gui_init (void)
     }
 
     gtk_widget_show_all (GTK_WIDGET (login));
+    if ( ! have_logo) {
+	    gtk_table_set_col_spacings (GTK_TABLE (table), 0);
+	    gtk_widget_hide (logo_frame);
+    }
 }
 
 
@@ -3706,41 +3765,41 @@ add_color_to_pb (GdkPixbuf *pb, GdkColor *color)
 	}
 }
 
-/* Load the background stuff, the image and program */
+/* setup background color/image */
 static void
-run_backgrounds (void)
+setup_background (void)
 {
 	GdkColor color;
-	/* Load background image */
-	if (GdmBackgroundType == GDM_BACKGROUND_IMAGE &&
-	    GdmBackgroundImage != NULL &&
-	    GdmBackgroundImage[0] != '\0') {
-		GdkPixbuf *pb = gdk_pixbuf_new_from_file (GdmBackgroundImage,
-							  NULL);
-		if (pb != NULL) {
-			if (gdk_pixbuf_get_has_alpha (pb)) {
-				if (GdmBackgroundColor == NULL ||
-				    GdmBackgroundColor[0] == '\0' ||
-				    ! gdk_color_parse (GdmBackgroundColor,
-						       &color)) {
-					gdk_color_parse ("#007777", &color);
-				}
-				add_color_to_pb (pb, &color);
-			}
-			if (GdmBackgroundScaleToFit) {
-				GdkPixbuf *spb = render_scaled_back (pb);
-				g_object_unref (G_OBJECT (pb));
-				pb = spb;
-			}
+	GdkPixbuf *pb = NULL;
 
-			/* paranoia */
-			if (pb != NULL) {
-				set_root (pb);
-				g_object_unref (G_OBJECT (pb));
+	if (GdmBackgroundType == GDM_BACKGROUND_IMAGE &&
+	    ! ve_string_empty (GdmBackgroundImage))
+		pb = gdk_pixbuf_new_from_file (GdmBackgroundImage, NULL);
+
+	/* Load background image */
+	if (pb != NULL) {
+		if (gdk_pixbuf_get_has_alpha (pb)) {
+			if (GdmBackgroundColor == NULL ||
+			    GdmBackgroundColor[0] == '\0' ||
+			    ! gdk_color_parse (GdmBackgroundColor,
+					       &color)) {
+				gdk_color_parse ("#007777", &color);
 			}
+			add_color_to_pb (pb, &color);
+		}
+		if (GdmBackgroundScaleToFit) {
+			GdkPixbuf *spb = render_scaled_back (pb);
+			g_object_unref (G_OBJECT (pb));
+			pb = spb;
+		}
+
+		/* paranoia */
+		if (pb != NULL) {
+			set_root (pb);
+			g_object_unref (G_OBJECT (pb));
 		}
 	/* Load background color */
-	} else if (GdmBackgroundType == GDM_BACKGROUND_COLOR) {
+	} else if (GdmBackgroundType != GDM_BACKGROUND_NONE) {
 		GdkColormap *colormap;
 
 		if (GdmBackgroundColor == NULL ||
@@ -3765,6 +3824,14 @@ run_backgrounds (void)
 			gdk_error_trap_pop ();
 		}
 	}
+}
+
+
+/* Load the background stuff, the image and program */
+static void
+run_backgrounds (void)
+{
+	setup_background ();
 
 	/* Launch a background program if one exists */
 	if (GdmBackgroundProg != NULL &&
@@ -3820,6 +3887,7 @@ gdm_reread_config (int sig, gpointer data)
 {
 	char *str;
 	VeConfig *config;
+	gboolean resize = FALSE;
 	/* reparse config stuff here.  At least ones we care about */
 
 	config = ve_config_get (GDM_CONFIG_FILE);
@@ -3828,19 +3896,9 @@ gdm_reread_config (int sig, gpointer data)
 	 * then just restarting */
 	/* Also we may not need to check ALL those keys but just a few */
 	if ( ! string_same (config, GdmBackgroundProg, GDM_KEY_BACKGROUNDPROG) ||
-	     ! string_same (config, GdmBackgroundImage, GDM_KEY_BACKGROUNDIMAGE) ||
-	     ! string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
-	     ! int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE) ||
-	     ! bool_same (config,
-			  GdmBackgroundScaleToFit,
-			  GDM_KEY_BACKGROUNDSCALETOFIT) ||
-	     ! bool_same (config,
-			  GdmBackgroundRemoteOnlyColor,
-			  GDM_KEY_BACKGROUNDREMOTEONLYCOLOR) ||
 	     ! string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
 	     ! int_same (config,
 			 GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
-	     ! string_same (config, GdmLogo, GDM_KEY_LOGO) ||
 	     ! bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
 	     ! bool_same (config, GdmBrowser, GDM_KEY_BROWSER) ||
 	     ! bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
@@ -3855,19 +3913,75 @@ gdm_reread_config (int sig, gpointer data)
 		return TRUE;
 	}
 
+	if ( ! string_same (config, GdmBackgroundImage, GDM_KEY_BACKGROUNDIMAGE) ||
+	     ! string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
+	     ! int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE) ||
+	     ! bool_same (config,
+			  GdmBackgroundScaleToFit,
+			  GDM_KEY_BACKGROUNDSCALETOFIT) ||
+	     ! bool_same (config,
+			  GdmBackgroundRemoteOnlyColor,
+			  GDM_KEY_BACKGROUNDREMOTEONLYCOLOR)) {
+		GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUNDIMAGE);
+		GdmBackgroundColor = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
+		GdmBackgroundType = ve_config_get_int (config, GDM_KEY_BACKGROUNDTYPE);
+		GdmBackgroundScaleToFit = ve_config_get_bool (config, GDM_KEY_BACKGROUNDSCALETOFIT);
+		GdmBackgroundRemoteOnlyColor = ve_config_get_bool (config, GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
+
+		setup_background ();
+	}
+
 	GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 	update_clock (NULL);
 
-#ifdef FIXME
 	str = ve_config_get_string (config, GDM_KEY_LOGO);
 	if (strcmp (ve_sure_string (str), ve_sure_string (GdmLogo)) != 0) {
+		GdkPixbuf *pb;
+		gboolean have_logo = FALSE;
+		int lw, lh;
+
 		g_free (GdmLogo);
 		GdmLogo = str;
-		/* FIXME: update logo (remove restart above) */
+
+		if (GdmLogo != NULL) {
+			pb = gdk_pixbuf_new_from_file (GdmLogo, NULL);
+		} else {
+			pb = NULL;
+		}
+
+		if (pb != NULL) {
+			have_logo = TRUE;
+			gtk_image_set_from_pixbuf (GTK_IMAGE (logo_image), pb);
+			lw = gdk_pixbuf_get_width (pb);
+			lh = gdk_pixbuf_get_height (pb);
+			g_object_unref (G_OBJECT (pb));
+		} else {
+			lw = lh = 100;
+		}
+
+		if (lw > gdm_wm_screen.width / 2)
+			lw = gdm_wm_screen.width / 2;
+		else
+			lw = -1;
+		if (lh > (2 * gdm_wm_screen.height) / 3)
+			lh = (2 * gdm_wm_screen.height) / 3;
+		else
+			lh = -1;
+		if (lw > -1 || lh > -1)
+			gtk_widget_set_size_request (logo_image, lw, lh);
+
+		if (have_logo) {
+			gtk_table_set_col_spacings (GTK_TABLE (table), 10);
+			gtk_widget_show (logo_frame);
+		} else {
+			gtk_table_set_col_spacings (GTK_TABLE (table), 0);
+			gtk_widget_hide (logo_frame);
+		}
+
+		resize = TRUE;
 	} else {
 		g_free (str);
 	}
-#endif
 
 	str = ve_config_get_translated_string (config, GDM_KEY_WELCOME);
 	/* A hack */
@@ -3884,9 +3998,13 @@ gdm_reread_config (int sig, gpointer data)
 		gtk_label_set_markup (GTK_LABEL (welcome), greeting);
 		g_free (greeting);
 
-		gtk_widget_queue_resize (login);
+		resize = TRUE;
 	} else {
 		g_free (str);
+	}
+
+	if (resize) {
+		login_window_resize (TRUE /* force */);
 	}
 
 	return TRUE;

@@ -603,24 +603,17 @@ greeter_entry_untranslate_timeout (GtkWidget *entry)
 {
 	const char *key = g_object_get_data (G_OBJECT (entry), "key");
 	const char *text;
-	char *val;
 	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 
 	ve_config_delete_translations (config, key);
 
-	val = ve_config_get_string (config, key);
-
-	if (strcmp (ve_sure_string (val), ve_sure_string (text)) != 0) {
-		ve_config_set_string (config, key, ve_sure_string (text));
-
-		update_greeters ();
-	}
-
-	g_free (val);
+	ve_config_set_string (config, key, ve_sure_string (text));
 
 	ve_config_save (config, FALSE /* force */);
+
+	update_greeters ();
 
 	return FALSE;
 }
