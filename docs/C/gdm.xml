@@ -107,6 +107,13 @@
 	competitors (X3DM, KDM, WDM) GDM was written from scratch and
 	does not contain any original XDM / X Consortium code. 
       </para>
+
+      <para>
+	For further information about GDM, see the
+	<ulink type="http" url="http://www.jirka.org/gdm.html">
+	the GDM website</ulink>.
+      </para>
+
     </sect2>
 
     <sect2 id="daemonov">
@@ -135,8 +142,8 @@
 	through a pipe.  Alternatively <filename>gdmgreeter</filename> command
 	can be used which is the same as <filename>gdmlogin</filename> but
 	allows greater themability.  <filename>gdmgreeter</filename>
-	is refered to as the Graphical Greeter, while 
-	<filename>gdmlogin</filename> is refered to as the Standard
+	is referred to as the Graphical Greeter, while 
+	<filename>gdmlogin</filename> is refereed to as the Standard
 	Greeter.
       </para>
       
@@ -174,7 +181,7 @@
 
       <para>
 	All operations on user files are done with the effective
-	userid of the user. If the sanity check fails on the user's
+	user id of the user. If the sanity check fails on the user's
 	<filename>.Xauthority</filename> file, a fallback cookie is created in
 	<filename>/tmp</filename>.
       </para>
@@ -190,7 +197,7 @@
 
       <para>
 	GDM also has a unix domain socket which can be used to control
-	certain aspects of behaviour, or to query information about running
+	certain aspects of behavior, or to query information about running
 	servers or logged in users.  This is the <filename>/tmp/.gdm_socket</filename>
 	and the protocol is described in the sources in the
 	<filename>daemon/gdm.h</filename> header file.  The
@@ -246,7 +253,7 @@
       </para>
 
       <para>
-	GDM listens to UDP port 177 and will repond to QUERY and
+	GDM listens to UDP port 177 and will respond to QUERY and
 	BROADCAST_QUERY requests by sending a WILLING packet to the
 	originator.
       </para>
@@ -278,7 +285,7 @@
 
       <para>
 	Even though GDM tries to outsmart potential attackers, it is
-	still adviced that you block UDP port 177 on your firewall
+	still advised that you block UDP port 177 on your firewall
 	unless you really need it. GDM guards against DoS attacks, but
 	the X protocol is still inherently insecure and should only be
 	used in controlled environments.  Also each remote connection
@@ -321,9 +328,7 @@
         The menu bar in the top of the greeter enables the user to
         select the requested session type/desktop environment,
         select an appropriate locale/language and optionally
-        shutdown/reboot the machine. The greeter window can also be
-        iconified to make room for other applications on the login
-        screen.
+        shutdown/reboot the machine.
       </para>
 
       <para>
@@ -362,7 +367,8 @@
         To filter out unwanted user names in the browser, an exclude
         option is implemented. The greeter will automatically ignore
         usernames listed in the <filename>Exclude</filename> statement in the
-        config file.
+        config file, and furthermore exclude users whose UIDs are lower
+	then <filename>MinimalUID</filename>.
       </para>
 
       <para>
@@ -377,7 +383,7 @@
         window. The image must be in a format readable to the gdk-pixbuf
         library (GIF, JPG, PNG, TIFF, XPM and possibly others), and
         it must be readable to the gdm user. See the <filename>
-        Logo</filename> option in the reference section below for detauls.
+        Logo</filename> option in the reference section below for details.
       </para>
 
     </sect2>
@@ -576,7 +582,7 @@
 	You have the $USER and $DISPLAY environment variables set for this script,
 	and again it is run as root.  The script should return 0 on success
 	as otherwise the user won't be logged in.  This is not true for
-	failsafe session showever.
+	failsafe session however.
       </para>
 
       <para>
@@ -605,7 +611,7 @@
 	<filename>etc/dm/Sessions</filename> directory.  The user
 	either picks from these sessions or GDM will look inside
 	the file <filename>~/.dmrc</filename> for the stored
-	preferrence.
+	preference.
       </para>
 
       <para>
@@ -624,7 +630,7 @@
 	<filename>PostLogin</filename> and
 	<filename>PreSession</filename>.
 	Again the script will be run with root
-	priviledges, the slave daemon will block and the $USER
+	privileges, the slave daemon will block and the $USER
 	environment variable will contain the name of the user who
 	just logged out and $DISPLAY will be set to the display
 	the user used, however note that the X server for this display
@@ -667,7 +673,7 @@
 
       <para>
 	The configuration file is divided into sections each
-	containing variables that define the behaviour for a specific
+	containing variables that define the behavior for a specific
 	part of the GDM suite.  The file is fairly well commented
 	as well.
       </para>
@@ -693,9 +699,9 @@
 	      <synopsis>AddGtkModules=false</synopsis>
 	      <para>
 	    If true, then enables gdmgreeter/gdmlogin to be launched with
-	    additional Gtk+ modules. This is useful when extra feaures are
-	    required such as accessibile login. Note that only "trusted"
-	    modules should be used to minimise security issues.
+	    additional Gtk+ modules. This is useful when extra features are
+	    required such as accessible login. Note that only "trusted"
+	    modules should be used to minimize security issues.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -893,7 +899,7 @@
 	    <listitem>
 	      <synopsis>GtkModuleList=module-1:module-2:...</synopsis>
 	      <para>
-	    A colon seperated list of Gtk+ modules that gdmgreeter/gdmlogin
+	    A colon separated list of Gtk+ modules that gdmgreeter/gdmlogin
 	    will be invoked with if AddGtkModules is true. The format is the 
 	    same as the standard Gtk+ module interface.
 	      </para>
@@ -1142,7 +1148,7 @@
 	      <para>
 		The directory where user's
 		<filename>.Xauthority</filename> file should be
-		saved. When nothing is specfied the user's home
+		saved. When nothing is specified the user's home
 		directory is used.
 	      </para>
 	    </listitem>
@@ -1193,7 +1199,7 @@
 		An X configuration or whatever else to make the X configuration
 		work.  See the script that came with the distribution for an
 		example.  The distributed XKeepsCrashing script is tested
-		on RedHat, but may work elsewhere.  Your system integrator should
+		on Red Hat, but may work elsewhere.  Your system integrator should
 		make sure this script is up to date for your particular system.
 	      </para>
 	      <para>
@@ -1231,7 +1237,7 @@
 	    <listitem>
 	      <synopsis>AllowRoot=true</synopsis>
 	      <para>
-		Allow root (privilaged user) to log in through GDM.  Set
+		Allow root (privileged user) to log in through GDM.  Set
 		this to false if you want to disallow such logins.
 	      </para>
 	      <para>
@@ -1248,7 +1254,7 @@
 	    <listitem>
 	      <synopsis>AllowRemoteRoot=true</synopsis>
 	      <para>
-		Allow root (privilaged user) to log in remotely through GDM.
+		Allow root (privileged user) to log in remotely through GDM.
 		Set this to false if you want to disallow such logins.  Remote
 		logins are any logins that come in through the xdmcp.
 	      </para>
@@ -1303,7 +1309,7 @@
 	      
 	      <para> 
 		Changing the value of RelaxPermissions makes it
-		possible to alter this behaviour:
+		possible to alter this behavior:
 	      </para>
 	      
 	      <para>
@@ -1561,7 +1567,7 @@
 		Interval in which to ping the X server in seconds.  If the
 		X server doesn't return before the next time we ping it,
 		the connection is stopped and the session ended.  This is
-		a combination of the xdm PingInterval and PingTimeout,
+		a combination of the XDM PingInterval and PingTimeout,
 		but in seconds.
 	      </para>
 
@@ -1671,7 +1677,7 @@
 	      <synopsis>BackgroundImage=somefile.png</synopsis>
 	      <para>
 		If the BackgroundType is 1, then display this file as the
-		bacground in the greeter.
+		background in the greeter.
 		This only affects the Standard Greeter.
 	      </para>
 	    </listitem>
@@ -1980,7 +1986,6 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>	
-
 	  
 	  <varlistentry>
 	    <term>SystemMenu</term>
@@ -2023,7 +2028,7 @@
 	    <listitem>
 	      <synopsis>UseCirclesInEntry=false</synopsis>
 	      <para>
-		Use circles instead of asteriscs in the password entry.
+		Use circles instead of asterisks in the password entry.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -2212,9 +2217,9 @@
 	<para>
 	  Servers are defined by sections named <filename>server-</filename>
 	  followed by the identifier of this server.  This should be a 
-	  simple ascii string with no spaces.  If you use the GUI
+	  simple ASCII string with no spaces.  If you use the GUI
 	  configurator, it will use random words for these.  These will
-	  not be user visible, they are just needed to uniquel identify the
+	  not be user visible, they are just needed to uniquely identify the
 	  server.
 	</para>
 	
@@ -2400,7 +2405,7 @@
     <title>Controlling GDM</title>
 
     <para>
-      You can control GDM behaviour during runtime in several different ways.  You can
+      You can control GDM behavior during runtime in several different ways.  You can
       either run certain commands, or you can talk to GDM using either a unix socket
       protocol, or a FIFO protocol.
     </para>
@@ -2516,7 +2521,7 @@
       <para>
 	There are also the commands <filename>gdm-stop</filename>, <filename>gdm-restart</filename>
 	and <filename>gdm-safe-restart</filename> which stop, restart, or restart the
-	GDM daemon after all users have logged out, respectivelly.  These are
+	GDM daemon after all users have logged out, respectively.  These are
 	installed in the <filename>sbin/</filename> directory.
       </para>
 
@@ -2566,7 +2571,7 @@
       This section describes the creation of themes for the Graphical
       Greeter.  For examples including screenshots, see the standard installed
       themes and the themes from
-      <ulink type="http" url="http://art.gnome.org/theme_list.php?category=gdm_greeter">
+      <ulink type="http" url="http://art.gnome.org/themes/gdm_greeter/index.php">
       the theme website</ulink>.
     </para>
 
@@ -2597,7 +2602,7 @@
         The Name, Description, Author and Copyright fields can be translated just
         like the other <filename>.desktop</filename>files.  All the files that are mentioned should
         be in the theme directory itself.  The Screenshot field points to a file
-        which should be a 200x150 screenshot of the theme in action (it is ok
+        which should be a 200x150 screenshot of the theme in action (it is OK
         not to have one, but it makes it nicer for user).  The Greeter field points
         to an XML file that contains the description of the theme.   The description
         will be given later.
@@ -2623,7 +2628,7 @@
 
       <para>
         Be sure to test all the environments with your theme, and make sure to test
-        how the caps lock warning looks by pressing capslock.  This is also a good
+        how the caps lock warning looks by pressing caps lock.  This is also a good
         way to take screenshots, just take a screenshot of the Xnest window.  This
         can be done in GNOME by focusing the Xnest window and pressing
         Alt-PrintScreen.
@@ -2953,7 +2958,7 @@
 		allows user to run configurator if user
 		enters root password (again if allowed
 	        by gdm configuration).  This is usually
-		now labeled Actions, and refered to as
+		now labeled Actions, and referred to as
 		the Actions menu.
 	      </para>
 	    </listitem>
@@ -3077,7 +3082,7 @@
         </para>
 
 	<screen>
-       &lt;normal color="#fffff" alpha="0.0"&gt;
+       &lt;normal color="#ffffff" alpha="0.0"&gt;
 	</screen>
 
         <para>
@@ -3149,22 +3154,22 @@
           <filename>disconnect</filename>, _("D_isconnect")
         </para>
         <para>
+          <filename>halt</filename>, _("Shut_down")
+        </para>
+        <para>
           <filename>language</filename>, _("_Language")
         </para>
         <para>
           <filename>quit</filename>, _("_Quit")
         </para>
         <para>
-          <filename>halt</filename>, _("Shut_down")
-        </para>
-        <para>
-          <filename>suspend</filename>, _("Sus_pend")
-        </para>
-        <para>
           <filename>reboot</filename>, _("_Reboot")
         </para>
         <para>
           <filename>session</filename>, _("_Session")
+        </para>
+        <para>
+          <filename>suspend</filename>, _("Sus_pend")
         </para>
         <para>
           <filename>system</filename>, _("_Actions")  (Formerly "S_ystem")

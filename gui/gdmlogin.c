@@ -2003,12 +2003,12 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		/* we should be now fine for focusing new windows */
 		gdm_wm_focus_new_windows (TRUE);
 
-		/* translators:  This is a nice and evil eggie text, translate
-		 * to your favourite currency */
 		dlg = ve_hig_dialog_new (NULL /* parent */,
 					 GTK_DIALOG_MODAL /* flags */,
 					 GTK_MESSAGE_INFO,
 					 GTK_BUTTONS_OK,
+					 /* translators:  This is a nice and evil eggie text, translate
+					  * to your favourite currency */
 					 _("Please insert 25 cents "
 					   "to log in."),
 					 /* avoid warning */ "%s", "");
