@@ -1,5 +1,68 @@
 Ahh news...
 
+2.4.2.99 stuff:
+
+- Updated docs a bit
+
+- When no local servers are defined we assume we have no console
+  and don't use the console to print messages with gdmopen and
+  dialog.  Also --no-console now forces this (forces ignoring
+  [servers] section).  Fixes debian #194613
+
+- Changed required permissions on ServAuthDir to be: root.gdm 1770.
+  These are now enforced and GDM will try to set them if they're
+  not that way already.
+
+- Fix PostLogin to behave like PostSession with respect to the return
+  value.
+
+- Use /var/log/gdm by default as logdir rather then the ServAuthDir
+
+- Reworked the server reinit to use SIGUSR1 as it should, should
+  fix some weird crashes which left X behind before.
+
+- A lot of race hunting again.
+
+- No more pam session_close and delete of credits if the user
+  has not yet logged in.
+
+- SIGTERM should kill things at any point properly without hanging
+
+- Faster shutdown in case there are lots of XDMCP sessions
+  open
+
+- Fix hang on systems where maximum number of open file descriptors
+  is very very high.  Use /proc/self/fd/ if available.
+
+- Use sched_yield in places where we know the other process
+  really has stuff to do, so that we speed things along.
+
+- Remove some deprecated function use (Steve Chaplin #118361)
+
+- Don't build with tcp wrappers if we don't build XDMCP
+
+- Don't include programmer references in translatable strings,
+  this time should really be fixed (#56654)
+
+- Redo the user selector setup in pam.  Now completely restart
+  pam when user is selected.
+
+- In the face browsers the username is bold to separate it from
+  the user info
+
+- On exit from an XDMCP display whack all the clients with windows
+  to support the more broken displays.
+
+- gdmchooser handles HUP gracefully and rereads config
+
+- gdmthemetester improved
+
+- Some build fixes
+
+- Fix some C99 isms
+
+- Many other fixes
+
 2.4.2.98 stuff:
 
 - DOCUMENTATION!  We have documentation!  I've updated the

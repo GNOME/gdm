@@ -1039,9 +1039,7 @@ gdm_slave_run (GdmDisplay *display)
 	    gdm_server_checklog (d);
 
     if ( ! d->handled) {
-	    /* yay, we now wait for the server to die,
-	     * which will in fact just exit, so
-	     * this code is a little bit too anal */
+	    /* yay, we now wait for the server to die */
 	    while (d->servpid > 0) {
 		    pause ();
 	    }
@@ -3702,13 +3700,6 @@ gdm_slave_child_handler (int sig)
 		gdm_slave_whack_temp_auth_file ();
 
 		gdm_slave_send_num (GDM_SOP_XPID, 0);
-
-		/* if not handled there is no need for further formalities,
-		 * we just have to die */
-		if ( ! d->handled) {
-			exit_code_to_use = DISPLAY_REMANAGE;
-			SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
-		}
 
 		/* whack the session good */
 		if (d->sesspid > 1) {

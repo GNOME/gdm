@@ -1,3 +1,11 @@
+Tue Jul 29 14:35:18 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: no need to handle server dead condition specifically
+	  for the unhandled case.  The pause call will exit and we'll notice
+	  the servpid being 0 and exit.
+
+	* NEWS: update
+
 Tue Jul 29 12:15:54 2003  George Lebl <jirka@5z.com>
 
 	* daemon/display.c, daemon/gdm.c: killall the xdmcp slaves first and
