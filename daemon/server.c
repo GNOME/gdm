@@ -140,14 +140,16 @@ gdm_server_stop (GdmDisplay *disp)
     disp->servstat = SERVER_DEAD;
 
     if (disp->servpid != 0) {
-	    pid_t servpid = disp->servpid;
-
-	    /* avoid SIGCHLD race */
-	    disp->servpid = 0;
+	    pid_t servpid;
 
 	    gdm_debug ("gdm_server_stop: Killing server pid %d", (int)servpid);
 
+	    /* avoid SIGCHLD race */
 	    gdm_sigchld_block_push ();
+
+	    servpid = disp->servpid;
+	    disp->servpid = 0;
+
 	    if (servpid > 0 &&
 		kill (servpid, SIGTERM) == 0)
 		    waitpid (servpid, 0, 0);
@@ -509,9 +511,11 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 
     /* bad things are happening */
     if (d->servpid > 0) {
-	    pid_t pid = d->servpid;
-	    d->servpid = 0;
+	    pid_t pid;
+
 	    gdm_sigchld_block_push ();
+	    pid = d->servpid;
+	    d->servpid = 0;
 	    if (pid > 0 &&
 		kill (pid, SIGTERM) == 0)
 		    waitpid (pid, NULL, 0);

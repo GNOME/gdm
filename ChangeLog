@@ -1,3 +1,10 @@
+Mon Jul 15 15:47:11 2002  George Lebl <jirka@5z.com>
+
+	* daemon/errorgui.c, daemon/misc.[ch], daemon/server.c,
+	  daemon/slave.c:  Clean up the comm stuff to only use unbuffered
+	  libc functions.  This might fix the freebsd issues perhaps,
+	  maybe.  Also fix some almost impossible to happen races.
+
 Mon Jul 15 14:55:27 2002  George Lebl <jirka@5z.com>
 
 	* NEWS, configure.in: prepare for 2.4.0.2

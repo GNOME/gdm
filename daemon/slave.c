@@ -1244,13 +1244,12 @@ run_pictures (void)
 		}
 		g_free (ret);
 
-		printf ("%c", STX);
-		fflush (stdout);
+		gdm_fdprintf (STDOUT_FILENO, "%c", STX);
 
 		i = 0;
 		while ((bytes = fread (buf, sizeof (char),
 				       sizeof (buf), fp)) > 0) {
-			fwrite (buf, 1, bytes, stdout);
+			write (STDOUT_FILENO, buf, bytes);
 			i += bytes;
 		}
 
@@ -1259,7 +1258,7 @@ run_pictures (void)
 		/* eek, this "could" happen, so just send some garbage */
 		while (i < s.st_size) {
 			bytes = MIN (sizeof (buf), s.st_size - i);
-			fwrite (buf, 1, bytes, stdout);
+			write (STDOUT_FILENO, buf, bytes);
 			i += bytes;
 		}
 			
@@ -3096,7 +3095,7 @@ check_for_interruption (const char *msg)
 char * 
 gdm_slave_greeter_ctl (char cmd, const char *str)
 {
-    gchar buf[FIELD_SIZE];
+    char *buf = NULL;
     int c;
 
     /* There is no spoon^H^H^H^H^Hgreeter */
@@ -3107,18 +3106,18 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
     check_notifies_immediately ++;
 
     if ( ! ve_string_empty (str)) {
-	    printf ("%c%c%s\n", STX, cmd, str);
+	    gdm_fdprintf (STDOUT_FILENO, "%c%c%s\n", STX, cmd, str);
     } else {
-	    printf ("%c%c\n", STX, cmd);
+	    gdm_fdprintf (STDOUT_FILENO, "%c%c\n", STX, cmd);
     }
-    fflush (stdout);
 
     /* Skip random junk that might have accumulated */
     do {
-	    c = getc (stdin);
+	    c = gdm_fdgetc (STDIN_FILENO);
     } while (c != EOF && c != STX);
     
-    if (c == EOF || fgets (buf, FIELD_SIZE-1, stdin) == NULL) {
+    if (c == EOF ||
+	(buf = gdm_fdgets (STDIN_FILENO)) == NULL) {
 	    check_notifies_immediately --;
 	    interrupted = TRUE;
 	    /* things don't seem well with the greeter, it probably died */
@@ -3129,15 +3128,10 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
 
     check_for_interruption (buf);
 
-    /* don't forget to flush */
-    fflush (stdin);
-    
-    if (buf[0] != '\0') {
-	    int len = strlen (buf);
-	    if (buf[len-1] == '\n')
-		    buf[len-1] = '\0';
-	    return g_strdup (buf);
+    if ( ! ve_string_empty (buf)) {
+	    return buf;
     } else {
+	    g_free (buf);
 	    return NULL;
     }
 }

@@ -29,6 +29,8 @@ void gdm_error  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 void gdm_debug  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 void gdm_fdprintf  (int fd, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
+int gdm_fdgetc     (int fd);
+char *gdm_fdgets   (int fd);
 
 /* Note that these can actually clear environment without killing
  * the LD_* env vars if --preserve-ld-vars was passed to the

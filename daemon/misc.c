@@ -930,4 +930,43 @@ gdm_test_opt (const char *cmd, const char *help, const char *option)
 	fclose (fp);
 	return got_it;
 }
+
+int
+gdm_fdgetc (int fd)
+{
+	char buf[1];
+	int bytes;
+
+	bytes = read (fd, buf, 1);
+	if (bytes != 1)
+		return EOF;
+	else
+		return (int)buf[0];
+}
+
+char *
+gdm_fdgets (int fd)
+{
+	int c;
+	int bytes = 0;
+	GString *gs = g_string_new (NULL);
+	for (;;) {
+		c = gdm_fdgetc (fd);
+		if (c == '\n')
+			return g_string_free (gs, FALSE);
+		/* on EOF */
+		if (c < 0) {
+			if (bytes == 0) {
+				g_string_free (gs, TRUE);
+				return NULL;
+			} else {
+				return g_string_free (gs, FALSE);
+			}
+		} else {
+			bytes ++;
+			g_string_append_c (gs, c);
+		}
+	}
+}
+
 /* EOF */
