@@ -19,6 +19,10 @@
 #ifndef GDM_MISC_H
 #define GDM_MISC_H
 
+#ifndef __PRETTY_FUNCTION__
+#define __PRETTY_FUNCTION__ "N/A"
+#endif
+
 #include <sys/types.h>
 
 #include "gdm.h"
