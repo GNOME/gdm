@@ -1,5 +1,152 @@
 Ahh news...
 
+2.4.2.x stuff:
+
+- The greeter.dtd is updated and there is theme creation documentation
+  (Brian Cameron, Aidan Butler, me)
+
+- A face browser for the graphical greeter.  This is selecting by selecting
+  a theme that implements it.  Add happygnome-list which does.
+  (Patrizio Bruno, me)
+
+- The standard greeter has a GtkTreeView based face browser based on the
+  new one from the graphical greeter.
+
+- Accesibility work.  Add posibility of adding modules to the greeter through
+  AddGtkModules and GtkModulesList.  Add guesture listeners.  Dwell mouse
+  events.  (Niall Power, Brian Cameron)
+
+- Attempt at getting things HIG-ified
+
+- Add "Run XDMCP chooser" button to the system menu, which is now called
+  the "Actions" menu, also allow a server type that runs a chooser by
+  adding a "chooser=true" to a server definition.
+
+- The XDMCP chooser got an overhaul internally.  Also there is an "Add"
+  button to add new hosts by typing in the hostname.
+
+- Add a PostLogin script which is run right after login succeeds but before
+  any setup is done.  This can be used if the users home directory needs
+  to be setup here.
+
+- Add security/DisallowTCP which will append -nolisten tcp to all
+  console displays, and this is by default true.  Fixes #87291
+
+- PingInterval is now PingIntervalSeconds and is now in seconds, it makes no
+  sense in minutes really since nobody is that patient anymore these days, also
+  the comment in the config file said seconds, so I suppose this is a bugfix,
+  should "fix" #103266
+
+- Add a "Delete theme" button to gdmsetup, add a scroll window to the
+  theme preview, fixes #110302 and #104757
+
+- PAM now asks for username itself.  This made LocalNoPasswordUsers impossible,
+  and so that was removed.  This way hopefully we should work with some more
+  pam setups, such as smartcard ones.  Fixes issues from #106537
+
+- The F10 menu in the graphical greeter is nicer.
+
+- When you doubleclick on the radiobutton in graphical greeter Actions
+  menu, it activates the item (Mihael Vrbanec)
+
+- There is the Welcome label and RemoteWelcome label now.  The local Welcome
+  label is now just "Welcome" since "Welcome to localhost" is silly.  Also
+  the graphical greeter uses this, as long as you use the stock label text.
+
+- Check for the capslock turned on before warning about it, and also only
+  mention "bad username or password" if we actually asked for a password.
+  Fixes #71496
+
+- The "subtype" field to the "show" item for the themes is gone, it was stupid
+  and I hope no one used it (it wasn't documented anyhow).
+
+- A bunch of standard pam messages are now translated inside gdm
+
+- If there are many sessions available the graphical greeter presents
+  a scrolled window, fixes #104120
+
+- Don't set RUSER for PAM and don't set RHOST if this is a console login,
+  apparently this is what it should be doing according to the Sun guys,
+  fixes issues from #106537
+
+- The loop of death is now working as it should be and is not as sensitive.
+  Also the toplevel loop of death does not abort the display, but only
+  disables it for 2 minutes.
+
+- Suspend now works much better and doesn't whack the gdm process,
+  fixes #108700
+
+- When more then 50 users on the system don't put them all into
+  the combobox in gdmsetup, semi-fixes #111830
+
+- When using shadow passwords, fall back to standard if shadow is
+  not available, fixes #109765 (cschelcher@free.fr)
+
+- Use strerror and not g_strerror as the latter returns UTF-8,
+  fixes #106655
+
+- Set TEXTDOMAIN to GETTEXT_PACKAGE for the x keeps failing script,
+  fixes #106657 (Owen Taylor)
+
+- gdmopens are done using login shell, fixes #106658, also gdmopen
+  doesn't deallocate the vt which is apparently not kosher and fixes
+  #106656 (Owen Taylor, me)
+
+- Fix RedHat #91031, prepend a dash rather then make shell argv[0] a dash
+  (Michael Blandford)
+
+- On Linux detect the runlevel and try to detect the user having run shutdown
+  (from say gnome-session) and if so suspend the slave operation for 30
+  seconds and wait what happens.  Most likely we'll get whacked.
+
+- Fix typos and change some strings, #106207, #105923, #56654 among others
+
+- gdmmktemp is gone as we have not been using it, also gdmaskpass and
+  gdmopen are now in libexec
+
+- Many minor fixes
+
+- Build fixes (Brian Cameron, me)
+
+- Solaris fixes (Brian Cameron, Niall Power)
+
+- Translation updates, language additions and such (Danilo Aegan,
+  Guntupalli Karunakar, Abel Cheung, me)
+
+2.4.1.4 stuff:
+
+- Raise DisplaysPerHost default to 2 to avoid a FAQ-type-problem
+
+- Add xdmcp/PingInterval key to the default config file
+
+- Fixed up the included spec file
+
+- Fixed some typo's (Kjartan Maraas)
+
+- Fixed Solaris build (Niall Power)
+
+- Added Thai, Mongolian, Indonesian, Kannada, Hindi
+  Bengali, Belarusian, Bosnian, Welsh, Persian, Interlingua,
+  Albanian, Serbian, Yiddish and Panjabi Language support
+  (Ross Golder, Sanlig Badral)
+
+- Sorted languages in alphabetic order (#106293) (Ross Golder)
+
+- Translation updates (Roozbeh Purnader, Christian Rose, Taneem Ahmed,
+  Pablo Saratxaga, Danilo Aegan, Jordi Mallach, Dmitry G. Mastrukov,
+  Belarusian team, Alessio Frusciante, Lapo Calamandrei, Christophe Merlet,
+  Andras Timar, Takeshi AIHANA, Roozbeh Pournader, Artis Trops,
+  Kang Jeong-Hee, Stanislav Visnovsky, FSF-India, Abel Cheung, Metin Amiroff,
+  Pauli Virtanen, Lauri Nurmi, Kjartan Maraas, Christian Neumar,
+  Kostas Papadimas, Vincent van Adrighem, Zbigniew Chyla, GNOME PL Team,
+  Evandro Fernandes Giovanini, Duarte Loreto, Pablo Gonzalo del Campo,
+  Lucas 'Basurero' Vieites, Ole Laursen, Paul Duffy, Russian team,
+  Yuriy Syrota, Miloslav Trmac, Gil "Dolfin" Osher, Progga,
+  Christian Neumair, Alexandre Folle de Menezes, Benjamin Greiner,
+  Fatih Demir, Arman)
+
+  
+
 2.4.1.3 stuff:
 
 - Fix redhat bug #83334 by fixing md5 code on non-alpha 64bit platforms
