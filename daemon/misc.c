@@ -37,6 +37,7 @@ static const gchar RCSid[]="$Id$";
 /* Configuration option variables */
 extern gchar *GdmPidFile;
 extern gboolean GdmDebug;
+extern GSList *displays;
 
 extern char **environ;
 
@@ -195,8 +196,21 @@ gdm_get_free_display (int start, int server_uid)
 	/* Cap this at 3000, I'm not sure we can ever seriously
 	 * go that far */
 	for (i = start; i < 3000; i ++) {
+		GSList *li;
 		struct stat s;
 		char buf[256];
+
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *dsp = li->data;
+			if (SERVER_IS_LOCAL (dsp) &&
+			    dsp->dispnum == i)
+				break;
+		}
+		if (li != NULL) {
+			/* found one */
+			continue;
+		}
+
 		sock = socket (AF_INET, SOCK_STREAM, 0);
 
 		serv_addr.sin_port = htons (6000 + i);

@@ -78,6 +78,7 @@ gchar *desc3 = N_("This panel displays GDM's fundamental system settings.\n"
 /* Keep track of X servers, the selected user level and session details */
 int number_of_servers = 0;
 int selected_server_row = -1;
+int selected_server_def_row = -1;
 int selected_session_row = -1, default_session_row = -1;
 GtkWidget *invisible_notebook = NULL;
 GdmConfigSession *current_default_session = NULL;
@@ -91,7 +92,7 @@ GtkWidget *GDMconfigurator = NULL;
 /** This is something of a hack, but it keeps the code clean and
  * easily extensible later on. 
  */
-GtkWidget *get_widget(gchar *widget_name)
+GtkWidget *get_widget(const gchar *widget_name)
 {
 	GtkWidget *ret = NULL;
 	ret = glade_xml_get_widget(GUI, widget_name);
@@ -533,6 +534,9 @@ gdm_config_parse_most (gboolean factory)
     gchar *default_session_name = NULL;
     gint linklen;
     const char *config_file;
+    gboolean got_standard_server = FALSE;
+    gboolean got_any_servers = FALSE;
+    char *standard_x_server = NULL;
 
     gtk_clist_clear (GTK_CLIST (get_widget ("sessions_clist")));
     gtk_clist_clear (GTK_CLIST (get_widget ("server_clist")));
@@ -589,6 +593,10 @@ gdm_config_parse_most (gboolean factory)
     gdm_entry_set("session_dir", gnome_config_get_string (GDM_KEY_SESSDIR));
     gdm_entry_set("pre_session_dir", gnome_config_get_string (GDM_KEY_PRESESS));
     gdm_entry_set("post_session_dir", gnome_config_get_string (GDM_KEY_POSTSESS));
+    standard_x_server = gnome_config_get_string (GDM_KEY_STANDARD_XSERVER);
+    gdm_entry_set("standard_x_server", standard_x_server);
+    gdm_entry_set("xnest_server", gnome_config_get_string (GDM_KEY_XNEST));
+    gdm_spin_set("flexible_servers", gnome_config_get_int(GDM_KEY_FLEXIBLE_XSERVERS));
     gdm_entry_set("failsafe_x_server", gnome_config_get_string (GDM_KEY_FAILSAFE_XSERVER));
     gdm_entry_set("x_keeps_crashing", gnome_config_get_string (GDM_KEY_XKEEPSCRASHING));
     gdm_entry_set("x_keeps_crashing_configurators", gnome_config_get_string (GDM_KEY_XKEEPSCRASHING_CONFIGURATORS));
@@ -802,8 +810,6 @@ gdm_config_parse_most (gboolean factory)
 	    
 	    /*printf ("coloring session %s.\n", data->name);*/
 	    gdk_color_parse ("#d6e8ff", &col);
-	    gdk_color_alloc (gdk_colormap_get_system(), &col);
-	    
 	    gtk_clist_set_background (GTK_CLIST (get_widget("sessions_clist")),
 				      i, &col);
 	    data->is_default = TRUE;
@@ -823,6 +829,106 @@ gdm_config_parse_most (gboolean factory)
    }
 
     gnome_config_pop_prefix();
+
+    gtk_clist_set_column_auto_resize
+	    (GTK_CLIST (get_widget ("server_def_clist")), 0, TRUE);
+    gtk_clist_set_column_auto_resize
+	    (GTK_CLIST (get_widget ("server_def_clist")), 1, TRUE);
+
+    got_standard_server = FALSE;
+    got_any_servers = FALSE;
+
+    /* Find server definitions */
+    iter = gnome_config_init_iterator_sections ("=" GDM_CONFIG_FILE "=/");
+    iter = gnome_config_iterator_next (iter, &key, NULL);
+    
+    while (iter) {
+	    if (strncmp (key, "server-", strlen ("server-")) == 0) {
+		    char *section;
+		    char *id;
+		    char *text[3];
+		    int row;
+
+		    section = g_strdup_printf ("=" GDM_CONFIG_FILE "=/%s/",
+					       key);
+		    gnome_config_push_prefix (section);
+
+		    id = g_strdup (key + strlen ("server-"));
+
+		    text[0] = gnome_config_get_string (GDM_KEY_SERVER_NAME);
+		    if (text[0] == NULL)
+			    text[0] = g_strdup (id);
+		    text[1] = gnome_config_get_string (GDM_KEY_SERVER_COMMAND);
+		    if (text[1] == NULL)
+			    text[1] = g_strdup (standard_x_server);
+		    if (text[1] == NULL)
+			    text[1] = g_strdup ("/usr/bin/X11/X");
+
+		    if (gnome_config_get_bool (GDM_KEY_SERVER_FLEXIBLE))
+			    text[2] = g_strdup (_("Yes"));
+		    else
+			    text[2] = g_strdup (_("No"));
+
+		    g_free (section);
+		    gnome_config_pop_prefix ();
+
+		    row = gtk_clist_append
+			    (GTK_CLIST (get_widget ("server_def_clist")), text);
+		    gtk_clist_set_row_data_full
+			    (GTK_CLIST (get_widget ("server_def_clist")), 
+			     row,
+			     id,
+			     (GDestroyNotify) g_free);
+
+		    g_free (text[0]);
+		    g_free (text[1]);
+		    g_free (text[2]);
+
+		    got_any_servers = TRUE;
+		    if (strcmp (id, GDM_STANDARD) == 0) {
+			    GdkColor col;
+			    gdk_color_parse ("#d6e8ff", &col);
+			    gtk_clist_set_background
+				    (GTK_CLIST (get_widget("server_def_clist")),
+				     row, &col);
+			    got_standard_server = TRUE;
+		    }
+	    }
+
+	    g_free (key);
+
+	    iter = gnome_config_iterator_next (iter, &key, NULL);
+    }
+
+    if ( ! got_any_servers ||
+	 ! got_standard_server) {
+	    char *text[3];
+	    int row;
+	    GdkColor col;
+
+	    text[0] = g_strdup (_("Standard server"));
+	    text[1] = g_strdup (standard_x_server);
+	    if (text[1] == NULL)
+		    text[1] = g_strdup ("/usr/bin/X11/X");
+
+	    text[2] = g_strdup (_("Yes"));
+
+	    row = gtk_clist_append
+		    (GTK_CLIST (get_widget ("server_def_clist")), text);
+	    gtk_clist_set_row_data_full
+		    (GTK_CLIST (get_widget ("server_def_clist")), 
+		     row,
+		     g_strdup (GDM_STANDARD),
+		     (GDestroyNotify) g_free);
+
+	    gdk_color_parse ("#d6e8ff", &col);
+	    gtk_clist_set_background
+		    (GTK_CLIST (get_widget("server_def_clist")), row, &col);
+
+	    g_free (text[0]);
+	    g_free (text[1]);
+	    g_free (text[2]);
+    }
     
     /* Fill the widgets in Servers tab */
     iter=gnome_config_init_iterator("=" GDM_CONFIG_FILE "=/" GDM_KEY_SERVERS);
@@ -846,6 +952,8 @@ gdm_config_parse_most (gboolean factory)
 	iter=gnome_config_iterator_next (iter, &key, &value);
     }
     /* FIXME: Could do something nicer with the 'exclude users' GUI sometime */
+
+    g_free (standard_x_server);
 }
 
 
@@ -1524,6 +1632,47 @@ change_timed_sensitivity (GtkButton *button,
 				  GTK_TOGGLE_BUTTON (button)->active);
 }
 
+void
+add_new_server_def (GtkButton *button, gpointer user_data)
+{
+}
+
+
+void
+edit_selected_server_def (GtkButton *button, gpointer user_data)
+{
+}
+
+
+void
+delete_selected_server_def (GtkButton *button, gpointer user_data)
+{
+	int tmp = selected_server_def_row;
+
+	if (selected_server_def_row < 0)
+		return;
+
+	selected_server_def_row = -1;
+
+	/* Remove the server from the list */
+	gtk_clist_remove (GTK_CLIST (get_widget ("server_def_clist")), tmp);
+}
+
+void
+make_server_def_default (GtkButton *button, gpointer user_data)
+{
+}
+
+void
+record_selected_server_def (GtkCList *clist,
+			    gint row,
+			    gint column,
+			    GdkEventButton *event,
+			    gpointer user_data)
+{
+	selected_server_def_row = row;
+}
+
 void handle_server_add_or_edit         (gchar           *string,
 					gpointer         user_data)
 {
@@ -1592,9 +1741,11 @@ delete_selected_server                 (GtkButton       *button,
     if (selected_server_row < 0)
       return;
 
+    selected_server_row = -1;
+
     /* Remove the server from the list */
     gtk_clist_remove(GTK_CLIST(get_widget("server_clist")), 
-		     selected_server_row);
+		     tmp);
     number_of_servers--;
     
     /* The server numbers will be out of sync now, so correct that */ 
@@ -1604,18 +1755,17 @@ delete_selected_server                 (GtkButton       *button,
 			     g_strdup_printf("%d", tmp));
 	  tmp++;
       }
-    selected_server_row = -1;
 }
 
 
 void
-record_selected_server                  (GtkCList *clist,
-			        	 gint row,
-					 gint column,
-					 GdkEventButton *event,
-					 gpointer user_data)
+record_selected_server (GtkCList *clist,
+			gint row,
+			gint column,
+			GdkEventButton *event,
+			gpointer user_data)
 {
-    selected_server_row = row;
+	selected_server_row = row;
 }
 
 
@@ -1737,7 +1887,6 @@ set_new_default_session (GtkButton *button,
    current_default_session->is_default = TRUE;
    
    gdk_color_parse ("#d6e8ff", &col);
-   gdk_color_alloc (gdk_colormap_get_system(), &col);
    gtk_clist_freeze (GTK_CLIST (get_widget("sessions_clist")));
 
    gtk_clist_set_background (GTK_CLIST (get_widget("sessions_clist")),

@@ -152,7 +152,10 @@
 /* Per server definitions */
 #define GDM_KEY_SERVER_NAME "name=Standard server"
 #define GDM_KEY_SERVER_COMMAND "command=/usr/bin/X11/X"
+/* runnable as flexi server */
 #define GDM_KEY_SERVER_FLEXIBLE "flexible=true"
+/* choosable from the login screen */
+#define GDM_KEY_SERVER_CHOOSABLE "choosable=true"
 
 #define GDM_KEY_ALLOWROOT "security/AllowRoot=true"
 #define GDM_KEY_ALLOWREMOTEROOT "security/AllowRemoteRoot=true"
@@ -292,6 +295,7 @@ struct _GdmXServer {
 	char *name;
 	char *command;
 	gboolean flexible;
+	gboolean choosable; /* not implemented yet */
 };
 
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;

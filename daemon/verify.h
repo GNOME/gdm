@@ -29,7 +29,7 @@ gchar *gdm_verify_user    (const char *username,
 void   gdm_verify_cleanup (void);
 void   gdm_verify_check   (void);
 /* used in pam */
-void   gdm_verify_env_setup (void);
+gboolean gdm_verify_open_session (void);
 void   gdm_verify_setup_user (const gchar *login, const gchar *display) ;
 
 #endif /* GDM_VERIFY_H */

@@ -30,7 +30,7 @@
 /* Some macros to make setting the tens of GtkEntry and GtkSpinButtons much simpler. 
  * It also makes the code a lot more readable too.
  */
-GtkWidget *get_widget(gchar *widget_name);
+GtkWidget *get_widget(const gchar *widget_name);
 
 
 typedef struct _GdmConfigSession GdmConfigSession;
@@ -176,6 +176,16 @@ change_background_sensitivity_none     (GtkButton       *button,
 void
 set_face_sensitivity                   (GtkButton       *button,
                                         gpointer         user_data);
+void add_new_server_def (GtkButton *button, gpointer user_data);
+void edit_selected_server_def (GtkButton *button, gpointer user_data);
+void delete_selected_server_def (GtkButton *button, gpointer user_data);
+void make_server_def_default (GtkButton *button, gpointer user_data);
+void record_selected_server_def (GtkCList *clist,
+				 gint row,
+				 gint column,
+				 GdkEventButton *event,
+				 gpointer user_data);
+
 void handle_server_add_or_edit         (gchar           *string,
 					gpointer         user_data);
 void

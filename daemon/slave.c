@@ -1061,8 +1061,7 @@ gdm_slave_greeter (void)
 	}
 
 	if (d->type == TYPE_FLEXI) {
-		/* FIXME: When we get multiple server types, put it here */
-		ve_setenv ("GDM_FLEXI_SERVER", GDM_STANDARD, TRUE);
+		ve_setenv ("GDM_FLEXI_SERVER", "yes", TRUE);
 	} else if (d->type == TYPE_FLEXI_XNEST) {
 		ve_setenv ("GDM_FLEXI_SERVER", "Xnest", TRUE);
 	} else {
@@ -1882,9 +1881,6 @@ gdm_slave_session_start (void)
 	ve_setenv ("LANG", language, TRUE);
 	ve_setenv ("GDM_LANG", language, TRUE);
     
-	/* setup the verify env vars */
-	gdm_verify_env_setup ();
-    
 	setpgid (0, 0);
 	
 	umask (022);
@@ -1896,6 +1892,14 @@ gdm_slave_session_start (void)
 	if (initgroups (login, pwent->pw_gid) < 0)
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("gdm_slave_session_start: initgroups() failed for %s. Aborting."), login);
+
+	/* setup the verify env vars, set credentials and such stuff 
+	 * and open the session */
+	if ( ! gdm_verify_open_session ())
+		gdm_child_exit (DISPLAY_REMANAGE,
+				_("%s: Could not open session for %s. "
+				  "Aborting."),
+				"gdm_slave_session_start", login);
 
 	if (setuid (pwent->pw_uid) < 0) 
 		gdm_child_exit (DISPLAY_REMANAGE,

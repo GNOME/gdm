@@ -175,7 +175,8 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 
     /* check for the standard method of disallowing users */
     if (pwent->pw_shell != NULL &&
-	strcmp (pwent->pw_shell, "/bin/false") == 0) {
+	(strcmp (pwent->pw_shell, "/bin/true") == 0 ||
+	 strcmp (pwent->pw_shell, "/bin/false") == 0)) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    if (GdmVerboseAuth) {
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
@@ -239,9 +240,10 @@ gdm_verify_check (void)
 }
 
 /* used in pam */
-void
-gdm_verify_env_setup (void)
+gboolean
+gdm_verify_open_session (void)
 {
+	return TRUE;
 }
 
 /* EOF */

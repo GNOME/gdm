@@ -1,7 +1,9 @@
 [Desktop Entry]
 _Name=New login in a nested window
 _Comment=Log in as another user inside a nested window
-TryExec=gdmflexiserver
+# Given that we can set up the Xnest binary in the config file
+# this is minorly evil
+TryExec=Xnest
 Exec=gdmflexiserver --xnest
 Icon=
 Terminal=0

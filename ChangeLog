@@ -1,3 +1,26 @@
+Sat Aug 18 18:17:44 2001  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch]: add some code for choosable servers (not
+	  implemented yet
+
+	* daemon/misc.c: search our own displays for used numbers first
+
+	* daemon/gdm.c, daemon/server.c, daemon/slave.c:  Finish implementing
+	  choosing of flexi servers
+
+	* daemon/slave.c, daemon/verify{,-pam,-crypt,-shadow}.[ch]:
+	  Correctly implement credential setting and some pam related	
+	  fixes
+
+	* gui/gdmconfig.(c|h|glade): Start on making configuration for 
+	  all the new stuff including the server definitions, not finished
+	  yet.
+
+	* gui/gdmflexiserver.c: if there are multiple flexible servers,
+	  give the user a choice
+
+	* gui/gdmflexiserver-xnest.desktop.in: only show if Xnest exists
+
 Fri Aug 17 23:56:14 2001  George Lebl <jirka@5z.com>
 
 	* config/gdm.conf.in: Add a standard server definition and the Xnest

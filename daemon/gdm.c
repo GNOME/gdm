@@ -329,6 +329,8 @@ gdm_config_parse (void)
 			    (GDM_KEY_SERVER_COMMAND);
 		    svr->flexible = gnome_config_get_bool
 			    (GDM_KEY_SERVER_FLEXIBLE);
+		    svr->choosable = gnome_config_get_bool
+			    (GDM_KEY_SERVER_CHOOSABLE);
 
 		    if (ve_string_empty (svr->command)) {
 			    gdm_error (_("%s: Empty server command, "
@@ -357,6 +359,7 @@ gdm_config_parse (void)
 	    svr->name = g_strdup ("Standard server");
 	    svr->command = g_strdup (GdmStandardXServer);
 	    svr->flexible = TRUE;
+	    svr->choosable = TRUE;
 
 	    xservers = g_slist_append (xservers, svr);
     }
@@ -1642,6 +1645,8 @@ handle_flexi_server (GdmConnection *conn, int type, const char *server,
 	GdmDisplay *display;
 	char *bin;
 
+	gdm_debug ("server: '%s'", server);
+
 	if (flexi_servers >= GdmFlexibleXServers) {
 		gdm_connection_write (conn,
 				      "ERROR 1 No more flexi servers\n");
@@ -1694,7 +1699,9 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		            strlen (GDM_SUP_FLEXI_XSERVER " ")) == 0) {
 		char *name = g_strdup
 			(&msg[strlen (GDM_SUP_FLEXI_XSERVER " ")]);
+		const char *command = NULL;
 		GdmXServer *svr;
+
 		g_strstrip (name);
 		if (ve_string_empty (name)) {
 			g_free (name);
@@ -1702,23 +1709,23 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 		}
 
 		svr = gdm_find_x_server (name);
+		g_free (name);
 		if (svr == NULL) {
 			/* Don't print the name to syslog as it might be
 			 * long and dangerous */
 			gdm_error (_("Unknown server type requested, using "
 				     "standard server."));
-			g_free (name);
-			name = g_strdup (GdmStandardXServer);
+			command = GdmStandardXServer;
 		} else if ( ! svr->flexible) {
 			gdm_error (_("Requested server %s not allowed to be "
 				     "used for flexible servers, using "
 				     "standard server."), name);
-			g_free (name);
-			name = g_strdup (GdmStandardXServer);
+			command = GdmStandardXServer;
+		} else {
+			command = svr->command;
 		}
 
-		handle_flexi_server (conn, TYPE_FLEXI, name, NULL, NULL);
-		g_free (name);
+		handle_flexi_server (conn, TYPE_FLEXI, command, NULL, NULL);
 	} else if (strncmp (msg, GDM_SUP_FLEXI_XNEST " ",
 		            strlen (GDM_SUP_FLEXI_XNEST " ")) == 0) {
 		char *dispname = NULL, *xauthfile = NULL;

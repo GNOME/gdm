@@ -538,7 +538,7 @@ gdm_server_spawn (GdmDisplay *d)
 		gdm_error (_("Invalid server command '%s'"), d->command);
 		argv = ve_split (GdmStandardXServer);
 		command = GdmStandardXServer;
-	} else if (access (bin, X_OK) != 0) {
+	} else if (bin[0] != '/') {
 		GdmXServer *svr = gdm_find_x_server (bin);
 		if (svr == NULL) {
 			gdm_error (_("Server name '%s' not found, "

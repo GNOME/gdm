@@ -40,8 +40,9 @@ extern gboolean GdmAllowRemoteRoot;
 extern gchar *GdmTimedLogin;
 extern gboolean GdmAllowRemoteAutoLogin;
 
-/* Local PAM handle */
-static pam_handle_t *pamh = NULL;
+/* Evil, but this way these things are passed to the child session */
+static char *current_login = NULL;
+static char *current_display = NULL;
 
 
 /* Internal PAM conversation function. Interfaces between the PAM
@@ -155,9 +156,9 @@ gdm_verify_user (const char *username,
     gchar *login;
     struct passwd *pwent;
     gboolean error_msg_given = FALSE;
-    gboolean opened_session = FALSE;
     gboolean started_timer = FALSE;
     gchar *auth_errmsg;
+    pam_handle_t *pamh;
 
     /* start the timer for timed logins */
     if (local ||
@@ -233,7 +234,8 @@ gdm_verify_user (const char *username,
     /* check for the standard method of disallowing users */
     if (pwent != NULL &&
 	pwent->pw_shell != NULL &&
-	strcmp (pwent->pw_shell, "/bin/false") == 0) {
+	(strcmp (pwent->pw_shell, "/bin/true") == 0 ||
+	 strcmp (pwent->pw_shell, "/bin/false") == 0)) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    if (GdmVerboseAuth) {
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
@@ -258,23 +260,17 @@ gdm_verify_user (const char *username,
 		    gdm_error (_("Couldn't set acct. mgmt for %s"), login);
 	    goto pamerr;
     }
-    
-    /* Register the session */
-    if ((pamerr = pam_open_session (pamh, 0)) != PAM_SUCCESS) {
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Couldn't open session for %s"), login);
-	    goto pamerr;
-    }
 
-    opened_session = TRUE;
+    pam_end (pamh, PAM_SUCCESS);
 
-    /* Set credentials */
-    if ((pamerr = pam_setcred (pamh, 0)) != PAM_SUCCESS) {
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Couldn't set credentials for %s"), login);
-	    goto pamerr;
-    }
-    
+    /* Workaround to avoid gdm messages being logged as PAM_pwdb */
+    closelog ();
+    openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+    g_free (current_login);
+    current_login = g_strdup (login);
+    g_free (current_display);
+    current_display = g_strdup (display);
     
     return login;
     
@@ -301,15 +297,16 @@ gdm_verify_user (const char *username,
 	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Please enter your login"));*/
     }
 
-    if (opened_session)
-	    pam_close_session (pamh, 0);
-    
     pam_end (pamh, pamerr);
-    pamh = NULL;
     
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
     closelog ();
     openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+    g_free (current_login);
+    current_login = NULL;
+    g_free (current_display);
+    current_display = NULL;
     
     return NULL;
 }
@@ -326,8 +323,8 @@ gdm_verify_user (const char *username,
 void
 gdm_verify_setup_user (const gchar *login, const gchar *display) 
 {
+    pam_handle_t *pamh;
     gint pamerr;
-    gboolean opened_session = FALSE;
 
     if (!login)
 	return;
@@ -359,36 +356,32 @@ gdm_verify_setup_user (const gchar *login, const gchar *display)
 	goto setup_pamerr;
     }
 #endif
-    
-    /* Register the session */
-    if ((pamerr = pam_open_session (pamh, PAM_SILENT)) != PAM_SUCCESS) {
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Couldn't open session for %s"), login);
-	    goto setup_pamerr;
-    }
 
-    opened_session = TRUE;
+    pam_end (pamh, PAM_SUCCESS);
     
-    /* Set credentials */
-    if ((pamerr = pam_setcred (pamh, PAM_SILENT)) != PAM_SUCCESS) {
-	    if (gdm_slave_should_complain ())
-		    gdm_error (_("Couldn't set credentials for %s"), login);
-	    goto setup_pamerr;
-    }
+    /* Workaround to avoid gdm messages being logged as PAM_pwdb */
+    closelog ();
+    openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+    g_free (current_login);
+    current_login = g_strdup (login);
+    g_free (current_display);
+    current_display = g_strdup (display);
     
     return;
     
  setup_pamerr:
     
-    if (opened_session)
-	    pam_close_session (pamh, PAM_SILENT);
-    
     pam_end (pamh, pamerr);
-    pamh = NULL;
     
     /* Workaround to avoid gdm messages being logged as PAM_pwdb */
     closelog ();
     openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+    g_free (current_login);
+    current_login = NULL;
+    g_free (current_display);
+    current_display = NULL;
 }
 
 
@@ -401,15 +394,45 @@ gdm_verify_setup_user (const gchar *login, const gchar *display)
 void 
 gdm_verify_cleanup (void)
 {
-    if (pamh) {
-	pam_close_session (pamh, PAM_SILENT);
-	pam_end (pamh, PAM_SUCCESS);
-	pamh = NULL;
+	pam_handle_t *pamh;
+	gint pamerr;
+
+	if (current_login == NULL)
+		return;
+
+	/* Initialize a PAM session for the user */
+	if ((pamerr = pam_start ("gdm", current_login,
+				 &standalone_pamc, &pamh)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Can't find /etc/pam.d/gdm!"));
+		goto cleanup_pamerr;
+	}
     
+	/* Inform PAM of the user's tty */
+	if (current_display != NULL &&
+	    (pamerr = pam_set_item
+	     (pamh, PAM_TTY, current_display)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Can't set PAM_TTY=%s"), current_display);
+		goto cleanup_pamerr;
+	}
+
+
+	/* FIXME: theoretically this closes even sessions that
+	 * don't exist, which I suppose is OK */
+	pam_close_session (pamh, PAM_SILENT);
+
+cleanup_pamerr:
+	pam_end (pamh, pamerr);
+
 	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
 	closelog ();
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
-    }
+
+	g_free (current_login);
+	current_login = NULL;
+	g_free (current_display);
+	current_display = NULL;
 }
 
 
@@ -431,19 +454,66 @@ gdm_verify_check (void)
 }
 
 /* used in pam */
-void
-gdm_verify_env_setup (void)
+gboolean
+gdm_verify_open_session (void)
 {
-    gchar **pamenv;
+	gchar **pamenv;
+	pam_handle_t *pamh;
+	gint pamerr;
 
-    /* Migrate any PAM env. variables to the user's environment */
-    if ((pamenv = pam_getenvlist (pamh))) {
-	gint i;
+	if (current_login == NULL)
+		return FALSE;
 
-	for (i = 0 ; pamenv[i] ; i++) {
-	    putenv (g_strdup (pamenv[i]));
+	/* Initialize a PAM session for the user */
+	if ((pamerr = pam_start ("gdm", current_login,
+				 &standalone_pamc, &pamh)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Can't find /etc/pam.d/gdm!"));
+		goto open_pamerr;
 	}
-    }
+    
+	/* Inform PAM of the user's tty */
+	if (current_display != NULL &&
+	    (pamerr = pam_set_item
+	     (pamh, PAM_TTY, current_display)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Can't set PAM_TTY=%s"), current_display);
+		goto open_pamerr;
+	}
+
+	/* Set credentials */
+	if ((pamerr = pam_setcred (pamh, PAM_SILENT)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Couldn't set credentials for %s"),
+				   current_login);
+		goto open_pamerr;
+	}
+
+	/* Register the session */
+	if ((pamerr = pam_open_session (pamh, PAM_SILENT)) != PAM_SUCCESS) {
+		if (gdm_slave_should_complain ())
+			gdm_error (_("Couldn't open session for %s"),
+				   current_login);
+		goto open_pamerr;
+	}
+
+	/* Migrate any PAM env. variables to the user's environment */
+	if ((pamenv = pam_getenvlist (pamh))) {
+		gint i;
+
+		for (i = 0 ; pamenv[i] ; i++) {
+			putenv (g_strdup (pamenv[i]));
+		}
+	}
+
+open_pamerr:
+	pam_end (pamh, pamerr);
+
+	/* Workaround to avoid gdm messages being logged as PAM_pwdb */
+	closelog ();
+	openlog ("gdm", LOG_PID, LOG_DAEMON);
+
+	return (pamerr == PAM_SUCCESS);
 }
 
 /* EOF */

@@ -171,7 +171,148 @@ get_xauthfile (void)
 	return xauthfile;
 }
 
+static GSList *xservers = NULL;
+static gboolean got_standard = FALSE;
 static gboolean use_xnest = FALSE;
+const char *server = NULL;
+const char *chosen_server = NULL;
+
+static void
+read_servers (void)
+{
+	gpointer iter;
+	char *k;
+
+	/* Find server definitions */
+	iter = gnome_config_init_iterator_sections ("=" GDM_CONFIG_FILE "=/");
+	iter = gnome_config_iterator_next (iter, &k, NULL);
+
+	while (iter) {
+		if (strncmp (k, "server-", strlen ("server-")) == 0) {
+			char *section;
+			GdmXServer *svr;
+
+			section = g_strdup_printf ("=" GDM_CONFIG_FILE "=/%s/", k);
+			gnome_config_push_prefix (section);
+
+			if ( ! gnome_config_get_bool
+			     (GDM_KEY_SERVER_FLEXIBLE)) {
+				gnome_config_pop_prefix ();
+				g_free (section);
+				g_free (k);
+				iter = gnome_config_iterator_next (iter,
+								   &k, NULL);
+				continue;
+			}
+
+			svr = g_new0 (GdmXServer, 1);
+
+			svr->id = g_strdup (k + strlen ("server-"));
+			svr->name = gnome_config_get_string
+				(GDM_KEY_SERVER_NAME);
+			svr->command = gnome_config_get_string
+				(GDM_KEY_SERVER_COMMAND);
+			svr->flexible = TRUE;
+			svr->choosable = gnome_config_get_bool
+				(GDM_KEY_SERVER_CHOOSABLE);
+
+			g_free (section);
+			gnome_config_pop_prefix ();
+
+			if (strcmp (svr->id, GDM_STANDARD) == 0)
+				got_standard = TRUE;
+
+			if (server != NULL &&
+			    strcmp (svr->id, server) == 0)
+				chosen_server = g_strdup (svr->id);
+
+			xservers = g_slist_append (xservers, svr);
+		}
+
+		g_free (k);
+
+		iter = gnome_config_iterator_next (iter, &k, NULL);
+	}
+}
+
+static char *
+choose_server (void)
+{
+	GtkWidget *dialog, *vbox;
+	GtkWidget *w;
+	GSList *group = NULL;
+	GSList *li;
+
+	if (chosen_server != NULL)
+		return g_strdup (chosen_server);
+
+	if (xservers == NULL)
+		return NULL;
+
+	if (xservers->next == NULL &&
+	    got_standard)
+		return g_strdup (GDM_STANDARD);
+
+	dialog = gnome_dialog_new (_("Choose server"),
+				   GNOME_STOCK_BUTTON_OK,
+				   GNOME_STOCK_BUTTON_CANCEL,
+				   NULL);
+	vbox = GNOME_DIALOG (dialog)->vbox;
+
+	w = gtk_label_new (_("Choose the X server to start"));
+	gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);
+
+	group = NULL;
+	if ( ! got_standard) {
+		w = gtk_radio_button_new_with_label (group,
+						     _("Standard server"));
+		gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+		group = gtk_radio_button_group (GTK_RADIO_BUTTON (w));
+	}
+
+	for (li = xservers; li != NULL; li = li->next) {
+		GdmXServer *svr = li->data;
+		w = gtk_radio_button_new_with_label
+			(group, svr->name ? svr->name : svr->id);
+		gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);
+		if (got_standard &&
+		    strcmp (svr->id, GDM_STANDARD) == 0)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w),
+						      TRUE);
+		gtk_object_set_user_data (GTK_OBJECT (w), svr->id);
+		group = gtk_radio_button_group (GTK_RADIO_BUTTON (w));
+	}
+
+	gtk_widget_show_all (dialog);
+
+	gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
+
+	switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
+	case 0:	
+		/* OK */
+		break;
+	default:
+		gtk_widget_destroy (dialog);
+		/* cancel, or close */
+		exit (0);
+		break;
+	}
+
+	for (li = group; li != NULL; li = li->next) {
+		GtkWidget *w = li->data;
+		char *name = gtk_object_get_user_data (GTK_OBJECT (w));
+		if (GTK_TOGGLE_BUTTON (w)->active) {
+			gtk_widget_destroy (dialog);
+			return g_strdup (name);
+		}
+	}
+
+	gtk_widget_destroy (dialog);
+
+	/* should never get here really */
+	return NULL;
+}
 
 struct poptOption options [] = {
 	{ "xnest", 'n', POPT_ARG_NONE, &use_xnest, 0, N_("Xnest mode"), NULL },
@@ -191,16 +332,22 @@ main (int argc, char *argv[])
 	char *version;
 	char *ret;
 	char *message;
+	poptContext ctx;
+	const char **args;
 
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 
 	gnome_init_with_popt_table ("gdmflexiserver", VERSION, argc, argv,
-				    options, 0, NULL);
+				    options, 0, &ctx);
 
 	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 	pidfile = gnome_config_get_string (GDM_KEY_PIDFILE);
 	gnome_config_pop_prefix ();
+
+	args = poptGetArgs (ctx);
+	if (args != NULL && args[0] != NULL)
+		server = args[0];
 
 	pid = 0;
 	if (pidfile != NULL)
@@ -237,7 +384,13 @@ main (int argc, char *argv[])
 					   get_xauthfile ());
 		version = "2.2.3.2";
 	} else {
-		command = g_strdup (GDM_SUP_FLEXI_XSERVER);
+		read_servers ();
+		server = choose_server ();
+		if (server == NULL)
+			command = g_strdup (GDM_SUP_FLEXI_XSERVER);
+		else
+			command = g_strdup_printf (GDM_SUP_FLEXI_XSERVER " %s",
+						   server);
 		version = "2.2.3.2";
 	}
 
