@@ -1,20 +1,21 @@
-%define ver           @VERSION@
-%define rel           1
 %define localstatedir /var/lib
 %define sysconfdir    /etc
 
-Summary:     The GNOME Display Manager.
-Name:        gdm
-Version:     %ver
-Release:     %rel
-Copyright:   LGPL/GPL
-Group:       User Interface/X
-Source:      ftp://ftp.5z.com/pub/unix/gdm-%{version}.tar.gz
-BuildRoot:   %{_tmppath}/gdm-%{version}-root
-Prereq:      /usr/sbin/useradd
-Requires:    pam >= 0.68
-Requires:    gnome-libs >= 1.0.17
-Epoch:       1
+Summary:        The GNOME Display Manager.
+Name:           gdm
+Version:        @VERSION@
+Release:        1
+Epoch:          1
+License:        LGPL/GPL
+Group:          User Interface/X
+Source:         ftp://ftp.5z.com/pub/unix/gdm-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/gdm-%{version}-root
+Prereq:         /usr/sbin/useradd
+Requires:       pam >= 0.68
+Requires:       gnome-libs >= 1.0.17
+BuildRequires:  usermode, libglade-devel
+BuildRequires:  gnome-libs-devel >= 1.0.17
+BuildRequires:  gdk-pixbuf-devel >= 0.7.0
 
 %description
 Gdm (the GNOME Display Manager) is a highly configurable
@@ -99,7 +100,7 @@ fi
 # ignore error in the above
 exit 0
 
-%files
+%files -f %name.lang
 %defattr(-, root, root)
 
 %doc AUTHORS COPYING ChangeLog NEWS README
@@ -113,7 +114,6 @@ exit 0
 %{_datadir}/gnome/apps/*/*
 %{_datadir}/gnome/help/*
 %{_datadir}/omf/gdm
-%{_datadir}/locale/*/*/*
 # %config %{sysconfdir}/security/console.apps/gdmconfig
 # %config %{sysconfdir}/X11/gdm/gnomerc
 # %config %{sysconfdir}/X11/gdm/gdm.conf
@@ -134,6 +134,11 @@ exit 0
 
 
 %changelog
+* Tue Nov  6 2001 Gregory Leblanc <gleblanc@linuxweasel.com>
+- removed some unnecessary %defines
+- fixed find_lang stuff
+- added some BuildRequires lines
+
 * Sun Jul 01 2001 George Lebl <jirka@5z.com>
 - Fixed file listing
 
