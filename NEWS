@@ -1,5 +1,22 @@
 Ahh news...
 
+2.4.1.6 SECURITY ADDENDUM:
+  Was not part of the original release notes to give distributors a chance
+  to update.
+
+- SECURITY: Fixed CAN-2003-0547 which allows any user to read any
+  root readable text file on the system by making a symling from
+  ~/.xsession-errors
+
+- SECURITY: Fixed CAN-2003-0548, a crash when chosen host expires.
+  DoS only for XDMCP (XDMCP should however be confined to a 'trusted'
+  network anyway)
+
+- SECURITY: Fixed CAN-2003-0549, a crash if authorization key name
+  is shorter then 18 bytes (that is, not MIT-MAGIC-COOKIE-1)
+  DoS only for XDMCP (XDMCP should however be confined to a 'trusted'
+  network anyway)
+
 2.4.1.6 stuff:
 
 - Backport the errorgui from HEAD, easier then fixing
