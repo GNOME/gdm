@@ -893,11 +893,13 @@ parse_translated_text (xmlNodePtr node,
   text = xmlNodeGetContent (node);
   if (text == NULL)
     {
-      g_set_error (error,
-		   GREETER_PARSER_ERROR,
-		   GREETER_PARSER_ERROR_BAD_SPEC,
-		   "No string defined for text node\n");
-      return FALSE;
+      /* This is empty text */
+      *translation_score = score;
+      if (*translated_text)
+        g_free (*translated_text);
+      *translated_text = g_strdup ("");
+  
+      return TRUE;
     }
 
   *translation_score = score;
