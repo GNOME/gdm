@@ -69,6 +69,7 @@
 /* crap, these don't fit into the above theme, this protocol
  * is thus liable to change */
 #define GDM_GNOMESESS  '?'
+#define GDM_SGNOMESESS '*'
 #define GDM_STARTTIMER 's'
 #define GDM_STOPTIMER  'S'
 #define GDM_LOGIN      'L' /* this is the login prompt, much like PROMPT but

@@ -1239,7 +1239,9 @@ gdm_slave_session_start (void)
     struct passwd *pwent;
     char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
     char *gnome_session = NULL;
-    gboolean savesess = FALSE, savelang = FALSE, usrcfgok = FALSE, authok = FALSE;
+    gboolean savesess = FALSE, savelang = FALSE, savegnomesess = FALSE;
+    gboolean usrcfgok = FALSE, sessoptok = FALSE, authok = FALSE;
+    gboolean need_config_sync = FALSE;
     int i;
     const char *shell = NULL;
     pid_t sesspid;
@@ -1265,6 +1267,15 @@ gdm_slave_session_start (void)
     usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
 			       cfgdir, "gdm", TRUE, GdmUserMaxFile,
 			       GdmRelaxPerms);
+    /* Sanity check on ~user/.gnome/session-options */
+    sessoptok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
+				cfgdir, "session-options", TRUE, GdmUserMaxFile,
+				/* We cannot be absolutely strict about the
+				 * session permissions, since by default they
+				 * will be writable by group and there's
+				 * nothing we can do about it.  So we relax
+				 * the permission checking in this case */
+				GdmRelaxPerms == 0 ? 1 : GdmRelaxPerms);
     g_free (cfgdir);
 
     if (usrcfgok) {
@@ -1329,12 +1340,12 @@ gdm_slave_session_start (void)
 
     if (greet) {
 	    char *ret = gdm_slave_greeter_ctl (GDM_SSESS, "");
-	    if (ret != NULL && ret[0] != '\0')
+	    if ( ! gdm_string_empty (ret))
 		    savesess = TRUE;
 	    g_free (ret);
 
 	    ret = gdm_slave_greeter_ctl (GDM_SLANG, "");
-	    if (ret != NULL && ret[0] != '\0')
+	    if ( ! gdm_string_empty (ret))
 		    savelang = TRUE;
 	    g_free (ret);
 
@@ -1348,6 +1359,12 @@ gdm_slave_session_start (void)
 			    ret = NULL;
 			    g_free (session);
 			    session = g_strdup ("Gnome");
+		    }
+		    g_free (ret);
+
+		    ret = gdm_slave_greeter_ctl (GDM_SGNOMESESS, "");
+		    if ( ! gdm_string_empty (ret)) {
+			    savegnomesess = TRUE;
 		    }
 		    g_free (ret);
 	    }
@@ -1473,19 +1490,38 @@ gdm_slave_session_start (void)
 			    _("gdm_slave_session_start: Could not become %s. Aborting."), login);
 	
 	chdir (pwent->pw_dir);
+
+	/* anality, make sure nothing is in memory for gnome_config
+	 * to write */
+	gnome_config_drop_all ();
 	
 	if (usrcfgok && savesess) {
-	    gchar *cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/last", NULL);
-	    gnome_config_set_string (cfgstr, save_session);
-	    gnome_config_sync();
-	    g_free (cfgstr);
+		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir,
+					     "/.gnome/gdm=/session/last", NULL);
+		gnome_config_set_string (cfgstr, save_session);
+		need_config_sync = TRUE;
+		g_free (cfgstr);
 	}
 	
 	if (usrcfgok && savelang) {
-	    gchar *cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/lang", NULL);
-	    gnome_config_set_string (cfgstr, language);
-	    gnome_config_sync();
-	    g_free (cfgstr);
+		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir,
+					     "/.gnome/gdm=/session/lang", NULL);
+		gnome_config_set_string (cfgstr, language);
+		need_config_sync = TRUE;
+		g_free (cfgstr);
+	}
+
+	if (sessoptok &&
+	    savegnomesess &&
+	    gnome_session != NULL) {
+		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/session-options=/Options/CurrentSession", NULL);
+		gnome_config_set_string (cfgstr, gnome_session);
+		need_config_sync = TRUE;
+		g_free (cfgstr);
+	}
+
+	if (need_config_sync) {
+		gnome_config_sync();
 	}
 
 	for (i = 0; i < sysconf (_SC_OPEN_MAX); i++)

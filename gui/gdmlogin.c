@@ -117,6 +117,7 @@ static GtkWidget *clock_label = NULL;
 static GtkWidget *entry;
 static GtkWidget *msg;
 static gboolean require_quarter = FALSE;
+static gboolean remember_gnome_session = FALSE;
 static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
@@ -1279,11 +1280,14 @@ gdm_login_session_init (GtkWidget *menu)
 				   "GNOME, into your current session."),
 				 NULL);
 
-			/* Add the chooser session, this one doesn't have a script
-			 * really, it's a fake, it runs the Gnome script */
-			/* For translators:  This is the login that lets users choose the
-			 * specific gnome session they want to use */
-			item = gtk_radio_menu_item_new_with_label (sessgrp, _("Gnome Chooser"));
+			/* Add the chooser session, this one doesn't have a
+			 * script really, it's a fake, it runs the Gnome
+			 * script */
+			/* For translators:  This is the login that lets
+			 * users choose the specific gnome session they
+			 * want to use */
+			item = gtk_radio_menu_item_new_with_label
+				(sessgrp, _("Gnome Chooser"));
 			gtk_tooltips_set_tip
 				(tooltips, GTK_WIDGET (item),
 				 _("This session will log you into "
@@ -1551,6 +1555,7 @@ get_gnome_session (const char *sess_string)
 	GtkWidget *hbox;
 	GtkWidget *entry;
 	GtkWidget *newcb;
+	GtkWidget *remembercb;
 	char *retval;
 	char **sessions;
 	char *selected;
@@ -1672,6 +1677,14 @@ get_gnome_session (const char *sess_string)
 			    GTK_SIGNAL_FUNC (toggle_insensitize),
 			    clist);
 
+	remembercb = gtk_check_button_new_with_label
+		/* Translators: this is to remember the chosen gnome session
+		 * for next time */
+	       	(_("Remember this setting"));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (remembercb), TRUE);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (d)->vbox), remembercb,
+			    FALSE, FALSE, 0);
+
 	gtk_window_set_modal (GTK_WINDOW (d), TRUE);
 
 	gtk_widget_show_all (d);
@@ -1680,6 +1693,8 @@ get_gnome_session (const char *sess_string)
 	gdm_wm_no_login_focus_push ();
 	gnome_dialog_run (GNOME_DIALOG (d));
 	gdm_wm_no_login_focus_pop ();
+
+	remember_gnome_session = GTK_TOGGLE_BUTTON (remembercb)->active;
 
 	/* we've set the just_hide to TRUE, so we can still access the
 	 * window */
@@ -1969,6 +1984,16 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 		g_free (sess);
 	}
+	break;
+
+    case GDM_SGNOMESESS:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+
+	if (remember_gnome_session)
+	    g_print ("%cY\n", STX);
+	else
+	    g_print ("%c\n", STX);
+
 	break;
 
     case GDM_STARTTIMER:
