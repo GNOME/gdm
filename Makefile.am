@@ -1,4 +1,4 @@
-SUBDIRS = config macros pixmaps intl daemon gui docs po debian
+SUBDIRS = config macros pixmaps intl daemon gui docs po
 
 EXTRA_DIST = \
 	ChangeLog		\

@@ -22,7 +22,6 @@ EXTRA_DIST = \
 	PostSession \
 	PreSession \
 	Default.redhat \
-	Default.debian \
 	XKeepsCrashing
 
 install-data-hook: gdm.conf gnomerc Gnome
@@ -34,7 +33,7 @@ install-data-hook: gdm.conf gnomerc Gnome
 		$(INSTALL_DATA) gdm.conf $(confdir)/gdm.conf; \
 	fi
 
-	$(INSTALL_SCRIPT) XKeepsCrashing $(confdir)/XKeepsCrashing
+	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(confdir)/XKeepsCrashing
 
 	if test '!' -f $(localedir)/locale.alias; then \
 		$(INSTALL_DATA) $(srcdir)/locale.alias $(localedir)/locale.alias; \
@@ -51,10 +50,6 @@ install-data-hook: gdm.conf gnomerc Gnome
 
 	if test '!' -f $(sessdir)/Gnome; then \
 		$(INSTALL_SCRIPT) Gnome $(sessdir)/Gnome; \
-	fi
-
-	if test -e /etc/debian_version; then \
-		$(INSTALL_SCRIPT) $(srcdir)/Default.debian $(sessdir)/Default; \
 	fi
 
 	if test '!' -d $(initdir); then \

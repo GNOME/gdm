@@ -297,16 +297,16 @@ AC_SUBST(EXPANDED_SESSDIR)
 AC_DEFINE_UNQUOTED(EXPANDED_SESSDIR,"$EXPANDED_SESSDIR")
 
 ## Stuff for debian/changelog.in
-if test -e "debian/changelog"; then
-  DEBIAN_DATESTAMP=`head -1 debian/changelog| sed -e 's/.*cvs.//' -e 's/).*//'`
-  DEBIAN_DATE=`grep '^ --' debian/changelog | head -1 | sed -e 's/.*  //'`
-else
-  DEBIAN_DATESTAMP=`date +%Y%m%d%H%M%s`
-  DEBIAN_DATE=`date -R`
-fi
-
-AC_SUBST(DEBIAN_DATESTAMP)
-AC_SUBST(DEBIAN_DATE)
+#if test -e "debian/changelog"; then
+#  DEBIAN_DATESTAMP=`head -1 debian/changelog| sed -e 's/.*cvs.//' -e 's/).*//'`
+#  DEBIAN_DATE=`grep '^ --' debian/changelog | head -1 | sed -e 's/.*  //'`
+#else
+#  DEBIAN_DATESTAMP=`date +%Y%m%d%H%M%s`
+#  DEBIAN_DATE=`date -R`
+#fi
+#
+#AC_SUBST(DEBIAN_DATESTAMP)
+#AC_SUBST(DEBIAN_DATE)
 
 prefix=$old_prefix
 exec_prefix=$old_exec_prefix
@@ -322,11 +322,11 @@ docs/Makefile
 docs/C/Makefile
 po/Makefile.in
 intl/Makefile
-debian/Makefile
+#debian/Makefile
 config/gdm.conf
 config/Gnome
 config/gnomerc
-debian/changelog
+#debian/changelog
 gdm.spec
 ],[sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile])
 
