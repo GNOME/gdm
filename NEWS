@@ -18,6 +18,10 @@ Ahh news...
 - If a greeter crashes within 10 seconds of display start, try
   running a different greeter (and telling the user that)
 
+- Fix #97774 by resetting the rlimits back after we fork the
+  user session.  Also make AlwaysRestartServer default to false
+  again since it was a workaround for this bug.
+
 - Checking for free display numbers was only taking into account
   servers listening on tcp.
 
@@ -56,6 +60,11 @@ Ahh news...
 - Fix RH #84247 by checking for gettext binary before using it
 
 - Random other minor fixes
+
+- Translation updates (Danilo Segan, Serbian team, Metin Amiroff,
+  Christian Rose, Kjartan Maraas, Artur Flinta, Vincent van Adrighem,
+  Valek Filippov, Laurent Dhima, Christophe Merlet, Mohammad DAMT,
+  Dafydd Harries)
 
 2.4.2.96 stuff:
 

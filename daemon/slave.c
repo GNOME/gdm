@@ -1029,6 +1029,8 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 	gdm_sigchld_block_push ();
 	gdm_sigterm_block_push ();
 	pid = d->sesspid = fork ();
+	if (pid == 0)
+		gdm_unset_signals ();
 	gdm_sigterm_block_pop ();
 	gdm_sigchld_block_pop ();
 
@@ -1677,6 +1679,8 @@ gdm_slave_greeter (void)
     gdm_sigterm_block_push ();
     greet = TRUE;
     pid = d->greetpid = fork ();
+    if (pid == 0)
+	    gdm_unset_signals ();
     gdm_sigterm_block_pop ();
     gdm_sigchld_block_pop ();
 
@@ -2099,6 +2103,8 @@ gdm_slave_chooser (void)
 	gdm_sigchld_block_push ();
 	gdm_sigterm_block_push ();
 	pid = d->chooserpid = fork ();
+	if (pid == 0)
+		gdm_unset_signals ();
 	gdm_sigterm_block_pop ();
 	gdm_sigchld_block_pop ();
 
@@ -2450,6 +2456,7 @@ find_prog (const char *name)
 
 static void
 session_child_run (struct passwd *pwent,
+		   gboolean failsafe,
 		   const char *home_dir,
 		   gboolean home_dir_ok,
 		   const char *session,
@@ -2458,11 +2465,9 @@ session_child_run (struct passwd *pwent,
 		   const char *gnome_session,
 		   gboolean usrcfgok,
 		   gboolean savesess,
-		   gboolean savelang,
-		   gboolean savegnomesess)
+		   gboolean savelang)
 {
 	int logfd;
-	gboolean failsafe = FALSE;
 	char *exec;
 	const char *shell = NULL;
 	VeConfig *dmrc = NULL;
@@ -2489,14 +2494,6 @@ session_child_run (struct passwd *pwent,
 		XSync (disp, False);
 
 		XCloseDisplay (disp);
-	}
-
-	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
-	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-	    /* hack */
-	    g_ascii_strcasecmp (session, "Failsafe") == 0 ||
-	    g_ascii_strcasecmp (session, "Failsafe.desktop") == 0) {
-		failsafe = TRUE;
 	}
 
 	/* Here we setup our 0,1,2 descriptors, we do it here
@@ -2855,7 +2852,7 @@ gdm_slave_session_start (void)
     struct passwd *pwent;
     char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
     char *gnome_session = NULL;
-    gboolean savesess = FALSE, savelang = FALSE, savegnomesess = FALSE;
+    gboolean savesess = FALSE, savelang = FALSE;
     gboolean usrcfgok = FALSE, authok = FALSE;
     const char *home_dir = NULL;
     gboolean home_dir_ok = FALSE;
@@ -3073,6 +3070,14 @@ gdm_slave_session_start (void)
 	g_ascii_strcasecmp (session, "Failsafe.desktop") == 0 /* hack */)
 	    failsafe = TRUE;
 
+    if ( ! failsafe) {
+	    char *exec = get_session_exec (session);
+	    if ( ! ve_string_empty (exec) &&
+		strcmp (exec, "failsafe") == 0)
+		    failsafe = TRUE;
+	    g_free (exec);
+    }
+
     /* Write out the Xservers file */
     gdm_slave_send_num (GDM_SOP_WRITE_X_SERVERS, 0 /* bogus */);
 
@@ -3084,17 +3089,20 @@ gdm_slave_session_start (void)
     gdm_sigchld_block_push ();
     gdm_sigterm_block_push ();
     pid = d->sesspid = fork ();
+    if (pid == 0)
+	    gdm_unset_signals ();
     gdm_sigterm_block_pop ();
     gdm_sigchld_block_pop ();
 
     switch (pid) {
 	
     case -1:
-	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_session_start: Error forking user session"));
+	gdm_slave_exit (DISPLAY_REMANAGE, _("gdm_slave_session_start: Error forking user session"));
 	
     case 0:
 	/* Never returns */
 	session_child_run (pwent,
+			   failsafe,
 			   home_dir,
 			   home_dir_ok,
 			   session,
@@ -3103,13 +3111,19 @@ gdm_slave_session_start (void)
 			   gnome_session,
 			   usrcfgok,
 			   savesess,
-			   savelang,
-			   savegnomesess);
+			   savelang);
 	g_assert_not_reached ();
 	
     default:
 	break;
     }
+
+    /* We must be root for this, and we are, but just to make sure */
+    seteuid (0);
+    setegid (GdmGroupId);
+    /* Reset all the process limits, pam may have set some up for our process and that
+       is quite evil.  But pam is generally evil, so this is to be expected. */
+    gdm_reset_limits ();
 
     g_free (session);
     g_free (save_session);

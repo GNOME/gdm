@@ -699,14 +699,20 @@ pid_t
 gdm_fork_extra (void)
 {
 	pid_t pid;
-	gdm_sigchld_block_push ();
 
+	gdm_sigchld_block_push ();
 	gdm_sigterm_block_push ();
+
 	pid = extra_process = fork ();
 	if (pid < 0)
 		extra_process = 0;
-	gdm_sigterm_block_pop ();
+	else if (pid == 0)
+		/* unset signals here, and yet again
+		   later as the block_pop will whack
+		   our signal mask*/
+		gdm_unset_signals ();
 
+	gdm_sigterm_block_pop ();
 	gdm_sigchld_block_pop ();
 
 	if (pid == 0) {
@@ -1341,6 +1347,58 @@ gdm_safe_fopen_ap (const char *file)
 	if (fd < 0)
 		return NULL;
 	return fdopen (fd, "a+");
+}
+
+void
+gdm_reset_limits (void)
+{
+	struct rlimit unlim = { RLIM_INFINITY, RLIM_INFINITY };
+
+	/* Note: I don't really know which ones are really very standard
+	   and which ones are not, so I just test for them all one by one */
+
+#ifdef RLIMIT_CPU
+	setrlimit (RLIMIT_CPU, &unlim);
+#endif
+#ifdef RLIMIT_DATA
+	setrlimit (RLIMIT_DATA, &unlim);
+#endif
+#ifdef RLIMIT_FSIZE
+	setrlimit (RLIMIT_FSIZE, &unlim);
+#endif
+#ifdef RLIMIT_LOCKS
+	setrlimit (RLIMIT_LOCKS, &unlim);
+#endif
+#ifdef RLIMIT_MEMLOCK
+	setrlimit (RLIMIT_MEMLOCK, &unlim);
+#endif
+#ifdef RLIMIT_NOFILE
+	setrlimit (RLIMIT_NOFILE, &unlim);
+#endif
+#ifdef RLIMIT_OFILE
+	setrlimit (RLIMIT_OFILE, &unlim);
+#endif
+#ifdef RLIMIT_NPROC
+	setrlimit (RLIMIT_NPROC, &unlim);
+#endif
+#ifdef RLIMIT_RSS
+	setrlimit (RLIMIT_RSS, &unlim);
+#endif
+#ifdef RLIMIT_STACK
+	setrlimit (RLIMIT_STACK, &unlim);
+#endif
+#ifdef RLIMIT_CORE
+	setrlimit (RLIMIT_CORE, &unlim);
+#endif
+#ifdef RLIMIT_AS
+	setrlimit (RLIMIT_AS, &unlim);
+#endif
+#ifdef RLIMIT_VMEM
+	setrlimit (RLIMIT_VMEM, &unlim);
+#endif
+#ifdef RLIMIT_PTHREAD
+	setrlimit (RLIMIT_PTHREAD, &unlim);
+#endif
 }
 
 /* EOF */

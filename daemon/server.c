@@ -992,6 +992,8 @@ gdm_server_spawn (GdmDisplay *d, const char *vtarg)
 
     gdm_sigterm_block_push ();
     pid = d->servpid = fork ();
+    if (pid == 0)
+	    gdm_unset_signals ();
     gdm_sigterm_block_pop ();
     gdm_sigchld_block_pop ();
     

@@ -1,3 +1,24 @@
+Mon Jul 14 16:44:19 2003  George Lebl <jirka@5z.com>
+
+	* daemon/misc.[ch], daemon/slave.c: Fix #97774 by resetting the
+	  rlimits back to infinity after we fork the user session.
+
+	* config/gdm.conf.in, daemon/gdm.h: The default for
+	  AlwaysRestartServer is now again false, since it turns out to be
+	  a LOT nicer with buggy X servers (and it turns out quite a lot of
+	  people have these).
+
+	* daemon/slave.c: properly guess the failsafeness of a session and
+	  don't re-guess it again
+
+	* daemon/slave.c: when under the influence of rlimits never
+	  ABORT a display since it really could just be that we're hitting
+	  stupid limits (definately set way too low).
+
+	* daemon/slave.c, daemon/server.c, daemon/misc.c: Be extra careful
+	  about when to reset signals to avoid races (unlikely though they
+	  may be)
+
 Mon Jul 14 12:04:13 2003  George Lebl <jirka@5z.com>
 
 	* config/XKeepsCrashing, config/extract-shell.sh: Fix RH #84247 by

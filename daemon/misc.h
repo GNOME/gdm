@@ -106,6 +106,8 @@ FILE * gdm_safe_fopen_w (const char *file);
 /* like fopen with "a+" and uses O_EXCL and O_NOFOLLOW */
 FILE * gdm_safe_fopen_ap (const char *file);
 
+void gdm_reset_limits (void);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */
