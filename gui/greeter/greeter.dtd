@@ -1,15 +1,10 @@
 <!-- dtd for greeter -->
-<!-- FIXME: this doesn't seem up to date -- George -->
-
-<!ENTITY % colorattrs
-	"file CDATA #IMPLIED
+<!ENTITY % colorattrs "file CDATA #IMPLIED
 	color CDATA #IMPLIED
 	font CDATA #IMPLIED
-	tint CDATA #IMPLIED"
->
-
+	tint CDATA #IMPLIED">
 <!ELEMENT greeter (item+)>
-<!ELEMENT item (pos,normal?,active?,prelight?,children?,show?,text?)>
+<!ELEMENT item (pos | normal? | active? | prelight? | children? | show? | text? | fixed? | box?|border?)*>
 <!ELEMENT children (item+)>
 <!ELEMENT pos EMPTY>
 <!ELEMENT show EMPTY>
@@ -17,30 +12,61 @@
 <!ELEMENT normal EMPTY>
 <!ELEMENT active EMPTY>
 <!ELEMENT prelight EMPTY>
+<!ELEMENT stock EMPTY>
+<!ELEMENT fixed (item+)>
+<!ELEMENT box (item+)>
+<!-- additional elements-->
+<!ELEMENT border EMPTY>
 
 <!ATTLIST item
- 	type CDATA #REQUIRED
-	id CDATA #IMPLIED
+	type (rect | entry | pixmap | label | svg | rect) #REQUIRED
+	id (user-pw-entry | caps-lock-warning | clock | pam-error | pam-message | pam-prompt | pam-warning | timed-label | timed-rect | language_button | disconnect_button | reboot_button | halt_button | session_button | suspend_button | system_button | config_button) #IMPLIED
+	button (true | false) #IMPLIED
 >
-
 <!ATTLIST pos
-	x CDATA #REQUIRED
-	y CDATA #REQUIRED
+	x CDATA #IMPLIED
+	y CDATA #IMPLIED
 	anchor CDATA "c"
 	width CDATA #IMPLIED
 	height CDATA #IMPLIED
 >
-
 <!ATTLIST normal
-	%colorattrs;
+	%colorattrs; 
+	alpha CDATA #IMPLIED
 >
 <!ATTLIST active
-	%colorattrs;
+	%colorattrs; 
+	alpha CDATA #IMPLIED
 >
 <!ATTLIST prelight
-	%colorattrs;
+	%colorattrs; 
+	file CDATA #IMPLIED
+>
+<!ATTLIST stock
+	type (language | session | system | disconnect | quit | caps-lock-warning | timed-label | welcome-label | username-label) #REQUIRED
+>
+<!ATTLIST box
+	orientation (horizontal | vertical) "horizontal"
+	spacing CDATA #IMPLIED
+	xpadding CDATA #IMPLIED
+	ypadding CDATA #IMPLIED
+	min-width CDATA #IMPLIED
+	min-height CDATA #IMPLIED
+>
+<!-- console,console-fixed,console-flexi,remote-flexi,flexi,remote-->
+<!ATTLIST show
+	modes CDATA #IMPLIED
+	type (config | system | halt | reboot | suspend | timed) #IMPLIED
+>
+<!ATTLIST text
+	xml:lang CDATA #IMPLIED
 >
 
-<!ATTLIST show
-	modes CDATA #REQUIRED
+<!-- <border red="0" green="0" blue="10" alpha="255"/>-->
+
+<!ATTLIST border
+	red CDATA #IMPLIED
+	green CDATA #IMPLIED
+	blue CDATA #IMPLIED
+	alpha CDATA #IMPLIED
 >
