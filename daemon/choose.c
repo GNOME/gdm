@@ -39,6 +39,7 @@
 #include <fcntl.h>
 
 #include "gdm.h"
+#include "misc.h"
 #include "choose.h"
 
 static const gchar RCSid[]="$Id$";
@@ -49,8 +50,6 @@ static GSList *indirect = NULL;
 /* Tunables */
 extern gint GdmMaxIndirect;	/* Maximum pending indirects, i.e. simultaneous choosing sessions */
 extern gint GdmMaxIndirectWait;	/* Maximum age before a pending session is removed from the list */
-
-extern void gdm_debug (gchar *, ...);
 
 static guint indirect_id = 1;
 
@@ -80,23 +79,38 @@ remove_oldest_pending (void)
 }
 
 gboolean
-gdm_choose_data (void *uncast_data, size_t len)
+gdm_choose_data (const char *data)
 {
-	GdmChooseData data;
+	int id;
+	struct in_addr addr;
 	GSList *li;
+	char *msg = g_strdup (data);
+	char *p;
 
-	if (len != sizeof (data)) {
+	p = strtok (msg, " ");
+	if (p == NULL || strcmp (GDM_SOP_CHOSEN, p) != 0) {
+		g_free (msg);
 		return FALSE;
 	}
 
-	memcpy (&data, uncast_data, len);
+	p = strtok (NULL, " ");
+	if (p == NULL || sscanf (p, "%d", &id) != 1) {
+		g_free (msg);
+		return FALSE;
+	}
+
+	p = strtok (NULL, " ");
+	if (p == NULL || inet_aton (p, &addr) == 0) {
+		g_free (msg);
+		return FALSE;
+	}
 
 	gdm_debug ("gdm_choose_data: got indirect id: %d address: %s",
-		   data.id, inet_ntoa (data.addr));
+		   id, inet_ntoa (addr));
 
 	for (li = indirect; li != NULL; li = li->next) {
 		GdmIndirectDisplay *idisp = li->data;
-		if (idisp->id == data.id) {
+		if (idisp->id == id) {
 			/* whack the oldest if more then allowed */
 			while (ipending >= GdmMaxIndirect &&
 			       remove_oldest_pending ())
@@ -105,7 +119,7 @@ gdm_choose_data (void *uncast_data, size_t len)
 			idisp->acctime = time (NULL);
 			g_free (idisp->chosen_host);
 			idisp->chosen_host = g_new (struct in_addr, 1);
-			memcpy (idisp->chosen_host, &(data.addr),
+			memcpy (idisp->chosen_host, &addr,
 				sizeof (struct in_addr));
 
 			/* Now this display is pending */
@@ -217,7 +231,7 @@ gdm_choose_indirect_dispose (GdmIndirectDisplay *id)
 	    ipending--;
     id->acctime = 0;
 
-    gdm_debug ("gdm_choose_indirect_dispose: Disposing %d", 
+    gdm_debug ("gdm_choose_indirect_dispose: Disposing %s", 
 	       inet_ntoa (id->dsp_sa->sin_addr));
 
     g_free (id->dsp_sa);

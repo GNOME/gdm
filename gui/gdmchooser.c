@@ -73,7 +73,7 @@ static gboolean gdm_chooser_decode_packet (GIOChannel   *source,
 					   GIOCondition  condition,
 					   gpointer      data);
 
-static void gdm_chooser_abort (const gchar *format, ...);
+static void gdm_chooser_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 static void gdm_chooser_browser_update (void);
 static void gdm_chooser_xdmcp_init (char **hosts);
 static void gdm_chooser_host_dispose (GdmChooserHost *host);

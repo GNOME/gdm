@@ -372,7 +372,7 @@ gdm_config_parse (void)
 	*stemp = '\0';
 
 	if (access (gtemp, X_OK))
-	    gdm_error ("gdm_config_parse: Greeter not found or can't be executed by the gdm user", gtemp);
+	    gdm_error (_("%s: Greeter not found or can't be executed by the gdm user"), "gdm_config_parse");
     }
 
     g_free (gtemp);
@@ -386,7 +386,7 @@ gdm_config_parse (void)
 	*stemp = '\0';
 
 	if (access (gtemp, X_OK))
-	    gdm_error ("gdm_config_parse: Chooser not found or it can't be executed by the gdm user", gtemp);
+	    gdm_error (_("%s: Chooser not found or it can't be executed by the gdm user"), "gdm_config_parse");
     }
     
     g_free (gtemp);
@@ -705,7 +705,8 @@ gdm_cleanup_children (void)
 	    crashed = TRUE;
     }
 	
-    gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
+    gdm_debug ("gdm_cleanup_children: child %d returned %d%s", pid, status,
+	       crashed ? " (child crashed)" : "");
 
     if (pid < 1)
 	return;
@@ -717,18 +718,36 @@ gdm_cleanup_children (void)
 	return;
 
     if (crashed) {
+	    gdm_debug ("gdm_cleanup_children: Slave crashed, killing it's "
+		       "children");
+
+	    if (d->sesspid > 0) {
+		    if (kill (d->sesspid, SIGTERM) == 0)
+			    waitpid (d->sesspid, NULL, 0);
+		    d->sesspid = 0;
+	    }
+	    if (d->greetpid > 0) {
+		    if (kill (d->greetpid, SIGTERM) == 0)
+			    waitpid (d->greetpid, NULL, 0);
+		    d->greetpid = 0;
+	    }
+	    if (d->chooserpid > 0) {
+		    if (kill (d->chooserpid, SIGTERM) == 0)
+			    waitpid (d->chooserpid, NULL, 0);
+		    d->chooserpid = 0;
+	    }
 	    if (d->servpid > 0) {
 		    if (kill (d->servpid, SIGTERM) == 0)
 			    waitpid (d->servpid, NULL, 0);
-
-		    /* just for paranoia's sake, yes sleeping in the
-		     * daemon is bad but this is an exceptional
-		     * situation and not normal occurance. */
-		    sleep (3);
-			    
 		    d->servpid = 0;
 	    }
     }
+
+    /* null all these, they are not valid most definately */
+    d->servpid = 0;
+    d->sesspid = 0;
+    d->greetpid = 0;
+    d->chooserpid = 0;
 
     /* definately not logged in now */
     d->logged_in = FALSE;
@@ -1268,81 +1287,144 @@ gdm_quit (void)
   g_main_quit (main_loop);
 }
 
+static void
+handle_message (const char *msg)
+{
+	gdm_debug ("Handeling message: '%s'", msg);
+
+	if (strncmp (msg, GDM_SOP_CHOSEN " ",
+		     strlen (GDM_SOP_CHOSEN " ")) == 0) {
+		gdm_choose_data (msg);
+	} else if (strncmp (msg, GDM_SOP_XPID " ",
+		     strlen (GDM_SOP_XPID " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid, pid;
+
+		if (sscanf (msg, GDM_SOP_XPID " %ld %ld", &slave_pid, &pid)
+		    != 2)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			d->servpid = pid;
+			gdm_debug ("Got XPID == %ld", (long)pid);
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
+	} else if (strncmp (msg, GDM_SOP_SESSPID " ",
+		     strlen (GDM_SOP_SESSPID " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid, pid;
+
+		if (sscanf (msg, GDM_SOP_SESSPID " %ld %ld", &slave_pid, &pid)
+		    != 2)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			d->sesspid = pid;
+			gdm_debug ("Got SESSPID == %ld", (long)pid);
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
+	} else if (strncmp (msg, GDM_SOP_GREETPID " ",
+		     strlen (GDM_SOP_GREETPID " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid, pid;
+
+		if (sscanf (msg, GDM_SOP_GREETPID " %ld %ld", &slave_pid, &pid)
+		    != 2)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			d->greetpid = pid;
+			gdm_debug ("Got GREETPID == %ld", (long)pid);
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
+	} else if (strncmp (msg, GDM_SOP_CHOOSERPID " ",
+		     strlen (GDM_SOP_CHOOSERPID " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid, pid;
+
+		if (sscanf (msg, GDM_SOP_CHOOSERPID " %ld %ld",
+			    &slave_pid, &pid) != 2)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			d->chooserpid = pid;
+			gdm_debug ("Got CHOOSERPID == %ld", (long)pid);
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
+	} else if (strncmp (msg, GDM_SOP_LOGGED_IN " ",
+		     strlen (GDM_SOP_LOGGED_IN " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		int logged_in;
+		if (sscanf (msg, GDM_SOP_LOGGED_IN " %ld %d", &slave_pid,
+			    &logged_in) != 2)
+			return;
+
+		/* Find out who this slave belongs to */
+		d = gdm_display_lookup (slave_pid);
+
+		if (d != NULL) {
+			d->logged_in = logged_in ? TRUE : FALSE;
+			gdm_debug ("Got logged in == %s",
+				   d->logged_in ? "TRUE" : "FALSE");
+
+			/* if the user just logged out,
+			 * let's see if it's safe to restart */
+			if (gdm_restart_mode &&
+			    ! d->logged_in)
+				gdm_safe_restart ();
+
+			/* send ack */
+			kill (slave_pid, SIGUSR2);
+		}
+	} else if (strcmp (msg, GDM_SOP_SOFT_RESTART) == 0) {
+		gdm_restart_mode = TRUE;
+		gdm_safe_restart ();
+	}
+}
+
 static gboolean
 gdm_slave_socket_handler (GIOChannel *source,
 			  GIOCondition cond,
 			  gpointer data)
 {
-	GdmSlaveHeader header;
 	gchar buf[PIPE_SIZE];
+	char *p;
 	gint len;
 
 	if (cond != G_IO_IN) 
 		return TRUE;
 
-	if (g_io_channel_read (source, (char *)&header, sizeof (header), &len)
+	if (g_io_channel_read (source, buf, sizeof (buf) - 1, &len)
 	    != G_IO_ERROR_NONE)
 		return TRUE;
 
-	if (len < sizeof (header))
+	if (len <= 0)
 		return TRUE;
 
-	gdm_debug ("gdm_slave_socket_handler: opcode %d len %d",
-		   (int) header.opcode,
-		   (int) header.len);
+	/* null terminate as the string is NOT */
+	buf[len] = '\0';
 
-	if (header.len > 0) {
-		if (g_io_channel_read (source, buf, header.len, &len)
-		    != G_IO_ERROR_NONE)
-			return TRUE;
-
-		if (len != header.len)
-			return TRUE;
-	} else {
-		len = 0;
-	}
-
-	gdm_debug ("gdm_slave_socket_handler: Read %d bytes", len);
-
-	if (header.opcode <= GDM_SOP_INVALID ||
-	    header.opcode >= GDM_SOP_LAST) {
-		gdm_error (_("%s: Invalid opcode"),
-			   "gdm_slave_socket_handler");
-		return TRUE;
-	}
-
-	if (header.opcode == GDM_SOP_CHOOSER) {
-		gdm_choose_data (buf, header.len);
-	} else if (header.opcode == GDM_SOP_XPID) {
-		GdmXPidData data;
-		if (header.len == sizeof (data)) {
-			GdmDisplay *d;
-			memcpy (&data, buf, sizeof (data));
-			/* Find out who this slave belongs to */
-			d = gdm_display_lookup (data.slave_pid);
-
-			if (d != NULL) {
-				d->servpid = data.xpid;
-			}
-		}
-	} else if (header.opcode == GDM_SOP_LOGGED_IN) {
-		GdmLoggedInData data;
-		if (header.len == sizeof (data)) {
-			GdmDisplay *d;
-			memcpy (&data, buf, sizeof (data));
-			/* Find out who this slave belongs to */
-			d = gdm_display_lookup (data.slave_pid);
-
-			if (d != NULL) {
-				d->logged_in = data.logged_in;
-
-				/* if the user just logged out,
-				 * let's see if it's safe to restart */
-				if (gdm_restart_mode &&
-				    ! data.logged_in)
-					gdm_safe_restart ();
-			}
-		}
+	p = strtok (buf, "\n");
+	while (p != NULL) {
+		handle_message (p);
+		p = strtok (NULL, "\n");
 	}
 
 	return TRUE;

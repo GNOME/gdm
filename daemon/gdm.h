@@ -286,39 +286,16 @@ void gdm_quit (void);
 
 /* primitive protocol for controlling the daemon from the chooser
  * or gdmconfig or whatnot */
-enum {
-	GDM_SOP_INVALID = 0,
 
-	GDM_SOP_CHOOSER,	/* Chosen host information */
-	GDM_SOP_XPID,		/* Pid of X server so that in case of
-				   slave crash, daemon can kill it */
-	GDM_SOP_LOGGED_IN,	/* status of user, if logged in or not,
-				   useful for safe restarts */
-
-	GDM_SOP_LAST
-};
-
-typedef struct _GdmXPidData GdmXPidData;
-struct _GdmXPidData {
-	pid_t slave_pid;
-	pid_t xpid;
-};
-
-typedef struct _GdmLoggedInData GdmLoggedInData;
-struct _GdmLoggedInData {
-	pid_t slave_pid;
-	gboolean logged_in;
-};
-
-/* Protocol is not for use outside of gdm so endianess be damned,
- * it's not really a "wire" protocol, just for the programs of the
- * gdm suite.  Which are all compiled on the same machine etc... etc...
- * blah blah blah*/
-typedef struct _GdmSlaveHeader GdmSlaveHeader;
-struct _GdmSlaveHeader {
-	int opcode;
-	size_t len; /* length of data (not including header) */
-};
+/* The ones that pass a <slave pid> must be from a valid slave, and
+ * the slave will be sent a SIGUSR2 */
+#define GDM_SOP_CHOSEN       "CHOSEN" /* <indirect id> <ip addr> */
+#define GDM_SOP_XPID         "XPID" /* <slave pid> <xpid> */
+#define GDM_SOP_SESSPID      "SESSPID" /* <slave pid> <sesspid> */
+#define GDM_SOP_GREETPID     "GREETPID" /* <slave pid> <greetpid> */
+#define GDM_SOP_CHOOSERPID   "CHOOSERPID" /* <slave pid> <chooserpid> */
+#define GDM_SOP_LOGGED_IN    "LOGGED_IN" /* <slave pid> <logged_in as int> */
+#define GDM_SOP_SOFT_RESTART "SOFT_RESTART" /* no arguments */
 
 void gdm_fifo_close (void);
 

@@ -22,10 +22,10 @@
 #include "config.h"
 #include "gdm.h"
 
-void gdm_fail   (const gchar *format, ...);
-void gdm_info   (const gchar *format, ...);
-void gdm_error  (const gchar *format, ...);
-void gdm_debug  (const gchar *format, ...);
+void gdm_fail   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+void gdm_info   (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+void gdm_error  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+void gdm_debug  (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 #ifdef HAVE_SETENV
 #define gdm_setenv(var,value) setenv(var,value,-1)

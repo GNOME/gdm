@@ -127,17 +127,19 @@ static void     gdm_slave_session_cleanup (void);
 static void     gdm_slave_alrm_handler (int sig);
 static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);
-static void     gdm_slave_exit (gint status, const gchar *format, ...);
-static void     gdm_child_exit (gint status, const gchar *format, ...);
+static void     gdm_slave_usr2_handler (int sig);
+static void     gdm_slave_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
+static void     gdm_child_exit (gint status, const gchar *format, ...) G_GNUC_PRINTF (2, 3);
 static gint     gdm_slave_exec_script (GdmDisplay *d, const gchar *dir,
 				       const char *login, struct passwd *pwent);
 static gchar *  gdm_parse_enriched_login (const gchar *s, GdmDisplay *display);
 static void	gdm_send_logged_in (gboolean logged_in);
-static void	gdm_send_xpid (pid_t xpid);
+static void	gdm_send_pid (const char *opcode, pid_t pid);
 
 
 /* Yay thread unsafety */
 static gboolean x_error_occured = FALSE;
+static gboolean gdm_got_usr2 = FALSE;
 
 /* ignore handlers */
 static int
@@ -159,7 +161,7 @@ gdm_slave_start (GdmDisplay *display)
 {  
 	time_t first_time;
 	int death_count;
-	struct sigaction alrm, term, child;
+	struct sigaction alrm, term, child, usr2;
 
 	if (!display)
 		return;
@@ -197,11 +199,21 @@ gdm_slave_start (GdmDisplay *display)
 	if (sigaction (SIGCHLD, &child, NULL) < 0) 
 		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_init: Error setting up CHLD signal handler"));
 
+	/* Handle a USR2 which is ack from master that it received a message */
+	usr2.sa_handler = gdm_slave_usr2_handler;
+	usr2.sa_flags = SA_RESTART;
+	sigemptyset (&usr2.sa_mask);
+	sigaddset (&usr2.sa_mask, SIGUSR2);
+
+	if (sigaction (SIGUSR2, &usr2, NULL) < 0)
+		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up USR2 signal handler"), "gdm_slave_init");
+
 	/* The signals we wish to listen to */
 	sigfillset (&mask);
 	sigdelset (&mask, SIGINT);
 	sigdelset (&mask, SIGTERM);
 	sigdelset (&mask, SIGCHLD);
+	sigdelset (&mask, SIGUSR2);
 	if (display->type != TYPE_LOCAL &&
 	    GdmPingInterval > 0) {
 		sigdelset (&mask, SIGALRM);
@@ -241,7 +253,7 @@ gdm_slave_start (GdmDisplay *display)
 			/* Whack the server if we want to restart it next time
 			 * we run gdm_slave_run */
 			gdm_server_stop (display);
-			gdm_send_xpid (0);
+			gdm_send_pid (GDM_SOP_XPID, 0);
 		} else {
 			/* OK about to start again so redo our cookies and reinit
 			 * the server */
@@ -353,7 +365,7 @@ gdm_slave_run (GdmDisplay *display)
     if (d->type == TYPE_LOCAL &&
 	d->servpid <= 0) {
 	    gdm_server_start (d);
-	    gdm_send_xpid (d->servpid);
+	    gdm_send_pid (GDM_SOP_XPID, d->servpid);
     }
     
     gdm_setenv ("XAUTHORITY", d->authfile);
@@ -472,6 +484,8 @@ gdm_slave_whack_greeter (void)
 	if (d->greetpid > 0)
 		waitpid (d->greetpid, 0, 0); 
 	d->greetpid = 0;
+
+	gdm_send_pid (GDM_SOP_GREETPID, 0);
 
 	if (greeter != NULL)
 		fclose (greeter);
@@ -1127,50 +1141,54 @@ gdm_slave_greeter (void)
 	
 	gdm_debug ("gdm_slave_greeter: Greeter on pid %d", d->greetpid);
 
+	gdm_send_pid (GDM_SOP_GREETPID, d->greetpid);
+
 	run_pictures (); /* Append pictures to greeter if browsing is on */
 	break;
     }
 }
 
 static void
-gdm_send_xpid (pid_t xpid)
+gdm_send_pid (const char *opcode, pid_t pid)
 {
-	GdmSlaveHeader header;
-	GdmXPidData data;
+	char *msg;
 	int fd;
 	char *fifopath;
 
-	gdm_debug ("Sending X pid == %ld for slave %ld",
-		   (long)xpid,
+	gdm_debug ("Sending %s == %ld for slave %ld",
+		   opcode,
+		   (long)pid,
 		   (long)getpid ());
+
+	gdm_got_usr2 = FALSE;
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 
 	fd = open (fifopath, O_WRONLY);
 	/* eek */
 	if (fd < 0) {
-		gdm_error (_("%s: Can't open fifo!"), "gdm_send_logged_in");
+		gdm_error (_("%s: Can't open fifo!"), "gdm_send_pid");
 		return;
 	}
 
-	header.opcode = GDM_SOP_XPID;
-	header.len = sizeof (data);
+	msg = g_strdup_printf ("\n%s %ld %ld\n", opcode,
+			       (long)getpid (), (long)pid);
 
-	data.slave_pid = getpid ();
-	data.xpid = xpid;
+	write (fd, msg, strlen (msg));
 
-	write (fd, &header, sizeof (header));
-	write (fd, &data, sizeof (data));
+	g_free (msg);
 
 	close (fd);
+
+	if ( ! gdm_got_usr2)
+		sleep (10);
 }
 
 
 static void
 gdm_send_logged_in (gboolean logged_in)
 {
-	GdmSlaveHeader header;
-	GdmLoggedInData data;
+	char *msg;
 	int fd;
 	char *fifopath;
 
@@ -1178,6 +1196,8 @@ gdm_send_logged_in (gboolean logged_in)
 		   logged_in ? "TRUE" : "FALSE",
 		   (long)getpid ());
 
+	gdm_got_usr2 = FALSE;
+
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmfifo", NULL);
 
 	fd = open (fifopath, O_WRONLY);
@@ -1187,23 +1207,23 @@ gdm_send_logged_in (gboolean logged_in)
 		return;
 	}
 
-	header.opcode = GDM_SOP_LOGGED_IN;
-	header.len = sizeof (data);
+	msg = g_strdup_printf ("\n%s %ld %d\n", GDM_SOP_LOGGED_IN,
+			       (long)getpid (), (int)logged_in);
 
-	data.slave_pid = getpid ();
-	data.logged_in = logged_in;
+	write (fd, msg, strlen (msg));
 
-	write (fd, &header, sizeof (header));
-	write (fd, &data, sizeof (data));
+	g_free (msg);
 
 	close (fd);
+
+	if ( ! gdm_got_usr2)
+		sleep (10);
 }
 
 static void
 send_chosen_host (GdmDisplay *disp, const char *hostname)
 {
-	GdmSlaveHeader header;
-	GdmChooseData data;
+	char *msg;
 	int fd;
 	char *fifopath;
 	struct hostent *host;
@@ -1228,15 +1248,13 @@ send_chosen_host (GdmDisplay *disp, const char *hostname)
 		return;
 	}
 
-	header.opcode = GDM_SOP_CHOOSER;
-	header.len = sizeof (GdmChooseData);
+	msg = g_strdup_printf ("\n%s %d %s\n", GDM_SOP_CHOSEN,
+			       disp->indirect_id,
+			       inet_ntoa (*((struct in_addr *)host->h_addr_list[0])));
 
-	data.id = disp->indirect_id;
-	memcpy (&(data.addr), (struct in_addr *)host->h_addr_list[0],
-		sizeof (struct in_addr));
+	write (fd, msg, strlen (msg));
 
-	write (fd, &header, sizeof (header));
-	write (fd, &data, sizeof (data));
+	g_free (msg);
 
 	close (fd);
 }
@@ -1263,7 +1281,7 @@ gdm_slave_chooser (void)
 	/* Fork. Parent is gdmslave, child is greeter process. */
 	last_killed_pid = 0; /* race condition wrapper,
 			      * it could be that we recieve sigchld before
-			      * we can set greetpid.  eek! */
+			      * we can set chooserpid.  eek! */
 	switch (d->chooserpid = fork()) {
 
 	case 0:
@@ -1337,12 +1355,16 @@ gdm_slave_chooser (void)
 		}
 
 		gdm_debug ("gdm_slave_chooser: Chooser on pid %d", d->chooserpid);
+		gdm_send_pid (GDM_SOP_CHOOSERPID, d->chooserpid);
+
 		close (p[1]);
 
 		fcntl(p[0], F_SETFD, fcntl(p[0], F_GETFD, 0) | FD_CLOEXEC);
 
 		/* wait for the chooser to die */
 		waitpid (d->chooserpid, 0, 0);
+
+		gdm_send_pid (GDM_SOP_CHOOSERPID, 0);
 
 		bytes = read (p[0], buf, sizeof(buf)-1);
 		if (bytes > 0) {
@@ -2028,6 +2050,7 @@ gdm_slave_session_start (void)
     g_free (gnome_session);
 
     sesspid = d->sesspid;
+    gdm_send_pid (GDM_SOP_SESSPID, sesspid);
 
     /* Wait for the user's session to exit, but by this time the
      * session might have ended, so check for 0 */
@@ -2053,6 +2076,8 @@ gdm_slave_session_stop (pid_t sesspid)
 
     seteuid (0);
     setegid (0);
+
+    gdm_send_pid (GDM_SOP_SESSPID, 0);
 
     gdm_debug ("gdm_slave_session_stop: %s on %s", local_login, d->name);
 
@@ -2109,7 +2134,7 @@ gdm_slave_term_handler (int sig)
 {
 	sigset_t tmask, omask;
 
-	gdm_debug ("gdm_slave_term_handler: %s got TERM signal", d->name);
+	gdm_debug ("gdm_slave_term_handler: %s got TERM/INT signal", d->name);
 
 	/* just for paranoia's sake */
 	seteuid (0);
@@ -2222,6 +2247,14 @@ gdm_slave_child_handler (int sig)
 		last_killed_pid = pid;
 	}
     }
+}
+
+static void
+gdm_slave_usr2_handler (int sig)
+{
+	gdm_debug ("gdm_slave_usr2_handler: %s got USR2 signal", d->name);
+	
+	gdm_got_usr2 = TRUE;
 }
 
 /* Minor X faults */

@@ -167,6 +167,8 @@ static char *selected_browser_user = NULL;
  * in some way or another */
 static gboolean session_dir_whacked_out = FALSE;
 
+static void gdm_login_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
+
 /*
  * Timed Login: Timer
  */

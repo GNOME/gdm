@@ -101,8 +101,8 @@ gdm_display_check_loop (GdmDisplay *disp)
    */
   if (since_last < 8)
     {
-      gdm_debug ("Will sleep %d seconds before next X server restart attempt",
-                 8 - since_last);
+      gdm_debug ("Will sleep %ld seconds before next X server restart attempt",
+                 (long)(8 - since_last));
       now = time (NULL) + 8 - since_last;
       disp->sleep_before_run = 8 - since_last;
     }

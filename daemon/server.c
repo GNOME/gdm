@@ -96,18 +96,20 @@ gdm_server_reinit (GdmDisplay *disp)
 void
 gdm_server_stop (GdmDisplay *disp)
 {
-    if (disp == NULL ||
-	disp->servpid <= 0)
+    if (disp == NULL)
 	return;
-
-    gdm_debug ("gdm_server_stop: Server for %s going down!", disp->name);
 
     /* Kill our connection if one existed */
     if (disp->dsp != NULL) {
-	XCloseDisplay (disp->dsp);
-	disp->dsp = NULL;
+	    XCloseDisplay (disp->dsp);
+	    disp->dsp = NULL;
     }
-    
+
+    if (disp->servpid <= 0)
+	    return;
+
+    gdm_debug ("gdm_server_stop: Server for %s going down!", disp->name);
+
     disp->servstat = SERVER_DEAD;
 
     if (disp->servpid != 0) {
@@ -296,7 +298,7 @@ gdm_server_start (GdmDisplay *disp)
     switch (d->servstat) {
 
     case SERVER_TIMEOUT:
-	    gdm_debug ("gdm_server_start: Temporary server failure (%d)", d->name);
+	    gdm_debug ("gdm_server_start: Temporary server failure (%s)", d->name);
 	    break;
 
     case SERVER_ABORT:

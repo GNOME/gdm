@@ -1,3 +1,21 @@
+Thu Jul 05 03:29:01 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: raise version to 2.2.3.1
+
+	* gdm.spec.in: do a "soft restart" in %post
+
+	* gui/gdmchooser.c, gui/gdmlogin.c: warning fixes
+
+	* daemon/misc.h, daemon/slave.c, daemon/xdmcp.c, daemon/choose.c,
+	  daemon/display.c, daemon/gdm.c,saemon/server.c: fix printf style
+	  warnings
+
+	* daemon/choose.[ch], display/gdm.[ch], daemon/slave.c: change the
+	  fifo protocol to be text based so that we can also control from
+	  scripts like the .spec file.  Also store all the different pids
+	  in the daemon so that we can whack all the different processes
+	  the slave starts if it crashes.  Also add a soft restart opcode.
+
 Wed Jul 04 20:58:31 2001  George Lebl <jirka@5z.com>
 
 	* gdm-safe-restart.in, Makefile.am, configure.in, daemon/choose.[ch], 

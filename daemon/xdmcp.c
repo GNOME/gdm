@@ -481,7 +481,8 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     
     /* Crude checksumming */
     for (i = 0 ; i < clnt_authlist.length ; i++) {
-	gdm_debug ("gdm_xdmcp_handle_query: authlist: %s", clnt_authlist.data);
+	gdm_debug ("gdm_xdmcp_handle_query: authlist: %s",
+		   (char *)clnt_authlist.data);
 	explen += 2+clnt_authlist.data[i].length;
     }
     
@@ -650,7 +651,8 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     explen += 2+clnt_port.length;
     
     for (i = 0 ; i < clnt_authlist.length ; i++) {
-	gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s", clnt_authlist.data);
+	gdm_debug ("gdm_xdmcp_handle_forward_query: authlist: %s",
+		   (char *)clnt_authlist.data);
 	explen += 2+clnt_authlist.data[i].length;
     }
     
@@ -943,8 +945,8 @@ gdm_xdmcp_send_accept (const char *hostname,
     
     XdmcpFlush (xdmcpfd, &buf, clnt_sa, (int)sizeof (struct sockaddr_in));
     
-    gdm_debug ("gdm_xdmcp_send_accept: Sending ACCEPT to %s with SessionID=%d", 
-	       inet_ntoa (clnt_sa->sin_addr), d->sessionid);
+    gdm_debug ("gdm_xdmcp_send_accept: Sending ACCEPT to %s with SessionID=%ld", 
+	       inet_ntoa (clnt_sa->sin_addr), (long)d->sessionid);
 }
 
 
@@ -1014,8 +1016,8 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	return;
     }
     
-    gdm_debug ("gdm_xdmcp_handle_manage: Got Display=%d, SessionID=%d from %s", 
-	       clnt_dspnum, clnt_sessid, inet_ntoa (clnt_sa->sin_addr));
+    gdm_debug ("gdm_xdmcp_handle_manage: Got Display=%d, SessionID=%ld from %s", 
+	       (int)clnt_dspnum, (long)clnt_sessid, inet_ntoa (clnt_sa->sin_addr));
     
     /* Display Class */
     if (! XdmcpReadARRAY8 (&buf, &clnt_dspclass)) {
@@ -1076,10 +1078,12 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	}
     }
     else if (d && d->dispstat == XDMCP_MANAGED) {
-	gdm_debug ("gdm_xdmcp_handle_manage: Session id %d already managed", clnt_sessid);	
+	gdm_debug ("gdm_xdmcp_handle_manage: Session id %ld already managed",
+		   (long)clnt_sessid);	
     }
     else {
-	gdm_debug ("gdm_xdmcp_handle_manage: Failed to look up session id %d", clnt_sessid);
+	gdm_debug ("gdm_xdmcp_handle_manage: Failed to look up session id %ld",
+		   (long)clnt_sessid);
 	gdm_xdmcp_send_refuse (clnt_sa, clnt_sessid);
     }
 
@@ -1092,7 +1096,7 @@ gdm_xdmcp_send_refuse (struct sockaddr_in *clnt_sa, CARD32 sessid)
 {
     XdmcpHeader header;
     
-    gdm_debug ("gdm_xdmcp_send_refuse: Sending REFUSE to %d", sessid);
+    gdm_debug ("gdm_xdmcp_send_refuse: Sending REFUSE to %ld", (long)sessid);
     
     header.version = XDM_PROTOCOL_VERSION;
     header.opcode= (CARD16) REFUSE;
@@ -1110,7 +1114,7 @@ gdm_xdmcp_send_failed (struct sockaddr_in *clnt_sa, CARD32 sessid)
     XdmcpHeader header;
     ARRAY8 status;
     
-    gdm_debug ("gdm_xdmcp_send_failed: Sending FAILED to %d", sessid);
+    gdm_debug ("gdm_xdmcp_send_failed: Sending FAILED to %ld", (long)sessid);
     
     status.data = "Failed to start session";
     status.length = strlen (status.data);
@@ -1163,7 +1167,7 @@ gdm_xdmcp_send_alive (struct sockaddr_in *clnt_sa, CARD32 sessid)
 {
     XdmcpHeader header;
     
-    gdm_debug ("Sending ALIVE to %d", sessid);
+    gdm_debug ("Sending ALIVE to %ld", (long)sessid);
     
     header.version = XDM_PROTOCOL_VERSION;
     header.opcode = (CARD16) ALIVE;
@@ -1246,8 +1250,8 @@ gdm_xdmcp_display_alloc (const char *hostname, gint displaynum)
     
     pending++;
     
-    gdm_debug ("gdm_xdmcp_display_alloc: display=%s, session id=%d, pending=%d ",
-	       d->name, d->sessionid, pending);
+    gdm_debug ("gdm_xdmcp_display_alloc: display=%s, session id=%ld, pending=%d ",
+	       d->name, (long)d->sessionid, pending);
     
     return (d);
 }
@@ -1320,8 +1324,8 @@ gdm_xdmcp_displays_check (void)
 		    d->type == TYPE_XDMCP &&
 		    d->dispstat == XDMCP_PENDING &&
 		    time (NULL) > d->acctime + GdmMaxManageWait) {
-			gdm_debug ("gdm_xdmcp_displays_check: Disposing session id %d",
-				   d->sessionid);
+			gdm_debug ("gdm_xdmcp_displays_check: Disposing session id %ld",
+				   (long)d->sessionid);
 			gdm_display_dispose (d);
 
 			/* restart as the list is now fucked */
