@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm\n"
-"POT-Creation-Date: 2003-01-02 01:09+0100\n"
-"PO-Revision-Date: 2003-01-02 01:15+0100\n"
+"POT-Creation-Date: 2003-02-27 18:26+0100\n"
+"PO-Revision-Date: 2003-02-27 18:28+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1257,7 +1257,8 @@ msgid "Please enter your username"
 msgstr "Wprowadź nazwę użytkownika"
 
 #: daemon/verify-crypt.c:1 daemon/verify-pam.c:1 daemon/verify-shadow.c:1
-#: gui/gdmlogin.c:1 gui/greeter/themes/circles/circles.xml.in.h:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter_parser.c:1
+#: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "Username:"
 msgstr "Nazwa użytkownika:"
@@ -2144,6 +2145,11 @@ msgstr "A-M|Macedoński"
 msgid "A-M|Malay"
 msgstr "A-M|Malajski"
 
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:1
+msgid "A-M|Mongolian"
+msgstr "A-M|Mongolski"
+
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:1
 msgid "N-Z|Norwegian (bokmal)"
@@ -2172,7 +2178,7 @@ msgstr "N-Z|Portugalski (brazylijski)"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:1
 msgid "N-Z|Romanian"
-msgstr "N-Z|Romański"
+msgstr "N-Z|Rumuński"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:1
@@ -2213,6 +2219,11 @@ msgstr "N-Z|Szwedzki (Finlandia)"
 #: gui/gdmlanguages.c:1
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamilski"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:1
+msgid "N-Z|Thai"
+msgstr "N-Z|Tajski"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:1
@@ -2286,7 +2297,8 @@ msgstr "GNOME - program wybierający"
 msgid "Last"
 msgstr "Poprzedni wybór"
 
-#: gui/gdmlogin.c:1 gui/greeter/themes/circles/circles.xml.in.h:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter_parser.c:1
+#: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 #, no-c-format
 msgid "User %s will login in %d seconds"
@@ -2317,15 +2329,15 @@ msgstr ""
 "\n"
 "Prawdopodobnie zalogowanie się również nie będzie możliwe."
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter_system.c:1
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Czy na pewno chcesz zrestartować maszynę?"
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter_system.c:1
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Czy na pewno chcesz wyłączyć maszynę?"
 
-#: gui/gdmlogin.c:1
+#: gui/gdmlogin.c:1 gui/greeter/greeter_system.c:1
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Czy na pewno chcesz uśpić maszynę?"
 
@@ -2531,12 +2543,14 @@ msgid "GDM Login"
 msgstr "GDM - logowanie"
 
 #: gui/gdmlogin.c:1 gui/greeter/greeter_canvas_item.c:1
+#: gui/greeter/greeter_parser.c:1
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "_Session"
 msgstr "_Sesja"
 
 #: gui/gdmlogin.c:1 gui/greeter/greeter_canvas_item.c:1
+#: gui/greeter/greeter_parser.c:1
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "_Language"
@@ -2578,18 +2592,21 @@ msgid "Suspend your computer"
 msgstr "Usypia komputer"
 
 #: gui/gdmlogin.c:1 gui/greeter/greeter_canvas_item.c:1
+#: gui/greeter/greeter_parser.c:1
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "S_ystem"
 msgstr "_Systemowe"
 
 #: gui/gdmlogin.c:1 gui/greeter/greeter_canvas_item.c:1
+#: gui/greeter/greeter_parser.c:1
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "_Quit"
 msgstr "Za_kończ"
 
 #: gui/gdmlogin.c:1 gui/greeter/greeter_canvas_item.c:1
+#: gui/greeter/greeter_parser.c:1
 #: gui/greeter/themes/circles/circles.xml.in.h:1
 #: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
 msgid "D_isconnect"
@@ -3138,6 +3155,19 @@ msgstr "Ponowne uruchomienie komputera"
 msgid "Configure"
 msgstr "Konfiguracja"
 
+#: gui/greeter/greeter_parser.c:1
+#: gui/greeter/themes/circles/circles.xml.in.h:1
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
+msgid "You've got capslock on!"
+msgstr "Włączony jest klawisz Caps Lock!"
+
+#: gui/greeter/greeter_parser.c:1
+#: gui/greeter/themes/circles/circles.xml.in.h:1
+#: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
+#, no-c-format
+msgid "Welcome to %h"
+msgstr "Witaj w systemie %h"
+
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
 msgstr "(c) 2002 Bond, James Bond"
@@ -3153,17 +3183,6 @@ msgstr "Okręgi"
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "Theme with blue circles"
 msgstr "Motyw z błękitnymi okręgami"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:1
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
-#, no-c-format
-msgid "Welcome to %h"
-msgstr "Witaj w systemie %h"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:1
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
-msgid "You've got capslock on!"
-msgstr "Włączony jest klawisz Caps Lock!"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
