@@ -1,3 +1,11 @@
+Wed Aug 18 11:54:29 2004  George Lebl <jirka@5z.com>
+
+	* gui/gdmlogin.c: don't resize the window after selection for
+	  the amount of time it could take to double click, that way a
+	  double click does not get lost.  Should fix some of the bugs,
+	  but it seems they are mostly with the graphical greeter which is
+	  not affected by this.
+
 2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Added nb to ALL_LINGUAS.

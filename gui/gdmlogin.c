@@ -2319,6 +2319,34 @@ gdm_login_browser_populate (void)
     }
 }
 
+static gboolean
+resize_in_time (gpointer data)
+{
+	login_window_resize (FALSE /* force */);
+	return FALSE;
+}
+
+static int
+get_double_click_time (void)
+{
+	/* FIXME: what about multihead? */
+	GtkSettings *settings = gtk_settings_get_default ();
+	int t;
+
+	g_object_get (G_OBJECT (settings),
+		      "gtk-double-click-time",
+		      &t,
+		      NULL);
+
+	/* sanity */
+	if (t < 100)
+		t = 100;
+	if (t > 1500)
+		t = 1500;
+
+	return t;
+}
+
 static void
 user_selected (GtkTreeSelection *selection, gpointer data)
 {
@@ -2352,7 +2380,8 @@ user_selected (GtkTreeSelection *selection, gpointer data)
 			  gtk_label_set_text (GTK_LABEL (msg),
 					      _("Doubleclick on the user "
 						"to log in"));
-			  login_window_resize (FALSE /* force */);
+			  g_timeout_add (get_double_click_time (),
+					 resize_in_time, NULL); 
 		  }
 	  }
   }
