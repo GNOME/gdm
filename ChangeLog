@@ -1,3 +1,22 @@
+Thu Jul 31 12:58:26 2003  George Lebl <jirka@5z.com>
+
+	* XKeepsCrashing, daemon/verify-pam.c:  update comments
+
+	* daemon/misc.c: fix leaks/crashes in the text message dialog stuff
+
+	* daemon/slave.c: do a chdir as the user id again just for sanity
+	  sake
+
+	* gui/gdmlogin.c, gui/greeter/greeter_item_ulist.c: don't load
+	  more then 50 users into the user listing.  This should fix
+	  random crap happening on large systems using things like NIS
+	  (you shouldn't use face browser here anyway)
+
+	* gui/greeter/greeter.c: remove the use of redundant
+	  _set_has_separator
+
+	* NEWS: update 
+
 Wed Jul 30 15:21:08 2003  George Lebl <jirka@5z.com>
 
 	* gui/gdmlogin.c, gui/greeter/greeter.c: add gdk_beep to the Username

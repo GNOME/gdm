@@ -443,10 +443,12 @@ gdm_text_message_dialog (const char *msg)
 				   TRUE /* de_setuid */) < 0) {
 			g_free (dialog);
 			g_free (msg_quoted);
+			g_free (argv[4]);
 			return FALSE;
 		}
 
 		g_free (dialog);
+		g_free (argv[4]);
 	} else {
 		char *argv[6];
 
@@ -462,11 +464,11 @@ gdm_text_message_dialog (const char *msg)
 
 		if (gdm_exec_wait (argv, TRUE /* no display */,
 				   TRUE /* de_setuid */) < 0) {
-			g_free (argv[3]);
+			g_free (argv[4]);
 			g_free (msg_quoted);
 			return FALSE;
 		}
-		g_free (argv[3]);
+		g_free (argv[4]);
 	}
 	g_free (msg_quoted);
 	return TRUE;
@@ -511,6 +513,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		retint = gdm_exec_wait (argv, TRUE /* no display */,
 					TRUE /* de_setuid */);
 		if (retint < 0) {
+			g_free (argv[4]);
 			g_free (dialog);
 			g_free (msg_quoted);
 			return FALSE;
@@ -521,6 +524,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 
 		g_free (dialog);
 		g_free (msg_quoted);
+		g_free (argv[4]);
 
 		return TRUE;
 	} else {
@@ -554,11 +558,11 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 
 		if (gdm_exec_wait (argv, TRUE /* no display */,
 				   TRUE /* de_setuid */) < 0) {
-			g_free (argv[3]);
+			g_free (argv[4]);
 			g_free (msg_quoted);
 			return FALSE;
 		}
-		g_free (argv[3]);
+		g_free (argv[4]);
 
 		if (ret != NULL) {
 			fp = fopen (tempname, "r");
@@ -1624,7 +1628,6 @@ gdm_sleep_no_signal (int secs)
 
 	while (secs > 0) {
 		struct timeval tv;
-		/* Wait 30 seconds. */
 		tv.tv_sec = secs;
 		tv.tv_usec = 0;
 		select (0, NULL, NULL, NULL, &tv);

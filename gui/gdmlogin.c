@@ -3030,6 +3030,9 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
 	if (defface != NULL)
 		user->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defface));
 
+	if (ve_string_empty (logname))
+		return user;
+
 	/* don't read faces, since that requires the daemon */
 	if (DOING_GDM_DEVELOPMENT)
 		return user;
@@ -3219,6 +3222,19 @@ gdm_login_users_init (void)
     pwent = getpwent();
 	
     while (pwent != NULL) {
+
+	/* FIXME: fix properly, see bug #111830 */
+	if (number_of_users > 50) {
+		user = gdm_login_user_alloc ("",
+					     9999 /*fake uid*/,
+					     "/",
+					     _("Too many users to list here..."));
+		users = g_list_insert_sorted (users, user,
+					      (GCompareFunc) gdm_login_sort_func);
+		/* don't update the size numbers, it's ok if this "user" is
+		   offscreen */
+		break;
+	}
 	
 	if (pwent->pw_shell && 
 	    gdm_login_check_shell (pwent->pw_shell) &&

@@ -650,8 +650,9 @@ authenticate_again:
     /* Register the session */
     pamerr = pam_open_session (pamh, 0);
     if (pamerr != PAM_SUCCESS) {
-            did_setcred = FALSE;
             opened_session = FALSE;
+	    /* we handle this above */
+            did_setcred = FALSE;
 	    if (gdm_slave_should_complain ())
 		    gdm_error (_("Couldn't open session for %s"), login);
 	    goto pamerr;

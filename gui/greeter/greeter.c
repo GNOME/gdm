@@ -319,7 +319,6 @@ greeter_ctrl_handler (GIOChannel *source,
 				 tmp,
 				 /* avoid warning */ "%s", "");
 	g_free (tmp);
-	gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
 

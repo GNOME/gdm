@@ -2859,6 +2859,9 @@ session_child_run (struct passwd *pwent,
 		ve_setenv ("LANG", language, TRUE);
 		ve_setenv ("GDM_LANG", language, TRUE);
 	}
+
+	/* just in case there is some weirdness going on */
+	IGNORE_EINTR (chdir (home_dir));
 	
 	if (usrcfgok && savesess && home_dir_ok) {
 		gchar *cfgstr = g_build_filename (home_dir, ".dmrc", NULL);

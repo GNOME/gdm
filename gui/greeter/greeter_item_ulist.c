@@ -67,6 +67,9 @@ gdm_greeter_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
 	if (defface != NULL)
 		user->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defface));
 
+	if (ve_string_empty (logname))
+		return user;
+
 	/* don't read faces, since that requires the daemon */
 	if (DOING_GDM_DEVELOPMENT)
 		return user;
@@ -265,15 +268,27 @@ gdm_greeter_users_init (void)
     pwent = getpwent();
 	
     while (pwent != NULL) {
+
+        /* FIXME: fix properly, see bug #111830 */
+        if (number_of_users > 50) {
+	    user = gdm_greeter_user_alloc ("",
+					   9999 /*fake uid*/,
+					   "/",
+					   _("Too many users to list here..."));
+	    users = g_list_insert_sorted (users, user,
+					  (GCompareFunc) gdm_greeter_sort_func);
+	    /* don't update the size numbers */
+	    break;
+	}
 	
 	if (pwent->pw_shell && 
 	    gdm_greeter_check_shell (pwent->pw_shell) &&
 	    !gdm_greeter_check_exclude(pwent)) {
 
-	    user = gdm_greeter_user_alloc(pwent->pw_name,
-					pwent->pw_uid,
-					pwent->pw_dir,
-					pwent->pw_gecos);
+	    user = gdm_greeter_user_alloc (pwent->pw_name,
+					   pwent->pw_uid,
+					   pwent->pw_dir,
+					   pwent->pw_gecos);
 
 	    if ((user) && (! g_list_find_custom (users, user,
 				(GCompareFunc) gdm_greeter_sort_func))) {
