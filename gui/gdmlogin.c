@@ -445,14 +445,14 @@ set_screen_pos (GtkWidget *widget, int x, int y)
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
-	if (x < 0)
-		x = 0;
-	if (y < 0)
-		y = 0;
-	if (x > gdk_screen_width () - widget->allocation.width)
-		x = gdk_screen_width () - widget->allocation.width;
-	if (y > gdk_screen_height () - widget->allocation.height)
-		y = gdk_screen_height () - widget->allocation.height;
+	if (x < screen.x)
+		x = screen.x;
+	if (y < screen.y)
+		y = screen.y;
+	if (x > screen.x + screen.width - widget->allocation.width)
+		x = screen.x + screen.width - widget->allocation.width;
+	if (y > screen.y + screen.height - widget->allocation.height)
+		y = screen.y + screen.height - widget->allocation.height;
 
 	gtk_widget_set_uposition (widget, x, y);
 }
@@ -516,6 +516,35 @@ gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
 }
 
 static gboolean
+within_rect (GdkRectangle *rect, int x, int y)
+{
+	return
+		x >= rect->x &&
+		x <= rect->x + rect->width &&
+		y >= rect->y &&
+		y <= rect->y + rect->height;
+}
+
+/* switch to the xinerama screen where x,y are */
+static void
+set_screen_to_pos (int x, int y)
+{
+	if ( ! within_rect (&screen, x, y)) {
+		int i;
+		/* If not within screen boundaries,
+		 * maybe we want to switch xinerama
+		 * screen */
+		for (i = 0; i < screens; i++) {
+			if (within_rect (&allscreens[i], x, y)) {
+				GdmXineramaScreen = i;
+				screen = allscreens[i];
+				break;
+			}
+		}
+	}
+}
+
+static gboolean
 gdm_login_icon_motion (GtkWidget *widget, GdkEventMotion *event)
 {
 	gint xp, yp;
@@ -528,6 +557,9 @@ gdm_login_icon_motion (GtkWidget *widget, GdkEventMotion *event)
 		return FALSE;
 
 	gdk_window_get_pointer (rootwin, &xp, &yp, &mask);
+
+	set_screen_to_pos (xp, yp);
+
 	set_screen_pos (GTK_WIDGET (widget), xp-p->x, yp-p->y);
 
 	return TRUE;
@@ -2258,6 +2290,9 @@ gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
 	    return FALSE;
 
     gdk_window_get_pointer (rootwin, &xp, &yp, &mask);
+
+    set_screen_to_pos (xp, yp);
+
     set_screen_pos (GTK_WIDGET (login), xp-p->x, yp-p->y);
 
     GdmSetPosition = TRUE;
@@ -2930,8 +2965,9 @@ gdm_screen_init (void)
 
 	if (have_xinerama) {
 		int screen_num;
-		XineramaScreenInfo *xscreens = XineramaQueryScreens (GDK_DISPLAY (),
-								    &screen_num);
+		XineramaScreenInfo *xscreens =
+			XineramaQueryScreens (GDK_DISPLAY (),
+					      &screen_num);
 
 
 		if (screen_num <= 0) 
@@ -2966,6 +3002,23 @@ gdm_screen_init (void)
 		allscreens[0] = screen;
 		screens = 1;
 	}
+#if 0
+	/* for testing Xinerama support on non-xinerama setups */
+	{
+		screen.x = 100;
+		screen.y = 100;
+		screen.width = gdk_screen_width () / 2 - 100;
+		screen.height = gdk_screen_height () / 2 - 100;
+
+		allscreens = g_new0 (GdkRectangle, 2);
+		allscreens[0] = screen;
+		allscreens[1].x = gdk_screen_width () / 2;
+		allscreens[1].y = gdk_screen_height () / 2;
+		allscreens[1].width = gdk_screen_width () / 2;
+		allscreens[1].height = gdk_screen_height () / 2;
+		screens = 2;
+	}
+#endif
 }
 
 static void
@@ -3018,8 +3071,8 @@ render_scaled_back (const GdkPixbuf *pb)
 				  allscreens[i].y,
 				  allscreens[i].width,
 				  allscreens[i].height,
-				  0 /* offset_x */,
-				  0 /* offset_y */,
+				  allscreens[i].x /* offset_x */,
+				  allscreens[i].y /* offset_y */,
 				  (double) allscreens[i].width / width,
 				  (double) allscreens[i].height / height,
 				  GDK_INTERP_BILINEAR);
