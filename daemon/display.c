@@ -21,7 +21,6 @@
 #include <syslog.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include <X11/Xauth.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -36,6 +35,7 @@
 #include "misc.h"
 #include "xdmcp.h"
 #include "choose.h"
+#include "auth.h"
 #include "gdm-net.h"
 
 /* External vars */
@@ -446,16 +446,13 @@ gdm_display_dispose (GdmDisplay *d)
     d->xnest_temp_auth_file = NULL;
 
     if (d->auths) {
-	GSList *tmpauth = d->auths;
+	    gdm_auth_free_auth_list (d->auths);
+	    d->auths = NULL;
+    }
 
-	while (tmpauth && tmpauth->data) {
-	    XauDisposeAuth ((Xauth *) tmpauth->data);
-	    tmpauth->data = NULL;
-	    tmpauth = tmpauth->next;
-	}
-
-	g_slist_free (d->auths);
-	d->auths = NULL;
+    if (d->local_auths) {
+	    gdm_auth_free_auth_list (d->local_auths);
+	    d->local_auths = NULL;
     }
 
     g_free (d->userauth);

@@ -28,6 +28,8 @@ void     gdm_auth_user_remove    (GdmDisplay *d, uid_t user);
 /* Call XSetAuthorization */
 void	 gdm_auth_set_local_auth (GdmDisplay *d);
 
+void     gdm_auth_free_auth_list (GSList *list);
+
 #endif /* GDM_AUTH_H */
 
 /* EOF */

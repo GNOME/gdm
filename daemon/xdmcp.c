@@ -1656,6 +1656,7 @@ gdm_xdmcp_display_alloc (struct in_addr *addr,
     d->dispnum = displaynum;
 
     d->handled = TRUE;
+    d->tcp_disallowed = FALSE;
 
     d->vt = -1;
 

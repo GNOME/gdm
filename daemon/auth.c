@@ -47,6 +47,7 @@ extern gchar *GdmUserAuthFile;
 extern gchar *GdmUserAuthFB;
 extern gint  GdmUserMaxFile;
 extern gint  GdmRelaxPerms;
+extern gboolean GdmDebug;
 
 static void
 display_add_error (GdmDisplay *d)
@@ -70,7 +71,9 @@ display_add_error (GdmDisplay *d)
 }
 
 static gboolean
-add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
+add_auth_entry (GdmDisplay *d, 
+		GSList **authlist,
+		FILE *af, FILE *af2,
 		unsigned short family, const char *addr, int addrlen)
 {
 	Xauth *xa;
@@ -95,7 +98,6 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 			return FALSE;
 		}
 
-
 		memcpy (xa->address, addr, addrlen);
 		xa->address_length = addrlen;
 	}
@@ -118,20 +120,9 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 	memcpy (xa->data, d->bcookie, 16);
 	xa->data_length = 16;
 
-	errno = 0;
-	if G_UNLIKELY ( ! XauWriteAuth (af, xa)) {
-		free (xa->data);
-		free (xa->number);
-		free (xa->name);
-		free (xa->address);
-		free (xa);
-		display_add_error (d);
-		return FALSE;
-	}
-
-	if (af2 != NULL) {
+	if (af != NULL) {
 		errno = 0;
-		if G_UNLIKELY ( ! XauWriteAuth (af2, xa)) {
+		if G_UNLIKELY ( ! XauWriteAuth (af, xa)) {
 			free (xa->data);
 			free (xa->number);
 			free (xa->name);
@@ -140,9 +131,22 @@ add_auth_entry (GdmDisplay *d, FILE *af, FILE *af2,
 			display_add_error (d);
 			return FALSE;
 		}
+
+		if (af2 != NULL) {
+			errno = 0;
+			if G_UNLIKELY ( ! XauWriteAuth (af2, xa)) {
+				free (xa->data);
+				free (xa->number);
+				free (xa->name);
+				free (xa->address);
+				free (xa);
+				display_add_error (d);
+				return FALSE;
+			}
+		}
 	}
 
-	d->auths = g_slist_append (d->auths, xa);
+	*authlist = g_slist_append (*authlist, xa);
 
 	return TRUE;
 }
@@ -160,11 +164,6 @@ gboolean
 gdm_auth_secure_display (GdmDisplay *d)
 {
     FILE *af, *af_gdm;
-    gboolean is_local = FALSE;
-    const char lo[] = {127,0,0,1};
-    guint i;
-    const GList *local_addys = NULL;
-    gboolean added_lo = FALSE;
 
     if G_UNLIKELY (!d)
 	return FALSE;
@@ -248,14 +247,7 @@ gdm_auth_secure_display (GdmDisplay *d)
      * have to eat up old authentication cookies before baking new
      * ones... */
     if (SERVER_IS_LOCAL (d) && d->auths) {
-	    GSList *li;
-	   
-	    for (li = d->auths; li != NULL; li = li->next) {
-		    XauDisposeAuth ((Xauth *) li->data);
-		    li->data = NULL;
-	    }
-
-	    g_slist_free (d->auths);
+	    gdm_auth_free_auth_list (d->auths);
 	    d->auths = NULL;
 
 	    g_free (d->cookie);
@@ -276,7 +268,56 @@ gdm_auth_secure_display (GdmDisplay *d)
 		    g_free (d->hostname);
 		    d->hostname = g_strdup (hostname);
 	    }
-	    local_addys = gdm_peek_local_address_list ();
+    }
+
+    if ( ! add_auth_entry (d, &(d->auths), af, af_gdm, FamilyWild, NULL, 0))
+	    return FALSE;
+
+    gdm_debug ("gdm_auth_secure_display: Setting up access");
+
+    if G_UNLIKELY (fclose (af) < 0) {
+	    display_add_error (d);
+	    return FALSE;
+    }
+    if (af_gdm != NULL) {
+	    if G_UNLIKELY (fclose (af_gdm) < 0) {
+		    display_add_error (d);
+		    return FALSE;
+	    }
+    }
+    ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
+
+    if G_UNLIKELY (GdmDebug)
+	    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
+		       d->name, g_slist_length (d->auths));
+
+    return TRUE;
+}
+
+static GSList *
+get_local_auths (GdmDisplay *d)
+{
+    gboolean is_local = FALSE;
+    const char lo[] = {127,0,0,1};
+    guint i;
+    const GList *local_addys = NULL;
+    gboolean added_lo = FALSE;
+    GSList *auths = NULL;
+
+    if G_UNLIKELY (!d)
+	return NULL;
+
+    if (SERVER_IS_LOCAL (d)) {
+	    char hostname[1024];
+
+	    /* reget local host if local as it may have changed */
+	    hostname[1023] = '\0';
+	    if G_LIKELY (gethostname (hostname, 1023) == 0) {
+		    g_free (d->hostname);
+		    d->hostname = g_strdup (hostname);
+	    }
+	    if ( ! d->tcp_disallowed)
+		    local_addys = gdm_peek_local_address_list ();
 
 	    is_local = TRUE;
     } else  {
@@ -293,11 +334,11 @@ gdm_auth_secure_display (GdmDisplay *d)
 
     /* Local access also in case the host is very local */
     if (is_local) {
-	    gdm_debug ("gdm_auth_secure_display: Setting up socket access");
+	    gdm_debug ("get_local_auths: Setting up socket access");
 
-	    if ( ! add_auth_entry (d, af, af_gdm, FamilyLocal,
+	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyLocal,
 				   d->hostname, strlen (d->hostname)))
-		    return FALSE;
+		    goto get_local_auth_error;
 
 	    /* local machine but not local if you get my meaning, add
 	     * the host gotten by gethostname as well if it's different
@@ -308,33 +349,33 @@ gdm_auth_secure_display (GdmDisplay *d)
 		    hostname[1023] = '\0';
 		    if (gethostname (hostname, 1023) == 0 &&
 			strcmp (hostname, d->hostname) != 0) {
-			    if ( ! add_auth_entry (d, af, af_gdm, FamilyLocal,
+			    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyLocal,
 						   hostname,
 						   strlen (hostname)))
-				    return FALSE;
+				    goto get_local_auth_error;
 		    }
 	    } else {
 		    /* local machine, perhaps we haven't added
 		     * localhost.localdomain to socket access */
 		    const char *localhost = "localhost.localdomain";
 		    if (strcmp (localhost, d->hostname) != 0) {
-			    if ( ! add_auth_entry (d, af, af_gdm, FamilyLocal,
+			    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyLocal,
 						   localhost,
 						   strlen (localhost))) {
-				    return FALSE;
+				    goto get_local_auth_error;
 			    }
 		    }
 	    }
     }
 
-    gdm_debug ("gdm_auth_secure_display: Setting up network access");
+    gdm_debug ("get_local_auths: Setting up network access");
 
     if ( ! SERVER_IS_LOCAL (d)) {
 	    /* we should write out an entry for d->addr since
 	       possibly it is not in d->addrs */
-	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
+	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
 				   (char *)&(d->addr), 4))
-		    return FALSE;
+		    goto get_local_auth_error;
 
 	    if (gdm_is_loopback_addr (&(d->addr)))
 		    added_lo = TRUE;
@@ -348,9 +389,9 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    if (memcmp (ia, &(d->addr), sizeof (struct in_addr)) == 0)
 		    continue;
 
-	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
+	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
 				   (char *)&ia->s_addr, 4))
-		    return FALSE;
+		    goto get_local_auth_error;
 
 	    if (gdm_is_loopback_addr (ia))
 		    added_lo = TRUE;
@@ -364,37 +405,32 @@ gdm_auth_secure_display (GdmDisplay *d)
 	    if (ia == NULL)
 		    break;
 
-	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
+	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
 				   (char *)&ia->s_addr, 4))
-		    return FALSE;
+		    goto get_local_auth_error;
 
 	    if (gdm_is_loopback_addr (ia))
 		    added_lo = TRUE;
     }
 
     /* if local server add loopback */
-    if (SERVER_IS_LOCAL (d) && ! added_lo) {
-	    if ( ! add_auth_entry (d, af, af_gdm, FamilyInternet,
+    if (SERVER_IS_LOCAL (d) && ! added_lo && ! d->tcp_disallowed) {
+	    if ( ! add_auth_entry (d, &auths, NULL, NULL, FamilyInternet,
 				   lo, 4))
-		    return FALSE;
+		    goto get_local_auth_error;
     }
 
-    if G_UNLIKELY (fclose (af) < 0) {
-	    display_add_error (d);
-	    return FALSE;
-    }
-    if (af_gdm != NULL) {
-	    if G_UNLIKELY (fclose (af_gdm) < 0) {
-		    display_add_error (d);
-		    return FALSE;
-	    }
-    }
-    ve_setenv ("XAUTHORITY", GDM_AUTHFILE (d), TRUE);
+    if G_UNLIKELY (GdmDebug)
+	    gdm_debug ("get_local_auths: Setting up access for %s - %d entries", 
+		       d->name, g_slist_length (auths));
 
-    gdm_debug ("gdm_auth_secure_display: Setting up access for %s - %d entries", 
-	       d->name, g_slist_length (d->auths));
+    return auths;
 
-    return TRUE;
+get_local_auth_error:
+
+    gdm_auth_free_auth_list (auths);
+
+    return NULL;
 }
 
 
@@ -475,6 +511,18 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 	    }
     } else {
 	    authdir = g_strdup (homedir);
+    }
+
+    if (d->local_auths != NULL) {
+	    gdm_auth_free_auth_list (d->local_auths);
+	    d->local_auths = NULL;
+    }
+
+    d->local_auths = get_local_auths (d);
+
+    if (d->local_auths == NULL) {
+	    gdm_error ("Can't make cookies");
+	    return FALSE;
     }
 
 try_user_add_again:
@@ -586,7 +634,7 @@ try_user_add_again:
 	af = gdm_auth_purge (d, af, FALSE /* remove when empty */);
 
     /* Append the authlist for this display to the cookie file */
-    auths = d->auths;
+    auths = d->local_auths;
 
     while (auths) {
 	if G_UNLIKELY ( ! XauWriteAuth (af, auths->data)) {
@@ -732,6 +780,36 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     d->userauth = NULL;
 }
 
+static gboolean
+memory_same (const char *sa, int lena, const char *sb, int lenb)
+{
+	if (lena == lenb) {
+		if (lena == 0)
+			return TRUE;
+		/* sanity */
+		if G_UNLIKELY (sa == NULL || sb == NULL)
+			return FALSE;
+		return memcmp (sa, sb, lena) == 0;
+	} else {
+		return FALSE;
+	}
+}
+
+static gboolean
+auth_same_except_data (Xauth *xa, Xauth *xb)
+{
+	if (xa->family == xb->family &&
+	    memory_same (xa->number, xa->number_length,
+			 xb->number, xb->number_length) &&
+	    memory_same (xa->name, xa->name_length,
+			 xb->name, xb->name_length) &&
+	    memory_same (xa->address, xa->address_length,
+			 xb->address, xb->address_length))
+		return TRUE;
+	else
+		return FALSE;
+}
+
 
 /**
  * gdm_auth_purge:
@@ -747,8 +825,6 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 {
     Xauth *xa;
     GSList *keep = NULL, *li;
-    char *dispnum;
-    int displen;
 
     if G_UNLIKELY (!d || !af)
 	return af;
@@ -761,21 +837,23 @@ gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
      * temporary file issues. Then remove any instance of this display
      * in the cookie jar... */
 
-    dispnum = g_strdup_printf ("%d", d->dispnum);
-    displen = strlen (dispnum);
-
     while ( (xa = XauReadAuth (af)) != NULL ) {
-
-	if (xa->number_length == displen &&
-	    xa->name_length == strlen ("MIT-MAGIC-COOKIE-1") &&
-	    memcmp ("MIT-MAGIC-COOKIE-1", xa->name, xa->name_length) == 0 &&
-	    memcmp (dispnum, xa->number, xa->number_length) == 0)
-		XauDisposeAuth (xa);
-	else
+	GSList *li;
+	/* We look at the current auths, but those may
+	   have different cookies then what is in the file,
+	   so don't compare those, but we wish to purge all
+	   the entries that we'd normally write */
+	for (li = d->local_auths; li != NULL; li = li->next) {
+		Xauth *xb = li->data;
+		if (auth_same_except_data (xa, xb)) {
+			XauDisposeAuth (xa);
+			xa = NULL;
+			break;
+		}
+	}
+	if (xa != NULL)
 		keep = g_slist_append (keep, xa);
     }
-
-    g_free (dispnum);
 
     fclose (af);
 
@@ -808,6 +886,19 @@ gdm_auth_set_local_auth (GdmDisplay *d)
 {
 	XSetAuthorization ((char *)"MIT-MAGIC-COOKIE-1", (int) strlen ("MIT-MAGIC-COOKIE-1"),
 			   (char *)d->bcookie, (int) 16);
+}
+
+void
+gdm_auth_free_auth_list (GSList *list)
+{
+	GSList *li;
+
+	for (li = list; li != NULL; li = li->next) {
+		XauDisposeAuth ((Xauth *) li->data);
+		li->data = NULL;
+	}
+
+	g_slist_free (list);
 }
 
 /* EOF */

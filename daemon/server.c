@@ -955,6 +955,7 @@ gdm_server_resolve_command_line (GdmDisplay *disp,
 	if (resolve_flags && GdmDisallowTCP && ! query_in_arglist) {
 		argv[len++] = g_strdup ("-nolisten");
 		argv[len++] = g_strdup ("tcp");
+		d->tcp_disallowed = TRUE;
 	}
 
 	if (vtarg != NULL &&
@@ -1295,6 +1296,7 @@ gdm_server_alloc (gint id, const gchar *command)
     d->screeny = 0;
 
     d->handled = TRUE;
+    d->tcp_disallowed = FALSE;
 
     d->vt = -1;
 

@@ -278,6 +278,7 @@ struct _GdmDisplay {
     gchar *authfile_gdm; /* authfile readable by gdm user
 			    if necessary */
     GSList *auths; 
+    GSList *local_auths; 
     gchar *userauth;
     gboolean authfb;
     gchar *command;
@@ -312,6 +313,7 @@ struct _GdmDisplay {
     time_t acctime;
 
     gboolean handled;
+    gboolean tcp_disallowed;
 
     int vt;
 

@@ -1,6 +1,17 @@
+Mon Aug 25 13:55:09 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/auth.[ch], daemon/xdmcp.c, daemon/server.c:
+	  Server auth file now uses FamilyWild and we set up the different
+	  access stuff for the user auth file.  Don't add FamilyInternet
+	  stuff to the xauth file if we start the server with
+	  "-nolisten tcp".  The purging is done right and doesn't
+	  mistakenly whack entries we didn't add.
+
+	* NEWS: update
+
 Mon Aug 25 11:13:08 2003  George Lebl <jirka@5z.com>
 
-	* gui/gdmsetup.c: make insensitive the optiosn which make no sense
+	* gui/gdmsetup.c: make insensitive the options which make no sense
 	  in the security page when actions menu is off.  Partly fixes
 	  #120639, the other part can be fixed after UI freeze is off.
 
