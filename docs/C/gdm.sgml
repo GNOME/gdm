@@ -505,6 +505,20 @@
 	  <title>[daemon]</title>
 
 	  <varlistentry>
+	    <term>AlwaysRestartServer</term>
+	    <listitem>
+	      <synopsis>AlwaysRestartServer=false</synopsis>
+	      <para>
+		If true, then gdm never tries to reuse existing X servers by
+		reinitializing them.  It will just kill the existing server and
+		start over.  Normally, just reinitializing is a nicer way to go
+		but if the X server memory usage keeps growing this may be
+		a safer option.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>AutomaticLoginEnable</term>
 	    <listitem>
 	      <synopsis>AutomaticLoginEnable=false</synopsis>
@@ -740,6 +754,18 @@
 	  </varlistentry>
 
 	  <varlistentry>
+	    <term>SuspendCommand</term>
+	    <listitem>
+	      <synopsis>SuspendCommand=</synopsis>
+	      <para>
+		Full path and arguments to command to be executed when
+		user selects Suspend from the System menu.  If empty
+		there is no such menu item.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
 	    <term>TimedLoginEnable</term>
 	    <listitem>
 	      <synopsis>TimedLoginEnable=false</synopsis>
@@ -899,6 +925,23 @@
 		not as useful as you can use PAM to do the same thing,
 		and in fact do even more.  However it is still followed,
 		so you should probably leave it true for PAM systems.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>AllowRemoteAutoLogin</term>
+	    <listitem>
+	      <synopsis>AllowRemoteAutoLogin=false</synopsis>
+	      <para>
+		Allow the timed login to work remotely.  That is, remote
+		connections through XDMCP will be allowed to log into the
+		"TimedLogin" user by letting the login window time out, just
+		like the local user on the first console.
+	      </para>
+	      <para>
+		Note that this can make a system quite insecure, and thus is
+		off by default.
 	      </para>
 	    </listitem>
 	  </varlistentry>

@@ -82,6 +82,7 @@ extern gchar *GdmSessDir;
 extern gchar *GdmLocaleFile;
 extern gchar *GdmAutomaticLogin;
 extern gboolean GdmAllowRemoteAutoLogin;
+extern gboolean GdmAlwaysRestartServer;
 extern gchar *GdmConfigurator;
 extern gboolean GdmConfigAvailable;
 extern gboolean GdmSystemMenu;
@@ -232,11 +233,19 @@ gdm_slave_start (GdmDisplay *display)
 
 		gdm_debug ("gdm_slave_start: Reinitializing things");
 
-		/* OK about to start again so redo our cookies and reinit
-		 * the server */
-		if ( ! gdm_auth_secure_display (d))
-			break;
-		gdm_server_reinit (d);
+
+		if (GdmAlwaysRestartServer) {
+			/* Whack the server if we want to restart it next time
+			 * we run gdm_slave_run */
+			gdm_server_stop (display);
+		} else {
+			/* OK about to start again so redo our cookies and reinit
+			 * the server */
+			if ( ! gdm_auth_secure_display (d))
+				break;
+
+			gdm_server_reinit (d);
+		}
 	}
 }
 
@@ -247,7 +256,7 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 	login = g_strdup (name);
 
 	greet = FALSE;
-	gdm_debug ("gdm_slave_start: Automatic login: %s", login);
+	gdm_debug ("setup_automatic_session: Automatic login: %s", login);
 
 	gdm_verify_setup_user (login, display->name);
 
@@ -255,7 +264,7 @@ setup_automatic_session (GdmDisplay *display, const char *name)
 	 * has terminated */
 	gdm_slave_exec_script (display, GdmDisplayInit, NULL, NULL);
 
-	gdm_debug ("gdm_slave_start: DisplayInit script finished");
+	gdm_debug ("setup_automatic_session: DisplayInit script finished");
 }
 
 static void 
@@ -317,12 +326,14 @@ gdm_slave_run (GdmDisplay *display)
     
     d = display;
 
-    if ( ! gdm_string_empty (GdmAutomaticLogin)) {
+    if ( ! gdm_string_empty (GdmAutomaticLogin) &&
+	ParsedAutomaticLogin == NULL) {
 	    ParsedAutomaticLogin = gdm_parse_enriched_login (GdmAutomaticLogin,
 							     display);
     }
 
-    if ( ! gdm_string_empty (GdmTimedLogin)) {
+    if ( ! gdm_string_empty (GdmTimedLogin) &&
+	ParsedTimedLogin == NULL) {
 	    ParsedTimedLogin = gdm_parse_enriched_login (GdmTimedLogin,
 							 display);
     }
@@ -349,7 +360,7 @@ gdm_slave_run (GdmDisplay *display)
     /* We keep our own (windowless) connection (dsp) open to avoid the
      * X server resetting due to lack of active connections. */
 
-    gdm_debug ("gdm_slave_start: Opening display %s", d->name);
+    gdm_debug ("gdm_slave_run: Opening display %s", d->name);
     d->dsp = NULL;
 
     /* if local then the the server should be ready for openning, so
@@ -364,7 +375,7 @@ gdm_slave_run (GdmDisplay *display)
 	d->dsp = XOpenDisplay (d->name);
 	
 	if (d->dsp == NULL) {
-	    gdm_debug ("gdm_slave_start: Sleeping %d on a retry", 1+openretries*2);
+	    gdm_debug ("gdm_slave_run: Sleeping %d on a retry", 1+openretries*2);
 	    sleep (1+openretries*2);
 	    openretries++;
 	}
@@ -409,7 +420,7 @@ gdm_slave_run (GdmDisplay *display)
 
 	    gdm_slave_session_start();
 
-	    gdm_debug ("gdm_slave_start: Automatic login done");
+	    gdm_debug ("gdm_slave_run: Automatic login done");
     } else {
 	    if (gdm_first_login)
 		    gdm_first_login = FALSE;
