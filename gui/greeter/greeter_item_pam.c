@@ -3,6 +3,7 @@
 #include "greeter_item_pam.h"
 #include "greeter_parser.h"
 #include "gdm.h"
+#include "gdmwm.h"
 #include "vicious.h"
 #include <string.h>
 

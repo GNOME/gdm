@@ -362,14 +362,27 @@ main (int argc, char *argv[])
 	textdomain (GETTEXT_PACKAGE);
 
 	if (strcmp (base (argv[0]), "gdmXnest") == 0) {
-		gnome_init_with_popt_table ("gdmXnest", VERSION,
-					    argc, argv, xnest_only_options,
-					    0, &ctx);
+		GnomeProgram *program = gnome_program_init
+			("gdmXnest", VERSION, 
+			 LIBGNOMEUI_MODULE /* module_info */,
+			 argc, argv,
+			 GNOME_PARAM_POPT_TABLE, xnest_only_options,
+			 NULL);
+		g_object_get (G_OBJECT (program),
+			      GNOME_PARAM_POPT_CONTEXT, &ctx,
+			      NULL);	
 		no_query = TRUE;
 		no_gdm_check = TRUE;
 	} else {
-		gnome_init_with_popt_table ("gdmXnestchooser", VERSION,
-					    argc, argv, options, 0, &ctx);
+		GnomeProgram *program = gnome_program_init
+			("gdmXnestchooser", VERSION, 
+			 LIBGNOMEUI_MODULE /* module_info */,
+			 argc, argv,
+			 GNOME_PARAM_POPT_TABLE, options,
+			 NULL);
+		g_object_get (G_OBJECT (program),
+			      GNOME_PARAM_POPT_CONTEXT, &ctx,
+			      NULL);	
 	}
 
 	args = poptGetArgs (ctx);

@@ -90,9 +90,8 @@ main (int argc, char *argv[])
 			    photo, TRUE, TRUE, 0);
 
 	if ( ! ve_string_empty (last_pix)) {
-		GtkWidget *e = gnome_pixmap_entry_gtk_entry
-			(GNOME_PIXMAP_ENTRY (photo));
-		gtk_entry_set_text (GTK_ENTRY (e), last_pix);
+		gnome_file_entry_set_filename (GNOME_FILE_ENTRY (photo),
+					       last_pix);
 	}
 
 	gtk_widget_show_all (dialog);

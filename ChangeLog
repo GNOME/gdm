@@ -1,3 +1,41 @@
+Mon Jul 29 17:45:59 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.[ch]: use the ve_signal routines, remove gdm_signal
+	  routines
+
+	* gui/gdmlogin.c, gui/greeter/greeter.c,
+	  gui/greeter/greeter_item_clock.[ch]: use the ve_signal routines
+	  for the HUP signal to avoid possible crashes/races/hangs if the
+	  signal handler comes in a bad time.  Also don't reset the graphical
+	  on every damn change, just the ones we care about, and update clock
+	  on the fly instead of restarting.
+
+	* gui/gdmchooser.c: make glade_helper not use the gnome_program
+	  thingie, since we never init it here.
+
+	* gui/Makefile.am, gui/gdmlogin.c, gui/gdmchooser.c,
+	  gui/gdmflexiserver.c, gui/gdmXnestchooser.c, gui/gdmcomm.c
+	  gui/greeter/Makefile.am, gui/greeter/greeter.c,
+	  gui/greeter/greeter_item_pam.c, gui/greeter/greeter_item_clock.c,
+	  gui/greeter/greeter_item_capslock.c, gui/greeter/greeter_item.c,
+	  gui/greeter/greeter_canvas_item.c:
+	  Compile without deprecated stuff. fix minor bugs found during
+	  the process.  Also compile everything with warnings and fix those.
+
+	* gui/gdmlogin.c, gui/gdmcomm.c, gui/gdmsetup.c,
+	  gui/greeter/greeter.c:  Use the new ve-config routines rather then
+	  gnome_config.  Fixed config bugs found in the process.  This
+	  also makes gdmsetup not delete comments and empty lines from the
+	  config which makes debugging and hand editting SO MUCH SIMPLER!
+
+	* gui/gdmsetup.c: recheck for gdm running before every update
+
+	* gui/gdmlogin.c, gui/greeter/greeter.c: remove the g_io_channel_init
+	  call which was reseting the whole setup.  So our channels were
+	  still buffered and encoded, which manifested itself when the
+	  read calls were replaced the read_chars.  This could actually solve
+	  the FreeBSD issues too.
+
 2002-07-27  Yanko Kaneti <yaneti@declera.com>
 
 	* gui/gdmlanguages.c: Added the untranslated Bulgarian string.

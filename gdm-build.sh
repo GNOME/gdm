@@ -38,6 +38,14 @@ if [ x$CLEAN = xyes ] ; then
 		exit 1
 	fi
 fi
+
+if [ x$NO_MAKE = xyes ] ; then
+	echo 
+	echo '*********' make skipped '*********'
+	echo 
+	exit 0
+fi
+
 echo make
 if ! make ; then
 	echo 

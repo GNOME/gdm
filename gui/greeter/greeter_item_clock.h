@@ -4,5 +4,6 @@
 #include "greeter_item.h"
 
 gboolean greeter_item_clock_setup (void);
+void greeter_item_clock_update (void);
 
 #endif

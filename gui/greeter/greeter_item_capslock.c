@@ -70,8 +70,8 @@ greeter_item_capslock_setup (GtkWidget *window)
 {
   capslock_update (is_caps_lock_on ());
   
-  gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
-		      GTK_SIGNAL_FUNC (cl_key_press_event), NULL);
+  g_signal_connect (G_OBJECT (window), "key_press_event",
+		    G_CALLBACK (cl_key_press_event), NULL);
   return TRUE;
 }
 

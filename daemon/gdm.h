@@ -390,18 +390,6 @@ enum {
 	GDM_XDMCP_LAST_OPCODE /*just a marker, not an opcode */
 };
 
-typedef gboolean (*GDMSignalFunc) (gint8	signal,
-				 gpointer	data);
-guint	gdm_signal_add		(gint8		signal,
-				 GDMSignalFunc	function,
-				 gpointer    	data);
-guint   gdm_signal_add_full     (gint           priority,
-				 gint8          signal,
-				 GDMSignalFunc  function,
-				 gpointer       data,
-				 GDestroyNotify destroy);
-void    gdm_signal_notify       (gint8          signal);
-
 /* If id == NULL, then get the first X server */
 GdmXServer *	gdm_find_x_server	(const char *id);
 

@@ -1,7 +1,17 @@
-SUBDIRS = themes
+SUBDIRS = . themes
+
+## Process this file with automake to produce makefile.in
+CFLAGS = @CFLAGS@ -g -Wall 	\
+	-Wpointer-arith  	\
+	-Wmissing-prototypes -Wmissing-declarations 
 
 INCLUDES = \
 	-I.						\
+	-DG_DISABLE_DEPRECATED				\
+	-DGDK_DISABLE_DEPRECATED			\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DGNOME_DISABLE_DEPRECATED			\
 	-I$(top_srcdir)/gui				\
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\

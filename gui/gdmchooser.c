@@ -156,8 +156,8 @@ static void
 setup_cursor (GdkCursorType type)
 {
 	GdkCursor *cursor = gdk_cursor_new (type);
-	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
-	gdk_cursor_destroy (cursor);
+	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+	gdk_cursor_unref (cursor);
 }
 
 static void
@@ -167,7 +167,7 @@ gdm_chooser_host_dispose (GdmChooserHost *host)
 	return;
 
     if (host->picture != NULL)
-	    gdk_pixbuf_unref (host->picture);
+	    g_object_unref (G_OBJECT (host->picture));
     host->picture = NULL;
 
     g_free (host->name);
@@ -246,11 +246,11 @@ gdm_chooser_host_alloc (const char *hostname,
 		host->picture = gdk_pixbuf_scale_simple (img, w, h,
 							 GDK_INTERP_BILINEAR);
 	else
-		host->picture = gdk_pixbuf_ref (img);
+		host->picture = g_object_ref (G_OBJECT (img));
 	
-	gdk_pixbuf_unref (img);
+	g_object_unref (G_OBJECT (img));
     } else if (defhostimg != NULL) {
-	    host->picture = gdk_pixbuf_ref (defhostimg);
+	    host->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defhostimg));
     }
 
     g_free (hostimg);
@@ -916,12 +916,8 @@ static void
 gdm_chooser_gui_init (void)
 {
 	glade_helper_add_glade_directory (GDM_GLADE_DIR);
+	glade_helper_search_gnome_dirs (FALSE);
 
-#if 0
-    GtkStyle  *style;
-    GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
-#endif
-   
     /* Enable theme */
     if (GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
@@ -1027,14 +1023,18 @@ set_background (void)
 			gdk_color_parse ("#007777", &color);
 		}
 
-		colormap = gdk_window_get_colormap (GDK_ROOT_PARENT ());
+		colormap = gdk_drawable_get_colormap
+			(gdk_get_default_root_window ());
 		/* paranoia */
 		if (colormap != NULL) {
+			gboolean success;
 			gdk_error_trap_push ();
 
-			gdk_color_alloc (colormap, &color);
-			gdk_window_set_background (GDK_ROOT_PARENT (), &color);
-			gdk_window_clear (GDK_ROOT_PARENT ());
+			gdk_colormap_alloc_colors (colormap, &color, 1,
+						   FALSE, TRUE, &success);
+
+			gdk_window_set_background (gdk_get_default_root_window (), &color);
+			gdk_window_clear (gdk_get_default_root_window ());
 
 			gdk_flush ();
 			gdk_error_trap_pop ();

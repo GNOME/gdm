@@ -13,6 +13,11 @@ DEFS = @DEFS@ -DGDM_CONFIG_FILE=\"@sysconfdir@/gdm/gdm.conf\" \
 INCLUDES = \
 	-I.						\
 	-I..						\
+	-DG_DISABLE_DEPRECATED				\
+	-DGDK_DISABLE_DEPRECATED			\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DGNOME_DISABLE_DEPRECATED			\
 	-I$(top_srcdir)/daemon				\
 	-I$(top_srcdir)/vicious-extensions		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\

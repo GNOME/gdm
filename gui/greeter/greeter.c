@@ -65,15 +65,17 @@ extern gboolean session_dir_whacked_out;
 static void 
 greeter_parse_config (void)
 {
+    VeConfig *config;
+
     if (!g_file_test (GDM_CONFIG_FILE, G_FILE_TEST_EXISTS))
       {
 	syslog (LOG_ERR, _("greeter_parse_config: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
 	used_defaults = TRUE;
       }
 
-    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+    config = ve_config_get (GDM_CONFIG_FILE);
 
-    GdmGraphicalTheme = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME);
+    GdmGraphicalTheme = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME);
     if (GdmGraphicalTheme == NULL ||
 	GdmGraphicalTheme[0] == '\0')
       {
@@ -81,31 +83,32 @@ greeter_parse_config (void)
 	GdmGraphicalTheme = g_strdup ("circles");
       }
 
-    GdmGraphicalThemeDir = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME_DIR);
+    GdmGraphicalThemeDir = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME_DIR);
     if (GdmGraphicalThemeDir == NULL ||
 	! g_file_test (GdmGraphicalThemeDir, G_FILE_TEST_IS_DIR))
       {
         g_free (GdmGraphicalThemeDir);
         GdmGraphicalThemeDir = g_strdup (GREETERTHEMEDIR);
       }
-    GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
-    GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
-    GdmUseCirclesInEntry = gnome_config_get_bool (GDM_KEY_ENTRY_CIRCLES);
+    GdmDefaultLocale = ve_config_get_string (config, GDM_KEY_LOCALE);
+    GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMASCREEN);
+    GdmUseCirclesInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_CIRCLES);
 
-    GdmShowXtermFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE);
-    GdmShowGnomeFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_FAILSAFE);
-    GdmShowGnomeChooserSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_CHOOSER);
-    GdmShowLastSession = gnome_config_get_bool (GDM_KEY_SHOW_LAST_SESSION);
-    GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
-    GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
-    GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
-    GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
-    GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
-    GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
-    GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
-    GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
+    GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
+    GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
+    GdmShowGnomeChooserSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_CHOOSER);
+    GdmShowLastSession = ve_config_get_bool (config, GDM_KEY_SHOW_LAST_SESSION);
+    GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
+    GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
+    GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
+    GdmConfigAvailable = ve_config_get_bool (config, GDM_KEY_CONFIG_AVAILABLE);
+    GdmHalt = ve_config_get_string (config, GDM_KEY_HALT);
+    GdmReboot = ve_config_get_string (config, GDM_KEY_REBOOT);
+    GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
+    GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
 
-    GdmTimedLoginEnable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
+    GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
+    GdmTimedLoginDelay = ve_config_get_int (config, GDM_KEY_TIMED_LOGIN_DELAY);
 
     /* Note: TimedLogin here is not gotten out of the config
      * but from the daemon since it's been munged on by the daemon a bit
@@ -119,8 +122,6 @@ greeter_parse_config (void)
 	    GdmTimedLogin = NULL;
 	  }
 
-	GdmTimedLoginDelay =
-		gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
 	if (GdmTimedLoginDelay < 5)
 	  {
 	    syslog (LOG_WARNING,
@@ -131,13 +132,10 @@ greeter_parse_config (void)
     else
       {
         GdmTimedLogin = NULL;
-	GdmTimedLoginDelay = 5;
       }
     greeter_current_delay = GdmTimedLoginDelay;
 
-    GdmUse24Clock = gnome_config_get_bool (GDM_KEY_USE_24_CLOCK);
-
-    gnome_config_pop_prefix();
+    GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 
     if (GdmXineramaScreen < 0)
       GdmXineramaScreen = 0;
@@ -147,8 +145,8 @@ static void
 setup_cursor (GdkCursorType type)
 {
 	GdkCursor *cursor = gdk_cursor_new (type);
-	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
-	gdk_cursor_destroy (cursor);
+	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+	gdk_cursor_unref (cursor);
 }
 
 static gboolean
@@ -162,7 +160,6 @@ greeter_ctrl_handler (GIOChannel *source,
     char *tmp;
     char *session;
     GreeterItemInfo *conversation_info;
-    GreeterItemInfo *entry_info;
     static GnomeCanvasItem *disabled_cover = NULL;
     gchar *language;
 
@@ -172,14 +169,14 @@ greeter_ctrl_handler (GIOChannel *source,
 
     /* Read random garbage from i/o channel until STX is found */
     do {
-      g_io_channel_read (source, buf, 1, &len);
+      g_io_channel_read_chars (source, buf, 1, &len, NULL);
       
       if (len != 1)
 	return TRUE;
     }  while (buf[0] && buf[0] != STX);
 
     /* Read opcode */
-    g_io_channel_read (source, buf, 1, &len);
+    g_io_channel_read_chars (source, buf, 1, &len, NULL);
 
     /* If opcode couldn't be read */
     if (len != 1)
@@ -190,7 +187,7 @@ greeter_ctrl_handler (GIOChannel *source,
     case GDM_SETLOGIN:
 	/* somebody is trying to fool us this is the user that
 	 * wants to log in, and well, we are the gullible kind */
-        g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 	
 	greeter_item_pam_set_user (buf);
@@ -198,7 +195,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	fflush (stdout);
 	break;
     case GDM_LOGIN:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
@@ -207,7 +204,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_PROMPT:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
@@ -216,7 +213,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_NOECHO:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
@@ -225,7 +222,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_MSG:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 	tmp = ve_locale_to_utf8 (buf);
 	greeter_item_pam_message (tmp);
@@ -236,7 +233,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_ERRBOX:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
@@ -248,7 +245,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_ERRDLG:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	/* we should be now fine for focusing new windows */
@@ -275,7 +272,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_SESS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
@@ -289,7 +286,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_LANG:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	buf[len-1] = '\0';
 	language = greeter_language_get_language (buf);
 	printf ("%c%s\n", STX, language);
@@ -298,7 +295,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_SSESS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	if (greeter_save_session ())
 	  printf ("%cY\n", STX);
@@ -309,7 +306,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_SLANG:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	if (greeter_language_get_save_language ())
 	    printf ("%cY\n", STX);
@@ -323,7 +320,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	/* fall thru to reset */
 
     case GDM_RESETOK:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	buf[len-1] = '\0';
 
 	conversation_info = greeter_lookup_id ("pam-conversation");
@@ -342,7 +339,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_QUIT:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	greeter_item_timed_stop ();
 	greeter_item_pam_leftover_messages ();
@@ -362,7 +359,7 @@ greeter_ctrl_handler (GIOChannel *source,
 		GString *str = g_string_new (NULL);
 
 		do {
-			g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+			g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 			buf[len-1] = '\0';
 			tmp = ve_locale_to_utf8 (buf);
 			g_string_append (str, tmp);
@@ -384,7 +381,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_SGNOMESESS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	if (greeter_save_gnome_session ())
 	    printf ("%cY\n", STX);
@@ -395,7 +392,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_STARTTIMER:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	greeter_item_timed_start ();
 	
@@ -404,7 +401,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_STOPTIMER:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	greeter_item_timed_stop ();
 
@@ -413,7 +410,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_DISABLE:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	gtk_widget_set_sensitive (window, FALSE);
 
 	if (disabled_cover == NULL)
@@ -434,7 +431,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_ENABLE:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	gtk_widget_set_sensitive (window, TRUE);
 
 	if (disabled_cover != NULL)
@@ -451,13 +448,13 @@ greeter_ctrl_handler (GIOChannel *source,
      * back a NULL response so that the daemon quits sending them */
     case GDM_NEEDPIC:
     case GDM_READPIC:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
 
     case GDM_NOFOCUS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	gdm_wm_no_login_focus_push ();
 	
@@ -466,7 +463,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_FOCUS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	gdm_wm_no_login_focus_pop ();
 	
@@ -475,7 +472,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	break;
 
     case GDM_SAVEDIE:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	/* Set busy cursor */
 	setup_cursor (GDK_WATCH);
@@ -755,15 +752,139 @@ greeter_abort (const gchar *format, ...)
     _exit (DISPLAY_ABORT);
 }
 
-static void
-greeter_reread_config (int sig)
+static gboolean
+string_same (VeConfig *config, const char *cur, const char *key)
 {
-  /* Set busy cursor */
-  setup_cursor (GDK_WATCH);
-  /* FIXME: actually reparse config stuff here, instead of
-   * just requesting a restart */
-  gdm_wm_save_wm_order ();
-  _exit (DISPLAY_RESTARTGREETER);
+	char *val = ve_config_get_string (config, key);
+	if (strcmp (ve_sure_string (cur), ve_sure_string (val)) == 0) {
+		g_free (val);
+		return TRUE;
+	} else {
+		syslog (LOG_ERR, "string not same: cur '%s' val '%s' key '%s'",
+			cur, val, key);
+		g_free (val);
+		return FALSE;
+	}
+}
+
+static gboolean
+bool_same (VeConfig *config, gboolean cur, const char *key)
+{
+	gboolean val = ve_config_get_bool (config, key);
+	if (ve_bool_equal (cur, val)) {
+		return TRUE;
+	} else {
+		syslog (LOG_ERR, "bool not same: cur '%d' val '%d' key '%s'",
+			cur, val, key);
+		return FALSE;
+	}
+}
+
+static gboolean
+int_same (VeConfig *config, int cur, const char *key)
+{
+	int val = ve_config_get_int (config, key);
+	if (cur == val) {
+		return TRUE;
+	} else {
+		syslog (LOG_ERR, "int not same: cur '%d' val '%d' key '%s'",
+			cur, val, key);
+		return FALSE;
+	}
+}
+
+
+static gboolean
+greeter_reread_config (int sig, gpointer data)
+{
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
+	char *theme, *theme_dir;
+
+	theme = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME);
+	if (ve_string_empty (theme)) {
+		g_free (theme);
+		theme = g_strdup ("circles");
+	}
+	theme_dir = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME_DIR);
+	if (theme_dir == NULL ||
+	    ! g_file_test (theme_dir, G_FILE_TEST_IS_DIR)) {
+		g_free (theme_dir);
+		theme_dir = g_strdup (GREETERTHEMEDIR);
+	}
+
+	/* FIXME: The following is evil, we should update on the fly rather
+	 * then just restarting */
+	/* Also we may not need to check ALL those keys but just a few */
+	if (strcmp (theme, GdmGraphicalTheme) != 0 ||
+	    strcmp (theme_dir, GdmGraphicalThemeDir) != 0 ||
+	     ! string_same (config,
+			    GdmDefaultLocale,
+			    GDM_KEY_LOCALE) ||
+	     ! int_same (config,
+			 GdmXineramaScreen,
+			 GDM_KEY_XINERAMASCREEN) ||
+	     ! bool_same (config,
+			  GdmUseCirclesInEntry,
+			  GDM_KEY_ENTRY_CIRCLES) ||
+	     ! bool_same (config,
+			  GdmShowXtermFailsafeSession,
+			  GDM_KEY_SHOW_XTERM_FAILSAFE) ||
+	     ! bool_same (config,
+			  GdmShowGnomeFailsafeSession,
+			  GDM_KEY_SHOW_GNOME_FAILSAFE) ||
+	     ! bool_same (config,
+			  GdmShowGnomeChooserSession,
+			  GDM_KEY_SHOW_GNOME_CHOOSER) ||
+	     ! string_same (config,
+			    GdmSessionDir,
+			    GDM_KEY_SESSDIR) ||
+	     ! string_same (config,
+			    GdmLocaleFile,
+			    GDM_KEY_LOCFILE) ||
+	     ! bool_same (config,
+			  GdmSystemMenu,
+			  GDM_KEY_SYSMENU) ||
+	     ! string_same (config,
+			    GdmHalt,
+			    GDM_KEY_HALT) ||
+	     ! string_same (config,
+			    GdmReboot,
+			    GDM_KEY_REBOOT) ||
+	     ! string_same (config,
+			    GdmSuspend,
+			    GDM_KEY_SUSPEND) ||
+	     ! string_same (config,
+			    GdmConfigurator,
+			    GDM_KEY_CONFIGURATOR) ||
+	     ! bool_same (config,
+			  GdmTimedLoginEnable,
+			  GDM_KEY_TIMED_LOGIN_ENABLE) ||
+	     ! int_same (config,
+			 GdmTimedLoginDelay,
+			 GDM_KEY_TIMED_LOGIN_DELAY)) {
+		syslog (LOG_ERR, "something not same: "
+			"theme '%s' theme_dir '%s'",
+			theme, theme_dir);
+		/* Set busy cursor */
+		setup_cursor (GDK_WATCH);
+
+		gdm_wm_save_wm_order ();
+
+		_exit (DISPLAY_RESTARTGREETER);
+	}
+
+	if ( ! bool_same (config,
+			  GdmUse24Clock,
+			  GDM_KEY_USE_24_CLOCK)) {
+		GdmUse24Clock = ve_config_get_bool (config,
+						    GDM_KEY_USE_24_CLOCK);
+		greeter_item_clock_update ();
+	}
+
+	g_free (theme);
+	g_free (theme_dir);
+
+	return TRUE;
 }
 
 static void
@@ -776,7 +897,8 @@ greeter_done (int sig)
 static char *
 get_theme_file (const char *in, char **theme_dir)
 {
-  char *file, *dir, *info, *s, *key;
+  char *file, *dir, *info, *s;
+  VeConfig *config;
 
   if (in == NULL)
     in = "circles";
@@ -819,12 +941,9 @@ get_theme_file (const char *in, char **theme_dir)
       return file;
     }
 
-  key = g_strconcat ("=", info, "=/", NULL);
-  g_free (info);
-  gnome_config_push_prefix (key);
-  g_free (key);
+  config = ve_config_new (info);
 
-  s = gnome_config_get_translated_string ("GdmGreeterTheme/Greeter");
+  s = ve_config_get_translated_string (config, "GdmGreeterTheme/Greeter");
   if (s == NULL || s[0] == '\0')
     {
       g_free (s);
@@ -833,8 +952,6 @@ get_theme_file (const char *in, char **theme_dir)
 
   file = g_build_filename (dir, s, NULL);
   g_free (s);
-
-  gnome_config_pop_prefix ();
 
   return file;
 }
@@ -886,7 +1003,9 @@ main (int argc, char *argv[])
   greeter_session_init ();
   greeter_language_init ();
 
-  hup.sa_handler = greeter_reread_config;
+  ve_signal_add (SIGHUP, greeter_reread_config, NULL);
+
+  hup.sa_handler = ve_signal_notify;
   hup.sa_flags = 0;
   sigemptyset(&hup.sa_mask);
   sigaddset (&hup.sa_mask, SIGCHLD);
@@ -919,7 +1038,6 @@ main (int argc, char *argv[])
     ctrlch = g_io_channel_unix_new (STDIN_FILENO);
     g_io_channel_set_encoding (ctrlch, NULL, NULL);
     g_io_channel_set_buffered (ctrlch, FALSE);
-    g_io_channel_init (ctrlch);
     g_io_add_watch (ctrlch, 
 		    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
 		    (GIOFunc) greeter_ctrl_handler,
@@ -930,8 +1048,8 @@ main (int argc, char *argv[])
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
   if (DOING_GDM_DEVELOPMENT)
-    gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
-			GTK_SIGNAL_FUNC (key_press_event), NULL);
+    g_signal_connect (G_OBJECT (window), "key_press_event",
+		      G_CALLBACK (key_press_event), NULL);
   
   canvas = gnome_canvas_new_aa ();
   gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas),

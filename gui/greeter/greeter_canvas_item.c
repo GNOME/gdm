@@ -210,8 +210,8 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
       item->item_type == GREETER_ITEM_TYPE_SVG ||
       item->item_type == GREETER_ITEM_TYPE_PIXMAP ||
       item->item_type == GREETER_ITEM_TYPE_LABEL)
-    gtk_signal_connect (GTK_OBJECT (item->item), "event",
-			(GtkSignalFunc) greeter_item_event_handler,
-			item);
+    g_signal_connect (G_OBJECT (item->item), "event",
+		      G_CALLBACK (greeter_item_event_handler),
+		      item);
 }
 

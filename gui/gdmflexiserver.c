@@ -126,11 +126,15 @@ choose_server (void)
 	    got_standard)
 		return g_strdup (GDM_STANDARD);
 
-	dialog = gnome_dialog_new (_("Choose server"),
-				   GNOME_STOCK_BUTTON_OK,
-				   GNOME_STOCK_BUTTON_CANCEL,
-				   NULL);
-	vbox = GNOME_DIALOG (dialog)->vbox;
+	dialog = gtk_dialog_new_with_buttons (_("Choose server"),
+					      NULL /* parent */,
+					      0 /* flags */,
+					      GTK_STOCK_OK,
+					      GTK_RESPONSE_OK,
+					      GTK_STOCK_CANCEL,
+					      GTK_RESPONSE_CANCEL,
+					      NULL);
+	vbox = GTK_DIALOG (dialog)->vbox;
 
 	w = gtk_label_new (_("Choose the X server to start"));
 	gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);
@@ -141,7 +145,7 @@ choose_server (void)
 						     _("Standard server"));
 		gtk_box_pack_start (GTK_BOX (vbox), w, FALSE, FALSE, 0);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
-		group = gtk_radio_button_group (GTK_RADIO_BUTTON (w));
+		group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (w));
 	}
 
 	for (li = xservers; li != NULL; li = li->next) {
@@ -153,16 +157,14 @@ choose_server (void)
 		    strcmp (svr->id, GDM_STANDARD) == 0)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w),
 						      TRUE);
-		gtk_object_set_user_data (GTK_OBJECT (w), svr->id);
-		group = gtk_radio_button_group (GTK_RADIO_BUTTON (w));
+		g_object_set_data (G_OBJECT (w), "ServerID", svr->id);
+		group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (w));
 	}
 
 	gtk_widget_show_all (dialog);
 
-	gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
-
-	switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
-	case 0:	
+	switch (gtk_dialog_run (GTK_DIALOG (dialog))) {
+	case GTK_RESPONSE_OK:	
 		/* OK */
 		break;
 	default:
@@ -174,7 +176,7 @@ choose_server (void)
 
 	for (li = group; li != NULL; li = li->next) {
 		GtkWidget *w = li->data;
-		char *name = gtk_object_get_user_data (GTK_OBJECT (w));
+		char *name = g_object_get_data (G_OBJECT (w), "ServerID");
 		if (GTK_TOGGLE_BUTTON (w)->active) {
 			gtk_widget_destroy (dialog);
 			return g_strdup (name);
@@ -209,13 +211,20 @@ main (int argc, char *argv[])
 	char *auth_cookie = NULL;
 	poptContext ctx;
 	const char **args;
+	GnomeProgram *program;
 
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	gnome_init_with_popt_table ("gdmflexiserver", VERSION, argc, argv,
-				    options, 0, &ctx);
+	program = gnome_program_init ("gdmflexiserver", VERSION, 
+				      LIBGNOMEUI_MODULE /* module_info */,
+				      argc, argv,
+				      GNOME_PARAM_POPT_TABLE, options,
+				      NULL);
+	g_object_get (G_OBJECT (program),
+		      GNOME_PARAM_POPT_CONTEXT, &ctx,
+		      NULL);	
 
 	gdmcomm_set_debug (debug);
 
@@ -235,10 +244,16 @@ main (int argc, char *argv[])
 			g_print ("%s\n", ret);
 			return 0;
 		} else {
-			dialog = gnome_warning_dialog
-				(_("Cannot communicate with gdm, perhaps "
+			dialog = gtk_message_dialog_new
+				(NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_OK,
+				 _("Cannot communicate with gdm, perhaps "
 				   "you have an old version running."));
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+			gtk_widget_show_all (dialog);
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
 			return 1;
 		}
 	}
@@ -246,12 +261,18 @@ main (int argc, char *argv[])
 	if (use_xnest) {
 		char *cookie = gdmcomm_get_a_cookie (FALSE /* binary */);
 		if (cookie == NULL) {
-			dialog = gnome_warning_dialog
-				(_("You do not seem to have the "
+			dialog = gtk_message_dialog_new
+				(NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_OK,
+				 _("You do not seem to have the "
 				   "authentication needed for this "
 				   "operation.  Perhaps your .Xauthority "
 				   "file is not set up correctly."));
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+			gtk_widget_show_all (dialog);
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
 			return 1;
 		}
 		command = g_strdup_printf (GDM_SUP_FLEXI_XNEST " %s %d %s %s",
@@ -266,11 +287,17 @@ main (int argc, char *argv[])
 		auth_cookie = gdmcomm_get_auth_cookie ();
 
 		if (auth_cookie == NULL) {
-			dialog = gnome_warning_dialog
-				(_("You do not seem to be logged in on the "
+			dialog = gtk_message_dialog_new
+				(NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_OK,
+				 _("You do not seem to be logged in on the "
 				   "console.  Starting a new login only "
 				   "works correctly on the console."));
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+			gtk_widget_show_all (dialog);
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
 			return 1;
 		}
 
@@ -305,8 +332,16 @@ main (int argc, char *argv[])
 
 	message = gdmcomm_get_error_message (ret, use_xnest);
 
-	dialog = gnome_warning_dialog (message);
-	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	dialog = gtk_message_dialog_new
+		(NULL /* parent */,
+		 GTK_DIALOG_MODAL /* flags */,
+		 GTK_MESSAGE_WARNING,
+		 GTK_BUTTONS_OK,
+		 "%s", message);
+	gtk_widget_show_all (dialog);
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+
 	return 1;
 }
 

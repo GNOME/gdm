@@ -20,7 +20,7 @@
 
 #include "config.h"
 #include <libgnome/libgnome.h>
-#include <libgnomeui/libgnomeui.h>
+#include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <X11/Xauth.h>
 
@@ -269,8 +269,9 @@ gdmcomm_get_a_cookie (gboolean binary)
 			str = g_string_new (NULL);
 
 			for (i = 0; i < xau->data_length; i++) {
-				g_string_sprintfa (str, "%02x",
-						   (guint)(guchar)xau->data[i]);
+				g_string_append_printf
+					(str, "%02x",
+					 (guint)(guchar)xau->data[i]);
 			}
 			cookie = g_string_free (str, FALSE);
 		}
@@ -365,9 +366,8 @@ gdmcomm_check (gboolean gui_bitching)
 	long pid;
 	char *pidfile;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	pidfile = gnome_config_get_string (GDM_KEY_PIDFILE);
-	gnome_config_pop_prefix ();
+	pidfile = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+					GDM_KEY_PIDFILE);
 
 	pid = 0;
 	if (pidfile != NULL)
@@ -382,21 +382,33 @@ gdmcomm_check (gboolean gui_bitching)
 	    (kill (pid, 0) < 0 &&
 	     errno != EPERM)) {
 		if (gui_bitching) {
-			dialog = gnome_warning_dialog
-				(_("GDM is not running.\n"
+			dialog = gtk_message_dialog_new
+				(NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_OK,
+				 _("GDM is not running.\n"
 				   "Please ask your "
 				   "system administrator to start it."));
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+			gtk_widget_show_all (dialog);
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
 		}
 		return FALSE;
 	}
 
 	if (access (GDM_SUP_SOCKET, R_OK|W_OK)) {
 		if (gui_bitching) {
-			dialog = gnome_warning_dialog
-				(_("Cannot communicate with gdm, perhaps "
+			dialog = gtk_message_dialog_new
+				(NULL /* parent */,
+				 GTK_DIALOG_MODAL /* flags */,
+				 GTK_MESSAGE_WARNING,
+				 GTK_BUTTONS_OK,
+				 _("Cannot communicate with gdm, perhaps "
 				   "you have an old version running."));
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+			gtk_widget_show_all (dialog);
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
 		}
 		return FALSE;
 	}

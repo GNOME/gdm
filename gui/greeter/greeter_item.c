@@ -54,7 +54,7 @@ greeter_item_info_free (GreeterItemInfo *info)
 
   for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
     if (info->pixbufs[i])
-      gdk_pixbuf_unref (info->pixbufs[i]);
+      g_object_unref (G_OBJECT (info->pixbufs[i]));
 
   g_free (info->id);
   g_free (info->orig_text);
@@ -85,7 +85,6 @@ greeter_item_update_text (GreeterItemInfo *info)
 static char *
 get_clock (void)
 {
-  char str[256];
   struct tm *the_tm;
   time_t the_time;
 

@@ -4,8 +4,9 @@
 #include "greeter_parser.h"
 
 static gboolean
-update_clock (GreeterItemInfo *info)
+update_clock (gpointer data)
 {
+  GreeterItemInfo *info = data;
   struct tm *the_tm;
   time_t the_time;
   gint time_til_next_min;
@@ -18,7 +19,7 @@ update_clock (GreeterItemInfo *info)
   time_til_next_min = 60 - the_tm->tm_sec;
   time_til_next_min = (time_til_next_min>=0?time_til_next_min:0);
 
-  gtk_timeout_add (time_til_next_min*1000, (GtkFunction)update_clock, info);
+  g_timeout_add (time_til_next_min*1000, update_clock, info);
 
   return FALSE;
 }
@@ -34,4 +35,14 @@ greeter_item_clock_setup (void)
     update_clock (info);
 
   return TRUE;
+}
+
+void
+greeter_item_clock_update (void)
+{
+  GreeterItemInfo *info;	
+
+  info = greeter_lookup_id ("clock");
+  if (info)
+    greeter_item_update_text (info);
 }

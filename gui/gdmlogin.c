@@ -17,6 +17,10 @@
  */
 
 #include <config.h>
+
+/* for GtkCList */
+#undef GTK_DISABLE_DEPRECATED
+
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
 #include <math.h>
@@ -264,8 +268,8 @@ static void
 setup_cursor (GdkCursorType type)
 {
 	GdkCursor *cursor = gdk_cursor_new (type);
-	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
-	gdk_cursor_destroy (cursor);
+	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+	gdk_cursor_unref (cursor);
 }
 
 static void
@@ -373,7 +377,7 @@ gdm_login_icon_pressed (GtkWidget *widget, GdkEventButton *event)
 		      NULL,
 		      fleur_cursor,
 		      GDK_CURRENT_TIME);
-    gdk_cursor_destroy (fleur_cursor);
+    gdk_cursor_unref (fleur_cursor);
     gdk_flush ();
 
     return TRUE;
@@ -419,7 +423,8 @@ gdm_login_icon_motion (GtkWidget *widget, GdkEventMotion *event)
 	if (p == NULL)
 		return FALSE;
 
-	gdk_window_get_pointer (GDK_ROOT_PARENT (), &xp, &yp, &mask);
+	gdk_window_get_pointer (gdk_get_default_root_window (),
+				&xp, &yp, &mask);
 
 	set_screen_to_pos (xp, yp);
 
@@ -461,7 +466,7 @@ gdm_login_iconify_handler (GtkWidget *widget, gpointer data)
 	    icon = gtk_image_new_from_pixbuf (pb);
 	    iw = gdk_pixbuf_get_width (pb);
 	    ih = gdk_pixbuf_get_height (pb);
-	    gdk_pixbuf_unref (pb);
+	    g_object_unref (G_OBJECT (pb));
     } else {
 	    /* sanity fallback */
 	    icon = gtk_event_box_new ();
@@ -789,63 +794,64 @@ static void
 gdm_login_parse_config (void)
 {
     struct stat unused;
+    VeConfig *config;
 	
     if (stat (GDM_CONFIG_FILE, &unused) == -1) {
 	syslog (LOG_ERR, _("gdm_login_parse_config: No configuration file: %s. Using defaults."), GDM_CONFIG_FILE);
 	used_defaults = TRUE;
     }
 
-    gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+    config = ve_config_get (GDM_CONFIG_FILE);
 
-    GdmAllowRoot = gnome_config_get_bool (GDM_KEY_ALLOWROOT);
-    GdmAllowRemoteRoot = gnome_config_get_bool (GDM_KEY_ALLOWREMOTEROOT);
-    GdmBrowser = gnome_config_get_bool (GDM_KEY_BROWSER);
-    GdmLogo = gnome_config_get_string (GDM_KEY_LOGO);
-    GdmIcon = gnome_config_get_string (GDM_KEY_ICON);
-    GdmQuiver = gnome_config_get_bool (GDM_KEY_QUIVER);
-    GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
-    GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
-    GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
-    GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
-    GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
-    GdmConfigurator = gnome_config_get_string (GDM_KEY_CONFIGURATOR);
-    GdmTitleBar = gnome_config_get_bool (GDM_KEY_TITLE_BAR);
-    GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
-    GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
-    GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
-    GdmWelcome = gnome_config_get_translated_string (GDM_KEY_WELCOME);
+    GdmAllowRoot = ve_config_get_bool (config, GDM_KEY_ALLOWROOT);
+    GdmAllowRemoteRoot = ve_config_get_bool (config, GDM_KEY_ALLOWREMOTEROOT);
+    GdmBrowser = ve_config_get_bool (config, GDM_KEY_BROWSER);
+    GdmLogo = ve_config_get_string (config, GDM_KEY_LOGO);
+    GdmIcon = ve_config_get_string (config, GDM_KEY_ICON);
+    GdmQuiver = ve_config_get_bool (config, GDM_KEY_QUIVER);
+    GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
+    GdmHalt = ve_config_get_string (config, GDM_KEY_HALT);
+    GdmReboot = ve_config_get_string (config, GDM_KEY_REBOOT);
+    GdmSuspend = ve_config_get_string (config, GDM_KEY_SUSPEND);
+    GdmConfigAvailable = ve_config_get_bool (config, GDM_KEY_CONFIG_AVAILABLE);
+    GdmConfigurator = ve_config_get_string (config, GDM_KEY_CONFIGURATOR);
+    GdmTitleBar = ve_config_get_bool (config, GDM_KEY_TITLE_BAR);
+    GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
+    GdmDefaultLocale = ve_config_get_string (config, GDM_KEY_LOCALE);
+    GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
+    GdmWelcome = ve_config_get_translated_string (config, GDM_KEY_WELCOME);
     /* A hack! */
     if (strcmp (ve_sure_string (GdmWelcome), "Welcome to %n") == 0) {
 	    g_free (GdmWelcome);
 	    GdmWelcome = g_strdup (_("Welcome to %n"));
     }
-    GdmBackgroundProg = gnome_config_get_string (GDM_KEY_BACKGROUNDPROG);
-    GdmBackgroundImage = gnome_config_get_string (GDM_KEY_BACKGROUNDIMAGE);
-    GdmBackgroundColor = gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR);
-    GdmBackgroundType = gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE);
-    GdmBackgroundScaleToFit = gnome_config_get_bool (GDM_KEY_BACKGROUNDSCALETOFIT);
-    GdmBackgroundRemoteOnlyColor = gnome_config_get_bool (GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
-    GdmGtkRC = gnome_config_get_string (GDM_KEY_GTKRC);
-    GdmExclude = gnome_config_get_string (GDM_KEY_EXCLUDE);
-    GdmMinimalUID = gnome_config_get_int (GDM_KEY_MINIMALUID);
-    GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
-    GdmDefaultFace = gnome_config_get_string (GDM_KEY_FACE);
-    GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
-    GdmIconMaxWidth = gnome_config_get_int (GDM_KEY_ICONWIDTH);
-    GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
-    GdmXineramaScreen = gnome_config_get_int (GDM_KEY_XINERAMASCREEN);
-    GdmUseCirclesInEntry = gnome_config_get_bool (GDM_KEY_ENTRY_CIRCLES);
-    GdmLockPosition = gnome_config_get_bool (GDM_KEY_LOCK_POSITION);
-    GdmSetPosition = gnome_config_get_bool (GDM_KEY_SET_POSITION);
-    GdmPositionX = gnome_config_get_int (GDM_KEY_POSITIONX);
-    GdmPositionY = gnome_config_get_int (GDM_KEY_POSITIONY);
+    GdmBackgroundProg = ve_config_get_string (config, GDM_KEY_BACKGROUNDPROG);
+    GdmBackgroundImage = ve_config_get_string (config, GDM_KEY_BACKGROUNDIMAGE);
+    GdmBackgroundColor = ve_config_get_string (config, GDM_KEY_BACKGROUNDCOLOR);
+    GdmBackgroundType = ve_config_get_int (config, GDM_KEY_BACKGROUNDTYPE);
+    GdmBackgroundScaleToFit = ve_config_get_bool (config, GDM_KEY_BACKGROUNDSCALETOFIT);
+    GdmBackgroundRemoteOnlyColor = ve_config_get_bool (config, GDM_KEY_BACKGROUNDREMOTEONLYCOLOR);
+    GdmGtkRC = ve_config_get_string (config, GDM_KEY_GTKRC);
+    GdmExclude = ve_config_get_string (config, GDM_KEY_EXCLUDE);
+    GdmMinimalUID = ve_config_get_int (config, GDM_KEY_MINIMALUID);
+    GdmGlobalFaceDir = ve_config_get_string (config, GDM_KEY_FACEDIR);
+    GdmDefaultFace = ve_config_get_string (config, GDM_KEY_FACE);
+    GdmDebug = ve_config_get_bool (config, GDM_KEY_DEBUG);
+    GdmIconMaxWidth = ve_config_get_int (config, GDM_KEY_ICONWIDTH);
+    GdmIconMaxHeight = ve_config_get_int (config, GDM_KEY_ICONHEIGHT);
+    GdmXineramaScreen = ve_config_get_int (config, GDM_KEY_XINERAMASCREEN);
+    GdmUseCirclesInEntry = ve_config_get_bool (config, GDM_KEY_ENTRY_CIRCLES);
+    GdmLockPosition = ve_config_get_bool (config, GDM_KEY_LOCK_POSITION);
+    GdmSetPosition = ve_config_get_bool (config, GDM_KEY_SET_POSITION);
+    GdmPositionX = ve_config_get_int (config, GDM_KEY_POSITIONX);
+    GdmPositionY = ve_config_get_int (config, GDM_KEY_POSITIONY);
 
-    GdmShowXtermFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_XTERM_FAILSAFE);
-    GdmShowGnomeFailsafeSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_FAILSAFE);
-    GdmShowGnomeChooserSession = gnome_config_get_bool (GDM_KEY_SHOW_GNOME_CHOOSER);
-    GdmShowLastSession = gnome_config_get_bool (GDM_KEY_SHOW_LAST_SESSION);
+    GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
+    GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
+    GdmShowGnomeChooserSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_CHOOSER);
+    GdmShowLastSession = ve_config_get_bool (config, GDM_KEY_SHOW_LAST_SESSION);
     
-    GdmTimedLoginEnable = gnome_config_get_bool (GDM_KEY_TIMED_LOGIN_ENABLE);
+    GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
 
     /* Note: TimedLogin here is not gotten out of the config
      * but from the daemon since it's been munged on by the daemon a bit
@@ -858,7 +864,7 @@ gdm_login_parse_config (void)
 	    }
 
 	    GdmTimedLoginDelay =
-		    gnome_config_get_int (GDM_KEY_TIMED_LOGIN_DELAY);
+		    ve_config_get_int (config, GDM_KEY_TIMED_LOGIN_DELAY);
 	    if (GdmTimedLoginDelay < 5) {
 		    syslog (LOG_WARNING,
 			    _("TimedLoginDelay was less then 5.  I'll just use 5."));
@@ -869,9 +875,7 @@ gdm_login_parse_config (void)
 	    GdmTimedLoginDelay = 5;
     }
   
-    GdmUse24Clock = gnome_config_get_bool (GDM_KEY_USE_24_CLOCK);
-
-    gnome_config_pop_prefix();
+    GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
     if (GdmIconMaxHeight < 0) GdmIconMaxHeight = 128;
@@ -1331,7 +1335,7 @@ gdm_login_session_init (GtkWidget *menu)
             g_object_set_data (G_OBJECT (item),
 			       SESSION_NAME,
 			       LAST_SESSION);
-            sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+            sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
             gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
             g_signal_connect (G_OBJECT (item), "activate",
 			      G_CALLBACK (gdm_login_session_handler),
@@ -1410,7 +1414,7 @@ gdm_login_session_init (GtkWidget *menu)
 					g_strdup (dent->d_name),
 					(GDestroyNotify) g_free);
 
-		sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+		sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
 		sessions = g_slist_append (sessions, g_strdup (dent->d_name));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 		g_signal_connect (G_OBJECT (item), "activate",
@@ -1460,7 +1464,7 @@ gdm_login_session_init (GtkWidget *menu)
 						   SESSION_NAME,
 						   GDM_SESSION_GNOME_CHOOSER);
 
-                                sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+                                sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
                                 sessions = g_slist_append (sessions,
                                                            g_strdup (GDM_SESSION_GNOME_CHOOSER));
                                 gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -1507,7 +1511,7 @@ gdm_login_session_init (GtkWidget *menu)
             g_object_set_data (G_OBJECT (item),
 			       SESSION_NAME, GDM_SESSION_FAILSAFE_GNOME);
 
-            sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+            sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
             sessions = g_slist_append (sessions,
                                        g_strdup (GDM_SESSION_FAILSAFE_GNOME));
             gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -1532,7 +1536,7 @@ gdm_login_session_init (GtkWidget *menu)
             g_object_set_data (G_OBJECT (item),
 			       SESSION_NAME, GDM_SESSION_FAILSAFE_XTERM);
 
-            sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+            sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
             sessions = g_slist_append (sessions,
                                        g_strdup (GDM_SESSION_FAILSAFE_XTERM));
             gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -1616,7 +1620,7 @@ gdm_login_language_menu_new (void)
     curlang = LAST_LANGUAGE;
 
     item = gtk_radio_menu_item_new_with_label (NULL, _("Last"));
-    languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+    languages = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     g_signal_connect (G_OBJECT (item), "activate", 
 		      G_CALLBACK (gdm_login_language_handler), 
@@ -1631,7 +1635,7 @@ gdm_login_language_menu_new (void)
 			  NULL);
 
     item = gtk_radio_menu_item_new_with_label (languages, _("System default"));
-    languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+    languages = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
     g_signal_connect (G_OBJECT (item), "activate", 
 		      G_CALLBACK (gdm_login_language_handler), 
@@ -1715,7 +1719,7 @@ gdm_login_language_menu_new (void)
 
 	    item = gtk_radio_menu_item_new (languages);
 	    gtk_container_add (GTK_CONTAINER (item), box);
-	    languages = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
+	    languages = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
 	    g_object_set_data_full (G_OBJECT (item),
 				    "Language",
 				    g_strdup (lang),
@@ -1980,7 +1984,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
     /* Read random garbage from i/o channel until STX is found */
     do {
-	g_io_channel_read (source, buf, 1, &len);
+	g_io_channel_read_chars (source, buf, 1, &len, NULL);
 
 	if (len != 1)
 	    return (TRUE);
@@ -1988,7 +1992,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 
     /* Read opcode */
-    g_io_channel_read (source, buf, 1, &len);
+    g_io_channel_read_chars (source, buf, 1, &len, NULL);
 
     /* If opcode couldn't be read */
     if (len != 1)
@@ -1999,7 +2003,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_SETLOGIN:
 	/* somebody is trying to fool us this is the user that
 	 * wants to log in, and well, we are the gullible kind */
-        g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+        g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 	g_free (curuser);
 	curuser = g_strdup (buf);
@@ -2007,7 +2011,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	fflush (stdout);
 	break;
     case GDM_LOGIN:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
@@ -2038,7 +2042,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_PROMPT:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
@@ -2069,7 +2073,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_NOECHO:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	tmp = ve_locale_to_utf8 (buf);
@@ -2100,7 +2104,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_MSG:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	/* the user has not yet seen messages */
@@ -2138,7 +2142,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_ERRBOX:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 	tmp = ve_locale_to_utf8 (buf);
 	gtk_label_set_text (GTK_LABEL (err_box), tmp);
@@ -2156,7 +2160,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_ERRDLG:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	/* we should be now fine for focusing new windows */
@@ -2183,7 +2187,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_SESS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 	tmp = ve_locale_to_utf8 (buf);
 	gdm_login_session_lookup (tmp);
@@ -2195,7 +2199,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_LANG:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 	gdm_login_language_lookup (buf);
 	printf ("%c%s\n", STX, language);
@@ -2203,7 +2207,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_SSESS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	if (savesess)
 	    printf ("%cY\n", STX);
@@ -2214,7 +2218,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_SLANG:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	if (savelang)
 	    printf ("%cY\n", STX);
@@ -2247,7 +2251,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	/* fall thru to reset */
 
     case GDM_RESETOK:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 	buf[len-1] = '\0';
 
 	if (curuser != NULL) {
@@ -2271,7 +2275,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_QUIT:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	if (timed_handler_id != 0) {
 		gtk_timeout_remove (timed_handler_id);
@@ -2343,7 +2347,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		GString *str = g_string_new (NULL);
 
 		do {
-			g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+			g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL);
 			buf[len-1] = '\0';
 			tmp = ve_locale_to_utf8 (buf);
 			g_string_append (str, tmp);
@@ -2365,7 +2369,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_SGNOMESESS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	if (remember_gnome_session)
 	    printf ("%cY\n", STX);
@@ -2376,7 +2380,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_STARTTIMER:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	/*
 	 * Timed Login: Start Timer Loop
@@ -2394,7 +2398,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_STOPTIMER:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	/*
 	 * Timed Login: Stop Timer Loop
@@ -2409,14 +2413,14 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_DISABLE:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	gtk_widget_set_sensitive (login, FALSE);
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
 
     case GDM_ENABLE:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	gtk_widget_set_sensitive (login, TRUE);
 	printf ("%c\n", STX);
 	fflush (stdout);
@@ -2426,13 +2430,13 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
      * back a NULL response so that the daemon quits sending them */
     case GDM_NEEDPIC:
     case GDM_READPIC:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 	printf ("%c\n", STX);
 	fflush (stdout);
 	break;
 
     case GDM_NOFOCUS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	gdm_wm_no_login_focus_push ();
 	
@@ -2441,7 +2445,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_FOCUS:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	gdm_wm_no_login_focus_pop ();
 	
@@ -2450,7 +2454,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_SAVEDIE:
-	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
+	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	/* Set busy cursor */
 	setup_cursor (GDK_WATCH);
@@ -2603,7 +2607,7 @@ gdm_login_handle_pressed (GtkWidget *widget, GdkEventButton *event)
 		      NULL,
 		      fleur_cursor,
 		      GDK_CURRENT_TIME);
-    gdk_cursor_destroy (fleur_cursor);
+    gdk_cursor_unref (fleur_cursor);
     gdk_flush ();
     
     return TRUE;
@@ -2633,7 +2637,7 @@ gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
     if (p == NULL)
 	    return FALSE;
 
-    gdk_window_get_pointer (GDK_ROOT_PARENT (), &xp, &yp, &mask);
+    gdk_window_get_pointer (gdk_get_default_root_window (), &xp, &yp, &mask);
 
     set_screen_to_pos (xp, yp);
 
@@ -3155,7 +3159,7 @@ gdm_login_gui_init (void)
 		logo = gtk_image_new_from_pixbuf (pb);
 		lw = gdk_pixbuf_get_width (pb);
 		lh = gdk_pixbuf_get_height (pb);
-		gdk_pixbuf_unref (pb);
+		g_object_unref (G_OBJECT (pb));
 
 		/* this will make the logo always left justified */
 		logoframe = gtk_alignment_new (0, 0.5, 0, 0);
@@ -3392,7 +3396,7 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 	user->login = g_strdup (logname);
 	user->homedir = g_strdup (homedir);
 	if (defface != NULL)
-		user->picture = gdk_pixbuf_ref (defface);
+		user->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defface));
 
 	/* don't read faces, since that requires the daemon */
 	if (DOING_GDM_DEVELOPMENT)
@@ -3485,7 +3489,7 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 		}
 
 		if (user->picture != NULL)
-			gdk_pixbuf_unref (user->picture);
+			g_object_unref (G_OBJECT (user->picture));
 
 		maxwidth = MAX (maxwidth, w);
 		maxheight = MAX (maxheight, h);
@@ -3493,7 +3497,7 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 		    h != gdk_pixbuf_get_height (img)) {
 			user->picture = gdk_pixbuf_scale_simple
 				(img, w, h, GDK_INTERP_BILINEAR);
-			gdk_pixbuf_unref (img);
+			g_object_unref (G_OBJECT (img));
 		} else {
 			user->picture = img;
 		}
@@ -3624,13 +3628,13 @@ set_root (GdkPixbuf *pb)
 
 	gdk_error_trap_push ();
 
-	gdk_window_set_back_pixmap (GDK_ROOT_PARENT (),
+	gdk_window_set_back_pixmap (gdk_get_default_root_window (),
 				    pm,
 				    FALSE /* parent_relative */);
 
-	gdk_pixmap_unref (pm);
+	g_object_unref (G_OBJECT (pm));
 
-	gdk_window_clear (GDK_ROOT_PARENT ());
+	gdk_window_clear (gdk_get_default_root_window ());
 
 	gdk_flush ();
 	gdk_error_trap_pop ();
@@ -3725,14 +3729,14 @@ run_backgrounds (void)
 			}
 			if (GdmBackgroundScaleToFit) {
 				GdkPixbuf *spb = render_scaled_back (pb);
-				gdk_pixbuf_unref (pb);
+				g_object_unref (G_OBJECT (pb));
 				pb = spb;
 			}
 
 			/* paranoia */
 			if (pb != NULL) {
 				set_root (pb);
-				gdk_pixbuf_unref (pb);
+				g_object_unref (G_OBJECT (pb));
 			}
 		}
 	/* Load background color */
@@ -3745,14 +3749,17 @@ run_backgrounds (void)
 			gdk_color_parse ("#007777", &color);
 		}
 
-		colormap = gdk_window_get_colormap (GDK_ROOT_PARENT ());
+		colormap = gdk_drawable_get_colormap
+			(gdk_get_default_root_window ());
 		/* paranoia */
 		if (colormap != NULL) {
+			gboolean success;
 			gdk_error_trap_push ();
 
-			gdk_color_alloc (colormap, &color);
-			gdk_window_set_background (GDK_ROOT_PARENT (), &color);
-			gdk_window_clear (GDK_ROOT_PARENT ());
+			gdk_colormap_alloc_colors (colormap, &color, 1,
+						   FALSE, TRUE, &success);
+			gdk_window_set_background (gdk_get_default_root_window (), &color);
+			gdk_window_clear (gdk_get_default_root_window ());
 
 			gdk_flush ();
 			gdk_error_trap_pop ();
@@ -3774,9 +3781,9 @@ enum {
 };
 
 static gboolean
-string_same (const char *cur, const char *key)
+string_same (VeConfig *config, const char *cur, const char *key)
 {
-	char *val = gnome_config_get_string (key);
+	char *val = ve_config_get_string (config, key);
 	if (strcmp (ve_sure_string (cur), ve_sure_string (val)) == 0) {
 		g_free (val);
 		return TRUE;
@@ -3787,9 +3794,9 @@ string_same (const char *cur, const char *key)
 }
 
 static gboolean
-bool_same (gboolean cur, const char *key)
+bool_same (VeConfig *config, gboolean cur, const char *key)
 {
-	gboolean val = gnome_config_get_bool (key);
+	gboolean val = ve_config_get_bool (config, key);
 	if (ve_bool_equal (cur, val)) {
 		return TRUE;
 	} else {
@@ -3798,9 +3805,9 @@ bool_same (gboolean cur, const char *key)
 }
 
 static gboolean
-int_same (int cur, const char *key)
+int_same (VeConfig *config, int cur, const char *key)
 {
-	int val = gnome_config_get_int (key);
+	int val = ve_config_get_int (config, key);
 	if (cur == val) {
 		return TRUE;
 	} else {
@@ -3808,35 +3815,36 @@ int_same (int cur, const char *key)
 	}
 }
 
-static void
-gdm_reread_config (int sig)
+static gboolean
+gdm_reread_config (int sig, gpointer data)
 {
 	char *str;
+	VeConfig *config;
 	/* reparse config stuff here.  At least ones we care about */
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+	config = ve_config_get (GDM_CONFIG_FILE);
 
 	/* FIXME: The following is evil, we should update on the fly rather
 	 * then just restarting */
 	/* Also we may not need to check ALL those keys but just a few */
-	if ( ! string_same (GdmBackgroundProg, GDM_KEY_BACKGROUNDPROG) ||
-	     ! string_same (GdmBackgroundImage, GDM_KEY_BACKGROUNDIMAGE) ||
-	     ! string_same (GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
-	     ! int_same (GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE) ||
-	     ! bool_same (GdmBackgroundScaleToFit,
+	if ( ! string_same (config, GdmBackgroundProg, GDM_KEY_BACKGROUNDPROG) ||
+	     ! string_same (config, GdmBackgroundImage, GDM_KEY_BACKGROUNDIMAGE) ||
+	     ! string_same (config, GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
+	     ! int_same (config, GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE) ||
+	     ! bool_same (config,
+			  GdmBackgroundScaleToFit,
 			  GDM_KEY_BACKGROUNDSCALETOFIT) ||
-	     ! bool_same (GdmBackgroundRemoteOnlyColor,
+	     ! bool_same (config,
+			  GdmBackgroundRemoteOnlyColor,
 			  GDM_KEY_BACKGROUNDREMOTEONLYCOLOR) ||
-	     ! string_same (GdmGtkRC, GDM_KEY_GTKRC) ||
-	     ! int_same (GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
-	     ! string_same (GdmLogo, GDM_KEY_LOGO) ||
-	     ! bool_same (GdmSystemMenu, GDM_KEY_SYSMENU) ||
-	     ! bool_same (GdmBrowser, GDM_KEY_BROWSER) ||
-	     ! bool_same (GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
-	     ! bool_same (GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
-		/* restart interruption */
-		gnome_config_pop_prefix ();
-
+	     ! string_same (config, GdmGtkRC, GDM_KEY_GTKRC) ||
+	     ! int_same (config,
+			 GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
+	     ! string_same (config, GdmLogo, GDM_KEY_LOGO) ||
+	     ! bool_same (config, GdmSystemMenu, GDM_KEY_SYSMENU) ||
+	     ! bool_same (config, GdmBrowser, GDM_KEY_BROWSER) ||
+	     ! bool_same (config, GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
+	     ! bool_same (config, GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
 		/* Set busy cursor */
 		setup_cursor (GDK_WATCH);
 
@@ -3844,22 +3852,24 @@ gdm_reread_config (int sig)
 
 		kill_thingies ();
 		_exit (DISPLAY_RESTARTGREETER);
-		return;
+		return TRUE;
 	}
 
-	GdmUse24Clock = gnome_config_get_bool (GDM_KEY_USE_24_CLOCK);
+	GdmUse24Clock = ve_config_get_bool (config, GDM_KEY_USE_24_CLOCK);
 	update_clock (NULL);
 
-	str = gnome_config_get_string (GDM_KEY_LOGO);
+#ifdef FIXME
+	str = ve_config_get_string (config, GDM_KEY_LOGO);
 	if (strcmp (ve_sure_string (str), ve_sure_string (GdmLogo)) != 0) {
 		g_free (GdmLogo);
 		GdmLogo = str;
-		/* FIXME: update logo */
+		/* FIXME: update logo (remove restart above) */
 	} else {
 		g_free (str);
 	}
+#endif
 
-	str = gnome_config_get_translated_string (GDM_KEY_WELCOME);
+	str = ve_config_get_translated_string (config, GDM_KEY_WELCOME);
 	/* A hack */
 	if (strcmp (ve_sure_string (str), "Welcome to %n") == 0) {
 		g_free (str);
@@ -3879,8 +3889,7 @@ gdm_reread_config (int sig)
 		g_free (str);
 	}
 
-
-	gnome_config_pop_prefix();
+	return TRUE;
 }
 
 int 
@@ -4057,7 +4066,9 @@ main (int argc, char *argv[])
     if (GdmBrowser)
 	gdm_login_browser_update();
 
-    hup.sa_handler = gdm_reread_config;
+    ve_signal_add (SIGHUP, gdm_reread_config, NULL);
+
+    hup.sa_handler = ve_signal_notify;
     hup.sa_flags = 0;
     sigemptyset(&hup.sa_mask);
     sigaddset (&hup.sa_mask, SIGCHLD);
@@ -4099,7 +4110,6 @@ main (int argc, char *argv[])
 	    ctrlch = g_io_channel_unix_new (STDIN_FILENO);
 	    g_io_channel_set_encoding (ctrlch, NULL, NULL);
 	    g_io_channel_set_buffered (ctrlch, FALSE);
-	    g_io_channel_init (ctrlch);
 	    g_io_add_watch (ctrlch, 
 			    G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP | G_IO_NVAL,
 			    (GIOFunc) gdm_login_ctrl_handler,

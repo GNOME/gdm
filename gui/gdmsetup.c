@@ -58,8 +58,8 @@ static void
 setup_cursor (GdkCursorType type)
 {
 	GdkCursor *cursor = gdk_cursor_new (type);
-	gdk_window_set_cursor (GDK_ROOT_PARENT (), cursor);
-	gdk_cursor_destroy (cursor);
+	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+	gdk_cursor_unref (cursor);
 }
 
 static void
@@ -69,6 +69,9 @@ update_greeters (void)
 	long pid;
 	static gboolean shown_error = FALSE;
 	gboolean have_error = FALSE;
+
+	/* recheck for gdm */
+	gdm_running = gdmcomm_check (FALSE /* gui_bitching */);
 
 	if ( ! gdm_running)
 		return;
@@ -146,7 +149,13 @@ run_timeout (GtkWidget *widget, guint tm, gboolean (*func) (GtkWidget *))
 static void
 update_key (const char *notify_key)
 {
-	if (notify_key != NULL && gdm_running) {
+	if (notify_key == NULL)
+	       return;
+
+	/* recheck for gdm */
+	gdm_running = gdmcomm_check (FALSE /* gui_bitching */);
+
+	if (gdm_running) {
 		char *ret;
 		char *s = g_strdup_printf ("%s %s", GDM_SUP_UPDATE_CONFIG,
 					   notify_key);
@@ -165,20 +174,17 @@ toggle_timeout (GtkWidget *toggle)
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 	const char *notify_key = g_object_get_data (G_OBJECT (toggle),
 						    "notify_key");
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 	gboolean val;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	val = gnome_config_get_bool (key);
+	val = ve_config_get_bool (config, key);
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
-		gnome_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
-
-		gnome_config_sync ();
+		ve_config_set_bool (config, key,
+				    GTK_TOGGLE_BUTTON (toggle)->active);
+		ve_config_save (config, FALSE /*force */);
 
 		update_key (notify_key);
 	}
-
-	gnome_config_pop_prefix ();
 
 	return FALSE;
 }
@@ -189,24 +195,21 @@ entry_timeout (GtkWidget *entry)
 	const char *key = g_object_get_data (G_OBJECT (entry), "key");
 	const char *text;
 	char *val;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	val = gnome_config_get_string (key);
+	val = ve_config_get_string (config, key);
 
 	if (strcmp (ve_sure_string (val), ve_sure_string (text)) != 0) {
-		gnome_config_set_string (key, ve_sure_string (text));
+		ve_config_set_string (config, key, ve_sure_string (text));
 
-		gnome_config_sync ();
+		ve_config_save (config, FALSE /* force */);
 
 		update_key (key);
 	}
 
 	g_free (val);
-
-	gnome_config_pop_prefix ();
 
 	return FALSE;
 }
@@ -218,22 +221,19 @@ intspin_timeout (GtkWidget *spin)
 	const char *notify_key = g_object_get_data (G_OBJECT (spin),
 						    "notify_key");
 	int val, new_val;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
 	new_val = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (spin));
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	val = gnome_config_get_int (key);
+	val = ve_config_get_int (config, key);
 
 	if (val != new_val) {
-		gnome_config_set_int (key, new_val);
+		ve_config_set_int (config, key, new_val);
 
-		gnome_config_sync ();
+		ve_config_save (config, FALSE /* force */);
 
 		update_key (notify_key);
 	}
-
-	gnome_config_pop_prefix ();
 
 	return FALSE;
 }
@@ -262,24 +262,21 @@ option_timeout (GtkWidget *option_menu)
 	const char *key = g_object_get_data (G_OBJECT (option_menu), "key");
 	const char *new_val;
 	char *val;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
 	new_val = get_str_from_option (GTK_OPTION_MENU (option_menu));
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	val = gnome_config_get_string (key);
+	val = ve_config_get_string (config, key);
 
 	if (strcmp (ve_sure_string (val), ve_sure_string (new_val)) != 0) {
-		gnome_config_set_string (key, new_val);
+		ve_config_set_string (config, key, new_val);
 
-		gnome_config_sync ();
+		ve_config_save (config, FALSE /* force */);
 
 		update_key (key);
 	}
 
 	g_free (val);
-
-	gnome_config_pop_prefix ();
 
 	return FALSE;
 }
@@ -333,9 +330,7 @@ setup_notify_toggle (const char *name,
 					      GTK_TYPE_TOGGLE_BUTTON);
 	gboolean val;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_bool (key);
-	gnome_config_pop_prefix ();
+	val = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE), key);
 
 	g_object_set_data_full (G_OBJECT (toggle),
 				"key", g_strdup (key),
@@ -361,9 +356,7 @@ setup_user_combo (const char *name, const char *key)
 	struct passwd *pwent;
 	char *str;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	str = gnome_config_get_string (key);
-	gnome_config_pop_prefix ();
+	str = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
 	/* normally empty */
 	users = g_list_append (users, g_strdup (""));
@@ -415,9 +408,7 @@ setup_intspin (const char *name,
 					    GTK_TYPE_SPIN_BUTTON);
 	int val;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_int (key);
-	gnome_config_pop_prefix ();
+	val = ve_config_get_int (ve_config_get (GDM_CONFIG_FILE), key);
 
 	g_object_set_data_full (G_OBJECT (spin),
 				"key", g_strdup (key),
@@ -439,20 +430,18 @@ greeter_toggle_timeout (GtkWidget *toggle)
 {
 	const char *key = g_object_get_data (G_OBJECT (toggle), "key");
 	gboolean val;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	val = gnome_config_get_bool (key);
+	val = ve_config_get_bool (config, key);
 
 	if ( ! ve_bool_equal (val, GTK_TOGGLE_BUTTON (toggle)->active)) {
-		gnome_config_set_bool (key, GTK_TOGGLE_BUTTON (toggle)->active);
+		ve_config_set_bool (config, key,
+				    GTK_TOGGLE_BUTTON (toggle)->active);
 
-		gnome_config_sync ();
+		ve_config_save (config, FALSE /* force */);
 
 		update_greeters ();
 	}
-
-	gnome_config_pop_prefix ();
 
 	return FALSE;
 }
@@ -471,9 +460,7 @@ setup_greeter_toggle (const char *name,
 					      GTK_TYPE_TOGGLE_BUTTON);
 	gboolean val;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_bool (key);
-	gnome_config_pop_prefix ();
+	val = ve_config_get_bool (ve_config_get (GDM_CONFIG_FILE), key);
 
 	g_object_set_data_full (G_OBJECT (toggle),
 				"key", g_strdup (key),
@@ -493,27 +480,24 @@ greeter_color_timeout (GtkWidget *picker)
 	const char *key = g_object_get_data (G_OBJECT (picker), "key");
 	char *val, *color;
 	guint8 r, g, b;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
 	gnome_color_picker_get_i8 (GNOME_COLOR_PICKER (picker),
 				   &r, &g, &b, NULL);
 	color = g_strdup_printf ("#%02x%02x%02x", (int)r, (int)g, (int)b);
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	val = gnome_config_get_string (key);
+	val = ve_config_get_string (config, key);
 
 	if (strcmp (ve_sure_string (val), ve_sure_string (color)) != 0) {
-		gnome_config_set_string (key, ve_sure_string (color));
+		ve_config_set_string (config, key, ve_sure_string (color));
 
-		gnome_config_sync ();
+		ve_config_save (config, FALSE /* force */);
 
 		update_greeters ();
 	}
 
 	g_free (val);
 	g_free (color);
-
-	gnome_config_pop_prefix ();
 
 	return FALSE;
 }
@@ -533,9 +517,7 @@ setup_greeter_color (const char *name,
 					      GNOME_TYPE_COLOR_PICKER);
 	char *val;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_string (key);
-	gnome_config_pop_prefix ();
+	val = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
 	g_object_set_data_full (G_OBJECT (picker),
 				"key", g_strdup (key),
@@ -562,22 +544,19 @@ greeter_editable_timeout (GtkWidget *editable)
 {
 	const char *key = g_object_get_data (G_OBJECT (editable), "key");
 	char *text, *val;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
 	text = gtk_editable_get_chars (GTK_EDITABLE (editable), 0, -1);
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	val = gnome_config_get_string (key);
+	val = ve_config_get_string (config, key);
 
 	if (strcmp (ve_sure_string (val), ve_sure_string (text)) != 0) {
-		gnome_config_set_string (key, ve_sure_string (text));
+		ve_config_set_string (config, key, ve_sure_string (text));
 
-		gnome_config_sync ();
+		ve_config_save (config, FALSE /* force */);
 
 		update_greeters ();
 	}
-
-	gnome_config_pop_prefix ();
 
 	g_free (text);
 	g_free (val);
@@ -599,9 +578,7 @@ setup_greeter_editable (const char *name,
 	char *val;
 	int pos;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_string (key);
-	gnome_config_pop_prefix ();
+	val = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
 	g_object_set_data_full (G_OBJECT (editable),
 				"key", g_strdup (key),
@@ -621,92 +598,29 @@ setup_greeter_editable (const char *name,
 	g_free (val);
 }
 
-static void
-whack_translations (const char *fullkey)
-{
-	char *section, *key, *p, *k, *v;
-	void *iterator;
-	GSList *to_clean, *li;
-
-	section = g_strdup (fullkey);
-	p = strchr (section, '/');
-	if (p == NULL) {
-		g_free (section);
-		return;
-	}
-	*p = '\0';
-	key = p+1;
-	p = strchr (key, '=');
-	if (p != NULL)
-		*p = '\0';
-
-
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	to_clean = NULL;
-	iterator = gnome_config_init_iterator (section);
-	while ((iterator = gnome_config_iterator_next (iterator, &k, &v))
-	       != NULL) {
-		p = strchr (k, '[');
-		if (p != NULL) {
-			*p = '\0';
-			if (strcmp (key, k) == 0) {
-				*p = '[';
-				to_clean = g_slist_prepend
-					(to_clean,
-					 g_strconcat (section, "/", k, NULL));
-			}
-		}
-		g_free (k);
-		g_free (v);
-	}
-
-	if (to_clean != NULL) {
-		for (li = to_clean; li != NULL; li = li->next) {
-			char *key = li->data;
-			li->data = NULL;
-
-			gnome_config_clean_key (key);
-
-			g_free (key);
-		}
-
-		g_slist_free (to_clean);
-
-		gnome_config_sync ();
-	}
-
-	gnome_config_pop_prefix ();
-
-	g_free (section);
-}
-
 static gboolean
 greeter_entry_untranslate_timeout (GtkWidget *entry)
 {
 	const char *key = g_object_get_data (G_OBJECT (entry), "key");
 	const char *text;
 	char *val;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
 	text = gtk_entry_get_text (GTK_ENTRY (entry));
 
-	whack_translations (key);
+	ve_config_delete_translations (config, key);
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	val = gnome_config_get_string (key);
+	val = ve_config_get_string (config, key);
 
 	if (strcmp (ve_sure_string (val), ve_sure_string (text)) != 0) {
-		gnome_config_set_string (key, ve_sure_string (text));
-
-		gnome_config_sync ();
+		ve_config_set_string (config, key, ve_sure_string (text));
 
 		update_greeters ();
 	}
 
 	g_free (val);
 
-	gnome_config_pop_prefix ();
+	ve_config_save (config, FALSE /* force */);
 
 	return FALSE;
 }
@@ -724,9 +638,8 @@ setup_greeter_untranslate_entry (const char *name,
 	GtkWidget *entry = glade_helper_get (xml, name, GTK_TYPE_ENTRY);
 	char *val;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_translated_string (key);
-	gnome_config_pop_prefix ();
+	val = ve_config_get_translated_string (ve_config_get (GDM_CONFIG_FILE),
+					       key);
 
 	g_object_set_data_full (G_OBJECT (entry),
 				"key", g_strdup (key),
@@ -751,10 +664,9 @@ greeter_backselect_timeout (GtkWidget *toggle)
 					     GTK_TYPE_TOGGLE_BUTTON);
 	GtkWidget *image_bg = glade_helper_get (xml, "sg_image_bg_rb",
 						GTK_TYPE_TOGGLE_BUTTON);
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-
-	val = gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE);
+	val = ve_config_get_int (config, GDM_KEY_BACKGROUNDTYPE);
 
 	if (GTK_TOGGLE_BUTTON (no_bg)->active)
 		new_val = 0 /* No background */;
@@ -764,13 +676,11 @@ greeter_backselect_timeout (GtkWidget *toggle)
 		new_val = 2 /* Color */;
 
 	if (val != new_val) {
-		gnome_config_set_int (GDM_KEY_BACKGROUNDTYPE, new_val);
-		gnome_config_sync ();
+		ve_config_set_int (config, GDM_KEY_BACKGROUNDTYPE, new_val);
+		ve_config_save (config, FALSE /* force */);
 
 		update_greeters ();
 	}
-
-	gnome_config_pop_prefix ();
 
 	return FALSE;
 }
@@ -795,9 +705,8 @@ setup_greeter_backselect (void)
 	GtkWidget *color_bg = glade_helper_get (xml, "sg_color_bg_rb",
 						GTK_TYPE_TOGGLE_BUTTON);
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE);
-	gnome_config_pop_prefix ();
+	val = ve_config_get_int (ve_config_get (GDM_CONFIG_FILE),
+				 GDM_KEY_BACKGROUNDTYPE);
 
 	if (val == 0)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (no_bg), TRUE);
@@ -845,9 +754,7 @@ setup_greeter_option (const char *name,
 	GtkWidget *option_menu = glade_helper_get (xml, name,
 						   GTK_TYPE_OPTION_MENU);
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_string (key);
-	gnome_config_pop_prefix ();
+	val = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE), key);
 
 	if (val != NULL &&
 	    strcmp (val, EXPANDED_BINDIR "/gdmlogin --disable-sound --disable-crash-dialog") == 0) {
@@ -1000,9 +907,8 @@ get_theme_dir (void)
 {
 	char *theme_dir;
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	theme_dir = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME_DIR);
-	gnome_config_pop_prefix ();
+	theme_dir = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+					  GDM_KEY_GRAPHICAL_THEME_DIR);
 
 	if (theme_dir == NULL ||
 	    theme_dir[0] == '\0' ||
@@ -1107,10 +1013,11 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 	GtkTreeIter *select_iter = NULL;
 
 	while ((dent = readdir (dir)) != NULL) {
-		char *n, *key, *file, *name, *desc, *author, *copyright, *ss;
+		char *n, *file, *name, *desc, *author, *copyright, *ss;
 		char *full;
 		GtkTreeIter iter;
 		gboolean sel;
+		VeConfig *theme_file;
 		if (dent->d_name[0] == '.')
 			continue;
 		n = g_strconcat (theme_dir, "/", dent->d_name,
@@ -1125,11 +1032,10 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			continue;
 		}
 
-		key = g_strconcat ("=", n, "=/GdmGreeterTheme/", NULL);
-		gnome_config_push_prefix (key);
-		g_free (key);
+		theme_file = ve_config_new (n);
 
-		file = gnome_config_get_translated_string ("Greeter");
+		file = ve_config_get_translated_string
+			(theme_file, "GdmGreeterTheme/Greeter");
 		if (ve_string_empty (file)) {
 			g_free (file);
 			file = g_strconcat (dent->d_name, ".xml");
@@ -1141,7 +1047,6 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			g_free (file);
 			g_free (full);
 			g_free (n);
-			gnome_config_pop_prefix ();
 			continue;
 		}
 		g_free (full);
@@ -1151,16 +1056,22 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 		else
 			sel = FALSE;
 
-		name = gnome_config_get_translated_string ("Name");
+		name = ve_config_get_translated_string
+			(theme_file, "GdmGreeterTheme/Name");
 		if (ve_string_empty (name)) {
 			g_free (name);
 			name = g_strdup (dent->d_name);
 		}
-		desc = gnome_config_get_translated_string ("Description");
-		author = gnome_config_get_translated_string ("Author");
-		copyright = gnome_config_get_translated_string ("Copyright");
-		ss = gnome_config_get_translated_string ("Screenshot");
-		gnome_config_pop_prefix ();
+		desc = ve_config_get_translated_string
+			(theme_file, "GdmGreeterTheme/Description");
+		author = ve_config_get_translated_string
+			(theme_file, "GdmGreeterTheme/Author");
+		copyright = ve_config_get_translated_string
+			(theme_file, "GdmGreeterTheme/Copyright");
+		ss = ve_config_get_translated_string
+			(theme_file, "GdmGreeterTheme/Screenshot");
+
+		ve_config_destroy (theme_file);
 
 		if (ss != NULL)
 			full = g_strconcat (theme_dir, "/", dent->d_name,
@@ -1204,19 +1115,17 @@ static gboolean
 greeter_theme_timeout (GtkWidget *toggle)
 {
 	char *val;
+	VeConfig *config = ve_config_get (GDM_CONFIG_FILE);
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	val = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME);
+	val = ve_config_get_string (config, GDM_KEY_GRAPHICAL_THEME);
 
 	if (strcmp (ve_sure_string (val),
 		    ve_sure_string (selected_theme)) != 0) {
-		gnome_config_set_string (GDM_KEY_GRAPHICAL_THEME,
-					 selected_theme);
-		gnome_config_sync ();
+		ve_config_set_string (config, GDM_KEY_GRAPHICAL_THEME,
+				      selected_theme);
+		ve_config_save (config, FALSE /* force */);
 
 		update_greeters ();
-
-		gnome_config_pop_prefix ();
 	}
 
 	g_free (val);
@@ -1708,9 +1617,8 @@ setup_graphical_themes (void)
 
 	char *theme_dir = get_theme_dir ();
 
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	selected_theme = gnome_config_get_string (GDM_KEY_GRAPHICAL_THEME);
-	gnome_config_pop_prefix ();
+	selected_theme = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+					       GDM_KEY_GRAPHICAL_THEME);
 
 	/* create list store */
 	store = gtk_list_store_new (THEME_NUM_COLUMNS,
@@ -2002,9 +1910,8 @@ main (int argc, char *argv[])
 		setup_cursor (GDK_WATCH);
 
 		/* If we are running under gdm parse the GDM gtkRC */
-		gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-		gtkrc = gnome_config_get_string (GDM_KEY_GTKRC);
-		gnome_config_pop_prefix ();
+		gtkrc = ve_config_get_string (ve_config_get (GDM_CONFIG_FILE),
+					      GDM_KEY_GTKRC);
 		if ( ! ve_string_empty (gtkrc))
 			gtk_rc_parse (gtkrc);
 		g_free (gtkrc);
@@ -2045,9 +1952,8 @@ main (int argc, char *argv[])
 
 	/* XXX: the setup proggie using a greeter config var for it's
 	 * ui?  Say it ain't so.  Our config sections are SUCH A MESS */
-	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
-	GdmMinimalUID = gnome_config_get_int (GDM_KEY_MINIMALUID);
-	gnome_config_pop_prefix ();
+	GdmMinimalUID = ve_config_get_int (ve_config_get (GDM_CONFIG_FILE),
+					   GDM_KEY_MINIMALUID);
 
 	setup_gui ();
 
