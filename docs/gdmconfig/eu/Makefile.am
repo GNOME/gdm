@@ -17,7 +17,7 @@ figs = \
 
 docname = gdmconfig
 lang = eu
-omffile=gdmconfig-C.omf
+omffile=gdmconfig-eu.omf
 sgml_ents =
 include $(top_srcdir)/docs/sgmldocs.make
 dist-hook: app-dist-hook
