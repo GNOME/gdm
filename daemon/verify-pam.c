@@ -519,7 +519,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
 	    gdm_error_box (cur_gdm_disp,
 			   GTK_MESSAGE_ERROR,
 		    _("\nThe change of the authentication token failed. "
-		      "Please try again later or cantact the system administrator."));
+		      "Please try again later or contact the system administrator."));
 	    goto setup_pamerr;
 	}
 	*/
@@ -534,7 +534,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
 	gdm_error (_("User %s not permitted to gain access at this time"), login);
 	gdm_error_box (cur_gdm_disp,
 		       GTK_MESSAGE_ERROR,
-		       _("\nThe system administrator has your disabled access to the system temporary."));
+		       _("\nThe system administrator has disabled your access to the system temporary."));
 	goto setup_pamerr;
     default :
 	if (gdm_slave_should_complain ())
