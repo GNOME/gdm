@@ -1,3 +1,10 @@
+Thu May 06 15:18:07 2004  George Lebl <jirka@5z.com>
+
+	* daemon/verify-pam.c: attempt to fix #126984 and possibly others
+	  where pam asks for the username AGAIN even though we gave it
+	  a username.  PAM is on crack.  Just attempt to detect it and
+	  give it the username without asking the user for it.
+
 Thu May 06 09:59:48 2004  George Lebl <jirka@5z.com>
 
 	* gui/misc.[ch], gui/gdmlogin.c, gui/gdmsetup.c,

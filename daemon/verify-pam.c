@@ -168,16 +168,24 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	/* PAM requested textual input with echo on */
 	case PAM_PROMPT_ECHO_ON:
  	    if (strcmp(m, _("Username:")) == 0) {
-		    /* this is an evil hack, but really there is no way we'll
-		       know this is a username prompt.  However we SHOULD NOT
-		       rely on this working.  The pam modules can set their
-		       prompt to whatever they wish to */
-		    gdm_slave_greeter_ctl_no_ret
-			    (GDM_MSG, _("Please enter your username"));
-		    s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
-		    /* this will clear the message */
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
-		    islogin = TRUE;
+		    if ( ! ve_string_empty (selected_user)) {
+			    /* Sometimes we are just completely on crack,
+			       and pam asks for the username even if we
+			       already gave it.  PAM is on better crack,
+			       then I can afford. */
+			    s = g_strdup (selected_user);
+		    } else {
+			    /* this is an evil hack, but really there is no way we'll
+			    know this is a username prompt.  However we SHOULD NOT
+			    rely on this working.  The pam modules can set their
+			    prompt to whatever they wish to */
+			    gdm_slave_greeter_ctl_no_ret
+				    (GDM_MSG, _("Please enter your username"));
+			    s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
+			    /* this will clear the message */
+			    gdm_slave_greeter_ctl_no_ret (GDM_MSG, "");
+			    islogin = TRUE;
+		    }
 	    } else {
 		    s = gdm_slave_greeter_ctl (GDM_PROMPT, m);
 	    }
