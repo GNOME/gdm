@@ -6,9 +6,11 @@ Mon Aug 25 10:47:30 2003  George Lebl <jirka@5z.com>
 	* daemon/slave.c: It appears some people are not letting
 	  us redirect the ~/.xsession-errors and close the pipe
 	  for us and we weren't handling EOF correctly (and ran
-	  into a very tight loop then)  Also fix select usage,
-	  fix some minor bugs with respect to returns from the
-	  read call, catch and handle the XFSZ signal
+	  into a very tight loop then).  This fixes #120580.
+	  Also fix select usage, and fix some minor bugs with
+	  respect to returns from the read calls.  Also catch
+	  and handle the XFSZ signal to avoid abrupt logouts when
+	  evil limits are set.
 
 	* docs/C/gdm.xml: updates relating to the ~/.xsession-errors
 	  stuff and how to handle the Xsession file.
