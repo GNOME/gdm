@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-05-26 17:53-0500\n"
+"POT-Creation-Date: 2002-05-24 17:00-0500\n"
 "PO-Revision-Date: 2002-05-15 11:03-0300\n"
 "Last-Translator: Isam Bayazidi <bayazidi@arabeyes.org>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
@@ -180,26 +180,6 @@ msgstr "عن طريق غير ذلك."
 #: daemon/filecheck.c:118
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
-msgstr ""
-
-#: daemon/gdm-net.c:247
-#, c-format
-msgid "%s: Could not make socket"
-msgstr ""
-
-#: daemon/gdm-net.c:257
-#, c-format
-msgid "%s: Could not bind socket"
-msgstr ""
-
-#: daemon/gdm-net.c:333
-#, c-format
-msgid "%s: Could not make FIFO"
-msgstr ""
-
-#: daemon/gdm-net.c:341
-#, c-format
-msgid "%s: Could not open FIFO"
 msgstr ""
 
 #: daemon/gdm.c:214
@@ -582,6 +562,26 @@ msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
 "standard server."
 msgstr "الى."
+
+#: daemon/gdm-net.c:247
+#, c-format
+msgid "%s: Could not make socket"
+msgstr ""
+
+#: daemon/gdm-net.c:257
+#, c-format
+msgid "%s: Could not bind socket"
+msgstr ""
+
+#: daemon/gdm-net.c:333
+#, c-format
+msgid "%s: Could not make FIFO"
+msgstr ""
+
+#: daemon/gdm-net.c:341
+#, c-format
+msgid "%s: Could not open FIFO"
+msgstr ""
 
 #. Translators, don't translate the 'y' and 'n'
 #: daemon/misc.c:439
@@ -1165,7 +1165,7 @@ msgid "Please enter your username"
 msgstr ""
 
 #: daemon/verify-crypt.c:72 daemon/verify-pam.c:302 daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3173 gui/greeter/themes/circles/circles.xml.in.h:6
+#: gui/gdmlogin.c:3173
 #, fuzzy
 msgid "Username:"
 msgstr " "
@@ -1520,77 +1520,107 @@ msgstr "لا"
 msgid "gdm_xdmcp_close: No XDMCP support"
 msgstr "لا"
 
-#: gui/gdmXnestchooser.c:99
-msgid "Xnest command line"
-msgstr ""
+#: gui/gdmchooser.c:72
+#, fuzzy
+msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
+msgstr "محلي مفعل."
 
-#: gui/gdmXnestchooser.c:99
-msgid "STRING"
-msgstr ""
+#: gui/gdmchooser.c:73
+#, fuzzy
+msgid "No serving hosts were found."
+msgstr "لا."
 
-#: gui/gdmXnestchooser.c:100
-msgid "Extra options for Xnest"
-msgstr ""
+#: gui/gdmchooser.c:74
+#, fuzzy
+msgid "Choose a host to connect to from the selection below."
+msgstr "أختر الى اتصال الى ال أسفل."
 
-#: gui/gdmXnestchooser.c:100
-msgid "OPTIONS"
-msgstr ""
+#: gui/gdmchooser.c:753
+#, fuzzy, c-format
+msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
+msgstr "لا."
 
-#: gui/gdmXnestchooser.c:101
-msgid "Just run Xnest, no query (no chooser)"
-msgstr ""
-
-#: gui/gdmXnestchooser.c:102
-msgid "Do direct query instead of indirect (chooser)"
-msgstr ""
-
-#: gui/gdmXnestchooser.c:103
-msgid "Run broadcast instead of indirect (chooser)"
-msgstr ""
-
-#: gui/gdmXnestchooser.c:104
-msgid "Run in background"
-msgstr ""
-
-#: gui/gdmXnestchooser.c:105
-msgid "Don't check for running gdm"
-msgstr ""
-
-#: gui/gdmXnestchooser.c:221
+#: gui/gdmchooser.c:868
 #, fuzzy
 msgid ""
-"Xnest doesn't exist.\n"
-"Please ask your system administrator\n"
-"to install it."
+"The main area of this application shows the hosts on the local network that "
+"have \"XDMCP\" enabled. This allows users to login remotely to other "
+"machines as if they were logged on using the console.\n"
+"\n"
+"You can rescan the network for new hosts by clicking \"Refresh\".  When you "
+"have selected a host click \"Connect\" to open a session to that machine."
 msgstr ""
+"ال تعمل ال محلي\n"
+" مفعل الى\n"
+" الى غير ذلك تعمل ال\n"
 "\n"
 "\n"
-" الى."
-
-#: gui/gdmXnestchooser.c:240
-#, fuzzy
-msgid ""
-"Indirect XDMCP is not enabled,\n"
-"please ask your system administrator to enable it\n"
-"in the GDM configurator program."
-msgstr ""
-"مفعل\n"
+" ال عن طريق\n"
 " الى\n"
-" ال."
-
-#: gui/gdmXnestchooser.c:263 gui/gdmcomm.c:380
-#, fuzzy
-msgid ""
-"GDM is not running.\n"
-"Please ask your system administrator to start it."
-msgstr ""
-"\n"
 " الى."
 
-#: gui/gdmXnestchooser.c:274
-msgid "Could not find a free display number"
+#: gui/gdmchooser.c:900
+#, fuzzy, c-format
+msgid "Can't open default host icon: %s"
+msgstr "تلقائي"
+
+#: gui/gdmchooser.c:949
+#, fuzzy
+msgid "gdm_signals_init: Error setting up HUP signal handler"
+msgstr "خطأ"
+
+#: gui/gdmchooser.c:952
+#, fuzzy
+msgid "gdm_signals_init: Error setting up INT signal handler"
+msgstr "خطأ"
+
+#: gui/gdmchooser.c:955
+#, fuzzy
+msgid "gdm_signals_init: Error setting up TERM signal handler"
+msgstr "خطأ"
+
+#: gui/gdmchooser.c:963 gui/gdmlogin.c:4020 gui/greeter/greeter.c:811
+msgid "Could not set signal mask!"
 msgstr ""
 
+#: gui/gdmchooser.c:969
+msgid "Socket for xdm communication"
+msgstr ""
+
+#: gui/gdmchooser.c:969
+msgid "SOCKET"
+msgstr ""
+
+#: gui/gdmchooser.c:972
+#, fuzzy
+msgid "Client address to return in response to xdm"
+msgstr "العميل الى الى"
+
+#: gui/gdmchooser.c:972
+msgid "ADDRESS"
+msgstr ""
+
+#: gui/gdmchooser.c:975
+#, fuzzy
+msgid "Connection type to return in response to xdm"
+msgstr "إتصال الى الى"
+
+#: gui/gdmchooser.c:975
+msgid "TYPE"
+msgstr ""
+
+#: gui/gdmchooser.c:1090
+#, fuzzy, c-format
+msgid ""
+"The chooser version (%s) does not match the daemon version (%s).\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
+msgstr ""
+"ال\n"
+"\n"
+" ال أو ال."
+
+#. EOF
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
@@ -1653,105 +1683,14 @@ msgstr ""
 msgid "Information"
 msgstr "معلومات"
 
-#: gui/gdmchooser.c:72
-#, fuzzy
-msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
-msgstr "محلي مفعل."
-
-#: gui/gdmchooser.c:73
-#, fuzzy
-msgid "No serving hosts were found."
-msgstr "لا."
-
-#: gui/gdmchooser.c:74
-#, fuzzy
-msgid "Choose a host to connect to from the selection below."
-msgstr "أختر الى اتصال الى ال أسفل."
-
-#: gui/gdmchooser.c:753
-#, fuzzy, c-format
-msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
-msgstr "لا."
-
-#: gui/gdmchooser.c:868
+#: gui/gdmXnestchooser.c:263 gui/gdmcomm.c:380
 #, fuzzy
 msgid ""
-"The main area of this application shows the hosts on the local network that "
-"have \"XDMCP\" enabled. This allows users to login remotely to other "
-"machines as if they were logged on using the console.\n"
-"\n"
-"You can rescan the network for new hosts by clicking \"Refresh\".  When you "
-"have selected a host click \"Connect\" to open a session to that machine."
+"GDM is not running.\n"
+"Please ask your system administrator to start it."
 msgstr ""
-"ال تعمل ال محلي\n"
-" مفعل الى\n"
-" الى غير ذلك تعمل ال\n"
 "\n"
-"\n"
-" ال عن طريق\n"
-" الى\n"
 " الى."
-
-#: gui/gdmchooser.c:900
-#, fuzzy, c-format
-msgid "Can't open default host icon: %s"
-msgstr "تلقائي"
-
-#: gui/gdmchooser.c:949
-#, fuzzy
-msgid "gdm_signals_init: Error setting up HUP signal handler"
-msgstr "خطأ"
-
-#: gui/gdmchooser.c:952
-#, fuzzy
-msgid "gdm_signals_init: Error setting up INT signal handler"
-msgstr "خطأ"
-
-#: gui/gdmchooser.c:955
-#, fuzzy
-msgid "gdm_signals_init: Error setting up TERM signal handler"
-msgstr "خطأ"
-
-#: gui/gdmchooser.c:963 gui/gdmlogin.c:4020 gui/greeter/greeter.c:817
-msgid "Could not set signal mask!"
-msgstr ""
-
-#: gui/gdmchooser.c:969
-msgid "Socket for xdm communication"
-msgstr ""
-
-#: gui/gdmchooser.c:969
-msgid "SOCKET"
-msgstr ""
-
-#: gui/gdmchooser.c:972
-#, fuzzy
-msgid "Client address to return in response to xdm"
-msgstr "العميل الى الى"
-
-#: gui/gdmchooser.c:972
-msgid "ADDRESS"
-msgstr ""
-
-#: gui/gdmchooser.c:975
-#, fuzzy
-msgid "Connection type to return in response to xdm"
-msgstr "إتصال الى الى"
-
-#: gui/gdmchooser.c:975
-msgid "TYPE"
-msgstr ""
-
-#: gui/gdmchooser.c:1090
-#, fuzzy, c-format
-msgid ""
-"The chooser version (%s) does not match the daemon version (%s).\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
-msgstr ""
-"ال\n"
-"\n"
-" ال أو ال."
 
 #: gui/gdmcomm.c:391 gui/gdmcomm.c:406 gui/gdmcomm.c:409
 #: gui/gdmflexiserver.c:239
@@ -1814,15 +1753,351 @@ msgstr "الى."
 msgid "Unknown error occured."
 msgstr "غير معروف."
 
-#: gui/gdmflexiserver-xnest.desktop.in.h:1
-#, fuzzy
-msgid "Log in as another user inside a nested window"
-msgstr "سجل"
+#: gui/gdmsetup.c:106
+msgid ""
+"An error occured while trying to contact the login screens.  Not all updates "
+"may have taken effect."
+msgstr ""
 
-#: gui/gdmflexiserver-xnest.desktop.in.h:2
+#: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
+#: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:848
 #, fuzzy
-msgid "New login in a nested window"
-msgstr "جديد"
+msgid "Standard greeter"
+msgstr "القياسي"
+
+#: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
+#: gui/gdmsetup-strings.c:49 gui/gdmsetup.c:850
+msgid "Graphical greeter"
+msgstr ""
+
+#: gui/gdmsetup.c:1323
+msgid "Archive is not of a subdirectory"
+msgstr ""
+
+#: gui/gdmsetup.c:1331
+msgid "Archive is not of a single subdirectory"
+msgstr ""
+
+#: gui/gdmsetup.c:1346 gui/gdmsetup.c:1425
+msgid "File not a tar.gz or tar archive"
+msgstr ""
+
+#: gui/gdmsetup.c:1348
+msgid "Archive does not include a GdmGreeterTheme.info file"
+msgstr ""
+
+#: gui/gdmsetup.c:1370
+#, fuzzy
+msgid "File does not exist"
+msgstr "الدليل."
+
+#: gui/gdmsetup.c:1478
+#, fuzzy
+msgid "No file selected"
+msgstr "لا."
+
+#: gui/gdmsetup.c:1504
+#, c-format
+msgid ""
+"Not a theme archive\n"
+"Details: %s"
+msgstr ""
+
+#: gui/gdmsetup.c:1526
+#, c-format
+msgid ""
+"Theme directory '%s' seems to be already installed, install again anyway?"
+msgstr ""
+
+#: gui/gdmsetup.c:1571
+msgid "Some error occured when installing the theme"
+msgstr ""
+
+#: gui/gdmsetup.c:1616
+msgid "Select new theme archive to install"
+msgstr ""
+
+#. This is the temporary help dialog
+#: gui/gdmsetup.c:1752
+#, c-format
+msgid ""
+"This configuration window changes settings for the GDM daemon, which is the "
+"graphical login screen for GNOME.  Changes that you make will take effect "
+"immediately.\n"
+"\n"
+"Note that not all configuration options are listed here.  You may want to "
+"edit %s if you cannot find what you are looking for."
+msgstr ""
+
+#: gui/gdmsetup.c:1963
+#, fuzzy
+msgid "You must be the superuser (root) to configure GDM.\n"
+msgstr "ال الى"
+
+#. EOF
+#: gui/gdmsetup.desktop.in.h:1
+#, fuzzy
+msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
+msgstr "ال عرض مدير"
+
+#: gui/gdmsetup.desktop.in.h:2
+msgid "GDM Configurator"
+msgstr ""
+
+#.
+#. * Translatable strings file generated by Glade.
+#. * Add this file to your project's POTFILES.in.
+#. * DO NOT compile it as part of your application.
+#.
+#: gui/gdmsetup-strings.c:7
+msgid "GDM Setup"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:8
+#, fuzzy
+msgid "L_ocal: "
+msgstr "الإعداد المحلي "
+
+#: gui/gdmsetup-strings.c:9
+msgid "_Remote: "
+msgstr ""
+
+#: gui/gdmsetup-strings.c:14
+#, fuzzy
+msgid "Greeter"
+msgstr "M"
+
+#: gui/gdmsetup-strings.c:15
+#, fuzzy
+msgid "_Login a user automatically on first bootup"
+msgstr "دخول تعمل"
+
+#: gui/gdmsetup-strings.c:16
+#, fuzzy
+msgid "_Automatic login username:"
+msgstr "اوتوماتيكي "
+
+#: gui/gdmsetup-strings.c:17 gui/gdmsetup-strings.c:22
+#: gui/gdmsetup-strings.c:25 gui/gdmsetup-strings.c:28
+#: gui/gdmsetup-strings.c:37
+msgid "*"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:18
+#, fuzzy
+msgid "Automatic login"
+msgstr "تسجيل دخول آلي"
+
+#: gui/gdmsetup-strings.c:19
+#, fuzzy
+msgid "Login a user automa_tically after a specified number of seconds"
+msgstr "دخول"
+
+#: gui/gdmsetup-strings.c:20
+msgid "Timed login us_ername:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:21
+#, fuzzy
+msgid "_Seconds before login:"
+msgstr "الثواني "
+
+#: gui/gdmsetup-strings.c:23
+msgid "Timed login"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:24
+#, fuzzy
+msgid "General"
+msgstr "M"
+
+#: gui/gdmsetup-strings.c:26
+#, fuzzy
+msgid "_Welcome string: "
+msgstr "مرحبا "
+
+#: gui/gdmsetup-strings.c:27
+#, fuzzy
+msgid "Welcome string: "
+msgstr "مرحبا "
+
+#: gui/gdmsetup-strings.c:29
+msgid "Logo"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:30
+#, fuzzy
+msgid "Always use 24 hour cloc_k format"
+msgstr "دائما"
+
+#: gui/gdmsetup-strings.c:31
+msgid "Show choosable user images (_face browser)"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:32
+#, fuzzy
+msgid "Miscellaneous"
+msgstr "متفرقات"
+
+#: gui/gdmsetup-strings.c:33
+#, fuzzy
+msgid "_No background"
+msgstr "الخلفية"
+
+#: gui/gdmsetup-strings.c:34
+#, fuzzy
+msgid "_Image"
+msgstr "صورة"
+
+#: gui/gdmsetup-strings.c:35
+#, fuzzy
+msgid "Co_lor"
+msgstr "اللون"
+
+#: gui/gdmsetup-strings.c:36
+#, fuzzy
+msgid "_Scale background image to fit"
+msgstr "الى"
+
+#: gui/gdmsetup-strings.c:38
+#, fuzzy
+msgid "_Only color on remote displays"
+msgstr "تعمل"
+
+#: gui/gdmsetup-strings.c:39
+#, fuzzy
+msgid "_Background color: "
+msgstr "الخلفية "
+
+#: gui/gdmsetup-strings.c:40
+#, fuzzy
+msgid "Pick a color"
+msgstr "اختر لونا"
+
+#: gui/gdmsetup-strings.c:41
+#, fuzzy
+msgid "Background"
+msgstr "الخلفية"
+
+#: gui/gdmsetup-strings.c:43
+msgid "<b>Preview:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:44
+msgid "No screenshot available"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:45
+msgid "<b>Description:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:46
+msgid "<b>Copyright:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:47
+msgid "<b>Author:</b>"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:48
+msgid "_Install new theme"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:50
+#, fuzzy
+msgid "Allow _root to login with GDM"
+msgstr "سماح الى"
+
+#: gui/gdmsetup-strings.c:51
+#, fuzzy
+msgid "Allow root to login r_emotely with GDM"
+msgstr "سماح الى"
+
+#: gui/gdmsetup-strings.c:52
+#, fuzzy
+msgid "Allow remote _timed logins"
+msgstr "سماح"
+
+#: gui/gdmsetup-strings.c:53
+msgid "Show _system menu"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:54
+#, fuzzy
+msgid "Allow c_onfiguration from the login screen"
+msgstr "سماح الى ال ال"
+
+#: gui/gdmsetup-strings.c:55
+msgid "Retry _delay (seconds) :"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:56
+#, fuzzy
+msgid "Options"
+msgstr "خيارات"
+
+#: gui/gdmsetup-strings.c:57
+#, fuzzy
+msgid "Security"
+msgstr "الأمن"
+
+#: gui/gdmsetup-strings.c:58
+#, fuzzy
+msgid ""
+"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
+"GDM with the XDMCP libraries."
+msgstr "لا ال ال."
+
+#: gui/gdmsetup-strings.c:59
+#, fuzzy
+msgid "Honour _indirect requests"
+msgstr "الحد الأقصى "
+
+#: gui/gdmsetup-strings.c:60
+#, fuzzy
+msgid "Listen on UDP port: "
+msgstr "تعمل "
+
+#: gui/gdmsetup-strings.c:61
+#, fuzzy
+msgid "Maximum pending requests:"
+msgstr "الحد الأقصى "
+
+#: gui/gdmsetup-strings.c:62
+#, fuzzy
+msgid "Max pending indirect requests:"
+msgstr "الحد الأقصى "
+
+#: gui/gdmsetup-strings.c:63
+#, fuzzy
+msgid "Maximum remote sessions:"
+msgstr "حذف"
+
+#: gui/gdmsetup-strings.c:64
+msgid "Maximum wait time:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:65
+msgid "Maximum indirect wait time:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:66
+msgid "Displays per host:"
+msgstr ""
+
+#: gui/gdmsetup-strings.c:67
+#, fuzzy
+msgid "Ping interval (minutes):"
+msgstr "دقائق:"
+
+#: gui/gdmsetup-strings.c:68
+#, fuzzy
+msgid "Enable _XDMCP"
+msgstr "تفعيل"
+
+#: gui/gdmsetup-strings.c:69
+msgid "XDMCP"
+msgstr ""
 
 #: gui/gdmflexiserver.c:129
 #, fuzzy
@@ -1887,6 +2162,16 @@ msgstr "سجل"
 #: gui/gdmflexiserver.desktop.in.h:2
 #, fuzzy
 msgid "New login"
+msgstr "جديد"
+
+#: gui/gdmflexiserver-xnest.desktop.in.h:1
+#, fuzzy
+msgid "Log in as another user inside a nested window"
+msgstr "سجل"
+
+#: gui/gdmflexiserver-xnest.desktop.in.h:2
+#, fuzzy
+msgid "New login in a nested window"
 msgstr "جديد"
 
 #. Note translate the A-M to the A-M you used in the group label
@@ -2211,17 +2496,17 @@ msgstr ""
 "\n"
 " الى."
 
-#: gui/gdmlogin.c:746 gui/greeter/greeter_system.c:40
+#: gui/gdmlogin.c:746 gui/greeter/greeter_system.c:18
 #, fuzzy
 msgid "Are you sure you want to reboot the machine?"
 msgstr "الى ال?"
 
-#: gui/gdmlogin.c:758 gui/greeter/greeter_system.c:51
+#: gui/gdmlogin.c:758 gui/greeter/greeter_system.c:29
 #, fuzzy
 msgid "Are you sure you want to shut down the machine?"
 msgstr "الى ال?"
 
-#: gui/gdmlogin.c:769 gui/greeter/greeter_system.c:61
+#: gui/gdmlogin.c:769 gui/greeter/greeter_system.c:39
 #, fuzzy
 msgid "Are you sure you want to suspend the machine?"
 msgstr "الى ال?"
@@ -2478,8 +2763,8 @@ msgstr ""
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 
-#: gui/gdmlogin.c:3878 gui/gdmlogin.c:3905 gui/greeter/greeter.c:464
-#: gui/greeter/greeter.c:491
+#: gui/gdmlogin.c:3878 gui/gdmlogin.c:3905 gui/greeter/greeter.c:462
+#: gui/greeter/greeter.c:489
 #, fuzzy, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.\n"
@@ -2490,12 +2775,12 @@ msgstr ""
 "\n"
 " ال أو ال."
 
-#: gui/gdmlogin.c:3911 gui/gdmlogin.c:3953 gui/greeter/greeter.c:497
-#: gui/greeter/greeter.c:540
+#: gui/gdmlogin.c:3911 gui/gdmlogin.c:3953 gui/greeter/greeter.c:495
+#: gui/greeter/greeter.c:538
 msgid "Reboot"
 msgstr ""
 
-#: gui/gdmlogin.c:3945 gui/greeter/greeter.c:532
+#: gui/gdmlogin.c:3945 gui/greeter/greeter.c:530
 #, fuzzy, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).\n"
@@ -2506,22 +2791,22 @@ msgstr ""
 "\n"
 " ال أو ال."
 
-#: gui/gdmlogin.c:3951 gui/greeter/greeter.c:538
+#: gui/gdmlogin.c:3951 gui/greeter/greeter.c:536
 #, fuzzy
 msgid "Restart"
 msgstr "اعد التشغيل"
 
-#: gui/gdmlogin.c:3992 gui/greeter/greeter.c:797
+#: gui/gdmlogin.c:3992 gui/greeter/greeter.c:791
 #, fuzzy
 msgid "main: Error setting up HUP signal handler"
 msgstr "خطأ"
 
-#: gui/gdmlogin.c:4000 gui/greeter/greeter.c:805
+#: gui/gdmlogin.c:4000 gui/greeter/greeter.c:799
 #, fuzzy
 msgid "main: Error setting up INT signal handler"
 msgstr "خطأ"
 
-#: gui/gdmlogin.c:4003 gui/greeter/greeter.c:808
+#: gui/gdmlogin.c:4003 gui/greeter/greeter.c:802
 #, fuzzy
 msgid "main: Error setting up TERM signal handler"
 msgstr "خطأ"
@@ -2531,7 +2816,7 @@ msgstr "خطأ"
 msgid "main: Error setting up CHLD signal handler"
 msgstr "خطأ"
 
-#: gui/gdmlogin.c:4085 gui/greeter/greeter.c:941
+#: gui/gdmlogin.c:4085 gui/greeter/greeter.c:935
 #, fuzzy
 msgid ""
 "Your session directory is missing or empty!\n"
@@ -2544,7 +2829,7 @@ msgstr ""
 " موجود\n"
 " و ال."
 
-#: gui/gdmlogin.c:4106 gui/greeter/greeter.c:963
+#: gui/gdmlogin.c:4106 gui/greeter/greeter.c:957
 #, fuzzy
 msgid ""
 "The configuration file contains an invalid command\n"
@@ -2555,7 +2840,7 @@ msgstr ""
 " ال و I ال\n"
 " تلقائي."
 
-#: gui/gdmlogin.c:4128 gui/greeter/greeter.c:986
+#: gui/gdmlogin.c:4128 gui/greeter/greeter.c:980
 #, fuzzy
 msgid ""
 "The configuration was not found.  GDM is using\n"
@@ -2639,364 +2924,80 @@ msgstr "ال ال"
 msgid "Login Photo"
 msgstr "دخول"
 
-#.
-#. * Translatable strings file generated by Glade.
-#. * Add this file to your project's POTFILES.in.
-#. * DO NOT compile it as part of your application.
-#.
-#: gui/gdmsetup-strings.c:7
-msgid "GDM Setup"
+#: gui/gdmXnestchooser.c:99
+msgid "Xnest command line"
 msgstr ""
 
-#: gui/gdmsetup-strings.c:8
-#, fuzzy
-msgid "L_ocal: "
-msgstr "الإعداد المحلي "
-
-#: gui/gdmsetup-strings.c:9
-msgid "_Remote: "
+#: gui/gdmXnestchooser.c:99
+msgid "STRING"
 msgstr ""
 
-#: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
-#: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:848
-#, fuzzy
-msgid "Standard greeter"
-msgstr "القياسي"
-
-#: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
-#: gui/gdmsetup-strings.c:49 gui/gdmsetup.c:850
-msgid "Graphical greeter"
+#: gui/gdmXnestchooser.c:100
+msgid "Extra options for Xnest"
 msgstr ""
 
-#: gui/gdmsetup-strings.c:14
-#, fuzzy
-msgid "Greeter"
-msgstr "M"
-
-#: gui/gdmsetup-strings.c:15
-#, fuzzy
-msgid "_Login a user automatically on first bootup"
-msgstr "دخول تعمل"
-
-#: gui/gdmsetup-strings.c:16
-#, fuzzy
-msgid "_Automatic login username:"
-msgstr "اوتوماتيكي "
-
-#: gui/gdmsetup-strings.c:17 gui/gdmsetup-strings.c:22
-#: gui/gdmsetup-strings.c:25 gui/gdmsetup-strings.c:28
-#: gui/gdmsetup-strings.c:37
-msgid "*"
+#: gui/gdmXnestchooser.c:100
+msgid "OPTIONS"
 msgstr ""
 
-#: gui/gdmsetup-strings.c:18
-#, fuzzy
-msgid "Automatic login"
-msgstr "تسجيل دخول آلي"
-
-#: gui/gdmsetup-strings.c:19
-#, fuzzy
-msgid "Login a user automa_tically after a specified number of seconds"
-msgstr "دخول"
-
-#: gui/gdmsetup-strings.c:20
-msgid "Timed login us_ername:"
+#: gui/gdmXnestchooser.c:101
+msgid "Just run Xnest, no query (no chooser)"
 msgstr ""
 
-#: gui/gdmsetup-strings.c:21
-#, fuzzy
-msgid "_Seconds before login:"
-msgstr "الثواني "
-
-#: gui/gdmsetup-strings.c:23
-msgid "Timed login"
+#: gui/gdmXnestchooser.c:102
+msgid "Do direct query instead of indirect (chooser)"
 msgstr ""
 
-#: gui/gdmsetup-strings.c:24
-#, fuzzy
-msgid "General"
-msgstr "M"
-
-#: gui/gdmsetup-strings.c:26
-#, fuzzy
-msgid "_Welcome string: "
-msgstr "مرحبا "
-
-#: gui/gdmsetup-strings.c:27
-#, fuzzy
-msgid "Welcome string: "
-msgstr "مرحبا "
-
-#: gui/gdmsetup-strings.c:29
-msgid "Logo"
+#: gui/gdmXnestchooser.c:103
+msgid "Run broadcast instead of indirect (chooser)"
 msgstr ""
 
-#: gui/gdmsetup-strings.c:30
-#, fuzzy
-msgid "Always use 24 hour cloc_k format"
-msgstr "دائما"
-
-#: gui/gdmsetup-strings.c:31
-msgid "Show choosable user images (_face browser)"
+#: gui/gdmXnestchooser.c:104
+msgid "Run in background"
 msgstr ""
 
-#: gui/gdmsetup-strings.c:32
-#, fuzzy
-msgid "Miscellaneous"
-msgstr "متفرقات"
-
-#: gui/gdmsetup-strings.c:33
-#, fuzzy
-msgid "_No background"
-msgstr "الخلفية"
-
-#: gui/gdmsetup-strings.c:34
-#, fuzzy
-msgid "_Image"
-msgstr "صورة"
-
-#: gui/gdmsetup-strings.c:35
-#, fuzzy
-msgid "Co_lor"
-msgstr "اللون"
-
-#: gui/gdmsetup-strings.c:36
-#, fuzzy
-msgid "_Scale background image to fit"
-msgstr "الى"
-
-#: gui/gdmsetup-strings.c:38
-#, fuzzy
-msgid "_Only color on remote displays"
-msgstr "تعمل"
-
-#: gui/gdmsetup-strings.c:39
-#, fuzzy
-msgid "_Background color: "
-msgstr "الخلفية "
-
-#: gui/gdmsetup-strings.c:40
-#, fuzzy
-msgid "Pick a color"
-msgstr "اختر لونا"
-
-#: gui/gdmsetup-strings.c:41
-#, fuzzy
-msgid "Background"
-msgstr "الخلفية"
-
-#: gui/gdmsetup-strings.c:43
-msgid "<b>Preview:</b>"
+#: gui/gdmXnestchooser.c:105
+msgid "Don't check for running gdm"
 msgstr ""
 
-#: gui/gdmsetup-strings.c:44
-msgid "No screenshot available"
-msgstr ""
-
-#: gui/gdmsetup-strings.c:45
-msgid "<b>Description:</b>"
-msgstr ""
-
-#: gui/gdmsetup-strings.c:46
-msgid "<b>Copyright:</b>"
-msgstr ""
-
-#: gui/gdmsetup-strings.c:47
-msgid "<b>Author:</b>"
-msgstr ""
-
-#: gui/gdmsetup-strings.c:48
-msgid "_Install new theme"
-msgstr ""
-
-#: gui/gdmsetup-strings.c:50
-#, fuzzy
-msgid "Allow _root to login with GDM"
-msgstr "سماح الى"
-
-#: gui/gdmsetup-strings.c:51
-#, fuzzy
-msgid "Allow root to login r_emotely with GDM"
-msgstr "سماح الى"
-
-#: gui/gdmsetup-strings.c:52
-#, fuzzy
-msgid "Allow remote _timed logins"
-msgstr "سماح"
-
-#: gui/gdmsetup-strings.c:53
-msgid "Show _system menu"
-msgstr ""
-
-#: gui/gdmsetup-strings.c:54
-#, fuzzy
-msgid "Allow c_onfiguration from the login screen"
-msgstr "سماح الى ال ال"
-
-#: gui/gdmsetup-strings.c:55
-msgid "Retry _delay (seconds) :"
-msgstr ""
-
-#: gui/gdmsetup-strings.c:56
-#, fuzzy
-msgid "Options"
-msgstr "خيارات"
-
-#: gui/gdmsetup-strings.c:57
-#, fuzzy
-msgid "Security"
-msgstr "الأمن"
-
-#: gui/gdmsetup-strings.c:58
+#: gui/gdmXnestchooser.c:221
 #, fuzzy
 msgid ""
-"No XDMCP support in the binary.  To enable XDMCP support you must recompile "
-"GDM with the XDMCP libraries."
-msgstr "لا ال ال."
-
-#: gui/gdmsetup-strings.c:59
-#, fuzzy
-msgid "Honour _indirect requests"
-msgstr "الحد الأقصى "
-
-#: gui/gdmsetup-strings.c:60
-#, fuzzy
-msgid "Listen on UDP port: "
-msgstr "تعمل "
-
-#: gui/gdmsetup-strings.c:61
-#, fuzzy
-msgid "Maximum pending requests:"
-msgstr "الحد الأقصى "
-
-#: gui/gdmsetup-strings.c:62
-#, fuzzy
-msgid "Max pending indirect requests:"
-msgstr "الحد الأقصى "
-
-#: gui/gdmsetup-strings.c:63
-#, fuzzy
-msgid "Maximum remote sessions:"
-msgstr "حذف"
-
-#: gui/gdmsetup-strings.c:64
-msgid "Maximum wait time:"
+"Xnest doesn't exist.\n"
+"Please ask your system administrator\n"
+"to install it."
 msgstr ""
-
-#: gui/gdmsetup-strings.c:65
-msgid "Maximum indirect wait time:"
-msgstr ""
-
-#: gui/gdmsetup-strings.c:66
-msgid "Displays per host:"
-msgstr ""
-
-#: gui/gdmsetup-strings.c:67
-#, fuzzy
-msgid "Ping interval (minutes):"
-msgstr "دقائق:"
-
-#: gui/gdmsetup-strings.c:68
-#, fuzzy
-msgid "Enable _XDMCP"
-msgstr "تفعيل"
-
-#: gui/gdmsetup-strings.c:69
-msgid "XDMCP"
-msgstr ""
-
-#: gui/gdmsetup.c:106
-msgid ""
-"An error occured while trying to contact the login screens.  Not all updates "
-"may have taken effect."
-msgstr ""
-
-#: gui/gdmsetup.c:1328
-msgid "Archive is not of a subdirectory"
-msgstr ""
-
-#: gui/gdmsetup.c:1336
-msgid "Archive is not of a single subdirectory"
-msgstr ""
-
-#: gui/gdmsetup.c:1360 gui/gdmsetup.c:1439
-msgid "File not a tar.gz or tar archive"
-msgstr ""
-
-#: gui/gdmsetup.c:1362
-msgid "Archive does not include a GdmGreeterTheme.info file"
-msgstr ""
-
-#: gui/gdmsetup.c:1384
-#, fuzzy
-msgid "File does not exist"
-msgstr "الدليل."
-
-#: gui/gdmsetup.c:1492
-#, fuzzy
-msgid "No file selected"
-msgstr "لا."
-
-#: gui/gdmsetup.c:1518
-#, c-format
-msgid ""
-"Not a theme archive\n"
-"Details: %s"
-msgstr ""
-
-#: gui/gdmsetup.c:1540
-#, c-format
-msgid ""
-"Theme directory '%s' seems to be already installed, install again anyway?"
-msgstr ""
-
-#: gui/gdmsetup.c:1585
-msgid "Some error occured when installing the theme"
-msgstr ""
-
-#: gui/gdmsetup.c:1630
-msgid "Select new theme archive to install"
-msgstr ""
-
-#. This is the temporary help dialog
-#: gui/gdmsetup.c:1766
-#, c-format
-msgid ""
-"This configuration window changes settings for the GDM daemon, which is the "
-"graphical login screen for GNOME.  Changes that you make will take effect "
-"immediately.\n"
 "\n"
-"Note that not all configuration options are listed here.  You may want to "
-"edit %s if you cannot find what you are looking for."
+"\n"
+" الى."
+
+#: gui/gdmXnestchooser.c:240
+#, fuzzy
+msgid ""
+"Indirect XDMCP is not enabled,\n"
+"please ask your system administrator to enable it\n"
+"in the GDM configurator program."
+msgstr ""
+"مفعل\n"
+" الى\n"
+" ال."
+
+#: gui/gdmXnestchooser.c:274
+msgid "Could not find a free display number"
 msgstr ""
 
-#: gui/gdmsetup.c:1977
-#, fuzzy
-msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr "ال الى"
-
-#. EOF
-#: gui/gdmsetup.desktop.in.h:1
-#, fuzzy
-msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr "ال عرض مدير"
-
-#: gui/gdmsetup.desktop.in.h:2
-msgid "GDM Configurator"
-msgstr ""
-
-#: gui/greeter/greeter.c:62
+#: gui/greeter/greeter.c:61
 #, fuzzy, c-format
 msgid "greeter_parse_config: No configuration file: %s. Using defaults."
 msgstr "لا."
 
-#: gui/greeter/greeter.c:880
+#: gui/greeter/greeter.c:874
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
 msgstr ""
 
-#: gui/greeter/greeter.c:898
+#: gui/greeter/greeter.c:892
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -3167,70 +3168,16 @@ msgstr ""
 msgid "Turkish"
 msgstr ""
 
-#: gui/greeter/greeter_system.c:106
+#: gui/greeter/greeter_system.c:78
 msgid "Shut down the computer"
 msgstr ""
 
-#: gui/greeter/greeter_system.c:118
+#: gui/greeter/greeter_system.c:86
 msgid "Suspend the computer"
 msgstr ""
 
-#: gui/greeter/greeter_system.c:130
+#: gui/greeter/greeter_system.c:94
 msgid "Reboot the computer"
-msgstr ""
-
-#: gui/greeter/greeter_system.c:143
-#, fuzzy
-msgid "Configure"
-msgstr "اعداد..."
-
-#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
-msgid "(c) 2002 Bond, James Bond"
-msgstr ""
-
-#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:2
-msgid "Bond, James Bond"
-msgstr ""
-
-#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:3
-msgid "Circles"
-msgstr ""
-
-#: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:4
-msgid "Theme with blue circles"
-msgstr ""
-
-#: gui/greeter/themes/circles/circles.xml.in.h:1
-msgid "Disconnect"
-msgstr ""
-
-#: gui/greeter/themes/circles/circles.xml.in.h:2
-#, fuzzy
-msgid "Option"
-msgstr "خيارات"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:3
-#, fuzzy
-msgid "Quit"
-msgstr "إقلاع"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:4
-#, fuzzy
-msgid "Session"
-msgstr "الجلسة"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:5
-#, fuzzy
-msgid "System"
-msgstr "نظام"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:8
-#, fuzzy, no-c-format
-msgid "Welcome to %h"
-msgstr "مرحبا الى"
-
-#: gui/greeter/themes/circles/circles.xml.in.h:9
-msgid "You've got capslock on!"
 msgstr ""
 
 #: utils/gdmaskpass.c:26
