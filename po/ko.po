@@ -1,13 +1,13 @@
 # Korean messages for gdm
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Changwoo Ryu <cwryu@adam.kaist.ac.kr>, 1999.
-#
+# update by Young-Ho, Cha <ganadist@chollian.net>, 2001.
 msgid ""
 msgstr ""
-"Project-Id-Version: gdm 2.0\n"
-"POT-Creation-Date: 2001-02-02 23:19-0800\n"
-"PO-Revision-Date: 1999-10-03 19:44+0900\n"
-"Last-Translator: Changwoo Ryu <cwryu@adam.kaist.ac.kr>\n"
+"Project-Id-Version: gdm 2.0.98\n"
+"POT-Creation-Date: 2001-02-19 17:09+0900\n"
+"PO-Revision-Date: 2001-02-19 18:53+0900\n"
+"Last-Translator: Young-Ho, Cha <ganadist@chollian.net>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=EUC-KR\n"
@@ -19,19 +19,16 @@ msgid "gdm_config_parse: No configuration file: %s. Aborting."
 msgstr "gdm_config_parse: 설정 파일이 없습니다: %s. 취소."
 
 #: daemon/gdm.c:175
-#, fuzzy
 msgid "gdm_config_parse: No greeter specified."
-msgstr "gdm_config_parse: greeter가 지정되어 있지 않았고 기본값이 없습니다."
+msgstr "gdm_config_parse: greeter가 지정되어 있지 않았습니다."
 
 #: daemon/gdm.c:178
-#, fuzzy
 msgid "gdm_config_parse: No authdir specified."
-msgstr "gdm_config_parse: authdir가 지정되지 않았고 기본값이 없습니다."
+msgstr "gdm_config_parse: authdir가 지정되지 않습니다."
 
 #: daemon/gdm.c:184
-#, fuzzy
 msgid "gdm_config_parse: No sessions directory specified."
-msgstr "gdm_config_parse: 세션 자료방이 지정되지 않았고 기본값이 없습니다."
+msgstr "gdm_config_parse: 세션 디렉토리가 지정되지 않았습니다."
 
 #: daemon/gdm.c:196
 msgid "gdm_config_parse: Invalid server line in config file. Ignoring!"
@@ -97,53 +94,52 @@ msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid() 실패: %s!"
 
 #. Bury this display for good
-#: daemon/gdm.c:375
+#: daemon/gdm.c:397
 #, c-format
 msgid "gdm_child_action: Aborting display %s"
 msgstr "gdm_child_action: 디스플레이 %s 취소"
 
 #. Reboot machine
-#: daemon/gdm.c:381
+#: daemon/gdm.c:403
 msgid "gdm_child_action: Master rebooting..."
 msgstr "gdm_child_action: 마스터 시스템 재시작..."
 
-#: daemon/gdm.c:390
+#: daemon/gdm.c:410
 #, c-format
 msgid "gdm_child_action: Reboot failed: %s"
 msgstr "gdm_child_action: 시스템 재시작 실패: %s"
 
 #. Halt machine
-#: daemon/gdm.c:394
+#: daemon/gdm.c:414
 msgid "gdm_child_action: Master halting..."
 msgstr "gdm_child_action: 마스터 시스템 종료..."
 
-#: daemon/gdm.c:403
+#: daemon/gdm.c:421
 #, c-format
 msgid "gdm_child_action: Halt failed: %s"
 msgstr "gdm_child_action: 시스템 종료 실패: %s"
 
-#: daemon/gdm.c:511
+#: daemon/gdm.c:520
 msgid "Only root wants to run gdm\n"
 msgstr "루트만이 gdm을 실행합니다\n"
 
-#: daemon/gdm.c:534
+#: daemon/gdm.c:543
 msgid "gdm already running. Aborting!"
 msgstr "gdm은 이미 실행중입니다. 취소!"
 
-#: daemon/gdm.c:560
+#: daemon/gdm.c:569
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr "gdm_main: TERM 시그날 처리기를 설정하는 데 문제 발생"
 
-#: daemon/gdm.c:563
+#: daemon/gdm.c:572
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr "gdm_main: INT 시그날 처리기를 설정하는 데 문제 발생"
 
-#: daemon/gdm.c:566
-#, fuzzy
+#: daemon/gdm.c:575
 msgid "gdm_main: Error setting up HUP signal handler"
-msgstr "main: HUP 시그날 처리기 설정에 문제 발생"
+msgstr "gdm_main: HUP 시그날 처리기 설정에 문제 발생"
 
-#: daemon/gdm.c:574
+#: daemon/gdm.c:583
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr "gdm_main: CHLD 시그날 처리기를 설정하는 데 문제 발생"
 
@@ -169,6 +165,7 @@ msgid ""
 "Failed to start X server several times in a short time period; disabling "
 "display %s"
 msgstr ""
+"짧은 시간에 여러번 X서버 기동 실패; 디스플레이 %s 사용 불가능"
 
 #: daemon/display.c:184
 #, c-format
@@ -220,44 +217,38 @@ msgid "gdm_server_start: Error setting up USR1 signal handler"
 msgstr "gdm_server_start: USR1 시그날 처리기를 설정하는 데 문제 발생"
 
 #: daemon/server.c:173
-#, fuzzy
 msgid "gdm_server_start: Error setting up CHLD signal handler"
-msgstr "gdm_server_start: USR1 시그날 처리기를 설정하는 데 문제 발생"
+msgstr "gdm_server_start: CHLD 시그날 처리기를 설정하는 데 문제 발생"
 
 #: daemon/server.c:184
-#, fuzzy
 msgid "gdm_server_start: Error setting up ALRM signal handler"
-msgstr "gdm_server_restart: ALARM 시그날 처리기를 설정하는 데 문제 발생"
+msgstr "gdm_server_restart: ALRM 시그날 처리기를 설정하는 데 문제 발생"
 
 #: daemon/server.c:289
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_server_spawn: Could not open logfile for display %s!"
-msgstr "gdm_server_start: 디스플레이 %s에 대한 기록 파일을 열지 못했습니다!"
+msgstr "gdm_server_spawn: 디스플레이 %s에 대한 기록 파일을 열지 못했습니다!"
 
 #: daemon/server.c:315
-#, fuzzy
 msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
-msgstr "gdm_server_start: USR1을 SIG_IGN으로 맞추는 데 문제 발생"
+msgstr "gdm_server_spawn: USR1을 SIG_IGN으로 맞추는 데 문제 발생"
 
 #: daemon/server.c:325
-#, fuzzy
 msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
-msgstr "gdm_server_start: USR1을 SIG_IGN으로 맞추는 데 문제 발생"
+msgstr "gdm_server_spawn: USR1을 SIG_DFL으로 맞추는 데 문제 발생"
 
 #: daemon/server.c:329
-#, fuzzy
 msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
-msgstr "gdm_server_start: USR1을 SIG_IGN으로 맞추는 데 문제 발생"
+msgstr "gdm_server_spawn: TERM을 SIG_DFL으로 맞추는 데 문제 발생"
 
 #: daemon/server.c:354
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_server_spawn: Xserver not found: %s"
-msgstr "gdm_server_start: Xserver가 없습니다: %s"
+msgstr "gdm_server_spawn: Xserver가 없습니다: %s"
 
 #: daemon/server.c:359
-#, fuzzy
 msgid "gdm_server_spawn: Can't fork Xserver process!"
-msgstr "gdm_server_start: Xserver 프로세스를 fork할 수 없습니다!"
+msgstr "gdm_server_spawn: Xserver 프로세스를 fork할 수 없습니다!"
 
 #: daemon/slave.c:115
 msgid "gdm_slave_init: Error setting up TERM/INT signal handler"
@@ -291,10 +282,9 @@ msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: gdmgreeter 프로세스를 fork할 수 없습니다"
 
 #: daemon/slave.c:365
-#, fuzzy, c-format
+#, c-format
 msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
-msgstr ""
-"gdm_slave_session_start: 인증을 통과했지만 getpwnam(%s)이 실패했습니다. 유령!"
+msgstr "gdm_slave_session_start: 인증을 통과했지만 getpwnam(%s)이 실패했습니다!"
 
 #: daemon/slave.c:485
 msgid ""
@@ -328,20 +318,19 @@ msgstr "gdm_slave_session_start: %s로(으로) 변신하지 못했습니다. 중지."
 msgid "gdm_slave_session_start: Could not start session `%s'"
 msgstr "gdm_slave_session_start: 세션 `%s'을(를) 시작하지 못했습니다"
 
-#: daemon/slave.c:757
-#, fuzzy, c-format
+#: daemon/slave.c:759
+#, c-format
 msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
-msgstr "gdm_slave_windows_kill_ioerror_handler: 치명적 X 문제 - %s 재시작"
-
-#: daemon/slave.c:854
-#, fuzzy, c-format
-msgid "gdm_slave_exec_script: Failed starting: %s"
-msgstr "gdm_exec_script: 시작 실패: %s"
+msgstr "gdm_slave_xioerror_handler: 치명적 X 문제 - %s 재시작"
 
 #: daemon/slave.c:858
-#, fuzzy
+#, c-format
+msgid "gdm_slave_exec_script: Failed starting: %s"
+msgstr "gdm_slave_exec_script: 시작 실패: %s"
+
+#: daemon/slave.c:862
 msgid "gdm_slave_exec_script: Can't fork script process!"
-msgstr "gdm_exec_script: 스크립트 프로세스를 fork할 수 없습니다!"
+msgstr "gdm_slave_exec_script: 스크립트 프로세스를 fork할 수 없습니다!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
@@ -394,7 +383,7 @@ msgstr "암호: "
 #: daemon/verify-crypt.c:72 daemon/verify-crypt.c:87 daemon/verify-shadow.c:82
 #: daemon/verify-shadow.c:97
 msgid "Login incorrect"
-msgstr ""
+msgstr "잘못된 로그인"
 
 #: daemon/verify-crypt.c:77 daemon/verify-shadow.c:87
 #, c-format
@@ -455,105 +444,104 @@ msgstr "gdm_xdmcp_handle_query: 패킷에서 authlist를 뽑아 내지 못했습니다"
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: 검사합이 틀렸습니다"
 
-#: daemon/xdmcp.c:437
+#: daemon/xdmcp.c:438
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr "gdm_xdmcp_handle_forward_query: 디스플레이 주소를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:444
+#: daemon/xdmcp.c:446
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr "gdm_xdmcp_handle_forward_query: 디스플레이 포트 번호를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:452
+#: daemon/xdmcp.c:454
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: 패킷에서 authlist를 뽑아 내지 못했습니다"
 
-#: daemon/xdmcp.c:467
+#: daemon/xdmcp.c:469
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: 검사합이 틀렸습니다"
 
-#: daemon/xdmcp.c:533
+#: daemon/xdmcp.c:535
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "%s 호스트에서 XDMCP 질의를 거부했습니다"
 
-#: daemon/xdmcp.c:535
+#: daemon/xdmcp.c:537
 msgid "Display not authorized to connect"
 msgstr "디스플레이에 연결할 권한이 없습니다"
 
-#: daemon/xdmcp.c:568
+#: daemon/xdmcp.c:570
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: 금지된 호스트 %s에서 REQUEST를 받았습니다"
 
-#: daemon/xdmcp.c:575
+#: daemon/xdmcp.c:577
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: 디스플레이 번호를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:581
+#: daemon/xdmcp.c:583
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: 연결 타입을 읽지 못했습니다"
 
-#: daemon/xdmcp.c:587
+#: daemon/xdmcp.c:589
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr "gdm_xdmcp_handle_request: 클라이언트 주소를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:593
+#: daemon/xdmcp.c:595
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr "gdm_xdmcp_handle_request: 인증 이름을 읽지 못했습니다"
 
-#: daemon/xdmcp.c:599
+#: daemon/xdmcp.c:601
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr "gdm_xdmcp_handle_request: 인증 자료를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:605
+#: daemon/xdmcp.c:607
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr "gdm_xdmcp_handle_request: 인증 리스트를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:616
+#: daemon/xdmcp.c:618
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr "gdm_xdmcp_handle_request: 제조자 아이디를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:634
+#: daemon/xdmcp.c:636
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: %s에서 검사합 실패"
 
-#: daemon/xdmcp.c:754
+#: daemon/xdmcp.c:756
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr "gdm_xdmcp_handle_manage: 금지된 호스트 %s에서 Manage를 받았습니다"
 
-#: daemon/xdmcp.c:761
+#: daemon/xdmcp.c:763
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage: 세션 아이디를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:767
+#: daemon/xdmcp.c:769
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: 디스플레이 번호를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:776
-#, fuzzy
+#: daemon/xdmcp.c:779
 msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
-msgstr "gdm_xdmcp_manage: 디스플레이 종류를 읽지 못했습니다"
+msgstr "gdm_xdmcp_handle_manage: 디스플레이 종류를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:798
+#: daemon/xdmcp.c:801
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr ""
 "gdm_xdmcp_handle_manage: %s 디스플레이에 쓸 기록 파일을 열지 못했습니다!"
 
-#: daemon/xdmcp.c:872
+#: daemon/xdmcp.c:876
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr ""
 "gdm_xdmcp_handle_keepalive: 금지된 호스트 %s에서 KEEPALIVE를 받았습니다"
 
-#: daemon/xdmcp.c:879
+#: daemon/xdmcp.c:883
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_keepalive: 디스플레이 번호를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:885
+#: daemon/xdmcp.c:889
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: 세션 아이디를 읽지 못했습니다"
 
@@ -592,7 +580,7 @@ msgstr "gdm_signals_init: INT 시그날 처리기를 설정하는 데 문제 발생"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: TERM 시그날 처리기를 설정하는 데 문제 발생"
 
-#: gui/gdmchooser.c:594 gui/gdmlogin.c:2090
+#: gui/gdmchooser.c:594 gui/gdmlogin.c:2084
 msgid "Could not set signal mask!"
 msgstr "시그날 마스크를 맞추지 못했습니다!"
 
@@ -677,7 +665,7 @@ msgstr "그 외"
 
 #: gui/gdmlogin.c:1449
 msgid "GNOME Desktop Manager"
-msgstr ""
+msgstr "그놈 데스크탑 관리자"
 
 #: gui/gdmlogin.c:1461
 #, c-format
@@ -700,7 +688,7 @@ msgstr "시스템 재시작..."
 msgid "Halt..."
 msgstr "시스템 종료..."
 
-#: gui/gdmlogin.c:1595
+#: gui/gdmconfig.c:40 gui/gdmlogin.c:1595
 msgid "System"
 msgstr "시스템"
 
@@ -713,57 +701,102 @@ msgstr "로그인 이름을 입력하세요"
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "기본 이미지를 열 수 없습니다: %s. 얼굴 브라우저 중지."
 
-#: gui/gdmlogin.c:2067
+#: gui/gdmlogin.c:2061
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: HUP 시그날 처리기 설정에 문제 발생"
 
-#: gui/gdmlogin.c:2070
+#: gui/gdmlogin.c:2064
 msgid "main: Error setting up INT signal handler"
 msgstr "main: INT 시그날 처리기 설정에 문제 발생"
 
-#: gui/gdmlogin.c:2073
+#: gui/gdmlogin.c:2067
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: TERM 시그날 처리기 설정에 문제 발생"
 
-#: gui/gdmlogin.c:2081
-#, fuzzy
+#: gui/gdmlogin.c:2075
 msgid "main: Error setting up CHLD signal handler"
-msgstr "gdm_main: CHLD 시그날 처리기를 설정하는 데 문제 발생"
+msgstr "main: CHLD 시그날 처리기를 설정하는 데 문제 발생"
 
-#: gui/gdmconfig.c:51
-msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr ""
+#. 3 user levels are present in the CList
+#: gui/gdmconfig.c:38
+msgid "Basic"
+msgstr "기본"
 
-#: gui/gdmconfig.c:84
-msgid "GNOME Display Manager Configurator"
-msgstr ""
+#: gui/gdmconfig.c:39
+msgid "Expert"
+msgstr "고급"
 
-#: gui/gdmconfig.c:103
-#, fuzzy
-msgid "The configuration file: "
-msgstr "이름 또는 암호가 틀렸습니다"
-
-#: gui/gdmconfig.c:212
-#, fuzzy
-msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
-msgstr "gdm_config_parse: 설정 파일에 X 서버 줄이 틀렸습니다. 무시!"
-
-#: gui/gdmconfig.c:279
+#: gui/gdmconfig.c:42
 msgid ""
-"The settings cannot take effect until gdm\n"
+"This panel displays the basic options for configuring GDM.\n"
+"\n"
+"If you need finer detail, select 'expert' or 'system setup' from the list "
+"above.\n"
+"\n"
+"This will display some of the more complex options of GDM that rarely need "
+"to be changed."
+msgstr ""
+"이것은 GDM의 기본 옵션을 설정하는 패널입니다.\n"
+"\n"
+"더 자세한 부분을 설정할 필요가 있으면 목록 아래의 '전문가' 또는 '시스템 설정'"
+"을 선택하십시오.\n"
+"\n"
+"그러면 변경할 일이 거의 없는 복잡한 몇몇의 GDM옵션이 표시될 것 입니다."
+
+#: gui/gdmconfig.c:47
+msgid ""
+"This panel displays the more advanced options of GDM.\n"
+"\n"
+"Be sure to take care when manipulating the security options, or you could be "
+"vulnerable to attackers.\n"
+"\n"
+"Choose \"System setup\" to change fundamental options in GDM."
+msgstr ""
+
+#: gui/gdmconfig.c:53
+msgid ""
+"This panel displays GDM's fundamental system settings.\n"
+"\n"
+"You should only change these paths if you really know what you are doing, as "
+"an incorrect setup could stop your machine from booting properly.\n"
+"\n"
+"Choose \"Basic\" if you just want to change your machine's login appearance."
+msgstr ""
+
+#: gui/gdmconfig.c:105
+msgid "You must be the superuser (root) to configure GDM.\n"
+msgstr "GDM을 설정하려면 슈퍼유저(root)이여야만 합니다.\n"
+
+#: gui/gdmconfig.c:174
+msgid "GNOME Display Manager Configurator"
+msgstr "그놈 디스플레이 관리자 설정도구"
+
+#: gui/gdmconfig.c:228
+msgid "The configuration file: "
+msgstr "설정 파일: "
+
+#: gui/gdmconfig.c:337
+msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
+msgstr "gdm_config_parse_most: 설정 파일에 X 서버 줄이 틀렸습니다. 무시!"
+
+#: gui/gdmconfig.c:404
+msgid ""
+"The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
 "Do you wish to restart GDM now?\n"
 "This will kill all your current sessions\n"
 "and you will lose any unsaved data!"
 msgstr ""
 
-#: gui/gdmconfig.c:284
+#: gui/gdmconfig.c:409
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
 msgstr ""
+"정말로 GDM을 재시작하고 저장되지 않은\n"
+"데이터를 잃어버려도 되겠습니까?"
 
-#: gui/gdmconfig.c:291
+#: gui/gdmconfig.c:416
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -771,11 +804,20 @@ msgid ""
 "rebooted"
 msgstr ""
 
-#: gui/gdmconfig.c:518
+#: gui/gdmconfig.c:543
+msgid ""
+"This will destroy any changes made in this session.\n"
+"Are you sure you want to do this?"
+msgstr ""
+
+#. Request the command line for this new server
+#: gui/gdmconfig.c:637 gui/gdmconfig.c:656
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
 msgstr ""
+"X서버의 경로와 보낼 매개변수들을\n"
+"입력하십시오."
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -784,11 +826,11 @@ msgstr ""
 #.
 #: gui/gdmconfig-strings.c:7
 msgid "Executables"
-msgstr ""
+msgstr "실행 파일"
 
 #: gui/gdmconfig-strings.c:8
 msgid "Chooser binary: "
-msgstr ""
+msgstr "선택기 실행파일: "
 
 #: gui/gdmconfig-strings.c:9
 msgid "Greeter binary: "
@@ -796,48 +838,47 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:10
 msgid "Halt command: "
-msgstr ""
+msgstr "시스템 중지 명령: "
 
 #: gui/gdmconfig-strings.c:11
 msgid "Reboot command: "
-msgstr ""
+msgstr "시스템 재시작 명령: "
 
 #: gui/gdmconfig-strings.c:12
 msgid "Directories"
-msgstr ""
+msgstr "디렉토리"
 
 #: gui/gdmconfig-strings.c:13
 msgid "Session directory: "
-msgstr ""
+msgstr "세션 디렉토리: "
 
 #: gui/gdmconfig-strings.c:14
-#, fuzzy
 msgid "PRE session scripts directory: "
-msgstr "세션 스크립트가 없습니다. 중지!"
+msgstr "PRE 세션 스크립트 디렉토리: "
 
 #: gui/gdmconfig-strings.c:15
 msgid "POST session scripts directory: "
-msgstr ""
+msgstr "POST 세션 스크립트 디렉토리: "
 
 #: gui/gdmconfig-strings.c:16
 msgid "Logging directory: "
-msgstr ""
+msgstr "기록 디렉토리: "
 
 #: gui/gdmconfig-strings.c:17
 msgid "Display initialization directory: "
-msgstr ""
+msgstr "국제화 디렉토리 표시: "
 
 #: gui/gdmconfig-strings.c:18
 msgid "Miscelleaneous"
-msgstr ""
+msgstr "기타사항"
 
 #: gui/gdmconfig-strings.c:19
 msgid "PID file: "
-msgstr ""
+msgstr "PID 파일: "
 
 #: gui/gdmconfig-strings.c:20
 msgid "Default $PATH: "
-msgstr ""
+msgstr "기본 경로: "
 
 #: gui/gdmconfig-strings.c:21
 msgid "Root $PATH: "
@@ -845,7 +886,7 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:22
 msgid "Automatic Login: "
-msgstr ""
+msgstr "자동 로그인: "
 
 #: gui/gdmconfig-strings.c:23
 msgid "GDM"
@@ -853,15 +894,15 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:24
 msgid "Options"
-msgstr ""
+msgstr "옵션"
 
 #: gui/gdmconfig-strings.c:25
 msgid "Allow root to login with GDM"
-msgstr ""
+msgstr "GDM으로 root 사용자 로그인 허용"
 
 #: gui/gdmconfig-strings.c:26
 msgid "Kill 'init' clients"
-msgstr ""
+msgstr "'init'클라이언트 강제종료"
 
 #: gui/gdmconfig-strings.c:27
 msgid "Relax permissions"
@@ -869,20 +910,19 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:28
 msgid "Authentication errors should be verbose"
-msgstr ""
+msgstr "인증오류 자세하게 표시"
 
 #: gui/gdmconfig-strings.c:29
-#, fuzzy
 msgid "Authorization Details"
-msgstr "이름 또는 암호가 틀렸습니다"
+msgstr "인증 세부사항"
 
 #: gui/gdmconfig-strings.c:30
 msgid "GDM runs as this user: "
-msgstr ""
+msgstr "GDM을 실행할 사용자: "
 
 #: gui/gdmconfig-strings.c:31
 msgid "User 'auth' directory: "
-msgstr ""
+msgstr "사용자 '인증' 디렉토리: "
 
 #: gui/gdmconfig-strings.c:32
 msgid "User 'auth' FB directory: "
@@ -890,35 +930,35 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:33
 msgid "User 'auth' file: "
-msgstr ""
+msgstr "사용자 '인증' 파일: "
 
 #: gui/gdmconfig-strings.c:34
 msgid "GDM runs as this group: "
-msgstr ""
+msgstr "GDM을 실행할 그룹: "
 
 #: gui/gdmconfig-strings.c:35
 msgid "Limits"
-msgstr ""
+msgstr "제한"
 
 #: gui/gdmconfig-strings.c:36
 msgid "Retry delay: "
-msgstr ""
+msgstr "재시도 지연: "
 
 #: gui/gdmconfig-strings.c:37
 msgid "Maximum user file length: "
-msgstr ""
+msgstr "최대 사용자 파일 길이: "
 
 #: gui/gdmconfig-strings.c:38
 msgid "Security"
-msgstr ""
+msgstr "보안"
 
 #: gui/gdmconfig-strings.c:39
 msgid "Enable XDMCP"
-msgstr ""
+msgstr "XDMCP 사용"
 
 #: gui/gdmconfig-strings.c:40
 msgid "Connection Settings"
-msgstr ""
+msgstr "연결 설정"
 
 #: gui/gdmconfig-strings.c:41
 msgid "Honour indirect requests"
@@ -930,11 +970,11 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:43
 msgid "Maximum wait time: "
-msgstr ""
+msgstr "최대 대기 시간: "
 
 #: gui/gdmconfig-strings.c:44
 msgid "Maximum remote sessions: "
-msgstr ""
+msgstr "최대 원격 세션: "
 
 #: gui/gdmconfig-strings.c:45
 msgid "Max pending indirect requests: "
@@ -958,24 +998,23 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:50
 msgid "Gtk+ RC file: "
-msgstr ""
+msgstr "Gtk+ RC 파일: "
 
 #: gui/gdmconfig-strings.c:51
-#, fuzzy
 msgid "Logo: "
-msgstr "로그인:"
+msgstr "로고:"
 
 #: gui/gdmconfig-strings.c:52
 msgid "Select a GTK+ theme file (gtkrc)"
-msgstr ""
+msgstr "GTK+ 테마 파일(gtkrc) 선택"
 
 #: gui/gdmconfig-strings.c:53
 msgid "Minimised Icon: "
-msgstr ""
+msgstr "최소화 아이콘: "
 
 #: gui/gdmconfig-strings.c:54
 msgid "Select a log to be displayed during login"
-msgstr ""
+msgstr "로그인 하는동안 표시될 로그 선택"
 
 #: gui/gdmconfig-strings.c:55
 msgid "Greeter Look and Feel"
@@ -983,16 +1022,16 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:56
 msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
-msgstr ""
+msgstr "'시스템' 메뉴 보기, (시스템 재시작, 끄기 등등.)"
 
 #: gui/gdmconfig-strings.c:57
 msgid "Quiver on failure"
-msgstr ""
+msgstr "로그인 실패할때 흔들림"
 
 #: gui/gdmconfig-strings.c:58
-#, fuzzy, c-format
+#, c-format
 msgid "Welcome to %n"
-msgstr "%s에 오신 것을 환영합니다"
+msgstr "%n 에 오신 것을 환영합니다"
 
 #: gui/gdmconfig-strings.c:59
 #, c-format
@@ -1006,20 +1045,19 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:62
 msgid "Default font: "
-msgstr ""
+msgstr "기본 글꼴: "
 
 #: gui/gdmconfig-strings.c:63
 msgid "Exclude these users: "
-msgstr ""
+msgstr "이 사용자들은 로그인 못함: "
 
 #: gui/gdmconfig-strings.c:64
-#, fuzzy
 msgid "Welcome message: "
-msgstr "%s에 오신 것을 환영합니다"
+msgstr "환영 메세지: "
 
 #: gui/gdmconfig-strings.c:65
 msgid "Pick a Font"
-msgstr ""
+msgstr "폰트 선택"
 
 #: gui/gdmconfig-strings.c:66
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
@@ -1027,83 +1065,83 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:67
 msgid "Background Program: "
-msgstr ""
+msgstr "배경 프로그램: "
 
 #: gui/gdmconfig-strings.c:68 gui/gdmconfig-strings.c:85
 msgid "Select a file containing Locale information"
-msgstr ""
+msgstr "로케일 정보가 포함된 파일 선택"
 
 #: gui/gdmconfig-strings.c:69
 msgid "Position"
-msgstr ""
+msgstr "위치"
 
 #: gui/gdmconfig-strings.c:70
 msgid "Manually set position"
-msgstr ""
+msgstr "위치 수동설정"
 
 #: gui/gdmconfig-strings.c:71
 msgid "Lock position"
-msgstr ""
+msgstr "위치 고정"
 
 #: gui/gdmconfig-strings.c:72
 msgid "X position: "
-msgstr ""
+msgstr "가로 위치: "
 
 #: gui/gdmconfig-strings.c:73
 msgid "Y position: "
-msgstr ""
+msgstr "세로 위치: "
 
 #: gui/gdmconfig-strings.c:74
 msgid "Xinerama screen: "
-msgstr ""
+msgstr "Xinerama 스크린: "
 
 #: gui/gdmconfig-strings.c:75
 msgid "User Interface"
-msgstr ""
+msgstr "사용자 인터페이스"
 
 #: gui/gdmconfig-strings.c:76
 msgid "Face browser"
-msgstr ""
+msgstr "얼굴 찾아보기"
 
 #: gui/gdmconfig-strings.c:77
 msgid "Show choosable user images (enable face browser)"
-msgstr ""
+msgstr "선택할수 있는 사용자 그림 보기(얼굴 찾아보기 가능)"
 
 #: gui/gdmconfig-strings.c:78
 msgid "Default face image to use: "
-msgstr ""
+msgstr "기본적으로 사용할 얼굴 그림: "
 
 #: gui/gdmconfig-strings.c:79
 msgid "Global faces directory: "
-msgstr ""
+msgstr "전체 얼굴 디렉토리: "
 
 #: gui/gdmconfig-strings.c:80
 msgid "Maximum face width: "
-msgstr ""
+msgstr "얼굴 최대 너비: "
 
 #: gui/gdmconfig-strings.c:81
 msgid "Select an image for users with no 'face'"
-msgstr ""
+msgstr "'얼굴'이 없는 사용자를 위한 그림 선택"
 
 #: gui/gdmconfig-strings.c:82
 msgid "Choose the directory to search for faces"
-msgstr ""
+msgstr "얼굴을 찾아보기위한 디렉토리 선택"
 
 #: gui/gdmconfig-strings.c:83
 msgid "Maximum face height: "
-msgstr ""
+msgstr "얼굴 최대 높이: "
 
 #: gui/gdmconfig-strings.c:84
 msgid "Localization"
-msgstr ""
+msgstr "지역화"
 
 #: gui/gdmconfig-strings.c:86
 msgid "Locale file: "
-msgstr ""
+msgstr "로케일 파일: "
 
 #: gui/gdmconfig-strings.c:87
 msgid "Default locale: "
-msgstr ""
+msgstr "기본 로케일: "
 
 #: gui/gdmconfig-strings.c:88
 msgid "Greeter"
@@ -1111,85 +1149,61 @@ msgstr ""
 
 #: gui/gdmconfig-strings.c:89
 msgid "Appearance"
-msgstr ""
+msgstr "모양새"
 
 #: gui/gdmconfig-strings.c:90
 msgid "Directory for host images: "
-msgstr ""
+msgstr "호스트 그림의 디렉토리: "
 
 #: gui/gdmconfig-strings.c:91
 msgid "Default host image:"
-msgstr ""
+msgstr "기본 호스트 그림:"
 
 #: gui/gdmconfig-strings.c:92
 msgid "Refresh"
-msgstr ""
+msgstr "갱신"
 
 #: gui/gdmconfig-strings.c:93
 msgid "Scan every 'x' seconds: "
-msgstr ""
+msgstr "'x'초 마다 검색: "
 
 #: gui/gdmconfig-strings.c:94
 msgid "Chooser"
-msgstr ""
+msgstr "선택기"
 
 #: gui/gdmconfig-strings.c:95
 msgid "Server Definitions"
-msgstr ""
+msgstr "서버 정의"
 
 #: gui/gdmconfig-strings.c:96
 msgid "No."
-msgstr ""
+msgstr "번호"
 
 #: gui/gdmconfig-strings.c:97
 msgid "Path to X server"
-msgstr ""
+msgstr "X서버의 경로"
 
 #: gui/gdmconfig-strings.c:98
 msgid "Add Server"
-msgstr ""
+msgstr "서버 추가"
 
 #: gui/gdmconfig-strings.c:99
 msgid "Edit Server"
-msgstr ""
+msgstr "서버 편집"
 
 #: gui/gdmconfig-strings.c:100
 msgid "Delete Server"
-msgstr ""
+msgstr "서버 지움"
 
 #: gui/gdmconfig-strings.c:101
 msgid "Debugging"
-msgstr ""
+msgstr "디버깅"
 
 #: gui/gdmconfig-strings.c:102
 msgid "Enable debugging output"
-msgstr ""
+msgstr "디버깅 출력 가능"
 
 #: gui/gdmconfig-strings.c:103
 msgid "Servers"
-msgstr ""
+msgstr "서버"
 
-#~ msgid "User unknown"
-#~ msgstr "사용자를 알 수 없습니다"
-
-#~ msgid "Incorrect password"
-#~ msgstr "암호가 틀렸습니다"
-
-#~ msgid ""
-#~ "According to %s, gdm was already running (%d),\n"
-#~ "but seems to have been murdered mysteriously.\n"
-#~ msgstr ""
-#~ "%s에 따르면, gdm은 이미 실행중입니다 (%d).\n"
-#~ "하지만 불가사의하게도 살해당한 것 같습니다.\n"
-
-#~ msgid "gdm_server_stop: Could not unlink auth file: %s!"
-#~ msgstr "gdm_server_stop: auth 파일을 지우지 못했습니다: %s!"
-
-#~ msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
-#~ msgstr "gdm_slave_xsync_ping: ALARM 시그날 처리기를 설정하는 데 문제 발생"
-
-#~ msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
-#~ msgstr "gdm_parse_enriched_string: 임시 버퍼를 malloc하지 못했습니다!"
-
-#~ msgid "Iconify"
-#~ msgstr "아이콘화"
