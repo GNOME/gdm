@@ -42,6 +42,7 @@ static GSList *xservers = NULL;
 static gboolean got_standard = FALSE;
 static gboolean use_xnest = FALSE;
 static gboolean authenticate = FALSE;
+static gboolean no_lock = FALSE;
 static const char *send_command = NULL;
 static const char *server = NULL;
 static const char *chosen_server = NULL;
@@ -414,6 +415,7 @@ choose_server (void)
 struct poptOption options [] = {
 	{ "command", 'c', POPT_ARG_STRING, &send_command, 0, N_("Send the specified protocol command to gdm"), N_("COMMAND") },
 	{ "xnest", 'n', POPT_ARG_NONE, &use_xnest, 0, N_("Xnest mode"), NULL },
+	{ "no-lock", 'l', POPT_ARG_NONE, &no_lock, 0, N_("Do not lock current screen"), NULL },
 	{ "debug", 'd', POPT_ARG_NONE, &debug, 0, N_("Debugging output"), NULL },
 	{ "authenticate", 'a', POPT_ARG_NONE, &authenticate, 0, N_("Authenticate before running --command"), NULL },
 	POPT_AUTOHELP
@@ -527,6 +529,18 @@ main (int argc, char *argv[])
 	ret = call_gdm (command, auth_cookie, version, 5);
 	if (ret != NULL &&
 	    strncmp (ret, "OK ", 3) == 0) {
+
+		/* if we switched to a different screen as a result of this,
+		 * lock the current screen */
+		if ( ! no_lock && ! use_xnest) {
+			char *argv[3] = {"xscreensaver-command", "-lock", NULL};
+			if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)
+				g_warning (_("Can't lock screen"));
+			argv[1] = "-throttle";
+			if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)
+				g_warning (_("Can't disable xscreensaver display hacks"));
+		}
+
 		/* all fine and dandy */
 		return 0;
 	}
