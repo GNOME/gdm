@@ -39,6 +39,14 @@
 #include "verify.h"
 #include "errorgui.h"
 
+#ifdef	HAVE_LOGINDEVPERM
+#include <libdevinfo.h>
+#endif	/* HAVE_LOGINDEVPERM */
+#ifdef  HAVE_ADT
+#include <bsm/adt.h>
+#include <bsm/adt_event.h>
+#endif	/* HAVE_ADT */
+
 /* Configuration option variables */
 extern gboolean GdmAllowRoot;
 extern gboolean GdmAllowRemoteRoot;
@@ -65,6 +73,245 @@ static char *selected_user = NULL;
 
 static gboolean opened_session = FALSE;
 static gboolean did_setcred = FALSE;
+
+#ifdef	HAVE_ADT
+#define	PW_FALSE	1	/* no password change */
+#define PW_TRUE		2	/* successful password change */
+#define PW_FAILED	3	/* failed password change */
+
+static	adt_session_data_t      *adt_ah = NULL;    /* audit session handle */
+
+
+/*
+ * audit_success_login - audit successful login
+ *
+ *	Entry	process audit context established -- i.e., pam_setcred()
+ *			called.
+ *		pw_change == PW_TRUE, if successful password change audit
+ *				      required.
+ *		pwent = authenticated user's passwd entry.
+ *
+ *	Exit	ADT_login (ADT_SUCCESS) audit record written
+ *		pw_change == PW_TRUE, ADT_passwd (ADT_SUCCESS) audit
+ *			record written.
+ *		adt_ah = audit session established for audit_logout();
+ *	
+ */
+static void
+audit_success_login(int pw_change, struct passwd *pwent)
+{
+	adt_event_data_t	*event;	/* event to generate */
+
+	if (adt_start_session(&adt_ah, NULL, ADT_USE_PROC_DATA) != 0) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_start_session(ADT_login): %m");
+		return;
+	}
+	if (adt_set_user(adt_ah, pwent->pw_uid, pwent->pw_gid,
+	    pwent->pw_uid, pwent->pw_gid, NULL, ADT_USER) != 0) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_set_user(ADT_login, %s): %m", pwent->pw_name);
+	}
+	if ((event = adt_alloc_event(adt_ah, ADT_login)) == NULL) {
+
+		syslog(LOG_AUTH | LOG_ALERT, "adt_alloc_event(ADT_login): %m");
+	} else if (adt_put_event(event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_put_event(ADT_login, ADT_SUCCESS): %m");
+	}
+
+	if (pw_change == PW_TRUE) {
+
+		/* Also audit password change */
+		adt_free_event(event);
+		if ((event = adt_alloc_event(adt_ah, ADT_passwd)) == NULL) {
+
+			syslog(LOG_AUTH | LOG_ALERT,
+			    "adt_alloc_event(ADT_passwd): %m");
+		} else if (adt_put_event(event, ADT_SUCCESS,
+		    ADT_SUCCESS) != 0) {
+
+			syslog(LOG_AUTH | LOG_ALERT,
+			    "adt_put_event(ADT_passwd, ADT_SUCCESS): %m");
+		}
+	}
+	adt_free_event(event);
+}
+
+
+/*
+ * audit_fail_login - audit failed login
+ *
+ *	Entry	did_setcred == FALSE, process audit context is not established.
+ *			       TRUE, process audit context established.
+ *		d = display structure, d->console non 0 if local,
+ *			d->hostname used if remote.
+ *		pw_change == PW_FALSE, if no password change requested.
+ *			     PW_TRUE, if successful password change audit
+ *				      required.
+ *			     PW_FAILED, if failed password change audit
+ *				      required.
+ *		pwent = NULL, or password entry to use.
+ *		pamerr = PAM error code; reason for failure.
+ *
+ *	Exit	ADT_login (ADT_FAILURE) audit record written
+ *		pw_change == PW_TRUE, ADT_passwd (ADT_FAILURE) audit
+ *			record written.
+ *	
+ */
+static void
+audit_fail_login(GdmDisplay *d, int pw_change, struct passwd *pwent,
+    int pamerr)
+{
+	adt_session_data_t	*ah;	/* audit session handle */
+	adt_event_data_t	*event;	/* event to generate */
+	adt_termid_t		*tid;	/* terminal ID for failures */
+
+	if (did_setcred == TRUE) {
+		if (adt_start_session(&ah, NULL, ADT_USE_PROC_DATA) != 0) {
+
+			syslog(LOG_AUTH | LOG_ALERT,
+			    "adt_start_session(ADT_login, ADT_FAILURE): %m");
+			return;
+		}
+	} else {
+		if (adt_start_session(&ah, NULL, 0) != 0) {
+		
+			syslog(LOG_AUTH | LOG_ALERT,
+			    "adt_start_session(ADT_login, ADT_FAILURE): %m");
+			return;
+		}
+		if (d->console) {
+			/* login from the local host */
+			if (adt_load_hostname(NULL, &tid) != 0) {
+
+				syslog(LOG_AUTH | LOG_ALERT,
+				    "adt_loadhostname(localhost): %m");
+			}
+		} else {
+			/* login from a remote host */
+			if (adt_load_hostname(d->hostname, &tid) != 0) {
+
+				syslog(LOG_AUTH | LOG_ALERT,
+				    "adt_loadhostname(%s): %m", d->hostname);
+			}
+		}
+		if (adt_set_user(ah,
+		    pwent ? pwent->pw_uid : ADT_NO_ATTRIB,
+		    pwent ? pwent->pw_gid : ADT_NO_ATTRIB,
+		    pwent ? pwent->pw_uid : ADT_NO_ATTRIB,
+		    pwent ? pwent->pw_gid : ADT_NO_ATTRIB,
+		    tid, ADT_NEW) != 0) {
+
+			syslog(LOG_AUTH | LOG_ALERT,
+			    "adt_set_user(%s): %m",
+			    pwent ? pwent->pw_name : "ADT_NO_ATTRIB");
+		}
+	}
+	if ((event = adt_alloc_event(ah, ADT_login)) == NULL) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_alloc_event(ADT_login, ADT_FAILURE): %m");
+		goto done;
+	} else if (adt_put_event(event, ADT_FAILURE,
+	    ADT_FAIL_PAM + pamerr) != 0) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_put_event(ADT_login(ADT_FAIL, %s): %m",
+		    pam_strerror(pamh, pamerr));
+	}
+	if (pw_change != PW_FALSE) {
+
+		/* Also audit password change */
+		adt_free_event(event);
+		if ((event = adt_alloc_event(ah, ADT_passwd)) == NULL) {
+
+			syslog(LOG_AUTH | LOG_ALERT,
+			    "adt_alloc_event(ADT_passwd): %m");
+			goto done;
+		}
+		if (pw_change == PW_TRUE) {
+			if (adt_put_event(event, ADT_SUCCESS,
+			    ADT_SUCCESS) != 0) {
+
+				syslog(LOG_AUTH | LOG_ALERT,
+				    "adt_put_event(ADT_passwd, ADT_SUCCESS): "
+				    "%m");
+			}
+		} else if (pw_change == PW_FAILED) {
+			if (adt_put_event(event, ADT_FAILURE,
+			    ADT_FAIL_PAM + pamerr) != 0) {
+
+				syslog(LOG_AUTH | LOG_ALERT,
+				    "adt_put_event(ADT_passwd, ADT_FAILURE): "
+				    "%m");
+			}
+		}
+	}
+	adt_free_event(event);
+
+done:
+	/* reset process audit state. this process is being reused.*/
+
+	if ((adt_set_user(ah, ADT_NO_AUDIT, ADT_NO_AUDIT, ADT_NO_AUDIT,
+	    ADT_NO_AUDIT, NULL, ADT_NEW) != 0) ||
+	    (adt_set_proc(ah) != 0)) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_put_event(ADT_login(ADT_FAILURE reset, %m)");
+	}
+	(void) adt_end_session(ah);
+}
+
+
+/*
+ * audit_logout - audit user logout
+ *
+ *	Entry	adt_ah = audit session handle established by
+ *			audit_success_login().
+ *
+ *	Exit	ADT_logout (ADT_SUCCESS) audit record written
+ *		process audit state reset.  (this process is reused for
+ *			the next login.)
+ *		audit session adt_ah ended.
+ */
+static void
+audit_logout(void)
+{
+	adt_event_data_t	*event;	/* event to generate */
+
+	if (adt_ah == NULL) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_ah(ADT_logout): NULL");
+		return;
+	}
+	if ((event = adt_alloc_event(adt_ah, ADT_logout)) == NULL) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_alloc_event(ADT_logout): %m");
+	} else if (adt_put_event(event, ADT_SUCCESS, ADT_SUCCESS) != 0) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_put_event(ADT_logout, ADT_SUCCESS): %m");
+	}
+	adt_free_event(event);
+
+	/* reset process audit state. this process is being reused.*/
+
+	if ((adt_set_user(adt_ah, ADT_NO_AUDIT, ADT_NO_AUDIT, ADT_NO_AUDIT,
+	    ADT_NO_AUDIT, NULL, ADT_NEW) != 0) ||
+	    (adt_set_proc(adt_ah) != 0)) {
+
+		syslog(LOG_AUTH | LOG_ALERT,
+		    "adt_set_proc(ADT_logout reset): %m");
+	}
+	(void) adt_end_session(adt_ah);
+}
+#endif	/* HAVE_ADT */
 
 void
 gdm_verify_select_user (const char *user)
@@ -424,6 +671,11 @@ create_pamh (GdmDisplay *d,
 	}
 
 	/* Inform PAM of the user's tty */
+#ifdef	sun
+	if (d->console == 0)
+		(void) pam_set_item (pamh, PAM_TTY, "/dev/console");
+	else 
+#endif	/* sun */
 	if ((*pamerr = pam_set_item (pamh, PAM_TTY, display)) != PAM_SUCCESS) {
 		if (gdm_slave_action_pending ())
 			gdm_error (_("Can't set PAM_TTY=%s"), display);
@@ -467,11 +719,14 @@ gdm_verify_user (GdmDisplay *d,
     gint pamerr;
     const void *p;
     char *login;
-    struct passwd *pwent;
+    struct passwd *pwent = NULL;
     gboolean error_msg_given;
     gboolean credentials_set;
     gboolean started_timer;
     int null_tok;
+#ifdef HAVE_ADT
+    int pw_change = PW_FALSE;   /* if got to trying to change password */
+#endif	/* HAVE_ADT */
 
 verify_user_again:
 
@@ -632,6 +887,14 @@ authenticate_again:
 	    /*gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG,
 	      _("Root login disallowed"));*/
 	    error_msg_given = TRUE;
+
+#ifdef HAVE_ADT
+	/*
+	 * map console login not allowed as a pam_acct_mgmt() failure
+	 * indeed that's where these checks should be made.
+	 */
+    pamerr = PAM_PERM_DENIED;
+#endif	/* HAVE_ADT */
 	    goto pamerr;
     }
 
@@ -647,8 +910,16 @@ authenticate_again:
 		    _("\nThe change of the authentication token failed. "
 		      "Please try again later or contact the system administrator."));
 	    error_msg_given = TRUE;
+#ifdef  HAVE_ADT
+		/* Password change failed */
+		pw_change = PW_FAILED;
+#endif	/* HAVE_ADT */
 	    goto pamerr;
 	}
+#ifdef  HAVE_ADT
+		/* Password changed */
+		pw_change = PW_TRUE;
+#endif	/* HAVE_ADT */
         break;
     case PAM_ACCT_EXPIRED :
 	gdm_error (_("User %s no longer permitted to access the system"), login);
@@ -676,6 +947,13 @@ authenticate_again:
 					  _("\nCannot set your user group, "
 					    "you will not be able to log in, "
 					    "please contact your system administrator."));
+#ifdef  HAVE_ADT
+		/*
+		 * map group setup error as a pam_setcred() failure
+		 * indeed that's where this should be done.
+		 */
+		pamerr = PAM_SYSTEM_ERR;
+#endif	/* HAVE_ADT */
 	    goto pamerr;
     }
 
@@ -711,11 +989,26 @@ authenticate_again:
 
     g_free (tmp_PAM_USER);
     tmp_PAM_USER = NULL;
-    
+
+#ifdef  HAVE_LOGINDEVPERM
+	if (d->console)
+		(void) di_devperm_login("/dev/console", pwent->pw_uid,
+		    pwent->pw_gid, NULL);
+	else
+		(void) di_devperm_login(d->name, pwent->pw_uid,
+		    pwent->pw_gid, NULL);
+#endif	/* HAVE_LOGINDEVPERM */
+#ifdef  HAVE_ADT
+	audit_success_login(pw_change, pwent);
+#endif  /* HAVE_ADT */
+
     return login;
     
  pamerr:
-    
+#ifdef  HAVE_ADT
+	audit_fail_login(d, pw_change, pwent, pamerr);
+#endif	/* HAVE_ADT */
+
     /* The verbose authentication is turned on, output the error
      * message from the PAM subsystem */
     if ( ! error_msg_given &&
@@ -808,11 +1101,15 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 		       char **new_login) 
 {
     gint pamerr = 0;
-    struct passwd *pwent;
+    struct passwd *pwent = NULL;
     const void *p;
     const char *after_login;
     int null_tok = 0;
     
+#ifdef HAVE_ADT
+    int pw_change = PW_FALSE;   /* if got to trying to change password */
+#endif	/* HAVE_ADT */
+
     *new_login = NULL;
 
     if (login == NULL)
@@ -878,6 +1175,11 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    *new_login = g_strdup (after_login);
     }
 
+#ifdef  HAVE_ADT
+	/* to set up for same auditing calls as in gdm_verify_user */
+	pwent = getpwnam (login);
+#endif	/* HAVE_ADT */
+
     /* Check if the user's account is healthy. */
     pamerr = pam_acct_mgmt (pamh, null_tok);
     switch (pamerr) {
@@ -888,16 +1190,22 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	 * we shouldn't be asking for new pw since we never
 	 * authenticated the user.  I suppose just ignoring
 	 * this would be OK */
-	/*
+#if	0	/* don't change password */
 	if ((pamerr = pam_chauthtok (pamh, PAM_CHANGE_EXPIRED_AUTHTOK)) != PAM_SUCCESS) {
 	    gdm_error (_("Authentication token change failed for user %s"), login);
 	    gdm_error_box (cur_gdm_disp,
 			   GTK_MESSAGE_ERROR,
 		    _("\nThe change of the authentication token failed. "
 		      "Please try again later or contact the system administrator."));
+#ifdef  HAVE_ADT
+		pw_change = PW_FAILED;
+#endif	/* HAVE_ADT */
 	    goto setup_pamerr;
 	}
-	*/
+#ifdef  HAVE_ADT
+    pw_change = PW_TRUE;
+#endif	/* HAVE_ADT */
+#endif	/* 0 */
         break;
     case PAM_ACCT_EXPIRED :
 	gdm_error (_("User %s no longer permitted to access the system"), login);
@@ -926,6 +1234,13 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 			   _("\nCannot set your user group, "
 			     "you will not be able to log in, "
 			     "please contact your system administrator."));
+#ifdef  HAVE_ADT
+		/*
+		 * map group setup error as a pam_setcred() failure
+		 * indeed that's where this should be done.
+		 */
+		pamerr = PAM_SYSTEM_ERR;
+#endif	/* HAVE_ADT */
 	    goto setup_pamerr;
     }
 
@@ -964,11 +1279,19 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 
     g_free (extra_standalone_message);
     extra_standalone_message = NULL;
+
+#ifdef  HAVE_ADT
+    audit_success_login(pw_change, pwent);
+#endif	/* HAVE_ADT */
     
     return TRUE;
     
  setup_pamerr:
-    
+
+#ifdef  HAVE_ADT
+    audit_fail_login(d, pw_change, pwent, pamerr);
+#endif	/* HAVE_ADT */
+
     did_setcred = FALSE;
     opened_session = FALSE;
     if (pamh != NULL) {
@@ -1031,6 +1354,15 @@ gdm_verify_cleanup (GdmDisplay *d)
 
 		pamerr = PAM_SUCCESS;
 
+#ifdef	HAVE_ADT
+		/*
+		 * User exiting.
+		 * If logged in, audit logout before cleaning up
+		 */
+		if (old_opened_session && old_did_setcred) {
+			audit_logout();
+		}
+#endif	/* HAVE_ADT */
 		/* Close the users session */
 		if (old_opened_session) {
 			gdm_debug ("Running pam_close_session");
@@ -1050,6 +1382,12 @@ gdm_verify_cleanup (GdmDisplay *d)
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 	}
 
+#ifdef	HAVE_LOGINDEVPERM
+	if (d->console)
+		(void) di_devperm_logout("/dev/console");
+	else
+		(void) di_devperm_logout(d->name);
+#endif	/* HAVE_LOGINDEVPERM */
 	/* Clear the group setup */
 	setgid (0);
 	/* this will get rid of any suplementary groups etc... */

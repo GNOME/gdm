@@ -635,6 +635,20 @@ else
    AC_MSG_RESULT(no)
 fi
 
+# Check for Solaris auditing API
+#
+AC_MSG_CHECKING(for Solaris auditing API)
+AC_CHECK_LIB(bsm, adt_start_session, [
+		     	AC_DEFINE(HAVE_ADT)
+			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lbsm" ])
+
+# Check for Solaris logindevperm support
+#
+AC_MSG_CHECKING(for Solaris logindevperm)
+AC_CHECK_LIB(devinfo, di_devperm_login, [
+		     	AC_DEFINE(HAVE_LOGINDEVPERM)
+			    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -ldevinfo" ])
+
 if test -x /usr/X11R6/bin/X; then
    X_PATH="/usr/bin/X11:/usr/X11R6/bin:/opt/X11R6/bin"
    X_SERVER_PATH="/usr/X11R6/bin"
