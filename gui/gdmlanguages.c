@@ -52,6 +52,8 @@ static Language languages [] = {
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Azerbaijani"), "az_AZ", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
+	{ N_("A-M|Amharic"), "am_ET", NULL, 0 },
+	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Arabic (Egypt)"), "ar_EG", NULL, 0 },
 	/*Note translate the A-M to the A-M you used in the group label */
 	{ N_("A-M|Arabic (Lebanon)"), "ar_LB", NULL, 0 },
