@@ -22,7 +22,7 @@
 #include "gdm.h"
 
 gboolean gdm_auth_secure_display (GdmDisplay *d);
-gboolean gdm_auth_user_add       (GdmDisplay *d, uid_t user, gchar *homedir);
+gboolean gdm_auth_user_add       (GdmDisplay *d, uid_t user, const char *homedir);
 void     gdm_auth_user_remove    (GdmDisplay *d, uid_t user);
 
 #endif /* GDM_AUTH_H */

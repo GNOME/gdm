@@ -462,23 +462,31 @@ gdm_slave_run (GdmDisplay *display)
 	    if (gdm_first_login)
 		    gdm_first_login = FALSE;
 	    gdm_slave_greeter ();  /* Start the greeter */
-	    gdm_slave_wait_for_login (); /* wait for a password */
 
-	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
+	    do {
+		    gdm_slave_wait_for_login (); /* wait for a password */
 
-	    if (do_timed_login) {
-		    /* timed out into a timed login */
-		    do_timed_login = FALSE;
-		    setup_automatic_session (d, ParsedTimedLogin);
-		    gdm_slave_send_string (GDM_SOP_LOGIN,
-					   ParsedTimedLogin);
-	    } else {
-		    gdm_slave_send_string (GDM_SOP_LOGIN, login);
-	    }
-	    gdm_slave_session_start ();
+		    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 
-	    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
-	    gdm_slave_send_string (GDM_SOP_LOGIN, "");
+		    if (do_timed_login) {
+			    /* timed out into a timed login */
+			    do_timed_login = FALSE;
+			    setup_automatic_session (d, ParsedTimedLogin);
+			    gdm_slave_send_string (GDM_SOP_LOGIN,
+						   ParsedTimedLogin);
+		    } else {
+			    gdm_slave_send_string (GDM_SOP_LOGIN, login);
+		    }
+		    gdm_slave_session_start ();
+
+		    gdm_slave_send_num (GDM_SOP_LOGGED_IN, FALSE);
+		    gdm_slave_send_string (GDM_SOP_LOGIN, "");
+
+		    if (greet) {
+			    gdm_slave_greeter_ctl_no_ret (GDM_ENABLE, "");
+			    gdm_slave_greeter_ctl_no_ret (GDM_RESETOK, "");
+		    }
+	    } while (greet);
     }
 }
 
@@ -1758,6 +1766,7 @@ dequote (const char *in)
 
 static void
 session_child_run (struct passwd *pwent,
+		   const char *home_dir,
 		   const char *session,
 		   const char *save_session,
 		   const char *language,
@@ -1781,7 +1790,7 @@ session_child_run (struct passwd *pwent,
 	ve_setenv ("LOGNAME", login, TRUE);
 	ve_setenv ("USER", login, TRUE);
 	ve_setenv ("USERNAME", login, TRUE);
-	ve_setenv ("HOME", pwent->pw_dir, TRUE);
+	ve_setenv ("HOME", home_dir, TRUE);
 	ve_setenv ("GDMSESSION", session, TRUE);
 	ve_setenv ("SHELL", pwent->pw_shell, TRUE);
 	ve_unsetenv ("MAIL");	/* Unset $MAIL for broken shells */
@@ -1830,14 +1839,14 @@ session_child_run (struct passwd *pwent,
 		gdm_child_exit (DISPLAY_REMANAGE,
 				_("gdm_slave_session_start: Could not become %s. Aborting."), login);
 	
-	chdir (pwent->pw_dir);
+	chdir (home_dir);
 
 	/* anality, make sure nothing is in memory for gnome_config
 	 * to write */
 	gnome_config_drop_all ();
 	
 	if (usrcfgok && savesess) {
-		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir,
+		gchar *cfgstr = g_strconcat ("=", home_dir,
 					     "/.gnome/gdm=/session/last", NULL);
 		gnome_config_set_string (cfgstr, save_session);
 		need_config_sync = TRUE;
@@ -1845,7 +1854,7 @@ session_child_run (struct passwd *pwent,
 	}
 	
 	if (usrcfgok && savelang) {
-		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir,
+		gchar *cfgstr = g_strconcat ("=", home_dir,
 					     "/.gnome/gdm=/session/lang", NULL);
 		gnome_config_set_string (cfgstr, language);
 		need_config_sync = TRUE;
@@ -1855,7 +1864,7 @@ session_child_run (struct passwd *pwent,
 	if (sessoptok &&
 	    savegnomesess &&
 	    gnome_session != NULL) {
-		gchar *cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/session-options=/Options/CurrentSession", NULL);
+		gchar *cfgstr = g_strconcat ("=", home_dir, "/.gnome/session-options=/Options/CurrentSession", NULL);
 		gnome_config_set_string (cfgstr, gnome_session);
 		need_config_sync = TRUE;
 		g_free (cfgstr);
@@ -1999,13 +2008,14 @@ session_child_run (struct passwd *pwent,
 static void
 gdm_slave_session_start (void)
 {
-    char *cfgdir;
     struct stat statbuf;
     struct passwd *pwent;
     char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
     char *gnome_session = NULL;
     gboolean savesess = FALSE, savelang = FALSE, savegnomesess = FALSE;
     gboolean usrcfgok = FALSE, sessoptok = FALSE, authok = FALSE;
+    const char *home_dir = NULL;
+    gboolean home_dir_ok = FALSE;
     pid_t pid;
 
     gdm_debug ("gdm_slave_session_start: Attempting session for user '%s'",
@@ -2024,60 +2034,76 @@ gdm_slave_session_start (void)
     if (pwent->pw_dir == NULL ||
 	! g_file_test (pwent->pw_dir, G_FILE_TEST_ISDIR)) {
 	    char *msg = g_strdup_printf (
-		     _("Your home directory is listed as '%s'\n"
+		     _("Your home directory is listed as:\n'%s'\n"
 		       "but it does not appear to exist.\n"
-		       "GDM cannot log you in unless you have\n"
-		       "a valid home directory."),
+		       "Do you want to log in with the root\n"
+		       "directory as your home directory?\n\n"
+		       "It is unlikely anything will work unless\n"
+		       "you use a failsafe session."),
 		     ve_sure_string (pwent->pw_dir));
-	    /* pretend we "logged in" */
-	    if (greet)
-		    gdm_slave_whack_greeter();
-	    /* then tell the user to piss off */
-	    gdm_error_box (d, GNOME_MESSAGE_BOX_ERROR, msg);
 
 	    gdm_error (_("%s: Home directory for %s: '%s' does not exist!"),
 		       "gdm_slave_session_start",
 		       login,
 		       ve_sure_string (pwent->pw_dir));
-	    return;
+
+	    /* Does the user want to piss off or try to do stupid crap? */
+	    if ( ! gdm_failsafe_yesno (d, msg)) {
+		    g_free (msg);
+		    return;
+	    }
+
+	    g_free (msg);
+
+	    home_dir_ok = FALSE;
+	    home_dir = "/";
+    } else {
+	    home_dir_ok = TRUE;
+	    home_dir = pwent->pw_dir;
     }
 
     setegid (pwent->pw_gid);
     seteuid (pwent->pw_uid);
 
-    /* Check if ~user/.gnome exists. Create it otherwise. */
-    cfgdir = g_strconcat (pwent->pw_dir, "/.gnome", NULL);
-    
-    if (stat (cfgdir, &statbuf) == -1) {
-	mkdir (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
-	chmod (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
+    if (home_dir_ok) {
+	    char *cfgdir;
+	    /* Check if ~user/.gnome exists. Create it otherwise. */
+	    cfgdir = g_strconcat (home_dir, "/.gnome", NULL);
+
+	    if (stat (cfgdir, &statbuf) == -1) {
+		    mkdir (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
+		    chmod (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
+	    }
+
+	    /* Sanity check on ~user/.gnome/gdm */
+	    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
+				       cfgdir, "gdm", TRUE, GdmUserMaxFile,
+				       GdmRelaxPerms);
+	    /* Sanity check on ~user/.gnome/session-options */
+	    sessoptok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
+					cfgdir, "session-options", TRUE, GdmUserMaxFile,
+					/* We cannot be absolutely strict about the
+					 * session permissions, since by default they
+					 * will be writable by group and there's
+					 * nothing we can do about it.  So we relax
+					 * the permission checking in this case */
+					GdmRelaxPerms == 0 ? 1 : GdmRelaxPerms);
+	    g_free (cfgdir);
+    } else {
+	    usrcfgok = FALSE;
+	    sessoptok = FALSE;
     }
-    
-    /* Sanity check on ~user/.gnome/gdm */
-    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
-			       cfgdir, "gdm", TRUE, GdmUserMaxFile,
-			       GdmRelaxPerms);
-    /* Sanity check on ~user/.gnome/session-options */
-    sessoptok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
-				cfgdir, "session-options", TRUE, GdmUserMaxFile,
-				/* We cannot be absolutely strict about the
-				 * session permissions, since by default they
-				 * will be writable by group and there's
-				 * nothing we can do about it.  So we relax
-				 * the permission checking in this case */
-				GdmRelaxPerms == 0 ? 1 : GdmRelaxPerms);
-    g_free (cfgdir);
 
     if (usrcfgok) {
 	gchar *cfgstr;
 
-	cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/last", NULL);
+	cfgstr = g_strconcat ("=", home_dir, "/.gnome/gdm=/session/last", NULL);
 	usrsess = gnome_config_get_string (cfgstr);
 	if (usrsess == NULL)
 		usrsess = g_strdup ("");
 	g_free (cfgstr);
 
-	cfgstr = g_strconcat ("=", pwent->pw_dir, "/.gnome/gdm=/session/lang", NULL);
+	cfgstr = g_strconcat ("=", home_dir, "/.gnome/gdm=/session/lang", NULL);
 	usrlang = gnome_config_get_string (cfgstr);
 	if (usrlang == NULL)
 		usrlang = g_strdup ("");
@@ -2188,7 +2214,10 @@ gdm_slave_session_start (void)
     setegid (pwent->pw_gid);
     seteuid (pwent->pw_uid);
 
-    authok = gdm_auth_user_add (d, pwent->pw_uid, pwent->pw_dir);
+    authok = gdm_auth_user_add (d, pwent->pw_uid,
+				/* Only pass the home_dir if
+				 * it was ok */
+				home_dir_ok ? home_dir : NULL);
 
     seteuid (0);
     setegid (GdmGroupId);
@@ -2220,6 +2249,7 @@ gdm_slave_session_start (void)
 
 	/* Never returns */
 	session_child_run (pwent,
+			   home_dir,
 			   session,
 			   save_session,
 			   language,
@@ -2678,7 +2708,10 @@ gdm_slave_exec_script (GdmDisplay *d, const gchar *dir, const char *login,
 	        ve_setenv ("USERNAME", GdmUser, TRUE);
         }
         if (pwent != NULL) {
-	        ve_setenv ("HOME", pwent->pw_dir, TRUE);
+		if (ve_string_empty (pwent->pw_dir))
+			ve_setenv ("HOME", "/", TRUE);
+		else
+			ve_setenv ("HOME", pwent->pw_dir, TRUE);
 	        ve_setenv ("SHELL", pwent->pw_shell, TRUE);
         } else {
 	        ve_setenv ("HOME", "/", TRUE);

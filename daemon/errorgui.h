@@ -44,6 +44,15 @@ char *		gdm_failsafe_question	(GdmDisplay *d,
 					 const char *question,
 					 gboolean echo);
 
+gboolean	gdm_run_failsafe_yesno	(const char *question,
+					 int screenx,
+					 int screeny,
+					 int screenwidth,
+					 int screenheight);
+/* this spawns self with the argument to run the above */
+gboolean	gdm_failsafe_yesno	(GdmDisplay *d,
+					 const char *question);
+
 #endif /* GDM_ERRORGUI_H */
 
 /* EOF */

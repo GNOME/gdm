@@ -1206,6 +1206,20 @@ main (int argc, char *argv[])
 	    }
 	    _exit (0);
     }
+    /* This is another utter hack.  Same as above but for yes/no questions */
+    if (argc == 4 &&
+	strcmp (argv[1], "--run-failsafe-yesno") == 0) {
+	    int x = 0, y = 0, width = 0, height = 0;
+	    gboolean ret;
+	    sscanf (argv[3], "%d:%d:%d:%d", &x, &y, &width, &height);
+	    ret = gdm_run_failsafe_yesno (argv[2], x, y, width, height);
+	    if (ret)
+		    g_print ("yes\n");
+	    else
+		    g_print ("no\n");
+	    fflush (stdout);
+	    _exit (0);
+    }
 
 
     /* XDM compliant error message */

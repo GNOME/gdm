@@ -302,9 +302,9 @@ gdm_auth_secure_display (GdmDisplay *d)
  */
 
 gboolean
-gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
+gdm_auth_user_add (GdmDisplay *d, uid_t user, const char *homedir)
 {
-    gchar *authdir;
+    const char *authdir;
     gint authfd;
     FILE *af;
     GSList *auths = NULL;
@@ -323,7 +323,8 @@ gdm_auth_user_add (GdmDisplay *d, uid_t user, gchar *homedir)
     umask (077);
 
     /* Find out if the Xauthority file passes the paranoia check */
-    if (! gdm_file_check ("gdm_auth_user_add", user, authdir, GdmUserAuthFile, 
+    if (authdir == NULL ||
+	! gdm_file_check ("gdm_auth_user_add", user, authdir, GdmUserAuthFile, 
 			  TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
 
 	/* No go. Let's create a fallback file in GdmUserAuthFB (/tmp) */

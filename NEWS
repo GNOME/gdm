@@ -1,5 +1,75 @@
 Ahh news...
 
+2.2.5.1 stuff:
+
+- IMPORTANT: XKeepsCrashing now has different semantics,
+  all the logic of crash recovery is no in this script including
+  gettext and finding the configurator and all that.  So
+  the script no longer takes any arguments.  If you have custom
+  versions of this script you will have to change them to reflect
+  this.  As a result of this XKeepsCrashingConfigurators is gone
+
+- Skipped a version number for greater stability
+
+- By default also look for XFdrake as a configurator on X crashes
+  to work on mandrake out of the box
+
+- pam setup is now the same as in the redhat and mandrake
+  packages
+
+- If the X server crashes within 5 seconds of telling us it's
+  ready, still treat it as a crash, since things like inability
+  to open mouse makes it die after it tells us it's OK
+
+- XKeepsCrashing now handles inability to open mouse and
+  offers to run mouseconfig (or if that's not available
+  just the x configurator it finds)
+
+- Fix crash on FreeBSD with setenv with NULL (just treat NULL
+  as empty string) (Heath Nielson)
+
+- DESTDIR fixes (Frodo Looijaard)
+
+- gdmopen now sets VT_NUMBER env var for it's child
+
+- Focus issues fixed in gdmwm (the windowmanager of the greeter)
+
+- Check for existance of a home directory.  If it doesn't exist,
+  the user has the option of canceling the login or logging in with
+  the home dir set to root.
+
+- Many MANY races fixed in handeling of extra processes.  Gdm should
+  now always clean up after itself well if killed.  And it will
+  now not screw up if the child processes die too quickly.
+
+- Some configure.in and build fixes, require libglade explicitly in
+  the configure script and also make console helper enabled by default
+  if it's possible to use it
+
+- gdmXnestchooser now has quite a few more modes of operation, in effect
+  it can now be used as a generic Xnext launching program.  It also
+  by default reads the Xnest command from gdm.conf
+  
+- Remove VerboseAuth configuration variable as it was utterly useless,
+  and actually resulted in usability degradation when on.
+
+- Include our own gdmmktemp like the mktemp program for shell scripts
+
+- Fix stuff on console with gdmopen by printing \033(K onto the console
+  before it does anything else
+
+- Work with KDE face directories (username.png rather then username) as
+  well (Mandrake)
+
+- Accept keypad enter in the greeter (Mandrake)
+
+- Run ssh-agent if it is found available and not yet running in the Gnome
+  session file (Ximian)
+
+- Errors from pam go into a separate dialog and information messages that
+  come just before login are also in a dialog so that the user gets
+  a chance to see them
+
 2.2.4.3 stuff:
 
 - Use PAM_ESTABILISH_CRED for pam_setcred
