@@ -251,6 +251,7 @@ main (int argc, char *argv[])
 				 GTK_BUTTONS_OK,
 				 _("Cannot communicate with gdm, perhaps "
 				   "you have an old version running."));
+			gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -270,6 +271,7 @@ main (int argc, char *argv[])
 				   "authentication needed for this "
 				   "operation.  Perhaps your .Xauthority "
 				   "file is not set up correctly."));
+			gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -295,6 +297,7 @@ main (int argc, char *argv[])
 				 _("You do not seem to be logged in on the "
 				   "console.  Starting a new login only "
 				   "works correctly on the console."));
+			gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -338,6 +341,7 @@ main (int argc, char *argv[])
 		 GTK_MESSAGE_WARNING,
 		 GTK_BUTTONS_OK,
 		 "%s", message);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_widget_show_all (dialog);
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);

@@ -88,6 +88,9 @@ void gdm_saveenv (void);
 /* leaks */
 void gdm_restoreenv (void);
 
+void gdm_sleep_no_signal (int secs);
+void gdm_reset_limits (void);
+
 #endif /* GDM_MISC_H */
 
 /* EOF */

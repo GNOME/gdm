@@ -27,6 +27,7 @@
 #include <syslog.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 #include "gdm.h"
 #include "misc.h"
@@ -116,21 +117,44 @@ static void
 show_errors (GtkWidget *button, gpointer data)
 {
 	const char *file = data;
+	char *details;
 	FILE *fp;
+	struct stat s;
 	GtkWidget *sw;
 	GtkWidget *label;
 	GtkWidget *dlg = gtk_widget_get_toplevel (button);
 	GtkWidget *parent = button->parent;
 	GString *gs = g_string_new (NULL);
+	gboolean valid_utf8 = TRUE;
 
-	fp = fopen (file, "r");
+	fp = NULL;
+	if (stat (file, &s) == 0) {
+		if (S_ISREG (s.st_mode))
+			fp = fopen (file, "r");
+		else {
+			g_string_printf (gs, "%s not a regular file!\n", file);
+		}
+	}
+
 	if (fp != NULL) {
-		char buf[256];
-		while (fgets (buf, sizeof (buf), fp))
+		char buf[128];
+		int lines = 0;
+		while (fgets (buf, sizeof (buf), fp)) {
+			if ( ! g_utf8_validate (buf, -1, NULL))
+				valid_utf8 = FALSE;
 			g_string_append (gs, buf);
+			/* cap lines at 100 */
+			if (lines ++ > 100) {
+				g_string_append (gs, "\n... File too long to display ...\n");
+				break;
+			}
+		}
 		fclose (fp);
 	} else {
-		g_string_printf (gs, _("%s could not be opened"), file);
+		char  *loc;
+		loc = gdm_locale_to_utf8 (_("%s could not be opened"));
+		g_string_append_printf (gs, loc, file);
+		g_free (loc);
 	}
 
 	gtk_widget_destroy (button);
@@ -149,14 +173,20 @@ show_errors (GtkWidget *button, gpointer data)
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw),
 					     GTK_SHADOW_IN);
 
-	label = gtk_label_new (gs->str);
+	details = g_string_free (gs, FALSE);
+
+	if ( ! valid_utf8) {
+		char *tmp = gdm_locale_to_utf8 (details);
+		g_free (details);
+		details = tmp;
+	}
+
+	label = gtk_label_new (details);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (sw), label);
 	gtk_widget_show (label);
 
 	gtk_box_pack_start (GTK_BOX (parent),
 			    sw, TRUE, TRUE, 0);
-
-	g_string_free (gs, TRUE);
 
 	center_window (dlg);
 }
@@ -223,6 +253,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 					      "%s",
 					      loc);
 		g_free (loc);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 		if (details_label != NULL) {
 			loc = gdm_locale_to_utf8 (details_label);
@@ -500,6 +531,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 					      GTK_BUTTONS_YES_NO,
 					      "%s",
 					      loc);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 		sid = g_signal_lookup ("event",
 				       GTK_TYPE_WIDGET);

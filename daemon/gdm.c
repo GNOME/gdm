@@ -831,7 +831,7 @@ gdm_final_cleanup (void)
 		 * because X is stupid and full of races and will hang my
 		 * keyboard if I don't */
 		if (li != list)
-			sleep (2);
+			gdm_sleep_no_signal (2);
 		gdm_display_unmanage (d);
 	}
 	g_slist_free (list);
@@ -921,7 +921,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		    gnome_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
 
 		    /* To enable gettext stuff in the script */
-		    gnome_setenv ("TEXTDOMAIN", PACKAGE, TRUE);
+		    gnome_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
 		    gnome_setenv ("TEXTDOMAINDIR", GNOMELOCALEDIR, TRUE);
 
 		    execv (argv[0], argv);
@@ -976,6 +976,30 @@ deal_with_x_crashes (GdmDisplay *d)
     gdm_error (_("Failed to start X server several times in a short time period; disabling display %s"), d->name);
 
     return FALSE;
+}
+
+static void
+suspend_machine (void)
+{
+	if (GdmSuspendReal != NULL &&
+	    fork () == 0) {
+		char **argv;
+		if (GdmXdmcp)
+			gdm_xdmcp_close ();
+		/* In the child setup empty mask and set all signals to
+		 * default values */
+		gdm_unset_signals ();
+
+		/* Also make a new process group */
+		setsid ();
+
+		chdir ("/");
+
+		argv = ve_split (GdmSuspendReal);
+		execv (argv[0], argv);
+		/* FIXME: what about fail */
+		_exit (1);
+	}
 }
 
 static gboolean 
@@ -1142,14 +1166,7 @@ start_autopsy:
 
     case DISPLAY_SUSPEND:	/* Suspend machine */
 	gdm_info (_("gdm_child_action: Master suspending..."));
-
-	gdm_final_cleanup ();
-	chdir ("/");
-
-	argv = ve_split (GdmSuspendReal);
-	execv (argv[0], argv);
-
-	gdm_error (_("gdm_child_action: Suspend failed: %s"), strerror (errno));
+	suspend_machine ();
 
 	status = DISPLAY_REMANAGE;
 	goto start_autopsy;

@@ -144,6 +144,7 @@ greeter_system_handler (GreeterItemInfo *info,
 	  return;
 
   dialog = gtk_dialog_new ();
+  gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
   if (working_command_exists (GdmHalt)) {
 	  halt_radio = gtk_radio_button_new_with_mnemonic (NULL,
@@ -199,6 +200,9 @@ greeter_system_handler (GreeterItemInfo *info,
   gtk_dialog_add_button (GTK_DIALOG (dialog),
 			 GTK_STOCK_OK,
 			 GTK_RESPONSE_OK);
+
+  gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+				   GTK_RESPONSE_OK);
   
   gtk_widget_show_all (dialog);
   gdm_wm_center_window (GTK_WINDOW (dialog));

@@ -686,6 +686,7 @@ gdm_login_message (const gchar *msg)
 				      GTK_BUTTONS_CLOSE,
 				      "%s",
 				      msg);
+	gtk_dialog_set_has_separator (GTK_DIALOG (req), FALSE);
 	g_signal_connect (G_OBJECT (req), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed),
 			  &req);
@@ -716,6 +717,7 @@ gdm_login_query (const gchar *msg)
 				      GTK_BUTTONS_YES_NO,
 				      "%s",
 				      msg);
+	gtk_dialog_set_has_separator (GTK_DIALOG (req), FALSE);
 	gtk_label_set_use_markup
 		(GTK_LABEL (GTK_MESSAGE_DIALOG (req)->label), TRUE);
 
@@ -755,6 +757,7 @@ gdm_run_command (const char *command)
 						 _("Could not fork a new process!\n\n"
 						   "You likely won't be able to log "
 						   "in either."));
+		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 		gtk_widget_show_all (dialog);
 		gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -2211,6 +2214,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 				      GTK_BUTTONS_OK,
 				      "%s",
 				      tmp);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 	g_free (tmp);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
@@ -2326,14 +2330,15 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		/* we should be now fine for focusing new windows */
 		gdm_wm_focus_new_windows (TRUE);
 
-		/* translators:  This is a nice and evil eggie text, translate
-		 * to your favourite currency */
 		dlg = gtk_message_dialog_new (NULL /* parent */,
 					      GTK_DIALOG_MODAL /* flags */,
 					      GTK_MESSAGE_INFO,
 					      GTK_BUTTONS_OK,
+					      /* translators:  This is a nice and evil eggie text, translate
+					       * to your favourite currency */
 					      _("Please insert 25 cents "
 						"to log in."));
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		gdm_wm_center_window (GTK_WINDOW (dlg));
 
 		gdm_wm_no_login_focus_push ();
@@ -2359,6 +2364,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 						      GTK_BUTTONS_OK,
 						      "%s",
 						      oldtext);
+			gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 			gtk_window_set_modal (GTK_WINDOW (dlg), TRUE);
 			gdm_wm_center_window (GTK_WINDOW (dlg));
 
@@ -4086,6 +4092,7 @@ main (int argc, char *argv[])
 					       "You have probably just upgraded gdm.\n"
 					       "Please restart the gdm daemon or reboot the computer."),
 					     VERSION);
+	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -4115,6 +4122,7 @@ main (int argc, char *argv[])
 					       "You have probably just upgraded gdm.\n"
 					       "Please restart the gdm daemon or reboot the computer."),
 					     VERSION);
+	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				    _("Reboot"),
 				    RESPONSE_REBOOT,
@@ -4157,6 +4165,7 @@ main (int argc, char *argv[])
 					       "You have probably just upgraded gdm.\n"
 					       "Please restart the gdm daemon or reboot the computer."),
 					     VERSION, gdm_version);
+	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 				    _("Restart"),
 				    RESPONSE_RESTART,
@@ -4308,6 +4317,7 @@ main (int argc, char *argv[])
 					     _("Your session directory is missing or empty!\n\n"
 					       "There are two available sessions you can use, but\n"
 					       "you should log in and correct the gdm configuration."));
+	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -4331,6 +4341,7 @@ main (int argc, char *argv[])
 					     _("The configuration file contains an invalid command\n"
 					       "line for the login dialog, and thus I ran the\n"
 					       "default command.  Please fix your configuration."));
+	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 
@@ -4356,6 +4367,7 @@ main (int argc, char *argv[])
 					       "defaults to run this session.  You should log in\n"
 					       "and create a configuration file with the GDM\n"
 					       "configuration program."));
+	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));
 

@@ -48,6 +48,9 @@ static pam_handle_t *pamh = NULL;
 
 static GdmDisplay *cur_gdm_disp = NULL;
 
+static gboolean opened_session = FALSE;
+static gboolean did_setcred = FALSE;
+
 /* Internal PAM conversation function. Interfaces between the PAM
  * authentication system and the actual greeter program */
 
@@ -88,7 +91,11 @@ gdm_verify_pam_conv (int num_msg, const struct pam_message **msg,
 	    
 	case PAM_PROMPT_ECHO_OFF:
 	    /* PAM requested textual input with echo off */
-	    s = gdm_slave_greeter_ctl (GDM_NOECHO, msg[replies]->msg);
+	    if (strcmp (msg[replies]->msg, "Password: ") == 0)
+		    /* hack to make sure we translate "Password: " */
+		    s = gdm_slave_greeter_ctl (GDM_NOECHO, _("Password: "));
+	    else
+		    s = gdm_slave_greeter_ctl (GDM_NOECHO, msg[replies]->msg);
 	    if (gdm_slave_greeter_check_interruption ()) {
 		    g_free (s);
 		    free (reply);
@@ -245,6 +252,8 @@ create_pamh (GdmDisplay *d,
 		pam_end (pamh, PAM_SUCCESS);
 	}
 	pamh = NULL;
+	opened_session = FALSE;
+	did_setcred = FALSE;
 
 	/* Initialize a PAM session for the user */
 	if ((*pamerr = pam_start (service, login, conv, &pamh)) != PAM_SUCCESS) {
@@ -260,20 +269,16 @@ create_pamh (GdmDisplay *d,
 		return FALSE;
 	}
 
-	/* gdm is requesting the login */
-	if ((*pamerr = pam_set_item (pamh, PAM_RUSER, GdmUser)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
-			gdm_error (_("Can't set PAM_RUSER=%s"), GdmUser);
-		return FALSE;
-	}
-
-	/* From the host of the display */
-	if ((*pamerr = pam_set_item (pamh, PAM_RHOST,
-				     d->console ? "localhost" : d->hostname)) != PAM_SUCCESS) {
-		if (gdm_slave_should_complain ())
-			gdm_error (_("Can't set PAM_RHOST=%s"),
-				   d->console ? "localhost" : d->hostname);
-		return FALSE;
+	if ( ! d->console) {
+		/* Only set RHOST if host is remote */
+		/* From the host of the display */
+		if ((*pamerr = pam_set_item (pamh, PAM_RHOST,
+					     d->hostname)) != PAM_SUCCESS) {
+			if (gdm_slave_should_complain ())
+				gdm_error (_("Can't set PAM_RHOST=%s"),
+					   d->hostname);
+			return FALSE;
+		}
 	}
 
 	return TRUE;
@@ -353,7 +358,7 @@ gdm_verify_user (GdmDisplay *d,
     /* Start authentication session */
     if ((pamerr = pam_authenticate (pamh, 0)) != PAM_SUCCESS) {
 #ifndef PAM_FAIL_DELAY
-	    sleep (GdmRetryDelay);
+	    gdm_sleep_no_signal (GdmRetryDelay);
 #endif /* PAM_FAIL_DELAY */
 	    if (started_timer)
 		    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
@@ -428,8 +433,10 @@ gdm_verify_user (GdmDisplay *d,
     }
 
     /* Set credentials */
+    did_setcred = TRUE;
     pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
     if (pamerr != PAM_SUCCESS) {
+        did_setcred = FALSE;
 	if (gdm_slave_should_complain ())
 	    gdm_error (_("Couldn't set credentials for %s"), login);
 	goto pamerr;
@@ -438,8 +445,12 @@ gdm_verify_user (GdmDisplay *d,
     credentials_set = TRUE;
 
     /* Register the session */
+    opened_session = TRUE;
     pamerr = pam_open_session (pamh, 0);
     if (pamerr != PAM_SUCCESS) {
+	    opened_session = FALSE;
+	    /* we handle this above */
+	    did_setcred = FALSE;
 	    if (gdm_slave_should_complain ())
 		    gdm_error (_("Couldn't open session for %s"), login);
 	    goto pamerr;
@@ -475,6 +486,9 @@ gdm_verify_user (GdmDisplay *d,
 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRDLG, _("Authentication failed"));
 	    }
     }
+
+    did_setcred = FALSE;
+    opened_session = FALSE;
 
     if (pamh != NULL) {
 	    /* Throw away the credentials */
@@ -589,16 +603,21 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
     }
 
     /* Set credentials */
+    did_setcred = TRUE;
     pamerr = pam_setcred (pamh, PAM_ESTABLISH_CRED);
     if (pamerr != PAM_SUCCESS) {
+	    did_setcred = FALSE;
 	    if (gdm_slave_should_complain ())
 		    gdm_error (_("Couldn't set credentials for %s"), login);
 	    goto setup_pamerr;
     }
 
     /* Register the session */
+    opened_session = TRUE;
     pamerr = pam_open_session (pamh, 0);
     if (pamerr != PAM_SUCCESS) {
+	    opened_session = FALSE;
+	    did_setcred = FALSE;
 	    /* Throw away the credentials */
 	    pam_setcred (pamh, PAM_DELETE_CRED);
 
@@ -619,6 +638,9 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display)
     return TRUE;
     
  setup_pamerr:
+
+    did_setcred = FALSE;
+    opened_session = FALSE;
     
     if (pamh != NULL)
 	    pam_end (pamh, pamerr);
@@ -651,21 +673,45 @@ gdm_verify_cleanup (GdmDisplay *d)
 
 	if (pamh != NULL) {
 		gint pamerr;
+		pam_handle_t *tmp_pamh;
+		gboolean old_opened_session;
+		gboolean old_did_setcred;
+
+		gdm_debug ("Running gdm_verify_cleanup and pamh != NULL");
+
+		gdm_sigterm_block_push ();
+		gdm_sigchld_block_push ();
+		tmp_pamh = pamh;
+		pamh = NULL;
+		old_opened_session = opened_session;
+		opened_session = FALSE;
+		old_did_setcred = did_setcred;
+		did_setcred = FALSE;
+		gdm_sigchld_block_pop ();
+		gdm_sigterm_block_pop ();
+
+		pamerr = PAM_SUCCESS;
 
 		/* Close the users session */
-		pamerr = pam_close_session (pamh, 0);
+		if (old_opened_session) {
+			gdm_debug ("Running pam_close_session");
+			pamerr = pam_close_session (tmp_pamh, 0);
+		}
 
 		/* Throw away the credentials */
-		pamerr = pam_setcred (pamh, PAM_DELETE_CRED);
+		if (old_did_setcred) {
+			gdm_debug ("Running pam_setcred with PAM_DELETE_CRED");
+			pamerr = pam_setcred (tmp_pamh, PAM_DELETE_CRED);
+		}
 
-		if (pamh != NULL)
-			pam_end (pamh, pamerr);
-		pamh = NULL;
+		pam_end (tmp_pamh, pamerr);
 
 		/* Workaround to avoid gdm messages being logged as PAM_pwdb */
 		closelog ();
 		openlog ("gdm", LOG_PID, LOG_DAEMON);
 	}
+
+	gdm_reset_limits ();
 
 	/* Clear the group setup */
 	setgid (0);

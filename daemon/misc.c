@@ -37,6 +37,7 @@
 #ifdef HAVE_SYS_SOCKIO_H
 #include <sys/sockio.h>
 #endif
+#include <sys/resource.h>
 
 #include <vicious.h>
 
@@ -319,6 +320,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 		GSList *li;
 		struct stat s;
 		char buf[256];
+		FILE *fp;
 
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *dsp = li->data;
@@ -343,6 +345,32 @@ gdm_get_free_display (int start, uid_t server_uid)
 			continue;
 		}
 		close (sock);
+
+		/* if lock file exists and the process exists */
+		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
+		if (stat (buf, &s) == 0 &&
+		    ! S_ISREG (s.st_mode)) {
+			/* Eeeek! not a regular file?  Perhaps someone
+			   is trying to play tricks on us */
+			continue;
+		}
+		fp = fopen (buf, "r");
+		if (fp != NULL) {
+			char buf2[100];
+			if (fgets (buf2, sizeof (buf2), fp) != NULL) {
+				gulong pid;
+				if (sscanf (buf2, "%lu", &pid) == 1 &&
+				    kill (pid, 0) == 0) {
+					fclose (fp);
+					continue;
+				}
+
+			}
+			fclose (fp);
+
+			/* whack the file, it's a stale lock file */
+			unlink (buf);
+		}
 
 		/* if starting as root, we'll be able to overwrite any
 		 * stale sockets or lock files, but a user may not be
@@ -373,53 +401,62 @@ gboolean
 gdm_text_message_dialog (const char *msg)
 {
 	char *dialog; /* do we have dialog?*/
+	char *msg_quoted;
 
 	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
 
+	msg_quoted = g_shell_quote (msg);
+	
 	dialog = g_find_program_in_path ("dialog");
 	if (dialog == NULL)
 		dialog = g_find_program_in_path ("gdialog");
 	if (dialog == NULL)
 		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {
-		char *argv[7];
-
+		char *argv[6];
+		
 		argv[0] = EXPANDED_SBINDIR "/gdmopen";
-		argv[1] = dialog;
-		argv[2] = "--msgbox";
-		argv[3] = (char *)msg;
-		argv[4] = "11";
-		argv[5] = "70";
-		argv[6] = NULL;
+		argv[1] = "-l";
+		argv[2] = "/bin/sh";
+		argv[3] = "-c";
+		argv[4] = g_strdup_printf ("%s --msgbox %s 11 70",
+					   dialog, msg_quoted);
+		argv[5] = NULL;
 
 		/* make sure gdialog wouldn't get confused */
 		if (gdm_exec_wait (argv, TRUE /* no display */,
 				   TRUE /* de_setuid */) < 0) {
 			g_free (dialog);
+			g_free (msg_quoted);
+			g_free (argv[4]);
 			return FALSE;
 		}
 
 		g_free (dialog);
+		g_free (argv[4]);
 	} else {
-		char *argv[5];
+		char *argv[6];
 
 		argv[0] = EXPANDED_SBINDIR "/gdmopen";
-		argv[1] = "/bin/sh";
-		argv[2] = "-c";
-		argv[3] = g_strdup_printf
+		argv[1] = "-l";
+		argv[2] = "/bin/sh";
+		argv[3] = "-c";
+		argv[4] = g_strdup_printf
 			("clear ; "
-			 "echo \"%s\" ; read ; clear",
-			 msg);
-		argv[4] = NULL;
+			 "echo %s ; read ; clear",
+			 msg_quoted);
+		argv[5] = NULL;
 
 		if (gdm_exec_wait (argv, TRUE /* no display */,
 				   TRUE /* de_setuid */) < 0) {
-			g_free (argv[3]);
+			g_free (argv[4]);
+			g_free (msg_quoted);
 			return FALSE;
 		}
-		g_free (argv[3]);
+		g_free (argv[4]);
 	}
+	g_free (msg_quoted);
 	return TRUE;
 }
 
@@ -427,6 +464,7 @@ gboolean
 gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 {
 	char *dialog; /* do we have dialog?*/
+	char *msg_quoted;
 
 	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
@@ -434,36 +472,42 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	if (ret != NULL)
 		*ret = FALSE;
 
+	msg_quoted = g_shell_quote (msg);
+	
 	dialog = g_find_program_in_path ("dialog");
 	if (dialog == NULL)
 		dialog = g_find_program_in_path ("gdialog");
 	if (dialog == NULL)
 		dialog = g_find_program_in_path ("whiptail");
 	if (dialog != NULL) {
-		char *argv[7];
+		char *argv[6];
 		int retint;
 
 		argv[0] = EXPANDED_SBINDIR "/gdmopen";
-		argv[1] = dialog;
-		argv[2] = "--yesno";
-		argv[3] = (char *)msg;
-		argv[4] = "11";
-		argv[5] = "70";
-		argv[6] = NULL;
+		argv[1] = "-l";
+		argv[2] = "/bin/sh";
+		argv[3] = "-c";
+		argv[4] = g_strdup_printf ("%s --yesno %s 11 70",
+					   dialog, msg_quoted);
+		argv[5] = NULL;
 
 		/* will unset DISPLAY and XAUTHORITY if they exist
 		 * so that gdialog (if used) doesn't get confused */
 		retint = gdm_exec_wait (argv, TRUE /* no display */,
 					TRUE /* de_setuid */);
 		if (retint < 0) {
+			g_free (argv[4]);
 			g_free (dialog);
+			g_free (msg_quoted);
 			return FALSE;
 		}
 
 		if (ret != NULL)
 			*ret = (retint == 0) ? TRUE : FALSE;
 
+		g_free (argv[4]);
 		g_free (dialog);
+		g_free (msg_quoted);
 
 		return TRUE;
 	} else {
@@ -471,33 +515,37 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		int tempfd;
 		FILE *fp;
 		char buf[256];
-		char *argv[5];
+		char *argv[6];
 
 		tempfd = g_mkstemp (tempname);
-		if (tempfd < 0)
+		if (tempfd < 0) {
+			g_free (msg_quoted);
 			return FALSE;
+		}
 
 		close (tempfd);
 
 		argv[0] = EXPANDED_SBINDIR "/gdmopen";
-		argv[1] = "/bin/sh";
-		argv[2] = "-c";
-		argv[3] = g_strdup_printf
+		argv[1] = "-l";
+		argv[2] = "/bin/sh";
+		argv[3] = "-c";
+		argv[4] = g_strdup_printf
 			("clear ; "
-			 "echo \"%s\" ; echo ; echo \"%s\" ; "
+			 "echo %s ; echo ; echo \"%s\" ; "
 			 "read RETURN ; echo $RETURN > %s ; clear'",
-			 msg,
+			 msg_quoted,
 			 /* Translators, don't translate the 'y' and 'n' */
 			 _("y = Yes or n = No? >"),
 			 tempname);
-		argv[4] = NULL;
+		argv[5] = NULL;
 
 		if (gdm_exec_wait (argv, TRUE /* no display */,
 				   TRUE /* de_setuid */) < 0) {
-			g_free (argv[3]);
+			g_free (argv[4]);
+			g_free (msg_quoted);
 			return FALSE;
 		}
-		g_free (argv[3]);
+		g_free (argv[4]);
 
 		if (ret != NULL) {
 			fp = fopen (tempname, "r");
@@ -507,12 +555,14 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 					*ret = TRUE;
 				fclose (fp);
 			} else {
+				g_free (msg_quoted);
 				return FALSE;
 			}
 		}
 
 		unlink (tempname);
 
+		g_free (msg_quoted);
 		return TRUE;
 	}
 }
@@ -1085,6 +1135,7 @@ gdm_unset_signals (void)
 	signal (SIGUSR1, SIG_DFL);
 	signal (SIGUSR2, SIG_DFL);
 	signal (SIGCHLD, SIG_DFL);
+	signal (SIGINT, SIG_DFL);
 	signal (SIGTERM, SIG_DFL);
 	signal (SIGPIPE, SIG_DFL);
 	signal (SIGALRM, SIG_DFL);
@@ -1149,6 +1200,73 @@ gdm_locale_from_utf8 (const char *text)
 	return out;
 }
 
+void
+gdm_sleep_no_signal (int secs)
+{
+	time_t endtime = time (NULL)+secs;
+
+	while (secs > 0) {
+		struct timeval tv;
+		tv.tv_sec = secs;
+		tv.tv_usec = 0;
+		select (0, NULL, NULL, NULL, &tv);
+		/* don't want to use sleep since we're using alarm
+		   for pinging */
+		secs = endtime - time (NULL);
+	}
+}
+
+void
+gdm_reset_limits (void)
+{
+	struct rlimit unlim = { RLIM_INFINITY, RLIM_INFINITY };
+
+	/* Note: I don't really know which ones are really very standard
+	   and which ones are not, so I just test for them all one by one */
+
+#ifdef RLIMIT_CPU
+	setrlimit (RLIMIT_CPU, &unlim);
+#endif
+#ifdef RLIMIT_DATA
+	setrlimit (RLIMIT_DATA, &unlim);
+#endif
+#ifdef RLIMIT_FSIZE
+	setrlimit (RLIMIT_FSIZE, &unlim);
+#endif
+#ifdef RLIMIT_LOCKS
+	setrlimit (RLIMIT_LOCKS, &unlim);
+#endif
+#ifdef RLIMIT_MEMLOCK
+	setrlimit (RLIMIT_MEMLOCK, &unlim);
+#endif
+#ifdef RLIMIT_NOFILE
+	setrlimit (RLIMIT_NOFILE, &unlim);
+#endif
+#ifdef RLIMIT_OFILE
+	setrlimit (RLIMIT_OFILE, &unlim);
+#endif
+#ifdef RLIMIT_NPROC
+	setrlimit (RLIMIT_NPROC, &unlim);
+#endif
+#ifdef RLIMIT_RSS
+	setrlimit (RLIMIT_RSS, &unlim);
+#endif
+#ifdef RLIMIT_STACK
+	setrlimit (RLIMIT_STACK, &unlim);
+#endif
+#ifdef RLIMIT_CORE
+	setrlimit (RLIMIT_CORE, &unlim);
+#endif
+#ifdef RLIMIT_AS
+	setrlimit (RLIMIT_AS, &unlim);
+#endif
+#ifdef RLIMIT_VMEM
+	setrlimit (RLIMIT_VMEM, &unlim);
+#endif
+#ifdef RLIMIT_PTHREAD
+	setrlimit (RLIMIT_PTHREAD, &unlim);
+#endif
+}
 
 
 /* EOF */

@@ -78,6 +78,8 @@ static int server_signal_pipe[2];
 void
 gdm_server_wipe_cookies (GdmDisplay *disp)
 {
+	char buf[256];
+
 	if ( ! ve_string_empty (disp->authfile))
 		unlink (disp->authfile);
 	g_free (disp->authfile);
@@ -86,6 +88,27 @@ gdm_server_wipe_cookies (GdmDisplay *disp)
 		unlink (disp->authfile_gdm);
 	g_free (disp->authfile_gdm);
 	disp->authfile_gdm = NULL;
+
+	/* X seems to be sometimes broken with its lock files and
+	   doesn't seem to remove them always, and if you manage
+	   to get into the weird state where the old pid now
+	   corresponds to some new pid, X will just die with
+	   a stupid error. */
+
+	/* Yes there could be a race here if another X server starts
+	   at this exact instant.  Oh well such is life.  Very unlikely
+	   to happen though as we should really be the only ones
+	   trying to start X servers, and we aren't starting an
+	   X server on this display yet. */
+
+	/* if lock file exists and it is our process, whack it! */
+	g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", disp->dispnum);
+	unlink (buf);
+
+	/* whack the unix socket as well */
+	g_snprintf (buf, sizeof (buf),
+		    "/tmp/.X11-unix/X%d", disp->dispnum);
+	unlink (buf);
 }
 
 /* ignore handlers */
@@ -146,7 +169,7 @@ gdm_server_reinit (GdmDisplay *disp)
 		 * get whacked ourselves after we open the connection and we'll think
 		 * it's an X screwup, which is really OK to happen and will just
 		 * restart the Xserver, it's just more nasty.  Oh how fun */
-		sleep (1);
+		gdm_sleep_no_signal (1);
 	} else if (pid == 0) {
 		Display *dsp;
 
@@ -176,7 +199,7 @@ gdm_server_reinit (GdmDisplay *disp)
 
 		if (dsp == NULL) {
 			/* HACK, see note above */
-			sleep (1);
+			gdm_sleep_no_signal (1);
 			_exit (0);
 		} else {
 			/* Wait for an xioerror */
@@ -540,7 +563,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		     * just wait a few seconds and hope things just work,
 		     * fortunately there is no such case yet and probably
 		     * never will, but just for code anality's sake */
-		    sleep (5);
+		    gdm_sleep_no_signal (5);
 		    /* In case we got a SIGCHLD */
 		    check_child_status ();
 	    } else if (d->server_uid != 0) {
@@ -563,7 +586,7 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 			 i++) {
 			    d->dsp = XOpenDisplay (d->name);
 			    if (d->dsp == NULL)
-				    sleep (1);
+				    gdm_sleep_no_signal (1);
 			    else
 				    d->servstat = SERVER_RUNNING;
 
@@ -577,14 +600,13 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 			    d->servstat = SERVER_TIMEOUT;
 		    }
 	    } else {
-		    fd_set rfds;
 
 		    gdm_debug ("gdm_server_start: Before mainloop waiting for server");
 
-		    FD_ZERO (&rfds);
-		    FD_SET (server_signal_pipe[0], &rfds);
-
 		    do {
+			    fd_set rfds;
+			    FD_ZERO (&rfds);
+			    FD_SET (server_signal_pipe[0], &rfds);
 			    select (server_signal_pipe[0]+1, &rfds, NULL, NULL, NULL);
 			    /* In case we got a SIGCHLD */
 			    check_child_status ();

@@ -12,6 +12,7 @@
 
 #include <vicious.h>
 
+#include "gdmwm.h"
 #include "greeter_parser.h"
 #include "greeter_events.h"
 
@@ -994,6 +995,7 @@ parse_label (xmlNodePtr        node,
 {
   xmlNodePtr child;
   int i;
+  double size_reduction = 1.0;
   char *translated_text;
   gint translation_score = 1000;
   
@@ -1078,6 +1080,24 @@ parse_label (xmlNodePtr        node,
   
   if (info->fonts[GREETER_ITEM_STATE_NORMAL] == NULL)
     info->fonts[GREETER_ITEM_STATE_NORMAL] = pango_font_description_from_string ("Sans");
+
+  if (gdm_wm_screen.width <= 800 &&
+      gdm_wm_screen.width > 640)
+    size_reduction = PANGO_SCALE_SMALL;
+  else if (gdm_wm_screen.width <= 640)
+    size_reduction = PANGO_SCALE_X_SMALL;
+
+  if (size_reduction < 0.99)
+    {
+      for (i = 0; i < GREETER_ITEM_STATE_MAX; i++)
+        {
+          if (info->fonts[i] != NULL)
+	    {
+	      int old_size = pango_font_description_get_size (info->fonts[i]);
+	      pango_font_description_set_size (info->fonts[i], old_size * size_reduction);
+	    }
+	}
+    }
 
   info->orig_text = translated_text;
   

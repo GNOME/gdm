@@ -60,6 +60,7 @@ static gboolean used_defaults = FALSE;
 gint greeter_current_delay = 0;
 
 extern gboolean session_dir_whacked_out;
+extern gboolean require_quarter;
 
 
 static void 
@@ -141,8 +142,8 @@ greeter_parse_config (void)
       GdmXineramaScreen = 0;
 }
 
-static void
-setup_cursor (GdkCursorType type)
+void
+greeter_setup_cursor (GdkCursorType type)
 {
 	GdkCursor *cursor = gdk_cursor_new (type);
 	gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
@@ -258,6 +259,7 @@ greeter_ctrl_handler (GIOChannel *source,
 				      GTK_BUTTONS_OK,
 				      "%s",
 				      tmp);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 	g_free (tmp);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
@@ -342,6 +344,28 @@ greeter_ctrl_handler (GIOChannel *source,
         g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	greeter_item_timed_stop ();
+
+	if (require_quarter) {
+		/* we should be now fine for focusing new windows */
+		gdm_wm_focus_new_windows (TRUE);
+
+		dlg = gtk_message_dialog_new (NULL /* parent */,
+					      GTK_DIALOG_MODAL /* flags */,
+					      GTK_MESSAGE_INFO,
+					      GTK_BUTTONS_OK,
+					      /* translators:  This is a nice and evil eggie text, translate
+					       * to your favourite currency */
+					      _("Please insert 25 cents "
+						"to log in."));
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
+		gdm_wm_center_window (GTK_WINDOW (dlg));
+
+		gdm_wm_no_login_focus_push ();
+		gtk_dialog_run (GTK_DIALOG (dlg));
+		gtk_widget_destroy (dlg);
+		gdm_wm_no_login_focus_pop ();
+	}
+
 	greeter_item_pam_leftover_messages ();
 
 	gdk_flush ();
@@ -475,7 +499,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
 
 	/* Set busy cursor */
-	setup_cursor (GDK_WATCH);
+	greeter_setup_cursor (GDK_WATCH);
 
 	gdm_wm_save_wm_order ();
 
@@ -558,11 +582,12 @@ verify_gdm_version (void)
 					 "You have probably just upgraded gdm.\n"
 					 "Please restart the gdm daemon or reboot the computer."),
 				       VERSION);
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      setup_cursor (GDK_LEFT_PTR);
+      greeter_setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
     
@@ -587,6 +612,7 @@ verify_gdm_version (void)
 					 "You have probably just upgraded gdm.\n"
 					 "Please restart the gdm daemon or reboot the computer."),
 				       VERSION);
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 			      _("Reboot"),
 			      RESPONSE_REBOOT,
@@ -597,7 +623,7 @@ verify_gdm_version (void)
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
       
-      setup_cursor (GDK_LEFT_PTR);
+      greeter_setup_cursor (GDK_LEFT_PTR);
 
       switch (gtk_dialog_run (GTK_DIALOG (dialog)))
 	{
@@ -630,6 +656,7 @@ verify_gdm_version (void)
 					 "You have probably just upgraded gdm.\n"
 					 "Please restart the gdm daemon or reboot the computer."),
 				       VERSION, gdm_version);
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 			      _("Restart"),
 			      RESPONSE_RESTART,
@@ -645,7 +672,7 @@ verify_gdm_version (void)
     
       gtk_dialog_set_default_response (GTK_DIALOG (dialog), RESPONSE_RESTART);
       
-      setup_cursor (GDK_LEFT_PTR);
+      greeter_setup_cursor (GDK_LEFT_PTR);
 
       switch (gtk_dialog_run (GTK_DIALOG (dialog)))
 	{
@@ -678,6 +705,7 @@ greeter_message (const gchar *msg)
 				GTK_BUTTONS_CLOSE,
 				"%s",
 				msg);
+  gtk_dialog_set_has_separator (GTK_DIALOG (req), FALSE);
   g_signal_connect (G_OBJECT (req), "destroy",
 		    G_CALLBACK (gtk_widget_destroyed),
 		    &req);
@@ -708,6 +736,7 @@ greeter_query (const gchar *msg)
 				      GTK_BUTTONS_YES_NO,
 				      "%s",
 				      msg);
+	gtk_dialog_set_has_separator (GTK_DIALOG (req), FALSE);
 	gtk_label_set_use_markup
 		(GTK_LABEL (GTK_MESSAGE_DIALOG (req)->label), TRUE);
 
@@ -866,7 +895,7 @@ greeter_reread_config (int sig, gpointer data)
 			"theme '%s' theme_dir '%s'",
 			theme, theme_dir);
 		/* Set busy cursor */
-		setup_cursor (GDK_WATCH);
+		greeter_setup_cursor (GDK_WATCH);
 
 		gdm_wm_save_wm_order ();
 
@@ -1030,7 +1059,7 @@ main (int argc, char *argv[])
   gtk_init (&argc, &argv);
 
   /* Should be a watch already, but anyway */
-  setup_cursor (GDK_WATCH);
+  greeter_setup_cursor (GDK_WATCH);
 
   if ( ! ve_string_empty (GdmGtkRC))
     gtk_rc_parse (GdmGtkRC);
@@ -1141,11 +1170,12 @@ main (int argc, char *argv[])
 				         _("There was an error loading the "
 					   "theme %s"),
 					 g_getenv ("GDM_THEME"));
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
     
         gtk_widget_show_all (dialog);
         gdm_wm_center_window (GTK_WINDOW (dialog));
 
-        setup_cursor (GDK_LEFT_PTR);
+        greeter_setup_cursor (GDK_LEFT_PTR);
     
         gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1180,11 +1210,12 @@ main (int argc, char *argv[])
 					 "is corrupt.  It does not contain "
 					 "definition for the username/password "
 					 "entry element."));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      setup_cursor (GDK_LEFT_PTR);
+      greeter_setup_cursor (GDK_LEFT_PTR);
 
       gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1214,11 +1245,12 @@ main (int argc, char *argv[])
 					 "also could not have been loaded, "
 					 "I will attempt to start the "
 					 "standard greeter"));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      setup_cursor (GDK_LEFT_PTR);
+      greeter_setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1234,11 +1266,12 @@ main (int argc, char *argv[])
 					 "and you may have to login another "
 					 "way and fix the installation of "
 					 "gdm"));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
     
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      setup_cursor (GDK_LEFT_PTR);
+      greeter_setup_cursor (GDK_LEFT_PTR);
     
       gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1279,10 +1312,11 @@ main (int argc, char *argv[])
 				       _("Your session directory is missing or empty!\n\n"
 					 "There are two available sessions you can use, but\n"
 					 "you should log in and correct the gdm configuration."));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      setup_cursor (GDK_LEFT_PTR);
+      greeter_setup_cursor (GDK_LEFT_PTR);
 
       gdm_wm_no_login_focus_push ();
       gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1303,10 +1337,11 @@ main (int argc, char *argv[])
 				       _("The configuration file contains an invalid command\n"
 					 "line for the login dialog, and thus I ran the\n"
 					 "default command.  Please fix your configuration."));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      setup_cursor (GDK_LEFT_PTR);
+      greeter_setup_cursor (GDK_LEFT_PTR);
 
       gdm_wm_no_login_focus_push ();
       gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1329,10 +1364,11 @@ main (int argc, char *argv[])
 					 "defaults to run this session.  You should log in\n"
 					 "and create a configuration file with the GDM\n"
 					 "configuration program."));
+      gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
       gtk_widget_show_all (dialog);
       gdm_wm_center_window (GTK_WINDOW (dialog));
 
-      setup_cursor (GDK_LEFT_PTR);
+      greeter_setup_cursor (GDK_LEFT_PTR);
 
       gdm_wm_no_login_focus_push ();
       gtk_dialog_run (GTK_DIALOG (dialog));
@@ -1342,7 +1378,7 @@ main (int argc, char *argv[])
 
   gdm_wm_restore_wm_order ();
 
-  setup_cursor (GDK_LEFT_PTR);
+  greeter_setup_cursor (GDK_LEFT_PTR);
 
   gtk_main ();
 

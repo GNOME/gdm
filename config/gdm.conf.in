@@ -145,9 +145,11 @@ MaxWaitIndirect=15
 # host.  This is now set at 2 since if the server crashes then gdm doesn't
 # know for some time and wouldn't allow another session.
 DisplaysPerHost=2
-# The number of seconds after which a non-responsive session is logged off.
-# Better keep this low.
-PingInterval=5
+# The number of minutes after which a non-responsive session is logged off.
+# Better keep this low.  This is the last version where this will be minutes.
+# In the current development versions this is replaced with PingIntervalSeconds
+# which defaults to 15 which is much nicer.
+PingInterval=1
 # The port.  177 is the standard port so better keep it that way
 Port=177
 # Willing script, none is shipped and by default we'll send

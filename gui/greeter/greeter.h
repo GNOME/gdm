@@ -11,4 +11,6 @@ void     greeter_abort   (const gchar *format, ...);
 gboolean greeter_query   (const gchar *msg);
 void     greeter_message (const gchar *msg);
 
+void     greeter_setup_cursor (GdkCursorType type);
+
 #endif

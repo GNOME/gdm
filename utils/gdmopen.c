@@ -59,7 +59,7 @@ static pid_t child_pid = -1;
 struct vt_stat vt;
 static int vtno;
 static int fd = 0;
-static int do_dealloc = FALSE;
+static int do_switchback = FALSE;
 
 static void
 sighandler (int sig)
@@ -69,14 +69,11 @@ sighandler (int sig)
 			waitpid (child_pid, NULL, 0);
 	}
 
-	if (do_dealloc) {
+	if (do_switchback) {
 		/* Switch back... */
 		(void) ioctl(fd, VT_ACTIVATE, vt.v_active);
 		/* wait to be really sure we have switched */
 		(void) ioctl(fd, VT_WAITACTIVE, vt.v_active);
-
-		/* Now deallocate our new one  */
-		(void) ioctl(fd, VT_DISALLOCATE, vtno);
 	}
 
 	/* Kill myself with this signal */
@@ -89,6 +86,8 @@ main (int argc, char *argv[])
 {
 	char vtname[256];
 	int status;
+	int cmd_start = 1;
+	char *command = NULL;
 
 	if (getuid () != geteuid () ||
 	    getuid () != 0) {
@@ -103,6 +102,29 @@ main (int argc, char *argv[])
 	if (argc <= 1) {
 		fprintf (stderr, "gdmopen: must supply a command!\n");
 		return 66;
+	}
+
+	command = argv[1];
+
+	if (strcmp (argv[1], "-l") == 0) {
+		char *p;
+		if (argc <= 2) {
+			fprintf (stderr, "gdmopen: must supply a command!\n");
+			return 66;
+		}
+		/* prepend '-' and start the command at
+		 * argument 2 */
+		cmd_start = 2;
+		command = argv[2];
+		argv[2] = malloc (strlen (command) + 2);
+		p = strrchr (command, '/');
+		if (p != NULL) {
+			/* make it "-basename" */
+			strcpy (argv[2]+1, p+1);
+		} else {
+			strcpy (argv[2]+1, command);
+		}
+		*(argv[2]) = '-';
 	}
 
 	fd = open ("/dev/console", O_WRONLY, 0);
@@ -131,6 +153,10 @@ main (int argc, char *argv[])
 	child_pid = fork();
 	if (child_pid == 0) {
 		char VT_NUMBER[256];
+
+#ifdef __linux__
+		putenv ("TERM=linux");
+#endif
 
 		snprintf (VT_NUMBER, sizeof (VT_NUMBER), "VT_NUMBER=%d", vtno);
 		putenv (VT_NUMBER);
@@ -176,7 +202,7 @@ main (int argc, char *argv[])
 		write (0, "\033(K", 3);
 #endif /* __linux__ */
 
-		execvp (argv[1], &argv[1]);
+		execvp (command, &argv[cmd_start]);
 
 		_exit (66); /* failed */
 	}
@@ -186,20 +212,17 @@ main (int argc, char *argv[])
 		return 66;
 	}
 
-	do_dealloc = TRUE;
+	do_switchback = TRUE;
 
 	waitpid (child_pid, &status, 0);
 	child_pid = -1;
 
-	do_dealloc = FALSE;
+	do_switchback = FALSE;
 
 	/* Switch back... */
 	(void) ioctl(fd, VT_ACTIVATE, vt.v_active);
 	/* wait to be really sure we have switched */
 	(void) ioctl(fd, VT_WAITACTIVE, vt.v_active);
-
-	/* Now deallocate our new one  */
-	(void) ioctl(fd, VT_DISALLOCATE, vtno);
 
 	close (fd);
 

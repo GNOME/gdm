@@ -1,3 +1,87 @@
+Thu Jul 31 14:07:25 2003  George Lebl <jirka@5z.com>
+
+	A bunch of fixes backported from the devel version
+
+	* config/XKeepsCrashing: fix rh #84247 by not using gettext
+	  if it doesn't exist (empty dialogs)
+
+	* config/XKeepsCrashing, daemon/gdm.c, daemon/misc.c,
+	  utils/gdmopen.c:  Fix rh #74911 by setting TERM to linux,
+	  and using a login shell to start the dialogs, backported from
+	  devel
+
+	* daemon/slave.c, daemon/verify-pam.c: fix rh #86481 by cleaning
+	  pam way before stopping server and all that.  Should make sure
+	  the session is closed if the X server crashes or is killed.
+	  Also doesn't close session if it wasn't opened.
+
+	* daemon/gdm.c, utils/gdmaskpass.c: use GETTEXT_PACKAGE, not
+	  PACKAGE
+
+	* config/gdm.conf.in, daemon/gdm.h: fix comment on PingInterval to
+	  say 'minutes' and not seconds and make the default be 1
+
+	* daemon/errorgui.c: cap error lines at 100, and convert to utf8
+	  if not properly utf8 already.
+
+	* gui/**/*.c: add gtk_dialog_set_has_separator (foo, FALSE)
+	  to get at least marginally closer to the HIG without actually
+	  doing any intrustive change in the code
+
+	* daemon/gdm.c, daemon/slave.c, daemon/server.c, daemon/misc.[ch],
+	  daemon/verify-*.c: use a sleep replacement using select which
+	  handles signals better and doesn't conflict with alarm.
+
+	* daemon/gdm.c: suspend now doesn't whack the gdm main daemon
+	  process, duh!
+
+	* daemon/verify-pam.c, daemon/slave.c, daemon/misc.[ch]: add
+	  gdm_reset_limits and reset limits in the parent process
+	  and when cleaning up the verify
+
+	* daemon/misc.c, daemon/gdmXnestchooser.c: fix the code that
+	  checks for a free display number to find one without
+	  a lockfile.
+
+	* daemon/server.c: whack server lockfile if it still exists
+	  along with the cookies.  Handles X crashes.
+
+	* daemon/server.c: correct select usage when waiting for server
+
+	* daemon/slave.c, daemon/misc.c: ignore SIGUSR1 and SIGPIPE by
+	  default and don't mask out all signals, just unmask the ones
+	  we're interested in. and also unset SIGINT in unset_signals
+
+	* daemon/slave.c: handle restarts of greeter during configuration
+	  semi sanely.  Can't completely backport the fix from devel,
+	  so there is a loop with a sleep instead of the waitpid replacement.
+	  doesn't restart greeter in a signal, and allow messages to be sent
+	  from the usr2 signal handler.
+
+	* daemon/slave.c: chdir to the home_dir when we're still root,
+	  just in case something is weird, so that we don't say in the
+	  ServAuthDir
+
+	* gui/greeter/greeter.[ch], gui/greeter/greeter_item_pam.c: follow
+	  full protocol just like the gdmlogin
+
+	* gui/gdmsetup.c: when the gdmsetup encounters more then 50 users,
+	  stop filling the combobox list
+
+	* gui/greeter/greeter_item_parser.c: Semi fix for rh #83369.  When
+	  we are at lower resolutions, size fonts to be smaller.
+
+	* gui/greeter/greeter_action_language.c,
+	  gui/greeter/greeter_system.c, gui/greeter/greeter_session.c:
+	  make OK the default response for these dialogs
+
+	* daemon/verify-pam.c: make sure to translate "Password: " 
+	  if it comes from pam untranslated.
+
+	* daemon/slave.c: setsid right after fork to avoid a race.
+	
+	* README: add website link
+
 2003-06-30  Mohammad DAMT  <mdamt@bisnisweb.com>
 
 	* po/id.po: Added Indonesian translation

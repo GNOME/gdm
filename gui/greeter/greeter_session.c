@@ -208,6 +208,7 @@ greeter_session_init (void)
   current_session = NULL;
   
   session_dialog = dialog = gtk_dialog_new ();
+  gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
   tooltips = gtk_tooltips_new ();
 
   gtk_dialog_add_button (GTK_DIALOG (dialog),
@@ -217,6 +218,9 @@ greeter_session_init (void)
   gtk_dialog_add_button (GTK_DIALOG (dialog),
 			 GTK_STOCK_OK,
 			 GTK_RESPONSE_OK);
+
+  gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+				   GTK_RESPONSE_OK);
   
   if (GdmShowLastSession)
     {

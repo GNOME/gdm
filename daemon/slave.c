@@ -75,8 +75,6 @@ static gboolean do_configurator = FALSE; /* if this is true, login as root
 					  * and start the configurator */
 static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
 					       greeter and try again */
-static gboolean restart_greeter_now = FALSE; /* restart_greeter_when the
-						SIGCHLD hits */
 static int check_notifies_immediately = 0; /* check notifies as they come */
 static gboolean gdm_wait_for_ack = TRUE; /* wait for ack on all messages to
 				      * the daemon */
@@ -86,6 +84,8 @@ static gboolean greeter_no_focus = FALSE;
 static gboolean interrupted = FALSE;
 static gchar *ParsedAutomaticLogin = NULL;
 static gchar *ParsedTimedLogin = NULL;
+
+static int in_usr2_signal = 0;
 
 int greeter_fd_out = -1;
 int greeter_fd_in = -1;
@@ -247,11 +247,14 @@ gdm_slave_start (GdmDisplay *display)
 {  
 	time_t first_time;
 	int death_count;
-	static sigset_t mask;
+	sigset_t mask;
 	struct sigaction alrm, term, child, usr2;
 
 	if (!display)
 		return;
+
+	signal (SIGPIPE, SIG_IGN);
+	signal (SIGUSR1, SIG_IGN);
 
 	gdm_debug ("gdm_slave_start: Starting slave process for %s", display->name);
 	if (display->type == TYPE_XDMCP &&
@@ -302,16 +305,16 @@ gdm_slave_start (GdmDisplay *display)
 				"gdm_slave_start", g_strerror (errno));
 
 	/* The signals we wish to listen to */
-	sigfillset (&mask);
-	sigdelset (&mask, SIGINT);
-	sigdelset (&mask, SIGTERM);
-	sigdelset (&mask, SIGCHLD);
-	sigdelset (&mask, SIGUSR2);
+	sigemptyset (&mask);
+	sigaddset (&mask, SIGINT);
+	sigaddset (&mask, SIGTERM);
+	sigaddset (&mask, SIGCHLD);
+	sigaddset (&mask, SIGUSR2);
 	if (display->type == TYPE_XDMCP &&
 	    GdmPingInterval > 0) {
-		sigdelset (&mask, SIGALRM);
+		sigaddset (&mask, SIGALRM);
 	}
-	sigprocmask (SIG_SETMASK, &mask, NULL);
+	sigprocmask (SIG_UNBLOCK, &mask, NULL);
 
 	first_time = time (NULL);
 	death_count = 0;
@@ -486,7 +489,7 @@ gdm_slave_run (GdmDisplay *display)
 
     if (d->sleep_before_run > 0) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d seconds before server start", d->sleep_before_run);
-	    sleep (d->sleep_before_run);
+	    gdm_sleep_no_signal (d->sleep_before_run);
 	    d->sleep_before_run = 0;
 
 	    check_notifies_now ();
@@ -569,7 +572,7 @@ gdm_slave_run (GdmDisplay *display)
 	
 	if (d->dsp == NULL) {
 	    gdm_debug ("gdm_slave_run: Sleeping %d on a retry", 1+openretries*2);
-	    sleep (1+openretries*2);
+	    gdm_sleep_no_signal (1+openretries*2);
 	    openretries++;
 	}
     }
@@ -587,7 +590,7 @@ gdm_slave_run (GdmDisplay *display)
     /* Just a race avoiding sleep, probably not necessary though,
      * but doesn't hurt anything */
     if ( ! d->handled)
-	    sleep (1);
+	    gdm_sleep_no_signal (1);
 
     if (SERVER_IS_LOCAL (d)) {
 	    gdm_slave_send (GDM_SOP_START_NEXT_LOCAL, FALSE);
@@ -739,6 +742,8 @@ focus_first_x_window (const char *class_res_name)
 	}
 	/* parent */
 	if (pid > 0) {
+		/* wait a second for the child to init self */
+		gdm_sleep_no_signal (1);
 		return;
 	}
 
@@ -808,6 +813,8 @@ focus_first_x_window (const char *class_res_name)
 		}
 	}
 }
+
+static void restart_the_greeter (void);
 
 static void
 run_config (GdmDisplay *display, struct passwd *pwent)
@@ -922,11 +929,17 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 		/* XXX: is this a race if we don't push a sigchld block?
 		 * but then we don't get a signal for restarting the greeter */
 		/* wait for the config proggie to die */
-		if (d->sesspid > 0)
-			/* must use the pid var here since sesspid might get
-			 * zeroed between the check and here by sigchld
-			 * handler */
-			ve_waitpid_no_signal (pid, 0, 0);
+		while (d->sesspid > 0) {
+			/* FIXME: evil, but without the waitpid setup from devel
+			   we can't do this safely otherwise */
+			sleep (5);
+
+			if (do_restart_greeter) {
+				do_restart_greeter = FALSE;
+				interrupted = FALSE;
+				restart_the_greeter ();
+			}
+		}
 		display->sesspid = 0;
 		configurator = FALSE;
 	}
@@ -1104,11 +1117,9 @@ gdm_slave_wait_for_login (void)
 
 			check_notifies_now ();
 			check_notifies_immediately++;
-			restart_greeter_now = TRUE;
 
 			run_config (d, pwent);
 
-			restart_greeter_now = FALSE;
 			check_notifies_immediately--;
 
 			gdm_verify_cleanup (d);
@@ -1696,7 +1707,29 @@ gdm_slave_send (const char *str, gboolean wait_for_ack)
 	     ! gdm_got_ack &&
 	     i < 10;
 	     i++) {
-		sleep (1);
+		if (in_usr2_signal > 0) {
+			fd_set rfds;
+			struct timeval tv;
+
+			FD_ZERO (&rfds);
+			FD_SET (d->slave_notify_fd, &rfds);
+
+			/* Wait up to 1 second. */
+			tv.tv_sec = 1;
+			tv.tv_usec = 0;
+
+			if (select (d->slave_notify_fd+1, &rfds, NULL, NULL, &tv) > 0) {
+				gdm_slave_usr2_handler (SIGUSR2);
+			}
+		} else {
+			struct timeval tv;
+			/* Wait 1 second. */
+			tv.tv_sec = 1;
+			tv.tv_usec = 0;
+			select (0, NULL, NULL, NULL, &tv);
+			/* don't want to use sleep since we're using alarm
+			   for pinging */
+		}
 	}
 
 	if (wait_for_ack  &&
@@ -2189,6 +2222,11 @@ session_child_run (struct passwd *pwent,
 
 	gdm_unset_signals ();
 
+	if (setsid() < 0)
+		/* should never happen */
+		gdm_error (_("%s: setsid() failed: %s!"),
+			   "session_child_run", strerror(errno));
+
 	gnome_setenv ("XAUTHORITY", d->authfile, TRUE);
 
 	disp = XOpenDisplay (d->name);
@@ -2276,11 +2314,6 @@ session_child_run (struct passwd *pwent,
 
 	gdm_clearenv ();
 
-	if (setsid() < 0)
-		/* should never happen */
-		gdm_error (_("%s: setsid() failed: %s!"),
-			   "session_child_run", strerror(errno));
-
 	/* Prepare user session */
 	gnome_setenv ("XAUTHORITY", d->userauth, TRUE);
 	gnome_setenv ("DISPLAY", d->name, TRUE);
@@ -2314,6 +2347,8 @@ session_child_run (struct passwd *pwent,
 	setpgid (0, 0);
 	
 	umask (022);
+	
+	chdir (home_dir);
 	
 	/* setup the verify env vars */
 	if ( ! gdm_verify_setup_env (d))
@@ -2809,6 +2844,13 @@ gdm_slave_session_start (void)
 	break;
     }
 
+    /* We must be root for this, and we are, but just to make sure */
+    seteuid (0);
+    setegid (GdmGroupId);
+    /* Reset all the process limits, pam may have set some up for our process and that
+       is quite evil.  But pam is generally evil, so this is to be expected. */
+    gdm_reset_limits ();
+
     g_free (session);
     g_free (save_session);
     g_free (language);
@@ -3034,15 +3076,9 @@ gdm_slave_child_handler (int sig)
 			whack_greeter_fds ();
 			gdm_slave_send_num (GDM_SOP_GREETPID, 0);
 
-			if (restart_greeter_now) {
-				do_restart_greeter = FALSE;
-				restart_the_greeter ();
-			} else {
-				interrupted = TRUE;
-				do_restart_greeter = TRUE;
-			}
-			gdm_in_signal--;
-			return;
+			interrupted = TRUE;
+			do_restart_greeter = TRUE;
+			continue;
 		}
 
 		whack_greeter_fds ();
@@ -3109,12 +3145,14 @@ gdm_slave_usr2_handler (int sig)
 	int i;
 
 	gdm_in_signal++;
+	in_usr2_signal++;
 
 	gdm_debug ("gdm_slave_usr2_handler: %s got USR2 signal", d->name);
 
 	count = read (d->slave_notify_fd, buf, sizeof (buf) -1);
 	if (count <= 0) {
 		gdm_in_signal--;
+		in_usr2_signal--;
 		return;
 	}
 
@@ -3123,6 +3161,7 @@ gdm_slave_usr2_handler (int sig)
 	vec = g_strsplit (buf, "\n", -1);
 	if (vec == NULL) {
 		gdm_in_signal--;
+		in_usr2_signal--;
 		return;
 	}
 
@@ -3166,6 +3205,7 @@ gdm_slave_usr2_handler (int sig)
 	g_strfreev (vec);
 
 	gdm_in_signal--;
+	in_usr2_signal--;
 }
 
 /* Minor X faults */
@@ -3308,6 +3348,8 @@ gdm_slave_quick_exit (gint status)
     setegid (0);
 
     if (d != NULL) {
+	    gdm_verify_cleanup (d);
+
 	    /* Well now we're just going to kill
 	     * everything including the X server,
 	     * so no need doing XCloseDisplay which
@@ -3334,7 +3376,6 @@ gdm_slave_quick_exit (gint status)
 	    d->sesspid = 0;
 
 	    gdm_server_stop (d);
-	    gdm_verify_cleanup (d);
 
 	    if (d->servpid > 1)
 		    kill (d->servpid, SIGTERM);
@@ -3742,8 +3783,8 @@ gdm_slave_handle_notify (const char *msg)
 		GdmGreeter = g_strdup (&msg[strlen (GDM_NOTIFY_GREETER) + 1]);
 
 		if (d->console) {
-			if (restart_greeter_now) {
-				restart_the_greeter ();
+			if (configurator) {
+				do_restart_greeter = TRUE;
 			} else if (d->type == TYPE_LOCAL) {
 				/* FIXME: can't handle flexi servers like this
 				 * without going all cranky */
@@ -3760,8 +3801,8 @@ gdm_slave_handle_notify (const char *msg)
 		GdmRemoteGreeter = g_strdup
 			(&msg[strlen (GDM_NOTIFY_REMOTEGREETER) + 1]);
 		if ( ! d->console) {
-			if (restart_greeter_now) {
-				restart_the_greeter ();
+			if (configurator) {
+				do_restart_greeter = TRUE;
 			} else if (d->type == TYPE_XDMCP) {
 				/* FIXME: can't handle flexi servers like this
 				 * without going all cranky */

@@ -110,7 +110,7 @@ gdm_verify_user (GdmDisplay *d,
 	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
     if (pwent == NULL) {
-	    sleep (GdmRetryDelay);
+	    gdm_sleep_no_signal (GdmRetryDelay);
 	    gdm_error (_("Couldn't authenticate user"));
 	    /* FIXME: Hmm, how are we sure that the login is username
 	     * and password.  That is the most common case but not
@@ -131,7 +131,7 @@ gdm_verify_user (GdmDisplay *d,
     /* Check whether password is valid */
     if (ppasswd == NULL || (ppasswd[0] != '\0' &&
 			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
-	    sleep (GdmRetryDelay);
+	    gdm_sleep_no_signal (GdmRetryDelay);
 	    /* FIXME: Hmm, how are we sure that the login is username
 	     * and password.  That is the most common case but not
 	     * necessarily true, this message needs to be changed

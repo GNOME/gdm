@@ -1,5 +1,51 @@
 Ahh news...
 
+2.4.1.5 stuff:
+
+- When at lower resolutions use smaller fonts (rh #83369)
+
+- Fix text dialogs (rh #84247, rh #74911)
+
+- Fix logout by ctrl-alt-bs to really close your session with
+  pam to allow others to gain console access (rh #86481)
+
+- PingInterval default now 1 (it's in minutes) and fix
+  the comment
+
+- Fix sleep/alarm conflict for xdmcp logins
+
+- Fix restarts of greeters during setup sanely and fix
+  hang after setup ends.
+
+- gdmsetup won't put more then 50 entries in it's combobox
+  making it not hang on large systems
+
+- Suspend doesn't whack the main daemon
+
+- Reset user limits after user is logging in making
+  AlwaysRestart=false safe again, but leave that at true
+  for now.
+
+- Fix checking for free display numbers
+
+- Handle X crashes vs. lock files by whacking the lockfiles
+
+- Ignore SIGUSR1 and SIGPIPE normally which should fix those
+  weird errors with X busy
+
+- "Password: " should always be translated now
+
+- Kill separators from all dialogs I could find.
+
+- Cap .xsession-errors at 100 lines and convert to utf8 if not
+  in utf8 to allow display.
+
+- Other minor fixes
+
+- Translation updates (Mohammad DAMT, Guntupalli Karunakar, 
+  Arafat Medini, Abel Cheung, Ravishankar Shrivastava,
+  Danilo, Segan)
+
 2.4.1.4 stuff:
 
 - Raise DisplaysPerHost default to 2 to avoid a FAQ-type-problem

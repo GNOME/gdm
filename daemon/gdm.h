@@ -193,7 +193,7 @@ enum {
 #define GDM_KEY_INDIRECT "xdmcp/HonorIndirect=true"
 #define GDM_KEY_MAXINDIR "xdmcp/MaxPendingIndirect=4"
 #define GDM_KEY_MAXINDWAIT "xdmcp/MaxWaitIndirect=30"
-#define GDM_KEY_PINGINTERVAL "xdmcp/PingInterval=5"
+#define GDM_KEY_PINGINTERVAL "xdmcp/PingInterval=1"
 #define GDM_KEY_WILLING "xdmcp/Willing=" EXPANDED_SYSCONFDIR "/gdm/Xwilling"
 
 #define GDM_KEY_GTKRC "gui/GtkRC=" EXPANDED_DATADIR "/themes/Default/gtk/gtkrc"
