@@ -34,6 +34,9 @@ typedef void (* GdmConnectionHandler) (GdmConnection *conn,
 gboolean	gdm_connection_is_writable (GdmConnection *conn);
 gboolean	gdm_connection_write (GdmConnection *conn,
 		                      const char *str);
+gboolean	gdm_connection_printf (GdmConnection *conn,
+				       const gchar *format, ...)
+				       G_GNUC_PRINTF (2, 3);
 
 GdmConnection *	gdm_connection_open_unix (const char *sockname,
 					  mode_t mode);

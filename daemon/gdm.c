@@ -2255,6 +2255,40 @@ update_config (const char *key)
 		notify_displays_string (GDM_NOTIFY_REMOTEGREETER, val);
 
 		goto update_config_ok;
+	} else if (is_key (key, GDM_KEY_XDMCP)) {
+		gboolean val = gnome_config_get_bool (GDM_KEY_XDMCP);
+		if (ve_bool_equal (val, GdmXdmcp))
+			goto update_config_ok;
+		GdmXdmcp = val;
+
+		if (GdmXdmcp) {
+			if (gdm_xdmcp_init ())
+				gdm_xdmcp_run ();
+		} else {
+			gdm_xdmcp_close ();
+		}
+
+		goto update_config_ok;
+	} else if (is_key (key, "xdmcp/PARAMETERS")) {
+		GdmDispPerHost = gnome_config_get_int (GDM_KEY_DISPERHOST);
+		GdmMaxPending = gnome_config_get_int (GDM_KEY_MAXPEND);
+		GdmMaxManageWait = gnome_config_get_int (GDM_KEY_MAXWAIT);
+		GdmMaxSessions = gnome_config_get_int (GDM_KEY_MAXSESS);
+		GdmIndirect = gnome_config_get_bool (GDM_KEY_INDIRECT);
+		GdmMaxIndirect = gnome_config_get_int (GDM_KEY_MAXINDIR);
+		GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);
+		GdmPingInterval = gnome_config_get_int (GDM_KEY_PINGINTERVAL);
+	} else if (is_key (key, GDM_KEY_UDPPORT)) {
+		int val = gnome_config_get_int (GDM_KEY_UDPPORT);
+		if (GdmPort == val)
+			goto update_config_ok;
+		GdmPort = val;
+
+		if (GdmXdmcp) {
+			gdm_xdmcp_close ();
+			if (gdm_xdmcp_init ())
+				gdm_xdmcp_run ();
+		}
 	}
 
 	gnome_config_pop_prefix ();
@@ -2395,29 +2429,36 @@ gdm_handle_user_message (GdmConnection *conn, const char *msg, gpointer data)
 			GdmDisplay *disp = li->data;
 			if ( ! disp->console)
 				continue;
-			gdm_connection_write (conn, sep);
+			gdm_connection_printf (conn,
+					       "%s%s,%s,",
+					       sep,
+					       ve_sure_string (disp->name),
+					       ve_sure_string (disp->login));
 			sep = ";";
-			gdm_connection_write (conn,
-					      ve_sure_string (disp->name));
-			gdm_connection_write (conn, ",");
-			gdm_connection_write (conn,
-					      ve_sure_string (disp->login));
-			gdm_connection_write (conn, ",");
 			if (disp->type == TYPE_FLEXI_XNEST) {
 				gdm_connection_write
 					(conn,
 					 ve_sure_string (disp->xnest_disp));
 			} else {
-				char *vt = g_strdup_printf ("%d",
+				gdm_connection_printf (conn, "%d",
 #ifdef __linux__
-							    disp->vt
+						       disp->vt
 #else
-							    -1
+						       -1
 #endif
-							    );
-				gdm_connection_write (conn, vt);
-				g_free (vt);
+						      );
 			}
+		}
+		gdm_connection_write (conn, "\n");
+	} else if (strcmp (msg, GDM_SUP_GREETERPIDS) == 0) {
+		GSList *li;
+		const char *sep = " ";
+		gdm_connection_write (conn, "OK");
+		for (li = displays; li != NULL; li = li->next) {
+			GdmDisplay *disp = li->data;
+			gdm_connection_printf (conn, "%s%ld",
+					       sep, (long)disp->greetpid);
+			sep = ";";
 		}
 		gdm_connection_write (conn, "\n");
 	} else if (strncmp (msg, GDM_SUP_UPDATE_CONFIG " ",

@@ -1,283 +1,254 @@
-<?xml version="1.0"?>
-<GTK-Interface>
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd" >
 
-<project>
-  <name>gdmchooser</name>
-  <program_name>gdmchooser</program_name>
-  <directory></directory>
-  <source_directory>src</source_directory>
-  <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
-  <gnome_support>True</gnome_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
-  <output_support_files>False</output_support_files>
-  <output_build_files>False</output_build_files>
-  <output_translatable_strings>True</output_translatable_strings>
-  <translatable_strings_file>gdmchooser-strings.c</translatable_strings_file>
-</project>
+<glade-interface>
+  <requires lib="gnome" />
+  <requires lib="bonobo" />
 
-<widget>
-  <class>GnomeApp</class>
-  <name>gdmchooser_main</name>
-  <signal>
-    <name>delete_event</name>
-    <handler>gdm_chooser_cancel</handler>
-    <last_modification_time>Mon, 05 Mar 2001 11:52:54 GMT</last_modification_time>
-  </signal>
-  <title>GDM Host Chooser</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
-  <wmclass_name>gdmchooser</wmclass_name>
-  <wmclass_class>gdm</wmclass_class>
-  <enable_layout_config>True</enable_layout_config>
+  <widget class="GnomeApp" id="gdmchooser_main">
+    <property name="title" translatable="yes">GDM Host Chooser</property>
+    <property name="type">GTK_WINDOW_TOPLEVEL</property>
+    <property name="modal">no</property>
+    <property name="allow_shrink">no</property>
+    <property name="allow_grow">yes</property>
+    <property name="wmclass_name">gdmchooser</property>
+    <property name="wmclass_class">gdm</property>
+    <property name="enable_layout_config">yes</property>
+    <property name="visible">yes</property>
+    <property name="window-position">GTK_WIN_POS_NONE</property>
 
-  <widget>
-    <class>GnomeDock</class>
-    <child_name>GnomeApp:dock</child_name>
-    <name>dock1</name>
-    <allow_floating>True</allow_floating>
-    <child>
-      <padding>0</padding>
-      <expand>True</expand>
-      <fill>True</fill>
+    <signal name="delete_event" handler="gdm_chooser_cancel" />
+
+    <child internal-child="dock">
+      <widget class="BonoboDock" id="dock1">
+        <property name="allow_floating">yes</property>
+        <property name="visible">yes</property>
+
+        <child>
+          <widget class="BonoboDockItem" id="dockitem2">
+            <property name="border_width">1</property>
+            <property name="shadow_type">GTK_SHADOW_OUT</property>
+            <property name="visible">yes</property>
+
+            <child>
+              <widget class="GtkToolbar" id="toolbar1">
+                <property name="border_width">1</property>
+                <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+                <property name="toolbar-style">GTK_TOOLBAR_BOTH</property>
+                <property name="visible">yes</property>
+
+                <child>
+                  <widget class="button" id="connect_button">
+                    <property name="sensitive">no</property>
+                    <property name="tooltip" translatable="yes">Open a session to the selected host</property>
+                    <property name="can_focus">yes</property>
+                    <property name="has_focus">yes</property>
+                    <property name="label" translatable="yes">Connect</property>
+                    <property name="stock_pixmap">gtk-jump-to</property>
+                    <property name="visible">yes</property>
+
+                    <signal name="clicked" handler="gdm_chooser_manage" />
+                  </widget>
+                </child>
+
+                <child>
+                  <widget class="button" id="rescan_button">
+                    <property name="tooltip" translatable="yes">Probe the network</property>
+                    <property name="can_focus">yes</property>
+                    <property name="label" translatable="yes">Rescan</property>
+                    <property name="stock_pixmap">gtk-refresh</property>
+                    <property name="visible">yes</property>
+
+                    <signal name="clicked" handler="gdm_chooser_xdmcp_discover" />
+                  </widget>
+                </child>
+
+                <child>
+                  <widget class="button" id="help_button">
+                    <property name="tooltip" translatable="yes">How to use this application</property>
+                    <property name="can_focus">yes</property>
+                    <property name="label" translatable="yes">Help</property>
+                    <property name="stock_pixmap">gnome-stock-book-open</property>
+                    <property name="visible">yes</property>
+
+                    <signal name="clicked" handler="display_chooser_information" />
+                  </widget>
+                  <packing>
+                    <property name="new_group">yes</property>
+                  </packing>
+                </child>
+
+                <child>
+                  <widget class="button" id="quit_button">
+                    <property name="tooltip" translatable="yes">Exit the application</property>
+                    <property name="can_focus">yes</property>
+                    <property name="label" translatable="yes">Quit</property>
+                    <property name="stock_pixmap">gtk-quit</property>
+                    <property name="visible">yes</property>
+
+                    <signal name="clicked" handler="gdm_chooser_cancel" />
+                  </widget>
+                  <packing>
+                    <property name="new_group">yes</property>
+                  </packing>
+                </child>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="placement">BONOBO_DOCK_TOP</property>
+            <property name="band">0</property>
+            <property name="position">0</property>
+            <property name="offset">1</property>
+            <property name="behavior">BONOBO_DOCK_ITEM_BEH_EXCLUSIVE</property>
+          </packing>
+        </child>
+
+        <child>
+          <widget class="GtkVBox" id="vbox1">
+            <property name="homogeneous">no</property>
+            <property name="spacing">0</property>
+            <property name="visible">yes</property>
+
+            <child>
+              <widget class="GtkLabel" id="status_label">
+                <property name="label" translatable="yes"> </property>
+                <property name="justify">GTK_JUSTIFY_CENTER</property>
+                <property name="wrap">no</property>
+                <property name="xalign">0.5</property>
+                <property name="yalign">0.5</property>
+                <property name="xpad">0</property>
+                <property name="ypad">0</property>
+                <property name="visible">yes</property>
+              </widget>
+              <packing>
+                <property name="padding">2</property>
+                <property name="expand">no</property>
+                <property name="fill">no</property>
+              </packing>
+            </child>
+
+            <child>
+              <widget class="GtkFrame" id="frame1">
+                <property name="child_name">GnomeDock:contents</property>
+                <property name="border_width">6</property>
+                <property name="label" translatable="yes">Most recently queried hosts</property>
+                <property name="label_xalign">0</property>
+                <property name="shadow">GTK_SHADOW_ETCHED_IN</property>
+                <property name="visible">yes</property>
+
+                <child>
+                  <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                    <property name="border_width">3</property>
+                    <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <property name="visible">yes</property>
+
+                    <child>
+                      <widget class="GnomeIconList" id="chooser_iconlist">
+                        <property name="can_focus">yes</property>
+                        <property name="selection_mode">GTK_SELECTION_SINGLE</property>
+                        <property name="icon_width">78</property>
+                        <property name="row_spacing">2</property>
+                        <property name="column_spacing">2</property>
+                        <property name="text_spacing">2</property>
+                        <property name="text_editable">no</property>
+                        <property name="text_static">no</property>
+                        <property name="visible">yes</property>
+
+                        <signal name="select_icon" handler="gdm_chooser_browser_select" />
+                        <signal name="unselect_icon" handler="gdm_chooser_browser_unselect" />
+                      </widget>
+                    </child>
+
+                    <child internal-child="hscrollbar">
+                      <widget class="GtkHScrollbar" id="convertwidget1">
+                        <property name="update_policy">GTK_UPDATE_CONTINUOUS</property>
+                        <property name="visible">yes</property>
+                      </widget>
+                    </child>
+
+                    <child internal-child="vscrollbar">
+                      <widget class="GtkVScrollbar" id="convertwidget2">
+                        <property name="update_policy">GTK_UPDATE_CONTINUOUS</property>
+                        <property name="visible">yes</property>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="padding">0</property>
+                <property name="expand">yes</property>
+                <property name="fill">yes</property>
+              </packing>
+            </child>
+          </widget>
+        </child>
+      </widget>
+      <packing>
+        <property name="padding">0</property>
+        <property name="expand">yes</property>
+        <property name="fill">yes</property>
+      </packing>
     </child>
-
-    <widget>
-      <class>GnomeDockItem</class>
-      <name>dockitem2</name>
-      <border_width>1</border_width>
-      <placement>GNOME_DOCK_TOP</placement>
-      <band>0</band>
-      <position>0</position>
-      <offset>1</offset>
-      <locked>False</locked>
-      <exclusive>True</exclusive>
-      <never_floating>False</never_floating>
-      <never_vertical>False</never_vertical>
-      <never_horizontal>False</never_horizontal>
-      <shadow_type>GTK_SHADOW_OUT</shadow_type>
-
-      <widget>
-	<class>GtkToolbar</class>
-	<name>toolbar1</name>
-	<border_width>1</border_width>
-	<orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-	<type>GTK_TOOLBAR_BOTH</type>
-	<space_size>16</space_size>
-	<space_style>GTK_TOOLBAR_SPACE_LINE</space_style>
-	<relief>GTK_RELIEF_NONE</relief>
-	<tooltips>True</tooltips>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <child_name>Toolbar:button</child_name>
-	  <name>connect_button</name>
-	  <sensitive>False</sensitive>
-	  <tooltip>Open a session to the selected host</tooltip>
-	  <can_focus>True</can_focus>
-	  <has_focus>True</has_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>gdm_chooser_manage</handler>
-	    <last_modification_time>Sun, 04 Mar 2001 22:47:24 GMT</last_modification_time>
-	  </signal>
-	  <label>Connect</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_JUMP_TO</stock_pixmap>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <child_name>Toolbar:button</child_name>
-	  <name>rescan_button</name>
-	  <tooltip>Probe the network</tooltip>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>gdm_chooser_xdmcp_discover</handler>
-	    <last_modification_time>Sun, 04 Mar 2001 22:48:05 GMT</last_modification_time>
-	  </signal>
-	  <label>Rescan</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_REFRESH</stock_pixmap>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <child_name>Toolbar:button</child_name>
-	  <name>help_button</name>
-	  <tooltip>How to use this application</tooltip>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>display_chooser_information</handler>
-	    <last_modification_time>Sun, 04 Mar 2001 22:48:48 GMT</last_modification_time>
-	  </signal>
-	  <label>Help</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_BOOK_OPEN</stock_pixmap>
-	  <child>
-	    <new_group>True</new_group>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <child_name>Toolbar:button</child_name>
-	  <name>quit_button</name>
-	  <tooltip>Exit the application</tooltip>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>gdm_chooser_cancel</handler>
-	    <last_modification_time>Sun, 04 Mar 2001 22:48:32 GMT</last_modification_time>
-	  </signal>
-	  <label>Quit</label>
-	  <stock_pixmap>GNOME_STOCK_PIXMAP_EXIT</stock_pixmap>
-	  <child>
-	    <new_group>True</new_group>
-	  </child>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkVBox</class>
-      <child_name>GnomeDock:contents</child_name>
-      <name>vbox1</name>
-      <homogeneous>False</homogeneous>
-      <spacing>0</spacing>
-
-      <widget>
-	<class>GtkLabel</class>
-	<name>status_label</name>
-	<label> </label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-	<child>
-	  <padding>2</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
-      </widget>
-
-      <widget>
-	<class>GtkFrame</class>
-	<child_name>GnomeDock:contents</child_name>
-	<name>frame1</name>
-	<border_width>6</border_width>
-	<label>Most recently queried hosts</label>
-	<label_xalign>0</label_xalign>
-	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkScrolledWindow</class>
-	  <name>scrolledwindow1</name>
-	  <border_width>3</border_width>
-	  <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-	  <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-
-	  <widget>
-	    <class>GnomeIconList</class>
-	    <name>chooser_iconlist</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>select_icon</name>
-	      <handler>gdm_chooser_browser_select</handler>
-	      <last_modification_time>Sun, 04 Mar 2001 22:46:22 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>unselect_icon</name>
-	      <handler>gdm_chooser_browser_unselect</handler>
-	      <last_modification_time>Sun, 04 Mar 2001 22:46:45 GMT</last_modification_time>
-	    </signal>
-	    <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	    <icon_width>78</icon_width>
-	    <row_spacing>2</row_spacing>
-	    <column_spacing>2</column_spacing>
-	    <text_spacing>2</text_spacing>
-	    <text_editable>False</text_editable>
-	    <text_static>False</text_static>
-	  </widget>
-	</widget>
-      </widget>
-    </widget>
   </widget>
-</widget>
-
-<widget>
-  <class>GnomeMessageBox</class>
-  <name>gdmchooser_help_dialog</name>
-  <message_box_type>GNOME_MESSAGE_BOX_INFO</message_box_type>
-  <message>The main area of this application shows the hosts on the local
+  <widget class="GnomeMessageBox" id="gdmchooser_help_dialog">
+    <property name="message">The main area of this application shows the hosts on the local
 network that have &quot;XDMCP&quot; enabled. This allows users to login
 remotely to other machines as if they were logged on using the
 console.
 
 You can rescan the network for new hosts by clicking 'rescan'.
 When you have selected a host click &quot;Connect&quot; to open a session
-to that machine.</message>
-  <title>Information</title>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>False</allow_grow>
-  <auto_shrink>False</auto_shrink>
-  <wmclass_class>gdm</wmclass_class>
-  <auto_close>True</auto_close>
-  <hide_on_close>False</hide_on_close>
+to that machine.</property>
+    <property name="title" translatable="yes">Information</property>
+    <property name="modal">no</property>
+    <property name="allow_shrink">no</property>
+    <property name="allow_grow">no</property>
+    <property name="wmclass_class">gdm</property>
+    <property name="auto_close">yes</property>
+    <property name="hide_on_close">no</property>
+    <property name="visible">yes</property>
+    <property name="message_box_type">info</property>
+    <property name="window-position">GTK_WIN_POS_NONE</property>
 
-  <widget>
-    <class>GtkVBox</class>
-    <child_name>GnomeDialog:vbox</child_name>
-    <name>dialog-vbox2</name>
-    <homogeneous>False</homogeneous>
-    <spacing>8</spacing>
-    <child>
-      <padding>4</padding>
-      <expand>True</expand>
-      <fill>True</fill>
-    </child>
+    <child internal-child="vbox">
+      <widget class="GtkVBox" id="dialog-vbox2">
+        <property name="homogeneous">no</property>
+        <property name="spacing">8</property>
+        <property name="visible">yes</property>
 
-    <widget>
-      <class>GtkHButtonBox</class>
-      <child_name>GnomeDialog:action_area</child_name>
-      <name>dialog-action_area2</name>
-      <layout_style>GTK_BUTTONBOX_END</layout_style>
-      <spacing>8</spacing>
-      <child_min_width>85</child_min_width>
-      <child_min_height>27</child_min_height>
-      <child_ipad_x>7</child_ipad_x>
-      <child_ipad_y>0</child_ipad_y>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>True</fill>
-	<pack>GTK_PACK_END</pack>
-      </child>
+        <child internal-child="action_area">
+          <widget class="GtkHButtonBox" id="dialog-action_area2">
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <property name="spacing">8</property>
+            <property name="visible">yes</property>
 
-      <widget>
-	<class>GtkButton</class>
-	<name>button8</name>
-	<can_default>True</can_default>
-	<can_focus>True</can_focus>
-	<stock_button>GNOME_STOCK_BUTTON_CLOSE</stock_button>
+            <child>
+              <widget class="GtkButton" id="button8">
+                <property name="can_default">yes</property>
+                <property name="can_focus">yes</property>
+                <property name="visible">yes</property>
+                <property name="label">gtk-close</property>
+                <property name="use_stock">yes</property>
+                <property name="use_underline">yes</property>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="padding">0</property>
+            <property name="expand">no</property>
+            <property name="fill">yes</property>
+            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
       </widget>
-    </widget>
+      <packing>
+        <property name="padding">4</property>
+        <property name="expand">yes</property>
+        <property name="fill">yes</property>
+      </packing>
+    </child>
   </widget>
-</widget>
-
-</GTK-Interface>
+</glade-interface>

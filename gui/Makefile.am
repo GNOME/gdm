@@ -24,6 +24,7 @@ bin_PROGRAMS = \
 	@GDMCHOOSER@ 		\
 	gdmlogin 		\
 	gdmconfig 		\
+	gdmsetup 		\
 	gdmphotosetup 		\
 	@GDMXNESTCHOOSER@	\
 	gdmflexiserver
@@ -60,6 +61,11 @@ gdmconfig_SOURCES = \
 	misc.c			\
 	misc.h
 
+gdmsetup_SOURCES = \
+	gdmsetup.c		\
+	misc.c			\
+	misc.h
+
 gdmchooser_LDFLAGS = -export-dynamic
 gdmchooser_LDADD = \
 	libgdmwm.a		\
@@ -70,7 +76,6 @@ gdmchooser_LDADD = \
 	$(XINERAMA_LIBS)	\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lvicious		\
 	-lviciousui
 
 gdmlogin_LDADD = \
@@ -81,7 +86,6 @@ gdmlogin_LDADD = \
 	$(X_EXTRA_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lvicious		\
 	-lviciousui
 
 gdmconfig_LDFLAGS = -export-dynamic
@@ -89,28 +93,31 @@ gdmconfig_LDADD = \
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lvicious		\
+	-lviciousui
+
+gdmsetup_LDFLAGS = -export-dynamic
+gdmsetup_LDADD = \
+	$(GUI_LIBS)		\
+	$(INTLLIBS)		\
+	-L$(top_builddir)/vicious-extensions	\
 	-lviciousui
 
 gdmphotosetup_LDADD = \
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lvicious		\
 	-lviciousui
 
 gdmXnestchooser_LDADD = \
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lvicious		\
 	-lviciousui
 
 gdmflexiserver_LDADD = \
 	$(GUI_LIBS)		\
 	$(INTLLIBS)		\
 	-L$(top_builddir)/vicious-extensions	\
-	-lvicious		\
 	-lviciousui
 
 Settingsdir = $(datadir)/gnome/capplets
@@ -127,23 +134,13 @@ System_DATA = $(System_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
 Gladedir = $(datadir)/gdm
-Glade_DATA = gdmconfig.glade2 gdmchooser.glade2
-
-Glade_src = gdmchooser.glade #gdmconfig.glade 
-
-#gdmconfig.glade2: gdmconfig.glade $(LIBGLADE_CONVERT)
-#	$(LIBGLADE_CONVERT) $(srcdir)/gdmconfig.glade > gdmconfig.glade.tmp \
-#	&& mv gdmconfig.glade.tmp gdmconfig.glade2
-
-gdmchooser.glade2: gdmchooser.glade $(LIBGLADE_CONVERT)
-	$(LIBGLADE_CONVERT) $(srcdir)/gdmchooser.glade > gdmchooser.glade.tmp \
-	&& mv gdmchooser.glade.tmp gdmchooser.glade2
+Glade_DATA = gdmconfig.glade gdmsetup.glade gdmchooser.glade
 
 EXTRA_DIST = \
 	gdmconfig-strings.c	\
+	gdmsetup-strings.c	\
 	gdmchooser-strings.c	\
 	$(Glade_DATA)		\
-	$(Glade_src)		\
 	$(System_DATA)		\
 	$(System_in_files)	\
 	$(Settings_DATA)	\

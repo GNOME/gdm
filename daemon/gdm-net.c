@@ -475,4 +475,22 @@ gdm_connection_set_close_notify (GdmConnection *conn,
 	conn->close_notify = close_notify;
 }
 
+gboolean 
+gdm_connection_printf (GdmConnection *conn, const gchar *format, ...)
+{
+	va_list args;
+	gboolean ret;
+	gchar *s;
+
+	va_start (args, format);
+	s = g_strdup_vprintf (format, args);
+	va_end (args);
+
+	ret = gdm_connection_write (conn, s);
+
+	g_free (s);
+
+	return ret;
+}
+
 /* EOF */

@@ -535,6 +535,18 @@ GdmXServer *	gdm_find_x_server	(const char *id);
  *   		 security/AllowRemoteAutoLogin (2.3.90.2)
  *   		 security/RetryDelay (2.3.90.2)
  *   		 daemon/Greeter (2.3.90.2)
+ *   		 daemon/RemoteGreeter (2.3.90.2)
+ *   		 xdmcp/Enable (2.3.90.2)
+ *   		 xdmcp/Port (2.3.90.2)
+ *   		 xdmcp/PARAMETERS (2.3.90.2) (pseudokey, all the parameters)
+ *			xdmcp/MaxPending
+ *			xdmcp/MaxSessions
+ *			xdmcp/MaxWait
+ *			xdmcp/DisplaysPerHost
+ *			xdmcp/HonorIndirect
+ *			xdmcp/MaxPendingIndirect
+ *			xdmcp/MaxWaitIndirect
+ *			xdmcp/PingInterval (only affects new connections)
  * Supported since: 2.3.90.2
  * Arguments:  <key>
  *   <key> is just the base part of the key such as "security/AllowRemoteRoot"
@@ -544,6 +556,14 @@ GdmXServer *	gdm_find_x_server	(const char *id);
  *      0 = Not implemented
  *      50 = Unsupported key
  *      999 = Unknown error
+ */
+#define GDM_SUP_GREETERPIDS  "GREETERPIDS" /* None */
+/* GREETERPIDS: List all greeter pids so that one can send HUP to them
+ * for config rereading.  Of course one must be root to do that.
+ * Supported since: 2.3.90.2
+ * Arguments:  None
+ * Answers:
+ *   OK <pid>;<pid>;...
  */
 #define GDM_SUP_CLOSE        "CLOSE" /* no arguments */
 /* CLOSE Answers: None

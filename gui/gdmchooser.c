@@ -879,17 +879,17 @@ gdm_chooser_gui_init (void)
      */
 	
     if ( ! DOING_GDM_DEVELOPMENT) {
-	    if (g_file_test (GDM_GLADE_DIR "/gdmchooser.glade2", G_FILE_TEST_EXISTS)) {
+	    if (g_file_test (GDM_GLADE_DIR "/gdmchooser.glade", G_FILE_TEST_EXISTS)) {
 		    glade_filename = g_strdup (GDM_GLADE_DIR
-					       "/gdmchooser.glade2");
+					       "/gdmchooser.glade");
 	    } else {
-		    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade2");
+		    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade");
 		    if (glade_filename == NULL) {	  
-			    glade_filename = g_strdup("gdmchooser.glade2");
+			    glade_filename = g_strdup("gdmchooser.glade");
 		    }
 	    }
     } else {
-	    glade_filename = g_strdup("gdmchooser.glade2");
+	    glade_filename = g_strdup("gdmchooser.glade");
     }
     /* Enable theme */
     if (GdmGtkRC)
@@ -1087,6 +1087,10 @@ main (int argc, char *argv[])
     
     fixedargv[fixedargc-1] = "--disable-sound";
 
+    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    textdomain (GETTEXT_PACKAGE);
+
     program = gnome_program_init ("gdmchooser", VERSION, 
 				  /* FIXME: oh fuck this inits way too much
 				   * shit that we don't want */
@@ -1102,9 +1106,7 @@ main (int argc, char *argv[])
     glade_gnome_init();
     g_free (fixedargv);
 
-    bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
-    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-    textdomain (GETTEXT_PACKAGE);
+    gdm_chooser_parse_config();
 
     gdm_wm_screen_init (GdmXineramaScreen);
 
@@ -1136,7 +1138,6 @@ main (int argc, char *argv[])
 	    return EXIT_SUCCESS;
     }
     
-    gdm_chooser_parse_config();
     gdm_chooser_gui_init();
     gdm_chooser_signals_init();
 

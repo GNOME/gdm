@@ -111,6 +111,7 @@ static gint globsessid;
 static gchar *sysid;
 static ARRAY8 servhost;
 static XdmcpBuffer buf;
+static gboolean initted = FALSE;
 
 extern GSList *displays;
 extern gint sessions;
@@ -231,6 +232,9 @@ gdm_xdmcp_init (void)
     struct sockaddr_in serv_sa = {0};
     gchar hostbuf[256];
     struct utsname name;
+
+    if ( ! GdmXdmcp)
+	    return TRUE;
     
     globsessid = time (NULL);
     
@@ -240,14 +244,18 @@ gdm_xdmcp_init (void)
 	GdmXdmcp = FALSE;
 	return FALSE;
     }
-    
-    uname (&name);
-    sysid = g_strconcat (name.sysname, " ", name.release, NULL);
 
-    servhost.data = g_strdup (hostbuf);
-    servhost.length = strlen (servhost.data);
+    if ( ! initted) {
+	    uname (&name);
+	    sysid = g_strconcat (name.sysname, " ", name.release, NULL);
+
+	    servhost.data = g_strdup (hostbuf);
+	    servhost.length = strlen (servhost.data);
+	    
+	    initted = TRUE;
+    }
     
-    gdm_debug ("Start up on host %s, port %d", hostbuf, GdmPort);
+    gdm_debug ("XDMCP: Start up on host %s, port %d", hostbuf, GdmPort);
     
     /* Open socket for communications */
     gdm_xdmcpfd = socket (AF_INET, SOCK_DGRAM, 0); /* UDP */

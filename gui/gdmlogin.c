@@ -3656,7 +3656,7 @@ gdm_reread_config (int sig)
 	update_clock (NULL);
 
 	str = gnome_config_get_string (GDM_KEY_LOGO);
-	if (strcmp (ve_sure_string (str), ve_sure_string (GdmLogo)) != NULL) {
+	if (strcmp (ve_sure_string (str), ve_sure_string (GdmLogo)) != 0) {
 		g_free (GdmLogo);
 		GdmLogo = str;
 		/* FIXME: update logo */
@@ -3669,7 +3669,7 @@ gdm_reread_config (int sig)
 		g_free (str);
 		str = gnome_config_get_string (GDM_KEY_WELCOME);
 	}
-	if (strcmp (ve_sure_string (str), ve_sure_string (GdmWelcome)) != NULL) {
+	if (strcmp (ve_sure_string (str), ve_sure_string (GdmWelcome)) != 0) {
 		char *greeting;
 		g_free (GdmWelcome);
 		GdmWelcome = str;
