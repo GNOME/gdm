@@ -27,6 +27,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <gdk/gdkx.h>
 #include <X11/Xmd.h>
 #include <X11/Xdmcp.h>
@@ -51,8 +52,10 @@ static GdmChooserHost *gdm_chooser_host_alloc (gchar *hostname, gchar *descripti
 static void gdm_chooser_decode_packet (void);
 static void gdm_chooser_abort (const gchar *format, ...);
 static void gdm_chooser_browser_update (void);
-static void gdm_chooser_xdmcp_init (void);
+static void gdm_chooser_xdmcp_init (gchar **hosts);
 static void gdm_chooser_host_dispose (GdmChooserHost *host);
+static void gdm_chooser_choose_host (gchar *hostname);
+static void gdm_chooser_add_hosts (gchar **hosts);
 
 /* Fixetyfix */
 int XdmcpReallocARRAY8 (ARRAY8Ptr array, int length);
@@ -70,8 +73,10 @@ static XdmAuthRec authlist = {
 
 
 static gint sockfd;
+static XdmcpBuffer bcbuf;
 static XdmcpBuffer querybuf;
 static GSList *bcaddr;
+static GSList *queryaddr;
 
 static gint  GdmIconMaxHeight;
 static gint  GdmIconMaxWidth;
@@ -87,7 +92,6 @@ static GtkWidget *rescan;
 static GtkWidget *cancel;
 
 static gint maxwidth = 0;
-static guint tid = 0;
 static GIOChannel *channel;
 static GList *hosts = NULL;
 static GdkImlibImage *defhostimg;
@@ -96,7 +100,7 @@ static GdmChooserHost *curhost;
 
 
 static gint 
-gdm_chooser_sort_func(gpointer d1, gpointer d2)
+gdm_chooser_sort_func (gpointer d1, gpointer d2)
 {
     GdmChooserHost *a = d1;
     GdmChooserHost *b = d2;
@@ -119,8 +123,9 @@ gdm_chooser_decode_packet (void)
     gchar *hostname = NULL;
     gchar *status = NULL;
     ARRAY8 auth, host, stat;
+    GdmChooserHost *new_host;
 
-    if (! XdmcpFill (sockfd, &buf, &clnt_sa, &sa_len))
+    if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt_sa, &sa_len))
 	return;
 
     if (! XdmcpReadHeader (&buf, &header))
@@ -152,10 +157,20 @@ gdm_chooser_decode_packet (void)
     /* We can't pipe hostnames larger than this */
     if (strlen (hostname)+1 > PIPE_BUF)
 	goto done;
+
+    new_host = gdm_chooser_host_alloc (hostname, (gchar *) status);
+    if (g_list_find_custom (hosts,
+			    new_host,
+			    (GCompareFunc) gdm_chooser_sort_func)) {
+	    gdm_chooser_host_dispose (new_host);
+	    goto done;
+    }
     
     hosts = g_list_insert_sorted (hosts, 
-				  gdm_chooser_host_alloc (hostname, (gchar *) status),
+				  new_host,
 				  (GCompareFunc) gdm_chooser_sort_func);
+
+    gdm_chooser_browser_update ();
     
  done:
     XdmcpDisposeARRAY8 (&auth);
@@ -225,12 +240,11 @@ gdm_chooser_xdmcp_discover (void)
 {
     struct sockaddr_in sock;
     GSList *bl = bcaddr;
+    GSList *ql = queryaddr;
     struct in_addr *ia;
     GList *hl = hosts;
 
     gtk_widget_set_sensitive (GTK_WIDGET (chooser), FALSE);
-    gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
-    gnome_icon_list_clear (GNOME_ICON_LIST (browser));
 
     while (hl) {
 	gdm_chooser_host_dispose ((GdmChooserHost *) hl->data);
@@ -247,19 +261,27 @@ gdm_chooser_xdmcp_discover (void)
     while (bl) {
 	ia = (struct in_addr *) bl->data;
 	sock.sin_addr.s_addr = ia->s_addr; 
-	XdmcpFlush (sockfd, &querybuf, &sock, sizeof (struct sockaddr_in));
+	XdmcpFlush (sockfd, &bcbuf, (XdmcpNetaddr) &sock, sizeof (struct sockaddr_in));
 	bl = bl->next;
     }
 
+    /*
     tid = g_timeout_add (GdmScanTime * 1000, 
 			 (GSourceFunc) gdm_chooser_browser_update, NULL);
+     */
+    while (ql != NULL) {
+	    ia = (struct in_addr *) ql->data;
+	    sock.sin_addr.s_addr = ia->s_addr;
+	    XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, sizeof (struct sockaddr_in));
+	    ql = ql->next;
+    }
 
     return TRUE;
 }
 
 
 static void
-gdm_chooser_xdmcp_init (void)
+gdm_chooser_xdmcp_init (char **hosts)
 {
     static XdmcpHeader header;
     gint sockopts = 1;
@@ -271,14 +293,21 @@ gdm_chooser_xdmcp_init (void)
     if (setsockopt (sockfd, SOL_SOCKET, SO_BROADCAST, (char *) &sockopts, sizeof (sockopts)) < 0)
 	gdm_chooser_abort ("Could not set socket options!");
 
-    gdm_chooser_find_bcaddr();
-
     /* Assemble XDMCP BROADCAST_QUERY packet in static buffer */
     header.opcode  = (CARD16) BROADCAST_QUERY;
     header.length  = 1;
     header.version = XDM_PROTOCOL_VERSION;
+    XdmcpWriteHeader (&bcbuf, &header);
+    XdmcpWriteARRAY8 (&bcbuf, &authlist.authentication);
+
+    /* Assemble XDMCP QUERY packet in static buffer */
+    header.opcode  = (CARD16) QUERY;
+    header.length  = 1;
+    header.version = XDM_PROTOCOL_VERSION;
     XdmcpWriteHeader (&querybuf, &header);
     XdmcpWriteARRAY8 (&querybuf, &authlist.authentication);
+
+    gdm_chooser_add_hosts (hosts);
 
     channel = g_io_channel_unix_new (sockfd);
     g_io_add_watch_full (channel, G_PRIORITY_DEFAULT,
@@ -304,13 +333,13 @@ gdm_chooser_cancel (void)
 static gboolean
 gdm_chooser_manage (void)
 {
-    if (curhost)
-	g_print ("%s\n", curhost->name);
+	if (curhost)
+		gdm_chooser_choose_host (curhost->name);
 
-    closelog();
-    gtk_main_quit();
+	closelog();
+	gtk_main_quit();
 
-    return TRUE;
+	return TRUE;
 }
 
 
@@ -406,7 +435,8 @@ gdm_chooser_browser_update (void)
 {
     GList *list = hosts;
 
-    g_source_remove (tid);
+    gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
+    gnome_icon_list_clear (GNOME_ICON_LIST (browser));
 
     while (list) {
 	GdmChooserHost *host;
@@ -571,7 +601,7 @@ gdm_chooser_gui_init (void)
 
 
 static void
-gdm_chooser_signals_init(void)
+gdm_chooser_signals_init (void)
 {
     struct sigaction hup;
     sigset_t mask;
@@ -656,12 +686,145 @@ gdm_chooser_host_dispose (GdmChooserHost *host)
     g_free (host);
 }
 
+static gchar *xdm_address = NULL;
+static gchar *client_address = NULL;
+static gint connection_type = 0;
+
+struct poptOption xdm_options [] = {
+  { "xdmaddress", '\0', POPT_ARG_STRING|POPT_ARGFLAG_ONEDASH, &xdm_address, 0,
+    "setting socket for xdm communication", "xdm response socket" },
+  { "clientaddress", '\0', POPT_ARG_STRING|POPT_ARGFLAG_ONEDASH, &client_address, 0, "setting client address to return in response to xdm", "client address" },
+  { "connectionType", '\0', POPT_ARG_INT|POPT_ARGFLAG_ONEDASH, &connection_type, 0, "setting connection type to return in response to xdm", "connection type" },
+  POPT_AUTOHELP
+  { NULL, 0, 0, NULL, 0}
+};
+
+#ifndef ishexdigit
+#define ishexdigit(c) (isdigit(c) || ('a' <= (c) && (c) <= 'f'))
+#endif
+#define HexChar(c)  ('0' <= (c) && (c) <= '9' ? (c) - '0' : (c) - 'a' + 10)
+
+static int
+from_hex (gchar *s, gchar *d, int len)
+{
+  int t;
+  while (len >= 2)
+    {
+      if (!ishexdigit(*s))
+ return 1;
+      t = HexChar (*s) << 4;
+      s++;
+      if (!ishexdigit(*s))
+ return 1;
+      t += HexChar (*s);
+      s++;
+      *d++ = t;
+      len -= 2;
+    }
+  return len;
+}
+
+
+static void
+gdm_chooser_choose_host (gchar *hostname)
+{
+  ARRAY8 tmparr;
+  struct hostent *hentry;
+
+  g_print ("%s\n", curhost->name);
+  if (xdm_address)
+    {
+      struct sockaddr_in in_addr;
+      char xdm_addr[32];
+      char client_addr[32];
+      int fd;
+      char buf[1024];
+      XdmcpBuffer buffer;
+      long family, port, addr;
+      if (strlen (xdm_address) > 64 || from_hex (xdm_address, xdm_addr, strlen (xdm_address)) != 0)
+ gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid xdm address.");
+
+      family = (xdm_addr[0] << 8) | xdm_addr[1];
+      port = (xdm_addr[2] << 8) | xdm_addr[3];
+      addr = (xdm_addr[4] << 24) | (xdm_addr[5] << 16) | (xdm_addr[6] << 8) | xdm_addr[7];
+      in_addr.sin_family = AF_INET;
+      in_addr.sin_port = htons (port);
+      in_addr.sin_addr.s_addr = htonl (addr);
+      if ((fd = socket (PF_INET, SOCK_STREAM, 0)) == -1)
+ gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't create response socket.");
+
+      if (connect (fd, (struct sockaddr_in *) &in_addr, sizeof (in_addr)) == -1)
+ gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't connect to xdm.");
+      buffer.data = (BYTE *) buf;
+      buffer.size = sizeof (buf);
+      buffer.pointer = 0;
+      buffer.count = 0;
+
+      if (strlen (client_address) > 64 || from_hex (client_address, client_addr, strlen (client_address)) != 0)
+ gdm_chooser_abort ("gdm_chooser_chooser_host: Invalid client address.");
+      tmparr.data = (BYTE *) client_addr;
+      tmparr.length = strlen (client_address) / 2;
+      XdmcpWriteARRAY8 (&buffer, &tmparr);
+      XdmcpWriteCARD16 (&buffer, (CARD16) connection_type);
+      hentry = gethostbyname (hostname);
+      if (!hentry)
+ gdm_chooser_abort ("gdm_chooser_chooser_host: Couldn't get host entry for %s", hostname);
+
+      tmparr.data = (BYTE *) hentry->h_addr_list[0]; /* XXX */
+      tmparr.length = 4;
+
+      XdmcpWriteARRAY8 (&buffer, &tmparr);
+      write (fd, (char *) buffer.data, buffer.pointer);
+      close (fd);
+    }
+}
+
+static void
+gdm_chooser_add_hosts (gchar **hosts)
+{
+	struct hostent *hostent;
+	struct sockaddr_in qa;
+	struct in_addr *ia;
+	int i;
+
+	for (i = 0; hosts != NULL && hosts[i] != NULL; i++) {
+		char *name = hosts[i];
+
+		if (strcmp (name, "BROADCAST") == 0) {
+			gdm_chooser_find_bcaddr ();
+			continue;
+		}
+		if (strlen (name) == 8 &&
+		    from_hex (name, (char *) &qa.sin_addr, strlen (name)) == 0)
+			qa.sin_family = AF_INET;
+		else if ((qa.sin_addr.s_addr = inet_addr (name)) != -1)
+			qa.sin_family = AF_INET;
+		else if ((hostent = gethostbyname (name)) != NULL
+			 && hostent->h_addrtype == AF_INET
+			 && hostent->h_length == 4) {
+			qa.sin_family = AF_INET;
+			memmove (&qa.sin_addr, hostent->h_addr, 4);
+		} else {
+			continue; /* not a valid address */
+		}
+
+		ia = g_new0 (struct in_addr, 1);
+		ia->s_addr = qa.sin_addr.s_addr;
+		queryaddr = g_slist_append (queryaddr, ia);
+	}
+
+	if (bcaddr == NULL &&
+	    queryaddr == NULL)
+		gdm_chooser_find_bcaddr ();
+}
 
 int 
 main (int argc, char *argv[])
 {
     gchar **fixedargv;
     gint fixedargc, i;
+    gchar **hosts;
+    poptContext ctx;
 
     /* Avoid creating ~gdm/.gnome stuff */
     gnome_do_not_create_directories = TRUE;
@@ -675,7 +838,7 @@ main (int argc, char *argv[])
 	fixedargv[i] = argv[i];
     
     fixedargv[fixedargc-1] = "--disable-sound";
-    gnome_init ("gdmchooser", VERSION, fixedargc, fixedargv);
+    gnome_init_with_popt_table ("gdmchooser", VERSION, fixedargc, fixedargv, xdm_options, 0, &ctx);
     g_free (fixedargv);
 
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
@@ -686,7 +849,10 @@ main (int argc, char *argv[])
     gdm_chooser_parse_config();
     gdm_chooser_gui_init();
     gdm_chooser_signals_init();
-    gdm_chooser_xdmcp_init();
+
+    hosts = (gchar **) poptGetArgs (ctx);
+    gdm_chooser_xdmcp_init (hosts);
+    poptFreeContext (ctx);
 
     gtk_main();
 
