@@ -1,3 +1,8 @@
+Wed Jun 11 09:13:50 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: add ifdefs around the change_to_first_and_clear since
+	  that's a linux only function.  Fixes compilation on non-linux.
+
 Wed Jun 11  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* config/CDE.desktop.in, config/Makefile.am: Add support for

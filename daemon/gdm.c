@@ -1216,7 +1216,9 @@ start_autopsy:
 	gdm_final_cleanup ();
 	chdir ("/");
 
+#ifdef __linux__
 	change_to_first_and_clear (TRUE /* reboot */);
+#endif /* __linux */
 
 	argv = ve_split (GdmRebootReal);
 	execv (argv[0], argv);
@@ -1234,7 +1236,9 @@ start_autopsy:
 	gdm_final_cleanup ();
 	chdir ("/");
 
+#ifdef __linux__
 	change_to_first_and_clear (FALSE /* reboot */);
+#endif /* __linux */
 
 	argv = ve_split (GdmHaltReal);
 	execv (argv[0], argv);
