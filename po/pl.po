@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2001-10-25 21:17+0200\n"
-"PO-Revision-Date: 2001-10-25 21:19+0200\n"
+"POT-Creation-Date: 2001-10-28 12:44+0100\n"
+"PO-Revision-Date: 2001-10-28 12:50+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -65,11 +65,11 @@ msgstr ""
 "gdm_error_box: Nie mo¿na stworzyæ procesu aby wy¶wietliæ okno z "
 "b³êdem/ostrze¿eniem"
 
-#: daemon/errorgui.c:1
+#: daemon/errorgui.c:1 daemon/errorgui.c:1
 msgid "gdm_failsafe_question: Failed to execute self"
 msgstr "gdm_failsafe_question: Nie mo¿na ponownie uruchomiæ procesu"
 
-#: daemon/errorgui.c:1
+#: daemon/errorgui.c:1 daemon/errorgui.c:1
 msgid "gdm_failsafe_question: Cannot fork to display error/info box"
 msgstr ""
 "gdm_failsafe_question: Nie mo¿na stworzyæ procesu aby wy¶wietliæ okno z "
@@ -751,47 +751,6 @@ msgstr "gdm_slave_chooser: Nie mo¿na utworzyæ procesu dla gdmchoosera"
 
 #: daemon/slave.c:1
 #, c-format
-msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
-msgstr ""
-"gdm_slave_session_start: U¿ytkownik zosta³ uwierzytelniony, lecz funkcja "
-"getpwnam(%s) nie powiod³a siê."
-
-#: daemon/slave.c:1
-#, c-format
-msgid ""
-"Your home directory is listed as '%s'\n"
-"but it does not appear to exist.\n"
-"GDM cannot log you in unless you have\n"
-"a valid home directory."
-msgstr ""
-"Twój katalog domowy jest zdefiniowany jako \"%s\"\n"
-"lecz katalog o tej nazwie nie istnieje.\n"
-"Bez poprawnego katalogu domowego GDM nie\n"
-"mo¿e przeprowadziæ logowania do systemu."
-
-#: daemon/slave.c:1
-#, c-format
-msgid "%s: Home directory for %s: '%s' does not exist!"
-msgstr "%s: Katalog domowy u¿ytkownika %s: \"%s\" nie istnieje!"
-
-#: daemon/slave.c:1
-msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
-msgstr ""
-"gdm_slave_session_start: Zakoñczono uwierzytelnianie. Uruchamianie greetera"
-
-#: daemon/slave.c:1
-msgid ""
-"gdm_slave_session_start: Execution of PreSession script returned > 0. "
-"Aborting."
-msgstr ""
-"gdm_slave_session_start: Skrypt PreSession zwróci³ status > 0. Rezygnacja."
-
-#: daemon/slave.c:1
-msgid "gdm_slave_session_start: Error forking user session"
-msgstr "gdm_slave_session_start: B³±d przy tworzeniu procesu sesji u¿ytkownika"
-
-#: daemon/slave.c:1
-#, c-format
 msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
 msgstr "gdm_slave_session_start: Nie mo¿na wykonaæ setgid %d. Rezygnacja."
 
@@ -919,6 +878,55 @@ msgstr ""
 
 #: daemon/slave.c:1
 #, c-format
+msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
+msgstr ""
+"gdm_slave_session_start: U¿ytkownik zosta³ uwierzytelniony, lecz funkcja "
+"getpwnam(%s) nie powiod³a siê."
+
+#: daemon/slave.c:1
+#, c-format
+msgid ""
+"Your home directory is listed as:\n"
+"'%s'\n"
+"but it does not appear to exist.\n"
+"Do you want to log in with the root\n"
+"directory as your home directory?\n"
+"\n"
+"It is unlikely anything will work unless\n"
+"you use a failsafe session."
+msgstr ""
+"Twój katalog domowy jest zdefiniowany jako:\n"
+"\"%s\"\n"
+"lecz katalog o tej nazwie nie istnieje.\n"
+"Czy chcesz zalogowaæ siê, przyjmuj±c\n"
+"g³ówny katalog za katalog domowy?\n"
+"\n"
+"Najprawdopodobniej w tej sytuacji bêdzie\n"
+"poprawnie dzia³aæ tylko sesja awaryjna."
+
+#: daemon/slave.c:1
+#, c-format
+msgid "%s: Home directory for %s: '%s' does not exist!"
+msgstr "%s: Katalog domowy u¿ytkownika %s: \"%s\" nie istnieje!"
+
+#: daemon/slave.c:1
+msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
+msgstr ""
+"gdm_slave_session_start: Zakoñczono uwierzytelnianie. Uruchamianie greetera"
+
+#: daemon/slave.c:1
+msgid ""
+"gdm_slave_session_start: Execution of PreSession script returned > 0. "
+"Aborting."
+msgstr ""
+"gdm_slave_session_start: Skrypt PreSession zwróci³ status > 0. Rezygnacja."
+
+#: daemon/slave.c:1
+msgid "gdm_slave_session_start: Error forking user session"
+msgstr "gdm_slave_session_start: B³±d przy tworzeniu procesu sesji u¿ytkownika"
+
+#: daemon/slave.c:1
+#, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Brak odpowiedzi na pakiety wysy³ane do %s, usuniêto ekran!"
 
@@ -950,6 +958,11 @@ msgid "gdm_parse_enriched_login: Can't fork script process!"
 msgstr "gdm_parse_enriched_login: Nie mo¿na utworzyæ procesu dla skryptu!"
 
 #. Ask gdmgreeter for the user's login. Just for good measure
+#: daemon/verify-crypt.c:1 daemon/verify-pam.c:1 daemon/verify-shadow.c:1
+#: gui/gdmlogin.c:1
+msgid "Please enter your username"
+msgstr "Wprowad¼ nazwê u¿ytkownika"
+
 #: daemon/verify-crypt.c:1 daemon/verify-pam.c:1 daemon/verify-shadow.c:1
 #: gui/gdmlogin.c:1
 msgid "Username:"
@@ -3534,11 +3547,6 @@ msgstr "Usypia komputer"
 msgid "Disconnect"
 msgstr "Roz³±cz"
 
-#. I think I'll add the buttons next to this
-#: gui/gdmlogin.c:1
-msgid "Please enter your username"
-msgstr "Wprowad¼ nazwê u¿ytkownika"
-
 #: gui/gdmlogin.c:1
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
@@ -3858,12 +3866,26 @@ msgid "Please type in the root (privilaged user) password."
 msgstr "Wprowad¼ has³o u¿ytkownika root."
 
 #: config/gettextfoo.h:1
+msgid "I will now try to restart the X server again."
+msgstr "Nast±pi teraz ponowna próba uruchomienia serwera X."
+
+#: config/gettextfoo.h:1
 msgid ""
 "I will disable this X server for now.  Restart GDM when it is configured "
 "correctly."
 msgstr ""
 "Ten serwer X zostanie tymczasowo unieaktywniony. Po jego poprawnym "
 "skonfigurowaniu uruchom ponownie GDM-a."
+
+#: config/gettextfoo.h:1
+msgid ""
+"I cannot start the X server (your graphical interface).  It is likely that "
+"it is not set up correctly.  Would you like to view the X server output to "
+"diagnose the problem?"
+msgstr ""
+"Nie mo¿na uruchomiæ serwera X (odpowiedzialnego za interfejs graficzny). "
+"Prawdopodobnie nie zosta³ on poprawnie skonfigurowany. Czy chcesz obejrzeæ "
+"zawarto¶æ wyj¶cia serwera, aby zdiagnozowaæ problem?"
 
 #: config/gettextfoo.h:1
 msgid ""
@@ -3882,13 +3904,3 @@ msgid ""
 msgstr ""
 "Czy chcesz spróbowaæ uruchomiæ program konfiguruj±cy mysz? Nale¿y w tym "
 "przypadku podaæ has³o u¿ytkownika root."
-
-#: config/gettextfoo.h:1
-msgid ""
-"I cannot start the X server (your graphical interface).  It is likely that "
-"it is not set up correctly.  Would you like to view the X server output to "
-"diagnose the problem?"
-msgstr ""
-"Nie mo¿na uruchomiæ serwera X (odpowiedzialnego za interfejs graficzny). "
-"Prawdopodobnie nie zosta³ on poprawnie skonfigurowany. Czy chcesz obejrzeæ "
-"zawarto¶æ wyj¶cia serwera, aby zdiagnozowaæ problem?"
