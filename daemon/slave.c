@@ -146,7 +146,7 @@ gdm_slave_start (GdmDisplay *display)
 		death_count ++;
 
 		if ((the_time - first_time) <= 0 ||
-		    (the_time - first_time) > 60) {
+		    (the_time - first_time) > 40) {
 			first_time = the_time;
 			death_count = 0;
 		} else if (death_count > 6) {
@@ -744,7 +744,7 @@ gdm_slave_xioerror_handler (Display *disp)
 }
 
 gchar * 
-gdm_slave_greeter_ctl (gchar cmd, gchar *str)
+gdm_slave_greeter_ctl (gchar cmd, const gchar *str)
 {
     gchar buf[FIELD_SIZE];
     guchar c;

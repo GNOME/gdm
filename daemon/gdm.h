@@ -126,6 +126,10 @@
 #define GDM_KEY_SYSMENU "greeter/SystemMenu=0"
 #define GDM_KEY_WELCOME "greeter/Welcome=Welcome to %h"
 #define GDM_KEY_BACKGROUNDPROG "greeter/BackgroundProgram="
+#define GDM_KEY_LOCK_POSITION "greeter/LockPosition=false"
+#define GDM_KEY_SET_POSITION "greeter/SetPosition=false"
+#define GDM_KEY_POSITIONX "greeter/PositionX=0"
+#define GDM_KEY_POSITIONY "greeter/PositionY=0"
 
 #define GDM_KEY_SCAN "chooser/ScanTime=3"
 #define GDM_KEY_HOST "chooser/DefaultHostImg=nohost.png"

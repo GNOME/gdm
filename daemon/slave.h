@@ -24,7 +24,7 @@
 #include "gdm.h"
 
 void     gdm_slave_start       (GdmDisplay *d);
-gchar   *gdm_slave_greeter_ctl (gchar cmd, gchar *str);
+gchar   *gdm_slave_greeter_ctl (gchar cmd, const gchar *str);
 
 #endif /* GDM_SLAVE_H */
 

@@ -18,6 +18,7 @@
 
 #include <config.h>
 #include <gnome.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,13 +42,13 @@
 
 static const gchar RCSid[]="$Id$";
 
-static gint  GdmBrowser;
-static gint  GdmDebug;
+static gboolean GdmBrowser;
+static gboolean GdmDebug;
 static gint  GdmIconMaxHeight;
 static gint  GdmIconMaxWidth;
-static gint  GdmQuiver;
+static gboolean GdmQuiver;
 static gint  GdmRelaxPerms;
-static gint  GdmSystemMenu;
+static gboolean GdmSystemMenu;
 static gint  GdmUserMaxFile;
 static gchar *GdmLogo;
 static gchar *GdmWelcome;
@@ -61,6 +62,10 @@ static gchar *GdmDefaultLocale;
 static gchar *GdmExclude;
 static gchar *GdmGlobalFaceDir;
 static gchar *GdmDefaultFace;
+static gboolean GdmLockPosition;
+static gboolean GdmSetPosition;
+static int GdmPositionX;
+static int GdmPositionY;
 
 static GtkWidget *login;
 static GtkWidget *label;
@@ -292,28 +297,29 @@ gdm_login_abort (const gchar *format, ...)
 
 /* I *really* need to rewrite this crap */
 static gchar *
-gdm_parse_enriched_string (gchar *s)
+gdm_parse_enriched_string (const gchar *s)
 {
-    gchar cmd, *buffer, *start;
+    gchar cmd, *buffer;
     gchar hostbuf[256];
     gchar *hostname, *temp1, *temp2, *display;
     struct utsname name;
+    GString *str;
 
-    if (!s)
+    if (s == NULL)
 	return(NULL);
 
     display = g_strdup (g_getenv ("DISPLAY"));
 
-    if(!display)
+    if (display == NULL)
 	return(NULL);
 
     temp1 = strchr (display, '.');
     temp2 = strchr (display, ':');
 
-    if (temp1) {
-	*temp1 = '\0';
-    } else if (temp2) {
-	*temp2 = '\0';
+    if (temp1 != NULL) {
+	    *temp1 = '\0';
+    } else if (temp2 != NULL) {
+	    *temp2 = '\0';
     } else {
 	    g_free (display);
 	    return (NULL);
@@ -322,7 +328,7 @@ gdm_parse_enriched_string (gchar *s)
     gethostname (hostbuf, 255);
     hostname = g_strdup (hostbuf);
     
-    if (!hostname) 
+    if (hostname != NULL) 
 	hostname = g_strdup ("Gnome");
 
     uname (&name);
@@ -333,72 +339,65 @@ gdm_parse_enriched_string (gchar *s)
 	return (g_strdup_printf (_("Welcome to %s"), hostname));
     }
 
-    if (!(buffer = g_malloc (4096))) {
-	syslog (LOG_ERR, _("gdm_parse_enriched_string: Could not malloc temporary buffer!"));
-	g_free (display);
-	return (NULL);
-    }
+    str = g_string_new (NULL);
 
-    start = buffer;
+    while (*s != '\0') {
 
-    while (*s) {
+	if (*s == '%' && s[1] != 0) {
+		cmd = s[1];
+		s+=2;
 
-	if (*s=='%' && (cmd = s[1]) != 0) {
-	    s+=2;
+		switch (cmd) {
 
-	    switch (cmd) {
+		case 'h': 
+			g_string_append (str, hostname);
+			break;
 
-	    case 'h': 
-		memcpy (buffer, hostname, strlen (hostname));
-		buffer += strlen (hostname);
-		break;
-		
-	    case 'n':
-	        memcpy (buffer, name.nodename, strlen (name.nodename));
-		buffer += strlen (name.nodename);
-		break;
+		case 'n':
+			g_string_append (str, name.nodename);
+			break;
 
-	    case 'd': 
-		memcpy (buffer, display, strlen (display));
-		buffer += strlen (display);
-		break;
+		case 'd': 
+			g_string_append (str, display);
+			break;
 
-	    case 's':
-	        memcpy (buffer, name.sysname, strlen (name.sysname));
-		buffer += strlen (name.sysname);
-		break;
-		
-	    case 'r':
-	        memcpy (buffer, name.release, strlen (name.release));
-	        buffer += strlen (name.release);
-	        break;
+		case 's':
+			g_string_append (str, name.sysname);
+			break;
 
-	    case 'm':
-	        memcpy (buffer, name.machine, strlen (name.machine));
-	        buffer += strlen (name.machine);
-	        break;
+		case 'r':
+			g_string_append (str, name.release);
+			break;
 
-	    case '%':
-		*buffer++ = '%';
-		break;
-		
-	    default:
-		break;
-	    };
+		case 'm':
+			g_string_append (str, name.machine);
+			break;
+
+		case '%':
+			g_string_append_c (str, '%');
+			break;
+
+		default:
+			break;
+		};
+	} else {
+		g_string_append_c (str, *s);
 	}
-	else
-	    *buffer++ = *s++;
+	s++;
     }
 
-    *buffer = 0;
-    g_free (display);
+    buffer = str->str;
+    g_string_free (str, FALSE);
 
-    return (g_strdup (start));
+    g_free (display);
+    g_free (hostname);
+
+    return buffer;
 }
 
 
 static gboolean
-gdm_login_query (gchar *msg)
+gdm_login_query (const gchar *msg)
 {
     GtkWidget *req;
 
@@ -454,12 +453,12 @@ gdm_login_parse_config (void)
 
     gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
 
-    GdmBrowser = gnome_config_get_int (GDM_KEY_BROWSER);
+    GdmBrowser = gnome_config_get_bool (GDM_KEY_BROWSER);
     GdmLogo = gnome_config_get_string (GDM_KEY_LOGO);
     GdmFont = gnome_config_get_string (GDM_KEY_FONT);
     GdmIcon = gnome_config_get_string (GDM_KEY_ICON);
-    GdmQuiver = gnome_config_get_int (GDM_KEY_QUIVER);
-    GdmSystemMenu = gnome_config_get_int (GDM_KEY_SYSMENU);
+    GdmQuiver = gnome_config_get_bool (GDM_KEY_QUIVER);
+    GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
     GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
     GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
@@ -471,11 +470,13 @@ gdm_login_parse_config (void)
     GdmExclude = gnome_config_get_string (GDM_KEY_EXCLUDE);
     GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
     GdmDefaultFace = gnome_config_get_string (GDM_KEY_FACE);
-    GdmDebug = gnome_config_get_int (GDM_KEY_DEBUG);
-    GdmUserMaxFile = gnome_config_get_int (GDM_KEY_MAXFILE);
-    GdmRelaxPerms = gnome_config_get_int (GDM_KEY_RELAXPERM);
+    GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
     GdmIconMaxWidth = gnome_config_get_int (GDM_KEY_ICONWIDTH);
     GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
+    GdmLockPosition = gnome_config_get_bool (GDM_KEY_LOCK_POSITION);
+    GdmSetPosition = gnome_config_get_bool (GDM_KEY_SET_POSITION);
+    GdmPositionX = gnome_config_get_int (GDM_KEY_LOCK_POSITION);
+    GdmPositionY = gnome_config_get_int (GDM_KEY_SET_POSITION);
 
     gnome_config_pop_prefix();
 
@@ -484,18 +485,18 @@ gdm_login_parse_config (void)
 
 
     /* Disable System menu on non-local displays */
-    display = getenv ("DISPLAY");
+    display = g_getenv ("DISPLAY");
 
     if (!display)
 	gdm_login_abort ("gdm_login_parse_config: DISPLAY variable not set!");
 
     if (strncmp (display, ":", 1))
-	GdmSystemMenu = 0;
+	GdmSystemMenu = FALSE;
 }
 
 
 static gboolean 
-gdm_login_list_lookup (GSList *l, gchar *data)
+gdm_login_list_lookup (GSList *l, const gchar *data)
 {
     GSList *list = l;
 
@@ -504,7 +505,7 @@ gdm_login_list_lookup (GSList *l, gchar *data)
 
     while (list) {
 
-	if (!strcasecmp (list->data, data))
+	if (g_strcasecmp (list->data, data) == 0)
 	    return (TRUE);
 	
 	list = list->next;
@@ -515,7 +516,7 @@ gdm_login_list_lookup (GSList *l, gchar *data)
 
 
 static void
-gdm_login_session_lookup (gchar* savedsess)
+gdm_login_session_lookup (const gchar* savedsess)
 {
     if (curuser == NULL)
 	gdm_login_abort("gdm_login_session_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
@@ -530,25 +531,29 @@ gdm_login_session_lookup (gchar* savedsess)
     if ( ! (savedsess != NULL &&
 	    strcmp ("(null)", savedsess) != 0 &&
 	    savedsess[0] != '\0')) {
-	/* If "Last" is chosen run Default, else run user's current selection */
-	if (!strcasecmp (cursess, lastsess))
-	    session = defsess;
-	else
-	    session = cursess;
+	    /* If "Last" is chosen run Default,
+	     * else run user's current selection */
+	    g_free (session);
+	    if (g_strcasecmp (cursess, lastsess) == 0)
+		    session = g_strdup (defsess);
+	    else
+		    session = g_strdup (cursess);
 
-	savesess = TRUE;
-	return;
+	    savesess = TRUE;
+	    return;
     }
 
     /* If "Last" session is selected */
-    if (!strcasecmp (cursess, lastsess)) { 
-	session = savedsess;
+    if (g_strcasecmp (cursess, lastsess) == 0) { 
+	g_free (session);
+	session = g_strdup (savedsess);
 
 	/* Check if user's saved session exists on this box */
 	if (!gdm_login_list_lookup (sessions, session)) {
 	    gchar *msg;
 
-	    session = defsess;
+	    g_free (session);
+	    session = g_strdup (defsess);
 	    msg = g_strdup_printf (_("Your preferred session type %s is not installed on this machine.\n" \
 				     "Do you wish to make %s the default for future sessions?"),
 				   savedsess, defsess);	    
@@ -558,10 +563,11 @@ gdm_login_session_lookup (gchar* savedsess)
     }
     /* One of the other available session types is selected */
     else { 
-	session = cursess;
+	g_free (session);
+	session = g_strdup (cursess);
 
 	/* User's saved session is not the chosen one */
-	if (strcasecmp (savedsess, session)) {
+	if (g_strcasecmp (savedsess, session) != 0) {
 	    gchar *msg;
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is " \
@@ -575,7 +581,7 @@ gdm_login_session_lookup (gchar* savedsess)
 
 
 static void
-gdm_login_language_lookup (gchar* savedlang)
+gdm_login_language_lookup (const gchar* savedlang)
 {
     if (curuser == NULL)
 	gdm_login_abort("gdm_login_language_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
@@ -589,21 +595,23 @@ gdm_login_language_lookup (gchar* savedlang)
     /* Previously saved language not found in ~user/.gnome/gdm */
     if (savedlang && ! strlen (savedlang)) {
 	/* If "Last" is chosen use Default, else use current selection */
-	if (!strcasecmp (curlang, lastlang))
-	    language = GdmDefaultLocale;
+	g_free (language);
+	if (g_strcasecmp (curlang, lastlang) == 0)
+	    language = g_strdup (GdmDefaultLocale);
 	else
-	    language = curlang;
+	    language = g_strdup (curlang);
 
 	savelang = TRUE;
 	return;
     }
 
     /* If a different language is selected */
-    if (strcasecmp (curlang, lastlang)) {
-	language = curlang;
+    if (g_strcasecmp (curlang, lastlang) != 0) {
+        g_free (language);
+	language = g_strdup (curlang);
 
 	/* User's saved language is not the chosen one */
-	if (strcasecmp (savedlang, language)) {
+	if (g_strcasecmp (savedlang, language) != 0) {
 	    gchar *msg;
 
 	    msg = g_strdup_printf (_("You have chosen %s for this session, but your default setting is " \
@@ -612,14 +620,61 @@ gdm_login_language_lookup (gchar* savedlang)
 	    savelang = gdm_login_query (msg);
 	    g_free (msg);
 	}
+    } else {
+	g_free (language);
+	language = g_strdup (savedlang);
     }
-    else
-	language = savedlang;
 
     /* Now this is utterly ugly, but I suppose it works */
     language[0] = tolower (language[0]);
 }
 
+static int dance_handler = 0;
+
+static gboolean
+dance (gpointer data)
+{
+	static double t1 = 0.0, t2 = 0.0;
+	double xm, ym;
+	int x, y;
+	static int width = -1;
+	static int height = -1;
+
+	if (width == -1)
+		width = gdk_screen_width ();
+	if (height == -1)
+		height = gdk_screen_height ();
+
+	if (login == NULL ||
+	    login->window == NULL) {
+		dance_handler = 0;
+		return FALSE;
+	}
+
+	xm = cos (1.01 * t1);
+	ym = sin (0.90 * t2);
+
+	t1 += 0.03 + (rand () % 10) / 500.0;
+	t2 += 0.03 + (rand () % 10) / 500.0;
+
+	x = (width / 2) + (width / 5) * xm;
+	y = (height / 2) + (height / 5) * ym;
+
+	set_screen_pos (login,
+			x - login->allocation.width / 2,
+			y - login->allocation.height / 2);
+
+	return TRUE;
+}
+
+static void
+evil (const char *user)
+{
+	if (dance_handler == 0 &&
+	    strcmp (user, "Start Dancing") == 0) {
+		dance_handler = gtk_timeout_add (50, dance, NULL);
+	}
+}
 
 static gboolean
 gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
@@ -640,8 +695,12 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	 * setups. Needs thinking! 
 	 */
 
-	if (curuser == NULL)
+	if (curuser == NULL) {
 	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+
+	    /* evilness */
+	    evil (curuser);
+	}
 
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
 	break;
@@ -718,7 +777,8 @@ gdm_login_session_init (GtkWidget *menu)
 	lstat (s, &statbuf);
 
 	/* If default session link exists, find out what it points to */
-	if (S_ISLNK (statbuf.st_mode) && !strcasecmp (dent->d_name, "default")) {
+	if (S_ISLNK (statbuf.st_mode) &&
+	    g_strcasecmp (dent->d_name, "default") == 0) {
 	    gchar t[_POSIX_PATH_MAX];
 	    
 	    linklen = readlink (s, t, _POSIX_PATH_MAX);
@@ -1182,7 +1242,8 @@ gdm_login_handle_pressed (GtkWidget *widget, GdkEventButton *event)
 
     if (login == NULL ||
 	login->window == NULL ||
-	event->type != GDK_BUTTON_PRESS)
+	event->type != GDK_BUTTON_PRESS ||
+	GdmLockPosition)
 	    return FALSE;
 
     p = g_new0 (CursorOffset, 1);
@@ -1239,6 +1300,11 @@ gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
 
     gdk_window_get_pointer (rootwin, &xp, &yp, &mask);
     set_screen_pos (GTK_WIDGET (login), xp-p->x, yp-p->y);
+
+    GdmSetPosition = TRUE;
+    GdmPositionX = xp - p->x;
+    GdmPositionY = yp - p->y;
+    gtk_window_position (GTK_WINDOW (login), GTK_WIN_POS_NONE);
 
     return TRUE;
 }
@@ -1307,6 +1373,31 @@ create_handle (void)
 }
 
 static void
+gdm_login_set_font (GtkWidget *widget, const char *font_name)
+{
+	GdkFont *font;
+	GtkStyle *new_style;
+	
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (font_name != NULL);
+
+	font = gdk_fontset_load (font_name);
+
+	if (font == NULL)
+		return;
+	
+	gtk_widget_set_rc_style (widget);
+	new_style = gtk_style_copy (gtk_widget_get_style (widget));
+
+	gdk_font_unref (new_style->font);
+	new_style->font = font;
+	
+	gtk_widget_set_style (widget, new_style);
+	gtk_style_unref (new_style);
+}
+
+static void
 gdm_login_gui_init (void)
 {
     GtkWidget *frame1, *frame2;
@@ -1314,7 +1405,6 @@ gdm_login_gui_init (void)
     GtkWidget *table, *stack, *hline1, *hline2, *handle;
     GtkWidget *bbox = NULL;
     GtkWidget *logoframe = NULL;
-    GtkStyle *style;
     gchar *greeting;
     gint cols, rows;
     struct stat statbuf;
@@ -1490,17 +1580,10 @@ gdm_login_gui_init (void)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (stack);
 
-    style = gtk_style_new();
-    gdk_font_unref (style->font);
-    style->font = gdk_font_load (GdmFont);
-
-    if (style->font)
-	gtk_widget_push_style (style);
-
     greeting = gdm_parse_enriched_string (GdmWelcome);    
     welcome = gtk_label_new (greeting);
-    gtk_widget_set_name(welcome, "Welcome");
-    g_free(greeting);
+    gtk_widget_set_name (welcome, "Welcome");
+    g_free (greeting);
     gtk_widget_ref (welcome);
     gtk_object_set_data_full (GTK_OBJECT (login), "welcome", welcome,
 			      (GtkDestroyNotify) gtk_widget_unref);
@@ -1508,8 +1591,8 @@ gdm_login_gui_init (void)
     gtk_table_attach (GTK_TABLE (stack), welcome, 0, 1, 0, 1,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-
-    gtk_widget_pop_style ();
+    if (GdmFont != NULL)
+	    gdm_login_set_font (welcome, GdmFont);
 
     hline1 = gtk_hseparator_new ();
     gtk_widget_ref (hline1);
@@ -1603,7 +1686,12 @@ gdm_login_gui_init (void)
     gtk_widget_grab_focus (entry);	
     gtk_window_set_focus (GTK_WINDOW (login), entry);	
     gtk_window_set_policy (GTK_WINDOW (login), 1, 1, 1);
-    gtk_window_position (GTK_WINDOW (login), GTK_WIN_POS_CENTER);
+    
+    if (GdmSetPosition) {
+	    set_screen_pos (login, GdmPositionX, GdmPositionY);
+    } else {
+	    gtk_window_position (GTK_WINDOW (login), GTK_WIN_POS_CENTER);
+    }
 
     gtk_widget_show_all (GTK_WIDGET (login));
 }
@@ -1698,11 +1786,11 @@ gdm_login_check_exclude (struct passwd *pwent)
     gint i;
 
     for (i=0 ; lockout_passes[i] ; i++) 
-	if(! strcmp (lockout_passes[i], pwent->pw_passwd))
+	if(strcmp (lockout_passes[i], pwent->pw_passwd) == 0)
 	    return (TRUE);
  
      while (list && list->data) {
-	 if (! strcasecmp (pwent->pw_name, (gchar *) list->data))
+	 if (g_strcasecmp (pwent->pw_name, (gchar *) list->data) == 0)
 	     return (TRUE);
 
 	 list = list->next;
@@ -1738,7 +1826,7 @@ gdm_login_users_init (void)
 
     if (access (GdmDefaultFace, R_OK)) {
 	syslog (LOG_WARNING, _("Can't open DefaultImage: %s. Suspending face browser!"), GdmDefaultFace);
-	GdmBrowser = 0;
+	GdmBrowser = FALSE;
 	return;
     }
     else 
