@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.2\n"
 "POT-Creation-Date: 2001-09-01 04:19-0700\n"
-"PO-Revision-Date: 2001-12-15 03:50+0100\n"
+"PO-Revision-Date: 2001-12-15 13:40+0100\n"
 "Last-Translator: Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -3548,7 +3548,10 @@ msgid ""
 "The configuration file contains an invalid command\n"
 "line for the login dialog, and thus I ran the\n"
 "default command.  Please fix your configuration."
-msgstr "Het configuratiebestand bevat een onjuiste opdracht"
+msgstr ""
+"Het configuratiebestand bevat een onjuiste opdrachtregel\n"
+"voor het loginvenster, dus heb ik de standaardopdracht\n"
+"uitgevoerd. Repareer uw configuratie."
 
 #: gui/gdmlogin.c:3772
 msgid ""
@@ -3557,6 +3560,10 @@ msgid ""
 "and create a configuration file with the GDM\n"
 "configuration program."
 msgstr ""
+"De configuratie kon niet worden gevonden. GDM\n"
+"gebruikt standaardwaarden voor deze sessie.\n"
+"U kunt het beste inloggen en een configuratiebestand\n"
+"maken met het GDM Configuratieprogramma."
 
 #: gui/gdmphotosetup.c:76
 msgid ""
@@ -3564,22 +3571,25 @@ msgid ""
 "please ask your system administrator to enable it\n"
 "in the GDM configurator program."
 msgstr ""
+"De gezichtenlijst is niet geconfigureerd,\n"
+"vraag de systeembeheerder alstublieft om deze\n"
+"te activeren voor u via het GDM configuratieprogramma."
 
 #: gui/gdmphotosetup.c:84
 msgid "Select a photo"
-msgstr ""
+msgstr "Kies een foto"
 
 #: gui/gdmphotosetup.c:89
 msgid "Select a photograph to show in the facebrowser:"
-msgstr ""
+msgstr "Kies een foto om weer te geven in de gezichtenlijst:"
 
 #: gui/gdmphotosetup.c:94
 msgid "Browse"
-msgstr ""
+msgstr "Bladeren"
 
 #: gui/gdmphotosetup.c:113
 msgid "No picture selected."
-msgstr ""
+msgstr "Geen foto geselecteerd."
 
 #: gui/gdmphotosetup.c:132
 #, c-format
@@ -3588,6 +3598,8 @@ msgid ""
 "disallowed pictures larger then %d bytes to\n"
 "show in the face browser"
 msgstr ""
+"De foto is te groot en de systeembeheerder staat geen\n"
+"foto's groter dan %d bytes toe in de gezichtenlijst."
 
 #: gui/gdmphotosetup.c:156
 #, c-format
@@ -3595,6 +3607,8 @@ msgid ""
 "File %s cannot be open for reading\n"
 "Error: %s"
 msgstr ""
+"Bestand %s kan niet voor inlezen geopend worden.\n"
+"Fout: %s"
 
 #: gui/gdmphotosetup.c:171
 #, c-format
@@ -3602,15 +3616,18 @@ msgid ""
 "File %s cannot be open for writing\n"
 "Error: %s"
 msgstr ""
+"Bestand %s kan niet voor wegschrijven geopend worden.\n"
+"Fout: %s"
 
 #: gui/gdmphotosetup.desktop.in.h:1
 msgid "Setup my GDM Face"
-msgstr ""
+msgstr "Mijn GDM gezicht kiezen"
 
 #: gui/gdmphotosetup.desktop.in.h:2
 msgid ""
 "Setup the picture that will show in the GDM (login manager) face browser"
 msgstr ""
+"Kies de foto die in de gezichtenlijst van GDM (login venster) komt te staan"
 
 #: gui/gdmXnestchooser.c:114
 msgid ""
@@ -3618,6 +3635,9 @@ msgid ""
 "Please ask your system administrator\n"
 "to install it."
 msgstr ""
+"Xnest bestaat niet.\n"
+"Vraag aan de systeembeheerder om\n"
+"deze te installeren."
 
 #: gui/gdmXnestchooser.c:130
 msgid ""
@@ -3625,27 +3645,30 @@ msgid ""
 "please ask your system administrator to enable it\n"
 "in the GDM configurator program."
 msgstr ""
+"Indirecte XDMCP is niet ingeschakeld.\n"
+"Vraag aan de systeembeheerder om het te activeren\n"
+"in het GDM configuratieprogramma."
 
 #: gui/gdmXnestchooser.c:164
 msgid "Could not find a free display number"
-msgstr ""
+msgstr "Kon geen vrij beeldschermnummer vinden"
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
-msgstr ""
+msgstr "gdmaskpass werkt alleen als root\n"
 
 #: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
 msgid "Authentication failure!\n"
-msgstr ""
+msgstr "Identificatiefout!\n"
 
 #: vicious-extensions/glade-helper.c:70
 msgid "(memory buffer)"
-msgstr ""
+msgstr "(geheugen buffer)"
 
 #: vicious-extensions/glade-helper.c:102 vicious-extensions/glade-helper.c:124
 #: vicious-extensions/glade-helper.c:144
 msgid "(memory buffer"
-msgstr ""
+msgstr "(geheugen buffer"
 
 #: vicious-extensions/glade-helper.c:173
 #, c-format
@@ -3656,6 +3679,12 @@ msgid ""
 "%s cannot continue and will exit now.\n"
 "You should check your installation of %s or reinstall %s."
 msgstr ""
+"Er is een fout opgetreden bij het laden van UI\n"
+"element %s%s uit bestand %s.\n"
+"Misschien is de Glade beschrijving kapot.\n"
+"%s kan niet doorgaan en zal beëindigd worden.\n"
+"U kunt het beste de installatie van %s controleren\n"
+"of %s opnieuw installeren."
 
 #: vicious-extensions/glade-helper.c:191
 #, c-format
@@ -3663,6 +3692,9 @@ msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
 "file: %s widget: %s"
 msgstr ""
+"Glade bestand is aan de drugs!?! Controleer of het juiste bestand\n"
+"geïnstalleerd is!\n"
+"bestand: %s widget: %s"
 
 #: vicious-extensions/glade-helper.c:217
 #, c-format
@@ -3674,6 +3706,13 @@ msgid ""
 "%s cannot continue and will exit now.\n"
 "You should check your installation of %s or reinstall %s."
 msgstr ""
+"Er is een fout opgetreden bij het laden van UI\n"
+"element %s%s uit bestand %s.\n"
+"CList widget type zou %d kolommen moeten hebben.\n"
+"Misschien is de Glade beschrijving kapot.\n"
+"%s kan niet doorgaan en zal beëindigd worden.\n"
+"U kunt het beste de installatie van %s controleren\n"
+"of %s opnieuw installeren."
 
 #: vicious-extensions/glade-helper.c:237
 #, c-format
@@ -3681,6 +3720,9 @@ msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
 "file: %s widget: %s expected clist columns: %d"
 msgstr ""
+"Glade bestand is aan de drugs!?! Controleer of het juiste bestand\n"
+"geïnstalleerd is!\n"
+"bestand: %s widget: %s verwachtte aantal kolommen: %d"
 
 #: vicious-extensions/glade-helper.c:251
 #, c-format
@@ -3691,55 +3733,51 @@ msgid ""
 "%s cannot continue and will exit now.\n"
 "You should check your installation of %s or reinstall %s."
 msgstr ""
+"Er is een fout opgetreden bij het laden van de\n"
+"gebruikersinterface uit bestand %s.\n"
+"Misschien is de Glade beschrijving niet gevonden.\n"
+"%s kan niet doorgaan en zal beëindigd worden.\n"
+"U kunt het beste de installatie van %s controleren\n"
+"of %s opnieuw installeren."
 
 #: vicious-extensions/glade-helper.c:264
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
-msgstr ""
+msgstr "Er kon geen gebruikersinterface worden geladen, SLECHT! (bestand: %s)"
 
 #: vicious-extensions/icon-entry-hack.c:268
 msgid "Choose an icon"
-msgstr ""
+msgstr "Kies een pictogram"
 
-#, fuzzy
 msgid "gdm_main: Error setting up TERM signal handler"
-msgstr "main: Fout bij het instellen van het TERM signaal"
+msgstr "gdm_main: Fout bij het instellen van de TERM signaalafhandeling"
 
-#, fuzzy
 msgid "gdm_main: Error setting up INT signal handler"
-msgstr "main: Fout bij het instellen van het INT signaal"
+msgstr "gdm_main: Fout bij het instellen van de INT signaalafhandeling"
 
-#, fuzzy
 msgid "gdm_main: Error setting up HUP signal handler"
-msgstr "main: Fout bij het instellen van het HUP signaal"
+msgstr "gdm_main: Fout bij het instellen van de HUP signaalafhandeling"
 
-#, fuzzy
 msgid "gdm_main: Error setting up CHLD signal handler"
-msgstr "gdm_main: Fout bij het instellen van het CHLD signaal"
+msgstr "gdm_main: Fout bij het instellen van de CHLD signaalafhandeling"
 
-#, fuzzy
 msgid "Login:"
-msgstr "Login"
+msgstr "Login:"
 
-#, fuzzy
 msgid "Root login disallowed"
-msgstr "Root login niet toegestaan op scherm `%s'"
-
-#, fuzzy
-msgid "Login disabled"
 msgstr "Root login niet toegestaan"
 
-#, fuzzy
+msgid "Login disabled"
+msgstr "Login uitgeschakeld"
+
 msgid "gdm_xdmcp_init: Can't alloc fifopath"
-msgstr "gdm_xdmcp_init: Kan geen socket aanmaken!"
+msgstr "gdm_xdmcp_init: Kan geen fifo-pad aanmaken!"
 
-#, fuzzy
 msgid "gdm_xdmcp_init: Could not make FIFO for chooser"
-msgstr "gdm_xdmcp_init: Kan geen socket aanmaken!"
+msgstr "gdm_xdmcp_init: Kan geen FIFO maken voor Kiezer!"
 
-#, fuzzy
 msgid "gdm_xdmcp_init: Could not open FIFO for chooser"
-msgstr "gdm_xdmcp_init: Kan geen socket aanmaken!"
+msgstr "gdm_xdmcp_init: Kan geen FIFO openen voor Kiezer!"
 
 msgid "Display not authorized to connect"
 msgstr "Beeld heeft geen toestemming om verbinding te maken"
@@ -3750,7 +3788,6 @@ msgstr "Stoppen..."
 msgid "Cancel"
 msgstr "Annuleer"
 
-#, fuzzy
 msgid "No session scripts found. Aborting!"
 msgstr "Geen sessiescripts gevonden. Gestopt!"
 
@@ -3760,13 +3797,12 @@ msgstr "Onbekende gebruiker"
 msgid "Incorrect password"
 msgstr "Wachtwoord is niet goed"
 
-#, fuzzy
 msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
-msgstr "gdm_slave_init: Fout bij het instellen van het CHLD signaal"
+msgstr ""
+"gdm_slave_xsync_ping: Fout bij het instellen van de ALARM signaalafhandeling"
 
-#, fuzzy
 msgid "gdm_parse_enriched_string: Could not malloc temporary buffer!"
-msgstr "gdm_parse_enriched_string: String is te lang!"
+msgstr "gdm_parse_enriched_string: Kon geen tijdelijke buffer reserveren!"
 
 msgid "Iconify"
 msgstr "Minimaliseer"
@@ -3778,13 +3814,11 @@ msgstr ""
 "Volgens %s was gdm al gestart (%d),\n"
 "maar het lijkt of gdm gestopt is.\n"
 
-#, fuzzy
 msgid "gdm_server_stop: Could not unlink auth file: %s!"
-msgstr "gdm_server_spawn: Kan het logbestand voor beeld %s niet openen!"
+msgstr "gdm_server_stop: Kon identificatiebestand %s niet ontkoppelen!"
 
-#, fuzzy
 msgid "gdm_slave_session_init: User '%s' not found. Aborting."
-msgstr "gdm_slave_session_start: Kan het groepsid %d niet instellen. Gestopt."
+msgstr "gdm_slave_session_init: Gebruiker '%s' niet gevonden. Gestopt."
 
 msgid ""
 "gdm_auth_secure_display: Error starting xauth process: %s. Running insecure!"
@@ -3795,24 +3829,20 @@ msgstr ""
 msgid ""
 "gdm_auth_secure_display: Error forking xauth process. Running insecure!"
 msgstr ""
-"gdm_auth_secure_display: Fout bij het forken van het xauth proces. Onveilig "
-"gestart!"
+"gdm_auth_secure_display: Fout bij het starten van het xauth(identificatie) "
+"proces. Onveilig gestart!"
 
-#, fuzzy
 msgid "gdm_auth_user_add: Error starting xauth process: %s"
-msgstr "gdm_slave_greeter: Fout bij het starten van de begroeter op beeld %s "
+msgstr "gdm_auth_user_add: Fout bij starten xauth (identificatie) proces: %s"
 
-#, fuzzy
 msgid "gdm_auth_user_add: Error forking xauth process."
-msgstr "gdm_slave_session_start: Fout bij het forken van de gebruikers sessie"
+msgstr "gdm_auth_user_add: Fout bij starten xauth (identificatie) proces."
 
-#, fuzzy
 msgid "gdm_auth_user_remove: Error forking xauth process."
-msgstr "gdm_slave_session_start: Fout bij het forken van de gebruikers sessie"
+msgstr "gdm_auth_user_remove: Fout bij starten xauth (identificatie) proces."
 
-#, fuzzy
 msgid "gdm_exec_command: Can't fork process!"
-msgstr "gdm_server_spawn: Kan Xserver proces niet forken!"
+msgstr "gdm_exec_command: Kan proces niet starten!"
 
 msgid "GNOME"
 msgstr "GNOME"
@@ -3830,37 +3860,33 @@ msgstr ""
 msgid "Logo not found. No image will be displayed!"
 msgstr "Logo niet gevonden. Er zal geen figuur weergegeven worden!"
 
-#, fuzzy
 msgid "gdm_greeter_parse_config: No configuration file: %s. Aborting."
-msgstr "gdm_chooser_parse_config: Geen configuratiebestand: %s. Gestopt."
+msgstr "gdm_greeter_parse_config: Geen configuratiebestand: %s. Gestopt."
 
 msgid "messages/welcome=Welcome to %h"
 msgstr "messages/welcome=Welkom bij %h"
 
-#, fuzzy
 msgid ""
 "Your previous session type %s is not installed on this machine.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
-"Uw favoriete sessie type %s is niet geinstalleerd op deze machine.\n"
+"Uw vorige sessie type %s is niet geïnstalleerd op deze machine.\n"
 "Wilt u %s het standaard type maken voor toekomstige sessies?"
 
-#, fuzzy
 msgid ""
 "Your previous session type %s is not installed on this machine.\n"
 "You will be logged in using the %s environment."
 msgstr ""
-"Uw favoriete sessie type %s is niet geinstalleerd op deze machine.\n"
-"Wilt u %s het standaard type maken voor toekomstige sessies?"
+"Uw favoriete sessie type %s is niet geïnstalleerd op deze machine.\n"
+"U zal ingelogd worden in de %s omgeving."
 
-#, fuzzy
 msgid ""
 "You have chosen the language %s for this session, but your default setting is "
 "%s.\n"
 "Do you wish to make %s the default language for future sessions?"
 msgstr ""
-"Uw heeft %s gekozen voor deze sessie, maar uw standaard instelling is %s.\n"
-"Wilt u %s standaard instellen voor toekomstige sessies?"
+"Uw heeft %s gekozen als taal, maar uw standaard instelling is %s.\n"
+"Wilt u %s instellen als standaardtaal?"
 
 #, fuzzy
 msgid ""
