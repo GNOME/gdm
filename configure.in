@@ -653,6 +653,7 @@ adt_user_context = ADT_USER;
 if test ${check_sun_audit} = yes
 then
    AC_DEFINE(HAVE_ADT)
+   EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lbsm"
    AC_MSG_RESULT(yes)
 else
    AC_MSG_RESULT(no)
