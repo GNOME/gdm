@@ -1,3 +1,18 @@
+Fri Aug 23 14:12:10 2002  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c:  Cleanup the exit stuff
+
+	* daemon/display.c, daemon/gdm.c: don't do setsid on -nodaemon
+	  as that breaks running from init and do it for the slave as
+	  that's correct.
+
+	* daemon/slave.c, daemon/display.c, daemon/gdm.c:  Cleanup
+	  killing children a bit, and session cleanup stuff.  Don't
+	  kill pids not greater then 1 to be extra anal and if we can't
+	  fork the slave set the pid to 0 and not leave it at -1.
+
+	* daemon/server.c: kill redundant line
+
 Fri Aug 23 11:04:38 2002  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.[ch], daemon/slave.c, gui/gdmlogin.c,

@@ -166,25 +166,30 @@ gdm_display_manage (GdmDisplay *d)
     if ( ! gdm_display_check_loop (d))
 	    return FALSE;
 
-    gdm_sigchld_block_push ();
-
     /* If we have an old slave process hanging around, kill it */
-    if (d->slavepid > 0 &&
-	kill (d->slavepid, SIGINT) == 0)
-		    ve_waitpid_no_signal (d->slavepid, 0, 0);
+    gdm_sigchld_block_push ();
+    if (d->slavepid > 1 &&
+	kill (d->slavepid, SIGTERM) == 0)
+	    ve_waitpid_no_signal (d->slavepid, 0, 0);
     d->slavepid = 0;
+    gdm_sigchld_block_pop ();
 
     /* Fork slave process */
+    gdm_sigchld_block_push ();
     gdm_sigterm_block_push ();
     pid = d->slavepid = fork ();
     gdm_sigterm_block_push ();
-
     gdm_sigchld_block_pop ();
 
     switch (pid) {
 
     case 0:
 	setpgid (0, 0);
+
+	/* Make the slave it's own leader.  This 1) makes killing -pid of
+	 * the daemon work more sanely because the daemon can whack the
+	 * slave much better itself */
+	setsid ();
 
 	d->slavepid = getpid ();
 
@@ -238,6 +243,7 @@ gdm_display_manage (GdmDisplay *d)
 	break;
 
     case -1:
+	d->slavepid = 0;
 	gdm_error (_("gdm_display_manage: Failed forking gdm slave process for %s"), d->name);
 
 	return FALSE;
@@ -279,7 +285,7 @@ gdm_display_unmanage (GdmDisplay *d)
 
     /* Kill slave */
     gdm_sigchld_block_push ();
-    if (d->slavepid > 0 &&
+    if (d->slavepid > 1 &&
 	kill (d->slavepid, SIGTERM) == 0)
 	    ve_waitpid_no_signal (d->slavepid, 0, 0);
     d->slavepid = 0;

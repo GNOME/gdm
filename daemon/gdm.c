@@ -1019,26 +1019,22 @@ gdm_cleanup_children (void)
 	    gdm_debug ("gdm_cleanup_children: Slave crashed, killing it's "
 		       "children");
 
-	    if (d->sesspid > 0) {
-		    if (kill (d->sesspid, SIGTERM) == 0)
+	    if (d->sesspid > 1 &&
+		kill (d->sesspid, SIGTERM) == 0)
 			    ve_waitpid_no_signal (d->sesspid, NULL, 0);
-		    d->sesspid = 0;
-	    }
-	    if (d->greetpid > 0) {
-		    if (kill (d->greetpid, SIGTERM) == 0)
+	    d->sesspid = 0;
+	    if (d->greetpid > 1 &&
+		kill (d->greetpid, SIGTERM) == 0)
 			    ve_waitpid_no_signal (d->greetpid, NULL, 0);
-		    d->greetpid = 0;
-	    }
-	    if (d->chooserpid > 0) {
-		    if (kill (d->chooserpid, SIGTERM) == 0)
+	    d->greetpid = 0;
+	    if (d->chooserpid > 1 &&
+		kill (d->chooserpid, SIGTERM) == 0)
 			    ve_waitpid_no_signal (d->chooserpid, NULL, 0);
-		    d->chooserpid = 0;
-	    }
-	    if (d->servpid > 0) {
-		    if (kill (d->servpid, SIGTERM) == 0)
+	    d->chooserpid = 0;
+	    if (d->servpid > 1 &&
+		kill (d->servpid, SIGTERM) == 0)
 			    ve_waitpid_no_signal (d->servpid, NULL, 0);
-		    d->servpid = 0;
-	    }
+	    d->servpid = 0;
     }
 
     /* null all these, they are not valid most definately */
@@ -1465,7 +1461,7 @@ main (int argc, char *argv[])
 
         if (pf != NULL &&
 	    fscanf (pf, "%d", &pidv) == 1 &&
-	    kill (pidv, 0) != -1 &&
+	    kill (pidv, 0) == 0 &&
 	    linux_only_is_running (pidv)) {
 		/* make sure the pid file doesn't get wiped */
 		GdmPidFile = NULL;
@@ -1485,9 +1481,6 @@ main (int argc, char *argv[])
 	    fprintf (pf, "%d\n", (int)getpid());
 	    fclose (pf);
 	}
-
-	/* ignore failing, it MAY fail if it is already the leader */
-	setsid ();
 
 	chdir (GdmServAuthDir);
 	umask (022);
@@ -1650,7 +1643,7 @@ send_slave_ack (GdmDisplay *d)
 		write (d->master_notify_fd, not, 2);
 	}
 	gdm_sigchld_block_push ();
-	if (d->slavepid > 0) {
+	if (d->slavepid > 1) {
 		kill (d->slavepid, SIGUSR2);
 	}
 	gdm_sigchld_block_pop ();
@@ -1667,7 +1660,7 @@ send_slave_command (GdmDisplay *d, const char *command)
 		g_free (cmd);
 	}
 	gdm_sigchld_block_push ();
-	if (d->slavepid > 0) {
+	if (d->slavepid > 1) {
 		kill (d->slavepid, SIGUSR2);
 	}
 	gdm_sigchld_block_pop ();
@@ -2004,7 +1997,7 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		for (li = displays; li != NULL; li = li->next) {
 			GdmDisplay *d = li->data;
 			gdm_sigchld_block_push ();
-			if (d->greetpid > 0)
+			if (d->greetpid > 1)
 				kill (d->greetpid, SIGHUP);
 			gdm_sigchld_block_pop ();
 		}
@@ -2385,7 +2378,7 @@ notify_displays_int (const char *key, int val)
 				      "%c%s %d\n",
 				      GDM_SLAVE_NOTIFY_KEY, key, val);
 			gdm_sigchld_block_push ();
-			if (disp->slavepid > 0)
+			if (disp->slavepid > 1)
 				kill (disp->slavepid, SIGUSR2);
 			gdm_sigchld_block_pop ();
 		}
@@ -2403,7 +2396,7 @@ notify_displays_string (const char *key, const char *val)
 				      "%c%s %s\n",
 				      GDM_SLAVE_NOTIFY_KEY, key, val);
 			gdm_sigchld_block_push ();
-			if (disp->slavepid > 0)
+			if (disp->slavepid > 1)
 				kill (disp->slavepid, SIGUSR2);
 			gdm_sigchld_block_pop ();
 		}

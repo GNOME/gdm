@@ -1097,7 +1097,6 @@ gdm_server_alloc (gint id, const gchar *command)
     d->dispnum = id;
     d->servpid = 0;
     d->servstat = SERVER_DEAD;
-    d->sessionid = 0;
     d->sesspid = 0;
     d->slavepid = 0;
     d->type = TYPE_LOCAL;
