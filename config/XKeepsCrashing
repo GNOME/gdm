@@ -11,6 +11,7 @@ MSG8=`gettext -s "I cannot start the X server (your graphical interface).  It is
 # XLOG = the log file for the X server
 # BINDIR = location of gdm binaries
 # SBINDIR = location of gdm system binaries
+# LIBEXECDIR = location of gdm libexec binaries (gdmaskpass, gdmopen)
 
 # return values are
 # 0 = try again, runs this server again
@@ -49,8 +50,8 @@ if test "x$DIALOG" = "x" ; then
     DIALOG=`which whiptail`
   fi
 fi
-if test -x "$SBINDIR/gdmaskpass" ; then
-  ASKPASS="$SBINDIR/gdmaskpass"
+if test -x "$LIBEXECDIR/gdmaskpass" ; then
+  ASKPASS="$LIBEXECDIR/gdmaskpass"
 else
   ASKPASS=
 fi
@@ -79,7 +80,7 @@ fi
 # we require 'gdmopen', to open a console, because we really dont
 # have one.  Perhaps someone should try to figure out some shell
 # black magic to get this to work on other then linux systems
-if test ! -x "$SBINDIR/gdmopen" ; then
+if test ! -x "$LIBEXECDIR/gdmopen" ; then
   exit 32
 fi
 
@@ -91,7 +92,7 @@ else
   # We do a lot of work wastefully over again, but oh well,
   # perhaps this needs fixing.
   #
-  "$SBINDIR/gdmopen" -l /bin/sh -c "$0 -noopen $@"
+  "$LIBEXECDIR/gdmopen" -l /bin/sh -c "$0 -noopen $@"
   exit $?
 fi
 

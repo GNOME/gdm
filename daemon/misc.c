@@ -375,7 +375,7 @@ gdm_text_message_dialog (const char *msg)
 	char *dialog; /* do we have dialog?*/
 	char *msg_quoted;
 
-	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
+	if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
 
 	msg_quoted = g_shell_quote (msg);
@@ -388,7 +388,7 @@ gdm_text_message_dialog (const char *msg)
 	if (dialog != NULL) {
 		char *argv[6];
 		
-		argv[0] = EXPANDED_SBINDIR "/gdmopen";
+		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
 		argv[1] = "-l";
 		argv[2] = "/bin/sh";
 		argv[3] = "-c";
@@ -408,7 +408,7 @@ gdm_text_message_dialog (const char *msg)
 	} else {
 		char *argv[6];
 
-		argv[0] = EXPANDED_SBINDIR "/gdmopen";
+		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
 		argv[1] = "-l";
 		argv[2] = "/bin/sh";
 		argv[3] = "-c";
@@ -436,7 +436,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 	char *dialog; /* do we have dialog?*/
 	char *msg_quoted;
 	
-	if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) != 0)
+	if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) != 0)
 		return FALSE;
 
 	if (ret != NULL)
@@ -453,7 +453,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 		char *argv[6];
 		int retint;
 
-		argv[0] = EXPANDED_SBINDIR "/gdmopen";
+		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
 		argv[1] = "-l";
 		argv[2] = "/bin/sh";
 		argv[3] = "-c";
@@ -493,7 +493,7 @@ gdm_text_yesno_dialog (const char *msg, gboolean *ret)
 
 		close (tempfd);
 
-		argv[0] = EXPANDED_SBINDIR "/gdmopen";
+		argv[0] = EXPANDED_LIBEXECDIR "/gdmopen";
 		argv[1] = "-l";
 		argv[2] = "/bin/sh";
 		argv[3] = "-c";

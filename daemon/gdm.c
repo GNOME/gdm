@@ -931,6 +931,7 @@ deal_with_x_crashes (GdmDisplay *d)
 		    gnome_setenv ("XLOG", xlog, TRUE);
 		    gnome_setenv ("BINDIR", EXPANDED_BINDIR, TRUE);
 		    gnome_setenv ("SBINDIR", EXPANDED_SBINDIR, TRUE);
+		    gnome_setenv ("LIBEXECDIR", EXPANDED_LIBEXECDIR, TRUE);
 
 		    /* To enable gettext stuff in the script */
 		    gnome_setenv ("TEXTDOMAIN", GETTEXT_PACKAGE, TRUE);
@@ -968,7 +969,7 @@ deal_with_x_crashes (GdmDisplay *d)
     /* if we have "open" we can talk to the user, not as user
      * friendly as the above script, but getting there */
     if ( ! just_abort &&
-	access (EXPANDED_SBINDIR "/gdmopen", X_OK) == 0) {
+	access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) == 0) {
 	    /* Shit if we knew what the program was to tell the user,
 	     * the above script would have been defined and we'd run
 	     * it for them */

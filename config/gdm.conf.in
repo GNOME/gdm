@@ -272,14 +272,15 @@ GraphicalTheme=circles
 GraphicalThemeDir=@EXPANDED_DATADIR@/gdm/themes/
 
 # The chooser is what's displayed when a user wants an indirect XDMCP
-# session
+# session, or selects Run XDMCP chooser from the system menu
 [chooser]
 # Default image for hosts
 DefaultHostImg=@EXPANDED_PIXMAPDIR@/nohost.png
 # Directory with host images, they are named by the hosts: host or host.png
 HostImageDir=@EXPANDED_DATADIR@/hosts/
 # Time we scan for hosts (well only the time we tell the user we are
-# scanning actually)
+# scanning actually, we continue to listen even after this has
+# expired)
 ScanTime=3
 # A comma separated lists of hosts to automatically add (if they answer to
 # a query of course).  You can use this to reach hosts that broadcast cannot
@@ -287,6 +288,8 @@ ScanTime=3
 Hosts=
 # Broadcast a query to get all hosts on the current network that answer
 Broadcast=true
+# Allow adding random hosts to the list by typing in their names
+AllowAdd=true
 
 [debug]
 # This will enable debugging into the syslog, usually not neccessary

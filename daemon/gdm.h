@@ -245,6 +245,7 @@ enum {
 #define GDM_KEY_HOSTDIR "chooser/HostImageDir=" EXPANDED_DATADIR "/hosts/"
 #define GDM_KEY_HOSTS "chooser/Hosts="
 #define GDM_KEY_BROADCAST "chooser/Broadcast=true"
+#define GDM_KEY_ALLOWADD "chooser/AllowAdd=true"
 
 #define GDM_KEY_DEBUG "debug/Enable=false"
 

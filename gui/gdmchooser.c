@@ -54,12 +54,6 @@
 #include "misc.h"
 #include "gdmwm.h"
 
-/* set the DOING_GDM_DEVELOPMENT env variable if you want to
- * search for the glade file in the current dir and not the system
- * install dir, better then something you have to change
- * in the source and recompile */
-static gboolean DOING_GDM_DEVELOPMENT = FALSE;
-
 static gboolean RUNNING_UNDER_GDM = FALSE;
 
 typedef struct _GdmChooserHost GdmChooserHost;
@@ -69,6 +63,7 @@ struct _GdmChooserHost {
     struct in_addr ia;
     GdkPixbuf *picture;
     gboolean willing;
+    int pos;
 };
 
 
@@ -81,11 +76,15 @@ static gchar *xdm_address = NULL;
 static gchar *client_address = NULL;
 static gint connection_type = 0;
 
+/* if this is received, select that host automatically */
+struct in_addr *select_addr = NULL;
+
 static void gdm_chooser_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 static void gdm_chooser_warn (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
 /* Exported for glade */
-gboolean gdm_chooser_cancel (void);
+void gdm_chooser_cancel (void);
+void gdm_chooser_add_host (void);
 void gdm_chooser_manage (GtkButton *button, gpointer data);
 void gdm_chooser_browser_select (GtkWidget *widget,
 				 gint selected,
@@ -134,6 +133,7 @@ static gchar *GdmHostDefaultIcon;
 static gchar *GdmGtkRC;
 static gchar *GdmHosts;
 static gboolean GdmBroadcast;
+static gboolean GdmAllowAdd;
 static gchar *GdmBackgroundColor;
 static int GdmBackgroundType;
 enum {
@@ -143,7 +143,7 @@ enum {
 };
 
 static GladeXML *chooser_app;
-static GtkWidget *chooser, *manage, *rescan, *cancel;
+static GtkWidget *chooser, *manage, *rescan, *cancel, *add_entry;
 static GtkWidget *status_label;
 
 static GIOChannel *channel;
@@ -201,6 +201,7 @@ gdm_chooser_host_alloc (const char *hostname,
     GList *hostl;
 
     host = g_new0 (GdmChooserHost, 1);
+    host->pos = -1;
     host->name = g_strdup (hostname);
     host->desc = g_strdup (description);
     memcpy (&host->ia, ia, sizeof (struct in_addr));
@@ -263,46 +264,34 @@ gdm_chooser_host_alloc (const char *hostname,
 }
 
 static void
-gdm_chooser_browser_update (void)
+gdm_chooser_browser_add_host (GdmChooserHost *host)
 {
-    GList *li;
-    gboolean any;
-
-    gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
-    gnome_icon_list_clear (GNOME_ICON_LIST (browser));
-
-    any = FALSE;
-    for (li = hosts; li != NULL; li = li->next) {
-	    GdmChooserHost *host = (GdmChooserHost *) li->data;
-
-	    if (host->willing) {
-		    /* FIXME: the \n doesn't actually propagate
-		     * since the icon list is a broken piece of horsedung */
-		    char *temp = g_strconcat (host->name, " \n",
-					      host->desc, NULL);
+    if (host->willing) {
+	    /* FIXME: the \n doesn't actually propagate
+	     * since the icon list is a broken piece of horsedung */
+	    char *temp = g_strconcat (host->name, " \n",
+				      host->desc, NULL);
+	    host->pos =
 		    gnome_icon_list_append_pixbuf (GNOME_ICON_LIST (browser),
 						   host->picture,
 						   NULL /* icon_filename */,
 						   temp);
-		    g_free (temp);
-		    any = TRUE;
+	    g_free (temp);
+
+	    if (select_addr != NULL &&
+		memcmp (&host->ia, select_addr,
+			sizeof (struct in_addr)) == 0) {
+		    gnome_icon_list_select_icon (GNOME_ICON_LIST (browser),
+						 host->pos);
+		    gtk_widget_grab_focus (manage);
 	    }
+	    select_addr = NULL;
     }
 
-    gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
-
-    if (any) {
-      gtk_label_set_text (GTK_LABEL (status_label), _(active_network));
-    } else {
-      gtk_label_set_text (GTK_LABEL (status_label), _(empty_network));
-    }
-    gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
-    gtk_widget_set_sensitive (GTK_WIDGET (rescan), TRUE);
     gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
 }
 
-
-static gboolean
+static GdmChooserHost *
 gdm_host_known (struct in_addr *ia)
 {
 	GList *li;
@@ -310,10 +299,10 @@ gdm_host_known (struct in_addr *ia)
 	for (li = hosts; li != NULL; li = li->next) {
 		GdmChooserHost *host = li->data;
 		if (memcmp (&host->ia, ia, sizeof (struct in_addr)) == 0) {
-			return TRUE;
+			return host;
 		}
 	}
-	return FALSE;
+	return NULL;
 }
 
 static gboolean
@@ -342,6 +331,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
     gchar *hostname = NULL;
     gchar *status = NULL;
     ARRAY8 auth, host, stat;
+    GdmChooserHost *gh;
 
     if (! XdmcpFill (sockfd, &buf, (XdmcpNetaddr) &clnt_sa, &sa_len))
 	return TRUE;
@@ -390,14 +380,28 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 	    }
     }
 
-    gdm_chooser_host_alloc (hostname,
-			    status,
-			    &clnt_sa.sin_addr,
-			    header.opcode == WILLING);
+    gh = gdm_host_known (&clnt_sa.sin_addr);
+    if (gh == NULL) {
+	    gh = gdm_chooser_host_alloc (hostname,
+					 status,
+					 &clnt_sa.sin_addr,
+					 header.opcode == WILLING);
+
+
+	    gdm_chooser_browser_add_host (gh);
+    } else {
+	    /* server changed it's mind */
+	    if (header.opcode == WILLING &&
+		! gh->willing) {
+		    gh->willing = TRUE;
+		    gdm_chooser_browser_add_host (gh);
+	    }
+	    /* hmmm what about the other change, just ignore
+	       for now, it's kind of confusing to just remove
+	       servers really */
+    }
 
     g_free (hostname);
-
-    gdm_chooser_browser_update ();
     
  done:
     if (header.opcode == WILLING) {
@@ -476,8 +480,19 @@ gdm_chooser_find_bcaddr (void)
 static gboolean
 chooser_scan_time_update (gpointer data)
 {
+	GList *li;
 	scan_time_handler = 0;
-	gdm_chooser_browser_update ();
+	for (li = hosts; li != NULL; li = li->next) {
+		GdmChooserHost *host = (GdmChooserHost *) li->data;
+		if (host->willing)
+			break;
+	}
+	if (li != NULL /* something was found */) {
+		gtk_label_set_text (GTK_LABEL (status_label), _(active_network));
+	} else {
+		gtk_label_set_text (GTK_LABEL (status_label), _(empty_network));
+	}
+	gtk_widget_set_sensitive (GTK_WIDGET (rescan), TRUE);
 	return FALSE;
 }
 
@@ -528,6 +543,7 @@ gdm_chooser_xdmcp_discover (void)
     GList *hl = hosts;
 
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
+    gtk_widget_set_sensitive (GTK_WIDGET (rescan), FALSE);
     gnome_icon_list_clear (GNOME_ICON_LIST (browser));
     gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
     gtk_label_set_text (GTK_LABEL (status_label),
@@ -716,8 +732,91 @@ gdm_chooser_choose_host (const char *hostname)
   }
 }
 
+void
+gdm_chooser_add_host (void)
+{
+	struct hostent *hostent;
+	struct sockaddr_in qa;
+	struct in_addr *ia;
+	GdmChooserHost *host;
+	struct sockaddr_in sock;
+	const char *name;
 
-gboolean
+	name = gtk_entry_get_text (GTK_ENTRY (add_entry));
+	if (ve_string_empty (name))
+		return;
+
+	if (strlen (name) == 8 &&
+	    from_hex (name, (char *) &qa.sin_addr, strlen (name)) == 0)
+		qa.sin_family = AF_INET;
+	else if ((qa.sin_addr.s_addr = inet_addr (name)) != -1)
+		qa.sin_family = AF_INET;
+	else if ((hostent = gethostbyname (name)) != NULL
+		 && hostent->h_addrtype == AF_INET
+		 && hostent->h_length == 4) {
+		qa.sin_family = AF_INET;
+		memmove (&qa.sin_addr, hostent->h_addr, 4);
+	} else {
+		GtkWidget *dialog;
+
+		dialog = gtk_message_dialog_new
+			(GTK_WINDOW (chooser) /* parent */,
+			 GTK_DIALOG_MODAL /* flags */,
+			 GTK_MESSAGE_ERROR,
+			 GTK_BUTTONS_CLOSE,
+			 _("I cannot find the host \"%s\", "
+			   "perhaps you have mistyped it."),
+			 name);
+
+		if (RUNNING_UNDER_GDM)
+			gdm_wm_center_window (GTK_WINDOW (dialog));
+
+		gdm_wm_no_login_focus_push ();
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		gdm_wm_no_login_focus_pop ();
+		return; /* not a valid address */
+	}
+
+	sock.sin_family = AF_INET;
+	sock.sin_port = htons (XDM_UDP_PORT);
+
+	ia = g_new0 (struct in_addr, 1);
+	ia->s_addr = qa.sin_addr.s_addr;
+
+	host = gdm_host_known (ia);
+	if (host != NULL) {
+		if (host->pos >= 0) {
+			gnome_icon_list_select_icon (GNOME_ICON_LIST (browser),
+						     host->pos);
+			gtk_widget_grab_focus (manage);
+		} else {
+			/* hmm, probably not willing, ping the host then for
+			   good measure */
+			sock.sin_addr.s_addr = ia->s_addr;
+			XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock,
+				    (int)sizeof (struct sockaddr_in));
+		}
+
+		/* empty the text entry to indicate success */
+		gtk_entry_set_text (GTK_ENTRY (add_entry), "");
+
+		g_free (ia);
+		return;
+	}
+
+	queryaddr = g_slist_append (queryaddr, ia);
+	select_addr = ia;
+
+	/* and send out the query */
+	sock.sin_addr.s_addr = ia->s_addr;
+	XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
+
+	/* empty the text entry to indicate success */
+	gtk_entry_set_text (GTK_ENTRY (add_entry), "");
+}
+
+void
 gdm_chooser_cancel (void)
 {
     if (scan_time_handler > 0) {
@@ -729,8 +828,6 @@ gdm_chooser_cancel (void)
     /* exit rather gtk_main_quit, it's just safer this way we don't
        have to worry about random whackiness happening */
     exit (EXIT_SUCCESS);
-
-    return TRUE;
 }
 
 
@@ -806,6 +903,8 @@ gdm_chooser_parse_config (void)
 
     GdmBackgroundColor = gnome_config_get_string (GDM_KEY_BACKGROUNDCOLOR);
     GdmBackgroundType = gnome_config_get_int (GDM_KEY_BACKGROUNDTYPE);
+
+    GdmAllowAdd = gnome_config_get_bool (GDM_KEY_ALLOWADD);
 
     /* note that command line arguments will prevail over these */
     GdmHosts = gnome_config_get_string (GDM_KEY_HOSTS);
@@ -886,7 +985,8 @@ display_chooser_information (void)
 		   "\"Refresh\".  When you have selected a host click "
 		   "\"Connect\" to open a session to that machine."));
 
-	gdm_wm_center_window (GTK_WINDOW (dialog));
+	if (RUNNING_UNDER_GDM)
+		gdm_wm_center_window (GTK_WINDOW (dialog));
 
 	gdm_wm_no_login_focus_push ();
 	gtk_dialog_run (GTK_DIALOG (dialog));
@@ -934,6 +1034,8 @@ gdm_chooser_gui_init (void)
 			       GTK_TYPE_BUTTON);
     status_label = glade_helper_get (chooser_app, "status_label",
 				     GTK_TYPE_LABEL);
+    add_entry = glade_helper_get (chooser_app, "add_entry",
+				  GTK_TYPE_ENTRY);
 
     browser = glade_helper_get (chooser_app, "chooser_iconlist",
 				GNOME_TYPE_ICON_LIST);
@@ -946,6 +1048,12 @@ gdm_chooser_gui_init (void)
     gtk_widget_set_size_request (GTK_WIDGET (chooser), 
 				 (gint) gdk_screen_width() * 0.4, 
 				 (gint) gdk_screen_height() * 0.6);
+
+    if ( ! GdmAllowAdd) {
+	    GtkWidget *w = glade_helper_get (chooser_app, "add_hbox",
+					     GTK_TYPE_HBOX);
+	    gtk_widget_hide (w);
+    }
 
     gdm_wm_center_window (GTK_WINDOW (chooser));
 }
@@ -1059,8 +1167,6 @@ main (int argc, char *argv[])
     int nextopt;
     const char *gdm_version;
 
-    if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
-	    DOING_GDM_DEVELOPMENT = TRUE;
     if (g_getenv ("RUNNING_UNDER_GDM") != NULL)
 	    RUNNING_UNDER_GDM = TRUE;
 
@@ -1086,17 +1192,20 @@ main (int argc, char *argv[])
     }
 
     /* Should be a watch already, but just in case */
-    setup_cursor (GDK_WATCH);
+    if (RUNNING_UNDER_GDM)
+	    setup_cursor (GDK_WATCH);
 
     glade_init();
 
     gdm_chooser_parse_config();
 
-    gdm_wm_screen_init (GdmXineramaScreen);
+    if (RUNNING_UNDER_GDM)
+	    gdm_wm_screen_init (GdmXineramaScreen);
 
     gdm_version = g_getenv ("GDM_VERSION");
 
-    if (gdm_version != NULL &&
+    if (RUNNING_UNDER_GDM &&
+	gdm_version != NULL &&
 	strcmp (gdm_version, VERSION) != 0) {
 	    GtkWidget *dialog;
 
@@ -1127,7 +1236,8 @@ main (int argc, char *argv[])
     gdm_chooser_gui_init();
     gdm_chooser_signals_init();
 
-    set_background ();
+    if (RUNNING_UNDER_GDM)
+	    set_background ();
 
     hosts = (char **)poptGetArgs (ctx);
     /* when no hosts on the command line, take them from the config */
@@ -1155,10 +1265,12 @@ main (int argc, char *argv[])
     gtk_widget_queue_resize (chooser);
     gtk_widget_show_now (chooser);
 
-    gdm_wm_center_window (GTK_WINDOW (chooser));
+    if (RUNNING_UNDER_GDM)
+	    gdm_wm_center_window (GTK_WINDOW (chooser));
 
-    /* can it ever happen that it'd be NULL here ??? */
-    if (chooser->window != NULL) {
+    if (RUNNING_UNDER_GDM &&
+	/* can it ever happen that it'd be NULL here ??? */
+	chooser->window != NULL) {
 	    gdm_wm_init (GDK_WINDOW_XWINDOW (chooser->window));
 
 	    /* Run the focus, note that this will work no matter what
@@ -1167,7 +1279,11 @@ main (int argc, char *argv[])
 	    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
     }
 
-    setup_cursor (GDK_LEFT_PTR);
+    if (RUNNING_UNDER_GDM)
+	    setup_cursor (GDK_LEFT_PTR);
+
+    if (GdmAllowAdd)
+	    gtk_widget_grab_focus (add_entry);
 
     gtk_main();
 

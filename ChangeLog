@@ -1,3 +1,22 @@
+Tue Jun 03 13:37:31 2003  George Lebl <jirka@5z.com>
+
+	* gdm.spec.in, configure.in, utils/Makefile.am, daemon/server.c,
+	  daemon/misc.c, daemon/gdm.c, config/XkeepsCrashing:
+	  whack gdmmktemp since it wasn't being used, move gdmaskpass and
+	  gdmopen to libexec since that's where they really belong
+
+	* daemon/gdm.h, config/gdm.conf.in, gui/gdmchooser.(c|glade): add an
+	  "Add" entry and button so that, we can add random hosts by typing
+	  their name.  Add chooser/AllowAdd config key (default to true)
+	  that controls if this is available.  Also fix up the updating of
+	  the icon list.  it was incredibly evil and rebuilt the list each
+	  time a host packet came in, this compounded with the fact that
+	  we were pinging 3 times (at least the broadcast to which everyone
+	  answers).  Also make this run fairly sanely outside of GDM,
+	  so that you can really just run it from anywhere if you really
+	  wish (mostly for debugging, though I imagine some other uses might
+	  pop up).
+
 Tue Jun 03 11:11:20 2003  George Lebl <jirka@5z.com>
 
         * gui/greeter/greeter_item.[ch], gui/greeter/greeter_parser.c:

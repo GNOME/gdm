@@ -11,12 +11,13 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	$(UTILS_CFLAGS)
 
-sbin_PROGRAMS = \
+libexec_PROGRAMS = \
 	@GDMASKPASS@	\
 	@GDMOPEN@
 
-bin_PROGRAMS = \
-	gdmmktemp
+# This is not useful anymore
+# bin_PROGRAMS = \
+#	gdmmktemp
 
 EXTRA_PROGRAMS = gdmaskpass gdmopen
 
@@ -26,8 +27,8 @@ gdmaskpass_SOURCES = \
 gdmopen_SOURCES = \
 	gdmopen.c
 
-gdmmktemp_SOURCES = \
-	gdmmktemp.c
+#gdmmktemp_SOURCES = \
+#	gdmmktemp.c
 
 gdmaskpass_LDADD = \
 	$(INTLLIBS)		\
@@ -37,5 +38,5 @@ gdmaskpass_LDADD = \
 gdmopen_LDADD = \
 	$(INTLLIBS)
 
-gdmmktemp_LDADD = \
-	$(INTLLIBS)
+#gdmmktemp_LDADD = \
+#	$(INTLLIBS)

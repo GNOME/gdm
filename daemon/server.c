@@ -251,7 +251,7 @@ static gboolean
 busy_ask_user (GdmDisplay *disp)
 {
     /* if we have "open" we can talk to the user */
-    if (access (EXPANDED_SBINDIR "/gdmopen", X_OK) == 0) {
+    if (access (EXPANDED_LIBEXECDIR "/gdmopen", X_OK) == 0) {
 	    char *error = g_strdup_printf
 		    (_("There already appears to be an X server "
 		       "running on display %s.  Should I try another "
