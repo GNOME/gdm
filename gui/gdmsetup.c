@@ -842,7 +842,7 @@ xdmcp_toggled (GtkWidget *toggle, gpointer data)
 {
 	GtkWidget *frame = data;
 
-	gtk_widget_set_sensitive (GTK_BIN (frame)->child,
+	gtk_widget_set_sensitive (frame,
 				  GTK_TOGGLE_BUTTON (toggle)->active);
 }
 
@@ -850,17 +850,23 @@ static void
 setup_xdmcp_support (void)
 {
 	GtkWidget *xdmcp_toggle = glade_helper_get (xml, "enable_xdmcp", GTK_TYPE_TOGGLE_BUTTON);
-	GtkWidget *xdmcp_frame = glade_helper_get (xml, "xdmcp_frame", GTK_TYPE_FRAME);
+	GtkWidget *xdmcp_frame = glade_helper_get (xml, "xdmcp_frame", GTK_TYPE_WIDGET);
+	GtkWidget *xdmcp_vbox = glade_helper_get (xml, "xdmcp_vbox", GTK_TYPE_WIDGET);
+	GtkWidget *no_xdmcp_label = glade_helper_get (xml, "no_xdmcp_label", GTK_TYPE_WIDGET);
 
 #ifndef HAVE_LIBXDMCP
-	gtk_widget_show (glade_helper_get (xml, "no_xdmcp_label", GTK_TYPE_LABEL));
-	gtk_widget_set_sensitive (xdmcp_toggle, FALSE);
-	gtk_widget_set_sensitive (xdmcp_frame, FALSE);
-#else /* ! HAVE_LIBXDMCP */
-	gtk_widget_hide (glade_helper_get (xml, "no_xdmcp_label", GTK_TYPE_LABEL));
+	gtk_widget_show (no_xdmcp_label);
+	gtk_widget_hide (xdmcp_vbox);
+#else /* HAVE_LIBXDMCP */
+	gtk_widget_hide (no_xdmcp_label);
+	gtk_widget_show (xdmcp_vbox);
 #endif /* HAVE_LIBXDMCP */
 
-	gtk_widget_set_sensitive (GTK_BIN (xdmcp_frame)->child, 
+	/* Why doesn't glade have this? */
+	gtk_label_set_use_markup (GTK_LABEL (GTK_BIN (xdmcp_toggle)->child),
+				  TRUE);
+
+	gtk_widget_set_sensitive (xdmcp_frame, 
 				  GTK_TOGGLE_BUTTON (xdmcp_toggle)->active);
 
 	g_signal_connect (G_OBJECT (xdmcp_toggle), "toggled",
