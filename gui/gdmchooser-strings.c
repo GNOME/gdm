@@ -13,5 +13,5 @@ gchar *s = N_("Exit the application");
 gchar *s = N_("Status");
 gchar *s = N_("The main area of this application shows the hosts on the local network that have \"XDMCP\" enabled. This allows users to login remotely to other machines as if they were logged on using the console.\n"
               "\n"
-              "You can rescan the network for new hosts by clicking \"Refresh\".  When you have selected a host click \"Connect\" to open a session to that machine.");
+              "You can rescan the network for new hosts by clicking \"Refresh\". When you have selected a host click \"Connect\" to open a session to that machine.");
 gchar *s = N_("Information");
