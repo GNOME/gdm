@@ -564,8 +564,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 				    "program.  Make sure it's path is set\n"
 				    "correctly in the configuration file.\n"
 				    "I will attempt to start it from the\n"
-				    "default location.  If I succeed, you\n"
-				    "should fix your configuration."));
+				    "default location."));
 
 		argv = g_strsplit
 			(EXPANDED_GDMCONFIGDIR

@@ -94,7 +94,7 @@ main (int argc, char *argv[])
 			GtkWidget *d;
 			msg = g_strdup_printf (_("The picture is too large and "
 						 "the system administrator\n"
-						 "disallowed pictores larger "
+						 "disallowed pictures larger "
 						 "then %d bytes to\n"
 						 "show in the face browser"),
 					       max_size);

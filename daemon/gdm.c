@@ -533,7 +533,7 @@ deal_with_x_crashes (GdmDisplay *d)
 				"interface).  It is likely that it is not set "
 				"up correctly.  You will need to log in on a "
 				"console and rerun the X configuration "
-				"program.  And then restart GDM.");
+				"program.  Then restart GDM.");
 		    argv[4] = _("I cannot start the X server (your graphical "
 				"interface).  It is likely that it is not set "
 				"up correctly.  Would you like me to try to "
@@ -593,7 +593,7 @@ deal_with_x_crashes (GdmDisplay *d)
 			       "interface).  It is likely that it is not set "
 			       "up correctly.  You will need to log in on a "
 			       "console and rerun the X configuration "
-			       "program.  And then restart GDM."));
+			       "program.  Then restart GDM."));
 		    /* Shit if we knew what the program was to tell the user,
 		     * the above script would have been defined and we'd run
 		     * it for them */
@@ -607,7 +607,7 @@ deal_with_x_crashes (GdmDisplay *d)
 			       "interface).  It is likely that it is not set "
 			       "up correctly.  You will need to log in on a "
 			       "console and rerun the X configuration "
-			       "program.  And then restart GDM."));
+			       "program.  Then restart GDM."));
 		    /* Shit if we knew what the program was to tell the user,
 		     * the above script would have been defined and we'd run
 		     * it for them */
