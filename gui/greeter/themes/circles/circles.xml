@@ -24,7 +24,7 @@
 	    <pos y="50%" anchor="w"/>
 	    <text val="Option"/>
 	  </item>
-	  <item type="pixmap">
+	  <item type="pixmap" id="system_button">
 	    <normal file="help.png" tint="#dddddd"/>
 	    <prelight file="help.png"/>
 	    <active file="help.png" tint="#ff0000"/>
@@ -33,7 +33,7 @@
 	  <item type="label">
 	    <normal color="#000000" font="Sans 14"/>
 	    <pos y="50%" anchor="w"/>
-	    <text val="Help"/>
+	    <text val="System"/>
 	  </item>
         </box>
       </item>
@@ -71,19 +71,9 @@
 	<text lang="sv" val="Välkommen till %h"/>
       </item>
       <item type="label" id="pam-prompt">
-        <pos anchor="n" x="50%"/>
+        <pos anchor="nw" x="10%"/>
         <normal color="#000000" font="Sans 16"/>
-	<text val="pam-prompt"/>
-      </item>
-      <item type="label" id="pam-message">
-        <pos anchor="n" x="50%"/>
-        <normal color="#000000" font="Sans 16"/>
-	<text val="pam-message"/>
-      </item>
-      <item type="label" id="pam-error">
-        <pos anchor="n" x="50%"/>
-        <normal color="#000000" font="Sans 16"/>
-	<text val="pam-error"/>
+	<text val="Username:"/>
       </item>
       <item type="rect">
 	<normal color="#000000"/>
@@ -94,7 +84,19 @@
 	  </item>
 	</fixed>
       </item>
+      <item type="label" id="pam-message">
+        <pos anchor="n" x="50%"/>
+        <normal color="#000000" font="Sans 16"/>
+	<text val=""/>
+      </item>
     </box>
+    <fixed>
+      <item type="label" id="pam-error">
+        <pos anchor="n" x="50%" y="110%"/>
+        <normal color="#000000" font="Sans 16"/>
+        <text val=""/>
+      </item>
+    </fixed>
   </item>
 </greeter>
 

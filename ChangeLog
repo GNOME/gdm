@@ -1,3 +1,23 @@
+2002-02-05  Alex Larsson  <alexl@redhat.com>
+
+	* gui/greeter/greeter.c:
+	* gui/greeter/greeter_configuration.h:
+	Add use_circles_in_entry option.
+
+	* gui/greeter/greeter_canvas_item.c:
+	Call gtk_entry_set_invisible_char() if
+	greeter_use_circles_in_entry is set.
+
+	* gui/greeter/greeter_item_pam.c:
+	More pam conversation work.
+
+	* gui/greeter/themes/circles/circles.xml:
+	Change Help to System, because Help didn't
+	do anything, and we want to be able to test
+	system stuff.
+	Move the pam conversation items around to
+	a nicer positioning.
+
 2002-02-05  Karsten Weiss  <knweiss@gmx.de>
 
 	* daemon/gdm.c, daemon/slave.c, gui/gdmconfig.c:

@@ -12,7 +12,35 @@ static guint err_box_clear_handler = 0;
 static void
 user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
 {
+  static gboolean first_return = TRUE;
+  GreeterItemInfo *error_info;
+  GreeterItemInfo *message_info;
+  
   g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
+
+  gtk_widget_set_sensitive (GTK_WIDGET (entry), FALSE);
+
+  /* somewhat ugly thing to clear the initial message */
+  if (first_return) {
+    first_return = FALSE;
+    message_info = greeter_lookup_id ("pam-message");
+    if (message_info)
+      g_object_set (G_OBJECT (message_info->item),
+		    "text", "",
+		    NULL);
+  }
+  
+  /* clear the err_box */
+  if (err_box_clear_handler > 0)
+    {
+      g_source_remove (err_box_clear_handler);
+      err_box_clear_handler = 0;
+    }
+  error_info = greeter_lookup_id ("pam-error");
+  if (error_info)
+    g_object_set (G_OBJECT (error_info->item),
+		  "text", "",
+		  NULL);
 }
 
 gboolean
@@ -59,7 +87,8 @@ greeter_item_pam_prompt (const char *message,
       
       gtk_widget_grab_focus (entry);
       gtk_entry_set_visibility (GTK_ENTRY (entry), entry_visible);
-      gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
+      gtk_widget_set_sensitive (GTK_WIDGET (entry), TRUE);
+      gtk_entry_set_max_length (GTK_ENTRY (entry), entry_len);
       gtk_entry_set_text (GTK_ENTRY (entry), "");
     }
 
@@ -122,17 +151,69 @@ error_clear (GreeterItemInfo *error_info)
 	return FALSE;
 }
 
+static char *
+break_at (const char *orig, int len)
+{
+  char *text, *p, *newline;
+  int i;
+
+  text = g_strdup (orig);
+  
+  p = text;
+  
+  while (strlen (p) > len)
+    {
+      newline = strchr (p, '\n');
+      if (newline &&
+	  ((newline - p) < len))
+	{
+	  p = newline + 1;
+	  continue;
+	}
+
+      for (i = MIN (len, strlen (p)-1); i > 0; i--)
+	{
+	  if (p[i] == ' ')
+	    {
+	      p[i] = '\n';
+	      p = p + i + 1;
+	      goto out;
+	    }
+	}
+      /* No place to break. give up */
+      p = p + 80;
+    out:
+    }
+  return text;
+}
+
 void
 greeter_item_pam_error (const char *message)
 {
   GreeterItemInfo *error_info;
+  char *text;
+
+  /* The message I got from pam had a silly newline
+   * in the beginning. That may make sense for a
+   * terminal based conversation, but it sucks for
+   * us, so skip it.
+   */
+  if (message[0] == '\n')
+    message++;
   
   error_info = greeter_lookup_id ("pam-error");
   if (error_info)
     {
+      /* This is a bad hack that I added because
+       * the canvas text item doesn't support
+       * text wrapping...
+       */
+      text = break_at (message, 50);
+
       g_object_set (G_OBJECT (error_info->item),
-		    "text", message,
+		    "text", text,
 		    NULL);
+      g_free (text);
       
       if (err_box_clear_handler > 0)
 	g_source_remove (err_box_clear_handler);

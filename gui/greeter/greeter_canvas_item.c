@@ -4,6 +4,7 @@
 
 #include "greeter_item.h"
 #include "greeter_canvas_item.h"
+#include "greeter_configuration.h"
 
 static void
 apply_tint (GdkPixbuf *pixbuf, guint32 tint_color)
@@ -188,7 +189,9 @@ greeter_item_create_canvas_item (GreeterItemInfo *item)
   case GREETER_ITEM_TYPE_ENTRY:
     entry = gtk_entry_new ();
     gtk_entry_set_has_frame (GTK_ENTRY (entry), FALSE);
-
+    if (greeter_use_circles_in_entry)
+      gtk_entry_set_invisible_char (GTK_ENTRY (entry), 0x25cf);
+    
     item->item = gnome_canvas_item_new (group,
 					GNOME_TYPE_CANVAS_WIDGET,
 					"widget", entry,

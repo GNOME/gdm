@@ -27,7 +27,8 @@ GtkWidget *window;
 GtkWidget *canvas;
 
 static char *GreeterConfTheme = NULL;
-static gchar *GdmDefaultLocale = NULL;
+static char *GdmDefaultLocale = NULL;
+int greeter_use_circles_in_entry = FALSE;
 
 static void 
 greeter_parse_config (void)
@@ -40,7 +41,8 @@ greeter_parse_config (void)
 
     GreeterConfTheme = gnome_config_get_string (GREETER_KEY_THEME);
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
-
+    greeter_use_circles_in_entry = gnome_config_get_bool (GREETER_KEY_ENTRY_CIRCLES);
+    
     gnome_config_pop_prefix();
 }
 
