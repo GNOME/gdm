@@ -464,7 +464,7 @@ gdm_verify_user (GdmDisplay *d,
 		pamerr == PAM_USER_UNKNOWN) {
 		    /* FIXME: Hmm, how are we sure that the login is username
 		     * and password.  That is the most common case but not
-		     * neccessairly true, this message needs to be changed
+		     * necessarily true, this message needs to be changed
 		     * to allow for such cases */
 		    auth_errmsg = 
 			    _("\nIncorrect username or password. "

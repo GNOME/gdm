@@ -114,7 +114,7 @@ gdm_verify_user (GdmDisplay *d,
 	    gdm_error (_("Couldn't authenticate user"));
 	    /* FIXME: Hmm, how are we sure that the login is username
 	     * and password.  That is the most common case but not
-	     * neccessairly true, this message needs to be changed
+	     * necessarily true, this message needs to be changed
 	     * to allow for such cases */
 	    auth_errmsg = g_strdup_printf
 		    (_("\nIncorrect username or password.  "
@@ -134,7 +134,7 @@ gdm_verify_user (GdmDisplay *d,
 	    sleep (GdmRetryDelay);
 	    /* FIXME: Hmm, how are we sure that the login is username
 	     * and password.  That is the most common case but not
-	     * neccessairly true, this message needs to be changed
+	     * necessarily true, this message needs to be changed
 	     * to allow for such cases */
 	    auth_errmsg = g_strdup_printf
 		    (_("\nIncorrect username or password.  "
