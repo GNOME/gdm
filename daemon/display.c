@@ -144,18 +144,20 @@ gdm_display_dispose (GdmDisplay *d)
     if (d->type == TYPE_XDMCP) {
 	displays = g_slist_remove (displays, d);
 	sessions--;
+	d->type = -1;
     }
 
     if (d->name) {
 	gdm_debug ("gdm_display_dispose: Disposing %s", d->name);
 	g_free (d->name);
+	d->name = NULL;
     }
 
-    if (d->hostname)
-	g_free (d->hostname);
+    g_free (d->hostname);
+    d->hostname = NULL;
 
-    if (d->authfile)
-	g_free (d->authfile);
+    g_free (d->authfile);
+    d->authfile = NULL;
 
     if (d->auths) {
 	GSList *tmpauth = d->auths;
@@ -166,19 +168,20 @@ gdm_display_dispose (GdmDisplay *d)
 	}
 
 	g_slist_free (d->auths);
+	d->auths = NULL;
     }
 
-    if (d->userauth)
-	g_free (d->userauth);
+    g_free (d->userauth);
+    d->userauth = NULL;
 
-    if (d->command)
-	g_free (d->command);
+    g_free (d->command);
+    d->command = NULL;
 
-    if (d->cookie)
-	g_free (d->cookie);
+    g_free (d->cookie);
+    d->cookie = NULL;
 
-    if (d->bcookie)
-	g_free (d->bcookie);
+    g_free (d->bcookie);
+    d->bcookie = NULL;
 
     g_free (d);
 }

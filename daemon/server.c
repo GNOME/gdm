@@ -42,10 +42,10 @@ static const gchar RCSid[]="$Id$";
 
 
 /* Local prototypes */
-void gdm_server_spawn (GdmDisplay *d);
-void gdm_server_usr1_handler (gint);
-void gdm_server_alarm_handler (gint);
-void gdm_server_child_handler (gint);
+static void gdm_server_spawn (GdmDisplay *d);
+static void gdm_server_usr1_handler (gint);
+static void gdm_server_alarm_handler (gint);
+static void gdm_server_child_handler (gint);
 
 /* Configuration options */
 extern gchar *argdelim;
@@ -56,8 +56,81 @@ extern gint GdmXdmcp;
 extern sigset_t sysmask;
 
 /* Global vars */
-GdmDisplay *d;
+GdmDisplay *d = NULL;
 
+static gboolean
+gdm_server_check_loop (GdmDisplay *disp)
+{
+  time_t now;
+  time_t since_last;
+  
+  now = time (NULL);
+
+  if (disp->disabled)
+    return FALSE;
+  
+  if (disp->last_start_time > now || disp->last_start_time == 0)
+    {
+      /* Reset everything if this is the first time in this
+       * function, or if the system clock got reset backward.
+       */
+      disp->last_start_time = now;
+      disp->retry_count = 1;
+
+      gdm_debug ("Resetting counts for loop of death detection");
+      
+      return TRUE;
+    }
+
+  since_last = now - disp->last_start_time;
+
+  /* If it's been at least 1.5 minutes since the last startup
+   * attempt, then we reset everything.
+   */
+
+  if (since_last >= 90)
+    {
+      disp->last_start_time = now;
+      disp->retry_count = 1;
+
+      gdm_debug ("Resetting counts for loop of death detection, 90 seconds elapsed.");
+      
+      return TRUE;
+    }
+
+  /* If we've tried too many times we bail out. i.e. this means we
+   * tried too many times in the 90-second period.
+   */
+  if (disp->retry_count > 4)
+    {
+      gchar *msg;
+      msg = g_strdup_printf (_("Failed to start X server several times in a short time period; disabling display %s"), disp->name);
+      gdm_error (msg);
+      g_free (msg);
+      disp->disabled = TRUE;
+
+      gdm_debug ("Failed to start X server after several retries; aborting.");
+      
+      exit (SERVER_ABORT);
+    }
+  
+  /* At least 8 seconds between start attempts,
+   * so you can try to kill gdm from the console
+   * in these gaps.
+   */
+  if (since_last < 8)
+    {
+      gdm_debug ("Sleeping %d seconds before next X server restart attempt",
+                 8 - since_last);
+      sleep (8 - since_last);
+      now = time (NULL);
+    }
+
+  disp->retry_count += 1;
+  disp->last_start_time = now;
+
+  return TRUE;
+}
 
 /**
  * gdm_server_start:
@@ -70,15 +143,22 @@ gboolean
 gdm_server_start (GdmDisplay *disp)
 {
     struct sigaction usr1, chld, alrm;
+    struct sigaction old_usr1, old_chld, old_alrm;
     sigset_t mask;
+    gboolean retvalue;
     
     if (!disp)
 	return FALSE;
     
     d = disp;
     d->servtries = 0;
-    
+
     gdm_debug ("gdm_server_start: %s", d->name);
+
+    if (!gdm_server_check_loop (disp))
+      return FALSE;
+
+    gdm_debug ("Attempting to start X server");
     
     /* Create new cookie */
     gdm_auth_secure_display (d);
@@ -89,7 +169,7 @@ gdm_server_start (GdmDisplay *disp)
     usr1.sa_flags = SA_RESTART|SA_RESETHAND;
     sigemptyset (&usr1.sa_mask);
     
-    if (sigaction (SIGUSR1, &usr1, NULL) < 0) {
+    if (sigaction (SIGUSR1, &usr1, &old_usr1) < 0) {
 	gdm_error (_("gdm_server_start: Error setting up USR1 signal handler"));
 	return FALSE;
     }
@@ -99,8 +179,9 @@ gdm_server_start (GdmDisplay *disp)
     chld.sa_flags = SA_RESTART|SA_RESETHAND;
     sigemptyset (&chld.sa_mask);
     
-    if (sigaction (SIGCHLD, &chld, NULL) < 0) {
+    if (sigaction (SIGCHLD, &chld, &old_chld) < 0) {
 	gdm_error (_("gdm_server_start: Error setting up CHLD signal handler"));
+	sigaction (SIGUSR1, &old_usr1, NULL);
 	return FALSE;
     }
 
@@ -109,8 +190,10 @@ gdm_server_start (GdmDisplay *disp)
     alrm.sa_flags = SA_RESTART|SA_RESETHAND;
     sigemptyset (&alrm.sa_mask);
     
-    if (sigaction (SIGALRM, &alrm, NULL) < 0) {
+    if (sigaction (SIGALRM, &alrm, &old_alrm) < 0) {
 	gdm_error (_("gdm_server_start: Error setting up ALRM signal handler"));
+	sigaction (SIGUSR1, &old_usr1, NULL);
+	sigaction (SIGCHLD, &old_chld, NULL);
 	return FALSE;
     }
     
@@ -123,10 +206,17 @@ gdm_server_start (GdmDisplay *disp)
     
     /* fork X server process */
     gdm_server_spawn (d);
-	
+
+/* hmmm perhaps this is b0rk, dunno, gonna revert to
+ * the beta 2/4 or whatever it was way of doing things
+ * (with the patches)
+ * -George */
+
+    retvalue = FALSE;
+
     /* Wait for X server to send ready signal */
     while (d->servtries < 5) {
-	pause();
+	gdm_run ();
 
 	switch (d->servstat) {
 
@@ -145,22 +235,31 @@ gdm_server_start (GdmDisplay *disp)
 	    alarm (0);
 	    
 	    gdm_debug ("gdm_server_start: Completed %s!", d->name);
-	    
-	    return TRUE;
+
+	    retvalue = TRUE;
+	    goto spawn_done;
 
 	case SERVER_ABORT:
 	    alarm (0);
 	    gdm_debug ("gdm_server_start: Server %s died during startup!", d->name);
 	    sigprocmask (SIG_SETMASK, &sysmask, NULL);
 
-	    return FALSE;
+	    retvalue = FALSE;
+	    goto spawn_done;
 
 	default:
 	    break;
 	}
     }
 
-    return FALSE;
+spawn_done:
+
+    /* restore default handlers */
+    sigaction (SIGUSR1, &old_usr1, NULL);
+    sigaction (SIGCHLD, &old_chld, NULL);
+    sigaction (SIGALRM, &old_alrm, NULL);
+
+    return retvalue;
 }
 
 
@@ -171,7 +270,7 @@ gdm_server_start (GdmDisplay *disp)
  * forks an actual X server process
  */
 
-void 
+static void 
 gdm_server_spawn (GdmDisplay *d)
 {
     struct sigaction usr1;
@@ -279,10 +378,12 @@ gdm_server_stop (GdmDisplay *d)
  * Received when the server is ready to accept connections
  */
 
-void
+static void
 gdm_server_usr1_handler (gint sig)
 {
     d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
+
+    gdm_quit ();
 }
 
 
@@ -293,10 +394,12 @@ gdm_server_usr1_handler (gint sig)
  * Server start timeout handler
  */
 
-void 
+static void 
 gdm_server_alarm_handler (gint signal)
 {
     d->servstat = SERVER_TIMEOUT; /* Server didn't start */
+
+    gdm_quit ();
 }
 
 
@@ -307,10 +410,14 @@ gdm_server_alarm_handler (gint signal)
  * Received when server died during startup
  */
 
-void 
+static void 
 gdm_server_child_handler (gint signal)
 {
+    gdm_debug ("gdm_server_child_handler: Got SIGCHLD, server abort");
+
     d->servstat = SERVER_ABORT;	/* Server died unexpectedly */
+
+    gdm_quit ();
 }
 
 
@@ -352,6 +459,10 @@ gdm_server_alloc (gint id, gchar *command)
     d->sessionid = 0;
     d->acctime = 0;
     d->dsp = NULL;
+
+    d->last_start_time = 0;
+    d->retry_count = 0;
+    d->disabled = FALSE;
     
     g_free (dname);
     g_free (hostname);

@@ -181,7 +181,7 @@ gdm_verify_user (const gchar *display)
     /* The verbose authentication is turned on, output the error
      * message from the PAM subsystem */
     if (GdmVerboseAuth)
-	gdm_slave_greeter_ctl (GDM_MSGERR, (gchar *) pam_strerror (pamh, pamerr));
+	gdm_slave_greeter_ctl (GDM_MSGERR, _("Authentication failed"));
     
     pam_end (pamh, pamerr);
     pamh = NULL;

@@ -28,6 +28,8 @@
 #include <signal.h>
 #include <dirent.h>
 #include <gdk/gdkx.h>
+#include <X11/X.h>
+#include <X11/Xlib.h>
 #include <pwd.h>
 #include <sys/utsname.h>
 
@@ -61,10 +63,12 @@ static GtkWidget *login;
 static GtkWidget *label;
 static GtkWidget *entry;
 static GtkWidget *msg;
+static gboolean first_message = TRUE;
 static GtkWidget *win;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
 static GdkWindow *rootwin;
+static GdkWindow *rootwin_overlay;
 
 static GnomeIconList *browser;
 static GdkImlibImage *defface;
@@ -397,7 +401,7 @@ gdm_login_parse_config (void)
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
-    GdmWelcome=gnome_config_get_string (GDM_KEY_WELCOME);
+    GdmWelcome=gnome_config_get_translated_string (GDM_KEY_WELCOME);
     GdmGtkRC = gnome_config_get_string (GDM_KEY_GTKRC);
     GdmExclude = gnome_config_get_string (GDM_KEY_EXCLUDE);
     GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
@@ -458,7 +462,9 @@ gdm_login_session_lookup (gchar* savedsess)
     gtk_widget_set_sensitive (GTK_WIDGET (sessmenu), FALSE);
 
     /* Previously saved session not found in ~user/.gnome/gdm */
-    if (savedsess && ! strlen (savedsess)) {
+    if ( ! (savedsess != NULL &&
+	    strcmp ("(null)", savedsess) != 0 &&
+	    savedsess[0] != '\0')) {
 	/* If "Last" is chosen run Default, else run user's current selection */
 	if (!strcasecmp (cursess, lastsess))
 	    session = defsess;
@@ -544,6 +550,9 @@ gdm_login_language_lookup (gchar* savedlang)
     }
     else
 	language = savedlang;
+
+    /* Now this is utterly ugly, but I suppose it works */
+    language[0] = tolower (language[0]);
 }
 
 
@@ -822,6 +831,15 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_PROMPT:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
+
+	/* Turn off the message whenever the prompt changes,
+	   this is sort of a hack. Also, don't turn it off
+	   the first time. Yeah I know.  */
+	if (first_message)
+	  first_message = FALSE;
+	else
+	  gtk_label_set (GTK_LABEL(msg), "");
+
 	gtk_label_set (GTK_LABEL (label), buf);
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
@@ -834,6 +852,15 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_NOECHO:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
+
+	/* Turn off the message whenever the prompt changes,
+	   this is sort of a hack. Also, don't turn it off
+	   the first time. Yeah I know.  */
+	if (first_message)
+	  first_message = FALSE;
+	else
+	  gtk_label_set (GTK_LABEL(msg), "");
+
 	gtk_label_set (GTK_LABEL(label), buf);
 	gtk_widget_show (GTK_WIDGET (label));
 	gtk_entry_set_text (GTK_ENTRY (entry), "");
@@ -1003,6 +1030,62 @@ gdm_login_browser_unselect (GtkWidget *widget, gint selected, GdkEvent *event)
     return (TRUE);
 }
 
+static GdkFilterReturn
+root_keys_filter (GdkXEvent *gdk_xevent,
+		  GdkEvent *event,
+		  gpointer data)
+{
+	XEvent *xevent = (XEvent *)gdk_xevent;
+	XEvent new_xevent;
+
+	if (xevent->type != KeyPress &&
+	    xevent->type != KeyRelease)
+		return GDK_FILTER_CONTINUE;
+
+	if (entry->window == NULL)
+		return GDK_FILTER_CONTINUE;
+
+	/* EVIIIIIIIIIL, but works */
+	/* -George */
+	new_xevent = *xevent;
+	new_xevent.xany.window = GDK_WINDOW_XWINDOW (entry->window);
+	XSendEvent (GDK_DISPLAY (),
+		    GDK_WINDOW_XWINDOW (entry->window),
+		    True, NoEventMask, &new_xevent);
+
+	return GDK_FILTER_CONTINUE;
+}
+
+static void
+gdm_init_root_window_overlay (void)
+{
+	GdkWindowAttr attributes;
+	gint attributes_mask;
+
+	attributes.window_type = GDK_WINDOW_TEMP;
+	attributes.x = 0;
+	attributes.y = 0;
+	attributes.width = gdk_screen_width ();
+	attributes.height = gdk_screen_height ();
+	attributes.wclass = GDK_INPUT_ONLY;
+	attributes.event_mask = (GDK_BUTTON_PRESS_MASK |
+				 GDK_BUTTON_RELEASE_MASK |
+				 GDK_POINTER_MOTION_MASK |
+				 GDK_POINTER_MOTION_HINT_MASK |
+				 GDK_KEY_PRESS_MASK |
+				 GDK_KEY_RELEASE_MASK |
+				 GDK_ENTER_NOTIFY_MASK |
+				 GDK_LEAVE_NOTIFY_MASK);
+	attributes_mask = GDK_WA_X | GDK_WA_Y;
+
+	rootwin_overlay = gdk_window_new (NULL,
+					  &attributes,
+					  attributes_mask);
+
+	gdk_window_show (rootwin_overlay);
+
+	gdk_window_add_filter (rootwin_overlay, root_keys_filter, NULL);
+}
 
 static void
 gdm_login_gui_init (void)
@@ -1021,6 +1104,8 @@ gdm_login_gui_init (void)
 	gtk_rc_parse (GdmGtkRC);
 
     rootwin = gdk_window_foreign_new (GDK_ROOT_WINDOW ());
+
+    gdm_init_root_window_overlay ();
 
     login = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_widget_ref (login);
@@ -1263,6 +1348,7 @@ gdm_login_gui_init (void)
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
         
     msg = gtk_label_new (_("Please enter your login"));
+    first_message = TRUE;
     gtk_widget_set_name(msg, "Message");
     gtk_widget_ref (msg);
     gtk_object_set_data_full (GTK_OBJECT (login), "msg", msg,
@@ -1510,6 +1596,9 @@ main (int argc, char *argv[])
 
     gnome_preferences_set_dialog_position (GTK_WIN_POS_CENTER);
     
+    bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+    textdomain (PACKAGE);
+
     gdm_login_parse_config();
 
     if (GdmBrowser)

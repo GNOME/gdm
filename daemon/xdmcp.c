@@ -115,7 +115,7 @@ extern gint GdmMaxIndirectWait;	/* Max wait between INDIRECT_QUERY and MANAGE */
 extern gint GdmDispPerHost;	/* Max number of displays per remote host */
 
 /* Local prototypes */
-static void gdm_xdmcp_decode_packet (void);
+static gboolean gdm_xdmcp_decode_packet (void);
 static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type);
 static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist);
 static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
@@ -261,7 +261,7 @@ gdm_xdmcp_close (void)
 }
 
 
-static void
+static gboolean
 gdm_xdmcp_decode_packet (void)
 {
     struct sockaddr_in clnt_sa;
@@ -276,17 +276,17 @@ gdm_xdmcp_decode_packet (void)
     
     if (!XdmcpFill (xdmcpfd, &buf, &clnt_sa, &sa_len)) {
 	gdm_error (_("gdm_xdmcp_decode: Could not create XDMCP buffer!"));
-	return;
+	return TRUE;
     }
     
     if (!XdmcpReadHeader (&buf, &header)) {
 	gdm_error (_("gdm_xdmcp_decode: Could not read XDMCP header!"));
-	return;
+	return TRUE;
     }
     
     if (header.version != XDM_PROTOCOL_VERSION) {
 	gdm_error (_("gdm_xdmcp_decode: Incorrect XDMCP version!"));
-	return;
+	return TRUE;
     }
 
     gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", 
@@ -329,6 +329,8 @@ gdm_xdmcp_decode_packet (void)
 		   inet_ntoa (clnt_sa.sin_addr));
 	break;
     }
+
+    return TRUE;
 }
 
 
@@ -431,12 +433,15 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     
     /* Read display port */
     if (! XdmcpReadARRAY8 (&buf, &clnt_port)) {
+	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
 	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not read display port number"));
 	return;
     }
     
     /* Extract array of authentication names from Xdmcp packet */
     if (! XdmcpReadARRAYofARRAY8 (&buf, &clnt_authlist)) {
+	XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+	XdmcpDisposeARRAYofARRAY8 (&clnt_port);
 	gdm_error (_("gdm_xdmcp_handle_forward_query: Could not extract authlist from packet")); 
 	return;
     }
@@ -453,7 +458,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     
     if (len != explen) {
 	gdm_error (_("gdm_xdmcp_handle_forward_query: Error in checksum")); 
-	return;
+	goto out;
     }
     
     /* Find client port number */
@@ -461,7 +466,7 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
 	port = port*256+clnt_port.data[i];
     
     /* Find client address. Ugly, ugly. Endianness sucks... */
-    memmove (&ia.s_addr, clnt_addr.data, clnt_addr.length);
+    memmove (&ia.s_addr, clnt_addr.data, MIN(clnt_addr.length, sizeof(ia.s_addr)));
     
     gdm_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY from display: %s, port %d", 
 	       inet_ntoa (ia), port);
@@ -472,14 +477,18 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     disp_sa->sin_port = htons (port);
     disp_sa->sin_addr.s_addr = ia.s_addr;
     
-    /* Cleanup */
-    XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
-    
     /* Check with tcp_wrappers if display is allowed to access */
     if (gdm_xdmcp_host_allow (disp_sa)) 
 	gdm_xdmcp_send_willing (disp_sa);
     else
 	gdm_xdmcp_send_unwilling (disp_sa, FORWARD_QUERY);
+
+  out:
+    g_free(disp_sa);
+    /* Cleanup */
+    XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
+    XdmcpDisposeARRAYofARRAY8 (&clnt_port);
+    XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
 }
 
 
@@ -505,7 +514,6 @@ gdm_xdmcp_send_willing (struct sockaddr_in *clnt_sa)
     XdmcpWriteARRAY8 (&buf, &status);
     XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in));
 }
-
 
 static void
 gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
@@ -534,13 +542,13 @@ gdm_xdmcp_send_unwilling (struct sockaddr_in *clnt_sa, gint type)
 static void
 gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 {
-    static CARD16 clnt_dspnum;
-    static ARRAY16 clnt_conntyp;
-    static ARRAYofARRAY8 clnt_addr;
-    static ARRAY8 clnt_authname;
-    static ARRAY8 clnt_authdata;
-    static ARRAYofARRAY8 clnt_authorization;
-    static ARRAY8 clnt_manufacturer;
+    CARD16 clnt_dspnum;
+    ARRAY16 clnt_conntyp;
+    ARRAYofARRAY8 clnt_addr;
+    ARRAY8 clnt_authname;
+    ARRAY8 clnt_authdata;
+    ARRAYofARRAY8 clnt_authorization;
+    ARRAY8 clnt_manufacturer;
     gint explen;
     gint i;
     gboolean mitauth = FALSE;
@@ -631,6 +639,13 @@ gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len)
 	gdm_xdmcp_send_accept (clnt_sa, clnt_dspnum);
     else
 	gdm_xdmcp_send_decline (clnt_sa);	
+
+    XdmcpDisposeARRAY8 (&clnt_authname);
+    XdmcpDisposeARRAY8 (&clnt_authdata);
+    XdmcpDisposeARRAY8 (&clnt_manufacturer);
+    XdmcpDisposeARRAYofARRAY8 (&clnt_addr);
+    XdmcpDisposeARRAYofARRAY8 (&clnt_authorization);
+    XdmcpDisposeARRAY16 (&clnt_conntyp);
 }
 
 
@@ -770,6 +785,7 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	if (logfd != -1) {
 	    dup2 (logfd, 1);
 	    dup2 (logfd, 2);
+            close (logfd);
 	}
 	else
 	    gdm_error (_("gdm_xdmcp_handle_manage: Could not open logfile for display %s!"), d->name);
@@ -791,6 +807,8 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	gdm_debug ("gdm_xdmcp_handle_manage: Failed to look up session id %d", clnt_sessid);
 	gdm_xdmcp_send_refuse (clnt_sa, clnt_sessid);
     }
+
+    XdmcpDisposeARRAY8(&clnt_dspclass);
 }
 
 

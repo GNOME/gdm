@@ -20,11 +20,11 @@ UserAuthFBDir=/tmp
 UserAuthFile=.Xauthority
 
 [security]
-AllowRoot=0
+AllowRoot=1
 RelaxPermissions=0
 RetryDelay=3
 UserMaxFile=65536
-VerboseAuth=1
+VerboseAuth=0
 
 [xdmcp]
 Enable=0
@@ -37,7 +37,7 @@ MaxWaitIndirect=30
 Port=177
 
 [gui]
-GtkRC=
+GtkRC=@datadir@/themes/Default/gtk/gtkrc
 MaxIconWidth=128
 MaxIconHeight=128
 
@@ -52,9 +52,12 @@ Icon=@pixmapdir@/gdm.xpm
 LocaleFile=@localedir@/locale.alias
 Logo=@pixmapdir@/gnome-logo-large.png
 Quiver=1
-SystemMenu=0
+SystemMenu=1
 Welcome=Welcome to %n
 Welcome[es]=Bienvenido a %n
+Welcome[de]=Willkommen auf %n
+Welcome[fr]=Bienvenue sur %n
+Welcome[cs]=Vítejte na %n
 
 [chooser]
 DefaultHostImg=@pixmapdir@/nohost.png

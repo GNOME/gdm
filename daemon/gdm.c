@@ -44,8 +44,6 @@ static void gdm_config_parse (void);
 static void gdm_local_servers_start (GdmDisplay *d);
 static void gdm_daemonify (void);
 static void gdm_local_servers_start (GdmDisplay *d);
-static void gdm_child_handler (gint sig);
-static void gdm_term_handler (int sig);
 
 /* Global vars */
 GSList *displays;		/* List of displays managed */
@@ -318,20 +316,12 @@ gdm_local_servers_start (GdmDisplay *d)
 {
     if (d && d->type == TYPE_LOCAL) {
 	gdm_debug ("gdm_local_servers_start: Starting %s", d->name);
-	gdm_slave_start (d);
+	gdm_display_manage (d);
     }
 }
 
-
-/**
- * gdm_child_handler:
- * @sig: Signal value
- *
- * ACME Funeral Services
- */
-
 static void 
-gdm_child_handler (gint sig)
+gdm_cleanup_children (void)
 {
     pid_t pid;
     gint exitstatus = 0, status = 0;
@@ -344,7 +334,7 @@ gdm_child_handler (gint sig)
     if (WIFEXITED (exitstatus))
 	status = WEXITSTATUS (exitstatus);
 	
-    gdm_debug ("gdm_child_handler: child %d returned %d", pid, status);
+    gdm_debug ("gdm_cleanup_children: child %d returned %d", pid, status);
 
     if (pid < 1)
 	return;
@@ -400,50 +390,69 @@ gdm_child_handler (gint sig)
 	
 	/* This is a local server so we start a new slave */
 	if (d->type == TYPE_LOCAL)
-	    gdm_slave_start (d);
-	
+	    gdm_display_manage (d);
 	/* Remote displays will send a request to be managed */
-	if (d->type == TYPE_XDMCP)
+	else if (d->type == TYPE_XDMCP)
 	    gdm_display_unmanage (d);
 	
 	break;
     }
+
+    gdm_quit ();
 }
-
-
-/**
- * gdm_term_handler:
- * @sig: Signal value
- *
- * Shutdown all displays and terminate the gdm process
- */
 
 static void
-gdm_term_handler (int sig)
+term_cleanup (void)
 {
-    sigset_t mask;
-
-    gdm_debug ("gdm_term_handler: Got TERM/INT. Going down!");
-
-    /* Block SIGCHLD */
-    sigemptyset (&mask);
-    sigaddset (&mask, SIGCHLD);
-    sigprocmask (SIG_BLOCK, &mask, NULL); 
-
-    /* Unmanage all displays */
-    g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
-
-    /* Cleanup */
-    closelog();
-    unlink (GdmPidFile);
-
-    exit (EXIT_SUCCESS);
+  sigset_t mask;
+  
+  gdm_debug ("term_cleanup: Got TERM/INT. Going down!");
+  
+  sigemptyset (&mask);
+  sigaddset (&mask, SIGCHLD);
+  sigprocmask (SIG_BLOCK, &mask, NULL); 
+  
+  g_slist_foreach (displays, (GFunc) gdm_display_unmanage, NULL);
+   
+  closelog();
+  unlink (GdmPidFile);
+  
+  exit (EXIT_SUCCESS);
 }
 
+static gboolean
+mainloop_sig_callback (gint8 sig, gpointer data)
+{
+  gdm_debug ("mainloop_sig_callback: Got signal %d", (int)sig);
+  switch (sig)
+    {
+    case SIGCHLD:
+      gdm_cleanup_children ();
+      break;
+
+    case SIGINT:
+    case SIGTERM:
+      term_cleanup ();
+      break;
+ 
+    default:
+      break;
+    }
+  
+  return TRUE;
+}
+
+static void
+signal_notify (int sig)
+{
+	g_signal_notify (sig);
+}
 
 /*
  * main: The main daemon control
  */
+
+static GMainLoop *main_loop;    
 
 int 
 main (int argc, char *argv[])
@@ -451,7 +460,6 @@ main (int argc, char *argv[])
     sigset_t mask;
     struct sigaction term, child;
     FILE *pf;
-    GMainLoop *main_loop;    
  
     /* XDM compliant error message */
     if (getuid())
@@ -492,7 +500,11 @@ main (int argc, char *argv[])
 	gdm_daemonify();
 
     /* Signal handling */
-    term.sa_handler = gdm_term_handler;
+    g_signal_add (SIGCHLD, mainloop_sig_callback, NULL);
+    g_signal_add (SIGTERM, mainloop_sig_callback, NULL);
+    g_signal_add (SIGINT, mainloop_sig_callback, NULL);
+    
+    term.sa_handler = signal_notify;
     term.sa_flags = SA_RESTART;
     sigemptyset (&term.sa_mask);
 
@@ -502,7 +514,7 @@ main (int argc, char *argv[])
     if (sigaction (SIGINT, &term, NULL) < 0) 
 	gdm_fail (_("gdm_main: Error setting up INT signal handler"));
 
-    child.sa_handler = gdm_child_handler;
+    child.sa_handler = signal_notify;
     child.sa_flags = SA_RESTART|SA_NOCLDSTOP;
     sigemptyset (&child.sa_mask);
     sigaddset (&child.sa_mask, SIGCHLD);
@@ -531,10 +543,132 @@ main (int argc, char *argv[])
 	gdm_xdmcp_run();
     }
 
-    g_main_run (main_loop);
+    /* We always exit via exit(), and sadly we need to g_main_quit()
+     * at times not knowing if it's this main or a recursive one we're
+     * quitting.
+     */
+    while (1)
+      {
+        gdm_run ();
+	gdm_debug ("main: Exited main loop");
+      }
 
     return EXIT_SUCCESS;	/* Not reached */
 }
 
+/* signal main loop support */
+
+
+typedef struct _GSignalData GSignalData;
+struct _GSignalData
+{
+  guint8      index;
+  guint8      shift;
+  GSignalFunc callback;
+};
+
+static gboolean g_signal_prepare  (gpointer  source_data,
+				   GTimeVal *current_time,
+				   gint     *timeout,
+				   gpointer   user_data);
+static gboolean g_signal_check    (gpointer  source_data,
+				   GTimeVal *current_time,
+				   gpointer  user_data);
+static gboolean g_signal_dispatch (gpointer  source_data,
+				   GTimeVal *current_time,
+				   gpointer  user_data);
+
+static GSourceFuncs signal_funcs = {
+  g_signal_prepare,
+  g_signal_check,
+  g_signal_dispatch,
+  g_free
+};
+static	guint32	signals_notified[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+static gboolean
+g_signal_prepare (gpointer  source_data,
+		  GTimeVal *current_time,
+		  gint     *timeout,
+		  gpointer  user_data)
+{
+  GSignalData *signal_data = source_data;
+  
+  return signals_notified[signal_data->index] & (1 << signal_data->shift);
+}
+
+static gboolean
+g_signal_check (gpointer  source_data,
+		GTimeVal *current_time,
+		gpointer  user_data)
+{
+  GSignalData *signal_data = source_data;
+  
+  return signals_notified[signal_data->index] & (1 << signal_data->shift);
+}
+
+static gboolean
+g_signal_dispatch (gpointer  source_data,
+		   GTimeVal *current_time,
+		   gpointer  user_data)
+{
+  GSignalData *signal_data = source_data;
+  
+  signals_notified[signal_data->index] &= ~(1 << signal_data->shift);
+  
+  return signal_data->callback (-128 + signal_data->index * 32 + signal_data->shift, user_data);
+}
+
+guint
+g_signal_add (gint8	  signal,
+	      GSignalFunc function,
+	      gpointer    data)
+{
+  return g_signal_add_full (G_PRIORITY_DEFAULT, signal, function, data, NULL);
+}
+
+guint
+g_signal_add_full (gint           priority,
+		   gint8          signal,
+		   GSignalFunc    function,
+		   gpointer       data,
+		   GDestroyNotify destroy)
+{
+  GSignalData *signal_data;
+  guint s = 128 + signal;
+  
+  g_return_val_if_fail (function != NULL, 0);
+  
+  signal_data = g_new (GSignalData, 1);
+  signal_data->index = s / 32;
+  signal_data->shift = s % 32;
+  signal_data->callback = function;
+  
+  return g_source_add (priority, TRUE, &signal_funcs, signal_data, data, destroy);
+}
+
+void
+g_signal_notify (gint8 signal)
+{
+  guint index, shift;
+  guint s = 128 + signal;
+  
+  index = s / 32;
+  shift = s % 32;
+  
+  signals_notified[index] |= 1 << shift;
+}
+
+void
+gdm_run (void)
+{
+  g_main_run (main_loop);
+}
+
+void
+gdm_quit (void)
+{
+  g_main_quit (main_loop);
+}
 
 /* EOF */

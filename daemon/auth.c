@@ -321,7 +321,7 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
      * to it. So we better play it safe... */
 
     if (! gdm_file_check ("gdm_auth_user_remove", user, authdir, authfile, 
-			  FALSE, GdmUserMaxFile, GdmRelaxPerms)) {
+			  TRUE, GdmUserMaxFile, GdmRelaxPerms)) {
 	gdm_error (_("gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"), d->userauth);
 
 	return; 

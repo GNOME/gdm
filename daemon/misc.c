@@ -130,12 +130,15 @@ gdm_debug (const gchar *format, ...)
     va_list args;
     gchar *s;
 
-    if (! GdmDebug) 
+    if (/*0 &&*/ ! GdmDebug) 
 	return;
 
     va_start (args, format);
     s = g_strdup_vprintf (format, args);
     va_end (args);
+
+    /* UGLY DEBUGGING HACK! */
+    /*{ FILE *fp = fopen ("/tmp/foo.gdm", "a"); fprintf (fp, "%s\n", s); fflush (fp); fclose (fp); };*/
     
     syslog (LOG_ERR, s);	/* FIXME: LOG_DEBUG */
     
@@ -162,13 +165,21 @@ gdm_debug (const gchar *format, ...)
  *
  * Afterall, providing the programmer with a nice, consistent
  * interface is what the standard C Library is all about. - Duh!
+ *
+ * Note from George:
+ * You cannot free the last env as it could have been something else
+ * and could still be in the env!  We just have to leak, there is no
+ * recourse.
+ * -George
  */
 
 #ifndef HAVE_SETENV
 gint 
 gdm_setenv (const gchar *var, const gchar *value)
 {
+#if 0
     static gchar *lastenv = NULL; /* Holds last successful assignment pointer */
+#endif
     gchar *envstr;		  /* Temporary environment string */
     gint result;		  /* Return value from the putenv() call */
 
@@ -189,12 +200,14 @@ gdm_setenv (const gchar *var, const gchar *value)
     /* Stuff the resulting string into the environment */
     result = putenv (envstr);
 
+#if 0
     /* If putenv() succeeded and lastenv is set, free the old pointer */
     if (result == 0 && lastenv)
 	g_free (lastenv);
 
     /* Save the current string pointer for the next gdm_setenv call */
     lastenv = envstr;
+#endif
     
     return result;
 }
@@ -204,7 +217,9 @@ gdm_setenv (const gchar *var, const gchar *value)
 gint 
 gdm_unsetenv (const gchar *var)
 {
+#if 0
     static gchar *lastenv = NULL; /* Holds last successful assignment pointer */
+#endif
     gchar *envstr;		  /* Temporary environment string */
     gint result;		  /* Return value from the putenv() call */
 
@@ -221,12 +236,14 @@ gdm_unsetenv (const gchar *var)
     /* Stuff the resulting string into the environment */
     result = putenv (envstr);
 
+#if 0
     /* If putenv() succeeded and lastenv is set, free the old pointer */
     if (result == 0 && lastenv)
 	g_free (lastenv);
 
     /* Save the current string pointer for the next gdm_setenv call */
     lastenv = envstr;
+#endif
     
     return result;
 }

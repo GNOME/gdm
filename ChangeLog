@@ -1,3 +1,16 @@
+Tue Jan 09 18:50:51 2001  George Lebl <jirka@5z.com>
+
+	* Many changes, too many to write a changelog for.  Applied most of
+	  the redhat and helix patches.  On the login screen make a window
+	  over the entire window and proxy key events back to the entry to
+	  get xdm like keyboard grab behaviour without a grab.  When starting
+	  local displays call gdm_display_manage to actually fork the slave.
+	  Try cleaning up after self when messing with signal handlers.
+	  When killing clients, ignore x errors.  Kill clients on the same
+	  display connection since opening a new one won't work.  Kill the
+	  alarm on the ping since it made no sense, and didn't work in the
+	  first place.
+
 2000-12-17  Marius Andreiana  <mandreiana@yahoo.com>
 
 	* configure.in: Added ro (Romanian) to ALL_LINGUAS

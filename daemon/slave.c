@@ -83,10 +83,11 @@ static void     gdm_slave_session_cleanup (void);
 static void     gdm_slave_term_handler (int sig);
 static void     gdm_slave_child_handler (int sig);
 static void     gdm_slave_windows_kill (void);
-static void     gdm_slave_xsync_handler (int sig);
+/* static void     gdm_slave_xsync_handler (int sig); */
 static gboolean gdm_slave_xsync_ping (void);
 static void     gdm_slave_exit (gint status, const gchar *format, ...);
 static gint     gdm_slave_exec_script (GdmDisplay*, gchar *dir);
+static gchar*   gdm_get_user_shell(void);
 
 
 void 
@@ -160,7 +161,7 @@ gdm_slave_start (GdmDisplay *display)
 }
 
 
-void
+static void
 gdm_slave_greeter (void)
 {
     gint pipe1[2], pipe2[2];  
@@ -249,8 +250,8 @@ gdm_slave_greeter (void)
 }
 
 
-void
-gdm_slave_session_start ()
+static void
+gdm_slave_session_start (void)
 {
     gchar *cfgdir, *sesspath;
     struct stat statbuf;
@@ -258,6 +259,7 @@ gdm_slave_session_start ()
     gchar *session, *language, *usrsess, *usrlang;
     gboolean savesess = FALSE, savelang = FALSE, usrcfgok = FALSE, authok = FALSE;
     gint i;
+    char *shell;
 
     pwent = getpwnam (login);
 
@@ -344,10 +346,13 @@ gdm_slave_session_start ()
 	gdm_setenv ("PATH", GdmDefaultPath);
 
     /* Set locale */
-    if (!strcasecmp (language, "english"))
+    if (strcasecmp (language, "english") == 0) {
 	gdm_setenv ("LANG", "C");
-    else
+	gdm_setenv ("GDM_LANG", "C");
+    } else {
 	gdm_setenv ("LANG", language);
+	gdm_setenv ("GDM_LANG", language);
+    }
     
     /* If script fails reset X server and restart greeter */
     if (gdm_slave_exec_script (d, GdmPreSession) != EXIT_SUCCESS) 
@@ -366,6 +371,7 @@ gdm_slave_session_start ()
     seteuid (0);
     
     if (!authok) {
+	gdm_debug ("gdm_slave_session_start: Auth not OK");
 	gdm_slave_session_stop();
 	gdm_slave_session_cleanup();
 	
@@ -427,9 +433,13 @@ gdm_slave_session_start ()
 	/* Restore sigmask inherited from init */
 	sigprocmask (SIG_SETMASK, &sysmask, NULL);
 	
-	execl (sesspath, NULL);
+ 	shell = gdm_get_user_shell ();
+  
+ 	execl (shell, "-", "-c", sesspath, NULL);
 	
 	gdm_error (_("gdm_slave_session_start: Could not start session `%s'"), sesspath);
+
+ 	g_free (shell);
 	
 	gdm_slave_session_stop();
 	gdm_slave_session_cleanup();
@@ -443,13 +453,15 @@ gdm_slave_session_start ()
     /* Wait for the user's session to exit */
     waitpid (d->sesspid, 0, 0);
 
+    gdm_debug ("gdm_slave_session_start: Session ended OK");
+
     gdm_slave_session_stop();
     gdm_slave_session_cleanup();
 }
 
 
-void
-gdm_slave_session_stop ()
+static void
+gdm_slave_session_stop (void)
 {
     struct passwd *pwent;
 
@@ -474,8 +486,7 @@ gdm_slave_session_stop ()
     seteuid (0);
 }
 
-
-void
+static void
 gdm_slave_session_cleanup (void)
 {
     gdm_debug ("gdm_slave_session_cleanup: %s on %s", login, d->name);
@@ -491,11 +502,41 @@ gdm_slave_session_cleanup (void)
 	gdm_slave_windows_kill();
 	
 	XCloseDisplay (d->dsp);
+	d->dsp = NULL;
     }
     
     exit (DISPLAY_REMANAGE);
 }
 
+static gchar*
+gdm_get_user_shell(void)
+{
+	struct passwd *pw;
+	int i;
+	/*char *shell;*/
+	static char *shells [] = {
+		"/bin/bash", "/bin/zsh", "/bin/tcsh", "/bin/ksh",
+		"/bin/csh", "/bin/sh", 0
+	};
+
+#if 0
+	if ((shell = getenv ("SHELL"))){
+		return g_strconcat (shell, NULL);
+	}
+#endif
+	pw = getpwuid(getuid());
+	if (pw && pw->pw_shell) {
+		return g_strdup (pw->pw_shell);
+	} 
+
+	for (i = 0; shells [i]; i++) {
+		if (g_file_exists (shells [i])){
+			return g_strdup (shells[i]);
+		}
+	}
+	
+	return g_strdup("/bin/sh");
+}
 
 static void
 gdm_slave_term_handler (int sig)
@@ -514,6 +555,7 @@ gdm_slave_term_handler (int sig)
     gdm_debug ("gdm_slave_term_handler: Whacking client connections");
     gdm_slave_windows_kill();
     XCloseDisplay (d->dsp);
+    d->dsp = NULL;
 
     exit (DISPLAY_ABORT);
 }
@@ -525,6 +567,8 @@ gdm_slave_child_handler (int sig)
 {
     gint status;
     pid_t pid;
+
+    gdm_debug ("gdm_slave_child_handler");
     
     while ((pid = waitpid (-1, &status, WNOHANG)) > 0) {
 	gdm_debug ("gdm_slave_child_handler: %d died", pid);
@@ -536,8 +580,10 @@ gdm_slave_child_handler (int sig)
 	    if (WIFEXITED (status))
 		exit (WEXITSTATUS (status));
 	    else {
-		if (d && d->dsp)
+		if (d && d->dsp) {
 		    XCloseDisplay (d->dsp);
+		    d->dsp = NULL;
+		}
 		
 		exit (DISPLAY_REMANAGE);
 	    }
@@ -549,6 +595,17 @@ gdm_slave_child_handler (int sig)
     }
 }
 
+static gint
+ignore_xerror (Display *disp, XErrorEvent *event)
+{
+	return 0;
+}
+static gint
+ignore_xioerror (Display *disp)
+{
+	return 0;
+}
+
 
 /* Only kills clients, not connections. This keeps the server alive */
 static void
@@ -557,18 +614,28 @@ gdm_slave_windows_kill (void)
     Window root, parent, *children;
     gint child, screen, nchildren;
     Display *disp = NULL;
+    gint (* xerror) (Display *, XErrorEvent *);
+    gint (* xioerror) (Display *);
     
+    /* this seems just wrong! */
+#if 0
     disp=XOpenDisplay (d->name);
     
     if (!disp) {
 	gdm_debug ("gdm_slave_windows_kill: Could not open display %s", d->name);
 	return;
     }
+#endif
+
+    disp = d->dsp;
     
     gdm_debug ("gdm_slave_windows_kill: Killing windows on %s", d->name);
     
     gdm_setenv ("XAUTHORITY", d->authfile);
     gdm_setenv ("DISPLAY", d->name);
+
+    xerror = XSetErrorHandler (ignore_xerror);
+    xioerror = XSetIOErrorHandler (ignore_xioerror);
     
     for (screen = 0 ; screen < ScreenCount (disp) ; screen++) {
 	
@@ -588,6 +655,9 @@ gdm_slave_windows_kill (void)
     }
     
     XSync (disp, FALSE);
+
+    XSetErrorHandler (xerror);
+    XSetIOErrorHandler (xioerror);
 }
 
 
@@ -595,9 +665,9 @@ gdm_slave_windows_kill (void)
 static gint
 gdm_slave_xerror_handler (Display *disp, XErrorEvent *evt)
 {
-    gdm_debug ("gdm_slave_windows_kill_error_handler: X error - display doesn't respond");
+    gdm_debug ("gdm_slave_xerror_handler: X error - display doesn't respond");
     pingack = FALSE;
-    return (TRUE);
+    return (0);
 }
 
 
@@ -610,37 +680,49 @@ gdm_slave_xioerror_handler (Display *disp)
     if (login)
 	gdm_slave_session_stop();
     
-    gdm_error (_("gdm_slave_windows_kill_ioerror_handler: Fatal X error - Restarting %s"), d->name);
+    gdm_error (_("gdm_slave_xioerror_handler: Fatal X error - Restarting %s"), d->name);
     
     exit (DISPLAY_REMANAGE);
 }
 
 
+#if 0
 static void
 gdm_slave_xsync_handler (int sig)
 {
     gdm_debug ("gdm_slave_xsync_handler: Xping failed for display %s", d->name);
     pingack = FALSE;
 }
+#endif
 
+/* I don't understand how the alarm stuff would even work here, I mean
+ * yes it would set the pingback var if XSync hangs, but other then that
+ * it doesn't stop the hang */
 
 static gboolean
 gdm_slave_xsync_ping (void)
 {
+#if 0
     struct sigaction sigalarm;
     sigset_t mask, omask;
+#endif
+    gint (* xerror) (Display *, XErrorEvent *);
+    gint (* xioerror) (Display *);
     
     gdm_debug ("gdm_slave_xsync_ping: Pinging %s", d->name);
     
     pingack = TRUE;
     
-    XSetErrorHandler (gdm_slave_xerror_handler);
-    XSetIOErrorHandler (gdm_slave_xioerror_handler);
-    
+    xerror = XSetErrorHandler (gdm_slave_xerror_handler);
+    xioerror = XSetIOErrorHandler (gdm_slave_xioerror_handler);
+
+#if 0
     sigalarm.sa_handler = gdm_slave_xsync_handler;
     sigalarm.sa_flags = 0;
     sigemptyset (&sigalarm.sa_mask);
-    
+#endif
+
+#if 0
     if (sigaction (SIGALRM, &sigalarm, NULL) < 0)
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_xsync_ping: Error setting up ALARM signal handler"));
     
@@ -649,13 +731,19 @@ gdm_slave_xsync_ping (void)
     sigprocmask (SIG_UNBLOCK, &mask, &omask);
     
     alarm (10);
+#endif
     
     XSync (d->dsp, TRUE);
     
+#if 0
     alarm (0);
     sigprocmask (SIG_SETMASK, &omask, NULL);
+#endif
     
     gdm_debug ("gdm_slave_xsync_ping: %s returned %d", d->name, pingack);
+
+    XSetErrorHandler (xerror);
+    XSetIOErrorHandler (xioerror);
     
     return (pingack);
 }

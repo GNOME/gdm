@@ -157,6 +157,9 @@ struct _GdmDisplay {
     pid_t slavepid;
     pid_t chooserpid;
     time_t acctime;
+    time_t last_start_time;
+    gint retry_count;
+    gboolean disabled;
 };
 
 
@@ -177,6 +180,21 @@ struct _GdmChooserDisplay {
     time_t acctime;
 };
 
+typedef gboolean (*GSignalFunc) (gint8		signal,
+				 gpointer	data);
+guint	g_signal_add		(gint8		signal,
+				 GSignalFunc	function,
+				 gpointer    	data);
+guint   g_signal_add_full       (gint           priority,
+				 gint8          signal,
+				 GSignalFunc    function,
+				 gpointer       data,
+				 GDestroyNotify destroy);
+void    g_signal_notify         (gint8          signal);
+
+
+void gdm_run (void);
+void gdm_quit (void);
 
 #endif /* __GDM_H__ */
 
