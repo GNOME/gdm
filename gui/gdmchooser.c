@@ -434,6 +434,7 @@ gdm_chooser_gui_init (void)
     GtkWidget *buttonpane;
     GtkWidget *scrollbar;
     GtkWidget *bframe;
+    GtkAdjustment *adj;
     GtkStyle  *style;
     GdkColor  bbg = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
     struct    stat statbuf;
@@ -497,16 +498,18 @@ gdm_chooser_gui_init (void)
     gtk_container_add(GTK_CONTAINER(bframe), GTK_WIDGET(browser));
 
     /* Browser scroll bar */
-    scrollbar = gtk_vscrollbar_new (browser->adj);
+    adj = GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
+    scrollbar = gtk_vscrollbar_new (adj);
+    gnome_icon_list_set_vadjustment (browser, adj);
 
     /* Box containing all browser functionality */
     bbox = gtk_hbox_new (0, 0);
     gtk_box_pack_start (GTK_BOX (bbox), GTK_WIDGET (bframe), 1, 1, 0);
     gtk_box_pack_start (GTK_BOX (bbox), scrollbar, 0, 0, 0);
-    gtk_widget_show_all(GTK_WIDGET(bbox));
+    gtk_widget_show_all (GTK_WIDGET (bbox));
 
     /* Put browser box in main window */
-    gtk_box_pack_start(GTK_BOX (vbox), GTK_WIDGET(bbox), TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (bbox), TRUE, TRUE, 0);
 
     /* Buttons */
     manage = gtk_button_new_with_label(_("Connect"));
