@@ -273,6 +273,22 @@ parse_show (xmlNodePtr       node,
   xmlChar *prop;
   char **argv = NULL;
   int i;
+
+  prop = xmlGetProp (node, "type");
+  if (prop != NULL)
+    {
+      g_free (info->show_type);
+      info->show_type = g_strdup (prop);
+      xmlFree (prop);
+    }
+
+  prop = xmlGetProp (node, "subtype");
+  if (prop != NULL)
+    {
+      g_free (info->show_subtype);
+      info->show_subtype = g_strdup (prop);
+      xmlFree (prop);
+    }
   
   prop = xmlGetProp (node, "modes");
   if (prop != NULL)

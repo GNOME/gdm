@@ -59,6 +59,8 @@ struct _GreeterItemInfo {
   double y;
 
   GreeterItemShowModes show_modes;
+  char *show_type; /* timed, system, config */
+  char *show_subtype; /* halt, suspend, reboot */
   
   GreeterItemSizeType width_type;
   GreeterItemSizeType height_type;

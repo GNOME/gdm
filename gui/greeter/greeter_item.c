@@ -5,12 +5,11 @@
 #include <unistd.h>
 
 #include "greeter_item.h"
+#include "greeter_configuration.h"
 
 #ifndef _
 #define _(x) (x)
 #endif
-
-extern gboolean GdmSystemMenu;
 
 GreeterItemInfo *
 greeter_item_info_new (GreeterItemInfo *parent,
@@ -57,6 +56,8 @@ greeter_item_info_free (GreeterItemInfo *info)
 
   g_free (info->id);
   g_free (info->orig_text);
+  g_free (info->show_type);
+  g_free (info->show_subtype);
   g_free (info);
 }
 
@@ -205,26 +206,33 @@ greeter_item_is_visible (GreeterItemInfo *info)
       ! (info->show_modes & GREETER_ITEM_SHOW_REMOTE))
     return FALSE;
 
-  /* FIXME: this is somewhat evil, maybe it should be part of the show
-   * modes */
-  if ( ! GdmSystemMenu &&
-      info->id != NULL &&
-      (strcmp (info->id, "system_button") == 0 ||
-       /* FIXME: reboot, halt and suspend should depend on the commands
-	* being set */
-       strcmp (info->id, "reboot_button") == 0 ||
-       strcmp (info->id, "halt_button") == 0 ||
-       strcmp (info->id, "suspend_button") == 0)) {
-        return FALSE;
-  }
+  if ( ! GdmConfigAvailable &&
+      info->show_type != NULL &&
+      strcmp (info->show_type, "config") == 0)
+	  return FALSE;
 
-  /* FIXME: this is somewhat evil, maybe it should be part of the show
-   * modes */
-  if ( ! GDM_TIMED_LOGIN_OK && info->id != NULL)
-    {
-      if (strncmp (info->id, "timed_login", strlen ("timed_login")) == 0)
-        return FALSE;
-    }
+  if ( ! GdmSystemMenu &&
+      info->show_type != NULL &&
+      strcmp (info->show_type, "system") == 0)
+	  return FALSE;
+
+  if (GdmHalt == NULL &&
+      info->show_subtype != NULL &&
+      strcmp (info->show_subtype, "halt") == 0)
+	  return FALSE;
+  if (GdmReboot == NULL &&
+      info->show_subtype != NULL &&
+      strcmp (info->show_subtype, "reboot") == 0)
+	  return FALSE;
+  if (GdmSuspend == NULL &&
+      info->show_subtype != NULL &&
+      strcmp (info->show_subtype, "suspend") == 0)
+	  return FALSE;
+
+  if ( ! GDM_TIMED_LOGIN_OK &&
+      info->show_type != NULL &&
+      strcmp (info->show_type, "timed") == 0)
+	  return FALSE;
 
   return TRUE;
 }

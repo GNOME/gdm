@@ -1,5 +1,6 @@
 circlesdir = $(datadir)/gdm/themes/circles
 circles_DATA = \
+	GdmGreeterTheme.info \
 	circles.xml \
 	background.svg \
 	flower.png  \

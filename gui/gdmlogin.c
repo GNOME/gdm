@@ -756,7 +756,7 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 	/* configure interruption */
 	login_entry = FALSE; /* no matter where we are,
 				this is no longer a login_entry */
-	/* timed interruption */
+	/* configure interruption */
 	g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
 }
 
@@ -3644,13 +3644,72 @@ enum {
 	RESPONSE_CLOSE
 };
 
+static gboolean
+string_same (const char *cur, const char *key)
+{
+	char *val = gnome_config_get_string (key);
+	if (strcmp (ve_sure_string (cur), ve_sure_string (val)) == 0) {
+		g_free (val);
+		return TRUE;
+	} else {
+		g_free (val);
+		return FALSE;
+	}
+}
+
+static gboolean
+bool_same (gboolean cur, const char *key)
+{
+	gboolean val = gnome_config_get_bool (key);
+	if (ve_bool_equal (cur, val)) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+static gboolean
+int_same (int cur, const char *key)
+{
+	int val = gnome_config_get_int (key);
+	if (cur == val) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
 static void
 gdm_reread_config (int sig)
 {
 	char *str;
-	/* FIXME: reparse config stuff here.  At least ones we care about */
+	/* reparse config stuff here.  At least ones we care about */
 
 	gnome_config_push_prefix ("=" GDM_CONFIG_FILE "=/");
+
+	/* FIXME: The following is evil, we should update on the fly rather
+	 * then just restarting */
+	/* Also we may not need to check ALL those keys but just a few */
+	if ( ! string_same (GdmBackgroundProg, GDM_KEY_BACKGROUNDPROG) ||
+	     ! string_same (GdmBackgroundImage, GDM_KEY_BACKGROUNDIMAGE) ||
+	     ! string_same (GdmBackgroundColor, GDM_KEY_BACKGROUNDCOLOR) ||
+	     ! int_same (GdmBackgroundType, GDM_KEY_BACKGROUNDTYPE) ||
+	     ! bool_same (GdmBackgroundScaleToFit,
+			  GDM_KEY_BACKGROUNDSCALETOFIT) ||
+	     ! bool_same (GdmBackgroundRemoteOnlyColor,
+			  GDM_KEY_BACKGROUNDREMOTEONLYCOLOR) ||
+	     ! string_same (GdmGtkRC, GDM_KEY_GTKRC) ||
+	     ! int_same (GdmXineramaScreen, GDM_KEY_XINERAMASCREEN) ||
+	     ! string_same (GdmLogo, GDM_KEY_LOGO) ||
+	     ! bool_same (GdmSystemMenu, GDM_KEY_SYSMENU) ||
+	     ! bool_same (GdmBrowser, GDM_KEY_BROWSER) ||
+	     ! bool_same (GdmConfigAvailable, GDM_KEY_CONFIG_AVAILABLE) ||
+	     ! bool_same (GdmTimedLoginEnable, GDM_KEY_TIMED_LOGIN_ENABLE)) {
+		/* restart interruption */
+		g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_RESTART_GREETER);
+		gnome_config_pop_prefix ();
+		return;
+	}
 
 	GdmUse24Clock = gnome_config_get_bool (GDM_KEY_USE_24_CLOCK);
 	update_clock (NULL);
@@ -3681,8 +3740,6 @@ gdm_reread_config (int sig)
 		g_free (str);
 	}
 
-	/* FIXME: background, position, xinerama screen, config available,
-	 * system menu, chooser/failsafe/last sessions */
 
 	gnome_config_pop_prefix();
 }

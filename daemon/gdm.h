@@ -108,6 +108,7 @@ enum {
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'
 #define GDM_INTERRUPT_CONFIGURE   'C'
+#define GDM_INTERRUPT_RESTART_GREETER 'R'
 
 /* The dreaded miscellaneous category */
 #define FIELD_SIZE 256

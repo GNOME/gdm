@@ -1,3 +1,30 @@
+Fri Apr 26 14:29:07 2002  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.h, daemon/slave.c: a bit of a hack, but create an
+	  interruption type for greeter restart.  It's easier to do this
+	  way then with just an exit since we avoid reentrancy issues and
+	  all kinds of other fun stuff.  That is we trap the interruption
+	  at defined points
+
+	* gui/gdmlogin.c: minor fixes, and recheck config and if some stuff
+	  changed (not the full set we care about, maybe we should do that)
+	  just restart.
+
+	* gui/greeter/greeter.c, gui/greeter/greeter_configuration.h,
+	  gui/greeter/greeter_item.[ch], gui/greeter/greeter_parser.c,
+	  gui/greeter/greeter_system.c:  Implement a config button handeling.
+	  the timed, system and config showing is handled by show
+	  types/subtypes so this is handled cleanly.  Request restart on HUP.
+	  To allow a name change
+
+	* gui/greeter/themes/circles/GdmGreeterTheme.info:  An idea (not used
+	  currently) for the greeter theme information.  This is so that we
+	  can do a theme browser and also handle theme installation and all
+	  that fun sort of stuff.
+
+	* gui/greeter/themes/circles/circles.xml: add a system show type
+	  to the system button
+
 Fri Apr 26 10:18:07 2002  George Lebl <jirka@5z.com>
 
 	* gui/gdmsetup.(c|glade): implement the greeter selection option menu

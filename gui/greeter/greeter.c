@@ -38,7 +38,11 @@ gboolean GdmShowXtermFailsafeSession = FALSE;
 gboolean GdmShowLastSession = FALSE;
 gchar *GdmSessionDir = NULL;
 gchar *GdmLocaleFile = NULL;
+gchar *GdmHalt = NULL;
+gchar *GdmReboot = NULL;
+gchar *GdmSuspend = NULL;
 gboolean GdmSystemMenu = TRUE;
+gboolean GdmConfigAvailable = TRUE;
 
 gboolean greeter_use_circles_in_entry = FALSE;
 
@@ -69,6 +73,10 @@ greeter_parse_config (void)
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     GdmSystemMenu = gnome_config_get_bool (GDM_KEY_SYSMENU);
+    GdmConfigAvailable = gnome_config_get_bool (GDM_KEY_CONFIG_AVAILABLE);
+    GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
+    GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
+    GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
     
     gnome_config_pop_prefix();
 
@@ -587,7 +595,10 @@ greeter_abort (const gchar *format, ...)
 static void
 greeter_reread_config (int sig)
 {
-	/* FIXME: reparse config stuff here */
+  /* FIXME: actually reparse config stuff here, instead of
+   * just requesting a restart */
+  /* restart interruption */
+  g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_RESTART_GREETER);
 }
 
 static void

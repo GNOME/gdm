@@ -69,6 +69,8 @@ static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
 static gboolean do_configurator = FALSE; /* if this is true, login as root
 					  * and start the configurator */
+static gboolean do_restart_greeter = FALSE; /* if this is true, whack the
+					       greeter and try again */
 static gchar *ParsedAutomaticLogin = NULL;
 static gchar *ParsedTimedLogin = NULL;
 
@@ -336,6 +338,30 @@ gdm_screen_init (GdmDisplay *display)
 	}
 }
 
+static void
+gdm_slave_whack_greeter (void)
+{
+	gdm_sigchld_block_push ();
+
+	greet = FALSE;
+
+	/* do what you do when you quit, this will hang until the
+	 * greeter decides to print an STX\n and die, meaning it can do some
+	 * last minute cleanup */
+	gdm_slave_greeter_ctl_no_ret (GDM_QUIT, "");
+
+	/* Wait for the greeter to really die, the check is just
+	 * being very anal, the pid is always set to something */
+	if (d->greetpid > 0)
+		waitpid (d->greetpid, 0, 0); 
+	d->greetpid = 0;
+
+	gdm_slave_send_num (GDM_SOP_GREETPID, 0);
+
+	gdm_sigchld_block_pop ();
+}
+
+
 static gboolean do_xfailed_on_xio_error = FALSE;
 
 static void 
@@ -500,6 +526,14 @@ gdm_slave_run (GdmDisplay *display)
 	    do {
 		    gdm_slave_wait_for_login (); /* wait for a password */
 
+		    if (do_restart_greeter) {
+			    do_restart_greeter = FALSE;
+			    if (greet)
+				    gdm_slave_whack_greeter ();
+			    gdm_slave_greeter ();  /* Start the greeter */
+			    continue;
+		    }
+
 		    d->logged_in = TRUE;
 		    gdm_slave_send_num (GDM_SOP_LOGGED_IN, TRUE);
 
@@ -529,29 +563,6 @@ gdm_slave_run (GdmDisplay *display)
 		    }
 	    } while (greet);
     }
-}
-
-static void
-gdm_slave_whack_greeter (void)
-{
-	gdm_sigchld_block_push ();
-
-	greet = FALSE;
-
-	/* do what you do when you quit, this will hang until the
-	 * greeter decides to print an STX\n and die, meaning it can do some
-	 * last minute cleanup */
-	gdm_slave_greeter_ctl_no_ret (GDM_QUIT, "");
-
-	/* Wait for the greeter to really die, the check is just
-	 * being very anal, the pid is always set to something */
-	if (d->greetpid > 0)
-		waitpid (d->greetpid, 0, 0); 
-	d->greetpid = 0;
-
-	gdm_slave_send_num (GDM_SOP_GREETPID, 0);
-
-	gdm_sigchld_block_pop ();
 }
 
 /* A hack really, this will wait around until the first mapped window
@@ -2867,6 +2878,9 @@ gdm_slave_greeter_check_interruption (const char *msg)
 			    ! ve_string_empty (GdmConfigurator)) {
 				do_configurator = TRUE;
 			}
+			break;
+		case GDM_INTERRUPT_RESTART_GREETER:
+			do_restart_greeter = TRUE;
 			break;
 		default:
 			break;

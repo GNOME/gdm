@@ -44,6 +44,24 @@ greeter_suspend_handler (void)
 }
 
 static void
+greeter_config_handler (GreeterItemInfo *info,
+			gpointer         user_data)
+{
+	/* we should be now fine for focusing new windows */
+	gdm_wm_focus_new_windows (TRUE);
+
+#if 0
+	/* Taken from gdmlogin, does this apply? */
+	/* configure interruption */
+	login_entry = FALSE; /* no matter where we are,
+				this is no longer a login_entry */
+#endif
+	/* configure interruption */
+	g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
+}
+
+
+static void
 greeter_system_handler (GreeterItemInfo *info,
 			gpointer         user_data)
 {
@@ -125,5 +143,8 @@ greeter_item_system_setup (void)
 					 NULL);
   greeter_item_register_action_callback ("system_button",
 					 (ActionFunc)greeter_system_handler,
+					 NULL);
+  greeter_item_register_action_callback ("config_button",
+					 (ActionFunc)greeter_config_handler,
 					 NULL);
 }
