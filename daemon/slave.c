@@ -610,6 +610,8 @@ focus_first_x_window (const char *class_res_name)
 		_exit (0);
 	}
 
+	XSetInputFocus (disp, PointerRoot, RevertToPointerRoot, CurrentTime);
+
 	/* set event mask for events on root window */
 	XGetWindowAttributes (disp,
 			      DefaultRootWindow (disp),
