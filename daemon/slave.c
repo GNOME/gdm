@@ -979,7 +979,7 @@ gdm_slave_run (GdmDisplay *display)
     while (d->handled &&
 	   openretries < maxtries &&
 	   d->dsp == NULL &&
-	   d->servpid > 1) {
+	   ( ! SERVER_IS_LOCAL (d) || d->servpid > 1)) {
 	d->dsp = XOpenDisplay (d->name);
 	
 	if (d->dsp == NULL) {
@@ -3701,14 +3701,14 @@ gdm_slave_child_handler (int sig)
 		gdm_server_wipe_cookies (d);
 		gdm_slave_whack_temp_auth_file ();
 
+		gdm_slave_send_num (GDM_SOP_XPID, 0);
+
 		/* if not handled there is no need for further formalities,
 		 * we just have to die */
 		if ( ! d->handled) {
 			exit_code_to_use = DISPLAY_REMANAGE;
 			SIGNAL_EXIT_WITH_JMP (d, JMP_JUST_QUIT_QUICKLY);
 		}
-
-		gdm_slave_send_num (GDM_SOP_XPID, 0);
 
 		/* whack the session good */
 		if (d->sesspid > 1) {

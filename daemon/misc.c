@@ -20,6 +20,7 @@
 #include <libgnome/libgnome.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -1109,11 +1110,45 @@ gdm_fdgets (int fd)
 void
 gdm_close_all_descriptors (int from, int except, int except2)
 {
-	int i;
-	int max = sysconf (_SC_OPEN_MAX);
-	for (i = from; i < max; i++) {
-		if (i != except && i != except2)
-			IGNORE_EINTR (close(i));
+	DIR *dir;
+	struct dirent *ent;
+	GSList *openfds = NULL;
+
+	/* evil, but less evil then going to _SC_OPEN_MAX
+	   which can be very VERY large */
+	dir = opendir ("/proc/self/fd/");
+	if (dir != NULL) {
+		GSList *li;
+		while ((ent = readdir (dir)) != NULL) {
+			openfds = g_slist_prepend (openfds,
+						   GINT_TO_POINTER (atoi (ent->d_name)));
+		}
+		closedir (dir);
+		for (li = openfds; li != NULL; li = li->next) {
+			int fd = GPOINTER_TO_INT (li->data); 
+			if (fd >= from && fd != except && fd != except2) {
+				IGNORE_EINTR (close(fd));
+			}
+		}
+		g_slist_free (openfds);
+	} else {
+		int i;
+		int max = sysconf (_SC_OPEN_MAX);
+		/* don't go higher then this.  This is
+		 * a safety measure to not hang on crazy
+		 * systems */
+		if (max > 4096) {
+			/* FIXME: warn about this perhaps */
+			/* try an open, in case we're really
+			   leaking fds somewhere badly, this
+			   should be very high */
+			i = gdm_open_dev_null (O_RDONLY);
+			max = MAX (i+1, 4096);
+		}
+		for (i = from; i < max; i++) {
+			if (i != except && i != except2)
+				IGNORE_EINTR (close(i));
+		}
 	}
 }
 

@@ -1,3 +1,18 @@
+Tue Jul 29 11:10:20 2003  George Lebl <jirka@5z.com>
+
+	* daemon/misc.c: apparently _SC_OPEN_MAX can be rediculously high
+	  sometimes (1024^2 on Linux 2.4 kernel if I understand it right).
+	  closing all those FDs can take quite a bit of time.  So 1)
+	  use /proc/self/fd/ directory if it exists and 2) limit the
+	  maximum fd to 4096 as we really won't be using fds higher then
+	  that I don't think.  We'll try an open in that case to see
+	  if we are really very high in the number of fds
+
+	* daemon/slave.c: fix xdmcp logins, the servpid will not be set
+	  here even if the server is running.  DUH!  Also send XPID 0
+	  before killing self just in case when we receive that
+	  X died.
+
 Mon Jul 28 16:28:28 2003  George Lebl <jirka@5z.com>
 
 	* docs/C/gdm.xml: fix doc of the gdm User/Group and add
