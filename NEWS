@@ -2,8 +2,30 @@ Ahh news...
 
 2.3.90.5 stuff:
 
+- Some work on making the language setup more sane and integrating
+  the graphical and the standard greeter language setups
+
+- Added more untranslated language names (Changwoo Ryu, me)
+
+- The graphical greeter now actually works with timed login stuff,
+  does enable/disable during configuration, and gives closing pam
+  comments after login is completed (such as that your pw will expire
+  or such)
+
+- The timed login time is now increased on any key or mouse press on
+  any widget.
+
+- The shipped locale.alias now lists all the languages we know,
+  and doesn't include any encodings or dups or other random garbage
+
+- Xnest is now being passed the -kb argument to disable the xkb
+  extension on the Xnest as this just causes problems apparently. (#66610)
+
+- The gdmXnestchooser command now actually uses the command you gave it
+  in the config file or on the command line
+
 - The graphical greeter is actually translated, plus a bunch of
-  other translation issues are fixed
+  other translation issues are fixed (#82549)
 
 - Possible crashes and random weird errors fixed by not using g_print
   for communication (since that does charset conversions which we don't
