@@ -346,6 +346,12 @@ gdm_get_free_display (int start, uid_t server_uid)
 
 		/* if lock file exists and the process exists */
 		g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", i);
+		if (stat (buf, &s) == 0 &&
+		    ! S_ISREG (s.st_mode)) {
+			/* Eeeek! not a regular file?  Perhaps someone
+			   is trying to play tricks on us */
+			continue;
+		}
 		fp = fopen (buf, "r");
 		if (fp != NULL) {
 			char buf2[100];
@@ -359,6 +365,9 @@ gdm_get_free_display (int start, uid_t server_uid)
 
 			}
 			fclose (fp);
+
+			/* whack the file, it's a stale lock file */
+			unlink (buf);
 		}
 
 		/* if starting as root, we'll be able to overwrite any
@@ -373,7 +382,7 @@ gdm_get_free_display (int start, uid_t server_uid)
 			}
 
 			g_snprintf (buf, sizeof (buf),
-				    "/tmp/.%d-lock", i);
+				    "/tmp/.X%d-lock", i);
 			if (stat (buf, &s) == 0 &&
 			    s.st_uid != server_uid) {
 				continue;

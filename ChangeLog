@@ -1,3 +1,13 @@
+Mon Jul 14 11:24:06 2003  George Lebl <jirka@5z.com>
+
+	* daemon/server.[ch], daemon/slave.c: XFree86 is an wanker and doesn't
+	  wipe it's lockfile sometimes apparently (well obviously it won't if it
+	  crashed or some such), so if we find a stale lock file after we
+	  kill the server, whack the lock file.
+
+	* daemon/misc.c: be very careful when approaching lockfiles in the
+	  /tmp directory
+
 Fri Jul 11 14:31:20 2003  George Lebl <jirka@5z.com>
 
 	* daemon/errorgui.c, daemon/server.c, daemon/slave.c:

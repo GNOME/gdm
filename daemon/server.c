@@ -75,6 +75,55 @@ static GdmDisplay *d = NULL;
 static gboolean server_signal_notified = FALSE;
 static int server_signal_pipe[2];
 
+void
+gdm_server_whack_lockfile (GdmDisplay *disp, pid_t pid)
+{
+	    FILE *fp;
+	    char buf[256];
+	    struct stat s;
+
+	    /* X seems to be sometimes broken with its lock files and
+	       doesn't seem to remove them always, and if you manage
+	       to get into the weird state where the old pid now
+	       corresponds to some new pid, X will just die with
+	       a stupid error. */
+
+	    /* Yes there could be a race here if another X server starts
+	       at this exact instant.  Oh well such is life.  Very unlikely
+	       to happen though as we should really be the only ones
+	       trying to start X servers, and we aren't starting an
+	       X server on this display yet. */
+
+	    /* if lock file exists and it is our process, whack it! */
+	    g_snprintf (buf, sizeof (buf), "/tmp/.X%d-lock", disp->dispnum);
+
+	    /* If doesn't exist, yay the X server is not a wanker */
+	    if (stat (buf, &s) != 0)
+		    return;
+	
+	    if ( ! S_ISREG (s.st_mode)) {
+		    /* Eeeek! not a regular file?  Perhaps someone
+		       is trying to play tricks on us */
+		    return;
+	    }
+
+	    fp = fopen (buf, "r");
+	    if (fp != NULL) {
+		    char buf2[100];
+		    if (fgets (buf2, sizeof (buf2), fp) != NULL) {
+			    gulong lockpid;
+			    fclose (fp);
+			    if (sscanf (buf2, "%lu", &lockpid) == 1 &&
+				pid == lockpid) {
+				    unlink (buf);
+			    }
+		    } else {
+			    fclose (fp);
+		    }
+	    }
+}
+
+
 /* Wipe cookie files */
 void
 gdm_server_wipe_cookies (GdmDisplay *disp)
@@ -237,6 +286,8 @@ gdm_server_stop (GdmDisplay *disp)
 		kill (servpid, SIGTERM) == 0)
 		    ve_waitpid_no_signal (servpid, 0, 0);
 	    gdm_sigchld_block_pop ();
+
+	    gdm_server_whack_lockfile (disp, servpid);
 
 	    gdm_debug ("gdm_server_stop: Server pid %d dead", (int)servpid);
     }
@@ -693,6 +744,8 @@ gdm_server_start (GdmDisplay *disp, gboolean treat_as_flexi,
 		kill (pid, SIGTERM) == 0)
 		    ve_waitpid_no_signal (pid, NULL, 0);
 	    gdm_sigchld_block_pop ();
+	    
+	    gdm_server_whack_lockfile (disp, pid);
     }
 
     /* We will rebake cookies anyway, so wipe these */
