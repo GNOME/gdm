@@ -422,6 +422,25 @@ focus_first_x_window (const char *class_res_name)
 	}
 }
 
+static gboolean
+accept_both_clicks (GtkWidget *w,
+		    GdkEvent *event,
+		    gpointer data)
+{
+	/* HAAAAAAAAAAAAAAAAACK */
+	/* Since the user has not logged in yet and may have left/right
+	 * mouse buttons switched, we just translate every right mouse click
+	 * to a left mouse click */
+	if ((event->type == GDK_BUTTON_PRESS ||
+	     event->type == GDK_2BUTTON_PRESS ||
+	     event->type == GDK_3BUTTON_PRESS ||
+	     event->type == GDK_BUTTON_RELEASE)
+	    && event->button.button == 3)
+		event->button.button = 1;
+
+	return FALSE;
+}      
+
 /* A hack really, this pretends to be a standalone gtk program */
 /* this should only be called once forked and all thingies are closed */
 static void
@@ -457,6 +476,9 @@ run_error_dialog (const char *error)
 				    TRUE, TRUE, 0);
 
 		button = gtk_button_new_with_label (_("OK"));
+		gtk_signal_connect (GTK_OBJECT (button), "event",
+				    GTK_SIGNAL_FUNC (accept_both_clicks),
+				    NULL);
 		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
 				    button, TRUE, TRUE, 0);
 
