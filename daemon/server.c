@@ -898,6 +898,20 @@ rotate_logs (const char *dname)
 	g_free (fname);
 }
 
+GdmXServer *
+gdm_server_resolve (GdmDisplay *disp)
+{
+	char *bin;
+	GdmXServer *svr = NULL;
+
+	bin = ve_first_word (disp->command);
+	if (bin != NULL && bin[0] != '/') {
+		svr = gdm_find_x_server (bin);
+	}
+	g_free (bin);
+	return svr;
+}
+
 
 char **
 gdm_server_resolve_command_line (GdmDisplay *disp,

@@ -42,6 +42,7 @@ void		gdm_server_checklog	(GdmDisplay *disp);
 char **		gdm_server_resolve_command_line (GdmDisplay *disp,
 						 gboolean resolve_flags,
 						 const char *vtarg);
+GdmXServer *	gdm_server_resolve	(GdmDisplay *disp);
 
 
 

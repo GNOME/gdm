@@ -898,6 +898,7 @@ gdm_start_first_unborn_local (int delay)
 		if (d != NULL &&
 		    d->type == TYPE_LOCAL &&
 		    d->dispstat == DISPLAY_UNBORN) {
+			GdmXServer *svr;
 			gdm_debug ("gdm_start_first_unborn_local: "
 				   "Starting %s", d->name);
 
@@ -910,13 +911,25 @@ gdm_start_first_unborn_local (int delay)
 			if (gdm_first_login)
 				d->timed_login_ok = TRUE;
 
+			svr = gdm_server_resolve (d);
+
 			if ( ! gdm_display_manage (d)) {
 				gdm_display_unmanage (d);
-				/* only the first local display gets
-				 * autologged in */
-				gdm_first_login = FALSE;
+				/* only the first local display where
+				   we actually log in gets
+				   autologged in */
+				if (svr != NULL &&
+				    svr->handled &&
+				    ! svr->chooser)
+					gdm_first_login = FALSE;
 			} else {
-				gdm_first_login = FALSE;
+				/* only the first local display where
+				   we actually log in gets
+				   autologged in */
+				if (svr != NULL &&
+				    svr->handled &&
+				    ! svr->chooser)
+					gdm_first_login = FALSE;
 				break;
 			}
 		}
