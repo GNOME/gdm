@@ -18,6 +18,10 @@ Ahh news...
 
 - Use /var/log/gdm by default as logdir rather then the ServAuthDir
 
+- The face browsers all display at most 50 users.  This should fix
+  very large systems where this may hang for a long time and more
+  then 50 users in a facebrowser is useless anyway.
+
 - Reworked the server reinit to use SIGUSR1 as it should, should
   fix some weird crashes which left X behind before.
 

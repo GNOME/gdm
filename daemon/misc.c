@@ -1180,6 +1180,7 @@ gdm_unset_signals (void)
 	gdm_signal_default (SIGUSR2);
 	gdm_signal_default (SIGCHLD);
 	gdm_signal_default (SIGTERM);
+	gdm_signal_default (SIGINT);
 	gdm_signal_default (SIGPIPE);
 	gdm_signal_default (SIGALRM);
 	gdm_signal_default (SIGHUP);
