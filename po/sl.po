@@ -7,13 +7,30 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2003-01-12 13:58+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-08-22 13:23+0200\n"
 "PO-Revision-Date: 2002-06-07 22:43+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: config/CDE.desktop.in.h:1
+msgid "CDE"
+msgstr "CDE"
+
+#: config/CDE.desktop.in.h:2
+msgid "This session logs you into CDE"
+msgstr "Ta seja vas prijavi v CDE"
+
+#: config/Default.desktop.in.h:1
+msgid "Default System Session"
+msgstr "Privzeta seja sistema"
+
+#: config/Default.desktop.in.h:2
+msgid "This is the default system session"
+msgstr "To je privzeta seja sistema"
 
 #. DON\'T CHANGE THIS BY HAND! CHANGE THE SCRIPT THIS IS GENERATED
 #. ALWAYS ADD A CHANGELOG OR I WILL PERSONALLY KICK YOUR ASS!
@@ -61,6 +78,10 @@ msgstr ""
 "nastavljen.  Želite videti izhod strežnika X za diagnozo problema?"
 
 #: config/gettextfoo.h:9
+msgid "Would you like to view the detailed X server output as well?"
+msgstr "Želite pogledati tudi podrobnosti izhoda strežnika X?"
+
+#: config/gettextfoo.h:10
 msgid ""
 "I cannot start the X server (your graphical interface).  It seems that the "
 "pointer device (your mouse) is not set up correctly.  Would you like to view "
@@ -70,13 +91,39 @@ msgstr ""
 "kazalna naprava (miška) ni pravilno nastavljena. Želite videti izhod "
 "strežnika X za diagnozo problema?"
 
-#: config/gettextfoo.h:10
+#: config/gettextfoo.h:11
 msgid ""
 "Would you like me to try to run the mouse configuration program?  Note that "
 "you will need the root password for this."
 msgstr ""
 "Želite, da poskušam pognati program za nastavljanje miške? Za to boste "
 "potrebovali administrativno (root) geslo."
+
+#: config/gettextfoo.h:12
+msgid ""
+"This is the failsafe xterm session.  Windows now have focus only if you have "
+"your cursor above them.  To get out of this mode type 'exit' in the window "
+"in the upper left corner"
+msgstr ""
+"To je pred sesutjem varna seja xterm.  Okna imajo sedaj fokus le, če je nad njimi "
+"miškin kazalec.  Za izhod iz tega načina v zgornjem levem oknu vtipkajte 'exit'."
+
+#: config/gettextfoo.h:13
+msgid ""
+"I could not start your session and so I have started the failsafe xterm "
+"session.  Windows now have focus only if you have your cursor above them.  "
+"To get out of this mode type 'exit' in the window in the upper left corner"
+msgstr ""
+"Nisem mogel zagnati seje, zato sem pognal pred napakami varno sejo xterm. "
+"Okna imajo sedaj fokus le, če je nad njimi miškin kazalec. Za izhod iz tega načina vtipkajte 'exit' v konu v levem zgornjem kotu."
+
+#: config/gnome.desktop.in.h:1
+msgid "GNOME"
+msgstr "GNOME"
+
+#: config/gnome.desktop.in.h:2
+msgid "This session logs you into GNOME"
+msgstr "Ta seja vas prijavi v GNOMe"
 
 #: daemon/auth.c:55
 #, c-format
@@ -99,104 +146,119 @@ msgstr ""
 "GDM ni mogel zapisati novega avtorizacijskega vnosa.  Možno je, da je "
 "zmanjkalo prostora na disku. %s%s"
 
-#: daemon/auth.c:179
+#: daemon/auth.c:194
 #, c-format
 msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: Nisem mogel ustvariti nove datoteke piškotkov v %s"
 
+#: daemon/auth.c:218 daemon/auth.c:235 daemon/auth.c:711
+msgid "%s: Cannot safely open %s"
+msgstr "%s: Ne morem varno odpreti %s"
+
 #. Really no need to clean up here - this process is a goner anyway
-#: daemon/auth.c:437 daemon/auth.c:471
-#, c-format
-msgid "gdm_auth_user_add: Could not open cookie file %s"
-msgstr "gdm_auth_user_add: Nisem mogel odpreti datoteke piškotkov %s"
+#: daemon/auth.c:524 daemon/auth.c:562
+msgid "%s: Could not open cookie file %s"
+msgstr "%s: Nisem mogel odpreti datoteke s piškotki %s"
 
-#: daemon/auth.c:454
-#, c-format
-msgid "gdm_auth_user_add: Could not lock cookie file %s"
-msgstr "gdm_auth_user_add: Nisem mogel zakleniti datoteke piškotkov %s"
+msgid "%s: Could not lock cookie file %s"
+msgstr "%s: Nisem mogel zakleniti datoteke s piškotki %s"
 
-#: daemon/auth.c:500
+#: daemon/auth.c:593 daemon/auth.c:614
 #, c-format
 msgid "%s: Could not write cookie"
 msgstr "%s: Nisem mogel zapisati piškotka"
 
-#: daemon/auth.c:574
-#, c-format
-msgid "gdm_auth_user_remove: Ignoring suspiciously looking cookie file %s"
-msgstr "gdm_auth_user_remove: Ne upoštevam sumljive datoteke s piškokotom %s"
+#: daemon/auth.c:689
+msgid "%s: Ignoring suspiciously looking cookie file %s"
+msgstr "%s: Ne upoštevam sumljive datoteke s piškokotki %s"
 
 #. This means we have no clue what's happening,
 #. * it's not X server crashing as we would have
 #. * cought that elsewhere.  Things are just
-#. * not working out, so tell the user
-#: daemon/display.c:98 daemon/display.c:105
+#. * not working out, so tell the user.
+#. * However this may have been caused by a malicious local user
+#. * zapping the display repeatedly, that shouldn't cause gdm
+#. * to stop working completely so just wait for 2 minutes,
+#. * that should give people ample time to stop gdm if needed,
+#. * or just wait for the stupid malicious user to get bored
+#. * and go away
+#: daemon/display.c:114
 #, c-format
 msgid ""
-"Failed to start the display server several times in a short time period; "
-"disabling display %s"
+"The display server has been shut down about 6 times in the last 90 seconds, "
+"it is likely that something bad is going on.  I will wait for 2 minutes "
+"before trying again on display %s."
 msgstr ""
-"Večkrat v kratkem času nisem uspel pognati strežnika X; izklapljam zaslon %s"
+"Strežnik zaslona je bil zaprt približno šestkrat v zadnjih 90 sekundah, "
+"verjetno se dogaja nekaj slabega.  Počakal bom 2 minuti preden bom znova poskušal pognati zaslon %s."
 
-#: daemon/display.c:163
+#: daemon/display.c:243
 #, c-format
 msgid "%s: Cannot create pipe"
 msgstr "%s: Ne morem ustvariti cevi"
 
-#: daemon/display.c:254
-#, c-format
-msgid "gdm_display_manage: Failed forking gdm slave process for %s"
-msgstr "gdm_display_manage: Delitev suženjskega procesa gdm za %s ni uspela"
+#: daemon/display.c:315
+msgid "%s: Failed forking gdm slave process for %s"
+msgstr "%s: Razvejitev suženjskega procesa gdm za %s ni uspela"
 
-#: daemon/errorgui.c:133
+#: daemon/errorgui.c:286
+msgid "%s not a regular file!\n"
+msgstr "%s ni običajna datoteka!\n"
+
+#: daemon/errorgui.c:301
+msgid ""
+"\n"
+"... File too long to display ...\n"
+msgstr ""
+"\n"
+"... Datoteka predolga za prikaz ...\n"
+
+#: daemon/errorgui.c:309
 #, c-format
 msgid "%s could not be opened"
 msgstr "%s: ne mora biti odprta"
 
-#: daemon/errorgui.c:283
-msgid "gdm_error_box: Cannot fork to display error/info box"
-msgstr "gdm_error_box: Ne morem se deliti za prikaz škatle z napako/podatki"
+#: daemon/errorgui.c:402 daemon/errorgui.c:522 daemon/errorgui.c:609
+#: daemon/errorgui.c:706
+msgid "%s: Cannot fork to display error/info box"
+msgstr "%s: Ne morem se razvejiti škatle za prikaz napake/podatkov"
 
-#: daemon/errorgui.c:435 daemon/errorgui.c:557
-msgid "gdm_failsafe_question: Cannot fork to display error/info box"
-msgstr ""
-"gdm_failsafe_question: Ne morem se deliti za prikaz škatle z napako/podatki"
-
-#: daemon/filecheck.c:49
+#: daemon/filecheck.c:54
 #, c-format
 msgid "%s: Directory %s does not exist."
 msgstr "%s: Imenik %s ne obstaja."
 
-#: daemon/filecheck.c:56 daemon/filecheck.c:97
+#: daemon/filecheck.c:61 daemon/filecheck.c:103
 #, c-format
 msgid "%s: %s is not owned by uid %d."
 msgstr "%s: Lastnik %s ni %d."
 
-#: daemon/filecheck.c:62 daemon/filecheck.c:104
+#: daemon/filecheck.c:67 daemon/filecheck.c:110
 #, c-format
 msgid "%s: %s is writable by group."
 msgstr "%s: skupina sme pisati po %s."
 
-#: daemon/filecheck.c:68
+#: daemon/filecheck.c:73
 #, c-format
 msgid "%s: %s is writable by other."
 msgstr "%s: ostali smejo pisati po %s."
 
-#: daemon/filecheck.c:82
+#: daemon/filecheck.c:88
 #, c-format
 msgid "%s: %s does not exist but must exist."
 msgstr "%s: %s ne obstaja, a mora."
 
-#: daemon/filecheck.c:90
+#: daemon/filecheck.c:96
 #, c-format
 msgid "%s: %s is not a regular file."
 msgstr "%s: %s ni običajna datoteka."
 
-#: daemon/filecheck.c:111
+#: daemon/filecheck.c:117
 #, c-format
 msgid "%s: %s is writable by group/other."
 msgstr "%s: skupina/ostali sme pisati po %s."
 
-#: daemon/filecheck.c:118
+#: daemon/filecheck.c:124
 #, c-format
 msgid "%s: %s is bigger than sysadmin specified maximum file size."
 msgstr ""
@@ -213,88 +275,124 @@ msgstr "%s: Ne morem ustvariti vtiča!"
 msgid "%s: Could not bind socket"
 msgstr "%s: Nisem mogel povezati vtiča"
 
-#: daemon/gdm-net.c:336
+#: daemon/gdm-net.c:334
 #, c-format
 msgid "%s: Could not make FIFO"
 msgstr "%s: Ne morem ustavariti FIFO"
 
-#: daemon/gdm-net.c:344
+#: daemon/gdm-net.c:342
 #, c-format
 msgid "%s: Could not open FIFO"
 msgstr "%s: Ne morem odpreti FIFO"
 
-#: daemon/gdm.c:225
+#: daemon/gdm.c:235
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
+"does not exist. Please correct gdm configuration %s and restart gdm."
+msgstr ""
+"Avtorizacijski imenik strežnika (daemon/ServAuthDir) je nastavljen na %s, a "
+"ta ne obstaja. Prosimo, popravite nastavitve gdm %s in vnovič poženite gdm."
+
+#: daemon/gdm.c:244
+#, c-format
+msgid "%s: Authdir %s does not exist. Aborting."
+msgstr "%s: Imenik authdir %s ne obstaja. Prekinjam."
+
+#: daemon/gdm.c:249
+#, c-format
+msgid ""
+"Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
+"not a directory. Please correct gdm configuration %s and restart gdm."
+msgstr ""
+"Avtorizacijski imenik strežnika (daemon/ServAuthDir) je nastavljen na %s, a "
+"to ni imenik. Prosimo, popravite nastavitve gdm %s in vnovič poženite gdm."
+
+#: daemon/gdm.c:258
+#, c-format
+msgid "%s: Authdir %s is not a directory. Aborting."
+msgstr "%s: Imenik authdir %s ni imenik. Prekinjam."
+
+#: daemon/gdm.c:271
+#, c-format
+msgid ""
+"%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
+msgstr ""
+"%s: Imenik dnevnika %s ne obstaja ali ni imenik.  Uporabljam ServAuthDir %s."
+
+#: daemon/gdm.c:305 gui/gdmlogin.c:692 gui/greeter/greeter.c:95
 #, c-format
 msgid "%s: No configuration file: %s. Using defaults."
 msgstr "%s: Ni datoteke nastavitev: %s. Uporabljam privzete vrednosti."
 
-#: daemon/gdm.c:298
+#: daemon/gdm.c:350
+#, c-format
+msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
+msgstr "%s: BaseXsession je prazen, uporabljam %s/gdm/Xsession"
+
+#: daemon/gdm.c:391
 #, c-format
 msgid "%s: Standard X server not found, trying alternatives"
 msgstr "%s: Običajni strežnik X ni bil najden, poskušam alternative"
 
-#: daemon/gdm.c:327
+#: daemon/gdm.c:419
 #, c-format
 msgid "%s: XDMCP was enabled while there is no XDMCP support, turning it off"
 msgstr "%s: XDMCP je bil vključen kljub temu, da ni podpore XDMCP, izklapljam"
 
-#: daemon/gdm.c:340
+#: daemon/gdm.c:432
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off automatic login"
 msgstr "%s: Root se ne more samodejno prijaviti, izklapljam samodejno prijavo"
 
-#: daemon/gdm.c:353
+#: daemon/gdm.c:445
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off timed login"
 msgstr "%s: Root se ne more samodejno prijaviti, izklapljam časovno prijavo"
 
-#: daemon/gdm.c:359
-#, c-format
-msgid "%s: TimedLoginDelay less then 5, so I will just use 5."
+#: daemon/gdm.c:451
+msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
 msgstr "%s: TimedLoginDelay je manj kot 5, zato bom uporabil 5."
 
-#: daemon/gdm.c:369
+#: daemon/gdm.c:461
 #, c-format
 msgid "%s: No greeter specified."
-msgstr "%s: Pozdravnik ni naveden."
+msgstr "%s: Pozdravni program ni naveden."
 
-#: daemon/gdm.c:372
+#: daemon/gdm.c:464
 #, c-format
 msgid "%s: No remote greeter specified."
-msgstr "%s: Oddaljen pozdravnik ni naveden."
+msgstr "%s: Oddaljen pozdravni program ni naveden."
 
-#: daemon/gdm.c:377
-msgid "No daemon/ServAuthDir specified in the configuration file"
-msgstr "V nastavitveni datoteki daemon/ServerAuthDir ni naveden"
-
-#: daemon/gdm.c:379
-#, c-format
-msgid "%s: No authdir specified."
-msgstr "%s: Authdir ni naveden."
-
-#: daemon/gdm.c:386
+#: daemon/gdm.c:468
 #, c-format
 msgid "%s: No sessions directory specified."
 msgstr "%s: Imenik sej ni naveden."
 
-#: daemon/gdm.c:412
+#: daemon/gdm.c:493
 #, c-format
 msgid "%s: Empty server command, using standard one."
 msgstr "%s: Prazen ukaz strežnika, uporabljam običajnega."
 
-#: daemon/gdm.c:458
+#: daemon/gdm.c:536
 #, c-format
 msgid "%s: Display number %d in use!  I will use %d"
 msgstr "%s: Zaslon številka %d je v uporabi!  Uporabil bom %d"
 
-#: daemon/gdm.c:475
+#: daemon/gdm.c:555
 #, c-format
 msgid "%s: Invalid server line in config file. Ignoring!"
 msgstr "%s: Neveljavna vrstica za strežnik v datoteki nastavitev. Preziram!"
 
+#: daemon/gdm.c:566 daemon/gdm.c:605
+#, c-format
+msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
+msgstr ""
+"%s: XDMCP je izključen in brez navedenih krajevnih strežnikov. Prekinjam!"
+
 #. start
 #. server uid
-#: daemon/gdm.c:498
+#: daemon/gdm.c:582
 #, c-format
 msgid ""
 "%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
@@ -303,7 +401,7 @@ msgstr ""
 "%s: XDMCP izključen in naveden ni noben krajevni strežnik. Dodajam %s na :%d "
 "za omogočitev nastavljanja!"
 
-#: daemon/gdm.c:513
+#: daemon/gdm.c:597
 #, c-format
 msgid ""
 "XDMCP is disabled and gdm cannot find any local server to start.  Aborting!  "
@@ -312,18 +410,12 @@ msgstr ""
 "XDMCP je izključen in gdm ne najde nobenega krajevne strežnika za pričetek.  "
 "Prekinjam!  Prosimo, popravite nastavitve %s in vnovič poženite gdm."
 
-#: daemon/gdm.c:521
-#, c-format
-msgid "%s: XDMCP disabled and no local servers defined. Aborting!"
-msgstr ""
-"%s: XDMCP je izključen in brez navedenih krajevnih strežnikov. Prekinjam!"
-
-#: daemon/gdm.c:529
+#: daemon/gdm.c:618
 #, c-format
 msgid "%s: Can't find the gdm user (%s). Trying 'nobody'!"
 msgstr "%s: Ne najdem uporabnika gdm (%s). Poizkušam 'nobody'!"
 
-#: daemon/gdm.c:537
+#: daemon/gdm.c:626
 #, c-format
 msgid ""
 "The gdm user does not exist. Please correct gdm configuration %s and restart "
@@ -332,12 +424,12 @@ msgstr ""
 "Uporabnik gdm ne obstjaa. Prosimo, popravite nastavitve gdm %s in vnovič "
 "poženite gdm."
 
-#: daemon/gdm.c:543
+#: daemon/gdm.c:633
 #, c-format
 msgid "%s: Can't find the gdm user (%s). Aborting!"
 msgstr "%s: Ne najdem uporabnika gdm (%s). Prekinjam!"
 
-#: daemon/gdm.c:550
+#: daemon/gdm.c:640
 #, c-format
 msgid ""
 "The gdm user is set to be root, but this is not allowed since it can pose a "
@@ -347,17 +439,17 @@ msgstr ""
 "predstavlja varnostni problem.  Prosimo, popravite nastavitve gdm %s in "
 "vnovič poženite gdm."
 
-#: daemon/gdm.c:557
+#: daemon/gdm.c:648
 #, c-format
 msgid "%s: The gdm user should not be root. Aborting!"
 msgstr "%s: Uporabnik gdm ne sme biti root. Prekinjam!"
 
-#: daemon/gdm.c:563
+#: daemon/gdm.c:654
 #, c-format
 msgid "%s: Can't find the gdm group (%s). Trying 'nobody'!"
 msgstr "%s: Ne najdem skupine gdm (%s). Poizkušam 'nobody'!"
 
-#: daemon/gdm.c:571
+#: daemon/gdm.c:662
 #, c-format
 msgid ""
 "The gdm group does not exist. Please correct gdm configuration %s and "
@@ -366,12 +458,12 @@ msgstr ""
 "Skupina gdm ne obstaja. Prosimo, popravite nastavitve gdm %s in vnovič "
 "poženite gdm."
 
-#: daemon/gdm.c:577
+#: daemon/gdm.c:669
 #, c-format
 msgid "%s: Can't find the gdm group (%s). Aborting!"
 msgstr "%s: Ne najdem skupine gdm (%s). Prekinjam!"
 
-#: daemon/gdm.c:584
+#: daemon/gdm.c:676
 #, c-format
 msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
@@ -381,56 +473,36 @@ msgstr ""
 "varnostni problem. Prosimo, popravite nastavitve gdm %s in vnovič poženite "
 "gdm."
 
-#: daemon/gdm.c:591
+#: daemon/gdm.c:684
 #, c-format
 msgid "%s: The gdm group should not be root. Aborting!"
 msgstr "%s: Skupina gdm ne sme biti root. Prekinjam!"
 
-#: daemon/gdm.c:606
+#: daemon/gdm.c:699
 #, c-format
 msgid "%s: Greeter not found or can't be executed by the gdm user"
-msgstr "%s: Pozdravnik ni bil najden ali pa ga uporabnik gdm ne more pognati"
+msgstr "%s: Pozdravni program ni bil najden ali pa ga uporabnik gdm ne more pognati"
 
-#: daemon/gdm.c:613
+#: daemon/gdm.c:706
 #, c-format
 msgid "%s: Remote greeter not found or can't be executed by the gdm user"
 msgstr ""
-"%s: Oddaljen pozdravnik ni bil najden ali pa ga uporabnik gdm ne more pognati"
+"%s: Oddaljen pozdravni program ni bil najden ali pa ga uporabnik gdm ne more pognati"
 
-#: daemon/gdm.c:624
+#: daemon/gdm.c:717
 #, c-format
 msgid "%s: Chooser not found or it can't be executed by the gdm user"
 msgstr "%s: Izbirnik ni bil najden ali pa ga uporabnik gdm ne more pognati"
 
-#: daemon/gdm.c:633
-#, c-format
-msgid ""
-"Server Authorization directory (daemon/ServAuthDir) is set to %s but this "
-"does not exist. Please correct gdm configuration %s and restart gdm."
-msgstr ""
-"Avtorizacijski imenik strežnika (daemon/ServAuthDir) je nastavljen na %s, a "
-"ta ne obstaja. Prosimo, popravite nastavitve gdm %s in vnovič poženite gdm."
+#: daemon/gdm.c:726
+msgid "No daemon/ServAuthDir specified in the configuration file"
+msgstr "V nastavitveni datoteki daemon/ServerAuthDir ni naveden"
 
-#: daemon/gdm.c:641
-#, c-format
-msgid "%s: Authdir %s does not exist. Aborting."
-msgstr "%s: Imenik authdir %s ne obstaja. Prekinjam."
+#: daemon/gdm.c:728
+msgid "%s: No daemon/ServAuthDir specified."
+msgstr "%s: Daemon/ServAuthDir ni naveden."
 
-#: daemon/gdm.c:646
-#, c-format
-msgid ""
-"Server Authorization directory (daemon/ServAuthDir) is set to %s but this is "
-"not a directory. Please correct gdm configuration %s and restart gdm."
-msgstr ""
-"Avtorizacijski imenik strežnika (daemon/ServAuthDir) je nastavljen na %s, a "
-"to ni imenik. Prosimo, popravite nastavitve gdm %s in vnovič poženite gdm."
-
-#: daemon/gdm.c:654
-#, c-format
-msgid "%s: Authdir %s is not a directory. Aborting."
-msgstr "%s: Imenik authdir %s ni imenik. Prekinjam."
-
-#: daemon/gdm.c:659
+#: daemon/gdm.c:754
 #, c-format
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but is not "
@@ -441,49 +513,46 @@ msgstr ""
 "ta ni v lasti uporabnika %s in skupine %s. Prosimo, popravite lastništvo ali "
 "nastavitve gdm %s in vnovič poženite gdm."
 
-#: daemon/gdm.c:669
+#: daemon/gdm.c:765
 #, c-format
 msgid "%s: Authdir %s is not owned by user %s, group %s. Aborting."
 msgstr "%s: Lastnik imenika authdir %s ni uporabnik %s, skupine %s. Prekinjam."
 
-#: daemon/gdm.c:675
-#, c-format
+#: daemon/gdm.c:771
 msgid ""
 "Server Authorization directory (daemon/ServAuthDir) is set to %s but has the "
-"wrong permissions, it should have permissions of 0750. Please correct the "
+"wrong permissions, it should have permissions of %o. Please correct the "
 "permissions or the gdm configuration %s and restart gdm."
 msgstr ""
 "Avtorizacijski imenik strežnika (daemon/ServAuthDir) je nastavljen na %s, a "
-"ta ima napačna dovoljenja, moral bi imeti dovoljenja 0750. Prosimo, "
+"ta ima napačna dovoljenja, moral bi imeti dovoljenja %o. Prosimo, "
 "popravite dovoljenja ali nastavitve gdm %s in vnovič poženite gdm."
 
-#: daemon/gdm.c:685
-#, c-format
-msgid "%s: Authdir %s has wrong permissions %o. Should be 0750. Aborting."
+#: daemon/gdm.c:782
+msgid "%s: Authdir %s has wrong permissions %o. Should be %o. Aborting."
 msgstr ""
-"%s: Imenik authdir %s ima napačna dovoljenja %o. Biti morajo 0750. Prekinjam."
+"%s: Imenik authdir %s ima napačna dovoljenja %o. Biti morajo %o. Prekinjam."
 
-#: daemon/gdm.c:740
+#: daemon/gdm.c:859
 #, c-format
 msgid "%s: fork() failed!"
-msgstr "%s: fork() ni uspel!"
+msgstr "%s: funkcija fork() (razvejitev) ni uspela!"
 
 #. should never happen
-#: daemon/gdm.c:743 daemon/slave.c:2281
+#: daemon/gdm.c:862 daemon/slave.c:2872
 #, c-format
 msgid "%s: setsid() failed: %s!"
 msgstr "%s: setsid() ni uspel: %s!"
 
-#: daemon/gdm.c:875
-#, c-format
-msgid "deal_with_x_crashes: Trying failsafe X server %s"
-msgstr "deal_with_x_crashes: Poizkušam pred sesutjem varen strežnik X %s"
+#: daemon/gdm.c:1032
+msgid "%s: Trying failsafe X server %s"
+msgstr "%s: Poizkušam pred sesutjem varen strežnik X %s"
 
-#: daemon/gdm.c:891
-msgid "deal_with_x_crashes: Running the XKeepsCrashing script"
-msgstr "deal_with_x_crashes: Poganjam skripto XKeepsCrashing"
+#: daemon/gdm.c:1050
+msgid "%s: Running the XKeepsCrashing script"
+msgstr "%s: Poganjam skripto XKeepsCrashing"
 
-#: daemon/gdm.c:964
+#: daemon/gdm.c:1162
 msgid ""
 "I cannot start the X server (your graphical interface).  It is likely that "
 "it is not set up correctly. You will need to log in on a console and rerun "
@@ -498,7 +567,7 @@ msgstr ""
 #. * talk to him.  He's on some 'l33t system anyway, so syslog
 #. * reading will do him good
 #. * }
-#: daemon/gdm.c:976
+#: daemon/gdm.c:1174
 #, c-format
 msgid ""
 "Failed to start X server several times in a short time period; disabling "
@@ -506,76 +575,77 @@ msgid ""
 msgstr ""
 "Večkrat v kratkem času nisem uspel pognati strežnika X; izklapljam zaslon %s"
 
-#: daemon/gdm.c:1058
-#, c-format
-msgid ""
-"gdm_child_action: Reboot or Halt request when there is no system menu from "
-"display %s"
-msgstr ""
-"gdm_child_action: Zahtevek za vnovičen zagon  ali ustavitev računalnika, ko "
-"na zaslonu %s ni bilo sistemskega menuja"
+#: daemon/gdm.c:1219
+msgid "System is rebooting, please wait ..."
+msgstr "Sistem se vnovič zaganja, prosim počakajte ..."
 
-#: daemon/gdm.c:1066
-#, c-format
-msgid ""
-"gdm_child_action: Restart, Reboot or Halt request from a non-local display %s"
+#: daemon/gdm.c:1221
+msgid "System is shutting down, please wait ..."
+msgstr "Sistem se ustavlja, prosim počakajte ..."
+
+#: daemon/gdm.c:1315
+msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
-"gdm_child_action: Zahtevek za vnovičen zagon programa in vnovičen zagon ali "
+"%s: Zahtevek za vnovičen zagon ali ustavitev računalnika, ko "
+"na zaslonu %s ni sistemskega menuja"
+
+#: daemon/gdm.c:1324
+msgid "Restart, Reboot or Halt request from a non-local display %s"
+msgstr ""
+"%s: Zahtevek za vnovičen zagon programa, vnovičen zagon ali "
 "ustavitev računalnika iz ne-krajevnega zaslona %s"
 
 #. Bury this display for good
-#: daemon/gdm.c:1102
-#, c-format
-msgid "gdm_child_action: Aborting display %s"
-msgstr "gdm_child_action: Opuščam zaslon %s"
+#: daemon/gdm.c:1384
+msgid "%s: Aborting display %s"
+msgstr "%s: Opuščam zaslon %s"
 
 #. Reboot machine
-#: daemon/gdm.c:1114
-msgid "gdm_child_action: Master rebooting..."
-msgstr "gdm_child_action: Vnovičen zagon strežnika..."
+#: daemon/gdm.c:1397
+msgid "Master rebooting..."
+msgstr "Gospodar se znova zaganja..."
 
-#: daemon/gdm.c:1122
-#, c-format
-msgid "gdm_child_action: Reboot failed: %s"
-msgstr "gdm_child_action: Vnovičen zagon ni uspel: %s"
+#: daemon/gdm.c:1409
+msgid "%s: Reboot failed: %s"
+msgstr "%s: Vnovičen zagon ni uspel: %s"
 
 #. Halt machine
-#: daemon/gdm.c:1129
-msgid "gdm_child_action: Master halting..."
-msgstr "gdm_child_action: Ustavitev strežnika..."
+#: daemon/gdm.c:1417
+msgid "Master halting..."
+msgstr "Gospodar se ustavlja..."
 
-#: daemon/gdm.c:1137
-#, c-format
-msgid "gdm_child_action: Halt failed: %s"
-msgstr "gdm_child_action: Ustavitev ni uspela: %s"
+#: daemon/gdm.c:1429
+msgid "%s: Halt failed: %s"
+msgstr "%s: Ustavitev ni uspela: %s"
 
 #. Suspend machine
-#: daemon/gdm.c:1144
-msgid "gdm_child_action: Master suspending..."
-msgstr "gdm_child_action: Strežnik obmiruje..."
+#. XXX: this is ugly, why should there be a suspend like this,
+#. * see GDM_SOP_SUSPEND_MACHINE
+#: daemon/gdm.c:1439 daemon/gdm.c:2606
+msgid "Master suspending..."
+msgstr "Strežnik se zamrzuje..."
 
-#: daemon/gdm.c:1152
-#, c-format
-msgid "gdm_child_action: Suspend failed: %s"
-msgstr "gdm_child_action: Obmirovanje ni uspelo: %s"
-
-#: daemon/gdm.c:1250
+#: daemon/gdm.c:1549
 msgid "GDM restarting ..."
 msgstr "GDM se znova zaganja ..."
 
-#: daemon/gdm.c:1255
+#: daemon/gdm.c:1553
 msgid "Failed to restart self"
 msgstr "Nisem se uspel znova pognati"
 
-#: daemon/gdm.c:1352
+#: daemon/gdm.c:1713
 msgid "Do not fork into the background"
 msgstr "Ne veji se v ozadje"
 
-#: daemon/gdm.c:1354
+#: daemon/gdm.c:1715
+msgid "No console (local) servers to be run"
+msgstr "Ni strežnikov (krajevne) konzole za zagon"
+
+#: daemon/gdm.c:1717
 msgid "Preserve LD_* variables"
 msgstr "Ohrani spremenljivke LD_*"
 
-#: daemon/gdm.c:1436 gui/gdmchooser.c:1103
+#: daemon/gdm.c:1837 gui/gdmchooser.c:1494
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -584,50 +654,42 @@ msgstr ""
 "Napaka v možnosti %s: %s.\n"
 "Poženite '%s --help' za popoln seznam možnosti ukazne vrstice.\n"
 
-#: daemon/gdm.c:1448
+#: daemon/gdm.c:1855
 msgid "Only root wants to run gdm\n"
 msgstr "Samo root sme pognati gdm\n"
 
-#: daemon/gdm.c:1476
+#: daemon/gdm.c:1871 daemon/gdm.c:1875 daemon/gdm.c:1950 daemon/gdm.c:1954
+#: daemon/gdm.c:1958 daemon/gdm.c:1962 daemon/gdm.c:1972 daemon/gdm.c:1978
+#: daemon/gdm.c:1989 daemon/misc.c:1391 daemon/misc.c:1395 daemon/misc.c:1399
+#: daemon/misc.c:1406 daemon/misc.c:1410 daemon/misc.c:1414
+#: daemon/server.c:499 daemon/server.c:512 daemon/slave.c:627
+#: daemon/slave.c:641 daemon/slave.c:651 daemon/slave.c:661
+#: gui/gdmchooser.c:1373 gui/gdmchooser.c:1376 gui/gdmchooser.c:1379
+#: gui/gdmlogin.c:3803 gui/gdmlogin.c:3811 gui/gdmlogin.c:3814
+#: gui/greeter/greeter.c:1161 gui/greeter/greeter.c:1169
+#: gui/greeter/greeter.c:1172
+msgid "%s: Error setting up %s signal handler: %s"
+msgstr "%s: Napaka ob vzpostavljanju obravnavalnika za signal %s: %s"
+
+#: daemon/gdm.c:1899
 msgid "gdm already running. Aborting!"
 msgstr "gdm ze teče. Prekinjam!"
 
-#: daemon/gdm.c:1510
-#, c-format
-msgid "%s: Error setting up TERM signal handler"
-msgstr "%s: Napaka pri vzpostavljanju obravnavalnika za signal TERM"
-
-#: daemon/gdm.c:1514
-#, c-format
-msgid "%s: Error setting up INT signal handler"
-msgstr "%s: Napaka pri vzpostavljanju obravnavalnika za signal INT"
-
-#: daemon/gdm.c:1518
-#, c-format
-msgid "%s: Error setting up HUP signal handler"
-msgstr "%s: Napaka pri vzpostavljanju obravnavalnika za signal HUP"
-
-#: daemon/gdm.c:1522
-#, c-format
-msgid "%s: Error setting up USR1 signal handler"
-msgstr "%s: Napaka pri vzposstavljanju obravnavalnika za signal USR1"
-
-#: daemon/gdm.c:1531
-#, c-format
+#: daemon/gdm.c:1998
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Napaka pri vzpostavljanju obravnavalinka za signal CHLD"
 
-#: daemon/gdm.c:2634 daemon/gdm.c:2652
+#: daemon/gdm.c:3243 daemon/gdm.c:3262
 msgid "Flexible server request denied: Not authenticated"
-msgstr "Zahtevek po fleksibilnem strežniku zavrnjen: Ni avtentificiran"
+msgstr "Zahtevek po fleksibilnem strežniku zavrnjen: Ni avtenticiran"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:2670
+#: daemon/gdm.c:3280
 msgid "Unknown server type requested, using standard server."
 msgstr "Zahtevana neznana vrsta strežnika, uporabljam običajen strežnik."
 
-#: daemon/gdm.c:2674
+#: daemon/gdm.c:3284
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -637,26 +699,34 @@ msgstr ""
 "uporabljam običajen strežnik."
 
 #. Translators, don't translate the 'y' and 'n'
-#: daemon/misc.c:491
+#: daemon/misc.c:555
 msgid "y = Yes or n = No? >"
 msgstr "y = Da ali n = Ne? >"
 
-#: daemon/misc.c:775
+#: daemon/misc.c:869
 #, c-format
 msgid "%s: Cannot get local addresses!"
 msgstr "%s: Ne morem dobiti krajevnih naslovov!"
 
-#: daemon/misc.c:890
+#: daemon/misc.c:984
 #, c-format
 msgid "Could not setgid %d. Aborting."
 msgstr "Nisem mogel setgid %d. Prekinjam."
 
-#: daemon/misc.c:895
+#: daemon/misc.c:989
 #, c-format
 msgid "initgroups() failed for %s. Aborting."
 msgstr "initgroups() ni uspel za %s. Prekinjam."
 
-#: daemon/server.c:255
+#: daemon/misc.c:1219 daemon/misc.c:1233
+msgid "%s: Error setting signal %d to %s"
+msgstr "%s: Napaka ob nastavljanju signala %d na %s"
+
+#: daemon/server.c:160
+msgid "Can not start fallback console"
+msgstr "Nisem mogel zagnati konzole varne pred napakami"
+
+#: daemon/server.c:330
 #, c-format
 msgid ""
 "There already appears to be an X server running on display %s.  Should I try "
@@ -666,7 +736,7 @@ msgstr ""
 "Izgleda, da na zaslonu %s strežnik X že teče. Naj poskusim drugo številko "
 "zaslona? Če odgovorite z ne, bom poskušal znova pognati strežnik na %s.%s"
 
-#: daemon/server.c:262
+#: daemon/server.c:337
 msgid ""
 "  (You can change consoles by pressing Ctrl-Alt plus a function key, such as "
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
@@ -676,132 +746,112 @@ msgstr ""
 "primer Ctrl-Alt-F7 za konzolo 7. Strežnik X navadno teče na konzolah 7 in "
 "višje.)"
 
-#: daemon/server.c:301
+#: daemon/server.c:377
 #, c-format
 msgid "Display '%s' cannot be opened by Xnest"
 msgstr "Zaslona '%s' Xnest ne more odpreti"
 
-#: daemon/server.c:331
+#: daemon/server.c:405
 #, c-format
 msgid "Display %s is busy. There is another X server running already."
 msgstr "Zaslon %s je zaseden, en strežnik X že teče."
 
-#: daemon/server.c:458
+#: daemon/server.c:487
 #, c-format
 msgid "%s: Error opening a pipe: %s"
 msgstr "%s: Napaka ob odpiranju cevi: %s"
 
-#: daemon/server.c:470
-#, c-format
-msgid "%s: Error setting up USR1 signal handler: %s"
-msgstr "%s: Napaka ob vzpostavljanju obravnavalnika za signal USR1: %s"
-
-#: daemon/server.c:483 daemon/slave.c:291
-#, c-format
-msgid "%s: Error setting up CHLD signal handler: %s"
-msgstr "%s: Napaka ob vzpostavljanju obravnavalinka za signal CHLD: %s"
-
-#: daemon/server.c:497 daemon/slave.c:267
-#, c-format
-msgid "%s: Error setting up ALRM signal handler: %s"
-msgstr "%s: Napaka ob vzpostavljanju obravnavalnika za signal ALRM: %s"
-
 #. Send X too busy
-#: daemon/server.c:700
+#: daemon/server.c:770
 #, c-format
 msgid "%s: Cannot find a free display number"
 msgstr "%s: Ne najdem proste številke zaslona"
 
-#: daemon/server.c:715
+#: daemon/server.c:785
 #, c-format
 msgid "%s: Display %s busy.  Trying another display number."
 msgstr "%s: Zaslon %s je zaseden.  Poskušam drugo številko zaslona."
 
-#: daemon/server.c:787
+#: daemon/server.c:879
 #, c-format
 msgid "Invalid server command '%s'"
 msgstr "Neveljaven strežniški ukaz '%s'"
 
-#: daemon/server.c:792
+#: daemon/server.c:884
 #, c-format
 msgid "Server name '%s' not found, using standard server"
 msgstr "Ime strežnika '%s' ni bilo najdeno, uporabljam običajen strežnik"
 
-#: daemon/server.c:939
-#, c-format
-msgid "gdm_server_spawn: Could not open logfile for display %s!"
-msgstr "gdm_server_spawn: Nisem mogel odpreti dnevnika za zaslon %s!"
+#: daemon/server.c:1059
+msgid "%s: Could not open logfile for display %s!"
+msgstr "%s: Nisem mogel odpreti dnevnika za zaslon %s!"
 
-#: daemon/server.c:949
-msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
-msgstr "gdm_server_spawn: Napaka pri nastavljanju USR1 na SIG_IGN"
+#: daemon/server.c:1072 daemon/server.c:1078 daemon/server.c:1083
+msgid "%s: Error setting %s to %s"
+msgstr "%s: Napaka ob nastavljanju %s na %s"
 
-#: daemon/server.c:953
-msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
-msgstr "gdm_server_spawn: Napaka pri nastavljanju TTIN na SIG_IGN"
-
-#: daemon/server.c:957
-msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
-msgstr "gdm_server_spawn: Napaka pri nastavljanju TTOU na SIG_IGN"
-
-#: daemon/server.c:967
-msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
-msgstr "gdm_server_spawn: Napaka pri nastavljanju HUP na SIG_DFL"
-
-#: daemon/server.c:971
-msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
-msgstr "gdm_server_spawn: Napaka pri nastavljanju TERM na SIG_DFL"
-
-#: daemon/server.c:1004
+#: daemon/server.c:1120
 #, c-format
 msgid "%s: Empty server command for display %s"
 msgstr "%s: Prazen ukaz strežnika za zaslon %s"
 
-#: daemon/server.c:1018
+#: daemon/server.c:1134
 #, c-format
 msgid "%s: Server was to be spawned by uid %d but that user doesn't exist"
 msgstr "%s: Strežnik bi se moral pognati kot uid %d, a ta uporabnik ne obstaja"
 
-#: daemon/server.c:1033 daemon/slave.c:1483 daemon/slave.c:1849
+#: daemon/server.c:1149 daemon/slave.c:2159 daemon/slave.c:2617
 #, c-format
 msgid "%s: Couldn't set groupid to %d"
 msgstr "%s: Ne morem nastaviti groupid (skupine) na %d"
 
-#: daemon/server.c:1039 daemon/slave.c:1488 daemon/slave.c:1854
+#: daemon/server.c:1155 daemon/slave.c:2164 daemon/slave.c:2622
 #, c-format
 msgid "%s: initgroups() failed for %s"
 msgstr "%s: initgrougs() ni uspel za %s"
 
-#: daemon/server.c:1045 daemon/slave.c:1493 daemon/slave.c:1859
+#: daemon/server.c:1161 daemon/slave.c:2169 daemon/slave.c:2627
 #, c-format
 msgid "%s: Couldn't set userid to %d"
 msgstr "%s: Ne morem nastaviti userid (uporabnika) na %d"
 
-#: daemon/server.c:1052
+#: daemon/server.c:1168
 #, c-format
 msgid "%s: Couldn't set groupid to 0"
 msgstr "%s: Ne morem nastaviti groupid (skupine) na 0"
 
-#: daemon/server.c:1063
-#, c-format
-msgid "gdm_server_spawn: Xserver not found: %s"
-msgstr "gdm_server_spawn: Ne najdem Xserver: %s"
+#: daemon/server.c:1179
+msgid "%s: Xserver not found: %s"
+msgstr "%sn: Ne najdem strežnika X: %s"
 
-#: daemon/server.c:1070
-msgid "gdm_server_spawn: Can't fork Xserver process!"
-msgstr "gdm_server_spawn: Ne morem razvejiti Xserver process!"
+#: daemon/server.c:1187
+msgid "%s: Can't fork Xserver process!"
+msgstr "%s: Ne morem razvejiti procesa strežnika X!"
 
-#: daemon/slave.c:281
-#, c-format
-msgid "%s: Error setting up TERM/INT signal handler: %s"
-msgstr "%s: Napaka ob vzpostavljanju obravnavalnika za signal TERM/INT: %s"
+#: daemon/slave.c:923
+msgid "Log in anyway"
+msgstr "Vseeno se prijavi"
 
-#: daemon/slave.c:301
-#, c-format
-msgid "%s: Error setting up USR2 signal handler: %s"
-msgstr "%s: Napaka ob vzpostavljanju obravnavalnika za signal USR2: %s"
+#: daemon/slave.c:925
+msgid ""
+"You are already logged in.  You can log in anyway, return to your previous "
+"login session, or abort this login"
+msgstr ""
+"Prijavljeni ste že. Lahko se vseeno prijavite še enkrat, se vrnete v vašo prejšnjo sejo lai prekličete to prijavo."
 
-#: daemon/slave.c:512
+#: daemon/slave.c:929
+msgid "Return to previous login"
+msgstr "Vrni se na prejšnjo prijavo"
+
+#: daemon/slave.c:930 daemon/slave.c:936
+msgid "Abort login"
+msgstr "Prekini prijavo"
+
+#: daemon/slave.c:933
+msgid "You are already logged in.  You can log in anyway or abort this login"
+msgstr "Prijavljeni ste že.  Lahko se vseeno prijavite ali prekinete to prijavo"
+
+#: daemon/slave.c:1023
 msgid ""
 "I could not start the X\n"
 "server (your graphical environment)\n"
@@ -822,40 +872,33 @@ msgstr ""
 "Gdm znova poženite, ko bo problem\n"
 "odpravljen."
 
-#: daemon/slave.c:737
-msgid "focus_first_x_window: cannot fork"
-msgstr "focus_first_x_window: ne morem se razvejiti"
-
-#: daemon/slave.c:761
+#: daemon/slave.c:1259
 #, c-format
-msgid "focus_first_x_window: cannot open display %s"
-msgstr "focus_first_x_window: ne morem odpreti zaslona %s"
+msgid "%s: cannot fork"
+msgstr "%s: ne morem razvejiti"
 
-#: daemon/slave.c:901
+#: daemon/slave.c:1306
+msgid "%s: cannot open display %s"
+msgstr "%s: ne morem odpreti zaslona %s"
+
+#: daemon/slave.c:1456
 msgid ""
-"Could not execute the configuration\n"
-"program.  Make sure it's path is set\n"
-"correctly in the configuration file.\n"
-"I will attempt to start it from the\n"
+"Could not execute the configuration program.  Make sure it's path is set "
+"correctly in the configuration file.  I will attempt to start it from the "
 "default location."
 msgstr ""
-"Nisem mogel pognati nastavitvenega \n"
-"programa. Prepričajte se, da je pot\n"
-"v datoteki nastavitev pravilna. \n"
-"Poskušal ga bom pognati iz \n"
-"privzetega mesta."
+"Nisem mogel pognati nastavitvenega programa. Prepričajte se, da je pot "
+"v datoteki nastavitev pravilna.  Poskušal ga bom pognati iz privzetega mesta."
 
-#: daemon/slave.c:915
+#: daemon/slave.c:1470
 msgid ""
-"Could not execute the configuration\n"
-"program.  Make sure it's path is set\n"
+"Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file."
 msgstr ""
-"Nisem mogel pognati nastavitvenega\n"
-"programa. Prepričajte se, da je pot \n"
+"Nisem mogel pognati nastavitvenega programa. Prepričajte se, da je pot "
 "v datoteki nastavitev pravilna."
 
-#: daemon/slave.c:1032
+#: daemon/slave.c:1597
 msgid ""
 "Enter the root password\n"
 "to run the configuration."
@@ -863,51 +906,33 @@ msgstr ""
 "Za zagon nastavitev vpišite\n"
 "geslo za root (administratorja)."
 
-#: daemon/slave.c:1055 daemon/slave.c:1139
-msgid "gdm_slave_wait_for_login: No login/Bad login"
-msgstr "gdm_slave_wait_for_login: Ni prijave/slaba prijava"
-
-#: daemon/slave.c:1445
+#: daemon/slave.c:2113 daemon/slave.c:2118
 #, c-format
 msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: Ne morem inicializirati cevi do gdmgreeter"
 
-#: daemon/slave.c:1560
+#: daemon/slave.c:2237
 msgid ""
-"No servers were defined in the\n"
-"configuration file and XDMCP was\n"
-"disabled.  This can only be a\n"
-"configuration error.  So I have started\n"
-"a single server for you.  You should\n"
-"log in and fix the configuration.\n"
-"Note that automatic and timed logins\n"
-"are disabled now."
+"No servers were defined in the configuration file and XDMCP was disabled.  "
+"This can only be a configuration error.  So I have started a single server "
+"for you.  You should log in and fix the configuration.  Note that automatic "
+"and timed logins are disabled now."
 msgstr ""
-"V datoteki nastavitev strežniki \n"
-"niso bili navedeni in XDMCP je bil\n"
-"izključen.  To je lahko le napaka v\n"
-"nastavitvah, zato sem za vas pognal\n"
-"en sam strežnik.  Prijavite se in\n"
-"popravite nastavitve.\n"
-"Samodejne in časovne prijave so\n"
+"V datoteki nastavitev strežniki niso bili navedeni in XDMCP je bil "
+"izključen.  To je lahko le napaka v nastavitvah, zato sem za vas pognal "
+"en sam strežnik.  Prijavite se in popravite nastavitve. Samodejne in časovne prijave so "
 "sedaj izklopljene."
 
-#: daemon/slave.c:1574
+#: daemon/slave.c:2251
 msgid ""
-"I could not start the regular X\n"
-"server (your graphical environment)\n"
-"and so this is a failsafe X server.\n"
-"You should log in and properly\n"
-"configure the X server."
+"I could not start the regular X server (your graphical environment) and so "
+"this is a failsafe X server.  You should log in and properly configure the X "
+"server."
 msgstr ""
-"Nisem mogel pognati običajnega \n"
-"strežnika X (vaše grafično okolje)\n"
-"zato je to pred sesutejem varen \n"
-"strežnik X.\n"
-"Prijavite se in pravilno nastavite\n"
-"strežnik X."
+"Nisem mogel pognati običajnega strežnika X (vaše grafično okolje) "
+"zato je to pred sesutejem varen strežnik X.  Prijavite se in pravilno nastavite strežnik X."
 
-#: daemon/slave.c:1583
+#: daemon/slave.c:2260
 #, c-format
 msgid ""
 "The specified display number was busy, so this server was started on display "
@@ -916,361 +941,334 @@ msgstr ""
 "Podana številka zaslona je bila zasedena, zato je bil ta strežnik pognan na "
 "zaslonu %s."
 
-#: daemon/slave.c:1596
-#, c-format
-msgid "gdm_slave_greeter: Cannot start greeter trying default: %s"
-msgstr ""
-"gdm_slave_greeter: Ne morem pognati pozdravnika, poskušam privzetega: %s"
-
-#: daemon/slave.c:1608
+#: daemon/slave.c:2280
 msgid ""
-"Cannot start the greeter program,\n"
-"you will not be able to log in.\n"
-"This display will be disabled.\n"
-"Try logging in by other means and\n"
-"editing the configuration file"
+"The greeter program appears to be crashing.\n"
+"I will attempt to use a different one."
 msgstr ""
-"Ne morem pognati pozdravnega \n"
-"programa zato se ne boste mogli\n"
-"prijaviti.\n"
-"Ta zaslon bo izključen.\n"
-"Poskusite se prijaviti z drugimi\n"
-"stredstvi in popraviti datoteko\n"
+"Zdi se, da se pozdravni program sesuva.\n"
+"Poskusil bom uporabiti drugega." 
+
+#. Something went wrong
+#: daemon/slave.c:2305
+#, c-format
+msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
+msgstr "%s: Ne morem pognati programa pozdrava z gtk moduli: %s. Poskušam brez modulov"
+
+#: daemon/slave.c:2312
+msgid "%s: Cannot start greeter trying default: %s"
+msgstr "%s: Ne morem pognati pozdravnega programa, poskušam privzetega: %s"
+
+#: daemon/slave.c:2325
+msgid ""
+"Cannot start the greeter program, you will not be able to log in.  This "
+"display will be disabled.  Try logging in by other means and editing the "
+"configuration file"
+msgstr ""
+"Ne morem pognati pozdravnega programa zato se ne boste mogli prijaviti.  "
+"Ta zaslon bo izključen. Poskusite se prijaviti z drugimi sredstvi in popraviti datoteko"
 "nastavitev."
 
-#: daemon/slave.c:1614
+#. If no greeter we really have to disable the display
+#: daemon/slave.c:2332
 #, c-format
 msgid "%s: Error starting greeter on display %s"
-msgstr "%s: Napaka ob zagonu pozdravnika na zaslonu %s"
+msgstr "%s: Napaka ob zagonu pozdravnega programa na zaslonu %s"
 
-#: daemon/slave.c:1618
+#: daemon/slave.c:2336
 #, c-format
 msgid "%s: Can't fork gdmgreeter process"
 msgstr "%s: Ne morem razvejiti procesa gdmgreeter"
 
-#: daemon/slave.c:1685 daemon/slave.c:1784
+#: daemon/slave.c:2421
 #, c-format
 msgid "%s: Can't open fifo!"
 msgstr "%s: Ne morem odpreti fifo!"
 
-#: daemon/slave.c:1810
-msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
-msgstr "gdm_slave_chooser: Ne morem inicializirati cevi do gdmchooser-ja"
+#: daemon/slave.c:2576
+msgid "%s: Can't init pipe to gdmchooser"
+msgstr "%s: Ne morem inicializirati cevi do programa gdmchooser"
 
-#: daemon/slave.c:1895
+#: daemon/slave.c:2665
 msgid ""
-"Cannot start the chooser program,\n"
-"you will not be able to log in.\n"
-"Please contact the system administrator.\n"
+"Cannot start the chooser program, you will probably not be able to log in.  "
+"Please contact the system administrator."
 msgstr ""
-"Nisem mogel pognati izbirnika,\n"
-"ne boste se mogli prijaviti.\n"
-"Prosimo, obrnite se na administratorja.\n"
+"Nisem mogel pognati izbirnika, ne boste se mogli prijaviti.  "
+"Prosimo, obrnite se na administratorja."
 
-#: daemon/slave.c:1899
-#, c-format
-msgid "gdm_slave_chooser: Error starting chooser on display %s"
-msgstr "gdm_slave_greeter: Napaka ob zaganjanju izbirnika na zaslonu %s"
+#: daemon/slave.c:2669
+msgid "%s: Error starting chooser on display %s"
+msgstr "%s: Napaka ob zagonu izbirnika na zaslonu %s"
 
-#: daemon/slave.c:1902
-msgid "gdm_slave_chooser: Can't fork gdmchooser process"
-msgstr "gdm_slave_chooser: Ne morem razvejiti procesa gdmchooser"
+#: daemon/slave.c:2672
+msgid "%s: Can't fork gdmchooser process"
+msgstr "%s: Ne morem razvejiti procesa gdmchooser"
 
-#. open stdout - fd 1
-#. open stderr - fd 2
-#: daemon/slave.c:2253
+#: daemon/slave.c:2842
 #, c-format
 msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: Nisem mogel odpreti ~/.xsession-errors"
 
-#: daemon/slave.c:2275
-msgid ""
-"gdm_slave_session_start: Execution of PreSession script returned > 0. "
-"Aborting."
+#: daemon/slave.c:2909
+msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr ""
-"gdm_slave_session_start: Izvajanje pred-sejne skripte je vrnilo > 0. "
+"%s: Izvajanje pred-sejne skripte je vrnilo rezultat večji od 0. "
 "Prekinjam."
 
-#: daemon/slave.c:2308
+#: daemon/slave.c:2938
 #, c-format
 msgid "Language %s does not exist, using %s"
 msgstr "Jezik %s ne obstaja, uporabljam %s"
 
-#: daemon/slave.c:2309 gui/gdmlogin.c:1114 gui/gdmlogin.c:1123
-#: gui/gdmlogin.c:1661 gui/greeter/greeter_action_language.c:52
-#: gui/greeter/greeter_action_language.c:138
-#: gui/greeter/greeter_action_language.c:146
+#: daemon/slave.c:2939
 msgid "System default"
 msgstr "Privzeto s strani sistema"
 
-#: daemon/slave.c:2321
+#: daemon/slave.c:2955
 #, c-format
 msgid "%s: Could not setup environment for %s. Aborting."
 msgstr "%s: Ne morem nastaviti okolja za %s. Prekinjam."
 
-#: daemon/slave.c:2335
+#: daemon/slave.c:2975
 #, c-format
 msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: setusercontext() ni uspel za %s. Prekinjam."
 
-#: daemon/slave.c:2341
+#: daemon/slave.c:2981
+msgid "%s: Could not become %s. Aborting."
+msgstr "%s: Ne morem postati %s. Prekinjam."
+
+#: daemon/slave.c:3040
+msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
+msgstr "%s: Ni vrstice Exec v datoteki seje: %s, zaganjam pred sesutjem varni GNOMe."
+
+#: daemon/slave.c:3046
+msgid ""
+"The session you selected does not look valid.  I will run the GNOME failsafe "
+"session for you."
+msgstr ""
+"Seja, ki ste jo izbrali, ne izgleda veljavna.  Pognal bom pred sesutjem varno sejo GNOME."
+
+#: daemon/slave.c:3060
 #, c-format
-msgid "gdm_slave_session_start: Could not become %s. Aborting."
-msgstr "gdm_slave_session_start: Ne morem postati %s. Prekinjam."
+msgid ""
+"%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
+msgstr ""
+"%s: Ne morem najti ali pognati osnovne skripte Xsession, poskusil bom pred sesutjem varno sejo GNOME."
+
+#: daemon/slave.c:3065
+msgid ""
+"Cannot find or run the base session script, will try the GNOME failsafe "
+"session for you."
+msgstr ""
+"Ne morem najti ali pognati osnovne skripte seje, poksusil bom pored sesutjem varno sejo GNOME."
 
 #. yaikes
-#: daemon/slave.c:2415
-msgid ""
-"gdm_slave_session_start: gnome-session not found for a failsafe gnome "
-"session, trying xterm"
+#: daemon/slave.c:3080
+msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
-"gdm_slave_session_start: gnome-session ni nil najden (za sejo varno pred "
-"sesutjem), poskušam xterm"
+"%s: gnome-session za sejo varno pred "
+"sesutjem ni bil najden, poskušam xterm"
 
-#: daemon/slave.c:2419
+#: daemon/slave.c:3085
 msgid ""
-"Could not find the GNOME installation,\n"
-"will try running the \"Failsafe xterm\"\n"
-"session."
+"Could not find the GNOME installation, will try running the \"Failsafe xterm"
+"\" session."
 msgstr ""
-"Nisem mogel najti namestitve GNOME.\n"
-"Poskušal bom sejo xterm, varno \n"
+"Nisem mogel najti namestitve GNOME. Poskušal bom pognati sejo xterm, varno \n"
 "pred sesutjem."
 
-#: daemon/slave.c:2425
+#: daemon/slave.c:3093
 msgid ""
-"This is the Failsafe Gnome session.\n"
-"You will be logged into the 'Default'\n"
-"session of Gnome with no startup scripts\n"
-"run.  This is only to fix problems in\n"
-"your installation."
+"This is the Failsafe Gnome session.  You will be logged into the 'Default' "
+"session of Gnome with no startup scripts run.  This is only to fix problems "
+"in your installation."
 msgstr ""
-"To je seja GNOME varna pred sesutjem.\n"
-"Prijavljeni boste v 'privzeto' sejo GNOMEa\n"
-"brez pognanih začetnih skript. To je \n"
-"namenjeno le popravljanju problemov \n"
-"v vaši namestitvi."
+"To je seja GNOME varna pred sesutjem. Prijavljeni boste v 'privzeto' sejo GNOMEa"
+"brez pognanih začetnih skript. Ta je namenjena le odpravljanju problemov v vaši namestitvi."
 
-#: daemon/slave.c:2446
+#: daemon/slave.c:3108
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Nisem našel programa \"xterm\" za zagon seje varne pred sesutjem."
 
-#: daemon/slave.c:2453
+#: daemon/slave.c:3121
 msgid ""
-"This is the Failsafe xterm session.\n"
-"You will be logged into a terminal\n"
-"console so that you may fix your system\n"
-"if you cannot log in any other way.\n"
-"To exit the terminal emulator, type\n"
-"'exit' and an enter into the window."
+"This is the Failsafe xterm session.  You will be logged into a terminal "
+"console so that you may fix your system if you cannot log in any other way.  "
+"To exit the terminal emulator, type 'exit' and an enter into the window."
 msgstr ""
-"To je seja xterm varna pred sesutjem.\n"
-"Prijavljeni boste v konzolo terminala,\n"
-"tako, da boste lahko popravili vaš \n"
-"sistem v kolikor se drugače ne morete\n"
-"prijaviti.\n"
-"Za izhod iz emulatorja terminala vpišite\n"
-"'exit' in pritisnite enter."
+"To je seja xterm varna pred sesutjem. Prijavljeni boste v konzolo terminala, "
+"tako, da boste lahko popravili vaš sistem v kolikor se drugače ne morete prijaviti."
+"Za izhod iz emulatorja terminala vtipkajte 'exit' in pritisnite enter."
 
-#: daemon/slave.c:2481
-#, c-format
-msgid "Running %s for %s on %s"
-msgstr "Poganjam %s za %s na %s"
+#: daemon/slave.c:3148
+msgid "%s: User not allowed to log in"
+msgstr "%s: Uporabniku prijava ni dovoljena"
 
-#: daemon/slave.c:2495
-msgid "gdm_slave_session_start: User not allowed to log in"
-msgstr "gdm_slave_session_start: Uporabniku prijava ni dovoljena"
-
-#: daemon/slave.c:2497
-msgid ""
-"The system administrator has\n"
-"disabled your account."
+#: daemon/slave.c:3151
+msgid "The system administrator has disabled your account."
 msgstr ""
-"Vaš račun je bil izključen\n"
-"s strani sistemskega administratorja."
+"Administrator sistema je onemogočil vaš račun."
 
-#: daemon/slave.c:2500
-#, c-format
-msgid "gdm_slave_session_start: Could not find/run session `%s'"
-msgstr "gdm_slave_session_start: Ne morem najti/pognati seje `%s'"
+#. will go to .xsession-errors
+#: daemon/slave.c:3162 daemon/slave.c:3167
+msgid "%s: Could not exec %s %s %s"
+msgstr "%s: Nisem mogel zagnati %s %s %s"
 
-#: daemon/slave.c:2505
-msgid ""
-"Cannot start the session, most likely the\n"
-"session does not exist.  Please select from\n"
-"the list of available sessions in the login\n"
-"dialog window."
+#. we can't really be any more specific
+#: daemon/slave.c:3178
+msgid "Cannot start the session due to some internal error."
+msgstr "Nisem mogel zagnati seje zaradi notranje napake"
+
+#: daemon/slave.c:3227
+msgid "%s: User passed auth but getpwnam(%s) failed!"
 msgstr ""
-"Ne morem začeti seje, najverjetneje seja\n"
-"ne obstaja. Prosimo izberite sejo iz \n"
-"seznama možnih sej v prijavnem oknu."
-
-#: daemon/slave.c:2539
-#, c-format
-msgid "gdm_slave_session_start: Could not start session `%s'"
-msgstr "gdm_slave_session_start: Ne morem pognati seje ,%s`"
-
-#: daemon/slave.c:2542
-msgid ""
-"Cannot start your shell.  It could be that the\n"
-"system administrator has disabled your login.\n"
-"It could also indicate an error with your account.\n"
-msgstr ""
-"Ne morem pognati vaše lupine.  Možno je, da je\n"
-"administrator sistema onemogočil vašo prijavo.\n"
-"To lahko pomeni tudi napako v vašem računu.\n"
-
-#: daemon/slave.c:2576
-#, c-format
-msgid "gdm_slave_session_start: User passed auth but getpwnam(%s) failed!"
-msgstr ""
-"gdm_slave_session_start: Uporabnik je bil avtentificiran, a getpwnam(%s) ni "
+"%s: Uporabnik je bil avtenticiran, a getpwnam(%s) ni "
 "uspel!"
 
-#: daemon/slave.c:2582
-#, c-format
+#: daemon/slave.c:3241
+msgid "%s: Execution of PostLogin script returned > 0. Aborting."
+msgstr ""
+"%s: Izvajanje poprijavne skripte je vrnilo rezultat večji od 0. "
+"Prekinjam."
+
+#: daemon/slave.c:3250
 msgid ""
 "Your home directory is listed as:\n"
 "'%s'\n"
-"but it does not appear to exist.\n"
-"Do you want to log in with the root\n"
+"but it does not appear to exist.  Do you want to log in with the / (root) "
 "directory as your home directory?\n"
 "\n"
-"It is unlikely anything will work unless\n"
-"you use a failsafe session."
+"It is unlikely anything will work unless you use a failsafe session."
 msgstr ""
 "Vaš domači imenik je naveden kot:\n"
 "'%s'\n"
-"a se zdi, da ne obstaja.\n"
-"Se želite prijaviti z korenskim\n"
-"imenikom kot vašim domačim?\n"
+"a se zdi, da ne obstaja. Se želite prijaviti z korenskim imenikom kot vašim domačim?\n"
 "\n"
-"Ni verjetno, da bi karkoli delalo,\n"
-"če ne uporabite pred sesutjem varne seje."
+"V kolikor ne uprabljate pred sesutjem varne seje, ni verjetno, da bi karkoli delalo."
 
-#: daemon/slave.c:2590
+#: daemon/slave.c:3258
 #, c-format
 msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: Domači imenik za %s: '%s' ne obstaja!"
 
-#: daemon/slave.c:2756
+#: daemon/slave.c:3386
 msgid ""
-"GDM could not write to your authorization\n"
-"file.  This could mean that you are out of\n"
-"disk space or that your home directory could\n"
-"not be opened for writing.  In any case, it\n"
-"is not possible to log in.  Please contact\n"
-"your system administrator"
+"GDM could not write to your authorization file.  This could mean that you "
+"are out of disk space or that your home directory could not be opened for "
+"writing.  In any case, it is not possible to log in.  Please contact your "
+"system administrator"
 msgstr ""
-"GDM ni mogel zapisati vaše avtorizacijske datoteke.  To lahko pomeni, da je "
+"GDM ni mogel pisati v vašo avtorizacijsko datoteko.  To lahko pomeni, da je "
 "zmanjkalo prostora na disku ali, da vašega domačega imenika ni mogoče "
-"odpreti za pisanje.  V obeh primerih se ne bo možno prijaviti.  Prosim, "
+"odpreti za pisanje.  V obeh primerih se ni možno prijaviti.  Prosim, "
 "stopite v stik z administratorjem sistema"
 
-#: daemon/slave.c:2790
-msgid "gdm_slave_session_start: Error forking user session"
-msgstr "gdm_slave_session_start: Napaka pri razvejanju uporabnikove seje"
+#: daemon/slave.c:3463
+msgid "%s: Error forking user session"
+msgstr "%s: Napaka pri razvejanju uporabnikove seje"
 
-#: daemon/slave.c:2848
+#: daemon/slave.c:3543
 msgid ""
-"Your session only lasted less then\n"
-"10 seconds.  If you have not logged out\n"
-"yourself, this could mean that there is\n"
-"some installation problem or that you may\n"
-"be out of diskspace.  Try logging in with\n"
-"one of the failsafe sessions to see if you\n"
-"can fix this problem."
+"Your session only lasted less than 10 seconds.  If you have not logged out "
+"yourself, this could mean that there is some installation problem or that "
+"you may be out of diskspace.  Try logging in with one of the failsafe "
+"sessions to see if you can fix this problem."
 msgstr ""
 "Vaša seja je trajala manj kot 10 sekund.  Če se niste sami odjavili, lahko "
 "to pomeni, da obstaja težava z namestitvijo ali, da vam je zmanjkalo "
 "prostora na disku.  Poskušajte se prijaviti z eno od varnih sej, da "
-"ugotovite ali lahko popravite problem."
+"ugotovite ali lahko problem odpravite."
 
-#: daemon/slave.c:2856
+#: daemon/slave.c:3551
 msgid "View details (~/.xsession-errors file)"
 msgstr "Glej podrobnosti (datoteka ~/.xsession-errors)"
 
-#: daemon/slave.c:2990
+#: daemon/slave.c:3678
+msgid "GDM detected a shutdown or reboot in progress."
+msgstr "GDM je zaznal, da je v teku izklop ali vnovičen zagon sistema."
+
+#: daemon/slave.c:3772
 #, c-format
 msgid "Ping to %s failed, whacking display!"
 msgstr "Ping do %s ni uspel, tolčem po zaslon."
 
-#: daemon/slave.c:3190
-#, c-format
-msgid "gdm_slave_xioerror_handler: Fatal X error - Restarting %s"
-msgstr "gdm_slave_xioerror_handler: Usodna napaka X - znova zaganjam %s"
+#: daemon/slave.c:4045
+msgid "%s: Fatal X error - Restarting %s"
+msgstr "%s: Usodna napaka X - znova zaganjam %s"
 
-#: daemon/slave.c:3550
-#, c-format
-msgid "gdm_slave_exec_script: Failed starting: %s"
-msgstr "gdm_slave_exec_script: Napaka pri zagonu: %s"
+#: daemon/slave.c:4446
+msgid "%s: Failed starting: %s"
+msgstr "%s: Napaka pri zagonu: %s"
 
-#: daemon/slave.c:3558
-msgid "gdm_slave_exec_script: Can't fork script process!"
-msgstr "gdm_slave_exec_script: Ne morem razvejiti procesa za skripto!"
+#: daemon/slave.c:4454 daemon/slave.c:4591
+msgid "%s: Can't fork script process!"
+msgstr "%s: Ne morem razvejiti procesa skripte!"
 
-#: daemon/slave.c:3652
-msgid "gdm_parse_enriched_login: Failed creating pipe"
-msgstr "gdm_parse_enriched_login: Nisem uspel ustvariti cevi"
+#: daemon/slave.c:4548
+msgid "%s: Failed creating pipe"
+msgstr "%s: Nisem mogel ustvariti cevi"
 
-#: daemon/slave.c:3680
-#, c-format
-msgid "gdm_parse_enriched_login: Failed executing: %s"
-msgstr "gdm_parse_enriched_login: Napaka pri zagonu: %s"
+#: daemon/slave.c:4585
+msgid "%s: Failed executing: %s"
+msgstr "%s: Napaka pri zagonu: %s"
 
-#: daemon/slave.c:3685
-msgid "gdm_parse_enriched_login: Can't fork script process!"
-msgstr "gdm_parse_enriched_login: Ne morem razvejiti procesa za skripto!"
+#: daemon/verify-crypt.c:70 daemon/verify-pam.c:708 daemon/verify-shadow.c:71
+msgid ""
+"\n"
+"Incorrect username or password.  Letters must be typed in the correct case."
+msgstr ""
+"\n"
+"Napačno uporabniško ime ali geslo.  Črke morajo biti pravilne velikosti."
 
-#. Ask gdmgreeter for the user's login. Just for good measure
-#: daemon/verify-crypt.c:71 daemon/verify-pam.c:319 daemon/verify-shadow.c:70
-#: gui/gdmlogin.c:3339
+#: daemon/verify-crypt.c:75 daemon/verify-pam.c:718 daemon/verify-shadow.c:76
+msgid "Please make sure the Caps Lock key is not enabled."
+msgstr "Prepričajte se, da niso vključene velike črke (caps lock)."
+
+
+#. I think I'll add the buttons next to this
+#: daemon/verify-crypt.c:114 daemon/verify-pam.c:175
+#: daemon/verify-shadow.c:113 gui/gdmlogin.c:2905
 msgid "Please enter your username"
 msgstr "Prosim, vpišite svoje uporabniško ime"
 
-#: daemon/verify-crypt.c:72 daemon/verify-pam.c:320 daemon/verify-shadow.c:71
-#: gui/gdmlogin.c:3297 gui/greeter/greeter_parser.c:961
-#: gui/greeter/themes/circles/circles.xml.in.h:5
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:5
+#. login: is whacked always translate to Username:
+#: daemon/verify-crypt.c:115 daemon/verify-pam.c:91 daemon/verify-pam.c:92
+#: daemon/verify-pam.c:93 daemon/verify-pam.c:169 daemon/verify-pam.c:505
+#: daemon/verify-shadow.c:114 gui/gdmlogin.c:1095 gui/gdmlogin.c:1109
+#: gui/gdmlogin.c:1757 gui/gdmlogin.c:2223 gui/greeter/greeter.c:265
+#: gui/greeter/greeter_parser.c:1045
 msgid "Username:"
 msgstr "Uporabniško ime:"
 
-#: daemon/verify-crypt.c:96 daemon/verify-shadow.c:105
-msgid "Password: "
+#: daemon/verify-crypt.c:153 daemon/verify-pam.c:94 daemon/verify-pam.c:95
+#: daemon/verify-pam.c:216 daemon/verify-shadow.c:171 gui/gdmlogin.c:1789
+msgid "Password:"
 msgstr "Geslo:"
 
-#: daemon/verify-crypt.c:114 daemon/verify-pam.c:361 daemon/verify-pam.c:532
-#: daemon/verify-shadow.c:123
-msgid "Couldn't authenticate user"
-msgstr "Nisem mogel avtentificirati uporabnika"
+#: daemon/verify-crypt.c:171 daemon/verify-crypt.c:185
+#: daemon/verify-shadow.c:189 daemon/verify-shadow.c:203
+msgid "Couldn't authenticate user \"%s\""
+msgstr "Nisem mogel avtenticirati uporabnika \"%s\""
 
-#: daemon/verify-crypt.c:120 daemon/verify-crypt.c:140
-msgid ""
-"\n"
-"Incorrect username or password.  Letters must be typed in the correct case.  "
-"Please be sure the Caps Lock key is not enabled"
-msgstr ""
-"\n"
-"Napačno uporabniško ime ali geslo.  Črke morajo biti pravilne velikosti.  "
-"Prepričajte se, da niso vključene velike črke (caps lock)."
-
-#: daemon/verify-crypt.c:154 daemon/verify-pam.c:374
-#: daemon/verify-shadow.c:163
+#: daemon/verify-crypt.c:198 daemon/verify-pam.c:594
+#: daemon/verify-shadow.c:216
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Prijava root na zaslonu '%s` ni dovoljena"
 
-#: daemon/verify-crypt.c:156 daemon/verify-shadow.c:165
+#: daemon/verify-crypt.c:200 daemon/verify-shadow.c:218
 msgid "The system administrator is not allowed to login from this screen"
 msgstr "Administratorju sistema prijava s tega zaslona ni dovoljena"
 
-#: daemon/verify-crypt.c:172 daemon/verify-shadow.c:181
+#: daemon/verify-crypt.c:216 daemon/verify-shadow.c:234
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Uporabniku %s prijava ni dovoljena"
 
-#: daemon/verify-crypt.c:174 daemon/verify-pam.c:404 daemon/verify-pam.c:565
-#: daemon/verify-shadow.c:183
+#: daemon/verify-crypt.c:218 daemon/verify-pam.c:624 daemon/verify-pam.c:873
+#: daemon/verify-shadow.c:236
 msgid ""
 "\n"
 "The system administrator has disabled your account."
@@ -1278,16 +1276,16 @@ msgstr ""
 "\n"
 "Administrator sistema je onemogočil vaš račun."
 
-#: daemon/verify-crypt.c:189 daemon/verify-crypt.c:223 daemon/verify-pam.c:422
-#: daemon/verify-pam.c:582 daemon/verify-shadow.c:197
-#: daemon/verify-shadow.c:230
+#: daemon/verify-crypt.c:233 daemon/verify-crypt.c:270 daemon/verify-pam.c:642
+#: daemon/verify-pam.c:890 daemon/verify-shadow.c:250
+#: daemon/verify-shadow.c:286
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Ne morem nastaviti uporabniške skupine za %s"
 
-#: daemon/verify-crypt.c:191 daemon/verify-crypt.c:226 daemon/verify-pam.c:424
-#: daemon/verify-pam.c:585 daemon/verify-shadow.c:199
-#: daemon/verify-shadow.c:233
+#: daemon/verify-crypt.c:235 daemon/verify-crypt.c:273 daemon/verify-pam.c:644
+#: daemon/verify-pam.c:893 daemon/verify-shadow.c:252
+#: daemon/verify-shadow.c:289
 msgid ""
 "\n"
 "Cannot set your user group, you will not be able to log in, please contact "
@@ -1297,36 +1295,96 @@ msgstr ""
 "Nisem mogel nastaviti uporabniške skupine. Ne boste se mogli prijaviti. "
 "Prosim, obrnite se na vašega sistemskega administratorja."
 
-#: daemon/verify-crypt.c:218 daemon/verify-shadow.c:225
+#: daemon/verify-crypt.c:265 daemon/verify-shadow.c:281
 #, c-format
 msgid "Cannot get passwd structure for %s"
 msgstr "Ne morem dobiti strukture passwd za %s"
 
-#: daemon/verify-pam.c:238
-msgid "Cannot setup pam handle with null login and/or display"
-msgstr "Ne morem nastaviti ročice pam brez prijave in/ali zaslona"
+#: daemon/verify-pam.c:96
+msgid "You are required to change your password immediately (password aged)"
+msgstr "Svoje geslo morate takoj spremeniti (zaradi njegove starosti)"
 
-#: daemon/verify-pam.c:252
+#: daemon/verify-pam.c:97
+msgid "You are required to change your password immediately (root enforced)"
+msgstr "Svoje geslo morate takoj spremeniti (zahteva administratorja)"
+
+#: daemon/verify-pam.c:98
+msgid "Your account has expired; please contact your system administrator"
+msgstr ""
+"Vaš uporabniški račun je pretekel; prosim, obrnite se na vašega sistemskega administratorja"
+
+#: daemon/verify-pam.c:99
+msgid "No password supplied"
+msgstr "Geslo ni bilo podano"
+
+#: daemon/verify-pam.c:100
+msgid "Password unchanged"
+msgstr "Geslo ni bilo spremenjeno"
+
+#: daemon/verify-pam.c:101
+msgid "Can not get username"
+msgstr "Ne morem dobiti uporabniškega imena"
+
+#: daemon/verify-pam.c:102
+msgid "Retype new UNIX password:"
+msgstr "Še enkrat vpišite novo geslo:"
+
+#: daemon/verify-pam.c:103
+msgid "Enter new UNIX password:"
+msgstr "Vpišite novo geslo:"
+
+#: daemon/verify-pam.c:104
+msgid "(current) UNIX password:"
+msgstr "(trenutno) geslo:"
+
+#: daemon/verify-pam.c:105
+msgid "Error while changing NIS password."
+msgstr "Napaka ob spreminjanju gesla NIS"
+
+#: daemon/verify-pam.c:106
+msgid "You must choose a longer password"
+msgstr "Izbrati morate daljše geslo"
+
+#: daemon/verify-pam.c:107
+msgid "Password has been already used. Choose another."
+msgstr "Geslo je bilo že uporabljeno. Izberite drugo."
+
+#: daemon/verify-pam.c:108
+msgid "You must wait longer to change your password"
+msgstr "Za spremembo gesla morate počakati dlje"
+
+#: daemon/verify-pam.c:109
+msgid "Sorry, passwords do not match"
+msgstr "Oprostite, gesli se ne ujemata"
+
+#: daemon/verify-pam.c:380
+msgid "Cannot setup pam handle with null display"
+msgstr "Ne morem nastaviti ročice pam z neobstoječim (null) zaslonom"
+
+#: daemon/verify-pam.c:397
 #, c-format
-msgid "Can't find /etc/pam.d/%s!"
-msgstr "Ne najdem /etc/pam.d/%s!"
+msgid "Unable to establish service %s: %s\n"
+msgstr "Nisem mogel vzpostaviti storitve %s: %s\n"
 
-#: daemon/verify-pam.c:259
+#: daemon/verify-pam.c:405
 #, c-format
 msgid "Can't set PAM_TTY=%s"
 msgstr "Ne morem nastaviti PAM_TTY=%s"
 
-#: daemon/verify-pam.c:266
-#, c-format
-msgid "Can't set PAM_RUSER=%s"
-msgstr "Ne morem nastaviti PAM_RUSER=%s"
-
-#: daemon/verify-pam.c:274
+#: daemon/verify-pam.c:415
 #, c-format
 msgid "Can't set PAM_RHOST=%s"
 msgstr "Ne morem nastaviti PAM_RHOST=%s"
 
-#: daemon/verify-pam.c:377
+#. is not really an auth problem, but it will
+#. pretty much look as such, it shouldn't really
+#. happen
+#: daemon/verify-pam.c:550 daemon/verify-pam.c:569 daemon/verify-pam.c:823
+#: daemon/verify-pam.c:836
+msgid "Couldn't authenticate user"
+msgstr "Nisem mogel avtenticirati uporabnika"
+
+#: daemon/verify-pam.c:597
 msgid ""
 "\n"
 "The system administrator is not allowed to login from this screen"
@@ -1334,32 +1392,32 @@ msgstr ""
 "\n"
 "Administratorju sistema prijava s tega zaslona ni dovoljena"
 
-#: daemon/verify-pam.c:393
+#: daemon/verify-pam.c:613
 #, c-format
 msgid "Authentication token change failed for user %s"
-msgstr "Sprememba žetona avtentifikacije za uporabnika %s ni uspela"
+msgstr "Sprememba žetona avtentikacije za uporabnika %s ni uspela"
 
-#: daemon/verify-pam.c:395
+#: daemon/verify-pam.c:615
 msgid ""
 "\n"
 "The change of the authentication token failed. Please try again later or "
 "contact the system administrator."
 msgstr ""
 "\n"
-"Sprememba žetona avtentifikacije ni uspela. Prosimo, poskusite kasneje ali "
+"Sprememba žetona avtentikacije ni uspela. Prosimo, poskusite kasneje ali "
 "se obrnite na sistemskega administratorja."
 
-#: daemon/verify-pam.c:402 daemon/verify-pam.c:562
+#: daemon/verify-pam.c:622 daemon/verify-pam.c:870
 #, c-format
 msgid "User %s no longer permitted to access the system"
 msgstr "Uporabniku %s dostop do sistema ni več dovoljen"
 
-#: daemon/verify-pam.c:408 daemon/verify-pam.c:568
+#: daemon/verify-pam.c:628 daemon/verify-pam.c:876
 #, c-format
 msgid "User %s not permitted to gain access at this time"
 msgstr "Uporabniku %s dostop v tem trenutku ni dovoljen"
 
-#: daemon/verify-pam.c:410
+#: daemon/verify-pam.c:630
 msgid ""
 "\n"
 "The system administrator has disabled access to the system temporarily."
@@ -1367,41 +1425,38 @@ msgstr ""
 "\n"
 "Administrator sistema je začasno onemogočil dostop do sistema."
 
-#: daemon/verify-pam.c:415 daemon/verify-pam.c:575
+#: daemon/verify-pam.c:635 daemon/verify-pam.c:883
 #, c-format
 msgid "Couldn't set acct. mgmt for %s"
 msgstr "Ne morem nastaviti upravljalnika prijave za %s"
 
-#: daemon/verify-pam.c:434 daemon/verify-pam.c:595
+#: daemon/verify-pam.c:656 daemon/verify-pam.c:906
 #, c-format
 msgid "Couldn't set credentials for %s"
 msgstr "Ne morem nastaviti akreditive za %s"
 
-#: daemon/verify-pam.c:444 daemon/verify-pam.c:606
+#: daemon/verify-pam.c:670 daemon/verify-pam.c:921
 #, c-format
 msgid "Couldn't open session for %s"
 msgstr "Ne morem odpreti seje za %s"
 
-#: daemon/verify-pam.c:470 daemon/verify-shadow.c:129
-#: daemon/verify-shadow.c:149
+#: daemon/verify-pam.c:712
 msgid ""
 "\n"
-"Incorrect username or password. Letters must be typed in the correct case. "
-"Please make sure the Caps Lock key is not enabled."
+"Authentication failed.  Letters must be typed in the correct case."
 msgstr ""
 "\n"
-"Napačno uporabniško ime ali geslo. Črke morajo biti pravilne velikosti. "
-"Prepričajte se, da niso vključene velike črke (caps lock)."
+"Avtentikacija ni uspela.  Črke morajo biti napisane v pravilni velikosti."
 
-#: daemon/verify-pam.c:475 daemon/verify-pam.c:535
+#: daemon/verify-pam.c:728 daemon/verify-pam.c:826 daemon/verify-pam.c:839
 msgid "Authentication failed"
-msgstr "Avtentifikacija ni uspela"
+msgstr "Avtentikacija ni uspela"
 
-#: daemon/verify-pam.c:520 gui/gdmsetup-strings.c:19 gui/gdmsetup.glade.h:10
+#: daemon/verify-pam.c:792
 msgid "Automatic login"
 msgstr "Samodejna prijava"
 
-#: daemon/verify-pam.c:571
+#: daemon/verify-pam.c:879
 msgid ""
 "\n"
 "The system administrator has disabled your access to the system temporary."
@@ -1409,233 +1464,198 @@ msgstr ""
 "\n"
 "Administrator sistema je začasno onemogočil vaš dostop do sistema."
 
-#: daemon/verify-pam.c:698 daemon/verify-pam.c:700
+#: daemon/verify-pam.c:1054 daemon/verify-pam.c:1056
 msgid "Can't find PAM configuration for gdm."
 msgstr "Ne najdem nastavitev PAM za gdm"
 
-#: daemon/xdmcp.c:244
+#: daemon/xdmcp.c:270
 #, c-format
-msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
-msgstr "gdm_xdmcp_init: Nisem dobil ime strežnika: %s!"
+msgid "%s: Could not get server hostname: %s!"
+msgstr "%s: Nisem uspel dobiti imena strežnika: %s!"
 
-#: daemon/xdmcp.c:264
-msgid "gdm_xdmcp_init: Could not create socket!"
-msgstr "gdm_xdmcp_init: Ne morem ustvariti vtiča!"
+#: daemon/xdmcp.c:291
+msgid "%s: Could not create socket!"
+msgstr "%s: Nisem mogel ustvariti vtiča!"
 
-#: daemon/xdmcp.c:274
-msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
-msgstr "gdm_xdmcp_init: Povezava na vtič XDMCP ne uspela!"
+#: daemon/xdmcp.c:301
+msgid "%s: Could not bind to XDMCP socket!"
+msgstr "%s: Nisem mogel povezati se na vtič XDMCP"
 
-#: daemon/xdmcp.c:333
-msgid "gdm_xdmcp_decode: Could not create XDMCP buffer!"
-msgstr "gdm_xdmcp_decode: Ne morem ustvariti izravnalnika za XDMCP!"
+#: daemon/xdmcp.c:369
+msgid "%s: Could not create XDMCP buffer!"
+msgstr "%s: Nisemo mogel ustvariti izravnalnika za XDMCP!"
 
-#: daemon/xdmcp.c:338
-msgid "gdm_xdmcp_decode: Could not read XDMCP header!"
-msgstr "gdm_xdmcp_decode: Ne morem prebrati glave XDMCP!"
+#: daemon/xdmcp.c:375
+msgid "%s: Could not read XDMCP header!"
+msgstr "%s: Nisem mogel prebrati glave XDMCP!"
 
-#: daemon/xdmcp.c:344
-msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
-msgstr "gdm_xdmcp_decode: Napačna verzija XDMCP!"
+#: daemon/xdmcp.c:382
+msgid "%s: Incorrect XDMCP version!"
+msgstr "%s: Napačna različica XDMCP!"
 
-#: daemon/xdmcp.c:397
-#, c-format
-msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
-msgstr "gdm_xdmcp_decode_packet: Neznana operacijska koda iz strežnika %s"
+#: daemon/xdmcp.c:435
+msgid "%s: Unknown opcode from host %s"
+msgstr "%s: Neznana operacijska koda iz strežnika %s"
 
-#: daemon/xdmcp.c:416
-msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
+#: daemon/xdmcp.c:455 daemon/xdmcp.c:741
+msgid "%s: Could not extract authlist from packet"
 msgstr ""
-"gdm_xdmcp_handle_query: Ne morem izvleči avtorizacijskega seznama iz paketa"
+"%s: Ne morem izvleči avtorizacijskega seznama iz paketa"
 
-#: daemon/xdmcp.c:428
-msgid "gdm_xdmcp_handle_query: Error in checksum"
-msgstr "gdm_xdmcp_handle_query: Napaka v preverjalni vsoti"
+#: daemon/xdmcp.c:471 daemon/xdmcp.c:761
+msgid "%s: Error in checksum"
+msgstr "%s: Napaka v preverjalni vsoti"
 
-#: daemon/xdmcp.c:671
-msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
-msgstr "gdm_xdmcp_handle_forward_query: Ne morem prebrati naslova zaslona"
+#: daemon/xdmcp.c:724
+msgid "%s: Could not read display address"
+msgstr "%s: Nisem mogel prebrati naslova zaslona"
 
-#: daemon/xdmcp.c:678
-msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
-msgstr ""
-"gdm_xdmcp_handle_forward_query: Ne morem prebrati številke vrat zaslona"
+#: daemon/xdmcp.c:732
+msgid "%s: Could not read display port number"
+msgstr "%s: Nisem mogel prebrati številke vrat zaslona"
 
-#: daemon/xdmcp.c:686
-msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
-msgstr ""
-"gdm_xdmcp_handle_forward_query: Ne morem izvleči avtorizacijskega seznama iz "
-"paketa"
+#: daemon/xdmcp.c:768
+msgid "%s: Bad address"
+msgstr "%s: Neveljaven naslov"
 
-#: daemon/xdmcp.c:702
-msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
-msgstr "gdm_xdmcp_handle_forward_query: Napaka v preverjalni vsoti"
-
-#: daemon/xdmcp.c:708
-msgid "gdm_xdmcp_handle_forward_query: Bad address"
-msgstr "gdm_xdmcp_handle_forward_query: Slab naslov"
-
-#: daemon/xdmcp.c:816
+#: daemon/xdmcp.c:883
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "Zavrnjena XDMCP poizvedba iz strežnika %s"
 
-#: daemon/xdmcp.c:962
-#, c-format
-msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
+#: daemon/xdmcp.c:1012
+msgid "%s: Got REQUEST from banned host %s"
 msgstr ""
-"gdm_xdmcp_handle_request: Dobil sem REQUEST iz prepovedanega gostitelja %s"
+"%s: Dobil sem REQUEST iz prepovedanega gostitelja %s"
 
-#: daemon/xdmcp.c:969
-msgid "gdm_xdmcp_handle_request: Could not read Display Number"
-msgstr "gdm_xdmcp_handle_request: Ne morem prebrati Številke Zaslona"
+#: daemon/xdmcp.c:1022 daemon/xdmcp.c:1296 daemon/xdmcp.c:1549
+msgid "%s: Could not read Display Number"
+msgstr "%s: Nisem mogel prebrati številke zaslona"
 
-#: daemon/xdmcp.c:975
-msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
-msgstr "gdm_xdmcp_handle_request: Ne morem prebrati Vrste Povezave"
+#: daemon/xdmcp.c:1029
+msgid "%s: Could not read Connection Type"
+msgstr "%s: Ne morem prebrati vrste povezave"
 
-#: daemon/xdmcp.c:981
-msgid "gdm_xdmcp_handle_request: Could not read Client Address"
-msgstr "gdm_xdmcp_handle_request: Ne morem prebrati Naslov Odjemalca"
+#: daemon/xdmcp.c:1036
+msgid "%s: Could not read Client Address"
+msgstr "%s: Nisem mogel prebrati naslova odjemalca"
 
-#: daemon/xdmcp.c:988
-msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
-msgstr "gdm_xdmcp_handle_request: Ne morem prebrati avtentifikacijskega"
+#: daemon/xdmcp.c:1044
+msgid "%s: Could not read Authentication Names"
+msgstr "%s: Nisem mogel rebrati imen avtentikacij"
 
-#: daemon/xdmcp.c:996
-msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
+#: daemon/xdmcp.c:1053
+msgid "%s: Could not read Authentication Data"
 msgstr ""
-"gdm_xdmcp_handle_request: Ne morem prebrati avtentifikacijskih podtakov"
+"%s: Ne morem prebrati avtentikacijskih podtakov"
 
-#: daemon/xdmcp.c:1005
-msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
-msgstr "gdm_xdmcp_handle_request: Ne morem prebrati avtorizacijskega seznama"
+#: daemon/xdmcp.c:1063
+msgid "%s: Could not read Authorization List"
+msgstr "%s: Ne morem prebrati avtorizacijskega seznama"
 
-#: daemon/xdmcp.c:1020
-msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
-msgstr "gdm_xdmcp_handle_request: Ne morem prebrati ID proizvajalca"
+#: daemon/xdmcp.c:1080
+msgid "%s: Could not read Manufacturer ID"
+msgstr "%s: Nisem mogel prebrati IDja proizvajalca"
 
-#: daemon/xdmcp.c:1043
-#, c-format
-msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
-msgstr "gdm_xdmcp_handle_request: Preverjalna vsota iz %s ni uspela"
+#: daemon/xdmcp.c:1104
+msgid "%s: Failed checksum from %s"
+msgstr "%s: Preverjalna vsota iz %s ni uspela"
 
-#: daemon/xdmcp.c:1210
-#, c-format
-msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
+#: daemon/xdmcp.c:1281
+msgid "%s: Got Manage from banned host %s"
 msgstr ""
-"gdm_xdmcp_handle_manage: Dobil sem Upravljaj iz prepovedanega gostitelja %s"
+"%s: Dobil sem Upravljaj iz prepovedanega gostitelja %s"
 
-#: daemon/xdmcp.c:1217
-msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
-msgstr "gdm_xdmcp_handle_manage: Ne morem prebrati ID seje "
+#: daemon/xdmcp.c:1289 daemon/xdmcp.c:1556
+msgid "%s: Could not read Session ID"
+msgstr "%s: Nisem mogel prebrati IDja seje"
 
-#: daemon/xdmcp.c:1223
-msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
-msgstr "gdm_xdmcp_handle_manage: Ne morem prebrati Številko Zaslona"
+#: daemon/xdmcp.c:1303
+msgid "%s: Could not read Display Class"
+msgstr "%s: Nisem mogel prebrati razreda zaslona"
 
-#: daemon/xdmcp.c:1232
-msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
-msgstr "gdm_xdmcp_handle_manage: Ne morem prebrati razreda zaslona"
-
-#: daemon/xdmcp.c:1307 daemon/xdmcp.c:1313 daemon/xdmcp.c:1363
-#: daemon/xdmcp.c:1369
-#, c-format
+#: daemon/xdmcp.c:1395 daemon/xdmcp.c:1401 daemon/xdmcp.c:1459
+#: daemon/xdmcp.c:1465
 msgid "%s: Could not read address"
 msgstr "%s: Nisem mogel prebrati naslova"
 
-#: daemon/xdmcp.c:1445
-#, c-format
-msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
+#: daemon/xdmcp.c:1541
+msgid "%s: Got KEEPALIVE from banned host %s"
 msgstr ""
-"gdm_xdmcp_handle_keepalive: Dobil sem KEEPALIVE iz prepovedanega gostitelja %"
-"s"
+"%s: Dobil sem KEEPALIVE iz prepovedanega gostitelja %s"
 
-#: daemon/xdmcp.c:1452
-msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
-msgstr "gdm_xdmcp_handle_keepalive: Ne morem prebrati Številka Zaslona"
+#: daemon/xdmcp.c:1798 daemon/xdmcp.c:1805 daemon/xdmcp.c:1811
+msgid "%s: No XDMCP support"
+msgstr "%s: Ni podpore za XDMCP"
 
-#: daemon/xdmcp.c:1458
-msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
-msgstr "gdm_xdmcp_handle_keepalive: Ne morem prebrati Identifikacijo Seje"
-
-#: daemon/xdmcp.c:1661
-msgid "gdm_xdmcp_init: No XDMCP support"
-msgstr "gdm_xdmcp_init: Ni podpore za XDMCP"
-
-#: daemon/xdmcp.c:1668
-msgid "gdm_xdmcp_run: No XDMCP support"
-msgstr "gdm_xdmcp_run: Ni podpore za XDMCP"
-
-#: daemon/xdmcp.c:1674
-msgid "gdm_xdmcp_close: No XDMCP support"
-msgstr "gdm_xdmcp_close: Ni podpore za XDMCP"
-
-#: gui/gdmXnestchooser.c:114 gui/gdmXnestchooser.c:121
+#: gui/gdmXnestchooser.c:132 gui/gdmXnestchooser.c:139
 msgid "Xnest command line"
 msgstr "Ukazna vrstica Xnest"
 
-#: gui/gdmXnestchooser.c:114 gui/gdmXnestchooser.c:121
+#: gui/gdmXnestchooser.c:132 gui/gdmXnestchooser.c:139
 msgid "STRING"
 msgstr "NIZ"
 
-#: gui/gdmXnestchooser.c:115 gui/gdmXnestchooser.c:122
+#: gui/gdmXnestchooser.c:133 gui/gdmXnestchooser.c:140
 msgid "Extra options for Xnest"
 msgstr "Dodatne možnosti za Xnest"
 
-#: gui/gdmXnestchooser.c:115 gui/gdmXnestchooser.c:122
+#: gui/gdmXnestchooser.c:133 gui/gdmXnestchooser.c:140
 msgid "OPTIONS"
 msgstr "MOŽNOSTI"
 
-#: gui/gdmXnestchooser.c:116 gui/gdmXnestchooser.c:126
+#: gui/gdmXnestchooser.c:134 gui/gdmXnestchooser.c:144
 msgid "Run in background"
 msgstr "Poženi v ozadju"
 
-#: gui/gdmXnestchooser.c:123
+#: gui/gdmXnestchooser.c:141
 msgid "Just run Xnest, no query (no chooser)"
 msgstr "Poženi le Xnest, brez pozivedovanja (brez izbirnika)"
 
-#: gui/gdmXnestchooser.c:124
+#: gui/gdmXnestchooser.c:142
 msgid "Do direct query instead of indirect (chooser)"
 msgstr "Izvedi posredno poizvedbo namesto neposredne (izbirnik)"
 
-#: gui/gdmXnestchooser.c:125
+#: gui/gdmXnestchooser.c:143
 msgid "Run broadcast instead of indirect (chooser)"
 msgstr "Izvedi oddajanje namesto posredovanja (izbirnik)"
 
-#: gui/gdmXnestchooser.c:127
+#: gui/gdmXnestchooser.c:145
 msgid "Don't check for running gdm"
 msgstr "Ne preveri ali gdm že teče"
 
-#: gui/gdmXnestchooser.c:468
-msgid ""
-"Xnest doesn't exist.\n"
-"Please ask your system administrator\n"
-"to install it."
-msgstr ""
-"Xnest ne obstaja.\n"
-"Prosite svojega sistemskega administratorja,\n"
-"da ga namesti"
+#: gui/gdmXnestchooser.c:486
+msgid "Xnest doesn't exist."
+msgstr "Xnest ne obstaja"
 
-#: gui/gdmXnestchooser.c:493
-msgid ""
-"Indirect XDMCP is not enabled,\n"
-"please ask your system administrator to enable it\n"
-"in the GDM configurator program."
+#: gui/gdmXnestchooser.c:488
+msgid "Please ask your system administrator to install it."
 msgstr ""
-"Posredni XDMCP ni vključen,\n"
-"prosite svojega sistemskega administratorja, da ga \n"
-"vključi v programu za nastavljanje GDM."
+"Prosite svojega sistemskega administratorja, da ga namesti."
 
-#: gui/gdmXnestchooser.c:522
+#: gui/gdmXnestchooser.c:513
+msgid "Indirect XDMCP is not enabled"
+msgstr "Posredni XDMCP ni vključen"
+
+#: gui/gdmXnestchooser.c:515 gui/gdmXnestchooser.c:535
 msgid ""
-"GDM is not running.\n"
-"Please ask your system administrator to start it."
-msgstr ""
-"GDM ne teče.\n"
-"Prosite svojega administratorja sistema, da ga požene."
+"Please ask your system administrator to enable it in the GDM configurator "
+"program."
+msgstr "Prosite svojega sistemskega administratorja, da ga vključi v programu za nastavljanje GDM."
 
-#: gui/gdmXnestchooser.c:539
+#: gui/gdmXnestchooser.c:533
+msgid "XDMCP is not enabled"
+msgstr "XDMCP ni vključen"
+
+#: gui/gdmXnestchooser.c:563
+msgid "GDM is not running"
+msgstr "GDM ne teče"
+
+#: gui/gdmXnestchooser.c:565
+msgid "Please ask your system administrator to start it."
+msgstr "Prosite svojega administratorja sistema, da ga požene."
+
+#: gui/gdmXnestchooser.c:581
 msgid "Could not find a free display number"
 msgstr "Nisem mogel najti proste številke zaslona"
 
@@ -1644,71 +1664,103 @@ msgstr "Nisem mogel najti proste številke zaslona"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: gui/gdmchooser-strings.c:7 gui/gdmchooser.glade.h:3
+#: gui/gdmchooser-strings.c:7 gui/gdmchooser.glade.h:5
 msgid "GDM Host Chooser"
 msgstr "Izbirnik gostiteljev GDM"
 
-#: gui/gdmchooser-strings.c:8 gui/gdmchooser.glade.h:4
+#: gui/gdmchooser-strings.c:8 gui/gdmchooser.glade.h:6
 msgid "How to use this application"
 msgstr "Kako uporabljati ta program "
 
-#: gui/gdmchooser-strings.c:9 gui/gdmchooser.glade.h:6
-msgid "Open a session to the selected host"
-msgstr "Odpri sejo izbranemu gostitelju"
-
-#. EOF
-#: gui/gdmchooser-strings.c:10 gui/gdmchooser.glade.h:1
-msgid "C_onnect"
-msgstr "Po_veži se"
-
-#: gui/gdmchooser-strings.c:11 gui/gdmchooser.glade.h:7
+#: gui/gdmchooser-strings.c:9 gui/gdmchooser.glade.h:8
 msgid "Probe the network"
 msgstr "Preizkusi mrežo"
 
-#: gui/gdmchooser-strings.c:12 gui/gdmchooser.glade.h:2
+#: gui/gdmchooser-strings.c:10 gui/gdmchooser.glade.h:4
 msgid "Exit the application"
 msgstr "Izhod iz programa"
 
-#: gui/gdmchooser-strings.c:13 gui/gdmchooser.glade.h:8
+#: gui/gdmchooser-strings.c:11 gui/gdmchooser.glade.h:7
+msgid "Open a session to the selected host"
+msgstr "Odpri sejo izbranemu gostitelju"
+
+#: gui/gdmchooser-strings.c:12 gui/gdmchooser.glade.h:3
+msgid "C_onnect"
+msgstr "Po_veži se"
+
+#: gui/gdmchooser-strings.c:13 gui/gdmchooser.glade.h:10
 msgid "Status"
 msgstr "Stanje"
 
-#: gui/gdmchooser-strings.c:14 gui/gdmchooser.glade.h:9
-msgid ""
-"The main area of this application shows the hosts on the local network that "
-"have \"XDMCP\" enabled. This allows users to login remotely to other "
-"machines as if they were logged on using the console.\n"
-"\n"
-"You can rescan the network for new hosts by clicking \"Refresh\". When you "
-"have selected a host click \"Connect\" to open a session to that machine."
-msgstr ""
-"Glavna površina tega programa kaže gostitelje na krajevni mreži, ki imajo "
-"vključen \"XDMCP\". To omogoča uporabnikom, da se prijavijo na druge "
-"računalnike, kot, da bi se prijavili v konzolo.\n"
-"\n"
-"Mrežo lahko preiščete za nove gostitelje s klikom na \"Osveži\". Ko boste "
-"izbrali gostitelja, kliknite \"Poveži se\" za odprtje  seje na tem "
-"računalniku."
+#: gui/gdmchooser-strings.c:14 gui/gdmchooser.glade.h:2
+msgid "A_dd host: "
+msgstr "_Dodaj gostitelja: "
 
-#: gui/gdmchooser-strings.c:17 gui/gdmchooser.glade.h:5
-msgid "Information"
-msgstr "Podatki"
+#. EOF
+#: gui/gdmchooser-strings.c:15 gui/gdmchooser.glade.h:1
+#: gui/gdmsetup-strings.c:19 gui/gdmsetup-strings.c:21
+#: gui/gdmsetup-strings.c:26 gui/gdmsetup-strings.c:32
+#: gui/gdmsetup-strings.c:37 gui/gdmsetup-strings.c:47 gui/gdmsetup.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: gui/gdmchooser-strings.c:16 gui/gdmchooser.glade.h:9
+msgid "Query and add this host to the above list"
+msgstr "Poizvedi po njem in dodaj tega gostitelja na zgornji seznam"
+
+#: gui/gdmchooser-strings.c:17 gui/gdmchooser.glade.h:11
+msgid "_Add"
+msgstr "_Dodaj"
 
 #: gui/gdmchooser.c:75
-msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
-msgstr ""
-"Prosim počakajte: na lokalni mreži iščem gostitelje z omogočenim XDMCP..."
+msgid "Please wait: scanning local network..."
+msgstr "Prosimo počakajte: preiskujem krajevno omrežje..."
 
 #: gui/gdmchooser.c:76
 msgid "No serving hosts were found."
 msgstr "Noben strežniški gostitel ni bil najden."
 
 #: gui/gdmchooser.c:77
-msgid "Choose a host to connect to from the selection below."
+msgid "Choose a ho_st to connect to:"
 msgstr ""
-"Iz spodnjih možnosti izberite gostitelja na katerega se želite povezati."
+"_Izberite gostitelja na katerega se želite povezati:"
 
-#: gui/gdmchooser.c:903
+#: gui/gdmchooser.c:484
+msgid "Cannot connect to remote server"
+msgstr "Ne morem se povezati z oddaljenim strežnikom"
+
+#: gui/gdmchooser.c:485
+#, c-format
+msgid ""
+"The host \"%s\" is not willing to support a login session right now.  Please "
+"try again later."
+msgstr ""
+"Gostitelj \"%s\" ni pripravljen podpreti prijavne seje. Znova poskusite kasneje."
+
+#: gui/gdmchooser.c:851
+msgid "Did not receive response from server"
+msgstr "Nisem prejel odgovora s strežnika"
+
+#: gui/gdmchooser.c:852
+#, c-format
+msgid ""
+"Did not receive any response from host \"%s\" in %d seconds.  Perhaps the "
+"host is not turned on, or is not willing to support a login session right "
+"now.  Please try again later."
+msgstr ""
+"Nisem prejel nobenega odgovora od gostitelja \"%s\" v %d sekundah.  Morda "
+"gostitelj ni prižgan ali v tem trenutku ni pripravljen podpreti prijavne seje.  Znova poskusite kasneje."
+
+#: gui/gdmchooser.c:904
+msgid "Cannot find host"
+msgstr "Ne najdem gostitelja"
+
+#: gui/gdmchooser.c:905
+#, c-format
+msgid "I cannot find the host \"%s\", perhaps you have mistyped it."
+msgstr "Ne najdem gostitelja \"%s\", morda ste ime napačno vpisali."
+
+#: gui/gdmchooser.c:1133
 msgid ""
 "The main area of this application shows the hosts on the local network that "
 "have \"XDMCP\" enabled. This allows users to login remotely to other "
@@ -1726,108 +1778,101 @@ msgstr ""
 "Ko boste izbrali gostitelja, kliknite \"Poveži se\" za odprtje \n"
 "seje na tem računalniku."
 
-#: gui/gdmchooser.c:931
+#: gui/gdmchooser.c:1168
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr "Ne morem odreti privzeto ikona gostitelja: %s"
 
-#: gui/gdmchooser.c:987
-msgid "gdm_signals_init: Error setting up HUP signal handler"
-msgstr ""
-"gdm_signals_init: Napaka pri vzpostavljanju obravnavalnika za signal HUP"
-
-#: gui/gdmchooser.c:990
-msgid "gdm_signals_init: Error setting up INT signal handler"
-msgstr ""
-"gdm_signals_init: Napaka pri vzpostavljanju obravnavalnika za signal INT"
-
-#: gui/gdmchooser.c:993
-msgid "gdm_signals_init: Error setting up TERM signal handler"
-msgstr ""
-"gdm_signals_init: Napaka pri vzpostavljanju obravnavalnika za signal TERM"
-
-#: gui/gdmchooser.c:1001 gui/gdmlogin.c:4227 gui/greeter/greeter.c:1075
+#: gui/gdmchooser.c:1387 gui/gdmlogin.c:3822 gui/gdmlogin.c:3829
+#: gui/greeter/greeter.c:1180 gui/greeter/greeter.c:1187
 msgid "Could not set signal mask!"
 msgstr "Ne morem nastaviti maske za signale!"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:1393
 msgid "Socket for xdm communication"
 msgstr "Vtič za komunikacijo xdm"
 
-#: gui/gdmchooser.c:1007
+#: gui/gdmchooser.c:1393
 msgid "SOCKET"
 msgstr "VTIČ"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:1396
 msgid "Client address to return in response to xdm"
 msgstr "Naslov odjemalca, vrnjen kot odgovor xdm-ju"
 
-#: gui/gdmchooser.c:1010
+#: gui/gdmchooser.c:1396
 msgid "ADDRESS"
 msgstr "NASLOV"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:1399
 msgid "Connection type to return in response to xdm"
 msgstr "Vrsta povezave vrnjena kot odgovor xdm-ju"
 
-#: gui/gdmchooser.c:1013
+#: gui/gdmchooser.c:1399
 msgid "TYPE"
 msgstr "VRSTA"
 
-#: gui/gdmchooser.c:1133
-#, c-format
-msgid ""
-"The chooser version (%s) does not match the daemon version (%s).\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
-msgstr ""
-"Različica izbirnika (%s) ne ustreza različici daemona (%s).\n"
-"Verjetno ste ravnokar nadgradili gdm.\n"
-"Prosim znova poženite gdm ali znova zaženite računalnik."
+#: gui/gdmchooser.c:1527
+msgid "Cannot run chooser"
+msgstr "Ne morem pognati izbirnika"
 
-#: gui/gdmcomm.c:395 gui/gdmphotosetup.c:68
+#: gui/gdmchooser.c:1528
 msgid ""
-"<b>GDM (The GNOME Display Manager) is not running.</b>\n"
-"\n"
+"The chooser version (%s) does not match the daemon version (%s).  You have "
+"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
+"computer."
+msgstr ""
+"Različica izbirnika (%s) ne ustreza različici daemona (%s).  "
+"Verjetno ste ravnokar nadgradili gdm. Prosim znova poženite gdm ali znova zaženite računalnik."
+
+#: gui/gdmcomm.c:392 gui/gdmphotosetup.c:66
+msgid "GDM (The GNOME Display Manager) is not running."
+msgstr "GDM (Upravljalnika zaslona GNOME) ne teče."
+
+#: gui/gdmcomm.c:395 gui/gdmphotosetup.c:69
+msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
-"Display Manager or xdm).\n"
-"If you still wish to use this feature, either start GDM your self or ask "
-"your system administrator to start GDM."
+"Display Manager) or xdm."
 msgstr ""
-"<b>GDM (Upravljalnik zaslona GNOME) ne teče.</b>\n"
-"\n"
-"Lahko, da uporabljate drug uporavljalnik zaslona, kot npr. KDM (Upravljalnik zaslona KDE) ali xmd).\n"
-"Če še vedno želite uporabljati to možnost, ali zaženite GDM ročno ali "
-"prosite sistemskega administratorja, naj zažene GDM."
+"Morda uporabljate drug upravljalnik zaslona, na primer KDM (KDEjev upravljalnik zaslona) ali xdm."
 
-
-#: gui/gdmcomm.c:417
+#: gui/gdmcomm.c:398 gui/gdmphotosetup.c:72
 msgid ""
-"Cannot communicate with GDM (The GNOME Display Manager), perhaps you have an "
-"old version running."
-msgstr "Ne morem komunicirati z GDM (Upravljalnik Zaslona GNOME), morda teče starejša različica."
+"If you still wish to use this feature, either start GDM yourself or ask your "
+"system administrator to start GDM."
+msgstr ""
+"Če še vedno želite uporabiti to možnost, ali sami poženite GDM ali prosite vašega sistemskega administratorja, da to stori."
 
-#: gui/gdmcomm.c:435 gui/gdmcomm.c:438 gui/gdmflexiserver.c:252
+#: gui/gdmcomm.c:416 gui/gdmflexiserver.c:253
+msgid "Cannot communicate with GDM (The GNOME Display Manager)"
+msgstr ""
+"Ne morem komunicirati z GDM (Upravljalnikom zaslona GNOME)"
+
+#: gui/gdmcomm.c:419 gui/gdmflexiserver.c:256
+msgid "Perhaps you have an old version of GDM running."
+msgstr "Morda že teče starejša različica GDMja."
+
+#: gui/gdmcomm.c:436 gui/gdmcomm.c:439
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
 msgstr "Ne morem komunicirati z gdm, morda teče starejša različica."
 
-#: gui/gdmcomm.c:441
+#: gui/gdmcomm.c:442
 msgid "The allowed limit of flexible X servers reached."
 msgstr "Dovoljena omejitev prilagodljivih strežnikov X dosežena."
 
-#: gui/gdmcomm.c:443
+#: gui/gdmcomm.c:444
 msgid "There were errors trying to start the X server."
 msgstr "Ob poskusu zagona strežnika X so bile napake."
 
-#: gui/gdmcomm.c:445
+#: gui/gdmcomm.c:446
 msgid "The X server failed.  Perhaps it is not configured well."
 msgstr "Strežnik X ni uspel. Morda ni pravilno nastavljen."
 
-#: gui/gdmcomm.c:448
+#: gui/gdmcomm.c:449
 msgid "Too many X sessions running."
 msgstr "Teče preveč sej X."
 
-#: gui/gdmcomm.c:450
+#: gui/gdmcomm.c:451
 msgid ""
 "The nested X server (Xnest) cannot connect to your current X server.  You "
 "may be missing an X authorization file."
@@ -1835,7 +1880,7 @@ msgstr ""
 "Gnezden strežnik X (Xnest) se ne more povezati s trenutnim strežnikom.  "
 "Morda vam manjka avtorizacijska datoteka X."
 
-#: gui/gdmcomm.c:455
+#: gui/gdmcomm.c:456
 msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
@@ -1843,24 +1888,24 @@ msgstr ""
 "Gnezden strežnik X (Xnest) ni na voljo, ali pa je gdm slabo nastavljen.\n"
 "Namestite paket Xnest za uporabo gnezdenih prijav."
 
-#: gui/gdmcomm.c:460
+#: gui/gdmcomm.c:461
 msgid ""
 "The X server is not available, it is likely that gdm is badly configured."
 msgstr "Strežnik X ni na voljo, verjetno je gdm slabo nastavljen."
 
-#: gui/gdmcomm.c:464
+#: gui/gdmcomm.c:465
 msgid "Trying to update an unsupported configuration key."
 msgstr "Poskušam posodobiti nepodprt konfiguracijski ključ"
 
-#: gui/gdmcomm.c:466
+#: gui/gdmcomm.c:467
 msgid ""
 "You do not seem to have authentication needed be for this operation.  "
 "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
-"Zdi se, da nimate avtentifikacije potrebne za ta ukaz.  Morda vaša datoteka ."
+"Zdi se, da nimate avtentikacije potrebne za ta ukaz.  Morda vaša datoteka ."
 "Xauthority ni pravilno nastavljena."
 
-#: gui/gdmcomm.c:470
+#: gui/gdmcomm.c:471
 msgid "Unknown error occured."
 msgstr "Zgodila se je neznana napaka."
 
@@ -1869,81 +1914,89 @@ msgid "Log in as another user inside a nested window"
 msgstr "Prijavi se kot drug uporabnik znotraj gnezdenega okna"
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:2
-msgid "New login in a nested window"
+msgid "New Login in a Nested Window"
 msgstr "Nova prijava v gnezdenem oknu"
 
 #: gui/gdmflexiserver.c:129
 msgid "Choose server"
 msgstr "Izberi strežnik"
 
-#: gui/gdmflexiserver.c:139
+#: gui/gdmflexiserver.c:140
 msgid "Choose the X server to start"
 msgstr "Izberi X strežnik, ki naj se požene"
 
-#: gui/gdmflexiserver.c:145
+#: gui/gdmflexiserver.c:146
 msgid "Standard server"
 msgstr "Običajen strežnik"
 
-#: gui/gdmflexiserver.c:193
+#: gui/gdmflexiserver.c:194
 msgid "Send the specified protocol command to gdm"
 msgstr "Gdmju pošlji določen ukaz protokola"
 
-#: gui/gdmflexiserver.c:193
+#: gui/gdmflexiserver.c:194
 msgid "COMMAND"
 msgstr "UKAZ"
 
-#: gui/gdmflexiserver.c:194
+#: gui/gdmflexiserver.c:195
 msgid "Xnest mode"
 msgstr "Način Xnest"
 
-#: gui/gdmflexiserver.c:195
+#: gui/gdmflexiserver.c:196
 msgid "Do not lock current screen"
 msgstr "Ne zakleni trenutnega zaslona"
 
-#: gui/gdmflexiserver.c:196
+#: gui/gdmflexiserver.c:197
 msgid "Debugging output"
 msgstr "Izhod razhroščevanja"
 
-#: gui/gdmflexiserver.c:197
+#: gui/gdmflexiserver.c:198
 msgid "Authenticate before running --command"
-msgstr "Avtentificiraj pred izvedbo --command"
+msgstr "Avtenticiraj pred izvedbo --command"
 
-#: gui/gdmflexiserver.c:269
-msgid ""
-"You do not seem to have the authentication needed for this operation.  "
-"Perhaps your .Xauthority file is not set up correctly."
+#: gui/gdmflexiserver.c:273
+msgid "You do not seem to have the authentication needed for this operation"
 msgstr ""
-"Zdi se, da za to dejanje nimate potrebne avtentifikacije.  Morda vaša "
-"datoteka .Xauthority ni pravilno nastavljena."
+"Zdi se, da za to dejanje nimate potrebne avtentikacije."
 
-#: gui/gdmflexiserver.c:295
-msgid ""
-"You do not seem to be logged in on the console.  Starting a new login only "
-"works correctly on the console."
+#: gui/gdmflexiserver.c:277
+msgid "Perhaps your .Xauthority file is not set up correctly."
 msgstr ""
-"Zdi se, da niste prijavljeni v konzolo.  Začetek nove prijave deluje "
-"pravilno le na konzoli."
+"Morda vaša datoteka .Xauthority ni pravilno nastavljena."
 
-#: gui/gdmflexiserver.c:323
+#: gui/gdmflexiserver.c:302
+msgid "You do not seem to be logged in on the console"
+msgstr ""
+"Zdi se, da niste prijavljeni v konzolo"
+
+#: gui/gdmflexiserver.c:305
+msgid "Starting a new login only works correctly on the console."
+msgstr ""
+"Začetek nove prijave deluje pravilno le iz konzole."
+
+#: gui/gdmflexiserver.c:334
 msgid "Can't lock screen"
 msgstr "Ne morem zakleniti zaslona"
 
-#: gui/gdmflexiserver.c:326
+#: gui/gdmflexiserver.c:337
 msgid "Can't disable xscreensaver display hacks"
 msgstr "Ne morem izključiti hackov zaslona xscreensaver"
+
+#: gui/gdmflexiserver.c:351
+msgid "Cannot start new display"
+msgstr "Ne morem pognati novega zaslona"
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without logging out"
 msgstr "Prijavi se kot drug uporabnik, brez da bi se odjavil"
 
 #: gui/gdmflexiserver.desktop.in.h:2
-msgid "New login"
+msgid "New Login"
 msgstr "Nova prijava"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:53
-msgid "A-M|Azerbaijani"
-msgstr "A-M|Azerbaižanščina"
+msgid "A-M|Albanian"
+msgstr "A-M|Albanščina"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:55
@@ -1962,372 +2015,435 @@ msgstr "A-M|Arabščina (Libanon)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:61
+msgid "A-M|Azerbaijani"
+msgstr "A-M|Azerbaižanščina"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:63
 msgid "A-M|Basque"
 msgstr "A-M|Baskovščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:63
+#: gui/gdmlanguages.c:65
+msgid "A-M|Belarusian"
+msgstr "A-M|Beloruščina"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:67
+msgid "A-M|Bengali"
+msgstr "A-M|Bengalščina"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:69
+msgid "A-M|Bengali (India)"
+msgstr "A-M|Bengalščina (Indija)"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:71
 msgid "A-M|Bulgarian"
 msgstr "A-M|Bulgarščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:65
+#: gui/gdmlanguages.c:73
+msgid "A-M|Bosnian"
+msgstr "A-M|Bosanščina"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:75
 msgid "A-M|Catalan"
 msgstr "A-M|Katalonščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:67
+#: gui/gdmlanguages.c:77
 msgid "A-M|Chinese (simplified)"
 msgstr "A-M|Kitajščina (poenostavljena)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:69
+#: gui/gdmlanguages.c:79
 msgid "A-M|Chinese (traditional)"
 msgstr "A-M|Kitajščina (tradicijonalna)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:71
+#: gui/gdmlanguages.c:81
 msgid "A-M|Croatian"
 msgstr "A-M|Hrvaščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:73
+#: gui/gdmlanguages.c:83
 msgid "A-M|Czech"
 msgstr "A-M|Češčina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:75
+#: gui/gdmlanguages.c:85
 msgid "A-M|Danish"
 msgstr "A-M|Danščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:77
+#: gui/gdmlanguages.c:87
 msgid "A-M|Dutch"
 msgstr "A-M|Nizozemščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:79
+#: gui/gdmlanguages.c:89
 msgid "A-M|English"
 msgstr "A-M|Angleščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:81
-msgid "A-M|Estonian"
-msgstr "A-M|Estonščina"
-
-#. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:83
+#: gui/gdmlanguages.c:91
 msgid "A-M|English (American)"
 msgstr "A-M|Angleščina (ZDA)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:85
+#: gui/gdmlanguages.c:93
 msgid "A-M|English (Australian)"
 msgstr "A-M|Angleščina (Avstralija)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:87
+#: gui/gdmlanguages.c:95
 msgid "A-M|English (British)"
 msgstr "A-M|Angleščina (Britanija)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:89
+#: gui/gdmlanguages.c:97
 msgid "A-M|English (Ireland)"
 msgstr "A-M|Angleščina (Irska)"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:91
+#: gui/gdmlanguages.c:99
+msgid "A-M|Estonian"
+msgstr "A-M|Estonščina"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:101
 msgid "A-M|Finnish"
 msgstr "A-M|Finščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:93
+#: gui/gdmlanguages.c:103
 msgid "A-M|French"
 msgstr "A-M|Francoščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:95
+#: gui/gdmlanguages.c:105
 msgid "A-M|Galician"
 msgstr "A-M|Galščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:97
+#: gui/gdmlanguages.c:107
 msgid "A-M|German"
 msgstr "A-M|Nemščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:99
+#: gui/gdmlanguages.c:109
 msgid "A-M|Greek"
 msgstr "A-M|Grščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:101 gui/gdmlanguages.c:102
+#: gui/gdmlanguages.c:111
+msgid "A-M|Gujarati"
+msgstr "A-M|Gujarati"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:113 gui/gdmlanguages.c:115
 msgid "A-M|Hebrew"
 msgstr "A-M|Hebrejščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:104
+#: gui/gdmlanguages.c:117
+msgid "A-M|Hindi"
+msgstr "A-M|Hindujščina"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:119
 msgid "A-M|Hungarian"
 msgstr "A-M|Madžarščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:106
+#: gui/gdmlanguages.c:121
 msgid "A-M|Icelandic"
 msgstr "A-M|Islandščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:108
+#: gui/gdmlanguages.c:123
+msgid "A-M|Indonesian"
+msgstr "A-M|Indonezijščina"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:125
+msgid "A-M|Interlingua"
+msgstr "A-M|Interlingua"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:127
 msgid "A-M|Irish"
 msgstr "A-M|Irščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:110
+#: gui/gdmlanguages.c:129
 msgid "A-M|Italian"
 msgstr "A-M|Italjanščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:112
+#: gui/gdmlanguages.c:131
 msgid "A-M|Japanese"
 msgstr "A-M|Japonščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:114
+#: gui/gdmlanguages.c:133
+msgid "A-M|Kannada"
+msgstr "A-M|Kannada"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:135
 msgid "A-M|Korean"
 msgstr "A-M|Korejščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:116
+#: gui/gdmlanguages.c:137
 msgid "A-M|Latvian"
 msgstr "A-M|Latvijščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:118
+#: gui/gdmlanguages.c:139
 msgid "A-M|Lithuanian"
 msgstr "A-M|Litvanščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:120
+#: gui/gdmlanguages.c:141
 msgid "A-M|Macedonian"
 msgstr "A-M|Makedonščina"
 
 #. Note translate the A-M to the A-M you used in the group label
-#: gui/gdmlanguages.c:122
+#: gui/gdmlanguages.c:143
 msgid "A-M|Malay"
 msgstr "A-M|Malajščina"
 
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:145
+msgid "A-M|Malayalam"
+msgstr "A-M|Malajalam"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:147
+msgid "A-M|Marathi"
+msgstr "A-M|Marathi"
+
+#. Note translate the A-M to the A-M you used in the group label
+#: gui/gdmlanguages.c:149
+msgid "A-M|Mongolian"
+msgstr "A-M|Mongolščina"
+
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:124
+#: gui/gdmlanguages.c:151
 msgid "N-Z|Norwegian (bokmal)"
 msgstr "N-Z|Norveščina (bokmal)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:126
+#: gui/gdmlanguages.c:153
 msgid "N-Z|Norwegian (nynorsk)"
 msgstr "N-Z|Norveščina (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:128
+#: gui/gdmlanguages.c:155
+msgid "N-Z|Oriya"
+msgstr "N-Z|Oriya"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:157
+msgid "N-Z|Panjabi"
+msgstr "N-Z|Panjabi"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:159
+msgid "N-Z|Persian"
+msgstr "N-Z|Perzijščina"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:161
 msgid "N-Z|Polish"
 msgstr "N-Z|Poljščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:130
+#: gui/gdmlanguages.c:163
 msgid "N-Z|Portuguese"
 msgstr "N-Z|Portugalščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:132
+#: gui/gdmlanguages.c:165
 msgid "N-Z|Portuguese (Brazilian)"
 msgstr "N-Z|Portugalščina (Brazilija)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:134
+#: gui/gdmlanguages.c:167
 msgid "N-Z|Romanian"
 msgstr "N-Z|Romunščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:136
+#: gui/gdmlanguages.c:169
 msgid "N-Z|Russian"
 msgstr "N-Z|Ruščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:138
+#: gui/gdmlanguages.c:171
+msgid "N-Z|Serbian"
+msgstr "N-Z|Srbščina"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:173
 msgid "N-Z|Slovak"
 msgstr "N-Z|Slovaščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:140
+#: gui/gdmlanguages.c:175
 msgid "N-Z|Slovenian"
 msgstr "N-Z|Slovenščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:142
+#: gui/gdmlanguages.c:177
 msgid "N-Z|Spanish"
 msgstr "N-Z|Španščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:144
+#: gui/gdmlanguages.c:179
 msgid "N-Z|Spanish (Mexico)"
 msgstr "N-Z|Španščina (Mehika)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:146
+#: gui/gdmlanguages.c:181
 msgid "N-Z|Swedish"
 msgstr "N-Z|Švedščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:148
+#: gui/gdmlanguages.c:183
 msgid "N-Z|Swedish (Finland)"
 msgstr "N-Z|Švedščina (Finska)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:150
+#: gui/gdmlanguages.c:185
 msgid "N-Z|Tamil"
 msgstr "N-Z|Tamilščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:152
+#: gui/gdmlanguages.c:187
+msgid "N-Z|Telugu"
+msgstr "N-Z|Telugu"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:189
+msgid "N-Z|Thai"
+msgstr "N-Z|Tajščina"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:191
 msgid "N-Z|Turkish"
 msgstr "N-Z|Turščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:154
+#: gui/gdmlanguages.c:193
 msgid "N-Z|Ukrainian"
 msgstr "N-Z|Ukrajinščina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:156
+#: gui/gdmlanguages.c:195
 msgid "N-Z|Vietnamese"
 msgstr "N-Z|Vietnamčina"
 
 #. Note translate the N-Z to the N-Z you used in the group label
-#: gui/gdmlanguages.c:158
+#: gui/gdmlanguages.c:197
 msgid "N-Z|Walloon"
 msgstr "N-Z|Waelščina"
 
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:199
+msgid "N-Z|Welsh"
+msgstr "N-Z|Welščina"
+
+#. Note translate the N-Z to the N-Z you used in the group label
+#: gui/gdmlanguages.c:201
+msgid "N-Z|Yiddish"
+msgstr "N-Z|Jidiš"
+
 #. This is the POSIX/C locale for english, should really be in Other
-#: gui/gdmlanguages.c:160
+#: gui/gdmlanguages.c:203
 msgid "Other|POSIX/C English"
 msgstr "Drugo|POSIX/C Angleško"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:335
+#: gui/gdmlanguages.c:378
 msgid "A-M"
 msgstr "A-M"
 
 #. This should be the same as in the front of the language strings
 #. * else the languages will appear in the "Other" submenu
-#: gui/gdmlanguages.c:343
+#: gui/gdmlanguages.c:386
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:69
-msgid "AnotherLevel"
-msgstr "AnotherLevel"
-
-#. default is nicely translated
-#. Translators: default GNOME session
-#: gui/gdmlogin.c:70 gui/gdmlogin.c:1884 gui/gdmlogin.c:1906
-msgid "Default"
-msgstr "Privzeta"
-
-#: gui/gdmlogin.c:71
-msgid "Failsafe"
-msgstr "Varno pred sesutjem"
-
-#: gui/gdmlogin.c:72
-msgid "Gnome"
-msgstr "Gnome"
-
-#: gui/gdmlogin.c:73
-msgid "KDE"
-msgstr "KDE"
-
-#: gui/gdmlogin.c:74
-msgid "XSession"
-msgstr "XSeja"
-
-#: gui/gdmlogin.c:75 gui/gdmlogin.c:1477 gui/greeter/greeter_session.c:353
-msgid "Gnome Chooser"
-msgstr "Izbirnik Gnome"
-
-#: gui/gdmlogin.c:76 gui/gdmlogin.c:1646
-#: gui/greeter/greeter_action_language.c:45
-msgid "Last"
-msgstr "Zadnja"
-
-#: gui/gdmlogin.c:218 gui/greeter/greeter_parser.c:948
-#: gui/greeter/themes/circles/circles.xml.in.h:4
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:4
-#, no-c-format
+#: gui/gdmlogin.c:209 gui/greeter/greeter_parser.c:1031
+#, c-format
 msgid "User %s will login in %d seconds"
 msgstr "Uporabnik %s se bo prijavil v %d sekundah"
 
-#: gui/gdmlogin.c:518
-msgid ""
-"Doubleclick here to un-iconify the login window, so that you may log in."
-msgstr ""
-"Dvokliknite tu za povečavo prijavnega okna. Tako se boste lahko prijavili."
+#: gui/gdmlogin.c:441
+msgid "%s: String too long!"
+msgstr "%s: Predolg niz!"
 
-#: gui/gdmlogin.c:588 gui/gdmlogin.c:600
+#: gui/gdmlogin.c:443
 #, c-format
 msgid "%sWelcome to %s%s"
 msgstr "%sDobrodošli na %s%s"
 
-#: gui/gdmlogin.c:598
-msgid "gdm_parse_enriched_string: String too long!"
-msgstr "gdm_parse_enriched_string: Predolg niz!"
+#: gui/gdmlogin.c:597
+msgid "Could not fork a new process!"
+msgstr "Nisem mogel razvejiti novega procesa!"
 
-#: gui/gdmlogin.c:755
-msgid ""
-"Could not fork a new process!\n"
-"\n"
-"You likely won't be able to log in either."
+#: gui/gdmlogin.c:599
+msgid "You likely won't be able to log in either."
 msgstr ""
-"Nisem mogel razvejiti novega procesa!\n"
-"\n"
-"Možno je, da se ne boste mogli prijaviti."
+"Verjetno je, da se vseeno ne boste mogli prijaviti."
 
-#: gui/gdmlogin.c:803 gui/greeter/greeter_system.c:52
+#: gui/gdmlogin.c:643 gui/greeter/greeter_system.c:55
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Ali zares želite znova zagnati računalnik?"
 
-#: gui/gdmlogin.c:815 gui/greeter/greeter_system.c:63
+#: gui/gdmlogin.c:644 gui/gdmlogin.c:2629 gui/greeter/greeter_parser.c:1011
+#: gui/greeter/greeter_system.c:56 gui/greeter/greeter_system.c:180
+msgid "_Reboot"
+msgstr "_Vnovičen zagon računalnika"
+
+#: gui/gdmlogin.c:656 gui/greeter/greeter_system.c:67
 msgid "Are you sure you want to shut down the machine?"
 msgstr "Ali zares želite ugasniti računalnik?"
 
-#: gui/gdmlogin.c:826 gui/greeter/greeter_system.c:73
+#: gui/gdmlogin.c:657
+msgid "Shut _Down"
+msgstr "_Izklop"
+
+#: gui/gdmlogin.c:677 gui/greeter/greeter_system.c:78
 msgid "Are you sure you want to suspend the machine?"
 msgstr "Ali zares želite obmirovati računalnik?"
 
-#: gui/gdmlogin.c:841
-#, c-format
-msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
-msgstr ""
-"gdm_login_parse_config: Datoteka nastavitev %s ne obstaja. Uporabljam "
-"privzete nastavitve."
+#: gui/gdmlogin.c:678 gui/gdmlogin.c:2656 gui/greeter/greeter_system.c:79
+msgid "_Suspend"
+msgstr "_Zamrznitev"
 
-#: gui/gdmlogin.c:873 gui/gdmlogin.c:4009
+#: gui/gdmlogin.c:725 gui/gdmlogin.c:3600 gui/greeter/greeter.c:146
+#: gui/greeter/greeter.c:951
+msgid "Welcome"
+msgstr "Dobrodošli"
+
+#: gui/gdmlogin.c:728 gui/gdmlogin.c:3603 gui/greeter/greeter.c:149
+#: gui/greeter/greeter.c:954
 #, c-format
 msgid "Welcome to %n"
 msgstr "Dobrodošli na %n"
 
-#: gui/gdmlogin.c:918 gui/greeter/greeter.c:128
-msgid "TimedLoginDelay was less then 5.  I'll just use 5."
-msgstr "Premor za samodejno prijavo je bil manj od 5.  Uporabil bom 5."
+#: gui/gdmlogin.c:772 gui/greeter/greeter.c:174
+msgid "TimedLoginDelay was less than 5.  I'll just use 5."
+msgstr "Premor za samodejno prijavo (TimedLoginDelay) je bil manj od 5.  Uporabil bom 5."
 
-#: gui/gdmlogin.c:978 gui/gdmlogin.c:1525 gui/greeter/greeter_session.c:65
-#: gui/greeter/greeter_session.c:400
-msgid "Failsafe Gnome"
-msgstr "Gnome (pred sesutjem varna)"
-
-#: gui/gdmlogin.c:980 gui/gdmlogin.c:1550 gui/greeter/greeter_session.c:67
-#: gui/greeter/greeter_session.c:426
-msgid "Failsafe xterm"
-msgstr "Xtrem (pred sesutjem varna)"
-
-#: gui/gdmlogin.c:1026 gui/greeter/greeter_session.c:111
+#: gui/gdmlogin.c:878 gui/greeter/greeter_session.c:111
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -2336,12 +2452,22 @@ msgstr ""
 "Vaša priljubljena seja %s ni nameščena na tem računalniku.\n"
 "Želite, da bo %s privzeta za nadaljne seje?"
 
+#: gui/gdmlogin.c:884 gui/gdmlogin.c:912 gui/gdmlogin.c:987
+#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:117
+#: gui/greeter/greeter_session.c:148
+msgid "Make _Default"
+msgstr "Naredi _privzeto"
+
+#: gui/gdmlogin.c:884 gui/greeter/greeter_session.c:117
+msgid "Just _Log In"
+msgstr "Le _prijavi se"
+
 #. never_encoding
 #. no_group
 #. untranslated
 #. markup
-#: gui/gdmlogin.c:1051 gui/gdmlogin.c:1132
-#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:139
+#: gui/gdmlogin.c:904 gui/gdmlogin.c:981
+#: gui/greeter/greeter_action_language.c:148 gui/greeter/greeter_session.c:140
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -2350,12 +2476,17 @@ msgstr ""
 "Za to sejo ste izbrali %s, čeprav je vaša privzeta %s.\n"
 "Ali želite, da bo %s privzeta za nadaljne seje?"
 
+#: gui/gdmlogin.c:912 gui/gdmlogin.c:987
+#: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:148
+msgid "Just For _This Session"
+msgstr "_Le za to sejo"
+
 #. if !GdmShowLastSession then our saved session is
 #. * irrelevant, we are in "switchdesk mode"
 #. * and the relevant thing is the saved session
 #. * in .Xclients
 #.
-#: gui/gdmlogin.c:1067 gui/greeter/greeter_session.c:157
+#: gui/gdmlogin.c:920 gui/greeter/greeter_session.c:158
 #, c-format
 msgid ""
 "You have chosen %s for this session.\n"
@@ -2368,37 +2499,52 @@ msgstr ""
 "switchdesk.\n"
 "(v menuju Sistem->Orodje za preklapljanje namizij)."
 
-#: gui/gdmlogin.c:1327
+#: gui/gdmlogin.c:963 gui/gdmlogin.c:972
+#: gui/greeter/greeter_action_language.c:52
+#: gui/greeter/greeter_action_language.c:132
+#: gui/greeter/greeter_action_language.c:140
+msgid "System Default"
+msgstr "Privzeto s strani sistema"
+
+#: gui/gdmlogin.c:1096 gui/gdmlogin.c:1110 gui/gdmlogin.c:1759
+#: gui/gdmlogin.c:2224 gui/gdmlogin.c:2863
+msgid "_Username:"
+msgstr "_Uporabniško ime:"
+
+#: gui/gdmlogin.c:1168
 #, c-format
 msgid "%s session selected"
 msgstr "Seja %s izbrana"
 
-#: gui/gdmlogin.c:1362 gui/greeter/greeter_session.c:231
+#: gui/gdmlogin.c:1191 gui/gdmlogin.c:1461 gui/greeter/greeter_session.c:257
+msgid "_Last"
+msgstr "_Zadnja"
+
+#: gui/gdmlogin.c:1202 gui/greeter/greeter_session.c:263
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Prijavi se v sejo, ki ste jo jo uporabili ob zadnji prijavi"
 
-#: gui/gdmlogin.c:1375 gui/greeter/greeter_session.c:244
-msgid "gdm_login_session_init: Session script directory not found!"
-msgstr "gdm_login_session_init: Nisem našel imenika s skriptami sej!"
+#: gui/gdmlogin.c:1215 gui/greeter/greeter_session.c:274
+msgid "%s: Session directory %s not found!"
+msgstr "%s: Imenik seje %s ni bil najden!"
 
-#: gui/gdmlogin.c:1465 gui/greeter/greeter_session.c:339
-msgid ""
-"This session will log you directly into GNOME, into your current session."
-msgstr "Ta seja vas bo prijavila neposredno v GNOME, v vašo trenutno sejo."
+#: gui/gdmlogin.c:1232 gui/greeter/greeter_session.c:250
+msgid "Failsafe Gnome"
+msgstr "Gnome (pred sesutjem varna)"
 
-#: gui/gdmlogin.c:1480 gui/greeter/greeter_session.c:356
-msgid ""
-"This session will log you into GNOME and it will let you choose which one of "
-"the GNOME sessions you want to use."
-msgstr ""
-"Ta seja vas bo prijavila v GNOME in vam omogočila izbrati katero od sej "
-"GNOME želite uporabiti."
+#: gui/gdmlogin.c:1233 gui/greeter/greeter_session.c:251
+msgid "Failsafe xterm"
+msgstr "Xtrem (pred sesutjem varna)"
 
-#: gui/gdmlogin.c:1515 gui/greeter/greeter_session.c:389
+#: gui/gdmlogin.c:1329 gui/greeter/greeter_session.c:379
 msgid "Yaikes, nothing found in the session directory."
 msgstr "Ajs, v imeniku sej ni ničesar."
 
-#: gui/gdmlogin.c:1527 gui/greeter/greeter_session.c:402
+#: gui/gdmlogin.c:1340 gui/greeter/greeter_session.c:391
+msgid "Failsafe _Gnome"
+msgstr "Pred sesutejem varni _Gnome"
+
+#: gui/gdmlogin.c:1342 gui/greeter/greeter_session.c:393
 msgid ""
 "This is a failsafe session that will log you into GNOME.  No startup scripts "
 "will be read and it is only to be used when you can't log in otherwise.  "
@@ -2408,7 +2554,11 @@ msgstr ""
 "le kadar se ne morete prijaviti drugače, saj začetne skripte ne bodo "
 "prebraner.  GNOME bo uporabil 'privzeto' sejo."
 
-#: gui/gdmlogin.c:1552 gui/greeter/greeter_session.c:428
+#: gui/gdmlogin.c:1365 gui/greeter/greeter_session.c:415
+msgid "Failsafe _Terminal"
+msgstr "Pred sesutjem varni _terminal"
+
+#: gui/gdmlogin.c:1367 gui/greeter/greeter_session.c:417
 msgid ""
 "This is a failsafe session that will log you into a terminal.  No startup "
 "scripts will be read and it is only to be used when you can't log in "
@@ -2418,7 +2568,7 @@ msgstr ""
 "jo le kadar se ne morete prijaviti drugače, saj začetne skripte ne bodo "
 "prebraner.  Za izhod iz terminala vpišite 'exit'."
 
-#: gui/gdmlogin.c:1573 gui/greeter/greeter_session.c:450
+#: gui/gdmlogin.c:1388 gui/greeter/greeter_session.c:437
 msgid "No default session link found. Using Failsafe GNOME.\n"
 msgstr "Privzeta povezava seje ni bila najdena. Uporabljam varno GNOME.\n"
 
@@ -2426,265 +2576,255 @@ msgstr "Privzeta povezava seje ni bila najdena. Uporabljam varno GNOME.\n"
 #. no_group
 #. untranslated
 #. makrup
-#: gui/gdmlogin.c:1617
+#: gui/gdmlogin.c:1432
 #, c-format
 msgid "%s language selected"
 msgstr "Izbran %s jezik"
 
-#: gui/gdmlogin.c:1657
+#: gui/gdmlogin.c:1472
 msgid "Log in using the language that you have used last time you logged in"
 msgstr "Prijavi se z uporabo jezika, ki ste ga uporabljali ob zadnji prijavi."
 
-#: gui/gdmlogin.c:1672
+#: gui/gdmlogin.c:1476
+msgid "_System Default"
+msgstr "_Privzeto s strani sistema"
+
+#: gui/gdmlogin.c:1487
 msgid "Log in using the default system language"
 msgstr "Prijavi se in uporabi privzet sistemski jezik"
 
-#: gui/gdmlogin.c:1692
-msgid "Other"
-msgstr "Drugo"
+#: gui/gdmlogin.c:1507
+msgid "_Other"
+msgstr "_Drugo"
 
-#: gui/gdmlogin.c:1846 gui/gdmlogin.c:1853
-msgid "Select GNOME session"
-msgstr "Izberite sejo GNOME"
+#: gui/gdmlogin.c:1790
+msgid "_Password:"
+msgstr "_Geslo:"
 
-#: gui/gdmlogin.c:1920
-msgid "Create new session"
-msgstr "Ustvari novo sejo"
-
-#: gui/gdmlogin.c:1929
-msgid "Name: "
-msgstr "Ime:"
-
-#. Translators: this is to remember the chosen gnome session
-#. * for next time
-#: gui/gdmlogin.c:1951
-msgid "Remember this setting"
-msgstr "Pomni te nastavitve"
-
-#: gui/gdmlogin.c:2335
+#. translators:  This is a nice and evil eggie text, translate
+#. * to your favourite currency
+#: gui/gdmlogin.c:2010 gui/greeter/greeter.c:416
 msgid "Please insert 25 cents to log in."
 msgstr "Prosim vstavite 25 SIT za prijavo"
 
-#: gui/gdmlogin.c:2742
+#: gui/gdmlogin.c:2232
+msgid "Doubleclick on the user to log in"
+msgstr "Za prijavo dvokliknite na uporabnika"
+
+#: gui/gdmlogin.c:2356
 msgid "GNOME Desktop Manager"
 msgstr "Upravljalnik namizja GNOME"
 
-#: gui/gdmlogin.c:2750
-#, c-format
-msgid "Can't open icon file: %s. Suspending iconify feature!"
-msgstr "Ne najdem datoteke z ikono: %s. Izključujem možnost ikonizacije!"
-
-#: gui/gdmlogin.c:2772
-msgid "Iconify the login window"
-msgstr "Pomanjšaj prijavno okno"
-
-#: gui/gdmlogin.c:2797 gui/greeter/greeter_item.c:96
+#: gui/gdmlogin.c:2382 gui/greeter/greeter_item.c:116
 msgid "%a %b %d, %H:%M"
 msgstr "%a %d %b, %H:%M"
 
-#: gui/gdmlogin.c:2799 gui/greeter/greeter_item.c:100
+#: gui/gdmlogin.c:2384 gui/greeter/greeter_item.c:120
 msgid "%a %b %d, %I:%M %p"
 msgstr "%a %d %b, %I:%M %p"
 
-#: gui/gdmlogin.c:2865
+#: gui/gdmlogin.c:2444
 msgid "Finger"
 msgstr "Prst"
 
-#: gui/gdmlogin.c:2957
+#: gui/gdmlogin.c:2537
 msgid "GDM Login"
 msgstr "Prijava GDM"
 
-#: gui/gdmlogin.c:3000 gui/greeter/greeter_canvas_item.c:129
-#: gui/greeter/greeter_parser.c:923
-#: gui/greeter/themes/circles/circles.xml.in.h:11
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:11
+#: gui/gdmlogin.c:2580 gui/greeter/greeter_parser.c:981
 msgid "_Session"
 msgstr "_Seja"
 
-#: gui/gdmlogin.c:3007 gui/greeter/greeter_canvas_item.c:122
-#: gui/greeter/greeter_parser.c:918
-#: gui/greeter/themes/circles/circles.xml.in.h:9
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:9
+#: gui/gdmlogin.c:2587 gui/greeter/greeter_parser.c:976
 msgid "_Language"
 msgstr "_Jezik"
 
-#: gui/gdmlogin.c:3019
-msgid "_Configure..."
-msgstr "_Nastavi..."
+#: gui/gdmlogin.c:2599 gui/greeter/greeter_system.c:142
+msgid "_XDMCP Chooser..."
+msgstr "Izbirnik _XDMCP..."
 
-#: gui/gdmlogin.c:3026
+#: gui/gdmlogin.c:2606 gui/greeter/greeter_system.c:149
+#: gui/greeter/greeter_system.c:341
+msgid ""
+"Run an XDMCP chooser which will allow you to log into available remote "
+"machines, if there are any."
+msgstr ""
+"Poženi izbirnik XDMCP, ki bo omogočil prijavo v oddaljene računalnike, ki so na voljo."
+
+#: gui/gdmlogin.c:2615 gui/greeter/greeter_system.c:157
+msgid "_Configure Login Manager..."
+msgstr "_Nastavi upravljalnik prijav..."
+
+#: gui/gdmlogin.c:2622 gui/greeter/greeter_system.c:164
+#: gui/greeter/greeter_system.c:361
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
 msgstr ""
 "Nastavi GDM (ta upravljalnik prijav). To bo zahtevalo geslo root "
 "(administratorja)."
 
-#: gui/gdmlogin.c:3033
-msgid "_Reboot..."
-msgstr "_Vnovičen zagon sistema..."
-
-#: gui/gdmlogin.c:3040
+#: gui/gdmlogin.c:2636 gui/greeter/greeter_system.c:187
 msgid "Reboot your computer"
 msgstr "Vnovič zaženi računalnik"
 
-#: gui/gdmlogin.c:3046
-msgid "Shut _down..."
-msgstr "_Ugasni..."
+#: gui/gdmlogin.c:2642 gui/greeter/greeter_parser.c:1001
+#: gui/greeter/greeter_system.c:68 gui/greeter/greeter_system.c:192
+msgid "Shut_down"
+msgstr "_Ugasni"
 
-#: gui/gdmlogin.c:3053
-msgid "Shut down your computer so that you may turn it off."
-msgstr "Ugasni računalnik, da se ga lahko izklopi."
+#: gui/gdmlogin.c:2649 gui/greeter/greeter_system.c:199
+msgid "Shut down the system so that you may safely turn off the computer."
+msgstr "Ustavi delovanje računalnika, da se ga lahko varno izklopi."
 
-#: gui/gdmlogin.c:3060
-msgid "_Suspend..."
-msgstr "_Zamrzni..."
-
-#: gui/gdmlogin.c:3067
+#: gui/gdmlogin.c:2663 gui/greeter/greeter_system.c:212
 msgid "Suspend your computer"
-msgstr "Zamrzni računalnik"
+msgstr "Zamrzne (suspend) vaš računalnik"
 
-#: gui/gdmlogin.c:3073 gui/greeter/greeter_canvas_item.c:138
-#: gui/greeter/greeter_parser.c:928
-#: gui/greeter/themes/circles/circles.xml.in.h:2
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:2
-msgid "S_ystem"
-msgstr "_Sistem"
+#: gui/gdmlogin.c:2669 gui/greeter/greeter_parser.c:986
+msgid "_Actions"
+msgstr "_Dejanja"
 
-#: gui/gdmlogin.c:3085 gui/greeter/greeter_canvas_item.c:151
-#: gui/greeter/greeter_parser.c:938
-#: gui/greeter/themes/circles/circles.xml.in.h:10
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:10
+#: gui/gdmlogin.c:2681 gui/greeter/greeter_canvas_item.c:145
+#: gui/greeter/greeter_parser.c:996
 msgid "_Quit"
 msgstr "_Izhod"
 
-#: gui/gdmlogin.c:3087 gui/greeter/greeter_canvas_item.c:153
-#: gui/greeter/greeter_parser.c:933
-#: gui/greeter/themes/circles/circles.xml.in.h:1
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:1
+#: gui/gdmlogin.c:2683 gui/greeter/greeter_canvas_item.c:147
+#: gui/greeter/greeter_parser.c:991
 msgid "D_isconnect"
 msgstr "O_dklopi se"
 
-#: gui/gdmlogin.c:3644
+#: gui/gdmlogin.c:2750 gui/greeter/greeter_item_ulist.c:426
+msgid "Icon"
+msgstr "Ikona"
+
+#: gui/gdmlogin.c:2757 gui/greeter/greeter_item_ulist.c:433
+msgid "Username"
+msgstr "Uporabniško ime"
+
+#: gui/gdmlogin.c:3211
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "Ne morem odpreti DefaultImage: %s. Izključujem pregledovalnik obrazov!"
 
-#: gui/gdmlogin.c:4084 gui/gdmlogin.c:4113 gui/greeter/greeter.c:556
-#: gui/greeter/greeter.c:585
-#, c-format
-msgid ""
-"The greeter version (%s) does not match the daemon version.\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
-msgstr ""
-"Različica pozdravnika (%s) ne ustreza različici daemona.\n"
-"Verjetno ste ravnokar nadgradili gdm.\n"
-"Znova poženite gdm ali vnovič poženite računalnik."
+#: gui/gdmlogin.c:3233 gui/gdmsetup.c:446 gui/greeter/greeter_item_ulist.c:281
+msgid "Too many users to list here..."
+msgstr "Preveč uporabnikov, da bi bili tu našteti..."
 
-#: gui/gdmlogin.c:4119 gui/gdmlogin.c:4163 gui/greeter/greeter.c:591
-#: gui/greeter/greeter.c:636
+#: gui/gdmlogin.c:3678 gui/gdmlogin.c:3708 gui/gdmlogin.c:3751
+#: gui/greeter/greeter.c:618 gui/greeter/greeter.c:648
+#: gui/greeter/greeter.c:692
+msgid "Cannot start the greeter"
+msgstr "Ne morem pognati pozdravnega programa"
+
+#: gui/gdmlogin.c:3679 gui/gdmlogin.c:3709
+msgid ""
+"The greeter version (%s) does not match the daemon version.  You have "
+"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
+"computer."
+msgstr ""
+"Različica pozdravnega programa (%s) ne ustreza različici daemona.  "
+"Verjetno ste pravkar nadgradili gdm.  Prosim, znova poženite gdm ali vnovič zaženite računalnik."
+
+#: gui/gdmlogin.c:3715 gui/gdmlogin.c:3760 gui/greeter/greeter.c:655
+#: gui/greeter/greeter.c:701
 msgid "Reboot"
 msgstr "Ponoven zagon računalnika"
 
-#: gui/gdmlogin.c:4155 gui/greeter/greeter.c:628
-#, c-format
+#: gui/gdmlogin.c:3752
 msgid ""
-"The greeter version (%s) does not match the daemon version (%s).\n"
-"You have probably just upgraded gdm.\n"
-"Please restart the gdm daemon or reboot the computer."
+"The greeter version (%s) does not match the daemon version (%s).  You have "
+"probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
+"computer."
 msgstr ""
-"Različica pozdravnika (%s) ne ustreza različici daemona (%s).\n"
-"Verjetno ste ravnokar nadgradili gdm.\n"
-"Znova poženite gdm ali vnovič poženite računalnik."
+"Različica pozdravnega programa (%s) ne ustreza različici daemona (%s).  "
+"Verjetno ste pravkar nadgradili gdm. Znova poženite daemon gdm ali vnovič zaženite računalnik."
 
-#: gui/gdmlogin.c:4161 gui/greeter/greeter.c:634
+#: gui/gdmlogin.c:3758 gui/greeter/greeter.c:699
 msgid "Restart"
 msgstr "Vnovičen zagon GDM"
 
-#: gui/gdmlogin.c:4206 gui/greeter/greeter.c:1055
-msgid "main: Error setting up HUP signal handler"
-msgstr "main: Napaka pri vzpostavljanju obravnavalnika za signal HUP"
+#: gui/gdmlogin.c:3910 gui/greeter/greeter.c:1401
+msgid "Session directory is missing"
+msgstr "Imenik seje ne obstaja"
 
-#: gui/gdmlogin.c:4214 gui/greeter/greeter.c:1063
-msgid "main: Error setting up INT signal handler"
-msgstr "main: Napaka pri vzpostavljanju obravnavalnika za signal INT"
-
-#: gui/gdmlogin.c:4217 gui/greeter/greeter.c:1066
-msgid "main: Error setting up TERM signal handler"
-msgstr "main: Napaka pri vzpostavljanju obravnavalnika za signal TERM"
-
-#: gui/gdmlogin.c:4308 gui/greeter/greeter.c:1279
+#: gui/gdmlogin.c:3912 gui/greeter/greeter.c:1403
 msgid ""
-"Your session directory is missing or empty!\n"
-"\n"
-"There are two available sessions you can use, but\n"
-"you should log in and correct the gdm configuration."
+"Your session directory is missing or empty!  There are two available "
+"sessions you can use, but you should log in and correct the gdm "
+"configuration."
 msgstr ""
-"Vaš imenik seje manjka ali je prazen!\n"
-"\n"
-"Obstajajo dve možni seji, ki jih lahko uprabite, \n"
-"a morali bi se prijaviti in popraviti nastavitve \n"
-"z nastavitvenim programom za GDM."
+"Vaš imenik seje manjka ali je prazen! Obstajata dve možni seji, ki ju lahko uprabite, a morali bi se prijaviti in popraviti nastavitve programa gdm."
 
-#: gui/gdmlogin.c:4331 gui/greeter/greeter.c:1303
+#: gui/gdmlogin.c:3935 gui/greeter/greeter.c:1427
+msgid "Configuration is not correct"
+msgstr "Nastavitve niso pravilne"
+
 msgid ""
-"The configuration file contains an invalid command\n"
-"line for the login dialog, and thus I ran the\n"
-"default command.  Please fix your configuration."
+"The configuration file contains an invalid command line for the login "
+"dialog, and thus I ran the default command.  Please fix your configuration."
 msgstr ""
-"Datoteka nastavitev vsebuje neveljavno ukazno\n"
-"vrstico za prijavno okno, zato je bil pognan\n"
-"privzet ukaz.  Prosim, popravite nastavitev."
+"Datoteka nastavitev vsebuje neveljavno ukazno vrstico za prijavno okno, zato sem pognal "
+"privzet ukaz.  Prosim, popravite vaše nastavitve."
 
-#: gui/gdmlogin.c:4355 gui/greeter/greeter.c:1328
+#: gui/gdmlogin.c:3961 gui/greeter/greeter.c:1455
+msgid "No configuration was found"
+msgstr "Nobena nastavitev ni bila najdena"
+
+#: gui/gdmlogin.c:3963 gui/greeter/greeter.c:1457
 msgid ""
-"The configuration was not found.  GDM is using\n"
-"defaults to run this session.  You should log in\n"
-"and create a configuration file with the GDM\n"
+"The configuration was not found.  GDM is using defaults to run this "
+"session.  You should log in and create a configuration file with the GDM "
 "configuration program."
 msgstr ""
-"Nastavitve niso bile najdene.  GDM uporablja \n"
-"privzete za to sejo.  Morali bi se prijaviti\n"
-"in ustvariti datoteko nastavitev z\n"
+"Nastavitve niso bile najdene.  GDM uporablja privzete za to sejo.  Morali bi se prijaviti in ustvariti datoteko nastavitev z"
 "nastavitvenim programom za GDM."
 
-#: gui/gdmphotosetup.c:129
+#: gui/gdmphotosetup.c:139
+msgid "The face browser is not configured"
+msgstr "Brskalnik obrazov ni nastavljen"
+
 msgid ""
-"The face browser is not configured,\n"
-"please ask your system administrator to enable it\n"
-"in the GDM configurator program."
+"The face browser is not configured in the GDM configuration.  Please ask "
+"your system administrator to enable it in the GDM configurator program."
 msgstr ""
-"Brskalnik obrazov ni nastavljen,\n"
-"prosite svojega sistemskega administratorja, da ga\n"
+"Brskalnik obrazov v nastavitvah GDM ni nastavljen. "
+"Prosite svojega sistemskega administratorja, da ga "
 "vklopi v programu za nastavljanje GDM."
 
-#: gui/gdmphotosetup.c:138
-msgid "Select a photo"
-msgstr "Izberi fotografijo"
+#: gui/gdmphotosetup.c:152 gui/gdmphotosetup.desktop.in.h:2
+msgid "Login Photo"
+msgstr "Prijavna fotografija"
 
-#: gui/gdmphotosetup.c:147
+#: gui/gdmphotosetup.c:162
 msgid "Select a photograph to show in the facebrowser:"
 msgstr "Izberite fotografijo, ki naj se kaže v brskalniku obrazov:"
 
-#: gui/gdmphotosetup.c:152
+#: gui/gdmphotosetup.c:167
 msgid "Browse"
 msgstr "Brskaj"
 
-#: gui/gdmphotosetup.c:185
+#: gui/gdmphotosetup.c:200
 msgid "No picture selected."
 msgstr "Slika ni izbrana"
 
-#: gui/gdmphotosetup.c:194
-#, c-format
-msgid ""
-"The picture is too large and the system administrator\n"
-"disallowed pictures larger then %d bytes to\n"
-"show in the face browser"
-msgstr ""
-"Slika je prevelika in sistemski administrator je v brskalniku obrazov "
-"prepovedal prikazovanje slik večjih od %d bajtov."
+#: gui/gdmphotosetup.c:210
+msgid "Picture is too large"
+msgstr "Slika je prevelika"
 
-#: gui/gdmphotosetup.c:220
+#: gui/gdmphotosetup.c:211
+msgid ""
+"The system administrator disallowed pictures larger than %d bytes to show in "
+"the face browser"
+msgstr ""
+"Slika je prevelika, saj je sistemski administrator je v brskalniku obrazov "
+"prepovedal prikazovanje slik večjih od %d bajtov"
+
+#: gui/gdmphotosetup.c:236 gui/gdmphotosetup.c:255
+msgid "Cannot open file"
+msgstr "Ne morem odpreti datoteke"
+
+#: gui/gdmphotosetup.c:237
 #, c-format
 msgid ""
 "File %s cannot be open for reading\n"
@@ -2693,7 +2833,7 @@ msgstr ""
 "Datoteke %s ni mogoče odpreti za branje\n"
 "Napaka: %s"
 
-#: gui/gdmphotosetup.c:238
+#: gui/gdmphotosetup.c:256
 #, c-format
 msgid ""
 "File %s cannot be open for writing\n"
@@ -2709,148 +2849,172 @@ msgstr ""
 "Spremeni sliko, ki se bo kazala v brskalniku obrazov GDM (GDM je "
 "upravljalnik prijav). "
 
-#: gui/gdmphotosetup.desktop.in.h:2
-msgid "Login Photo"
-msgstr "Prijavna fotografija"
-
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: gui/gdmsetup-strings.c:7 gui/gdmsetup.glade.h:15
-msgid "GDM Setup"
-msgstr "Nastavitev GDM"
+#: gui/gdmsetup-strings.c:7 gui/gdmsetup.desktop.in.h:2
+#: gui/gdmsetup.glade.h:24
+msgid "Login Screen Setup"
+msgstr "Nastavitev prijavnega zaslona"
 
 #: gui/gdmsetup-strings.c:8 gui/gdmsetup.glade.h:20
-msgid "L_ocal: "
-msgstr "_Krajevno: "
-
-#: gui/gdmsetup-strings.c:9 gui/gdmsetup.glade.h:51
-msgid "_Remote: "
-msgstr "_Oddaljeno: "
-
-#: gui/gdmsetup-strings.c:10 gui/gdmsetup-strings.c:12
-#: gui/gdmsetup-strings.c:42 gui/gdmsetup.c:807 gui/gdmsetup.glade.h:39
-msgid "Standard greeter"
-msgstr "Običajen pozdravljalnik"
-
-#: gui/gdmsetup-strings.c:11 gui/gdmsetup-strings.c:13
-#: gui/gdmsetup-strings.c:52 gui/gdmsetup.c:809 gui/gdmsetup.glade.h:17
-msgid "Graphical greeter"
-msgstr "Grafični pozdravljalnik"
-
-#: gui/gdmsetup-strings.c:14 gui/gdmsetup.glade.h:9
-msgid "Always use 24 hour cloc_k format"
-msgstr "Vedno uporabljaj 24 u_rno obliko časa"
-
-#: gui/gdmsetup-strings.c:15 gui/gdmsetup.glade.h:18
 msgid "Greeter"
 msgstr "Pozdravljalnik"
 
-#: gui/gdmsetup-strings.c:16 gui/gdmsetup.glade.h:48
-msgid "_Login a user automatically on first bootup"
-msgstr "Ob _prvem zagonu prijavi uporabnika samodejno"
+#: gui/gdmsetup-strings.c:9 gui/gdmsetup-strings.c:24
+#: gui/gdmsetup-strings.c:29 gui/gdmsetup-strings.c:36
+#: gui/gdmsetup-strings.c:39 gui/gdmsetup-strings.c:42
+#: gui/gdmsetup-strings.c:65 gui/gdmsetup-strings.c:78 gui/gdmsetup.glade.h:1
+msgid "    "
+msgstr "    "
 
-#: gui/gdmsetup-strings.c:17 gui/gdmsetup.glade.h:44
-msgid "_Automatic login username:"
-msgstr "Uporabniško ime za _samodejno prijavo:"
+#: gui/gdmsetup-strings.c:10 gui/gdmsetup.glade.h:22
+msgid "L_ocal: "
+msgstr "_Krajevno: "
 
-#: gui/gdmsetup-strings.c:18 gui/gdmsetup-strings.c:23
-#: gui/gdmsetup-strings.c:26 gui/gdmsetup-strings.c:29
-#: gui/gdmsetup-strings.c:37 gui/gdmsetup.glade.h:1
-msgid "*"
-msgstr "*"
+#: gui/gdmsetup-strings.c:11 gui/gdmsetup.glade.h:62
+msgid "_Remote: "
+msgstr "_Oddaljeno: "
 
-#: gui/gdmsetup-strings.c:20 gui/gdmsetup.glade.h:22
-msgid "Login a user automa_tically after a specified number of seconds"
-msgstr "Po določenem številu sekund sa_modejno prijavi uporabnika"
-
-#: gui/gdmsetup-strings.c:21 gui/gdmsetup.glade.h:41
-msgid "Timed login us_ername:"
-msgstr "U_porabniško ime za časovno prijavo:"
-
-#: gui/gdmsetup-strings.c:22 gui/gdmsetup.glade.h:53
-msgid "_Seconds before login:"
-msgstr "_Sekund pred prijavo:"
-
-#: gui/gdmsetup-strings.c:24 gui/gdmsetup.glade.h:40
-msgid "Timed login"
-msgstr "Časovna prijava"
-
-#: gui/gdmsetup-strings.c:25 gui/gdmsetup.glade.h:16
-msgid "General"
-msgstr "Splošno"
-
-#: gui/gdmsetup-strings.c:27 gui/gdmsetup.glade.h:54
+#: gui/gdmsetup-strings.c:12 gui/gdmsetup.glade.h:65
 msgid "_Welcome string: "
 msgstr "_Pozdravno sporočilo:"
 
-#: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:42
-msgid "Welcome string: "
-msgstr "_Pozdravno sporočilo: "
+#: gui/gdmsetup-strings.c:13 gui/gdmsetup.glade.h:40
+msgid "Re_mote welcome string: "
+msgstr "_Oddaljeno pozdravno sporočilo:"
 
-#: gui/gdmsetup-strings.c:30 gui/gdmsetup.glade.h:23
+#: gui/gdmsetup-strings.c:14 gui/gdmsetup-strings.c:16
+#: gui/gdmsetup-strings.c:51 gui/gdmsetup.c:818 gui/gdmsetup.glade.h:46
+msgid "Standard greeter"
+msgstr "Običajen pozdravljalnik"
+
+#: gui/gdmsetup-strings.c:15 gui/gdmsetup-strings.c:17
+#: gui/gdmsetup-strings.c:63 gui/gdmsetup.c:820 gui/gdmsetup.glade.h:19
+msgid "Graphical greeter"
+msgstr "Grafični pozdravljalnik"
+
+#: gui/gdmsetup-strings.c:18 gui/gdmsetup.glade.h:48
+#, no-c-format
+msgid ""
+"String to be shown in the greeter as welcome.  You can insert %n in here and "
+"it will be replaced by the name of your computer."
+msgstr ""
+"Niz bo prikazan v pozdravu kot dobrodošlica.  Lahko vstavite %n in zamenjan bo z imenom vašega računalnika."
+
+#: gui/gdmsetup-strings.c:20 gui/gdmsetup.glade.h:50
+#, no-c-format
+msgid ""
+"String to be shown in the greeter for people logging in remotely with "
+"XDMCP.  You can insert %n in here and it will be replaced by the name of "
+"your computer."
+msgstr ""
+"Niz bo prikazan v pozdravu kot dobrodošlica uporabnikom, ki se prijavljajo oddaljeno preko XDMCP.  Lahko vstavite %n in zamenjan bo z imenom vašega računalnika."
+
+
+#: gui/gdmsetup-strings.c:22 gui/gdmsetup.glade.h:9
+msgid "Always use 24 hour cloc_k format"
+msgstr "Vedno uporabljaj 24 u_rno obliko časa"
+
+#: gui/gdmsetup-strings.c:23 gui/gdmsetup.glade.h:11
+msgid "Automatic Login"
+msgstr "Samodejna prijava"
+
+#: gui/gdmsetup-strings.c:25 gui/gdmsetup.glade.h:54
+msgid "_Automatic login username:"
+msgstr "Uporabniško ime za _samodejno prijavo:"
+
+#: gui/gdmsetup-strings.c:27 gui/gdmsetup.glade.h:59
+msgid "_Login a user automatically on first bootup"
+msgstr "Ob _prvem zagonu prijavi uporabnika samodejno"
+
+#: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:51
+msgid "Timed Login"
+msgstr "Časovna prijava"
+
+#: gui/gdmsetup-strings.c:30 gui/gdmsetup.glade.h:52
+msgid "Timed login us_ername:"
+msgstr "U_porabniško ime za časovno prijavo:"
+
+#: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:64
+msgid "_Seconds before login:"
+msgstr "_Sekund pred prijavo:"
+
+#: gui/gdmsetup-strings.c:33 gui/gdmsetup.glade.h:25
+msgid "Login a user automa_tically after a specified number of seconds"
+msgstr "Po določenem številu sekund sa_modejno prijavi uporabnika"
+
+#: gui/gdmsetup-strings.c:34 gui/gdmsetup.glade.h:18
+msgid "General"
+msgstr "Splošno"
+
+#: gui/gdmsetup-strings.c:35 gui/gdmsetup.glade.h:26
 msgid "Logo"
 msgstr "Logotip"
 
-#: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:38
-msgid "Show choosable user images (_face browser)"
-msgstr "Kaži izbirne uporabniške slike (brskalnik o_brazov)"
-
-#: gui/gdmsetup-strings.c:32 gui/gdmsetup.glade.h:29
+#: gui/gdmsetup-strings.c:38 gui/gdmsetup.glade.h:32
 msgid "Miscellaneous"
 msgstr "Razo"
 
-#: gui/gdmsetup-strings.c:33 gui/gdmsetup.glade.h:49
-msgid "_No background"
-msgstr "_Brez ozadja"
+#: gui/gdmsetup-strings.c:40 gui/gdmsetup.glade.h:44
+msgid "Show choosable user images (_face browser)"
+msgstr "Kaži izbirne uporabniške slike (brskalnik o_brazov)"
 
-#: gui/gdmsetup-strings.c:34 gui/gdmsetup.glade.h:46
-msgid "_Image"
-msgstr "_Slika"
-
-#: gui/gdmsetup-strings.c:35 gui/gdmsetup.glade.h:12
-msgid "Co_lor"
-msgstr "_Barva"
-
-#: gui/gdmsetup-strings.c:36 gui/gdmsetup.glade.h:52
-msgid "_Scale background image to fit"
-msgstr "_Prilagodi velikost slike v ozadju"
-
-#: gui/gdmsetup-strings.c:38 gui/gdmsetup.glade.h:50
-msgid "_Only color on remote displays"
-msgstr "_Le barva na oddaljenih zaslonih"
-
-#: gui/gdmsetup-strings.c:39 gui/gdmsetup.glade.h:45
-msgid "_Background color: "
-msgstr "_Barva v ozadju:"
-
-#: gui/gdmsetup-strings.c:40 gui/gdmsetup.glade.h:33
-msgid "Pick a color"
-msgstr "Izberi barvo"
-
-#: gui/gdmsetup-strings.c:41 gui/gdmsetup.glade.h:11
+#: gui/gdmsetup-strings.c:41 gui/gdmsetup.glade.h:12
 msgid "Background"
 msgstr "Ozadje"
 
-#: gui/gdmsetup-strings.c:43 gui/gdmsetup.glade.h:4
-msgid "<b>Preview:</b>"
-msgstr "<b>Predogled</b>"
+#: gui/gdmsetup-strings.c:43 gui/gdmsetup.glade.h:60
+msgid "_No background"
+msgstr "_Brez ozadja"
 
-#: gui/gdmsetup-strings.c:44 gui/gdmsetup.glade.h:31
+#: gui/gdmsetup-strings.c:44 gui/gdmsetup.glade.h:57
+msgid "_Image"
+msgstr "_Slika"
+
+#: gui/gdmsetup-strings.c:45 gui/gdmsetup.glade.h:13
+msgid "Co_lor"
+msgstr "_Barva"
+
+#: gui/gdmsetup-strings.c:46 gui/gdmsetup.glade.h:63
+msgid "_Scale background image to fit"
+msgstr "_Prilagodi velikost slike v ozadju"
+
+#: gui/gdmsetup-strings.c:48 gui/gdmsetup.glade.h:61
+msgid "_Only color on remote displays"
+msgstr "_Le barva na oddaljenih zaslonih"
+
+#: gui/gdmsetup-strings.c:49 gui/gdmsetup.glade.h:55
+msgid "_Background color: "
+msgstr "_Barva v ozadju:"
+
+#: gui/gdmsetup-strings.c:50 gui/gdmsetup.glade.h:36
+msgid "Pick a color"
+msgstr "Izberi barvo"
+
+#: gui/gdmsetup-strings.c:52 gui/gdmsetup.glade.h:39
+msgid "Preview:"
+msgstr "Predogled:"
+
+#: gui/gdmsetup-strings.c:53 gui/gdmsetup.glade.h:34
 msgid "No screenshot available"
 msgstr "Zajem zaslona ni na voljo"
 
-#: gui/gdmsetup-strings.c:45 gui/gdmsetup.glade.h:3
-msgid "<b>Description:</b>"
-msgstr "<b>Opis:</b>"
+#: gui/gdmsetup-strings.c:54 gui/gdmsetup.glade.h:15
+msgid "Description:"
+msgstr "Opis:"
 
-#: gui/gdmsetup-strings.c:46 gui/gdmsetup.glade.h:2
-msgid "<b>Author:</b>"
-msgstr "<b>Avtor:</b>"
+#: gui/gdmsetup-strings.c:55 gui/gdmsetup.glade.h:14
+msgid "Copyright:"
+msgstr "Avtorske pravice:"
 
-#: gui/gdmsetup-strings.c:47 gui/gdmsetup.glade.h:57
+#: gui/gdmsetup-strings.c:56 gui/gdmsetup.glade.h:10
+msgid "Author:"
+msgstr "Avtor:"
+
+#: gui/gdmsetup-strings.c:57 gui/gdmsetup.glade.h:68
 msgid ""
 "description\n"
 "widget"
@@ -2858,51 +3022,75 @@ msgstr ""
 "opis\n"
 "gradnik"
 
-#: gui/gdmsetup-strings.c:49 gui/gdmsetup.glade.h:55
+#: gui/gdmsetup-strings.c:59 gui/gdmsetup.glade.h:66
 msgid "author"
 msgstr "avtor"
 
-#: gui/gdmsetup-strings.c:50 gui/gdmsetup.glade.h:56
+#: gui/gdmsetup-strings.c:60 gui/gdmsetup.glade.h:67
 msgid "copyright"
 msgstr "avtorske pravice"
 
-#: gui/gdmsetup-strings.c:51 gui/gdmsetup.glade.h:47
+#: gui/gdmsetup-strings.c:61 gui/gdmsetup.glade.h:58
 msgid "_Install new theme"
 msgstr "_Namesti novo temo"
 
-#: gui/gdmsetup-strings.c:53 gui/gdmsetup.glade.h:5
-msgid "Allow _root to login with GDM"
-msgstr "Dovoli _rootu (administratorju) prijavo preko GDM"
+#: gui/gdmsetup-strings.c:62 gui/gdmsetup.glade.h:56
+msgid "_Delete theme"
+msgstr "_Zbriši temp"
 
-#: gui/gdmsetup-strings.c:54 gui/gdmsetup.glade.h:8
-msgid "Allow root to login r_emotely with GDM"
-msgstr "Dovoli root-u (administratorju), da se oddaljeno _prijavi preko GDM"
-
-#: gui/gdmsetup-strings.c:55 gui/gdmsetup.glade.h:7
-msgid "Allow remote _timed logins"
-msgstr "Dovoli oddaljene č_asovne prijave"
-
-#: gui/gdmsetup-strings.c:56 gui/gdmsetup.glade.h:37
-msgid "Show _system menu"
-msgstr "Kaži _sistemski menu"
-
-#: gui/gdmsetup-strings.c:57 gui/gdmsetup.glade.h:6
-msgid "Allow c_onfiguration from the login screen"
-msgstr "Dovoli nastavitve v zaslonu prijavljanja"
-
-#: gui/gdmsetup-strings.c:58 gui/gdmsetup.glade.h:35
-msgid "Retry _delay (seconds) :"
-msgstr "Premor me_d poizkusi (sekund) : "
-
-#: gui/gdmsetup-strings.c:59 gui/gdmsetup.glade.h:32
+#: gui/gdmsetup-strings.c:64 gui/gdmsetup.glade.h:35
 msgid "Options"
 msgstr "Možnosti"
 
-#: gui/gdmsetup-strings.c:60 gui/gdmsetup.glade.h:36
+#: gui/gdmsetup-strings.c:66 gui/gdmsetup.glade.h:4
+msgid "Allow _root to login with GDM"
+msgstr "Dovoli _rootu (administratorju) prijavo preko GDM"
+
+#: gui/gdmsetup-strings.c:67 gui/gdmsetup.glade.h:7
+msgid "Allow root to login r_emotely with GDM"
+msgstr "Dovoli root-u (administratorju), da se oddaljeno _prijavi preko GDM"
+
+#: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:6
+msgid "Allow remote _timed logins"
+msgstr "Dovoli oddaljene č_asovne prijave"
+
+#: gui/gdmsetup-strings.c:69 gui/gdmsetup.glade.h:45
+msgid ""
+"Show the \"Actions\" menu (formerly known as the \"System\" menu).  If not "
+"set, none of the system commands will be available (this includes reboot, "
+"shutdown, configure, chooser)"
+msgstr ""
+"Kaži menu \"Dejanja\" (prej znan kot menu \"Sistem). Če ni nastavljen, "
+"ne bo na voljo noben od sistemskih ukazov (to vključuje vnovični zagon, ustavitev, nastavitev in izbirnik)."
+
+#: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:43
+msgid "Show _actions menu"
+msgstr "Kaži menu _dejanj"
+
+#: gui/gdmsetup-strings.c:71 gui/gdmsetup.glade.h:5
+msgid "Allow c_onfiguration from the login screen"
+msgstr "Dovoli nastavitve v zaslonu prijavljanja"
+
+#: gui/gdmsetup-strings.c:72 gui/gdmsetup.glade.h:3
+msgid "Allo_w running XDMCP chooser from the login screen"
+msgstr "Do_voli zagon izbirnika XdMCP iz prijavnega zaslona"
+
+#: gui/gdmsetup-strings.c:73 gui/gdmsetup.glade.h:8
+msgid ""
+"Always disallow TCP connections to _X server (disables all remote "
+"connections)"
+msgstr ""
+"Vedno onemogoči povezave TCP na strežnik _X (onemogoči vse oddaljene povezave)."
+
+#: gui/gdmsetup-strings.c:74 gui/gdmsetup.glade.h:41
+msgid "Retry _delay (seconds) :"
+msgstr "Premor me_d poizkusi (sekund) : "
+
+#: gui/gdmsetup-strings.c:75 gui/gdmsetup.glade.h:42
 msgid "Security"
 msgstr "Varnost"
 
-#: gui/gdmsetup-strings.c:61 gui/gdmsetup.glade.h:30
+#: gui/gdmsetup-strings.c:76 gui/gdmsetup.glade.h:33
 msgid ""
 "No XDMCP support in the binary.  To enable XDMCP support you must recompile "
 "GDM with the XDMCP libraries."
@@ -2910,47 +3098,51 @@ msgstr ""
 "Podpora XDMCP ni bila prevedena.  Za vključitev podpore XDMCP morate GDM "
 "prevesti skupaj s knjižnjicami XDMCP."
 
-#: gui/gdmsetup-strings.c:62 gui/gdmsetup.glade.h:19
-msgid "Honour _indirect requests"
-msgstr "Upoštevaj zahtevke za _preusmeritev"
-
-#: gui/gdmsetup-strings.c:63 gui/gdmsetup.glade.h:21
-msgid "Listen on UDP port: "
-msgstr "Poslušaj na vratih UDP: "
-
-#: gui/gdmsetup-strings.c:64 gui/gdmsetup.glade.h:26
-msgid "Maximum pending requests:"
-msgstr "Največje število čakajočih zahtevkov:"
-
-#: gui/gdmsetup-strings.c:65 gui/gdmsetup.glade.h:24
-msgid "Max pending indirect requests:"
-msgstr "Največje število čakajočih posrednih zahtevkov:"
-
-#: gui/gdmsetup-strings.c:66 gui/gdmsetup.glade.h:27
-msgid "Maximum remote sessions:"
-msgstr "Največje število oddaljenih sej:"
-
-#: gui/gdmsetup-strings.c:67 gui/gdmsetup.glade.h:28
-msgid "Maximum wait time:"
-msgstr "Največji čakalni čas:"
-
-#: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:25
-msgid "Maximum indirect wait time:"
-msgstr "Največji posredni čakalni čas: "
-
-#: gui/gdmsetup-strings.c:69 gui/gdmsetup.glade.h:13
-msgid "Displays per host:"
-msgstr "Zaslonov na gostitelja:"
-
-#: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:34
-msgid "Ping interval (minutes):"
-msgstr "Interval za ping (minut): "
-
-#: gui/gdmsetup-strings.c:71 gui/gdmsetup.glade.h:14
+#: gui/gdmsetup-strings.c:77 gui/gdmsetup.glade.h:17
 msgid "Enable _XDMCP"
 msgstr "Vkjuči _XDMCP"
 
-#: gui/gdmsetup-strings.c:72 gui/gdmsetup.glade.h:43
+#: gui/gdmsetup-strings.c:79 gui/gdmsetup.glade.h:21
+msgid "Honour _indirect requests"
+msgstr "Upoštevaj zahtevke za _preusmeritev"
+
+#: gui/gdmsetup-strings.c:80 gui/gdmsetup.glade.h:23
+msgid "Listen on _UDP port: "
+msgstr "Poslušaj na vratih _UDP: "
+
+#: gui/gdmsetup-strings.c:81 gui/gdmsetup.glade.h:28
+msgid "Maximum _pending requests:"
+msgstr "Največje š_tevilo čakajočih zahtevkov:"
+
+#: gui/gdmsetup-strings.c:82 gui/gdmsetup.glade.h:27
+msgid "Max p_ending indirect requests:"
+msgstr "Največje število čakajočih _posrednih zahtevkov:"
+
+#: gui/gdmsetup-strings.c:83 gui/gdmsetup.glade.h:29
+msgid "Maximum _remote sessions:"
+msgstr "Največje število o_ddaljenih sej:"
+
+#: gui/gdmsetup-strings.c:84 gui/gdmsetup.glade.h:30
+msgid "Maximum _wait time:"
+msgstr "Največji ča_kalni čas:"
+
+#: gui/gdmsetup-strings.c:85 gui/gdmsetup.glade.h:31
+msgid "Maximum indirect w_ait time:"
+msgstr "Največji po_sredni čakalni čas:"
+
+#: gui/gdmsetup-strings.c:86 gui/gdmsetup.glade.h:16
+msgid "Displays per _host:"
+msgstr "Zaslonov na _gostitelja:"
+
+#: gui/gdmsetup-strings.c:87 gui/gdmsetup.glade.h:37
+msgid "Pin_g interval (seconds):"
+msgstr "Interval za _ping (sekund):"
+
+#: gui/gdmsetup-strings.c:88 gui/gdmsetup.glade.h:38
+msgid "Ping interval (seconds):"
+msgstr "Interval za ping (sekund):"
+
+#: gui/gdmsetup-strings.c:89 gui/gdmsetup.glade.h:53
 msgid "XDMCP"
 msgstr "XDMCP"
 
@@ -2962,104 +3154,132 @@ msgstr ""
 "Ob poskusu povezovanja z prijavnimi zasloni se je zgodila napaka.  Vse "
 "posodobitve morda niso uveljavljene."
 
-#: gui/gdmsetup.c:1324
+#: gui/gdmsetup.c:1401
 msgid "Archive is not of a subdirectory"
 msgstr "Arhiv ni podimenik"
 
-#: gui/gdmsetup.c:1332
+#: gui/gdmsetup.c:1409
 msgid "Archive is not of a single subdirectory"
 msgstr "Arhiv ni sam podimenik"
 
-#: gui/gdmsetup.c:1356 gui/gdmsetup.c:1435
+#: gui/gdmsetup.c:1433 gui/gdmsetup.c:1512
 msgid "File not a tar.gz or tar archive"
 msgstr "Datotaka ni arhiv tar.gz ali tar"
 
-#: gui/gdmsetup.c:1358
+#: gui/gdmsetup.c:1435
 msgid "Archive does not include a GdmGreeterTheme.info file"
 msgstr "Arhiv ne vsebuje datoteke GdmGreeterTheme.info"
 
-#: gui/gdmsetup.c:1380
+#: gui/gdmsetup.c:1457
 msgid "File does not exist"
 msgstr "Datoteka ne obstaja"
 
-#: gui/gdmsetup.c:1488
+#: gui/gdmsetup.c:1565
 msgid "No file selected"
 msgstr "Izbrana ni nobena datoteka"
 
-#: gui/gdmsetup.c:1514
-#, c-format
-msgid ""
-"Not a theme archive\n"
-"Details: %s"
+#: gui/gdmsetup.c:1592
+msgid "Not a theme archive"
 msgstr ""
-"Ni arhiv teme\n"
-"Podrobnosti: %s"
+"Ni arhiv teme"
 
-#: gui/gdmsetup.c:1536
+#: gui/gdmsetup.c:1593
+#, c-format
+msgid "Details: %s"
+msgstr "Podrobnosti: %s"
+
+#. FIXME: if exists already perhaps we could also have an
+#. * option to change the dir name
+#: gui/gdmsetup.c:1611
 #, c-format
 msgid ""
 "Theme directory '%s' seems to be already installed, install again anyway?"
 msgstr "Imenik teme '%s' se zdi že nameščen, naj ga vseeno namestim znova?"
 
-#: gui/gdmsetup.c:1581
+#: gui/gdmsetup.c:1687
 msgid "Some error occured when installing the theme"
 msgstr "Med nameščanjem teme se je zgodila napaka"
 
-#: gui/gdmsetup.c:1626
+#: gui/gdmsetup.c:1733
 msgid "Select new theme archive to install"
 msgstr "Izberi nov arhiv teme za namestitev"
 
-#. This is the temporary help dialog
-#: gui/gdmsetup.c:1766
+#: gui/gdmsetup.c:1801
 #, c-format
+msgid "Do you really wish to remove theme '%s' from the system?"
+msgstr "Zares želite iz sistema odstraniti temo '%s'?"
+
+#. This is the temporary help dialog
+#: gui/gdmsetup.c:2011
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
 "graphical login screen for GNOME.  Changes that you make will take effect "
 "immediately.\n"
 "\n"
 "Note that not all configuration options are listed here.  You may want to "
-"edit %s if you cannot find what you are looking for."
+"edit %s if you cannot find what you are looking for.\n"
+"\n"
+"For complete documentation see the GNOME help browser Under the category "
+"GNOME/System."
 msgstr ""
 "To nastavitveno okno spremeni nastavitve daemona GDM, ki je grafični "
 "prijavni zaslon za GNOME.  Spremembe, ki jih boste storili, bodo "
 "uveljavljene takoj.\n"
 "\n"
-"Vedite, da tu niso naštete vse nastavitvene možnosti. Morda boste želili "
-"urediti datoteko %s, če tu ne boste našli kar iščete."
+"Vedite, da tu niso naštete vse nastavitvene možnosti. Če tu ne boste našči "
+"kar iščete, boste morda želeli ročno urediti datoteko %s."
+"\n"
+"Za popolno dokumentacijo si poglejte Gnomov brskalnik pomoči v razdelku "
+"GNOME/Sistem"
 
-#: gui/gdmsetup.c:2070
-msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr "Za nastavljanje GDMja morate biti administrator (root)\n"
+#: gui/gdmsetup.c:2391
+msgid "You must be the superuser (root) to configure GDM."
+msgstr "Za nastavljanje GDMja morate biti administrator (root)."
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
 msgstr "Grafični program za nastavljanje Upravljalnika zaslonov GNOME (GDM)"
 
-#: gui/gdmsetup.desktop.in.h:2
-msgid "GDM Configurator"
-msgstr "Nastavljalnik GDM"
-
-#: gui/greeter/greeter.c:72
+#: gui/greeter/greeter.c:619 gui/greeter/greeter.c:649
 #, c-format
-msgid "greeter_parse_config: No configuration file: %s. Using defaults."
+msgid ""
+"The greeter version (%s) does not match the daemon version.\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
 msgstr ""
-"greeter_parse_config: Ni datoteke nastavitev %s. Uporabljam privzete "
-"nastavitve."
+"Različica pozdravnega programa (%s) ne ustreza različici daemona.\n"
+"Verjetno ste ravnokar nadgradili gdm.\n"
+"Znova poženite gdm ali vnovič poženite računalnik."
 
-#: gui/greeter/greeter.c:1141
+#: gui/greeter/greeter.c:693
+#, c-format
+msgid ""
+"The greeter version (%s) does not match the daemon version (%s).\n"
+"You have probably just upgraded gdm.\n"
+"Please restart the gdm daemon or reboot the computer."
+msgstr ""
+"Različica pozdravnega programa (%s) ne ustreza različici daemona (%s).\n"
+"Verjetno ste ravnokar nadgradili gdm.\n"
+"Znova poženite gdm ali vnovič poženite računalnik."
+
+#: gui/greeter/greeter.c:1249
 #, c-format
 msgid "There was an error loading the theme %s"
 msgstr "Ob nalaganju teme %s se je zgodila napaka"
 
-#: gui/greeter/greeter.c:1179
-msgid ""
-"The theme for the graphical greeter is corrupt.  It does not contain "
-"definition for the username/password entry element."
-msgstr ""
-"Tema za grafični pozdravnik je pokvarjena.  Ne vsebuje definicij za vnos uporabniškega imena ali gesla."
+#: gui/greeter/greeter.c:1297
+msgid "The theme for the graphical greeter is corrupt"
+msgstr "Tema za grafični pozdravnik je pokvarjena"
 
-#: gui/greeter/greeter.c:1212
+#: gui/greeter/greeter.c:1300
+msgid ""
+"The theme does not contain definition for the username/password entry "
+"element."
+msgstr ""
+"Tema ne vsebuje definicij za vnos uporabniškega imena ali gesla."
+
+#: gui/greeter/greeter.c:1332
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
@@ -3067,7 +3287,7 @@ msgstr ""
 "Ob nalaganju teme se je zgodila napaka, prav tako ni bilo mogoče naložiti "
 "privzete teme. Poskušal bom zagnati običajni pozdravljalnik"
 
-#: gui/greeter/greeter.c:1232
+#: gui/greeter/greeter.c:1353
 msgid ""
 "I could not start the standard greeter.  This display will abort and you may "
 "have to login another way and fix the installation of gdm"
@@ -3075,42 +3295,90 @@ msgstr ""
 "Nisem mogel zagnati običajnega pozdravljalnika.  Ta zaslon se bo prekinil in "
 "morda se boste morali prijaviti na drug način in popraviti namestitev gdm-ja"
 
-#: gui/greeter/greeter_action_language.c:194
+#: gui/greeter/greeter_action_language.c:45
+msgid "Last"
+msgstr "Zadnja"
+
+#: gui/greeter/greeter_action_language.c:188
 msgid "Select a language"
 msgstr "Izberi jezik"
 
-#: gui/greeter/greeter_action_language.c:207
+#: gui/greeter/greeter_action_language.c:205
 msgid "Select a language for your session to use:"
 msgstr "Izberite jezik, ki naj ga uporabi vaša seja:"
 
-#: gui/greeter/greeter_system.c:150
-msgid "Shut down the computer"
-msgstr "Ugasni računalnik"
+#: gui/greeter/greeter_canvas_item.c:124
+msgid "Select _Language..."
+msgstr "Izberi _jezik..."
 
-#: gui/greeter/greeter_system.c:162
-msgid "Suspend the computer"
-msgstr "Zamrzni računalnik"
+#: gui/greeter/greeter_canvas_item.c:131
+msgid "Select _Session..."
+msgstr "Izberi _sejo..."
 
-#: gui/greeter/greeter_system.c:174
-msgid "Reboot the computer"
-msgstr "Vnovič zaženi računalnik"
+#: gui/greeter/greeter_canvas_item.c:351
+msgid "Answer questions here and press Enter when done.  For a menu press F10."
+msgstr "Odgovorite na vprašanja tu in, ko ste končali, pritisnite Enter.  Za menu pritisnite F10."
 
-#: gui/greeter/greeter_system.c:187
-msgid "Configure"
-msgstr "Nastavi"
+#: gui/greeter/greeter_item_ulist.c:263
+msgid "Can't open DefaultImage: %s!"
+msgstr "Ne morem odreti privzete slike (DefaultImage): %s!"
 
-#: gui/greeter/greeter_parser.c:943
-#: gui/greeter/themes/circles/circles.xml.in.h:8
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:8
+#: gui/greeter/greeter_item_ulist.c:365
+msgid ""
+"Doubleclick on the user\n"
+"to log in"
+msgstr ""
+"Za prijavo\n"
+"dvokliknite na uporabnika."
+
+
+#: gui/greeter/greeter_parser.c:1006 gui/greeter/greeter_system.c:205
+msgid "Sus_pend"
+msgstr "_Zamrzni"
+
+#: gui/greeter/greeter_parser.c:1016
+msgid "_XDMCP Chooser"
+msgstr "Izbirnik _XDMCP"
+
+#: gui/greeter/greeter_parser.c:1021
+msgid "_Configure"
+msgstr "_Nastavi"
+
+#: gui/greeter/greeter_parser.c:1026
 msgid "You've got capslock on!"
 msgstr "Vključene imate velike črke!"
 
-#: gui/greeter/greeter_parser.c:955
-#: gui/greeter/themes/circles/circles.xml.in.h:7
-#: gui/greeter/themes/happygnome/happygnome.xml.in.h:7
-#, no-c-format
-msgid "Welcome to %h"
-msgstr "Dobrodošli na %h"
+#: gui/greeter/greeter_session.c:233
+msgid "Choose a Session"
+msgstr "Izberi sejo"
+
+#: gui/greeter/greeter_system.c:270
+msgid "Choose an Action"
+msgstr "Izberi dejanje"
+
+#: gui/greeter/greeter_system.c:292
+msgid "Shut _down the computer"
+msgstr "_Ustavi računalnik"
+
+#: gui/greeter/greeter_system.c:295
+msgid "Shut down your computer so that you may turn it off."
+msgstr "Ustavi računalnik, da se ga lahko izklopi."
+
+#: gui/greeter/greeter_system.c:310
+msgid "_Reboot the computer"
+msgstr "_Vnovič zaženi računalnik"
+
+#: gui/greeter/greeter_system.c:324
+msgid "Sus_pend the computer"
+msgstr "_Zamrzni računalnik"
+
+#: gui/greeter/greeter_system.c:338
+msgid "Run _XDMCP chooser"
+msgstr "Poženi izbirnik _XDMCP"
+
+#: gui/greeter/greeter_system.c:358
+msgid "_Configure the login manager"
+msgstr "_Nastavi upravljalnika prijav"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
@@ -3128,21 +3396,40 @@ msgstr "Krogi"
 msgid "Theme with blue circles"
 msgstr "Tema z modrimi krogi"
 
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:1
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 GNOME"
 msgstr "(c) 2002 GNOME"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:2
+msgid "GNOME Art variation of Circles with a Face Browser"
+msgstr "Umetniška variacija krogov GNOME z brskalnikom obrazov"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:3
+#: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
+msgid "GNOME Artists"
+msgstr "Umetniški ustvarjalci GNOME"
+
+#: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:4
+msgid "Happy GNOME with Browser"
+msgstr "Veseli GNOME z brskalnikom"
 
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:2
 msgid "GNOME Art variation of Circles"
 msgstr "Umetniška variacija krogov GNOME"
 
-#: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
-msgid "GNOME Artists"
-msgstr "Umetniški ustvarjalci GNOME"
-
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:4
 msgid "Happy GNOME"
 msgstr "Veseli GNOME"
+
+#: gui/modules/dwellmouselistener.c:573 gui/modules/keymouselistener.c:632
+#, c-format
+msgid ""
+"Error while trying to run (%s)\n"
+"which is linked to (%s)"
+msgstr ""
+"Napaka ob poskusu zagona (%s), \n"
+"ki je povezan na (%s)"
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
@@ -3150,33 +3437,34 @@ msgstr "gdmaskpass teče le kot root\n"
 
 #: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
 msgid "Authentication failure!\n"
-msgstr "Avtentifikacija ni uspela!\n"
+msgstr "Avtentikacija ni uspela!\n"
 
-#: vicious-extensions/glade-helper.c:82
+#: vicious-extensions/glade-helper.c:83
 msgid "(memory buffer)"
 msgstr "(pomnilniški izravnalnik)"
 
-#: vicious-extensions/glade-helper.c:114 vicious-extensions/glade-helper.c:136
-#: vicious-extensions/glade-helper.c:156
+#: vicious-extensions/glade-helper.c:115 vicious-extensions/glade-helper.c:137
+#: vicious-extensions/glade-helper.c:157
 msgid "(memory buffer"
 msgstr "(pomnilniški izravnalnik"
 
-#: vicious-extensions/glade-helper.c:188
-#, c-format
+#: vicious-extensions/glade-helper.c:189 vicious-extensions/glade-helper.c:236
+#: vicious-extensions/glade-helper.c:273
+msgid "Cannot load user interface"
+msgstr "Ne morem naložiti uporabniškega vmesnika"
+
+#: vicious-extensions/glade-helper.c:190
 msgid ""
-"An error occured while loading the user interface\n"
-"element %s%s from file %s.\n"
-"Possibly the glade interface description was corrupted.\n"
-"%s cannot continue and will exit now.\n"
-"You should check your installation of %s or reinstall %s."
+"An error occured while loading the user interface element %s%s from file %"
+"s.  Possibly the glade interface description was corrupted.  %s cannot "
+"continue and will exit now.  You should check your installation of %s or "
+"reinstall %s."
 msgstr ""
-"Ob nalaganju elementa uporabniškega vmesnika %s%s \n"
-"iz datoteke %s se je zgodila napaka.\n"
-"Verjetno je opis vmesnika glade pokvarjen.\n"
-"%s ne more nadaljevati in bo končal.\n"
+"Ob nalaganju elementa uporabniškega vmesnika %s%s iz datoteke %s se je zgodila napaka.  "
+"Verjetno je opis vmesnika glade pokvarjen.  %s ne more nadaljevati in se bo zato zaprl. "
 "Preverite namestitev %s ali na novo namestite %s."
 
-#: vicious-extensions/glade-helper.c:204
+#: vicious-extensions/glade-helper.c:206
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3185,24 +3473,18 @@ msgstr ""
 "Datoteka glade je zadeta! Prepričajte se, da je nameščena prava datoteka.\n"
 "datoteka: %s gradnik: %s"
 
-#: vicious-extensions/glade-helper.c:234
-#, c-format
+#: vicious-extensions/glade-helper.c:237
 msgid ""
-"An error occured while loading the user interface\n"
-"element %s%s from file %s.\n"
-"CList type widget should have %d columns.\n"
-"Possibly the glade interface description was corrupted.\n"
-"%s cannot continue and will exit now.\n"
-"You should check your installation of %s or reinstall %s."
+"An error occured while loading the user interface element %s%s from file %"
+"s.  CList type widget should have %d columns.  Possibly the glade interface "
+"description was corrupted.  %s cannot continue and will exit now.  You "
+"should check your installation of %s or reinstall %s."
 msgstr ""
-"Napaka Ob nalaganju predmeta uporabniškega \n"
-"vmesnika %s%s iz datoteke %s.\n"
-"Gradnik vrste CList bi moral imeti %d stolpcev.\n"
-"Možno je, da je bil opis vmesnika glade pokvarjen.\n"
-"%s ne more nadaljevati in se bo zapru.\n"
-"Preverite namestitev %s ali na novo namestite %s."
+"Napaka ob nalaganju predmeta uporabniškega vmesnika %s%s iz datoteke %s.  "
+"Gradnik vrste CList bi moral imeti %d stolpcev. Možno je, da je bil opis vmesnika glade pokvarjen.  "
+"%s ne more nadaljevati in se bo zato zaprl. Preverite namestitev %s ali na novo namestite %s."
 
-#: vicious-extensions/glade-helper.c:252
+#: vicious-extensions/glade-helper.c:255
 #, c-format
 msgid ""
 "Glade file is on crack! Make sure the correct file is installed!\n"
@@ -3212,24 +3494,361 @@ msgstr ""
 "datoteka.\n"
 "datoteka: %s gradnik: %s pričakovanih clist stolpcev: %d"
 
-#: vicious-extensions/glade-helper.c:270
-#, c-format
+#: vicious-extensions/glade-helper.c:274
 msgid ""
-"An error occured while loading the user interface\n"
-"from file %s.\n"
-"Possibly the glade interface description was not found.\n"
-"%s cannot continue and will exit now.\n"
-"You should check your installation of %s or reinstall %s."
+"An error occured while loading the user interface from file %s.  Possibly "
+"the glade interface description was not found.  %s cannot continue and will "
+"exit now.  You should check your installation of %s or reinstall %s."
 msgstr ""
-"Ob nalaganju uporabniškega vmesnika iz datoteke %s se je zgodila napaka.\n"
-"Verjetno opis vmesnika glade ni bil najden.\n"
-"%s ne more nadaljevati in bo končal.\n"
-"Preverite namestitev %s ali na novo namestite %s."
+"Ob nalaganju uporabniškega vmesnika iz datoteke %s se je zgodila napaka.  "
+"Verjetno opis vmesnika glade ni bil najden.  "
+"%s ne more nadaljevati in se bo zato zarpl.  Preverite namestitev %s ali na novo namestite %s."
 
-#: vicious-extensions/glade-helper.c:281
+#: vicious-extensions/glade-helper.c:286
 #, c-format
 msgid "No interface could be loaded, BAD! (file: %s)"
 msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
+
+#: vicious-extensions/ve-nongnome.c:132
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "Preveč vzdevkov za locale, lahko pomeni krožno povezavo"
+
+#~ msgid "gdm_auth_user_add: Could not open cookie file %s"
+#~ msgstr "gdm_auth_user_add: Nisem mogel odpreti datoteke piškotkov %s"
+
+#~ msgid "gdm_auth_user_add: Could not lock cookie file %s"
+#~ msgstr "gdm_auth_user_add: Nisem mogel zakleniti datoteke piškotkov %s"
+
+#~ msgid ""
+#~ "Failed to start the display server several times in a short time period; "
+#~ "disabling display %s"
+#~ msgstr ""
+#~ "Večkrat v kratkem času nisem uspel pognati strežnika X; izklapljam zaslon "
+#~ "%s"
+
+#~ msgid "gdm_failsafe_question: Cannot fork to display error/info box"
+#~ msgstr ""
+#~ "gdm_failsafe_question: Ne morem se deliti za prikaz škatle z napako/"
+#~ "podatki"
+
+#~ msgid "gdm_child_action: Reboot failed: %s"
+#~ msgstr "gdm_child_action: Vnovičen zagon ni uspel: %s"
+
+#~ msgid "gdm_child_action: Halt failed: %s"
+#~ msgstr "gdm_child_action: Ustavitev ni uspela: %s"
+
+#~ msgid "gdm_child_action: Suspend failed: %s"
+#~ msgstr "gdm_child_action: Obmirovanje ni uspelo: %s"
+
+#~ msgid "%s: Error setting up TERM signal handler"
+#~ msgstr "%s: Napaka pri vzpostavljanju obravnavalnika za signal TERM"
+
+#~ msgid "%s: Error setting up INT signal handler"
+#~ msgstr "%s: Napaka pri vzpostavljanju obravnavalnika za signal INT"
+
+#~ msgid "%s: Error setting up HUP signal handler"
+#~ msgstr "%s: Napaka pri vzpostavljanju obravnavalnika za signal HUP"
+
+#~ msgid "%s: Error setting up USR1 signal handler"
+#~ msgstr "%s: Napaka pri vzposstavljanju obravnavalnika za signal USR1"
+
+#~ msgid "%s: Error setting up CHLD signal handler: %s"
+#~ msgstr "%s: Napaka ob vzpostavljanju obravnavalinka za signal CHLD: %s"
+
+#~ msgid "%s: Error setting up ALRM signal handler: %s"
+#~ msgstr "%s: Napaka ob vzpostavljanju obravnavalnika za signal ALRM: %s"
+
+#~ msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
+#~ msgstr "gdm_server_spawn: Napaka pri nastavljanju USR1 na SIG_IGN"
+
+#~ msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
+#~ msgstr "gdm_server_spawn: Napaka pri nastavljanju TTIN na SIG_IGN"
+
+#~ msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
+#~ msgstr "gdm_server_spawn: Napaka pri nastavljanju TTOU na SIG_IGN"
+
+#~ msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
+#~ msgstr "gdm_server_spawn: Napaka pri nastavljanju HUP na SIG_DFL"
+
+#~ msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
+#~ msgstr "gdm_server_spawn: Napaka pri nastavljanju TERM na SIG_DFL"
+
+#~ msgid "gdm_server_spawn: Can't fork Xserver process!"
+#~ msgstr "gdm_server_spawn: Ne morem razvejiti Xserver process!"
+
+#~ msgid "%s: Error setting up TERM/INT signal handler: %s"
+#~ msgstr "%s: Napaka ob vzpostavljanju obravnavalnika za signal TERM/INT: %s"
+
+#~ msgid "focus_first_x_window: cannot fork"
+#~ msgstr "focus_first_x_window: ne morem se razvejiti"
+
+#~ msgid "gdm_slave_wait_for_login: No login/Bad login"
+#~ msgstr "gdm_slave_wait_for_login: Ni prijave/slaba prijava"
+
+#~ msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
+#~ msgstr "gdm_slave_chooser: Ne morem inicializirati cevi do gdmchooser-ja"
+
+#~ msgid "gdm_slave_chooser: Error starting chooser on display %s"
+#~ msgstr "gdm_slave_greeter: Napaka ob zaganjanju izbirnika na zaslonu %s"
+
+#~ msgid "gdm_slave_chooser: Can't fork gdmchooser process"
+#~ msgstr "gdm_slave_chooser: Ne morem razvejiti procesa gdmchooser"
+
+#~ msgid "gdm_slave_session_start: Could not become %s. Aborting."
+#~ msgstr "gdm_slave_session_start: Ne morem postati %s. Prekinjam."
+
+#~ msgid "Running %s for %s on %s"
+#~ msgstr "Poganjam %s za %s na %s"
+
+#~ msgid "gdm_slave_session_start: User not allowed to log in"
+#~ msgstr "gdm_slave_session_start: Uporabniku prijava ni dovoljena"
+
+#~ msgid ""
+#~ "The system administrator has\n"
+#~ "disabled your account."
+#~ msgstr ""
+#~ "Vaš račun je bil izključen\n"
+#~ "s strani sistemskega administratorja."
+
+#~ msgid "gdm_slave_session_start: Could not find/run session `%s'"
+#~ msgstr "gdm_slave_session_start: Ne morem najti/pognati seje `%s'"
+
+#~ msgid ""
+#~ "Cannot start the session, most likely the\n"
+#~ "session does not exist.  Please select from\n"
+#~ "the list of available sessions in the login\n"
+#~ "dialog window."
+#~ msgstr ""
+#~ "Ne morem začeti seje, najverjetneje seja\n"
+#~ "ne obstaja. Prosimo izberite sejo iz \n"
+#~ "seznama možnih sej v prijavnem oknu."
+
+#~ msgid "gdm_slave_session_start: Could not start session `%s'"
+#~ msgstr "gdm_slave_session_start: Ne morem pognati seje ,%s`"
+
+#~ msgid ""
+#~ "Cannot start your shell.  It could be that the\n"
+#~ "system administrator has disabled your login.\n"
+#~ "It could also indicate an error with your account.\n"
+#~ msgstr ""
+#~ "Ne morem pognati vaše lupine.  Možno je, da je\n"
+#~ "administrator sistema onemogočil vašo prijavo.\n"
+#~ "To lahko pomeni tudi napako v vašem računu.\n"
+
+#~ msgid "gdm_slave_exec_script: Can't fork script process!"
+#~ msgstr "gdm_slave_exec_script: Ne morem razvejiti procesa za skripto!"
+
+#~ msgid "gdm_parse_enriched_login: Failed creating pipe"
+#~ msgstr "gdm_parse_enriched_login: Nisem uspel ustvariti cevi"
+
+#~ msgid "gdm_parse_enriched_login: Can't fork script process!"
+#~ msgstr "gdm_parse_enriched_login: Ne morem razvejiti procesa za skripto!"
+
+#~ msgid "Can't find /etc/pam.d/%s!"
+#~ msgstr "Ne najdem /etc/pam.d/%s!"
+
+#~ msgid "Can't set PAM_RUSER=%s"
+#~ msgstr "Ne morem nastaviti PAM_RUSER=%s"
+
+#~ msgid ""
+#~ "\n"
+#~ "Incorrect username or password. Letters must be typed in the correct "
+#~ "case. Please make sure the Caps Lock key is not enabled."
+#~ msgstr ""
+#~ "\n"
+#~ "Napačno uporabniško ime ali geslo. Črke morajo biti pravilne velikosti. "
+#~ "Prepričajte se, da niso vključene velike črke (caps lock)."
+
+#~ msgid "gdm_xdmcp_init: Could not get server hostname: %s!"
+#~ msgstr "gdm_xdmcp_init: Nisem dobil ime strežnika: %s!"
+
+#~ msgid "gdm_xdmcp_init: Could not create socket!"
+#~ msgstr "gdm_xdmcp_init: Ne morem ustvariti vtiča!"
+
+#~ msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
+#~ msgstr "gdm_xdmcp_init: Povezava na vtič XDMCP ne uspela!"
+
+#~ msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
+#~ msgstr "gdm_xdmcp_handle_forward_query: Ne morem prebrati naslova zaslona"
+
+#~ msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
+#~ msgstr ""
+#~ "gdm_xdmcp_handle_forward_query: Ne morem prebrati številke vrat zaslona"
+
+#~ msgid ""
+#~ "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
+#~ msgstr ""
+#~ "gdm_xdmcp_handle_forward_query: Ne morem izvleči avtorizacijskega seznama "
+#~ "iz paketa"
+
+#~ msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
+#~ msgstr "gdm_xdmcp_handle_forward_query: Napaka v preverjalni vsoti"
+
+#~ msgid "gdm_xdmcp_handle_forward_query: Bad address"
+#~ msgstr "gdm_xdmcp_handle_forward_query: Slab naslov"
+
+#~ msgid "gdm_xdmcp_handle_request: Could not read Client Address"
+#~ msgstr "gdm_xdmcp_handle_request: Ne morem prebrati Naslov Odjemalca"
+
+#~ msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
+#~ msgstr "gdm_xdmcp_handle_request: Ne morem prebrati ID proizvajalca"
+
+#~ msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
+#~ msgstr "gdm_xdmcp_handle_manage: Ne morem prebrati ID seje "
+
+#~ msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
+#~ msgstr "gdm_xdmcp_handle_manage: Ne morem prebrati Številko Zaslona"
+
+#~ msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
+#~ msgstr "gdm_xdmcp_handle_manage: Ne morem prebrati razreda zaslona"
+
+#~ msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
+#~ msgstr "gdm_xdmcp_handle_keepalive: Ne morem prebrati Številka Zaslona"
+
+#~ msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
+#~ msgstr "gdm_xdmcp_handle_keepalive: Ne morem prebrati Identifikacijo Seje"
+
+#~ msgid "gdm_xdmcp_init: No XDMCP support"
+#~ msgstr "gdm_xdmcp_init: Ni podpore za XDMCP"
+
+#~ msgid "gdm_xdmcp_run: No XDMCP support"
+#~ msgstr "gdm_xdmcp_run: Ni podpore za XDMCP"
+
+#~ msgid ""
+#~ "The main area of this application shows the hosts on the local network "
+#~ "that have \"XDMCP\" enabled. This allows users to login remotely to other "
+#~ "machines as if they were logged on using the console.\n"
+#~ "\n"
+#~ "You can rescan the network for new hosts by clicking \"Refresh\". When "
+#~ "you have selected a host click \"Connect\" to open a session to that "
+#~ "machine."
+#~ msgstr ""
+#~ "Glavna površina tega programa kaže gostitelje na krajevni mreži, ki imajo "
+#~ "vključen \"XDMCP\". To omogoča uporabnikom, da se prijavijo na druge "
+#~ "računalnike, kot, da bi se prijavili v konzolo.\n"
+#~ "\n"
+#~ "Mrežo lahko preiščete za nove gostitelje s klikom na \"Osveži\". Ko boste "
+#~ "izbrali gostitelja, kliknite \"Poveži se\" za odprtje  seje na tem "
+#~ "računalniku."
+
+#~ msgid "Information"
+#~ msgstr "Podatki"
+
+#~ msgid "gdm_signals_init: Error setting up HUP signal handler"
+#~ msgstr ""
+#~ "gdm_signals_init: Napaka pri vzpostavljanju obravnavalnika za signal HUP"
+
+#~ msgid "gdm_signals_init: Error setting up INT signal handler"
+#~ msgstr ""
+#~ "gdm_signals_init: Napaka pri vzpostavljanju obravnavalnika za signal INT"
+
+#~ msgid "gdm_signals_init: Error setting up TERM signal handler"
+#~ msgstr ""
+#~ "gdm_signals_init: Napaka pri vzpostavljanju obravnavalnika za signal TERM"
+
+#~ msgid ""
+#~ "<b>GDM (The GNOME Display Manager) is not running.</b>\n"
+#~ "\n"
+#~ "You might in fact be using a different display manager, such as KDM (KDE "
+#~ "Display Manager or xdm).\n"
+#~ "If you still wish to use this feature, either start GDM your self or ask "
+#~ "your system administrator to start GDM."
+#~ msgstr ""
+#~ "<b>GDM (Upravljalnik zaslona GNOME) ne teče.</b>\n"
+#~ "\n"
+#~ "Lahko, da uporabljate drug uporavljalnik zaslona, kot npr. KDM "
+#~ "(Upravljalnik zaslona KDE) ali xmd).\n"
+#~ "Če še vedno želite uporabljati to možnost, ali zaženite GDM ročno ali "
+#~ "prosite sistemskega administratorja, naj zažene GDM."
+
+#~ msgid "AnotherLevel"
+#~ msgstr "AnotherLevel"
+
+#~ msgid "Failsafe"
+#~ msgstr "Varno pred sesutjem"
+
+#~ msgid "Gnome"
+#~ msgstr "Gnome"
+
+#~ msgid "XSession"
+#~ msgstr "XSeja"
+
+#~ msgid "Gnome Chooser"
+#~ msgstr "Izbirnik Gnome"
+
+#~ msgid ""
+#~ "Doubleclick here to un-iconify the login window, so that you may log in."
+#~ msgstr ""
+#~ "Dvokliknite tu za povečavo prijavnega okna. Tako se boste lahko prijavili."
+
+#~ msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
+#~ msgstr ""
+#~ "gdm_login_parse_config: Datoteka nastavitev %s ne obstaja. Uporabljam "
+#~ "privzete nastavitve."
+
+#~ msgid "gdm_login_session_init: Session script directory not found!"
+#~ msgstr "gdm_login_session_init: Nisem našel imenika s skriptami sej!"
+
+#~ msgid ""
+#~ "This session will log you directly into GNOME, into your current session."
+#~ msgstr "Ta seja vas bo prijavila neposredno v GNOME, v vašo trenutno sejo."
+
+#~ msgid ""
+#~ "This session will log you into GNOME and it will let you choose which one "
+#~ "of the GNOME sessions you want to use."
+#~ msgstr ""
+#~ "Ta seja vas bo prijavila v GNOME in vam omogočila izbrati katero od sej "
+#~ "GNOME želite uporabiti."
+
+#~ msgid "Create new session"
+#~ msgstr "Ustvari novo sejo"
+
+#~ msgid "Name: "
+#~ msgstr "Ime:"
+
+#~ msgid "Remember this setting"
+#~ msgstr "Pomni te nastavitve"
+
+#~ msgid "Can't open icon file: %s. Suspending iconify feature!"
+#~ msgstr "Ne najdem datoteke z ikono: %s. Izključujem možnost ikonizacije!"
+
+#~ msgid "Iconify the login window"
+#~ msgstr "Pomanjšaj prijavno okno"
+
+#~ msgid "_Reboot..."
+#~ msgstr "_Vnovičen zagon sistema..."
+
+#~ msgid "S_ystem"
+#~ msgstr "_Sistem"
+
+#~ msgid "main: Error setting up HUP signal handler"
+#~ msgstr "main: Napaka pri vzpostavljanju obravnavalnika za signal HUP"
+
+#~ msgid "main: Error setting up INT signal handler"
+#~ msgstr "main: Napaka pri vzpostavljanju obravnavalnika za signal INT"
+
+#~ msgid "main: Error setting up TERM signal handler"
+#~ msgstr "main: Napaka pri vzpostavljanju obravnavalnika za signal TERM"
+
+#~ msgid "Select a photo"
+#~ msgstr "Izberi fotografijo"
+
+#~ msgid "GDM Setup"
+#~ msgstr "Nastavitev GDM"
+
+#~ msgid "Welcome string: "
+#~ msgstr "_Pozdravno sporočilo: "
+
+#~ msgid "<b>Author:</b>"
+#~ msgstr "<b>Avtor:</b>"
+
+#~ msgid "GDM Configurator"
+#~ msgstr "Nastavljalnik GDM"
+
+#~ msgid "greeter_parse_config: No configuration file: %s. Using defaults."
+#~ msgstr ""
+#~ "greeter_parse_config: Ni datoteke nastavitev %s. Uporabljam privzete "
+#~ "nastavitve."
 
 #~ msgid "<b>Copyright:</b>"
 #~ msgstr "<b>Avtorske pravice:</b>"
@@ -3370,15 +3989,12 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 #~ msgid "System"
 #~ msgstr "Sistem"
 
-#~ msgid "%s: Could not get server hostname: %s!"
-#~ msgstr "%s: Nisem uspel dobiti imena strežnika: %s!"
-
 #~ msgid "%s: Could not get address from hostname!"
 #~ msgstr "%s: Nisem uspel dobiti naslova iz imena gostitelja!"
 
 #~ msgid "gdm_slave_session_start: Authentication completed. Whacking greeter"
 #~ msgstr ""
-#~ "gdm_slave_session_start: Avtentifikacija opravljena. Kakšen pozdravljatelj"
+#~ "gdm_slave_session_start: Avtentikacija opravljena. Kakšen pozdravljatelj"
 
 #~ msgid "Basic"
 #~ msgstr "Osnove"
@@ -3458,9 +4074,6 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 #~ "V opisu vmesnika glade ne morem najti\n"
 #~ "gradnika gdmconfigurator\n"
 #~ "Prosim preverite namestitev."
-
-#~ msgid "GNOME Display Manager Configurator"
-#~ msgstr "Nastavljalnik Upravljalnika zaslona GNOME"
 
 #~ msgid ""
 #~ "The configuration file: %s\n"
@@ -3718,7 +4331,7 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 #~ "If the user fails to authenticate himself the login window should Quiver "
 #~ "to indicate failure"
 #~ msgstr ""
-#~ "Če se je uporabnik napačno avtentificiral, naj se prijavno okno zatrese, "
+#~ "Če se je uporabnik napačno avtenticiral, naj se prijavno okno zatrese, "
 #~ "da pokaže na napako"
 
 #~ msgid "Quiver on failure"
@@ -4035,7 +4648,7 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 #~ msgstr "Ubij 'inicializacijske' odjemalce"
 
 #~ msgid "Should GDM print authentication errors in the greeter"
-#~ msgstr "Naj GDM v pozdravljalniku kaže avtentifikacijske napake"
+#~ msgstr "Naj GDM v pozdravljalniku kaže avtentikacijske napake"
 
 #~ msgid "Select how relaxed permissions are"
 #~ msgstr "Izberite kako lahkotna so dovoljenja"
@@ -4178,9 +4791,6 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 #~ msgid "Edit server"
 #~ msgstr "Uredi strežnik"
 
-#~ msgid "Delete server"
-#~ msgstr "Zbriši strežnik"
-
 #~ msgid "Static Servers (servers to always run)"
 #~ msgstr "Stalni strežniki (ki se vedno poženejo)"
 
@@ -4246,12 +4856,6 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 
 #~ msgid "X-server setup"
 #~ msgstr "Nastavitev strežnika X"
-
-#~ msgid "Session configuration"
-#~ msgstr "Nastavitev seje "
-
-#~ msgid "Session directory: "
-#~ msgstr "Imenik seje:"
 
 #~ msgid "Select a directory to be used for system-wide session scripts"
 #~ msgstr "Izberi imenik, ki bo uporabljen za sistemske skripte sej"
@@ -4331,9 +4935,6 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 #~ "Z vejicami ločen seznam strežnikov, ki naj se pojavijo v izbirniku "
 #~ "(skupaj z poizvedbo zgoraj)"
 
-#~ msgid "Chooser"
-#~ msgstr "Izbirnik"
-
 #~ msgid "Debugging"
 #~ msgstr "Razhroščevanje"
 
@@ -4390,9 +4991,6 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 
 #~ msgid "PID file: "
 #~ msgstr "Datoteka PID:"
-
-#~ msgid "Default GNOME session file: "
-#~ msgstr "Privzeta datoteka seje GNOME:"
 
 #~ msgid "Paths"
 #~ msgstr "Poti"
@@ -4524,14 +5122,8 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 #~ msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
 #~ msgstr "gdm_slave_session_start: initgrougs() ni uspel za %s. Prekinjam."
 
-#~ msgid "Choose an icon"
-#~ msgstr "Izberi ikono"
-
-#~ msgid "Login incorrect"
-#~ msgstr "Napačna prijava"
-
 #~ msgid "Authentication errors should be verbose"
-#~ msgstr "Avtentifikacijske napake naj bodo zgovorne"
+#~ msgstr "Avtenikacijske napake naj bodo zgovorne"
 
 #~ msgid "X configurator binaries to try: "
 #~ msgstr "Programi, ki naj se poskusijo za nastavitev Xov: "
@@ -4570,9 +5162,6 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 #~ msgid "Root login disallowed"
 #~ msgstr "Prijava root ni dovoljena"
 
-#~ msgid "Incorrect password"
-#~ msgstr "Napačno geslo"
-
 #~ msgid "gdm_xdmcp_init: Can't alloc fifopath"
 #~ msgstr "gdm_xdmcp_init: Alokacija fifopath ne uspe"
 
@@ -4591,6 +5180,3 @@ msgstr "Nobenega vmesnika ni moč naložiti, SLABO! (datoteka: %s)"
 
 #~ msgid "Halt..."
 #~ msgstr "Zaustavitev..."
-
-#~ msgid "Iconify"
-#~ msgstr "Skrči v ikono"
