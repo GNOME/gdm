@@ -2,8 +2,8 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
     <!ENTITY legal SYSTEM "legal.xml">
-    <!ENTITY version "2.4.1.101"> 
-    <!ENTITY date "8/20/2003"> 
+    <!ENTITY version "2.4.1.102"> 
+    <!ENTITY date "8/25/2003"> 
 ]>
 
 <article id="index" lang="en">
@@ -539,7 +539,8 @@
       </para>
 
       <para>
-	The output from the user session is redirected to <filename>~/.xsession-errors</filename>
+	The output from the user session is redirected to
+	<filename>~/.xsession-errors</filename>
 	before even the <filename>PreSession</filename> script is started.  So
 	it is not really necessary to redirect this again in the session setup
 	script.  As is usually done.  If the user session lasted less then
@@ -551,15 +552,37 @@
       </para>
 
       <para>
-	The <filename>~/.xsession-errors</filename> file is capped at about
+	The session output is piped through the GDM daemon and so the
+	<filename>~/.xsession-errors</filename> file is capped at about
 	200 kilobytes by GDM to prevent a possible denial of service attack
-	on the apps.  An app could perhaps on reading some wrong data print out
+	on the session.  An app could perhaps on reading some wrong data print out
 	warnings or errors on the stderr or stdout.  This could perhaps
 	fill up the users home directory who would then have to log out and
-	log back in to clear this.  Note that some distributors seem to
-	override the ~/.xsession-errors redirection and do it themselves
-	in their own Xsession script which means that GDM will not be able to
-	trap the output and cap this file.
+	log back in to clear this.  This could be especially nasty if quotas
+	are set.  GDM also correctly traps the XFSZ signal and stops writing
+	the file, which would lead to killed sessions if the file was
+	redirected in the old fashioned way from the script.
+      </para>
+
+      <para>
+	Note that some distributors seem to
+	override the <filename>~/.xsession-errors</filename> redirection and
+	do it themselves in their own Xsession script (set by the
+	<filename>BaseXsession</filename> configuration key) which means that
+	GDM will not be able to trap the output and cap this file.  You also
+	lose output from the <filename>PreSession</filename> script which can
+	make debugging things harder to figure out as perhaps useful output
+	of what is wrong will not be printed out.  See the description of the
+	<filename>BaseXsession</filename> configuration key for more
+	information, especially on how to handle multiple display managers
+	using the same script.
+      </para>
+
+      <para>
+	If you run a system with quotas set, it would be good to delete the
+	<filename>~/.xsession-errors</filename> in the
+	<filename>PostSession</filename> script.  Such that this log file
+	doesn't unneccesairly stay around.
       </para>
 
     </sect2>
@@ -975,6 +998,30 @@
 		selected session will be the <filename>Exec=</filename> from
 		the <filename>.desktop</filename> file of the session.
 	      </para>
+
+              <para>
+		If you wish to use the same script for several different display
+		managers, and wish to have some of the script run only for GDM, then
+		you can check the presence of the <filename>GDMSESSION</filename>
+		environmental variable.  This will always be set to the basename of
+		<filename>.desktop</filename> file that is being used for this
+		session, and will only be set for GDM sessions.  Previously some
+		scripts were checking for <filename>GDM_LANG</filename>, but that
+		is only set when the user picks a non-system default language.
+	      </para>
+
+              <para>
+		This script should take care of doing the "login" for the user
+		and so it should source the <filename>/etc/profile</filename>
+		and friends.  The standard script shipped with GDM sources
+		the files in this order: <filename>/etc/profile</filename>
+		then <filename>~/.profile</filename> then
+		<filename>/etc/xprofile</filename> and finally
+		<filename>~/.xprofile</filename>.  Note that different distributions
+		may change this however.  Sometimes users personal setup will
+		be in <filename>~/.bash_profile</filename>, however broken
+		that is.
+              </para>
 	    </listitem>
 	  </varlistentry>
 	  

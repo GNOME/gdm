@@ -38,7 +38,7 @@
 #include "auth.h"
 
 /* Local prototypes */
-static FILE *gdm_auth_purge (GdmDisplay *d, FILE *af);
+static FILE *gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty);
 
 /* Configuration option variables */
 extern gchar *GdmServAuthDir;
@@ -583,7 +583,7 @@ try_user_add_again:
 
     /* If not a fallback file, nuke any existing cookies for this display */
     if (! d->authfb)
-	af = gdm_auth_purge (d, af);
+	af = gdm_auth_purge (d, af, FALSE /* remove when empty */);
 
     /* Append the authlist for this display to the cookie file */
     auths = d->auths;
@@ -719,11 +719,13 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
     }
 
     /* Purge entries for this display from the cookie jar */
-    af = gdm_auth_purge (d, af);
+    af = gdm_auth_purge (d, af, TRUE /* remove when empty */);
 
     /* Close the file and unlock it */
-    fclose (af);
-    /* FIXME: what about out of diskspace errors on errors close */
+    if (af != NULL)
+	    /* FIXME: what about out of diskspace errors on errors close */
+	    fclose (af);
+
     XauUnlockAuth (d->userauth);
 
     g_free (d->userauth);
@@ -735,12 +737,13 @@ gdm_auth_user_remove (GdmDisplay *d, uid_t user)
  * gdm_auth_purge:
  * @d: Pointer to a GdmDisplay struct
  * @af: File handle to a cookie file
+ * @remove_when_empty: remove the file when empty
  * 
  * Remove all cookies referring to this display a cookie file.
  */
 
 static FILE *
-gdm_auth_purge (GdmDisplay *d, FILE *af)
+gdm_auth_purge (GdmDisplay *d, FILE *af, gboolean remove_when_empty)
 {
     Xauth *xa;
     GSList *keep = NULL, *li;
@@ -774,8 +777,14 @@ gdm_auth_purge (GdmDisplay *d, FILE *af)
 
     g_free (dispnum);
 
-    /* Rewind the file */
     fclose (af);
+
+    if (remove_when_empty &&
+	keep == NULL) {
+	    IGNORE_EINTR (unlink (d->userauth));
+	    return NULL;
+    }
+
     af = gdm_safe_fopen_w (d->userauth);
 
     /* Write out remaining entries */

@@ -76,6 +76,7 @@ static gchar *login = NULL;
 static gboolean greet = FALSE;
 static gboolean configurator = FALSE;
 static gboolean remanage_asap = FALSE;
+static gboolean got_xfsz_signal = FALSE;
 static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
 static gboolean do_configurator = FALSE; /* if this is true, login as root
@@ -274,7 +275,7 @@ slave_waitpid_setpid (pid_t pid)
 }
 
 static void
-run_session_output (void)
+run_session_output (gboolean read_until_eof)
 {
 	char buf[256];
 	int r, written;
@@ -295,39 +296,67 @@ run_session_output (void)
 	/* the fd is non-blocking */
 	for (;;) {
 		IGNORE_EINTR (r = read (d->session_output_fd, buf, sizeof(buf)));
-		if (r <= 0)
-			goto end_run_session_output;
 
-		if G_UNLIKELY (d->xsession_errors_bytes >= MAX_XSESSION_ERRORS_BYTES)
+		/* EOF */
+		if G_UNLIKELY (r == 0) {
+			IGNORE_EINTR (close (d->session_output_fd));
+			d->session_output_fd = -1;
+			IGNORE_EINTR (close (d->xsession_errors_fd));
+			d->xsession_errors_fd = -1;
+			break;
+		}
+
+		/* Nothing to read */
+		if (r < 0 && errno == EAGAIN)
+			break;
+
+		/* some evil error */
+		if G_UNLIKELY (r < 0) {
+			gdm_error ("error reading from session output, closing the pipe");
+			IGNORE_EINTR (close (d->session_output_fd));
+			d->session_output_fd = -1;
+			IGNORE_EINTR (close (d->xsession_errors_fd));
+			d->xsession_errors_fd = -1;
+			break;
+		}
+
+		if G_UNLIKELY (d->xsession_errors_bytes >= MAX_XSESSION_ERRORS_BYTES ||
+			       got_xfsz_signal)
 			continue;
 
 		/* write until we succeed in writing something */
 		IGNORE_EINTR (written = write (d->xsession_errors_fd, buf, r));
-		if G_UNLIKELY (written < 0) {
+		if G_UNLIKELY (written < 0 || got_xfsz_signal) {
 			/* evil! */
-			goto end_run_session_output;
+			break;
 		}
 
 		/* write until we succeed in writing everything */
 		while G_UNLIKELY (written < r) {
 			int n;
 			IGNORE_EINTR (n = write (d->xsession_errors_fd, &buf[written], r-written));
-			if G_UNLIKELY (n < 0) {
+			if G_UNLIKELY (n < 0 || got_xfsz_signal) {
 				/* evil! */
-				goto end_run_session_output;
+				break;
 			}
 			written += n;
 		}
 
 		d->xsession_errors_bytes += r;
 
-		if G_UNLIKELY (d->xsession_errors_bytes >= MAX_XSESSION_ERRORS_BYTES) {
-			write (d->xsession_errors_fd,
-			       "\n...Too much output, ignoring rest...\n",
-			       strlen ("\n...Too much output, ignoring rest...\n"));
+		if G_UNLIKELY (d->xsession_errors_bytes >= MAX_XSESSION_ERRORS_BYTES &&
+			       ! got_xfsz_signal) {
+			IGNORE_EINTR (write (d->xsession_errors_fd,
+					     "\n...Too much output, ignoring rest...\n",
+					     strlen ("\n...Too much output, ignoring rest...\n")));
 		}
+
+		/* there wasn't more then buf available, so no need to try reading
+		 * again, unless we really want to */
+		if (r < sizeof (buf) && ! read_until_eof)
+			break;
 	}
-end_run_session_output:
+
 	seteuid (old);
 	setegid (oldg);
 }
@@ -353,7 +382,9 @@ slave_waitpid (GdmWaitPid *wp)
 			select (0, NULL, NULL, NULL, &tv);
 			/* don't want to use sleep since we're using alarm
 			   for pinging */
-			run_session_output ();
+
+			if (d->session_output_fd >= 0)
+				run_session_output (FALSE /* read_until_eof */);
 			check_notifies_now ();
 		}
 		check_notifies_now ();
@@ -375,9 +406,10 @@ slave_waitpid (GdmWaitPid *wp)
 			if (ret > 0) {
 			       	if (FD_ISSET (wp->fd_r, &rfds)) {
 					IGNORE_EINTR (read (wp->fd_r, buf, 1));
-				} else if (d->session_output_fd >= 0 &&
-					   FD_ISSET (d->session_output_fd, &rfds)) {
-					run_session_output ();
+				}
+				if (d->session_output_fd >= 0 &&
+				    FD_ISSET (d->session_output_fd, &rfds)) {
+					run_session_output (FALSE /* read_until_eof */);
 				}
 			} else if (errno == EBADF) {
 				read_session_output = FALSE;
@@ -556,12 +588,32 @@ parent_exists (void)
 	return TRUE;
 }
 
+#ifdef SIGXFSZ
+static void
+gdm_slave_xfsz_handler (int signal)
+{
+	gdm_in_signal++;
+
+	/* in places where we care we can check
+	 * and stop writing */
+	got_xfsz_signal = TRUE;
+
+	/* whack self ASAP */
+	remanage_asap = TRUE;
+
+	gdm_in_signal--;
+}
+#endif /* SIGXFSZ */
+
 void 
 gdm_slave_start (GdmDisplay *display)
 {  
 	time_t first_time;
 	int death_count;
 	struct sigaction alrm, term, child, usr2;
+#ifdef SIGXFSZ
+	struct sigaction xfsz;
+#endif /* SIGXFSZ */
 	sigset_t mask;
 
 	/* Ignore SIGUSR1/SIGPIPE, and especially ignore it
@@ -659,6 +711,19 @@ gdm_slave_start (GdmDisplay *display)
 	if G_UNLIKELY (sigaction (SIGUSR2, &usr2, NULL) < 0)
 		gdm_slave_exit (DISPLAY_ABORT, _("%s: Error setting up %s signal handler: %s"),
 				"gdm_slave_start", "USR2", strerror (errno));
+
+#ifdef SIGXFSZ
+	/* handle the filesize signal */
+	xfsz.sa_handler = gdm_slave_xfsz_handler;
+	xfsz.sa_flags = SA_RESTART;
+	sigemptyset (&xfsz.sa_mask);
+	sigaddset (&xfsz.sa_mask, SIGXFSZ);
+
+	if G_UNLIKELY (sigaction (SIGXFSZ, &xfsz, NULL) < 0)
+		gdm_slave_exit (DISPLAY_ABORT,
+				_("%s: Error setting up %s signal handler: %s"),
+				"gdm_slave_start", "XFSZ", strerror (errno));
+#endif /* SIGXFSZ */
 
 	first_time = time (NULL);
 	death_count = 0;
@@ -2008,7 +2073,7 @@ run_pictures (void)
 			bytes = MIN (sizeof (buf), s.st_size - i);
 			errno = 0;
 			bytes = write (greeter_fd_out, buf, bytes);
-			if G_UNLIKELY (bytes < 0 && errno == EPIPE) {
+			if G_UNLIKELY (bytes < 0 && (errno == EPIPE || errno == EBADF)) {
 				/* something very, very bad has happened */
 				gdm_slave_quick_exit (DISPLAY_REMANAGE);
 			}
@@ -2069,11 +2134,22 @@ copy_auth_file (uid_t fromuid, uid_t touid, const char *file)
 		if (bytes == 0)
 			break;
 
+		if (bytes < 0) {
+			/* Error reading */
+			gdm_error ("Error reading %s: %s", file, strerror (errno));
+			IGNORE_EINTR (close (fromfd));
+			IGNORE_EINTR (close (authfd));
+			setuid (old);
+			g_free (name);
+			return NULL;
+		}
+
 		written = 0;
 		do {
 			IGNORE_EINTR (n = write (authfd, &buf[written], bytes-written));
 			if G_UNLIKELY (n < 0) {
-				/*Error writing*/
+				/* Error writing */
+				gdm_error ("Error writing %s: %s", name, strerror (errno));
 				IGNORE_EINTR (close (fromfd));
 				IGNORE_EINTR (close (authfd));
 				setuid (old);
@@ -3186,11 +3262,15 @@ finish_session_output (gboolean do_read)
 {
 	if G_LIKELY (d->session_output_fd >= 0)  {
 		if (do_read)
-			run_session_output ();
-		IGNORE_EINTR (close (d->xsession_errors_fd));
-		IGNORE_EINTR (close (d->session_output_fd));
-		d->xsession_errors_fd = -1;
-		d->session_output_fd = -1;
+			run_session_output (TRUE /* read_until_eof */);
+		if (d->session_output_fd >= 0)  {
+			IGNORE_EINTR (close (d->session_output_fd));
+			d->session_output_fd = -1;
+		}
+		if (d->xsession_errors_fd >= 0)  {
+			IGNORE_EINTR (close (d->xsession_errors_fd));
+			d->xsession_errors_fd = -1;
+		}
 	}
 }
 
