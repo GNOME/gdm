@@ -546,8 +546,7 @@
 	script.  As is usually done.  If the user session lasted less then
 	10 seconds, GDM assumes that the session crashed and allows the user to
 	view this file in a dialog before returning to the login screen.
-	Also if the session being started is one of the failsafe session, this
-	file is not created.  This way the user can view the session errors from
+	This way the user can view the session errors from
 	the last session and correct the problem this way.
       </para>
 
@@ -576,6 +575,14 @@
 	<filename>BaseXsession</filename> configuration key for more
 	information, especially on how to handle multiple display managers
 	using the same script.
+      </para>
+
+      <para>
+	Note that if the session is a failsafe session, or if GDM can't open
+	this file for some reason, then a fallback file will be created in the
+	<filename>/tmp</filename> directory named
+	<filename>/tmp/xses-&lt;user&gt;.XXXXXX</filename> where the
+	<filename>XXXXXX</filename> are some random characters.
       </para>
 
       <para>

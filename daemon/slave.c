@@ -2893,10 +2893,14 @@ open_xsession_errors (struct passwd *pwent,
 		      gboolean home_dir_ok)
 {
 	int logfd = -1;
+
+	g_free (d->xsession_errors_filename);
+	d->xsession_errors_filename = NULL;
+
         /* Log all output from session programs to a file,
 	 * unless in failsafe mode which needs to work when there is
 	 * no diskspace as well */
-	if ( ! failsafe && home_dir_ok) {
+	if G_LIKELY ( ! failsafe && home_dir_ok) {
 		char *filename = g_build_filename (home_dir,
 						   ".xsession-errors",
 						   NULL);
@@ -2911,11 +2915,38 @@ open_xsession_errors (struct passwd *pwent,
 		seteuid (old);
 		setegid (oldg);
 
-		g_free (filename);
-
 		if G_UNLIKELY (logfd < 0) {
 			gdm_error (_("%s: Could not open ~/.xsession-errors"),
 				   "run_session_child");
+			g_free (filename);
+		} else {
+			d->xsession_errors_filename = filename;
+		}
+	}
+
+	/* let's try an alternative */
+	if G_UNLIKELY (logfd < 0) {
+		mode_t oldmode;
+
+		char *filename = g_strdup_printf ("/tmp/xses-%s.XXXXXX",
+						  pwent->pw_name);
+		uid_t old = geteuid ();
+		uid_t oldg = getegid ();
+
+		setegid (pwent->pw_gid);
+		seteuid (pwent->pw_uid);
+
+		oldmode = umask (077);
+		logfd = mkstemp (filename);
+		umask (oldmode);
+
+		seteuid (old);
+		setegid (oldg);
+
+		if G_LIKELY (logfd >= 0) {
+			d->xsession_errors_filename = filename;
+		} else {
+			g_free (filename);
 		}
 	}
 
@@ -3612,7 +3643,6 @@ gdm_slave_session_start (void)
 		   (end_time - 10 <= session_start_time) &&
 		   /* only if the X server still exist! */
 		   d->servpid > 1) {
-	    char *errfile = g_build_filename (home_dir, ".xsession-errors", NULL);
 	    gdm_debug ("Session less than 10 seconds!");
 
 	    /* FIXME: perhaps do some checking to display a better error,
@@ -3626,12 +3656,11 @@ gdm_slave_session_start (void)
 				  "be out of diskspace.  Try logging in with "
 				  "one of the failsafe sessions to see if you "
 				  "can fix this problem."),
-				(home_dir_ok && ! failsafe) ?
+				(d->xsession_errors_filename != NULL) ?
 			       	  _("View details (~/.xsession-errors file)") :
 				  NULL,
-				errfile,
+				d->xsession_errors_filename,
 				uid, gid);
-	    g_free (errfile);
     }
 
     gdm_slave_session_stop (pid != 0 /* run_post_session */,

@@ -270,7 +270,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 		}
 
 		/* First read the details if they exist */
-		if (details_file) {
+		if (details_label != NULL && details_file != NULL) {
 			FILE *fp;
 			struct stat s;
 			int r;

@@ -480,6 +480,9 @@ gdm_display_dispose (GdmDisplay *d)
     g_free (d->login);
     d->login = NULL;
 
+    g_free (d->xsession_errors_filename);
+    d->xsession_errors_filename = NULL;
+
     g_free (d);
 }
 

@@ -366,6 +366,8 @@ struct _GdmDisplay {
     int xsession_errors_bytes;
 #define MAX_XSESSION_ERRORS_BYTES (80*2500)  /* maximum number of bytes in
 						the ~/.xsession-errors file */
+    char *xsession_errors_filename; /* if NULL then there is no .xsession-errors
+				       file */
 };
 
 typedef struct _GdmXServer GdmXServer;
