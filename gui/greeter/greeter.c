@@ -39,11 +39,15 @@ gboolean GDM_IS_LOCAL = FALSE;
 char *GdmGraphicalTheme = NULL;
 char *GdmGraphicalThemeDir = NULL;
 int GdmXineramaScreen = 0;
+#if 0
+/* FIXME: maybe just whack this */
 gboolean GdmShowGnomeChooserSession = FALSE;
+#endif
 gboolean GdmShowGnomeFailsafeSession = FALSE;
 gboolean GdmShowXtermFailsafeSession = FALSE;
 gboolean GdmShowLastSession = FALSE;
 gchar *GdmSessionDir = NULL;
+gchar *GdmDefaultSession = NULL;
 gchar *GdmLocaleFile = NULL;
 gchar *GdmHalt = NULL;
 gchar *GdmReboot = NULL;
@@ -119,9 +123,13 @@ greeter_parse_config (void)
 
     GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
     GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
+#if 0
+    /* FIXME: maybe just whack this */
     GdmShowGnomeChooserSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_CHOOSER);
+#endif
     GdmShowLastSession = ve_config_get_bool (config, GDM_KEY_SHOW_LAST_SESSION);
     GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
+    GdmDefaultSession = ve_config_get_string (config, GDM_KEY_DEFAULTSESSION);
     GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
     GdmSystemMenu = ve_config_get_bool (config, GDM_KEY_SYSMENU);
     GdmConfigAvailable = ve_config_get_bool (config, GDM_KEY_CONFIG_AVAILABLE);
@@ -405,6 +413,8 @@ greeter_ctrl_handler (GIOChannel *source,
 	_exit (EXIT_SUCCESS);
 	break;
 
+#if 0
+	/* FIXME: Maybe whack this */
     case GDM_GNOMESESS:
 	{
 		char *sess;
@@ -442,6 +452,7 @@ greeter_ctrl_handler (GIOChannel *source,
 	fflush (stdout);
 
 	break;
+#endif
 
     case GDM_STARTTIMER:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */
@@ -904,9 +915,12 @@ greeter_reread_config (int sig, gpointer data)
 	     ! bool_same (config,
 			  GdmShowGnomeFailsafeSession,
 			  GDM_KEY_SHOW_GNOME_FAILSAFE) ||
+#if 0
+	     /* FIXME: maybe just whack this */
 	     ! bool_same (config,
 			  GdmShowGnomeChooserSession,
 			  GDM_KEY_SHOW_GNOME_CHOOSER) ||
+#endif
 	     ! string_same (config,
 			    GdmSessionDir,
 			    GDM_KEY_SESSDIR) ||

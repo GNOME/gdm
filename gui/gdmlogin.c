@@ -65,20 +65,6 @@ struct _GdmLoginUser {
     GdkPixbuf *picture;
 };
 
-/* Some strings that are in other files that we may want to
- * translate.  This is not actually used anywhere, it's just
- * to have gettext know about these strings. */
-const char *session_titles[] = {
-	N_("AnotherLevel"),
-	N_("Default"),
-	N_("Failsafe"),
-	N_("Gnome"),
-	N_("KDE"),
-	N_("XSession"),
-	N_("Gnome Chooser"),
-	N_("Last")
-};
-
 #define LAST_SESSION "Last"
 #define LAST_LANGUAGE "Last"
 #define DEFAULT_LANGUAGE "Default"
@@ -125,6 +111,7 @@ enum {
 static gchar *GdmGtkRC;
 static gchar *GdmIcon;
 static gchar *GdmSessionDir;
+static gchar *GdmDefaultSession;
 static gchar *GdmLocaleFile;
 static gchar *GdmExclude;
 static int GdmMinimalUID;
@@ -140,7 +127,11 @@ static gint GdmPositionX;
 static gint GdmPositionY;
 static gboolean GdmTitleBar;
 
+#if 0
+/* FIXME: maybe just whack this */
 static gboolean GdmShowGnomeChooserSession;
+#endif
+
 static gboolean GdmShowGnomeFailsafeSession;
 static gboolean GdmShowXtermFailsafeSession;
 static gboolean GdmShowLastSession;
@@ -162,11 +153,15 @@ static GtkWidget *msg;
 static GtkWidget *err_box;
 static guint err_box_clear_handler = 0;
 static gboolean require_quarter = FALSE;
+#if 0
+/* FIXME: Maybe whack this */
 static gboolean remember_gnome_session = FALSE;
+#endif
 static GtkWidget *icon_win = NULL;
 static GtkWidget *sessmenu;
 static GtkWidget *langmenu;
 static GtkTooltips *tooltips;
+static GHashTable *sessnames;
 
 static gboolean login_is_local = FALSE;
 static gboolean used_defaults = FALSE;
@@ -881,6 +876,7 @@ gdm_login_parse_config (void)
     GdmTitleBar = ve_config_get_bool (config, GDM_KEY_TITLE_BAR);
     GdmLocaleFile = ve_config_get_string (config, GDM_KEY_LOCFILE);
     GdmSessionDir = ve_config_get_string (config, GDM_KEY_SESSDIR);
+    GdmDefaultSession = ve_config_get_string (config, GDM_KEY_DEFAULTSESSION);
     GdmWelcome = ve_config_get_translated_string (config, greeter_Welcome_key);
     /* A hack! */
     if (strcmp (ve_sure_string (GdmWelcome), "Welcome") == 0) {
@@ -914,7 +910,10 @@ gdm_login_parse_config (void)
 
     GdmShowXtermFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_XTERM_FAILSAFE);
     GdmShowGnomeFailsafeSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_FAILSAFE);
+#if 0
+    /* FIXME: Maybe just whack this */
     GdmShowGnomeChooserSession = ve_config_get_bool (config, GDM_KEY_SHOW_GNOME_CHOOSER);
+#endif
     GdmShowLastSession = ve_config_get_bool (config, GDM_KEY_SHOW_LAST_SESSION);
     
     GdmTimedLoginEnable = ve_config_get_bool (config, GDM_KEY_TIMED_LOGIN_ENABLE);
@@ -987,8 +986,10 @@ gdm_login_list_lookup (GSList *l, const gchar *data)
 }
 
 static const char *
-translate_session (const char *name)
+session_name (const char *name)
 {
+	const char *nm;
+
 	/* eek */
 	if (name == NULL)
 		return "(null)";
@@ -997,18 +998,18 @@ translate_session (const char *name)
 		return _("Failsafe Gnome");
 	else if (strcmp (name, GDM_SESSION_FAILSAFE_XTERM) == 0)
 		return _("Failsafe xterm");
+
+	nm = g_hash_table_lookup (sessnames, name);
+	if (nm != NULL)
+		return nm;
 	else
-		return _(name);
+		return name;
 }
 
 
 static void
 gdm_login_session_lookup (const gchar* savedsess)
 {
-    if (curuser == NULL)
-	gdm_login_abort("gdm_login_session_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
-			"information on your PAM and user database setup");
-
     /* Don't save session unless told otherwise */
     savesess = FALSE;
 
@@ -1046,8 +1047,8 @@ gdm_login_session_lookup (const gchar* savedsess)
 				     "installed on this machine.\n"
                                      "Do you wish to make %s the default for "
 				     "future sessions?"),
-                                   translate_session (savedsess),
-                                   translate_session (defsess));	    
+                                   session_name (savedsess),
+                                   session_name (defsess));	    
 	    savesess = gdm_login_query (msg);                                   
 	    g_free (msg);
 	}
@@ -1060,8 +1061,9 @@ gdm_login_session_lookup (const gchar* savedsess)
 	/* User's saved session is not the chosen one */
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
 	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-            /* bad hack, "Failsafe" is just a name in the session dir */
-            strcmp (session, "Failsafe") == 0) {
+            /* bad hack, "Failsafe.desktop" is just a name in the session dir */
+            g_ascii_strcasecmp (session, "Failsafe") == 0 ||
+            g_ascii_strcasecmp (session, "Failsafe.desktop") == 0) {
 		savesess = FALSE;
 	} else if (strcmp (savedsess, session) != 0) {
 		gchar *msg = NULL;
@@ -1072,11 +1074,11 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                  "setting is %s.\nDo you wish "
                                                  "to make %s the default for "
                                                  "future sessions?"),
-                                               translate_session (session),
-                                               translate_session (savedsess),
-                                               translate_session (session));
+                                               session_name (session),
+                                               session_name (savedsess),
+                                               session_name (session));
                         savesess = gdm_login_query (msg);
-                } else if (strcmp (session, "Default") != 0 &&
+                } else if (strcmp (session, "Xclients.desktop") != 0 &&
                            strcmp (session, LAST_SESSION) != 0) {
                         /* if !GdmShowLastSession then our saved session is
                          * irrelevant, we are in "switchdesk mode"
@@ -1089,8 +1091,8 @@ gdm_login_session_lookup (const gchar* savedsess)
                                                  "run the 'switchdesk' utility\n"
                                                  "(System->Desktop Switching Tool from "
                                                  "the panel menu)."),
-                                               translate_session (session),
-                                               translate_session (session));
+                                               session_name (session),
+                                               session_name (session));
                         savesess = FALSE;
                         gdm_login_message (msg);
                 }
@@ -1103,10 +1105,6 @@ gdm_login_session_lookup (const gchar* savedsess)
 static void
 gdm_login_language_lookup (const gchar* savedlang)
 {
-    if (curuser == NULL)
-	gdm_login_abort("gdm_login_language_lookup: curuser==NULL. Mail <mkp@mkp.net> with " \
-			"information on your PAM and user database setup");
-
     /* Don't save language unless told otherwise */
     savelang = FALSE;
 
@@ -1337,7 +1335,7 @@ gdm_login_session_handler (GtkWidget *widget)
 
     cursess = g_object_get_data (G_OBJECT (widget), SESSION_NAME);
 
-    s = g_strdup_printf (_("%s session selected"), translate_session (cursess));
+    s = g_strdup_printf (_("%s session selected"), session_name (cursess));
 
     gtk_label_set_text (GTK_LABEL (msg), s);
     g_free (s);
@@ -1353,9 +1351,7 @@ gdm_login_session_init (GtkWidget *menu)
     GtkWidget *item;
     DIR *sessdir;
     struct dirent *dent;
-    struct stat statbuf;
-    gint linklen;
-    gboolean got_default_link = FALSE;
+    gboolean searching_for_default = TRUE;
 
     cursess = NULL;
     
@@ -1385,7 +1381,8 @@ gdm_login_session_init (GtkWidget *menu)
     /* Check that session dir is readable */
     if (GdmSessionDir == NULL ||
 	access (GdmSessionDir, R_OK|X_OK)) {
-	syslog (LOG_ERR, _("gdm_login_session_init: Session script directory not found!"));
+	syslog (LOG_ERR, _("gdm_login_session_init: Session directory %s not found!"), ve_sure_string (GdmSessionDir));
+	GdmShowXtermFailsafeSession = TRUE;
 	session_dir_whacked_out = TRUE;
     }
 
@@ -1400,125 +1397,120 @@ gdm_login_session_init (GtkWidget *menu)
     else
 	    dent = NULL;
 
+    sessnames = g_hash_table_new (g_str_hash, g_str_equal);
+
     while (dent != NULL) {
-	gchar *s;
+	    VeConfig *cfg;
+	    char *exec;
+	    char *name;
+	    char *comment;
+	    char *s;
 
-	/* Ignore backups and rpmsave files */
-	if ((strstr (dent->d_name, "~")) ||
-	    (strstr (dent->d_name, ".rpmsave")) ||
-	    (strstr (dent->d_name, ".rpmorig")) ||
-	    (strstr (dent->d_name, ".dpkg-old")) ||
-	    (strstr (dent->d_name, ".deleted")) ||
-	    (strstr (dent->d_name, ".desc")) /* description file */ ||
-	    (strstr (dent->d_name, ".orig"))) {
-	    dent = readdir (sessdir);
-	    continue;
-	}
-
-	s = g_strconcat (GdmSessionDir, "/", dent->d_name, NULL);
-	lstat (s, &statbuf);
-
-	/* If default session link exists, find out what it points to */
-	if (S_ISLNK (statbuf.st_mode)) {
-		if (g_ascii_strcasecmp (dent->d_name, "default") == 0) {
-			gchar t[_POSIX_PATH_MAX];
-
-			linklen = readlink (s, t, _POSIX_PATH_MAX);
-			t[linklen] = 0;
-			g_free (defsess);
-			defsess = g_strdup (t);
-
-			got_default_link = TRUE;
-		} else {
-			/* This may just be a link to somewhere so
-			 * stat the file itself */
-			stat (s, &statbuf);
-		}
-	}
-
-	/* If session script is readable/executable add it to the list */
-	if (S_ISREG (statbuf.st_mode)) {
-
-	    if ((statbuf.st_mode & (S_IRUSR|S_IXUSR)) == (S_IRUSR|S_IXUSR) &&
-		(statbuf.st_mode & (S_IRGRP|S_IXGRP)) == (S_IRGRP|S_IXGRP) &&
-		(statbuf.st_mode & (S_IROTH|S_IXOTH)) == (S_IROTH|S_IXOTH)) 
-	    {
-		item = gtk_radio_menu_item_new_with_label (sessgrp, _(dent->d_name));
-		g_object_set_data_full (G_OBJECT (item),
-					SESSION_NAME,
-					g_strdup (dent->d_name),
-					(GDestroyNotify) g_free);
-
-		sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-		sessions = g_slist_append (sessions, g_strdup (dent->d_name));
-		gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		g_signal_connect (G_OBJECT (item), "activate",
-				  G_CALLBACK (gdm_login_session_handler),
-				  NULL);
-		gtk_widget_show (GTK_WIDGET (item));
-
-		/* if there is a session called Default, use that as default
-		 * if no link has been made */
-		if ( ! got_default_link &&
-		    g_ascii_strcasecmp (dent->d_name, "Default") == 0) {
-			g_free (defsess);
-			defsess = g_strdup (dent->d_name);
-		}
-
-		if (g_ascii_strcasecmp (dent->d_name, "Gnome") == 0) {
-			/* Just in case there is no Default session and
-			 * no default link, make Gnome the default */
-			if (defsess == NULL)
-				defsess = g_strdup (dent->d_name);
-			
-			/* FIXME: when we get descriptions in session files,
-			 * take this out */
-			gtk_tooltips_set_tip
-				(tooltips, GTK_WIDGET (item),
-				 _("This session will log you directly into "
-				   "GNOME, into your current session."),
-				 NULL);
-
-                        if (GdmShowGnomeChooserSession) {
-                                /* Add the chooser session, this one doesn't have a
-                                 * script really, it's a fake, it runs the Gnome
-                                 * script */
-                                /* For translators:  This is the login that lets
-                                 * users choose the specific gnome session they
-                                 * want to use */
-                                item = gtk_radio_menu_item_new_with_label
-                                        (sessgrp, _("Gnome Chooser"));
-                                gtk_tooltips_set_tip
-                                        (tooltips, GTK_WIDGET (item),
-                                         _("This session will log you into "
-                                           "GNOME and it will let you choose which "
-                                           "one of the GNOME sessions you want to "
-                                           "use."),
-                                         NULL);
-                                g_object_set_data (G_OBJECT (item),
-						   SESSION_NAME,
-						   GDM_SESSION_GNOME_CHOOSER);
-
-                                sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-                                sessions = g_slist_append (sessions,
-                                                           g_strdup (GDM_SESSION_GNOME_CHOOSER));
-                                gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-                                g_signal_connect (G_OBJECT (item), "activate",
-						  G_CALLBACK (gdm_login_session_handler),
-						  NULL);
-                                gtk_widget_show (GTK_WIDGET (item));
-                        }
-		}
-			
+	    /* ignore everything bug the .desktop files */
+	    if (strstr (dent->d_name, ".desktop") == NULL) {
+		    dent = readdir (sessdir);
+		    continue;
 	    }
-	    else 
-		syslog (LOG_ERR, "Wrong permissions on %s/%s. Should be readable/executable for all.", 
-			GdmSessionDir, dent->d_name);
 
-	}
+	    s = g_strconcat (GdmSessionDir, "/", dent->d_name, NULL);
+	    cfg = ve_config_new (s);
+	    g_free (s);
 
-	dent = readdir (sessdir);
-	g_free (s);
+
+	    exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
+	    name = ve_config_get_translated_string (cfg, "Desktop Entry/Name");
+	    comment = ve_config_get_translated_string (cfg, "Desktop Entry/Comment");
+
+	    ve_config_destroy (cfg);
+
+	    if (ve_string_empty (exec) || ve_string_empty (name)) {
+		    g_free (exec);
+		    g_free (name);
+		    g_free (comment);
+		    dent = readdir (sessdir);
+		    continue;
+	    }
+
+	    item = gtk_radio_menu_item_new_with_label (sessgrp, name);
+	    g_object_set_data_full (G_OBJECT (item),
+				    SESSION_NAME,
+				    g_strdup (dent->d_name),
+				    (GDestroyNotify) g_free);
+
+	    if ( ! ve_string_empty (comment))
+		    gtk_tooltips_set_tip
+			    (tooltips, GTK_WIDGET (item), comment, NULL);
+
+	    sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
+	    sessions = g_slist_append (sessions, g_strdup (dent->d_name));
+	    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	    g_signal_connect (G_OBJECT (item), "activate",
+			      G_CALLBACK (gdm_login_session_handler),
+			      NULL);
+	    gtk_widget_show (GTK_WIDGET (item));
+
+	    /* if we found the default session */
+	    if ( ! ve_string_empty (GdmDefaultSession) &&
+		 strcmp (dent->d_name, GdmDefaultSession) == 0) {
+		    g_free (defsess);
+		    defsess = g_strdup (dent->d_name);
+		    searching_for_default = FALSE;
+	    }
+
+	    /* if there is a session called Default */
+	    if (searching_for_default &&
+		g_ascii_strcasecmp (dent->d_name, "Default.desktop") == 0) {
+		    g_free (defsess);
+		    defsess = g_strdup (dent->d_name);
+	    }
+
+	    if (searching_for_default &&
+		g_ascii_strcasecmp (dent->d_name, "Gnome.desktop") == 0) {
+		    /* Just in case there is no Default session and
+		     * no default link, make Gnome the default */
+		    if (defsess == NULL)
+			    defsess = g_strdup (dent->d_name);
+
+#if 0
+		    /* FIXME: maybe just whack this completely */
+		    if (GdmShowGnomeChooserSession) {
+			    /* Add the chooser session, this one doesn't have a
+			     * script really, it's a fake, it runs the Gnome
+			     * script */
+			    /* For translators:  This is the login that lets
+			     * users choose the specific gnome session they
+			     * want to use */
+			    item = gtk_radio_menu_item_new_with_label
+				    (sessgrp, _("Gnome Chooser"));
+			    gtk_tooltips_set_tip
+				    (tooltips, GTK_WIDGET (item),
+				     _("This session will log you into "
+				       "GNOME and it will let you choose which "
+				       "one of the GNOME sessions you want to "
+				       "use."),
+				     NULL);
+			    g_object_set_data (G_OBJECT (item),
+					       SESSION_NAME,
+					       GDM_SESSION_GNOME_CHOOSER);
+
+			    sessgrp = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
+			    sessions = g_slist_append (sessions,
+						       g_strdup (GDM_SESSION_GNOME_CHOOSER));
+			    gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+			    g_signal_connect (G_OBJECT (item), "activate",
+					      G_CALLBACK (gdm_login_session_handler),
+					      NULL);
+			    gtk_widget_show (GTK_WIDGET (item));
+		    }
+#endif
+	    }
+
+	    g_hash_table_insert (sessnames, g_strdup (dent->d_name), name);
+
+	    g_free (exec);
+	    g_free (comment);
+
+	    dent = readdir (sessdir);
     }
 
     if (sessdir != NULL)
@@ -1527,6 +1519,7 @@ gdm_login_session_init (GtkWidget *menu)
     if (sessions == NULL) {
 	    syslog (LOG_WARNING, _("Yaikes, nothing found in the session directory."));
 	    session_dir_whacked_out = TRUE;
+	    GdmShowXtermFailsafeSession = TRUE;
 
 	    defsess = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
     }
@@ -1792,6 +1785,8 @@ gdm_login_language_menu_new (void)
     return menu;
 }
 
+#if 0
+/* FIXME: Maybe whack this */
 static void
 toggle_sensitize (GtkWidget *w, gpointer data)
 {
@@ -1998,6 +1993,7 @@ get_gnome_session (const char *sess_string)
 
 	return retval;
 }
+#endif
 
 static gboolean
 err_box_clear (gpointer data)
@@ -2090,7 +2086,7 @@ greeter_is_capslock_on (void)
   unsigned int states;
   Display *dsp;
 
-  /* HACK! incredible hack, if this is set we get
+  /* HACK! incredible hack, if GDM_PARENT_DISPLAY is set we get
    * indicator state from the parent display, since we must be inside an
    * Xnest */
   dsp = get_parent_display ();
@@ -2453,6 +2449,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	_exit (EXIT_SUCCESS);
 	break;
 
+#if 0
+	/* FIXME: Maybe whack this */
     case GDM_GNOMESESS:
 	{
 		char *sess;
@@ -2490,6 +2488,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	fflush (stdout);
 
 	break;
+#endif
 
     case GDM_STARTTIMER:
 	g_io_channel_read_chars (source, buf, PIPE_SIZE-1, &len, NULL); /* Empty */

@@ -10,6 +10,8 @@
 #include <gtk/gtk.h>
 #include <libgnome/libgnome.h>
 
+#include "vicious.h"
+
 #include "gdm.h"
 #include "gdmwm.h"
 
@@ -27,6 +29,7 @@ static gboolean save_session = FALSE;
 static char *current_session = NULL;
 static gchar *default_session = NULL;
 static GSList *sessions = NULL;
+static GHashTable *sessnames = NULL;
 
 /* This is true if session dir doesn't exist or is whacked out
  * in some way or another */
@@ -55,18 +58,24 @@ greeter_login_list_lookup (GSList *l, const gchar *data)
 }
 
 static const char *
-translate_session (const char *name)
+session_name (const char *name)
 {
+	const char *nm;
+
 	/* eek */
 	if (name == NULL)
 		return "(null)";
 
 	if (strcmp (name, GDM_SESSION_FAILSAFE_GNOME) == 0)
-	  return _("Failsafe Gnome");
+		return _("Failsafe Gnome");
 	else if (strcmp (name, GDM_SESSION_FAILSAFE_XTERM) == 0)
-	  return _("Failsafe xterm");
+		return _("Failsafe xterm");
+
+	nm = g_hash_table_lookup (sessnames, name);
+	if (nm != NULL)
+		return nm;
 	else
-	  return _(name);
+		return name;
 }
 
 char *
@@ -74,14 +83,10 @@ greeter_session_lookup (const char *saved_session)
 {
   gchar *session = NULL;
   
-  if (greeter_current_user == NULL)
-    greeter_abort("greeter_session_lookup: greeter_current_user==NULL. Mail <mkp@mkp.net> with " \
-		  "information on your PAM and user database setup");
-  
   /* Don't save session unless told otherwise */
   save_session = FALSE;
 
-  /* Previously saved session not found in ~user/.gnome2/gdm */
+  /* Previously saved session not found in ~/.dmrc */
   if ( ! (saved_session != NULL &&
 	  strcmp ("(null)", saved_session) != 0 &&
 	  saved_session[0] != '\0')) {
@@ -112,8 +117,8 @@ greeter_session_lookup (const char *saved_session)
 				   "installed on this machine.\n"
 				   "Do you wish to make %s the default for "
 				   "future sessions?"),
-				 translate_session (saved_session),
-				 translate_session (default_session));	    
+				 session_name (saved_session),
+				 session_name (default_session));	    
 	  save_session = greeter_query (msg);
 	  g_free (msg);
 	}
@@ -126,6 +131,7 @@ greeter_session_lookup (const char *saved_session)
       if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
 	  strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
 	  /* bad hack, "Failsafe" is just a name in the session dir */
+	  strcmp (session, "Failsafe.desktop") == 0 ||
 	  strcmp (session, "Failsafe") == 0)
 	{
 	  save_session = FALSE;
@@ -141,12 +147,12 @@ greeter_session_lookup (const char *saved_session)
 				       "setting is %s.\nDo you wish "
 				       "to make %s the default for "
 				       "future sessions?"),
-				     translate_session (session),
-				     translate_session (saved_session),
-				     translate_session (session));
+				     session_name (session),
+				     session_name (saved_session),
+				     session_name (session));
 	      save_session = greeter_query (msg);
 	    }
-	  else if (strcmp (session, "Default") != 0 &&
+	  else if (strcmp (session, "Xclients.desktop") != 0 &&
 		   strcmp (session, LAST_SESSION) != 0)
 	    {
 	      /* if !GdmShowLastSession then our saved session is
@@ -160,8 +166,8 @@ greeter_session_lookup (const char *saved_session)
 				       "run the 'switchdesk' utility\n"
 				       "(System->Desktop Switching Tool from "
 				       "the panel menu)."),
-				     translate_session (session),
-				     translate_session (session));
+				     session_name (session),
+				     session_name (session));
 	      save_session = FALSE;
 	      greeter_message (msg);
 	    }
@@ -179,6 +185,8 @@ greeter_save_session (void)
 }
 
 
+#if 0
+	/* FIXME: Maybe whack this */
 /* At the moment we don't support the gnome session stuff */
 char *
 greeter_get_gnome_session (const char *sess_string)
@@ -191,6 +199,7 @@ greeter_save_gnome_session (void)
 {
   return FALSE;
 }
+#endif
 
 void 
 greeter_session_init (void)
@@ -204,9 +213,7 @@ greeter_session_init (void)
   GtkWidget *dialog;
   DIR *sessdir;
   struct dirent *dent;
-  struct stat statbuf;
-  gint linklen;
-  gboolean got_default_link = FALSE;
+  gboolean searching_for_default = FALSE;
   static GtkTooltips *tooltips = NULL;
   GtkRequisition req;
   char *s;
@@ -281,8 +288,9 @@ greeter_session_init (void)
     if (GdmSessionDir == NULL ||
 	access (GdmSessionDir, R_OK|X_OK))
       {
-	syslog (LOG_ERR, _("gdm_login_session_init: Session script directory not found!"));
+	syslog (LOG_ERR, _("gdm_login_session_init: Session directory %s not found!"), ve_sure_string (GdmSessionDir));
 	session_dir_whacked_out = TRUE;
+	GdmShowXtermFailsafeSession = TRUE;
       }
 
     /* Read directory entries in session dir */
@@ -297,126 +305,79 @@ greeter_session_init (void)
 	    dent = NULL;
 
     while (dent != NULL) {
-	gchar *s;
+	    VeConfig *cfg;
+	    char *exec;
+	    char *name;
+	    char *comment;
+	    /* ignore everything bug the .desktop files */
+	    if (strstr (dent->d_name, ".desktop") == NULL) {
+		    dent = readdir (sessdir);
+		    continue;
+	    }
 
-	/* Ignore backups and rpmsave files */
-	if ((strstr (dent->d_name, "~")) ||
-	    (strstr (dent->d_name, ".rpmsave")) ||
-	    (strstr (dent->d_name, ".rpmorig")) ||
-	    (strstr (dent->d_name, ".dpkg-old")) ||
-	    (strstr (dent->d_name, ".deleted")) ||
-	    (strstr (dent->d_name, ".desc")) /* description file */ ||
-	    (strstr (dent->d_name, ".orig")))
-	  {
-	    dent = readdir (sessdir);
-	    continue;
-	  }
+	    s = g_strconcat (GdmSessionDir, "/", dent->d_name, NULL);
+	    cfg = ve_config_new (s);
+	    g_free (s);
 
-	s = g_build_filename (GdmSessionDir, dent->d_name, NULL);
-	lstat (s, &statbuf);
+	    exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
+	    name = ve_config_get_translated_string (cfg, "Desktop Entry/Name");
+	    comment = ve_config_get_translated_string (cfg, "Desktop Entry/Comment");
 
-	/* If default session link exists, find out what it points to */
-	if (S_ISLNK (statbuf.st_mode))
-	  {
-	    if (g_ascii_strcasecmp (dent->d_name, "default") == 0)
-	      {
-	        gchar t[_POSIX_PATH_MAX];
-	        
-	        linklen = readlink (s, t, _POSIX_PATH_MAX);
-	        t[linklen] = 0;
-	        g_free (default_session);
-	        default_session = g_strdup (t);
-	        
-	        got_default_link = TRUE;
-	      }
-	    else
-	      {
-		/* This may just be a link to somewhere so
-		 * stat the file itself */
-		stat (s, &statbuf);
-	      }
-	  }
+	    ve_config_destroy (cfg);
 
-	/* If session script is readable/executable add it to the list */
-	if (S_ISREG (statbuf.st_mode))
-	  {
-	    
-	    if ((statbuf.st_mode & (S_IRUSR|S_IXUSR)) == (S_IRUSR|S_IXUSR) &&
-		(statbuf.st_mode & (S_IRGRP|S_IXGRP)) == (S_IRGRP|S_IXGRP) &&
-		(statbuf.st_mode & (S_IROTH|S_IXOTH)) == (S_IROTH|S_IXOTH)) 
-	      {
-		radio = gtk_radio_button_new_with_mnemonic (session_group, _(dent->d_name));
-		g_object_set_data_full (G_OBJECT (radio),
-					SESSION_NAME,
-					g_strdup (dent->d_name),
-					(GDestroyNotify) g_free);
-		session_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radio));
-		gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 4);
-		gtk_widget_show (radio);
-		
-		sessions = g_slist_append (sessions, g_strdup (dent->d_name));
-		
-		/* if there is a session called Default, use that as default
-		 * if no link has been made */
-		if ( ! got_default_link &&
-		     g_ascii_strcasecmp (dent->d_name, "Default") == 0) {
-		  g_free (default_session);
-		  default_session = g_strdup (dent->d_name);
-		}
-		
-		if (g_ascii_strcasecmp (dent->d_name, "Gnome") == 0) {
-		  /* Just in case there is no Default session and
-		   * no default link, make Gnome the default */
-		  if (default_session == NULL)
+	    if (ve_string_empty (exec) || ve_string_empty (name)) {
+		    g_free (exec);
+		    g_free (name);
+		    g_free (comment);
+		    dent = readdir (sessdir);
+		    continue;
+	    }
+
+	    radio = gtk_radio_button_new_with_mnemonic (session_group, _(dent->d_name));
+	    g_object_set_data_full (G_OBJECT (radio),
+				    SESSION_NAME,
+				    g_strdup (dent->d_name),
+				    (GDestroyNotify) g_free);
+	    session_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radio));
+	    gtk_box_pack_start (GTK_BOX (vbox), radio, FALSE, FALSE, 4);
+	    gtk_widget_show (radio);
+
+	    if ( ! ve_string_empty (comment))
+		    gtk_tooltips_set_tip
+			    (tooltips, GTK_WIDGET (radio), comment, NULL);
+
+
+	    sessions = g_slist_append (sessions, g_strdup (dent->d_name));
+
+	    /* if we found the default session */
+	    if ( ! ve_string_empty (GdmDefaultSession) &&
+		 strcmp (dent->d_name, GdmDefaultSession) == 0) {
+		    g_free (default_session);
 		    default_session = g_strdup (dent->d_name);
-		  
-		  /* FIXME: when we get descriptions in session files,
-		   * take this out */
-		  gtk_tooltips_set_tip
-		    (tooltips, GTK_WIDGET (radio),
-		     _("This session will log you directly into "
-		       "GNOME, into your current session."),
-		     NULL);
-		  
-#ifdef NOT_SUPPORTED_YET
-		  if (GdmShowGnomeChooserSession)
-		    {
-		      /* Add the chooser session, this one doesn't have a
-		       * script really, it's a fake, it runs the Gnome
-		       * script */
-		      /* For translators:  This is the login that lets
-		       * users choose the specific gnome session they
-		       * want to use */
-		      item = gtk_radio_menu_item_new_with_label
-			(sessgrp, _("Gnome Chooser"));
-		      gtk_tooltips_set_tip
-			(tooltips, GTK_WIDGET (item),
-			 _("This session will log you into "
-			   "GNOME and it will let you choose which "
-			   "one of the GNOME sessions you want to "
-			   "use."),
-			 NULL);
-		      g_object_set_data (G_OBJECT (item),
-					 SESSION_NAME,
-					 GDM_SESSION_GNOME_CHOOSER);
-		      
-		      sessgrp = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (item));
-		      sessions = g_slist_append (sessions,
-						 g_strdup (GDM_SESSION_GNOME_CHOOSER));
-		      gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-		      gtk_widget_show (GTK_WIDGET (item));
-		    }
-#endif
-		}
-	      }
-	    else 
-	      syslog (LOG_ERR, "Wrong permissions on %s/%s. Should be readable/executable for all.", 
-		      GdmSessionDir, dent->d_name);
-	    
-	  }
-	
-	dent = readdir (sessdir);
-	g_free (s);
+		    searching_for_default = FALSE;
+	    }
+
+	    /* if there is a session called Default */
+	    if (searching_for_default &&
+		g_ascii_strcasecmp (dent->d_name, "Default.desktop") == 0) {
+		    g_free (default_session);
+		    default_session = g_strdup (dent->d_name);
+	    }
+
+	    if (searching_for_default &&
+		g_ascii_strcasecmp (dent->d_name, "Gnome.desktop") == 0) {
+		    /* Just in case there is no Default session and
+		     * no default link, make Gnome the default */
+		    if (default_session == NULL)
+			    default_session = g_strdup (dent->d_name);
+	    }
+
+	    g_hash_table_insert (sessnames, g_strdup (dent->d_name), name);
+
+	    g_free (exec);
+	    g_free (comment);
+
+	    dent = readdir (sessdir);
     }
 
     if (sessdir != NULL)
@@ -426,6 +387,7 @@ greeter_session_init (void)
       {
 	syslog (LOG_WARNING, _("Yaikes, nothing found in the session directory."));
 	session_dir_whacked_out = TRUE;
+	GdmShowXtermFailsafeSession = TRUE;
 	
 	default_session = g_strdup (GDM_SESSION_FAILSAFE_GNOME);
       }

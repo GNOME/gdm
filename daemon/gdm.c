@@ -102,8 +102,12 @@ int gdm_in_signal = 0;
 gchar *GdmUser = NULL;
 gchar *GdmGroup = NULL;
 gchar *GdmSessDir = NULL;
+gchar *GdmXsession = NULL;
 gchar *GdmLocaleFile = NULL;
+#if 0
+/* FIXME: Maybe just whack this */
 gchar *GdmGnomeDefaultSession = NULL;
+#endif
 gchar *GdmAutomaticLogin = NULL;
 gboolean GdmAutomaticLoginEnable = FALSE;
 gboolean GdmAlwaysRestartServer = FALSE;
@@ -270,9 +274,13 @@ gdm_config_parse (void)
     GdmRootPath = gnome_config_get_string (GDM_KEY_ROOTPATH);
     GdmServAuthDir = gnome_config_get_string (GDM_KEY_SERVAUTH);
     GdmSessDir = gnome_config_get_string (GDM_KEY_SESSDIR);
+    GdmXsession = gnome_config_get_string (GDM_KEY_BASEXSESSION);
     GdmSuspend = gnome_config_get_string (GDM_KEY_SUSPEND);
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
+#if 0
+/* FIXME: Maybe just whack this */
     GdmGnomeDefaultSession = gnome_config_get_string (GDM_KEY_GNOMEDEFAULTSESSION);
+#endif
     GdmUser = gnome_config_get_string (GDM_KEY_USER);
     GdmUserAuthDir = gnome_config_get_string (GDM_KEY_UAUTHDIR);
     GdmUserAuthFile = gnome_config_get_string (GDM_KEY_UAUTHFILE);

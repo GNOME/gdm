@@ -89,9 +89,12 @@ enum {
 #define GDM_SLANG      'R'
 #define GDM_RESET      'A'
 #define GDM_QUIT       'P'
-/* Well these aren't as nice as above, oh well */
+#if 0
+/* FIXME: Maybe just whack this */
 #define GDM_GNOMESESS  '?'
 #define GDM_SGNOMESESS '*'
+#endif
+/* Well these aren't as nice as above, oh well */
 #define GDM_STARTTIMER 's'
 #define GDM_STOPTIMER  'S'
 #define GDM_SETLOGIN   'l' /* this just sets the login to be this, just for
@@ -145,9 +148,14 @@ enum {
 #define GDM_KEY_XKEEPSCRASHING "daemon/XKeepsCrashing=" EXPANDED_SYSCONFDIR "/gdm/XKeepsCrashing"
 #define GDM_KEY_REBOOT "daemon/RebootCommand=/usr/bin/reboot;/sbin/reboot;/sbin/shutdown -r now;/usr/sbin/shutdown -r now"
 #define GDM_KEY_ROOTPATH "daemon/RootPath=/sbin:/usr/sbin:/bin:/usr/bin:/usr/bin/X11:/usr/local/bin:" EXPANDED_BINDIR
+#if 0
+/* FIXME: Maybe just whack this */
 #define GDM_KEY_GNOMEDEFAULTSESSION "daemon/GnomeDefaultSession=" EXPANDED_DATADIR "/gnome/default.session"
+#endif
 #define GDM_KEY_SERVAUTH "daemon/ServAuthDir=" EXPANDED_AUTHDIR
-#define GDM_KEY_SESSDIR "daemon/SessionDir=" EXPANDED_SYSCONFDIR "/gdm/Sessions/"
+#define GDM_KEY_SESSDIR "daemon/SessionDesktopDir=" EXPANDED_SYSCONFDIR "/dm/Sessions/"
+#define GDM_KEY_BASEXSESSION "daemon/BaseXsession=" EXPANDED_SYSCONFDIR "/gdm/Xsession"
+#define GDM_KEY_DEFAULTSESSION "daemon/DefaultSession=gnome.desktop"
 #define GDM_KEY_SUSPEND "daemon/SuspendCommand="
 
 #define GDM_KEY_UAUTHDIR "daemon/UserAuthDir="
@@ -251,14 +259,20 @@ enum {
 
 #define GDM_KEY_SERVERS "servers"
 
+#if 0
+/* FIXME: Maybe just whack this */
 #define GDM_KEY_SHOW_GNOME_CHOOSER "greeter/ShowGnomeChooserSession=true"
+#endif
 #define GDM_KEY_SHOW_GNOME_FAILSAFE "greeter/ShowGnomeFailsafeSession=true"
 #define GDM_KEY_SHOW_XTERM_FAILSAFE "greeter/ShowXtermFailsafeSession=true"
 #define GDM_KEY_SHOW_LAST_SESSION "greeter/ShowLastSession=true"
 
 #define GDM_SESSION_FAILSAFE_GNOME "GDM_Failsafe.GNOME"
 #define GDM_SESSION_FAILSAFE_XTERM "GDM_Failsafe.XTERM"
+#if 0
+/* FIXME: Maybe just whack this */
 #define GDM_SESSION_GNOME_CHOOSER "Gnome Chooser"
+#endif
 
 #define GDM_STANDARD "Standard"
 

@@ -106,8 +106,13 @@ extern int gdm_normal_runlevel;
 extern gchar *GdmUser;
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
+#if 0
+/* FIXME: Maybe just whack this */
 extern gchar *GdmGnomeDefaultSession;
+#endif
 extern gchar *GdmSessDir;
+extern gchar *GdmXsession;
+extern gchar *GdmDefaultSession;
 extern gchar *GdmLocaleFile;
 extern gchar *GdmAutomaticLogin;
 extern gboolean GdmAllowRemoteAutoLogin;
@@ -1332,7 +1337,25 @@ run_pictures (void)
 		}
 		g_free (cfgdir);
 
-		/* Nothing found yet */
+		if (picfile == NULL) {
+			picfile = g_strconcat (pwent->pw_dir, "/.face", NULL);
+			if (access (picfile, R_OK) != 0) {
+				g_free (picfile);
+				picfile = NULL;
+			} else if ( ! gdm_file_check ("run_pictures", pwent->pw_uid,
+						      pwent->pw_dir, ".face", TRUE, TRUE, GdmUserMaxFile,
+						      GdmRelaxPerms)) {
+				g_free (picfile);
+
+				seteuid (0);
+				setegid (GdmGroupId);
+
+				gdm_slave_greeter_ctl_no_ret (GDM_READPIC, "");
+				continue;
+			}
+		}
+
+		/* Nothing found yet, try the old location */
 		if (picfile == NULL) {
 			picfile = g_strconcat (pwent->pw_dir, "/.gnome2/photo", NULL);
 			picdir = g_strconcat (pwent->pw_dir, "/.gnome2", NULL);
@@ -2025,6 +2048,8 @@ gdm_slave_chooser (void)
 	}
 }
 
+#if 0
+/* FIXME: Maybe just whack this */
 static void
 read_sessions (FILE *fp, GString *sessions, const char *def, gboolean *got_def)
 {
@@ -2145,6 +2170,7 @@ gdm_get_sessions (struct passwd *pwent)
 		return ret;
 	}
 }
+#endif
 
 static gboolean
 is_session_ok (const char *session_name)
@@ -2160,7 +2186,7 @@ is_session_ok (const char *session_name)
 		return FALSE;
 
 	file = g_strconcat (GdmSessDir, "/", session_name, NULL);
-	if (access (file, X_OK) == 0) {
+	if (access (file, F_OK) == 0) {
 		g_free (file);
 		return TRUE;
 	}
@@ -2172,14 +2198,14 @@ static char *
 find_a_session (void)
 {
 	char *try[] = {
-		"Gnome",
-		"gnome",
-		"GNOME",
-		"Default",
-		"default",
-		"Xsession",
-		"Failsafe",
-		"failsafe",
+		"Xclients.desktop",
+		"Gnome.desktop",
+		"gnome.desktop",
+		"GNOME.desktop",
+		"kde.desktop",
+		"KDE.desktop",
+		"failsafe.desktop",
+		"Failsafe.desktop",
 		NULL
 	};
 	int i;
@@ -2194,6 +2220,21 @@ find_a_session (void)
 }
 
 static char *
+get_session_exec (const char *desktop)
+{
+	char *file;
+	VeConfig *cfg;
+	char *exec;
+
+	file = g_strconcat (GdmSessDir, "/", desktop, NULL);
+	cfg = ve_config_new (file);
+	g_free (file);
+	exec = ve_config_get_string (cfg, "Desktop Entry/Exec");
+	ve_config_destroy (cfg);
+	return exec;
+}
+
+static char *
 find_prog (const char *name, const char *args, char **retpath)
 {
 	char *ret;
@@ -2205,6 +2246,7 @@ find_prog (const char *name, const char *args, char **retpath)
 		"/opt/X11R6/bin/",
 		"/usr/bin/",
 		"/usr/local/bin/",
+		"/opt/gnome/bin/",
 		EXPANDED_BINDIR "/",
 		NULL
 	};
@@ -2230,27 +2272,6 @@ find_prog (const char *name, const char *args, char **retpath)
 	return NULL;
 }
 
-static char *
-dequote (const char *in)
-{
-	GString *str;
-	char *out;
-	const char *p;
-
-	str = g_string_new (NULL);
-
-	for (p = in; *p != '\0'; p++) {
-		if (*p == '\'')
-			g_string_append (str, "'\\''");
-		else
-			g_string_append_c (str, *p);
-	}
-
-	out = str->str;
-	g_string_free (str, FALSE);
-	return out;
-}
-
 static void
 session_child_run (struct passwd *pwent,
 		   const char *home_dir,
@@ -2262,15 +2283,17 @@ session_child_run (struct passwd *pwent,
 		   gboolean usrcfgok,
 		   gboolean savesess,
 		   gboolean savelang,
-		   gboolean sessoptok,
 		   gboolean savegnomesess)
 {
 	int logfd;
 	gboolean failsafe = FALSE;
 	char *sesspath, *sessexec;
-	gboolean need_config_sync = FALSE;
+	char *exec;
 	const char *shell = NULL;
+	VeConfig *dmrc = NULL;
 	Display *disp;
+	int argc;
+	char **argv;
 
 	gdm_unset_signals ();
 
@@ -2297,7 +2320,8 @@ session_child_run (struct passwd *pwent,
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
 	    strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
 	    /* hack */
-	    g_ascii_strcasecmp (session, "Failsafe") == 0) {
+	    g_ascii_strcasecmp (session, "Failsafe") == 0 ||
+	    g_ascii_strcasecmp (session, "Failsafe.desktop") == 0) {
 		failsafe = TRUE;
 	}
 
@@ -2314,12 +2338,10 @@ session_child_run (struct passwd *pwent,
 		uid_t old = geteuid ();
 		uid_t oldg = getegid ();
 
-		/* unlink the filename to be anal (as root to get rid of
-		 * possible old versions with root ownership) */
-		unlink (filename);
-
 		setegid (pwent->pw_gid);
 		seteuid (pwent->pw_uid);
+		/* unlink to be anal */
+		unlink (filename);
 		logfd = open (filename, O_CREAT|O_TRUNC|O_WRONLY, 0644);
 		seteuid (old);
 		setegid (oldg);
@@ -2442,27 +2464,38 @@ session_child_run (struct passwd *pwent,
 	/* anality, make sure nothing is in memory for gnome_config
 	 * to write */
 	gnome_config_drop_all ();
-	
+
 	if (usrcfgok && savesess && home_dir_ok) {
-		gchar *cfgstr = g_strconcat ("=", home_dir,
-					     "/.gnome2/gdm=/session/last", NULL);
-		gnome_config_set_string (cfgstr, save_session);
-		need_config_sync = TRUE;
+		gchar *cfgstr = g_strconcat (home_dir, "/.dmrc", NULL);
+		if (dmrc == NULL)
+			dmrc = ve_config_new (cfgstr);
+		ve_config_set_string (dmrc, "Desktop/Session",
+				      ve_sure_string (save_session));
 		g_free (cfgstr);
 	}
 	
 	if (usrcfgok && savelang && home_dir_ok) {
-		gchar *cfgstr = g_strconcat ("=", home_dir,
-					     "/.gnome2/gdm=/session/lang", NULL);
-		/* we chose the system default language so wipe the lang key */
+		gchar *cfgstr = g_strconcat (home_dir, "/.dmrc", NULL);
+		if (dmrc == NULL)
+			dmrc = ve_config_new (cfgstr);
 		if (ve_string_empty (language))
-			gnome_config_clean_key (cfgstr);
+			/* we chose the system default language so wipe the
+			 * lang key */
+			ve_config_delete_key (dmrc, "Desktop/Language");
 		else
-			gnome_config_set_string (cfgstr, language);
-		need_config_sync = TRUE;
+			ve_config_set_string (dmrc, "Desktop/Language",
+					      language);
 		g_free (cfgstr);
 	}
 
+	if (dmrc != NULL) {
+		ve_config_save (dmrc, FALSE);
+		ve_config_destroy (dmrc);
+		dmrc = NULL;
+	}
+
+#if 0
+	/* Maybe just whack this */
 	if (sessoptok &&
 	    savegnomesess &&
 	    gnome_session != NULL &&
@@ -2472,11 +2505,7 @@ session_child_run (struct passwd *pwent,
 		need_config_sync = TRUE;
 		g_free (cfgstr);
 	}
-
-	if (need_config_sync) {
-		gnome_config_sync ();
-		gnome_config_drop_all ();
-	}
+#endif
 
 	closelog ();
 
@@ -2484,15 +2513,56 @@ session_child_run (struct passwd *pwent,
 
 	openlog ("gdm", LOG_PID, LOG_DAEMON);
 	
+#if 0
+/* FIXME: Maybe just whack this */
 	/* If "Gnome Chooser" is still set as a session,
 	 * just change that to "Gnome", since "Gnome Chooser" is a
 	 * fake */
 	if (strcmp (session, GDM_SESSION_GNOME_CHOOSER) == 0) {
 		session = "Gnome";
 	}
-	
+#endif
+
 	sesspath = NULL;
 	sessexec = NULL;
+
+	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
+	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
+		exec = get_session_exec (session);
+		if (exec == NULL) {
+			gdm_error (_("%s: No Exec line in the session file: %s, starting failsafe GNOME"),
+				   "gdm_slave_session_start",
+				   session);
+			session = GDM_SESSION_FAILSAFE_GNOME;
+			gdm_error_box
+				(d, GTK_MESSAGE_ERROR,
+				 _("The session you selected does not look valid.  I will run the GNOME failsafe session for you."));
+		}
+	} else {
+		exec = NULL;
+	}
+
+	if (strcmp (session, GDM_SESSION_FAILSAFE_XTERM) != 0 &&
+	    strcmp (session, GDM_SESSION_FAILSAFE_GNOME) != 0) {
+		if (access (GdmXsession, X_OK) != 0) {
+			gdm_error (_("%s: Cannot find the base Xsession script, will try GNOME failsafe"),
+				   "gdm_slave_session_start");
+			session = GDM_SESSION_FAILSAFE_GNOME;
+			gdm_error_box
+				(d, GTK_MESSAGE_ERROR,
+				 _("Cannot find a base session script, will try the GNOME failsafe session for you."));
+		} else {
+			sesspath = g_strdup (GdmXsession);
+			/* This is where everything is OK, and note that
+			   we really DON'T care about leaks, we are going to
+			   exec in just a bit */
+			sessexec = g_strdup_printf
+				("%s %s/%s",
+				 g_shell_quote (GdmXsession),
+				 g_shell_quote (GdmSessDir),
+				 g_shell_quote (session));
+		}
+	}
 
 	if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0) {
 		sesspath = find_prog ("gnome-session",
@@ -2500,7 +2570,7 @@ session_child_run (struct passwd *pwent,
 				      &sessexec);
 		if (sesspath == NULL) {
 			/* yaikes */
-			gdm_error (_("%s: gnome-session not found for a failsafe gnome session, trying xterm"),
+			gdm_error (_("%s: gnome-session not found for a failsafe GNOME session, trying xterm"),
 				   "gdm_slave_session_start");
 			session = GDM_SESSION_FAILSAFE_XTERM;
 			gdm_error_box
@@ -2550,23 +2620,6 @@ session_child_run (struct passwd *pwent,
 		failsafe = TRUE;
 	} 
 
-	/* hack */
-	if (strcmp (session, "Failsafe") == 0) {
-		failsafe = TRUE;
-	}
-
-	if (sesspath == NULL) {
-		if (GdmSessDir != NULL) {
-			sesspath = g_strconcat
-				("'", GdmSessDir, "/",
-				 dequote (session), "'", NULL);
-			sessexec = g_strconcat (GdmSessDir, "/",
-						session, NULL);
-		} else {
-			sesspath = g_strdup ("'/Eeeeek! Eeeeek!'");
-		}
-	}
-	
 	gdm_debug (_("Running %s for %s on %s"),
 		   sesspath, login, d->name);
 
@@ -2576,8 +2629,7 @@ session_child_run (struct passwd *pwent,
 		shell = "/bin/sh";
 	}
 
-	/* just a stupid test, the below would fail, but this gives a better
-	 * message */
+	/* just a stupid test */
 	if (strcmp (shell, "/sbin/nologin") == 0 ||
 	    strcmp (shell, "/bin/false") == 0 ||
 	    strcmp (shell, "/bin/true") == 0) {
@@ -2586,56 +2638,42 @@ session_child_run (struct passwd *pwent,
 		gdm_error_box (d, GTK_MESSAGE_ERROR,
 			       _("The system administrator has\n"
 				 "disabled your account."));
-	} else if (access (sessexec != NULL ? sessexec : sesspath, X_OK) != 0) {
-		gdm_error (_("%s: Could not find/run session `%s'"), 
-			   "gdm_slave_session_start", sesspath);
+		/* ends as if nothing bad happened */
+		_exit (0);
+	}
+
+	if ( ! g_shell_parse_argv (sessexec, &argc, &argv, NULL)) {
+		/* will go to .xsession-errors */
+		fprintf (stderr, _("%s: Could not parse `%s'"), 
+			 "gdm_slave_session_start", sessexec);
+		gdm_error (_("%s: Could not parse `%s'"), 
+			   "gdm_slave_session_start", sessexec);
 		/* if we can't read and exec the session, then make a nice
 		 * error dialog */
 		gdm_error_box
 			(d, GTK_MESSAGE_ERROR,
-			 _("Cannot start the session, most likely the\n"
-			   "session does not exist.  Please select from\n"
-			   "the list of available sessions in the login\n"
-			   "dialog window."));
-	} else {
-		char *exec = g_strconcat ("exec ", sesspath, NULL);
-		char *shellbase = g_path_get_basename (shell);
-		char *dashshell = g_strconcat ("-", shellbase, NULL);
-		/* FIXME: this is a hack currently this is all screwed up
-		 * so I won't run the users shell unless it's one of the
-		 * "listed" ones, I'll just run bash or sh,
-		 * that's a bit evil but in the end it works out better in
-		 * fact.  In the future we will do our own login setup
-		 * stuff */
-		if (strcmp (shellbase, "sh") != 0 &&
-		    strcmp (shellbase, "bash") != 0 &&
-		    strcmp (shellbase, "tcsh") != 0 &&
-		    strcmp (shellbase, "ksh") != 0 &&
-		    strcmp (shellbase, "pdksh") != 0 &&
-		    strcmp (shellbase, "zsh") != 0 &&
-		    strcmp (shellbase, "csh") != 0 &&
-		    strcmp (shellbase, "ash") != 0 &&
-		    strcmp (shellbase, "bsh") != 0 &&
-		    strcmp (shellbase, "bash2") != 0) {
-			if (access ("/bin/bash", R_OK|X_OK) == 0)
-				shell = "/bin/bash";
-			else if (access ("/bin/bash2", R_OK|X_OK) == 0)
-				shell = "/bin/bash2";
-			else
-				shell = "/bin/sh";
-		}
-		execl (shell, dashshell, "-c", exec, NULL);
-		/* nutcase fallback */
-		execl ("/bin/sh", "-sh", "-c", exec, NULL);
-
-		gdm_error (_("%s: Could not start session `%s'"), 
-			   "gdm_slave_session_start", sesspath);
-		gdm_error_box
-			(d, GTK_MESSAGE_ERROR,
-			 _("Cannot start your shell.  It could be that the\n"
-			   "system administrator has disabled your login.\n"
-			   "It could also indicate an error with your account.\n"));
+			 /* we can't really be any more specific */
+			 _("Cannot start the session due to some "
+			   "internal error."));
+		/* ends as if nothing bad happened */
+		_exit (0);
 	}
+
+	execv (sesspath, argv);
+
+		/* will go to .xsession-errors */
+	fprintf (stderr, _("%s: Could not exec %s with as %s"), 
+		 "gdm_slave_session_start", sesspath, sessexec);
+	gdm_error (_("%s: Could not exec %s with as %s"), 
+		   "gdm_slave_session_start", sesspath, sessexec);
+
+	/* if we can't read and exec the session, then make a nice
+	 * error dialog */
+	gdm_error_box
+		(d, GTK_MESSAGE_ERROR,
+		 /* we can't really be any more specific */
+		 _("Cannot start the session due to some "
+		   "internal error."));
 	
 	/* ends as if nothing bad happened */
 	_exit (0);
@@ -2644,12 +2682,11 @@ session_child_run (struct passwd *pwent,
 static void
 gdm_slave_session_start (void)
 {
-    struct stat statbuf;
     struct passwd *pwent;
     char *save_session = NULL, *session = NULL, *language = NULL, *usrsess, *usrlang;
     char *gnome_session = NULL;
     gboolean savesess = FALSE, savelang = FALSE, savegnomesess = FALSE;
-    gboolean usrcfgok = FALSE, sessoptok = FALSE, authok = FALSE;
+    gboolean usrcfgok = FALSE, authok = FALSE;
     const char *home_dir = NULL;
     gboolean home_dir_ok = FALSE;
     time_t session_start_time, end_time; 
@@ -2681,7 +2718,7 @@ gdm_slave_session_start (void)
 	    char *msg = g_strdup_printf (
 		     _("Your home directory is listed as:\n'%s'\n"
 		       "but it does not appear to exist.\n"
-		       "Do you want to log in with the root\n"
+		       "Do you want to log in with the /tmp\n"
 		       "directory as your home directory?\n\n"
 		       "It is unlikely anything will work unless\n"
 		       "you use a failsafe session."),
@@ -2702,7 +2739,7 @@ gdm_slave_session_start (void)
 	    g_free (msg);
 
 	    home_dir_ok = FALSE;
-	    home_dir = "/";
+	    home_dir = "/tmp";
     } else {
 	    home_dir_ok = TRUE;
 	    home_dir = pwent->pw_dir;
@@ -2712,19 +2749,12 @@ gdm_slave_session_start (void)
     seteuid (pwent->pw_uid);
 
     if (home_dir_ok) {
-	    char *cfgdir;
-	    /* Check if ~user/.gnome2 exists. Create it otherwise. */
-	    cfgdir = g_strconcat (home_dir, "/.gnome2", NULL);
-
-	    if (stat (cfgdir, &statbuf) == -1) {
-		    mkdir (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
-		    chmod (cfgdir, S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH);
-	    }
-
-	    /* Sanity check on ~user/.gnome2/gdm */
+	    /* Sanity check on ~user/.dmrc */
 	    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
-				       cfgdir, "gdm", TRUE, FALSE, GdmUserMaxFile,
-				       GdmRelaxPerms);
+				       home_dir, ".dmrc", TRUE, FALSE,
+				       GdmUserMaxFile, GdmRelaxPerms);
+#if 0
+	    /* FIXME: Maybe just whack this */
 	    /* Sanity check on ~user/.gnome2/session-options */
 	    sessoptok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
 					cfgdir, "session-options", TRUE, FALSE, GdmUserMaxFile,
@@ -2734,26 +2764,24 @@ gdm_slave_session_start (void)
 					 * nothing we can do about it.  So we relax
 					 * the permission checking in this case */
 					GdmRelaxPerms == 0 ? 1 : GdmRelaxPerms);
-	    g_free (cfgdir);
+#endif
     } else {
 	    usrcfgok = FALSE;
-	    sessoptok = FALSE;
     }
 
     if (usrcfgok) {
-	gchar *cfgstr;
+	gchar *cfgfile = g_strconcat (home_dir, "/.dmrc", NULL);
+	VeConfig *cfg = ve_config_new (cfgfile);
+	g_free (cfgfile);
 
-	cfgstr = g_strconcat ("=", home_dir, "/.gnome2/gdm=/session/last", NULL);
-	usrsess = gnome_config_get_string (cfgstr);
+	usrsess = ve_config_get_string (cfg, "Desktop/Session");
 	if (usrsess == NULL)
 		usrsess = g_strdup ("");
-	g_free (cfgstr);
-
-	cfgstr = g_strconcat ("=", home_dir, "/.gnome2/gdm=/session/lang", NULL);
-	usrlang = gnome_config_get_string (cfgstr);
+	usrlang = ve_config_get_string (cfg, "Desktop/Language");
 	if (usrlang == NULL)
 		usrlang = g_strdup ("");
-	g_free (cfgstr);
+
+	ve_config_destroy (cfg);
     } else {
 	usrsess = g_strdup ("");
 	usrlang = g_strdup ("");
@@ -2801,6 +2829,8 @@ gdm_slave_session_start (void)
 		    savelang = TRUE;
 	    g_free (ret);
 
+#if 0
+/* FIXME: Maybe just whack this */
 	    if (strcmp (session, GDM_SESSION_GNOME_CHOOSER) == 0) {
 		    char *sessions = gdm_get_sessions (pwent);
 		    ret = gdm_slave_greeter_ctl (GDM_GNOMESESS, sessions);
@@ -2820,6 +2850,7 @@ gdm_slave_session_start (void)
 		    }
 		    g_free (ret);
 	    }
+#endif
 
 	    gdm_debug ("gdm_slave_session_start: Authentication completed. Whacking greeter");
 
@@ -2868,7 +2899,8 @@ gdm_slave_session_start (void)
 
     if (strcmp (session, GDM_SESSION_FAILSAFE_GNOME) == 0 ||
 	strcmp (session, GDM_SESSION_FAILSAFE_XTERM) == 0 ||
-	g_ascii_strcasecmp (session, "Failsafe") == 0 /* hack */)
+	g_ascii_strcasecmp (session, "Failsafe") == 0 /* hack */ ||
+	g_ascii_strcasecmp (session, "Failsafe.desktop") == 0 /* hack */)
 	    failsafe = TRUE;
 
     /* Write out the Xservers file */
@@ -2902,7 +2934,6 @@ gdm_slave_session_start (void)
 			   usrcfgok,
 			   savesess,
 			   savelang,
-			   sessoptok,
 			   savegnomesess);
 	g_assert_not_reached ();
 	

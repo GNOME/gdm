@@ -218,7 +218,7 @@ main (int argc, char *argv[])
 			char buf[4096];
 			size_t size;
 			char *photofile = g_strconcat (g_get_home_dir (),
-						       "/.gnome2/photo",
+						       "/.face",
 						       NULL);
 			char *cfg_file = g_strconcat (g_get_home_dir (),
 						      "/.gnome2/gdm",

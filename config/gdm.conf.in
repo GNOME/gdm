@@ -33,7 +33,6 @@ AlwaysRestartServer=true
 # The gdm configuration program that is run from the login screen, you should
 # probably leave this alone
 Configurator=@EXPANDED_GDMCONFIGDIR@/gdmsetup --disable-sound --disable-crash-dialog
-GnomeDefaultSession=@EXPANDED_DATADIR@/gnome/default.session
 # The chooser program.  Must output the chosen host on stdout, probably you
 # should leave this alone
 Chooser=@EXPANDED_BINDIR@/gdmchooser
@@ -86,7 +85,14 @@ HaltCommand=/usr/bin/poweroff;/sbin/poweroff;/sbin/shutdown -h now;/usr/sbin/shu
 SuspendCommand=
 # Probably should not touch the below this is the standard setup
 ServAuthDir=@EXPANDED_AUTHDIR@
-SessionDir=@EXPANDED_SYSCONFDIR@/gdm/Sessions/
+# This is our standard startup script.  A bit different from a normal
+# X session, but it shares a lot of stuff with that.  See the provided
+# default for more information.
+BaseXsession=@EXPANDED_SYSCONFDIR@/gdm/Xsession
+# This is a directory where .desktop files describing the sessions live
+SessionDesktopDir=@EXPANDED_SYSCONFDIR@/dm/Sessions/
+# This is the default .desktop session.  One of the ones in SessionDesktopDir
+DefaultSession=gnome.desktop
 # Better leave this blank and HOME will be used.  You can use syntax ~/ below
 # to indicate home directory of the user
 UserAuthDir=
@@ -257,8 +263,6 @@ BackgroundProgram=
 # if this is true then the background program is run always, otherwise
 # it is only run when the BackgroundType is 0 (None)
 RunBackgroundProgramAlways=false
-# Show the chooser (you can choose a specific saved gnome session) session
-ShowGnomeChooserSession=true
 # Show the Failsafe sessions.  These are much MUCH nicer (focus for xterm for
 # example) and more failsafe then those supplied by scripts so distros should
 # use this rather then just running an xterm from a script.

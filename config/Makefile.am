@@ -1,7 +1,7 @@
 pixmapdir = $(datadIR)/pixmaps
 confdir = $(sysconfdir)/gdm
 localedir = $(sysconfdir)/gdm
-sessdir = $(sysconfdir)/gdm/Sessions
+sessdir = $(sysconfdir)/dm/Sessions
 initdir = $(sysconfdir)/gdm/Init
 authdir = $(localstatedir)/gdm
 gnomercdir = $(sysconfdir)/gdm
@@ -14,15 +14,15 @@ noinst_DATA = gdm.conf
 
 EXTRA_DIST = \
 	gdm.conf.in \
-	Gnome.in \
-	gnomerc.in \
+	gnome.desktop.in \
+	Xclients.desktop.in \
 	Xsession.in \
 	gdm \
 	gdm-autologin \
 	locale.alias \
-	Default \
-	PostSession \
-	PreSession \
+	Default.in \
+	PostSession.in \
+	PreSession.in \
 	PostLogin \
 	XKeepsCrashing \
 	gettextfoo.h \
@@ -31,7 +31,9 @@ EXTRA_DIST = \
 gettextfoo.h: XKeepsCrashing
 	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h
 
-install-data-hook: gdm.conf gnomerc Gnome Xsession
+@INTLTOOL_DESKTOP_RULE@
+
+install-data-hook: gdm.conf Xsession gnome.desktop Xclients.desktop Default PostSession PreSession
 	if test '!' -d $(DESTDIR)$(confdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(confdir); \
 		chmod 755 $(DESTDIR)$(confdir); \
@@ -46,6 +48,7 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 	$(INSTALL_DATA) gdm.conf $(DESTDIR)$(confdir)/factory-gdm.conf
 
 	$(INSTALL_SCRIPT) $(srcdir)/XKeepsCrashing $(DESTDIR)$(confdir)/XKeepsCrashing
+	$(INSTALL_SCRIPT) $(srcdir)/Xsession $(DESTDIR)$(confdir)/Xsession
 
 	-if test -f $(DESTDIR)$(localedir)/locale.alias; then \
 		cp -f $(DESTDIR)$(localedir)/locale.alias $(DESTDIR)$(localedir)/locale.alias.orig; \
@@ -57,22 +60,15 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		chmod 755 $(DESTDIR)$(sessdir); \
 	fi
 
-	-if test -f $(DESTDIR)$(sessdir)/Xsession; then \
-		cp -f $(DESTDIR)$(sessdir)/Xsession $(DESTDIR)$(sessdir)/Xsession.orig; \
+	-if test -f $(DESTDIR)$(sessdir)/Xclients.desktop; then \
+		cp -f $(DESTDIR)$(sessdir)/Xclients.desktop $(DESTDIR)$(sessdir)/Xclients.orig; \
 	fi
-	$(INSTALL_SCRIPT) Xsession $(DESTDIR)$(sessdir)/Xsession
+	$(INSTALL_SCRIPT) Xclients.desktop $(DESTDIR)$(sessdir)/Xclients.desktop
 
-	-if test -f $(DESTDIR)$(sessdir)/Gnome; then \
-		cp -f $(DESTDIR)$(sessdir)/Gnome $(DESTDIR)$(sessdir)/Gnome.orig; \
+	-if test -f $(DESTDIR)$(sessdir)/gnome.desktop; then \
+		cp -f $(DESTDIR)$(sessdir)/gnome.desktop $(DESTDIR)$(sessdir)/gnome.orig; \
 	fi
-	$(INSTALL_SCRIPT) Gnome $(DESTDIR)$(sessdir)/Gnome
-
-	-if test -f /usr/bin/switchdesk; then \
-		if test -f $(DESTDIR)$(sessdir)/Default; then \
-			cp -f $(DESTDIR)$(sessdir)/Default $(DESTDIR)$(sessdir)/Default.orig; \
-		fi; \
-		$(LN_S) -f Xsession $(DESTDIR)$(sessdir)/Default; \
-	fi
+	$(INSTALL_SCRIPT) gnome.desktop $(DESTDIR)$(sessdir)/gnome.desktop
 
 	if test '!' -d $(DESTDIR)$(initdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(initdir); \
@@ -111,11 +107,6 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		$(mkinstalldirs) $(DESTDIR)$(gnomercdir); \
 		chmod 755 $(DESTDIR)$(gnomercdir); \
 	fi
-
-	-if test -f $(DESTDIR)$(gnomercdir)/gnomerc; then \
-		cp -f $(DESTDIR)$(gnomercdir)/gnomerc $(DESTDIR)$(gnomercdir)/gnomerc.orig; \
-	fi
-	$(INSTALL_SCRIPT) gnomerc $(DESTDIR)$(gnomercdir)/gnomerc
 
 	if test '!' -d $(DESTDIR)$(authdir); then \
 		$(mkinstalldirs) $(DESTDIR)$(authdir); \

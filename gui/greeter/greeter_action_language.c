@@ -108,12 +108,6 @@ greeter_language_get_language (const char *old_language)
 {
   gchar *retval = NULL;
 
-#if 0
-  if (greeter_current_user == NULL)
-    greeter_abort ("greeter_language_get_language: curuser==NULL. Mail <mkp@mkp.net> with " \
-		    "information on your PAM and user database setup");
-#endif
-  
   /* Don't save language unless told otherwise */
   savelang = FALSE;
 

@@ -108,7 +108,8 @@ exit 0
 %{_sbindir}/*
 %{_libexecdir}/*
 %config %{sysconfdir}/pam.d/*
-%config %{sysconfdir}/X11/*
+%config %{sysconfdir}/X11/dm/Sessions/*
+%config %{sysconfdir}/X11/gdm
 %config %{sysconfdir}/security/console.apps/*
 %{_datadir}/pixmaps/*
 %{_datadir}/gdm
@@ -136,6 +137,9 @@ exit 0
 
 
 %changelog
+* Mon Jun  9 2003 George Lebl <jirka@5z.com>
+- Updated for the new session setup
+
 * Mon May  5 2003 George Lebl <jirka@5z.com>
 - Updated the lang stuff, and the file lists
 

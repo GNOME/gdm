@@ -1,3 +1,21 @@
+Mon Jun 09 17:01:27 2003  George Lebl <jirka@5z.com>
+
+	* daemon/slave.c, gui/gdmphotosetup.c: use $HOME/.face by default
+
+	* daemon/slave.c: when no home dir, try /tmp as the home and not /
+
+	* config/*, daemon/gdm.[ch], gui/gdmlogin.c,
+	  gui/greeter/greeter.c, gui/greeter/greeter_action_language.c,
+	  gui/greeter/greeter_configuration.h,
+	  gui/greeter/greeter_session.[ch]:  Rework the session setup as
+	  discussed with Oswald Buddenhagen, the kdm maintainer.   Now the
+	  sessions are .desktop files and we have one happy Xsession file
+	  which parses that .desktop file and runs the appropriate command.
+	  Also store preferences such as last session and language in .dmrc.
+	  The session desktops are now in /etc/X11/dm/Sessions since they can
+	  be shared by kdm as well in the future.  The setup needs a bit
+	  more tuning I think and it's not all tested.
+
 Mon Jun 09  Brian Cameron <Brian.Cameron@Sun.COM>
 
 	* gui/modules/keymouselistener.c: Fixed bug that caused the
