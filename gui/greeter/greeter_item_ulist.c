@@ -57,6 +57,7 @@ gdm_greeter_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
 	gchar buf[PIPE_SIZE];
 	size_t size;
 	int bufsize;
+	char *p;
 
 	user = g_new0 (GdmGreeterUser, 1);
 
@@ -66,6 +67,18 @@ gdm_greeter_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir,
 		user->gecos = ve_locale_to_utf8 (gecos);
 	else
 		user->gecos = g_strdup (gecos);
+
+	/* Cut up to first comma since those are ugly arguments and
+	 * not the name anymore, but only if more then 1 comma is found,
+	 * since otherwise it might be part of the actual comment,
+	 * this is sort of "heurestic" because there seems to be no
+	 * real standard, it's all optional */
+	p = strchr (user->gecos, ',');
+	if (p != NULL) {
+		if (strchr (p+1, ',') != NULL)
+			*p = '\0';
+	}
+
 	user->homedir = g_strdup (homedir);
 	if (defface != NULL)
 		user->picture = (GdkPixbuf *)g_object_ref (G_OBJECT (defface));
@@ -295,7 +308,7 @@ gdm_greeter_users_init (void)
 	    user = gdm_greeter_user_alloc (pwent->pw_name,
 					   pwent->pw_uid,
 					   pwent->pw_dir,
-					   pwent->pw_gecos);
+					   ve_sure_string (pwent->pw_gecos));
 
 	    if ((user) && (! g_list_find_custom (users, user,
 				(GCompareFunc) gdm_greeter_sort_func))) {
