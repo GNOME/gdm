@@ -664,6 +664,8 @@ gdm_slave_wait_for_login (void)
 			do_configurator = FALSE;
 			g_free (login);
 			login = NULL;
+			/* clear any error */
+			gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, "");
 			gdm_slave_greeter_ctl_no_ret
 				(GDM_MSGERR,
 				 _("Enter the root password\n"

@@ -157,6 +157,7 @@ gdm_verify_user (const char *username,
     gboolean error_msg_given = FALSE;
     gboolean opened_session = FALSE;
     gboolean started_timer = FALSE;
+    gchar *auth_errmsg;
 
     /* start the timer for timed logins */
     if (local ||
@@ -167,7 +168,7 @@ gdm_verify_user (const char *username,
 
     if (username == NULL) {
 	    /* Ask gdmgreeter for the user's login. Just for good measure */
-	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Login:"));
+	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Username:"));
 	    if (login == NULL ||
 		gdm_slave_greeter_check_interruption (login)) {
 		    if (started_timer)
@@ -218,8 +219,12 @@ gdm_verify_user (const char *username,
 	    gdm_error (_("Root login disallowed on display '%s'"),
 		       display);
 	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-						  _("Root login disallowed"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+						  _("\nThe system administrator"
+						    " is not allowed to login "
+						    "from this screen"));
+		    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+		      _("Root login disallowed"));*/
 		    error_msg_given = TRUE;
 	    }
 	    goto pamerr;
@@ -231,8 +236,12 @@ gdm_verify_user (const char *username,
 	strcmp (pwent->pw_shell, "/bin/false") == 0) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-						  _("Login disabled"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+						  _("\nThe system administrator"
+						    " has disabled your "
+						    "account."));
+		    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+		      _("Login disabled"));*/
 		    error_msg_given = TRUE;
 	    }
 	    goto pamerr;
@@ -274,8 +283,24 @@ gdm_verify_user (const char *username,
     /* The verbose authentication is turned on, output the error
      * message from the PAM subsystem */
     if ( ! error_msg_given &&
-	gdm_slave_should_complain ())
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Authentication failed"));
+	gdm_slave_should_complain ()) {
+	    /* I'm not sure yet if I should display this message for any other issues - heeten */
+	    if (pamerr == PAM_AUTH_ERR &&
+		GdmVerboseAuth) {
+		    auth_errmsg = g_strdup_printf
+			    (_("\nIncorrect username or password.  "
+			       "Letters must be typed in the correct case.  "  
+			       "Please be sure the Caps Lock key is not enabled"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
+		    g_free (auth_errmsg);
+	    } else {
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Authentication failed"));
+	    }
+
+	    /*sleep (3);
+	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Please enter your login"));*/
+    }
+
     if (opened_session)
 	    pam_close_session (pamh, 0);
     

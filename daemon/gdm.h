@@ -88,6 +88,7 @@
 #define GDM_NEEDPIC    '#' /* need a user picture?, sent after greeter
 			    *  is started */
 #define GDM_READPIC    '%' /* Send a user picture in a temp file */
+#define GDM_ERRBOX     'e' /* Puts string in a popup error box */
 
 /* Different login interruptions */
 #define GDM_INTERRUPT_TIMED_LOGIN 'T'

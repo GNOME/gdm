@@ -1,5 +1,31 @@
 Ahh news...
 
+2.2.3.2 stuff:
+
+- printf/syslog format bugs fixed which fixes possible security
+  problems (Cyril Diakhate, Abel Cheung, Havoc, me)
+
+- Some fixes coming from the Gnome usability report (Heeten Choxi, me)
+
+- Run /etc/X11/xinit/xinitrc.d from the Gnome session
+
+- RUNNING_UNDER_GDM defined for init scripts (Owen)
+
+- Embrace and extend XDMCP so that choosing works nicer.  No worries, still
+  100% compatible with XDMCP 1.0
+
+- In the redhat package don't use the GiveConsole/TakeConsole since they're
+  not kosher, pam does this for us, for standard, non rpm build this was never
+  done
+
+- s/Halt/Shut down/
+
+- Don't ask to save Failsafe sessions
+
+- When user doesn't exist, ask for a password anyway
+
+- Various minor fixes (Owen, me)
+
 2.2.3.1 stuff:
 
 - file descriptor leaks and messups dealt with, making gdm2 work again

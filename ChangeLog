@@ -1,3 +1,19 @@
+Fri Aug 10 11:51:20 2001  George Lebl <jirka@5z.com>
+
+	* Apply the following patch and massage it a bit to be more sane
+
+	Mon Jul 30 14:29:00 2001  Heeten Choxi <azari.geo@yahoo.com>
+
+	* daemon/gdm.h, gui/gdmlogin.c: created new Opcode for communication
+	between daemon and greeter called GDM_ERRBOX.
+	
+	* daemon/verify-pam.c, daemon/verify-crypt.c, daemon/verify-shadow.c:
+	Use GDM_ERRBOX to send error feedback to greeter when logins fail.
+	(As suggested in GNOME Usability Study Report :: Logging In)
+	
+	* gui/gdmlogin.c: Added an "Ok" button that can be pushed to continue
+	with login.  (As suggested in GNOME Usability Report)
+
 Sat Aug 04 19:47:31 2001  George Lebl <jirka@5z.com>
 
 	* daemon/slave.c, gui/gdmchooser.c, gui/gdmlogin.c: In the rest of

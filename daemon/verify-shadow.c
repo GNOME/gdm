@@ -56,7 +56,7 @@ extern gboolean GdmAllowRemoteRoot;
 gchar *
 gdm_verify_user (const char *username, const gchar *display, gboolean local) 
 {
-    gchar *login, *passwd, *ppasswd;
+    gchar *login, *passwd, *ppasswd, *auth_errmsg;
     struct passwd *pwent;
     struct spwd *sp;
 
@@ -65,7 +65,7 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 
     if (username == NULL) {
 	    /* Ask for the user's login */
-	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Login:"));
+	    login = gdm_slave_greeter_ctl (GDM_LOGIN, _("Username:"));
 	    if (login == NULL ||
 		gdm_slave_greeter_check_interruption (login)) {
 		    if (local)
@@ -113,16 +113,39 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
     if (local)
 	    gdm_slave_greeter_ctl_no_ret (GDM_STOPTIMER, "");
 
-    if (!pwent) {
+    if (pwent == NULL) {
 	    gdm_error (_("Couldn't authenticate user"));
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
+	    if (GdmVerboseAuth) {
+		    auth_errmsg = g_strdup_printf
+			    (_("\nIncorrect username or password.  "
+			       "Letters must be typed in the correct case.  "  
+			       "Please be sure the Caps Lock key is not enabled"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
+		    g_free (auth_errmsg);
+	    } else {
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+						  _("Login incorrect"));
+	    }
+	    g_free (login);
+	    g_free (passwd);
+	    g_free (ppasswd);
 	    return NULL;
     }
 
     /* Check whether password is valid */
     if (ppasswd == NULL || (ppasswd[0] != '\0' &&
 			    strcmp (crypt (passwd, ppasswd), ppasswd) != 0)) {
-	    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR, _("Login incorrect"));
+	    if (GdmVerboseAuth) {
+		    auth_errmsg = g_strdup_printf
+			    (_("\nIncorrect username or password.  "
+			       "Letters must be typed in the correct case.  "  
+			       "Please be sure the Caps Lock key is not enabled"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX, auth_errmsg);
+		    g_free (auth_errmsg);
+	    } else {
+		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+						  _("Login incorrect"));
+	    }
 	    g_free (login);
 	    g_free (passwd);
 	    g_free (ppasswd);
@@ -133,13 +156,17 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 	  ( ! GdmAllowRemoteRoot && ! local) ) &&
 	pwent->pw_uid == 0) {
 	    gdm_error (_("Root login disallowed on display '%s'"), display);
-	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-						  _("Root login disallowed"));
-	    } else {
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+  	    if (GdmVerboseAuth) {
+ 		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+						  _("The system administrator "
+						    "is not allowed to login "
+						    "from this screen"));
+ 		    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+ 		      _("Root login disallowed"));*/
+  	    } else {
+ 		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
 						  _("Login incorrect"));
-	    }
+  	    }
 	    g_free (login);
 	    g_free (passwd);
 	    g_free (ppasswd);
@@ -151,8 +178,12 @@ gdm_verify_user (const char *username, const gchar *display, gboolean local)
 	strcmp (pwent->pw_shell, "/bin/false") == 0) {
 	    gdm_error (_("User %s not allowed to log in"), login);
 	    if (GdmVerboseAuth) {
-		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
-						  _("Login disabled"));
+		    gdm_slave_greeter_ctl_no_ret (GDM_ERRBOX,
+						  _("\nThe system administrator"
+						    " has disabled your "
+						    "account."));
+		    /*gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
+		      _("Login disabled"));*/
 	    } else {
 		    gdm_slave_greeter_ctl_no_ret (GDM_MSGERR,
 						  _("Login incorrect"));

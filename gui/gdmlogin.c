@@ -125,7 +125,10 @@ static GtkWidget *login;
 static GtkWidget *label;
 static GtkWidget *clock_label = NULL;
 static GtkWidget *entry;
+static GtkWidget *ok_button;
 static GtkWidget *msg;
+static GtkWidget *err_box;
+static guint err_box_clear_handler = 0;
 static gboolean require_quarter = FALSE;
 static gboolean remember_gnome_session = FALSE;
 static GtkWidget *icon_win = NULL;
@@ -1132,22 +1135,20 @@ evil (const char *user)
 	return FALSE;
 }
 
-static gboolean
-gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
+static void
+gdm_login_enter (GtkWidget *entry)
 {
-    static gboolean first_return = TRUE;
-    static gchar *login_string;
+	static gchar *login_string;
+	static gboolean first_return = TRUE;
 
-    if (!event)
-	return(TRUE);
+	if (entry == NULL)
+		return;
 
-    switch (event->keyval) {
-
-    case GDK_Return:
 	gtk_widget_set_sensitive (entry, FALSE);
+	gtk_widget_set_sensitive (ok_button, FALSE);
 
 	if (GdmBrowser)
-	    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 
 	login_string = gtk_entry_get_text (GTK_ENTRY (entry));
 
@@ -1160,7 +1161,7 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 		login_entry = FALSE;
 		/* timed interruption */
 		g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
-		return TRUE;
+		return;
 	}
 
 	/* Save login. I'm making the assumption that login is always
@@ -1177,9 +1178,10 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 			g_free (curuser);
 			curuser = NULL;
 			gtk_widget_set_sensitive (entry, TRUE);
+			gtk_widget_set_sensitive (ok_button, TRUE);
 			gtk_widget_grab_focus (entry);	
 			gtk_window_set_focus (GTK_WINDOW (login), entry);	
-			return TRUE;
+			return;
 		}
 	}
 
@@ -1189,8 +1191,32 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	       gtk_label_set (GTK_LABEL (msg), "");
 	}
 
+	/* clear the err_box */
+	if (err_box_clear_handler > 0)
+		gtk_timeout_remove (err_box_clear_handler);
+	err_box_clear_handler = 0;
+	gtk_label_set (GTK_LABEL (err_box), "");
+
 	login_entry = FALSE;
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
+}
+
+static void
+gdm_login_ok_button_press (GtkButton *button, GtkWidget *entry)
+{
+	gdm_login_enter (entry);
+}
+
+static gboolean
+gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
+{
+    if (!event)
+	return(TRUE);
+
+    switch (event->keyval) {
+
+    case GDK_Return:
+        gdm_login_enter (entry);
 	break;
 
     case GDK_Up:
@@ -1815,6 +1841,15 @@ get_gnome_session (const char *sess_string)
 }
 
 static gboolean
+err_box_clear (gpointer data)
+{
+	gtk_label_set_text (GTK_LABEL (err_box), "");
+
+	err_box_clear_handler = 0;
+	return FALSE;
+}
+
+static gboolean
 gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 {
     gchar buf[PIPE_SIZE];
@@ -1864,6 +1899,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 32);
 	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 	gtk_widget_set_sensitive (entry, TRUE);
+	gtk_widget_set_sensitive (ok_button, TRUE);
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
@@ -1888,6 +1924,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
 	gtk_entry_set_visibility (GTK_ENTRY (entry), TRUE);
 	gtk_widget_set_sensitive (entry, TRUE);
+	gtk_widget_set_sensitive (ok_button, TRUE);
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
@@ -1912,6 +1949,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_entry_set_max_length (GTK_ENTRY (entry), 128);
 	gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
 	gtk_widget_set_sensitive (entry, TRUE);
+	gtk_widget_set_sensitive (ok_button, TRUE);
 	gtk_widget_grab_focus (entry);	
 	gtk_window_set_focus (GTK_WINDOW (login), entry);	
 	gtk_widget_show (entry);
@@ -1951,6 +1989,21 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_show (GTK_WIDGET (msg));
 	g_print ("%c\n", STX);
 
+	break;
+
+    case GDM_ERRBOX:
+	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
+	buf[len-1] = '\0';
+	gtk_label_set_text (GTK_LABEL (err_box), buf);
+	if (err_box_clear_handler > 0)
+		gtk_timeout_remove (err_box_clear_handler);
+	if (ve_string_empty (buf))
+		err_box_clear_handler = 0;
+	else
+		err_box_clear_handler = gtk_timeout_add (30000,
+							 err_box_clear,
+							 NULL);
+	g_print ("%c\n", STX);
 	break;
 
     case GDM_SESS:
@@ -2016,6 +2069,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	}
 
 	gtk_widget_set_sensitive (entry, TRUE);
+	gtk_widget_set_sensitive (ok_button, TRUE);
 
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
@@ -2213,6 +2267,7 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 	    curuser = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
 
 	gtk_widget_set_sensitive (entry, FALSE);
+	gtk_widget_set_sensitive (ok_button, FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 	login_entry = FALSE;
 	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
@@ -2601,6 +2656,7 @@ gdm_login_gui_init (void)
     GtkWidget *table, *stack, *hline1, *hline2, *handle;
     GtkWidget *bbox = NULL;
     GtkWidget *logoframe = NULL;
+    GtkWidget /**help_button,*/ *button_box;
     GtkAccelGroup *accel;
     gchar *greeting;
     gint cols, rows;
@@ -2906,7 +2962,7 @@ gdm_login_gui_init (void)
 	}
     }
 
-    stack = gtk_table_new (6, 1, FALSE);
+    stack = gtk_table_new (7, 1, FALSE);
     gtk_widget_ref (stack);
     gtk_object_set_data_full (GTK_OBJECT (login), "stack", stack,
 			      (GtkDestroyNotify) gtk_widget_unref);
@@ -2926,21 +2982,34 @@ gdm_login_gui_init (void)
     if (GdmFont != NULL)
 	    gdm_login_set_font (welcome, GdmFont);
 
+    /* Put in error box here */
+
+    err_box = gtk_label_new (0);
+    gtk_widget_set_name (err_box, "Error box");
+    gtk_signal_connect (GTK_OBJECT (err_box), "destroy",
+			GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+			&err_box);
+    gtk_label_set_line_wrap (GTK_LABEL (err_box), TRUE);
+    gtk_table_attach (GTK_TABLE (stack), err_box, 0, 1, 1, 2,
+		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		      (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+
     hline1 = gtk_hseparator_new ();
     gtk_widget_ref (hline1);
     gtk_object_set_data_full (GTK_OBJECT (login), "hline1", hline1,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (hline1);
-    gtk_table_attach (GTK_TABLE (stack), hline1, 0, 1, 1, 2,
+    gtk_table_attach (GTK_TABLE (stack), hline1, 0, 1, 2, 3,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-		      (GtkAttachOptions) (GTK_FILL), 0, 10);
+		      (GtkAttachOptions) (GTK_FILL), 0, 6);
     
-    label = gtk_label_new (_("Login:"));
+    label = gtk_label_new (_("Username:"));
     gtk_widget_ref (label);
     gtk_object_set_data_full (GTK_OBJECT (login), "label", label,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (label);
-    gtk_table_attach (GTK_TABLE (stack), label, 0, 1, 2, 3,
+    gtk_table_attach (GTK_TABLE (stack), label, 0, 1, 3, 4,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (0), 0, 0);
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
@@ -2954,7 +3023,7 @@ gdm_login_gui_init (void)
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_entry_set_text (GTK_ENTRY (entry), "");
     gtk_widget_show (entry);
-    gtk_table_attach (GTK_TABLE (stack), entry, 0, 1, 3, 4,
+    gtk_table_attach (GTK_TABLE (stack), entry, 0, 1, 4, 5,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (0), 10, 0);
     gtk_signal_connect_object (GTK_OBJECT(entry), 
@@ -2967,17 +3036,38 @@ gdm_login_gui_init (void)
     gtk_object_set_data_full (GTK_OBJECT (login), "hline2", hline2,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (hline2);
-    gtk_table_attach (GTK_TABLE (stack), hline2, 0, 1, 4, 5,
+    gtk_table_attach (GTK_TABLE (stack), hline2, 0, 1, 5, 6,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 0, 10);
-        
+
+    /* I think I'll add the buttons next to this */
     msg = gtk_label_new (_("Please enter your login"));
     gtk_widget_set_name(msg, "Message");
+    
     gtk_widget_ref (msg);
     gtk_object_set_data_full (GTK_OBJECT (login), "msg", msg,
 			      (GtkDestroyNotify) gtk_widget_unref);
     gtk_widget_show (msg);
-    gtk_table_attach (GTK_TABLE (stack), msg, 0, 1, 5, 6,
+
+    /* FIXME: No Documentation yet.... */
+    /*help_button = gnome_stock_button (GNOME_STOCK_BUTTON_HELP);
+    gtk_widget_show (help_button);*/
+
+    ok_button = gnome_stock_button (GNOME_STOCK_BUTTON_OK);
+    gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
+			GTK_SIGNAL_FUNC (gdm_login_ok_button_press),
+			entry);
+    gtk_widget_show (ok_button);
+
+    button_box = gtk_hbox_new (0, 5);
+    gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (msg), TRUE, TRUE, 0);
+    /*gtk_box_pack_start (GTK_BOX (button_box), GTK_WIDGET (help_button),
+			FALSE, FALSE, 0);*/
+    gtk_box_pack_end (GTK_BOX (button_box), GTK_WIDGET (ok_button),
+		      FALSE, FALSE, 0);
+    gtk_widget_show (button_box);
+    
+    gtk_table_attach (GTK_TABLE (stack), button_box, 0, 1, 6, 7,
 		      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		      (GtkAttachOptions) (GTK_FILL), 10, 10);
 
