@@ -1,3 +1,18 @@
+Mon Jun 04 20:45:54 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am, configure.in, gdmconfig-security(.in), gdm.spec.in:
+	  cleaned up the pam stuff ala gnome-utils
+
+	* configure.in, accconfig.h, daemon/xdmcp.[ch], daemon/gdm.c,
+	  gui/gdmconfig.(c|glade): Detect the xdmcp libs and compile
+	  without xdmcp support if not found and allow selecting this
+	  option ala the xinerama one.  The configurator will disable
+	  the xdmcp options if they aren't compiled in
+
+	* daemon/gdm.c, gui/gdmlogin.c, gui/gdmconfig.(c|glade): Apparently
+	  5 seconds is useful for timed login so lower the minimum from 10
+	  to 5
+
 Sun Jun 03 04:55:49 2001  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.h: remove unused opcode (GDM_STOP)
