@@ -1,6 +1,3 @@
-#define N_(x) x
-#define _(x) x
-
 struct _Language {
 	char *name;
 	char *locale;

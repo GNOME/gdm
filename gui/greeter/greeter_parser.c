@@ -864,7 +864,7 @@ parse_translated_text (xmlNodePtr node,
   xmlChar *prop;
   gint score;
   
-  prop = xmlGetProp (node, "xml:lang");
+  prop = xmlNodeGetLang (node);
   if (prop)
     {
       score = is_current_locale (prop);

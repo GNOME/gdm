@@ -1,3 +1,24 @@
+Thu May 30 13:30:01 2002  George Lebl <jirka@5z.com>
+
+	* gui/greeter/greeter.c, gui/greeter/greeter_item.c,
+	  gui/greeter/greeter_lang_list.c, greeter/greeter_action_language.c,
+	  greeter/greeter_item_pam.c, gui/gdmlogin.c:  Use the new conversion
+	  routines from ve, use the new strftime from ve.  Also add the
+	  correct includes so that the graphical greeter is now actually
+	  translated.  This among other things fixes #82548
+
+	* gui/greeter/greeter_parser.c: correctly get the language, fixes
+	  #82549
+
+	* gui/gdmchooser.glade: remove unused dialog
+
+	* daemon/slave.c, daemon/gdm.c, daemon/errorgui.c, gui/gdmlogin.c,
+	  gui/gdmchooser.c, gui/greeter/greeter.c,
+	  gui/greeter/greeter_item_pam.c, gui/greeter/greeter_system.c:
+	  We can no longer use g_print as we did before as it now does
+	  charset conversions and that can screw us up in a major way.
+	  so replace most uses with printf/fflush
+
 Wed May 29 14:13:45 2002  George Lebl <jirka@5z.com>
 
 	* Release 2.3.90.4

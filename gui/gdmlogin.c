@@ -200,7 +200,8 @@ gdm_timer (gpointer data)
 		login_entry = FALSE; /* no matter where we are,
 					this is no longer a login_entry */
 		/* timed interruption */
-		g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
+		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
+		fflush (stdout);
 	} else if ((curdelay % 5) == 0) {
 		gchar *autologin_msg = 
 			g_strdup_printf (_("User %s will login in %d seconds"),
@@ -737,7 +738,8 @@ gdm_run_gdmconfig (GtkWidget *w, gpointer data)
 	login_entry = FALSE; /* no matter where we are,
 				this is no longer a login_entry */
 	/* configure interruption */
-	g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
+	printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
+	fflush (stdout);
 }
 
 static void
@@ -1196,7 +1198,8 @@ gdm_login_enter (GtkWidget *entry)
 	    login_entry) {
 		login_entry = FALSE;
 		/* timed interruption */
-		g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
+		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_TIMED_LOGIN);
+		fflush (stdout);
 		return;
 	}
 
@@ -1234,9 +1237,9 @@ gdm_login_enter (GtkWidget *entry)
 	gtk_label_set_text (GTK_LABEL (err_box), "");
 
 	login_entry = FALSE;
-	tmp = g_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)),
-				  -1, NULL, NULL, NULL);
-	g_print ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
+	tmp = ve_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)));
+	printf ("%c%s\n", STX, gtk_entry_get_text (GTK_ENTRY (entry)));
+	fflush (stdout);
 	g_free (tmp);
 }
 
@@ -1955,13 +1958,14 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	buf[len-1] = '\0';
 	g_free (curuser);
 	curuser = g_strdup (buf);
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
     case GDM_LOGIN:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	tmp = ve_locale_to_utf8 (buf);
 	gtk_label_set_text (GTK_LABEL (label), tmp);
 	g_free (tmp);
 
@@ -1992,7 +1996,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	tmp = ve_locale_to_utf8 (buf);
 	gtk_label_set_text (GTK_LABEL (label), tmp);
 	g_free (tmp);
 
@@ -2023,7 +2027,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 
-	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	tmp = ve_locale_to_utf8 (buf);
 	gtk_label_set_text (GTK_LABEL(label), tmp);
 	g_free (tmp);
 
@@ -2065,32 +2069,33 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		oldtext = gtk_label_get_text (GTK_LABEL (msg));
 		if ( ! ve_string_empty (oldtext)) {
 			char *newtext;
-			tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+			tmp = ve_locale_to_utf8 (buf);
 			newtext = g_strdup_printf ("%s\n%s", oldtext, tmp);
 			g_free (tmp);
 			gtk_label_set_text (GTK_LABEL (msg), newtext);
 			g_free (newtext);
 		} else {
-			tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+			tmp = ve_locale_to_utf8 (buf);
 			gtk_label_set_text (GTK_LABEL (msg), tmp);
 			g_free (tmp);
 		}
 	} else {
-		tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+		tmp = ve_locale_to_utf8 (buf);
 		gtk_label_set_text (GTK_LABEL (msg), tmp);
 		g_free (tmp);
 	}
 	replace_msg = FALSE;
 
 	gtk_widget_show (GTK_WIDGET (msg));
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 
 	break;
 
     case GDM_ERRBOX:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	tmp = ve_locale_to_utf8 (buf);
 	gtk_label_set_text (GTK_LABEL (err_box), tmp);
 	g_free (tmp);
 	if (err_box_clear_handler > 0)
@@ -2101,7 +2106,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		err_box_clear_handler = gtk_timeout_add (30000,
 							 err_box_clear,
 							 NULL);
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 
     case GDM_ERRDLG:
@@ -2111,7 +2117,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	/* we should be now fine for focusing new windows */
 	gdm_wm_focus_new_windows (TRUE);
 
-	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	tmp = ve_locale_to_utf8 (buf);
 	dlg = gtk_message_dialog_new (NULL /* parent */,
 				      GTK_DIALOG_MODAL /* flags */,
 				      GTK_MESSAGE_ERROR,
@@ -2127,17 +2133,19 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	gtk_widget_destroy (dlg);
 	gdm_wm_no_login_focus_pop ();
 
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 
     case GDM_SESS:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
-	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	tmp = ve_locale_to_utf8 (buf);
 	gdm_login_session_lookup (tmp);
 	g_free (tmp);
-	tmp = g_locale_from_utf8 (session, -1, NULL, NULL, NULL);
-	g_print ("%c%s\n", STX, tmp);
+	tmp = ve_locale_from_utf8 (session);
+	printf ("%c%s\n", STX, tmp);
+	fflush (stdout);
 	g_free (tmp);
 	break;
 
@@ -2145,16 +2153,18 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 	buf[len-1] = '\0';
 	gdm_login_language_lookup (buf);
-	g_print ("%c%s\n", STX, language);
+	printf ("%c%s\n", STX, language);
+	fflush (stdout);
 	break;
 
     case GDM_SSESS:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
 	if (savesess)
-	    g_print ("%cY\n", STX);
+	    printf ("%cY\n", STX);
 	else
-	    g_print ("%c\n", STX);
+	    printf ("%c\n", STX);
+	fflush (stdout);
 	
 	break;
 
@@ -2162,9 +2172,10 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
 	if (savelang)
-	    g_print ("%cY\n", STX);
+	    printf ("%cY\n", STX);
 	else
-	    g_print ("%c\n", STX);
+	    printf ("%c\n", STX);
+	fflush (stdout);
 
 	break;
 
@@ -2205,12 +2216,13 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
 
-	tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+	tmp = ve_locale_to_utf8 (buf);
 	gtk_label_set_text (GTK_LABEL (msg), tmp);
 	g_free (tmp);
 	gtk_widget_show (GTK_WIDGET (msg));
 
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 
     case GDM_QUIT:
@@ -2273,7 +2285,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	gdk_flush ();
 
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 
 	/* screw gtk_main_quit, we want to make sure we definately die */
 	_exit (EXIT_SUCCESS);
@@ -2287,7 +2300,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		do {
 			g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
 			buf[len-1] = '\0';
-			tmp = g_locale_to_utf8 (buf, -1, NULL, NULL, NULL);
+			tmp = ve_locale_to_utf8 (buf);
 			g_string_append (str, tmp);
 			g_free (tmp);
 		} while (len == PIPE_SIZE-1);
@@ -2297,8 +2310,9 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 		g_string_free (str, TRUE);
 
-		tmp = g_locale_from_utf8 (sess, -1, NULL, NULL, NULL);
-		g_print ("%c%s\n", STX, tmp);
+		tmp = ve_locale_from_utf8 (sess);
+		printf ("%c%s\n", STX, tmp);
+		fflush (stdout);
 		g_free (tmp);
 
 		g_free (sess);
@@ -2309,9 +2323,10 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 
 	if (remember_gnome_session)
-	    g_print ("%cY\n", STX);
+	    printf ("%cY\n", STX);
 	else
-	    g_print ("%c\n", STX);
+	    printf ("%c\n", STX);
+	fflush (stdout);
 
 	break;
 
@@ -2329,7 +2344,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		timed_handler_id = gtk_timeout_add (1000,
 						    gdm_timer, NULL);
 	}
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 
     case GDM_STOPTIMER:
@@ -2343,19 +2359,22 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 		gtk_timeout_remove (timed_handler_id);
 		timed_handler_id = 0;
 	}
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 
     case GDM_DISABLE:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 	gtk_widget_set_sensitive (login, FALSE);
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 
     case GDM_ENABLE:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
 	gtk_widget_set_sensitive (login, TRUE);
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 
     /* These are handled separately so ignore them here and send
@@ -2363,7 +2382,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
     case GDM_NEEDPIC:
     case GDM_READPIC:
 	g_io_channel_read (source, buf, PIPE_SIZE-1, &len); /* Empty */
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 
     case GDM_NOFOCUS:
@@ -2371,7 +2391,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	gdm_wm_no_login_focus_push ();
 	
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 
     case GDM_FOCUS:
@@ -2379,7 +2400,8 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 
 	gdm_wm_no_login_focus_pop ();
 	
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 	break;
 	
     default:
@@ -2454,9 +2476,9 @@ gdm_login_browser_select (GtkWidget *widget, gint selected, GdkEvent *event)
 	gtk_widget_set_sensitive (ok_button, FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 	login_entry = FALSE;
-	tmp = g_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)),
-				  -1, NULL, NULL, NULL);
-	g_print ("%c%s\n", STX, tmp);
+	tmp = ve_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)));
+	printf ("%c%s\n", STX, tmp);
+	fflush (stdout);
 	g_free (tmp);
 	break;
 	
@@ -2669,9 +2691,8 @@ static gboolean
 update_clock (gpointer data)
 {
 	struct tm *the_tm;
-	char *utf8;
+	char *str;
 	time_t the_time;
-	char str[256];
 	gint time_til_next_min;
 
 	if (clock_label == NULL)
@@ -2681,25 +2702,13 @@ update_clock (gpointer data)
 	the_tm = localtime (&the_time);
 
 	if (GdmUse24Clock) {
-	        if (strftime (str, sizeof (str), _("%a %b %d, %H:%M"), the_tm) == 0) {
-		        /* according to docs, if the string does not fit, the
-		        * contents of str are undefined, thus just use
-		        * ??? */
-		        strcpy (str, "???");
-		}
+		str = ve_strftime (the_tm, _("%a %b %d, %H:%M"));
 	} else {
-	       	if (strftime (str, sizeof (str), _("%a %b %d, %I:%M %p"), the_tm) == 0) {
-		        /* according to docs, if the string does not fit, the
-		        * contents of str are undefined, thus just use
-		        * ??? */
-		        strcpy (str, "???");
-		}
+		str = ve_strftime (the_tm, _("%a %b %d, %I:%M %p"));
   	}
-	str [sizeof(str)-1] = '\0'; /* just for sanity */
 
-	utf8 = g_locale_to_utf8 (str, -1, NULL, NULL, NULL);
-	gtk_label_set_text (GTK_LABEL (clock_label), utf8);
-	g_free (utf8);
+	gtk_label_set_text (GTK_LABEL (clock_label), str);
+	g_free (str);
 
 	/* account for leap seconds */
 	time_til_next_min = 60 - the_tm->tm_sec;
@@ -3347,7 +3356,8 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 			return user;
 	} while (buf[0] != GDM_NEEDPIC);
 
-	g_print ("%c%s\n", STX, logname);
+	printf ("%c%s\n", STX, logname);
+	fflush (stdout);
 
 	do {
 		while (read (STDIN_FILENO, buf, 1) == 1)
@@ -3371,7 +3381,8 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 		/* we trust the daemon, even if it wanted to give us
 		 * bogus bufsize */
 		/* the daemon will now print the buffer */
-		g_print ("%cOK\n", STX);
+		printf ("%cOK\n", STX);
+		fflush (stdout);
 
 		while (read (STDIN_FILENO, buf, 1) == 1)
 			if (buf[0] == STX)
@@ -3404,7 +3415,8 @@ gdm_login_user_alloc (const gchar *logname, uid_t uid, const gchar *homedir)
 	}
 
 	/* the daemon is now free to go on */
-	g_print ("%c\n", STX);
+	printf ("%c\n", STX);
+	fflush (stdout);
 
 	if (img != NULL) {
 		gint w, h;

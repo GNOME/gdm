@@ -1,3 +1,6 @@
+#include "config.h"
+
+#include <libgnome/libgnome.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdlib.h>
@@ -6,10 +9,7 @@
 
 #include "greeter_item.h"
 #include "greeter_configuration.h"
-
-#ifndef _
-#define _(x) (x)
-#endif
+#include "vicious.h"
 
 GreeterItemInfo *
 greeter_item_info_new (GreeterItemInfo *parent,
@@ -90,15 +90,7 @@ get_clock (void)
   time (&the_time);
   the_tm = localtime (&the_time);
 
-  if (strftime (str, sizeof (str)-1, _("%a %b %d, %I:%M %p"), the_tm) == 0) {
-    /* according to docs, if the string does not fit, the
-     * contents of str are undefined, thus just use
-     * ??? */
-    strcpy (str, "???");
-  }
-  str [sizeof (str)-1] = '\0'; /* just for sanity */
-
-  return g_locale_to_utf8 (str, -1, NULL, NULL, NULL);
+  return ve_strftime (the_tm, _("%a %b %d, %I:%M %p"));
 }
 
 

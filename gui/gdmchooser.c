@@ -650,7 +650,8 @@ gdm_chooser_choose_host (const char *hostname)
   ARRAY8 tmparr;
   struct hostent *hentry;
 
-  g_print ("%s\n", curhost->name);
+  printf ("%s\n", curhost->name);
+  fflush (stdout);
   if (xdm_address != NULL) {
       struct sockaddr_in in_addr;
       char xdm_addr[32];

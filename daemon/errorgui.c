@@ -371,7 +371,8 @@ gdm_failsafe_question (GdmDisplay *d,
 		loc = g_locale_from_utf8 (ve_sure_string (gtk_entry_get_text (GTK_ENTRY (entry))),
 					  -1, NULL, NULL, NULL);
 
-		g_print ("%s", ve_sure_string (loc));
+		printf ("%s", ve_sure_string (loc));
+		fflush (stdout);
 
 		_exit (0);
 	} else if (pid > 0) {
@@ -493,9 +494,10 @@ gdm_failsafe_yesno (GdmDisplay *d,
 		}
 
 		if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES)
-			g_print ("yes\n");
+			printf ("yes\n");
 		else
-			g_print ("no\n");
+			printf ("no\n");
+		fflush (stdout);
 
 		_exit (0);
 	} else if (pid > 0) {

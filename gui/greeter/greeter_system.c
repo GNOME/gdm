@@ -78,7 +78,8 @@ greeter_config_handler (void)
 				this is no longer a login_entry */
 #endif
 	/* configure interruption */
-	g_print ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
+	printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_CONFIGURE);
+	fflush (stdout);
 }
 
 

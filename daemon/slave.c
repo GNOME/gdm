@@ -1204,7 +1204,8 @@ run_pictures (void)
 		}
 		g_free (ret);
 
-		g_print ("%c", STX);
+		printf ("%c", STX);
+		fflush (stdout);
 
 		i = 0;
 		while ((bytes = fread (buf, sizeof (char),
@@ -3050,10 +3051,11 @@ gdm_slave_greeter_ctl (char cmd, const char *str)
     check_notifies_immediately ++;
 
     if ( ! ve_string_empty (str)) {
-	    g_print ("%c%c%s\n", STX, cmd, str);
+	    printf ("%c%c%s\n", STX, cmd, str);
     } else {
-	    g_print ("%c%c\n", STX, cmd);
+	    printf ("%c%c\n", STX, cmd);
     }
+    fflush (stdout);
 
     /* Skip random junk that might have accumulated */
     do {

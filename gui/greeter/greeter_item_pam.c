@@ -3,6 +3,7 @@
 #include "greeter_item_pam.h"
 #include "greeter_parser.h"
 #include "gdm.h"
+#include "vicious.h"
 #include <string.h>
 
 static gboolean messages_to_give = FALSE;
@@ -63,9 +64,9 @@ user_pw_activate (GtkEntry *entry, GreeterItemInfo *info)
   
   entry_is_login = FALSE;
 
-  tmp = g_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)),
-			    -1, NULL, NULL, NULL);
-  g_print ("%c%s\n", STX, tmp);
+  tmp = ve_locale_from_utf8 (gtk_entry_get_text (GTK_ENTRY (entry)));
+  printf ("%c%s\n", STX, tmp);
+  fflush (stdout);
   g_free (tmp);
 }
 

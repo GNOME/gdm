@@ -1344,10 +1344,11 @@ main (int argc, char *argv[])
 	/* do nothing */ ;
 
     if (nextopt != -1) {
-	    g_print (_("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
-		     poptBadOption (ctx, 0),
-		     poptStrerror (nextopt),
-		     argv[0]);
+	    printf (_("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
+		    poptBadOption (ctx, 0),
+		    poptStrerror (nextopt),
+		    argv[0]);
+	    fflush (stdout);
 	    exit (1);
     }
 
