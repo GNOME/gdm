@@ -1,5 +1,11 @@
 AC_INIT(daemon/gdm.h)
 
+dnl
+dnl Due to the sed scripts being split on 90 line
+dnl blocks, this macro needs to be right at the beggining.
+dnl
+AM_PROG_XML_I18N_TOOLS
+
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(gdm,2.2.1)
 AM_MAINTAINER_MODE

@@ -32,7 +32,9 @@ gdmlogin_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) @PIXB
 gdmconfig_LDADD = $(GNOME_LIBDIR) $(GNOME_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) @LIBGLADE_LIBS@
  
 Systemdir = $(datadir)/gnome/apps/System
-System_DATA = gdmconfig.desktop
+System_in_files = gdmconfig.desktop.in
+System_DATA = $(System_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 Gladedir = $(datadir)/gdm
 Glade_DATA = gdmconfig.glade gdmchooser.glade
