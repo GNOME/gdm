@@ -629,8 +629,8 @@ gestures_filter (GdkXEvent *gdk_xevent,
 
 				if (!retval) {
 					GtkWidget *dialog = 
-						gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_WARNING,
-							GTK_BUTTONS_CLOSE,
+						gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR,
+							GTK_BUTTONS_OK,
 							_("Error while trying to run (%s)\n"\
 							"which is linked to (%s)"),
 							action,
