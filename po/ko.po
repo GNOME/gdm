@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.0\n"
-"POT-Creation-Date: 1999-09-26 15:25+0900\n"
-"PO-Revision-Date: 1999-09-21 08:22+0900\n"
+"POT-Creation-Date: 1999-10-03 19:44+0900\n"
+"PO-Revision-Date: 1999-10-03 19:44+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@adam.kaist.ac.kr>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -123,11 +123,11 @@ msgid "gdm_daemonify: setsid() failed: %s!"
 msgstr "gdm_daemonify: setsid() 실패: %s!"
 
 #. XDM compliant error message
-#: daemon/gdm.c:594
+#: daemon/gdm.c:593
 msgid "Only root wants to run x^hgdm\n"
 msgstr "루트만이 x^hgdm을 실행합니다\n"
 
-#: daemon/gdm.c:615
+#: daemon/gdm.c:614
 msgid ""
 "gdm already running. Aborting!\n"
 "\n"
@@ -135,7 +135,7 @@ msgstr ""
 "gdm은 이미 실행중입니다. 취소!\n"
 "\n"
 
-#: daemon/gdm.c:621
+#: daemon/gdm.c:620
 #, c-format
 msgid ""
 "According to %s, gdm was already running (%d),\n"
@@ -144,15 +144,15 @@ msgstr ""
 "%s에 따르면, gdm은 이미 실행중입니다 (%d).\n"
 "하지만 불가사의하게도 살해당한 것 같습니다.\n"
 
-#: daemon/gdm.c:643
+#: daemon/gdm.c:642
 msgid "gdm_main: Error setting up TERM signal handler"
 msgstr "gdm_main: TERM 시그날 처리기를 설정하는 데 문제 발생"
 
-#: daemon/gdm.c:646
+#: daemon/gdm.c:645
 msgid "gdm_main: Error setting up INT signal handler"
 msgstr "gdm_main: INT 시그날 처리기를 설정하는 데 문제 발생"
 
-#: daemon/gdm.c:654
+#: daemon/gdm.c:653
 msgid "gdm_main: Error setting up CHLD signal handler"
 msgstr "gdm_main: CHLD 시그날 처리기를 설정하는 데 문제 발생"
 
@@ -260,16 +260,16 @@ msgstr "gdm_slave_init: TERM/INT 시그날 처리기를 설정하는 데 문제 발생"
 msgid "gdm_slave_init: Error setting up CHLD signal handler"
 msgstr "gdm_slave_init: CHLD 시그날 처리기를 설정하는 데 문제 발생"
 
-#: daemon/slave.c:179
+#: daemon/slave.c:178
 msgid "gdm_slave_greeter: Can't init pipe to gdmgreeter"
 msgstr "gdm_slave_greeter: gdmgreeter에 대한 파이프를 초기화할 수 없습니다"
 
-#: daemon/slave.c:204
+#: daemon/slave.c:203
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set groupid to %d"
 msgstr "gdm_slave_greeter: 그룹 아이디를 %d로 맞출 수 없습니다"
 
-#: daemon/slave.c:207
+#: daemon/slave.c:206
 #, c-format
 msgid "gdm_slave_greeter: Couldn't set userid to %d"
 msgstr "gdm_slave_greeter: 사용자 아이디를 %d로 맞출 수 없습니다"
@@ -283,53 +283,53 @@ msgstr "gdm_slave_greeter: 디스플레이 %s에서 greeter를 시작하는 데 문제 발생"
 msgid "gdm_slave_greeter: Can't fork gdmgreeter process"
 msgstr "gdm_slave_greeter: gdmgreeter 프로세스를 fork할 수 없습니다"
 
-#: daemon/slave.c:298
+#: daemon/slave.c:267
 #, c-format
-msgid "gdm_slave_session_init: User '%s' not found. Aborting."
-msgstr "gdm_slave_session_init: 사용자 '%s'이(가) 없습니다. 중지."
-
-#: daemon/slave.c:323
 msgid ""
-"gdm_slave_session_init: Execution of PreSession script returned > 0. "
-"Aborting."
-msgstr ""
-"gdm_slave_session_init: PreSession 스크립트를 실행했을 때 0가 아닌 값을 "
-"리턴했습니다. 중지."
-
-#: daemon/slave.c:347
-msgid "gdm_slave_session_init: Error forking user session"
-msgstr "gdm_slave_session_init: 사용자 세션을 fork하는 데 문제 발생"
+"gdm_slave_session_start: User passed authentication but getpwnam(%s) failed. "
+"Spooky!"
+msgstr "gdm_slave_session_start: 인증을 통과했지만 getpwnam(%s)이 실패했습니다. 유령!"
 
 #: daemon/slave.c:355
-#, c-format
-msgid "gdm_slave_session_init: Could not setgid %d. Aborting."
-msgstr "gdm_slave_session_init: setgid %d 실패했습니다. 중지."
+msgid ""
+"gdm_slave_session_start: Execution of PreSession script returned > 0. "
+"Aborting."
+msgstr "gdm_slave_session_start: PreSession 스크립트가 0보다 큰 값을 리턴했습니다. 중지."
 
-#: daemon/slave.c:358
-#, c-format
-msgid "gdm_slave_session_init: initgroups() failed for %s. Aborting."
-msgstr "gdm_slave_session_init: %s에 대하여 initgroups() 실패. 중지."
+#: daemon/slave.c:379
+msgid "gdm_slave_session_start: Error forking user session"
+msgstr "gdm_slave_session_start: 사용자 세션을 fork하는 데 문제 발생"
 
-#: daemon/slave.c:361
+#: daemon/slave.c:387
 #, c-format
-msgid "gdm_slave_session_init: Could not become %s. Aborting."
-msgstr "gdm_slave_session_init: %s로(으로) 변신하지 못했습니다. 중지."
+msgid "gdm_slave_session_start: Could not setgid %d. Aborting."
+msgstr "gdm_slave_session_start: setgid %d 실패했습니다. 중지."
 
-#: daemon/slave.c:403
+#: daemon/slave.c:390
 #, c-format
-msgid "gdm_slave_session_init: Could not start session `%s'"
-msgstr "gdm_slave_session_init: 세션 `%s'을(를) 시작하지 못했습니다"
+msgid "gdm_slave_session_start: initgroups() failed for %s. Aborting."
+msgstr "gdm_slave_session_start: %s에 대하여 initgroups() 실패. 중지."
 
-#: daemon/slave.c:578
+#: daemon/slave.c:393
+#, c-format
+msgid "gdm_slave_session_start: Could not become %s. Aborting."
+msgstr "gdm_slave_session_start: %s로(으로) 변신하지 못했습니다. 중지."
+
+#: daemon/slave.c:429
+#, c-format
+msgid "gdm_slave_session_start: Could not start session `%s'"
+msgstr "gdm_slave_session_start: 세션 `%s'을(를) 시작하지 못했습니다"
+
+#: daemon/slave.c:604
 #, c-format
 msgid "gdm_slave_windows_kill_ioerror_handler: Fatal X error - Restarting %s"
 msgstr "gdm_slave_windows_kill_ioerror_handler: 치명적 X 문제 - %s 재시작"
 
-#: daemon/slave.c:610
+#: daemon/slave.c:636
 msgid "gdm_slave_xsync_ping: Error setting up ALARM signal handler"
 msgstr "gdm_slave_xsync_ping: ALARM 시그날 처리기를 설정하는 데 문제 발생"
 
-#: daemon/verify.c:129 daemon/verify.c:201 gui/gdmlogin.c:1253
+#: daemon/verify.c:129 daemon/verify.c:201 gui/gdmlogin.c:1220
 msgid "Login:"
 msgstr "로그인:"
 
@@ -424,117 +424,117 @@ msgstr "gdm_xdmcp_decode: XDMCP 헤더를 읽지 못했습니다!"
 msgid "gdm_xdmcp_decode: Incorrect XDMCP version!"
 msgstr "gdm_xdmcp_decode: XDMCP 버전이 틀렸습니다!"
 
-#: daemon/xdmcp.c:333
+#: daemon/xdmcp.c:334
 #, c-format
 msgid "gdm_xdmcp_decode_packet: Unknown opcode from host %s"
 msgstr "gdm_xdmcp_decode_packet: %s 호스트에서 알 수 없는 작동 부호"
 
-#: daemon/xdmcp.c:351
+#: daemon/xdmcp.c:352
 msgid "gdm_xdmcp_handle_query: Could not extract authlist from packet"
 msgstr "gdm_xdmcp_handle_query: 패킷에서 authlist를 뽑아 내지 못했습니다"
 
-#: daemon/xdmcp.c:362
+#: daemon/xdmcp.c:363
 msgid "gdm_xdmcp_handle_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_query: 검사합이 틀렸습니다"
 
-#: daemon/xdmcp.c:433
+#: daemon/xdmcp.c:434
 msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
 msgstr "gdm_xdmcp_handle_forward_query: 디스플레이 주소를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:439
+#: daemon/xdmcp.c:440
 msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
 msgstr "gdm_xdmcp_handle_forward_query: 디스플레이 포트 번호를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:445
+#: daemon/xdmcp.c:446
 msgid "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
 msgstr ""
 "gdm_xdmcp_handle_forward_query: 패킷에서 authlist를 뽑아 내지 못했습니다"
 
-#: daemon/xdmcp.c:460
+#: daemon/xdmcp.c:461
 msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
 msgstr "gdm_xdmcp_handle_forward_query: 검사합이 틀렸습니다"
 
-#: daemon/xdmcp.c:523
+#: daemon/xdmcp.c:524
 #, c-format
 msgid "Denied XDMCP query from host %s"
 msgstr "%s 호스트에서 XDMCP 질의를 거부했습니다"
 
-#: daemon/xdmcp.c:525
+#: daemon/xdmcp.c:526
 msgid "Display not authorized to connect"
 msgstr "디스플레이에 연결할 권한이 없습니다"
 
-#: daemon/xdmcp.c:558
+#: daemon/xdmcp.c:559
 #, c-format
 msgid "gdm_xdmcp_handle_request: Got REQUEST from banned host %s"
 msgstr "gdm_xdmcp_handle_request: 금지된 호스트 %s에서 REQUEST를 받았습니다"
 
-#: daemon/xdmcp.c:565
+#: daemon/xdmcp.c:566
 msgid "gdm_xdmcp_handle_request: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_request: 디스플레이 번호를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:571
+#: daemon/xdmcp.c:572
 msgid "gdm_xdmcp_handle_request: Could not read Connection Type"
 msgstr "gdm_xdmcp_handle_request: 연결 타입을 읽지 못했습니다"
 
-#: daemon/xdmcp.c:577
+#: daemon/xdmcp.c:578
 msgid "gdm_xdmcp_handle_request: Could not read Client Address"
 msgstr "gdm_xdmcp_handle_request: 클라이언트 주소를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:583
+#: daemon/xdmcp.c:584
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Names"
 msgstr "gdm_xdmcp_handle_request: 인증 이름을 읽지 못했습니다"
 
-#: daemon/xdmcp.c:589
+#: daemon/xdmcp.c:590
 msgid "gdm_xdmcp_handle_request: Could not read Authentication Data"
 msgstr "gdm_xdmcp_handle_request: 인증 자료를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:595
+#: daemon/xdmcp.c:596
 msgid "gdm_xdmcp_handle_request: Could not read Authorization List"
 msgstr "gdm_xdmcp_handle_request: 인증 리스트를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:606
+#: daemon/xdmcp.c:607
 msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
 msgstr "gdm_xdmcp_handle_request: 제조자 아이디를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:624
+#: daemon/xdmcp.c:625
 #, c-format
 msgid "gdm_xdmcp_handle_request: Failed checksum from %s"
 msgstr "gdm_xdmcp_handle_request: %s에서 검사합 실패"
 
-#: daemon/xdmcp.c:737
+#: daemon/xdmcp.c:738
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Got Manage from banned host %s"
 msgstr "gdm_xdmcp_handle_manage: 금지된 호스트 %s에서 Manage를 받았습니다"
 
-#: daemon/xdmcp.c:744
+#: daemon/xdmcp.c:745
 msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_manage: 세션 아이디를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:750
+#: daemon/xdmcp.c:751
 msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_manage: 디스플레이 번호를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:759
+#: daemon/xdmcp.c:760
 msgid "gdm_xdmcp_manage: Could not read Display Class"
 msgstr "gdm_xdmcp_manage: 디스플레이 종류를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:780
+#: daemon/xdmcp.c:781
 #, c-format
 msgid "gdm_xdmcp_handle_manage: Could not open logfile for display %s!"
 msgstr ""
 "gdm_xdmcp_handle_manage: %s 디스플레이에 쓸 기록 파일을 열지 못했습니다!"
 
-#: daemon/xdmcp.c:852
+#: daemon/xdmcp.c:853
 #, c-format
 msgid "gdm_xdmcp_handle_keepalive: Got KEEPALIVE from banned host %s"
 msgstr ""
 "gdm_xdmcp_handle_keepalive: 금지된 호스트 %s에서 KEEPALIVE를 받았습니다"
 
-#: daemon/xdmcp.c:859
+#: daemon/xdmcp.c:860
 msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
 msgstr "gdm_xdmcp_handle_keepalive: 디스플레이 번호를 읽지 못했습니다"
 
-#: daemon/xdmcp.c:865
+#: daemon/xdmcp.c:866
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr "gdm_xdmcp_handle_keepalive: 세션 아이디를 읽지 못했습니다"
 
@@ -573,7 +573,7 @@ msgstr "gdm_signals_init: INT 시그날 처리기를 설정하는 데 문제 발생"
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr "gdm_signals_init: TERM 시그날 처리기를 설정하는 데 문제 발생"
 
-#: gui/gdmchooser.c:596 gui/gdmlogin.c:1565
+#: gui/gdmchooser.c:596 gui/gdmlogin.c:1532
 msgid "Could not set signal mask!"
 msgstr "시그날 마스크를 맞추지 못했습니다!"
 
@@ -603,7 +603,7 @@ msgstr "정말로 이 시스템을 종료할까요?"
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr "gdm_login_parse_config: 설정 파일이 없습니다: %s. 중지."
 
-#: gui/gdmlogin.c:524
+#: gui/gdmlogin.c:484
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
@@ -612,7 +612,7 @@ msgstr ""
 "선택한 세션 타입 %s은(는) 이 기계에 설치되어 있지 않습니다.\n"
 "앞으로 세션에 %s을(를) 기본으로 사용하시겠습니까?"
 
-#: gui/gdmlogin.c:543 gui/gdmlogin.c:573
+#: gui/gdmlogin.c:499 gui/gdmlogin.c:541
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -621,91 +621,91 @@ msgstr ""
 "이 세션에 %s을(를) 선택했지만, 기본 설정은 %s입니다.\n"
 "앞으로 %s을(를) 기본 세션으로 하시겠습니까?"
 
-#: gui/gdmlogin.c:631
+#: gui/gdmlogin.c:600
 #, c-format
 msgid "%s session selected"
 msgstr "%s 세션을 선택했습니다"
 
-#: gui/gdmlogin.c:647 gui/gdmlogin.c:750
+#: gui/gdmlogin.c:616 gui/gdmlogin.c:719
 msgid "Last"
 msgstr "지난번"
 
-#: gui/gdmlogin.c:662
+#: gui/gdmlogin.c:631
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr "gdm_login_session_init: 세션 스크립트 자료방이 없습니다!"
 
-#: gui/gdmlogin.c:715
+#: gui/gdmlogin.c:684
 msgid "No session scripts found. Aborting!"
 msgstr "세션 스크립트가 없습니다. 중지!"
 
-#: gui/gdmlogin.c:719
+#: gui/gdmlogin.c:688
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr "기본 세션 링크가 없습니다. %s 사용합니다.\n"
 
-#: gui/gdmlogin.c:733
+#: gui/gdmlogin.c:702
 #, c-format
 msgid "%s language selected"
 msgstr "%s 언어가 선택되었습니다"
 
-#: gui/gdmlogin.c:765
+#: gui/gdmlogin.c:734
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:771
+#: gui/gdmlogin.c:740
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:777
+#: gui/gdmlogin.c:746
 msgid "Other"
 msgstr "그 외"
 
-#: gui/gdmlogin.c:1080
+#: gui/gdmlogin.c:1052
 msgid "Session"
 msgstr "세션"
 
-#: gui/gdmlogin.c:1087
+#: gui/gdmlogin.c:1059
 msgid "Language"
 msgstr "언어"
 
-#: gui/gdmlogin.c:1094
+#: gui/gdmlogin.c:1066
 msgid "Reboot..."
 msgstr "시스템 재시작..."
 
-#: gui/gdmlogin.c:1101
+#: gui/gdmlogin.c:1073
 msgid "Halt..."
 msgstr "시스템 종료..."
 
-#: gui/gdmlogin.c:1108
+#: gui/gdmlogin.c:1080
 msgid "System"
 msgstr "시스템"
 
-#: gui/gdmlogin.c:1116
+#: gui/gdmlogin.c:1088
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr "아이콘 파일을 열 수 없습니다: %s. 아이콘화 기능 중지!"
 
-#: gui/gdmlogin.c:1119
+#: gui/gdmlogin.c:1091
 msgid "Iconify"
 msgstr "아이콘화"
 
-#: gui/gdmlogin.c:1288
+#: gui/gdmlogin.c:1255
 msgid "Please enter your login"
 msgstr "로그인 이름을 입력하세요"
 
-#: gui/gdmlogin.c:1469
+#: gui/gdmlogin.c:1436
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr "기본 이미지를 열 수 없습니다: %s. 얼굴 브라우저 중지."
 
-#: gui/gdmlogin.c:1551
+#: gui/gdmlogin.c:1518
 msgid "main: Error setting up HUP signal handler"
 msgstr "main: HUP 시그날 처리기 설정에 문제 발생"
 
-#: gui/gdmlogin.c:1554
+#: gui/gdmlogin.c:1521
 msgid "main: Error setting up INT signal handler"
 msgstr "main: INT 시그날 처리기 설정에 문제 발생"
 
-#: gui/gdmlogin.c:1557
+#: gui/gdmlogin.c:1524
 msgid "main: Error setting up TERM signal handler"
 msgstr "main: TERM 시그날 처리기 설정에 문제 발생"
