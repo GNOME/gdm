@@ -40,6 +40,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
 #ifdef HAVE_LIBXINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
@@ -67,6 +68,7 @@ static GdmDisplay *d;
 static gchar *login = NULL;
 static sigset_t mask;
 static gboolean greet = FALSE;
+static gboolean configurator = FALSE;
 static gboolean remanage_asap = FALSE;
 static gboolean do_timed_login = FALSE; /* if this is true,
 					   login the timed login */
@@ -185,6 +187,38 @@ check_notifies_now (void)
 		g_free (s);
 	}
 	g_list_free (list);
+}
+
+static void
+gdm_slave_desensitize_config (void)
+{
+	if (configurator &&
+	    d->dsp != NULL) {
+		gulong foo = 1;
+		Atom atom = XInternAtom (d->dsp,
+					 "_GDM_SETUP_INSENSITIVE",
+					 False);
+		XChangeProperty (d->dsp,
+				 DefaultRootWindow (d->dsp),
+				 atom,
+				 XA_CARDINAL, 32, PropModeReplace,
+				 (unsigned char *) &foo, 1);
+		XSync (d->dsp, False);
+	}
+
+}
+
+static void
+gdm_slave_sensitize_config (void)
+{
+	if (d->dsp != NULL) {
+		XDeleteProperty (d->dsp,
+				 DefaultRootWindow (d->dsp),
+				 XInternAtom (d->dsp,
+					      "_GDM_SETUP_INSENSITIVE",
+					      False));
+		XSync (d->dsp, False);
+	}
 }
 
 /* ignore handlers */
@@ -878,6 +912,7 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 
 		_exit (0);
 	} else {
+		configurator = TRUE;
 		/* XXX: is this a race if we don't push a sigchld block?
 		 * but then we don't get a signal for restarting the greeter */
 		/* wait for the config proggie to die */
@@ -887,12 +922,15 @@ run_config (GdmDisplay *display, struct passwd *pwent)
 			 * handler */
 			ve_waitpid_no_signal (pid, 0, 0);
 		display->sesspid = 0;
+		configurator = FALSE;
 	}
 }
 
 static void
 restart_the_greeter (void)
 {
+	gdm_slave_desensitize_config ();
+
 	/* no login */
 	g_free (login);
 	login = NULL;
@@ -924,6 +962,8 @@ restart_the_greeter (void)
 
 	if (greeter_no_focus)
 		gdm_slave_greeter_ctl_no_ret (GDM_NOFOCUS, "");
+
+	gdm_slave_sensitize_config ();
 }
 
 static void
@@ -3095,6 +3135,8 @@ gdm_slave_child_handler (int sig)
 	if (pid == d->greetpid && greet) {
 		if (WIFEXITED (status) &&
 		    WEXITSTATUS (status) == DISPLAY_RESTARTGREETER) {
+			gdm_slave_desensitize_config ();
+
 			greet = FALSE;
 			d->greetpid = 0;
 			whack_greeter_fds ();

@@ -49,32 +49,32 @@ working_command_exists (const char *commands)
 static void
 greeter_reboot_handler (void)
 {
-	if (greeter_query (_("Are you sure you want to reboot the machine?"))) {
+	/*if (greeter_query (_("Are you sure you want to reboot the machine?"))) {*/
 		closelog();
 		
 		_exit (DISPLAY_REBOOT);
-	}
+	/*}*/
 }
 
 
 static void
 greeter_halt_handler (void)
 {
-	if (greeter_query (_("Are you sure you want to shut down the machine?"))) {
+	/* if (greeter_query (_("Are you sure you want to shut down the machine?"))) { */
 		closelog();
 
 		_exit (DISPLAY_HALT);
-	}
+	/* } */
 }
 
 static void
 greeter_suspend_handler (void)
 {
-	if (greeter_query (_("Are you sure you want to suspend the machine?"))) {
+	/* if (greeter_query (_("Are you sure you want to suspend the machine?"))) { */
 		closelog();
 
 		_exit (DISPLAY_SUSPEND);
-	}
+	/* } */
 }
 
 static void

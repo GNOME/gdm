@@ -65,6 +65,27 @@ setup_cursor (GdkCursorType type)
 }
 
 static void
+setup_window_cursor (GdkCursorType type)
+{
+	GdkCursor *cursor = gdk_cursor_new (type);
+	GtkWidget *setup_dialog = glade_helper_get
+		(xml, "setup_dialog", GTK_TYPE_WINDOW);
+	if (setup_dialog->window)
+		gdk_window_set_cursor (setup_dialog->window, cursor);
+	gdk_cursor_unref (cursor);
+}
+
+static void
+unsetup_window_cursor (void)
+{
+	GtkWidget *setup_dialog = glade_helper_get
+		(xml, "setup_dialog", GTK_TYPE_WINDOW);
+	if (setup_dialog->window)
+		gdk_window_set_cursor (setup_dialog->window, NULL);
+}
+
+
+static void
 update_greeters (void)
 {
 	char *p, *ret;
@@ -1874,6 +1895,88 @@ setup_gui (void)
 }
 
 static gboolean
+get_sensitivity (void)
+{
+	static Atom atom = 0;
+	Display *disp = gdk_x11_get_default_xdisplay ();
+	Window root = gdk_x11_get_default_root_xwindow ();
+	gulong *data;
+	gulong nitems_return;
+	gulong bytes_after_return;
+	Atom type_returned;
+	int format_returned;
+
+	if (atom == 0)
+		atom = XInternAtom (disp, "_GDM_SETUP_INSENSITIVE", False);
+
+	if (XGetWindowProperty (disp,
+				root,
+				atom,
+				0, 1,
+				False,
+				XA_CARDINAL,
+				&type_returned, &format_returned,
+				&nitems_return,
+				&bytes_after_return,
+				(unsigned char **)&data) != Success)
+		return TRUE;
+
+	if (format_returned != 32 ||
+	    data[0] == 0) {
+		XFree (data);
+		return TRUE;
+	} else {
+		XFree (data);
+		return FALSE;
+	}
+}
+
+static void
+update_sensitivity (void)
+{
+	gboolean sensitive = get_sensitivity ();
+	GtkWidget *setup_dialog = glade_helper_get (xml, "setup_dialog",
+						    GTK_TYPE_WINDOW);
+	gtk_widget_set_sensitive (setup_dialog, sensitive);
+	if (sensitive)
+		unsetup_window_cursor ();
+	else
+		setup_window_cursor (GDK_WATCH);
+}
+
+static GdkFilterReturn
+root_window_filter (GdkXEvent *gdk_xevent,
+		    GdkEvent *event,
+		    gpointer data)
+{
+	XEvent *xevent = (XEvent *)gdk_xevent;
+
+	if (xevent->type == PropertyNotify)
+		update_sensitivity ();
+
+	return GDK_FILTER_CONTINUE;
+}
+
+static void
+setup_disable_handler (void)
+{
+	XWindowAttributes attribs = { 0, };
+	Display *disp = gdk_x11_get_default_xdisplay ();
+	Window root = gdk_x11_get_default_root_xwindow ();
+
+	update_sensitivity ();
+
+	/* set event mask for events on root window */
+	XGetWindowAttributes (disp, root, &attribs);
+	XSelectInput (disp, root,
+		      attribs.your_event_mask |
+		      PropertyChangeMask);
+
+	gdk_window_add_filter (gdk_get_default_root_window (),
+			       root_window_filter, NULL);
+}
+
+static gboolean
 gdm_event (GSignalInvocationHint *ihint,
 	   guint		n_param_values,
 	   const GValue	       *param_values,
@@ -1978,8 +2081,11 @@ main (int argc, char *argv[])
 
 	setup_gui ();
 
-	if (RUNNING_UNDER_GDM)
+	if (RUNNING_UNDER_GDM) {
+		setup_disable_handler ();
+
 		setup_cursor (GDK_LEFT_PTR);
+	}
 
 	gtk_main ();
 
