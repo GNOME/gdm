@@ -63,7 +63,8 @@ gdm_check (void)
 			 GTK_MESSAGE_WARNING,
 			 GTK_BUTTONS_OK,
 			 "foo");
-		 gtk_label_set_markup
+		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+		gtk_label_set_markup
 			 (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label),
 			  _("<b>GDM (The GNOME Display Manager) "
 			    "is not running.</b>\n\n"
@@ -141,6 +142,7 @@ main (int argc, char *argv[])
 					      "system administrator to enable "
 					      "it\nin the GDM configurator "
 					      "program."));
+		gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);
 	}
@@ -153,6 +155,7 @@ main (int argc, char *argv[])
 					      GTK_STOCK_OK,
 					      GTK_RESPONSE_OK,
 					      NULL);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    gtk_label_new (_("Select a photograph to show "
 					     "in the facebrowser:")),
@@ -193,6 +196,7 @@ main (int argc, char *argv[])
 						    GTK_MESSAGE_WARNING,
 						    GTK_BUTTONS_OK,
 						    _("No picture selected."));
+			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
 		} else if (s.st_size > max_size) {
@@ -207,6 +211,7 @@ main (int argc, char *argv[])
 						      "than %d bytes to\n"
 						      "show in the face browser"),
 						    max_size);
+			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
 		} else {
@@ -231,6 +236,7 @@ main (int argc, char *argv[])
 							      "reading\nError: %s"),
 							    pixmap,
 							    g_strerror (errno));
+				gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
 				g_free (cfg_file);
@@ -249,6 +255,7 @@ main (int argc, char *argv[])
 							      "writing\nError: %s"),
 							    photofile,
 							    g_strerror (errno));
+				gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 				gtk_dialog_run (GTK_DIALOG (d));
 				gtk_widget_destroy (d);
 				g_free (cfg_file);

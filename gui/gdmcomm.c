@@ -390,7 +390,8 @@ gdmcomm_check (gboolean gui_bitching)
 				 GTK_MESSAGE_WARNING,
 				 GTK_BUTTONS_OK,
 				 "foo");
-			 gtk_label_set_markup
+			gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+			gtk_label_set_markup
 				 (GTK_LABEL (GTK_MESSAGE_DIALOG (dialog)->label),
 				  _("<b>GDM (The GNOME Display Manager) "
 				    "is not running.</b>\n\n"
@@ -417,6 +418,7 @@ gdmcomm_check (gboolean gui_bitching)
 				 _("Cannot communicate with GDM "
 				   "(The GNOME Display Manager), perhaps "
 				   "you have an old version running."));
+			gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 			gtk_widget_show_all (dialog);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);

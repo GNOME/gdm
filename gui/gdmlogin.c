@@ -687,6 +687,7 @@ gdm_login_message (const gchar *msg)
 				      GTK_BUTTONS_CLOSE,
 				      "%s",
 				      msg);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 	g_signal_connect (G_OBJECT (req), "destroy",
 			  G_CALLBACK (gtk_widget_destroyed),
 			  &req);
@@ -1861,6 +1862,7 @@ get_gnome_session (const char *sess_string)
 					 GTK_STOCK_OK,
 					 GTK_RESPONSE_OK,
 					 NULL);
+	gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox),
 			    gtk_label_new (_("Select GNOME session")),
 			    FALSE, FALSE, 0);
@@ -2281,6 +2283,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 				      "%s",
 				      tmp);
 	g_free (tmp);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 	gdm_wm_center_window (GTK_WINDOW (dlg));
 
@@ -2919,6 +2922,7 @@ window_browser_event (GtkWidget *window, GdkEvent *event, gpointer data)
 							 GTK_STOCK_OK,
 							 GTK_RESPONSE_OK,
 							 NULL);
+			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 			less = gnome_less_new ();
 			gtk_widget_show (less);
 			gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox),

@@ -147,6 +147,7 @@ check_update_error:
 						  "login screens.  Not all "
 						  "updates may have taken "
 						  "effect."));
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		shown_error = TRUE;
@@ -1512,6 +1513,7 @@ install_ok (GtkWidget *button, gpointer data)
 						GTK_MESSAGE_ERROR,
 						GTK_BUTTONS_OK,
 						_("No file selected"));
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		g_free (cwd);
@@ -1540,6 +1542,7 @@ install_ok (GtkWidget *button, gpointer data)
 						_("Not a theme archive\n"
 						  "Details: %s"),
 						error);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 		g_free (filename);
@@ -1563,6 +1566,7 @@ install_ok (GtkWidget *button, gpointer data)
 			   "installed, install again anyway?"),
 			 fname);
 		g_free (fname);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		if (gtk_dialog_run (GTK_DIALOG (dlg)) != GTK_RESPONSE_YES) {
 			gtk_widget_destroy (dlg);
 			g_free (filename);
@@ -1609,6 +1613,7 @@ install_ok (GtkWidget *button, gpointer data)
 						GTK_BUTTONS_OK,
 						_("Some error occured when "
 						  "installing the theme"));
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		gtk_dialog_run (GTK_DIALOG (dlg));
 		gtk_widget_destroy (dlg);
 	}
@@ -1727,6 +1732,7 @@ delete_theme (GtkWidget *button, gpointer data)
 		 GTK_BUTTONS_YES_NO,
 		 _("Do you really wish to remove theme '%s' from the system?"),
 		 name);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 	if (gtk_dialog_run (GTK_DIALOG (dlg)) == GTK_RESPONSE_YES) {
 		char *theme_dir = get_theme_dir ();
 		char *cwd = g_get_current_dir ();
@@ -1907,6 +1913,7 @@ dialog_response (GtkWidget *dlg, int response, gpointer data)
 			   "are listed here.  You may want to edit %s "
 			   "if you cannot find what you are looking for."),
 			 GDM_CONFIG_FILE);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		g_signal_connect (G_OBJECT (dlg), "destroy",
 				  G_CALLBACK (gtk_widget_destroyed),
 				  &dlg);
@@ -2248,6 +2255,7 @@ main (int argc, char *argv[])
 						GTK_MESSAGE_ERROR,
 						GTK_BUTTONS_OK,
 						_("You must be the superuser (root) to configure GDM.\n"));
+		gtk_dialog_set_has_separator (GTK_DIALOG (fatal_error), FALSE);
 		if (RUNNING_UNDER_GDM)
 			setup_cursor (GDK_LEFT_PTR);
 		gtk_dialog_run (GTK_DIALOG (fatal_error));

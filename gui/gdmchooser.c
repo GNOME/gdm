@@ -444,6 +444,7 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 		       "to support a login session right now.  "
 		       "Please try again later."),
 		     added_host);
+	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 	    if (RUNNING_UNDER_GDM)
 		    gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -813,6 +814,7 @@ add_check (gpointer data)
 			   "later."),
 			 added_host,
 			 ADD_TIMEOUT / 1000);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 		if (RUNNING_UNDER_GDM)
 			gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -861,6 +863,7 @@ gdm_chooser_add_host (void)
 			 _("I cannot find the host \"%s\", "
 			   "perhaps you have mistyped it."),
 			 name);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 		if (RUNNING_UNDER_GDM)
 			gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1095,6 +1098,7 @@ display_chooser_information (void)
 		   "You can rescan the network for new hosts by clicking "
 		   "\"Refresh\".  When you have selected a host click "
 		   "\"Connect\" to open a session to that machine."));
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 	if (RUNNING_UNDER_GDM)
 		gdm_wm_center_window (GTK_WINDOW (dialog));
@@ -1355,6 +1359,7 @@ main (int argc, char *argv[])
 					       "You have probably just upgraded gdm.\n"
 					       "Please restart the gdm daemon or reboot the computer."),
 					     VERSION, gdm_version);
+	    gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
 
 	    gtk_widget_show_all (dialog);
 	    gdm_wm_center_window (GTK_WINDOW (dialog));

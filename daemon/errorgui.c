@@ -223,6 +223,7 @@ gdm_error_box_full (GdmDisplay *d, GtkMessageType type, const char *error,
 					      "%s",
 					      loc);
 		g_free (loc);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 		if (details_label != NULL) {
 			loc = gdm_locale_to_utf8 (details_label);
@@ -362,6 +363,7 @@ gdm_failsafe_question (GdmDisplay *d,
 						   GTK_STOCK_OK,
 						   GTK_RESPONSE_OK,
 						   NULL);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 		g_signal_connect (G_OBJECT (dlg), "delete_event",
 				  G_CALLBACK (gtk_true), NULL);
 
@@ -502,6 +504,7 @@ gdm_failsafe_yesno (GdmDisplay *d,
 					      GTK_BUTTONS_YES_NO,
 					      "%s",
 					      loc);
+		gtk_dialog_set_has_separator (GTK_DIALOG (dlg), FALSE);
 
 		sid = g_signal_lookup ("event",
 				       GTK_TYPE_WIDGET);

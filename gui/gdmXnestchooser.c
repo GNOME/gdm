@@ -469,6 +469,7 @@ main (int argc, char *argv[])
 					    "Please ask your system "
 					    "administrator\n"
 					    "to install it."));
+		gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 		gtk_widget_show_all (d);
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);
@@ -496,6 +497,7 @@ main (int argc, char *argv[])
 				   "system administrator to enable "
 				   "it\nin the GDM configurator "
 				   "program."));
+			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -515,6 +517,7 @@ main (int argc, char *argv[])
 				   "system administrator to enable "
 				   "it\nin the GDM configurator "
 				   "program."));
+			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -542,6 +545,7 @@ main (int argc, char *argv[])
 				 _("GDM is not running.\n"
 				   "Please ask your "
 				   "system administrator to start it."));
+			gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 			gtk_widget_show_all (d);
 			gtk_dialog_run (GTK_DIALOG (d));
 			gtk_widget_destroy (d);
@@ -558,6 +562,7 @@ main (int argc, char *argv[])
 					    GTK_BUTTONS_OK,
 					    _("Could not find a free "
 					      "display number"));
+		gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
 		gtk_widget_show_all (d);
 		gtk_dialog_run (GTK_DIALOG (d));
 		gtk_widget_destroy (d);
