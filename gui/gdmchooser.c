@@ -20,12 +20,6 @@
  * presents a list of them and allows the user to choose one. The
  * selected hostname will be printed on stdout. */
 
-/* This should always be commented before commiting/releasing. When it's
- * defined the current directory is searched for the glade file, prior to
- * the system directory.
- */
-/*#define DOING_DEVELOPMENT 1*/
-
 #include <config.h>
 #include <gnome.h>
 #include <glade/glade.h>
@@ -52,6 +46,13 @@
 
 #include "gdmchooser.h"
 #include "gdm.h"
+
+/* set the DOING_GDM_DEVELOPMENT env variable to "yes" if you want to
+ * search for the glade file in the current dir and not the system
+ * install dir, better then something you have to change
+ * in the source and recompile */
+static gboolean DOING_GDM_DEVELOPMENT = FALSE;
+
 
 static const gchar RCSid[]="$Id$";
 
@@ -501,15 +502,14 @@ gdm_chooser_gui_init (void)
 	 * in the same directory, so we can actually make changes easily.
      */
 	
-#ifndef DOING_DEVELOPMENT
-    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade");
-    if (!glade_filename)
-      {	  
-	  glade_filename = g_strdup("gdmchooser.glade");
-      }
-#else
-	glade_filename = g_strdup("gdmchooser.glade");
-#endif /* DOING_DEVELOPMENT */
+    if ( ! DOING_GDM_DEVELOPMENT) {
+	    glade_filename = gnome_datadir_file("gdm/gdmchooser.glade");
+	    if (glade_filename == NULL) {	  
+		    glade_filename = g_strdup("gdmchooser.glade");
+	    }
+    } else {
+	    glade_filename = g_strdup("gdmchooser.glade");
+    }
     /* Enable theme */
     if (GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
@@ -528,6 +528,15 @@ gdm_chooser_gui_init (void)
     /* Main window */
     g_assert (glade_filename != NULL);
     chooser_app = glade_xml_new (glade_filename, "gdmchooser_main");
+    if (chooser_app == NULL) {
+	    GtkWidget *fatal_error = 
+		    gnome_error_dialog(_("Cannot find the glade interface description\n"
+					 "file, cannot run gdmchooser.\n"
+					 "Please check your installation and the\n"
+					 "location of the gdmchooser.glade file."));
+	    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
+	    exit(EXIT_FAILURE);
+    }
     glade_xml_signal_autoconnect (chooser_app);
    
     chooser = glade_xml_get_widget (chooser_app, "gdmchooser_main");
@@ -535,6 +544,19 @@ gdm_chooser_gui_init (void)
     rescan = glade_xml_get_widget (chooser_app, "rescan_button");
     cancel = glade_xml_get_widget (chooser_app, "quit_button");
     status_label = glade_xml_get_widget (chooser_app, "status_label");
+
+    if (chooser == NULL ||
+	manage == NULL ||
+	rescan == NULL ||
+	cancel == NULL ||
+	status_label == NULL) {
+	    GtkWidget *fatal_error = 
+		    gnome_error_dialog(_("The glade interface description file\n"
+					 "appears to be corrupted.\n"
+					 "Please check your installation."));
+	    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
+	    exit(EXIT_FAILURE);
+	}
    
     /* Find background style for browser */
     style = gtk_style_copy (chooser->style);
@@ -792,6 +814,10 @@ main (int argc, char *argv[])
     gint fixedargc, i;
     gchar **hosts;
     poptContext ctx;
+
+    if (g_getenv ("DOING_GDM_DEVELOPMENT") != 0 &&
+	 g_strcasecmp (g_getenv ("DOING_GDM_DEVELOPMENT"), "yes") == 0)
+	    DOING_GDM_DEVELOPMENT = TRUE;
 
     /* Avoid creating ~gdm/.gnome stuff */
     gnome_do_not_create_directories = TRUE;

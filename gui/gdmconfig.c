@@ -28,10 +28,10 @@
 #include "gdmconfig.h"
 #include "icon-entry-hack.h"
 
-/* set the DOING_GDMCONFIG_DEVELOPMENT env variable to "yes" if you don't
+/* set the DOING_GDM_DEVELOPMENT env variable to "yes" if you don't
  * want to do that root stuff, better then something you have to change
  * in the source and recompile */
-static gboolean DOING_GDMCONFIG_DEVELOPMENT = FALSE;
+static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 
 /* XML Structures for the various configurator components */
 GladeXML *GUI = NULL;
@@ -98,6 +98,21 @@ GtkWidget *get_widget(gchar *widget_name)
 			}
 		}
 	}
+
+	if (ret == NULL) {
+		char *error =
+			g_strdup_printf (_("The glade ui description file "
+					   "doesn't seem to contain the\n"
+					   "widget \"%s\".  "
+					   "Unfortunately I cannot continue.\n"
+					   "Please check your installation."),
+					 widget_name);
+		GtkWidget *fatal_error = gnome_error_dialog (error);
+		g_free (error);
+		gnome_dialog_run_and_close (GNOME_DIALOG (fatal_error));
+		exit (EXIT_FAILURE);
+	}
+
 	return ret;
 }
 
@@ -127,9 +142,9 @@ void gdm_radio_write (gchar *radio_base_name,
 int
 main (int argc, char *argv[])
 {
-    if (g_getenv ("DOING_GDMCONFIG_DEVELOPMENT") != 0 &&
-	g_strcasecmp (g_getenv ("DOING_GDMCONFIG_DEVELOPMENT"), "yes") == 0)
-	    DOING_GDMCONFIG_DEVELOPMENT = TRUE;
+    if (g_getenv ("DOING_GDM_DEVELOPMENT") != 0 &&
+	 g_strcasecmp (g_getenv ("DOING_GDM_DEVELOPMENT"), "yes") == 0)
+	    DOING_GDM_DEVELOPMENT = TRUE;
 
     bindtextdomain (PACKAGE, GNOMELOCALEDIR);
     textdomain (PACKAGE);
@@ -141,7 +156,7 @@ main (int argc, char *argv[])
      * GDM's configuration.
      */
 
-    if ( ! DOING_GDMCONFIG_DEVELOPMENT) {
+    if ( ! DOING_GDM_DEVELOPMENT) {
 	    if (geteuid() != 0)
 	    {
 		    GtkWidget *fatal_error = 
@@ -157,7 +172,7 @@ main (int argc, char *argv[])
 	 * in the same directory, so we can actually make changes easily.
      */
 	
-    if ( ! DOING_GDMCONFIG_DEVELOPMENT) {
+    if ( ! DOING_GDM_DEVELOPMENT) {
 	    glade_filename = gnome_datadir_file ("gdm/gdmconfig.glade");
 	    if (glade_filename == NULL) {	  
 		    glade_filename = g_strdup ("gdmconfig.glade");
@@ -171,6 +186,19 @@ main (int argc, char *argv[])
 	basic_notebook = glade_xml_new(glade_filename, "basic_notebook");
 	system_notebook = glade_xml_new(glade_filename, "system_notebook");
 	expert_notebook = glade_xml_new(glade_filename, "expert_notebook");
+
+	if (GUI == NULL ||
+	    basic_notebook == NULL ||
+	    system_notebook == NULL ||
+	    expert_notebook == NULL) {
+		    GtkWidget *fatal_error = 
+			    gnome_error_dialog(_("Cannot find the glade interface description\n"
+						 "file, cannot run gdmconfig.\n"
+						 "Please check your installation and the\n"
+						 "location of the gdmconfig.glade file."));
+		    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
+		    exit(EXIT_FAILURE);
+	}
 
    invisible_notebook = gtk_notebook_new();
    gtk_notebook_set_show_tabs (GTK_NOTEBOOK (invisible_notebook), FALSE);
@@ -188,11 +216,17 @@ main (int argc, char *argv[])
    gtk_container_add (GTK_CONTAINER (get_widget ("main_container")),
 		      invisible_notebook);
    gtk_widget_show (invisible_notebook);
-    g_assert(GUI != NULL);
 
     /* Sanity checking */
     GDMconfigurator = get_widget("gdmconfigurator");
-    g_assert(GDMconfigurator != NULL);
+    if (GDMconfigurator == NULL) {
+	    GtkWidget *fatal_error = 
+		    gnome_error_dialog(_("Cannot find the gdmconfigurator widget in\n"
+					 "the glade interface description file\n"
+					 "Please check your installation."));
+	    gnome_dialog_run_and_close(GNOME_DIALOG(fatal_error));
+	    exit(EXIT_FAILURE);
+	}
 
     /* We set most of the user interface NOT wanting signals to get triggered as
      * we do it. Then we hook up the signals, and THEN set a few remaining elements.
