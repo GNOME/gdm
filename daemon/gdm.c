@@ -1542,6 +1542,15 @@ gdm_safe_restart (void)
 	gdm_restart_now ();
 }
 
+static void
+main_daemon_abrt (int sig)
+{
+	/* FIXME: note that this could mean out of memory */
+	gdm_error ("main daemon: Got SIGABRT, something went very wrong. Going down!");
+	gdm_final_cleanup ();
+	exit (EXIT_FAILURE);
+}
+
 static gboolean
 mainloop_sig_callback (int sig, gpointer data)
 {
@@ -1551,13 +1560,6 @@ mainloop_sig_callback (int sig, gpointer data)
     case SIGCHLD:
       while (gdm_cleanup_children ())
 	      ;
-      break;
-
-    case SIGABRT:
-      /* FIXME: note that this could mean out of memory */
-      gdm_error ("main daemon: Got SIGABRT, something went very wrong. Going down!");
-      gdm_final_cleanup ();
-      exit (EXIT_FAILURE);
       break;
 
     case SIGINT:
@@ -1764,7 +1766,7 @@ int
 main (int argc, char *argv[])
 {
     sigset_t mask;
-    struct sigaction sig, child;
+    struct sigaction sig, child, abrt;
     FILE *pf;
     poptContext ctx;
     int nextopt;
@@ -1880,7 +1882,6 @@ main (int argc, char *argv[])
     ve_signal_add (SIGINT, mainloop_sig_callback, NULL);
     ve_signal_add (SIGHUP, mainloop_sig_callback, NULL);
     ve_signal_add (SIGUSR1, mainloop_sig_callback, NULL);
-    ve_signal_add (SIGABRT, mainloop_sig_callback, NULL);
 
     sig.sa_handler = ve_signal_notify;
     sig.sa_flags = SA_RESTART;
@@ -1902,10 +1903,6 @@ main (int argc, char *argv[])
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "USR1", strerror (errno));
 
-    if (sigaction (SIGABRT, &sig, NULL) < 0) 
-	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
-		  "main", "ABRT", strerror (errno));
-
     /* some process limit signals we catch and restart on,
        note that we don't catch these in the slave, but then
        we catch those in the main daemon as slave crashing
@@ -1922,6 +1919,16 @@ main (int argc, char *argv[])
 	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
 		  "main", "XFSZ", strerror (errno));
 #endif
+
+    /* cannot use mainloop for SIGABRT, the handler can never
+       return */
+    abrt.sa_handler = main_daemon_abrt;
+    abrt.sa_flags = SA_RESTART;
+    sigemptyset (&abrt.sa_mask);
+
+    if (sigaction (SIGABRT, &abrt, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "ABRT", strerror (errno));
 
     child.sa_handler = ve_signal_notify;
     child.sa_flags = SA_RESTART|SA_NOCLDSTOP;
