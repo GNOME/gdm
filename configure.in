@@ -168,6 +168,14 @@ ALL_LINGUAS="am ar az be bg bn ca cs cy da de el es et eu fa fi fr ga gl hi he h
 AM_GLIB_GNU_GETTEXT
 
 EXTRA_DAEMON_LIBS=""
+EXTRA_CHOOSER_LIBS=""
+
+AC_CHECK_FUNC(socket,,[AC_CHECK_LIB(socket,socket, [
+		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lsocket"
+		     EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lsocket"])])
+AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname, [
+		     EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lnsl"
+		     EXTRA_CHOOSER_LIBS="$EXTRA_CHOOSER_LIBS -lnsl"])])
 
 # TCP Wrappers for XDMCP access control
 if test x$with_tcp_wrappers = xno ; then
@@ -218,9 +226,9 @@ else
   dnl find out if we need -lnsl or whatever
   LIB_NSL=
   if test -n "$LIBWRAP_PATH"; then
-        AC_MSG_CHECKING(whether -lwrap requires -lnsl)
+        AC_MSG_CHECKING(whether -lwrap also requires -lnsl)
         ORIG_LIBS="$LIBS"
-        LIBS="-lwrap $LIBS"
+        LIBS="$EXTRA_DAEMON_LIBS $LIBS"
         AC_TRY_LINK([
 #include <tcpd.h>
 int allow_severity, deny_severity;
@@ -425,6 +433,7 @@ CPPFLAGS="$xinerama_save_cppflags"
 # Subst the extra libs
 #
 AC_SUBST(EXTRA_DAEMON_LIBS)
+AC_SUBST(EXTRA_CHOOSER_LIBS)
 
 #
 # Configuration file foo, we need to get expanded versions of a bunch of things

@@ -1,3 +1,26 @@
+Tue Jul 15 11:08:31 2003  George Lebl <jirka@5z.com>
+
+	* configure.in: check for needing to link in libsocket and libnsl
+
+Tue Jul 15 11:07:57 2003  George Lebl <jirka@5z.com>
+
+	* configure.in, gui/Makefile.am, gdmchooser.(c|glade): Whack
+	  GnomeIconList and replace with GtkTreeView as in the other
+	  browsers.  Fixes among other things connecting to the wrong
+	  host (Why someone has NOT seen this bug before is a mystery
+	  to me, but the chooser was definately not usable for more
+	  then a few hosts and then only if they responded in
+	  alphabetical order).  Thanks to Niall Power for spotting this
+	  bug.  Also clean up the glade file a bit and don't compile
+	  with libgnome/ui anymore.
+
+	* gui/gdmlogin.c, gui/gdmsetup.c,
+	  gui/greeter/greeter_action_language.c,
+	  gui/greeter/greeter_canvas_item.c:  Add the rules hint for
+	  lists since it looks cooler and seems easier to browse to me.
+
+	* NEWS: update
+
 Mon Jul 14 16:44:19 2003  George Lebl <jirka@5z.com>
 
 	* daemon/misc.[ch], daemon/slave.c: Fix #97774 by resetting the
