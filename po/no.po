@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdm 2.5.0.90\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-13 21:06+0100\n"
-"PO-Revision-Date: 2004-01-13 17:11+0100\n"
+"POT-Creation-Date: 2004-01-21 23:05+0100\n"
+"PO-Revision-Date: 2004-01-21 23:06+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -177,7 +177,7 @@ msgstr "%s: Kunne ikke skrive informasjonskapsel"
 msgid "%s: Ignoring suspiciously looking cookie file %s"
 msgstr "%s: Overser suspekt cookie-fil %s"
 
-#: daemon/auth.c:890 daemon/gdm.c:2219
+#: daemon/auth.c:890 daemon/gdm.c:2221
 #, c-format
 msgid "Can't write to %s: %s"
 msgstr "Kan ikke skrive til %s: %s"
@@ -546,12 +546,12 @@ msgstr ""
 "være %o. Avbryter."
 
 #. FIXME: how to handle this?
-#: daemon/gdm.c:832 daemon/gdm.c:840 daemon/gdm.c:2003 daemon/gdm.c:2011
+#: daemon/gdm.c:832 daemon/gdm.c:840 daemon/gdm.c:2005 daemon/gdm.c:2013
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"
 msgstr "Kan ikke skrive PID-fil %s. Kan være tom for diskplass. Feil: %s\n"
 
-#: daemon/gdm.c:834 daemon/gdm.c:842 daemon/gdm.c:2005 daemon/gdm.c:2013
+#: daemon/gdm.c:834 daemon/gdm.c:842 daemon/gdm.c:2007 daemon/gdm.c:2015
 #, c-format
 msgid "Cannot write PID file %s, possibly out of diskspace.  Error: %s"
 msgstr "Kan ikke skrive PID-fil %s. Kan være tom for diskplass. Feil: %s"
@@ -601,7 +601,7 @@ msgstr ""
 "Gjentatte feil under oppstart av X-tjeneren over en kort tidsperiode; "
 "stenger skjerm %s"
 
-#: daemon/gdm.c:1175 daemon/gdm.c:2721
+#: daemon/gdm.c:1175 daemon/gdm.c:2724
 msgid "Master suspending..."
 msgstr "Sjef går i dvale..."
 
@@ -631,58 +631,58 @@ msgstr "Sjef starter på nytt..."
 msgid "%s: Reboot failed: %s"
 msgstr "%s: Omstart feilet: %s"
 
-#: daemon/gdm.c:1373
+#: daemon/gdm.c:1375
 #, c-format
 msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
 "Omstart eller nedstenging forespurt selv om det ikke finnes en systemmeny "
 "fra skjerm %s"
 
-#: daemon/gdm.c:1382
+#: daemon/gdm.c:1384
 #, c-format
 msgid "Restart, Reboot or Halt request from a non-local display %s"
 msgstr "Forespørsel om omstart eller nedstenging fra en ekstern skjerm %s"
 
 #. Bury this display for good
-#: daemon/gdm.c:1442
+#: daemon/gdm.c:1444
 #, c-format
 msgid "%s: Aborting display %s"
 msgstr "%s: Avbryter skjerm %s"
 
-#: daemon/gdm.c:1580
+#: daemon/gdm.c:1582
 msgid "GDM restarting ..."
 msgstr "GDM starter på nytt..."
 
-#: daemon/gdm.c:1584
+#: daemon/gdm.c:1586
 msgid "Failed to restart self"
 msgstr "Feil under gjenoppstarting"
 
 #. FIXME: note that this could mean out of memory
-#: daemon/gdm.c:1658
+#: daemon/gdm.c:1660
 msgid "main daemon: Got SIGABRT, something went very wrong. Going down!"
 msgstr "hoveddaemon: Mottok SIGABRT. Noe gikk veldig galt. Går ned!"
 
-#: daemon/gdm.c:1796
+#: daemon/gdm.c:1798
 msgid "Do not fork into the background"
 msgstr "Ikke kjør fork() og gå til bakgrunnen"
 
-#: daemon/gdm.c:1798
+#: daemon/gdm.c:1800
 msgid "No console (local) servers to be run"
 msgstr "Ingen konsolltjenere (lokale) å kjøre"
 
-#: daemon/gdm.c:1800
+#: daemon/gdm.c:1802
 msgid "Preserve LD_* variables"
 msgstr "Bevar LD_* variabler"
 
-#: daemon/gdm.c:1802
+#: daemon/gdm.c:1804
 msgid "Print GDM version"
 msgstr "Skriv ut GDM-versjon"
 
-#: daemon/gdm.c:1804
+#: daemon/gdm.c:1806
 msgid "Start the first X server but then halt until we get a GO in the fifo"
 msgstr "Start første X-tjener, men vent til vi får startsignal i fifo"
 
-#: daemon/gdm.c:1923 gui/gdmchooser.c:2023
+#: daemon/gdm.c:1925 gui/gdmchooser.c:2023
 #, c-format
 msgid ""
 "Error on option %s: %s.\n"
@@ -692,13 +692,13 @@ msgstr ""
 "Kjør «%s --help» for å se en full liste over tilgjengelige "
 "kommandolinjeflagg.\n"
 
-#: daemon/gdm.c:1941
+#: daemon/gdm.c:1943
 msgid "Only root wants to run gdm\n"
 msgstr "Bare root kan kjøre gdm\n"
 
-#: daemon/gdm.c:1957 daemon/gdm.c:1961 daemon/gdm.c:2036 daemon/gdm.c:2040
-#: daemon/gdm.c:2044 daemon/gdm.c:2048 daemon/gdm.c:2058 daemon/gdm.c:2064
-#: daemon/gdm.c:2075 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
+#: daemon/gdm.c:1959 daemon/gdm.c:1963 daemon/gdm.c:2038 daemon/gdm.c:2042
+#: daemon/gdm.c:2046 daemon/gdm.c:2050 daemon/gdm.c:2060 daemon/gdm.c:2066
+#: daemon/gdm.c:2077 daemon/misc.c:1603 daemon/misc.c:1607 daemon/misc.c:1611
 #: daemon/misc.c:1618 daemon/misc.c:1622 daemon/misc.c:1626
 #: daemon/server.c:510 daemon/server.c:523 daemon/slave.c:805
 #: daemon/slave.c:819 daemon/slave.c:829 daemon/slave.c:839 daemon/slave.c:851
@@ -710,31 +710,31 @@ msgstr "Bare root kan kjøre gdm\n"
 msgid "%s: Error setting up %s signal handler: %s"
 msgstr "%s: Feil under oppsett av signalhåndterer for %s: %s"
 
-#: daemon/gdm.c:1985
+#: daemon/gdm.c:1987
 msgid "gdm already running. Aborting!"
 msgstr "gdm kjører allerede. Avbryter!"
 
-#: daemon/gdm.c:2084
+#: daemon/gdm.c:2086
 #, c-format
 msgid "%s: Error setting up CHLD signal handler"
 msgstr "%s: Feil under oppsett av CHLD signalhåndtereren"
 
-#: daemon/gdm.c:2188
+#: daemon/gdm.c:2190
 #, c-format
 msgid "Can't open %s for writing"
 msgstr "Kunne ikke åpne %s for skriving"
 
-#: daemon/gdm.c:3425 daemon/gdm.c:3444
+#: daemon/gdm.c:3428 daemon/gdm.c:3447
 msgid "Flexible server request denied: Not authenticated"
 msgstr "Fleksibel tjenerforespørsel nektet: Ikke autentisert"
 
 #. Don't print the name to syslog as it might be
 #. * long and dangerous
-#: daemon/gdm.c:3462
+#: daemon/gdm.c:3465
 msgid "Unknown server type requested, using standard server."
 msgstr "Ukjent tjenertype forespurt, bruker forvalgt tjener."
 
-#: daemon/gdm.c:3466
+#: daemon/gdm.c:3469
 #, c-format
 msgid ""
 "Requested server %s not allowed to be used for flexible servers, using "
@@ -743,16 +743,16 @@ msgstr ""
 "Forespurt tjener, %s, er ikke tillatt som fleksibel tjener. Bruker forvalgt "
 "tjener."
 
-#: daemon/gdm.c:3588
+#: daemon/gdm.c:3591
 msgid "Query logout action request denied: Not authenticated"
 msgstr "Forespørsel om handling for utlogging nektet: Ikke autentisert"
 
-#: daemon/gdm.c:3646 daemon/gdm.c:3701
+#: daemon/gdm.c:3649 daemon/gdm.c:3704
 msgid "Set logout action request denied: Not authenticated"
 msgstr ""
 "Forespørsel om setting av handling for utlogging nektet: Ikke autentisert"
 
-#: daemon/gdm.c:3746 daemon/gdm.c:3773
+#: daemon/gdm.c:3749 daemon/gdm.c:3776
 msgid "Query vt request denied: Not authenticated"
 msgstr "Forespørsel om virtuelt konsoll nektet: Ikke autentisert"
 
@@ -781,7 +781,7 @@ msgstr "initgroups() feilet for %s. Avbryter."
 msgid "%s: Error setting signal %d to %s"
 msgstr "%s: Feil under setting av signal %d til %s"
 
-#: daemon/misc.c:2270
+#: daemon/misc.c:2272
 #, c-format
 msgid ""
 "Last login:\n"
@@ -1329,7 +1329,7 @@ msgstr "%s: Kan ikke opprette rør"
 msgid "%s: Failed executing: %s"
 msgstr "%s: Feil under kjøring: %s"
 
-#: daemon/verify-crypt.c:71 daemon/verify-pam.c:723 daemon/verify-shadow.c:72
+#: daemon/verify-crypt.c:75 daemon/verify-pam.c:723 daemon/verify-shadow.c:76
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
@@ -1337,56 +1337,56 @@ msgstr ""
 "\n"
 "Ugyldig brukernavn eller passord. Det må tas hensyn til små/store bokstaver."
 
-#: daemon/verify-crypt.c:76 daemon/verify-pam.c:733 daemon/verify-shadow.c:77
+#: daemon/verify-crypt.c:80 daemon/verify-pam.c:733 daemon/verify-shadow.c:81
 msgid "Please make sure the Caps Lock key is not enabled."
 msgstr "Vennligst sjekk at Caps-lock ikke er aktivert."
 
 #. I think I'll add the buttons next to this
-#: daemon/verify-crypt.c:123 daemon/verify-pam.c:176
-#: daemon/verify-shadow.c:122 gui/gdmlogin.c:2908
+#: daemon/verify-crypt.c:127 daemon/verify-pam.c:176
+#: daemon/verify-shadow.c:126 gui/gdmlogin.c:2908
 msgid "Please enter your username"
 msgstr "Vennligst skriv inn brukernavn"
 
 #. login: is whacked always translate to Username:
-#: daemon/verify-crypt.c:124 daemon/verify-pam.c:92 daemon/verify-pam.c:93
+#: daemon/verify-crypt.c:128 daemon/verify-pam.c:92 daemon/verify-pam.c:93
 #: daemon/verify-pam.c:94 daemon/verify-pam.c:170 daemon/verify-pam.c:512
-#: daemon/verify-shadow.c:123 gui/gdmlogin.c:1049 gui/gdmlogin.c:1063
+#: daemon/verify-shadow.c:127 gui/gdmlogin.c:1049 gui/gdmlogin.c:1063
 #: gui/gdmlogin.c:1754 gui/gdmlogin.c:2223 gui/greeter/greeter.c:270
 #: gui/greeter/greeter_parser.c:1061
 msgid "Username:"
 msgstr "Brukernavn:"
 
-#: daemon/verify-crypt.c:162 daemon/verify-pam.c:95 daemon/verify-pam.c:96
-#: daemon/verify-pam.c:223 daemon/verify-shadow.c:180 gui/gdmlogin.c:1786
+#: daemon/verify-crypt.c:166 daemon/verify-pam.c:95 daemon/verify-pam.c:96
+#: daemon/verify-pam.c:223 daemon/verify-shadow.c:184 gui/gdmlogin.c:1786
 msgid "Password:"
 msgstr "Passord:"
 
-#: daemon/verify-crypt.c:180 daemon/verify-crypt.c:194
-#: daemon/verify-shadow.c:198 daemon/verify-shadow.c:212
+#: daemon/verify-crypt.c:184 daemon/verify-crypt.c:198
+#: daemon/verify-shadow.c:202 daemon/verify-shadow.c:216
 #, c-format
 msgid "Couldn't authenticate user \"%s\""
 msgstr "Kunne ikke autentisere bruker «%s»"
 
-#: daemon/verify-crypt.c:207 daemon/verify-pam.c:609
-#: daemon/verify-shadow.c:225
+#: daemon/verify-crypt.c:211 daemon/verify-pam.c:609
+#: daemon/verify-shadow.c:229
 #, c-format
 msgid "Root login disallowed on display '%s'"
 msgstr "Root innlogging ikke tillatt på skjerm «%s»"
 
-#: daemon/verify-crypt.c:209 daemon/verify-shadow.c:227
+#: daemon/verify-crypt.c:213 daemon/verify-shadow.c:231
 msgid "The system administrator is not allowed to login from this screen"
 msgstr ""
 "Systemadministrator har ikke tillatelse til å logge inn fra denne skjermen"
 
-#: daemon/verify-crypt.c:225 daemon/verify-crypt.c:249
-#: daemon/verify-shadow.c:243 daemon/verify-shadow.c:267
+#: daemon/verify-crypt.c:229 daemon/verify-crypt.c:253
+#: daemon/verify-shadow.c:247 daemon/verify-shadow.c:271
 #, c-format
 msgid "User %s not allowed to log in"
 msgstr "Bruker %s har ikke tillatelse til å logge inn"
 
-#: daemon/verify-crypt.c:227 daemon/verify-crypt.c:251 daemon/verify-pam.c:639
-#: daemon/verify-pam.c:888 daemon/verify-shadow.c:245
-#: daemon/verify-shadow.c:269
+#: daemon/verify-crypt.c:231 daemon/verify-crypt.c:255 daemon/verify-pam.c:639
+#: daemon/verify-pam.c:888 daemon/verify-shadow.c:249
+#: daemon/verify-shadow.c:273
 msgid ""
 "\n"
 "The system administrator has disabled your account."
@@ -1394,16 +1394,16 @@ msgstr ""
 "\n"
 "Systemadministrator har deaktivert din konto."
 
-#: daemon/verify-crypt.c:274 daemon/verify-crypt.c:379 daemon/verify-pam.c:657
-#: daemon/verify-pam.c:905 daemon/verify-shadow.c:292
-#: daemon/verify-shadow.c:396
+#: daemon/verify-crypt.c:278 daemon/verify-crypt.c:416 daemon/verify-pam.c:657
+#: daemon/verify-pam.c:905 daemon/verify-shadow.c:296
+#: daemon/verify-shadow.c:434
 #, c-format
 msgid "Cannot set user group for %s"
 msgstr "Kan ikke sette brukergruppe for %s"
 
-#: daemon/verify-crypt.c:276 daemon/verify-crypt.c:382 daemon/verify-pam.c:659
-#: daemon/verify-pam.c:908 daemon/verify-shadow.c:294
-#: daemon/verify-shadow.c:399
+#: daemon/verify-crypt.c:280 daemon/verify-crypt.c:419 daemon/verify-pam.c:659
+#: daemon/verify-pam.c:908 daemon/verify-shadow.c:298
+#: daemon/verify-shadow.c:437
 msgid ""
 "\n"
 "Cannot set your user group, you will not be able to log in, please contact "
@@ -1413,13 +1413,13 @@ msgstr ""
 "Kan ikke sette din brukergruppe. Du vil ikke kunne logge inn. Vennligst "
 "kontakt din systemadministrator."
 
-#: daemon/verify-crypt.c:287 daemon/verify-crypt.c:327
-#: daemon/verify-shadow.c:305 daemon/verify-shadow.c:345
+#: daemon/verify-crypt.c:291 daemon/verify-crypt.c:364
+#: daemon/verify-shadow.c:309 daemon/verify-shadow.c:383
 #, c-format
 msgid "Password of %s has expired"
 msgstr "Passord for %s er utgått"
 
-#: daemon/verify-crypt.c:289 daemon/verify-shadow.c:307
+#: daemon/verify-crypt.c:293 daemon/verify-shadow.c:311
 msgid ""
 "You are required to change your password.\n"
 "Please choose a new one."
@@ -1427,7 +1427,7 @@ msgstr ""
 "Det kreves at du endrer ditt passord.\n"
 "Vennligst velg et nytt."
 
-#: daemon/verify-crypt.c:300 daemon/verify-shadow.c:318
+#: daemon/verify-crypt.c:304 daemon/verify-shadow.c:322
 msgid ""
 "\n"
 "Cannot change your password, you will not be able to log in, please try "
@@ -1437,7 +1437,14 @@ msgstr ""
 "Kan ikke endre ditt passord. Du vil ikke kunne logge inn. Vennligst prøv "
 "igjen senere, eller kontakt din systemadministrator."
 
-#: daemon/verify-crypt.c:329 daemon/verify-shadow.c:347
+#: daemon/verify-crypt.c:347 daemon/verify-crypt.c:355
+#: daemon/verify-shadow.c:366 daemon/verify-shadow.c:374
+msgid ""
+"Your password has been changed but you may have to change it again, please "
+"try again later or contact your system administrator."
+msgstr "Passordet ditt err endret, men du vil kanskje måtte endre det igjen. Vennligst prøv igjen senere, eller kontakt din systemadministrator."
+
+#: daemon/verify-crypt.c:366 daemon/verify-shadow.c:385
 msgid ""
 "Your password has expired.\n"
 "Only a system administrator can now change it"
@@ -1445,11 +1452,11 @@ msgstr ""
 "Passordet ditt er utgått.\n"
 "Kun en systemadministrator kan endre det nå."
 
-#: daemon/verify-crypt.c:336 daemon/verify-shadow.c:354
+#: daemon/verify-crypt.c:373 daemon/verify-shadow.c:392
 msgid "Internal error on passwdexpired"
 msgstr "Intern feil med passwdexpired"
 
-#: daemon/verify-crypt.c:338 daemon/verify-shadow.c:356
+#: daemon/verify-crypt.c:375 daemon/verify-shadow.c:394
 msgid ""
 "An internal error occured, you will not be able to log in.\n"
 "Please try again later or contact your system administrator."
@@ -1457,7 +1464,7 @@ msgstr ""
 "En intern feil oppsto. Du vil ikke kunne logge inn.\n"
 "Vennligst prøv igjen senere eller kontakt din systemadministrator."
 
-#: daemon/verify-crypt.c:374 daemon/verify-shadow.c:391
+#: daemon/verify-crypt.c:411 daemon/verify-shadow.c:429
 #, c-format
 msgid "Cannot get passwd structure for %s"
 msgstr "Kan ikke finne passwd-data for %s"
