@@ -355,6 +355,16 @@ AC_SUBST(GDMXNESTCHOOSER)
 xinerama_save_cppflags="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 
+# Check for defopen
+#
+if test -f /etc/default/login; then
+  AC_CHECK_LIB(cmd, defopen, use_defopen=yes, use_defopen=no)
+  if test "x$use_defopen" = "xyes"; then
+    EXTRA_DAEMON_LIBS="$EXTRA_DAEMON_LIBS -lcmd"
+    AC_DEFINE(HAVE_DEFOPEN)
+  fi
+fi
+
 ALL_X_LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS"
 
 case "$host" in

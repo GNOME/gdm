@@ -27,6 +27,10 @@
 #include <security/pam_appl.h>
 #include <pwd.h>
 
+#ifdef HAVE_DEFOPEN
+#include <deflt.h>
+#endif
+
 #include <vicious.h>
 
 #include "gdm.h"
@@ -429,6 +433,7 @@ gdm_verify_user (GdmDisplay *d,
     gboolean error_msg_given = FALSE;
     gboolean credentials_set = FALSE;
     gboolean started_timer = FALSE;
+    int null_tok = 0;
 
     /* start the timer for timed logins */
     if ( ! ve_string_empty (GdmTimedLogin) &&
@@ -452,6 +457,24 @@ gdm_verify_user (GdmDisplay *d,
     }
 
     pam_set_item (pamh, PAM_USER_PROMPT, _("Username:"));
+
+    /* A Solaris thing: */
+#ifdef HAVE_DEFOPEN
+    if (defopen(DEFLT"/login") == 0) {
+	    char *passreq;
+	    int def_flgs;
+
+	    def_flgs = defcntl(DC_GETFLAGS, 0);
+	    TURNOFF(def_flgs, DC_CASE);
+	    (void) defcntl (DC_SETFLAGS, def_flgs);	 /* ignore case */
+
+	    if (((passreq = defread("PASSREQ=")) != NULL) &&
+		g_ascii_strcasecmp (passreq, "YES") == 0)
+		    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
+
+	    (void) defopen(NULL); /* close defaults file  */
+    }
+#endif
 	    
 #ifdef PAM_FAIL_DELAY
     pam_fail_delay (pamh, GdmRetryDelay * 1000);
@@ -466,7 +489,7 @@ authenticate_again:
 
     gdm_verify_select_user (NULL);
     /* Start authentication session */
-    if ((pamerr = pam_authenticate (pamh, 0)) != PAM_SUCCESS) {
+    if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
 	    if ( ! ve_string_empty (selected_user)) {
 		    /* FIXME: what about errors */
 		    pam_set_item (pamh, PAM_USER, selected_user);
@@ -526,7 +549,7 @@ authenticate_again:
     }
 
     /* Check if the user's account is healthy. */
-    pamerr = pam_acct_mgmt (pamh, 0);
+    pamerr = pam_acct_mgmt (pamh, null_tok);
     switch (pamerr) {
     case PAM_SUCCESS :
 	break;
@@ -677,6 +700,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     gint pamerr = 0;
     struct passwd *pwent;
     const char *after_login;
+    int null_tok = 0;
     
     *new_login = NULL;
 
@@ -696,9 +720,27 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
 	    goto setup_pamerr;
     }
 
+    /* A Solaris thing: */
+#ifdef HAVE_DEFOPEN
+    if (defopen(DEFLT"/login") == 0) {
+	    char *passreq;
+	    int def_flgs;
+
+	    def_flgs = defcntl(DC_GETFLAGS, 0);
+	    TURNOFF(def_flgs, DC_CASE);
+	    (void) defcntl (DC_SETFLAGS, def_flgs);	 /* ignore case */
+
+	    if (((passreq = defread("PASSREQ=")) != NULL) &&
+		g_ascii_strcasecmp (passreq, "YES") == 0)
+		    null_tok |= PAM_DISALLOW_NULL_AUTHTOK;
+
+	    (void) defopen(NULL); /* close defaults file  */
+    }
+#endif
+
     /* Start authentication session */
     did_we_ask_for_password = FALSE;
-    if ((pamerr = pam_authenticate (pamh, 0)) != PAM_SUCCESS) {
+    if ((pamerr = pam_authenticate (pamh, null_tok)) != PAM_SUCCESS) {
 	    if (gdm_slave_should_complain ()) {
 		    gdm_error (_("Couldn't authenticate user"));
 		    gdm_error_box (cur_gdm_disp,
@@ -726,7 +768,7 @@ gdm_verify_setup_user (GdmDisplay *d, const gchar *login, const gchar *display,
     }
 
     /* Check if the user's account is healthy. */
-    pamerr = pam_acct_mgmt (pamh, 0);
+    pamerr = pam_acct_mgmt (pamh, null_tok);
     switch (pamerr) {
     case PAM_SUCCESS :
 	break;
