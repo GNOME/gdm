@@ -214,6 +214,7 @@ struct _GdmDisplay {
     gchar *command;
     gboolean failsafe_xserver;
     gboolean use_chooser;
+    int indirect_id;
     gchar *cookie;
     gchar *bcookie;
     gchar *name;
@@ -251,8 +252,10 @@ struct _GdmDisplay {
 typedef struct _GdmIndirectDisplay GdmIndirectDisplay;
 
 struct _GdmIndirectDisplay {
-    struct sockaddr_in* dsp_sa;
-    time_t acctime;
+	int id;
+	struct sockaddr_in* dsp_sa;
+	time_t acctime;
+	struct in_addr *chosen_host;
 };
 
 

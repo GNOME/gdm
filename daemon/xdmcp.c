@@ -125,11 +125,9 @@ extern gboolean GdmXdmcp;	/* xdmcp enabled */
 /* Local prototypes */
 static gboolean gdm_xdmcp_decode_packet (void);
 static void gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type);
-/*
-FIXME: This function is not really implemented to begin with, I dunno
-       what to do there anyway -George
-static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist);
-*/
+static void gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
+					  struct sockaddr_in *clnt_sa,
+					  ARRAYofARRAY8Ptr authlist);
 static void gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_request (struct sockaddr_in *clnt_sa, gint len);
 static void gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len);
@@ -177,6 +175,30 @@ extern GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_s
 extern GdmIndirectDisplay *gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa);
 extern void gdm_choose_indirect_dispose (GdmIndirectDisplay *id);
 
+static gboolean
+is_local_addr (struct in_addr *ia)
+{
+	char hostbuf[1024];
+	const char lo[] = {127,0,0,1};
+	struct hostent *he;
+	int i;
+
+	if (gethostname (hostbuf, sizeof (hostbuf) - 1) != 0)
+		return FALSE;
+
+	he = gethostbyaddr (lo, sizeof (struct in_addr), AF_INET);
+	if (he == NULL) /*eek?*/
+		return FALSE;
+
+	if (strcmp (he->h_name, hostbuf) == 0)
+		return TRUE;
+
+	for (i = 0; he->h_aliases[i] != NULL; i++) {
+		if (strcmp (he->h_aliases[i], hostbuf) == 0)
+			return TRUE;
+	}
+	return FALSE;
+}
 
 gboolean
 gdm_xdmcp_init (void)
@@ -188,7 +210,7 @@ gdm_xdmcp_init (void)
     globsessid = time (NULL);
     
     /* Fetch and store local hostname in XDMCP friendly format */
-    if (gethostname (hostbuf, 255)) {
+    if (gethostname (hostbuf, 255) != 0) {
 	gdm_error (_("gdm_xdmcp_init: Could not get server hostname: %s!"), strerror (errno));
 	GdmXdmcp = FALSE;
 	return FALSE;
@@ -228,19 +250,13 @@ gdm_xdmcp_init (void)
 
 	fifopath = g_strconcat (GdmServAuthDir, "/.gdmchooser", NULL);
 
-	if (!fifopath) {
-	    gdm_error (_("gdm_xdmcp_init: Can't alloc fifopath"));
-	    gdm_xdmcp_close ();
-	    GdmXdmcp = FALSE;
-	    return FALSE;
-	}
-
 	unlink (fifopath);
 
 	if (mkfifo (fifopath, 0660) < 0) {
 	    gdm_error (_("gdm_xdmcp_init: Could not make FIFO for chooser"));
 	    gdm_xdmcp_close ();
 	    GdmXdmcp = FALSE;
+	    g_free (fifopath);
 	    return FALSE;
 	}
 
@@ -250,6 +266,7 @@ gdm_xdmcp_init (void)
 	    gdm_error (_("gdm_xdmcp_init: Could not open FIFO for chooser"));
 	    gdm_xdmcp_close ();
 	    GdmXdmcp = FALSE;
+	    g_free (fifopath);
 	    return FALSE;
 	}
 
@@ -331,9 +348,9 @@ gdm_xdmcp_decode_packet (void)
 	return TRUE;
     }
 
-    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", 
-	       opcode_names[header.opcode], inet_ntoa (clnt_sa.sin_addr));
-
+    if (header.opcode <= ALIVE)
+	    gdm_debug ("gdm_xdmcp_decode: Received opcode %s from client %s", 
+		       opcode_names[header.opcode], inet_ntoa (clnt_sa.sin_addr));
 
     switch (header.opcode) {
 	
@@ -375,7 +392,6 @@ gdm_xdmcp_decode_packet (void)
     return TRUE;
 }
 
-
 static void 
 gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 {
@@ -402,39 +418,39 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
 	XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
 	return;
     }
-    
+
     /* Check with tcp_wrappers if client is allowed to access */
     if (gdm_xdmcp_host_allow (clnt_sa)) {
 
 	/* If this is an INDIRECT_QUERY, try to look up the display in
  	 * the pending list. If found send a FORWARD_QUERY to the
  	 * chosen manager. Otherwise alloc a new indirect display. */
-        /* EEEEEEEEK! dunno what this is suppsoed to do */
-
-	/* OK, now, we don't do forward query here since I have no clue
-	 * where the fuck would we send it and the code here is bullshit,
-	 * I suppose we really want to just send willing here and run the
-	 * chooser
-	 * -George */
 
 	if (GdmIndirect &&
 	    type == INDIRECT_QUERY) {
-	    GdmIndirectDisplay *id = gdm_choose_indirect_lookup (clnt_sa);
+		GdmIndirectDisplay *id = gdm_choose_indirect_lookup (clnt_sa);
 
-	    /* EEEEEEEEK! dunno what this is suppsoed to do */
-	    /*
-	    if (id) {
-		    gdm_xdmcp_send_forward_query (id, &clnt_authlist);
-	    } else {
-	    }
-		    */
-	    if (id == NULL) {
-		    gdm_choose_indirect_alloc (clnt_sa);
-	    }
-	    gdm_debug ("Got INDIRECT query");
+		if (id != NULL &&
+		    id->chosen_host != NULL) {
+			/* if user chose us, then just send willing */
+			if (is_local_addr (id->chosen_host)) {
+				gdm_xdmcp_send_willing (clnt_sa);
+			} else {
+				gdm_xdmcp_send_forward_query (id, clnt_sa,
+							      &clnt_authlist);
+			}
+			gdm_choose_indirect_dispose (id);
+		} else if (id == NULL) {
+			id = gdm_choose_indirect_alloc (clnt_sa);
+			if (id != NULL) {
+				gdm_xdmcp_send_willing (clnt_sa);
+			}
+		} else  {
+			gdm_xdmcp_send_willing (clnt_sa);
+		}
+	} else {
+		gdm_xdmcp_send_willing (clnt_sa);
 	}
-
-	gdm_xdmcp_send_willing (clnt_sa);
     } else if (type == QUERY) {
 	    /* unwilling is ONLY sent for direct queries, never for broadcast
 	     * nor indirects */
@@ -445,29 +461,56 @@ gdm_xdmcp_handle_query (struct sockaddr_in *clnt_sa, gint len, gint type)
     XdmcpDisposeARRAYofARRAY8 (&clnt_authlist);
 }
 
-/* EEEEEEEEEK, this function doesn't do anything */
-#if 0
 static void
-gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id, ARRAYofARRAY8Ptr authlist)
+gdm_xdmcp_send_forward_query (GdmIndirectDisplay *id,
+			      struct sockaddr_in *clnt_sa,
+			      ARRAYofARRAY8Ptr authlist)
 {
-    ARRAY8 status;
-    XdmcpHeader header;
-    
-    status.data = sysid;
-    status.length = strlen (sysid);
-    
-    header.opcode = (CARD16) WILLING;
-    header.length = 6 + serv_authlist.authentication.length;
-    header.length += servhost.length + status.length;
-    header.version = XDM_PROTOCOL_VERSION;
-    XdmcpWriteHeader (&buf, &header);
-    
-    XdmcpWriteARRAY8 (&buf, &serv_authlist.authentication); /* Hardcoded authentication */
-    XdmcpWriteARRAY8 (&buf, &servhost);
-    XdmcpWriteARRAY8 (&buf, &status);
-    /* XdmcpFlush (xdmcpfd, &buf, clnt_sa, sizeof (struct sockaddr_in)); */
+	struct sockaddr_in sock;
+	XdmcpHeader header;
+	int i, authlen;
+	ARRAY8 address;
+	ARRAY8 port;
+
+	g_assert (id != NULL);
+	g_assert (id->chosen_host != NULL);
+
+	gdm_debug ("gdm_xdmcp_send_forward_query: Sending forward query to %s", 
+		   inet_ntoa (*id->chosen_host));
+
+	authlen = 1;
+	for (i = 0 ; i < authlist->length ; i++) {
+		authlen += 2 + authlist->data[i].length;
+	}
+
+	/* we depend on this being 2 elsewhere as well */
+	port.length = 2;
+	port.data = g_new (char, 2);
+	*((guint16 *)port.data) = (guint16) htons (clnt_sa->sin_port);
+	address.length = sizeof (struct in_addr);
+	address.data = (void *)g_new (struct in_addr, 1);
+	memcpy (address.data, &(clnt_sa->sin_addr), sizeof (struct in_addr));
+
+	header.opcode = (CARD16) FORWARD_QUERY;
+	header.length = authlen;
+	header.length += 2 + address.length;
+	header.length += 2 + port.length;
+	header.version = XDM_PROTOCOL_VERSION;
+	XdmcpWriteHeader (&buf, &header);
+
+	XdmcpWriteARRAY8 (&buf, &address);
+	XdmcpWriteARRAY8 (&buf, &port);
+	XdmcpWriteARRAYofARRAY8 (&buf, authlist);
+
+	sock.sin_family = AF_INET;
+	sock.sin_port = htons (XDM_UDP_PORT);
+	sock.sin_addr.s_addr = id->chosen_host->s_addr;
+	XdmcpFlush (xdmcpfd, &buf, (XdmcpNetaddr) &sock,
+		    sizeof (struct sockaddr_in));
+
+	g_free (port.data);
+	g_free (address.data);
 }
-#endif
 
 
 static void 
@@ -480,9 +523,6 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     static struct sockaddr_in *disp_sa;
     guint port = 0;
     struct in_addr ia;
-    
-    gdm_debug ("gdm_xdmcp_handle_forward_query: ForwardQuery from %s", 
-	       inet_ntoa (clnt_sa->sin_addr));
     
     /* Read display address */
     if (! XdmcpReadARRAY8 (&buf, &clnt_addr)) {
@@ -527,20 +567,18 @@ gdm_xdmcp_handle_forward_query (struct sockaddr_in *clnt_sa, gint len)
     /* Find client address. Ugly, ugly. Endianness sucks... */
     memmove (&ia.s_addr, clnt_addr.data, MIN(clnt_addr.length, sizeof(ia.s_addr)));
     
-    gdm_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY from display: %s, port %d", 
-	       inet_ntoa (ia), port);
+    gdm_debug ("gdm_xdmcp_handle_forward_query: Got FORWARD_QUERY for display: %s, port %d", 
+	       inet_ntoa (ia), ntohs (port));
     
     /* Assemble sockaddr_in struct to pass on */
     disp_sa = g_new0 (struct sockaddr_in, 1);
     disp_sa->sin_family = AF_INET;
-    disp_sa->sin_port = htons (port);
+    disp_sa->sin_port = port;
     disp_sa->sin_addr.s_addr = ia.s_addr;
-    
+
     /* Check with tcp_wrappers if display is allowed to access */
     if (gdm_xdmcp_host_allow (disp_sa)) 
-	gdm_xdmcp_send_willing (disp_sa);
-    else
-	gdm_xdmcp_send_unwilling (disp_sa, FORWARD_QUERY);
+	    gdm_xdmcp_send_willing (disp_sa);
 
   out:
     g_free(disp_sa);
@@ -859,8 +897,8 @@ gdm_xdmcp_handle_manage (struct sockaddr_in *clnt_sa, gint len)
 	d->dispstat == XDMCP_PENDING &&
 	GdmIndirect &&
 	id != NULL) {
-	    gdm_choose_indirect_dispose (id);
 	    d->use_chooser = TRUE;
+	    d->indirect_id = id->id;
     } else {
 	    d->use_chooser = FALSE;
     }

@@ -43,14 +43,16 @@
 
 static const gchar RCSid[]="$Id$";
 
-gint ipending = 0;
-GSList *indirect = NULL;
+static gint ipending = 0;
+static GSList *indirect = NULL;
 
 /* Tunables */
 extern gint GdmMaxIndirect;	/* Maximum pending indirects, i.e. simultaneous choosing sessions */
 extern gint GdmMaxIndirectWait;	/* Maximum age before a pending session is removed from the list */
 
 extern void gdm_debug (gchar *, ...);
+
+static int indirect_id = 0;
 
 
 GdmIndirectDisplay *gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa);
@@ -62,20 +64,46 @@ gboolean gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint 
 gboolean
 gdm_choose_socket_handler (GIOChannel *source, GIOCondition cond, gint fd)
 {
-    gchar buf[PIPE_SIZE];
-    gint len;
+	gchar buf[PIPE_SIZE];
+	gint len;
+	int id;
+	struct in_addr addr;
+	GSList *li;
 
-    if (cond != G_IO_IN) 
-	return (TRUE);
+	if (cond != G_IO_IN) 
+		return TRUE;
 
-    g_io_channel_read (source, buf, PIPE_SIZE-1, &len);
-    buf[len-1] = '\0';
+	if (g_io_channel_read (source, buf, PIPE_SIZE, &len) != G_IO_ERROR_NONE)
+		return TRUE;
 
-    gdm_debug ("gdm_choose_socket_handler: Read `%s'", buf);
+	gdm_debug ("gdm_choose_socket_handler: Read %d bytes", len);
 
-    /* gdm_choose_indirect_alloc (); */
+	if (buf[0] != STX)
+		return TRUE;
 
-    return (TRUE);
+	if (len != 1/*stx*/ + sizeof (int) /* id */ + sizeof (struct in_addr)) {
+		gdm_debug ("gdm_choose_socket_handler: Data not correct size");
+		return TRUE;
+	}
+
+	id = *(int *) (&buf[1]);
+	memcpy (&addr, &buf[1+sizeof(int)], sizeof (struct in_addr));
+
+	gdm_debug ("gdm_choose_socket_handler: got indirect id: %d address: %s",
+		   id, inet_ntoa (addr));
+
+	for (li = indirect; li != NULL; li = li->next) {
+		GdmIndirectDisplay *idisp = li->data;
+		if (idisp->id == id) {
+			g_free (idisp->chosen_host);
+			idisp->chosen_host = g_new (struct in_addr, 1);
+			memcpy (idisp->chosen_host, &addr,
+				sizeof (struct in_addr));
+			return TRUE;
+		}
+	}
+
+	return TRUE;
 }
 
 
@@ -84,19 +112,20 @@ gdm_choose_indirect_alloc (struct sockaddr_in *clnt_sa)
 {
     GdmIndirectDisplay *id;
 
-    if (!clnt_sa)
-	return (NULL);
+    if (clnt_sa == NULL)
+	    return NULL;
+
+    if (ipending >= GdmMaxIndirect)
+	    return NULL;
 
     id = g_new0 (GdmIndirectDisplay, 1);
-
-    if (!id)
-	return (NULL);
-
+    id->id = indirect_id++;
     id->dsp_sa = g_new0 (struct sockaddr_in, 1);
     memcpy (id->dsp_sa, clnt_sa, sizeof (struct sockaddr_in));
     id->acctime = time (NULL);
+    id->chosen_host = NULL;
     
-    indirect = g_slist_append (indirect, id);
+    indirect = g_slist_prepend (indirect, id);
     ipending++;
     
     gdm_debug ("gdm_choose_display_alloc: display=%s, pending=%d ",
@@ -116,29 +145,31 @@ gdm_choose_indirect_lookup (struct sockaddr_in *clnt_sa)
     
     for (li = ilist; li != NULL; li = li->next) {
         id = (GdmIndirectDisplay *) li->data;
+	if (id == NULL)
+		continue;
 
-	if (id && time (NULL) > id->acctime + GdmMaxIndirectWait)	{
+	if (time (NULL) > id->acctime + GdmMaxIndirectWait)	{
 	    gdm_debug ("gdm_choose_indirect_check: Disposing stale INDIRECT query from %s",
 		       inet_ntoa (clnt_sa->sin_addr));
 	    gdm_choose_indirect_dispose (id);
 	}
 	
-	if (id && id->dsp_sa->sin_addr.s_addr == clnt_sa->sin_addr.s_addr)
-	return (id);
+	if (id->dsp_sa->sin_addr.s_addr == clnt_sa->sin_addr.s_addr)
+		return id;
     }
     g_slist_free (ilist);
     
     gdm_debug ("gdm_choose_indirect_lookup: Host %s not found", 
 	       inet_ntoa (clnt_sa->sin_addr));
 
-    return (NULL);
+    return NULL;
 }
 
 
 void
 gdm_choose_indirect_dispose (GdmIndirectDisplay *id)
 {
-    if (!id)
+    if (id == NULL)
 	return;
 
     indirect = g_slist_remove (indirect, id);
@@ -148,6 +179,8 @@ gdm_choose_indirect_dispose (GdmIndirectDisplay *id)
 
     g_free (id->dsp_sa);
     id->dsp_sa = NULL;
+    g_free (id->chosen_host);
+    id->chosen_host = NULL;
 
     g_free (id);
 

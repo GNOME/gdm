@@ -53,14 +53,15 @@
 #include "misc.h"
 #include "gdmwm.h"
 
+static const gchar RCSid[]="$Id$";
+
 /* set the DOING_GDM_DEVELOPMENT env variable if you want to
  * search for the glade file in the current dir and not the system
  * install dir, better then something you have to change
  * in the source and recompile */
 static gboolean DOING_GDM_DEVELOPMENT = FALSE;
 
-
-static const gchar RCSid[]="$Id$";
+static gboolean RUNNING_UNDER_GDM = FALSE;
 
 static const gchar *scanning_message = N_("Please wait: scanning local network for XDMCP-enabled hosts...");
 static const gchar *empty_network = N_("No serving hosts were found.");
@@ -105,6 +106,7 @@ static gint  GdmScanTime;
 static gchar *GdmHostIconDir;
 static gchar *GdmHostDefaultIcon;
 static gchar *GdmGtkRC;
+static gint  GdmMaxIndirectWait;
 
 static GladeXML *chooser_app;
 static GtkWidget *chooser, *manage, *rescan, *cancel;
@@ -492,6 +494,8 @@ gdm_chooser_parse_config (void)
     GdmIconMaxWidth = gnome_config_get_int (GDM_KEY_ICONWIDTH);
     GdmIconMaxHeight = gnome_config_get_int (GDM_KEY_ICONHEIGHT);
     GdmDebug = gnome_config_get_bool (GDM_KEY_DEBUG);
+
+    GdmMaxIndirectWait = gnome_config_get_int (GDM_KEY_MAXINDWAIT);    
 
     if (GdmScanTime < 1) GdmScanTime = 1;
     if (GdmIconMaxWidth < 0) GdmIconMaxWidth = 128;
@@ -904,6 +908,27 @@ gdm_chooser_add_hosts (const char **hosts)
 		gdm_chooser_find_bcaddr ();
 }
 
+static gboolean
+indirect_wait_exceeded (gpointer data)
+{
+	GtkWidget *dialog;
+
+	gdm_wm_focus_new_windows (TRUE);
+
+	dialog = gnome_ok_dialog
+		(_("The maximum wait time exceeded for choosing a session.\n"
+		   "Please press OK and try again."));
+	gtk_widget_show_all (dialog);
+	gdm_center_window (GTK_WINDOW (dialog));
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+
+	exit (EXIT_SUCCESS);
+
+	return FALSE;
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -911,9 +936,12 @@ main (int argc, char *argv[])
     int fixedargc, i;
     const char **hosts;
     poptContext ctx;
+    const char *gdm_version;
 
     if (g_getenv ("DOING_GDM_DEVELOPMENT") != NULL)
 	    DOING_GDM_DEVELOPMENT = TRUE;
+    if (g_getenv ("RUNNING_UNDER_GDM") != NULL)
+	    RUNNING_UNDER_GDM = TRUE;
 
     /* Avoid creating ~gdm/.gnome stuff */
     gnome_do_not_create_directories = TRUE;
@@ -935,6 +963,33 @@ main (int argc, char *argv[])
     textdomain (PACKAGE);
 
     gdm_screen_init ();
+
+    gdm_version = g_getenv ("GDM_VERSION");
+
+    if (gdm_version != NULL &&
+	strcmp (gdm_version, VERSION) != 0) {
+	    char *msg;
+	    GtkWidget *dialog;
+
+	    gdm_wm_init (0);
+
+	    gdm_wm_focus_new_windows (TRUE);
+
+	    msg = g_strdup_printf
+		    (_("The chooser version (%s) does not match the daemon "
+		       "version (%s).\n"
+		       "You have probably just upgraded gdm.\n"
+		       "Please restart the gdm daemon or reboot the computer."),
+		     VERSION, gdm_version);
+	    dialog = gnome_error_dialog (msg);
+	    g_free (msg);
+
+	    gtk_widget_show_all (dialog);
+	    gdm_center_window (GTK_WINDOW (dialog));
+	    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+	    return EXIT_SUCCESS;
+    }
     
     gdm_chooser_parse_config();
     gdm_chooser_gui_init();
@@ -956,6 +1011,11 @@ main (int argc, char *argv[])
 		     * if it fails */
 		    gdm_wm_focus_window (GDK_WINDOW_XWINDOW (chooser->window));
 	    }
+    }
+
+    if (RUNNING_UNDER_GDM) {
+	    gtk_timeout_add (GdmMaxIndirectWait * 1000,
+			     indirect_wait_exceeded, NULL);
     }
 
     gtk_main();

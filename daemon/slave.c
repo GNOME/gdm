@@ -29,6 +29,10 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <strings.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <X11/Xlib.h>
 #ifdef HAVE_LIBXINERAMA
 #include <X11/extensions/Xinerama.h>
@@ -87,6 +91,7 @@ extern gchar *GdmSuspend;
 extern gchar *GdmDefaultPath;
 extern gchar *GdmRootPath;
 extern gchar *GdmUserAuthFile;
+extern gchar *GdmServAuthDir;
 extern gchar *GdmDefaultLocale;
 extern gchar *GdmTimedLogin;
 extern gint GdmTimedLoginDelay;
@@ -995,16 +1000,53 @@ gdm_slave_greeter (void)
 }
 
 static void
+send_chosen_host (GdmDisplay *disp, const char *hostname)
+{
+	int fd;
+	char *fifopath;
+	struct hostent *host;
+	char *buf;
+
+	host = gethostbyname (hostname);
+
+	if (host == NULL) {
+		gdm_error ("Cannot get address of host '%s'", hostname);
+		return;
+	}
+
+	gdm_debug ("Sending chosen host address (%s) %s",
+		   hostname, inet_ntoa (*(struct in_addr *)host->h_addr_list[0]));
+
+	fifopath = g_strconcat (GdmServAuthDir, "/.gdmchooser", NULL);
+
+	fd = open (fifopath, O_WRONLY);
+
+	/* send char: STX, int: indirect display id, in_addr: address */
+	buf = g_new (char, 1 + sizeof (int) + sizeof (struct in_addr));
+	buf[0] = STX;
+	memcpy (&buf[1], &disp->indirect_id, sizeof (int));
+	memcpy (&buf[1 + sizeof (int)],
+		(struct in_addr *)host->h_addr_list[0],
+		sizeof (struct in_addr));
+	write (fd, buf, 1 + sizeof (int) + sizeof (struct in_addr));
+
+	close (fd);
+}
+
+
+static void
 gdm_slave_chooser (void)
 {
-	gint pipe1[2], pipe2[2];  
+	gint p[2];
 	gchar **argv;
 	struct passwd *pwent;
+	char buf[1024];
+	size_t bytes;
 
 	gdm_debug ("gdm_slave_chooser: Running chooser on %s", d->name);
 
 	/* Open a pipe for chooser communications */
-	if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
+	if (pipe (p) < 0)
 		gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Can't init pipe to gdmchooser"));
 
 	/* Run the init script. gdmslave suspends until script has terminated */
@@ -1024,14 +1066,10 @@ gdm_slave_chooser (void)
 		sigprocmask (SIG_SETMASK, &mask, NULL);
 
 		/* Plumbing */
-		close (pipe1[1]);
-		close (pipe2[0]);
+		close (p[0]);
 
-		if (pipe1[0] != STDIN_FILENO) 
-			dup2 (pipe1[0], STDIN_FILENO);
-
-		if (pipe2[1] != STDOUT_FILENO) 
-			dup2 (pipe2[1], STDOUT_FILENO);
+		if (p[1] != STDOUT_FILENO) 
+			dup2 (p[1], STDOUT_FILENO);
 
 		if (setgid (GdmGroupId) < 0) 
 			gdm_child_exit (DISPLAY_ABORT, _("gdm_slave_chooser: Couldn't set groupid to %d"), GdmGroupId);
@@ -1091,23 +1129,21 @@ gdm_slave_chooser (void)
 		}
 
 		gdm_debug ("gdm_slave_chooser: Chooser on pid %d", d->chooserpid);
-		close (pipe1[0]);
-		close (pipe2[1]);
+		close (p[1]);
 
-		fcntl(pipe1[1], F_SETFD, fcntl(pipe1[1], F_GETFD, 0) | FD_CLOEXEC);
-		fcntl(pipe2[0], F_SETFD, fcntl(pipe2[0], F_GETFD, 0) | FD_CLOEXEC);
-
-		if (pipe1[1] != STDOUT_FILENO) 
-			dup2 (pipe1[1], STDOUT_FILENO);
-
-		if (pipe2[0] != STDIN_FILENO) 
-			dup2 (pipe2[0], STDIN_FILENO);
+		fcntl(p[0], F_SETFD, fcntl(p[0], F_GETFD, 0) | FD_CLOEXEC);
 
 		/* wait for the chooser to die */
 		waitpid (d->chooserpid, 0, 0);
 
-		/* FIXME: read the chosen host here and whack it onto the
-		 * chooser fifo thingie */
+		bytes = read (p[0], buf, sizeof(buf)-1);
+		if (bytes > 0) {
+			if (buf[bytes-1] == '\n')
+				buf[bytes-1] ='\0';
+			else
+				buf[bytes] ='\0';
+			send_chosen_host (d, buf);
+		}
 		break;
 	}
 }
