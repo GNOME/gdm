@@ -76,9 +76,6 @@ static gchar *xdm_address = NULL;
 static gchar *client_address = NULL;
 static gint connection_type = 0;
 
-/* if this is received, select that host automatically */
-struct in_addr *select_addr = NULL;
-
 static void gdm_chooser_abort (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 static void gdm_chooser_warn (const gchar *format, ...) G_GNUC_PRINTF (1, 2);
 
@@ -94,6 +91,13 @@ void gdm_chooser_browser_unselect (GtkWidget *widget,
 				   GdkEvent *event);
 void gdm_chooser_xdmcp_discover (void);
 void display_chooser_information (void);
+
+#define ADD_TIMEOUT 3000
+static guint add_check_handler = 0;
+
+/* if this is received, select that host automatically */
+static struct in_addr *added_addr = NULL;
+static char *added_host = NULL;
 
 static guint scan_time_handler = 0;
 
@@ -278,14 +282,19 @@ gdm_chooser_browser_add_host (GdmChooserHost *host)
 						   temp);
 	    g_free (temp);
 
-	    if (select_addr != NULL &&
-		memcmp (&host->ia, select_addr,
+	    if (added_addr != NULL &&
+		memcmp (&host->ia, added_addr,
 			sizeof (struct in_addr)) == 0) {
 		    gnome_icon_list_select_icon (GNOME_ICON_LIST (browser),
 						 host->pos);
 		    gtk_widget_grab_focus (manage);
 	    }
-	    select_addr = NULL;
+	    g_free (added_host);
+	    added_host = NULL;
+	    added_addr = NULL;
+	    if (add_check_handler > 0)
+		    g_source_remove (add_check_handler);
+	    add_check_handler = 0;
     }
 
     gtk_widget_set_sensitive (GTK_WIDGET (browser), TRUE);
@@ -413,6 +422,39 @@ gdm_chooser_decode_packet (GIOChannel   *source,
 	    /* hmmm what about the other change, just ignore
 	       for now, it's kind of confusing to just remove
 	       servers really */
+    }
+
+    if ( ! gh->willing &&
+	added_addr != NULL &&
+	memcmp (&gh->ia, added_addr,
+		sizeof (struct in_addr)) == 0) {
+	    GtkWidget *dialog;
+
+	    added_addr = NULL;
+	    if (add_check_handler > 0)
+		    g_source_remove (add_check_handler);
+	    add_check_handler = 0;
+
+	    dialog = gtk_message_dialog_new
+		    (GTK_WINDOW (chooser) /* parent */,
+		     GTK_DIALOG_MODAL /* flags */,
+		     GTK_MESSAGE_ERROR,
+		     GTK_BUTTONS_CLOSE,
+		     _("The host \"%s\" is not willing "
+		       "to support a login session right now.  "
+		       "Please try again later."),
+		     added_host);
+
+	    if (RUNNING_UNDER_GDM)
+		    gdm_wm_center_window (GTK_WINDOW (dialog));
+
+	    gdm_wm_no_login_focus_push ();
+	    gtk_dialog_run (GTK_DIALOG (dialog));
+	    gtk_widget_destroy (dialog);
+	    gdm_wm_no_login_focus_pop ();
+
+	    g_free (added_host);
+	    added_host = NULL;
     }
 
     g_free (hostname);
@@ -556,7 +598,12 @@ gdm_chooser_xdmcp_discover (void)
 {
     GList *hl = hosts;
 
-    select_addr = NULL;
+    g_free (added_host);
+    added_host = NULL;
+    added_addr = NULL;
+    if (add_check_handler > 0)
+	    g_source_remove (add_check_handler);
+    add_check_handler = 0;
 
     gtk_widget_set_sensitive (GTK_WIDGET (manage), FALSE);
     gtk_widget_set_sensitive (GTK_WIDGET (rescan), FALSE);
@@ -748,6 +795,37 @@ gdm_chooser_choose_host (const char *hostname)
   }
 }
 
+static gboolean
+add_check (gpointer data)
+{
+	if (added_addr != NULL) {
+		GtkWidget *dialog;
+
+		dialog = gtk_message_dialog_new
+			(GTK_WINDOW (chooser) /* parent */,
+			 GTK_DIALOG_MODAL /* flags */,
+			 GTK_MESSAGE_ERROR,
+			 GTK_BUTTONS_CLOSE,
+			 _("Did not receive any response from host \"%s\" "
+			   "in %d seconds.  Perhaps the host is not "
+			   "turned on, or is not willing to support a "
+			   "login session right now.  Please try again "
+			   "later."),
+			 added_host,
+			 ADD_TIMEOUT / 1000);
+
+		if (RUNNING_UNDER_GDM)
+			gdm_wm_center_window (GTK_WINDOW (dialog));
+
+		gdm_wm_no_login_focus_push ();
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+		gdm_wm_no_login_focus_pop ();
+	}
+	add_check_handler = 0;
+	return FALSE;
+}
+
 void
 gdm_chooser_add_host (void)
 {
@@ -817,7 +895,14 @@ gdm_chooser_add_host (void)
 			XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock,
 				    (int)sizeof (struct sockaddr_in));
 
-			select_addr = ia;
+			added_addr = ia;
+			g_free (added_host);
+			added_host = g_strdup (name);
+
+			if (add_check_handler > 0)
+				g_source_remove (add_check_handler);
+			add_check_handler = g_timeout_add (ADD_TIMEOUT,
+							   add_check, NULL);
 		}
 
 		/* empty the text entry to indicate success */
@@ -825,11 +910,18 @@ gdm_chooser_add_host (void)
 		return;
 	}
 
-	select_addr = ia;
+	added_addr = ia;
+	g_free (added_host);
+	added_host = g_strdup (name);
 
 	/* and send out the query */
 	sock.sin_addr.s_addr = ia->s_addr;
 	XdmcpFlush (sockfd, &querybuf, (XdmcpNetaddr) &sock, (int)sizeof (struct sockaddr_in));
+
+	if (add_check_handler > 0)
+		g_source_remove (add_check_handler);
+	add_check_handler = g_timeout_add (ADD_TIMEOUT,
+					   add_check, NULL);
 
 	/* empty the text entry to indicate success */
 	gtk_entry_set_text (GTK_ENTRY (add_entry), "");
@@ -1016,6 +1108,9 @@ display_chooser_information (void)
 static void 
 gdm_chooser_gui_init (void)
 {
+	int width;
+	int height;
+
 	glade_helper_add_glade_directory (GDM_GLADE_DIR);
 	glade_helper_search_gnome_dirs (FALSE);
 
@@ -1059,14 +1154,10 @@ gdm_chooser_gui_init (void)
     browser = glade_helper_get (chooser_app, "chooser_iconlist",
 				GNOME_TYPE_ICON_LIST);
     gnome_icon_list_freeze (GNOME_ICON_LIST (browser));
-    gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.");
+    gnome_icon_list_set_separators (GNOME_ICON_LIST (browser), " /-_.\n");
     gnome_icon_list_set_icon_width (GNOME_ICON_LIST (browser), GdmIconMaxWidth + 20);
     gnome_icon_list_set_icon_border (GNOME_ICON_LIST (browser), 2);
     gnome_icon_list_thaw (GNOME_ICON_LIST (browser));
-
-    gtk_widget_set_size_request (GTK_WIDGET (chooser), 
-				 (gint) gdk_screen_width() * 0.4, 
-				 (gint) gdk_screen_height() * 0.6);
 
     if ( ! GdmAllowAdd) {
 	    GtkWidget *w = glade_helper_get (chooser_app, "add_hbox",
@@ -1074,7 +1165,30 @@ gdm_chooser_gui_init (void)
 	    gtk_widget_hide (w);
     }
 
-    gdm_wm_center_window (GTK_WINDOW (chooser));
+    gtk_window_get_size (GTK_WINDOW (chooser),
+			 &width, &height);
+    if (RUNNING_UNDER_GDM) {
+	    if (width > gdm_wm_screen.width)
+		    width = gdm_wm_screen.width;
+	    if (height > gdm_wm_screen.height)
+		    height = gdm_wm_screen.height;
+    } else {
+	    if (width > gdk_screen_width ())
+		    width = gdk_screen_width ();
+	    if (height > gdk_screen_height ())
+		    height = gdk_screen_height ();
+    }
+    gtk_widget_set_size_request (GTK_WIDGET (chooser), 
+				 width, height);
+    gtk_window_set_default_size (GTK_WINDOW (chooser), 
+				 width, height);
+    gtk_window_resize (GTK_WINDOW (chooser), 
+		       width, height);
+
+    if (RUNNING_UNDER_GDM) {
+	    gtk_widget_show_now (chooser);
+	    gdm_wm_center_window (GTK_WINDOW (chooser));
+    }
 }
 
 

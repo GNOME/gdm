@@ -230,13 +230,13 @@ gdm_wm_set_screen (int cur_screen_num)
 void
 gdm_wm_center_window (GtkWindow *cw) 
 {
-	GtkRequisition req;
         gint x, y;
+        gint w, h;
 
-	gtk_widget_size_request (GTK_WIDGET (cw), &req);
+	gtk_window_get_size (cw, &w, &h); 
 
-	x = gdm_wm_screen.x + (gdm_wm_screen.width - req.width)/2;
-	y = gdm_wm_screen.y + (gdm_wm_screen.height - req.height)/2;	
+	x = gdm_wm_screen.x + (gdm_wm_screen.width - w)/2;
+	y = gdm_wm_screen.y + (gdm_wm_screen.height - h)/2;	
 
 	if (x < gdm_wm_screen.x)
 		x = gdm_wm_screen.x;
