@@ -1109,6 +1109,7 @@ main (int argc, char *argv[])
 
     gnome_init("gdmlogin", VERSION, argc, argv);
     gnome_sound_shutdown ();
+    gnome_preferences_set_dialog_position(GTK_WIN_POS_CENTER);
     
     gdm_login_parse_config();
     gdm_login_gui_init();
