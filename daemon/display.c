@@ -162,6 +162,56 @@ gdm_display_check_loop (GdmDisplay *disp)
   return TRUE;
 }
 
+static void
+whack_old_slave (GdmDisplay *d)
+{
+    time_t t = time (NULL);
+    /* Kill slave */
+    if (d->slavepid > 1 &&
+	kill (d->slavepid, SIGTERM) == 0) {
+	    int exitstatus;
+	    int ret;
+wait_again:
+	    sleep (10);
+	    errno = 0;
+	    ret = waitpid (d->slavepid, &exitstatus, WNOHANG);
+	    if (ret <= 0) {
+		    /* rekill the slave to tell it to
+		       hurry up and die if we're getting
+		       killed ourselves */
+		    if (ve_signal_was_notified (SIGTERM) ||
+			ve_signal_was_notified (SIGINT) ||
+			ve_signal_was_notified (SIGHUP) ||
+			t + 10 <= time (NULL)) {
+			    gdm_debug ("whack_old_slave: GOT ANOTHER SIGTERM (or it was 10 secs already), killing slave again");
+			    kill (d->slavepid, SIGTERM);
+			    t = time (NULL);
+			    goto wait_again;
+		    } else if (ret < 0 && errno == EINTR) {
+			    goto wait_again;
+		    }
+	    }
+
+	    if (WIFSIGNALED (exitstatus)) {
+		    gdm_debug ("whack_old_slave: Slave crashed (signal %d), killing its children",
+			       (int)WTERMSIG (exitstatus));
+
+		    if (d->sesspid > 1)
+			    kill (-(d->sesspid), SIGTERM);
+		    d->sesspid = 0;
+		    if (d->greetpid > 1)
+			    kill (-(d->greetpid), SIGTERM);
+		    d->greetpid = 0;
+		    if (d->chooserpid > 1)
+			    kill (-(d->chooserpid), SIGTERM);
+		    d->chooserpid = 0;
+		    if (d->servpid > 1)
+			    kill (d->servpid, SIGTERM);
+		    d->servpid = 0;
+	    }
+    }
+    d->slavepid = 0;
+}
 
 /**
  * gdm_display_manage:
@@ -194,25 +244,7 @@ gdm_display_manage (GdmDisplay *d)
     /* If we have an old slave process hanging around, kill it */
     /* This shouldn't be a normal code path however, so it doesn't matter
      * that we are hanging */
-    if (d->slavepid > 1 &&
-	kill (d->slavepid, SIGTERM) == 0) {
-	    int ret;
-wait_again:
-	    errno = 0;
-	    ret = waitpid (d->slavepid, NULL, 0);
-	    if (ret < 0 &&
-		errno == EINTR) {
-		    /* rekill the slave to tell it to
-		       hurry up and die if we're getting
-		       killed ourselves */
-		    if (ve_signal_was_notified (SIGTERM) ||
-			ve_signal_was_notified (SIGINT)) {
-			    kill (d->slavepid, SIGTERM);
-		    }
-		    goto wait_again;
-	    }
-    }
-    d->slavepid = 0;
+    whack_old_slave (d);
 
     d->managetime = time (NULL);
 
@@ -322,46 +354,9 @@ gdm_display_unmanage (GdmDisplay *d)
     gdm_debug ("gdm_display_unmanage: Stopping %s (slave pid: %d)",
 	       d->name, (int)d->slavepid);
 
-    /* Kill slave */
-    if (d->slavepid > 1 &&
-	kill (d->slavepid, SIGTERM) == 0) {
-	    int ret;
-	    int exitstatus;
-wait_again:
-	    errno = 0;
-	    ret = waitpid (d->slavepid, &exitstatus, 0);
-	    if (ret < 0 &&
-		errno == EINTR) {
-		    /* rekill the slave to tell it to
-		       hurry up and die if we're getting
-		       killed ourselves */
-		    if (ve_signal_was_notified (SIGTERM) ||
-			ve_signal_was_notified (SIGINT)) {
-			    gdm_debug ("gdm_display_unmanage: GOT ANOTHER SIGTERM, killing slave again");
-			    kill (d->slavepid, SIGTERM);
-		    }
-		    goto wait_again;
-	    }
-
-	    if (WIFSIGNALED (exitstatus)) {
-		    gdm_debug ("gdm_display_unmanage: Slave crashed (signal %d), killing its children",
-			       (int)WTERMSIG (exitstatus));
-
-		    if (d->sesspid > 1)
-			    kill (-(d->sesspid), SIGTERM);
-		    d->sesspid = 0;
-		    if (d->greetpid > 1)
-			    kill (-(d->greetpid), SIGTERM);
-		    d->greetpid = 0;
-		    if (d->chooserpid > 1)
-			    kill (-(d->chooserpid), SIGTERM);
-		    d->chooserpid = 0;
-		    if (d->servpid > 1)
-			    kill (d->servpid, SIGTERM);
-		    d->servpid = 0;
-	    }
-    }
-    d->slavepid = 0;
+    /* Kill slave, this may in fact hang for a bit at least until the
+     * slave dies, which should be ASAP though */
+    whack_old_slave (d);
     
     if (d->type == TYPE_LOCAL)
 	d->dispstat = DISPLAY_DEAD;

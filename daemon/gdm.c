@@ -988,11 +988,23 @@ deal_with_x_crashes (GdmDisplay *d)
 			"XKeepsCrashing script"),
 		      "deal_with_x_crashes");
 
-	    pid = gdm_fork_extra ();
+	    extra_process = pid = fork ();
+	    if (pid < 0)
+		    extra_process = 0;
 
 	    if (pid == 0) {
 		    char *argv[2];
 		    char *xlog = g_strconcat (GdmLogDir, "/", d->name, ".log", NULL);
+
+		    gdm_unset_signals ();
+
+		    /* Also make a new process group so that we may use
+		     * kill -(extra_process) to kill extra process and all it's
+		     * possible children */
+		    setsid ();
+
+		    if (GdmXdmcp)
+			    gdm_xdmcp_close ();
 
 		    closelog ();
 
@@ -1032,7 +1044,26 @@ deal_with_x_crashes (GdmDisplay *d)
 	    } else if (pid > 0) {
 		    int status;
 
-		    gdm_wait_for_extra (&status);
+		    if (extra_process > 1) {
+			    int ret;
+			    int killsignal = SIGTERM;
+			    int storeerrno;
+			    do {
+				    /* wait for some signal */
+				    pause ();
+				    errno = 0;
+				    ret = waitpid (extra_process, &status, WNOHANG);
+				    storeerrno = errno;
+				    if (ret <= 0 &&
+					(ve_signal_was_notified (SIGTERM) ||
+					 ve_signal_was_notified (SIGINT) ||
+					 ve_signal_was_notified (SIGHUP))) {
+					    kill (-(extra_process), killsignal);
+					    killsignal = SIGKILL;
+				    }
+			    } while (ret == 0 || (ret < 0 && storeerrno == EINTR));
+		    }
+		    extra_process = 0;
 
 		    if (WIFEXITED (status) &&
 			WEXITSTATUS (status) == 0) {
@@ -1651,6 +1682,16 @@ gdm_get_our_runlevel (void)
 #endif /* __linux__ */
 }
 
+/* initially if we get a TERM or INT we just want to die,
+   but we want to also kill an extra process if it exists */
+static void
+initial_term_int (int signal)
+{
+	if (extra_process > 1)
+		kill (-(extra_process), SIGTERM);
+	_exit (EXIT_FAILURE);
+}
+
 int 
 main (int argc, char *argv[])
 {
@@ -1707,6 +1748,19 @@ main (int argc, char *argv[])
     if ( ! g_get_charset (&charset)) {
 	    gdm_charset = g_strdup (charset);
     }
+
+    /* initial TERM/INT handler */
+    sig.sa_handler = initial_term_int;
+    sig.sa_flags = SA_RESTART;
+    sigemptyset (&sig.sa_mask);
+
+    if (sigaction (SIGTERM, &sig, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "TERM", strerror (errno));
+
+    if (sigaction (SIGINT, &sig, NULL) < 0) 
+	gdm_fail (_("%s: Error setting up %s signal handler: %s"),
+		  "main", "INT", strerror (errno));
 
     /* get the name of the root user */
     gdm_root_user ();

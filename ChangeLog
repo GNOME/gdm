@@ -1,3 +1,23 @@
+Sat Jul 26 01:47:40 2003  George Lebl <jirka@5z.com>
+
+	* daemon/display.c, daemon/gdm.c: the waitpid function doesn't work
+	  as I expected with respect to signals so emulate it with either
+	  sleep or pause and then a WNOHANG waitpid.  Also kill the
+	  XKeepsCrashing thing if we get a SIGTERM, SIGINT or SIGHUP,
+	  just like with the slaves.  The slaves are now killed at least
+	  once in 10 seconds in case they are hanging somewhere.
+
+	* daemon/gdm.c: set up a TERM/INT handler for the first few moments,
+	  which will kill the extra process if any in addition to exiting.
+
+	* daemon/misc.c: fix the gdm_signal_default to use SIG_DFL and
+	  not SIG_IGN, doh! and fix extra_process check a little
+
+	* daemon/server.c, daemon/slave.c: fix server start race that
+	  could result in the USR1 to not set SERVER_RUNNING, and fix
+	  slave not to try to open the display again if the server
+	  is gone.
+
 Fri Jul 25 19:01:11 2003  George Lebl <jirka@5z.com>
 
 	* daemon/gdm.c: minor cleanup of main

@@ -755,7 +755,7 @@ gdm_wait_for_extra (int *status)
 {
 	gdm_sigchld_block_push ();
 
-	if (extra_process > 0) {
+	if (extra_process > 1) {
 		ve_waitpid_no_signal (extra_process, &extra_status, 0);
 	}
 	extra_process = 0;
@@ -1162,7 +1162,7 @@ gdm_signal_default (int signal)
 {
 	struct sigaction def_signal;
 
-	def_signal.sa_handler = SIG_IGN;
+	def_signal.sa_handler = SIG_DFL;
 	def_signal.sa_flags = SA_RESTART;
 	sigemptyset (&def_signal.sa_mask);
 

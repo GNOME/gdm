@@ -533,9 +533,6 @@ do_server_wait (GdmDisplay *d)
 			d->servstat == SERVER_PENDING) {
 			    d->servstat = SERVER_TIMEOUT;
 		    }
-		    if (d->servpid <= 1) {
-			    d->servstat = SERVER_ABORT;
-		    }
 	    } else {
 		    time_t t = time (NULL);
 
@@ -580,6 +577,10 @@ do_server_wait (GdmDisplay *d)
 
     close (server_signal_pipe[0]);
     close (server_signal_pipe[1]);
+
+    if (d->servpid <= 1) {
+	    d->servstat = SERVER_ABORT;
+    }
 }
 
 /**
@@ -1170,10 +1171,8 @@ gdm_server_usr1_handler (gint sig)
 {
     gdm_in_signal++;
 
-    if (d->servpid > 1) {
-	    d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
-	    d->starttime = time (NULL);
-    }
+    d->servstat = SERVER_RUNNING; /* Server ready to accept connections */
+    d->starttime = time (NULL);
 
     gdm_debug ("gdm_server_usr1_handler: Got SIGUSR1, server running");
 

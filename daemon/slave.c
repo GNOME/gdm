@@ -980,7 +980,8 @@ gdm_slave_run (GdmDisplay *display)
     
     while (d->handled &&
 	   openretries < maxtries &&
-	   d->dsp == NULL) {
+	   d->dsp == NULL &&
+	   d->servpid > 1) {
 	d->dsp = XOpenDisplay (d->name);
 	
 	if (d->dsp == NULL) {
