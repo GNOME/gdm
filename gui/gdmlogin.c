@@ -2208,6 +2208,30 @@ gdm_login_handle_motion (GtkWidget *widget, GdkEventMotion *event)
     return TRUE;
 }
 
+static gboolean
+minimize_expose (GtkWidget *icon, GdkEventExpose *event, gpointer data)
+{
+	if (icon->window != NULL) {
+		gtk_paint_flat_box (icon->style,
+				    icon->window,
+				    icon->state,
+				    GTK_SHADOW_NONE,
+				    &event->area,
+				    icon,
+				    "gdm-iconify",
+				    0, 0,
+				    icon->allocation.width,
+				    icon->allocation.height);
+		gdk_draw_rectangle (icon->window,
+				    icon->style->text_gc[icon->state],
+				    TRUE /* filled */,
+				    3				/* x */,
+				    icon->allocation.height - 6 /* y */,
+				    icon->allocation.width - 6	/* width */,
+				    3				/* height */);
+	}
+	return TRUE;
+}
 
 static GtkWidget *
 create_handle (void)
@@ -2252,11 +2276,14 @@ create_handle (void)
 		if (access (GdmIcon, R_OK)) {
 			syslog (LOG_WARNING, _("Can't open icon file: %s. Suspending iconify feature!"), GdmIcon);
 		} else {
+			GtkWidget *icon;
 			w = gtk_button_new ();
-			gtk_button_set_relief (GTK_BUTTON (w), GTK_RELIEF_NONE);
-			gtk_container_add (GTK_CONTAINER (w),
-					   gtk_arrow_new (GTK_ARROW_DOWN,
-							  GTK_SHADOW_OUT));
+			icon = gtk_drawing_area_new ();
+			gtk_signal_connect (GTK_OBJECT (icon), "expose_event",
+					    GTK_SIGNAL_FUNC (minimize_expose),
+					    NULL);
+			gtk_widget_set_usize (icon, 20, -1);
+			gtk_container_add (GTK_CONTAINER (w), icon);
 			gtk_signal_connect
 				(GTK_OBJECT (w), "clicked",
 				 GTK_SIGNAL_FUNC (gdm_login_iconify_handler), 

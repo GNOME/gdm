@@ -90,6 +90,8 @@ static Language languages [] = {
 	{ N_("N-Z|Swedish"), "sv_SE", 0 },
 	/*Note translate the N-Z to the N-Z you used in the group label */
 	{ N_("N-Z|Turkish"), "tr_TR", 0 },
+	/* This is the POSIX/C locale for english, should really be in Other */
+	{ N_("Other|POSIX/C English"), "C", 0 },
 	{ NULL, NULL }
 };
 
@@ -260,6 +262,7 @@ gdm_lang_read_locale_file (const char *locale_file)
 	char curline[256];
 	GList *langs = NULL;
 	GHashTable *dupcheck;
+	gboolean got_C = FALSE;
 
 	if (locale_file == NULL)
 		return NULL;
@@ -311,10 +314,16 @@ gdm_lang_read_locale_file (const char *locale_file)
 		langs = g_list_prepend (langs, g_strdup (lang));
 		g_hash_table_insert (dupcheck, g_strdup (lang),
 				     GINT_TO_POINTER (1));
+
+		if (strcmp (lang, "C") == 0)
+			got_C = TRUE;
 	}
 
 	g_hash_table_foreach (dupcheck, (GHFunc) g_free, NULL);
 	g_hash_table_destroy (dupcheck);
+
+	if ( ! got_C)
+		langs = g_list_prepend (langs, g_strdup ("C"));
 
 	langs = g_list_sort (langs, lang_collate);
 
