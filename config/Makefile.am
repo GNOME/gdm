@@ -87,7 +87,7 @@ install-data-hook: gdm.conf gnomerc Gnome Xsession
 		$(mkinstalldirs) $(DESTDIR)$(postlogindir); \
 		chmod 755 $(DESTDIR)$(postlogindir); \
 	fi
-	$(INSTALL_SCRIPT) $(srcdir)/PostLogin $(DESTDIR)$(postdir)/Default.sample
+	$(INSTALL_SCRIPT) $(srcdir)/PostLogin $(DESTDIR)$(postlogindir)/Default.sample
 
 	if test '!' -d $(DESTDIR)$(predir); then \
 		$(mkinstalldirs) $(DESTDIR)$(predir); \
