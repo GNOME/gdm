@@ -56,16 +56,16 @@
     </para>
 
     <para>
-      gdm - The Gnome Display Manager daemon (<filename /gdm/).
+      gdm - The Gnome Display Manager daemon (<filename>gdm</filename>).
     </para>
 
     <para>
-      Greeter - The graphical login window (<filename /gdmlogin/).
+      Greeter - The graphical login window (<filename>gdmlogin</filename>).
     </para>
 
     <para>
       Chooser - The host chooser which appears on remote displays
-      sending INDIRECT queries (<filename /gdmchooser/).
+      sending INDIRECT queries (<filename>gdmchooser</filename>).
     </para>
 
     <para>
@@ -102,14 +102,14 @@
       
       <para> 
 	Upon startup the <filename>gdm</filename> daemon parses its config file
-	<filename>gdm.conf</filename>.  For each of the local displays <filename /gdm/
-	forks an Xserver and a slave process. The main <filename /gdm/ process
+	<filename>gdm.conf</filename>.  For each of the local displays <filename>gdm</filename>
+	forks an Xserver and a slave process. The main <filename>gdm</filename> process
 	will then listen to XDMCP requests from remote displays and
 	monitor the local display sessions.
       </para>
       
       <para> 
-	The <filename /gdm/ slave process opens the display and starts
+	The <filename>gdm</filename> slave process opens the display and starts
 	<filename>gdmlogin</filename>, the graphical login
 	program. <filename>gdmlogin</filename> runs as a dedicated
 	user and communicates asynchronously with the slave process
@@ -124,7 +124,7 @@
 
       <para>
 	Remote displays can connect to the XDMCP port on the GDM
-	host. <filename /gdm/ will grant access to hosts specified in
+	host. <filename>gdm</filename> will grant access to hosts specified in
 	the gdm service section in your TCP Wrappers configuration
 	file. GDM does not support remote display access control on
 	systems without TCP Wrappers. XDMCP support can be turned off
@@ -151,7 +151,7 @@
       <para>
 	All operations on user files are done with the effective
 	userid of the user. If the sanity check fails on the user's
-	<filename /.Xauthority/ file, a fallback cookie is created in
+	<filename>.Xauthority</filename> file, a fallback cookie is created in
 	<filename>/tmp</filename>.
       </para>
 
@@ -236,7 +236,7 @@
 
 	<para>
 	  The text entry field is used for entering logins, passwords,
-	  passphrases etc. <filename /gdmlogin/ is controlled by the
+	  passphrases etc. <filename>gdmlogin</filename> is controlled by the
 	  underlying daemon and is basically stateless. The daemon
 	  controls the greeter through a simple protocol where it can
 	  ask the greeter for a text string with echo turned on or
@@ -300,7 +300,7 @@
 	<para>
 	  To filter out unwanted user names in the browser, an exclude
 	  option is implemented. The greeter will automatically ignore
-	  usernames listed in the <filename /Exclude/ statement in the
+	  usernames listed in the <filename>Exclude</filename> statement in the
 	  config file.
 	</para>
 
@@ -322,8 +322,8 @@
 	  The greeter can optionally display a logo in the login
 	  window. The image must be in a format readable to the Imlib
 	  library (GIF, JPG, PNG, TIFF, XPM and possibly others), and
-	  it must be readable to the gdm user. See the <filename
-	  /Logo/ option in the reference section below for detauls.
+	  it must be readable to the gdm user. See the <filename>
+	  Logo</filename> option in the reference section below for detauls.
 	</para>
 
       </sect2>
@@ -358,8 +358,8 @@
     </para>
 
     <para>
-      <filename /gdm.conf/ is configuration file for both <filename
-      /gdm/, <filename /gdmlogin/, and <filename /gdmchooser/ since a
+      <filename>gdm.conf</filename> is configuration file for both <filename>
+      gdm</filename>, <filename>gdmlogin</filename>, and <filename>gdmchooser</filename> since a
       lot of parameters overlap.
     </para>
 
@@ -375,8 +375,8 @@
       <title>The Script Directories</title>
       
       <para>
-	In this section we will explain the <filename /Init/,
-	<filename /PreRoot/ and <filename /PostRoot/ directories as
+	In this section we will explain the <filename>Init</filename>,
+	<filename>PreRoot</filename> and <filename>PostRoot</filename> directories as
 	they are very similar.
       </para>
 

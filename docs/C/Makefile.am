@@ -21,8 +21,6 @@ dist-hook:
 	-cp $(srcdir)/gdm/*.html gdm/*.css $(distdir)/gdm
 	-cp $(srcdir)/gdm.html $(distdir)
 	-cp $(srcdir)/gdm.html $(distdir)/gdm/index.html
-	mkdir $(distdir)/images
-	-cp $(srcdir)/images/*.gif $(srcdir)/images/*.jpg $(distdir)/images
 
 install-data-local: gdm.html
 	$(mkinstalldirs) $(gdm_helpdir)/images

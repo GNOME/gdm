@@ -20,6 +20,7 @@ gdm_SOURCES = \
 	slave.c \
 	slave.h \
 	server.c \
+	server.h \
 	misc.c \
 	misc.h \
 	auth.c \
