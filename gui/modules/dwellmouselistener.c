@@ -33,11 +33,11 @@
 
 #include <X11/Xlib.h>
 #include <config.h>
-
+ 
 #ifdef HAVE_XINPUT
 #include <X11/extensions/XInput.h>
 #endif
-
+ 
 /*
  * Note that CONFIGFILE will have to be changed to something more generic
  * if this module is ever moved outside of gdm.
@@ -87,7 +87,6 @@ static GSList *binding_list = NULL;
 extern char **environ;
 static guint enter_signal_id = 0;
 static guint leave_signal_id = 0;
-
 static int xinput_type_motion = 0;
 
 static Crossings *crossings = NULL;
@@ -96,7 +95,7 @@ static guint max_crossings = 0;
 static XID *ext_input_devices = NULL;
 static gint ext_device_count = 0;
 static gboolean latch_core_pointer = TRUE;
-
+ 
 static void create_event_watcher ();
 static void load_bindings(gchar *path);
 static gchar * screen_exec_display_string (GdkScreen *screen, const char *old);
@@ -112,6 +111,7 @@ is_ext_device (XID id)
 	gint i;
 	for (i = 0; i < ext_device_count; i++)
 		if (id == ext_input_devices[i]) return TRUE;
+	g_message ("is-ext-device failed for %d", id);
 	return FALSE;
 }
 
@@ -667,8 +667,8 @@ leave_enter_emission_hook (GSignalInvocationHint        *ihint,
 			  g_timeout_add (2000,
 					 change_cursor_back,
 					 NULL);
-			  latch_core_pointer = FALSE; 
-                          /* once we've recognized a gesture, we need to leave the pointer alone */
+			  latch_core_pointer = FALSE;
+			  /* once we've recognized a gesture, we need to leave the pointer alone */
                         }
                     }
                 }
@@ -743,7 +743,7 @@ create_event_watcher (void)
 G_MODULE_EXPORT void gtk_module_init (int *argc, char* argv[]);
 
 void gtk_module_init (int *argc, char* argv[])
-{ 
+{
   create_event_watcher ();
 }
 
