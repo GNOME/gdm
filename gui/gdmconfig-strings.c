@@ -51,6 +51,7 @@ gchar *s = N_("de_DE");
 gchar *s = N_("nl_NL");
 gchar *s = N_("en_US");
 gchar *s = N_("en_UK");
+gchar *s = N_("et_EE");
 gchar *s = N_("fi_FI");
 gchar *s = N_("fr_FR");
 gchar *s = N_("gl_ES");
