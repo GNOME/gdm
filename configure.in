@@ -285,9 +285,37 @@ if test x$have_pam = xno; then
   	fi
   fi
 
-  # Check if the function 'passwdexpired' and 'chpass' exist
-  # (only used in 'verify-crypt.c')
-  AC_CHECK_FUNCS(loginrestrictions passwdexpired chpass)
+  # Check How to handle authentication with the functions 'loginrestrictions',
+  # 'passwdexpired', 'chpass', 'setpwdb', 'getuserpw', 'putuserpw' and 'endpwdb'
+  AC_CHECK_FUNCS(loginrestrictions)
+  can_clear_admchg_flag=yes
+  AC_CHECK_FUNCS([passwdexpired chpass setpwdb getuserpw putuserpw endpwdb],
+  		  ,can_clear_admchg_flag=no)
+  if test x$can_clear_admchg_flag = xyes ; then
+    AC_COMPILE_IFELSE([
+      #if !defined(S_READ) || !defined(S_WRITE) || !defined(PW_ADMCHG)
+      choke me
+      #endif
+      ],
+      ,[AC_CHECK_HEADERS(
+	usersec.h
+	,[AC_COMPILE_IFELSE([
+	  #include <usersec.h>
+	  #if !defined(S_READ) || !defined(S_WRITE) || !defined(PW_ADMCHG)
+	  choke me
+	  #endif
+	  ],
+	  ,
+	  can_clear_admchg_flag=no
+	)]
+	,can_clear_admchg_flag=no
+      )]
+    )
+  fi
+  if test x$can_clear_admchg_flag = xyes ; then
+    AC_DEFINE(CAN_CLEAR_ADMCHG,,[Define this variable if the code to clear
+    	      the ADMCHG flag can be compiled])
+  fi
 fi
 
 AC_SUBST(VRFY)

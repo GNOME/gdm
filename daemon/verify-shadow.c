@@ -26,6 +26,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#if defined(CAN_CLEAR_ADMCHG) && defined(HAVE_USERSEC_H)
+#  include <usersec.h>
+#endif /* CAN_CLEAR_ADMCHG && HAVE_USERSEC_H */
+
 #ifdef HAVE_CRYPT
 #  include <crypt.h>
 #endif /* HAVE_CRYPT */
@@ -338,6 +342,40 @@ authenticate_again:
 	    if ((ret != 0) || (reEnter != 0)) {
 		    return NULL;
 	    }
+
+#if defined(CAN_CLEAR_ADMCHG)
+	    /* The password is changed by root, clear the ADM_CHG
+	       flag in the passwd file */
+	    ret = setpwdb (S_READ | S_WRITE);
+	    if (!ret) {
+		    upwd = getuserpw (login);
+		    if (upwd == NULL) {
+			    ret = -1;
+		    }
+		    else {
+			    upwd->upw_flags &= ~PW_ADMCHG;
+			    ret = putuserpw (upwd);
+			    if (!ret) {
+				    ret = endpwdb ();
+			    }
+		    }
+	    }
+
+	    if (ret) {
+		    gdm_error_box (d, GTK_MESSAGE_WARNING,
+				   _("Your password has been changed but "
+				     "you may have to change it again, "
+				     "please try again later or contact "
+				     "your system administrator."));
+	    }
+
+#else /* !CAN_CLEAR_ADMCHG */
+	    gdm_error_box (d, GTK_MESSAGE_WARNING,
+			   _("Your password has been changed but you "
+			     "may have to change it again, please try again "
+			     "later or contact your system administrator."));
+
+#endif /* CAN_CLEAR_ADMCHG */
 
 	    break;
 
