@@ -114,6 +114,7 @@ enum {
 #define GDM_INTERRUPT_SUSPEND     'S'
 #define GDM_INTERRUPT_SELECT_USER 'U'
 #define GDM_INTERRUPT_LOGIN_SOUND 'L'
+#define GDM_INTERRUPT_THEME       'H'
 
 /* The dreaded miscellaneous category */
 #define FIELD_SIZE 256
@@ -415,6 +416,8 @@ struct _GdmDisplay {
 
     /* Only set in the main daemon as that's the only place that cares */
     GdmLogoutAction logout_action;
+    
+    char *theme_name;
 };
 
 typedef struct _GdmXServer GdmXServer;
@@ -548,6 +551,7 @@ void		gdm_final_cleanup	(void);
 #define GDM_SOP_SOFT_RESTART_SERVERS "SOFT_RESTART_SERVERS"  /* no arguments */
 /* Suspend the machine if it is even allowed */
 #define GDM_SOP_SUSPEND_MACHINE "SUSPEND_MACHINE"  /* no arguments */
+#define GDM_SOP_CHOSEN_THEME "CHOSEN_THEME"  /* <slave pid> <theme name> */
 
 /* Notification protocol */
 /* keys */

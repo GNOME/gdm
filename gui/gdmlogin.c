@@ -67,6 +67,7 @@ struct _GdmLoginUser {
 #define LAST_LANGUAGE "Last"
 #define DEFAULT_LANGUAGE "Default"
 #define SESSION_NAME "SessionName"
+#define GTK_KEY "gtk-2.0"
 
 enum {
 	GREETER_ULIST_ICON_COLUMN = 0,
@@ -618,6 +619,21 @@ gdm_login_suspend_handler (void)
 		printf ("%c%c%c\n", STX, BEL, GDM_INTERRUPT_SUSPEND);
 		fflush (stdout);
 	}
+}
+
+static void
+gdm_theme_handler (GtkWidget *widget, gpointer data)
+{
+    char *theme_name;
+
+    theme_name = g_strdup((char *)data);
+    printf ("%c%c%c%s\n", STX, BEL, GDM_INTERRUPT_THEME, theme_name);
+  
+    fflush (stdout);
+
+    gtk_settings_set_string_property (gtk_settings_get_default (), 
+				      "gtk-theme-name", theme_name, "gdm");
+    g_free (theme_name);
 }
 
 static void 
@@ -1591,6 +1607,61 @@ gdm_login_language_menu_new (void)
     return menu;
 }
 
+static GList *
+build_theme_list (void)
+{
+    DIR *dir;
+    struct dirent *de;
+    gchar *theme_dir;
+    GList *theme_list = NULL;
+    gchar *tmp1, *tmp2;
+
+    theme_dir = gtk_rc_get_theme_dir ();
+    dir = opendir (theme_dir);
+
+    while ((de = readdir (dir))) {
+	if (de->d_name[0] == '.')
+		continue;
+	tmp1 = g_build_filename (theme_dir, de->d_name, NULL);
+	tmp2 = g_build_filename (tmp1, GTK_KEY, NULL);
+	if (g_file_test (tmp2, G_FILE_TEST_IS_DIR))
+		theme_list = g_list_prepend (theme_list, g_strdup (de->d_name));
+    }
+    g_free (tmp1);
+    g_free (tmp2);
+    g_free (theme_dir);
+    closedir (dir);
+    return theme_list;
+}
+
+static GtkWidget *
+gdm_login_theme_menu_new (void)
+{
+    GList *theme_list;
+    GtkWidget *item;
+    GtkWidget *menu;
+    char *theme_name;
+    char *menu_item_name;
+
+    menu = gtk_menu_new ();
+    theme_list = build_theme_list ();
+
+    for ( ; theme_list ; theme_list = theme_list->next) {
+	theme_name = g_strdup ((char *)theme_list->data);
+	menu_item_name = g_strdup_printf ("_%s", theme_name);
+	item = gtk_menu_item_new_with_mnemonic (_(menu_item_name));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	gtk_widget_show (GTK_WIDGET (item));
+	g_signal_connect (G_OBJECT (item), "activate",
+			  G_CALLBACK (gdm_theme_handler), theme_name);
+	gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item), _(theme_name), NULL);
+    }
+    g_free (theme_name);
+    g_free (menu_item_name);
+    g_list_free (theme_list);
+    return menu;
+}
+
 static gboolean
 err_box_clear (gpointer data)
 {
@@ -2526,7 +2597,16 @@ gdm_login_gui_init (void)
     GtkWidget *frame;
     int lw, lh;
     gboolean have_logo = FALSE;
+    GtkWidget *thememenu;
+    gchar *theme_dir;
+    const gchar *theme_name;
 
+    theme_dir = gtk_rc_get_theme_dir ();
+    theme_name = g_getenv ("GDM_THEME");
+
+    GdmGtkRC = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
+    g_free (theme_dir);
+    
     if( ! ve_string_empty (GdmGtkRC))
 	gtk_rc_parse (GdmGtkRC);
 
@@ -2674,6 +2754,14 @@ gdm_login_gui_init (void)
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), menu);
 		gtk_widget_show (GTK_WIDGET (item));
 	}
+    }
+
+    menu = gdm_login_theme_menu_new ();
+    if (menu != NULL) {
+	thememenu = gtk_menu_item_new_with_mnemonic (_("_Theme"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menubar), thememenu);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (thememenu), menu);
+	gtk_widget_show (GTK_WIDGET (thememenu));
     }
 
     /* Add a quit/disconnect item when in xdmcp mode or flexi mode */

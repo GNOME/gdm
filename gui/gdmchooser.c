@@ -1685,10 +1685,18 @@ gdm_chooser_gui_init (void)
 	GtkTreeSelection *selection;
 	GtkTreeViewColumn *column;
 
+	gchar *theme_dir;
+	const char *theme_name;
+
 	glade_helper_add_glade_directory (GDM_GLADE_DIR);
 	glade_helper_search_gnome_dirs (FALSE);
 
     /* Enable theme */
+    theme_dir = gtk_rc_get_theme_dir ();
+    theme_name = g_getenv ("GDM_THEME");
+    GdmGtkRC = g_strdup_printf ("%s/%s/gtk-2.0/gtkrc", theme_dir, theme_name);
+    g_free (theme_dir);
+
     if (RUNNING_UNDER_GDM && GdmGtkRC)
 	gtk_rc_parse (GdmGtkRC);
 

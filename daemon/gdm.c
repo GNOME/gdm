@@ -2726,7 +2726,24 @@ gdm_handle_message (GdmConnection *conn, const char *msg, gpointer data)
 		    GdmSystemMenu) {
 			suspend_machine ();
 		}
+	} else if (strncmp (msg, GDM_SOP_CHOSEN_THEME " ",
+		            strlen (GDM_SOP_CHOSEN_THEME " ")) == 0) {
+		GdmDisplay *d;
+		long slave_pid;
+		const char *p;
 
+		if (sscanf (msg, GDM_SOP_CHOSEN_THEME " %ld", &slave_pid) != 1)
+			return;
+		d = gdm_display_lookup (slave_pid);
+
+		p = strrchr (msg, ' ');
+		if (p == NULL)
+			d->theme_name = "Default";
+		while (*p == ' ')
+			p++;
+		d->theme_name = g_strdup (p);
+
+		send_slave_ack (d, NULL);
 	}
 }
 
