@@ -24,7 +24,7 @@ EXTRA_DIST = \
 	Default.redhat \
 	XKeepsCrashing \
 	gettextfoo.h \
-	extract-shell.h
+	extract-shell.sh
 
 gettextfoo.h: XKeepsCrashing
 	cat $^ | $(srcdir)/extract-shell.sh > gettextfoo.h

@@ -18,7 +18,7 @@ sbin_SCRIPTS = gdm-restart gdm-safe-restart
 
 install-data-local: gdmconfig-security
 if CONSOLE_HELPER
-	$(INSTALL_DATA) -D gdmconfig-pam $(DESTDIR)$(PAM_PREFIX)/pam.d/gdmconfig
+	$(INSTALL_DATA) -D $(srcdir)/gdmconfig-pam $(DESTDIR)$(PAM_PREFIX)/pam.d/gdmconfig
 	$(INSTALL_DATA) -D gdmconfig-security $(DESTDIR)$(PAM_PREFIX)/security/console.apps/gdmconfig
 	$(INSTALL_DATA) -m 755 -d $(sbindir)
 	mv -f $(bindir)/gdmconfig $(sbindir)
