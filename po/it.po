@@ -2,27 +2,32 @@
 # Copyright (C) 2000, 2001 Free Software Foundation, Inc.
 # Daniele Medri <madrid@linux.it>, 2000
 # Salvo Isaja <salvois@it.gnome.org>, 2001
-# Lapo Calamandrei <lapo@it.gnome.org>, 2003 
+# Lapo Calamandrei <lapo@it.gnome.org>, 2003
+# Alessio Frusciante <algol@firenze.linux.it>, 2003
+# Francesco Marletta <francesco.marletta@tiscali.it>, 2003
 #
+
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2\n"
-"POT-Creation-Date: 2003-09-02 12:12-0700\n"
-"PO-Revision-Date: 2003-08-26 15:23+0200\n"
-"Last-Translator: Alessio Frusciante <algol@firenze.linux.it>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-09-03 03:55+0200\n"
+"PO-Revision-Date: 2003-09-08 00:10+0200\n"
+"Last-Translator: Francesco Marletta <francesco.marletta@tiscali.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
+"Content-Transfer-Encoding: 8bit"
 
 #: config/CDE.desktop.in.h:1
 msgid "CDE"
 msgstr "CDE"
 
+# [MF] è un po' libera come traduzione, ma datosi che è un
+#      file .desktop credo possa andare bene lo stesso
 #: config/CDE.desktop.in.h:2
 msgid "This session logs you into CDE"
-msgstr ""
+msgstr "Sessione di lavoro con CDE"
 
 #: config/Default.desktop.in.h:1
 msgid "Default System Session"
@@ -59,7 +64,7 @@ msgstr "Inserire la password di root (super utente)."
 
 #: config/gettextfoo.h:6
 msgid "I will now try to restart the X server again."
-msgstr "Sarà riavviato di nuovo il server X."
+msgstr "Si cercherà di riavviare di nuovo il server X."
 
 #: config/gettextfoo.h:7
 msgid ""
@@ -76,7 +81,7 @@ msgid ""
 "diagnose the problem?"
 msgstr ""
 "Impossibile avviare il server X (l'interfaccia grafica). È possibile "
-"chequesto non sia configurato correttamente. Visualizzare l'output per "
+"che questo non sia configurato correttamente. Visualizzare l'output per "
 "diagnosticare il problema?"
 
 #: config/gettextfoo.h:9
@@ -89,8 +94,8 @@ msgid ""
 "pointer device (your mouse) is not set up correctly.  Would you like to view "
 "the X server output to diagnose the problem?"
 msgstr ""
-"Impossibile avviare il server X (l'interfaccia grafica). È possibile cheil "
-"dispositivo di puntamento non sia configurato correttamente. Visualizzare "
+"Impossibile avviare il server X (l'interfaccia grafica). È possibile che il "
+"dispositivo di puntamento (il mouse) non sia configurato correttamente. Visualizzare "
 "l'output per cercare di risolvere il problema?"
 
 #: config/gettextfoo.h:11
@@ -107,6 +112,9 @@ msgid ""
 "your cursor above them.  To get out of this mode type 'exit' in the window "
 "in the upper left corner"
 msgstr ""
+"Questa è la sessione xterm d'emergenza. Le finestre avranno il focus solo "
+"quando il puntatore si trova sopra di esse. Per uscire da questa modalità "
+"digitare \"exit\" nella finestra nell'angolo in alto a sinistra"
 
 #: config/gettextfoo.h:13
 msgid ""
@@ -114,14 +122,20 @@ msgid ""
 "session.  Windows now have focus only if you have your cursor above them.  "
 "To get out of this mode type 'exit' in the window in the upper left corner"
 msgstr ""
+"Impossibile avviare la sessione scelta, così è stata avviata la sessione "
+"xterm d'emergenza. Le finestre avranno il focus solo quando il puntatore "
+"si trova sopra di esse. Per uscire da questa modalità digitare \"exit\" nella "
+"finestra nell'angolo in alto a sinistra"
 
 #: config/gnome.desktop.in.h:1
 msgid "GNOME"
 msgstr "GNOME"
 
+# [MF] è un po' libera come traduzione, ma datosi che è un
+#      file .desktop credo possa andare bene lo stesso
 #: config/gnome.desktop.in.h:2
 msgid "This session logs you into GNOME"
-msgstr ""
+msgstr "Sessione di lavoro con GNOME"
 
 # poco corretto e brutto
 #: daemon/auth.c:56
@@ -151,9 +165,9 @@ msgid "%s: Could not make new cookie file in %s"
 msgstr "%s: impossibile creare il nuovo file cookie in %s"
 
 #: daemon/auth.c:217 daemon/auth.c:234 daemon/auth.c:759
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Cannot safely open %s"
-msgstr "%s: impossibile creare la pipe"
+msgstr "%s: impossibile aprire in modo sicuro %s"
 
 #. Really no need to clean up here - this process is a goner anyway
 #: daemon/auth.c:572 daemon/auth.c:610
@@ -172,9 +186,9 @@ msgid "%s: Could not write cookie"
 msgstr "%s: impossibile creare il file cookie"
 
 #: daemon/auth.c:737
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Ignoring suspiciously looking cookie file %s"
-msgstr "gdm_auth_user_remove: Il file cookie %s sembra sospetto, ignorato"
+msgstr "%s: il file cookie %s sembra sospetto, ignorato"
 
 #. This means we have no clue what's happening,
 #. * it's not X server crashing as we would have
@@ -193,6 +207,9 @@ msgid ""
 "it is likely that something bad is going on.  I will wait for 2 minutes "
 "before trying again on display %s."
 msgstr ""
+"Il server del display è stato fermato circa 6 volte negli ultimi 90 secondi, "
+"ed è probabile che stia accadendo qualcosa di strano. Il prossimo tentativo "
+"sul display %s sarà effettuato fra 2 minuti."
 
 #: daemon/display.c:243
 #, c-format
@@ -200,11 +217,9 @@ msgid "%s: Cannot create pipe"
 msgstr "%s: impossibile creare la pipe"
 
 #: daemon/display.c:315
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Failed forking gdm slave process for %s"
-msgstr ""
-"gdm_display_manage: Tentativo di eseguire una fork sul processo slave di gdm "
-"per %s fallito"
+msgstr "%s: tentativo fallito di eseguire una fork sul processo slave di gdm per %s"
 
 #: daemon/errorgui.c:286
 #, c-format
@@ -226,10 +241,10 @@ msgstr "Impossibile aprire %s"
 
 #: daemon/errorgui.c:402 daemon/errorgui.c:522 daemon/errorgui.c:609
 #: daemon/errorgui.c:706
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Cannot fork to display error/info box"
 msgstr ""
-"gdm_error_box: impossibile eseguire una fork per visualizzare un messaggio "
+"%s: impossibile eseguire una fork per visualizzare un messaggio "
 "di errore o informativo"
 
 #: daemon/filecheck.c:54
@@ -240,7 +255,7 @@ msgstr "%s: directory %s inesistente."
 #: daemon/filecheck.c:61 daemon/filecheck.c:103
 #, c-format
 msgid "%s: %s is not owned by uid %d."
-msgstr "%s: il proprietario di %s non è l'uid %d."
+msgstr "%s: il proprietario di %s non ha l'uid %d."
 
 # questa forma non mi piace
 #: daemon/filecheck.c:67 daemon/filecheck.c:110
@@ -322,13 +337,14 @@ msgstr ""
 #: daemon/gdm.c:257
 #, c-format
 msgid "%s: Authdir %s is not a directory. Aborting."
-msgstr "%s authdir %s non è una directory; chiusura in corso."
+msgstr "%s: authdir %s non è una directory; chiusura in corso."
 
 #: daemon/gdm.c:270
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s: Logdir %s does not exist or isn't a directory.  Using ServAuthDir %s."
-msgstr "%s: Logdir %s non esiste o non una directory. Si user ServAuthDir %s."
+msgstr ""
+"%s: Logdir %s non esiste o non è una directory. Si userà ServAuthDir %s."
 
 #: daemon/gdm.c:304 gui/gdmlogin.c:692 gui/greeter/greeter.c:95
 #, c-format
@@ -340,7 +356,7 @@ msgstr ""
 #: daemon/gdm.c:349
 #, c-format
 msgid "%s: BaseXsession empty, using %s/gdm/Xsession"
-msgstr ""
+msgstr "%s: sessione X di base vuota, si usera %s/gdm/Xsession"
 
 #: daemon/gdm.c:389
 #, c-format
@@ -355,7 +371,7 @@ msgstr "%s: è stato abilitato XDMCP ma non c'è supporto per esso; disabilitato
 #: daemon/gdm.c:430
 #, c-format
 msgid "%s: Root cannot be autologged in, turing off automatic login"
-msgstr "%s: l'utente root non può eseguire il login automatico; disabilitato"
+msgstr "%s: l'utente root non può eseguire il login temporizzato; disabilitato"
 
 #: daemon/gdm.c:443
 #, c-format
@@ -364,14 +380,13 @@ msgstr ""
 "%s: l'utente root non può eseguire il login automatico; login automatico "
 "disabilitato"
 
-# login temporizzato mi sembra la traduzione più corretta,
-# ma è oscena
+# [MF] dato che è un mess informativo sono stato un po' più lungo
 #: daemon/gdm.c:449
-#, fuzzy, c-format
+#, c-format
 msgid "%s: TimedLoginDelay less than 5, so I will just use 5."
 msgstr ""
-"%s: l'intervallo del login temporizzato è minore di 5 secondi; sarà "
-"effettuato in 5 secodi comunque."
+"%s: il ritardo prima del login temporizzato (TimedLoginDelay) è minore "
+"di 5 secondi; sarà impostato comunque a 5 secondi."
 
 #: daemon/gdm.c:459
 #, c-format
@@ -418,7 +433,7 @@ msgid ""
 "%s: XDMCP disabled and no local servers defined. Adding %s on :%d to allow "
 "configuration!"
 msgstr ""
-"%s: XDMCP è disabilitato e non è stato definito nessun server locale; sarò "
+"%s: XDMCP è disabilitato e non è stato definito nessun server locale; sarà "
 "aggiunto %s su :%d per permettere la configurazione."
 
 #: daemon/gdm.c:595
@@ -492,7 +507,7 @@ msgid ""
 "The gdm group is set to be root, but this is not allowed since it can pose a "
 "security risk. Please correct gdm configuration %s and restart gdm."
 msgstr ""
-"Il gruppo di GDM è impostato su «root», ma non è premesso per motivi di "
+"Il gruppo di GDM è impostato su «root», ma ciò non è premesso per motivi di "
 "sicurezza. Correggere la configurazione (%s) e rilanciare il programma."
 
 #: daemon/gdm.c:682
@@ -520,9 +535,9 @@ msgid "No daemon/ServAuthDir specified in the configuration file"
 msgstr "Nessun daemon/ServAuthDir specificato nel file di configurazione"
 
 #: daemon/gdm.c:726
-#, fuzzy, c-format
+#, c-format
 msgid "%s: No daemon/ServAuthDir specified."
-msgstr "%s: nessuna authdir specificata."
+msgstr "%s: nessun demone/ServAuthDir specificato."
 
 #: daemon/gdm.c:752
 #, c-format
@@ -606,11 +621,11 @@ msgstr ""
 
 #: daemon/gdm.c:1217
 msgid "System is rebooting, please wait ..."
-msgstr ""
+msgstr "Riavvio del sistema in corso..."
 
 #: daemon/gdm.c:1219
 msgid "System is shutting down, please wait ..."
-msgstr ""
+msgstr "Arresto del sistema in corso..."
 
 #: daemon/gdm.c:1313
 #, c-format
@@ -618,11 +633,11 @@ msgid "Reboot or Halt request when there is no system menu from display %s"
 msgstr ""
 "Richiesta di riavvio o arresto in assenza del menù di sistema dal display %s"
 
+# NdT qui ci vorrebbe un modo per differenziare le traduzioni di restart e reboot
 #: daemon/gdm.c:1322
-#, fuzzy, c-format
+#, c-format
 msgid "Restart, Reboot or Halt request from a non-local display %s"
-msgstr ""
-"gdm_child_action: richiesta di riavvio o di arresto dal display remoto %s"
+msgstr "Richiesta di riavvio o di arresto dal display remoto %s"
 
 #. Bury this display for good
 #: daemon/gdm.c:1382
@@ -654,9 +669,8 @@ msgstr "%s: arresto fallito: %s"
 #. XXX: this is ugly, why should there be a suspend like this,
 #. * see GDM_SOP_SUSPEND_MACHINE
 #: daemon/gdm.c:1437 daemon/gdm.c:2604
-#, fuzzy
 msgid "Master suspending..."
-msgstr "gdm_child_action: sospensione generale..."
+msgstr "Sospensione generale..."
 
 #: daemon/gdm.c:1547
 msgid "GDM restarting ..."
@@ -666,14 +680,13 @@ msgstr "Riavvio di GDM in corso..."
 msgid "Failed to restart self"
 msgstr "Tentativo di riavvio fallito"
 
-# aiutooooooo
 #: daemon/gdm.c:1711
 msgid "Do not fork into the background"
 msgstr "Non effettuare una fork in background"
 
 #: daemon/gdm.c:1713
 msgid "No console (local) servers to be run"
-msgstr ""
+msgstr "Nessun server di console (locale) da avviare"
 
 #: daemon/gdm.c:1715
 msgid "Preserve LD_* variables"
@@ -685,9 +698,9 @@ msgid ""
 "Error on option %s: %s.\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
-"Opzione %s errata: %s\n"
-"Eseguire «%s --help» per visualizzare la lista completa delle opzioni e dei "
-"comandi disponibili.\n"
+"Opzione %s errata: %s.\n"
+"Eseguire «%s --help» per visualizzare la lista delle opzioni disponibili per la "
+"riga di comando.\n"
 
 #: daemon/gdm.c:1853
 msgid "Only root wants to run gdm\n"
@@ -743,7 +756,7 @@ msgstr "y = Sì o n = No? >"
 #: daemon/misc.c:869
 #, c-format
 msgid "%s: Cannot get local addresses!"
-msgstr "%s: impossibile determinare gli indirizzi locali."
+msgstr "%s: impossibile determinare gli indirizzi locali!"
 
 #: daemon/misc.c:984
 #, c-format
@@ -757,13 +770,13 @@ msgid "initgroups() failed for %s. Aborting."
 msgstr "Errore eseguendo initgroups() per %s; chiusura in corso."
 
 #: daemon/misc.c:1219 daemon/misc.c:1233
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting signal %d to %s"
-msgstr "%s: errore nell'attivazione del gestore del segnale USR1: %s"
+msgstr "%s: errore nell'impostazione del segnale %d a %s"
 
 #: daemon/server.c:160
 msgid "Can not start fallback console"
-msgstr ""
+msgstr "Impossibile avviare la console di ripiego"
 
 #: daemon/server.c:330
 #, c-format
@@ -773,8 +786,7 @@ msgid ""
 "server on %s again.%s"
 msgstr ""
 "C'è già un server X in esecuzione sul display %s. Provare un altro display? "
-"Rispondendo «no» sarà eseguito un altro tentativo di avvio del server su %s.%"
-"s"
+"Rispondendo «no» sarà eseguito un altro tentativo di avvio del server su %s.%s"
 
 #: daemon/server.c:337
 msgid ""
@@ -782,7 +794,7 @@ msgid ""
 "Ctrl-Alt-F7 to go to console 7.  X servers usually run on consoles 7 and "
 "higher.)"
 msgstr ""
-"   (È possibile cambiare console premendo Ctrl-Alt e un tasto funzione. Ad "
+"  (È possibile cambiare console premendo Ctrl-Alt e un tasto funzione. Ad "
 "esempio premendo Ctrl-Alt-F7 si passa alla console 7. Solitamente il server "
 "X è sulle console dalla 7 in su.)"
 
@@ -829,9 +841,9 @@ msgid "%s: Could not open logfile for display %s!"
 msgstr "%s: impossibile aprire il file di log per il display %s."
 
 #: daemon/server.c:1073 daemon/server.c:1079 daemon/server.c:1084
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error setting %s to %s"
-msgstr "%s: errore nell'apertura della pipe: %s"
+msgstr "%s: errore nell'impostazione di %s a %s"
 
 #: daemon/server.c:1121
 #, c-format
@@ -874,28 +886,34 @@ msgstr "%s: Xserver mancante: %s"
 msgid "%s: Can't fork Xserver process!"
 msgstr "%s: impossibile eseguire una fork sul processo Xserver"
 
+# NdT: qui ci vuole un bell'aiuto
 #: daemon/slave.c:987
+#, check
 msgid "Log in anyway"
-msgstr ""
+msgstr "Effettua comunque il login"
 
 #: daemon/slave.c:989
+#, check
 msgid ""
 "You are already logged in.  You can log in anyway, return to your previous "
 "login session, or abort this login"
 msgstr ""
+"Si è già loggati. Si può proseguire comunque, tornare alla precedente "
+"sessione o interrompere questo login"
 
 #: daemon/slave.c:993
 msgid "Return to previous login"
-msgstr ""
+msgstr "Ritorna al login precedente"
 
 #: daemon/slave.c:994 daemon/slave.c:1000
-#, fuzzy
 msgid "Abort login"
 msgstr "Interrompi login"
 
+# NdT: questa è una versione diversa, ditemi quale delle due è meglio
 #: daemon/slave.c:997
+#, check
 msgid "You are already logged in.  You can log in anyway or abort this login"
-msgstr ""
+msgstr "Si è già loggati. Si può proseguire comunque o interrompere questo login"
 
 #: daemon/slave.c:1087
 msgid ""
@@ -920,7 +938,7 @@ msgstr ""
 #: daemon/slave.c:1323
 #, c-format
 msgid "%s: cannot fork"
-msgstr ""
+msgstr "%s: impossibile eseguire una fork"
 
 #: daemon/slave.c:1370
 #, c-format
@@ -928,17 +946,14 @@ msgid "%s: cannot open display %s"
 msgstr "%s: impossibile aprire il display %s"
 
 #: daemon/slave.c:1520
-#, fuzzy
 msgid ""
 "Could not execute the configuration program.  Make sure it's path is set "
 "correctly in the configuration file.  I will attempt to start it from the "
 "default location."
 msgstr ""
-"Impossibile eseguire il programma di\n"
-"configurazione. Controllare che il percorso\n"
-"sia impostato correttamente nel file di\n"
-"configurazione. Sarà effettuato un tentativo\n"
-"di esecuzione dalla posizione standard."
+"Impossibile eseguire il programma di configurazione. Controllare che "
+"il percorso sia impostato correttamente nel file di configurazione. "
+"Sarà effettuato un tentativo di esecuzione dalla posizione predefinita."
 
 #: daemon/slave.c:1534
 msgid ""
@@ -962,32 +977,25 @@ msgid "%s: Can't init pipe to gdmgreeter"
 msgstr "%s: impossibile inizializzare la pipe verso gdmgreeter"
 
 #: daemon/slave.c:2312
-#, fuzzy
 msgid ""
 "No servers were defined in the configuration file and XDMCP was disabled.  "
 "This can only be a configuration error.  So I have started a single server "
 "for you.  You should log in and fix the configuration.  Note that automatic "
 "and timed logins are disabled now."
 msgstr ""
-"Non è definito nessun server nel file di\n"
-"configurazione e XDMCP è disabilitato,\n"
-"quindi deve sicuramente esserci un errore\n"
-"di configurazione. Sarà avviato un server\n"
-"singolo, effettuare il login e correggere\n"
-"la configurazione. I login automatici e\n"
-"a tempo sono disabilitati per ora."
+"Non è definito nessun server nel file di configurazione e XDMCP "
+"è disabilitato. Deve sicuramente esserci un errore di configurazione. "
+"Sarà avviato un server singolo, effettuare il login e correggere "
+"la configurazione. I login automatici e temporizzati sono disabilitati per ora."
 
 #: daemon/slave.c:2326
-#, fuzzy
 msgid ""
 "I could not start the regular X server (your graphical environment) and so "
 "this is a failsafe X server.  You should log in and properly configure the X "
 "server."
 msgstr ""
-"Impossibile avviare il server X\n"
-"standard (l'interfaccia grafica),\n"
-"quindi sarà avviato quello d'emergenza.\n"
-"Effettuare il login e configurare\n"
+"Impossibile avviare il server X standard (l'interfaccia grafica), "
+"quindi sarà avviato quello d'emergenza. Effettuare il login e configurare "
 "il server X."
 
 #: daemon/slave.c:2335
@@ -1004,37 +1012,35 @@ msgid ""
 "The greeter program appears to be crashing.\n"
 "I will attempt to use a different one."
 msgstr ""
+"Il greeter sembra essere andato in crash.\n"
+"Si proverà ad usarne uno differente."
 
 #. Something went wrong
 #: daemon/slave.c:2380
 #, c-format
 msgid "%s: Cannot start greeter with gtk modules: %s. Trying without modules"
-msgstr ""
+msgstr "%s: impossibile avviare il greeter con i moduli gtk: %s. Si riproverà senza moduli"
 
-# da correggere...
 #: daemon/slave.c:2387
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Cannot start greeter trying default: %s"
-msgstr "gdm_slave_greeter: impossibile avviare il greeter: %s"
+msgstr "%s: impossibile avviare il greeter, si prova quello predefinito: %s"
 
 #: daemon/slave.c:2400
-#, fuzzy
 msgid ""
 "Cannot start the greeter program, you will not be able to log in.  This "
 "display will be disabled.  Try logging in by other means and editing the "
 "configuration file"
 msgstr ""
-"Impossibile avviare il greeter,\n"
-"non sarò possibile effettuare il\n"
-"login. Questo display verrà disabilitato.\n"
-"Effettuare il login in altri modi e correggere\n"
-"il problema modificando il file di configurazione."
+"Impossibile avviare il greeter, non sarà possibile effettuare il login. "
+"Questo display verrà disabilitato. Effettuare il login in altri modi e "
+"correggere il problema modificando il file di configurazione"
 
 #. If no greeter we really have to disable the display
 #: daemon/slave.c:2407
 #, c-format
 msgid "%s: Error starting greeter on display %s"
-msgstr "%s: errore nell'avvio del greeter l display %s"
+msgstr "%s: errore nell'avvio del greeter sul display %s"
 
 #: daemon/slave.c:2411
 #, c-format
@@ -1044,32 +1050,30 @@ msgstr "%s: impossibile eseguire una fork sul processo gdmgreeter"
 #: daemon/slave.c:2496
 #, c-format
 msgid "%s: Can't open fifo!"
-msgstr "%s: impossibile aprire la fifo."
+msgstr "%s: impossibile aprire il fifo."
 
 #: daemon/slave.c:2651
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Can't init pipe to gdmchooser"
-msgstr "%s: impossibile inizializzare la pipe verso gdmgreeter"
+msgstr "%s: impossibile inizializzare la pipe verso gdmchooser"
 
 #: daemon/slave.c:2740
-#, fuzzy
 msgid ""
 "Cannot start the chooser program, you will probably not be able to log in.  "
 "Please contact the system administrator."
 msgstr ""
-"Impossibile avviare il chooser,\n"
-"non sarà possibile effettuare il login.\n"
-"Contattare l'amministratore di sistema.\n"
+"Impossibile avviare il chooser, non sarà possibile effettuare il login. "
+"Contattare l'amministratore di sistema."
 
 #: daemon/slave.c:2744
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error starting chooser on display %s"
-msgstr "%s: errore nell'avvio del greeter l display %s"
+msgstr "%s: errore nell'avvio del chooser sul display %s"
 
 #: daemon/slave.c:2747
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Can't fork gdmchooser process"
-msgstr "%s: impossibile eseguire una fork sul processo gdmgreeter"
+msgstr "%s: impossibile eseguire una fork sul processo gdmchooser"
 
 #: daemon/slave.c:2919
 #, c-format
@@ -1077,10 +1081,10 @@ msgid "%s: Could not open ~/.xsession-errors"
 msgstr "%s: impossibile aprire «~/.session-errors»"
 
 #: daemon/slave.c:3015
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Execution of PreSession script returned > 0. Aborting."
 msgstr ""
-"gdm_slave_session_start: l'esecuzione dello script «PreSession» ha "
+"%s: l'esecuzione dello script «PreSession» ha "
 "restituito un valore maggiore di 0; chiusura in corso."
 
 #: daemon/slave.c:3044
@@ -1103,101 +1107,96 @@ msgid "%s: setusercontext() failed for %s. Aborting."
 msgstr "%s: errore eseguendo setusercontext() per %s; chiusura in corso."
 
 #: daemon/slave.c:3087
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not become %s. Aborting."
-msgstr "%s: impossibile impostare l'ambiente per %s; chiusura in corso."
+msgstr "%s: impossibile diventare %s; chiusura in corso."
 
 #: daemon/slave.c:3146
-#, fuzzy, c-format
+#, c-format
 msgid "%s: No Exec line in the session file: %s, starting failsafe GNOME"
 msgstr ""
-"Il link per la sessione predefinita non è stato trovato. Sarà utilizzata la "
-"sessione d'emergenza di GNOME.\n"
+"%s: nessuna riga Exec nel file di sessione: %s, verrà avviata "
+"la sessione GNOME d'emergenza"
 
 #: daemon/slave.c:3152
 msgid ""
 "The session you selected does not look valid.  I will run the GNOME failsafe "
 "session for you."
 msgstr ""
+"La sessione selezionata non sembra valida. Verrà avviata la sessione GNOME d'emergenza."
 
 #: daemon/slave.c:3166
 #, c-format
 msgid ""
 "%s: Cannot find or run the base Xsession script, will try GNOME failsafe"
 msgstr ""
+"%s: impossibile trovare o eseguire lo script di base Xsession, verrà provata "
+"quella GNOME d'emergenza"
 
 #: daemon/slave.c:3171
 msgid ""
 "Cannot find or run the base session script, will try the GNOME failsafe "
 "session for you."
 msgstr ""
+"Impossibile trovare o eseguire lo script di sessione di base, verrà provata "
+"la sessione GNOME d'emergenza."
 
 #. yaikes
 #: daemon/slave.c:3186
-#, fuzzy, c-format
+#, c-format
 msgid "%s: gnome-session not found for a failsafe GNOME session, trying xterm"
 msgstr ""
-"gdm_slave_session_start: gnome-session non trovato per la sessione "
-"d'emergenza di gnome; sarà effettuato un tentativo con xterm."
+"%s: gnome-session non trovato per la sessione d'emergenza di GNOME, "
+"sarà effettuato un tentativo con xterm."
 
 #: daemon/slave.c:3191
-#, fuzzy
 msgid ""
 "Could not find the GNOME installation, will try running the \"Failsafe xterm"
 "\" session."
 msgstr ""
-"Impossibile trovare l'installazione di GNOME,\n"
-"sarà effettuato un tentativo con la sessione\n"
-"«Xterm d'emergenza»."
+"Impossibile trovare l'installazione di GNOME, sarà effettuato un tentativo "
+"con la sessione «Xterm d'emergenza»."
 
 #: daemon/slave.c:3199
-#, fuzzy
 msgid ""
 "This is the Failsafe Gnome session.  You will be logged into the 'Default' "
 "session of Gnome with no startup scripts run.  This is only to fix problems "
 "in your installation."
 msgstr ""
-"Questa è la sessione GNOME d'emergenza.\n"
-"Consente l'accesso nella sessione GNOME\n"
-"predefinita senza eseguire scritp di avvio.\n"
-"Serve solo per risolvere eventuali problemi\n"
-"dell'installazione."
+"Questa è la sessione GNOME d'emergenza. Consente l'accesso nella "
+"sessione GNOME predefinita senza eseguire script di avvio. Serve "
+"solo per risolvere eventuali problemi dell'installazione."
 
 #: daemon/slave.c:3214
 msgid "Cannot find \"xterm\" to start a failsafe session."
 msgstr "Impossibile trovare «xterm» per avviare la sessione d'emergenza."
 
+# [MF] Non che mi piaccia molto, ma non ho tempo ora
 #: daemon/slave.c:3227
-#, fuzzy
 msgid ""
 "This is the Failsafe xterm session.  You will be logged into a terminal "
 "console so that you may fix your system if you cannot log in any other way.  "
 "To exit the terminal emulator, type 'exit' and an enter into the window."
 msgstr ""
-"Quasta è la sessione xterm d'emergenza.\n"
-"Sarà presente un terminale dal quale sarà\n"
-"possibile correggere la configurazione del\n"
-"sistema nel caso non ci fossero altri modi per\n"
-"accedervi. Per uscire digitare «exit» e premere\n"
-"invio nella finestra del terminale."
+"Questa è la sessione xterm d'emergenza. Sarà presente un terminale "
+"dal quale sarà possibile correggere la configurazione del sistema "
+"nel caso non ci fossero altri modi per accedervi. Per uscire "
+"digitare «exit» e premere invio nella finestra del terminale."
 
 #: daemon/slave.c:3254
-#, fuzzy, c-format
+#, c-format
 msgid "%s: User not allowed to log in"
-msgstr "L'utente %s non è abilitato per il login"
+msgstr "%s: utente non abilitato per il login"
 
 #: daemon/slave.c:3257
-#, fuzzy
 msgid "The system administrator has disabled your account."
-msgstr ""
-"\n"
-"L'amministratore di sistema ha disabilitato questo account."
+msgstr "L'amministratore di sistema ha disabilitato l'account."
 
 #. will go to .xsession-errors
 #: daemon/slave.c:3268 daemon/slave.c:3273
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not exec %s %s %s"
-msgstr "%s: impossibile leggere l'indirizzo"
+msgstr "%s: impossibile eseguire %s %s %s"
 
 #. we can't really be any more specific
 #: daemon/slave.c:3284
@@ -1205,22 +1204,19 @@ msgid "Cannot start the session due to some internal error."
 msgstr "Impossibile avviare la sessione a causa di un errore interno."
 
 #: daemon/slave.c:3337
-#, fuzzy, c-format
+#, c-format
 msgid "%s: User passed auth but getpwnam(%s) failed!"
-msgstr ""
-"gdm_slave_session_start: l'utente è stato autenticato, ma getpwnam(%s) ha "
-"restituito un errore."
+msgstr "%s: l'utente è stato autenticato, ma getpwnam(%s) ha fallito!"
 
 #: daemon/slave.c:3351
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Execution of PostLogin script returned > 0. Aborting."
 msgstr ""
-"gdm_slave_session_start: l'esecuzione dello script «PreSession» ha "
+"%s: l'esecuzione dello script «PostSession» ha "
 "restituito un valore maggiore di 0; chiusura in corso."
 
-# questa è dura.....
 #: daemon/slave.c:3360
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Your home directory is listed as:\n"
 "'%s'\n"
@@ -1230,12 +1226,11 @@ msgid ""
 "It is unlikely anything will work unless you use a failsafe session."
 msgstr ""
 "La directory home specificata è:\n"
-"«%s», ma sembra che sia inesistente.\n"
-"Utilizzare la directory radice come\n"
-"home?\n"
+"«%s»\n"
+"ma sembra che sia inesistente.\n"
+"Effettuare il login e utilizzare la directory / (radice) come home?\n"
 "\n"
-"Utilizzare la sessione d'emergenza perchè\n"
-"il desktop funzioni correttamente."
+"È improbabile che qualcosa funzioni a meno di usare una sessione di emergenza."
 
 #: daemon/slave.c:3368
 #, c-format
@@ -1243,48 +1238,42 @@ msgid "%s: Home directory for %s: '%s' does not exist!"
 msgstr "%s: directory home di %s: «%s» non esiste"
 
 #: daemon/slave.c:3496
-#, fuzzy
 msgid ""
 "GDM could not write to your authorization file.  This could mean that you "
 "are out of disk space or that your home directory could not be opened for "
 "writing.  In any case, it is not possible to log in.  Please contact your "
 "system administrator"
 msgstr ""
-"GDM non può creare il file di autorizzazione.\n"
-"È possibile che non ci sia spazio sufficiente o\n"
-"che non sia possibile scrivere nella directory home.\n"
-"Impossibile effettuare il login. Contattare\n"
+"GDM non può scrivere sul file di autorizzazione. È possibile che non ci sia "
+"spazio sufficiente o che non sia possibile scrivere nella directory home. "
+"In ogni caso è impossibile effettuare il login. Contattare "
 "l'amministratore di sistema."
 
 #: daemon/slave.c:3573
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error forking user session"
-msgstr ""
-"gdm_slave_session_start: errore eseguendo la fork della sessione utente"
+msgstr "%s: errore eseguendo la fork della sessione utente"
 
 #: daemon/slave.c:3652
-#, fuzzy
 msgid ""
 "Your session only lasted less than 10 seconds.  If you have not logged out "
 "yourself, this could mean that there is some installation problem or that "
 "you may be out of diskspace.  Try logging in with one of the failsafe "
 "sessions to see if you can fix this problem."
 msgstr ""
-"La sessione è durata meno di 10 secondi. Se\n"
-"non è stato esplicitamente effettuato un logout,\n"
-"è possibile che ci siano stati dei problemi\n"
-"durante l'installazione o che lo spazio su\n"
-"disco sia esaurito. Provare ad utilizzare\n"
-"la sessione d'emergenza per tentare di\n"
+"La sessione è durata meno di 10 secondi. Se non è stato esplicitamente "
+"effettuato un logout, è possibile che ci siano stati dei problemi "
+"durante l'installazione o che lo spazio su disco sia esaurito. Provare "
+"ad utilizzare una delle sessioni d'emergenza per tentare di "
 "risolvere il problema."
 
 #: daemon/slave.c:3660
 msgid "View details (~/.xsession-errors file)"
-msgstr "Visualizza dettagli (file ~/.xsession-errors file)"
+msgstr "Visualizza dettagli (file ~/.xsession-errors)"
 
 #: daemon/slave.c:3786
 msgid "GDM detected a shutdown or reboot in progress."
-msgstr ""
+msgstr "GDM ha rilevato un arresto o un riavvio in corso."
 
 # AIUTO!!
 #: daemon/slave.c:3880
@@ -1293,41 +1282,38 @@ msgid "Ping to %s failed, whacking display!"
 msgstr "Impossibile fare il ping di %s; il display sarà disconnesso."
 
 #: daemon/slave.c:4153
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Fatal X error - Restarting %s"
-msgstr ""
-"gdm_slave_xioerror_handler: errore fatale di X; riavvio di %s in corso."
+msgstr "%s: errore fatale di X; riavvio di %s in corso."
 
 #: daemon/slave.c:4554
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Failed starting: %s"
-msgstr "gdm_slave_exec_script: errore nell'avvio: %s"
+msgstr "%s: errore nell'avvio: %s"
 
 #: daemon/slave.c:4562 daemon/slave.c:4699
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Can't fork script process!"
-msgstr "%s: impossibile eseguire una fork sul processo gdmgreeter"
+msgstr "%s: impossibile eseguire una fork sul processo script!"
 
 #: daemon/slave.c:4656
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Failed creating pipe"
 msgstr "%s: impossibile creare la pipe"
 
 #: daemon/slave.c:4693
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Failed executing: %s"
-msgstr "gdm_parse_enriched_login: errore nell'avvio: %s"
+msgstr "%s: errore nell'avvio: %s"
 
-# e via di fantasia.....
 #: daemon/verify-crypt.c:70 daemon/verify-pam.c:708 daemon/verify-shadow.c:71
-#, fuzzy
 msgid ""
 "\n"
 "Incorrect username or password.  Letters must be typed in the correct case."
 msgstr ""
 "\n"
-"Nome utente o password sbagliati.  Attenzione a maiuscole e minuscole.  "
-"Controllare che il «Blocco maiuscole» non sia inserito"
+"Nome utente o password sbagliati.  "
+"Le lettere devono essere digitate rispettando maiuscole e minuscole."
 
 #: daemon/verify-crypt.c:75 daemon/verify-pam.c:718 daemon/verify-shadow.c:76
 msgid "Please make sure the Caps Lock key is not enabled."
@@ -1357,7 +1343,7 @@ msgstr "Password:"
 #: daemon/verify-shadow.c:189 daemon/verify-shadow.c:203
 #, c-format
 msgid "Couldn't authenticate user \"%s\""
-msgstr "Impossibile autenticare l'utente \"%s\""
+msgstr "Impossibile autenticare l'utente «%s»"
 
 #: daemon/verify-crypt.c:198 daemon/verify-pam.c:594
 #: daemon/verify-shadow.c:216
@@ -1412,11 +1398,11 @@ msgstr "Impossibile acquisire la struttura di passwd per %s"
 
 #: daemon/verify-pam.c:96
 msgid "You are required to change your password immediately (password aged)"
-msgstr ""
+msgstr "Ti è richiesto di cambiare la password immediatamente (password invecchiata)"
 
 #: daemon/verify-pam.c:97
 msgid "You are required to change your password immediately (root enforced)"
-msgstr ""
+msgstr "Ti è richiesto di cambiare la password immediatamente (forzato da root)"
 
 #: daemon/verify-pam.c:98
 msgid "Your account has expired; please contact your system administrator"
@@ -1431,9 +1417,8 @@ msgid "Password unchanged"
 msgstr "Password non modificata"
 
 #: daemon/verify-pam.c:101
-#, fuzzy
 msgid "Can not get username"
-msgstr "Inserire il nome utente"
+msgstr "Impossibile recuperare il nome utente"
 
 #: daemon/verify-pam.c:102
 msgid "Retype new UNIX password:"
@@ -1441,7 +1426,7 @@ msgstr "Riscrivere la nuova password UNIX:"
 
 #: daemon/verify-pam.c:103
 msgid "Enter new UNIX password:"
-msgstr "Scrivere la password UNIX:"
+msgstr "Scrivere la nuova password UNIX:"
 
 #: daemon/verify-pam.c:104
 msgid "(current) UNIX password:"
@@ -1474,7 +1459,7 @@ msgstr "Impossibile impostare il gestore pam con display nullo"
 #: daemon/verify-pam.c:397
 #, c-format
 msgid "Unable to establish service %s: %s\n"
-msgstr ""
+msgstr "Impossibile stabilire il servizio %s: %s\n"
 
 #: daemon/verify-pam.c:405
 #, c-format
@@ -1557,6 +1542,8 @@ msgid ""
 "\n"
 "Authentication failed.  Letters must be typed in the correct case."
 msgstr ""
+"\n"
+"Autenticazione fallita. Le lettere devono essere digitate rispettando le maiuscole."
 
 #: daemon/verify-pam.c:728 daemon/verify-pam.c:826 daemon/verify-pam.c:839
 msgid "Authentication failed"
@@ -1580,66 +1567,64 @@ msgid "Can't find PAM configuration for gdm."
 msgstr "Impossibile trovare il file di configurazione PAM per GDM"
 
 #: daemon/xdmcp.c:270
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not get server hostname: %s!"
-msgstr "gdm_xdmcp_init: impossibile trovare il nome del server: %s."
+msgstr "g%s: impossibile trovare il nome del server: %s!"
 
 #: daemon/xdmcp.c:291
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not create socket!"
-msgstr "%s: impossibile creare un socket"
+msgstr "%s: impossibile creare un socket!"
 
 #: daemon/xdmcp.c:301
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not bind to XDMCP socket!"
-msgstr "%s: impossibile mappare il socket"
+msgstr "%s: impossibile agganciarsi al socket XDMCP"
 
 #: daemon/xdmcp.c:369
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not create XDMCP buffer!"
-msgstr "gdm_xdmcp_decode: impossibile creare un buffer per XDMCP."
+msgstr "%s: impossibile creare un buffer per XDMCP!"
 
 #: daemon/xdmcp.c:375
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read XDMCP header!"
-msgstr "gdm_xdmcp_decode: impossibile leggere l'intestazione di XDMCP."
+msgstr "%s: impossibile leggere l'intestazione di XDMCP!"
 
 #: daemon/xdmcp.c:382
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Incorrect XDMCP version!"
-msgstr "gdm_xdmcp_decode: versione di XDMCP non corretta."
+msgstr "%s: versione di XDMCP non corretta!"
 
 #: daemon/xdmcp.c:435
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Unknown opcode from host %s"
-msgstr "gdm_xdmcp_decode_packet: opcode sconosciuto dall'host %s"
+msgstr "%s: opcode sconosciuto dall'host %s"
 
 #: daemon/xdmcp.c:455 daemon/xdmcp.c:741
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not extract authlist from packet"
-msgstr ""
-"gdm_xdmcp_handle_query: impossibile estrarre la lista delle autorizzazioni "
-"dal pacchetto"
+msgstr "%s: impossibile estrarre la lista delle autorizzazioni dal pacchetto"
 
 #: daemon/xdmcp.c:471 daemon/xdmcp.c:761
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Error in checksum"
-msgstr "gdm_xdmcp_handle_query: errore nel checksum"
+msgstr "%s: errore nel checksum"
 
 #: daemon/xdmcp.c:724
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read display address"
-msgstr "%s: impossibile leggere l'indirizzo"
+msgstr "%s: impossibile leggere l'indirizzo del display"
 
 #: daemon/xdmcp.c:732
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read display port number"
-msgstr "Impossibile trovare un display disponibile"
+msgstr "%s: impossibile leggere il numero di porta del display"
 
 #: daemon/xdmcp.c:768
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Bad address"
-msgstr "%s: impossibile leggere l'indirizzo"
+msgstr "%s: indirizzo errato"
 
 #: daemon/xdmcp.c:883
 #, c-format
@@ -1648,66 +1633,71 @@ msgstr "Interrogazione XDMCP negata dall'host %s"
 
 # banned è dura, esiliato o cacciato, cmq non si capisce quindi
 # metto (ban), sono graditissimi dei suggerimenti
+# [MF] che ne dici di "bando" ?
 #: daemon/xdmcp.c:1012
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Got REQUEST from banned host %s"
-msgstr "gdm_xdmcp_handle_request: ricevuto REQUEST dall'host esiliato (ban) %s"
+msgstr "%s: ricevuto REQUEST dall'host bandito %s"
 
 #: daemon/xdmcp.c:1022 daemon/xdmcp.c:1296 daemon/xdmcp.c:1549
-#, fuzzy, c-format
+#, c-format
+#, check -> io metterei "il numero del display"
 msgid "%s: Could not read Display Number"
-msgstr "gdm_xdmcp_handle_request: impossibile leggere \"Display Number\""
+msgstr "%s: impossibile leggere \"Display Number\""
 
 #: daemon/xdmcp.c:1029
-#, fuzzy, c-format
+#, c-format
+#, check -> io metterei "il tipo di connessione"
 msgid "%s: Could not read Connection Type"
-msgstr "gdm_xdmcp_handle_request: impossibile leggere \"Connection Type\""
+msgstr "%s: impossibile leggere \"Connection Type\""
 
 #: daemon/xdmcp.c:1036
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read Client Address"
-msgstr "%s: impossibile leggere l'indirizzo"
+msgstr "%s: impossibile leggere l'indirizzo del client"
 
 #: daemon/xdmcp.c:1044
-#, fuzzy, c-format
+#, c-format
+#, check -> io metterei "nomi autenticati" o simile
 msgid "%s: Could not read Authentication Names"
-msgstr "gdm_xdmcp_handle_request: impossibile leggere \"Authentication Names\""
+msgstr "%s: impossibile leggere \"Authentication Names\""
 
 #: daemon/xdmcp.c:1053
-#, fuzzy, c-format
+#, c-format
+#, check -> io metterei "dati di autorizzazione"
 msgid "%s: Could not read Authentication Data"
-msgstr "gdm_xdmcp_handle_request: impossibile leggere \"Authentication Data\""
+msgstr "%s: impossibile leggere \"Authentication Data\""
 
 #: daemon/xdmcp.c:1063
-#, fuzzy, c-format
+#, c-format
+#, check -> io metterei "lista di autorizzazioni"
 msgid "%s: Could not read Authorization List"
-msgstr "gdm_xdmcp_handle_request: impossibile leggere \"Authorization List\""
+msgstr "%s: impossibile leggere \"Authorization List\""
 
 #: daemon/xdmcp.c:1080
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read Manufacturer ID"
-msgstr "%s: impossibile leggere l'indirizzo"
+msgstr "%s: impossibile leggere l'ID del produttore"
 
 #: daemon/xdmcp.c:1104
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Failed checksum from %s"
-msgstr "gdm_xdmcp_handle_request: errore nel checksum da %s"
+msgstr "%st: errore nel checksum da %s"
 
 #: daemon/xdmcp.c:1281
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Got Manage from banned host %s"
-msgstr ""
-"gdm_xdmcp_handle_manage: ricevuto \"Manage\" dall'host esiliato (ban) %s"
+msgstr "%s: ricevuto \"Manage\" dall'host bandito %s"
 
 #: daemon/xdmcp.c:1289 daemon/xdmcp.c:1556
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read Session ID"
-msgstr "%s: impossibile leggere l'indirizzo"
+msgstr "%s: impossibile leggere l'ID di sessione"
 
 #: daemon/xdmcp.c:1303
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Could not read Display Class"
-msgstr "%s: impossibile leggere l'indirizzo"
+msgstr "%s: impossibile leggere la classe del display"
 
 #: daemon/xdmcp.c:1395 daemon/xdmcp.c:1401 daemon/xdmcp.c:1459
 #: daemon/xdmcp.c:1465
@@ -1716,15 +1706,14 @@ msgid "%s: Could not read address"
 msgstr "%s: impossibile leggere l'indirizzo"
 
 #: daemon/xdmcp.c:1541
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Got KEEPALIVE from banned host %s"
-msgstr ""
-"gdm_xdmcp_handle_keepalive: ricevuto KEEPALIVE dall'host esiliato (ban) %s"
+msgstr "%s: ricevuto KEEPALIVE dall'host bandito %s"
 
 #: daemon/xdmcp.c:1799 daemon/xdmcp.c:1806 daemon/xdmcp.c:1812
-#, fuzzy, c-format
+#, c-format
 msgid "%s: No XDMCP support"
-msgstr "gdm_xdmcp_close: supporto per XDMCP mancante"
+msgstr "%s: supporto per XDMCP mancante"
 
 #: gui/gdmXnestchooser.c:132 gui/gdmXnestchooser.c:139
 msgid "Xnest command line"
@@ -1750,7 +1739,7 @@ msgstr "Esecuzione in background"
 
 #: gui/gdmXnestchooser.c:141
 msgid "Just run Xnest, no query (no chooser)"
-msgstr "Eseguire Xnest immediatamente (niente chooser)"
+msgstr "Eseguire solamente Xnest, senza interrogazione (niente chooser)"
 
 # lunghissima...
 #: gui/gdmXnestchooser.c:142
@@ -1766,47 +1755,36 @@ msgid "Don't check for running gdm"
 msgstr "Non verificare se GDM è in esecuzione"
 
 #: gui/gdmXnestchooser.c:486
-#, fuzzy
 msgid "Xnest doesn't exist."
-msgstr "Il file non esiste"
+msgstr "Xnest non esiste."
 
 # oddio che italiano impiegatizio...
 #: gui/gdmXnestchooser.c:488
-#, fuzzy
 msgid "Please ask your system administrator to install it."
-msgstr ""
-"Xnest non esiste.\n"
-"Contattare l'amministratore di sistema\n"
-"per l'eventuale installazione."
+msgstr "Contattare l'amministratore di sistema per installarlo."
 
 #: gui/gdmXnestchooser.c:513
 msgid "Indirect XDMCP is not enabled"
-msgstr ""
+msgstr "XDMCP indiretto non abilitato"
 
 #: gui/gdmXnestchooser.c:515 gui/gdmXnestchooser.c:535
-#, fuzzy
 msgid ""
 "Please ask your system administrator to enable it in the GDM configurator "
 "program."
-msgstr ""
-"XDMCP indiretto non abilitato.\n"
-"Contattare l'amministratore di sistema\n"
-"per l'eventuale attivazione."
+msgstr "Contattare l'amministratore di sistema per abilitarlo nel programma "
+"di configurazione di GDM."
 
 #: gui/gdmXnestchooser.c:533
 msgid "XDMCP is not enabled"
-msgstr ""
+msgstr "XDMCP non è abilitato"
 
 #: gui/gdmXnestchooser.c:563
 msgid "GDM is not running"
-msgstr ""
+msgstr "GDM non avviato"
 
 #: gui/gdmXnestchooser.c:565
-#, fuzzy
 msgid "Please ask your system administrator to start it."
-msgstr ""
-"GDM non avviato.\n"
-"Contattare l'amministratore di sistema per il suo avvio."
+msgstr "Contattare l'amministratore di sistema per il suo avvio."
 
 #: gui/gdmXnestchooser.c:581
 msgid "Could not find a free display number"
@@ -1847,7 +1825,7 @@ msgstr "Stato"
 
 #: gui/gdmchooser-strings.c:14 gui/gdmchooser.glade.h:2
 msgid "A_dd host: "
-msgstr ""
+msgstr "A_ggiungi host: "
 
 #. EOF
 #: gui/gdmchooser-strings.c:15 gui/gdmchooser.glade.h:1
@@ -1859,29 +1837,27 @@ msgstr "*"
 
 #: gui/gdmchooser-strings.c:16 gui/gdmchooser.glade.h:9
 msgid "Query and add this host to the above list"
-msgstr ""
+msgstr "Interroga e aggiungi questo host alla lista soprastante"
 
 #: gui/gdmchooser-strings.c:17 gui/gdmchooser.glade.h:11
 msgid "_Add"
-msgstr ""
+msgstr "_Aggiungi"
 
 #: gui/gdmchooser.c:75
-#, fuzzy
 msgid "Please wait: scanning local network..."
-msgstr "Attendere: ricerca di host XDMCP nella rete locale..."
+msgstr "Attendere: ricerca nella rete locale..."
 
 #: gui/gdmchooser.c:76
 msgid "No serving hosts were found."
 msgstr "Non sono stati trovati host."
 
 #: gui/gdmchooser.c:77
-#, fuzzy
 msgid "Choose a ho_st to connect to:"
-msgstr "Scegliere un host a cui connettersi dall'elenco sottostante."
+msgstr "Scegliere un ho_st a cui connettersi:"
 
 #: gui/gdmchooser.c:484
 msgid "Cannot connect to remote server"
-msgstr ""
+msgstr "Impossibile connettersi al server remoto"
 
 #: gui/gdmchooser.c:485
 #, c-format
@@ -1889,10 +1865,11 @@ msgid ""
 "The host \"%s\" is not willing to support a login session right now.  Please "
 "try again later."
 msgstr ""
+"L'host \"%s\" non consente attualmente una sessione di login. Riprovare più tardi."
 
 #: gui/gdmchooser.c:851
 msgid "Did not receive response from server"
-msgstr ""
+msgstr "Nessuna risposta dal server"
 
 #: gui/gdmchooser.c:852
 #, c-format
@@ -1901,15 +1878,18 @@ msgid ""
 "host is not turned on, or is not willing to support a login session right "
 "now.  Please try again later."
 msgstr ""
+"Non è stata ricevuta nessuna risposta dall'host \"%s\" da %d secondi. Forse "
+"l'host è spento o non consente attualmente una sessione di login. Riprovare "
+"più tardi."
 
 #: gui/gdmchooser.c:904
 msgid "Cannot find host"
-msgstr ""
+msgstr "Impossibile trovare l'host"
 
 #: gui/gdmchooser.c:905
 #, c-format
 msgid "I cannot find the host \"%s\", perhaps you have mistyped it."
-msgstr ""
+msgstr "Impossibile trovare l'host \"%s\", forse è stato digitato male."
 
 #: gui/gdmchooser.c:1133
 msgid ""
@@ -1935,7 +1915,7 @@ msgstr "Impossibile aprire l'icona predefinita dell'host: %s"
 #: gui/gdmchooser.c:1387 gui/gdmlogin.c:3822 gui/gdmlogin.c:3829
 #: gui/greeter/greeter.c:1180 gui/greeter/greeter.c:1187
 msgid "Could not set signal mask!"
-msgstr "Impossibile impostare la maschera del segnale."
+msgstr "Impossibile impostare la maschera del segnale!"
 
 #: gui/gdmchooser.c:1393
 msgid "Socket for xdm communication"
@@ -1966,60 +1946,50 @@ msgstr "TIPO"
 
 #: gui/gdmchooser.c:1527
 msgid "Cannot run chooser"
-msgstr ""
+msgstr "Impossibile avviare chooser"
 
 #: gui/gdmchooser.c:1528
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The chooser version (%s) does not match the daemon version (%s).  You have "
 "probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
 "computer."
 msgstr ""
-"La versione del chooser (%s) non combacia con quella del demone (%s).\n"
-"Probabilmente è stato appena eseguito un aggiornamento di GDM.\n"
-"Far ripartire l'applicazione o riavviare la macchina."
+"La versione del chooser (%s) non combacia con quella del demone (%s). "
+"Probabilmente è stato appena eseguito un aggiornamento di GDM. "
+"Far ripartire il demone o riavviare la macchina."
 
 #: gui/gdmcomm.c:392 gui/gdmphotosetup.c:66
-#, fuzzy
 msgid "GDM (The GNOME Display Manager) is not running."
-msgstr ""
-"Impossibile comunicare con GDM (GNOME Display Manager), è possibile che la "
-"versione in esecuzione sia vecchia."
+msgstr "GDM (The GNOME Display Manager) non è avviato."
 
 #: gui/gdmcomm.c:395 gui/gdmphotosetup.c:69
 msgid ""
 "You might in fact be using a different display manager, such as KDM (KDE "
 "Display Manager) or xdm."
 msgstr ""
+"Potrebbe essere infatti in uso un gestore di display diverso, come KDM (KDE "
+"Display Manager) o xdm."
 
 #: gui/gdmcomm.c:398 gui/gdmphotosetup.c:72
-#, fuzzy
 msgid ""
 "If you still wish to use this feature, either start GDM yourself or ask your "
 "system administrator to start GDM."
 msgstr ""
-"GDM non avviato.\n"
-"Contattare l'amministratore di sistema per il suo avvio."
+"Se si vuole ancora usare questa funzionalità, bisogna avviare GDM da sé o chiedere "
+"all'amministratore di sistema di avviare GDM."
 
 #: gui/gdmcomm.c:416 gui/gdmflexiserver.c:253
-#, fuzzy
 msgid "Cannot communicate with GDM (The GNOME Display Manager)"
-msgstr ""
-"Impossibile comunicare con GDM (GNOME Display Manager), è possibile che la "
-"versione in esecuzione sia vecchia."
+msgstr "Impossibile comunicare con GDM (GNOME Display Manager)"
 
 #: gui/gdmcomm.c:419 gui/gdmflexiserver.c:256
-#, fuzzy
 msgid "Perhaps you have an old version of GDM running."
-msgstr ""
-"Impossibile comunicare con GDM, è possibile che la versione in esecuzione "
-"sia vecchia."
+msgstr "Forse la versione di GDM in esecuzione è vecchia."
 
 #: gui/gdmcomm.c:436 gui/gdmcomm.c:439
 msgid "Cannot communicate with gdm, perhaps you have an old version running."
-msgstr ""
-"Impossibile comunicare con GDM, è possibile che la versione in esecuzione "
-"sia vecchia."
+msgstr "Impossibile comunicare con GDM, forse la versione in esecuzione è vecchia."
 
 #: gui/gdmcomm.c:442
 msgid "The allowed limit of flexible X servers reached."
@@ -2051,7 +2021,7 @@ msgid ""
 "The nested X server (Xnest) is not available, or gdm is badly configured.\n"
 "Please install the Xnest package in order to use the nested login."
 msgstr ""
-"Server X annidato (Xnet) non è disponibile o GDM è configurato male.\n"
+"Server X annidato (Xnest) non è disponibile o GDM è configurato male.\n"
 "Installare il pacchetto Xnest per utilizzare il login in finestra."
 
 #: gui/gdmcomm.c:461
@@ -2061,8 +2031,7 @@ msgstr "Server X non disponibile, è probabile che GDM sia configurato male."
 
 #: gui/gdmcomm.c:465
 msgid "Trying to update an unsupported configuration key."
-msgstr ""
-"Tentativo di aggiornamento di una chiave di configurazione non supportata."
+msgstr "Tentativo di aggiornamento di una chiave di configurazione non supportata."
 
 #: gui/gdmcomm.c:467
 msgid ""
@@ -2081,7 +2050,6 @@ msgid "Log in as another user inside a nested window"
 msgstr "Permette di effettuare un nuovo login in una finestra"
 
 #: gui/gdmflexiserver-xnest.desktop.in.h:2
-#, fuzzy
 msgid "New Login in a Nested Window"
 msgstr "Nuovo login in finestra"
 
@@ -2112,7 +2080,7 @@ msgstr "Modalità Xnest"
 
 #: gui/gdmflexiserver.c:196
 msgid "Do not lock current screen"
-msgstr "Non effettuare il lock dello schermo"
+msgstr "Non bloccare lo schermo attuale"
 
 #: gui/gdmflexiserver.c:197
 msgid "Debugging output"
@@ -2123,26 +2091,22 @@ msgid "Authenticate before running --command"
 msgstr "Effettuare l'autenticazione prima di eseguire --command"
 
 #: gui/gdmflexiserver.c:273
-#, fuzzy
 msgid "You do not seem to have the authentication needed for this operation"
-msgstr ""
-"Non si dispone dell'autenticazione necessaria per questa operazione. "
-"Probabilmente il file .Xauthority non è impostato correttamente."
+msgstr "Non si dispone dell'autenticazione necessaria per questa operazione"
 
 #: gui/gdmflexiserver.c:277
-#, fuzzy
 msgid "Perhaps your .Xauthority file is not set up correctly."
-msgstr ""
-"Non si dispone dell'autenticazione necessaria per questa operazione. "
-"Probabilmente il file .Xauthority non è impostato correttamente."
+msgstr "Probabilmente il file .Xauthority non è impostato correttamente."
 
 #: gui/gdmflexiserver.c:302
+#, check
 msgid "You do not seem to be logged in on the console"
-msgstr ""
+msgstr "Non si è loggati sulla console"
 
 #: gui/gdmflexiserver.c:305
+#, check
 msgid "Starting a new login only works correctly on the console."
-msgstr ""
+msgstr "L'avvio di un nuovo login funziona correttamente solo dalla console."
 
 #: gui/gdmflexiserver.c:334
 msgid "Can't lock screen"
@@ -2155,14 +2119,13 @@ msgstr "Impossibile disabilitare gli \"hack\" per il display di xscreensaver"
 
 #: gui/gdmflexiserver.c:351
 msgid "Cannot start new display"
-msgstr ""
+msgstr "Impossibile avviare un nuovo display"
 
 #: gui/gdmflexiserver.desktop.in.h:1
 msgid "Log in as another user without logging out"
 msgstr "Effettua un nuovo login senza chiudere la sessione corrente"
 
 #: gui/gdmflexiserver.desktop.in.h:2
-#, fuzzy
 msgid "New Login"
 msgstr "Nuovo login"
 
@@ -2179,12 +2142,12 @@ msgstr "A-M|Amarico"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:57
 msgid "A-M|Arabic (Egypt)"
-msgstr "A-M|Arabo (egiziano)"
+msgstr "A-M|Arabo (Egitto)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:59
 msgid "A-M|Arabic (Lebanon)"
-msgstr "A-M|Arabo (libanese)"
+msgstr "A-M|Arabo (Libano)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:61
@@ -2264,22 +2227,22 @@ msgstr "A-M|Inglese"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:91
 msgid "A-M|English (American)"
-msgstr "A-M|Inglese (americano)"
+msgstr "A-M|Inglese (America)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:93
 msgid "A-M|English (Australian)"
-msgstr "A-M|Inglese (australiano)"
+msgstr "A-M|Inglese (Australia)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:95
 msgid "A-M|English (British)"
-msgstr "A-M|Inglese (britannico)"
+msgstr "A-M|Inglese (Gran Bretagna)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:97
 msgid "A-M|English (Ireland)"
-msgstr "A-M|Inglese (irlandese)"
+msgstr "A-M|Inglese (Irlanda)"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:99
@@ -2324,7 +2287,7 @@ msgstr "A-M|Ebraico"
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:117
 msgid "A-M|Hindi"
-msgstr "A-M|Finnico"
+msgstr "A-M|Hindi"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:119
@@ -2393,21 +2356,19 @@ msgstr "A-M|Malese"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:145
-#, fuzzy
+# check -> controllo lingua
 msgid "A-M|Malayalam"
 msgstr "A-M|Malese"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:147
-#, fuzzy
 msgid "A-M|Marathi"
-msgstr "A-M|Gujarati"
+msgstr "A-M|Marathi"
 
 #. Note translate the A-M to the A-M you used in the group label
 #: gui/gdmlanguages.c:149
-#, fuzzy
 msgid "A-M|Mongolian"
-msgstr "A-M|Macedone"
+msgstr "A-M|Mongolo"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:151
@@ -2421,9 +2382,8 @@ msgstr "N-Z|Norvegese (nynorsk)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:155
-#, fuzzy
 msgid "N-Z|Oriya"
-msgstr "N-Z|Serbo"
+msgstr "N-Z|Oriya"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:157
@@ -2448,7 +2408,7 @@ msgstr "N-Z|Portoghese"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:165
 msgid "N-Z|Portuguese (Brazilian)"
-msgstr "N-Z|Portoghese (brasiliano)"
+msgstr "N-Z|Portoghese (Brasile)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:167
@@ -2483,7 +2443,7 @@ msgstr "N-Z|Spagnolo"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:179
 msgid "N-Z|Spanish (Mexico)"
-msgstr "N-Z|Spagnolo (messicano)"
+msgstr "N-Z|Spagnolo (Messico)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:181
@@ -2493,7 +2453,7 @@ msgstr "N-Z|Svedese"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:183
 msgid "N-Z|Swedish (Finland)"
-msgstr "N-Z|Svedese (finlandese)"
+msgstr "N-Z|Svedese (Finlandia)"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:185
@@ -2533,7 +2493,7 @@ msgstr "N-Z|Vallone"
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:199
 msgid "N-Z|Welsh"
-msgstr "N-Z|Gallese"
+msgstr "A-M|Gallese"
 
 #. Note translate the N-Z to the N-Z you used in the group label
 #: gui/gdmlanguages.c:201
@@ -2563,9 +2523,9 @@ msgid "User %s will login in %d seconds"
 msgstr "L'utente %s effettuerà il login tra %d secondi"
 
 #: gui/gdmlogin.c:441
-#, fuzzy, c-format
+#, c-format
 msgid "%s: String too long!"
-msgstr "gdm_parse_enriched_string: stringa troppo lunga!"
+msgstr "%s: stringa troppo lunga!"
 
 #: gui/gdmlogin.c:443
 #, c-format
@@ -2573,50 +2533,42 @@ msgid "%sWelcome to %s%s"
 msgstr "%sBenvenuti su %s%s"
 
 #: gui/gdmlogin.c:597
-#, fuzzy
 msgid "Could not fork a new process!"
-msgstr "%s: impossibile leggere l'indirizzo"
+msgstr "Impossibile eseguire la fork di un nuovo processo!"
 
 #: gui/gdmlogin.c:599
-#, fuzzy
 msgid "You likely won't be able to log in either."
-msgstr ""
-"Impossibile eseguire la fork di un nuovo processo.\n"
-"Probabilmente non sarà possibile il login."
+msgstr "Probabilmente non sarà possibile nemmeno effettuare il login."
 
 #: gui/gdmlogin.c:643 gui/greeter/greeter_system.c:55
 msgid "Are you sure you want to reboot the machine?"
-msgstr "Riavviare la macchina?"
+msgstr "Sicuri di voler riavviare la macchina?"
 
 #: gui/gdmlogin.c:644 gui/gdmlogin.c:2629 gui/greeter/greeter_parser.c:1011
 #: gui/greeter/greeter_system.c:56 gui/greeter/greeter_system.c:180
-#, fuzzy
 msgid "_Reboot"
-msgstr "Riavvia"
+msgstr "_Riavvia"
 
 #: gui/gdmlogin.c:656 gui/greeter/greeter_system.c:67
 msgid "Are you sure you want to shut down the machine?"
-msgstr "Arrestare la macchina?"
+msgstr "Sicuri di voler arrestare la macchina?"
 
 #: gui/gdmlogin.c:657
-#, fuzzy
 msgid "Shut _Down"
-msgstr "_Arresta..."
+msgstr "_Arresta"
 
 #: gui/gdmlogin.c:677 gui/greeter/greeter_system.c:78
 msgid "Are you sure you want to suspend the machine?"
-msgstr "Sospendere la macchina?"
+msgstr "Sicuri di voler sospendere la macchina?"
 
 #: gui/gdmlogin.c:678 gui/gdmlogin.c:2656 gui/greeter/greeter_system.c:79
-#, fuzzy
 msgid "_Suspend"
-msgstr "_Sospendi..."
+msgstr "_Sospendi"
 
 #: gui/gdmlogin.c:725 gui/gdmlogin.c:3600 gui/greeter/greeter.c:146
 #: gui/greeter/greeter.c:951
-#, fuzzy
 msgid "Welcome"
-msgstr "Benvenuti su %h"
+msgstr "Benvenuti"
 
 #: gui/gdmlogin.c:728 gui/gdmlogin.c:3603 gui/greeter/greeter.c:149
 #: gui/greeter/greeter.c:954
@@ -2625,10 +2577,9 @@ msgid "Welcome to %n"
 msgstr "Benvenuti su %n"
 
 #: gui/gdmlogin.c:772 gui/greeter/greeter.c:174
-#, fuzzy
 msgid "TimedLoginDelay was less than 5.  I'll just use 5."
 msgstr ""
-"L'intervallo del login temporizzato è minore di 5 secondi; sarranno comunque "
+"Il ritardo del login temporizzato è minore di 5 secondi; sarranno comunque "
 "impiegati 5 secondi"
 
 #: gui/gdmlogin.c:878 gui/greeter/greeter_session.c:111
@@ -2643,13 +2594,12 @@ msgstr ""
 #: gui/gdmlogin.c:884 gui/gdmlogin.c:912 gui/gdmlogin.c:987
 #: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:117
 #: gui/greeter/greeter_session.c:148
-#, fuzzy
 msgid "Make _Default"
-msgstr "Predefinita"
+msgstr "Rendi pre_definita"
 
 #: gui/gdmlogin.c:884 gui/greeter/greeter_session.c:117
 msgid "Just _Log In"
-msgstr ""
+msgstr "Solo _login"
 
 #. never_encoding
 #. no_group
@@ -2669,7 +2619,7 @@ msgstr ""
 #: gui/gdmlogin.c:912 gui/gdmlogin.c:987
 #: gui/greeter/greeter_action_language.c:154 gui/greeter/greeter_session.c:148
 msgid "Just For _This Session"
-msgstr ""
+msgstr "Solo per _questa sessione"
 
 # da controllare se effettivamente si chiama così
 #. if !GdmShowLastSession then our saved session is
@@ -2686,7 +2636,7 @@ msgid ""
 "(System->Desktop Switching Tool from the panel menu)."
 msgstr ""
 "È stato scelto «%s» per questa sessione.\n"
-"Per rendere «%s» la sessione predefinita,\n"
+"Per rendere «%s» la sessione predefinita per il futuro,\n"
 "utilizzare l'utility «switchdesk»\n"
 "(dal menù del pannello in «Sistema» -> «Desktop Switching Tool»)."
 
@@ -2694,15 +2644,13 @@ msgstr ""
 #: gui/greeter/greeter_action_language.c:52
 #: gui/greeter/greeter_action_language.c:132
 #: gui/greeter/greeter_action_language.c:140
-#, fuzzy
 msgid "System Default"
-msgstr "Lingua di sistema"
+msgstr "Predefinita di sistema"
 
 #: gui/gdmlogin.c:1096 gui/gdmlogin.c:1110 gui/gdmlogin.c:1759
 #: gui/gdmlogin.c:2224 gui/gdmlogin.c:2863
-#, fuzzy
 msgid "_Username:"
-msgstr "Utente: "
+msgstr "Nome _utente:"
 
 #: gui/gdmlogin.c:1168
 #, c-format
@@ -2710,35 +2658,33 @@ msgid "%s session selected"
 msgstr "Sessione selezionata: %s"
 
 #: gui/gdmlogin.c:1191 gui/gdmlogin.c:1461 gui/greeter/greeter_session.c:257
-#, fuzzy
 msgid "_Last"
-msgstr "Precedente"
+msgstr "_Precedente"
 
 #: gui/gdmlogin.c:1202 gui/greeter/greeter_session.c:263
 msgid "Log in using the session that you have used last time you logged in"
 msgstr "Esegue il login utilizzando la sessione scelta precedentemente"
 
 #: gui/gdmlogin.c:1215 gui/greeter/greeter_session.c:274
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Session directory %s not found!"
-msgstr "%s: nessuna directory per le sessioni specificata."
+msgstr "%s: directory per le sessioni %s non trovata!"
 
 #: gui/gdmlogin.c:1232 gui/greeter/greeter_session.c:250
 msgid "Failsafe Gnome"
-msgstr "Sessione GNOME d'emergenza"
+msgstr "GNOME d'emergenza"
 
 #: gui/gdmlogin.c:1233 gui/greeter/greeter_session.c:251
 msgid "Failsafe xterm"
-msgstr "Sessione xterm d'emergenza"
+msgstr "xterm d'emergenza"
 
 #: gui/gdmlogin.c:1329 gui/greeter/greeter_session.c:379
 msgid "Yaikes, nothing found in the session directory."
 msgstr "La directory della sessione è vuota."
 
 #: gui/gdmlogin.c:1340 gui/greeter/greeter_session.c:391
-#, fuzzy
 msgid "Failsafe _Gnome"
-msgstr "Sessione GNOME d'emergenza"
+msgstr "_GNOME d'emergenza"
 
 #: gui/gdmlogin.c:1342 gui/greeter/greeter_session.c:393
 msgid ""
@@ -2751,9 +2697,8 @@ msgstr ""
 "farlo. GNOME utilizzerà la sessione «Predefinita»"
 
 #: gui/gdmlogin.c:1365 gui/greeter/greeter_session.c:415
-#, fuzzy
 msgid "Failsafe _Terminal"
-msgstr "Sessione xterm d'emergenza"
+msgstr "_Terminale d'emergenza"
 
 #: gui/gdmlogin.c:1367 gui/greeter/greeter_session.c:417
 msgid ""
@@ -2785,24 +2730,22 @@ msgid "Log in using the language that you have used last time you logged in"
 msgstr "Effettua il login usando la lingua scelta la volta precedente."
 
 #: gui/gdmlogin.c:1476
-#, fuzzy
 msgid "_System Default"
-msgstr "Lingua di sistema"
+msgstr "Predefinita di _sistema"
 
 #: gui/gdmlogin.c:1487
 msgid "Log in using the default system language"
 msgstr "Effettua il login usando la lingua predefinita di sistema"
 
 #: gui/gdmlogin.c:1507
-#, fuzzy
 msgid "_Other"
-msgstr "Altre"
+msgstr "_Altre"
 
 #: gui/gdmlogin.c:1790
-#, fuzzy
 msgid "_Password:"
-msgstr "Password:"
+msgstr "_Password:"
 
+# NdT: qui una volta avremmo potuto mettere: Inserire 500 lire... :)
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
 #: gui/gdmlogin.c:2010 gui/greeter/greeter.c:416
@@ -2811,11 +2754,11 @@ msgstr "Inserire 50 centesimi per entrare."
 
 #: gui/gdmlogin.c:2232
 msgid "Doubleclick on the user to log in"
-msgstr ""
+msgstr "Doppio clic sull'utente per il login"
 
 #: gui/gdmlogin.c:2356
 msgid "GNOME Desktop Manager"
-msgstr "Desktop manager GNOME"
+msgstr "Gestore desktop GNOME"
 
 #: gui/gdmlogin.c:2382 gui/greeter/greeter_item.c:116
 msgid "%a %b %d, %H:%M"
@@ -2842,9 +2785,8 @@ msgid "_Language"
 msgstr "_Lingua"
 
 #: gui/gdmlogin.c:2599 gui/greeter/greeter_system.c:142
-#, fuzzy
 msgid "_XDMCP Chooser..."
-msgstr "Host chooser di GDM"
+msgstr "Chooser _XDMCP..."
 
 #: gui/gdmlogin.c:2606 gui/greeter/greeter_system.c:149
 #: gui/greeter/greeter_system.c:341
@@ -2852,17 +2794,18 @@ msgid ""
 "Run an XDMCP chooser which will allow you to log into available remote "
 "machines, if there are any."
 msgstr ""
+"Avvia un  chooser XDMCP che permetterà di fare il login sulle macchine remote "
+"disponibili, se ce ne sono."
 
 #: gui/gdmlogin.c:2615 gui/greeter/greeter_system.c:157
-#, fuzzy
 msgid "_Configure Login Manager..."
-msgstr "_Configurazione..."
+msgstr "_Configura gestore di login.."
 
 #: gui/gdmlogin.c:2622 gui/greeter/greeter_system.c:164
 #: gui/greeter/greeter_system.c:361
 msgid ""
 "Configure GDM (this login manager). This will require the root password."
-msgstr "Configura GDM (questo programma). Sarà necessaria la password di root."
+msgstr "Configura GDM (questo gestore di login). Sarà necessaria la password di root."
 
 #: gui/gdmlogin.c:2636 gui/greeter/greeter_system.c:187
 msgid "Reboot your computer"
@@ -2870,23 +2813,20 @@ msgstr "Riavvia la macchina"
 
 #: gui/gdmlogin.c:2642 gui/greeter/greeter_parser.c:1001
 #: gui/greeter/greeter_system.c:68 gui/greeter/greeter_system.c:192
-#, fuzzy
 msgid "Shut_down"
-msgstr "_Arresta..."
+msgstr "_Arresta"
 
 #: gui/gdmlogin.c:2649 gui/greeter/greeter_system.c:199
-#, fuzzy
 msgid "Shut down the system so that you may safely turn off the computer."
-msgstr "Arresta la macchina per poterla spengere"
+msgstr "Arresta la macchina per poterla spengere in tutta sicurezza."
 
 #: gui/gdmlogin.c:2663 gui/greeter/greeter_system.c:212
 msgid "Suspend your computer"
 msgstr "Sospende la macchina"
 
 #: gui/gdmlogin.c:2669 gui/greeter/greeter_parser.c:986
-#, fuzzy
 msgid "_Actions"
-msgstr "Opzioni"
+msgstr "_Azioni"
 
 #: gui/gdmlogin.c:2681 gui/greeter/greeter_canvas_item.c:145
 #: gui/greeter/greeter_parser.c:996
@@ -2900,41 +2840,39 @@ msgstr "Disco_nnetti"
 
 #: gui/gdmlogin.c:2750 gui/greeter/greeter_item_ulist.c:426
 msgid "Icon"
-msgstr ""
+msgstr "Icona"
 
 #: gui/gdmlogin.c:2757 gui/greeter/greeter_item_ulist.c:433
-#, fuzzy
 msgid "Username"
-msgstr "Utente: "
+msgstr "Nome utente"
 
 #: gui/gdmlogin.c:3211
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
-"Impossibile aprire l'immagine standard: %s; visualizzazione volti "
-"disabilitata."
+"Impossibile aprire l'immagine predefinita: %s; visualizzazione volti "
+"disabilitata!"
 
 #: gui/gdmlogin.c:3233 gui/gdmsetup.c:468 gui/greeter/greeter_item_ulist.c:281
 msgid "Too many users to list here..."
-msgstr ""
+msgstr "Troppi utenti da elencare..."
 
 #: gui/gdmlogin.c:3678 gui/gdmlogin.c:3708 gui/gdmlogin.c:3751
 #: gui/greeter/greeter.c:618 gui/greeter/greeter.c:648
 #: gui/greeter/greeter.c:692
-#, fuzzy
 msgid "Cannot start the greeter"
-msgstr "Greeter standard"
+msgstr "Impossibile avviare il greeter"
 
 #: gui/gdmlogin.c:3679 gui/gdmlogin.c:3709
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version.  You have "
 "probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
 "computer."
 msgstr ""
-"La versione del greeter (%s) non combacia con quella del demone.\n"
-"Probabilmente è stato appena eseguito un aggiornamento di GDM.\n"
-"Far ripartire l'applicazione o riavviare la macchina."
+"La versione del greeter (%s) non combacia con quella del demone. "
+"Probabilmente è stato appena eseguito un aggiornamento di GDM. "
+"Far ripartire il demone gdm o riavviare la macchina."
 
 #: gui/gdmlogin.c:3715 gui/gdmlogin.c:3760 gui/greeter/greeter.c:655
 #: gui/greeter/greeter.c:701
@@ -2942,91 +2880,81 @@ msgid "Reboot"
 msgstr "Riavvia"
 
 #: gui/gdmlogin.c:3752
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The greeter version (%s) does not match the daemon version (%s).  You have "
 "probably just upgraded gdm.  Please restart the gdm daemon or reboot the "
 "computer."
 msgstr ""
-"La versione del greeter (%s) non combacia con quella del demone (%s).\n"
-"Probabilmente è stato appena eseguito un aggiornamento di GDM.\n"
-"Far ripartire l'applicazione o riavviare la macchina."
+"La versione del greeter (%s) non combacia con quella del demone (%s). "
+"Probabilmente è stato appena eseguito un aggiornamento di GDM. "
+"Far ripartire il demone gdm o riavviare la macchina."
 
 #: gui/gdmlogin.c:3758 gui/greeter/greeter.c:699
 msgid "Restart"
 msgstr "Riparti"
 
 #: gui/gdmlogin.c:3910 gui/greeter/greeter.c:1401
-#, fuzzy
 msgid "Session directory is missing"
-msgstr "%s: nessuna directory per le sessioni specificata."
+msgstr "Directory di sessione mancante"
 
 #: gui/gdmlogin.c:3912 gui/greeter/greeter.c:1403
-#, fuzzy
 msgid ""
 "Your session directory is missing or empty!  There are two available "
 "sessions you can use, but you should log in and correct the gdm "
 "configuration."
 msgstr ""
-"La directory della sessione è vuota o mancante.\n"
-"\n"
-"Ci sono due sessioni utilizzabili, comunque sarebbe necessario\n"
-"effettuare il login e correggere la configurazine di GDM."
+"La directory della sessione è vuota o mancante! Ci sono due sessioni utilizzabili, "
+"ma sarebbe necessario effettuare il login e correggere la configurazione di GDM."
 
 #: gui/gdmlogin.c:3935 gui/greeter/greeter.c:1427
 msgid "Configuration is not correct"
-msgstr ""
+msgstr "Configurazione non corretta"
 
 #: gui/gdmlogin.c:3937 gui/greeter/greeter.c:1429
-#, fuzzy
 msgid ""
 "The configuration file contains an invalid command line for the login "
 "dialog, and thus I ran the default command.  Please fix your configuration."
 msgstr ""
-"Il file di configurazione contiene un comando non valido\n"
-"per la finestra di login, quindi sarà utilizzato il\n"
-"comando predefinito. Correggere la configurazione."
+"Il file di configurazione contiene un comando non valido per la finestra di "
+"login, perciò sarà utilizzato il comando predefinito. Correggere la configurazione."
 
 #: gui/gdmlogin.c:3961 gui/greeter/greeter.c:1455
 msgid "No configuration was found"
-msgstr ""
+msgstr "Nessuna configurazione trovata"
 
 #: gui/gdmlogin.c:3963 gui/greeter/greeter.c:1457
-#, fuzzy
 msgid ""
 "The configuration was not found.  GDM is using defaults to run this "
 "session.  You should log in and create a configuration file with the GDM "
 "configuration program."
 msgstr ""
-"Non è stata trovata la configurazione. GDM utilizzarà\n"
-"le impostazioni predefinite per eseguire la sessione.\n"
-"Sarebbe necessario effettuare il login ed utilizzare il\n"
+"Non è stata trovata la configurazione. GDM utilizzerà "
+"le impostazioni predefinite per eseguire la sessione. "
+"Sarebbe necessario effettuare il login ed utilizzare il "
 "programma di configurazione di GDM per correggere il problema."
 
 #: gui/gdmphotosetup.c:139
-#, fuzzy
 msgid "The face browser is not configured"
-msgstr ""
-"Il server X non si è avviato. Probabilmente non è comfigurato correttamente."
+msgstr "Il browser dei volti non è configurato "
 
-# schif schif
 #: gui/gdmphotosetup.c:142
-#, fuzzy
+
 msgid ""
 "The face browser is not configured in the GDM configuration.  Please ask "
 "your system administrator to enable it in the GDM configurator program."
 msgstr ""
-"Il browser dei volti non è configurato,\n"
-"Contattare l'amministratore di sistema perchè\n"
-"venga eventualmente configurato."
+"Il browser dei volti non è presente nella configurazione di GDM. "
+"Chiedere all'amministratore di sistema di abilitarlo nel programma di "
+"configurazione di GDM."
 
 #: gui/gdmphotosetup.c:152 gui/gdmphotosetup.desktop.in.h:2
 msgid "Login Photo"
-msgstr "Immagine per il login"
+msgstr "Foto per il login"
 
 #: gui/gdmphotosetup.c:162
 msgid "Select a photograph to show in the facebrowser:"
-msgstr "Selezionare un'immagine per il browser dei volti: "
+msgstr "Selezionare una foto per il browser dei volti:"
 
 #: gui/gdmphotosetup.c:167
 msgid "Browse"
@@ -3038,22 +2966,20 @@ msgstr "Nessun'immagine selezionata"
 
 #: gui/gdmphotosetup.c:210
 msgid "Picture is too large"
-msgstr ""
+msgstr "Immagine troppo grande"
 
 #: gui/gdmphotosetup.c:211
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The system administrator disallowed pictures larger than %d bytes to show in "
 "the face browser"
 msgstr ""
-"L'immagine supera la dimensione massima di %d byte\n"
-"stabilita dall'amministratore di sistema per\n"
-"l'uso nel browser dei volti"
+"L'immagine supera la dimensione massima di %d byte stabilita dall'amministratore "
+"di sistema per l'uso nel browser dei volti"
 
 #: gui/gdmphotosetup.c:236 gui/gdmphotosetup.c:255
-#, fuzzy
 msgid "Cannot open file"
-msgstr "%s: impossibile aprire la fifo."
+msgstr "Impossibile aprire il file"
 
 #: gui/gdmphotosetup.c:237
 #, c-format
@@ -3086,7 +3012,7 @@ msgstr "Seleziona l'immagine da utilizzare nel browser dei volti di GDM"
 #: gui/gdmsetup-strings.c:7 gui/gdmsetup.desktop.in.h:2
 #: gui/gdmsetup.glade.h:24
 msgid "Login Screen Setup"
-msgstr ""
+msgstr "Impostazione della schermata di login"
 
 #: gui/gdmsetup-strings.c:8 gui/gdmsetup.glade.h:20
 msgid "Greeter"
@@ -3097,7 +3023,7 @@ msgstr "Greeter"
 #: gui/gdmsetup-strings.c:39 gui/gdmsetup-strings.c:42
 #: gui/gdmsetup-strings.c:65 gui/gdmsetup-strings.c:78 gui/gdmsetup.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: gui/gdmsetup-strings.c:10 gui/gdmsetup.glade.h:22
 msgid "L_ocal: "
@@ -3109,12 +3035,11 @@ msgstr "_Remoto: "
 
 #: gui/gdmsetup-strings.c:12 gui/gdmsetup.glade.h:65
 msgid "_Welcome string: "
-msgstr "Messa_ggio di benvenuto: "
+msgstr "Messaggio di _benvenuto: "
 
 #: gui/gdmsetup-strings.c:13 gui/gdmsetup.glade.h:40
-#, fuzzy
 msgid "Re_mote welcome string: "
-msgstr "Messa_ggio di benvenuto: "
+msgstr "Messaggio di benvenuto re_moto: "
 
 #: gui/gdmsetup-strings.c:14 gui/gdmsetup-strings.c:16
 #: gui/gdmsetup-strings.c:51 gui/gdmsetup.c:840 gui/gdmsetup.glade.h:46
@@ -3132,6 +3057,8 @@ msgid ""
 "String to be shown in the greeter as welcome.  You can insert %n in here and "
 "it will be replaced by the name of your computer."
 msgstr ""
+"Stringa da mostrare nel greeter come messaggio di benvenuto. Se si inserisce "
+"%n al suo interno, questo verrà sostituito con il nome del computer."
 
 #: gui/gdmsetup-strings.c:20 gui/gdmsetup.glade.h:50
 #, no-c-format
@@ -3140,13 +3067,15 @@ msgid ""
 "XDMCP.  You can insert %n in here and it will be replaced by the name of "
 "your computer."
 msgstr ""
+"Stringa da mostrare nel greeter agli utenti che vogliono fare il login da remoto "
+"con XDMCP. Se si inserisce %n al suo interno, questo verrà sostituito con "
+"il nome del computer."
 
 #: gui/gdmsetup-strings.c:22 gui/gdmsetup.glade.h:9
 msgid "Always use 24 hour cloc_k format"
-msgstr "_Utilizzare sempre l'orologio con 24 ore"
+msgstr "_Utilizzare sempre il formato orario a 24 ore"
 
 #: gui/gdmsetup-strings.c:23 gui/gdmsetup.glade.h:11
-#, fuzzy
 msgid "Automatic Login"
 msgstr "Login automatico"
 
@@ -3159,17 +3088,16 @@ msgid "_Login a user automatically on first bootup"
 msgstr "Abilitare il _login automatico al primo avvio"
 
 #: gui/gdmsetup-strings.c:28 gui/gdmsetup.glade.h:51
-#, fuzzy
 msgid "Timed Login"
 msgstr "Login temporizzato"
 
 #: gui/gdmsetup-strings.c:30 gui/gdmsetup.glade.h:52
 msgid "Timed login us_ername:"
-msgstr "Ut_ente per il login temporizzato"
+msgstr "Ut_ente per il login temporizzato:"
 
 #: gui/gdmsetup-strings.c:31 gui/gdmsetup.glade.h:64
 msgid "_Seconds before login:"
-msgstr "Attesa in _secondi"
+msgstr "_Secondi prima del login:"
 
 #: gui/gdmsetup-strings.c:33 gui/gdmsetup.glade.h:25
 msgid "Login a user automa_tically after a specified number of seconds"
@@ -3189,7 +3117,7 @@ msgstr "Varie"
 
 #: gui/gdmsetup-strings.c:40 gui/gdmsetup.glade.h:44
 msgid "Show choosable user images (_face browser)"
-msgstr "Mostra le immagini utente selezionabili (abilita il browser dei volti)"
+msgstr "Mostra le immagini utente selezionabili (browser dei _volti)"
 
 #: gui/gdmsetup-strings.c:41 gui/gdmsetup.glade.h:12
 msgid "Background"
@@ -3209,7 +3137,7 @@ msgstr "Co_lore"
 
 #: gui/gdmsetup-strings.c:46 gui/gdmsetup.glade.h:63
 msgid "_Scale background image to fit"
-msgstr "Adatta l'immagine allo _schermo"
+msgstr "Adatta l'immagine di sfondo allo _schermo"
 
 #: gui/gdmsetup-strings.c:48 gui/gdmsetup.glade.h:61
 msgid "_Only color on remote displays"
@@ -3217,35 +3145,31 @@ msgstr "S_olo colore sui display remoti"
 
 #: gui/gdmsetup-strings.c:49 gui/gdmsetup.glade.h:55
 msgid "_Background color: "
-msgstr "Colore dello s_fondo :"
+msgstr "Colore dello s_fondo: "
 
 #: gui/gdmsetup-strings.c:50 gui/gdmsetup.glade.h:36
 msgid "Pick a color"
 msgstr "Selezionare un colore"
 
 #: gui/gdmsetup-strings.c:52 gui/gdmsetup.glade.h:39
-#, fuzzy
 msgid "Preview:"
-msgstr "<b>Anteprima:</b>"
+msgstr "Anteprima:"
 
 #: gui/gdmsetup-strings.c:53 gui/gdmsetup.glade.h:34
 msgid "No screenshot available"
 msgstr "Nessuno screenshot disponibile"
 
 #: gui/gdmsetup-strings.c:54 gui/gdmsetup.glade.h:15
-#, fuzzy
 msgid "Description:"
-msgstr "<b>Descrizione:</b>"
+msgstr "Descrizione:"
 
 #: gui/gdmsetup-strings.c:55 gui/gdmsetup.glade.h:14
-#, fuzzy
 msgid "Copyright:"
-msgstr "copyright"
+msgstr "Copyright:"
 
 #: gui/gdmsetup-strings.c:56 gui/gdmsetup.glade.h:10
-#, fuzzy
 msgid "Author:"
-msgstr "autore"
+msgstr "Autore:"
 
 #: gui/gdmsetup-strings.c:57 gui/gdmsetup.glade.h:68
 msgid ""
@@ -3269,7 +3193,7 @@ msgstr "_Installa nuovo tema"
 
 #: gui/gdmsetup-strings.c:62 gui/gdmsetup.glade.h:56
 msgid "_Delete theme"
-msgstr ""
+msgstr "_Elimina tema"
 
 #: gui/gdmsetup-strings.c:64 gui/gdmsetup.glade.h:35
 msgid "Options"
@@ -3285,7 +3209,7 @@ msgstr "Consentire a root di effettuare il login r_emoto da GDM"
 
 #: gui/gdmsetup-strings.c:68 gui/gdmsetup.glade.h:6
 msgid "Allow remote _timed logins"
-msgstr "Consentire i login temporizzati remoti"
+msgstr "Consentire i login _temporizzati remoti"
 
 #: gui/gdmsetup-strings.c:69 gui/gdmsetup.glade.h:45
 msgid ""
@@ -3293,26 +3217,29 @@ msgid ""
 "set, none of the system commands will be available (this includes reboot, "
 "shutdown, configure, chooser)"
 msgstr ""
+"Mostra il menù \"Azioni\" (prima conosciuto come menù \"Sistema\"). Se non "
+"impostato, nessuno dei comandi di sistema sarà disponibile (inclusi riavvia, "
+"arresta, configura, chooser)"
 
 #: gui/gdmsetup-strings.c:70 gui/gdmsetup.glade.h:43
-#, fuzzy
 msgid "Show _actions menu"
-msgstr "Mostrare il menù «_Sistema»"
+msgstr "Mostrare il menù «_Azioni»"
 
 #: gui/gdmsetup-strings.c:71 gui/gdmsetup.glade.h:5
 msgid "Allow c_onfiguration from the login screen"
-msgstr "Consentire la configurazione dalla schermata di login"
+msgstr "Consentire la c_onfigurazione dalla schermata di login"
 
 #: gui/gdmsetup-strings.c:72 gui/gdmsetup.glade.h:3
-#, fuzzy
 msgid "Allo_w running XDMCP chooser from the login screen"
-msgstr "Consentire la configurazione dalla schermata di login"
+msgstr "Consentire l'esecu_zione del chooser XDMCP dalla schermata di login"
 
 #: gui/gdmsetup-strings.c:73 gui/gdmsetup.glade.h:8
 msgid ""
 "Always disallow TCP connections to _X server (disables all remote "
 "connections)"
 msgstr ""
+"Respingere sempre le connessioni TCP al server _X (disabilita tutte "
+"le connessioni remote)"
 
 #: gui/gdmsetup-strings.c:74 gui/gdmsetup.glade.h:41
 msgid "Retry _delay (seconds) :"
@@ -3339,49 +3266,40 @@ msgid "Honour _indirect requests"
 msgstr "Assolvere le richieste _indirette"
 
 #: gui/gdmsetup-strings.c:80 gui/gdmsetup.glade.h:23
-#, fuzzy
 msgid "Listen on _UDP port: "
-msgstr "Stare in ascolto sulla porta UDP: "
+msgstr "Porta UDP su cui stare in ascolto: "
 
 #: gui/gdmsetup-strings.c:81 gui/gdmsetup.glade.h:28
-#, fuzzy
 msgid "Maximum _pending requests:"
-msgstr "Numero massimo di richieste sospese:"
+msgstr "Numero massimo di richieste sos_pese:"
 
 #: gui/gdmsetup-strings.c:82 gui/gdmsetup.glade.h:27
-#, fuzzy
 msgid "Max p_ending indirect requests:"
-msgstr "Numero massimo di richieste indirette sospese:"
+msgstr "Numero massimo di richieste indirette sosp_ese:"
 
 #: gui/gdmsetup-strings.c:83 gui/gdmsetup.glade.h:29
-#, fuzzy
 msgid "Maximum _remote sessions:"
-msgstr "Numero massimo di sessioni remote:"
+msgstr "Numero massimo di sessioni _remote:"
 
 #: gui/gdmsetup-strings.c:84 gui/gdmsetup.glade.h:30
-#, fuzzy
 msgid "Maximum _wait time:"
-msgstr "Tempo massimo di attesa:"
+msgstr "Tempo _massimo di attesa:"
 
 #: gui/gdmsetup-strings.c:85 gui/gdmsetup.glade.h:31
-#, fuzzy
 msgid "Maximum indirect w_ait time:"
-msgstr "Tempo massimo di attesa indiretta:"
+msgstr "Tempo massimo di _attesa indiretta:"
 
 #: gui/gdmsetup-strings.c:86 gui/gdmsetup.glade.h:16
-#, fuzzy
 msgid "Displays per _host:"
-msgstr "Numero di display per host:"
+msgstr "Numero di display per _host:"
 
 #: gui/gdmsetup-strings.c:87 gui/gdmsetup.glade.h:37
-#, fuzzy
 msgid "Pin_g interval (seconds):"
-msgstr "Intervallo per ping (minuti):"
+msgstr "Intervallo per pin_g (secondi):"
 
 #: gui/gdmsetup-strings.c:88 gui/gdmsetup.glade.h:38
-#, fuzzy
 msgid "Ping interval (seconds):"
-msgstr "Intervallo per ping (minuti):"
+msgstr "Intervallo per ping (secondi):"
 
 #: gui/gdmsetup-strings.c:89 gui/gdmsetup.glade.h:53
 msgid "XDMCP"
@@ -3394,7 +3312,7 @@ msgid ""
 "may have taken effect."
 msgstr ""
 "Errore nel tentativo di contattare gli schermi di login. Non tutti gli "
-"aggiornamente potrebbero avere effetto."
+"aggiornamenti potrebbero avere effetto."
 
 # non correttissimo ma abbastanza, graditi suggerimenti
 #: gui/gdmsetup.c:1423
@@ -3407,7 +3325,7 @@ msgstr "L'archivio deve contenere solo una sotto-directory"
 
 #: gui/gdmsetup.c:1455 gui/gdmsetup.c:1534
 msgid "File not a tar.gz or tar archive"
-msgstr "Il file non è ne' un tar.gz o ne' archivio tar"
+msgstr "Il file non è né un archivio tar.gz né archivio tar"
 
 #: gui/gdmsetup.c:1457
 msgid "Archive does not include a GdmGreeterTheme.info file"
@@ -3422,16 +3340,13 @@ msgid "No file selected"
 msgstr "Nessun file selezionato"
 
 #: gui/gdmsetup.c:1614
-#, fuzzy
 msgid "Not a theme archive"
-msgstr ""
-"Non è l'archivio di un tema\n"
-"Dettagli: %s"
+msgstr "Non è l'archivio di un tema"
 
 #: gui/gdmsetup.c:1615
 #, c-format
 msgid "Details: %s"
-msgstr ""
+msgstr "Dettagli: %s"
 
 #. FIXME: if exists already perhaps we could also have an
 #. * option to change the dir name
@@ -3452,11 +3367,11 @@ msgstr "Selezionare l'archivio del nuovo tema da installare"
 #: gui/gdmsetup.c:1823
 #, c-format
 msgid "Do you really wish to remove theme '%s' from the system?"
-msgstr ""
+msgstr "Rimuovere veramente «%s» dal sistema?"
 
 #. This is the temporary help dialog
 #: gui/gdmsetup.c:2033
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This configuration window changes settings for the GDM daemon, which is the "
 "graphical login screen for GNOME.  Changes that you make will take effect "
@@ -3468,21 +3383,24 @@ msgid ""
 "For complete documentation see the GNOME help browser Under the category "
 "GNOME/System."
 msgstr ""
-"Finestra di configurazione del demone GDM, il login grafico di GNOME. I "
-"cambiamenti fatti hanno effetto immediatamente.\n"
+"In questa finestra di configurazione si cambiano le impostazioni del demone "
+"GDM, che è il login grafico di GNOME. I cambiamenti effettuati avranno "
+"effetto immediatamente.\n"
 "\n"
 "Qui non sono disponibili tutte le opzioni di configurazione. Editare il file "
 "«%s» per modificare i parametri mancanti."
+"\n"
+"Per avere la documentazione completa consultare l'aiuto di GNOME sotto la "
+"categoria GNOME/System."
 
 #: gui/gdmsetup.c:2417
-#, fuzzy
 msgid "You must be the superuser (root) to configure GDM."
-msgstr "Solo il super utente (root) può configurare GDM.\n"
+msgstr "Solo il super utente (root) può configurare GDM."
 
 #. EOF
 #: gui/gdmsetup.desktop.in.h:1
 msgid "A graphical application for configuring the GNOME Display Manager (GDM)"
-msgstr "Strumento di configurazione del dispay manager di GNOME (GDM)"
+msgstr "Applicazione grafica di configurazione del display manager di GNOME (GDM)"
 
 #: gui/greeter/greeter.c:619 gui/greeter/greeter.c:649
 #, c-format
@@ -3513,23 +3431,20 @@ msgstr "Errore nel caricamento del tema %s"
 
 #: gui/greeter/greeter.c:1297
 msgid "The theme for the graphical greeter is corrupt"
-msgstr ""
+msgstr "Il tema per il greeter grafico è corrotto"
 
 #: gui/greeter/greeter.c:1300
-#, fuzzy
 msgid ""
 "The theme does not contain definition for the username/password entry "
 "element."
-msgstr ""
-"Il tema per il greeter grafico è corrotto: non contiene la definizione "
-"dell'elemento username/password."
+msgstr "Il tema non contiene la definizione dell'elemento username/password."
 
 #: gui/greeter/greeter.c:1332
 msgid ""
 "There was an error loading the theme, and the default theme also could not "
 "have been loaded, I will attempt to start the standard greeter"
 msgstr ""
-"Errore nel caricamente del tema selezionato e anche il tema predefinito non "
+"Errore nel caricamento del tema selezionato e anche il tema predefinito non "
 "può essere caricato; sarà avviato il greeter standard"
 
 #: gui/greeter/greeter.c:1353
@@ -3553,44 +3468,43 @@ msgid "Select a language for your session to use:"
 msgstr "Seleziona la lingua per la sessione: "
 
 #: gui/greeter/greeter_canvas_item.c:124
-#, fuzzy
 msgid "Select _Language..."
-msgstr "Selezionare la lingua"
+msgstr "Selezione _lingua..."
 
 #: gui/greeter/greeter_canvas_item.c:131
-#, fuzzy
 msgid "Select _Session..."
-msgstr "Seleziona la sessione GNOME"
+msgstr "Selezione _sessione..."
 
 #: gui/greeter/greeter_canvas_item.c:351
 msgid "Answer questions here and press Enter when done.  For a menu press F10."
 msgstr ""
+"Rispondere alle domande poste e premere Invio alla fine. "
+"Per avere un menù premere F10."
 
 #: gui/greeter/greeter_item_ulist.c:263
-#, fuzzy, c-format
+#, c-format
 msgid "Can't open DefaultImage: %s!"
-msgstr "Impossibile aprire l'icona predefinita dell'host: %s"
+msgstr "Impossibile aprire l'immagine predefinita: %s!"
 
 #: gui/greeter/greeter_item_ulist.c:365
 msgid ""
 "Doubleclick on the user\n"
 "to log in"
 msgstr ""
+"Doppio clic sull'utente\n"
+"per il login"
 
 #: gui/greeter/greeter_parser.c:1006 gui/greeter/greeter_system.c:205
-#, fuzzy
 msgid "Sus_pend"
-msgstr "_Sospendi..."
+msgstr "_Sospendi"
 
 #: gui/greeter/greeter_parser.c:1016
-#, fuzzy
 msgid "_XDMCP Chooser"
-msgstr "Host chooser di GDM"
+msgstr "Chooser _XDMCP"
 
 #: gui/greeter/greeter_parser.c:1021
-#, fuzzy
 msgid "_Configure"
-msgstr "Configurazione"
+msgstr "_Configurazione"
 
 #: gui/greeter/greeter_parser.c:1026
 msgid "You've got capslock on!"
@@ -3598,38 +3512,35 @@ msgstr "Blocco maiuscole attivato!"
 
 #: gui/greeter/greeter_session.c:233
 msgid "Choose a Session"
-msgstr ""
+msgstr "Scegliere una sessione"
 
 #: gui/greeter/greeter_system.c:270
 msgid "Choose an Action"
-msgstr ""
+msgstr "Scegiere un'azione"
 
 #: gui/greeter/greeter_system.c:292
-#, fuzzy
 msgid "Shut _down the computer"
-msgstr "Arrestare la macchina"
+msgstr "_Arrestare la macchina"
 
 #: gui/greeter/greeter_system.c:295
 msgid "Shut down your computer so that you may turn it off."
-msgstr "Arresta la macchina per poterla spengere"
+msgstr "Arresta la macchina per poterla spengere."
 
 #: gui/greeter/greeter_system.c:310
-#, fuzzy
 msgid "_Reboot the computer"
-msgstr "Riavviare la macchina"
+msgstr "_Riavviare la macchina"
 
 #: gui/greeter/greeter_system.c:324
-#, fuzzy
 msgid "Sus_pend the computer"
-msgstr "Sospendere la macchina"
+msgstr "_Sospendere la macchina"
 
 #: gui/greeter/greeter_system.c:338
 msgid "Run _XDMCP chooser"
-msgstr ""
+msgstr "Eseguire il chooser _XDMCP"
 
 #: gui/greeter/greeter_system.c:358
 msgid "_Configure the login manager"
-msgstr ""
+msgstr "_Configurare il gestore dei login"
 
 #: gui/greeter/themes/circles/GdmGreeterTheme.desktop.in.h:1
 msgid "(c) 2002 Bond, James Bond"
@@ -3653,9 +3564,8 @@ msgid "(c) 2002 GNOME"
 msgstr "© 2002 GNOME"
 
 #: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:2
-#, fuzzy
 msgid "GNOME Art variation of Circles with a Face Browser"
-msgstr "Variazione artistica GNOME di Circles"
+msgstr "Variazione artistica GNOME di Circles con browser dei volti"
 
 #: gui/greeter/themes/happygnome-list/GdmGreeterTheme.desktop.in.h:3
 #: gui/greeter/themes/happygnome/GdmGreeterTheme.desktop.in.h:3
@@ -3680,25 +3590,29 @@ msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to (%s)"
 msgstr ""
+"Errore nel tentativo di eseguire (%s)\n"
+"che è linkato a (%s)"
 
 #: utils/gdmaskpass.c:26
 msgid "gdmaskpass only runs as root\n"
-msgstr "gdmaskpass funziona solo se lanciato dal root\n"
+msgstr "gdmaskpass funziona solo se lanciato da root\n"
 
 #: utils/gdmaskpass.c:42 utils/gdmaskpass.c:48
 msgid "Authentication failure!\n"
 msgstr "Autenticazione fallita.\n"
 
 # da tradurre?
+# NdT [MF] io lo traduco
 #: vicious-extensions/glade-helper.c:83
 msgid "(memory buffer)"
-msgstr ""
+msgstr "(buffer di memoria)"
 
 # da tradurre?
+# NdT [MF] io lo traduco
 #: vicious-extensions/glade-helper.c:115 vicious-extensions/glade-helper.c:137
 #: vicious-extensions/glade-helper.c:157
 msgid "(memory buffer"
-msgstr ""
+msgstr "(buffer di memoria"
 
 #: vicious-extensions/glade-helper.c:189 vicious-extensions/glade-helper.c:236
 #: vicious-extensions/glade-helper.c:273
@@ -3706,17 +3620,16 @@ msgid "Cannot load user interface"
 msgstr "Impossibile caricare l'interfaccia utente"
 
 #: vicious-extensions/glade-helper.c:190
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An error occured while loading the user interface element %s%s from file %"
 "s.  Possibly the glade interface description was corrupted.  %s cannot "
 "continue and will exit now.  You should check your installation of %s or "
 "reinstall %s."
 msgstr ""
-"Errore durante il caricamente dell'elemento %s%s\n"
-"dell'interfaccia utente dal file %s.\n"
-"È possibile che la descrizione dell'interfaccia glade\n"
-"sia corrotta. Impossibile continuare l'ìesecuzione di %s.\n"
+"Errore durante il caricamente dell'elemento %s%s dell'interfaccia utente dal file %s. "
+"È possibile che la descrizione dell'interfaccia glade sia corrotta. "
+"%s non può continuare l'esecuzione e verrà quindi terminato. "
 "Controllare l'installazione di %s o reinstallare %s."
 
 # mavvia ma chi li scrive questi!?
@@ -3730,18 +3643,17 @@ msgstr ""
 "file: %s; widget: %s"
 
 #: vicious-extensions/glade-helper.c:237
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An error occured while loading the user interface element %s%s from file %"
 "s.  CList type widget should have %d columns.  Possibly the glade interface "
 "description was corrupted.  %s cannot continue and will exit now.  You "
 "should check your installation of %s or reinstall %s."
 msgstr ""
-"Errore durante il caricamente dell'elemento %s%s\n"
-"dell'interfaccia utente dal file %s.\n"
-"Il widget di tipo CList deve avere %d colonne.\n"
-"È possibile che la descrizione dell'interfaccia glade\n"
-"sia corrotta. Impossibile continuare l'ìesecuzione di %s.\n"
+"Errore durante il caricamente dell'elemento %s%s dell'interfaccia utente dal file %s. "
+"Il widget di tipo CList deve avere %d colonne. "
+"È possibile che la descrizione dell'interfaccia glade sia corrotta. "
+"%s non può continuare l'esecuzione e verrà quindi terminato. "
 "Controllare l'installazione di %s o reinstallare %s."
 
 #: vicious-extensions/glade-helper.c:255
@@ -3754,16 +3666,15 @@ msgstr ""
 "file: %s; widget: %s; colonne clist attese: %d"
 
 #: vicious-extensions/glade-helper.c:274
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An error occured while loading the user interface from file %s.  Possibly "
 "the glade interface description was not found.  %s cannot continue and will "
 "exit now.  You should check your installation of %s or reinstall %s."
 msgstr ""
-"Errore durante il caricamento dell'interfaccia utente\n"
-"dal file %s.\n"
-"È possibile che la descrizione dell'interfaccia glade\n"
-"risulti mancante. Impossibile continuare l'esecuzione di %s.\n"
+"Errore durante il caricamento dell'interfaccia utente dal file %s. "
+"È possibile che la descrizione dell'interfaccia glade risulti mancante. "
+"%s non può continuare l'esecuzione e verrà quindi terminato. "
 "Controllare l'installazione di %s o reinstallare %s."
 
 #: vicious-extensions/glade-helper.c:286
@@ -3773,350 +3684,5 @@ msgstr "ERRORE! Impossibile caricare l'interfaccia (file: %s)"
 
 #: vicious-extensions/ve-nongnome.c:132
 msgid "Too many alias levels for a locale, may indicate a loop"
-msgstr ""
+msgstr "Troppi livelli di alias per un locale, potrebbe indicare un ciclo"
 
-#~ msgid "gdm_auth_user_add: Could not open cookie file %s"
-#~ msgstr "gdm_auth_user_add: impossibile aprire il file cookie %s"
-
-#~ msgid "gdm_auth_user_add: Could not lock cookie file %s"
-#~ msgstr "gdm_auth_user_add: impossibile impostare il lock sul file cookie %s"
-
-#~ msgid ""
-#~ "Failed to start the display server several times in a short time period; "
-#~ "disabling display %s"
-#~ msgstr ""
-#~ "Troppi errori ravvicinati nell'avvio del server X; display %s disattivato"
-
-#~ msgid "gdm_failsafe_question: Cannot fork to display error/info box"
-#~ msgstr ""
-#~ "gdm_failsafe_question: impossibile eseguire una fork per visualizzare un "
-#~ "messaggio di errore o informativo"
-
-#~ msgid "gdm_child_action: Reboot failed: %s"
-#~ msgstr "gdm_child_action: errore nel riavviare la macchina: %s"
-
-#~ msgid "gdm_child_action: Halt failed: %s"
-#~ msgstr "gdm_child_action: errore nell'arresto della macchina: %s"
-
-#~ msgid "gdm_child_action: Suspend failed: %s"
-#~ msgstr "gdm_child_action: errore nella sospensione della macchina: %s"
-
-#~ msgid "%s: Error setting up TERM signal handler"
-#~ msgstr "%s: errore nell'attivazione del gestore del segnale TERM"
-
-#~ msgid "%s: Error setting up INT signal handler"
-#~ msgstr "%s: errore nell'attivazione del gestore del segnale INT"
-
-#~ msgid "%s: Error setting up HUP signal handler"
-#~ msgstr "%s: errore nell'attivazione del gestore del segnale HUP"
-
-#~ msgid "%s: Error setting up USR1 signal handler"
-#~ msgstr "%s: errore nell'attivazione del gestore del segnale USR1"
-
-#~ msgid "%s: Error setting up CHLD signal handler: %s"
-#~ msgstr "%s: errore nell'attivazione del gestore del segnale CHLD: %s"
-
-#~ msgid "%s: Error setting up ALRM signal handler: %s"
-#~ msgstr "%s: errore nell'attivazione del gestore del segnale ALRM: %s"
-
-#~ msgid "gdm_server_spawn: Error setting USR1 to SIG_IGN"
-#~ msgstr "gdm_server_spawn: errore nell'impostazione di USR1 a SIG_IGN"
-
-#~ msgid "gdm_server_spawn: Error setting TTIN to SIG_IGN"
-#~ msgstr "gdm_server_spawn: errore nell'impostazione di TTIN a SIG_IGN"
-
-#~ msgid "gdm_server_spawn: Error setting TTOU to SIG_IGN"
-#~ msgstr "gdm_server_spawn: errore nell'impostazione di TTOU a SIG_IGN"
-
-#~ msgid "gdm_server_spawn: Error setting HUP to SIG_DFL"
-#~ msgstr "gdm_server_spawn: errore nell'impostazione di HUP a SIG_DFL"
-
-#~ msgid "gdm_server_spawn: Error setting TERM to SIG_DFL"
-#~ msgstr "gdm_server_spawn: errore nell'impostazione di TERM a SIG_DFL"
-
-#~ msgid "gdm_server_spawn: Can't fork Xserver process!"
-#~ msgstr ""
-#~ "gdm_server_spawn: impossibile eseguire una fork sul processo del server X"
-
-#~ msgid "%s: Error setting up TERM/INT signal handler: %s"
-#~ msgstr "%s: errore nell'attivazione del gestore del segnale TERM/INT: %s"
-
-#~ msgid "focus_first_x_window: cannot fork"
-#~ msgstr "focus_first_x_window: impossibile eseguire la fork"
-
-#~ msgid "gdm_slave_wait_for_login: No login/Bad login"
-#~ msgstr "gdm_slave_wait_for_login: login sbagliato o nullo"
-
-#~ msgid "gdm_slave_chooser: Can't init pipe to gdmchooser"
-#~ msgstr ""
-#~ "gdm_slave_chooser: impossibile inizializzare la pipe verso gdmchooser"
-
-#~ msgid "gdm_slave_chooser: Error starting chooser on display %s"
-#~ msgstr "gdm_slave_chooser: errore nell'avvio del chooser nel display %s"
-
-#~ msgid "gdm_slave_chooser: Can't fork gdmchooser process"
-#~ msgstr ""
-#~ "gdm_slave_chooser: impossibile eseguire una fork sul processo gdmchooser"
-
-#~ msgid "gdm_slave_session_start: Could not become %s. Aborting."
-#~ msgstr ""
-#~ "gdm_slave_session_start: impossibile assumere l'identità %s; chiusura in "
-#~ "corso."
-
-# ehm?
-#~ msgid "Running %s for %s on %s"
-#~ msgstr "Esecuzione di %s per %s su %s"
-
-#~ msgid "gdm_slave_session_start: User not allowed to log in"
-#~ msgstr ""
-#~ "gdm_slave_session_start: utente non autorizzato ad effettuare il login"
-
-#~ msgid ""
-#~ "The system administrator has\n"
-#~ "disabled your account."
-#~ msgstr ""
-#~ "L'amministratore di sistema ha\n"
-#~ "disabilitato questo account."
-
-#~ msgid "gdm_slave_session_start: Could not find/run session `%s'"
-#~ msgstr ""
-#~ "gdm_slave_session_start: impossibile trovare o avviare la sessione «%s»"
-
-#~ msgid ""
-#~ "Cannot start the session, most likely the\n"
-#~ "session does not exist.  Please select from\n"
-#~ "the list of available sessions in the login\n"
-#~ "dialog window."
-#~ msgstr ""
-#~ "Impossibile avviare la sessione, probabilmente\n"
-#~ "non esiste. Selezionarne un'altra dalla lista\n"
-#~ "delle sessioni disponibili nella schermata\n"
-#~ "di login."
-
-#~ msgid "gdm_slave_session_start: Could not start session `%s'"
-#~ msgstr "gdm_slave_session_start: impossibile avviare la sessione «%s»"
-
-#~ msgid ""
-#~ "Cannot start your shell.  It could be that the\n"
-#~ "system administrator has disabled your login.\n"
-#~ "It could also indicate an error with your account.\n"
-#~ msgstr ""
-#~ "Impossibile avviare la shell. È possibile che\n"
-#~ "l'amministratore di sistema abbia disabilitato questo\n"
-#~ "account oppure che sia mal configurato.\n"
-
-#~ msgid "gdm_slave_exec_script: Can't fork script process!"
-#~ msgstr ""
-#~ "gdm_slave_exec_script: impossibile eseguire una fork sul processo dello "
-#~ "script!"
-
-#~ msgid "gdm_parse_enriched_login: Failed creating pipe"
-#~ msgstr "gdm_parse_enriched_login: errore nella creazione della pipe"
-
-#~ msgid "gdm_parse_enriched_login: Can't fork script process!"
-#~ msgstr ""
-#~ "gdm_parse_enriched_login: impossibile eseguire una fork sul processo "
-#~ "dello script!"
-
-#~ msgid "Can't find /etc/pam.d/%s!"
-#~ msgstr "Impossibile trovare «/etc/pam.d/%s»."
-
-#~ msgid "Can't set PAM_RUSER=%s"
-#~ msgstr "Impossibile impostare «PAM_RUSER=%s»"
-
-#~ msgid ""
-#~ "\n"
-#~ "Incorrect username or password. Letters must be typed in the correct "
-#~ "case. Please make sure the Caps Lock key is not enabled."
-#~ msgstr ""
-#~ "\n"
-#~ "Nome utente o password sbagliati.  Attenzione a maiuscole e minuscole.  "
-#~ "Controllare che il «Blocco maiuscole» non sia inserito"
-
-#~ msgid "gdm_xdmcp_init: Could not create socket!"
-#~ msgstr "gdm_xdmcp_init: impossibile creare un socket."
-
-#~ msgid "gdm_xdmcp_init: Could not bind to XDMCP socket!"
-#~ msgstr "gdm_xdmcp_init: impossibile comunicare con un socket XDMCP."
-
-#~ msgid "gdm_xdmcp_handle_forward_query: Could not read display address"
-#~ msgstr ""
-#~ "gdm_xdmcp_handle_forward_query: impossibile leggere l'indirizzo del "
-#~ "display"
-
-#~ msgid "gdm_xdmcp_handle_forward_query: Could not read display port number"
-#~ msgstr ""
-#~ "gdm_xdmcp_handle_forward_query: impossibile leggere il numero della porta "
-#~ "del display"
-
-#~ msgid ""
-#~ "gdm_xdmcp_handle_forward_query: Could not extract authlist from packet"
-#~ msgstr ""
-#~ "gdm_xdmcp_handle_forward_query: impossibile estrarre la lista delle "
-#~ "autorizzazioni dal pacchetto"
-
-#~ msgid "gdm_xdmcp_handle_forward_query: Error in checksum"
-#~ msgstr "gdm_xdmcp_handle_forward_query: errore nel checksum"
-
-#~ msgid "gdm_xdmcp_handle_forward_query: Bad address"
-#~ msgstr "gdm_xdmcp_handle_forward_query: indirizzo errato"
-
-#~ msgid "gdm_xdmcp_handle_request: Could not read Client Address"
-#~ msgstr "gdm_xdmcp_handle_request: impossibile leggere \"Client Address\""
-
-#~ msgid "gdm_xdmcp_handle_request: Could not read Manufacturer ID"
-#~ msgstr "gdm_xdmcp_handle_request: impossibile leggere \"Manufacturer ID\""
-
-#~ msgid "gdm_xdmcp_handle_manage: Could not read Session ID"
-#~ msgstr "gdm_xdmcp_handle_manage: impossibile leggere \"Session ID\""
-
-#~ msgid "gdm_xdmcp_handle_manage: Could not read Display Number"
-#~ msgstr "gdm_xdmcp_handle_manage: impossibile leggere \"Display Number\""
-
-#~ msgid "gdm_xdmcp_handle_manage: Could not read Display Class"
-#~ msgstr "gdm_xdmcp_handle_manage: impossibile leggere \"Display Class\""
-
-#~ msgid "gdm_xdmcp_handle_keepalive: Could not read Display Number"
-#~ msgstr "gdm_xdmcp_handle_keepalive: impossibile leggere \"Display Number\""
-
-#~ msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
-#~ msgstr "gdm_xdmcp_handle_keepalive: impossibile leggere \"Session ID\""
-
-#~ msgid "gdm_xdmcp_init: No XDMCP support"
-#~ msgstr "gdm_xdmcp_init: supporto per XDMCP mancante"
-
-#~ msgid "gdm_xdmcp_run: No XDMCP support"
-#~ msgstr "gdm_xdmcp_run: supporto per XDMCP mancante"
-
-#~ msgid ""
-#~ "The main area of this application shows the hosts on the local network "
-#~ "that have \"XDMCP\" enabled. This allows users to login remotely to other "
-#~ "machines as if they were logged on using the console.\n"
-#~ "\n"
-#~ "You can rescan the network for new hosts by clicking \"Refresh\". When "
-#~ "you have selected a host click \"Connect\" to open a session to that "
-#~ "machine."
-#~ msgstr ""
-#~ "L'area principale di questa applicazione mostra gli host, sulla rete "
-#~ "locale, che hanno «XDMCP» abilitato. Permette agli utenti di effettuare "
-#~ "il login sulle macchine remote come se si stesse eseguendo dalla "
-#~ "console.\n"
-#~ "\n"
-#~ "È possibile eseguire una ricerca per nuovi host cliccando «Aggiorna». "
-#~ "Dopo aver selezionato un host cliccare «Connetti» per aprire una sessione."
-
-#~ msgid "Information"
-#~ msgstr "Informazioni"
-
-#~ msgid "gdm_signals_init: Error setting up HUP signal handler"
-#~ msgstr ""
-#~ "gdm_signals_int: errore nell'attivazione del gestore del segnale HUP"
-
-#~ msgid "gdm_signals_init: Error setting up INT signal handler"
-#~ msgstr ""
-#~ "gdm_signals_init: errore nell'attivazione del gestore del segnale INT"
-
-#~ msgid "gdm_signals_init: Error setting up TERM signal handler"
-#~ msgstr ""
-#~ "gdm_signals_init: errore nell'attivazione del gestore del segnale TERM"
-
-#~ msgid ""
-#~ "<b>GDM (The GNOME Display Manager) is not running.</b>\n"
-#~ "\n"
-#~ "You might in fact be using a different display manager, such as KDM (KDE "
-#~ "Display Manager or xdm).\n"
-#~ "If you still wish to use this feature, either start GDM your self or ask "
-#~ "your system administrator to start GDM."
-#~ msgstr ""
-#~ "<b>GDM (GNOME Display Manager) non avviato.</b>\n"
-#~ "È possibile che si stia utilizzando un altro display manager, come KDM "
-#~ "(KDE Display Manager) o xdm.\n"
-#~ "Per utilizzare questa funzione è necessario utilizzare GDM."
-
-#~ msgid "AnotherLevel"
-#~ msgstr "AnotherLevel"
-
-#~ msgid "Failsafe"
-#~ msgstr "D'emergenza"
-
-#~ msgid "Gnome"
-#~ msgstr "GNOME"
-
-#~ msgid "XSession"
-#~ msgstr "XSession"
-
-#~ msgid "Gnome Chooser"
-#~ msgstr "Chooser"
-
-#~ msgid ""
-#~ "Doubleclick here to un-iconify the login window, so that you may log in."
-#~ msgstr "Doppio click per ripristinare la finestra di login."
-
-#~ msgid "gdm_login_parse_config: No configuration file: %s. Using defaults."
-#~ msgstr ""
-#~ "gdm_login_parse_config: file di configurazione mancante: %s; saranno "
-#~ "utilizzate le impostazioni standard."
-
-#~ msgid "gdm_login_session_init: Session script directory not found!"
-#~ msgstr ""
-#~ "gdm_login_session_init: directory degli script di sessione non trovata"
-
-#~ msgid ""
-#~ "This session will log you directly into GNOME, into your current session."
-#~ msgstr "Esegue il login direttamente nella sessione corrente di GNOME."
-
-# ripetizione brutta ma necessaria
-#~ msgid ""
-#~ "This session will log you into GNOME and it will let you choose which one "
-#~ "of the GNOME sessions you want to use."
-#~ msgstr ""
-#~ "Esegue il login in GNOME e consente di scegliere quale sessione GNOME "
-#~ "utilizzare."
-
-#~ msgid "Name: "
-#~ msgstr "Nome: "
-
-#~ msgid "Remember this setting"
-#~ msgstr "Registra le impostazioni"
-
-#~ msgid "Can't open icon file: %s. Suspending iconify feature!"
-#~ msgstr ""
-#~ "Impossibile aprire il file icona: %s; riduzione ad icona disabilitata."
-
-#~ msgid "Iconify the login window"
-#~ msgstr "Riduce a icona la finestra di login"
-
-#~ msgid "_Reboot..."
-#~ msgstr "_Riavvia..."
-
-#~ msgid "S_ystem"
-#~ msgstr "S_istema"
-
-#~ msgid "main: Error setting up HUP signal handler"
-#~ msgstr "main: errore nell'attivazione del gestore del segnale HUP"
-
-#~ msgid "main: Error setting up INT signal handler"
-#~ msgstr "main: errore nell'attivazione del gestore del segnale INT"
-
-#~ msgid "main: Error setting up TERM signal handler"
-#~ msgstr "main: errore nell'attivazione del gestore del segnale TERM"
-
-#~ msgid "Select a photo"
-#~ msgstr "Selezionare un'immagine"
-
-#~ msgid "GDM Setup"
-#~ msgstr "Configuirazione di GDM"
-
-#~ msgid "Welcome string: "
-#~ msgstr "Messaggio di benvenuto: "
-
-#~ msgid "<b>Author:</b>"
-#~ msgstr "<b>Autore:</b>"
-
-#~ msgid "GDM Configurator"
-#~ msgstr "Configurazione di GDM"
-
-#~ msgid "greeter_parse_config: No configuration file: %s. Using defaults."
-#~ msgstr ""
-#~ "gdm_greeter_parse_config: file di configurazione mancante: %s; saranno "
-#~ "utilizzate le impostazioni predefinite."
