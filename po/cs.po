@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.98\n"
-"POT-Creation-Date: 2001-03-04 16:26-0800\n"
+"POT-Creation-Date: 2001-04-15 21:58-0700\n"
 "PO-Revision-Date: 2001-02-02 23:19-0800\n"
 "Last-Translator: George Lebl <jirka@5z.com>\n"
 "Language-Team: czech <cs@li.org>\n"
@@ -81,12 +81,12 @@ msgstr ""
 
 #: daemon/gdm.c:304
 msgid "gdm_daemonify: fork() failed!"
-msgstr ""
+msgstr "gdm_daemonify: fork() selhal!"
 
 #: daemon/gdm.c:307
 #, c-format
 msgid "gdm_daemonify: setsid() failed: %s!"
-msgstr ""
+msgstr "gdm_daemonify: setsid() selhal: %s!"
 
 #. Bury this display for good
 #: daemon/gdm.c:399
@@ -124,7 +124,7 @@ msgstr "Jen root chce spustit gdm\n"
 
 #: daemon/gdm.c:547
 msgid "gdm already running. Aborting!"
-msgstr ""
+msgstr "gdm ji¾ bì¾í. Konèím!"
 
 #: daemon/gdm.c:573
 msgid "gdm_main: Error setting up TERM signal handler"
@@ -191,9 +191,9 @@ msgid "%s: %s is writable by other."
 msgstr ""
 
 #: daemon/filecheck.c:84
-#, fuzzy, c-format
+#, c-format
 msgid "%s: %s does not exist and must."
-msgstr "%s: Adresáø %s neexistuje."
+msgstr "%s: %s musí existovat ale neexistuje."
 
 #: daemon/filecheck.c:92
 #, c-format
@@ -334,23 +334,23 @@ msgstr ""
 
 #. Ask gdmgreeter for the user's login. Just for good measure
 #: daemon/verify-crypt.c:58 daemon/verify-pam.c:137 daemon/verify-shadow.c:60
-#: gui/gdmlogin.c:1784
+#: gui/gdmlogin.c:1803
 msgid "Login:"
-msgstr ""
+msgstr "U¾ivatel:"
 
 #: daemon/verify-pam.c:144 daemon/verify-pam.c:230
 msgid "Can't find /etc/pam.d/gdm!"
-msgstr ""
+msgstr "Nemohu najít /etc/pam.d/gdm!"
 
 #: daemon/verify-pam.c:150 daemon/verify-pam.c:236
 #, c-format
 msgid "Can't set PAM_TTY=%s"
-msgstr ""
+msgstr "Nemohu nastavit PAM_TTY=%s"
 
 #: daemon/verify-crypt.c:71 daemon/verify-pam.c:156 daemon/verify-shadow.c:81
 #, c-format
 msgid "Couldn't authenticate %s"
-msgstr ""
+msgstr "Nemohu ovìøit %s"
 
 #: daemon/verify-pam.c:167 daemon/verify-pam.c:249
 #, c-format
@@ -369,7 +369,7 @@ msgstr ""
 
 #: daemon/verify-pam.c:198
 msgid "Authentication failed"
-msgstr ""
+msgstr "Ovìøení selhalo"
 
 #: daemon/verify-pam.c:322
 msgid "gdm_verify_check: Can't find PAM configuration file for gdm"
@@ -377,23 +377,22 @@ msgstr ""
 
 #. Request the user's password
 #: daemon/verify-crypt.c:64 daemon/verify-shadow.c:74
-#, fuzzy
 msgid "Password: "
-msgstr "Heslo:"
+msgstr "Heslo: "
 
 #: daemon/verify-crypt.c:72 daemon/verify-crypt.c:87 daemon/verify-shadow.c:82
 #: daemon/verify-shadow.c:97
 msgid "Login incorrect"
-msgstr ""
+msgstr "Neplatné pøihlá¹ení"
 
 #: daemon/verify-crypt.c:77 daemon/verify-shadow.c:87
 #, c-format
 msgid "Root login disallowed on display '%s'"
-msgstr ""
+msgstr "Pøihla¹ování jako root není dovoleno na displeji '%s'"
 
 #: daemon/verify-crypt.c:78 daemon/verify-shadow.c:88
 msgid "Root login disallowed"
-msgstr "Pøihla¹ování roota nepovoleno"
+msgstr "Pøihla¹ování jako root není povolen"
 
 #: daemon/xdmcp.c:181
 #, c-format
@@ -468,7 +467,7 @@ msgstr ""
 
 #: daemon/xdmcp.c:561
 msgid "Display not authorized to connect"
-msgstr ""
+msgstr "Displej není autorizován k pøipojení"
 
 #: daemon/xdmcp.c:594
 #, c-format
@@ -543,75 +542,75 @@ msgstr ""
 msgid "gdm_xdmcp_handle_keepalive: Could not read Session ID"
 msgstr ""
 
-#: gui/gdmchooser.c:369
+#: gui/gdmchooser.c:58
+msgid "Please wait: scanning local network for XDMCP-enabled hosts..."
+msgstr ""
+"Èekejte prosím: skenuji lokální sí» a hledám servery s podporou XDMCP..."
+
+#: gui/gdmchooser.c:59
+msgid "No serving hosts were found."
+msgstr "®ádné servery nenalezeny."
+
+#: gui/gdmchooser.c:60
+msgid "Choose a host to connect to from the selection below."
+msgstr "Vyberte server ke kterému se chcete pøipojit."
+
+#: gui/gdmchooser.c:384
 #, c-format
 msgid "gdm_chooser_parse_config: No configuration file: %s. Aborting."
 msgstr ""
 
-#: gui/gdmchooser.c:483
+#: gui/gdmchooser.c:519
 #, c-format
 msgid "Can't open default host icon: %s"
 msgstr ""
 
-#. Buttons
-#: gui/gdmchooser.c:550
-msgid "Connect"
-msgstr "Pøipojit se"
-
-#: gui/gdmchooser.c:557
-msgid "Rescan"
-msgstr "Znovu pøeèíst"
-
-#: gui/gdmchooser.c:563
-msgid "Cancel"
-msgstr "Zru¹it"
-
-#: gui/gdmchooser.c:614
+#: gui/gdmchooser.c:581
 msgid "gdm_signals_init: Error setting up HUP signal handler"
 msgstr ""
 
-#: gui/gdmchooser.c:617
+#: gui/gdmchooser.c:584
 msgid "gdm_signals_init: Error setting up INT signal handler"
 msgstr ""
 
-#: gui/gdmchooser.c:620
+#: gui/gdmchooser.c:587
 msgid "gdm_signals_init: Error setting up TERM signal handler"
 msgstr ""
 
-#: gui/gdmchooser.c:628 gui/gdmlogin.c:2150
+#: gui/gdmchooser.c:595 gui/gdmlogin.c:2168
 msgid "Could not set signal mask!"
 msgstr ""
 
-#: gui/gdmlogin.c:391 gui/gdmlogin.c:397 gui/gdmlogin.c:404
+#: gui/gdmlogin.c:390 gui/gdmlogin.c:396 gui/gdmlogin.c:403
 #, c-format
 msgid "Welcome to %s"
 msgstr "Vítejte na %s"
 
-#: gui/gdmlogin.c:402
+#: gui/gdmlogin.c:401
 msgid "gdm_parse_enriched_string: String too long!"
 msgstr ""
 
-#: gui/gdmlogin.c:499
+#: gui/gdmlogin.c:498
 msgid "Are you sure you want to reboot the machine?"
 msgstr "Jste si jist(a) ¾e chcete restartovat vá¹ poèítaè"
 
-#: gui/gdmlogin.c:513
+#: gui/gdmlogin.c:512
 msgid "Are you sure you want to halt the machine?"
 msgstr "Jste si jist(a) ¾e chcete zastavit vá¹ poèítaè"
 
-#: gui/gdmlogin.c:531
+#: gui/gdmlogin.c:530
 #, c-format
 msgid "gdm_login_parse_config: No configuration file: %s. Aborting."
 msgstr ""
 
-#: gui/gdmlogin.c:641
+#: gui/gdmlogin.c:640
 #, c-format
 msgid ""
 "Your preferred session type %s is not installed on this machine.\n"
 "Do you wish to make %s the default for future sessions?"
 msgstr ""
 
-#: gui/gdmlogin.c:657 gui/gdmlogin.c:712
+#: gui/gdmlogin.c:656 gui/gdmlogin.c:711
 #, c-format
 msgid ""
 "You have chosen %s for this session, but your default setting is %s.\n"
@@ -620,102 +619,102 @@ msgstr ""
 "Zvolili jste %s pro toto sezení, ale va¹e standardní nastavení je %s.\n"
 "Chcete udìlat %s va¹e standardní nastavení pro pøí¹tí sezení?"
 
-#: gui/gdmlogin.c:858
+#: gui/gdmlogin.c:865
 #, c-format
 msgid "%s session selected"
 msgstr "Vybráno sezení %s"
 
-#: gui/gdmlogin.c:874 gui/gdmlogin.c:983
+#: gui/gdmlogin.c:881 gui/gdmlogin.c:990
 msgid "Last"
 msgstr "Pøedchozí"
 
-#: gui/gdmlogin.c:891
+#: gui/gdmlogin.c:898
 msgid "gdm_login_session_init: Session script directory not found!"
 msgstr ""
 
-#: gui/gdmlogin.c:946
+#: gui/gdmlogin.c:953
 msgid "No session scripts found. Aborting!"
 msgstr ""
 
-#: gui/gdmlogin.c:950
+#: gui/gdmlogin.c:957
 #, c-format
 msgid "No default session link found. Using %s.\n"
 msgstr ""
 
-#: gui/gdmlogin.c:964
+#: gui/gdmlogin.c:971
 #, c-format
 msgid "%s language selected"
 msgstr "Vybrán jazyk %s"
 
-#: gui/gdmlogin.c:1001
+#: gui/gdmlogin.c:1008
 msgid "A-M"
 msgstr "A-M"
 
-#: gui/gdmlogin.c:1007
+#: gui/gdmlogin.c:1014
 msgid "N-Z"
 msgstr "N-Z"
 
-#: gui/gdmlogin.c:1013
+#: gui/gdmlogin.c:1020
 msgid "Other"
 msgstr "Ostatní"
 
 #. translators:  This is a nice and evil eggie text, translate
 #. * to your favourite currency
-#: gui/gdmlogin.c:1233
+#: gui/gdmlogin.c:1252
 msgid "Please insert 25 cents to log in."
 msgstr "Za pøihlá¹ení vhodit 5 korun."
 
-#: gui/gdmlogin.c:1517
+#: gui/gdmlogin.c:1536
 msgid "GNOME Desktop Manager"
 msgstr "GNOME Správce pøihlá¹ení"
 
-#: gui/gdmlogin.c:1529
+#: gui/gdmlogin.c:1548
 #, c-format
 msgid "Can't open icon file: %s. Suspending iconify feature!"
 msgstr ""
 
-#: gui/gdmlogin.c:1636
+#: gui/gdmlogin.c:1655
 msgid "Session"
 msgstr "Sezení"
 
-#: gui/gdmlogin.c:1643
+#: gui/gdmlogin.c:1662
 msgid "Language"
 msgstr "Jazyk"
 
-#: gui/gdmlogin.c:1650
+#: gui/gdmlogin.c:1669
 msgid "Reboot..."
 msgstr "Restartovat..."
 
-#: gui/gdmlogin.c:1657
+#: gui/gdmlogin.c:1676
 msgid "Halt..."
 msgstr "Zastavit..."
 
-#: gui/gdmconfig.c:41 gui/gdmlogin.c:1664
+#: gui/gdmconfig.c:41 gui/gdmlogin.c:1683
 msgid "System"
 msgstr "Systém"
 
-#: gui/gdmlogin.c:1820
+#: gui/gdmlogin.c:1839
 msgid "Please enter your login"
 msgstr "Zadejte své pøihla¹ovací jméno"
 
-#: gui/gdmlogin.c:2006
+#: gui/gdmlogin.c:2024
 #, c-format
 msgid "Can't open DefaultImage: %s. Suspending face browser!"
 msgstr ""
 
-#: gui/gdmlogin.c:2127
+#: gui/gdmlogin.c:2145
 msgid "main: Error setting up HUP signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:2130
+#: gui/gdmlogin.c:2148
 msgid "main: Error setting up INT signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:2133
+#: gui/gdmlogin.c:2151
 msgid "main: Error setting up TERM signal handler"
 msgstr ""
 
-#: gui/gdmlogin.c:2141
+#: gui/gdmlogin.c:2159
 msgid "main: Error setting up CHLD signal handler"
 msgstr ""
 
@@ -726,7 +725,7 @@ msgstr "Základní"
 
 #: gui/gdmconfig.c:40
 msgid "Expert"
-msgstr ""
+msgstr "Expert"
 
 #: gui/gdmconfig.c:43
 msgid ""
@@ -759,23 +758,23 @@ msgid ""
 "Choose \"Basic\" if you just want to change your machine's login appearance."
 msgstr ""
 
-#: gui/gdmconfig.c:103
+#: gui/gdmconfig.c:126
 msgid "You must be the superuser (root) to configure GDM.\n"
-msgstr ""
+msgstr "K nastavení GDM musíte být superu¾ivatel (root).\n"
 
-#: gui/gdmconfig.c:176
+#: gui/gdmconfig.c:203
 msgid "GNOME Display Manager Configurator"
-msgstr ""
+msgstr "Nastavení správce pøihlá¹ení GNOME"
 
-#: gui/gdmconfig.c:230
+#: gui/gdmconfig.c:250
 msgid "The configuration file: "
-msgstr ""
+msgstr "Soubor nastavení: "
 
-#: gui/gdmconfig.c:339
+#: gui/gdmconfig.c:358
 msgid "gdm_config_parse_most: Invalid server line in config file. Ignoring!"
 msgstr ""
 
-#: gui/gdmconfig.c:406
+#: gui/gdmconfig.c:425
 msgid ""
 "The applied settings cannot take effect until gdm\n"
 "is restarted or your computer is rebooted.\n"
@@ -784,13 +783,13 @@ msgid ""
 "and you will lose any unsaved data!"
 msgstr ""
 
-#: gui/gdmconfig.c:411
+#: gui/gdmconfig.c:430
 msgid ""
 "Are you sure you wish to restart GDM\n"
 "and lose any unsaved data?"
 msgstr ""
 
-#: gui/gdmconfig.c:418
+#: gui/gdmconfig.c:437
 msgid ""
 "The greeter settings will take effect the next time\n"
 "it is displayed.  The rest of the settings will not\n"
@@ -798,14 +797,14 @@ msgid ""
 "rebooted"
 msgstr ""
 
-#: gui/gdmconfig.c:545
+#: gui/gdmconfig.c:563
 msgid ""
 "This will destroy any changes made in this session.\n"
 "Are you sure you want to do this?"
 msgstr ""
 
 #. Request the command line for this new server
-#: gui/gdmconfig.c:639 gui/gdmconfig.c:658
+#: gui/gdmconfig.c:657 gui/gdmconfig.c:676
 msgid ""
 "Enter the path to the X server,and\n"
 "any parameters that should be passed to it."
@@ -817,460 +816,497 @@ msgstr ""
 #. * DO NOT compile it as part of your application.
 #.
 #: gui/gdmconfig-strings.c:7
-msgid "GDM"
-msgstr ""
+msgid "GDM Configuration Utility"
+msgstr "Nastavení GDM"
 
-#: gui/gdmconfig-strings.c:8 gui/gdmconfig-strings.c:77
-msgid "Security"
-msgstr ""
+#: gui/gdmconfig-strings.c:8
+msgid "_Configuration"
+msgstr "_Nastavení"
 
-#: gui/gdmconfig-strings.c:9 gui/gdmconfig-strings.c:87
-msgid "XDMCP"
-msgstr "XDMCP"
+#: gui/gdmconfig-strings.c:9
+msgid "Revert settings"
+msgstr "Originální nastavení"
 
 #: gui/gdmconfig-strings.c:10
-msgid "User Interface"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:11
-msgid "Greeter"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:12 gui/gdmconfig-strings.c:124
-msgid "Chooser"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:13
-msgid "Servers"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:14
-msgid "GDM Configuration Utility"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:15
-msgid "_Configuration"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:16
-msgid "Revert settings"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:17
 msgid "Apply"
-msgstr ""
+msgstr "Aplikovat"
 
-#: gui/gdmconfig-strings.c:18 gui/gdmconfig-strings.c:63
+#: gui/gdmconfig-strings.c:11 gui/gdmconfig-strings.c:55
 msgid "Options"
-msgstr ""
+msgstr "Mo¾nosti"
 
-#: gui/gdmconfig-strings.c:19
+#: gui/gdmconfig-strings.c:12
 msgid " "
 msgstr " "
 
-#: gui/gdmconfig-strings.c:20
+#: gui/gdmconfig-strings.c:13
 msgid "basic_settings"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:21
+#: gui/gdmconfig-strings.c:14
 msgid "General Appearance"
-msgstr ""
+msgstr "V¹eobecný vzhled"
 
-#: gui/gdmconfig-strings.c:22
+#: gui/gdmconfig-strings.c:15
 msgid "Logo: "
 msgstr "Logo: "
 
-#: gui/gdmconfig-strings.c:23
+#: gui/gdmconfig-strings.c:16
 msgid "Select a logo to be displayed during login"
-msgstr ""
+msgstr "Vyberte logo které bude zobrazene pøi pøihlá¹ení"
 
-#: gui/gdmconfig-strings.c:24
+#: gui/gdmconfig-strings.c:17
 msgid "Minimised Icon: "
-msgstr ""
+msgstr "Ikona: "
 
-#: gui/gdmconfig-strings.c:25
+#: gui/gdmconfig-strings.c:18
 msgid "Select a GTK+ theme file (gtkrc)"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:26
+#: gui/gdmconfig-strings.c:19
 msgid "Gtk+ RC file: "
-msgstr ""
+msgstr "Gtk+ RC soubor: "
 
-#: gui/gdmconfig-strings.c:27
+#: gui/gdmconfig-strings.c:20
 msgid "Login appearance"
-msgstr ""
+msgstr "Vzhled pøihlá¹ení"
 
-#: gui/gdmconfig-strings.c:28
+#: gui/gdmconfig-strings.c:21
 msgid "Greeter Look and Feel"
-msgstr ""
+msgstr "Vzhled uvítání"
 
-#: gui/gdmconfig-strings.c:29
+#: gui/gdmconfig-strings.c:22
 msgid "Show the 'system' menu, (for reboot, shutdown etc.)"
-msgstr ""
+msgstr "Povolit systémové menu, (pro restart, vypnutí atd.)"
 
-#: gui/gdmconfig-strings.c:30
+#: gui/gdmconfig-strings.c:23
 msgid "Quiver on failure"
-msgstr ""
+msgstr "Zatøást se pøi selhání"
 
-#: gui/gdmconfig-strings.c:31
-#, fuzzy, c-format
-msgid ""
-"Welcome to %n\n"
-"%n\n"
-"This is %n\n"
-msgstr ""
-"Vítejte na %n\n"
-"%n\n"
-"Toto je %n"
+#: gui/gdmconfig-strings.c:24
+#, c-format
+msgid "Welcome to %n"
+msgstr "Vítejte na %n"
 
-#: gui/gdmconfig-strings.c:35
+#: gui/gdmconfig-strings.c:25
+#, c-format
+msgid "%n"
+msgstr "%n"
+
+#: gui/gdmconfig-strings.c:26 gui/gdmconfig-strings.c:27
 #, c-format
 msgid "This is %n"
 msgstr "Toto je %n"
 
-#: gui/gdmconfig-strings.c:36
+#: gui/gdmconfig-strings.c:28
 msgid "Default font: "
-msgstr ""
+msgstr "Implicitní písmo: "
 
-#: gui/gdmconfig-strings.c:37
-#, fuzzy
+#: gui/gdmconfig-strings.c:29
 msgid "Welcome message: "
-msgstr "Vítejte na %s"
+msgstr "Vítací zpráva: "
 
-#: gui/gdmconfig-strings.c:38
+#: gui/gdmconfig-strings.c:30
 msgid "Pick a Font"
-msgstr ""
+msgstr "Vyberte písmo"
 
-#: gui/gdmconfig-strings.c:39
+#: gui/gdmconfig-strings.c:31
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
 msgstr ""
+"AaÁáBbCcÈèDdÏïEeÌìÉéFfGgHhIiÍíJjKkLlMmNnÒòOoÓóPpQqRrØøSs©¹Tt«»UuÚúVvWwXxYÝýZz"
+"®¾"
 
-#: gui/gdmconfig-strings.c:40
+#: gui/gdmconfig-strings.c:32
 msgid "Extras"
-msgstr ""
+msgstr "Extra"
 
-#: gui/gdmconfig-strings.c:41
+#: gui/gdmconfig-strings.c:33
 msgid "Background Program: "
-msgstr ""
+msgstr "Program pro pozadí: "
 
-#: gui/gdmconfig-strings.c:42 gui/gdmconfig-strings.c:116
+#: gui/gdmconfig-strings.c:34 gui/gdmconfig-strings.c:117
 msgid "Select a file containing Locale information"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:43
+#: gui/gdmconfig-strings.c:35
 msgid "Default locale: "
-msgstr ""
+msgstr "Implicitní lokalizace: "
+
+#: gui/gdmconfig-strings.c:36
+msgid "Exclude these users: "
+msgstr "Vylouèit tyto u¾ivatele: "
+
+#: gui/gdmconfig-strings.c:37
+msgid "Automatic Login: "
+msgstr "Automatické pøihlá¹ení: "
+
+#: gui/gdmconfig-strings.c:38
+msgid "Position"
+msgstr "Pozice"
+
+#: gui/gdmconfig-strings.c:39
+msgid "Manually set position"
+msgstr "Ruènì nastavit pozici"
+
+#: gui/gdmconfig-strings.c:40
+msgid "Lock position"
+msgstr "Zamknout pozici"
+
+#: gui/gdmconfig-strings.c:41
+msgid "X position: "
+msgstr "Pozice x: "
+
+#: gui/gdmconfig-strings.c:42
+msgid "Y position: "
+msgstr "Pozice y: "
+
+#: gui/gdmconfig-strings.c:43
+msgid "Xinerama screen: "
+msgstr "Obrazovka Xinerama: "
 
 #: gui/gdmconfig-strings.c:44
-msgid "Exclude these users: "
-msgstr ""
+msgid "Login behaviour"
+msgstr "Chování pøihlá¹ování"
 
-#: gui/gdmconfig-strings.c:45
-msgid "Automatic Login: "
-msgstr ""
+#: gui/gdmconfig-strings.c:45 gui/gdmconfig-strings.c:53
+msgid "Face browser"
+msgstr "Prohlí¾eè tváøí"
 
 #: gui/gdmconfig-strings.c:46
-msgid "Position"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:47
-msgid "Manually set position"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:48
-msgid "Lock position"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:49
-msgid "X position: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:50
-msgid "Y position: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:51
-msgid "Xinerama screen: "
-msgstr ""
-
-#: gui/gdmconfig-strings.c:52
-msgid "Login behaviour"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:53 gui/gdmconfig-strings.c:61
-msgid "Face browser"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:54
 msgid "Show choosable user images (enable face browser)"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:55
+#: gui/gdmconfig-strings.c:47
 msgid "Default face image: "
-msgstr ""
+msgstr "Implicitní obrázek oblièeje: "
 
-#: gui/gdmconfig-strings.c:56
+#: gui/gdmconfig-strings.c:48
 msgid "Global faces directory: "
-msgstr ""
+msgstr "Globalní adresáø s oblièeji: "
 
-#: gui/gdmconfig-strings.c:57
+#: gui/gdmconfig-strings.c:49
 msgid "Maximum face width: "
-msgstr ""
+msgstr "Maximální ¹íøka oblièeje: "
 
-#: gui/gdmconfig-strings.c:58
+#: gui/gdmconfig-strings.c:50
 msgid "Select an image for users with no 'face'"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:59
+#: gui/gdmconfig-strings.c:51
 msgid "Choose the directory to search for faces"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:60
+#: gui/gdmconfig-strings.c:52
 msgid "Maximum face height: "
-msgstr ""
+msgstr "Maximální vý¹ka oblièeje: "
 
-#: gui/gdmconfig-strings.c:62
+#: gui/gdmconfig-strings.c:54
 msgid "expert"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:64
+#: gui/gdmconfig-strings.c:56
 msgid "Allow root to login with GDM"
+msgstr "Povolit pøihlá¹ení jako 'root' s GDM"
+
+#: gui/gdmconfig-strings.c:57
+msgid ""
+"Determines whether GDM should kill X clients started by the init scripts "
+"when the user logs in."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:65
+#: gui/gdmconfig-strings.c:58
 msgid "Kill 'init' clients"
+msgstr "Zabít klienty 'init'"
+
+#: gui/gdmconfig-strings.c:59
+msgid "Should GDM print authentication errors in the greeter"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:66
-msgid "Relax permissions"
-msgstr ""
-
-#: gui/gdmconfig-strings.c:67
+#: gui/gdmconfig-strings.c:60
 msgid "Authentication errors should be verbose"
 msgstr ""
 
+#: gui/gdmconfig-strings.c:61
+msgid "Select how relaxed permissions are"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:62
+msgid "Permissions: "
+msgstr "Práva: "
+
+#: gui/gdmconfig-strings.c:63
+msgid "Allow world writable files and directories"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:64
+msgid "World writable"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:65
+msgid "Allow group writable files and directories"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:66
+msgid "Group writable"
+msgstr ""
+
+#: gui/gdmconfig-strings.c:67
+msgid "Only accept user owned files and directories"
+msgstr ""
+
 #: gui/gdmconfig-strings.c:68
+msgid "Paranoia"
+msgstr "Paranoia"
+
+#: gui/gdmconfig-strings.c:69
 msgid "Authorization Details"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:69
-msgid "GDM runs as this user: "
-msgstr ""
-
 #: gui/gdmconfig-strings.c:70
+msgid "GDM runs as this user: "
+msgstr "GDM bì¾í jako tento u¾ivatel: "
+
+#: gui/gdmconfig-strings.c:71
 msgid "User 'auth' directory: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:71
+#: gui/gdmconfig-strings.c:72
 msgid "User 'auth' FB directory: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:72
+#: gui/gdmconfig-strings.c:73
 msgid "User 'auth' file: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:73
+#: gui/gdmconfig-strings.c:74
 msgid "GDM runs as this group: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:74
-msgid "Limits"
-msgstr ""
-
 #: gui/gdmconfig-strings.c:75
+msgid "Limits"
+msgstr "Limity"
+
+#: gui/gdmconfig-strings.c:76
 msgid "Retry delay: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:76
+#: gui/gdmconfig-strings.c:77
 msgid "Maximum user file length: "
 msgstr ""
 
 #: gui/gdmconfig-strings.c:78
-msgid "Enable XDMCP"
-msgstr ""
+msgid "Security"
+msgstr "Bezpeènost"
 
 #: gui/gdmconfig-strings.c:79
+msgid "Enable XDMCP"
+msgstr "Povolit XDMCP"
+
+#: gui/gdmconfig-strings.c:80
 msgid "Connection Settings"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:80
+#: gui/gdmconfig-strings.c:81
 msgid "Honour indirect requests"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:81
+#: gui/gdmconfig-strings.c:82
 msgid "Maximum indirect wait time: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:82
+#: gui/gdmconfig-strings.c:83
 msgid "Maximum wait time: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:83
+#: gui/gdmconfig-strings.c:84
 msgid "Maximum remote sessions: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:84
+#: gui/gdmconfig-strings.c:85
 msgid "Max pending indirect requests: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:85
+#: gui/gdmconfig-strings.c:86
 msgid "Maximum pending requests: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:86
+#: gui/gdmconfig-strings.c:87
 msgid "Listen on UDP port: "
 msgstr ""
 
 #: gui/gdmconfig-strings.c:88
+msgid "XDMCP"
+msgstr "XDMCP"
+
+#: gui/gdmconfig-strings.c:89
 msgid "Server Definitions"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:89
+#: gui/gdmconfig-strings.c:90
 msgid "No."
 msgstr ""
 
-#: gui/gdmconfig-strings.c:90
-msgid "Path to X server"
-msgstr ""
-
 #: gui/gdmconfig-strings.c:91
-msgid "Add Server"
-msgstr ""
+msgid "Path to X server"
+msgstr "Cesta k X serveru"
 
 #: gui/gdmconfig-strings.c:92
-msgid "Edit Server"
-msgstr ""
+msgid "Add Server"
+msgstr "Pøidat server"
 
 #: gui/gdmconfig-strings.c:93
-msgid "Delete Server"
-msgstr ""
+msgid "Edit Server"
+msgstr "Upravit server"
 
 #: gui/gdmconfig-strings.c:94
+msgid "Delete Server"
+msgstr "Smazat server"
+
+#: gui/gdmconfig-strings.c:95
 msgid "Debugging"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:95
+#: gui/gdmconfig-strings.c:96
 msgid "Enable debugging output"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:96
+#: gui/gdmconfig-strings.c:97
 msgid "X-server setup"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:97
+#: gui/gdmconfig-strings.c:98
 msgid "system_setup"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:98
+#: gui/gdmconfig-strings.c:99
 msgid "Executables"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:99
+#: gui/gdmconfig-strings.c:100
 msgid "Chooser command: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:100
+#: gui/gdmconfig-strings.c:101
 msgid "Greeter command: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:101
+#: gui/gdmconfig-strings.c:102
 msgid "Halt command: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:102
+#: gui/gdmconfig-strings.c:103
 msgid "Reboot command: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:103
+#: gui/gdmconfig-strings.c:104
 msgid "Directories"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:104
+#: gui/gdmconfig-strings.c:105
 msgid "Session directory: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:105
+#: gui/gdmconfig-strings.c:106
 msgid "PRE session scripts directory: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:106
+#: gui/gdmconfig-strings.c:107
 msgid "POST session scripts directory: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:107
+#: gui/gdmconfig-strings.c:108
 msgid "Logging directory: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:108
+#: gui/gdmconfig-strings.c:109
 msgid "Display initialization directory: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:109 gui/gdmconfig-strings.c:112
+#: gui/gdmconfig-strings.c:110 gui/gdmconfig-strings.c:113
 msgid "Miscelleaneous"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:110
+#: gui/gdmconfig-strings.c:111
 msgid "PID file: "
 msgstr "Soubor PID: "
 
-#: gui/gdmconfig-strings.c:111
+#: gui/gdmconfig-strings.c:112
 msgid "Paths"
-msgstr ""
+msgstr "Cesty"
 
-#: gui/gdmconfig-strings.c:113
+#: gui/gdmconfig-strings.c:114
 msgid "Default $PATH: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:114
+#: gui/gdmconfig-strings.c:115
 msgid "Root $PATH: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:115
+#: gui/gdmconfig-strings.c:116
 msgid "Localization"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:117
+#: gui/gdmconfig-strings.c:118
 msgid "Locale file: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:118
+#: gui/gdmconfig-strings.c:119
 msgid "Environment"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:119
+#: gui/gdmconfig-strings.c:120
 msgid "Appearance"
 msgstr "Vzhled"
 
-#: gui/gdmconfig-strings.c:120
+#: gui/gdmconfig-strings.c:121
 msgid "Directory for host images: "
 msgstr ""
 
-#: gui/gdmconfig-strings.c:121
+#: gui/gdmconfig-strings.c:122
 msgid "Default host image:"
 msgstr ""
 
-#: gui/gdmconfig-strings.c:122
-msgid "Refresh"
-msgstr ""
-
 #: gui/gdmconfig-strings.c:123
+msgid "Refresh"
+msgstr "Obnovit"
+
+#: gui/gdmconfig-strings.c:124
 msgid "Scan every 'x' seconds: "
 msgstr ""
 
 #: gui/gdmconfig-strings.c:125
+msgid "Chooser"
+msgstr "Výbìr"
+
+#: gui/gdmconfig-strings.c:126
 msgid "(C) 2001 Lee Mallabone"
 msgstr "(C) 2001 Lee Mallabone"
 
-#: gui/gdmconfig-strings.c:126
+#: gui/gdmconfig-strings.c:127
 msgid ""
 "Configure the GNOME Display Manager.\n"
 "Please submit any bugs or feature requests at http://bugzilla.gnome.org "
 "under the `gdm' product."
 msgstr ""
 
+#~ msgid "Connect"
+#~ msgstr "Pøipojit se"
+
+#~ msgid "Rescan"
+#~ msgstr "Znovu pøeèíst"
+
+#~ msgid "Cancel"
+#~ msgstr "Zru¹it"
+
 #, fuzzy
-#~ msgid "Welcome to %n"
-#~ msgstr "Vítejte na %s"
+#~ msgid ""
+#~ "Welcome to %n\n"
+#~ "%n\n"
+#~ "This is %n\n"
+#~ msgstr ""
+#~ "Vítejte na %n\n"
+#~ "%n\n"
+#~ "Toto je %n"
 
 #~ msgid "User unknown"
 #~ msgstr "U¾ivatel neznám"
