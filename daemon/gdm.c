@@ -608,13 +608,6 @@ gdm_config_parse (void)
     /* Lookup user and groupid for the gdm user */
     pwent = getpwnam (GdmUser);
 
-    if G_UNLIKELY (pwent == NULL && 0 /* FIXME: this is evil! */) {
-	    gdm_error (_("%s: Can't find the gdm user (%s). Trying 'nobody'!"), "gdm_config_parse", GdmUser);
-	    g_free (GdmUser);
-	    GdmUser = g_strdup ("nobody");
-	    pwent = getpwnam (GdmUser);
-    }
-
     if G_UNLIKELY (pwent == NULL) {
 	    char *s = g_strdup_printf
 		    (_("The gdm user does not exist. "
@@ -643,13 +636,6 @@ gdm_config_parse (void)
     }
 
     grent = getgrnam (GdmGroup);
-
-    if G_UNLIKELY (grent == NULL && 0 /* FIXME: this is evil! */) {
-	    gdm_error (_("%s: Can't find the gdm group (%s). Trying 'nobody'!"), "gdm_config_parse", GdmUser);
-	    g_free (GdmGroup);
-	    GdmGroup = g_strdup ("nobody");
-	    grent = getgrnam (GdmGroup);
-    }
 
     if G_UNLIKELY (grent == NULL) {
 	    char *s = g_strdup_printf
@@ -830,17 +816,17 @@ gdm_daemonify (void)
 	    fclose (pf);
 	    if G_UNLIKELY (errno != 0) {
 		    /* FIXME: how to handle this? */
-		    gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
+		    gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
 				  GdmPidFile, strerror (errno));
-		    gdm_error ("Cannot write PID file %s, possibly out of diskspace.  Error: %s",
+		    gdm_error (_("Cannot write PID file %s, possibly out of diskspace.  Error: %s"),
 			       GdmPidFile, strerror (errno));
 
 	    }
 	} else if G_UNLIKELY (errno != 0) {
 	    /* FIXME: how to handle this? */
-	    gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
+	    gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
 			  GdmPidFile, strerror (errno));
-	    gdm_error ("Cannot write PID file %s, possibly out of diskspace.  Error: %s",
+	    gdm_error (_("Cannot write PID file %s, possibly out of diskspace.  Error: %s"),
 		       GdmPidFile, strerror (errno));
 
 	}
@@ -1574,7 +1560,7 @@ static void
 main_daemon_abrt (int sig)
 {
 	/* FIXME: note that this could mean out of memory */
-	gdm_error ("main daemon: Got SIGABRT, something went very wrong. Going down!");
+	gdm_error (_("main daemon: Got SIGABRT, something went very wrong. Going down!"));
 	gdm_final_cleanup ();
 	exit (EXIT_FAILURE);
 }
@@ -1917,17 +1903,17 @@ main (int argc, char *argv[])
 	    fclose (pf);
 	    if (errno != 0) {
 		    /* FIXME: how to handle this? */
-		    gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
+		    gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
 				  GdmPidFile, strerror (errno));
-		    gdm_error ("Cannot write PID file %s, possibly out of diskspace.  Error: %s",
+		    gdm_error (_("Cannot write PID file %s, possibly out of diskspace.  Error: %s"),
 			       GdmPidFile, strerror (errno));
 
 	    }
 	} else if (errno != 0) {
 	    /* FIXME: how to handle this? */
-		gdm_fdprintf (2, "Cannot write PID file %s, possibly out of diskspace.  Error: %s\n",
+		gdm_fdprintf (2, _("Cannot write PID file %s, possibly out of diskspace.  Error: %s\n"),
 			      GdmPidFile, strerror (errno));
-	    gdm_error ("Cannot write PID file %s, possibly out of diskspace.  Error: %s",
+	    gdm_error (_("Cannot write PID file %s, possibly out of diskspace.  Error: %s"),
 		       GdmPidFile, strerror (errno));
 
 	}

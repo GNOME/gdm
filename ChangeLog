@@ -1,3 +1,12 @@
+Thu Nov 06 09:51:45 2003  George Lebl <jirka@5z.com>
+
+	* daemon/gdm.c: whack some stale code, mark some messages for translation
+
+	* daemon/slave.c: whack all clients inside the session stop.  Should
+	  "fix" #126071 although I don't see a clean way to fix that.
+	  There's always a race as clients could still not be all dead by the
+	  time we call close session.  But perhaps this helps matters a bit.
+
 Fri Oct 17 10:54:12 2003  George Lebl <jirka@5z.com>
 
 	* Release 2.4.4.5

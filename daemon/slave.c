@@ -4088,6 +4088,17 @@ gdm_slave_session_stop (gboolean run_post_session,
 	    kill (- (d->sesspid), SIGTERM);
     gdm_sigchld_block_pop ();
 
+    /* HACK:
+       This is to fix #126071, that is kill processes that may still hold open
+       fd's in the home directory to allow a clean unmount.  However note of course
+       that this is a race. */
+    gdm_server_whack_clients (d);
+
+#if defined(_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SCHED_YIELD)
+    /* let the other processes die perhaps or whatnot */
+    sched_yield ();
+#endif
+
     finish_session_output (run_post_session /* do_read */);
     
     if (local_login == NULL)
