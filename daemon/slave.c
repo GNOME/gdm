@@ -476,10 +476,21 @@ focus_first_x_window (const char *class_res_name)
 				   &hint) &&
 		    hint.res_name != NULL &&
 		    strcmp (hint.res_name, class_res_name) == 0) {
-			XSetInputFocus (disp,
-					event.xmap.window,
-					RevertToPointerRoot,
-					CurrentTime);
+			Window root_return;
+			int x_return, y_return;
+			unsigned int width_return = 0, height_return = 0;
+			unsigned int border_width_return;
+			unsigned int depth_return;
+
+			XGetGeometry (disp, event.xmap.window,
+				      &root_return, &x_return,
+				      &y_return, &width_return,
+				      &height_return, &border_width_return,
+				      &depth_return);
+			XWarpPointer (disp, None, event.xmap.window,
+				      0, 0, 0, 0,
+				      width_return / 2,
+				      height_return / 2);
 			XSync (disp, False);
 			XCloseDisplay (disp);
 
@@ -1601,8 +1612,7 @@ gdm_slave_session_start (void)
 	gdm_debug (_("Running %s for %s on %s"),
 		   sesspath, login, d->name);
 
-	if (pwent->pw_shell != NULL &&
-	    pwent->pw_shell[0] != '\0') {
+	if ( ! gdm_string_empty (pwent->pw_shell)) {
 		shell = pwent->pw_shell;
 	} else {
 		shell = "/bin/sh";
