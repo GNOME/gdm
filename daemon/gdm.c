@@ -53,12 +53,14 @@ gchar *argdelim = " ";		/* argv argument delimiter */
 uid_t GdmUserId;		/* Userid under which gdm should run */
 gid_t GdmGroupId;		/* Groupid under which gdm should run */
 
+gboolean gdm_first_login = TRUE;
+
 /* Configuration options */
 gchar *GdmUser = NULL;
 gchar *GdmGroup = NULL;
 gchar *GdmSessDir = NULL;
+gchar *GdmAutomaticLogin = NULL;
 gchar *GdmGreeter = NULL;
-gchar *GdmBackgroundProg = NULL;
 gchar *GdmChooser = NULL;
 gchar *GdmLogDir = NULL;
 gchar *GdmDisplayInit = NULL;
@@ -73,6 +75,7 @@ gchar *GdmUserAuthFB = NULL;
 gchar *GdmPidFile = NULL;
 gchar *GdmDefaultPath = NULL;
 gchar *GdmRootPath = NULL;
+gchar *GdmDefaultLocale = NULL;
 gint  GdmKillInitClients = 0;
 gint  GdmUserMaxFile = 0;
 gint  GdmXdmcp = 0;
@@ -118,8 +121,8 @@ gdm_config_parse (void)
     GdmChooser = gnome_config_get_string (GDM_KEY_CHOOSER);
     GdmDefaultPath = gnome_config_get_string (GDM_KEY_PATH);
     GdmDisplayInit = gnome_config_get_string (GDM_KEY_INITDIR);
+    GdmAutomaticLogin = gnome_config_get_string (GDM_KEY_AUTOMATICLOGIN);
     GdmGreeter = gnome_config_get_string (GDM_KEY_GREETER);
-    GdmBackgroundProg = gnome_config_get_string (GDM_KEY_BACKGROUNDPROG);
     GdmGroup = gnome_config_get_string (GDM_KEY_GROUP);
     GdmHalt = gnome_config_get_string (GDM_KEY_HALT);
     GdmKillInitClients = gnome_config_get_int (GDM_KEY_KILLIC);
@@ -130,6 +133,7 @@ gdm_config_parse (void)
     GdmReboot = gnome_config_get_string (GDM_KEY_REBOOT);
     GdmRetryDelay = gnome_config_get_int (GDM_KEY_RETRYDELAY);
     GdmRootPath = gnome_config_get_string (GDM_KEY_ROOTPATH);
+    GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmServAuthDir = gnome_config_get_string (GDM_KEY_SERVAUTH);
     GdmSessDir= gnome_config_get_string (GDM_KEY_SESSDIR);
     GdmUser = gnome_config_get_string (GDM_KEY_USER);
@@ -156,6 +160,12 @@ gdm_config_parse (void)
 
     gnome_config_pop_prefix();
 
+    if (GdmAutomaticLogin != NULL &&
+	strcmp (GdmAutomaticLogin, "root") == 0) {
+	    gdm_info ("gdm_config_parse: Root cannot be autologged in, turing off");
+	    g_free (GdmAutomaticLogin);
+	    GdmAutomaticLogin = NULL;
+    }
 
     /* Prerequisites */ 
     if (GdmGreeter == NULL)
@@ -538,6 +548,8 @@ main (int argc, char *argv[])
 
     /* Start local X servers */
     g_slist_foreach (displays, (GFunc) gdm_local_servers_start, NULL);
+
+    gdm_first_login = FALSE;
 
     /* Accept remote connections */
     if (GdmXdmcp) {

@@ -51,15 +51,17 @@ GdmDisplay *d;
 gchar *login = NULL;
 sigset_t mask, omask;
 gboolean pingack;
-gboolean greet = TRUE;
+gboolean greet = FALSE;
 FILE *greeter;
+
+extern gboolean gdm_first_login;
 
 /* Configuration option variables */
 extern uid_t GdmUserId;
 extern gid_t GdmGroupId;
 extern gchar *GdmSessDir;
+extern gchar *GdmAutomaticLogin;
 extern gchar *GdmGreeter;
-extern gchar *GdmBackgroundProg;
 extern gchar *GdmDisplayInit;
 extern gchar *GdmPreSession;
 extern gchar *GdmPostSession;
@@ -67,6 +69,7 @@ extern gchar *GdmSuspend;
 extern gchar *GdmDefaultPath;
 extern gchar *GdmRootPath;
 extern gchar *GdmUserAuthFile;
+extern gchar *GdmDefaultLocale;
 extern gint GdmUserMaxFile;
 extern gint GdmRelaxPerms;
 extern gint GdmKillInitClients;
@@ -156,10 +159,31 @@ gdm_slave_start (GdmDisplay *display)
 	}
     }
     
-    if (d->dsp) 
-	gdm_slave_greeter();  /* Start the greeter */
-    else
+    if (d->dsp) {
+	if (gdm_first_login &&
+	    GdmAutomaticLogin != NULL &&
+	    GdmAutomaticLogin[0] != '\0' &&
+	    strcmp (GdmAutomaticLogin, "root") != 0) {
+		login = g_strdup (GdmAutomaticLogin);
+
+		greet = FALSE;
+		gdm_debug ("gdm_slave_start: Automatic login: %s", login);
+
+		/* Run the init script. gdmslave suspends until script
+		 * has terminated */
+		gdm_slave_exec_script (d, GdmDisplayInit);
+
+		gdm_debug ("gdm_slave_start: DisplayInit script finished");
+
+		gdm_slave_session_start();
+
+		gdm_debug ("gdm_slave_start: Automatic login done");
+	} else {
+		gdm_slave_greeter ();  /* Start the greeter */
+	}
+    } else {
 	exit (DISPLAY_ABORT);
+    }
 }
 
 
@@ -174,23 +198,6 @@ gdm_slave_greeter (void)
     /* Run the init script. gdmslave suspends until script has terminated */
     gdm_slave_exec_script (d, GdmDisplayInit);
 
-    if (GdmBackgroundProg != NULL &&
-	GdmBackgroundProg[0] != '\0') {
-	    d->backgroundpid = fork ();
-
-	    if (d->backgroundpid == -1) {
-		    /*ingore errors, this is irrelevant */
-		    d->backgroundpid = 0;
-	    } else if (d->backgroundpid == 0) {
-		    argv = g_strsplit (GdmBackgroundProg, argdelim, MAX_ARGS);
-		    execv (argv[0], argv);
-		    /*ingore errors, this is irrelevant */
-		    _exit (0);
-	    }
-    } else {
-	    d->backgroundpid = 0;
-    }
-    
     /* Open a pipe for greeter communications */
     if (pipe (pipe1) < 0 || pipe (pipe2) < 0) 
 	gdm_slave_exit (DISPLAY_ABORT, _("gdm_slave_greeter: Can't init pipe to gdmgreeter"));
@@ -275,7 +282,7 @@ gdm_slave_session_start (void)
     gchar *cfgdir, *sesspath;
     struct stat statbuf;
     struct passwd *pwent;
-    gchar *session, *language, *usrsess, *usrlang;
+    gchar *session = NULL, *language = NULL, *usrsess, *usrlang;
     gboolean savesess = FALSE, savelang = FALSE, usrcfgok = FALSE, authok = FALSE;
     gint i;
     char *shell;
@@ -298,8 +305,9 @@ gdm_slave_session_start (void)
     }
     
     /* Sanity check on ~user/.gnome/gdm */
-    usrcfgok = gdm_file_check ("gdm_slave_greeter", pwent->pw_uid, cfgdir, "gdm", 
-				TRUE, GdmUserMaxFile, GdmRelaxPerms);
+    usrcfgok = gdm_file_check ("gdm_slave_session_start", pwent->pw_uid,
+			       cfgdir, "gdm", TRUE, GdmUserMaxFile,
+			       GdmRelaxPerms);
     g_free (cfgdir);
 
     if (usrcfgok) {
@@ -320,36 +328,46 @@ gdm_slave_session_start (void)
 
     setegid (GdmGroupId);
     seteuid (0);
-    
-    session = gdm_slave_greeter_ctl (GDM_SESS, usrsess);
-    language = gdm_slave_greeter_ctl (GDM_LANG, usrlang);
-    
-    if (strlen (gdm_slave_greeter_ctl (GDM_SSESS, "")))
-	savesess = TRUE;
-    
-    if (strlen (gdm_slave_greeter_ctl (GDM_SLANG, "")))
-	savelang = TRUE;
-    
-    gdm_debug ("gdm_slave_session_start: Authentication completed. Whacking greeter");
-    
-    sigemptyset (&mask);
-    sigaddset (&mask, SIGCHLD);
-    sigprocmask (SIG_BLOCK, &mask, &omask);  
-    
-    greet = FALSE;
 
-    /* Kill greeter and wait for it to die */
-    kill (d->greetpid, SIGINT);
-    waitpid (d->greetpid, 0, 0); 
-    d->greetpid = 0;
-
-    /* Kill background */
-    if (d->backgroundpid != 0) {
-	    kill (d->backgroundpid, SIGTERM);
-	    d->backgroundpid = 0;
+    if (greet) {
+	    session = gdm_slave_greeter_ctl (GDM_SESS, usrsess);
+	    language = gdm_slave_greeter_ctl (GDM_LANG, usrlang);
     }
     
-    sigprocmask (SIG_SETMASK, &omask, NULL);
+    if (session == NULL ||
+	session[0] == '\0') {
+	    g_free (session);
+	    session = g_strdup ("Default");
+    }
+
+    if (language == NULL ||
+	language[0] == '\0') {
+	    g_free (language);
+	    language = g_strdup ("english");
+    }
+
+    if (greet) {
+	    if (strlen (gdm_slave_greeter_ctl (GDM_SSESS, "")))
+		    savesess = TRUE;
+
+	    if (strlen (gdm_slave_greeter_ctl (GDM_SLANG, "")))
+		    savelang = TRUE;
+
+	    gdm_debug ("gdm_slave_session_start: Authentication completed. Whacking greeter");
+
+	    sigemptyset (&mask);
+	    sigaddset (&mask, SIGCHLD);
+	    sigprocmask (SIG_BLOCK, &mask, &omask);  
+
+	    greet = FALSE;
+
+	    /* Kill greeter and wait for it to die */
+	    kill (d->greetpid, SIGINT);
+	    waitpid (d->greetpid, 0, 0); 
+	    d->greetpid = 0;
+
+	    sigprocmask (SIG_SETMASK, &omask, NULL);
+    }
     
     if (GdmKillInitClients)
 	gdm_slave_windows_kill();
@@ -568,12 +586,6 @@ gdm_slave_term_handler (int sig)
 {
     gdm_debug ("gdm_slave_term_handler: %s got TERM signal", d->name);
 
-    if (d->backgroundpid != 0) {
-	    gdm_debug ("gdm_slave_term_handler: Whacking background");
-	    kill (d->backgroundpid, SIGTERM);
-	    d->backgroundpid = 0;
-    } 
-    
     if (d->greetpid) {
 	gdm_debug ("gdm_slave_term_handler: Whacking greeter");
 	kill (d->greetpid, SIGINT);
@@ -608,11 +620,6 @@ gdm_slave_child_handler (int sig)
 	    gdm_debug ("gdm_slave_child_handler: %d returned %d", pid, WEXITSTATUS (status));
 	
 	if (pid == d->greetpid && greet) {
-	    if (d->backgroundpid != 0) {
-		kill (d->backgroundpid, SIGTERM);
-	        d->backgroundpid = 0;
-	    }
-
 	    if (WIFEXITED (status))
 		exit (WEXITSTATUS (status));
 	    else {
@@ -628,10 +635,6 @@ gdm_slave_child_handler (int sig)
 	if (pid && pid == d->sesspid) {
 	    gdm_slave_session_stop();
 	    gdm_slave_session_cleanup();
-	}
-
-	if (pid && pid == d->backgroundpid) {
-	    d->backgroundpid = 0;
 	}
     }
 }
@@ -833,10 +836,6 @@ gdm_slave_exit (gint status, const gchar *format, ...)
     if (d->greetpid)
 	kill (d->greetpid, SIGTERM);
     d->greetpid = 0;
-
-    if (d->backgroundpid)
-	kill (d->backgroundpid, SIGTERM);
-    d->backgroundpid = 0;
 
     if (d->chooserpid)
 	kill (d->chooserpid, SIGTERM);

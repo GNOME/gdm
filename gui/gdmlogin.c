@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <syslog.h>
 #include <ctype.h>
@@ -49,6 +51,7 @@ static gint  GdmSystemMenu;
 static gint  GdmUserMaxFile;
 static gchar *GdmLogo;
 static gchar *GdmWelcome;
+static gchar *GdmBackgroundProg;
 static gchar *GdmFont;
 static gchar *GdmGtkRC;
 static gchar *GdmIcon;
@@ -92,9 +95,29 @@ gboolean savesess;
 gboolean savelang;
 gint maxwidth;
 
+pid_t backgroundpid = 0;
+
 static void
-gdm_login_done (void)
+gdm_greeter_chld (int sig)
 {
+	if (backgroundpid != 0 &&
+	    waitpid (backgroundpid, NULL, WNOHANG) > 0) {
+		backgroundpid = 0;
+	}
+}
+
+static void
+kill_background (void)
+{
+	if (backgroundpid != 0) {
+		kill (backgroundpid, SIGTERM);
+	}
+}
+
+static void
+gdm_login_done (int sig)
+{
+    kill_background ();
     _exit (DISPLAY_SUCCESS);
 }
 
@@ -219,8 +242,10 @@ gdm_login_abort (const gchar *format, ...)
     va_list args;
     gchar *s;
 
-    if (!format)
+    if (!format) {
+	kill_background ();
 	exit (DISPLAY_ABORT);
+    }
 
     va_start (args, format);
     s = g_strdup_vprintf (format, args);
@@ -229,6 +254,7 @@ gdm_login_abort (const gchar *format, ...)
     syslog (LOG_ERR, s);
     closelog();
 
+    kill_background ();
     exit (DISPLAY_ABORT);
 }
 
@@ -245,7 +271,7 @@ gdm_parse_enriched_string (gchar *s)
     if (!s)
 	return(NULL);
 
-    display = getenv ("DISPLAY");
+    display = g_strdup (g_getenv ("DISPLAY"));
 
     if(!display)
 	return(NULL);
@@ -253,12 +279,14 @@ gdm_parse_enriched_string (gchar *s)
     temp1 = strchr (display, '.');
     temp2 = strchr (display, ':');
 
-    if (temp1)
+    if (temp1) {
 	*temp1 = '\0';
-    else if (temp2)
+    } else if (temp2) {
 	*temp2 = '\0';
-    else
-	return (NULL);
+    } else {
+	    g_free (display);
+	    return (NULL);
+    }
 
     gethostname (hostbuf, 255);
     hostname = g_strdup (hostbuf);
@@ -270,11 +298,13 @@ gdm_parse_enriched_string (gchar *s)
 
     if (strlen (s) > 1023) {
 	syslog (LOG_ERR, _("gdm_parse_enriched_string: String too long!"));
+	g_free (display);
 	return (g_strdup_printf (_("Welcome to %s"), hostname));
     }
 
     if (!(buffer = g_malloc (4096))) {
 	syslog (LOG_ERR, _("gdm_parse_enriched_string: Could not malloc temporary buffer!"));
+	g_free (display);
 	return (NULL);
     }
 
@@ -330,6 +360,7 @@ gdm_parse_enriched_string (gchar *s)
     }
 
     *buffer = 0;
+    g_free (display);
 
     return (g_strdup (start));
 }
@@ -359,6 +390,7 @@ gdm_login_reboot_handler (void)
     if (gdm_login_query (_("Are you sure you want to reboot the machine?"))) {
 	closelog();
 
+        kill_background ();
 	exit (DISPLAY_REBOOT);
     }
 
@@ -372,6 +404,7 @@ gdm_login_halt_handler (void)
     if (gdm_login_query (_("Are you sure you want to halt the machine?"))) {
 	closelog();
 
+        kill_background ();
 	exit (DISPLAY_HALT);
     }
 
@@ -401,7 +434,8 @@ gdm_login_parse_config (void)
     GdmLocaleFile = gnome_config_get_string (GDM_KEY_LOCFILE);
     GdmDefaultLocale = gnome_config_get_string (GDM_KEY_LOCALE);
     GdmSessionDir = gnome_config_get_string (GDM_KEY_SESSDIR);
-    GdmWelcome=gnome_config_get_translated_string (GDM_KEY_WELCOME);
+    GdmWelcome = gnome_config_get_translated_string (GDM_KEY_WELCOME);
+    GdmBackgroundProg = gnome_config_get_string (GDM_KEY_BACKGROUNDPROG);
     GdmGtkRC = gnome_config_get_string (GDM_KEY_GTKRC);
     GdmExclude = gnome_config_get_string (GDM_KEY_EXCLUDE);
     GdmGlobalFaceDir = gnome_config_get_string (GDM_KEY_FACEDIR);
@@ -940,6 +974,7 @@ gdm_login_ctrl_handler (GIOChannel *source, GIOCondition cond, gint fd)
 	break;
 
     case GDM_QUIT:
+        kill_background ();
 	exit (EXIT_SUCCESS);
 	break;
 	
@@ -1573,6 +1608,7 @@ main (int argc, char *argv[])
     gchar **fixedargv;
     gint fixedargc, i;
     struct sigaction hup;
+    struct sigaction chld;
     sigset_t mask;
     GIOChannel *ctrlch;
 
@@ -1609,9 +1645,10 @@ main (int argc, char *argv[])
     if (GdmBrowser)
 	gdm_login_browser_update();
 
-    hup.sa_handler = (void *) gdm_login_done;
+    hup.sa_handler = gdm_login_done;
     hup.sa_flags = 0;
     sigemptyset(&hup.sa_mask);
+    sigaddset (&hup.sa_mask, SIGCHLD);
 
     if (sigaction (SIGHUP, &hup, NULL) < 0) 
         gdm_login_abort (_("main: Error setting up HUP signal handler"));
@@ -1622,13 +1659,39 @@ main (int argc, char *argv[])
     if (sigaction (SIGTERM, &hup, NULL) < 0) 
         gdm_login_abort (_("main: Error setting up TERM signal handler"));
 
+    chld.sa_handler = gdm_greeter_chld;
+    chld.sa_flags = SA_RESTART;
+    sigemptyset(&chld.sa_mask);
+    sigaddset (&chld.sa_mask, SIGCHLD);
+
+    if (sigaction (SIGCHLD, &chld, NULL) < 0) 
+        gdm_login_abort (_("main: Error setting up CHLD signal handler"));
+
     sigfillset (&mask);
     sigdelset (&mask, SIGTERM);
     sigdelset (&mask, SIGHUP);
     sigdelset (&mask, SIGINT);
+    sigdelset (&mask, SIGCHLD);
     
     if (sigprocmask (SIG_SETMASK, &mask, NULL) == -1) 
 	gdm_login_abort (_("Could not set signal mask!"));
+
+    /* Launch a background program if one exists */
+    if (GdmBackgroundProg != NULL &&
+	GdmBackgroundProg[0] != '\0') {
+	    backgroundpid = fork ();
+
+	    if (backgroundpid == -1) {
+		    /*ingore errors, this is irrelevant */
+		    backgroundpid = 0;
+	    } else if (backgroundpid == 0) {
+		    char **argv;
+		    argv = g_strsplit (GdmBackgroundProg, " ", MAX_ARGS);
+		    execv (argv[0], argv);
+		    /*ingore errors, this is irrelevant */
+		    _exit (0);
+	    }
+    }
 
     ctrlch = g_io_channel_unix_new (STDIN_FILENO);
     g_io_channel_init (ctrlch);
@@ -1640,6 +1703,7 @@ main (int argc, char *argv[])
 
     gtk_main();
 
+    kill_background ();
     exit(EXIT_SUCCESS);
 }
 
