@@ -1458,7 +1458,7 @@ read_themes (GtkListStore *store, const char *theme_dir, DIR *dir,
 			(theme_file, "GdmGreeterTheme/Greeter");
 		if (ve_string_empty (file)) {
 			g_free (file);
-			file = g_strconcat (dent->d_name, ".xml");
+			file = g_strconcat (dent->d_name, ".xml", NULL);
 		}
 
 		full = g_strconcat (theme_dir, "/", dent->d_name,
