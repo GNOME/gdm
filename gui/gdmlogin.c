@@ -1070,7 +1070,7 @@ static gboolean
 gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 {
     static gboolean first_return = TRUE;
-    static gchar *login;
+    static gchar *login_string;
 
     if (!event)
 	return(TRUE);
@@ -1083,12 +1083,12 @@ gdm_login_entry_handler (GtkWidget *widget, GdkEventKey *event)
 	if (GdmBrowser)
 	    gtk_widget_set_sensitive (GTK_WIDGET (browser), FALSE);
 
-	login = gtk_entry_get_text (GTK_ENTRY (entry));
+	login_string = gtk_entry_get_text (GTK_ENTRY (entry));
 
 	/* If in timed login mode, and if this is the login
 	 * entry.  Then an enter by itself is sort of like I want to
 	 * log in as the timed user "damn it".  */
-	if (gdm_string_empty (login) &&
+	if (gdm_string_empty (login_string) &&
 	    timed_handler_id != 0 &&
 	    login_entry) {
 		login_entry = FALSE;
